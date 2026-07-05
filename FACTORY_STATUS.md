@@ -167,6 +167,10 @@ The three concrete things standing between today's build and the next dollar:
 1. **Add the HTTP Request node to the n8n Sensing Engine workflow → `POST http://localhost:3000/api/trends`.**
    This is the one step in [11] that couldn't be done remotely (no n8n API key). Full step-by-step is in §4 item 1 above. Until this node exists, `/api/trends` is built and tested but has nothing feeding it — `OPPORTUNITIES.md` stays empty.
 
+   > **n8n:** open workflow → add HTTP Request node →
+   > POST http://localhost:3000/api/trends →
+   > Body: `{{ $json }}` → Save → Test
+
 2. **Run `start_factory.bat` and test the full pipeline live.**
    Everything in this file has been tested piece-by-piece and in cross-task regression (§2), but never all three processes (n8n + `server.js` + `factory_loop.js`) started together from the actual `.bat` file in one shot. Do this once item 1 is done, then click **Scout** on the dashboard and confirm a book appears in `books/` and (once the n8n node is live) an entry lands in `OPPORTUNITIES.md`.
 
