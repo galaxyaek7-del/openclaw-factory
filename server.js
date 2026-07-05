@@ -773,7 +773,8 @@ app.post('/api/qa-check', (req, res) => {
 // Read-only status of the factory's core components. Never mutates state —
 // in particular this must NOT hit the n8n webhook (that would trigger a real
 // Scout run); it only pings n8n's root to check reachability.
-app.get('/health', async (req, res) => {
+// Shared by /health and /good-morning so the two never drift out of sync.
+async function computeHealthStatus() {
   const checks = {};
 
   // sensing_engine — is n8n reachable? Not fatal on its own: Scout already
@@ -838,7 +839,11 @@ app.get('/health', async (req, res) => {
   if (failing.some(c => c.severity === 'critical')) status = 'critical';
   else if (failing.length > 0) status = 'degraded';
 
-  res.json({ status, timestamp: new Date().toISOString(), checks });
+  return { status, timestamp: new Date().toISOString(), checks };
+}
+
+app.get('/health', async (req, res) => {
+  res.json(await computeHealthStatus());
 });
 
 // ── FACTORY DOCTOR: SELF-HEALING LOOP STATUS ──
@@ -868,6 +873,79 @@ app.get('/factory-loop/status', (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// ── GOOD MORNING: GALAXY'S DAILY BRIEFING ──
+// One request, full factory picture — see GOOD_MORNING.md for the spec this
+// implements. Every section degrades independently: if one file is missing
+// or unreadable, that section reports it honestly instead of failing the
+// whole briefing.
+function readTopOpportunities(limit = 3) {
+  const oppFile = path.join(__dirname, 'OPPORTUNITIES.md');
+  if (!fs.existsSync(oppFile)) {
+    return { items: [], note: 'OPPORTUNITIES.md غير موجود بعد — لا فرص مسجَّلة' };
+  }
+  const lines = fs.readFileSync(oppFile, 'utf8').split('\n');
+  const re = /^-\s*\[(.+?)\]\s*(.+?)\s*—\s*(.+)$/;
+  const items = [];
+  for (const line of lines) {
+    const m = line.match(re);
+    if (m) items.push({ timestamp: m[1], niche: m[2].trim(), reason: m[3].trim() });
+  }
+  // NOTE: "top by traffic" as asked isn't possible with real data yet — no
+  // trend-volume number exists anywhere in this system (n8n doesn't return
+  // real Google Trends counts; see [4]/[8]/[11]'s documented gap). Most
+  // recent entries are used as an honest stand-in, same pattern as
+  // factory_loop.js's HUNT step — flagged here rather than silently
+  // mislabeling recency as traffic.
+  return {
+    items: items.slice(-limit).reverse(),
+    note: items.length ? 'لا يوجد رقم "ترافيك" حقيقي بعد — معروضة الأحدث بدل الأعلى ترافيكاً فعلياً' : 'لا فرص مسجَّلة بعد',
+  };
+}
+
+function readLastLoopActions(limit = 10) {
+  const logFile = path.join(__dirname, 'factory_loop.log');
+  if (!fs.existsSync(logFile)) {
+    return { entries: [], note: 'factory_loop.js لم يعمل بعد — لا يوجد سجل' };
+  }
+  const lines = fs.readFileSync(logFile, 'utf8').split('\n').filter(Boolean);
+  const entries = lines.slice(-limit).map(line => {
+    try { return JSON.parse(line); } catch (_) { return { raw: line }; }
+  });
+  return { entries };
+}
+
+function readNextDollarActions() {
+  const statusFile = path.join(__dirname, 'FACTORY_STATUS.md');
+  if (!fs.existsSync(statusFile)) return { text: null, note: 'FACTORY_STATUS.md غير موجود' };
+  const content = fs.readFileSync(statusFile, 'utf8');
+  const marker = '## 6. Next Dollar Actions';
+  const idx = content.indexOf(marker);
+  if (idx === -1) return { text: null, note: 'قسم "Next Dollar Actions" غير موجود في FACTORY_STATUS.md' };
+  const rest = content.slice(idx + marker.length);
+  const nextHeaderMatch = rest.match(/\n## /);
+  const section = (nextHeaderMatch ? rest.slice(0, nextHeaderMatch.index) : rest).trim();
+  return { text: section };
+}
+
+app.get('/good-morning', async (req, res) => {
+  const [factoryStatus, opportunities, lastNightActions, nextDollar] = await Promise.all([
+    computeHealthStatus().catch(err => ({ status: 'error', error: err.message })),
+    Promise.resolve().then(() => readTopOpportunities(3)).catch(err => ({ items: [], note: `error: ${err.message}` })),
+    Promise.resolve().then(() => readLastLoopActions(10)).catch(err => ({ entries: [], note: `error: ${err.message}` })),
+    Promise.resolve().then(() => readNextDollarActions()).catch(err => ({ text: null, note: `error: ${err.message}` })),
+  ]);
+
+  res.json({
+    success: true,
+    generated_at: new Date().toISOString(),
+    title: '🏭 OpenClaw Factory — Daily Briefing',
+    factory_status: factoryStatus,
+    top_opportunities: opportunities,
+    last_night_actions: lastNightActions,
+    next_dollar_actions: nextDollar,
+  });
 });
 
 // ── STATIC ──
