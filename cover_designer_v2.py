@@ -16,10 +16,24 @@ for eight color constants (Constitution §2: loose coupling).
 """
 
 import os
+import re
 import sys
 import json
 
 from PIL import Image, ImageDraw, ImageFont
+
+# Pillow draws raw codepoints left-to-right with no contextual letter joining
+# and no bidi reordering — unshaped Arabic renders completely garbled (and,
+# with some fonts, as missing-glyph boxes). arabic_reshaper + python-bidi fix
+# this; guarded because this is this factory's dominant script (see
+# CLAUDE.md) but a missing optional dependency must still degrade instead of
+# crashing cover generation.
+try:
+    import arabic_reshaper
+    from bidi.algorithm import get_display as _bidi_get_display
+except Exception:
+    arabic_reshaper = None
+    _bidi_get_display = None
 
 # When spawned as a child process without a real console, Python's stdin/
 # stdout can silently fall back to the OS locale codepage instead of UTF-8,
@@ -131,6 +145,48 @@ def _shade(rgb, amount):
     return tuple(min(255, int(c + (255 - c) * -amount)) for c in rgb)
 
 
+_ARABIC_RE = re.compile(r'[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]')
+
+
+def _is_rtl(text):
+    return bool(_ARABIC_RE.search(text or ''))
+
+
+def _shape_for_render(text):
+    """Call right before drawing (never before wrapping) — reshapes Arabic
+    into correct joined letterforms and reorders into visual/display order.
+    Non-Arabic text passes through unchanged. Falls back to raw text (rather
+    than raising) if the shaping libraries are unavailable."""
+    if not _is_rtl(text) or arabic_reshaper is None or _bidi_get_display is None:
+        return text
+    try:
+        return _bidi_get_display(arabic_reshaper.reshape(text))
+    except Exception:
+        return text
+
+
+_PLACEHOLDER_WORDS = {
+    'subtitle', 'title', 'introduction', 'conclusion', 'chapter', 'chapters',
+    'audience', 'price', 'topic', 'niche', 'author', 'untitled',
+}
+
+
+def _looks_like_placeholder(text):
+    """Defense in depth: reject a caller passing through a literal prompt-tag
+    echo (e.g. the bare word "SUBTITLE") as if it were real content — this
+    generator must never render that onto a cover, regardless of which
+    caller failed to catch it upstream. Only rejects short (<=2 word) exact
+    matches, so a real subtitle merely containing one of these words as part
+    of a longer sentence is never falsely rejected."""
+    if not text:
+        return False
+    words = str(text).strip().split()
+    if not words or len(words) > 2:
+        return False
+    normalized = re.sub(r'[^a-zA-Z]', '', str(text)).strip().lower()
+    return normalized in _PLACEHOLDER_WORDS
+
+
 def _wrap_text_to_width(draw, text, font, max_width):
     words = text.split()
     lines, line = [], ""
@@ -207,6 +263,13 @@ def generate_cover(title, subtitle="", author="", niche="", theme=None, output=N
     subtitle = str(subtitle or "").strip()
     author = str(author or "").strip()
 
+    # Reject placeholder-looking text before it ever gets near the canvas —
+    # omit rather than render a literal "SUBTITLE"/"TITLE" echo.
+    if _looks_like_placeholder(subtitle):
+        subtitle = ""
+    if _looks_like_placeholder(author):
+        author = ""
+
     accent_hex = resolve_theme(theme or niche)
     accent_rgb = _hex_to_rgb(accent_hex)
     dark_rgb = _hex_to_rgb(DARK)
@@ -255,18 +318,24 @@ def generate_cover(title, subtitle="", author="", niche="", theme=None, output=N
 
     y = title_y
     for line in title_lines:
-        w = draw.textlength(line, font=title_font)
-        draw.text(((COVER_W - w) / 2, y), line, font=title_font, fill=text_on_accent)
+        rendered = _shape_for_render(line)
+        w = draw.textlength(rendered, font=title_font)
+        draw.text(((COVER_W - w) / 2, y), rendered, font=title_font, fill=text_on_accent)
         y += line_height
 
     if subtitle:
         sub_font_size = max(24, int(title_font_size * 0.32))
-        sub_font = _load_font(FONT_CANDIDATES_ITALIC, sub_font_size)
+        # Arabic typography doesn't use italics, and this system's italic
+        # font has patchy Arabic glyph coverage — use the regular weight for
+        # RTL subtitles instead of forcing a Latin-style oblique on them.
+        sub_font_candidates = FONT_CANDIDATES_REGULAR if _is_rtl(subtitle) else FONT_CANDIDATES_ITALIC
+        sub_font = _load_font(sub_font_candidates, sub_font_size)
         sub_lines = _wrap_text_to_width(draw, subtitle, sub_font, max_text_width)
         y += int(title_font_size * 0.25)
         for line in sub_lines[:2]:
-            w = draw.textlength(line, font=sub_font)
-            draw.text(((COVER_W - w) / 2, y), line, font=sub_font, fill=text_on_accent)
+            rendered = _shape_for_render(line)
+            w = draw.textlength(rendered, font=sub_font)
+            draw.text(((COVER_W - w) / 2, y), rendered, font=sub_font, fill=text_on_accent)
             y += int(sub_font_size * 1.3)
 
     # Short decorative rule beneath the title block — gives the remaining
@@ -293,7 +362,7 @@ def generate_cover(title, subtitle="", author="", niche="", theme=None, output=N
 
     draw.rectangle([0, author_zone_y0, COVER_W, COVER_H], fill=dark_rgb)
     if author:
-        author_display = author.upper()
+        author_display = _shape_for_render(author.upper())
         w = draw.textlength(author_display, font=author_font)
         author_y = author_zone_y0 + (author_zone_h - author_font_size) // 2
         draw.text(((COVER_W - w) / 2, author_y), author_display, font=author_font, fill=white_rgb)

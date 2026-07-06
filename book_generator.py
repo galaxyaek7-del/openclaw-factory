@@ -37,6 +37,15 @@ try:
 except (Exception, SystemExit):
     NICHE_VALIDATOR = None
 
+# Optional: cover_designer_v2.py's Pillow-rendered 70/20/10 cover, used
+# instead of the vector-drawn safe_cover() below when available. It is a
+# standalone tool (Pillow only, no reportlab) — guarding the import means a
+# missing Pillow install degrades to the old cover instead of crashing.
+try:
+    import cover_designer_v2 as COVER_DESIGNER_V2
+except Exception:
+    COVER_DESIGNER_V2 = None
+
 PAGE_W = 6 * inch
 PAGE_H = 9 * inch
 MARGIN = 0.6 * inch
@@ -1686,10 +1695,21 @@ def _parse_sectioned_book(text, expected_chapters):
             introduction = body
         elif 'فصل' in header or 'chapter' in header.lower():
             chapters.append({"title": header, "content": body})
-        elif not subtitle and not chapters:
-            subtitle = header
-            if not introduction:
-                introduction = body
+        elif 'فرعي' in header or 'subtitle' in header.lower():
+            # BUG FIX: this branch used to be reached via the generic
+            # "first unrecognized header" fallback below, which assigned
+            # `subtitle = header` — when the model dutifully echoes the
+            # literal "##SUBTITLE##" tag, that made subtitle literally the
+            # word "SUBTITLE" while the real subtitle text (in `body`) was
+            # silently reassigned to `introduction`. The value belongs in
+            # the body, never the tag/header text itself.
+            subtitle = body
+        elif not subtitle and not chapters and not introduction:
+            # Loose fallback for when the model invents its own natural-
+            # language header instead of a recognizable tag — use body as
+            # the subtitle when there is one; only fall back to the header
+            # text itself if the model left the body empty.
+            subtitle = body or header
 
     if not chapters:
         raise ValueError("لم يتم العثور على أي فصول في رد الذكاء الاصطناعي")
@@ -1768,6 +1788,31 @@ def safe_cover(c, title, subtitle, accent, author):
             c.showPage()
 
 
+def draw_cover_v2(c, title, subtitle, author, topic, theme):
+    """Uses cover_designer_v2.py's Pillow-rendered 70/20/10 cover instead of
+    the vector-drawn safe_cover() below, when available. A cover must never
+    block book production (Constitution: fault tolerance) — any failure here
+    (missing Pillow, a font issue, cover_designer_v2's own quality gate
+    rejecting the result) falls back to safe_cover() instead of raising.
+    Returns the cover_designer_v2 result dict on success, or None if the
+    fallback was used."""
+    if COVER_DESIGNER_V2 is not None:
+        try:
+            cover_result = COVER_DESIGNER_V2.generate_cover(
+                title=title, subtitle=subtitle, author=author,
+                niche=topic, theme=theme,
+            )
+            if cover_result.get('success'):
+                img = ImageReader(cover_result['path'])
+                c.drawImage(img, 0, 0, PAGE_W, PAGE_H, preserveAspectRatio=False, mask='auto')
+                c.showPage()
+                return cover_result
+        except Exception:
+            pass
+    safe_cover(c, title, subtitle, theme_color(theme), author)
+    return None
+
+
 def draw_flowing_text(c, accent, header_label, paragraphs, x, top, max_width, page_counter,
                        font="Helvetica", size=10, line_height=None, para_gap=None, bottom=1 * inch):
     if line_height is None:
@@ -1812,13 +1857,13 @@ def draw_flowing_text(c, accent, header_label, paragraphs, x, top, max_width, pa
     return y
 
 
-def create_ai_book(out_path, title, subtitle, theme, author, book_data):
+def create_ai_book(out_path, title, subtitle, theme, author, book_data, topic=""):
     accent = theme_color(theme)
     c = canvas.Canvas(out_path, pagesize=(PAGE_W, PAGE_H))
     page_counter = [0]
 
-    # Cover — never blocks production (see safe_cover)
-    safe_cover(c, title, subtitle, accent, author)
+    # Cover — never blocks production (see draw_cover_v2/safe_cover)
+    cover_info = draw_cover_v2(c, title, subtitle, author, topic, theme)
     page_counter[0] += 1
 
     chapters = book_data.get('chapters') or []
@@ -1883,7 +1928,38 @@ def create_ai_book(out_path, title, subtitle, theme, author, book_data):
         page_counter[0] += 1
 
     c.save()
-    return page_counter[0]
+    return page_counter[0], cover_info
+
+
+_PLACEHOLDER_WORDS = {
+    'subtitle', 'title', 'introduction', 'conclusion', 'chapter', 'chapters',
+    'audience', 'price', 'topic', 'niche', 'author', 'untitled',
+}
+
+
+def _looks_like_placeholder(text):
+    """True when text is (almost) exactly a prompt-tag name the AI echoed
+    back literally (e.g. the bare word "SUBTITLE") rather than real content.
+    Only rejects short (<=2 word) matches, so a genuine subtitle that merely
+    contains one of these words in a longer sentence is never rejected."""
+    if not text:
+        return False
+    words = str(text).strip().split()
+    if not words or len(words) > 2:
+        return False
+    normalized = re.sub(r'[^a-zA-Z]', '', str(text)).strip().lower()
+    return normalized in _PLACEHOLDER_WORDS
+
+
+def _resolve_subtitle(ai_subtitle, topic):
+    """Never let a literal placeholder echo (e.g. "SUBTITLE") reach book
+    pages or the cover. Falls back to a topic-derived subtitle, or omits it
+    entirely (empty string) if there's no topic to derive one from."""
+    ai_subtitle = str(ai_subtitle or '').strip()
+    if ai_subtitle and not _looks_like_placeholder(ai_subtitle):
+        return ai_subtitle
+    topic = str(topic or '').strip()
+    return f"دليلك الكامل في {topic}" if topic else ''
 
 
 def _sanitize_filename_component(text, fallback="book"):
@@ -2039,8 +2115,8 @@ def generate_book(title, topic, chapters=8, audience="القارئ العام", 
         ai_error = str(e)
         book_data = _fallback_book_content(title, topic, chapters, audience)
 
-    subtitle = book_data.get('subtitle') or f"دليلك الكامل في {topic}"
-    n_pages = create_ai_book(out_path, title, subtitle, theme, author, book_data)
+    subtitle = _resolve_subtitle(book_data.get('subtitle'), topic)
+    n_pages, cover_info = create_ai_book(out_path, title, subtitle, theme, author, book_data, topic=topic)
 
     result = {
         "success": True,
@@ -2053,6 +2129,8 @@ def generate_book(title, topic, chapters=8, audience="القارئ العام", 
         "ai_used": ai_error is None,
         "ai_error": ai_error,
         "quality_gate": gate,
+        "cover": cover_info,
+        "cover_v2_used": cover_info is not None,
     }
     _log_generation(result)
     return result
