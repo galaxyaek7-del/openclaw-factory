@@ -948,6 +948,35 @@ app.get('/good-morning', async (req, res) => {
   });
 });
 
+// ── PROFIT ORACLE ──
+// Read-only view into profit_oracle.py's own output (that script runs
+// on-demand or via factory_loop.js — this route never invokes it, it only
+// reads golden_opportunities.json, the same way /factory-loop/status only
+// reads factory_loop.log).
+app.get('/oracle', (req, res) => {
+  const jsonFile = path.join(__dirname, 'golden_opportunities.json');
+  try {
+    if (!fs.existsSync(jsonFile)) {
+      return res.json({
+        success: true, count: 0, top: [],
+        note: 'لم يُشغَّل profit_oracle.py بعد — شغّله عبر: python profit_oracle.py --run',
+      });
+    }
+    const data = JSON.parse(fs.readFileSync(jsonFile, 'utf8'));
+    const results = Array.isArray(data.results) ? data.results : [];
+    const golden = results.filter(r => r.verdict === 'GOLDEN'); // already sorted by profit_score desc
+    res.json({
+      success: true,
+      generated_at: data.generated_at,
+      golden_count: golden.length,
+      total_scored: results.length,
+      top: golden.slice(0, 5),
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // ── STATIC ──
 app.use(express.static(path.join(__dirname)));
 app.get('/{*path}', (req, res) => {

@@ -2,7 +2,7 @@
 
 > Treat OpenClaw as an enterprise-grade digital factory, not a collection of scripts.
 
-This document is the highest-authority engineering standard for this repository. Any task, fix, or feature must be evaluated against these 15 principles before and after implementation.
+This document is the highest-authority engineering standard for this repository. Any task, fix, or feature must be evaluated against these 16 principles before and after implementation.
 
 ---
 
@@ -95,6 +95,9 @@ AI providers are interchangeable. The factory should support multiple providers 
 ## 15. Human Override
 The Executive Director can override any automated decision.
 
+## 16. The Butter Principle (Profit-First)
+No product is built on hope. Before any product is made, its profit potential must be scored — demand, competition, margin, execution fit — never skipped, never assumed. A digital product priced at $30 or more, at near-zero production cost, is "butter": high margin, low risk, worth making. A score of 80+ ("GOLDEN") still requires the Executive Director's ("Galaxy's") approval before production — profit-first does not mean approval-free. Implemented in `profit_oracle.py`.
+
 ---
 
 ## Architecture: Sensing ↔ Brain
@@ -102,6 +105,18 @@ The Executive Director can override any automated decision.
 n8n is the Sensing layer. server.js is the Brain. They communicate only via HTTP POST `/api/trends`.
 
 n8n owns discovery (Google Trends, future data sources) and knows nothing about book generation, quality gates, or opportunity tracking — it just detects a trend and POSTs it. server.js owns judgment (`quality_gate()`) and memory (`OPPORTUNITIES.md`) — it never reaches into n8n's workflow internals. Neither side depends on the other's implementation details, only on this one HTTP contract (Constitution §2: loose coupling).
+
+---
+
+## Cover Design: The 70/20/10 Rule
+
+Every generated book cover follows a fixed visual hierarchy, top to bottom:
+
+- **70% — Title.** The single dominant element. Largest text on the cover, placed at the top, bold enough to stay readable at a 100px thumbnail.
+- **20% — Visual/graphic element.** A supporting accent (image, icon, pattern) in the middle — present, but never competing with the title for attention.
+- **10% — Author name.** Smallest text on the cover, placed at the bottom. Must always render smaller than the title — a cover generator that lets the author name rival the title has inverted its own hierarchy and should refuse to save.
+
+One dominant color per niche/genre; high contrast between text and background. Implemented in `cover_designer_v2.py`.
 
 ---
 
@@ -117,3 +132,5 @@ Build the most reliable, scalable, secure and self-improving digital product fac
 |---|---|
 | 2026-07-05 | Constitution established and adopted as the governing standard for all work in this repository. |
 | 2026-07-05 | Added "Architecture: Sensing ↔ Brain" — codifies the n8n ↔ server.js contract established by `/api/trends` (Task [11]). |
+| 2026-07-06 | Added "Cover Design: The 70/20/10 Rule" — this rule was referenced as already being in this document by the task that built `cover_designer_v2.py` but did not actually exist here yet; added now so that reference is accurate going forward. |
+| 2026-07-06 | Added "16. The Butter Principle (Profit-First)" — same situation: referenced by the task that built `profit_oracle.py` as an existing numbered principle, but this document only had 15 before now. |
