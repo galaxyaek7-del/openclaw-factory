@@ -4,6 +4,8 @@
 
 This is the home page of OpenClaw's permanent, organizational memory. Written in plain Markdown — works with or without the Obsidian app (open this folder as an Obsidian vault for backlinks/graph view, or just read it as files). Nothing here is fabricated: where real information didn't exist for a section, that gap is stated explicitly rather than invented. Search this Brain before building — see [knowledge_brain.js](../knowledge_brain.js).
 
+**New here, or Claude Code is unavailable? Start with [SURVIVAL_GUIDE.md](./SURVIVAL_GUIDE.md)** — how to start the factory, run every cell by hand, read GOLDEN_OPPORTUNITIES.md, and what to do when something breaks. Proof of OPENCLAW_OS_CONSTITUTION.md's Supreme Law: the factory survives the loss of any individual tool, Claude included.
+
 ## The traceability chain
 
 This is the intended reading order — each link is a real, load-bearing relationship, not just a folder list:
@@ -51,6 +53,7 @@ This is the intended reading order — each link is a real, load-bearing relatio
 | 18 | [Daily_Logs](./18_Daily_Logs/) | Day 05–07 narrative (⚠️ Days 01–04 not documented anywhere found) |
 | 19 | [Lessons_Learned](./19_Lessons_Learned/) | **Read first.** The success:true bug, the $12.99 pricing trap, the circuit-breaker discovery |
 | 99 | [Archive](./99_Archive/) | Where superseded knowledge goes to stay findable |
+| — | [SURVIVAL_GUIDE.md](./SURVIVAL_GUIDE.md) | Operate the whole factory without Claude Code — start it, run every cell by hand, read opportunities, emergency procedures |
 
 ## The standing rule
 
