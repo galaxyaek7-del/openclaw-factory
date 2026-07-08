@@ -977,6 +977,27 @@ app.get('/oracle', (req, res) => {
   }
 });
 
+// ── DUAL-INSPECTOR QUALITY SYSTEM ──
+// Read-only view into inspectors.py's own log (CONSTITUTION.md §17). This
+// route never runs an inspection itself — final_inspection() is invoked
+// automatically inside book_generator.py's generate_book(), right after a
+// product is written to disk; this only reads inspections.log afterward.
+app.get('/inspections', (req, res) => {
+  const logFile = path.join(__dirname, 'inspections.log');
+  try {
+    if (!fs.existsSync(logFile)) {
+      return res.json({ success: true, count: 0, entries: [], note: 'لا فحوصات مسجَّلة بعد' });
+    }
+    const lines = fs.readFileSync(logFile, 'utf8').split('\n').filter(Boolean);
+    const entries = lines.slice(-10).map(line => {
+      try { return JSON.parse(line); } catch (_) { return { raw: line }; }
+    }).reverse(); // most recent first
+    res.json({ success: true, count: lines.length, entries });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // ── STATIC ──
 app.use(express.static(path.join(__dirname)));
 app.get('/{*path}', (req, res) => {

@@ -46,6 +46,16 @@ try:
 except Exception:
     COVER_DESIGNER_V2 = None
 
+# Optional: inspectors.py's Dual-Inspector Quality System (CONSTITUTION.md
+# §17) — the master gate every generated product must pass before it's
+# considered publishable. Guarded the same way: an absent/broken inspection
+# system must not crash generation, but per its own "fail closed" design it
+# also must never be silently treated as approval — see its call site below.
+try:
+    import inspectors as INSPECTORS
+except Exception:
+    INSPECTORS = None
+
 PAGE_W = 6 * inch
 PAGE_H = 9 * inch
 MARGIN = 0.6 * inch
@@ -2132,6 +2142,38 @@ def generate_book(title, topic, chapters=8, audience="القارئ العام", 
         "cover": cover_info,
         "cover_v2_used": cover_info is not None,
     }
+
+    # Dual-Inspector Quality System (CONSTITUTION.md §17) — the master gate.
+    # A book being written to disk successfully is not the same as it being
+    # cleared to publish; that only happens if BOTH inspectors approve. If
+    # the inspection system itself is unavailable, this fails closed (never
+    # silently treated as approved) rather than skipping inspection.
+    if INSPECTORS is not None:
+        try:
+            inspection = INSPECTORS.final_inspection({
+                "pdf_path": out_path,
+                "cover_path": cover_info.get("path") if cover_info else None,
+                "title": title,
+                "subtitle": subtitle,
+                "author": author,
+                "niche": topic,
+                "price": price,
+                "min_pages": 4,
+            })
+        except Exception as e:
+            inspection = {"passed": False, "published": False,
+                          "technical": {"passed": False, "checks": [], "severity": "critical",
+                                        "failures": [f"استثناء غير متوقَّع أثناء الفحص: {e}"]},
+                          "commercial": {"passed": False, "checks": [], "failures": [], "verdict": "لم يُدقَّق"}}
+    else:
+        inspection = {"passed": False, "published": False,
+                      "technical": {"passed": False, "checks": [], "severity": "critical",
+                                    "failures": ["inspectors.py غير متوفر — لا يمكن الموافقة على النشر"]},
+                      "commercial": {"passed": False, "checks": [], "failures": [], "verdict": "لم يُدقَّق"}}
+
+    result["published"] = inspection["published"]
+    result["inspection"] = inspection
+
     _log_generation(result)
     return result
 
