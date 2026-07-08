@@ -68,7 +68,18 @@ app.post('/generate-book', async (req, res) => {
       try {
         const result = JSON.parse(output.trim());
         if (result.success) {
-          res.json({ success: true, filename: result.file || filename, pages: result.pages });
+          // `published`/`inspection` (Dual Inspection, CONSTITUTION.md §17)
+          // must reach the caller — a book can be generated successfully yet
+          // still be quarantined. Silently dropping these fields here was
+          // exactly why factory_loop.js couldn't tell a rejection from a
+          // real success and kept retrying the same rejected niche forever.
+          res.json({
+            success: true,
+            filename: result.file || filename,
+            pages: result.pages,
+            published: result.published,
+            inspection: result.inspection,
+          });
         } else {
           res.json({ success: false, error: result.error });
         }

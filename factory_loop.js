@@ -35,7 +35,9 @@ const REPORTS_DIR = path.join(FACTORY_DIR, 'reports');
 const WEEKLY_REPORT_STABLE = path.join(FACTORY_DIR, 'FACTORY_WEEKLY_REPORT.md');
 const OPPORTUNITIES_FILE = path.join(FACTORY_DIR, 'OPPORTUNITIES.md');
 const FACTORY_STATUS_FILE = path.join(FACTORY_DIR, 'FACTORY_STATUS.md');
+const REJECTED_NICHES_FILE = path.join(FACTORY_DIR, 'REJECTED_NICHES.md');
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const REJECTION_COOLDOWN_MS = WEEK_MS;
 
 function appendLoopLog(entry) {
   try {
@@ -45,6 +47,88 @@ function appendLoopLog(entry) {
     // stderr — this must never throw back into the caller.
     console.error('[factory_loop] failed to write factory_loop.log:', err.message);
   }
+}
+
+// ── CIRCUIT BREAKER (Anti-Fragility / Digital Sanitation) ──
+// Root cause of the retry-storm this fixes: book_generator.py's
+// generate_book() can return success:true (the PDF really was written) while
+// still setting published:false (CONSTITUTION.md §17, Dual Inspection,
+// blocked it). server.js's /generate-book handler used to drop `published`/
+// `inspection` from its response entirely, so this loop had no way to tell
+// a quarantined book from a real success — it just saw success:true and,
+// finding no matching file on disk next tick (title/theme drift, re-runs,
+// etc.), tried the exact same rejected niche again. Every 10 minutes.
+// Every failure now becomes durable knowledge in REJECTED_NICHES.md instead.
+function summarizeInspectionFailure(inspection) {
+  if (!inspection) return 'سبب غير معروف (لا بيانات فحص مُرفَقة)';
+  const failures = [
+    ...((inspection.technical && inspection.technical.failures) || []),
+    ...((inspection.commercial && inspection.commercial.failures) || []),
+  ];
+  return failures.length ? failures.join('؛ ') : 'رُفض دون سبب مُفصَّل';
+}
+
+function recordRejectedNiche(niche, title, reason) {
+  const now = new Date();
+  const entry = [
+    `## 🚫 ${now.toISOString()}`,
+    `**النيتش:** ${niche || ''}`,
+    `**العنوان:** ${title || ''}`,
+    `**السبب:** ${reason}`,
+    '',
+  ].join('\n') + '\n';
+  try {
+    if (!fs.existsSync(REJECTED_NICHES_FILE)) {
+      fs.writeFileSync(REJECTED_NICHES_FILE,
+        '# 🚫 Rejected Niches — ذاكرة قاطع الدائرة (Circuit Breaker)\n\n' +
+        'نيتشات فشلت في اجتياز الفحص المزدوج (Dual Inspection, CONSTITUTION.md §17) — ' +
+        'تُحفَظ هنا كي لا يُعاد توليدها ويُهدَر استدعاء Groq عليها قبل انتهاء فترة التهدئة ' +
+        '(7 أيام). Anti-Fragility: كل فشل هنا معرفة دائمة، لا مجرد خطأ منسي.\n\n');
+    }
+    fs.appendFileSync(REJECTED_NICHES_FILE, entry);
+  } catch (err) {
+    console.error('[factory_loop] failed to write REJECTED_NICHES.md:', err.message);
+  }
+}
+
+function readRejectedNiches() {
+  if (!fs.existsSync(REJECTED_NICHES_FILE)) return [];
+  const text = fs.readFileSync(REJECTED_NICHES_FILE, 'utf8');
+  const blocks = text.split(/^## /m).slice(1); // drop the file header before the first entry
+  const entries = [];
+  for (const block of blocks) {
+    const tsMatch = block.match(/^🚫\s*(\S+)/);
+    const nicheMatch = block.match(/\*\*النيتش:\*\*\s*(.+)/);
+    const reasonMatch = block.match(/\*\*السبب:\*\*\s*(.+)/);
+    if (tsMatch && nicheMatch) {
+      entries.push({
+        timestamp: tsMatch[1],
+        niche: nicheMatch[1].trim(),
+        reason: reasonMatch ? reasonMatch[1].trim() : '',
+      });
+    }
+  }
+  return entries;
+}
+
+// Returns null if the niche is clear to try, or {reason, rejectedAt,
+// retryAfter} if a cooldown from a past rejection is still active. The
+// cooldown window is recomputed from `now` each call (not stored per-entry)
+// so a single constant (REJECTION_COOLDOWN_MS) stays the one source of truth.
+function isNicheRejected(niche, now = new Date()) {
+  if (!niche) return null;
+  const nicheLower = niche.trim().toLowerCase();
+  const cutoffMs = now.getTime() - REJECTION_COOLDOWN_MS;
+  const matches = readRejectedNiches().filter(e => e.niche.trim().toLowerCase() === nicheLower);
+  if (!matches.length) return null;
+  const latest = matches.reduce((a, b) => (Date.parse(a.timestamp) > Date.parse(b.timestamp) ? a : b));
+  const rejectedMs = Date.parse(latest.timestamp);
+  if (!Number.isFinite(rejectedMs) || rejectedMs < cutoffMs) return null; // cooldown expired
+  return {
+    reason: latest.reason,
+    rejectedAt: latest.timestamp,
+    retryAfter: new Date(rejectedMs + REJECTION_COOLDOWN_MS).toISOString(),
+  };
 }
 
 // A real AbortController-based timeout — unlike a bare Promise.race, this
@@ -105,6 +189,16 @@ async function triggerGenerateBook(brief) {
       }),
     }, 150000, 'generate-book');
     const data = await res.json();
+
+    // success:true + published:false means Dual Inspection quarantined it
+    // (CONSTITUTION.md §17) — a real, distinct outcome from a plain failure.
+    // Record it so the circuit breaker can recognize this niche next time.
+    if (data.success && data.published === false) {
+      const reason = summarizeInspectionFailure(data.inspection);
+      recordRejectedNiche(brief.topic, brief.title, reason);
+      return { ok: false, rejected: true, detail: `تم التوليد لكن رُفض النشر (Dual Inspection): ${reason}` };
+    }
+
     return {
       ok: !!data.success,
       detail: data.success ? `تم توليد الكتاب: ${data.filename} (${data.pages} صفحة)` : `فشل التوليد: ${data.error}`,
@@ -194,6 +288,15 @@ async function hunt(reachable) {
   }
 
   const chosen = eligible[eligible.length - 1]; // most recent eligible — see "highest traffic" note above
+
+  // Circuit breaker: don't waste a Groq call retrying a niche that Dual
+  // Inspection already rejected within the last 7 days — see REJECTED_NICHES.md.
+  const rejection = isNicheRejected(chosen.brief.topic);
+  if (rejection) {
+    const detail = `تخطي نيتش مرفوض (${chosen.brief.title}) — قاطع الدائرة نشط حتى ${rejection.retryAfter}: ${rejection.reason}`;
+    return { action: 'skipped', detail };
+  }
+
   const expectedFile = chosen.book && chosen.book.file;
   const stillExists = expectedFile && fs.existsSync(path.join(BOOKS_DIR, expectedFile));
   if (stillExists) {
@@ -202,7 +305,7 @@ async function hunt(reachable) {
 
   const result = await triggerGenerateBook(chosen.brief);
   return {
-    action: result.ok ? 'healed' : 'failed',
+    action: result.ok ? 'healed' : (result.rejected ? 'rejected' : 'failed'),
     detail: `كتاب مفقود لنيتش مؤهَّل من آخر ${lastThree.length} سجلات (${chosen.brief.title}): ${result.detail}`,
   };
 }
@@ -564,4 +667,5 @@ module.exports = {
   runTick, healFinance, healEmptyBooks, healN8n, hunt, diagnose,
   generateWeeklyReport, maybeGenerateWeeklyReport, weekReportPath,
   booksProducedSince, revenueSince, healingActionsSince,
+  recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
 };
