@@ -2,7 +2,7 @@
 
 > Treat OpenClaw as an enterprise-grade digital factory, not a collection of scripts.
 
-This document is the highest-authority engineering standard for this repository. Any task, fix, or feature must be evaluated against these 16 principles before and after implementation.
+**Supreme law:** this document operates under, and must never contradict, [`OPENCLAW_OS_CONSTITUTION.md`](./OPENCLAW_OS_CONSTITUTION.md) — the company's foundational mission, DNA, Councils, and Supreme Law ("System Before Individuals"). Where the two ever appear to conflict, `OPENCLAW_OS_CONSTITUTION.md` wins. This document is the *engineering-specific* implementation standard: it translates that supreme law into concrete code-level principles for this repository. Any task, fix, or feature must be evaluated against both — the 17 principles below, and the supreme law above them.
 
 ---
 
@@ -98,6 +98,13 @@ The Executive Director can override any automated decision.
 ## 16. The Butter Principle (Profit-First)
 No product is built on hope. Before any product is made, its profit potential must be scored — demand, competition, margin, execution fit — never skipped, never assumed. A digital product priced at $30 or more, at near-zero production cost, is "butter": high margin, low risk, worth making. A score of 80+ ("GOLDEN") still requires the Executive Director's ("Galaxy's") approval before production — profit-first does not mean approval-free. Implemented in `profit_oracle.py`.
 
+## 17. Dual Inspection
+No product ships without both guardians' approval. Every generated product passes through two independent inspectors before it may publish: a **Technical Inspector** (cover, PDF integrity, Arabic rendering, no placeholder leftovers) and a **Commercial Auditor** (profit score, Butter-principle price, no duplicates, no previously-rejected niches). Either failing blocks publication and logs the reason to `QUARANTINE.md`; a critical technical failure alerts the Executive Director immediately. One bad product across KDP/Etsy/Gumroad is a disaster, not a minor bug — zero tolerance. Implemented in `inspectors.py`, called automatically at the end of every `generate_book()`.
+
+**Quality Council.** This *is* this repository's concrete instantiation of `OPENCLAW_OS_CONSTITUTION.md`'s **Quality** Council and its mandate — *"Nothing reaches production without passing all quality gates."* The Technical Inspector and Commercial Auditor are that Council's two standing gates for the book_engine product line; any future product line (template_engine, art_engine, ...) must stand up its own equivalent pair before it may publish, per the same supreme law.
+
+**Anti-Fragility.** Per `OPENCLAW_OS_CONSTITUTION.md`'s Anti-Fragility principle — *"every failure becomes knowledge"* — a rejected product is never just discarded. `QUARANTINE.md` and `inspections.log` are that knowledge made durable: every blocked niche, every failure reason, and every critical alert stays on record so the same mistake is recognizable (`audit_commercial`'s "niche not previously rejected" check reads this history back in) instead of being repeated blindly.
+
 ---
 
 ## Architecture: Sensing ↔ Brain
@@ -134,3 +141,5 @@ Build the most reliable, scalable, secure and self-improving digital product fac
 | 2026-07-05 | Added "Architecture: Sensing ↔ Brain" — codifies the n8n ↔ server.js contract established by `/api/trends` (Task [11]). |
 | 2026-07-06 | Added "Cover Design: The 70/20/10 Rule" — this rule was referenced as already being in this document by the task that built `cover_designer_v2.py` but did not actually exist here yet; added now so that reference is accurate going forward. |
 | 2026-07-06 | Added "16. The Butter Principle (Profit-First)" — same situation: referenced by the task that built `profit_oracle.py` as an existing numbered principle, but this document only had 15 before now. |
+| 2026-07-06 | Added "17. Dual Inspection" — the task that built `inspectors.py` asked for it as "Principle 23", but this document only had 16 principles at the time (17 through 22 don't exist), so it was added as the actual next number, 17, instead of leaving an unexplained gap. |
+| 2026-07-08 | Installed `OPENCLAW_OS_CONSTITUTION.md` as the supreme governing law above this document; added explicit Quality Council + Anti-Fragility references to "17. Dual Inspection", tying `inspectors.py`/`QUARANTINE.md`/`inspections.log` to their source principles in the supreme constitution. |
