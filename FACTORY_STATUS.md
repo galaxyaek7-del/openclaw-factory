@@ -1,7 +1,32 @@
 # OpenClaw Factory — Status Report
 
-**Last updated:** 2026-07-08
+**Last updated:** 2026-07-09
 **Governed by:** [CONSTITUTION.md](./CONSTITUTION.md), supreme law: [OPENCLAW_OS_CONSTITUTION.md](./OPENCLAW_OS_CONSTITUTION.md)
+
+## Day 08 Complete
+
+**Theme: the factory learned to find its own opportunities, remember everything, survive without Claude, and honestly judge itself.** Five new capabilities, taking Day 06–07's quality/pricing gates and turning them into a self-sustaining loop.
+
+| Component | What it does |
+|---|---|
+| Value-based pricing fix (`scoutBriefPrompt()` + `profit_oracle.butter_price()`) | Groq now prices for value directly (verified live: suggested $49 unprompted); anything still under $30 gets repriced to a defensible $30–100, unless the niche itself is genuinely weak (SKIP-tier) |
+| `OpenClaw_Brain/` (Knowledge Brain, 20 files across 20 folders + `MASTER_INDEX.md`) | The factory's permanent memory — architecture, living cells, councils, market intelligence, and 3 documented Lessons Learned — CONSTITUTION.md §18 |
+| `knowledge_brain.js` + `GET /brain` | Real keyword search across the whole Brain, no fabricated "AI search" — plain substring scan, honest about it |
+| `market_hunter.py` (Golden Hunter) | Discovers new candidate niches from curated categories × seasonality, **consults the Knowledge Brain first** (rejected niches, quarantine history, duplicates) before ever scoring anything — CONSTITUTION.md §19. Runs daily via `factory_loop.js`, exposed via `GET /hunter` |
+| `SURVIVAL_GUIDE.md` | How to run the entire factory without Claude Code — start it, run every cell by hand, read opportunities, emergency procedures. Found and documented a real gap: `CLAUDE.md`'s install instructions were missing `pypdf`/`Pillow`/`arabic_reshaper`/`python-bidi` |
+| `self_awareness.js` (Self-Awareness Engine) | Answers "how am I doing, truthfully?" daily — vital signs, growth vs. yesterday (`GROWTH_LOG.md`), honest self-diagnosis, one verdict paragraph. No code path forces a positive verdict — CONSTITUTION.md §20. `GET /awareness`, folded into `GET /good-morning` |
+
+**Verified live today (2026-07-09), via `node self_awareness.js`, not a synthetic scenario:**
+
+> اليوم المصنع سليم. أصبح أذكى مقارنة بالأمس لأن تحسّن أبرز في ملفات المعرفة (+1). أقوى خلية: Dashboard/Health (100%). أضعف خلية: Butter Compliance (15%). أكبر فرصة: 20 فرصة مسجَّلة في GOLDEN_OPPORTUNITIES.md بانتظار مراجعة Galaxy. التركيز التالي الموصى به: معالجة Butter compliance (15% فقط من آخر 20 فحص اجتاز حد $30).
+
+Translated: **healthy, smarter than yesterday** (+1 knowledge file), **strongest cell: Dashboard/Health (100%)**, **weakest cell: Butter Compliance (15% — only 3 of the last 20 Dual Inspection runs actually cleared the $30 floor)**, 20 golden opportunities awaiting Galaxy's review, next recommended focus: closing that Butter-compliance gap.
+
+**Read honestly, not as a contradiction:** the pricing fix (this same day) demonstrably works going forward (Groq suggesting $49 live) — the 15% figure reflects the *last 20 inspections on file*, most of which predate the fix (test runs and pre-fix Scout calls at $9.99–$14.99). The Self-Awareness Engine doesn't know that context automatically; it reports the raw number and lets a human read the reason. That gap between "the fix works" and "the trailing metric hasn't caught up yet" is itself worth watching over the next few real Scout runs.
+
+**Known, still-open gap, surfaced again by Self-Awareness's own compliance check (§19):** the circuit breaker still doesn't cover `/api/scout/run` — see [OpenClaw_Brain/19_Lessons_Learned/The_Circuit_Breaker_Discovery.md](./OpenClaw_Brain/19_Lessons_Learned/The_Circuit_Breaker_Discovery.md).
+
+---
 
 ## Day 06–07 Summary
 
@@ -168,12 +193,12 @@ A second, independent intake path (Task [11]): n8n → `POST /api/trends` → Qu
    6. Save and activate the workflow
    Once that node exists, every trend the workflow discovers will automatically flow through Quality Gate into `OPPORTUNITIES.md` — no further server-side change needed. `/api/trends` also still doesn't receive real Google Trends *volume* numbers (the "highest traffic" gap from [4]/[8]) — it only receives whatever fields the workflow's last node happens to output, so once the node is added, check `trends_received.log` to see the real shape and confirm `extractNiche()` in `server.js` picks up the right field (it already tries `niche`, `trend`, `topic`, `title`, `keyword`, `query`, `name`).
 2. ~~**Human review step ("Galaxy")**~~ — **partially superseded by Day 06–07's Dual Inspection**: every book now passes an automated Technical + Commercial gate before it could ever reach a human. This is *not* the same thing as a human review queue, though — there is still no UI/endpoint for Galaxy to eyeball a book before it publishes; today "review" only happens automatically (inspectors.py) or not at all.
-3. **Structured `knowledge_base.json`** — today's `books/_generation_log.jsonl` and `scout_runs.log` are flat append-only logs. A real knowledge base (niche win/loss history, reasons, reusable scoring) to actively *inform* future Scout decisions — not just record them — is not built yet. `QUARANTINE.md`/`REJECTED_NICHES.md` are a first, partial step in this direction for rejections specifically.
+3. ~~**Structured `knowledge_base.json`**~~ — **substantially done in Day 08**: `OpenClaw_Brain/` is the real, structured knowledge base (20 files, `MASTER_INDEX.md`, searchable via `knowledge_brain.js`/`GET /brain`). `books/_generation_log.jsonl`/`scout_runs.log` remain flat logs, but `QUARANTINE.md`/`REJECTED_NICHES.md` now actively *inform* future decisions (market_hunter/HUNT both consult them before proposing a niche), not just record them.
 4. ~~**Scheduled self-healing daemon**~~ — **done in [8]**: `factory_loop.js` polls `/health` every 10 minutes and takes automatic corrective action (finance repair, missing-book regeneration); start it via `start_factory.bat` or `node factory_loop.js`.
 5. **Automated test suite** — all testing this session was manual/live verification against the running server. No `npm test`/`pytest` regression suite exists yet (Constitution §12).
 6. **Other product tracks** — per `CLAUDE.md`'s 3-layer architecture, only `book_engine` (Layer 2) is active; `template_engine`, `art_engine`, `app_engine`, `service_engine`, `trade_engine` are not started (consistent with the golden rule: no new product line before the current one proves profitable).
-7. **Circuit breaker doesn't cover `/api/scout/run`** (Day 06–07 finding) — `REJECTED_NICHES.md` is only written to by `factory_loop.js`'s own `hunt()`; the Scout button's direct path to `book_generator.py` never records a rejection there. Needs the recording logic moved to a shared point (`book_generator.py` or `/generate-book`) so every caller benefits.
-8. **Scout price vs. Butter Principle mismatch** (Day 06–07 finding) — Groq suggests $9.99–$14.99 by default; Dual Inspection requires $30+. As configured today, nearly every Scout-generated book will be quarantined on price alone. Either Scout's pricing prompt needs to target $30+, or pricing needs a deliberate human override step per book.
+7. **Circuit breaker still doesn't cover `/api/scout/run`** (Day 06–07 finding, still open) — `REJECTED_NICHES.md` is only written to by `factory_loop.js`'s own `hunt()` and `market_hunter.py`; the Scout button's direct path to `book_generator.py` never records a rejection there. Needs the recording logic moved to a shared point (`book_generator.py` or `/generate-book`) so every caller benefits. As of Day 08, `self_awareness.js`'s Constitution-compliance check (§19) surfaces this gap automatically every day, so it can't be silently forgotten.
+8. ~~**Scout price vs. Butter Principle mismatch**~~ — **fixed**: `scoutBriefPrompt()` now asks for value-based premium pricing (verified live: Groq suggested $49 unprompted), and `profit_oracle.butter_price()` catches anything still under $30 for a genuinely non-weak niche. Self-Awareness's own live verdict (2026-07-09) shows the *trailing* butter-compliance metric still at 15% — expected, since most of the last 20 inspections on file predate this fix; worth re-checking after a handful of fresh Scout runs.
 
 ## 5. Weekly Reports
 
