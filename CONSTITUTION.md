@@ -2,7 +2,7 @@
 
 > Treat OpenClaw as an enterprise-grade digital factory, not a collection of scripts.
 
-**Supreme law:** this document operates under, and must never contradict, [`OPENCLAW_OS_CONSTITUTION.md`](./OPENCLAW_OS_CONSTITUTION.md) — the company's foundational mission, DNA, Councils, and Supreme Law ("System Before Individuals"). Where the two ever appear to conflict, `OPENCLAW_OS_CONSTITUTION.md` wins. This document is the *engineering-specific* implementation standard: it translates that supreme law into concrete code-level principles for this repository. Any task, fix, or feature must be evaluated against both — the 19 principles below, and the supreme law above them.
+**Supreme law:** this document operates under, and must never contradict, [`OPENCLAW_OS_CONSTITUTION.md`](./OPENCLAW_OS_CONSTITUTION.md) — the company's foundational mission, DNA, Councils, and Supreme Law ("System Before Individuals"). Where the two ever appear to conflict, `OPENCLAW_OS_CONSTITUTION.md` wins. This document is the *engineering-specific* implementation standard: it translates that supreme law into concrete code-level principles for this repository. Any task, fix, or feature must be evaluated against both — the 20 principles below, and the supreme law above them.
 
 ---
 
@@ -111,6 +111,9 @@ Nothing valuable stays only in conversations. Every lesson — a bug found, a fi
 ## 19. Golden Hunter
 Hunt butter opportunities across markets, always consult the Knowledge Brain first to avoid repeating rejected or duplicate niches. Before any candidate niche is scored, it must be checked against `REJECTED_NICHES.md` (the circuit breaker), `QUARANTINE.md` (Dual Inspection's rejection history), and the generation log for duplicates — a candidate that fails any of these is skipped before profit_oracle ever runs on it, not after. Implemented in `market_hunter.py`, run daily by `factory_loop.js`, exposed via `GET /hunter`.
 
+## 20. Self-Awareness
+The factory must honestly know its own health, growth, and weaknesses every day. Truth over flattery — there is no code path that forces a positive verdict; a real weak cell must be named as the weakest, not softened. This is how it becomes smarter than yesterday: growth is measured against yesterday's own recorded numbers (`GROWTH_LOG.md`), not against a fixed target, and the first honest self-diagnosis is worth more than a comfortable one. Implemented in `self_awareness.js`, run daily by `factory_loop.js`, exposed via `GET /awareness` and folded into `GET /good-morning`.
+
 ---
 
 ## Architecture: Sensing ↔ Brain
@@ -151,3 +154,4 @@ Build the most reliable, scalable, secure and self-improving digital product fac
 | 2026-07-08 | Installed `OPENCLAW_OS_CONSTITUTION.md` as the supreme governing law above this document; added explicit Quality Council + Anti-Fragility references to "17. Dual Inspection", tying `inspectors.py`/`QUARANTINE.md`/`inspections.log` to their source principles in the supreme constitution. |
 | 2026-07-08 | Added "18. Knowledge Brain" — the task that built `OpenClaw_Brain/` asked for it as "Principle 24", but this document only had 17 principles at the time (18 through 23 don't exist), so it was added as the actual next number, 18, same pattern as §16/§17. |
 | 2026-07-09 | Added "19. Golden Hunter" — the task that built `market_hunter.py` asked for it as "Principle 19", and for once that was already the correct next number (this document had exactly 18 principles at the time). Recorded here anyway for consistency with every other amendment. |
+| 2026-07-09 | Added "20. Self-Awareness" — the task that built `self_awareness.js` asked for it as "Principle 20", which was correct (this document had exactly 19 principles at the time). |

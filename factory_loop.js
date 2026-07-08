@@ -23,6 +23,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawn, execSync } = require('child_process');
+const selfAwareness = require('./self_awareness');
 
 const FACTORY_DIR = __dirname;
 const DASHBOARD_URL = process.env.DASHBOARD_URL || 'http://localhost:3000';
@@ -379,6 +380,27 @@ async function maybeRunMarketHunter(now = new Date()) {
   return { action: result.ok ? 'hunted' : 'failed', detail: result.detail };
 }
 
+// ── SELF-AWARENESS ──
+// CONSTITUTION.md §20. self_awareness.js is a plain Node module — required
+// directly (no subprocess needed, unlike market_hunter.py). Gated to once
+// per calendar day: the growth comparison itself is day-over-day, so
+// running it more often than daily produces the same "same as an hour ago"
+// result and just wastes a health round-trip.
+async function maybeRunSelfAwareness(now = new Date()) {
+  const today = isoDate(now);
+  const history = selfAwareness.readGrowthLog();
+  const lastDate = history.length ? history[history.length - 1].date : null;
+  if (lastDate === today) {
+    return { action: 'none', detail: `تم تقييم الوعي الذاتي اليوم بالفعل (${today})` };
+  }
+  try {
+    const assessment = await selfAwareness.runDailyAwareness(now);
+    return { action: 'assessed', detail: assessment.verdict };
+  } catch (err) {
+    return { action: 'failed', detail: `فشل تقييم الوعي الذاتي: ${err.message}` };
+  }
+}
+
 // ── WEEKLY REPORT ──
 // "Every Sunday at 00:00" is the nominal trigger, but a 10-minute-tick loop
 // can't guarantee it's alive at that exact instant (restarts, maintenance).
@@ -657,6 +679,11 @@ async function runTick() {
   // standalone local Python process, not an HTTP call to the dashboard.
   actions.push({ step: 'golden_hunter', ...(await maybeRunMarketHunter()) });
 
+  // Self-Awareness also runs regardless of reachability — an unreachable
+  // dashboard is itself an honest, reportable vital sign (see
+  // self_awareness.js's own health.reachable field), not a reason to skip.
+  actions.push({ step: 'self_awareness', ...(await maybeRunSelfAwareness()) });
+
   appendLoopLog({
     diagnosis: diagnosis.reachable
       ? { status: diagnosis.health.status, checks: diagnosis.health.checks }
@@ -741,4 +768,5 @@ module.exports = {
   generateWeeklyReport, maybeGenerateWeeklyReport, weekReportPath,
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
+  maybeRunMarketHunter, maybeRunSelfAwareness,
 };

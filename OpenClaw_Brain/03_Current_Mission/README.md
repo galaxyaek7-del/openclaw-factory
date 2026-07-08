@@ -4,7 +4,7 @@
 
 ## Where the factory stands right now
 
-**book_engine is the only active track.** Today's mission, concretely: get one Scout-generated book to actually clear both Quality Council gates (Technical + Commercial) and publish — not just get generated. As of Day 08, the factory also actively *discovers* new candidate niches on its own (`market_hunter.py`) rather than only reacting to what n8n/Scout happen to bring it.
+**book_engine is the only active track.** Today's mission, concretely: get one Scout-generated book to actually clear both Quality Council gates (Technical + Commercial) and publish — not just get generated. As of Day 08, the factory also actively *discovers* new candidate niches on its own (`market_hunter.py`) rather than only reacting to what n8n/Scout happen to bring it, and now honestly reports on its own health and growth every day — see [Self_Awareness.md](./Self_Awareness.md).
 
 ## What shipped this week (Day 06–08)
 

@@ -5,6 +5,7 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 const Groq = require('groq-sdk');
 const knowledgeBrain = require('./knowledge_brain');
+const selfAwareness = require('./self_awareness');
 
 require('dotenv').config();
 
@@ -949,11 +950,14 @@ function readNextDollarActions() {
 }
 
 app.get('/good-morning', async (req, res) => {
-  const [factoryStatus, opportunities, lastNightActions, nextDollar] = await Promise.all([
+  const [factoryStatus, opportunities, lastNightActions, nextDollar, awareness] = await Promise.all([
     computeHealthStatus().catch(err => ({ status: 'error', error: err.message })),
     Promise.resolve().then(() => readTopOpportunities(3)).catch(err => ({ items: [], note: `error: ${err.message}` })),
     Promise.resolve().then(() => readLastLoopActions(10)).catch(err => ({ entries: [], note: `error: ${err.message}` })),
     Promise.resolve().then(() => readNextDollarActions()).catch(err => ({ text: null, note: `error: ${err.message}` })),
+    // CONSTITUTION.md §20: Galaxy sees the truth every morning, not just the
+    // health check — the same honest verdict GET /awareness computes.
+    selfAwareness.assessSelfAwareness().catch(err => ({ verdict: null, note: `error: ${err.message}` })),
   ]);
 
   res.json({
@@ -964,6 +968,7 @@ app.get('/good-morning', async (req, res) => {
     top_opportunities: opportunities,
     last_night_actions: lastNightActions,
     next_dollar_actions: nextDollar,
+    self_awareness: { verdict: awareness.verdict, growth: awareness.growth, weakest_cell: awareness.diagnosis ? awareness.diagnosis.weakest_cell : null },
   });
 });
 
@@ -1061,6 +1066,21 @@ app.get('/hunter', (req, res) => {
       golden_count: last.golden_count,
       golden_catch: last.golden_catch,
     });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ── SELF-AWARENESS ──
+// CONSTITUTION.md §20: "how am I doing, truthfully?" This computes a fresh
+// assessment on every call (vitals + growth-vs-yesterday + honest
+// diagnosis + verdict) but does NOT write to GROWTH_LOG.md itself — that
+// write happens once daily from factory_loop.js, the same read-vs-write
+// split /oracle and /hunter already use for their own logs.
+app.get('/awareness', async (req, res) => {
+  try {
+    const assessment = await selfAwareness.assessSelfAwareness();
+    res.json({ success: true, ...assessment });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

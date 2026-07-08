@@ -10,7 +10,7 @@ OPENCLAW_OS_CONSTITUTION.md names 12 Councils but doesn't say which code impleme
 | **Knowledge** | This Brain (`OpenClaw_Brain/`) + `knowledge_brain.js` | ✅ Built (today) |
 | **Security** | `.env` secrets, guarded imports everywhere, the token-handling protocol (see [11_Security](../11_Security/)) | ✅ Practiced, not a named module |
 | **Digital Sanitation** | The circuit breaker's cooldown logic; manual test-artifact cleanup discipline this session | ⚠️ Practiced ad hoc, no dedicated automation |
-| **Executive** | The Chairman (Galaxy) directly, via conversation-driven tasks | ✅ De facto — no software component, doesn't need one |
+| **Executive** | The Chairman (Galaxy) directly, via conversation-driven tasks; `self_awareness.js` (Day 08) now gives Galaxy an honest daily verdict to decide from, via `GET /awareness` and `GET /good-morning` | ✅ Human-led, now with a real self-report to read first |
 | **Innovation** | No dedicated component | ❌ Not built |
 | **Publishing** | No automated KDP/Etsy upload — see [13_Publishing](../13_Publishing/) | ❌ Not built |
 | **Marketing** | `AGENT_PROMPTS.publisher` generates SEO copy on request, but nothing posts anywhere automatically | ⚠️ Partial (content generation only) |

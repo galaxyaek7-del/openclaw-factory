@@ -2,6 +2,20 @@
 
 Each cell scored honestly against OPENCLAW_OS_CONSTITUTION.md's Living Cell checklist (see [04_Architecture](../04_Architecture/)) — including where a cell falls short, not just where it succeeds.
 
+## self_awareness (`self_awareness.js` — Day 08)
+
+| Property | Status | Note |
+|---|---|---|
+| Independent | ✅ | Plain Node module; `factory_loop.js` and `server.js` both `require()` it directly, no subprocess |
+| Reusable | ✅ | `assessSelfAwareness()`/`compareGrowth()` take no hardcoded assumptions about which metrics matter — the metric list is a small, named table (`METRIC_LABELS`) |
+| Scalable | ✅ | Reads small log tails (last 20 lines) and one Markdown table, not the full history |
+| Secure | ✅ | No secrets, read-only against every file it touches |
+| Observable | ✅ | `GROWTH_LOG.md` (one row/day) is itself the observability artifact |
+| Documented | ✅ | This entry + [Self_Awareness.md](../03_Current_Mission/Self_Awareness.md) + module docstring |
+| Recoverable | ✅ | An unreachable dashboard degrades to `health.reachable: false` (itself an honest, reportable vital sign), never a crash |
+
+**The one property this cell exists specifically to strengthen:** it's the only component whose entire job is to be able to report bad news about every *other* cell — `market_hunter` reports on niches, `inspectors` reports on products, but nothing reported on the factory's own trajectory until this one.
+
 ## market_hunter (`market_hunter.py` — the Golden Hunter, Day 08)
 
 | Property | Status | Note |
