@@ -329,9 +329,29 @@ function checkConstitutionCompliance(vitals, growth) {
   if (growth.has_baseline && growth.deltas.knowledge_entries <= 0) {
     notes.push('§18 (Knowledge Brain): لم ينمُ العقل المعرفي منذ الأمس — تحقّق أن دروساً جديدة تُوثَّق فعلياً بدل البقاء في المحادثات فقط.');
   }
-  notes.push('§19 (Golden Hunter): فجوة معروفة ومستمرة — REJECTED_NICHES.md لا يغطي /api/scout/run بعد ' +
-    '(انظر OpenClaw_Brain/19_Lessons_Learned/The_Circuit_Breaker_Discovery.md). ليست مخالفة جديدة، بل تذكير حتى تُغلَق.');
+  // §19 (Golden Hunter): this used to be a hardcoded, unconditional warning
+  // ("REJECTED_NICHES.md doesn't cover /api/scout/run yet") — itself a small
+  // dishonesty for a module whose whole purpose is truth over flattery: a
+  // hardcoded note can't ever report that a gap got fixed. Now a real,
+  // verifiable check — does book_generator.py's own source actually contain
+  // the shared recording point? — not an assumption held in this file.
+  notes.push(checkScoutCircuitBreakerCoverage());
   return notes;
+}
+
+function checkScoutCircuitBreakerCoverage() {
+  const bookGenPath = path.join(FACTORY_DIR, 'book_generator.py');
+  try {
+    const source = fs.readFileSync(bookGenPath, 'utf8');
+    const fixed = source.includes('_record_rejected_niche');
+    return fixed
+      ? '§19 (Golden Hunter): مُغلَقة — generate_book() يسجّل الرفض مباشرة (نقطة مشتركة لكل المسارات: Scout وhunt() وmarket_hunter)، ' +
+        'وليس factory_loop.js وحده كما كان سابقاً.'
+      : '§19 (Golden Hunter): فجوة مفتوحة — REJECTED_NICHES.md لا يزال لا يغطي /api/scout/run ' +
+        '(انظر OpenClaw_Brain/19_Lessons_Learned/The_Circuit_Breaker_Discovery.md).';
+  } catch (_) {
+    return '§19 (Golden Hunter): تعذّر التحقق من book_generator.py لمعرفة حالة هذه الفجوة.';
+  }
 }
 
 // ── THE DAILY VERDICT ──

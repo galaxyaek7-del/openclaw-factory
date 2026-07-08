@@ -195,10 +195,14 @@ async function triggerGenerateBook(brief) {
 
     // success:true + published:false means Dual Inspection quarantined it
     // (CONSTITUTION.md §17) — a real, distinct outcome from a plain failure.
-    // Record it so the circuit breaker can recognize this niche next time.
+    // NOTE: the actual REJECTED_NICHES.md write now happens inside
+    // book_generator.py's generate_book() itself (CONSTITUTION.md §19/§20
+    // fix — every caller of /generate-book, including Scout, shares that
+    // one recording point now). Recording it AGAIN here would double-write
+    // the same rejection every time hunt() calls this endpoint — this stays
+    // read-only: just recognizing the outcome to report it correctly.
     if (data.success && data.published === false) {
       const reason = summarizeInspectionFailure(data.inspection);
-      recordRejectedNiche(brief.topic, brief.title, reason);
       return { ok: false, rejected: true, detail: `تم التوليد لكن رُفض النشر (Dual Inspection): ${reason}` };
     }
 

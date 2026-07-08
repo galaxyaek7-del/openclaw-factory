@@ -2007,6 +2007,61 @@ def _resolve_price(topic, price):
     return new_price, True
 
 
+def _summarize_inspection_failure(inspection):
+    """Mirrors factory_loop.js's summarizeInspectionFailure() exactly — same
+    reasoning text regardless of which side of the process boundary wrote
+    the rejection."""
+    if not inspection:
+        return "سبب غير معروف (لا بيانات فحص)"
+    failures = list((inspection.get("technical") or {}).get("failures") or []) + \
+        list((inspection.get("commercial") or {}).get("failures") or [])
+    return "؛ ".join(failures) if failures else "رُفض دون سبب مُفصَّل"
+
+
+def _record_rejected_niche(niche, title, reason):
+    """The shared circuit-breaker recording point (CONSTITUTION.md §19/§20 —
+    closes the gap self_awareness.js's own Constitution-compliance check
+    flagged: REJECTED_NICHES.md used to be written ONLY by factory_loop.js's
+    hunt()/market_hunter.py, so a niche rejected via the Scout button
+    (/api/scout/run → this exact function) or a direct /generate-book call
+    was never remembered and could be retried endlessly.
+
+    generate_book() is the ONE function every caller — hunt(), Scout,
+    /generate-book directly — ultimately goes through, so writing here
+    (rather than in each caller separately) means every path shares one
+    memory automatically, with no risk of drifting out of sync. Writes the
+    exact same file, in the exact same format, that factory_loop.js's own
+    recordRejectedNiche() writes — either side can read what the other
+    wrote; see REJECTED_NICHES.md's own parsing regex in factory_loop.js."""
+    factory_dir = os.path.dirname(os.path.abspath(__file__))
+    rejected_file = os.path.join(factory_dir, 'REJECTED_NICHES.md')
+    # No 'Z' suffix: datetime.now() is naive local time, not UTC — matching
+    # the same convention already used by inspectors.py's QUARANTINE.md
+    # entries (Node's factory_loop.js writes a real UTC 'Z' timestamp for
+    # its own entries; Date.parse() on the JS reading side still parses
+    # this naive format correctly for the cooldown-window math either way).
+    timestamp = datetime.now().isoformat()
+    entry = (
+        f"## 🚫 {timestamp}\n"
+        f"**النيتش:** {niche or ''}\n"
+        f"**العنوان:** {title or ''}\n"
+        f"**السبب:** {reason}\n\n"
+    )
+    try:
+        if not os.path.exists(rejected_file):
+            with open(rejected_file, 'w', encoding='utf-8') as f:
+                f.write(
+                    "# 🚫 Rejected Niches — ذاكرة قاطع الدائرة (Circuit Breaker)\n\n"
+                    "نيتشات فشلت في اجتياز الفحص المزدوج (Dual Inspection, CONSTITUTION.md §17) — "
+                    "تُحفَظ هنا كي لا يُعاد توليدها ويُهدَر استدعاء Groq عليها قبل انتهاء فترة التهدئة "
+                    "(7 أيام). Anti-Fragility: كل فشل هنا معرفة دائمة، لا مجرد خطأ منسي.\n\n"
+                )
+        with open(rejected_file, 'a', encoding='utf-8') as f:
+            f.write(entry)
+    except Exception:
+        pass
+
+
 def _sanitize_filename_component(text, fallback="book"):
     text = re.sub(r'[^\w\-]+', '_', str(text or ''), flags=re.UNICODE).strip('_').lower()
     return text or fallback
@@ -2206,6 +2261,16 @@ def generate_book(title, topic, chapters=8, audience="القارئ العام", 
 
     result["published"] = inspection["published"]
     result["inspection"] = inspection
+
+    # Circuit breaker (CONSTITUTION.md §19/§20) — recorded HERE, the one
+    # function every caller (Scout, /generate-book directly, factory_loop.js's
+    # hunt()) ultimately goes through, so every path shares one memory. This
+    # closes the exact gap self_awareness.js's own Constitution-compliance
+    # check flagged: REJECTED_NICHES.md used to be written only from
+    # factory_loop.js's side, so a niche rejected via the Scout button was
+    # never remembered.
+    if not inspection["published"]:
+        _record_rejected_niche(topic, title, _summarize_inspection_failure(inspection))
 
     _log_generation(result)
     return result

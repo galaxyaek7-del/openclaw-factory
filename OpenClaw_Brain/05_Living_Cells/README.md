@@ -66,15 +66,15 @@ Each cell scored honestly against OPENCLAW_OS_CONSTITUTION.md's Living Cell chec
 | Documented | ✅ | This entry + module docstring explicitly distinguishing real checks from documented estimates |
 | Recoverable | ✅ | "Fail closed" by design — an inspection exception is treated as a rejection, never a silent approval |
 
-## Circuit Breaker (`factory_loop.js` — `REJECTED_NICHES.md`)
+## Circuit Breaker (`book_generator.py._record_rejected_niche()` + `factory_loop.js` reads — `REJECTED_NICHES.md`)
 
 | Property | Status | Note |
 |---|---|---|
-| Independent | ✅ | Lives inside `factory_loop.js`, its own process, separate from the dashboard |
-| Reusable | ⚠️ **Partial — a known, real gap** | Only wired into `hunt()`'s `triggerGenerateBook()`; `/api/scout/run` doesn't share this memory. See [19_Lessons_Learned/The_Circuit_Breaker_Discovery.md](../19_Lessons_Learned/The_Circuit_Breaker_Discovery.md) |
+| Independent | ✅ | The write lives in `book_generator.py` (Python); reads happen from `factory_loop.js`/`market_hunter.py` (Node/Python) — same plain-Markdown file, no process dependency either direction |
+| Reusable | ✅ **Fixed, Day 08** | Was: only wired into `hunt()`'s `triggerGenerateBook()`, so `/api/scout/run` never shared this memory. Now: recorded once, inside `generate_book()` itself — the one function every caller (Scout, `hunt()`, a direct `/generate-book` call) already goes through. See [19_Lessons_Learned/The_Self_Awareness_Blind_Spot.md](../19_Lessons_Learned/The_Self_Awareness_Blind_Spot.md) |
 | Scalable | ✅ | O(n) file scan, fine at current rejection volume |
 | Secure | ✅ | No secrets |
-| Observable | ✅ | `REJECTED_NICHES.md` + every skip logged to `factory_loop.log` |
+| Observable | ✅ | `REJECTED_NICHES.md` + every skip logged to `factory_loop.log`; `self_awareness.js` now verifies this fix is actually present in `book_generator.py`'s source on every daily assessment, rather than assuming it |
 | Documented | ✅ | This entry + inline comments explaining the root cause it fixes |
 | Recoverable | ✅ | Missing `REJECTED_NICHES.md` degrades to "nothing rejected yet," never a crash |
 

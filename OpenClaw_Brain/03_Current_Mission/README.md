@@ -19,14 +19,16 @@
 | Value-based pricing fix (Scout prompt + `butter_price()`) | Golden Hunter / Smart Publishing |
 | This Brain | Knowledge |
 | `market_hunter.py` (Day 08) — Brain-aware candidate discovery | Golden Hunter |
+| `self_awareness.js` (Day 08) — daily honest verdict | Executive / Knowledge |
+| Scout circuit-breaker gap closed (Day 08) — `_record_rejected_niche()` moved into `generate_book()` | Anti-Fragility / Digital Sanitation |
 
 ## The mission's real current blocker (as of this writing)
 
-Fixed today: Scout's default pricing ($9.99–$14.99) failed the $30 Butter floor on every book. See [19_Lessons_Learned/The_1299_Pricing_Trap.md](../19_Lessons_Learned/The_1299_Pricing_Trap.md) for the full story — Groq's prompt now asks for value-based premium pricing directly, and `profit_oracle.butter_price()` repriced anything still under $30 (as long as the niche itself wasn't genuinely weak).
+Fixed: Scout's default pricing ($9.99–$14.99) failed the $30 Butter floor on every book. See [19_Lessons_Learned/The_1299_Pricing_Trap.md](../19_Lessons_Learned/The_1299_Pricing_Trap.md) for the full story — Groq's prompt now asks for value-based premium pricing directly, and `profit_oracle.butter_price()` repriced anything still under $30 (as long as the niche itself wasn't genuinely weak).
 
-**What's still open:** the circuit breaker (`REJECTED_NICHES.md`) still only guards `factory_loop.js`'s autonomous `hunt()` loop and (as of Day 08) `market_hunter.py`'s own discovery — `/api/scout/run` (the button a human or n8n actually triggers) still has no such memory. See [02_Roadmap](../02_Roadmap/).
+**Resolved (Day 08, same day self_awareness.js found it):** the circuit breaker used to only guard `factory_loop.js`'s own `hunt()` loop — `/api/scout/run` never recorded a rejection anywhere Node could see. Fixed by moving the recording into `book_generator.py`'s `generate_book()` itself, the one function every caller shares. Verified: a niche rejected via the same path Scout uses is now remembered and skipped on retry through `hunt()` too. See [19_Lessons_Learned/The_Self_Awareness_Blind_Spot.md](../19_Lessons_Learned/The_Self_Awareness_Blind_Spot.md).
 
-**Day 08 addition:** `market_hunter.py` now actively discovers new candidate niches (curated categories × seasonality, see [08_Market_Intelligence](../08_Market_Intelligence/)) instead of waiting for n8n or Scout — and consults `REJECTED_NICHES.md`, `QUARANTINE.md`, and the generation log *before* scoring anything, per CONSTITUTION.md §19.
+`market_hunter.py` actively discovers new candidate niches (curated categories × seasonality, see [08_Market_Intelligence](../08_Market_Intelligence/)) instead of waiting for n8n or Scout — and consults `REJECTED_NICHES.md`, `QUARANTINE.md`, and the generation log *before* scoring anything, per CONSTITUTION.md §19.
 
 ## Traceability anchor
 
