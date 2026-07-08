@@ -2,7 +2,7 @@
 
 > Treat OpenClaw as an enterprise-grade digital factory, not a collection of scripts.
 
-**Supreme law:** this document operates under, and must never contradict, [`OPENCLAW_OS_CONSTITUTION.md`](./OPENCLAW_OS_CONSTITUTION.md) — the company's foundational mission, DNA, Councils, and Supreme Law ("System Before Individuals"). Where the two ever appear to conflict, `OPENCLAW_OS_CONSTITUTION.md` wins. This document is the *engineering-specific* implementation standard: it translates that supreme law into concrete code-level principles for this repository. Any task, fix, or feature must be evaluated against both — the 18 principles below, and the supreme law above them.
+**Supreme law:** this document operates under, and must never contradict, [`OPENCLAW_OS_CONSTITUTION.md`](./OPENCLAW_OS_CONSTITUTION.md) — the company's foundational mission, DNA, Councils, and Supreme Law ("System Before Individuals"). Where the two ever appear to conflict, `OPENCLAW_OS_CONSTITUTION.md` wins. This document is the *engineering-specific* implementation standard: it translates that supreme law into concrete code-level principles for this repository. Any task, fix, or feature must be evaluated against both — the 19 principles below, and the supreme law above them.
 
 ---
 
@@ -108,6 +108,9 @@ No product ships without both guardians' approval. Every generated product passe
 ## 18. Knowledge Brain
 Nothing valuable stays only in conversations. Every lesson — a bug found, a fix that worked, a gap discovered while testing a fix — becomes permanent, linked knowledge in `OpenClaw_Brain/`, not a fact that only exists in a chat transcript. Search the Brain before building: check `05_Living_Cells` and `19_Lessons_Learned` for whether this problem, or a component it depends on, already has a documented answer or a known failure mode. Implemented in `OpenClaw_Brain/` (see `MASTER_INDEX.md`) and `knowledge_brain.js`, exposed via `GET /brain`.
 
+## 19. Golden Hunter
+Hunt butter opportunities across markets, always consult the Knowledge Brain first to avoid repeating rejected or duplicate niches. Before any candidate niche is scored, it must be checked against `REJECTED_NICHES.md` (the circuit breaker), `QUARANTINE.md` (Dual Inspection's rejection history), and the generation log for duplicates — a candidate that fails any of these is skipped before profit_oracle ever runs on it, not after. Implemented in `market_hunter.py`, run daily by `factory_loop.js`, exposed via `GET /hunter`.
+
 ---
 
 ## Architecture: Sensing ↔ Brain
@@ -147,3 +150,4 @@ Build the most reliable, scalable, secure and self-improving digital product fac
 | 2026-07-06 | Added "17. Dual Inspection" — the task that built `inspectors.py` asked for it as "Principle 23", but this document only had 16 principles at the time (17 through 22 don't exist), so it was added as the actual next number, 17, instead of leaving an unexplained gap. |
 | 2026-07-08 | Installed `OPENCLAW_OS_CONSTITUTION.md` as the supreme governing law above this document; added explicit Quality Council + Anti-Fragility references to "17. Dual Inspection", tying `inspectors.py`/`QUARANTINE.md`/`inspections.log` to their source principles in the supreme constitution. |
 | 2026-07-08 | Added "18. Knowledge Brain" — the task that built `OpenClaw_Brain/` asked for it as "Principle 24", but this document only had 17 principles at the time (18 through 23 don't exist), so it was added as the actual next number, 18, same pattern as §16/§17. |
+| 2026-07-09 | Added "19. Golden Hunter" — the task that built `market_hunter.py` asked for it as "Principle 19", and for once that was already the correct next number (this document had exactly 18 principles at the time). Recorded here anyway for consistency with every other amendment. |

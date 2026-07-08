@@ -22,6 +22,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { spawn, execSync } = require('child_process');
 
 const FACTORY_DIR = __dirname;
 const DASHBOARD_URL = process.env.DASHBOARD_URL || 'http://localhost:3000';
@@ -35,6 +36,7 @@ const REPORTS_DIR = path.join(FACTORY_DIR, 'reports');
 const WEEKLY_REPORT_STABLE = path.join(FACTORY_DIR, 'FACTORY_WEEKLY_REPORT.md');
 const OPPORTUNITIES_FILE = path.join(FACTORY_DIR, 'OPPORTUNITIES.md');
 const FACTORY_STATUS_FILE = path.join(FACTORY_DIR, 'FACTORY_STATUS.md');
+const MARKET_HUNTER_LOG = path.join(FACTORY_DIR, 'market_hunter_runs.log');
 const REJECTED_NICHES_FILE = path.join(FACTORY_DIR, 'REJECTED_NICHES.md');
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 const REJECTION_COOLDOWN_MS = WEEK_MS;
@@ -310,6 +312,73 @@ async function hunt(reachable) {
   };
 }
 
+// ── GOLDEN HUNTER ──
+// CONSTITUTION.md §19: market_hunter.py scans for new golden opportunities,
+// consulting the Knowledge Brain (REJECTED_NICHES.md included) before
+// proposing anything. It's a standalone Python script, spawned locally —
+// unlike HUNT/HEAL it needs no dashboard reachability, so it runs
+// regardless. Gated to once per calendar day (not every 10-minute tick):
+// scanning the same curated candidate list more than once a day would just
+// re-discover the same niches for no new information.
+function detectPythonForHunter() {
+  const candidates = ['python3', 'python', 'py'];
+  for (const cmd of candidates) {
+    try {
+      execSync(`${cmd} --version`, { stdio: 'ignore' });
+      return cmd;
+    } catch (_) { /* try next candidate */ }
+  }
+  return 'python';
+}
+
+function lastHuntDate() {
+  if (!fs.existsSync(MARKET_HUNTER_LOG)) return null;
+  const lines = fs.readFileSync(MARKET_HUNTER_LOG, 'utf8').split('\n').filter(Boolean);
+  if (!lines.length) return null;
+  try {
+    const last = JSON.parse(lines[lines.length - 1]);
+    const t = Date.parse(last.timestamp);
+    return Number.isFinite(t) ? isoDate(new Date(t)) : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function runMarketHunter() {
+  return new Promise((resolve) => {
+    const pythonPath = detectPythonForHunter();
+    const child = spawn(pythonPath, [path.join(FACTORY_DIR, 'market_hunter.py'), '--run'], { cwd: FACTORY_DIR });
+    let output = '', errOut = '';
+    const timer = setTimeout(() => {
+      child.kill();
+      resolve({ ok: false, detail: 'انتهت مهلة market_hunter.py (60 ثانية)' });
+    }, 60000);
+    child.stdout.on('data', d => { output += d.toString(); });
+    child.stderr.on('data', d => { errOut += d.toString(); });
+    child.on('close', () => {
+      clearTimeout(timer);
+      try {
+        const result = JSON.parse(output.trim());
+        resolve({
+          ok: !!result.success,
+          detail: `مسح ${result.scanned} نيتش، ${result.skipped} تخطّي، ${result.golden} ذهبي`,
+        });
+      } catch (e) {
+        resolve({ ok: false, detail: `فشل تحليل ناتج market_hunter.py: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeRunMarketHunter(now = new Date()) {
+  const today = isoDate(now);
+  if (lastHuntDate() === today) {
+    return { action: 'none', detail: `تم تشغيل Golden Hunter اليوم بالفعل (${today})` };
+  }
+  const result = await runMarketHunter();
+  return { action: result.ok ? 'hunted' : 'failed', detail: result.detail };
+}
+
 // ── WEEKLY REPORT ──
 // "Every Sunday at 00:00" is the nominal trigger, but a 10-minute-tick loop
 // can't guarantee it's alive at that exact instant (restarts, maintenance).
@@ -583,6 +652,10 @@ async function runTick() {
   // filesystem read; only the health section degrades to "unreachable" if
   // the dashboard happened to be down at the time.
   actions.push({ step: 'weekly_report', ...(await maybeGenerateWeeklyReport(diagnosis)) });
+
+  // Golden Hunter also runs regardless of dashboard reachability — it's a
+  // standalone local Python process, not an HTTP call to the dashboard.
+  actions.push({ step: 'golden_hunter', ...(await maybeRunMarketHunter()) });
 
   appendLoopLog({
     diagnosis: diagnosis.reachable

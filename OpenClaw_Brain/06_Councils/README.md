@@ -5,7 +5,7 @@ OPENCLAW_OS_CONSTITUTION.md names 12 Councils but doesn't say which code impleme
 | Council | What's actually built | Status |
 |---|---|---|
 | **Quality** | `inspectors.py` — Technical Inspector + Commercial Auditor (CONSTITUTION.md §17) | ✅ Built |
-| **Golden Hunter** | `profit_oracle.py` (scoring) + Scout's niche-picking in `server.js` | ✅ Built |
+| **Golden Hunter** | `market_hunter.py` (candidate discovery, Brain-aware) + `profit_oracle.py` (scoring) + Scout's niche-picking in `server.js` | ✅ Built |
 | **Engineering** | `server.js`, `book_generator.py`, `factory_loop.js` — the core pipeline | ✅ Built |
 | **Knowledge** | This Brain (`OpenClaw_Brain/`) + `knowledge_brain.js` | ✅ Built (today) |
 | **Security** | `.env` secrets, guarded imports everywhere, the token-handling protocol (see [11_Security](../11_Security/)) | ✅ Practiced, not a named module |

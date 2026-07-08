@@ -1036,6 +1036,36 @@ app.get('/brain', (req, res) => {
   }
 });
 
+// ── GOLDEN HUNTER ──
+// CONSTITUTION.md §19: Golden Hunter. Read-only — this route never runs
+// market_hunter.py itself (that happens inside factory_loop.js's daily
+// cycle, or manually via `python market_hunter.py --run`); it only reads
+// the most recent entry from market_hunter_runs.log, the same pattern
+// /inspections and /oracle already use for their own logs.
+app.get('/hunter', (req, res) => {
+  const logFile = path.join(__dirname, 'market_hunter_runs.log');
+  try {
+    if (!fs.existsSync(logFile)) {
+      return res.json({
+        success: true, count: 0, golden_catch: [],
+        note: 'لم يُشغَّل market_hunter.py بعد — شغّله عبر: python market_hunter.py --run',
+      });
+    }
+    const lines = fs.readFileSync(logFile, 'utf8').split('\n').filter(Boolean);
+    const last = JSON.parse(lines[lines.length - 1]);
+    res.json({
+      success: true,
+      timestamp: last.timestamp,
+      scanned_count: last.scanned_count,
+      skipped_count: last.skipped_count,
+      golden_count: last.golden_count,
+      golden_catch: last.golden_catch,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // ── STATIC ──
 app.use(express.static(path.join(__dirname)));
 app.get('/{*path}', (req, res) => {

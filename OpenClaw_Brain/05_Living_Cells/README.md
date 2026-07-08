@@ -2,6 +2,20 @@
 
 Each cell scored honestly against OPENCLAW_OS_CONSTITUTION.md's Living Cell checklist (see [04_Architecture](../04_Architecture/)) — including where a cell falls short, not just where it succeeds.
 
+## market_hunter (`market_hunter.py` — the Golden Hunter, Day 08)
+
+| Property | Status | Note |
+|---|---|---|
+| Independent | ✅ | Standalone script; `factory_loop.js` spawns it as a subprocess, no dashboard dependency |
+| Reusable | ✅ | `hunt_market()`/`_generate_candidates()` aren't hardcoded to one category list |
+| Scalable | ⚠️ Unproven | Curated candidate pool is small (10 seeds); untested at a larger candidate volume |
+| Secure | ✅ | No secrets, no network calls |
+| Observable | ✅ | `market_hunter_runs.log` (every run) + appends to `OPPORTUNITIES.md` with clear attribution |
+| Documented | ✅ | This entry + [08_Market_Intelligence](../08_Market_Intelligence/) + module docstring |
+| Recoverable | ✅ | Guards `profit_oracle`/`inspectors` imports; a missing Brain check degrades to "not found" rather than crashing |
+
+**The one property this cell exists specifically to strengthen:** it's the first component to consult *three* separate rejection/duplicate memories (`REJECTED_NICHES.md`, `QUARANTINE.md`, generation-log duplicates) before doing any work — the concrete implementation of CONSTITUTION.md §19's "always consult the Knowledge Brain first."
+
 ## Scout (`server.js` — `/api/scout/run`, `scoutBriefPrompt()`)
 
 | Property | Status | Note |
