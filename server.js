@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
 const Groq = require('groq-sdk');
+const knowledgeBrain = require('./knowledge_brain');
 
 require('dotenv').config();
 
@@ -1011,6 +1012,25 @@ app.get('/inspections', (req, res) => {
       try { return JSON.parse(line); } catch (_) { return { raw: line }; }
     }).reverse(); // most recent first
     res.json({ success: true, count: lines.length, entries });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ── KNOWLEDGE BRAIN ──
+// CONSTITUTION.md §18: "search the Brain before building." Read-only view of
+// OpenClaw_Brain/'s real, current folder map — computed from disk every
+// call, never a stale hardcoded copy. Optional ?q= does a keyword search
+// across every .md file instead (see knowledge_brain.js).
+app.get('/brain', (req, res) => {
+  try {
+    const q = req.query.q;
+    if (q) {
+      const results = knowledgeBrain.searchBrain(q);
+      return res.json({ success: true, query: q, count: results.length, results });
+    }
+    const map = knowledgeBrain.getBrainMap();
+    res.json({ success: true, ...map });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
