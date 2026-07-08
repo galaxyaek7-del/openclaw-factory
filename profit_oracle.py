@@ -52,6 +52,8 @@ GOLDEN_JSON_FILE = os.path.join(FACTORY_DIR, 'golden_opportunities.json')
 NICHE_REPORTS_DIR = os.path.join(FACTORY_DIR, 'niche_reports')
 
 MAX_COMPETITION = NICHE_VALIDATOR.CRITERIA['max_competition'] if NICHE_VALIDATOR else 50000
+MIN_BUTTER_PRICE = 30   # CONSTITUTION.md §16 — the Butter Principle's floor
+MAX_BUTTER_PRICE = 100  # a KDP-realistic ceiling for a single digital book
 
 # ── Keyword heuristics — documented estimates, not live APIs ──
 
@@ -262,6 +264,47 @@ def score_opportunity(niche, now=None):
             "execution": execution_score,
         },
     }
+
+
+def butter_price(niche):
+    """Smart Publishing + Butter Principle (OPENCLAW_OS_CONSTITUTION.md /
+    CONSTITUTION.md §16): given a niche, returns a defensible price in the
+    $30–$100 butter-tier band — never a flat $30 for everything, never a
+    fabricated number. The starting tier reuses the same keyword vocabulary
+    _score_margin() already scores this niche's margin against (premium/
+    recurring signals → a higher defensible starting point), then this
+    niche's OWN profit_score scales it upward within the remaining headroom
+    to $100 — a stronger niche (higher demand, lower competition) can
+    defensibly ask for more, rather than every repriced niche landing on
+    the same number.
+
+    Callers are expected to only invoke this for niches that are not
+    genuinely weak (see score_opportunity()'s verdict != 'SKIP') — a niche
+    with real thin demand or saturated competition doesn't become viable
+    just because a bigger number was attached to it."""
+    niche = str(niche or '').strip()
+    if not niche:
+        raise ValueError("النيتش (niche) مطلوب")
+
+    result = score_opportunity(niche)
+    score = result['profit_score']
+    niche_lower = niche.lower()
+
+    if any(k in niche_lower for k in PREMIUM_KEYWORDS):
+        base = 60
+    elif any(k in niche_lower for k in MID_KEYWORDS):
+        base = 45
+    else:
+        base = MIN_BUTTER_PRICE + 5  # $35 — still comfortably above the floor
+
+    if any(k in niche_lower for k in RECURRING_KEYWORDS):
+        base += 10  # a subscription-able product defensibly commands more
+
+    base = min(base, MAX_BUTTER_PRICE)
+    headroom = MAX_BUTTER_PRICE - base
+    scaled = base + headroom * max(0, score - 60) / 40  # score 60→base, 100→ceiling
+
+    return round(min(MAX_BUTTER_PRICE, max(MIN_BUTTER_PRICE, scaled)))
 
 
 def _read_opportunities():

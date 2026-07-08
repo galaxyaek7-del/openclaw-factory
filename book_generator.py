@@ -56,6 +56,14 @@ try:
 except Exception:
     INSPECTORS = None
 
+# Optional: profit_oracle.py — used here only for Smart Publishing's
+# value-based repricing (see _resolve_price() below), not for scoring niches
+# before they're chosen (that's Scout's/HUNT's job upstream of this file).
+try:
+    import profit_oracle as PROFIT_ORACLE
+except Exception:
+    PROFIT_ORACLE = None
+
 PAGE_W = 6 * inch
 PAGE_H = 9 * inch
 MARGIN = 0.6 * inch
@@ -1972,6 +1980,33 @@ def _resolve_subtitle(ai_subtitle, topic):
     return f"دليلك الكامل في {topic}" if topic else ''
 
 
+def _resolve_price(topic, price):
+    """Smart Publishing (OPENCLAW_OS_CONSTITUTION.md) + Butter Principle
+    (CONSTITUTION.md §16): a price below $30 is not an automatic rejection.
+    Groq defaulting to a template price (its own few-shot example used to
+    show "9.99") is a correctable mistake, not evidence the niche is weak —
+    only profit_oracle scoring this niche as SKIP (<60: genuinely thin
+    demand or saturated competition) means no price would make it worth
+    building, and that case is left alone to fail Commercial Audit honestly
+    rather than papering over it with a bigger number.
+
+    Returns (resolved_price, was_repriced)."""
+    try:
+        price_val = max(0.0, float(price))
+    except (TypeError, ValueError):
+        price_val = 0.0
+    if price_val >= 30 or PROFIT_ORACLE is None or not str(topic or '').strip():
+        return price_val, False
+    try:
+        scored = PROFIT_ORACLE.score_opportunity(topic)
+        if scored['verdict'] == 'SKIP':
+            return price_val, False  # genuinely weak niche — no repricing rescues it
+        new_price = float(PROFIT_ORACLE.butter_price(topic))
+    except Exception:
+        return price_val, False
+    return new_price, True
+
+
 def _sanitize_filename_component(text, fallback="book"):
     text = re.sub(r'[^\w\-]+', '_', str(text or ''), flags=re.UNICODE).strip('_').lower()
     return text or fallback
@@ -2093,10 +2128,7 @@ def generate_book(title, topic, chapters=8, audience="القارئ العام", 
         raise ValueError("العنوان (title) مطلوب")
     topic = str(topic or '').strip()[:500]
     audience = str(audience or 'القارئ العام').strip()[:200] or 'القارئ العام'
-    try:
-        price = max(0.0, float(price))
-    except (TypeError, ValueError):
-        price = 0.0
+    price, repriced = _resolve_price(topic, price)
     try:
         chapters = max(2, min(int(chapters), 20))
     except (TypeError, ValueError):
@@ -2136,6 +2168,7 @@ def generate_book(title, topic, chapters=8, audience="القارئ العام", 
         "topic": topic,
         "audience": audience,
         "price": price,
+        "repriced": repriced,
         "ai_used": ai_error is None,
         "ai_error": ai_error,
         "quality_gate": gate,
