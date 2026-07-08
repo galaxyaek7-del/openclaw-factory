@@ -1,7 +1,30 @@
 # OpenClaw Factory — Status Report
 
-**Last updated:** 2026-07-05
-**Governed by:** [CONSTITUTION.md](./CONSTITUTION.md)
+**Last updated:** 2026-07-08
+**Governed by:** [CONSTITUTION.md](./CONSTITUTION.md), supreme law: [OPENCLAW_OS_CONSTITUTION.md](./OPENCLAW_OS_CONSTITUTION.md)
+
+## Day 06–07 Summary
+
+**Theme: the factory learned to judge its own work before publishing it.** Four new capabilities layered on top of Day 05's pipeline, plus the supreme constitution that names why they exist.
+
+| Component | What it does |
+|---|---|
+| `cover_designer_v2.py` | Real 70/20/10-rule covers (Pillow), fixed a genuine Arabic-shaping bug (`arabic_reshaper`+`python-bidi`) that earlier covers silently had |
+| SUBTITLE placeholder fix | `book_generator.py` no longer leaks a literal `"SUBTITLE"` tag as real content when Groq echoes its own prompt tag |
+| `profit_oracle.py` | Scores any niche 0–100 across Demand/Competition/Margin/Execution-fit *before* a single AI token or PDF page is spent on it — CONSTITUTION.md §16, The Butter Principle |
+| `OPENCLAW_OS_CONSTITUTION.md` | Installed as the supreme governing law above `CONSTITUTION.md` — Mission, Councils, Anti-Fragility, Golden Hunter, etc. |
+| `inspectors.py` (Dual Inspection) | Two independent gates — **Technical Inspector** (cover/PDF/Arabic/placeholder, real pixel + `pypdf` checks, not self-reported metadata) and **Commercial Auditor** (profit score, $30 Butter price, duplicates, prior rejections) — CONSTITUTION.md §17, this repo's concrete Quality Council. Wired automatically into the end of every `generate_book()`. |
+| Circuit breaker (`REJECTED_NICHES.md`) | `factory_loop.js`'s HUNT no longer retries a niche Dual Inspection already rejected within 7 days — Anti-Fragility: rejections become durable memory, not repeated Groq spend |
+
+**Real bug found and fixed along the way:** `server.js`'s `/generate-book` was silently dropping the `published`/`inspection` fields from its response — the actual root cause of a 5-hour, ~10-minute-interval retry storm `factory_loop.js` ran against a single rejected niche before this session started. Fixed as a prerequisite for the circuit breaker to be possible at all.
+
+**Verified today via a real, live `/api/scout/run` call (not a synthetic test):** Scout picked a real Groq-generated niche ("الإبداع الفوري: كيف تحول ردود أفعالك إلى فرص ذهبية") → `profit_oracle` scored it 62/100 (GOOD) → the book generated cleanly and **Technical Inspector passed all 13 checks** → **Commercial Auditor blocked it on `butter_price: $12.99 < $30`** → correctly quarantined, not published.
+
+**⚠️ Architectural gap found during that same test, not yet fixed:** the circuit breaker only guards `factory_loop.js`'s own `hunt()` loop. `/api/scout/run` (the button a human or n8n actually triggers) calls `book_generator.py` through a separate path and never writes to `REJECTED_NICHES.md` — so repeated manual/n8n-triggered Scout runs on a similarly-priced niche are **not yet** protected by the breaker, only the autonomous loop is. Candidate fix: move the rejection-recording into `book_generator.py` or `/generate-book` itself, so every caller shares one memory.
+
+**The real blocker underneath all of it:** Scout's Groq-suggested prices cluster at $9.99–$14.99. The Butter Principle's $30 floor is a hard, correct gate — but as configured today, it means **most Scout-generated books will never publish automatically** until either Scout's pricing prompt is changed to aim at $30+, or a human deliberately overrides price per book. This isn't a bug in the gate; it's the gate doing exactly its job against the current defaults.
+
+---
 
 ## Day 05 Final Summary
 
@@ -144,11 +167,13 @@ A second, independent intake path (Task [11]): n8n → `POST /api/trends` → Qu
    5. Set **Body Content Type**: JSON, **Body**: an expression, `{{ $json }}` (sends whatever the previous node's output item is)
    6. Save and activate the workflow
    Once that node exists, every trend the workflow discovers will automatically flow through Quality Gate into `OPPORTUNITIES.md` — no further server-side change needed. `/api/trends` also still doesn't receive real Google Trends *volume* numbers (the "highest traffic" gap from [4]/[8]) — it only receives whatever fields the workflow's last node happens to output, so once the node is added, check `trends_received.log` to see the real shape and confirm `extractNiche()` in `server.js` picks up the right field (it already tries `niche`, `trend`, `topic`, `title`, `keyword`, `query`, `name`).
-2. **Human review step ("Galaxy")** — the original brief called for sending a generated book for human review before publishing. Not yet built: no review queue/endpoint exists; Scout currently goes straight from generation to `books/`.
-3. **Structured `knowledge_base.json`** — today's `books/_generation_log.jsonl` and `scout_runs.log` are flat append-only logs. A real knowledge base (niche win/loss history, reasons, reusable scoring) to actively *inform* future Scout decisions — not just record them — is not built yet.
+2. ~~**Human review step ("Galaxy")**~~ — **partially superseded by Day 06–07's Dual Inspection**: every book now passes an automated Technical + Commercial gate before it could ever reach a human. This is *not* the same thing as a human review queue, though — there is still no UI/endpoint for Galaxy to eyeball a book before it publishes; today "review" only happens automatically (inspectors.py) or not at all.
+3. **Structured `knowledge_base.json`** — today's `books/_generation_log.jsonl` and `scout_runs.log` are flat append-only logs. A real knowledge base (niche win/loss history, reasons, reusable scoring) to actively *inform* future Scout decisions — not just record them — is not built yet. `QUARANTINE.md`/`REJECTED_NICHES.md` are a first, partial step in this direction for rejections specifically.
 4. ~~**Scheduled self-healing daemon**~~ — **done in [8]**: `factory_loop.js` polls `/health` every 10 minutes and takes automatic corrective action (finance repair, missing-book regeneration); start it via `start_factory.bat` or `node factory_loop.js`.
 5. **Automated test suite** — all testing this session was manual/live verification against the running server. No `npm test`/`pytest` regression suite exists yet (Constitution §12).
 6. **Other product tracks** — per `CLAUDE.md`'s 3-layer architecture, only `book_engine` (Layer 2) is active; `template_engine`, `art_engine`, `app_engine`, `service_engine`, `trade_engine` are not started (consistent with the golden rule: no new product line before the current one proves profitable).
+7. **Circuit breaker doesn't cover `/api/scout/run`** (Day 06–07 finding) — `REJECTED_NICHES.md` is only written to by `factory_loop.js`'s own `hunt()`; the Scout button's direct path to `book_generator.py` never records a rejection there. Needs the recording logic moved to a shared point (`book_generator.py` or `/generate-book`) so every caller benefits.
+8. **Scout price vs. Butter Principle mismatch** (Day 06–07 finding) — Groq suggests $9.99–$14.99 by default; Dual Inspection requires $30+. As configured today, nearly every Scout-generated book will be quarantined on price alone. Either Scout's pricing prompt needs to target $30+, or pricing needs a deliberate human override step per book.
 
 ## 5. Weekly Reports
 
@@ -174,5 +199,4 @@ The three concrete things standing between today's build and the next dollar:
 2. **Run `start_factory.bat` and test the full pipeline live.**
    Everything in this file has been tested piece-by-piece and in cross-task regression (§2), but never all three processes (n8n + `server.js` + `factory_loop.js`) started together from the actual `.bat` file in one shot. Do this once item 1 is done, then click **Scout** on the dashboard and confirm a book appears in `books/` and (once the n8n node is live) an entry lands in `OPPORTUNITIES.md`.
 
-3. **Generate Book #3 after Quality Gate approval by Galaxy.**
-   Note on numbering: `books/` already holds 3 real AI-generated PDFs from today's testing (see §2/§3), so this isn't literally the third book ever — read it as *the next book produced through the full reviewed flow*. Also worth knowing: there is **no automated "Galaxy" review queue yet** (§4 item 2 — not built). Today, "approval by Galaxy" means the Chairman reviewing the Scout-picked niche/brief by eye before triggering generation, not a system gate. Recommended flow right now: click Scout → read the niche it picked and the Quality Gate result in the activity log → if it looks right, let `generate_book()` run (it already will have); if not, delete the PDF from `books/` and click Scout again for a fresh pick.
+3. **Fix the price mismatch so a book can actually publish.** Superseded by Day 06–07: Quality Gate approval is no longer the last step before a book counts as done — Dual Inspection (§17) is, and it verified live today (see Day 06–07 Summary) that Scout's real Groq-suggested price ($12.99) fails the $30 Butter floor even when everything else — niche score, cover, PDF integrity — passes cleanly. The next real dollar requires one of: (a) change Scout's pricing prompt/logic to target $30+, or (b) add a manual price-override step before generation so a human can deliberately price a promising niche at Butter level. Until one of these ships, `published: true` will keep being the rare case, not the default.
