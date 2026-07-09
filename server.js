@@ -689,12 +689,16 @@ app.post('/api/scout/run', async (req, res) => {
   // the finalized brief, not on whatever the caller posted. Same
   // fail-safe contract as /generate-book: any failure from runCompliance
   // itself is treated as blocked, never allowed through.
+  console.log(`[scout] brief sent to compliance filter — title: "${brief.title}" | topic: "${brief.topic}"`);
+
   let complianceResult;
   try {
     complianceResult = await runCompliance({
       niche: brief.topic || '',
       title: brief.title || '',
+      subtitle: '',
       description: brief.audience || '',
+      type: brief.type || 'journal',
     });
   } catch (err) {
     complianceResult = {
@@ -714,7 +718,8 @@ app.post('/api/scout/run', async (req, res) => {
       risk_level: complianceResult.risk_level,
       score: complianceResult.score,
       reasons: complianceResult.reasons,
-      message: 'Niche rejected by Butter Compliance filter.',
+      brief_intercepted: { title: brief.title, topic: brief.topic },
+      message: 'Scout brief rejected by Butter Compliance filter.',
     });
   }
 
@@ -856,9 +861,10 @@ app.post('/api/trends', async (req, res) => {
       // it's written to OPPORTUNITIES.md (a human-facing dashboard file,
       // surfaced via /brain and /good-morning). Same fail-safe contract as
       // every other caller: a runCompliance() failure is treated as blocked.
+      const trendTitle = (typeof item.title === 'string' && item.title.trim()) || niche;
       let compliance;
       try {
-        compliance = await runCompliance({ niche, title: niche, description: gate.reason || '' });
+        compliance = await runCompliance({ niche, title: trendTitle, description: gate.reason || '' });
       } catch (err) {
         compliance = {
           allowed: false,
@@ -869,6 +875,7 @@ app.post('/api/trends', async (req, res) => {
       }
 
       if (compliance.allowed === false) {
+        console.log(`[trends] blocked by compliance filter — niche: "${niche}" | title: "${trendTitle}" | risk: ${compliance.risk_level}`);
         results.push({ added: false, niche, reason: 'compliance_rejected', risk_level: compliance.risk_level, compliance_reasons: compliance.reasons });
       } else {
         appendOpportunity(niche, gate);
