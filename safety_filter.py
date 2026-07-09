@@ -1,4 +1,6 @@
-"""Butter Compliance Filter — blocks/flags risky niches before publishing.
+"""OpenClaw Factory — Niche Safety Filter v1
+
+Gates every niche BEFORE it reaches book_generator.py.
 
 Reads a JSON object from stdin describing a candidate product
 ({niche, title, subtitle, description, type}) and writes a JSON

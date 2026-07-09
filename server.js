@@ -17,19 +17,19 @@ const groq = new Groq({ apiKey: GROQ_KEY || 'missing' });
 app.use(cors());
 app.use(express.json());
 
-// ── BUTTER COMPLIANCE FILTER ──
+// ── NICHE SAFETY FILTER ──
 // Gates any niche/title/description before it can reach book generation.
-// Wraps compliance_filter.py (blocklists for brand-poison, financial,
-// medical, trademark, adult content — see compliance_filter.py). This is a
+// Wraps safety_filter.py (blocklists for brand-poison, financial,
+// medical, trademark, adult content — see safety_filter.py). This is a
 // safety gate, not a UX nicety: any failure to get a clean verdict from the
 // Python process (spawn error, timeout, non-zero exit, unparseable output)
 // must REJECT, never silently let an unchecked niche through.
-function runCompliance(payload, timeoutMs = 5000) {
+function runSafetyCheck(payload, timeoutMs = 5000) {
   const FAIL_SAFE = () => ({
     allowed: false,
     score: 0,
     risk_level: 'blocked',
-    reasons: [{ category: 'filter_error', level: 'blocked', reason: 'compliance filter unavailable — failing safe' }],
+    reasons: [{ category: 'filter_error', level: 'blocked', reason: 'safety filter unavailable — failing safe' }],
   });
 
   return new Promise((resolve) => {
@@ -44,7 +44,7 @@ function runCompliance(payload, timeoutMs = 5000) {
     let python;
     try {
       const pythonPath = detectPython();
-      const scriptPath = path.join(__dirname, 'compliance_filter.py');
+      const scriptPath = path.join(__dirname, 'safety_filter.py');
       python = spawn(pythonPath, [scriptPath], { cwd: __dirname });
     } catch (err) {
       resolve(FAIL_SAFE());
@@ -64,9 +64,9 @@ function runCompliance(payload, timeoutMs = 5000) {
 
     python.on('close', code => {
       try {
-        if (code !== 0) throw new Error(`compliance_filter.py exited ${code}: ${errOut}`);
+        if (code !== 0) throw new Error(`safety_filter.py exited ${code}: ${errOut}`);
         const result = JSON.parse(output.trim());
-        if (typeof result.allowed !== 'boolean') throw new Error('malformed compliance result');
+        if (typeof result.allowed !== 'boolean') throw new Error('malformed safety-check result');
         finish(result);
       } catch (err) {
         finish(FAIL_SAFE());
@@ -82,9 +82,9 @@ function runCompliance(payload, timeoutMs = 5000) {
   });
 }
 
-app.post('/api/compliance/check', async (req, res) => {
+app.post('/api/safety/check', async (req, res) => {
   try {
-    const result = await runCompliance(req.body || {});
+    const result = await runSafetyCheck(req.body || {});
     res.json({ success: true, ...result });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -100,7 +100,7 @@ app.post('/generate-book', async (req, res) => {
   if (!title) return res.json({ success: false, error: 'Title is required' });
 
   try {
-    const complianceResult = await runCompliance({
+    const safetyResult = await runSafetyCheck({
       niche: req.body.niche || '',
       title: req.body.title || '',
       subtitle: req.body.subtitle || '',
@@ -108,15 +108,15 @@ app.post('/generate-book', async (req, res) => {
       type: req.body.type || '',
     });
 
-    if (complianceResult.allowed === false) {
+    if (safetyResult.allowed === false) {
       return res.json({
         success: false,
         blocked: true,
-        reason: 'compliance_rejected',
-        risk_level: complianceResult.risk_level,
-        score: complianceResult.score,
-        reasons: complianceResult.reasons,
-        message: 'Niche rejected by Butter Compliance filter.',
+        reason: 'safety_rejected',
+        risk_level: safetyResult.risk_level,
+        score: safetyResult.score,
+        reasons: safetyResult.reasons,
+        message: 'Niche rejected by Niche Safety Filter.',
       });
     }
 
@@ -682,18 +682,18 @@ app.post('/api/scout/run', async (req, res) => {
     }
   }
 
-  // 2.5) Butter Compliance gate — brief.topic/title/audience are what
+  // 2.5) Niche Safety Filter gate — brief.topic/title/audience are what
   // actually reaches book_generator.py via runBookGenerator() below
   // (this route never reads req.body for the niche; Scout always picks
   // its own via Groq or the hardcoded fallback), so the gate must run on
   // the finalized brief, not on whatever the caller posted. Same
-  // fail-safe contract as /generate-book: any failure from runCompliance
+  // fail-safe contract as /generate-book: any failure from runSafetyCheck
   // itself is treated as blocked, never allowed through.
-  console.log(`[scout] brief sent to compliance filter — title: "${brief.title}" | topic: "${brief.topic}"`);
+  console.log(`[scout] brief sent to safety filter — title: "${brief.title}" | topic: "${brief.topic}"`);
 
-  let complianceResult;
+  let safetyResult;
   try {
-    complianceResult = await runCompliance({
+    safetyResult = await runSafetyCheck({
       niche: brief.topic || '',
       title: brief.title || '',
       subtitle: '',
@@ -701,25 +701,25 @@ app.post('/api/scout/run', async (req, res) => {
       type: brief.type || 'journal',
     });
   } catch (err) {
-    complianceResult = {
+    safetyResult = {
       allowed: false,
       score: 0,
       risk_level: 'blocked',
-      reasons: [{ category: 'filter_error', level: 'blocked', reason: 'compliance filter unavailable — failing safe' }],
+      reasons: [{ category: 'filter_error', level: 'blocked', reason: 'safety filter unavailable — failing safe' }],
     };
   }
 
-  if (complianceResult.allowed === false) {
-    logScout('compliance-rejected', { brief, risk_level: complianceResult.risk_level, reasons: complianceResult.reasons });
+  if (safetyResult.allowed === false) {
+    logScout('safety-rejected', { brief, risk_level: safetyResult.risk_level, reasons: safetyResult.reasons });
     return res.json({
       success: false,
       blocked: true,
-      reason: 'compliance_rejected',
-      risk_level: complianceResult.risk_level,
-      score: complianceResult.score,
-      reasons: complianceResult.reasons,
+      reason: 'safety_rejected',
+      risk_level: safetyResult.risk_level,
+      score: safetyResult.score,
+      reasons: safetyResult.reasons,
       brief_intercepted: { title: brief.title, topic: brief.topic },
-      message: 'Scout brief rejected by Butter Compliance filter.',
+      message: 'Scout brief rejected by Niche Safety Filter.',
     });
   }
 
@@ -855,31 +855,31 @@ app.post('/api/trends', async (req, res) => {
         continue;
       }
 
-      // Butter Compliance gate — quality_gate() only scores commercial
+      // Niche Safety Filter gate — quality_gate() only scores commercial
       // viability, it has no idea what a scam/trademark/medical niche is.
-      // A niche that passes quality must also clear runCompliance() before
+      // A niche that passes quality must also clear runSafetyCheck() before
       // it's written to OPPORTUNITIES.md (a human-facing dashboard file,
       // surfaced via /brain and /good-morning). Same fail-safe contract as
-      // every other caller: a runCompliance() failure is treated as blocked.
+      // every other caller: a runSafetyCheck() failure is treated as blocked.
       const trendTitle = (typeof item.title === 'string' && item.title.trim()) || niche;
-      let compliance;
+      let safety;
       try {
-        compliance = await runCompliance({ niche, title: trendTitle, description: gate.reason || '' });
+        safety = await runSafetyCheck({ niche, title: trendTitle, description: gate.reason || '' });
       } catch (err) {
-        compliance = {
+        safety = {
           allowed: false,
           score: 0,
           risk_level: 'blocked',
-          reasons: [{ category: 'filter_error', level: 'blocked', reason: 'compliance filter unavailable — failing safe' }],
+          reasons: [{ category: 'filter_error', level: 'blocked', reason: 'safety filter unavailable — failing safe' }],
         };
       }
 
-      if (compliance.allowed === false) {
-        console.log(`[trends] blocked by compliance filter — niche: "${niche}" | title: "${trendTitle}" | risk: ${compliance.risk_level}`);
-        results.push({ added: false, niche, reason: 'compliance_rejected', risk_level: compliance.risk_level, compliance_reasons: compliance.reasons });
+      if (safety.allowed === false) {
+        console.log(`[trends] blocked by safety filter — niche: "${niche}" | title: "${trendTitle}" | risk: ${safety.risk_level}`);
+        results.push({ added: false, niche, reason: 'safety_rejected', risk_level: safety.risk_level, safety_reasons: safety.reasons });
       } else {
         appendOpportunity(niche, gate);
-        results.push({ added: true, niche, reason: gate.reason, compliance: { score: compliance.score, risk_level: compliance.risk_level } });
+        results.push({ added: true, niche, reason: gate.reason, safety: { score: safety.score, risk_level: safety.risk_level } });
       }
     } catch (err) {
       logTrendsError('quality_gate', err);
@@ -912,24 +912,24 @@ app.post('/api/market-analyze', (req, res) => {
       try {
         const niches = data.recommended_niches || [];
 
-        // Butter Compliance gate: a niche must clear runCompliance() before
+        // Niche Safety Filter gate: a niche must clear runSafetyCheck() before
         // it's ever shown to the user — market_analyzer.py's scoring has no
         // idea what a "scam trading" niche is, so it could otherwise sit at
         // position #1 unfiltered.
         const checked = await Promise.all(niches.map(async (n) => {
           try {
-            const compliance = await runCompliance({
+            const safety = await runSafetyCheck({
               niche: n.niche,
               title: n.niche,
               description: n.recommendation_reason || '',
             });
-            return { n, compliance };
+            return { n, safety };
           } catch (err) {
-            // A single niche's compliance check blowing up must never take
+            // A single niche's safety check blowing up must never take
             // down the whole endpoint — fail that niche closed instead.
             return {
               n,
-              compliance: {
+              safety: {
                 allowed: false,
                 score: 0,
                 risk_level: 'blocked',
@@ -941,11 +941,11 @@ app.post('/api/market-analyze', (req, res) => {
 
         const approved_niches = [];
         const blocked_niches = [];
-        for (const { n, compliance } of checked) {
-          if (compliance.allowed === true) {
-            approved_niches.push({ ...n, compliance: { score: compliance.score, risk_level: compliance.risk_level } });
+        for (const { n, safety } of checked) {
+          if (safety.allowed === true) {
+            approved_niches.push({ ...n, safety: { score: safety.score, risk_level: safety.risk_level } });
           } else {
-            blocked_niches.push({ ...n, compliance: { score: compliance.score, risk_level: compliance.risk_level, reasons: compliance.reasons } });
+            blocked_niches.push({ ...n, safety: { score: safety.score, risk_level: safety.risk_level, reasons: safety.reasons } });
           }
         }
 
@@ -958,7 +958,7 @@ app.post('/api/market-analyze', (req, res) => {
               `🔍 أفضل ${approved_niches.length} نيشات (من ${data.total_analyzed} محلَّل):`,
               ...lines
             ].join('\n')
-          : '⚠️ جميع النيتشات المقترحة رُفضت من Butter Compliance. أعد التحليل.';
+          : '⚠️ جميع النيتشات المقترحة رُفضت من Niche Safety Filter. أعد التحليل.';
 
         res.json({
           success: true,
@@ -967,7 +967,7 @@ app.post('/api/market-analyze', (req, res) => {
             ...data,
             recommended_niches: approved_niches,
             blocked_niches,
-            compliance_stats: {
+            safety_stats: {
               total: niches.length,
               approved: approved_niches.length,
               blocked: blocked_niches.length,
