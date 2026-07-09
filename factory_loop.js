@@ -42,6 +42,53 @@ const REJECTED_NICHES_FILE = path.join(FACTORY_DIR, 'REJECTED_NICHES.md');
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 const REJECTION_COOLDOWN_MS = WEEK_MS;
 
+// ── PID LOCKFILE GUARD ──
+// Two factory_loop.js instances were found running concurrently (audit
+// task), ticking in near-lockstep and double-writing every log/state file
+// and racing on triggerGenerateBook(). This guard refuses a second startup
+// while a live instance already holds the lock. Acquired only from main()
+// — i.e. only when this file is executed directly (`node factory_loop.js`)
+// — never as a side effect of `require('./factory_loop')`, so importing
+// this module's exported functions for reuse/testing stays side-effect-free.
+const LOCK_FILE = path.join(FACTORY_DIR, '.factory_loop.lock');
+
+function isPidAlive(pid) {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+function acquireLock() {
+  try {
+    if (fs.existsSync(LOCK_FILE)) {
+      const existingPid = parseInt(fs.readFileSync(LOCK_FILE, 'utf8').trim(), 10);
+      if (Number.isFinite(existingPid) && isPidAlive(existingPid)) {
+        console.log(`[factory_loop] another factory_loop running (PID ${existingPid}), exiting`);
+        process.exit(0);
+      }
+      // Stale lock (owning process is gone, or the file is unreadable/
+      // corrupt) — fall through and reclaim it below.
+    }
+    fs.writeFileSync(LOCK_FILE, String(process.pid));
+  } catch (err) {
+    // Disk full, permissions, etc. — never let the lockfile itself block
+    // startup; worst case this run just isn't guarded against a duplicate.
+    console.error('[factory_loop] lockfile check failed, continuing without guard:', err.message);
+  }
+}
+
+function releaseLock() {
+  try {
+    fs.unlinkSync(LOCK_FILE);
+  } catch (err) {
+    // Nothing safe left to do on cleanup — file may already be gone, or may
+    // belong to a newer process that reclaimed a stale lock after us.
+  }
+}
+
 function appendLoopLog(entry) {
   try {
     fs.appendFileSync(LOOP_LOG, JSON.stringify({ timestamp: new Date().toISOString(), ...entry }) + '\n');
@@ -730,6 +777,8 @@ async function forceWeeklyReport(force) {
 }
 
 function main() {
+  acquireLock();
+
   const once = process.argv.includes('--once');
   const forceReportIdx = process.argv.indexOf('--weekly-report');
 
@@ -762,6 +811,13 @@ process.on('unhandledRejection', (err) => {
 process.on('uncaughtException', (err) => {
   appendLoopLog({ diagnosis: { status: 'loop_error' }, actions: [{ step: 'uncaughtException', action: 'error', detail: String(err) }] });
 });
+
+// Release the PID lockfile on every exit path — normal exit, Ctrl+C, or a
+// kill signal — so a clean shutdown never leaves a stale lock behind for
+// the next startup to have to detect-and-reclaim.
+process.on('SIGINT', () => { releaseLock(); process.exit(0); });
+process.on('SIGTERM', () => { releaseLock(); process.exit(0); });
+process.on('exit', releaseLock);
 
 if (require.main === module) {
   main();

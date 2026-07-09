@@ -2,3 +2,4 @@ node_modules/
 backups/
 *.log
 .env
+.factory_loop.lock
