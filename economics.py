@@ -115,7 +115,15 @@ def evaluate(price, platform, config, page_count=None):
     }
 
 
-def suggest_optimal_price(platform, config, candidate_prices=None):
+def price_landscape(platform, config, candidate_prices=None):
+    """Deliberately does NOT return a single "best" price. With zero sales
+    recorded anywhere in this factory (see Task 12/13-A's finance audit),
+    there is no demand model — per-unit net profit alone cannot tell you
+    which price sells more units, so ranking candidates and picking #1 is
+    just the old $30 rule wearing a spreadsheet. This function surfaces the
+    two genuinely different questions ("best inside the high-volume 70%
+    tier" vs. "best net margin overall, unproven") side by side and forces
+    the caller to read the warning rather than blindly take a top pick."""
     if candidate_prices is None:
         defaults = {
             "kdp_ebook": [2.99, 4.99, 6.99, 7.99, 8.99, 9.99, 19.99, 24.99, 29.99],
@@ -135,12 +143,44 @@ def suggest_optimal_price(platform, config, candidate_prices=None):
         key=lambda r: r["net_profit"],
         reverse=True,
     )
-    best = approved_ranked[0] if approved_ranked else None
+
+    volume_tier_ranked = [r for r in approved_ranked if r.get("royalty_rate") == 0.70]
+    volume_tier_best = volume_tier_ranked[0] if volume_tier_ranked else None
+    margin_tier_best = approved_ranked[0] if approved_ranked else None
+
+    def _entry(result, rationale):
+        if result is None:
+            return None
+        return {"price": result["price"], "net_profit": result["net_profit"], "rationale": rationale}
+
+    same_price = (
+        volume_tier_best is not None
+        and margin_tier_best is not None
+        and volume_tier_best["price"] == margin_tier_best["price"]
+    )
+
+    volume_tier_optimum = _entry(
+        volume_tier_best,
+        "highest net profit inside KDP's 70% tier — the high-volume band",
+    )
+    margin_tier_optimum = _entry(
+        margin_tier_best,
+        "highest net profit at 35% tier — requires proven demand at this price",
+    )
+    if same_price:
+        # Same object for both, per spec, and the warning says so explicitly.
+        margin_tier_optimum = volume_tier_optimum
+
+    warning = "NO DEMAND MODEL EXISTS. Zero sales recorded. Per-unit profit does not equal total profit. Do not choose a price from this output alone."
+    if same_price:
+        warning += " (volume_tier_optimum and margin_tier_optimum are the same price.)"
 
     return {
         "platform": platform,
-        "best": best,
-        "ranked": sorted(ranked, key=lambda r: r.get("net_profit", -1), reverse=True),
+        "volume_tier_optimum": volume_tier_optimum,
+        "margin_tier_optimum": margin_tier_optimum,
+        "approved_prices": sorted(ranked, key=lambda r: r.get("net_profit", -1), reverse=True),
+        "warning": warning,
     }
 
 

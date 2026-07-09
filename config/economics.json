@@ -34,5 +34,9 @@
       "max_price": 19.68,
       "_reason": "Any ebook priced in this band nets LESS per unit than a $9.99 ebook (which earns 70%), while also selling less. Strictly dominated. Break-even vs $9.99 occurs at $19.69."
     }
+  },
+  "demand_model": {
+    "exists": false,
+    "_note": "No sales data. Any price recommendation is speculation. Populate from finance_data.json once real sales exist."
   }
 }

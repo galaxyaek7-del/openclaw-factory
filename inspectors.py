@@ -46,6 +46,19 @@ try:
 except Exception:
     profit_oracle = None
 
+# Economics engine (Task 13-A/13-B) — replaces the flat $30 price floor
+# with a real net-profit-per-unit calculation (royalty tier, KDP delivery
+# cost, dead-zone detection). Guarded the same way every other optional
+# dependency in this file is: if the import OR the config load fails, this
+# stays None and audit_commercial() fails CLOSED (rejects), never silently
+# skips the check or falls back to the old flat-price rule.
+try:
+    import economics
+    ECONOMICS_CONFIG = economics.load_config()
+except Exception:
+    economics = None
+    ECONOMICS_CONFIG = None
+
 # Reuse cover_designer_v2's own placeholder detector rather than duplicating
 # the word list a third time. Inspector 1 independently RE-RUNS this check
 # against the actual text strings that produced the artifact — it does not
@@ -65,7 +78,10 @@ INSPECTIONS_LOG = os.path.join(FACTORY_DIR, 'inspections.log')
 
 EXPECTED_COVER_SIZE = (1600, 2560)
 MIN_PAGES = 4
-BUTTER_PRICE = 30
+# BUTTER_PRICE (flat $30 floor) removed — economics.py's config
+# (config/economics.json) is now the single source of truth for the price/
+# profit floor (Task 13-B/13-C). See audit_commercial()'s butter_price
+# check below.
 MIN_PROFIT_SCORE = 60
 
 
@@ -305,9 +321,10 @@ def _is_duplicate(niche, title):
     return False, None
 
 
-def audit_commercial(niche, price, title=None):
+def audit_commercial(niche, price, title=None, platform=None, page_count=None):
     checks = []
     failures = []
+    platform = platform or "kdp_ebook"
 
     # 1. profit_score >= 60 (from the real profit_oracle, not re-derived)
     profit_result = None
@@ -326,16 +343,32 @@ def audit_commercial(niche, price, title=None):
             checks.append({"name": "profit_score", "passed": False, "detail": f"خطأ: {e}"})
             failures.append(f"profit_score: {e}")
 
-    # 2. price point >= $30 (Butter principle, CONSTITUTION.md §16)
+    # 2. net profit per unit >= floor (Butter principle, CONSTITUTION.md §16
+    # — a PROFIT floor, not a price floor; see economics.py, Task 13-A/B/C).
+    # The economics engine failing must NEVER be silently treated as
+    # approval or silently fall back to the old flat-price rule — fail
+    # closed, same zero-tolerance discipline as every other guard here.
     try:
         price_val = float(price)
     except (TypeError, ValueError):
         price_val = 0.0
-    butter_ok = price_val >= BUTTER_PRICE
-    checks.append({"name": "butter_price", "passed": butter_ok,
-                   "detail": f"${price_val:.2f} (حد الزبدة: ${BUTTER_PRICE})"})
-    if not butter_ok:
-        failures.append(f"butter_price: ${price_val:.2f} < ${BUTTER_PRICE}")
+
+    if economics is None or ECONOMICS_CONFIG is None:
+        checks.append({"name": "butter_price", "passed": False,
+                       "detail": "economics.py أو config/economics.json غير متوفر"})
+        failures.append("economics_engine_unavailable")
+    else:
+        try:
+            econ_result = economics.evaluate(price_val, platform, ECONOMICS_CONFIG, page_count=page_count)
+            butter_ok = econ_result["approved"]
+            checks.append({"name": "butter_price", "passed": butter_ok,
+                           "detail": f"{econ_result['reason']} (platform: {platform})"})
+            if not butter_ok:
+                failures.append(f"butter_price: {econ_result['reason']}")
+        except Exception as e:
+            checks.append({"name": "butter_price", "passed": False,
+                           "detail": f"economics.evaluate() فشل: {e}"})
+            failures.append(f"economics_engine_unavailable: {e}")
 
     # 3. no duplicate of an existing product (real check vs. generation history)
     is_dup, dup_detail = _is_duplicate(niche, title)
@@ -448,7 +481,11 @@ def final_inspection(product):
                      "severity": "critical"}
 
     try:
-        commercial = audit_commercial(product.get("niche"), product.get("price"), product.get("title"))
+        commercial = audit_commercial(
+            product.get("niche"), product.get("price"), product.get("title"),
+            platform=product.get("platform", "kdp_ebook"),
+            page_count=product.get("page_count"),
+        )
     except Exception as e:
         commercial = {"passed": False, "checks": [], "failures": [f"استثناء غير متوقَّع في التدقيق التجاري: {e}"],
                       "verdict": "خطأ في التدقيق", "profit_score": None}
