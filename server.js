@@ -17,6 +17,80 @@ const groq = new Groq({ apiKey: GROQ_KEY || 'missing' });
 app.use(cors());
 app.use(express.json());
 
+// ── BUTTER COMPLIANCE FILTER ──
+// Gates any niche/title/description before it can reach book generation.
+// Wraps compliance_filter.py (blocklists for brand-poison, financial,
+// medical, trademark, adult content — see compliance_filter.py). This is a
+// safety gate, not a UX nicety: any failure to get a clean verdict from the
+// Python process (spawn error, timeout, non-zero exit, unparseable output)
+// must REJECT, never silently let an unchecked niche through.
+function runCompliance(payload, timeoutMs = 5000) {
+  const FAIL_SAFE = () => ({
+    allowed: false,
+    score: 0,
+    risk_level: 'blocked',
+    reasons: [{ category: 'filter_error', level: 'blocked', reason: 'compliance filter unavailable — failing safe' }],
+  });
+
+  return new Promise((resolve) => {
+    let settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+
+    let python;
+    try {
+      const pythonPath = detectPython();
+      const scriptPath = path.join(__dirname, 'compliance_filter.py');
+      python = spawn(pythonPath, [scriptPath], { cwd: __dirname });
+    } catch (err) {
+      resolve(FAIL_SAFE());
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish(FAIL_SAFE());
+    }, timeoutMs);
+
+    let output = '', errOut = '';
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+
+    python.on('error', () => finish(FAIL_SAFE()));
+
+    python.on('close', code => {
+      try {
+        if (code !== 0) throw new Error(`compliance_filter.py exited ${code}: ${errOut}`);
+        const result = JSON.parse(output.trim());
+        if (typeof result.allowed !== 'boolean') throw new Error('malformed compliance result');
+        finish(result);
+      } catch (err) {
+        finish(FAIL_SAFE());
+      }
+    });
+
+    try {
+      python.stdin.write(JSON.stringify(payload));
+      python.stdin.end();
+    } catch (err) {
+      finish(FAIL_SAFE());
+    }
+  });
+}
+
+app.post('/api/compliance/check', async (req, res) => {
+  try {
+    const result = await runCompliance(req.body || {});
+    res.json({ success: true, ...result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // ── GENERATE BOOK ──
 app.post('/generate-book', async (req, res) => {
   // `output` is destructured as `outputName` to avoid colliding with the
@@ -26,6 +100,26 @@ app.post('/generate-book', async (req, res) => {
   if (!title) return res.json({ success: false, error: 'Title is required' });
 
   try {
+    const complianceResult = await runCompliance({
+      niche: req.body.niche || '',
+      title: req.body.title || '',
+      subtitle: req.body.subtitle || '',
+      description: req.body.description || '',
+      type: req.body.type || '',
+    });
+
+    if (complianceResult.allowed === false) {
+      return res.json({
+        success: false,
+        blocked: true,
+        reason: 'compliance_rejected',
+        risk_level: complianceResult.risk_level,
+        score: complianceResult.score,
+        reasons: complianceResult.reasons,
+        message: 'Niche rejected by Butter Compliance filter.',
+      });
+    }
+
     const pythonPath = detectPython();
     const bookScript = path.join(__dirname, 'book_generator.py');
 
@@ -741,21 +835,81 @@ app.post('/api/market-analyze', (req, res) => {
     let output = '', errOut = '';
     python.stdout.on('data', d => { output += d.toString(); });
     python.stderr.on('data', d => { errOut += d.toString(); });
-    python.on('close', () => {
+    python.on('close', async () => {
+      let data;
       try {
-        const data = JSON.parse(output.trim());
+        data = JSON.parse(output.trim());
+      } catch {
+        return res.json({ success: false, error: 'Parse error: ' + output + errOut });
+      }
+
+      try {
         const niches = data.recommended_niches || [];
-        const lines = niches.map((n, i) =>
+
+        // Butter Compliance gate: a niche must clear runCompliance() before
+        // it's ever shown to the user — market_analyzer.py's scoring has no
+        // idea what a "scam trading" niche is, so it could otherwise sit at
+        // position #1 unfiltered.
+        const checked = await Promise.all(niches.map(async (n) => {
+          try {
+            const compliance = await runCompliance({
+              niche: n.niche,
+              title: n.niche,
+              description: n.recommendation_reason || '',
+            });
+            return { n, compliance };
+          } catch (err) {
+            // A single niche's compliance check blowing up must never take
+            // down the whole endpoint — fail that niche closed instead.
+            return {
+              n,
+              compliance: {
+                allowed: false,
+                score: 0,
+                risk_level: 'blocked',
+                reasons: [{ category: 'filter_error', level: 'blocked', reason: 'filter_error' }],
+              },
+            };
+          }
+        }));
+
+        const approved_niches = [];
+        const blocked_niches = [];
+        for (const { n, compliance } of checked) {
+          if (compliance.allowed === true) {
+            approved_niches.push({ ...n, compliance: { score: compliance.score, risk_level: compliance.risk_level } });
+          } else {
+            blocked_niches.push({ ...n, compliance: { score: compliance.score, risk_level: compliance.risk_level, reasons: compliance.reasons } });
+          }
+        }
+
+        const lines = approved_niches.map((n, i) =>
           `${i + 1}. ${n.niche}\n   💰 $${n.avg_price} | Score: ${n.profit_score} | ${n.recommendation_reason}`
         );
-        const summary = [
-          `📅 ${data.current_month} — ${data.seasonal_opportunity}`,
-          `🔍 أفضل ${niches.length} نيشات (من ${data.total_analyzed} محلَّل):`,
-          ...lines
-        ].join('\n');
-        res.json({ success: true, summary, data });
-      } catch {
-        res.json({ success: false, error: 'Parse error: ' + output + errOut });
+        const summary = approved_niches.length
+          ? [
+              `📅 ${data.current_month} — ${data.seasonal_opportunity}`,
+              `🔍 أفضل ${approved_niches.length} نيشات (من ${data.total_analyzed} محلَّل):`,
+              ...lines
+            ].join('\n')
+          : '⚠️ جميع النيتشات المقترحة رُفضت من Butter Compliance. أعد التحليل.';
+
+        res.json({
+          success: true,
+          summary,
+          data: {
+            ...data,
+            recommended_niches: approved_niches,
+            blocked_niches,
+            compliance_stats: {
+              total: niches.length,
+              approved: approved_niches.length,
+              blocked: blocked_niches.length,
+            },
+          },
+        });
+      } catch (err) {
+        res.json({ success: false, error: err.message });
       }
     });
   } catch (error) {
