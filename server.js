@@ -682,6 +682,42 @@ app.post('/api/scout/run', async (req, res) => {
     }
   }
 
+  // 2.5) Butter Compliance gate — brief.topic/title/audience are what
+  // actually reaches book_generator.py via runBookGenerator() below
+  // (this route never reads req.body for the niche; Scout always picks
+  // its own via Groq or the hardcoded fallback), so the gate must run on
+  // the finalized brief, not on whatever the caller posted. Same
+  // fail-safe contract as /generate-book: any failure from runCompliance
+  // itself is treated as blocked, never allowed through.
+  let complianceResult;
+  try {
+    complianceResult = await runCompliance({
+      niche: brief.topic || '',
+      title: brief.title || '',
+      description: brief.audience || '',
+    });
+  } catch (err) {
+    complianceResult = {
+      allowed: false,
+      score: 0,
+      risk_level: 'blocked',
+      reasons: [{ category: 'filter_error', level: 'blocked', reason: 'compliance filter unavailable — failing safe' }],
+    };
+  }
+
+  if (complianceResult.allowed === false) {
+    logScout('compliance-rejected', { brief, risk_level: complianceResult.risk_level, reasons: complianceResult.reasons });
+    return res.json({
+      success: false,
+      blocked: true,
+      reason: 'compliance_rejected',
+      risk_level: complianceResult.risk_level,
+      score: complianceResult.score,
+      reasons: complianceResult.reasons,
+      message: 'Niche rejected by Butter Compliance filter.',
+    });
+  }
+
   // 3) Generate the actual book (real AI content, saved into books/).
   let bookResult;
   try {
@@ -809,11 +845,34 @@ app.post('/api/trends', async (req, res) => {
     }
     try {
       const gate = await runQualityGate(niche);
-      if (gate.passed) {
-        appendOpportunity(niche, gate);
-        results.push({ added: true, niche, reason: gate.reason });
-      } else {
+      if (!gate.passed) {
         results.push({ added: false, niche, reason: gate.reason });
+        continue;
+      }
+
+      // Butter Compliance gate — quality_gate() only scores commercial
+      // viability, it has no idea what a scam/trademark/medical niche is.
+      // A niche that passes quality must also clear runCompliance() before
+      // it's written to OPPORTUNITIES.md (a human-facing dashboard file,
+      // surfaced via /brain and /good-morning). Same fail-safe contract as
+      // every other caller: a runCompliance() failure is treated as blocked.
+      let compliance;
+      try {
+        compliance = await runCompliance({ niche, title: niche, description: gate.reason || '' });
+      } catch (err) {
+        compliance = {
+          allowed: false,
+          score: 0,
+          risk_level: 'blocked',
+          reasons: [{ category: 'filter_error', level: 'blocked', reason: 'compliance filter unavailable — failing safe' }],
+        };
+      }
+
+      if (compliance.allowed === false) {
+        results.push({ added: false, niche, reason: 'compliance_rejected', risk_level: compliance.risk_level, compliance_reasons: compliance.reasons });
+      } else {
+        appendOpportunity(niche, gate);
+        results.push({ added: true, niche, reason: gate.reason, compliance: { score: compliance.score, risk_level: compliance.risk_level } });
       }
     } catch (err) {
       logTrendsError('quality_gate', err);
