@@ -3,3 +3,6 @@ backups/
 *.log
 .env
 .factory_loop.lock
+__pycache__/
+*.pyc
+*.pyo
