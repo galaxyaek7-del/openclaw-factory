@@ -1014,6 +1014,72 @@ app.post('/api/qa-check', (req, res) => {
 // in particular this must NOT hit the n8n webhook (that would trigger a real
 // Scout run); it only pings n8n's root to check reachability.
 // Shared by /health and /good-morning so the two never drift out of sync.
+// ── REALITY SCORECARD ──
+// Ground-truth business state (Task 14) — reality.py reads config/reality.json
+// (human-maintained: only a real KDP ASIN counts as "published") and
+// finance_data.json (real recorded sales). Fail-safe: any spawn error,
+// timeout, parse error, or non-zero exit is treated as CRITICAL — a broken
+// truth-teller means we assume the worst, never the best.
+function runReality(timeoutMs = 5000) {
+  const FAIL_SAFE = (extra) => ({
+    verdict: 'CRITICAL',
+    reason: 'reality engine unavailable',
+    ...(extra || {}),
+  });
+
+  return new Promise((resolve) => {
+    let settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+
+    let python;
+    try {
+      const pythonPath = detectPython();
+      const scriptPath = path.join(__dirname, 'reality.py');
+      python = spawn(pythonPath, [scriptPath], { cwd: __dirname });
+    } catch (err) {
+      resolve(FAIL_SAFE({ error: err.message }));
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish(FAIL_SAFE({ error: 'timeout' }));
+    }, timeoutMs);
+
+    let output = '', errOut = '';
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+
+    python.on('error', err => finish(FAIL_SAFE({ error: err.message })));
+
+    python.on('close', code => {
+      try {
+        if (code !== 0) throw new Error(`reality.py exited ${code}: ${errOut}`);
+        const result = JSON.parse(output.trim());
+        if (typeof result.verdict !== 'string') throw new Error('malformed reality result');
+        finish(result);
+      } catch (err) {
+        finish(FAIL_SAFE({ error: err.message }));
+      }
+    });
+
+    try {
+      python.stdin.end(); // reality.py takes no stdin input
+    } catch (err) {
+      finish(FAIL_SAFE({ error: err.message }));
+    }
+  });
+}
+
+app.get('/api/reality', async (req, res) => {
+  res.json(await runReality());
+});
+
 async function computeHealthStatus() {
   const checks = {};
 
@@ -1079,7 +1145,23 @@ async function computeHealthStatus() {
   if (failing.some(c => c.severity === 'critical')) status = 'critical';
   else if (failing.length > 0) status = 'degraded';
 
-  return { status, timestamp: new Date().toISOString(), checks };
+  // Reality Scorecard override (Task 14): a factory with every cell green
+  // but zero published books, or zero sales 30+ days after publishing, is
+  // not "healthy" — self-awareness measures CELL health, not OUTCOMES. The
+  // cell-based status above is preserved as-is when reality itself is OK
+  // (or unreachable-but-not-worse); it's only overridden toward a worse
+  // verdict, never softened.
+  const reality = await runReality();
+  let statusSource = 'cells';
+  if (reality.verdict === 'CRITICAL') {
+    status = 'critical';
+    statusSource = 'reality';
+  } else if (reality.verdict === 'WARNING') {
+    status = 'warning';
+    statusSource = 'reality';
+  }
+
+  return { status, status_source: statusSource, timestamp: new Date().toISOString(), checks, reality };
 }
 
 app.get('/health', async (req, res) => {

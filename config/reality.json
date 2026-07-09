@@ -1,0 +1,12 @@
+{
+  "_comment": "Ground-truth business state. The factory cannot fake these numbers.",
+  "version": 1,
+  "published_books": [],
+  "_published_schema": "Each entry: { asin, title, platform, price_usd, published_date, cover_path, manuscript_path }",
+  "_published_note": "A book is PUBLISHED only when it has a real ASIN from Amazon. A PDF on disk is NOT published. Only a human can add entries here after publishing on KDP.",
+  "thresholds": {
+    "critical_if_published_zero": true,
+    "critical_if_sales_zero_after_days": 30,
+    "_note": "30 days after first publication with zero sales = the market has spoken."
+  }
+}
