@@ -1,0 +1,38 @@
+{
+  "_comment": "Single source of truth for OpenClaw unit economics. Edit this, not code.",
+  "version": 1,
+  "min_net_profit_per_unit_usd": 6.00,
+  "_min_net_comment": "Floor derived from KDP's best case: $9.99 ebook nets ~$6.89. Setting floor at $6.00 admits that price point while rejecting genuinely weak margins.",
+  "platforms": {
+    "kdp_ebook": {
+      "royalty_tiers": [
+        { "min_price": 2.99, "max_price": 9.99, "rate": 0.70 },
+        { "min_price": 0.99, "max_price": 200.00, "rate": 0.35 }
+      ],
+      "_tier_note": "First matching tier wins. The 70% tier requires price within 2.99-9.99 inclusive. All other prices fall to 35%.",
+      "delivery_cost_per_mb_usd": 0.15,
+      "assumed_file_size_mb": 1.0,
+      "applies_delivery_cost_to_tier": [0.70],
+      "_delivery_note": "KDP deducts delivery cost only on the 70% tier."
+    },
+    "kdp_paperback": {
+      "royalty_rate": 0.60,
+      "printing_cost_base_usd": 0.85,
+      "printing_cost_per_page_usd": 0.012,
+      "_print_note": "US marketplace, black ink, white paper. Approximate. Verify against KDP printing cost calculator before trusting."
+    },
+    "gumroad_digital": {
+      "royalty_rate": 0.90,
+      "flat_fee_usd": 0.00,
+      "_note": "Gumroad takes 10% on Gumroad-discovered sales. Simplified."
+    }
+  },
+  "dead_zone": {
+    "kdp_ebook": {
+      "enabled": true,
+      "min_price": 10.00,
+      "max_price": 19.68,
+      "_reason": "Any ebook priced in this band nets LESS per unit than a $9.99 ebook (which earns 70%), while also selling less. Strictly dominated. Break-even vs $9.99 occurs at $19.69."
+    }
+  }
+}
