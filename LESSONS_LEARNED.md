@@ -44,6 +44,12 @@ A requested `git add -A` would have swept roughly 19 unrelated files into a comm
 
 **RULE:** Stage only the files the current task actually produced. Name them explicitly in `git add`; never rely on `-A`/`.` to "catch everything," even when explicitly asked, without first checking what "everything" currently contains.
 
+### 8. LLM ceiling isn't always the model — sometimes it's the ask
+
+`llama-3.1-8b-instant` produced Publishability 3/10 on a full-book single-call generation. Swapping to `llama-3.3-70b-versatile` with a 46% larger token budget produced Publishability 1/10 — worse on the metric that matters most. Wordcount barely moved (972 → 998 despite the larger budget).
+
+**RULE:** When output quality is capped, test whether the PROMPT pattern is the ceiling before assuming the MODEL is. Structural demands ("generate a full book, N chapters, K words each, this exact heading format") compress LLMs into generic mode. Chunked generation with independent context per chunk outperforms single-call generation of the same total length.
+
 ---
 
 ## Placement note
