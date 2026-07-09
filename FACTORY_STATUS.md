@@ -3,6 +3,33 @@
 **Last updated:** 2026-07-09
 **Governed by:** [CONSTITUTION.md](./CONSTITUTION.md), supreme law: [OPENCLAW_OS_CONSTITUTION.md](./OPENCLAW_OS_CONSTITUTION.md)
 
+## Day 09 — Niche Safety Filter v1
+
+**Status:** ✅ Complete
+
+**Shipped:**
+- `safety_filter.py` — 5 blocklists (AR+EN), fail-safe, UTF-8 hardened
+- 5 gate points in `server.js`
+- PID lockfile guard on `factory_loop.js`
+- Duplicate factory_loop killed (PID 24652)
+- Dead files removed; `__pycache__` untracked
+
+**Verified:**
+- No exposed API keys (`export.txt`, `.env`, full git history audited)
+- All 5 gates tested — clean pass + poisoned reject
+- `OPPORTUNITIES.md` protected from poisoned trends
+- Butter Compliance (pricing) untouched: still 35%, still rising
+
+**Open — carried to Day 10:**
+- `market_hunter.py` + `profit_oracle.py` write to dashboards ungated
+- `/api/agent/scout` (LLM text) unfiltered
+- `dual_inspection` (25%) excluded from `cellScores()` — metric blind spot
+- n8n processes (PID 360, 20808) — role undocumented
+- Orphaned dead code: `niche_validator.py` v1, `cover_generator.py`
+- Butter Compliance at 35% — factory's own weakest_cell verdict
+
+**Next:** Phase B — Safety Filter v2 architecture (config-driven blocklists, audit log, metrics).
+
 ## Day 08 Complete
 
 **Theme: the factory learned to find its own opportunities, remember everything, survive without Claude, and honestly judge itself.** Five new capabilities, taking Day 06–07's quality/pricing gates and turning them into a self-sustaining loop.
