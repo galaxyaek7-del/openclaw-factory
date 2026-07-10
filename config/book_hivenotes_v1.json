@@ -1,0 +1,31 @@
+{
+  "product": {
+    "id": "hivenotes_001",
+    "publisher": "HiveNotes Press",
+    "title": "The Beekeeper's Hive Inspection Logbook",
+    "subtitle": "52-Week Field Record for Hobbyist Apiarists",
+    "author": "HiveNotes Press",
+    "trim_size": {"width_in": 8.5, "height_in": 11, "bleed_in": 0.125},
+    "target_pages": 140,
+    "target_price_usd": 14.99,
+    "platform": "kdp_paperback",
+    "language": "en",
+    "isbn": null
+  },
+  "colors": {
+    "primary": "#4A7BA6",
+    "ink": "#1A1A1A",
+    "light_gray": "#E8E8E8"
+  },
+  "sections": [
+    {"name": "front_matter", "pages": 6},
+    {"name": "year_at_a_glance", "pages": 4},
+    {"name": "contacts", "pages": 2},
+    {"name": "colony_setup", "pages": 4},
+    {"name": "weekly_inspections", "weeks": 52, "pages_per_week": 2},
+    {"name": "pests_disease_log", "pages": 6},
+    {"name": "harvest_log", "pages": 6},
+    {"name": "equipment_inventory", "pages": 4},
+    {"name": "annual_summary", "pages": 4}
+  ]
+}
