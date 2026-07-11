@@ -16,6 +16,7 @@ from datetime import datetime, date
 
 CONFIG_PATH = "config/reality.json"
 FINANCE_PATH = "finance_data.json"
+LEDGER_PATH = "data/sales_ledger.jsonl"
 
 
 def count_books_on_disk(books_dir="books"):
@@ -101,6 +102,51 @@ def net_revenue(finance_path=FINANCE_PATH):
         return 0.0
 
 
+def _load_ledger_events(ledger_path=LEDGER_PATH):
+    """Reads data/sales_ledger.jsonl (channels/ledger.py,
+    OCTOPUS_ARCHITECTURE.md §10.4) defensively. A missing file or a
+    malformed line must never crash the scorecard — it just means fewer
+    real events counted, never a false zero either (an empty/missing
+    ledger reads the same as "no events yet", not an error)."""
+    if not os.path.exists(ledger_path):
+        return []
+    events = []
+    try:
+        with open(ledger_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    events.append(json.loads(line))
+                except (TypeError, ValueError):
+                    continue
+    except Exception:
+        return []
+    return events
+
+
+def count_live_channel_publishes(ledger_path=LEDGER_PATH):
+    """Real, non-dry-run, successful publish_attempt events per platform —
+    ADR-7's fix for the "published: true" claim this file used to have no
+    way to check beyond the human-maintained config/reality.json (KDP-only,
+    gated on a real ASIN). A dry_run attempt is validation, not evidence a
+    product is actually live — only ok=True and dry_run=False count here."""
+    counts = {}
+    for event in _load_ledger_events(ledger_path):
+        if not isinstance(event, dict):
+            continue
+        if event.get("event_type") != "publish_attempt":
+            continue
+        if event.get("dry_run") is not False:
+            continue
+        if event.get("ok") is not True:
+            continue
+        platform = event.get("platform") or "unknown"
+        counts[platform] = counts.get(platform, 0) + 1
+    return counts
+
+
 def days_since_first_publish(config):
     try:
         books = config.get("published_books", []) if config else []
@@ -132,14 +178,21 @@ def scorecard():
 
     books_on_disk = count_books_on_disk()
     published = count_published(config)
+    channel_published = count_live_channel_publishes()
+    channel_published_total = sum(channel_published.values())
+    total_published = published + channel_published_total
     units_sold = count_units_sold()
     revenue = net_revenue()
+    # KDP-only for now (config/reality.json's published_date field) —
+    # sales_ledger.jsonl events aren't folded into this yet, so "days since
+    # first publish" can undercount when a non-KDP channel published first.
+    # A known, honest gap, not a silent assumption.
     days = days_since_first_publish(config)
 
-    if published == 0:
+    if total_published == 0:
         verdict = "CRITICAL"
-        reason = "Zero books published. The factory produces inventory nobody can buy."
-        next_action = "Publish one book on KDP. Nothing else matters."
+        reason = "Zero products published on any channel (KDP or otherwise). The factory produces inventory nobody can buy."
+        next_action = "Publish one product on any channel. Nothing else matters."
     elif units_sold == 0 and days is not None and days >= 30:
         verdict = "CRITICAL"
         reason = f"Published {published} books, zero sales in {days} days. The market has rejected the current offering."
@@ -157,6 +210,9 @@ def scorecard():
     return {
         "books_on_disk": books_on_disk,
         "books_published": published,
+        "channel_published": channel_published,
+        "channel_published_total": channel_published_total,
+        "total_published": total_published,
         "units_sold": units_sold,
         "net_revenue_usd": revenue,
         "days_since_first_publish": days,
