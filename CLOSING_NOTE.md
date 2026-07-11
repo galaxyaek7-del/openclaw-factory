@@ -11,21 +11,26 @@
 **اقرأ [`OpenClaw_Brain/00_Governance/PRINCIPAL_ARCHITECT_CHARTER.md`](00_Governance/PRINCIPAL_ARCHITECT_CHARTER.md) قبل أي شيء آخر في هذا الملف.** يحدد الصلاحيات الدائمة، الخطوط الحمراء، والمبادئ الحاكمة الست التي يُبنى عليها كل قرار لاحق — بما فيها القاعدة التي لا تزال سارية هنا: قراءة `CLOSING_NOTE.md` أول كل جلسة، وكتابته آخرها.
 
 **مستندات حوكمة إضافية أُضيفت في نفس اليوم — اقرأها بهذا الترتيب قبل لمس `factory_loop.js` أو `profit_oracle.py`:**
-1. [`AUTOMATION_GAPS_REPORT.md`](00_Governance/AUTOMATION_GAPS_REPORT.md) — تقييم صادق لنسبة الأتمتة الحقيقية (~20-25%) وترتيب الفجوات بالأولوية.
+1. [`AUTOMATION_GAPS_REPORT.md`](00_Governance/AUTOMATION_GAPS_REPORT.md) — تقييم صادق لنسبة الأتمتة الحقيقية (~20-25%) وترتيب الفجوات بالأولوية (فجوة #3 أُغلقت اليوم — انظر أدناه).
 2. [`ADR-009-golden-hunter-bridge.md`](00_Governance/ADR-009-golden-hunter-bridge.md) — جسر يربط اكتشاف Golden Hunter بإنتاج فعلي تلقائياً.
 3. [`ADR-010-golden-hunter-butter-price.md`](00_Governance/ADR-010-golden-hunter-butter-price.md) — إصلاح تسعير الجسر (كان يُنتج أسعاراً أقل من حد الزبدة 30$ قبل الإصلاح).
-4. [`AUTO_PRODUCE_ACTIVATION_CHECKLIST.md`](00_Governance/AUTO_PRODUCE_ACTIVATION_CHECKLIST.md) — **يجب مراجعته قبل أي اقتراح لتفعيل `FACTORY_AUTO_PRODUCE`**.
+4. [`ADR-011-readiness-certificate.md`](00_Governance/ADR-011-readiness-certificate.md) — شهادة جاهزية آلية مبنية على أدلة، لا شعور.
+5. [`AUTO_PRODUCE_ACTIVATION_CHECKLIST.md`](00_Governance/AUTO_PRODUCE_ACTIVATION_CHECKLIST.md) — **يجب مراجعته قبل أي اقتراح لتفعيل `FACTORY_AUTO_PRODUCE`**.
+
+**أداة عملية جديدة:** `python scripts/readiness_certificate.py` — شغّلها في بداية أي جلسة قادمة تناقش فيها موعد تفعيل `FACTORY_AUTO_PRODUCE`. تُخرج READY/NOT_READY_YET/BLOCKED بالدليل، وتُسجِّل تلقائياً في `data/readiness_history.jsonl`. آخر نتيجة حقيقية (18:24 اليوم): **BLOCKED** — بسبب 3 مخالفات تسعير قديمة (قبل إصلاح ADR-010) لا تزال ضمن نافذة 24 ساعة؛ متوقَّع أن تتعافى تلقائياً خلال نفس اليوم مع بيانات نظيفة متراكمة، بلا تدخل يدوي.
 
 ## 1. المرجع الوحيد
 
 `OCTOPUS_ARCHITECTURE.md` (خصوصاً §10) هو القرار المعماري المعتمد. أي خطة جديدة تتعارض معه (تسمية مجلدات مختلفة، ملفات سجل موازية، ترتيب بناء مختلف) **يجب أن تُحسم لصالحه أو تُطرح للمراجعة أولاً** — لا تُنفَّذ بالتوازي. حدث هذا فعلاً مرة (خطة `arms/` مقابل `channels/`) وكلّف جلسة كاملة لتصحيحه.
 
-## 2. الحالة الفعلية الآن — الحلقة الكاملة جاهزة
+## 2. الحالة الفعلية الآن — الحلقة الكاملة جاهزة، وتعمل فعلياً الآن
 
 `factory_loop.js` → `distributor.py` → `data/sales_ledger.jsonl` مبنية، مربوطة، ومختبَرة تلقائياً بالكامل:
 `book_generator.py` (QA + Commercial Auditor) → `factory_loop.js` (`triggerGenerateBook`) → `POST /api/distribute` → `distributor.py` → `channels/gumroad_arm.py` → `data/sales_ledger.jsonl` → `reality.py` / `self_awareness.js` يقرآن السجل كحقيقة.
 
 لا تدخل بشري في هذا المسار العادي. التفاصيل الكاملة والتحقق في `PROGRESS_REPORT.md`.
+
+**تغيّر اليوم:** لوحة التحكم (`http://localhost:3000`) كانت لا تعمل — سبب قديم غير متعلق بأي تعديل من هذه الجلسات (ترويسة `charset` خاطئة لملف `index.html` المحفوظ عمداً كـ UTF-16 LE)، أُصلح في `server.js` (واجهة فقط، لا منطق أعمال). بعدها شُغِّل `start_factory.bat` فعلياً — **`factory_loop.js` يعمل الآن باستمرار حقيقي** (`.factory_loop.lock` يحمل PID حياً)، لأول مرة منذ بداية هذه السلسلة من الجلسات. إن وجدت الجلسة القادمة أن العملية توقفت، هذا يستحق الانتباه (راجع `NEEDS_ATTENTION.md` أولاً).
 
 ## 3. القاعدتان الحرجتان اللتان لا تتغيّران بدون إذن صريح
 
@@ -40,11 +45,12 @@
 
 ## 4. الفجوات المعروفة (مرتَّبة حسب الأهمية)
 
-1. **لا استطلاع مبيعات فعلي** — `channels/ledger.py` يدعم أحداث `sale`، لكن لا شيء يستدعي `get_sales()` بشكل دوري بعد. `reality.py` لا يزال يعتمد على إدخال يدوي (`finance_data.json`) لأي رقم إيراد حقيقي. (هذه أولوية #2 في `AUTOMATION_GAPS_REPORT.md`)
+1. **لا استطلاع مبيعات فعلي** — `channels/ledger.py` يدعم أحداث `sale`، لكن لا شيء يستدعي `get_sales()` بشكل دوري بعد. `reality.py` لا يزال يعتمد على إدخال يدوي (`finance_data.json`) لأي رقم إيراد حقيقي. (أولوية #2 في `AUTOMATION_GAPS_REPORT.md` — لا قيمة له قبل وجود `GUMROAD_ACCESS_TOKEN`)
 2. **`reality.py`'s `days_since_first_publish`** لا يزال KDP فقط — لا يحسب "أول نشر" عبر Gumroad/القنوات الأخرى.
 3. **ذراع واحدة فقط مسجَّلة (`gumroad`)** — Payhip/Etsy/Redbubble متعمَّد تأجيلها (ADR-8): لا تُبنى قبل أن يبيع Gumroad دولاراً حقيقياً واحداً.
-4. **لا تنبيه بشري خارج الملفات** — `inspectors.py` نفسه يذكر أنه لا قناة تنبيه حية (بريد/Slack) موصولة. (أولوية #3 في `AUTOMATION_GAPS_REPORT.md`)
-5. **لم يُشغَّل اختبار حي كامل (توليد كتاب جديد فعلي عبر Groq → توزيع)** — كل التحقق تم بمسارات معزولة/مموَّهة لتفادي إنفاق رصيد Groq حقيقي بلا إذن. أول تفعيل حقيقي لـ `FACTORY_AUTO_PRODUCE` سيكون أول اختبار حقيقي كامل للحلقة بأسرها.
+4. ~~لا تنبيه بشري~~ **✅ أُغلقت اليوم** — `NEEDS_ATTENTION.md` (`factory_loop.js`) يُنشَأ/يُحذَف تلقائياً عند 3 إشارات مشبوهة متتالية. 34 اختباراً.
+5. **تنوّع مرشَّحي `market_hunter.py` قد يكون محدوداً** (اكتُشف أثناء بناء `ADR-011`) — نفس النيتش تقريباً تصدَّر `market_hunter_runs.log` في 3 أيام متتالية (09-07 إلى 11-07). لم يُحقَّق فيه بعد — يستحق النظر إن بقي معيار "3 نيتشات مختلفة" في شهادة الجاهزية معلَّقاً طويلاً.
+6. **لم يُشغَّل اختبار حي كامل (توليد كتاب جديد فعلي عبر Groq → توزيع)** — كل التحقق تم بمسارات معزولة/مموَّهة لتفادي إنفاق رصيد Groq حقيقي بلا إذن. أول تفعيل حقيقي لـ `FACTORY_AUTO_PRODUCE` سيكون أول اختبار حقيقي كامل للحلقة بأسرها.
 
 ## 5. ملفات غير متعلقة بهذا العمل — لا تفترض أنها جزء منه
 
