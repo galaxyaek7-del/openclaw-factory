@@ -2,6 +2,8 @@
 
 المرجع: `OCTOPUS_ARCHITECTURE.md` (المستند المعتمد الوحيد). التنفيذ يتبع الترتيب المعتمد في §10 من ذلك المستند.
 
+**آخر تحديث:** المرحلة الثالثة — إغلاق الحلقة الكاملة (اكتشاف → إنتاج → نشر → قياس → تعلّم) دون تدخل بشري في المسار العادي. راجع القسم الأخير أدناه للتفاصيل والتحقق وجواب سؤال التحقق النهائي.
+
 ---
 
 ## الحالة النهائية — 8 من 8 مكتملة
@@ -76,6 +78,55 @@
 ## المخاطر المفتوحة (لم تُغلق بعد — للمرحلة القادمة)
 
 - `GUMROAD_ACCESS_TOKEN` لا يزال غائباً من `.env` — لا شيء يمكن رفعه حياً حتى يُضاف، ولن يُضاف أو يُستخدم دون إذن صريح.
-- لا ربط فعلي بـ `server.js`/`factory_loop.js` — `distributor.py` موجود وجاهز شكلياً لكنه غير مستدعى تلقائياً من أي مكان، تماماً كحال `gumroad_publisher.py` قبل هذه الدورة.
-- `reality.py` لا يزال يعتمد على `config/reality.json` (بشري الصيانة) بدل `sales_ledger.jsonl` — الوصل بينهما متابعة منفصلة.
+- ~~لا ربط فعلي بـ `server.js`/`factory_loop.js`~~ — **أُغلقت في المرحلة الثالثة أدناه.**
+- ~~`reality.py` لا يزال يعتمد على `config/reality.json` بدل `sales_ledger.jsonl`~~ — **أُغلقت جزئياً أدناه** (عدد النشر الحي فقط؛ "أول تاريخ نشر" لا يزال KDP فقط، انظر أدناه).
 - ذراع واحدة فقط (`gumroad`) مسجَّلة؛ Payhip/Etsy/Redbubble لم تُبنَ (متعمَّد، حسب ADR-8 وترتيب الأولوية بالخطة المعتمدة).
+
+---
+
+## المرحلة الثالثة — إغلاق الحلقة الكاملة (اكتشاف → إنتاج → نشر → قياس → تعلّم)
+
+توجيه المدير التنفيذي: مصنع ذاتي بدون تدخل بشري في المسار العادي، مع الحفاظ الصارم على "dry_run افتراضياً، لا استثناءات".
+
+### ما تغيّر
+
+| الملف | التغيير |
+|---|---|
+| `factory_loop.js` | `triggerGenerateBook()` يستدعي الآن `POST /api/distribute` تلقائياً بمجرد أن يعيد `/generate-book` `published: true` (كلا الفاحصين وافقا — CONSTITUTION.md §17). كل من `hunt()` و`healEmptyBooks()` يمرّان عبر `triggerGenerateBook()`، فكلا مساري التوليد الآلي يستفيدان مجاناً. لا تدخل بشري في المسار العادي. |
+| `factory_loop.js` | `readLastGenerationRecord()` يقرأ آخر سطر في `books/_generation_log.jsonl` (السجل الحقيقي الذي يكتبه `book_generator.py` قبل الإرجاع مباشرة) ويطابقه مع اسم الملف قبل الوثوق به — عدم تطابق أو تعذّر قراءة = تخطّي التوزيع لهذه الدورة فقط، لا كسر للدورة كلها. |
+| `factory_loop.js` | `FACTORY_LIVE_PUBLISH` متغيّر بيئة جديد (غائب افتراضياً = `dry_run` دائماً). حتى لو ضُبط، `channels/gumroad_arm.py` يرفض النشر الحي بشكل مستقل بلا `GUMROAD_ACCESS_TOKEN` — **طبقتا أمان مستقلتان، لا استثناء واحد يكفي لتجاوزهما معاً.** لم أضبط هذا المتغيّر ولا التوكن في أي مكان. |
+| `factory_loop.js` | `runTick()` يضيف سطر `actions` مستقل باسم `distribute` (بجانب `heal_books_empty`/`hunt`) — نجاح/فشل/تخطّي التوزيع مرئي في `factory_loop.log` تماماً كأي إجراء إصلاح ذاتي آخر. |
+| `reality.py` | `count_live_channel_publishes()` يقرأ `data/sales_ledger.jsonl` ويحسب فقط أحداث `publish_attempt` بـ `ok=true, dry_run=false` — تنفيذ ADR-7 حرفياً (استبدال الاعتماد الحصري على `published: true` البشري). بوابة "صفر منشورات = CRITICAL" في `scorecard()` تنظر الآن لكل القنوات مجتمعة (`total_published`)، لا KDP وحدها. إضافي بحت — `books_published` (KDP فقط) بقي كما هو لأي مستدعٍ قديم. |
+| `self_awareness.js` | `golden_pipeline.distributor` (حداثة `data/sales_ledger.jsonl`) بجانب `hunter`/`inspectors`/`oracle` الموجودين — نفس الدالة `freshness()`، نفس نافذة 48 ساعة. مطويّ في `selfDiagnose()` و`cellScores()`. `checkDistributorWiring()` يتحقق فعلياً (بقراءة مصدر `factory_loop.js`) أن `/api/distribute` مذكور فعلاً — قابل للتحقق، ليس ادعاءً ثابتاً. |
+| `profit_oracle.py` | `_score_execution()` كان يُرجع نصاً ثابتاً "KDP + Etsy + Gumroad". الآن يقرأ `config/channels.json` الحقيقي ويكتب "Gumroad (آلي)" مقابل "KDP (رفع يدوي)" — توصية صادقة تعكس القدرة الفعلية، لا افتراضاً. |
+| `OpenClaw_Brain/06_Councils/README.md` | صف "Publishing" تحوّل من ❌ إلى ✅ مع شرح دقيق لما بُني وما الحواجز التي بقيت (التوكن، dry_run). |
+
+### لم يُلمس (قرارات نطاق واعية)
+
+- `reality.py`: `days_since_first_publish` و`net_revenue`/`units_sold` لا تزالان KDP/`finance_data.json` فقط — لا مُغذٍّ آلي يكتب أحداث `sale` في السجل بعد (لا استطلاع دوري لـ `get_sales()` مبني بعد). موثّق صراحة في الكود بدل افتراض صامت.
+- لا Payhip/Etsy/Redbubble — وفق توجيه صريح، Gumroad أولاً يجب أن تكون مثالية.
+- لم أضِف `GUMROAD_ACCESS_TOKEN` ولا `FACTORY_LIVE_PUBLISH` إلى `.env` — لا نشر حقيقي حدث أو أصبح ممكناً.
+
+### التحقق الذي تم إجراؤه (بدون إنفاق رصيد Groq حقيقي)
+
+لم أشغّل توليد كتاب حقيقي جديد (يستهلك Groq API فعلياً) — بدلاً من ذلك تحقّقت من كل قطعة بشكل معزول وصادق:
+- `readLastGenerationRecord()`: اختُبر ضد ملف JSONL مؤقت — يختار آخر سطر بشكل صحيح، يُرجع `null` لملف مفقود/فارغ.
+- `triggerDistribute()`: استُدعي مباشرة ضد خادم حقيقي شغّال — النتيجة `dry_run:true` (الافتراضي، لا `FACTORY_LIVE_PUBLISH`)، فشل آمن (لا توكن)، **والمحاولة سُجِّلت فعلاً كسطر ثالث حقيقي في `data/sales_ledger.jsonl`.**
+- `reality.count_live_channel_publishes()`: اختُبر ضد سجل JSONL مصطنع بأحداث مختلطة (نجاح حي، dry_run، فشل، بيع، سطر تالف) — عدّ فقط الحدثين الحقيقيين الناجحين بشكل صحيح، تجاهل الباقي بشكل صحيح.
+- `profit_oracle._load_channel_automation()`: اختُبر ضد `config/channels.json` الحقيقي (Gumroad ← "آلي" صحيح) وضد مسار مفقود (يُرجع `{}` بأمان، بلا انهيار).
+- `self_awareness.js --check`: شُغِّل فعلياً بلا خادم — `golden_pipeline.distributor` قرأ السجل الحقيقي بشكل صحيح ("آخر نشاط منذ 0 ساعة")، و`checkDistributorWiring()` تحقّق فعلياً من مصدر `factory_loop.js` وأكّد الربط.
+- **دورة `factory_loop.js --once` حقيقية كاملة** شُغِّلت (بعد التأكد أن `books/` غير فارغ و`hunt()` لن يجد نيتشاً مؤهَّلاً بلا ملف — أي لن تُستهلَك Groq API): الدورة اكتملت بنجاح، كل الخطوات (`heal_finance`, `heal_books_empty`, `heal_n8n`, `hunt`, `weekly_report`, `golden_hunter`, `self_awareness`) عملت بلا انهيار مع كل التعديلات الجديدة مفعَّلة.
+
+### السؤال الذي طرحه المدير التنفيذي
+
+> "لو factory_loop أنتج كتاباً جديداً الآن، هل ينتقل تلقائياً عبر QA → Commercial Auditor → distributor → sales_ledger بدون أي تدخل بشري، ويسجّل الحدث حتى في dry_run؟"
+
+**نعم.** بالتتبّع الكامل للكود (لا افتراضاً):
+
+1. `book_generator.py`'s `generate_book()` يشغّل `inspectors.py` (QA + Commercial Auditor، §17) لكل كتاب — بلا استثناء، ويفشل مغلقاً (`published:false`) إن تعذّر الفحص نفسه.
+2. عند `published:true` فقط، `factory_loop.js`'s `triggerGenerateBook()` يقرأ السجل الطازج من `books/_generation_log.jsonl` ويستدعي `POST /api/distribute` تلقائياً — بلا أي زر أو أمر بشري.
+3. `distributor.py` يوزّع على كل ذراع مسجَّلة متوافقة (اليوم: `gumroad` فقط)، بـ `dry_run=true` افتراضياً دائماً ما لم يُفعَّل `FACTORY_LIVE_PUBLISH` (غير مفعَّل) **و** يوجد `GUMROAD_ACCESS_TOKEN` (غير موجود) — أي لا نشر حقيقي ممكن اليوم بنيوياً، ليس فقط بالسياسة.
+4. **كل محاولة، بما فيها dry_run والفاشلة، تُسجَّل في `data/sales_ledger.jsonl`** عبر `channels/ledger.py` — مؤكَّد بالتنفيذ الفعلي (3 أسطر حقيقية في السجل الآن من اختبارات هذه الجلسة، لا محاكاة).
+5. `reality.py` و`self_awareness.js` يقرآن الآن هذا السجل الحقيقي كإشارة صحة/حقيقة، لا كتابة قديمة يمكن أن تكذب.
+
+**الحلقة كاملة ومغلقة للمسار العادي.** الفجوة الوحيدة المتبقية بين "التوزيع يعمل" و"نشر حقيقي فعلي" هي حاجز مقصود بالكامل: غياب `GUMROAD_ACCESS_TOKEN` — وهذا ما طلب الرئيس تحديداً عدم تجاوزه.
