@@ -33,6 +33,14 @@ const LOOP_LOG = path.join(FACTORY_DIR, 'factory_loop.log');
 const SCOUT_LOG = path.join(FACTORY_DIR, 'scout_runs.log');
 const FINANCE_FILE = path.join(FACTORY_DIR, 'finance_data.json');
 const BOOKS_DIR = path.join(FACTORY_DIR, 'books');
+const GENERATION_LOG_FILE = path.join(BOOKS_DIR, '_generation_log.jsonl');
+
+// Real live publishing from the automatic loop requires BOTH this env var
+// AND a platform secret (e.g. GUMROAD_ACCESS_TOKEN) — channels/gumroad_arm.py
+// enforces the token check independently, so setting this alone can never
+// push anything live. Absent (the default): every automatic distribution
+// attempt stays dry_run, no exceptions (OCTOPUS_ARCHITECTURE.md §10.4/ADR-6).
+const LIVE_PUBLISH_ENABLED = process.env.FACTORY_LIVE_PUBLISH === 'true';
 const REPORTS_DIR = path.join(FACTORY_DIR, 'reports');
 const WEEKLY_REPORT_STABLE = path.join(FACTORY_DIR, 'FACTORY_WEEKLY_REPORT.md');
 const OPPORTUNITIES_FILE = path.join(FACTORY_DIR, 'OPPORTUNITIES.md');
@@ -225,6 +233,63 @@ function countBooks() {
   return fs.readdirSync(BOOKS_DIR).filter(f => f.toLowerCase().endsWith('.pdf')).length;
 }
 
+// The last line of books/_generation_log.jsonl is the exact record
+// book_generator.py's generate_book() wrote for the request that just
+// completed (schemas/product.py's Product.from_jsonl_record() bridges
+// this same record into a Product) — _log_generation() is called
+// synchronously right before generate_book() returns, so by the time
+// /generate-book's HTTP response reaches us, the record is already on disk.
+function readLastGenerationRecord(logPath = GENERATION_LOG_FILE) {
+  if (!fs.existsSync(logPath)) return null;
+  const lines = fs.readFileSync(logPath, 'utf8').split('\n').filter(Boolean);
+  if (!lines.length) return null;
+  try {
+    return JSON.parse(lines[lines.length - 1]);
+  } catch (_) {
+    return null;
+  }
+}
+
+function formatDistributionAction(distribution) {
+  return { action: distribution.ok ? 'distributed' : 'failed', detail: distribution.detail };
+}
+
+// Calls the distribution backbone (distributor.py, via server.js's
+// POST /api/distribute) for one already-generated, already-inspected
+// record. dry_run stays true unless a human has explicitly set
+// FACTORY_LIVE_PUBLISH=true — and even then, channels/gumroad_arm.py
+// independently refuses to push live without GUMROAD_ACCESS_TOKEN. Every
+// attempt (dry-run or live, success or failure) is recorded to
+// data/sales_ledger.jsonl by distributor.py itself, regardless of the
+// outcome here.
+async function triggerDistribute(record) {
+  try {
+    const res = await fetchWithTimeout(`${DASHBOARD_URL}/api/distribute`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ record, dry_run: !LIVE_PUBLISH_ENABLED }),
+    }, 140000, 'api-distribute');
+    const data = await res.json();
+
+    if (!data.success) {
+      return { ok: false, dry_run: null, detail: `فشل التوزيع: ${data.error}`, outcomes: null };
+    }
+
+    const outcomes = data.outcomes || [];
+    const summary = outcomes.length
+      ? outcomes.map(o => {
+          if (!o.attempted) return `${o.arm}: تخطّي (${o.skip_reason})`;
+          const r = o.result;
+          return `${o.arm}: ${r.ok ? 'نجاح' : 'فشل'}${r.dry_run ? ' [dry-run]' : ' [حي]'}${r.error ? ' — ' + r.error : ''}`;
+        }).join('؛ ')
+      : 'لا أذرع مسجَّلة';
+
+    return { ok: true, dry_run: data.dry_run, detail: summary, outcomes };
+  } catch (err) {
+    return { ok: false, dry_run: null, detail: `فشل الاتصال بـ /api/distribute: ${err.message}`, outcomes: null };
+  }
+}
+
 async function triggerGenerateBook(brief) {
   try {
     const res = await fetchWithTimeout(`${DASHBOARD_URL}/generate-book`, {
@@ -253,10 +318,25 @@ async function triggerGenerateBook(brief) {
       return { ok: false, rejected: true, detail: `تم التوليد لكن رُفض النشر (Dual Inspection): ${reason}` };
     }
 
-    return {
-      ok: !!data.success,
-      detail: data.success ? `تم توليد الكتاب: ${data.filename} (${data.pages} صفحة)` : `فشل التوليد: ${data.error}`,
-    };
+    if (!data.success) {
+      return { ok: false, detail: `فشل التوليد: ${data.error}` };
+    }
+
+    // data.success && data.published === true from here on: BOTH inspectors
+    // passed (CONSTITUTION.md §17 — Technical/QA + Commercial Auditor). No
+    // human step from here — hand the fresh record straight to the
+    // distributor automatically (Publishing Council, OCTOPUS_ARCHITECTURE.md).
+    const result = { ok: true, detail: `تم توليد الكتاب: ${data.filename} (${data.pages} صفحة)` };
+    const record = readLastGenerationRecord();
+    if (!record || record.file !== data.filename) {
+      result.distribution = {
+        ok: false, dry_run: null, outcomes: null,
+        detail: 'تعذّر مطابقة سجل التوليد الأخير في books/_generation_log.jsonl — تخطّي التوزيع الآلي هذه المرة',
+      };
+    } else {
+      result.distribution = await triggerDistribute(record);
+    }
+    return result;
   } catch (err) {
     return { ok: false, detail: `فشل الاتصال بـ /generate-book: ${err.message}` };
   }
@@ -305,6 +385,7 @@ async function healEmptyBooks(reachable) {
   return {
     action: result.ok ? 'healed' : 'failed',
     detail: `books/ كان فارغاً — أُعيد توليد آخر نيتش Scout (${lastSuccess.brief.title}): ${result.detail}`,
+    distribution: result.distribution,
   };
 }
 
@@ -361,6 +442,7 @@ async function hunt(reachable) {
   return {
     action: result.ok ? 'healed' : (result.rejected ? 'rejected' : 'failed'),
     detail: `كتاب مفقود لنيتش مؤهَّل من آخر ${lastThree.length} سجلات (${chosen.brief.title}): ${result.detail}`,
+    distribution: result.distribution,
   };
 }
 
@@ -709,9 +791,22 @@ async function runTick() {
 
   if (diagnosis.reachable) {
     actions.push({ step: 'heal_finance', ...healFinance(diagnosis.health) });
-    actions.push({ step: 'heal_books_empty', ...(await healEmptyBooks(true)) });
+
+    const healBooksResult = await healEmptyBooks(true);
+    const { distribution: healBooksDistribution, ...healBooksAction } = healBooksResult;
+    actions.push({ step: 'heal_books_empty', ...healBooksAction });
+    if (healBooksDistribution) {
+      actions.push({ step: 'distribute', ...formatDistributionAction(healBooksDistribution) });
+    }
+
     actions.push({ step: 'heal_n8n', ...healN8n(diagnosis.health) });
-    actions.push({ step: 'hunt', ...(await hunt(true)) });
+
+    const huntResult = await hunt(true);
+    const { distribution: huntDistribution, ...huntAction } = huntResult;
+    actions.push({ step: 'hunt', ...huntAction });
+    if (huntDistribution) {
+      actions.push({ step: 'distribute', ...formatDistributionAction(huntDistribution) });
+    }
   } else {
     actions.push({
       step: 'diagnose',
@@ -829,4 +924,5 @@ module.exports = {
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
   maybeRunMarketHunter, maybeRunSelfAwareness,
+  readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction,
 };
