@@ -50,6 +50,7 @@ OPPORTUNITIES_FILE = os.path.join(FACTORY_DIR, 'OPPORTUNITIES.md')
 GOLDEN_MD_FILE = os.path.join(FACTORY_DIR, 'GOLDEN_OPPORTUNITIES.md')
 GOLDEN_JSON_FILE = os.path.join(FACTORY_DIR, 'golden_opportunities.json')
 NICHE_REPORTS_DIR = os.path.join(FACTORY_DIR, 'niche_reports')
+CHANNELS_CONFIG_FILE = os.path.join(FACTORY_DIR, 'config', 'channels.json')
 
 MAX_COMPETITION = NICHE_VALIDATOR.CRITERIA['max_competition'] if NICHE_VALIDATOR else 50000
 MIN_BUTTER_PRICE = 30   # CONSTITUTION.md §16 — the Butter Principle's floor
@@ -189,12 +190,48 @@ def _score_margin(niche):
     return margin_score, notes, price
 
 
+def _load_channel_automation():
+    """Real automation status per platform from config/channels.json (the
+    same data channels/registry.py's arms fulfill for Gumroad today) —
+    'api' (an arm can push it automatically) vs 'manual' (a human still has
+    to upload it by hand). Optional/guarded the same way the
+    niche_validator_v2 import above is: a missing or malformed file must
+    never crash scoring, it just means no automation claim is made."""
+    try:
+        with open(CHANNELS_CONFIG_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        channels = data.get('channels', [])
+        return {
+            c['id']: c.get('automation')
+            for c in channels if isinstance(c, dict) and c.get('id')
+        }
+    except Exception:
+        return {}
+
+
+def _label_channel(automation, channel_id, display_name):
+    """Appends a real automation status to a platform's display name.
+    Unknown/missing status makes no claim either way, rather than guessing."""
+    status = automation.get(channel_id)
+    if status == 'api':
+        return f"{display_name} (آلي)"
+    if status == 'manual':
+        return f"{display_name} (رفع يدوي)"
+    return display_name
+
+
 def _score_execution(niche):
     """10% weight. Grounded in real, current factory capability: only
     book_engine is active (FACTORY_STATUS.md) — everything is scored against
-    whether it can become a digital book/planner/guide today."""
+    whether it can become a digital book/planner/guide today. The platform
+    recommendation is labeled with each channel's REAL automation status
+    (config/channels.json / channels/registry.py) rather than a flat
+    hardcoded string — Gumroad is wired to an actual arm today, KDP/Etsy
+    still require a human to upload, and this should say so honestly."""
     notes = []
     niche_lower = niche.lower()
+    automation = _load_channel_automation()
+
     if any(k in niche_lower for k in PHYSICAL_PRODUCT_KEYWORDS):
         fit_score = 15
         notes.append("يبدو منتجاً مادياً — المصنع ينتج كتباً/طباعات رقمية فقط اليوم (book_engine)")
@@ -202,10 +239,13 @@ def _score_execution(niche):
     else:
         fit_score = 90
         notes.append("يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي")
+        kdp_label = _label_channel(automation, 'kdp_paperback', 'KDP')
         if any(k in niche_lower for k in MID_KEYWORDS) or any(k in niche_lower for k in PREMIUM_KEYWORDS):
-            platform = "KDP + Etsy + Gumroad"
+            etsy_label = _label_channel(automation, 'etsy_digital', 'Etsy')
+            gumroad_label = _label_channel(automation, 'gumroad', 'Gumroad')
+            platform = f"{kdp_label} + {etsy_label} + {gumroad_label}"
         else:
-            platform = "KDP"
+            platform = kdp_label
 
     return fit_score, notes, platform
 
