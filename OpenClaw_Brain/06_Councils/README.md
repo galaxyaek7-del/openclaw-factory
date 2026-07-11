@@ -12,11 +12,11 @@ OPENCLAW_OS_CONSTITUTION.md names 12 Councils but doesn't say which code impleme
 | **Digital Sanitation** | The circuit breaker's cooldown logic; manual test-artifact cleanup discipline this session | ⚠️ Practiced ad hoc, no dedicated automation |
 | **Executive** | The Chairman (Galaxy) directly, via conversation-driven tasks; `self_awareness.js` (Day 08) now gives Galaxy an honest daily verdict to decide from, via `GET /awareness` and `GET /good-morning` | ✅ Human-led, now with a real self-report to read first |
 | **Innovation** | No dedicated component | ❌ Not built |
-| **Publishing** | No automated KDP/Etsy upload — see [13_Publishing](../13_Publishing/) | ❌ Not built |
+| **Publishing** | `channels/base_arm.py` + `channels/gumroad_arm.py` + `distributor.py`, wired end to end: `factory_loop.js` calls `POST /api/distribute` automatically the moment a book clears Dual Inspection (§17), no human step in the normal path. Every attempt (dry-run or live) is recorded to `data/sales_ledger.jsonl`. Real live pushes still require `GUMROAD_ACCESS_TOKEN` (not present in `.env` yet) + an explicit `FACTORY_LIVE_PUBLISH=true` — dry_run is the default, no exceptions. Only Gumroad is wired; Payhip/Etsy/Redbubble are deliberately not (OCTOPUS_ARCHITECTURE.md ADR-8: prove one arm sells before copying the pattern). | ✅ Built (2026-07-11) |
 | **Marketing** | `AGENT_PROMPTS.publisher` generates SEO copy on request, but nothing posts anywhere automatically | ⚠️ Partial (content generation only) |
 | **Investment** | No dedicated component | ❌ Not built |
 | **Product Lifecycle** | No dedicated component — no book has ever been formally "retired" or archived | ❌ Not built |
 
 ## Reading this table
 
-Four Councils (Quality, Golden Hunter, Knowledge, and Engineering as the substrate all of them run on) have real, working code. Security and Digital Sanitation are *practiced* — real habits enforced in every task this session — but have no single file to point to. The rest are named in the supreme law but have nothing built for them yet, which is expected: [01_Vision](../01_Vision/)'s Golden Rule says don't build ahead of proven need.
+Five Councils (Quality, Golden Hunter, Knowledge, Publishing, and Engineering as the substrate all of them run on) have real, working code. Security and Digital Sanitation are *practiced* — real habits enforced in every task this session — but have no single file to point to. The rest are named in the supreme law but have nothing built for them yet, which is expected: [01_Vision](../01_Vision/)'s Golden Rule says don't build ahead of proven need.
