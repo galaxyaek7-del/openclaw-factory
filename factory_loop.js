@@ -37,6 +37,8 @@ const GENERATION_LOG_FILE = path.join(BOOKS_DIR, '_generation_log.jsonl');
 const GOLDEN_JSON_FILE = path.join(FACTORY_DIR, 'golden_opportunities.json');
 const GOLDEN_HUNTER_EVENTS_FILE = path.join(FACTORY_DIR, 'data', 'golden_hunter_events.jsonl');
 const GOLDEN_FRESHNESS_MS = 24 * 60 * 60 * 1000; // ADR-009: >24h old = stale, skip without failing
+const NEEDS_ATTENTION_FILE = path.join(FACTORY_DIR, 'NEEDS_ATTENTION.md');
+const ATTENTION_STREAK_THRESHOLD = 3; // consecutive occurrences before flagging
 
 // Real live publishing from the automatic loop requires BOTH this env var
 // AND a platform secret (e.g. GUMROAD_ACCESS_TOKEN) — channels/gumroad_arm.py
@@ -588,6 +590,91 @@ async function huntGolden(reachable) {
   };
 }
 
+// ── MINIMAL ATTENTION ALERTING ──
+// AUTOMATION_GAPS_REPORT.md §3 flagged zero notification channel (inspectors.py
+// itself: "no live notification channel wired"). NEEDS_ATTENTION.md is the
+// simplest possible fix: no email/Slack, just a file at the repo root that
+// this same function creates AND removes — its entire lifecycle is
+// self-owned, the same pattern as .factory_loop.lock. It exists only while a
+// real problem condition holds; a human doesn't have to remember to check
+// logs every day during the FACTORY_AUTO_PRODUCE dry-run review window
+// (AUTO_PRODUCE_ACTIVATION_CHECKLIST.md) — but is still expected to
+// investigate via data/golden_hunter_events.jsonl / factory_loop.log, this
+// file only says "look", never why in full detail.
+//
+// Three trigger conditions, all confirmed with real data before wiring in:
+//   1. This tick's actions include action:"failed" for golden_hunter_bridge
+//      or distribute — an immediate, single-tick signal.
+//   2. The last ATTENTION_STREAK_THRESHOLD raw events in
+//      golden_hunter_events.jsonl are ALL skipped for reason
+//      stale/missing_or_unreadable — Golden Hunter itself looks stuck.
+//   3. The last ATTENTION_STREAK_THRESHOLD "attempted" events all used
+//      _price_source "fallback_floor_clamped" — profit_oracle.py
+//      --butter-price (ADR-010) is failing repeatedly, not just once.
+function checkNeedsAttention(tickActions, logPath = GOLDEN_HUNTER_EVENTS_FILE) {
+  const reasons = [];
+
+  for (const a of tickActions || []) {
+    if ((a.step === 'golden_hunter_bridge' || a.step === 'distribute') && a.action === 'failed') {
+      reasons.push(`فشل حقيقي في خطوة "${a.step}" هذه الدورة: ${a.detail}`);
+    }
+  }
+
+  const events = readGoldenHunterEvents(logPath);
+
+  const recentRaw = events.slice(-ATTENTION_STREAK_THRESHOLD);
+  if (
+    recentRaw.length === ATTENTION_STREAK_THRESHOLD &&
+    recentRaw.every(e => e.action === 'skipped' && (e.reason === 'stale' || e.reason === 'missing_or_unreadable'))
+  ) {
+    reasons.push(
+      `آخر ${ATTENTION_STREAK_THRESHOLD} محاولات لجسر Golden Hunter كانت كلها "${recentRaw[recentRaw.length - 1].reason}" — ` +
+      'يبدو Golden Hunter نفسه متوقفاً، أو golden_opportunities.json لا يتحدَّث.'
+    );
+  }
+
+  const recentAttempted = events.filter(e => e.action === 'attempted').slice(-ATTENTION_STREAK_THRESHOLD);
+  if (
+    recentAttempted.length === ATTENTION_STREAK_THRESHOLD &&
+    recentAttempted.every(e => e.brief && e.brief._price_source === 'fallback_floor_clamped')
+  ) {
+    reasons.push(
+      `آخر ${ATTENTION_STREAK_THRESHOLD} محاولات تسعير استخدمت السقوط الآمن (fallback_floor_clamped) بدل ` +
+      'butter_price() الحقيقية — استدعاء profit_oracle.py --butter-price يفشل بانتظام، لا مرة واحدة عابرة.'
+    );
+  }
+
+  return reasons;
+}
+
+function writeNeedsAttention(reasons, filePath = NEEDS_ATTENTION_FILE) {
+  const content = [
+    '# ⚠️ NEEDS_ATTENTION.md — يحتاج مراجعة بشرية',
+    '',
+    `آخر تحديث: ${new Date().toISOString()}`,
+    '',
+    'هذا الملف يُكتَب ويُحذَف تلقائياً بواسطة factory_loop.js فقط — وجوده يعني أن أحد الشروط التالية تحقّق الآن:',
+    '',
+    ...reasons.map(r => `- ${r}`),
+    '',
+    'راجع `data/golden_hunter_events.jsonl` و`factory_loop.log` للتفاصيل الكاملة. سيُحذَف هذا الملف تلقائياً بمجرد أن تعود الدورات القادمة لحالتها الطبيعية — لا حاجة لحذفه يدوياً.',
+    '',
+  ].join('\n');
+  try {
+    fs.writeFileSync(filePath, content, 'utf8');
+  } catch (err) {
+    console.error('[factory_loop] failed to write NEEDS_ATTENTION.md:', err.message);
+  }
+}
+
+function clearNeedsAttention(filePath = NEEDS_ATTENTION_FILE) {
+  try {
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  } catch (err) {
+    console.error('[factory_loop] failed to clear NEEDS_ATTENTION.md:', err.message);
+  }
+}
+
 // ── HEAL ──
 
 // NOTE on this check: the task asked to "rebuild finance.json from
@@ -1090,6 +1177,13 @@ async function runTick() {
     actions,
   });
 
+  const attentionReasons = checkNeedsAttention(actions);
+  if (attentionReasons.length) {
+    writeNeedsAttention(attentionReasons);
+  } else {
+    clearNeedsAttention();
+  }
+
   return { diagnosis, actions };
 }
 
@@ -1181,4 +1275,5 @@ module.exports = {
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
   appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted,
   evaluateGoldenOpportunities, getButterPrice,
+  checkNeedsAttention, writeNeedsAttention, clearNeedsAttention,
 };

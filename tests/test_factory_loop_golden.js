@@ -204,6 +204,99 @@ async function main() {
     assert.strictEqual(fl.goldenNicheAlreadyAttempted('anything', path.join(tmpDir, 'nope2.jsonl')), false);
   });
 
+  // ── checkNeedsAttention / writeNeedsAttention / clearNeedsAttention (temp files only) ──
+
+  await test('checkNeedsAttention: healthy history + no failures this tick -> no reasons', () => {
+    const p = path.join(tmpDir, 'attn_healthy.jsonl');
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'butter_price' } }, p);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'butter_price' } }, p);
+    const reasons = fl.checkNeedsAttention([{ step: 'golden_hunter_bridge', action: 'skipped', detail: 'x' }], p);
+    assert.deepStrictEqual(reasons, []);
+  });
+
+  await test('checkNeedsAttention: action:"failed" this tick for golden_hunter_bridge -> flagged immediately', () => {
+    const p = path.join(tmpDir, 'attn_empty.jsonl');
+    const reasons = fl.checkNeedsAttention([{ step: 'golden_hunter_bridge', action: 'failed', detail: 'boom' }], p);
+    assert.strictEqual(reasons.length, 1);
+    assert.ok(reasons[0].includes('golden_hunter_bridge'));
+  });
+
+  await test('checkNeedsAttention: action:"failed" this tick for distribute -> flagged immediately', () => {
+    const p = path.join(tmpDir, 'attn_empty2.jsonl');
+    const reasons = fl.checkNeedsAttention([{ step: 'distribute', action: 'failed', detail: 'gumroad down' }], p);
+    assert.strictEqual(reasons.length, 1);
+    assert.ok(reasons[0].includes('distribute'));
+  });
+
+  await test('checkNeedsAttention: 2 consecutive stale skips -> NOT flagged yet (threshold is 3)', () => {
+    const p = path.join(tmpDir, 'attn_stale2.jsonl');
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
+    assert.deepStrictEqual(fl.checkNeedsAttention([], p), []);
+  });
+
+  await test('checkNeedsAttention: 3 consecutive stale/missing skips -> flagged', () => {
+    const p = path.join(tmpDir, 'attn_stale3.jsonl');
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'missing_or_unreadable' }, p);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
+    const reasons = fl.checkNeedsAttention([], p);
+    assert.strictEqual(reasons.length, 1);
+    assert.ok(reasons[0].includes('Golden Hunter'));
+  });
+
+  await test('checkNeedsAttention: a successful attempt in between resets the stale streak', () => {
+    const p = path.join(tmpDir, 'attn_reset.jsonl');
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'butter_price' } }, p);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
+    // last 3 raw events: attempted, skipped, skipped -> not 3 consecutive skips
+    assert.deepStrictEqual(fl.checkNeedsAttention([], p), []);
+  });
+
+  await test('checkNeedsAttention: 3 consecutive fallback_floor_clamped pricing attempts -> flagged', () => {
+    const p = path.join(tmpDir, 'attn_fallback3.jsonl');
+    for (let i = 0; i < 3; i++) {
+      fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'fallback_floor_clamped' } }, p);
+    }
+    const reasons = fl.checkNeedsAttention([], p);
+    assert.strictEqual(reasons.length, 1);
+    assert.ok(reasons[0].includes('fallback_floor_clamped'));
+  });
+
+  await test('checkNeedsAttention: 2 fallback + 1 real butter_price -> NOT flagged', () => {
+    const p = path.join(tmpDir, 'attn_fallback_mixed.jsonl');
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'fallback_floor_clamped' } }, p);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'fallback_floor_clamped' } }, p);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'butter_price' } }, p);
+    assert.deepStrictEqual(fl.checkNeedsAttention([], p), []);
+  });
+
+  await test('writeNeedsAttention / clearNeedsAttention: full lifecycle against a temp path', () => {
+    const p = path.join(tmpDir, 'NEEDS_ATTENTION_test.md');
+    assert.strictEqual(fs.existsSync(p), false);
+    fl.writeNeedsAttention(['سبب تجريبي واحد'], p);
+    assert.strictEqual(fs.existsSync(p), true);
+    const content = fs.readFileSync(p, 'utf8');
+    assert.ok(content.includes('سبب تجريبي واحد'));
+    fl.clearNeedsAttention(p);
+    assert.strictEqual(fs.existsSync(p), false);
+  });
+
+  await test('clearNeedsAttention: missing file -> no-op, never throws', () => {
+    assert.doesNotThrow(() => fl.clearNeedsAttention(path.join(tmpDir, 'never_existed.md')));
+  });
+
+  await test('checkNeedsAttention: real current data/golden_hunter_events.jsonl does NOT false-positive today', () => {
+    // Sanity check against the REAL file (read-only) — confirms today's
+    // actual history (pre-ADR-010 + post-ADR-010 entries mixed) doesn't
+    // accidentally trip either streak check.
+    const reasons = fl.checkNeedsAttention([]);
+    assert.deepStrictEqual(reasons, [], `unexpected false positive against real data: ${JSON.stringify(reasons)}`);
+  });
+
   console.log(`\n${passed} passed`);
   if (process.exitCode) {
     console.error('SOME TESTS FAILED');
