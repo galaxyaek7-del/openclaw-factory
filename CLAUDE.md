@@ -44,6 +44,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - الأمان: كل شيء محلي، API keys في `.env` فقط، لا cloud
 - المحتوى: كل وكيل يجب أن يكون قابل للتحول بسهولة بين المسارات
 
+### ⚠️ قبل اقتراح أي بنية أمنية أو فصل حسابات
+
+كل أداة/منصة في OpenClaw (GitHub، KDP، Gumroad، مستقبلاً Payhip/Etsy/Canva/Pinterest، Groq، Anthropic، n8n) مربوطة اليوم بحساب Google شخصي واحد، بلا استثناء. هذا قرار واعٍ (بساطة + تكلفة صفر لمرحلة مبكرة)، لا سهواً — راجع `OpenClaw_Brain/00_Governance/IDENTITY_ARCHITECTURE.md` والمخاطر الصريحة فيه، و`ADR-014` لمحفّزات إعادة النظر، **قبل** اقتراح أي تجزئة حسابات أو بنية أمنية جديدة.
+
 ---
 
 ## Running the project
