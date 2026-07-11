@@ -34,6 +34,9 @@ const SCOUT_LOG = path.join(FACTORY_DIR, 'scout_runs.log');
 const FINANCE_FILE = path.join(FACTORY_DIR, 'finance_data.json');
 const BOOKS_DIR = path.join(FACTORY_DIR, 'books');
 const GENERATION_LOG_FILE = path.join(BOOKS_DIR, '_generation_log.jsonl');
+const GOLDEN_JSON_FILE = path.join(FACTORY_DIR, 'golden_opportunities.json');
+const GOLDEN_HUNTER_EVENTS_FILE = path.join(FACTORY_DIR, 'data', 'golden_hunter_events.jsonl');
+const GOLDEN_FRESHNESS_MS = 24 * 60 * 60 * 1000; // ADR-009: >24h old = stale, skip without failing
 
 // Real live publishing from the automatic loop requires BOTH this env var
 // AND a platform secret (e.g. GUMROAD_ACCESS_TOKEN) — channels/gumroad_arm.py
@@ -41,6 +44,12 @@ const GENERATION_LOG_FILE = path.join(BOOKS_DIR, '_generation_log.jsonl');
 // push anything live. Absent (the default): every automatic distribution
 // attempt stays dry_run, no exceptions (OCTOPUS_ARCHITECTURE.md §10.4/ADR-6).
 const LIVE_PUBLISH_ENABLED = process.env.FACTORY_LIVE_PUBLISH === 'true';
+
+// Real automatic production from a Golden Hunter discovery requires this
+// separate, explicit flag — unset (the default) means the bridge always
+// picks the top opportunity and RECORDS what it would produce, but never
+// spends a real Groq call. ADR-009: not set anywhere in this repo/.env.
+const AUTO_PRODUCE_ENABLED = process.env.FACTORY_AUTO_PRODUCE === 'true';
 const REPORTS_DIR = path.join(FACTORY_DIR, 'reports');
 const WEEKLY_REPORT_STABLE = path.join(FACTORY_DIR, 'FACTORY_WEEKLY_REPORT.md');
 const OPPORTUNITIES_FILE = path.join(FACTORY_DIR, 'OPPORTUNITIES.md');
@@ -340,6 +349,168 @@ async function triggerGenerateBook(brief) {
   } catch (err) {
     return { ok: false, detail: `فشل الاتصال بـ /generate-book: ${err.message}` };
   }
+}
+
+// ── GOLDEN HUNTER BRIDGE (ADR-009) ──
+// Connects market_hunter.py/profit_oracle.py's daily output
+// (golden_opportunities.json) to actual production — the gap identified in
+// AUTOMATION_GAPS_REPORT.md §1: discovery ran automatically but nothing
+// ever consumed it. This bridge is read-only toward Golden Hunter itself —
+// it never imports or calls market_hunter.py/profit_oracle.py, only reads
+// their already-written output file.
+
+function appendGoldenHunterEvent(fields, logPath = GOLDEN_HUNTER_EVENTS_FILE) {
+  try {
+    fs.mkdirSync(path.dirname(logPath), { recursive: true });
+    const record = { timestamp: new Date().toISOString(), ...fields };
+    fs.appendFileSync(logPath, JSON.stringify(record) + '\n');
+    return record;
+  } catch (err) {
+    // Logging failure must never break the tick itself.
+    console.error('[factory_loop] failed to write golden_hunter_events.jsonl:', err.message);
+    return { ...fields, _logFailed: true };
+  }
+}
+
+function readGoldenHunterEvents(logPath = GOLDEN_HUNTER_EVENTS_FILE) {
+  if (!fs.existsSync(logPath)) return [];
+  const lines = fs.readFileSync(logPath, 'utf8').split('\n').filter(Boolean);
+  const events = [];
+  for (const line of lines) {
+    try { events.push(JSON.parse(line)); } catch (_) { /* skip a malformed line */ }
+  }
+  return events;
+}
+
+function normalizeNiche(niche) {
+  return String(niche || '').trim().toLowerCase();
+}
+
+// Only a real (dry_run:false) prior attempt blocks retrying the same niche
+// — a dry-run "would have produced X" entry is informational only and must
+// never permanently block the real attempt once FACTORY_AUTO_PRODUCE is
+// eventually enabled.
+function goldenNicheAlreadyAttempted(niche, logPath = GOLDEN_HUNTER_EVENTS_FILE) {
+  const target = normalizeNiche(niche);
+  if (!target) return false;
+  return readGoldenHunterEvents(logPath).some(
+    e => e.action === 'attempted' && e.dry_run === false && normalizeNiche(e.niche) === target
+  );
+}
+
+function readGoldenOpportunities(jsonPath = GOLDEN_JSON_FILE) {
+  if (!fs.existsSync(jsonPath)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+  } catch (_) {
+    return null;
+  }
+}
+
+// Highest profit_score among non-SKIP verdicts only — a niche profit_oracle
+// itself flagged SKIP (<60) is never auto-produced, matching the same
+// quality bar a human reviewing GOLDEN_OPPORTUNITIES.md would apply.
+function pickTopGoldenOpportunity(data) {
+  const results = Array.isArray(data && data.results) ? data.results : [];
+  const eligible = results.filter(r => r && r.verdict && r.verdict !== 'SKIP' && typeof r.profit_score === 'number');
+  if (!eligible.length) return null;
+  return eligible.reduce((best, r) => (r.profit_score > best.profit_score ? r : best));
+}
+
+// Builds a /generate-book-compatible brief straight from a scored
+// opportunity — bypasses Scout's free-association Groq prompt entirely,
+// since the niche and its recommended price are already real, tested data
+// from profit_oracle.py, not something to re-invent.
+function briefFromGoldenOpportunity(opportunity) {
+  const priceMatch = /([0-9]+(\.[0-9]+)?)/.exec(opportunity.recommended_price || '');
+  const price = priceMatch ? parseFloat(priceMatch[1]) : 30;
+  return {
+    title: opportunity.niche,
+    topic: opportunity.niche,
+    audience: 'القارئ العام',
+    price,
+    chapters: 8,
+  };
+}
+
+// Pure decision logic (data + "now" in, a verdict out) — separated from
+// huntGolden() specifically so it's unit-testable with fabricated data,
+// without ever reading/writing the real golden_opportunities.json.
+function evaluateGoldenOpportunities(data, nowMs = Date.now()) {
+  if (!data) {
+    return { ok: false, reason: 'missing_or_unreadable', detail: 'golden_opportunities.json غير موجود أو غير قابل للقراءة — تخطٍّ بلا فشل' };
+  }
+
+  const generatedAtMs = Date.parse(data.generated_at);
+  if (!Number.isFinite(generatedAtMs)) {
+    return { ok: false, reason: 'invalid_timestamp', detail: 'generated_at غير صالح في golden_opportunities.json' };
+  }
+
+  const ageMs = nowMs - generatedAtMs;
+  if (ageMs > GOLDEN_FRESHNESS_MS) {
+    const ageHours = Math.round(ageMs / (60 * 60 * 1000));
+    return { ok: false, reason: 'stale', age_hours: ageHours, detail: `golden_opportunities.json قديم (${ageHours} ساعة، الحد 24) — تخطٍّ بلا فشل` };
+  }
+
+  const top = pickTopGoldenOpportunity(data);
+  if (!top) {
+    return { ok: false, reason: 'no_eligible_opportunity', detail: 'لا فرصة بحكم GOOD/GOLDEN في golden_opportunities.json حالياً' };
+  }
+
+  return { ok: true, top };
+}
+
+async function huntGolden(reachable) {
+  if (!reachable) {
+    return { action: 'skipped', ...appendGoldenHunterEvent({ action: 'skipped', reason: 'dashboard_unreachable', detail: 'السيرفر غير متاح — تخطّي جسر Golden Hunter هذه الدورة' }) };
+  }
+
+  const data = readGoldenOpportunities();
+  const evaluation = evaluateGoldenOpportunities(data);
+  if (!evaluation.ok) {
+    const rec = appendGoldenHunterEvent({ action: 'skipped', reason: evaluation.reason, age_hours: evaluation.age_hours, detail: evaluation.detail });
+    return { action: 'skipped', detail: rec.detail };
+  }
+  const top = evaluation.top;
+
+  if (goldenNicheAlreadyAttempted(top.niche)) {
+    const rec = appendGoldenHunterEvent({ action: 'skipped', reason: 'already_attempted', niche: top.niche, detail: `النيتش "${top.niche}" جُرِّب فعلياً سابقاً عبر جسر Golden Hunter — لا تكرار` });
+    return { action: 'none', detail: rec.detail };
+  }
+
+  const rejection = isNicheRejected(top.niche);
+  if (rejection) {
+    const rec = appendGoldenHunterEvent({ action: 'skipped', reason: 'circuit_breaker', niche: top.niche, detail: `تخطّي نيتش مرفوض سابقاً (${top.niche}) — قاطع الدائرة نشط حتى ${rejection.retryAfter}: ${rejection.reason}` });
+    return { action: 'skipped', detail: rec.detail };
+  }
+
+  const brief = briefFromGoldenOpportunity(top);
+
+  if (!AUTO_PRODUCE_ENABLED) {
+    // dry_run: record exactly what WOULD have been produced — zero Groq
+    // calls, zero side effects beyond this one log line.
+    const rec = appendGoldenHunterEvent({
+      action: 'attempted', dry_run: true, niche: top.niche, profit_score: top.profit_score,
+      verdict: top.verdict, brief,
+      detail: `[dry-run] كان سيُنتَج: "${top.niche}" (score ${top.profit_score}, ${top.verdict}) — FACTORY_AUTO_PRODUCE غير مفعَّل`,
+    });
+    return { action: 'skipped', detail: rec.detail };
+  }
+
+  const result = await triggerGenerateBook(brief);
+  const rec = appendGoldenHunterEvent({
+    action: 'attempted', dry_run: false, niche: top.niche, profit_score: top.profit_score,
+    verdict: top.verdict, brief,
+    ok: result.ok, rejected: !!result.rejected, detail: result.detail,
+    distribution: result.distribution
+      ? { ok: result.distribution.ok, dry_run: result.distribution.dry_run, detail: result.distribution.detail }
+      : null,
+  });
+  return {
+    action: result.ok ? 'produced' : (result.rejected ? 'rejected' : 'failed'),
+    detail: `[Golden Hunter → إنتاج] ${rec.detail}`,
+    distribution: result.distribution,
+  };
 }
 
 // ── HEAL ──
@@ -807,6 +978,13 @@ async function runTick() {
     if (huntDistribution) {
       actions.push({ step: 'distribute', ...formatDistributionAction(huntDistribution) });
     }
+
+    const goldenResult = await huntGolden(true);
+    const { distribution: goldenDistribution, ...goldenAction } = goldenResult;
+    actions.push({ step: 'golden_hunter_bridge', ...goldenAction });
+    if (goldenDistribution) {
+      actions.push({ step: 'distribute', ...formatDistributionAction(goldenDistribution) });
+    }
   } else {
     actions.push({
       step: 'diagnose',
@@ -925,4 +1103,7 @@ module.exports = {
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
   maybeRunMarketHunter, maybeRunSelfAwareness,
   readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction,
+  huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
+  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted,
+  evaluateGoldenOpportunities,
 };
