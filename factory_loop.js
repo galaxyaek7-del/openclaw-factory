@@ -417,19 +417,94 @@ function pickTopGoldenOpportunity(data) {
   return eligible.reduce((best, r) => (r.profit_score > best.profit_score ? r : best));
 }
 
+const MIN_BUTTER_PRICE = 30; // CONSTITUTION.md §16 — last-resort fallback only, mirrors profit_oracle.py's own MIN_BUTTER_PRICE
+
+// ADR-010: calls the REAL, existing profit_oracle.butter_price(niche) —
+// the single constitutional source of truth for CONSTITUTION.md §16's $30
+// floor — via a purely additive `--butter-price` CLI flag on
+// profit_oracle.py. golden_opportunities.json's recommended_price
+// (score_opportunity()'s _score_margin() keyword-tier estimate) is NOT
+// butter-compliant and can land below $30 (observed for real: $19 for
+// "مخطط شهري قابل للطباعة العودة للمدارس", 2026-07-11) — so it is never
+// used directly as a production price.
+function getButterPrice(niche, { timeoutMs = 15000, scriptPath = path.join(FACTORY_DIR, 'profit_oracle.py'), pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [scriptPath, '--butter-price'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, error: `تعذّر تشغيل profit_oracle.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, error: 'انتهت مهلة profit_oracle.py --butter-price (15 ثانية)' });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, error: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (result.success && Number.isFinite(result.butter_price)) {
+          finish({ ok: true, price: result.butter_price });
+        } else {
+          finish({ ok: false, error: result.error || `ناتج غير متوقع: ${output}${errOut}` });
+        }
+      } catch (e) {
+        finish({ ok: false, error: `Parse error: ${output}${errOut}` });
+      }
+    });
+
+    try {
+      python.stdin.write(JSON.stringify({ niche }));
+      python.stdin.end();
+    } catch (err) {
+      finish({ ok: false, error: err.message });
+    }
+  });
+}
+
 // Builds a /generate-book-compatible brief straight from a scored
 // opportunity — bypasses Scout's free-association Groq prompt entirely,
-// since the niche and its recommended price are already real, tested data
-// from profit_oracle.py, not something to re-invent.
-function briefFromGoldenOpportunity(opportunity) {
-  const priceMatch = /([0-9]+(\.[0-9]+)?)/.exec(opportunity.recommended_price || '');
-  const price = priceMatch ? parseFloat(priceMatch[1]) : 30;
+// since the niche is already real, tested data from profit_oracle.py, not
+// something to re-invent. The price is NOT taken from opportunity.
+// recommended_price directly (see getButterPrice() above) — it always goes
+// through butter_price(), with a fail-safe floor-clamp if that call itself
+// fails for any reason (never silently use an unchecked, possibly
+// sub-floor, raw price).
+async function briefFromGoldenOpportunity(opportunity, butterOpts = {}) {
+  const rawMatch = /([0-9]+(\.[0-9]+)?)/.exec(opportunity.recommended_price || '');
+  const rawPrice = rawMatch ? parseFloat(rawMatch[1]) : null;
+
+  const butter = await getButterPrice(opportunity.niche, butterOpts);
+  let price, priceSource;
+  if (butter.ok) {
+    price = butter.price;
+    priceSource = 'butter_price';
+  } else {
+    price = Math.max(rawPrice !== null ? rawPrice : MIN_BUTTER_PRICE, MIN_BUTTER_PRICE);
+    priceSource = 'fallback_floor_clamped';
+  }
+
   return {
     title: opportunity.niche,
     topic: opportunity.niche,
     audience: 'القارئ العام',
     price,
     chapters: 8,
+    _raw_recommended_price: rawPrice,
+    _price_source: priceSource,
+    _butter_price_error: butter.ok ? null : butter.error,
   };
 }
 
@@ -484,7 +559,7 @@ async function huntGolden(reachable) {
     return { action: 'skipped', detail: rec.detail };
   }
 
-  const brief = briefFromGoldenOpportunity(top);
+  const brief = await briefFromGoldenOpportunity(top);
 
   if (!AUTO_PRODUCE_ENABLED) {
     // dry_run: record exactly what WOULD have been produced — zero Groq
@@ -1105,5 +1180,5 @@ module.exports = {
   readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction,
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
   appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted,
-  evaluateGoldenOpportunities,
+  evaluateGoldenOpportunities, getButterPrice,
 };

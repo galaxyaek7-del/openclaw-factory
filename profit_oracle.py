@@ -434,6 +434,22 @@ def main():
             sys.exit(1)
         return
 
+    # ADR-010: a purely additive invocation surface for the EXISTING
+    # butter_price() — no scoring/pricing logic changed here. Added so
+    # factory_loop.js's Golden Hunter bridge can route through the real
+    # constitutional price (CONSTITUTION.md §16) instead of trusting
+    # score_opportunity()'s recommended_price field, which is _score_margin()'s
+    # keyword-tier estimate and can land below the $30 floor.
+    if '--butter-price' in sys.argv:
+        try:
+            data = json.loads(sys.stdin.read())
+            price = butter_price(data.get('niche', ''))
+            print(json.dumps({"success": True, "niche": data.get('niche', ''), "butter_price": price}, ensure_ascii=False))
+        except Exception as e:
+            print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))
+            sys.exit(1)
+        return
+
     # Demo: 3 sample niches chosen to land on 3 different verdicts.
     samples = [
         "العودة للمدارس اشتراك للمبتدئين",  # in-season + premium/recurring + sub-niche -> GOLDEN (80+)
