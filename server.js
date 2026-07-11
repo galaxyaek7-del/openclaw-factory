@@ -1458,9 +1458,22 @@ app.get('/awareness', async (req, res) => {
 });
 
 // ── STATIC ──
-app.use(express.static(path.join(__dirname)));
-app.get('/{*path}', (req, res) => {
+// index.html is saved as UTF-16 LE with BOM (see CLAUDE.md's "index.html
+// encoding" note) — deliberate, not something to convert. express.static's
+// default index-file serving and a plain res.sendFile() both label it
+// Content-Type: text/html; charset=utf-8 regardless of the file's real
+// bytes, so every browser misrenders the whole page (every ASCII byte gets
+// a null byte between it from the UTF-16 encoding, read as UTF-8 garbage/
+// blank). sendIndexHtml() sets the correct charset explicitly instead.
+function sendIndexHtml(res) {
+  res.set('Content-Type', 'text/html; charset=utf-16le');
   res.sendFile(path.join(__dirname, 'index.html'));
+}
+
+app.get('/', (req, res) => sendIndexHtml(res));
+app.use(express.static(path.join(__dirname), { index: false }));
+app.get('/{*path}', (req, res) => {
+  sendIndexHtml(res);
 });
 
 function detectPython() {
