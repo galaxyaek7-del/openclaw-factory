@@ -189,6 +189,75 @@ app.post('/generate-book', async (req, res) => {
   }
 });
 
+// ── DISTRIBUTE ──
+// Wraps distributor.py (OCTOPUS_ARCHITECTURE.md) via the same
+// spawn + stdin-JSON + stdout-JSON pattern as /generate-book. Every safety
+// property lives in distributor.py/channels/gumroad_arm.py, not here —
+// this endpoint is a thin passthrough and must not duplicate or bypass any
+// of it:
+//   - dry_run defaults to true. Only an explicit `dry_run: false` in the
+//     request body goes live; anything else (missing, true, a truthy
+//     non-boolean) stays a dry run — mirrors distributor.py's own
+//     job.get("dry_run", True), made explicit here too so the default is
+//     visible at this layer instead of only inherited silently.
+//   - Every attempt (dry-run or live, success or failure) is recorded to
+//     data/sales_ledger.jsonl by distributor.py itself.
+//   - No arm can push live without its own platform secret — GumroadArm's
+//     status() fails safe on a missing GUMROAD_ACCESS_TOKEN regardless of
+//     dry_run, and nothing here checks or touches that secret.
+app.post('/api/distribute', (req, res) => {
+  const { record, arms } = req.body || {};
+
+  if (!record || typeof record !== 'object' || Array.isArray(record)) {
+    return res.status(400).json({ success: false, error: 'record (a JSONL production-log record) is required' });
+  }
+  if (arms !== undefined && !Array.isArray(arms)) {
+    return res.status(400).json({ success: false, error: 'arms must be an array of arm names, if provided' });
+  }
+
+  const dryRun = req.body.dry_run === false ? false : true;
+
+  const pythonPath = detectPython();
+  const distributorScript = path.join(__dirname, 'distributor.py');
+
+  if (!fs.existsSync(distributorScript)) {
+    return res.status(404).json({ success: false, error: 'distributor.py not found' });
+  }
+
+  const payload = JSON.stringify({ record, arms, dry_run: dryRun });
+
+  let python;
+  try {
+    python = spawn(pythonPath, [distributorScript, '--json'], { cwd: __dirname });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: 'Failed to spawn distributor.py: ' + err.message });
+  }
+
+  let output = '', errOut = '', responded = false;
+  python.stdout.on('data', d => { output += d.toString(); });
+  python.stderr.on('data', d => { errOut += d.toString(); });
+
+  python.on('error', (err) => {
+    if (responded) return;
+    responded = true;
+    res.status(500).json({ success: false, error: 'Failed to spawn distributor.py: ' + err.message });
+  });
+
+  python.on('close', () => {
+    if (responded) return;
+    responded = true;
+    try {
+      const result = JSON.parse(output.trim());
+      res.json(result);
+    } catch {
+      res.json({ success: false, error: 'Parse error: ' + output + errOut });
+    }
+  });
+
+  python.stdin.write(payload);
+  python.stdin.end();
+});
+
 // ── CHAT ──
 app.post('/chat', async (req, res) => {
   const { message, agent } = req.body;
