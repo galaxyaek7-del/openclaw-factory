@@ -31,6 +31,7 @@ const INSPECTIONS_LOG = path.join(FACTORY_DIR, 'inspections.log');
 const HUNTER_LOG = path.join(FACTORY_DIR, 'market_hunter_runs.log');
 const GOLDEN_JSON = path.join(FACTORY_DIR, 'golden_opportunities.json');
 const LESSONS_DIR = path.join(FACTORY_DIR, 'OpenClaw_Brain', '19_Lessons_Learned');
+const SALES_LEDGER_FILE = path.join(FACTORY_DIR, 'data', 'sales_ledger.jsonl');
 
 const PIPELINE_FRESHNESS_MS = 48 * 60 * 60 * 1000; // "flowing" = active within 48h
 
@@ -156,6 +157,10 @@ function checkGoldenPipeline(now) {
   return {
     hunter: freshness(HUNTER_LOG, 'market_hunter'),
     inspectors: freshness(INSPECTIONS_LOG, 'inspectors'),
+    // data/sales_ledger.jsonl (channels/ledger.py) records every
+    // distributor.py attempt — dry-run or live — so "flowing" here means
+    // "the Publishing Council actually ran recently", not "something sold".
+    distributor: freshness(SALES_LEDGER_FILE, 'distributor'),
     // profit_oracle doesn't keep its own JSONL log — golden_opportunities.json's
     // generated_at is the real signal of when it last actually ran.
     oracle: (() => {
@@ -299,6 +304,9 @@ function selfDiagnose(vitals) {
   if (!vitals.golden_pipeline.inspectors.flowing) {
     weaknesses.push({ cell: 'inspectors', issue: vitals.golden_pipeline.inspectors.reason });
   }
+  if (!vitals.golden_pipeline.distributor.flowing) {
+    weaknesses.push({ cell: 'distributor', issue: vitals.golden_pipeline.distributor.reason });
+  }
   if (vitals.butter_compliance && vitals.butter_compliance.rate < 100) {
     weaknesses.push({
       cell: 'Butter compliance',
@@ -336,7 +344,25 @@ function checkConstitutionCompliance(vitals, growth) {
   // verifiable check — does book_generator.py's own source actually contain
   // the shared recording point? — not an assumption held in this file.
   notes.push(checkScoutCircuitBreakerCoverage());
+  notes.push(checkDistributorWiring());
   return notes;
+}
+
+// Publishing Council (OpenClaw_Brain/06_Councils/README.md was "❌ Not
+// built" before this): same philosophy as checkScoutCircuitBreakerCoverage
+// below — a real, re-checkable fact from factory_loop.js's own source, not
+// a hardcoded claim that would silently go stale the day the wiring breaks.
+function checkDistributorWiring() {
+  const factoryLoopPath = path.join(FACTORY_DIR, 'factory_loop.js');
+  try {
+    const source = fs.readFileSync(factoryLoopPath, 'utf8');
+    const wired = source.includes('/api/distribute');
+    return wired
+      ? 'Publishing Council: مُغلَقة — factory_loop.js يستدعي /api/distribute تلقائياً بعد نجاح الفحص المزدوج (QA + Commercial Auditor)، بلا تدخل بشري في المسار العادي.'
+      : 'Publishing Council: فجوة مفتوحة — لا استدعاء آلي لـ /api/distribute من factory_loop.js بعد.';
+  } catch (_) {
+    return 'Publishing Council: تعذّر التحقق من factory_loop.js لمعرفة حالة هذه الفجوة.';
+  }
 }
 
 function checkScoutCircuitBreakerCoverage() {
@@ -362,6 +388,7 @@ function cellScores(vitals) {
     'market_hunter': vitals.golden_pipeline.hunter.flowing ? 100 : 0,
     'profit_oracle': vitals.golden_pipeline.oracle.flowing ? 100 : 0,
     'inspectors': vitals.golden_pipeline.inspectors.flowing ? 100 : 0,
+    'distributor': vitals.golden_pipeline.distributor.flowing ? 100 : 0,
     'Knowledge Brain': vitals.knowledge_entries > 0 ? 100 : 0,
   };
   if (vitals.butter_compliance) scores['Butter Compliance'] = vitals.butter_compliance.rate;
