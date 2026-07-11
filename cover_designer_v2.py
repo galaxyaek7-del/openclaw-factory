@@ -413,7 +413,7 @@ def main():
     # Demo/test run — required sample from the task spec.
     result = generate_cover(
         title="The Complete Home Kitchen",
-        author="Aek Abdelkader Grafat",
+        author="Abdelkader Grafat",
         niche="cookbook recipes",
     )
     print(json.dumps(result, indent=2, ensure_ascii=False))
