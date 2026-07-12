@@ -39,6 +39,12 @@ from schemas.product import Product
 # Self-registers "gumroad" in channels.registry on import.
 import channels.gumroad_arm  # noqa: F401,E402
 
+# ADR-025: self-registers "payhip"/"etsy" — dry-run only today, no real
+# token for either. Deliberate override of ADR-8's deferral, by explicit
+# presidential request on 2026-07-12.
+import channels.payhip_arm  # noqa: F401,E402
+import channels.etsy_arm  # noqa: F401,E402
+
 
 def distribute(product, arm_names=None, dry_run=True, ledger_path=None):
     """Fan `product` out to arms and record every attempt in the ledger.
