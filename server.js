@@ -6,6 +6,11 @@ const { spawn } = require('child_process');
 const Groq = require('groq-sdk');
 const knowledgeBrain = require('./knowledge_brain');
 const selfAwareness = require('./self_awareness');
+// readLastGenerationRecord is a pure file read (no side effects) — requiring
+// factory_loop.js here never starts its loop or acquires its lockfile: both
+// only happen inside main(), guarded by `if (require.main === module)`
+// (see factory_loop.js's own comment on that guard).
+const { readLastGenerationRecord, getButterPrice } = require('./factory_loop');
 
 require('dotenv').config();
 
@@ -13,6 +18,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const GROQ_KEY = process.env.GROQ_KEY;
 const groq = new Groq({ apiKey: GROQ_KEY || 'missing' });
+
+// Same gate factory_loop.js already enforces for its own automatic
+// distribution calls (ADR-018) — absent by default, so a real Gumroad push
+// still requires both this AND GUMROAD_ACCESS_TOKEN (channels/gumroad_arm.py
+// checks that independently).
+const LIVE_PUBLISH_ENABLED = process.env.FACTORY_LIVE_PUBLISH === 'true';
 
 app.use(cors());
 app.use(express.json());
@@ -205,7 +216,59 @@ app.post('/generate-book', async (req, res) => {
 //   - No arm can push live without its own platform secret — GumroadArm's
 //     status() fails safe on a missing GUMROAD_ACCESS_TOKEN regardless of
 //     dry_run, and nothing here checks or touches that secret.
-app.post('/api/distribute', (req, res) => {
+// Shared spawn + stdin-JSON/stdout-JSON helper — extracted so both the
+// route below AND the Scout auto-distribute link (ADR-018) call the exact
+// same distributor.py invocation, instead of two divergent copies.
+function runDistributor(record, { arms, dryRun = true } = {}, timeoutMs = 140000) {
+  return new Promise((resolve, reject) => {
+    const pythonPath = detectPython();
+    const distributorScript = path.join(__dirname, 'distributor.py');
+    if (!fs.existsSync(distributorScript)) {
+      reject(new Error('distributor.py not found'));
+      return;
+    }
+
+    let python;
+    try {
+      python = spawn(pythonPath, [distributorScript, '--json'], { cwd: __dirname });
+    } catch (err) {
+      reject(err);
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      try { python.kill(); } catch (_) { /* best effort */ }
+      reject(new Error('انتهت مهلة distributor.py'));
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', err => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      reject(err);
+    });
+    python.on('close', () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      try {
+        resolve(JSON.parse(output.trim()));
+      } catch (e) {
+        reject(new Error('Parse error: ' + output + errOut));
+      }
+    });
+
+    python.stdin.write(JSON.stringify({ record, arms, dry_run: dryRun }));
+    python.stdin.end();
+  });
+}
+
+app.post('/api/distribute', async (req, res) => {
   const { record, arms } = req.body || {};
 
   if (!record || typeof record !== 'object' || Array.isArray(record)) {
@@ -217,46 +280,46 @@ app.post('/api/distribute', (req, res) => {
 
   const dryRun = req.body.dry_run === false ? false : true;
 
-  const pythonPath = detectPython();
-  const distributorScript = path.join(__dirname, 'distributor.py');
-
-  if (!fs.existsSync(distributorScript)) {
-    return res.status(404).json({ success: false, error: 'distributor.py not found' });
-  }
-
-  const payload = JSON.stringify({ record, arms, dry_run: dryRun });
-
-  let python;
   try {
-    python = spawn(pythonPath, [distributorScript, '--json'], { cwd: __dirname });
+    const result = await runDistributor(record, { arms, dryRun });
+    res.json(result);
   } catch (err) {
-    return res.status(500).json({ success: false, error: 'Failed to spawn distributor.py: ' + err.message });
+    res.status(500).json({ success: false, error: 'Failed to run distributor.py: ' + err.message });
+  }
+});
+
+// ── SCOUT → DISTRIBUTOR LINK (ADR-018) ──
+// /api/scout/run generates a real book via book_generator.py directly (see
+// runBookGenerator above) but, unlike factory_loop.js's hunt()/
+// healEmptyBooks()/huntGolden() (all routed through triggerGenerateBook()
+// -> triggerDistribute()), it never used to call distributor.py at all — a
+// Scout-generated book sat with zero distribution attempt recorded. This
+// closes that gap using the exact same record-matching + dry_run gate
+// factory_loop.js already applies, so a manual Scout run behaves like the
+// automatic loop instead of being a second, inconsistent path.
+async function autoDistributeScoutBook(bookResult) {
+  if (!bookResult || bookResult.success !== true) return null;
+
+  if (bookResult.published === false) {
+    return { ok: false, dry_run: null, outcomes: null, detail: 'تم التوليد لكن رُفض النشر (Dual Inspection) — تخطّي التوزيع' };
   }
 
-  let output = '', errOut = '', responded = false;
-  python.stdout.on('data', d => { output += d.toString(); });
-  python.stderr.on('data', d => { errOut += d.toString(); });
+  const record = readLastGenerationRecord();
+  if (!record || record.file !== bookResult.file) {
+    return { ok: false, dry_run: null, outcomes: null, detail: 'تعذّر مطابقة سجل التوليد الأخير في books/_generation_log.jsonl — تخطّي التوزيع الآلي' };
+  }
 
-  python.on('error', (err) => {
-    if (responded) return;
-    responded = true;
-    res.status(500).json({ success: false, error: 'Failed to spawn distributor.py: ' + err.message });
-  });
-
-  python.on('close', () => {
-    if (responded) return;
-    responded = true;
-    try {
-      const result = JSON.parse(output.trim());
-      res.json(result);
-    } catch {
-      res.json({ success: false, error: 'Parse error: ' + output + errOut });
+  const dryRun = !LIVE_PUBLISH_ENABLED;
+  try {
+    const result = await runDistributor(record, { dryRun });
+    if (!result.success) {
+      return { ok: false, dry_run: dryRun, outcomes: null, detail: `فشل التوزيع: ${result.error}` };
     }
-  });
-
-  python.stdin.write(payload);
-  python.stdin.end();
-});
+    return { ok: true, dry_run: dryRun, outcomes: result.outcomes };
+  } catch (err) {
+    return { ok: false, dry_run: dryRun, outcomes: null, detail: `فشل الاتصال بـ distributor.py: ${err.message}` };
+  }
+}
 
 // ── SALES POLL ──
 // Wraps scripts/poll_sales.py (ADR-016) via the same spawn + stdin-JSON +
@@ -805,6 +868,25 @@ app.post('/api/scout/run', async (req, res) => {
     }
   }
 
+  // 2.4) Real butter_price() (ADR-018) — Scout's own Groq prompt only
+  // self-instructs a >=$30 floor with no market-comparable computation
+  // behind it, unlike the Golden Hunter bridge (factory_loop.js's
+  // briefFromGoldenOpportunity()), which already calls the real
+  // profit_oracle.py butter_price(). Reusing that exact function here so
+  // Scout's price is the same constitutional number, not a second,
+  // divergent estimate — same fail-safe floor-clamp on failure.
+  const MIN_BUTTER_PRICE = 30; // mirrors factory_loop.js's own constant (CONSTITUTION.md §16)
+  const butter = await getButterPrice(brief.topic);
+  if (butter.ok) {
+    brief._raw_scout_price = brief.price;
+    brief.price = butter.price;
+    brief._price_source = 'butter_price';
+  } else {
+    brief.price = Math.max(brief.price || 0, MIN_BUTTER_PRICE);
+    brief._price_source = 'fallback_floor_clamped';
+    brief._butter_price_error = butter.error;
+  }
+
   // 2.5) Niche Safety Filter gate — brief.topic/title/audience are what
   // actually reaches book_generator.py via runBookGenerator() below
   // (this route never reads req.body for the niche; Scout always picks
@@ -866,12 +948,15 @@ app.post('/api/scout/run', async (req, res) => {
     return res.status(502).json({ success: false, error: (bookResult && bookResult.error) || 'فشل توليد الكتاب', n8n: n8nStatus, brief });
   }
 
+  const distribution = await autoDistributeScoutBook(bookResult);
+
   const result = {
     success: true,
     n8n: n8nStatus,
     briefSource,
     brief,
     book: bookResult,
+    distribution,
     durationMs: Date.now() - startedAt,
   };
   logScout('success', result);
