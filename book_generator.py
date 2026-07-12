@@ -2276,6 +2276,82 @@ def generate_book(title, topic, chapters=8, audience="القارئ العام", 
     return result
 
 
+def generate_printable(title, ptype, price, subtitle="", pages=15, theme="blue", author="OpenClaw Press", output=None):
+    """Generates a real English EU/US printable (planner/tracker/habit/
+    budget/...) via the EXISTING create_book() — its internal drawing logic
+    is untouched, called exactly as before — then wires the result through
+    the same Dual Inspection + Factory Memory + circuit-breaker pipeline
+    generate_book() already uses (ADR-020/ADR-021): create_book()'s output
+    stops being a dead end. Scout/hunt()/Golden Hunter's generate_book()
+    path and this one now share the exact same downstream (inspectors.py,
+    books/_generation_log.jsonl, and — via schemas/product.py's
+    product_type="printable" routing — distributor.py).
+
+    Economically evaluated against "gumroad_digital" (ADR-020's separate
+    $2.50 profit floor), never "kdp_ebook" — these are not KDP products."""
+    title = str(title or '').strip()
+    if not title:
+        raise ValueError("العنوان (title) مطلوب")
+    ptype = str(ptype or '').strip().lower()
+    try:
+        pages = max(2, min(int(pages), 60))
+    except (TypeError, ValueError):
+        pages = 15
+
+    books_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'books')
+    os.makedirs(books_dir, exist_ok=True)
+    out_path, filename = _resolve_safe_output_path(books_dir, output, title)
+
+    n_pages = create_book(out_path, title, subtitle, ptype, theme, pages, author)
+
+    result = {
+        "success": True,
+        "file": filename,
+        "path": out_path,
+        "pages": n_pages,
+        "topic": title,
+        "price": price,
+        "product_type": "printable",
+    }
+
+    # Dual-Inspector Quality System (CONSTITUTION.md §17) — same master gate
+    # generate_book() uses. cover_path=None: create_book() draws its cover on
+    # page 1 of the same PDF, not a separate file.
+    if INSPECTORS is not None:
+        try:
+            inspection = INSPECTORS.final_inspection({
+                "pdf_path": out_path,
+                "cover_path": None,
+                "title": title,
+                "subtitle": subtitle,
+                "author": author,
+                "niche": title,
+                "price": price,
+                "platform": "gumroad_digital",
+                "page_count": n_pages,
+                "min_pages": 4,
+            })
+        except Exception as e:
+            inspection = {"passed": False, "published": False,
+                          "technical": {"passed": False, "checks": [], "severity": "critical",
+                                        "failures": [f"استثناء غير متوقَّع أثناء الفحص: {e}"]},
+                          "commercial": {"passed": False, "checks": [], "failures": [], "verdict": "لم يُدقَّق"}}
+    else:
+        inspection = {"passed": False, "published": False,
+                      "technical": {"passed": False, "checks": [], "severity": "critical",
+                                    "failures": ["inspectors.py غير متوفر — لا يمكن الموافقة على النشر"]},
+                      "commercial": {"passed": False, "checks": [], "failures": [], "verdict": "لم يُدقَّق"}}
+
+    result["published"] = inspection["published"]
+    result["inspection"] = inspection
+
+    if not inspection["published"]:
+        _record_rejected_niche(title, title, _summarize_inspection_failure(inspection))
+
+    _log_generation(result)
+    return result
+
+
 def main():
     if '--quality-gate' in sys.argv:
         # Lightweight hook so other processes (server.js's /api/trends) can
@@ -2297,6 +2373,20 @@ def main():
         return
     try:
         data = json.loads(sys.stdin.read())
+
+        if data.get('product_type') == 'printable':
+            result = generate_printable(
+                title=data.get('title', 'Untitled Printable'),
+                ptype=data.get('ptype') or data.get('type', 'planner'),
+                price=data.get('price', 5.0),
+                subtitle=data.get('subtitle', ''),
+                pages=data.get('pages', 15),
+                theme=data.get('theme', 'blue'),
+                author=data.get('author', ''),
+                output=data.get('output'),
+            )
+            print(json.dumps(result, ensure_ascii=False))
+            return
 
         if 'topic' in data:
             result = generate_book(
