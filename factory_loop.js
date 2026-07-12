@@ -301,6 +301,47 @@ async function triggerDistribute(record) {
   }
 }
 
+// ── SALES POLL (ADR-016) ──
+// Calls POST /api/sales/poll (scripts/poll_sales.py) every tick so a real
+// Gumroad sale is recorded to data/sales_ledger.jsonl without a human ever
+// running --sales by hand. Fails safe exactly like triggerDistribute: no
+// GUMROAD_ACCESS_TOKEN means channels/gumroad_arm.py's get_sales() reports
+// a skip_reason, never a crash, and this function turns that into a normal
+// "none" tick action, not a "failed" one.
+async function pollSales(reachable) {
+  if (!reachable) {
+    return { action: 'skipped', detail: 'السيرفر غير متاح — تخطي استطلاع المبيعات هذه الدورة' };
+  }
+  try {
+    const res = await fetchWithTimeout(`${DASHBOARD_URL}/api/sales/poll`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    }, 30000, 'api-sales-poll');
+    const data = await res.json();
+
+    if (!data.success) {
+      return { action: 'failed', detail: `فشل استطلاع المبيعات: ${data.error}` };
+    }
+
+    const outcomes = data.outcomes || [];
+    const summary = outcomes.length
+      ? outcomes.map(o => {
+          if (o.skip_reason) return `${o.arm}: تخطّي (${o.skip_reason})`;
+          if (o.error) return `${o.arm}: خطأ (${o.error})`;
+          return `${o.arm}: ${o.new_sales} مبيعة جديدة`;
+        }).join('؛ ')
+      : 'لا أذرع مسجَّلة';
+
+    return {
+      action: (data.total_new_sales || 0) > 0 ? 'found_sales' : 'none',
+      detail: `استطلاع المبيعات: ${summary}`,
+    };
+  } catch (err) {
+    return { action: 'failed', detail: `فشل الاتصال بـ /api/sales/poll: ${err.message}` };
+  }
+}
+
 async function triggerGenerateBook(brief) {
   try {
     const res = await fetchWithTimeout(`${DASHBOARD_URL}/generate-book`, {
@@ -1134,6 +1175,8 @@ async function runTick() {
 
     actions.push({ step: 'heal_n8n', ...healN8n(diagnosis.health) });
 
+    actions.push({ step: 'sales_poll', ...(await pollSales(true)) });
+
     const huntResult = await hunt(true);
     const { distribution: huntDistribution, ...huntAction } = huntResult;
     actions.push({ step: 'hunt', ...huntAction });
@@ -1271,7 +1314,7 @@ module.exports = {
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
   maybeRunMarketHunter, maybeRunSelfAwareness,
-  readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction,
+  readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction, pollSales,
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
   appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted,
   evaluateGoldenOpportunities, getButterPrice,
