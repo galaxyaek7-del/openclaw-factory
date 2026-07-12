@@ -258,6 +258,60 @@ app.post('/api/distribute', (req, res) => {
   python.stdin.end();
 });
 
+// ── SALES POLL ──
+// Wraps scripts/poll_sales.py (ADR-016) via the same spawn + stdin-JSON +
+// stdout-JSON pattern as /api/distribute. This endpoint never talks to
+// Gumroad directly — poll_sales.py calls each registered arm's get_sales(),
+// which itself refuses (skip_reason, never a network call) without a real
+// GUMROAD_ACCESS_TOKEN, same fail-safe channels/gumroad_arm.py already
+// enforces for publish().
+app.post('/api/sales/poll', (req, res) => {
+  const { arms } = req.body || {};
+  if (arms !== undefined && !Array.isArray(arms)) {
+    return res.status(400).json({ success: false, error: 'arms must be an array of arm names, if provided' });
+  }
+
+  const pythonPath = detectPython();
+  const pollScript = path.join(__dirname, 'scripts', 'poll_sales.py');
+
+  if (!fs.existsSync(pollScript)) {
+    return res.status(404).json({ success: false, error: 'scripts/poll_sales.py not found' });
+  }
+
+  const payload = JSON.stringify({ arms });
+
+  let python;
+  try {
+    python = spawn(pythonPath, [pollScript, '--json'], { cwd: __dirname });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: 'Failed to spawn poll_sales.py: ' + err.message });
+  }
+
+  let output = '', errOut = '', responded = false;
+  python.stdout.on('data', d => { output += d.toString(); });
+  python.stderr.on('data', d => { errOut += d.toString(); });
+
+  python.on('error', (err) => {
+    if (responded) return;
+    responded = true;
+    res.status(500).json({ success: false, error: 'Failed to spawn poll_sales.py: ' + err.message });
+  });
+
+  python.on('close', () => {
+    if (responded) return;
+    responded = true;
+    try {
+      const result = JSON.parse(output.trim());
+      res.json(result);
+    } catch {
+      res.json({ success: false, error: 'Parse error: ' + output + errOut });
+    }
+  });
+
+  python.stdin.write(payload);
+  python.stdin.end();
+});
+
 // ── CHAT ──
 app.post('/chat', async (req, res) => {
   const { message, agent } = req.body;
