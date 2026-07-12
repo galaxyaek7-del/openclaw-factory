@@ -56,6 +56,15 @@ MAX_COMPETITION = NICHE_VALIDATOR.CRITERIA['max_competition'] if NICHE_VALIDATOR
 MIN_BUTTER_PRICE = 30   # CONSTITUTION.md §16 — the Butter Principle's floor
 MAX_BUTTER_PRICE = 100  # a KDP-realistic ceiling for a single digital book
 
+# ADR-020: EU/US English printables (Gumroad) have a completely different
+# psychological price ceiling than a KDP ebook — $30 reads as absurd for a
+# 10-30 page planner/tracker, whereas $5-15 is the real market band (see
+# PRICING_AND_FIRST_PRODUCTS.md). Separate constants, not a replacement —
+# MIN/MAX_BUTTER_PRICE above stay exactly as-is for every existing book
+# caller.
+MIN_BUTTER_PRICE_PRINTABLE = 5
+MAX_BUTTER_PRICE_PRINTABLE = 15
+
 # ── Keyword heuristics — documented estimates, not live APIs ──
 
 SEASONAL_KEYWORDS = {
@@ -306,17 +315,22 @@ def score_opportunity(niche, now=None):
     }
 
 
-def butter_price(niche):
+def butter_price(niche, product_type="book"):
     """Smart Publishing + Butter Principle (OPENCLAW_OS_CONSTITUTION.md /
-    CONSTITUTION.md §16): given a niche, returns a defensible price in the
-    $30–$100 butter-tier band — never a flat $30 for everything, never a
-    fabricated number. The starting tier reuses the same keyword vocabulary
-    _score_margin() already scores this niche's margin against (premium/
-    recurring signals → a higher defensible starting point), then this
-    niche's OWN profit_score scales it upward within the remaining headroom
-    to $100 — a stronger niche (higher demand, lower competition) can
-    defensibly ask for more, rather than every repriced niche landing on
-    the same number.
+    CONSTITUTION.md §16): given a niche, returns a defensible price — never
+    a flat number for everything, never a fabricated one. The starting tier
+    reuses the same keyword vocabulary _score_margin() already scores this
+    niche's margin against (premium/recurring signals → a higher defensible
+    starting point), then this niche's OWN profit_score scales it upward
+    within the remaining headroom to the ceiling — a stronger niche (higher
+    demand, lower competition) can defensibly ask for more, rather than
+    every repriced niche landing on the same number.
+
+    product_type="book" (default, unchanged): $30-$100 KDP-ebook band.
+    product_type="printable" (ADR-020): $5-$15 EU/US Gumroad-printable band
+    — $30 reads as absurd for a 10-30 page planner/tracker in that market.
+    Every existing caller that doesn't pass product_type gets byte-for-byte
+    the same book pricing as before this parameter existed.
 
     Callers are expected to only invoke this for niches that are not
     genuinely weak (see score_opportunity()'s verdict != 'SKIP') — a niche
@@ -326,25 +340,41 @@ def butter_price(niche):
     if not niche:
         raise ValueError("النيتش (niche) مطلوب")
 
+    if product_type == "printable":
+        min_price, max_price = MIN_BUTTER_PRICE_PRINTABLE, MAX_BUTTER_PRICE_PRINTABLE
+    else:
+        min_price, max_price = MIN_BUTTER_PRICE, MAX_BUTTER_PRICE
+
     result = score_opportunity(niche)
     score = result['profit_score']
     niche_lower = niche.lower()
 
-    if any(k in niche_lower for k in PREMIUM_KEYWORDS):
-        base = 60
-    elif any(k in niche_lower for k in MID_KEYWORDS):
-        base = 45
+    if product_type == "printable":
+        # Same keyword signals, rescaled proportionally into the $5-15 band
+        # instead of book pricing's $30/$45/$60 tiers.
+        if any(k in niche_lower for k in PREMIUM_KEYWORDS):
+            base = min_price + (max_price - min_price) * 0.5   # ~$10
+        elif any(k in niche_lower for k in MID_KEYWORDS):
+            base = min_price + (max_price - min_price) * 0.25  # ~$7.5
+        else:
+            base = min_price + 1  # $6 — still comfortably above the floor
+        if any(k in niche_lower for k in RECURRING_KEYWORDS):
+            base += (max_price - min_price) * 0.15  # ~$1.5 more for a subscription-able product
     else:
-        base = MIN_BUTTER_PRICE + 5  # $35 — still comfortably above the floor
+        if any(k in niche_lower for k in PREMIUM_KEYWORDS):
+            base = 60
+        elif any(k in niche_lower for k in MID_KEYWORDS):
+            base = 45
+        else:
+            base = min_price + 5  # $35 — still comfortably above the floor
+        if any(k in niche_lower for k in RECURRING_KEYWORDS):
+            base += 10  # a subscription-able product defensibly commands more
 
-    if any(k in niche_lower for k in RECURRING_KEYWORDS):
-        base += 10  # a subscription-able product defensibly commands more
-
-    base = min(base, MAX_BUTTER_PRICE)
-    headroom = MAX_BUTTER_PRICE - base
+    base = min(base, max_price)
+    headroom = max_price - base
     scaled = base + headroom * max(0, score - 60) / 40  # score 60→base, 100→ceiling
 
-    return round(min(MAX_BUTTER_PRICE, max(MIN_BUTTER_PRICE, scaled)))
+    return round(min(max_price, max(min_price, scaled)))
 
 
 def _read_opportunities():
@@ -443,8 +473,9 @@ def main():
     if '--butter-price' in sys.argv:
         try:
             data = json.loads(sys.stdin.read())
-            price = butter_price(data.get('niche', ''))
-            print(json.dumps({"success": True, "niche": data.get('niche', ''), "butter_price": price}, ensure_ascii=False))
+            product_type = data.get('product_type', 'book')  # ADR-020: "printable" -> $5-15 EU/US band
+            price = butter_price(data.get('niche', ''), product_type=product_type)
+            print(json.dumps({"success": True, "niche": data.get('niche', ''), "product_type": product_type, "butter_price": price}, ensure_ascii=False))
         except Exception as e:
             print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))
             sys.exit(1)
