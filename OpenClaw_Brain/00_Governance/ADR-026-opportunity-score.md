@@ -1,0 +1,53 @@
+# ADR-026 — Opportunity Score: بوابة قبول إلزامية موحَّدة عبر الطبقات
+
+**التاريخ:** 2026-07-13
+**الحالة:** معتمَد، منفَّذ، مختبَر حياً.
+**يُنفِّذ:** `ELITE_ASSET_DOCTRINE.md` §4.
+
+---
+
+## القرار
+
+دالة جديدة `profit_oracle.opportunity_score(niche, tier)` — مركَّب مرجَّح حسب الطبقة، يُعيد استخدام مكوّنات `score_opportunity()` الحقيقية (demand/competition/margin) **بلا أي تعديل عليها**، ويضيف عاملين جديدين (`automation_potential`, `long_term_value`) كثوابت موثَّقة لكل طبقة — لا تخمين لكل نيتش على حدة.
+
+```
+OpportunityScore = tier_weight × (
+    0.25 × market_demand +
+    0.20 × competition_favorability +
+    0.20 × profit_potential +
+    0.15 × automation_potential +
+    0.20 × long_term_value
+)
+```
+
+- `tier_weight`: Tier1=1.3, Tier2=1.15, Tier3=1.0, Tier4=0.8.
+- `automation_potential` (ثابت لكل طبقة): Tier1=40 (يحتاج بنية غير موجودة بعد، §6)، Tier2=85، Tier3=80، Tier4=100 (آلي بالكامل فعلياً اليوم).
+- `long_term_value` (ثابت لكل طبقة): Tier1=95، Tier2=70، Tier3=60، Tier4=25.
+- **الحد الأدنى للقبول: 65/100** (`MIN_OPPORTUNITY_SCORE`) — أعلى صراحةً من `inspectors.py`'s `MIN_PROFIT_SCORE=60` الحالي، بما يعكس "أصول أقل، أفضل".
+
+## خطأ اتجاه اكتُشف وصُحِّح قبل أي كود
+
+المسودة الأولى للصيغة استخدمت `(100 − competition)` بافتراض أن الدرجة الخام تمثّل "كمية المنافسة". **هذا خطأ:** `_score_competition()` في `profit_oracle.py` يُنتج أصلاً درجة "المنافسة المواتية" (الأعلى = منافسة أقل/أفضل) — بدليل أن `score_opportunity()` نفسها تجمعها موجَبة (`competition_score * 0.30`). صُحِّحت الصيغة لاستخدام `competition_favorability` مباشرة **قبل** كتابة أي سطر كود، لا بعد اكتشاف عطل حي.
+
+## الرفض التلقائي في `factory_loop.js`
+
+`getOpportunityScore()` (نفس نمط `getButterPrice()` تماماً — spawn لـ`profit_oracle.py --opportunity-score`) مُوصَّلة داخل `huntGolden()` بعد فحص قاطع الدائرة الحالي مباشرة: أي فرصة دون 65 تُتخطَّى وتُسجَّل بالسبب والدرجة، **قبل** بناء أي brief أو استدعاء Groq. فشل الحساب نفسه (spawn error, timeout) **يفشل مفتوحاً عمداً** — بوابة إضافية جديدة فوق فحوصات قائمة، لا تُوقِف الإنتاج بسبب عطل في فحص جديد؛ `inspectors.py`'s Dual Inspection يبقى الحارس النهائي الحقيقي بغضّ النظر.
+
+## أثر حقيقي مهم، مُتحقَّق منه حياً — لا افتراض
+
+Golden Hunter (`market_hunter.py`) يكتشف فرصاً بشكل Tier 4 حصرياً اليوم (`ELITE_ASSET_DOCTRINE.md` §5). الحد الأقصى النظري لأي نيتش Tier 4 — حتى لو كانت درجاته الخام (demand/competition/margin) 100/100/100 كاملة — هو:
+
+```
+0.8 × (0.25×100 + 0.20×100 + 0.20×100 + 0.15×100 + 0.20×25) = 0.8 × 85 = 68
+```
+
+**68/100 فقط، أعلى بقليل من حد 65** — بمعنى: أي نيتش حقيقي أقل من كامل الكمال سيُرفَض غالباً. تحقَّق حياً: نيتش "العودة للمدارس اشتراك للمبتدئين" (كان يُصنَّف "GOLDEN" بمعيار `profit_score` القديم، 86/100) يُرفَض الآن عند Opportunity Score بـ58.5/100.
+
+**هذا ليس عطلاً — هو التنفيذ الصحيح لـ"Tier 4 يُخفَّض ترتيبه".** الأثر العملي: جسر Golden Hunter الآلي سيتوقف عملياً عن إنتاج أي شيء تلقائياً من الآن. الإنتاج اليدوي (زر Scout، استدعاء CLI مباشر) **يبقى متاحاً بالكامل** — لا يمر عبر هذه البوابة إطلاقاً، وهو الطريق المقصود لـ"Tier 4 كتجربة".
+
+## الأثر
+
+- ملف مُعدَّل: `profit_oracle.py` (`opportunity_score()` + `--opportunity-score` CLI، بلا تعديل على `score_opportunity()`/`butter_price()`).
+- ملف مُعدَّل: `factory_loop.js` (`getOpportunityScore()` + بوابة جديدة في `huntGolden()`).
+- ملف جديد: `tests/test_opportunity_score.py` (8 اختبارات).
+- `inspectors.py`, `book_generator.py`, `channels/*`, `distributor.py`: **بلا أي تعديل** — هذه بوابة إضافية قبل الإنتاج، لا تعديل على بوابة الفحص المزدوج بعد التوليد.
