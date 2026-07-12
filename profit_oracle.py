@@ -321,6 +321,81 @@ def score_opportunity(niche, now=None):
     }
 
 
+# ── OPPORTUNITY SCORE (ADR-026, ELITE_ASSET_DOCTRINE.md §4) ──
+# Tier-aware composite score for the Elite Digital Asset doctrine — reuses
+# score_opportunity()'s real demand/competition/margin signals UNCHANGED
+# (never re-derived), and adds two tier-derived factors this factory has
+# no real per-niche signal for yet: automation_potential and
+# long_term_value. These are documented, fixed-per-tier constants, not
+# per-niche guesses — inventing a fake per-niche automation/LTV score
+# would be exactly the "fabricated number" this factory's economics
+# engine was built to stop doing (see economics.py's own docstring).
+
+TIER_WEIGHTS = {"tier1": 1.3, "tier2": 1.15, "tier3": 1.0, "tier4": 0.8}
+
+# Tier 1 today needs real hosting/billing/support infrastructure that does
+# not exist (ELITE_ASSET_DOCTRINE.md §6) — its automation_potential is
+# LOW until that's built, not high just because "AI Agent" sounds
+# automated. Tier 4 (create_book()/generate_printable()) is the one
+# actually fully automatic today.
+AUTOMATION_POTENTIAL_BY_TIER = {"tier1": 40, "tier2": 85, "tier3": 80, "tier4": 100}
+
+# Tier 1's recurring-revenue ceiling is highest IF it ever gets built;
+# Tier 4 is one-off with no recurring/lifetime-value signal at all.
+LONG_TERM_VALUE_BY_TIER = {"tier1": 95, "tier2": 70, "tier3": 60, "tier4": 25}
+
+# ADR-026: stricter than inspectors.py's MIN_PROFIT_SCORE=60 — "fewer,
+# better assets" means a higher bar, not the same bar applied to a
+# fancier-sounding label.
+MIN_OPPORTUNITY_SCORE = 65
+
+
+def opportunity_score(niche, tier="tier4"):
+    """Tier-aware composite score (ADR-026). Returns a dict with the final
+    0-100 score, whether it clears MIN_OPPORTUNITY_SCORE, and every
+    component so a caller/log can show its work — never a bare number with
+    no way to audit how it was reached."""
+    tier = tier if tier in TIER_WEIGHTS else "tier4"
+    result = score_opportunity(niche)
+    scores = result["scores"]
+
+    market_demand = scores["demand"]
+    competition_favorability = scores["competition"]  # already high=favorable, see score_opportunity()
+    profit_potential = scores["margin"]
+    automation_potential = AUTOMATION_POTENTIAL_BY_TIER[tier]
+    long_term_value = LONG_TERM_VALUE_BY_TIER[tier]
+
+    raw = (
+        0.25 * market_demand +
+        0.20 * competition_favorability +
+        0.20 * profit_potential +
+        0.15 * automation_potential +
+        0.20 * long_term_value
+    )
+    weighted = round(min(100.0, raw * TIER_WEIGHTS[tier]), 1)
+    accepted = weighted >= MIN_OPPORTUNITY_SCORE
+
+    return {
+        "niche": niche,
+        "tier": tier,
+        "tier_weight": TIER_WEIGHTS[tier],
+        "opportunity_score": weighted,
+        "accepted": accepted,
+        "min_required": MIN_OPPORTUNITY_SCORE,
+        "components": {
+            "market_demand": market_demand,
+            "competition_favorability": competition_favorability,
+            "profit_potential": profit_potential,
+            "automation_potential": automation_potential,
+            "long_term_value": long_term_value,
+        },
+        "reason": (
+            f"accepted: {weighted}/100 >= {MIN_OPPORTUNITY_SCORE} floor (tier={tier})" if accepted
+            else f"rejected: {weighted}/100 < {MIN_OPPORTUNITY_SCORE} floor (tier={tier})"
+        ),
+    }
+
+
 def butter_price(niche, product_type="book"):
     """Smart Publishing + Butter Principle (OPENCLAW_OS_CONSTITUTION.md /
     CONSTITUTION.md §16): given a niche, returns a defensible price — never
@@ -503,6 +578,19 @@ def main():
             product_type = data.get('product_type', 'book')  # ADR-020: "printable" -> $5-15 EU/US band
             price = butter_price(data.get('niche', ''), product_type=product_type)
             print(json.dumps({"success": True, "niche": data.get('niche', ''), "product_type": product_type, "butter_price": price}, ensure_ascii=False))
+        except Exception as e:
+            print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))
+            sys.exit(1)
+        return
+
+    # ADR-026: purely additive invocation surface for the EXISTING
+    # opportunity_score() — so factory_loop.js can call it the same way it
+    # already calls --butter-price, no new spawn pattern needed.
+    if '--opportunity-score' in sys.argv:
+        try:
+            data = json.loads(sys.stdin.read())
+            result = opportunity_score(data.get('niche', ''), tier=data.get('tier', 'tier4'))
+            print(json.dumps({"success": True, **result}, ensure_ascii=False))
         except Exception as e:
             print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))
             sys.exit(1)

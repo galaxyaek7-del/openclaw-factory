@@ -54,14 +54,14 @@
 ```
 OpportunityScore = tier_weight × (
     0.25 × market_demand +
-    0.20 × (100 − competition) +
+    0.20 × competition_favorability +
     0.20 × profit_potential +
     0.15 × automation_potential +
     0.20 × long_term_value
 )
 ```
 
-- **المكوّنات الأربعة الأولى** (demand/competition/profit/تنفيذ) مُعاد استخدامها حرفياً من `profit_oracle.score_opportunity()` الموجودة فعلاً — لا إعادة اختراع.
+- **المكوّنات الثلاثة الأولى** (`demand`, `competition`, `margin` من `score_opportunity()`) مُعاد استخدامها حرفياً — **بدون عكس اتجاهها**: `competition_score` في `profit_oracle.py` مُصمَّم أصلاً بحيث الدرجة العالية = منافسة مواتية (منخفضة)، تماماً كما يُستخدَم في `score_opportunity()`'s الصيغة الأصلية (`competition_score * 0.30` تُضاف موجَبة). عكسها بالخطأ (`100 - competition`) كان الخطأ الأول المكتشَف قبل التنفيذ — صُحِّح قبل كتابة أي كود.
 - **`automation_potential`** و**`long_term_value`** مكوّنان جديدان، محسوبان من `product_type`/`tier` مباشرة (قيم ثابتة موثَّقة لكل طبقة، لا تخمين لكل نيتش على حدة).
 - **`tier_weight`**: Tier 1 = 1.3، Tier 2 = 1.15، Tier 3 = 1.0، Tier 4 = 0.8 — يكافئ الطبقات الأعلى قيمة على نفس الدرجة الخام.
 - **الحد الأدنى للقبول: 65/100** (أعلى من حد 60 الحالي في `inspectors.py` — "أصول أقل، أفضل" يعني عتبة أعلى، لا نفس العتبة).
