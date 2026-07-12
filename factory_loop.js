@@ -517,6 +517,59 @@ function getButterPrice(niche, { timeoutMs = 15000, scriptPath = path.join(FACTO
   });
 }
 
+// ADR-026 (ELITE_ASSET_DOCTRINE.md §4): same spawn pattern as
+// getButterPrice() above, calling profit_oracle.py's new
+// --opportunity-score flag. Golden Hunter's market_hunter.py searches for
+// KDP-book-shaped signals only (ELITE_ASSET_DOCTRINE.md §5's honest
+// finding — not redirected to Tier 1/2 yet), so every opportunity from
+// this bridge is scored as "tier4" here, never guessed at a higher tier.
+function getOpportunityScore(niche, { timeoutMs = 15000, scriptPath = path.join(FACTORY_DIR, 'profit_oracle.py'), pythonPath, tier = 'tier4' } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [scriptPath, '--opportunity-score'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, error: `تعذّر تشغيل profit_oracle.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, error: 'انتهت مهلة profit_oracle.py --opportunity-score (15 ثانية)' });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, error: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (result.success && Number.isFinite(result.opportunity_score)) {
+          finish({ ok: true, score: result.opportunity_score, accepted: result.accepted, reason: result.reason, components: result.components });
+        } else {
+          finish({ ok: false, error: result.error || `ناتج غير متوقع: ${output}${errOut}` });
+        }
+      } catch (e) {
+        finish({ ok: false, error: `Parse error: ${output}${errOut}` });
+      }
+    });
+
+    try {
+      python.stdin.write(JSON.stringify({ niche, tier }));
+      python.stdin.end();
+    } catch (err) {
+      finish({ ok: false, error: err.message });
+    }
+  });
+}
+
 // Builds a /generate-book-compatible brief straight from a scored
 // opportunity — bypasses Scout's free-association Groq prompt entirely,
 // since the niche is already real, tested data from profit_oracle.py, not
@@ -599,6 +652,22 @@ async function huntGolden(reachable) {
   const rejection = isNicheRejected(top.niche);
   if (rejection) {
     const rec = appendGoldenHunterEvent({ action: 'skipped', reason: 'circuit_breaker', niche: top.niche, detail: `تخطّي نيتش مرفوض سابقاً (${top.niche}) — قاطع الدائرة نشط حتى ${rejection.retryAfter}: ${rejection.reason}` });
+    return { action: 'skipped', detail: rec.detail };
+  }
+
+  // ADR-026: Opportunity Score gate — "fewer, better assets" means a
+  // stricter bar than the old profit_score>=60 check alone. A scoring
+  // failure (spawn error, timeout, bad output) fails OPEN here on
+  // purpose, not closed: this is a NEW, additive gate layered on top of
+  // profit_score/butter_price's existing checks (still enforced later by
+  // book_generator.py's Dual Inspection regardless) — never block
+  // production because a second, newer scoring call happened to fail.
+  const opportunityScore = await getOpportunityScore(top.niche, { tier: 'tier4' });
+  if (opportunityScore.ok && !opportunityScore.accepted) {
+    const rec = appendGoldenHunterEvent({
+      action: 'skipped', reason: 'opportunity_score_below_floor', niche: top.niche,
+      opportunity_score: opportunityScore.score, detail: `تخطّي "${top.niche}" — Opportunity Score ${opportunityScore.score}/100 (${opportunityScore.reason})`,
+    });
     return { action: 'skipped', detail: rec.detail };
   }
 
@@ -1378,7 +1447,7 @@ module.exports = {
   readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction, pollSales,
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
   appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted,
-  evaluateGoldenOpportunities, getButterPrice,
+  evaluateGoldenOpportunities, getButterPrice, getOpportunityScore,
   checkNeedsAttention, writeNeedsAttention, clearNeedsAttention,
   checkPendingReview, countPendingReviewDrafts, writeNeedsReview, clearNeedsReview,
 };
