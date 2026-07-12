@@ -216,11 +216,43 @@ app.post('/generate-book', async (req, res) => {
 //   - No arm can push live without its own platform secret — GumroadArm's
 //     status() fails safe on a missing GUMROAD_ACCESS_TOKEN regardless of
 //     dry_run, and nothing here checks or touches that secret.
+// ── PUBLISHER → DISTRIBUTION LINK (ADR-019) ──
+// Publisher was the one dashboard-only agent with a genuinely unique role
+// (SEO listing copy) — nothing else in the real pipeline produces it, unlike
+// Builder/Design/QA/Finance which duplicate book_generator.py/
+// cover_designer_v2/Dual Inspection/economics.py respectively (see
+// ADR-019). This makes Publisher's existing prompt (AGENT_PROMPTS.publisher
+// — unchanged) run automatically on every real distribution attempt instead
+// of only through its manual dashboard button. It never blocks or fails a
+// distribution: a Groq error here is logged, not thrown, exactly like every
+// other fail-safe wrapper in this file.
+//
+// The actual logic lives in lib/publisher_seo.js (groq client/key/prompt are
+// injected there) so it's unit-testable without a real network call — see
+// tests/test_publisher_seo.js.
+const { logPublisherSEO, generatePublisherSEO: generatePublisherSEOCore } = require('./lib/publisher_seo');
+
+async function generatePublisherSEO(record) {
+  return generatePublisherSEOCore(record, {
+    groqClient: groq,
+    groqKey: GROQ_KEY,
+    systemPrompt: AGENT_PROMPTS.publisher.system,
+  });
+}
+
 // Shared spawn + stdin-JSON/stdout-JSON helper — extracted so both the
 // route below AND the Scout auto-distribute link (ADR-018) call the exact
 // same distributor.py invocation, instead of two divergent copies.
-function runDistributor(record, { arms, dryRun = true } = {}, timeoutMs = 140000) {
-  return new Promise((resolve, reject) => {
+async function runDistributor(record, { arms, dryRun = true } = {}, timeoutMs = 140000) {
+  const seo = await generatePublisherSEO(record);
+  logPublisherSEO({
+    product_title: (record && (record.title || record.topic)) || null,
+    ok: seo.ok,
+    content: seo.ok ? seo.content : null,
+    error: seo.ok ? null : seo.error,
+  });
+
+  const distributorResult = await new Promise((resolve, reject) => {
     const pythonPath = detectPython();
     const distributorScript = path.join(__dirname, 'distributor.py');
     if (!fs.existsSync(distributorScript)) {
@@ -266,6 +298,8 @@ function runDistributor(record, { arms, dryRun = true } = {}, timeoutMs = 140000
     python.stdin.write(JSON.stringify({ record, arms, dry_run: dryRun }));
     python.stdin.end();
   });
+
+  return { ...distributorResult, seo: { ok: seo.ok, content: seo.ok ? seo.content : null, error: seo.ok ? null : seo.error } };
 }
 
 app.post('/api/distribute', async (req, res) => {
@@ -313,9 +347,9 @@ async function autoDistributeScoutBook(bookResult) {
   try {
     const result = await runDistributor(record, { dryRun });
     if (!result.success) {
-      return { ok: false, dry_run: dryRun, outcomes: null, detail: `فشل التوزيع: ${result.error}` };
+      return { ok: false, dry_run: dryRun, outcomes: null, seo: result.seo, detail: `فشل التوزيع: ${result.error}` };
     }
-    return { ok: true, dry_run: dryRun, outcomes: result.outcomes };
+    return { ok: true, dry_run: dryRun, outcomes: result.outcomes, seo: result.seo };
   } catch (err) {
     return { ok: false, dry_run: dryRun, outcomes: null, detail: `فشل الاتصال بـ distributor.py: ${err.message}` };
   }
