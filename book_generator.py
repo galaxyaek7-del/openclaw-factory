@@ -2352,6 +2352,101 @@ def generate_printable(title, ptype, price, subtitle="", pages=15, theme="blue",
     return result
 
 
+# ── ECONOMICS PLATFORM ROUTING (ADR-020/ADR-024) ──
+# Shared by generate_book_from_content() and schemas/product.py's mirror
+# logic — kept here too so inspectors.py's Dual Inspection evaluates the
+# SAME platform distributor.py will later evaluate the resulting Product
+# against, never a mismatched one.
+def _economics_platform_for(product_type):
+    if product_type == "premium":
+        return "gumroad_premium"
+    if product_type == "printable":
+        return "gumroad_digital"
+    return "kdp_ebook"
+
+
+def generate_book_from_content(title, subtitle, chapters, price, theme="blue",
+                                author="OpenClaw Press", output=None, product_type="book"):
+    """ADR-022: assembles a real PDF from ALREADY-WRITTEN chapters — a human
+    (the president) + Claude authoring/review collaboration, never Groq —
+    through the exact same create_ai_book() + Dual Inspection + Factory
+    Memory pipeline generate_book() already uses. ai_generate_book_content()/
+    _fallback_book_content() are never called here; only the content SOURCE
+    differs from generate_book(), nothing about the downstream pipeline.
+
+    chapters: a non-empty list of {"title": str, "content": str} — content
+    is used verbatim, never rewritten or truncated here.
+
+    product_type: "book" (default, kdp_ebook economics), "printable"
+    (gumroad_digital, ADR-020), or "premium" (gumroad_premium, ADR-024) —
+    routes Dual Inspection's commercial audit to the matching platform so
+    it never evaluates a $97 premium product against KDP's $6 floor or
+    against the $2.50 printable floor."""
+    title = str(title or '').strip()
+    if not title:
+        raise ValueError("العنوان (title) مطلوب")
+    if not isinstance(chapters, list) or not chapters:
+        raise ValueError("chapters يجب أن تكون قائمة غير فارغة من {title, content}")
+
+    subtitle = _resolve_subtitle(subtitle, title)
+
+    books_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'books')
+    os.makedirs(books_dir, exist_ok=True)
+    out_path, filename = _resolve_safe_output_path(books_dir, output, title)
+
+    book_data = {"chapters": chapters, "introduction": ""}
+    n_pages, cover_info = create_ai_book(out_path, title, subtitle, theme, author, book_data, topic=title)
+
+    result = {
+        "success": True,
+        "file": filename,
+        "path": out_path,
+        "pages": n_pages,
+        "topic": title,
+        "price": price,
+        "product_type": product_type,
+        "cover": cover_info,
+        "cover_v2_used": cover_info is not None,
+        "content_source": "human_claude_review",  # never "groq_ai" — audit trail (ADR-022)
+    }
+
+    platform = _economics_platform_for(product_type)
+
+    if INSPECTORS is not None:
+        try:
+            inspection = INSPECTORS.final_inspection({
+                "pdf_path": out_path,
+                "cover_path": cover_info.get("path") if cover_info else None,
+                "title": title,
+                "subtitle": subtitle,
+                "author": author,
+                "niche": title,
+                "price": price,
+                "platform": platform,
+                "page_count": n_pages,
+                "min_pages": 4,
+            })
+        except Exception as e:
+            inspection = {"passed": False, "published": False,
+                          "technical": {"passed": False, "checks": [], "severity": "critical",
+                                        "failures": [f"استثناء غير متوقَّع أثناء الفحص: {e}"]},
+                          "commercial": {"passed": False, "checks": [], "failures": [], "verdict": "لم يُدقَّق"}}
+    else:
+        inspection = {"passed": False, "published": False,
+                      "technical": {"passed": False, "checks": [], "severity": "critical",
+                                    "failures": ["inspectors.py غير متوفر — لا يمكن الموافقة على النشر"]},
+                      "commercial": {"passed": False, "checks": [], "failures": [], "verdict": "لم يُدقَّق"}}
+
+    result["published"] = inspection["published"]
+    result["inspection"] = inspection
+
+    if not inspection["published"]:
+        _record_rejected_niche(title, title, _summarize_inspection_failure(inspection))
+
+    _log_generation(result)
+    return result
+
+
 def main():
     if '--quality-gate' in sys.argv:
         # Lightweight hook so other processes (server.js's /api/trends) can
@@ -2373,6 +2468,20 @@ def main():
         return
     try:
         data = json.loads(sys.stdin.read())
+
+        if isinstance(data.get('chapters'), list) and data['chapters']:
+            result = generate_book_from_content(
+                title=data.get('title', 'Untitled'),
+                subtitle=data.get('subtitle', ''),
+                chapters=data['chapters'],
+                price=data.get('price', 9.99),
+                theme=data.get('theme', 'blue'),
+                author=data.get('author', ''),
+                output=data.get('output'),
+                product_type=data.get('product_type', 'book'),
+            )
+            print(json.dumps(result, ensure_ascii=False))
+            return
 
         if data.get('product_type') == 'printable':
             result = generate_printable(
