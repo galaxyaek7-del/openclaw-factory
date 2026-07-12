@@ -2327,7 +2327,7 @@ def generate_printable(title, ptype, price, subtitle="", pages=15, theme="blue",
                 "author": author,
                 "niche": title,
                 "price": price,
-                "platform": "gumroad_digital",
+                "platform": _economics_platform_for("printable"),
                 "page_count": n_pages,
                 "min_pages": 4,
             })
@@ -2469,7 +2469,16 @@ def main():
     try:
         data = json.loads(sys.stdin.read())
 
-        if isinstance(data.get('chapters'), list) and data['chapters']:
+        if isinstance(data.get('chapters'), list):
+            # Dispatch on KEY PRESENCE (a list, even empty), not truthiness —
+            # an empty "chapters": [] must reach generate_book_from_content()'s
+            # own ValueError("chapters يجب أن تكون قائمة غير فارغة...") for a
+            # clear, honest failure. Dispatching on truthiness let an empty
+            # list fall through all the way to the legacy create_book()
+            # branch below, which silently produced a placeholder cookbook
+            # PDF with no Dual Inspection and no clear error — exactly the
+            # malformed-draft case scripts/process_approved_drafts.py must
+            # reject loudly, not paper over.
             result = generate_book_from_content(
                 title=data.get('title', 'Untitled'),
                 subtitle=data.get('subtitle', ''),

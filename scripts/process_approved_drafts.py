@@ -56,6 +56,21 @@ def _run_cli(script_name, payload, timeout=180):
         return {"success": False, "error": f"unparseable output: {proc.stdout!r} stderr={proc.stderr!r}"}
 
 
+def _unique_archive_path(directory, filename):
+    """Code review fix (2026-07-12): never silently overwrite a prior
+    archived record — if `filename` already exists in `directory` (e.g. the
+    same draft filename reprocessed after a fix), append a numeric suffix
+    instead of clobbering the earlier audit trail."""
+    candidate = directory / filename
+    if not candidate.exists():
+        return candidate
+    stem, suffix = candidate.stem, candidate.suffix
+    n = 2
+    while (directory / f"{stem}_{n}{suffix}").exists():
+        n += 1
+    return directory / f"{stem}_{n}{suffix}"
+
+
 def _read_last_generation_record():
     if not GENERATION_LOG.exists():
         return None
@@ -92,7 +107,8 @@ def process_one(draft_path: Path) -> dict:
     if not gen_result.get("success") or not gen_result.get("published"):
         outcome["moved_to"] = "rejected"
         REJECTED_DIR.mkdir(parents=True, exist_ok=True)
-        (REJECTED_DIR / draft_path.name).write_text(json.dumps(outcome, ensure_ascii=False, indent=2), encoding="utf-8")
+        _unique_archive_path(REJECTED_DIR, draft_path.name).write_text(
+            json.dumps(outcome, ensure_ascii=False, indent=2), encoding="utf-8")
         draft_path.unlink()
         return outcome
 
@@ -105,7 +121,8 @@ def process_one(draft_path: Path) -> dict:
 
     outcome["moved_to"] = "completed"
     COMPLETED_DIR.mkdir(parents=True, exist_ok=True)
-    (COMPLETED_DIR / draft_path.name).write_text(json.dumps(outcome, ensure_ascii=False, indent=2), encoding="utf-8")
+    _unique_archive_path(COMPLETED_DIR, draft_path.name).write_text(
+        json.dumps(outcome, ensure_ascii=False, indent=2), encoding="utf-8")
     draft_path.unlink()
     return outcome
 

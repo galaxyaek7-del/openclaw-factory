@@ -110,6 +110,13 @@ def create_product(api_key, access_token, shop_id, product_spec):
         "quantity": 999,
         "title": title,
         "description": product_spec.get("description", ""),
+        # CODE REVIEW FLAG (unverified, no live token to test against): Etsy's
+        # v3 API conventionally expects listing money fields as a structured
+        # amount/divisor/currency_code object, not a bare decimal in
+        # form-encoded data — this specific field is a likely 400 on first
+        # real use, not just a generic "unverified shape" caveat. Confirm
+        # against https://developers.etsy.com/documentation/reference/
+        # #operation/createDraftListing before ever calling this live.
         "price": price_usd,
         "who_made": "i_did",
         "when_made": "made_to_order",

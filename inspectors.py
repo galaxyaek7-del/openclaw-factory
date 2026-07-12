@@ -365,6 +365,24 @@ def audit_commercial(niche, price, title=None, platform=None, page_count=None):
                            "detail": f"{econ_result['reason']} (platform: {platform})"})
             if not butter_ok:
                 failures.append(f"butter_price: {econ_result['reason']}")
+            # Code review fix (2026-07-12): market_realistic/suggested_realistic_price
+            # were computed by economics.evaluate() but silently dropped here —
+            # schemas/product.py's Product.from_jsonl_record() DOES act on them
+            # (silently re-prices to suggested_realistic_price when False), so a
+            # human reading this inspection record previously had no way to see
+            # that the approved price and the price actually distributed later
+            # can differ. Informational only — never added to `failures`, since
+            # the existing, intended design is "reprice automatically", not
+            # "reject", and that must not change here.
+            if econ_result.get("market_realistic") is False:
+                checks.append({
+                    "name": "market_realism", "passed": True,
+                    "detail": (
+                        f"⚠️ السعر المُقَرّ (${price_val:.2f}) غير واقعي لحجم المنتج — "
+                        f"سيُعاد تسعيره فعلياً إلى ${econ_result.get('suggested_realistic_price')} "
+                        f"عند التوزيع (schemas/product.py)، لا عند هذا السعر"
+                    ),
+                })
         except Exception as e:
             checks.append({"name": "butter_price", "passed": False,
                            "detail": f"economics.evaluate() فشل: {e}"})

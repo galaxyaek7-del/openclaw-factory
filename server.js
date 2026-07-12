@@ -314,6 +314,16 @@ app.post('/api/distribute', async (req, res) => {
 
   const dryRun = req.body.dry_run === false ? false : true;
 
+  // Restores the pre-refactor 404 for a missing distributor.py — the
+  // runDistributor() helper itself just rejects with a generic Error for
+  // this case (it has no HTTP status opinion, correctly), so the specific
+  // "misconfigured deployment" status has to be checked here, same as
+  // /api/sales/poll already does for its own script.
+  const distributorScript = path.join(__dirname, 'distributor.py');
+  if (!fs.existsSync(distributorScript)) {
+    return res.status(404).json({ success: false, error: 'distributor.py not found' });
+  }
+
   try {
     const result = await runDistributor(record, { arms, dryRun });
     res.json(result);
