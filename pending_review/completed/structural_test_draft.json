@@ -1,0 +1,155 @@
+{
+  "draft_file": "structural_test_draft.json",
+  "processed_at": "2026-07-12T17:27:15.612369+00:00",
+  "generation": {
+    "success": true,
+    "file": "structural_test_draft_-_pending_review_loop.pdf",
+    "path": "C:\\openclaw-dasgboard\\books\\structural_test_draft_-_pending_review_loop.pdf",
+    "pages": 4,
+    "topic": "STRUCTURAL TEST DRAFT - Pending Review Loop",
+    "price": 97,
+    "product_type": "premium",
+    "cover": {
+      "success": true,
+      "file": "structural_test_draft_-_pending_review_loop_cover.png",
+      "path": "C:\\openclaw-dasgboard\\books\\covers\\structural_test_draft_-_pending_review_loop_cover.png",
+      "size": [
+        1600,
+        2560
+      ],
+      "theme_hex": "#2563eb",
+      "quality_check": {
+        "passed": true,
+        "title_font_size": 136,
+        "author_font_size": 38,
+        "reason": "العنوان (136px) أكبر من اسم المؤلف (38px)"
+      }
+    },
+    "cover_v2_used": true,
+    "content_source": "human_claude_review",
+    "published": true,
+    "inspection": {
+      "passed": true,
+      "published": true,
+      "technical": {
+        "passed": true,
+        "checks": [
+          {
+            "name": "pdf_file_size",
+            "passed": true,
+            "detail": "حجم الملف: 93389 بايت"
+          },
+          {
+            "name": "pdf_not_corrupt",
+            "passed": true,
+            "detail": "يُفتح بنجاح عبر pypdf (4 صفحة)"
+          },
+          {
+            "name": "pdf_page_count",
+            "passed": true,
+            "detail": "4 صفحة (الحد الأدنى: 4)"
+          },
+          {
+            "name": "pdf_page_dimensions_sane",
+            "passed": true,
+            "detail": "432x648 pt"
+          },
+          {
+            "name": "pdf_no_empty_pages",
+            "passed": true,
+            "detail": "23347 بايت/صفحة في المتوسط (الحد الأدنى: 300)"
+          },
+          {
+            "name": "cover_opens",
+            "passed": true,
+            "detail": "الصورة تُفتح وتُتحقَّق بنجاح عبر Pillow"
+          },
+          {
+            "name": "cover_dimensions",
+            "passed": true,
+            "detail": "1600x2560 (متوقَّع 1600x2560)"
+          },
+          {
+            "name": "cover_70_20_10_zone",
+            "passed": true,
+            "detail": "حدود منطقة العنوان عند 70% من الارتفاع (متوقَّع ~70%)"
+          },
+          {
+            "name": "cover_title_bigger_than_author",
+            "passed": true,
+            "detail": "ارتفاع كتلة العنوان (تقديري): 586px، المؤلف: 24px"
+          },
+          {
+            "name": "no_placeholder_title",
+            "passed": true,
+            "detail": "لا يوجد نص Placeholder"
+          },
+          {
+            "name": "no_placeholder_subtitle",
+            "passed": true,
+            "detail": "لا يوجد نص Placeholder"
+          },
+          {
+            "name": "no_placeholder_author",
+            "passed": true,
+            "detail": "لا يوجد نص Placeholder"
+          }
+        ],
+        "failures": [],
+        "severity": "none"
+      },
+      "commercial": {
+        "passed": true,
+        "checks": [
+          {
+            "name": "profit_score",
+            "passed": true,
+            "detail": "62/100 (الحد الأدنى: 60)"
+          },
+          {
+            "name": "butter_price",
+            "passed": true,
+            "detail": "ok: net $87.30 clears floor $25.00 (platform: gumroad_premium)"
+          },
+          {
+            "name": "not_duplicate",
+            "passed": true,
+            "detail": "لا تكرار في سجل الإنتاج"
+          },
+          {
+            "name": "not_previously_rejected",
+            "passed": true,
+            "detail": "لم يُرفض من قبل"
+          }
+        ],
+        "failures": [],
+        "verdict": "يستحق النشر لمشترين محترفين",
+        "profit_score": 62
+      },
+      "timestamp": "2026-07-12T19:27:15.527917",
+      "title": "STRUCTURAL TEST DRAFT - Pending Review Loop",
+      "niche": "STRUCTURAL TEST DRAFT - Pending Review Loop"
+    }
+  },
+  "distribution": {
+    "success": true,
+    "dry_run": true,
+    "outcomes": [
+      {
+        "arm": "gumroad",
+        "attempted": true,
+        "ok": false,
+        "skip_reason": null,
+        "result": {
+          "ok": false,
+          "platform": "gumroad",
+          "product_id": null,
+          "url": null,
+          "error": "arm not ready: unavailable",
+          "dry_run": true
+        }
+      }
+    ]
+  },
+  "moved_to": "completed"
+}
