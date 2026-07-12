@@ -110,5 +110,20 @@ class GumroadArm(BaseArm):
             dry_run=False,
         )
 
+    def get_sales(self):
+        """Fetch raw sales from Gumroad's /sales endpoint (ADR-016). Returns
+        (sales: list, error: str|None) — never raises; a missing token or a
+        failed request is reported as an error, same fail-safe style as
+        publish(), so a poller can log it without crashing."""
+        current_status = self.status()
+        if current_status is not ArmStatus.READY:
+            return [], f"arm not ready: {current_status.value}"
+        try:
+            token = gumroad_publisher.load_token()
+            sales = gumroad_publisher.get_sales(token)
+        except Exception as e:
+            return [], str(e)
+        return sales, None
+
 
 registry.register(GumroadArm())
