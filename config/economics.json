@@ -24,7 +24,9 @@
     "gumroad_digital": {
       "royalty_rate": 0.90,
       "flat_fee_usd": 0.00,
-      "_note": "Gumroad takes 10% on Gumroad-discovered sales. Simplified."
+      "min_net_profit_per_unit_usd": 2.50,
+      "_note": "Gumroad takes 10% on Gumroad-discovered sales. Simplified.",
+      "_floor_note": "ADR-020: separate, lower profit floor than the global $6.00 (calibrated for KDP ebooks) — printables have near-zero marginal cost and this floor exists specifically to allow the president's approved $3-5 launch pricing (net $2.70-$4.50 at 90% royalty) while still rejecting near-zero prices. Decided explicitly by the president, not inferred."
     }
   },
   "dead_zone": {

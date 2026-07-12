@@ -139,6 +139,16 @@ class Product:
         cover = record.get("cover")
         cover_path = cover.get("path") if isinstance(cover, dict) else None
 
+        # ADR-020: printables (product_type="printable", written explicitly
+        # by book_generator.py's generate_printable()) are distributed on
+        # Gumroad, never KDP — their economics must be evaluated against
+        # "gumroad_digital" (90% royalty, its own lower profit floor), not
+        # "kdp_ebook". Any record without this field (every book produced
+        # before today) keeps evaluating against "kdp_ebook" exactly as
+        # before — this is purely additive, not a behavior change for books.
+        product_type = record.get("product_type") or "book"
+        economics_platform = "gumroad_digital" if product_type == "printable" else "kdp_ebook"
+
         price_usd = None
         needs_pricing = True
         price_source = None
@@ -147,7 +157,7 @@ class Product:
                 economics = _load_economics_module()
                 config = economics.load_config()
                 page_count = record.get("pages")
-                result = economics.evaluate(raw_price_hint, "kdp_ebook", config, page_count=page_count)
+                result = economics.evaluate(raw_price_hint, economics_platform, config, page_count=page_count)
                 if result.get("approved"):
                     if result.get("market_realistic") is False:
                         suggested = result.get("suggested_realistic_price")
@@ -184,5 +194,5 @@ class Product:
             raw_price_hint=raw_price_hint,
             needs_pricing=needs_pricing,
             price_source=price_source,
-            product_type="book",  # books/_generation_log.jsonl is book-only today
+            product_type=product_type,
         )

@@ -87,11 +87,89 @@ def in_dead_zone(price, platform, config):
     return dz["min_price"] <= price <= dz["max_price"]
 
 
+_MARKET_REALISM_DEFAULTS = {
+    "max_price_per_page_usd": 1.0,
+    "short_book_max_pages": 30,
+    "short_book_price_ceiling_usd": 15.0,
+}
+
+
+def _market_realism_config(config):
+    """Defensive: any field missing from config["market_realism"] (or the
+    whole section itself missing) falls back to _MARKET_REALISM_DEFAULTS.
+    Unlike a missing min_net_profit_per_unit_usd (which raises via a plain
+    KeyError in evaluate() below — that IS meant to be fatal, see
+    EconomicsConfigError's docstring), a missing sanity-check setting must
+    never crash evaluate() — it just falls back to a safe default."""
+    section = config.get("market_realism", {})
+    if not isinstance(section, dict):
+        section = {}
+    return {
+        "max_price_per_page_usd": section.get(
+            "max_price_per_page_usd", _MARKET_REALISM_DEFAULTS["max_price_per_page_usd"]
+        ),
+        "short_book_max_pages": section.get(
+            "short_book_max_pages", _MARKET_REALISM_DEFAULTS["short_book_max_pages"]
+        ),
+        "short_book_price_ceiling_usd": section.get(
+            "short_book_price_ceiling_usd", _MARKET_REALISM_DEFAULTS["short_book_price_ceiling_usd"]
+        ),
+    }
+
+
+def market_realism_check(price, page_count, config):
+    """Sanity ceiling layered ON TOP of the profit-floor check — does not
+    replace it. A price can clear the profit floor (net_profit >=
+    min_net_profit_per_unit_usd) and still be unrealistic: a thin book
+    priced high enough to clear the floor is still a thin book a buyer
+    won't pay that much for.
+
+    Two independent ceilings, the stricter one wins:
+      1. price_per_page = price / page_count must not exceed
+         max_price_per_page_usd.
+      2. books under short_book_max_pages pages are additionally capped at
+         short_book_price_ceiling_usd outright.
+
+    Returns (market_realistic: bool, suggested_realistic_price: float).
+    With no usable page_count, neither ceiling can be computed, so this
+    skips rather than blocks — same "skip, don't fail on missing data"
+    pattern as the amazon_competition check in book_generator.py's
+    quality_gate: market_realistic=True, suggested_realistic_price=price.
+    """
+    settings = _market_realism_config(config)
+
+    try:
+        pages = int(page_count) if page_count is not None else None
+    except (TypeError, ValueError):
+        pages = None
+
+    if pages is None or pages <= 0:
+        return True, price
+
+    ceilings = [settings["max_price_per_page_usd"] * pages]
+    if pages < settings["short_book_max_pages"]:
+        ceilings.append(settings["short_book_price_ceiling_usd"])
+
+    ceiling = min(ceilings)
+    if price > ceiling:
+        return False, round(ceiling, 2)
+    return True, price
+
+
 def evaluate(price, platform, config, page_count=None):
-    floor = config["min_net_profit_per_unit_usd"]
+    # ADR-020: printables (gumroad_digital) have fundamentally different unit
+    # economics than a KDP ebook (near-zero marginal cost, 90% royalty vs.
+    # 35-70%) — the global $6.00 floor below was derived specifically from
+    # KDP's best case and does not apply here. A platform may override it via
+    # its own "min_net_profit_per_unit_usd" key in config/economics.json;
+    # falling back to the global floor keeps kdp_ebook's behavior byte-for-
+    # byte unchanged when no override is present.
+    platform_conf = config.get("platforms", {}).get(platform, {})
+    floor = platform_conf.get("min_net_profit_per_unit_usd", config["min_net_profit_per_unit_usd"])
     rate = royalty_rate(price, platform, config)
     net = net_profit(price, platform, config, page_count=page_count)
     dead = in_dead_zone(price, platform, config)
+    market_realistic, suggested_realistic_price = market_realism_check(price, page_count, config)
 
     if dead:
         approved = False
@@ -112,6 +190,8 @@ def evaluate(price, platform, config, page_count=None):
         "in_dead_zone": dead,
         "approved": approved,
         "reason": reason,
+        "market_realistic": market_realistic,
+        "suggested_realistic_price": suggested_realistic_price,
     }
 
 
