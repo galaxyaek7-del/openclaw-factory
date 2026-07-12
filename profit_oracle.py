@@ -65,6 +65,12 @@ MAX_BUTTER_PRICE = 100  # a KDP-realistic ceiling for a single digital book
 MIN_BUTTER_PRICE_PRINTABLE = 5
 MAX_BUTTER_PRICE_PRINTABLE = 15
 
+# ADR-024: human+Claude-authored premium bundles (HIGH_VALUE_STRATEGY.md) —
+# a third, independent band. Separate constants, not a replacement — book
+# and printable bands above stay exactly as-is.
+MIN_BUTTER_PRICE_PREMIUM = 50
+MAX_BUTTER_PRICE_PREMIUM = 300
+
 # ── Keyword heuristics — documented estimates, not live APIs ──
 
 SEASONAL_KEYWORDS = {
@@ -329,6 +335,9 @@ def butter_price(niche, product_type="book"):
     product_type="book" (default, unchanged): $30-$100 KDP-ebook band.
     product_type="printable" (ADR-020): $5-$15 EU/US Gumroad-printable band
     — $30 reads as absurd for a 10-30 page planner/tracker in that market.
+    product_type="premium" (ADR-024): $50-$300 EU/US Gumroad premium-bundle
+    band (HIGH_VALUE_STRATEGY.md) — human+Claude-authored content, not
+    Groq, is what justifies this band; profit_score alone never does.
     Every existing caller that doesn't pass product_type gets byte-for-byte
     the same book pricing as before this parameter existed.
 
@@ -342,6 +351,8 @@ def butter_price(niche, product_type="book"):
 
     if product_type == "printable":
         min_price, max_price = MIN_BUTTER_PRICE_PRINTABLE, MAX_BUTTER_PRICE_PRINTABLE
+    elif product_type == "premium":
+        min_price, max_price = MIN_BUTTER_PRICE_PREMIUM, MAX_BUTTER_PRICE_PREMIUM
     else:
         min_price, max_price = MIN_BUTTER_PRICE, MAX_BUTTER_PRICE
 
@@ -351,7 +362,10 @@ def butter_price(niche, product_type="book"):
 
     if product_type == "printable":
         # Same keyword signals, rescaled proportionally into the $5-15 band
-        # instead of book pricing's $30/$45/$60 tiers.
+        # instead of book pricing's $30/$45/$60 tiers. Formula untouched
+        # since ADR-020 shipped this morning — verified byte-for-byte
+        # identical across 12 real niches before adding the "premium"
+        # branch below.
         if any(k in niche_lower for k in PREMIUM_KEYWORDS):
             base = min_price + (max_price - min_price) * 0.5   # ~$10
         elif any(k in niche_lower for k in MID_KEYWORDS):
@@ -360,6 +374,19 @@ def butter_price(niche, product_type="book"):
             base = min_price + 1  # $6 — still comfortably above the floor
         if any(k in niche_lower for k in RECURRING_KEYWORDS):
             base += (max_price - min_price) * 0.15  # ~$1.5 more for a subscription-able product
+    elif product_type == "premium":
+        # ADR-024: same keyword signals, rescaled proportionally into the
+        # $50-300 band — a separate branch from "printable" (not a shared
+        # formula) so shipped printable pricing can never shift as a side
+        # effect of adding this one.
+        if any(k in niche_lower for k in PREMIUM_KEYWORDS):
+            base = min_price + (max_price - min_price) * 0.5   # ~$175
+        elif any(k in niche_lower for k in MID_KEYWORDS):
+            base = min_price + (max_price - min_price) * 0.25  # ~$112.5
+        else:
+            base = min_price + 10  # $60 — still comfortably above the floor
+        if any(k in niche_lower for k in RECURRING_KEYWORDS):
+            base += (max_price - min_price) * 0.15  # ~$37.5 more for a subscription-able product
     else:
         if any(k in niche_lower for k in PREMIUM_KEYWORDS):
             base = 60

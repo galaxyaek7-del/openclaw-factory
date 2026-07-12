@@ -139,15 +139,21 @@ class Product:
         cover = record.get("cover")
         cover_path = cover.get("path") if isinstance(cover, dict) else None
 
-        # ADR-020: printables (product_type="printable", written explicitly
-        # by book_generator.py's generate_printable()) are distributed on
-        # Gumroad, never KDP — their economics must be evaluated against
-        # "gumroad_digital" (90% royalty, its own lower profit floor), not
-        # "kdp_ebook". Any record without this field (every book produced
-        # before today) keeps evaluating against "kdp_ebook" exactly as
-        # before — this is purely additive, not a behavior change for books.
+        # ADR-020/ADR-024: printables and premium bundles (product_type
+        # written explicitly by book_generator.py's generate_printable()/
+        # generate_book_from_content()) are distributed on Gumroad, never
+        # KDP — their economics must be evaluated against "gumroad_digital"/
+        # "gumroad_premium" (their own profit floors), not "kdp_ebook". Any
+        # record without this field (every book produced before today)
+        # keeps evaluating against "kdp_ebook" exactly as before — this is
+        # purely additive, not a behavior change for books.
         product_type = record.get("product_type") or "book"
-        economics_platform = "gumroad_digital" if product_type == "printable" else "kdp_ebook"
+        if product_type == "printable":
+            economics_platform = "gumroad_digital"
+        elif product_type == "premium":
+            economics_platform = "gumroad_premium"
+        else:
+            economics_platform = "kdp_ebook"
 
         price_usd = None
         needs_pricing = True

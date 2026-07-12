@@ -70,7 +70,7 @@ def net_profit(price, platform, config, page_count=None):
         print_cost = pconf["printing_cost_base_usd"] + (pconf["printing_cost_per_page_usd"] * page_count)
         return round(max(0.0, price * rate - print_cost), 4)
 
-    if platform == "gumroad_digital":
+    if platform in ("gumroad_digital", "gumroad_premium"):
         rate = pconf["royalty_rate"]
         return round(price * rate - pconf.get("flat_fee_usd", 0.0), 4)
 
@@ -94,30 +94,44 @@ _MARKET_REALISM_DEFAULTS = {
 }
 
 
-def _market_realism_config(config):
+def _market_realism_config(config, platform=None):
     """Defensive: any field missing from config["market_realism"] (or the
     whole section itself missing) falls back to _MARKET_REALISM_DEFAULTS.
     Unlike a missing min_net_profit_per_unit_usd (which raises via a plain
     KeyError in evaluate() below — that IS meant to be fatal, see
     EconomicsConfigError's docstring), a missing sanity-check setting must
-    never crash evaluate() — it just falls back to a safe default."""
+    never crash evaluate() — it just falls back to a safe default.
+
+    ADR-024: a platform may override any of these three fields via its own
+    "market_realism" dict under config["platforms"][platform] — a $1/page
+    ceiling calibrated for a KDP ebook makes no sense for a curated $50-300
+    premium bundle, where price reflects expertise/curation, not raw page
+    count. Falling back to the global section (then defaults) when no
+    per-platform override exists keeps kdp_ebook/gumroad_digital's behavior
+    exactly as before this parameter existed."""
     section = config.get("market_realism", {})
     if not isinstance(section, dict):
         section = {}
+    platform_override = {}
+    if platform:
+        platform_conf = config.get("platforms", {}).get(platform, {})
+        platform_override = platform_conf.get("market_realism", {})
+        if not isinstance(platform_override, dict):
+            platform_override = {}
     return {
-        "max_price_per_page_usd": section.get(
+        "max_price_per_page_usd": platform_override.get("max_price_per_page_usd", section.get(
             "max_price_per_page_usd", _MARKET_REALISM_DEFAULTS["max_price_per_page_usd"]
-        ),
-        "short_book_max_pages": section.get(
+        )),
+        "short_book_max_pages": platform_override.get("short_book_max_pages", section.get(
             "short_book_max_pages", _MARKET_REALISM_DEFAULTS["short_book_max_pages"]
-        ),
-        "short_book_price_ceiling_usd": section.get(
+        )),
+        "short_book_price_ceiling_usd": platform_override.get("short_book_price_ceiling_usd", section.get(
             "short_book_price_ceiling_usd", _MARKET_REALISM_DEFAULTS["short_book_price_ceiling_usd"]
-        ),
+        )),
     }
 
 
-def market_realism_check(price, page_count, config):
+def market_realism_check(price, page_count, config, platform=None):
     """Sanity ceiling layered ON TOP of the profit-floor check — does not
     replace it. A price can clear the profit floor (net_profit >=
     min_net_profit_per_unit_usd) and still be unrealistic: a thin book
@@ -136,7 +150,7 @@ def market_realism_check(price, page_count, config):
     pattern as the amazon_competition check in book_generator.py's
     quality_gate: market_realistic=True, suggested_realistic_price=price.
     """
-    settings = _market_realism_config(config)
+    settings = _market_realism_config(config, platform=platform)
 
     try:
         pages = int(page_count) if page_count is not None else None
@@ -169,7 +183,7 @@ def evaluate(price, platform, config, page_count=None):
     rate = royalty_rate(price, platform, config)
     net = net_profit(price, platform, config, page_count=page_count)
     dead = in_dead_zone(price, platform, config)
-    market_realistic, suggested_realistic_price = market_realism_check(price, page_count, config)
+    market_realistic, suggested_realistic_price = market_realism_check(price, page_count, config, platform=platform)
 
     if dead:
         approved = False

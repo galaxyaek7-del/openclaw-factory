@@ -27,6 +27,18 @@
       "min_net_profit_per_unit_usd": 2.50,
       "_note": "Gumroad takes 10% on Gumroad-discovered sales. Simplified.",
       "_floor_note": "ADR-020: separate, lower profit floor than the global $6.00 (calibrated for KDP ebooks) — printables have near-zero marginal cost and this floor exists specifically to allow the president's approved $3-5 launch pricing (net $2.70-$4.50 at 90% royalty) while still rejecting near-zero prices. Decided explicitly by the president, not inferred."
+    },
+    "gumroad_premium": {
+      "royalty_rate": 0.90,
+      "flat_fee_usd": 0.00,
+      "min_net_profit_per_unit_usd": 25.00,
+      "_note": "ADR-024: $50-300 human+Claude-authored premium bundles (HIGH_VALUE_STRATEGY.md) — same Gumroad royalty rate as gumroad_digital, much higher profit floor reflecting real human authoring time, not the near-zero marginal cost of an automated printable.",
+      "market_realism": {
+        "max_price_per_page_usd": 5.0,
+        "short_book_max_pages": 20,
+        "short_book_price_ceiling_usd": 50.0
+      },
+      "_market_realism_note": "Overrides the global market_realism section (calibrated for KDP ebooks) — a curated 40-60 page premium guide is priced on expertise/curation, not raw page count. A genuinely short (<20 page) premium product is still capped at $50 as a sanity check, not exempted entirely."
     }
   },
   "dead_zone": {
