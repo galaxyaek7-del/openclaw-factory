@@ -716,6 +716,63 @@ function clearNeedsAttention(filePath = NEEDS_ATTENTION_FILE) {
   }
 }
 
+// ── PENDING REVIEW NOTIFICATION (Human-in-the-Loop, HIGH_VALUE_EXECUTION_PLAN.md) ──
+// Same self-owned create/delete lifecycle as NEEDS_ATTENTION.md above —
+// NEEDS_REVIEW.md exists only while pending_review/queue/ actually has
+// drafts waiting, so the president doesn't have to remember to check an
+// empty folder. This step only counts files; it never reads/writes/moves
+// any draft itself (that stays a manual+Claude review action, then
+// scripts/process_approved_drafts.py — see pending_review/README.md).
+const PENDING_REVIEW_QUEUE_DIR = path.join(FACTORY_DIR, 'pending_review', 'queue');
+const NEEDS_REVIEW_FILE = path.join(FACTORY_DIR, 'NEEDS_REVIEW.md');
+
+function countPendingReviewDrafts(queueDir = PENDING_REVIEW_QUEUE_DIR) {
+  if (!fs.existsSync(queueDir)) return 0;
+  try {
+    return fs.readdirSync(queueDir).filter(f => f.toLowerCase().endsWith('.json')).length;
+  } catch (err) {
+    return 0;
+  }
+}
+
+function writeNeedsReview(count, filePath = NEEDS_REVIEW_FILE) {
+  const content = [
+    '# 📝 NEEDS_REVIEW.md — مسودات بانتظار المراجعة',
+    '',
+    `آخر تحديث: ${new Date().toISOString()}`,
+    '',
+    `يوجد ${count} مسودة في \`pending_review/queue/\` بانتظار مراجعة بشرية-Claude (نموذج المراجعة المعلَّقة، HIGH_VALUE_EXECUTION_PLAN.md).`,
+    '',
+    'الخطوة التالية: افتح Claude Code وقل "راجع المسودات المعلقة" — راجع `pending_review/README.md` لخطوات المراجعة الكاملة.',
+    '',
+    'هذا الملف يُكتَب ويُحذَف تلقائياً بواسطة factory_loop.js فقط — سيُحذَف تلقائياً بمجرد أن يُفرَّغ `queue/` (بعد نقل كل مسودة إلى `approved/`).',
+    '',
+  ].join('\n');
+  try {
+    fs.writeFileSync(filePath, content, 'utf8');
+  } catch (err) {
+    console.error('[factory_loop] failed to write NEEDS_REVIEW.md:', err.message);
+  }
+}
+
+function clearNeedsReview(filePath = NEEDS_REVIEW_FILE) {
+  try {
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  } catch (err) {
+    console.error('[factory_loop] failed to clear NEEDS_REVIEW.md:', err.message);
+  }
+}
+
+function checkPendingReview(queueDir = PENDING_REVIEW_QUEUE_DIR, notifyFilePath = NEEDS_REVIEW_FILE) {
+  const count = countPendingReviewDrafts(queueDir);
+  if (count > 0) {
+    writeNeedsReview(count, notifyFilePath);
+  } else {
+    clearNeedsReview(notifyFilePath);
+  }
+  return { action: count > 0 ? 'needs_review' : 'none', detail: count > 0 ? `${count} مسودة بانتظار المراجعة` : '\`pending_review/queue/\` فارغ' };
+}
+
 // ── HEAL ──
 
 // NOTE on this check: the task asked to "rebuild finance.json from
@@ -1213,6 +1270,10 @@ async function runTick() {
   // self_awareness.js's own health.reachable field), not a reason to skip.
   actions.push({ step: 'self_awareness', ...(await maybeRunSelfAwareness()) });
 
+  // Pending-review notification (Human-in-the-Loop, HIGH_VALUE_EXECUTION_
+  // PLAN.md) — a plain filesystem count, runs regardless of reachability.
+  actions.push({ step: 'pending_review', ...checkPendingReview() });
+
   appendLoopLog({
     diagnosis: diagnosis.reachable
       ? { status: diagnosis.health.status, checks: diagnosis.health.checks }
@@ -1319,4 +1380,5 @@ module.exports = {
   appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted,
   evaluateGoldenOpportunities, getButterPrice,
   checkNeedsAttention, writeNeedsAttention, clearNeedsAttention,
+  checkPendingReview, countPendingReviewDrafts, writeNeedsReview, clearNeedsReview,
 };
