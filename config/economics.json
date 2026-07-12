@@ -39,6 +39,18 @@
         "short_book_price_ceiling_usd": 50.0
       },
       "_market_realism_note": "Overrides the global market_realism section (calibrated for KDP ebooks) — a curated 40-60 page premium guide is priced on expertise/curation, not raw page count. A genuinely short (<20 page) premium product is still capped at $50 as a sanity check, not exempted entirely."
+    },
+    "gumroad_elite": {
+      "royalty_rate": 0.90,
+      "flat_fee_usd": 0.00,
+      "min_net_profit_per_unit_usd": 70.00,
+      "_note": "ADR-027/ELITE_ASSET_DOCTRINE.md Tier 1 floor: $97+ (net $87.30 at 90% royalty clears this). Independent of gumroad_premium's $25 floor — Tier 1 positioning demands a materially higher bar, not the same one relabeled.",
+      "market_realism": {
+        "max_price_per_page_usd": 10.0,
+        "short_book_max_pages": 15,
+        "short_book_price_ceiling_usd": 97.0
+      },
+      "_market_realism_note": "A genuinely thin Tier 1 bundle (<15 pages, e.g. an AI Agent Blueprint) is still sanity-capped at $97 — the Tier 1 floor itself, not exempted from the check entirely."
     }
   },
   "dead_zone": {

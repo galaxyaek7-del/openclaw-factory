@@ -71,6 +71,12 @@ MAX_BUTTER_PRICE_PRINTABLE = 15
 MIN_BUTTER_PRICE_PREMIUM = 50
 MAX_BUTTER_PRICE_PREMIUM = 300
 
+# ADR-027/ELITE_ASSET_DOCTRINE.md: Tier 1 elite assets — a fourth,
+# independent band. Separate constants, not a replacement — book/
+# printable/premium bands above stay exactly as-is.
+MIN_BUTTER_PRICE_ELITE = 97
+MAX_BUTTER_PRICE_ELITE = 497
+
 # ── Keyword heuristics — documented estimates, not live APIs ──
 
 SEASONAL_KEYWORDS = {
@@ -413,6 +419,9 @@ def butter_price(niche, product_type="book"):
     product_type="premium" (ADR-024): $50-$300 EU/US Gumroad premium-bundle
     band (HIGH_VALUE_STRATEGY.md) — human+Claude-authored content, not
     Groq, is what justifies this band; profit_score alone never does.
+    product_type="elite" (ADR-027/ELITE_ASSET_DOCTRINE.md): $97-$497 Tier 1
+    band — highest bar, gated further upstream by opportunity_score()'s
+    tier1 weighting, never approved on profit_score alone either.
     Every existing caller that doesn't pass product_type gets byte-for-byte
     the same book pricing as before this parameter existed.
 
@@ -428,6 +437,8 @@ def butter_price(niche, product_type="book"):
         min_price, max_price = MIN_BUTTER_PRICE_PRINTABLE, MAX_BUTTER_PRICE_PRINTABLE
     elif product_type == "premium":
         min_price, max_price = MIN_BUTTER_PRICE_PREMIUM, MAX_BUTTER_PRICE_PREMIUM
+    elif product_type == "elite":
+        min_price, max_price = MIN_BUTTER_PRICE_ELITE, MAX_BUTTER_PRICE_ELITE
     else:
         min_price, max_price = MIN_BUTTER_PRICE, MAX_BUTTER_PRICE
 
@@ -462,6 +473,19 @@ def butter_price(niche, product_type="book"):
             base = min_price + 10  # $60 — still comfortably above the floor
         if any(k in niche_lower for k in RECURRING_KEYWORDS):
             base += (max_price - min_price) * 0.15  # ~$37.5 more for a subscription-able product
+    elif product_type == "elite":
+        # ADR-027: same keyword signals, rescaled proportionally into the
+        # $97-497 band — its own branch, never shares a formula with
+        # "premium"/"printable" so neither shifts as a side effect of
+        # adding this one.
+        if any(k in niche_lower for k in PREMIUM_KEYWORDS):
+            base = min_price + (max_price - min_price) * 0.5   # ~$297
+        elif any(k in niche_lower for k in MID_KEYWORDS):
+            base = min_price + (max_price - min_price) * 0.25  # ~$197
+        else:
+            base = min_price + 20  # $117 — still comfortably above the floor
+        if any(k in niche_lower for k in RECURRING_KEYWORDS):
+            base += (max_price - min_price) * 0.15  # ~$60 more for a subscription-able product
     else:
         if any(k in niche_lower for k in PREMIUM_KEYWORDS):
             base = 60

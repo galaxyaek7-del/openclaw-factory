@@ -2358,6 +2358,8 @@ def generate_printable(title, ptype, price, subtitle="", pages=15, theme="blue",
 # SAME platform distributor.py will later evaluate the resulting Product
 # against, never a mismatched one.
 def _economics_platform_for(product_type):
+    if product_type == "elite":
+        return "gumroad_elite"
     if product_type == "premium":
         return "gumroad_premium"
     if product_type == "printable":

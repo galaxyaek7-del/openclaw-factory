@@ -70,7 +70,7 @@ def net_profit(price, platform, config, page_count=None):
         print_cost = pconf["printing_cost_base_usd"] + (pconf["printing_cost_per_page_usd"] * page_count)
         return round(max(0.0, price * rate - print_cost), 4)
 
-    if platform in ("gumroad_digital", "gumroad_premium"):
+    if platform in ("gumroad_digital", "gumroad_premium", "gumroad_elite"):
         rate = pconf["royalty_rate"]
         return round(price * rate - pconf.get("flat_fee_usd", 0.0), 4)
 
