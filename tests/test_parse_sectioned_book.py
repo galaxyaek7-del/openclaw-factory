@@ -66,6 +66,28 @@ Some real chapter content here.
         self.assertEqual(len(result["chapters"]), 1)
         self.assertIn("Some real chapter content", result["chapters"][0]["content"])
 
+    def test_natural_language_header_after_first_chapter_is_kept(self):
+        """A model that tags its first chapter properly ('##Chapter 1: ...##')
+        but drifts to a purely natural-language header for a later chapter
+        (no 'chapter'/'فصل' keyword at all) must still produce a chapter
+        entry for it, not silently drop the content. Found live while
+        generating the Payhip onboarding-template product (2026-07-13):
+        two consecutive Groq drafts raised 'no chapters found' because every
+        later chapter was dropped this way."""
+        drifted = """##SUBTITLE##
+Sub
+##Chapter 1: The Welcome Email##
+Real content for chapter one.
+##Create a Kickoff Checklist to Get Your Projects Off to a Flying Start##
+Real content for the drifted chapter.
+##CONCLUSION##
+Real conclusion.
+"""
+        result = bg._parse_sectioned_book(drifted, expected_chapters=2)
+        self.assertEqual(len(result["chapters"]), 2)
+        self.assertIn("Real content for the drifted chapter", result["chapters"][1]["content"])
+        self.assertIn("Real conclusion", result["conclusion"])
+
 
 if __name__ == "__main__":
     unittest.main()

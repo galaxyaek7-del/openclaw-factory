@@ -1746,6 +1746,18 @@ def _parse_sectioned_book(text, expected_chapters):
             # the subtitle when there is one; only fall back to the header
             # text itself if the model left the body empty.
             subtitle = body or header
+        else:
+            # Code review fix (2026-07-13): observed live — a model that
+            # dutifully labels its FIRST chapter "Chapter 1: ..." (matching
+            # the branch above) sometimes drifts to purely natural-language
+            # headers for LATER chapters ("Create a Kickoff Checklist to Get
+            # Your Projects Off to a Flying Start", no "chapter"/"فصل"
+            # anywhere) — those previously matched no branch at all and were
+            # silently dropped, sometimes leaving zero recognized chapters.
+            # Once subtitle/introduction is already set, any further
+            # unrecognized header before ##CONCLUSION## can only be a
+            # chapter the model titled in its own words.
+            chapters.append({"title": header, "content": body})
 
     if not chapters:
         raise ValueError("لم يتم العثور على أي فصول في رد الذكاء الاصطناعي")
