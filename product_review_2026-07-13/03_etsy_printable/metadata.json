@@ -1,0 +1,27 @@
+{
+  "product": "Weekly Meal Planner Printable",
+  "tier": "Tier 4 — Printable",
+  "channel": "etsy (dry-run only, not live)",
+  "product_type": "printable",
+  "pages": 15,
+  "price_listed": 9,
+  "content_source": "fully automatic — no Groq, no human review. Tier 4 has automation_potential=100 per ELITE_ASSET_DOCTRINE.md, so the doctrine explicitly does not require Human-in-the-Loop review for this tier. Content drawn from templates via create_book().",
+  "pipeline": "book_generator.py (generate_printable) -> Dual Inspection -> distributor.py --dry-run  (no pending_review step — not required for this tier)",
+  "inspection": {
+    "technical_passed": true,
+    "commercial_passed": true,
+    "profit_score": 68,
+    "butter_price_net": 8.10,
+    "butter_price_floor": 2.50,
+    "platform": "gumroad_digital",
+    "verdict": "يستحق النشر لمشترين محترفين"
+  },
+  "distribution": "Dry-run only against gumroad/payhip/etsy arms. No live token configured for any platform (.env has no ETSY_API_KEY/ETSY_ACCESS_TOKEN/ETSY_SHOP_ID) — no live publish has occurred.",
+  "files_in_this_folder": [
+    "weekly_meal_planner_printable.pdf",
+    "metadata.json"
+  ],
+  "note": "No separate cover file — cover is drawn directly inside the PDF (see inspection check 'cover_exists': 'لا غلاف منفصل متوقَّع').",
+  "status": "يحتاج مراجعة بصرية من الرئيس",
+  "generated_at": "2026-07-13T08:46:14"
+}

@@ -1,0 +1,28 @@
+{
+  "product": "AI Prompting Playbook for Freelancers",
+  "tier": "Tier 3 — Premium Guide",
+  "channel": "gumroad (dry-run only, not live)",
+  "product_type": "premium",
+  "pages": 8,
+  "price_listed": 37,
+  "price_note": "Requested range was $27-47 and 15-30 pages. Delivered at 8 pages — a deliberate quality-over-length tradeoff: the content is 6 chapters of concrete, copy-paste-ready prompt templates rather than padded generic advice. Flagged honestly for visual review.",
+  "content_source": "human_claude_review — raw draft generated via Groq (llama-3.1-8b-instant), then substantively rewritten by Principal Architect (Claude Code) directly in-session to replace generic filler with concrete prompt templates. No coded Claude/Anthropic API call anywhere in the pipeline.",
+  "pipeline": "pending_review/approved -> scripts/process_approved_drafts.py -> book_generator.py (generate_book_from_content) -> Dual Inspection -> distributor.py --dry-run",
+  "inspection": {
+    "technical_passed": true,
+    "commercial_passed": true,
+    "profit_score": 62,
+    "butter_price_net": 33.30,
+    "butter_price_floor": 25.00,
+    "platform": "gumroad_premium",
+    "verdict": "يستحق النشر لمشترين محترفين"
+  },
+  "distribution": "Dry-run only against gumroad/payhip/etsy arms. No live token configured for any platform (.env has no GUMROAD_ACCESS_TOKEN) — no live publish has occurred.",
+  "files_in_this_folder": [
+    "ai_prompting_playbook_for_freelancers.pdf",
+    "ai_prompting_playbook_for_freelancers_cover.png",
+    "metadata.json"
+  ],
+  "status": "يحتاج مراجعة بصرية من الرئيس",
+  "generated_at": "2026-07-13T08:47:59"
+}

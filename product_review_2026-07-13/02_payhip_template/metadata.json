@@ -1,0 +1,29 @@
+{
+  "product": "Freelancer Client Onboarding Template",
+  "tier": "Tier 2 — Professional Template",
+  "channel": "payhip (dry-run only, not live)",
+  "product_type": "premium",
+  "pages": 7,
+  "price_listed": 37,
+  "price_note": "Requested range was $17-37. Listed at $37, but the live market_realism check (inspectors.py) correctly flagged that a 7-page product caps out at $35 (gumroad_premium ceiling: $5/page) and will be repriced to $35.0 at actual distribution time. This is expected, correct behavior of yesterday's pricing-sanity fix, not a bug — flagged honestly for visual review.",
+  "content_source": "human_claude_review — raw draft generated via Groq (llama-3.1-8b-instant); the draft was already well-structured (real checklists/scripts), so review was a lighter tightening pass rather than a full rewrite. No coded Claude/Anthropic API call anywhere in the pipeline.",
+  "pipeline": "pending_review/approved -> scripts/process_approved_drafts.py -> book_generator.py (generate_book_from_content) -> Dual Inspection -> distributor.py --dry-run",
+  "inspection": {
+    "technical_passed": true,
+    "commercial_passed": true,
+    "profit_score": 71,
+    "butter_price_net": 33.30,
+    "butter_price_floor": 25.00,
+    "platform": "gumroad_premium",
+    "market_realism_warning": "السعر المُقَرّ ($37.00) غير واقعي لحجم المنتج — سيُعاد تسعيره فعلياً إلى $35.0 عند التوزيع",
+    "verdict": "يستحق النشر لمشترين محترفين"
+  },
+  "distribution": "Dry-run only against gumroad/payhip/etsy arms. No live token configured for any platform (.env has no PAYHIP_API_KEY) — no live publish has occurred.",
+  "files_in_this_folder": [
+    "freelancer_client_onboarding_template.pdf",
+    "freelancer_client_onboarding_template_cover.png",
+    "metadata.json"
+  ],
+  "status": "يحتاج مراجعة بصرية من الرئيس",
+  "generated_at": "2026-07-13T08:51:43"
+}

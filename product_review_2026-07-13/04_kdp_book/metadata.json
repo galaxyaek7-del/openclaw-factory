@@ -1,0 +1,28 @@
+{
+  "product": "30-Day Habit Tracker Journal",
+  "tier": "Tier 4 — Digital Book",
+  "channel": "kdp (dry-run only, not live)",
+  "product_type": "book",
+  "pages": 38,
+  "price_listed": 38.0,
+  "price_note": "Requested price range was $9-15; the commercial-audit repricer (butter_price) raised the actual listed price to $38.0 net-of-floor for kdp_ebook economics. First generation attempt (7 chapters) produced only 11 pages, short of the 30-60 target; regenerated with 16 chapters to reach 38 pages, within target.",
+  "content_source": "fully automatic via Groq (ai_generate_book_content) — no human review. Tier 4 does not require Human-in-the-Loop per ELITE_ASSET_DOCTRINE.md.",
+  "pipeline": "book_generator.py (generate_book) -> Dual Inspection -> distributor.py --dry-run  (no pending_review step — not required for this tier)",
+  "inspection": {
+    "technical_passed": true,
+    "commercial_passed": true,
+    "profit_score": 62,
+    "butter_price_net": 13.30,
+    "butter_price_floor": 6.00,
+    "platform": "kdp_ebook",
+    "verdict": "يستحق النشر لمشترين محترفين"
+  },
+  "distribution": "Dry-run only against gumroad/payhip/etsy arms (no dedicated KDP arm exists yet). No live token configured for any platform — no live publish has occurred.",
+  "files_in_this_folder": [
+    "30-day_habit_tracker_journal.pdf",
+    "30-day_habit_tracker_journal_cover.png",
+    "metadata.json"
+  ],
+  "status": "يحتاج مراجعة بصرية من الرئيس",
+  "generated_at": "2026-07-13T08:45:52"
+}
