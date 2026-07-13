@@ -114,7 +114,9 @@ PORT=3000
 | `publisher` | SEO-optimised titles, descriptions, keywords, Amazon categories |
 | `finance` | Pricing strategy, profit margins per platform, break-even |
 
-Each agent accepts an optional `message` in the request body; if omitted, a default `trigger` prompt fires automatically. `POST /api/market-analyze` is still a hardcoded stub — not yet wired to `market_analyzer.py`.
+Each agent accepts an optional `message` in the request body; if omitted, a default `trigger` prompt fires automatically. `index.html` only wires UI buttons for `builder`/`design`/`publisher`/`qa` — the bare `scout` and `finance` agents above are live and reachable via `POST /api/agent/scout` / `POST /api/agent/finance`, but have no UI trigger (the fuller `/api/scout/run` pipeline below is what the UI's Scout button actually calls).
+
+There is also a separate, more complete Scout pipeline: `POST /api/scout/run` runs a real end-to-end chain — Groq market brief → pricing (`getButterPrice()` in `factory_loop.js`) → niche safety filter (`safety_filter.py`) → `book_generator.py` → auto-distribution (`autoDistributeScoutBook()` → `distributor.py`). This is distinct from the simple `POST /api/agent/scout` text-analysis call above and is what the dashboard's Scout button triggers.
 
 ### Finance data
 
@@ -125,9 +127,15 @@ Finance is persisted to `finance_data.json` in the project root. The server read
 
 ### Other Python utilities
 
-- `market_analyzer.py` — Static niche scoring logic; called via `POST /api/market-analyze` (currently a stub in `server.js`, the Python module can be imported or run directly).
-- `quality_doctor.py` — QA checker that validates product data (PDF pages, SEO keywords, pricing, description length). Not yet wired to any HTTP endpoint.
-- `cover_generator.py` — Standalone cover PDF generator (not integrated into the server).
+- `market_analyzer.py` — Static niche scoring logic; called live via `POST /api/market-analyze` (`server.js`).
+- `quality_doctor.py` — QA checker that validates product data (PDF pages, SEO keywords, pricing, description length); called live via `POST /api/qa-check` (`server.js`).
+- `cover_designer_v2.py` — The live cover-generation engine, imported by `book_generator.py`, `inspectors.py`, `profit_oracle.py`, and `server.js`. (An older `cover_generator.py` existed as an unwired Day-05 scratch script and was removed 2026-07-13.)
+- `niche_validator_v2.py` — The live niche-validation engine (imported as `NICHE_VALIDATOR` by `book_generator.py`/`profit_oracle.py`). (An older `niche_validator.py` v1 existed, claimed a `/analyze-niche` endpoint that no longer exists in `server.js`, and was removed 2026-07-13.)
+- `audit_seed.py`, `hive_logbook_generator.py` — standalone CLI tools run manually, by design not imported by any other module ("Zero factory impact" per `audit_seed.py`'s own docstring). `hive_logbook_generator.py` produced the real HiveNotes KDP product (`seeds/hivenotes/`) entirely outside the generic `book_generator.py` pipeline and outside `factory_loop.js`'s awareness.
+
+### No scheduler exists
+
+Nothing in this repo runs anything on a timer: `factory_loop.js` (the Golden Hunter loop) has no cron, no `package.json` script, and no CI workflow — it only runs when invoked manually (`node factory_loop.js`). It also does not auto-process Human-in-the-Loop approvals: it only counts files in `pending_review/queue/` and writes an alert to `NEEDS_REVIEW.md`; a human must run `scripts/process_approved_drafts.py` manually after approving a draft. Confirmed by full-repo audit, 2026-07-13.
 
 ### `index.html` encoding
 

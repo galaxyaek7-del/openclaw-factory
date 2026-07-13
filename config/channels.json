@@ -1,0 +1,58 @@
+{
+  "_comment": "Multi-channel distribution registry. Add new channels here as they come online.",
+  "version": 1,
+  "channels": [
+    {
+      "id": "kdp_paperback",
+      "name": "Amazon KDP (Paperback)",
+      "type": "print_on_demand",
+      "automation": "manual",
+      "api_available": false,
+      "supports_pdf": true,
+      "supports_arabic": false,
+      "royalty_model": "tiered",
+      "notes": "Human upload required. No public publishing API."
+    },
+    {
+      "id": "gumroad",
+      "name": "Gumroad",
+      "type": "digital_download",
+      "automation": "api",
+      "api_available": true,
+      "api_docs": "https://gumroad.com/api",
+      "supports_pdf": true,
+      "supports_arabic": true,
+      "royalty_model": "flat",
+      "fee_percent": 10,
+      "fee_flat_usd": 0.50,
+      "notes": "OAuth 2.0 REST API. Full product CRUD."
+    },
+    {
+      "id": "payhip",
+      "name": "Payhip",
+      "type": "digital_download",
+      "automation": "api",
+      "api_available": true,
+      "api_docs": "https://payhip.com/api-reference",
+      "supports_pdf": true,
+      "supports_arabic": true,
+      "royalty_model": "flat",
+      "fee_percent": 0,
+      "notes": "Free plan has 0% platform fee. Payment provider fees still apply."
+    },
+    {
+      "id": "etsy_digital",
+      "name": "Etsy (Digital Downloads)",
+      "type": "digital_download",
+      "automation": "manual",
+      "api_available": false,
+      "api_docs": "closed to new apps since 2024",
+      "supports_pdf": true,
+      "supports_arabic": true,
+      "royalty_model": "listing_plus_percent",
+      "fee_percent": 6.5,
+      "fee_flat_usd": 0.20,
+      "notes": "Human upload required. API closed."
+    }
+  ]
+}

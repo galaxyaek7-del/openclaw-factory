@@ -1,0 +1,2248 @@
+{
+  "generated_at": "2026-07-10T22:03:24.056261+00:00",
+  "purpose": "Day 09 pre-flight diagnostic check, requested by Executive Director",
+  "endpoints": {
+    "health": {
+      "http_status": 200,
+      "body": {
+        "status": "critical",
+        "status_source": "reality",
+        "timestamp": "2026-07-10T21:57:44.236Z",
+        "checks": {
+          "sensing_engine": {
+            "ok": false,
+            "severity": "degraded",
+            "detail": "n8n غير متاح: fetch failed"
+          },
+          "book_generator": {
+            "ok": true,
+            "severity": "critical",
+            "detail": "book_generator.py موجود"
+          },
+          "finance": {
+            "ok": true,
+            "severity": "degraded",
+            "detail": "JSON صالح"
+          },
+          "books_folder": {
+            "ok": true,
+            "severity": "degraded",
+            "count": 10,
+            "detail": "10 كتاب PDF"
+          }
+        },
+        "reality": {
+          "books_on_disk": 10,
+          "books_published": 0,
+          "units_sold": 0,
+          "net_revenue_usd": 0,
+          "days_since_first_publish": null,
+          "verdict": "CRITICAL",
+          "reason": "Zero books published. The factory produces inventory nobody can buy.",
+          "next_action": "Publish one book on KDP. Nothing else matters."
+        }
+      }
+    },
+    "awareness": {
+      "http_status": 200,
+      "body": {
+        "success": true,
+        "timestamp": "2026-07-10T21:57:44.307Z",
+        "vitals": {
+          "timestamp": "2026-07-10T21:57:44.307Z",
+          "health": {
+            "reachable": true,
+            "status": "critical",
+            "checks": {
+              "sensing_engine": {
+                "ok": false,
+                "severity": "degraded",
+                "detail": "n8n غير متاح: fetch failed"
+              },
+              "book_generator": {
+                "ok": true,
+                "severity": "critical",
+                "detail": "book_generator.py موجود"
+              },
+              "finance": {
+                "ok": true,
+                "severity": "degraded",
+                "detail": "JSON صالح"
+              },
+              "books_folder": {
+                "ok": true,
+                "severity": "degraded",
+                "count": 10,
+                "detail": "10 كتاب PDF"
+              }
+            }
+          },
+          "knowledge_entries": 28,
+          "lessons_learned": 4,
+          "golden_opportunities": 42,
+          "rejected_niches": 1,
+          "quarantine_entries": 23,
+          "butter_compliance": {
+            "total": 20,
+            "passed": 7,
+            "rate": 35
+          },
+          "dual_inspection": {
+            "total": 20,
+            "passed": 5,
+            "rate": 25
+          },
+          "golden_pipeline": {
+            "hunter": {
+              "flowing": true,
+              "reason": "market_hunter: آخر نشاط منذ 18 ساعة"
+            },
+            "inspectors": {
+              "flowing": true,
+              "reason": "inspectors: آخر نشاط منذ 38 ساعة"
+            },
+            "oracle": {
+              "flowing": true,
+              "reason": "profit_oracle: آخر تشغيل منذ 18 ساعة"
+            }
+          }
+        },
+        "growth": {
+          "has_baseline": true,
+          "direction": "same",
+          "reason": "لا تغيّر صافٍ في المؤشرات الأربعة الرئيسية منذ الأمس",
+          "deltas": {
+            "knowledge_entries": 0,
+            "lessons_learned": 0,
+            "golden_opportunities": 0,
+            "dual_inspection_pass_rate": 0
+          }
+        },
+        "diagnosis": {
+          "weaknesses": [
+            {
+              "cell": "Dashboard/Health",
+              "issue": "الحالة العامة: critical"
+            },
+            {
+              "cell": "sensing_engine",
+              "issue": "n8n غير متاح: fetch failed"
+            },
+            {
+              "cell": "Butter compliance",
+              "issue": "35% فقط من آخر 20 فحص اجتاز حد $30"
+            }
+          ],
+          "weakest_cell": "Dashboard/Health"
+        },
+        "constitution_notes": [
+          "§16 (Butter Principle): 65% من آخر الفحوصات لم تصل لحد $30 — ليس انتهاكاً (النظام يرفض هذه بدل أن يخترق الحد)، لكنه يستحق متابعة إن استمر الاتجاه.",
+          "§18 (Knowledge Brain): لم ينمُ العقل المعرفي منذ الأمس — تحقّق أن دروساً جديدة تُوثَّق فعلياً بدل البقاء في المحادثات فقط.",
+          "§19 (Golden Hunter): مُغلَقة — generate_book() يسجّل الرفض مباشرة (نقطة مشتركة لكل المسارات: Scout وhunt() وmarket_hunter)، وليس factory_loop.js وحده كما كان سابقاً."
+        ],
+        "verdict": "اليوم المصنع في حالة حرجة. أصبح كما هو بالضبط مقارنة بالأمس لأن لا تغيّر صافٍ في المؤشرات الأربعة الرئيسية منذ الأمس. أقوى خلية: market_hunter (100%). أضعف خلية: Butter Compliance (35%). أكبر فرصة: 42 فرصة مسجَّلة في GOLDEN_OPPORTUNITIES.md بانتظار مراجعة Galaxy. التركيز التالي الموصى به: معالجة Dashboard/Health (الحالة العامة: critical)."
+      }
+    },
+    "oracle": {
+      "http_status": 200,
+      "body": {
+        "success": true,
+        "generated_at": "2026-07-10T05:33:05.496260",
+        "golden_count": 0,
+        "total_scored": 42,
+        "top": []
+      }
+    },
+    "hunter": {
+      "http_status": 200,
+      "body": {
+        "success": true,
+        "timestamp": "2026-07-10T05:33:05.502211",
+        "scanned_count": 10,
+        "skipped_count": 0,
+        "golden_count": 10,
+        "golden_catch": [
+          {
+            "niche": "مخطط شهري قابل للطباعة",
+            "brain_matches": 0,
+            "profit_score": 71,
+            "verdict": "GOOD",
+            "butter_rating": "🧈🧈🧈🧈",
+            "recommended_butter_price": "$67"
+          },
+          {
+            "niche": "مخطط شهري قابل للطباعة العودة للمدارس",
+            "brain_matches": 0,
+            "profit_score": 72,
+            "verdict": "GOOD",
+            "butter_rating": "🧈🧈🧈🧈",
+            "recommended_butter_price": "$68"
+          },
+          {
+            "niche": "مخطط شهري قابل للطباعة للمراهقين",
+            "brain_matches": 0,
+            "profit_score": 70,
+            "verdict": "GOOD",
+            "butter_rating": "🧈🧈🧈🧈",
+            "recommended_butter_price": "$66"
+          },
+          {
+            "niche": "قوالب تصميم SVG قابلة للقص",
+            "brain_matches": 0,
+            "profit_score": 66,
+            "verdict": "GOOD",
+            "butter_rating": "🧈🧈🧈",
+            "recommended_butter_price": "$66"
+          },
+          {
+            "niche": "قوالب تصميم SVG قابلة للقص العودة للمدارس",
+            "brain_matches": 0,
+            "profit_score": 71,
+            "verdict": "GOOD",
+            "butter_rating": "🧈🧈🧈🧈",
+            "recommended_butter_price": "$71"
+          },
+          {
+            "niche": "قوالب تصميم SVG قابلة للقص للنساء",
+            "brain_matches": 0,
+            "profit_score": 69,
+            "verdict": "GOOD",
+            "butter_rating": "🧈🧈🧈",
+            "recommended_butter_price": "$69"
+          },
+          {
+            "niche": "متتبع الميزانية الشخصية",
+            "brain_matches": 0,
+            "profit_score": 68,
+            "verdict": "GOOD",
+            "butter_rating": "🧈🧈🧈",
+            "recommended_butter_price": "$56"
+          },
+          {
+            "niche": "متتبع الميزانية الشخصية العودة للمدارس",
+            "brain_matches": 0,
+            "profit_score": 68,
+            "verdict": "GOOD",
+            "butter_rating": "🧈🧈🧈",
+            "recommended_butter_price": "$56"
+          },
+          {
+            "niche": "متتبع الميزانية الشخصية للمبتدئين",
+            "brain_matches": 0,
+            "profit_score": 71,
+            "verdict": "GOOD",
+            "butter_rating": "🧈🧈🧈🧈",
+            "recommended_butter_price": "$60"
+          },
+          {
+            "niche": "متتبع العادات اليومية",
+            "brain_matches": 0,
+            "profit_score": 68,
+            "verdict": "GOOD",
+            "butter_rating": "🧈🧈🧈",
+            "recommended_butter_price": "$56"
+          }
+        ]
+      }
+    },
+    "inspections": {
+      "http_status": 200,
+      "body": {
+        "success": true,
+        "count": 35,
+        "entries": [
+          {
+            "passed": true,
+            "published": true,
+            "technical": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "pdf_file_size",
+                  "passed": true,
+                  "detail": "حجم الملف: 112303 بايت"
+                },
+                {
+                  "name": "pdf_not_corrupt",
+                  "passed": true,
+                  "detail": "يُفتح بنجاح عبر pypdf (12 صفحة)"
+                },
+                {
+                  "name": "pdf_page_count",
+                  "passed": true,
+                  "detail": "12 صفحة (الحد الأدنى: 4)"
+                },
+                {
+                  "name": "pdf_page_dimensions_sane",
+                  "passed": true,
+                  "detail": "432x648 pt"
+                },
+                {
+                  "name": "pdf_no_empty_pages",
+                  "passed": true,
+                  "detail": "9359 بايت/صفحة في المتوسط (الحد الأدنى: 300)"
+                },
+                {
+                  "name": "cover_opens",
+                  "passed": true,
+                  "detail": "الصورة تُفتح وتُتحقَّق بنجاح عبر Pillow"
+                },
+                {
+                  "name": "cover_dimensions",
+                  "passed": true,
+                  "detail": "1600x2560 (متوقَّع 1600x2560)"
+                },
+                {
+                  "name": "cover_70_20_10_zone",
+                  "passed": true,
+                  "detail": "حدود منطقة العنوان عند 70% من الارتفاع (متوقَّع ~70%)"
+                },
+                {
+                  "name": "cover_title_bigger_than_author",
+                  "passed": true,
+                  "detail": "ارتفاع كتلة العنوان (تقديري): 836px، المؤلف: 0px"
+                },
+                {
+                  "name": "arabic_shaping_available",
+                  "passed": true,
+                  "detail": "arabic_reshaper + python-bidi متوفرتان وتعملان (تشكيل حقيقي حدث)"
+                },
+                {
+                  "name": "no_placeholder_title",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_subtitle",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_author",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                }
+              ],
+              "failures": [],
+              "severity": "none"
+            },
+            "commercial": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "profit_score",
+                  "passed": true,
+                  "detail": "62/100 (الحد الأدنى: 60)"
+                },
+                {
+                  "name": "butter_price",
+                  "passed": true,
+                  "detail": "$49.00 (حد الزبدة: $30)"
+                },
+                {
+                  "name": "not_duplicate",
+                  "passed": true,
+                  "detail": "لا تكرار في سجل الإنتاج"
+                },
+                {
+                  "name": "not_previously_rejected",
+                  "passed": true,
+                  "detail": "لم يُرفض من قبل"
+                }
+              ],
+              "failures": [],
+              "verdict": "يستحق النشر لمشترين محترفين",
+              "profit_score": 62
+            },
+            "timestamp": "2026-07-09T09:39:58.808249",
+            "title": "الرجل الناجح: 30 يومًا لتميزك الشخصي",
+            "niche": "كتاب تعليمي يُدرب القارئ على بناء شخصية ناجحة من الداخل من خلال 30 يومًا من التحفيز والتشكيك"
+          },
+          {
+            "passed": true,
+            "published": true,
+            "technical": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "pdf_file_size",
+                  "passed": true,
+                  "detail": "حجم الملف: 102976 بايت"
+                },
+                {
+                  "name": "pdf_not_corrupt",
+                  "passed": true,
+                  "detail": "يُفتح بنجاح عبر pypdf (25 صفحة)"
+                },
+                {
+                  "name": "pdf_page_count",
+                  "passed": true,
+                  "detail": "25 صفحة (الحد الأدنى: 4)"
+                },
+                {
+                  "name": "pdf_page_dimensions_sane",
+                  "passed": true,
+                  "detail": "432x648 pt"
+                },
+                {
+                  "name": "pdf_no_empty_pages",
+                  "passed": true,
+                  "detail": "4119 بايت/صفحة في المتوسط (الحد الأدنى: 300)"
+                },
+                {
+                  "name": "cover_opens",
+                  "passed": true,
+                  "detail": "الصورة تُفتح وتُتحقَّق بنجاح عبر Pillow"
+                },
+                {
+                  "name": "cover_dimensions",
+                  "passed": true,
+                  "detail": "1600x2560 (متوقَّع 1600x2560)"
+                },
+                {
+                  "name": "cover_70_20_10_zone",
+                  "passed": true,
+                  "detail": "حدود منطقة العنوان عند 70% من الارتفاع (متوقَّع ~70%)"
+                },
+                {
+                  "name": "cover_title_bigger_than_author",
+                  "passed": true,
+                  "detail": "ارتفاع كتلة العنوان (تقديري): 652px، المؤلف: 0px"
+                },
+                {
+                  "name": "arabic_shaping_available",
+                  "passed": true,
+                  "detail": "arabic_reshaper + python-bidi متوفرتان وتعملان (تشكيل حقيقي حدث)"
+                },
+                {
+                  "name": "no_placeholder_title",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_subtitle",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_author",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                }
+              ],
+              "failures": [],
+              "severity": "none"
+            },
+            "commercial": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "profit_score",
+                  "passed": true,
+                  "detail": "62/100 (الحد الأدنى: 60)"
+                },
+                {
+                  "name": "butter_price",
+                  "passed": true,
+                  "detail": "$49.00 (حد الزبدة: $30)"
+                },
+                {
+                  "name": "not_duplicate",
+                  "passed": true,
+                  "detail": "لا تكرار في سجل الإنتاج"
+                },
+                {
+                  "name": "not_previously_rejected",
+                  "passed": true,
+                  "detail": "لم يُرفض من قبل"
+                }
+              ],
+              "failures": [],
+              "verdict": "يستحق النشر لمشترين محترفين",
+              "profit_score": 62
+            },
+            "timestamp": "2026-07-09T09:36:08.511430",
+            "title": "صناعة ألعاب العقل للأطفال",
+            "niche": "كتاب تعليمي يوفر ألعاب ذهنية وتأملات تساعد الأطفال في تنمية قوة التفكير والتركيز"
+          },
+          {
+            "passed": false,
+            "published": false,
+            "technical": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "pdf_file_size",
+                  "passed": true,
+                  "detail": "حجم الملف: 81460 بايت"
+                },
+                {
+                  "name": "pdf_not_corrupt",
+                  "passed": true,
+                  "detail": "يُفتح بنجاح عبر pypdf (25 صفحة)"
+                },
+                {
+                  "name": "pdf_page_count",
+                  "passed": true,
+                  "detail": "25 صفحة (الحد الأدنى: 4)"
+                },
+                {
+                  "name": "pdf_page_dimensions_sane",
+                  "passed": true,
+                  "detail": "432x648 pt"
+                },
+                {
+                  "name": "pdf_no_empty_pages",
+                  "passed": true,
+                  "detail": "3258 بايت/صفحة في المتوسط (الحد الأدنى: 300)"
+                },
+                {
+                  "name": "cover_opens",
+                  "passed": true,
+                  "detail": "الصورة تُفتح وتُتحقَّق بنجاح عبر Pillow"
+                },
+                {
+                  "name": "cover_dimensions",
+                  "passed": true,
+                  "detail": "1600x2560 (متوقَّع 1600x2560)"
+                },
+                {
+                  "name": "cover_70_20_10_zone",
+                  "passed": true,
+                  "detail": "حدود منطقة العنوان عند 70% من الارتفاع (متوقَّع ~70%)"
+                },
+                {
+                  "name": "cover_title_bigger_than_author",
+                  "passed": true,
+                  "detail": "ارتفاع كتلة العنوان (تقديري): 580px، المؤلف: 0px"
+                },
+                {
+                  "name": "arabic_shaping_available",
+                  "passed": true,
+                  "detail": "arabic_reshaper + python-bidi متوفرتان وتعملان (تشكيل حقيقي حدث)"
+                },
+                {
+                  "name": "no_placeholder_title",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_subtitle",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_author",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                }
+              ],
+              "failures": [],
+              "severity": "none"
+            },
+            "commercial": {
+              "passed": false,
+              "checks": [
+                {
+                  "name": "profit_score",
+                  "passed": false,
+                  "detail": "58/100 (الحد الأدنى: 60)"
+                },
+                {
+                  "name": "butter_price",
+                  "passed": true,
+                  "detail": "$49.00 (حد الزبدة: $30)"
+                },
+                {
+                  "name": "not_duplicate",
+                  "passed": true,
+                  "detail": "لا تكرار في سجل الإنتاج"
+                },
+                {
+                  "name": "not_previously_rejected",
+                  "passed": true,
+                  "detail": "لم يُرفض من قبل"
+                }
+              ],
+              "failures": [
+                "profit_score: 58 < 60"
+              ],
+              "verdict": "غير جاهز تجارياً: profit_score: 58 < 60",
+              "profit_score": 58
+            },
+            "timestamp": "2026-07-09T09:35:44.044330",
+            "title": "أبحاث التوجيه الذكي",
+            "niche": "كتاب دراسي شامل يعرّف قارئه على أساسيات البحث العلمي وطرق التوجيه الذكي في اتخاذ القرارات"
+          },
+          {
+            "passed": false,
+            "published": false,
+            "technical": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "pdf_file_size",
+                  "passed": true,
+                  "detail": "حجم الملف: 85963 بايت"
+                },
+                {
+                  "name": "pdf_not_corrupt",
+                  "passed": true,
+                  "detail": "يُفتح بنجاح عبر pypdf (8 صفحة)"
+                },
+                {
+                  "name": "pdf_page_count",
+                  "passed": true,
+                  "detail": "8 صفحة (الحد الأدنى: 4)"
+                },
+                {
+                  "name": "pdf_page_dimensions_sane",
+                  "passed": true,
+                  "detail": "432x648 pt"
+                },
+                {
+                  "name": "pdf_no_empty_pages",
+                  "passed": true,
+                  "detail": "10745 بايت/صفحة في المتوسط (الحد الأدنى: 300)"
+                },
+                {
+                  "name": "cover_opens",
+                  "passed": true,
+                  "detail": "الصورة تُفتح وتُتحقَّق بنجاح عبر Pillow"
+                },
+                {
+                  "name": "cover_dimensions",
+                  "passed": true,
+                  "detail": "1600x2560 (متوقَّع 1600x2560)"
+                },
+                {
+                  "name": "cover_70_20_10_zone",
+                  "passed": true,
+                  "detail": "حدود منطقة العنوان عند 70% من الارتفاع (متوقَّع ~70%)"
+                },
+                {
+                  "name": "cover_title_bigger_than_author",
+                  "passed": true,
+                  "detail": "ارتفاع كتلة العنوان (تقديري): 574px، المؤلف: 32px"
+                },
+                {
+                  "name": "arabic_shaping_available",
+                  "passed": true,
+                  "detail": "arabic_reshaper + python-bidi متوفرتان وتعملان (تشكيل حقيقي حدث)"
+                },
+                {
+                  "name": "no_placeholder_title",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_subtitle",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_author",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                }
+              ],
+              "failures": [],
+              "severity": "none"
+            },
+            "commercial": {
+              "passed": false,
+              "checks": [
+                {
+                  "name": "profit_score",
+                  "passed": false,
+                  "detail": "56/100 (الحد الأدنى: 60)"
+                },
+                {
+                  "name": "butter_price",
+                  "passed": false,
+                  "detail": "$5.00 (حد الزبدة: $30)"
+                },
+                {
+                  "name": "not_duplicate",
+                  "passed": true,
+                  "detail": "لا تكرار في سجل الإنتاج"
+                },
+                {
+                  "name": "not_previously_rejected",
+                  "passed": true,
+                  "detail": "لم يُرفض من قبل"
+                }
+              ],
+              "failures": [
+                "profit_score: 56 < 60",
+                "butter_price: $5.00 < $30"
+              ],
+              "verdict": "غير جاهز تجارياً: profit_score: 56 < 60؛ butter_price: $5.00 < $30",
+              "profit_score": 56
+            },
+            "timestamp": "2026-07-08T19:44:40.306740",
+            "title": "كتاب اختبار قاطع الدائرة الموحّد",
+            "niche": "منتج"
+          },
+          {
+            "passed": false,
+            "published": false,
+            "technical": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "pdf_file_size",
+                  "passed": true,
+                  "detail": "حجم الملف: 52323 بايت"
+                },
+                {
+                  "name": "pdf_not_corrupt",
+                  "passed": true,
+                  "detail": "يُفتح بنجاح عبر pypdf (6 صفحة)"
+                },
+                {
+                  "name": "pdf_page_count",
+                  "passed": true,
+                  "detail": "6 صفحة (الحد الأدنى: 4)"
+                },
+                {
+                  "name": "pdf_page_dimensions_sane",
+                  "passed": true,
+                  "detail": "432x648 pt"
+                },
+                {
+                  "name": "pdf_no_empty_pages",
+                  "passed": true,
+                  "detail": "8720 بايت/صفحة في المتوسط (الحد الأدنى: 300)"
+                },
+                {
+                  "name": "cover_opens",
+                  "passed": true,
+                  "detail": "الصورة تُفتح وتُتحقَّق بنجاح عبر Pillow"
+                },
+                {
+                  "name": "cover_dimensions",
+                  "passed": true,
+                  "detail": "1600x2560 (متوقَّع 1600x2560)"
+                },
+                {
+                  "name": "cover_70_20_10_zone",
+                  "passed": true,
+                  "detail": "حدود منطقة العنوان عند 70% من الارتفاع (متوقَّع ~70%)"
+                },
+                {
+                  "name": "cover_title_bigger_than_author",
+                  "passed": true,
+                  "detail": "ارتفاع كتلة العنوان (تقديري): 756px، المؤلف: 0px"
+                },
+                {
+                  "name": "arabic_shaping_available",
+                  "passed": true,
+                  "detail": "arabic_reshaper + python-bidi متوفرتان وتعملان (تشكيل حقيقي حدث)"
+                },
+                {
+                  "name": "no_placeholder_title",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_subtitle",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_author",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                }
+              ],
+              "failures": [],
+              "severity": "none"
+            },
+            "commercial": {
+              "passed": false,
+              "checks": [
+                {
+                  "name": "profit_score",
+                  "passed": false,
+                  "detail": "56/100 (الحد الأدنى: 60)"
+                },
+                {
+                  "name": "butter_price",
+                  "passed": false,
+                  "detail": "$5.00 (حد الزبدة: $30)"
+                },
+                {
+                  "name": "not_duplicate",
+                  "passed": true,
+                  "detail": "لا تكرار في سجل الإنتاج"
+                },
+                {
+                  "name": "not_previously_rejected",
+                  "passed": true,
+                  "detail": "لم يُرفض من قبل"
+                }
+              ],
+              "failures": [
+                "profit_score: 56 < 60",
+                "butter_price: $5.00 < $30"
+              ],
+              "verdict": "غير جاهز تجارياً: profit_score: 56 < 60؛ butter_price: $5.00 < $30",
+              "profit_score": 56
+            },
+            "timestamp": "2026-07-08T19:44:20.817745",
+            "title": "???? ?????? ???? ??????? ??????? 2",
+            "niche": "????"
+          },
+          {
+            "passed": true,
+            "published": true,
+            "technical": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "pdf_file_size",
+                  "passed": true,
+                  "detail": "حجم الملف: 51700 بايت"
+                },
+                {
+                  "name": "pdf_not_corrupt",
+                  "passed": true,
+                  "detail": "يُفتح بنجاح عبر pypdf (8 صفحة)"
+                },
+                {
+                  "name": "pdf_page_count",
+                  "passed": true,
+                  "detail": "8 صفحة (الحد الأدنى: 4)"
+                },
+                {
+                  "name": "pdf_page_dimensions_sane",
+                  "passed": true,
+                  "detail": "432x648 pt"
+                },
+                {
+                  "name": "pdf_no_empty_pages",
+                  "passed": true,
+                  "detail": "6462 بايت/صفحة في المتوسط (الحد الأدنى: 300)"
+                },
+                {
+                  "name": "cover_opens",
+                  "passed": true,
+                  "detail": "الصورة تُفتح وتُتحقَّق بنجاح عبر Pillow"
+                },
+                {
+                  "name": "cover_dimensions",
+                  "passed": true,
+                  "detail": "1600x2560 (متوقَّع 1600x2560)"
+                },
+                {
+                  "name": "cover_70_20_10_zone",
+                  "passed": true,
+                  "detail": "حدود منطقة العنوان عند 70% من الارتفاع (متوقَّع ~70%)"
+                },
+                {
+                  "name": "cover_title_bigger_than_author",
+                  "passed": true,
+                  "detail": "ارتفاع كتلة العنوان (تقديري): 756px، المؤلف: 0px"
+                },
+                {
+                  "name": "arabic_shaping_available",
+                  "passed": true,
+                  "detail": "arabic_reshaper + python-bidi متوفرتان وتعملان (تشكيل حقيقي حدث)"
+                },
+                {
+                  "name": "no_placeholder_title",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_subtitle",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_author",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                }
+              ],
+              "failures": [],
+              "severity": "none"
+            },
+            "commercial": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "profit_score",
+                  "passed": true,
+                  "detail": "62/100 (الحد الأدنى: 60)"
+                },
+                {
+                  "name": "butter_price",
+                  "passed": true,
+                  "detail": "$38.00 (حد الزبدة: $30)"
+                },
+                {
+                  "name": "not_duplicate",
+                  "passed": true,
+                  "detail": "لا تكرار في سجل الإنتاج"
+                },
+                {
+                  "name": "not_previously_rejected",
+                  "passed": true,
+                  "detail": "لم يُرفض من قبل"
+                }
+              ],
+              "failures": [],
+              "verdict": "يستحق النشر لمشترين محترفين",
+              "profit_score": 62
+            },
+            "timestamp": "2026-07-08T19:43:49.493323",
+            "title": "???? ?????? ???? ??????? ???????",
+            "niche": "???? ?????? ?? ?????? ??? Scout ????? ???????"
+          },
+          {
+            "passed": true,
+            "published": true,
+            "technical": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "pdf_file_size",
+                  "passed": true,
+                  "detail": "حجم الملف: 96326 بايت"
+                },
+                {
+                  "name": "pdf_not_corrupt",
+                  "passed": true,
+                  "detail": "يُفتح بنجاح عبر pypdf (25 صفحة)"
+                },
+                {
+                  "name": "pdf_page_count",
+                  "passed": true,
+                  "detail": "25 صفحة (الحد الأدنى: 4)"
+                },
+                {
+                  "name": "pdf_page_dimensions_sane",
+                  "passed": true,
+                  "detail": "432x648 pt"
+                },
+                {
+                  "name": "pdf_no_empty_pages",
+                  "passed": true,
+                  "detail": "3853 بايت/صفحة في المتوسط (الحد الأدنى: 300)"
+                },
+                {
+                  "name": "cover_opens",
+                  "passed": true,
+                  "detail": "الصورة تُفتح وتُتحقَّق بنجاح عبر Pillow"
+                },
+                {
+                  "name": "cover_dimensions",
+                  "passed": true,
+                  "detail": "1600x2560 (متوقَّع 1600x2560)"
+                },
+                {
+                  "name": "cover_70_20_10_zone",
+                  "passed": true,
+                  "detail": "حدود منطقة العنوان عند 70% من الارتفاع (متوقَّع ~70%)"
+                },
+                {
+                  "name": "cover_title_bigger_than_author",
+                  "passed": true,
+                  "detail": "ارتفاع كتلة العنوان (تقديري): 562px، المؤلف: 0px"
+                },
+                {
+                  "name": "arabic_shaping_available",
+                  "passed": true,
+                  "detail": "arabic_reshaper + python-bidi متوفرتان وتعملان (تشكيل حقيقي حدث)"
+                },
+                {
+                  "name": "no_placeholder_title",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_subtitle",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_author",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                }
+              ],
+              "failures": [],
+              "severity": "none"
+            },
+            "commercial": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "profit_score",
+                  "passed": true,
+                  "detail": "62/100 (الحد الأدنى: 60)"
+                },
+                {
+                  "name": "butter_price",
+                  "passed": true,
+                  "detail": "$49.00 (حد الزبدة: $30)"
+                },
+                {
+                  "name": "not_duplicate",
+                  "passed": true,
+                  "detail": "لا تكرار في سجل الإنتاج"
+                },
+                {
+                  "name": "not_previously_rejected",
+                  "passed": true,
+                  "detail": "لم يُرفض من قبل"
+                }
+              ],
+              "failures": [],
+              "verdict": "يستحق النشر لمشترين محترفين",
+              "profit_score": 62
+            },
+            "timestamp": "2026-07-08T09:54:26.190080",
+            "title": "الكتاب المقدس للكتابة الإبداعية",
+            "niche": "كتاب تعليمي يُدريب الكتاب على صناعة القصص المثيرة وكتابة الحوارات العاطفية دون أيخبرة سابقة"
+          },
+          {
+            "passed": false,
+            "published": false,
+            "technical": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "pdf_file_size",
+                  "passed": true,
+                  "detail": "حجم الملف: 73788 بايت"
+                },
+                {
+                  "name": "pdf_not_corrupt",
+                  "passed": true,
+                  "detail": "يُفتح بنجاح عبر pypdf (8 صفحة)"
+                },
+                {
+                  "name": "pdf_page_count",
+                  "passed": true,
+                  "detail": "8 صفحة (الحد الأدنى: 4)"
+                },
+                {
+                  "name": "pdf_page_dimensions_sane",
+                  "passed": true,
+                  "detail": "432x648 pt"
+                },
+                {
+                  "name": "pdf_no_empty_pages",
+                  "passed": true,
+                  "detail": "9224 بايت/صفحة في المتوسط (الحد الأدنى: 300)"
+                },
+                {
+                  "name": "cover_opens",
+                  "passed": true,
+                  "detail": "الصورة تُفتح وتُتحقَّق بنجاح عبر Pillow"
+                },
+                {
+                  "name": "cover_dimensions",
+                  "passed": true,
+                  "detail": "1600x2560 (متوقَّع 1600x2560)"
+                },
+                {
+                  "name": "cover_70_20_10_zone",
+                  "passed": true,
+                  "detail": "حدود منطقة العنوان عند 70% من الارتفاع (متوقَّع ~70%)"
+                },
+                {
+                  "name": "cover_title_bigger_than_author",
+                  "passed": true,
+                  "detail": "ارتفاع كتلة العنوان (تقديري): 556px، المؤلف: 32px"
+                },
+                {
+                  "name": "arabic_shaping_available",
+                  "passed": true,
+                  "detail": "arabic_reshaper + python-bidi متوفرتان وتعملان (تشكيل حقيقي حدث)"
+                },
+                {
+                  "name": "no_placeholder_title",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_subtitle",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_author",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                }
+              ],
+              "failures": [],
+              "severity": "none"
+            },
+            "commercial": {
+              "passed": false,
+              "checks": [
+                {
+                  "name": "profit_score",
+                  "passed": false,
+                  "detail": "56/100 (الحد الأدنى: 60)"
+                },
+                {
+                  "name": "butter_price",
+                  "passed": false,
+                  "detail": "$5.00 (حد الزبدة: $30)"
+                },
+                {
+                  "name": "not_duplicate",
+                  "passed": true,
+                  "detail": "لا تكرار في سجل الإنتاج"
+                },
+                {
+                  "name": "not_previously_rejected",
+                  "passed": true,
+                  "detail": "لم يُرفض من قبل"
+                }
+              ],
+              "failures": [
+                "profit_score: 56 < 60",
+                "butter_price: $5.00 < $30"
+              ],
+              "verdict": "غير جاهز تجارياً: profit_score: 56 < 60؛ butter_price: $5.00 < $30",
+              "profit_score": 56
+            },
+            "timestamp": "2026-07-08T09:53:46.764178",
+            "title": "كتاب عام جداً للاختبار",
+            "niche": "كتاب"
+          },
+          {
+            "passed": true,
+            "published": true,
+            "technical": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "pdf_file_size",
+                  "passed": true,
+                  "detail": "حجم الملف: 118167 بايت"
+                },
+                {
+                  "name": "pdf_not_corrupt",
+                  "passed": true,
+                  "detail": "يُفتح بنجاح عبر pypdf (7 صفحة)"
+                },
+                {
+                  "name": "pdf_page_count",
+                  "passed": true,
+                  "detail": "7 صفحة (الحد الأدنى: 4)"
+                },
+                {
+                  "name": "pdf_page_dimensions_sane",
+                  "passed": true,
+                  "detail": "432x648 pt"
+                },
+                {
+                  "name": "pdf_no_empty_pages",
+                  "passed": true,
+                  "detail": "16881 بايت/صفحة في المتوسط (الحد الأدنى: 300)"
+                },
+                {
+                  "name": "cover_opens",
+                  "passed": true,
+                  "detail": "الصورة تُفتح وتُتحقَّق بنجاح عبر Pillow"
+                },
+                {
+                  "name": "cover_dimensions",
+                  "passed": true,
+                  "detail": "1600x2560 (متوقَّع 1600x2560)"
+                },
+                {
+                  "name": "cover_70_20_10_zone",
+                  "passed": true,
+                  "detail": "حدود منطقة العنوان عند 70% من الارتفاع (متوقَّع ~70%)"
+                },
+                {
+                  "name": "cover_title_bigger_than_author",
+                  "passed": true,
+                  "detail": "ارتفاع كتلة العنوان (تقديري): 834px، المؤلف: 32px"
+                },
+                {
+                  "name": "arabic_shaping_available",
+                  "passed": true,
+                  "detail": "arabic_reshaper + python-bidi متوفرتان وتعملان (تشكيل حقيقي حدث)"
+                },
+                {
+                  "name": "no_placeholder_title",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_subtitle",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_author",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                }
+              ],
+              "failures": [],
+              "severity": "none"
+            },
+            "commercial": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "profit_score",
+                  "passed": true,
+                  "detail": "65/100 (الحد الأدنى: 60)"
+                },
+                {
+                  "name": "butter_price",
+                  "passed": true,
+                  "detail": "$43.00 (حد الزبدة: $30)"
+                },
+                {
+                  "name": "not_duplicate",
+                  "passed": true,
+                  "detail": "لا تكرار في سجل الإنتاج"
+                },
+                {
+                  "name": "not_previously_rejected",
+                  "passed": true,
+                  "detail": "لم يُرفض من قبل"
+                }
+              ],
+              "failures": [],
+              "verdict": "يستحق النشر لمشترين محترفين",
+              "profit_score": 65
+            },
+            "timestamp": "2026-07-08T09:53:35.675193",
+            "title": "دليل تحويل الأفكار السلبية إلى مشاريع مربحة",
+            "niche": "كتاب إرشادي حول تطوير مهارات التفكير الإيجابي وتحويلها إلى مشاريع تجارية ناجحة ومربحة للمبتدئين في ريادة الأعمال"
+          },
+          {
+            "passed": false,
+            "published": false,
+            "technical": {
+              "passed": true,
+              "checks": [
+                {
+                  "name": "pdf_file_size",
+                  "passed": true,
+                  "detail": "حجم الملف: 106149 بايت"
+                },
+                {
+                  "name": "pdf_not_corrupt",
+                  "passed": true,
+                  "detail": "يُفتح بنجاح عبر pypdf (6 صفحة)"
+                },
+                {
+                  "name": "pdf_page_count",
+                  "passed": true,
+                  "detail": "6 صفحة (الحد الأدنى: 4)"
+                },
+                {
+                  "name": "pdf_page_dimensions_sane",
+                  "passed": true,
+                  "detail": "432x648 pt"
+                },
+                {
+                  "name": "pdf_no_empty_pages",
+                  "passed": true,
+                  "detail": "17692 بايت/صفحة في المتوسط (الحد الأدنى: 300)"
+                },
+                {
+                  "name": "cover_opens",
+                  "passed": true,
+                  "detail": "الصورة تُفتح وتُتحقَّق بنجاح عبر Pillow"
+                },
+                {
+                  "name": "cover_dimensions",
+                  "passed": true,
+                  "detail": "1600x2560 (متوقَّع 1600x2560)"
+                },
+                {
+                  "name": "cover_70_20_10_zone",
+                  "passed": true,
+                  "detail": "حدود منطقة العنوان عند 70% من الارتفاع (متوقَّع ~70%)"
+                },
+                {
+                  "name": "cover_title_bigger_than_author",
+                  "passed": true,
+                  "detail": "ارتفاع كتلة العنوان (تقديري): 506px، المؤلف: 22px"
+                },
+                {
+                  "name": "arabic_shaping_available",
+                  "passed": true,
+                  "detail": "arabic_reshaper + python-bidi متوفرتان وتعملان (تشكيل حقيقي حدث)"
+                },
+                {
+                  "name": "no_placeholder_title",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_subtitle",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                },
+                {
+                  "name": "no_placeholder_author",
+                  "passed": true,
+                  "detail": "لا يوجد نص Placeholder"
+                }
+              ],
+              "failures": [],
+              "severity": "none"
+            },
+            "commercial": {
+              "passed": false,
+              "checks": [
+                {
+                  "name": "profit_score",
+                  "passed": true,
+                  "detail": "62/100 (الحد الأدنى: 60)"
+                },
+                {
+                  "name": "butter_price",
+                  "passed": true,
+                  "detail": "$38.00 (حد الزبدة: $30)"
+                },
+                {
+                  "name": "not_duplicate",
+                  "passed": false,
+                  "detail": "يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: الإبداع_الفوريا_كيف_تحول_ردود_أفعالك_إلى_فرص_ذهبية.pdf"
+                },
+                {
+                  "name": "not_previously_rejected",
+                  "passed": false,
+                  "detail": "مرفوض سابقاً في QUARANTINE.md"
+                }
+              ],
+              "failures": [
+                "not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: الإبداع_الفوريا_كيف_تحول_ردود_أفعالك_إلى_فرص_ذهبية.pdf",
+                "not_previously_rejected: هذا النيتش مرفوض مسبقاً"
+              ],
+              "verdict": "غير جاهز تجارياً: not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: الإبداع_الفوريا_كيف_تحول_ردود_أفعالك_إلى_فرص_ذهبية.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً",
+              "profit_score": 62
+            },
+            "timestamp": "2026-07-08T09:53:20.041803",
+            "title": "الإبداع الفوري: كيف تحول ردود أفعالك إلى فرص ذهبية (اختبار إعادة التسعير)",
+            "niche": "كتاب إرشادي يظهر الطرق الأساسية لتحويل النظرة السلبية إلى فرص إبداعية فريدة والعمل على بناء أعمال مربحة"
+          }
+        ]
+      }
+    },
+    "brain": {
+      "http_status": 200,
+      "body": {
+        "success": true,
+        "exists": true,
+        "masterIndex": "MASTER_INDEX.md",
+        "totalMarkdownFiles": 28,
+        "folders": [
+          {
+            "folder": "00_Constitution",
+            "fileCount": 1,
+            "files": [
+              "00_Constitution/README.md"
+            ]
+          },
+          {
+            "folder": "01_Vision",
+            "fileCount": 1,
+            "files": [
+              "01_Vision/README.md"
+            ]
+          },
+          {
+            "folder": "02_Roadmap",
+            "fileCount": 1,
+            "files": [
+              "02_Roadmap/README.md"
+            ]
+          },
+          {
+            "folder": "03_Current_Mission",
+            "fileCount": 2,
+            "files": [
+              "03_Current_Mission/README.md",
+              "03_Current_Mission/Self_Awareness.md"
+            ]
+          },
+          {
+            "folder": "04_Architecture",
+            "fileCount": 1,
+            "files": [
+              "04_Architecture/README.md"
+            ]
+          },
+          {
+            "folder": "05_Living_Cells",
+            "fileCount": 1,
+            "files": [
+              "05_Living_Cells/README.md"
+            ]
+          },
+          {
+            "folder": "06_Councils",
+            "fileCount": 1,
+            "files": [
+              "06_Councils/README.md"
+            ]
+          },
+          {
+            "folder": "07_Knowledge_Base",
+            "fileCount": 1,
+            "files": [
+              "07_Knowledge_Base/README.md"
+            ]
+          },
+          {
+            "folder": "08_Market_Intelligence",
+            "fileCount": 1,
+            "files": [
+              "08_Market_Intelligence/README.md"
+            ]
+          },
+          {
+            "folder": "09_Prompt_Library",
+            "fileCount": 1,
+            "files": [
+              "09_Prompt_Library/README.md"
+            ]
+          },
+          {
+            "folder": "10_Automation",
+            "fileCount": 1,
+            "files": [
+              "10_Automation/README.md"
+            ]
+          },
+          {
+            "folder": "11_Security",
+            "fileCount": 1,
+            "files": [
+              "11_Security/README.md"
+            ]
+          },
+          {
+            "folder": "12_Production",
+            "fileCount": 1,
+            "files": [
+              "12_Production/README.md"
+            ]
+          },
+          {
+            "folder": "13_Publishing",
+            "fileCount": 1,
+            "files": [
+              "13_Publishing/README.md"
+            ]
+          },
+          {
+            "folder": "14_Marketing",
+            "fileCount": 1,
+            "files": [
+              "14_Marketing/README.md"
+            ]
+          },
+          {
+            "folder": "15_Finance",
+            "fileCount": 1,
+            "files": [
+              "15_Finance/README.md"
+            ]
+          },
+          {
+            "folder": "16_Laboratory",
+            "fileCount": 1,
+            "files": [
+              "16_Laboratory/README.md"
+            ]
+          },
+          {
+            "folder": "17_Research",
+            "fileCount": 1,
+            "files": [
+              "17_Research/README.md"
+            ]
+          },
+          {
+            "folder": "18_Daily_Logs",
+            "fileCount": 1,
+            "files": [
+              "18_Daily_Logs/README.md"
+            ]
+          },
+          {
+            "folder": "19_Lessons_Learned",
+            "fileCount": 5,
+            "files": [
+              "19_Lessons_Learned/README.md",
+              "19_Lessons_Learned/The_1299_Pricing_Trap.md",
+              "19_Lessons_Learned/The_Circuit_Breaker_Discovery.md",
+              "19_Lessons_Learned/The_Self_Awareness_Blind_Spot.md",
+              "19_Lessons_Learned/The_Success_True_Bug.md"
+            ]
+          },
+          {
+            "folder": "99_Archive",
+            "fileCount": 1,
+            "files": [
+              "99_Archive/README.md"
+            ]
+          }
+        ]
+      }
+    },
+    "good_morning": {
+      "http_status": 200,
+      "body": {
+        "success": true,
+        "generated_at": "2026-07-10T21:57:45.897Z",
+        "title": "🏭 OpenClaw Factory — Daily Briefing",
+        "factory_status": {
+          "status": "critical",
+          "status_source": "reality",
+          "timestamp": "2026-07-10T21:57:45.803Z",
+          "checks": {
+            "sensing_engine": {
+              "ok": false,
+              "severity": "degraded",
+              "detail": "n8n غير متاح: fetch failed"
+            },
+            "book_generator": {
+              "ok": true,
+              "severity": "critical",
+              "detail": "book_generator.py موجود"
+            },
+            "finance": {
+              "ok": true,
+              "severity": "degraded",
+              "detail": "JSON صالح"
+            },
+            "books_folder": {
+              "ok": true,
+              "severity": "degraded",
+              "count": 10,
+              "detail": "10 كتاب PDF"
+            }
+          },
+          "reality": {
+            "books_on_disk": 10,
+            "books_published": 0,
+            "units_sold": 0,
+            "net_revenue_usd": 0,
+            "days_since_first_publish": null,
+            "verdict": "CRITICAL",
+            "reason": "Zero books published. The factory produces inventory nobody can buy.",
+            "next_action": "Publish one book on KDP. Nothing else matters."
+          }
+        },
+        "top_opportunities": {
+          "items": [
+            {
+              "timestamp": "2026-07-09T07:40:38.730Z",
+              "niche": "gratitude journal daily",
+              "reason": "نجحت كل فحوصات الجودة"
+            },
+            {
+              "timestamp": "2026-07-09T07:36:55.404Z",
+              "niche": "minimalist budget planner",
+              "reason": "نجحت كل فحوصات الجودة"
+            }
+          ],
+          "note": "لا يوجد رقم \"ترافيك\" حقيقي بعد — معروضة الأحدث بدل الأعلى ترافيكاً فعلياً"
+        },
+        "last_night_actions": {
+          "entries": [
+            {
+              "timestamp": "2026-07-10T07:33:59.593Z",
+              "diagnosis": {
+                "status": "critical",
+                "checks": {
+                  "sensing_engine": {
+                    "ok": false,
+                    "severity": "degraded",
+                    "detail": "n8n غير متاح: fetch failed"
+                  },
+                  "book_generator": {
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": "book_generator.py موجود"
+                  },
+                  "finance": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "detail": "JSON صالح"
+                  },
+                  "books_folder": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "count": 10,
+                    "detail": "10 كتاب PDF"
+                  }
+                }
+              },
+              "actions": [
+                {
+                  "step": "heal_finance",
+                  "action": "none",
+                  "detail": "finance_data.json سليم"
+                },
+                {
+                  "step": "heal_books_empty",
+                  "action": "none",
+                  "detail": "books/ غير فارغ"
+                },
+                {
+                  "step": "heal_n8n",
+                  "action": "warning",
+                  "detail": "n8n غير متاح — يُتابَع الإنتاج بدونه (Scout يعتمد على تحليل Groq الاحتياطي مؤقتاً، كما صُمِّم في مسار Scout)"
+                },
+                {
+                  "step": "hunt",
+                  "action": "none",
+                  "detail": "أحدث نيتش مؤهَّل (الرجل الناجح: 30 يومًا لتميزك الشخصي) له كتاب موجود بالفعل"
+                },
+                {
+                  "step": "weekly_report",
+                  "action": "none",
+                  "detail": "ليس يوم الأحد — لا تقرير أسبوعي في هذه الدورة"
+                },
+                {
+                  "step": "golden_hunter",
+                  "action": "none",
+                  "detail": "تم تشغيل Golden Hunter اليوم بالفعل (2026-07-10)"
+                },
+                {
+                  "step": "self_awareness",
+                  "action": "none",
+                  "detail": "تم تقييم الوعي الذاتي اليوم بالفعل (2026-07-10)"
+                }
+              ]
+            },
+            {
+              "timestamp": "2026-07-10T09:45:01.566Z",
+              "diagnosis": {
+                "status": "critical",
+                "checks": {
+                  "sensing_engine": {
+                    "ok": false,
+                    "severity": "degraded",
+                    "detail": "n8n غير متاح: fetch failed"
+                  },
+                  "book_generator": {
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": "book_generator.py موجود"
+                  },
+                  "finance": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "detail": "JSON صالح"
+                  },
+                  "books_folder": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "count": 10,
+                    "detail": "10 كتاب PDF"
+                  }
+                }
+              },
+              "actions": [
+                {
+                  "step": "heal_finance",
+                  "action": "none",
+                  "detail": "finance_data.json سليم"
+                },
+                {
+                  "step": "heal_books_empty",
+                  "action": "none",
+                  "detail": "books/ غير فارغ"
+                },
+                {
+                  "step": "heal_n8n",
+                  "action": "warning",
+                  "detail": "n8n غير متاح — يُتابَع الإنتاج بدونه (Scout يعتمد على تحليل Groq الاحتياطي مؤقتاً، كما صُمِّم في مسار Scout)"
+                },
+                {
+                  "step": "hunt",
+                  "action": "none",
+                  "detail": "أحدث نيتش مؤهَّل (الرجل الناجح: 30 يومًا لتميزك الشخصي) له كتاب موجود بالفعل"
+                },
+                {
+                  "step": "weekly_report",
+                  "action": "none",
+                  "detail": "ليس يوم الأحد — لا تقرير أسبوعي في هذه الدورة"
+                },
+                {
+                  "step": "golden_hunter",
+                  "action": "none",
+                  "detail": "تم تشغيل Golden Hunter اليوم بالفعل (2026-07-10)"
+                },
+                {
+                  "step": "self_awareness",
+                  "action": "none",
+                  "detail": "تم تقييم الوعي الذاتي اليوم بالفعل (2026-07-10)"
+                }
+              ]
+            },
+            {
+              "timestamp": "2026-07-10T11:33:39.027Z",
+              "diagnosis": {
+                "status": "critical",
+                "checks": {
+                  "sensing_engine": {
+                    "ok": false,
+                    "severity": "degraded",
+                    "detail": "n8n غير متاح: fetch failed"
+                  },
+                  "book_generator": {
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": "book_generator.py موجود"
+                  },
+                  "finance": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "detail": "JSON صالح"
+                  },
+                  "books_folder": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "count": 10,
+                    "detail": "10 كتاب PDF"
+                  }
+                }
+              },
+              "actions": [
+                {
+                  "step": "heal_finance",
+                  "action": "none",
+                  "detail": "finance_data.json سليم"
+                },
+                {
+                  "step": "heal_books_empty",
+                  "action": "none",
+                  "detail": "books/ غير فارغ"
+                },
+                {
+                  "step": "heal_n8n",
+                  "action": "warning",
+                  "detail": "n8n غير متاح — يُتابَع الإنتاج بدونه (Scout يعتمد على تحليل Groq الاحتياطي مؤقتاً، كما صُمِّم في مسار Scout)"
+                },
+                {
+                  "step": "hunt",
+                  "action": "none",
+                  "detail": "أحدث نيتش مؤهَّل (الرجل الناجح: 30 يومًا لتميزك الشخصي) له كتاب موجود بالفعل"
+                },
+                {
+                  "step": "weekly_report",
+                  "action": "none",
+                  "detail": "ليس يوم الأحد — لا تقرير أسبوعي في هذه الدورة"
+                },
+                {
+                  "step": "golden_hunter",
+                  "action": "none",
+                  "detail": "تم تشغيل Golden Hunter اليوم بالفعل (2026-07-10)"
+                },
+                {
+                  "step": "self_awareness",
+                  "action": "none",
+                  "detail": "تم تقييم الوعي الذاتي اليوم بالفعل (2026-07-10)"
+                }
+              ]
+            },
+            {
+              "timestamp": "2026-07-10T11:43:38.438Z",
+              "diagnosis": {
+                "status": "critical",
+                "checks": {
+                  "sensing_engine": {
+                    "ok": false,
+                    "severity": "degraded",
+                    "detail": "n8n غير متاح: fetch failed"
+                  },
+                  "book_generator": {
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": "book_generator.py موجود"
+                  },
+                  "finance": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "detail": "JSON صالح"
+                  },
+                  "books_folder": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "count": 10,
+                    "detail": "10 كتاب PDF"
+                  }
+                }
+              },
+              "actions": [
+                {
+                  "step": "heal_finance",
+                  "action": "none",
+                  "detail": "finance_data.json سليم"
+                },
+                {
+                  "step": "heal_books_empty",
+                  "action": "none",
+                  "detail": "books/ غير فارغ"
+                },
+                {
+                  "step": "heal_n8n",
+                  "action": "warning",
+                  "detail": "n8n غير متاح — يُتابَع الإنتاج بدونه (Scout يعتمد على تحليل Groq الاحتياطي مؤقتاً، كما صُمِّم في مسار Scout)"
+                },
+                {
+                  "step": "hunt",
+                  "action": "none",
+                  "detail": "أحدث نيتش مؤهَّل (الرجل الناجح: 30 يومًا لتميزك الشخصي) له كتاب موجود بالفعل"
+                },
+                {
+                  "step": "weekly_report",
+                  "action": "none",
+                  "detail": "ليس يوم الأحد — لا تقرير أسبوعي في هذه الدورة"
+                },
+                {
+                  "step": "golden_hunter",
+                  "action": "none",
+                  "detail": "تم تشغيل Golden Hunter اليوم بالفعل (2026-07-10)"
+                },
+                {
+                  "step": "self_awareness",
+                  "action": "none",
+                  "detail": "تم تقييم الوعي الذاتي اليوم بالفعل (2026-07-10)"
+                }
+              ]
+            },
+            {
+              "timestamp": "2026-07-10T12:03:39.426Z",
+              "diagnosis": {
+                "status": "critical",
+                "checks": {
+                  "sensing_engine": {
+                    "ok": false,
+                    "severity": "degraded",
+                    "detail": "n8n غير متاح: fetch failed"
+                  },
+                  "book_generator": {
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": "book_generator.py موجود"
+                  },
+                  "finance": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "detail": "JSON صالح"
+                  },
+                  "books_folder": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "count": 10,
+                    "detail": "10 كتاب PDF"
+                  }
+                }
+              },
+              "actions": [
+                {
+                  "step": "heal_finance",
+                  "action": "none",
+                  "detail": "finance_data.json سليم"
+                },
+                {
+                  "step": "heal_books_empty",
+                  "action": "none",
+                  "detail": "books/ غير فارغ"
+                },
+                {
+                  "step": "heal_n8n",
+                  "action": "warning",
+                  "detail": "n8n غير متاح — يُتابَع الإنتاج بدونه (Scout يعتمد على تحليل Groq الاحتياطي مؤقتاً، كما صُمِّم في مسار Scout)"
+                },
+                {
+                  "step": "hunt",
+                  "action": "none",
+                  "detail": "أحدث نيتش مؤهَّل (الرجل الناجح: 30 يومًا لتميزك الشخصي) له كتاب موجود بالفعل"
+                },
+                {
+                  "step": "weekly_report",
+                  "action": "none",
+                  "detail": "ليس يوم الأحد — لا تقرير أسبوعي في هذه الدورة"
+                },
+                {
+                  "step": "golden_hunter",
+                  "action": "none",
+                  "detail": "تم تشغيل Golden Hunter اليوم بالفعل (2026-07-10)"
+                },
+                {
+                  "step": "self_awareness",
+                  "action": "none",
+                  "detail": "تم تقييم الوعي الذاتي اليوم بالفعل (2026-07-10)"
+                }
+              ]
+            },
+            {
+              "timestamp": "2026-07-10T13:55:59.948Z",
+              "diagnosis": {
+                "status": "critical",
+                "checks": {
+                  "sensing_engine": {
+                    "ok": false,
+                    "severity": "degraded",
+                    "detail": "n8n غير متاح: fetch failed"
+                  },
+                  "book_generator": {
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": "book_generator.py موجود"
+                  },
+                  "finance": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "detail": "JSON صالح"
+                  },
+                  "books_folder": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "count": 10,
+                    "detail": "10 كتاب PDF"
+                  }
+                }
+              },
+              "actions": [
+                {
+                  "step": "heal_finance",
+                  "action": "none",
+                  "detail": "finance_data.json سليم"
+                },
+                {
+                  "step": "heal_books_empty",
+                  "action": "none",
+                  "detail": "books/ غير فارغ"
+                },
+                {
+                  "step": "heal_n8n",
+                  "action": "warning",
+                  "detail": "n8n غير متاح — يُتابَع الإنتاج بدونه (Scout يعتمد على تحليل Groq الاحتياطي مؤقتاً، كما صُمِّم في مسار Scout)"
+                },
+                {
+                  "step": "hunt",
+                  "action": "none",
+                  "detail": "أحدث نيتش مؤهَّل (الرجل الناجح: 30 يومًا لتميزك الشخصي) له كتاب موجود بالفعل"
+                },
+                {
+                  "step": "weekly_report",
+                  "action": "none",
+                  "detail": "ليس يوم الأحد — لا تقرير أسبوعي في هذه الدورة"
+                },
+                {
+                  "step": "golden_hunter",
+                  "action": "none",
+                  "detail": "تم تشغيل Golden Hunter اليوم بالفعل (2026-07-10)"
+                },
+                {
+                  "step": "self_awareness",
+                  "action": "none",
+                  "detail": "تم تقييم الوعي الذاتي اليوم بالفعل (2026-07-10)"
+                }
+              ]
+            },
+            {
+              "timestamp": "2026-07-10T15:56:01.439Z",
+              "diagnosis": {
+                "status": "critical",
+                "checks": {
+                  "sensing_engine": {
+                    "ok": false,
+                    "severity": "degraded",
+                    "detail": "n8n غير متاح: fetch failed"
+                  },
+                  "book_generator": {
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": "book_generator.py موجود"
+                  },
+                  "finance": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "detail": "JSON صالح"
+                  },
+                  "books_folder": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "count": 10,
+                    "detail": "10 كتاب PDF"
+                  }
+                }
+              },
+              "actions": [
+                {
+                  "step": "heal_finance",
+                  "action": "none",
+                  "detail": "finance_data.json سليم"
+                },
+                {
+                  "step": "heal_books_empty",
+                  "action": "none",
+                  "detail": "books/ غير فارغ"
+                },
+                {
+                  "step": "heal_n8n",
+                  "action": "warning",
+                  "detail": "n8n غير متاح — يُتابَع الإنتاج بدونه (Scout يعتمد على تحليل Groq الاحتياطي مؤقتاً، كما صُمِّم في مسار Scout)"
+                },
+                {
+                  "step": "hunt",
+                  "action": "none",
+                  "detail": "أحدث نيتش مؤهَّل (الرجل الناجح: 30 يومًا لتميزك الشخصي) له كتاب موجود بالفعل"
+                },
+                {
+                  "step": "weekly_report",
+                  "action": "none",
+                  "detail": "ليس يوم الأحد — لا تقرير أسبوعي في هذه الدورة"
+                },
+                {
+                  "step": "golden_hunter",
+                  "action": "none",
+                  "detail": "تم تشغيل Golden Hunter اليوم بالفعل (2026-07-10)"
+                },
+                {
+                  "step": "self_awareness",
+                  "action": "none",
+                  "detail": "تم تقييم الوعي الذاتي اليوم بالفعل (2026-07-10)"
+                }
+              ]
+            },
+            {
+              "timestamp": "2026-07-10T19:56:00.864Z",
+              "diagnosis": {
+                "status": "critical",
+                "checks": {
+                  "sensing_engine": {
+                    "ok": false,
+                    "severity": "degraded",
+                    "detail": "n8n غير متاح: fetch failed"
+                  },
+                  "book_generator": {
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": "book_generator.py موجود"
+                  },
+                  "finance": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "detail": "JSON صالح"
+                  },
+                  "books_folder": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "count": 10,
+                    "detail": "10 كتاب PDF"
+                  }
+                }
+              },
+              "actions": [
+                {
+                  "step": "heal_finance",
+                  "action": "none",
+                  "detail": "finance_data.json سليم"
+                },
+                {
+                  "step": "heal_books_empty",
+                  "action": "none",
+                  "detail": "books/ غير فارغ"
+                },
+                {
+                  "step": "heal_n8n",
+                  "action": "warning",
+                  "detail": "n8n غير متاح — يُتابَع الإنتاج بدونه (Scout يعتمد على تحليل Groq الاحتياطي مؤقتاً، كما صُمِّم في مسار Scout)"
+                },
+                {
+                  "step": "hunt",
+                  "action": "none",
+                  "detail": "أحدث نيتش مؤهَّل (الرجل الناجح: 30 يومًا لتميزك الشخصي) له كتاب موجود بالفعل"
+                },
+                {
+                  "step": "weekly_report",
+                  "action": "none",
+                  "detail": "ليس يوم الأحد — لا تقرير أسبوعي في هذه الدورة"
+                },
+                {
+                  "step": "golden_hunter",
+                  "action": "none",
+                  "detail": "تم تشغيل Golden Hunter اليوم بالفعل (2026-07-10)"
+                },
+                {
+                  "step": "self_awareness",
+                  "action": "none",
+                  "detail": "تم تقييم الوعي الذاتي اليوم بالفعل (2026-07-10)"
+                }
+              ]
+            },
+            {
+              "timestamp": "2026-07-10T21:39:05.625Z",
+              "diagnosis": {
+                "status": "critical",
+                "checks": {
+                  "sensing_engine": {
+                    "ok": false,
+                    "severity": "degraded",
+                    "detail": "n8n غير متاح: fetch failed"
+                  },
+                  "book_generator": {
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": "book_generator.py موجود"
+                  },
+                  "finance": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "detail": "JSON صالح"
+                  },
+                  "books_folder": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "count": 10,
+                    "detail": "10 كتاب PDF"
+                  }
+                }
+              },
+              "actions": [
+                {
+                  "step": "heal_finance",
+                  "action": "none",
+                  "detail": "finance_data.json سليم"
+                },
+                {
+                  "step": "heal_books_empty",
+                  "action": "none",
+                  "detail": "books/ غير فارغ"
+                },
+                {
+                  "step": "heal_n8n",
+                  "action": "warning",
+                  "detail": "n8n غير متاح — يُتابَع الإنتاج بدونه (Scout يعتمد على تحليل Groq الاحتياطي مؤقتاً، كما صُمِّم في مسار Scout)"
+                },
+                {
+                  "step": "hunt",
+                  "action": "none",
+                  "detail": "أحدث نيتش مؤهَّل (الرجل الناجح: 30 يومًا لتميزك الشخصي) له كتاب موجود بالفعل"
+                },
+                {
+                  "step": "weekly_report",
+                  "action": "none",
+                  "detail": "ليس يوم الأحد — لا تقرير أسبوعي في هذه الدورة"
+                },
+                {
+                  "step": "golden_hunter",
+                  "action": "none",
+                  "detail": "تم تشغيل Golden Hunter اليوم بالفعل (2026-07-10)"
+                },
+                {
+                  "step": "self_awareness",
+                  "action": "none",
+                  "detail": "تم تقييم الوعي الذاتي اليوم بالفعل (2026-07-10)"
+                }
+              ]
+            },
+            {
+              "timestamp": "2026-07-10T21:49:03.980Z",
+              "diagnosis": {
+                "status": "critical",
+                "checks": {
+                  "sensing_engine": {
+                    "ok": false,
+                    "severity": "degraded",
+                    "detail": "n8n غير متاح: fetch failed"
+                  },
+                  "book_generator": {
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": "book_generator.py موجود"
+                  },
+                  "finance": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "detail": "JSON صالح"
+                  },
+                  "books_folder": {
+                    "ok": true,
+                    "severity": "degraded",
+                    "count": 10,
+                    "detail": "10 كتاب PDF"
+                  }
+                }
+              },
+              "actions": [
+                {
+                  "step": "heal_finance",
+                  "action": "none",
+                  "detail": "finance_data.json سليم"
+                },
+                {
+                  "step": "heal_books_empty",
+                  "action": "none",
+                  "detail": "books/ غير فارغ"
+                },
+                {
+                  "step": "heal_n8n",
+                  "action": "warning",
+                  "detail": "n8n غير متاح — يُتابَع الإنتاج بدونه (Scout يعتمد على تحليل Groq الاحتياطي مؤقتاً، كما صُمِّم في مسار Scout)"
+                },
+                {
+                  "step": "hunt",
+                  "action": "none",
+                  "detail": "أحدث نيتش مؤهَّل (الرجل الناجح: 30 يومًا لتميزك الشخصي) له كتاب موجود بالفعل"
+                },
+                {
+                  "step": "weekly_report",
+                  "action": "none",
+                  "detail": "ليس يوم الأحد — لا تقرير أسبوعي في هذه الدورة"
+                },
+                {
+                  "step": "golden_hunter",
+                  "action": "none",
+                  "detail": "تم تشغيل Golden Hunter اليوم بالفعل (2026-07-10)"
+                },
+                {
+                  "step": "self_awareness",
+                  "action": "none",
+                  "detail": "تم تقييم الوعي الذاتي اليوم بالفعل (2026-07-10)"
+                }
+              ]
+            }
+          ]
+        },
+        "next_dollar_actions": {
+          "text": "The three concrete things standing between today's build and the next dollar:\n\n1. **Add the HTTP Request node to the n8n Sensing Engine workflow → `POST http://localhost:3000/api/trends`.**\n   This is the one step in [11] that couldn't be done remotely (no n8n API key). Full step-by-step is in §4 item 1 above. Until this node exists, `/api/trends` is built and tested but has nothing feeding it — `OPPORTUNITIES.md` stays empty.\n\n   > **n8n:** open workflow → add HTTP Request node →\n   > POST http://localhost:3000/api/trends →\n   > Body: `{{ $json }}` → Save → Test\n\n2. **Run `start_factory.bat` and test the full pipeline live.**\n   Everything in this file has been tested piece-by-piece and in cross-task regression (§2), but never all three processes (n8n + `server.js` + `factory_loop.js`) started together from the actual `.bat` file in one shot. Do this once item 1 is done, then click **Scout** on the dashboard and confirm a book appears in `books/` and (once the n8n node is live) an entry lands in `OPPORTUNITIES.md`.\n\n3. **Fix the price mismatch so a book can actually publish.** Superseded by Day 06–07: Quality Gate approval is no longer the last step before a book counts as done — Dual Inspection (§17) is, and it verified live today (see Day 06–07 Summary) that Scout's real Groq-suggested price ($12.99) fails the $30 Butter floor even when everything else — niche score, cover, PDF integrity — passes cleanly. The next real dollar requires one of: (a) change Scout's pricing prompt/logic to target $30+, or (b) add a manual price-override step before generation so a human can deliberately price a promising niche at Butter level. Until one of these ships, `published: true` will keep being the rare case, not the default."
+        },
+        "self_awareness": {
+          "verdict": "اليوم المصنع في حالة حرجة. أصبح كما هو بالضبط مقارنة بالأمس لأن لا تغيّر صافٍ في المؤشرات الأربعة الرئيسية منذ الأمس. أقوى خلية: market_hunter (100%). أضعف خلية: Butter Compliance (35%). أكبر فرصة: 42 فرصة مسجَّلة في GOLDEN_OPPORTUNITIES.md بانتظار مراجعة Galaxy. التركيز التالي الموصى به: معالجة Dashboard/Health (الحالة العامة: critical).",
+          "growth": {
+            "has_baseline": true,
+            "direction": "same",
+            "reason": "لا تغيّر صافٍ في المؤشرات الأربعة الرئيسية منذ الأمس",
+            "deltas": {
+              "knowledge_entries": 0,
+              "lessons_learned": 0,
+              "golden_opportunities": 0,
+              "dual_inspection_pass_rate": 0
+            }
+          },
+          "weakest_cell": "Dashboard/Health"
+        }
+      }
+    }
+  }
+}

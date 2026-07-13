@@ -1,0 +1,13 @@
+{
+  "channel": "gumroad",
+  "product_type": "digital",
+  "title": "The Beekeeper's Hive Inspection Logbook (Printable PDF)",
+  "subtitle": "52-Week Field Record for Hobbyist Apiarists",
+  "price_cents": 699,
+  "price_usd": 6.99,
+  "file_path": "seeds/hivenotes/hive_logbook_v1.pdf",
+  "cover_image_path": null,
+  "description": "A structured 140-page hive inspection logbook for hobbyist beekeepers. Print at home or use on a tablet. Includes: 52 weekly inspection sheets, year-at-a-glance tracker, pests and disease log, honey harvest records, contacts directory, and equipment inventory. Instant PDF download — print as many copies as you need.",
+  "tags": ["beekeeping", "beekeeper", "logbook", "hive inspection", "apiary", "printable", "PDF"],
+  "publisher": "HiveNotes Press"
+}
