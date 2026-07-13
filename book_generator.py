@@ -1704,16 +1704,34 @@ def _parse_sectioned_book(text, expected_chapters):
 
     subtitle, introduction, conclusion = '', '', ''
     chapters = []
+    # Code review fix (2026-07-13): the prompt emits TWO separate markers per
+    # chapter (##CHAPTER N TITLE## and ##CHAPTER N CONTENT##) — both contain
+    # "chapter", so the old single `elif 'chapter' in header.lower()` branch
+    # matched BOTH independently, appending two half-empty chapter entries
+    # per real chapter (title text landing in one entry's "content" field,
+    # the actual body in another). Pre-existing bug, not introduced by
+    # today's English-prompt translation — the markers were already English
+    # even in the old Arabic-instructed prompt. Now pairs a TITLE marker
+    # with the next CONTENT marker into one chapter entry; a chapter header
+    # with no TITLE/CONTENT sub-tag at all (looser model output) still falls
+    # back to one entry per header, as before.
+    pending_chapter_title = None
     for i in range(1, len(parts), 2):
         header = parts[i].strip()
+        header_lower = header.lower()
         body = parts[i + 1].strip() if i + 1 < len(parts) else ''
-        if 'خاتم' in header or 'خلاص' in header or 'conclusion' in header.lower():
+        if 'خاتم' in header or 'خلاص' in header or 'conclusion' in header_lower:
             conclusion = body
-        elif 'مقدم' in header or 'intro' in header.lower():
+        elif 'مقدم' in header or 'intro' in header_lower:
             introduction = body
-        elif 'فصل' in header or 'chapter' in header.lower():
+        elif ('فصل' in header or 'chapter' in header_lower) and ('title' in header_lower or 'عنوان' in header):
+            pending_chapter_title = body
+        elif ('فصل' in header or 'chapter' in header_lower) and ('content' in header_lower or 'محتوى' in header):
+            chapters.append({"title": pending_chapter_title or header, "content": body})
+            pending_chapter_title = None
+        elif 'فصل' in header or 'chapter' in header_lower:
             chapters.append({"title": header, "content": body})
-        elif 'فرعي' in header or 'subtitle' in header.lower():
+        elif 'فرعي' in header or 'subtitle' in header_lower:
             # BUG FIX: this branch used to be reached via the generic
             # "first unrecognized header" fallback below, which assigned
             # `subtitle = header` — when the model dutifully echoes the
@@ -1741,53 +1759,68 @@ def _parse_sectioned_book(text, expected_chapters):
 
 
 def ai_generate_book_content(title, topic, chapters, audience):
+    # Code review fix (2026-07-13): this prompt instructed Groq in Arabic
+    # unconditionally — a gap ADR-020 (EU/US English market, 2026-07-12)
+    # never actually closed here, since yesterday's work touched
+    # create_book() (already English) and generate_book_from_content()
+    # (content supplied externally) but never this function, the one Scout/
+    # hunt()/Golden Hunter's generate_book() path actually calls. Rewritten
+    # in English to match the standing market decision — no toggle added,
+    # same precedent as create_book()'s printable pages (hardcoded English,
+    # no parameter) since English is the default target market now, not an
+    # option among several.
     n = max(2, min(int(chapters or 8), 20))
     system = (
-        "أنت وكيل بناء المحتوى في OpenClaw Factory. تكتب محتوى كتب رقمية حقيقياً وكاملاً "
-        "(وليس ملخصات أو عناوين فقط) بجودة تصلح للنشر المباشر على Amazon KDP."
+        "You are the content-building agent at OpenClaw Factory. You write real, complete digital "
+        "book content (not summaries or bare headings), at a quality bar suitable for direct "
+        "publication on Amazon KDP or Gumroad, for an English-speaking EU/US audience."
     )
     chapter_markers = "\n".join(
-        f"##CHAPTER {i} TITLE##\nعنوان الفصل {i}\n##CHAPTER {i} CONTENT##\nمحتوى الفصل {i} الكامل (300-500 كلمة)"
+        f"##CHAPTER {i} TITLE##\nChapter {i} title\n##CHAPTER {i} CONTENT##\nFull content of chapter {i} (300-500 words)"
         for i in range(1, n + 1)
     )
-    user_prompt = f"""اكتب محتوى كتاب رقمي كامل.
-العنوان: "{title}"
-الموضوع/النيش: {topic}
-الجمهور المستهدف: {audience}
-عدد الفصول: {n}
+    user_prompt = f"""Write the complete content of a digital book.
+Title: "{title}"
+Topic/niche: {topic}
+Target audience: {audience}
+Number of chapters: {n}
 
-مهم جداً: أعد الناتج فقط بهذا التنسيق النصي الحرفي (بدون JSON وبدون Markdown)، والتزم بعلامات ##...## كما هي بالضبط، بنفس الترتيب، لكل الفصول الـ {n}:
+Very important: return ONLY this exact plain-text format (no JSON, no Markdown), keeping the ##...## markers exactly as written, in the same order, for all {n} chapters:
 
 ##SUBTITLE##
-عنوان فرعي جذاب
+A compelling subtitle
 ##INTRODUCTION##
-مقدمة حقيقية (150-250 كلمة)
+A real introduction (150-250 words)
 {chapter_markers}
 ##CONCLUSION##
-خاتمة (100-150 كلمة)
+A conclusion (100-150 words)
 
-لا تضف أي شرح أو ترقيم أو نص خارج هذه الأقسام. كل محتوى فصل يجب أن يكون نصاً حقيقياً مفيداً وليس حشواً."""
+Do not add any explanation, numbering, or text outside these sections. Every chapter's content must be real, useful text, not filler."""
     raw = groq_chat(system, user_prompt, max_tokens=4096)
     return _parse_sectioned_book(raw, n)
 
 
 def _fallback_book_content(title, topic, chapters, audience):
+    # Code review fix (2026-07-13): same English-market fix as
+    # ai_generate_book_content() above — this fallback must never revert to
+    # Arabic when the real AI call fails, or a failed Groq call would
+    # silently ship an Arabic placeholder for an English-market product.
     n = max(2, min(int(chapters or 8), 20))
     return {
-        "subtitle": f"دليل شامل حول {topic}",
+        "subtitle": f"A Complete Guide to {topic}",
         "introduction": (
-            f"هذا الكتاب يقدّم مدخلاً عملياً إلى {topic}، موجّه لـ{audience}. "
-            "تعذّر توليد المحتوى عبر الذكاء الاصطناعي في هذه المحاولة، لذا يعرض هذا الإصدار "
-            "هيكلاً أساسياً يمكن إعادة توليده لاحقاً."
+            f"This book offers a practical introduction to {topic}, written for {audience}. "
+            "AI content generation was unavailable for this attempt, so this edition shows a "
+            "basic structure that can be regenerated later."
         ),
         "chapters": [
             {
-                "title": f"الفصل {i}: أساسيات {topic}",
-                "content": f"محتوى هذا الفصل قيد الإعداد وسيغطي جوانب مهمة من {topic} بما يخدم {audience}.",
+                "title": f"Chapter {i}: The Basics of {topic}",
+                "content": f"This chapter's content is being prepared and will cover important aspects of {topic} for {audience}.",
             }
             for i in range(1, n + 1)
         ],
-        "conclusion": "نتمنى أن يكون هذا الكتاب مفيداً لك في رحلتك.",
+        "conclusion": "We hope this book is useful to you on your journey.",
     }
 
 
