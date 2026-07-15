@@ -50,6 +50,45 @@ A requested `git add -A` would have swept roughly 19 unrelated files into a comm
 
 **RULE:** When output quality is capped, test whether the PROMPT pattern is the ceiling before assuming the MODEL is. Structural demands ("generate a full book, N chapters, K words each, this exact heading format") compress LLMs into generic mode. Chunked generation with independent context per chunk outperforms single-call generation of the same total length.
 
+### 9. A log's volume is not evidence of real activity
+
+`factory_loop.js`'s Golden Hunter Bridge logged 105 "attempted" dry-run entries over 4 days for the exact same niche at the exact same score — each entry individually honest (a real re-evaluation did happen), but the aggregate read like days of active market search when it was really a static file being re-read on a timer. Caught only by diffing entries against each other, not by reading any single one.
+
+**RULE:** A counter or event-log growing over time is not proof that the underlying signal is changing. Before trusting "N events happened," check whether N distinct *states* happened, or the same one repeated.
+
+### 10. A category-level bonus can invert a per-item quality gate
+
+`profit_oracle.opportunity_score()`'s tier1 path added a fixed, tier-wide bonus (`automation_potential`/`long_term_value`) meant to reflect Tier 1's strategic value — but combined with tier1's highest multiplier, that fixed bonus alone cleared the acceptance floor regardless of the actual item being scored. A single-character niche ("x") scored 76.4 and "passed" a gate meant to be *stricter* than the one below it, which correctly rejected the same input.
+
+**RULE:** When a formula adds a category-wide constant on top of a per-item signal, compute the *effective* per-item bar that constant leaves behind for each category — don't assume "we added a bonus for the important tier" and "the important tier is harder to pass" are the same claim.
+
+### 11. Trace the real call path before "fixing" a suspected bug
+
+Two findings looked like real bugs from a first read of the code alone: "three competing scoring systems" and "shared .md files with no file lock." Tracing every actual caller both times changed the diagnosis — the "competing" scores turned out to be an intentional 3-stage funnel (`run_oracle()` only ever calls the unweighted scorer; the stricter gate applies once, at the final production step), and the "race condition" turned out to be confined to a manual demo script, not the live automated path. Acting on the first-read diagnosis in either case would have meant "fixing" something that wasn't broken, or over-building a defense against a risk that was much narrower than it looked.
+
+**RULE:** Grep every real call site of a function before proposing to change it. What a function looks like in isolation and what it's actually used for can disagree.
+
+### 12. A tool's export and import commands are not the same risk class
+
+n8n's CLI has both `export:workflow` (reads the local database) and `import:workflow` (writes to it). Running export while the n8n server process was already live and serving traffic was safe — confirmed by checking both n8n and `server.js` kept responding normally afterward. Import against the same live database was judged too risky to attempt without authorization, since a concurrent write against a database the server itself might touch mid-request could corrupt workflows already in production use.
+
+**RULE:** For any CLI tool with separate read/write subcommands against a database a live service also owns, treat them as different risk tiers even when they're documented side-by-side and look symmetric — a safe diagnostic read does not imply a safe write.
+
+### 13. One real data batch is cheaper than building the pipeline first
+
+Before writing `market_hunter_tier1.py`, one real search batch against Hacker News + GitHub (both free, keyless APIs) was run through the *existing* scoring function first. It surfaced that the scorer itself was structurally blind to real market signal (HN points, GitHub stars) — a finding that would have been much more expensive to discover after building an automated collection pipeline on top of it.
+
+**RULE:** Before automating a new data-collection pipeline, run one manual batch of real data through the scoring/gating logic that will consume it. If the existing logic can't meaningfully use good real data today, more automated data won't fix that — the gate needs work first, not the pipe.
+
+---
+
+## الحفر المكتشفة
+
+- المصنع فيه ملفان ماليان — finance_data.json (الجذر، المستخدم فعلياً من reality.py) و data/finance.json (بقايا ميتة). القرار: sales_ledger.jsonl سيكون مصدر الحقيقة الوحيد للمبيعات مستقبلاً. لا نحذف data/finance.json الآن، نتركه معزولاً.
+- economics.py كان ربحياً أعمى: وافق على 49$ لكتاب 12 صفحة. أُضيفت طبقة market_realism (سقف 1$/صفحة، سقف 15$ للكتب <30 صفحة) في config/economics.json. القرار: السعر عند النشر = suggested_realistic_price دائماً، لا السعر الربحي.
+- قاعدة: price_usd لا يُؤخذ من السجل الخام أبداً — يمرّ عبر economics.py مع page_count. بلا page_count تُتخطّى طبقة الواقعية.
+- البوابة 1أ مغلقة: schemas/product.py يترجم JSONL→Product بسعر واقعي محسوب.
+
 ---
 
 ## Placement note
