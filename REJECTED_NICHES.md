@@ -107,3 +107,118 @@
 **العنوان:** Regression Test Draft With Content
 **السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
 
+## 🚫 2026-07-13T09:15:25.763241
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-13T09:17:40.901305
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T08:32:25.848808
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T08:48:52.903166
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T13:29:52.588335
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T13:38:09.814714
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T17:03:09.453370
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T20:26:04.936383
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:13:25.368428
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:14:46.110976
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:22:50.414908
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:23:56.470912
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:37:47.956501
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:39:08.909471
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:40:32.798508
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:43:15.568867
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:45:51.404742
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:48:03.382851
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:56:43.800486
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T22:16:13.415362
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T22:20:04.939142
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T23:53:10.399433
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-16T00:03:25.500335
+**النيتش:** Regression Test Draft With Content
+**العنوان:** Regression Test Draft With Content
+**السبب:** pdf_page_count: 3 صفحة (الحد الأدنى: 4)؛ not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+

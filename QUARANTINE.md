@@ -235,3 +235,141 @@
 **فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
 **فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
 
+## 🚫 2026-07-13T09:15:25.762029
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-13T09:17:40.900023
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T08:32:25.847241
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T08:48:52.900441
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T13:29:52.585175
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T13:38:09.812617
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T17:03:09.451813
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T20:26:04.934769
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:13:25.367161
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:14:46.109749
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:22:50.412817
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:23:56.468744
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:37:47.955173
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:39:08.907898
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:40:32.796576
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:43:15.567054
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:45:51.402289
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:48:03.379876
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T21:56:43.798615
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T22:16:13.413521
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T22:20:04.937867
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-15T23:53:10.397402
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+
+## 🚫 2026-07-16T00:03:25.498456
+**العنوان:** Regression Test Draft With Content
+**النيتش:** Regression Test Draft With Content
+**فشل الفحص الفني (warning):** pdf_page_count: 3 صفحة (الحد الأدنى: 4)
+**فشل التدقيق التجاري:** not_duplicate: يطابق تماماً نيتشاً سابقاً أُنتِج بالفعل: regression_test_draft_with_content.pdf؛ not_previously_rejected: هذا النيتش مرفوض مسبقاً
+

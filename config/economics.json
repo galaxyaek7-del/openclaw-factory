@@ -64,5 +64,12 @@
   "demand_model": {
     "exists": false,
     "_note": "No sales data. Any price recommendation is speculation. Populate from finance_data.json once real sales exist."
+  },
+  "market_realism": {
+    "max_price_per_page_usd": 1.0,
+    "_price_per_page_comment": "A 12-page book priced above 12*this value is priced by profit-floor math alone, not by what a page count that thin can credibly justify to a buyer.",
+    "short_book_max_pages": 30,
+    "short_book_price_ceiling_usd": 15.0,
+    "_short_book_comment": "Books under short_book_max_pages pages are additionally capped at short_book_price_ceiling_usd regardless of the per-page ceiling above — a second, independent sanity check, not a replacement for the first."
   }
 }
