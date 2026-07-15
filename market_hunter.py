@@ -331,6 +331,20 @@ def main():
     print()
 
     print("=== 3. عيّنة تُحجَب بواسطة العقل المعرفي (رفض سابق حقيقي، مؤقت للعرض) ===")
+    # Concurrency note (STRUCTURAL_DIAGNOSIS.md disease #6, investigated
+    # 2026-07-15): this block only runs when a human manually executes
+    # `python market_hunter.py` (this __main__ demo, not hunt_market() — the
+    # real automated path never touches REJECTED_NICHES.md). Its read-
+    # modify-rewrite cleanup below could in theory clobber a real rejection
+    # appended by factory_loop.js's separate process in the same instant.
+    # Traced deliberately: hunt_market() itself never writes this file, so
+    # the actual window is "a human runs this demo script by hand at the
+    # exact moment factory_loop.js's own tick also calls
+    # recordRejectedNiche()" — narrow, self-healing (a clobbered rejection
+    # just gets re-evaluated and re-rejected next time), not a production
+    # data-integrity risk. Not worth a cross-language file-locking library
+    # for this specific, rare, non-catastrophic window; revisit only if this
+    # demo path is ever wired into anything automated.
     demo_rejected_niche = "نيتش تجريبي محجوب توضيحياً"
     _wrote_demo_entry = False
     try:
