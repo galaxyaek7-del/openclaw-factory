@@ -253,9 +253,17 @@ def ai_ceo_decision(analysis):
         evidence.append(f"مخاطرة {risk.get('level')}: {'; '.join(risk.get('notes', []))}")
         return {"decision": "REJECT", "evidence": evidence, "confidence_gate": "n/a — risk overrides confidence"}
 
+    # Bug found in self-audit (2026-07-15): mapping pain's qualitative
+    # "medium" confidence to 100 — the theoretical ceiling — inflated the
+    # average enough to clear the WAIT gate on genuinely middling evidence,
+    # undermining the whole point of the gate. Fixed to the SAME numeric
+    # scale profit_oracle._score_confidence() already uses (80/55/30 for
+    # high/medium/low) so both confidence sources are actually comparable,
+    # not two different scales averaged together.
+    PAIN_CONFIDENCE_SCALE = {"high": 80, "medium": 55, "low": 30}
     confidence_values = [v for v in [
         confidence.get("score"),
-        100 if pain.get("confidence") == "medium" else (40 if pain.get("confidence") == "low" else None),
+        PAIN_CONFIDENCE_SCALE.get(pain.get("confidence")),
     ] if v is not None]
     avg_confidence = round(sum(confidence_values) / len(confidence_values)) if confidence_values else 0
 
@@ -285,7 +293,20 @@ def ai_ceo_decision(analysis):
 def analyze_opportunity(niche, external_signal=None, tier="tier4", max_results=10, analysis_db_file=None):
     """The one integrated entry point — calls every real engine above and
     profit_oracle/competitor_discovery, combines into one analysis, and
-    lets ai_ceo_decision() synthesize a single evidence-based decision."""
+    lets ai_ceo_decision() synthesize a single evidence-based decision.
+
+    Bug found in self-audit (2026-07-15): an empty/blank niche raised an
+    uncaught ValueError from profit_oracle.score_opportunity() — every
+    other function in this file degrades honestly (None/Unknown) rather
+    than crashing; this one didn't. Fixed to match."""
+    niche = str(niche or '').strip()
+    if not niche:
+        return {
+            "niche": niche,
+            "analyzed_at": datetime.now(timezone.utc).isoformat(),
+            "error": "لا نيتش صالح — لا يمكن تحليل نص فارغ",
+            "ai_ceo": {"decision": "WAIT", "evidence": ["لا نيتش صالح لتحليله"], "confidence_gate": 0},
+        }
     scored = PROFIT_ORACLE.opportunity_score(niche, tier=tier, external_signal=external_signal)
     competitors = COMPETITOR_DISCOVERY.get_or_refresh_competitors(niche, max_results=max_results)
     pain = analyze_customer_pain(niche, max_results=max_results)

@@ -115,6 +115,20 @@ class TestAiCeoDecision(unittest.TestCase):
         result = mie.ai_ceo_decision(analysis)
         self.assertEqual(result["decision"], "WAIT")
 
+    def test_pain_confidence_uses_the_same_numeric_scale_as_profit_oracle_confidence(self):
+        """Regression test for a self-audit finding (2026-07-15): pain's
+        'medium' confidence was previously mapped to 100 (the theoretical
+        ceiling), which could single-handedly drag a genuinely low overall
+        confidence above the WAIT gate. 'medium' must map to a moderate
+        value (55, matching profit_oracle._score_confidence()'s own scale),
+        not the maximum."""
+        # confidence.score=10 (very low) + pain 'medium' must NOT be enough
+        # to escape the < 40 WAIT gate on its own.
+        analysis = self._base(confidence={"score": 10}, customer_pain={"pain_score": 50, "confidence": "medium"}, opportunity_gap=80)
+        result = mie.ai_ceo_decision(analysis)
+        self.assertEqual(result["decision"], "WAIT", f"avg confidence should stay below 40, got: {result}")
+        self.assertLess(result["confidence_gate"], 40)
+
     def test_high_opportunity_gap_and_real_pain_builds(self):
         analysis = self._base(opportunity_gap=80, customer_pain={"pain_score": 70, "confidence": "medium"}, confidence={"score": 70})
         result = mie.ai_ceo_decision(analysis)
@@ -161,6 +175,16 @@ class TestAnalyzeOpportunityOrchestration(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(self.db_path):
             os.remove(self.db_path)
+
+    def test_empty_niche_degrades_honestly_never_crashes(self):
+        """Regression test for a self-audit finding (2026-07-15):
+        analyze_opportunity('') used to raise an uncaught ValueError from
+        profit_oracle — every other function here degrades (None/Unknown)
+        instead of crashing; this one must too."""
+        for bad_niche in ('', '   ', None):
+            result = mie.analyze_opportunity(bad_niche, analysis_db_file=self.db_path)
+            self.assertIn("error", result)
+            self.assertEqual(result["ai_ceo"]["decision"], "WAIT")
 
     @patch("competitor_discovery._query_github")
     @patch("competitor_discovery._query_hn")

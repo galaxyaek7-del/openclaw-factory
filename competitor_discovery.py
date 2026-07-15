@@ -34,7 +34,6 @@ import os
 import re
 import sys
 import json
-import math
 import argparse
 import urllib.request
 import urllib.error

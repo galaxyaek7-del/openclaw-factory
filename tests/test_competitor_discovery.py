@@ -105,6 +105,23 @@ class TestGatherRealMetrics(unittest.TestCase):
         self.assertIn("راكد", metrics["development_velocity"])
 
 
+class TestNetworkFailureHandling(unittest.TestCase):
+    """Coverage gap found in self-audit (2026-07-15): _query_hn/_query_github's
+    graceful-degradation behavior was only exercised indirectly through
+    higher-level tests, unlike market_intelligence_engine.py's equivalent
+    fetchers which have direct failure-mode tests. Added for consistency."""
+
+    @patch("competitor_discovery._http_get_json")
+    def test_query_hn_never_raises_on_network_failure(self, mock_get):
+        mock_get.side_effect = Exception("network down")
+        self.assertEqual(cd._query_hn("x"), [])
+
+    @patch("competitor_discovery._http_get_json")
+    def test_query_github_never_raises_on_network_failure(self, mock_get):
+        mock_get.side_effect = Exception("network down")
+        self.assertEqual(cd._query_github("x"), [])
+
+
 class TestOpportunityGap(unittest.TestCase):
     def test_high_demand_low_competition_is_high_gap(self):
         gap = cd.compute_opportunity_gap(demand_score=90, competition_score=10)

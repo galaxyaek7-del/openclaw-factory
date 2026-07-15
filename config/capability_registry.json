@@ -43,7 +43,7 @@
       "name": "AI CEO Decision (BUILD/IMPROVE/WAIT/REJECT/PIVOT)",
       "level": "REAL",
       "source": "market_intelligence_engine.py's ai_ceo_decision() — a deterministic, transparent decision tree over already-real/estimated components (risk, confidence, opportunity_gap, customer_pain, competition), never a black box; every branch cites its specific real evidence, and a low-overall-confidence gate forces WAIT instead of a false-confident decision",
-      "note": "REAL here means the decision LOGIC is a verified, tested function (23 tests, tests/test_market_intelligence_engine.py) — not that every input feeding it is REAL-level (several are ESTIMATED, honestly labeled as such in the evidence it cites)."
+      "note": "REAL here means the decision LOGIC is a verified, tested function (19 tests, tests/test_market_intelligence_engine.py — count corrected 2026-07-15 self-audit, was previously misstated as 23) — not that every input feeding it is REAL-level (several are ESTIMATED, honestly labeled as such in the evidence it cites)."
     },
     {
       "id": "risk_score",

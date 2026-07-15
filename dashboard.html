@@ -108,6 +108,20 @@
       if (!ts) return '—';
       return new Date(ts).toLocaleString('ar', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
     }
+    // XSS fix (self-audit, 2026-07-15): every field below can carry real
+    // external/generated text — niche names sourced from real HN/GitHub
+    // titles, GROQ-generated notes, raw OpenClaw_Brain/*.md file content
+    // via /brain search. None of it is meant to be interpreted as markup,
+    // so every interpolation into innerHTML below must escape it first.
+    function escapeHtml(s) {
+      if (s === null || s === undefined) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
 
     async function load() {
       const res = await fetch('/api/dashboard');
@@ -119,7 +133,7 @@
       if (nextAction) {
         cards.push(`<div class="card" style="border-color:var(--accent);">
           <h2>🎯 التوصية الاستراتيجية (reality.py)</h2>
-          <div class="note" style="font-size:14px; color:var(--text); font-weight:600;">${nextAction}</div>
+          <div class="note" style="font-size:14px; color:var(--text); font-weight:600;">${escapeHtml(nextAction)}</div>
         </div>`);
       }
       const booksCount = d.health && d.health.checks && d.health.checks.books_folder ? d.health.checks.books_folder.count : 0;
@@ -131,7 +145,7 @@
       cards.push(`<div class="card">
         <h2>صحة المصنع</h2>
         <div class="metric ${d.health && d.health.status}">${d.health ? d.health.status : '—'}</div>
-        <div class="note">${d.health && d.health.reality ? d.health.reality.reason : ''}</div>
+        <div class="note">${escapeHtml(d.health && d.health.reality ? d.health.reality.reason : '')}</div>
       </div>`);
       cards.push(`<div class="card">
         <h2>المالية (حقيقية)</h2>
@@ -141,17 +155,17 @@
       cards.push(`<div class="card">
         <h2>Oracle (Tier 4)</h2>
         <div class="metric">${d.oracle.golden_count}/${d.oracle.total_scored}</div>
-        <div class="note">${d.oracle.note || 'فرص GOLDEN من أصل الإجمالي المُقيَّم'}</div>
+        <div class="note">${escapeHtml(d.oracle.note) || 'فرص GOLDEN من أصل الإجمالي المُقيَّم'}</div>
       </div>`);
       cards.push(`<div class="card">
         <h2>Golden Hunter (يومي)</h2>
         <div class="metric">${d.hunter.ran ? d.hunter.golden_count : '—'}</div>
-        <div class="note">${d.hunter.note || 'آخر تشغيل: ' + fmtTime(d.hunter.timestamp)}</div>
+        <div class="note">${d.hunter.note ? escapeHtml(d.hunter.note) : 'آخر تشغيل: ' + fmtTime(d.hunter.timestamp)}</div>
       </div>`);
       cards.push(`<div class="card">
         <h2>اكتشاف Tier 1 (بحث حقيقي)</h2>
         <div class="metric">${d.tier1_discovery.accepted}/${d.tier1_discovery.candidates_researched}</div>
-        <div class="note">${d.tier1_discovery.note || 'مرشَّحون مقبولون من أصل المُبحوثين'}</div>
+        <div class="note">${escapeHtml(d.tier1_discovery.note) || 'مرشَّحون مقبولون من أصل المُبحوثين'}</div>
       </div>`);
       cards.push(`<div class="card">
         <h2>قائمة المراجعة البشرية</h2>
@@ -160,20 +174,20 @@
       </div>`);
       cards.push(`<div class="card">
         <h2>الوعي الذاتي</h2>
-        <div class="note" style="font-size:13px; color:var(--text);">${d.self_awareness ? d.self_awareness.verdict : '—'}</div>
-        <div class="note">أضعف خلية: ${d.self_awareness ? d.self_awareness.weakest_cell : '—'}</div>
+        <div class="note" style="font-size:13px; color:var(--text);">${escapeHtml(d.self_awareness ? d.self_awareness.verdict : '—')}</div>
+        <div class="note">أضعف خلية: ${escapeHtml(d.self_awareness ? d.self_awareness.weakest_cell : '—')}</div>
       </div>`);
       cards.push(`<div class="card ${d.risk.level === 'critical' || d.risk.level === 'high' ? 'flag-active' : ''}">
         <h2>مستوى الخطر</h2>
-        <div class="metric ${d.risk.level === 'critical' ? 'critical' : d.risk.level === 'medium' ? 'degraded' : 'ok'}">${d.risk.level}</div>
-        <div class="note">${d.risk.reason}</div>
+        <div class="metric ${d.risk.level === 'critical' ? 'critical' : d.risk.level === 'medium' ? 'degraded' : 'ok'}">${escapeHtml(d.risk.level)}</div>
+        <div class="note">${escapeHtml(d.risk.reason)}</div>
       </div>`);
       const mi = d.latest_market_intelligence;
       if (mi.available) {
         cards.push(`<div class="card" style="border-color:var(--accent);">
           <h2>🧠 آخر تحليل ذكاء سوقي (AI CEO)</h2>
-          <div class="metric">${mi.ai_ceo.decision}</div>
-          <div class="note"><strong>${mi.niche}</strong><br>${mi.ai_ceo.evidence.join('<br>')}</div>
+          <div class="metric">${escapeHtml(mi.ai_ceo.decision)}</div>
+          <div class="note"><strong>${escapeHtml(mi.niche)}</strong><br>${mi.ai_ceo.evidence.map(escapeHtml).join('<br>')}</div>
         </div>`);
       }
       const cm = d.capability_maturity;
@@ -184,25 +198,25 @@
       </div>`);
       cards.push(`<div class="card">
         <h2>الأولويات الحالية</h2>
-        <pre class="notif-content" style="max-height:140px; overflow-y:auto;">${d.current_priorities && d.current_priorities.text ? d.current_priorities.text : (d.current_priorities && d.current_priorities.note) || '—'}</pre>
+        <pre class="notif-content" style="max-height:140px; overflow-y:auto;">${escapeHtml(d.current_priorities && d.current_priorities.text ? d.current_priorities.text : (d.current_priorities && d.current_priorities.note) || '—')}</pre>
       </div>`);
       document.getElementById('grid').innerHTML = cards.join('');
 
       const notifs = [];
       notifs.push(`<div class="notif-box ${d.needs_attention.active ? 'active' : ''}">
         <strong>${fmtBool(d.needs_attention.active)} — يحتاج انتباهاً</strong>
-        ${d.needs_attention.content ? `<pre class="notif-content">${d.needs_attention.content}</pre>` : ''}
+        ${d.needs_attention.content ? `<pre class="notif-content">${escapeHtml(d.needs_attention.content)}</pre>` : ''}
       </div>`);
       notifs.push(`<div class="notif-box ${d.needs_review.active ? 'active' : ''}">
         <strong>${fmtBool(d.needs_review.active)} — يحتاج مراجعة بشرية</strong>
-        ${d.needs_review.content ? `<pre class="notif-content">${d.needs_review.content}</pre>` : ''}
+        ${d.needs_review.content ? `<pre class="notif-content">${escapeHtml(d.needs_review.content)}</pre>` : ''}
       </div>`);
       document.getElementById('notifications').innerHTML = notifs.join('');
 
       const rows = (d.activity || []).map(e => `<div class="timeline-row">
         <div class="timeline-time">${fmtTime(e.timestamp)}</div>
-        <div class="timeline-source">${e.source}</div>
-        <div class="timeline-summary">${e.summary}</div>
+        <div class="timeline-source">${escapeHtml(e.source)}</div>
+        <div class="timeline-summary">${escapeHtml(e.summary)}</div>
       </div>`).join('');
       document.getElementById('timeline').innerHTML = rows || '<div class="empty">لا نشاط مسجَّل بعد</div>';
 
@@ -210,7 +224,7 @@
         .filter(c => c.level === 'DISCOVERY')
         .map(c => `<div class="timeline-row">
           <div class="timeline-source" style="background:var(--crit); color:#fff;">DISCOVERY</div>
-          <div class="timeline-summary"><strong>${c.name}</strong><br><span style="color:var(--text-dim); font-size:12px;">${c.action_plan}</span></div>
+          <div class="timeline-summary"><strong>${escapeHtml(c.name)}</strong><br><span style="color:var(--text-dim); font-size:12px;">${escapeHtml(c.action_plan)}</span></div>
         </div>`).join('');
       document.getElementById('discoveryRoadmap').innerHTML = discoveryRows || '<div class="empty">لا مقاييس في مرحلة الاكتشاف</div>';
     }
@@ -228,7 +242,7 @@
         const d = await res.json();
         const results = (d.results || []).slice(0, 8);
         box.innerHTML = results.length
-          ? results.map(r => `<div><strong>${r.file}:${r.line}</strong><br>${r.text}</div>`).join('')
+          ? results.map(r => `<div><strong>${escapeHtml(r.file)}:${escapeHtml(r.line)}</strong><br>${escapeHtml(r.text)}</div>`).join('')
           : '<div>لا نتائج</div>';
         box.style.display = 'block';
       }, 300);
