@@ -55,17 +55,26 @@ MIN_BUTTER_VERDICT_SCORE = 60  # verdict != SKIP — same threshold used everywh
 # Reuses profit_oracle's own keyword vocabulary rather than redefining it,
 # so a category's tier (premium/mid/recurring) is judged consistently
 # everywhere in this factory, not just here.
+#
+# English (EU/US) per ADR-020 — corrected 2026-07-15 (STRUCTURAL_DIAGNOSIS.md
+# disease #4): this list was still all-Arabic 3+ days after ADR-020 retargeted
+# every new product at the English EU/US market, meaning every live Golden
+# Hunter tick since 2026-07-12 was scanning the wrong market entirely. The
+# 1:1-translated Arabic originals are preserved in git history (this same
+# file, pre-2026-07-15) rather than deleted, per ADR-020's own "no deletion of
+# out-of-scope Arabic assets" policy — a future Arabic-market decision should
+# not have to start from zero.
 SEED_CATEGORIES = [
-    "مخطط شهري قابل للطباعة",
-    "قوالب تصميم SVG قابلة للقص",
-    "متتبع الميزانية الشخصية",
-    "متتبع العادات اليومية",
-    "دفتر تخطيط الزفاف",
-    "قوالب سير ذاتية احترافية",
-    "نظام اشتراك تدريب شهري",
-    "قوالب عرض تقديمي احترافية",
-    "دفتر تخطيط الوجبات الأسبوعي",
-    "نظام إدارة المشاريع الشخصية",
+    "printable monthly planner",
+    "cuttable SVG design templates",
+    "personal budget tracker",
+    "daily habit tracker",
+    "wedding planning journal",
+    "professional resume templates",
+    "monthly coaching subscription system",
+    "professional presentation templates",
+    "weekly meal planner",
+    "personal project management system",
 ]
 
 # Audience/qualifier phrases combined with a seed category to produce more
@@ -87,16 +96,16 @@ def _generate_candidates(limit=10):
                 seasonal_hits.append(kw)
         # SEASONAL_KEYWORDS has both Arabic and English entries for the same
         # season (e.g. "العودة للمدارس" / "back to school") — every seed
-        # category here is Arabic, so prefer an Arabic match to avoid
-        # producing a mixed-language niche phrase.
-        arabic_hits = [kw for kw in seasonal_hits if re.search(r'[؀-ۿ]', kw)]
-        if arabic_hits:
-            seasonal_hits = arabic_hits
+        # category here is English (ADR-020), so prefer an English match to
+        # avoid producing a mixed-language niche phrase.
+        english_hits = [kw for kw in seasonal_hits if not re.search(r'[؀-ۿ]', kw)]
+        if english_hits:
+            seasonal_hits = english_hits
 
     # SUBNICHE_QUALIFIERS mixes English ("for beginners") and Arabic
-    # ("للمبتدئين") entries — every seed category here is Arabic, so keep
-    # only the Arabic qualifiers to avoid a mixed-language niche phrase.
-    qualifiers = [q for q in PROFIT_ORACLE.SUBNICHE_QUALIFIERS if re.search(r'[؀-ۿ]', q)] if PROFIT_ORACLE is not None else []
+    # ("للمبتدئين") entries — every seed category here is English (ADR-020),
+    # so keep only the English qualifiers to avoid a mixed-language phrase.
+    qualifiers = [q for q in PROFIT_ORACLE.SUBNICHE_QUALIFIERS if not re.search(r'[؀-ۿ]', q)] if PROFIT_ORACLE is not None else []
 
     for category in SEED_CATEGORIES:
         # Plain category on its own.
