@@ -1,0 +1,15 @@
+{
+  "niche": "AI Agent Blueprint for EU AI Act Compliance Audit Logging",
+  "researched_at": "2026-07-15T00:00:00Z",
+  "source": {
+    "platform": "hacker_news",
+    "api": "https://hn.algolia.com/api/v1/search_by_date?tags=show_hn&query=legal%20AI%20agent",
+    "title": "Show HN: Open-Source Article 12 Logging Infrastructure for the EU AI Act",
+    "url": "https://systima.ai/blog/open-source-article-12-audit-logging",
+    "points": 42,
+    "num_comments": 10,
+    "created_at": "2026-03-03T10:11:44Z"
+  },
+  "vertical_match": "Regulatory compliance (EU AI Act) — strongest engagement in this second batch",
+  "opportunity_score_tier1_post_fix": {"opportunity_score": 81.6, "accepted": false}
+}
