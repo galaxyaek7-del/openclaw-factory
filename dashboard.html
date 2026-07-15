@@ -112,6 +112,19 @@
       document.getElementById('ts').textContent = new Date(d.generated_at).toLocaleString('ar');
 
       const cards = [];
+      const nextAction = d.health && d.health.reality ? d.health.reality.next_action : null;
+      if (nextAction) {
+        cards.push(`<div class="card" style="border-color:var(--accent);">
+          <h2>🎯 التوصية الاستراتيجية (reality.py)</h2>
+          <div class="note" style="font-size:14px; color:var(--text); font-weight:600;">${nextAction}</div>
+        </div>`);
+      }
+      const booksCount = d.health && d.health.checks && d.health.checks.books_folder ? d.health.checks.books_folder.count : 0;
+      cards.push(`<div class="card">
+        <h2>الطاقة الإنتاجية</h2>
+        <div class="metric">${booksCount}</div>
+        <div class="note">منتج جاهز على القرص — ${d.pending_review.queue} بانتظار المراجعة، ${d.pending_review.completed} مكتمل عبر الخط الكامل</div>
+      </div>`);
       cards.push(`<div class="card">
         <h2>صحة المصنع</h2>
         <div class="metric ${d.health && d.health.status}">${d.health ? d.health.status : '—'}</div>
