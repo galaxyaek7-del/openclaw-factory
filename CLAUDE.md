@@ -128,6 +128,10 @@ Finance is persisted to `finance_data.json` in the project root. The server read
 ```
 `DELETE /finance/delete/:id` (`server.js:558`) exists alongside `POST /finance/add` but has no UI button wired to it in `index.html` — a half-finished CRUD pair, not dead code (low risk: local JSON mutation only, id-validated).
 
+### Executive Dashboard
+
+`GET /api/dashboard` (`server.js`) and the static page `dashboard.html` (served automatically by `express.static`, plain UTF-8 unlike `index.html`) aggregate real, already-existing signals into one view: `computeHealthStatus()`, `self_awareness.assessSelfAwareness()`, and `lib/dashboard_data.js`'s pure file reads over `golden_opportunities.json`, `finance_data.json`, `market_hunter_runs.log`, `pending_review/`, `tier1_intake/candidates/`, `NEEDS_ATTENTION.md`, `NEEDS_REVIEW.md`. It computes nothing new and fabricates no metric — a section with no data yet reports that honestly (e.g. `tier1_discovery.accepted` is 0 today, matching `ADR-035`/`ADR-036`'s real finding, not an invented KPI). `lib/dashboard_data.js` has no Express/`child_process` dependency, so it's unit-tested in isolation (`tests/test_dashboard_data.js`) without needing a live server.
+
 ### Other Python utilities
 
 - `market_analyzer.py` — Static niche scoring logic; called live via `POST /api/market-analyze` (`server.js`).

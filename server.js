@@ -6,6 +6,7 @@ const { spawn } = require('child_process');
 const Groq = require('groq-sdk');
 const knowledgeBrain = require('./knowledge_brain');
 const selfAwareness = require('./self_awareness');
+const dashboardData = require('./lib/dashboard_data');
 // readLastGenerationRecord is a pure file read (no side effects) — requiring
 // factory_loop.js here never starts its loop or acquires its lockfile: both
 // only happen inside main(), guarded by `if (require.main === module)`
@@ -1635,6 +1636,27 @@ app.get('/awareness', async (req, res) => {
   try {
     const assessment = await selfAwareness.assessSelfAwareness();
     res.json({ success: true, ...assessment });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ── EXECUTIVE DASHBOARD ──
+// ADR-034's 2026-07-15 override update: built by aggregating real,
+// already-existing signals (this route computes nothing new — it calls the
+// same computeHealthStatus()/selfAwareness.assessSelfAwareness() every other
+// status route already uses, plus lib/dashboard_data.js's pure file reads
+// over golden_opportunities.json, finance_data.json, market_hunter_runs.log,
+// pending_review/, tier1_intake/, NEEDS_ATTENTION.md, NEEDS_REVIEW.md).
+// Zero fabricated metrics — a section with no data yet reports that
+// honestly instead of inventing a number.
+app.get('/api/dashboard', async (req, res) => {
+  try {
+    const [health, awareness] = await Promise.all([
+      computeHealthStatus().catch(err => ({ status: 'error', error: err.message })),
+      selfAwareness.assessSelfAwareness().catch(err => ({ verdict: null, error: err.message })),
+    ]);
+    res.json({ success: true, ...dashboardData.computeDashboard({ health, awareness }) });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

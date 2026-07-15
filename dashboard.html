@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>OpenClaw — لوحة القيادة</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Tahoma, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 24px; }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  .subtitle { color: #94a3b8; font-size: 13px; margin-bottom: 24px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 16px; }
+  .card h2 { font-size: 14px; color: #94a3b8; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 0.05em; }
+  .metric { font-size: 28px; font-weight: 700; }
+  .note { font-size: 12px; color: #f59e0b; margin-top: 8px; }
+  .ok { color: #22c55e; }
+  .critical { color: #ef4444; }
+  .degraded { color: #f59e0b; }
+  .flag-active { background: #7f1d1d; border-color: #ef4444; }
+  pre { white-space: pre-wrap; font-size: 12px; color: #cbd5e1; }
+  .refresh { font-size: 12px; color: #64748b; }
+</style>
+</head>
+<body>
+  <h1>🏭 OpenClaw — لوحة القيادة</h1>
+  <div class="subtitle">تجميع حي لبيانات حقيقية موجودة فعلاً — لا مقاييس مُختلَقة. آخر تحديث: <span id="ts">...</span></div>
+  <div class="grid" id="grid">جارٍ التحميل...</div>
+
+  <script>
+    function fmtBool(active) { return active ? '⚠️ نشط' : '✅ لا شيء'; }
+
+    async function load() {
+      const res = await fetch('/api/dashboard');
+      const d = await res.json();
+      document.getElementById('ts').textContent = new Date(d.generated_at).toLocaleString('ar');
+
+      const cards = [];
+
+      cards.push(`<div class="card">
+        <h2>صحة المصنع</h2>
+        <div class="metric ${d.health && d.health.status}">${d.health ? d.health.status : '—'}</div>
+        <div class="note">${d.health && d.health.reality ? d.health.reality.reason : ''}</div>
+      </div>`);
+
+      cards.push(`<div class="card">
+        <h2>المالية (حقيقية)</h2>
+        <div class="metric">$${d.finance.total_revenue}</div>
+        <div class="note">${d.finance.total_sales} عملية بيع — KDP $${d.finance.by_platform.KDP} / Etsy $${d.finance.by_platform.Etsy} / Gumroad $${d.finance.by_platform.Gumroad}</div>
+      </div>`);
+
+      cards.push(`<div class="card">
+        <h2>Oracle (Tier 4)</h2>
+        <div class="metric">${d.oracle.golden_count}/${d.oracle.total_scored}</div>
+        <div class="note">${d.oracle.note || 'فرص GOLDEN مسجَّلة من أصل الإجمالي المُقيَّم'}</div>
+      </div>`);
+
+      cards.push(`<div class="card">
+        <h2>Golden Hunter (يومي)</h2>
+        <div class="metric">${d.hunter.ran ? d.hunter.golden_count : '—'}</div>
+        <div class="note">${d.hunter.note || 'آخر تشغيل: ' + d.hunter.timestamp}</div>
+      </div>`);
+
+      cards.push(`<div class="card">
+        <h2>اكتشاف Tier 1 (بحث حقيقي)</h2>
+        <div class="metric">${d.tier1_discovery.accepted}/${d.tier1_discovery.candidates_researched}</div>
+        <div class="note">${d.tier1_discovery.note || 'مرشَّحون مقبولون من أصل المُبحوثين'}</div>
+      </div>`);
+
+      cards.push(`<div class="card">
+        <h2>قائمة المراجعة البشرية</h2>
+        <div class="metric">${d.pending_review.queue}</div>
+        <div class="note">في الانتظار — ${d.pending_review.approved} مُوافَق، ${d.pending_review.completed} مكتمل، ${d.pending_review.rejected} مرفوض</div>
+      </div>`);
+
+      cards.push(`<div class="card ${d.needs_attention.active ? 'flag-active' : ''}">
+        <h2>يحتاج انتباهاً؟</h2>
+        <div class="metric">${fmtBool(d.needs_attention.active)}</div>
+      </div>`);
+
+      cards.push(`<div class="card ${d.needs_review.active ? 'flag-active' : ''}">
+        <h2>يحتاج مراجعة؟</h2>
+        <div class="metric">${fmtBool(d.needs_review.active)}</div>
+      </div>`);
+
+      cards.push(`<div class="card">
+        <h2>الوعي الذاتي</h2>
+        <div class="note" style="font-size:13px; color:#e2e8f0;">${d.self_awareness ? d.self_awareness.verdict : '—'}</div>
+        <div class="note">أضعف خلية: ${d.self_awareness ? d.self_awareness.weakest_cell : '—'}</div>
+      </div>`);
+
+      document.getElementById('grid').innerHTML = cards.join('');
+    }
+
+    load();
+    setInterval(load, 60000); // real 10-minute factory tick — no point refreshing faster than that
+  </script>
+</body>
+</html>
