@@ -31,11 +31,13 @@ Maintained automatically. Each entry: why it exists, the exact manual action nee
 
 **Manual action required:** Resolve #2, then publish (or confirm publishing) at least one product live.
 
-## 4. Tier-1/2 Golden Hunter scoring (not a credential blocker — a design gap)
+## 4. Tier-1/2 Golden Hunter scoring (not a credential blocker — a design gap, partially closed)
 
-**Why it exists:** Different category from #1-3 — not blocked on access, blocked on unfinished engineering. `ADR-035`/`ADR-036`: `profit_oracle.score_opportunity()`'s demand/competition/margin heuristic is blind to real market signal (HN points, GitHub stars) — confirmed empirically across 8 real research candidates, all clustering into the same 2-4 discrete scores regardless of real evidence strength. Needs a genuine scoring redesign (e.g. feeding real engagement signal into the demand component directly), which is a standalone design project, not a quick fix.
+**Why it exists:** Different category from #1-3 — not blocked on access, blocked on unfinished engineering. `ADR-035`/`ADR-036`: `profit_oracle.score_opportunity()`'s demand/competition/margin heuristic was blind to real market signal (HN points, GitHub stars) — confirmed empirically across 8 real research candidates, all clustering into the same 2-4 discrete scores regardless of real evidence strength.
 
-**Manual action required:** None — this is a "when there's time for a dedicated design session" item, not a founder-authorization item. Listed here for visibility, not because it's blocking on him.
+**Update (`ADR-038`):** the `demand` component is fixed — now accepts real HN/GitHub signal and meaningfully differentiates (proven: the same 8 candidates now range 80.3-84.6 instead of a flat 81.6, tracking real evidence strength). Backward compatible, zero effect on live tier4 behavior (proven algebraically + by test). **`competition` and `profit_potential` still need the same treatment** before any real candidate could plausibly clear the tier1 floor — same word-count/keyword estimates as before.
+
+**Manual action required:** None — still a "next design session" item, not a founder-authorization item. Narrower now than before.
 
 ---
 
