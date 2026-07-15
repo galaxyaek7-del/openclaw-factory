@@ -289,12 +289,63 @@ async function main() {
     assert.doesNotThrow(() => fl.clearNeedsAttention(path.join(tmpDir, 'never_existed.md')));
   });
 
-  await test('checkNeedsAttention: real current data/golden_hunter_events.jsonl does NOT false-positive today', () => {
+  await test('checkNeedsAttention: real current data/golden_hunter_events.jsonl does not false-positive on the OLD two streak checks', () => {
     // Sanity check against the REAL file (read-only) — confirms today's
     // actual history (pre-ADR-010 + post-ADR-010 entries mixed) doesn't
-    // accidentally trip either streak check.
+    // accidentally trip the stale-skip or fallback-pricing streak checks.
+    // It DOES (correctly) trip the golden-stagnation check added for
+    // STRUCTURAL_DIAGNOSIS.md disease #1 — that one is asserted separately
+    // below since it is a real, expected positive, not a false one.
     const reasons = fl.checkNeedsAttention([]);
-    assert.deepStrictEqual(reasons, [], `unexpected false positive against real data: ${JSON.stringify(reasons)}`);
+    const nonStagnation = reasons.filter(r => !r.includes('بلا تغيير'));
+    assert.deepStrictEqual(nonStagnation, [], `unexpected false positive against real data: ${JSON.stringify(nonStagnation)}`);
+  });
+
+  await test('checkGoldenStagnation: real data genuinely IS stagnant today (disease #1, confirmed positive)', () => {
+    // As of this fix, the real golden_opportunities.json top pick has been
+    // unchanged since 2026-07-11 — this must keep firing until a real new
+    // candidate source (ADR-028) changes the picture, not be silenced.
+    const reason = fl.checkGoldenStagnation();
+    assert.ok(reason, 'expected a real stagnation reason against the current repo data');
+    assert.ok(reason.includes('بلا تغيير'));
+  });
+
+  await test('checkGoldenStagnation: fresh single attempt -> no reason (not enough history)', () => {
+    const p = path.join(tmpDir, 'stagnation_fresh.jsonl');
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', profit_score: 70 }, p);
+    assert.strictEqual(fl.checkGoldenStagnation(p), null);
+  });
+
+  await test('checkGoldenStagnation: same (niche, score) repeated but all within the last hour -> no reason yet', () => {
+    const p = path.join(tmpDir, 'stagnation_recent.jsonl');
+    const now = Date.now();
+    for (let i = 0; i < 5; i++) {
+      fl.appendGoldenHunterEvent(
+        { action: 'attempted', dry_run: true, niche: 'a', profit_score: 70, timestamp: new Date(now - i * 60000).toISOString() },
+        p
+      );
+    }
+    assert.strictEqual(fl.checkGoldenStagnation(p, now), null);
+  });
+
+  await test('checkGoldenStagnation: same (niche, score) unchanged for 30h -> flagged with hour count', () => {
+    const p = path.join(tmpDir, 'stagnation_old.jsonl');
+    const now = Date.now();
+    const thirtyHoursAgo = new Date(now - 30 * 60 * 60 * 1000).toISOString();
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'ثابت', profit_score: 72, timestamp: thirtyHoursAgo }, p);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'ثابت', profit_score: 72, timestamp: new Date(now - 60000).toISOString() }, p);
+    const reason = fl.checkGoldenStagnation(p, now);
+    assert.ok(reason);
+    assert.ok(reason.includes('30 ساعة'));
+  });
+
+  await test('checkGoldenStagnation: a profit_score change resets the streak (no false alarm)', () => {
+    const p = path.join(tmpDir, 'stagnation_changed.jsonl');
+    const now = Date.now();
+    const thirtyHoursAgo = new Date(now - 30 * 60 * 60 * 1000).toISOString();
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'ثابت', profit_score: 72, timestamp: thirtyHoursAgo }, p);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'ثابت', profit_score: 90, timestamp: new Date(now - 60000).toISOString() }, p);
+    assert.strictEqual(fl.checkGoldenStagnation(p, now), null);
   });
 
   console.log(`\n${passed} passed`);

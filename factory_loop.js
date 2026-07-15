@@ -721,6 +721,45 @@ async function huntGolden(reachable) {
 //   3. The last ATTENTION_STREAK_THRESHOLD "attempted" events all used
 //      _price_source "fallback_floor_clamped" — profit_oracle.py
 //      --butter-price (ADR-010) is failing repeatedly, not just once.
+//   4. The same top niche (STRUCTURAL_DIAGNOSIS.md disease #1): each
+//      dry-run "attempted" entry is individually honest, but
+//      golden_opportunities.json's top pick can go unchanged for days while
+//      huntGolden() keeps logging a "fresh" attempt every tick — which
+//      *reads* like ongoing search activity when it is really the same
+//      static candidate being re-scored. See checkGoldenStagnation() below.
+const GOLDEN_STAGNATION_MS = 24 * 60 * 60 * 1000; // same top niche re-attempted, unchanged, for this long
+
+// Walks the "attempted" events backwards from the most recent one and finds
+// how long the exact same (niche, profit_score) pick has been repeating.
+// Returns a human reason string once that streak exceeds GOLDEN_STAGNATION_MS,
+// or null if the pick is new/changing/there isn't enough history yet.
+function checkGoldenStagnation(logPath = GOLDEN_HUNTER_EVENTS_FILE, nowMs = Date.now()) {
+  const attempted = readGoldenHunterEvents(logPath).filter(e => e.action === 'attempted' && e.niche);
+  if (!attempted.length) return null;
+
+  const last = attempted[attempted.length - 1];
+  const lastNiche = normalizeNiche(last.niche);
+
+  let streakStart = last;
+  for (let i = attempted.length - 1; i >= 0; i--) {
+    const e = attempted[i];
+    if (normalizeNiche(e.niche) !== lastNiche || e.profit_score !== last.profit_score) break;
+    streakStart = e;
+  }
+
+  const startMs = Date.parse(streakStart.timestamp);
+  if (!Number.isFinite(startMs)) return null;
+  const spanMs = nowMs - startMs;
+  if (spanMs < GOLDEN_STAGNATION_MS) return null;
+
+  const spanHours = Math.round(spanMs / (60 * 60 * 1000));
+  return (
+    `النيتش "${last.niche}" (profit_score ${last.profit_score}) هو نفسه أعلى فرصة في golden_opportunities.json ` +
+    `منذ ${spanHours} ساعة بلا تغيير — الجسر يعمل ويسجّل بصدق كل تِكّة، لكن لا مرشّح جديد يُكتشَف؛ ` +
+    'المصدر الحالي (market_hunter.py SEED_CATEGORIES الثابتة) لا يولِّد جديداً — راجع ADR-028 (مصدر مرشّحين حقيقي لم يُبنَ بعد).'
+  );
+}
+
 function checkNeedsAttention(tickActions, logPath = GOLDEN_HUNTER_EVENTS_FILE) {
   const reasons = [];
 
@@ -753,6 +792,9 @@ function checkNeedsAttention(tickActions, logPath = GOLDEN_HUNTER_EVENTS_FILE) {
       'butter_price() الحقيقية — استدعاء profit_oracle.py --butter-price يفشل بانتظام، لا مرة واحدة عابرة.'
     );
   }
+
+  const stagnation = checkGoldenStagnation(logPath);
+  if (stagnation) reasons.push(stagnation);
 
   return reasons;
 }
@@ -1448,6 +1490,6 @@ module.exports = {
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
   appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted,
   evaluateGoldenOpportunities, getButterPrice, getOpportunityScore,
-  checkNeedsAttention, writeNeedsAttention, clearNeedsAttention,
+  checkNeedsAttention, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
   checkPendingReview, countPendingReviewDrafts, writeNeedsReview, clearNeedsReview,
 };
