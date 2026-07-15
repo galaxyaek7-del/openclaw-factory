@@ -28,5 +28,17 @@
     "opportunity_score": 81.6,
     "accepted": false,
     "note": "Re-scored after ADR-035 fixed the tier1 gate (raw score must now clear 81.25, same underlying bar tier4 already used). Rejected — same weighted score as before, but no longer accepted, since the fix removed the automatic tier1 bonus pass-through."
+  },
+  "opportunity_score_tier1_WITH_REAL_SIGNAL": {
+    "opportunity_score": 80.3,
+    "accepted": false,
+    "components": {
+      "market_demand": 48,
+      "competition_favorability": 70,
+      "profit_potential": 54,
+      "automation_potential": 40,
+      "long_term_value": 95
+    },
+    "note": "ADR-038: demand component now derived from the real signal above (HN points / GitHub stars + recency), not a keyword/word-count guess. Meaningfully differentiates from other candidates now — still rejected at tier1 today because competition_favorability/profit_potential remain keyword-estimates, capping the ceiling."
   }
 }

@@ -11,5 +11,20 @@
     "created_at": "2026-03-03T10:11:44Z"
   },
   "vertical_match": "Regulatory compliance (EU AI Act) — strongest engagement in this second batch",
-  "opportunity_score_tier1_post_fix": {"opportunity_score": 81.6, "accepted": false}
+  "opportunity_score_tier1_post_fix": {
+    "opportunity_score": 81.6,
+    "accepted": false
+  },
+  "opportunity_score_tier1_WITH_REAL_SIGNAL": {
+    "opportunity_score": 83.3,
+    "accepted": false,
+    "components": {
+      "market_demand": 57,
+      "competition_favorability": 70,
+      "profit_potential": 54,
+      "automation_potential": 40,
+      "long_term_value": 95
+    },
+    "note": "ADR-038: demand component now derived from the real signal above (HN points / GitHub stars + recency), not a keyword/word-count guess. Meaningfully differentiates from other candidates now — still rejected at tier1 today because competition_favorability/profit_potential remain keyword-estimates, capping the ceiling."
+  }
 }

@@ -11,5 +11,20 @@
     "created_at": "2026-05-28T05:16:29Z"
   },
   "vertical_match": "Legal — matches ELITE_ASSET_DOCTRINE.md's explicit target vertical list",
-  "opportunity_score_tier1_post_fix": {"opportunity_score": 81.6, "accepted": false}
+  "opportunity_score_tier1_post_fix": {
+    "opportunity_score": 81.6,
+    "accepted": false
+  },
+  "opportunity_score_tier1_WITH_REAL_SIGNAL": {
+    "opportunity_score": 82.0,
+    "accepted": false,
+    "components": {
+      "market_demand": 53,
+      "competition_favorability": 70,
+      "profit_potential": 54,
+      "automation_potential": 40,
+      "long_term_value": 95
+    },
+    "note": "ADR-038: demand component now derived from the real signal above (HN points / GitHub stars + recency), not a keyword/word-count guess. Meaningfully differentiates from other candidates now — still rejected at tier1 today because competition_favorability/profit_potential remain keyword-estimates, capping the ceiling."
+  }
 }

@@ -26,6 +26,7 @@ import os
 import re
 import sys
 import json
+import math
 from datetime import datetime
 
 # When spawned as a child process without a real console, Python's stdin/
@@ -124,10 +125,84 @@ def _find_niche_report(niche):
     return None
 
 
-def _score_demand(niche, now=None):
+# ADR-038 (STRUCTURAL_DIAGNOSIS.md follow-up, ADR-035/036): real engagement
+# evidence gathered during the Tier-1 research batches (Hacker News points
+# 1-226, GitHub stars 330-13443 across 8 real candidates) — anchors below
+# are calibrated against that actual observed range, not invented. Log-scale
+# because both are heavily right-skewed (most posts/repos get very little
+# traction; a handful get a lot). This is a first-pass calibration with no
+# real sales-conversion data behind it yet — same honesty discipline as the
+# rest of this file: a better proxy for real-world attention than keyword
+# matching, not a validated predictor of revenue. Revisit with real outcome
+# data once any exists.
+def _normalize_hn_points(points):
+    return max(20, min(100, round(30 + 22 * math.log10(max(points, 1) + 1))))
+
+
+def _normalize_github_stars(stars):
+    return max(20, min(100, round(15 + 18 * math.log10(max(stars, 1) + 1))))
+
+
+def _score_momentum_from_recency(created_at, now=None):
+    """Simple recency banding (same fixed-tier style as SEASONAL_KEYWORDS'
+    in-season/out-of-season split) — a recent post/repo getting real
+    engagement suggests current momentum; an old one, even a popular one,
+    proves past interest more than present. Degrades to neutral 50 on any
+    missing/unparseable date, never raises."""
+    if not created_at:
+        return 50, "لا تاريخ نشر متوفر مع الإشارة الخارجية — قيمة محايدة"
+    try:
+        now = now or datetime.now()
+        created = datetime.fromisoformat(str(created_at).replace('Z', '+00:00'))
+        # Compare naive-to-naive: strip tzinfo if present so this never
+        # raises on an aware-vs-naive subtraction — a day-count this rough
+        # doesn't need timezone precision.
+        created = created.replace(tzinfo=None)
+        now_naive = now.replace(tzinfo=None) if now.tzinfo else now
+        days_old = (now_naive - created).days
+    except Exception:
+        return 50, "تاريخ نشر غير صالح مع الإشارة الخارجية — قيمة محايدة"
+
+    if days_old <= 30:
+        return 80, f"نشر حديث ({days_old} يوماً) — زخم عالٍ محتمل [بيانات حقيقية]"
+    if days_old <= 90:
+        return 60, f"نشر خلال آخر 3 أشهر ({days_old} يوماً) [بيانات حقيقية]"
+    return 40, f"أقدم من 3 أشهر ({days_old} يوماً) — زخم أقل احتمالاً [بيانات حقيقية]"
+
+
+def _score_from_external_signal(signal, now=None):
+    """Real per-candidate evidence (ADR-036's own recommendation) instead of
+    the word-count guess below — same pattern _score_competition() already
+    uses for a saved Amazon report: real data when available, clearly
+    labeled otherwise."""
+    notes = []
+    source = signal.get('source')
+    if source == 'hacker_news':
+        points = signal.get('points', 0)
+        volume_score = _normalize_hn_points(points)
+        notes.append(f"حجم حقيقي من Hacker News: {points} نقطة → {volume_score}/100 [بيانات حقيقية، ADR-036]")
+    elif source == 'github':
+        stars = signal.get('stars', 0)
+        volume_score = _normalize_github_stars(stars)
+        notes.append(f"حجم حقيقي من GitHub: {stars} نجمة → {volume_score}/100 [بيانات حقيقية، ADR-036]")
+    else:
+        volume_score = 50
+        notes.append(f"مصدر إشارة خارجية غير معروف ({source}) — قيمة محايدة")
+
+    momentum_score, momentum_note = _score_momentum_from_recency(signal.get('created_at'), now)
+    notes.append(momentum_note)
+    return volume_score, momentum_score, notes
+
+
+def _score_demand(niche, now=None, external_signal=None):
     """40% weight. Seasonality is real (today's date vs. a keyword calendar).
-    Search volume and momentum are explicitly-labeled estimates — no live
-    Trends connection exists in this factory yet."""
+    Without external_signal, search volume and momentum are explicitly-
+    labeled estimates — no live Trends connection exists in this factory
+    yet. With external_signal (real HN points / GitHub stars gathered
+    during Tier-1 research, ADR-036), volume and momentum use that real
+    evidence instead — never both at once, real data always wins when
+    present. Omitting external_signal (every current live caller) reproduces
+    today's exact behavior, unchanged."""
     now = now or datetime.now()
     niche_lower = niche.lower()
     notes = []
@@ -145,19 +220,23 @@ def _score_demand(niche, now=None):
     else:
         notes.append("لا كلمة موسمية — يُفترض نيتش دائم (evergreen)")
 
-    word_count = len(niche.split())
-    if 2 <= word_count <= 4:
-        volume_score = 75
-        notes.append(f"تقدير حجم البحث: جيد (تخصص متوازن، {word_count} كلمات) [تقدير]")
-    elif word_count == 1:
-        volume_score = 55
-        notes.append("تقدير حجم البحث: عام جداً (كلمة واحدة) [تقدير غير موثوق بلا بيانات حقيقية]")
+    if external_signal:
+        volume_score, momentum_score, signal_notes = _score_from_external_signal(external_signal, now)
+        notes.extend(signal_notes)
     else:
-        volume_score = 45
-        notes.append(f"تقدير حجم البحث: محدود (نيتش طويل جداً، {word_count} كلمة) [تقدير]")
+        word_count = len(niche.split())
+        if 2 <= word_count <= 4:
+            volume_score = 75
+            notes.append(f"تقدير حجم البحث: جيد (تخصص متوازن، {word_count} كلمات) [تقدير]")
+        elif word_count == 1:
+            volume_score = 55
+            notes.append("تقدير حجم البحث: عام جداً (كلمة واحدة) [تقدير غير موثوق بلا بيانات حقيقية]")
+        else:
+            volume_score = 45
+            notes.append(f"تقدير حجم البحث: محدود (نيتش طويل جداً، {word_count} كلمة) [تقدير]")
 
-    momentum_score = 50
-    notes.append("زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية")
+        momentum_score = 50
+        notes.append("زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية")
 
     demand_score = round(season_score * 0.40 + volume_score * 0.35 + momentum_score * 0.25)
     return demand_score, notes
@@ -271,12 +350,12 @@ def _score_execution(niche):
     return fit_score, notes, platform
 
 
-def score_opportunity(niche, now=None):
+def score_opportunity(niche, now=None, external_signal=None):
     niche = str(niche or '').strip()
     if not niche:
         raise ValueError("النيتش (niche) مطلوب")
 
-    demand_score, demand_notes = _score_demand(niche, now)
+    demand_score, demand_notes = _score_demand(niche, now, external_signal)
     competition_score, competition_notes = _score_competition(niche)
     margin_score, margin_notes, price = _score_margin(niche)
     execution_score, execution_notes, platform = _score_execution(niche)
@@ -356,13 +435,17 @@ LONG_TERM_VALUE_BY_TIER = {"tier1": 95, "tier2": 70, "tier3": 60, "tier4": 25}
 MIN_OPPORTUNITY_SCORE = 65
 
 
-def opportunity_score(niche, tier="tier4"):
+def opportunity_score(niche, tier="tier4", external_signal=None):
     """Tier-aware composite score (ADR-026). Returns a dict with the final
     0-100 score, whether it clears MIN_OPPORTUNITY_SCORE, and every
     component so a caller/log can show its work — never a bare number with
-    no way to audit how it was reached."""
+    no way to audit how it was reached. external_signal (ADR-038): optional
+    real engagement evidence ({"source": "hacker_news", "points": N} or
+    {"source": "github", "stars": N}, optionally "created_at") — omitting it
+    (every current live caller, factory_loop.js always passes tier4 with
+    none) reproduces today's exact behavior unchanged."""
     tier = tier if tier in TIER_WEIGHTS else "tier4"
-    result = score_opportunity(niche)
+    result = score_opportunity(niche, external_signal=external_signal)
     scores = result["scores"]
 
     market_demand = scores["demand"]
@@ -628,7 +711,7 @@ def main():
     if '--opportunity-score' in sys.argv:
         try:
             data = json.loads(sys.stdin.read())
-            result = opportunity_score(data.get('niche', ''), tier=data.get('tier', 'tier4'))
+            result = opportunity_score(data.get('niche', ''), tier=data.get('tier', 'tier4'), external_signal=data.get('external_signal'))
             print(json.dumps({"success": True, **result}, ensure_ascii=False))
         except Exception as e:
             print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))

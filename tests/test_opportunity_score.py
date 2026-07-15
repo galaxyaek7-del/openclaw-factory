@@ -112,5 +112,67 @@ class TestTierInvariantAcceptanceFloor(unittest.TestCase):
         self.assertGreaterEqual(raw_ceiling, raw_floor)
 
 
+class TestExternalSignal(unittest.TestCase):
+    """ADR-038: real HN/GitHub engagement evidence, gathered during the
+    Tier-1 research batches (ADR-035/036), can now feed the demand
+    component directly instead of the word-count guess."""
+
+    def test_omitting_external_signal_reproduces_exact_prior_behavior(self):
+        """The single most important property: every current live caller
+        (factory_loop.js) never passes external_signal, so this must be a
+        pure no-op for them."""
+        niche = "a very specific narrow test niche"
+        with_none = po.score_opportunity(niche, external_signal=None)
+        without_arg = po.score_opportunity(niche)
+        self.assertEqual(with_none["scores"], without_arg["scores"])
+        self.assertEqual(with_none["profit_score"], without_arg["profit_score"])
+
+    def test_real_signal_changes_demand_component(self):
+        niche = "some niche with no keyword hits at all"
+        baseline = po.score_opportunity(niche)["scores"]["demand"]
+        with_signal = po.score_opportunity(niche, external_signal={"source": "hacker_news", "points": 200})["scores"]["demand"]
+        self.assertNotEqual(baseline, with_signal)
+
+    def test_stronger_real_signal_scores_higher_demand_than_weaker(self):
+        weak = po.score_opportunity("x", external_signal={"source": "hacker_news", "points": 1})["scores"]["demand"]
+        strong = po.score_opportunity("x", external_signal={"source": "hacker_news", "points": 200})["scores"]["demand"]
+        self.assertGreater(strong, weak)
+
+    def test_github_stars_also_recognized(self):
+        weak = po.score_opportunity("x", external_signal={"source": "github", "stars": 50})["scores"]["demand"]
+        strong = po.score_opportunity("x", external_signal={"source": "github", "stars": 10000})["scores"]["demand"]
+        self.assertGreater(strong, weak)
+
+    def test_unknown_source_degrades_to_neutral_never_throws(self):
+        result = po.score_opportunity("x", external_signal={"source": "carrier_pigeon", "count": 5})
+        self.assertIsInstance(result["scores"]["demand"], int)
+
+    def test_missing_created_at_degrades_to_neutral_momentum_never_throws(self):
+        result = po.score_opportunity("x", external_signal={"source": "hacker_news", "points": 50})
+        self.assertIsInstance(result["scores"]["demand"], int)
+
+    def test_recent_post_scores_higher_momentum_than_old_one(self):
+        from datetime import datetime, timedelta
+        now = datetime(2026, 7, 15)
+        recent = po.score_opportunity("x", now=now, external_signal={"source": "hacker_news", "points": 50, "created_at": (now - timedelta(days=5)).isoformat()})["scores"]["demand"]
+        old = po.score_opportunity("x", now=now, external_signal={"source": "hacker_news", "points": 50, "created_at": (now - timedelta(days=400)).isoformat()})["scores"]["demand"]
+        self.assertGreater(recent, old)
+
+    def test_opportunity_score_passes_external_signal_through(self):
+        niche = "x"
+        r = po.opportunity_score(niche, tier="tier1", external_signal={"source": "github", "stars": 13000})
+        without = po.opportunity_score(niche, tier="tier1")
+        self.assertNotEqual(r["opportunity_score"], without["opportunity_score"])
+
+    def test_real_batch_candidates_now_differentiate_instead_of_clustering(self):
+        """The exact regression this fixes (ADR-036): 8 real, wildly
+        different candidates used to all land on the identical 81.6/100.
+        With real signal, they must no longer be identical."""
+        weak = po.opportunity_score("niche a", tier="tier1", external_signal={"source": "hacker_news", "points": 2})
+        strong = po.opportunity_score("niche b", tier="tier1", external_signal={"source": "github", "stars": 13443})
+        self.assertNotEqual(weak["opportunity_score"], strong["opportunity_score"])
+        self.assertGreater(strong["opportunity_score"], weak["opportunity_score"])
+
+
 if __name__ == "__main__":
     unittest.main()
