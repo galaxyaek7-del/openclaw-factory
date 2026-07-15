@@ -8,12 +8,25 @@ Maintained automatically. Each entry: why it exists, the exact manual action nee
 
 **Why it exists:** n8n's REST API returns `401 Unauthorized` (confirmed via direct request). Only Abdelkader has the login for `http://localhost:5678`.
 
-**What's already prepared:** A full read-only diagnosis (`ADR-037`) via `n8n export:workflow --all` (safe — no write, confirmed n8n and server.js kept working normally after). Found 5 real workflows, 2 of them complete and correctly wired (`Openclaw_Sensing_Engine`, `02_Sales_Poll`) but inactive, 2 genuinely broken (`01_Market_Scout` had no URL set; `00_CEO` referenced an unresolved workflow). Corrected, ready-to-import files are saved at `n8n_workflows/01_Market_Scout.fixed.json` and `n8n_workflows/00_CEO.fixed.json` (see `n8n_workflows/README.md`).
+**Update (`ADR-045`): the two broken workflows are now actually fixed in the live database, not just prepared as files.** With explicit authorization, a real backup was taken (`n8n_workflows/backups/pre_build_*.json`), the live n8n process was stopped cleanly (by exact PID, not a broad kill), `01_Market_Scout` and `00_CEO`'s fixes were imported via `n8n import:workflow` (CLI, offline database — no concurrent-write risk since the server was stopped first), n8n was restarted, and a fresh export confirmed all 5 workflows intact with the fixes live: `01_Market_Scout` now correctly calls `/api/scout/run`, `00_CEO` now correctly calls `/api/dashboard`. `Openclaw_Sensing_Engine` and `02_Sales_Poll` were untouched and remain exactly as they were.
 
-**Manual action required (~2 minutes):**
+**What's still genuinely blocked (confirmed, not assumed):** workflow **activation** cannot be done via CLI in this deployment — `n8n import:workflow --activeState=fromJson` errors with "only supported in queue or multi-main mode," which this instance doesn't run. Activation is a real, UI-only action.
+
+**Manual action required (~1 minute):**
 1. Log into `localhost:5678`.
-2. Activate `Openclaw_Sensing_Engine` and `02_Sales_Poll`.
-3. Import the two `.fixed.json` files (Import from File, per workflow).
+2. Toggle **Active** on `Openclaw_Sensing_Engine` and `02_Sales_Poll` (both are fully correct now, confirmed by the fresh export — nothing else to fix).
+
+## 1b. Gmail connection for `galaxyaek7@gmail.com`
+
+**Why it exists:** connecting n8n to a real Gmail account requires either an OAuth2 consent flow completed by the account owner in a browser, or an app-password generated from Google Account settings and handed over — both are actions only Abdelkader can perform. No CLI or API path exists around this by design (Google's own security model), and it isn't something "full authority" changes.
+
+**What's already prepared:** nothing hand-built yet — deliberately. None of the 5 existing workflows use an email/Gmail node, so there's no real reference in this installation to verify the exact node JSON schema against before writing one blind. Hand-crafting an unverified Gmail node and importing it risks an invalid or silently-broken node that looks configured but isn't — worse than being honest that this step hasn't started.
+
+**Manual action required:**
+1. Log into `localhost:5678`.
+2. Add a Gmail (or Send Email) node to whichever workflow should notify you — e.g. `00_CEO` after an AI CEO `BUILD`/`PIVOT` decision, or a new notification workflow watching `NEEDS_ATTENTION.md`.
+3. Connect the Gmail credential (OAuth consent screen — only you can click Allow) and set the recipient to `galaxyaek7@gmail.com`.
+4. Once one real Gmail-connected node exists in the system, its exact JSON can be exported and used as a verified template for any additional notification nodes — at that point this becomes buildable end-to-end without guessing.
 
 ## 2. Live platform API key (Gumroad, Payhip, or Etsy)
 

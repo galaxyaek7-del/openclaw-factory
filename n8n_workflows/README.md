@@ -1,8 +1,8 @@
-# n8n_workflows/ — prepared fixes, ready to import (ADR-037 follow-up)
+# n8n_workflows/ — fixes applied and verified live (ADR-045)
 
-**Not live.** These are corrected copies of two broken workflows discovered via a real, read-only diagnostic export (`n8n export:workflow --all` — safe, no write to the live n8n database, confirmed n8n and server.js kept working normally afterward). They are **not applied automatically** — importing them is the final manual step, deliberately left to a human with n8n login access, since:
-- n8n's REST API needs a login this session doesn't have (401 Unauthorized).
-- n8n's CLI `import:workflow` writes directly to the local database — doing that while the server is already running live risks corrupting workflows already in production use. That risk is not worth gambling with unilaterally, even though this specific fix has been reviewed carefully.
+**Update 2026-07-15: these are now LIVE, not just prepared.** With explicit authorization, applied via: real backup (`backups/pre_build_*.json`) → clean stop of the live n8n process (exact PID, not a broad kill) → `n8n import:workflow` against the now-offline database (zero concurrent-write risk) → restart → fresh export confirmed all 5 workflows intact with both fixes live. See `ADR-045` for the full step-by-step and verification.
+
+The files below are kept as the exact record of what was imported — historical/audit value, not a pending action anymore. **Only workflow activation remains manual** (confirmed: n8n's `--activeState=fromJson` CLI flag errors outside queue/multi-main mode, so this genuinely requires the UI, not a gap in effort) — see `BLOCKERS.md` #1.
 
 ## What's fixed and why
 
@@ -10,12 +10,14 @@
 
 **`00_CEO.fixed.json`** — same workflow (same `id`), but its `Execute Workflow` node previously referenced an **unresolved workflow ID** (`value: "="` — an incomplete n8n expression, not a real workflow reference, confirmed via the real export). Rather than guess which other workflow a "CEO" orchestrator should chain to (an arbitrary business decision with no evidence behind it), the node is replaced with a plain `GET http://localhost:3000/api/dashboard` HTTP Request — the real Executive Dashboard aggregator built today. Renamed to "View Executive Dashboard" to match what it actually does now.
 
-## How to apply (manual step — needs n8n login)
+## Remaining manual step — activation only (UI-only, confirmed)
 
 1. Log into `http://localhost:5678`.
-2. For each file here: open the existing workflow by the same name → Menu → **Import from File** → select the `.fixed.json` → it updates in place (same workflow `id`).
-3. Review the change in the n8n editor before saving, same as reviewing any diff.
-4. Separately: activate `Openclaw_Sensing_Engine` and `02_Sales_Poll` (both already complete, just inactive — see `ADR-037`).
+2. Toggle **Active** on `Openclaw_Sensing_Engine` and `02_Sales_Poll` — both are fully correct today (confirmed by the post-restart export), nothing left to fix on them.
+
+## Gmail connection (`galaxyaek7@gmail.com`) — not started, see `BLOCKERS.md` #1b
+
+Deliberately not hand-built: none of the 5 existing workflows use an email node, so there's no real reference to verify a Gmail node's exact JSON schema against in this installation. Writing one blind risks an invalid or silently-broken node. Needs the account owner's OAuth consent in the browser regardless — see `BLOCKERS.md` #1b for the exact remaining steps.
 
 ## What was deliberately NOT built
 
