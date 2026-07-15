@@ -6,3 +6,15 @@ backups/
 __pycache__/
 *.pyc
 *.pyo
+
+# Scratch/manual test-run PDF output at repo root (not demo_cookbook.pdf,
+# which book_generator.py's own default demo mode intentionally produces —
+# see CLAUDE.md). STRUCTURAL_DIAGNOSIS.md disease #12.
+/cookbook_cover.pdf
+/cover_test.pdf
+/demo.pdf
+/healthy_eating_120.pdf
+/output.pdf
+/test_output.pdf
+books/regression_test_draft_with_content.pdf
+books/covers/regression_test_draft_with_content_cover.png
