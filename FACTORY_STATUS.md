@@ -25,7 +25,7 @@
 - `/api/agent/scout` (LLM text) unfiltered
 - `dual_inspection` (25%) excluded from `cellScores()` — metric blind spot
 - n8n processes (PID 360, 20808) — role undocumented
-- Orphaned dead code: `niche_validator.py` v1, `cover_generator.py`
+- ~~Orphaned dead code: `niche_validator.py` v1, `cover_generator.py`~~ — resolved 2026-07-13, both files removed (see `CLAUDE.md`); this line was still listed as "open" until 2026-07-15 (STRUCTURAL_DIAGNOSIS.md disease #7)
 - Butter Compliance at 35% — factory's own weakest_cell verdict
 
 **Next:** Phase B — Safety Filter v2 architecture (config-driven blocklists, audit log, metrics).
@@ -233,6 +233,7 @@ A second, independent intake path (Task [11]): n8n → `POST /api/trends` → Qu
 
 | التاريخ | كتب | إيرادات | إصلاحات ذاتية | التقرير |
 |---|---|---|---|---|
+| 2026-07-12 | 10 | $0.00 | 25 | [WEEK_2026-07-12.md](./reports/WEEK_2026-07-12.md) |
 | 2026-07-05 | 3 | $0.00 | 0 | [WEEK_2026-07-05.md](./reports/WEEK_2026-07-05.md) |
 
 ---
