@@ -118,12 +118,15 @@ Each agent accepts an optional `message` in the request body; if omitted, a defa
 
 There is also a separate, more complete Scout pipeline: `POST /api/scout/run` runs a real end-to-end chain — Groq market brief → pricing (`getButterPrice()` in `factory_loop.js`) → niche safety filter (`safety_filter.py`) → `book_generator.py` → auto-distribution (`autoDistributeScoutBook()` → `distributor.py`). This is distinct from the simple `POST /api/agent/scout` text-analysis call above and is what the dashboard's Scout button triggers.
 
+`POST /chat` (`server.js:423`) — a **raw, unauthenticated Groq passthrough** (any `message` in the request body goes straight to `llama-3.1-8b-instant`, no rate limit, no cost cap). Confirmed via full-repo audit (STRUCTURAL_DIAGNOSIS.md disease #8) to have **zero callers**: not `index.html`, not `factory_loop.js`, not any test, not any other doc. Predates the six-agent `POST /api/agent/:name` system above and was superseded by it in every practical sense. Kept working (not removed) because a live endpoint with unknown external callers is a behavior change, not a refactor — removing it is a decision for the President, not a default cleanup action. Until removed or gated, treat it as unauthenticated paid-API exposure: don't link to it from any new UI without adding at least the same validation `/api/agent/:name` has.
+
 ### Finance data
 
 Finance is persisted to `finance_data.json` in the project root. The server reads/writes this file synchronously. Structure:
 ```json
 {"sales": [...], "totalKDP": 0, "totalEtsy": 0, "totalGumroad": 0}
 ```
+`DELETE /finance/delete/:id` (`server.js:558`) exists alongside `POST /finance/add` but has no UI button wired to it in `index.html` — a half-finished CRUD pair, not dead code (low risk: local JSON mutation only, id-validated).
 
 ### Other Python utilities
 
@@ -131,7 +134,7 @@ Finance is persisted to `finance_data.json` in the project root. The server read
 - `quality_doctor.py` — QA checker that validates product data (PDF pages, SEO keywords, pricing, description length); called live via `POST /api/qa-check` (`server.js`).
 - `cover_designer_v2.py` — The live cover-generation engine, imported by `book_generator.py`, `inspectors.py`, `profit_oracle.py`, and `server.js`. (An older `cover_generator.py` existed as an unwired Day-05 scratch script and was removed 2026-07-13.)
 - `niche_validator_v2.py` — The live niche-validation engine (imported as `NICHE_VALIDATOR` by `book_generator.py`/`profit_oracle.py`). (An older `niche_validator.py` v1 existed, claimed a `/analyze-niche` endpoint that no longer exists in `server.js`, and was removed 2026-07-13.)
-- `audit_seed.py`, `hive_logbook_generator.py` — standalone CLI tools run manually, by design not imported by any other module ("Zero factory impact" per `audit_seed.py`'s own docstring). `hive_logbook_generator.py` produced the real HiveNotes KDP product (`seeds/hivenotes/`) entirely outside the generic `book_generator.py` pipeline and outside `factory_loop.js`'s awareness.
+- `audit_seed.py`, `hive_logbook_generator.py`, `seed_english_book.py` — standalone CLI tools run manually, by design not imported by any other module ("Zero factory impact" per `audit_seed.py`'s own docstring; `seed_english_book.py`'s own docstring: "Standalone... Does NOT touch the live factory pipeline. Safe to run/delete."). `hive_logbook_generator.py` produced the real HiveNotes KDP product (`seeds/hivenotes/`) entirely outside the generic `book_generator.py` pipeline and outside `factory_loop.js`'s awareness. `seed_english_book.py` produced the real `seeds/morning-focus-journal-for-remote-workers-v1.docx` — it imports `book_generator._parse_sectioned_book` (read-only reuse) but nothing in the live pipeline calls it back; until this line was added (STRUCTURAL_DIAGNOSIS.md disease #11) its standalone status wasn't documented outside its own docstring and a bare filename in `ARMS_ARCHITECTURE_INPUT.md`'s tree snapshot.
 
 ### No scheduler exists
 
