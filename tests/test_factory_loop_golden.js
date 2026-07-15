@@ -310,6 +310,43 @@ async function main() {
     assert.ok(reason.includes('بلا تغيير'));
   });
 
+  await test('checkPendingAiCeoDecision: missing file -> null, never throws', () => {
+    assert.strictEqual(fl.checkPendingAiCeoDecision(path.join(tmpDir, 'no_mie.jsonl')), null);
+  });
+
+  await test('checkPendingAiCeoDecision: WAIT/IMPROVE/REJECT decisions are not actionable -> null', () => {
+    const p = path.join(tmpDir, 'mie_wait.jsonl');
+    fs.writeFileSync(p, JSON.stringify({ niche: 'a', ai_ceo: { decision: 'WAIT', evidence: ['not enough data'] } }) + '\n');
+    assert.strictEqual(fl.checkPendingAiCeoDecision(p), null);
+  });
+
+  await test('checkPendingAiCeoDecision: a real BUILD decision surfaces with its actual evidence', () => {
+    const p = path.join(tmpDir, 'mie_build.jsonl');
+    fs.writeFileSync(p, JSON.stringify({ niche: 'legal compliance tool', ai_ceo: { decision: 'BUILD', evidence: ['real opportunity gap 80'] } }) + '\n');
+    const reason = fl.checkPendingAiCeoDecision(p);
+    assert.ok(reason);
+    assert.ok(reason.includes('BUILD'));
+    assert.ok(reason.includes('legal compliance tool'));
+    assert.ok(reason.includes('real opportunity gap 80'));
+  });
+
+  await test('checkPendingAiCeoDecision: reads the LAST analysis, not an earlier one', () => {
+    const p = path.join(tmpDir, 'mie_multi.jsonl');
+    fs.writeFileSync(p,
+      JSON.stringify({ niche: 'old', ai_ceo: { decision: 'BUILD', evidence: ['old'] } }) + '\n' +
+      JSON.stringify({ niche: 'new', ai_ceo: { decision: 'WAIT', evidence: ['new'] } }) + '\n'
+    );
+    assert.strictEqual(fl.checkPendingAiCeoDecision(p), null); // latest is WAIT, not actionable
+  });
+
+  await test('checkNeedsAttention: real market_intelligence_analyses.jsonl today has no actionable decision (IMPROVE only)', () => {
+    // Sanity check against the REAL file — today's only real analysis is
+    // "IMPROVE", not actionable, so this must not add a false reason.
+    const reasons = fl.checkNeedsAttention([]);
+    const aiCeoReasons = reasons.filter(r => r.includes('محرك الاستخبارات السوقية'));
+    assert.deepStrictEqual(aiCeoReasons, []);
+  });
+
   await test('checkGoldenStagnation: fresh single attempt -> no reason (not enough history)', () => {
     const p = path.join(tmpDir, 'stagnation_fresh.jsonl');
     fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', profit_score: 70 }, p);

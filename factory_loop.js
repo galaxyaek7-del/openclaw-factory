@@ -760,6 +760,44 @@ function checkGoldenStagnation(logPath = GOLDEN_HUNTER_EVENTS_FILE, nowMs = Date
   );
 }
 
+// ADR-044: the one real integration point between market_intelligence_engine.py
+// (run manually/deliberately — network calls stay out of this live loop,
+// same boundary ADR-041/042/043 already established) and the actual
+// automation loop. Pure file read — no new network call, no new
+// subprocess. Surfaces the CURRENT state (an actionable AI CEO decision
+// still sitting unaddressed), not a one-time notification — same
+// semantics as every other NEEDS_ATTENTION.md reason: it stays flagged
+// as long as it's still true, clears when it's not.
+const MARKET_INTELLIGENCE_ANALYSES_FILE = path.join(FACTORY_DIR, 'data', 'market_intelligence_analyses.jsonl');
+const AI_CEO_ACTIONABLE_DECISIONS = ['BUILD', 'PIVOT'];
+
+function checkPendingAiCeoDecision(logPath = MARKET_INTELLIGENCE_ANALYSES_FILE) {
+  if (!fs.existsSync(logPath)) return null;
+  let lines;
+  try {
+    lines = fs.readFileSync(logPath, 'utf8').split('\n').filter(Boolean);
+  } catch (_) {
+    return null;
+  }
+  if (!lines.length) return null;
+
+  let last;
+  try {
+    last = JSON.parse(lines[lines.length - 1]);
+  } catch (_) {
+    return null;
+  }
+
+  const decision = last && last.ai_ceo && last.ai_ceo.decision;
+  if (!AI_CEO_ACTIONABLE_DECISIONS.includes(decision)) return null;
+
+  const evidence = (last.ai_ceo.evidence || []).join('؛ ');
+  return (
+    `محرك الاستخبارات السوقية أصدر قراراً فعلياً غير مُعالَج بعد: "${decision}" لنيتش "${last.niche}" ` +
+    `— ${evidence}. راجعه عبر: python market_intelligence_engine.py --analyze "${last.niche}"`
+  );
+}
+
 function checkNeedsAttention(tickActions, logPath = GOLDEN_HUNTER_EVENTS_FILE) {
   const reasons = [];
 
@@ -795,6 +833,9 @@ function checkNeedsAttention(tickActions, logPath = GOLDEN_HUNTER_EVENTS_FILE) {
 
   const stagnation = checkGoldenStagnation(logPath);
   if (stagnation) reasons.push(stagnation);
+
+  const pendingAiCeo = checkPendingAiCeoDecision();
+  if (pendingAiCeo) reasons.push(pendingAiCeo);
 
   return reasons;
 }
@@ -1491,5 +1532,6 @@ module.exports = {
   appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted,
   evaluateGoldenOpportunities, getButterPrice, getOpportunityScore,
   checkNeedsAttention, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
+  checkPendingAiCeoDecision,
   checkPendingReview, countPendingReviewDrafts, writeNeedsReview, clearNeedsReview,
 };
