@@ -13,57 +13,23 @@ from .base_arm import BaseArm, ArmStatus, PublishResult
 from . import gumroad_publisher
 from . import registry
 
-# ADR-5: circuit breaker. Kept in-memory and per-process — no persistence
-# needed yet at MVP scale (a single arm, never called automatically).
-_COOLDOWN_THRESHOLD = 3
-
 
 class GumroadArm(BaseArm):
     name = "gumroad"
 
-    def __init__(self):
-        self._consecutive_failures = 0
-
     def status(self) -> ArmStatus:
-        if self._consecutive_failures >= _COOLDOWN_THRESHOLD:
-            return ArmStatus.COOLDOWN
-        try:
-            gumroad_publisher.load_token()
-        except gumroad_publisher.ConfigError:
-            return ArmStatus.UNAVAILABLE
-        return ArmStatus.READY
-
-    def supports(self, product) -> bool:
-        """Gumroad needs a real file and a resolved price. A Product still
-        needing pricing (needs_pricing=True) is not supported yet — never
-        invent a price here."""
-        if not product.file_path:
-            return False
-        if product.price_usd is None or product.needs_pricing:
-            return False
-        return True
+        return self._status_via(gumroad_publisher.load_token, gumroad_publisher.ConfigError)
 
     def publish(self, product, dry_run: bool = True) -> PublishResult:
         current_status = self.status()
         if current_status is not ArmStatus.READY:
-            return PublishResult(
-                ok=False,
-                platform=self.name,
-                product_id=None,
-                url=None,
-                error=f"arm not ready: {current_status.value}",
-                dry_run=dry_run,
-            )
+            return self._not_ready_result(current_status, dry_run)
 
         if not self.supports(product):
-            return PublishResult(
-                ok=False,
-                platform=self.name,
-                product_id=None,
-                url=None,
-                error="product not supported (missing file_path or unresolved price)",
-                dry_run=dry_run,
-            )
+            return self._not_supported_result(dry_run)
+
+        if dry_run:
+            return self._dry_run_result()
 
         spec = {
             "title": product.title,
@@ -72,23 +38,11 @@ class GumroadArm(BaseArm):
             "file_path": product.file_path,
         }
 
-        if dry_run:
-            # Validate shape only. No network call, no gumroad_publisher
-            # function is invoked — this is the safe default.
-            return PublishResult(
-                ok=True,
-                platform=self.name,
-                product_id=None,
-                url=None,
-                error=None,
-                dry_run=True,
-            )
-
         try:
             token = gumroad_publisher.load_token()
             result = gumroad_publisher.create_product(token, spec)
         except Exception as e:
-            self._consecutive_failures += 1
+            self._record_failure()
             return PublishResult(
                 ok=False,
                 platform=self.name,
@@ -98,7 +52,7 @@ class GumroadArm(BaseArm):
                 dry_run=False,
             )
 
-        self._consecutive_failures = 0
+        self._record_success()
         product_id = result.get("id") if isinstance(result, dict) else None
         url = result.get("short_url") if isinstance(result, dict) else None
         return PublishResult(

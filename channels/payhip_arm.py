@@ -15,54 +15,23 @@ from .base_arm import BaseArm, ArmStatus, PublishResult
 from . import payhip_publisher
 from . import registry
 
-# ADR-5: circuit breaker, same pattern as GumroadArm.
-_COOLDOWN_THRESHOLD = 3
-
 
 class PayhipArm(BaseArm):
     name = "payhip"
 
-    def __init__(self):
-        self._consecutive_failures = 0
-
     def status(self) -> ArmStatus:
-        if self._consecutive_failures >= _COOLDOWN_THRESHOLD:
-            return ArmStatus.COOLDOWN
-        try:
-            payhip_publisher.load_token()
-        except payhip_publisher.ConfigError:
-            return ArmStatus.UNAVAILABLE
-        return ArmStatus.READY
-
-    def supports(self, product) -> bool:
-        """Same shape requirements as GumroadArm: a real file and a
-        resolved price. A Product still needing pricing is not supported."""
-        if not product.file_path:
-            return False
-        if product.price_usd is None or product.needs_pricing:
-            return False
-        return True
+        return self._status_via(payhip_publisher.load_token, payhip_publisher.ConfigError)
 
     def publish(self, product, dry_run: bool = True) -> PublishResult:
         current_status = self.status()
         if current_status is not ArmStatus.READY:
-            return PublishResult(
-                ok=False, platform=self.name, product_id=None, url=None,
-                error=f"arm not ready: {current_status.value}", dry_run=dry_run,
-            )
+            return self._not_ready_result(current_status, dry_run)
 
         if not self.supports(product):
-            return PublishResult(
-                ok=False, platform=self.name, product_id=None, url=None,
-                error="product not supported (missing file_path or unresolved price)", dry_run=dry_run,
-            )
+            return self._not_supported_result(dry_run)
 
         if dry_run:
-            # Validate shape only. No network call, no payhip_publisher
-            # function is invoked — this is the safe default.
-            return PublishResult(
-                ok=True, platform=self.name, product_id=None, url=None, error=None, dry_run=True,
-            )
+            return self._dry_run_result()
 
         try:
             token = payhip_publisher.load_token()
@@ -76,14 +45,14 @@ class PayhipArm(BaseArm):
             # create_product() always raises UnsupportedOperationError today
             # (ADR-025) — this branch is the expected, honest outcome of
             # every live attempt until Payhip ships a real product API.
-            self._consecutive_failures += 1
+            self._record_failure()
             return PublishResult(
                 ok=False, platform=self.name, product_id=None, url=None, error=str(e), dry_run=False,
             )
 
         # Unreachable today, kept so this becomes a one-line fix if Payhip
         # ever ships a real product-creation endpoint.
-        self._consecutive_failures = 0
+        self._record_success()
         return PublishResult(ok=True, platform=self.name, product_id=None, url=None, error=None, dry_run=False)
 
 
