@@ -2,10 +2,24 @@
 """
 OpenClaw Factory v7+ - Market Analyzer & Niche Scout
 Analyzes market trends and recommends profitable niches
+
+Honesty note (STRUCTURAL_DIAGNOSIS.md disease #2, added 2026-07-15 — same
+discipline as market_hunter.py's own docstring): MARKET_DATA below is a
+fixed, hardcoded reference table, not a live market scan. POST /api/market-
+analyze (server.js) calls analyze_market() with no input at all, so every
+call returns the exact same top-3 niches out of the exact same 10-item
+table, always. This is a third, independent "is this niche good" scorer
+alongside profit_oracle.py's score_opportunity()/opportunity_score() — it
+predates both and serves a different, dashboard-facing "what's trending in
+general" button rather than gating any real production decision, so it is
+NOT consolidated into profit_oracle here (that is a larger, riskier change
+better suited to its own session with real usage data — see
+STRUCTURAL_DIAGNOSIS.md disease #2). What IS fixed here: the previous
+`"analysis_confidence": "High"` label overstated what a static table can
+possibly tell you — corrected below to say what this function actually is.
 """
 
 import json
-import random
 from datetime import datetime
 
 MARKET_DATA = {
@@ -77,7 +91,8 @@ def analyze_market():
         "seasonal_opportunity": seasonal,
         "recommended_niches": recommendations,
         "total_analyzed": len(MARKET_DATA["trending_niches"]),
-        "analysis_confidence": "High"
+        "analysis_confidence": "static_reference_table",
+        "note": "Curated reference list of common KDP/Etsy niche archetypes, not a live market scan — same 10 niches every call, scored by a fixed formula.",
     }
 
 if __name__ == "__main__":
