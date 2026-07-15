@@ -4,29 +4,107 @@
 <meta charset="UTF-8">
 <title>OpenClaw — لوحة القيادة</title>
 <style>
-  body { font-family: -apple-system, Segoe UI, Tahoma, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 24px; }
-  h1 { font-size: 20px; margin-bottom: 4px; }
-  .subtitle { color: #94a3b8; font-size: 13px; margin-bottom: 24px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
-  .card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 16px; }
-  .card h2 { font-size: 14px; color: #94a3b8; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 0.05em; }
-  .metric { font-size: 28px; font-weight: 700; }
-  .note { font-size: 12px; color: #f59e0b; margin-top: 8px; }
-  .ok { color: #22c55e; }
-  .critical { color: #ef4444; }
-  .degraded { color: #f59e0b; }
-  .flag-active { background: #7f1d1d; border-color: #ef4444; }
-  pre { white-space: pre-wrap; font-size: 12px; color: #cbd5e1; }
-  .refresh { font-size: 12px; color: #64748b; }
+  :root {
+    --bg: #f8fafc; --bg-card: #ffffff; --border: #e2e8f0; --text: #0f172a; --text-dim: #64748b;
+    --accent: #2563eb; --ok: #16a34a; --warn: #d97706; --crit: #dc2626; --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  [data-theme="dark"] {
+    --bg: #0b1120; --bg-card: #131c31; --border: #1f2b45; --text: #e5edff; --text-dim: #8ba0c4;
+    --accent: #60a5fa; --ok: #4ade80; --warn: #fbbf24; --crit: #f87171; --shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Tahoma, sans-serif;
+    background: var(--bg); color: var(--text); margin: 0; padding: 28px;
+    transition: background .2s ease, color .2s ease;
+  }
+  .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+  h1 { font-size: 20px; margin: 0; font-weight: 700; }
+  .subtitle { color: var(--text-dim); font-size: 13px; margin-top: 2px; }
+  .controls { display: flex; gap: 10px; align-items: center; }
+  #search {
+    background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
+    border-radius: 8px; padding: 8px 12px; font-size: 13px; width: 240px;
+  }
+  #themeToggle, #search { cursor: pointer; }
+  #themeToggle {
+    background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
+    border-radius: 8px; padding: 8px 14px; font-size: 13px;
+  }
+  #searchResults {
+    position: absolute; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: var(--shadow); max-width: 400px; max-height: 300px; overflow-y: auto; z-index: 10; display: none;
+    padding: 8px; font-size: 12px;
+  }
+  #searchResults div { padding: 6px 8px; border-radius: 6px; }
+  #searchResults div:hover { background: var(--border); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 20px; }
+  .card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;
+    box-shadow: var(--shadow); transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover { transform: translateY(-2px); }
+  .card h2 { font-size: 12px; color: var(--text-dim); margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+  .metric { font-size: 26px; font-weight: 700; line-height: 1.2; }
+  .note { font-size: 12px; color: var(--text-dim); margin-top: 8px; line-height: 1.5; }
+  .ok { color: var(--ok); } .critical { color: var(--crit); } .degraded { color: var(--warn); }
+  .flag-active { border-color: var(--crit); background: color-mix(in srgb, var(--crit) 8%, var(--bg-card)); }
+  .section-title { font-size: 14px; font-weight: 700; margin: 28px 0 12px 0; color: var(--text-dim); text-transform: uppercase; letter-spacing: .06em; }
+  .timeline { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); }
+  .timeline-row { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; align-items: baseline; }
+  .timeline-row:last-child { border-bottom: none; }
+  .timeline-time { color: var(--text-dim); font-size: 11px; white-space: nowrap; min-width: 130px; }
+  .timeline-source { font-size: 10px; padding: 2px 8px; border-radius: 999px; background: var(--border); color: var(--text-dim); white-space: nowrap; }
+  .timeline-summary { flex: 1; }
+  .empty { padding: 20px; text-align: center; color: var(--text-dim); font-size: 13px; }
+  .notif-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 8px; }
+  .notif-box.active { border-color: var(--warn); }
+  pre.notif-content { white-space: pre-wrap; font-size: 12px; color: var(--text); margin: 8px 0 0 0; font-family: inherit; }
 </style>
 </head>
 <body>
-  <h1>🏭 OpenClaw — لوحة القيادة</h1>
-  <div class="subtitle">تجميع حي لبيانات حقيقية موجودة فعلاً — لا مقاييس مُختلَقة. آخر تحديث: <span id="ts">...</span></div>
+  <div class="topbar">
+    <div>
+      <h1>🏭 OpenClaw — لوحة القيادة</h1>
+      <div class="subtitle">تجميع حي لبيانات حقيقية موجودة فعلاً — لا مقاييس مُختلَقة. آخر تحديث: <span id="ts">...</span></div>
+    </div>
+    <div class="controls">
+      <div style="position:relative;">
+        <input id="search" placeholder="🔎 بحث في قاعدة المعرفة (OpenClaw_Brain)..." />
+        <div id="searchResults"></div>
+      </div>
+      <button id="themeToggle">🌙 داكن</button>
+    </div>
+  </div>
+
   <div class="grid" id="grid">جارٍ التحميل...</div>
 
+  <div class="section-title">مركز التنبيهات</div>
+  <div id="notifications"></div>
+
+  <div class="section-title">سجلّ النشاط الحقيقي</div>
+  <div class="timeline" id="timeline">جارٍ التحميل...</div>
+
   <script>
+    // Theme: persisted, defaults to system preference — same convention
+    // Artifacts use (data-theme on root), so this behaves predictably.
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      document.getElementById('themeToggle').textContent = t === 'dark' ? '☀️ فاتح' : '🌙 داكن';
+      localStorage.setItem('openclaw_dashboard_theme', t);
+    }
+    const savedTheme = localStorage.getItem('openclaw_dashboard_theme')
+      || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    applyTheme(savedTheme);
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
     function fmtBool(active) { return active ? '⚠️ نشط' : '✅ لا شيء'; }
+    function fmtTime(ts) {
+      if (!ts) return '—';
+      return new Date(ts).toLocaleString('ar', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
 
     async function load() {
       const res = await fetch('/api/dashboard');
@@ -34,64 +112,88 @@
       document.getElementById('ts').textContent = new Date(d.generated_at).toLocaleString('ar');
 
       const cards = [];
-
       cards.push(`<div class="card">
         <h2>صحة المصنع</h2>
         <div class="metric ${d.health && d.health.status}">${d.health ? d.health.status : '—'}</div>
         <div class="note">${d.health && d.health.reality ? d.health.reality.reason : ''}</div>
       </div>`);
-
       cards.push(`<div class="card">
         <h2>المالية (حقيقية)</h2>
         <div class="metric">$${d.finance.total_revenue}</div>
         <div class="note">${d.finance.total_sales} عملية بيع — KDP $${d.finance.by_platform.KDP} / Etsy $${d.finance.by_platform.Etsy} / Gumroad $${d.finance.by_platform.Gumroad}</div>
       </div>`);
-
       cards.push(`<div class="card">
         <h2>Oracle (Tier 4)</h2>
         <div class="metric">${d.oracle.golden_count}/${d.oracle.total_scored}</div>
-        <div class="note">${d.oracle.note || 'فرص GOLDEN مسجَّلة من أصل الإجمالي المُقيَّم'}</div>
+        <div class="note">${d.oracle.note || 'فرص GOLDEN من أصل الإجمالي المُقيَّم'}</div>
       </div>`);
-
       cards.push(`<div class="card">
         <h2>Golden Hunter (يومي)</h2>
         <div class="metric">${d.hunter.ran ? d.hunter.golden_count : '—'}</div>
-        <div class="note">${d.hunter.note || 'آخر تشغيل: ' + d.hunter.timestamp}</div>
+        <div class="note">${d.hunter.note || 'آخر تشغيل: ' + fmtTime(d.hunter.timestamp)}</div>
       </div>`);
-
       cards.push(`<div class="card">
         <h2>اكتشاف Tier 1 (بحث حقيقي)</h2>
         <div class="metric">${d.tier1_discovery.accepted}/${d.tier1_discovery.candidates_researched}</div>
         <div class="note">${d.tier1_discovery.note || 'مرشَّحون مقبولون من أصل المُبحوثين'}</div>
       </div>`);
-
       cards.push(`<div class="card">
         <h2>قائمة المراجعة البشرية</h2>
         <div class="metric">${d.pending_review.queue}</div>
         <div class="note">في الانتظار — ${d.pending_review.approved} مُوافَق، ${d.pending_review.completed} مكتمل، ${d.pending_review.rejected} مرفوض</div>
       </div>`);
-
-      cards.push(`<div class="card ${d.needs_attention.active ? 'flag-active' : ''}">
-        <h2>يحتاج انتباهاً؟</h2>
-        <div class="metric">${fmtBool(d.needs_attention.active)}</div>
-      </div>`);
-
-      cards.push(`<div class="card ${d.needs_review.active ? 'flag-active' : ''}">
-        <h2>يحتاج مراجعة؟</h2>
-        <div class="metric">${fmtBool(d.needs_review.active)}</div>
-      </div>`);
-
       cards.push(`<div class="card">
         <h2>الوعي الذاتي</h2>
-        <div class="note" style="font-size:13px; color:#e2e8f0;">${d.self_awareness ? d.self_awareness.verdict : '—'}</div>
+        <div class="note" style="font-size:13px; color:var(--text);">${d.self_awareness ? d.self_awareness.verdict : '—'}</div>
         <div class="note">أضعف خلية: ${d.self_awareness ? d.self_awareness.weakest_cell : '—'}</div>
       </div>`);
-
       document.getElementById('grid').innerHTML = cards.join('');
+
+      const notifs = [];
+      notifs.push(`<div class="notif-box ${d.needs_attention.active ? 'active' : ''}">
+        <strong>${fmtBool(d.needs_attention.active)} — يحتاج انتباهاً</strong>
+        ${d.needs_attention.content ? `<pre class="notif-content">${d.needs_attention.content}</pre>` : ''}
+      </div>`);
+      notifs.push(`<div class="notif-box ${d.needs_review.active ? 'active' : ''}">
+        <strong>${fmtBool(d.needs_review.active)} — يحتاج مراجعة بشرية</strong>
+        ${d.needs_review.content ? `<pre class="notif-content">${d.needs_review.content}</pre>` : ''}
+      </div>`);
+      document.getElementById('notifications').innerHTML = notifs.join('');
+
+      const rows = (d.activity || []).map(e => `<div class="timeline-row">
+        <div class="timeline-time">${fmtTime(e.timestamp)}</div>
+        <div class="timeline-source">${e.source}</div>
+        <div class="timeline-summary">${e.summary}</div>
+      </div>`).join('');
+      document.getElementById('timeline').innerHTML = rows || '<div class="empty">لا نشاط مسجَّل بعد</div>';
     }
 
+    // Global search — wired directly to the existing, real GET /brain?q=
+    // (knowledge_brain.js's searchBrain()) — no new backend, no fabrication.
+    let searchTimer;
+    document.getElementById('search').addEventListener('input', (e) => {
+      clearTimeout(searchTimer);
+      const q = e.target.value.trim();
+      const box = document.getElementById('searchResults');
+      if (!q) { box.style.display = 'none'; return; }
+      searchTimer = setTimeout(async () => {
+        const res = await fetch('/brain?q=' + encodeURIComponent(q));
+        const d = await res.json();
+        const results = (d.results || []).slice(0, 8);
+        box.innerHTML = results.length
+          ? results.map(r => `<div><strong>${r.file}:${r.line}</strong><br>${r.text}</div>`).join('')
+          : '<div>لا نتائج</div>';
+        box.style.display = 'block';
+      }, 300);
+    });
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#search') && !e.target.closest('#searchResults')) {
+        document.getElementById('searchResults').style.display = 'none';
+      }
+    });
+
     load();
-    setInterval(load, 60000); // real 10-minute factory tick — no point refreshing faster than that
+    setInterval(load, 60000); // real 10-minute factory tick — no point refreshing faster
   </script>
 </body>
 </html>

@@ -97,12 +97,61 @@ test('readTier1IntakeSummary: counts real candidates and accepted ones honestly'
   assert.equal(result.accepted, 1);
 });
 
-test('readAttentionFlag / readReviewFlag: reflect real file existence, not assumptions', () => {
+test('readAttentionFlag / readReviewFlag: reflect real file existence and content, not assumptions', () => {
   const missing = path.join(tmpDir, 'NEEDS_ATTENTION_missing.md');
   assert.equal(dd.readAttentionFlag(missing).active, false);
   const present = path.join(tmpDir, 'NEEDS_ATTENTION_present.md');
-  fs.writeFileSync(present, 'x');
-  assert.equal(dd.readAttentionFlag(present).active, true);
+  fs.writeFileSync(present, 'real reason text');
+  const result = dd.readAttentionFlag(present);
+  assert.equal(result.active, true);
+  assert.equal(result.content, 'real reason text');
+});
+
+test('readActivityTimeline: merges all three real sources, sorted newest first', () => {
+  const dir = fs.mkdtempSync(path.join(tmpDir, 'activity_'));
+  const loopLog = path.join(dir, 'factory_loop.log');
+  const inspLog = path.join(dir, 'inspections.log');
+  const goldenLog = path.join(dir, 'golden.jsonl');
+
+  fs.writeFileSync(loopLog, JSON.stringify({
+    timestamp: '2026-07-15T10:00:00Z',
+    actions: [{ step: 'heal_finance', action: 'healed' }, { step: 'hunt', action: 'none' }],
+  }) + '\n');
+  fs.writeFileSync(inspLog, JSON.stringify({
+    timestamp: '2026-07-15T12:00:00Z', title: 'Test Book', passed: true,
+    commercial: { profit_score: 70 },
+  }) + '\n');
+  fs.writeFileSync(goldenLog, JSON.stringify({
+    timestamp: '2026-07-15T08:00:00Z', action: 'skipped', reason: 'stale', detail: 'قديم',
+  }) + '\n');
+
+  const result = dd.readActivityTimeline({ factoryLoopLog: loopLog, inspectionsLog: inspLog, goldenHunterEvents: goldenLog });
+  assert.equal(result.length, 3);
+  // newest first
+  assert.equal(result[0].source, 'inspection');
+  assert.equal(result[1].source, 'factory_loop');
+  assert.equal(result[2].source, 'golden_hunter');
+  // action:none entries are summarized, not dropped, but described honestly
+  assert.ok(result[1].summary.includes('heal_finance'));
+});
+
+test('readActivityTimeline: already_attempted golden hunter noise is filtered out', () => {
+  const dir = fs.mkdtempSync(path.join(tmpDir, 'activity_noise_'));
+  const goldenLog = path.join(dir, 'golden.jsonl');
+  fs.writeFileSync(goldenLog,
+    JSON.stringify({ timestamp: '2026-07-15T08:00:00Z', action: 'skipped', reason: 'already_attempted' }) + '\n' +
+    JSON.stringify({ timestamp: '2026-07-15T08:10:00Z', action: 'skipped', reason: 'circuit_breaker', detail: 'real reason' }) + '\n'
+  );
+  const result = dd.readActivityTimeline({ factoryLoopLog: path.join(tmpDir, 'nope1'), inspectionsLog: path.join(tmpDir, 'nope2'), goldenHunterEvents: goldenLog });
+  assert.equal(result.length, 1);
+  assert.equal(result[0].summary, 'real reason');
+});
+
+test('readActivityTimeline: all sources missing -> empty array, never throws', () => {
+  const result = dd.readActivityTimeline({
+    factoryLoopLog: path.join(tmpDir, 'nope_a'), inspectionsLog: path.join(tmpDir, 'nope_b'), goldenHunterEvents: path.join(tmpDir, 'nope_c'),
+  });
+  assert.deepEqual(result, []);
 });
 
 test('computeDashboard: composes every section, degrades gracefully with no health/awareness passed', () => {
@@ -117,6 +166,7 @@ test('computeDashboard: composes every section, degrades gracefully with no heal
   assert.ok(result.pending_review);
   assert.ok(result.needs_attention);
   assert.ok(result.needs_review);
+  assert.ok(Array.isArray(result.activity));
 });
 
 test('computeDashboard: passes health/awareness through without altering them', () => {
