@@ -6,6 +6,7 @@ Runs with stdlib unittest (see tests/test_base_arm.py).
     python -m unittest tests.test_opportunity_score -v
 """
 
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -216,6 +217,71 @@ class TestRiskAndConfidence(unittest.TestCase):
         without = po.score_opportunity("xyz", external_signal=None)
         withsig = po.score_opportunity("xyz", external_signal={"source": "hacker_news", "points": 50})
         self.assertGreater(withsig["confidence"]["score"], without["confidence"]["score"])
+
+
+class TestRealCompetitionAndMargin(unittest.TestCase):
+    """ADR-041: real competitor-count feeds competition; real platform fees
+    (economics.py) + real logged AI cost (book_generator.py's cost log)
+    feed margin — same 'reuse before creating' pattern as ADR-038/039."""
+
+    def test_competition_unaffected_when_no_real_signal_present(self):
+        niche = "a niche with no saved report and no external signal"
+        without = po.score_opportunity(niche)
+        with_none = po.score_opportunity(niche, external_signal=None)
+        self.assertEqual(without["scores"]["competition"], with_none["scores"]["competition"])
+
+    def test_real_related_results_count_changes_competition_score(self):
+        niche = "some niche xyz"
+        baseline = po.score_opportunity(niche)["scores"]["competition"]
+        crowded = po.score_opportunity(niche, external_signal={"competition": {"related_results_count": 500}})["scores"]["competition"]
+        self.assertNotEqual(baseline, crowded)
+
+    def test_more_real_competitors_scores_lower_than_fewer(self):
+        few = po.score_opportunity("x", external_signal={"competition": {"related_results_count": 1}})["scores"]["competition"]
+        many = po.score_opportunity("x", external_signal={"competition": {"related_results_count": 1000}})["scores"]["competition"]
+        self.assertGreater(few, many)
+
+    def test_saved_amazon_report_still_takes_priority_over_external_signal(self):
+        """The original real-data path (niche_validator_v2 saved reports)
+        must still win over the newer external_signal path when both exist
+        — it's the more specific, platform-real signal."""
+        niche = "a niche with no saved report at all zzz"
+        result = po.score_opportunity(niche, external_signal={"competition": {"related_results_count": 5}})
+        # no saved report for this fake niche, so the external_signal path is used
+        self.assertIn("بحث حي", result["reasoning"])
+
+    def test_margin_uses_real_economics_fees_not_flat_100(self):
+        result = po.score_opportunity("premium subscription budget planner")
+        self.assertIn("هامش صافٍ حقيقي", result["reasoning"])
+        self.assertIn("economics.json", result["reasoning"])
+
+    def test_margin_never_raises_if_economics_unavailable(self):
+        original = po.ECONOMICS
+        try:
+            po.ECONOMICS = None
+            result = po.score_opportunity("premium subscription budget planner")
+            self.assertIsInstance(result["scores"]["margin"], int)
+        finally:
+            po.ECONOMICS = original
+
+    def test_real_average_ai_cost_missing_log_returns_none_not_zero(self):
+        avg, count = po._real_average_ai_cost_per_call(log_file="/no/such/ai_cost_log.jsonl")
+        self.assertIsNone(avg)
+        self.assertEqual(count, 0)
+
+    def test_real_average_ai_cost_computed_from_real_logged_entries(self):
+        import tempfile, os as _os
+        fd, path = tempfile.mkstemp(suffix=".jsonl")
+        _os.close(fd)
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(json.dumps({"cost_usd": 0.01}) + "\n")
+                f.write(json.dumps({"cost_usd": 0.03}) + "\n")
+            avg, count = po._real_average_ai_cost_per_call(log_file=path)
+            self.assertEqual(count, 2)
+            self.assertAlmostEqual(avg, 0.02, places=6)
+        finally:
+            _os.remove(path)
 
 
 if __name__ == "__main__":

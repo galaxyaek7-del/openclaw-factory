@@ -58,8 +58,17 @@ try:
 except (Exception, SystemExit):
     SAFETY_FILTER = None
 
+# ADR-041: economics.py never imports profit_oracle (only sys/json) — zero
+# circular-import risk, same as safety_filter.py above. Reused for real
+# platform-fee math instead of the flat "digital = free" assumption.
+try:
+    import economics as ECONOMICS
+except (Exception, SystemExit):
+    ECONOMICS = None
+
 FACTORY_DIR = os.path.dirname(os.path.abspath(__file__))
 OPPORTUNITIES_FILE = os.path.join(FACTORY_DIR, 'OPPORTUNITIES.md')
+AI_COST_LOG_FILE = os.path.join(FACTORY_DIR, 'data', 'ai_cost_log.jsonl')  # book_generator.py's real per-call Groq cost log (ADR-041)
 GOLDEN_MD_FILE = os.path.join(FACTORY_DIR, 'GOLDEN_OPPORTUNITIES.md')
 GOLDEN_JSON_FILE = os.path.join(FACTORY_DIR, 'golden_opportunities.json')
 NICHE_REPORTS_DIR = os.path.join(FACTORY_DIR, 'niche_reports')
@@ -255,19 +264,30 @@ def _score_demand(niche, now=None, external_signal=None):
     return demand_score, notes
 
 
-def _score_competition(niche):
-    """30% weight. Real data when a saved niche_validator_v2.py report
-    matches; otherwise a specificity-based estimate, clearly labeled."""
+def _score_competition(niche, external_signal=None):
+    """30% weight. Real data in priority order: a saved niche_validator_v2.py
+    Amazon report first (unchanged, existing path); otherwise a real
+    competitor-count from external_signal['competition'] when a research
+    batch gathered one (ADR-041 — same log-scale honesty as ADR-038's
+    demand normalization, calibrated as a first pass, not a validated
+    predictor); otherwise the original word-count guess, clearly labeled.
+    Omitting external_signal (every current live caller) reproduces
+    today's exact behavior unchanged."""
     notes = []
     report = _find_niche_report(niche)
+    comp_signal = (external_signal or {}).get('competition')
     if report and report.get('status') == 'success':
         total_results = report.get('metrics', {}).get('total_results', 0)
         comp_score = max(0, round(100 * (1 - min(total_results, MAX_COMPETITION) / MAX_COMPETITION)))
         notes.append(f"منافسة حقيقية من تقرير محفوظ: {total_results:,} نتيجة (الحد: {MAX_COMPETITION:,})")
+    elif comp_signal and comp_signal.get('related_results_count') is not None:
+        related_count = comp_signal['related_results_count']
+        comp_score = max(0, min(100, round(95 - 20 * math.log10(related_count + 1))))
+        notes.append(f"منافسة حقيقية: {related_count} نتيجة مشابهة فعلية (بحث حي) → {comp_score}/100 [بيانات حقيقية، ADR-041]")
     else:
         word_count = len(niche.split())
         comp_score = 70 if word_count >= 3 else 45
-        notes.append("لا بحث Amazon محفوظ لهذا النيتش — تقدير من درجة التخصص [تقدير]")
+        notes.append("لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]")
 
     if any(q in niche.lower() for q in SUBNICHE_QUALIFIERS):
         comp_score = min(100, comp_score + 10)
@@ -276,9 +296,44 @@ def _score_competition(niche):
     return comp_score, notes
 
 
+def _real_average_ai_cost_per_call(log_file=None):
+    """Real average, computed only from actual logged Groq calls
+    (book_generator.py's _log_ai_cost(), ADR-041). Returns (None, 0) when
+    no real call has been logged yet — never a guessed placeholder cost."""
+    log_file = log_file or AI_COST_LOG_FILE
+    if not os.path.exists(log_file):
+        return None, 0
+    costs = []
+    try:
+        with open(log_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    rec = json.loads(line)
+                except Exception:
+                    continue
+                if rec.get('cost_usd') is not None:
+                    costs.append(rec['cost_usd'])
+    except Exception:
+        return None, 0
+    if not costs:
+        return None, 0
+    return sum(costs) / len(costs), len(costs)
+
+
 def _score_margin(niche):
-    """20% weight. Price tier + recurring potential are keyword estimates;
-    production cost is a real, always-true fact for this factory (digital)."""
+    """20% weight. Price tier and recurring-revenue potential are still
+    keyword estimates (no real sales data exists yet to know an actual
+    achievable price or repeat-purchase rate — see
+    config/capability_registry.json's DISCOVERY entries for both). The
+    cost side is now real (ADR-041): actual platform fees from
+    config/economics.json (economics.net_profit(), same real fee schedule
+    the live distributor uses) replace the old flat 'digital = free'
+    assumption, and real logged Groq cost (data/ai_cost_log.jsonl) is
+    subtracted when any exists — reported honestly as unavailable, never
+    invented, until enough real generations have been logged."""
     notes = []
     niche_lower = niche.lower()
     if any(k in niche_lower for k in PREMIUM_KEYWORDS):
@@ -289,15 +344,38 @@ def _score_margin(niche):
         price, price_score = 9, 45
     notes.append(f"السعر المقترح: ${price} [تقدير حسب فئة الكلمات المفتاحية]")
 
-    cost_score = 100
-    notes.append("تكلفة الإنتاج: ~$0 (منتج رقمي — حقيقة ثابتة لهذا المصنع)")
+    avg_ai_cost, sample_size = _real_average_ai_cost_per_call()
+    if ECONOMICS is not None:
+        try:
+            # Absolute path — economics.py's own default is CWD-relative
+            # ("config/economics.json"), which would silently break if this
+            # module is ever invoked from a different working directory.
+            config = ECONOMICS.load_config(os.path.join(FACTORY_DIR, 'config', 'economics.json'))
+            net_after_fees = ECONOMICS.net_profit(price, "gumroad_digital", config)
+            net_after_ai_cost = net_after_fees - (avg_ai_cost or 0)
+            cost_score = max(0, min(100, round(100 * net_after_ai_cost / price))) if price else 0
+            ai_cost_note = (
+                f"متوسط تكلفة Groq حقيقية من {sample_size} استدعاء فعلي مسجَّل: ${avg_ai_cost:.4f}"
+                if avg_ai_cost is not None
+                else "لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً"
+            )
+            notes.append(
+                f"هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): "
+                f"${net_after_fees:.2f} من ${price} — {ai_cost_note}"
+            )
+        except Exception as e:
+            cost_score = 100
+            notes.append(f"تعذّر حساب الهامش الحقيقي ({e}) — عاد لافتراض 'رقمي=صفر تكلفة' القديم")
+    else:
+        cost_score = 100
+        notes.append("economics.py غير متوفر — تكلفة الإنتاج: ~$0 [افتراض قديم، لا حساب حقيقي]")
 
     if any(k in niche_lower for k in RECURRING_KEYWORDS):
         recurring_score = 90
-        notes.append("إمكانية اشتراك متكرر: مرتفعة")
+        notes.append("إمكانية اشتراك متكرر: مرتفعة [تقدير كلمات مفتاحية — لا بيانات مبيعات حقيقية بعد]")
     else:
         recurring_score = 40
-        notes.append("إمكانية اشتراك متكرر: منخفضة (منتج لمرة واحدة على الأرجح)")
+        notes.append("إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]")
 
     margin_score = round(price_score * 0.5 + cost_score * 0.2 + recurring_score * 0.3)
     return margin_score, notes, price
@@ -437,7 +515,7 @@ def score_opportunity(niche, now=None, external_signal=None):
         raise ValueError("النيتش (niche) مطلوب")
 
     demand_score, demand_notes = _score_demand(niche, now, external_signal)
-    competition_score, competition_notes = _score_competition(niche)
+    competition_score, competition_notes = _score_competition(niche, external_signal)
     margin_score, margin_notes, price = _score_margin(niche)
     execution_score, execution_notes, platform = _score_execution(niche)
 

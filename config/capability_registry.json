@@ -55,22 +55,40 @@
       "missing_evidence": "Reports are point-in-time snapshots, manually gathered — not a live, continuously-refreshed feed."
     },
     {
+      "id": "competition_real_result_count",
+      "name": "Competition (real HN/GitHub result count)",
+      "level": "ESTIMATED",
+      "source": "external_signal.competition.related_results_count from a real research batch (HN Algolia / GitHub Search API) — profit_oracle.py's _score_competition(), ADR-041",
+      "confidence": "low-medium",
+      "assumptions": ["Number of similar real HN/GitHub results is a fair proxy for how crowded a niche is", "Log-scale decay curve (calibrated as a first pass, no real data behind the specific curve shape yet) is the right shape"],
+      "missing_evidence": "No real sales-outcome data yet linking result-count to actual competitive difficulty. Also: no live caller gathers related_results_count today — this path exists and is tested, but isn't fed by any current research batch's data collection yet (tier1_intake/'s existing 8 candidates only recorded one representative result each, not a full count)."
+    },
+    {
       "id": "competition_no_report",
       "name": "Competition (keyword specificity guess)",
       "level": "ESTIMATED",
       "source": "Word-count + subniche-qualifier heuristic — profit_oracle.py's _score_competition() fallback",
       "confidence": "low",
       "assumptions": ["A longer, more specific niche phrase implies lower competition"],
-      "missing_evidence": "No real data at all when no saved report exists — pure text-pattern guess."
+      "missing_evidence": "No real data at all when no saved report or external competitor-count signal exists — pure text-pattern guess."
+    },
+    {
+      "id": "margin_real_fees_and_cost",
+      "name": "Margin — real platform fees + real logged AI cost",
+      "level": "ESTIMATED",
+      "source": "economics.net_profit() over config/economics.json's real gumroad_digital fee schedule, minus real average cost from data/ai_cost_log.jsonl (book_generator.py's _log_ai_cost(), ADR-041) when any exists",
+      "confidence": "medium (fees are exact and real; AI cost is real once logged, currently sparse/empty since this logging just started)",
+      "assumptions": ["gumroad_digital is the representative channel for fee purposes even before other channels have live tokens"],
+      "missing_evidence": "AI cost log has near-zero real entries yet (logging only started today) — the average will strengthen automatically as real production continues, no code change needed."
     },
     {
       "id": "margin_price_tier",
-      "name": "Profit Margin / Price Tier",
+      "name": "Profit Margin / Price Tier (the price estimate itself)",
       "level": "ESTIMATED",
       "source": "PREMIUM_KEYWORDS/MID_KEYWORDS keyword match — profit_oracle.py's _score_margin()",
       "confidence": "low",
       "assumptions": ["Presence of words like 'template'/'course'/'system' predicts a higher achievable price"],
-      "missing_evidence": "No real pricing A/B test or sales history exists yet to validate any price point."
+      "missing_evidence": "No real pricing A/B test or sales history exists yet to validate any price point — this is distinct from margin_real_fees_and_cost above, which is real once a price is assumed."
     },
     {
       "id": "execution_fit",

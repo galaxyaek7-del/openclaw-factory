@@ -1655,9 +1655,55 @@ def get_groq_key():
     return None
 
 
-def groq_chat(system_prompt, user_prompt, max_tokens=4096, timeout=30, retries=3):
+# ADR-041: real per-call AI cost, logged going forward — previously Groq's
+# response `usage` field was read and discarded. Rates confirmed directly
+# from Groq's own pricing docs (console.groq.com/docs/model/llama-3.1-8b-instant,
+# checked 2026-07-15): $0.05/M input tokens, $0.08/M output tokens. Update
+# this constant if the model or its published price ever changes — it is
+# not a guess, but it is a snapshot, and needs re-verifying periodically.
+GROQ_PRICING_USD_PER_MILLION_TOKENS = {"llama-3.1-8b-instant": {"input": 0.05, "output": 0.08}}
+AI_COST_LOG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'ai_cost_log.jsonl')
+
+
+def _log_ai_cost(model, usage, context=None, log_file=None):
+    """Appends one real, verifiable cost record per Groq call. Never raises —
+    a logging failure must not break book generation. This is purely
+    additive data collection for ADR-041's Margin Score real-cost
+    component: with zero real calls logged yet, that component has nothing
+    to average yet — this is what starts making it real over time, not a
+    backdated fabrication."""
+    try:
+        log_file = log_file or AI_COST_LOG_FILE
+        prompt_tokens = usage.get('prompt_tokens', 0) if usage else 0
+        completion_tokens = usage.get('completion_tokens', 0) if usage else 0
+        rates = GROQ_PRICING_USD_PER_MILLION_TOKENS.get(model)
+        cost_usd = None
+        if rates:
+            cost_usd = round(
+                prompt_tokens / 1_000_000 * rates['input'] + completion_tokens / 1_000_000 * rates['output'], 6
+            )
+        record = {
+            "timestamp": datetime.now().isoformat(),
+            "model": model,
+            "prompt_tokens": prompt_tokens,
+            "completion_tokens": completion_tokens,
+            "total_tokens": usage.get('total_tokens') if usage else None,
+            "cost_usd": cost_usd,
+            "context": context,
+        }
+        os.makedirs(os.path.dirname(log_file), exist_ok=True)
+        with open(log_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(record, ensure_ascii=False) + '\n')
+    except Exception:
+        pass  # logging must never break the actual generation call
+
+
+def groq_chat(system_prompt, user_prompt, max_tokens=4096, timeout=30, retries=3, cost_context=None):
     """Calls Groq with timeout + retry + graceful failure (Constitution §3: Fault Tolerance).
-    Auth/bad-request errors (401/403/400) are not retried — retrying can't fix a bad key."""
+    Auth/bad-request errors (401/403/400) are not retried — retrying can't fix a bad key.
+    Return value is unchanged (still just the content string) — real cost
+    tracking (ADR-041) is a side effect via _log_ai_cost(), not a signature
+    change, so this stays a drop-in replacement for the one existing caller."""
     key = get_groq_key()
     if not key:
         raise RuntimeError("GROQ_KEY غير موجود في البيئة أو .env")
@@ -1682,6 +1728,7 @@ def groq_chat(system_prompt, user_prompt, max_tokens=4096, timeout=30, retries=3
             req = urllib.request.Request(GROQ_API_URL, data=payload, method='POST', headers=headers)
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 result = json.loads(r.read().decode('utf-8'))
+            _log_ai_cost(GROQ_MODEL, result.get('usage'), cost_context)
             return result['choices'][0]['message']['content']
         except urllib.error.HTTPError as e:
             last_error = e
@@ -1808,7 +1855,7 @@ A real introduction (150-250 words)
 A conclusion (100-150 words)
 
 Do not add any explanation, numbering, or text outside these sections. Every chapter's content must be real, useful text, not filler."""
-    raw = groq_chat(system, user_prompt, max_tokens=4096)
+    raw = groq_chat(system, user_prompt, max_tokens=4096, cost_context={"niche": topic, "title": title})
     return _parse_sectioned_book(raw, n)
 
 
