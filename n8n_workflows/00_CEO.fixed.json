@@ -1,0 +1,94 @@
+{
+  "updatedAt": "2026-07-14T08:18:32.245Z",
+  "createdAt": "2026-07-14T07:51:31.886Z",
+  "id": "3IECKwdQb0Fx76cU",
+  "name": "00_CEO",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -816,
+        -48
+      ],
+      "id": "7e299f65-a85b-4644-84fe-d6858469e8e6",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/dashboard",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -640,
+        -48
+      ],
+      "id": "9e49868a-c621-4e07-a797-099d6ac21940",
+      "name": "View Executive Dashboard"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "View Executive Dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "View Executive Dashboard": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "636be6d4-960d-4da8-9b12-7871f1a74930",
+  "activeVersionId": null,
+  "versionCounter": 12,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-07-14T07:51:31.895Z",
+      "createdAt": "2026-07-14T07:51:31.895Z",
+      "role": "workflow:owner",
+      "workflowId": "3IECKwdQb0Fx76cU",
+      "projectId": "TNshas0d0JrRkxgB",
+      "project": {
+        "updatedAt": "2026-06-11T18:41:05.962Z",
+        "createdAt": "2026-06-11T18:32:25.182Z",
+        "id": "TNshas0d0JrRkxgB",
+        "name": "Abdelkader Galaxy <galaxyaek7@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "0138d4da-3d85-4c07-a431-cdae11c16eb6"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}
