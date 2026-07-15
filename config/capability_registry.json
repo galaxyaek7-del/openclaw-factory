@@ -27,7 +27,7 @@
       "id": "pricing_intelligence_real_competitor_prices",
       "name": "Pricing Intelligence — real competitor prices / Price Position / Pricing Power / Revenue Potential",
       "level": "DISCOVERY",
-      "action_plan": "Would require live-fetching and parsing each discovered competitor's actual pricing page — unreliable extraction (many pages have no clear price or hide it behind signup/contact-sales), and shipping a confidently-wrong extracted price is worse than an honest Unknown. Needs a dedicated, carefully-validated page-parsing capability before this becomes real, not attempted in ADR-043."
+      "action_plan": "Tested directly, not just assumed (ADR-046): 4 real competitor URLs fetched live. Result — 1/4 clean success (exact 3-tier pricing extracted correctly), 1/4 price hidden behind a separate pricing page, 2/4 failed outright (DNS timeout; 403 bot-block). 25% reliability confirms this is not safe to feed an automated score silently — a wrong extracted price presented with false confidence is worse than Unknown. Usable only as a manual, human-reviewed best-effort lookup per competitor (like tier1_intake's reviewed research), never wired into automatic scoring. Revisit only if a more robust fetch approach (handling bot-blocking, following pricing sub-links) is built and re-tested with a larger real sample."
     },
     {
       "id": "market_gap_opportunity_gap",
