@@ -74,5 +74,43 @@ class TestOpportunityScoreThreshold(unittest.TestCase):
         self.assertGreater(po.MIN_OPPORTUNITY_SCORE, 60)
 
 
+class TestTierInvariantAcceptanceFloor(unittest.TestCase):
+    """ADR-035: before this fix, tier1's fixed automation_potential/
+    long_term_value bonuses (combined with its 1.3 tier_weight) made
+    virtually anything clear 65 at tier1 — even a single-character niche.
+    Acceptance must now require the same underlying raw quality bar tier4
+    already used in production, applied to every tier equally."""
+
+    def test_trivial_single_char_niche_rejected_even_at_tier1(self):
+        result = po.opportunity_score("x", tier="tier1")
+        self.assertFalse(result["accepted"], result)
+
+    def test_generic_two_word_niche_rejected_at_tier1(self):
+        result = po.opportunity_score("AI agent", tier="tier1")
+        self.assertFalse(result["accepted"], result)
+
+    def test_fix_is_a_no_op_for_tier4(self):
+        """Provable algebraically: raw_floor is MIN_OPPORTUNITY_SCORE /
+        TIER_WEIGHTS['tier4'], so for tier4 itself `raw >= raw_floor` is
+        exactly `weighted >= MIN_OPPORTUNITY_SCORE` — the only live caller
+        (factory_loop.js's Golden Hunter Bridge) always passes tier4, so
+        this fix must change nothing about today's production behavior."""
+        for niche in ["x", "AI agent", "كتاب", "premium subscription enterprise workflow system"]:
+            result = po.opportunity_score(niche, tier="tier4")
+            self.assertEqual(result["accepted"], result["opportunity_score"] >= po.MIN_OPPORTUNITY_SCORE, niche)
+
+    def test_a_maximally_optimized_string_can_still_pass_tier1(self):
+        """The new floor must be strict, not impossible — confirms tier1
+        acceptance is still reachable in principle, not a permanent zero."""
+        result = po.score_opportunity("premium subscription")
+        raw_ceiling = (
+            0.25 * 100 + 0.20 * 100 + 0.20 * 100
+            + 0.15 * po.AUTOMATION_POTENTIAL_BY_TIER["tier1"]
+            + 0.20 * po.LONG_TERM_VALUE_BY_TIER["tier1"]
+        )
+        raw_floor = po.MIN_OPPORTUNITY_SCORE / po.TIER_WEIGHTS["tier4"]
+        self.assertGreaterEqual(raw_ceiling, raw_floor)
+
+
 if __name__ == "__main__":
     unittest.main()

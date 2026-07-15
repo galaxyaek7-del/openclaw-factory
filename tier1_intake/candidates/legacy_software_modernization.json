@@ -1,0 +1,32 @@
+{
+  "niche": "AI Agent Blueprint for Legacy Software API Modernization",
+  "researched_at": "2026-07-15T00:00:00Z",
+  "source": {
+    "platform": "hacker_news",
+    "api": "https://hn.algolia.com/api/v1/search_by_date?tags=show_hn&query=compliance%20agent%20automation%20SME",
+    "title": "Show HN: legacy-use – add REST APIs to legacy software with computer-use",
+    "url": "https://www.legacy-use.com/",
+    "points": 15,
+    "num_comments": 1,
+    "created_at": "2025-07-14T06:53:36Z",
+    "note": "Strongest real signal in this batch (highest points)."
+  },
+  "vertical_match": "Legacy/ignored-industry software modernization — matches the 'ignored industries' trend GOLDEN_HUNTER_V2_STRATEGY.md §2 flagged as rising",
+  "opportunity_score_tier1": {
+    "opportunity_score": 81.6,
+    "accepted": true,
+    "components": {
+      "market_demand": 52,
+      "competition_favorability": 70,
+      "profit_potential": 54,
+      "automation_potential": 40,
+      "long_term_value": 95
+    },
+    "note": "Identical to every other candidate in this batch despite having the strongest real signal (15 HN points) — see ADR-035, gate not discriminating."
+  },
+  "opportunity_score_tier1_POST_FIX": {
+    "opportunity_score": 81.6,
+    "accepted": false,
+    "note": "Re-scored after ADR-035 fixed the tier1 gate (raw score must now clear 81.25, same underlying bar tier4 already used). Rejected — same weighted score as before, but no longer accepted, since the fix removed the automatic tier1 bonus pass-through."
+  }
+}

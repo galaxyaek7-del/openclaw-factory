@@ -379,7 +379,22 @@ def opportunity_score(niche, tier="tier4"):
         0.20 * long_term_value
     )
     weighted = round(min(100.0, raw * TIER_WEIGHTS[tier]), 1)
-    accepted = weighted >= MIN_OPPORTUNITY_SCORE
+    # ADR-035: `weighted >= MIN_OPPORTUNITY_SCORE` alone made tier1 trivially
+    # easy to pass — automation_potential/long_term_value are fixed per-tier
+    # bonuses (not per-niche signal), and tier1's combination of a high
+    # long_term_value (95) with the largest tier_weight (1.3) meant even a
+    # single-character niche cleared 65. The tier weight still lets an
+    # ACCEPTED candidate rank/display higher at a higher tier (unchanged,
+    # see test_same_niche_scores_higher_at_higher_tier) — it just no longer
+    # buys entry into "accepted" by itself. Acceptance now requires the same
+    # underlying raw quality bar tier4 already uses in production
+    # (MIN_OPPORTUNITY_SCORE / tier4's own weight), applied tier-invariantly.
+    # This is provably a no-op for tier4 itself (raw_floor is literally
+    # derived from tier4's existing calibration) and only tightens tier1-3,
+    # which have no live caller today (factory_loop.js only ever passes
+    # tier4) — zero risk to current production behavior.
+    raw_floor = MIN_OPPORTUNITY_SCORE / TIER_WEIGHTS["tier4"]
+    accepted = raw >= raw_floor
 
     return {
         "niche": niche,
