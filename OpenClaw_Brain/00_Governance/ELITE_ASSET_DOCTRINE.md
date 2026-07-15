@@ -4,6 +4,8 @@
 **الحالة:** معتمَد — قرار استراتيجي تنفيذي جوهري من الرئيس عبد القادر، بعد اعتراض مُقدَّم وسُمِع.
 **يُعيد تعريف:** كل وثائق الرؤية السابقة (`PRODUCT_VISION.md`, `HIGH_VALUE_STRATEGY.md`, `HIGH_VALUE_EXECUTION_PLAN.md`, `SALVATION_PROPOSAL_V2.md`, `PRICING_AND_FIRST_PRODUCTS.md`) — كل واحدة مُحدَّثة ببانر إحالة لهذه الوثيقة.
 
+**المرجع الأعلى:** `ENTERPRISE_ARCHITECTURE.md` (ADR-029، في هذا المجلد) هو الآن North Star التنظيمي لـ19 قسماً وظيفياً. هذه الوثيقة تبقى المرجع المعتمَد لتصنيف Tier المنتج تحديداً (1-4) — الأقسام #06 (Product Factory) و#08 (Publishing) في ENTERPRISE_ARCHITECTURE.md تستخدمان هذا التصنيف مباشرة، لا تناقضه.
+
 ---
 
 ## 0. الاعتراض المُقدَّم قبل الكتابة (`PRINCIPAL_ARCHITECT_CHARTER.md` §5)

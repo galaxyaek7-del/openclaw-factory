@@ -33,6 +33,7 @@ This is the intended reading order — each link is a real, load-bearing relatio
 | # | Folder | What's there |
 |---|---|---|
 | 00 | [Constitution](./00_Constitution/) | The supreme law + engineering constitution, and how they relate |
+| 00 | [Governance](./00_Governance/) | ADRs (28+ as of 2026-07-15), doctrine proposals, the Principal Architect charter — the record of *why* each architectural decision was made, not just what exists. Added after this index was first written; was missing from this table until 2026-07-15. |
 | 01 | [Vision](./01_Vision/) | Mission, the six product tracks, the Golden Rule |
 | 02 | [Roadmap](./02_Roadmap/) | Real near-term milestones (⚠️ no "20-day plan"/"octopus vision" doc exists yet) |
 | 03 | [Current_Mission](./03_Current_Mission/) | Day 07 status — kept in sync with `FACTORY_STATUS.md` |

@@ -1,0 +1,38 @@
+# ADR-029 — ENTERPRISE_ARCHITECTURE.md كمرجع أعلى (North Star) لـ19 قسماً
+
+**التاريخ:** 2026-07-15
+**الحالة:** معتمَد، منفَّذ.
+**يُنفِّذ:** توجيه تأسيسي من الرئيس عبد القادر (OPENCLAW SUPREME CONSTITUTION v1.0) — تأسيس الشركة معمارياً بـ19 قسماً، مع إكمال ذراع واحدة 100% كأولوية تنفيذية.
+
+## القرار
+
+`OpenClaw_Brain/00_Governance/ENTERPRISE_ARCHITECTURE.md` هو الآن North Star الرسمي لتصنيف OpenClaw إلى 19 قسماً وظيفياً (Executive Office → Infrastructure)، بحالة صادقة لكل قسم (🟢 مبني / 🟡 جزئي / ⚪ رؤية) مبنية على تحقّق فعلي من الكود، لا افتراض.
+
+**هذا تصنيف إضافي، لا بديل.** لا يُلغي `OpenClaw_Brain/`'s الموجود مسبقاً (21 مجلداً توثيقياً) ولا `OCTOPUS_ARCHITECTURE.md` (3 طبقات تشغيلية) ولا `ELITE_ASSET_DOCTRINE.md` (Tiers 1-4 للمنتجات) — الثلاثة عُدِّلت لتُشير إليه كمرجع أعلى تنظيمي، بينما تبقى كل منها مرجعاً معتمَداً لزاويتها الخاصة (التوثيق/الكود التشغيلي/تصنيف المنتج على التوالي).
+
+## لماذا تصنيف رابع بدل توسيع واحد من الثلاثة الموجودين
+
+- **`OpenClaw_Brain/` (21 مجلداً):** تصنيف "أين أجد الشرح" (توثيقي) — لا يجيب "ما هي وظائف الشركة ومَن مسؤول عنها". توسيعه ليشمل 19 قسماً تنظيمياً كان سيخلط غرضين مختلفين في بنية واحدة.
+- **`OCTOPUS_ARCHITECTURE.md`:** تصنيف كود تشغيلي بحت (Core/Engines/Channels) — لا يغطي أقساماً لا كود لها بعد إطلاقاً (Customer Success، Executive Office) لأنه أصلاً مصمَّم ليصف ما يعمل، لا ما يُخطَّط له.
+- **`ELITE_ASSET_DOCTRINE.md`:** تصنيف منتج/تسعير فقط (Tier 1-4) — لا علاقة له بأقسام مثل Security أو Knowledge Center.
+
+كل الثلاثة صحيحة في نطاقها ولم تُمَس جوهرياً — أُضيفت فقط إشارة عابرة لـENTERPRISE_ARCHITECTURE.md في مقدمة كل منها.
+
+## القرارات التصميمية
+
+**ADR-29.1 — الحالة مبنية على تحقّق فعلي، لا على الرؤية الاستراتيجية للقسم.**
+قسم يبدو استراتيجياً مهماً جداً (مثل Customer Success) صُنِّف ⚪ بصدق كامل رغم أهميته — لا تحسين تجميلي للحالة. هذا امتداد مباشر لمبدأ `MASTER_INDEX.md` القائم أصلاً: "nothing here is fabricated: where real information didn't exist for a section, that gap is stated explicitly rather than invented."
+
+**ADR-29.2 — التداخل بين الأقسام يُذكَر صراحة، لا يُخفى.**
+قسم 03 (Factory OS) وقسم 06 (Product Factory) يستخدمان فعلياً نفس الكود (`book_generator.py`). بدل اختراع فصل مصطنع، الجدول يذكر التداخل بوضوح — تصنيف نظيف يكذب أسوأ من تصنيف صادق فيه تداخل.
+
+**ADR-29.3 — وثيقة الدستور الجديدة لم تُحفَظ كملف تلقائياً.**
+الرئيس أرسل "OPENCLAW SUPREME CONSTITUTION v1.0" كنص محادثة. حفظها كملف حوكمة رسمي (`00_Constitution/SUPREME_CONSTITUTION_v1.md`) قرار وزنه يوازي دستوراً — تُرِك كتوصية صريحة في نهاية `ENTERPRISE_ARCHITECTURE.md` لتأكيد منفصل من الرئيس، بدل تنفيذ ضمني داخل commit تنظيف يومي.
+
+## الأثر
+
+- ملف جديد: `OpenClaw_Brain/00_Governance/ENTERPRISE_ARCHITECTURE.md`.
+- ملف جديد: هذا الـADR.
+- ملف مُعدَّل: `OCTOPUS_ARCHITECTURE.md` (إضافة إشارة في المقدمة فقط).
+- ملف مُعدَّل: `OpenClaw_Brain/00_Governance/ELITE_ASSET_DOCTRINE.md` (إضافة إشارة في المقدمة فقط).
+- ملف مُعدَّل: `OpenClaw_Brain/MASTER_INDEX.md` (إضافة صف `00_Governance` المفقود — عُثِر عليه أثناء هذا العمل، غير متعلق مباشرة لكن صُحِّح لأنه رخيص وصحيح).
