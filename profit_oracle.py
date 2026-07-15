@@ -46,12 +46,25 @@ try:
 except (Exception, SystemExit):
     NICHE_VALIDATOR = None
 
+# ADR-039: safety_filter.py's evaluate() is a pure function (no stdin
+# reading happens on import — that only happens under main()'s own
+# `if __name__ == '__main__'` guard) and safety_filter.py never imports
+# profit_oracle, so this carries none of the circular-import risk that
+# importing inspectors.py directly would (inspectors.py imports
+# profit_oracle itself — see ADR-039's note on why a duplicate-check
+# dimension wasn't added here).
+try:
+    import safety_filter as SAFETY_FILTER
+except (Exception, SystemExit):
+    SAFETY_FILTER = None
+
 FACTORY_DIR = os.path.dirname(os.path.abspath(__file__))
 OPPORTUNITIES_FILE = os.path.join(FACTORY_DIR, 'OPPORTUNITIES.md')
 GOLDEN_MD_FILE = os.path.join(FACTORY_DIR, 'GOLDEN_OPPORTUNITIES.md')
 GOLDEN_JSON_FILE = os.path.join(FACTORY_DIR, 'golden_opportunities.json')
 NICHE_REPORTS_DIR = os.path.join(FACTORY_DIR, 'niche_reports')
 CHANNELS_CONFIG_FILE = os.path.join(FACTORY_DIR, 'config', 'channels.json')
+REJECTED_NICHES_FILE = os.path.join(FACTORY_DIR, 'REJECTED_NICHES.md')  # factory_loop.js's circuit breaker
 
 MAX_COMPETITION = NICHE_VALIDATOR.CRITERIA['max_competition'] if NICHE_VALIDATOR else 50000
 MIN_BUTTER_PRICE = 30   # CONSTITUTION.md §16 — the Butter Principle's floor
@@ -350,6 +363,74 @@ def _score_execution(niche):
     return fit_score, notes, platform
 
 
+# ADR-039: real risk signals only — reuses the two safety mechanisms this
+# factory already has (safety_filter.py's blocklist, REJECTED_NICHES.md's
+# circuit breaker) rather than inventing a "legal risk"/"competitive
+# threat" number with nothing behind it. Informational only — never part
+# of profit_score's weighted formula, so it can't silently change any
+# existing accept/reject decision.
+def _is_in_rejected_niches(niche, rejected_file=None):
+    rejected_file = rejected_file or REJECTED_NICHES_FILE
+    if not niche or not os.path.exists(rejected_file):
+        return False
+    try:
+        with open(rejected_file, 'r', encoding='utf-8') as f:
+            content = f.read().lower()
+    except Exception:
+        return False
+    return niche.strip().lower() in content
+
+
+def _score_risk(niche):
+    notes = []
+    risk_score = 90  # 100 = no known risk today; only real deductions below
+    risk_level = "low"
+
+    if SAFETY_FILTER is None:
+        notes.append("safety_filter.py غير متوفر — لا حكم أمان، لا افتراض")
+    else:
+        try:
+            result = SAFETY_FILTER.evaluate({"title": niche, "description": niche})
+            if not result.get("allowed", True):
+                risk_level, risk_score = "blocked", 0
+                notes.append(f"محجوب بواسطة safety_filter.py ({result.get('risk_level')}): {', '.join(result.get('reasons', [])) or 'بلا تفاصيل'}")
+            elif result.get("risk_level") == "medium":
+                risk_level, risk_score = "medium", 60
+                notes.append(f"safety_filter.py: خطر متوسط — {', '.join(result.get('reasons', []))}")
+            else:
+                notes.append("safety_filter.py: لا مخاطر محتوى معروفة")
+        except Exception as e:
+            notes.append(f"تعذّر تشغيل safety_filter.py: {e} — لا حكم أمان، لا افتراض")
+
+    if _is_in_rejected_niches(niche):
+        risk_level = "high" if risk_level == "low" else risk_level
+        risk_score = min(risk_score, 30)
+        notes.append("مرفوض سابقاً في REJECTED_NICHES.md — قاطع الدائرة نشط")
+    else:
+        notes.append("لا رفض سابق في REJECTED_NICHES.md")
+
+    return risk_score, risk_level, notes
+
+
+# ADR-039: honest meta-score — how much of THIS result is real evidence
+# versus a keyword/word-count estimate, not a new invented dimension. The
+# whole point is to say "we don't actually know" plainly instead of
+# dressing an estimate up as a measurement.
+def _score_confidence(niche, external_signal):
+    real_signals_used = []
+    if external_signal:
+        real_signals_used.append("الطلب (HN/GitHub)")
+    report = _find_niche_report(niche)
+    if report and report.get('status') == 'success':
+        real_signals_used.append("المنافسة (تقرير Amazon محفوظ)")
+
+    if len(real_signals_used) >= 2:
+        return 80, "عالية نسبياً", f"بيانات حقيقية في: {'، '.join(real_signals_used)}"
+    if len(real_signals_used) == 1:
+        return 55, "متوسطة", f"بيانات حقيقية في {real_signals_used[0]} فقط — الباقي تقدير كلمات مفتاحية"
+    return 30, "منخفضة", "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+
+
 def score_opportunity(niche, now=None, external_signal=None):
     niche = str(niche or '').strip()
     if not niche:
@@ -388,6 +469,9 @@ def score_opportunity(niche, now=None, external_signal=None):
 
     reasoning = "؛ ".join(demand_notes + competition_notes + margin_notes + execution_notes)
 
+    risk_score, risk_level, risk_notes = _score_risk(niche)
+    confidence_score, confidence_level, confidence_note = _score_confidence(niche, external_signal)
+
     return {
         "niche": niche,
         "profit_score": profit_score,
@@ -403,6 +487,11 @@ def score_opportunity(niche, now=None, external_signal=None):
             "margin": margin_score,
             "execution": execution_score,
         },
+        # ADR-039: additive, informational only — never factored into
+        # profit_score/verdict above, so no existing accept/reject decision
+        # changes because of these two fields.
+        "risk": {"score": risk_score, "level": risk_level, "notes": risk_notes},
+        "confidence": {"score": confidence_score, "level": confidence_level, "note": confidence_note},
     }
 
 

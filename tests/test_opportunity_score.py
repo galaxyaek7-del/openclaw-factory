@@ -174,5 +174,49 @@ class TestExternalSignal(unittest.TestCase):
         self.assertGreater(strong["opportunity_score"], weak["opportunity_score"])
 
 
+class TestRiskAndConfidence(unittest.TestCase):
+    """ADR-039: only the two dimensions with a real, already-existing data
+    source (safety_filter.py's blocklist, REJECTED_NICHES.md's circuit
+    breaker) were added as new scores — never folded into profit_score, so
+    no existing accept/reject decision can change because of them."""
+
+    def test_risk_and_confidence_never_change_profit_score_or_verdict(self):
+        niche = "premium subscription budget planner for professionals"
+        result = po.score_opportunity(niche)
+        self.assertIn("risk", result)
+        self.assertIn("confidence", result)
+        # same profit_score/verdict this niche always produced
+        self.assertEqual(result["profit_score"], po.score_opportunity(niche)["profit_score"])
+
+    def test_clean_niche_with_no_rejection_history_scores_low_risk(self):
+        result = po.score_opportunity("a totally unremarkable niche xyz123")
+        self.assertEqual(result["risk"]["level"], "low")
+        self.assertGreaterEqual(result["risk"]["score"], 80)
+
+    def test_is_in_rejected_niches_true_for_real_matching_content(self):
+        import tempfile, os as _os
+        fd, path = tempfile.mkstemp(suffix=".md")
+        _os.close(fd)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write("## 🚫 2026-07-15\n**النيتش:** some rejected niche\n**السبب:** test\n")
+        try:
+            self.assertTrue(po._is_in_rejected_niches("some rejected niche", rejected_file=path))
+            self.assertFalse(po._is_in_rejected_niches("a totally different niche", rejected_file=path))
+        finally:
+            _os.remove(path)
+
+    def test_is_in_rejected_niches_missing_file_is_false_never_throws(self):
+        self.assertFalse(po._is_in_rejected_niches("anything", rejected_file="/no/such/file.md"))
+
+    def test_confidence_low_with_no_real_signal_at_all(self):
+        result = po.score_opportunity("some totally generic niche with nothing special")
+        self.assertEqual(result["confidence"]["level"], "منخفضة")
+
+    def test_confidence_higher_with_real_external_signal(self):
+        without = po.score_opportunity("xyz", external_signal=None)
+        withsig = po.score_opportunity("xyz", external_signal={"source": "hacker_news", "points": 50})
+        self.assertGreater(withsig["confidence"]["score"], without["confidence"]["score"])
+
+
 if __name__ == "__main__":
     unittest.main()
