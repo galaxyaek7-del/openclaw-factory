@@ -147,6 +147,15 @@
         <div class="note" style="font-size:13px; color:var(--text);">${d.self_awareness ? d.self_awareness.verdict : '—'}</div>
         <div class="note">أضعف خلية: ${d.self_awareness ? d.self_awareness.weakest_cell : '—'}</div>
       </div>`);
+      cards.push(`<div class="card ${d.risk.level === 'critical' || d.risk.level === 'high' ? 'flag-active' : ''}">
+        <h2>مستوى الخطر</h2>
+        <div class="metric ${d.risk.level === 'critical' ? 'critical' : d.risk.level === 'medium' ? 'degraded' : 'ok'}">${d.risk.level}</div>
+        <div class="note">${d.risk.reason}</div>
+      </div>`);
+      cards.push(`<div class="card">
+        <h2>الأولويات الحالية</h2>
+        <pre class="notif-content" style="max-height:140px; overflow-y:auto;">${d.current_priorities && d.current_priorities.text ? d.current_priorities.text : (d.current_priorities && d.current_priorities.note) || '—'}</pre>
+      </div>`);
       document.getElementById('grid').innerHTML = cards.join('');
 
       const notifs = [];

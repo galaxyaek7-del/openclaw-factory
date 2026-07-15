@@ -1656,7 +1656,8 @@ app.get('/api/dashboard', async (req, res) => {
       computeHealthStatus().catch(err => ({ status: 'error', error: err.message })),
       selfAwareness.assessSelfAwareness().catch(err => ({ verdict: null, error: err.message })),
     ]);
-    res.json({ success: true, ...dashboardData.computeDashboard({ health, awareness }) });
+    const priorities = readNextDollarActions();
+    res.json({ success: true, ...dashboardData.computeDashboard({ health, awareness, priorities }) });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

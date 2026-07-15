@@ -159,6 +159,8 @@ test('computeDashboard: composes every section, degrades gracefully with no heal
   assert.ok(result.generated_at);
   assert.equal(result.health, null);
   assert.equal(result.self_awareness, null);
+  assert.equal(result.current_priorities, null);
+  assert.ok(result.risk);
   assert.ok(result.finance);
   assert.ok(result.oracle);
   assert.ok(result.hunter);
@@ -167,6 +169,32 @@ test('computeDashboard: composes every section, degrades gracefully with no heal
   assert.ok(result.needs_attention);
   assert.ok(result.needs_review);
   assert.ok(Array.isArray(result.activity));
+});
+
+test('computeDashboard: passes current_priorities through unchanged (reuse, not reimplementation)', () => {
+  const priorities = { text: 'Ship the first real sale' };
+  const result = dd.computeDashboard({ priorities });
+  assert.equal(result.current_priorities, priorities);
+});
+
+test('deriveRiskLevel: critical health always wins regardless of needs_attention', () => {
+  const result = dd.deriveRiskLevel({ status: 'critical' }, { active: false });
+  assert.equal(result.level, 'critical');
+});
+
+test('deriveRiskLevel: needs_attention active -> high, even if health is only degraded', () => {
+  const result = dd.deriveRiskLevel({ status: 'degraded' }, { active: true });
+  assert.equal(result.level, 'high');
+});
+
+test('deriveRiskLevel: healthy + no attention flag -> low', () => {
+  const result = dd.deriveRiskLevel({ status: 'healthy' }, { active: false });
+  assert.equal(result.level, 'low');
+});
+
+test('deriveRiskLevel: missing health -> unknown, never throws', () => {
+  const result = dd.deriveRiskLevel(null, null);
+  assert.equal(result.level, 'unknown');
 });
 
 test('computeDashboard: passes health/awareness through without altering them', () => {
