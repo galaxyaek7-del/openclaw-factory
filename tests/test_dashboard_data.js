@@ -169,6 +169,7 @@ test('computeDashboard: composes every section, degrades gracefully with no heal
   assert.ok(result.needs_attention);
   assert.ok(result.needs_review);
   assert.ok(Array.isArray(result.activity));
+  assert.ok(result.latest_market_intelligence);
 });
 
 test('computeDashboard: passes current_priorities through unchanged (reuse, not reimplementation)', () => {
@@ -222,6 +223,23 @@ test('readCapabilityMaturity: counts levels correctly from real data, never inve
   assert.equal(result.discovery, 3);
   assert.equal(result.total, 6);
   assert.equal(result.capabilities.length, 6);
+});
+
+test('readLatestMarketIntelligence: missing log -> available:false, never throws', () => {
+  const result = dd.readLatestMarketIntelligence(path.join(tmpDir, 'nope_mie.jsonl'));
+  assert.equal(result.available, false);
+});
+
+test('readLatestMarketIntelligence: reads the LAST real analysis, not the first', () => {
+  const p = path.join(tmpDir, 'mie.jsonl');
+  fs.writeFileSync(p,
+    JSON.stringify({ niche: 'old one', ai_ceo: { decision: 'WAIT' } }) + '\n' +
+    JSON.stringify({ niche: 'newest one', ai_ceo: { decision: 'BUILD' } }) + '\n'
+  );
+  const result = dd.readLatestMarketIntelligence(p);
+  assert.equal(result.available, true);
+  assert.equal(result.niche, 'newest one');
+  assert.equal(result.ai_ceo.decision, 'BUILD');
 });
 
 test('readCapabilityMaturity: the real repo registry is well-formed and non-empty', () => {

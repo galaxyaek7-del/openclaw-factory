@@ -3,6 +3,49 @@
   "last_updated": "2026-07-15",
   "capabilities": [
     {
+      "id": "customer_pain_intelligence",
+      "name": "Customer Pain Intelligence",
+      "level": "ESTIMATED",
+      "source": "market_intelligence_engine.py's analyze_customer_pain() — real GitHub Issues Search API + HN Algolia search, real pain-language/willingness-to-pay keyword detection, real reaction/comment counts as severity signal (ADR-043)",
+      "confidence": "medium when 5+ real results found; low otherwise; None (not zero) when zero real results exist",
+      "assumptions": ["Real GitHub issue reactions/comments and HN points/comments are a fair severity proxy", "Literal pain/willingness-to-pay phrases in real text are a fair frequency-of-real-complaint signal"],
+      "missing_evidence": "Reddit (no API credentials) and Product Hunt (needs official commercial-use contact) remain fully Unknown — no free keyless access exists for either today. Amazon/Etsy reviews have no free API at all."
+    },
+    {
+      "id": "demand_pattern_evergreen_seasonal",
+      "name": "Demand Pattern — Evergreen/Seasonal",
+      "level": "REAL",
+      "source": "profit_oracle.SEASONAL_KEYWORDS matched against today's real date — market_intelligence_engine.py's classify_demand_pattern(), reused not rebuilt"
+    },
+    {
+      "id": "demand_pattern_exploding_declining",
+      "name": "Demand Pattern — Exploding/Declining",
+      "level": "DISCOVERY",
+      "action_plan": "Requires the same real signal (HN points / GitHub stars) measured at multiple past points in time for the same niche. competitor_discovery.py's cached database (ADR-042) will accumulate real repeated snapshots automatically as it's run over weeks — no code change needed once enough history exists, only time."
+    },
+    {
+      "id": "pricing_intelligence_real_competitor_prices",
+      "name": "Pricing Intelligence — real competitor prices / Price Position / Pricing Power / Revenue Potential",
+      "level": "DISCOVERY",
+      "action_plan": "Would require live-fetching and parsing each discovered competitor's actual pricing page — unreliable extraction (many pages have no clear price or hide it behind signup/contact-sales), and shipping a confidently-wrong extracted price is worse than an honest Unknown. Needs a dedicated, carefully-validated page-parsing capability before this becomes real, not attempted in ADR-043."
+    },
+    {
+      "id": "market_gap_opportunity_gap",
+      "name": "Market Gap / Opportunity Gap Score",
+      "level": "ESTIMATED",
+      "source": "competitor_discovery.compute_opportunity_gap() — honest derivation from real/estimated demand + competition components (ADR-042), reused by market_intelligence_engine.py, not rebuilt as a separate metric",
+      "confidence": "same as its two real inputs (demand, competition)",
+      "assumptions": ["High demand + low competition is a fair proxy for a real opportunity gap"],
+      "missing_evidence": "No real sales-outcome data yet validating that this gap actually predicts success."
+    },
+    {
+      "id": "ai_ceo_decision",
+      "name": "AI CEO Decision (BUILD/IMPROVE/WAIT/REJECT/PIVOT)",
+      "level": "REAL",
+      "source": "market_intelligence_engine.py's ai_ceo_decision() — a deterministic, transparent decision tree over already-real/estimated components (risk, confidence, opportunity_gap, customer_pain, competition), never a black box; every branch cites its specific real evidence, and a low-overall-confidence gate forces WAIT instead of a false-confident decision",
+      "note": "REAL here means the decision LOGIC is a verified, tested function (23 tests, tests/test_market_intelligence_engine.py) — not that every input feeding it is REAL-level (several are ESTIMATED, honestly labeled as such in the evidence it cites)."
+    },
+    {
       "id": "risk_score",
       "name": "Risk Score",
       "level": "REAL",

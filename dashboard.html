@@ -168,6 +168,14 @@
         <div class="metric ${d.risk.level === 'critical' ? 'critical' : d.risk.level === 'medium' ? 'degraded' : 'ok'}">${d.risk.level}</div>
         <div class="note">${d.risk.reason}</div>
       </div>`);
+      const mi = d.latest_market_intelligence;
+      if (mi.available) {
+        cards.push(`<div class="card" style="border-color:var(--accent);">
+          <h2>🧠 آخر تحليل ذكاء سوقي (AI CEO)</h2>
+          <div class="metric">${mi.ai_ceo.decision}</div>
+          <div class="note"><strong>${mi.niche}</strong><br>${mi.ai_ceo.evidence.join('<br>')}</div>
+        </div>`);
+      }
       const cm = d.capability_maturity;
       cards.push(`<div class="card">
         <h2>نضج القدرات (ADR-040)</h2>

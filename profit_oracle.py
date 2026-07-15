@@ -664,6 +664,15 @@ def opportunity_score(niche, tier="tier4", external_signal=None):
             f"accepted: {weighted}/100 >= {MIN_OPPORTUNITY_SCORE} floor (tier={tier})" if accepted
             else f"rejected: {weighted}/100 < {MIN_OPPORTUNITY_SCORE} floor (tier={tier})"
         ),
+        # ADR-043: risk/confidence were already computed inside
+        # score_opportunity() above (ADR-039) but silently discarded here —
+        # same "real data thrown away" pattern ADR-041 found in
+        # groq_chat(). Purely additive: two new keys, nothing existing
+        # changed, so every current caller is unaffected.
+        "risk": result["risk"],
+        "confidence": result["confidence"],
+        "recommended_price": result["recommended_price"],
+        "recommended_platform": result["recommended_platform"],
     }
 
 
