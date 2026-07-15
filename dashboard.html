@@ -85,6 +85,9 @@
   <div class="section-title">سجلّ النشاط الحقيقي</div>
   <div class="timeline" id="timeline">جارٍ التحميل...</div>
 
+  <div class="section-title">خارطة طريق الاكتشاف — ماذا يحتاج كل مقياس مفقود ليصبح حقيقياً</div>
+  <div class="timeline" id="discoveryRoadmap">جارٍ التحميل...</div>
+
   <script>
     // Theme: persisted, defaults to system preference — same convention
     // Artifacts use (data-theme on root), so this behaves predictably.
@@ -165,6 +168,12 @@
         <div class="metric ${d.risk.level === 'critical' ? 'critical' : d.risk.level === 'medium' ? 'degraded' : 'ok'}">${d.risk.level}</div>
         <div class="note">${d.risk.reason}</div>
       </div>`);
+      const cm = d.capability_maturity;
+      cards.push(`<div class="card">
+        <h2>نضج القدرات (ADR-040)</h2>
+        <div class="metric"><span class="ok">${cm.real}</span> / <span style="color:var(--warn)">${cm.estimated}</span> / <span class="critical">${cm.discovery}</span></div>
+        <div class="note">حقيقي / مُقدَّر / اكتشاف — من أصل ${cm.total} مقياساً مُصنَّفاً. لا رقم مُختلَق — كل "اكتشاف" له خطة فتح واضحة</div>
+      </div>`);
       cards.push(`<div class="card">
         <h2>الأولويات الحالية</h2>
         <pre class="notif-content" style="max-height:140px; overflow-y:auto;">${d.current_priorities && d.current_priorities.text ? d.current_priorities.text : (d.current_priorities && d.current_priorities.note) || '—'}</pre>
@@ -188,6 +197,14 @@
         <div class="timeline-summary">${e.summary}</div>
       </div>`).join('');
       document.getElementById('timeline').innerHTML = rows || '<div class="empty">لا نشاط مسجَّل بعد</div>';
+
+      const discoveryRows = (d.capability_maturity.capabilities || [])
+        .filter(c => c.level === 'DISCOVERY')
+        .map(c => `<div class="timeline-row">
+          <div class="timeline-source" style="background:var(--crit); color:#fff;">DISCOVERY</div>
+          <div class="timeline-summary"><strong>${c.name}</strong><br><span style="color:var(--text-dim); font-size:12px;">${c.action_plan}</span></div>
+        </div>`).join('');
+      document.getElementById('discoveryRoadmap').innerHTML = discoveryRows || '<div class="empty">لا مقاييس في مرحلة الاكتشاف</div>';
     }
 
     // Global search — wired directly to the existing, real GET /brain?q=

@@ -1,0 +1,194 @@
+{
+  "schema_note": "Every metric/capability the factory has considered building, classified into exactly one of REAL / ESTIMATED / DISCOVERY (ADR-040). REAL = computed from verified data. ESTIMATED = an explainable model over available evidence, must expose confidence/assumptions/missing_evidence. DISCOVERY = not computable yet — action_plan says exactly what would make it real, never a placeholder number.",
+  "last_updated": "2026-07-15",
+  "capabilities": [
+    {
+      "id": "risk_score",
+      "name": "Risk Score",
+      "level": "REAL",
+      "source": "safety_filter.py.evaluate() (content blocklist) + REJECTED_NICHES.md (circuit breaker) — profit_oracle.py's _score_risk(), ADR-039",
+      "verified_by": "tests/test_opportunity_score.py::TestRiskAndConfidence"
+    },
+    {
+      "id": "automation_potential",
+      "name": "Automation Potential (per tier)",
+      "level": "REAL",
+      "source": "Fixed, documented per-tier constant reflecting today's actual production capability (Tier 4 fully automatic today; Tier 1 needs infra that doesn't exist yet) — profit_oracle.py's AUTOMATION_POTENTIAL_BY_TIER, ADR-026"
+    },
+    {
+      "id": "long_term_value_tier",
+      "name": "Long-Term Value (per tier)",
+      "level": "REAL",
+      "source": "Fixed, documented per-tier constant (Tier 1's recurring-revenue ceiling vs Tier 4's one-off nature) — profit_oracle.py's LONG_TERM_VALUE_BY_TIER, ADR-026"
+    },
+    {
+      "id": "butter_price_floor",
+      "name": "Minimum Viable Price (Butter Price)",
+      "level": "REAL",
+      "source": "Constitutional constant (CONSTITUTION.md §16) + config/economics.json's real per-platform floors — profit_oracle.py's butter_price()"
+    },
+    {
+      "id": "demand_with_signal",
+      "name": "Demand (with real external signal)",
+      "level": "ESTIMATED",
+      "source": "_normalize_hn_points()/_normalize_github_stars() — ADR-038",
+      "confidence": "medium",
+      "assumptions": ["HN points / GitHub stars are a valid proxy for market demand", "log-scale curve calibrated on 8 real observed candidates is representative of the wider distribution"],
+      "missing_evidence": "No real sales-conversion data yet linking HN/GitHub engagement to actual purchases — the curve is a first-pass calibration, not a validated predictor."
+    },
+    {
+      "id": "demand_no_signal",
+      "name": "Demand (keyword/word-count only)",
+      "level": "ESTIMATED",
+      "source": "Word-count + seasonal-keyword heuristic — profit_oracle.py's _score_demand() default path",
+      "confidence": "low",
+      "assumptions": ["Niche phrase word count correlates with search specificity", "Seasonal keyword list covers the real seasonal patterns that matter"],
+      "missing_evidence": "No live Google Trends / search-volume connection exists (n8n Sensing Engine built but inactive — see BLOCKERS.md #1)."
+    },
+    {
+      "id": "competition_with_report",
+      "name": "Competition (real saved Amazon report)",
+      "level": "ESTIMATED",
+      "source": "niche_validator_v2.py's saved report, when one exists for the niche — profit_oracle.py's _score_competition()",
+      "confidence": "medium-high",
+      "assumptions": ["Amazon search-result count is a fair proxy for competition intensity"],
+      "missing_evidence": "Reports are point-in-time snapshots, manually gathered — not a live, continuously-refreshed feed."
+    },
+    {
+      "id": "competition_no_report",
+      "name": "Competition (keyword specificity guess)",
+      "level": "ESTIMATED",
+      "source": "Word-count + subniche-qualifier heuristic — profit_oracle.py's _score_competition() fallback",
+      "confidence": "low",
+      "assumptions": ["A longer, more specific niche phrase implies lower competition"],
+      "missing_evidence": "No real data at all when no saved report exists — pure text-pattern guess."
+    },
+    {
+      "id": "margin_price_tier",
+      "name": "Profit Margin / Price Tier",
+      "level": "ESTIMATED",
+      "source": "PREMIUM_KEYWORDS/MID_KEYWORDS keyword match — profit_oracle.py's _score_margin()",
+      "confidence": "low",
+      "assumptions": ["Presence of words like 'template'/'course'/'system' predicts a higher achievable price"],
+      "missing_evidence": "No real pricing A/B test or sales history exists yet to validate any price point."
+    },
+    {
+      "id": "execution_fit",
+      "name": "Execution Fit / Technical Complexity / Time-to-Market",
+      "level": "ESTIMATED",
+      "source": "Digital-vs-physical keyword check against real production capability (book_engine) — profit_oracle.py's _score_execution()",
+      "confidence": "medium",
+      "assumptions": ["A niche not matching PHYSICAL_PRODUCT_KEYWORDS can be produced by the existing book_engine"],
+      "missing_evidence": "No real per-product generation-time measurement feeds this yet, even though book_generator.py's logs contain the raw data to compute one."
+    },
+    {
+      "id": "confidence_score",
+      "name": "Confidence Score",
+      "level": "REAL",
+      "source": "Deterministic function of which other components actually used real data this call — profit_oracle.py's _score_confidence(), ADR-039",
+      "note": "Meta-level: this one is REAL, not ESTIMATED, because it's a direct computation over known facts (was external_signal present? was a real report found?), not a guess about an unknown."
+    },
+    {
+      "id": "pricing_power",
+      "name": "Pricing Power",
+      "level": "DISCOVERY",
+      "action_plan": "Requires real price-sensitivity data: at least one live sales channel (BLOCKERS.md #2) with several real transactions at varying price points for comparable products. Cannot be estimated honestly before a single real sale exists."
+    },
+    {
+      "id": "customer_pain",
+      "name": "Customer Pain",
+      "level": "DISCOVERY",
+      "action_plan": "Requires real customer input: reviews, support tickets, or survey responses. Blocked entirely on having any customers at all (zero today)."
+    },
+    {
+      "id": "market_growth",
+      "name": "Market Growth",
+      "level": "DISCOVERY",
+      "action_plan": "Requires the SAME metric measured at multiple points in time to compute a growth rate. Today's research batches (tier1_intake/) are single snapshots. Unlock: start storing dated snapshots of the same real signals (HN points, GitHub stars) for the same candidates over weeks/months."
+    },
+    {
+      "id": "search_trend",
+      "name": "Search Trend",
+      "level": "DISCOVERY",
+      "action_plan": "Requires a live Google Trends connection. The n8n Sensing Engine workflow already exists for exactly this and is structurally complete (ADR-037) — unlock is: activate it (needs n8n login, BLOCKERS.md #1), not new engineering."
+    },
+    {
+      "id": "social_trend",
+      "name": "Social Trend",
+      "level": "DISCOVERY",
+      "action_plan": "Requires a social media API connection (e.g. Reddit, X/Twitter) with real credentials — none exist today. Falls under BLOCKERS.md's 'external credentials' category if pursued."
+    },
+    {
+      "id": "b2b_potential",
+      "name": "B2B Potential",
+      "level": "DISCOVERY",
+      "action_plan": "A real B2B/B2C classifier needs training data (real buyer-type outcomes), not a keyword guess — building it from keywords alone would repeat the exact ADR-036 mistake. Unlock: once real sales exist, tag buyer type per sale and train from that."
+    },
+    {
+      "id": "b2c_potential",
+      "name": "B2C Potential",
+      "level": "DISCOVERY",
+      "action_plan": "Same as b2b_potential — inverse of the same unlock."
+    },
+    {
+      "id": "saas_potential",
+      "name": "SaaS Potential",
+      "level": "DISCOVERY",
+      "action_plan": "No hosting/billing/subscription infrastructure exists (ELITE_ASSET_DOCTRINE.md §6) to validate any SaaS hypothesis against. Unlock: build minimal real subscription infra first, or don't score this dimension."
+    },
+    {
+      "id": "ai_leverage",
+      "name": "AI Leverage",
+      "level": "DISCOVERY",
+      "action_plan": "No agreed, computable definition exists yet for what this number would even measure. Unlock: define a precise formula (e.g. 'hours of human work replaced per unit produced') before attempting to compute it."
+    },
+    {
+      "id": "virality",
+      "name": "Virality",
+      "level": "DISCOVERY",
+      "action_plan": "Requires real share/mention tracking on a live product — no product is live on any channel yet (BLOCKERS.md #2/#3)."
+    },
+    {
+      "id": "maintenance_cost",
+      "name": "Maintenance Cost",
+      "level": "DISCOVERY",
+      "action_plan": "Requires operational cost data over a longer real time window than 13 days. Unlock: track real time-spent-per-product-type across more production cycles."
+    },
+    {
+      "id": "revenue_recurrence",
+      "name": "Revenue Recurrence",
+      "level": "DISCOVERY",
+      "action_plan": "Requires real repeat-purchase data. Unlock: once any real sales exist, compute this directly from sales_ledger.jsonl instead of guessing from the word 'subscription' in a niche name."
+    },
+    {
+      "id": "customer_lifetime_value",
+      "name": "Customer Lifetime Value",
+      "level": "DISCOVERY",
+      "action_plan": "Requires real, multi-purchase customer history. Blocked entirely on having any customers (zero today)."
+    },
+    {
+      "id": "upsell_potential",
+      "name": "Upsell Potential",
+      "level": "DISCOVERY",
+      "action_plan": "Same blocker as customer_lifetime_value — needs a real customer base first."
+    },
+    {
+      "id": "cross_sell_potential",
+      "name": "Cross-sell Potential",
+      "level": "DISCOVERY",
+      "action_plan": "Same blocker as customer_lifetime_value — needs a real customer base first."
+    },
+    {
+      "id": "defensibility_moat",
+      "name": "Defensibility / Competitive Moat",
+      "level": "DISCOVERY",
+      "action_plan": "Requires a real competitive-intelligence process (tracking specific competitors' offers/pricing over time) — none exists. Unlock: define which 3-5 real competitors to track and what signal to record, then track it for a real period before scoring this."
+    },
+    {
+      "id": "market_saturation",
+      "name": "Market Saturation",
+      "level": "DISCOVERY",
+      "action_plan": "Distinct from competition_score (which measures search-result density for one niche) — this needs real total-addressable-market sizing, which no tool in this factory computes. Until then, use competition_score as the closest real proxy rather than inventing a separate number for the same underlying question."
+    }
+  ]
+}

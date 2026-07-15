@@ -197,6 +197,39 @@ test('deriveRiskLevel: missing health -> unknown, never throws', () => {
   assert.equal(result.level, 'unknown');
 });
 
+test('readCapabilityMaturity: missing registry -> honest zero, never throws', () => {
+  const result = dd.readCapabilityMaturity(path.join(tmpDir, 'nope_registry.json'));
+  assert.equal(result.total, 0);
+  assert.ok(result.note);
+});
+
+test('readCapabilityMaturity: counts levels correctly from real data, never invents a capability', () => {
+  const p = path.join(tmpDir, 'registry.json');
+  fs.writeFileSync(p, JSON.stringify({
+    last_updated: '2026-07-15',
+    capabilities: [
+      { id: 'a', level: 'REAL' },
+      { id: 'b', level: 'REAL' },
+      { id: 'c', level: 'ESTIMATED' },
+      { id: 'd', level: 'DISCOVERY' },
+      { id: 'e', level: 'DISCOVERY' },
+      { id: 'f', level: 'DISCOVERY' },
+    ],
+  }));
+  const result = dd.readCapabilityMaturity(p);
+  assert.equal(result.real, 2);
+  assert.equal(result.estimated, 1);
+  assert.equal(result.discovery, 3);
+  assert.equal(result.total, 6);
+  assert.equal(result.capabilities.length, 6);
+});
+
+test('readCapabilityMaturity: the real repo registry is well-formed and non-empty', () => {
+  const result = dd.readCapabilityMaturity();
+  assert.ok(result.total > 0, 'expected config/capability_registry.json to exist with real entries');
+  assert.equal(result.real + result.estimated + result.discovery, result.total);
+});
+
 test('computeDashboard: passes health/awareness through without altering them', () => {
   const health = { status: 'healthy' };
   const awareness = { verdict: 'ok', growth: 'up', diagnosis: { weakest_cell: 'finance' } };
