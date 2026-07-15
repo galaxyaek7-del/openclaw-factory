@@ -14,6 +14,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 import requests
@@ -22,10 +23,40 @@ FACTORY_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_ENV_PATH = FACTORY_DIR / ".env"
 GUMROAD_API_BASE = "https://api.gumroad.com/v2"
 
+# Retry only idempotent calls (GET/PUT) on transient failures — a dropped
+# connection or a 5xx is safe to retry because repeating the same read or
+# the same update has no side effect beyond the intended one. create_product
+# (POST) is deliberately NEVER retried here: if the first request actually
+# succeeded on Gumroad's side but the response was lost, a blind retry
+# would create a second, duplicate paid listing. That failure mode is worse
+# than surfacing one honest error and letting a human decide.
+_RETRY_ATTEMPTS = 3
+_RETRY_BACKOFF_SECONDS = 1.5
+
 
 class ConfigError(Exception):
     """A missing/invalid local configuration — never a Gumroad API error."""
     pass
+
+
+def _request_with_retry(method, url, **kwargs):
+    """requests.request() wrapper that retries a transient failure (network
+    error or 5xx response) up to _RETRY_ATTEMPTS times with linear backoff.
+    A 4xx response is never retried — it is a permanent client/config error
+    that will not resolve itself on a second try."""
+    last_exc = None
+    for attempt in range(1, _RETRY_ATTEMPTS + 1):
+        try:
+            r = requests.request(method, url, **kwargs)
+        except requests.RequestException as e:
+            last_exc = e
+        else:
+            if r.status_code < 500:
+                return r
+            last_exc = requests.RequestException(f"HTTP {r.status_code}: {r.text[:200]}")
+        if attempt < _RETRY_ATTEMPTS:
+            time.sleep(_RETRY_BACKOFF_SECONDS * attempt)
+    raise last_exc
 
 
 def load_token(env_path=None):
@@ -48,7 +79,7 @@ def load_token(env_path=None):
 
 def list_products(token):
     try:
-        r = requests.get(f"{GUMROAD_API_BASE}/products", params={"access_token": token}, timeout=30)
+        r = _request_with_retry("GET", f"{GUMROAD_API_BASE}/products", params={"access_token": token}, timeout=30)
         r.raise_for_status()
     except requests.RequestException as e:
         raise RuntimeError(f"Gumroad list_products request failed: {_safe_err(e)}")
@@ -82,6 +113,7 @@ def create_product(token, product_spec):
         "customizable_price": "false",
     }
     try:
+        # Deliberately not retried — see _request_with_retry's docstring.
         with open(file_path, "rb") as fh:
             files = {"file": (file_path.name, fh, "application/pdf")}
             r = requests.post(f"{GUMROAD_API_BASE}/products", data=data, files=files, timeout=120)
@@ -100,7 +132,7 @@ def update_product(token, product_id, updates):
     data = dict(updates)
     data["access_token"] = token
     try:
-        r = requests.put(f"{GUMROAD_API_BASE}/products/{product_id}", data=data, timeout=60)
+        r = _request_with_retry("PUT", f"{GUMROAD_API_BASE}/products/{product_id}", data=data, timeout=60)
         r.raise_for_status()
     except requests.RequestException as e:
         raise RuntimeError(f"Gumroad update_product request failed: {_safe_err(e)}")
@@ -115,7 +147,7 @@ def get_sales(token, product_id=None):
     if product_id:
         params["product_id"] = product_id
     try:
-        r = requests.get(f"{GUMROAD_API_BASE}/sales", params=params, timeout=30)
+        r = _request_with_retry("GET", f"{GUMROAD_API_BASE}/sales", params=params, timeout=30)
         r.raise_for_status()
     except requests.RequestException as e:
         raise RuntimeError(f"Gumroad get_sales request failed: {_safe_err(e)}")
