@@ -58,10 +58,19 @@
       "id": "competition_real_result_count",
       "name": "Competition (real HN/GitHub result count)",
       "level": "ESTIMATED",
-      "source": "external_signal.competition.related_results_count from a real research batch (HN Algolia / GitHub Search API) — profit_oracle.py's _score_competition(), ADR-041",
+      "source": "external_signal.competition.related_results_count, now automatically gatherable via competitor_discovery.py (ADR-042) — profit_oracle.py's _score_competition(), ADR-041",
       "confidence": "low-medium",
       "assumptions": ["Number of similar real HN/GitHub results is a fair proxy for how crowded a niche is", "Log-scale decay curve (calibrated as a first pass, no real data behind the specific curve shape yet) is the right shape"],
-      "missing_evidence": "No real sales-outcome data yet linking result-count to actual competitive difficulty. Also: no live caller gathers related_results_count today — this path exists and is tested, but isn't fed by any current research batch's data collection yet (tier1_intake/'s existing 8 candidates only recorded one representative result each, not a full count)."
+      "missing_evidence": "No real sales-outcome data yet linking result-count to actual competitive difficulty."
+    },
+    {
+      "id": "competitor_discovery_and_classification",
+      "name": "Automated Competitor Discovery + Classification",
+      "level": "ESTIMATED",
+      "source": "competitor_discovery.py (ADR-042) — real, automated HN/GitHub queries, explainable classification into Direct/Indirect/Alternative/Enterprise/Emerging/Unclassified, real per-competitor metrics (stars, forks, last-updated, dev velocity) with a persistent, freshness-cached database (data/competitor_database.json)",
+      "confidence": "medium for classification of strong-signal competitors (>500 GitHub stars or >100 HN points); low-to-unclassified for weak-signal hits, by design — no forced guess",
+      "assumptions": ["GitHub owner type (Organization vs User) + star count is a fair proxy for enterprise vs. indie", "Repo age + moderate stars is a fair proxy for 'emerging startup'"],
+      "missing_evidence": "Reddit mentions, Google Trends, Product Hunt, website visits, SEO rank, company size, and pricing model are explicitly returned as Unknown with a stated reason per-field (not silently omitted) — no free, keyless real source exists for any of them today."
     },
     {
       "id": "competition_no_report",

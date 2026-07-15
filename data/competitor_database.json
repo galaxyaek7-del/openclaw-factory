@@ -1,0 +1,217 @@
+{
+  "ai agent compliance automation": {
+    "niche": "AI agent compliance automation",
+    "discovered_at": "2026-07-15T19:55:10.954193+00:00",
+    "total_found": 10,
+    "by_category": {
+      "Unclassified": [
+        "Show HN:Conduit–Headless browser with SHA-256 hash chain - Ed25519 audit trails",
+        "Show HN: OctopusGarden – An autonomous software factory (specs in, code out)",
+        "Show HN: Sutra.team – The First OS for Autonomous Agents",
+        "Show HN: The MCP Blueprint – First Comprehensive Book on Model Context Protocol",
+        "Show HN: Helply – AI support agents with guaranteed results",
+        "itbench-hub/ITBench-CISO-CAA-Agent",
+        "itsoumya-d/certiflow-ai"
+      ],
+      "Emerging Startup": [
+        "SHAdd0WTAka/Zen-Ai-Pentest",
+        "rahuliitk/quicktrust",
+        "RD-DCS/venutian-antfarm"
+      ]
+    },
+    "competitors": [
+      {
+        "name": "Show HN:Conduit–Headless browser with SHA-256 hash chain - Ed25519 audit trails",
+        "url": null,
+        "source": "hacker_news",
+        "category": "Unclassified",
+        "category_reason": "إشارة ضعيفة جداً (3 نقطة، 1 تعليق) — لا ثقة كافية للتصنيف",
+        "metrics": {
+          "website_visits": "لا أداة قياس زيارات مجانية متصلة (SimilarWeb/Ahrefs تحتاج اشتراكاً مدفوعاً)",
+          "seo_rank": "لا أداة SEO مجانية متصلة",
+          "reddit_mentions": "Reddit API يحتاج بيانات اعتماد غير متوفرة في هذه الجلسة",
+          "google_trends": "لا اتصال Trends حي (n8n Sensing Engine مبني، غير مُفعَّل — راجع BLOCKERS.md)",
+          "product_hunt": "يحتاج تواصلاً رسمياً مسبقاً مع Product Hunt قبل استخدام تجاري (GOLDEN_HUNTER_V2_STRATEGY.md §2)",
+          "company_size": "لا مصدر مجاني حقيقي لحجم الشركة",
+          "pricing_model": "غير قابل للاستنتاج بثقة من بيانات HN/GitHub وحدها",
+          "hacker_news_points": 3,
+          "hacker_news_comments": 1,
+          "first_seen": "2026-03-11T23:15:53Z"
+        }
+      },
+      {
+        "name": "Show HN: OctopusGarden – An autonomous software factory (specs in, code out)",
+        "url": "https://github.com/foundatron/octopusgarden",
+        "source": "hacker_news",
+        "category": "Unclassified",
+        "category_reason": "إشارة ضعيفة جداً (8 نقطة، 5 تعليق) — لا ثقة كافية للتصنيف",
+        "metrics": {
+          "website_visits": "لا أداة قياس زيارات مجانية متصلة (SimilarWeb/Ahrefs تحتاج اشتراكاً مدفوعاً)",
+          "seo_rank": "لا أداة SEO مجانية متصلة",
+          "reddit_mentions": "Reddit API يحتاج بيانات اعتماد غير متوفرة في هذه الجلسة",
+          "google_trends": "لا اتصال Trends حي (n8n Sensing Engine مبني، غير مُفعَّل — راجع BLOCKERS.md)",
+          "product_hunt": "يحتاج تواصلاً رسمياً مسبقاً مع Product Hunt قبل استخدام تجاري (GOLDEN_HUNTER_V2_STRATEGY.md §2)",
+          "company_size": "لا مصدر مجاني حقيقي لحجم الشركة",
+          "pricing_model": "غير قابل للاستنتاج بثقة من بيانات HN/GitHub وحدها",
+          "hacker_news_points": 8,
+          "hacker_news_comments": 5,
+          "first_seen": "2026-03-03T00:07:15Z"
+        }
+      },
+      {
+        "name": "Show HN: Sutra.team – The First OS for Autonomous Agents",
+        "url": "https://www.sutra.team/",
+        "source": "hacker_news",
+        "category": "Unclassified",
+        "category_reason": "إشارة ضعيفة جداً (2 نقطة، 0 تعليق) — لا ثقة كافية للتصنيف",
+        "metrics": {
+          "website_visits": "لا أداة قياس زيارات مجانية متصلة (SimilarWeb/Ahrefs تحتاج اشتراكاً مدفوعاً)",
+          "seo_rank": "لا أداة SEO مجانية متصلة",
+          "reddit_mentions": "Reddit API يحتاج بيانات اعتماد غير متوفرة في هذه الجلسة",
+          "google_trends": "لا اتصال Trends حي (n8n Sensing Engine مبني، غير مُفعَّل — راجع BLOCKERS.md)",
+          "product_hunt": "يحتاج تواصلاً رسمياً مسبقاً مع Product Hunt قبل استخدام تجاري (GOLDEN_HUNTER_V2_STRATEGY.md §2)",
+          "company_size": "لا مصدر مجاني حقيقي لحجم الشركة",
+          "pricing_model": "غير قابل للاستنتاج بثقة من بيانات HN/GitHub وحدها",
+          "hacker_news_points": 2,
+          "hacker_news_comments": 0,
+          "first_seen": "2026-03-02T14:00:56Z"
+        }
+      },
+      {
+        "name": "Show HN: The MCP Blueprint – First Comprehensive Book on Model Context Protocol",
+        "url": "https://www.amazon.com/dp/B0GPNSPK3Y",
+        "source": "hacker_news",
+        "category": "Unclassified",
+        "category_reason": "إشارة ضعيفة جداً (2 نقطة، 0 تعليق) — لا ثقة كافية للتصنيف",
+        "metrics": {
+          "website_visits": "لا أداة قياس زيارات مجانية متصلة (SimilarWeb/Ahrefs تحتاج اشتراكاً مدفوعاً)",
+          "seo_rank": "لا أداة SEO مجانية متصلة",
+          "reddit_mentions": "Reddit API يحتاج بيانات اعتماد غير متوفرة في هذه الجلسة",
+          "google_trends": "لا اتصال Trends حي (n8n Sensing Engine مبني، غير مُفعَّل — راجع BLOCKERS.md)",
+          "product_hunt": "يحتاج تواصلاً رسمياً مسبقاً مع Product Hunt قبل استخدام تجاري (GOLDEN_HUNTER_V2_STRATEGY.md §2)",
+          "company_size": "لا مصدر مجاني حقيقي لحجم الشركة",
+          "pricing_model": "غير قابل للاستنتاج بثقة من بيانات HN/GitHub وحدها",
+          "hacker_news_points": 2,
+          "hacker_news_comments": 0,
+          "first_seen": "2026-02-23T08:52:49Z"
+        }
+      },
+      {
+        "name": "Show HN: Helply – AI support agents with guaranteed results",
+        "url": "https://helply.com",
+        "source": "hacker_news",
+        "category": "Unclassified",
+        "category_reason": "إشارة ضعيفة جداً (2 نقطة، 0 تعليق) — لا ثقة كافية للتصنيف",
+        "metrics": {
+          "website_visits": "لا أداة قياس زيارات مجانية متصلة (SimilarWeb/Ahrefs تحتاج اشتراكاً مدفوعاً)",
+          "seo_rank": "لا أداة SEO مجانية متصلة",
+          "reddit_mentions": "Reddit API يحتاج بيانات اعتماد غير متوفرة في هذه الجلسة",
+          "google_trends": "لا اتصال Trends حي (n8n Sensing Engine مبني، غير مُفعَّل — راجع BLOCKERS.md)",
+          "product_hunt": "يحتاج تواصلاً رسمياً مسبقاً مع Product Hunt قبل استخدام تجاري (GOLDEN_HUNTER_V2_STRATEGY.md §2)",
+          "company_size": "لا مصدر مجاني حقيقي لحجم الشركة",
+          "pricing_model": "غير قابل للاستنتاج بثقة من بيانات HN/GitHub وحدها",
+          "hacker_news_points": 2,
+          "hacker_news_comments": 0,
+          "first_seen": "2026-02-03T19:05:16Z"
+        }
+      },
+      {
+        "name": "SHAdd0WTAka/Zen-Ai-Pentest",
+        "url": "https://api.github.com/repos/SHAdd0WTAka/Zen-Ai-Pentest",
+        "source": "github",
+        "category": "Emerging Startup",
+        "category_reason": "مستودع عمره 167 يوماً فقط (حقيقي)، 413 نجمة — إشارة مشروع جديد",
+        "metrics": {
+          "website_visits": "لا أداة قياس زيارات مجانية متصلة (SimilarWeb/Ahrefs تحتاج اشتراكاً مدفوعاً)",
+          "seo_rank": "لا أداة SEO مجانية متصلة",
+          "company_size": "لا مصدر مجاني حقيقي لحجم الشركة",
+          "pricing_model": "غير قابل للاستنتاج بثقة من بيانات HN/GitHub وحدها",
+          "github_stars": 413,
+          "github_forks": 74,
+          "open_issues": 17,
+          "last_updated": "2026-07-15T00:30:43Z",
+          "development_velocity": "نشط مؤخراً (آخر push منذ 19 يوماً، حقيقي)"
+        }
+      },
+      {
+        "name": "itbench-hub/ITBench-CISO-CAA-Agent",
+        "url": "https://api.github.com/repos/itbench-hub/ITBench-CISO-CAA-Agent",
+        "source": "github",
+        "category": "Unclassified",
+        "category_reason": "إشارة ضعيفة جداً (22 نجمة، owner_type=Organization) — لا ثقة كافية للتصنيف",
+        "metrics": {
+          "website_visits": "لا أداة قياس زيارات مجانية متصلة (SimilarWeb/Ahrefs تحتاج اشتراكاً مدفوعاً)",
+          "seo_rank": "لا أداة SEO مجانية متصلة",
+          "company_size": "لا مصدر مجاني حقيقي لحجم الشركة",
+          "pricing_model": "غير قابل للاستنتاج بثقة من بيانات HN/GitHub وحدها",
+          "github_stars": 22,
+          "github_forks": 9,
+          "open_issues": 2,
+          "last_updated": "2026-07-08T23:29:54Z",
+          "development_velocity": "راكد على الأرجح (آخر push منذ 433 يوماً، حقيقي)"
+        }
+      },
+      {
+        "name": "rahuliitk/quicktrust",
+        "url": "https://api.github.com/repos/rahuliitk/quicktrust",
+        "source": "github",
+        "category": "Emerging Startup",
+        "category_reason": "مستودع عمره 143 يوماً فقط (حقيقي)، 10 نجمة — إشارة مشروع جديد",
+        "metrics": {
+          "website_visits": "لا أداة قياس زيارات مجانية متصلة (SimilarWeb/Ahrefs تحتاج اشتراكاً مدفوعاً)",
+          "seo_rank": "لا أداة SEO مجانية متصلة",
+          "company_size": "لا مصدر مجاني حقيقي لحجم الشركة",
+          "pricing_model": "غير قابل للاستنتاج بثقة من بيانات HN/GitHub وحدها",
+          "github_stars": 10,
+          "github_forks": 2,
+          "open_issues": 0,
+          "last_updated": "2026-05-24T20:36:33Z",
+          "development_velocity": "نشط جزئياً (آخر push منذ 126 يوماً، حقيقي)"
+        }
+      },
+      {
+        "name": "itsoumya-d/certiflow-ai",
+        "url": "https://api.github.com/repos/itsoumya-d/certiflow-ai",
+        "source": "github",
+        "category": "Unclassified",
+        "category_reason": "إشارة ضعيفة جداً (6 نجمة، owner_type=User) — لا ثقة كافية للتصنيف",
+        "metrics": {
+          "website_visits": "لا أداة قياس زيارات مجانية متصلة (SimilarWeb/Ahrefs تحتاج اشتراكاً مدفوعاً)",
+          "seo_rank": "لا أداة SEO مجانية متصلة",
+          "company_size": "لا مصدر مجاني حقيقي لحجم الشركة",
+          "pricing_model": "غير قابل للاستنتاج بثقة من بيانات HN/GitHub وحدها",
+          "github_stars": 6,
+          "github_forks": 0,
+          "open_issues": 0,
+          "last_updated": "2026-05-28T02:54:59Z",
+          "development_velocity": "نشط جزئياً (آخر push منذ 124 يوماً، حقيقي)"
+        }
+      },
+      {
+        "name": "RD-DCS/venutian-antfarm",
+        "url": "https://api.github.com/repos/RD-DCS/venutian-antfarm",
+        "source": "github",
+        "category": "Emerging Startup",
+        "category_reason": "مستودع عمره 118 يوماً فقط (حقيقي)، 5 نجمة — إشارة مشروع جديد",
+        "metrics": {
+          "website_visits": "لا أداة قياس زيارات مجانية متصلة (SimilarWeb/Ahrefs تحتاج اشتراكاً مدفوعاً)",
+          "seo_rank": "لا أداة SEO مجانية متصلة",
+          "company_size": "لا مصدر مجاني حقيقي لحجم الشركة",
+          "pricing_model": "غير قابل للاستنتاج بثقة من بيانات HN/GitHub وحدها",
+          "github_stars": 5,
+          "github_forks": 0,
+          "open_issues": 8,
+          "last_updated": "2026-04-19T21:55:14Z",
+          "development_velocity": "نشط جزئياً (آخر push منذ 108 يوماً، حقيقي)"
+        }
+      }
+    ],
+    "market_saturation": "Unknown — يحتاج بيانات حجم سوق حقيقي (TAM)، لا عدد نتائج بحث فقط (ADR-040)",
+    "barrier_to_entry": "Unknown — لا مؤشر تقني/رأسمالي حقيقي متاح من HN/GitHub وحدهما",
+    "pricing_power": "Unknown — يحتاج بيانات مبيعات حقيقية، صفر مبيعات اليوم",
+    "_cache": {
+      "hit": false,
+      "age_days": 0
+    }
+  }
+}
