@@ -324,25 +324,46 @@ def _real_average_ai_cost_per_call(log_file=None):
 
 
 def _score_margin(niche):
-    """20% weight. Price tier and recurring-revenue potential are still
-    keyword estimates (no real sales data exists yet to know an actual
-    achievable price or repeat-purchase rate — see
-    config/capability_registry.json's DISCOVERY entries for both). The
-    cost side is now real (ADR-041): actual platform fees from
-    config/economics.json (economics.net_profit(), same real fee schedule
-    the live distributor uses) replace the old flat 'digital = free'
-    assumption, and real logged Groq cost (data/ai_cost_log.jsonl) is
-    subtracted when any exists — reported honestly as unavailable, never
-    invented, until enough real generations have been logged."""
+    """20% weight. Price tier and recurring-revenue potential were pure
+    keyword estimates until this fix (2026-07-16, Revenue Activation
+    phase): _score_competition() already checked _find_niche_report()
+    for a real saved Amazon report first, keyword estimate only as
+    fallback (ADR-041/042) — this function never did the equivalent for
+    price, despite _find_niche_report() already being imported and used
+    two functions away in this same file. Now it does: a real saved
+    report's actual average competitor price is used when one exists,
+    normalized the same way market_intelligence_core.scoring.
+    pricing_power.py already scores a real price (price / MAX_BUTTER_PRICE
+    * 100) for consistency with that existing convention. Recurring-
+    revenue potential remains a keyword estimate — no real repeat-purchase
+    data exists anywhere in this factory yet (config/capability_registry.
+    json's own DISCOVERY entry for it), and this fix does not invent one.
+
+    Omitting a saved report (every niche this factory has evaluated so
+    far — niche_reports/ is empty) reproduces the exact prior keyword-tier
+    behavior unchanged."""
     notes = []
     niche_lower = niche.lower()
-    if any(k in niche_lower for k in PREMIUM_KEYWORDS):
+
+    report = _find_niche_report(niche)
+    real_avg_price = (
+        (report.get('metrics', {}) or {}).get('price', {}).get('avg')
+        if report and report.get('status') == 'success' else None
+    )
+
+    if real_avg_price:
+        price = real_avg_price
+        price_score = max(0, min(100, round(price / MAX_BUTTER_PRICE * 100)))
+        notes.append(f"متوسط سعر منافسين حقيقي من تقرير Amazon محفوظ: ${price} → {price_score}/100 [بيانات حقيقية]")
+    elif any(k in niche_lower for k in PREMIUM_KEYWORDS):
         price, price_score = 39, 90
+        notes.append(f"السعر المقترح: ${price} [تقدير حسب فئة الكلمات المفتاحية]")
     elif any(k in niche_lower for k in MID_KEYWORDS):
         price, price_score = 19, 65
+        notes.append(f"السعر المقترح: ${price} [تقدير حسب فئة الكلمات المفتاحية]")
     else:
         price, price_score = 9, 45
-    notes.append(f"السعر المقترح: ${price} [تقدير حسب فئة الكلمات المفتاحية]")
+        notes.append(f"السعر المقترح: ${price} [تقدير حسب فئة الكلمات المفتاحية]")
 
     avg_ai_cost, sample_size = _real_average_ai_cost_per_call()
     if ECONOMICS is not None:

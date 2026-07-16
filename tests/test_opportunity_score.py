@@ -10,6 +10,7 @@ import json
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
@@ -282,6 +283,58 @@ class TestRealCompetitionAndMargin(unittest.TestCase):
             self.assertAlmostEqual(avg, 0.02, places=6)
         finally:
             _os.remove(path)
+
+
+class TestRealMarginPricing(unittest.TestCase):
+    """Revenue Activation phase (2026-07-16): _score_margin() now checks
+    _find_niche_report() for a real saved competitor price first — the
+    same real-data-priority pattern _score_competition() already used
+    since ADR-041/042 — falling back to the keyword-tier estimate only
+    when no real report exists."""
+
+    _REAL_REPORT = {
+        "status": "success",
+        "metrics": {"price": {"min": 6.99, "avg": 24.99, "max": 39.99}},
+    }
+
+    @patch("profit_oracle._find_niche_report", return_value=_REAL_REPORT)
+    def test_real_saved_price_is_used_when_available(self, mock_find):
+        margin_score, notes, price = po._score_margin("a niche with a real saved report")
+        self.assertEqual(price, 24.99)
+        self.assertTrue(any("بيانات حقيقية" in n and "24.99" in n for n in notes))
+
+    @patch("profit_oracle._find_niche_report", return_value=_REAL_REPORT)
+    def test_real_price_score_is_normalized_against_max_butter_price(self, mock_find):
+        _, notes, price = po._score_margin("a niche with a real saved report")
+        expected_score = max(0, min(100, round(price / po.MAX_BUTTER_PRICE * 100)))
+        self.assertTrue(any(f"{expected_score}/100" in n for n in notes))
+
+    @patch("profit_oracle._find_niche_report", return_value=None)
+    def test_keyword_estimation_used_as_fallback_when_no_report(self, mock_find):
+        _, notes, price = po._score_margin("template bundle system")  # PREMIUM_KEYWORDS tier
+        self.assertEqual(price, 39)  # unchanged from before this fix
+        self.assertTrue(any("تقدير حسب فئة الكلمات المفتاحية" in n for n in notes))
+
+    @patch("profit_oracle._find_niche_report", return_value={"status": "error"})
+    def test_error_status_report_also_falls_back_to_keyword_estimate(self, mock_find):
+        _, notes, price = po._score_margin("template bundle system")
+        self.assertEqual(price, 39)
+
+    @patch("profit_oracle._find_niche_report", return_value={"status": "success", "metrics": {}})
+    def test_report_missing_price_field_falls_back_to_keyword_estimate(self, mock_find):
+        _, notes, price = po._score_margin("template bundle system")
+        self.assertEqual(price, 39)
+
+    def test_existing_behavior_unchanged_when_no_report_exists_on_real_disk(self):
+        """The exact regression proof requested: with the real,
+        untouched niche_reports/ directory (empty, per this session's own
+        confirmation), score_opportunity()'s margin score and reasoning
+        for an existing, already-tested niche must be byte-for-byte
+        identical to before this fix."""
+        result = po.score_opportunity("premium subscription budget planner")
+        self.assertIn("هامش صافٍ حقيقي", result["reasoning"])
+        self.assertIn("economics.json", result["reasoning"])
+        self.assertIn("$19", result["recommended_price"])
 
 
 if __name__ == "__main__":
