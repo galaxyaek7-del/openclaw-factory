@@ -75,6 +75,7 @@ for _stream in (sys.stdin, sys.stdout, sys.stderr):
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import profit_oracle as PROFIT_ORACLE
 import competitor_discovery as COMPETITOR_DISCOVERY
+from market_intelligence_core import http_client as MIC_HTTP_CLIENT
 
 FACTORY_DIR = os.path.dirname(os.path.abspath(__file__))
 ANALYSIS_DB_FILE = os.path.join(FACTORY_DIR, 'data', 'market_intelligence_analyses.jsonl')
@@ -97,13 +98,14 @@ WILLINGNESS_TO_PAY_KEYWORDS = [
 # ── CUSTOMER PAIN INTELLIGENCE (real GitHub Issues + HN search) ──
 
 def _http_get_json(url, timeout=10):
-    import urllib.request
-    req = urllib.request.Request(url, headers={
-        'User-Agent': 'Mozilla/5.0 (OpenClaw-Factory-MarketIntelligence)',
-        'Accept': 'application/json',
-    })
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return json.loads(r.read().decode('utf-8'))
+    """ADR-049: delegates to market_intelligence_core.http_client — the
+    urllib logic itself now lives in exactly one place (it was
+    byte-for-byte duplicated with competitor_discovery.py's own copy
+    before this). Kept as a real local function (not a bare re-export)
+    so `@patch("market_intelligence_engine._http_get_json")` in
+    tests/test_market_intelligence_engine.py keeps intercepting every
+    caller below unchanged."""
+    return MIC_HTTP_CLIENT.http_get_json(url, timeout=timeout)
 
 
 def _query_github_issues(query, limit=10):

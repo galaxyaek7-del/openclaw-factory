@@ -40,6 +40,8 @@ import urllib.error
 import urllib.parse
 from datetime import datetime, timezone
 
+from market_intelligence_core import http_client as MIC_HTTP_CLIENT
+
 for _stream in (sys.stdin, sys.stdout, sys.stderr):
     try:
         _stream.reconfigure(encoding='utf-8')
@@ -60,12 +62,16 @@ CATEGORIES = ["Direct Competitor", "Indirect Competitor", "Alternative Solution"
 #    the logic can be unit-tested with fixture data, no live calls needed) ──
 
 def _http_get_json(url, timeout=10):
-    req = urllib.request.Request(url, headers={
-        'User-Agent': 'Mozilla/5.0 (OpenClaw-Factory-CompetitorDiscovery)',
-        'Accept': 'application/json',
-    })
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return json.loads(r.read().decode('utf-8'))
+    """ADR-049: delegates to market_intelligence_core.http_client — the
+    urllib logic itself now lives in exactly one place (it was
+    byte-for-byte duplicated with market_intelligence_engine.py's own
+    copy before this). Kept as a real local function (not a bare
+    re-export) so `@patch("competitor_discovery._http_get_json")` in
+    tests/test_competitor_discovery.py keeps intercepting every caller
+    below unchanged."""
+    return MIC_HTTP_CLIENT.http_get_json(
+        url, timeout=timeout, user_agent='Mozilla/5.0 (OpenClaw-Factory-CompetitorDiscovery)'
+    )
 
 
 def _query_hn(query, limit=10):
