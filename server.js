@@ -560,6 +560,54 @@ function runPythonActionAsync(action, section) {
   return job;
 }
 
+// Phase 11 (Autonomous Production Launch): the one action that needs one
+// extra step beyond runPythonActionAsync's plain "spawn, wait, parse" —
+// after the Python side's full_cycle stages finish, this appends a
+// company_health_monitoring section using the exact same companyHealthService()
+// handler already registered in SERVICE_REGISTRY (JS-side Company Health
+// isn't reachable from Python). Wrapped independently so a failure here
+// never discards the real Python-side results that already completed —
+// the same graceful-degradation principle applied one level up.
+function runFullCycleActionAsync(action) {
+  const job = newActionJob(action);
+  const pythonPath = detectPython();
+  const scriptPath = path.join(__dirname, 'mission_control_api.py');
+  const python = spawn(pythonPath, [scriptPath, 'full_cycle'], { cwd: __dirname });
+  traceSpan(job, action, 'python_process_spawned');
+  let output = '', errOut = '';
+  python.stdout.on('data', d => { output += d.toString(); });
+  python.stderr.on('data', d => { errOut += d.toString(); });
+  const finish = (status, resultOrError) => {
+    job.status = status;
+    job.finished_at = new Date().toISOString();
+    if (status === 'completed') job.result = resultOrError; else job.error = resultOrError;
+    job.progress.push({ at: job.finished_at, message: status });
+    logServiceCall({ service: 'actions', action, job_id: job.id, event: 'finished', status, duration_ms: Date.parse(job.finished_at) - Date.parse(job.started_at) });
+  };
+  python.on('error', (err) => finish('failed', err.message));
+  python.on('close', async () => {
+    traceSpan(job, action, 'python_process_exited');
+    let parsed;
+    try {
+      parsed = JSON.parse(output.trim());
+    } catch {
+      return finish('failed', `parse error: ${output}${errOut}`);
+    }
+    if (parsed.success === false) return finish('failed', parsed.error || 'action reported failure');
+
+    let companyHealthSection;
+    try {
+      companyHealthSection = { ok: true, result: await companyHealthService() };
+    } catch (err) {
+      companyHealthSection = { ok: false, error: err.message };
+    }
+    traceSpan(job, action, 'company_health_monitoring_collected');
+    finish('completed', { ...parsed, company_health_monitoring: companyHealthSection });
+  });
+  logServiceCall({ service: 'actions', action, job_id: job.id, event: 'started' });
+  return job;
+}
+
 // For actions cheap enough (local file reads/writes only, no live
 // network) that a job/polling round-trip would just be overhead — runs
 // to completion before the HTTP response, but still recorded as a job
@@ -709,12 +757,24 @@ const ACTION_REGISTRY = [
     kind: 'sync',
     section: 'export_executive_report',
   },
+  {
+    name: 'run-full-cycle',
+    description: 'Runs one complete, deliberate pass through the full business lifecycle (Market Intelligence -> Decision Engine -> Production -> Quality Validation -> Executive Reports -> Learning -> Knowledge Base update), plus a Company Health/Automation/Security monitoring snapshot. A manually-triggered orchestration, not an unattended scheduler — this factory has no scheduler by design (CLAUDE.md), to keep paid-API calls and production/publish actions under explicit human control. Every stage is independently graceful-degraded: one stage failing never blocks the rest.',
+    reused: 'real_world_mode/operating_mode.py, production_factory/factory.py, validation_layer/daily_report.py, revenue_pipeline/pipeline.py, decision_engine/feedback.py+learning.py, mission_control_api.py\'s _automation() — every stage reuses an already-built module, nothing new.',
+    reversible: true, // read/append only — no destructive action, no real publish, no real spend beyond what the reused modules already do
+    kind: 'async',
+    asyncRunner: () => runFullCycleActionAsync('run-full-cycle'),
+  },
 ];
 const ACTION_BY_NAME = new Map(ACTION_REGISTRY.map(a => [a.name, a]));
 
 function triggerAction(action, req) {
   if (action.kind === 'async') {
-    return Promise.resolve(runPythonActionAsync(action.name, action.section));
+    // asyncRunner lets one action (run-full-cycle) use a bespoke runner
+    // instead of the generic single-Python-call one, without changing
+    // runPythonActionAsync's signature for every other async action.
+    const runner = action.asyncRunner || (() => runPythonActionAsync(action.name, action.section));
+    return Promise.resolve(runner());
   }
   if (action.section) {
     return runActionSync(action.name, () => runPythonService(action.section), req);

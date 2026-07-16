@@ -23,11 +23,11 @@ import mission_control_api
 
 
 class TestEndpointDispatch(unittest.TestCase):
-    def test_all_ten_endpoints_are_registered(self):
+    def test_all_eleven_endpoints_are_registered(self):
         for name in ("opportunities", "production", "revenue", "automation",
                      "decision_history", "system_configuration",
                      "rerun_market_analysis", "trigger_opportunity_evaluation",
-                     "validation_report", "export_executive_report"):
+                     "validation_report", "export_executive_report", "full_cycle"):
             self.assertIn(name, mission_control_api._ENDPOINTS)
 
     def test_opportunities_returns_real_ranking_shape(self):
@@ -180,6 +180,105 @@ class TestEndpointDispatch(unittest.TestCase):
             result = mission_control_api._trigger_opportunity_evaluation()
         mock_cycle.assert_called_once_with(execute_production=False)
         self.assertEqual(result, fake_result)
+
+
+class TestFullCycle(unittest.TestCase):
+    """_full_cycle() (Phase 11 — Autonomous Production Launch). Every real
+    module it calls is mocked here so these tests stay fast (the real
+    market_intelligence_and_evaluation stage alone takes minutes of live
+    network calls) — the modules themselves are already tested elsewhere
+    (test_real_world_mode.py, test_production_factory.py, etc.); these
+    tests are about _full_cycle()'s own orchestration and graceful
+    degradation, not re-verifying each reused module's internals."""
+
+    def _patched(self, tmp_path, **overrides):
+        """Context manager stack patching every stage to a fast, successful
+        default, with per-test overrides for the ones under test."""
+        from contextlib import ExitStack
+        defaults = {
+            "real_world_mode.operating_mode.run_real_world_cycle": lambda **k: {"processed": 0, "results": []},
+            "production_factory.factory.run_production_factory": lambda: {"processed": 0, "dossiers": []},
+            "validation_layer.daily_report.generate_daily_report": lambda **k: {
+                "opportunities_discovered": 0, "opportunities_accepted": 0,
+                "failures": [], "bottlenecks": [], "stalled_opportunities": [],
+            },
+            "validation_layer.daily_report.render_markdown": lambda report: "md",
+            "revenue_pipeline.pipeline.run_revenue_pipeline": lambda **k: {"processed": 0},
+            "revenue_pipeline.pipeline.render_ceo_revenue_report": lambda result: "md",
+            "decision_engine.feedback.sync_outcomes": lambda **k: {"synced": 0},
+            "decision_engine.learning.recalibration_report": lambda **k: {"recalibrated": False},
+        }
+        defaults.update(overrides)
+        stack = ExitStack()
+        stack.enter_context(patch.object(mission_control_api, "_FACTORY_ROOT", tmp_path))
+        for target, side_effect in defaults.items():
+            stack.enter_context(patch(target, side_effect=side_effect))
+        return stack
+
+    def test_all_stages_present_and_completed_on_the_happy_path(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            with self._patched(Path(tmp)):
+                result = mission_control_api._full_cycle()
+            expected_stages = {
+                "market_intelligence_and_evaluation", "production", "quality_validation",
+                "executive_reports", "automation_snapshot", "security_snapshot",
+                "learning", "knowledge_base_update",
+            }
+            self.assertEqual(set(result["stages"].keys()), expected_stages)
+            self.assertEqual(result["stages_completed"], result["stages_total"])
+            self.assertTrue(result["cycle_id"].startswith("cycle_"))
+
+    def test_one_stage_failing_never_blocks_the_others(self):
+        """Graceful degradation, objective 10: a real exception in one
+        stage must not prevent the rest from completing."""
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            with self._patched(
+                Path(tmp),
+                **{"production_factory.factory.run_production_factory": lambda: (_ for _ in ()).throw(RuntimeError("synthetic failure"))},
+            ):
+                result = mission_control_api._full_cycle()
+            self.assertFalse(result["stages"]["production"]["ok"])
+            self.assertIn("synthetic failure", result["stages"]["production"]["error"])
+            other_stages = {k: v for k, v in result["stages"].items() if k != "production"}
+            self.assertTrue(all(s["ok"] for s in other_stages.values()), other_stages)
+            self.assertEqual(result["stages_completed"], result["stages_total"] - 1)
+
+    def test_knowledge_base_update_appends_a_real_record_to_the_patched_path(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            with self._patched(tmp_path):
+                result = mission_control_api._full_cycle()
+            log_file = tmp_path / "data" / "full_cycle_runs.jsonl"
+            self.assertTrue(log_file.exists())
+            record = json.loads(log_file.read_text(encoding="utf-8").strip())
+            self.assertEqual(record["cycle_id"], result["cycle_id"])
+            self.assertIn("stages_summary", record)
+
+    def test_security_snapshot_counts_real_rejected_niches_entries(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            (tmp_path / "REJECTED_NICHES.md").write_text(
+                "# header\n\n## \U0001f6ab 2026-01-01T00:00:00\n**niche:** a\n\n"
+                "## \U0001f6ab 2026-01-02T00:00:00\n**niche:** b\n",
+                encoding="utf-8",
+            )
+            with self._patched(tmp_path):
+                result = mission_control_api._full_cycle()
+            self.assertEqual(result["stages"]["security_snapshot"]["result"]["rejected_niches_recorded"], 2)
+
+    def test_executive_reports_saves_a_file_named_after_the_cycle(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            with self._patched(tmp_path):
+                result = mission_control_api._full_cycle()
+            report_path = tmp_path / result["stages"]["executive_reports"]["result"]["path"]
+            self.assertTrue(report_path.exists())
+            self.assertIn(result["cycle_id"], report_path.name)
 
 
 class TestCliDispatch(unittest.TestCase):

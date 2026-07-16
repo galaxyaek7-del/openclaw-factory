@@ -171,7 +171,10 @@
 
 <main>
   <section id="tab-health" class="tab">
-    <div class="tabHeader"><h2>الحالة العامة للشركة</h2></div>
+    <div class="tabHeader">
+      <h2>الحالة العامة للشركة</h2>
+      <div class="actionsBar"><button class="btn primary" data-action="run-full-cycle">🔁 تشغيل دورة كاملة</button></div>
+    </div>
     <div id="healthContent" class="loading">جارٍ التحميل…</div>
   </section>
 
@@ -447,6 +450,7 @@ const AFFECTED_TAB_BY_ACTION = {
   'resume-production': 'production',
   'run-validation': 'validation',
   'export-executive-report': 'revenue',
+  'run-full-cycle': 'health',
 };
 
 function openActionModal(actionName) {

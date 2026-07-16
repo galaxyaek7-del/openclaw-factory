@@ -276,6 +276,137 @@ def _export_executive_report():
     return {"path": f"reports/{fname}", "markdown": combined_md}
 
 
+def _full_cycle():
+    """Executive Directive Phase 11 ('Autonomous Production Launch') —
+    scoped, per explicit decision in this session, to a manually-triggered,
+    complete run through every real stage of the business lifecycle in one
+    deliberate call, NOT an unattended scheduler (this factory's
+    documented "no scheduler exists" architecture — CLAUDE.md — protects
+    against paid-API costs and irreversible actions firing without a
+    human triggering them; that reasoning is unchanged by this directive).
+
+    Reuses every existing module — no new business logic, no new engine.
+    Every stage is independently wrapped so a single stage's failure never
+    prevents the rest from running (graceful degradation, objective 10).
+    """
+    cycle_id = f"cycle_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
+    stages = {}
+
+    def _run(name, fn):
+        started_at = datetime.now(timezone.utc).isoformat()
+        try:
+            stages[name] = {"ok": True, "started_at": started_at, "result": fn()}
+        except Exception as e:
+            stages[name] = {"ok": False, "started_at": started_at, "error": str(e)}
+
+    def _market_intelligence_and_evaluation():
+        # Objectives 1+2: Market Intelligence -> Decision Engine ranking/
+        # evaluation, real_world_mode's own real pipeline (ADR-056).
+        from real_world_mode import operating_mode
+        return operating_mode.run_real_world_cycle(execute_production=False)
+    _run("market_intelligence_and_evaluation", _market_intelligence_and_evaluation)
+
+    def _production():
+        # Objectives 3+4: Production Candidate creation + pipeline
+        # execution for every currently ACCEPTED opportunity (Phase 7).
+        from production_factory import factory
+        return factory.run_production_factory()
+    _run("production", _production)
+
+    def _quality_validation():
+        # Objective 5: reuses validation_layer's real daily report
+        # (ADR-053) — failures/bottlenecks/stalled items are exactly
+        # "quality validation before publication" for this factory.
+        from validation_layer import daily_report
+        report = daily_report.generate_daily_report()
+        return {
+            "opportunities_discovered": report["opportunities_discovered"],
+            "opportunities_accepted": report["opportunities_accepted"],
+            "failures": report["failures"],
+            "bottlenecks": report["bottlenecks"],
+            "stalled_opportunities": report["stalled_opportunities"],
+        }
+    _run("quality_validation", _quality_validation)
+
+    def _executive_reports():
+        # Objective 6: same combined report export_executive_report()
+        # already produces, saved under this cycle's own id.
+        from validation_layer import daily_report as dr
+        from revenue_pipeline import pipeline as rp
+        validation = dr.generate_daily_report()
+        revenue = rp.run_revenue_pipeline()
+        combined_md = (
+            f"# Full Cycle Executive Report — {cycle_id}\n\n"
+            f"Generated: {datetime.now(timezone.utc).isoformat()}\n\n"
+            "---\n\n## Validation\n\n" + dr.render_markdown(validation) +
+            "\n\n---\n\n## Revenue\n\n" + rp.render_ceo_revenue_report(revenue) + "\n"
+        )
+        reports_dir = _FACTORY_ROOT / "reports"
+        reports_dir.mkdir(exist_ok=True)
+        fname = f"{cycle_id}_executive_report.md"
+        (reports_dir / fname).write_text(combined_md, encoding="utf-8")
+        return {"path": f"reports/{fname}", "revenue_processed": revenue.get("processed", 0)}
+    _run("executive_reports", _executive_reports)
+
+    def _automation_snapshot():
+        # Objective 7 (Automation): reuses _automation() verbatim — no
+        # second implementation of the same n8n status read.
+        return _automation()
+    _run("automation_snapshot", _automation_snapshot)
+
+    def _security_snapshot():
+        # Objective 7 (Security): reuses safety_filter.py's own circuit-
+        # breaker record (REJECTED_NICHES.md, CONSTITUTION.md §17) — a
+        # real count of content that already failed safety/quality
+        # checks and is blocked from immediate retry. No new security
+        # engine; this factory has no other real security signal today.
+        rejected_file = _FACTORY_ROOT / "REJECTED_NICHES.md"
+        rejected_count = 0
+        if rejected_file.exists():
+            rejected_count = rejected_file.read_text(encoding="utf-8").count("## \U0001f6ab ")
+        return {"rejected_niches_recorded": rejected_count}
+    _run("security_snapshot", _security_snapshot)
+
+    def _learning():
+        # Objective 8: reuses decision_engine's existing, real feedback/
+        # learning modules — never fabricates a lesson when no real sales
+        # exist yet to learn from (both honestly report zero if so).
+        from decision_engine import feedback, learning
+        sync = feedback.sync_outcomes()
+        recalibration = learning.recalibration_report()
+        return {"sync_outcomes": sync, "recalibration": recalibration}
+    _run("learning", _learning)
+
+    def _knowledge_base_update():
+        # Objective 9: a real, appended, machine-readable record of this
+        # cycle — same append-only JSONL convention every other real log
+        # in this factory already uses (market_hunter_runs.log,
+        # golden_hunter_events.jsonl, decisions.jsonl), not a new
+        # subsystem. Deliberately NOT a narrative file under
+        # OpenClaw_Brain/18_Daily_Logs/ — that folder's own README
+        # documents it as a human-curated day-boundary summary, not a
+        # per-run machine log.
+        log_path = _FACTORY_ROOT / "data" / "full_cycle_runs.jsonl"
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        record = {
+            "cycle_id": cycle_id,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "stages_summary": {name: s["ok"] for name, s in stages.items()},
+        }
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+        return {"logged_to": "data/full_cycle_runs.jsonl"}
+    _run("knowledge_base_update", _knowledge_base_update)
+
+    ok_count = sum(1 for s in stages.values() if s["ok"])
+    return {
+        "cycle_id": cycle_id,
+        "stages": stages,
+        "stages_completed": ok_count,
+        "stages_total": len(stages),
+    }
+
+
 _ENDPOINTS = {
     "opportunities": _opportunities,
     "production": _production,
@@ -287,6 +418,7 @@ _ENDPOINTS = {
     "trigger_opportunity_evaluation": _trigger_opportunity_evaluation,
     "validation_report": _validation_report,
     "export_executive_report": _export_executive_report,
+    "full_cycle": _full_cycle,
 }
 
 
