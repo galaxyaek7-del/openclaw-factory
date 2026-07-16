@@ -1,0 +1,120 @@
+{
+  "updatedAt": "2026-07-16T00:00:00.000Z",
+  "createdAt": "2026-07-16T00:00:00.000Z",
+  "id": "PN03productionNotifyX",
+  "name": "03_Production_Notify",
+  "description": "Receives server.js's notifyN8nProductionEvent() POST once a real production dossier completes. Orchestration/logging only — no business logic lives here; the payload is already a plain projection of a real dossier computed by production_factory. Not yet imported into the live n8n instance (see n8n_workflows/README.md).",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "production-notify",
+        "httpMethod": "POST",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -560,
+        0
+      ],
+      "id": "a1b2c3d4-0001-4a11-9e11-000000000001",
+      "name": "Webhook",
+      "webhookId": "a1b2c3d4-0001-4a11-9e11-000000000099"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1b2c3d4-0002-4a11-9e11-000000000002",
+              "name": "received_at",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "a1b2c3d4-0003-4a11-9e11-000000000003",
+              "name": "event",
+              "value": "={{ $json.body.event }}",
+              "type": "string"
+            },
+            {
+              "id": "a1b2c3d4-0004-4a11-9e11-000000000004",
+              "name": "niche",
+              "value": "={{ $json.body.niche }}",
+              "type": "string"
+            },
+            {
+              "id": "a1b2c3d4-0005-4a11-9e11-000000000005",
+              "name": "production_id",
+              "value": "={{ $json.body.production_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -384,
+        0
+      ],
+      "id": "a1b2c3d4-0006-4a11-9e11-000000000006",
+      "name": "Log Production Event"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Log Production Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "a1b2c3d4-0007-4a11-9e11-000000000007",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-07-16T00:00:00.000Z",
+      "createdAt": "2026-07-16T00:00:00.000Z",
+      "role": "workflow:owner",
+      "workflowId": "PN03productionNotifyX",
+      "projectId": "TNshas0d0JrRkxgB",
+      "project": {
+        "updatedAt": "2026-06-11T18:41:05.962Z",
+        "createdAt": "2026-06-11T18:32:25.182Z",
+        "id": "TNshas0d0JrRkxgB",
+        "name": "Abdelkader Galaxy <galaxyaek7@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "0138d4da-3d85-4c07-a431-cdae11c16eb6"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}

@@ -99,7 +99,12 @@ Supported `type` values: `journal`, `planner`, `habit`, `gratitude`, `fitness`, 
 ```
 GROQ_KEY=<your Groq API key>
 PORT=3000
+N8N_PRODUCTION_WEBHOOK_URL=<optional — n8n webhook URL for production-completion notifications, unset by default>
 ```
+
+`N8N_PRODUCTION_WEBHOOK_URL` gates `server.js`'s `notifyN8nProductionEvent()` (n8n Integration Gap fix): when the `start-production-pipeline` Mission Control action completes at least one real dossier, it fire-and-forget `POST`s a plain projection of that dossier to this URL if set. Unset by default — a real production run must never fail or block on n8n being unreachable or unwired. See `n8n_workflows/README.md`'s "n8n Integration Gap audit" section for the full workflow map, what's proven live vs. still blocked on manual n8n activation (`BLOCKERS.md` #1), and the exact steps to wire this up.
+
+(This file's own env-var list above predates several since-added optional vars from later work sessions — e.g. `MISSION_CONTROL_PASSWORD`, `FACTORY_LIVE_PUBLISH`, `GUMROAD_ACCESS_TOKEN` — each documented at its own point of use in `server.js` rather than cross-referenced here; not fully re-catalogued in this edit, which is scoped to the n8n gap fix only.)
 
 ### Agent endpoints
 

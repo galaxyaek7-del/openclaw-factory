@@ -8,6 +8,7 @@ const knowledgeBrain = require('./knowledge_brain');
 const selfAwareness = require('./self_awareness');
 const dashboardData = require('./lib/dashboard_data');
 const metricsLib = require('./lib/metrics');
+const n8nNotify = require('./lib/n8n_notify');
 // readLastGenerationRecord is a pure file read (no side effects) — requiring
 // factory_loop.js here never starts its loop or acquires its lockfile: both
 // only happen inside main(), guarded by `if (require.main === module)`
@@ -602,12 +603,39 @@ function writeProductionControl(state) {
   return state;
 }
 
+// ── N8N PRODUCTION NOTIFY (n8n Integration Gap fix) ──
+// Before this, n8n's only real touchpoints were Market Intelligence
+// (Openclaw_Sensing_Engine -> POST /api/trends) and status/sales
+// (00_CEO -> GET /api/dashboard, 02_Sales_Poll -> POST /api/sales/poll) —
+// nothing in the chain notified n8n once a real Production dossier
+// completed. Actual fetch/timeout/logging logic lives in
+// lib/n8n_notify.js (no Express dependency, unit-tested in isolation by
+// mocking global.fetch — same convention as lib/metrics.js); this is a
+// thin wrapper supplying the real env var and log sink.
+const N8N_PRODUCTION_WEBHOOK_URL = process.env.N8N_PRODUCTION_WEBHOOK_URL || null;
+
+async function notifyN8nProductionEvent(payload) {
+  return n8nNotify.notifyN8nProductionEvent(payload, {
+    webhookUrl: N8N_PRODUCTION_WEBHOOK_URL,
+    log: (entry) => logServiceCall({ service: 'n8n_notify', ...entry }),
+  });
+}
+
 async function startProductionPipelineAction() {
   const control = readProductionControl();
   if (control.paused) {
     throw new Error(`production is paused (${control.reason || 'no reason given'}, since ${control.changed_at})`);
   }
-  return runPythonService('production');
+  const result = await runPythonService('production');
+  if (result.processed > 0) {
+    // Fire-and-forget on purpose: a slow/unreachable n8n notify must
+    // never delay the action's own response back to Mission Control.
+    for (const dossier of result.dossiers || []) {
+      notifyN8nProductionEvent(n8nNotify.buildProductionNotifyPayload(dossier))
+        .catch(() => {}); // notifyN8nProductionEvent already never rejects; belt-and-suspenders only
+    }
+  }
+  return result;
 }
 
 async function pauseProductionAction(req) {
@@ -645,7 +673,7 @@ const ACTION_REGISTRY = [
   },
   {
     name: 'start-production-pipeline',
-    description: 'Builds a production dossier for every currently ACCEPTED opportunity. Refuses to run while production is paused.',
+    description: 'Builds a production dossier for every currently ACCEPTED opportunity. Refuses to run while production is paused. Notifies n8n (fire-and-forget, opt-in via N8N_PRODUCTION_WEBHOOK_URL) once dossiers complete.',
     reused: 'production_factory/factory.py run_production_factory() (Phase 7)',
     reversible: true, // dossier building only — no real purchase/publish side effect
     kind: 'sync',

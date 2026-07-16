@@ -240,14 +240,11 @@ A second, independent intake path (Task [11]): n8n → `POST /api/trends` → Qu
 
 ## 6. Next Dollar Actions
 
+**Correction (Phase — n8n Integration Gap audit, dated after this file's Day 08/09-era original writing): item 1 below was already stale before today's audit.** The n8n Sensing Engine workflow's HTTP Request node was already correctly configured — confirmed two ways: (a) `BLOCKERS.md` #1's `ADR-045` note states `Openclaw_Sensing_Engine` and `02_Sales_Poll` were "untouched, remain exactly as they were" when the *other* two workflows were fixed, i.e. Sensing Engine needed no fix; (b) direct evidence in `OPPORTUNITIES.md` itself — a real entry (`[2026-07-15T06:40:04.543Z] what is a monsoon — نجحت كل فحوصات الجودة`) whose timestamp format and exact reason string only come from `server.js`'s `/api/trends` → `runQualityGate()` path, proving the n8n → `/api/trends` pipeline fired successfully for real at least once. `OPPORTUNITIES.md` has never "stayed empty" since. The one genuinely remaining n8n gap is workflow **activation**, which is UI-only (confirmed: n8n's CLI `--activeState=fromJson` errors outside queue/multi-main mode) — see `BLOCKERS.md` #1 for the exact remaining manual step, not a code gap.
+
 The three concrete things standing between today's build and the next dollar:
 
-1. **Add the HTTP Request node to the n8n Sensing Engine workflow → `POST http://localhost:3000/api/trends`.**
-   This is the one step in [11] that couldn't be done remotely (no n8n API key). Full step-by-step is in §4 item 1 above. Until this node exists, `/api/trends` is built and tested but has nothing feeding it — `OPPORTUNITIES.md` stays empty.
-
-   > **n8n:** open workflow → add HTTP Request node →
-   > POST http://localhost:3000/api/trends →
-   > Body: `{{ $json }}` → Save → Test
+1. ~~Add the HTTP Request node to the n8n Sensing Engine workflow~~ — already done (see correction above). The real remaining n8n action is activation, which only the founder can do via the browser at `http://localhost:5678` (log in → toggle **Active** on `Openclaw_Sensing_Engine`, `02_Sales_Poll`, `00_CEO`, `01_Market_Scout`).
 
 2. **Run `start_factory.bat` and test the full pipeline live.**
    Everything in this file has been tested piece-by-piece and in cross-task regression (§2), but never all three processes (n8n + `server.js` + `factory_loop.js`) started together from the actual `.bat` file in one shot. Do this once item 1 is done, then click **Scout** on the dashboard and confirm a book appears in `books/` and (once the n8n node is live) an entry lands in `OPPORTUNITIES.md`.

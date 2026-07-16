@@ -66,30 +66,98 @@ def _revenue():
     return {**result, "ceo_report_markdown": pipeline.render_ceo_revenue_report(result)}
 
 
+# The 4 real factory workflows (a 5th, "My workflow", is an unrelated
+# Google-Drive scratch workflow confirmed in the same n8n instance — not
+# part of the factory, deliberately excluded here). Only two ever needed
+# a code fix (ADR-045); the other two were already correct — confirmed by
+# BLOCKERS.md #1's own note that they were "untouched, remain exactly as
+# they were" when the fix was applied.
+_N8N_FIXED_EXPORTS = {"00_CEO", "01_Market_Scout"}
+_N8N_BACKUP_ONLY_WORKFLOWS = {"Openclaw_Sensing_Engine", "02_Sales_Poll"}
+_N8N_BACKUP_PATH = _FACTORY_ROOT / "n8n_workflows" / "backups" / "pre_build_20260715_232343.json"
+
+# Real, verifiable proof that the n8n -> /api/trends path has fired for
+# real at least once: server.js's runQualityGate() (via book_generator.py
+# --quality-gate) uses this exact reason string on a pass, and
+# appendOpportunity() writes it with a JS Date.toISOString() timestamp —
+# a distinct signature from market_hunter.py's own OPPORTUNITIES.md
+# entries (which always read "market_hunter: <verdict> (<score>/100)").
+# This does not prove n8n specifically (vs. a manual call to the same
+# endpoint) sent any one entry — it proves the endpoint has really
+# received and processed external submissions.
+_TRENDS_PIPELINE_SIGNATURE = "نجحت كل فحوصات الجودة"
+
+
+def _find_trends_pipeline_evidence():
+    opportunities_file = _FACTORY_ROOT / "OPPORTUNITIES.md"
+    if not opportunities_file.exists():
+        return None
+    hits = []
+    for line in opportunities_file.read_text(encoding="utf-8").splitlines():
+        if line.startswith("- [") and _TRENDS_PIPELINE_SIGNATURE in line and "market_hunter:" not in line:
+            hits.append(line)
+    if not hits:
+        return None
+    return {"count": len(hits), "most_recent": hits[-1]}
+
+
 def _automation():
     """Real, but honestly bounded: n8n's REST API needs a login this
     factory does not have credentials for (BLOCKERS.md #1) — this reads
-    the last real, exported workflow definitions instead (n8n_workflows/
-    *.fixed.json, ADR-045) and labels them explicitly as a static export,
-    never live state."""
+    the last real, exported workflow definitions instead and labels them
+    explicitly as a static export, never live state.
+
+    Two sources, both real, neither fabricated:
+      - n8n_workflows/*.fixed.json: current, re-exported after ADR-045's
+        fixes (00_CEO, 01_Market_Scout).
+      - n8n_workflows/backups/pre_build_*.json: the only export that
+        includes Openclaw_Sensing_Engine and 02_Sales_Poll (they needed no
+        fix, so were never re-exported to *.fixed.json) — labelled
+        source_kind='backup_2026-07-15' so a caller never mistakes this
+        for a live re-check."""
     workflows_dir = _FACTORY_ROOT / "n8n_workflows"
     workflows = []
+    seen_names = set()
     if workflows_dir.is_dir():
         for path in sorted(workflows_dir.glob("*.fixed.json")):
             try:
                 with open(path, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                workflows.append({
-                    "name": data.get("name", path.stem),
-                    "active_in_export": data.get("active", False),
-                    "source_file": path.name,
-                })
             except (OSError, json.JSONDecodeError):
                 continue
+            name = data.get("name", path.stem)
+            workflows.append({
+                "name": name,
+                "active_in_export": data.get("active", False),
+                "source_file": path.name,
+                "source_kind": "current_export",
+            })
+            seen_names.add(name)
+
+    if _N8N_BACKUP_PATH.exists():
+        try:
+            with open(_N8N_BACKUP_PATH, "r", encoding="utf-8") as f:
+                backup_workflows = json.load(f)
+            for data in backup_workflows:
+                name = data.get("name")
+                if name not in _N8N_BACKUP_ONLY_WORKFLOWS or name in seen_names:
+                    continue
+                workflows.append({
+                    "name": name,
+                    "active_in_export": data.get("active", False),
+                    "source_file": _N8N_BACKUP_PATH.name,
+                    "source_kind": "backup_2026-07-15",
+                })
+                seen_names.add(name)
+        except (OSError, json.JSONDecodeError):
+            pass
+
+    evidence = _find_trends_pipeline_evidence()
     return {
         "workflows": workflows,
         "live_status_available": False,
         "reason": "n8n REST API يحتاج تسجيل دخول يدوي (BLOCKERS.md #1) — هذه حالة آخر تصدير حقيقي محفوظ، لا حالة حية",
+        "trends_pipeline_evidence": evidence,
     }
 
 

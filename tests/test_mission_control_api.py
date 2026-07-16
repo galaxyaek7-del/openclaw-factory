@@ -53,6 +53,60 @@ class TestEndpointDispatch(unittest.TestCase):
         self.assertFalse(result["live_status_available"])
         self.assertIn("reason", result)
 
+    def test_automation_reports_all_four_real_workflows_not_just_the_two_with_fixes(self):
+        """n8n Integration Gap fix: before this, Mission Control's automation
+        view only knew about the 2 workflows re-exported after ADR-045's
+        fixes, silently omitting Openclaw_Sensing_Engine and 02_Sales_Poll —
+        which never needed a fix, so were never re-exported, but are just
+        as real and just as relevant to 'is workflow execution observable'."""
+        result = mission_control_api._automation()
+        names = {w["name"] for w in result["workflows"]}
+        self.assertEqual(names, {"00_CEO", "01_Market_Scout", "Openclaw_Sensing_Engine", "02_Sales_Poll"})
+
+    def test_automation_labels_current_vs_backup_sourced_workflows_honestly(self):
+        """The two fixed workflows come from a current re-export; the other
+        two only exist in a dated backup — the response must never blur
+        that distinction into looking like one uniform 'live' source."""
+        result = mission_control_api._automation()
+        by_name = {w["name"]: w for w in result["workflows"]}
+        self.assertEqual(by_name["00_CEO"]["source_kind"], "current_export")
+        self.assertEqual(by_name["01_Market_Scout"]["source_kind"], "current_export")
+        self.assertEqual(by_name["Openclaw_Sensing_Engine"]["source_kind"], "backup_2026-07-15")
+        self.assertEqual(by_name["02_Sales_Poll"]["source_kind"], "backup_2026-07-15")
+
+    def test_automation_surfaces_real_trends_pipeline_evidence(self):
+        """Real, verifiable proof the n8n -> /api/trends path fired for real
+        at least once (a genuine OPPORTUNITIES.md entry whose exact reason
+        string and timestamp format only come from that one code path) —
+        must be surfaced, not silently dropped."""
+        result = mission_control_api._automation()
+        evidence = result["trends_pipeline_evidence"]
+        self.assertIsNotNone(evidence)
+        self.assertGreaterEqual(evidence["count"], 1)
+        self.assertIn("نجحت كل فحوصات الجودة", evidence["most_recent"])
+
+    def test_find_trends_pipeline_evidence_ignores_market_hunter_entries(self):
+        """market_hunter.py's own OPPORTUNITIES.md entries ('market_hunter:
+        <verdict> (<score>/100)') must never be mistaken for n8n-fed ones —
+        they're a completely different, already-attributed source."""
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            opp_file = Path(tmp) / "OPPORTUNITIES.md"
+            opp_file.write_text(
+                "- [2026-01-01T00:00:00.000Z] some niche — market_hunter: GOOD (70/100)\n",
+                encoding="utf-8",
+            )
+            with patch.object(mission_control_api, "_FACTORY_ROOT", Path(tmp)):
+                evidence = mission_control_api._find_trends_pipeline_evidence()
+            self.assertIsNone(evidence)
+
+    def test_find_trends_pipeline_evidence_missing_file_is_honest_none(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch.object(mission_control_api, "_FACTORY_ROOT", Path(tmp)):
+                evidence = mission_control_api._find_trends_pipeline_evidence()
+            self.assertIsNone(evidence)
+
     def test_decision_history_returns_summary_records_newest_first(self):
         result = mission_control_api._decision_history()
         self.assertIn("history", result)

@@ -22,3 +22,34 @@ Deliberately not hand-built: none of the 5 existing workflows use an email node,
 ## What was deliberately NOT built
 
 No new workflows for the other requested "departments" (Customer Support, Backup, Security, Reporting, etc.) — see `ADR-037` for why: no real business logic exists behind most of them yet (zero customers, git already covers backup, `safety_filter.py` already runs in-process), so building empty shells for them would be example workflows by another name.
+
+## n8n Integration Gap audit (ADR-06x, dated after ADR-045)
+
+A full re-audit of every real workflow found the wiring already correct, with one exception: **the Production step of the factory pipeline had no n8n touchpoint at all.**
+
+**Real workflow map today** (the 5th, "My workflow" — a Google Drive scratch workflow in the same instance — is not part of the factory and is excluded):
+
+| Workflow | Trigger | Calls | Status |
+|---|---|---|---|
+| `Openclaw_Sensing_Engine` | Schedule (daily 8am) + Webhook (`scout-trigger`) | Google Trends RSS → `POST /api/trends` | Correct since before ADR-045 (never needed a fix); **proven live** — see evidence below |
+| `01_Market_Scout` | Manual | `POST /api/scout/run` | Fixed by ADR-045 |
+| `00_CEO` | Manual | `GET /api/dashboard` | Fixed by ADR-045 |
+| `02_Sales_Poll` | Schedule (every 4h) | `POST /api/sales/poll` | Correct since before ADR-045 (never needed a fix) |
+| `03_Production_Notify` (new, this audit) | Webhook (`production-notify`) | none (receives only) | **Prepared, not imported** — see below |
+
+**Correction to `FACTORY_STATUS.md` §6:** that file's "Next Dollar Actions" claimed the Sensing Engine's HTTP node was still missing and `OPPORTUNITIES.md` "stays empty." Both were already false: `BLOCKERS.md` #1's own `ADR-045` note says Sensing Engine and `02_Sales_Poll` were "untouched, remain exactly as they were" when the other two were fixed — i.e. Sensing Engine needed no fix. Direct proof it fired for real: `OPPORTUNITIES.md` contains `[2026-07-15T06:40:04.543Z] what is a monsoon — نجحت كل فحوصات الجودة` — a timestamp format and exact reason string that only come from `server.js`'s `/api/trends` → `runQualityGate()` path (confirmed by grepping that exact string to its single source, `book_generator.py`'s `--quality-gate` reason). `GET /api/v1/automation-status` (Mission Control's Automation tab) now surfaces this same evidence (`trends_pipeline_evidence`), and reports on all 4 real workflows above, not just the 2 that have `.fixed.json` re-exports (the other 2 are read from `backups/pre_build_20260715_232343.json`, clearly labeled `source_kind: "backup_2026-07-15"` so it's never mistaken for a live re-check).
+
+### `03_Production_Notify.prepared.json` — new, not yet imported
+
+`server.js` now calls `notifyN8nProductionEvent()` after `start-production-pipeline` completes at least one real dossier — a plain, fire-and-forget `POST` of `{event, production_id, niche, generated_at, recommended_price, pre_production_checks_passed}` to `N8N_PRODUCTION_WEBHOOK_URL` (an env var; unset by default). With no URL configured it no-ops immediately — a real production run must never fail or block on n8n being unreachable or not yet wired up. Every attempt (skipped/succeeded/failed) is logged via the same `logServiceCall()`/`logs/service_layer.log` path every other service action uses.
+
+`03_Production_Notify.prepared.json` is the receiving side: a single `Webhook` node (`POST /webhook/production-notify`) → a `Set` node that extracts the real fields into named outputs, ready for the founder to extend with whatever real downstream action they want (email, Slack, a spreadsheet row, etc.) — deliberately not built here, same reasoning as `ADR-037`: no real downstream action has been decided yet, so inventing one would be an example node by another name.
+
+**This file is prepared, not imported** — unlike `00_CEO.fixed.json`/`01_Market_Scout.fixed.json`, it was never pushed into the live n8n database, because doing so needs the same stop-the-live-process step ADR-045 used, which requires the founder's explicit go-ahead each time, not a standing authorization. To activate:
+
+1. Import `03_Production_Notify.prepared.json` into n8n — either via the UI's **Import from File**, or the same CLI path ADR-045 used (`n8n import:workflow --input=...` against a stopped instance).
+2. Log into `http://localhost:5678` and toggle **Active**.
+3. Set `N8N_PRODUCTION_WEBHOOK_URL=http://localhost:5678/webhook/production-notify` in `.env`.
+4. Restart `server.js` so it picks up the new env var.
+
+Until all four steps are done, `start-production-pipeline` continues to work exactly as before (the notify call safely no-ops) — nothing about existing behavior changes by this file merely existing on disk.

@@ -658,10 +658,14 @@ const loaders = {
     const res = await fetchJson('/api/v1/automation-status');
     if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
     const d = res.data;
+    const evidence = d.trends_pipeline_evidence
+      ? `<div class="card"><h3>دليل تنفيذ حقيقي — Sensing Engine → /api/trends</h3><div class="muted">${d.trends_pipeline_evidence.count} إدخال حقيقي وصل عبر هذا المسار. الأحدث:<br>${escapeHtml(d.trends_pipeline_evidence.most_recent)}</div></div>`
+      : '';
     el.innerHTML = `
       <p class="muted">⚠️ ${escapeHtml(d.reason)}</p>
-      <table><thead><tr><th>Workflow</th><th>نشط في آخر تصدير</th><th>الملف</th></tr></thead>
-      <tbody>${(d.workflows || []).map(w => `<tr><td>${escapeHtml(w.name)}</td><td>${w.active_in_export ? badge('ready') : badge('unavailable')}</td><td class="muted">${escapeHtml(w.source_file)}</td></tr>`).join('')}</tbody></table>
+      <table><thead><tr><th>Workflow</th><th>نشط في آخر تصدير</th><th>مصدر البيانات</th><th>الملف</th></tr></thead>
+      <tbody>${(d.workflows || []).map(w => `<tr><td>${escapeHtml(w.name)}</td><td>${w.active_in_export ? badge('ready') : badge('unavailable')}</td><td class="muted">${escapeHtml(w.source_kind)}</td><td class="muted">${escapeHtml(w.source_file)}</td></tr>`).join('')}</tbody></table>
+      ${evidence}
     `;
   },
 
