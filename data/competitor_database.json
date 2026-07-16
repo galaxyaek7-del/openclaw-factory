@@ -429,20 +429,6 @@
       "age_days": 0
     }
   },
-  "a test niche xyz": {
-    "niche": "a test niche xyz",
-    "discovered_at": "2026-07-15T20:15:53.172269+00:00",
-    "total_found": 0,
-    "by_category": {},
-    "competitors": [],
-    "market_saturation": "Unknown — يحتاج بيانات حجم سوق حقيقي (TAM)، لا عدد نتائج بحث فقط (ADR-040)",
-    "barrier_to_entry": "Unknown — لا مؤشر تقني/رأسمالي حقيقي متاح من HN/GitHub وحدهما",
-    "pricing_power": "Unknown — يحتاج بيانات مبيعات حقيقية، صفر مبيعات اليوم",
-    "_cache": {
-      "hit": false,
-      "age_days": 0
-    }
-  },
   "ai saas pricing tool": {
     "niche": "AI SaaS pricing tool",
     "discovered_at": "2026-07-15T21:35:39.506121+00:00",

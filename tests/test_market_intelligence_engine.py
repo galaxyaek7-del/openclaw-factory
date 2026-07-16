@@ -164,17 +164,32 @@ class TestAnalyzeOpportunityOrchestration(unittest.TestCase):
     """The one integrated entry point — every network-calling function
     across both modules is mocked, so this never makes a real call.
     analysis_db_file is always redirected to a temp path — this must never
-    write into the real data/market_intelligence_analyses.jsonl."""
+    write into the real data/market_intelligence_analyses.jsonl.
+
+    competitor_discovery.COMPETITOR_DB_FILE is also redirected (2026-07-16
+    fix): get_or_refresh_competitors() still calls save_database() even
+    when the network query is mocked to return [] — without this, every
+    run of this test class was silently appending a real (if empty)
+    result to the live data/competitor_database.json, confirmed by
+    finding this suite's own niche strings inside that file."""
 
     def setUp(self):
         import tempfile
         fd, self.db_path = tempfile.mkstemp(suffix=".jsonl")
         os.close(fd)
         os.remove(self.db_path)
+        fd, self.competitor_db_path = tempfile.mkstemp(suffix=".json")
+        os.close(fd)
+        os.remove(self.competitor_db_path)
+        patcher = patch("competitor_discovery.COMPETITOR_DB_FILE", self.competitor_db_path)
+        patcher.start()
+        self.addCleanup(patcher.stop)
 
     def tearDown(self):
         if os.path.exists(self.db_path):
             os.remove(self.db_path)
+        if os.path.exists(self.competitor_db_path):
+            os.remove(self.competitor_db_path)
 
     def test_empty_niche_degrades_honestly_never_crashes(self):
         """Regression test for a self-audit finding (2026-07-15):

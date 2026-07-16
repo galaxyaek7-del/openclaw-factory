@@ -82,19 +82,26 @@ class TestStoreNeverOverwrites(unittest.TestCase):
 
 
 class TestEvaluateAndDecide(unittest.TestCase):
+    """competitor_discovery.COMPETITOR_DB_FILE is redirected (2026-07-16
+    fix): get_or_refresh_competitors() writes to it even with the network
+    query itself mocked — without this, every run of this class was
+    appending a real entry to the live data/competitor_database.json."""
+
     def setUp(self):
         self.decisions_path = _temp_path()
         self.analysis_db_path = _temp_path()
+        self.competitor_db_path = _temp_path(suffix=".json")
         patcher1 = patch("competitor_discovery._query_hn", return_value=[])
         patcher2 = patch("competitor_discovery._query_github", return_value=[])
         patcher3 = patch("market_intelligence_engine._query_hn_discussions", return_value=([], 0))
         patcher4 = patch("market_intelligence_engine._query_github_issues", return_value=([], 0))
-        for p in (patcher1, patcher2, patcher3, patcher4):
+        patcher5 = patch("competitor_discovery.COMPETITOR_DB_FILE", self.competitor_db_path)
+        for p in (patcher1, patcher2, patcher3, patcher4, patcher5):
             p.start()
             self.addCleanup(p.stop)
 
     def tearDown(self):
-        for p in (self.decisions_path, self.analysis_db_path):
+        for p in (self.decisions_path, self.analysis_db_path, self.competitor_db_path):
             if os.path.exists(p):
                 os.remove(p)
 

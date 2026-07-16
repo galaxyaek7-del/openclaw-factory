@@ -36,10 +36,17 @@ def _derive_status(ai_ceo_decision, opportunity_score_accepted):
 
 
 def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=10,
-                         analysis_db_file=None, decisions_path=None):
+                         analysis_db_file=None, decisions_path=None, precomputed_analysis=None):
     """Runs the full Signal -> Evaluation -> Decision path for one niche and
-    records the result permanently (append-only, never overwritten)."""
-    analysis = market_intelligence_core.evaluate_opportunity(
+    records the result permanently (append-only, never overwritten).
+
+    precomputed_analysis (ADR-051): when the caller already has a fresh
+    evaluate_opportunity() result (e.g. the Executive Orchestrator, which
+    runs the market_intelligence stage immediately before the decision
+    stage in the same cycle), pass it here to skip a second, redundant
+    live network round-trip. Omitting it (every caller before this
+    parameter existed) reproduces today's exact behavior unchanged."""
+    analysis = precomputed_analysis if precomputed_analysis is not None else market_intelligence_core.evaluate_opportunity(
         niche, external_signal=external_signal, tier=tier, max_results=max_results,
         analysis_db_file=analysis_db_file,
     )

@@ -109,14 +109,28 @@ class TestRegistryAutoDiscovery(unittest.TestCase):
 
 
 class TestCoreEvaluateOpportunity(unittest.TestCase):
+    """competitor_discovery.COMPETITOR_DB_FILE is redirected here too
+    (2026-07-16 fix): get_or_refresh_competitors() writes to it even when
+    the network query itself is mocked — without this, every run of this
+    class was appending a real entry to the live
+    data/competitor_database.json."""
+
     def setUp(self):
         fd, self.db_path = tempfile.mkstemp(suffix=".jsonl")
         os.close(fd)
         os.remove(self.db_path)
+        fd, self.competitor_db_path = tempfile.mkstemp(suffix=".json")
+        os.close(fd)
+        os.remove(self.competitor_db_path)
+        patcher = patch("competitor_discovery.COMPETITOR_DB_FILE", self.competitor_db_path)
+        patcher.start()
+        self.addCleanup(patcher.stop)
 
     def tearDown(self):
         if os.path.exists(self.db_path):
             os.remove(self.db_path)
+        if os.path.exists(self.competitor_db_path):
+            os.remove(self.competitor_db_path)
 
     def test_empty_niche_degrades_honestly_never_crashes(self):
         from market_intelligence_core import core
