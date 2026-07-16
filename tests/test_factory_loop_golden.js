@@ -9,6 +9,21 @@
 // function call) — deliberately, per ADR-010: the whole point is to verify
 // the real constitutional pricing function, not a mock of it.
 //
+// Phase 10A (Production Stability): the one exception to "never touches the
+// real file" used to be checkGoldenStagnation()'s "real data genuinely IS
+// stagnant today" test, which called checkGoldenStagnation() with no path
+// argument — defaulting to the REAL, live data/golden_hunter_events.jsonl,
+// which the actual always-running background factory_loop.js process keeps
+// appending to. That is not a concurrency/write-corruption bug (factory_loop.js
+// already holds a PID lockfile — see its "PID LOCKFILE GUARD" section — so
+// there is only ever one real writer); it was a test asserting a specific,
+// time-sensitive fact about live, legitimately-changing production data,
+// which necessarily goes stale as the real automation keeps doing its real
+// job. Root-cause fix: a frozen, real, historical snapshot
+// (tests/fixtures/golden_hunter_events_stagnant_sample.jsonl, captured
+// 2026-07-16 from the actual file) plus a fixed `nowMs`, so the test is now a
+// single reader of immutable data instead of racing a live writer.
+//
 //   node tests/test_factory_loop_golden.js
 
 const assert = require('assert');
@@ -301,12 +316,18 @@ async function main() {
     assert.deepStrictEqual(nonStagnation, [], `unexpected false positive against real data: ${JSON.stringify(nonStagnation)}`);
   });
 
-  await test('checkGoldenStagnation: real data genuinely IS stagnant today (disease #1, confirmed positive)', () => {
-    // As of this fix, the real golden_opportunities.json top pick has been
-    // unchanged since 2026-07-11 — this must keep firing until a real new
-    // candidate source (ADR-028) changes the picture, not be silenced.
-    const reason = fl.checkGoldenStagnation();
-    assert.ok(reason, 'expected a real stagnation reason against the current repo data');
+  await test('checkGoldenStagnation: real (frozen) data genuinely WAS stagnant (disease #1, confirmed positive)', () => {
+    // Frozen real snapshot (see the file-header comment above for why):
+    // captured from the actual data/golden_hunter_events.jsonl on
+    // 2026-07-16, covering the genuine 2026-07-12 -> 2026-07-15 stretch
+    // where the same (niche, profit_score) kept re-attempting unchanged.
+    // A fixed nowMs shortly after the snapshot's last matching entry makes
+    // this fully deterministic — no more racing the live background
+    // factory_loop.js process.
+    const fixturePath = path.join(__dirname, 'fixtures', 'golden_hunter_events_stagnant_sample.jsonl');
+    const fixedNowMs = Date.parse('2026-07-15T07:00:00.000Z');
+    const reason = fl.checkGoldenStagnation(fixturePath, fixedNowMs);
+    assert.ok(reason, 'expected a real stagnation reason against the frozen snapshot');
     assert.ok(reason.includes('بلا تغيير'));
   });
 

@@ -7,6 +7,7 @@ const Groq = require('groq-sdk');
 const knowledgeBrain = require('./knowledge_brain');
 const selfAwareness = require('./self_awareness');
 const dashboardData = require('./lib/dashboard_data');
+const metricsLib = require('./lib/metrics');
 // readLastGenerationRecord is a pure file read (no side effects) — requiring
 // factory_loop.js here never starts its loop or acquires its lockfile: both
 // only happen inside main(), guarded by `if (require.main === module)`
@@ -378,6 +379,58 @@ generateServiceLayerDocs();
 
 const v1Router = express.Router();
 
+// ── OBSERVABILITY (Phase 10A — Production Stability) ──
+// Real request/error/latency counters for every request that reaches
+// this router, plus service-health aggregation. Pure recording logic
+// lives in lib/metrics.js (framework-free, unit-tested in isolation);
+// this middleware only wires it to real request/response timing.
+const METRICS_REGISTRY = metricsLib.createMetricsRegistry();
+
+v1Router.use((req, res, next) => {
+  const startedAtNs = process.hrtime.bigint();
+  res.on('finish', () => {
+    // req.route is only set once Express matches a route (by 'finish' time
+    // it always is, even for routes with params) — using the pattern
+    // ('/actions/:id', not '/actions/act_f83...') keeps route cardinality
+    // bounded instead of growing one label per random job id.
+    const route = (req.route && req.route.path) || req.path;
+    const durationMs = Number(process.hrtime.bigint() - startedAtNs) / 1e6;
+    metricsLib.recordRequest(METRICS_REGISTRY, { method: req.method, route, status: res.statusCode, durationMs });
+  });
+  next();
+});
+
+// Reused by both GET /api/v1/health and the health gauge inside
+// GET /api/v1/metrics — one real computation, not two.
+async function computeServiceLayerHealth() {
+  return Promise.all(SERVICE_REGISTRY.map(async (svc) => {
+    try {
+      const r = await svc.health();
+      return { name: svc.name, status: r.status, detail: r.detail };
+    } catch (err) {
+      return { name: svc.name, status: 'error', detail: err.message };
+    }
+  }));
+}
+
+v1Router.get('/health', async (req, res) => {
+  const services = await computeServiceLayerHealth();
+  const aggregate = metricsLib.aggregateHealth(services);
+  res.json({
+    success: true, version: 'v1', checked_at: new Date().toISOString(),
+    uptime_seconds: process.uptime(), ...aggregate, services,
+  });
+});
+
+v1Router.get('/metrics', async (req, res) => {
+  const services = await computeServiceLayerHealth();
+  const text = metricsLib.renderPrometheusText(METRICS_REGISTRY, {
+    uptimeSeconds: process.uptime(), serviceHealth: services,
+  });
+  res.set('Content-Type', 'text/plain; version=0.0.4; charset=utf-8');
+  res.send(text);
+});
+
 v1Router.get('/docs', (req, res) => {
   res.json({
     success: true,
@@ -460,11 +513,26 @@ function newActionJob(action) {
 // (status:'running'); updates the SAME job object in place whenever the
 // process actually finishes, fully decoupled from any HTTP response —
 // so a five-minute real evaluation never holds a request open.
+// Lightweight tracing (Phase 10A — Production Stability): real,
+// timestamped lifecycle spans for the two actions this applies to today
+// (rerun-market-analysis / Market Analysis, trigger-opportunity-evaluation
+// / Opportunity Evaluation — the only two registered with kind:'async').
+// Not a new tracing system — just more granular entries in the exact same
+// job.progress array/logServiceCall() calls Phase 9 already built, so a
+// slow multi-minute real run has real, inspectable stage timestamps
+// instead of only "started"/"finished".
+function traceSpan(job, action, span) {
+  const at = new Date().toISOString();
+  job.progress.push({ at, message: span });
+  logServiceCall({ service: 'actions', action, job_id: job.id, event: 'span', span });
+}
+
 function runPythonActionAsync(action, section) {
   const job = newActionJob(action);
   const pythonPath = detectPython();
   const scriptPath = path.join(__dirname, 'mission_control_api.py');
   const python = spawn(pythonPath, [scriptPath, section], { cwd: __dirname });
+  traceSpan(job, action, 'python_process_spawned');
   let output = '', errOut = '';
   python.stdout.on('data', d => { output += d.toString(); });
   python.stderr.on('data', d => { errOut += d.toString(); });
@@ -477,6 +545,7 @@ function runPythonActionAsync(action, section) {
   };
   python.on('error', (err) => finish('failed', err.message));
   python.on('close', () => {
+    traceSpan(job, action, 'python_process_exited');
     let parsed;
     try {
       parsed = JSON.parse(output.trim());
@@ -647,6 +716,22 @@ v1Router.get('/actions/:id', (req, res) => {
   res.json({ success: true, version: 'v1', job });
 });
 
+// Single-writer guard (Phase 10A — Production Stability): refuses to start
+// a second run of the SAME action while one is still 'running'. This is a
+// real gap Phase 9 left open — nothing previously stopped two overlapping
+// triggers of e.g. rerun-market-analysis from spawning two Python
+// subprocesses that both call orchestrator.run_cycle() and append to the
+// same shared files (data/decisions.jsonl, data/orchestrator_timeline.jsonl)
+// at once. factory_loop.js's own PID lockfile already gives it single-writer
+// safety for its own process; this is the equivalent guard for actions
+// triggered through Mission Control.
+function isActionRunning(actionName) {
+  for (const job of ACTION_JOBS.values()) {
+    if (job.action === actionName && job.status === 'running') return job;
+  }
+  return null;
+}
+
 v1Router.post('/actions/:name', async (req, res) => {
   const action = ACTION_BY_NAME.get(req.params.name);
   if (!action) {
@@ -654,6 +739,13 @@ v1Router.post('/actions/:name', async (req, res) => {
   }
   if (!req.body || req.body.confirmed !== true) {
     return res.status(400).json({ success: false, version: 'v1', error: { code: 'confirmation_required', message: 'this action requires { "confirmed": true } in the request body' } });
+  }
+  const alreadyRunning = isActionRunning(action.name);
+  if (alreadyRunning) {
+    return res.status(409).json({
+      success: false, version: 'v1',
+      error: { code: 'action_already_running', message: `${action.name} is already running (job ${alreadyRunning.id}, started ${alreadyRunning.started_at})` },
+    });
   }
   try {
     const job = await triggerAction(action, req);

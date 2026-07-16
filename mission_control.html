@@ -332,7 +332,7 @@ function escapeHtml(s) {
 }
 
 function badge(level) {
-  const map = { low: 'good', medium: 'warn', high: 'bad', critical: 'bad', ready: 'good', unavailable: 'muted', cooldown: 'warn', running: 'info', completed: 'good', failed: 'bad', paused: 'warn' };
+  const map = { low: 'good', medium: 'warn', high: 'bad', critical: 'bad', ready: 'good', unavailable: 'muted', cooldown: 'warn', running: 'info', completed: 'good', failed: 'bad', paused: 'warn', healthy: 'good', degraded: 'warn', unhealthy: 'bad' };
   const cls = map[level] || 'muted';
   return `<span class="badge ${cls}">${escapeHtml(level ?? 'Unknown')}</span>`;
 }
@@ -546,18 +546,26 @@ let _lastValidationJob = null;
 const loaders = {
   health: async () => {
     const el = document.getElementById('healthContent');
-    const res = await fetchJson('/api/v1/company-health');
+    const [res, slRes] = await Promise.all([
+      fetchJson('/api/v1/company-health'),
+      fetchJson('/api/v1/health').catch(() => null),
+    ]);
     if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
     const d = res.data;
+    const slCard = slRes && slRes.success
+      ? `<div class="card"><h3>Service Layer Health</h3><div class="big">${badge(slRes.overall)}</div><div class="muted">${slRes.healthy_count}/${slRes.total_count} خدمة سليمة — تشغيل ${Math.round(slRes.uptime_seconds)} ثانية</div></div>`
+      : '';
     el.innerHTML = `
       <div class="grid">
         <div class="card"><h3>الحالة</h3><div class="big">${badge(d.health?.status)}</div></div>
         <div class="card"><h3>مستوى المخاطرة</h3><div class="big">${badge(d.risk?.level)}</div><div class="muted">${escapeHtml(d.risk?.reason)}</div></div>
         <div class="card"><h3>الوعي الذاتي</h3><div class="big">${escapeHtml(d.self_awareness?.verdict ?? 'Unknown')}</div><div class="muted">أضعف خلية: ${escapeHtml(d.self_awareness?.weakest_cell)}</div></div>
+        ${slCard}
       </div>
       <details><summary>الأولوية التالية</summary><pre>${escapeHtml(d.current_priorities?.text ?? d.current_priorities?.note ?? 'لا شيء')}</pre></details>
     `;
     if (d.health?.status === 'critical') pushNotification('warning', 'الحالة العامة للمصنع: حرِجة (critical)');
+    if (slRes && slRes.success && slRes.overall !== 'healthy') pushNotification('warning', `Service Layer: ${slRes.overall} (${slRes.healthy_count}/${slRes.total_count})`);
   },
 
   market: async () => {
