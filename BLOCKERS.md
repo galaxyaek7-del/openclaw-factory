@@ -44,13 +44,17 @@ Maintained automatically. Each entry: why it exists, the exact manual action nee
 
 **Manual action required:** Resolve #2, then publish (or confirm publishing) at least one product live.
 
-## 4. Tier-1/2 Golden Hunter scoring (not a credential blocker — a design gap, partially closed)
+## 4. Tier-1/2 Golden Hunter scoring (not a credential blocker — a design gap, mostly closed)
 
 **Why it exists:** Different category from #1-3 — not blocked on access, blocked on unfinished engineering. `ADR-035`/`ADR-036`: `profit_oracle.score_opportunity()`'s demand/competition/margin heuristic was blind to real market signal (HN points, GitHub stars) — confirmed empirically across 8 real research candidates, all clustering into the same 2-4 discrete scores regardless of real evidence strength.
 
-**Update (`ADR-038`):** the `demand` component is fixed — now accepts real HN/GitHub signal and meaningfully differentiates (proven: the same 8 candidates now range 80.3-84.6 instead of a flat 81.6, tracking real evidence strength). Backward compatible, zero effect on live tier4 behavior (proven algebraically + by test). **`competition` and `profit_potential` still need the same treatment** before any real candidate could plausibly clear the tier1 floor — same word-count/keyword estimates as before.
+**Update (`ADR-038`):** the `demand` component is fixed — now accepts real HN/GitHub signal and meaningfully differentiates (proven: the same 8 candidates now range 80.3-84.6 instead of a flat 81.6, tracking real evidence strength). Backward compatible, zero effect on live tier4 behavior (proven algebraically + by test).
 
-**Manual action required:** None — still a "next design session" item, not a founder-authorization item. Narrower now than before.
+**Correction (End-to-End Company Validation, 2026-07-16): this entry had gone stale.** It previously claimed `competition` and `profit_potential` (margin) "still need the same treatment" — that was already false by the time of this validation: `ADR-041` (2026-07-15) applied the exact same real-signal philosophy to both. `profit_oracle.py`'s `_score_competition()` and `_score_margin()` both now call `_find_niche_report()` first (a real saved Amazon report, when one exists) before falling back to the keyword/word-count estimate — confirmed directly in the source, not assumed. `config/capability_registry.json` reflects this: `competition_with_report`, `competition_real_result_count`, and `margin_real_fees_and_cost` are all `ESTIMATED` (real signal, honestly labeled with its confidence/assumptions), not the old flat keyword guess.
+
+**What genuinely remains a design gap (not a credential blocker):** `niche_reports/` — the real saved Amazon reports `_find_niche_report()` looks for — has been empty all session, so the *real-report* path in both functions has real code but zero real data to run on yet; every live scoring today still falls through to the real-HN/GitHub-signal path (also real, just a weaker signal) or the keyword fallback. Tier1/2 candidates still cluster below the raw acceptance floor in practice (see the "Golden Hunter" evaluation runs throughout this session) — not because the scoring is fake, but because real evidence strength for AI-agent-blueprint-style tier1 niches is still thin (see `config/capability_registry.json`'s `pricing_intelligence_real_competitor_prices` entry, DISCOVERY, for why competitor pricing specifically stays unresolved).
+
+**Manual action required:** None — still an engineering/evidence-accumulation item, not a founder-authorization item.
 
 ---
 
