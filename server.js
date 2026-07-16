@@ -29,6 +29,123 @@ const LIVE_PUBLISH_ENABLED = process.env.FACTORY_LIVE_PUBLISH === 'true';
 app.use(cors());
 app.use(express.json());
 
+// ── MISSION CONTROL: simple password gate (Phase 8) ──
+// Deliberately NOT express-session/cookie-parser — no new npm dependency
+// for a single-operator local tool (per explicit direction: "simple
+// password gate", not multi-user accounts/roles). A signed, in-memory-
+// secret session token (crypto.createHmac), set as an httpOnly cookie;
+// the secret is generated fresh every server start, so restarting the
+// process invalidates every session — acceptable for a local tool, not a
+// hosted multi-instance service.
+//
+// Scope, deliberately narrow: this gates ONLY /mission_control.html and
+// /api/mission-control/* — every pre-existing route's security posture
+// is left exactly as it was. Retroactively adding auth to the dozens of
+// existing routes would be a much larger, riskier change to already-
+// relied-upon behavior, and was not asked for.
+const crypto = require('crypto');
+const MISSION_CONTROL_SESSION_SECRET = crypto.randomBytes(32).toString('hex');
+const MISSION_CONTROL_PASSWORD = process.env.MISSION_CONTROL_PASSWORD;
+
+function signMissionControlSession(payload) {
+  const mac = crypto.createHmac('sha256', MISSION_CONTROL_SESSION_SECRET).update(payload).digest('hex');
+  return `${payload}.${mac}`;
+}
+
+function verifyMissionControlSession(token) {
+  if (!token || !token.includes('.')) return false;
+  const dot = token.lastIndexOf('.');
+  const payload = token.slice(0, dot);
+  const mac = token.slice(dot + 1);
+  const expected = crypto.createHmac('sha256', MISSION_CONTROL_SESSION_SECRET).update(payload).digest('hex');
+  try {
+    return crypto.timingSafeEqual(Buffer.from(mac), Buffer.from(expected));
+  } catch {
+    return false;
+  }
+}
+
+function parseCookies(req) {
+  const header = req.headers.cookie;
+  const out = {};
+  if (!header) return out;
+  for (const part of header.split(';')) {
+    const idx = part.indexOf('=');
+    if (idx === -1) continue;
+    out[part.slice(0, idx).trim()] = decodeURIComponent(part.slice(idx + 1).trim());
+  }
+  return out;
+}
+
+function requireMissionControlAuth(req, res, next) {
+  const cookies = parseCookies(req);
+  if (verifyMissionControlSession(cookies.mc_session)) return next();
+  // Path-based, not Accept-header-based: curl and fetch() both send
+  // "Accept: */*" by default, which also satisfies req.accepts('html'),
+  // so an Accept check would wrongly redirect API calls (including the
+  // frontend's own fetch() calls on session expiry) to the login page
+  // instead of returning JSON it can react to.
+  if (req.method === 'GET' && !req.path.startsWith('/api/')) {
+    return res.redirect('/mission_control_login.html');
+  }
+  return res.status(401).json({ success: false, error: 'unauthenticated' });
+}
+
+app.post('/api/mission-control/login', (req, res) => {
+  if (!MISSION_CONTROL_PASSWORD) {
+    return res.status(500).json({
+      success: false,
+      error: 'MISSION_CONTROL_PASSWORD غير مُعرَّف في .env — أضِفه أولاً (سطر واحد: MISSION_CONTROL_PASSWORD=...)',
+    });
+  }
+  const { password } = req.body || {};
+  if (password !== MISSION_CONTROL_PASSWORD) {
+    return res.status(401).json({ success: false, error: 'كلمة مرور خاطئة' });
+  }
+  const token = signMissionControlSession(`mc|${Date.now()}`);
+  res.cookie('mc_session', token, { httpOnly: true, sameSite: 'lax', maxAge: 12 * 60 * 60 * 1000 });
+  res.json({ success: true });
+});
+
+app.post('/api/mission-control/logout', (req, res) => {
+  res.clearCookie('mc_session');
+  res.json({ success: true });
+});
+
+app.get('/api/mission-control/session', (req, res) => {
+  const cookies = parseCookies(req);
+  res.json({ success: true, authenticated: verifyMissionControlSession(cookies.mc_session) });
+});
+
+app.get('/mission_control.html', requireMissionControlAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'mission_control.html'));
+});
+
+// Real Python packages built this session, reused (not duplicated) via
+// mission_control_api.py's thin CLI dispatcher — same stdin/stdout-JSON
+// subprocess pattern every other script this factory already uses
+// (see /api/market-analyze above).
+const MISSION_CONTROL_ENDPOINTS = ['opportunities', 'production', 'revenue', 'automation'];
+app.get('/api/mission-control/:section', requireMissionControlAuth, (req, res) => {
+  const section = req.params.section;
+  if (!MISSION_CONTROL_ENDPOINTS.includes(section)) {
+    return res.status(404).json({ success: false, error: `unknown section: ${section}` });
+  }
+  const pythonPath = detectPython();
+  const scriptPath = path.join(__dirname, 'mission_control_api.py');
+  const python = spawn(pythonPath, [scriptPath, section], { cwd: __dirname });
+  let output = '', errOut = '';
+  python.stdout.on('data', d => { output += d.toString(); });
+  python.stderr.on('data', d => { errOut += d.toString(); });
+  python.on('close', () => {
+    try {
+      res.json(JSON.parse(output.trim()));
+    } catch {
+      res.status(500).json({ success: false, error: 'Parse error: ' + output + errOut });
+    }
+  });
+});
+
 // ── NICHE SAFETY FILTER ──
 // Gates any niche/title/description before it can reach book generation.
 // Wraps safety_filter.py (blocklists for brand-poison, financial,

@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpenClaw Mission Control</title>
+<meta name="theme-color" content="#0f172a">
+<link rel="manifest" href="/mission_control.webmanifest">
+<style>
+  :root {
+    --bg: #0b1220; --panel: #111c33; --card: #16213e; --text: #e2e8f0; --muted: #94a3b8;
+    --accent: #38bdf8; --good: #4ade80; --warn: #fbbf24; --bad: #f87171; --border: #263352;
+  }
+  :root[data-theme="light"] {
+    --bg: #f1f5f9; --panel: #ffffff; --card: #ffffff; --text: #0f172a; --muted: #475569;
+    --accent: #0284c7; --good: #16a34a; --warn: #d97706; --bad: #dc2626; --border: #e2e8f0;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f1f5f9; --panel: #ffffff; --card: #ffffff; --text: #0f172a; --muted: #475569;
+      --accent: #0284c7; --good: #16a34a; --warn: #d97706; --bad: #dc2626; --border: #e2e8f0;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header {
+    position: sticky; top: 0; z-index: 10; background: var(--panel); border-bottom: 1px solid var(--border);
+    padding: .75rem 1rem; display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
+  }
+  header h1 { font-size: 1.1rem; margin: 0; flex: 1; }
+  header button {
+    background: transparent; border: 1px solid var(--border); color: var(--text);
+    border-radius: 8px; padding: .4rem .7rem; cursor: pointer; font-size: .85rem;
+  }
+  #searchBox {
+    flex: 1 1 200px; min-width: 120px; padding: .5rem .75rem; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--bg); color: var(--text);
+  }
+  nav {
+    display: flex; overflow-x: auto; gap: .25rem; padding: .5rem 1rem; background: var(--panel);
+    border-bottom: 1px solid var(--border); -webkit-overflow-scrolling: touch;
+  }
+  nav button {
+    white-space: nowrap; background: transparent; border: none; color: var(--muted);
+    padding: .5rem .9rem; border-radius: 8px; cursor: pointer; font-size: .85rem;
+  }
+  nav button.active { background: var(--card); color: var(--accent); font-weight: 600; }
+  main { padding: 1rem; max-width: 1100px; margin: 0 auto; }
+  section.tab { display: none; }
+  section.tab.active { display: block; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .75rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem;
+  }
+  .card h3 { margin: 0 0 .5rem; font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .card .big { font-size: 1.6rem; font-weight: 700; }
+  .badge { display: inline-block; padding: .15rem .55rem; border-radius: 999px; font-size: .75rem; font-weight: 600; }
+  .badge.good { background: color-mix(in srgb, var(--good) 20%, transparent); color: var(--good); }
+  .badge.warn { background: color-mix(in srgb, var(--warn) 20%, transparent); color: var(--warn); }
+  .badge.bad { background: color-mix(in srgb, var(--bad) 20%, transparent); color: var(--bad); }
+  .badge.muted { background: color-mix(in srgb, var(--muted) 20%, transparent); color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  th, td { text-align: right; padding: .5rem; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: .75rem; text-transform: uppercase; }
+  .muted { color: var(--muted); }
+  .loading { color: var(--muted); padding: 2rem; text-align: center; }
+  pre { white-space: pre-wrap; word-break: break-word; background: var(--bg); padding: .75rem; border-radius: 8px; font-size: .8rem; }
+  details summary { cursor: pointer; color: var(--accent); font-size: .85rem; margin-top: .5rem; }
+  .searchResults { margin-top: 1rem; }
+  .searchResults .card { margin-bottom: .5rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🛰️ Mission Control</h1>
+  <input id="searchBox" type="search" placeholder="بحث عام… (نيتش، قرار، معرفة)">
+  <button id="themeToggle">🌗 السمة</button>
+  <button id="logoutBtn">خروج</button>
+</header>
+
+<nav id="tabNav"></nav>
+
+<main>
+  <section id="tab-health" class="tab">
+    <h2>الحالة العامة للشركة</h2>
+    <div id="healthContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-market" class="tab">
+    <h2>ذكاء السوق</h2>
+    <div id="marketContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-opportunities" class="tab">
+    <h2>طابور الفرص</h2>
+    <div id="opportunitiesContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-production" class="tab">
+    <h2>طابور الإنتاج</h2>
+    <div id="productionContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-publishing" class="tab">
+    <h2>حالة النشر</h2>
+    <div id="publishingContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-revenue" class="tab">
+    <h2>ملخص الإيراد</h2>
+    <div id="revenueContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-automation" class="tab">
+    <h2>مراقبة الأتمتة (n8n)</h2>
+    <div id="automationContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-alerts" class="tab">
+    <h2>التنبيهات</h2>
+    <div id="alertsContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-history" class="tab">
+    <h2>المعرفة وتاريخ القرارات</h2>
+    <div id="historyContent" class="loading">جارٍ التحميل…</div>
+  </section>
+</main>
+
+<div id="globalSearchOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:20;">
+  <div style="max-width:700px;margin:5vh auto;background:var(--panel);border-radius:12px;padding:1rem;max-height:85vh;overflow:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <strong>نتائج البحث</strong>
+      <button id="closeSearch" style="background:none;border:none;color:var(--text);font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="globalSearchResults" class="searchResults"></div>
+  </div>
+</div>
+
+<script>
+const TABS = [
+  { id: 'health', label: 'الحالة العامة' },
+  { id: 'market', label: 'ذكاء السوق' },
+  { id: 'opportunities', label: 'الفرص' },
+  { id: 'production', label: 'الإنتاج' },
+  { id: 'publishing', label: 'النشر' },
+  { id: 'revenue', label: 'الإيراد' },
+  { id: 'automation', label: 'الأتمتة' },
+  { id: 'alerts', label: 'التنبيهات' },
+  { id: 'history', label: 'المعرفة والتاريخ' },
+];
+
+const nav = document.getElementById('tabNav');
+TABS.forEach((t, i) => {
+  const btn = document.createElement('button');
+  btn.textContent = t.label;
+  btn.dataset.tab = t.id;
+  if (i === 0) btn.classList.add('active');
+  btn.addEventListener('click', () => showTab(t.id));
+  nav.appendChild(btn);
+});
+
+function showTab(id) {
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+  document.querySelectorAll('section.tab').forEach(s => s.classList.toggle('active', s.id === `tab-${id}`));
+  window.location.hash = id;
+  loadTab(id);
+}
+
+// ── theme ──
+const themeToggle = document.getElementById('themeToggle');
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('mc_theme', theme);
+}
+applyTheme(localStorage.getItem('mc_theme') || 'dark');
+themeToggle.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  applyTheme(current);
+});
+
+// ── auth ──
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await fetch('/api/mission-control/logout', { method: 'POST' });
+  window.location.href = '/mission_control_login.html';
+});
+
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function badge(level) {
+  const map = { low: 'good', medium: 'warn', high: 'bad', critical: 'bad', ready: 'good', unavailable: 'muted', cooldown: 'warn' };
+  const cls = map[level] || 'muted';
+  return `<span class="badge ${cls}">${escapeHtml(level ?? 'Unknown')}</span>`;
+}
+
+async function fetchJson(url) {
+  const res = await fetch(url);
+  return res.json();
+}
+
+// cache production data so the Publishing tab can derive from it without a second call
+let _productionCache = null;
+
+const loaders = {
+  health: async () => {
+    const el = document.getElementById('healthContent');
+    const d = await fetchJson('/api/dashboard');
+    el.innerHTML = `
+      <div class="grid">
+        <div class="card"><h3>الحالة</h3><div class="big">${badge(d.health?.status)}</div></div>
+        <div class="card"><h3>مستوى المخاطرة</h3><div class="big">${badge(d.risk?.level)}</div><div class="muted">${escapeHtml(d.risk?.reason)}</div></div>
+        <div class="card"><h3>الوعي الذاتي</h3><div class="big">${escapeHtml(d.self_awareness?.verdict ?? 'Unknown')}</div><div class="muted">أضعف خلية: ${escapeHtml(d.self_awareness?.weakest_cell)}</div></div>
+        <div class="card"><h3>Golden Hunter</h3><div class="muted">${d.hunter?.ran ? `آخر تشغيل: ${escapeHtml(d.hunter.timestamp)}<br>مسح: ${d.hunter.scanned_count} | تخطّي: ${d.hunter.skipped_count} | ذهبي: ${d.hunter.golden_count}` : escapeHtml(d.hunter?.note ?? 'لم يُشغَّل بعد')}</div></div>
+        <div class="card"><h3>Oracle</h3><div class="big">${d.oracle?.golden_count ?? 0} 🏆</div><div class="muted">من ${d.oracle?.total_scored ?? 0} مُقيَّم</div></div>
+        <div class="card"><h3>مرشَّحو Tier-1</h3><div class="muted">${escapeHtml(d.tier1_discovery?.note ?? JSON.stringify(d.tier1_discovery))}</div></div>
+      </div>
+      <details><summary>الأولوية التالية</summary><pre>${escapeHtml(d.current_priorities?.text ?? d.current_priorities?.note ?? 'لا شيء')}</pre></details>
+    `;
+  },
+
+  market: async () => {
+    const el = document.getElementById('marketContent');
+    const d = await fetchJson('/api/dashboard');
+    const mi = d.latest_market_intelligence;
+    if (!mi || !mi.available) {
+      el.innerHTML = `<p class="muted">${escapeHtml(mi?.note ?? 'لا تحليل ذكاء سوق حقيقي مسجَّل بعد')}</p>`;
+      return;
+    }
+    el.innerHTML = `
+      <div class="card">
+        <h3>آخر تحليل حقيقي</h3>
+        <p><strong>${escapeHtml(mi.niche)}</strong></p>
+        <p>قرار AI CEO: ${badge(mi.ai_ceo?.decision)}</p>
+        <p class="muted">${(mi.ai_ceo?.evidence || []).map(escapeHtml).join('<br>')}</p>
+      </div>
+    `;
+  },
+
+  opportunities: async () => {
+    const el = document.getElementById('opportunitiesContent');
+    const d = await fetchJson('/api/mission-control/opportunities');
+    if (!d.success) { el.innerHTML = `<p class="muted">${escapeHtml(d.error)}</p>`; return; }
+    const rows = (d.all || []).map(o => `
+      <tr>
+        <td>${escapeHtml(o.niche)}</td>
+        <td>${o.opportunity_score}</td>
+        <td>${badge(o.status)}</td>
+        <td>${escapeHtml(o.ai_ceo_decision)}</td>
+      </tr>`).join('');
+    el.innerHTML = `
+      <p class="muted">طابور القبول (ACCEPTED جاهزة للتنفيذ): ${d.queue?.length ?? 0}</p>
+      <table><thead><tr><th>النيتش</th><th>الدرجة</th><th>الحالة</th><th>قرار AI CEO</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="4" class="muted">لا فرص مُقيَّمة بعد</td></tr>'}</tbody></table>
+    `;
+  },
+
+  production: async () => {
+    const el = document.getElementById('productionContent');
+    const d = await fetchJson('/api/mission-control/production');
+    _productionCache = d;
+    if (!d.success) { el.innerHTML = `<p class="muted">${escapeHtml(d.error)}</p>`; return; }
+    if (!d.processed) { el.innerHTML = `<p class="muted">${escapeHtml(d.reason)}</p>`; return; }
+    el.innerHTML = d.dossiers.map(ds => `
+      <div class="card">
+        <h3>${escapeHtml(ds.production_id)}</h3>
+        <p><strong>${escapeHtml(ds.niche)}</strong></p>
+        <p>السعر: $${ds.pricing_strategy?.recommended_price ?? '؟'} | التحقُّق قبل الإنتاج: ${ds.pre_production_verification?.all_checks_passed ? badge('ready') : badge('unavailable')}</p>
+        <details><summary>التفاصيل الكاملة</summary><pre>${escapeHtml(JSON.stringify(ds, null, 2))}</pre></details>
+      </div>
+    `).join('');
+  },
+
+  publishing: async () => {
+    const el = document.getElementById('publishingContent');
+    if (!_productionCache) _productionCache = await fetchJson('/api/mission-control/production');
+    const d = _productionCache;
+    if (!d.success || !d.processed) {
+      el.innerHTML = `<p class="muted">${escapeHtml(d.reason ?? 'لا بيانات نشر بعد — لا فرصة قيد الإنتاج')}</p>`;
+      return;
+    }
+    el.innerHTML = d.dossiers.map(ds => `
+      <div class="card">
+        <h3>${escapeHtml(ds.niche)}</h3>
+        <table><tbody>
+          ${(ds.publishing_checklist || []).map(c => `<tr><td>${escapeHtml(c.platform)}</td><td>${badge(c.status)}</td></tr>`).join('')}
+        </tbody></table>
+      </div>
+    `).join('');
+  },
+
+  revenue: async () => {
+    const el = document.getElementById('revenueContent');
+    const d = await fetchJson('/api/mission-control/revenue');
+    if (!d.success) { el.innerHTML = `<p class="muted">${escapeHtml(d.error)}</p>`; return; }
+    el.innerHTML = `<pre>${escapeHtml(d.ceo_report_markdown)}</pre>`;
+  },
+
+  automation: async () => {
+    const el = document.getElementById('automationContent');
+    const d = await fetchJson('/api/mission-control/automation');
+    if (!d.success) { el.innerHTML = `<p class="muted">${escapeHtml(d.error)}</p>`; return; }
+    el.innerHTML = `
+      <p class="muted">⚠️ ${escapeHtml(d.reason)}</p>
+      <table><thead><tr><th>Workflow</th><th>نشط في آخر تصدير</th><th>الملف</th></tr></thead>
+      <tbody>${(d.workflows || []).map(w => `<tr><td>${escapeHtml(w.name)}</td><td>${w.active_in_export ? badge('ready') : badge('unavailable')}</td><td class="muted">${escapeHtml(w.source_file)}</td></tr>`).join('')}</tbody></table>
+    `;
+  },
+
+  alerts: async () => {
+    const el = document.getElementById('alertsContent');
+    const d = await fetchJson('/api/dashboard');
+    el.innerHTML = `
+      <div class="card"><h3>NEEDS_ATTENTION</h3><pre>${escapeHtml(d.needs_attention?.content ?? 'لا شيء')}</pre></div>
+      <div class="card"><h3>NEEDS_REVIEW</h3><pre>${escapeHtml(d.needs_review?.content ?? 'لا شيء')}</pre></div>
+    `;
+  },
+
+  history: async () => {
+    const el = document.getElementById('historyContent');
+    const d = await fetchJson('/api/dashboard');
+    const activity = (d.activity || []).map(e => `<tr><td>${escapeHtml(e.source)}</td><td>${escapeHtml(e.summary)}</td></tr>`).join('');
+    el.innerHTML = `
+      <p class="muted">استخدم شريط البحث العام أعلاه للبحث في المعرفة (OpenClaw_Brain) وسجل القرارات.</p>
+      <table><thead><tr><th>المصدر</th><th>الحدث</th></tr></thead><tbody>${activity || '<tr><td colspan="2" class="muted">لا نشاط مسجَّل</td></tr>'}</tbody></table>
+    `;
+  },
+};
+
+function loadTab(id) {
+  const fn = loaders[id];
+  if (fn) fn().catch(err => {
+    const el = document.getElementById(`${id}Content`);
+    if (el) el.innerHTML = `<p class="muted">تعذَّر التحميل: ${escapeHtml(err.message)}</p>`;
+  });
+}
+
+// ── global search ──
+const searchBox = document.getElementById('searchBox');
+const searchOverlay = document.getElementById('globalSearchOverlay');
+const searchResultsEl = document.getElementById('globalSearchResults');
+document.getElementById('closeSearch').addEventListener('click', () => searchOverlay.style.display = 'none');
+
+let searchTimer;
+searchBox.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  clearTimeout(searchTimer);
+  runGlobalSearch(searchBox.value.trim());
+});
+
+async function runGlobalSearch(q) {
+  if (!q) return;
+  searchOverlay.style.display = 'block';
+  searchResultsEl.innerHTML = '<p class="loading">جارٍ البحث…</p>';
+  try {
+    const [brainRes, oppRes] = await Promise.all([
+      fetchJson(`/brain?q=${encodeURIComponent(q)}`),
+      fetchJson('/api/mission-control/opportunities'),
+    ]);
+    const brainHits = (brainRes.results || []).slice(0, 10).map(r => `
+      <div class="card"><strong>${escapeHtml(r.file)}:${escapeHtml(r.line)}</strong><pre>${escapeHtml(r.text)}</pre></div>
+    `).join('');
+    const oppHits = (oppRes.all || []).filter(o => o.niche.toLowerCase().includes(q.toLowerCase())).slice(0, 10).map(o => `
+      <div class="card"><strong>${escapeHtml(o.niche)}</strong> — ${o.opportunity_score}/100 ${badge(o.status)}</div>
+    `).join('');
+    searchResultsEl.innerHTML = `
+      <h4>الفرص المطابقة</h4>${oppHits || '<p class="muted">لا نتائج</p>'}
+      <h4>المعرفة (OpenClaw_Brain)</h4>${brainHits || '<p class="muted">لا نتائج</p>'}
+    `;
+  } catch (err) {
+    searchResultsEl.innerHTML = `<p class="muted">فشل البحث: ${escapeHtml(err.message)}</p>`;
+  }
+}
+
+// ── PWA service worker ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/mission_control_sw.js').catch(() => {});
+}
+
+// ── init ──
+const initialTab = (window.location.hash || '#health').slice(1);
+showTab(TABS.some(t => t.id === initialTab) ? initialTab : 'health');
+</script>
+</body>
+</html>
