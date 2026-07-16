@@ -62,6 +62,10 @@ def _stage_events(stage, niche, tier, all_records):
             "finished_at": r.get("finished_at"),
             "duration_seconds": _duration_seconds(r),
             "error": r.get("error"),
+            # ADR-055: the real, unabridged engine output (e.g. publishing's
+            # per-platform outcomes) — additive only, every existing key
+            # above is unchanged, so no existing caller is affected.
+            "output": r.get("output", {}),
         }
         for r in matches
     ]
