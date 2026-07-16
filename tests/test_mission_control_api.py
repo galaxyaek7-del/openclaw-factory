@@ -13,6 +13,7 @@ import subprocess
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
@@ -22,9 +23,11 @@ import mission_control_api
 
 
 class TestEndpointDispatch(unittest.TestCase):
-    def test_all_six_endpoints_are_registered(self):
+    def test_all_ten_endpoints_are_registered(self):
         for name in ("opportunities", "production", "revenue", "automation",
-                     "decision_history", "system_configuration"):
+                     "decision_history", "system_configuration",
+                     "rerun_market_analysis", "trigger_opportunity_evaluation",
+                     "validation_report", "export_executive_report"):
             self.assertIn(name, mission_control_api._ENDPOINTS)
 
     def test_opportunities_returns_real_ranking_shape(self):
@@ -82,6 +85,48 @@ class TestEndpointDispatch(unittest.TestCase):
         self.assertIsNotNone(result["capability_registry"])
         self.assertIn("platforms", result["economics"])
 
+    def test_validation_report_returns_the_real_daily_report_and_markdown(self):
+        result = mission_control_api._validation_report()
+        self.assertIn("report", result)
+        self.assertIn("markdown", result)
+        self.assertIn("opportunities_discovered", result["report"])
+        self.assertIsInstance(result["markdown"], str)
+
+    def test_export_executive_report_combines_both_real_reports_and_saves_a_file(self):
+        """Patches _FACTORY_ROOT to a scratch directory so this test never
+        writes into the real reports/ folder."""
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch.object(mission_control_api, "_FACTORY_ROOT", Path(tmp)):
+                result = mission_control_api._export_executive_report()
+            self.assertTrue(result["path"].startswith("reports/"))
+            self.assertIn("# OpenClaw Executive Report", result["markdown"])
+            self.assertIn("## Validation", result["markdown"])
+            self.assertIn("## Revenue", result["markdown"])
+            written = Path(tmp) / result["path"]
+            self.assertTrue(written.exists())
+
+    def test_rerun_market_analysis_calls_golden_hunter_run_hunt_only(self):
+        """Mocked: run_hunt() is a real, live-network pipeline (HN/GitHub/
+        Stack Exchange per signal) that can take minutes — this test only
+        verifies the wiring/passthrough, never runs it for real."""
+        fake_queue = [{"niche": "fake", "evidence": {}}]
+        with patch("golden_hunter.hunt.run_hunt", return_value=fake_queue) as mock_hunt:
+            result = mission_control_api._rerun_market_analysis()
+        mock_hunt.assert_called_once_with()
+        self.assertEqual(result["queue"], fake_queue)
+        self.assertEqual(result["count"], 1)
+
+    def test_trigger_opportunity_evaluation_never_allows_execute_production_true(self):
+        """Mocked for the same live-network reason as above, and asserts
+        the one real safety guarantee this action makes: it can never
+        pass execute_production=True to the real cycle, no matter what."""
+        fake_result = {"processed": 0, "results": []}
+        with patch("real_world_mode.operating_mode.run_real_world_cycle", return_value=fake_result) as mock_cycle:
+            result = mission_control_api._trigger_opportunity_evaluation()
+        mock_cycle.assert_called_once_with(execute_production=False)
+        self.assertEqual(result, fake_result)
+
 
 class TestCliDispatch(unittest.TestCase):
     def _run(self, *args):
@@ -123,6 +168,21 @@ class TestCliDispatch(unittest.TestCase):
         data = json.loads(proc.stdout)
         self.assertTrue(data["success"])
         self.assertIn("tier_weights", data)
+
+    def test_validation_report_endpoint_runs_end_to_end_via_real_cli(self):
+        proc = self._run("validation_report")
+        self.assertEqual(proc.returncode, 0)
+        data = json.loads(proc.stdout)
+        self.assertTrue(data["success"])
+        self.assertIn("report", data)
+
+    # rerun_market_analysis and trigger_opportunity_evaluation are
+    # deliberately NOT exercised via real subprocess CLI here — both hit
+    # live external services (HN/GitHub/Stack Exchange) per real signal
+    # and can take minutes; that would make the whole suite unreliable
+    # and slow. Their wiring is covered by the mocked tests above; their
+    # real end-to-end behavior was already verified live earlier this
+    # session (real_world_mode/golden_hunter test suites + manual runs).
 
 
 if __name__ == "__main__":

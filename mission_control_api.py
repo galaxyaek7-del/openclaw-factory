@@ -21,10 +21,22 @@ and persisted by a deliberate, separate run of the underlying package.
     python mission_control_api.py automation
     python mission_control_api.py decision_history
     python mission_control_api.py system_configuration
+
+Phase 9 (Mission Control Operations) adds four more branches below —
+still zero new business logic, but two of them (rerun_market_analysis,
+trigger_opportunity_evaluation) call real, live-network-touching
+pipelines that can take minutes; server.js runs those two as background
+jobs, not inline request/response, for exactly that reason:
+
+    python mission_control_api.py rerun_market_analysis
+    python mission_control_api.py trigger_opportunity_evaluation
+    python mission_control_api.py validation_report
+    python mission_control_api.py export_executive_report
 """
 
 import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 _FACTORY_ROOT = Path(__file__).resolve().parent
@@ -126,6 +138,76 @@ def _system_configuration():
     }
 
 
+def _rerun_market_analysis():
+    """'Re-run market analysis': golden_hunter/hunt.py's own real pipeline
+    (ADR-060) — re-reads every currently available real signal (OPPORTUNITIES.md
+    + tier1_intake/candidates/), runs each through the existing orchestrator
+    cycle in dry-run only, and returns a freshly re-ranked evidence-package
+    queue. No new logic — run_hunt() already does exactly this; this is a
+    passthrough. Slow (live HN/GitHub/Stack Exchange calls per signal) —
+    the caller (server.js) must run this as a background job, not inline."""
+    from golden_hunter import hunt
+    from real_world_mode import signal_intake
+    try:
+        signals_count = len(signal_intake.collect_all_real_signals())
+    except Exception:
+        signals_count = None
+    queue = hunt.run_hunt()
+    return {"queue": queue, "count": len(queue), "signals_processed": signals_count}
+
+
+def _trigger_opportunity_evaluation():
+    """'Trigger opportunity evaluation': real_world_mode/operating_mode.py's
+    own real cycle (ADR-056) — same real signals, run through
+    orchestrator.run_cycle() (ADR-051) with execute_production always False
+    (this action only ever evaluates and records decisions; it can never
+    trigger a real production/publish side effect — that stays a separate,
+    explicitly gated action). No new logic — passthrough only. Slow, same
+    reason as rerun_market_analysis above."""
+    from real_world_mode import operating_mode
+    return operating_mode.run_real_world_cycle(execute_production=False)
+
+
+def _validation_report():
+    """'Run validation': validation_layer/daily_report.py (ADR-053) — the
+    same real daily validation report this factory already generates,
+    passthrough only."""
+    from validation_layer import daily_report
+    report = daily_report.generate_daily_report()
+    return {"report": report, "markdown": daily_report.render_markdown(report)}
+
+
+def _export_executive_report():
+    """'Export executive report': concatenates two already-existing real
+    report renderers (validation_layer's daily report + revenue_pipeline's
+    CEO revenue report) into one markdown file under reports/. No new
+    metric, no new business logic — just packaging two real reports
+    together and saving the result."""
+    from validation_layer import daily_report as dr
+    from revenue_pipeline import pipeline as rp
+
+    validation = dr.generate_daily_report()
+    validation_md = dr.render_markdown(validation)
+    revenue = rp.run_revenue_pipeline()
+    revenue_md = rp.render_ceo_revenue_report(revenue)
+
+    generated_at = datetime.now(timezone.utc)
+    combined_md = (
+        "# OpenClaw Executive Report\n\n"
+        f"Generated: {generated_at.isoformat()}\n\n"
+        "---\n\n## Validation\n\n" + validation_md +
+        "\n\n---\n\n## Revenue\n\n" + revenue_md + "\n"
+    )
+
+    reports_dir = _FACTORY_ROOT / "reports"
+    reports_dir.mkdir(exist_ok=True)
+    fname = f"executive_report_{generated_at.strftime('%Y%m%dT%H%M%SZ')}.md"
+    fpath = reports_dir / fname
+    fpath.write_text(combined_md, encoding="utf-8")
+
+    return {"path": f"reports/{fname}", "markdown": combined_md}
+
+
 _ENDPOINTS = {
     "opportunities": _opportunities,
     "production": _production,
@@ -133,6 +215,10 @@ _ENDPOINTS = {
     "automation": _automation,
     "decision_history": _decision_history,
     "system_configuration": _system_configuration,
+    "rerun_market_analysis": _rerun_market_analysis,
+    "trigger_opportunity_evaluation": _trigger_opportunity_evaluation,
+    "validation_report": _validation_report,
+    "export_executive_report": _export_executive_report,
 }
 
 

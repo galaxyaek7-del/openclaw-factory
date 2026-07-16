@@ -2,7 +2,7 @@
 
 _Auto-generated from SERVICE_REGISTRY in server.js at server startup — do not hand-edit, it is overwritten on every restart. Source of truth: server.js._
 
-Generated at: 2026-07-16T17:02:44.786Z
+Generated at: 2026-07-16T17:27:56.143Z
 
 Every endpoint below requires an authenticated Mission Control session (`POST /api/mission-control/login`) and returns the standard envelope:
 
@@ -23,7 +23,7 @@ Overall factory health status, derived risk level, self-awareness verdict, and c
 
 - Data: `GET /api/v1/company-health`
 - Health: `GET /api/v1/company-health/health`
-- Reuses: server.js computeHealthStatus() + self_awareness.js assessSelfAwareness() + lib/dashboard_data.js deriveRiskLevel()/readAttentionFlag() + server.js readNextDollarActions() — identical composition to the pre-existing GET /api/dashboard.
+- Reuses: server.js computeHealthStatus() + self_awareness.js assessSelfAwareness() + lib/dashboard_data.js deriveRiskLevel()/readAttentionFlag()/readActivityTimeline() + server.js readNextDollarActions() — identical composition to the pre-existing GET /api/dashboard.
 
 ### market-intelligence
 
@@ -51,11 +51,11 @@ Every ACCEPTED/REJECTED/DEFERRED decision ever recorded, newest first, summary f
 
 ### production-queue
 
-Production dossiers for every ACCEPTED opportunity (pricing, assets, pre-production verification).
+Production dossiers for every ACCEPTED opportunity (pricing, assets, pre-production verification), plus the current pause/resume state (Phase 9).
 
 - Data: `GET /api/v1/production-queue`
 - Health: `GET /api/v1/production-queue/health`
-- Reuses: production_factory/factory.py run_production_factory(), via mission_control_api.py.
+- Reuses: production_factory/factory.py run_production_factory(), via mission_control_api.py, plus server.js readProductionControl() (Phase 9 pause/resume flag).
 
 ### publishing-status
 

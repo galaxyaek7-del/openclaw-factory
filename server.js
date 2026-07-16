@@ -217,7 +217,13 @@ async function companyHealthService() {
   const needsAttention = dashboardData.readAttentionFlag();
   const risk = dashboardData.deriveRiskLevel(health, needsAttention);
   const current_priorities = readNextDollarActions();
-  return { health, risk, self_awareness: awareness, current_priorities };
+  // Additive field (Phase 9 — Mission Control Operations): the real
+  // automation/production/system events feed Mission Control's activity
+  // timeline reads, merged client-side with GET /api/v1/actions' user-
+  // action jobs. Same function GET /api/dashboard already exposes —
+  // reused, not recomputed.
+  const activity = dashboardData.readActivityTimeline({});
+  return { health, risk, self_awareness: awareness, current_priorities, activity };
 }
 
 async function knowledgeBaseService(req) {
@@ -254,7 +260,7 @@ const SERVICE_REGISTRY = [
   {
     name: 'company-health',
     description: 'Overall factory health status, derived risk level, self-awareness verdict, and current next-dollar priorities.',
-    reused: 'server.js computeHealthStatus() + self_awareness.js assessSelfAwareness() + lib/dashboard_data.js deriveRiskLevel()/readAttentionFlag() + server.js readNextDollarActions() — identical composition to the pre-existing GET /api/dashboard.',
+    reused: 'server.js computeHealthStatus() + self_awareness.js assessSelfAwareness() + lib/dashboard_data.js deriveRiskLevel()/readAttentionFlag()/readActivityTimeline() + server.js readNextDollarActions() — identical composition to the pre-existing GET /api/dashboard.',
     handler: companyHealthService,
     health: fsHealthCheck(() => dashboardData.readAttentionFlag(), 'dashboardData module reachable, NEEDS_ATTENTION.md read check ok'),
   },
@@ -281,9 +287,9 @@ const SERVICE_REGISTRY = [
   },
   {
     name: 'production-queue',
-    description: 'Production dossiers for every ACCEPTED opportunity (pricing, assets, pre-production verification).',
-    reused: 'production_factory/factory.py run_production_factory(), via mission_control_api.py.',
-    handler: () => runPythonService('production'),
+    description: 'Production dossiers for every ACCEPTED opportunity (pricing, assets, pre-production verification), plus the current pause/resume state (Phase 9).',
+    reused: 'production_factory/factory.py run_production_factory(), via mission_control_api.py, plus server.js readProductionControl() (Phase 9 pause/resume flag).',
+    handler: async () => ({ ...(await runPythonService('production')), production_control: readProductionControl() }),
     health: pythonHealthCheck('production'),
   },
   {
@@ -413,6 +419,251 @@ for (const svc of SERVICE_REGISTRY) {
     }
   });
 }
+
+// ── ACTIONS (Phase 9 — Mission Control Operations) ──
+// Mutating/triggering endpoints, still reuse-only: every action calls
+// straight into an already-built module, nothing here decides anything
+// new. Two actions (rerun-market-analysis, trigger-opportunity-
+// evaluation) touch live external services and can take minutes, so they
+// run as background jobs: POST returns a job immediately (status
+// 'running'); GET /api/v1/actions/:id polls for progress/result. The
+// rest are fast, local-file-only operations and complete inline.
+
+const ACTION_JOBS = new Map();
+const ACTION_JOBS_MAX = 200; // bound memory; only ever prunes jobs that already finished
+
+function pruneActionJobs() {
+  if (ACTION_JOBS.size <= ACTION_JOBS_MAX) return;
+  const finished = [...ACTION_JOBS.values()]
+    .filter(j => j.status !== 'running')
+    .sort((a, b) => a.started_at.localeCompare(b.started_at));
+  for (const job of finished) {
+    if (ACTION_JOBS.size <= ACTION_JOBS_MAX) break;
+    ACTION_JOBS.delete(job.id);
+  }
+}
+
+function newActionJob(action) {
+  const id = 'act_' + crypto.randomBytes(8).toString('hex');
+  const job = {
+    id, action, status: 'running',
+    started_at: new Date().toISOString(), finished_at: null,
+    result: null, error: null,
+    progress: [{ at: new Date().toISOString(), message: `started ${action}` }],
+  };
+  ACTION_JOBS.set(id, job);
+  pruneActionJobs();
+  return job;
+}
+
+// Spawns immediately and returns the job record right away
+// (status:'running'); updates the SAME job object in place whenever the
+// process actually finishes, fully decoupled from any HTTP response —
+// so a five-minute real evaluation never holds a request open.
+function runPythonActionAsync(action, section) {
+  const job = newActionJob(action);
+  const pythonPath = detectPython();
+  const scriptPath = path.join(__dirname, 'mission_control_api.py');
+  const python = spawn(pythonPath, [scriptPath, section], { cwd: __dirname });
+  let output = '', errOut = '';
+  python.stdout.on('data', d => { output += d.toString(); });
+  python.stderr.on('data', d => { errOut += d.toString(); });
+  const finish = (status, resultOrError) => {
+    job.status = status;
+    job.finished_at = new Date().toISOString();
+    if (status === 'completed') job.result = resultOrError; else job.error = resultOrError;
+    job.progress.push({ at: job.finished_at, message: status });
+    logServiceCall({ service: 'actions', action, job_id: job.id, event: 'finished', status, duration_ms: Date.parse(job.finished_at) - Date.parse(job.started_at) });
+  };
+  python.on('error', (err) => finish('failed', err.message));
+  python.on('close', () => {
+    let parsed;
+    try {
+      parsed = JSON.parse(output.trim());
+    } catch {
+      return finish('failed', `parse error: ${output}${errOut}`);
+    }
+    if (parsed.success === false) return finish('failed', parsed.error || 'action reported failure');
+    finish('completed', parsed);
+  });
+  logServiceCall({ service: 'actions', action, job_id: job.id, event: 'started' });
+  return job;
+}
+
+// For actions cheap enough (local file reads/writes only, no live
+// network) that a job/polling round-trip would just be overhead — runs
+// to completion before the HTTP response, but still recorded as a job
+// so it shows up in the same activity/audit trail as the async ones.
+async function runActionSync(action, fn, req) {
+  const job = newActionJob(action);
+  try {
+    const result = await fn(req);
+    job.status = 'completed';
+    job.result = result;
+    job.finished_at = new Date().toISOString();
+    logServiceCall({ service: 'actions', action, job_id: job.id, event: 'finished', status: 'completed', duration_ms: Date.parse(job.finished_at) - Date.parse(job.started_at) });
+  } catch (err) {
+    job.status = 'failed';
+    job.error = err.message;
+    job.finished_at = new Date().toISOString();
+    logServiceCall({ service: 'actions', action, job_id: job.id, event: 'finished', status: 'failed', error: err.message });
+  }
+  return job;
+}
+
+// ── Production pause/resume ──
+// This factory has no scheduler and no live background production
+// process to literally "pause" (CLAUDE.md: "No scheduler exists"). This
+// flag gates the one real thing "production" means here: the manually-
+// triggered start-production-pipeline action below. Toggling it back is
+// the exact reverse operation — fully reversible by design.
+const PRODUCTION_CONTROL_PATH = path.join(__dirname, 'data', 'production_control.json');
+
+function readProductionControl() {
+  try {
+    return JSON.parse(fs.readFileSync(PRODUCTION_CONTROL_PATH, 'utf8'));
+  } catch {
+    return { paused: false, changed_at: null, reason: null };
+  }
+}
+
+function writeProductionControl(state) {
+  fs.mkdirSync(path.dirname(PRODUCTION_CONTROL_PATH), { recursive: true });
+  fs.writeFileSync(PRODUCTION_CONTROL_PATH, JSON.stringify(state, null, 2));
+  return state;
+}
+
+async function startProductionPipelineAction() {
+  const control = readProductionControl();
+  if (control.paused) {
+    throw new Error(`production is paused (${control.reason || 'no reason given'}, since ${control.changed_at})`);
+  }
+  return runPythonService('production');
+}
+
+async function pauseProductionAction(req) {
+  const reason = (req.body && req.body.reason) || 'paused via Mission Control';
+  return writeProductionControl({ paused: true, changed_at: new Date().toISOString(), reason });
+}
+
+async function resumeProductionAction() {
+  return writeProductionControl({ paused: false, changed_at: new Date().toISOString(), reason: null });
+}
+
+const ACTION_REGISTRY = [
+  {
+    name: 'refresh-data',
+    description: 'No backend computation — logs a manual refresh event for the activity timeline/audit trail. The actual data re-fetch happens client-side against the existing read services.',
+    reversible: true,
+    kind: 'sync',
+    run: async () => ({ refreshed_at: new Date().toISOString() }),
+  },
+  {
+    name: 'rerun-market-analysis',
+    description: 'Re-scans every real signal source and re-ranks the golden opportunity queue.',
+    reused: 'golden_hunter/hunt.py run_hunt() (ADR-060)',
+    reversible: true, // read-only re-scan; nothing it does is destructive
+    kind: 'async',
+    section: 'rerun_market_analysis',
+  },
+  {
+    name: 'trigger-opportunity-evaluation',
+    description: 'Runs every real signal through the orchestrator cycle and records fresh decisions. Never triggers real production — execute_production is hardcoded false.',
+    reused: 'real_world_mode/operating_mode.py run_real_world_cycle(execute_production=False) (ADR-056)',
+    reversible: true,
+    kind: 'async',
+    section: 'trigger_opportunity_evaluation',
+  },
+  {
+    name: 'start-production-pipeline',
+    description: 'Builds a production dossier for every currently ACCEPTED opportunity. Refuses to run while production is paused.',
+    reused: 'production_factory/factory.py run_production_factory() (Phase 7)',
+    reversible: true, // dossier building only — no real purchase/publish side effect
+    kind: 'sync',
+    run: startProductionPipelineAction,
+  },
+  {
+    name: 'pause-production',
+    description: 'Gates start-production-pipeline off until resumed. Does not affect factory_loop.js (this factory has no scheduler to pause — see CLAUDE.md).',
+    reversible: true,
+    kind: 'sync',
+    run: pauseProductionAction,
+  },
+  {
+    name: 'resume-production',
+    description: 'Reverses pause-production.',
+    reversible: true,
+    kind: 'sync',
+    run: resumeProductionAction,
+  },
+  {
+    name: 'run-validation',
+    description: 'Generates the real daily validation report (opportunities, bottlenecks, stalled items, reliability, recommendations).',
+    reused: 'validation_layer/daily_report.py (ADR-053)',
+    reversible: true,
+    kind: 'sync',
+    section: 'validation_report',
+  },
+  {
+    name: 'export-executive-report',
+    description: 'Combines the validation report and the CEO revenue report into one markdown file under reports/.',
+    reused: 'validation_layer/daily_report.py + revenue_pipeline/pipeline.py',
+    reversible: true, // only ever adds a new timestamped file, never overwrites
+    kind: 'sync',
+    section: 'export_executive_report',
+  },
+];
+const ACTION_BY_NAME = new Map(ACTION_REGISTRY.map(a => [a.name, a]));
+
+function triggerAction(action, req) {
+  if (action.kind === 'async') {
+    return Promise.resolve(runPythonActionAsync(action.name, action.section));
+  }
+  if (action.section) {
+    return runActionSync(action.name, () => runPythonService(action.section), req);
+  }
+  return runActionSync(action.name, action.run, req);
+}
+
+v1Router.get('/actions', (req, res) => {
+  const jobs = [...ACTION_JOBS.values()]
+    .sort((a, b) => b.started_at.localeCompare(a.started_at))
+    .slice(0, 50)
+    .map(({ id, action, status, started_at, finished_at, error }) => ({ id, action, status, started_at, finished_at, error }));
+  res.json({
+    success: true,
+    version: 'v1',
+    generated_at: new Date().toISOString(),
+    actions: ACTION_REGISTRY.map(a => ({ name: a.name, description: a.description, reused: a.reused || null, reversible: a.reversible, kind: a.kind })),
+    recent_jobs: jobs,
+  });
+});
+
+v1Router.get('/actions/:id', (req, res) => {
+  const job = ACTION_JOBS.get(req.params.id);
+  if (!job) {
+    return res.status(404).json({ success: false, version: 'v1', error: { code: 'unknown_job', message: `no such job: ${req.params.id}` } });
+  }
+  res.json({ success: true, version: 'v1', job });
+});
+
+v1Router.post('/actions/:name', async (req, res) => {
+  const action = ACTION_BY_NAME.get(req.params.name);
+  if (!action) {
+    return res.status(404).json({ success: false, version: 'v1', error: { code: 'unknown_action', message: `no such action: ${req.params.name}` } });
+  }
+  if (!req.body || req.body.confirmed !== true) {
+    return res.status(400).json({ success: false, version: 'v1', error: { code: 'confirmation_required', message: 'this action requires { "confirmed": true } in the request body' } });
+  }
+  try {
+    const job = await triggerAction(action, req);
+    logServiceCall({ service: 'actions', action: action.name, job_id: job.id, event: 'requested', status: job.status });
+    res.json({ success: true, version: 'v1', job });
+  } catch (err) {
+    logServiceCall({ service: 'actions', action: action.name, event: 'request_failed', error: err.message });
+    res.status(500).json({ success: false, version: 'v1', error: { code: 'action_dispatch_failed', message: err.message } });
+  }
+});
 
 // Any /api/v1/* path that matched none of the registered services above
 // must 404 as JSON — without this, it would otherwise fall through past

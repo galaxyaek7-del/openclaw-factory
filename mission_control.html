@@ -10,44 +10,59 @@
   :root {
     --bg: #0b1220; --panel: #111c33; --card: #16213e; --text: #e2e8f0; --muted: #94a3b8;
     --accent: #38bdf8; --good: #4ade80; --warn: #fbbf24; --bad: #f87171; --border: #263352;
+    --info: #818cf8;
   }
   :root[data-theme="light"] {
     --bg: #f1f5f9; --panel: #ffffff; --card: #ffffff; --text: #0f172a; --muted: #475569;
     --accent: #0284c7; --good: #16a34a; --warn: #d97706; --bad: #dc2626; --border: #e2e8f0;
+    --info: #4f46e5;
   }
   @media (prefers-color-scheme: light) {
     :root:not([data-theme="dark"]) {
       --bg: #f1f5f9; --panel: #ffffff; --card: #ffffff; --text: #0f172a; --muted: #475569;
       --accent: #0284c7; --good: #16a34a; --warn: #d97706; --bad: #dc2626; --border: #e2e8f0;
+      --info: #4f46e5;
     }
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; padding-bottom: env(safe-area-inset-bottom); }
   header {
-    position: sticky; top: 0; z-index: 10; background: var(--panel); border-bottom: 1px solid var(--border);
-    padding: .75rem 1rem; display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
+    position: sticky; top: 0; z-index: 30; background: var(--panel); border-bottom: 1px solid var(--border);
+    padding: .75rem 1rem; display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
   }
   header h1 { font-size: 1.1rem; margin: 0; flex: 1; }
-  header button {
+  header button, .btn {
     background: transparent; border: 1px solid var(--border); color: var(--text);
-    border-radius: 8px; padding: .4rem .7rem; cursor: pointer; font-size: .85rem;
+    border-radius: 8px; padding: .5rem .8rem; cursor: pointer; font-size: .85rem;
+    min-height: 40px; touch-action: manipulation;
   }
+  .btn.primary { background: var(--accent); color: #06111f; border-color: var(--accent); font-weight: 600; }
+  .btn.danger { background: transparent; border-color: var(--bad); color: var(--bad); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
   #searchBox {
     flex: 1 1 200px; min-width: 120px; padding: .5rem .75rem; border-radius: 8px;
-    border: 1px solid var(--border); background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); background: var(--bg); color: var(--text); min-height: 40px;
+  }
+  .iconBtn { position: relative; }
+  .iconBtn .dot {
+    position: absolute; top: -4px; left: -4px; background: var(--bad); color: #fff;
+    font-size: .65rem; border-radius: 999px; min-width: 16px; height: 16px; line-height: 16px;
+    text-align: center; padding: 0 3px; font-weight: 700;
   }
   nav {
     display: flex; overflow-x: auto; gap: .25rem; padding: .5rem 1rem; background: var(--panel);
-    border-bottom: 1px solid var(--border); -webkit-overflow-scrolling: touch;
+    border-bottom: 1px solid var(--border); -webkit-overflow-scrolling: touch; position: sticky; top: 57px; z-index: 20;
   }
   nav button {
     white-space: nowrap; background: transparent; border: none; color: var(--muted);
-    padding: .5rem .9rem; border-radius: 8px; cursor: pointer; font-size: .85rem;
+    padding: .6rem .9rem; border-radius: 8px; cursor: pointer; font-size: .85rem; min-height: 40px; touch-action: manipulation;
   }
   nav button.active { background: var(--card); color: var(--accent); font-weight: 600; }
   main { padding: 1rem; max-width: 1100px; margin: 0 auto; }
   section.tab { display: none; }
   section.tab.active { display: block; }
+  .tabHeader { display: flex; align-items: center; justify-content: space-between; gap: .75rem; flex-wrap: wrap; margin-bottom: .75rem; }
+  .actionsBar { display: flex; gap: .5rem; flex-wrap: wrap; }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .75rem; }
   .card {
     background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem;
@@ -58,6 +73,7 @@
   .badge.good { background: color-mix(in srgb, var(--good) 20%, transparent); color: var(--good); }
   .badge.warn { background: color-mix(in srgb, var(--warn) 20%, transparent); color: var(--warn); }
   .badge.bad { background: color-mix(in srgb, var(--bad) 20%, transparent); color: var(--bad); }
+  .badge.info { background: color-mix(in srgb, var(--info) 20%, transparent); color: var(--info); }
   .badge.muted { background: color-mix(in srgb, var(--muted) 20%, transparent); color: var(--muted); }
   table { width: 100%; border-collapse: collapse; font-size: .85rem; }
   th, td { text-align: right; padding: .5rem; border-bottom: 1px solid var(--border); }
@@ -68,72 +84,193 @@
   details summary { cursor: pointer; color: var(--accent); font-size: .85rem; margin-top: .5rem; }
   .searchResults { margin-top: 1rem; }
   .searchResults .card { margin-bottom: .5rem; }
+
+  /* modal overlay (confirm dialog + progress) */
+  .modalOverlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 50;
+    align-items: center; justify-content: center; padding: 1rem;
+  }
+  .modalOverlay.open { display: flex; }
+  .modalBox {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.25rem; max-width: 420px; width: 100%; max-height: 85vh; overflow: auto;
+  }
+  .modalBox h3 { margin: 0 0 .5rem; }
+  .modalButtons { display: flex; gap: .5rem; justify-content: flex-end; margin-top: 1rem; }
+  .modalBox input[type="text"] {
+    width: 100%; padding: .6rem .75rem; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text); margin-top: .5rem;
+  }
+  .spinner {
+    width: 22px; height: 22px; border: 3px solid var(--border); border-top-color: var(--accent);
+    border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; vertical-align: middle; margin-left: .5rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* notification center */
+  #notifDropdown {
+    display: none; position: fixed; top: 58px; left: 1rem; z-index: 40;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    width: min(360px, 90vw); max-height: 70vh; overflow: auto; box-shadow: 0 10px 30px rgba(0,0,0,.3);
+  }
+  #notifDropdown.open { display: block; }
+  .notifItem { padding: .7rem 1rem; border-bottom: 1px solid var(--border); font-size: .85rem; }
+  .notifItem:last-child { border-bottom: none; }
+  .notifItem .type { font-weight: 700; margin-left: .4rem; }
+  .notifItem.success .type { color: var(--good); }
+  .notifItem.warning .type { color: var(--warn); }
+  .notifItem.error .type { color: var(--bad); }
+  .notifItem.info .type { color: var(--info); }
+  .notifItem time { display: block; color: var(--muted); font-size: .7rem; margin-top: .2rem; }
+  #toastStack { position: fixed; bottom: 1rem; left: 1rem; z-index: 60; display: flex; flex-direction: column; gap: .5rem; max-width: 90vw; }
+  .toast {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: .7rem 1rem;
+    font-size: .85rem; box-shadow: 0 8px 24px rgba(0,0,0,.3); animation: toastIn .2s ease-out;
+    border-inline-start: 4px solid var(--muted);
+  }
+  .toast.success { border-inline-start-color: var(--good); }
+  .toast.warning { border-inline-start-color: var(--warn); }
+  .toast.error { border-inline-start-color: var(--bad); }
+  .toast.info { border-inline-start-color: var(--info); }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .activityFilters { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: .75rem; }
+  .activityFilters button { border-radius: 999px; padding: .35rem .8rem; font-size: .78rem; }
+  .activityFilters button.active { background: var(--accent); color: #06111f; border-color: var(--accent); }
+  .activityItem { display: flex; gap: .6rem; padding: .6rem 0; border-bottom: 1px solid var(--border); }
+  .activityItem:last-child { border-bottom: none; }
+  .activityItem .cat { flex-shrink: 0; }
+
+  /* mobile */
+  @media (max-width: 640px) {
+    header h1 { flex-basis: 100%; order: -1; text-align: center; }
+    #searchBox { flex-basis: 100%; order: 1; }
+    main { padding: .75rem; }
+    .grid { grid-template-columns: 1fr; }
+    .actionsBar { width: 100%; }
+    .actionsBar .btn { flex: 1 1 auto; }
+    table { font-size: .78rem; }
+    th, td { padding: .4rem; }
+  }
 </style>
 </head>
 <body>
 <header>
   <h1>🛰️ Mission Control</h1>
   <input id="searchBox" type="search" placeholder="بحث عام… (نيتش، قرار، معرفة)">
+  <button id="refreshBtn" class="iconBtn" title="تحديث البيانات">🔄</button>
+  <button id="notifBtn" class="iconBtn" title="الإشعارات">🔔<span id="notifDot" class="dot" style="display:none;">0</span></button>
   <button id="themeToggle">🌗 السمة</button>
   <button id="logoutBtn">خروج</button>
 </header>
+
+<div id="notifDropdown"></div>
+<div id="toastStack"></div>
 
 <nav id="tabNav"></nav>
 
 <main>
   <section id="tab-health" class="tab">
-    <h2>الحالة العامة للشركة</h2>
+    <div class="tabHeader"><h2>الحالة العامة للشركة</h2></div>
     <div id="healthContent" class="loading">جارٍ التحميل…</div>
   </section>
 
   <section id="tab-market" class="tab">
-    <h2>ذكاء السوق</h2>
+    <div class="tabHeader">
+      <h2>ذكاء السوق</h2>
+      <div class="actionsBar"><button class="btn primary" data-action="rerun-market-analysis">🔍 إعادة تحليل السوق</button></div>
+    </div>
     <div id="marketContent" class="loading">جارٍ التحميل…</div>
   </section>
 
   <section id="tab-opportunities" class="tab">
-    <h2>طابور الفرص</h2>
+    <div class="tabHeader">
+      <h2>طابور الفرص</h2>
+      <div class="actionsBar"><button class="btn primary" data-action="trigger-opportunity-evaluation">⚡ تقييم الفرص الآن</button></div>
+    </div>
     <div id="opportunitiesContent" class="loading">جارٍ التحميل…</div>
   </section>
 
   <section id="tab-production" class="tab">
-    <h2>طابور الإنتاج</h2>
+    <div class="tabHeader">
+      <h2>طابور الإنتاج</h2>
+      <div class="actionsBar">
+        <button class="btn primary" data-action="start-production-pipeline">▶️ بدء الإنتاج</button>
+        <button class="btn" data-action="pause-production">⏸️ إيقاف مؤقت</button>
+        <button class="btn" data-action="resume-production">⏵ استئناف</button>
+      </div>
+    </div>
     <div id="productionContent" class="loading">جارٍ التحميل…</div>
   </section>
 
   <section id="tab-publishing" class="tab">
-    <h2>حالة النشر</h2>
+    <div class="tabHeader"><h2>حالة النشر</h2></div>
     <div id="publishingContent" class="loading">جارٍ التحميل…</div>
   </section>
 
   <section id="tab-revenue" class="tab">
-    <h2>ملخص الإيراد</h2>
+    <div class="tabHeader">
+      <h2>ملخص الإيراد</h2>
+      <div class="actionsBar"><button class="btn primary" data-action="export-executive-report">📄 تصدير تقرير تنفيذي</button></div>
+    </div>
     <div id="revenueContent" class="loading">جارٍ التحميل…</div>
   </section>
 
   <section id="tab-automation" class="tab">
-    <h2>مراقبة الأتمتة (n8n)</h2>
+    <div class="tabHeader"><h2>مراقبة الأتمتة (n8n)</h2></div>
     <div id="automationContent" class="loading">جارٍ التحميل…</div>
   </section>
 
+  <section id="tab-validation" class="tab">
+    <div class="tabHeader">
+      <h2>التحقُّق (Validation)</h2>
+      <div class="actionsBar"><button class="btn primary" data-action="run-validation">✅ تشغيل التحقُّق</button></div>
+    </div>
+    <div id="validationContent" class="loading">لا تقرير بعد — اضغط "تشغيل التحقُّق"</div>
+  </section>
+
+  <section id="tab-activity" class="tab">
+    <div class="tabHeader"><h2>السجل الزمني للنشاط</h2></div>
+    <div class="activityFilters" id="activityFilters"></div>
+    <div id="activityContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
   <section id="tab-alerts" class="tab">
-    <h2>التنبيهات</h2>
+    <div class="tabHeader"><h2>التنبيهات</h2></div>
     <div id="alertsContent" class="loading">جارٍ التحميل…</div>
   </section>
 
   <section id="tab-history" class="tab">
-    <h2>المعرفة وتاريخ القرارات</h2>
+    <div class="tabHeader"><h2>المعرفة وتاريخ القرارات</h2></div>
     <div id="historyContent" class="loading">جارٍ التحميل…</div>
   </section>
 </main>
 
-<div id="globalSearchOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:20;">
-  <div style="max-width:700px;margin:5vh auto;background:var(--panel);border-radius:12px;padding:1rem;max-height:85vh;overflow:auto;">
+<div id="globalSearchOverlay" class="modalOverlay">
+  <div class="modalBox" style="max-width:700px;">
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <strong>نتائج البحث</strong>
       <button id="closeSearch" style="background:none;border:none;color:var(--text);font-size:1.2rem;cursor:pointer;">✕</button>
     </div>
     <div id="globalSearchResults" class="searchResults"></div>
+  </div>
+</div>
+
+<div id="actionModal" class="modalOverlay">
+  <div class="modalBox">
+    <h3 id="actionModalTitle"></h3>
+    <p id="actionModalDesc" class="muted"></p>
+    <p id="actionModalReversible" class="muted"></p>
+    <div id="actionModalExtra"></div>
+    <div id="actionModalProgress" style="display:none; margin-top:.75rem;">
+      <span class="spinner"></span>
+      <span id="actionModalProgressText" class="muted"></span>
+    </div>
+    <div id="actionModalResult" class="muted" style="margin-top:.75rem;"></div>
+    <div class="modalButtons">
+      <button id="actionModalCancel" class="btn">إلغاء</button>
+      <button id="actionModalConfirm" class="btn primary">تأكيد</button>
+    </div>
   </div>
 </div>
 
@@ -146,6 +283,8 @@ const TABS = [
   { id: 'publishing', label: 'النشر' },
   { id: 'revenue', label: 'الإيراد' },
   { id: 'automation', label: 'الأتمتة' },
+  { id: 'validation', label: 'التحقُّق' },
+  { id: 'activity', label: 'النشاط' },
   { id: 'alerts', label: 'التنبيهات' },
   { id: 'history', label: 'المعرفة والتاريخ' },
 ];
@@ -160,7 +299,9 @@ TABS.forEach((t, i) => {
   nav.appendChild(btn);
 });
 
+let currentTab = 'health';
 function showTab(id) {
+  currentTab = id;
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
   document.querySelectorAll('section.tab').forEach(s => s.classList.toggle('active', s.id === `tab-${id}`));
   window.location.hash = id;
@@ -191,9 +332,14 @@ function escapeHtml(s) {
 }
 
 function badge(level) {
-  const map = { low: 'good', medium: 'warn', high: 'bad', critical: 'bad', ready: 'good', unavailable: 'muted', cooldown: 'warn' };
+  const map = { low: 'good', medium: 'warn', high: 'bad', critical: 'bad', ready: 'good', unavailable: 'muted', cooldown: 'warn', running: 'info', completed: 'good', failed: 'bad', paused: 'warn' };
   const cls = map[level] || 'muted';
   return `<span class="badge ${cls}">${escapeHtml(level ?? 'Unknown')}</span>`;
+}
+
+function fmtTime(iso) {
+  if (!iso) return '—';
+  try { return new Date(iso).toLocaleString('ar'); } catch (_) { return iso; }
 }
 
 async function fetchJson(url) {
@@ -201,30 +347,224 @@ async function fetchJson(url) {
   return res.json();
 }
 
+// ── notification center ──
+const NOTIFICATIONS = [];
+let unreadCount = 0;
+const notifDropdown = document.getElementById('notifDropdown');
+const notifDot = document.getElementById('notifDot');
+const toastStack = document.getElementById('toastStack');
+
+function pushNotification(type, message) {
+  NOTIFICATIONS.unshift({ type, message, at: new Date().toISOString() });
+  if (NOTIFICATIONS.length > 40) NOTIFICATIONS.length = 40;
+  unreadCount++;
+  renderNotifications();
+  showToast(type, message);
+}
+
+function renderNotifications() {
+  notifDot.style.display = unreadCount > 0 ? 'inline-block' : 'none';
+  notifDot.textContent = unreadCount > 99 ? '99+' : String(unreadCount);
+  notifDropdown.innerHTML = NOTIFICATIONS.length
+    ? NOTIFICATIONS.map(n => `
+        <div class="notifItem ${n.type}">
+          <span class="type">${{success:'✔ نجاح', warning:'⚠ تحذير', error:'✖ خطأ', info:'ℹ معلومة'}[n.type] || n.type}</span>
+          ${escapeHtml(n.message)}
+          <time>${fmtTime(n.at)}</time>
+        </div>`).join('')
+    : '<div class="notifItem muted">لا إشعارات بعد</div>';
+}
+
+function showToast(type, message) {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = message;
+  toastStack.appendChild(el);
+  setTimeout(() => el.remove(), 5000);
+}
+
+document.getElementById('notifBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  notifDropdown.classList.toggle('open');
+  if (notifDropdown.classList.contains('open')) { unreadCount = 0; renderNotifications(); }
+});
+document.addEventListener('click', (e) => {
+  if (!notifDropdown.contains(e.target) && e.target.id !== 'notifBtn') notifDropdown.classList.remove('open');
+});
+
+// ── global refresh ──
+document.getElementById('refreshBtn').addEventListener('click', async () => {
+  await runAction('refresh-data', {});
+  loadTab(currentTab);
+  pushNotification('info', 'تم تحديث بيانات اللوحة الحالية');
+});
+
+// ── action registry + confirm modal + async job polling ──
+const ACTION_META = {};
+async function loadActionRegistry() {
+  try {
+    const res = await fetchJson('/api/v1/actions');
+    if (res.success) res.actions.forEach(a => { ACTION_META[a.name] = a; });
+  } catch (_) { /* actions tab/buttons will still work, just without rich descriptions */ }
+}
+
+async function runAction(name, body) {
+  const res = await fetch(`/api/v1/actions/${name}`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ confirmed: true, ...body }),
+  });
+  return res.json();
+}
+
+async function pollJob(jobId, onUpdate) {
+  for (;;) {
+    let res;
+    try { res = await fetchJson(`/api/v1/actions/${jobId}`); }
+    catch (err) { onUpdate({ status: 'failed', error: err.message }); return; }
+    if (!res.success) { onUpdate({ status: 'failed', error: res.error?.message || 'poll failed' }); return; }
+    onUpdate(res.job);
+    if (res.job.status !== 'running') return;
+    await new Promise(r => setTimeout(r, 2000));
+  }
+}
+
+const actionModal = document.getElementById('actionModal');
+const actionModalTitle = document.getElementById('actionModalTitle');
+const actionModalDesc = document.getElementById('actionModalDesc');
+const actionModalReversible = document.getElementById('actionModalReversible');
+const actionModalExtra = document.getElementById('actionModalExtra');
+const actionModalProgress = document.getElementById('actionModalProgress');
+const actionModalProgressText = document.getElementById('actionModalProgressText');
+const actionModalResult = document.getElementById('actionModalResult');
+const actionModalCancel = document.getElementById('actionModalCancel');
+const actionModalConfirm = document.getElementById('actionModalConfirm');
+
+const AFFECTED_TAB_BY_ACTION = {
+  'rerun-market-analysis': 'market',
+  'trigger-opportunity-evaluation': 'opportunities',
+  'start-production-pipeline': 'production',
+  'pause-production': 'production',
+  'resume-production': 'production',
+  'run-validation': 'validation',
+  'export-executive-report': 'revenue',
+};
+
+function openActionModal(actionName) {
+  const meta = ACTION_META[actionName] || { description: '', reversible: null };
+  actionModalTitle.textContent = actionName;
+  actionModalDesc.textContent = meta.description || '';
+  actionModalReversible.textContent = meta.reversible
+    ? '↩ هذا الإجراء قابل للعكس.'
+    : (meta.reversible === false ? '⚠ هذا الإجراء غير قابل للعكس.' : '');
+  actionModalExtra.innerHTML = actionName === 'pause-production'
+    ? '<input type="text" id="pauseReasonInput" placeholder="سبب الإيقاف (اختياري)">'
+    : '';
+  actionModalProgress.style.display = 'none';
+  actionModalResult.textContent = '';
+  actionModalConfirm.disabled = false;
+  actionModalConfirm.textContent = 'تأكيد';
+  actionModalCancel.style.display = '';
+  actionModal.classList.add('open');
+  actionModalConfirm.onclick = () => confirmAction(actionName);
+  actionModalCancel.onclick = closeActionModal;
+}
+
+function closeActionModal() {
+  actionModal.classList.remove('open');
+}
+
+async function confirmAction(actionName) {
+  actionModalConfirm.disabled = true;
+  actionModalCancel.style.display = 'none';
+  actionModalProgress.style.display = 'block';
+  actionModalProgressText.textContent = 'جارٍ التنفيذ…';
+
+  const body = {};
+  if (actionName === 'pause-production') {
+    const reasonEl = document.getElementById('pauseReasonInput');
+    if (reasonEl && reasonEl.value.trim()) body.reason = reasonEl.value.trim();
+  }
+
+  let res;
+  try {
+    res = await runAction(actionName, body);
+  } catch (err) {
+    actionModalProgress.style.display = 'none';
+    actionModalResult.textContent = `فشل الطلب: ${err.message}`;
+    actionModalConfirm.disabled = false;
+    actionModalConfirm.textContent = 'إغلاق';
+    actionModalConfirm.onclick = closeActionModal;
+    pushNotification('error', `${actionName}: فشل الطلب`);
+    return;
+  }
+
+  if (!res.success) {
+    actionModalProgress.style.display = 'none';
+    actionModalResult.textContent = res.error?.message || 'فشل غير معروف';
+    actionModalConfirm.disabled = false;
+    actionModalConfirm.textContent = 'إغلاق';
+    actionModalConfirm.onclick = closeActionModal;
+    pushNotification('error', `${actionName}: ${res.error?.message || 'فشل'}`);
+    return;
+  }
+
+  const finish = (job) => {
+    actionModalProgress.style.display = 'none';
+    actionModalConfirm.disabled = false;
+    actionModalConfirm.textContent = 'إغلاق';
+    actionModalConfirm.onclick = closeActionModal;
+    if (job.status === 'completed') {
+      actionModalResult.textContent = 'اكتمل بنجاح.';
+      pushNotification('success', `${actionName}: اكتمل بنجاح`);
+    } else {
+      actionModalResult.textContent = `فشل: ${job.error || 'سبب غير معروف'}`;
+      pushNotification('error', `${actionName}: ${job.error || 'فشل'}`);
+    }
+    const affectedTab = AFFECTED_TAB_BY_ACTION[actionName];
+    if (affectedTab === currentTab) loadTab(currentTab);
+  };
+
+  if (res.job.status === 'running') {
+    actionModalProgressText.textContent = 'قيد التنفيذ في الخلفية (قد يستغرق دقائق لأنه يتصل بمصادر خارجية حقيقية)…';
+    pollJob(res.job.id, (job) => {
+      if (job.status === 'running') return;
+      finish(job);
+    });
+  } else {
+    finish(res.job);
+  }
+}
+
+document.querySelectorAll('[data-action]').forEach(btn => {
+  btn.addEventListener('click', () => openActionModal(btn.dataset.action));
+});
+
 // cache production data so the Publishing tab can derive from it without a second call
 let _productionCache = null;
+let _lastValidationJob = null;
 
 const loaders = {
   health: async () => {
     const el = document.getElementById('healthContent');
-    const d = await fetchJson('/api/dashboard');
+    const res = await fetchJson('/api/v1/company-health');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const d = res.data;
     el.innerHTML = `
       <div class="grid">
         <div class="card"><h3>الحالة</h3><div class="big">${badge(d.health?.status)}</div></div>
         <div class="card"><h3>مستوى المخاطرة</h3><div class="big">${badge(d.risk?.level)}</div><div class="muted">${escapeHtml(d.risk?.reason)}</div></div>
         <div class="card"><h3>الوعي الذاتي</h3><div class="big">${escapeHtml(d.self_awareness?.verdict ?? 'Unknown')}</div><div class="muted">أضعف خلية: ${escapeHtml(d.self_awareness?.weakest_cell)}</div></div>
-        <div class="card"><h3>Golden Hunter</h3><div class="muted">${d.hunter?.ran ? `آخر تشغيل: ${escapeHtml(d.hunter.timestamp)}<br>مسح: ${d.hunter.scanned_count} | تخطّي: ${d.hunter.skipped_count} | ذهبي: ${d.hunter.golden_count}` : escapeHtml(d.hunter?.note ?? 'لم يُشغَّل بعد')}</div></div>
-        <div class="card"><h3>Oracle</h3><div class="big">${d.oracle?.golden_count ?? 0} 🏆</div><div class="muted">من ${d.oracle?.total_scored ?? 0} مُقيَّم</div></div>
-        <div class="card"><h3>مرشَّحو Tier-1</h3><div class="muted">${escapeHtml(d.tier1_discovery?.note ?? JSON.stringify(d.tier1_discovery))}</div></div>
       </div>
       <details><summary>الأولوية التالية</summary><pre>${escapeHtml(d.current_priorities?.text ?? d.current_priorities?.note ?? 'لا شيء')}</pre></details>
     `;
+    if (d.health?.status === 'critical') pushNotification('warning', 'الحالة العامة للمصنع: حرِجة (critical)');
   },
 
   market: async () => {
     const el = document.getElementById('marketContent');
-    const d = await fetchJson('/api/dashboard');
-    const mi = d.latest_market_intelligence;
+    const res = await fetchJson('/api/v1/market-intelligence');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const mi = res.data.latest;
     if (!mi || !mi.available) {
       el.innerHTML = `<p class="muted">${escapeHtml(mi?.note ?? 'لا تحليل ذكاء سوق حقيقي مسجَّل بعد')}</p>`;
       return;
@@ -241,8 +581,9 @@ const loaders = {
 
   opportunities: async () => {
     const el = document.getElementById('opportunitiesContent');
-    const d = await fetchJson('/api/mission-control/opportunities');
-    if (!d.success) { el.innerHTML = `<p class="muted">${escapeHtml(d.error)}</p>`; return; }
+    const res = await fetchJson('/api/v1/opportunity-queue');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const d = res.data;
     const rows = (d.all || []).map(o => `
       <tr>
         <td>${escapeHtml(o.niche)}</td>
@@ -259,11 +600,16 @@ const loaders = {
 
   production: async () => {
     const el = document.getElementById('productionContent');
-    const d = await fetchJson('/api/mission-control/production');
-    _productionCache = d;
-    if (!d.success) { el.innerHTML = `<p class="muted">${escapeHtml(d.error)}</p>`; return; }
-    if (!d.processed) { el.innerHTML = `<p class="muted">${escapeHtml(d.reason)}</p>`; return; }
-    el.innerHTML = d.dossiers.map(ds => `
+    const res = await fetchJson('/api/v1/production-queue');
+    _productionCache = res;
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const d = res.data;
+    const control = d.production_control;
+    const pauseNote = control?.paused
+      ? `<p>${badge('paused')} <span class="muted">${escapeHtml(control.reason || '')} — منذ ${fmtTime(control.changed_at)}</span></p>`
+      : `<p class="muted">الإنتاج غير موقوف حالياً.</p>`;
+    if (!d.processed) { el.innerHTML = pauseNote + `<p class="muted">${escapeHtml(d.reason)}</p>`; return; }
+    el.innerHTML = pauseNote + d.dossiers.map(ds => `
       <div class="card">
         <h3>${escapeHtml(ds.production_id)}</h3>
         <p><strong>${escapeHtml(ds.niche)}</strong></p>
@@ -275,17 +621,18 @@ const loaders = {
 
   publishing: async () => {
     const el = document.getElementById('publishingContent');
-    if (!_productionCache) _productionCache = await fetchJson('/api/mission-control/production');
-    const d = _productionCache;
-    if (!d.success || !d.processed) {
+    const res = await fetchJson('/api/v1/publishing-status');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const d = res.data;
+    if (!d.processed) {
       el.innerHTML = `<p class="muted">${escapeHtml(d.reason ?? 'لا بيانات نشر بعد — لا فرصة قيد الإنتاج')}</p>`;
       return;
     }
-    el.innerHTML = d.dossiers.map(ds => `
+    el.innerHTML = d.publishing.map(p => `
       <div class="card">
-        <h3>${escapeHtml(ds.niche)}</h3>
+        <h3>${escapeHtml(p.niche)}</h3>
         <table><tbody>
-          ${(ds.publishing_checklist || []).map(c => `<tr><td>${escapeHtml(c.platform)}</td><td>${badge(c.status)}</td></tr>`).join('')}
+          ${(p.checklist || []).map(c => `<tr><td>${escapeHtml(c.platform)}</td><td>${badge(c.status)}</td></tr>`).join('')}
         </tbody></table>
       </div>
     `).join('');
@@ -293,15 +640,16 @@ const loaders = {
 
   revenue: async () => {
     const el = document.getElementById('revenueContent');
-    const d = await fetchJson('/api/mission-control/revenue');
-    if (!d.success) { el.innerHTML = `<p class="muted">${escapeHtml(d.error)}</p>`; return; }
-    el.innerHTML = `<pre>${escapeHtml(d.ceo_report_markdown)}</pre>`;
+    const res = await fetchJson('/api/v1/revenue-summary');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    el.innerHTML = `<pre>${escapeHtml(res.data.ceo_report_markdown)}</pre>`;
   },
 
   automation: async () => {
     const el = document.getElementById('automationContent');
-    const d = await fetchJson('/api/mission-control/automation');
-    if (!d.success) { el.innerHTML = `<p class="muted">${escapeHtml(d.error)}</p>`; return; }
+    const res = await fetchJson('/api/v1/automation-status');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const d = res.data;
     el.innerHTML = `
       <p class="muted">⚠️ ${escapeHtml(d.reason)}</p>
       <table><thead><tr><th>Workflow</th><th>نشط في آخر تصدير</th><th>الملف</th></tr></thead>
@@ -309,22 +657,125 @@ const loaders = {
     `;
   },
 
+  validation: async () => {
+    const el = document.getElementById('validationContent');
+    if (!_lastValidationJob) {
+      try {
+        const res = await fetchJson('/api/v1/actions');
+        if (res.success) {
+          _lastValidationJob = (res.recent_jobs || []).find(j => j.action === 'run-validation' && j.status === 'completed') || null;
+          if (_lastValidationJob) {
+            const full = await fetchJson(`/api/v1/actions/${_lastValidationJob.id}`);
+            if (full.success) _lastValidationJob = full.job;
+          }
+        }
+      } catch (_) { /* fall through to empty state */ }
+    }
+    if (!_lastValidationJob || !_lastValidationJob.result) {
+      el.innerHTML = '<p class="muted">لا تقرير تحقُّق بعد — اضغط "تشغيل التحقُّق" أعلاه.</p>';
+      return;
+    }
+    el.innerHTML = `<pre>${escapeHtml(_lastValidationJob.result.markdown)}</pre>`;
+  },
+
+  activity: async () => {
+    const el = document.getElementById('activityContent');
+    const filtersEl = document.getElementById('activityFilters');
+    let items = [];
+    try {
+      const [healthRes, actionsRes] = await Promise.all([
+        fetchJson('/api/v1/company-health'),
+        fetchJson('/api/v1/actions'),
+      ]);
+      const sourceCategory = (source) => {
+        if (source === 'factory_loop' || source === 'golden_hunter') return 'automation';
+        if (source === 'inspection') return 'production';
+        return 'system';
+      };
+      if (healthRes.success) {
+        (healthRes.data.activity || []).forEach(e => items.push({
+          at: e.timestamp, category: sourceCategory(e.source), label: e.source, detail: e.summary,
+        }));
+      }
+      if (actionsRes.success) {
+        (actionsRes.recent_jobs || []).forEach(j => items.push({
+          at: j.started_at, category: 'user', label: j.action,
+          detail: j.status === 'running' ? 'قيد التنفيذ…' : (j.status === 'failed' ? `فشل: ${j.error || ''}` : 'اكتمل بنجاح'),
+        }));
+      }
+    } catch (err) {
+      el.innerHTML = `<p class="muted">تعذَّر التحميل: ${escapeHtml(err.message)}</p>`;
+      return;
+    }
+    items.sort((a, b) => Date.parse(b.at || 0) - Date.parse(a.at || 0));
+
+    const CAT_LABELS = { user: 'إجراءات المستخدم', automation: 'الأتمتة', production: 'الإنتاج', system: 'النظام' };
+    if (!filtersEl.dataset.built) {
+      filtersEl.dataset.built = '1';
+      const allBtn = document.createElement('button');
+      allBtn.className = 'btn active';
+      allBtn.textContent = 'الكل';
+      allBtn.dataset.cat = 'all';
+      filtersEl.appendChild(allBtn);
+      Object.entries(CAT_LABELS).forEach(([cat, label]) => {
+        const b = document.createElement('button');
+        b.className = 'btn';
+        b.textContent = label;
+        b.dataset.cat = cat;
+        filtersEl.appendChild(b);
+      });
+      filtersEl.addEventListener('click', (e) => {
+        const b = e.target.closest('button[data-cat]');
+        if (!b) return;
+        filtersEl.querySelectorAll('button').forEach(x => x.classList.toggle('active', x === b));
+        renderActivityList(items, b.dataset.cat);
+      });
+    }
+    renderActivityList(items, filtersEl.querySelector('button.active')?.dataset.cat || 'all');
+
+    function renderActivityList(all, cat) {
+      const filtered = cat === 'all' ? all : all.filter(i => i.category === cat);
+      el.innerHTML = filtered.length
+        ? filtered.slice(0, 100).map(i => `
+            <div class="activityItem">
+              <span class="cat">${badge(i.category === 'user' ? 'info' : (i.category === 'production' ? 'good' : 'muted'))}</span>
+              <div><strong>${escapeHtml(CAT_LABELS[i.category] || i.category)}</strong> — ${escapeHtml(i.label)}
+                <div class="muted">${escapeHtml(i.detail)}</div>
+                <time class="muted">${fmtTime(i.at)}</time>
+              </div>
+            </div>`).join('')
+        : '<p class="muted">لا أحداث في هذه الفئة.</p>';
+    }
+  },
+
   alerts: async () => {
     const el = document.getElementById('alertsContent');
-    const d = await fetchJson('/api/dashboard');
+    const res = await fetchJson('/api/v1/alerts');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const d = res.data;
     el.innerHTML = `
       <div class="card"><h3>NEEDS_ATTENTION</h3><pre>${escapeHtml(d.needs_attention?.content ?? 'لا شيء')}</pre></div>
       <div class="card"><h3>NEEDS_REVIEW</h3><pre>${escapeHtml(d.needs_review?.content ?? 'لا شيء')}</pre></div>
     `;
+    if (d.needs_attention?.active) pushNotification('warning', 'NEEDS_ATTENTION نشط');
   },
 
   history: async () => {
     const el = document.getElementById('historyContent');
-    const d = await fetchJson('/api/dashboard');
-    const activity = (d.activity || []).map(e => `<tr><td>${escapeHtml(e.source)}</td><td>${escapeHtml(e.summary)}</td></tr>`).join('');
+    const res = await fetchJson('/api/v1/decision-history');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const rows = (res.data.history || []).slice(0, 100).map(d => `
+      <tr>
+        <td>${escapeHtml(d.niche)}</td>
+        <td>${badge(d.status)}</td>
+        <td>${escapeHtml(d.ai_ceo_decision)}</td>
+        <td>${d.opportunity_score}</td>
+        <td class="muted">${fmtTime(d.decided_at)}</td>
+      </tr>`).join('');
     el.innerHTML = `
-      <p class="muted">استخدم شريط البحث العام أعلاه للبحث في المعرفة (OpenClaw_Brain) وسجل القرارات.</p>
-      <table><thead><tr><th>المصدر</th><th>الحدث</th></tr></thead><tbody>${activity || '<tr><td colspan="2" class="muted">لا نشاط مسجَّل</td></tr>'}</tbody></table>
+      <p class="muted">استخدم شريط البحث العام أعلاه للبحث في المعرفة (OpenClaw_Brain) وسجل القرارات. إجمالي القرارات: ${res.data.count}</p>
+      <table><thead><tr><th>النيتش</th><th>الحالة</th><th>قرار AI CEO</th><th>الدرجة</th><th>التاريخ</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="5" class="muted">لا قرارات مسجَّلة</td></tr>'}</tbody></table>
     `;
   },
 };
@@ -341,28 +792,26 @@ function loadTab(id) {
 const searchBox = document.getElementById('searchBox');
 const searchOverlay = document.getElementById('globalSearchOverlay');
 const searchResultsEl = document.getElementById('globalSearchResults');
-document.getElementById('closeSearch').addEventListener('click', () => searchOverlay.style.display = 'none');
+document.getElementById('closeSearch').addEventListener('click', () => searchOverlay.classList.remove('open'));
 
-let searchTimer;
 searchBox.addEventListener('keydown', (e) => {
   if (e.key !== 'Enter') return;
-  clearTimeout(searchTimer);
   runGlobalSearch(searchBox.value.trim());
 });
 
 async function runGlobalSearch(q) {
   if (!q) return;
-  searchOverlay.style.display = 'block';
+  searchOverlay.classList.add('open');
   searchResultsEl.innerHTML = '<p class="loading">جارٍ البحث…</p>';
   try {
     const [brainRes, oppRes] = await Promise.all([
-      fetchJson(`/brain?q=${encodeURIComponent(q)}`),
-      fetchJson('/api/mission-control/opportunities'),
+      fetchJson(`/api/v1/knowledge-base?q=${encodeURIComponent(q)}`),
+      fetchJson('/api/v1/opportunity-queue'),
     ]);
-    const brainHits = (brainRes.results || []).slice(0, 10).map(r => `
+    const brainHits = (brainRes.data?.results || []).slice(0, 10).map(r => `
       <div class="card"><strong>${escapeHtml(r.file)}:${escapeHtml(r.line)}</strong><pre>${escapeHtml(r.text)}</pre></div>
     `).join('');
-    const oppHits = (oppRes.all || []).filter(o => o.niche.toLowerCase().includes(q.toLowerCase())).slice(0, 10).map(o => `
+    const oppHits = (oppRes.data?.all || []).filter(o => o.niche.toLowerCase().includes(q.toLowerCase())).slice(0, 10).map(o => `
       <div class="card"><strong>${escapeHtml(o.niche)}</strong> — ${o.opportunity_score}/100 ${badge(o.status)}</div>
     `).join('');
     searchResultsEl.innerHTML = `
@@ -380,6 +829,8 @@ if ('serviceWorker' in navigator) {
 }
 
 // ── init ──
+renderNotifications();
+loadActionRegistry();
 const initialTab = (window.location.hash || '#health').slice(1);
 showTab(TABS.some(t => t.id === initialTab) ? initialTab : 'health');
 </script>
