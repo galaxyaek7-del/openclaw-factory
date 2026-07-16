@@ -58,7 +58,16 @@ def intake_from_tier1_candidates(candidates_dir=None):
         elif source.get("platform") == "hacker_news" and source.get("points") is not None:
             external_signal = {"source": "hacker_news", "points": source["points"], "created_at": source.get("created_at")}
 
-        signals.append({"niche": niche, "external_signal": external_signal, "source": path.name})
+        # Bug fix (Final Validation phase, 2026-07-16): every file in this
+        # directory is, by its own location and schema (opportunity_score_
+        # tier1_post_fix keys, see ADR-035/036), explicitly a Tier-1
+        # research candidate -- yet no tier field was ever produced here,
+        # so operating_mode.py silently defaulted every one of them to
+        # tier4 (a disposable one-off book, automation_potential=100,
+        # long_term_value=25) instead of tier1 (automation_potential=40,
+        # long_term_value=95). A proven defect: these candidates were
+        # never actually evaluated as what they were researched to be.
+        signals.append({"niche": niche, "external_signal": external_signal, "source": path.name, "tier": "tier1"})
 
     return signals
 

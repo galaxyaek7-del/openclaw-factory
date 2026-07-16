@@ -69,6 +69,20 @@ class TestSignalIntakeFromTier1Candidates(unittest.TestCase):
         self.assertEqual(result[0]["external_signal"]["source"], "hacker_news")
         self.assertEqual(result[0]["external_signal"]["points"], 150)
 
+    def test_tier1_candidates_are_tagged_tier1_not_defaulted_to_tier4(self):
+        """Regression test for a proven defect (Final Validation phase,
+        2026-07-16): every file in tier1_intake/candidates/ is, by its own
+        location and schema, a Tier-1 research candidate, yet no tier
+        field was ever produced -- operating_mode.py silently defaulted
+        all of them to tier4 (long_term_value=25) instead of tier1
+        (long_term_value=95)."""
+        self._write_candidate("a.json", {
+            "niche": "a tier propagation test niche",
+            "source": {"platform": "github", "stars": 100, "created_at": "2026-01-01T00:00:00Z"},
+        })
+        result = signal_intake.intake_from_tier1_candidates(candidates_dir=self.tmp_dir)
+        self.assertEqual(result[0]["tier"], "tier1")
+
     def test_candidate_with_no_recognizable_source_gets_no_external_signal(self):
         self._write_candidate("c.json", {"niche": "a niche with unknown source", "source": {"platform": "product_hunt"}})
         result = signal_intake.intake_from_tier1_candidates(candidates_dir=self.tmp_dir)
@@ -123,6 +137,22 @@ class TestRunRealWorldCycle(unittest.TestCase):
             result = operating_mode.run_real_world_cycle(timeline_path=self.timeline_path, decisions_path=self.decisions_path)
         self.assertEqual(result["processed"], 0)
         self.assertIn("reason", result)
+
+    def test_signals_tier_field_is_actually_passed_through_to_run_cycle(self):
+        """Regression test: the tier propagation fix must actually reach
+        orchestrator.run_cycle(), not just exist in signal_intake's output."""
+        fake_signals = [{"niche": "tier passthrough test niche", "external_signal": None, "source": "test", "tier": "tier1"}]
+        with patch("real_world_mode.signal_intake.collect_all_real_signals", return_value=fake_signals), \
+             patch("real_world_mode.operating_mode.orch.run_cycle", return_value=[]) as mock_run_cycle:
+            operating_mode.run_real_world_cycle(timeline_path=self.timeline_path, decisions_path=self.decisions_path)
+        self.assertEqual(mock_run_cycle.call_args.kwargs["tier"], "tier1")
+
+    def test_signals_without_a_tier_field_still_default_to_tier4(self):
+        fake_signals = [{"niche": "no tier field test niche", "external_signal": None, "source": "test"}]
+        with patch("real_world_mode.signal_intake.collect_all_real_signals", return_value=fake_signals), \
+             patch("real_world_mode.operating_mode.orch.run_cycle", return_value=[]) as mock_run_cycle:
+            operating_mode.run_real_world_cycle(timeline_path=self.timeline_path, decisions_path=self.decisions_path)
+        self.assertEqual(mock_run_cycle.call_args.kwargs["tier"], "tier4")
 
     def test_each_real_signal_runs_through_the_unchanged_orchestrator(self):
         fake_signals = [

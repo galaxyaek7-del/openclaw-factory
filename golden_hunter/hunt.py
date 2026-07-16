@@ -31,7 +31,8 @@ def run_hunt(candidates_dir=None, timeline_path=None, decisions_path=None,
 
     for signal in signals:
         orch.run_cycle(
-            signal["niche"], external_signal=signal["external_signal"], execute_production=False,
+            signal["niche"], external_signal=signal["external_signal"],
+            tier=signal.get("tier", "tier4"), execute_production=False,
             timeline_path=timeline_path, decisions_path=decisions_path,
             analysis_db_file=analysis_db_file, outcomes_path=outcomes_path,
         )

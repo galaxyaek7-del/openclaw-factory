@@ -33,6 +33,7 @@ def run_real_world_cycle(execute_production=False, candidates_dir=None, timeline
         stage_results = orch.run_cycle(
             signal["niche"],
             external_signal=signal["external_signal"],
+            tier=signal.get("tier", "tier4"),
             execute_production=execute_production,
             timeline_path=timeline_path,
             decisions_path=decisions_path,
