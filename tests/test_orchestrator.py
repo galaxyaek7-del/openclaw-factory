@@ -227,6 +227,49 @@ class TestPrioritizeQueueReusesDecisionEngineRanking(unittest.TestCase):
             result = orch.prioritize_queue(max_items=2)
             self.assertEqual(len(result), 2)
 
+
+class TestRealCompetitionEnrichment(unittest.TestCase):
+    """ADR-057: profit_oracle._score_competition() already accepts a real
+    external_signal['competition']['related_results_count'] (ADR-041);
+    competitor_discovery.py already computes a real HN/GitHub competitor
+    count (ADR-042). Nothing wired them together until this fix."""
+
+    def setUp(self):
+        self.competitor_db_path = _temp_path(".json")
+
+    def tearDown(self):
+        if os.path.exists(self.competitor_db_path):
+            os.remove(self.competitor_db_path)
+
+    @patch("competitor_discovery._query_github", return_value=[{"full_name": "x/y", "stargazers_count": 10, "owner": {"type": "User"}, "created_at": "2026-01-01T00:00:00Z"}])
+    @patch("competitor_discovery._query_hn", return_value=[])
+    def test_real_competitor_count_is_merged_into_competition_key(self, mock_hn, mock_gh):
+        with patch("competitor_discovery.COMPETITOR_DB_FILE", self.competitor_db_path):
+            result = orch._enrich_with_real_competition("a real enrichment test niche", None, 10)
+        self.assertEqual(result["competition"]["related_results_count"], 1)
+
+    @patch("competitor_discovery._query_github", return_value=[])
+    @patch("competitor_discovery._query_hn", return_value=[])
+    def test_existing_demand_signal_fields_are_preserved_not_overwritten(self, mock_hn, mock_gh):
+        with patch("competitor_discovery.COMPETITOR_DB_FILE", self.competitor_db_path):
+            result = orch._enrich_with_real_competition(
+                "a preserve fields test niche", {"source": "github", "stars": 500}, 10
+            )
+        self.assertEqual(result["source"], "github")
+        self.assertEqual(result["stars"], 500)
+        self.assertIn("competition", result)
+
+    def test_competitor_discovery_failure_degrades_to_unchanged_signal_never_fabricates(self):
+        with patch("competitor_discovery.get_or_refresh_competitors", side_effect=Exception("network down")):
+            original = {"source": "github", "stars": 500}
+            result = orch._enrich_with_real_competition("a failure test niche", original, 10)
+        self.assertEqual(result, original)
+
+    def test_none_external_signal_still_gets_a_real_competition_key(self):
+        with patch("competitor_discovery.get_or_refresh_competitors", return_value={"total_found": 3}):
+            result = orch._enrich_with_real_competition("x", None, 10)
+        self.assertEqual(result, {"competition": {"related_results_count": 3}})
+
     def test_no_cap_returns_the_full_real_queue(self):
         with patch("decision_engine.ranking.rank_queue", return_value=[{"niche": "a"}, {"niche": "b"}]):
             result = orch.prioritize_queue()

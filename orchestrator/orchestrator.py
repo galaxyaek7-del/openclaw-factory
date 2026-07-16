@@ -21,6 +21,7 @@ instruction not to wire the Decision Engine directly into factory_loop.js.
 import hashlib
 from datetime import datetime, timezone
 
+import competitor_discovery
 from decision_engine import ranking as decision_ranking
 
 from orchestrator import engines  # noqa: F401 — import triggers auto-registration
@@ -32,6 +33,30 @@ from orchestrator.types import DUPLICATE_SENSITIVE_STAGES, EXECUTION_ORDER, Exec
 def make_idempotency_key(stage_name, niche, tier):
     raw = f"{stage_name}|{str(niche).strip().lower()}|{tier}"
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
+
+
+def _enrich_with_real_competition(niche, external_signal, max_results):
+    """ADR-057: closes a real, long-documented gap (BLOCKERS.md #4) —
+    profit_oracle._score_competition() already accepts a real
+    external_signal['competition']['related_results_count'] (ADR-041),
+    and competitor_discovery.py already computes a real HN/GitHub
+    competitor count, but nothing ever connected the two until now.
+    Purely additive to whatever demand-shaped external_signal the caller
+    already provided; never overwrites it, never fabricates a count —
+    any competitor_discovery failure degrades to the original
+    external_signal completely unchanged."""
+    try:
+        competitors = competitor_discovery.get_or_refresh_competitors(niche, max_results=max_results)
+        total_found = competitors.get("total_found")
+    except Exception:
+        return external_signal
+
+    if total_found is None:
+        return external_signal
+
+    enriched = dict(external_signal or {})
+    enriched["competition"] = {"related_results_count": total_found}
+    return enriched
 
 
 def _skip(stage_name, idempotency_key, reason, timeline_path):
@@ -77,7 +102,11 @@ def run_cycle(niche, external_signal=None, tier="tier4", max_results=10,
     package's own test suite was found doing exactly that. Omitting them
     (every call before this parameter existed — there was no prior
     caller) uses the same real default paths those modules already use.
+
+    external_signal is enriched with a real competition count (ADR-057)
+    before being passed to context — see _enrich_with_real_competition().
     """
+    external_signal = _enrich_with_real_competition(niche, external_signal, max_results)
     context = {
         "niche": niche, "external_signal": external_signal, "tier": tier,
         "max_results": max_results, "dry_run": not execute_production,
