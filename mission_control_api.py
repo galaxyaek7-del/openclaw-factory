@@ -19,6 +19,8 @@ and persisted by a deliberate, separate run of the underlying package.
     python mission_control_api.py production
     python mission_control_api.py revenue
     python mission_control_api.py automation
+    python mission_control_api.py decision_history
+    python mission_control_api.py system_configuration
 """
 
 import json
@@ -79,11 +81,58 @@ def _automation():
     }
 
 
+_DECISION_SUMMARY_FIELDS = (
+    "decision_id", "niche", "tier", "decided_at", "status",
+    "ai_ceo_decision", "opportunity_score", "opportunity_score_accepted", "reasoning",
+)
+
+
+def _decision_history():
+    """Every ACCEPTED/REJECTED/DEFERRED decision ever recorded, unfiltered
+    and newest first — decision_engine/store.py's own guarantee is that
+    none of this history is ever dropped. Projected to summary fields only
+    (the full evaluation_snapshot per record is already reachable through
+    the opportunity-queue/market-intelligence services and would make this
+    listing multiple MB); no new logic, just a field selection over the
+    real record."""
+    from decision_engine import store
+    records = sorted(store.read_decisions(), key=lambda d: d.get("decided_at", ""), reverse=True)
+    summaries = [{k: r.get(k) for k in _DECISION_SUMMARY_FIELDS} for r in records]
+    return {"history": summaries, "count": len(summaries)}
+
+
+def _system_configuration():
+    """Real, non-secret configuration values only — unit economics, tier
+    weights/floors, and the capability maturity registry, all read from
+    their existing single sources of truth (config/economics.json,
+    profit_oracle.py's constants, config/capability_registry.json). No
+    values are computed or estimated here."""
+    from profit_oracle import TIER_WEIGHTS, MIN_OPPORTUNITY_SCORE, AUTOMATION_POTENTIAL_BY_TIER, LONG_TERM_VALUE_BY_TIER
+
+    def _read_json(rel_path):
+        p = _FACTORY_ROOT / rel_path
+        if not p.exists():
+            return None
+        with open(p, "r", encoding="utf-8") as f:
+            return json.load(f)
+
+    return {
+        "tier_weights": TIER_WEIGHTS,
+        "min_opportunity_score": MIN_OPPORTUNITY_SCORE,
+        "automation_potential_by_tier": AUTOMATION_POTENTIAL_BY_TIER,
+        "long_term_value_by_tier": LONG_TERM_VALUE_BY_TIER,
+        "economics": _read_json("config/economics.json"),
+        "capability_registry": _read_json("config/capability_registry.json"),
+    }
+
+
 _ENDPOINTS = {
     "opportunities": _opportunities,
     "production": _production,
     "revenue": _revenue,
     "automation": _automation,
+    "decision_history": _decision_history,
+    "system_configuration": _system_configuration,
 }
 
 

@@ -85,7 +85,14 @@ function requireMissionControlAuth(req, res, next) {
   // so an Accept check would wrongly redirect API calls (including the
   // frontend's own fetch() calls on session expiry) to the login page
   // instead of returning JSON it can react to.
-  if (req.method === 'GET' && !req.path.startsWith('/api/')) {
+  //
+  // req.originalUrl, not req.path: this middleware is also mounted via
+  // app.use('/api/v1', requireMissionControlAuth, v1Router), and Express
+  // rewrites req.path to be relative to the mount point inside a sub-
+  // router (e.g. '/company-health', not '/api/v1/company-health') —
+  // req.originalUrl always holds the real, full request path regardless
+  // of mount depth.
+  if (req.method === 'GET' && !req.originalUrl.startsWith('/api/')) {
     return res.redirect('/mission_control_login.html');
   }
   return res.status(401).json({ success: false, error: 'unauthenticated' });
@@ -121,29 +128,320 @@ app.get('/mission_control.html', requireMissionControlAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'mission_control.html'));
 });
 
-// Real Python packages built this session, reused (not duplicated) via
-// mission_control_api.py's thin CLI dispatcher — same stdin/stdout-JSON
-// subprocess pattern every other script this factory already uses
-// (see /api/market-analyze above).
+// ── UNIFIED SERVICE LAYER (Phase 8 — Unified Service Layer) ──
+// Every core capability exposed through one stable, versioned internal
+// API: GET /api/v1/<service> (data) + GET /api/v1/<service>/health
+// (liveness). Reuse only — every handler below calls straight into an
+// already-built, already-tested module; nothing here computes a new
+// score, decision, or metric. Gated by the exact same
+// requireMissionControlAuth built above (no second auth mechanism —
+// "authentication-ready" means reusing the one that exists, not
+// inventing a parallel one).
+
+const SERVICE_LOG_DIR = path.join(__dirname, 'logs');
+const SERVICE_LOG_PATH = path.join(SERVICE_LOG_DIR, 'service_layer.log');
+
+// Structured logging: one JSON line per service call, real fields only
+// (service, path, status, duration — never a fabricated metric). Never
+// allowed to break the request it's logging.
+function logServiceCall(entry) {
+  const line = JSON.stringify({ timestamp: new Date().toISOString(), ...entry });
+  try {
+    fs.mkdirSync(SERVICE_LOG_DIR, { recursive: true });
+    fs.appendFileSync(SERVICE_LOG_PATH, line + '\n');
+  } catch { /* logging must never break a request */ }
+  console.log(`[service_layer] ${line}`);
+}
+
+// Single shared bridge to mission_control_api.py's CLI dispatcher —
+// replaces the old ad hoc inline spawn/parse block that used to live
+// only in /api/mission-control/:section (Phase 8 Mission Control), so
+// there is exactly one place that knows how to run a Python service,
+// not two copies of the same spawn/parse glue.
+function runPythonService(section) {
+  return new Promise((resolve, reject) => {
+    const pythonPath = detectPython();
+    const scriptPath = path.join(__dirname, 'mission_control_api.py');
+    const python = spawn(pythonPath, [scriptPath, section], { cwd: __dirname });
+    let output = '', errOut = '';
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', reject);
+    python.on('close', () => {
+      let parsed;
+      try {
+        parsed = JSON.parse(output.trim());
+      } catch {
+        return reject(new Error(`parse error: ${output}${errOut}`));
+      }
+      if (parsed.success === false) return reject(new Error(parsed.error || 'python endpoint reported failure'));
+      resolve(parsed);
+    });
+  });
+}
+
+// Cheap dependency check, not a full data run: confirms the Python
+// interpreter is resolvable and the dispatcher script exists on disk.
+// Deliberately does NOT spawn mission_control_api.py itself — that would
+// make every health poll pay for a real subprocess + module import just
+// to answer "is this wired up", which is a different question from "is
+// the data fresh".
+function pythonHealthCheck(section) {
+  return async () => {
+    const scriptPath = path.join(__dirname, 'mission_control_api.py');
+    if (!fs.existsSync(scriptPath)) {
+      return { status: 'error', detail: 'mission_control_api.py not found on disk' };
+    }
+    const pythonPath = detectPython();
+    return {
+      status: 'ok',
+      detail: `dependency check only (not a full data run): python=${pythonPath}, script=mission_control_api.py, section=${section}`,
+    };
+  };
+}
+
+// For JS-backed services: runs the same real, cheap read the data
+// endpoint itself would use, and reports whether it threw.
+function fsHealthCheck(probeFn, label) {
+  return async () => {
+    probeFn();
+    return { status: 'ok', detail: label };
+  };
+}
+
+async function companyHealthService() {
+  const [health, awareness] = await Promise.all([
+    computeHealthStatus().catch(err => ({ status: 'error', error: err.message })),
+    selfAwareness.assessSelfAwareness().catch(err => ({ verdict: null, error: err.message })),
+  ]);
+  const needsAttention = dashboardData.readAttentionFlag();
+  const risk = dashboardData.deriveRiskLevel(health, needsAttention);
+  const current_priorities = readNextDollarActions();
+  return { health, risk, self_awareness: awareness, current_priorities };
+}
+
+async function knowledgeBaseService(req) {
+  const q = req.query.q;
+  if (q) {
+    const results = knowledgeBrain.searchBrain(q);
+    return { query: q, count: results.length, results };
+  }
+  return knowledgeBrain.getBrainMap();
+}
+
+async function alertsService() {
+  return {
+    needs_attention: dashboardData.readAttentionFlag(),
+    needs_review: dashboardData.readReviewFlag(),
+  };
+}
+
+async function publishingStatusService() {
+  const production = await runPythonService('production');
+  const dossiers = production.dossiers || [];
+  return {
+    processed: production.processed,
+    reason: production.reason || null,
+    publishing: dossiers.map(d => ({
+      production_id: d.production_id,
+      niche: d.niche,
+      checklist: d.publishing_checklist || [],
+    })),
+  };
+}
+
+const SERVICE_REGISTRY = [
+  {
+    name: 'company-health',
+    description: 'Overall factory health status, derived risk level, self-awareness verdict, and current next-dollar priorities.',
+    reused: 'server.js computeHealthStatus() + self_awareness.js assessSelfAwareness() + lib/dashboard_data.js deriveRiskLevel()/readAttentionFlag() + server.js readNextDollarActions() — identical composition to the pre-existing GET /api/dashboard.',
+    handler: companyHealthService,
+    health: fsHealthCheck(() => dashboardData.readAttentionFlag(), 'dashboardData module reachable, NEEDS_ATTENTION.md read check ok'),
+  },
+  {
+    name: 'market-intelligence',
+    description: 'The most recent real market intelligence analysis (scores, risk, customer pain, pricing, AI CEO verdict).',
+    reused: 'lib/dashboard_data.js readLatestMarketIntelligence() — same field this session already confirmed is served by GET /api/dashboard.',
+    handler: async () => ({ latest: dashboardData.readLatestMarketIntelligence() }),
+    health: fsHealthCheck(() => dashboardData.readLatestMarketIntelligence(), 'market_intelligence_analyses.jsonl read check ok'),
+  },
+  {
+    name: 'opportunity-queue',
+    description: 'Every ranked opportunity plus the ACCEPTED queue ready for production.',
+    reused: 'decision_engine/ranking.py rank_all()/rank_queue(), via mission_control_api.py.',
+    handler: () => runPythonService('opportunities'),
+    health: pythonHealthCheck('opportunities'),
+  },
+  {
+    name: 'decision-history',
+    description: 'Every ACCEPTED/REJECTED/DEFERRED decision ever recorded, newest first, summary fields only.',
+    reused: 'decision_engine/store.py read_decisions(), via mission_control_api.py.',
+    handler: () => runPythonService('decision_history'),
+    health: pythonHealthCheck('decision_history'),
+  },
+  {
+    name: 'production-queue',
+    description: 'Production dossiers for every ACCEPTED opportunity (pricing, assets, pre-production verification).',
+    reused: 'production_factory/factory.py run_production_factory(), via mission_control_api.py.',
+    handler: () => runPythonService('production'),
+    health: pythonHealthCheck('production'),
+  },
+  {
+    name: 'publishing-status',
+    description: "Per-platform publishing checklist for every production dossier — a projection of production-queue's own publishing_checklist field, not a new computation.",
+    reused: 'production_factory/factory.py (via the production-queue service above), projected to just the checklist fields.',
+    handler: publishingStatusService,
+    health: pythonHealthCheck('production'),
+  },
+  {
+    name: 'revenue-summary',
+    description: 'Revenue pipeline results for every ACCEPTED opportunity plus the rendered CEO revenue report.',
+    reused: 'revenue_pipeline/pipeline.py run_revenue_pipeline()/render_ceo_revenue_report(), via mission_control_api.py.',
+    handler: () => runPythonService('revenue'),
+    health: pythonHealthCheck('revenue'),
+  },
+  {
+    name: 'automation-status',
+    description: 'n8n workflow status from the last real exported definitions (n8n_workflows/*.fixed.json) — honestly labelled as a static export, not live state (n8n REST API still needs a manual login, BLOCKERS.md #1).',
+    reused: 'mission_control_api.py\'s existing n8n_workflows/*.fixed.json reader.',
+    handler: () => runPythonService('automation'),
+    health: pythonHealthCheck('automation'),
+  },
+  {
+    name: 'knowledge-base',
+    description: 'OpenClaw_Brain folder map, or full-text search results when called with ?q=.',
+    reused: 'knowledge_brain.js searchBrain()/getBrainMap() — same module already backing the pre-existing GET /brain.',
+    handler: knowledgeBaseService,
+    health: fsHealthCheck(() => knowledgeBrain.getBrainMap(), 'OpenClaw_Brain directory read check ok'),
+  },
+  {
+    name: 'alerts',
+    description: 'NEEDS_ATTENTION.md and NEEDS_REVIEW.md — active flags and their content, if any.',
+    reused: 'lib/dashboard_data.js readAttentionFlag()/readReviewFlag() — same fields already confirmed served by GET /api/dashboard.',
+    handler: alertsService,
+    health: fsHealthCheck(() => dashboardData.readAttentionFlag(), 'dashboardData module reachable'),
+  },
+  {
+    name: 'system-configuration',
+    description: 'Real, non-secret configuration: unit economics (config/economics.json), tier weights/floor and per-tier automation/long-term-value constants (profit_oracle.py), and the capability maturity registry.',
+    reused: 'config/economics.json, config/capability_registry.json, profit_oracle.py\'s TIER_WEIGHTS/MIN_OPPORTUNITY_SCORE/AUTOMATION_POTENTIAL_BY_TIER/LONG_TERM_VALUE_BY_TIER, via mission_control_api.py.',
+    handler: () => runPythonService('system_configuration'),
+    health: pythonHealthCheck('system_configuration'),
+  },
+];
+
+// Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
+// can never hand-drift from the real, live set of services — "API
+// documentation generated automatically", not a hand-maintained file.
+function generateServiceLayerDocs() {
+  const lines = [
+    '# OpenClaw Unified Service Layer — API Reference (v1)',
+    '',
+    '_Auto-generated from SERVICE_REGISTRY in server.js at server startup — do not hand-edit, it is overwritten on every restart. Source of truth: server.js._',
+    '',
+    `Generated at: ${new Date().toISOString()}`,
+    '',
+    'Every endpoint below requires an authenticated Mission Control session (`POST /api/mission-control/login`) and returns the standard envelope:',
+    '',
+    '```json',
+    '{ "success": true, "service": "<name>", "version": "v1", "generated_at": "<ISO>", "data": { /* ... */ } }',
+    '```',
+    '',
+    'Errors:',
+    '```json',
+    '{ "success": false, "service": "<name>", "version": "v1", "error": { "code": "...", "message": "..." } }',
+    '```',
+    '',
+    '## Services',
+    '',
+  ];
+  for (const svc of SERVICE_REGISTRY) {
+    lines.push(`### ${svc.name}`, '', svc.description, '',
+      `- Data: \`GET /api/v1/${svc.name}\``,
+      `- Health: \`GET /api/v1/${svc.name}/health\``,
+      `- Reuses: ${svc.reused}`, '');
+  }
+  lines.push('### docs', '', 'Machine-readable version of this same file: `GET /api/v1/docs`.', '');
+  try {
+    fs.writeFileSync(path.join(__dirname, 'SERVICE_LAYER_API.md'), lines.join('\n'));
+  } catch (err) {
+    console.error('Failed to write SERVICE_LAYER_API.md:', err.message);
+  }
+}
+generateServiceLayerDocs();
+
+const v1Router = express.Router();
+
+v1Router.get('/docs', (req, res) => {
+  res.json({
+    success: true,
+    version: 'v1',
+    generated_at: new Date().toISOString(),
+    services: SERVICE_REGISTRY.map(s => ({
+      name: s.name,
+      description: s.description,
+      reused: s.reused,
+      data_endpoint: `/api/v1/${s.name}`,
+      health_endpoint: `/api/v1/${s.name}/health`,
+    })),
+  });
+});
+
+for (const svc of SERVICE_REGISTRY) {
+  v1Router.get(`/${svc.name}`, (req, res) => {
+    const startedAt = Date.now();
+    Promise.resolve(svc.handler(req))
+      .then((data) => {
+        logServiceCall({ service: svc.name, path: req.path, method: req.method, status: 200, duration_ms: Date.now() - startedAt });
+        res.json({ success: true, service: svc.name, version: 'v1', generated_at: new Date().toISOString(), data });
+      })
+      .catch((err) => {
+        logServiceCall({ service: svc.name, path: req.path, method: req.method, status: 500, duration_ms: Date.now() - startedAt, error: err.message });
+        res.status(500).json({ success: false, service: svc.name, version: 'v1', error: { code: 'internal_error', message: err.message } });
+      });
+  });
+
+  v1Router.get(`/${svc.name}/health`, async (req, res) => {
+    const startedAt = Date.now();
+    try {
+      const result = await svc.health();
+      logServiceCall({ service: svc.name, path: req.path, method: req.method, status: 200, duration_ms: Date.now() - startedAt, health: result.status });
+      res.json({ success: true, service: svc.name, version: 'v1', checked_at: new Date().toISOString(), ...result });
+    } catch (err) {
+      logServiceCall({ service: svc.name, path: req.path, method: req.method, status: 500, duration_ms: Date.now() - startedAt, error: err.message });
+      res.status(500).json({ success: false, service: svc.name, version: 'v1', error: { code: 'health_check_failed', message: err.message } });
+    }
+  });
+}
+
+// Any /api/v1/* path that matched none of the registered services above
+// must 404 as JSON — without this, it would otherwise fall through past
+// this router entirely and hit the SPA catch-all route at the bottom of
+// this file, returning a 200 HTML page for a bad API call.
+v1Router.use((req, res) => {
+  res.status(404).json({ success: false, version: 'v1', error: { code: 'unknown_service', message: `no such service: ${req.path}` } });
+});
+
+app.use('/api/v1', requireMissionControlAuth, v1Router);
+
+// Superseded by /api/v1/* above but kept working: mission_control.html
+// (Phase 8 Mission Control) still calls this ad hoc catch-all directly.
+// Rewiring its fetch() calls to the versioned services is deliberately
+// deferred — this directive was backend-only ("No UI work yet").
+// Refactored to share runPythonService() with the v1 layer instead of
+// its own inline spawn/parse block, so there is no duplicated glue code.
 const MISSION_CONTROL_ENDPOINTS = ['opportunities', 'production', 'revenue', 'automation'];
-app.get('/api/mission-control/:section', requireMissionControlAuth, (req, res) => {
+app.get('/api/mission-control/:section', requireMissionControlAuth, async (req, res) => {
   const section = req.params.section;
   if (!MISSION_CONTROL_ENDPOINTS.includes(section)) {
     return res.status(404).json({ success: false, error: `unknown section: ${section}` });
   }
-  const pythonPath = detectPython();
-  const scriptPath = path.join(__dirname, 'mission_control_api.py');
-  const python = spawn(pythonPath, [scriptPath, section], { cwd: __dirname });
-  let output = '', errOut = '';
-  python.stdout.on('data', d => { output += d.toString(); });
-  python.stderr.on('data', d => { errOut += d.toString(); });
-  python.on('close', () => {
-    try {
-      res.json(JSON.parse(output.trim()));
-    } catch {
-      res.status(500).json({ success: false, error: 'Parse error: ' + output + errOut });
-    }
-  });
+  try {
+    const result = await runPythonService(section);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 // ── NICHE SAFETY FILTER ──
