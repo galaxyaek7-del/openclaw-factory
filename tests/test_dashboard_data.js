@@ -242,6 +242,74 @@ test('readLatestMarketIntelligence: reads the LAST real analysis, not the first'
   assert.equal(result.ai_ceo.decision, 'BUILD');
 });
 
+// Phase 11 (Business Activation): products created / production throughput.
+test('readProductionInventorySummary: missing log -> honest zero, never throws', () => {
+  const result = dd.readProductionInventorySummary(path.join(tmpDir, 'nope_gen.jsonl'));
+  assert.equal(result.total_attempts, 0);
+  assert.equal(result.created, 0);
+  assert.equal(result.failed, 0);
+  assert.ok(result.note);
+});
+
+test('readProductionInventorySummary: counts created/failed/quality-review from real entries', () => {
+  const p = path.join(tmpDir, 'gen_log.jsonl');
+  const now = new Date();
+  const old = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 30 days ago
+  fs.writeFileSync(p,
+    JSON.stringify({ success: true, published: true, timestamp: now.toISOString() }) + '\n' +
+    JSON.stringify({ success: true, published: false, timestamp: now.toISOString() }) + '\n' +
+    JSON.stringify({ success: false, timestamp: now.toISOString() }) + '\n' +
+    JSON.stringify({ success: true, published: true, timestamp: old.toISOString() }) + '\n'
+  );
+  const result = dd.readProductionInventorySummary(p);
+  assert.equal(result.total_attempts, 4);
+  assert.equal(result.created, 3);
+  assert.equal(result.failed, 1);
+  assert.equal(result.passed_quality_review, 2);
+  assert.equal(result.last_7_days, 3, 'the 30-day-old entry must not count toward the 7-day throughput window');
+});
+
+test('readDecisionQueueSummary: missing log -> honest zero, never throws', () => {
+  const result = dd.readDecisionQueueSummary(path.join(tmpDir, 'nope_dec.jsonl'));
+  assert.equal(result.total, 0);
+  assert.ok(result.note);
+});
+
+test('readDecisionQueueSummary: buckets real decisions by status, never fabricates a status', () => {
+  const p = path.join(tmpDir, 'decisions.jsonl');
+  fs.writeFileSync(p,
+    JSON.stringify({ status: 'DEFERRED' }) + '\n' +
+    JSON.stringify({ status: 'ACCEPTED' }) + '\n' +
+    JSON.stringify({ status: 'REJECTED' }) + '\n' +
+    JSON.stringify({ status: 'DEFERRED' }) + '\n' +
+    JSON.stringify({ status: 'something_unrecognized' }) + '\n'
+  );
+  const result = dd.readDecisionQueueSummary(p);
+  assert.equal(result.deferred, 2);
+  assert.equal(result.accepted, 1);
+  assert.equal(result.rejected, 1);
+  assert.equal(result.other, 1);
+  assert.equal(result.total, 5);
+});
+
+test('readFailedJobsSummary: missing log -> honest zero, never throws', () => {
+  const result = dd.readFailedJobsSummary(path.join(tmpDir, 'nope_floop.log'));
+  assert.equal(result.failed_count, 0);
+});
+
+test('readFailedJobsSummary: counts only real action:"failed" entries, ignores routine ticks', () => {
+  const p = path.join(tmpDir, 'floop.log');
+  fs.writeFileSync(p,
+    JSON.stringify({ timestamp: 't1', actions: [{ step: 'heal_finance', action: 'none' }] }) + '\n' +
+    JSON.stringify({ timestamp: 't2', actions: [{ step: 'golden_hunter_bridge', action: 'failed', detail: 'boom' }] }) + '\n' +
+    JSON.stringify({ timestamp: 't3', actions: [{ step: 'sales_poll', action: 'failed', detail: 'timeout' }, { step: 'hunt', action: 'none' }] }) + '\n'
+  );
+  const result = dd.readFailedJobsSummary(p);
+  assert.equal(result.failed_count, 2);
+  assert.equal(result.recent.length, 2);
+  assert.equal(result.recent[0].step, 'sales_poll', 'most recent failure must be first');
+});
+
 test('readCapabilityMaturity: the real repo registry is well-formed and non-empty', () => {
   const result = dd.readCapabilityMaturity();
   assert.ok(result.total > 0, 'expected config/capability_registry.json to exist with real entries');
@@ -255,4 +323,14 @@ test('computeDashboard: passes health/awareness through without altering them', 
   assert.equal(result.health, health);
   assert.equal(result.self_awareness.verdict, 'ok');
   assert.equal(result.self_awareness.weakest_cell, 'finance');
+});
+
+test('computeDashboard: includes the Phase 11 business-activation KPIs against real repo data', () => {
+  const result = dd.computeDashboard({});
+  assert.ok('production_inventory' in result);
+  assert.ok('decision_queue' in result);
+  assert.ok('failed_jobs' in result);
+  assert.ok(typeof result.production_inventory.created === 'number');
+  assert.ok(typeof result.decision_queue.total === 'number');
+  assert.ok(typeof result.failed_jobs.failed_count === 'number');
 });

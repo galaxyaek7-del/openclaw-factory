@@ -66,7 +66,7 @@
   <div class="topbar">
     <div>
       <h1>🏭 OpenClaw — لوحة القيادة</h1>
-      <div class="subtitle">تجميع حي لبيانات حقيقية موجودة فعلاً — لا مقاييس مُختلَقة. آخر تحديث: <span id="ts">...</span></div>
+      <div class="subtitle">تجميع حي لبيانات حقيقية موجودة فعلاً — لا مقاييس مُختلَقة. آخر تحديث: <span id="ts">...</span> <span id="fetchError" style="display:none; color:var(--crit); font-weight:600;"></span></div>
     </div>
     <div class="controls">
       <div style="position:relative;">
@@ -124,8 +124,26 @@
     }
 
     async function load() {
-      const res = await fetch('/api/dashboard');
-      const d = await res.json();
+      // Zero-assumption audit follow-up — Medium finding, fixed: this used
+      // to have no try/catch at all around its fetch/parse. With
+      // setInterval(load, 60000) below, a failed /api/dashboard call (non-
+      // 200, network drop, malformed JSON) used to fail silently every
+      // 60s, forever, with no visible indicator — the one job this page
+      // has is telling the founder if something's wrong.
+      const errEl = document.getElementById('fetchError');
+      try {
+        const res = await fetch('/api/dashboard');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const d = await res.json();
+        errEl.style.display = 'none';
+        renderDashboard(d);
+      } catch (err) {
+        errEl.textContent = `⚠️ فشل آخر تحديث: ${err.message}`;
+        errEl.style.display = 'inline';
+      }
+    }
+
+    function renderDashboard(d) {
       document.getElementById('ts').textContent = new Date(d.generated_at).toLocaleString('ar');
 
       const cards = [];
@@ -171,6 +189,35 @@
         <h2>قائمة المراجعة البشرية</h2>
         <div class="metric">${d.pending_review.queue}</div>
         <div class="note">في الانتظار — ${d.pending_review.approved} مُوافَق، ${d.pending_review.completed} مكتمل، ${d.pending_review.rejected} مرفوض</div>
+      </div>`);
+      const reality = d.health && d.health.reality;
+      cards.push(`<div class="card ${reality && reality.total_published === 0 ? 'flag-active' : ''}">
+        <h2>المنتجات المنشورة فعلياً</h2>
+        <div class="metric ${reality && reality.total_published > 0 ? 'ok' : 'critical'}">${reality ? reality.total_published : '—'}</div>
+        <div class="note">نشر حقيقي على قناة (KDP/Etsy/Gumroad) — لا يُحتسَب مجرد التوليد على القرص</div>
+      </div>`);
+      const pi = d.production_inventory;
+      cards.push(`<div class="card">
+        <h2>منتجات أُنشئت (سجل حقيقي)</h2>
+        <div class="metric">${pi.created}</div>
+        <div class="note">${pi.total_attempts} محاولة إجمالاً — ${pi.failed} فشلت، ${pi.passed_quality_review} اجتاز الفحص المزدوج (Dual Inspection)</div>
+      </div>`);
+      cards.push(`<div class="card">
+        <h2>معدّل الإنتاج (آخر 7 أيام)</h2>
+        <div class="metric">${pi.last_7_days}</div>
+        <div class="note">${pi.last_updated ? 'آخر توليد: ' + fmtTime(pi.last_updated) : 'لا بيانات بعد'}</div>
+      </div>`);
+      const dq = d.decision_queue;
+      cards.push(`<div class="card">
+        <h2>فرص بانتظار قرار مستقبلي</h2>
+        <div class="metric">${dq.deferred}</div>
+        <div class="note">${dq.accepted} مقبولة جاهزة للإنتاج، ${dq.rejected} مرفوضة، من أصل ${dq.total} قراراً حقيقياً</div>
+      </div>`);
+      const fj = d.failed_jobs;
+      cards.push(`<div class="card ${fj.failed_count > 0 ? 'flag-active' : ''}">
+        <h2>مهام فاشلة (factory_loop)</h2>
+        <div class="metric ${fj.failed_count > 0 ? 'critical' : 'ok'}">${fj.failed_count}</div>
+        <div class="note">${fj.recent.length ? 'آخر فشل: ' + escapeHtml(fj.recent[0].step) + ' — ' + escapeHtml(fj.recent[0].detail || '') : 'لا فشل مسجَّل'}</div>
       </div>`);
       cards.push(`<div class="card">
         <h2>الوعي الذاتي</h2>
@@ -238,13 +285,19 @@
       const box = document.getElementById('searchResults');
       if (!q) { box.style.display = 'none'; return; }
       searchTimer = setTimeout(async () => {
-        const res = await fetch('/brain?q=' + encodeURIComponent(q));
-        const d = await res.json();
-        const results = (d.results || []).slice(0, 8);
-        box.innerHTML = results.length
-          ? results.map(r => `<div><strong>${escapeHtml(r.file)}:${escapeHtml(r.line)}</strong><br>${escapeHtml(r.text)}</div>`).join('')
-          : '<div>لا نتائج</div>';
-        box.style.display = 'block';
+        try {
+          const res = await fetch('/brain?q=' + encodeURIComponent(q));
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const d = await res.json();
+          const results = (d.results || []).slice(0, 8);
+          box.innerHTML = results.length
+            ? results.map(r => `<div><strong>${escapeHtml(r.file)}:${escapeHtml(r.line)}</strong><br>${escapeHtml(r.text)}</div>`).join('')
+            : '<div>لا نتائج</div>';
+          box.style.display = 'block';
+        } catch (err) {
+          box.innerHTML = `<div>⚠️ فشل البحث: ${escapeHtml(err.message)}</div>`;
+          box.style.display = 'block';
+        }
       }, 300);
     });
     document.addEventListener('click', (e) => {
