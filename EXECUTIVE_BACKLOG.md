@@ -7,7 +7,7 @@
 
 ## Standing note on overall priority
 
-Per the Business Activation directive: **no item in this queue outranks business activation itself.** Every item below is real, verified engineering value — but `ACTIVATION_PLAN.md`'s blockers (credentials, `MISSION_CONTROL_PASSWORD`, the automation switches) are the actual highest-value work available, and none of it is engineering work I can do unilaterally. This queue exists for the real engineering work that remains genuinely useful alongside that, not instead of it.
+Per the Business Activation directive: **no item in this queue outranks business activation itself.** `ACTIVATION_PLAN.md`'s remaining blocker — a real `GUMROAD_ACCESS_TOKEN` — is still the highest-value work available, and it is not engineering work I can do unilaterally (`MISSION_CONTROL_PASSWORD` and the production redeploy were resolved this session — see Done). This queue exists for the real engineering work that remains genuinely useful while that's pending, not instead of it.
 
 ## Founder-only (cannot be safely delegated — flagged, not implemented)
 
@@ -35,3 +35,5 @@ Per the Business Activation directive: **no item in this queue outranks business
 - ~~Write retroactive ADRs for the last 3 real architectural/operational decisions~~ — `9fb3b38`. `ADR-062`/`063`/`064`.
 - ~~JSONL-read duplication: Level 1 (extract) + Level 2 (prevent recurrence)~~ — `f8815c6` + `4436df2`. New `lib/jsonl.js`, 2 real sites migrated, `scripts/check_jsonl_duplication.js` in CI, documented in `CLAUDE.md`.
 - ~~`opportunity_gap` double-inversion bug (`analyze_opportunity()` passing `competition_favorability` where `compute_opportunity_gap()` expects raw intensity)~~ — `7fd18c0`. Verified against all 1,344 real historical decisions (zero mismatches on the buggy formula, 94% would clear BUILD's threshold on the corrected one). This is very likely the primary reason no real decision has ever been ACCEPTED — the remaining blocker (`pain_score`'s evidence source) is recorded above as founder-only.
+- ~~`MISSION_CONTROL_PASSWORD` activated + production redeployed with every accumulated fix~~ — real, live `--confirm` deploy run twice this session. Verified directly against the running server: loopback-only binding, `/finance/add`/`/chat` now require auth, real login + authenticated `/api/v1/docs` call succeeded end-to-end.
+- ~~`deploy_production.js` pre-flight syntax check before touching the live server~~ — `0e2cb44`. Found by reflecting on this session's own two real deploys: the script killed the existing server before checking anything about the new code. `checkServerSyntax()` now gates that. Does not solve the full rollback question (still Near Future/founder-scoped below) — closes the cheapest, most likely real failure mode only.
