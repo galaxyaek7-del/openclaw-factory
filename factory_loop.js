@@ -878,6 +878,33 @@ function checkNeedsAttention(tickActions, logPath = GOLDEN_HUNTER_EVENTS_FILE) {
   return reasons;
 }
 
+// Prove-the-Company follow-up (Master Roadmap "Important" item M4): before
+// this, NEEDS_ATTENTION.md/NEEDS_REVIEW.md were written correctly but
+// nothing pushed them to a human — a real, verified gap between "the
+// system correctly detects a problem" and "a human finds out" without
+// remembering to check a file. Zero new dependencies, zero cloud service
+// (CLAUDE.md's own architecture): a real Windows toast notification via
+// PowerShell's System.Windows.Forms.NotifyIcon, already present on this
+// machine. Fails completely silently on any error (missing PowerShell,
+// no desktop session, non-Windows) — a notification must never be able
+// to break a tick, exactly like every other best-effort side effect in
+// this file. A hard 5s timeout guarantees this can never hang the loop.
+function sendDesktopNotification(title, message) {
+  try {
+    const escapedTitle = title.replace(/'/g, "''");
+    const escapedMessage = message.replace(/'/g, "''");
+    const script = `Add-Type -AssemblyName System.Windows.Forms; ` +
+      `$n = New-Object System.Windows.Forms.NotifyIcon; ` +
+      `$n.Icon = [System.Drawing.SystemIcons]::Warning; $n.Visible = $true; ` +
+      `$n.ShowBalloonTip(10000, '${escapedTitle}', '${escapedMessage}', [System.Windows.Forms.ToolTipIcon]::Warning); ` +
+      `Start-Sleep -Seconds 1; $n.Dispose()`;
+    execSync(`powershell -NoProfile -Command "${script}"`, { timeout: 5000, stdio: 'ignore' });
+    return true;
+  } catch (_) {
+    return false; // never let a notification failure affect the real tick
+  }
+}
+
 function writeNeedsAttention(reasons, filePath = NEEDS_ATTENTION_FILE) {
   const content = [
     '# ⚠️ NEEDS_ATTENTION.md — يحتاج مراجعة بشرية',
@@ -1462,7 +1489,14 @@ async function runTick() {
 
   // Pending-review notification (Human-in-the-Loop, HIGH_VALUE_EXECUTION_
   // PLAN.md) — a plain filesystem count, runs regardless of reachability.
+  // reviewWasActive captured BEFORE the call so a real desktop
+  // notification only fires on the actual transition into "needs review"
+  // (never repeated every ~10min tick while already flagged).
+  const reviewWasActive = fs.existsSync(NEEDS_REVIEW_FILE);
   actions.push({ step: 'pending_review', ...checkPendingReview() });
+  if (!reviewWasActive && fs.existsSync(NEEDS_REVIEW_FILE)) {
+    sendDesktopNotification('📝 OpenClaw needs review', 'New drafts are waiting in pending_review/queue/.');
+  }
 
   appendLoopLog({
     diagnosis: diagnosis.reachable
@@ -1471,9 +1505,13 @@ async function runTick() {
     actions,
   });
 
+  const attentionWasActive = fs.existsSync(NEEDS_ATTENTION_FILE);
   const attentionReasons = checkNeedsAttention(actions);
   if (attentionReasons.length) {
     writeNeedsAttention(attentionReasons);
+    if (!attentionWasActive) {
+      sendDesktopNotification('⚠️ OpenClaw needs attention', attentionReasons[0]);
+    }
   } else {
     clearNeedsAttention();
   }
@@ -1603,4 +1641,5 @@ module.exports = {
   checkPendingReview, countPendingReviewDrafts, writeNeedsReview, clearNeedsReview,
   acquireLock, releaseLock, isPidAlive, LOCK_FILE,
   safeTick,
+  sendDesktopNotification,
 };
