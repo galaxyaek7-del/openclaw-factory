@@ -477,6 +477,27 @@ function closeActionModal() {
   actionModal.classList.remove('open');
 }
 
+// Phase 10A (Operational Excellence): a job whose overall status is
+// 'completed' can still contain a real, partially-degraded result —
+// run-full-cycle's own graceful degradation means one inner stage (or
+// the company_health_monitoring section) can fail while the rest still
+// succeed, and the job itself still reports 'completed'. Without this
+// check, that silently looked identical to a fully clean run in the
+// notification center — a real gap between what Mission Control showed
+// and the real system state. Returns null when nothing degraded, or a
+// short description of what did.
+function describeJobDegradation(job) {
+  const result = job.result;
+  if (!result || typeof result.stages_completed !== 'number') return null;
+  const failedStages = Object.entries(result.stages || {})
+    .filter(([, s]) => !s.ok)
+    .map(([name]) => name);
+  if (result.company_health_monitoring && result.company_health_monitoring.ok === false) {
+    failedStages.push('company_health_monitoring');
+  }
+  return failedStages.length ? failedStages.join('، ') : null;
+}
+
 async function confirmAction(actionName) {
   actionModalConfirm.disabled = true;
   actionModalCancel.style.display = 'none';
@@ -518,8 +539,14 @@ async function confirmAction(actionName) {
     actionModalConfirm.textContent = 'إغلاق';
     actionModalConfirm.onclick = closeActionModal;
     if (job.status === 'completed') {
-      actionModalResult.textContent = 'اكتمل بنجاح.';
-      pushNotification('success', `${actionName}: اكتمل بنجاح`);
+      const degradation = describeJobDegradation(job);
+      if (degradation) {
+        actionModalResult.textContent = `اكتمل مع تدهور جزئي: ${degradation}`;
+        pushNotification('warning', `${actionName}: اكتمل مع تدهور جزئي — ${degradation}`);
+      } else {
+        actionModalResult.textContent = 'اكتمل بنجاح.';
+        pushNotification('success', `${actionName}: اكتمل بنجاح`);
+      }
     } else {
       actionModalResult.textContent = `فشل: ${job.error || 'سبب غير معروف'}`;
       pushNotification('error', `${actionName}: ${job.error || 'فشل'}`);
