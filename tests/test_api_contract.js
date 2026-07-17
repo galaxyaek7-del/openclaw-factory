@@ -19,6 +19,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { spawn } = require('child_process');
+const net = require('net');
 const path = require('path');
 
 const PORT = 3199; // distinct from the interactive-session convention (3099), to avoid any collision if both ever run at once
@@ -195,6 +196,92 @@ test('real product PDFs under books/ are no longer served as static content', as
   const res = await fetch(`${BASE_URL}/books/${encodeURIComponent(pdfs[0])}`, { redirect: 'manual' });
   const contentType = res.headers.get('content-type') || '';
   assert.ok(!contentType.includes('application/pdf'), `a real product PDF must not be downloadable unauthenticated, got: ${contentType}`);
+});
+
+// Zero-assumption audit follow-up — Critical finding, fixed: server.js
+// used to bind all interfaces (0.0.0.0 + ::), making every unauthenticated
+// legacy route reachable from the LAN. Now binds 127.0.0.1 explicitly. If
+// the real server were still bound to all interfaces, a second listener
+// could NOT also bind 0.0.0.0 on the same port (EADDRINUSE) — succeeding
+// here proves the real server is loopback-only, not just claimed to be.
+// Zero-assumption audit follow-up — Critical finding, fixed: /chat,
+// /finance/add, and DELETE /finance/delete/:id predated Mission Control's
+// auth layer and had zero authentication (confirmed zero callers anywhere
+// in the UI, so gating them has no regression risk).
+test('POST /chat now requires Mission Control auth', async () => {
+  const unauth = await fetch(`${BASE_URL}/chat`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: 'hi' }),
+  });
+  assert.equal(unauth.status, 401);
+  const body = await unauth.json();
+  assert.equal(body.success, false);
+});
+
+test('POST /finance/add now requires Mission Control auth, and works when authenticated', async () => {
+  const unauth = await fetch(`${BASE_URL}/finance/add`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ platform: 'Gumroad', amount: 1, product: 'test' }),
+  });
+  assert.equal(unauth.status, 401);
+
+  // This suite runs against the real finance_data.json (same cwd as the
+  // real factory) — the test sale is immediately deleted afterward so no
+  // trace is left in real financial data.
+  const authed = await fetch(`${BASE_URL}/finance/add`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: cookie },
+    body: JSON.stringify({ platform: 'Gumroad', amount: 1, product: 'contract-test-sale-DELETE-ME' }),
+  });
+  assert.equal(authed.status, 200);
+  const body = await authed.json();
+  assert.equal(body.success, true);
+  assert.ok(body.sale && body.sale.id);
+
+  const cleanup = await fetch(`${BASE_URL}/finance/delete/${body.sale.id}`, {
+    method: 'DELETE', headers: { Cookie: cookie },
+  });
+  assert.equal(cleanup.status, 200, 'cleanup delete of the test sale must succeed — no trace should remain in real finance_data.json');
+});
+
+test('DELETE /finance/delete/:id now requires Mission Control auth', async () => {
+  const unauth = await fetch(`${BASE_URL}/finance/delete/123`, { method: 'DELETE' });
+  assert.equal(unauth.status, 401);
+
+  const authed = await fetch(`${BASE_URL}/finance/delete/999999999`, { method: 'DELETE', headers: { Cookie: cookie } });
+  assert.equal(authed.status, 200, 'an authenticated call for a non-existent id must still succeed cleanly (idempotent delete)');
+});
+
+// Zero-assumption audit follow-up — Medium-High finding, fixed: runReality()
+// spawned a fresh Python interpreter on every call with no caching (freshly
+// measured live: 3-4s per call on GET /api/dashboard, the exact endpoint
+// dashboard.html polls every 60s). Now cached for 30s. This asserts real,
+// repeat-call speed rather than a specific millisecond number, to stay
+// robust across slower CI environments while still catching a regression
+// back to "every call re-spawns Python" (which would consistently cost
+// multiple real seconds per call, not sub-second).
+test('GET /api/reality is cached — repeat calls within the TTL are consistently fast, not re-spawning Python each time', async () => {
+  await fetch(`${BASE_URL}/api/reality`); // warm the cache
+  const timings = [];
+  for (let i = 0; i < 3; i++) {
+    const start = Date.now();
+    const res = await fetch(`${BASE_URL}/api/reality`);
+    await res.json();
+    timings.push(Date.now() - start);
+  }
+  for (const t of timings) {
+    assert.ok(t < 1500, `expected a cached /api/reality call to be well under 1500ms, got ${t}ms — caching may have regressed`);
+  }
+});
+
+test('server binds to loopback only, not all interfaces', async () => {
+  const probe = net.createServer();
+  const bindResult = await new Promise((resolve) => {
+    probe.once('error', (err) => resolve({ bound: false, code: err.code }));
+    probe.once('listening', () => resolve({ bound: true }));
+    probe.listen(PORT, '0.0.0.0');
+  });
+  probe.close();
+  assert.equal(bindResult.bound, true, `expected to be able to also bind 0.0.0.0:${PORT} (proving the real server isn't on all interfaces), got: ${JSON.stringify(bindResult)}`);
 });
 
 test('dashboard.html and mission_control_login.html still serve correctly (no regression)', async () => {

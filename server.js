@@ -564,6 +564,18 @@ function traceSpan(job, action, span) {
 // of wedging the single-writer guard on that action forever.
 const PYTHON_ACTION_TIMEOUT_MS = 15 * 60 * 1000;
 
+// Zero-assumption audit follow-up — High finding, fixed: /generate-book and
+// /api/sales/poll spawned Python subprocesses with no timeout at all,
+// unlike every other spawn site in this file. Both are business-critical
+// and frequently invoked (sales_poll fires every factory_loop tick, ~every
+// 10 min) — a genuine hang (Groq stall, network hang) would previously run
+// forever server-side with nothing to kill it. Set generously above each
+// caller's own client-side timeout (factory_loop.js: 150s for
+// generate-book, 30s for sales_poll) so the server reports a clean timeout
+// error before the caller gives up first.
+const PYTHON_GENERATE_BOOK_TIMEOUT_MS = 180000;
+const PYTHON_SALES_POLL_TIMEOUT_MS = 45000;
+
 function runPythonActionAsync(action, section) {
   const job = newActionJob(action);
   const pythonPath = detectPython();
@@ -1052,13 +1064,17 @@ app.post('/generate-book', async (req, res) => {
 
     const python = spawn(pythonPath, [bookScript, '--json'], { cwd: __dirname });
 
-    let output = '', errOut = '';
+    let output = '', errOut = '', timedOut = false;
+    killAfterTimeout(python, PYTHON_GENERATE_BOOK_TIMEOUT_MS, () => { timedOut = true; });
     python.stdout.on('data', d => { output += d.toString(); });
     python.stderr.on('data', d => { errOut += d.toString(); });
     python.stdin.write(payload);
     python.stdin.end();
 
     python.on('close', code => {
+      if (timedOut) {
+        return res.status(504).json({ success: false, error: `book_generator.py timed out after ${PYTHON_GENERATE_BOOK_TIMEOUT_MS}ms` });
+      }
       try {
         const result = JSON.parse(output.trim());
         if (result.success) {
@@ -1281,7 +1297,8 @@ app.post('/api/sales/poll', (req, res) => {
     return res.status(500).json({ success: false, error: 'Failed to spawn poll_sales.py: ' + err.message });
   }
 
-  let output = '', errOut = '', responded = false;
+  let output = '', errOut = '', responded = false, timedOut = false;
+  killAfterTimeout(python, PYTHON_SALES_POLL_TIMEOUT_MS, () => { timedOut = true; });
   python.stdout.on('data', d => { output += d.toString(); });
   python.stderr.on('data', d => { errOut += d.toString(); });
 
@@ -1294,6 +1311,9 @@ app.post('/api/sales/poll', (req, res) => {
   python.on('close', () => {
     if (responded) return;
     responded = true;
+    if (timedOut) {
+      return res.status(504).json({ success: false, error: `poll_sales.py timed out after ${PYTHON_SALES_POLL_TIMEOUT_MS}ms` });
+    }
     try {
       const result = JSON.parse(output.trim());
       res.json(result);
@@ -1307,7 +1327,14 @@ app.post('/api/sales/poll', (req, res) => {
 });
 
 // ── CHAT ──
-app.post('/chat', async (req, res) => {
+// Zero-assumption audit follow-up — Critical finding, fixed: this route
+// predates Mission Control's auth layer and was never retrofitted.
+// CLAUDE.md already documented zero real callers (superseded by
+// POST /api/agent/:name); confirmed again here — zero references anywhere
+// in index.html/dashboard.html/any script — so gating it has no UI/
+// automation regression risk, only removes unbounded unauthenticated
+// paid-Groq-API exposure.
+app.post('/chat', requireMissionControlAuth, async (req, res) => {
   const { message, agent } = req.body;
   try {
     const response = await groq.chat.completions.create({
@@ -1411,7 +1438,13 @@ app.get('/finance', (req, res) => {
   }
 });
 
-app.post('/finance/add', (req, res) => {
+// Zero-assumption audit follow-up — Critical finding, fixed: this route
+// mutates the real financial ledger (finance_data.json) with zero
+// authentication — confirmed zero callers anywhere in index.html or any
+// script (CLAUDE.md already noted no UI button wires to it), so gating it
+// has no regression risk, only removes the ability for anyone reaching
+// this server to inject fake sales records.
+app.post('/finance/add', requireMissionControlAuth, (req, res) => {
   const { platform, amount, product, date } = req.body || {};
 
   if (!FINANCE_PLATFORMS.includes(platform)) {
@@ -1442,7 +1475,11 @@ app.post('/finance/add', (req, res) => {
   }
 });
 
-app.delete('/finance/delete/:id', (req, res) => {
+// Zero-assumption audit follow-up — Critical finding, fixed: same
+// rationale as /finance/add above — zero callers confirmed, real
+// financial-ledger mutation, no auth. Anyone reaching this server could
+// previously delete real sale records with zero credentials.
+app.delete('/finance/delete/:id', requireMissionControlAuth, (req, res) => {
   const id = parseInt(req.params.id, 10);
   if (!Number.isFinite(id)) {
     return res.status(400).json({ success: false, error: 'id غير صالح' });
@@ -2215,8 +2252,31 @@ function runReality(timeoutMs = 5000) {
   });
 }
 
+// Zero-assumption audit follow-up — Medium-High finding, fixed: runReality()
+// spawned a fresh Python interpreter on every single call with no caching,
+// making GET /api/dashboard — the exact endpoint dashboard.html polls every
+// 60s — take 3-4 real seconds per request (measured live against the real
+// running server). reality.py reflects slow-moving business state (KDP
+// publish status, real sales), not per-request-sensitive data, so a short
+// TTL cache removes the redundant spawn cost without ever serving
+// meaningfully stale data. runReality() itself is untouched/still directly
+// callable (tests use it uncached); only the two live call sites route
+// through this cached wrapper.
+const REALITY_CACHE_TTL_MS = 30000;
+let realityCache = null; // { result, expiresAt }
+
+function runRealityCached(timeoutMs = 5000) {
+  if (realityCache && Date.now() < realityCache.expiresAt) {
+    return Promise.resolve(realityCache.result);
+  }
+  return runReality(timeoutMs).then(result => {
+    realityCache = { result, expiresAt: Date.now() + REALITY_CACHE_TTL_MS };
+    return result;
+  });
+}
+
 app.get('/api/reality', async (req, res) => {
-  res.json(await runReality());
+  res.json(await runRealityCached());
 });
 
 async function computeHealthStatus() {
@@ -2290,7 +2350,7 @@ async function computeHealthStatus() {
   // cell-based status above is preserved as-is when reality itself is OK
   // (or unreachable-but-not-worse); it's only overridden toward a worse
   // verdict, never softened.
-  const reality = await runReality();
+  const reality = await runRealityCached();
   let statusSource = 'cells';
   if (reality.verdict === 'CRITICAL') {
     status = 'critical';
@@ -2594,7 +2654,28 @@ function detectPython() {
   return 'python';
 }
 
-app.listen(PORT, () => {
-  console.log(`✅ OpenClaw Factory — http://localhost:${PORT}`);
+// Zero-assumption audit follow-up — Critical finding, fixed: this used to
+// have no host argument, so Express/Node defaulted to binding ALL
+// interfaces (confirmed via netstat: both 0.0.0.0:PORT and [::]:PORT were
+// listening). Combined with ~20 routes that predate Mission Control's auth
+// layer and have no authentication at all (some of them — /generate-book,
+// /api/distribute, /api/scout/run — are also called internally by
+// factory_loop.js over plain http://localhost with no auth cookie, so they
+// cannot be retrofitted with Mission Control's cookie-based auth without
+// breaking the automated production pipeline), this meant every one of
+// those routes was reachable from the LAN, not just this machine — a much
+// larger exposure than the network binding alone should have allowed.
+// Binding to loopback only closes that reachability gap without touching
+// any route's auth logic and without breaking factory_loop.js (which
+// already calls http://localhost) or the UI (same-origin) — this is
+// enforcing CLAUDE.md's own stated "everything local, no cloud"
+// architecture at the network layer, not inventing a new one.
+// BIND_HOST exists as an explicit, deliberate override for the day this
+// factory really does need to be reachable beyond localhost — never set
+// by default.
+const BIND_HOST = process.env.BIND_HOST || '127.0.0.1';
+
+app.listen(PORT, BIND_HOST, () => {
+  console.log(`✅ OpenClaw Factory — http://localhost:${PORT} (bound to ${BIND_HOST})`);
   console.log(`🔧 Static dir: ${path.join(__dirname)}`);
 });
