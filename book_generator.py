@@ -2617,17 +2617,64 @@ def main():
         books_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'books')
         os.makedirs(books_dir, exist_ok=True)
         title = data.get('title', 'The Complete Kitchen')
+        subtitle = data.get('subtitle', 'Delicious Recipes for Every Occasion')
+        author = data.get('author', '')
+        price = data.get('price', 9.99)
         out_path, filename = _resolve_safe_output_path(books_dir, data.get('output'), title)
         n = create_book(
             out_path,
             title,
-            data.get('subtitle', 'Delicious Recipes for Every Occasion'),
-            data.get('type',     'cookbook'),
-            data.get('theme',    'orange'),
-            data.get('pages',    120),
-            data.get('author',   ''),
+            subtitle,
+            data.get('type',  'cookbook'),
+            data.get('theme', 'orange'),
+            data.get('pages', 120),
+            author,
         )
-        print(json.dumps({"success": True, "pages": n, "file": filename}))
+
+        result = {"success": True, "pages": n, "file": filename, "path": out_path, "price": price}
+
+        # Zero-assumption audit follow-up (Medium-High finding, constitutional
+        # compliance): this legacy dispatch branch used to return here with
+        # no Dual Inspection at all — CONSTITUTION.md sec.17's explicit "zero
+        # tolerance, no product ships without both guardians' approval" claim
+        # was violated for any caller reaching this branch (i.e. any
+        # /generate-book request with no topic/chapters/product_type —
+        # exactly the shape CLAUDE.md documents for the plain
+        # journal/planner/habit/etc. types). Same gate generate_printable()
+        # and generate_book() already use, applied here too — never a
+        # second, weaker copy of the check.
+        if INSPECTORS is not None:
+            try:
+                inspection = INSPECTORS.final_inspection({
+                    "pdf_path": out_path,
+                    "cover_path": None,
+                    "title": title,
+                    "subtitle": subtitle,
+                    "author": author,
+                    "niche": title,
+                    "price": price,
+                    "platform": _economics_platform_for("printable"),
+                    "page_count": n,
+                    "min_pages": 4,
+                })
+            except Exception as e:
+                inspection = {"passed": False, "published": False,
+                              "technical": {"passed": False, "checks": [], "severity": "critical",
+                                            "failures": [f"استثناء غير متوقَّع أثناء الفحص: {e}"]},
+                              "commercial": {"passed": False, "checks": [], "failures": [], "verdict": "لم يُدقَّق"}}
+        else:
+            inspection = {"passed": False, "published": False,
+                          "technical": {"passed": False, "checks": [], "severity": "critical",
+                                        "failures": ["inspectors.py غير متوفر — لا يمكن الموافقة على النشر"]},
+                          "commercial": {"passed": False, "checks": [], "failures": [], "verdict": "لم يُدقَّق"}}
+
+        result["published"] = inspection["published"]
+        result["inspection"] = inspection
+        if not inspection["published"]:
+            _record_rejected_niche(title, title, _summarize_inspection_failure(inspection))
+
+        _log_generation(result)
+        print(json.dumps(result, ensure_ascii=False))
     except Exception as e:
         print(json.dumps({"success": False, "error": str(e), "trace": traceback.format_exc()}))
         sys.exit(1)
