@@ -109,9 +109,27 @@ function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit) {
       exitFn(0);
       return;
     }
-    // Stale lock (owning process is gone, or the file is unreadable/
-    // corrupt) — reclaim it.
-    fs.writeFileSync(lockFile, String(process.pid));
+    // Zero-assumption audit follow-up — Medium finding, fixed: this used to
+    // reclaim a stale lock with a plain writeFileSync, three separate calls
+    // (read -> isPidAlive -> write) after the common-path fix above only
+    // closed the "no lock file yet" race, not this one. Two processes
+    // starting right after a crash (stale lock still present) could both
+    // pass the dead-PID check above and both believe they'd reclaimed it.
+    // Fixed with unlink-then-exclusive-create: the OS guarantees only one
+    // caller can ever successfully unlink the SAME directory entry — a
+    // second caller's unlink throws ENOENT, which is treated as "someone
+    // else already reclaimed it," not a collision to paper over.
+    try {
+      fs.unlinkSync(lockFile);
+    } catch (unlinkErr) {
+      if (unlinkErr.code === 'ENOENT') {
+        console.log('[factory_loop] another factory_loop already reclaimed the stale lock, exiting');
+        exitFn(0);
+        return;
+      }
+      throw unlinkErr;
+    }
+    fs.writeFileSync(lockFile, String(process.pid), { flag: 'wx' });
   } catch (err) {
     // Disk full, permissions, etc. — never let the lockfile itself block
     // startup; worst case this run just isn't guarded against a duplicate.
@@ -1466,14 +1484,43 @@ async function runTick() {
 // Absolute safety net: whatever happens inside a tick, the loop itself must
 // never die and must never let an exception escape to crash this process
 // (let alone the dashboard, which is a separate process entirely).
-async function safeTick() {
+//
+// Zero-assumption audit follow-up — Medium-High finding, fixed: setInterval
+// does not wait for an async callback to resolve before scheduling the
+// next call. Summing this tick's own real per-step timeouts (health 5s +
+// sales_poll ~45s + market_hunter.py 60s x2 (hunt + golden_hunter) +
+// generate-book 180s + distribute 140s) shows a single real tick can
+// plausibly approach or exceed the 10-minute INTERVAL_MS once real
+// (non-dry-run) generation/distribution calls start firing — this has
+// never been observed only because FACTORY_AUTO_PRODUCE has been off for
+// this factory's entire history. Once it's turned on, two concurrent
+// runTick() calls would each independently evaluate huntGolden()/
+// goldenNicheAlreadyAttempted() — a real window for duplicate production/
+// distribution and duplicate Groq spend. This in-process guard closes it.
+let tickRunning = false;
+
+// tickFn defaults to the real runTick — parameterized (same pattern as
+// acquireLock's lockFile/exitFn) purely so a test can inject a slow fake
+// tick and verify the overlap guard without ever running a real tick's
+// actual Groq/network calls.
+async function safeTick(tickFn = runTick) {
+  if (tickRunning) {
+    appendLoopLog({
+      diagnosis: { status: 'tick_skipped_overlap' },
+      actions: [{ step: 'tick', action: 'skipped', detail: 'previous tick still running — overlap guard' }],
+    });
+    return;
+  }
+  tickRunning = true;
   try {
-    await runTick();
+    await tickFn();
   } catch (err) {
     appendLoopLog({
       diagnosis: { status: 'loop_error' },
       actions: [{ step: 'tick', action: 'error', detail: err && err.message ? err.message : String(err) }],
     });
+  } finally {
+    tickRunning = false;
   }
 }
 
@@ -1555,4 +1602,5 @@ module.exports = {
   checkPendingAiCeoDecision,
   checkPendingReview, countPendingReviewDrafts, writeNeedsReview, clearNeedsReview,
   acquireLock, releaseLock, isPidAlive, LOCK_FILE,
+  safeTick,
 };

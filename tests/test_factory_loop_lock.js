@@ -103,6 +103,33 @@ function runHelper(lockFile, holdMs) {
   });
 }
 
+test('two real, concurrently-running processes racing to reclaim the SAME stale lock: exactly one wins', async () => {
+  // Zero-assumption audit follow-up — Medium finding: only the common
+  // "no lock file yet" path was atomic before; the stale-lock-reclaim path
+  // (both processes see a dead pid and would both plainly overwrite) was
+  // still racy. Pre-seed a stale lock (a pid essentially guaranteed not to
+  // be a real running process), then race two real processes against it.
+  const lockFile = tempLockPath();
+  fs.writeFileSync(lockFile, '999999999');
+  try {
+    const [a, b] = await Promise.all([
+      runHelper(lockFile, 800),
+      runHelper(lockFile, 800),
+    ]);
+    const results = [a, b];
+    const winners = results.filter(r => r.acquired);
+    const losers = results.filter(r => !r.acquired);
+    assert.equal(winners.length, 1, `exactly one real process must win the stale-lock reclaim, got: ${JSON.stringify(results)}`);
+    assert.equal(losers.length, 1, 'exactly one real process must be blocked');
+    assert.equal(losers[0].exitedViaGuard, true);
+
+    const finalHolder = fs.readFileSync(lockFile, 'utf8').trim();
+    assert.equal(finalHolder, String(winners[0].pid), "the reclaimed lock file must hold the real winner's own pid, never a stale or corrupted value");
+  } finally {
+    fs.rmSync(lockFile, { force: true });
+  }
+});
+
 test('two real, concurrently-running processes: exactly one wins the lock, the other exits 0 without corrupting it', async () => {
   const lockFile = tempLockPath();
   try {
