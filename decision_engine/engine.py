@@ -72,11 +72,19 @@ def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=1
     ai_ceo = analysis["ai_ceo"]
     status = _derive_status(ai_ceo["decision"], composite["accepted"])
 
+    # Zero-assumption audit follow-up (High finding): this used to rebuild
+    # its own string comparing composite['opportunity_score'] (tier-weighted)
+    # against composite['min_required'] (the flat MIN_OPPORTUNITY_SCORE
+    # constant) — the exact same bug already fixed in profit_oracle.py's own
+    # `reason` field (which compares raw vs. tier-adjusted raw_floor, the
+    # comparison `accepted` is actually decided by). For any tier where
+    # tier_weight != tier4's 0.8, this produced a false inequality (e.g.
+    # "88.6/100, < 65" for a value that is not, in fact, less than 65) — a
+    # real bug already found live in this exact codebase's tier1 records
+    # (data/decisions.jsonl). Reusing composite['reason'] directly instead
+    # of re-deriving it here means this can never drift out of sync again.
     reasoning = list(ai_ceo["evidence"])
-    reasoning.append(
-        f"Opportunity Score (ADR-026): {composite['opportunity_score']}/100, "
-        f"{'>= ' if composite['accepted'] else '< '}{composite['min_required']} المطلوب (tier={tier})"
-    )
+    reasoning.append(f"Opportunity Score (ADR-026): {composite['reason']}")
     if ai_ceo["decision"] == "BUILD" and not composite["accepted"]:
         reasoning.append("تعارض بين بوابتين مستقلتين: AI CEO أوصى بالبناء لكن Opportunity Score لم يعبر الحد — تأجيل، لا قبول أحادي الجانب")
 

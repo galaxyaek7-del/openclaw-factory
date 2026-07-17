@@ -140,6 +140,43 @@ class TestEvaluateAndDecide(unittest.TestCase):
     def test_status_derivation_improve_is_deferred(self):
         self.assertEqual(engine._derive_status("IMPROVE", True), "DEFERRED")
 
+    def test_reasoning_reuses_profit_oracles_own_reason_never_rederives_it(self):
+        """Zero-assumption audit follow-up (High finding): evaluate_and_decide()
+        used to rebuild its own 'opportunity_score >= min_required' string
+        from composite['opportunity_score'] (tier-weighted) vs the flat
+        MIN_OPPORTUNITY_SCORE constant — a second, independent copy of the
+        exact bug already fixed in profit_oracle.opportunity_score()'s own
+        `reason` field (which correctly compares raw vs. tier-adjusted
+        raw_floor instead). This already produced real, false-inequality
+        text in data/decisions.jsonl for real tier1 records (e.g.
+        "88.6/100, < 65" for a value that is not, in fact, less than 65).
+        Fixed by reusing composite['reason'] directly — this test proves
+        that reuse, not just that *a* string exists."""
+        # precomputed_analysis bypasses market_intelligence_core.evaluate_opportunity()
+        # entirely (that path independently calls profit_oracle for its own
+        # scoring, unrelated to this test — patching profit_oracle globally
+        # would break that unrelated call too). This isolates exactly the
+        # reasoning-construction logic under test.
+        fake_analysis = {
+            "niche": "مثال اختبار",
+            "analyzed_at": "2026-07-17T00:00:00",
+            "ai_ceo": {"decision": "BUILD", "evidence": ["real evidence line"]},
+        }
+        with patch("decision_engine.engine.profit_oracle.opportunity_score") as mock_score:
+            mock_score.return_value = {
+                "opportunity_score": 69.5,
+                "accepted": False,
+                "min_required": 65,
+                "reason": "rejected: opportunity_score 69.5/100 (raw 69.5 < 81.2 floor, tier=tier3)",
+            }
+            d = engine.evaluate_and_decide(
+                "مثال اختبار", tier="tier3", precomputed_analysis=fake_analysis,
+                decisions_path=self.decisions_path, analysis_db_file=self.analysis_db_path,
+            )
+        joined = " ".join(d.reasoning)
+        self.assertIn("raw 69.5 < 81.2 floor", joined, "must reuse profit_oracle's own real comparison, not re-derive one")
+        self.assertNotIn("69.5/100, < 65", joined, "must never rebuild the old, potentially-false flat-constant comparison")
+
 
 class TestRanking(unittest.TestCase):
     def setUp(self):
