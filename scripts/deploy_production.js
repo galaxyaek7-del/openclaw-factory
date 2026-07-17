@@ -16,14 +16,25 @@
 // authorization) — an AI agent must never invoke this against the real
 // running instance without being told to, for this specific run.
 //
+// Phase 10D adds real recovery-action auditing (objective 5): every
+// --confirm run — success or failure — appends a real record (timestamp,
+// operator, reason, affected systems, result) to
+// data/recovery_actions.jsonl via lib/recovery_log.js. Pass --reason
+// "..." to record why (defaults to "manual deploy" if omitted).
+//
 //   node scripts/deploy_production.js              (dry run — shows what would happen)
 //   node scripts/deploy_production.js --confirm     (actually stops + restarts the real server)
+//   node scripts/deploy_production.js --confirm --reason "picking up Phase 10D fixes"
 
 const { execSync, spawn } = require('child_process');
+const os = require('os');
 const path = require('path');
+const { recordRecoveryAction } = require('../lib/recovery_log.js');
 
 const REPO_ROOT = path.join(__dirname, '..');
 const confirmed = process.argv.includes('--confirm');
+const reasonIdx = process.argv.indexOf('--reason');
+const reason = reasonIdx !== -1 ? process.argv[reasonIdx + 1] : 'manual deploy (no --reason given)';
 
 function findListeningPid(port) {
   try {
@@ -79,7 +90,20 @@ try {
   child.unref();
   console.log(`server.js started (PID ${child.pid}). Verify manually: curl http://localhost:${port}/api/dashboard`);
   console.log('\nNote: factory_loop.js is not restarted automatically — start it separately if it was running before, per this factory\'s "no scheduler" convention (every process start is a deliberate action).');
+
+  recordRecoveryAction({
+    operator: os.userInfo().username,
+    reason,
+    affectedSystems: existingPid ? [`server.js (was PID ${existingPid})`, 'server.js (new instance)'] : ['server.js (new instance)'],
+    result: `success — new PID ${child.pid}`,
+  });
 } catch (err) {
   console.error(`\nDeploy failed: ${err.message}`);
+  recordRecoveryAction({
+    operator: os.userInfo().username,
+    reason,
+    affectedSystems: existingPid ? [`server.js (was PID ${existingPid})`] : ['server.js'],
+    result: `failed — ${err.message}`,
+  });
   process.exit(1);
 }
