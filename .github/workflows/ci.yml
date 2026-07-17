@@ -53,6 +53,16 @@ jobs:
           console.log('mission_control.html inline JS: syntax OK');
           "
 
+      # ── Engineering Evolution Mode: no new JSONL-read duplication ──
+      # Level 2 permanent safeguard (see scripts/check_jsonl_duplication.js's
+      # own header): the same manual "read file, split lines, skip a
+      # corrupt one" idiom was independently reimplemented 17+ times
+      # before lib/jsonl.js existed. This fails the build the moment a
+      # new copy is introduced anywhere, instead of letting the count
+      # silently grow until a future audit notices again.
+      - name: No new JSONL-read duplication beyond the recorded baseline
+        run: node scripts/check_jsonl_duplication.js
+
       # ── Security check: secrets never committed ──
       - name: Verify .env is never tracked in git
         run: |

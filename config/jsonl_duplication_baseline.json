@@ -1,0 +1,9 @@
+{
+  "_comment": "Engineering Evolution Mode (Level 2 safeguard): counts the raw `.split('\\n').filter(Boolean)` line-parsing idiom per file, outside lib/jsonl.js (the one canonical, allowed implementation). This is the count of ALREADY-KNOWN, deliberately-not-yet-migrated occurrences as of the pass that created lib/jsonl.js -- see EXECUTIVE_BACKLOG.md's Near Future section for why they weren't all migrated at once. scripts/check_jsonl_duplication.js fails CI if any file's real count EXCEEDS what's recorded here, catching a brand-new copy the moment it's introduced. A LOWER count than baseline (some were migrated away) is fine and should just update this file down. generate_release_notes.js's one match is a documented false positive (it splits git command output, not a JSONL log) -- kept in the baseline rather than special-cased, since the check's job is to catch growth, not to perfectly classify every match's semantics.",
+  "factory_loop.js": 6,
+  "lib/dashboard_data.js": 2,
+  "self_awareness.js": 3,
+  "server.js": 4,
+  "scripts/ops_daily_checks.js": 3,
+  "scripts/generate_release_notes.js": 1
+}
