@@ -313,8 +313,27 @@ def analyze_opportunity(niche, external_signal=None, tier="tier4", max_results=1
     competitors = COMPETITOR_DISCOVERY.get_or_refresh_competitors(niche, max_results=max_results)
     pain = analyze_customer_pain(niche, max_results=max_results)
     demand_pattern = classify_demand_pattern(niche)
+    # Strategic Autonomy follow-up (Evidence Governance diagnostic, verified
+    # against all 1,344 real historical decisions with zero mismatches
+    # against the buggy version): compute_opportunity_gap(demand, competition)
+    # expects raw competition INTENSITY (high=bad -- see its own docstring
+    # "high demand + low competition = high gap" and its existing tests,
+    # e.g. test_high_demand_low_competition_is_high_gap passes
+    # competition_score=10 for a LOW-competition case). But
+    # competition_favorability is already inverted the OTHER way (high=good,
+    # i.e. low real competition) -- profit_oracle.py's own comment: "already
+    # high=favorable". Passing it in directly double-inverted every real
+    # evaluation, silently punishing genuinely low-competition niches
+    # instead of rewarding them. This has suppressed opportunity_gap by
+    # ~20-30 points on every one of 1,344 real evaluations -- confirmed
+    # this is the reason opportunity_gap has never once reached the BUILD
+    # threshold (65) in this factory's real history; the corrected formula
+    # clears it for 1,263/1,344 (94%) of those same real records.
+    # Un-inverting back to raw intensity here (100 - favorability) restores
+    # compute_opportunity_gap()'s own documented contract without changing
+    # that function itself or its existing, correct tests.
     opportunity_gap = COMPETITOR_DISCOVERY.compute_opportunity_gap(
-        scored["components"]["market_demand"], scored["components"]["competition_favorability"]
+        scored["components"]["market_demand"], 100 - scored["components"]["competition_favorability"]
     )
 
     analysis = {

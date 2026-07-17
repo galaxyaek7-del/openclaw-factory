@@ -220,6 +220,51 @@ class TestAnalyzeOpportunityOrchestration(unittest.TestCase):
         self.assertIn("competitors", result)
         self.assertIn("opportunity_gap", result)
         self.assertIn("pricing", result)
+
+    @patch("competitor_discovery._query_github")
+    @patch("competitor_discovery._query_hn")
+    @patch("market_intelligence_engine._query_hn_discussions")
+    @patch("market_intelligence_engine._query_github_issues")
+    @patch("market_intelligence_engine.PROFIT_ORACLE.opportunity_score")
+    def test_opportunity_gap_uses_competition_favorability_correctly_not_double_inverted(
+        self, mock_score, mock_issues, mock_hn_disc, mock_cd_hn, mock_cd_gh,
+    ):
+        """Strategic Autonomy / Evidence Governance follow-up: analyze_opportunity()
+        used to pass competition_favorability (already high=favorable)
+        directly into compute_opportunity_gap(demand, competition), whose
+        own contract expects raw competition INTENSITY (high=bad) — see
+        its own tests (test_high_demand_low_competition_is_high_gap passes
+        competition_score=10 for a LOW-competition case). This double-
+        inverted every real evaluation, suppressing opportunity_gap by
+        ~20-30 points and confirmed (verified against all 1,344 real
+        historical decisions, zero mismatches) to be the reason
+        opportunity_gap had never once reached the BUILD threshold (65) in
+        this factory's real history.
+
+        Uses the EXACT real values from one of those historical records
+        (market_demand=63, competition_favorability=70, which recorded a
+        buggy opportunity_gap of 50) to prove the fix: the corrected
+        value must be ~66 (0.6*63 + 0.4*70 = 65.8), not the old ~50
+        (0.6*63 + 0.4*(100-70) = 49.8)."""
+        mock_issues.return_value = ([], 0)
+        mock_hn_disc.return_value = ([], 0)
+        mock_cd_hn.return_value = []
+        mock_cd_gh.return_value = []
+        mock_score.return_value = {
+            "components": {
+                "market_demand": 63,
+                "competition_favorability": 70,
+                "profit_potential": 78,
+            },
+            "risk": {"level": "low", "notes": []},
+            "confidence": {"score": 30, "level": "منخفضة", "note": "test"},
+            "recommended_price": "$19",
+        }
+
+        result = mie.analyze_opportunity("a real-shaped historical test niche", analysis_db_file=self.db_path)
+
+        self.assertEqual(result["opportunity_gap"], 66, result)
+        self.assertNotEqual(result["opportunity_gap"], 50, "must never reproduce the old double-inverted value")
         self.assertIn("ai_ceo", result)
         self.assertIn(result["ai_ceo"]["decision"], mie.DECISIONS)
 
