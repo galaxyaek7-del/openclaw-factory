@@ -38,3 +38,9 @@ Any item that would require guessing a founder's business judgment (which eviden
 ## How this roadmap stays current
 
 Update this file whenever: a Critical item is resolved (promote the next tier), a new capability gap is found (add it with the same Purpose/Owner/Dependencies/Risk shape as `CAPABILITY_MAP.md`), or evidence shows a prior entry was wrong (correct it visibly, don't silently delete — matches this session's own standing convention for `EXECUTIVE_BACKLOG.md`).
+
+---
+
+## Progress log
+
+**2026-07-17 — Enterprise Gap Analysis (4 parallel audits across all 15 requested categories):** produced `ENTERPRISE_GAP_ANALYSIS.md` (20 confirmed gaps, full dependency graph, structural inventory — no new orphans or duplicated-responsibility instances found beyond one: the sales-ledger/finance-data divergence). Corrected a live self-contradiction between `EXECUTIVE_BACKLOG.md` and this session's own newer findings (the `opportunity_gap` fix was previously over-credited as the reason for zero real acceptances — it isn't; M1 remains the real cause). Also corroborated M1 further: `ADR-028`'s candidate-discovery hybrid was already tried (`tier1_intake/`, `ADR-035`, `ADR-038`) and correctly abandoned for the same root cause, not overlooked. No Critical (M1/M2) item resolved this cycle — both remain founder-only. Highest-value non-founder-gated finding: CI silently excludes 13 of 18 JS test files (`ENTERPRISE_GAP_ANALYSIS.md` GAP-01) — top pick for next session.
