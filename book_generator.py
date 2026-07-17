@@ -9,6 +9,8 @@ Types: journal, planner, habit, gratitude, fitness, tracker,
 import os, sys, json, re, time, traceback, urllib.request, urllib.error, tempfile
 from datetime import datetime
 
+import path_safety
+
 # When spawned as a child process (e.g. by server.js) without a real console,
 # Python's stdin/stdout can silently fall back to the OS locale codepage
 # instead of UTF-8, corrupting Arabic text on both the way in and the way out.
@@ -83,6 +85,22 @@ DARK  = colors.HexColor("#1f2937")
 GRAY  = colors.HexColor("#d1d5db")
 WHITE = colors.white
 
+# Standing-charter continuous-improvement follow-up (documentation gap
+# found by the zero-assumption production audit, Section D): these 12
+# fixed Unsplash CDN URLs are embedded directly into generated cookbook
+# PDFs that are real, sellable KDP/Etsy/Gumroad products. Unsplash's
+# standard license (as of this factory's original integration) permits
+# commercial use, including in products sold for money, without requiring
+# attribution — that is the basis this code has always relied on. What
+# this comment adds, honestly: that basis was never previously written
+# down anywhere in this repo, there is no per-product record of which
+# license snapshot applied to which sold PDF, and this list has not been
+# re-verified against Unsplash's live terms as of any specific recent
+# date. Real, low risk at today's near-zero real sales volume; worth
+# re-confirming directly against unsplash.com/license before scaling
+# cookbook production meaningfully, and worth expanding beyond 12 fixed
+# images if volume grows (KDP is known to flag templated/repetitive-
+# looking content across nominally-different listings).
 FOOD_IMAGES = [
     "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&q=90",
     "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1200&q=90",
@@ -2154,28 +2172,22 @@ def _record_rejected_niche(niche, title, reason):
         pass
 
 
+# Standing-charter continuous-improvement follow-up: this and
+# _resolve_safe_output_path() used to be their own independent
+# implementation, duplicated (with subtle differences) in
+# cover_designer_v2.py — a real fix-drift risk (zero-assumption audit,
+# Section C). Both are now thin wrappers over the one shared
+# implementation both modules call — kept as functions (not just replaced
+# with direct path_safety.* calls at every call site) so every existing
+# caller/test keeps working against the exact same names unchanged.
 def _sanitize_filename_component(text, fallback="book"):
-    text = re.sub(r'[^\w\-]+', '_', str(text or ''), flags=re.UNICODE).strip('_').lower()
-    return text or fallback
+    return path_safety.sanitize_filename_component(text, fallback=fallback)
 
 
 def _resolve_safe_output_path(books_dir, output, title):
     """Confines the output PDF to books_dir regardless of what the caller passes
     in `output` (Constitution §4: sanitize filenames, prevent path traversal)."""
-    fallback_name = _sanitize_filename_component(title)
-    if output:
-        base = os.path.basename(str(output))          # drops any ../ or C:\ the caller supplied
-        name, _ext = os.path.splitext(base)
-        name = _sanitize_filename_component(name, fallback=fallback_name)
-    else:
-        name = fallback_name
-    filename = f"{name}.pdf"
-
-    books_dir_real = os.path.realpath(books_dir)
-    out_path = os.path.realpath(os.path.join(books_dir_real, filename))
-    if os.path.commonpath([out_path, books_dir_real]) != books_dir_real:
-        raise ValueError("مسار ملف الإخراج غير آمن")
-    return out_path, filename
+    return path_safety.confine_to_directory(books_dir, output, title, '.pdf')
 
 
 def _log_generation(result):

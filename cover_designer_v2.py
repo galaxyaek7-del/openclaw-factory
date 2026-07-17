@@ -22,6 +22,8 @@ import json
 
 from PIL import Image, ImageDraw, ImageFont
 
+import path_safety
+
 # Pillow draws raw codepoints left-to-right with no contextual letter joining
 # and no bidi reordering — unshaped Arabic renders completely garbled (and,
 # with some fonts, as missing-glyph boxes). arabic_reshaper + python-bidi fix
@@ -250,10 +252,14 @@ def _draw_visual_accent(draw, y0, y1, accent_rgb):
     draw.ellipse([cx - r // 3, cy - r // 3, cx + r // 3, cy + r // 3], fill=accent_rgb)
 
 
+# Standing-charter continuous-improvement follow-up: this used to be its
+# own independent implementation, duplicated (with subtle differences —
+# this version never sanitized a caller-supplied `output` filename, only
+# the title-derived fallback) from book_generator.py's own copy — a real
+# fix-drift risk (zero-assumption audit, Section C). Now a thin wrapper
+# over the one shared implementation both modules call.
 def _sanitize_filename_component(text, fallback="cover"):
-    text = "".join(c if (c.isalnum() or c in "-_ ") else "_" for c in str(text or "").strip())
-    text = text.replace(" ", "_").strip("_").lower()
-    return text[:80] or fallback
+    return path_safety.sanitize_filename_component(text, fallback=fallback)
 
 
 def generate_cover(title, subtitle="", author="", niche="", theme=None, output=None):
@@ -368,15 +374,15 @@ def generate_cover(title, subtitle="", author="", niche="", theme=None, output=N
         draw.text(((COVER_W - w) / 2, author_y), author_display, font=author_font, fill=white_rgb)
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    safe_name = _sanitize_filename_component(title)
-    filename = os.path.basename(str(output)) if output else f"{safe_name}_cover.png"
-    if not filename.lower().endswith('.png'):
-        filename += '.png'
-
-    out_path = os.path.realpath(os.path.join(OUTPUT_DIR, filename))
-    output_dir_real = os.path.realpath(OUTPUT_DIR)
-    if os.path.commonpath([out_path, output_dir_real]) != output_dir_real:
-        raise ValueError("مسار ملف الإخراج غير آمن")
+    # Standing-charter continuous-improvement follow-up: this used to
+    # reimplement sanitize+confine independently (zero-assumption audit,
+    # Section C) — now shares path_safety.confine_to_directory() with
+    # book_generator.py. fallback_name preserves the exact prior naming
+    # convention (f"{safe_title}_cover.png" when no output is given) —
+    # re-sanitizing an already-sanitized string is a no-op, so passing it
+    # as fallback_stem below is safe.
+    fallback_name = f"{_sanitize_filename_component(title)}_cover"
+    out_path, filename = path_safety.confine_to_directory(OUTPUT_DIR, output, fallback_name, '.png')
 
     img.save(out_path, "PNG")
 
