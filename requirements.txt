@@ -1,0 +1,6 @@
+# Python dependencies for OpenClaw Factory (Phase 10C — CI reproducibility).
+# Versions pinned to what this session's real environment has installed
+# and verified working (`pip freeze`), not guessed.
+reportlab==5.0.0
+Pillow==12.2.0
+pypdf==6.14.2

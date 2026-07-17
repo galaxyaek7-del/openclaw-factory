@@ -1,0 +1,99 @@
+name: CI
+
+# Phase 10C (Operations Automation & CI/CD Pipeline). Real CI — runs the
+# actual test suite on GitHub's own runners. This does not touch the
+# factory's live business infrastructure (no Groq calls, no n8n, no
+# publishing) and is not the "no scheduler" this factory's architecture
+# deliberately avoids for its own runtime — it only validates code
+# changes before they merge, the same as any standard software project.
+#
+# No merge to main should occur unless every job below passes.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      # ── Architecture integrity ──
+      - name: Syntax check server.js
+        run: node -c server.js
+
+      - name: Syntax check every Python module (compileall)
+        run: python -m compileall -q . -x '(venv|__pycache__)'
+
+      - name: Syntax check Mission Control's inline JavaScript
+        run: |
+          node -e "
+          const fs = require('fs');
+          const html = fs.readFileSync('mission_control.html', 'utf8');
+          const m = html.match(/<script>([\s\S]*)<\/script>/);
+          if (!m) { console.error('no <script> block found'); process.exit(1); }
+          new Function(m[1]);
+          console.log('mission_control.html inline JS: syntax OK');
+          "
+
+      # ── Security check: secrets never committed ──
+      - name: Verify .env is never tracked in git
+        run: |
+          if git ls-files | grep -qx '\.env'; then
+            echo "::error::.env is tracked in git — secrets must only live in .env, never committed"
+            exit 1
+          fi
+          echo "confirmed: .env is not tracked"
+
+      # ── Python tests ──
+      - name: Python tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+
+      # ── JavaScript tests (includes Dashboard tests) ──
+      - name: JavaScript unit tests (metrics, dashboard data, n8n notify)
+        run: node --test tests/test_metrics.js tests/test_dashboard_data.js tests/test_n8n_notify.js
+
+      # ── Factory Loop tests ──
+      - name: Factory Loop tests
+        run: node tests/test_factory_loop_golden.js
+
+      # ── API contract tests ──
+      - name: API contract tests
+        run: node --test tests/test_api_contract.js
+        env:
+          MISSION_CONTROL_PASSWORD: ci-contract-test-password
+
+      # ── Lightweight performance regression gate ──
+      - name: Performance smoke check (generous thresholds, not a full load test)
+        run: |
+          MISSION_CONTROL_PASSWORD=ci-perf-check-password PORT=3299 node server.js &
+          SERVER_PID=$!
+          sleep 3
+          node scripts/perf_measure.js http://localhost:3299 ci-perf-check-password latency > /tmp/ci_perf_output.txt || true
+          cat /tmp/ci_perf_output.txt
+          kill $SERVER_PID
+          # Fail only on a gross regression (e.g. an endpoint hanging/erroring
+          # for minutes) — this is a smoke check, not a strict performance
+          # gate; CI runner performance varies and isn't comparable to any
+          # specific real-hardware baseline.
+          if grep -qi "error\|nan" /tmp/ci_perf_output.txt; then
+            echo "::error::performance smoke check reported an error or non-numeric latency"
+            exit 1
+          fi

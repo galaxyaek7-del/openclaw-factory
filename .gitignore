@@ -1,5 +1,11 @@
 node_modules/
-backups/
+# Phase 10C rollback-simulation finding: this was previously unanchored
+# ("backups/"), which also matched n8n_workflows/backups/ — a real,
+# meaningful artifact (ADR-045's n8n export backup, read by
+# mission_control_api.py's _automation()) that was invisible to git as a
+# result. Anchored to the repo root so it only excludes the root-level
+# CONSTITUTION.md rolling backups it was actually meant for.
+/backups/
 *.log
 .env
 .factory_loop.lock
