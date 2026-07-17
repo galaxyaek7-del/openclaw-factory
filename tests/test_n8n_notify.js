@@ -129,6 +129,21 @@ test('buildProductionNotifyPayload: missing nested fields degrade to null, never
   assert.equal(payload.pre_production_checks_passed, null);
 });
 
+test('envVarName lets a second caller report an accurate reason for its own webhook var', async () => {
+  let fetchCalled = false;
+  await withMockedFetch(
+    async () => { fetchCalled = true; throw new Error('fetch must not be called'); },
+    async () => {
+      const result = await notifyN8nProductionEvent(
+        { event: 'golden_opportunity_accepted' },
+        { webhookUrl: null, envVarName: 'N8N_TELEGRAM_WEBHOOK_URL' }
+      );
+      assert.deepEqual(result, { attempted: false, reason: 'N8N_TELEGRAM_WEBHOOK_URL not configured' });
+      assert.equal(fetchCalled, false);
+    }
+  );
+});
+
 // ADR-065 Step 3(a) — factory_loop.js's Golden Hunter Bridge notify.
 test('buildGoldenHunterNotifyPayload: projects a real opportunity_score() result', () => {
   const opportunityScore = { score: 85.3, reason: 'accepted: opportunity_score 85.3/100 (raw 106.6 >= 81.2 floor, tier=tier4)' };

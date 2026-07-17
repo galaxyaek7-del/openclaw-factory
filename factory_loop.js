@@ -629,6 +629,7 @@ async function notifyGoldenHunterAccepted(niche, opportunityScore) {
     const payload = buildGoldenHunterNotifyPayload(niche, opportunityScore);
     return await notifyN8nProductionEvent(payload, {
       webhookUrl: N8N_TELEGRAM_WEBHOOK_URL,
+      envVarName: 'N8N_TELEGRAM_WEBHOOK_URL',
       log: (entry) => appendGoldenHunterEvent({ action: 'n8n_notify', niche, ...entry }),
     });
   } catch (err) {

@@ -153,7 +153,19 @@ class Product:
             economics_platform = "gumroad_digital"
         elif product_type == "premium":
             economics_platform = "gumroad_premium"
-        elif product_type == "elite":
+        elif product_type in ("elite", "techdoc"):
+            # ADR-065/068: "techdoc" (book_generator.generate_product_package(),
+            # the technical-docs/product-package generator) is priced the
+            # same $97-497 elite band as "elite" — same real bug class
+            # ADR-041 already fixed for margin scoring: this mapping is
+            # duplicated from book_generator.py's own
+            # _economics_platform_for() and had drifted out of sync when
+            # "techdoc" was added there without updating this one, which
+            # left every techdoc Product with needs_pricing=True (silently
+            # falling to "kdp_ebook" via the else branch below) and
+            # therefore unsupported by every distribution arm. Found via
+            # the mission's own Step 5 end-to-end proof run, fixed here
+            # rather than left for a future session to rediscover.
             economics_platform = "gumroad_elite"
         else:
             economics_platform = "kdp_ebook"
