@@ -934,6 +934,36 @@ def _read_opportunities():
     return niches
 
 
+# ADR-070 (mission follow-up, 2026-07-17): a second, separate reader from
+# _read_opportunities() above rather than changing that function's return
+# shape — real_world_mode/signal_intake.py's intake_from_opportunities_md()
+# already depends on _read_opportunities() returning a plain list of niche
+# strings (tests/test_real_world_mode.py), so extending it in place would
+# break a real, working consumer for no benefit to it. This extracts the
+# same OPPORTUNITIES.md lines PLUS an optional ladder=<rank> tag from the
+# reason text — the exact tag market_hunter.py's _append_to_opportunities()
+# writes for every real ACCEPTED candidate (ADR-068). Entries with no tag
+# (every Sensing Engine signal, every pre-ladder entry) get ladder=None.
+_LADDER_TAG_RE = re.compile(r'ladder=(\w+)')
+
+
+def _read_opportunities_with_ladder():
+    if not os.path.exists(OPPORTUNITIES_FILE):
+        return []
+    line_re = re.compile(r'^-\s*\[(.+?)\]\s*(.+?)\s*—\s*(.+)$')
+    entries = []
+    with open(OPPORTUNITIES_FILE, 'r', encoding='utf-8') as f:
+        for line in f:
+            m = line_re.match(line.strip())
+            if not m:
+                continue
+            niche = m.group(2).strip()
+            reason = m.group(3).strip()
+            ladder_match = _LADDER_TAG_RE.search(reason)
+            entries.append({"niche": niche, "ladder": ladder_match.group(1) if ladder_match else None})
+    return entries
+
+
 def _verdict_label(result):
     label = {"GOLDEN": "🏆 GOLDEN", "GOOD": "✅ GOOD", "SKIP": "⛔ SKIP"}[result["verdict"]]
     if result["needs_galaxy_approval"]:
@@ -980,10 +1010,43 @@ def _write_golden_report(results, generated_at):
 def run_oracle():
     """Reads OPPORTUNITIES.md, scores every niche, writes GOLDEN_OPPORTUNITIES.md
     (human-readable, ranked) and golden_opportunities.json (machine-readable,
-    for server.js's /oracle endpoint) — both sorted by profit_score descending."""
-    niches = _read_opportunities()
-    results = [score_opportunity(n) for n in niches]
-    results.sort(key=lambda r: r['profit_score'], reverse=True)
+    for server.js's /oracle endpoint and factory_loop.js's Golden Hunter
+    Bridge). score_opportunity() still runs for every niche unchanged (the
+    human report / every pre-ladder consumer keeps working byte-for-byte
+    the same); a niche carrying a ladder=<rank> tag (ADR-068) also gets
+    scored via ladder_opportunity_score() (ADR-066), and its result is
+    merged in as additive ladder/ladder_score/ladder_accepted/ladder_price
+    fields.
+
+    ADR-070: sort order now puts every ladder_accepted=True result first
+    (ranked among themselves by ladder_score), THEN falls back to the
+    original profit_score descending order for everything else — the
+    concrete fix for the gap ADR-069 disclosed (factory_loop.js's
+    automatic tick still picking old KDP niches over newly-accepted AI
+    SaaS/B2B ones). A file with no ladder-tagged entries at all sorts
+    exactly as before (every result has ladder_accepted=None -> falsy ->
+    same profit_score-only ordering)."""
+    entries = _read_opportunities_with_ladder()
+    results = []
+    for entry in entries:
+        niche = entry["niche"]
+        result = score_opportunity(niche)
+        ladder = entry["ladder"]
+        if ladder and ladder in LADDER_RANKS:
+            ladder_result = ladder_opportunity_score(niche, ladder=ladder)
+            result["ladder"] = ladder
+            result["ladder_score"] = ladder_result["ladder_score"]
+            result["ladder_accepted"] = ladder_result["accepted"]
+            result["ladder_price"] = ladder_result["price"]
+        results.append(result)
+
+    results.sort(
+        key=lambda r: (
+            bool(r.get('ladder_accepted')),
+            r['ladder_score'] if r.get('ladder_accepted') else r['profit_score'],
+        ),
+        reverse=True,
+    )
     generated_at = datetime.now().isoformat()
     _write_golden_report(results, generated_at)
     return results

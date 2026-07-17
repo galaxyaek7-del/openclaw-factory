@@ -504,6 +504,21 @@ function pickTopGoldenOpportunity(data) {
   const results = Array.isArray(data && data.results) ? data.results : [];
   const eligible = results.filter(r => r && r.verdict && r.verdict !== 'SKIP' && typeof r.profit_score === 'number');
   if (!eligible.length) return null;
+
+  // ADR-070: ladder-accepted opportunities (profit_oracle.
+  // ladder_opportunity_score(), the Strategic Production Priority Ladder
+  // gate, ADR-066) always outrank plain profit_score-ranked ones — the
+  // whole point of the ladder pivot is that a lower-profit_score AI SaaS/
+  // B2B opportunity should still win over a higher-profit_score KDP one
+  // (real, confirmed case: an AI SaaS niche scored profit_score 69 under
+  // the old scorer, an old KDP printable scored 71 — without this, the
+  // KDP one would still win). Entries without ladder info (every pre-
+  // ladder golden_opportunities.json, and every existing test's synthetic
+  // fixture) fall through to the exact prior behavior, unchanged.
+  const ladderAccepted = eligible.filter(r => r.ladder_accepted === true);
+  if (ladderAccepted.length) {
+    return ladderAccepted.reduce((best, r) => (r.ladder_score > best.ladder_score ? r : best));
+  }
   return eligible.reduce((best, r) => (r.profit_score > best.profit_score ? r : best));
 }
 
@@ -610,6 +625,60 @@ function getOpportunityScore(niche, { timeoutMs = 15000, scriptPath = path.join(
 
     try {
       python.stdin.write(JSON.stringify({ niche, tier }));
+      python.stdin.end();
+    } catch (err) {
+      finish({ ok: false, error: err.message });
+    }
+  });
+}
+
+// ADR-070 (mission follow-up, 2026-07-17): same spawn pattern as
+// getOpportunityScore() above, calling profit_oracle.py's --ladder-score
+// flag (profit_oracle.ladder_opportunity_score(), ADR-066) instead of
+// --opportunity-score. Returns the exact same {ok, score, accepted,
+// reason, components} shape so every downstream caller in huntGolden()
+// (skip-detail logging, notifyGoldenHunterAccepted()) works identically
+// regardless of which gate produced the result.
+function getLadderOpportunityScore(niche, ladder, { timeoutMs = 15000, scriptPath = path.join(FACTORY_DIR, 'profit_oracle.py'), pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [scriptPath, '--ladder-score'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, error: `تعذّر تشغيل profit_oracle.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, error: 'انتهت مهلة profit_oracle.py --ladder-score (15 ثانية)' });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, error: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (result.success && Number.isFinite(result.ladder_score)) {
+          finish({ ok: true, score: result.ladder_score, accepted: result.accepted, reason: result.reason, components: result.components });
+        } else {
+          finish({ ok: false, error: result.error || `ناتج غير متوقع: ${output}${errOut}` });
+        }
+      } catch (e) {
+        finish({ ok: false, error: `Parse error: ${output}${errOut}` });
+      }
+    });
+
+    try {
+      python.stdin.write(JSON.stringify({ niche, ladder }));
       python.stdin.end();
     } catch (err) {
       finish({ ok: false, error: err.message });
@@ -729,7 +798,18 @@ async function huntGolden(reachable) {
   // profit_score/butter_price's existing checks (still enforced later by
   // book_generator.py's Dual Inspection regardless) — never block
   // production because a second, newer scoring call happened to fail.
-  const opportunityScore = await getOpportunityScore(top.niche, { tier: 'tier4' });
+  //
+  // ADR-070 (mission follow-up, 2026-07-17): when the picked opportunity
+  // carries a ladder tag (pickTopGoldenOpportunity() now prefers these,
+  // market_hunter.py's retooled Strategic Production Priority Ladder
+  // candidates, ADR-068), gate via the ladder-aware score instead — the
+  // exact wiring ADR-069 disclosed as the remaining gap after Step 5's
+  // proof. Every entry with no ladder tag (every pre-ladder golden
+  // opportunity) keeps using the original opportunity_score() gate,
+  // byte-for-byte unchanged.
+  const opportunityScore = top.ladder
+    ? await getLadderOpportunityScore(top.niche, top.ladder)
+    : await getOpportunityScore(top.niche, { tier: 'tier4' });
   if (opportunityScore.ok && !opportunityScore.accepted) {
     const rec = appendGoldenHunterEvent({
       action: 'skipped', reason: 'opportunity_score_below_floor', niche: top.niche,
@@ -1668,7 +1748,7 @@ module.exports = {
   readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction, pollSales,
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
   appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted,
-  evaluateGoldenOpportunities, getButterPrice, getOpportunityScore,
+  evaluateGoldenOpportunities, getButterPrice, getOpportunityScore, getLadderOpportunityScore,
   checkNeedsAttention, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
   checkPendingAiCeoDecision,
   checkPendingReview, countPendingReviewDrafts, writeNeedsReview, clearNeedsReview,

@@ -1,7 +1,304 @@
 {
-  "generated_at": "2026-07-17T23:31:27.861153",
-  "count": 118,
+  "generated_at": "2026-07-17T23:55:23.078248",
+  "count": 122,
   "results": [
+    {
+      "niche": "AI-powered compliance automation subscription system for accounting firms",
+      "profit_score": 69,
+      "verdict": "GOOD",
+      "recommended_price": "$39",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 8 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: مرتفعة [تقدير كلمات مفتاحية — لا بيانات مبيعات حقيقية بعد]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 70,
+        "margin": 90,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      },
+      "ladder": "ai_saas",
+      "ladder_score": 85.3,
+      "ladder_accepted": true,
+      "ladder_price": 388
+    },
+    {
+      "niche": "AI customer support automation platform for e-commerce businesses",
+      "profit_score": 61,
+      "verdict": "GOOD",
+      "recommended_price": "$9",
+      "recommended_platform": "KDP (رفع يدوي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 8 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $9 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $8.10 من $9 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 70,
+        "margin": 52,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      },
+      "ladder": "ai_saas",
+      "ladder_score": 79.6,
+      "ladder_accepted": true,
+      "ladder_price": 126
+    },
+    {
+      "niche": "AI customer support automation platform for e-commerce businesses",
+      "profit_score": 61,
+      "verdict": "GOOD",
+      "recommended_price": "$9",
+      "recommended_platform": "KDP (رفع يدوي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 8 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $9 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $8.10 من $9 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 70,
+        "margin": 52,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      },
+      "ladder": "ai_saas",
+      "ladder_score": 79.6,
+      "ladder_accepted": true,
+      "ladder_price": 126
+    },
+    {
+      "niche": "workflow automation system for logistics companies",
+      "profit_score": 66,
+      "verdict": "GOOD",
+      "recommended_price": "$39",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 6 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 70,
+        "margin": 75,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      },
+      "ladder": "b2b_systems",
+      "ladder_score": 76.3,
+      "ladder_accepted": true,
+      "ladder_price": 327
+    },
+    {
+      "niche": "inventory management system for wholesale distributors",
+      "profit_score": 66,
+      "verdict": "GOOD",
+      "recommended_price": "$39",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 6 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 70,
+        "margin": 75,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      },
+      "ladder": "b2b_systems",
+      "ladder_score": 76.3,
+      "ladder_accepted": true,
+      "ladder_price": 327
+    },
+    {
+      "niche": "workflow automation system for logistics companies",
+      "profit_score": 66,
+      "verdict": "GOOD",
+      "recommended_price": "$39",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 6 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 70,
+        "margin": 75,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      },
+      "ladder": "b2b_systems",
+      "ladder_score": 76.3,
+      "ladder_accepted": true,
+      "ladder_price": 327
+    },
+    {
+      "niche": "inventory management system for wholesale distributors",
+      "profit_score": 66,
+      "verdict": "GOOD",
+      "recommended_price": "$39",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 6 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 70,
+        "margin": 75,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      },
+      "ladder": "b2b_systems",
+      "ladder_score": 76.3,
+      "ladder_accepted": true,
+      "ladder_price": 327
+    },
+    {
+      "niche": "automated invoice processing toolkit for small businesses",
+      "profit_score": 66,
+      "verdict": "GOOD",
+      "recommended_price": "$39",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 7 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 70,
+        "margin": 75,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      },
+      "ladder": "automation_tools",
+      "ladder_score": 67.3,
+      "ladder_accepted": true,
+      "ladder_price": 194
+    },
+    {
+      "niche": "automated invoice processing toolkit for small businesses",
+      "profit_score": 66,
+      "verdict": "GOOD",
+      "recommended_price": "$39",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 7 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 70,
+        "margin": 75,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      },
+      "ladder": "automation_tools",
+      "ladder_score": 67.3,
+      "ladder_accepted": true,
+      "ladder_price": 194
+    },
     {
       "niche": "مخطط شهري قابل للطباعة",
       "profit_score": 71,
@@ -1917,35 +2214,6 @@
       }
     },
     {
-      "niche": "AI-powered compliance automation subscription system for accounting firms",
-      "profit_score": 69,
-      "verdict": "GOOD",
-      "recommended_price": "$39",
-      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
-      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 8 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: مرتفعة [تقدير كلمات مفتاحية — لا بيانات مبيعات حقيقية بعد]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
-      "butter_rating": "🧈🧈🧈",
-      "needs_galaxy_approval": false,
-      "scores": {
-        "demand": 52,
-        "competition": 70,
-        "margin": 90,
-        "execution": 90
-      },
-      "risk": {
-        "score": 90,
-        "level": "low",
-        "notes": [
-          "safety_filter.py: لا مخاطر محتوى معروفة",
-          "لا رفض سابق في REJECTED_NICHES.md"
-        ]
-      },
-      "confidence": {
-        "score": 30,
-        "level": "منخفضة",
-        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
-      }
-    },
-    {
       "niche": "متتبع الميزانية الشخصية",
       "profit_score": 68,
       "verdict": "GOOD",
@@ -3292,122 +3560,6 @@
         "demand": 52,
         "competition": 80,
         "margin": 62,
-        "execution": 90
-      },
-      "risk": {
-        "score": 90,
-        "level": "low",
-        "notes": [
-          "safety_filter.py: لا مخاطر محتوى معروفة",
-          "لا رفض سابق في REJECTED_NICHES.md"
-        ]
-      },
-      "confidence": {
-        "score": 30,
-        "level": "منخفضة",
-        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
-      }
-    },
-    {
-      "niche": "workflow automation system for logistics companies",
-      "profit_score": 66,
-      "verdict": "GOOD",
-      "recommended_price": "$39",
-      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
-      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 6 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
-      "butter_rating": "🧈🧈🧈",
-      "needs_galaxy_approval": false,
-      "scores": {
-        "demand": 52,
-        "competition": 70,
-        "margin": 75,
-        "execution": 90
-      },
-      "risk": {
-        "score": 90,
-        "level": "low",
-        "notes": [
-          "safety_filter.py: لا مخاطر محتوى معروفة",
-          "لا رفض سابق في REJECTED_NICHES.md"
-        ]
-      },
-      "confidence": {
-        "score": 30,
-        "level": "منخفضة",
-        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
-      }
-    },
-    {
-      "niche": "inventory management system for wholesale distributors",
-      "profit_score": 66,
-      "verdict": "GOOD",
-      "recommended_price": "$39",
-      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
-      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 6 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
-      "butter_rating": "🧈🧈🧈",
-      "needs_galaxy_approval": false,
-      "scores": {
-        "demand": 52,
-        "competition": 70,
-        "margin": 75,
-        "execution": 90
-      },
-      "risk": {
-        "score": 90,
-        "level": "low",
-        "notes": [
-          "safety_filter.py: لا مخاطر محتوى معروفة",
-          "لا رفض سابق في REJECTED_NICHES.md"
-        ]
-      },
-      "confidence": {
-        "score": 30,
-        "level": "منخفضة",
-        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
-      }
-    },
-    {
-      "niche": "automated invoice processing toolkit for small businesses",
-      "profit_score": 66,
-      "verdict": "GOOD",
-      "recommended_price": "$39",
-      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
-      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 7 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
-      "butter_rating": "🧈🧈🧈",
-      "needs_galaxy_approval": false,
-      "scores": {
-        "demand": 52,
-        "competition": 70,
-        "margin": 75,
-        "execution": 90
-      },
-      "risk": {
-        "score": 90,
-        "level": "low",
-        "notes": [
-          "safety_filter.py: لا مخاطر محتوى معروفة",
-          "لا رفض سابق في REJECTED_NICHES.md"
-        ]
-      },
-      "confidence": {
-        "score": 30,
-        "level": "منخفضة",
-        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
-      }
-    },
-    {
-      "niche": "AI customer support automation platform for e-commerce businesses",
-      "profit_score": 61,
-      "verdict": "GOOD",
-      "recommended_price": "$9",
-      "recommended_platform": "KDP (رفع يدوي)",
-      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 8 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $9 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $8.10 من $9 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
-      "butter_rating": "🧈🧈🧈",
-      "needs_galaxy_approval": false,
-      "scores": {
-        "demand": 52,
-        "competition": 70,
-        "margin": 52,
         "execution": 90
       },
       "risk": {

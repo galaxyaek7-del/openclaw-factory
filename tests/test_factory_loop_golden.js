@@ -78,6 +78,75 @@ async function main() {
     assert.strictEqual(fl.pickTopGoldenOpportunity({}), null);
   });
 
+  // ── ADR-070: ladder-accepted opportunities outrank plain profit_score ──
+
+  await test('pickTopGoldenOpportunity: a ladder-accepted entry outranks a higher-profit_score non-ladder one', () => {
+    // The exact real case that motivated this fix: an old KDP niche at
+    // profit_score 71 (no ladder tag) vs. a new AI SaaS niche at
+    // profit_score 69 but ladder_accepted (score 85.3) — the AI SaaS one
+    // must win now, where it would have lost under the old logic alone.
+    const data = {
+      results: [
+        { niche: 'old kdp niche', profit_score: 71, verdict: 'GOOD' },
+        { niche: 'ai saas niche', profit_score: 69, verdict: 'GOOD', ladder: 'ai_saas', ladder_score: 85.3, ladder_accepted: true },
+      ],
+    };
+    const top = fl.pickTopGoldenOpportunity(data);
+    assert.strictEqual(top.niche, 'ai saas niche');
+  });
+
+  await test('pickTopGoldenOpportunity: among multiple ladder-accepted entries, picks the highest ladder_score', () => {
+    const data = {
+      results: [
+        { niche: 'a', profit_score: 50, verdict: 'GOOD', ladder: 'automation_tools', ladder_score: 67.3, ladder_accepted: true },
+        { niche: 'b', profit_score: 40, verdict: 'GOOD', ladder: 'ai_saas', ladder_score: 85.3, ladder_accepted: true },
+      ],
+    };
+    const top = fl.pickTopGoldenOpportunity(data);
+    assert.strictEqual(top.niche, 'b');
+  });
+
+  await test('pickTopGoldenOpportunity: ladder_accepted=false entries never outrank plain profit_score ranking', () => {
+    const data = {
+      results: [
+        { niche: 'old kdp niche', profit_score: 71, verdict: 'GOOD' },
+        { niche: 'rejected ladder niche', profit_score: 40, verdict: 'GOOD', ladder: 'educational', ladder_score: 48, ladder_accepted: false },
+      ],
+    };
+    const top = fl.pickTopGoldenOpportunity(data);
+    assert.strictEqual(top.niche, 'old kdp niche');
+  });
+
+  await test('pickTopGoldenOpportunity: no ladder fields anywhere behaves exactly as before (backward compat)', () => {
+    const data = { results: [opp('a', 65, 'GOOD', '$30'), opp('b', 82, 'GOLDEN', '$45')] };
+    const top = fl.pickTopGoldenOpportunity(data);
+    assert.strictEqual(top.niche, 'b');
+  });
+
+  // ── getLadderOpportunityScore (ADR-070) — real subprocess, real profit_oracle.py ──
+
+  await test('getLadderOpportunityScore: real call on a real accepted AI SaaS niche', async () => {
+    const r = await fl.getLadderOpportunityScore(
+      'AI-powered compliance automation subscription system for accounting firms',
+      'ai_saas'
+    );
+    assert.strictEqual(r.ok, true);
+    assert.strictEqual(r.accepted, true);
+    assert.ok(r.score > 0);
+    assert.ok(r.reason.includes('ladder=ai_saas'));
+  });
+
+  await test('getLadderOpportunityScore: real call on a plain KDP niche is rejected', async () => {
+    const r = await fl.getLadderOpportunityScore('printable monthly planner', 'kdp_books');
+    assert.strictEqual(r.ok, true);
+    assert.strictEqual(r.accepted, false);
+  });
+
+  await test('getLadderOpportunityScore: broken script path -> ok:false, never throws', async () => {
+    const r = await fl.getLadderOpportunityScore('x', 'ai_saas', { scriptPath: BROKEN_SCRIPT });
+    assert.strictEqual(r.ok, false);
+  });
+
   // ── getButterPrice (ADR-010) — real subprocess, real profit_oracle.py ──
 
   await test('getButterPrice: real call returns a number within the constitutional $30-$100 range', async () => {
