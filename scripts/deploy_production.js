@@ -65,7 +65,21 @@ async function waitForHealthy(port, timeoutMs = 15000, pollIntervalMs = 300) {
   return false;
 }
 
-module.exports = { findListeningPid, waitForHealthy };
+// Prove-OpenClaw operational-excellence follow-up: a cheap pre-flight
+// gate, checked before ever touching the live process — see the real
+// call site's own comment for why. Returns { ok, error } rather than
+// throwing, so the caller decides what to do (the real deploy flow
+// throws on failure; a test can just inspect the result).
+function checkServerSyntax(repoRoot, targetFile = 'server.js') {
+  try {
+    execSync(`node -c ${targetFile}`, { cwd: repoRoot, stdio: 'pipe' });
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: (err.stderr && err.stderr.toString()) || err.message };
+  }
+}
+
+module.exports = { findListeningPid, waitForHealthy, checkServerSyntax };
 
 if (require.main === module) {
   const confirmed = process.argv.includes('--confirm');
@@ -79,11 +93,12 @@ if (require.main === module) {
   console.log(`\n1. Current production server on port ${port}: ${existingPid ? `PID ${existingPid}` : 'not running'}`);
   console.log('2. Would run: git pull origin main');
   console.log('3. Would run: npm ci');
+  console.log('4. Would run a pre-flight syntax check (node -c server.js) — stops here, existing server untouched, if it fails');
   console.log(existingPid
-    ? `4. Would stop the exact process PID ${existingPid} (never a broad "taskkill /IM node.exe" — that would kill unrelated Node processes)`
-    : '4. No existing process to stop');
-  console.log('5. Would start: node server.js (and separately, if desired: node factory_loop.js)');
-  console.log('6. Would verify: GET /api/dashboard returns 200 within 15s');
+    ? `5. Would stop the exact process PID ${existingPid} (never a broad "taskkill /IM node.exe" — that would kill unrelated Node processes)`
+    : '5. No existing process to stop');
+  console.log('6. Would start: node server.js (and separately, if desired: node factory_loop.js)');
+  console.log('7. Would verify: GET /api/dashboard returns 200 within 15s');
 
   if (!confirmed) {
     console.log('\nDry run only — nothing was changed. Re-run with --confirm to actually deploy.');
@@ -99,6 +114,26 @@ if (require.main === module) {
 
       console.log('\n=== npm ci ===');
       execSync('npm ci', { cwd: REPO_ROOT, stdio: 'inherit' });
+
+      // Prove-OpenClaw operational-excellence follow-up: this deploy has
+      // now been run twice, for real, in one session. Both times worked —
+      // but the script kills the existing server BEFORE checking anything
+      // about the new code at all. A bad commit that doesn't even parse
+      // (a real, common failure mode — a syntax error, not a logic bug)
+      // would previously have killed the live server and only found out
+      // afterward, when the new process never came up healthy — leaving
+      // zero servers running with nothing to fall back to. This doesn't
+      // solve that whole class of problem (a genuine rollback/blue-green
+      // redesign is a real architecture decision, correctly left for the
+      // founder — see EXECUTIVE_BACKLOG.md's Near Future tier), but it
+      // catches the single most likely real failure cheaply, before ever
+      // touching the live process.
+      console.log('\n=== Pre-flight syntax check (node -c server.js) ===');
+      const syntaxCheck = checkServerSyntax(REPO_ROOT);
+      if (!syntaxCheck.ok) {
+        throw new Error(`server.js failed a pre-flight syntax check — the existing server was NOT touched: ${syntaxCheck.error}`);
+      }
+      console.log('✔ server.js syntax OK — safe to proceed');
 
       if (existingPid) {
         console.log(`\n=== Stopping existing server (PID ${existingPid}) ===`);

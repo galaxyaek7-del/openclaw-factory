@@ -11,7 +11,10 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const http = require('http');
-const { waitForHealthy } = require('../scripts/deploy_production.js');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const { waitForHealthy, checkServerSyntax } = require('../scripts/deploy_production.js');
 
 test('waitForHealthy: resolves true quickly once the real endpoint returns 200', async () => {
   const server = http.createServer((req, res) => {
@@ -47,4 +50,42 @@ test('waitForHealthy: resolves false when the server responds with a non-200 sta
   } finally {
     server.close();
   }
+});
+
+// Operational-excellence follow-up: deploy_production.js used to kill the
+// existing live server BEFORE checking anything about the new code at
+// all -- a bad commit that doesn't even parse (a real, common failure
+// mode) would previously have been discovered only after the old process
+// was already dead. checkServerSyntax() is the cheap pre-flight gate that
+// now runs before that kill step. Uses a real scratch repo directory
+// (never the real server.js), with both a valid and a genuinely broken
+// file, so this proves the check actually distinguishes them.
+test('checkServerSyntax: a real, valid JS file passes', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test_deploy_syntax_'));
+  try {
+    fs.writeFileSync(path.join(tmpDir, 'server.js'), 'const x = 1 + 1;\nconsole.log(x);\n');
+    const result = checkServerSyntax(tmpDir);
+    assert.equal(result.ok, true);
+    assert.equal(result.error, undefined);
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
+test('checkServerSyntax: a real, genuinely broken JS file fails, with a real error message', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test_deploy_syntax_'));
+  try {
+    fs.writeFileSync(path.join(tmpDir, 'server.js'), 'const x = 1 +\n'); // deliberately incomplete
+    const result = checkServerSyntax(tmpDir);
+    assert.equal(result.ok, false);
+    assert.ok(result.error && result.error.length > 0, 'a real syntax error message must be captured');
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
+test('checkServerSyntax: the real, current server.js passes (sanity check against the actual live file)', () => {
+  const repoRoot = path.join(__dirname, '..');
+  const result = checkServerSyntax(repoRoot);
+  assert.equal(result.ok, true, `the real server.js must currently pass its own pre-flight check: ${result.error}`);
 });
