@@ -168,3 +168,41 @@ test('GET /api/dashboard (pre-existing, unauthenticated) still responds 200', as
   const body = await res.json();
   assert.equal(body.success, true);
 });
+
+// Red-team audit (Phase 10 follow-up) — CRITICAL finding, fixed: server.js
+// used to serve the entire repo root via express.static with no auth,
+// exposing finance_data.json, data/*.jsonl, config/*.json, and every real
+// product PDF under books/ to anyone who could reach the port.
+test('sensitive repo files are no longer served as static content', async () => {
+  for (const p of ['/finance_data.json', '/data/decisions.jsonl', '/config/economics.json']) {
+    const res = await fetch(`${BASE_URL}${p}`, { redirect: 'manual' });
+    // Must fall through to the SPA catch-all (text/html), never the real
+    // file's own content-type — proves the raw file isn't being served.
+    const contentType = res.headers.get('content-type') || '';
+    assert.ok(
+      contentType.includes('text/html'),
+      `${p} must not be served with its real content-type, got: ${contentType}`
+    );
+  }
+});
+
+test('real product PDFs under books/ are no longer served as static content', async () => {
+  const fs = require('fs');
+  const path = require('path');
+  const booksDir = path.join(REPO_ROOT, 'books');
+  const pdfs = fs.existsSync(booksDir) ? fs.readdirSync(booksDir).filter(f => f.endsWith('.pdf')) : [];
+  if (pdfs.length === 0) return; // nothing to check in this environment
+  const res = await fetch(`${BASE_URL}/books/${encodeURIComponent(pdfs[0])}`, { redirect: 'manual' });
+  const contentType = res.headers.get('content-type') || '';
+  assert.ok(!contentType.includes('application/pdf'), `a real product PDF must not be downloadable unauthenticated, got: ${contentType}`);
+});
+
+test('dashboard.html and mission_control_login.html still serve correctly (no regression)', async () => {
+  const dashRes = await fetch(`${BASE_URL}/dashboard.html`);
+  assert.equal(dashRes.status, 200);
+  assert.match(dashRes.headers.get('content-type'), /text\/html/);
+
+  const loginRes = await fetch(`${BASE_URL}/mission_control_login.html`);
+  assert.equal(loginRes.status, 200);
+  assert.match(loginRes.headers.get('content-type'), /text\/html/);
+});

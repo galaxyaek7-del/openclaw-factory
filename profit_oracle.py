@@ -681,9 +681,21 @@ def opportunity_score(niche, tier="tier4", external_signal=None):
             "automation_potential": automation_potential,
             "long_term_value": long_term_value,
         },
+        # Red-team audit (Phase 10 follow-up) — MEDIUM finding, fixed: this
+        # used to compare `weighted` against the literal MIN_OPPORTUNITY_SCORE
+        # constant, but `accepted` is actually decided by `raw >= raw_floor`
+        # (tier-invariant, see ADR-035 above) — a different comparison for
+        # every tier except tier4. For tier1-3 this produced a false
+        # inequality string (e.g. "70/100 < 65" for a niche that was
+        # correctly rejected because 70 < 81.25, not because 70 < 65).
+        # Dormant today (factory_loop.js's only live caller always passes
+        # tier4, where raw_floor's comparison and this one are identical —
+        # see test_fix_is_a_no_op_for_tier4's algebraic proof), but a real,
+        # permanently-recorded (decisions.jsonl) latent bug for any future
+        # tier1-3 caller. Now shows the actual comparison that decided it.
         "reason": (
-            f"accepted: {weighted}/100 >= {MIN_OPPORTUNITY_SCORE} floor (tier={tier})" if accepted
-            else f"rejected: {weighted}/100 < {MIN_OPPORTUNITY_SCORE} floor (tier={tier})"
+            f"accepted: opportunity_score {weighted}/100 (raw {raw:.1f} >= {raw_floor:.1f} floor, tier={tier})" if accepted
+            else f"rejected: opportunity_score {weighted}/100 (raw {raw:.1f} < {raw_floor:.1f} floor, tier={tier})"
         ),
         # ADR-043: risk/confidence were already computed inside
         # score_opportunity() above (ADR-039) but silently discarded here —

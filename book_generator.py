@@ -2614,18 +2614,20 @@ def main():
             print(json.dumps(result, ensure_ascii=False))
             return
 
-        out_name = data.get('output') or 'book.pdf'
-        out_path = os.path.abspath(out_name)
+        books_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'books')
+        os.makedirs(books_dir, exist_ok=True)
+        title = data.get('title', 'The Complete Kitchen')
+        out_path, filename = _resolve_safe_output_path(books_dir, data.get('output'), title)
         n = create_book(
             out_path,
-            data.get('title',    'The Complete Kitchen'),
+            title,
             data.get('subtitle', 'Delicious Recipes for Every Occasion'),
             data.get('type',     'cookbook'),
             data.get('theme',    'orange'),
             data.get('pages',    120),
             data.get('author',   ''),
         )
-        print(json.dumps({"success": True, "pages": n, "file": out_name}))
+        print(json.dumps({"success": True, "pages": n, "file": filename}))
     except Exception as e:
         print(json.dumps({"success": False, "error": str(e), "trace": traceback.format_exc()}))
         sys.exit(1)

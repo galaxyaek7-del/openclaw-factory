@@ -80,18 +80,38 @@ function isPidAlive(pid) {
   }
 }
 
-function acquireLock() {
+// lockFile/exitFn are parameterized (defaulting to the real values) purely
+// so tests can exercise this against an isolated temp file and a fake exit
+// function — never the real, currently-running factory's own lock file.
+function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit) {
+  // Red-team audit (Phase 10 follow-up) — MEDIUM finding, fixed: the old
+  // version did existsSync -> read -> isPidAlive -> writeFileSync as four
+  // separate calls, not one atomic operation, so two instances starting in
+  // the same narrow window could both see "no live lock" and both write —
+  // exactly the failure this guard exists to prevent (see comment above).
+  // { flag: 'wx' } makes the common case (no lock file yet) a single
+  // atomic exclusive-create: the OS itself guarantees only one process can
+  // win it, no check-then-act gap.
   try {
-    if (fs.existsSync(LOCK_FILE)) {
-      const existingPid = parseInt(fs.readFileSync(LOCK_FILE, 'utf8').trim(), 10);
-      if (Number.isFinite(existingPid) && isPidAlive(existingPid)) {
-        console.log(`[factory_loop] another factory_loop running (PID ${existingPid}), exiting`);
-        process.exit(0);
-      }
-      // Stale lock (owning process is gone, or the file is unreadable/
-      // corrupt) — fall through and reclaim it below.
+    fs.writeFileSync(lockFile, String(process.pid), { flag: 'wx' });
+    return;
+  } catch (err) {
+    if (err.code !== 'EEXIST') {
+      console.error('[factory_loop] lockfile check failed, continuing without guard:', err.message);
+      return;
     }
-    fs.writeFileSync(LOCK_FILE, String(process.pid));
+  }
+  // A lock file already exists — check whether its owner is still alive.
+  try {
+    const existingPid = parseInt(fs.readFileSync(lockFile, 'utf8').trim(), 10);
+    if (Number.isFinite(existingPid) && isPidAlive(existingPid)) {
+      console.log(`[factory_loop] another factory_loop running (PID ${existingPid}), exiting`);
+      exitFn(0);
+      return;
+    }
+    // Stale lock (owning process is gone, or the file is unreadable/
+    // corrupt) — reclaim it.
+    fs.writeFileSync(lockFile, String(process.pid));
   } catch (err) {
     // Disk full, permissions, etc. — never let the lockfile itself block
     // startup; worst case this run just isn't guarded against a duplicate.
@@ -99,9 +119,9 @@ function acquireLock() {
   }
 }
 
-function releaseLock() {
+function releaseLock(lockFile = LOCK_FILE) {
   try {
-    fs.unlinkSync(LOCK_FILE);
+    fs.unlinkSync(lockFile);
   } catch (err) {
     // Nothing safe left to do on cleanup — file may already be gone, or may
     // belong to a newer process that reclaimed a stale lock after us.
@@ -1534,4 +1554,5 @@ module.exports = {
   checkNeedsAttention, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
   checkPendingAiCeoDecision,
   checkPendingReview, countPendingReviewDrafts, writeNeedsReview, clearNeedsReview,
+  acquireLock, releaseLock, isPidAlive, LOCK_FILE,
 };

@@ -45,13 +45,29 @@ try {
     console.log('Re-run with --apply --reason "..." to actually restore it.');
   } else {
     const fullTargetPath = path.join(REPO_ROOT, targetPath);
+    // Red-team audit (Phase 10 follow-up) — MEDIUM finding, fixed: this
+    // used to overwrite the target with zero backup of its pre-restore
+    // state. If the wrong <ref> was given, any uncommitted local drift in
+    // that file (plausible for the JSONL files factory_loop.js writes to
+    // continuously) was permanently destroyed with no undo. Now backs up
+    // the current file first, whenever one exists to back up.
+    let backupPath = null;
+    if (fs.existsSync(fullTargetPath)) {
+      backupPath = `${fullTargetPath}.pre-restore-backup`;
+      fs.copyFileSync(fullTargetPath, backupPath);
+    }
     fs.writeFileSync(fullTargetPath, content);
     console.log(`Restored ${targetPath} to its state at ${ref}.`);
+    if (backupPath) {
+      console.log(`Pre-restore backup saved to ${backupPath}`);
+    }
     recordRecoveryAction({
       operator: os.userInfo().username,
       reason,
       affectedSystems: [targetPath],
-      result: `success — restored to ${ref}`,
+      result: backupPath
+        ? `success — restored to ${ref}, pre-restore state backed up to ${path.basename(backupPath)}`
+        : `success — restored to ${ref} (no prior file existed to back up)`,
     });
   }
 } catch (err) {

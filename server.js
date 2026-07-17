@@ -9,6 +9,7 @@ const selfAwareness = require('./self_awareness');
 const dashboardData = require('./lib/dashboard_data');
 const metricsLib = require('./lib/metrics');
 const n8nNotify = require('./lib/n8n_notify');
+const { nextSaleId } = require('./lib/next_sale_id');
 // readLastGenerationRecord is a pure file read (no side effects) — requiring
 // factory_loop.js here never starts its loop or acquires its lockfile: both
 // only happen inside main(), guarded by `if (require.main === module)`
@@ -1425,7 +1426,7 @@ app.post('/finance/add', (req, res) => {
   try {
     const data = loadFin();
     const sale = {
-      id: Date.now(),
+      id: nextSaleId(data.sales),
       platform,
       amount: parsedAmount,
       product: String(product || 'Unknown').slice(0, 200),
@@ -2562,7 +2563,22 @@ function sendIndexHtml(res) {
 }
 
 app.get('/', (req, res) => sendIndexHtml(res));
-app.use(express.static(path.join(__dirname), { index: false }));
+
+// Red-team audit (Phase 10 follow-up) — CRITICAL finding, fixed: this used
+// to be `app.use(express.static(path.join(__dirname), { index: false }))`,
+// which served the ENTIRE repo root unauthenticated — finance_data.json,
+// data/*.jsonl, config/*.json, and every real product PDF under books/
+// were all publicly downloadable with no session. Neither dashboard.html
+// nor mission_control_login.html reference any other local asset (checked:
+// no relative <script>/<link>/fetch() to a sibling file), so only these
+// two named files need bare-path serving — nothing else in the repo does.
+app.get('/dashboard.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+app.get('/mission_control_login.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'mission_control_login.html'));
+});
+
 app.get('/{*path}', (req, res) => {
   sendIndexHtml(res);
 });

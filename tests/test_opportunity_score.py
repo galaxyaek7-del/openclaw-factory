@@ -18,6 +18,11 @@ if str(_FACTORY_ROOT) not in sys.path:
 
 import profit_oracle as po
 
+# Captured before any test patches profit_oracle.score_opportunity, so
+# tests that mock it can still obtain one real, fully-shaped result to
+# safely override individual fields on.
+_REAL_SCORE_OPPORTUNITY = po.score_opportunity
+
 
 class TestOpportunityScoreComponents(unittest.TestCase):
     def test_competition_is_not_inverted(self):
@@ -112,6 +117,58 @@ class TestTierInvariantAcceptanceFloor(unittest.TestCase):
         )
         raw_floor = po.MIN_OPPORTUNITY_SCORE / po.TIER_WEIGHTS["tier4"]
         self.assertGreaterEqual(raw_ceiling, raw_floor)
+
+
+class TestReasonStringReflectsActualDecision(unittest.TestCase):
+    """Red-team audit (Phase 10 follow-up) — MEDIUM finding: the `reason`
+    string used to compare `weighted` against the literal
+    MIN_OPPORTUNITY_SCORE constant (65), but `accepted` is actually decided
+    by `raw >= raw_floor` (81.25, tier-invariant — see ADR-035 above), a
+    different comparison for every tier except tier4. For tier3
+    (tier_weight=1.0, so weighted == raw) this could produce a false
+    inequality like "69.5/100 < 65" for a value that is not, in fact, less
+    than 65 — a real, permanently-recorded (decisions.jsonl) bug for any
+    future tier1-3 caller. Dormant today: factory_loop.js's only live
+    caller always passes tier4 (test_fix_is_a_no_op_for_tier4 above)."""
+
+    @patch("profit_oracle.score_opportunity")
+    def test_tier3_rejection_reason_uses_raw_floor_not_the_flat_constant(self, mock_score):
+        # demand=competition=margin=70 with tier3's fixed
+        # automation_potential=80/long_term_value=60 gives weighted=raw=69.5:
+        # rejected (69.5 < raw_floor 81.25) even though 69.5 is NOT < 65 —
+        # exactly the false-inequality condition the old string produced.
+        # Start from a real result (so every field opportunity_score() reads
+        # is present and realistic) and override only the three scores.
+        real_result = _REAL_SCORE_OPPORTUNITY("مثال اختبار")
+        real_result["scores"] = {"demand": 70, "competition": 70, "margin": 70}
+        mock_score.return_value = real_result
+        result = po.opportunity_score("مثال اختبار", tier="tier3")
+
+        self.assertEqual(result["opportunity_score"], 69.5)
+        self.assertFalse(result["accepted"])
+        # The number this rejection is measured against must be raw_floor
+        # (81.25), never the flat MIN_OPPORTUNITY_SCORE (65) — 69.5 is not
+        # less than 65, so a reason string built from 65 would be a lie.
+        raw_floor = po.MIN_OPPORTUNITY_SCORE / po.TIER_WEIGHTS["tier4"]
+        self.assertIn(f"{raw_floor:.1f}", result["reason"])
+        self.assertNotIn(f"{result['opportunity_score']}/100 < {po.MIN_OPPORTUNITY_SCORE}", result["reason"])
+
+    def test_tier4_reason_string_unchanged_in_substance(self):
+        """No-op check for the only live tier: for tier4, raw == weighted /
+        tier_weight and raw_floor's comparison is algebraically identical
+        to weighted >= MIN_OPPORTUNITY_SCORE, so accepted/rejected must
+        still line up exactly with the flat floor for every real niche."""
+        for niche in ["x", "AI agent", "كتاب", "premium subscription enterprise workflow system"]:
+            result = po.opportunity_score(niche, tier="tier4")
+            self.assertEqual(
+                result["accepted"],
+                result["opportunity_score"] >= po.MIN_OPPORTUNITY_SCORE,
+                niche,
+            )
+            if result["accepted"]:
+                self.assertIn("accepted:", result["reason"])
+            else:
+                self.assertIn("rejected:", result["reason"])
 
 
 class TestExternalSignal(unittest.TestCase):
