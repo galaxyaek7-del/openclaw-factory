@@ -1006,7 +1006,7 @@ app.post('/api/safety/check', async (req, res) => {
 app.post('/generate-book', async (req, res) => {
   // `output` is destructured as `outputName` to avoid colliding with the
   // `output`/`errOut` stdout-accumulator variables used below.
-  const { title, subtitle, type, theme, pages, author, topic, chapters, audience, price, output: outputName } = req.body;
+  const { title, subtitle, type, theme, pages, author, topic, chapters, audience, price, product_type, sections, output: outputName } = req.body;
 
   if (!title) return res.json({ success: false, error: 'Title is required' });
 
@@ -1040,9 +1040,32 @@ app.post('/generate-book', async (req, res) => {
 
     const filename = outputName || (title.replace(/\s+/g, '_').toLowerCase() + '.pdf');
 
-    // With a `topic`, route to the real AI content engine (generate_book());
-    // otherwise keep the original fixed-template path exactly as before.
-    const payload = topic
+    // ADR-071 (mission follow-up, 2026-07-18): with product_type:"techdoc"
+    // (factory_loop.js's briefFromGoldenOpportunity(), a ladder-tagged
+    // Golden Hunter pick, MASTER_CHARTER.md §2), route to
+    // book_generator.generate_product_package() — the technical-docs/
+    // product-package generator — instead of the AI-generated-book path.
+    // `sections` passes through only when the caller supplies its own
+    // (Array.isArray guard so a stray non-array value never reaches
+    // book_generator.py); otherwise generate_product_package() fills its
+    // own default section skeleton. Checked BEFORE the `topic` branch
+    // below so a techdoc request (which also carries a `topic`, for
+    // content context) doesn't fall into the AI-book path instead.
+    const payload = product_type === 'techdoc'
+      ? JSON.stringify({
+          title,
+          subtitle: subtitle || '',
+          product_type: 'techdoc',
+          topic: topic || title,
+          price: price != null ? price : 197,
+          theme: theme || 'blue',
+          author: author || '',
+          output: filename,
+          ...(Array.isArray(sections) ? { sections } : {}),
+        })
+      // With a `topic`, route to the real AI content engine (generate_book());
+      // otherwise keep the original fixed-template path exactly as before.
+      : topic
       ? JSON.stringify({
           title,
           topic,

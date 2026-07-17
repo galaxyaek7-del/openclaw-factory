@@ -400,6 +400,11 @@ async function triggerGenerateBook(brief) {
         chapters: brief.chapters,
         audience: brief.audience,
         price: brief.price,
+        // ADR-071: forwards product_type:"techdoc" through to server.js's
+        // /generate-book when briefFromGoldenOpportunity() built a ladder-
+        // tagged brief — undefined for every other brief (JSON.stringify
+        // drops it), so this is a no-op for every existing caller.
+        ...(brief.product_type ? { product_type: brief.product_type } : {}),
       }),
     }, 150000, 'generate-book');
     const data = await res.json();
@@ -715,6 +720,30 @@ async function notifyGoldenHunterAccepted(niche, opportunityScore) {
 // fails for any reason (never silently use an unchecked, possibly
 // sub-floor, raw price).
 async function briefFromGoldenOpportunity(opportunity, butterOpts = {}) {
+  // ADR-071 (mission follow-up, 2026-07-18): a ladder-tagged opportunity
+  // (Strategic Production Priority Ladder, MASTER_CHARTER.md §2) already
+  // carries its own real, ladder-band price — ladder_price, computed by
+  // profit_oracle.ladder_opportunity_score() via butter_price()'s elite/
+  // premium bands (ADR-066). Using getButterPrice()'s default "book" band
+  // below would silently reprice a $388 AI SaaS opportunity down into
+  // KDP's $30-100 book band. Routes to book_generator.
+  // generate_product_package() (product_type: "techdoc") via server.js's
+  // /generate-book instead of the AI-generated-book path — early return,
+  // the rest of this function (getButterPrice()-based book pricing) is
+  // completely unchanged for every non-ladder opportunity.
+  if (opportunity.ladder && Number.isFinite(opportunity.ladder_price)) {
+    return {
+      title: opportunity.niche,
+      topic: opportunity.niche,
+      audience: 'القارئ العام',
+      price: opportunity.ladder_price,
+      product_type: 'techdoc',
+      _raw_recommended_price: opportunity.ladder_price,
+      _price_source: 'ladder_price',
+      _butter_price_error: null,
+    };
+  }
+
   const rawMatch = /([0-9]+(\.[0-9]+)?)/.exec(opportunity.recommended_price || '');
   const rawPrice = rawMatch ? parseFloat(rawMatch[1]) : null;
 

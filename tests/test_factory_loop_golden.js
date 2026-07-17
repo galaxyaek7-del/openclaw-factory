@@ -200,6 +200,35 @@ async function main() {
     assert.ok(brief._butter_price_error, 'the failure reason must be recorded, not swallowed silently');
   });
 
+  // ── briefFromGoldenOpportunity: ladder-tagged opportunities (ADR-071) ──
+
+  await test('briefFromGoldenOpportunity: a ladder-tagged opportunity uses ladder_price, not getButterPrice()', async () => {
+    const opportunity = {
+      niche: 'AI-powered compliance automation subscription system for accounting firms',
+      profit_score: 69, verdict: 'GOOD',
+      ladder: 'ai_saas', ladder_score: 85.3, ladder_accepted: true, ladder_price: 388,
+    };
+    const brief = await fl.briefFromGoldenOpportunity(opportunity);
+    assert.strictEqual(brief.price, 388);
+    assert.strictEqual(brief.product_type, 'techdoc');
+    assert.strictEqual(brief._price_source, 'ladder_price');
+    assert.strictEqual(brief.chapters, undefined, 'must not carry the AI-book chapters count for a techdoc brief');
+  });
+
+  await test('briefFromGoldenOpportunity: ladder present but ladder_price missing falls through to butter_price path', async () => {
+    const opportunity = opp('نيتش', 70, 'GOOD', '$19');
+    opportunity.ladder = 'ai_saas'; // no ladder_price on this fixture
+    const brief = await fl.briefFromGoldenOpportunity(opportunity);
+    assert.strictEqual(brief.product_type, undefined);
+    assert.ok(brief.price >= 30);
+  });
+
+  await test('briefFromGoldenOpportunity: no ladder field behaves exactly as before (backward compat)', async () => {
+    const brief = await fl.briefFromGoldenOpportunity(opp('نيتش عادي', 65, 'GOOD', '$9'));
+    assert.strictEqual(brief.product_type, undefined);
+    assert.strictEqual(brief.chapters, 8);
+  });
+
   // ── evaluateGoldenOpportunities (freshness + staleness, "now" injected) ──
 
   await test('evaluateGoldenOpportunities: null data -> ok:false, missing_or_unreadable', () => {
