@@ -155,6 +155,31 @@ function logServiceCall(entry) {
   console.log(`[service_layer] ${line}`);
 }
 
+// Phase 10B (Production Hardening): shared timeout guard for every
+// mission_control_api.py subprocess this file spawns. Without this, a
+// genuinely hung subprocess (network stall, an infinite loop) never
+// emits 'close', so runPythonService's promise never settles (an HTTP
+// request hangs forever) and an async action's job never leaves
+// 'running' — which permanently wedges the single-writer guard on that
+// action until the whole server restarts. Kills the process and lets
+// the caller's own 'close'/'error' handling produce a clear timeout
+// error instead of an indefinite hang.
+function killAfterTimeout(childProcess, timeoutMs, onTimeout) {
+  const timer = setTimeout(() => {
+    onTimeout();
+    childProcess.kill();
+  }, timeoutMs);
+  const clear = () => clearTimeout(timer);
+  childProcess.once('close', clear);
+  childProcess.once('error', clear);
+  return clear;
+}
+
+// Fast, local-file-only services (opportunities/production/revenue/
+// automation/decision_history/system_configuration) — generous but
+// bounded; none of these normally take more than a couple of seconds.
+const PYTHON_SERVICE_TIMEOUT_MS = 30000;
+
 // Single shared bridge to mission_control_api.py's CLI dispatcher —
 // replaces the old ad hoc inline spawn/parse block that used to live
 // only in /api/mission-control/:section (Phase 8 Mission Control), so
@@ -165,11 +190,13 @@ function runPythonService(section) {
     const pythonPath = detectPython();
     const scriptPath = path.join(__dirname, 'mission_control_api.py');
     const python = spawn(pythonPath, [scriptPath, section], { cwd: __dirname });
-    let output = '', errOut = '';
+    let output = '', errOut = '', timedOut = false;
+    killAfterTimeout(python, PYTHON_SERVICE_TIMEOUT_MS, () => { timedOut = true; });
     python.stdout.on('data', d => { output += d.toString(); });
     python.stderr.on('data', d => { errOut += d.toString(); });
     python.on('error', reject);
     python.on('close', () => {
+      if (timedOut) return reject(new Error(`${section} timed out after ${PYTHON_SERVICE_TIMEOUT_MS}ms`));
       let parsed;
       try {
         parsed = JSON.parse(output.trim());
@@ -528,13 +555,22 @@ function traceSpan(job, action, span) {
   logServiceCall({ service: 'actions', action, job_id: job.id, event: 'span', span });
 }
 
+// Slow, real-network async actions (rerun-market-analysis, trigger-
+// opportunity-evaluation, run-full-cycle) — observed taking 3-5 minutes
+// against 111 real signals. This is a hang safety net, not a normal-
+// operation limit: 15 minutes is far above any observed real run, just
+// enough to guarantee a stuck subprocess eventually gets killed instead
+// of wedging the single-writer guard on that action forever.
+const PYTHON_ACTION_TIMEOUT_MS = 15 * 60 * 1000;
+
 function runPythonActionAsync(action, section) {
   const job = newActionJob(action);
   const pythonPath = detectPython();
   const scriptPath = path.join(__dirname, 'mission_control_api.py');
   const python = spawn(pythonPath, [scriptPath, section], { cwd: __dirname });
   traceSpan(job, action, 'python_process_spawned');
-  let output = '', errOut = '';
+  let output = '', errOut = '', timedOut = false;
+  killAfterTimeout(python, PYTHON_ACTION_TIMEOUT_MS, () => { timedOut = true; });
   python.stdout.on('data', d => { output += d.toString(); });
   python.stderr.on('data', d => { errOut += d.toString(); });
   const finish = (status, resultOrError) => {
@@ -547,6 +583,7 @@ function runPythonActionAsync(action, section) {
   python.on('error', (err) => finish('failed', err.message));
   python.on('close', () => {
     traceSpan(job, action, 'python_process_exited');
+    if (timedOut) return finish('failed', `timed out after ${PYTHON_ACTION_TIMEOUT_MS}ms`);
     let parsed;
     try {
       parsed = JSON.parse(output.trim());
@@ -574,7 +611,8 @@ function runFullCycleActionAsync(action) {
   const scriptPath = path.join(__dirname, 'mission_control_api.py');
   const python = spawn(pythonPath, [scriptPath, 'full_cycle'], { cwd: __dirname });
   traceSpan(job, action, 'python_process_spawned');
-  let output = '', errOut = '';
+  let output = '', errOut = '', timedOut = false;
+  killAfterTimeout(python, PYTHON_ACTION_TIMEOUT_MS, () => { timedOut = true; });
   python.stdout.on('data', d => { output += d.toString(); });
   python.stderr.on('data', d => { errOut += d.toString(); });
   const finish = (status, resultOrError) => {
@@ -587,6 +625,7 @@ function runFullCycleActionAsync(action) {
   python.on('error', (err) => finish('failed', err.message));
   python.on('close', async () => {
     traceSpan(job, action, 'python_process_exited');
+    if (timedOut) return finish('failed', `timed out after ${PYTHON_ACTION_TIMEOUT_MS}ms`);
     let parsed;
     try {
       parsed = JSON.parse(output.trim());

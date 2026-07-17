@@ -823,12 +823,27 @@ const loaders = {
   },
 };
 
+// Phase 10B (Mission Control Optimization): a rapid double-click on a
+// tab, or a refresh happening at the same moment an action's own
+// completion triggers a reload of the same tab, previously fired two
+// full sets of redundant network requests for the exact same fresh
+// data. This is not a time-based cache (which would risk showing stale
+// health/status data) — it only skips a new load while one for the
+// same tab is already in flight, so real data is never delayed or
+// staled, just never fetched twice at once.
+const _tabLoadsInFlight = new Set();
+
 function loadTab(id) {
+  if (_tabLoadsInFlight.has(id)) return;
   const fn = loaders[id];
-  if (fn) fn().catch(err => {
-    const el = document.getElementById(`${id}Content`);
-    if (el) el.innerHTML = `<p class="muted">تعذَّر التحميل: ${escapeHtml(err.message)}</p>`;
-  });
+  if (!fn) return;
+  _tabLoadsInFlight.add(id);
+  fn()
+    .catch(err => {
+      const el = document.getElementById(`${id}Content`);
+      if (el) el.innerHTML = `<p class="muted">تعذَّر التحميل: ${escapeHtml(err.message)}</p>`;
+    })
+    .finally(() => _tabLoadsInFlight.delete(id));
 }
 
 // ── global search ──
