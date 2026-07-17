@@ -1355,10 +1355,40 @@ app.post('/chat', requireMissionControlAuth, async (req, res) => {
 // logging, and input validation on the write endpoints.
 const FINANCE_FILE = path.join(__dirname, 'finance_data.json');
 const FINANCE_ERROR_LOG = path.join(__dirname, 'finance_errors.log');
-const FINANCE_PLATFORMS = ['KDP', 'Etsy', 'Gumroad'];
+// ADR-065/MASTER_CHARTER.md: Paddle added alongside the existing three
+// platforms (Step 4's paddle_arm.py) — additive, existing KDP/Etsy/Gumroad
+// callers unaffected.
+const FINANCE_PLATFORMS = ['KDP', 'Etsy', 'Gumroad', 'Paddle'];
+
+// Same six ranks as profit_oracle.py's LADDER_RANKS (MASTER_CHARTER.md §2)
+// — duplicated here rather than spawning Python just to read a constant
+// list; both must be kept in sync if the ladder itself ever changes.
+const LADDER_RANKS = ['ai_saas', 'b2b_systems', 'automation_tools', 'reusable_assets', 'educational', 'kdp_books'];
 
 function financeDefault() {
-  return { sales: [], totalKDP: 0, totalEtsy: 0, totalGumroad: 0, totalSales: 0, lastUpdated: null };
+  return {
+    sales: [], totalKDP: 0, totalEtsy: 0, totalGumroad: 0, totalPaddle: 0, totalSales: 0,
+    byLadder: Object.fromEntries(LADDER_RANKS.map(r => [r, 0])),
+    lastUpdated: null,
+  };
+}
+
+// ADR-065 Step 3(c): the "4-layer" finance view this fix implements —
+// (1) per-sale records (data.sales, unchanged), (2) per-platform totals
+// (totalKDP/Etsy/Gumroad/Paddle), (3) per-ladder-rank rollup (byLadder —
+// which Strategic Production Priority Ladder rank each sale's revenue
+// belongs to, MASTER_CHARTER.md §2), (4) one overall total (totalSales).
+// Every sale not tagged with a `ladder` field (every sale recorded before
+// this fix, and any future caller that omits it) rolls up under
+// 'kdp_books' — the honest default for a factory whose only live product
+// today is books, never a silent guess at a different rank.
+function recomputeByLadder(sales) {
+  const byLadder = Object.fromEntries(LADDER_RANKS.map(r => [r, 0]));
+  for (const s of sales) {
+    const rank = LADDER_RANKS.includes(s.ladder) ? s.ladder : 'kdp_books';
+    byLadder[rank] += s.amount;
+  }
+  return byLadder;
 }
 
 function logFinanceError(context, err) {
@@ -1404,18 +1434,28 @@ function loadFin() {
   }
 
   // Defensive shape normalization — tolerates a partially-missing/legacy file.
+  const sales = Array.isArray(parsed.sales) ? parsed.sales : [];
   return {
-    sales: Array.isArray(parsed.sales) ? parsed.sales : [],
+    sales,
     totalKDP: Number.isFinite(parsed.totalKDP) ? parsed.totalKDP : 0,
     totalEtsy: Number.isFinite(parsed.totalEtsy) ? parsed.totalEtsy : 0,
     totalGumroad: Number.isFinite(parsed.totalGumroad) ? parsed.totalGumroad : 0,
+    totalPaddle: Number.isFinite(parsed.totalPaddle) ? parsed.totalPaddle : 0,
     totalSales: Number.isFinite(parsed.totalSales) ? parsed.totalSales : 0,
+    // A legacy file saved before this fix has no byLadder at all — rather
+    // than guess, recompute it once from the real sales it already has, so
+    // a pre-existing finance_data.json self-heals to the new shape exactly
+    // like the corrupt-JSON path above already does for the whole file.
+    byLadder: (parsed.byLadder && typeof parsed.byLadder === 'object')
+      ? { ...Object.fromEntries(LADDER_RANKS.map(r => [r, 0])), ...parsed.byLadder }
+      : recomputeByLadder(sales),
     lastUpdated: parsed.lastUpdated || null,
   };
 }
 
 function saveFin(data) {
-  data.totalSales = (data.totalKDP || 0) + (data.totalEtsy || 0) + (data.totalGumroad || 0);
+  data.totalSales = (data.totalKDP || 0) + (data.totalEtsy || 0) + (data.totalGumroad || 0) + (data.totalPaddle || 0);
+  data.byLadder = recomputeByLadder(data.sales);
   data.lastUpdated = new Date().toISOString();
   // Atomic write: write to a temp file then rename over the target, so a crash
   // mid-write can never leave finance_data.json half-written/corrupt.
@@ -1428,6 +1468,7 @@ function recomputeFinTotals(data) {
   data.totalKDP = data.sales.filter(s => s.platform === 'KDP').reduce((a, s) => a + s.amount, 0);
   data.totalEtsy = data.sales.filter(s => s.platform === 'Etsy').reduce((a, s) => a + s.amount, 0);
   data.totalGumroad = data.sales.filter(s => s.platform === 'Gumroad').reduce((a, s) => a + s.amount, 0);
+  data.totalPaddle = data.sales.filter(s => s.platform === 'Paddle').reduce((a, s) => a + s.amount, 0);
 }
 
 app.get('/finance', (req, res) => {
@@ -1446,7 +1487,7 @@ app.get('/finance', (req, res) => {
 // has no regression risk, only removes the ability for anyone reaching
 // this server to inject fake sales records.
 app.post('/finance/add', requireMissionControlAuth, (req, res) => {
-  const { platform, amount, product, date } = req.body || {};
+  const { platform, amount, product, date, ladder } = req.body || {};
 
   if (!FINANCE_PLATFORMS.includes(platform)) {
     return res.status(400).json({ success: false, error: `platform يجب أن يكون أحد: ${FINANCE_PLATFORMS.join(', ')}` });
@@ -1456,6 +1497,10 @@ app.post('/finance/add', requireMissionControlAuth, (req, res) => {
     return res.status(400).json({ success: false, error: 'amount يجب أن يكون رقماً موجباً' });
   }
   const parsedDate = /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : new Date().toISOString().split('T')[0];
+  // Unknown/omitted ladder rank defaults to 'kdp_books' — same honest-
+  // default rule as recomputeByLadder() above, never a guess at a
+  // different rank.
+  const parsedLadder = LADDER_RANKS.includes(ladder) ? ladder : 'kdp_books';
 
   try {
     const data = loadFin();
@@ -1465,6 +1510,7 @@ app.post('/finance/add', requireMissionControlAuth, (req, res) => {
       amount: parsedAmount,
       product: String(product || 'Unknown').slice(0, 200),
       date: parsedDate,
+      ladder: parsedLadder,
     };
     data.sales.push(sale);
     recomputeFinTotals(data);

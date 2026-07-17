@@ -1,0 +1,85 @@
+{
+  "updatedAt": "2026-07-17T00:00:00.000Z",
+  "createdAt": "2026-07-17T00:00:00.000Z",
+  "id": "TN04telegramNotifyX",
+  "name": "04_Telegram_Notify",
+  "description": "Receives factory_loop.js's notifyGoldenHunterAccepted() POST the moment a real opportunity clears profit_oracle's acceptance gate (ADR-065 Step 3(a)), and forwards it to Telegram as a real message. Not yet imported into the live n8n instance — see n8n_workflows/README.md for the exact manual activation steps (a Telegram bot token is an external credential this factory cannot create for itself).",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "golden-hunter-notify",
+        "httpMethod": "POST",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [-560, 0],
+      "id": "b1c2d3e4-0001-4a11-9e11-000000000001",
+      "name": "Webhook",
+      "webhookId": "b1c2d3e4-0001-4a11-9e11-000000000099"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b1c2d3e4-0002-4a11-9e11-000000000002",
+              "name": "message",
+              "value": "={{ \"\\uD83C\\uDFC6 Golden Hunter accepted a new opportunity\\n\\nNiche: \" + $json.body.niche + \"\\nOpportunity Score: \" + $json.body.opportunity_score + \"/100\\n\" + $json.body.reason }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-384, 0],
+      "id": "b1c2d3e4-0003-4a11-9e11-000000000003",
+      "name": "Build Telegram Message"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.OPENCLAW_TELEGRAM_CHAT_ID }}",
+        "text": "={{ $json.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [-192, 0],
+      "id": "b1c2d3e4-0004-4a11-9e11-000000000004",
+      "name": "Send Telegram Message",
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "OpenClaw Telegram Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Build Telegram Message", "type": "main", "index": 0 }]]
+    },
+    "Build Telegram Message": {
+      "main": [[{ "node": "Send Telegram Message", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "b1c2d3e4-0005-4a11-9e11-000000000005",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "tags": []
+}

@@ -243,6 +243,39 @@ test('POST /finance/add now requires Mission Control auth, and works when authen
   assert.equal(cleanup.status, 200, 'cleanup delete of the test sale must succeed — no trace should remain in real finance_data.json');
 });
 
+// ADR-065 Step 3(c) — finance's "4-layer" rollup: platform totals now
+// include Paddle (paddle_arm.py, Step 4), and every sale rolls up under a
+// Strategic Production Priority Ladder rank (byLadder), defaulting to
+// 'kdp_books' when omitted so pre-existing sales self-heal honestly
+// instead of guessing a different rank.
+test('POST /finance/add accepts Paddle + a ladder rank, and GET /finance rolls both up', async () => {
+  const authed = await fetch(`${BASE_URL}/finance/add`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: cookie },
+    body: JSON.stringify({ platform: 'Paddle', amount: 150, product: 'contract-test-ladder-DELETE-ME', ladder: 'ai_saas' }),
+  });
+  assert.equal(authed.status, 200);
+  const body = await authed.json();
+  assert.equal(body.success, true);
+  assert.equal(body.sale.ladder, 'ai_saas');
+
+  const fin = await (await fetch(`${BASE_URL}/finance`)).json();
+  assert.ok(fin.totalPaddle >= 150);
+  assert.ok(fin.byLadder && fin.byLadder.ai_saas >= 150);
+
+  await fetch(`${BASE_URL}/finance/delete/${body.sale.id}`, { method: 'DELETE', headers: { Cookie: cookie } });
+});
+
+test('POST /finance/add with an unknown ladder value defaults to kdp_books, never rejects', async () => {
+  const authed = await fetch(`${BASE_URL}/finance/add`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: cookie },
+    body: JSON.stringify({ platform: 'KDP', amount: 5, product: 'contract-test-unknown-ladder-DELETE-ME', ladder: 'not-a-real-rank' }),
+  });
+  assert.equal(authed.status, 200);
+  const body = await authed.json();
+  assert.equal(body.sale.ladder, 'kdp_books');
+  await fetch(`${BASE_URL}/finance/delete/${body.sale.id}`, { method: 'DELETE', headers: { Cookie: cookie } });
+});
+
 test('DELETE /finance/delete/:id now requires Mission Control auth', async () => {
   const unauth = await fetch(`${BASE_URL}/finance/delete/123`, { method: 'DELETE' });
   assert.equal(unauth.status, 401);

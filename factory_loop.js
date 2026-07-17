@@ -24,9 +24,18 @@ const fs = require('fs');
 const path = require('path');
 const { spawn, execSync } = require('child_process');
 const selfAwareness = require('./self_awareness');
+const { notifyN8nProductionEvent, buildGoldenHunterNotifyPayload } = require('./lib/n8n_notify');
 
 const FACTORY_DIR = __dirname;
 const DASHBOARD_URL = process.env.DASHBOARD_URL || 'http://localhost:3000';
+// ADR-065 Step 3(a): separate from server.js's N8N_PRODUCTION_WEBHOOK_URL
+// (a different, already-documented payload contract) — unset by default,
+// same fail-safe-if-unconfigured discipline as that one. Points at the
+// prepared n8n_workflows/04_Telegram_Notify.prepared.json workflow once the
+// founder imports/activates it (n8n_workflows/README.md has the exact
+// manual steps — a Telegram bot token is an external credential this
+// factory cannot create for itself).
+const N8N_TELEGRAM_WEBHOOK_URL = process.env.N8N_TELEGRAM_WEBHOOK_URL || null;
 const INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
 
 const LOOP_LOG = path.join(FACTORY_DIR, 'factory_loop.log');
@@ -608,6 +617,25 @@ function getOpportunityScore(niche, { timeoutMs = 15000, scriptPath = path.join(
   });
 }
 
+// ADR-065 Step 3(a): fire-and-forget real notification the moment a real
+// opportunity clears profit_oracle's acceptance gate — reuses
+// lib/n8n_notify.js's generic sender (same one server.js's production
+// pipeline already uses), never a second HTTP implementation. Deliberately
+// never awaited by its caller (huntGolden()) and never throws: a
+// notification is observability, not part of the production decision
+// itself — it must never be able to delay or fail a real tick.
+async function notifyGoldenHunterAccepted(niche, opportunityScore) {
+  try {
+    const payload = buildGoldenHunterNotifyPayload(niche, opportunityScore);
+    return await notifyN8nProductionEvent(payload, {
+      webhookUrl: N8N_TELEGRAM_WEBHOOK_URL,
+      log: (entry) => appendGoldenHunterEvent({ action: 'n8n_notify', niche, ...entry }),
+    });
+  } catch (err) {
+    return { attempted: false, error: err.message };
+  }
+}
+
 // Builds a /generate-book-compatible brief straight from a scored
 // opportunity — bypasses Scout's free-association Groq prompt entirely,
 // since the niche is already real, tested data from profit_oracle.py, not
@@ -707,6 +735,10 @@ async function huntGolden(reachable) {
       opportunity_score: opportunityScore.score, detail: `تخطّي "${top.niche}" — Opportunity Score ${opportunityScore.score}/100 (${opportunityScore.reason})`,
     });
     return { action: 'skipped', detail: rec.detail };
+  }
+
+  if (opportunityScore.ok && opportunityScore.accepted) {
+    notifyGoldenHunterAccepted(top.niche, opportunityScore).catch(() => {});
   }
 
   const brief = await briefFromGoldenOpportunity(top);
@@ -1642,4 +1674,5 @@ module.exports = {
   acquireLock, releaseLock, isPidAlive, LOCK_FILE,
   safeTick,
   sendDesktopNotification,
+  notifyGoldenHunterAccepted,
 };

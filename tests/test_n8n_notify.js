@@ -8,7 +8,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { notifyN8nProductionEvent, buildProductionNotifyPayload } = require('../lib/n8n_notify.js');
+const { notifyN8nProductionEvent, buildProductionNotifyPayload, buildGoldenHunterNotifyPayload } = require('../lib/n8n_notify.js');
 
 function withMockedFetch(impl, fn) {
   const original = global.fetch;
@@ -127,6 +127,17 @@ test('buildProductionNotifyPayload: missing nested fields degrade to null, never
   const payload = buildProductionNotifyPayload(dossier);
   assert.equal(payload.recommended_price, null);
   assert.equal(payload.pre_production_checks_passed, null);
+});
+
+// ADR-065 Step 3(a) — factory_loop.js's Golden Hunter Bridge notify.
+test('buildGoldenHunterNotifyPayload: projects a real opportunity_score() result', () => {
+  const opportunityScore = { score: 85.3, reason: 'accepted: opportunity_score 85.3/100 (raw 106.6 >= 81.2 floor, tier=tier4)' };
+  const payload = buildGoldenHunterNotifyPayload('AI-powered compliance automation subscription system', opportunityScore);
+  assert.equal(payload.event, 'golden_opportunity_accepted');
+  assert.equal(payload.niche, 'AI-powered compliance automation subscription system');
+  assert.equal(payload.opportunity_score, 85.3);
+  assert.equal(payload.reason, opportunityScore.reason);
+  assert.ok(payload.generated_at);
 });
 
 test('payload is sent as the real, unmodified JSON body (no field renaming/dropping)', async () => {

@@ -3,6 +3,15 @@
   "totalKDP": 0,
   "totalEtsy": 0,
   "totalGumroad": 0,
+  "totalPaddle": 0,
   "totalSales": 0,
-  "lastUpdated": "2026-07-17T17:41:02.281Z"
+  "byLadder": {
+    "ai_saas": 0,
+    "b2b_systems": 0,
+    "automation_tools": 0,
+    "reusable_assets": 0,
+    "educational": 0,
+    "kdp_books": 0
+  },
+  "lastUpdated": "2026-07-17T21:22:27.772Z"
 }

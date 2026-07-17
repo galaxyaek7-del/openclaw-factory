@@ -127,6 +127,48 @@ def _generate_candidates(limit=10):
     return unique[:limit]
 
 
+# ADR-065 Step 3(b): closes the "Sensing Engine output -> market_hunter
+# input" link. Before this fix, market_hunter.py only ever WROTE to
+# OPPORTUNITIES.md (_append_to_opportunities() below) — the n8n Sensing
+# Engine workflow (Openclaw_Sensing_Engine, server.js's /api/trends ->
+# quality_gate()) already wrote real signals into that same shared file,
+# but nothing ever read them back in as hunt candidates; profit_oracle.
+# run_oracle() scored them later, separately, but market_hunter's own hunt
+# never used them to generate/prioritize candidates. This reads them as a
+# real, additional candidate source, distinguished from market_hunter's own
+# prior output by the "market_hunter:" reason prefix _append_to_opportunities()
+# always writes — anything else in the file came from somewhere else
+# (Sensing Engine today; honestly labeled as "external", not assumed to be
+# any one specific source).
+def _read_sensing_engine_niches(limit=10, opps_file=None):
+    opps_file = opps_file or OPPORTUNITIES_FILE
+    if not os.path.exists(opps_file):
+        return []
+    line_re = re.compile(r'^-\s*\[(.+?)\]\s*(.+?)\s*—\s*(.+)$')
+    niches = []
+    seen = set()
+    try:
+        with open(opps_file, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+    except Exception:
+        return []
+    for line in reversed(lines):  # most recent signals first
+        m = line_re.match(line.strip())
+        if not m:
+            continue
+        niche, reason = m.group(2).strip(), m.group(3).strip()
+        if reason.startswith('market_hunter:'):
+            continue  # our own prior output, not a new external signal
+        niche_lower = niche.lower()
+        if not niche or niche_lower in seen:
+            continue
+        seen.add(niche_lower)
+        niches.append(niche)
+        if len(niches) >= limit:
+            break
+    return niches
+
+
 def _read_rejected_niches():
     """Reads factory_loop.js's circuit-breaker memory (REJECTED_NICHES.md) —
     a plain markdown file, parsed directly rather than requiring a Node
@@ -207,7 +249,11 @@ def hunt_market(limit=10, write_opportunities=True):
     OPPORTUNITIES.md → re-run profit_oracle so GOLDEN_OPPORTUNITIES.md stays
     the single, consistent authority (this module never writes that file
     itself — see module docstring)."""
-    candidates = _generate_candidates(limit)
+    seed_candidates = _generate_candidates(limit)
+    # Real link (ADR-065 Step 3(b)): Sensing Engine signals already sitting
+    # in OPPORTUNITIES.md, not previously read back in as hunt input.
+    sensing_candidates = [n for n in _read_sensing_engine_niches(limit) if n not in seed_candidates]
+    candidates = seed_candidates + sensing_candidates
     scanned = []
     skipped = []
     golden_catch = []
@@ -215,7 +261,11 @@ def hunt_market(limit=10, write_opportunities=True):
     for niche in candidates:
         should_skip, reason = _check_knowledge_brain(niche)
         brain_hits = _search_brain(niche.split()[0]) if niche.split() else []
-        entry = {"niche": niche, "brain_matches": len(brain_hits)}
+        entry = {
+            "niche": niche,
+            "brain_matches": len(brain_hits),
+            "source": "sensing_engine" if niche in sensing_candidates else "seed",
+        }
 
         if should_skip:
             entry["skip_reason"] = reason
@@ -265,6 +315,7 @@ def hunt_market(limit=10, write_opportunities=True):
         "scanned_count": len(scanned),
         "skipped_count": len(skipped),
         "golden_count": len(golden_catch),
+        "sensing_engine_linked_count": len(sensing_candidates),
         "scanned": scanned,
         "golden_catch": golden_catch,
     }

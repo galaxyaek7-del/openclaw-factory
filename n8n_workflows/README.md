@@ -53,3 +53,22 @@ A full re-audit of every real workflow found the wiring already correct, with on
 4. Restart `server.js` so it picks up the new env var.
 
 Until all four steps are done, `start-production-pipeline` continues to work exactly as before (the notify call safely no-ops) — nothing about existing behavior changes by this file merely existing on disk.
+
+## `04_Telegram_Notify.prepared.json` — new, ADR-065 Step 3(a), not yet imported
+
+The mission's "nervous system" step: `factory_loop.js`'s Golden Hunter Bridge now fires `notifyGoldenHunterAccepted()` (reusing `lib/n8n_notify.js`'s generic sender, same one `03_Production_Notify` uses) the moment a real opportunity clears `profit_oracle.py`'s acceptance gate — a plain `POST {event, niche, opportunity_score, reason, generated_at}` to `N8N_TELEGRAM_WEBHOOK_URL` (a new, separate env var from `N8N_PRODUCTION_WEBHOOK_URL` — different payload contract, different workflow). Unset by default; a real Golden Hunter tick must never fail or block on this.
+
+This workflow is the receiving side: `Webhook` → `Set` (builds the message text) → `Telegram` node (sends it). **Cannot be fully activated without the founder** — a Telegram bot token is an external credential (standing execution-authority boundary item #5: "access to external secrets or credentials"), not something this factory can create or hold for itself.
+
+**Exact manual steps to get a real Telegram message landing:**
+
+1. In Telegram, message `@BotFather` → `/newbot` → follow the prompts → copy the bot token it gives you.
+2. Message your new bot once (anything), then visit `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates` in a browser to find your numeric `chat.id` in the JSON response — that's `OPENCLAW_TELEGRAM_CHAT_ID`.
+3. Log into `http://localhost:5678` → **Credentials** → **New** → **Telegram API** → paste the bot token → save. Note the credential's real id.
+4. Import `04_Telegram_Notify.prepared.json` (UI's **Import from File**, or the same CLI path `ADR-045` used against a stopped instance) → open the **Send Telegram Message** node → attach the credential you just created (replaces the placeholder `REPLACE_WITH_YOUR_TELEGRAM_CREDENTIAL_ID`).
+5. In n8n's **Settings → Environment Variables** (or your OS environment for the n8n process), set `OPENCLAW_TELEGRAM_CHAT_ID` to the chat id from step 2.
+6. Toggle the workflow **Active**.
+7. In this repo's `.env`, set `N8N_TELEGRAM_WEBHOOK_URL=http://localhost:5678/webhook/golden-hunter-notify`.
+8. Restart `factory_loop.js` so it picks up the new env var.
+
+Once all 8 steps are done, the next real Golden Hunter tick that accepts an opportunity sends a real Telegram message — no code changes needed after that. Until then, `notifyGoldenHunterAccepted()` safely no-ops (logged as `n8n_notify`/`skipped` in `data/golden_hunter_events.jsonl`), exactly like `03_Production_Notify` does today.
