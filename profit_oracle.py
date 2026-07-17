@@ -709,6 +709,115 @@ def opportunity_score(niche, tier="tier4", external_signal=None):
     }
 
 
+# ── LADDER OPPORTUNITY SCORE (ADR-065, MASTER_CHARTER.md §2) ──
+# A second, additive composite gate for the Strategic Production Priority
+# Ladder pivot (2026-07-17) — never modifies opportunity_score() above or
+# any of its existing callers/tests. factory_loop.js's Golden Hunter Bridge
+# keeps calling opportunity_score() exactly as before; this is the gate a
+# ladder-aware caller (market_hunter.py's retooled seed categories, Step 4
+# of the same mission) is meant to call instead, once a niche is tagged
+# with which of the six ladder ranks it belongs to.
+#
+# Recurring revenue and reusability are now the two highest-weighted
+# factors (mission instruction), reusing score_opportunity()'s real demand/
+# competition/margin components UNCHANGED, the same "reuse before
+# inventing" discipline as opportunity_score() itself.
+
+LADDER_RANKS = ["ai_saas", "b2b_systems", "automation_tools", "reusable_assets", "educational", "kdp_books"]
+
+# Fixed, documented per-rank constants — same honesty discipline as
+# AUTOMATION_POTENTIAL_BY_TIER/LONG_TERM_VALUE_BY_TIER above: no per-niche
+# recurring-revenue/reusability signal exists anywhere in this factory yet,
+# so these are category-level estimates grounded in MASTER_CHARTER.md §2's
+# own stated reasoning for the ladder order, not per-niche guesses.
+RECURRING_REVENUE_BY_LADDER = {
+    "ai_saas": 100, "b2b_systems": 85, "automation_tools": 55,
+    "reusable_assets": 20, "educational": 20, "kdp_books": 10,
+}
+REUSABILITY_BY_LADDER = {
+    "ai_saas": 95, "b2b_systems": 85, "automation_tools": 80,
+    "reusable_assets": 90, "educational": 45, "kdp_books": 20,
+}
+
+# Which existing butter_price() band each ladder rank is priced against —
+# reuses the bands that already exist rather than inventing new pricing
+# math: SaaS/B2B command elite pricing ($97-497, ADR-027), automation
+# tools/reusable assets sit in the premium band ($50-300, ADR-024),
+# educational/KDP stay in the original book band ($30-100).
+LADDER_PRICE_BAND = {
+    "ai_saas": "elite", "b2b_systems": "elite",
+    "automation_tools": "premium", "reusable_assets": "premium",
+    "educational": "book", "kdp_books": "book",
+}
+
+# Mission-specified hard floor (Step 2): reject anything priced below $97,
+# independent of how well it scores otherwise — a separate gate from
+# LADDER_MIN_SCORE below, not folded into the weighted formula.
+MIN_LADDER_PROFIT_FLOOR = 97
+
+LADDER_MIN_SCORE = 65  # same bar as MIN_OPPORTUNITY_SCORE, applied to this new formula
+
+
+def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None):
+    """Ladder-aware composite score (ADR-065). Reuses score_opportunity()'s
+    real demand/competition/margin components unchanged and adds two new
+    ladder-derived factors, weighted highest per the mission's instruction
+    ('recurring revenue + reusability weighted highest'). Also enforces a
+    hard $97 profit floor via the ladder's real butter_price() band —
+    independent of the weighted score, so a well-scoring but cheaply-priced
+    niche still can't pass. Unknown ladder values fall back to "kdp_books"
+    (the strictest band), never silently accepted."""
+    ladder = ladder if ladder in RECURRING_REVENUE_BY_LADDER else "kdp_books"
+    result = score_opportunity(niche, external_signal=external_signal)
+    scores = result["scores"]
+
+    market_demand = scores["demand"]
+    competition_favorability = scores["competition"]
+    profit_potential = scores["margin"]
+    recurring_revenue_potential = RECURRING_REVENUE_BY_LADDER[ladder]
+    reusability = REUSABILITY_BY_LADDER[ladder]
+
+    raw = (
+        0.15 * market_demand +
+        0.15 * competition_favorability +
+        0.15 * profit_potential +
+        0.25 * recurring_revenue_potential +
+        0.30 * reusability
+    )
+    ladder_score = round(min(100.0, raw), 1)
+
+    price_band = LADDER_PRICE_BAND[ladder]
+    price = butter_price(niche, product_type=price_band)
+    clears_profit_floor = price >= MIN_LADDER_PROFIT_FLOOR
+    clears_score_floor = ladder_score >= LADDER_MIN_SCORE
+    accepted = clears_score_floor and clears_profit_floor
+
+    if not clears_profit_floor:
+        reason = f"rejected: price ${price} below ${MIN_LADDER_PROFIT_FLOOR} profit floor (ladder={ladder})"
+    elif not clears_score_floor:
+        reason = f"rejected: ladder_score {ladder_score}/100 < {LADDER_MIN_SCORE} (ladder={ladder})"
+    else:
+        reason = f"accepted: ladder_score {ladder_score}/100 >= {LADDER_MIN_SCORE}, price ${price} >= ${MIN_LADDER_PROFIT_FLOOR} (ladder={ladder})"
+
+    return {
+        "niche": niche,
+        "ladder": ladder,
+        "ladder_score": ladder_score,
+        "price": price,
+        "accepted": accepted,
+        "reason": reason,
+        "components": {
+            "market_demand": market_demand,
+            "competition_favorability": competition_favorability,
+            "profit_potential": profit_potential,
+            "recurring_revenue_potential": recurring_revenue_potential,
+            "reusability": reusability,
+        },
+        "risk": result["risk"],
+        "confidence": result["confidence"],
+    }
+
+
 def butter_price(niche, product_type="book"):
     """Smart Publishing + Butter Principle (OPENCLAW_OS_CONSTITUTION.md /
     CONSTITUTION.md §16): given a niche, returns a defensible price — never
@@ -921,6 +1030,24 @@ def main():
         try:
             data = json.loads(sys.stdin.read())
             result = opportunity_score(data.get('niche', ''), tier=data.get('tier', 'tier4'), external_signal=data.get('external_signal'))
+            print(json.dumps({"success": True, **result}, ensure_ascii=False))
+        except Exception as e:
+            print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))
+            sys.exit(1)
+        return
+
+    # ADR-065: purely additive invocation surface for the EXISTING
+    # ladder_opportunity_score() — same spawn pattern as --opportunity-score,
+    # for market_hunter.py/factory_loop.js to call once a niche is tagged
+    # with a Strategic Production Priority Ladder rank (Step 4).
+    if '--ladder-score' in sys.argv:
+        try:
+            data = json.loads(sys.stdin.read())
+            result = ladder_opportunity_score(
+                data.get('niche', ''),
+                ladder=data.get('ladder', 'kdp_books'),
+                external_signal=data.get('external_signal'),
+            )
             print(json.dumps({"success": True, **result}, ensure_ascii=False))
         except Exception as e:
             print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))
