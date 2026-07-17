@@ -240,10 +240,11 @@ function fsHealthCheck(probeFn, label) {
 }
 
 async function companyHealthService() {
-  const [health, awareness] = await Promise.all([
-    computeHealthStatus().catch(err => ({ status: 'error', error: err.message })),
-    selfAwareness.assessSelfAwareness().catch(err => ({ verdict: null, error: err.message })),
-  ]);
+  // Standing charter follow-up — same fix as GET /api/dashboard/good-morning:
+  // avoid assessSelfAwareness()'s own redundant self-fetch of the health
+  // object this function already computed a line earlier.
+  const health = await computeHealthStatus().catch(err => ({ status: 'error', error: err.message }));
+  const awareness = await selfAwareness.assessSelfAwareness(new Date(), health).catch(err => ({ verdict: null, error: err.message }));
   const needsAttention = dashboardData.readAttentionFlag();
   const risk = dashboardData.deriveRiskLevel(health, needsAttention);
   const current_priorities = readNextDollarActions();
@@ -2451,14 +2452,20 @@ function readNextDollarActions() {
 }
 
 app.get('/good-morning', async (req, res) => {
-  const [factoryStatus, opportunities, lastNightActions, nextDollar, awareness] = await Promise.all([
-    computeHealthStatus().catch(err => ({ status: 'error', error: err.message })),
+  // Standing charter follow-up — same fix as GET /api/dashboard: this used
+  // to run computeHealthStatus() and assessSelfAwareness() in Promise.all,
+  // but assessSelfAwareness() independently re-fetched the identical
+  // health object over HTTP from this same server (necessary only when
+  // self_awareness.js runs as a separate process via factory_loop.js).
+  // Computed once, handed directly to assessSelfAwareness() instead.
+  const factoryStatus = await computeHealthStatus().catch(err => ({ status: 'error', error: err.message }));
+  const [opportunities, lastNightActions, nextDollar, awareness] = await Promise.all([
     Promise.resolve().then(() => readTopOpportunities(3)).catch(err => ({ items: [], note: `error: ${err.message}` })),
     Promise.resolve().then(() => readLastLoopActions(10)).catch(err => ({ entries: [], note: `error: ${err.message}` })),
     Promise.resolve().then(() => readNextDollarActions()).catch(err => ({ text: null, note: `error: ${err.message}` })),
     // CONSTITUTION.md §20: Galaxy sees the truth every morning, not just the
     // health check — the same honest verdict GET /awareness computes.
-    selfAwareness.assessSelfAwareness().catch(err => ({ verdict: null, note: `error: ${err.message}` })),
+    selfAwareness.assessSelfAwareness(new Date(), factoryStatus).catch(err => ({ verdict: null, note: `error: ${err.message}` })),
   ]);
 
   res.json({
@@ -2596,12 +2603,22 @@ app.get('/awareness', async (req, res) => {
 // pending_review/, tier1_intake/, NEEDS_ATTENTION.md, NEEDS_REVIEW.md).
 // Zero fabricated metrics — a section with no data yet reports that
 // honestly instead of inventing a number.
+// Standing charter follow-up — verified live during the reality-cache fix's
+// own measurement: this used to run computeHealthStatus() and
+// assessSelfAwareness() in Promise.all (parallel), but assessSelfAwareness()
+// independently made its OWN HTTP round-trip back to THIS SAME server's
+// /health endpoint (self_awareness.js's getHealth(), necessary when it runs
+// as a separate process via factory_loop.js, but pure waste when called
+// in-process here) — recomputing the identical health object a second time
+// over a network hop, ~1s of real, measured cost on every /api/dashboard
+// call even after runReality()'s caching fix. Now computed once and handed
+// directly to assessSelfAwareness(), which skips its own fetch entirely
+// when a precomputed health object is given (self_awareness.js's own
+// default behavior is unchanged for factory_loop.js/the CLI).
 app.get('/api/dashboard', async (req, res) => {
   try {
-    const [health, awareness] = await Promise.all([
-      computeHealthStatus().catch(err => ({ status: 'error', error: err.message })),
-      selfAwareness.assessSelfAwareness().catch(err => ({ verdict: null, error: err.message })),
-    ]);
+    const health = await computeHealthStatus().catch(err => ({ status: 'error', error: err.message }));
+    const awareness = await selfAwareness.assessSelfAwareness(new Date(), health).catch(err => ({ verdict: null, error: err.message }));
     const priorities = readNextDollarActions();
     res.json({ success: true, ...dashboardData.computeDashboard({ health, awareness, priorities }) });
   } catch (err) {

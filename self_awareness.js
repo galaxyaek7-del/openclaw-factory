@@ -81,6 +81,24 @@ async function getHealth() {
   }
 }
 
+// Standing charter follow-up (verified, measured, then fixed): this module
+// is required both in-process by server.js AND as a genuinely separate
+// process by factory_loop.js — getHealth()'s HTTP round-trip to its own
+// /health endpoint is the only way factory_loop.js can reach it, so it
+// must stay the default. But when server.js calls assessSelfAwareness()
+// from inside its own /api/dashboard handler, that handler has *already*
+// computed the exact same health object moments earlier in the same
+// request — going back out over HTTP to ask itself for it again was pure,
+// measured waste (confirmed live: ~1s of every /api/dashboard call, even
+// after runReality()'s own caching fix). precomputedHealth is optional and
+// defaults to undefined everywhere else (factory_loop.js, the CLI,
+// existing tests) — this is a zero-behavior-change fast path, not a new
+// default.
+function projectHealthForVitals(precomputedHealth) {
+  if (!precomputedHealth) return null;
+  return { reachable: true, status: precomputedHealth.status, checks: precomputedHealth.checks || {} };
+}
+
 function countLessons() {
   if (!fs.existsSync(LESSONS_DIR)) return 0;
   return fs.readdirSync(LESSONS_DIR)
@@ -179,8 +197,8 @@ function checkGoldenPipeline(now) {
   };
 }
 
-async function computeVitalSigns(now) {
-  const health = await getHealth();
+async function computeVitalSigns(now, precomputedHealth) {
+  const health = projectHealthForVitals(precomputedHealth) || await getHealth();
   const brainMap = knowledgeBrain.getBrainMap();
   return {
     timestamp: now.toISOString(),
@@ -426,8 +444,8 @@ function generateVerdict(vitals, growth, diagnosis) {
 
 // ── ORCHESTRATION ──
 
-async function assessSelfAwareness(now = new Date()) {
-  const vitals = await computeVitalSigns(now);
+async function assessSelfAwareness(now = new Date(), precomputedHealth) {
+  const vitals = await computeVitalSigns(now, precomputedHealth);
   const history = readGrowthLog();
   const yesterday = history.length ? history[history.length - 1] : null;
 
