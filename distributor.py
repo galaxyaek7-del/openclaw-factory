@@ -45,6 +45,13 @@ import channels.gumroad_arm  # noqa: F401,E402
 import channels.payhip_arm  # noqa: F401,E402
 import channels.etsy_arm  # noqa: F401,E402
 
+# ADR-065: self-registers "paddle" — dry-run only today, no real
+# PADDLE_API_KEY. Preferred arm for the new AI SaaS/B2B ladder ranks
+# (MASTER_CHARTER.md §2), alongside (not replacing) gumroad/payhip/etsy —
+# see channels/gumroad_arm.py's own docstring for why that one is archived
+# rather than removed.
+import channels.paddle_arm  # noqa: F401,E402
+
 
 def distribute(product, arm_names=None, dry_run=True, ledger_path=None):
     """Fan `product` out to arms and record every attempt in the ledger.

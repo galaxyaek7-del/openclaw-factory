@@ -10,14 +10,15 @@ Brain first, always — never re-propose a niche this factory already knows
 is rejected or a duplicate.
 
 Honesty note (same discipline as profit_oracle.py/inspectors.py): there is
-no live Etsy/KDP/Google-Trends scraping or API integration anywhere in this
-factory. "Scanning digital marketplaces" here means combining a curated,
-real set of common profitable digital-product categories (planners,
-templates, SVG cut files, trackers — genuine, publicly-known KDP/Etsy
-niche archetypes) with the same seasonal calendar and keyword vocabulary
-profit_oracle.py already uses — never a fabricated live data pull. Every
-candidate is then scored by profit_oracle itself (the single, tested
-scoring authority in this factory), not a second, duplicate scorer.
+no live market-research API integration anywhere in this factory.
+"Scanning the market" here means combining a curated, real set of
+professional business-problem categories (ADR-065's Strategic Production
+Priority Ladder pivot, 2026-07-17 — retooled away from the original KDP/
+Etsy consumer archetypes) with real Sensing Engine signals already flowing
+into OPPORTUNITIES.md — never a fabricated live data pull. Every candidate
+is then scored by profit_oracle's ladder_opportunity_score() (ADR-066), the
+single, tested, ladder-aware scoring authority in this factory, not a
+second, duplicate scorer.
 """
 
 import os
@@ -48,83 +49,40 @@ REJECTED_NICHES_FILE = os.path.join(FACTORY_DIR, 'REJECTED_NICHES.md')  # factor
 BRAIN_DIR = os.path.join(FACTORY_DIR, 'OpenClaw_Brain')
 HUNT_LOG = os.path.join(FACTORY_DIR, 'market_hunter_runs.log')
 
-MIN_BUTTER_VERDICT_SCORE = 60  # verdict != SKIP — same threshold used everywhere else in this factory
-
-# Curated, real digital-product category archetypes (KDP/Etsy-style) — the
-# closest honest substitute for "scanning marketplaces" without a live API.
-# Reuses profit_oracle's own keyword vocabulary rather than redefining it,
-# so a category's tier (premium/mid/recurring) is judged consistently
-# everywhere in this factory, not just here.
+# Retooled 2026-07-17 (ADR-065/ADR-068, MASTER_CHARTER.md §2, mission
+# Step 4): every category now targets a real professional business problem
+# (the "professional business problems" the mission asked for) instead of a
+# KDP/Etsy consumer archetype, and is tagged with the Strategic Production
+# Priority Ladder rank it belongs to (profit_oracle.LADDER_RANKS) so
+# hunt_market() can score it with the new ladder_opportunity_score() gate
+# (ADR-066) instead of the old flat score_opportunity() one. One KDP entry
+# is kept, tagged "kdp_books" — books remain a real, supported (if
+# deprioritized) track per MASTER_CHARTER.md §3 ("last/supporting, not shut
+# down"), not deleted.
 #
-# English (EU/US) per ADR-020 — corrected 2026-07-15 (STRUCTURAL_DIAGNOSIS.md
-# disease #4): this list was still all-Arabic 3+ days after ADR-020 retargeted
-# every new product at the English EU/US market, meaning every live Golden
-# Hunter tick since 2026-07-12 was scanning the wrong market entirely. The
-# 1:1-translated Arabic originals are preserved in git history (this same
-# file, pre-2026-07-15) rather than deleted, per ADR-020's own "no deletion of
-# out-of-scope Arabic assets" policy — a future Arabic-market decision should
-# not have to start from zero.
+# The prior KDP/Etsy-flavored English list (planners/SVG templates/
+# trackers) and its 1:1-translated Arabic predecessor are both preserved in
+# git history (this same file, pre-2026-07-17) rather than deleted — same
+# "no deletion of out-of-scope assets" policy ADR-020 already established.
 SEED_CATEGORIES = [
-    "printable monthly planner",
-    "cuttable SVG design templates",
-    "personal budget tracker",
-    "daily habit tracker",
-    "wedding planning journal",
-    "professional resume templates",
-    "monthly coaching subscription system",
-    "professional presentation templates",
-    "weekly meal planner",
-    "personal project management system",
+    {"niche": "AI-powered compliance automation subscription system for accounting firms", "ladder": "ai_saas"},
+    {"niche": "AI customer support automation platform for e-commerce businesses", "ladder": "ai_saas"},
+    {"niche": "workflow automation system for logistics companies", "ladder": "b2b_systems"},
+    {"niche": "inventory management system for wholesale distributors", "ladder": "b2b_systems"},
+    {"niche": "automated invoice processing toolkit for small businesses", "ladder": "automation_tools"},
+    {"niche": "automated social media scheduling tool for marketing agencies", "ladder": "automation_tools"},
+    {"niche": "reusable API integration template bundle for SaaS developers", "ladder": "reusable_assets"},
+    {"niche": "white-label client onboarding template system for B2B startups", "ladder": "reusable_assets"},
+    {"niche": "compliance training course for financial advisors", "ladder": "educational"},
+    {"niche": "printable monthly planner", "ladder": "kdp_books"},
 ]
-
-# Audience/qualifier phrases combined with a seed category to produce more
-# specific candidates — reuses profit_oracle's SUBNICHE_QUALIFIERS list
-# directly (see _generate_candidates()) rather than a second copy.
 
 
 def _generate_candidates(limit=10):
-    """Combines curated seed categories with profit_oracle's own seasonal
-    calendar and subniche-qualifier vocabulary to produce candidate niche
-    strings — a real, deterministic process, not a live market scan."""
-    candidates = []
-    now = datetime.now()
-
-    seasonal_hits = []
-    if PROFIT_ORACLE is not None:
-        for kw, months in PROFIT_ORACLE.SEASONAL_KEYWORDS.items():
-            if now.month in months:
-                seasonal_hits.append(kw)
-        # SEASONAL_KEYWORDS has both Arabic and English entries for the same
-        # season (e.g. "العودة للمدارس" / "back to school") — every seed
-        # category here is English (ADR-020), so prefer an English match to
-        # avoid producing a mixed-language niche phrase.
-        english_hits = [kw for kw in seasonal_hits if not re.search(r'[؀-ۿ]', kw)]
-        if english_hits:
-            seasonal_hits = english_hits
-
-    # SUBNICHE_QUALIFIERS mixes English ("for beginners") and Arabic
-    # ("للمبتدئين") entries — every seed category here is English (ADR-020),
-    # so keep only the English qualifiers to avoid a mixed-language phrase.
-    qualifiers = [q for q in PROFIT_ORACLE.SUBNICHE_QUALIFIERS if not re.search(r'[؀-ۿ]', q)] if PROFIT_ORACLE is not None else []
-
-    for category in SEED_CATEGORIES:
-        # Plain category on its own.
-        candidates.append(category)
-        # Seasonal variant, if anything is actually in-season right now.
-        for kw in seasonal_hits[:1]:
-            candidates.append(f"{category} {kw}")
-        # One subniche-qualified variant per category for audience specificity.
-        if qualifiers:
-            candidates.append(f"{category} {qualifiers[hash(category) % len(qualifiers)]}")
-
-    # De-duplicate while preserving order, then cap to `limit`.
-    seen = set()
-    unique = []
-    for c in candidates:
-        if c not in seen:
-            seen.add(c)
-            unique.append(c)
-    return unique[:limit]
+    """Returns up to `limit` (niche, ladder) tuples from SEED_CATEGORIES —
+    a real, deterministic process, not a live market scan (see module
+    docstring)."""
+    return [(c["niche"], c["ladder"]) for c in SEED_CATEGORIES[:limit]]
 
 
 # ADR-065 Step 3(b): closes the "Sensing Engine output -> market_hunter
@@ -244,27 +202,35 @@ def _check_knowledge_brain(niche):
 
 
 def hunt_market(limit=10, write_opportunities=True):
-    """The main hunt: generate candidates → consult the Brain FIRST → score
-    survivors via profit_oracle → keep butter-tier only → append to
-    OPPORTUNITIES.md → re-run profit_oracle so GOLDEN_OPPORTUNITIES.md stays
-    the single, consistent authority (this module never writes that file
-    itself — see module docstring)."""
-    seed_candidates = _generate_candidates(limit)
+    """The main hunt: generate (niche, ladder) candidates → consult the
+    Brain FIRST → score survivors via profit_oracle.ladder_opportunity_score()
+    (ADR-066, the Strategic Production Priority Ladder gate) → keep accepted
+    only → append to OPPORTUNITIES.md → re-run profit_oracle so
+    GOLDEN_OPPORTUNITIES.md stays the single, consistent authority for the
+    older, still-live score_opportunity() gate (this module never writes
+    that file itself — see module docstring)."""
+    seed_candidates = _generate_candidates(limit)  # [(niche, ladder), ...]
+    seed_niches = [n for n, _ladder in seed_candidates]
     # Real link (ADR-065 Step 3(b)): Sensing Engine signals already sitting
-    # in OPPORTUNITIES.md, not previously read back in as hunt input.
-    sensing_candidates = [n for n in _read_sensing_engine_niches(limit) if n not in seed_candidates]
+    # in OPPORTUNITIES.md, not previously read back in as hunt input. These
+    # carry no known ladder tag yet, so they default to "kdp_books" — the
+    # same honest fallback profit_oracle.py/server.js's /finance use
+    # elsewhere for untagged revenue, never a guessed different rank.
+    sensing_niches = [n for n in _read_sensing_engine_niches(limit) if n not in seed_niches]
+    sensing_candidates = [(n, "kdp_books") for n in sensing_niches]
     candidates = seed_candidates + sensing_candidates
     scanned = []
     skipped = []
     golden_catch = []
 
-    for niche in candidates:
+    for niche, ladder in candidates:
         should_skip, reason = _check_knowledge_brain(niche)
         brain_hits = _search_brain(niche.split()[0]) if niche.split() else []
         entry = {
             "niche": niche,
+            "ladder": ladder,
             "brain_matches": len(brain_hits),
-            "source": "sensing_engine" if niche in sensing_candidates else "seed",
+            "source": "sensing_engine" if niche in sensing_niches else "seed",
         }
 
         if should_skip:
@@ -280,7 +246,7 @@ def hunt_market(limit=10, write_opportunities=True):
             continue
 
         try:
-            scored = PROFIT_ORACLE.score_opportunity(niche)
+            scored = PROFIT_ORACLE.ladder_opportunity_score(niche, ladder=ladder)
         except Exception as e:
             entry["error"] = str(e)
             skipped.append(entry)
@@ -288,18 +254,17 @@ def hunt_market(limit=10, write_opportunities=True):
             continue
 
         entry.update({
-            "profit_score": scored["profit_score"],
-            "verdict": scored["verdict"],
-            "butter_rating": scored["butter_rating"],
+            "ladder_score": scored["ladder_score"],
+            "accepted": scored["accepted"],
+            "price": scored["price"],
         })
         scanned.append(entry)
 
-        if scored["profit_score"] >= MIN_BUTTER_VERDICT_SCORE:
-            butter = PROFIT_ORACLE.butter_price(niche)
-            entry["recommended_butter_price"] = f"${butter}"
+        if scored["accepted"]:
+            entry["recommended_price"] = f"${scored['price']}"
             golden_catch.append(entry)
         else:
-            entry["skip_reason"] = f"profit_score {scored['profit_score']} < {MIN_BUTTER_VERDICT_SCORE} (SKIP)"
+            entry["skip_reason"] = scored["reason"]
             skipped.append(entry)
 
     if write_opportunities and golden_catch:
@@ -331,7 +296,10 @@ def _append_to_opportunities(golden_catch):
     lines = []
     for entry in golden_catch:
         ts = datetime.now().isoformat()
-        lines.append(f"- [{ts}] {entry['niche']} — market_hunter: {entry['verdict']} ({entry['profit_score']}/100)\n")
+        lines.append(
+            f"- [{ts}] {entry['niche']} — market_hunter: ACCEPTED ladder={entry['ladder']} "
+            f"({entry['ladder_score']}/100, ${entry['price']})\n"
+        )
     try:
         with open(OPPORTUNITIES_FILE, 'a', encoding='utf-8') as f:
             f.writelines(lines)

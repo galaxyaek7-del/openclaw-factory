@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-16T05:55:10.710651",
-  "count": 103,
+  "generated_at": "2026-07-17T23:31:27.861153",
+  "count": 118,
   "results": [
     {
       "niche": "مخطط شهري قابل للطباعة",
@@ -1134,6 +1134,122 @@
       }
     },
     {
+      "niche": "printable monthly planner",
+      "profit_score": 71,
+      "verdict": "GOOD",
+      "recommended_price": "$19",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: جيد (تخصص متوازن، 3 كلمات) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $19 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $17.10 من $19 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: مرتفعة [تقدير كلمات مفتاحية — لا بيانات مبيعات حقيقية بعد]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 63,
+        "competition": 70,
+        "margin": 78,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
+      "niche": "printable monthly planner back to school",
+      "profit_score": 71,
+      "verdict": "GOOD",
+      "recommended_price": "$19",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "موسمية: يطابق 'back to school' (في موسمه الآن)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 6 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $19 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $17.10 من $19 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: مرتفعة [تقدير كلمات مفتاحية — لا بيانات مبيعات حقيقية بعد]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 64,
+        "competition": 70,
+        "margin": 78,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
+      "niche": "cuttable SVG design templates back to school",
+      "profit_score": 71,
+      "verdict": "GOOD",
+      "recommended_price": "$39",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "موسمية: يطابق 'back to school' (في موسمه الآن)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 7 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 64,
+        "competition": 70,
+        "margin": 75,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
+      "niche": "cuttable SVG design templates",
+      "profit_score": 70,
+      "verdict": "GOOD",
+      "recommended_price": "$39",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: جيد (تخصص متوازن، 4 كلمات) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 63,
+        "competition": 70,
+        "margin": 75,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
       "niche": "cuttable SVG design templates",
       "profit_score": 70,
       "verdict": "GOOD",
@@ -1726,6 +1842,93 @@
         "demand": 52,
         "competition": 80,
         "margin": 75,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
+      "niche": "printable monthly planner for teens",
+      "profit_score": 69,
+      "verdict": "GOOD",
+      "recommended_price": "$19",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 5 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ تخصيص جمهور واضح — فجوة/underserved sub-niche محتملة؛ السعر المقترح: $19 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $17.10 من $19 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: مرتفعة [تقدير كلمات مفتاحية — لا بيانات مبيعات حقيقية بعد]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 80,
+        "margin": 78,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
+      "niche": "cuttable SVG design templates for teens",
+      "profit_score": 69,
+      "verdict": "GOOD",
+      "recommended_price": "$39",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 6 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ تخصيص جمهور واضح — فجوة/underserved sub-niche محتملة؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 80,
+        "margin": 75,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
+      "niche": "AI-powered compliance automation subscription system for accounting firms",
+      "profit_score": 69,
+      "verdict": "GOOD",
+      "recommended_price": "$39",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 8 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: مرتفعة [تقدير كلمات مفتاحية — لا بيانات مبيعات حقيقية بعد]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 70,
+        "margin": 90,
         "execution": 90
       },
       "risk": {
@@ -2642,6 +2845,93 @@
       }
     },
     {
+      "niche": "personal budget tracker",
+      "profit_score": 68,
+      "verdict": "GOOD",
+      "recommended_price": "$19",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: جيد (تخصص متوازن، 3 كلمات) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $19 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $17.10 من $19 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 63,
+        "competition": 70,
+        "margin": 62,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
+      "niche": "personal budget tracker back to school",
+      "profit_score": 68,
+      "verdict": "GOOD",
+      "recommended_price": "$19",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "موسمية: يطابق 'back to school' (في موسمه الآن)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 6 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $19 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $17.10 من $19 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 64,
+        "competition": 70,
+        "margin": 62,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
+      "niche": "daily habit tracker",
+      "profit_score": 68,
+      "verdict": "GOOD",
+      "recommended_price": "$19",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: جيد (تخصص متوازن، 3 كلمات) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $19 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $17.10 من $19 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 63,
+        "competition": 70,
+        "margin": 62,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
       "niche": "قوالب تصميم SVG قابلة للقص",
       "profit_score": 66,
       "verdict": "GOOD",
@@ -2973,6 +3263,151 @@
         "demand": 52,
         "competition": 80,
         "margin": 62,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
+      "niche": "personal budget tracker for teens",
+      "profit_score": 66,
+      "verdict": "GOOD",
+      "recommended_price": "$19",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 5 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ تخصيص جمهور واضح — فجوة/underserved sub-niche محتملة؛ السعر المقترح: $19 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $17.10 من $19 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 80,
+        "margin": 62,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
+      "niche": "workflow automation system for logistics companies",
+      "profit_score": 66,
+      "verdict": "GOOD",
+      "recommended_price": "$39",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 6 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 70,
+        "margin": 75,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
+      "niche": "inventory management system for wholesale distributors",
+      "profit_score": 66,
+      "verdict": "GOOD",
+      "recommended_price": "$39",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 6 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 70,
+        "margin": 75,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
+      "niche": "automated invoice processing toolkit for small businesses",
+      "profit_score": 66,
+      "verdict": "GOOD",
+      "recommended_price": "$39",
+      "recommended_platform": "KDP (رفع يدوي) + Etsy (رفع يدوي) + Gumroad (آلي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 7 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $39 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $35.10 من $39 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 70,
+        "margin": 75,
+        "execution": 90
+      },
+      "risk": {
+        "score": 90,
+        "level": "low",
+        "notes": [
+          "safety_filter.py: لا مخاطر محتوى معروفة",
+          "لا رفض سابق في REJECTED_NICHES.md"
+        ]
+      },
+      "confidence": {
+        "score": 30,
+        "level": "منخفضة",
+        "note": "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
+      }
+    },
+    {
+      "niche": "AI customer support automation platform for e-commerce businesses",
+      "profit_score": 61,
+      "verdict": "GOOD",
+      "recommended_price": "$9",
+      "recommended_platform": "KDP (رفع يدوي)",
+      "reasoning": "لا كلمة موسمية — يُفترض نيتش دائم (evergreen)؛ تقدير حجم البحث: محدود (نيتش طويل جداً، 8 كلمة) [تقدير]؛ زخم الترند: لا يوجد اتصال حقيقي بـ Google Trends بعد — قيمة محايدة افتراضية؛ لا بحث Amazon محفوظ ولا عدد نتائج حقيقي آخر لهذا النيتش — تقدير من درجة التخصص [تقدير]؛ السعر المقترح: $9 [تقدير حسب فئة الكلمات المفتاحية]؛ هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): $8.10 من $9 — لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً؛ إمكانية اشتراك متكرر: منخفضة [تقدير كلمات مفتاحية]؛ يناسب book_engine (المحرك الوحيد الفعّال حالياً) كدليل/كتاب رقمي",
+      "butter_rating": "🧈🧈🧈",
+      "needs_galaxy_approval": false,
+      "scores": {
+        "demand": 52,
+        "competition": 70,
+        "margin": 52,
         "execution": 90
       },
       "risk": {

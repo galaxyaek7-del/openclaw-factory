@@ -1,5 +1,26 @@
 """OpenClaw Factory — Gumroad arm (OCTOPUS_ARCHITECTURE.md ADR-2).
 
+ARCHIVED (ADR-065/MASTER_CHARTER.md §2, 2026-07-17): the Strategic
+Production Priority Ladder pivot ranks Gumroad's one-time-download model
+below the new AI SaaS/B2B tracks (see channels/paddle_arm.py, built the
+same day for that ladder) — Gumroad was never activated live in this
+factory (GUMROAD_ACCESS_TOKEN was always the missing piece, per
+CLOSING_NOTE.md 2026-07-15), and no new engineering effort defaults to it
+going forward.
+
+"Archived" here means deprioritized and frozen, NOT deleted or physically
+relocated: 7+ real, already-tested modules (distributor.py,
+production_factory/dossier.py, multi_source_intelligence/connectors/
+gumroad.py, strategic_intelligence/channel_value.py, executive_intelligence/
+inactivity.py + revenue_distance.py, scripts/poll_sales.py, and their
+tests) import this exact module path for self-registration/sales-polling.
+Moving the file would require updating every one of those import sites in
+the same change with real risk of missing one and silently breaking working
+code — exactly the "ceremony/risk ahead of evidence" this factory's own
+governance warns against (STRUCTURAL_DIAGNOSIS.md). Kept fully functional
+and registered so existing sales-polling/legacy-book-distribution keeps
+working unchanged; simply no longer the arm a new product defaults to.
+
 A thin adapter that implements BaseArm on top of the existing
 gumroad_publisher.py. gumroad_publisher.py is not modified — every real
 Gumroad API call still goes through create_product()/load_token() exactly

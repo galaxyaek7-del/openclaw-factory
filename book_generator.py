@@ -2464,6 +2464,12 @@ def generate_printable(title, ptype, price, subtitle="", pages=15, theme="blue",
 def _economics_platform_for(product_type):
     if product_type == "elite":
         return "gumroad_elite"
+    if product_type == "techdoc":
+        # ADR-065/MASTER_CHARTER.md §2: technical-docs/product-package
+        # output is priced for the AI SaaS/B2B ladder ranks, the same
+        # $97-497 elite band (ADR-027) profit_oracle.py's LADDER_PRICE_BAND
+        # already prices those ranks against — never KDP's $6 floor.
+        return "gumroad_elite"
     if product_type == "premium":
         return "gumroad_premium"
     if product_type == "printable":
@@ -2553,6 +2559,73 @@ def generate_book_from_content(title, subtitle, chapters, price, theme="blue",
     return result
 
 
+# ── PRODUCT PACKAGE / TECHNICAL DOCS (ADR-065, mission Step 4) ──
+# Generalizes book_generator.py toward the new Strategic Production
+# Priority Ladder's higher tracks (AI SaaS/B2B/automation tools/reusable
+# assets, MASTER_CHARTER.md §2) — a real, sellable technical-docs/product-
+# package PDF (API reference, setup guide, feature reference, FAQ) using the
+# exact same create_ai_book() + Dual Inspection + Factory Memory pipeline
+# every other product already goes through. Wraps
+# generate_book_from_content() (unmodified) rather than duplicating its
+# pipeline — same "wrap, don't rewrite" principle every other product-type
+# addition in this file already follows.
+DEFAULT_TECHDOC_SECTIONS = [
+    "Overview",
+    "Getting Started",
+    "Feature Reference",
+    "Setup & Configuration",
+    "FAQ & Troubleshooting",
+    "Support & Next Steps",
+]
+
+
+def generate_product_package(title, subtitle="", topic="", price=197.0, theme="blue",
+                              author="OpenClaw Press", output=None, sections=None):
+    """Technical-docs/product-package generator (ADR-065 Step 4). Builds a
+    real PDF from a standard technical-documentation section skeleton
+    (Overview/Getting Started/Feature Reference/Setup/FAQ/Support) unless
+    the caller supplies its own `sections` — either a list of plain section
+    title strings (this function fills an honest, clearly-labeled
+    placeholder for each) or already-complete {"title", "content"} dicts
+    (used verbatim, same contract as generate_book_from_content()'s own
+    `chapters` parameter).
+
+    Always priced/inspected as product_type="techdoc" (_economics_platform_for()
+    routes this to "gumroad_elite", the $97-497 band the Strategic
+    Production Priority Ladder's AI SaaS/B2B ranks are priced against, see
+    profit_oracle.py's LADDER_PRICE_BAND) — never silently evaluated
+    against KDP's $6 floor.
+
+    Honesty note: no Groq/AI call happens in this function (same as
+    generate_book_from_content()) — placeholder section content is clearly
+    labeled as such; a real product needs its actual content written (by a
+    human, Claude, or a future dedicated content-generation call) before
+    this placeholder text ever ships to a real customer."""
+    title = str(title or '').strip()
+    if not title:
+        raise ValueError("العنوان (title) مطلوب")
+    topic = topic or title
+
+    if sections is None:
+        sections = DEFAULT_TECHDOC_SECTIONS
+
+    chapters = []
+    for s in sections:
+        if isinstance(s, dict):
+            chapters.append({"title": s.get("title", "Untitled Section"), "content": s.get("content", "")})
+        else:
+            chapters.append({
+                "title": str(s),
+                "content": f"[Placeholder — {s} content for '{topic}' not yet written. "
+                           f"Replace before real publication.]",
+            })
+
+    return generate_book_from_content(
+        title=title, subtitle=subtitle, chapters=chapters, price=price,
+        theme=theme, author=author, output=output, product_type="techdoc",
+    )
+
+
 def main():
     if '--quality-gate' in sys.argv:
         # Lightweight hook so other processes (server.js's /api/trends) can
@@ -2574,6 +2647,28 @@ def main():
         return
     try:
         data = json.loads(sys.stdin.read())
+
+        # ADR-065 Step 4: a techdoc/product-package request with no
+        # `chapters` supplied auto-fills the standard technical-docs
+        # section skeleton (generate_product_package()) instead of falling
+        # through to the legacy create_cookbook() default below. A caller
+        # that DOES supply its own `chapters` alongside product_type=
+        # "techdoc" still reaches the existing branch just below unchanged
+        # (generate_book_from_content() already threads product_type
+        # through) — this only covers the "no chapters given yet" case.
+        if data.get('product_type') == 'techdoc' and not isinstance(data.get('chapters'), list):
+            result = generate_product_package(
+                title=data.get('title', 'Untitled'),
+                subtitle=data.get('subtitle', ''),
+                topic=data.get('topic', ''),
+                price=data.get('price', 197.0),
+                theme=data.get('theme', 'blue'),
+                author=data.get('author', ''),
+                output=data.get('output'),
+                sections=data.get('sections'),
+            )
+            print(json.dumps(result, ensure_ascii=False))
+            return
 
         if isinstance(data.get('chapters'), list):
             # Dispatch on KEY PRESENCE (a list, even empty), not truthiness —
