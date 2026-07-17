@@ -12,31 +12,50 @@ const fs = require('fs');
 const path = require('path');
 
 const REPO_ROOT = path.join(__dirname, '..');
-const apply = process.argv.includes('--apply');
 
-const LOG_ROTATE_THRESHOLD_BYTES = 10 * 1024 * 1024; // 10MB — generous; logs/service_layer.log is 0.05MB today (see ops_daily_checks.js), far below this
+const LOG_ROTATE_THRESHOLD_BYTES = 10 * 1024 * 1024; // 10MB — generous; every log rotated here is far below this today
 const REPORTS_RETENTION_COUNT = 10; // keep the 10 most recent reports/*.md; this session's own reports/ dir is far below this today
 
-console.log(`=== OpenClaw Maintenance (${apply ? 'APPLYING CHANGES' : 'DRY RUN — pass --apply to actually act'}) ===\n`);
-
-function rotateLogIfNeeded() {
-  const logPath = path.join(REPO_ROOT, 'logs', 'service_layer.log');
-  if (!fs.existsSync(logPath)) return console.log('✔ logs/service_layer.log does not exist yet — nothing to rotate');
-  const sizeBytes = fs.statSync(logPath).size;
-  if (sizeBytes < LOG_ROTATE_THRESHOLD_BYTES) {
-    return console.log(`✔ logs/service_layer.log is ${(sizeBytes / 1024).toFixed(1)}KB — below the ${LOG_ROTATE_THRESHOLD_BYTES / 1024 / 1024}MB rotation threshold, no action needed`);
+// Standing-charter continuous-improvement follow-up (verified via the
+// zero-assumption production audit, Section C): this used to rotate only
+// logs/service_layer.log. factory_loop.log and inspections.log are real,
+// unbounded, growing root-level logs (measured: 535KB/386KB after ~56h of
+// continuous operation, ~230KB/day for factory_loop.log alone) that this
+// script never covered — a real long-horizon risk for a system meant to
+// run "for years with minimal human intervention." Generalized to a
+// single parameterized function so every log this factory writes shares
+// one rotation implementation, not a second copy per log file.
+function rotateLogIfNeeded(logPath, archivePrefix, thresholdBytes = LOG_ROTATE_THRESHOLD_BYTES, apply = false) {
+  const relPath = path.relative(REPO_ROOT, logPath);
+  if (!fs.existsSync(logPath)) {
+    console.log(`✔ ${relPath} does not exist yet — nothing to rotate`);
+    return { rotated: false, reason: 'missing' };
   }
-  const archiveName = `service_layer.${new Date().toISOString().replace(/[:.]/g, '-')}.log`;
-  const archivePath = path.join(REPO_ROOT, 'logs', archiveName);
-  console.log(`${apply ? 'Rotating' : 'Would rotate'} logs/service_layer.log (${(sizeBytes / 1024 / 1024).toFixed(2)}MB) -> logs/${archiveName}`);
+  const sizeBytes = fs.statSync(logPath).size;
+  if (sizeBytes < thresholdBytes) {
+    console.log(`✔ ${relPath} is ${(sizeBytes / 1024).toFixed(1)}KB — below the ${thresholdBytes / 1024 / 1024}MB rotation threshold, no action needed`);
+    return { rotated: false, reason: 'below_threshold', sizeBytes };
+  }
+  const archiveName = `${archivePrefix}.${new Date().toISOString().replace(/[:.]/g, '-')}.log`;
+  const archivePath = path.join(path.dirname(logPath), archiveName);
+  console.log(`${apply ? 'Rotating' : 'Would rotate'} ${relPath} (${(sizeBytes / 1024 / 1024).toFixed(2)}MB) -> ${path.relative(REPO_ROOT, archivePath)}`);
   if (apply) {
     fs.renameSync(logPath, archivePath);
     fs.writeFileSync(logPath, '');
     console.log('✔ rotated');
   }
+  return { rotated: apply, reason: 'over_threshold', sizeBytes, archivePath };
 }
 
-function cleanupOldReports() {
+function rotateAllKnownLogs(apply = false) {
+  return [
+    rotateLogIfNeeded(path.join(REPO_ROOT, 'logs', 'service_layer.log'), 'service_layer', LOG_ROTATE_THRESHOLD_BYTES, apply),
+    rotateLogIfNeeded(path.join(REPO_ROOT, 'factory_loop.log'), 'factory_loop', LOG_ROTATE_THRESHOLD_BYTES, apply),
+    rotateLogIfNeeded(path.join(REPO_ROOT, 'inspections.log'), 'inspections', LOG_ROTATE_THRESHOLD_BYTES, apply),
+  ];
+}
+
+function cleanupOldReports(apply = false) {
   const reportsDir = path.join(REPO_ROOT, 'reports');
   if (!fs.existsSync(reportsDir)) return console.log('✔ reports/ does not exist — nothing to clean up');
   const files = fs.readdirSync(reportsDir)
@@ -54,10 +73,15 @@ function cleanupOldReports() {
   }
 }
 
-rotateLogIfNeeded();
-console.log('');
-cleanupOldReports();
+module.exports = { rotateLogIfNeeded, rotateAllKnownLogs, cleanupOldReports };
 
-if (!apply) {
-  console.log('\nDry run only — nothing was changed. Re-run with --apply to actually perform the actions above.');
+if (require.main === module) {
+  const apply = process.argv.includes('--apply');
+  console.log(`=== OpenClaw Maintenance (${apply ? 'APPLYING CHANGES' : 'DRY RUN — pass --apply to actually act'}) ===\n`);
+  rotateAllKnownLogs(apply);
+  console.log('');
+  cleanupOldReports(apply);
+  if (!apply) {
+    console.log('\nDry run only — nothing was changed. Re-run with --apply to actually perform the actions above.');
+  }
 }
