@@ -67,48 +67,70 @@ test('successful POST -> attempted true, success true, logs succeeded with statu
 });
 
 test('non-2xx response -> attempted true, success false, logs failed with status', async () => {
-  await withMockedFetch(
-    async () => ({ ok: false, status: 500 }),
-    async () => {
-      const logs = [];
-      const result = await notifyN8nProductionEvent({ event: 'x' }, { webhookUrl: 'http://x', log: (e) => logs.push(e) });
-      assert.deepEqual(result, { attempted: true, success: false, status: 500 });
-      assert.equal(logs[0].event, 'failed');
-      assert.equal(logs[0].status, 500);
-    }
-  );
+  // Production Activation Phase audit (2026-07-19): a real failure here
+  // enqueues a retry (lib/n8n_notify.js's own enqueueRetry() call) --
+  // found live, this test was writing synthetic "telegram_notify:x"
+  // entries into the REAL data/factory_state.json on every run because
+  // no statePath override was passed, unlike the retry-specific tests
+  // further down this same file. Cleaned up the real file; isolated here
+  // so it can never recur.
+  const statePath = tempStatePath();
+  try {
+    await withMockedFetch(
+      async () => ({ ok: false, status: 500 }),
+      async () => {
+        const logs = [];
+        const result = await notifyN8nProductionEvent({ event: 'x' }, { webhookUrl: 'http://x', statePath, log: (e) => logs.push(e) });
+        assert.deepEqual(result, { attempted: true, success: false, status: 500 });
+        assert.equal(logs[0].event, 'failed');
+        assert.equal(logs[0].status, 500);
+      }
+    );
+  } finally {
+    if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
+  }
 });
 
 test('network error (unreachable n8n) -> never throws, reports success false with the real error message', async () => {
-  await withMockedFetch(
-    async () => { throw new Error('ECONNREFUSED'); },
-    async () => {
-      const logs = [];
-      const result = await notifyN8nProductionEvent({ event: 'x' }, { webhookUrl: 'http://x', log: (e) => logs.push(e) });
-      assert.equal(result.attempted, true);
-      assert.equal(result.success, false);
-      assert.equal(result.error, 'ECONNREFUSED');
-      assert.equal(logs[0].event, 'error');
-    }
-  );
+  const statePath = tempStatePath();
+  try {
+    await withMockedFetch(
+      async () => { throw new Error('ECONNREFUSED'); },
+      async () => {
+        const logs = [];
+        const result = await notifyN8nProductionEvent({ event: 'x' }, { webhookUrl: 'http://x', statePath, log: (e) => logs.push(e) });
+        assert.equal(result.attempted, true);
+        assert.equal(result.success, false);
+        assert.equal(result.error, 'ECONNREFUSED');
+        assert.equal(logs[0].event, 'error');
+      }
+    );
+  } finally {
+    if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
+  }
 });
 
 test('timeout aborts the request and is reported as a non-throwing failure', async () => {
-  await withMockedFetch(
-    (url, opts) => new Promise((resolve, reject) => {
-      opts.signal.addEventListener('abort', () => reject(new Error('The operation was aborted')));
-    }),
-    async () => {
-      const logs = [];
-      const result = await notifyN8nProductionEvent(
-        { event: 'x' },
-        { webhookUrl: 'http://x', timeoutMs: 20, log: (e) => logs.push(e) }
-      );
-      assert.equal(result.attempted, true);
-      assert.equal(result.success, false);
-      assert.ok(result.error);
-    }
-  );
+  const statePath = tempStatePath();
+  try {
+    await withMockedFetch(
+      (url, opts) => new Promise((resolve, reject) => {
+        opts.signal.addEventListener('abort', () => reject(new Error('The operation was aborted')));
+      }),
+      async () => {
+        const logs = [];
+        const result = await notifyN8nProductionEvent(
+          { event: 'x' },
+          { webhookUrl: 'http://x', timeoutMs: 20, statePath, log: (e) => logs.push(e) }
+        );
+        assert.equal(result.attempted, true);
+        assert.equal(result.success, false);
+        assert.ok(result.error);
+      }
+    );
+  } finally {
+    if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
+  }
 });
 
 test('buildProductionNotifyPayload: projects the real production_factory dossier fields server.js relies on', () => {

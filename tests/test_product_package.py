@@ -165,13 +165,28 @@ class TestGenerateProductPackage(unittest.TestCase):
         self.assertTrue(result["success"])
 
     def test_groq_failure_falls_back_honestly_never_crashes(self):
-        with patch.object(bg, "ai_generate_techdoc_content", side_effect=RuntimeError("Groq unavailable")):
-            result = self._track(bg.generate_product_package(
-                title="Test Fallback Package",
-                sections=["Overview"],
-                output="test_product_package_fallback.pdf",
-            ))
-        self.assertTrue(result["success"], "a Groq failure must degrade to the honest fallback, never crash generation")
+        # Production Activation Phase audit (2026-07-19): generate_product_package()'s
+        # own except block calls factory_state.enqueue_retry("groq_generation", e)
+        # with no path override (book_generator.py exposes none) -- found live,
+        # this test was writing a synthetic "groq_generation" entry into the
+        # REAL data/factory_state.json on every run, which Mission Control's
+        # /recovery view then reported as a real pending retry. Isolated here
+        # via the same DEFAULT_STATE_PATH patch technique used elsewhere.
+        import factory_state
+        import tempfile
+        tmp_state = tempfile.mktemp(suffix=".json")
+        try:
+            with patch.object(bg, "ai_generate_techdoc_content", side_effect=RuntimeError("Groq unavailable")), \
+                 patch.object(factory_state, "DEFAULT_STATE_PATH", Path(tmp_state)):
+                result = self._track(bg.generate_product_package(
+                    title="Test Fallback Package",
+                    sections=["Overview"],
+                    output="test_product_package_fallback.pdf",
+                ))
+            self.assertTrue(result["success"], "a Groq failure must degrade to the honest fallback, never crash generation")
+        finally:
+            if os.path.exists(tmp_state):
+                os.remove(tmp_state)
 
     def test_dict_sections_are_used_verbatim_never_overwritten(self):
         captured = {}
