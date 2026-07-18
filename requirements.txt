@@ -4,3 +4,10 @@
 reportlab==5.0.0
 Pillow==12.2.0
 pypdf==6.14.2
+# Real, unguarded top-level dependency of channels/gumroad_publisher.py and
+# channels/paddle_publisher.py (both `import requests` with no try/except) —
+# found missing from this file during the 2026-07-18 architecture review;
+# never caught locally because CI has never actually run on GitHub's own
+# infrastructure yet (a separate, already-known gap), so a clean `pip
+# install -r requirements.txt` environment was never actually exercised.
+requests==2.34.2

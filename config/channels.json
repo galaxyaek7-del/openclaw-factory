@@ -53,6 +53,18 @@
       "fee_percent": 6.5,
       "fee_flat_usd": 0.20,
       "notes": "Human upload required. API closed."
+    },
+    {
+      "id": "paddle",
+      "name": "Paddle",
+      "type": "digital_download",
+      "automation": "api",
+      "api_available": true,
+      "api_docs": "https://developer.paddle.com",
+      "supports_pdf": true,
+      "supports_arabic": true,
+      "royalty_model": "flat",
+      "notes": "Added ADR-065/074. Live account approved 2026-07-18: product/price creation confirmed working; checkout/transaction creation blocked by Paddle's own account-onboarding gate (transaction_checkout_not_enabled), not a code issue. Approved tax_category confirmed live: 'standard'."
     }
   ]
 }

@@ -203,3 +203,18 @@ graph TD
 **Safe to reduce without further design work (recommended, not yet done):** M4 (a cheap notification hook when `NEEDS_ATTENTION.md`/`NEEDS_REVIEW.md` changes — e.g., a desktop notification or a log entry a human is more likely to see) — genuinely low-risk, real value, no design ambiguity.
 
 **Requires a founder decision before touching (correctly not done unilaterally):** M1, M3, the single-machine/single-account architecture (M9 — explicitly protected by `CLAUDE.md`'s own instructions).
+
+---
+
+## Update 2026-07-18 — Strategic Ladder Pivot: C1, C2, M2, M4 all materially changed
+
+The founder fired `ADR-034`'s trigger the day after this document was written (`MASTER_CHARTER.md`, `ADR-065`) — a full pivot to a Strategic Production Priority Ladder (AI SaaS > B2B > Automation Tools > Reusable Assets > Educational > KDP last). Real, verified changes since:
+
+- **C1 (Market Intelligence):** `market_hunter.py`'s `SEED_CATEGORIES` retooled (`ADR-068`) from KDP/Etsy consumer archetypes to real professional B2B/SaaS problems, each tagged with a ladder rank.
+- **C2 (Decision Gate — the live one):** **no longer 0% acceptance.** New `profit_oracle.ladder_opportunity_score()` (`ADR-066`), wired into `factory_loop.js`'s automatic tick (`ADR-070`), has accepted 5 real opportunities. **C2b's own risk — two inconsistent decision paths — is now sharper, not resolved:** `decision_engine`/`orchestrator` (Mission Control's Decision Queue) was not updated alongside the live tick and still runs the old gate. See `ENGINEERING_ASSESSMENT_20260718.md` for the full finding (its Critical Issue C1) — the single highest-priority item from this update.
+- **M2 (distribution credential):** partially resolved. A real, approved, **live** Paddle account exists — product and price creation confirmed working against the real API (`ADR-074`). The remaining blocker is a distinct Paddle account-onboarding gate (checkout/transaction creation disabled pending onboarding completion), not a missing credential.
+- **M4 (proactive founder notification):** **resolved for the "opportunity accepted" case.** Real Telegram messages (Arabic) now fire automatically on real accepted opportunities, verified through the actual n8n workflow end-to-end (`ADR-072`/`073`). "Product ready" / "sale made" / "errors" notification types are still not wired to Telegram — a real, disclosed, narrower remaining gap than M4's original framing.
+
+New finding this update, not in the original capability set: **6 of 13 intelligence/orchestration-layer subsystems built under `ADR-048`–`064`** (`executive_intelligence`, `multi_source_intelligence`, `strategic_intelligence`, `production_evidence`, `real_market_evidence`, and what's only reachable through them) **have no path from any automatic entry point** — real, tested, non-duplicated code, reachable only via manual Mission Control actions or each other. See `ENGINEERING_ASSESSMENT_20260718.md` Critical Issue C5.
+
+Full current picture, priorities, and execution order: `OpenClaw_Brain/00_Governance/ENGINEERING_ASSESSMENT_20260718.md`.

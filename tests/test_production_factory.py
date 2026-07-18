@@ -86,14 +86,18 @@ class TestProductTypeCapability(unittest.TestCase):
 
 class TestPublishingChecklist(unittest.TestCase):
     def setUp(self):
-        # Other test files (test_base_arm.py, test_sales_poll.py) call
-        # channels.registry.clear() as part of their own isolation and
-        # don't restore it -- since the registry is global, mutable,
-        # module-level state shared across the whole test process, this
-        # re-registers the 3 real arms explicitly so this test never
-        # depends on test discovery order. registry.register() is
-        # idempotent by design (its own docstring: "re-registering the
-        # same name is a deliberate override, not an error").
+        # channels.registry is global, mutable, module-level state shared
+        # across the whole test process — other test files (test_base_arm.py,
+        # test_sales_poll.py, test_paddle_arm.py) register their own arms as
+        # an import/setup side effect and never fully reset it. Found live
+        # (2026-07-18 architecture review): re-registering just these 3
+        # WITHOUT clearing first let `paddle` (registered by test_paddle_arm.py
+        # elsewhere in the same full-suite run) leak into this test's
+        # checklist, failing it only in full-suite order, never standalone —
+        # a real test-isolation bug, not a paddle-arm defect. clear() first
+        # so this test's platform set is authoritative regardless of what
+        # ran before it in the same process.
+        channel_registry.clear()
         channel_registry.register(GumroadArm())
         channel_registry.register(EtsyArm())
         channel_registry.register(PayhipArm())

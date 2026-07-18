@@ -38,3 +38,15 @@ A rejected niche is written to `REJECTED_NICHES.md` (a real circuit breaker — 
 
 ## The honest summary
 Every mechanical stage of this company — intelligence, creation, review, publishing, revenue tracking, observability, recovery — is real, tested, and (as of this session) secured and performant. **The company has never once made a real accept decision**, and the two live blockers (M1: no real-evidence source fits this product category; M2: no distribution credential) are independent of each other and independent of every engineering improvement made this session. This operating model describes a company that is mechanically ready and has not yet, in its real operating history, produced a single accepted opportunity.
+
+---
+
+## Update 2026-07-18 — M1 and M2 both materially changed, one section above is now stale
+
+The founder directed a Strategic Production Priority Ladder pivot (`MASTER_CHARTER.md`, `ADR-065`) the day after this document was written, explicitly firing `ADR-034`'s trigger. This changed the two facts the summary above rests on:
+
+- **"How decisions are made" is now partially superseded.** A new gate, `profit_oracle.ladder_opportunity_score()` (`ADR-066`), was wired into `factory_loop.js`'s live automatic tick (`ADR-070`) — weighting recurring revenue + reusability, not the old fixed tier bar. **Verified live: 5 real opportunities have now been ACCEPTED** — the company's real accept rate is no longer 0%. **However — the OTHER decision surface this document already flagged as inconsistent (C2/C2b, `decision_engine`/`orchestrator`) was NOT updated** — `decision_engine/engine.py` still calls the old `opportunity_score()`. Mission Control's Decision Queue and the automatic tick can now show genuinely different pictures. See `ENGINEERING_ASSESSMENT_20260718.md` Critical Issue C1 — this is the single most important open item as of this update.
+- **"How products are published" gained a fourth arm.** `channels/paddle_arm.py` (`ADR-065`/`074`) is registered alongside Gumroad/Etsy/Payhip. Unlike those three, Paddle's account is real, approved, and **live**: real product + price creation confirmed working via the actual API. The remaining blocker (a real checkout link) is Paddle's own account-onboarding gate, not a missing credential or code gap — materially narrower than M2's original "no credential exists at all" framing.
+- **A new founder-notification channel is live**, addressing a gap this document didn't have a section for: real Telegram messages (Arabic, per founder instruction) now fire on real accepted opportunities, verified end-to-end through the actual n8n workflow, not just a direct API test.
+
+Everything else in this document (creation, review, revenue tracking, knowledge retention, how failures become improvements) is unaffected and still accurate.
