@@ -64,6 +64,7 @@ ADR)              │
 | How does the pipeline actually work, file by file? | `OpenClaw_Brain/00_Governance/MASTER_BLUEPRINT.md` |
 | What's the current architecture, what's strong, what's broken, in priority order? | `OpenClaw_Brain/00_Governance/ENGINEERING_ASSESSMENT_20260718.md` (this review) |
 | How was the decision-surface duplication actually fixed? | `OpenClaw_Brain/00_Governance/ADR-076-decision-surface-reconciliation.md` |
+| Is every stage (discovery → sale → reporting) actually connected, and what's the shortest path to full autonomy? | `OpenClaw_Brain/00_Governance/COMPANY_INTEGRATION_AUDIT_20260718.md` |
 | How does the company mechanically operate, stage by stage? | `COMPANY_OPERATING_MODEL.md` (+ 2026-07-18 update note) |
 | What capabilities exist, what's missing, what's the dependency graph? | `CAPABILITY_MAP.md` (+ 2026-07-18 update note) |
 | What's blocked on the founder specifically, right now? | `BLOCKERS.md` |
