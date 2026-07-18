@@ -20,6 +20,8 @@ from pathlib import Path
 
 from orchestrator.registry import register_engine
 from production_factory.dossier import make_production_id
+from product_families import registry as family_registry
+from product_families.spec import build_product_specification
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent.parent
 _BOOK_GENERATOR = _FACTORY_ROOT / "book_generator.py"
@@ -33,6 +35,26 @@ def run(context):
     niche = context["niche"]
     decision = context.get("decision_result") or {}
     ladder = decision.get("ladder")
+
+    # Packaging Architecture Plan §7 (Phase A, 2026-07-18): a resolved
+    # product_family with an actually-registered adapter dispatches
+    # in-process through product_families.registry — the new, modular
+    # Generation path. Any other case (no family resolved yet, or a
+    # family name with no adapter module built, e.g. the 5 not-yet-built
+    # families) falls through to the exact hardcoded techdoc/book payload
+    # below, byte-for-byte unchanged — this is the deliberate
+    # "nothing breaks mid-migration" guarantee from the plan's Risk 4.
+    product_family = decision.get("product_family")
+    adapter = family_registry.get(product_family) if product_family else None
+    if adapter is not None:
+        price = (decision.get("evaluation_snapshot") or {}).get("price")
+        spec = build_product_specification(
+            niche=niche, product_family=product_family, ladder=ladder,
+            production_id=make_production_id(decision) if decision.get("decision_id") else None,
+            title=niche, topic=niche, author="OpenClaw Factory", price_hint=price,
+        )
+        result = adapter.generate(spec)
+        return {"executed": True, **result}
 
     if ladder:
         # ADR-077 (Product Generation Pipeline): a ladder-tagged decision

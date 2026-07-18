@@ -38,6 +38,12 @@ class Decision:
     # defaults say.
     ladder: Optional[str] = None  # Strategic Production Priority Ladder rank (MASTER_CHARTER.md §2), when known
     decision_path: str = "ai_ceo_full_evaluation"  # "ai_ceo_full_evaluation" (engine.evaluate_and_decide(), live evidence gathering) or "ladder_fast_gate" (engine.record_ladder_decision(), no live evidence gathering — market_hunter.py's per-tick discovery path)
+    # Packaging Architecture Plan §1 (Phase A, 2026-07-18): orthogonal to
+    # `ladder` — `ladder` answers "how much should we prioritize/pay for
+    # this," `product_family` answers "what kind of file do we build."
+    # Additive, default None — every decision recorded before this field
+    # existed keeps its real meaning (no family was ever decided for it).
+    product_family: Optional[str] = None
 
     def to_dict(self):
         return {
@@ -54,6 +60,7 @@ class Decision:
             "external_signal": self.external_signal,
             "ladder": self.ladder,
             "decision_path": self.decision_path,
+            "product_family": self.product_family,
         }
 
 

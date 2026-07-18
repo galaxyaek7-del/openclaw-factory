@@ -16,6 +16,10 @@ import channels.paddle_arm  # noqa: F401,E402 — ADR-077: was missing (real
 import profit_oracle
 from channels import registry as channel_registry
 
+import product_families  # noqa: F401,E402 — self-registers Phase A family adapters
+from product_families import registry as family_registry
+from product_families.mapping import ALL_PRODUCT_FAMILIES
+
 from revenue_pipeline import plan as plan_module
 
 # Real check names already run by inspectors.py's Dual Inspection system
@@ -46,19 +50,20 @@ def make_production_id(decision):
 
 
 def _product_type_capability():
-    """Honest, not aspirational: only book_engine is real today
-    (FACTORY_STATUS.md). The other five requested types are explicitly
-    reported as not built, never silently implied as available."""
-    return {
-        "KDP / Digital Books": "REAL — book_engine (book_generator.py)",
-        "Digital Templates / Printables": "REAL — book_engine generate_printable() (ADR-020)",
-        "Premium Bundles": "REAL — book_engine (ADR-024)",
-        "Elite Tier-1 Assets": "REAL — book_engine (ADR-027), needs real infrastructure per ELITE_ASSET_DOCTRINE.md §6",
-        "SaaS": "NOT YET BUILT — book_engine is the only active engine (FACTORY_STATUS.md, OCTOPUS_ARCHITECTURE.md track 4)",
-        "AI Tools": "NOT YET BUILT — same",
-        "APIs": "NOT YET BUILT — same",
-        "Automation Systems": "NOT YET BUILT — same",
-    }
+    """Honest, not aspirational (Packaging Architecture Plan §4.6,
+    2026-07-18): data-driven off product_families.registry, not a
+    hardcoded dict — a family reports REAL only once its adapter module
+    actually exists and self-registered on import; declaring a new family
+    module updates this automatically, with zero edit here."""
+    capability = {}
+    for name in ALL_PRODUCT_FAMILIES:
+        adapter = family_registry.get(name)
+        capability[name] = (
+            f"REAL — product_families.families.{name}"
+            if adapter is not None
+            else "NOT YET BUILT — no adapter registered yet (Packaging Architecture Plan §7 roadmap)"
+        )
+    return capability
 
 
 def _market_positioning(snapshot):

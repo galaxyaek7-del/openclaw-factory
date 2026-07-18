@@ -247,6 +247,52 @@ class TestRunCycleDryRunSafetyDefault(_IsolatedRunCycleTestCase):
         sent_payload = json.loads(mock_run.call_args.kwargs["input"])
         self.assertEqual(sent_payload["production_id"], "PROD-dec-abc123")
 
+    def test_a_registered_product_family_dispatches_in_process_never_spawns_a_subprocess(self):
+        """Packaging Architecture Plan §7 (Phase A, 2026-07-18): a decision
+        whose product_family resolves to an actually-registered adapter
+        dispatches through product_families.registry in-process — the new
+        Generation path — and never touches the subprocess/techdoc payload
+        below it at all."""
+        from unittest.mock import patch, MagicMock
+        from orchestrator.engines import production
+        from product_families import registry as family_registry
+
+        fake_adapter = MagicMock()
+        fake_adapter.generate.return_value = {"success": True, "path": "/fake/spreadsheet.pdf"}
+        with patch.object(family_registry, "get", return_value=fake_adapter):
+            with patch.object(production.subprocess, "run") as mock_subprocess_run:
+                context = {
+                    "niche": "x", "dry_run": False,
+                    "decision_result": {"ladder": "reusable_assets", "product_family": "professional_templates",
+                                        "decision_id": "dec-fam-1", "evaluation_snapshot": {"price": 197}},
+                }
+                result = production.run(context)
+
+        self.assertFalse(mock_subprocess_run.called, "a registered family adapter must dispatch in-process, never spawn book_generator.py")
+        self.assertTrue(fake_adapter.generate.called)
+        sent_spec = fake_adapter.generate.call_args.args[0]
+        self.assertEqual(sent_spec["product_family"], "professional_templates")
+        self.assertEqual(sent_spec["production_id"], "PROD-dec-fam-1")
+        self.assertTrue(result["success"])
+
+    def test_an_unregistered_product_family_falls_back_to_the_existing_techdoc_payload(self):
+        """The "nothing breaks mid-migration" guarantee (Plan §7 Risk 4):
+        a resolved family with no adapter built yet (e.g. notion_systems,
+        not built in Phase A) must fall through to today's exact hardcoded
+        ladder/techdoc behavior, never raise or silently drop the niche."""
+        from unittest.mock import patch, MagicMock
+        from orchestrator.engines import production
+
+        context = {
+            "niche": "x", "dry_run": False,
+            "decision_result": {"ladder": "ai_saas", "product_family": "notion_systems", "evaluation_snapshot": {"price": 388}},
+        }
+        fake_proc = MagicMock(stdout='{"success": true}')
+        with patch.object(production.subprocess, "run", return_value=fake_proc) as mock_run:
+            production.run(context)
+        sent_payload = json.loads(mock_run.call_args.kwargs["input"])
+        self.assertEqual(sent_payload["product_type"], "techdoc")
+
 
 class TestDuplicateExecutionPreventionScopedToCostlyStages(_IsolatedRunCycleTestCase):
     def test_market_intelligence_and_decision_never_skip_as_duplicate_on_rerun(self):

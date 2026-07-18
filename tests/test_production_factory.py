@@ -74,14 +74,20 @@ class TestCustomerProfile(unittest.TestCase):
 
 
 class TestProductTypeCapability(unittest.TestCase):
-    def test_book_engine_types_are_real(self):
-        caps = dossier._product_type_capability()
-        self.assertIn("REAL", caps["KDP / Digital Books"])
+    """Packaging Architecture Plan §4.6 (2026-07-18): capability is now
+    data-driven off product_families.registry, not a hardcoded dict — the
+    4 Phase A families (with a real, self-registered adapter) report REAL;
+    the 5 not-yet-built families report NOT YET BUILT."""
 
-    def test_unbuilt_types_are_honestly_not_built(self):
+    def test_phase_a_families_are_real(self):
         caps = dossier._product_type_capability()
-        for product_type in ("SaaS", "AI Tools", "APIs", "Automation Systems"):
-            self.assertIn("NOT YET BUILT", caps[product_type])
+        for family in ("kdp_books", "professional_templates", "digital_toolkits", "knowledge_bases"):
+            self.assertIn("REAL", caps[family])
+
+    def test_unbuilt_families_are_honestly_not_built(self):
+        caps = dossier._product_type_capability()
+        for family in ("ai_saas", "notion_systems", "spreadsheet_systems", "prompt_libraries", "automation_packs"):
+            self.assertIn("NOT YET BUILT", caps[family])
 
 
 class TestPublishingChecklist(unittest.TestCase):

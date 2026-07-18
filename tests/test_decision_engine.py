@@ -163,6 +163,27 @@ class TestEvaluateAndDecide(unittest.TestCase):
     def test_status_derivation_improve_is_deferred(self):
         self.assertEqual(engine._derive_status("IMPROVE", True), "DEFERRED")
 
+    # Packaging Architecture Plan §1 (Phase A, 2026-07-18) — product_family
+
+    def test_omitting_product_family_resolves_from_ladder_default_table(self):
+        d = engine.evaluate_and_decide(
+            "workflow automation system for logistics companies",
+            ladder="b2b_systems", decisions_path=self.decisions_path, analysis_db_file=self.analysis_db_path,
+        )
+        self.assertEqual(d.product_family, "automation_packs")
+
+    def test_explicit_product_family_overrides_the_default_table(self):
+        d = engine.evaluate_and_decide(
+            "AI-powered compliance automation subscription system for accounting firms",
+            ladder="ai_saas", product_family="knowledge_bases",
+            decisions_path=self.decisions_path, analysis_db_file=self.analysis_db_path,
+        )
+        self.assertEqual(d.product_family, "knowledge_bases")
+
+    def test_no_ladder_no_product_family_reproduces_prior_behavior(self):
+        d = engine.evaluate_and_decide("a reproducibility test niche", decisions_path=self.decisions_path, analysis_db_file=self.analysis_db_path)
+        self.assertIsNone(d.product_family)
+
     def test_reasoning_reuses_profit_oracles_own_reason_never_rederives_it(self):
         """Zero-assumption audit follow-up (High finding): evaluate_and_decide()
         used to rebuild its own 'opportunity_score >= min_required' string
@@ -238,6 +259,20 @@ class TestRecordLadderDecision(unittest.TestCase):
         self.assertEqual(d.opportunity_score, 99.9)
         self.assertEqual(d.evaluation_snapshot["price"], 500)
         self.assertEqual(d.evaluation_snapshot["components"], {"market_demand": 1})
+
+    # Packaging Architecture Plan §1 (Phase A, 2026-07-18) — product_family
+
+    def test_omitting_product_family_resolves_from_ladder_default_table(self):
+        ladder_result = {"accepted": True, "ladder_score": 85.3, "price": 388, "reason": "accepted: test", "components": {}}
+        d = engine.record_ladder_decision("test niche", "ai_saas", ladder_result, decisions_path=self.decisions_path)
+        self.assertEqual(d.product_family, "ai_saas")
+
+    def test_explicit_product_family_overrides_the_default_table(self):
+        ladder_result = {"accepted": True, "ladder_score": 85.3, "price": 388, "reason": "accepted: test", "components": {}}
+        d = engine.record_ladder_decision(
+            "test niche", "ai_saas", ladder_result, decisions_path=self.decisions_path, product_family="knowledge_bases",
+        )
+        self.assertEqual(d.product_family, "knowledge_bases")
 
     def test_reads_via_the_same_ranking_and_mission_control_path(self):
         """Confirms the actual unification claim: a fast-path decision is

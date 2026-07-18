@@ -1,0 +1,219 @@
+"""Tests for product_families/ (Packaging Architecture Plan, Phase A,
+2026-07-18): the registry, the common ProductSpecification builder, the
+ladder->default-family mapping, and the 4 Phase A family adapters.
+
+Real Groq calls are mocked the same way tests/test_product_package.py
+already established (ai_generate_techdoc_content()/ai_generate_book_content())
+except knowledge_bases, whose adapter never calls Groq at all (verbatim-only
+content, by design — see product_families/families/knowledge_bases.py).
+
+    python -m unittest tests.test_product_families -v
+"""
+
+import os
+import sys
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+_FACTORY_ROOT = Path(__file__).resolve().parent.parent
+if str(_FACTORY_ROOT) not in sys.path:
+    sys.path.insert(0, str(_FACTORY_ROOT))
+
+import book_generator as bg
+from product_families import registry
+from product_families.mapping import ALL_PRODUCT_FAMILIES, resolve_product_family
+from product_families.spec import (
+    build_product_specification, components_to_sections, components_to_verbatim_chapters,
+)
+
+# Importing families registers the 4 real Phase A adapters as a side effect.
+import product_families.families  # noqa: F401
+
+
+class TestRegistry(unittest.TestCase):
+    def setUp(self):
+        self._saved = registry.all_families()
+
+    def tearDown(self):
+        registry.clear()
+        for adapter in self._saved:
+            registry.register(adapter)
+
+    def test_phase_a_families_are_all_registered(self):
+        names = {a.name for a in registry.all_families()}
+        self.assertEqual(names, {"kdp_books", "professional_templates", "digital_toolkits", "knowledge_bases"})
+
+    def test_unregistered_family_returns_none_not_a_guess(self):
+        registry.clear()
+        self.assertIsNone(registry.get("spreadsheet_systems"))
+
+    def test_register_overrides_same_name_deliberately(self):
+        class FakeAdapter:
+            name = "kdp_books"
+
+            def generate(self, spec):
+                return {"success": True, "fake": True}
+
+        registry.register(FakeAdapter())
+        result = registry.get("kdp_books").generate({})
+        self.assertTrue(result["fake"])
+
+
+class TestLadderToFamilyMapping(unittest.TestCase):
+    def test_explicit_family_always_wins(self):
+        self.assertEqual(resolve_product_family("kdp_books", explicit_family="ai_saas"), "ai_saas")
+
+    def test_default_table_applies_when_no_explicit_family(self):
+        self.assertEqual(resolve_product_family("ai_saas"), "ai_saas")
+        self.assertEqual(resolve_product_family("b2b_systems"), "automation_packs")
+        self.assertEqual(resolve_product_family("automation_tools"), "automation_packs")
+        self.assertEqual(resolve_product_family("reusable_assets"), "professional_templates")
+        self.assertEqual(resolve_product_family("educational"), "knowledge_bases")
+        self.assertEqual(resolve_product_family("kdp_books"), "kdp_books")
+
+    def test_unknown_ladder_resolves_to_none_never_a_guess(self):
+        self.assertIsNone(resolve_product_family("not_a_real_ladder"))
+        self.assertIsNone(resolve_product_family(None))
+
+    def test_all_default_mapping_targets_are_real_families(self):
+        from product_families.mapping import DEFAULT_FAMILY_BY_LADDER
+        for family in DEFAULT_FAMILY_BY_LADDER.values():
+            self.assertIn(family, ALL_PRODUCT_FAMILIES)
+
+
+class TestProductSpecification(unittest.TestCase):
+    def test_builds_full_shape_with_defaults(self):
+        spec = build_product_specification(niche="test niche", product_family="kdp_books")
+        self.assertEqual(spec["niche"], "test niche")
+        self.assertEqual(spec["product_family"], "kdp_books")
+        self.assertEqual(spec["title"], "test niche")  # defaults to niche
+        self.assertEqual(spec["topic"], "test niche")
+        self.assertEqual(spec["language"], "ar")
+        self.assertEqual(spec["components"], [])
+        self.assertEqual(spec["family_config"], {})
+
+    def test_explicit_title_overrides_niche_default(self):
+        spec = build_product_specification(niche="n", product_family="kdp_books", title="Real Title")
+        self.assertEqual(spec["title"], "Real Title")
+
+
+class TestComponentsToSections(unittest.TestCase):
+    def test_empty_returns_none_so_caller_falls_to_default_skeleton(self):
+        self.assertIsNone(components_to_sections(None))
+        self.assertIsNone(components_to_sections([]))
+
+    def test_plain_string_component_passes_through_for_ai_generation(self):
+        self.assertEqual(components_to_sections(["Overview"]), ["Overview"])
+
+    def test_dict_with_content_is_used_verbatim(self):
+        result = components_to_sections([{"title": "Intro", "content": "real text"}])
+        self.assertEqual(result, [{"title": "Intro", "content": "real text"}])
+
+    def test_dict_without_content_is_treated_as_ai_generate_title(self):
+        result = components_to_sections([{"title": "Setup"}])
+        self.assertEqual(result, ["Setup"])
+
+
+class TestComponentsToVerbatimChapters(unittest.TestCase):
+    def test_verbatim_dicts_pass_through(self):
+        result = components_to_verbatim_chapters([{"title": "Article 1", "content": "real content"}])
+        self.assertEqual(result, [{"title": "Article 1", "content": "real content"}])
+
+    def test_missing_content_raises_never_fabricates(self):
+        with self.assertRaises(ValueError):
+            components_to_verbatim_chapters([{"title": "Article 1"}])
+
+    def test_plain_string_component_raises_no_ai_generation_path_yet(self):
+        with self.assertRaises(ValueError):
+            components_to_verbatim_chapters(["Article 1"])
+
+
+class _CleanupPdfMixin:
+    def setUp(self):
+        self._created_paths = []
+
+    def tearDown(self):
+        for p in self._created_paths:
+            try:
+                os.remove(p)
+            except OSError:
+                pass
+
+    def _track(self, result):
+        if result.get("path"):
+            self._created_paths.append(result["path"])
+        if result.get("cover") and result["cover"].get("path"):
+            self._created_paths.append(result["cover"]["path"])
+        return result
+
+
+class TestKdpBooksAdapter(_CleanupPdfMixin, unittest.TestCase):
+    def test_generates_a_real_pdf_via_generate_book(self):
+        fake_book_data = {"introduction": "x", "chapters": [{"title": "C1", "content": "real content"}], "subtitle": ""}
+        with patch.object(bg, "ai_generate_book_content", return_value=fake_book_data):
+            spec = build_product_specification(
+                niche="test kdp niche", product_family="kdp_books",
+                family_config={"output": "test_family_kdp_books.pdf"},
+            )
+            result = self._track(registry.get("kdp_books").generate(spec))
+        self.assertTrue(result["success"])
+        self.assertTrue(os.path.exists(result["path"]))
+
+
+class TestProfessionalTemplatesAdapter(_CleanupPdfMixin, unittest.TestCase):
+    def test_generates_a_real_pdf_via_generate_product_package(self):
+        def _fake_generated(title, topic, titles):
+            return [{"title": t, "content": f"real content for {t}"} for t in titles]
+
+        with patch.object(bg, "ai_generate_techdoc_content", side_effect=_fake_generated):
+            spec = build_product_specification(
+                niche="test professional templates niche", product_family="professional_templates",
+                components=["Overview", "Setup"],
+                family_config={"output": "test_family_professional_templates.pdf"},
+            )
+            result = self._track(registry.get("professional_templates").generate(spec))
+        self.assertTrue(result["success"])
+        self.assertEqual(result["product_type"], "techdoc")
+
+
+class TestDigitalToolkitsAdapter(_CleanupPdfMixin, unittest.TestCase):
+    def test_generates_a_real_pdf_via_generate_product_package(self):
+        def _fake_generated(title, topic, titles):
+            return [{"title": t, "content": f"real content for {t}"} for t in titles]
+
+        with patch.object(bg, "ai_generate_techdoc_content", side_effect=_fake_generated):
+            spec = build_product_specification(
+                niche="test digital toolkits niche", product_family="digital_toolkits",
+                components=[{"title": "Checklist", "content": "real verbatim checklist content"}],
+                family_config={"output": "test_family_digital_toolkits.pdf"},
+            )
+            result = self._track(registry.get("digital_toolkits").generate(spec))
+        self.assertTrue(result["success"])
+
+
+class TestKnowledgeBasesAdapter(_CleanupPdfMixin, unittest.TestCase):
+    def test_generates_a_real_pdf_from_verbatim_components_no_groq_call(self):
+        spec = build_product_specification(
+            niche="test knowledge base niche", product_family="knowledge_bases",
+            components=[
+                {"title": "Article 1", "content": "Real article content, written verbatim."},
+                {"title": "Article 2", "content": "More real article content."},
+            ],
+            family_config={"output": "test_family_knowledge_bases.pdf"},
+        )
+        result = self._track(registry.get("knowledge_bases").generate(spec))
+        self.assertTrue(result["success"])
+        self.assertEqual(result["content_source"], "human_claude_review")
+
+    def test_missing_content_fails_honestly_never_a_real_pdf(self):
+        spec = build_product_specification(
+            niche="test knowledge base failure niche", product_family="knowledge_bases",
+            components=[{"title": "Article With No Content"}],
+        )
+        with self.assertRaises(ValueError):
+            registry.get("knowledge_bases").generate(spec)
+
+
+if __name__ == "__main__":
+    unittest.main()

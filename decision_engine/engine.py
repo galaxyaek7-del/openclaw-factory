@@ -24,6 +24,7 @@ from market_intelligence_core import core as market_intelligence_core
 
 from decision_engine import store
 from decision_engine.types import Decision, make_decision_id
+from product_families.mapping import resolve_product_family
 
 
 def _derive_status(ai_ceo_decision, opportunity_score_accepted):
@@ -37,9 +38,19 @@ def _derive_status(ai_ceo_decision, opportunity_score_accepted):
 
 def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=10,
                          analysis_db_file=None, decisions_path=None, precomputed_analysis=None,
-                         ladder=None):
+                         ladder=None, product_family=None):
     """Runs the full Signal -> Evaluation -> Decision path for one niche and
     records the result permanently (append-only, never overwritten).
+
+    product_family (Packaging Architecture Plan §1/§2, Phase A, 2026-07-18):
+    an explicit family always wins; with none given, resolved from `ladder`
+    via product_families.mapping.resolve_product_family()'s documented
+    default table. Omitting it (every caller before this parameter existed)
+    still resolves a family whenever `ladder` is known — this is additive
+    to the Decision record only; orchestrator/engines/production.py falls
+    back to its own unchanged behavior whenever the resolved family has no
+    registered adapter yet, so no real behavior changes until a family
+    module actually exists.
 
     precomputed_analysis (ADR-051): when the caller already has a fresh
     evaluate_opportunity() result (e.g. the Executive Orchestrator, which
@@ -58,6 +69,7 @@ def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=1
     already ladder-aware; this path was not. Omitting ladder (every caller
     before this parameter existed) reproduces the exact prior behavior —
     the old tier-based gate — unchanged."""
+    resolved_family = resolve_product_family(ladder, product_family)
     analysis = precomputed_analysis if precomputed_analysis is not None else market_intelligence_core.evaluate_opportunity(
         niche, external_signal=external_signal, tier=tier, max_results=max_results,
         analysis_db_file=analysis_db_file,
@@ -77,6 +89,7 @@ def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=1
             evaluation_snapshot=analysis,
             external_signal=external_signal,
             ladder=ladder,
+            product_family=resolved_family,
         )
         store.append_decision(decision, path=decisions_path)
         return decision
@@ -126,6 +139,7 @@ def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=1
         evaluation_snapshot=analysis,
         external_signal=external_signal,
         ladder=ladder,
+        product_family=resolved_family,
     )
     store.append_decision(decision, path=decisions_path)
     return decision
@@ -145,10 +159,16 @@ def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=1
 # evaluate_and_decide() path, still available for deliberate manual
 # review) — ai_ceo_decision is honestly recorded as "N/A", never a
 # fabricated verdict.
-def record_ladder_decision(niche, ladder, ladder_result, decisions_path=None):
+def record_ladder_decision(niche, ladder, ladder_result, decisions_path=None, product_family=None):
     """ladder_result: the exact dict profit_oracle.ladder_opportunity_score()
     already returned for this niche — never recomputed here, so this can
-    never silently disagree with the score the caller actually acted on."""
+    never silently disagree with the score the caller actually acted on.
+
+    product_family (Packaging Architecture Plan §1, Phase A, 2026-07-18):
+    an explicit family always wins; with none given, resolved from
+    `ladder` via the same product_families.mapping.resolve_product_family()
+    evaluate_and_decide() uses — market_hunter.py's fast discovery path
+    and the deliberate manual-review path never diverge on this either."""
     now = datetime.now(timezone.utc).isoformat()
     decision = Decision(
         decision_id=make_decision_id(niche, ladder or "kdp_books", now),
@@ -168,6 +188,7 @@ def record_ladder_decision(niche, ladder, ladder_result, decisions_path=None):
         external_signal=None,
         ladder=ladder,
         decision_path="ladder_fast_gate",
+        product_family=resolve_product_family(ladder, product_family),
     )
     store.append_decision(decision, path=decisions_path)
     return decision
