@@ -48,9 +48,10 @@ class PaddleArm(BaseArm):
             product_id = created.get("id") if isinstance(created, dict) else None
             # A Paddle product isn't sellable without an attached Price —
             # created immediately after, same real two-step Paddle requires.
-            paddle_publisher.create_price(api_key, product_id, {
+            price = paddle_publisher.create_price(api_key, product_id, {
                 "unit_price_cents": round(product.price_usd * 100),
             })
+            price_id = price.get("id") if isinstance(price, dict) else None
         except Exception as e:
             self._record_failure()
             return PublishResult(
@@ -58,9 +59,24 @@ class PaddleArm(BaseArm):
                 error=str(e), dry_run=False,
             )
 
+        # Checkout link is a real, distinct third step (2026-07-18, real
+        # account testing) — Paddle can accept product/price creation while
+        # still refusing transaction/checkout creation with
+        # transaction_checkout_not_enabled if the account's onboarding isn't
+        # fully complete. Product + price already succeeding is real
+        # progress; a checkout-creation failure here does NOT undo that, so
+        # publish() still reports ok=True with url=None rather than
+        # discarding a real, already-created product over a separate,
+        # account-level gate.
+        checkout_url = None
+        try:
+            _txn, checkout_url = paddle_publisher.create_checkout_transaction(api_key, price_id)
+        except Exception:
+            checkout_url = None
+
         self._record_success()
         return PublishResult(
-            ok=True, platform=self.name, product_id=product_id, url=None,
+            ok=True, platform=self.name, product_id=product_id, url=checkout_url,
             error=None, dry_run=False,
         )
 

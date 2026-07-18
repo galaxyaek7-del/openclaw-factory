@@ -102,6 +102,21 @@ def list_products(api_key):
     return r.json().get("data", [])
 
 
+def _raise_with_paddle_error(r, action, api_key):
+    """Paddle's error responses carry a real, specific reason in the JSON
+    body ({"error": {"code", "detail"}}) that requests.raise_for_status()'s
+    generic HTTPError discards — surfacing it directly saved real diagnosis
+    time once a live account was actually available to test against (a
+    product_tax_category_not_approved / transaction_checkout_not_enabled
+    error is meaningless as a bare 'HTTP 400 Client Error')."""
+    try:
+        body = r.json()
+        detail = body.get("error", {}).get("detail") or body.get("error", {}).get("code") or r.text[:300]
+    except Exception:
+        detail = r.text[:300]
+    raise RuntimeError(f"Paddle {action} failed: HTTP {r.status_code}: {_safe_err(detail, api_key)}")
+
+
 def create_product(api_key, product_spec):
     """Creates a Paddle Product — the recurring-revenue/reusable-asset
     equivalent of gumroad_publisher.create_product(), but Paddle products
@@ -114,16 +129,36 @@ def create_product(api_key, product_spec):
     body = {
         "name": title,
         "description": product_spec.get("description", ""),
-        # "digital" is the honest default for this factory's own products;
-        # a real SaaS/B2B product might need "software" — left overridable
-        # via product_spec rather than guessed silently.
-        "tax_category": product_spec.get("tax_category", "digital-goods"),
+        # "standard" confirmed live against a real Paddle account
+        # (2026-07-18) as the tax category actually approved for a
+        # freshly-onboarded seller — "digital-goods"/"ebooks" both came
+        # back product_tax_category_not_approved on the same real account.
+        # Paddle approves categories per-account, so this default is a
+        # real, confirmed starting point, not a guess — still overridable
+        # via product_spec for an account with different approvals.
+        "tax_category": product_spec.get("tax_category", "standard"),
     }
     try:
         r = requests.post(f"{PADDLE_API_BASE}/products", headers=_headers(api_key), json=body, timeout=60)
-        r.raise_for_status()
+        if not r.ok:
+            _raise_with_paddle_error(r, "create_product", api_key)
     except requests.RequestException as e:
         raise RuntimeError(f"Paddle create_product request failed: {_safe_err(e, api_key)}")
+    return r.json().get("data", r.json())
+
+
+def update_product(api_key, product_id, updates):
+    """PATCH an existing product — used to fill in real title/description
+    on a product created with placeholder values, rather than creating a
+    duplicate every time a caller wants to change one field."""
+    if not product_id:
+        raise ConfigError("update_product requires a product_id")
+    try:
+        r = requests.patch(f"{PADDLE_API_BASE}/products/{product_id}", headers=_headers(api_key), json=updates, timeout=60)
+        if not r.ok:
+            _raise_with_paddle_error(r, "update_product", api_key)
+    except requests.RequestException as e:
+        raise RuntimeError(f"Paddle update_product request failed: {_safe_err(e, api_key)}")
     return r.json().get("data", r.json())
 
 
@@ -147,10 +182,35 @@ def create_price(api_key, product_id, price_spec):
         body["billing_cycle"] = billing_cycle
     try:
         r = requests.post(f"{PADDLE_API_BASE}/prices", headers=_headers(api_key), json=body, timeout=60)
-        r.raise_for_status()
+        if not r.ok:
+            _raise_with_paddle_error(r, "create_price", api_key)
     except requests.RequestException as e:
         raise RuntimeError(f"Paddle create_price request failed: {_safe_err(e, api_key)}")
     return r.json().get("data", r.json())
+
+
+def create_checkout_transaction(api_key, price_id, quantity=1):
+    """Creates a Paddle Transaction for a given price — the real mechanism
+    that produces a shareable checkout URL (`data.checkout.url` in the
+    response). Confirmed live (2026-07-18) that a freshly-approved account
+    can still be blocked here with `transaction_checkout_not_enabled`
+    ("Checkouts aren't enabled for this account... you haven't fully
+    completed the Paddle onboarding process") even after products/prices
+    already work — a real, distinct account-level gate, not a bug in this
+    function. Callers must handle that RuntimeError as "founder needs to
+    finish onboarding in the Paddle dashboard," not a code defect."""
+    if not price_id:
+        raise ConfigError("create_checkout_transaction requires a price_id")
+    body = {"items": [{"price_id": price_id, "quantity": quantity}]}
+    try:
+        r = requests.post(f"{PADDLE_API_BASE}/transactions", headers=_headers(api_key), json=body, timeout=60)
+        if not r.ok:
+            _raise_with_paddle_error(r, "create_checkout_transaction", api_key)
+    except requests.RequestException as e:
+        raise RuntimeError(f"Paddle create_checkout_transaction request failed: {_safe_err(e, api_key)}")
+    data = r.json().get("data", r.json())
+    checkout_url = (data.get("checkout") or {}).get("url")
+    return data, checkout_url
 
 
 def get_transactions(api_key):
@@ -165,10 +225,18 @@ def get_transactions(api_key):
 
 
 def _safe_err(exc, api_key=None):
-    """Same key-redaction discipline as gumroad_publisher._safe_err()."""
+    """Same key-redaction discipline as gumroad_publisher._safe_err().
+
+    Real Paddle keys are always long (`pdl_live_apikey_...`, 46+ chars),
+    but a blind substring replace has no such guarantee — found live
+    (2026-07-18) via a test using a short placeholder key ("k") that
+    happened to collide with a letter inside a real, unrelated Paddle
+    error message ("Checkouts" -> "Chec***REDACTED***outs"). Guarding
+    against anything short enough to plausibly appear as an ordinary
+    substring keeps this safe without weakening real-key redaction."""
     text = str(exc)
     key = api_key or os.environ.get("PADDLE_API_KEY", "")
-    if key and key in text:
+    if key and len(key) >= 16 and key in text:
         text = text.replace(key, "***REDACTED***")
     return text
 

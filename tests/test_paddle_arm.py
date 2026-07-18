@@ -22,9 +22,11 @@ from channels.base_arm import ArmStatus
 from schemas.product import Product
 
 
-def _fake_response(status_code=200, json_data=None):
+def _fake_response(status_code=200, json_data=None, text=""):
     resp = MagicMock()
     resp.status_code = status_code
+    resp.ok = status_code < 400
+    resp.text = text
     resp.json.return_value = json_data if json_data is not None else {"data": {}}
     resp.raise_for_status.side_effect = (
         pp.requests.HTTPError(f"HTTP {status_code}") if status_code >= 400 else None
@@ -67,11 +69,39 @@ class TestCreateProductAndPrice(unittest.TestCase):
         self.assertEqual(result["id"], "pro_123")
         body = mock_post.call_args.kwargs["json"]
         self.assertEqual(body["name"], "Test Product")
-        self.assertEqual(body["tax_category"], "digital-goods")
+        # ADR-074: "standard" confirmed live (2026-07-18) as the tax
+        # category actually approved on a real Paddle account —
+        # "digital-goods" was rejected (product_tax_category_not_approved).
+        self.assertEqual(body["tax_category"], "standard")
+
+    def test_create_product_tax_category_overridable(self):
+        with patch.object(pp.requests, "post", return_value=_fake_response(json_data={"data": {"id": "pro_123"}})) as mock_post:
+            pp.create_product("k", {"title": "Test Product", "tax_category": "saas"})
+        self.assertEqual(mock_post.call_args.kwargs["json"]["tax_category"], "saas")
+
+    def test_create_product_surfaces_real_paddle_error_detail(self):
+        """The exact real case this was built for: a bare 'HTTP 400
+        Client Error' told nothing; Paddle's own error body has the real
+        reason (product_tax_category_not_approved)."""
+        error_body = {"error": {"code": "product_tax_category_not_approved", "detail": "tax category not approved"}}
+        with patch.object(pp.requests, "post", return_value=_fake_response(status_code=400, json_data=error_body)):
+            with self.assertRaises(RuntimeError) as ctx:
+                pp.create_product("k", {"title": "Test Product"})
+        self.assertIn("tax category not approved", str(ctx.exception))
 
     def test_create_product_requires_title(self):
         with self.assertRaises(pp.ConfigError):
             pp.create_product("k", {"description": "no title"})
+
+    def test_update_product_requires_product_id(self):
+        with self.assertRaises(pp.ConfigError):
+            pp.update_product("k", None, {"name": "x"})
+
+    def test_update_product_patches_expected_fields(self):
+        with patch.object(pp.requests, "patch", return_value=_fake_response(json_data={"data": {"id": "pro_123", "name": "New Name"}})) as mock_patch:
+            result = pp.update_product("k", "pro_123", {"name": "New Name"})
+        self.assertEqual(result["name"], "New Name")
+        self.assertEqual(mock_patch.call_args.kwargs["json"], {"name": "New Name"})
 
     def test_create_price_requires_product_id(self):
         with self.assertRaises(pp.ConfigError):
@@ -87,6 +117,35 @@ class TestCreateProductAndPrice(unittest.TestCase):
         body = mock_post.call_args.kwargs["json"]
         self.assertEqual(body["product_id"], "pro_123")
         self.assertEqual(body["unit_price"]["amount"], "19700")
+
+
+class TestCreateCheckoutTransaction(unittest.TestCase):
+    def test_requires_price_id(self):
+        with self.assertRaises(pp.ConfigError):
+            pp.create_checkout_transaction("k", None)
+
+    def test_posts_expected_items_and_returns_checkout_url(self):
+        checkout_data = {"data": {"id": "txn_1", "checkout": {"url": "https://checkout.paddle.com/xyz"}}}
+        with patch.object(pp.requests, "post", return_value=_fake_response(json_data=checkout_data)) as mock_post:
+            data, checkout_url = pp.create_checkout_transaction("k", "pri_1", quantity=2)
+        self.assertEqual(mock_post.call_args.kwargs["json"], {"items": [{"price_id": "pri_1", "quantity": 2}]})
+        self.assertEqual(checkout_url, "https://checkout.paddle.com/xyz")
+        self.assertEqual(data["id"], "txn_1")
+
+    def test_no_checkout_object_returns_none_url_never_throws(self):
+        with patch.object(pp.requests, "post", return_value=_fake_response(json_data={"data": {"id": "txn_1"}})):
+            data, checkout_url = pp.create_checkout_transaction("k", "pri_1")
+        self.assertIsNone(checkout_url)
+
+    def test_surfaces_real_checkout_not_enabled_error(self):
+        """The exact real case this was built for: a fresh Paddle account
+        can accept product/price creation while still blocking checkout
+        creation until onboarding is fully complete."""
+        error_body = {"error": {"code": "transaction_checkout_not_enabled", "detail": "Checkouts aren't enabled for this account."}}
+        with patch.object(pp.requests, "post", return_value=_fake_response(status_code=400, json_data=error_body)):
+            with self.assertRaises(RuntimeError) as ctx:
+                pp.create_checkout_transaction("fake-paddle-key", "pri_1")
+        self.assertIn("Checkouts aren't enabled", str(ctx.exception))
 
 
 class TestPaddleArmGracefulNotConfigured(unittest.TestCase):
@@ -125,15 +184,33 @@ class TestPaddleArmDryRun(unittest.TestCase):
 
 
 class TestPaddleArmLivePublish(unittest.TestCase):
-    def test_publish_creates_product_then_price(self):
+    def test_publish_creates_product_price_and_checkout_link(self):
         arm = PaddleArm()
         with patch.object(pp, "load_api_key", return_value="fake-key"), \
              patch.object(pp, "create_product", return_value={"id": "pro_1"}) as mock_product, \
-             patch.object(pp, "create_price", return_value={"id": "pri_1"}) as mock_price:
+             patch.object(pp, "create_price", return_value={"id": "pri_1"}) as mock_price, \
+             patch.object(pp, "create_checkout_transaction", return_value=({"id": "txn_1"}, "https://checkout.paddle.com/xyz")) as mock_txn:
             result = arm.publish(_product(price_usd=197.0), dry_run=False)
         self.assertTrue(result.ok)
         self.assertEqual(result.product_id, "pro_1")
+        self.assertEqual(result.url, "https://checkout.paddle.com/xyz")
         mock_price.assert_called_once_with("fake-key", "pro_1", {"unit_price_cents": 19700})
+        mock_txn.assert_called_once_with("fake-key", "pri_1")
+
+    def test_publish_still_succeeds_when_checkout_creation_fails(self):
+        """Real case (2026-07-18): product+price creation can succeed
+        while checkout creation is blocked by account onboarding status —
+        publish() must still report the real product as created, not
+        discard it over a separate, account-level gate."""
+        arm = PaddleArm()
+        with patch.object(pp, "load_api_key", return_value="fake-key"), \
+             patch.object(pp, "create_product", return_value={"id": "pro_1"}), \
+             patch.object(pp, "create_price", return_value={"id": "pri_1"}), \
+             patch.object(pp, "create_checkout_transaction", side_effect=RuntimeError("transaction_checkout_not_enabled")):
+            result = arm.publish(_product(price_usd=197.0), dry_run=False)
+        self.assertTrue(result.ok)
+        self.assertEqual(result.product_id, "pro_1")
+        self.assertIsNone(result.url)
 
     def test_publish_failure_is_recorded_never_raises(self):
         arm = PaddleArm()
