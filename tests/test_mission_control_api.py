@@ -53,6 +53,25 @@ class TestEndpointDispatch(unittest.TestCase):
         for unbuilt_family in ("ai_saas", "notion_workspaces", "api_products", "micro_saas"):
             self.assertTrue(families[unbuilt_family].startswith("NOT YET BUILT"))
 
+    def test_production_families_surfaces_real_manifests_for_manifest_driven_families(self):
+        """Universal Production Engine Roadmap Step 3 (2026-07-18): the
+        Product Definition Registry's manifests are real, structured data
+        Mission Control can show directly — never fabricated for a family
+        that has none yet."""
+        result = mission_control_api._production_families()
+        manifests = result["manifests"]
+        for manifest_driven_family in ("automation_systems", "professional_templates", "digital_toolkits"):
+            self.assertIn(manifest_driven_family, manifests)
+            m = manifests[manifest_driven_family]
+            self.assertEqual(m["content_generator"], "groq_techdoc")
+            self.assertEqual(m["asset_builder"], "techdoc_package")
+            self.assertEqual(m["packager"], "single_file")
+            self.assertIn("paddle", m["supported_marketplaces"])
+        # kdp_books/knowledge_bases have real, distinct logic — no manifest,
+        # never a fabricated one just to look complete.
+        for bespoke_family in ("kdp_books", "knowledge_bases"):
+            self.assertNotIn(bespoke_family, manifests)
+
     def test_recovery_returns_the_real_factory_state_shape(self):
         """Unified Recovery System §6 — this must reflect exactly what
         factory_state.py's own load_state() returns, plus the last real

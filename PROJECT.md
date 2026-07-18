@@ -33,7 +33,7 @@ The same `production_id`, computed once by `production_factory/dossier.py`'s `ma
 
 ## The Universal Production Engine (`UNIVERSAL_PRODUCTION_ENGINE.md`)
 
-As of 2026-07-18 (Roadmap Step 2), `automation_systems` is the first product family built end-to-end on the new swappable Content Generation / Asset Generation / Packaging / Dossier Bundle registries — the reference template every future family (Prompt Libraries, SaaS, Templates, etc.) now follows by configuration, not a rewrite. See `UNIVERSAL_PRODUCTION_ENGINE.md` for the full architecture, what's real vs. still a template, and the integration evidence.
+As of 2026-07-19 (Roadmap Step 3), a Product Definition Registry (`product_families/manifest.py`) replaces family-specific routing: 3 families (`automation_systems`, `professional_templates`, `digital_toolkits`) are pure `ProductManifest` configuration with zero bespoke adapter code, and a brand-new family that reuses existing generators needs only one manifest to work — proven with a throwaway demo family, not just asserted. See `UNIVERSAL_PRODUCTION_ENGINE.md` for the full architecture, the deliberate "lighter path" scope decision, and the integration/recovery evidence.
 
 ## The unified decision pipeline (final architecture, `ADR-076`)
 

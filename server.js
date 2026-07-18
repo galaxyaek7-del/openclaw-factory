@@ -374,8 +374,8 @@ const SERVICE_REGISTRY = [
   },
   {
     name: 'production-families',
-    description: 'Universal Production Engine (2026-07-18): which of the 11 UPE product families have a real registered adapter today, under the founder-approved canonical family names.',
-    reused: 'product_families.registry, via mission_control_api.py — same data-driven discipline as production_factory/dossier.py\'s _product_type_capability().',
+    description: 'Universal Production Engine (2026-07-18): which of the 11 UPE product families have a real registered adapter today, under the founder-approved canonical family names, plus each manifest-driven family\'s real Product Manifest (Roadmap Step 3) — category, generators, pricing, supported marketplaces.',
+    reused: 'product_families.registry + product_families.manifest, via mission_control_api.py — same data-driven discipline as production_factory/dossier.py\'s _product_type_capability().',
     handler: () => runPythonService('production_families'),
     health: pythonHealthCheck('production_families'),
   },

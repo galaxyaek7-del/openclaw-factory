@@ -285,11 +285,21 @@ def _production_families():
     real registered adapter — data-driven off product_families.registry,
     same discipline as production_factory.dossier._product_type_capability(),
     reported under the founder-approved UPE canonical names (see
-    _UPE_FAMILY_REGISTRY_NAMES above)."""
+    _UPE_FAMILY_REGISTRY_NAMES above).
+
+    Roadmap Step 3 (2026-07-18): also surfaces each family's real
+    ProductManifest (product_families.manifest registry) when one is
+    registered — category, which registry names build it, pricing,
+    supported marketplaces, etc. A family with no manifest (kdp_books/
+    knowledge_bases, whose real logic genuinely differs from the generic
+    pipeline, or any not-yet-built family) simply has no `manifests`
+    entry — never a fabricated one."""
     import product_families  # noqa: F401 — self-registers Phase A adapters
     from product_families import registry as family_registry
+    from product_families import manifest as manifest_registry
 
     families = {}
+    manifests = {}
     for upe_name, registry_name in _UPE_FAMILY_REGISTRY_NAMES.items():
         adapter = family_registry.get(registry_name)
         families[upe_name] = (
@@ -297,7 +307,10 @@ def _production_families():
             if adapter is not None
             else "NOT YET BUILT — no adapter registered yet (Universal Production Engine Roadmap)"
         )
-    return {"families": families}
+        real_manifest = manifest_registry.get(registry_name)
+        if real_manifest is not None:
+            manifests[upe_name] = real_manifest.to_dict()
+    return {"families": families, "manifests": manifests}
 
 
 def _rerun_market_analysis():

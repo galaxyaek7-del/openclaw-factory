@@ -169,15 +169,34 @@ class TestProfessionalTemplatesAdapter(_CleanupPdfMixin, unittest.TestCase):
         def _fake_generated(title, topic, titles):
             return [{"title": t, "content": f"real content for {t}"} for t in titles]
 
-        with patch.object(bg, "ai_generate_techdoc_content", side_effect=_fake_generated):
+        import tempfile
+        tmp_changelog = tempfile.mktemp(suffix=".jsonl")
+        tmp_state = tempfile.mktemp(suffix=".json")
+        self.addCleanup(lambda: os.path.exists(tmp_changelog) and os.remove(tmp_changelog))
+        self.addCleanup(lambda: os.path.exists(tmp_state) and os.remove(tmp_state))
+
+        # Universal Production Engine Roadmap Step 3 (2026-07-18): this
+        # family is now manifest-driven and routes through dossier_bundle,
+        # which makes its own real Groq calls for marketing/support copy —
+        # unmocked, this hit the REAL Groq API during a routine test run
+        # (found live: real cost logged to data/ai_cost_log.jsonl). Must
+        # always be mocked, same discipline as every other AI content path.
+        with patch.object(bg, "ai_generate_techdoc_content", side_effect=_fake_generated), \
+             patch.object(bg, "groq_chat", side_effect=RuntimeError("no network in test")), \
+             patch.object(bg, "_record_rejected_niche"), \
+             patch.object(bg.INSPECTORS, "_log_quarantine"):
             spec = build_product_specification(
                 niche="test professional templates niche", product_family="professional_templates",
                 components=["Overview", "Setup"],
-                family_config={"output": "test_family_professional_templates.pdf"},
+                family_config={
+                    "output": "test_family_professional_templates.pdf",
+                    "changelog_path": tmp_changelog, "state_path": tmp_state,
+                },
             )
             result = self._track(registry.get("professional_templates").generate(spec))
         self.assertTrue(result["success"])
         self.assertEqual(result["product_type"], "techdoc")
+        self.assertIsNotNone(result["dossier_bundle"])
 
 
 class TestDigitalToolkitsAdapter(_CleanupPdfMixin, unittest.TestCase):
@@ -185,14 +204,27 @@ class TestDigitalToolkitsAdapter(_CleanupPdfMixin, unittest.TestCase):
         def _fake_generated(title, topic, titles):
             return [{"title": t, "content": f"real content for {t}"} for t in titles]
 
-        with patch.object(bg, "ai_generate_techdoc_content", side_effect=_fake_generated):
+        import tempfile
+        tmp_changelog = tempfile.mktemp(suffix=".jsonl")
+        tmp_state = tempfile.mktemp(suffix=".json")
+        self.addCleanup(lambda: os.path.exists(tmp_changelog) and os.remove(tmp_changelog))
+        self.addCleanup(lambda: os.path.exists(tmp_state) and os.remove(tmp_state))
+
+        with patch.object(bg, "ai_generate_techdoc_content", side_effect=_fake_generated), \
+             patch.object(bg, "groq_chat", side_effect=RuntimeError("no network in test")), \
+             patch.object(bg, "_record_rejected_niche"), \
+             patch.object(bg.INSPECTORS, "_log_quarantine"):
             spec = build_product_specification(
                 niche="test digital toolkits niche", product_family="digital_toolkits",
                 components=[{"title": "Checklist", "content": "real verbatim checklist content"}],
-                family_config={"output": "test_family_digital_toolkits.pdf"},
+                family_config={
+                    "output": "test_family_digital_toolkits.pdf",
+                    "changelog_path": tmp_changelog, "state_path": tmp_state,
+                },
             )
             result = self._track(registry.get("digital_toolkits").generate(spec))
         self.assertTrue(result["success"])
+        self.assertIsNotNone(result["dossier_bundle"])
 
 
 class TestKnowledgeBasesAdapter(_CleanupPdfMixin, unittest.TestCase):
