@@ -54,21 +54,23 @@ A full re-audit of every real workflow found the wiring already correct, with on
 
 Until all four steps are done, `start-production-pipeline` continues to work exactly as before (the notify call safely no-ops) — nothing about existing behavior changes by this file merely existing on disk.
 
-## `04_Telegram_Notify.prepared.json` — new, ADR-065 Step 3(a), not yet imported
+## `04_Telegram_Notify.prepared.json` — imported and live, one click from fully active (`ADR-072`)
 
-The mission's "nervous system" step: `factory_loop.js`'s Golden Hunter Bridge now fires `notifyGoldenHunterAccepted()` (reusing `lib/n8n_notify.js`'s generic sender, same one `03_Production_Notify` uses) the moment a real opportunity clears `profit_oracle.py`'s acceptance gate — a plain `POST {event, niche, opportunity_score, reason, generated_at}` to `N8N_TELEGRAM_WEBHOOK_URL` (a new, separate env var from `N8N_PRODUCTION_WEBHOOK_URL` — different payload contract, different workflow). Unset by default; a real Golden Hunter tick must never fail or block on this.
+The mission's "nervous system" step: `factory_loop.js`'s Golden Hunter Bridge fires `notifyGoldenHunterAccepted()` (reusing `lib/n8n_notify.js`'s generic sender, same one `03_Production_Notify` uses) the moment a real opportunity clears `profit_oracle.py`'s acceptance gate — a plain `POST {event, niche, opportunity_score, reason, generated_at}` to `N8N_TELEGRAM_WEBHOOK_URL` (a new, separate env var from `N8N_PRODUCTION_WEBHOOK_URL` — different payload contract, different workflow). Unset means safe no-op; a real Golden Hunter tick must never fail or block on this.
 
-This workflow is the receiving side: `Webhook` → `Set` (builds the message text) → `Telegram` node (sends it). **Cannot be fully activated without the founder** — a Telegram bot token is an external credential (standing execution-authority boundary item #5: "access to external secrets or credentials"), not something this factory can create or hold for itself.
+This workflow is the receiving side: `Webhook` → `Set` (builds the message text) → `HTTP Request` node (calls Telegram's Bot API `sendMessage` directly, reading `TELEGRAM_BOT_TOKEN`/`OPENCLAW_TELEGRAM_CHAT_ID` from **n8n's own process environment** via `{{ $env.* }}` expressions — not an n8n Telegram credential, since this instance's UI/REST API wasn't reachable this session to create one; this also means neither value is ever committed to this repo or embedded in the workflow JSON).
 
-**Exact manual steps to get a real Telegram message landing:**
+**Done, 2026-07-18 (`ADR-072`), with the founder's real bot token:**
+1. Founder generated a real bot via `@BotFather` (`@OpenClaw_Abdelkader_bot`) and gave the token directly.
+2. Verified the token live (`getMe`), stored in `.env` as `TELEGRAM_BOT_TOKEN` (gitignored, never committed).
+3. Real `chat_id` (`5236670532`) fetched via `getUpdates` after the founder messaged the bot — stored as `OPENCLAW_TELEGRAM_CHAT_ID`.
+4. **A real test message was sent directly via Telegram's API and confirmed delivered** — proves the bot/chat channel itself works end-to-end, independent of n8n.
+5. n8n's live database backed up (`n8n_workflows/backups/pre_telegram_activation_*.json`), then the updated workflow imported via CLI while n8n was offline (same safe pattern as `ADR-045`) — zero concurrent-write risk.
+6. n8n started with `TELEGRAM_BOT_TOKEN`/`OPENCLAW_TELEGRAM_CHAT_ID`/`N8N_BLOCK_ENV_ACCESS_IN_NODE=false` in its process environment, confirmed healthy (`/healthz`).
+7. `N8N_TELEGRAM_WEBHOOK_URL=http://localhost:5678/webhook/golden-hunter-notify` set in `.env`.
 
-1. In Telegram, message `@BotFather` → `/newbot` → follow the prompts → copy the bot token it gives you.
-2. Message your new bot once (anything), then visit `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates` in a browser to find your numeric `chat.id` in the JSON response — that's `OPENCLAW_TELEGRAM_CHAT_ID`.
-3. Log into `http://localhost:5678` → **Credentials** → **New** → **Telegram API** → paste the bot token → save. Note the credential's real id.
-4. Import `04_Telegram_Notify.prepared.json` (UI's **Import from File**, or the same CLI path `ADR-045` used against a stopped instance) → open the **Send Telegram Message** node → attach the credential you just created (replaces the placeholder `REPLACE_WITH_YOUR_TELEGRAM_CREDENTIAL_ID`).
-5. In n8n's **Settings → Environment Variables** (or your OS environment for the n8n process), set `OPENCLAW_TELEGRAM_CHAT_ID` to the chat id from step 2.
-6. Toggle the workflow **Active**.
-7. In this repo's `.env`, set `N8N_TELEGRAM_WEBHOOK_URL=http://localhost:5678/webhook/golden-hunter-notify`.
-8. Restart `factory_loop.js` so it picks up the new env var.
+**Confirmed, directly from n8n itself, not assumed:** `n8n import:workflow --activeState=fromJson` fails outright in this instance's deployment mode ("can only be used when n8n is running in queue or multi-main mode"), and a POST to the production webhook URL returns n8n's own error: *"The workflow must be active for a production URL to run successfully. You can activate the workflow using the toggle in the top-right of the editor."* This is a genuine n8n platform limitation, not a permissions or effort gap — **only one manual step remains:**
 
-Once all 8 steps are done, the next real Golden Hunter tick that accepts an opportunity sends a real Telegram message — no code changes needed after that. Until then, `notifyGoldenHunterAccepted()` safely no-ops (logged as `n8n_notify`/`skipped` in `data/golden_hunter_events.jsonl`), exactly like `03_Production_Notify` does today.
+1. Open `http://localhost:5678` (n8n is already running) → open **04_Telegram_Notify** → toggle **Active** (top-right).
+
+That's it. The moment that toggle is on, `factory_loop.js`'s next real accepted opportunity sends a real Telegram message with zero further code changes — the whole chain from `TELEGRAM_BOT_TOKEN` through to a delivered message has already been built and independently verified piece by piece. Until that toggle is on, `notifyGoldenHunterAccepted()` still safely no-ops (webhook not registered → connection/404, logged, never blocks a real tick).

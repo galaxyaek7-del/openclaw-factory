@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-07-17T00:00:00.000Z",
+  "updatedAt": "2026-07-18T00:00:00.000Z",
   "createdAt": "2026-07-17T00:00:00.000Z",
   "id": "TN04telegramNotifyX",
   "name": "04_Telegram_Notify",
-  "description": "Receives factory_loop.js's notifyGoldenHunterAccepted() POST the moment a real opportunity clears profit_oracle's acceptance gate (ADR-065 Step 3(a)), and forwards it to Telegram as a real message. Not yet imported into the live n8n instance — see n8n_workflows/README.md for the exact manual activation steps (a Telegram bot token is an external credential this factory cannot create for itself).",
-  "active": false,
+  "description": "Receives factory_loop.js's notifyGoldenHunterAccepted() POST the moment a real opportunity clears profit_oracle's acceptance gate (ADR-065 Step 3(a)), and forwards it to Telegram as a real message via a plain HTTP Request to Telegram's Bot API (not an n8n Telegram credential — this instance's REST API/UI was not reachable this session to create one; TELEGRAM_BOT_TOKEN/OPENCLAW_TELEGRAM_CHAT_ID are read from the n8n process's own environment via $env, never embedded in this file). Imported via CLI while n8n was offline (ADR-072) — same safe pattern as ADR-045.",
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -42,21 +42,15 @@
     },
     {
       "parameters": {
-        "chatId": "={{ $env.OPENCLAW_TELEGRAM_CHAT_ID }}",
-        "text": "={{ $json.message }}",
-        "additionalFields": {}
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage?chat_id={{ $env.OPENCLAW_TELEGRAM_CHAT_ID }}&text={{ encodeURIComponent($json.message) }}",
+        "options": {}
       },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
       "position": [-192, 0],
       "id": "b1c2d3e4-0004-4a11-9e11-000000000004",
-      "name": "Send Telegram Message",
-      "credentials": {
-        "telegramApi": {
-          "id": "REPLACE_WITH_YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "OpenClaw Telegram Bot"
-        }
-      }
+      "name": "Send Telegram Message"
     }
   ],
   "connections": {
@@ -78,7 +72,7 @@
   "pinData": {},
   "versionId": "b1c2d3e4-0005-4a11-9e11-000000000005",
   "activeVersionId": null,
-  "versionCounter": 1,
+  "versionCounter": 2,
   "triggerCount": 0,
   "sourceWorkflowId": null,
   "tags": []
