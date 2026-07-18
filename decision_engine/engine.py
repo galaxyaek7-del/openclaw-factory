@@ -36,7 +36,8 @@ def _derive_status(ai_ceo_decision, opportunity_score_accepted):
 
 
 def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=10,
-                         analysis_db_file=None, decisions_path=None, precomputed_analysis=None):
+                         analysis_db_file=None, decisions_path=None, precomputed_analysis=None,
+                         ladder=None):
     """Runs the full Signal -> Evaluation -> Decision path for one niche and
     records the result permanently (append-only, never overwritten).
 
@@ -45,7 +46,18 @@ def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=1
     runs the market_intelligence stage immediately before the decision
     stage in the same cycle), pass it here to skip a second, redundant
     live network round-trip. Omitting it (every caller before this
-    parameter existed) reproduces today's exact behavior unchanged."""
+    parameter existed) reproduces today's exact behavior unchanged.
+
+    ladder (ADR-076, Decision Surface Reconciliation, 2026-07-18): when the
+    niche carries a Strategic Production Priority Ladder rank
+    (MASTER_CHARTER.md §2 — market_hunter.py tags every real candidate with
+    one), the composite gate is profit_oracle.ladder_opportunity_score()
+    (ADR-066) instead of the old tier-based opportunity_score() (ADR-026)
+    — this is the fix for the divergence ENGINEERING_ASSESSMENT_20260718.md
+    found: the automatic tick (factory_loop.js's huntGolden(), ADR-070) was
+    already ladder-aware; this path was not. Omitting ladder (every caller
+    before this parameter existed) reproduces the exact prior behavior —
+    the old tier-based gate — unchanged."""
     analysis = precomputed_analysis if precomputed_analysis is not None else market_intelligence_core.evaluate_opportunity(
         niche, external_signal=external_signal, tier=tier, max_results=max_results,
         analysis_db_file=analysis_db_file,
@@ -64,13 +76,26 @@ def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=1
             reasoning=[analysis["error"]],
             evaluation_snapshot=analysis,
             external_signal=external_signal,
+            ladder=ladder,
         )
         store.append_decision(decision, path=decisions_path)
         return decision
 
-    composite = profit_oracle.opportunity_score(niche, tier=tier, external_signal=external_signal)
+    if ladder:
+        composite = profit_oracle.ladder_opportunity_score(niche, ladder=ladder, external_signal=external_signal)
+        composite_score = composite["ladder_score"]
+        composite_accepted = composite["accepted"]
+        composite_reason = composite["reason"]
+        score_label = "Ladder Opportunity Score (ADR-066)"
+    else:
+        composite = profit_oracle.opportunity_score(niche, tier=tier, external_signal=external_signal)
+        composite_score = composite["opportunity_score"]
+        composite_accepted = composite["accepted"]
+        composite_reason = composite["reason"]
+        score_label = "Opportunity Score (ADR-026)"
+
     ai_ceo = analysis["ai_ceo"]
-    status = _derive_status(ai_ceo["decision"], composite["accepted"])
+    status = _derive_status(ai_ceo["decision"], composite_accepted)
 
     # Zero-assumption audit follow-up (High finding): this used to rebuild
     # its own string comparing composite['opportunity_score'] (tier-weighted)
@@ -84,8 +109,8 @@ def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=1
     # (data/decisions.jsonl). Reusing composite['reason'] directly instead
     # of re-deriving it here means this can never drift out of sync again.
     reasoning = list(ai_ceo["evidence"])
-    reasoning.append(f"Opportunity Score (ADR-026): {composite['reason']}")
-    if ai_ceo["decision"] == "BUILD" and not composite["accepted"]:
+    reasoning.append(f"{score_label}: {composite_reason}")
+    if ai_ceo["decision"] == "BUILD" and not composite_accepted:
         reasoning.append("تعارض بين بوابتين مستقلتين: AI CEO أوصى بالبناء لكن Opportunity Score لم يعبر الحد — تأجيل، لا قبول أحادي الجانب")
 
     decision = Decision(
@@ -95,11 +120,54 @@ def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=1
         decided_at=analysis["analyzed_at"],
         status=status,
         ai_ceo_decision=ai_ceo["decision"],
-        opportunity_score=composite["opportunity_score"],
-        opportunity_score_accepted=composite["accepted"],
+        opportunity_score=composite_score,
+        opportunity_score_accepted=composite_accepted,
         reasoning=reasoning,
         evaluation_snapshot=analysis,
         external_signal=external_signal,
+        ladder=ladder,
+    )
+    store.append_decision(decision, path=decisions_path)
+    return decision
+
+
+# ADR-076 (Decision Surface Reconciliation, 2026-07-18): the fast-path
+# recorder — market_hunter.py's hunt_market() already computes a real
+# profit_oracle.ladder_opportunity_score() result for every candidate it
+# scans (accepted or not); this writes that already-computed result into
+# the SAME single source of truth (data/decisions.jsonl) evaluate_and_decide()
+# above writes to, via the same Decision type and store — so
+# decision_engine/ranking.py and mission_control_api.py's Decision Queue
+# (both read data/decisions.jsonl directly, unchanged by this ADR) reflect
+# every real accept/reject decision, regardless of which of the two real
+# decision paths produced it. Deliberately does NOT run live AI-CEO
+# evidence gathering itself (that stays the separate, heavier
+# evaluate_and_decide() path, still available for deliberate manual
+# review) — ai_ceo_decision is honestly recorded as "N/A", never a
+# fabricated verdict.
+def record_ladder_decision(niche, ladder, ladder_result, decisions_path=None):
+    """ladder_result: the exact dict profit_oracle.ladder_opportunity_score()
+    already returned for this niche — never recomputed here, so this can
+    never silently disagree with the score the caller actually acted on."""
+    now = datetime.now(timezone.utc).isoformat()
+    decision = Decision(
+        decision_id=make_decision_id(niche, ladder or "kdp_books", now),
+        niche=niche,
+        tier="tier4",  # every real market_hunter.py candidate is sourced as tier4 today (ADR-026's meaning, unchanged) — a separate axis from ladder
+        decided_at=now,
+        status="ACCEPTED" if ladder_result.get("accepted") else "REJECTED",
+        ai_ceo_decision="N/A",
+        opportunity_score=ladder_result.get("ladder_score"),
+        opportunity_score_accepted=ladder_result.get("accepted"),
+        reasoning=[ladder_result.get("reason", "")],
+        evaluation_snapshot={
+            "ladder": ladder,
+            "price": ladder_result.get("price"),
+            "components": ladder_result.get("components"),
+        },
+        external_signal=None,
+        ladder=ladder,
+        decision_path="ladder_fast_gate",
     )
     store.append_decision(decision, path=decisions_path)
     return decision

@@ -43,6 +43,18 @@ try:
 except Exception:
     INSPECTORS = None
 
+# ADR-076 (Decision Surface Reconciliation, 2026-07-18): guarded the same
+# way PROFIT_ORACLE/INSPECTORS are — a broken decision_engine import must
+# never crash the real hunt. Records every real candidate this module
+# scores (accepted or not) into the single source of truth
+# (data/decisions.jsonl) decision_engine's own full AI-CEO evaluation path
+# already writes to, so Mission Control's Decision Queue reflects the same
+# real decisions the automatic tick actually acts on.
+try:
+    from decision_engine.engine import record_ladder_decision as RECORD_LADDER_DECISION
+except Exception:
+    RECORD_LADDER_DECISION = None
+
 FACTORY_DIR = os.path.dirname(os.path.abspath(__file__))
 OPPORTUNITIES_FILE = os.path.join(FACTORY_DIR, 'OPPORTUNITIES.md')
 REJECTED_NICHES_FILE = os.path.join(FACTORY_DIR, 'REJECTED_NICHES.md')  # factory_loop.js's circuit breaker
@@ -259,6 +271,15 @@ def hunt_market(limit=10, write_opportunities=True):
             "price": scored["price"],
         })
         scanned.append(entry)
+
+        # ADR-076: record every real scored candidate (accepted or not)
+        # into the single source of truth every decision surface reads —
+        # never lets a recording failure block the real hunt.
+        if RECORD_LADDER_DECISION is not None:
+            try:
+                RECORD_LADDER_DECISION(niche, ladder, scored)
+            except Exception:
+                pass
 
         if scored["accepted"]:
             entry["recommended_price"] = f"${scored['price']}"

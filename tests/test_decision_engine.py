@@ -122,6 +122,29 @@ class TestEvaluateAndDecide(unittest.TestCase):
         self.assertIn("dimension_scores", history[0]["evaluation_snapshot"])
         self.assertIn("ai_ceo", history[0]["evaluation_snapshot"])
 
+    # ADR-076 (Decision Surface Reconciliation) — ladder-aware evaluate_and_decide()
+
+    def test_omitting_ladder_reproduces_exact_prior_behavior(self):
+        d = engine.evaluate_and_decide("a reproducibility test niche", decisions_path=self.decisions_path, analysis_db_file=self.analysis_db_path)
+        self.assertIsNone(d.ladder)
+        self.assertEqual(d.to_dict()["decision_path"], "ai_ceo_full_evaluation")
+
+    def test_ladder_argument_uses_ladder_opportunity_score_not_old_gate(self):
+        d = engine.evaluate_and_decide(
+            "AI-powered compliance automation subscription system for accounting firms",
+            ladder="ai_saas", decisions_path=self.decisions_path, analysis_db_file=self.analysis_db_path,
+        )
+        self.assertEqual(d.ladder, "ai_saas")
+        self.assertTrue(any("Ladder Opportunity Score (ADR-066)" in r for r in d.reasoning))
+
+    def test_ladder_decision_recorded_with_ladder_field_populated(self):
+        engine.evaluate_and_decide(
+            "workflow automation system for logistics companies",
+            ladder="b2b_systems", decisions_path=self.decisions_path, analysis_db_file=self.analysis_db_path,
+        )
+        history = store.find_decisions_by_niche("workflow automation system for logistics companies", path=self.decisions_path)
+        self.assertEqual(history[0]["ladder"], "b2b_systems")
+
     def test_status_derivation_build_and_accepted_is_accepted(self):
         self.assertEqual(engine._derive_status("BUILD", True), "ACCEPTED")
 
@@ -176,6 +199,54 @@ class TestEvaluateAndDecide(unittest.TestCase):
         joined = " ".join(d.reasoning)
         self.assertIn("raw 69.5 < 81.2 floor", joined, "must reuse profit_oracle's own real comparison, not re-derive one")
         self.assertNotIn("69.5/100, < 65", joined, "must never rebuild the old, potentially-false flat-constant comparison")
+
+
+class TestRecordLadderDecision(unittest.TestCase):
+    """ADR-076 (Decision Surface Reconciliation) — the fast-path recorder
+    market_hunter.py calls for every real candidate it scans, writing into
+    the exact same single source of truth (data/decisions.jsonl) the full
+    AI-CEO evaluate_and_decide() path above writes to."""
+
+    def setUp(self):
+        self.decisions_path = _temp_path()
+
+    def tearDown(self):
+        if os.path.exists(self.decisions_path):
+            os.remove(self.decisions_path)
+
+    def test_accepted_ladder_result_recorded_as_accepted(self):
+        ladder_result = {"accepted": True, "ladder_score": 85.3, "price": 388, "reason": "accepted: test", "components": {}}
+        d = engine.record_ladder_decision("test niche", "ai_saas", ladder_result, decisions_path=self.decisions_path)
+        self.assertEqual(d.status, "ACCEPTED")
+        self.assertEqual(d.ladder, "ai_saas")
+        self.assertEqual(d.decision_path, "ladder_fast_gate")
+        self.assertEqual(d.ai_ceo_decision, "N/A")
+        self.assertEqual(d.opportunity_score, 85.3)
+
+    def test_rejected_ladder_result_recorded_as_rejected_never_dropped(self):
+        ladder_result = {"accepted": False, "ladder_score": 40.1, "price": 67, "reason": "rejected: test", "components": {}}
+        d = engine.record_ladder_decision("test niche 2", "kdp_books", ladder_result, decisions_path=self.decisions_path)
+        self.assertEqual(d.status, "REJECTED")
+        history = store.find_decisions_by_niche("test niche 2", path=self.decisions_path)
+        self.assertEqual(len(history), 1, "a rejected fast-path decision must remain searchable, same guarantee as the AI-CEO path")
+
+    def test_never_recomputes_the_score_reuses_the_caller_supplied_result_verbatim(self):
+        """The whole point: this must never silently disagree with the
+        score the real caller (market_hunter.py) already acted on."""
+        ladder_result = {"accepted": True, "ladder_score": 99.9, "price": 500, "reason": "accepted: verbatim check", "components": {"market_demand": 1}}
+        d = engine.record_ladder_decision("verbatim niche", "ai_saas", ladder_result, decisions_path=self.decisions_path)
+        self.assertEqual(d.opportunity_score, 99.9)
+        self.assertEqual(d.evaluation_snapshot["price"], 500)
+        self.assertEqual(d.evaluation_snapshot["components"], {"market_demand": 1})
+
+    def test_reads_via_the_same_ranking_and_mission_control_path(self):
+        """Confirms the actual unification claim: a fast-path decision is
+        indistinguishable, to a reader of decision_engine.store/ranking
+        (what mission_control_api.py uses), from any other decision."""
+        ladder_result = {"accepted": True, "ladder_score": 76.3, "price": 327, "reason": "accepted: b2b test", "components": {}}
+        engine.record_ladder_decision("ranking test niche", "b2b_systems", ladder_result, decisions_path=self.decisions_path)
+        queue = ranking.rank_queue(decisions_path=self.decisions_path, outcomes_path=_temp_path())
+        self.assertTrue(any(d["niche"] == "ranking test niche" for d in queue))
 
 
 class TestRanking(unittest.TestCase):
