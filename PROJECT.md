@@ -31,6 +31,10 @@ finance_data.json) → Telegram Founder Report (n8n → Telegram, Arabic)
 
 The same `production_id`, computed once by `production_factory/dossier.py`'s `make_production_id()`, now threads through every one of those stages (previously, the generated file's own log identity and the dossier's identity were two disconnected IDs — closed this phase). See `OpenClaw_Brain/00_Governance/ADR-077-product-generation-pipeline.md` for the full account of what was built, what's mocked in tests and why (real Groq/Paddle cost is never spent on a routine test run), and what's still a founder-gated manual step (activating the two remaining n8n workflows).
 
+## The Universal Production Engine (`UNIVERSAL_PRODUCTION_ENGINE.md`)
+
+As of 2026-07-18 (Roadmap Step 2), `automation_systems` is the first product family built end-to-end on the new swappable Content Generation / Asset Generation / Packaging / Dossier Bundle registries — the reference template every future family (Prompt Libraries, SaaS, Templates, etc.) now follows by configuration, not a rewrite. See `UNIVERSAL_PRODUCTION_ENGINE.md` for the full architecture, what's real vs. still a template, and the integration evidence.
+
 ## The unified decision pipeline (final architecture, `ADR-076`)
 
 Before 2026-07-18, two real decision-making surfaces silently disagreed (`ENGINEERING_ASSESSMENT_20260718.md`'s Critical Issue C1). **This is now closed.** One scoring function, one recording function, one file:
@@ -83,6 +87,7 @@ ADR)              │
 | How was the decision-surface duplication actually fixed? | `OpenClaw_Brain/00_Governance/ADR-076-decision-surface-reconciliation.md` |
 | How does a product go from ACCEPTED decision to a Telegram message in the founder's pocket? | `OpenClaw_Brain/00_Governance/ADR-077-product-generation-pipeline.md` |
 | What happens if the power/internet goes out mid-cycle — does it lose work or double-publish? | `DISASTER_RECOVERY_PLAN.md`'s "Unified Recovery System (2026-07-18)" section |
+| How does a product family actually get built, and what does a future family need to add? | `UNIVERSAL_PRODUCTION_ENGINE.md` |
 | Is every stage (discovery → sale → reporting) actually connected, and what's the shortest path to full autonomy? | `OpenClaw_Brain/00_Governance/COMPANY_INTEGRATION_AUDIT_20260718.md` |
 | How does the company mechanically operate, stage by stage? | `COMPANY_OPERATING_MODEL.md` (+ 2026-07-18 update note) |
 | What capabilities exist, what's missing, what's the dependency graph? | `CAPABILITY_MAP.md` (+ 2026-07-18 update note) |

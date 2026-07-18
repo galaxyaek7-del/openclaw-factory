@@ -254,22 +254,23 @@ def _resolve_recovery():
 
 # Universal Production Engine §2/§7 (2026-07-18) — the 11 canonical
 # family names the approved UPE architecture plan names, distinct from
-# product_families.mapping.ALL_PRODUCT_FAMILIES, which still carries two
-# families under their pre-UPE names (automation_packs, notion_systems)
-# that real tests already depend on (test_orchestrator.py,
-# test_decision_engine.py, test_production_factory.py,
-# test_product_families.py) and which Step 1's "zero behavior change"
-# scope does not rename. This dict reports the founder-approved
-# canonical naming Mission Control should actually show, mapped to
-# whatever real registry name (if any) an adapter self-registers under
-# today — no adapter is renamed or duplicated to produce this mapping.
+# product_families.mapping.ALL_PRODUCT_FAMILIES, which still carries one
+# family under its pre-UPE name (notion_systems) that real tests already
+# depend on (test_orchestrator.py, test_production_factory.py) and which
+# is out of scope to rename until that family is actually built (same
+# "rename when you build it" discipline that just retired automation_packs
+# -> automation_systems in Roadmap Step 2). This dict reports the
+# founder-approved canonical naming Mission Control should actually show,
+# mapped to whatever real registry name (if any) an adapter self-registers
+# under today — no adapter is renamed or duplicated to produce this
+# mapping.
 _UPE_FAMILY_REGISTRY_NAMES = {
     "kdp_books": "kdp_books",
     "professional_templates": "professional_templates",
     "digital_toolkits": "digital_toolkits",
     "knowledge_bases": "knowledge_bases",
     "ai_saas": "ai_saas",
-    "automation_systems": "automation_packs",
+    "automation_systems": "automation_systems",
     "notion_workspaces": "notion_systems",
     "spreadsheet_systems": "spreadsheet_systems",
     "prompt_libraries": "prompt_libraries",

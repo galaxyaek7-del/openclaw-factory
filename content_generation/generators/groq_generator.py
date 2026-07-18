@@ -18,6 +18,7 @@ shape — every downstream Asset Generator keeps working unchanged.
 """
 
 import book_generator as bg
+import factory_state
 from .. import registry
 
 
@@ -27,18 +28,27 @@ class GroqBookContentGenerator:
 
     def generate(self, request):
         """request: {"title", "topic", "chapter_count" (default 8),
-        "audience" (default "القارئ العام")}. Returns the real book_data
-        shape create_ai_book() expects: {"subtitle","introduction",
-        "chapters","conclusion"}. Falls back to honest, clearly-labeled
-        placeholder content on a real Groq failure — never raises,
-        matching generate_book()'s own existing discipline."""
+        "audience" (default "القارئ العام"), "production_id" (optional)}.
+        Returns the real book_data shape create_ai_book() expects:
+        {"subtitle","introduction","chapters","conclusion"}. Falls back
+        to honest, clearly-labeled placeholder content on a real Groq
+        failure — never raises, matching generate_book()'s own existing
+        discipline. A caller using this generator standalone (Universal
+        Production Engine Roadmap Step 2) — not via generate_book(),
+        which already enqueues its own retry — needs the same real
+        recovery-queue entry on failure, threading production_id through
+        so recovery_metadata can trace it back to this exact product."""
         title = request.get("title", "Untitled Book")
         topic = request.get("topic") or title
         chapters = request.get("chapter_count", 8)
         audience = request.get("audience", "القارئ العام")
         try:
             return bg.ai_generate_book_content(title, topic, chapters, audience)
-        except Exception:
+        except Exception as e:
+            factory_state.enqueue_retry(
+                "groq_generation", e,
+                context={"production_id": request.get("production_id"), "generator": self.name, "title": title},
+            )
             return bg._fallback_book_content(title, topic, chapters, audience)
 
 
@@ -47,18 +57,23 @@ class GroqTechdocContentGenerator:
     name = "groq_techdoc"
 
     def generate(self, request):
-        """request: {"title", "topic", "section_titles": [str, ...]}.
-        Returns {"components": [{"title","content"}, ...]} — the same
-        shape generate_product_package() already assembles from
-        ai_generate_techdoc_content()'s real output. Falls back to
-        honest, clearly-labeled placeholder content on a real Groq
-        failure — never raises."""
+        """request: {"title", "topic", "section_titles": [str, ...],
+        "production_id" (optional)}. Returns {"components": [{"title",
+        "content"}, ...]} — the same shape generate_product_package()
+        already assembles from ai_generate_techdoc_content()'s real
+        output. Falls back to honest, clearly-labeled placeholder content
+        on a real Groq failure — never raises. Same standalone-caller
+        recovery-queue requirement as GroqBookContentGenerator above."""
         title = request.get("title", "Untitled")
         topic = request.get("topic") or title
         section_titles = request.get("section_titles") or []
         try:
             generated = bg.ai_generate_techdoc_content(title, topic, section_titles)
-        except Exception:
+        except Exception as e:
+            factory_state.enqueue_retry(
+                "groq_generation", e,
+                context={"production_id": request.get("production_id"), "generator": self.name, "title": title},
+            )
             generated = bg._fallback_techdoc_content(topic, section_titles)
         return {"components": generated}
 

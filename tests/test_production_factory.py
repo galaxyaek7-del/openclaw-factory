@@ -84,9 +84,15 @@ class TestProductTypeCapability(unittest.TestCase):
         for family in ("kdp_books", "professional_templates", "digital_toolkits", "knowledge_bases"):
             self.assertIn("REAL", caps[family])
 
+    def test_automation_systems_is_real_upe_step_2(self):
+        """Universal Production Engine Roadmap Step 2 (2026-07-18): the
+        first family built end-to-end on the new registries."""
+        caps = dossier._product_type_capability()
+        self.assertIn("REAL", caps["automation_systems"])
+
     def test_unbuilt_families_are_honestly_not_built(self):
         caps = dossier._product_type_capability()
-        for family in ("ai_saas", "notion_systems", "spreadsheet_systems", "prompt_libraries", "automation_packs"):
+        for family in ("ai_saas", "notion_systems", "spreadsheet_systems", "prompt_libraries"):
             self.assertIn("NOT YET BUILT", caps[family])
 
 

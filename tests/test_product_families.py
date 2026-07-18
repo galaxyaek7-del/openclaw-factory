@@ -42,7 +42,10 @@ class TestRegistry(unittest.TestCase):
 
     def test_phase_a_families_are_all_registered(self):
         names = {a.name for a in registry.all_families()}
-        self.assertEqual(names, {"kdp_books", "professional_templates", "digital_toolkits", "knowledge_bases"})
+        self.assertEqual(
+            names,
+            {"kdp_books", "professional_templates", "digital_toolkits", "knowledge_bases", "automation_systems"},
+        )
 
     def test_unregistered_family_returns_none_not_a_guess(self):
         registry.clear()
@@ -66,8 +69,8 @@ class TestLadderToFamilyMapping(unittest.TestCase):
 
     def test_default_table_applies_when_no_explicit_family(self):
         self.assertEqual(resolve_product_family("ai_saas"), "ai_saas")
-        self.assertEqual(resolve_product_family("b2b_systems"), "automation_packs")
-        self.assertEqual(resolve_product_family("automation_tools"), "automation_packs")
+        self.assertEqual(resolve_product_family("b2b_systems"), "automation_systems")
+        self.assertEqual(resolve_product_family("automation_tools"), "automation_systems")
         self.assertEqual(resolve_product_family("reusable_assets"), "professional_templates")
         self.assertEqual(resolve_product_family("educational"), "knowledge_bases")
         self.assertEqual(resolve_product_family("kdp_books"), "kdp_books")
@@ -213,6 +216,90 @@ class TestKnowledgeBasesAdapter(_CleanupPdfMixin, unittest.TestCase):
         )
         with self.assertRaises(ValueError):
             registry.get("knowledge_bases").generate(spec)
+
+
+class TestAutomationSystemsAdapter(_CleanupPdfMixin, unittest.TestCase):
+    """Universal Production Engine Roadmap Step 2 (2026-07-18) — the
+    first family routed through content_generation/asset_generation/
+    product_packaging instead of calling book_generator.py directly."""
+
+    def _isolated_path(self, suffix):
+        import tempfile
+        path = tempfile.mktemp(suffix=suffix)
+        self.addCleanup(lambda: os.path.exists(path) and os.remove(path))
+        return path
+
+    def _isolated_changelog(self):
+        return self._isolated_path(".jsonl")
+
+    def test_generates_a_real_pdf_via_the_upe_registries(self):
+        def _fake_generated(title, topic, titles):
+            return [{"title": t, "content": f"real content for {t}"} for t in titles]
+
+        with patch.object(bg, "ai_generate_techdoc_content", side_effect=_fake_generated), \
+             patch.object(bg, "groq_chat", side_effect=RuntimeError("no network in test")), \
+             patch.object(bg, "_record_rejected_niche"), \
+             patch.object(bg.INSPECTORS, "_log_quarantine"):
+            spec = build_product_specification(
+                # Deliberately NOT market_hunter.py's real seed niche text
+                # ("workflow automation system for logistics companies") --
+                # this test's thin fake content fails real Dual Inspection
+                # every run, and doing that against a real, shared seed
+                # niche pollutes REJECTED_NICHES.md's circuit-breaker memory
+                # for a niche real Discovery actually uses (found live,
+                # 2026-07-18: it broke tests/test_unified_pipeline_e2e.py).
+                niche="test automation systems niche",
+                product_family="automation_systems",
+                production_id="PROD-automation-test-1",
+                family_config={
+                    "output": "test_family_automation_systems.pdf",
+                    "changelog_path": self._isolated_changelog(),
+                    "state_path": self._isolated_path(".json"),
+                },
+            )
+            result = self._track(registry.get("automation_systems").generate(spec))
+
+        self.assertTrue(result["success"])
+        self.assertEqual(result["product_type"], "techdoc")
+        self.assertEqual(len(result["components"]), 6)  # DEFAULT_AUTOMATION_SECTIONS
+        self.assertEqual(result["package"], {
+            "artifact_path": result["path"], "method": "single_file", "file_count": 1,
+        })
+        self.assertEqual(result["dossier_bundle"]["production_id"], "PROD-automation-test-1")
+        self.assertEqual(result["dossier_bundle"]["version"], "1.0.0")
+        self.assertEqual(result["dossier_bundle"]["build_manifest"]["content_generator"], "groq_techdoc")
+        self.assertEqual(result["dossier_bundle"]["build_manifest"]["asset_builder"], "techdoc_package")
+        self.assertEqual(result["dossier_bundle"]["build_manifest"]["packager"], "single_file")
+        self.assertIsNotNone(result["dossier_bundle"]["qa_report"])
+        self.assertFalse(result["dossier_bundle"]["recovery_metadata"]["had_pending_retry"])
+
+    def test_uses_its_own_real_section_skeleton_not_the_generic_techdoc_one(self):
+        from product_families.families.automation_systems import DEFAULT_AUTOMATION_SECTIONS
+        self.assertEqual(
+            DEFAULT_AUTOMATION_SECTIONS,
+            [
+                "System Overview", "Workflow Architecture", "Setup & Integration Guide",
+                "Automation Triggers & Logic", "Maintenance & Troubleshooting", "ROI & Time Savings",
+            ],
+        )
+
+    def test_verbatim_components_are_never_regenerated(self):
+        with patch.object(bg, "ai_generate_techdoc_content") as mocked, \
+             patch.object(bg, "groq_chat", side_effect=RuntimeError("no network in test")), \
+             patch.object(bg, "_record_rejected_niche"), \
+             patch.object(bg.INSPECTORS, "_log_quarantine"):
+            spec = build_product_specification(
+                niche="test automation verbatim niche", product_family="automation_systems",
+                components=[{"title": "Custom Section", "content": "Already-written real content."}],
+                family_config={
+                    "output": "test_family_automation_systems_verbatim.pdf",
+                    "changelog_path": self._isolated_changelog(),
+                    "state_path": self._isolated_path(".json"),
+                },
+            )
+            result = self._track(registry.get("automation_systems").generate(spec))
+        mocked.assert_not_called()
+        self.assertEqual(result["components"], [{"title": "Custom Section", "content": "Already-written real content."}])
 
 
 if __name__ == "__main__":

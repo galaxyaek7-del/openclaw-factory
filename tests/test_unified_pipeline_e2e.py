@@ -23,6 +23,9 @@ _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
     sys.path.insert(0, str(_FACTORY_ROOT))
 
+import book_generator as bg
+import dossier_bundle.build_bundle as bb
+import factory_state
 import market_hunter as mh
 import profit_oracle as po
 from decision_engine import ranking, store
@@ -179,14 +182,25 @@ class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
         self.decisions_path = _temp_path()
         self.ledger_path = _temp_path(suffix=".jsonl")
         self.finance_path = _temp_path(suffix=".json")
+        # Universal Production Engine Roadmap Step 2 (2026-07-18): REAL_LADDER
+        # ("b2b_systems") now resolves to the real, registered
+        # automation_systems adapter, which routes through dossier_bundle
+        # (changelog) and factory_state (recovery queue) — neither of which
+        # production.run() exposes a per-call path override for, since it's
+        # the real orchestrator entry point, not a test seam. Isolated here
+        # for the duration of this test instead.
+        self.changelog_path = _temp_path(suffix=".jsonl")
+        self.state_path = _temp_path(suffix=".json")
+        self._generated_files = []
 
         from channels import registry as channel_registry
         from channels.paddle_arm import PaddleArm
         channel_registry.register(PaddleArm())  # idempotent — a real, live arm, not a stub
 
     def tearDown(self):
-        for p in (self.decisions_path, self.ledger_path, self.finance_path):
-            if os.path.exists(p):
+        for p in (self.decisions_path, self.ledger_path, self.finance_path,
+                   self.changelog_path, self.state_path, *self._generated_files):
+            if p and os.path.exists(p):
                 os.remove(p)
 
     def test_full_pipeline_carries_one_real_production_id_through_every_stage(self):
@@ -215,20 +229,51 @@ class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
         for key in ("product_specification", "pricing_strategy", "publishing_checklist"):
             self.assertIn(key, dossier)
 
-        # Stage 4: AI Content Generation + Packaging + QA — the real
-        # orchestrator production engine, with only the Groq-costly
-        # book_generator.py subprocess mocked. Proves the SAME production_id
-        # computed above is the one actually sent to generation.
+        # Stage 4: Content Generation + Asset Generation + Packaging + QA —
+        # the real orchestrator production engine. REAL_LADDER
+        # ("b2b_systems") now resolves to the real, registered
+        # automation_systems adapter (Universal Production Engine Roadmap
+        # Step 2, 2026-07-18) and dispatches IN-PROCESS — the "nothing
+        # breaks mid-migration" guarantee production.py's own comment
+        # describes, now realized for this ladder rank; book_generator.py's
+        # subprocess is never spawned for it anymore. Only the Groq-costly
+        # content call is mocked — the real PDF/QA/dossier-bundle pipeline
+        # runs for real. Proves the SAME production_id computed above is
+        # the one actually threaded through generation.
         context = {"niche": REAL_NICHE, "dry_run": False, "decision_result": decision}
-        fake_stdout = json.dumps({
-            "success": True, "path": "/fake/path.pdf", "pages": 8,
-            "product_type": "techdoc", "price": scored["price"],
-        })
-        fake_proc = MagicMock(stdout=fake_stdout)
-        with patch.object(production_engine.subprocess, "run", return_value=fake_proc) as mock_run:
+
+        def _fake_generated(title, topic, titles):
+            return [{"title": t, "content": f"real content for {t}"} for t in titles]
+
+        # This test's thin fake content will likely fail real Dual
+        # Inspection (a real, honest verdict — not mocked), which would
+        # otherwise write a real entry to REJECTED_NICHES.md/QUARANTINE.md
+        # for REAL_NICHE — a real, shared market_hunter.py seed niche other
+        # tests in this same suite (TestOneOpportunityFlowsThroughEvery...)
+        # rely on never being circuit-broken. The inspection verdict itself
+        # stays real; only the disk-logging side effect is suppressed, same
+        # isolation principle as the changelog/state path patches above.
+        # _log_generation is also suppressed: it writes topic=REAL_NICHE
+        # into the real books/_generation_log.jsonl unconditionally, which
+        # would make inspectors._is_duplicate() flag REAL_NICHE as a
+        # duplicate on this same file's OWN next real hunt_market() call
+        # (TestOneOpportunityFlowsThroughEveryStageWithNoDivergence, same
+        # process) — found live, 2026-07-18.
+        with patch.object(bg, "ai_generate_techdoc_content", side_effect=_fake_generated), \
+             patch.object(bg, "groq_chat", side_effect=RuntimeError("no network in test")), \
+             patch.object(bb, "_CHANGELOG_PATH", self.changelog_path), \
+             patch.object(factory_state, "DEFAULT_STATE_PATH", Path(self.state_path)), \
+             patch.object(bg, "_record_rejected_niche"), \
+             patch.object(bg, "_log_generation"), \
+             patch.object(bg.INSPECTORS, "_log_quarantine"), \
+             patch.object(production_engine.subprocess, "run") as mock_run:
             production_result = production_engine.run(context)
-        sent_payload = json.loads(mock_run.call_args.kwargs["input"])
-        self.assertEqual(sent_payload["production_id"], production_id)
+        self.assertFalse(mock_run.called, "a registered family adapter must dispatch in-process, never spawn book_generator.py")
+        if production_result.get("path"):
+            self._generated_files.append(production_result["path"])
+        if (production_result.get("cover") or {}).get("path"):
+            self._generated_files.append(production_result["cover"]["path"])
+        self.assertEqual(production_result["production_id"], production_id)
         self.assertTrue(production_result["success"])
 
         # Stage 5: Metadata carried into a real Product (schemas/product.py) —

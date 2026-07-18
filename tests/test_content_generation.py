@@ -15,6 +15,7 @@ if str(_FACTORY_ROOT) not in sys.path:
     sys.path.insert(0, str(_FACTORY_ROOT))
 
 import book_generator as bg
+import content_generation.generators.groq_generator as groq_gen
 from content_generation import registry
 import content_generation.generators  # noqa: F401 — self-registers
 
@@ -63,9 +64,12 @@ class TestGroqBookContentGenerator(unittest.TestCase):
         self.assertEqual(result, fake_book_data)
 
     def test_falls_back_honestly_on_groq_failure_never_raises(self):
-        with patch.object(bg, "ai_generate_book_content", side_effect=RuntimeError("groq down")):
-            result = registry.get("groq_book").generate({"title": "T", "topic": "test topic"})
+        with patch.object(bg, "ai_generate_book_content", side_effect=RuntimeError("groq down")), \
+             patch.object(groq_gen.factory_state, "enqueue_retry") as mocked_retry:
+            result = registry.get("groq_book").generate({"title": "T", "topic": "test topic", "production_id": "PROD-1"})
         self.assertIn("chapters", result)
+        mocked_retry.assert_called_once()
+        self.assertEqual(mocked_retry.call_args.kwargs["context"]["production_id"], "PROD-1")
 
     def test_defaults_topic_to_title_and_audience_when_omitted(self):
         with patch.object(bg, "ai_generate_book_content", return_value={"chapters": []}) as mocked:
@@ -91,12 +95,15 @@ class TestGroqTechdocContentGenerator(unittest.TestCase):
         )
 
     def test_falls_back_honestly_on_groq_failure_never_raises(self):
-        with patch.object(bg, "ai_generate_techdoc_content", side_effect=RuntimeError("groq down")):
+        with patch.object(bg, "ai_generate_techdoc_content", side_effect=RuntimeError("groq down")), \
+             patch.object(groq_gen.factory_state, "enqueue_retry") as mocked_retry:
             result = registry.get("groq_techdoc").generate(
-                {"title": "T", "topic": "test topic", "section_titles": ["Overview"]}
+                {"title": "T", "topic": "test topic", "section_titles": ["Overview"], "production_id": "PROD-2"}
             )
         self.assertEqual(len(result["components"]), 1)
         self.assertEqual(result["components"][0]["title"], "Overview")
+        mocked_retry.assert_called_once()
+        self.assertEqual(mocked_retry.call_args.kwargs["context"]["production_id"], "PROD-2")
 
 
 if __name__ == "__main__":

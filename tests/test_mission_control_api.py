@@ -35,7 +35,7 @@ class TestEndpointDispatch(unittest.TestCase):
         """Universal Production Engine §7 — Mission Control's own view of
         family readiness, reported under the founder-approved canonical
         names (not product_families.mapping.ALL_PRODUCT_FAMILIES's
-        pre-UPE naming for the two still-unbuilt families)."""
+        pre-UPE naming for the one still-unbuilt family, notion_systems)."""
         result = mission_control_api._production_families()
         families = result["families"]
         self.assertEqual(
@@ -47,7 +47,8 @@ class TestEndpointDispatch(unittest.TestCase):
                 "api_products", "micro_saas",
             },
         )
-        for real_family in ("kdp_books", "professional_templates", "digital_toolkits", "knowledge_bases"):
+        for real_family in ("kdp_books", "professional_templates", "digital_toolkits",
+                             "knowledge_bases", "automation_systems"):
             self.assertTrue(families[real_family].startswith("REAL"))
         for unbuilt_family in ("ai_saas", "notion_workspaces", "api_products", "micro_saas"):
             self.assertTrue(families[unbuilt_family].startswith("NOT YET BUILT"))

@@ -170,7 +170,7 @@ class TestEvaluateAndDecide(unittest.TestCase):
             "workflow automation system for logistics companies",
             ladder="b2b_systems", decisions_path=self.decisions_path, analysis_db_file=self.analysis_db_path,
         )
-        self.assertEqual(d.product_family, "automation_packs")
+        self.assertEqual(d.product_family, "automation_systems")
 
     def test_explicit_product_family_overrides_the_default_table(self):
         d = engine.evaluate_and_decide(
