@@ -133,6 +133,7 @@ async function main() {
     assert.strictEqual(r.ok, true);
     assert.strictEqual(r.accepted, true);
     assert.ok(r.score > 0);
+    assert.ok(r.price > 0, 'price must be threaded through for the Arabic Telegram message (ADR-073)');
     assert.ok(r.reason.includes('ladder=ai_saas'));
   });
 

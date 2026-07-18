@@ -3,7 +3,7 @@
   "createdAt": "2026-07-17T00:00:00.000Z",
   "id": "TN04telegramNotifyX",
   "name": "04_Telegram_Notify",
-  "description": "Receives factory_loop.js's notifyGoldenHunterAccepted() POST the moment a real opportunity clears profit_oracle's acceptance gate (ADR-065 Step 3(a)), and forwards it to Telegram as a real message via a plain HTTP Request to Telegram's Bot API (not an n8n Telegram credential — this instance's REST API/UI was not reachable this session to create one; TELEGRAM_BOT_TOKEN/OPENCLAW_TELEGRAM_CHAT_ID are read from the n8n process's own environment via $env, never embedded in this file). Imported via CLI while n8n was offline (ADR-072) — same safe pattern as ADR-045.",
+  "description": "Receives factory_loop.js's notifyGoldenHunterAccepted() POST the moment a real opportunity clears profit_oracle's acceptance gate (ADR-065 Step 3(a)), and forwards it to Telegram as a real message via a plain HTTP Request to Telegram's Bot API (not an n8n Telegram credential — this instance's REST API/UI was not reachable this session to create one; TELEGRAM_BOT_TOKEN/OPENCLAW_TELEGRAM_CHAT_ID are read from the n8n process's own environment via $env, never embedded in this file). Imported via CLI while n8n was offline (ADR-072) — same safe pattern as ADR-045. Message text is Arabic (ADR-073, 2026-07-18): the founder reads Arabic, not English.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -27,7 +27,7 @@
             {
               "id": "b1c2d3e4-0002-4a11-9e11-000000000002",
               "name": "message",
-              "value": "={{ \"\\uD83C\\uDFC6 Golden Hunter accepted a new opportunity\\n\\nNiche: \" + $json.body.niche + \"\\nOpportunity Score: \" + $json.body.opportunity_score + \"/100\\n\" + $json.body.reason }}",
+              "value": "={{ \"🏆 الصياد الذهبي قبل فرصة جديدة\\n\\nالمجال: \" + $json.body.niche + \"\\nالنقاط: \" + $json.body.opportunity_score + \"/100\" + ($json.body.price ? (\"\\nالسعر المقترح: $\" + $json.body.price) : \"\") }}",
               "type": "string"
             }
           ]

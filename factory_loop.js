@@ -673,7 +673,10 @@ function getLadderOpportunityScore(niche, ladder, { timeoutMs = 15000, scriptPat
       try {
         const result = JSON.parse(output.trim());
         if (result.success && Number.isFinite(result.ladder_score)) {
-          finish({ ok: true, score: result.ladder_score, accepted: result.accepted, reason: result.reason, components: result.components });
+          // ADR-073: price threaded through too — a Telegram notification's
+          // "key numbers" (mission follow-up, 2026-07-18) means both the
+          // score and the real ladder-band price, not score alone.
+          finish({ ok: true, score: result.ladder_score, price: result.price, accepted: result.accepted, reason: result.reason, components: result.components });
         } else {
           finish({ ok: false, error: result.error || `ناتج غير متوقع: ${output}${errOut}` });
         }

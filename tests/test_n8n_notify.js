@@ -155,6 +155,21 @@ test('buildGoldenHunterNotifyPayload: projects a real opportunity_score() result
   assert.ok(payload.generated_at);
 });
 
+// ADR-073 (mission follow-up, 2026-07-18): the "key numbers" a Telegram
+// notification shows now include price, not just score.
+test('buildGoldenHunterNotifyPayload: carries price when the ladder gate produced one', () => {
+  const opportunityScore = { score: 85.3, price: 388, reason: 'accepted: ladder_score 85.3/100 >= 65, price $388 >= $97 (ladder=ai_saas)' };
+  const payload = buildGoldenHunterNotifyPayload('x', opportunityScore);
+  assert.equal(payload.price, 388);
+});
+
+test('buildGoldenHunterNotifyPayload: price is omitted (not "undefined") when the old tier gate produced no price', () => {
+  const opportunityScore = { score: 70, reason: 'accepted: opportunity_score 70/100 (tier=tier4)' };
+  const payload = buildGoldenHunterNotifyPayload('x', opportunityScore);
+  assert.equal(payload.price, undefined);
+  assert.equal(JSON.stringify(payload).includes('"price"'), false);
+});
+
 test('payload is sent as the real, unmodified JSON body (no field renaming/dropping)', async () => {
   const payload = {
     event: 'production_dossier_completed',
