@@ -65,7 +65,7 @@ def _validate_quality(niche, production_output, production_plan):
 
 
 def process_opportunity(decision, execute=False, timeline_path=None, decisions_path=None,
-                         analysis_db_file=None, outcomes_path=None):
+                         analysis_db_file=None, outcomes_path=None, state_path=None):
     """One ACCEPTED opportunity through the revenue pipeline. execute=False
     (default) never spends real money or publishes anything live — this
     only reuses orchestrator.run_cycle()'s own existing safety switch,
@@ -81,6 +81,7 @@ def process_opportunity(decision, execute=False, timeline_path=None, decisions_p
             tier=decision.get("tier", "tier4"), execute_production=True,
             timeline_path=timeline_path, decisions_path=decisions_path,
             analysis_db_file=analysis_db_file, outcomes_path=outcomes_path,
+            state_path=state_path,
         )
         production_stage = next((r for r in stage_results if r.engine == "production"), None)
         production_output = production_stage.output if production_stage else None

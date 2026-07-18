@@ -145,6 +145,7 @@ class _IsolatedRunCycleTestCase(unittest.TestCase):
         self.analysis_db_path = _temp_path()
         self.outcomes_path = _temp_path()
         self.competitor_db_path = _temp_path(".json")
+        self.state_path = _temp_path(".json")
         patcher1 = patch("competitor_discovery._query_hn", return_value=[])
         patcher2 = patch("competitor_discovery._query_github", return_value=[])
         patcher3 = patch("market_intelligence_engine._query_hn_discussions", return_value=([], 0))
@@ -156,14 +157,15 @@ class _IsolatedRunCycleTestCase(unittest.TestCase):
 
     def tearDown(self):
         for p in (self.timeline_path, self.decisions_path, self.analysis_db_path,
-                  self.outcomes_path, self.competitor_db_path):
+                  self.outcomes_path, self.competitor_db_path, self.state_path):
             if os.path.exists(p):
                 os.remove(p)
 
     def _run_cycle(self, niche, **kwargs):
         return orch.run_cycle(
             niche, timeline_path=self.timeline_path, decisions_path=self.decisions_path,
-            analysis_db_file=self.analysis_db_path, outcomes_path=self.outcomes_path, **kwargs,
+            analysis_db_file=self.analysis_db_path, outcomes_path=self.outcomes_path,
+            state_path=self.state_path, **kwargs,
         )
 
 

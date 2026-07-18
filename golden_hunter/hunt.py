@@ -20,7 +20,7 @@ from real_world_mode import signal_intake
 
 
 def run_hunt(candidates_dir=None, timeline_path=None, decisions_path=None,
-             analysis_db_file=None, outcomes_path=None, max_items=None):
+             analysis_db_file=None, outcomes_path=None, max_items=None, state_path=None):
     """Continuously monitors every currently available real evidence
     source (OPPORTUNITIES.md + tier1_intake/candidates/, re-read fresh
     every call), runs each through the existing pipeline in dry-run only,
@@ -35,6 +35,7 @@ def run_hunt(candidates_dir=None, timeline_path=None, decisions_path=None,
             tier=signal.get("tier", "tier4"), execute_production=False,
             timeline_path=timeline_path, decisions_path=decisions_path,
             analysis_db_file=analysis_db_file, outcomes_path=outcomes_path,
+            state_path=state_path,
         )
 
     ranked = decision_ranking.rank_all(path=decisions_path)

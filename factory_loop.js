@@ -25,6 +25,7 @@ const path = require('path');
 const { spawn, execSync } = require('child_process');
 const selfAwareness = require('./self_awareness');
 const { notifyN8nProductionEvent, buildGoldenHunterNotifyPayload } = require('./lib/n8n_notify');
+const factoryState = require('./lib/factory_state');
 
 const FACTORY_DIR = __dirname;
 const DASHBOARD_URL = process.env.DASHBOARD_URL || 'http://localhost:3000';
@@ -1578,13 +1579,26 @@ async function maybeGenerateWeeklyReport(diagnosis, now = new Date()) {
 }
 
 // ── ONE TICK ──
+// Operational Resilience Architecture §3/§4 (Phase A, 2026-07-18): marks
+// the named step as in-flight in data/factory_state.json before it runs.
+// This is the missing persisted "how far did the tick get" signal —
+// tickRunning (safeTick, below) is in-memory only and loses this on a
+// crash. Best-effort (factory_state's own functions never throw) — a
+// disk error here must never affect the real tick.
+function markStep(step) {
+  factoryState.setCurrentTask('golden_hunter_tick', step);
+}
+
 async function runTick() {
+  markStep('diagnose');
   const diagnosis = await diagnose();
   const actions = [];
 
   if (diagnosis.reachable) {
+    markStep('heal_finance');
     actions.push({ step: 'heal_finance', ...healFinance(diagnosis.health) });
 
+    markStep('heal_books_empty');
     const healBooksResult = await healEmptyBooks(true);
     const { distribution: healBooksDistribution, ...healBooksAction } = healBooksResult;
     actions.push({ step: 'heal_books_empty', ...healBooksAction });
@@ -1594,8 +1608,10 @@ async function runTick() {
 
     actions.push({ step: 'heal_n8n', ...healN8n(diagnosis.health) });
 
+    markStep('sales_poll');
     actions.push({ step: 'sales_poll', ...(await pollSales(true)) });
 
+    markStep('hunt');
     const huntResult = await hunt(true);
     const { distribution: huntDistribution, ...huntAction } = huntResult;
     actions.push({ step: 'hunt', ...huntAction });
@@ -1603,6 +1619,7 @@ async function runTick() {
       actions.push({ step: 'distribute', ...formatDistributionAction(huntDistribution) });
     }
 
+    markStep('golden_hunter_bridge');
     const goldenResult = await huntGolden(true);
     const { distribution: goldenDistribution, ...goldenAction } = goldenResult;
     actions.push({ step: 'golden_hunter_bridge', ...goldenAction });
@@ -1621,15 +1638,18 @@ async function runTick() {
   // finance_data.json, factory_loop.log, OPPORTUNITIES.md) is a direct
   // filesystem read; only the health section degrades to "unreachable" if
   // the dashboard happened to be down at the time.
+  markStep('weekly_report');
   actions.push({ step: 'weekly_report', ...(await maybeGenerateWeeklyReport(diagnosis)) });
 
   // Golden Hunter also runs regardless of dashboard reachability — it's a
   // standalone local Python process, not an HTTP call to the dashboard.
+  markStep('golden_hunter');
   actions.push({ step: 'golden_hunter', ...(await maybeRunMarketHunter()) });
 
   // Self-Awareness also runs regardless of reachability — an unreachable
   // dashboard is itself an honest, reportable vital sign (see
   // self_awareness.js's own health.reachable field), not a reason to skip.
+  markStep('self_awareness');
   actions.push({ step: 'self_awareness', ...(await maybeRunSelfAwareness()) });
 
   // Pending-review notification (Human-in-the-Loop, HIGH_VALUE_EXECUTION_
@@ -1637,11 +1657,14 @@ async function runTick() {
   // reviewWasActive captured BEFORE the call so a real desktop
   // notification only fires on the actual transition into "needs review"
   // (never repeated every ~10min tick while already flagged).
+  markStep('pending_review');
   const reviewWasActive = fs.existsSync(NEEDS_REVIEW_FILE);
   actions.push({ step: 'pending_review', ...checkPendingReview() });
   if (!reviewWasActive && fs.existsSync(NEEDS_REVIEW_FILE)) {
     sendDesktopNotification('📝 OpenClaw needs review', 'New drafts are waiting in pending_review/queue/.');
   }
+
+  factoryState.clearCurrentTask();
 
   appendLoopLog({
     diagnosis: diagnosis.reachable

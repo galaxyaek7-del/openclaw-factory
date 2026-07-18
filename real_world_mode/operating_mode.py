@@ -19,7 +19,8 @@ from real_world_mode import signal_intake
 
 
 def run_real_world_cycle(execute_production=False, candidates_dir=None, timeline_path=None,
-                          decisions_path=None, analysis_db_file=None, outcomes_path=None):
+                          decisions_path=None, analysis_db_file=None, outcomes_path=None,
+                          state_path=None):
     signals = signal_intake.collect_all_real_signals(candidates_dir=candidates_dir)
     if not signals:
         return {
@@ -39,6 +40,7 @@ def run_real_world_cycle(execute_production=False, candidates_dir=None, timeline
             decisions_path=decisions_path,
             analysis_db_file=analysis_db_file,
             outcomes_path=outcomes_path,
+            state_path=state_path,
         )
         results.append({
             "niche": signal["niche"],

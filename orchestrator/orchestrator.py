@@ -22,6 +22,7 @@ import hashlib
 from datetime import datetime, timezone
 
 import competitor_discovery
+import factory_state
 from decision_engine import ranking as decision_ranking
 
 from orchestrator import engines  # noqa: F401 — import triggers auto-registration
@@ -70,7 +71,17 @@ def _skip(stage_name, idempotency_key, reason, timeline_path):
     return result
 
 
-def _run_stage(stage_name, fn, context, idempotency_key, timeline_path, max_attempts):
+def _run_stage(stage_name, fn, context, idempotency_key, timeline_path, max_attempts, state_path=None):
+    # Operational Resilience Architecture §3/§4 (Phase A, 2026-07-18):
+    # set_current_task() is the "in-flight, not yet resolved" evidence
+    # startup recovery needs — orchestrator/timeline.py alone only records
+    # *finished* attempts, never "this was started and the process died
+    # before it finished." Cleared unconditionally below regardless of
+    # success/failure — either way the stage is no longer in flight.
+    # Best-effort only (factory_state's own functions never raise) — a
+    # disk error here must never affect the real stage execution.
+    factory_state.set_current_task(stage_name, idempotency_key=idempotency_key, path=state_path)
+
     started_at = datetime.now(timezone.utc).isoformat()
     output, error, attempts = retry.run_with_retry(fn, context, max_attempts=max_attempts)
     finished_at = datetime.now(timezone.utc).isoformat()
@@ -80,13 +91,18 @@ def _run_stage(stage_name, fn, context, idempotency_key, timeline_path, max_atte
         output=output or {}, error=error,
     )
     timeline.append_execution(result, path=timeline_path)
+
+    factory_state.clear_current_task(path=state_path)
+    if not error:
+        factory_state.record_checkpoint(stage_name, idempotency_key, path=state_path)
+
     return result
 
 
 def run_cycle(niche, external_signal=None, tier="tier4", max_results=10,
               execute_production=False, max_attempts=3, timeline_path=None,
               decisions_path=None, analysis_db_file=None, outcomes_path=None,
-              ladder=None):
+              ladder=None, state_path=None):
     """Runs the full coordinated pipeline for ONE opportunity signal.
 
     execute_production=False (default): production/publishing are always
@@ -115,7 +131,14 @@ def run_cycle(niche, external_signal=None, tier="tier4", max_results=10,
     manual orchestration path and the automatic tick now make the exact
     same real decision about what to build, never a second, diverging one.
     Omitting it (every caller before this parameter existed) reproduces
-    the exact prior behavior unchanged."""
+    the exact prior behavior unchanged.
+
+    state_path (Operational Resilience Architecture, Phase A, 2026-07-18):
+    forwarded to factory_state's set_current_task()/clear_current_task()/
+    record_checkpoint() calls in _run_stage() — omitting it (every caller
+    before this parameter existed) writes to the real data/
+    factory_state.json, the same default-path convention every other
+    optional path parameter here already uses."""
     external_signal = _enrich_with_real_competition(niche, external_signal, max_results)
     context = {
         "niche": niche, "external_signal": external_signal, "tier": tier,
@@ -147,7 +170,7 @@ def run_cycle(niche, external_signal=None, tier="tier4", max_results=10,
             results.append(_skip(stage_name, idempotency_key, "no engine registered for this stage", timeline_path))
             continue
 
-        result = _run_stage(stage_name, engine_fn, context, idempotency_key, timeline_path, max_attempts)
+        result = _run_stage(stage_name, engine_fn, context, idempotency_key, timeline_path, max_attempts, state_path=state_path)
         results.append(result)
         context[f"{stage_name}_result"] = result.output
 

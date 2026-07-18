@@ -117,6 +117,7 @@ class TestRunRealWorldCycle(unittest.TestCase):
         self.decisions_path = _temp_path()
         self.analysis_db_path = _temp_path()
         self.competitor_db_path = _temp_path(".json")
+        self.state_path = _temp_path(".json")
         for p in (
             patch("competitor_discovery._query_hn", return_value=[]),
             patch("competitor_discovery._query_github", return_value=[]),
@@ -128,7 +129,8 @@ class TestRunRealWorldCycle(unittest.TestCase):
             self.addCleanup(p.stop)
 
     def tearDown(self):
-        for p in (self.timeline_path, self.decisions_path, self.analysis_db_path, self.competitor_db_path):
+        for p in (self.timeline_path, self.decisions_path, self.analysis_db_path,
+                  self.competitor_db_path, self.state_path):
             if os.path.exists(p):
                 os.remove(p)
 
@@ -162,7 +164,7 @@ class TestRunRealWorldCycle(unittest.TestCase):
         with patch("real_world_mode.signal_intake.collect_all_real_signals", return_value=fake_signals):
             result = operating_mode.run_real_world_cycle(
                 timeline_path=self.timeline_path, decisions_path=self.decisions_path,
-                analysis_db_file=self.analysis_db_path,
+                analysis_db_file=self.analysis_db_path, state_path=self.state_path,
             )
         self.assertEqual(result["processed"], 2)
         for entry in result["results"]:
@@ -174,7 +176,7 @@ class TestRunRealWorldCycle(unittest.TestCase):
         with patch("real_world_mode.signal_intake.collect_all_real_signals", return_value=fake_signals):
             result = operating_mode.run_real_world_cycle(
                 timeline_path=self.timeline_path, decisions_path=self.decisions_path,
-                analysis_db_file=self.analysis_db_path,
+                analysis_db_file=self.analysis_db_path, state_path=self.state_path,
             )
         stages = {s["engine"]: s for s in result["results"][0]["stages"]}
         self.assertEqual(stages["production"]["status"], "SKIPPED_NOT_APPLICABLE")
@@ -191,7 +193,7 @@ class TestRunRealWorldCycle(unittest.TestCase):
         with patch("real_world_mode.signal_intake.collect_all_real_signals", return_value=fake_signals):
             operating_mode.run_real_world_cycle(
                 timeline_path=self.timeline_path, decisions_path=self.decisions_path,
-                analysis_db_file=self.analysis_db_path,
+                analysis_db_file=self.analysis_db_path, state_path=self.state_path,
             )
 
         records = evidence_catalog.list_all_evidence_records(timeline_path=self.timeline_path, decisions_path=self.decisions_path)
