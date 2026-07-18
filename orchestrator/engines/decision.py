@@ -22,5 +22,6 @@ def run(context):
         max_results=context.get("max_results", 10),
         precomputed_analysis=context.get("market_intelligence_result"),
         decisions_path=context.get("decisions_path"),
+        ladder=context.get("ladder"),
     )
     return decision.to_dict()

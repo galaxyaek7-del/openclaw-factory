@@ -8,6 +8,11 @@ from datetime import datetime, timezone
 import channels.etsy_arm  # noqa: F401,E402 — self-registers
 import channels.gumroad_arm  # noqa: F401,E402
 import channels.payhip_arm  # noqa: F401,E402
+import channels.paddle_arm  # noqa: F401,E402 — ADR-077: was missing (real
+# drift found in ENGINEERING_ASSESSMENT_20260718.md) since paddle_arm.py
+# was added this session (ADR-065/074) — _publishing_checklist() below
+# reports on whatever channels.registry actually has, so this dossier
+# builder reported an incomplete publishing checklist without it.
 import profit_oracle
 from channels import registry as channel_registry
 
@@ -121,7 +126,7 @@ def build_production_dossier(decision):
     roi_info = plan_module.estimate_roi(
         production_plan["recommended_price"],
         cost_info.get("estimated_cost_usd") if cost_info.get("maturity") == "REAL" else None,
-        platform=production_plan["recommended_platform"],
+        platform=production_plan.get("economics_platform", production_plan["recommended_platform"]),
     )
 
     return {

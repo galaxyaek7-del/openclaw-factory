@@ -55,7 +55,11 @@ def _validate_quality(niche, production_output, production_plan):
         "author": "OpenClaw Factory",
         "niche": niche,
         "price": production_plan.get("recommended_price"),
-        "platform": production_plan.get("recommended_platform"),
+        # ADR-077: the ECONOMICS platform (which real fee/royalty band to
+        # validate against), not the distribution-channel recommendation —
+        # "paddle" has no config/economics.json entry, would raise
+        # "unknown platform" from inspectors.py's own economics lookup.
+        "platform": production_plan.get("economics_platform", production_plan.get("recommended_platform")),
     }
     return inspectors.final_inspection(product)
 
@@ -91,7 +95,7 @@ def process_opportunity(decision, execute=False, timeline_path=None, decisions_p
     roi = plan_module.estimate_roi(
         production_plan["recommended_price"],
         cost.get("estimated_cost_usd") if cost.get("maturity") == "REAL" else None,
-        platform=production_plan["recommended_platform"],
+        platform=production_plan.get("economics_platform", production_plan["recommended_platform"]),
     )
 
     return {

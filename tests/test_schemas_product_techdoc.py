@@ -57,5 +57,30 @@ class TestTechdocEconomicsPlatformMapping(unittest.TestCase):
             Product.from_jsonl_record(record)
 
 
+class TestSourceIdPrefersProductionId(unittest.TestCase):
+    """ADR-077 Requirement #5: a real generated product's ledger identity
+    (source_id) should trace back to the same production_id
+    production_factory/dossier.py already computed, when present."""
+
+    def test_production_id_is_preferred_over_timestamp_when_present(self):
+        record = {
+            "title": "Test", "topic": "test", "price": 388, "path": "/fake/path.pdf",
+            "pages": 8, "product_type": "techdoc",
+            "production_id": "PROD-dec-abc123", "timestamp": "2026-07-18T00:00:00",
+        }
+        product = Product.from_jsonl_record(record)
+        self.assertEqual(product.source_id, "PROD-dec-abc123")
+
+    def test_falls_back_to_timestamp_when_production_id_absent(self):
+        """Every record generated before this field existed keeps working
+        exactly as before — no production_id key at all."""
+        record = {
+            "title": "Test", "topic": "test", "price": 20, "path": "/fake/path.pdf",
+            "pages": 8, "timestamp": "2026-07-18T00:00:00",
+        }
+        product = Product.from_jsonl_record(record)
+        self.assertEqual(product.source_id, "2026-07-18T00:00:00")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -8,6 +8,18 @@ This is a map of what runs, not a new system. Every box below is a real file alr
 
 ---
 
+## 2026-07-18 update note (`ADR-077`, Product Generation Pipeline) — corrections and completion
+
+This document predates several real changes since 2026-07-17 — read the sections below alongside, not instead of, the original blueprint:
+
+- **§4 "Channels" is stale on two facts, corrected here:** `channels/gumroad_arm.py` was never archived (it is live in `channels/`, self-registers on import, used by the real Finance Ledger reconciliation this phase added). `channels/paddle_arm.py` is no longer skeleton-only — a real `PADDLE_API_KEY` exists (`ADR-074`), `PaddleArm.status()` returns `READY`, and it can create real products/prices/checkout transactions.
+- **§1's chain now continues past "Notification"** — `ADR-077` closes the gap this blueprint's original scope stopped short of: `book_generator.py` (Packaging) → `inspectors.py` (QA) → `schemas/product.py` (Metadata) → `channels/paddle_arm.py` (Paddle Product Creation) → `channels/ledger.py` `record_publish_attempt()` (Publishing Queue) → `channels/ledger.reconcile_ledger_to_finance()` **(new)** → `finance_data.json` (Finance Ledger) → `03_Production_Notify.prepared.json`'s real Telegram-sending nodes **(new this phase — previously only logged the event, never told the founder)** → the founder's phone (Telegram Founder Report).
+- **One identifier now threads the whole chain** (previously two disconnected IDs: the dossier's `production_id` and the generated file's own timestamp-based log identity). `production_factory/dossier.py`'s `make_production_id()` (`f"PROD-{decision_id}"`, unchanged formula) is now passed into `book_generator.py`'s generation call, stored in its log entry, and preferred by `schemas/product.py`'s `Product.source_id` — so the dossier, the generated PDF's own record, the publish-queue event, and the Telegram message all carry the same ID. See `ADR-077-product-generation-pipeline.md` for the full account.
+- **Finance Ledger reconciliation is new** — before this phase, `channels/ledger.py` recorded real sales but nothing ever carried them into `finance_data.json` (confirmed gap, `COMPANY_INTEGRATION_AUDIT_20260718.md`). `reconcile_ledger_to_finance()` closes it, wired to fire on every `scripts/poll_sales.py` tick (the same tick `POST /api/sales/poll` already runs) — idempotent, never double-counts, never invents an amount for a sale shape it doesn't recognize.
+- **Still a founder-gated manual step, not a code gap:** activating `03_Production_Notify` (now telegram-capable) and `04_Telegram_Notify` in the live n8n instance both require the UI **Active** toggle — confirmed platform limitation (`n8n import:workflow --activeState=fromJson` fails outside queue/multi-main mode), not an effort gap. See `n8n_workflows/README.md`.
+
+---
+
 ## 1. The chain, stage by stage
 
 ```

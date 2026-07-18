@@ -14,6 +14,23 @@ OpenClaw Factory is an AI-first digital-product company: a real, automated pipel
 
 The automated pipeline fired end-to-end for the first time in this company's history on 2026-07-17/18: a real opportunity was discovered, scored, accepted, produced as a real technical-docs product, quality-checked, and reached a real distribution attempt — with zero manual intervention beyond starting the process. Telegram notifications are live (in Arabic, per the founder's own instruction). A real, approved Paddle account can create real products and prices; the last mile (a working checkout link) is blocked by Paddle's own account-onboarding step, not by this codebase. **As of 2026-07-18, there is one single source of truth for every accepted opportunity** (`data/decisions.jsonl`, unified across every decision surface — see below); no real dollar has been earned yet. See `OpenClaw_Brain/00_Governance/ENGINEERING_ASSESSMENT_20260718.md` for the full, current, evidence-based picture — architecture, strengths, and prioritized gaps — and `COMPANY_OPERATING_MODEL.md` / `CAPABILITY_MAP.md` for the mechanics (both carry 2026-07-18 update notes reconciling them with the ladder pivot).
 
+## The Product Generation Pipeline (final architecture, `ADR-077`)
+
+As of 2026-07-18, every stage from a discovered opportunity to the founder's own phone is real code, connected, structured-JSON in/out at every boundary, and proven together by one end-to-end test (`tests/test_unified_pipeline_e2e.py`'s `TestFullProductGenerationPipelineEndToEnd`):
+
+```
+Market Intelligence → Opportunity Selection → Product Specification (dossier,
+production_id = f"PROD-{decision_id}") → AI Content Generation (real Groq,
+honest fallback) → Packaging (book_generator.py) → QA (inspectors.py Dual
+Inspection) → Metadata (schemas/product.py, source_id = production_id) →
+Paddle Product Creation (channels/paddle_arm.py, real account) →
+Publishing Queue (channels/ledger.py publish_attempt events) →
+Finance Ledger (channels/ledger.reconcile_ledger_to_finance() →
+finance_data.json) → Telegram Founder Report (n8n → Telegram, Arabic)
+```
+
+The same `production_id`, computed once by `production_factory/dossier.py`'s `make_production_id()`, now threads through every one of those stages (previously, the generated file's own log identity and the dossier's identity were two disconnected IDs — closed this phase). See `OpenClaw_Brain/00_Governance/ADR-077-product-generation-pipeline.md` for the full account of what was built, what's mocked in tests and why (real Groq/Paddle cost is never spent on a routine test run), and what's still a founder-gated manual step (activating the two remaining n8n workflows).
+
 ## The unified decision pipeline (final architecture, `ADR-076`)
 
 Before 2026-07-18, two real decision-making surfaces silently disagreed (`ENGINEERING_ASSESSMENT_20260718.md`'s Critical Issue C1). **This is now closed.** One scoring function, one recording function, one file:
@@ -64,6 +81,7 @@ ADR)              │
 | How does the pipeline actually work, file by file? | `OpenClaw_Brain/00_Governance/MASTER_BLUEPRINT.md` |
 | What's the current architecture, what's strong, what's broken, in priority order? | `OpenClaw_Brain/00_Governance/ENGINEERING_ASSESSMENT_20260718.md` (this review) |
 | How was the decision-surface duplication actually fixed? | `OpenClaw_Brain/00_Governance/ADR-076-decision-surface-reconciliation.md` |
+| How does a product go from ACCEPTED decision to a Telegram message in the founder's pocket? | `OpenClaw_Brain/00_Governance/ADR-077-product-generation-pipeline.md` |
 | Is every stage (discovery → sale → reporting) actually connected, and what's the shortest path to full autonomy? | `OpenClaw_Brain/00_Governance/COMPANY_INTEGRATION_AUDIT_20260718.md` |
 | How does the company mechanically operate, stage by stage? | `COMPANY_OPERATING_MODEL.md` (+ 2026-07-18 update note) |
 | What capabilities exist, what's missing, what's the dependency graph? | `CAPABILITY_MAP.md` (+ 2026-07-18 update note) |

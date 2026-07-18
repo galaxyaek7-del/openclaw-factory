@@ -19,6 +19,7 @@ import sys
 from pathlib import Path
 
 from orchestrator.registry import register_engine
+from production_factory.dossier import make_production_id
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent.parent
 _BOOK_GENERATOR = _FACTORY_ROOT / "book_generator.py"
@@ -29,7 +30,30 @@ def run(context):
     if context.get("dry_run", True):
         return {"executed": False, "reason": "dry_run=True — no subprocess spawned, no Groq cost incurred"}
 
-    payload = {"topic": context["niche"], "title": context["niche"], "author": "OpenClaw Factory"}
+    niche = context["niche"]
+    decision = context.get("decision_result") or {}
+    ladder = decision.get("ladder")
+
+    if ladder:
+        # ADR-077 (Product Generation Pipeline): a ladder-tagged decision
+        # (Strategic Production Priority Ladder, MASTER_CHARTER.md §2)
+        # routes to the real technical-docs product-package generator,
+        # priced against its own real ladder band — the exact same
+        # routing factory_loop.js's briefFromGoldenOpportunity() already
+        # uses (ADR-071), kept consistent here rather than diverging into
+        # a second real decision about what to build for the same
+        # decision_path this factory just unified (ADR-076).
+        price = (decision.get("evaluation_snapshot") or {}).get("price") or 197
+        payload = {"title": niche, "topic": niche, "product_type": "techdoc", "price": price, "author": "OpenClaw Factory"}
+        # Requirement #5 (ADR-077): reuse production_factory.dossier's own
+        # ID formula (f"PROD-{decision_id}") rather than a second one, so
+        # the real generated file's own log entry, the dossier, and the
+        # eventual Finance/Telegram trail all key off the same identifier.
+        if decision.get("decision_id"):
+            payload["production_id"] = make_production_id(decision)
+    else:
+        payload = {"topic": niche, "title": niche, "author": "OpenClaw Factory"}
+
     proc = subprocess.run(
         [sys.executable, str(_BOOK_GENERATOR), "--json"],
         input=json.dumps(payload, ensure_ascii=False),

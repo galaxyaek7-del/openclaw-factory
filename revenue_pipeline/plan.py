@@ -18,8 +18,38 @@ def build_production_plan(decision):
     """decision: a Decision.to_dict()-shaped record. Every field here is
     read from data the pipeline already computed (evaluation_snapshot's
     real pricing/reasoning) — this only organizes it into a plan shape,
-    it does not re-derive anything."""
+    it does not re-derive anything.
+
+    ADR-077 (Product Generation Pipeline): a ladder-tagged decision
+    (`decision["ladder"]`, ADR-076) routes to `product_type="techdoc"` and
+    `recommended_platform="paddle"` — the exact same routing
+    factory_loop.js's briefFromGoldenOpportunity() already uses (ADR-071),
+    kept consistent here rather than a second, diverging assumption.
+    `economics_platform` is a separate field: ROI/fee math is still
+    modeled against the real "gumroad_elite" band (config/economics.json)
+    — the same $97-497 elite-tier fee structure book_generator.py's Dual
+    Inspection already validates ladder-tagged products against
+    (`_economics_platform_for("techdoc")`); `config/economics.json` has no
+    dedicated "paddle" entry yet and Paddle's own fee structure isn't
+    confirmed live (checkout still blocked by account onboarding,
+    ADR-074), so this is the closest real, already-configured proxy, not
+    a guess. Omitting a ladder tag reproduces the exact prior book/
+    Gumroad plan unchanged."""
     snapshot = decision.get("evaluation_snapshot") or {}
+    ladder = decision.get("ladder")
+
+    if ladder:
+        return {
+            "niche": decision.get("niche"),
+            "tier": decision.get("tier"),
+            "recommended_price": snapshot.get("price"),
+            "recommended_platform": "paddle",
+            "economics_platform": "gumroad_elite",
+            "product_type": "techdoc",
+            "reasoning": decision.get("reasoning"),
+            "pricing_note": f"Ladder rank: {ladder} (MASTER_CHARTER.md §2, ADR-065)",
+        }
+
     pricing = snapshot.get("pricing") or {}
     price_str = pricing.get("recommended_price", "")
     try:
@@ -32,6 +62,7 @@ def build_production_plan(decision):
         "tier": decision.get("tier"),
         "recommended_price": price,
         "recommended_platform": "gumroad_digital",  # the only real, currently-tested distribution arm (channels/gumroad_arm.py)
+        "economics_platform": "gumroad_digital",
         "product_type": "book",
         "reasoning": decision.get("reasoning"),
         "pricing_note": pricing.get("note"),

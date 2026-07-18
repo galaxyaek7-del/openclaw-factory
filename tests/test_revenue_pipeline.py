@@ -55,6 +55,28 @@ class TestBuildProductionPlan(unittest.TestCase):
         result = plan.build_production_plan(d_dict)
         self.assertIsNone(result["recommended_price"])
 
+    # ADR-077 (Product Generation Pipeline) — ladder-aware routing
+
+    def test_ladder_tagged_decision_routes_to_paddle_techdoc(self):
+        d = _accepted_decision()
+        d_dict = d.to_dict()
+        d_dict["ladder"] = "ai_saas"
+        d_dict["evaluation_snapshot"] = {"price": 388}
+        result = plan.build_production_plan(d_dict)
+        self.assertEqual(result["recommended_platform"], "paddle")
+        self.assertEqual(result["product_type"], "techdoc")
+        self.assertEqual(result["recommended_price"], 388)
+        # economics/ROI math still uses a real, already-configured band —
+        # config/economics.json has no "paddle" entry yet.
+        self.assertEqual(result["economics_platform"], "gumroad_elite")
+
+    def test_no_ladder_tag_reproduces_exact_prior_book_gumroad_plan(self):
+        d = _accepted_decision(price_str="$19.99")
+        result = plan.build_production_plan(d.to_dict())
+        self.assertEqual(result["recommended_platform"], "gumroad_digital")
+        self.assertEqual(result["product_type"], "book")
+        self.assertEqual(result["economics_platform"], "gumroad_digital")
+
 
 class TestEstimateProductionCost(unittest.TestCase):
     def test_no_logged_cost_is_discovery(self):

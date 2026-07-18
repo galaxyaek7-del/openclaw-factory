@@ -112,9 +112,21 @@ class TestPublishingChecklist(unittest.TestCase):
 
 class TestPreProductionVerification(unittest.TestCase):
     def test_no_ready_platform_fails_verification_even_if_accepted(self):
-        """Confirmed real state today: zero live platform API keys exist
-        (BLOCKERS.md #2), so market_readiness must be False and
-        all_checks_passed must be False even for an ACCEPTED decision."""
+        """Tests _pre_production_verification()'s own logic in isolation
+        from real registry state — a real PADDLE_API_KEY now exists this
+        session (ADR-074), so channels.registry genuinely has a ready arm
+        today, and this test's job is to verify the "no ready platform"
+        code path, not to assert a real-world credential fact that has
+        since changed (found live via the exact test-isolation lesson
+        ADR-076's TestPublishingChecklist fix already established: don't
+        let ambient global registry state decide a test's outcome).
+        Registry is cleared for the duration of this test only, then real
+        arms restored via addCleanup so later tests in the same process
+        see the real, current registry again."""
+        saved_arms = channel_registry.all_arms()
+        channel_registry.clear()
+        self.addCleanup(lambda: [channel_registry.register(a) for a in saved_arms])
+
         d = _accepted_decision().to_dict()
         result = dossier._pre_production_verification(d, {"maturity": "DISCOVERY", "reason": "x"})
         self.assertFalse(result["market_readiness"]["market_ready"])

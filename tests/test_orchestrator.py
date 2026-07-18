@@ -10,6 +10,7 @@ test the production/publishing adapters in isolation with mocks).
     python -m unittest tests.test_orchestrator -v
 """
 
+import json
 import os
 import sys
 import tempfile
@@ -195,6 +196,56 @@ class TestRunCycleDryRunSafetyDefault(_IsolatedRunCycleTestCase):
         from orchestrator.engines import production
         result = production.run({"niche": "x", "dry_run": True})
         self.assertFalse(result["executed"])
+
+    def test_ladder_tagged_decision_routes_production_to_the_techdoc_payload(self):
+        """ADR-077: a ladder-tagged decision must route production to the
+        same real product_type='techdoc' payload factory_loop.js's
+        briefFromGoldenOpportunity() already uses (ADR-071) — never a
+        second, diverging assumption about what to build."""
+        from unittest.mock import patch, MagicMock
+        from orchestrator.engines import production
+
+        context = {
+            "niche": "workflow automation system for logistics companies",
+            "dry_run": False,
+            "decision_result": {"ladder": "b2b_systems", "evaluation_snapshot": {"price": 327}},
+        }
+        fake_proc = MagicMock(stdout='{"success": true, "product_type": "techdoc"}')
+        with patch.object(production.subprocess, "run", return_value=fake_proc) as mock_run:
+            production.run(context)
+        sent_payload = json.loads(mock_run.call_args.kwargs["input"])
+        self.assertEqual(sent_payload["product_type"], "techdoc")
+        self.assertEqual(sent_payload["price"], 327)
+
+    def test_no_ladder_tag_reproduces_the_exact_prior_book_payload(self):
+        from unittest.mock import patch, MagicMock
+        from orchestrator.engines import production
+
+        context = {"niche": "x", "dry_run": False, "decision_result": {}}
+        fake_proc = MagicMock(stdout='{"success": true}')
+        with patch.object(production.subprocess, "run", return_value=fake_proc) as mock_run:
+            production.run(context)
+        sent_payload = json.loads(mock_run.call_args.kwargs["input"])
+        self.assertNotIn("product_type", sent_payload)
+        self.assertEqual(sent_payload["topic"], "x")
+
+    def test_ladder_tagged_decision_with_a_decision_id_threads_the_same_production_id(self):
+        """ADR-077 Requirement #5: reuses production_factory.dossier's own
+        f"PROD-{decision_id}" formula (via make_production_id) rather than
+        inventing a second ID scheme, so the real generated file traces
+        back to the same dossier/decision."""
+        from unittest.mock import patch, MagicMock
+        from orchestrator.engines import production
+
+        context = {
+            "niche": "x", "dry_run": False,
+            "decision_result": {"ladder": "ai_saas", "decision_id": "dec-abc123", "evaluation_snapshot": {}},
+        }
+        fake_proc = MagicMock(stdout='{"success": true}')
+        with patch.object(production.subprocess, "run", return_value=fake_proc) as mock_run:
+            production.run(context)
+        sent_payload = json.loads(mock_run.call_args.kwargs["input"])
+        self.assertEqual(sent_payload["production_id"], "PROD-dec-abc123")
 
 
 class TestDuplicateExecutionPreventionScopedToCostlyStages(_IsolatedRunCycleTestCase):

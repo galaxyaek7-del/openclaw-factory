@@ -26,9 +26,16 @@ cover-only, and full cover+inspection), not guessed:
                      inspected is Arabic content (arabic_shaping_available
                      checks confirm this), so "ar" is used as the safe
                      default rather than left unset
-  source_id      <- top-level "timestamp" (the only field present on 100%
-                     of observed records, including the one failure case
-                     with no "path"/"price") -> ""
+  source_id      <- top-level "production_id" when present (ADR-077: the
+                     real orchestrator/engines/production.py ladder-tagged
+                     path now threads production_factory/dossier.py's own
+                     f"PROD-{decision_id}" all the way into book_generator's
+                     log entry, so a real generated product's ledger/
+                     publish_attempt record can be traced back to the same
+                     decision/dossier that produced it), else top-level
+                     "timestamp" (the only field present on 100% of records
+                     generated before this field existed, including the one
+                     failure case with no "path"/"price") -> ""
 
 price_usd is NOT copied from the raw record. economics.py exists precisely
 to replace the old hardcoded "$30 floor" with a real per-unit profit
@@ -211,7 +218,7 @@ class Product:
             cover_path=cover_path,
             tags=[],
             language="ar",
-            source_id=record.get("timestamp") or "",
+            source_id=record.get("production_id") or record.get("timestamp") or "",
             raw_price_hint=raw_price_hint,
             needs_pricing=needs_pricing,
             price_source=price_source,

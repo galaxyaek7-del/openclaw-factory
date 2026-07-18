@@ -14,12 +14,27 @@ import subprocess
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
     sys.path.insert(0, str(_FACTORY_ROOT))
 
 import book_generator as bg
+
+# ADR-077: generate_product_package() now makes a REAL Groq call for any
+# plain-string section (ai_generate_techdoc_content()) — with a real
+# GROQ_KEY configured, an unmocked test here would spend real money and
+# real time on every run. groq_chat()/ai_generate_techdoc_content() are
+# mocked in every test below except TestCliDispatchAutoFillsSectionsForTechdoc's
+# subprocess test, which deliberately makes the one real Groq call this
+# suite performs (can't mock across a process boundary) — same discipline
+# this session already applied to Telegram/Paddle (verify live once, keep
+# the rest of the suite fast/free/deterministic).
+_FAKE_TECHDOC_RAW = (
+    "##SECTION 1 TITLE##\nOverview\n##SECTION 1 CONTENT##\nReal test overview content.\n"
+    "##SECTION 2 TITLE##\nGetting Started\n##SECTION 2 CONTENT##\nReal test getting-started content."
+)
 
 
 def _run_cli(payload, timeout=30):
@@ -43,6 +58,44 @@ class TestEconomicsPlatformRouting(unittest.TestCase):
         self.assertEqual(bg._economics_platform_for("book"), "kdp_ebook")
 
 
+class TestAiGenerateTechdocContent(unittest.TestCase):
+    """ADR-077 — the new real content-generation path. groq_chat() is
+    mocked at the lowest level here (no network, no cost) so the
+    prompt-building/parsing logic itself is what's actually tested."""
+
+    def test_parses_real_marker_format_positionally(self):
+        with patch.object(bg, "groq_chat", return_value=_FAKE_TECHDOC_RAW):
+            result = bg.ai_generate_techdoc_content("Test Title", "test topic", ["Overview", "Getting Started"])
+        self.assertEqual(result, [
+            {"title": "Overview", "content": "Real test overview content."},
+            {"title": "Getting Started", "content": "Real test getting-started content."},
+        ])
+
+    def test_never_returns_empty_content_even_if_model_drops_a_section(self):
+        raw = "##SECTION 1 TITLE##\nOverview\n##SECTION 1 CONTENT##\nOnly this one section came back."
+        with patch.object(bg, "groq_chat", return_value=raw):
+            result = bg.ai_generate_techdoc_content("T", "topic", ["Overview", "Getting Started"])
+        self.assertEqual(len(result), 2)
+        self.assertTrue(all(c["content"] for c in result), "every section must have non-empty content, even a dropped one")
+
+    def test_completely_unparseable_response_still_returns_one_entry_per_section(self):
+        with patch.object(bg, "groq_chat", return_value="the model ignored the format entirely"):
+            result = bg.ai_generate_techdoc_content("T", "topic", ["Overview", "Getting Started", "FAQ"])
+        self.assertEqual(len(result), 3)
+        self.assertTrue(all(c["content"] for c in result))
+
+    def test_groq_failure_propagates_so_caller_can_fall_back(self):
+        with patch.object(bg, "groq_chat", side_effect=RuntimeError("Groq down")):
+            with self.assertRaises(RuntimeError):
+                bg.ai_generate_techdoc_content("T", "topic", ["Overview"])
+
+    def test_fallback_content_is_honestly_labeled_never_claims_to_be_ai_generated(self):
+        result = bg._fallback_techdoc_content("test topic", ["Overview", "FAQ"])
+        self.assertEqual(len(result), 2)
+        for c in result:
+            self.assertIn("unavailable", c["content"].lower())
+
+
 class TestGenerateProductPackage(unittest.TestCase):
     def setUp(self):
         self._created_paths = []
@@ -64,25 +117,61 @@ class TestGenerateProductPackage(unittest.TestCase):
             self._created_paths.append(result["cover"]["path"])
         return result
 
+    def _fake_generated(self, section_titles):
+        return [{"title": t, "content": f"Real test content for {t}."} for t in section_titles]
+
     def test_default_sections_produce_a_real_pdf_priced_as_techdoc(self):
-        result = self._track(bg.generate_product_package(
-            title="Test Compliance Automation Product Package",
-            topic="compliance automation for accounting firms",
-            price=197.0,
-            output="test_product_package_default.pdf",
-        ))
+        with patch.object(bg, "ai_generate_techdoc_content", side_effect=lambda title, topic, titles: self._fake_generated(titles)):
+            result = self._track(bg.generate_product_package(
+                title="Test Compliance Automation Product Package",
+                topic="compliance automation for accounting firms",
+                price=197.0,
+                output="test_product_package_default.pdf",
+            ))
         self.assertTrue(result["success"])
         self.assertEqual(result["product_type"], "techdoc")
         self.assertTrue(os.path.exists(result["path"]))
         self.assertGreaterEqual(result["pages"], 1)
 
+    def test_production_id_is_threaded_into_the_result_when_given(self):
+        """ADR-077 Requirement #5: an explicit production_id (the same
+        f"PROD-{decision_id}" production_factory/dossier.py already
+        computes) must reach the generated record."""
+        with patch.object(bg, "ai_generate_techdoc_content", side_effect=lambda title, topic, titles: self._fake_generated(titles)):
+            result = self._track(bg.generate_product_package(
+                title="Test Production Id Package",
+                sections=["Overview"],
+                output="test_product_package_production_id.pdf",
+                production_id="PROD-dec-test-1",
+            ))
+        self.assertEqual(result["production_id"], "PROD-dec-test-1")
+
+    def test_production_id_is_omitted_entirely_when_not_given(self):
+        with patch.object(bg, "ai_generate_techdoc_content", side_effect=lambda title, topic, titles: self._fake_generated(titles)):
+            result = self._track(bg.generate_product_package(
+                title="Test No Production Id Package",
+                sections=["Overview"],
+                output="test_product_package_no_production_id.pdf",
+            ))
+        self.assertNotIn("production_id", result)
+
     def test_custom_plain_string_sections_are_used_as_chapter_titles(self):
-        result = self._track(bg.generate_product_package(
-            title="Test Custom Sections Package",
-            sections=["Intro", "API Reference"],
-            output="test_product_package_custom.pdf",
-        ))
+        with patch.object(bg, "ai_generate_techdoc_content", side_effect=lambda title, topic, titles: self._fake_generated(titles)):
+            result = self._track(bg.generate_product_package(
+                title="Test Custom Sections Package",
+                sections=["Intro", "API Reference"],
+                output="test_product_package_custom.pdf",
+            ))
         self.assertTrue(result["success"])
+
+    def test_groq_failure_falls_back_honestly_never_crashes(self):
+        with patch.object(bg, "ai_generate_techdoc_content", side_effect=RuntimeError("Groq unavailable")):
+            result = self._track(bg.generate_product_package(
+                title="Test Fallback Package",
+                sections=["Overview"],
+                output="test_product_package_fallback.pdf",
+            ))
+        self.assertTrue(result["success"], "a Groq failure must degrade to the honest fallback, never crash generation")
 
     def test_dict_sections_are_used_verbatim_never_overwritten(self):
         captured = {}
@@ -105,6 +194,13 @@ class TestGenerateProductPackage(unittest.TestCase):
 
 
 class TestCliDispatchAutoFillsSectionsForTechdoc(unittest.TestCase):
+    """Runs the real CLI as a subprocess — cannot mock groq_chat() across a
+    process boundary, so the first test below makes ONE real Groq call
+    (ADR-077's real content generation). Deliberate, not an oversight: this
+    is the single real-integration proof for the whole techdoc content
+    path; every other test in this file mocks ai_generate_techdoc_content()
+    to stay fast/free/deterministic."""
+
     def test_techdoc_with_no_chapters_autofills_default_sections(self):
         result = _run_cli({
             "title": "CLI Test Techdoc Package",

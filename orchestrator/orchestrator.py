@@ -85,7 +85,8 @@ def _run_stage(stage_name, fn, context, idempotency_key, timeline_path, max_atte
 
 def run_cycle(niche, external_signal=None, tier="tier4", max_results=10,
               execute_production=False, max_attempts=3, timeline_path=None,
-              decisions_path=None, analysis_db_file=None, outcomes_path=None):
+              decisions_path=None, analysis_db_file=None, outcomes_path=None,
+              ladder=None):
     """Runs the full coordinated pipeline for ONE opportunity signal.
 
     execute_production=False (default): production/publishing are always
@@ -105,13 +106,22 @@ def run_cycle(niche, external_signal=None, tier="tier4", max_results=10,
 
     external_signal is enriched with a real competition count (ADR-057)
     before being passed to context — see _enrich_with_real_competition().
-    """
+
+    ladder (ADR-077, Product Generation Pipeline): threaded into context
+    for the decision engine (ladder-aware gate, ADR-076) and the production
+    engine (routes to the real technical-docs generator instead of the old
+    AI-book path, same real routing factory_loop.js's
+    briefFromGoldenOpportunity() already uses, ADR-071) — this deliberate/
+    manual orchestration path and the automatic tick now make the exact
+    same real decision about what to build, never a second, diverging one.
+    Omitting it (every caller before this parameter existed) reproduces
+    the exact prior behavior unchanged."""
     external_signal = _enrich_with_real_competition(niche, external_signal, max_results)
     context = {
         "niche": niche, "external_signal": external_signal, "tier": tier,
         "max_results": max_results, "dry_run": not execute_production,
         "decisions_path": decisions_path, "analysis_db_file": analysis_db_file,
-        "outcomes_path": outcomes_path,
+        "outcomes_path": outcomes_path, "ladder": ladder,
     }
     engines_map = get_engines()
     results = []

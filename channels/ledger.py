@@ -98,3 +98,140 @@ def read_events(event_type=None, ledger_path=None):
             if event_type is not None and record.get("event_type") != event_type:
                 continue
             yield record
+
+
+# ── FINANCE RECONCILIATION (ADR-077, Product Generation Pipeline) ──
+# Closes the real, confirmed gap COMPANY_INTEGRATION_AUDIT_20260718.md
+# found: real sales already land here via record_sale() (scripts/
+# poll_sales.py, every tick), but nothing ever carried them into
+# finance_data.json — the file server.js's /finance actually reads for
+# the founder's real revenue figure. A real sale could have landed and
+# stayed invisible in Mission Control.
+
+_FINANCE_FILE = _FACTORY_ROOT / "finance_data.json"
+_LADDER_RANKS = ("ai_saas", "b2b_systems", "automation_tools", "reusable_assets", "educational", "kdp_books")
+_PLATFORM_DISPLAY = {"gumroad": "Gumroad", "paddle": "Paddle", "payhip": "Payhip", "etsy": "Etsy"}
+
+
+def _extract_sale_amount(raw, platform):
+    """Real, per-platform amount extraction — never a guess or a flat
+    default. Gumroad's real get_sales() shape (gumroad_publisher.py) uses
+    a "price" field in whole dollars (confirmed against Gumroad's own API
+    docs — the v2 Sales resource's `price` is already a decimal amount,
+    not cents). Paddle's real get_transactions() shape (paddle_publisher.py)
+    nests the charged total under details.totals.grand_total, a string in
+    the smallest currency unit (cents for USD, per Paddle's own Billing API
+    docs). Returns None (never 0) for anything unrecognized — an
+    unrecognized real sale must never silently count as $0 revenue."""
+    if platform == "gumroad":
+        price = raw.get("price")
+        try:
+            return round(float(price), 2)
+        except (TypeError, ValueError):
+            return None
+    if platform == "paddle":
+        try:
+            return round(int(raw["details"]["totals"]["grand_total"]) / 100, 2)
+        except (KeyError, TypeError, ValueError):
+            return None
+    return None
+
+
+def _default_finance_data():
+    return {
+        "sales": [], "totalKDP": 0, "totalEtsy": 0, "totalGumroad": 0, "totalPaddle": 0,
+        "totalSales": 0, "byLadder": {r: 0 for r in _LADDER_RANKS}, "lastUpdated": None,
+    }
+
+
+def reconcile_ledger_to_finance(ledger_path=None, finance_path=None):
+    """Reconciles real `sale` events already in the ledger into
+    finance_data.json. Idempotent: each written sale record carries a
+    `source_ledger_key` (f"{platform}:{raw_sale_id}") as its dedup key, so
+    re-running this never double-counts a real sale already reconciled
+    once — same discipline poll_sales.py's own ledger-side dedup already
+    uses. A sale whose amount can't be honestly extracted (unrecognized
+    platform shape) is skipped and counted in `skipped_unrecognized`, never
+    guessed at $0 — reported so a human can look, not hidden.
+
+    Uses the exact same finance_data.json shape server.js's loadFin()/
+    saveFin() read and write (schemas/fields identical, including the
+    ADR-065 byLadder/totalPaddle additions) and the same atomic
+    temp-file-then-rename write server.js already uses, so either language
+    writing this file stays safe."""
+    finance_path = Path(finance_path) if finance_path else _FINANCE_FILE
+
+    if finance_path.exists():
+        try:
+            with open(finance_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            data = _default_finance_data()
+    else:
+        data = _default_finance_data()
+
+    # Defensive shape normalization — tolerates a partially-missing/legacy
+    # file, same discipline as server.js's own loadFin().
+    data["sales"] = data.get("sales") if isinstance(data.get("sales"), list) else []
+    for key in ("totalKDP", "totalEtsy", "totalGumroad", "totalPaddle", "totalSales"):
+        if not isinstance(data.get(key), (int, float)):
+            data[key] = 0
+    if not isinstance(data.get("byLadder"), dict):
+        data["byLadder"] = {r: 0 for r in _LADDER_RANKS}
+
+    already_reconciled = {s.get("source_ledger_key") for s in data["sales"] if s.get("source_ledger_key")}
+    next_id = max([s.get("id", 0) for s in data["sales"] if isinstance(s.get("id"), int)], default=0) + 1
+
+    reconciled = 0
+    skipped_unrecognized = 0
+
+    for event in read_events(event_type="sale", ledger_path=ledger_path):
+        platform = event.get("platform")
+        raw = event.get("raw") or {}
+        source_key = f"{platform}:{raw.get('id')}"
+        if source_key in already_reconciled:
+            continue
+
+        amount = _extract_sale_amount(raw, platform)
+        if amount is None:
+            skipped_unrecognized += 1
+            continue
+
+        data["sales"].append({
+            "id": next_id,
+            "platform": _PLATFORM_DISPLAY.get(platform, platform),
+            "amount": amount,
+            "product": raw.get("product_name") or raw.get("description") or "Unknown",
+            "date": (event.get("timestamp") or "")[:10] or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+            "source_ledger_key": source_key,
+        })
+        already_reconciled.add(source_key)
+        next_id += 1
+        reconciled += 1
+
+    if reconciled:
+        data["totalKDP"] = sum(s["amount"] for s in data["sales"] if s["platform"] == "KDP")
+        data["totalEtsy"] = sum(s["amount"] for s in data["sales"] if s["platform"] == "Etsy")
+        data["totalGumroad"] = sum(s["amount"] for s in data["sales"] if s["platform"] == "Gumroad")
+        data["totalPaddle"] = sum(s["amount"] for s in data["sales"] if s["platform"] == "Paddle")
+        data["totalSales"] = data["totalKDP"] + data["totalEtsy"] + data["totalGumroad"] + data["totalPaddle"]
+
+        # Mirrors server.js's recomputeByLadder() exactly: a sale with no
+        # `ladder` field (every real sale reconciled here — a platform's
+        # raw sale payload carries no notion of our internal Strategic
+        # Production Priority Ladder) rolls up under 'kdp_books', the same
+        # honest default server.js's own saveFin() path already uses.
+        by_ladder = {r: 0 for r in _LADDER_RANKS}
+        for s in data["sales"]:
+            rank = s.get("ladder") if s.get("ladder") in _LADDER_RANKS else "kdp_books"
+            by_ladder[rank] += s["amount"]
+        data["byLadder"] = by_ladder
+
+        data["lastUpdated"] = datetime.now(timezone.utc).isoformat()
+
+        tmp_path = finance_path.parent / f"{finance_path.name}.tmp-{os.getpid()}"
+        with open(tmp_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+        os.replace(tmp_path, finance_path)
+
+    return {"reconciled": reconciled, "skipped_unrecognized": skipped_unrecognized, "total_sales": data["totalSales"]}

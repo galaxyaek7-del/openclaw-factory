@@ -17,7 +17,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
@@ -155,6 +155,126 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         self.assertEqual(out["payload"]["price"], direct["price"])
         self.assertEqual(out["brief"]["price"], direct["price"], "the production brief Paddle's arm ultimately prices from must match the single source of truth, not a separately-derived number")
         self.assertEqual(out["brief"]["product_type"], "techdoc")
+
+
+class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
+    """ADR-077 (Product Generation Pipeline) Requirement #7: one real,
+    connected proof that every stage — Market Intelligence -> Opportunity
+    Selection -> Product Specification -> AI Content Generation ->
+    Packaging -> QA -> Metadata -> Paddle Product Creation -> Publishing
+    Queue -> Finance Ledger -> Telegram Founder Report — actually wires
+    together, carrying the SAME real production_id (Requirement #5) end
+    to end. Real Groq content generation is not repeated here (already
+    proven live by tests/test_product_package.py's
+    TestCliDispatchAutoFillsSectionsForTechdoc) — book_generator.py's own
+    subprocess is mocked so this test proves wiring, not content quality.
+    Paddle is called with dry_run=True (this repo's standing convention:
+    never spend real money in a test) but IS the real, registered
+    PaddleArm — not a stub.
+
+    python -m unittest tests.test_unified_pipeline_e2e.TestFullProductGenerationPipelineEndToEnd -v
+    """
+
+    def setUp(self):
+        self.decisions_path = _temp_path()
+        self.ledger_path = _temp_path(suffix=".jsonl")
+        self.finance_path = _temp_path(suffix=".json")
+
+        from channels import registry as channel_registry
+        from channels.paddle_arm import PaddleArm
+        channel_registry.register(PaddleArm())  # idempotent — a real, live arm, not a stub
+
+    def tearDown(self):
+        for p in (self.decisions_path, self.ledger_path, self.finance_path):
+            if os.path.exists(p):
+                os.remove(p)
+
+    def test_full_pipeline_carries_one_real_production_id_through_every_stage(self):
+        from production_factory import dossier as dossier_module
+        from schemas.product import Product
+        from channels import ledger
+        from channels import registry as channel_registry
+        from orchestrator.engines import production as production_engine
+
+        # Stage 1+2: Market Intelligence -> Opportunity Selection. Reuses
+        # the exact real scoring/recording path stages 1-2 above already
+        # proved live (profit_oracle.ladder_opportunity_score() + the
+        # ADR-076 single-source-of-truth recorder).
+        scored = po.ladder_opportunity_score(REAL_NICHE, ladder=REAL_LADDER)
+        self.assertTrue(scored["accepted"])
+        record_ladder_decision(REAL_NICHE, REAL_LADDER, scored, decisions_path=self.decisions_path)
+        decision = store.find_decisions_by_niche(REAL_NICHE, path=self.decisions_path)[0]
+        self.assertEqual(decision["status"], "ACCEPTED")
+
+        # Stage 3: Product Specification / Metadata — the real dossier,
+        # production_factory/dossier.py's own structured-JSON contract
+        # (Requirement #2/#6).
+        dossier = dossier_module.build_production_dossier(decision)
+        production_id = dossier["production_id"]
+        self.assertEqual(production_id, f"PROD-{decision['decision_id']}")
+        for key in ("product_specification", "pricing_strategy", "publishing_checklist"):
+            self.assertIn(key, dossier)
+
+        # Stage 4: AI Content Generation + Packaging + QA — the real
+        # orchestrator production engine, with only the Groq-costly
+        # book_generator.py subprocess mocked. Proves the SAME production_id
+        # computed above is the one actually sent to generation.
+        context = {"niche": REAL_NICHE, "dry_run": False, "decision_result": decision}
+        fake_stdout = json.dumps({
+            "success": True, "path": "/fake/path.pdf", "pages": 8,
+            "product_type": "techdoc", "price": scored["price"],
+        })
+        fake_proc = MagicMock(stdout=fake_stdout)
+        with patch.object(production_engine.subprocess, "run", return_value=fake_proc) as mock_run:
+            production_result = production_engine.run(context)
+        sent_payload = json.loads(mock_run.call_args.kwargs["input"])
+        self.assertEqual(sent_payload["production_id"], production_id)
+        self.assertTrue(production_result["success"])
+
+        # Stage 5: Metadata carried into a real Product (schemas/product.py) —
+        # proves source_id (the ledger's own product identity) resolves to
+        # the SAME production_id, not the fallback timestamp.
+        generated_record = {**production_result, "production_id": production_id}
+        product = Product.from_jsonl_record(generated_record)
+        self.assertEqual(product.source_id, production_id)
+        self.assertFalse(product.needs_pricing)
+
+        # Stage 6: Paddle Product Creation — the real, registered PaddleArm.
+        # dry_run=True: validates real product shape, makes zero live API
+        # calls (this repo's standing "never spend real money in a test" rule).
+        paddle_arm = channel_registry.get("paddle")
+        publish_result = paddle_arm.publish(product, dry_run=True)
+        self.assertTrue(publish_result.ok)
+
+        # Stage 7: Publishing Queue — the real ledger, proving the SAME
+        # production_id is the recorded event's product identity.
+        publish_event = ledger.record_publish_attempt(product, publish_result, ledger_path=self.ledger_path)
+        self.assertEqual(publish_event["product_source_id"], production_id)
+
+        # Stage 8: Finance Ledger — a real Paddle-shaped sale event
+        # reconciled into finance_data.json via the real, already-unit-
+        # tested reconciliation function (channels/ledger.py, ADR-077).
+        ledger.record_sale("paddle", {"id": "txn_e2e_1", "details": {"totals": {"grand_total": "38800"}}}, ledger_path=self.ledger_path)
+        reconciliation = ledger.reconcile_ledger_to_finance(ledger_path=self.ledger_path, finance_path=self.finance_path)
+        self.assertEqual(reconciliation["reconciled"], 1)
+        with open(self.finance_path, encoding="utf-8") as f:
+            finance_data = json.load(f)
+        self.assertEqual(finance_data["totalPaddle"], 388.0)
+
+        # Stage 9: Telegram Founder Report — the real JS payload builder
+        # (lib/n8n_notify.js, called via a real subprocess, no mocking),
+        # proving the SAME production_id would reach the founder's Telegram
+        # message (03_Production_Notify.prepared.json's "Build Telegram
+        # Message" node reads body.production_id directly).
+        script = f"""
+        const {{ buildProductionNotifyPayload }} = require({json.dumps(str(_FACTORY_ROOT / 'lib' / 'n8n_notify.js'))});
+        const dossier = {json.dumps(dossier, default=str)};
+        process.stdout.write(JSON.stringify(buildProductionNotifyPayload(dossier)));
+        """
+        result = subprocess.run(["node", "-e", script], capture_output=True, text=True, timeout=30, cwd=str(_FACTORY_ROOT))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        telegram_payload = json.loads(result.stdout.strip())
+        self.assertEqual(telegram_payload["production_id"], production_id)
 
 
 if __name__ == "__main__":

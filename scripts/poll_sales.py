@@ -28,8 +28,9 @@ if str(_FACTORY_ROOT) not in sys.path:
 from channels import registry
 from channels import ledger
 
-# Self-registers "gumroad" in channels.registry on import.
+# Self-registers "gumroad"/"paddle" in channels.registry on import.
 import channels.gumroad_arm  # noqa: F401,E402
+import channels.paddle_arm  # noqa: F401,E402
 
 
 def _already_recorded_keys(ledger_path=None):
@@ -109,7 +110,16 @@ def main():
 
         outcomes = poll_sales(arm_names=arm_names)
         total_new = sum(o["new_sales"] for o in outcomes)
-        emit({"success": True, "total_new_sales": total_new, "outcomes": outcomes})
+        # ADR-077 (Product Generation Pipeline) — Finance Ledger stage.
+        # Same subprocess tick that already records new sales into the
+        # ledger now also reconciles them into finance_data.json, so a
+        # real sale is never invisible to the founder's actual revenue
+        # figure. Idempotent — safe to run even when total_new is 0.
+        finance_reconciliation = ledger.reconcile_ledger_to_finance()
+        emit({
+            "success": True, "total_new_sales": total_new, "outcomes": outcomes,
+            "finance_reconciliation": finance_reconciliation,
+        })
     except Exception as e:
         emit({"success": False, "error": str(e)})
         sys.exit(0)
