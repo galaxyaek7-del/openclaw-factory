@@ -252,6 +252,53 @@ def _resolve_recovery():
     return {"resolved": resolve_recovery()}
 
 
+# Universal Production Engine §2/§7 (2026-07-18) — the 11 canonical
+# family names the approved UPE architecture plan names, distinct from
+# product_families.mapping.ALL_PRODUCT_FAMILIES, which still carries two
+# families under their pre-UPE names (automation_packs, notion_systems)
+# that real tests already depend on (test_orchestrator.py,
+# test_decision_engine.py, test_production_factory.py,
+# test_product_families.py) and which Step 1's "zero behavior change"
+# scope does not rename. This dict reports the founder-approved
+# canonical naming Mission Control should actually show, mapped to
+# whatever real registry name (if any) an adapter self-registers under
+# today — no adapter is renamed or duplicated to produce this mapping.
+_UPE_FAMILY_REGISTRY_NAMES = {
+    "kdp_books": "kdp_books",
+    "professional_templates": "professional_templates",
+    "digital_toolkits": "digital_toolkits",
+    "knowledge_bases": "knowledge_bases",
+    "ai_saas": "ai_saas",
+    "automation_systems": "automation_packs",
+    "notion_workspaces": "notion_systems",
+    "spreadsheet_systems": "spreadsheet_systems",
+    "prompt_libraries": "prompt_libraries",
+    "api_products": "api_products",
+    "micro_saas": "micro_saas",
+}
+
+
+def _production_families():
+    """Universal Production Engine §7 integration requirement: Mission
+    Control's own view of which of the 11 UPE product families have a
+    real registered adapter — data-driven off product_families.registry,
+    same discipline as production_factory.dossier._product_type_capability(),
+    reported under the founder-approved UPE canonical names (see
+    _UPE_FAMILY_REGISTRY_NAMES above)."""
+    import product_families  # noqa: F401 — self-registers Phase A adapters
+    from product_families import registry as family_registry
+
+    families = {}
+    for upe_name, registry_name in _UPE_FAMILY_REGISTRY_NAMES.items():
+        adapter = family_registry.get(registry_name)
+        families[upe_name] = (
+            f"REAL — product_families.families.{registry_name}"
+            if adapter is not None
+            else "NOT YET BUILT — no adapter registered yet (Universal Production Engine Roadmap)"
+        )
+    return {"families": families}
+
+
 def _rerun_market_analysis():
     """'Re-run market analysis': golden_hunter/hunt.py's own real pipeline
     (ADR-060) — re-reads every currently available real signal (OPPORTUNITIES.md
@@ -462,6 +509,7 @@ _ENDPOINTS = {
     "system_configuration": _system_configuration,
     "recovery": _recovery,
     "resolve_recovery": _resolve_recovery,
+    "production_families": _production_families,
     "rerun_market_analysis": _rerun_market_analysis,
     "trigger_opportunity_evaluation": _trigger_opportunity_evaluation,
     "validation_report": _validation_report,

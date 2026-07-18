@@ -2,7 +2,7 @@
 
 _Auto-generated from SERVICE_REGISTRY in server.js at server startup — do not hand-edit, it is overwritten on every restart. Source of truth: server.js._
 
-Generated at: 2026-07-17T17:40:39.638Z
+Generated at: 2026-07-18T21:03:26.408Z
 
 Every endpoint below requires an authenticated Mission Control session (`POST /api/mission-control/login`) and returns the standard envelope:
 
@@ -104,6 +104,22 @@ Real, non-secret configuration: unit economics (config/economics.json), tier wei
 - Data: `GET /api/v1/system-configuration`
 - Health: `GET /api/v1/system-configuration/health`
 - Reuses: config/economics.json, config/capability_registry.json, profit_oracle.py's TIER_WEIGHTS/MIN_OPPORTUNITY_SCORE/AUTOMATION_POTENTIAL_BY_TIER/LONG_TERM_VALUE_BY_TIER, via mission_control_api.py.
+
+### recovery-status
+
+Unified Recovery System (2026-07-18) dashboard: current in-flight task, recovery state, pending retries, last checkpoint, and the last real recovery action.
+
+- Data: `GET /api/v1/recovery-status`
+- Health: `GET /api/v1/recovery-status/health`
+- Reuses: factory_state.py load_state() + data/recovery_actions.jsonl, via mission_control_api.py.
+
+### production-families
+
+Universal Production Engine (2026-07-18): which of the 11 UPE product families have a real registered adapter today, under the founder-approved canonical family names.
+
+- Data: `GET /api/v1/production-families`
+- Health: `GET /api/v1/production-families/health`
+- Reuses: product_families.registry, via mission_control_api.py — same data-driven discipline as production_factory/dossier.py's _product_type_capability().
 
 ### docs
 

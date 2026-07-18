@@ -372,6 +372,13 @@ const SERVICE_REGISTRY = [
     handler: () => runPythonService('recovery'),
     health: pythonHealthCheck('recovery'),
   },
+  {
+    name: 'production-families',
+    description: 'Universal Production Engine (2026-07-18): which of the 11 UPE product families have a real registered adapter today, under the founder-approved canonical family names.',
+    reused: 'product_families.registry, via mission_control_api.py — same data-driven discipline as production_factory/dossier.py\'s _product_type_capability().',
+    handler: () => runPythonService('production_families'),
+    health: pythonHealthCheck('production_families'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
