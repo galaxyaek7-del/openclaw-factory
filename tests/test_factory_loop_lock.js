@@ -28,10 +28,13 @@ test('acquireLock: creates the lock file atomically when none exists', () => {
   const lockFile = tempLockPath();
   try {
     let exited = false;
-    acquireLock(lockFile, () => { exited = true; });
+    const wasStaleLockReclaimed = acquireLock(lockFile, () => { exited = true; });
     assert.equal(exited, false);
     assert.ok(fs.existsSync(lockFile));
     assert.equal(fs.readFileSync(lockFile, 'utf8'), String(process.pid));
+    // Unified Recovery System §2 (2026-07-18): a clean create is not a
+    // stale-lock reclaim -- the startup safety check must see false here.
+    assert.equal(wasStaleLockReclaimed, false);
   } finally {
     releaseLock(lockFile);
   }
@@ -63,9 +66,12 @@ test('acquireLock: reclaims a stale lock left by a pid that is no longer alive',
     // A pid essentially guaranteed not to be a real running process.
     fs.writeFileSync(lockFile, '999999999');
     let exited = false;
-    acquireLock(lockFile, () => { exited = true; });
+    const wasStaleLockReclaimed = acquireLock(lockFile, () => { exited = true; });
     assert.equal(exited, false, 'a stale lock must be reclaimed, not treated as live');
     assert.equal(fs.readFileSync(lockFile, 'utf8'), String(process.pid));
+    // Unified Recovery System §2: this IS the real "previous instance
+    // died uncleanly" signal the startup safety check acts on.
+    assert.equal(wasStaleLockReclaimed, true);
   } finally {
     releaseLock(lockFile);
   }

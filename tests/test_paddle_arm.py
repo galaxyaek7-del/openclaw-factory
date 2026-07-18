@@ -17,6 +17,7 @@ if str(_FACTORY_ROOT) not in sys.path:
     sys.path.insert(0, str(_FACTORY_ROOT))
 
 from channels import paddle_publisher as pp
+import channels.paddle_arm as pa
 from channels.paddle_arm import PaddleArm
 from channels.base_arm import ArmStatus
 from schemas.product import Product
@@ -78,6 +79,19 @@ class TestCreateProductAndPrice(unittest.TestCase):
         with patch.object(pp.requests, "post", return_value=_fake_response(json_data={"data": {"id": "pro_123"}})) as mock_post:
             pp.create_product("k", {"title": "Test Product", "tax_category": "saas"})
         self.assertEqual(mock_post.call_args.kwargs["json"]["tax_category"], "saas")
+
+    def test_create_product_includes_custom_data_when_given(self):
+        """Unified Recovery System §5: this is what paddle_arm.py's
+        publish() later searches list_products() for, to avoid ever
+        creating a second real product for the same production_id."""
+        with patch.object(pp.requests, "post", return_value=_fake_response(json_data={"data": {"id": "pro_123"}})) as mock_post:
+            pp.create_product("k", {"title": "Test Product", "custom_data": {"production_id": "PROD-1"}})
+        self.assertEqual(mock_post.call_args.kwargs["json"]["custom_data"], {"production_id": "PROD-1"})
+
+    def test_create_product_omits_custom_data_when_not_given(self):
+        with patch.object(pp.requests, "post", return_value=_fake_response(json_data={"data": {"id": "pro_123"}})) as mock_post:
+            pp.create_product("k", {"title": "Test Product"})
+        self.assertNotIn("custom_data", mock_post.call_args.kwargs["json"])
 
     def test_create_product_surfaces_real_paddle_error_detail(self):
         """The exact real case this was built for: a bare 'HTTP 400
@@ -184,9 +198,22 @@ class TestPaddleArmDryRun(unittest.TestCase):
 
 
 class TestPaddleArmLivePublish(unittest.TestCase):
+    def setUp(self):
+        # Unified Recovery System §7 (2026-07-18): publish()'s new
+        # snapshot_before() call has no path override (unlike
+        # factory_state's own set_current_task/etc.) — it always targets
+        # the real data/decisions.jsonl by design, so a real (dry_run=
+        # False) publish() call in a test must mock it explicitly, same
+        # as every other real side effect here (create_product/
+        # list_products/etc.), rather than let it write real .bak files.
+        patcher = patch.object(pa, "snapshot_before")
+        self.mock_snapshot = patcher.start()
+        self.addCleanup(patcher.stop)
+
     def test_publish_creates_product_price_and_checkout_link(self):
         arm = PaddleArm()
         with patch.object(pp, "load_api_key", return_value="fake-key"), \
+             patch.object(pp, "list_products", return_value=[]), \
              patch.object(pp, "create_product", return_value={"id": "pro_1"}) as mock_product, \
              patch.object(pp, "create_price", return_value={"id": "pri_1"}) as mock_price, \
              patch.object(pp, "create_checkout_transaction", return_value=({"id": "txn_1"}, "https://checkout.paddle.com/xyz")) as mock_txn:
@@ -194,6 +221,7 @@ class TestPaddleArmLivePublish(unittest.TestCase):
         self.assertTrue(result.ok)
         self.assertEqual(result.product_id, "pro_1")
         self.assertEqual(result.url, "https://checkout.paddle.com/xyz")
+        mock_product.assert_called_once()
         mock_price.assert_called_once_with("fake-key", "pro_1", {"unit_price_cents": 19700})
         mock_txn.assert_called_once_with("fake-key", "pri_1")
 
@@ -204,6 +232,7 @@ class TestPaddleArmLivePublish(unittest.TestCase):
         discard it over a separate, account-level gate."""
         arm = PaddleArm()
         with patch.object(pp, "load_api_key", return_value="fake-key"), \
+             patch.object(pp, "list_products", return_value=[]), \
              patch.object(pp, "create_product", return_value={"id": "pro_1"}), \
              patch.object(pp, "create_price", return_value={"id": "pri_1"}), \
              patch.object(pp, "create_checkout_transaction", side_effect=RuntimeError("transaction_checkout_not_enabled")):
@@ -215,10 +244,92 @@ class TestPaddleArmLivePublish(unittest.TestCase):
     def test_publish_failure_is_recorded_never_raises(self):
         arm = PaddleArm()
         with patch.object(pp, "load_api_key", return_value="fake-key"), \
+             patch.object(pp, "list_products", return_value=[]), \
              patch.object(pp, "create_product", side_effect=RuntimeError("Paddle API down")):
             result = arm.publish(_product(), dry_run=False)
         self.assertFalse(result.ok)
         self.assertEqual(result.error, "Paddle API down")
+
+
+class TestPaddleArmIdempotentPublish(unittest.TestCase):
+    """Unified Recovery System §5 (2026-07-18): a real duplicate-publish
+    window closed — a retry must never create a second real Paddle
+    product for the same production_id."""
+
+    def setUp(self):
+        # See TestPaddleArmLivePublish.setUp for why this is mocked here too.
+        patcher = patch.object(pa, "snapshot_before")
+        self.mock_snapshot = patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_an_existing_product_with_matching_custom_data_is_reused_never_recreated(self):
+        arm = PaddleArm()
+        existing_products = [
+            {"id": "pro_other", "custom_data": {"production_id": "PROD-different"}},
+            {"id": "pro_match", "custom_data": {"production_id": "PROD-real-1"}},
+        ]
+        product = _product()
+        product.source_id = "PROD-real-1"
+        with patch.object(pp, "load_api_key", return_value="fake-key"), \
+             patch.object(pp, "list_products", return_value=existing_products), \
+             patch.object(pp, "create_product") as mock_create, \
+             patch.object(pp, "create_price", return_value={"id": "pri_1"}) as mock_price, \
+             patch.object(pp, "create_checkout_transaction", return_value=({"id": "t"}, "http://checkout")):
+            result = arm.publish(product, dry_run=False)
+        self.assertTrue(result.ok)
+        self.assertEqual(result.product_id, "pro_match")
+        mock_create.assert_not_called()
+        mock_price.assert_called_once_with("fake-key", "pro_match", {"unit_price_cents": 19700})
+
+    def test_no_matching_product_creates_a_new_one_with_custom_data_set(self):
+        arm = PaddleArm()
+        product = _product()
+        product.source_id = "PROD-new-1"
+        with patch.object(pp, "load_api_key", return_value="fake-key"), \
+             patch.object(pp, "list_products", return_value=[]), \
+             patch.object(pp, "create_product", return_value={"id": "pro_new"}) as mock_create, \
+             patch.object(pp, "create_price", return_value={"id": "pri_1"}), \
+             patch.object(pp, "create_checkout_transaction", return_value=({"id": "t"}, "http://checkout")):
+            result = arm.publish(product, dry_run=False)
+        self.assertTrue(result.ok)
+        self.assertEqual(result.product_id, "pro_new")
+        mock_create.assert_called_once_with("fake-key", {
+            "title": product.title, "description": product.description,
+            "custom_data": {"production_id": "PROD-new-1"},
+        })
+
+    def test_a_product_with_no_source_id_always_creates_fresh_unchanged_behavior(self):
+        """A legacy Product with no production_id (e.g. the old book
+        path) has nothing to dedup against — list_products() is never
+        even called, same behavior as before this fix."""
+        arm = PaddleArm()
+        product = _product()
+        product.source_id = ""
+        with patch.object(pp, "load_api_key", return_value="fake-key"), \
+             patch.object(pp, "list_products") as mock_list, \
+             patch.object(pp, "create_product", return_value={"id": "pro_1"}), \
+             patch.object(pp, "create_price", return_value={"id": "pri_1"}), \
+             patch.object(pp, "create_checkout_transaction", return_value=({"id": "t"}, "http://checkout")):
+            result = arm.publish(product, dry_run=False)
+        self.assertTrue(result.ok)
+        mock_list.assert_not_called()
+
+    def test_list_products_failure_degrades_to_creating_fresh_never_blocks_publish(self):
+        """If the dedup check itself can't reach Paddle, publish() still
+        proceeds (fails open on the check, never on the publish itself) —
+        matches this factory's standing "a safety check must never become
+        a new single point of failure" discipline."""
+        arm = PaddleArm()
+        product = _product()
+        product.source_id = "PROD-x"
+        with patch.object(pp, "load_api_key", return_value="fake-key"), \
+             patch.object(pp, "list_products", side_effect=RuntimeError("Paddle unreachable")), \
+             patch.object(pp, "create_product", return_value={"id": "pro_1"}) as mock_create, \
+             patch.object(pp, "create_price", return_value={"id": "pri_1"}), \
+             patch.object(pp, "create_checkout_transaction", return_value=({"id": "t"}, "http://checkout")):
+            result = arm.publish(product, dry_run=False)
+        self.assertTrue(result.ok)
+        mock_create.assert_called_once()
 
 
 if __name__ == "__main__":

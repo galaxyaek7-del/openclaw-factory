@@ -35,6 +35,7 @@ from channels import registry
 from channels import ledger
 from channels.base_arm import PublishResult
 from schemas.product import Product
+import factory_state
 
 # Self-registers "gumroad" in channels.registry on import.
 import channels.gumroad_arm  # noqa: F401,E402
@@ -92,6 +93,16 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None):
             )
 
         ledger.record_publish_attempt(product, result, ledger_path=ledger_path)
+
+        # Unified Recovery System §3 (2026-07-18): a real (non-dry-run)
+        # publish attempt that failed is remembered for a later retry —
+        # the publish_attempt record above already makes this honest and
+        # auditable; this just adds "try again once reachable" on top.
+        # Never enqueued for a dry run (nothing real to retry) or a
+        # config/not-ready failure (retrying won't fix a missing API key).
+        if not result.dry_run and not result.ok and not str(result.error or "").startswith("arm not ready:"):
+            factory_state.enqueue_retry(f"arm_publish:{name}:{product.source_id}", result.error)
+
         outcomes.append({
             "arm": name, "attempted": True, "ok": result.ok,
             "skip_reason": None, "result": result,

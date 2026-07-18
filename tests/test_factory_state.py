@@ -151,5 +151,46 @@ class TestCheckpointAndRetryQueue(unittest.TestCase):
         self.assertEqual(len(due), 2)
 
 
+class TestExponentialBackoff(unittest.TestCase):
+    """Unified Recovery System §3: attempt=1 is due immediately (the
+    factory's own ~10min tick cadence already exceeds any sub-minute
+    backoff); attempt 2+ escalates 60s, 120s, 240s..., capped at 1h."""
+
+    def test_backoff_seconds_schedule(self):
+        self.assertEqual(factory_state._backoff_seconds(1), 0)
+        self.assertEqual(factory_state._backoff_seconds(2), 60)
+        self.assertEqual(factory_state._backoff_seconds(3), 120)
+        self.assertEqual(factory_state._backoff_seconds(4), 240)
+
+    def test_backoff_seconds_caps_at_one_hour(self):
+        self.assertEqual(factory_state._backoff_seconds(20), 3600)
+
+    def setUp(self):
+        self.path = _temp_path()
+
+    def tearDown(self):
+        if os.path.exists(self.path):
+            os.remove(self.path)
+
+    def test_first_attempt_is_immediately_due(self):
+        factory_state.enqueue_retry("groq_generation", "timeout", path=self.path, attempt=1)
+        due = factory_state.due_retries(self.path)
+        self.assertEqual(len(due), 1)
+
+    def test_second_attempt_is_not_due_within_the_backoff_window(self):
+        factory_state.enqueue_retry("groq_generation", "timeout", path=self.path, attempt=2)
+        due = factory_state.due_retries(self.path)
+        self.assertEqual(due, [], "a 60s backoff must not be due immediately after enqueueing")
+
+    def test_entry_missing_next_retry_at_is_treated_as_immediately_due(self):
+        """Backward compatibility: a legacy entry (written before this
+        field existed) must never get stuck forever."""
+        state = factory_state.load_state(self.path)
+        state["pending_retries"].append({"task": "legacy_task", "last_error": "x"})
+        factory_state.save_state(state, self.path)
+        due = factory_state.due_retries(self.path)
+        self.assertEqual(len(due), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -23,12 +23,25 @@ import mission_control_api
 
 
 class TestEndpointDispatch(unittest.TestCase):
-    def test_all_eleven_endpoints_are_registered(self):
+    def test_all_twelve_endpoints_are_registered(self):
         for name in ("opportunities", "production", "revenue", "automation",
-                     "decision_history", "system_configuration",
+                     "decision_history", "system_configuration", "recovery",
                      "rerun_market_analysis", "trigger_opportunity_evaluation",
                      "validation_report", "export_executive_report", "full_cycle"):
             self.assertIn(name, mission_control_api._ENDPOINTS)
+
+    def test_recovery_returns_the_real_factory_state_shape(self):
+        """Unified Recovery System §6 — this must reflect exactly what
+        factory_state.py's own load_state() returns, plus the last real
+        recovery action, never a second, competing computation."""
+        import factory_state
+        result = mission_control_api._recovery()
+        for key in ("current_task", "active_workflow", "recovery_info",
+                    "pending_retries", "last_successful_checkpoint",
+                    "last_successful_recovery", "updated_at"):
+            self.assertIn(key, result)
+        real_state = factory_state.load_state()
+        self.assertEqual(result["recovery_info"], real_state["recovery_info"])
 
     def test_opportunities_returns_real_ranking_shape(self):
         result = mission_control_api._opportunities()

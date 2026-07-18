@@ -20,6 +20,7 @@ the "paddle" arm available via channels.registry.get("paddle").
 from .base_arm import BaseArm, ArmStatus, PublishResult
 from . import paddle_publisher
 from . import registry
+from recovery.snapshot import snapshot_before
 
 
 class PaddleArm(BaseArm):
@@ -41,13 +42,52 @@ class PaddleArm(BaseArm):
 
         try:
             api_key = paddle_publisher.load_api_key()
-            created = paddle_publisher.create_product(api_key, {
-                "title": product.title,
-                "description": product.description,
-            })
-            product_id = created.get("id") if isinstance(created, dict) else None
+
+            # Unified Recovery System §7 (2026-07-18): a real, critical
+            # state-mutating operation is about to run — snapshot the
+            # small set of critical state files first, so a corrupted
+            # write mid-operation always has a clean, just-before copy to
+            # restore from. Best-effort, never blocks the real publish.
+            snapshot_before(f"paddle publish for {product.source_id or product.title}")
+
+            # Unified Recovery System §5 (2026-07-18): a real duplicate-
+            # publish gap — a crash between this real Paddle product-
+            # creation call succeeding and its SUCCESS record being
+            # recorded would previously make a retry create a SECOND real
+            # Paddle product for the same opportunity. product.source_id
+            # is already production_id (PROD-{decision_id}) for a real
+            # ladder-tagged generation (ADR-077's schemas/product.py fix)
+            # — search for a product already carrying it in custom_data
+            # before ever creating a new one. A product with no source_id
+            # (e.g. the legacy book path) always creates fresh, same as
+            # before this fix.
+            product_id = None
+            if product.source_id:
+                try:
+                    existing = paddle_publisher.list_products(api_key)
+                except Exception:
+                    existing = []
+                match = next(
+                    (p for p in existing if isinstance(p, dict) and (p.get("custom_data") or {}).get("production_id") == product.source_id),
+                    None,
+                )
+                if match:
+                    product_id = match.get("id")
+
+            if product_id is None:
+                created = paddle_publisher.create_product(api_key, {
+                    "title": product.title,
+                    "description": product.description,
+                    "custom_data": {"production_id": product.source_id} if product.source_id else None,
+                })
+                product_id = created.get("id") if isinstance(created, dict) else None
+
             # A Paddle product isn't sellable without an attached Price —
             # created immediately after, same real two-step Paddle requires.
+            # (Scope note: this still creates a fresh Price on every retry
+            # even when the Product itself was found via the dedup check
+            # above — harmless duplication, never a second real Product,
+            # which is the concrete gap this fix closes.)
             price = paddle_publisher.create_price(api_key, product_id, {
                 "unit_price_cents": round(product.price_usd * 100),
             })

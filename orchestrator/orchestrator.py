@@ -24,6 +24,7 @@ from datetime import datetime, timezone
 import competitor_discovery
 import factory_state
 from decision_engine import ranking as decision_ranking
+from recovery import snapshot
 
 from orchestrator import engines  # noqa: F401 — import triggers auto-registration
 from orchestrator import retry, timeline
@@ -81,6 +82,23 @@ def _run_stage(stage_name, fn, context, idempotency_key, timeline_path, max_atte
     # Best-effort only (factory_state's own functions never raise) — a
     # disk error here must never affect the real stage execution.
     factory_state.set_current_task(stage_name, idempotency_key=idempotency_key, path=state_path)
+
+    # Unified Recovery System §7 (2026-07-18): snapshot the small set of
+    # critical state files before a duplicate-sensitive stage (production/
+    # publishing) runs — this is where a real external side effect
+    # (Groq spend, a Paddle create) can happen, so it's the moment worth
+    # protecting. Best-effort, never blocks the real stage.
+    #
+    # Gated on state_path is None (real production, no test override) —
+    # found live during the Unified Recovery System's own validation pass:
+    # an unconditional call here snapshotted the REAL data/decisions.jsonl
+    # every time ANY test reached a duplicate-sensitive stage, regardless
+    # of that test's own isolated timeline/decisions paths, littering the
+    # repo with real .bak files from test runs. Same "omitting the
+    # optional path param means real, tests always override it" contract
+    # every other path parameter in this module already follows.
+    if stage_name in DUPLICATE_SENSITIVE_STAGES and state_path is None:
+        snapshot.snapshot_before(f"orchestrator stage {stage_name} ({idempotency_key})")
 
     started_at = datetime.now(timezone.utc).isoformat()
     output, error, attempts = retry.run_with_retry(fn, context, max_attempts=max_attempts)

@@ -224,6 +224,14 @@
     <div id="automationContent" class="loading">جارٍ التحميل…</div>
   </section>
 
+  <section id="tab-recovery" class="tab">
+    <div class="tabHeader">
+      <h2>نظام الاسترجاع الموحَّد</h2>
+      <div class="actionsBar"><button class="btn primary" data-action="confirm-safe-to-resume">✅ تأكيد أن الاستئناف آمن</button></div>
+    </div>
+    <div id="recoveryContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
   <section id="tab-validation" class="tab">
     <div class="tabHeader">
       <h2>التحقُّق (Validation)</h2>
@@ -286,6 +294,7 @@ const TABS = [
   { id: 'publishing', label: 'النشر' },
   { id: 'revenue', label: 'الإيراد' },
   { id: 'automation', label: 'الأتمتة' },
+  { id: 'recovery', label: 'الاسترجاع' },
   { id: 'validation', label: 'التحقُّق' },
   { id: 'activity', label: 'النشاط' },
   { id: 'alerts', label: 'التنبيهات' },
@@ -697,6 +706,57 @@ const loaders = {
       <table><thead><tr><th>Workflow</th><th>نشط في آخر تصدير</th><th>مصدر البيانات</th><th>الملف</th></tr></thead>
       <tbody>${(d.workflows || []).map(w => `<tr><td>${escapeHtml(w.name)}</td><td>${w.active_in_export ? badge('ready') : badge('unavailable')}</td><td class="muted">${escapeHtml(w.source_kind)}</td><td class="muted">${escapeHtml(w.source_file)}</td></tr>`).join('')}</tbody></table>
       ${evidence}
+    `;
+  },
+
+  recovery: async () => {
+    const el = document.getElementById('recoveryContent');
+    const res = await fetchJson('/api/v1/recovery-status');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const d = res.data;
+    const task = d.current_task;
+    const info = d.recovery_info || {};
+    const retries = d.pending_retries || [];
+    const checkpoint = d.last_successful_checkpoint;
+    const lastRecovery = d.last_successful_recovery;
+
+    el.innerHTML = `
+      <div class="card">
+        <h3>الحالة الحالية</h3>
+        ${task
+          ? `<p>مهمة قيد التنفيذ: <strong>${escapeHtml(task.name)}</strong>${task.step ? ` — ${escapeHtml(task.step)}` : ''} ${badge('running')}</p>
+             <p class="muted">بدأت في: ${fmtTime(task.started_at)}</p>`
+          : `<p class="muted">لا مهمة قيد التنفيذ حالياً ${badge('completed')}</p>`}
+      </div>
+
+      <div class="card">
+        <h3>حالة الاسترجاع</h3>
+        ${info.interrupted
+          ? `<p>${badge('bad')} انقطاع يحتاج انتباه</p><p class="muted">${escapeHtml(info.reason)}</p><p class="muted">اكتُشف في: ${fmtTime(info.detected_at)}</p>`
+          : `<p>${badge('good')} لا انقطاع مسجَّل</p>`}
+      </div>
+
+      <div class="card">
+        <h3>آخر نقطة تحقُّق ناجحة</h3>
+        ${checkpoint
+          ? `<p class="muted">${escapeHtml(checkpoint.stage)} — ${fmtTime(checkpoint.at)}</p>`
+          : '<p class="muted">لا نقطة تحقُّق مسجَّلة بعد</p>'}
+      </div>
+
+      <div class="card">
+        <h3>عمليات إعادة المحاولة المعلَّقة (${retries.length})</h3>
+        ${retries.length
+          ? `<table><thead><tr><th>المهمة</th><th>المحاولة</th><th>آخر خطأ</th><th>الموعد التالي</th></tr></thead>
+             <tbody>${retries.map(r => `<tr><td>${escapeHtml(r.task)}</td><td>${escapeHtml(String(r.attempt ?? 1))}</td><td class="muted">${escapeHtml(r.last_error)}</td><td class="muted">${fmtTime(r.next_retry_at)}</td></tr>`).join('')}</tbody></table>`
+          : '<p class="muted">لا عمليات معلَّقة</p>'}
+      </div>
+
+      <div class="card">
+        <h3>آخر عملية استرجاع حقيقية</h3>
+        ${lastRecovery
+          ? `<p class="muted">${fmtTime(lastRecovery.timestamp)} — ${escapeHtml(lastRecovery.operator)} — ${escapeHtml(lastRecovery.reason)}</p><p class="muted">${escapeHtml(lastRecovery.result)}</p>`
+          : '<p class="muted">لا سجلّ استرجاع بعد</p>'}
+      </div>
     `;
   },
 

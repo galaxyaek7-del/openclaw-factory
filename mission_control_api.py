@@ -206,6 +206,52 @@ def _system_configuration():
     }
 
 
+def _recovery():
+    """Unified Recovery System §6 (2026-07-18) — Mission Control's
+    Recovery Dashboard. Real, already-computed state only: factory_state.
+    json's own current view (current_task/active_workflow/recovery_info/
+    pending_retries/last_successful_checkpoint) plus the most recent real
+    recovery action already recorded by lib/recovery_log.js's
+    recordRecoveryAction() — no new computation, just assembling what
+    already exists into one dashboard-ready shape."""
+    import factory_state
+
+    state = factory_state.load_state()
+
+    recovery_actions_file = _FACTORY_ROOT / "data" / "recovery_actions.jsonl"
+    last_recovery_action = None
+    if recovery_actions_file.exists():
+        with open(recovery_actions_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    last_recovery_action = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+
+    return {
+        "current_task": state["current_task"],
+        "active_workflow": state["active_workflow"],
+        "recovery_info": state["recovery_info"],
+        "pending_retries": state["pending_retries"],
+        "last_successful_checkpoint": state["last_successful_checkpoint"],
+        "last_successful_recovery": last_recovery_action,
+        "updated_at": state["updated_at"],
+    }
+
+
+def _resolve_recovery():
+    """Unified Recovery System §2/§6 — the founder's explicit
+    confirm-safe-to-resume action, invoked once they've verified it's
+    actually safe (e.g. checked the real Paddle dashboard for a stray
+    product). Reuses recovery.startup_check.resolve_recovery() directly,
+    never a second implementation."""
+    from recovery.startup_check import resolve_recovery
+    return {"resolved": resolve_recovery()}
+
+
 def _rerun_market_analysis():
     """'Re-run market analysis': golden_hunter/hunt.py's own real pipeline
     (ADR-060) — re-reads every currently available real signal (OPPORTUNITIES.md
@@ -414,6 +460,8 @@ _ENDPOINTS = {
     "automation": _automation,
     "decision_history": _decision_history,
     "system_configuration": _system_configuration,
+    "recovery": _recovery,
+    "resolve_recovery": _resolve_recovery,
     "rerun_market_analysis": _rerun_market_analysis,
     "trigger_opportunity_evaluation": _trigger_opportunity_evaluation,
     "validation_report": _validation_report,

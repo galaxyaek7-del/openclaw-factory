@@ -50,6 +50,17 @@
 
 See `ROLLBACK_VALIDATION_REPORT.md` for full detail. Summary: every category tested successfully and reproducibly.
 
+## Test 7: factory_loop.js abrupt kill mid-tick (Unified Recovery System, 2026-07-18)
+
+**Method**: acquired the real PID lockfile, marked `golden_hunter_bridge` (a real step that can spawn a real generation/distribution call) as the in-flight `current_task` in `data/factory_state.json`, then sent `SIGKILL` to the process — no clean shutdown, no chance for `releaseLock()`/`clearCurrentTask()` to run. Restarted `factory_loop.js` for real (`node factory_loop.js --once`).
+
+**Results**:
+- 🔴 **Real, pre-existing bug found while setting up this test**: `process.on('exit', releaseLock)` passed Node's exit CODE as `releaseLock`'s first argument (`lockFile`), so `fs.unlinkSync(<a number>)` silently failed on *every* exit path — clean or not. The PID lock was never actually being released by a normal shutdown, which would have made every restart look identical to a crash. Fixed: `process.on('exit', () => releaseLock())`. Verified fixed by direct reproduction (`releaseLock(0)` confirmed to leave the real lock file behind; the wrapped form does not).
+- ✅ After the fix, a clean `--once` run correctly releases the lock and leaves `current_task: null`.
+- ✅ The simulated abrupt kill left the stale lock behind, as expected.
+- ✅ The next real startup correctly detected the stale lock, read `current_task = {"name": "golden_hunter_tick", "step": "golden_hunter_bridge"}`, classified it `NEEDS_CONFIRMATION` (a risky step with no idempotency key to verify against), wrote a real Arabic `NEEDS_ATTENTION.md` entry, and recorded `recovery_info.interrupted = true` with a real, specific reason — all without the tick loop starting.
+- ✅ `data/factory_state.json` accurately reflected every stage of this — before the crash, during the crash, and after the classification — confirmed by reading the real file at each step, not asserted from code alone.
+
 ## Overall
 
-5 of 6 scenarios passed with zero gaps found. 1 scenario (server crash) passed on every measure except one — the orphaned-subprocess finding — which is disclosed above, not hidden, with a real diagnostic tool now available to address it operationally.
+6 of 7 scenarios passed with zero gaps found. 1 scenario (server crash) passed on every measure except one — the orphaned-subprocess finding — which is disclosed above, not hidden, with a real diagnostic tool now available to address it operationally. Test 7 itself *found* a real bug (the exit-handler argument collision) rather than merely confirming safety — fixed in the same pass, not left for a future session to rediscover.

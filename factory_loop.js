@@ -24,8 +24,14 @@ const fs = require('fs');
 const path = require('path');
 const { spawn, execSync } = require('child_process');
 const selfAwareness = require('./self_awareness');
-const { notifyN8nProductionEvent, buildGoldenHunterNotifyPayload } = require('./lib/n8n_notify');
+const n8nNotify = require('./lib/n8n_notify');
+const {
+  notifyN8nProductionEvent, buildGoldenHunterNotifyPayload,
+  buildFactoryStoppedUnexpectedlyPayload, buildFactoryRecoveredPayload,
+  buildRetryQueueStatusPayload,
+} = n8nNotify;
 const factoryState = require('./lib/factory_state');
+const { checkStartupSafety } = require('./scripts/factory_startup_check');
 
 const FACTORY_DIR = __dirname;
 const DASHBOARD_URL = process.env.DASHBOARD_URL || 'http://localhost:3000';
@@ -93,6 +99,12 @@ function isPidAlive(pid) {
 // lockFile/exitFn are parameterized (defaulting to the real values) purely
 // so tests can exercise this against an isolated temp file and a fake exit
 // function — never the real, currently-running factory's own lock file.
+//
+// Return value (Unified Recovery System §2, 2026-07-18): true iff a stale
+// lock (dead PID) was reclaimed — the real, concrete "did the previous
+// instance die uncleanly" signal the new startup safety check needs.
+// false for a clean create or a blocked-exit path. Purely additive — no
+// existing caller reads this return value, so this changes no behavior.
 function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit) {
   // Red-team audit (Phase 10 follow-up) — MEDIUM finding, fixed: the old
   // version did existsSync -> read -> isPidAlive -> writeFileSync as four
@@ -104,11 +116,11 @@ function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit) {
   // win it, no check-then-act gap.
   try {
     fs.writeFileSync(lockFile, String(process.pid), { flag: 'wx' });
-    return;
+    return false;
   } catch (err) {
     if (err.code !== 'EEXIST') {
       console.error('[factory_loop] lockfile check failed, continuing without guard:', err.message);
-      return;
+      return false;
     }
   }
   // A lock file already exists — check whether its owner is still alive.
@@ -117,7 +129,7 @@ function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit) {
     if (Number.isFinite(existingPid) && isPidAlive(existingPid)) {
       console.log(`[factory_loop] another factory_loop running (PID ${existingPid}), exiting`);
       exitFn(0);
-      return;
+      return false;
     }
     // Zero-assumption audit follow-up — Medium finding, fixed: this used to
     // reclaim a stale lock with a plain writeFileSync, three separate calls
@@ -135,15 +147,17 @@ function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit) {
       if (unlinkErr.code === 'ENOENT') {
         console.log('[factory_loop] another factory_loop already reclaimed the stale lock, exiting');
         exitFn(0);
-        return;
+        return false;
       }
       throw unlinkErr;
     }
     fs.writeFileSync(lockFile, String(process.pid), { flag: 'wx' });
+    return true;
   } catch (err) {
     // Disk full, permissions, etc. — never let the lockfile itself block
     // startup; worst case this run just isn't guarded against a duplicate.
     console.error('[factory_loop] lockfile check failed, continuing without guard:', err.message);
+    return false;
   }
 }
 
@@ -709,6 +723,22 @@ async function notifyGoldenHunterAccepted(niche, opportunityScore) {
       webhookUrl: N8N_TELEGRAM_WEBHOOK_URL,
       envVarName: 'N8N_TELEGRAM_WEBHOOK_URL',
       log: (entry) => appendGoldenHunterEvent({ action: 'n8n_notify', niche, ...entry }),
+    });
+  } catch (err) {
+    return { attempted: false, error: err.message };
+  }
+}
+
+// Unified Recovery System §4 (2026-07-18): the same fire-and-forget,
+// never-throws pattern as notifyGoldenHunterAccepted() above, reused for
+// the factory's own stopped/recovered events rather than a second
+// notify implementation.
+async function notifyFactoryRecoveryEvent(payload) {
+  try {
+    return await notifyN8nProductionEvent(payload, {
+      webhookUrl: N8N_TELEGRAM_WEBHOOK_URL,
+      envVarName: 'N8N_TELEGRAM_WEBHOOK_URL',
+      log: (entry) => appendLoopLog({ diagnosis: { status: 'recovery_notify' }, actions: [{ step: 'recovery_notify', ...entry }] }),
     });
   } catch (err) {
     return { attempted: false, error: err.message };
@@ -1589,7 +1619,54 @@ function markStep(step) {
   factoryState.setCurrentTask('golden_hunter_tick', step);
 }
 
+// Unified Recovery System §3 (2026-07-18): replays every currently-due
+// retry. `telegram_notify:*` entries carry enough stored context
+// (payload/webhookUrl/envVarName) to be genuinely resent — a failed
+// replay re-enqueues itself with an incremented attempt via
+// notifyN8nProductionEvent()'s own existing enqueueRetry call, so the
+// backoff schedule keeps escalating rather than resetting.
+//
+// `arm_publish:*`/`groq_generation` entries have no stored replay
+// context yet in this pass — genuinely replaying a specific publish or
+// regeneration needs the original product/request captured too, a
+// real, separate follow-up (documented in DISASTER_RECOVERY_PLAN.md's
+// Unified Recovery System section) rather than something guessed at
+// here. They are still counted and reported via retry_queue_status —
+// never silently dropped from view, just not auto-replayed yet.
+async function processPendingRetries() {
+  const beforeCount = factoryState.loadState().pending_retries.length;
+  const due = factoryState.dueRetries();
+  let replayed = 0;
+
+  for (const retry of due) {
+    if (retry.task.startsWith('telegram_notify:') && retry.context && retry.context.payload) {
+      factoryState.clearRetry(retry.task);
+      // Called via the module object (not the destructured const above)
+      // so a test can mock it directly -- see tests/test_process_pending_retries.js.
+      const result = await n8nNotify.notifyN8nProductionEvent(retry.context.payload, {
+        webhookUrl: retry.context.webhookUrl,
+        envVarName: retry.context.envVarName,
+        attempt: (retry.attempt || 1) + 1,
+      }).catch(() => null);
+      if (result && result.success) replayed++;
+    }
+  }
+
+  const stillPending = factoryState.loadState().pending_retries;
+  // Only notify when the queue's size actually changed since before this
+  // pass — a queue that stays at a constant size across many ticks (e.g.
+  // one entry with no replay context yet) must never spam the founder
+  // every ~10 minutes.
+  if (stillPending.length !== beforeCount) {
+    notifyFactoryRecoveryEvent(buildRetryQueueStatusPayload(stillPending)).catch(() => {});
+  }
+  return { processed: due.length, replayed, still_pending: stillPending.length };
+}
+
 async function runTick() {
+  markStep('process_retries');
+  await processPendingRetries();
+
   markStep('diagnose');
   const diagnosis = await diagnose();
   const actions = [];
@@ -1748,7 +1825,7 @@ async function forceWeeklyReport(force) {
 }
 
 function main() {
-  acquireLock();
+  const wasStaleLock = acquireLock();
 
   const once = process.argv.includes('--once');
   const forceReportIdx = process.argv.indexOf('--weekly-report');
@@ -1759,6 +1836,23 @@ function main() {
       process.exitCode = 1;
     });
     return;
+  }
+
+  // Unified Recovery System §2 (2026-07-18): a stale reclaimed lock means
+  // the previous instance died uncleanly — classify whether it's safe to
+  // resume automatically before starting the tick loop at all.
+  const startup = checkStartupSafety(wasStaleLock);
+
+  if (startup.classification === 'NEEDS_CONFIRMATION') {
+    console.log(`[factory_loop] NEEDS_CONFIRMATION: ${startup.reason} — tick loop is NOT starting until confirmed via Mission Control (confirm-safe-to-resume action)`);
+    writeNeedsAttention([`استرجاع يحتاج تأكيد: ${startup.reason}`]);
+    notifyFactoryRecoveryEvent(buildFactoryStoppedUnexpectedlyPayload(startup.reason, startup.current_task)).catch(() => {});
+    return;
+  }
+
+  if (startup.classification === 'RECOVERING') {
+    console.log(`[factory_loop] RECOVERING: ${startup.reason}`);
+    notifyFactoryRecoveryEvent(buildFactoryRecoveredPayload(startup.reason, startup.current_task)).catch(() => {});
   }
 
   console.log(`[factory_loop] starting — dashboard=${DASHBOARD_URL}, interval=${INTERVAL_MS / 60000}min${once ? ' (--once)' : ''}`);
@@ -1786,9 +1880,20 @@ process.on('uncaughtException', (err) => {
 // Release the PID lockfile on every exit path — normal exit, Ctrl+C, or a
 // kill signal — so a clean shutdown never leaves a stale lock behind for
 // the next startup to have to detect-and-reclaim.
+//
+// Unified Recovery System §2 (2026-07-18) — real bug found while
+// verifying the new startup-safety check: Node's 'exit' event passes the
+// process's exit CODE as its listener's first argument. Passing
+// releaseLock directly made every natural exit call releaseLock(0) —
+// colliding with releaseLock(lockFile = LOCK_FILE)'s own first
+// parameter, so fs.unlinkSync(0) silently failed (caught by its own
+// empty catch) and the lock was NEVER actually released on ANY exit
+// path, clean or not. This made Safe Startup Detection unusable — every
+// restart looked like a crash. Wrapped in a no-arg arrow so the real
+// default path is always used.
 process.on('SIGINT', () => { releaseLock(); process.exit(0); });
 process.on('SIGTERM', () => { releaseLock(); process.exit(0); });
-process.on('exit', releaseLock);
+process.on('exit', () => releaseLock());
 
 if (require.main === module) {
   main();
@@ -1811,4 +1916,6 @@ module.exports = {
   safeTick,
   sendDesktopNotification,
   notifyGoldenHunterAccepted,
+  notifyFactoryRecoveryEvent,
+  processPendingRetries,
 };

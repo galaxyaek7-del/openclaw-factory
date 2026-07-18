@@ -126,15 +126,41 @@ def record_checkpoint(stage, idempotency_key, path=None):
         return None
 
 
-def enqueue_retry(task, error, path=None):
-    """Appends a pending retry — the Offline Mode queue (§6): a real
-    network failure (Groq/arm publish/n8n notify) is remembered here
-    instead of just being lost, so a later reconnect can replay it."""
+_MAX_BACKOFF_SECONDS = 3600  # 1 hour ceiling
+
+
+def _backoff_seconds(attempt):
+    """0s, 60s, 120s, 240s, ... capped at 1h (Unified Recovery System §3).
+    attempt is 1-indexed. The first failure (attempt=1) is due immediately
+    — the factory's own tick cadence (~10 minutes) is already a longer
+    wait than any sub-minute backoff would add, so escalating backoff
+    only matters from the second consecutive failure onward."""
+    if attempt <= 1:
+        return 0
+    return min(60 * (2 ** (attempt - 2)), _MAX_BACKOFF_SECONDS)
+
+
+def enqueue_retry(task, error, path=None, attempt=1, context=None):
+    """Appends a pending retry with real exponential backoff (Unified
+    Recovery System §3) — a real network failure (Groq/arm publish/n8n
+    notify) is remembered here instead of just being lost, so a later
+    reconnect can replay it. Append-only by design: enqueueing the same
+    `task` twice before it's ever processed produces two entries (this is
+    deliberate — see tests) — process_pending_retries() is what converges
+    a repeatedly-failing task to one entry, by clear_retry()-ing the old
+    one before re-enqueueing with attempt+1.
+
+    context: an optional, small, JSON-serializable snapshot of what's
+    needed to actually replay this specific action — without it, the
+    retry processor can only count/report the entry, never replay it."""
     try:
         state = load_state(path)
+        now = datetime.now(timezone.utc)
+        next_retry_at = now.timestamp() + _backoff_seconds(attempt)
         state["pending_retries"].append({
-            "task": task, "last_error": str(error),
-            "queued_at": datetime.now(timezone.utc).isoformat(),
+            "task": task, "last_error": str(error), "attempt": attempt, "context": context,
+            "queued_at": now.isoformat(),
+            "next_retry_at": datetime.fromtimestamp(next_retry_at, tz=timezone.utc).isoformat(),
         })
         return save_state(state, path)
     except OSError as e:
@@ -143,10 +169,22 @@ def enqueue_retry(task, error, path=None):
 
 
 def due_retries(path=None):
-    """Every currently-queued retry — Phase A has no backoff scheduling
-    yet (every queued retry is "due"); a later phase may add next_retry_at
-    filtering without changing this function's contract."""
-    return load_state(path)["pending_retries"]
+    """Every currently-queued retry whose next_retry_at has passed (or has
+    none — a legacy/malformed entry is treated as immediately due rather
+    than stuck forever)."""
+    now = datetime.now(timezone.utc)
+    due = []
+    for r in load_state(path)["pending_retries"]:
+        next_retry_at = r.get("next_retry_at")
+        if not next_retry_at:
+            due.append(r)
+            continue
+        try:
+            if datetime.fromisoformat(next_retry_at) <= now:
+                due.append(r)
+        except ValueError:
+            due.append(r)
+    return due
 
 
 def clear_retry(task, path=None):

@@ -138,6 +138,15 @@ def create_product(api_key, product_spec):
         # via product_spec for an account with different approvals.
         "tax_category": product_spec.get("tax_category", "standard"),
     }
+    # Unified Recovery System §5 (2026-07-18): a real, structured
+    # custom_data key (Paddle's own supported field for exactly this)
+    # lets paddle_arm.py's publish() find this product again via
+    # list_products() before ever creating a second one for the same
+    # production_id — turns "retry-safe by luck" into "retry-safe by
+    # construction." Omitted (every caller before this existed) leaves
+    # the request body exactly as before.
+    if product_spec.get("custom_data"):
+        body["custom_data"] = product_spec["custom_data"]
     try:
         r = requests.post(f"{PADDLE_API_BASE}/products", headers=_headers(api_key), json=body, timeout=60)
         if not r.ok:

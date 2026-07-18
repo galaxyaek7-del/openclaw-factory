@@ -10,6 +10,7 @@ import os, sys, json, re, time, traceback, urllib.request, urllib.error, tempfil
 from datetime import datetime
 
 import path_safety
+import factory_state
 
 # When spawned as a child process (e.g. by server.js) without a real console,
 # Python's stdin/stdout can silently fall back to the OS locale codepage
@@ -2314,6 +2315,12 @@ def generate_book(title, topic, chapters=8, audience="القارئ العام", 
         book_data = ai_generate_book_content(title, topic, chapters, audience)
     except Exception as e:
         ai_error = str(e)
+        # Unified Recovery System §3 (2026-07-18): this attempt still
+        # degrades to the honest fallback below (never blocks generation),
+        # but a real Groq failure is also remembered for a later retry —
+        # a connectivity/rate-limit blip today shouldn't mean this niche's
+        # real AI content is lost forever.
+        factory_state.enqueue_retry("groq_generation", e)
         book_data = _fallback_book_content(title, topic, chapters, audience)
 
     subtitle = _resolve_subtitle(book_data.get('subtitle'), topic)
@@ -2698,7 +2705,10 @@ def generate_product_package(title, subtitle="", topic="", price=197.0, theme="b
     if plain_titles:
         try:
             generated = ai_generate_techdoc_content(title, topic, plain_titles)
-        except Exception:
+        except Exception as e:
+            # Unified Recovery System §3 (2026-07-18): same discipline as
+            # generate_book()'s own Groq failure handling above.
+            factory_state.enqueue_retry("groq_generation", e)
             generated = _fallback_techdoc_content(topic, plain_titles)
     generated_iter = iter(generated)
 

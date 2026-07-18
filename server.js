@@ -365,6 +365,13 @@ const SERVICE_REGISTRY = [
     handler: () => runPythonService('system_configuration'),
     health: pythonHealthCheck('system_configuration'),
   },
+  {
+    name: 'recovery-status',
+    description: 'Unified Recovery System (2026-07-18) dashboard: current in-flight task, recovery state, pending retries, last checkpoint, and the last real recovery action.',
+    reused: 'factory_state.py load_state() + data/recovery_actions.jsonl, via mission_control_api.py.',
+    handler: () => runPythonService('recovery'),
+    health: pythonHealthCheck('recovery'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
@@ -714,10 +721,24 @@ function writeProductionControl(state) {
 // mocking global.fetch — same convention as lib/metrics.js); this is a
 // thin wrapper supplying the real env var and log sink.
 const N8N_PRODUCTION_WEBHOOK_URL = process.env.N8N_PRODUCTION_WEBHOOK_URL || null;
+// Unified Recovery System §4/§6 (2026-07-18): the same real webhook var
+// factory_loop.js's own recovery/founder-facing events already use
+// (N8N_TELEGRAM_WEBHOOK_URL, distinct from N8N_PRODUCTION_WEBHOOK_URL) —
+// so a recovery_completed event fired from a Mission Control action
+// lands on the same Telegram channel as the other 3 recovery events.
+const N8N_TELEGRAM_WEBHOOK_URL = process.env.N8N_TELEGRAM_WEBHOOK_URL || null;
 
 async function notifyN8nProductionEvent(payload) {
   return n8nNotify.notifyN8nProductionEvent(payload, {
     webhookUrl: N8N_PRODUCTION_WEBHOOK_URL,
+    log: (entry) => logServiceCall({ service: 'n8n_notify', ...entry }),
+  });
+}
+
+async function notifyN8nRecoveryEvent(payload) {
+  return n8nNotify.notifyN8nProductionEvent(payload, {
+    webhookUrl: N8N_TELEGRAM_WEBHOOK_URL,
+    envVarName: 'N8N_TELEGRAM_WEBHOOK_URL',
     log: (entry) => logServiceCall({ service: 'n8n_notify', ...entry }),
   });
 }
@@ -746,6 +767,24 @@ async function pauseProductionAction(req) {
 
 async function resumeProductionAction() {
   return writeProductionControl({ paused: false, changed_at: new Date().toISOString(), reason: null });
+}
+
+// Unified Recovery System §2/§6 (2026-07-18): the founder's explicit
+// clear-to-proceed after startup classified a real interruption as
+// NEEDS_CONFIRMATION (recovery/startup_check.py) — e.g. they checked the
+// real Paddle dashboard for a stray product and confirmed it's safe.
+// Refuses honestly if nothing is actually marked interrupted, rather
+// than silently no-opping.
+async function confirmSafeToResumeAction() {
+  const recovery = await runPythonService('recovery');
+  if (!recovery.recovery_info || !recovery.recovery_info.interrupted) {
+    throw new Error('nothing is currently marked as needing confirmation — recovery_info.interrupted is false');
+  }
+  const currentTask = recovery.current_task || {};
+  const result = await runPythonService('resolve_recovery');
+  notifyN8nRecoveryEvent(n8nNotify.buildRecoveryCompletedPayload(currentTask.name, currentTask.idempotency_key))
+    .catch(() => {}); // never blocks the action's own response
+  return result;
 }
 
 const ACTION_REGISTRY = [
@@ -793,6 +832,14 @@ const ACTION_REGISTRY = [
     reversible: true,
     kind: 'sync',
     run: resumeProductionAction,
+  },
+  {
+    name: 'confirm-safe-to-resume',
+    description: 'Clears a recovery_info.interrupted flag after the founder has verified it is actually safe (e.g. checked the real Paddle dashboard for a stray product following an unclean shutdown mid-production/publishing). Refuses honestly if nothing is currently marked as needing confirmation.',
+    reused: 'recovery/startup_check.py resolve_recovery(), via mission_control_api.py',
+    reversible: false, // resolves a real state transition, not a toggle
+    kind: 'sync',
+    run: confirmSafeToResumeAction,
   },
   {
     name: 'run-validation',

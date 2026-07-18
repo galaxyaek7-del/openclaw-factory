@@ -164,3 +164,53 @@ test('mutators never throw even when the underlying write genuinely fails', () =
   assert.doesNotThrow(() => factoryState.enqueueRetry('x', 'err', badPath));
   assert.doesNotThrow(() => factoryState.clearRetry('x', badPath));
 });
+
+// Unified Recovery System §3: attempt=1 is due immediately (the factory's
+// own ~10min tick cadence already exceeds any sub-minute backoff);
+// attempt 2+ escalates 60s, 120s, 240s..., capped at 1h.
+
+test('backoffSeconds schedule', () => {
+  assert.equal(factoryState.backoffSeconds(1), 0);
+  assert.equal(factoryState.backoffSeconds(2), 60);
+  assert.equal(factoryState.backoffSeconds(3), 120);
+  assert.equal(factoryState.backoffSeconds(4), 240);
+});
+
+test('backoffSeconds caps at one hour', () => {
+  assert.equal(factoryState.backoffSeconds(20), 3600);
+});
+
+test('first attempt is immediately due', () => {
+  const p = tempPath();
+  try {
+    factoryState.enqueueRetry('groq_generation', 'timeout', p, 1);
+    const due = factoryState.dueRetries(p);
+    assert.equal(due.length, 1);
+  } finally {
+    cleanup(p);
+  }
+});
+
+test('second attempt is not due within the backoff window', () => {
+  const p = tempPath();
+  try {
+    factoryState.enqueueRetry('groq_generation', 'timeout', p, 2);
+    const due = factoryState.dueRetries(p);
+    assert.deepEqual(due, []);
+  } finally {
+    cleanup(p);
+  }
+});
+
+test('entry missing next_retry_at is treated as immediately due', () => {
+  const p = tempPath();
+  try {
+    const state = factoryState.loadState(p);
+    state.pending_retries.push({ task: 'legacy_task', last_error: 'x' });
+    factoryState.saveState(state, p);
+    const due = factoryState.dueRetries(p);
+    assert.equal(due.length, 1);
+  } finally {
+    cleanup(p);
+  }
+});

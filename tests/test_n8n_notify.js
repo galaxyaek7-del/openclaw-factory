@@ -7,8 +7,20 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 
-const { notifyN8nProductionEvent, buildProductionNotifyPayload, buildGoldenHunterNotifyPayload } = require('../lib/n8n_notify.js');
+const {
+  notifyN8nProductionEvent, buildProductionNotifyPayload, buildGoldenHunterNotifyPayload,
+  buildFactoryStoppedUnexpectedlyPayload, buildFactoryRecoveredPayload,
+  buildRecoveryCompletedPayload, buildRetryQueueStatusPayload,
+} = require('../lib/n8n_notify.js');
+const factoryState = require('../lib/factory_state.js');
+
+function tempStatePath() {
+  return path.join(os.tmpdir(), `n8n_notify_test_state_${Date.now()}_${Math.random().toString(36).slice(2)}.json`);
+}
 
 function withMockedFetch(impl, fn) {
   const original = global.fetch;
@@ -188,4 +200,130 @@ test('payload is sent as the real, unmodified JSON body (no field renaming/dropp
       await notifyN8nProductionEvent(payload, { webhookUrl: 'http://x' });
     }
   );
+});
+
+// Unified Recovery System §4 (2026-07-18) — the 4 new founder-facing
+// "the factory itself" events.
+
+test('buildFactoryStoppedUnexpectedlyPayload: carries the reason and the interrupted task', () => {
+  const currentTask = { name: 'production', step: null, idempotency_key: 'abc123' };
+  const payload = buildFactoryStoppedUnexpectedlyPayload('unresolved production stage', currentTask);
+  assert.equal(payload.event, 'factory_stopped_unexpectedly');
+  assert.equal(payload.reason, 'unresolved production stage');
+  assert.deepEqual(payload.current_task, currentTask);
+  assert.ok(payload.generated_at);
+});
+
+test('buildFactoryStoppedUnexpectedlyPayload: a null current_task is honest, never fabricated', () => {
+  const payload = buildFactoryStoppedUnexpectedlyPayload('x', null);
+  assert.equal(payload.current_task, null);
+});
+
+test('buildFactoryRecoveredPayload: carries the reason and the resumed task', () => {
+  const currentTask = { name: 'decision', step: null };
+  const payload = buildFactoryRecoveredPayload('safe to auto-resume', currentTask);
+  assert.equal(payload.event, 'factory_recovered');
+  assert.equal(payload.reason, 'safe to auto-resume');
+  assert.deepEqual(payload.current_task, currentTask);
+});
+
+test('buildRecoveryCompletedPayload: carries the stage and idempotency key', () => {
+  const payload = buildRecoveryCompletedPayload('production', 'key1');
+  assert.equal(payload.event, 'recovery_completed');
+  assert.equal(payload.stage, 'production');
+  assert.equal(payload.idempotency_key, 'key1');
+});
+
+test('buildRecoveryCompletedPayload: missing fields degrade to null, never throw', () => {
+  const payload = buildRecoveryCompletedPayload();
+  assert.equal(payload.stage, null);
+  assert.equal(payload.idempotency_key, null);
+});
+
+test('buildRetryQueueStatusPayload: reports counts grouped by task prefix, never every item', () => {
+  const pendingRetries = [
+    { task: 'groq_generation' },
+    { task: 'arm_publish:paddle:PROD-1' },
+    { task: 'arm_publish:paddle:PROD-2' },
+    { task: 'telegram_notify:factory_recovered' },
+  ];
+  const payload = buildRetryQueueStatusPayload(pendingRetries);
+  assert.equal(payload.event, 'retry_queue_status');
+  assert.equal(payload.pending_count, 4);
+  assert.deepEqual(payload.by_task, { groq_generation: 1, arm_publish: 2, telegram_notify: 1 });
+});
+
+test('buildRetryQueueStatusPayload: an empty queue reports zero, never throws', () => {
+  const payload = buildRetryQueueStatusPayload([]);
+  assert.equal(payload.pending_count, 0);
+  assert.deepEqual(payload.by_task, {});
+});
+
+test('buildRetryQueueStatusPayload: missing/undefined input degrades to an empty report', () => {
+  const payload = buildRetryQueueStatusPayload(undefined);
+  assert.equal(payload.pending_count, 0);
+});
+
+// Unified Recovery System §3 (2026-07-18) — a real notify failure is
+// remembered for a later retry, never just lost.
+
+test('a non-2xx response enqueues a retry for this event', async () => {
+  const statePath = tempStatePath();
+  try {
+    await withMockedFetch(
+      async () => ({ ok: false, status: 500 }),
+      async () => {
+        await notifyN8nProductionEvent({ event: 'recovery_completed' }, { webhookUrl: 'http://x', statePath });
+      }
+    );
+    const due = factoryState.dueRetries(statePath);
+    assert.equal(due.length, 1);
+    assert.equal(due[0].task, 'telegram_notify:recovery_completed');
+    assert.match(due[0].last_error, /500/);
+  } finally {
+    if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
+  }
+});
+
+test('an unreachable n8n enqueues a retry for this event', async () => {
+  const statePath = tempStatePath();
+  try {
+    await withMockedFetch(
+      async () => { throw new Error('ECONNREFUSED'); },
+      async () => {
+        await notifyN8nProductionEvent({ event: 'factory_recovered' }, { webhookUrl: 'http://x', statePath });
+      }
+    );
+    const due = factoryState.dueRetries(statePath);
+    assert.equal(due.length, 1);
+    assert.equal(due[0].task, 'telegram_notify:factory_recovered');
+    assert.match(due[0].last_error, /ECONNREFUSED/);
+  } finally {
+    if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
+  }
+});
+
+test('a successful notify never enqueues a retry', async () => {
+  const statePath = tempStatePath();
+  try {
+    await withMockedFetch(
+      async () => ({ ok: true, status: 200 }),
+      async () => {
+        await notifyN8nProductionEvent({ event: 'factory_recovered' }, { webhookUrl: 'http://x', statePath });
+      }
+    );
+    assert.equal(fs.existsSync(statePath), false, 'a successful notify must never write a retry-queue file at all');
+  } finally {
+    if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
+  }
+});
+
+test('a no-webhook-configured no-op never enqueues a retry', async () => {
+  const statePath = tempStatePath();
+  try {
+    await notifyN8nProductionEvent({ event: 'factory_recovered' }, { webhookUrl: null, statePath });
+    assert.equal(fs.existsSync(statePath), false);
+  } finally {
+    if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
+  }
 });
