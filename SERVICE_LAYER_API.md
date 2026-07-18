@@ -2,7 +2,7 @@
 
 _Auto-generated from SERVICE_REGISTRY in server.js at server startup — do not hand-edit, it is overwritten on every restart. Source of truth: server.js._
 
-Generated at: 2026-07-18T22:18:44.519Z
+Generated at: 2026-07-18T22:42:11.999Z
 
 Every endpoint below requires an authenticated Mission Control session (`POST /api/mission-control/login`) and returns the standard envelope:
 
@@ -120,6 +120,14 @@ Universal Production Engine (2026-07-18): which of the 11 UPE product families h
 - Data: `GET /api/v1/production-families`
 - Health: `GET /api/v1/production-families/health`
 - Reuses: product_families.registry + product_families.manifest, via mission_control_api.py — same data-driven discipline as production_factory/dossier.py's _product_type_capability().
+
+### commercial-execution
+
+Universal Production Engine (2026-07-19): the Commercial Execution Layer — which marketplaces are autonomous vs need real founder action right now (approval gates, computed off every arm's own live status()), plus the most recent real publish attempts from the ledger.
+
+- Data: `GET /api/v1/commercial-execution`
+- Health: `GET /api/v1/commercial-execution/health`
+- Reuses: commercial_execution.approval_gates + channels.ledger, via mission_control_api.py.
 
 ### docs
 

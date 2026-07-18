@@ -313,6 +313,23 @@ def _production_families():
     return {"families": families, "manifests": manifests}
 
 
+def _commercial_execution():
+    """Universal Production Engine Roadmap Step 4 (2026-07-19): Mission
+    Control's real view of the Commercial Execution Layer — which
+    marketplaces are autonomous vs need founder action right now
+    (commercial_execution.approval_gates, computed off every registered
+    arm's own real status()), plus the most recent real publish_attempt
+    events already recorded by channels/ledger.py — the real audit
+    trail, never fabricated or recomputed."""
+    import distributor  # noqa: F401 — self-registers every real arm
+    from commercial_execution.approval_gates import check_approval_gates
+    from channels import ledger
+
+    gates = check_approval_gates()
+    recent_publish_attempts = list(ledger.read_events(event_type="publish_attempt"))[-20:]
+    return {"approval_gates": gates, "recent_publish_attempts": recent_publish_attempts}
+
+
 def _rerun_market_analysis():
     """'Re-run market analysis': golden_hunter/hunt.py's own real pipeline
     (ADR-060) — re-reads every currently available real signal (OPPORTUNITIES.md
@@ -524,6 +541,7 @@ _ENDPOINTS = {
     "recovery": _recovery,
     "resolve_recovery": _resolve_recovery,
     "production_families": _production_families,
+    "commercial_execution": _commercial_execution,
     "rerun_market_analysis": _rerun_market_analysis,
     "trigger_opportunity_evaluation": _trigger_opportunity_evaluation,
     "validation_report": _validation_report,

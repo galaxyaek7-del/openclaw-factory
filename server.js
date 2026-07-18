@@ -379,6 +379,13 @@ const SERVICE_REGISTRY = [
     handler: () => runPythonService('production_families'),
     health: pythonHealthCheck('production_families'),
   },
+  {
+    name: 'commercial-execution',
+    description: 'Universal Production Engine (2026-07-19): the Commercial Execution Layer — which marketplaces are autonomous vs need real founder action right now (approval gates, computed off every arm\'s own live status()), plus the most recent real publish attempts from the ledger.',
+    reused: 'commercial_execution.approval_gates + channels.ledger, via mission_control_api.py.',
+    handler: () => runPythonService('commercial_execution'),
+    health: pythonHealthCheck('commercial_execution'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

@@ -375,5 +375,54 @@ class TestRealCompetitionEnrichment(unittest.TestCase):
             self.assertEqual(len(result), 2)
 
 
+class TestPublishingEngineUsesTheUnifiedPipeline(unittest.TestCase):
+    """Universal Production Engine Roadmap Step 4 (2026-07-19):
+    orchestrator/engines/publishing.py now routes through
+    commercial_execution.pipeline.run_publish_pipeline() instead of
+    calling distributor.distribute() directly, so a decision's
+    product_family (when it has a registered ProductManifest) narrows
+    publishing to that family's declared marketplaces."""
+
+    def test_product_family_from_the_decision_result_is_threaded_through(self):
+        from orchestrator.engines import publishing
+
+        context = {
+            "dry_run": True,
+            "production_result": {
+                "executed": True, "success": True, "path": "/fake/path.pdf",
+                "price": 197.0, "product_type": "techdoc", "production_id": "PROD-pub-test",
+                "dossier_bundle": {"version": "1.2.0"},
+            },
+            "decision_result": {"product_family": "automation_systems"},
+        }
+        with patch.object(publishing, "run_publish_pipeline") as mocked:
+            mocked.return_value = {"marketplaces": [], "product_id": "PROD-pub-test",
+                                    "version": "1.2.0", "revenue_status": {}, "audit_trail": []}
+            result = publishing.run(context)
+
+        mocked.assert_called_once()
+        call_kwargs = mocked.call_args.kwargs
+        self.assertEqual(call_kwargs["product_family"], "automation_systems")
+        self.assertEqual(call_kwargs["version"], "1.2.0")
+        self.assertTrue(result["executed"])
+        self.assertIn("publish_record", result)
+
+    def test_no_decision_result_means_no_product_family_never_a_crash(self):
+        from orchestrator.engines import publishing
+
+        context = {
+            "dry_run": True,
+            "production_result": {
+                "executed": True, "success": True, "path": "/fake/path.pdf",
+                "price": 9.99, "product_type": "book",
+            },
+        }
+        with patch.object(publishing, "run_publish_pipeline") as mocked:
+            mocked.return_value = {"marketplaces": [], "product_id": "", "version": None,
+                                    "revenue_status": {}, "audit_trail": []}
+            publishing.run(context)
+        self.assertIsNone(mocked.call_args.kwargs["product_family"])
+
+
 if __name__ == "__main__":
     unittest.main()

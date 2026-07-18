@@ -28,8 +28,16 @@ class TestEndpointDispatch(unittest.TestCase):
                      "decision_history", "system_configuration", "recovery",
                      "rerun_market_analysis", "trigger_opportunity_evaluation",
                      "validation_report", "export_executive_report", "full_cycle",
-                     "production_families"):
+                     "production_families", "commercial_execution"):
             self.assertIn(name, mission_control_api._ENDPOINTS)
+
+    def test_commercial_execution_reports_real_approval_gates_and_ledger_history(self):
+        """Universal Production Engine Roadmap Step 4 (2026-07-19) —
+        Mission Control's real view of the Commercial Execution Layer."""
+        result = mission_control_api._commercial_execution()
+        self.assertIn("gated", result["approval_gates"])
+        self.assertIn("autonomous", result["approval_gates"])
+        self.assertIsInstance(result["recent_publish_attempts"], list)
 
     def test_production_families_reports_the_11_upe_canonical_names(self):
         """Universal Production Engine §7 — Mission Control's own view of

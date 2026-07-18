@@ -31,9 +31,9 @@ finance_data.json) → Telegram Founder Report (n8n → Telegram, Arabic)
 
 The same `production_id`, computed once by `production_factory/dossier.py`'s `make_production_id()`, now threads through every one of those stages (previously, the generated file's own log identity and the dossier's identity were two disconnected IDs — closed this phase). See `OpenClaw_Brain/00_Governance/ADR-077-product-generation-pipeline.md` for the full account of what was built, what's mocked in tests and why (real Groq/Paddle cost is never spent on a routine test run), and what's still a founder-gated manual step (activating the two remaining n8n workflows).
 
-## The Universal Production Engine (`UNIVERSAL_PRODUCTION_ENGINE.md`)
+## The Universal Production Engine (`UNIVERSAL_PRODUCTION_ENGINE.md`) + Commercial Execution Layer (`COMMERCIAL_EXECUTION.md`)
 
-As of 2026-07-19 (Roadmap Step 3), a Product Definition Registry (`product_families/manifest.py`) replaces family-specific routing: 3 families (`automation_systems`, `professional_templates`, `digital_toolkits`) are pure `ProductManifest` configuration with zero bespoke adapter code, and a brand-new family that reuses existing generators needs only one manifest to work — proven with a throwaway demo family, not just asserted. See `UNIVERSAL_PRODUCTION_ENGINE.md` for the full architecture, the deliberate "lighter path" scope decision, and the integration/recovery evidence.
+As of 2026-07-19 (Roadmap Step 3), a Product Definition Registry (`product_families/manifest.py`) replaces family-specific routing: 3 families (`automation_systems`, `professional_templates`, `digital_toolkits`) are pure `ProductManifest` configuration with zero bespoke adapter code, and a brand-new family that reuses existing generators needs only one manifest to work — proven with a throwaway demo family, not just asserted. Roadmap Step 4 (same day) unified the publish side into one Commercial Execution Layer: publishing now respects a family's manifest-declared marketplaces (`commercial_execution/pipeline.py`), every publish produces one explicit, auditable `PublishRecord`, and a real, computed founder-approval-gate view (`commercial_execution/approval_gates.py`) shows exactly which marketplaces are autonomous vs. need founder action right now. See `UNIVERSAL_PRODUCTION_ENGINE.md` and `COMMERCIAL_EXECUTION.md` for the full architecture and integration/recovery evidence.
 
 ## The unified decision pipeline (final architecture, `ADR-076`)
 
@@ -88,6 +88,7 @@ ADR)              │
 | How does a product go from ACCEPTED decision to a Telegram message in the founder's pocket? | `OpenClaw_Brain/00_Governance/ADR-077-product-generation-pipeline.md` |
 | What happens if the power/internet goes out mid-cycle — does it lose work or double-publish? | `DISASTER_RECOVERY_PLAN.md`'s "Unified Recovery System (2026-07-18)" section |
 | How does a product family actually get built, and what does a future family need to add? | `UNIVERSAL_PRODUCTION_ENGINE.md` |
+| How does a generated product actually get published, tracked, and recovered — and what needs founder action first? | `COMMERCIAL_EXECUTION.md` |
 | Is every stage (discovery → sale → reporting) actually connected, and what's the shortest path to full autonomy? | `OpenClaw_Brain/00_Governance/COMPANY_INTEGRATION_AUDIT_20260718.md` |
 | How does the company mechanically operate, stage by stage? | `COMPANY_OPERATING_MODEL.md` (+ 2026-07-18 update note) |
 | What capabilities exist, what's missing, what's the dependency graph? | `CAPABILITY_MAP.md` (+ 2026-07-18 update note) |
