@@ -2,7 +2,7 @@
 
 _Auto-generated from SERVICE_REGISTRY in server.js at server startup — do not hand-edit, it is overwritten on every restart. Source of truth: server.js._
 
-Generated at: 2026-07-19T15:32:19.200Z
+Generated at: 2026-07-19T16:21:54.172Z
 
 Every endpoint below requires an authenticated Mission Control session (`POST /api/mission-control/login`) and returns the standard envelope:
 
@@ -136,6 +136,30 @@ Real AI provider capability registry (Claude, GPT, Gemini, Grok, DeepSeek, Qwen,
 - Data: `GET /api/v1/ai-capability-registry`
 - Health: `GET /api/v1/ai-capability-registry/health`
 - Reuses: ai_capability/registry.py list_providers()/read_capability_requests() (Autonomous Digital Company v1, Track B2, 2026-07-19), via mission_control_api.py.
+
+### founder-console
+
+The only view framed as 'you need to decide something': blocked marketplace channels + why, DEFERRED decisions awaiting a call, the real attention/review flags, and BLOCKERS.md's founder-only action list. Everything else in Mission Control stays informational.
+
+- Data: `GET /api/v1/founder-console`
+- Health: `GET /api/v1/founder-console/health`
+- Reuses: founder_console.py build_founder_queue_partial() (EOS Phase 1, 2026-07-19) + lib/dashboard_data.js readAttentionFlag()/readReviewFlag() + a BLOCKERS.md read (same technique as readNextDollarActions()).
+
+### evolution-report
+
+Company Evolution Engine -- real bottleneck detection, technical debt, high-ROI opportunity ranking, tool-integration proposals, and a new capability-gap scan (config/capability_registry.json entries not yet REAL). Detection only, never automatic execution.
+
+- Data: `GET /api/v1/evolution-report`
+- Health: `GET /api/v1/evolution-report/health`
+- Reuses: evolution_engine.py build_evolution_report() (EOS Phase 1, 2026-07-19) -- combines executive_intelligence.bottlenecks, strategic_intelligence.technical_debt, revenue_pipeline.pipeline, tool_intelligence.proposals, and the new capability_registry_scanner.py.
+
+### market-review
+
+Weekly Market Review -- niches scanned, real opportunity-gap/customer-pain trend (period vs. all-time), and top rejection reasons. The one weekly Continuous Improvement Engine review type that had no real generator before EOS Phase 1.
+
+- Data: `GET /api/v1/market-review`
+- Health: `GET /api/v1/market-review/health`
+- Reuses: market_intelligence_core/market_review.py generate_market_review() (EOS Phase 1, 2026-07-19) -- reuses strategic_intelligence.rejection_patterns.most_frequent_rejection_reasons() verbatim, no reimplementation.
 
 ### strategic-recommendations
 

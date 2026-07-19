@@ -274,6 +274,37 @@ async function alertsService() {
   };
 }
 
+// EOS Phase 1 (2026-07-19): "show only decisions that require founder
+// approval; everything else should operate autonomously." Merges the
+// Python-side half (blocked channels + DEFERRED decisions,
+// founder_console.py) with two already-real JS-native reads —
+// dashboardData.readAttentionFlag()/readReviewFlag() (written by
+// factory_loop.js's real checkNeedsAttention()/checkPendingReview() on
+// real state transitions) and a BLOCKERS.md read (same markdown-scrape
+// technique readNextDollarActions() already uses on FACTORY_STATUS.md).
+// Zero new judgment — pure assembly of already-real signals.
+function readBlockersFile() {
+  const p = path.join(__dirname, 'BLOCKERS.md');
+  if (!fs.existsSync(p)) return { text: null, note: 'BLOCKERS.md غير موجود' };
+  try {
+    return { text: fs.readFileSync(p, 'utf8') };
+  } catch (err) {
+    return { text: null, note: `تعذّر قراءة BLOCKERS.md: ${err.message}` };
+  }
+}
+
+async function founderConsoleService() {
+  const partial = await runPythonService('founder_console');
+  return {
+    blocked_channels: partial.blocked_channels || [],
+    autonomous_channels: partial.autonomous_channels || [],
+    pending_decisions: partial.pending_decisions || [],
+    attention_flag: dashboardData.readAttentionFlag(),
+    review_flag: dashboardData.readReviewFlag(),
+    blockers: readBlockersFile(),
+  };
+}
+
 async function publishingStatusService() {
   const production = await runPythonService('production');
   const dossiers = production.dossiers || [];
@@ -393,6 +424,27 @@ const SERVICE_REGISTRY = [
     reused: 'ai_capability/registry.py list_providers()/read_capability_requests() (Autonomous Digital Company v1, Track B2, 2026-07-19), via mission_control_api.py.',
     handler: () => runPythonService('ai_capability'),
     health: pythonHealthCheck('ai_capability'),
+  },
+  {
+    name: 'founder-console',
+    description: "The only view framed as 'you need to decide something': blocked marketplace channels + why, DEFERRED decisions awaiting a call, the real attention/review flags, and BLOCKERS.md's founder-only action list. Everything else in Mission Control stays informational.",
+    reused: 'founder_console.py build_founder_queue_partial() (EOS Phase 1, 2026-07-19) + lib/dashboard_data.js readAttentionFlag()/readReviewFlag() + a BLOCKERS.md read (same technique as readNextDollarActions()).',
+    handler: founderConsoleService,
+    health: fsHealthCheck(() => dashboardData.readAttentionFlag(), 'dashboardData module reachable'),
+  },
+  {
+    name: 'evolution-report',
+    description: "Company Evolution Engine -- real bottleneck detection, technical debt, high-ROI opportunity ranking, tool-integration proposals, and a new capability-gap scan (config/capability_registry.json entries not yet REAL). Detection only, never automatic execution.",
+    reused: 'evolution_engine.py build_evolution_report() (EOS Phase 1, 2026-07-19) -- combines executive_intelligence.bottlenecks, strategic_intelligence.technical_debt, revenue_pipeline.pipeline, tool_intelligence.proposals, and the new capability_registry_scanner.py.',
+    handler: () => runPythonService('evolution_report'),
+    health: pythonHealthCheck('evolution_report'),
+  },
+  {
+    name: 'market-review',
+    description: "Weekly Market Review -- niches scanned, real opportunity-gap/customer-pain trend (period vs. all-time), and top rejection reasons. The one weekly Continuous Improvement Engine review type that had no real generator before EOS Phase 1.",
+    reused: 'market_intelligence_core/market_review.py generate_market_review() (EOS Phase 1, 2026-07-19) -- reuses strategic_intelligence.rejection_patterns.most_frequent_rejection_reasons() verbatim, no reimplementation.',
+    handler: () => runPythonService('market_review'),
+    health: pythonHealthCheck('market_review'),
   },
   {
     name: 'strategic-recommendations',

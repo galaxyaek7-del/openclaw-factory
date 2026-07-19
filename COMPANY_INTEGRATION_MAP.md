@@ -80,3 +80,26 @@ The founder asked for 11 domains of "autonomous company" capability (Executive A
 - `tests/test_ai_capability.py` (13 tests), `tests/test_tool_intelligence.py` (9 tests), `tests/test_infrastructure_intelligence.js` (7 tests), `tests/test_factory_loop_weekly_executive_report.js` (2 tests), `tests/test_ai_cost_log.py`'s 2 new `latency_ms` tests, `tests/test_dossier_bundle.py`'s new `lifecycle_status` assertion — all real-data-shaped, no network calls.
 - Real, live, end-to-end verification performed directly for every new Mission Control service and action (`infrastructure-status`, `ai-capability-registry`, `request-ai-capability`, `tool-recommendations`, `strategic-recommendations`) — a real server instance started, real authentication, real response shapes confirmed against what the new UI code in `mission_control.html` consumes.
 - Full suite green throughout: Python test count grew from 679 → 703 (13 `ai_capability` + 9 `tool_intelligence` + 2 `latency_ms` + 1 `lifecycle_status` — `test_dossier_bundle.py`'s existing test extended, not counted separately), plus every JS test file.
+
+---
+
+## Enterprise Operating System (2026-07-19)
+
+The founder's next ask was explicit: stop adding isolated features, turn the factory into a *continuously operating company* across 8 layers (Executive Command Center, Company Memory, Department Collaboration, Continuous Improvement Engine, Executive Dashboard v2, Knowledge Graph, Company Evolution Engine, Founder Console). Same research-first, Track A/B/C discipline as every prior milestone. Full detail in `OpenClaw_Brain/00_Governance/ADR-080-eos-phase-1.md`; summarized here.
+
+### Track A — Wire up
+AI-provider status (`ai_capability/registry.py`) and Infrastructure status (`lib/infrastructure_intelligence.js`, bridged into Python via a new CLI entry point) both now feed the combined executive report. Channel approval gating (`commercial_execution/approval_gates.py`) and DEFERRED decisions (`decision_engine/store.py`) now feed the new Founder Console. The already-registered `system-configuration` service got a dashboard tab.
+
+### Track B — Build small and honest
+- **Market Review** (`market_intelligence_core/market_review.py`) — the last genuinely missing Continuous Improvement Engine review (niches scanned, opportunity-gap/pain-score trend, top rejection reasons — the last one reusing `strategic_intelligence/rejection_patterns.py` verbatim, not reimplemented). Continuous Improvement Engine is now 6/6.
+- **Company Evolution Engine** (`evolution_engine.py`) — combines bottleneck detection, technical debt, high-ROI ranking, and tool proposals (all already real) with one new detector, `capability_registry_scanner.py::find_capability_gaps()` (flags `config/capability_registry.json` entries not yet `REAL`, no fabricated staleness/age signal — the data has no per-entry timestamp).
+- **Founder Console** (`founder_console.py` + `server.js::founderConsoleService()`) — the one Mission Control tab explicitly framed as "you need to decide something": blocked channels, DEFERRED decisions, the real `NEEDS_ATTENTION.md`/`NEEDS_REVIEW.md` flags (written by `factory_loop.js`'s existing state-transition checks), and `BLOCKERS.md`.
+
+### Track C — Deferred, documented
+Customer knowledge (zero real customers), dynamic OKR auto-generation (the founder's Strategic Production Priority Ladder stays hand-owned business strategy — a unified read-only view delivers the real ask without touching it), autonomous execution of Evolution Engine recommendations (every autonomous action in this factory is operational, never architectural), a general-purpose pub/sub event bus (a formalized JSONL-log envelope, planned for Phase 2, delivers "structured events between departments" without a new live-coupling failure mode), general duplicate-work detection beyond the one existing CI check, and `ACTION_REGISTRY` risk-tiering beyond `reversible:true/false` — each with a specific unblock condition.
+
+### Phase 2/3 (documented roadmap, not yet built)
+Phase 2: Department Events (the JSONL-envelope formalization) starting with 4 simple departments; Department Health rollup; Unified Priorities view; Knowledge Graph v1 (real nodes/edges over already-real data — `Niche`/`Decision`/`ProductionRun`/`PublishChannel`/`AIProvider` — as a disposable, regenerable snapshot, never a new source of truth). Phase 3: remaining department event emitters; Executive Decisions dashboard reframing; re-evaluate Track C items only if their unblock condition fires.
+
+### Tests
+`tests/test_market_review.py` (7), `tests/test_capability_registry_scanner.py` (4), `tests/test_evolution_engine.py` (5), `tests/test_founder_console.py` (3), plus extensions to `tests/test_ai_capability.py` and `tests/test_mission_control_api.py`. Every new service/tab verified live against a real running server instance with real authentication.

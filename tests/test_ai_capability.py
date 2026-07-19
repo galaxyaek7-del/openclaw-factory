@@ -111,6 +111,36 @@ class TestRegistryListProviders(unittest.TestCase):
         self.assertFalse(local["configured"])
 
 
+class TestRenderMarkdown(unittest.TestCase):
+    """EOS Phase 1 (2026-07-19): the markdown renderer feeding the
+    combined executive report's new AI Capability section."""
+
+    def setUp(self):
+        fd, self.cost_log = tempfile.mkstemp(suffix=".jsonl")
+        os.close(fd)
+        os.remove(self.cost_log)
+
+    def tearDown(self):
+        if os.path.exists(self.cost_log):
+            os.remove(self.cost_log)
+
+    def test_renders_a_row_per_provider(self):
+        providers = registry.list_providers(self.cost_log)
+        md = registry.render_markdown(providers)
+        for p in providers:
+            self.assertIn(p["display_name"], md)
+
+    def test_configured_providers_show_a_check_mark(self):
+        with patch.dict(os.environ, {"GROQ_KEY": "test-key"}):
+            providers = registry.list_providers(self.cost_log)
+        md = registry.render_markdown(providers)
+        self.assertIn("✅", md)
+
+    def test_never_throws_on_empty_provider_list(self):
+        md = registry.render_markdown([])
+        self.assertIsInstance(md, str)
+
+
 class TestCapabilityRequestLog(unittest.TestCase):
     def setUp(self):
         fd, self.requests_log = tempfile.mkstemp(suffix=".jsonl")

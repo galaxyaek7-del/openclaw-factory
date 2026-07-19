@@ -214,7 +214,8 @@ class TestEndpointDispatch(unittest.TestCase):
         writes into the real reports/ folder. Autonomous Digital Company
         v1 (2026-07-19): now also joins executive_intelligence's and
         strategic_intelligence's real reports, previously standalone-CLI
-        only (ADR-052/ADR-054)."""
+        only (ADR-052/ADR-054). EOS Phase 1 (2026-07-19): now also joins
+        ai_capability's real provider registry."""
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             with patch.object(mission_control_api, "_FACTORY_ROOT", Path(tmp)):
@@ -225,8 +226,42 @@ class TestEndpointDispatch(unittest.TestCase):
             self.assertIn("## Strategic Recommendations", result["markdown"])
             self.assertIn("## Validation", result["markdown"])
             self.assertIn("## Revenue", result["markdown"])
+            self.assertIn("## AI Capability", result["markdown"])
+            self.assertIn("## Infrastructure", result["markdown"])
+            self.assertIn("## Market Review", result["markdown"])
             written = Path(tmp) / result["path"]
             self.assertTrue(written.exists())
+
+    def test_get_infrastructure_status_returns_none_honestly_on_subprocess_failure(self):
+        """EOS Phase 1 (2026-07-19): a missing Node binary or a subprocess
+        hiccup must never break the rest of the combined report -- fails
+        open (returns None), same discipline as every other section here."""
+        with patch("subprocess.run", side_effect=FileNotFoundError("node not found")):
+            self.assertIsNone(mission_control_api._get_infrastructure_status())
+
+    def test_get_infrastructure_status_parses_real_shaped_stdout(self):
+        fake_result = subprocess.CompletedProcess(args=[], returncode=0, stdout='{"system": {"cpu": {"count": 4}}, "ai_cost_trend": {}}')
+        with patch("subprocess.run", return_value=fake_result):
+            status = mission_control_api._get_infrastructure_status()
+        self.assertEqual(status["system"]["cpu"]["count"], 4)
+
+    def test_get_infrastructure_status_returns_none_on_nonzero_exit(self):
+        fake_result = subprocess.CompletedProcess(args=[], returncode=1, stdout="")
+        with patch("subprocess.run", return_value=fake_result):
+            self.assertIsNone(mission_control_api._get_infrastructure_status())
+
+    def test_render_infrastructure_markdown_handles_none_honestly(self):
+        md = mission_control_api._render_infrastructure_markdown(None)
+        self.assertIn("تعذّر", md)
+
+    def test_render_infrastructure_markdown_renders_real_shape(self):
+        status = {
+            "system": {"cpu": {"count": 4, "model": "Test CPU"}, "memory": {"used_pct": 50.0}, "disk": {"used_pct": 30.0}},
+            "ai_cost_trend": {"recent_7d_cost_usd": 0.01, "recent_7d_calls": 5, "outlier": False},
+        }
+        md = mission_control_api._render_infrastructure_markdown(status)
+        self.assertIn("Test CPU", md)
+        self.assertIn("50.0", md)
 
     def test_rerun_market_analysis_calls_golden_hunter_run_hunt_only(self):
         """Mocked: run_hunt() is a real, live-network pipeline (HN/GitHub/

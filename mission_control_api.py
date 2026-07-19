@@ -36,6 +36,7 @@ jobs, not inline request/response, for exactly that reason:
 """
 
 import json
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -433,17 +434,83 @@ def _strategic_report():
     }
 
 
+def _get_infrastructure_status(timeout=15):
+    """EOS Phase 1 (2026-07-19): reuses lib/infrastructure_intelligence.js's
+    real getInfrastructureStatus() via its new CLI entry point, rather than
+    reimplementing CPU/memory/disk/cost-trend logic in Python a second
+    time. Fails honestly (returns None) on any error -- a missing Node
+    binary or a subprocess hiccup must never break the rest of the
+    combined report, same fail-open discipline every other section here
+    already follows."""
+    try:
+        result = subprocess.run(
+            ["node", str(_FACTORY_ROOT / "lib" / "infrastructure_intelligence.js")],
+            capture_output=True, encoding="utf-8", timeout=timeout, cwd=str(_FACTORY_ROOT),
+        )
+        if result.returncode != 0:
+            return None
+        return json.loads(result.stdout.strip())
+    except Exception:
+        return None
+
+
+def _render_infrastructure_markdown(status):
+    if status is None:
+        return "تعذّر جلب حالة البنية التحتية الحقيقية هذه المرة (Node غير متاح أو فشل الاستدعاء) — لم يُدرَج قسم البنية التحتية.\n"
+    sys_info = status.get("system", {})
+    cost = status.get("ai_cost_trend", {})
+    cpu = sys_info.get("cpu", {})
+    mem = sys_info.get("memory", {})
+    disk = sys_info.get("disk", {})
+    lines = [
+        f"- **CPU**: {cpu.get('count', '؟')} أنوية — {cpu.get('model', '؟')}",
+        f"- **الذاكرة**: {mem.get('used_pct', '؟')}% مستخدَم",
+        f"- **القرص**: {disk.get('used_pct', disk.get('error', '؟'))}%" if not disk.get("error") else f"- **القرص**: {disk['error']}",
+        f"- **تكلفة الذكاء الاصطناعي (7 أيام)**: ${cost.get('recent_7d_cost_usd', 0)} عبر {cost.get('recent_7d_calls', 0)} استدعاء"
+        + (" ⚠️ ارتفاع غير معتاد" if cost.get("outlier") else ""),
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def _founder_console():
+    """Founder Console -- EOS Phase 1 (2026-07-19): the Python-side half
+    (blocked channels + DEFERRED decisions). server.js merges this with
+    the JS-native attention/review flags and BLOCKERS.md read. Passthrough
+    only -- see founder_console.py for what's actually assembled."""
+    from founder_console import build_founder_queue_partial
+    return build_founder_queue_partial()
+
+
+def _evolution_report():
+    """'Company Evolution Engine' -- EOS Phase 1 (2026-07-19): combines
+    bottleneck detection, technical debt, high-ROI ranking, tool
+    proposals, and the new capability-gap scanner into one report.
+    Passthrough only -- see evolution_engine.py for what's actually
+    combined."""
+    import evolution_engine
+    report = evolution_engine.build_evolution_report()
+    return {"report": report, "markdown": evolution_engine.render_markdown(report)}
+
+
+def _market_review():
+    """'Market Review' -- EOS Phase 1 (2026-07-19), the one genuinely
+    missing weekly Continuous Improvement Engine review type. Exposed
+    standalone here the same way _validation_report()/_strategic_report()
+    already expose their own reports -- passthrough only."""
+    from market_intelligence_core import market_review as mr
+    report = mr.generate_market_review()
+    return {"report": report, "markdown": mr.render_markdown(report)}
+
+
 def _build_combined_executive_report_markdown(title):
-    """Concatenates four already-existing real report renderers —
+    """Concatenates already-existing real report renderers —
     validation_layer's daily report, revenue_pipeline's CEO revenue
-    report, and (Autonomous Digital Company v1, 2026-07-19)
-    executive_intelligence's bottleneck/opportunity report and
-    strategic_intelligence's decision-pattern/technical-debt report —
-    into one markdown string. No new metric, no new business logic here
-    — the two added reports were already real and tested (ADR-052/
-    ADR-054) but only ever run as standalone CLI tools (`python -m
-    executive_intelligence.report` / `python -m
-    strategic_intelligence.report`).
+    report, executive_intelligence's bottleneck/opportunity report,
+    strategic_intelligence's decision-pattern/technical-debt report
+    (Autonomous Digital Company v1, 2026-07-19), and (EOS Phase 1,
+    2026-07-19) ai_capability's provider registry — into one markdown
+    string. No new metric, no new business logic here; every section
+    reuses an already-real, already-tested report renderer.
 
     Shared by _export_executive_report() and _full_cycle()'s own
     executive_reports stage, which previously re-implemented this exact
@@ -453,6 +520,8 @@ def _build_combined_executive_report_markdown(title):
     from revenue_pipeline import pipeline as rp
     from executive_intelligence import report as exec_report
     from strategic_intelligence import report as strat_report
+    from ai_capability import registry as ai_registry
+    from market_intelligence_core import market_review
 
     validation = dr.generate_daily_report()
     validation_md = dr.render_markdown(validation)
@@ -462,6 +531,12 @@ def _build_combined_executive_report_markdown(title):
     executive_md = exec_report.render_markdown(executive)
     strategic = strat_report.generate_strategic_report()
     strategic_md = strat_report.render_markdown(strategic)
+    ai_providers = ai_registry.list_providers()
+    ai_md = ai_registry.render_markdown(ai_providers)
+    infra_status = _get_infrastructure_status()
+    infra_md = _render_infrastructure_markdown(infra_status)
+    market = market_review.generate_market_review()
+    market_md = market_review.render_markdown(market)
 
     combined_md = (
         f"# {title}\n\n"
@@ -469,7 +544,10 @@ def _build_combined_executive_report_markdown(title):
         "---\n\n## Executive Summary\n\n" + executive_md +
         "\n\n---\n\n## Strategic Recommendations\n\n" + strategic_md +
         "\n\n---\n\n## Validation\n\n" + validation_md +
-        "\n\n---\n\n## Revenue\n\n" + revenue_md + "\n"
+        "\n\n---\n\n## Revenue\n\n" + revenue_md +
+        "\n\n---\n\n## AI Capability\n\n" + ai_md +
+        "\n\n---\n\n## Infrastructure\n\n" + infra_md +
+        "\n\n---\n\n## Market Review\n\n" + market_md + "\n"
     )
     return combined_md, revenue
 
@@ -635,6 +713,9 @@ _ENDPOINTS = {
     "ai_capability_request": _ai_capability_request,
     "tool_intelligence": _tool_intelligence,
     "strategic_report": _strategic_report,
+    "market_review": _market_review,
+    "evolution_report": _evolution_report,
+    "founder_console": _founder_console,
     "full_cycle": _full_cycle,
 }
 

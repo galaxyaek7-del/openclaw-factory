@@ -163,6 +163,25 @@ def list_providers(cost_log_path=None):
     return out
 
 
+def render_markdown(providers):
+    """EOS Phase 1 (2026-07-19): a compact markdown summary of
+    list_providers()'s output, for the combined executive report --
+    same 'real report + render_markdown()' shape every other report
+    module in this factory already follows (validation_layer,
+    executive_intelligence, strategic_intelligence)."""
+    lines = ["| Provider | Configured | Calls | Avg Latency (ms) | Avg Cost/Call | Metrics Level |",
+             "|---|---|---|---|---|---|"]
+    for p in providers:
+        stats = p.get("real_stats") or {}
+        levels = sorted({m["level"] for m in p["metrics"].values()})
+        lines.append(
+            f"| {p['display_name']} | {'✅' if p['configured'] else '❌'} | "
+            f"{stats.get('calls', '—')} | {stats.get('avg_latency_ms', '—')} | "
+            f"{stats.get('avg_cost_usd_per_call', '—')} | {', '.join(levels)} |"
+        )
+    return "\n".join(lines) + "\n"
+
+
 def record_capability_request(department, task_type, requested_provider, reason, path=None):
     """Append-only log of a department's real request for a different/
     better AI model (Autonomous Digital Company v1 §8) -- same discipline

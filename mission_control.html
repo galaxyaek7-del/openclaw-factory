@@ -178,6 +178,11 @@
     <div id="healthContent" class="loading">جارٍ التحميل…</div>
   </section>
 
+  <section id="tab-founder" class="tab">
+    <div class="tabHeader"><h2>🔴 يحتاج قرارك — كل ما هو دون ذلك يعمل تلقائياً</h2></div>
+    <div id="founderContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
   <section id="tab-market" class="tab">
     <div class="tabHeader">
       <h2>ذكاء السوق</h2>
@@ -252,6 +257,16 @@
     <div id="strategicContent" class="loading">جارٍ التحميل…</div>
   </section>
 
+  <section id="tab-evolution" class="tab">
+    <div class="tabHeader"><h2>تطوّر الشركة (Company Evolution Engine)</h2></div>
+    <div id="evolutionContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-sysconfig" class="tab">
+    <div class="tabHeader"><h2>إعدادات النظام (System Configuration)</h2></div>
+    <div id="sysconfigContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
   <section id="tab-validation" class="tab">
     <div class="tabHeader">
       <h2>التحقُّق (Validation)</h2>
@@ -308,6 +323,7 @@
 <script>
 const TABS = [
   { id: 'health', label: 'الحالة العامة' },
+  { id: 'founder', label: '🔴 يحتاج قرارك' },
   { id: 'market', label: 'ذكاء السوق' },
   { id: 'opportunities', label: 'الفرص' },
   { id: 'production', label: 'الإنتاج' },
@@ -319,6 +335,8 @@ const TABS = [
   { id: 'infrastructure', label: 'البنية التحتية' },
   { id: 'aimodels', label: 'نماذج الذكاء الاصطناعي' },
   { id: 'strategic', label: 'التوصيات الاستراتيجية' },
+  { id: 'evolution', label: 'تطوّر الشركة' },
+  { id: 'sysconfig', label: 'إعدادات النظام' },
   { id: 'validation', label: 'التحقُّق' },
   { id: 'activity', label: 'النشاط' },
   { id: 'alerts', label: 'التنبيهات' },
@@ -632,23 +650,77 @@ const loaders = {
     if (slRes && slRes.success && slRes.overall !== 'healthy') pushNotification('warning', `Service Layer: ${slRes.overall} (${slRes.healthy_count}/${slRes.total_count})`);
   },
 
+  founder: async () => {
+    const el = document.getElementById('founderContent');
+    const res = await fetchJson('/api/v1/founder-console');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const d = res.data;
+    const nothingPending = !d.blocked_channels.length && !d.pending_decisions.length
+      && !d.attention_flag.active && !d.review_flag.active;
+    let html = '';
+    if (nothingPending) {
+      html += `<div class="card"><p>${badge('good')} لا شيء ينتظر قرارك الآن — كل شيء يعمل تلقائياً.</p></div>`;
+    }
+    if (d.attention_flag.active) {
+      html += `<div class="card"><h3>${badge('bad')} يحتاج انتباهاً</h3><pre>${escapeHtml(d.attention_flag.content)}</pre></div>`;
+    }
+    if (d.review_flag.active) {
+      html += `<div class="card"><h3>${badge('warn')} بانتظار المراجعة</h3><pre>${escapeHtml(d.review_flag.content)}</pre></div>`;
+    }
+    if (d.blocked_channels.length) {
+      html += `
+      <div class="card">
+        <h3>قنوات تحتاج إجراءً منك (${d.blocked_channels.length})</h3>
+        <table><thead><tr><th>المنصة</th><th>الحالة</th><th>السبب</th></tr></thead>
+        <tbody>${d.blocked_channels.map(c => `<tr><td>${escapeHtml(c.marketplace)}</td><td>${badge(c.status)}</td><td class="muted">${escapeHtml(c.reason)}</td></tr>`).join('')}</tbody></table>
+      </div>`;
+    }
+    if (d.pending_decisions.length) {
+      html += `
+      <div class="card">
+        <h3>قرارات مؤجَّلة بانتظار رأيك (${d.pending_decisions.length})</h3>
+        <table><thead><tr><th>النيتش</th><th>الدرجة</th></tr></thead>
+        <tbody>${d.pending_decisions.map(p => `<tr><td>${escapeHtml(p.niche)}</td><td>${p.opportunity_score}</td></tr>`).join('')}</tbody></table>
+      </div>`;
+    }
+    if (d.blockers?.text) {
+      html += `<div class="card"><h3>قائمة BLOCKERS.md الكاملة</h3><pre>${escapeHtml(d.blockers.text)}</pre></div>`;
+    }
+    el.innerHTML = html;
+  },
+
   market: async () => {
     const el = document.getElementById('marketContent');
-    const res = await fetchJson('/api/v1/market-intelligence');
-    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
-    const mi = res.data.latest;
-    if (!mi || !mi.available) {
-      el.innerHTML = `<p class="muted">${escapeHtml(mi?.note ?? 'لا تحليل ذكاء سوق حقيقي مسجَّل بعد')}</p>`;
-      return;
-    }
-    el.innerHTML = `
+    const [miRes, reviewRes] = await Promise.all([
+      fetchJson('/api/v1/market-intelligence'),
+      fetchJson('/api/v1/market-review'),
+    ]);
+    let html = '';
+    const mi = miRes.success ? miRes.data.latest : null;
+    html += `
       <div class="card">
         <h3>آخر تحليل حقيقي</h3>
-        <p><strong>${escapeHtml(mi.niche)}</strong></p>
-        <p>قرار AI CEO: ${badge(mi.ai_ceo?.decision)}</p>
-        <p class="muted">${(mi.ai_ceo?.evidence || []).map(escapeHtml).join('<br>')}</p>
-      </div>
-    `;
+        ${mi && mi.available
+          ? `<p><strong>${escapeHtml(mi.niche)}</strong></p>
+             <p>قرار AI CEO: ${badge(mi.ai_ceo?.decision)}</p>
+             <p class="muted">${(mi.ai_ceo?.evidence || []).map(escapeHtml).join('<br>')}</p>`
+          : `<p class="muted">${escapeHtml(mi?.note ?? 'لا تحليل ذكاء سوق حقيقي مسجَّل بعد')}</p>`}
+      </div>`;
+    if (reviewRes.success) {
+      const r = reviewRes.data.report;
+      const trend = r.opportunity_trend;
+      html += `
+      <div class="card">
+        <h3>مراجعة السوق الأسبوعية (آخر ${r.period_days} أيام)</h3>
+        <p>نيتشات مُمسوحة: <strong>${r.scan_summary.niches_scanned}</strong></p>
+        ${trend.answer === 'Unknown'
+          ? `<p class="muted">اتجاه الفرص: ${escapeHtml(trend.reason)}</p>`
+          : `<p>متوسط فجوة الفرصة: ${trend.period_avg_opportunity_gap} (تاريخياً: ${trend.all_time_avg_opportunity_gap})</p>
+             <p>متوسط درجة الألم: ${trend.period_avg_pain_score} (تاريخياً: ${trend.all_time_avg_pain_score})</p>`}
+        <details><summary>التقرير الكامل</summary><pre>${escapeHtml(r.top_rejection_reasons ? JSON.stringify(r.top_rejection_reasons, null, 2) : '')}</pre></details>
+      </div>`;
+    }
+    el.innerHTML = html;
   },
 
   opportunities: async () => {
@@ -910,6 +982,79 @@ const loaders = {
       <div class="card"><h3>تقرير strategic_intelligence الحقيقي</h3><pre>${escapeHtml(res.data.markdown)}</pre></div>
       <h3 style="margin:1rem 0 .5rem;">اقتراحات الأدوات والبرمجيات (Tool Recommendations)</h3>
       ${proposals.map(proposalCard).join('')}
+    `;
+  },
+
+  evolution: async () => {
+    const el = document.getElementById('evolutionContent');
+    const res = await fetchJson('/api/v1/evolution-report');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const r = res.data.report;
+    const bottlenecks = r.bottlenecks;
+    const debt = r.technical_debt;
+    const roi = r.high_roi_opportunities;
+    const gaps = r.capability_gaps;
+    el.innerHTML = `
+      <div class="card">
+        <h3>الاختناقات</h3>
+        ${bottlenecks.detected
+          ? `<table><tbody>${bottlenecks.items.map(b => `<tr><td class="muted">${escapeHtml(b.evidence)}</td></tr>`).join('')}</tbody></table>`
+          : `<p class="muted">${escapeHtml(bottlenecks.reason)}</p>`}
+      </div>
+      <div class="card">
+        <h3>الديون التقنية</h3>
+        ${debt.answer === 'Unknown'
+          ? `<p class="muted">${escapeHtml(debt.reason)}</p>`
+          : `<table><tbody>${debt.evidence.map(e => `<tr><td>${escapeHtml(e.component)}</td><td class="muted">${escapeHtml(e.evidence)}</td></tr>`).join('')}</tbody></table>`}
+      </div>
+      <div class="card">
+        <h3>أعلى الفرص عائداً (ROI)</h3>
+        ${roi.answer === 'Unknown'
+          ? `<p class="muted">${escapeHtml(roi.reason)}</p>`
+          : `<table><thead><tr><th>النيتش</th><th>العائد %</th><th>الصافي بعد التكلفة</th></tr></thead>
+             <tbody>${roi.top.map(o => `<tr><td>${escapeHtml(o.niche)}</td><td>${o.roi_pct}%</td><td>$${o.net_after_cost}</td></tr>`).join('')}</tbody></table>`}
+      </div>
+      <div class="card">
+        <h3>فجوات القدرات المكتشَفة (${gaps.discovery_level.length + gaps.estimated_level.length} من ${gaps.total_capabilities ?? 0})</h3>
+        <table><thead><tr><th>القدرة</th><th>المستوى</th></tr></thead>
+        <tbody>
+          ${gaps.discovery_level.map(c => `<tr><td>${escapeHtml(c.name || c.id)}</td><td>${badge('DISCOVERY')}</td></tr>`).join('')}
+          ${gaps.estimated_level.map(c => `<tr><td>${escapeHtml(c.name || c.id)}</td><td>${badge('ESTIMATED')}</td></tr>`).join('')}
+        </tbody></table>
+      </div>
+      <div class="card">
+        <h3>اقتراحات الأدوات (مقترَح، لا تنفيذ)</h3>
+        ${r.tool_proposals.map(p => `<p class="muted">${escapeHtml(p.tool)}</p>`).join('')}
+      </div>
+    `;
+  },
+
+  sysconfig: async () => {
+    const el = document.getElementById('sysconfigContent');
+    const res = await fetchJson('/api/v1/system-configuration');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const d = res.data;
+    const cap = d.capability_registry;
+    el.innerHTML = `
+      <div class="grid">
+        <div class="card"><h3>حدّ درجة الفرصة الأدنى</h3><div class="big">${d.min_opportunity_score}</div></div>
+        <div class="card"><h3>أوزان الفئات (Tier Weights)</h3><pre>${escapeHtml(JSON.stringify(d.tier_weights, null, 2))}</pre></div>
+      </div>
+      <div class="card">
+        <h3>إمكانية الأتمتة حسب الفئة</h3>
+        <pre>${escapeHtml(JSON.stringify(d.automation_potential_by_tier, null, 2))}</pre>
+      </div>
+      <div class="card">
+        <h3>القيمة طويلة الأمد حسب الفئة</h3>
+        <pre>${escapeHtml(JSON.stringify(d.long_term_value_by_tier, null, 2))}</pre>
+      </div>
+      <div class="card">
+        <h3>سجل نضج القدرات (${cap?.capabilities?.length ?? 0} قدرة)</h3>
+        <p class="muted">آخر تحديث: ${escapeHtml(cap?.last_updated)}</p>
+        <table><thead><tr><th>القدرة</th><th>المستوى</th></tr></thead>
+        <tbody>${(cap?.capabilities || []).map(c => `<tr><td>${escapeHtml(c.name)}</td><td>${badge(c.level)}</td></tr>`).join('')}</tbody></table>
+      </div>
+      <details><summary>الاقتصاد الكامل (economics.json)</summary><pre>${escapeHtml(JSON.stringify(d.economics, null, 2))}</pre></details>
     `;
   },
 
