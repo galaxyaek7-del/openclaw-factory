@@ -170,6 +170,21 @@ async function main() {
     assert.ok(r.error);
   });
 
+  // ── checkProductionEngineHealth (Autonomous Digital Company v1 follow-up, 2026-07-19) ──
+
+  await test('checkProductionEngineHealth: real call against real data/orchestrator_timeline.jsonl, shape is honest', async () => {
+    const r = await fl.checkProductionEngineHealth();
+    assert.strictEqual(typeof r.ok, 'boolean');
+    assert.ok(r.reason);
+    assert.ok(r.engine_health);
+  });
+
+  await test('checkProductionEngineHealth: broken script path fails OPEN (ok:true), never blocks production on its own error', async () => {
+    const r = await fl.checkProductionEngineHealth({ scriptPath: BROKEN_SCRIPT });
+    assert.strictEqual(r.ok, true);
+    assert.ok(r.reason);
+  });
+
   // ── briefFromGoldenOpportunity (ADR-010: routes price through butter_price) ──
 
   await test('briefFromGoldenOpportunity: the exact real case that motivated ADR-010 — raw $19, floored/repriced to >= $30', async () => {

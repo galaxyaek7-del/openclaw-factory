@@ -717,6 +717,56 @@ function getLadderOpportunityScore(niche, ladder, { timeoutMs = 15000, scriptPat
   });
 }
 
+// Autonomous Digital Company v1 follow-up (2026-07-19): "data flows, not
+// isolated modules" — executive_intelligence's real per-engine success-
+// rate detection (ADR-052) now actually gates a real business decision
+// (whether to dispatch a new production run this cycle) via profit_oracle.
+// py's new --production-health-gate flag, instead of only ever appearing
+// in a standalone daily report. Same spawn pattern as getLadderOpportunity
+// Score() above; needs no stdin (checks real, factory-wide history, not a
+// per-niche input). Fails OPEN on a spawn/parse error, same discipline as
+// every other gate in this file — never block production because this
+// NEWER check itself failed to run.
+function checkProductionEngineHealth({ timeoutMs = 15000, scriptPath = path.join(FACTORY_DIR, 'profit_oracle.py'), pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [scriptPath, '--production-health-gate'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: true, reason: `تعذّر تشغيل بوابة صحة الإنتاج (فشل فتح فشل) — لا حظر: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: true, reason: 'انتهت مهلة بوابة صحة الإنتاج (15 ثانية) — لا حظر (فشل فتح)' });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: true, reason: `خطأ بوابة صحة الإنتاج — لا حظر (فشل فتح): ${err.message}` }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (result.success) {
+          finish({ ok: result.ok, reason: result.reason, engine_health: result.engine_health });
+        } else {
+          finish({ ok: true, reason: `بوابة صحة الإنتاج أبلغت عن فشل — لا حظر (فشل فتح): ${result.error || output}${errOut}` });
+        }
+      } catch (e) {
+        finish({ ok: true, reason: `فشل تحليل ناتج بوابة صحة الإنتاج — لا حظر (فشل فتح): ${e.message}` });
+      }
+    });
+  });
+}
+
 // ADR-065 Step 3(a): fire-and-forget real notification the moment a real
 // opportunity clears profit_oracle's acceptance gate — reuses
 // lib/n8n_notify.js's generic sender (same one server.js's production
@@ -917,6 +967,17 @@ async function huntGolden(reachable) {
   // A non-ladder opportunity (every pre-ladder golden candidate) keeps
   // using triggerGenerateBook(), byte-for-byte unchanged.
   if (top.ladder) {
+    // Autonomous Digital Company v1 follow-up (2026-07-19): real production-
+    // engine health gate — see checkProductionEngineHealth()'s own comment.
+    const healthGate = await checkProductionEngineHealth();
+    if (!healthGate.ok) {
+      const rec = appendGoldenHunterEvent({
+        action: 'skipped', reason: 'production_engine_unhealthy', niche: top.niche,
+        detail: `تخطّي الإنتاج — ${healthGate.reason}`,
+      });
+      return { action: 'skipped', detail: rec.detail };
+    }
+
     const result = await runLadderOpportunityPipeline(top.niche, top.ladder);
     const rec = appendGoldenHunterEvent({
       action: 'attempted', dry_run: false, niche: top.niche, profit_score: top.profit_score,
@@ -2054,6 +2115,7 @@ module.exports = {
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
   appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted,
   evaluateGoldenOpportunities, getButterPrice, getOpportunityScore, getLadderOpportunityScore,
+  checkProductionEngineHealth,
   checkNeedsAttention, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
   checkPendingAiCeoDecision,
   checkPendingReview, countPendingReviewDrafts, writeNeedsReview, clearNeedsReview,

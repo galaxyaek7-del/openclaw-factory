@@ -323,6 +323,64 @@ def _real_average_ai_cost_per_call(log_file=None):
     return sum(costs) / len(costs), len(costs)
 
 
+def _real_ai_cost_trend(log_file=None, now=None):
+    """Autonomous Digital Company v1 follow-up (2026-07-19): "data flows,
+    not isolated modules" — the same real cost-rate-trend signal
+    lib/infrastructure_intelligence.js's getCostTrend() already computes
+    for the dashboard (recent 7-day average vs. the real trailing daily
+    average, flagged as an outlier only when a real baseline exists and
+    the recent average is genuinely more than double it), reimplemented
+    here in Python so _score_margin() below can use a real, CURRENT cost
+    figure instead of a flat all-time average that would understate a
+    genuine recent cost spike. Two independent readers of the same real
+    log for two different purposes (a dashboard display vs. a scoring
+    input) — not duplicated business logic, since neither reuses the
+    other's decision.
+
+    Returns (recent_7d_avg_cost_per_call, is_outlier) — recent_7d_avg is
+    None when there's no real data in the last 7 days to average (never
+    a fabricated recent figure)."""
+    log_file = log_file or AI_COST_LOG_FILE
+    now = now or datetime.now()
+    if not os.path.exists(log_file):
+        return None, False
+
+    recent_costs, trailing_costs = [], []
+    seven_days_ago = now.timestamp() - 7 * 24 * 60 * 60
+    try:
+        with open(log_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    rec = json.loads(line)
+                except Exception:
+                    continue
+                cost = rec.get('cost_usd')
+                ts = rec.get('timestamp')
+                if cost is None or not ts:
+                    continue
+                try:
+                    when = datetime.fromisoformat(ts).timestamp()
+                except (TypeError, ValueError):
+                    continue
+                (recent_costs if when >= seven_days_ago else trailing_costs).append(cost)
+    except Exception:
+        return None, False
+
+    if not recent_costs:
+        return None, False
+
+    recent_avg = sum(recent_costs) / len(recent_costs)
+    if not trailing_costs:
+        return recent_avg, False
+
+    trailing_avg = sum(trailing_costs) / len(trailing_costs)
+    is_outlier = trailing_avg > 0 and recent_avg > trailing_avg * 2
+    return recent_avg, is_outlier
+
+
 def _score_margin(niche):
     """20% weight. Price tier and recurring-revenue potential were pure
     keyword estimates until this fix (2026-07-16, Revenue Activation
@@ -366,6 +424,22 @@ def _score_margin(niche):
         notes.append(f"السعر المقترح: ${price} [تقدير حسب فئة الكلمات المفتاحية]")
 
     avg_ai_cost, sample_size = _real_average_ai_cost_per_call()
+    # Autonomous Digital Company v1 follow-up (2026-07-19): when a real
+    # recent cost spike exists (recent 7-day average genuinely more than
+    # double the real trailing baseline — same threshold
+    # infrastructure_intelligence.js's dashboard already uses), the flat
+    # all-time average understates what this will actually cost RIGHT NOW.
+    # Use the real recent average instead — still real, still never a
+    # guess, just a more current real figure. No real outlier -> byte-for-
+    # byte the same behavior as before this change.
+    recent_avg_ai_cost, is_cost_outlier = _real_ai_cost_trend()
+    cost_outlier_note = None
+    if is_cost_outlier and recent_avg_ai_cost is not None:
+        cost_outlier_note = (
+            f"⚠️ ارتفاع حقيقي في تكلفة Groq الأخيرة (متوسط 7 أيام ${recent_avg_ai_cost:.4f} "
+            f"يفوق ضعف المتوسط التاريخي) — استُخدم المتوسط الأخير بدل المتوسط الكلي لتقدير أدق للتكلفة الحالية"
+        )
+        avg_ai_cost = recent_avg_ai_cost
     if ECONOMICS is not None:
         try:
             # Absolute path — economics.py's own default is CWD-relative
@@ -384,6 +458,8 @@ def _score_margin(niche):
                 f"هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): "
                 f"${net_after_fees:.2f} من ${price} — {ai_cost_note}"
             )
+            if cost_outlier_note:
+                notes.append(cost_outlier_note)
         except Exception as e:
             cost_score = 100
             notes.append(f"تعذّر حساب الهامش الحقيقي ({e}) — عاد لافتراض 'رقمي=صفر تكلفة' القديم")
@@ -1111,6 +1187,23 @@ def main():
                 ladder=data.get('ladder', 'kdp_books'),
                 external_signal=data.get('external_signal'),
             )
+            print(json.dumps({"success": True, **result}, ensure_ascii=False))
+        except Exception as e:
+            print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))
+            sys.exit(1)
+        return
+
+    # Autonomous Digital Company v1 follow-up (2026-07-19): real, narrow
+    # gate reusing executive_intelligence's already-tested engine-health
+    # detection (ADR-052) -- "data flows, not isolated modules". Needs no
+    # stdin (checks real, factory-wide production-engine history, not a
+    # per-niche input) — same spawn pattern as --opportunity-score/
+    # --ladder-score, for factory_loop.js's Golden Hunter Bridge to call
+    # right before dispatching a real production run.
+    if '--production-health-gate' in sys.argv:
+        try:
+            from executive_intelligence.production_gate import check_production_engine_health
+            result = check_production_engine_health()
             print(json.dumps({"success": True, **result}, ensure_ascii=False))
         except Exception as e:
             print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))

@@ -7,8 +7,10 @@ Runs with stdlib unittest (see tests/test_base_arm.py).
 """
 
 import json
+import os
 import sys
 import unittest
+from datetime import datetime, timedelta
 from pathlib import Path
 from unittest.mock import patch
 
@@ -340,6 +342,77 @@ class TestRealCompetitionAndMargin(unittest.TestCase):
             self.assertAlmostEqual(avg, 0.02, places=6)
         finally:
             _os.remove(path)
+
+
+class TestRealAiCostTrend(unittest.TestCase):
+    """Autonomous Digital Company v1 follow-up (2026-07-19): the same real
+    cost-rate-trend signal lib/infrastructure_intelligence.js's
+    getCostTrend() computes for the dashboard, reimplemented here so
+    _score_margin() can use a real, current cost figure instead of a flat
+    all-time average."""
+
+    def _write_log(self, entries):
+        import tempfile, os as _os
+        fd, path = tempfile.mkstemp(suffix=".jsonl")
+        _os.close(fd)
+        with open(path, "w", encoding="utf-8") as f:
+            for e in entries:
+                f.write(json.dumps(e) + "\n")
+        return path
+
+    def test_missing_log_returns_none_not_zero(self):
+        avg, outlier = po._real_ai_cost_trend(log_file="/no/such/ai_cost_log.jsonl")
+        self.assertIsNone(avg)
+        self.assertFalse(outlier)
+
+    def test_no_recent_entries_returns_none(self):
+        now = datetime(2026, 7, 20)
+        old_ts = (now - timedelta(days=20)).isoformat()
+        path = self._write_log([{"cost_usd": 0.01, "timestamp": old_ts}])
+        try:
+            avg, outlier = po._real_ai_cost_trend(log_file=path, now=now)
+            self.assertIsNone(avg)
+            self.assertFalse(outlier)
+        finally:
+            os.remove(path)
+
+    def test_real_trailing_baseline_plus_a_genuine_spike_is_flagged(self):
+        now = datetime(2026, 7, 20)
+        entries = []
+        for d in range(10, 1, -1):
+            entries.append({"cost_usd": 0.0001, "timestamp": (now - timedelta(days=d)).isoformat()})
+        entries.append({"cost_usd": 5.0, "timestamp": (now - timedelta(hours=1)).isoformat()})
+        path = self._write_log(entries)
+        try:
+            avg, outlier = po._real_ai_cost_trend(log_file=path, now=now)
+            self.assertGreater(avg, 0)
+            self.assertTrue(outlier)
+        finally:
+            os.remove(path)
+
+    def test_steady_spend_is_not_flagged(self):
+        now = datetime(2026, 7, 20)
+        entries = [{"cost_usd": 0.0001, "timestamp": (now - timedelta(days=d)).isoformat()} for d in range(15, 0, -1)]
+        path = self._write_log(entries)
+        try:
+            avg, outlier = po._real_ai_cost_trend(log_file=path, now=now)
+            self.assertFalse(outlier)
+        finally:
+            os.remove(path)
+
+
+class TestScoreMarginUsesRealCostTrendOnAGenuineOutlier(unittest.TestCase):
+    @patch("profit_oracle._real_ai_cost_trend", return_value=(0.5, True))
+    @patch("profit_oracle._real_average_ai_cost_per_call", return_value=(0.001, 10))
+    def test_real_outlier_uses_the_recent_average_and_notes_it(self, mock_avg, mock_trend):
+        _, notes, _ = po._score_margin("template bundle system")
+        self.assertTrue(any("ارتفاع حقيقي في تكلفة" in n for n in notes))
+
+    @patch("profit_oracle._real_ai_cost_trend", return_value=(None, False))
+    @patch("profit_oracle._real_average_ai_cost_per_call", return_value=(0.001, 10))
+    def test_no_outlier_keeps_prior_behavior_unchanged(self, mock_avg, mock_trend):
+        _, notes, _ = po._score_margin("template bundle system")
+        self.assertFalse(any("ارتفاع حقيقي في تكلفة" in n for n in notes))
 
 
 class TestRealMarginPricing(unittest.TestCase):
