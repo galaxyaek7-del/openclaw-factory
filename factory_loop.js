@@ -898,6 +898,29 @@ async function huntGolden(reachable) {
     return { action: 'skipped', detail: rec.detail };
   }
 
+  // Strategic Phase (2026-07-19): a ladder-tagged opportunity routes
+  // through the modern pipeline (Product Definition Registry +
+  // Commercial Execution Layer) instead of the legacy book_generator.py-
+  // only path — market_hunter.py's own daily run already recorded a real
+  // ACCEPTED decision for this exact niche (decision_path=
+  // "ladder_fast_gate"); runLadderOpportunityPipeline() reuses it
+  // (existing_decision=) rather than re-evaluating, so this can never
+  // record a second decision/production_id for the same real opportunity.
+  // A non-ladder opportunity (every pre-ladder golden candidate) keeps
+  // using triggerGenerateBook(), byte-for-byte unchanged.
+  if (top.ladder) {
+    const result = await runLadderOpportunityPipeline(top.niche, top.ladder);
+    const rec = appendGoldenHunterEvent({
+      action: 'attempted', dry_run: false, niche: top.niche, profit_score: top.profit_score,
+      verdict: top.verdict, brief, ladder: top.ladder, pipeline: 'orchestrator',
+      ok: result.ok, detail: result.detail, production_id: result.production_id,
+    });
+    return {
+      action: result.ok ? 'produced' : 'failed',
+      detail: `[Golden Hunter → المحرك الحديث] ${rec.detail}`,
+    };
+  }
+
   const result = await triggerGenerateBook(brief);
   const rec = appendGoldenHunterEvent({
     action: 'attempted', dry_run: false, niche: top.niche, profit_score: top.profit_score,
@@ -1335,6 +1358,63 @@ async function maybeRunMarketHunter(now = new Date()) {
   }
   const result = await runMarketHunter();
   return { action: result.ok ? 'hunted' : 'failed', detail: result.detail };
+}
+
+// ── STRATEGIC PHASE (2026-07-19): the modern Product Definition
+// Registry + Commercial Execution Layer pipeline, for ladder-tagged
+// golden opportunities only. Reuses the SAME FACTORY_AUTO_PRODUCE gate
+// AUTO_PRODUCE_ACTIVATION_CHECKLIST.md already documents (no new env
+// var, no new review process) — this function is only ever called from
+// huntGolden() when that gate is already on. Spawns
+// `python -m orchestrator.orchestrator` (NOT the raw script path — see
+// orchestrator/orchestrator.py's own docstring: the raw-path form
+// shadows Python's stdlib `types` module via orchestrator/types.py).
+function runLadderOpportunityPipeline(niche, ladder, { timeoutMs = 150000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), ['-m', 'orchestrator.orchestrator', '--run-ladder-opportunity'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل orchestrator.orchestrator: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة orchestrator.orchestrator --run-ladder-opportunity (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من orchestrator.orchestrator' });
+          return;
+        }
+        finish({
+          ok: result.production_success === true && result.publishing_status === 'SUCCESS',
+          detail: `production=${result.production_status} (${result.production_id || 'no id'}), publishing=${result.publishing_status}`,
+          production_id: result.production_id,
+          publish_record: result.publish_record,
+        });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج orchestrator.orchestrator: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+
+    python.stdin.write(JSON.stringify({ niche, ladder, tier: 'tier4' }));
+    python.stdin.end();
+  });
 }
 
 // ── SELF-AWARENESS ──

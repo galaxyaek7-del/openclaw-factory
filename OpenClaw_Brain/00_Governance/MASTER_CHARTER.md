@@ -40,6 +40,7 @@ Ranked by what gets engineering attention and what a new opportunity is scored a
 3. **No product line launches ahead of the ladder's own discipline:** no new track gets a dedicated engine built out fully before the ladder's own opportunity gate (§2) has actually accepted a real candidate for it. Building `paddle_arm.py`'s skeleton now is preparation, not a claim that a Paddle-sold product exists yet.
 4. **Full memory.** Every opportunity, decision, and rejection stays logged (`data/decisions.jsonl`, `data/golden_hunter_events.jsonl`) — the ladder changes what wins, not whether losses are recorded honestly.
 5. **Protected Right to Object stays in force**, including against this charter itself, if a future session finds the ladder producing bad outcomes.
+6. **One real decision per opportunity, never re-derived.** As of the Strategic Phase (2026-07-19, `COMPANY_INTEGRATION_MAP.md`), the modern pipeline (`orchestrator.run_cycle()`) can be triggered automatically from `factory_loop.js`'s existing tick — but only by *reusing* a decision Golden Hunter already recorded (`existing_decision=`), never by re-evaluating the same niche a second time. This is what makes automatic triggering safe: a second independent decision for the same real opportunity would mean a second `production_id` and real duplicate-publishing risk. Still gated by the same `FACTORY_AUTO_PRODUCE` review process `AUTO_PRODUCE_ACTIVATION_CHECKLIST.md` already documents — no new switch, no new review process.
 
 ## 5. Ownership
 

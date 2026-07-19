@@ -55,6 +55,17 @@ try:
 except Exception:
     RECORD_LADDER_DECISION = None
 
+# Strategic Phase (2026-07-19): Pioneer supplies real, currently-trending
+# candidate niches (no fixed list, no niche pre-specified — genuinely
+# upstream discovery) alongside SEED_CATEGORIES/the Sensing Engine,
+# scored and recorded through this exact same unchanged loop below.
+# Guarded the same way PROFIT_ORACLE/RECORD_LADDER_DECISION are — a
+# broken network call must never crash the real hunt.
+try:
+    from golden_hunter.pioneer import discover_candidates as PIONEER_DISCOVER
+except Exception:
+    PIONEER_DISCOVER = None
+
 FACTORY_DIR = os.path.dirname(os.path.abspath(__file__))
 OPPORTUNITIES_FILE = os.path.join(FACTORY_DIR, 'OPPORTUNITIES.md')
 REJECTED_NICHES_FILE = os.path.join(FACTORY_DIR, 'REJECTED_NICHES.md')  # factory_loop.js's circuit breaker
@@ -230,7 +241,26 @@ def hunt_market(limit=10, write_opportunities=True):
     # elsewhere for untagged revenue, never a guessed different rank.
     sensing_niches = [n for n in _read_sensing_engine_niches(limit) if n not in seed_niches]
     sensing_candidates = [(n, "kdp_books") for n in sensing_niches]
-    candidates = seed_candidates + sensing_candidates
+
+    # Strategic Phase (2026-07-19): Pioneer's real, currently-trending
+    # candidates — no known ladder tag (Pioneer doesn't guess one; it
+    # only discovers), so they default to "kdp_books", the same honest
+    # fallback the Sensing Engine's own untagged niches above already
+    # use. A Pioneer failure (network down, HN unreachable) degrades to
+    # an empty list, never blocking the rest of the real hunt.
+    pioneer_niches = []
+    if PIONEER_DISCOVER is not None:
+        try:
+            pioneer_candidates_raw = PIONEER_DISCOVER(limit=limit)
+            pioneer_niches = [
+                c["niche"] for c in pioneer_candidates_raw
+                if c.get("niche") and c["niche"] not in seed_niches and c["niche"] not in sensing_niches
+            ]
+        except Exception:
+            pioneer_niches = []
+    pioneer_candidates = [(n, "kdp_books") for n in pioneer_niches]
+
+    candidates = seed_candidates + sensing_candidates + pioneer_candidates
     scanned = []
     skipped = []
     golden_catch = []
@@ -238,11 +268,17 @@ def hunt_market(limit=10, write_opportunities=True):
     for niche, ladder in candidates:
         should_skip, reason = _check_knowledge_brain(niche)
         brain_hits = _search_brain(niche.split()[0]) if niche.split() else []
+        if niche in pioneer_niches:
+            source = "pioneer"
+        elif niche in sensing_niches:
+            source = "sensing_engine"
+        else:
+            source = "seed"
         entry = {
             "niche": niche,
             "ladder": ladder,
             "brain_matches": len(brain_hits),
-            "source": "sensing_engine" if niche in sensing_niches else "seed",
+            "source": source,
         }
 
         if should_skip:
@@ -302,6 +338,7 @@ def hunt_market(limit=10, write_opportunities=True):
         "skipped_count": len(skipped),
         "golden_count": len(golden_catch),
         "sensing_engine_linked_count": len(sensing_candidates),
+        "pioneer_linked_count": len(pioneer_candidates),
         "scanned": scanned,
         "golden_catch": golden_catch,
     }

@@ -42,7 +42,8 @@ class TestHuntMarketRecordsToSharedDecisionStore(unittest.TestCase):
         def _record_to_temp_path(niche, ladder, scored):
             return record_ladder_decision(niche, ladder, scored, decisions_path=self.decisions_path)
 
-        with patch.object(mh, "RECORD_LADDER_DECISION", _record_to_temp_path):
+        with patch.object(mh, "RECORD_LADDER_DECISION", _record_to_temp_path), \
+             patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
             result = mh.hunt_market(limit=3, write_opportunities=False)
 
         # A candidate blocked by the Knowledge Brain (REJECTED_NICHES.md/
@@ -57,13 +58,15 @@ class TestHuntMarketRecordsToSharedDecisionStore(unittest.TestCase):
         self.assertEqual(len(recorded), len(actually_scored), "every actually-scored candidate must be recorded, accepted or not")
 
     def test_a_recording_failure_never_blocks_the_real_hunt(self):
-        with patch.object(mh, "RECORD_LADDER_DECISION", side_effect=RuntimeError("store unavailable")):
+        with patch.object(mh, "RECORD_LADDER_DECISION", side_effect=RuntimeError("store unavailable")), \
+             patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
             result = mh.hunt_market(limit=1, write_opportunities=False)
         self.assertIn("scanned_count", result)
         self.assertGreater(result["scanned_count"], 0)
 
     def test_recording_disabled_entirely_never_crashes(self):
-        with patch.object(mh, "RECORD_LADDER_DECISION", None):
+        with patch.object(mh, "RECORD_LADDER_DECISION", None), \
+             patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
             result = mh.hunt_market(limit=1, write_opportunities=False)
         self.assertIn("scanned_count", result)
 

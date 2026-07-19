@@ -1,6 +1,8 @@
 # PROJECT.md — OpenClaw Factory, Current State
 
-**Last updated:** 2026-07-18. **This is a pointer document, not a duplicate** — it orients a new reader to where the real, living state actually lives, and states the current one-paragraph truth. Don't hand-maintain the details here; update the documents it points to instead.
+**Last updated:** 2026-07-19. **This is a pointer document, not a duplicate** — it orients a new reader to where the real, living state actually lives, and states the current one-paragraph truth. Don't hand-maintain the details here; update the documents it points to instead.
+
+**Strategic Phase, 2026-07-19** (`COMPANY_INTEGRATION_MAP.md`): the factory is now a single, continuously-operable company, not two disconnected dispatch paths. `orchestrator.run_cycle()` gained a real, gated CLI trigger that `factory_loop.js`'s existing tick can call for a ladder-tagged golden opportunity — reusing the already-documented `FACTORY_AUTO_PRODUCE` safety gate, no new review process — and a real safeguard (`existing_decision=`) that makes this safe: it reuses the decision Golden Hunter already recorded instead of re-evaluating it, so it can never record a second decision (and therefore a second `production_id`) for the same real opportunity. Also shipped: **Pioneer** (`golden_hunter/pioneer.py`), real novel-candidate discovery upstream of Golden Hunter's fixed seed list; Mission Control's new Commercial Execution tab (approval gates + Product Definition Registry visibility, both previously invisible); and an honest resolution of `quality_doctor.py`'s fabricated QA endpoint.
 
 ## What this is
 
@@ -89,6 +91,7 @@ ADR)              │
 | What happens if the power/internet goes out mid-cycle — does it lose work or double-publish? | `DISASTER_RECOVERY_PLAN.md`'s "Unified Recovery System (2026-07-18)" section |
 | How does a product family actually get built, and what does a future family need to add? | `UNIVERSAL_PRODUCTION_ENGINE.md` |
 | How does a generated product actually get published, tracked, and recovered — and what needs founder action first? | `COMMERCIAL_EXECUTION.md` |
+| Is every subsystem actually connected end-to-end, and what's the real remaining gap list? | `COMPANY_INTEGRATION_MAP.md` |
 | Is every stage (discovery → sale → reporting) actually connected, and what's the shortest path to full autonomy? | `OpenClaw_Brain/00_Governance/COMPANY_INTEGRATION_AUDIT_20260718.md` |
 | How does the company mechanically operate, stage by stage? | `COMPANY_OPERATING_MODEL.md` (+ 2026-07-18 update note) |
 | What capabilities exist, what's missing, what's the dependency graph? | `CAPABILITY_MAP.md` (+ 2026-07-18 update note) |

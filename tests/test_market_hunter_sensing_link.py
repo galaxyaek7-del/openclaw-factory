@@ -9,6 +9,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
@@ -65,15 +66,39 @@ class TestReadSensingEngineNiches(unittest.TestCase):
 
 
 class TestHuntMarketLinksSensingEngine(unittest.TestCase):
+    """Pioneer (Strategic Phase, 2026-07-19) is mocked to an empty list in
+    every test here -- its own real HN network calls are tested once,
+    deliberately, in tests/test_pioneer.py, not repeated on every
+    market_hunter test run."""
+
     def test_hunt_market_result_reports_sensing_engine_linked_count(self):
-        result = mh.hunt_market(limit=1, write_opportunities=False)
+        with patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
+            result = mh.hunt_market(limit=1, write_opportunities=False)
         self.assertIn("sensing_engine_linked_count", result)
         self.assertIsInstance(result["sensing_engine_linked_count"], int)
 
     def test_scanned_entries_are_labeled_with_their_real_source(self):
-        result = mh.hunt_market(limit=1, write_opportunities=False)
+        with patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
+            result = mh.hunt_market(limit=1, write_opportunities=False)
         for entry in result["scanned"]:
-            self.assertIn(entry["source"], ("seed", "sensing_engine"))
+            self.assertIn(entry["source"], ("seed", "sensing_engine", "pioneer"))
+
+    def test_hunt_market_result_reports_pioneer_linked_count(self):
+        with patch.object(mh, "PIONEER_DISCOVER", return_value=[
+            {"niche": "a real pioneer test candidate niche xyz", "source": "hacker_news_top_stories"},
+        ]):
+            result = mh.hunt_market(limit=1, write_opportunities=False)
+        self.assertEqual(result["pioneer_linked_count"], 1)
+        pioneer_entries = [e for e in result["scanned"] if e["source"] == "pioneer"]
+        self.assertEqual(len(pioneer_entries), 1)
+        self.assertEqual(pioneer_entries[0]["niche"], "a real pioneer test candidate niche xyz")
+        self.assertEqual(pioneer_entries[0]["ladder"], "kdp_books")
+
+    def test_a_pioneer_failure_never_blocks_the_real_hunt(self):
+        with patch.object(mh, "PIONEER_DISCOVER", side_effect=RuntimeError("HN unreachable")):
+            result = mh.hunt_market(limit=1, write_opportunities=False)
+        self.assertIn("scanned_count", result)
+        self.assertEqual(result["pioneer_linked_count"], 0)
 
 
 if __name__ == "__main__":

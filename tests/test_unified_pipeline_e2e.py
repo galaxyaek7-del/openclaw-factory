@@ -72,7 +72,7 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         with patch.object(
             mh, "RECORD_LADDER_DECISION",
             lambda niche, ladder, scored: record_ladder_decision(niche, ladder, scored, decisions_path=self.decisions_path),
-        ):
+        ), patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
             mh.hunt_market(limit=len(mh.SEED_CATEGORIES), write_opportunities=False)
 
         history = store.find_decisions_by_niche(REAL_NICHE, path=self.decisions_path)

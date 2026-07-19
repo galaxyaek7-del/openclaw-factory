@@ -2291,6 +2291,20 @@ app.post('/api/market-analyze', (req, res) => {
 });
 
 // ── QA CHECK ──
+// Strategic Phase audit (2026-07-19): quality_doctor.py's "fixes_applied"
+// list is fabricated — every _check_*() method appends a plausible-
+// sounding fix string ("Increasing pages to 120", "Generated
+// professional cover") without ever regenerating a page, drawing a
+// cover, or touching a price; health_score is `100 - issues*15`, not
+// derived from any real check. inspectors.py's Dual Inspection already
+// does the real version of every one of these checks (real pypdf page
+// counts, real Pillow cover dimensions, real profit_oracle pricing) and
+// is what every actual product in this factory is gated on — this
+// endpoint has zero real callers today (confirmed: no UI button, no
+// pipeline stage). Left live (not removed — a behavior change needing
+// founder sign-off, not a default cleanup) but now self-disclosing, so
+// nothing built on top of it in the future can mistake it for a real
+// QA gate.
 app.post('/api/qa-check', (req, res) => {
   try {
     const pythonPath = detectPython();
@@ -2305,7 +2319,10 @@ app.post('/api/qa-check', (req, res) => {
       (err, stdout, stderr) => {
         try {
           const result = JSON.parse(stdout.trim());
-          res.json({ success: true, ...result });
+          res.json({
+            success: true, ...result,
+            warning: 'quality_doctor.py is a legacy prototype: its "fixes_applied" entries are fabricated (nothing is actually regenerated, redrawn, or repriced) and health_score/ready_to_publish are not derived from any real check. The real, load-bearing QA gate is inspectors.py\'s Dual Inspection — every actual generated product is gated on that, not this.',
+          });
         } catch {
           res.json({ success: false, error: stderr || stdout || String(err) });
         }

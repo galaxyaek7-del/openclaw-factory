@@ -169,6 +169,122 @@ class _IsolatedRunCycleTestCase(unittest.TestCase):
         )
 
 
+class TestExistingDecisionAvoidsDuplicateDecisionRecording(_IsolatedRunCycleTestCase):
+    """Strategic Phase (2026-07-19): market_hunter.py's daily hunt_market()
+    already calls decision_engine.engine.record_ladder_decision() for a
+    real accepted opportunity. If the golden-hunter-bridge path called
+    run_cycle() without existing_decision, the "decision" stage would run
+    evaluate_and_decide() again -- a SEPARATE real re-evaluation recording
+    a second decision (different decision_id, since make_decision_id()
+    hashes in a fresh timestamp) for the same real niche, risking two
+    independent production_ids and duplicate publishing for one real
+    opportunity. This is the regression test for that fix."""
+
+    def test_market_intelligence_and_decision_are_skipped_not_reevaluated(self):
+        existing = {"decision_id": "existing-1", "niche": "x", "status": "ACCEPTED", "ladder": "b2b_systems"}
+        results = self._run_cycle("x", ladder="b2b_systems", existing_decision=existing)
+        by_stage = {r.engine: r for r in results}
+        self.assertEqual(by_stage["market_intelligence"].status, "SKIPPED_NOT_APPLICABLE")
+        self.assertEqual(by_stage["decision"].status, "SKIPPED_NOT_APPLICABLE")
+        self.assertIn("reusing an existing decision", by_stage["decision"].output.get("reason", ""))
+
+    def test_zero_new_decisions_are_ever_recorded_to_the_real_store(self):
+        existing = {"decision_id": "existing-2", "niche": "y", "status": "ACCEPTED", "ladder": "b2b_systems"}
+        self._run_cycle("y", ladder="b2b_systems", existing_decision=existing)
+        # decisions_path was never written to at all -- not even created.
+        self.assertFalse(os.path.exists(self.decisions_path))
+
+    def test_execute_production_true_proceeds_using_the_reused_decision(self):
+        from orchestrator.engines import production as production_engine
+        existing = {
+            "decision_id": "existing-3", "niche": "z", "status": "ACCEPTED", "ladder": "b2b_systems",
+            "evaluation_snapshot": {"price": 197},
+        }
+        with patch.object(production_engine.subprocess, "run") as mock_run:
+            mock_run.return_value.stdout = json.dumps({"success": True, "path": "/fake.pdf"})
+            results = self._run_cycle(
+                "z", ladder="b2b_systems", execute_production=True, existing_decision=existing,
+            )
+        by_stage = {r.engine: r for r in results}
+        self.assertEqual(by_stage["production"].status, "SUCCESS")
+        self.assertEqual(by_stage["publishing"].status, "SUCCESS")
+
+    def test_omitting_existing_decision_reproduces_prior_behavior(self):
+        """No existing_decision (every caller before this parameter
+        existed) -- market_intelligence/decision still run for real,
+        unchanged."""
+        results = self._run_cycle("a existing_decision omitted test niche", ladder="b2b_systems")
+        by_stage = {r.engine: r for r in results}
+        self.assertEqual(by_stage["market_intelligence"].status, "SUCCESS")
+        self.assertEqual(by_stage["decision"].status, "SUCCESS")
+
+
+class TestCliRunLadderOpportunity(unittest.TestCase):
+    """Strategic Phase (2026-07-19): the real CLI bridge factory_loop.js's
+    golden_hunter_bridge step spawns
+    (`python -m orchestrator.orchestrator --run-ladder-opportunity`).
+    Must always be invoked with `-m` -- `python orchestrator/orchestrator.py`
+    directly puts orchestrator/'s own directory on sys.path, and
+    orchestrator/types.py shadows the stdlib `types` module."""
+
+    def test_no_accepted_decision_fails_honestly_never_fabricates_one(self):
+        """Real, safe, read-only smoke test against the ACTUAL CLI
+        subprocess and the real data/decisions.jsonl -- a niche this
+        random can never have a real accepted decision, so this never
+        risks a real production/publish side effect."""
+        import subprocess
+        proc = subprocess.run(
+            [sys.executable, "-m", "orchestrator.orchestrator", "--run-ladder-opportunity"],
+            input=json.dumps({"niche": "zzz_never_a_real_accepted_niche_test_probe_998877", "ladder": "b2b_systems"}),
+            capture_output=True, text=True, cwd=str(_FACTORY_ROOT), timeout=30,
+        )
+        self.assertEqual(proc.returncode, 1)
+        result = json.loads(proc.stdout)
+        self.assertFalse(result["success"])
+        self.assertIn("no ACCEPTED decision", result["error"])
+
+    def test_invalid_stdin_fails_honestly(self):
+        import subprocess
+        proc = subprocess.run(
+            [sys.executable, "-m", "orchestrator.orchestrator", "--run-ladder-opportunity"],
+            input="not valid json", capture_output=True, text=True, cwd=str(_FACTORY_ROOT), timeout=30,
+        )
+        self.assertEqual(proc.returncode, 1)
+        result = json.loads(proc.stdout)
+        self.assertFalse(result["success"])
+
+    def test_an_existing_accepted_decision_drives_a_real_run_cycle_call(self):
+        """In-process test (not subprocess) so run_cycle()/decision_store
+        can be mocked -- proves the CLI reuses the existing decision via
+        existing_decision= rather than re-evaluating, and reports the
+        real production_id/publish_record back."""
+        from orchestrator import orchestrator as orch
+        from decision_engine import store as decision_store
+        import io
+
+        fake_decision = {"decision_id": "cli-test-1", "niche": "cli test niche", "status": "ACCEPTED", "ladder": "b2b_systems"}
+        fake_result_production = ExecutionResult(
+            engine="production", status="SUCCESS", started_at="t", finished_at="t",
+            attempts=1, idempotency_key="k1", output={"production_id": "PROD-cli-test-1", "success": True},
+        )
+        fake_result_publishing = ExecutionResult(
+            engine="publishing", status="SUCCESS", started_at="t", finished_at="t",
+            attempts=1, idempotency_key="k2", output={"publish_record": {"product_id": "PROD-cli-test-1"}},
+        )
+
+        with patch.object(decision_store, "find_decisions_by_niche", return_value=[fake_decision]), \
+             patch.object(orch, "run_cycle", return_value=[fake_result_production, fake_result_publishing]) as mocked_run_cycle, \
+             patch("sys.stdin", io.StringIO(json.dumps({"niche": "cli test niche", "ladder": "b2b_systems"}))), \
+             patch("builtins.print") as mocked_print:
+            orch._cli_run_ladder_opportunity()
+
+        self.assertEqual(mocked_run_cycle.call_args.kwargs["existing_decision"], fake_decision)
+        self.assertTrue(mocked_run_cycle.call_args.kwargs["execute_production"])
+        printed = json.loads(mocked_print.call_args.args[0])
+        self.assertTrue(printed["success"])
+        self.assertEqual(printed["production_id"], "PROD-cli-test-1")
+
+
 class TestRunCycleDryRunSafetyDefault(_IsolatedRunCycleTestCase):
     def test_default_never_executes_production_or_publishing(self):
         results = self._run_cycle("a dry run safety test niche")

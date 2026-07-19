@@ -232,6 +232,11 @@
     <div id="recoveryContent" class="loading">جارٍ التحميل…</div>
   </section>
 
+  <section id="tab-commercial" class="tab">
+    <div class="tabHeader"><h2>التنفيذ التجاري (Commercial Execution)</h2></div>
+    <div id="commercialContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
   <section id="tab-validation" class="tab">
     <div class="tabHeader">
       <h2>التحقُّق (Validation)</h2>
@@ -295,6 +300,7 @@ const TABS = [
   { id: 'revenue', label: 'الإيراد' },
   { id: 'automation', label: 'الأتمتة' },
   { id: 'recovery', label: 'الاسترجاع' },
+  { id: 'commercial', label: 'التنفيذ التجاري' },
   { id: 'validation', label: 'التحقُّق' },
   { id: 'activity', label: 'النشاط' },
   { id: 'alerts', label: 'التنبيهات' },
@@ -758,6 +764,61 @@ const loaders = {
           : '<p class="muted">لا سجلّ استرجاع بعد</p>'}
       </div>
     `;
+  },
+
+  commercial: async () => {
+    const el = document.getElementById('commercialContent');
+    const [ceRes, pfRes] = await Promise.all([
+      fetchJson('/api/v1/commercial-execution'),
+      fetchJson('/api/v1/production-families'),
+    ]);
+    if (!ceRes.success) { el.innerHTML = `<p class="muted">${escapeHtml(ceRes.error?.message)}</p>`; return; }
+    const gates = ceRes.data.approval_gates || { gated: [], autonomous: [] };
+    const recent = ceRes.data.recent_publish_attempts || [];
+    const families = (pfRes.success && pfRes.data.families) || {};
+    const manifests = (pfRes.success && pfRes.data.manifests) || {};
+
+    const gatesCard = `
+      <div class="card">
+        <h3>بوابات الموافقة (Approval Gates)</h3>
+        <p class="muted">أي منصة تعمل تلقائياً الآن، وأيها يحتاج فعلاً إجراء من الرئيس.</p>
+        <table><thead><tr><th>المنصة</th><th>الحالة</th><th>السبب</th></tr></thead>
+        <tbody>
+          ${gates.autonomous.map(g => `<tr><td>${escapeHtml(g.marketplace)}</td><td>${badge('ready')}</td><td class="muted">جاهزة تلقائياً</td></tr>`).join('')}
+          ${gates.gated.map(g => `<tr><td>${escapeHtml(g.marketplace)}</td><td>${badge(g.status)}</td><td class="muted">${escapeHtml(g.reason)}</td></tr>`).join('')}
+        </tbody></table>
+      </div>`;
+
+    const recentCard = `
+      <div class="card">
+        <h3>آخر محاولات النشر الحقيقية (${recent.length})</h3>
+        ${recent.length
+          ? `<table><thead><tr><th>المنصة</th><th>النتيجة</th><th>المنتج</th><th>الوقت</th></tr></thead>
+             <tbody>${recent.slice(-15).reverse().map(r => `<tr><td>${escapeHtml(r.platform)}</td><td>${badge(r.ok ? 'good' : 'bad')}${r.dry_run ? ' <span class="muted">(dry-run)</span>' : ''}</td><td class="muted">${escapeHtml(r.product_title || r.product_source_id || '')}</td><td class="muted">${fmtTime(r.timestamp)}</td></tr>`).join('')}</tbody></table>`
+          : '<p class="muted">لا محاولات نشر مسجَّلة بعد</p>'}
+      </div>`;
+
+    const familyRows = Object.keys(families).map(name => {
+      const m = manifests[name];
+      const isReal = (families[name] || '').startsWith('REAL');
+      return `<tr>
+        <td>${escapeHtml(name)}</td>
+        <td>${isReal ? badge('ready') : badge('unavailable')}</td>
+        <td class="muted">${m ? escapeHtml(m.category) : '—'}</td>
+        <td class="muted">${m ? escapeHtml((m.supported_marketplaces || []).join(', ')) : '—'}</td>
+        <td class="muted">${m && m.pricing_strategy ? escapeHtml(String(m.pricing_strategy.price_hint ?? '—')) : '—'}</td>
+      </tr>`;
+    }).join('');
+
+    const familiesCard = `
+      <div class="card">
+        <h3>سجل تعريف المنتجات (Product Definition Registry)</h3>
+        <p class="muted">أي عائلات منتجات جاهزة فعلياً الآن، وبأي إعدادات (Product Manifest).</p>
+        <table><thead><tr><th>العائلة</th><th>الحالة</th><th>الفئة</th><th>المنصات المدعومة</th><th>السعر المقترَح</th></tr></thead>
+        <tbody>${familyRows}</tbody></table>
+      </div>`;
+
+    el.innerHTML = gatesCard + recentCard + familiesCard;
   },
 
   validation: async () => {
