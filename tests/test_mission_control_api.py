@@ -211,13 +211,18 @@ class TestEndpointDispatch(unittest.TestCase):
 
     def test_export_executive_report_combines_both_real_reports_and_saves_a_file(self):
         """Patches _FACTORY_ROOT to a scratch directory so this test never
-        writes into the real reports/ folder."""
+        writes into the real reports/ folder. Autonomous Digital Company
+        v1 (2026-07-19): now also joins executive_intelligence's and
+        strategic_intelligence's real reports, previously standalone-CLI
+        only (ADR-052/ADR-054)."""
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             with patch.object(mission_control_api, "_FACTORY_ROOT", Path(tmp)):
                 result = mission_control_api._export_executive_report()
             self.assertTrue(result["path"].startswith("reports/"))
             self.assertIn("# OpenClaw Executive Report", result["markdown"])
+            self.assertIn("## Executive Summary", result["markdown"])
+            self.assertIn("## Strategic Recommendations", result["markdown"])
             self.assertIn("## Validation", result["markdown"])
             self.assertIn("## Revenue", result["markdown"])
             written = Path(tmp) / result["path"]

@@ -1417,6 +1417,53 @@ function runLadderOpportunityPipeline(niche, ladder, { timeoutMs = 150000, pytho
   });
 }
 
+// Autonomous Digital Company v1, Track A (2026-07-19): the same joined
+// executive_intelligence + strategic_intelligence + validation_layer +
+// revenue_pipeline report Mission Control's "Export Executive Report"
+// button produces (mission_control_api.py::_export_executive_report()),
+// reused here rather than re-derived, so the weekly report and the
+// on-demand button can never disagree. ~13s on real data (4 real report
+// generators reading real files) — timeoutMs gives ample margin.
+function runExportExecutiveReport({ timeoutMs = 60000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'export_executive_report'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة export_executive_report (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من export_executive_report' });
+          return;
+        }
+        finish({ ok: true, path: result.path, markdown: result.markdown });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج export_executive_report: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
 // ── SELF-AWARENESS ──
 // CONSTITUTION.md §20. self_awareness.js is a plain Node module — required
 // directly (no subprocess needed, unlike market_hunter.py). Gated to once
@@ -1597,7 +1644,7 @@ function updateFactoryStatusWithReport(dateStr, reportFilename, stats) {
   }
 }
 
-async function generateWeeklyReport(diagnosis, now) {
+async function generateWeeklyReport(diagnosis, now, { pythonPath } = {}) {
   const sinceMs = now.getTime() - WEEK_MS;
   const health = diagnosis.reachable ? diagnosis.health : { status: 'unreachable', error: diagnosis.error };
 
@@ -1606,6 +1653,7 @@ async function generateWeeklyReport(diagnosis, now) {
   const healing = healingActionsSince(sinceMs);
   const opportunities = readOpportunities();
   const recommendations = buildRecommendations({ health, books, revenue, healing });
+  const executiveReport = await runExportExecutiveReport({ pythonPath });
 
   const dateStr = isoDate(now);
   const lines = [];
@@ -1654,6 +1702,13 @@ async function generateWeeklyReport(diagnosis, now) {
   lines.push('');
   lines.push('## 6. توصيات الأسبوع القادم');
   for (const r of recommendations) lines.push(`- ${r}`);
+  lines.push('');
+  lines.push('## 7. التقرير التنفيذي الموحّد (Executive / Strategic / Validation / Revenue)');
+  if (executiveReport.ok) {
+    lines.push(executiveReport.markdown);
+  } else {
+    lines.push(`- ⚠️ تعذّر إنشاء التقرير التنفيذي الموحّد هذا الأسبوع: ${executiveReport.detail}`);
+  }
   lines.push('');
 
   const content = lines.join('\n');
@@ -1981,7 +2036,7 @@ if (require.main === module) {
 
 module.exports = {
   runTick, healFinance, healEmptyBooks, healN8n, hunt, diagnose,
-  generateWeeklyReport, maybeGenerateWeeklyReport, weekReportPath,
+  generateWeeklyReport, maybeGenerateWeeklyReport, weekReportPath, runExportExecutiveReport,
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
   maybeRunMarketHunter, maybeRunSelfAwareness,

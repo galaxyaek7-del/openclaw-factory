@@ -1684,13 +1684,19 @@ GROQ_PRICING_USD_PER_MILLION_TOKENS = {"llama-3.1-8b-instant": {"input": 0.05, "
 AI_COST_LOG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'ai_cost_log.jsonl')
 
 
-def _log_ai_cost(model, usage, context=None, log_file=None):
+def _log_ai_cost(model, usage, context=None, log_file=None, latency_ms=None):
     """Appends one real, verifiable cost record per Groq call. Never raises —
     a logging failure must not break book generation. This is purely
     additive data collection for ADR-041's Margin Score real-cost
     component: with zero real calls logged yet, that component has nothing
     to average yet — this is what starts making it real over time, not a
-    backdated fabrication."""
+    backdated fabrication.
+
+    `latency_ms` (Autonomous Digital Company v1, Track B2, 2026-07-19): real
+    wall-clock time for the successful request/response round trip, added so
+    ai_capability/registry.py can report a real, measured "speed" stat for
+    Groq instead of leaving it permanently null. Optional/backward-compatible
+    — older log lines simply have no `latency_ms` key."""
     try:
         log_file = log_file or AI_COST_LOG_FILE
         prompt_tokens = usage.get('prompt_tokens', 0) if usage else 0
@@ -1708,6 +1714,7 @@ def _log_ai_cost(model, usage, context=None, log_file=None):
             "completion_tokens": completion_tokens,
             "total_tokens": usage.get('total_tokens') if usage else None,
             "cost_usd": cost_usd,
+            "latency_ms": latency_ms,
             "context": context,
         }
         os.makedirs(os.path.dirname(log_file), exist_ok=True)
@@ -1745,9 +1752,11 @@ def groq_chat(system_prompt, user_prompt, max_tokens=4096, timeout=30, retries=3
     for attempt in range(1, retries + 1):
         try:
             req = urllib.request.Request(GROQ_API_URL, data=payload, method='POST', headers=headers)
+            _request_started = time.time()
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 result = json.loads(r.read().decode('utf-8'))
-            _log_ai_cost(GROQ_MODEL, result.get('usage'), cost_context)
+            latency_ms = round((time.time() - _request_started) * 1000)
+            _log_ai_cost(GROQ_MODEL, result.get('usage'), cost_context, latency_ms=latency_ms)
             return result['choices'][0]['message']['content']
         except urllib.error.HTTPError as e:
             last_error = e

@@ -7,6 +7,7 @@ const Groq = require('groq-sdk');
 const knowledgeBrain = require('./knowledge_brain');
 const selfAwareness = require('./self_awareness');
 const dashboardData = require('./lib/dashboard_data');
+const infrastructureIntelligence = require('./lib/infrastructure_intelligence');
 const metricsLib = require('./lib/metrics');
 const n8nNotify = require('./lib/n8n_notify');
 const { nextSaleId } = require('./lib/next_sale_id');
@@ -385,6 +386,13 @@ const SERVICE_REGISTRY = [
     reused: 'commercial_execution.approval_gates + channels.ledger, via mission_control_api.py.',
     handler: () => runPythonService('commercial_execution'),
     health: pythonHealthCheck('commercial_execution'),
+  },
+  {
+    name: 'infrastructure-status',
+    description: "Real CPU/memory/disk (Node's os/fs modules) plus a real AI cost-rate trend over data/ai_cost_log.jsonl (this week's real spend vs. the real trailing daily average). No fabricated 'quota remaining' — Groq exposes no queryable quota API.",
+    reused: 'lib/infrastructure_intelligence.js getInfrastructureStatus() (Autonomous Digital Company v1, Track B1, 2026-07-19) — pure os/fs + JSONL reads, no new dependency.',
+    handler: async () => infrastructureIntelligence.getInfrastructureStatus(),
+    health: fsHealthCheck(() => infrastructureIntelligence.getSystemResources(), 'os/fs resource read check ok'),
   },
 ];
 

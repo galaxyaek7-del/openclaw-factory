@@ -369,31 +369,56 @@ def _validation_report():
     return {"report": report, "markdown": daily_report.render_markdown(report)}
 
 
-def _export_executive_report():
-    """'Export executive report': concatenates two already-existing real
-    report renderers (validation_layer's daily report + revenue_pipeline's
-    CEO revenue report) into one markdown file under reports/. No new
-    metric, no new business logic — just packaging two real reports
-    together and saving the result."""
+def _build_combined_executive_report_markdown(title):
+    """Concatenates four already-existing real report renderers —
+    validation_layer's daily report, revenue_pipeline's CEO revenue
+    report, and (Autonomous Digital Company v1, 2026-07-19)
+    executive_intelligence's bottleneck/opportunity report and
+    strategic_intelligence's decision-pattern/technical-debt report —
+    into one markdown string. No new metric, no new business logic here
+    — the two added reports were already real and tested (ADR-052/
+    ADR-054) but only ever run as standalone CLI tools (`python -m
+    executive_intelligence.report` / `python -m
+    strategic_intelligence.report`).
+
+    Shared by _export_executive_report() and _full_cycle()'s own
+    executive_reports stage, which previously re-implemented this exact
+    combination independently (found live, 2026-07-19) — one real
+    report-building function now, not two competing copies."""
     from validation_layer import daily_report as dr
     from revenue_pipeline import pipeline as rp
+    from executive_intelligence import report as exec_report
+    from strategic_intelligence import report as strat_report
 
     validation = dr.generate_daily_report()
     validation_md = dr.render_markdown(validation)
     revenue = rp.run_revenue_pipeline()
     revenue_md = rp.render_ceo_revenue_report(revenue)
+    executive = exec_report.generate_report()
+    executive_md = exec_report.render_markdown(executive)
+    strategic = strat_report.generate_strategic_report()
+    strategic_md = strat_report.render_markdown(strategic)
 
-    generated_at = datetime.now(timezone.utc)
     combined_md = (
-        "# OpenClaw Executive Report\n\n"
-        f"Generated: {generated_at.isoformat()}\n\n"
-        "---\n\n## Validation\n\n" + validation_md +
+        f"# {title}\n\n"
+        f"Generated: {datetime.now(timezone.utc).isoformat()}\n\n"
+        "---\n\n## Executive Summary\n\n" + executive_md +
+        "\n\n---\n\n## Strategic Recommendations\n\n" + strategic_md +
+        "\n\n---\n\n## Validation\n\n" + validation_md +
         "\n\n---\n\n## Revenue\n\n" + revenue_md + "\n"
     )
+    return combined_md, revenue
+
+
+def _export_executive_report():
+    """'Export executive report' Mission Control action — see
+    _build_combined_executive_report_markdown() for what's actually
+    combined."""
+    combined_md, _revenue = _build_combined_executive_report_markdown("OpenClaw Executive Report")
 
     reports_dir = _FACTORY_ROOT / "reports"
     reports_dir.mkdir(exist_ok=True)
-    fname = f"executive_report_{generated_at.strftime('%Y%m%dT%H%M%SZ')}.md"
+    fname = f"executive_report_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}.md"
     fpath = reports_dir / fname
     fpath.write_text(combined_md, encoding="utf-8")
 
@@ -453,18 +478,14 @@ def _full_cycle():
     _run("quality_validation", _quality_validation)
 
     def _executive_reports():
-        # Objective 6: same combined report export_executive_report()
-        # already produces, saved under this cycle's own id.
-        from validation_layer import daily_report as dr
-        from revenue_pipeline import pipeline as rp
-        validation = dr.generate_daily_report()
-        revenue = rp.run_revenue_pipeline()
-        combined_md = (
-            f"# Full Cycle Executive Report — {cycle_id}\n\n"
-            f"Generated: {datetime.now(timezone.utc).isoformat()}\n\n"
-            "---\n\n## Validation\n\n" + dr.render_markdown(validation) +
-            "\n\n---\n\n## Revenue\n\n" + rp.render_ceo_revenue_report(revenue) + "\n"
-        )
+        # Objective 6: the exact same combined report
+        # export_executive_report() produces (Autonomous Digital Company
+        # v1, 2026-07-19: this used to independently re-implement the
+        # same validation+revenue combination — now shares the one real
+        # builder, and gains the executive_intelligence/
+        # strategic_intelligence sections for free), saved under this
+        # cycle's own id.
+        combined_md, revenue = _build_combined_executive_report_markdown(f"Full Cycle Executive Report — {cycle_id}")
         reports_dir = _FACTORY_ROOT / "reports"
         reports_dir.mkdir(exist_ok=True)
         fname = f"{cycle_id}_executive_report.md"

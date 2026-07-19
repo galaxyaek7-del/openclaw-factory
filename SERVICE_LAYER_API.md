@@ -2,7 +2,7 @@
 
 _Auto-generated from SERVICE_REGISTRY in server.js at server startup — do not hand-edit, it is overwritten on every restart. Source of truth: server.js._
 
-Generated at: 2026-07-18T22:42:11.999Z
+Generated at: 2026-07-19T13:38:10.230Z
 
 Every endpoint below requires an authenticated Mission Control session (`POST /api/mission-control/login`) and returns the standard envelope:
 
@@ -128,6 +128,14 @@ Universal Production Engine (2026-07-19): the Commercial Execution Layer — whi
 - Data: `GET /api/v1/commercial-execution`
 - Health: `GET /api/v1/commercial-execution/health`
 - Reuses: commercial_execution.approval_gates + channels.ledger, via mission_control_api.py.
+
+### infrastructure-status
+
+Real CPU/memory/disk (Node's os/fs modules) plus a real AI cost-rate trend over data/ai_cost_log.jsonl (this week's real spend vs. the real trailing daily average). No fabricated 'quota remaining' — Groq exposes no queryable quota API.
+
+- Data: `GET /api/v1/infrastructure-status`
+- Health: `GET /api/v1/infrastructure-status/health`
+- Reuses: lib/infrastructure_intelligence.js getInfrastructureStatus() (Autonomous Digital Company v1, Track B1, 2026-07-19) — pure os/fs + JSONL reads, no new dependency.
 
 ### docs
 

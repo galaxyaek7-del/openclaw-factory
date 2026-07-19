@@ -75,6 +75,19 @@ class TestLogAiCost(unittest.TestCase):
             lines = [l for l in f.read().split("\n") if l.strip()]
         self.assertEqual(len(lines), 2)
 
+    def test_latency_ms_is_recorded_when_provided(self):
+        bg._log_ai_cost(
+            "llama-3.1-8b-instant", {"prompt_tokens": 10, "completion_tokens": 10}, latency_ms=842,
+            log_file=self.log_path,
+        )
+        record = self._read_last()
+        self.assertEqual(record["latency_ms"], 842)
+
+    def test_latency_ms_defaults_to_none_for_backward_compatibility(self):
+        bg._log_ai_cost("llama-3.1-8b-instant", {"prompt_tokens": 10, "completion_tokens": 10}, log_file=self.log_path)
+        record = self._read_last()
+        self.assertIsNone(record["latency_ms"])
+
     def test_never_raises_even_if_log_dir_cannot_be_created(self):
         # A path with a null byte / invalid character is guaranteed to fail
         # os.makedirs — the function must still not raise.
