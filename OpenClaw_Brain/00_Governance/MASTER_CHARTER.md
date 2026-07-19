@@ -45,3 +45,7 @@ Ranked by what gets engineering attention and what a new opportunity is scored a
 ## 5. Ownership
 
 Same as `PRINCIPAL_ARCHITECT_CHARTER.md` §6 — founder holds final decision authority; this charter is an operating agreement, not a self-executing policy engine.
+
+## 6. Autonomous Digital Company v1 note (2026-07-19)
+
+Does not change the ladder (§2) or fire any new trigger — this milestone (`COMPANY_INTEGRATION_MAP.md`'s own dedicated section) is internal tooling: real executive/infrastructure/AI-capability/tool-integration intelligence surfaced in Mission Control. Worth recording here because it extends this charter's "never fabricate" discipline (already governing §2's opportunity gate) into a new domain: `ai_capability/`'s provider registry compares AI systems on real, measured metrics only — Groq is the one provider with real usage data; every other named provider (Claude, GPT, Gemini, Grok, DeepSeek, Qwen, Mistral, local models) stays honestly unmeasured until a real credential exists and is actually called. Same standard as this charter's own §2 scoring — no invented number substitutes for missing real evidence.

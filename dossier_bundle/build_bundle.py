@@ -281,6 +281,13 @@ def build_product_dossier_bundle(
     bundle = {
         "production_id": production_id,
         "version": version,
+        # Autonomous Digital Company v1, Track C (2026-07-19): honestly
+        # "active" for every product today -- there is zero real per-
+        # product sales data yet to ever justify "declining"/"retire".
+        # The decision logic that would set this to anything else is
+        # real future work (needs real sales history to evolve/retire
+        # against), named here so it isn't forgotten, never guessed at.
+        "lifecycle_status": "active",
         "documentation": _build_documentation(spec),
         "metadata": metadata,
         "marketing": _generate_marketing_copy(spec),

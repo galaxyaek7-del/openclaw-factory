@@ -415,6 +415,24 @@ def _tool_intelligence():
     return {"proposals": proposals.list_proposals()}
 
 
+def _strategic_report():
+    """'Strategic Recommendations' Mission Control tab: strategic_intelligence's
+    own real decision-pattern/rejection/technical-debt report (ADR-054),
+    previously only reachable bundled inside the combined executive report
+    -- exposed standalone here the same way _validation_report() already
+    exposes validation_layer's report standalone, alongside the real
+    software/AI-tool integration proposals (Track B3). No new logic —
+    passthrough only."""
+    from strategic_intelligence import report as strat_report
+    from tool_intelligence import proposals
+    report = strat_report.generate_strategic_report()
+    return {
+        "report": report,
+        "markdown": strat_report.render_markdown(report),
+        "tool_proposals": proposals.list_proposals(),
+    }
+
+
 def _build_combined_executive_report_markdown(title):
     """Concatenates four already-existing real report renderers —
     validation_layer's daily report, revenue_pipeline's CEO revenue
@@ -616,6 +634,7 @@ _ENDPOINTS = {
     "ai_capability": _ai_capability,
     "ai_capability_request": _ai_capability_request,
     "tool_intelligence": _tool_intelligence,
+    "strategic_report": _strategic_report,
     "full_cycle": _full_cycle,
 }
 

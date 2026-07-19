@@ -237,6 +237,21 @@
     <div id="commercialContent" class="loading">جارٍ التحميل…</div>
   </section>
 
+  <section id="tab-infrastructure" class="tab">
+    <div class="tabHeader"><h2>صحة البنية التحتية (Infrastructure Health)</h2></div>
+    <div id="infrastructureContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-aimodels" class="tab">
+    <div class="tabHeader"><h2>سجل قدرات الذكاء الاصطناعي (AI Capability Registry)</h2></div>
+    <div id="aimodelsContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-strategic" class="tab">
+    <div class="tabHeader"><h2>التوصيات الاستراتيجية</h2></div>
+    <div id="strategicContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
   <section id="tab-validation" class="tab">
     <div class="tabHeader">
       <h2>التحقُّق (Validation)</h2>
@@ -301,6 +316,9 @@ const TABS = [
   { id: 'automation', label: 'الأتمتة' },
   { id: 'recovery', label: 'الاسترجاع' },
   { id: 'commercial', label: 'التنفيذ التجاري' },
+  { id: 'infrastructure', label: 'البنية التحتية' },
+  { id: 'aimodels', label: 'نماذج الذكاء الاصطناعي' },
+  { id: 'strategic', label: 'التوصيات الاستراتيجية' },
   { id: 'validation', label: 'التحقُّق' },
   { id: 'activity', label: 'النشاط' },
   { id: 'alerts', label: 'التنبيهات' },
@@ -350,7 +368,7 @@ function escapeHtml(s) {
 }
 
 function badge(level) {
-  const map = { low: 'good', medium: 'warn', high: 'bad', critical: 'bad', ready: 'good', unavailable: 'muted', cooldown: 'warn', running: 'info', completed: 'good', failed: 'bad', paused: 'warn', healthy: 'good', degraded: 'warn', unhealthy: 'bad' };
+  const map = { low: 'good', medium: 'warn', high: 'bad', critical: 'bad', ready: 'good', unavailable: 'muted', cooldown: 'warn', running: 'info', completed: 'good', failed: 'bad', paused: 'warn', healthy: 'good', degraded: 'warn', unhealthy: 'bad', REAL: 'good', ESTIMATED: 'warn', DISCOVERY: 'muted' };
   const cls = map[level] || 'muted';
   return `<span class="badge ${cls}">${escapeHtml(level ?? 'Unknown')}</span>`;
 }
@@ -819,6 +837,80 @@ const loaders = {
       </div>`;
 
     el.innerHTML = gatesCard + recentCard + familiesCard;
+  },
+
+  infrastructure: async () => {
+    const el = document.getElementById('infrastructureContent');
+    const res = await fetchJson('/api/v1/infrastructure-status');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const sys = res.data.system || {};
+    const cost = res.data.ai_cost_trend || {};
+    const cpu = sys.cpu || {};
+    const mem = sys.memory || {};
+    const disk = sys.disk || {};
+    el.innerHTML = `
+      <div class="grid">
+        <div class="card"><h3>المعالج (CPU)</h3><div class="big">${cpu.count ?? '؟'} أنوية</div><div class="muted">${escapeHtml(cpu.model)}</div></div>
+        <div class="card"><h3>الذاكرة (Memory)</h3><div class="big">${mem.used_pct ?? '؟'}%</div><div class="muted">مستخدَم من ${((mem.total_bytes || 0) / 1e9).toFixed(1)} GB</div></div>
+        <div class="card"><h3>القرص (Disk)</h3><div class="big">${disk.used_pct ?? (disk.error ? '؟' : '؟')}%</div><div class="muted">${disk.error ? escapeHtml(disk.error) : `متبقٍّ ${((disk.free_bytes || 0) / 1e9).toFixed(1)} GB`}</div></div>
+      </div>
+      <div class="card">
+        <h3>اتجاه تكلفة الذكاء الاصطناعي الحقيقي (Groq)</h3>
+        <p>إجمالي الاستدعاءات الحقيقية: <strong>${cost.total_calls ?? 0}</strong> — التكلفة الإجمالية: $${(cost.total_cost_usd ?? 0).toFixed(6)}</p>
+        <p>آخر 7 أيام: $${(cost.recent_7d_cost_usd ?? 0).toFixed(6)} عبر ${cost.recent_7d_calls ?? 0} استدعاء ${cost.outlier ? badge('bad') + ' ارتفاع غير معتاد' : ''}</p>
+        ${cost.trailing_daily_avg_usd != null ? `<p class="muted">متوسط الاتجاه السابق: $${cost.trailing_daily_avg_usd.toFixed(6)}/يوم</p>` : `<p class="muted">${escapeHtml(cost.note)}</p>`}
+      </div>
+    `;
+  },
+
+  'aimodels': async () => {
+    const el = document.getElementById('aimodelsContent');
+    const res = await fetchJson('/api/v1/ai-capability-registry');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const providers = res.data.providers || [];
+    const metricLabel = { quality: 'الجودة', speed: 'السرعة', cost: 'التكلفة', availability: 'الجاهزية', context_size: 'حجم السياق', reasoning_suitability: 'ملاءمة الاستدلال', multimodal_support: 'دعم الوسائط المتعددة' };
+    const providerCard = (p) => `
+      <div class="card">
+        <h3>${escapeHtml(p.display_name)} ${p.configured ? badge('ready') : badge('unavailable')}</h3>
+        ${p.real_stats ? `<p class="muted">استدعاءات حقيقية: ${p.real_stats.calls} | متوسط زمن الاستجابة: ${p.real_stats.avg_latency_ms ?? '؟'} ms | متوسط التكلفة/استدعاء: $${p.real_stats.avg_cost_usd_per_call ?? '؟'}</p>` : ''}
+        <table><tbody>
+          ${Object.entries(p.metrics).map(([name, m]) => `<tr><td>${metricLabel[name] || escapeHtml(name)}</td><td>${badge(m.level)}</td><td class="muted">${m.value ?? (m.note ? escapeHtml(m.note) : '—')}</td></tr>`).join('')}
+        </tbody></table>
+      </div>`;
+    const recent = res.data.recent_requests || [];
+    const requestsCard = `
+      <div class="card">
+        <h3>طلبات الأقسام الأخيرة (${recent.length})</h3>
+        ${recent.length
+          ? `<table><thead><tr><th>القسم</th><th>المهمة</th><th>المزوّد المطلوب</th><th>الوقت</th></tr></thead>
+             <tbody>${recent.slice().reverse().map(r => `<tr><td>${escapeHtml(r.department)}</td><td class="muted">${escapeHtml(r.task_type)}</td><td>${escapeHtml(r.requested_provider)}</td><td class="muted">${fmtTime(r.timestamp)}</td></tr>`).join('')}</tbody></table>`
+          : '<p class="muted">لا طلبات مسجَّلة بعد</p>'}
+      </div>`;
+    el.innerHTML = providers.map(providerCard).join('') + requestsCard;
+  },
+
+  strategic: async () => {
+    const el = document.getElementById('strategicContent');
+    const res = await fetchJson('/api/v1/strategic-recommendations');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const proposals = res.data.tool_proposals || [];
+    const proposalCard = (p) => `
+      <div class="card">
+        <h3>${escapeHtml(p.tool)}</h3>
+        <p>${badge('info')} <span class="muted">${escapeHtml(p.status)}</span></p>
+        <details><summary>لماذا يُحتاج إليه</summary><p class="muted">${escapeHtml(p.why_needed)}</p></details>
+        <details><summary>القيمة التجارية المتوقَّعة</summary><p class="muted">${escapeHtml(p.expected_business_value)}</p></details>
+        <details><summary>جهد التنفيذ / العائد المقدَّر</summary><p class="muted">${escapeHtml(p.implementation_effort)}</p><p class="muted">${escapeHtml(p.estimated_roi)}</p></details>
+        <details><summary>الاعتماديات والمخاطر</summary>
+          <p class="muted">الاعتماديات: ${(p.dependencies || []).map(escapeHtml).join('، ')}</p>
+          <p class="muted">المخاطر: ${(p.risks || []).map(escapeHtml).join('، ')}</p>
+        </details>
+      </div>`;
+    el.innerHTML = `
+      <div class="card"><h3>تقرير strategic_intelligence الحقيقي</h3><pre>${escapeHtml(res.data.markdown)}</pre></div>
+      <h3 style="margin:1rem 0 .5rem;">اقتراحات الأدوات والبرمجيات (Tool Recommendations)</h3>
+      ${proposals.map(proposalCard).join('')}
+    `;
   },
 
   validation: async () => {

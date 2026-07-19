@@ -395,6 +395,13 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('ai_capability'),
   },
   {
+    name: 'strategic-recommendations',
+    description: "Strategic Recommendations tab: strategic_intelligence's real decision-pattern/rejection/technical-debt report (ADR-054), previously only reachable bundled inside the combined executive report, plus the same real tool-integration proposals as tool-recommendations.",
+    reused: 'strategic_intelligence/report.py generate_strategic_report() (ADR-054) + tool_intelligence/proposals.py, via mission_control_api.py.',
+    handler: () => runPythonService('strategic_report'),
+    health: pythonHealthCheck('strategic_report'),
+  },
+  {
     name: 'tool-recommendations',
     description: "Real, evidence-cited software/AI-tool integration proposals -- '(مقترَح، لا تنفيذ)' (proposed, not implemented), matching the existing ADR-024 convention. Every proposal is grounded in a real gap this factory's own audits found, with why/business-value/effort/ROI/dependencies/risks fields — never a generic tool pitch.",
     reused: 'tool_intelligence/proposals.py list_proposals() (Autonomous Digital Company v1, Track B3, 2026-07-19), via mission_control_api.py.',

@@ -2,7 +2,7 @@
 
 _Auto-generated from SERVICE_REGISTRY in server.js at server startup — do not hand-edit, it is overwritten on every restart. Source of truth: server.js._
 
-Generated at: 2026-07-19T13:53:35.844Z
+Generated at: 2026-07-19T14:05:51.988Z
 
 Every endpoint below requires an authenticated Mission Control session (`POST /api/mission-control/login`) and returns the standard envelope:
 
@@ -136,6 +136,14 @@ Real AI provider capability registry (Claude, GPT, Gemini, Grok, DeepSeek, Qwen,
 - Data: `GET /api/v1/ai-capability-registry`
 - Health: `GET /api/v1/ai-capability-registry/health`
 - Reuses: ai_capability/registry.py list_providers()/read_capability_requests() (Autonomous Digital Company v1, Track B2, 2026-07-19), via mission_control_api.py.
+
+### strategic-recommendations
+
+Strategic Recommendations tab: strategic_intelligence's real decision-pattern/rejection/technical-debt report (ADR-054), previously only reachable bundled inside the combined executive report, plus the same real tool-integration proposals as tool-recommendations.
+
+- Data: `GET /api/v1/strategic-recommendations`
+- Health: `GET /api/v1/strategic-recommendations/health`
+- Reuses: strategic_intelligence/report.py generate_strategic_report() (ADR-054) + tool_intelligence/proposals.py, via mission_control_api.py.
 
 ### tool-recommendations
 

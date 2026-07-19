@@ -224,6 +224,7 @@ class TestBuildProductDossierBundle(unittest.TestCase):
         self.assertEqual(bundle["build_manifest"]["production_id"], "PROD-1")
         self.assertEqual(bundle["build_manifest"]["version"], "1.0.0")
         self.assertTrue(bundle["changelog_appended"])
+        self.assertEqual(bundle["lifecycle_status"], "active")
 
     def test_second_build_of_the_same_production_id_bumps_the_version(self):
         spec = {"production_id": "PROD-repeat", "title": "T"}
