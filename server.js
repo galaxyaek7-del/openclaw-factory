@@ -187,11 +187,11 @@ const PYTHON_SERVICE_TIMEOUT_MS = 30000;
 // only in /api/mission-control/:section (Phase 8 Mission Control), so
 // there is exactly one place that knows how to run a Python service,
 // not two copies of the same spawn/parse glue.
-function runPythonService(section) {
+function runPythonService(section, extraArgs = []) {
   return new Promise((resolve, reject) => {
     const pythonPath = detectPython();
     const scriptPath = path.join(__dirname, 'mission_control_api.py');
-    const python = spawn(pythonPath, [scriptPath, section], { cwd: __dirname });
+    const python = spawn(pythonPath, [scriptPath, section, ...extraArgs], { cwd: __dirname });
     let output = '', errOut = '', timedOut = false;
     killAfterTimeout(python, PYTHON_SERVICE_TIMEOUT_MS, () => { timedOut = true; });
     python.stdout.on('data', d => { output += d.toString(); });
@@ -386,6 +386,20 @@ const SERVICE_REGISTRY = [
     reused: 'commercial_execution.approval_gates + channels.ledger, via mission_control_api.py.',
     handler: () => runPythonService('commercial_execution'),
     health: pythonHealthCheck('commercial_execution'),
+  },
+  {
+    name: 'ai-capability-registry',
+    description: 'Real AI provider capability registry (Claude, GPT, Gemini, Grok, DeepSeek, Qwen, Mistral, local models, plus Groq itself) — Groq metrics computed live from data/ai_cost_log.jsonl (REAL where measured), every other provider honestly DISCOVERY-level until a credential exists and is actually called. Plus the append-only log of real department requests for a different/better model.',
+    reused: 'ai_capability/registry.py list_providers()/read_capability_requests() (Autonomous Digital Company v1, Track B2, 2026-07-19), via mission_control_api.py.',
+    handler: () => runPythonService('ai_capability'),
+    health: pythonHealthCheck('ai_capability'),
+  },
+  {
+    name: 'tool-recommendations',
+    description: "Real, evidence-cited software/AI-tool integration proposals -- '(مقترَح، لا تنفيذ)' (proposed, not implemented), matching the existing ADR-024 convention. Every proposal is grounded in a real gap this factory's own audits found, with why/business-value/effort/ROI/dependencies/risks fields — never a generic tool pitch.",
+    reused: 'tool_intelligence/proposals.py list_proposals() (Autonomous Digital Company v1, Track B3, 2026-07-19), via mission_control_api.py.',
+    handler: () => runPythonService('tool_intelligence'),
+    health: pythonHealthCheck('tool_intelligence'),
   },
   {
     name: 'infrastructure-status',
@@ -791,6 +805,20 @@ async function resumeProductionAction() {
   return writeProductionControl({ paused: false, changed_at: new Date().toISOString(), reason: null });
 }
 
+// Autonomous Digital Company v1, Track B2 (2026-07-19): a real, logged
+// department request for a different/better AI model — never an
+// autonomous model switch (ai_capability/evaluator.py's own recommendation
+// stays advisory only, since there is zero comparative data across
+// providers today beyond Groq).
+async function requestAiCapabilityAction(req) {
+  const { department, task_type, requested_provider, reason } = req.body || {};
+  if (!department || !task_type || !requested_provider) {
+    throw new Error('{ department, task_type, requested_provider } are required');
+  }
+  const payload = JSON.stringify({ department, task_type, requested_provider, reason: reason || '' });
+  return runPythonService('ai_capability_request', [payload]);
+}
+
 // Unified Recovery System §2/§6 (2026-07-18): the founder's explicit
 // clear-to-proceed after startup classified a real interruption as
 // NEEDS_CONFIRMATION (recovery/startup_check.py) — e.g. they checked the
@@ -878,6 +906,14 @@ const ACTION_REGISTRY = [
     reversible: true, // only ever adds a new timestamped file, never overwrites
     kind: 'sync',
     section: 'export_executive_report',
+  },
+  {
+    name: 'request-ai-capability',
+    description: 'Logs a real department request for a different/better AI model, plus the current honest recommendation for that task type. Requires { department, task_type, requested_provider } in the request body.',
+    reused: 'ai_capability/registry.py record_capability_request() + evaluator.py recommend_for_task() (Autonomous Digital Company v1, Track B2, 2026-07-19)',
+    reversible: true, // append-only log entry, never an autonomous model switch
+    kind: 'sync',
+    run: requestAiCapabilityAction,
   },
   {
     name: 'run-full-cycle',

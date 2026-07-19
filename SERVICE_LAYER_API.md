@@ -2,7 +2,7 @@
 
 _Auto-generated from SERVICE_REGISTRY in server.js at server startup — do not hand-edit, it is overwritten on every restart. Source of truth: server.js._
 
-Generated at: 2026-07-19T13:38:10.230Z
+Generated at: 2026-07-19T13:53:35.844Z
 
 Every endpoint below requires an authenticated Mission Control session (`POST /api/mission-control/login`) and returns the standard envelope:
 
@@ -128,6 +128,22 @@ Universal Production Engine (2026-07-19): the Commercial Execution Layer — whi
 - Data: `GET /api/v1/commercial-execution`
 - Health: `GET /api/v1/commercial-execution/health`
 - Reuses: commercial_execution.approval_gates + channels.ledger, via mission_control_api.py.
+
+### ai-capability-registry
+
+Real AI provider capability registry (Claude, GPT, Gemini, Grok, DeepSeek, Qwen, Mistral, local models, plus Groq itself) — Groq metrics computed live from data/ai_cost_log.jsonl (REAL where measured), every other provider honestly DISCOVERY-level until a credential exists and is actually called. Plus the append-only log of real department requests for a different/better model.
+
+- Data: `GET /api/v1/ai-capability-registry`
+- Health: `GET /api/v1/ai-capability-registry/health`
+- Reuses: ai_capability/registry.py list_providers()/read_capability_requests() (Autonomous Digital Company v1, Track B2, 2026-07-19), via mission_control_api.py.
+
+### tool-recommendations
+
+Real, evidence-cited software/AI-tool integration proposals -- '(مقترَح، لا تنفيذ)' (proposed, not implemented), matching the existing ADR-024 convention. Every proposal is grounded in a real gap this factory's own audits found, with why/business-value/effort/ROI/dependencies/risks fields — never a generic tool pitch.
+
+- Data: `GET /api/v1/tool-recommendations`
+- Health: `GET /api/v1/tool-recommendations/health`
+- Reuses: tool_intelligence/proposals.py list_proposals() (Autonomous Digital Company v1, Track B3, 2026-07-19), via mission_control_api.py.
 
 ### infrastructure-status
 

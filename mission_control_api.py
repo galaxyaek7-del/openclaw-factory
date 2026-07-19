@@ -32,6 +32,7 @@ jobs, not inline request/response, for exactly that reason:
     python mission_control_api.py trigger_opportunity_evaluation
     python mission_control_api.py validation_report
     python mission_control_api.py export_executive_report
+    python mission_control_api.py ai_capability
 """
 
 import json
@@ -369,6 +370,51 @@ def _validation_report():
     return {"report": report, "markdown": daily_report.render_markdown(report)}
 
 
+def _ai_capability():
+    """Autonomous Digital Company v1, Track B2 (2026-07-19): the real AI
+    Capability Registry — every named provider candidate (Claude, GPT,
+    Gemini, Grok, DeepSeek, Qwen, Mistral, local models, plus Groq itself),
+    Groq's metrics computed live from data/ai_cost_log.jsonl, every other
+    provider honestly DISCOVERY-level (never a fabricated benchmark for a
+    provider never actually called). Passthrough only, no new logic here."""
+    from ai_capability import registry
+    return {
+        "providers": registry.list_providers(),
+        "recent_requests": registry.read_capability_requests()[-20:],
+    }
+
+
+def _ai_capability_request():
+    """Records a real department request for a different/better AI model
+    (Autonomous Digital Company v1 §8) — an append-only logged request,
+    never an autonomous model switch (too risky with zero comparative
+    data across providers today; see ai_capability/evaluator.py). Reads
+    its payload as a JSON string in sys.argv[2]:
+    `python mission_control_api.py ai_capability_request '{"department":"builder","task_type":"reasoning","requested_provider":"anthropic","reason":"..."}'`"""
+    from ai_capability import registry
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    record = registry.record_capability_request(
+        department=payload.get("department", "unknown"),
+        task_type=payload.get("task_type", "unknown"),
+        requested_provider=payload.get("requested_provider", "unknown"),
+        reason=payload.get("reason", ""),
+    )
+    recommendation = None
+    if payload.get("task_type"):
+        from ai_capability import evaluator
+        recommendation = evaluator.recommend_for_task(payload["task_type"])
+    return {"recorded": record, "current_recommendation": recommendation}
+
+
+def _tool_intelligence():
+    """Autonomous Digital Company v1, Track B3 (2026-07-19): real,
+    evidence-cited software/AI-tool integration proposals -- '(مقترَح، لا
+    تنفيذ)', matching ADR-024's existing convention. Passthrough only, no
+    new logic here."""
+    from tool_intelligence import proposals
+    return {"proposals": proposals.list_proposals()}
+
+
 def _build_combined_executive_report_markdown(title):
     """Concatenates four already-existing real report renderers —
     validation_layer's daily report, revenue_pipeline's CEO revenue
@@ -567,6 +613,9 @@ _ENDPOINTS = {
     "trigger_opportunity_evaluation": _trigger_opportunity_evaluation,
     "validation_report": _validation_report,
     "export_executive_report": _export_executive_report,
+    "ai_capability": _ai_capability,
+    "ai_capability_request": _ai_capability_request,
+    "tool_intelligence": _tool_intelligence,
     "full_cycle": _full_cycle,
 }
 
