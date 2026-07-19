@@ -29,6 +29,7 @@ const {
   notifyN8nProductionEvent, buildGoldenHunterNotifyPayload,
   buildFactoryStoppedUnexpectedlyPayload, buildFactoryRecoveredPayload,
   buildRetryQueueStatusPayload,
+  buildPendingReviewNeededPayload, buildNewSaleDetectedPayload,
 } = n8nNotify;
 const factoryState = require('./lib/factory_state');
 const { checkStartupSafety } = require('./scripts/factory_startup_check');
@@ -395,8 +396,15 @@ async function pollSales(reachable) {
         }).join('؛ ')
       : 'لا أذرع مسجَّلة';
 
+    const totalNewSales = data.total_new_sales || 0;
+    if (totalNewSales > 0) {
+      // Fire-and-forget, same discipline as every other n8n notify call —
+      // a Telegram hiccup must never affect the real, already-recorded sale.
+      notifyFactoryRecoveryEvent(buildNewSaleDetectedPayload(outcomes, totalNewSales)).catch(() => {});
+    }
+
     return {
-      action: (data.total_new_sales || 0) > 0 ? 'found_sales' : 'none',
+      action: totalNewSales > 0 ? 'found_sales' : 'none',
       detail: `استطلاع المبيعات: ${summary}`,
     };
   } catch (err) {
@@ -1871,9 +1879,11 @@ async function runTick() {
   // (never repeated every ~10min tick while already flagged).
   markStep('pending_review');
   const reviewWasActive = fs.existsSync(NEEDS_REVIEW_FILE);
-  actions.push({ step: 'pending_review', ...checkPendingReview() });
+  const pendingReviewResult = checkPendingReview();
+  actions.push({ step: 'pending_review', ...pendingReviewResult });
   if (!reviewWasActive && fs.existsSync(NEEDS_REVIEW_FILE)) {
     sendDesktopNotification('📝 OpenClaw needs review', 'New drafts are waiting in pending_review/queue/.');
+    notifyFactoryRecoveryEvent(buildPendingReviewNeededPayload(countPendingReviewDrafts())).catch(() => {});
   }
 
   factoryState.clearCurrentTask();

@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-07-18T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
   "createdAt": "2026-07-17T00:00:00.000Z",
   "id": "TN04telegramNotifyX",
   "name": "04_Telegram_Notify",
-  "description": "Receives factory_loop.js's notifyGoldenHunterAccepted() POST the moment a real opportunity clears profit_oracle's acceptance gate (ADR-065 Step 3(a)), and forwards it to Telegram as a real message via a plain HTTP Request to Telegram's Bot API (not an n8n Telegram credential — this instance's REST API/UI was not reachable this session to create one; TELEGRAM_BOT_TOKEN/OPENCLAW_TELEGRAM_CHAT_ID are read from the n8n process's own environment via $env, never embedded in this file). Imported via CLI while n8n was offline (ADR-072) — same safe pattern as ADR-045. Message text is Arabic (ADR-073, 2026-07-18): the founder reads Arabic, not English.",
+  "description": "Receives real \"nervous system\" events via factory_loop.js's notifyGoldenHunterAccepted()/notifyFactoryRecoveryEvent() (lib/n8n_notify.js), and forwards each to Telegram as a real Arabic message via a plain HTTP Request to Telegram's Bot API (not an n8n Telegram credential -- this instance's REST API/UI was not reachable this session to create one; TELEGRAM_BOT_TOKEN/OPENCLAW_TELEGRAM_CHAT_ID are read from the n8n process's own environment via $env, never embedded in this file). Autonomous Digital Company v1 follow-up (2026-07-19): the \"Build Telegram Message\" node used to hardcode ONE message template regardless of the real event field sent to it -- every other event type (factory_stopped_unexpectedly, factory_recovered, recovery_completed, retry_queue_status) silently produced a garbled golden-hunter-shaped message with undefined fields. Now branches on $json.body.event with the correct Arabic template per event, plus two newly wired events: pending_review_needed (\"جاهز للمراجعة\") and sale_detected (\"بيع جديد\"). Imported via CLI while n8n was offline (ADR-072) -- same safe pattern as ADR-045. Message text is Arabic (ADR-073, 2026-07-18): the founder reads Arabic, not English.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -15,7 +15,10 @@
       },
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
-      "position": [-560, 0],
+      "position": [
+        -560,
+        0
+      ],
       "id": "b1c2d3e4-0001-4a11-9e11-000000000001",
       "name": "Webhook",
       "webhookId": "b1c2d3e4-0001-4a11-9e11-000000000099"
@@ -27,7 +30,7 @@
             {
               "id": "b1c2d3e4-0002-4a11-9e11-000000000002",
               "name": "message",
-              "value": "={{ \"🏆 الصياد الذهبي قبل فرصة جديدة\\n\\nالمجال: \" + $json.body.niche + \"\\nالنقاط: \" + $json.body.opportunity_score + \"/100\" + ($json.body.price ? (\"\\nالسعر المقترح: $\" + $json.body.price) : \"\") }}",
+              "value": "={{ $json.body.event === \"golden_opportunity_accepted\" ? (\"🏆 الصياد الذهبي قبل فرصة جديدة\\n\\nالمجال: \" + $json.body.niche + \"\\nالنقاط: \" + $json.body.opportunity_score + \"/100\" + ($json.body.price ? (\"\\nالسعر المقترح: $\" + $json.body.price) : \"\")) :\n    $json.body.event === \"factory_stopped_unexpectedly\" ? (\"🚨 عطل حرج — توقّف المصنع بشكل غير متوقع\\n\\nالسبب: \" + $json.body.reason) :\n    $json.body.event === \"factory_recovered\" ? (\"✅ تعافى المصنع وعاد للعمل\\n\\nالسبب: \" + $json.body.reason) :\n    $json.body.event === \"recovery_completed\" ? (\"✅ اكتملت عملية الاسترجاع\\n\\nالمرحلة: \" + ($json.body.stage || \"غير محددة\")) :\n    $json.body.event === \"retry_queue_status\" ? (\"🔁 حالة قائمة إعادة المحاولة\\n\\nعدد المهام المعلَّقة: \" + $json.body.pending_count) :\n    $json.body.event === \"pending_review_needed\" ? (\"📝 منتج جاهز للمراجعة\\n\\nيوجد \" + $json.body.count + \" مسودة بانتظار المراجعة البشرية\") :\n    $json.body.event === \"sale_detected\" ? (\"💰 بيع جديد!\\n\\nعدد المبيعات الجديدة: \" + $json.body.total_new_sales) :\n    (\"📩 إشعار من OpenClaw: \" + $json.body.event) }}",
               "type": "string"
             }
           ]
@@ -36,7 +39,10 @@
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
-      "position": [-384, 0],
+      "position": [
+        -384,
+        0
+      ],
       "id": "b1c2d3e4-0003-4a11-9e11-000000000003",
       "name": "Build Telegram Message"
     },
@@ -48,17 +54,36 @@
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
-      "position": [-192, 0],
+      "position": [
+        -192,
+        0
+      ],
       "id": "b1c2d3e4-0004-4a11-9e11-000000000004",
       "name": "Send Telegram Message"
     }
   ],
   "connections": {
     "Webhook": {
-      "main": [[{ "node": "Build Telegram Message", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Build Telegram Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Build Telegram Message": {
-      "main": [[{ "node": "Send Telegram Message", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Send Telegram Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -72,7 +97,7 @@
   "pinData": {},
   "versionId": "b1c2d3e4-0005-4a11-9e11-000000000005",
   "activeVersionId": null,
-  "versionCounter": 2,
+  "versionCounter": 3,
   "triggerCount": 0,
   "sourceWorkflowId": null,
   "tags": []

@@ -15,6 +15,7 @@ const {
   notifyN8nProductionEvent, buildProductionNotifyPayload, buildGoldenHunterNotifyPayload,
   buildFactoryStoppedUnexpectedlyPayload, buildFactoryRecoveredPayload,
   buildRecoveryCompletedPayload, buildRetryQueueStatusPayload,
+  buildPendingReviewNeededPayload, buildNewSaleDetectedPayload,
 } = require('../lib/n8n_notify.js');
 const factoryState = require('../lib/factory_state.js');
 
@@ -284,6 +285,36 @@ test('buildRetryQueueStatusPayload: an empty queue reports zero, never throws', 
 test('buildRetryQueueStatusPayload: missing/undefined input degrades to an empty report', () => {
   const payload = buildRetryQueueStatusPayload(undefined);
   assert.equal(payload.pending_count, 0);
+});
+
+// "Nervous system" wave 2 (2026-07-19) — pending_review_needed/sale_detected,
+// closing the gap a live audit found: pending-review transitions only ever
+// produced a desktop toast, and pollSales() detecting a real sale produced
+// no notification at all.
+
+test('buildPendingReviewNeededPayload: carries the real count', () => {
+  const payload = buildPendingReviewNeededPayload(3);
+  assert.equal(payload.event, 'pending_review_needed');
+  assert.equal(payload.count, 3);
+  assert.ok(payload.generated_at);
+});
+
+test('buildNewSaleDetectedPayload: carries total + only the arms with a real new sale', () => {
+  const outcomes = [
+    { arm: 'paddle', new_sales: 1 },
+    { arm: 'gumroad', new_sales: 0 },
+    { arm: 'kdp', skip_reason: 'not configured' },
+  ];
+  const payload = buildNewSaleDetectedPayload(outcomes, 1);
+  assert.equal(payload.event, 'sale_detected');
+  assert.equal(payload.total_new_sales, 1);
+  assert.deepEqual(payload.outcomes, [{ arm: 'paddle', new_sales: 1 }]);
+});
+
+test('buildNewSaleDetectedPayload: missing/undefined outcomes degrades to an empty list, never throws', () => {
+  const payload = buildNewSaleDetectedPayload(undefined, 0);
+  assert.deepEqual(payload.outcomes, []);
+  assert.equal(payload.total_new_sales, 0);
 });
 
 // Unified Recovery System §3 (2026-07-18) — a real notify failure is

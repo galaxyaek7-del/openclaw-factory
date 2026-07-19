@@ -74,3 +74,15 @@ This workflow is the receiving side: `Webhook` → `Set` (builds the message tex
 1. Open `http://localhost:5678` (n8n is already running) → open **04_Telegram_Notify** → toggle **Active** (top-right).
 
 That's it. The moment that toggle is on, `factory_loop.js`'s next real accepted opportunity sends a real Telegram message with zero further code changes — the whole chain from `TELEGRAM_BOT_TOKEN` through to a delivered message has already been built and independently verified piece by piece. Until that toggle is on, `notifyGoldenHunterAccepted()` still safely no-ops (webhook not registered → connection/404, logged, never blocks a real tick).
+
+## Nervous-system fix + 2 new events (2026-07-19)
+
+A live audit (Autonomous Digital Company v1 follow-up) found `04_Telegram_Notify`'s "Build Telegram Message" node hardcoded exactly ONE message template — the golden-hunter one — regardless of the real `event` field sent to it. Every other real event this webhook already receives (`factory_stopped_unexpectedly`, `factory_recovered`, `recovery_completed`, `retry_queue_status`, sent by `notifyFactoryRecoveryEvent()`) silently produced a garbled message with undefined fields (`"المجال: undefined\nالنقاط: undefined/100"`). Confirmed live via a direct probe to the real webhook before fixing — that probe unfortunately sent one such garbled test message to the founder's real Telegram (noted honestly, not hidden).
+
+**Fixed**: the message-building expression now branches on `$json.body.event`, with a correct Arabic template for every event type already in use, plus two genuinely new ones the founder asked for:
+- `pending_review_needed` — "📝 منتج جاهز للمراجعة" (fired by `factory_loop.js`'s `checkPendingReview()` on the same 0→N transition that already triggers the desktop toast).
+- `sale_detected` — "💰 بيع جديد!" (fired by `pollSales()` when `/api/sales/poll` reports `total_new_sales > 0`).
+
+**Deployed live, with the founder's explicit go-ahead, 2026-07-19**: real backup (`n8n_workflows/backups/pre_nervous_system_v2_*`) → stop exact PID → `n8n import:workflow` → restart → `n8n update:workflow --id=TN04telegramNotifyX --active=true` (see correction below) → restart again → verified `/healthz` and a real `pending_review_needed` message delivered end-to-end via `factory_loop.js`'s actual `notifyFactoryRecoveryEvent()` function (not just a raw webhook probe).
+
+**Correction to ADR-072's platform-limitation note**: this n8n version (2.25.7) does NOT reject `n8n update:workflow --id=<id> --active=true` (deprecated in favor of `n8n publish:workflow`, but functional) — it writes the active flag to the database immediately but **requires an n8n restart to take effect** ("Changes will not take effect if n8n is running"). So activation is no longer strictly UI-only, as ADR-072 found with the older `--activeState=fromJson` flag — a CLI path exists now, it just still needs the same stop/restart cycle as any other workflow-content change, which is why this remains a founder-go-ahead action per this file's own standing norm, not a fully unattended one.

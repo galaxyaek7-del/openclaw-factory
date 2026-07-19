@@ -38,3 +38,9 @@ This is real, live, and confirmed directly from Paddle's own API — not a guess
 - `channels/paddle_arm.py`: `publish()` now attempts checkout-link creation after price creation, threads a real `url` through `PublishResult` when it succeeds, degrades honestly (not a failure) when it doesn't.
 - `tests/test_paddle_arm.py`: 9 new/updated tests. Full suite: 479 Python tests, zero regressions.
 - **Next step, founder-only:** check Paddle vendor dashboard for a pending onboarding step (payout/banking details, business verification, or similar) blocking checkout. The moment that's resolved, `create_checkout_transaction()` — already built, tested, and proven correct against the real API's product-tax-category and error-detail behavior — will produce a real checkout link with zero further code changes.
+
+## Addendum, 2026-07-19 — re-verified live, still blocked, founder notified
+
+Re-ran `create_checkout_transaction()` directly against the real Paddle API (same real product `pro_01kxtd3xzaz0nmfgphk55brhn7` / price `pri_01kxtd4p62t4m7ezap61k5ree0`) — **identical error, unchanged since 2026-07-18**: `"Checkout has not yet been enabled for this account, you may need to check with Paddle Support that the Paddle onboarding process has completed."` Confirms this is still a real, live, account-level gate on Paddle's side, not a stale finding.
+
+Sent a detailed Arabic checklist directly to the founder's Telegram (via the Bot API, bypassing n8n entirely — same direct-send precedent `ADR-072` established) listing the specific `vendors.paddle.com` sections to check (Business details, Payouts/Banking, Tax information), since Paddle's own error message doesn't name the exact missing sub-step and this factory has no way to see inside his account dashboard. Includes the exact error text and `sellers@paddle.com` as the escalation path if all sections look complete. No code change — this remains purely a founder-side action.
