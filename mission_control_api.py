@@ -36,6 +36,7 @@ jobs, not inline request/response, for exactly that reason:
 """
 
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -435,41 +436,168 @@ def _strategic_report():
 
 
 def _get_infrastructure_status(timeout=15):
-    """EOS Phase 1 (2026-07-19): reuses lib/infrastructure_intelligence.js's
-    real getInfrastructureStatus() via its new CLI entry point, rather than
-    reimplementing CPU/memory/disk/cost-trend logic in Python a second
-    time. Fails honestly (returns None) on any error -- a missing Node
-    binary or a subprocess hiccup must never break the rest of the
-    combined report, same fail-open discipline every other section here
-    already follows."""
-    try:
-        result = subprocess.run(
-            ["node", str(_FACTORY_ROOT / "lib" / "infrastructure_intelligence.js")],
-            capture_output=True, encoding="utf-8", timeout=timeout, cwd=str(_FACTORY_ROOT),
-        )
-        if result.returncode != 0:
-            return None
-        return json.loads(result.stdout.strip())
-    except Exception:
-        return None
+    """EOS Phase 2 (2026-07-19): now a thin wrapper over
+    infrastructure_bridge.py, extracted as a shared module so
+    ai_doctor.py can reuse the same real bridge without depending on
+    this CLI dispatcher."""
+    from infrastructure_bridge import get_infrastructure_status
+    return get_infrastructure_status(timeout=timeout)
 
 
 def _render_infrastructure_markdown(status):
-    if status is None:
-        return "تعذّر جلب حالة البنية التحتية الحقيقية هذه المرة (Node غير متاح أو فشل الاستدعاء) — لم يُدرَج قسم البنية التحتية.\n"
-    sys_info = status.get("system", {})
-    cost = status.get("ai_cost_trend", {})
-    cpu = sys_info.get("cpu", {})
-    mem = sys_info.get("memory", {})
-    disk = sys_info.get("disk", {})
-    lines = [
-        f"- **CPU**: {cpu.get('count', '؟')} أنوية — {cpu.get('model', '؟')}",
-        f"- **الذاكرة**: {mem.get('used_pct', '؟')}% مستخدَم",
-        f"- **القرص**: {disk.get('used_pct', disk.get('error', '؟'))}%" if not disk.get("error") else f"- **القرص**: {disk['error']}",
-        f"- **تكلفة الذكاء الاصطناعي (7 أيام)**: ${cost.get('recent_7d_cost_usd', 0)} عبر {cost.get('recent_7d_calls', 0)} استدعاء"
-        + (" ⚠️ ارتفاع غير معتاد" if cost.get("outlier") else ""),
-    ]
-    return "\n".join(lines) + "\n"
+    from infrastructure_bridge import render_infrastructure_markdown
+    return render_infrastructure_markdown(status)
+
+
+def _read_jsonl_entries(path):
+    """Shared, module-local JSONL reader for the small endpoints below
+    that need one (golden_hunter_status/pioneer_status) -- same
+    convention every other module in this factory already follows for
+    this exact pattern (no single shared Python JSONL module exists
+    yet, confirmed across the codebase; each store reimplements this
+    same 10-line, skip-corrupt-line read)."""
+    if not os.path.exists(path):
+        return []
+    out = []
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                out.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+    return out
+
+
+def _golden_hunter_status():
+    """Golden Hunter Evolution -- EOS Phase 2 (2026-07-19): real recent
+    activity (data/golden_hunter_events.jsonl) plus the top currently
+    scored opportunities, each with a real pre-acceptance ROI estimate
+    (revenue_pipeline.plan.estimate_pre_acceptance_roi() -- informational
+    only, never changes the real accept/reject gate). No duplicate-
+    opportunity risk here -- this only reads golden_opportunities.json
+    and the event log, both already the real, single source of truth
+    factory_loop.js's own goldenNicheAlreadyAttempted() circuit breaker
+    already protects."""
+    import json as _json
+    from department_health import recent_activity_count, GOLDEN_HUNTER_EVENTS_FILE
+    from revenue_pipeline import plan as revenue_plan
+
+    opp_path = _FACTORY_ROOT / "golden_opportunities.json"
+    opportunities = []
+    if opp_path.exists():
+        with open(opp_path, "r", encoding="utf-8") as f:
+            opportunities = _json.load(f).get("results", [])
+
+    top = sorted(opportunities, key=lambda o: o.get("profit_score", 0), reverse=True)[:5]
+    enriched = []
+    for o in top:
+        price = o.get("ladder_price") if o.get("ladder_accepted") else None
+        if price is None:
+            raw = str(o.get("recommended_price", "")).replace("$", "").strip()
+            try:
+                price = float(raw)
+            except ValueError:
+                price = None
+        roi = revenue_plan.estimate_pre_acceptance_roi(price) if price else {"maturity": "DISCOVERY", "reason": "لا سعر صالح لتقدير عائد مسبق"}
+        enriched.append({
+            "niche": o.get("niche"), "profit_score": o.get("profit_score"), "verdict": o.get("verdict"),
+            "ladder": o.get("ladder"), "ladder_accepted": o.get("ladder_accepted"),
+            "confidence": o.get("confidence"), "pre_acceptance_roi": roi,
+        })
+
+    events = _read_jsonl_entries(GOLDEN_HUNTER_EVENTS_FILE)
+    activity = recent_activity_count([e for e in events if e.get("action") in ("attempted", "skipped")])
+
+    return {
+        "top_opportunities": enriched, "recent_activity_count_7d": activity,
+        "total_scored": len(opportunities),
+    }
+
+
+def _pioneer_status():
+    """Pioneer -- EOS Phase 2 (2026-07-19): real discovery activity.
+    Pioneer's candidates feed into market_hunter.hunt_market()'s
+    existing loop and are logged into the SAME golden_hunter_events.jsonl
+    (no separate Pioneer-only log exists -- honestly disclosed, not
+    fabricated as a distinct counter). Passthrough only."""
+    from department_health import recent_activity_count, GOLDEN_HUNTER_EVENTS_FILE
+    import json as _json
+
+    def _read_jsonl(path):
+        if not os.path.exists(path):
+            return []
+        out = []
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    out.append(_json.loads(line))
+                except _json.JSONDecodeError:
+                    continue
+        return out
+
+    events = _read_jsonl_entries(GOLDEN_HUNTER_EVENTS_FILE)
+    activity = recent_activity_count([e for e in events if e.get("action") in ("attempted", "skipped")])
+    return {
+        "combined_activity_count_7d": activity,
+        "note": "لا عدّاد نشاط منفصل لـPioneer اليوم -- اكتشافاته تُدمَج في نفس حلقة Golden Hunter ونفس سجل الأحداث",
+        "source": "golden_hunter/pioneer.py discover_candidates() -> market_hunter.hunt_market()",
+    }
+
+
+def _knowledge_graph():
+    """Knowledge Graph v1 -- EOS Phase 2 (2026-07-19): a real, queryable
+    company memory built fresh from real data on every call (small
+    enough today not to need snapshot caching for a live request;
+    save_snapshot() is available for a disposable on-disk copy if
+    needed elsewhere). Passthrough only -- see knowledge_graph/build.py."""
+    from knowledge_graph import build
+    graph = build.build_graph()
+    return {
+        "node_count": graph["node_count"], "edge_count": graph["edge_count"],
+        "nodes": graph["nodes"], "edges": graph["edges"],
+    }
+
+
+def _department_health():
+    """Department Health -- EOS Phase 2 (2026-07-19): pure assembly of
+    already-computed real health signals per named department, zero new
+    health computation. Passthrough only -- see department_health.py."""
+    import department_health
+    report = department_health.build_department_health()
+    return {"report": report, "markdown": department_health.render_markdown(report)}
+
+
+def _research_department():
+    """Research Department -- EOS Phase 2 (2026-07-19): real analysis
+    assembled under 7 named categories, no new analysis logic.
+    Passthrough only -- see research_department.py."""
+    import research_department
+    report = research_department.build_research_report()
+    return {"report": report, "markdown": research_department.render_markdown(report)}
+
+
+def _ai_doctor():
+    """AI Doctor -- EOS Phase 2 (2026-07-19): the real, non-fabricated
+    replacement for quality_doctor.py's confirmed-fake pattern.
+    Passthrough only -- see ai_doctor.py for what's actually combined."""
+    import ai_doctor
+    report = ai_doctor.build_ai_doctor_report()
+    return {"report": report, "markdown": ai_doctor.render_markdown(report)}
+
+
+def _integration_registry():
+    """Integration Registry -- EOS Phase 2 (2026-07-19): real, adapter-
+    based extension points for every founder-named future vendor, plus
+    AI providers/commerce channels referenced from their own real
+    registries. Passthrough only -- see integration_registry.py."""
+    from integration_registry import list_integrations
+    return {"integrations": list_integrations()}
 
 
 def _founder_console():
@@ -716,6 +844,13 @@ _ENDPOINTS = {
     "market_review": _market_review,
     "evolution_report": _evolution_report,
     "founder_console": _founder_console,
+    "integration_registry": _integration_registry,
+    "ai_doctor": _ai_doctor,
+    "research_department": _research_department,
+    "department_health": _department_health,
+    "knowledge_graph": _knowledge_graph,
+    "golden_hunter_status": _golden_hunter_status,
+    "pioneer_status": _pioneer_status,
     "full_cycle": _full_cycle,
 }
 

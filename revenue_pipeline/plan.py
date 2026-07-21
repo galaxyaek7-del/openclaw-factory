@@ -101,3 +101,21 @@ def estimate_roi(price, production_cost_usd, platform="gumroad_digital"):
         "expected_net_after_cost": round(net_after_cost, 2),
         "roi_pct": roi_pct,
     }
+
+
+def estimate_pre_acceptance_roi(price, platform="gumroad_digital", log_file=None):
+    """EOS Phase 2, Golden Hunter Evolution (2026-07-19): the one real
+    ROI signal that was only ever computed AFTER an opportunity was
+    ACCEPTED (via estimate_roi(), called from process_opportunity()).
+    estimate_production_cost() already produces a real, usable-pre-
+    production cost estimate (the factory-wide real average logged AI
+    cost, not requiring this exact niche to have already been produced)
+    -- so a real ROI figure is available at scoring time too, purely by
+    calling these two already-real functions together. No new profit
+    formula, no per-niche cost guess. Informational only -- this never
+    changes the real accept/reject gate, which stays too speculative
+    pre-production to act on directly."""
+    cost = estimate_production_cost(log_file=log_file)
+    if cost.get("maturity") != "REAL":
+        return {"maturity": "DISCOVERY", "reason": cost.get("reason", "لا تكلفة إنتاج حقيقية بعد لتقدير عائد مسبق")}
+    return estimate_roi(price, cost["estimated_cost_usd"], platform=platform)

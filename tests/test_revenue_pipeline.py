@@ -117,6 +117,44 @@ class TestEstimateRoi(unittest.TestCase):
         self.assertGreater(result["roi_pct"], 0)
 
 
+class TestEstimatePreAcceptanceRoi(unittest.TestCase):
+    """EOS Phase 2, Golden Hunter Evolution (2026-07-19): the one real
+    ROI signal previously only computed post-acceptance, now usable at
+    scoring time via the already-real estimate_production_cost()."""
+
+    def test_no_logged_cost_is_honestly_discovery_not_a_guess(self):
+        result = plan.estimate_pre_acceptance_roi(97.0, log_file="/no/such/ai_cost_log.jsonl")
+        self.assertEqual(result["maturity"], "DISCOVERY")
+
+    def test_real_logged_cost_produces_a_real_roi(self):
+        import json
+        path = _temp_path()
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(json.dumps({"cost_usd": 0.02}) + "\n")
+            result = plan.estimate_pre_acceptance_roi(97.0, log_file=path)
+            self.assertEqual(result["maturity"], "REAL")
+            self.assertIn("roi_pct", result)
+        finally:
+            if os.path.exists(path):
+                os.remove(path)
+
+    def test_never_changes_the_real_accept_reject_gate(self):
+        import json
+        # This function is purely informational -- confirm it has no
+        # side effect on any decision/gate state (it's a pure calculation).
+        path = _temp_path()
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(json.dumps({"cost_usd": 0.02}) + "\n")
+            result = plan.estimate_pre_acceptance_roi(97.0, log_file=path)
+            self.assertNotIn("accepted", result)
+            self.assertNotIn("gate", result)
+        finally:
+            if os.path.exists(path):
+                os.remove(path)
+
+
 class TestRunRevenuePipeline(unittest.TestCase):
     def setUp(self):
         self.decisions_path = _temp_path()

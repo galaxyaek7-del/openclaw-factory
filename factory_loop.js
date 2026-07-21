@@ -1533,6 +1533,77 @@ function runExportExecutiveReport({ timeoutMs = 60000, pythonPath } = {}) {
   });
 }
 
+// EOS Phase 2, Autonomous Recommendations (2026-07-19): same subprocess
+// pattern as runExportExecutiveReport() above, calling
+// mission_control_api.py's evolution_report section (evolution_engine.
+// build_evolution_report(), real bottleneck/tech-debt/ROI/capability-gap
+// signals -- no new business logic here).
+function runEvolutionReport({ timeoutMs = 30000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'evolution_report'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة evolution_report (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من evolution_report' });
+          return;
+        }
+        finish({ ok: true, markdown: result.markdown });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج evolution_report: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+function evolutionReportPath(now) {
+  return path.join(REPORTS_DIR, `EVOLUTION_${isoDate(now)}.md`);
+}
+
+// Same once-per-calendar-day gating pattern as maybeGenerateWeeklyReport()
+// (file-existence check for today's dated report) -- no new scheduler,
+// reuses the exact existing daily-gate shape already proven for Golden
+// Hunter's own maybeRunMarketHunter()/lastHuntDate().
+async function maybeGenerateDailyEvolutionReport(now = new Date()) {
+  const datedPath = evolutionReportPath(now);
+  if (fs.existsSync(datedPath)) {
+    return { action: 'none', detail: `تقرير التطوّر اليومي موجود بالفعل: ${path.basename(datedPath)}` };
+  }
+  const result = await runEvolutionReport();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(REPORTS_DIR, { recursive: true });
+    fs.writeFileSync(datedPath, result.markdown, 'utf8');
+    return { action: 'generated', detail: `تم إنشاء تقرير التطوّر اليومي: ${path.basename(datedPath)}` };
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ تقرير التطوّر: ${err.message}` };
+  }
+}
+
 // ── SELF-AWARENESS ──
 // CONSTITUTION.md §20. self_awareness.js is a plain Node module — required
 // directly (no subprocess needed, unlike market_hunter.py). Gated to once
@@ -1922,6 +1993,13 @@ async function runTick() {
   markStep('weekly_report');
   actions.push({ step: 'weekly_report', ...(await maybeGenerateWeeklyReport(diagnosis)) });
 
+  // EOS Phase 2, Autonomous Recommendations (2026-07-19): same
+  // once-per-calendar-day pattern as Golden Hunter's own
+  // maybeRunMarketHunter() below — a standalone local Python call, runs
+  // regardless of dashboard reachability.
+  markStep('evolution_report');
+  actions.push({ step: 'evolution_report', ...(await maybeGenerateDailyEvolutionReport()) });
+
   // Golden Hunter also runs regardless of dashboard reachability — it's a
   // standalone local Python process, not an HTTP call to the dashboard.
   markStep('golden_hunter');
@@ -2108,6 +2186,7 @@ if (require.main === module) {
 module.exports = {
   runTick, healFinance, healEmptyBooks, healN8n, hunt, diagnose,
   generateWeeklyReport, maybeGenerateWeeklyReport, weekReportPath, runExportExecutiveReport,
+  runEvolutionReport, evolutionReportPath, maybeGenerateDailyEvolutionReport,
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
   maybeRunMarketHunter, maybeRunSelfAwareness,

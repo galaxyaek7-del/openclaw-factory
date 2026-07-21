@@ -191,12 +191,27 @@
     <div id="marketContent" class="loading">جارٍ التحميل…</div>
   </section>
 
+  <section id="tab-goldenhunter" class="tab">
+    <div class="tabHeader"><h2>الصياد الذهبي (Golden Hunter Evolution)</h2></div>
+    <div id="goldenhunterContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-pioneer" class="tab">
+    <div class="tabHeader"><h2>الرائد (Pioneer)</h2></div>
+    <div id="pioneerContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
   <section id="tab-opportunities" class="tab">
     <div class="tabHeader">
       <h2>طابور الفرص</h2>
       <div class="actionsBar"><button class="btn primary" data-action="trigger-opportunity-evaluation">⚡ تقييم الفرص الآن</button></div>
     </div>
     <div id="opportunitiesContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-research" class="tab">
+    <div class="tabHeader"><h2>قسم الأبحاث (Research Department)</h2></div>
+    <div id="researchContent" class="loading">جارٍ التحميل…</div>
   </section>
 
   <section id="tab-production" class="tab">
@@ -262,6 +277,21 @@
     <div id="evolutionContent" class="loading">جارٍ التحميل…</div>
   </section>
 
+  <section id="tab-aidoctor" class="tab">
+    <div class="tabHeader"><h2>الطبيب الهندسي (AI Doctor)</h2></div>
+    <div id="aidoctorContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-knowledgegraph" class="tab">
+    <div class="tabHeader"><h2>خريطة المعرفة (Knowledge Graph)</h2></div>
+    <div id="knowledgegraphContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
+  <section id="tab-depthealth" class="tab">
+    <div class="tabHeader"><h2>صحة الأقسام (Department Health)</h2></div>
+    <div id="depthealthContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
   <section id="tab-sysconfig" class="tab">
     <div class="tabHeader"><h2>إعدادات النظام (System Configuration)</h2></div>
     <div id="sysconfigContent" class="loading">جارٍ التحميل…</div>
@@ -325,7 +355,10 @@ const TABS = [
   { id: 'health', label: 'الحالة العامة' },
   { id: 'founder', label: '🔴 يحتاج قرارك' },
   { id: 'market', label: 'ذكاء السوق' },
+  { id: 'goldenhunter', label: 'الصياد الذهبي' },
+  { id: 'pioneer', label: 'الرائد' },
   { id: 'opportunities', label: 'الفرص' },
+  { id: 'research', label: 'قسم الأبحاث' },
   { id: 'production', label: 'الإنتاج' },
   { id: 'publishing', label: 'النشر' },
   { id: 'revenue', label: 'الإيراد' },
@@ -336,6 +369,9 @@ const TABS = [
   { id: 'aimodels', label: 'نماذج الذكاء الاصطناعي' },
   { id: 'strategic', label: 'التوصيات الاستراتيجية' },
   { id: 'evolution', label: 'تطوّر الشركة' },
+  { id: 'aidoctor', label: 'الطبيب الهندسي' },
+  { id: 'knowledgegraph', label: 'خريطة المعرفة' },
+  { id: 'depthealth', label: 'صحة الأقسام' },
   { id: 'sysconfig', label: 'إعدادات النظام' },
   { id: 'validation', label: 'التحقُّق' },
   { id: 'activity', label: 'النشاط' },
@@ -723,6 +759,44 @@ const loaders = {
     el.innerHTML = html;
   },
 
+  goldenhunter: async () => {
+    const el = document.getElementById('goldenhunterContent');
+    const res = await fetchJson('/api/v1/golden-hunter-status');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const d = res.data;
+    el.innerHTML = `
+      <div class="grid">
+        <div class="card"><h3>نشاط آخر 7 أيام</h3><div class="big">${d.recent_activity_count_7d}</div></div>
+        <div class="card"><h3>إجمالي المُقيَّم</h3><div class="big">${d.total_scored}</div></div>
+      </div>
+      <div class="card">
+        <h3>أعلى الفرص الحالية + عائد مسبق تقديري (معلوماتي فقط)</h3>
+        <table><thead><tr><th>النيتش</th><th>الدرجة</th><th>الحكم</th><th>عائد مسبق (ROI)</th></tr></thead>
+        <tbody>${d.top_opportunities.map(o => {
+          const roi = o.pre_acceptance_roi;
+          const roiText = roi.maturity === 'REAL' ? `${roi.roi_pct}%` : `<span class="muted">${escapeHtml(roi.reason)}</span>`;
+          return `<tr><td>${escapeHtml(o.niche)}</td><td>${o.profit_score}</td><td>${badge(o.verdict)}</td><td>${roiText}</td></tr>`;
+        }).join('')}</tbody></table>
+        <p class="muted">العائد المسبق معلوماتي فقط — لا يغيّر بوابة القبول/الرفض الحقيقية.</p>
+      </div>
+    `;
+  },
+
+  pioneer: async () => {
+    const el = document.getElementById('pioneerContent');
+    const res = await fetchJson('/api/v1/pioneer-status');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const d = res.data;
+    el.innerHTML = `
+      <div class="card">
+        <h3>نشاط الاكتشاف المشترك (آخر 7 أيام)</h3>
+        <div class="big">${d.combined_activity_count_7d}</div>
+        <p class="muted">${escapeHtml(d.note)}</p>
+        <p class="muted">المصدر: ${escapeHtml(d.source)}</p>
+      </div>
+    `;
+  },
+
   opportunities: async () => {
     const el = document.getElementById('opportunitiesContent');
     const res = await fetchJson('/api/v1/opportunity-queue');
@@ -740,6 +814,30 @@ const loaders = {
       <table><thead><tr><th>النيتش</th><th>الدرجة</th><th>الحالة</th><th>قرار AI CEO</th></tr></thead>
       <tbody>${rows || '<tr><td colspan="4" class="muted">لا فرص مُقيَّمة بعد</td></tr>'}</tbody></table>
     `;
+  },
+
+  research: async () => {
+    const el = document.getElementById('researchContent');
+    const res = await fetchJson('/api/v1/research-department');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const r = res.data.report;
+    const section = (title, body) => `<div class="card"><h3>${title}</h3>${body}</div>`;
+    const honestOrList = (obj, listBuilder) => obj.answer === 'Unknown'
+      ? `<p class="muted">${escapeHtml(obj.reason)}</p>` : listBuilder(obj);
+
+    el.innerHTML = [
+      section('أبحاث السوق', honestOrList(r.market, (m) =>
+        `<table><tbody>${m.recent_findings.map(f => `<tr><td>${escapeHtml(f.niche)}</td><td class="muted">فجوة=${f.opportunity_gap}, ألم=${f.pain_score ?? '؟'}</td></tr>`).join('')}</tbody></table>`)),
+      section('أبحاث المنافسين', honestOrList(r.competitor, (c) =>
+        `<p>${c.tracked_niches} نيتش متتبَّع</p><p class="muted">${(c.sample_niches || []).map(escapeHtml).join('، ')}</p>`)),
+      section('أبحاث التسعير', `<p class="muted">KDP: $${r.pricing.kdp_book_ceiling_usd} | مطبوعات: $${r.pricing.printable_ceiling_usd} | مميز: $${r.pricing.premium_ceiling_usd} | نخبة: $${r.pricing.elite_ceiling_usd}</p>`),
+      section('أبحاث النشر', `<p>${r.publishing.autonomous?.length ?? 0} منصة تلقائية، ${r.publishing.gated?.length ?? 0} تحتاج إجراءً</p>`),
+      section('أبحاث الأتمتة', r.automation.bottlenecks.detected
+        ? `<p class="muted">${r.automation.bottlenecks.items.map(i => escapeHtml(i.evidence)).join('<br>')}</p>`
+        : '<p class="muted">لا اختناقات حقيقية اليوم</p>'),
+      section('أبحاث التقنية', `<p class="muted">${escapeHtml(r.technology.reason)}</p>`),
+      section('أبحاث العملاء', `<p class="muted">${escapeHtml(r.customer.reason)}</p>`),
+    ].join('');
   },
 
   production: async () => {
@@ -1029,12 +1127,83 @@ const loaders = {
     `;
   },
 
+  aidoctor: async () => {
+    const el = document.getElementById('aidoctorContent');
+    const res = await fetchJson('/api/v1/ai-doctor');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const r = res.data.report;
+    const dep = r.dependency_risk;
+    el.innerHTML = `
+      <div class="card">
+        <h3>مخاطر التبعيات (Dependency Risk)</h3>
+        <p>Python: ${dep.python.pinned}/${dep.python.checked} مثبَّتة بدقة ${(dep.python.unpinned || []).length ? `— <span class="muted">${dep.python.unpinned.map(escapeHtml).join('، ')}</span>` : ''}</p>
+        <p>Node: ${dep.node.pinned}/${dep.node.checked} مثبَّتة بدقة ${(dep.node.unpinned || []).length ? `— <span class="muted">${dep.node.unpinned.map(escapeHtml).join('، ')}</span>` : ''}</p>
+        <p>npm audit: ${dep.npm_audit.available ? escapeHtml(JSON.stringify(dep.npm_audit.vulnerabilities)) : `<span class="muted">غير متاح — ${escapeHtml(dep.npm_audit.reason)}</span>`}</p>
+      </div>
+      <div class="card">
+        <h3>البنية التحتية</h3>
+        ${r.infrastructure ? `<p>CPU: ${r.infrastructure.system?.cpu?.count} أنوية | الذاكرة: ${r.infrastructure.system?.memory?.used_pct}%</p>` : '<p class="muted">تعذّر الجلب هذه المرة</p>'}
+      </div>
+      <div class="card">
+        <h3>اختناقات وديون تقنية (من Evolution Engine)</h3>
+        ${r.evolution.bottlenecks.detected
+          ? `<p class="muted">${r.evolution.bottlenecks.items.map(i => escapeHtml(i.evidence)).join('<br>')}</p>`
+          : '<p class="muted">لا اختناقات حقيقية اليوم</p>'}
+      </div>
+      <p class="muted">لا انجراف معماري ولا تحليل سجلات عميق بعد — لا بنية أساس أو أدوات تحليل سجلات حقيقية موجودة اليوم (Track C).</p>
+    `;
+  },
+
+  knowledgegraph: async () => {
+    const el = document.getElementById('knowledgegraphContent');
+    const res = await fetchJson('/api/v1/knowledge-graph');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const d = res.data;
+    const nodesByType = {};
+    for (const n of d.nodes) nodesByType[n.type] = (nodesByType[n.type] || 0) + 1;
+    const edgesByRelation = {};
+    for (const e of d.edges) edgesByRelation[e.relation] = (edgesByRelation[e.relation] || 0) + 1;
+    el.innerHTML = `
+      <div class="grid">
+        <div class="card"><h3>إجمالي العُقَد</h3><div class="big">${d.node_count}</div></div>
+        <div class="card"><h3>إجمالي الروابط</h3><div class="big">${d.edge_count}</div></div>
+      </div>
+      <div class="card">
+        <h3>العُقَد حسب النوع</h3>
+        <table><tbody>${Object.entries(nodesByType).map(([t, c]) => `<tr><td>${escapeHtml(t)}</td><td>${c}</td></tr>`).join('')}</tbody></table>
+      </div>
+      <div class="card">
+        <h3>الروابط حسب العلاقة</h3>
+        <table><tbody>${Object.entries(edgesByRelation).map(([r, c]) => `<tr><td>${escapeHtml(r)}</td><td>${c}</td></tr>`).join('')}</tbody></table>
+      </div>
+      <p class="muted">لقطة مشتقة قابلة لإعادة البناء دائماً — ليست مصدر الحقيقة (المصدر: data/decisions.jsonl وغيرها من السجلات الحقيقية). روابط "produced" تُصنَّف exact (تطابق حقيقي عبر production_id) أو approximate (تطابق نصي احتياطي) بصراحة.</p>
+    `;
+  },
+
+  depthealth: async () => {
+    const el = document.getElementById('depthealthContent');
+    const res = await fetchJson('/api/v1/department-health');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const report = res.data.report;
+    el.innerHTML = Object.entries(report).map(([name, d]) => {
+      if (d.data_source === 'none') {
+        return `<div class="card"><h3>${escapeHtml(name)}</h3><p class="muted">لا بيانات حقيقية — ${escapeHtml(d.reason)}</p></div>`;
+      }
+      const fields = Object.entries(d).filter(([k]) => !['data_source', 'source', 'reason'].includes(k));
+      return `<div class="card"><h3>${escapeHtml(name)} ${badge('good')}</h3>${fields.map(([k, v]) => `<p class="muted">${escapeHtml(k)}: ${escapeHtml(typeof v === 'object' ? JSON.stringify(v) : String(v))}</p>`).join('')}</div>`;
+    }).join('');
+  },
+
   sysconfig: async () => {
     const el = document.getElementById('sysconfigContent');
-    const res = await fetchJson('/api/v1/system-configuration');
+    const [res, integRes] = await Promise.all([
+      fetchJson('/api/v1/system-configuration'),
+      fetchJson('/api/v1/integration-registry'),
+    ]);
     if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
     const d = res.data;
     const cap = d.capability_registry;
+    const integrations = integRes.success ? integRes.data.integrations : [];
     el.innerHTML = `
       <div class="grid">
         <div class="card"><h3>حدّ درجة الفرصة الأدنى</h3><div class="big">${d.min_opportunity_score}</div></div>
@@ -1055,6 +1224,12 @@ const loaders = {
         <tbody>${(cap?.capabilities || []).map(c => `<tr><td>${escapeHtml(c.name)}</td><td>${badge(c.level)}</td></tr>`).join('')}</tbody></table>
       </div>
       <details><summary>الاقتصاد الكامل (economics.json)</summary><pre>${escapeHtml(JSON.stringify(d.economics, null, 2))}</pre></details>
+      <div class="card">
+        <h3>سجل التكاملات المستقبلية (${integrations.length} تكامل مُسمّى)</h3>
+        <p class="muted">نقاط امتداد حقيقية — بدون بيانات اعتماد فعلية، تبقى مستوى DISCOVERY صراحةً، لا افتراض قدرة وهمية.</p>
+        <table><thead><tr><th>الاسم</th><th>الفئة</th><th>الحالة</th></tr></thead>
+        <tbody>${integrations.map(i => `<tr><td>${escapeHtml(i.name)}</td><td class="muted">${escapeHtml(i.category)}</td><td>${i.configured === true ? badge('ready') : i.configured === false ? badge('unavailable') : '<span class="muted">—</span>'}</td></tr>`).join('')}</tbody></table>
+      </div>
     `;
   },
 

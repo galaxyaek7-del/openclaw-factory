@@ -2,7 +2,7 @@
 
 _Auto-generated from SERVICE_REGISTRY in server.js at server startup — do not hand-edit, it is overwritten on every restart. Source of truth: server.js._
 
-Generated at: 2026-07-19T16:21:54.172Z
+Generated at: 2026-07-21T22:31:28.517Z
 
 Every endpoint below requires an authenticated Mission Control session (`POST /api/mission-control/login`) and returns the standard envelope:
 
@@ -136,6 +136,62 @@ Real AI provider capability registry (Claude, GPT, Gemini, Grok, DeepSeek, Qwen,
 - Data: `GET /api/v1/ai-capability-registry`
 - Health: `GET /api/v1/ai-capability-registry/health`
 - Reuses: ai_capability/registry.py list_providers()/read_capability_requests() (Autonomous Digital Company v1, Track B2, 2026-07-19), via mission_control_api.py.
+
+### golden-hunter-status
+
+Golden Hunter Evolution -- real recent activity + top currently-scored opportunities, each with a real, informational pre-acceptance ROI estimate. Never changes the real accept/reject gate.
+
+- Data: `GET /api/v1/golden-hunter-status`
+- Health: `GET /api/v1/golden-hunter-status/health`
+- Reuses: mission_control_api.py _golden_hunter_status() (EOS Phase 2, 2026-07-19) -- reuses golden_opportunities.json, data/golden_hunter_events.jsonl, and revenue_pipeline.plan.estimate_pre_acceptance_roi() verbatim.
+
+### pioneer-status
+
+Pioneer -- real discovery activity. Honestly discloses that Pioneer's candidates share the same event log as Golden Hunter (no separate Pioneer-only counter exists).
+
+- Data: `GET /api/v1/pioneer-status`
+- Health: `GET /api/v1/pioneer-status/health`
+- Reuses: mission_control_api.py _pioneer_status() (EOS Phase 2, 2026-07-19).
+
+### knowledge-graph
+
+A real, queryable company memory -- nodes (Niche, Decision, ProductionRun, PublishChannel, AIProvider) and edges built fresh from 5 real data sources on every call. The Decision->ProductionRun edge is honestly labelled 'exact' (real production_id match) or 'approximate' (best-effort niche-text fallback) -- never presented as certain when it isn't.
+
+- Data: `GET /api/v1/knowledge-graph`
+- Health: `GET /api/v1/knowledge-graph/health`
+- Reuses: knowledge_graph/build.py build_graph() (EOS Phase 2, 2026-07-19) -- reuses data/decisions.jsonl, data/market_intelligence_analyses.jsonl, data/sales_ledger.jsonl, data/ai_cost_log.jsonl verbatim, no new data collection.
+
+### department-health
+
+Per-named-department health rollup -- pure assembly of already-computed real signals (orchestrator engine success rates, channel approval status, real activity counts, AI provider status, infrastructure status, recovery/retry state). Researchers and Customer Intelligence are honestly 'no real data' -- never a fabricated score.
+
+- Data: `GET /api/v1/department-health`
+- Health: `GET /api/v1/department-health/health`
+- Reuses: department_health.py build_department_health() (EOS Phase 2, 2026-07-19) -- reuses executive_intelligence.engine_health, commercial_execution.approval_gates, ai_capability.registry, infrastructure_bridge.py, channels.ledger, and factory_state.py verbatim.
+
+### research-department
+
+Real analysis assembled under 7 named research categories (Market, Competitor, Pricing, Publishing, Automation, Technology, Customer) -- pure assembly of already-real signals, no new analysis logic. Technology and Customer research are honestly 'Unknown' -- no module evaluates tech choices, and this factory has zero real customer data.
+
+- Data: `GET /api/v1/research-department`
+- Health: `GET /api/v1/research-department/health`
+- Reuses: research_department.py build_research_report() (EOS Phase 2, 2026-07-19) -- reuses market_intelligence_analyses.jsonl, competitor_discovery.py, profit_oracle.py constants, commercial_execution.approval_gates, and evolution_engine.py verbatim.
+
+### ai-doctor
+
+The real, non-fabricated engineering-health system replacing quality_doctor.py's confirmed-fake pattern -- combines evolution_engine's bottleneck/tech-debt/ROI/capability-gap signals with real infrastructure status and a real (never-fabricated) dependency-pinning + npm-audit check.
+
+- Data: `GET /api/v1/ai-doctor`
+- Health: `GET /api/v1/ai-doctor/health`
+- Reuses: ai_doctor.py build_ai_doctor_report() (EOS Phase 2, 2026-07-19) -- reuses evolution_engine.py and infrastructure_bridge.py verbatim, no reimplementation.
+
+### integration-registry
+
+Real, adapter-based extension points for every founder-named future vendor (n8n, GitHub, Notion, Slack, Discord, Cloudflare, Docker, Supabase, PostgreSQL, vector databases, Shopify, KDP, Perplexity, MiniMax, etc.), plus AI providers/commerce channels referenced from their own real registries -- never a second, duplicate source of truth for those. No live 'test connection' calls -- real env-var presence only.
+
+- Data: `GET /api/v1/integration-registry`
+- Health: `GET /api/v1/integration-registry/health`
+- Reuses: integration_registry.py list_integrations() (EOS Phase 2, 2026-07-19) -- references ai_capability/registry.py and channels/registry.py rather than duplicating them.
 
 ### founder-console
 

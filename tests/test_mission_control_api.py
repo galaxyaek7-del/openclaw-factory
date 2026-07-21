@@ -109,6 +109,19 @@ class TestEndpointDispatch(unittest.TestCase):
         self.assertIn("ceo_report_markdown", result)
         self.assertIsInstance(result["ceo_report_markdown"], str)
 
+    def test_golden_hunter_status_returns_real_shape_never_throws(self):
+        result = mission_control_api._golden_hunter_status()
+        self.assertIn("top_opportunities", result)
+        self.assertIn("recent_activity_count_7d", result)
+        self.assertIn("total_scored", result)
+        for opp in result["top_opportunities"]:
+            self.assertIn("pre_acceptance_roi", opp)
+
+    def test_pioneer_status_honestly_discloses_shared_event_log(self):
+        result = mission_control_api._pioneer_status()
+        self.assertIn("combined_activity_count_7d", result)
+        self.assertIn("note", result)
+
     def test_automation_never_claims_live_status(self):
         """Zero fabrication: this must never claim n8n live status is
         available when it structurally cannot check it."""

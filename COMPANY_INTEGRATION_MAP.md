@@ -103,3 +103,15 @@ Phase 2: Department Events (the JSONL-envelope formalization) starting with 4 si
 
 ### Tests
 `tests/test_market_review.py` (7), `tests/test_capability_registry_scanner.py` (4), `tests/test_evolution_engine.py` (5), `tests/test_founder_console.py` (3), plus extensions to `tests/test_ai_capability.py` and `tests/test_mission_control_api.py`. Every new service/tab verified live against a real running server instance with real authentication.
+
+---
+
+## Enterprise Operating System, Phase 2, Round 1 (2026-07-19)
+
+Full detail in `OpenClaw_Brain/00_Governance/ADR-081-eos-phase-2-round-1.md`. The founder's Phase 2 ask (12 sections: Mission Control V2's 15 tabs, Golden Hunter/Pioneer evolution, Research Department, AI Doctor, Knowledge Graph v1, Department Health, ~30 future-integration extension points, Production Safety) hit two load-bearing warnings from research: `quality_doctor.py` is confirmed still fake (the exact mistake "AI Doctor" must not repeat), and "Researchers" is an existing, deliberate, founder-gated non-build (unchanged by this round).
+
+**Built**: `integration_registry.py` (the ~30-vendor catalog, referencing `ai_capability`/`channels` registries rather than duplicating them — n8n and Telegram honestly `configured: True`, everything else env-var-checked only, never a live test-connection call); `ai_doctor.py` (real replacement for `quality_doctor.py`'s pattern — combines `evolution_engine` + a newly-extracted `infrastructure_bridge.py`, plus one honest dependency-risk check that surfaces `npm audit`'s real failure reason instead of fabricating a score); `research_department.py` (7 named categories, zero new analysis logic, never triggers a live per-niche call); `department_health.py` (per-department real signals; Researchers/Customer Intelligence honestly `data_source: "none"`); `revenue_pipeline/plan.py::estimate_pre_acceptance_roi()` (the one real missing Golden Hunter signal, informational-only); `knowledge_graph/build.py` (real nodes/edges from 4 JSONL sources — the `Decision→produced→ProductionRun` edge is genuinely **exact** when `make_production_id()`'s convention holds, `approximate` fallback otherwise; live data today honestly shows zero such edges, confirmed as a real finding via controlled-fixture tests, not a bug); a daily-gated Autonomous Recommendations cadence (`factory_loop.js`, same file-existence pattern as the weekly report); 6 new Mission Control tabs (Golden Hunter, Pioneer, Research Department, AI Doctor, Knowledge Graph, Department Health), all verified live.
+
+**Deferred (Track C)**: Technology/Customer Research, architecture drift detection, deep error-log analysis, live test-connection checks for new integrations, autonomous execution of any recommendation, and a general rollback/undo mechanism (a real, confirmed gap — only pre-op snapshots + "reversible because non-destructive" exist today).
+
+**Round 2/3 roadmap (not built this round)**: Department Events (JSONL-envelope formalization), Unified Priorities view, remaining department event emitters, Executive Decisions dashboard reframing.
