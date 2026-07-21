@@ -25,6 +25,7 @@ const path = require('path');
 const { spawn, execSync } = require('child_process');
 const selfAwareness = require('./self_awareness');
 const n8nNotify = require('./lib/n8n_notify');
+const departmentEvents = require('./lib/department_events');
 const {
   notifyN8nProductionEvent, buildGoldenHunterNotifyPayload,
   buildFactoryStoppedUnexpectedlyPayload, buildFactoryRecoveredPayload,
@@ -477,11 +478,23 @@ async function triggerGenerateBook(brief) {
 // it never imports or calls market_hunter.py/profit_oracle.py, only reads
 // their already-written output file.
 
-function appendGoldenHunterEvent(fields, logPath = GOLDEN_HUNTER_EVENTS_FILE) {
+function appendGoldenHunterEvent(fields, logPath = GOLDEN_HUNTER_EVENTS_FILE, departmentEventsLogPath = departmentEvents.DEFAULT_LOG_PATH) {
   try {
     fs.mkdirSync(path.dirname(logPath), { recursive: true });
     const record = { timestamp: new Date().toISOString(), ...fields };
     fs.appendFileSync(logPath, JSON.stringify(record) + '\n');
+    // EOS Phase 2, Round 2 (2026-07-19): also emits a real correlation-
+    // index entry -- envelope only (no business data duplicated), same
+    // call site as the real write above, never a re-derivation scan.
+    // Best-effort: a department_events write failure must never affect
+    // the real golden_hunter_events.jsonl record just written.
+    try {
+      departmentEvents.emit({
+        department: 'golden_hunter', event_type: `golden_hunter.${fields.action || 'event'}`,
+        ref_id: fields.niche || null, source_log: 'data/golden_hunter_events.jsonl',
+        summary: fields.detail || fields.action || '',
+      }, departmentEventsLogPath);
+    } catch (_) { /* best effort, never blocks the real event log */ }
     return record;
   } catch (err) {
     // Logging failure must never break the tick itself.

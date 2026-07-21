@@ -183,6 +183,11 @@
     <div id="founderContent" class="loading">جارٍ التحميل…</div>
   </section>
 
+  <section id="tab-unifiedpriorities" class="tab">
+    <div class="tabHeader"><h2>الأولويات الموحّدة</h2></div>
+    <div id="unifiedprioritiesContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
   <section id="tab-market" class="tab">
     <div class="tabHeader">
       <h2>ذكاء السوق</h2>
@@ -354,6 +359,7 @@
 const TABS = [
   { id: 'health', label: 'الحالة العامة' },
   { id: 'founder', label: '🔴 يحتاج قرارك' },
+  { id: 'unifiedpriorities', label: 'الأولويات الموحّدة' },
   { id: 'market', label: 'ذكاء السوق' },
   { id: 'goldenhunter', label: 'الصياد الذهبي' },
   { id: 'pioneer', label: 'الرائد' },
@@ -725,6 +731,34 @@ const loaders = {
     el.innerHTML = html;
   },
 
+  unifiedpriorities: async () => {
+    const el = document.getElementById('unifiedprioritiesContent');
+    const res = await fetchJson('/api/v1/unified-priorities');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const d = res.data;
+    const q = d.opportunity_queue;
+    const queueRows = (q?.queue || []).map(o => `
+      <tr><td>${escapeHtml(o.niche)}</td><td>${o.opportunity_score}</td><td>${badge(o.status)}</td></tr>`).join('');
+    el.innerHTML = `
+      <p class="muted">ثلاث إشارات أولوية حقيقية، جنباً إلى جنب — بلا دمج في درجة واحدة مُختلَقة.</p>
+      <div class="card">
+        <h3>الأولوية التالية (FACTORY_STATUS.md)</h3>
+        <pre>${escapeHtml(d.next_dollar_actions?.text ?? d.next_dollar_actions?.note ?? 'لا شيء')}</pre>
+      </div>
+      <div class="card">
+        <h3>طابور القبول المُرتَّب (ACCEPTED)</h3>
+        ${q?.error
+          ? `<p class="muted">${escapeHtml(q.error)}</p>`
+          : `<table><thead><tr><th>النيتش</th><th>الدرجة</th><th>الحالة</th></tr></thead>
+             <tbody>${queueRows || '<tr><td colspan="3" class="muted">لا فرص مُقيَّمة بعد</td></tr>'}</tbody></table>`}
+      </div>
+      <div class="card">
+        <h3>سلّم أولويات الإنتاج الاستراتيجي (MASTER_CHARTER.md)</h3>
+        <pre>${escapeHtml(d.strategic_priority_ladder?.text ?? d.strategic_priority_ladder?.note ?? 'لا شيء')}</pre>
+      </div>
+    `;
+  },
+
   market: async () => {
     const el = document.getElementById('marketContent');
     const [miRes, reviewRes] = await Promise.all([
@@ -884,7 +918,18 @@ const loaders = {
     const el = document.getElementById('revenueContent');
     const res = await fetchJson('/api/v1/revenue-summary');
     if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
-    el.innerHTML = `<pre>${escapeHtml(res.data.ceo_report_markdown)}</pre>`;
+    const t = res.data.revenue_trend;
+    const trendCard = t ? `
+      <div class="card">
+        <h3>اتجاه الإيراد عبر الزمن</h3>
+        ${t.total_sales_count === 0
+          ? `<p class="muted">${escapeHtml(t.note)}</p>`
+          : `<p>آخر 7 أيام: <strong>$${t.recent_7d_revenue_usd}</strong> (${t.recent_7d_sales_count} عملية)
+                — متوسط يومي تاريخي: ${t.trailing_daily_avg_usd !== null ? `$${t.trailing_daily_avg_usd}` : 'غير متاح بعد'}</p>
+             ${t.note ? `<p class="muted">${escapeHtml(t.note)}</p>` : ''}
+             <details><summary>حسب اليوم</summary><pre>${escapeHtml(JSON.stringify(t.by_day, null, 2))}</pre></details>`}
+      </div>` : '';
+    el.innerHTML = `${trendCard}<pre>${escapeHtml(res.data.ceo_report_markdown)}</pre>`;
   },
 
   automation: async () => {

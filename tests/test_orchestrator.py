@@ -540,5 +540,56 @@ class TestPublishingEngineUsesTheUnifiedPipeline(unittest.TestCase):
         self.assertIsNone(mocked.call_args.kwargs["product_family"])
 
 
+class TestPublishingEngineHonorsFactoryLivePublish(unittest.TestCase):
+    """EOS Phase 2, Round 2 (2026-07-19) production-safety hardening: a
+    real live publish now needs BOTH context["dry_run"]=False AND
+    FACTORY_LIVE_PUBLISH=true -- confirmed this was NOT the case before
+    this fix (context["dry_run"] alone controlled it, and the modern
+    ladder pipeline hardcodes execute_production=True, which flows into
+    dry_run=False with zero further check). Matches the founder's own,
+    already-documented "three independent barriers" design
+    (AUTO_PRODUCE_ACTIVATION_CHECKLIST.md, ADR-009 §9.2)."""
+
+    def _context(self):
+        return {
+            "dry_run": False,
+            "production_result": {
+                "executed": True, "success": True, "path": "/fake/path.pdf",
+                "price": 197.0, "product_type": "techdoc", "production_id": "PROD-live-test",
+                "dossier_bundle": {"version": "1.0.0"},
+            },
+        }
+
+    def test_dry_run_false_without_factory_live_publish_still_forces_a_dry_run(self):
+        from orchestrator.engines import publishing
+        with patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("FACTORY_LIVE_PUBLISH", None)
+            with patch.object(publishing, "run_publish_pipeline") as mocked:
+                mocked.return_value = {"marketplaces": [], "product_id": "x", "version": "1.0.0",
+                                        "revenue_status": {}, "audit_trail": []}
+                publishing.run(self._context())
+        self.assertTrue(mocked.call_args.kwargs["dry_run"])
+
+    def test_dry_run_false_with_factory_live_publish_true_allows_a_real_attempt(self):
+        from orchestrator.engines import publishing
+        with patch.dict(os.environ, {"FACTORY_LIVE_PUBLISH": "true"}):
+            with patch.object(publishing, "run_publish_pipeline") as mocked:
+                mocked.return_value = {"marketplaces": [], "product_id": "x", "version": "1.0.0",
+                                        "revenue_status": {}, "audit_trail": []}
+                publishing.run(self._context())
+        self.assertFalse(mocked.call_args.kwargs["dry_run"])
+
+    def test_context_dry_run_true_still_wins_even_with_factory_live_publish_true(self):
+        from orchestrator.engines import publishing
+        context = self._context()
+        context["dry_run"] = True
+        with patch.dict(os.environ, {"FACTORY_LIVE_PUBLISH": "true"}):
+            with patch.object(publishing, "run_publish_pipeline") as mocked:
+                mocked.return_value = {"marketplaces": [], "product_id": "x", "version": "1.0.0",
+                                        "revenue_status": {}, "audit_trail": []}
+                publishing.run(context)
+        self.assertTrue(mocked.call_args.kwargs["dry_run"])
+
+
 if __name__ == "__main__":
     unittest.main()

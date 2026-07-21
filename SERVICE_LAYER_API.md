@@ -2,7 +2,7 @@
 
 _Auto-generated from SERVICE_REGISTRY in server.js at server startup — do not hand-edit, it is overwritten on every restart. Source of truth: server.js._
 
-Generated at: 2026-07-21T22:31:28.517Z
+Generated at: 2026-07-21T23:17:49.436Z
 
 Every endpoint below requires an authenticated Mission Control session (`POST /api/mission-control/login`) and returns the standard envelope:
 
@@ -40,6 +40,14 @@ Every ranked opportunity plus the ACCEPTED queue ready for production.
 - Data: `GET /api/v1/opportunity-queue`
 - Health: `GET /api/v1/opportunity-queue/health`
 - Reuses: decision_engine/ranking.py rank_all()/rank_queue(), via mission_control_api.py.
+
+### unified-priorities
+
+EOS Phase 2, Round 2 (2026-07-19): three real priority signals shown side by side, never merged into one fabricated composite score -- FACTORY_STATUS.md's Next Dollar Actions, the ranked ACCEPTED opportunity queue, and MASTER_CHARTER.md's Strategic Production Priority Ladder. Closes the real Opportunity Intelligence gap (today spread across the market/goldenhunter/pioneer/opportunities tabs) without inventing a new ranking algorithm.
+
+- Data: `GET /api/v1/unified-priorities`
+- Health: `GET /api/v1/unified-priorities/health`
+- Reuses: server.js readNextDollarActions() (existing, also used by company-health) + decision_engine/ranking.py rank_queue() via the existing opportunity-queue service + a new MASTER_CHARTER.md markdown-section read using the same technique as readNextDollarActions().
 
 ### decision-history
 

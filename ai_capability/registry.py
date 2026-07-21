@@ -182,7 +182,7 @@ def render_markdown(providers):
     return "\n".join(lines) + "\n"
 
 
-def record_capability_request(department, task_type, requested_provider, reason, path=None):
+def record_capability_request(department, task_type, requested_provider, reason, path=None, department_events_path=None):
     """Append-only log of a department's real request for a different/
     better AI model (Autonomous Digital Company v1 §8) -- same discipline
     as decision_engine/store.py: one JSON object per line, never rewritten.
@@ -199,6 +199,22 @@ def record_capability_request(department, task_type, requested_provider, reason,
     }
     with open(path, "a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+    # EOS Phase 2, Round 2 (2026-07-19): also emits a real correlation-
+    # index entry -- envelope only, same call site as the real write
+    # above. Best-effort: a department_events failure must never affect
+    # the real request just recorded.
+    try:
+        from department_events import emit as _emit_department_event
+        _emit_department_event(
+            department="ai_capability_manager", event_type="capability.request_logged",
+            ref_id=requested_provider, source_log="data/ai_capability_requests.jsonl",
+            summary=f"{department} requested {requested_provider} for {task_type}",
+            path=department_events_path,
+        )
+    except Exception:
+        pass
+
     return record
 
 

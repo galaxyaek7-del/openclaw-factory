@@ -65,8 +65,16 @@ def _production():
 
 def _revenue():
     from revenue_pipeline import pipeline
+    from channels import ledger
     result = pipeline.run_revenue_pipeline()
-    return {**result, "ceo_report_markdown": pipeline.render_ceo_revenue_report(result)}
+    return {
+        **result,
+        "ceo_report_markdown": pipeline.render_ceo_revenue_report(result),
+        # EOS Phase 2, Round 2 (2026-07-19): real revenue-over-time trend
+        # from the ledger's own sale events -- see channels/ledger.py's
+        # revenue_trend() docstring. Additive field, same tab, no forecast.
+        "revenue_trend": ledger.revenue_trend(),
+    }
 
 
 # The 4 real factory workflows (a 5th, "My workflow", is an unrelated

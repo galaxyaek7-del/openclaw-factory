@@ -342,6 +342,13 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('opportunities'),
   },
   {
+    name: 'unified-priorities',
+    description: "EOS Phase 2, Round 2 (2026-07-19): three real priority signals shown side by side, never merged into one fabricated composite score -- FACTORY_STATUS.md's Next Dollar Actions, the ranked ACCEPTED opportunity queue, and MASTER_CHARTER.md's Strategic Production Priority Ladder. Closes the real Opportunity Intelligence gap (today spread across the market/goldenhunter/pioneer/opportunities tabs) without inventing a new ranking algorithm.",
+    reused: 'server.js readNextDollarActions() (existing, also used by company-health) + decision_engine/ranking.py rank_queue() via the existing opportunity-queue service + a new MASTER_CHARTER.md markdown-section read using the same technique as readNextDollarActions().',
+    handler: unifiedPrioritiesService,
+    health: fsHealthCheck(() => readNextDollarActions(), 'FACTORY_STATUS.md read check ok'),
+  },
+  {
     name: 'decision-history',
     description: 'Every ACCEPTED/REJECTED/DEFERRED decision ever recorded, newest first, summary fields only.',
     reused: 'decision_engine/store.py read_decisions(), via mission_control_api.py.',
@@ -2748,6 +2755,39 @@ function readNextDollarActions() {
   const nextHeaderMatch = rest.match(/\n## /);
   const section = (nextHeaderMatch ? rest.slice(0, nextHeaderMatch.index) : rest).trim();
   return { text: section };
+}
+
+// EOS Phase 2, Round 2 (2026-07-19): same markdown-section-scrape technique
+// as readNextDollarActions() above, applied to MASTER_CHARTER.md's own
+// "## 2. Strategic Production Priority Ladder" heading -- one more real
+// priority signal for the Unified Priorities Engine below.
+function readStrategicPriorityLadder() {
+  const charterFile = path.join(__dirname, 'OpenClaw_Brain', '00_Governance', 'MASTER_CHARTER.md');
+  if (!fs.existsSync(charterFile)) return { text: null, note: 'MASTER_CHARTER.md غير موجود' };
+  const content = fs.readFileSync(charterFile, 'utf8');
+  const marker = '## 2. Strategic Production Priority Ladder';
+  const idx = content.indexOf(marker);
+  if (idx === -1) return { text: null, note: 'قسم "Strategic Production Priority Ladder" غير موجود في MASTER_CHARTER.md' };
+  const rest = content.slice(idx + marker.length);
+  const nextHeaderMatch = rest.match(/\n## /);
+  const section = (nextHeaderMatch ? rest.slice(0, nextHeaderMatch.index) : rest).trim();
+  return { text: section };
+}
+
+// EOS Phase 2, Round 2 (2026-07-19): Unified Priorities Engine. Combines
+// three already-real priority signals SIDE BY SIDE -- never merged into
+// one fabricated composite score, per the founder's own "no invented
+// metrics" standing rule. Closes Opportunity Intelligence's one real gap
+// (today a founder needs 4 separate tabs -- market/goldenhunter/pioneer/
+// opportunities -- to piece this picture together) without building a
+// second, competing consolidation layer.
+async function unifiedPrioritiesService() {
+  const opportunityQueue = await runPythonService('opportunities').catch(err => ({ error: err.message }));
+  return {
+    next_dollar_actions: readNextDollarActions(),
+    opportunity_queue: opportunityQueue,
+    strategic_priority_ladder: readStrategicPriorityLadder(),
+  };
 }
 
 app.get('/good-morning', async (req, res) => {

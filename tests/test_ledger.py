@@ -12,6 +12,7 @@ import os
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
@@ -106,6 +107,70 @@ class TestReconcileLedgerToFinance(unittest.TestCase):
         self.assertEqual(len(data["sales"]), 2)
         self.assertEqual(data["sales"][0]["platform"], "KDP")  # pre-existing sale preserved verbatim
         self.assertEqual(data["sales"][1]["id"], 2)  # new sale's id continues the sequence
+
+
+class TestRevenueTrend(unittest.TestCase):
+    def setUp(self):
+        self.ledger_path = _temp_path(".jsonl")
+
+    def tearDown(self):
+        if os.path.exists(self.ledger_path):
+            os.remove(self.ledger_path)
+
+    def _sale_event(self, timestamp, platform="gumroad", price="19.99", sale_id="s"):
+        return {
+            "event_type": "sale", "platform": platform, "timestamp": timestamp,
+            "raw": {"id": sale_id, "price": price},
+        }
+
+    def test_no_sales_reports_honestly_zero_never_a_fabricated_trend(self):
+        result = ledger.revenue_trend(ledger_path=self.ledger_path)
+        self.assertEqual(result["total_sales_count"], 0)
+        self.assertEqual(result["total_revenue_usd"], 0)
+        self.assertIsNone(result["trailing_daily_avg_usd"])
+        self.assertEqual(result["by_day"], {})
+        self.assertIn("لا توجد مبيعات", result["note"])
+
+    def test_publish_attempt_events_never_counted_as_revenue(self):
+        ledger.record_publish_attempt(
+            type("P", (), {"title": "t", "source_id": "1", "product_type": "book"})(),
+            type("R", (), {"platform": "gumroad", "ok": True, "dry_run": False, "product_id": "p", "url": None, "error": None})(),
+            ledger_path=self.ledger_path,
+        )
+        result = ledger.revenue_trend(ledger_path=self.ledger_path)
+        self.assertEqual(result["total_sales_count"], 0)
+
+    def test_sales_bucketed_by_day_and_summed_correctly(self):
+        now = datetime(2026, 7, 20, tzinfo=timezone.utc)
+        ledger.append_event(self._sale_event("2026-07-19T10:00:00+00:00", price="10.00", sale_id="a"), ledger_path=self.ledger_path)
+        ledger.append_event(self._sale_event("2026-07-19T15:00:00+00:00", price="5.00", sale_id="b"), ledger_path=self.ledger_path)
+        ledger.append_event(self._sale_event("2026-07-18T00:00:00+00:00", price="20.00", sale_id="c"), ledger_path=self.ledger_path)
+
+        result = ledger.revenue_trend(now=now, ledger_path=self.ledger_path)
+        self.assertEqual(result["total_sales_count"], 3)
+        self.assertEqual(result["total_revenue_usd"], 35.00)
+        self.assertEqual(result["by_day"]["2026-07-19"], 15.00)
+        self.assertEqual(result["by_day"]["2026-07-18"], 20.00)
+
+    def test_recent_7d_vs_trailing_average_matches_getcosttrend_style_shape(self):
+        now = datetime(2026, 7, 20, tzinfo=timezone.utc)
+        # 10 days ago (trailing) and 1 day ago (recent).
+        ledger.append_event(self._sale_event("2026-07-05T00:00:00+00:00", price="30.00", sale_id="old"), ledger_path=self.ledger_path)
+        ledger.append_event(self._sale_event("2026-07-19T00:00:00+00:00", price="9.00", sale_id="new"), ledger_path=self.ledger_path)
+
+        result = ledger.revenue_trend(now=now, ledger_path=self.ledger_path)
+        self.assertEqual(result["recent_7d_revenue_usd"], 9.00)
+        self.assertEqual(result["recent_7d_sales_count"], 1)
+        self.assertEqual(result["trailing_daily_avg_usd"], 30.00)
+        self.assertIsNone(result["note"])
+
+    def test_unrecognized_platform_amount_excluded_never_guessed(self):
+        ledger.append_event(
+            {"event_type": "sale", "platform": "mystery", "timestamp": "2026-07-19T00:00:00+00:00", "raw": {"id": "x"}},
+            ledger_path=self.ledger_path,
+        )
+        result = ledger.revenue_trend(ledger_path=self.ledger_path)
+        self.assertEqual(result["total_sales_count"], 0)
 
 
 if __name__ == "__main__":

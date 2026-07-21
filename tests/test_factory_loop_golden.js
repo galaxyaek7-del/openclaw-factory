@@ -51,6 +51,7 @@ const opp = (niche, score, verdict, price) => ({
 });
 
 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'golden-'));
+const DEP_EVENTS_PATH = path.join(tmpDir, 'department_events.jsonl'); // isolates department_events writes from the real data/department_events.jsonl
 const BROKEN_SCRIPT = path.join(tmpDir, 'does_not_exist.py'); // forces getButterPrice's fallback path deterministically
 
 async function main() {
@@ -308,8 +309,8 @@ async function main() {
 
   await test('appendGoldenHunterEvent / readGoldenHunterEvents: round trip', () => {
     const p = path.join(tmpDir, 'events.jsonl');
-    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
-    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'x' }, p);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'x' }, p, DEP_EVENTS_PATH);
     const events = fl.readGoldenHunterEvents(p);
     assert.strictEqual(events.length, 2);
     assert.strictEqual(events[1].niche, 'x');
@@ -318,13 +319,13 @@ async function main() {
 
   await test('goldenNicheAlreadyAttempted: dry_run entries never block a future real attempt', () => {
     const p = path.join(tmpDir, 'events_dryrun.jsonl');
-    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'دليل التأمل' }, p);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'دليل التأمل' }, p, DEP_EVENTS_PATH);
     assert.strictEqual(fl.goldenNicheAlreadyAttempted('دليل التأمل', p), false);
   });
 
   await test('goldenNicheAlreadyAttempted: a real (dry_run:false) attempt DOES block a repeat, case/whitespace-insensitive', () => {
     const p = path.join(tmpDir, 'events_live.jsonl');
-    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: false, niche: 'Productivity Guide' }, p);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: false, niche: 'Productivity Guide' }, p, DEP_EVENTS_PATH);
     assert.strictEqual(fl.goldenNicheAlreadyAttempted('  productivity guide  ', p), true);
     assert.strictEqual(fl.goldenNicheAlreadyAttempted('a completely different niche', p), false);
   });
@@ -337,8 +338,8 @@ async function main() {
 
   await test('checkNeedsAttention: healthy history + no failures this tick -> no reasons', () => {
     const p = path.join(tmpDir, 'attn_healthy.jsonl');
-    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'butter_price' } }, p);
-    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'butter_price' } }, p);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'butter_price' } }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'butter_price' } }, p, DEP_EVENTS_PATH);
     const reasons = fl.checkNeedsAttention([{ step: 'golden_hunter_bridge', action: 'skipped', detail: 'x' }], p);
     assert.deepStrictEqual(reasons, []);
   });
@@ -359,16 +360,16 @@ async function main() {
 
   await test('checkNeedsAttention: 2 consecutive stale skips -> NOT flagged yet (threshold is 3)', () => {
     const p = path.join(tmpDir, 'attn_stale2.jsonl');
-    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
-    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p, DEP_EVENTS_PATH);
     assert.deepStrictEqual(fl.checkNeedsAttention([], p), []);
   });
 
   await test('checkNeedsAttention: 3 consecutive stale/missing skips -> flagged', () => {
     const p = path.join(tmpDir, 'attn_stale3.jsonl');
-    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
-    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'missing_or_unreadable' }, p);
-    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'missing_or_unreadable' }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p, DEP_EVENTS_PATH);
     const reasons = fl.checkNeedsAttention([], p);
     assert.strictEqual(reasons.length, 1);
     assert.ok(reasons[0].includes('Golden Hunter'));
@@ -376,11 +377,11 @@ async function main() {
 
   await test('checkNeedsAttention: a successful attempt in between resets the stale streak', () => {
     const p = path.join(tmpDir, 'attn_reset.jsonl');
-    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
-    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
-    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'butter_price' } }, p);
-    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
-    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'butter_price' } }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p, DEP_EVENTS_PATH);
     // last 3 raw events: attempted, skipped, skipped -> not 3 consecutive skips
     assert.deepStrictEqual(fl.checkNeedsAttention([], p), []);
   });
@@ -388,7 +389,7 @@ async function main() {
   await test('checkNeedsAttention: 3 consecutive fallback_floor_clamped pricing attempts -> flagged', () => {
     const p = path.join(tmpDir, 'attn_fallback3.jsonl');
     for (let i = 0; i < 3; i++) {
-      fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'fallback_floor_clamped' } }, p);
+      fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'fallback_floor_clamped' } }, p, DEP_EVENTS_PATH);
     }
     const reasons = fl.checkNeedsAttention([], p);
     assert.strictEqual(reasons.length, 1);
@@ -397,9 +398,9 @@ async function main() {
 
   await test('checkNeedsAttention: 2 fallback + 1 real butter_price -> NOT flagged', () => {
     const p = path.join(tmpDir, 'attn_fallback_mixed.jsonl');
-    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'fallback_floor_clamped' } }, p);
-    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'fallback_floor_clamped' } }, p);
-    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'butter_price' } }, p);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'fallback_floor_clamped' } }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'fallback_floor_clamped' } }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', brief: { _price_source: 'butter_price' } }, p, DEP_EVENTS_PATH);
     assert.deepStrictEqual(fl.checkNeedsAttention([], p), []);
   });
 
@@ -484,7 +485,7 @@ async function main() {
 
   await test('checkGoldenStagnation: fresh single attempt -> no reason (not enough history)', () => {
     const p = path.join(tmpDir, 'stagnation_fresh.jsonl');
-    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', profit_score: 70 }, p);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'a', profit_score: 70 }, p, DEP_EVENTS_PATH);
     assert.strictEqual(fl.checkGoldenStagnation(p), null);
   });
 
@@ -494,7 +495,7 @@ async function main() {
     for (let i = 0; i < 5; i++) {
       fl.appendGoldenHunterEvent(
         { action: 'attempted', dry_run: true, niche: 'a', profit_score: 70, timestamp: new Date(now - i * 60000).toISOString() },
-        p
+        p, DEP_EVENTS_PATH
       );
     }
     assert.strictEqual(fl.checkGoldenStagnation(p, now), null);
@@ -504,8 +505,8 @@ async function main() {
     const p = path.join(tmpDir, 'stagnation_old.jsonl');
     const now = Date.now();
     const thirtyHoursAgo = new Date(now - 30 * 60 * 60 * 1000).toISOString();
-    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'ثابت', profit_score: 72, timestamp: thirtyHoursAgo }, p);
-    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'ثابت', profit_score: 72, timestamp: new Date(now - 60000).toISOString() }, p);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'ثابت', profit_score: 72, timestamp: thirtyHoursAgo }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'ثابت', profit_score: 72, timestamp: new Date(now - 60000).toISOString() }, p, DEP_EVENTS_PATH);
     const reason = fl.checkGoldenStagnation(p, now);
     assert.ok(reason);
     assert.ok(reason.includes('30 ساعة'));
@@ -515,8 +516,8 @@ async function main() {
     const p = path.join(tmpDir, 'stagnation_changed.jsonl');
     const now = Date.now();
     const thirtyHoursAgo = new Date(now - 30 * 60 * 60 * 1000).toISOString();
-    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'ثابت', profit_score: 72, timestamp: thirtyHoursAgo }, p);
-    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'ثابت', profit_score: 90, timestamp: new Date(now - 60000).toISOString() }, p);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'ثابت', profit_score: 72, timestamp: thirtyHoursAgo }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'ثابت', profit_score: 90, timestamp: new Date(now - 60000).toISOString() }, p, DEP_EVENTS_PATH);
     assert.strictEqual(fl.checkGoldenStagnation(p, now), null);
   });
 

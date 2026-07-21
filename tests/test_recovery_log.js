@@ -15,6 +15,11 @@ function tmpLogPath() {
   return path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'recovery-log-test-')), 'recovery_actions.jsonl');
 }
 
+// Isolates department_events writes from the real data/department_events.jsonl
+function tmpDeptEventsPath() {
+  return path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'recovery-log-test-dep-')), 'department_events.jsonl');
+}
+
 test('recordRecoveryAction: writes a real record with all 5 required fields', () => {
   const logPath = tmpLogPath();
   const record = recordRecoveryAction({
@@ -23,6 +28,7 @@ test('recordRecoveryAction: writes a real record with all 5 required fields', ()
     affectedSystems: ['server.js', 'mission_control'],
     result: 'success',
     logPath,
+    departmentEventsPath: tmpDeptEventsPath(),
   });
   assert.ok(record.timestamp);
   assert.equal(record.operator, 'test-operator');
@@ -37,8 +43,9 @@ test('recordRecoveryAction: writes a real record with all 5 required fields', ()
 
 test('recordRecoveryAction: appends, never overwrites prior entries', () => {
   const logPath = tmpLogPath();
-  recordRecoveryAction({ operator: 'a', reason: 'r1', affectedSystems: ['x'], result: 'ok', logPath });
-  recordRecoveryAction({ operator: 'b', reason: 'r2', affectedSystems: ['y'], result: 'ok', logPath });
+  const departmentEventsPath = tmpDeptEventsPath();
+  recordRecoveryAction({ operator: 'a', reason: 'r1', affectedSystems: ['x'], result: 'ok', logPath, departmentEventsPath });
+  recordRecoveryAction({ operator: 'b', reason: 'r2', affectedSystems: ['y'], result: 'ok', logPath, departmentEventsPath });
   const all = readRecoveryActions(logPath);
   assert.equal(all.length, 2);
   assert.equal(all[0].reason, 'r1');
@@ -52,6 +59,19 @@ test('recordRecoveryAction: requires every field, never silently logs an incompl
   assert.throws(() => recordRecoveryAction({ operator: 'a', reason: 'r', result: 'ok', logPath }), /affectedSystems/);
   assert.throws(() => recordRecoveryAction({ operator: 'a', reason: 'r', affectedSystems: ['x'], logPath }), /result/);
   assert.throws(() => recordRecoveryAction({ operator: 'a', reason: 'r', affectedSystems: [], result: 'ok', logPath }), /affectedSystems/);
+});
+
+test('recordRecoveryAction: department_events write is isolated to the given departmentEventsPath, never the real default log', () => {
+  const logPath = tmpLogPath();
+  const departmentEventsPath = tmpDeptEventsPath();
+  const { readEvents, DEFAULT_LOG_PATH } = require('../lib/department_events.js');
+  const before = fs.existsSync(DEFAULT_LOG_PATH) ? fs.readFileSync(DEFAULT_LOG_PATH, 'utf8') : null;
+  recordRecoveryAction({ operator: 'iso-test', reason: 'r', affectedSystems: ['x'], result: 'ok', logPath, departmentEventsPath });
+  const after = fs.existsSync(DEFAULT_LOG_PATH) ? fs.readFileSync(DEFAULT_LOG_PATH, 'utf8') : null;
+  assert.equal(after, before, 'the real department_events.jsonl must be untouched when departmentEventsPath is given');
+  const events = readEvents(departmentEventsPath);
+  assert.equal(events.length, 1);
+  assert.equal(events[0].department, 'recovery');
 });
 
 test('readRecoveryActions: missing file -> empty array, never throws', () => {

@@ -146,15 +146,20 @@ class TestCapabilityRequestLog(unittest.TestCase):
         fd, self.requests_log = tempfile.mkstemp(suffix=".jsonl")
         os.close(fd)
         os.remove(self.requests_log)
+        fd, self.dep_events_log = tempfile.mkstemp(suffix=".jsonl")
+        os.close(fd)
+        os.remove(self.dep_events_log)
 
     def tearDown(self):
         if os.path.exists(self.requests_log):
             os.remove(self.requests_log)
+        if os.path.exists(self.dep_events_log):
+            os.remove(self.dep_events_log)
 
     def test_record_and_read_round_trip(self):
         registry.record_capability_request(
             department="builder", task_type="reasoning", requested_provider="anthropic",
-            reason="test request", path=self.requests_log,
+            reason="test request", path=self.requests_log, department_events_path=self.dep_events_log,
         )
         entries = registry.read_capability_requests(self.requests_log)
         self.assertEqual(len(entries), 1)
@@ -167,10 +172,29 @@ class TestCapabilityRequestLog(unittest.TestCase):
         self.assertEqual(entries, [])
 
     def test_append_only_never_overwrites_prior_requests(self):
-        registry.record_capability_request("builder", "reasoning", "anthropic", "r1", path=self.requests_log)
-        registry.record_capability_request("design", "multimodal", "openai", "r2", path=self.requests_log)
+        registry.record_capability_request("builder", "reasoning", "anthropic", "r1", path=self.requests_log, department_events_path=self.dep_events_log)
+        registry.record_capability_request("design", "multimodal", "openai", "r2", path=self.requests_log, department_events_path=self.dep_events_log)
         entries = registry.read_capability_requests(self.requests_log)
         self.assertEqual(len(entries), 2)
+
+    def test_department_events_write_is_isolated_never_touches_real_default_log(self):
+        import department_events as de
+        before = None
+        if os.path.exists(de.DEFAULT_LOG_PATH):
+            with open(de.DEFAULT_LOG_PATH, "r", encoding="utf-8") as f:
+                before = f.read()
+        registry.record_capability_request(
+            "builder", "reasoning", "anthropic", "iso test",
+            path=self.requests_log, department_events_path=self.dep_events_log,
+        )
+        after = None
+        if os.path.exists(de.DEFAULT_LOG_PATH):
+            with open(de.DEFAULT_LOG_PATH, "r", encoding="utf-8") as f:
+                after = f.read()
+        self.assertEqual(before, after, "the real department_events.jsonl must be untouched when department_events_path is given")
+        events = de.read_events(path=self.dep_events_log)
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0]["department"], "ai_capability_manager")
 
 
 class TestEvaluatorRecommendForTask(unittest.TestCase):

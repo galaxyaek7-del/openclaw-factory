@@ -20,7 +20,7 @@ reads of config/reality.json / finance_data.json are untouched.
 
 import json
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
@@ -235,3 +235,63 @@ def reconcile_ledger_to_finance(ledger_path=None, finance_path=None):
         os.replace(tmp_path, finance_path)
 
     return {"reconciled": reconciled, "skipped_unrecognized": skipped_unrecognized, "total_sales": data["totalSales"]}
+
+
+# ── REVENUE TREND OVER TIME (EOS Phase 2, Round 2, 2026-07-19) ──
+# The one real Revenue Intelligence gap: finance_data.json only ever holds
+# current totals, no time series. Reads the ledger's own real, timestamped
+# `sale` events, bucketed by day -- same "recent 7d vs. trailing daily
+# average" pattern already proven by lib/infrastructure_intelligence.js's
+# getCostTrend() and factory_loop.js's revenueSince(). Never a forecast:
+# with zero real sales recorded today, this honestly reports that instead
+# of fabricating a trend line from publish attempts or estimates.
+def revenue_trend(now=None, ledger_path=None):
+    now = now or datetime.now(timezone.utc)
+    since_recent = now - timedelta(days=7)
+
+    by_day = {}
+    total_amount = 0.0
+    total_count = 0
+    recent_amount = 0.0
+    recent_count = 0
+
+    for event in read_events(event_type="sale", ledger_path=ledger_path):
+        amount = _extract_sale_amount(event.get("raw") or {}, event.get("platform"))
+        if amount is None:
+            continue
+        try:
+            dt = datetime.fromisoformat((event.get("timestamp") or "").replace("Z", "+00:00"))
+        except ValueError:
+            continue
+
+        day_key = dt.strftime("%Y-%m-%d")
+        by_day[day_key] = by_day.get(day_key, 0.0) + amount
+        total_amount += amount
+        total_count += 1
+        if dt >= since_recent:
+            recent_amount += amount
+            recent_count += 1
+
+    if not by_day:
+        return {
+            "total_sales_count": 0,
+            "total_revenue_usd": 0,
+            "recent_7d_revenue_usd": 0,
+            "recent_7d_sales_count": 0,
+            "trailing_daily_avg_usd": None,
+            "by_day": {},
+            "note": "لا توجد مبيعات حقيقية مسجَّلة بعد في data/sales_ledger.jsonl -- لا يوجد اتجاه إيراد حقيقي لعرضه (لا تنبّؤ، لا تقدير).",
+        }
+
+    trailing_days = [d for d in by_day if datetime.strptime(d, "%Y-%m-%d").replace(tzinfo=timezone.utc) < since_recent]
+    trailing_avg = (sum(by_day[d] for d in trailing_days) / len(trailing_days)) if trailing_days else None
+
+    return {
+        "total_sales_count": total_count,
+        "total_revenue_usd": round(total_amount, 2),
+        "recent_7d_revenue_usd": round(recent_amount, 2),
+        "recent_7d_sales_count": recent_count,
+        "trailing_daily_avg_usd": round(trailing_avg, 2) if trailing_avg is not None else None,
+        "by_day": {d: round(v, 2) for d, v in sorted(by_day.items())},
+        "note": None if trailing_avg is not None else "لا يوجد تاريخ كافٍ بعد (أقل من أسبوع من البيانات) لحساب متوسط اتجاه موثوق.",
+    }
