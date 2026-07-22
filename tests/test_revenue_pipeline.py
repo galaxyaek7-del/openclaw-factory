@@ -276,6 +276,30 @@ class TestRunRevenuePipeline(unittest.TestCase):
         self.assertTrue(mock_run_cycle.called)
         self.assertTrue(mock_run_cycle.call_args.kwargs["execute_production"])
 
+    @patch("orchestrator.orchestrator.run_cycle")
+    def test_real_bug_2026_07_22_execute_reuses_the_already_recorded_decision(self, mock_run_cycle):
+        """Full Factory Integrity Audit (2026-07-22): process_opportunity()
+        used to re-run market_intelligence+decision for a niche that
+        market_hunter.py had ALREADY accepted for real, via the exact same
+        decision-path divergence bug found earlier this session (a stricter
+        re-evaluation could DEFER an already-ACCEPTED niche, producing zero
+        output and a second, orphaned decision record). orchestrator.py's
+        own docstring names existing_decision= as "the real safeguard
+        against recording two independent decisions... for the same real
+        opportunity" -- process_opportunity() just wasn't passing it."""
+        mock_run_cycle.return_value = []
+        d = _accepted_decision()
+        store.append_decision(d, path=self.decisions_path)
+        pipeline.run_revenue_pipeline(
+            execute=True, decisions_path=self.decisions_path, outcomes_path=self.outcomes_path,
+            timeline_path=self.timeline_path, analysis_db_file=self.analysis_db_path,
+        )
+        self.assertTrue(mock_run_cycle.called)
+        passed_decision = mock_run_cycle.call_args.kwargs.get("existing_decision")
+        self.assertIsNotNone(passed_decision)
+        self.assertEqual(passed_decision["niche"], d.niche)
+        self.assertEqual(passed_decision["decision_id"], d.decision_id)
+
 
 if __name__ == "__main__":
     unittest.main()

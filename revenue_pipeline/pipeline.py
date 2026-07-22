@@ -81,7 +81,7 @@ def process_opportunity(decision, execute=False, timeline_path=None, decisions_p
             tier=decision.get("tier", "tier4"), execute_production=True,
             timeline_path=timeline_path, decisions_path=decisions_path,
             analysis_db_file=analysis_db_file, outcomes_path=outcomes_path,
-            state_path=state_path,
+            state_path=state_path, existing_decision=decision,
         )
         production_stage = next((r for r in stage_results if r.engine == "production"), None)
         production_output = production_stage.output if production_stage else None
