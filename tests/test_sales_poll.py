@@ -70,7 +70,7 @@ class TestPollSales(unittest.TestCase):
         ), patch.object(
             gumroad_arm_module.gumroad_publisher, "get_sales", return_value=[sale]
         ):
-            outcomes = poll_sales_module.poll_sales(ledger_path=self.ledger_path)
+            outcomes, new_sale_details = poll_sales_module.poll_sales(ledger_path=self.ledger_path)
 
         self.assertEqual(outcomes[0]["arm"], "gumroad")
         self.assertEqual(outcomes[0]["new_sales"], 1)
@@ -78,6 +78,33 @@ class TestPollSales(unittest.TestCase):
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0]["platform"], "gumroad")
         self.assertEqual(events[0]["raw"]["id"], "sale_1")
+
+    def test_new_sale_details_carries_a_real_extracted_amount(self):
+        """ADR-085: new_sale_details is additive -- lets a caller (e.g. a
+        direct Telegram notify) report a real dollar figure, not just a
+        count. Must never fabricate an amount for an unrecognized shape."""
+        sale = {"id": "sale_3", "product_name": "Test Book", "price": "19.99"}
+        with patch.object(
+            gumroad_arm_module.gumroad_publisher, "load_token", return_value="fake-token"
+        ), patch.object(
+            gumroad_arm_module.gumroad_publisher, "get_sales", return_value=[sale]
+        ):
+            outcomes, new_sale_details = poll_sales_module.poll_sales(ledger_path=self.ledger_path)
+
+        self.assertEqual(len(new_sale_details), 1)
+        self.assertEqual(new_sale_details[0], {"platform": "gumroad", "amount": 19.99})
+
+    def test_new_sale_details_is_empty_when_nothing_new(self):
+        sale = {"id": "sale_4", "product_name": "Test Book", "price": "999"}
+        ledger.record_sale("gumroad", sale, ledger_path=self.ledger_path)
+        with patch.object(
+            gumroad_arm_module.gumroad_publisher, "load_token", return_value="fake-token"
+        ), patch.object(
+            gumroad_arm_module.gumroad_publisher, "get_sales", return_value=[sale]
+        ):
+            outcomes, new_sale_details = poll_sales_module.poll_sales(ledger_path=self.ledger_path)
+
+        self.assertEqual(new_sale_details, [])
 
     def test_already_recorded_sale_is_not_duplicated(self):
         sale = {"id": "sale_2", "product_name": "Test Book", "price": "999"}
@@ -88,7 +115,7 @@ class TestPollSales(unittest.TestCase):
         ), patch.object(
             gumroad_arm_module.gumroad_publisher, "get_sales", return_value=[sale]
         ):
-            outcomes = poll_sales_module.poll_sales(ledger_path=self.ledger_path)
+            outcomes, new_sale_details = poll_sales_module.poll_sales(ledger_path=self.ledger_path)
 
         self.assertEqual(outcomes[0]["new_sales"], 0)
         events = list(ledger.read_events(event_type="sale", ledger_path=self.ledger_path))
@@ -99,7 +126,7 @@ class TestPollSales(unittest.TestCase):
             gumroad_arm_module.gumroad_publisher, "load_token",
             side_effect=gumroad_arm_module.gumroad_publisher.ConfigError("no token"),
         ):
-            outcomes = poll_sales_module.poll_sales(ledger_path=self.ledger_path)
+            outcomes, new_sale_details = poll_sales_module.poll_sales(ledger_path=self.ledger_path)
 
         self.assertEqual(outcomes[0]["new_sales"], 0)
         self.assertEqual(outcomes[0]["error"], "arm not ready: unavailable")
@@ -122,7 +149,7 @@ class TestPollSales(unittest.TestCase):
                 return PublishResult(True, self.name, None, None, None, dry_run)
 
         registry.register(NoSalesArm())
-        outcomes = poll_sales_module.poll_sales(arm_names=["no-sales"], ledger_path=self.ledger_path)
+        outcomes, new_sale_details = poll_sales_module.poll_sales(arm_names=["no-sales"], ledger_path=self.ledger_path)
         self.assertEqual(outcomes[0]["skip_reason"], "no get_sales() support")
         self.assertEqual(outcomes[0]["new_sales"], 0)
 

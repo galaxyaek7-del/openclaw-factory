@@ -25,6 +25,7 @@ const path = require('path');
 const { spawn, execSync } = require('child_process');
 const selfAwareness = require('./self_awareness');
 const n8nNotify = require('./lib/n8n_notify');
+const telegramDirect = require('./lib/telegram_direct');
 const departmentEvents = require('./lib/department_events');
 const {
   notifyN8nProductionEvent, buildGoldenHunterNotifyPayload,
@@ -2053,6 +2054,12 @@ async function runTick() {
     writeNeedsAttention(attentionReasons);
     if (!attentionWasActive) {
       sendDesktopNotification('⚠️ OpenClaw needs attention', attentionReasons[0]);
+      // ADR-085: "Errors" was ADR-073's third named-but-unwired Telegram
+      // category (NEEDS_ATTENTION.md/sendDesktopNotification existed, but
+      // neither reached Telegram). Direct send, only on the same
+      // newly-active transition as the desktop toast above — never
+      // re-sent every tick while the same condition stays flagged.
+      telegramDirect.sendTelegramMessage(telegramDirect.buildCriticalErrorMessage(attentionReasons)).catch(() => {});
     }
   } else {
     clearNeedsAttention();

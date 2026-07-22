@@ -48,10 +48,18 @@ def poll_sales(arm_names=None, ledger_path=None):
     "new_sales", "error"}. An arm with no get_sales() method is reported
     with skip_reason "no get_sales() support" — not every arm is expected to
     report sales (BaseArm's contract stays unchanged, ADR-013).
+
+    Also returns `new_sale_details` (real, additive, never dropped) — one
+    entry per newly-recorded sale this call, {"platform", "amount"} using
+    ledger._extract_sale_amount()'s already-real per-platform logic, so a
+    caller (e.g. server.js's direct Telegram notify, ADR-085) can report a
+    real dollar figure instead of just a count. `amount` is None when the
+    platform's raw shape can't be honestly parsed — never guessed as $0.
     """
     targets = arm_names if arm_names is not None else [a.name for a in registry.all_arms()]
     already = _already_recorded_keys(ledger_path=ledger_path)
     outcomes = []
+    new_sale_details = []
 
     for name in targets:
         arm = registry.get(name)
@@ -77,10 +85,11 @@ def poll_sales(arm_names=None, ledger_path=None):
             ledger.record_sale(name, sale, ledger_path=ledger_path)
             already.add(key)
             new_count += 1
+            new_sale_details.append({"platform": name, "amount": ledger._extract_sale_amount(sale, name)})
 
         outcomes.append({"arm": name, "checked": True, "skip_reason": None, "new_sales": new_count, "error": None})
 
-    return outcomes
+    return outcomes, new_sale_details
 
 
 def emit(obj):
@@ -108,7 +117,7 @@ def main():
         job = json.loads(raw_input) if raw_input else {}
         arm_names = job.get("arms")  # None = every registered arm
 
-        outcomes = poll_sales(arm_names=arm_names)
+        outcomes, new_sale_details = poll_sales(arm_names=arm_names)
         total_new = sum(o["new_sales"] for o in outcomes)
         # ADR-077 (Product Generation Pipeline) — Finance Ledger stage.
         # Same subprocess tick that already records new sales into the
@@ -118,6 +127,7 @@ def main():
         finance_reconciliation = ledger.reconcile_ledger_to_finance()
         emit({
             "success": True, "total_new_sales": total_new, "outcomes": outcomes,
+            "new_sale_details": new_sale_details,
             "finance_reconciliation": finance_reconciliation,
         })
     except Exception as e:

@@ -10,6 +10,7 @@ const dashboardData = require('./lib/dashboard_data');
 const infrastructureIntelligence = require('./lib/infrastructure_intelligence');
 const metricsLib = require('./lib/metrics');
 const n8nNotify = require('./lib/n8n_notify');
+const telegramDirect = require('./lib/telegram_direct');
 const { nextSaleId } = require('./lib/next_sale_id');
 // readLastGenerationRecord is a pure file read (no side effects) — requiring
 // factory_loop.js here never starts its loop or acquires its lockfile: both
@@ -934,6 +935,10 @@ async function startProductionPipelineAction() {
     for (const dossier of result.dossiers || []) {
       notifyN8nProductionEvent(n8nNotify.buildProductionNotifyPayload(dossier))
         .catch(() => {}); // notifyN8nProductionEvent already never rejects; belt-and-suspenders only
+      // ADR-085: "Product ready" was ADR-073's other named-but-unwired
+      // Telegram category (n8n's workflow only logs this event, never
+      // sent it on). Direct send, same fire-and-forget discipline.
+      telegramDirect.sendTelegramMessage(telegramDirect.buildProductReadyMessage(dossier)).catch(() => {});
     }
   }
   return result;
@@ -1627,6 +1632,22 @@ app.post('/api/sales/poll', (req, res) => {
     try {
       const result = JSON.parse(output.trim());
       res.json(result);
+      // ADR-085: "Sale made" was one of ADR-073's 3 named-but-unwired
+      // Telegram categories (no notification hook existed anywhere in this
+      // path). One real, summary message per poll run — never one per
+      // individual sale, so a multi-sale poll can't spam the founder.
+      // Fire-and-forget: a slow/unreachable Telegram must never delay this
+      // response, which has already been sent above.
+      if (result.success && (result.new_sale_details || []).length > 0) {
+        const details = result.new_sale_details;
+        const total = details.reduce((sum, d) => sum + (d.amount || 0), 0);
+        const byPlatform = {};
+        for (const d of details) byPlatform[d.platform] = (byPlatform[d.platform] || 0) + 1;
+        const platformLine = Object.entries(byPlatform).map(([p, c]) => `${p} (${c})`).join('، ');
+        const lines = ['💰 بيع جديد!', '', `عدد العمليات: ${details.length}`, `المنصة: ${platformLine}`];
+        if (total > 0) lines.push(`الإجمالي: $${total.toFixed(2)}`);
+        telegramDirect.sendTelegramMessage(lines.join('\n')).catch(() => {});
+      }
     } catch {
       res.json({ success: false, error: 'Parse error: ' + output + errOut });
     }
