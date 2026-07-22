@@ -58,6 +58,17 @@ try:
 except (Exception, SystemExit):
     SAFETY_FILTER = None
 
+# Strategic Phase 3, Round 1 (2026-07-22): competitor_discovery.py never
+# imports profit_oracle (confirmed), so this carries the same zero
+# circular-import risk as safety_filter above. Only its cache-reading
+# functions (load_database/_normalize_key) are ever called from here --
+# never discover_competitors() itself, which would add a live HN+GitHub
+# network call to every synchronous score (see _score_defensibility()).
+try:
+    import competitor_discovery as COMPETITOR_DISCOVERY
+except (Exception, SystemExit):
+    COMPETITOR_DISCOVERY = None
+
 # ADR-041: economics.py never imports profit_oracle (only sys/json) — zero
 # circular-import risk, same as safety_filter.py above. Reused for real
 # platform-fee math instead of the flat "digital = free" assumption.
@@ -606,6 +617,44 @@ def _score_confidence(niche, external_signal):
     return 30, "منخفضة", "كل المكوّنات تقديرات كلمات مفتاحية — لا بيانات سوق حقيقية بعد"
 
 
+# Strategic Phase 3, Round 1 (2026-07-22): Golden Hunter Evolution's
+# "defensibility" dimension -- additive, informational only (ADR-039
+# pattern), never factored into profit_score/verdict. Proxy signal only,
+# derived from how many well-resourced competitors (real GitHub-org+stars
+# or HN-points classification, competitor_discovery.py) already exist in
+# this niche's CACHED discovery data -- never a true moat/network-effect/
+# patent measurement, which this factory has no real data source for.
+# Deliberately reads the cache only (load_database()) and never calls
+# get_or_refresh_competitors()/discover_competitors() from here -- doing
+# so would add a live HN+GitHub network call to every synchronous score,
+# exactly what ADR-042 built competitor_discovery.py standalone to avoid.
+def _score_defensibility(niche):
+    if COMPETITOR_DISCOVERY is None:
+        return None, "Unknown", "competitor_discovery.py غير متوفر"
+
+    try:
+        db = COMPETITOR_DISCOVERY.load_database()
+        key = COMPETITOR_DISCOVERY._normalize_key(niche)
+    except Exception as e:
+        return None, "Unknown", f"تعذّر قراءة قاعدة بيانات المنافسين: {e}"
+
+    cached = db.get(key)
+    if not cached:
+        return None, "Unknown", "لا بيانات منافسين مخزَّنة بعد لهذا النيتش — لا استعلام حي من داخل التسجيل"
+
+    by_category = cached.get("by_category", {}) or {}
+    total = cached.get("total_found", 0) or 0
+    strong = len(by_category.get("Enterprise Leader", [])) + len(by_category.get("Direct Competitor", []))
+
+    if total == 0:
+        return 70, "متوسطة-عالية", "صفر منافسين حقيقيين في آخر بحث مخزَّن — لكن هذا قد يعني ضعف الطلب أيضاً، لا دفاعية مؤكَّدة"
+    if strong == 0:
+        return 75, "عالية نسبياً", f"لا منافسين أقوياء (Direct Competitor/Enterprise Leader) بين {total} نتيجة مخزَّنة — إشارة حقيقية لسوق أقل ازدحاماً"
+    if strong / total >= 0.5:
+        return 25, "منخفضة", f"{strong} من {total} نتيجة مخزَّنة منافسون أقوياء (نجوم/نقاط حقيقية عالية) — سوق مزدحم بمنافسين جادّين"
+    return 50, "متوسطة", f"{strong} من {total} نتيجة مخزَّنة منافسون أقوياء — منافسة جزئية حقيقية"
+
+
 def score_opportunity(niche, now=None, external_signal=None):
     niche = str(niche or '').strip()
     if not niche:
@@ -646,6 +695,7 @@ def score_opportunity(niche, now=None, external_signal=None):
 
     risk_score, risk_level, risk_notes = _score_risk(niche)
     confidence_score, confidence_level, confidence_note = _score_confidence(niche, external_signal)
+    defensibility_score, defensibility_level, defensibility_note = _score_defensibility(niche)
 
     return {
         "niche": niche,
@@ -667,6 +717,10 @@ def score_opportunity(niche, now=None, external_signal=None):
         # changes because of these two fields.
         "risk": {"score": risk_score, "level": risk_level, "notes": risk_notes},
         "confidence": {"score": confidence_score, "level": confidence_level, "note": confidence_note},
+        # Strategic Phase 3, Round 1: additive, informational only -- same
+        # discipline as risk/confidence above, never factored into
+        # profit_score/verdict.
+        "defensibility": {"score": defensibility_score, "level": defensibility_level, "note": defensibility_note},
     }
 
 
@@ -780,6 +834,7 @@ def opportunity_score(niche, tier="tier4", external_signal=None):
         # changed, so every current caller is unaffected.
         "risk": result["risk"],
         "confidence": result["confidence"],
+        "defensibility": result["defensibility"],
         "recommended_price": result["recommended_price"],
         "recommended_platform": result["recommended_platform"],
     }
@@ -891,6 +946,7 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None):
         },
         "risk": result["risk"],
         "confidence": result["confidence"],
+        "defensibility": result["defensibility"],
     }
 
 

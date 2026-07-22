@@ -371,6 +371,61 @@ def _trigger_opportunity_evaluation():
     return operating_mode.run_real_world_cycle(execute_production=False)
 
 
+def _product_concept_comparison():
+    """Strategic Phase 3, Round 1 (2026-07-22): Product Laboratory MVP --
+    revenue_pipeline.plan.compare_ladder_variants() (real per-ladder
+    price/score, real pre-acceptance ROI) for one founder-given niche.
+    Fast, local-only (no live network calls) -- unlike go_deep_evidence,
+    this can run inline, no background job needed.
+
+    Reads its niche as a JSON payload in sys.argv[2]:
+    `python mission_control_api.py product_concept_comparison '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        return {"success": False, "error": "niche is required"}
+
+    from revenue_pipeline import plan
+    return plan.compare_ladder_variants(niche)
+
+
+def _go_deep_evidence():
+    """Strategic Phase 3, Round 1 (2026-07-22) -- 'Go Deep' on-demand
+    evidence action: the real, usable version of Market Validation's
+    'collect evidence before production, multiple independent signals',
+    for ONE opportunity the founder selects (unlike the fully-automatic
+    ladder_fast_gate path, which stays honestly single-signal -- see
+    decision_engine/engine.py::record_ladder_decision()). Runs 3 already-
+    real, independent evidence sources -- never a new one -- and never
+    gates any decision itself, purely informational, same discipline as
+    revenue_pipeline/plan.py's ROI estimate. Slow (multiple live network
+    calls) -- the caller (server.js) must run this as a background job.
+
+    Reads its niche as a JSON payload in sys.argv[2]:
+    `python mission_control_api.py go_deep_evidence '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        return {"success": False, "error": "niche is required"}
+
+    from market_intelligence_engine import analyze_customer_pain
+    import competitor_discovery
+    from multi_source_intelligence.coverage import evidence_coverage_score
+
+    def _safe(label, fn):
+        try:
+            return {"ok": True, "result": fn()}
+        except Exception as e:
+            return {"ok": False, "error": f"{label} failed: {e}"}
+
+    return {
+        "niche": niche,
+        "customer_pain": _safe("analyze_customer_pain", lambda: analyze_customer_pain(niche)),
+        "competitors": _safe("get_or_refresh_competitors", lambda: competitor_discovery.get_or_refresh_competitors(niche)),
+        "evidence_coverage": _safe("evidence_coverage_score", lambda: evidence_coverage_score(niche)),
+    }
+
+
 def _validation_report():
     """'Run validation': validation_layer/daily_report.py (ADR-053) — the
     same real daily validation report this factory already generates,
@@ -860,6 +915,8 @@ _ENDPOINTS = {
     "golden_hunter_status": _golden_hunter_status,
     "pioneer_status": _pioneer_status,
     "full_cycle": _full_cycle,
+    "go_deep_evidence": _go_deep_evidence,
+    "product_concept_comparison": _product_concept_comparison,
 }
 
 

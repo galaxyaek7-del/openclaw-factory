@@ -119,3 +119,53 @@ def estimate_pre_acceptance_roi(price, platform="gumroad_digital", log_file=None
     if cost.get("maturity") != "REAL":
         return {"maturity": "DISCOVERY", "reason": cost.get("reason", "لا تكلفة إنتاج حقيقية بعد لتقدير عائد مسبق")}
     return estimate_roi(price, cost["estimated_cost_usd"], platform=platform)
+
+
+# Strategic Phase 3, Round 1 (2026-07-22): Product Laboratory MVP --
+# "generate concepts, estimate ROI, compare alternatives" without
+# inventing new market data or a second product-generation pipeline.
+# Reuses profit_oracle.ladder_opportunity_score()'s existing, real per-
+# ladder pricing/scoring for the SAME underlying niche/demand/competition
+# signals, and this module's own real estimate_pre_acceptance_roi() --
+# the only thing that varies per "concept" is which real product line
+# (ladder track) this same opportunity is positioned as. Purely
+# informational: never auto-selects a winner, never gates any decision --
+# same discipline estimate_pre_acceptance_roi() itself already follows.
+_LADDER_PRICE_BAND_TO_ECONOMICS_PLATFORM = {
+    "book": "gumroad_digital", "premium": "gumroad_premium", "elite": "gumroad_elite",
+}
+
+
+def compare_ladder_variants(niche, ladders=None, log_file=None):
+    """One real variant per requested ladder rank (default: every rank in
+    profit_oracle.LADDER_RANKS) -- each computed from
+    profit_oracle.ladder_opportunity_score() (real demand/competition/
+    margin + documented per-ladder recurring-revenue/reusability
+    constants) and this module's own estimate_pre_acceptance_roi() (real
+    logged AI cost + real platform fees). Sorted by ladder_score
+    descending for readability only -- this is a comparison, not a
+    selection; the founder/AI-CEO still decides."""
+    candidate_ladders = ladders if ladders else profit_oracle.LADDER_RANKS
+    variants = []
+    for ladder in candidate_ladders:
+        if ladder not in profit_oracle.LADDER_RANKS:
+            variants.append({"ladder": ladder, "error": f"unknown ladder rank: {ladder!r}"})
+            continue
+        scored = profit_oracle.ladder_opportunity_score(niche, ladder=ladder)
+        econ_platform = _LADDER_PRICE_BAND_TO_ECONOMICS_PLATFORM[profit_oracle.LADDER_PRICE_BAND[ladder]]
+        roi = estimate_pre_acceptance_roi(scored["price"], platform=econ_platform, log_file=log_file)
+        variants.append({
+            "ladder": ladder,
+            "ladder_score": scored["ladder_score"],
+            "price": scored["price"],
+            "accepted": scored["accepted"],
+            "reason": scored["reason"],
+            "pre_acceptance_roi": roi,
+        })
+
+    variants.sort(key=lambda v: v.get("ladder_score") if v.get("ladder_score") is not None else -1, reverse=True)
+    return {
+        "niche": niche,
+        "variants": variants,
+        "note": "معلوماتي فقط -- لا يُغيّر أي بوابة قبول/رفض حقيقية، ولا يختار فائزاً تلقائياً.",
+    }

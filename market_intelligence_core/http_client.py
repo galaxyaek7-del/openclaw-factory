@@ -35,3 +35,17 @@ def http_get_json(url, timeout=10, user_agent=DEFAULT_USER_AGENT):
     })
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return json.loads(r.read().decode('utf-8'))
+
+
+# Strategic Phase 3, Round 1 (2026-07-22): a second canonical primitive for
+# APIs that don't speak JSON -- arXiv's official API returns Atom XML, not
+# JSON, so http_get_json() above can't be reused for it (parsing XML is
+# each connector's own concern, per this module's own docstring -- only
+# the raw fetch is shared).
+def http_get_text(url, timeout=10, user_agent=DEFAULT_USER_AGENT):
+    req = urllib.request.Request(url, headers={
+        'User-Agent': user_agent,
+        'Accept': 'application/atom+xml, text/xml, */*',
+    })
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read().decode('utf-8')

@@ -279,6 +279,56 @@ class TestRiskAndConfidence(unittest.TestCase):
         self.assertGreater(withsig["confidence"]["score"], without["confidence"]["score"])
 
 
+class TestDefensibility(unittest.TestCase):
+    """Strategic Phase 3, Round 1 (2026-07-22): Golden Hunter Evolution's
+    'defensibility' dimension -- additive only (ADR-039 pattern), sourced
+    from competitor_discovery.py's CACHED database only. Never triggers a
+    live HN+GitHub search from inside scoring."""
+
+    def test_defensibility_never_changes_profit_score_or_verdict(self):
+        niche = "premium subscription budget planner for professionals"
+        result = po.score_opportunity(niche)
+        self.assertIn("defensibility", result)
+        self.assertEqual(result["profit_score"], po.score_opportunity(niche)["profit_score"])
+
+    def test_unknown_when_no_cached_competitor_data_exists(self):
+        with patch.object(po.COMPETITOR_DISCOVERY, "load_database", return_value={}):
+            result = po.score_opportunity("a niche with no cached competitor data at all xyz")
+        self.assertEqual(result["defensibility"]["level"], "Unknown")
+        self.assertIsNone(result["defensibility"]["score"])
+
+    def test_never_triggers_a_live_competitor_search_from_inside_scoring(self):
+        with patch.object(po.COMPETITOR_DISCOVERY, "discover_competitors", side_effect=AssertionError("must never be called from scoring")), \
+             patch.object(po.COMPETITOR_DISCOVERY, "get_or_refresh_competitors", side_effect=AssertionError("must never be called from scoring")):
+            po.score_opportunity("any niche")  # would raise if either were called
+
+    def test_low_defensibility_when_cached_data_shows_strong_competitors(self):
+        niche = "crowded niche with strong competitors"
+        fixture = {
+            po.COMPETITOR_DISCOVERY._normalize_key(niche): {
+                "total_found": 4,
+                "by_category": {"Direct Competitor": ["a", "b"], "Enterprise Leader": ["c"], "Unclassified": ["d"]},
+            }
+        }
+        with patch.object(po.COMPETITOR_DISCOVERY, "load_database", return_value=fixture):
+            result = po.score_opportunity(niche)
+        self.assertEqual(result["defensibility"]["level"], "منخفضة")
+        self.assertLess(result["defensibility"]["score"], 50)
+
+    def test_higher_defensibility_when_cached_data_shows_no_strong_competitors(self):
+        niche = "quiet niche with only weak competitors"
+        fixture = {
+            po.COMPETITOR_DISCOVERY._normalize_key(niche): {
+                "total_found": 3,
+                "by_category": {"Unclassified": ["a", "b"], "Emerging Startup": ["c"]},
+            }
+        }
+        with patch.object(po.COMPETITOR_DISCOVERY, "load_database", return_value=fixture):
+            result = po.score_opportunity(niche)
+        self.assertEqual(result["defensibility"]["level"], "عالية نسبياً")
+        self.assertGreaterEqual(result["defensibility"]["score"], 70)
+
+
 class TestRealCompetitionAndMargin(unittest.TestCase):
     """ADR-041: real competitor-count feeds competition; real platform fees
     (economics.py) + real logged AI cost (book_generator.py's cost log)

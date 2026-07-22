@@ -349,6 +349,23 @@ const SERVICE_REGISTRY = [
     health: fsHealthCheck(() => readNextDollarActions(), 'FACTORY_STATUS.md read check ok'),
   },
   {
+    // Strategic Phase 3, Round 1 (2026-07-22): Product Laboratory MVP --
+    // fast, local-only (no live network), so a plain query-param GET
+    // service, unlike go-deep-evidence's async job (which does real
+    // live-network calls and needs the job/polling pattern).
+    name: 'product-concept-comparison',
+    description: "Real per-ladder price/score variants for one niche (profit_oracle.ladder_opportunity_score() across all 6 ladder ranks) plus real pre-acceptance ROI per variant -- side by side, never auto-selecting a winner.",
+    reused: 'revenue_pipeline/plan.py compare_ladder_variants() (Strategic Phase 3, Round 1, 2026-07-22) -- reuses profit_oracle.ladder_opportunity_score()/estimate_pre_acceptance_roi() verbatim.',
+    handler: (req) => {
+      const niche = (req.query.niche || '').trim();
+      if (!niche) {
+        return Promise.resolve({ variants: [], note: 'مرِّر ?niche=<النيتش> لمقارنة مسارات إنتاج فرصة محدَّدة — لا نيتش مُحدَّد بعد' });
+      }
+      return runPythonService('product_concept_comparison', [JSON.stringify({ niche })]);
+    },
+    health: pythonHealthCheck('product_concept_comparison'),
+  },
+  {
     name: 'decision-history',
     description: 'Every ACCEPTED/REJECTED/DEFERRED decision ever recorded, newest first, summary fields only.',
     reused: 'decision_engine/store.py read_decisions(), via mission_control_api.py.',
@@ -735,11 +752,11 @@ const PYTHON_ACTION_TIMEOUT_MS = 15 * 60 * 1000;
 const PYTHON_GENERATE_BOOK_TIMEOUT_MS = 180000;
 const PYTHON_SALES_POLL_TIMEOUT_MS = 45000;
 
-function runPythonActionAsync(action, section) {
+function runPythonActionAsync(action, section, extraArgs = []) {
   const job = newActionJob(action);
   const pythonPath = detectPython();
   const scriptPath = path.join(__dirname, 'mission_control_api.py');
-  const python = spawn(pythonPath, [scriptPath, section], { cwd: __dirname });
+  const python = spawn(pythonPath, [scriptPath, section, ...extraArgs], { cwd: __dirname });
   traceSpan(job, action, 'python_process_spawned');
   let output = '', errOut = '', timedOut = false;
   killAfterTimeout(python, PYTHON_ACTION_TIMEOUT_MS, () => { timedOut = true; });
@@ -977,6 +994,24 @@ const ACTION_REGISTRY = [
     section: 'trigger_opportunity_evaluation',
   },
   {
+    // Strategic Phase 3, Round 1 (2026-07-22): "Go Deep" -- the real,
+    // usable version of Market Validation's "collect evidence before
+    // production, multiple independent signals" for ONE opportunity the
+    // founder selects. Never gates any decision itself (informational
+    // only, same discipline as the ROI estimate) -- the fully-automatic
+    // ladder_fast_gate path stays honestly single-signal, unchanged.
+    name: 'go-deep-evidence',
+    description: 'Runs real customer-pain evidence (GitHub Issues + HN Algolia), live competitor classification, and the full 11-source evidence-coverage score for ONE opportunity. Informational only — never changes any accept/reject gate.',
+    reused: 'market_intelligence_engine.analyze_customer_pain() + competitor_discovery.get_or_refresh_competitors() + multi_source_intelligence.coverage.evidence_coverage_score()',
+    reversible: true, // read-only evidence gathering; nothing it does is destructive
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('go-deep-evidence', 'go_deep_evidence', [JSON.stringify({ niche })]);
+    },
+  },
+  {
     name: 'start-production-pipeline',
     description: 'Builds a production dossier for every currently ACCEPTED opportunity. Refuses to run while production is paused. Notifies n8n (fire-and-forget, opt-in via N8N_PRODUCTION_WEBHOOK_URL) once dossiers complete.',
     reused: 'production_factory/factory.py run_production_factory() (Phase 7)',
@@ -1047,7 +1082,7 @@ function triggerAction(action, req) {
     // instead of the generic single-Python-call one, without changing
     // runPythonActionAsync's signature for every other async action.
     const runner = action.asyncRunner || (() => runPythonActionAsync(action.name, action.section));
-    return Promise.resolve(runner());
+    return Promise.resolve(runner(req));
   }
   if (action.section) {
     return runActionSync(action.name, () => runPythonService(action.section), req);

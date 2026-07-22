@@ -209,8 +209,13 @@
   <section id="tab-opportunities" class="tab">
     <div class="tabHeader">
       <h2>طابور الفرص</h2>
-      <div class="actionsBar"><button class="btn primary" data-action="trigger-opportunity-evaluation">⚡ تقييم الفرص الآن</button></div>
+      <div class="actionsBar">
+        <button class="btn primary" data-action="trigger-opportunity-evaluation">⚡ تقييم الفرص الآن</button>
+        <button class="btn" data-action="go-deep-evidence">🔎 تعمّق في فرصة محدَّدة</button>
+        <button id="productConceptComparisonBtn" class="btn">🧪 قارن مسارات الإنتاج</button>
+      </div>
     </div>
+    <div id="productConceptComparisonResult"></div>
     <div id="opportunitiesContent" class="loading">جارٍ التحميل…</div>
   </section>
 
@@ -433,6 +438,47 @@ function badge(level) {
   return `<span class="badge ${cls}">${escapeHtml(level ?? 'Unknown')}</span>`;
 }
 
+// Strategic Phase 3, Round 1 (2026-07-22): Market Validation transparency
+// -- decision_path already exists on every real decision (decision_engine/
+// types.py) but was never surfaced. "ladder_fast_gate" = today's automatic
+// path, single real signal (profit_oracle's composite score only,
+// ai_ceo_decision hardcoded "N/A"). "ai_ceo_full_evaluation" = the
+// deliberate path, genuinely multi-signal (AI-CEO verdict + composite
+// score + real customer-pain evidence). Missing/null = a decision recorded
+// before this field existed.
+function decisionPathBadge(path) {
+  if (path === 'ladder_fast_gate') return `<span class="badge warn" title="إشارة واحدة فقط: درجة profit_oracle">بوابة سريعة (إشارة واحدة)</span>`;
+  if (path === 'ai_ceo_full_evaluation') return `<span class="badge good" title="إشارات متعددة: الدرجة + دليل ألم عملاء حقيقي">تقييم AI CEO كامل (إشارات متعددة)</span>`;
+  return `<span class="badge muted">قديم (بلا تصنيف)</span>`;
+}
+
+// Strategic Phase 3, Round 1 (2026-07-22): renders _go_deep_evidence()'s
+// 3 real, independent evidence sources for one founder-selected niche.
+// Purely a display concern -- the report itself never gates any decision.
+function renderGoDeepEvidenceResult(result) {
+  if (!result) return '<p class="muted">لا نتيجة.</p>';
+  const section = (title, body) => `<div class="card"><h3>${title}</h3>${body}</div>`;
+  const okOrError = (part, render) => (part && part.ok) ? render(part.result) : `<p class="muted">${escapeHtml(part?.error ?? 'فشل غير معروف')}</p>`;
+
+  const pain = section('ألم العملاء الحقيقي (GitHub Issues + HN)', okOrError(result.customer_pain, (r) => `
+    <p>درجة الألم: <strong>${r.pain_score ?? 'غير متاح'}</strong> (ثقة: ${escapeHtml(r.confidence)})</p>
+    <p class="muted">${escapeHtml(r.reason)}</p>
+    <p class="muted">إشارات استعداد الدفع الحقيقية: ${r.real_evidence?.willingness_to_pay_hits ?? 0}</p>
+  `));
+
+  const competitors = section('المنافسون الحقيقيون (HN + GitHub)', okOrError(result.competitors, (r) => `
+    <p>إجمالي المكتشَف: <strong>${r.total_found ?? 0}</strong></p>
+    <p class="muted">${Object.entries(r.by_category || {}).map(([cat, names]) => `${escapeHtml(cat)}: ${names.length}`).join(' — ')}</p>
+  `));
+
+  const coverage = section('تغطية الأدلة (11 مصدراً)', okOrError(result.evidence_coverage, (r) => `
+    <p>نجح: ${r.succeeded?.length ?? 0} / ${r.checked?.length ?? 0} (${r.coverage_pct ?? 0}%)</p>
+    <p class="muted">نجح: ${(r.succeeded || []).join('، ') || '—'}</p>
+  `));
+
+  return `<p class="muted">إشارات معلوماتية فقط — لا تُغيّر أي بوابة قبول/رفض حقيقية.</p>${pain}${competitors}${coverage}`;
+}
+
 function fmtTime(iso) {
   if (!iso) return '—';
   try { return new Date(iso).toLocaleString('ar'); } catch (_) { return iso; }
@@ -555,6 +601,8 @@ function openActionModal(actionName) {
     : (meta.reversible === false ? '⚠ هذا الإجراء غير قابل للعكس.' : '');
   actionModalExtra.innerHTML = actionName === 'pause-production'
     ? '<input type="text" id="pauseReasonInput" placeholder="سبب الإيقاف (اختياري)">'
+    : actionName === 'go-deep-evidence'
+    ? '<input type="text" id="goDeepNicheInput" placeholder="النيتش المطلوب التعمّق فيه (مطلوب)">'
     : '';
   actionModalProgress.style.display = 'none';
   actionModalResult.textContent = '';
@@ -602,6 +650,17 @@ async function confirmAction(actionName) {
     const reasonEl = document.getElementById('pauseReasonInput');
     if (reasonEl && reasonEl.value.trim()) body.reason = reasonEl.value.trim();
   }
+  if (actionName === 'go-deep-evidence') {
+    const nicheEl = document.getElementById('goDeepNicheInput');
+    const niche = nicheEl ? nicheEl.value.trim() : '';
+    if (!niche) {
+      actionModalProgress.style.display = 'none';
+      actionModalResult.textContent = 'النيتش مطلوب.';
+      actionModalConfirm.disabled = false;
+      return;
+    }
+    body.niche = niche;
+  }
 
   let res;
   try {
@@ -633,7 +692,10 @@ async function confirmAction(actionName) {
     actionModalConfirm.onclick = closeActionModal;
     if (job.status === 'completed') {
       const degradation = describeJobDegradation(job);
-      if (degradation) {
+      if (actionName === 'go-deep-evidence') {
+        actionModalResult.innerHTML = renderGoDeepEvidenceResult(job.result);
+        pushNotification('success', `go-deep-evidence: تقرير أدلة جاهز لـ"${job.result?.niche ?? ''}"`);
+      } else if (degradation) {
         actionModalResult.textContent = `اكتمل مع تدهور جزئي: ${degradation}`;
         pushNotification('warning', `${actionName}: اكتمل مع تدهور جزئي — ${degradation}`);
       } else {
@@ -658,6 +720,37 @@ async function confirmAction(actionName) {
     finish(res.job);
   }
 }
+
+// Strategic Phase 3, Round 1 (2026-07-22): Product Laboratory MVP button
+// -- fast, local-only, no job/polling needed (unlike go-deep-evidence).
+function renderProductConceptComparison(data) {
+  const rows = (data.variants || []).map(v => v.error
+    ? `<tr><td>${escapeHtml(v.ladder)}</td><td colspan="4" class="muted">${escapeHtml(v.error)}</td></tr>`
+    : `<tr>
+        <td>${escapeHtml(v.ladder)}</td>
+        <td>${v.ladder_score}</td>
+        <td>$${v.price}</td>
+        <td>${badge(v.accepted ? 'good' : 'bad')}</td>
+        <td>${v.pre_acceptance_roi?.maturity === 'REAL' ? `${v.pre_acceptance_roi.roi_pct}%` : `<span class="muted">${escapeHtml(v.pre_acceptance_roi?.reason ?? '—')}</span>`}</td>
+      </tr>`).join('');
+  return `
+    <div class="card">
+      <h3>مقارنة مسارات الإنتاج: "${escapeHtml(data.niche)}"</h3>
+      <p class="muted">${escapeHtml(data.note)}</p>
+      <table><thead><tr><th>المسار</th><th>الدرجة</th><th>السعر</th><th>مقبول؟</th><th>عائد مسبق (ROI)</th></tr></thead>
+      <tbody>${rows}</tbody></table>
+    </div>`;
+}
+
+document.getElementById('productConceptComparisonBtn').addEventListener('click', async () => {
+  const niche = prompt('النيتش المطلوب مقارنة مساراته:');
+  if (!niche || !niche.trim()) return;
+  const el = document.getElementById('productConceptComparisonResult');
+  el.innerHTML = '<p class="muted">جارٍ المقارنة…</p>';
+  const res = await fetchJson(`/api/v1/product-concept-comparison?niche=${encodeURIComponent(niche.trim())}`);
+  if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+  el.innerHTML = renderProductConceptComparison(res.data);
+});
 
 document.querySelectorAll('[data-action]').forEach(btn => {
   btn.addEventListener('click', () => openActionModal(btn.dataset.action));
@@ -738,7 +831,7 @@ const loaders = {
     const d = res.data;
     const q = d.opportunity_queue;
     const queueRows = (q?.queue || []).map(o => `
-      <tr><td>${escapeHtml(o.niche)}</td><td>${o.opportunity_score}</td><td>${badge(o.status)}</td></tr>`).join('');
+      <tr><td>${escapeHtml(o.niche)}</td><td>${o.opportunity_score}</td><td>${badge(o.status)}</td><td>${decisionPathBadge(o.decision_path)}</td></tr>`).join('');
     el.innerHTML = `
       <p class="muted">ثلاث إشارات أولوية حقيقية، جنباً إلى جنب — بلا دمج في درجة واحدة مُختلَقة.</p>
       <div class="card">
@@ -749,8 +842,9 @@ const loaders = {
         <h3>طابور القبول المُرتَّب (ACCEPTED)</h3>
         ${q?.error
           ? `<p class="muted">${escapeHtml(q.error)}</p>`
-          : `<table><thead><tr><th>النيتش</th><th>الدرجة</th><th>الحالة</th></tr></thead>
-             <tbody>${queueRows || '<tr><td colspan="3" class="muted">لا فرص مُقيَّمة بعد</td></tr>'}</tbody></table>`}
+          : `<table><thead><tr><th>النيتش</th><th>الدرجة</th><th>الحالة</th><th>مسار القرار</th></tr></thead>
+             <tbody>${queueRows || '<tr><td colspan="4" class="muted">لا فرص مُقيَّمة بعد</td></tr>'}</tbody></table>
+             <p class="muted">مسار القرار: "بوابة سريعة" = إشارة واحدة (درجة profit_oracle فقط) — "تقييم AI CEO كامل" = إشارات متعددة (الدرجة + دليل ألم عملاء حقيقي).</p>`}
       </div>
       <div class="card">
         <h3>سلّم أولويات الإنتاج الاستراتيجي (MASTER_CHARTER.md)</h3>
@@ -842,11 +936,12 @@ const loaders = {
         <td>${o.opportunity_score}</td>
         <td>${badge(o.status)}</td>
         <td>${escapeHtml(o.ai_ceo_decision)}</td>
+        <td>${decisionPathBadge(o.decision_path)}</td>
       </tr>`).join('');
     el.innerHTML = `
       <p class="muted">طابور القبول (ACCEPTED جاهزة للتنفيذ): ${d.queue?.length ?? 0}</p>
-      <table><thead><tr><th>النيتش</th><th>الدرجة</th><th>الحالة</th><th>قرار AI CEO</th></tr></thead>
-      <tbody>${rows || '<tr><td colspan="4" class="muted">لا فرص مُقيَّمة بعد</td></tr>'}</tbody></table>
+      <table><thead><tr><th>النيتش</th><th>الدرجة</th><th>الحالة</th><th>قرار AI CEO</th><th>مسار القرار</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="5" class="muted">لا فرص مُقيَّمة بعد</td></tr>'}</tbody></table>
     `;
   },
 

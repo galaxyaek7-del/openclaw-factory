@@ -10,6 +10,7 @@ from market_intelligence_core.types import CONFIDENCE_SCALE  # reused, not a sec
 SOURCES = (
     "amazon", "etsy", "gumroad", "product_hunt", "reddit",
     "google_trends", "hacker_news", "github", "stack_overflow", "public_search",
+    "arxiv",  # Strategic Phase 3, Round 1 (2026-07-22): 11th source, real
 )
 
 

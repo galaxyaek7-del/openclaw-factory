@@ -22,7 +22,7 @@ from multi_source_intelligence.types import SOURCES, unavailable_result
 
 
 class TestRegistryAutoDiscovery(unittest.TestCase):
-    def test_all_ten_sources_are_registered(self):
+    def test_all_eleven_sources_are_registered(self):
         import multi_source_intelligence.connectors  # noqa: F401
         connectors_map = registry.get_connectors()
         for source in SOURCES:
@@ -65,6 +65,39 @@ class TestRealConnectorsWork(unittest.TestCase):
         from multi_source_intelligence.connectors import stack_overflow
         result = stack_overflow.check("a failure test niche")
         self.assertEqual(result.availability, "unavailable")
+
+    @patch("multi_source_intelligence.connectors.arxiv._query_arxiv", return_value=[{"title": "A Real Paper", "summary": "abstract text", "published": "2026-01-01T00:00:00Z", "url": "https://arxiv.org/abs/0000.00000"}])
+    def test_arxiv_connector_reports_real_verified_data(self, mock_arxiv):
+        from multi_source_intelligence.connectors import arxiv
+        result = arxiv.check("a real arxiv connector test niche")
+        self.assertEqual(result.availability, "available")
+        self.assertEqual(result.verification_status, "VERIFIED")
+        self.assertEqual(result.parsed_data[0]["title"], "A Real Paper")
+
+    @patch("multi_source_intelligence.connectors.arxiv._query_arxiv", side_effect=Exception("network down"))
+    def test_arxiv_connector_degrades_honestly_on_failure(self, mock_arxiv):
+        from multi_source_intelligence.connectors import arxiv
+        result = arxiv.check("a failure test niche")
+        self.assertEqual(result.availability, "unavailable")
+        self.assertEqual(result.verification_status, "UNKNOWN")
+
+    def test_arxiv_connector_parses_real_atom_xml_shape(self):
+        sample_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <id>http://arxiv.org/abs/1234.5678v1</id>
+    <published>2026-01-01T00:00:00Z</published>
+    <title>  A Sample Paper Title  </title>
+    <summary>  A sample abstract.  </summary>
+  </entry>
+</feed>"""
+        with patch("market_intelligence_core.http_client.http_get_text", return_value=sample_xml):
+            from multi_source_intelligence.connectors.arxiv import _query_arxiv
+            entries = _query_arxiv("sample niche")
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["title"], "A Sample Paper Title")
+        self.assertEqual(entries[0]["summary"], "A sample abstract.")
+        self.assertEqual(entries[0]["url"], "http://arxiv.org/abs/1234.5678v1")
 
 
 class TestHonestlyUnavailableConnectors(unittest.TestCase):
@@ -122,33 +155,39 @@ class TestEvidenceCoverageScore(unittest.TestCase):
     @patch("competitor_discovery._query_hn", return_value=[])
     @patch("competitor_discovery._query_github", return_value=[])
     @patch("multi_source_intelligence.connectors.stack_overflow._query_stack_overflow", return_value=[])
-    def test_coverage_score_reports_all_ten_sources_checked(self, mock_so, mock_gh, mock_hn):
+    @patch("multi_source_intelligence.connectors.arxiv._query_arxiv", return_value=[])
+    def test_coverage_score_reports_all_eleven_sources_checked(self, mock_arxiv, mock_so, mock_gh, mock_hn):
         result = coverage.evidence_coverage_score("a coverage test niche", max_results=3)
-        self.assertEqual(len(result["checked"]), 10)
+        self.assertEqual(len(result["checked"]), 11)
         self.assertEqual(set(result["checked"]), set(SOURCES))
 
     @patch("competitor_discovery._query_hn", return_value=[{"title": "x", "points": 10, "num_comments": 1}])
     @patch("competitor_discovery._query_github", return_value=[{"full_name": "a/b", "stargazers_count": 10, "created_at": "2026-01-01T00:00:00Z"}])
     @patch("multi_source_intelligence.connectors.stack_overflow._query_stack_overflow", return_value=[{"title": "x", "view_count": 1, "answer_count": 1, "score": 1}])
-    def test_coverage_score_correctly_tallies_succeeded_vs_unknown(self, mock_so, mock_gh, mock_hn):
+    @patch("multi_source_intelligence.connectors.arxiv._query_arxiv", return_value=[{"title": "x", "summary": "y", "published": "2026-01-01T00:00:00Z", "url": "https://arxiv.org/abs/x"}])
+    def test_coverage_score_correctly_tallies_succeeded_vs_unknown(self, mock_arxiv, mock_so, mock_gh, mock_hn):
         result = coverage.evidence_coverage_score("a tally test niche", max_results=3)
-        self.assertEqual(set(result["succeeded"]), {"hacker_news", "github", "stack_overflow"})
+        self.assertEqual(set(result["succeeded"]), {"hacker_news", "github", "stack_overflow", "arxiv"})
         self.assertEqual(len(result["unknown"]), 7)
-        self.assertEqual(result["coverage_pct"], 30.0)
+        self.assertAlmostEqual(result["coverage_pct"], 36.4, places=1)
 
-    def test_a_connector_raising_an_uncaught_exception_is_tallied_as_failed_not_crashing_the_score(self):
+    @patch("competitor_discovery._query_github", return_value=[])
+    @patch("multi_source_intelligence.connectors.stack_overflow._query_stack_overflow", return_value=[])
+    @patch("multi_source_intelligence.connectors.arxiv._query_arxiv", return_value=[])
+    def test_a_connector_raising_an_uncaught_exception_is_tallied_as_failed_not_crashing_the_score(self, mock_arxiv, mock_so, mock_gh):
         with patch.dict(registry._CONNECTORS, {"hacker_news": lambda niche, max_results: (_ for _ in ()).throw(Exception("boom"))}):
             result = coverage.evidence_coverage_score("a raising connector test niche", max_results=3)
         self.assertIn("hacker_news", result["failed"])
         # every other source is still checked -- one source's crash never stops the rest
-        self.assertEqual(len(result["checked"]), 10)
+        self.assertEqual(len(result["checked"]), 11)
 
 
 class TestAggregatorIsStandaloneNotWiredIntoScoring(unittest.TestCase):
     def test_accumulate_evidence_returns_coverage_and_per_source_evidence(self):
         with patch("competitor_discovery._query_hn", return_value=[]), \
              patch("competitor_discovery._query_github", return_value=[]), \
-             patch("multi_source_intelligence.connectors.stack_overflow._query_stack_overflow", return_value=[]):
+             patch("multi_source_intelligence.connectors.stack_overflow._query_stack_overflow", return_value=[]), \
+             patch("multi_source_intelligence.connectors.arxiv._query_arxiv", return_value=[]):
             result = aggregator.accumulate_evidence("a standalone aggregator test niche", max_results=3)
         self.assertIn("coverage", result)
         self.assertIn("evidence_by_source", result)

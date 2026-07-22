@@ -155,6 +155,54 @@ class TestEstimatePreAcceptanceRoi(unittest.TestCase):
                 os.remove(path)
 
 
+class TestCompareLadderVariants(unittest.TestCase):
+    """Strategic Phase 3, Round 1 (2026-07-22): Product Laboratory MVP --
+    real per-ladder price/score variants for the SAME niche, compared
+    side by side, never auto-selecting a winner."""
+
+    def test_returns_one_variant_per_ladder_rank_by_default(self):
+        result = plan.compare_ladder_variants("premium subscription budget planner for professionals")
+        self.assertEqual(len(result["variants"]), len(plan.profit_oracle.LADDER_RANKS))
+        self.assertEqual({v["ladder"] for v in result["variants"]}, set(plan.profit_oracle.LADDER_RANKS))
+
+    def test_variants_never_auto_select_a_winner(self):
+        result = plan.compare_ladder_variants("a niche for winner-selection test")
+        self.assertNotIn("winner", result)
+        self.assertNotIn("recommended", result)
+        self.assertNotIn("selected", result)
+        for v in result["variants"]:
+            self.assertNotIn("recommended", v)
+            self.assertNotIn("selected", v)
+
+    def test_higher_ladder_ranks_get_priced_in_the_elite_band(self):
+        result = plan.compare_ladder_variants("a real pricing band comparison niche")
+        by_ladder = {v["ladder"]: v for v in result["variants"]}
+        self.assertGreater(by_ladder["ai_saas"]["price"], by_ladder["kdp_books"]["price"])
+
+    def test_pre_acceptance_roi_uses_real_logged_cost_when_available(self):
+        import json
+        path = _temp_path()
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(json.dumps({"cost_usd": 0.02}) + "\n")
+            result = plan.compare_ladder_variants("a real roi comparison niche", log_file=path)
+            self.assertTrue(any(v["pre_acceptance_roi"]["maturity"] == "REAL" for v in result["variants"]))
+        finally:
+            if os.path.exists(path):
+                os.remove(path)
+
+    def test_unknown_ladder_reported_honestly_not_silently_dropped(self):
+        result = plan.compare_ladder_variants("a niche", ladders=["ai_saas", "not_a_real_ladder"])
+        self.assertEqual(len(result["variants"]), 2)
+        bad = next(v for v in result["variants"] if v["ladder"] == "not_a_real_ladder")
+        self.assertIn("error", bad)
+
+    def test_sorted_by_ladder_score_descending(self):
+        result = plan.compare_ladder_variants("a niche for sort-order test")
+        scores = [v["ladder_score"] for v in result["variants"] if "ladder_score" in v]
+        self.assertEqual(scores, sorted(scores, reverse=True))
+
+
 class TestRunRevenuePipeline(unittest.TestCase):
     def setUp(self):
         self.decisions_path = _temp_path()
