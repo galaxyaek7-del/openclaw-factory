@@ -67,16 +67,38 @@ def record_publish_attempt(product, result, ledger_path=None) -> dict:
     return append_event(event, ledger_path=ledger_path)
 
 
-def record_sale(platform: str, sale: dict, ledger_path=None) -> dict:
+def record_sale(platform: str, sale: dict, ledger_path=None, niche=None) -> dict:
     """Append one real sale as reported by a platform's get_sales(). The raw
     sale dict is kept under "raw" verbatim — never reshaped/guessed, since a
-    ledger meant to replace a lie must not introduce a new one."""
+    ledger meant to replace a lie must not introduce a new one.
+
+    Market Learning Loop (2026-07-22): when the caller knows which real
+    niche this sale belongs to, ALSO logs a real "closed_sale" event to
+    market_evidence.py — this factory's real automatic evidence channel,
+    consumed directly by the Executive Quality Gate. `niche` is optional
+    and deliberately not auto-derived from the raw sale here: this
+    factory has never seen an actual completed Paddle/Gumroad sale
+    (zero real sales exist yet), so the real response shape needed to
+    reliably map a sale back to its niche hasn't been verified against a
+    live example — guessing that mapping blind risks recording a real
+    evidence event against the wrong niche, which would be worse than
+    not recording it at all. Wire this for real once the first real sale
+    happens and its actual shape can be checked. A failure logging
+    evidence must never lose the real sale record itself — wrapped in
+    try/except, best-effort only."""
     event = {
         "event_type": "sale",
         "platform": platform,
         "raw": sale,
     }
-    return append_event(event, ledger_path=ledger_path)
+    recorded = append_event(event, ledger_path=ledger_path)
+    if niche:
+        try:
+            import market_evidence
+            market_evidence.record_evidence(niche, "closed_sale", {"platform": platform, "raw": sale}, source="ledger.record_sale")
+        except Exception:
+            pass
+    return recorded
 
 
 def read_events(event_type=None, ledger_path=None):

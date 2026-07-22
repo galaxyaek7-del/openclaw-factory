@@ -39,7 +39,7 @@ class TestCustomerPainEvidence(unittest.TestCase):
 
 
 class TestWillingnessToPay(unittest.TestCase):
-    def test_no_source_is_always_unknown(self):
+    def test_no_source_and_no_niche_is_always_unknown(self):
         """This factory has zero real per-opportunity WTP data -- must
         never silently pass."""
         result = eqg.check_willingness_to_pay()
@@ -49,11 +49,68 @@ class TestWillingnessToPay(unittest.TestCase):
         result = eqg.check_willingness_to_pay({"source": "real discovery sprint replies", "count": 5})
         self.assertEqual(result["status"], "PASS")
 
+    def test_niche_with_no_market_evidence_logged_is_still_unknown(self):
+        result = eqg.check_willingness_to_pay(niche="a niche with zero logged evidence")
+        self.assertEqual(result["status"], "UNKNOWN")
+
+    def test_market_learning_loop_real_positive_signal_passes(self):
+        """The whole point of ADR-088: UNKNOWN disappears only because
+        real evidence arrived, never assumed."""
+        path = _temp_evidence_path()
+        try:
+            import market_evidence as me
+            me.record_evidence("n", "demo_request", {}, evidence_path=path)
+            with patch.object(me, "DEFAULT_EVIDENCE_PATH", Path(path)):
+                result = eqg.check_willingness_to_pay(niche="n")
+            self.assertEqual(result["status"], "PASS")
+        finally:
+            import os
+            if os.path.exists(path):
+                os.remove(path)
+
+    def test_market_learning_loop_real_pricing_objection_fails(self):
+        path = _temp_evidence_path()
+        try:
+            import market_evidence as me
+            me.record_evidence("n", "pricing_objection", {}, evidence_path=path)
+            with patch.object(me, "DEFAULT_EVIDENCE_PATH", Path(path)):
+                result = eqg.check_willingness_to_pay(niche="n")
+            self.assertEqual(result["status"], "FAIL")
+        finally:
+            import os
+            if os.path.exists(path):
+                os.remove(path)
+
+
+def _temp_evidence_path():
+    import tempfile, os
+    fd, path = tempfile.mkstemp(suffix=".jsonl")
+    os.close(fd)
+    os.remove(path)
+    return path
+
 
 class TestCustomerRetentionPotential(unittest.TestCase):
-    def test_always_unknown_zero_real_sales_exist(self):
+    def test_always_unknown_with_no_niche_zero_real_sales_exist(self):
         result = eqg.check_customer_retention_potential()
         self.assertEqual(result["status"], "UNKNOWN")
+
+    def test_niche_with_no_retention_evidence_is_still_unknown(self):
+        result = eqg.check_customer_retention_potential(niche="untouched niche")
+        self.assertEqual(result["status"], "UNKNOWN")
+
+    def test_real_churn_signal_fails(self):
+        path = _temp_evidence_path()
+        try:
+            import market_evidence as me
+            me.record_evidence("n", "retention_signal", {"outcome": "churned"}, evidence_path=path)
+            with patch.object(me, "DEFAULT_EVIDENCE_PATH", Path(path)):
+                result = eqg.check_customer_retention_potential(niche="n")
+            self.assertEqual(result["status"], "FAIL")
+        finally:
+            import os
+            if os.path.exists(path):
+                os.remove(path)
 
 
 class TestMarketSaturation(unittest.TestCase):

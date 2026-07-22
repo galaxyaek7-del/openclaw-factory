@@ -14,6 +14,7 @@ import tempfile
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
+from unittest import mock
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
@@ -27,6 +28,44 @@ def _temp_path(suffix):
     os.close(fd)
     os.remove(path)
     return path
+
+
+class TestRecordSaleMarketEvidenceHook(unittest.TestCase):
+    """Market Learning Loop (2026-07-22): record_sale()'s new optional
+    `niche` param should also log a real closed_sale market-evidence
+    event -- but only when a niche is actually given, and never at the
+    cost of the real sale record itself."""
+
+    def setUp(self):
+        self.ledger_path = _temp_path(".jsonl")
+        self.evidence_path = _temp_path(".jsonl")
+
+    def tearDown(self):
+        for p in (self.ledger_path, self.evidence_path):
+            if os.path.exists(p):
+                os.remove(p)
+
+    def test_no_niche_given_records_sale_only_no_evidence_event(self):
+        import market_evidence
+        with mock.patch.object(market_evidence, "DEFAULT_EVIDENCE_PATH", Path(self.evidence_path)):
+            ledger.record_sale("gumroad", {"id": "s1", "price": "9.99"}, ledger_path=self.ledger_path)
+        self.assertEqual(market_evidence.read_evidence(evidence_path=self.evidence_path), [])
+
+    def test_niche_given_also_logs_a_real_closed_sale_event(self):
+        import market_evidence
+        with mock.patch.object(market_evidence, "DEFAULT_EVIDENCE_PATH", Path(self.evidence_path)):
+            ledger.record_sale("gumroad", {"id": "s2", "price": "9.99"}, ledger_path=self.ledger_path, niche="a real niche")
+        events = market_evidence.read_evidence("a real niche", "closed_sale", evidence_path=self.evidence_path)
+        self.assertEqual(len(events), 1)
+
+    def test_evidence_logging_failure_never_loses_the_real_sale_record(self):
+        import market_evidence
+        with mock.patch.object(market_evidence, "record_evidence", side_effect=RuntimeError("disk full")):
+            recorded = ledger.record_sale("gumroad", {"id": "s3", "price": "9.99"}, ledger_path=self.ledger_path, niche="a real niche")
+        self.assertEqual(recorded["event_type"], "sale")
+        with open(self.ledger_path, encoding="utf-8") as f:
+            lines = f.readlines()
+        self.assertEqual(len(lines), 1)
 
 
 class TestReconcileLedgerToFinance(unittest.TestCase):

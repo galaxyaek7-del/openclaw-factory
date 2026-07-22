@@ -12,17 +12,24 @@ before; every other criterion is a real, already-computed field threaded
 through, never recalculated with new logic.
 
 The honest core of this module: several of the 20 requested criteria
-have NO real data source anywhere in this factory today --
-willingness-to-pay (zero real sales/pricing experiments ever run),
-customer-acquisition-difficulty per specific niche (no automated
-per-niche CAC pipeline exists, only manual research done for a handful
-of products this session), and customer-retention-potential (zero real
-sales exist to measure retention from at all). A gate that silently
-scored these anyway would be exactly the fabrication this whole
-engagement has refused everywhere else. Instead: these are always
-reported UNKNOWN unless a caller explicitly supplies real, already-
-gathered evidence, and UNKNOWN on any of them routes to
-NEEDS_HUMAN_REVIEW rather than a fabricated PASS.
+have NO automatically-observed real data source anywhere in this
+factory today -- willingness-to-pay, customer-acquisition-difficulty per
+specific niche, and customer-retention-potential all depend on real
+market interactions this factory has no live instrumentation to detect
+on its own (no landing page, no connected CRM, no automatic call
+transcription). A gate that silently scored these anyway would be
+exactly the fabrication this whole engagement has refused everywhere
+else.
+
+Market Learning Loop (2026-07-22, market_evidence.py): these three
+criteria now auto-consume a real, permanent evidence ledger the moment
+ANY real event (a real discovery call outcome, a real cold-email reply,
+a real closed sale) has actually been recorded for that niche -- by a
+human, or by Claude Code checking a real channel during a session.
+UNKNOWN never disappears on its own; it disappears only because real
+evidence arrived and was logged. Zero recorded evidence for a niche
+still means honestly UNKNOWN, routed to NEEDS_HUMAN_REVIEW, never a
+fabricated PASS.
 
 Never triggers a live network call -- reads only already-computed or
 already-cached real data (competitor_discovery's cache,
@@ -98,15 +105,26 @@ def check_customer_pain_evidence(customer_pain):
 
 
 # ── 2. Real willingness-to-pay evidence ──
-def check_willingness_to_pay(explicit_wtp_evidence=None):
-    """No real data source exists anywhere in this factory for
-    per-opportunity willingness-to-pay -- zero real sales exist, and no
-    pricing-experiment mechanism has ever been built. Always Unknown
-    unless a caller explicitly supplies real, already-gathered evidence
-    (e.g. logged replies from a real customer-discovery sprint)."""
+def check_willingness_to_pay(explicit_wtp_evidence=None, niche=None):
+    """Market Learning Loop (2026-07-22): auto-consumes market_evidence.py's
+    real, already-recorded WTP-adjacent events (demo/trial/purchase/
+    closed-sale = positive, pricing_objection = negative) for this exact
+    niche the moment any real evidence exists -- never invents a dollar
+    figure, only counts real events. Still always Unknown when zero real
+    evidence has been recorded yet, matching this factory's honest
+    default (zero real sales exist for most niches today)."""
     if explicit_wtp_evidence:
         return _real("PASS", explicit_wtp_evidence, "دليل استعداد للدفع حقيقي مُقدَّم صراحةً من مصدر خارجي")
-    return _unknown("لا آلية حقيقية في هذا المصنع لقياس الاستعداد للدفع لكل فرصة تلقائياً — صفر مبيعات حقيقية حتى الآن")
+    if niche:
+        import market_evidence
+        signal = market_evidence.get_willingness_to_pay_signal(niche)
+        if signal:
+            if signal["positive_signals"] > 0 and signal["pricing_objections"] == 0:
+                return _real("PASS", signal, f"{signal['positive_signals']} إشارة سوق حقيقية إيجابية مسجَّلة (طلب عرض/تجربة/شراء/بيع مغلق)")
+            if signal["pricing_objections"] > 0 and signal["pricing_objections"] >= signal["positive_signals"]:
+                return _real("FAIL", signal, f"{signal['pricing_objections']} اعتراض سعري حقيقي مسجَّل، يساوي أو يفوق الإشارات الإيجابية")
+            return _real("INFO", signal, f"دليل سوق حقيقي مختلط: {signal['positive_signals']} إيجابي، {signal['pricing_objections']} اعتراض سعري")
+    return _unknown("لا آلية حقيقية في هذا المصنع لقياس الاستعداد للدفع تلقائياً — صفر دليل سوق حقيقي (Market Evidence Ledger) مُسجَّل بعد لهذا النيتش")
 
 
 # ── 3. Market saturation and competitor quality ──
@@ -248,24 +266,39 @@ def check_operational_cost(cost_log_file=None):
 
 
 # ── 13. Customer acquisition difficulty ──
-def check_customer_acquisition_difficulty(explicit_cac_evidence=None):
-    """No automated per-niche real data source exists. Manual research
-    exists for a handful of specific products this session (e.g. real
-    CAC benchmarks by persona) but nothing is computed automatically per
-    opportunity. Always Unknown unless a caller supplies real,
-    already-gathered evidence."""
+def check_customer_acquisition_difficulty(explicit_cac_evidence=None, niche=None):
+    """Market Learning Loop (2026-07-22): auto-consumes market_evidence.py's
+    real logged cold_outreach_result/email_reply events for this niche
+    -- a real, computed reply rate, not a dollar CAC (no real spend-
+    tracking exists to compute a dollar figure from). Still Unknown when
+    zero real outreach has been logged yet for this niche."""
     if explicit_cac_evidence:
         return _real("INFO", explicit_cac_evidence, "دليل صعوبة اكتساب عملاء حقيقي مُقدَّم صراحةً")
-    return _unknown("لا مصدر بيانات آلي حقيقي لصعوبة اكتساب العملاء لكل فرصة على حدة")
+    if niche:
+        import market_evidence
+        signal = market_evidence.get_customer_acquisition_signal(niche)
+        if signal:
+            rate_note = f" (معدل رد {signal['reply_rate_pct']}%)" if signal["reply_rate_pct"] is not None else ""
+            return _real("INFO", signal, f"دليل سوق حقيقي: أُرسِل {signal['sent']}، رَدّ {signal['replied']}{rate_note}")
+    return _unknown("لا مصدر بيانات آلي حقيقي لصعوبة اكتساب العملاء — صفر دليل سوق حقيقي (Market Evidence Ledger) مُسجَّل بعد لهذا النيتش")
 
 
 # ── 14. Customer retention potential ──
-def check_customer_retention_potential():
-    """Always Unknown: zero real sales exist anywhere in this factory to
-    measure retention from. There is no honest way to score this today,
-    for any opportunity, and pretending otherwise would be exactly the
-    fabrication this gate exists to prevent."""
-    return _unknown("صفر مبيعات حقيقية موجودة في هذا المصنع لقياس الاحتفاظ بالعملاء منها — لا توجد طريقة صادقة لتقييم هذا اليوم")
+def check_customer_retention_potential(niche=None):
+    """Market Learning Loop (2026-07-22): auto-consumes market_evidence.py's
+    real retention_signal events (renewal/churn) for this niche. Still
+    Unknown by default -- zero real sales exist anywhere in this factory
+    to measure retention from for most niches today, and pretending
+    otherwise would be exactly the fabrication this gate exists to
+    prevent."""
+    if niche:
+        import market_evidence
+        signal = market_evidence.get_retention_signal(niche)
+        if signal:
+            if signal["churned"] > signal["renewed"]:
+                return _real("FAIL", signal, f"{signal['churned']} حالة تسرّب حقيقية مسجَّلة، أكثر من التجديد ({signal['renewed']})")
+            return _real("PASS" if signal["renewed"] > 0 else "INFO", signal, f"{signal['renewed']} تجديد حقيقي، {signal['churned']} تسرّب مسجَّل")
+    return _unknown("صفر مبيعات/تجديدات حقيقية مسجَّلة بعد لقياس الاحتفاظ بالعملاء لهذا النيتش — لا توجد طريقة صادقة لتقييم هذا حتى يصل دليل حقيقي")
 
 
 # ── 15. Infrastructure readiness ──
@@ -321,7 +354,7 @@ def _run_all_checks(spec):
     components = snap.get("components") or {}
     return {
         "customer_pain_evidence": check_customer_pain_evidence(snap.get("customer_pain")),
-        "willingness_to_pay_evidence": check_willingness_to_pay(spec.get("explicit_wtp_evidence")),
+        "willingness_to_pay_evidence": check_willingness_to_pay(spec.get("explicit_wtp_evidence"), niche=spec.get("niche")),
         "market_saturation_competitor_quality": check_market_saturation(spec.get("niche"), spec.get("competitor_db")),
         "technical_feasibility": check_technical_feasibility(spec.get("ladder"), spec.get("product_family")),
         "legal_compliance_risk": check_legal_compliance_risk(spec.get("niche")),
@@ -332,8 +365,8 @@ def _run_all_checks(spec):
         "revenue_model_sustainability": check_revenue_model_sustainability(components),
         "brand_reputation_risk": check_brand_reputation_risk(spec.get("product_chapters")),
         "operational_cost": check_operational_cost(spec.get("cost_log_file")),
-        "customer_acquisition_difficulty": check_customer_acquisition_difficulty(spec.get("explicit_cac_evidence")),
-        "customer_retention_potential": check_customer_retention_potential(),
+        "customer_acquisition_difficulty": check_customer_acquisition_difficulty(spec.get("explicit_cac_evidence"), niche=spec.get("niche")),
+        "customer_retention_potential": check_customer_retention_potential(niche=spec.get("niche")),
         "infrastructure_readiness": check_infrastructure_readiness(spec.get("ladder"), spec.get("product_family")),
         "automation_readiness": check_automation_readiness(components),
         "data_confidence_score": check_data_confidence_score(snap.get("confidence")),

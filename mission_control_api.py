@@ -922,6 +922,26 @@ def _executive_quality_gate():
     })
 
 
+def _record_market_evidence():
+    """Market Learning Loop (Executive Directive, 2026-07-22): the
+    human-driven entry point for the 12+ evidence categories nothing in
+    this factory can automatically observe (a real discovery call, a
+    real cold-email reply, a real objection heard on a call). Once
+    logged here, the Executive Quality Gate consumes it automatically
+    from that point forward. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py record_market_evidence
+    '{"niche":"...","event_type":"...","payload":{...}}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    event_type = (payload.get("event_type") or "").strip()
+    if not niche or not event_type:
+        raise ValueError("{ niche, event_type } are both required")
+
+    import market_evidence
+    event = market_evidence.record_evidence(niche, event_type, payload.get("payload"), source="mission_control")
+    return {"event": event}
+
+
 def _check_paddle_checkout_status():
     """ADR-085/ADR-086: re-attempts Paddle checkout-link creation for
     every real product in data/paddle_products.json (5 as of ADR-086 --
@@ -971,6 +991,7 @@ _ENDPOINTS = {
     "opportunity_pipeline": _opportunity_pipeline,
     "check_paddle_checkout_status": _check_paddle_checkout_status,
     "executive_quality_gate": _executive_quality_gate,
+    "record_market_evidence": _record_market_evidence,
 }
 
 

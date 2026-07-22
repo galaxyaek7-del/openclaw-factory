@@ -1098,6 +1098,24 @@ const ACTION_REGISTRY = [
     },
   },
   {
+    // Market Learning Loop (Executive Directive, 2026-07-22): the real,
+    // human-driven entry point for evidence categories nothing in this
+    // factory can automatically observe -- a real discovery call
+    // outcome, a real cold-email reply, a real objection heard on a
+    // call. Once logged, the Executive Quality Gate consumes it
+    // automatically from that point on, no further code changes.
+    name: 'record-market-evidence',
+    description: 'Logs one real market-evidence event (discovery call, cold outreach result, objection, closed sale, etc.) for a niche. The Executive Quality Gate reads this automatically -- UNKNOWN fields disappear only because real evidence was recorded here, never assumed.',
+    reused: 'market_evidence.py (Market Learning Loop)',
+    reversible: true, // append-only evidence log; nothing it does is destructive
+    kind: 'async',
+    asyncRunner: (req) => {
+      const { niche, event_type, payload } = req.body || {};
+      if (!niche || !event_type) return Promise.reject(new Error('{ niche, event_type } are both required in the request body'));
+      return runPythonActionAsync('record-market-evidence', 'record_market_evidence', [JSON.stringify({ niche, event_type, payload })]);
+    },
+  },
+  {
     name: 'run-validation',
     description: 'Generates the real daily validation report (opportunities, bottlenecks, stalled items, reliability, recommendations).',
     reused: 'validation_layer/daily_report.py (ADR-053)',
