@@ -989,6 +989,49 @@ def _risk_intelligence_scan():
     return er.run_risk_intelligence_scan(niche, refresh_competitors=bool(payload.get("refresh_competitors")))
 
 
+def _convene_executive_board():
+    """AI Executive Board (Executive Directive, 2026-07-22) -- the
+    highest decision-making authority in this factory. All 10 executive
+    roles are deterministic real-evidence analyses (never a free-form
+    LLM opinion) over the same underlying Executive Quality Gate/
+    Enterprise Readiness evaluation. No single executive's vote is ever
+    a standalone approval -- only the aggregated board tally is. Reads
+    its payload from sys.argv[2]:
+    `python mission_control_api.py convene_executive_board
+    '{"niche":"...","decision_type":"production"}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    from decision_engine import ranking
+    import executive_board as eb
+
+    decisions = ranking.rank_all()
+    decision = next((d for d in decisions if d.get("niche") == niche), None)
+    if decision is None:
+        raise ValueError(f"لا قرار مسجَّل لهذا النيتش: {niche!r}")
+
+    return eb.convene_board({
+        "niche": decision.get("niche"),
+        "title": decision.get("niche"),
+        "ladder": decision.get("ladder"),
+        "evaluation_snapshot": decision.get("evaluation_snapshot"),
+        "decided_at": decision.get("decided_at"),
+    }, decision_type=payload.get("decision_type", "production"))
+
+
+def _review_board_track_record():
+    """On-demand (not continuous -- no scheduler exists in this
+    factory): compares real past board decisions against whatever real
+    market evidence has accumulated since. Reads its payload from
+    sys.argv[2]: `python mission_control_api.py review_board_track_record
+    '{"niche":"..."}'` (niche optional -- omit for every real meeting)."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    import executive_board as eb
+    return {"reviews": eb.review_board_track_record(payload.get("niche"))}
+
+
 def _check_paddle_checkout_status():
     """ADR-085/ADR-086: re-attempts Paddle checkout-link creation for
     every real product in data/paddle_products.json (5 as of ADR-086 --
@@ -1041,6 +1084,8 @@ _ENDPOINTS = {
     "record_market_evidence": _record_market_evidence,
     "enterprise_readiness_gate": _enterprise_readiness_gate,
     "risk_intelligence_scan": _risk_intelligence_scan,
+    "convene_executive_board": _convene_executive_board,
+    "review_board_track_record": _review_board_track_record,
 }
 
 

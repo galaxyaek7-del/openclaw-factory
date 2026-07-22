@@ -1149,6 +1149,35 @@ const ACTION_REGISTRY = [
     },
   },
   {
+    // AI Executive Board (Executive Directive, 2026-07-22) -- the
+    // highest decision-making authority in this factory. All 10
+    // executives are deterministic real-evidence analyses, never a
+    // free-form LLM opinion. "No single agent may approve strategic
+    // decisions alone" is enforced structurally: this action is the
+    // ONLY path to a real board decision.
+    name: 'convene-executive-board',
+    description: 'Convenes all 10 executive roles against an already-recorded decision, real evidence only. Majority required for "production" decisions, unanimous for "irreversible". Every meeting is stored permanently with complete reasoning.',
+    reused: 'executive_board.py (Executive Directive)',
+    reversible: true, // read-only evaluation + an append-only meeting record; changes no other data
+    kind: 'async',
+    asyncRunner: (req) => {
+      const { niche, decision_type } = req.body || {};
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('convene-executive-board', 'convene_executive_board', [JSON.stringify({ niche, decision_type: decision_type || 'production' })]);
+    },
+  },
+  {
+    name: 'review-board-track-record',
+    description: 'On-demand (not continuous -- no scheduler exists): compares real past board decisions against whatever real market evidence has accumulated since, for one niche or every real meeting.',
+    reused: 'executive_board.py::review_board_track_record()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche) || null;
+      return runPythonActionAsync('review-board-track-record', 'review_board_track_record', [JSON.stringify({ niche })]);
+    },
+  },
+  {
     name: 'run-validation',
     description: 'Generates the real daily validation report (opportunities, bottlenecks, stalled items, reliability, recommendations).',
     reused: 'validation_layer/daily_report.py (ADR-053)',
