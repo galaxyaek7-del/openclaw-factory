@@ -31,8 +31,16 @@ import profit_oracle as po
 from decision_engine import ranking, store
 from decision_engine.engine import record_ladder_decision
 
-REAL_NICHE = "workflow automation system for logistics companies"
-REAL_LADDER = "b2b_systems"
+REAL_NICHE = "automated invoice processing toolkit for small businesses"
+REAL_LADDER = "automation_tools"
+# ADR-085 (2026-07-22): a real production run (this session's "pipeline
+# depth" work) generated a real, permanent books/_generation_log.jsonl
+# entry for the PREVIOUS REAL_NICHE ("workflow automation system for
+# logistics companies") — exactly the collision this file's own comments
+# below already anticipated for test-internal writes, just from a real
+# external run instead. Switched to another real, currently-unproduced
+# SEED_CATEGORIES entry rather than leaving this suite permanently
+# broken by tonight's legitimate real work.
 
 
 def _temp_path(suffix=".jsonl"):
