@@ -894,16 +894,17 @@ def _full_cycle():
 
 
 def _check_paddle_checkout_status():
-    """ADR-085: re-attempts Paddle checkout-link creation for the real,
-    already-created $388 techdoc price (ADR-074). Sends a real, one-time
-    Arabic Telegram message the moment Paddle's account-onboarding gate
-    clears (direct Bot API send -- bypasses n8n, same precedent as
-    ADR-072/ADR-074's addenda). Reports honestly, with no message sent,
-    while transaction_checkout_not_enabled is still the real Paddle
-    response -- this is the expected result on every run before the
-    founder finishes onboarding in vendors.paddle.com."""
+    """ADR-085/ADR-086: re-attempts Paddle checkout-link creation for
+    every real product in data/paddle_products.json (5 as of ADR-086 --
+    the original $388 techdoc plus 4 more queued the same night). Sends a
+    real, one-time Arabic Telegram message per product the moment
+    Paddle's account-onboarding gate clears (direct Bot API send --
+    bypasses n8n, same precedent as ADR-072/ADR-074's addenda). Reports
+    honestly, with no message sent, while transaction_checkout_not_enabled
+    is still the real Paddle response -- this is the expected result on
+    every run before the founder finishes onboarding in vendors.paddle.com."""
     from scripts import check_paddle_checkout_status
-    return check_paddle_checkout_status.check_and_notify()
+    return check_paddle_checkout_status.check_and_notify_all()
 
 
 _ENDPOINTS = {

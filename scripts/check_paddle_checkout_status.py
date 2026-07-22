@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Paddle checkout readiness check (ADR-085).
+"""OpenClaw Factory — Paddle checkout readiness check (ADR-085/ADR-086).
 
 ADR-074 created the first real Paddle product+price (the $388 techdoc,
 "AI-Powered Compliance Automation System for Accounting Firms") and found
@@ -9,23 +9,27 @@ checkout-link creation blocked by Paddle's own account-onboarding gate
 not a code defect. That gate is entirely on Paddle's side; nothing here
 can clear it, only detect the moment it clears.
 
-This script re-attempts `create_checkout_transaction()` for that exact,
-already-existing price (never creates a new product/price — that would
-mean a second real Paddle product for the same techdoc). Two outcomes:
+ADR-086 (2026-07-22) extended this from one hardcoded product to a real
+registry (`data/paddle_products.json`) — 4 more real products were priced
+and queued the same night, and checkout will clear for the whole account
+at once, not per-product, so all 5 need checking together.
+
+For every product in the registry, re-attempts `create_checkout_transaction()`
+for its already-existing price (never creates a new product/price). Two
+outcomes per product:
 
   - Still blocked (`transaction_checkout_not_enabled`): reported quietly,
-    no Telegram message. Onboarding isn't done yet; this is the expected,
-    ordinary case every time this runs before that.
+    no Telegram message. Expected on every run before onboarding clears.
   - Real checkout URL returned: sent directly to the founder's Telegram in
     Arabic (channels/telegram_direct.py — bypasses n8n on purpose, same
-    precedent as ADR-072/ADR-074's addendum for critical one-off
-    messages) and recorded in data/paddle_checkout_notifications.json so
-    a second run never re-sends the same real link.
+    precedent as ADR-072/ADR-074's addendum) and recorded in
+    data/paddle_checkout_notifications.json, keyed per price_id, so a
+    later run never re-sends the same real link.
 
 This factory deliberately has no scheduler (CLAUDE.md, ADR-035/036) — so
 "automatic" here means zero further code changes and one click away, via
 the `check-paddle-checkout-status` Mission Control action, not a
-background timer. See ADR-085 for the full reasoning.
+background timer. See ADR-085/ADR-086 for the full reasoning.
 
 CLI mirrors scripts/poll_sales.py's stdin/stdout JSON convention:
 
@@ -35,6 +39,7 @@ CLI mirrors scripts/poll_sales.py's stdin/stdout JSON convention:
 import argparse
 import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
@@ -44,18 +49,20 @@ if str(_FACTORY_ROOT) not in sys.path:
 from channels import paddle_publisher
 from channels import telegram_direct
 
-# ADR-074: the exact, already-created $388 techdoc product/price. Hardcoded
-# deliberately — re-deriving this from a live list_products() search on
-# every check would risk silently matching a different product if
-# custom_data ever drifts; the known-good IDs from the ADR are the ground
-# truth here, and a mismatch should surface as a clear Paddle error, not a
-# guessed substitute.
-KNOWN_PRODUCT_ID = "pro_01kxtd3xzaz0nmfgphk55brhn7"
-KNOWN_PRICE_ID = "pri_01kxtd4p62t4m7ezap61k5ree0"
-KNOWN_PRODUCT_TITLE = "AI-Powered Compliance Automation System for Accounting Firms"
-KNOWN_PRICE_USD = 388.00
-
+DEFAULT_REGISTRY_PATH = _FACTORY_ROOT / "data" / "paddle_products.json"
 DEFAULT_STATE_PATH = _FACTORY_ROOT / "data" / "paddle_checkout_notifications.json"
+
+
+def _load_product_registry(registry_path=None):
+    path = Path(registry_path) if registry_path else DEFAULT_REGISTRY_PATH
+    if not path.exists():
+        return []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except (json.JSONDecodeError, OSError):
+        return []
 
 
 def _read_state(state_path=None):
@@ -76,24 +83,30 @@ def _write_state(state, state_path=None):
         json.dump(state, f, ensure_ascii=False, indent=2)
 
 
-def _build_arabic_message(checkout_url):
+def _build_arabic_message(title, price, checkout_url):
     return (
         "\U0001F4B0 رابط الدفع جاهز!\n\n"
-        f"المنتج: نظام أتمتة الامتثال بالذكاء الاصطناعي لمكاتب المحاسبة\n"
-        f"السعر: ${KNOWN_PRICE_USD:.2f}\n\n"
+        f"المنتج: {title}\n"
+        f"السعر: ${price:.2f}\n\n"
         f"رابط الدفع الحقيقي:\n{checkout_url}"
     )
 
 
-def check_and_notify(state_path=None, env_path=None):
-    """Returns a dict describing exactly what happened — never raises.
-    already_notified=True means a real link was already sent in a prior
-    run and this call intentionally sent nothing new."""
+def check_and_notify(product, state_path=None, env_path=None):
+    """One product through the readiness check. `product` is a dict with
+    at least title/price_id/price. Returns a dict describing exactly what
+    happened — never raises. already_notified=True means a real link was
+    already sent in a prior run and this call intentionally sent nothing
+    new."""
+    price_id = product["price_id"]
+    title = product.get("title", price_id)
+    price = product.get("price", 0.0)
+
     state = _read_state(state_path)
-    existing = state.get(KNOWN_PRICE_ID)
+    existing = state.get(price_id)
     if existing and existing.get("notified"):
         return {
-            "success": True, "checkout_ready": True, "already_notified": True,
+            "title": title, "success": True, "checkout_ready": True, "already_notified": True,
             "checkout_url": existing.get("checkout_url"), "telegram_sent": False,
             "notified_at": existing.get("notified_at"),
         }
@@ -101,39 +114,38 @@ def check_and_notify(state_path=None, env_path=None):
     try:
         api_key = paddle_publisher.load_api_key(env_path)
     except paddle_publisher.ConfigError as e:
-        return {"success": False, "checkout_ready": False, "error": str(e)}
+        return {"title": title, "success": False, "checkout_ready": False, "error": str(e)}
 
     try:
-        _txn, checkout_url = paddle_publisher.create_checkout_transaction(api_key, KNOWN_PRICE_ID)
+        _txn, checkout_url = paddle_publisher.create_checkout_transaction(api_key, price_id)
     except RuntimeError as e:
         # ADR-074 found Paddle's real error body puts this reason in
         # `detail`, not the `code` -- and _raise_with_paddle_error() prefers
         # `detail` when both exist, so the code string
         # "transaction_checkout_not_enabled" often never appears in the
-        # message text at all. Confirmed live (2026-07-18, 2026-07-19, and
-        # again here) that the real detail text is always some variant of
+        # message text at all. Confirmed live (2026-07-18, 2026-07-19,
+        # 2026-07-22) that the real detail text is always some variant of
         # "checkout... [not/aren't] ...enabled ... account" -- match on
         # that combination rather than the code, which this account's real
         # responses don't actually surface.
         msg = str(e).lower()
         if "checkout" in msg and "enabled" in msg and "account" in msg:
             return {
-                "success": True, "checkout_ready": False, "already_notified": False,
+                "title": title, "success": True, "checkout_ready": False, "already_notified": False,
                 "reason": "Paddle onboarding still incomplete (checkout not enabled for this account) — expected until the founder finishes it in vendors.paddle.com",
             }
-        return {"success": False, "checkout_ready": False, "error": str(e)}
+        return {"title": title, "success": False, "checkout_ready": False, "error": str(e)}
 
     if not checkout_url:
         # Paddle accepted the request but returned no checkout.url — a real,
         # different-shaped problem worth surfacing honestly rather than
         # silently treating as "still blocked".
-        return {"success": False, "checkout_ready": False, "error": "Paddle returned no checkout.url despite a successful transaction response"}
+        return {"title": title, "success": False, "checkout_ready": False, "error": "Paddle returned no checkout.url despite a successful transaction response"}
 
-    telegram_result = telegram_direct.send_telegram_message(_build_arabic_message(checkout_url), env_path=env_path)
+    telegram_result = telegram_direct.send_telegram_message(_build_arabic_message(title, price, checkout_url), env_path=env_path)
 
-    from datetime import datetime, timezone
     notified_at = datetime.now(timezone.utc).isoformat()
-    state[KNOWN_PRICE_ID] = {
+    state[price_id] = {
         "notified": bool(telegram_result.get("sent")),
         "checkout_url": checkout_url,
         "notified_at": notified_at if telegram_result.get("sent") else None,
@@ -142,9 +154,25 @@ def check_and_notify(state_path=None, env_path=None):
     _write_state(state, state_path)
 
     return {
-        "success": True, "checkout_ready": True, "already_notified": False,
+        "title": title, "success": True, "checkout_ready": True, "already_notified": False,
         "checkout_url": checkout_url, "telegram_sent": bool(telegram_result.get("sent")),
         "telegram_error": telegram_result.get("error"),
+    }
+
+
+def check_and_notify_all(registry_path=None, state_path=None, env_path=None):
+    """Runs check_and_notify() for every product in the registry. One
+    Paddle account has one onboarding gate — the moment it clears, every
+    product's first real check afterward will report checkout_ready=True
+    and send its own real Telegram message, not just the first one ever
+    registered."""
+    products = _load_product_registry(registry_path)
+    results = [check_and_notify(p, state_path=state_path, env_path=env_path) for p in products]
+    return {
+        "success": all(r.get("success") for r in results) if results else True,
+        "total_products": len(results),
+        "newly_ready": sum(1 for r in results if r.get("checkout_ready") and not r.get("already_notified")),
+        "results": results,
     }
 
 
@@ -160,7 +188,7 @@ def main():
         except Exception:
             pass
 
-    parser = argparse.ArgumentParser(description="Paddle checkout readiness check (ADR-085)")
+    parser = argparse.ArgumentParser(description="Paddle checkout readiness check (ADR-085/ADR-086)")
     parser.add_argument("--json", action="store_true", help="Read a JSON job from stdin, print a JSON result to stdout")
     args = parser.parse_args()
 
@@ -170,7 +198,7 @@ def main():
 
     try:
         sys.stdin.read()  # no job fields used today; kept for convention consistency
-        result = check_and_notify()
+        result = check_and_notify_all()
         emit(result)
     except Exception as e:
         emit({"success": False, "error": str(e)})

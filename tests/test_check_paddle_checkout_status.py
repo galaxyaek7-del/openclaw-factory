@@ -1,4 +1,4 @@
-"""Tests for scripts/check_paddle_checkout_status.py (ADR-085).
+"""Tests for scripts/check_paddle_checkout_status.py (ADR-085/ADR-086).
 
 Runs with stdlib unittest. No live Paddle/Telegram API call is ever made
 -- paddle_publisher.create_checkout_transaction and
@@ -21,12 +21,22 @@ if str(_FACTORY_ROOT) not in sys.path:
 from channels import paddle_publisher
 from scripts import check_paddle_checkout_status as cpcs
 
+TEST_PRODUCT = {"title": "Test Product", "product_id": "pro_test123", "price_id": "pri_test123", "price": 388.0}
+
 
 def _temp_state_path():
     fd, path = tempfile.mkstemp(suffix=".json")
     import os
     os.close(fd)
     os.remove(path)  # check_and_notify must handle a not-yet-existing file
+    return path
+
+
+def _temp_registry_path(products):
+    fd, path = tempfile.mkstemp(suffix=".json")
+    import os
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        json.dump(products, f)
     return path
 
 
@@ -53,7 +63,7 @@ class TestCheckAndNotify(unittest.TestCase):
              patch.object(cpcs.paddle_publisher, "create_checkout_transaction",
                            side_effect=RuntimeError(real_detail)), \
              patch.object(cpcs.telegram_direct, "send_telegram_message") as mock_send:
-            result = cpcs.check_and_notify(state_path=self.state_path)
+            result = cpcs.check_and_notify(TEST_PRODUCT, state_path=self.state_path)
 
         self.assertTrue(result["success"])
         self.assertFalse(result["checkout_ready"])
@@ -64,7 +74,7 @@ class TestCheckAndNotify(unittest.TestCase):
              patch.object(cpcs.paddle_publisher, "create_checkout_transaction",
                            side_effect=RuntimeError("Paddle create_checkout_transaction failed: HTTP 404: price_not_found")), \
              patch.object(cpcs.telegram_direct, "send_telegram_message") as mock_send:
-            result = cpcs.check_and_notify(state_path=self.state_path)
+            result = cpcs.check_and_notify(TEST_PRODUCT, state_path=self.state_path)
 
         self.assertFalse(result["success"])
         self.assertIn("price_not_found", result["error"])
@@ -76,7 +86,7 @@ class TestCheckAndNotify(unittest.TestCase):
                            return_value=({"id": "txn_123"}, "https://checkout.paddle.com/real-link")), \
              patch.object(cpcs.telegram_direct, "send_telegram_message",
                            return_value={"sent": True, "message_id": 99, "error": None}) as mock_send:
-            result = cpcs.check_and_notify(state_path=self.state_path)
+            result = cpcs.check_and_notify(TEST_PRODUCT, state_path=self.state_path)
 
         self.assertTrue(result["success"])
         self.assertTrue(result["checkout_ready"])
@@ -86,6 +96,7 @@ class TestCheckAndNotify(unittest.TestCase):
         sent_text = mock_send.call_args[0][0]
         self.assertIn("https://checkout.paddle.com/real-link", sent_text)
         self.assertIn("388", sent_text)
+        self.assertIn("Test Product", sent_text)
 
     def test_second_run_after_real_send_is_idempotent_never_resends(self):
         with patch.object(cpcs.paddle_publisher, "load_api_key", return_value="fake-key"), \
@@ -93,11 +104,11 @@ class TestCheckAndNotify(unittest.TestCase):
                            return_value=({"id": "txn_123"}, "https://checkout.paddle.com/real-link")), \
              patch.object(cpcs.telegram_direct, "send_telegram_message",
                            return_value={"sent": True, "message_id": 99, "error": None}):
-            cpcs.check_and_notify(state_path=self.state_path)
+            cpcs.check_and_notify(TEST_PRODUCT, state_path=self.state_path)
 
         with patch.object(cpcs.paddle_publisher, "create_checkout_transaction") as mock_create, \
              patch.object(cpcs.telegram_direct, "send_telegram_message") as mock_send:
-            result = cpcs.check_and_notify(state_path=self.state_path)
+            result = cpcs.check_and_notify(TEST_PRODUCT, state_path=self.state_path)
 
         self.assertTrue(result["already_notified"])
         mock_create.assert_not_called()  # never even re-hits Paddle once already notified
@@ -106,7 +117,7 @@ class TestCheckAndNotify(unittest.TestCase):
     def test_missing_api_key_is_reported_not_raised(self):
         with patch.object(cpcs.paddle_publisher, "load_api_key",
                            side_effect=paddle_publisher.ConfigError("PADDLE_API_KEY not set")):
-            result = cpcs.check_and_notify(state_path=self.state_path)
+            result = cpcs.check_and_notify(TEST_PRODUCT, state_path=self.state_path)
         self.assertFalse(result["success"])
         self.assertIn("PADDLE_API_KEY", result["error"])
 
@@ -118,7 +129,7 @@ class TestCheckAndNotify(unittest.TestCase):
                            return_value=({"id": "txn_123"}, "https://checkout.paddle.com/real-link")), \
              patch.object(cpcs.telegram_direct, "send_telegram_message",
                            return_value={"sent": False, "message_id": None, "error": "bot blocked"}):
-            result = cpcs.check_and_notify(state_path=self.state_path)
+            result = cpcs.check_and_notify(TEST_PRODUCT, state_path=self.state_path)
 
         self.assertTrue(result["checkout_ready"])
         self.assertFalse(result["telegram_sent"])
@@ -128,7 +139,59 @@ class TestCheckAndNotify(unittest.TestCase):
         # a later retry should try sending again, not silently skip forever.
         with open(self.state_path, "r", encoding="utf-8") as f:
             state = json.load(f)
-        self.assertFalse(state[cpcs.KNOWN_PRICE_ID]["notified"])
+        self.assertFalse(state[TEST_PRODUCT["price_id"]]["notified"])
+
+
+class TestCheckAndNotifyAll(unittest.TestCase):
+    """ADR-086: the registry grew from 1 hardcoded product to N real
+    products the same night — every product must be checked, not just
+    the first one ever registered."""
+
+    def setUp(self):
+        self.state_path = _temp_state_path()
+        self.registry_path = _temp_registry_path([
+            {"title": "Product A", "product_id": "pro_a", "price_id": "pri_a", "price": 100.0},
+            {"title": "Product B", "product_id": "pro_b", "price_id": "pri_b", "price": 200.0},
+        ])
+
+    def tearDown(self):
+        import os
+        for p in (self.state_path, self.registry_path):
+            if os.path.exists(p):
+                os.remove(p)
+
+    def test_checks_every_product_in_the_registry(self):
+        with patch.object(cpcs.paddle_publisher, "load_api_key", return_value="fake-key"), \
+             patch.object(cpcs.paddle_publisher, "create_checkout_transaction",
+                           side_effect=RuntimeError("checkout not yet enabled for this account")), \
+             patch.object(cpcs.telegram_direct, "send_telegram_message") as mock_send:
+            result = cpcs.check_and_notify_all(registry_path=self.registry_path, state_path=self.state_path)
+
+        self.assertEqual(result["total_products"], 2)
+        self.assertEqual(result["newly_ready"], 0)
+        self.assertEqual({r["title"] for r in result["results"]}, {"Product A", "Product B"})
+        mock_send.assert_not_called()
+
+    def test_reports_newly_ready_count_and_sends_one_message_per_product(self):
+        with patch.object(cpcs.paddle_publisher, "load_api_key", return_value="fake-key"), \
+             patch.object(cpcs.paddle_publisher, "create_checkout_transaction",
+                           side_effect=lambda api_key, price_id: ({"id": "txn"}, f"https://checkout.paddle.com/{price_id}")), \
+             patch.object(cpcs.telegram_direct, "send_telegram_message",
+                           return_value={"sent": True, "message_id": 1, "error": None}) as mock_send:
+            result = cpcs.check_and_notify_all(registry_path=self.registry_path, state_path=self.state_path)
+
+        self.assertEqual(result["newly_ready"], 2)
+        self.assertEqual(mock_send.call_count, 2)
+
+    def test_empty_registry_is_honestly_empty_never_an_error(self):
+        empty_registry = _temp_registry_path([])
+        try:
+            result = cpcs.check_and_notify_all(registry_path=empty_registry, state_path=self.state_path)
+            self.assertEqual(result["total_products"], 0)
+            self.assertEqual(result["results"], [])
+        finally:
+            import os
+            os.remove(empty_registry)
 
 
 if __name__ == "__main__":

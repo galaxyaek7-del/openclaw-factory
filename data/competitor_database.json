@@ -3308,5 +3308,61 @@
       "hit": false,
       "age_days": 0
     }
+  },
+  "ai customer support automation platform for e-commerce businesses": {
+    "niche": "AI customer support automation platform for e-commerce businesses",
+    "discovered_at": "2026-07-22T09:19:17.818305+00:00",
+    "total_found": 2,
+    "by_category": {
+      "Unclassified": [
+        "AhmadFaour9/NexusAI-Intelligent-Customer-Experience-Platform",
+        "Aditya2005-cloud/N8Nproject-main"
+      ]
+    },
+    "competitors": [
+      {
+        "name": "AhmadFaour9/NexusAI-Intelligent-Customer-Experience-Platform",
+        "url": "https://api.github.com/repos/AhmadFaour9/NexusAI-Intelligent-Customer-Experience-Platform",
+        "source": "github",
+        "category": "Unclassified",
+        "category_reason": "إشارة ضعيفة جداً (0 نجمة، owner_type=User) — لا ثقة كافية للتصنيف",
+        "metrics": {
+          "website_visits": "لا أداة قياس زيارات مجانية متصلة (SimilarWeb/Ahrefs تحتاج اشتراكاً مدفوعاً)",
+          "seo_rank": "لا أداة SEO مجانية متصلة",
+          "company_size": "لا مصدر مجاني حقيقي لحجم الشركة",
+          "pricing_model": "غير قابل للاستنتاج بثقة من بيانات HN/GitHub وحدها",
+          "github_stars": 0,
+          "github_forks": 0,
+          "open_issues": 0,
+          "last_updated": "2026-03-17T19:40:10Z",
+          "development_velocity": "راكد على الأرجح (آخر push منذ 190 يوماً، حقيقي)"
+        }
+      },
+      {
+        "name": "Aditya2005-cloud/N8Nproject-main",
+        "url": "https://api.github.com/repos/Aditya2005-cloud/N8Nproject-main",
+        "source": "github",
+        "category": "Unclassified",
+        "category_reason": "إشارة ضعيفة جداً (0 نجمة، owner_type=User) — لا ثقة كافية للتصنيف",
+        "metrics": {
+          "website_visits": "لا أداة قياس زيارات مجانية متصلة (SimilarWeb/Ahrefs تحتاج اشتراكاً مدفوعاً)",
+          "seo_rank": "لا أداة SEO مجانية متصلة",
+          "company_size": "لا مصدر مجاني حقيقي لحجم الشركة",
+          "pricing_model": "غير قابل للاستنتاج بثقة من بيانات HN/GitHub وحدها",
+          "github_stars": 0,
+          "github_forks": 0,
+          "open_issues": 0,
+          "last_updated": "2026-07-06T08:05:24Z",
+          "development_velocity": "نشط جزئياً (آخر push منذ 41 يوماً، حقيقي)"
+        }
+      }
+    ],
+    "market_saturation": "Unknown — يحتاج بيانات حجم سوق حقيقي (TAM)، لا عدد نتائج بحث فقط (ADR-040)",
+    "barrier_to_entry": "Unknown — لا مؤشر تقني/رأسمالي حقيقي متاح من HN/GitHub وحدهما",
+    "pricing_power": "Unknown — يحتاج بيانات مبيعات حقيقية، صفر مبيعات اليوم",
+    "_cache": {
+      "hit": false,
+      "age_days": 0
+    }
   }
 }
