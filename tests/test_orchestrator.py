@@ -151,7 +151,14 @@ class _IsolatedRunCycleTestCase(unittest.TestCase):
         patcher3 = patch("market_intelligence_engine._query_hn_discussions", return_value=([], 0))
         patcher4 = patch("market_intelligence_engine._query_github_issues", return_value=([], 0))
         patcher5 = patch("competitor_discovery.COMPETITOR_DB_FILE", self.competitor_db_path)
-        for p in (patcher1, patcher2, patcher3, patcher4, patcher5):
+        # Opportunity Rejection Investigation (2026-07-22): reformulate_pain_
+        # query() now makes a real (costly, non-deterministic) Groq call and
+        # _query_stack_overflow_for_pain() a real network call unless
+        # mocked -- found live: an earlier run of this suite without these
+        # two mocks leaked 38 real Groq calls into data/ai_cost_log.jsonl.
+        patcher6 = patch("market_intelligence_engine.reformulate_pain_query", return_value=("test", "literal_fallback", None))
+        patcher7 = patch("market_intelligence_engine._query_stack_overflow_for_pain", return_value=([], 0))
+        for p in (patcher1, patcher2, patcher3, patcher4, patcher5, patcher6, patcher7):
             p.start()
             self.addCleanup(p.stop)
 

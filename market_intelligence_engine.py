@@ -134,13 +134,118 @@ def _count_keyword_hits(text, keywords):
     return sum(1 for k in keywords if k in text_lower)
 
 
+# ── SEMANTIC QUERY REFORMULATION (Opportunity Rejection Investigation,
+# 2026-07-22) ──
+#
+# Root cause, confirmed directly against this factory's own real history:
+# 6 of the 8 highest-scoring real opportunities ever scored (86-90.5/100,
+# far above every acceptance bar) returned ZERO real customer-pain matches,
+# because the search queried GitHub Issues/HN for the literal branded
+# product name ("AI Agent Blueprint for Freelance Security Pentesting
+# Automation") -- a phrase no real developer would ever type into a bug
+# report. It searched for the pitch, not the pain. This was never a
+# scoring-threshold problem; it was a query-design defect starving good
+# candidates of the evidence that would let them clear the AI-CEO's
+# confidence gate.
+#
+# Fix: reformulate the niche into a natural problem-description query
+# before searching -- real semantic understanding via the one real LLM
+# call this factory already has (book_generator.groq_chat(), same
+# model/key/cost-logging as every other real Groq call here), not a
+# second keyword list dressed up as "semantic". Degrades honestly in
+# strict order, never fabricates a query, never silently hides which
+# method actually ran:
+#   1. groq_semantic       -- real LLM call succeeds
+#   2. deterministic_fallback -- Groq unavailable/fails: real (not
+#      invented) string manipulation, stripping common template/marketing
+#      scaffolding words so the remainder reads closer to a problem domain
+#   3. literal_fallback    -- both above produced nothing usable: the
+#      original (pre-fix) behavior, used as an absolute last resort, never
+#      silently passed off as an improvement
+
+_TEMPLATE_WORDS_TO_STRIP = [
+    "ai agent blueprint for", "ai agent blueprint", "blueprint for", "blueprint",
+    "automation platform for", "automation system for", "automation tool for",
+    "automation toolkit for", "automation for", "automation",
+    "platform for", "system for", "toolkit for", "tool for",
+]
+
+
+def _deterministic_query_fallback(niche):
+    """No Groq available -- a real, deterministic simplification (never a
+    guess at meaning): strip common template/marketing scaffolding words
+    so the remaining phrase reads closer to a real problem domain. Weaker
+    signal than the Groq-based reformulation, but still strictly better
+    than searching the literal branded pitch verbatim."""
+    q = (niche or "").lower()
+    for phrase in _TEMPLATE_WORDS_TO_STRIP:
+        q = q.replace(phrase, " ")
+    q = re.sub(r"\s+", " ", q).strip()
+    return q or niche
+
+
+def reformulate_pain_query(niche):
+    """Returns (query, method, note). Never raises -- a reformulation
+    failure must never break customer-pain analysis, it just falls back
+    to a weaker (but still real, still logged) query."""
+    niche = str(niche or "").strip()
+    if not niche:
+        return niche, "literal_fallback", "نيتش فارغ"
+
+    try:
+        from book_generator import groq_chat
+        system = (
+            "You extract the real-world problem a product idea solves. "
+            "Respond with ONLY a short phrase (5-12 words) describing the "
+            "underlying frustration or task, phrased the way someone would "
+            "describe it in a support ticket, bug report, or forum post -- "
+            "no product names, no marketing language, no punctuation beyond spaces."
+        )
+        # cost_context must be a dict, matching every other real groq_chat()
+        # caller (book_generator.py) -- knowledge_graph/build.py reads
+        # context.niche to build a real AIProvider edge; a bare string here
+        # broke that assumption (found live, 2026-07-22).
+        result = groq_chat(system, niche, max_tokens=40, retries=1, cost_context={"niche": niche, "purpose": "customer_pain_query_reformulation"})
+        query = (result or "").strip().strip('"').strip("'").strip()
+        if query and len(query) >= 5:
+            return query, "groq_semantic", None
+        return _deterministic_query_fallback(niche), "deterministic_fallback", "رد Groq فارغ أو قصير جداً ليكون استعلاماً حقيقياً"
+    except Exception as e:
+        return _deterministic_query_fallback(niche), "deterministic_fallback", f"Groq غير متاح: {e}"
+
+
+def _query_stack_overflow_for_pain(query, limit=10):
+    """Reuses multi_source_intelligence's real, already-tested Stack
+    Exchange connector verbatim (Opportunity Rejection Investigation,
+    2026-07-22, mission point 2: expand evidence collection) -- a genuine
+    third independent source, not a re-implementation. Its search API
+    returns title/view_count/answer_count/score only (no body text), so
+    keyword-hit counting here is honestly title-only -- a real but
+    narrower signal than GitHub Issues/HN, never presented as equivalent."""
+    try:
+        from multi_source_intelligence.connectors.stack_overflow import _query_stack_overflow
+        items = _query_stack_overflow(query, max_results=limit)
+        return items, len(items)
+    except Exception:
+        return [], 0
+
+
 def analyze_customer_pain(niche, max_results=10):
-    """Real signal only: severity from real reaction/comment counts,
+    """Real signal only: severity from real reaction/comment/view counts,
     frequency from real result counts, willingness-to-pay from real
-    keyword presence in real issue/discussion text. Reddit and Product
-    Hunt are explicitly Unknown — no access today (BLOCKERS.md)."""
-    issues, issues_total = _query_github_issues(niche, max_results)
-    discussions, hn_total = _query_hn_discussions(f"{niche} problem", max_results)
+    keyword presence in real issue/discussion/question text. Reddit and
+    Product Hunt are explicitly Unknown — no access today (BLOCKERS.md).
+
+    Opportunity Rejection Investigation (2026-07-22): searches a real
+    reformulated problem-description query (reformulate_pain_query()),
+    never the literal niche/product name -- see that function's docstring
+    for why. Also now checks Stack Overflow, a genuine third real source
+    (mission point 2), alongside GitHub Issues and Hacker News."""
+    query, query_method, query_note = reformulate_pain_query(niche)
+
+    issues, issues_total = _query_github_issues(query, max_results)
+    discussions, hn_total = _query_hn_discussions(f"{query} problem", max_results)
+    so_questions, so_total = _query_stack_overflow_for_pain(query, max_results)
 
     severity_signals = []
     pain_hits = 0
@@ -157,14 +262,19 @@ def analyze_customer_pain(niche, max_results=10):
         severity_signals.append(d.get('points', 0) + d.get('num_comments', 0))
         pain_hits += _count_keyword_hits(text, PAIN_KEYWORDS)
         payment_hits += _count_keyword_hits(text, WILLINGNESS_TO_PAY_KEYWORDS)
+    for q in so_questions:
+        text = q.get('title', '') or ''
+        severity_signals.append(q.get('view_count', 0) // 100 + q.get('answer_count', 0) * 5)
+        pain_hits += _count_keyword_hits(text, PAIN_KEYWORDS)
+        payment_hits += _count_keyword_hits(text, WILLINGNESS_TO_PAY_KEYWORDS)
 
     avg_severity = round(sum(severity_signals) / len(severity_signals), 1) if severity_signals else None
-    frequency = issues_total + hn_total
+    frequency = issues_total + hn_total + so_total
 
-    if not issues and not discussions:
+    if not issues and not discussions and not so_questions:
         pain_score = None
         confidence = "low"
-        reason = "لا نتائج حقيقية من GitHub Issues أو Hacker News لهذا النيتش — لا يمكن تقييم الألم بلا دليل"
+        reason = f"لا نتائج حقيقية من GitHub Issues أو Hacker News أو Stack Overflow لاستعلام \"{query}\" — لا يمكن تقييم الألم بلا دليل"
     else:
         # Real, bounded, explainable combination — not a fabricated single
         # number: frequency (log-scaled like ADR-038/041) + real severity
@@ -174,22 +284,31 @@ def analyze_customer_pain(niche, max_results=10):
         severity_score = max(0, min(100, round((avg_severity or 0) * 2)))
         payment_score = min(100, payment_hits * 25)
         pain_score = round(freq_score * 0.4 + severity_score * 0.4 + payment_score * 0.2)
-        confidence = "medium" if (len(issues) + len(discussions)) >= 5 else "low"
+        confidence = "medium" if (len(issues) + len(discussions) + len(so_questions)) >= 5 else "low"
         reason = (
             f"{len(issues)} GitHub issue حقيقي (من أصل {issues_total} إجمالاً)، "
             f"{len(discussions)} نقاش HN حقيقي (من أصل {hn_total} إجمالاً)، "
-            f"{pain_hits} إشارة ألم لغوية حقيقية، {payment_hits} إشارة استعداد دفع حقيقية"
+            f"{len(so_questions)} سؤال Stack Overflow حقيقي (من أصل {so_total} إجمالاً)، "
+            f"{pain_hits} إشارة ألم لغوية حقيقية، {payment_hits} إشارة استعداد دفع حقيقية "
+            f"(استعلام: \"{query}\", طريقة: {query_method})"
         )
 
     return {
         "pain_score": pain_score,
         "confidence": confidence,
         "reason": reason,
+        # Full explainability (mission point 4): exactly what was searched
+        # and how that query was produced, never hidden inside "reason".
+        "query_used": query,
+        "query_method": query_method,
+        "query_note": query_note,
         "real_evidence": {
             "github_issues_found": len(issues),
             "github_issues_total": issues_total,
             "hn_discussions_found": len(discussions),
             "hn_discussions_total": hn_total,
+            "stack_overflow_found": len(so_questions),
+            "stack_overflow_total": so_total,
             "avg_severity_signal": avg_severity,
             "pain_language_hits": pain_hits,
             "willingness_to_pay_hits": payment_hits,

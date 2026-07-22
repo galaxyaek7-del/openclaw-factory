@@ -116,6 +116,22 @@ class TestBuildGraph(unittest.TestCase):
         cost_edges = [e for e in graph["edges"] if e["relation"] == "cost_incurred_from"]
         self.assertEqual(len(cost_edges), 0)
 
+    def test_malformed_string_context_never_crashes_the_build(self):
+        """Found live (2026-07-22): a caller logging a bare string as
+        cost_context (instead of the dict every real caller uses) crashed
+        the whole graph build on entry.get("context").get("niche"). One
+        malformed log line must never take down the rest of the graph."""
+        d, a, l, c = self._paths_for(
+            ai_costs=[
+                {"model": "llama-3.1-8b-instant", "context": "not_a_dict", "cost_usd": 0.01},
+                {"model": "llama-3.1-8b-instant", "context": {"niche": "test niche"}, "cost_usd": 0.01},
+            ],
+            decisions=[{"niche": "test niche", "decision_id": "dec1", "status": "ACCEPTED"}],
+        )
+        graph = build.build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c)
+        cost_edges = [e for e in graph["edges"] if e["relation"] == "cost_incurred_from"]
+        self.assertEqual(len(cost_edges), 1)  # the malformed entry contributed nothing, but didn't crash the good one either
+
     def test_empty_everything_never_throws(self):
         d, a, l, c = self._paths_for()
         graph = build.build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c)

@@ -96,7 +96,12 @@ class TestEvaluateAndDecide(unittest.TestCase):
         patcher3 = patch("market_intelligence_engine._query_hn_discussions", return_value=([], 0))
         patcher4 = patch("market_intelligence_engine._query_github_issues", return_value=([], 0))
         patcher5 = patch("competitor_discovery.COMPETITOR_DB_FILE", self.competitor_db_path)
-        for p in (patcher1, patcher2, patcher3, patcher4, patcher5):
+        # Opportunity Rejection Investigation (2026-07-22): reformulate_pain_
+        # query() now makes a real Groq call and _query_stack_overflow_for_pain()
+        # a real network call unless mocked.
+        patcher6 = patch("market_intelligence_engine.reformulate_pain_query", return_value=("test", "literal_fallback", None))
+        patcher7 = patch("market_intelligence_engine._query_stack_overflow_for_pain", return_value=([], 0))
+        for p in (patcher1, patcher2, patcher3, patcher4, patcher5, patcher6, patcher7):
             p.start()
             self.addCleanup(p.stop)
 
@@ -144,6 +149,26 @@ class TestEvaluateAndDecide(unittest.TestCase):
         )
         history = store.find_decisions_by_niche("workflow automation system for logistics companies", path=self.decisions_path)
         self.assertEqual(history[0]["ladder"], "b2b_systems")
+
+    def test_ladder_components_scalability_and_recurring_revenue_are_persisted(self):
+        """Opportunity Rejection Investigation (2026-07-22), mission point 7:
+        an accepted opportunity must include scalability + long-term
+        strategic value. ladder_opportunity_score()'s recurring_revenue_
+        potential/reusability were computed but silently discarded before
+        this fix -- same pattern as record_ladder_decision()/
+        analyze_opportunity(), fixed the same day."""
+        d = engine.evaluate_and_decide(
+            "workflow automation system for logistics companies",
+            ladder="b2b_systems", decisions_path=self.decisions_path, analysis_db_file=self.analysis_db_path,
+        )
+        components = d.evaluation_snapshot.get("ladder_components")
+        self.assertIsNotNone(components)
+        self.assertIn("reusability", components)
+        self.assertIn("recurring_revenue_potential", components)
+
+    def test_no_ladder_means_no_ladder_components_key_never_a_fabricated_one(self):
+        d = engine.evaluate_and_decide("a reproducibility test niche", decisions_path=self.decisions_path, analysis_db_file=self.analysis_db_path)
+        self.assertNotIn("ladder_components", d.evaluation_snapshot)
 
     def test_status_derivation_build_and_accepted_is_accepted(self):
         self.assertEqual(engine._derive_status("BUILD", True), "ACCEPTED")

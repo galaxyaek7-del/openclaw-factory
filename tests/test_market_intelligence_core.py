@@ -138,17 +138,27 @@ class TestCoreEvaluateOpportunity(unittest.TestCase):
         self.assertIn("error", result)
         self.assertEqual(result["dimension_scores"], {})
 
+    @patch("market_intelligence_engine._query_stack_overflow_for_pain")
+    @patch("market_intelligence_engine.reformulate_pain_query")
     @patch("competitor_discovery._query_github")
     @patch("competitor_discovery._query_hn")
     @patch("market_intelligence_engine._query_hn_discussions")
     @patch("market_intelligence_engine._query_github_issues")
     def test_legacy_shape_is_fully_preserved_and_dimension_scores_is_additive(
-        self, mock_issues, mock_hn_disc, mock_cd_hn, mock_cd_gh
+        self, mock_issues, mock_hn_disc, mock_cd_hn, mock_cd_gh, mock_reformulate, mock_so
     ):
         mock_issues.return_value = ([], 0)
         mock_hn_disc.return_value = ([], 0)
         mock_cd_hn.return_value = []
         mock_cd_gh.return_value = []
+        # Opportunity Rejection Investigation (2026-07-22): reformulate_pain_
+        # query() now makes a real (non-deterministic) Groq call -- this test
+        # calls analyze_opportunity() twice for the SAME niche and asserts
+        # byte-identical customer_pain output, so the query must be pinned
+        # to a fixed value across both calls, same as every other test in
+        # this suite mocks out live-network/live-LLM dependencies.
+        mock_reformulate.return_value = ("a core equivalence test niche", "literal_fallback", None)
+        mock_so.return_value = ([], 0)
 
         from market_intelligence_core import core
 
@@ -170,17 +180,21 @@ class TestCoreEvaluateOpportunity(unittest.TestCase):
             for field in ("raw_data", "normalized_score", "confidence", "explanation"):
                 self.assertIn(field, result["dimension_scores"][dim])
 
+    @patch("market_intelligence_engine._query_stack_overflow_for_pain")
+    @patch("market_intelligence_engine.reformulate_pain_query")
     @patch("competitor_discovery._query_github")
     @patch("competitor_discovery._query_hn")
     @patch("market_intelligence_engine._query_hn_discussions")
     @patch("market_intelligence_engine._query_github_issues")
     def test_dimension_scores_never_invents_a_number_for_discovery_dimensions(
-        self, mock_issues, mock_hn_disc, mock_cd_hn, mock_cd_gh
+        self, mock_issues, mock_hn_disc, mock_cd_hn, mock_cd_gh, mock_reformulate, mock_so
     ):
         mock_issues.return_value = ([], 0)
         mock_hn_disc.return_value = ([], 0)
         mock_cd_hn.return_value = []
         mock_cd_gh.return_value = []
+        mock_reformulate.return_value = ("a totally generic niche xyz", "literal_fallback", None)
+        mock_so.return_value = ([], 0)
 
         from market_intelligence_core import core
         result = core.evaluate_opportunity("a totally generic niche xyz", analysis_db_file=self.db_path)

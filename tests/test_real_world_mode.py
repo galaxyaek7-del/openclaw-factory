@@ -124,6 +124,11 @@ class TestRunRealWorldCycle(unittest.TestCase):
             patch("market_intelligence_engine._query_hn_discussions", return_value=([], 0)),
             patch("market_intelligence_engine._query_github_issues", return_value=([], 0)),
             patch("competitor_discovery.COMPETITOR_DB_FILE", self.competitor_db_path),
+            # Opportunity Rejection Investigation (2026-07-22): reformulate_
+            # pain_query() now makes a real Groq call and
+            # _query_stack_overflow_for_pain() a real network call unless mocked.
+            patch("market_intelligence_engine.reformulate_pain_query", return_value=("test", "literal_fallback", None)),
+            patch("market_intelligence_engine._query_stack_overflow_for_pain", return_value=([], 0)),
         ):
             p.start()
             self.addCleanup(p.stop)

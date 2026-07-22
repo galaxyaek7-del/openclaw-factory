@@ -100,6 +100,15 @@ def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=1
         composite_accepted = composite["accepted"]
         composite_reason = composite["reason"]
         score_label = "Ladder Opportunity Score (ADR-066)"
+        # Opportunity Rejection Investigation (2026-07-22), mission point 7:
+        # an accepted opportunity must include scalability + long-term
+        # strategic value. ladder_opportunity_score() already computes
+        # recurring_revenue_potential/reusability (the real per-ladder
+        # proxies for those) but they were silently discarded before this
+        # fix -- only composite_score/composite_accepted were kept, same
+        # "computed then dropped" pattern found and fixed twice already
+        # today (record_ladder_decision(), analyze_opportunity()).
+        analysis["ladder_components"] = composite.get("components")
     else:
         composite = profit_oracle.opportunity_score(niche, tier=tier, external_signal=external_signal)
         composite_score = composite["opportunity_score"]

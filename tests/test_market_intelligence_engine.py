@@ -22,6 +22,21 @@ import market_intelligence_engine as mie
 
 
 class TestCustomerPainIntelligence(unittest.TestCase):
+    """Opportunity Rejection Investigation (2026-07-22): every test here
+    mocks reformulate_pain_query() to return the niche verbatim
+    ("literal_fallback"), so this class keeps testing the existing GitHub/
+    HN/Stack-Overflow aggregation logic in isolation from the new
+    reformulation step (covered separately in TestReformulatePainQuery
+    below) -- and never depends on live Groq availability."""
+
+    def setUp(self):
+        patcher = patch("market_intelligence_engine.reformulate_pain_query", return_value=("niche", "literal_fallback", None))
+        self.mock_reformulate = patcher.start()
+        self.addCleanup(patcher.stop)
+        so_patcher = patch("market_intelligence_engine._query_stack_overflow_for_pain", return_value=([], 0))
+        self.mock_so = so_patcher.start()
+        self.addCleanup(so_patcher.stop)
+
     @patch("market_intelligence_engine._query_hn_discussions")
     @patch("market_intelligence_engine._query_github_issues")
     def test_no_real_results_gives_no_score_not_a_guess(self, mock_issues, mock_hn):
@@ -63,6 +78,81 @@ class TestCustomerPainIntelligence(unittest.TestCase):
         self.assertIn("reddit", result["unknown_sources"])
         self.assertIn("product_hunt", result["unknown_sources"])
 
+    @patch("market_intelligence_engine._query_hn_discussions")
+    @patch("market_intelligence_engine._query_github_issues")
+    def test_stack_overflow_is_a_real_third_source_not_just_github_hn(self, mock_issues, mock_hn):
+        mock_issues.return_value = ([], 0)
+        mock_hn.return_value = ([], 0)
+        self.mock_so.return_value = (
+            [{"title": "so frustrating, no good solution for this", "view_count": 500, "answer_count": 3, "score": 2}],
+            20,
+        )
+        result = mie.analyze_customer_pain("niche")
+        self.assertEqual(result["real_evidence"]["stack_overflow_found"], 1)
+        self.assertEqual(result["real_evidence"]["stack_overflow_total"], 20)
+        self.assertIsNotNone(result["pain_score"])
+        self.assertGreater(result["real_evidence"]["pain_language_hits"], 0)
+
+    @patch("market_intelligence_engine._query_hn_discussions")
+    @patch("market_intelligence_engine._query_github_issues")
+    def test_query_used_and_method_are_always_reported(self, mock_issues, mock_hn):
+        """Full explainability (mission point 4): every analysis states
+        exactly what was searched and how that query was produced."""
+        mock_issues.return_value = ([], 0)
+        mock_hn.return_value = ([], 0)
+        result = mie.analyze_customer_pain("niche")
+        self.assertEqual(result["query_used"], "niche")
+        self.assertEqual(result["query_method"], "literal_fallback")
+        self.assertIn("query_note", result)
+
+
+class TestReformulatePainQuery(unittest.TestCase):
+    """Opportunity Rejection Investigation (2026-07-22): the actual fix for
+    the confirmed root cause -- literal branded product names never match
+    how a real person describes a problem. Never fabricates a query;
+    degrades honestly through 3 named methods."""
+
+    @patch("book_generator.groq_chat")
+    def test_groq_semantic_reformulation_used_when_available(self, mock_groq):
+        mock_groq.return_value = "freelance pentester manual reporting is slow and error-prone"
+        query, method, note = mie.reformulate_pain_query("AI Agent Blueprint for Freelance Security Pentesting Automation")
+        self.assertEqual(method, "groq_semantic")
+        self.assertIn("pentester", query)
+        self.assertIsNone(note)
+
+    @patch("book_generator.groq_chat")
+    def test_falls_back_to_deterministic_stripping_when_groq_fails(self, mock_groq):
+        mock_groq.side_effect = RuntimeError("فشل استدعاء Groq بعد 3 محاولات: no key")
+        query, method, note = mie.reformulate_pain_query("AI Agent Blueprint for Freelance Security Pentesting Automation")
+        self.assertEqual(method, "deterministic_fallback")
+        self.assertNotIn("blueprint", query.lower())
+        self.assertIn("freelance security pentesting", query)
+        self.assertIsNotNone(note)
+
+    @patch("book_generator.groq_chat")
+    def test_falls_back_to_deterministic_stripping_when_groq_returns_junk(self, mock_groq):
+        mock_groq.return_value = "ok"  # too short to be a real reformulation
+        query, method, note = mie.reformulate_pain_query("AI Agent Blueprint for SOC 2 Compliance Automation")
+        self.assertEqual(method, "deterministic_fallback")
+
+    def test_deterministic_fallback_strips_template_words_never_invents_meaning(self):
+        query = mie._deterministic_query_fallback("AI Agent Blueprint for EU AI Act Compliance Audit Logging")
+        self.assertNotIn("blueprint", query)
+        self.assertIn("eu ai act compliance audit logging", query)
+
+    def test_empty_niche_degrades_honestly(self):
+        query, method, note = mie.reformulate_pain_query("")
+        self.assertEqual(method, "literal_fallback")
+
+    @patch("book_generator.groq_chat")
+    def test_never_raises_even_on_unexpected_groq_error_shape(self, mock_groq):
+        mock_groq.side_effect = Exception("unexpected")
+        query, method, note = mie.reformulate_pain_query("some niche")
+        self.assertEqual(method, "deterministic_fallback")
+        self.assertIsInstance(query, str)
+
+
+class TestLowLevelPainQueries(unittest.TestCase):
     @patch("market_intelligence_engine._http_get_json")
     def test_query_github_issues_never_raises_on_network_failure(self, mock_get):
         mock_get.side_effect = Exception("network down")
@@ -184,6 +274,17 @@ class TestAnalyzeOpportunityOrchestration(unittest.TestCase):
         patcher = patch("competitor_discovery.COMPETITOR_DB_FILE", self.competitor_db_path)
         patcher.start()
         self.addCleanup(patcher.stop)
+        # Opportunity Rejection Investigation (2026-07-22): reformulate_pain_
+        # query() now makes a real Groq call and _query_stack_overflow_for_pain()
+        # a real network call unless mocked -- both redirected here so this
+        # class's own "every network-calling function is mocked" guarantee
+        # (see class docstring) still holds.
+        reformulate_patcher = patch("market_intelligence_engine.reformulate_pain_query", return_value=("test niche xyz", "literal_fallback", None))
+        reformulate_patcher.start()
+        self.addCleanup(reformulate_patcher.stop)
+        so_patcher = patch("market_intelligence_engine._query_stack_overflow_for_pain", return_value=([], 0))
+        so_patcher.start()
+        self.addCleanup(so_patcher.stop)
 
     def tearDown(self):
         if os.path.exists(self.db_path):

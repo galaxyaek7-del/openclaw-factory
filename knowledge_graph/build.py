@@ -149,7 +149,12 @@ def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_co
     # AIProvider edges (real, from ai_cost_log.jsonl's context.niche + model)
     for entry in ai_costs:
         model = entry.get("model")
-        niche = (entry.get("context") or {}).get("niche")
+        context = entry.get("context")
+        # Defensive (found live, 2026-07-22): context is a dict for every
+        # real book/content-generation call, but a caller can log a bare
+        # string (e.g. a short label) instead -- one malformed log line
+        # must never crash the whole graph build.
+        niche = context.get("niche") if isinstance(context, dict) else None
         if not model or not niche:
             continue
         provider_id = f"ai_provider:{model}"

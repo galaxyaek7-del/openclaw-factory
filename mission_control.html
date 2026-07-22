@@ -466,8 +466,10 @@ function renderGoDeepEvidenceResult(result) {
   const section = (title, body) => `<div class="card"><h3>${title}</h3>${body}</div>`;
   const okOrError = (part, render) => (part && part.ok) ? render(part.result) : `<p class="muted">${escapeHtml(part?.error ?? 'فشل غير معروف')}</p>`;
 
-  const pain = section('ألم العملاء الحقيقي (GitHub Issues + HN)', okOrError(result.customer_pain, (r) => `
+  const QUERY_METHOD_LABEL = { groq_semantic: 'فهم دلالي (Groq)', deterministic_fallback: 'تبسيط آلي احتياطي', literal_fallback: 'النيتش الحرفي (احتياطي أخير)' };
+  const pain = section('ألم العملاء الحقيقي (GitHub Issues + HN + Stack Overflow)', okOrError(result.customer_pain, (r) => `
     <p>درجة الألم: <strong>${r.pain_score ?? 'غير متاح'}</strong> (ثقة: ${escapeHtml(r.confidence)})</p>
+    <p class="muted">استعلام البحث الفعلي: "<strong>${escapeHtml(r.query_used)}</strong>" — ${escapeHtml(QUERY_METHOD_LABEL[r.query_method] ?? r.query_method)}${r.query_note ? ` (${escapeHtml(r.query_note)})` : ''}</p>
     <p class="muted">${escapeHtml(r.reason)}</p>
     <p class="muted">إشارات استعداد الدفع الحقيقية: ${r.real_evidence?.willingness_to_pay_hits ?? 0}</p>
   `));
