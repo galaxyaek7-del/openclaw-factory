@@ -27,6 +27,13 @@ DEFAULT_SNAPSHOT_TARGETS = (
     _FACTORY_ROOT / "data" / "factory_state.json",
     _FACTORY_ROOT / "data" / "production_control.json",
     _FACTORY_ROOT / "data" / "decisions.jsonl",
+    # Full Factory Integrity Audit (2026-07-22): these 4 files didn't exist
+    # when this list was last written and carry the same duplicate-write/
+    # corruption risk this snapshot system exists to protect against.
+    _FACTORY_ROOT / "data" / "market_evidence.jsonl",
+    _FACTORY_ROOT / "data" / "board_meetings.jsonl",
+    _FACTORY_ROOT / "data" / "paddle_products.json",
+    _FACTORY_ROOT / "data" / "paddle_checkout_notifications.json",
 )
 
 
