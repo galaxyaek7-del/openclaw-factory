@@ -314,6 +314,20 @@ class TestRecordLadderDecision(unittest.TestCase):
         self.assertEqual(d.evaluation_snapshot["confidence"]["level"], "متوسطة")
         self.assertEqual(d.evaluation_snapshot["defensibility"]["level"], "عالية نسبياً")
 
+    def test_market_signal_and_ai_leverage_are_persisted_proactively(self):
+        """Strategic Opportunity Intelligence Engine (2026-07-22): fixed
+        proactively this time, before ever shipping the drop."""
+        ladder_result = {
+            "accepted": True, "ladder_score": 85.3, "price": 388,
+            "reason": "accepted: test", "components": {"automation_potential": 40},
+            "market_signal": {"score": 60, "level": "مرتفعة", "note": "z"},
+            "ai_leverage": {"score": 80, "level": "عالية", "note": "w"},
+        }
+        d = engine.record_ladder_decision("test niche", "ai_saas", ladder_result, decisions_path=self.decisions_path)
+        self.assertEqual(d.evaluation_snapshot["market_signal"]["level"], "مرتفعة")
+        self.assertEqual(d.evaluation_snapshot["ai_leverage"]["level"], "عالية")
+        self.assertEqual(d.evaluation_snapshot["components"]["automation_potential"], 40)
+
     def test_missing_risk_confidence_defensibility_degrade_to_none_never_crash(self):
         ladder_result = {"accepted": True, "ladder_score": 85.3, "price": 388, "reason": "accepted: test", "components": {}}
         d = engine.record_ladder_decision("test niche", "ai_saas", ladder_result, decisions_path=self.decisions_path)

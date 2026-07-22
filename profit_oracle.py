@@ -655,6 +655,81 @@ def _score_defensibility(niche):
     return 50, "متوسطة", f"{strong} من {total} نتيجة مخزَّنة منافسون أقوياء — منافسة جزئية حقيقية"
 
 
+# Strategic Opportunity Intelligence Engine (2026-07-22): "Market Size" --
+# additive, informational only, same pattern as risk/confidence/
+# defensibility above. ADR-042/043 already established, twice, that no
+# free real TAM (dollar market size) data source exists anywhere this
+# factory can reach (no Statista/Crunchbase/paid panel access) --
+# fabricating one would be exactly the "confidently wrong number" this
+# factory's culture exists to prevent (explicit instruction: "No
+# fabricated numbers. No guessed TAM."). What IS real: competitor_
+# discovery.py's CACHED total_found (real HN+GitHub result volume for
+# this niche) and, when passed, external_signal's own real result count
+# -- a genuine, if partial, proxy for "does real discussion volume exist
+# around this problem", never presented as a dollar figure. Cache-only,
+# same reasoning as _score_defensibility() above: never triggers a live
+# competitor search from inside scoring.
+def _score_market_signal(niche, external_signal=None):
+    cache_total = None
+    if COMPETITOR_DISCOVERY is not None:
+        try:
+            db = COMPETITOR_DISCOVERY.load_database()
+            key = COMPETITOR_DISCOVERY._normalize_key(niche)
+            cached = db.get(key)
+            if cached:
+                cache_total = cached.get("total_found")
+        except Exception:
+            cache_total = None
+
+    external_total = None
+    if external_signal:
+        external_total = (external_signal.get("competition") or {}).get("related_results_count")
+
+    candidates = [v for v in (cache_total, external_total) if v is not None]
+    if not candidates:
+        return None, "Unknown", "لا بيانات حجم نقاش حقيقية مخزَّنة أو مُمرَّرة لهذا النيتش — لا تخمين لِـTAM بالدولار (لا مصدر بيانات سوق حقيقي متاح، ADR-042/043)"
+
+    volume = max(candidates)
+    score = max(0, min(100, round(20 * math.log10(volume + 1))))
+    level = "مرتفعة" if score >= 60 else "متوسطة" if score >= 30 else "منخفضة"
+    return score, level, f"حجم نقاش حقيقي حول هذا الموضوع: {volume} نتيجة حقيقية (مقياس اهتمام/نقاش، وليس تقدير TAM بالدولار)"
+
+
+# "AI Leverage" -- additive, informational only. Real, deterministic
+# keyword classification of the niche's OWN text against two real,
+# human-observable task categories (text/knowledge work LLMs are
+# genuinely capable of today, vs. physical/real-time/safety-critical work
+# they structurally are not) -- same discipline as PREMIUM_KEYWORDS/
+# RECURRING_KEYWORDS/PAIN_KEYWORDS elsewhere in this file: a real function
+# of real input text, never a fabricated "AI readiness score". Explicitly
+# a coarse text heuristic, not a verified technical assessment.
+AI_LEVERAGE_HIGH_KEYWORDS = [
+    "research", "writing", "content", "summariz", "summaris", "classif",
+    "extract", "translat", "documentation", "reporting", "analysis",
+    "customer support", "code review", "copywriting", "transcription",
+    "chatbot", "assistant", "generat", "compliance", "audit",
+]
+AI_LEVERAGE_LOW_KEYWORDS = [
+    "hardware", "physical", "manufactur", "logistics", "shipping",
+    "real-time control", "safety-critical", "industrial control",
+    "plc", "warehouse", "delivery",
+]
+
+
+def _score_ai_leverage(niche):
+    niche_lower = (niche or "").lower()
+    high_hits = sum(1 for k in AI_LEVERAGE_HIGH_KEYWORDS if k in niche_lower)
+    low_hits = sum(1 for k in AI_LEVERAGE_LOW_KEYWORDS if k in niche_lower)
+
+    if high_hits == 0 and low_hits == 0:
+        return None, "Unknown", "لا كلمات مفتاحية حقيقية في النيتش لتصنيف نوع المهمة (نصية/معرفية مقابل مادية/فيزيائية) — لا تخمين"
+
+    score = max(0, min(100, 50 + high_hits * 20 - low_hits * 25))
+    level = "عالية" if score >= 65 else "متوسطة" if score >= 35 else "منخفضة"
+    reason = f"{high_hits} كلمة مفتاحية حقيقية تشير لمهام نصية/معرفية (تُلائم LLM)، {low_hits} كلمة تشير لمهام مادية/فيزيائية (لا تُلائم LLM) — تصنيف نصي حقيقي، ليس تقييماً تقنياً مُتحقَّقاً"
+    return score, level, reason
+
+
 def score_opportunity(niche, now=None, external_signal=None):
     niche = str(niche or '').strip()
     if not niche:
@@ -696,6 +771,8 @@ def score_opportunity(niche, now=None, external_signal=None):
     risk_score, risk_level, risk_notes = _score_risk(niche)
     confidence_score, confidence_level, confidence_note = _score_confidence(niche, external_signal)
     defensibility_score, defensibility_level, defensibility_note = _score_defensibility(niche)
+    market_signal_score, market_signal_level, market_signal_note = _score_market_signal(niche, external_signal)
+    ai_leverage_score, ai_leverage_level, ai_leverage_note = _score_ai_leverage(niche)
 
     return {
         "niche": niche,
@@ -721,6 +798,11 @@ def score_opportunity(niche, now=None, external_signal=None):
         # discipline as risk/confidence above, never factored into
         # profit_score/verdict.
         "defensibility": {"score": defensibility_score, "level": defensibility_level, "note": defensibility_note},
+        # Strategic Opportunity Intelligence Engine (2026-07-22): same
+        # additive discipline -- real evidence or honest Unknown, never
+        # factored into profit_score/verdict.
+        "market_signal": {"score": market_signal_score, "level": market_signal_level, "note": market_signal_note},
+        "ai_leverage": {"score": ai_leverage_score, "level": ai_leverage_level, "note": ai_leverage_note},
     }
 
 
@@ -835,6 +917,8 @@ def opportunity_score(niche, tier="tier4", external_signal=None):
         "risk": result["risk"],
         "confidence": result["confidence"],
         "defensibility": result["defensibility"],
+        "market_signal": result["market_signal"],
+        "ai_leverage": result["ai_leverage"],
         "recommended_price": result["recommended_price"],
         "recommended_platform": result["recommended_platform"],
     }
@@ -868,6 +952,24 @@ RECURRING_REVENUE_BY_LADDER = {
 REUSABILITY_BY_LADDER = {
     "ai_saas": 95, "b2b_systems": 85, "automation_tools": 80,
     "reusable_assets": 90, "educational": 45, "kdp_books": 20,
+}
+
+# Strategic Opportunity Intelligence Engine (2026-07-22): the ladder-based
+# path had zero automation_potential field at all -- AUTOMATION_POTENTIAL_
+# BY_TIER (above) only ever fed the OLD tier-based opportunity_score(),
+# which almost no real decision uses anymore. Grounded in the SAME real,
+# already-documented finding AUTOMATION_POTENTIAL_BY_TIER itself is
+# grounded in (ELITE_ASSET_DOCTRINE.md §6): ai_saas/b2b_systems need real
+# hosting/user-DB/subscription-billing/ongoing-support infrastructure that
+# does not exist in this factory today -- LOW automation potential until
+# that's built, not high just because "AI SaaS" sounds automated.
+# automation_tools/reusable_assets/educational/kdp_books all already run
+# end-to-end on the existing, fully-automated book_generator.py/
+# product_families pipeline today -- HIGH automation potential, real not
+# guessed.
+AUTOMATION_POTENTIAL_BY_LADDER = {
+    "ai_saas": 40, "b2b_systems": 40, "automation_tools": 90,
+    "reusable_assets": 90, "educational": 100, "kdp_books": 100,
 }
 
 # Which existing butter_price() band each ladder rank is priced against —
@@ -907,6 +1009,7 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None):
     profit_potential = scores["margin"]
     recurring_revenue_potential = RECURRING_REVENUE_BY_LADDER[ladder]
     reusability = REUSABILITY_BY_LADDER[ladder]
+    automation_potential = AUTOMATION_POTENTIAL_BY_LADDER[ladder]
 
     raw = (
         0.15 * market_demand +
@@ -943,10 +1046,122 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None):
             "profit_potential": profit_potential,
             "recurring_revenue_potential": recurring_revenue_potential,
             "reusability": reusability,
+            # Strategic Opportunity Intelligence Engine (2026-07-22): real,
+            # ladder-grounded automation-potential -- see AUTOMATION_
+            # POTENTIAL_BY_LADDER's own docstring for why these values.
+            "automation_potential": automation_potential,
         },
         "risk": result["risk"],
         "confidence": result["confidence"],
         "defensibility": result["defensibility"],
+        "market_signal": result["market_signal"],
+        "ai_leverage": result["ai_leverage"],
+    }
+
+
+# ── STRATEGIC INVESTMENT LAYER (2026-07-22) ──
+# "Evaluate every opportunity as if OpenClaw were acquiring a company, not
+# building a product." A pure synthesis over an already-computed
+# ladder_opportunity_score() result -- never recomputes anything, never
+# gathers new evidence, never changes ladder_result['accepted']. Every
+# answer is "Yes" / "No" / "Uncertain" (never a forced binary) and cites
+# the specific real evidence behind it, same transparent-decision-tree
+# discipline as ai_ceo_decision(). "Uncertain" whenever the underlying
+# real evidence itself is Unknown -- this factory never turns a missing
+# signal into a confident answer in either direction.
+
+def _uncertain(reason):
+    return {"answer": "Uncertain", "evidence": reason}
+
+
+def strategic_investment_layer(ladder_result):
+    price = ladder_result.get("price")
+    ladder = ladder_result.get("ladder")
+    defensibility = ladder_result.get("defensibility") or {}
+    market_signal = ladder_result.get("market_signal") or {}
+    ai_leverage = ladder_result.get("ai_leverage") or {}
+    components = ladder_result.get("components") or {}
+    recurring = components.get("recurring_revenue_potential")
+    reusability = components.get("reusability")
+    competition_favorability = components.get("competition_favorability")
+    def_level = defensibility.get("level")
+
+    # 1. Can this become a premium digital asset?
+    if price is None:
+        q1 = _uncertain("لا سعر حقيقي محسوب بعد")
+    elif price < MIN_LADDER_PROFIT_FLOOR:
+        q1 = {"answer": "No", "evidence": f"السعر الحقيقي ${price} دون الحد الأدنى (${MIN_LADDER_PROFIT_FLOOR})"}
+    elif def_level in (None, "Unknown"):
+        q1 = _uncertain(f"السعر ${price} يعبر الحد لكن لا بيانات دفاعية حقيقية بعد")
+    elif def_level == "منخفضة":
+        q1 = {"answer": "No", "evidence": f"السعر ${price} يعبر الحد لكن الدفاعية منخفضة: {defensibility.get('note')}"}
+    else:
+        q1 = {"answer": "Yes", "evidence": f"السعر الحقيقي ${price} يعبر الحد الأدنى (${MIN_LADDER_PROFIT_FLOOR})، والدفاعية: {def_level}"}
+
+    # 2. Can it evolve into a software business?
+    software_ladders = ("ai_saas", "b2b_systems", "automation_tools")
+    if ladder not in software_ladders:
+        q2 = {"answer": "No", "evidence": f"مسار الإنتاج ({ladder}) ليس مساراً برمجياً"}
+    elif ai_leverage.get("level") in (None, "Unknown"):
+        q2 = _uncertain(f"مسار برمجي ({ladder}) لكن لا بيانات رافعة AI حقيقية بعد")
+    elif ai_leverage.get("level") == "منخفضة":
+        q2 = {"answer": "No", "evidence": f"مسار برمجي ({ladder}) لكن رافعة AI منخفضة: {ai_leverage.get('note')}"}
+    else:
+        q2 = {"answer": "Yes", "evidence": f"مسار الإنتاج ({ladder}) برمجي بطبيعته + رافعة AI حقيقية: {ai_leverage.get('level')}"}
+
+    # 3. Can it create recurring revenue?
+    if recurring is None:
+        q3 = _uncertain("لا مكوّن إيراد متكرر محسوب")
+    elif recurring >= 55:
+        q3 = {"answer": "Yes", "evidence": f"إيراد متكرر حقيقي (تقدير حسب المسار {ladder}): {recurring}/100"}
+    else:
+        q3 = {"answer": "No", "evidence": f"إيراد متكرر ضعيف حسب المسار {ladder}: {recurring}/100"}
+
+    # 4. Can it dominate a narrow market?
+    if market_signal.get("level") in (None, "Unknown") or competition_favorability is None:
+        q4 = _uncertain("لا بيانات حجم نقاش حقيقي أو منافسة كافية")
+    elif def_level in (None, "Unknown", "منخفضة") or competition_favorability < 60:
+        q4 = {"answer": "No", "evidence": f"منافسة ({competition_favorability}/100) أو دفاعية ({def_level}) غير كافية للسيطرة على سوق ضيق"}
+    else:
+        q4 = {"answer": "Yes", "evidence": f"نقاش حقيقي موجود ({market_signal.get('note')}) + منافسة مواتية ({competition_favorability}/100) + دفاعية {def_level}"}
+
+    # 5. Can competitors copy it easily? (inverse framing of defensibility)
+    if def_level in (None, "Unknown"):
+        q5 = _uncertain("لا بيانات منافسين مخزَّنة لتقييم الدفاعية")
+    elif def_level == "منخفضة":
+        q5 = {"answer": "Yes", "evidence": defensibility.get("note")}
+    elif def_level == "متوسطة":
+        q5 = _uncertain(defensibility.get("note") or "دفاعية متوسطة — غير حاسمة")
+    else:  # "عالية نسبياً" or "متوسطة-عالية"
+        q5 = {"answer": "No", "evidence": defensibility.get("note")}
+
+    # 6. Does it become more valuable over time?
+    if recurring is None or reusability is None or def_level in (None, "Unknown"):
+        q6 = _uncertain("بيانات ناقصة (إيراد متكرر/قابلية إعادة استخدام/دفاعية) لتقييم القيمة طويلة المدى")
+    elif recurring >= 55 and reusability >= 55 and def_level != "منخفضة":
+        q6 = {"answer": "Yes", "evidence": f"إيراد متكرر {recurring}/100 + قابلية إعادة استخدام {reusability}/100 + دفاعية {def_level}"}
+    else:
+        q6 = {"answer": "No", "evidence": f"إيراد متكرر {recurring}/100 أو قابلية إعادة استخدام {reusability}/100 أو دفاعية {def_level} غير كافية"}
+
+    # 7. Can one successful product create an ecosystem of additional products?
+    if reusability is None:
+        q7 = _uncertain("لا مكوّن قابلية إعادة استخدام محسوب")
+    elif reusability >= 80:
+        q7 = {"answer": "Yes", "evidence": f"قابلية إعادة استخدام عالية حسب المسار ({ladder}): {reusability}/100"}
+    else:
+        q7 = {"answer": "No", "evidence": f"قابلية إعادة استخدام محدودة حسب المسار ({ladder}): {reusability}/100"}
+
+    return {
+        "niche": ladder_result.get("niche"),
+        "ladder": ladder,
+        "can_become_premium_digital_asset": q1,
+        "can_evolve_into_software_business": q2,
+        "can_create_recurring_revenue": q3,
+        "can_dominate_a_narrow_market": q4,
+        "competitors_can_copy_it_easily": q5,
+        "becomes_more_valuable_over_time": q6,
+        "can_create_a_product_ecosystem": q7,
+        "note": "تركيب معلوماتي فقط فوق ladder_opportunity_score() الحقيقي -- لا يُغيّر بوابة القبول/الرفض، ولا اختلاق بيانات جديدة. 'Uncertain' حين يكون الدليل الحقيقي نفسه غير معروف.",
     }
 
 

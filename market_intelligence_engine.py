@@ -468,6 +468,10 @@ def analyze_opportunity(niche, external_signal=None, tier="tier4", max_results=1
         # so a caller/mock on the older pre-defensibility shape degrades to
         # None rather than raising KeyError.
         "defensibility": scored.get("defensibility"),
+        # Strategic Opportunity Intelligence Engine (2026-07-22): same
+        # proactive persistence -- scored already computes these too.
+        "market_signal": scored.get("market_signal"),
+        "ai_leverage": scored.get("ai_leverage"),
         "customer_pain": pain,
         "demand_pattern": demand_pattern,
         "competitors": {"total_found": competitors["total_found"], "by_category": competitors["by_category"]},

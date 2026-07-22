@@ -504,12 +504,36 @@ function fieldCell(value) {
   return escapeHtml(String(value));
 }
 
+// Strategic Opportunity Intelligence Engine (2026-07-22): compact summary
+// of strategic_investment_layer()'s 7 acquisition-style questions --
+// "X/7 Yes", full breakdown in the title tooltip. null (not fabricated)
+// when no real ladder exists to synthesize from.
+function strategicVerdictSummary(layer) {
+  if (!layer) return '<span class="muted">—</span>';
+  const keys = [
+    'can_become_premium_digital_asset', 'can_evolve_into_software_business', 'can_create_recurring_revenue',
+    'can_dominate_a_narrow_market', 'competitors_can_copy_it_easily', 'becomes_more_valuable_over_time',
+    'can_create_a_product_ecosystem',
+  ];
+  const labels = {
+    can_become_premium_digital_asset: 'أصل رقمي مميز', can_evolve_into_software_business: 'يتطور لعمل برمجي',
+    can_create_recurring_revenue: 'إيراد متكرر', can_dominate_a_narrow_market: 'سيطرة على سوق ضيق',
+    competitors_can_copy_it_easily: 'سهل النسخ', becomes_more_valuable_over_time: 'يزداد قيمة مع الوقت',
+    can_create_a_product_ecosystem: 'منظومة منتجات',
+  };
+  const yesCount = keys.filter(k => layer[k]?.answer === 'Yes').length;
+  const tooltip = keys.map(k => `${labels[k]}: ${layer[k]?.answer ?? '—'}`).join('\n');
+  const cls = yesCount >= 5 ? 'good' : yesCount >= 3 ? 'warn' : 'muted';
+  return `<span class="badge ${cls}" title="${escapeHtml(tooltip)}">${yesCount}/7 Yes</span>`;
+}
+
 function renderOpportunityPipelineTable(rows) {
   if (!rows.length) return '<p class="muted">لا فرص هنا.</p>';
   return `<div style="overflow-x:auto;"><table><thead><tr>
     <th>النيتش</th><th>الدرجة</th><th>حجم السوق</th><th>نوع العميل</th><th>الألم</th>
     <th>المنافسة</th><th>السعر</th><th>إيراد متكرر</th><th>التعقيد التقني</th>
     <th>وقت MVP</th><th>الدفاعية</th><th>قابلية التوسع العالمي</th>
+    <th>رافعة AI</th><th>قابلية الأتمتة</th><th>الحكم الاستراتيجي</th>
   </tr></thead><tbody>${rows.map(o => `
     <tr>
       <td>${escapeHtml(o.niche)}</td>
@@ -524,6 +548,9 @@ function renderOpportunityPipelineTable(rows) {
       <td>${fieldCell(o.time_to_mvp)}</td>
       <td>${fieldCell(o.defensibility)}</td>
       <td>${fieldCell(o.global_scalability)}</td>
+      <td>${fieldCell(o.ai_leverage)}</td>
+      <td>${fieldCell(o.automation_potential)}</td>
+      <td>${strategicVerdictSummary(o.strategic_investment)}</td>
     </tr>`).join('')}</tbody></table></div>`;
 }
 
@@ -773,19 +800,20 @@ async function confirmAction(actionName) {
 // -- fast, local-only, no job/polling needed (unlike go-deep-evidence).
 function renderProductConceptComparison(data) {
   const rows = (data.variants || []).map(v => v.error
-    ? `<tr><td>${escapeHtml(v.ladder)}</td><td colspan="4" class="muted">${escapeHtml(v.error)}</td></tr>`
+    ? `<tr><td>${escapeHtml(v.ladder)}</td><td colspan="6" class="muted">${escapeHtml(v.error)}</td></tr>`
     : `<tr>
         <td>${escapeHtml(v.ladder)}</td>
         <td>${v.ladder_score}</td>
         <td>$${v.price}</td>
         <td>${badge(v.accepted ? 'good' : 'bad')}</td>
         <td>${v.pre_acceptance_roi?.maturity === 'REAL' ? `${v.pre_acceptance_roi.roi_pct}%` : `<span class="muted">${escapeHtml(v.pre_acceptance_roi?.reason ?? '—')}</span>`}</td>
+        <td>${strategicVerdictSummary(v.strategic_investment)}</td>
       </tr>`).join('');
   return `
     <div class="card">
-      <h3>مقارنة مسارات الإنتاج: "${escapeHtml(data.niche)}"</h3>
+      <h3>مقارنة مسارات الإنتاج (تقييم استحواذ استراتيجي): "${escapeHtml(data.niche)}"</h3>
       <p class="muted">${escapeHtml(data.note)}</p>
-      <table><thead><tr><th>المسار</th><th>الدرجة</th><th>السعر</th><th>مقبول؟</th><th>عائد مسبق (ROI)</th></tr></thead>
+      <table><thead><tr><th>المسار</th><th>الدرجة</th><th>السعر</th><th>مقبول؟</th><th>عائد مسبق (ROI)</th><th>الحكم الاستراتيجي</th></tr></thead>
       <tbody>${rows}</tbody></table>
     </div>`;
 }

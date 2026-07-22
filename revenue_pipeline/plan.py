@@ -161,6 +161,10 @@ def compare_ladder_variants(niche, ladders=None, log_file=None):
             "accepted": scored["accepted"],
             "reason": scored["reason"],
             "pre_acceptance_roi": roi,
+            # Strategic Opportunity Intelligence Engine (2026-07-22):
+            # "evaluate as if acquiring a company" per candidate product
+            # line -- pure synthesis over `scored`, reused verbatim.
+            "strategic_investment": profit_oracle.strategic_investment_layer(scored),
         })
 
     variants.sort(key=lambda v: v.get("ladder_score") if v.get("ladder_score") is not None else -1, reverse=True)

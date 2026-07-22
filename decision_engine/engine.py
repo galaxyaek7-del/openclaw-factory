@@ -204,6 +204,13 @@ def record_ladder_decision(niche, ladder, ladder_result, decisions_path=None, pr
             "risk": ladder_result.get("risk"),
             "confidence": ladder_result.get("confidence"),
             "defensibility": ladder_result.get("defensibility"),
+            # Strategic Opportunity Intelligence Engine (2026-07-22):
+            # market_signal/ai_leverage; components (above) now also
+            # carries automation_potential -- persisted proactively this
+            # time, same "computed then dropped" pattern already fixed
+            # reactively three times this week.
+            "market_signal": ladder_result.get("market_signal"),
+            "ai_leverage": ladder_result.get("ai_leverage"),
         },
         external_signal=None,
         ladder=ladder,

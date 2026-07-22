@@ -45,6 +45,7 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
             "reason": "test", "components": {
                 "market_demand": 60, "competition_favorability": 70, "profit_potential": 50,
                 "recurring_revenue_potential": kwargs.pop("recurring", 90), "reusability": kwargs.pop("reusability", 90),
+                "automation_potential": kwargs.pop("automation_potential", 40),
             },
             "risk": {"score": 90, "level": "low", "notes": []},
             "confidence": {"score": 55, "level": "متوسطة", "note": "test"},
@@ -52,6 +53,12 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
         defensibility = kwargs.pop("defensibility", None)
         if defensibility is not None:
             ladder_result["defensibility"] = defensibility
+        market_signal = kwargs.pop("market_signal", None)
+        if market_signal is not None:
+            ladder_result["market_signal"] = market_signal
+        ai_leverage = kwargs.pop("ai_leverage", None)
+        if ai_leverage is not None:
+            ladder_result["ai_leverage"] = ai_leverage
         niche, ladder = args
         decisions_path = kwargs.pop("decisions_path")
         return engine.record_ladder_decision(niche, ladder, ladder_result, decisions_path=decisions_path)
@@ -91,14 +98,53 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
         entry = result["product_laboratory"][0]
         self.assertEqual(entry["defensibility"]["answer"], "Unknown")
 
-    def test_market_size_and_time_to_mvp_are_always_honestly_unknown(self):
-        """No real data source exists for either anywhere in this factory
-        -- must never be fabricated."""
+    def test_time_to_mvp_is_always_honestly_unknown(self):
+        """No real dev-time-estimation model exists anywhere in this
+        factory -- must never be fabricated."""
         self._record("any niche", "automation_tools", accepted=True, score=70.0, price=150)
         result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
         entry = result["product_laboratory"][0]
-        self.assertEqual(entry["market_size"]["answer"], "Unknown")
         self.assertEqual(entry["time_to_mvp"]["answer"], "Unknown")
+
+    def test_market_size_honestly_unknown_when_not_recorded(self):
+        self._record("a niche with no market signal", "automation_tools", accepted=True, score=70.0, price=150)
+        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        entry = result["product_laboratory"][0]
+        self.assertEqual(entry["market_size"]["answer"], "Unknown")
+
+    def test_market_size_real_when_market_signal_recorded(self):
+        """Strategic Opportunity Intelligence Engine (2026-07-22): market
+        size is a real discussion-volume proxy, never a fabricated TAM."""
+        self._record(
+            "a niche with real market signal", "automation_tools", accepted=True, score=70.0, price=150,
+            market_signal={"score": 60, "level": "مرتفعة", "note": "حجم نقاش حقيقي: 50 نتيجة"},
+        )
+        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        entry = result["product_laboratory"][0]
+        self.assertEqual(entry["market_size"]["level"], "مرتفعة")
+
+    def test_ai_leverage_and_automation_potential_surfaced_when_present(self):
+        self._record(
+            "a niche with real ai leverage", "ai_saas", accepted=True, score=90.0, price=300,
+            ai_leverage={"score": 80, "level": "عالية", "note": "test"}, automation_potential=40,
+        )
+        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        entry = result["product_laboratory"][0]
+        self.assertEqual(entry["ai_leverage"]["level"], "عالية")
+        self.assertEqual(entry["automation_potential"], 40)
+
+    def test_strategic_investment_layer_present_for_ladder_tagged_decisions(self):
+        self._record(
+            "a niche for strategic layer test", "ai_saas", accepted=True, score=90.0, price=300,
+            defensibility={"score": 75, "level": "عالية نسبياً", "note": "test"},
+            market_signal={"score": 60, "level": "مرتفعة", "note": "test"},
+            ai_leverage={"score": 80, "level": "عالية", "note": "test"},
+        )
+        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        entry = result["product_laboratory"][0]
+        self.assertIsNotNone(entry["strategic_investment"])
+        self.assertIn("can_become_premium_digital_asset", entry["strategic_investment"])
+        self.assertIn("can_create_a_product_ecosystem", entry["strategic_investment"])
 
     def test_customer_type_uses_ladder_as_an_honest_proxy(self):
         self._record("a b2b niche", "b2b_systems", accepted=True, score=75.0, price=180)

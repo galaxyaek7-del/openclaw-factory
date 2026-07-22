@@ -319,6 +319,10 @@ class TestAnalyzeOpportunityOrchestration(unittest.TestCase):
         # Opportunity Intelligence Round 2 (2026-07-22): was silently
         # discarded before the fix, same pattern as risk/confidence above.
         self.assertIn("defensibility", result)
+        # Strategic Opportunity Intelligence Engine (2026-07-22): persisted
+        # proactively this time.
+        self.assertIn("market_signal", result)
+        self.assertIn("ai_leverage", result)
         self.assertIn("customer_pain", result)
         self.assertIn("demand_pattern", result)
         self.assertIn("competitors", result)

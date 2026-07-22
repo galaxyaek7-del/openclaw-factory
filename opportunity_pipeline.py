@@ -1,13 +1,15 @@
 """
-Opportunity Pipeline (Opportunity Intelligence Round 2, 2026-07-22).
+Opportunity Pipeline (Opportunity Intelligence Round 2, 2026-07-22;
+Strategic Opportunity Intelligence Engine, 2026-07-22).
 
 A real, ranked view over every already-scored opportunity in
-data/decisions.jsonl -- ten named fields per opportunity, each either a
-real value (reused verbatim from profit_oracle/decision_engine/market_
+data/decisions.jsonl -- real fields per opportunity, each either a real
+value (reused verbatim from profit_oracle/decision_engine/market_
 intelligence_engine, never recomputed) or honestly Unknown when this
-factory has no real signal for it yet (Market Size and Time to MVP have
-no real data source anywhere in this codebase -- reported as such, never
-guessed).
+factory has no real signal for it yet (Time to MVP has no real data
+source anywhere in this codebase -- reported as such, never guessed;
+Market Size is a real discussion-volume proxy, explicitly never a dollar
+TAM figure -- see profit_oracle._score_market_signal()'s own docstring).
 
 Reads only already-computed real data (decision_engine.ranking.rank_all())
 -- zero live network calls, safe to run over the full real history in
@@ -22,16 +24,24 @@ snapshot shapes (decision_engine/engine.py):
   - "ladder_fast_gate" (market_hunter.py, what nearly all real decisions
     use today): {ladder, price, components: {market_demand,
     competition_favorability, profit_potential, recurring_revenue_
-    potential, reusability}, risk, confidence, defensibility}
+    potential, reusability, automation_potential}, risk, confidence,
+    defensibility, market_signal, ai_leverage}
   - "ai_ceo_full_evaluation" (the deliberate path): {scores: {demand,
     competition, margin, execution}, risk, confidence, defensibility,
-    customer_pain, demand_pattern, competitors, opportunity_gap, pricing}
+    market_signal, ai_leverage, customer_pain, demand_pattern,
+    competitors, opportunity_gap, pricing}
 This module checks both shapes per field rather than assuming one.
+
+Also synthesizes profit_oracle.strategic_investment_layer() per
+opportunity -- "evaluate as if acquiring a company" -- whenever a real
+ladder is on record; honestly omitted (never fabricated) for decisions
+with no ladder.
 """
 
 from datetime import datetime, timezone
 
 from decision_engine import ranking
+import profit_oracle
 
 
 def _unknown(reason):
@@ -89,6 +99,33 @@ def _annotate(decision):
         else _unknown("مكوّن قابلية إعادة الاستخدام يُحسَب فقط عبر مسار ladder_fast_gate -- غير متاح لهذا القرار")
     )
 
+    # Strategic Opportunity Intelligence Engine (2026-07-22): the 3
+    # dimensions that previously had zero real signal -- now real.
+    market_signal = snap.get("market_signal")
+    if not isinstance(market_signal, dict) or market_signal.get("level") is None:
+        market_signal = _unknown("لم يُحسَب بعد لهذا القرار (رُصِد أول مرة اعتباراً من 2026-07-22 -- قرارات أقدم لا تحمله)")
+
+    ai_leverage = snap.get("ai_leverage")
+    if not isinstance(ai_leverage, dict) or ai_leverage.get("level") is None:
+        ai_leverage = _unknown("لم يُحسَب بعد لهذا القرار (رُصِد أول مرة اعتباراً من 2026-07-22 -- قرارات أقدم لا تحمله)")
+
+    automation_potential = ladder_components.get("automation_potential")
+    if automation_potential is None:
+        automation_potential = _unknown("مكوّن قابلية الأتمتة (حسب المسار) يُحسَب فقط عبر مسار ladder_fast_gate -- غير متاح لهذا القرار")
+
+    # Strategic Investment Layer -- only when a real ladder is on record
+    # (the synthesis needs ladder-specific components); honestly omitted,
+    # never fabricated, otherwise.
+    strategic_investment = None
+    if ladder and ladder_components:
+        strategic_investment = profit_oracle.strategic_investment_layer({
+            "niche": decision.get("niche"), "ladder": ladder, "price": price,
+            "components": ladder_components,
+            "defensibility": snap.get("defensibility"),
+            "market_signal": snap.get("market_signal"),
+            "ai_leverage": snap.get("ai_leverage"),
+        })
+
     return {
         "niche": decision.get("niche"),
         "decision_id": decision.get("decision_id"),
@@ -96,8 +133,8 @@ def _annotate(decision):
         "status": decision.get("status"),
         "opportunity_score": decision.get("opportunity_score"),
 
-        # The 10 named fields (Opportunity Intelligence Round 2 ask):
-        "market_size": _unknown("لا مصدر بيانات TAM حقيقي في هذا المصنع بعد"),
+        # The 10 originally-named fields (Opportunity Intelligence Round 2):
+        "market_size": market_signal,  # real discussion-volume proxy -- see profit_oracle._score_market_signal(), never a dollar TAM
         "customer_type": (
             {"value": ladder, "note": "proxy من مسار الإنتاج (ladder rank) -- لا تصنيف عملاء حقيقي منفصل موجود بعد"}
             if ladder else _unknown("لا ladder مُسجَّل لهذا القرار")
@@ -111,7 +148,17 @@ def _annotate(decision):
         "defensibility": defensibility,
         "global_scalability": global_scalability,
 
-        # Additional real, already-computed context (not part of the 10
+        # The 3 dimensions added by the Strategic Opportunity Intelligence
+        # Engine (2026-07-22):
+        "ai_leverage": ai_leverage,
+        "automation_potential": automation_potential,
+
+        # The Strategic Investment Layer -- 7 acquisition-style questions,
+        # synthesized from the real fields above. None (not fabricated)
+        # when no real ladder exists to synthesize from.
+        "strategic_investment": strategic_investment,
+
+        # Additional real, already-computed context (not part of the
         # named fields, kept for transparency):
         "risk": snap.get("risk"),
         "confidence": snap.get("confidence"),

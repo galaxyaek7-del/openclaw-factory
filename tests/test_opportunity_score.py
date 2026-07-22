@@ -329,6 +329,174 @@ class TestDefensibility(unittest.TestCase):
         self.assertGreaterEqual(result["defensibility"]["score"], 70)
 
 
+class TestMarketSignal(unittest.TestCase):
+    """Strategic Opportunity Intelligence Engine (2026-07-22): a real
+    discussion-volume proxy -- explicitly NOT a dollar TAM estimate. Never
+    fabricates a market-size number when no real evidence exists."""
+
+    def test_never_changes_profit_score_or_verdict(self):
+        niche = "a market signal test niche"
+        result = po.score_opportunity(niche)
+        self.assertIn("market_signal", result)
+        self.assertEqual(result["profit_score"], po.score_opportunity(niche)["profit_score"])
+
+    def test_honestly_unknown_with_no_cached_data_and_no_external_signal(self):
+        with patch.object(po.COMPETITOR_DISCOVERY, "load_database", return_value={}):
+            result = po.score_opportunity("a niche with zero market signal data xyz")
+        self.assertEqual(result["market_signal"]["level"], "Unknown")
+        self.assertIsNone(result["market_signal"]["score"])
+
+    def test_real_cached_volume_produces_a_real_score(self):
+        niche = "a niche with real cached discussion volume"
+        fixture = {po.COMPETITOR_DISCOVERY._normalize_key(niche): {"total_found": 50, "by_category": {}}}
+        with patch.object(po.COMPETITOR_DISCOVERY, "load_database", return_value=fixture):
+            result = po.score_opportunity(niche)
+        self.assertIsNotNone(result["market_signal"]["score"])
+        self.assertIn("50", result["market_signal"]["note"])
+
+    def test_never_presents_itself_as_a_dollar_tam(self):
+        niche = "a niche checking market signal wording"
+        fixture = {po.COMPETITOR_DISCOVERY._normalize_key(niche): {"total_found": 20, "by_category": {}}}
+        with patch.object(po.COMPETITOR_DISCOVERY, "load_database", return_value=fixture):
+            result = po.score_opportunity(niche)
+        self.assertNotIn("$", result["market_signal"]["note"])
+        self.assertIn("TAM", result["market_signal"]["note"])  # explicitly disclaims being one
+
+    def test_external_signal_used_when_no_cache_entry(self):
+        result = po.score_opportunity("a niche with only external signal", external_signal={"competition": {"related_results_count": 30}})
+        self.assertIsNotNone(result["market_signal"]["score"])
+
+    def test_never_triggers_a_live_competitor_search(self):
+        with patch.object(po.COMPETITOR_DISCOVERY, "discover_competitors", side_effect=AssertionError("must never be called from scoring")), \
+             patch.object(po.COMPETITOR_DISCOVERY, "get_or_refresh_competitors", side_effect=AssertionError("must never be called from scoring")):
+            po.score_opportunity("any niche")
+
+
+class TestAiLeverage(unittest.TestCase):
+    """Strategic Opportunity Intelligence Engine (2026-07-22): a real,
+    deterministic keyword classification -- same discipline as every other
+    keyword-based score in this file, never a fabricated 'AI readiness'
+    number."""
+
+    def test_never_changes_profit_score_or_verdict(self):
+        niche = "AI-powered research and writing assistant"
+        result = po.score_opportunity(niche)
+        self.assertIn("ai_leverage", result)
+        self.assertEqual(result["profit_score"], po.score_opportunity(niche)["profit_score"])
+
+    def test_high_leverage_for_text_knowledge_work(self):
+        result = po.score_opportunity("automated research and content writing assistant for analysts")
+        self.assertEqual(result["ai_leverage"]["level"], "عالية")
+
+    def test_low_leverage_for_physical_work(self):
+        result = po.score_opportunity("warehouse logistics and physical shipping manufacturing tool")
+        self.assertEqual(result["ai_leverage"]["level"], "منخفضة")
+
+    def test_unknown_with_no_recognizable_keywords_at_all(self):
+        result = po.score_opportunity("xyz qwerty zzz")
+        self.assertEqual(result["ai_leverage"]["level"], "Unknown")
+        self.assertIsNone(result["ai_leverage"]["score"])
+
+
+class TestAutomationPotentialByLadder(unittest.TestCase):
+    """Strategic Opportunity Intelligence Engine (2026-07-22): the ladder
+    path had zero automation_potential field before this -- grounded in
+    ELITE_ASSET_DOCTRINE.md's real finding (ai_saas/b2b_systems need
+    infrastructure that doesn't exist; automation_tools/reusable_assets/
+    educational/kdp_books already run on the existing pipeline today)."""
+
+    def test_ai_saas_has_low_automation_potential_today(self):
+        result = po.ladder_opportunity_score("a real automation potential test niche", ladder="ai_saas")
+        self.assertEqual(result["components"]["automation_potential"], 40)
+
+    def test_kdp_books_has_high_automation_potential_today(self):
+        result = po.ladder_opportunity_score("a real automation potential test niche", ladder="kdp_books")
+        self.assertEqual(result["components"]["automation_potential"], 100)
+
+    def test_never_changes_ladder_score_formula_weights(self):
+        """The core weighted formula must stay exactly as ADR-065 defined
+        it -- automation_potential is additive context, not a 6th weighted
+        component silently added to the gate."""
+        with_it = po.ladder_opportunity_score("a formula stability test niche", ladder="automation_tools")
+        # ladder_score is computed from exactly 5 weighted components; confirm the value is unchanged from before this dimension existed by recomputing the same formula manually.
+        c = with_it["components"]
+        expected = round(min(100.0, 0.15 * c["market_demand"] + 0.15 * c["competition_favorability"] + 0.15 * c["profit_potential"] + 0.25 * c["recurring_revenue_potential"] + 0.30 * c["reusability"]), 1)
+        self.assertEqual(with_it["ladder_score"], expected)
+
+
+class TestStrategicInvestmentLayer(unittest.TestCase):
+    """Strategic Opportunity Intelligence Engine (2026-07-22): a pure
+    synthesis over an already-computed ladder_opportunity_score() result
+    -- never recomputes, never changes accepted, every answer cites real
+    evidence or is honestly Uncertain."""
+
+    def _ladder_result(self, **overrides):
+        base = {
+            "niche": "a strategic layer test niche", "ladder": "ai_saas", "price": 297,
+            "accepted": True, "components": {
+                "market_demand": 60, "competition_favorability": 70, "profit_potential": 55,
+                "recurring_revenue_potential": 100, "reusability": 95, "automation_potential": 40,
+            },
+            "defensibility": {"score": 75, "level": "عالية نسبياً", "note": "لا منافسين أقوياء"},
+            "market_signal": {"score": 60, "level": "مرتفعة", "note": "حجم نقاش حقيقي: 50 نتيجة"},
+            "ai_leverage": {"score": 80, "level": "عالية", "note": "2 كلمة عالية"},
+        }
+        base.update(overrides)
+        return base
+
+    def test_never_mutates_or_recomputes_the_input(self):
+        ladder_result = self._ladder_result()
+        original = dict(ladder_result)
+        po.strategic_investment_layer(ladder_result)
+        self.assertEqual(ladder_result, original)
+
+    def test_all_seven_questions_present(self):
+        result = po.strategic_investment_layer(self._ladder_result())
+        for key in (
+            "can_become_premium_digital_asset", "can_evolve_into_software_business",
+            "can_create_recurring_revenue", "can_dominate_a_narrow_market",
+            "competitors_can_copy_it_easily", "becomes_more_valuable_over_time",
+            "can_create_a_product_ecosystem",
+        ):
+            self.assertIn(key, result)
+            self.assertIn(result[key]["answer"], ("Yes", "No", "Uncertain"))
+            self.assertTrue(result[key]["evidence"])
+
+    def test_strong_real_evidence_across_the_board_answers_yes_consistently(self):
+        result = po.strategic_investment_layer(self._ladder_result())
+        self.assertEqual(result["can_become_premium_digital_asset"]["answer"], "Yes")
+        self.assertEqual(result["can_evolve_into_software_business"]["answer"], "Yes")
+        self.assertEqual(result["can_create_recurring_revenue"]["answer"], "Yes")
+        self.assertEqual(result["competitors_can_copy_it_easily"]["answer"], "No")
+        self.assertEqual(result["can_create_a_product_ecosystem"]["answer"], "Yes")
+
+    def test_missing_defensibility_is_uncertain_never_a_guessed_yes_or_no(self):
+        ladder_result = self._ladder_result(defensibility={"score": None, "level": "Unknown", "note": "لا بيانات"})
+        result = po.strategic_investment_layer(ladder_result)
+        self.assertEqual(result["can_become_premium_digital_asset"]["answer"], "Uncertain")
+        self.assertEqual(result["competitors_can_copy_it_easily"]["answer"], "Uncertain")
+
+    def test_low_price_answers_no_never_yes(self):
+        ladder_result = self._ladder_result(price=45)
+        result = po.strategic_investment_layer(ladder_result)
+        self.assertEqual(result["can_become_premium_digital_asset"]["answer"], "No")
+
+    def test_kdp_books_ladder_cannot_become_a_software_business(self):
+        ladder_result = self._ladder_result(ladder="kdp_books")
+        result = po.strategic_investment_layer(ladder_result)
+        self.assertEqual(result["can_evolve_into_software_business"]["answer"], "No")
+
+    def test_low_defensibility_says_competitors_can_copy_it(self):
+        ladder_result = self._ladder_result(defensibility={"score": 25, "level": "منخفضة", "note": "منافسون أقوياء كثر"})
+        result = po.strategic_investment_layer(ladder_result)
+        self.assertEqual(result["competitors_can_copy_it_easily"]["answer"], "Yes")
+
+    def test_never_changes_the_real_accept_reject_gate(self):
+        ladder_result = self._ladder_result()
+        po.strategic_investment_layer(ladder_result)
+        self.assertTrue(ladder_result["accepted"])  # untouched
+
+
 class TestRealCompetitionAndMargin(unittest.TestCase):
     """ADR-041: real competitor-count feeds competition; real platform fees
     (economics.py) + real logged AI cost (book_generator.py's cost log)

@@ -174,6 +174,15 @@ class TestCompareLadderVariants(unittest.TestCase):
             self.assertNotIn("recommended", v)
             self.assertNotIn("selected", v)
 
+    def test_each_variant_carries_a_strategic_investment_layer(self):
+        """Strategic Opportunity Intelligence Engine (2026-07-22):
+        'evaluate as if acquiring a company' per candidate product line."""
+        result = plan.compare_ladder_variants("a niche for strategic layer per variant test", ladders=["ai_saas", "kdp_books"])
+        for v in result["variants"]:
+            self.assertIn("strategic_investment", v)
+            self.assertIn("can_become_premium_digital_asset", v["strategic_investment"])
+            self.assertIn("can_evolve_into_software_business", v["strategic_investment"])
+
     def test_higher_ladder_ranks_get_priced_in_the_elite_band(self):
         result = plan.compare_ladder_variants("a real pricing band comparison niche")
         by_ladder = {v["ladder"]: v for v in result["variants"]}
