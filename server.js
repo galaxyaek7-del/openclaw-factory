@@ -1116,6 +1116,39 @@ const ACTION_REGISTRY = [
     },
   },
   {
+    // Enterprise Readiness Layer (Executive Directive, 2026-07-22).
+    // Applies PROSPECTIVELY ONLY per the founder's explicit decision --
+    // the 5 real products shipped before this gate existed keep an
+    // honest pre-gate status, never a silent retroactive rejection.
+    name: 'enterprise-readiness-gate',
+    description: 'Runs the full Enterprise Readiness Layer (10 product reviews, risk register, documentation completeness, transparency report) against an already-recorded decision. Prospective only -- pre-gate products report PRE_GATE, never REJECTED.',
+    reused: 'enterprise_readiness.py (Executive Directive)',
+    reversible: true, // read-only evaluation; changes no data
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('enterprise-readiness-gate', 'enterprise_readiness_gate', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    // Risk Intelligence Engine (Executive Directive, 2026-07-22) --
+    // on-demand only, this factory has no scheduler. Regulation
+    // changes, pricing changes, technology disruption, and demand
+    // decline are honestly reported Unknown -- no real, funded data
+    // source exists for them in this factory.
+    name: 'risk-intelligence-scan',
+    description: 'On-demand real risk scan (competitors, market saturation, customer complaints) for one niche. Regulation/pricing/tech-disruption/demand-decline are honestly Unknown -- no real data source exists for these yet.',
+    reused: 'enterprise_readiness.py::run_risk_intelligence_scan()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const { niche, refresh_competitors } = req.body || {};
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('risk-intelligence-scan', 'risk_intelligence_scan', [JSON.stringify({ niche, refresh_competitors: !!refresh_competitors })]);
+    },
+  },
+  {
     name: 'run-validation',
     description: 'Generates the real daily validation report (opportunities, bottlenecks, stalled items, reliability, recommendations).',
     reused: 'validation_layer/daily_report.py (ADR-053)',

@@ -942,6 +942,53 @@ def _record_market_evidence():
     return {"event": event}
 
 
+def _enterprise_readiness_gate():
+    """Enterprise Readiness Layer (Executive Directive, 2026-07-22) --
+    the full product review + risk register + documentation-completeness
+    + transparency report, composed. Applies PROSPECTIVELY ONLY per the
+    founder's explicit decision -- a pre-gate product (the 5 shipped
+    2026-07-22) is reported with its real pre-gate status, never
+    silently rejected. Reads its niche as a JSON payload in sys.argv[2]:
+    `python mission_control_api.py enterprise_readiness_gate '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    from decision_engine import ranking
+    import enterprise_readiness as er
+
+    decisions = ranking.rank_all()
+    decision = next((d for d in decisions if d.get("niche") == niche), None)
+    if decision is None:
+        raise ValueError(f"لا قرار مسجَّل لهذا النيتش: {niche!r}")
+
+    return er.run_enterprise_readiness_gate({
+        "niche": decision.get("niche"),
+        "title": decision.get("niche"),
+        "ladder": decision.get("ladder"),
+        "evaluation_snapshot": decision.get("evaluation_snapshot"),
+        "decided_at": decision.get("decided_at"),
+    })
+
+
+def _risk_intelligence_scan():
+    """On-demand Risk Intelligence Engine scan (Executive Directive,
+    2026-07-22) -- never continuous, this factory has no scheduler. Only
+    refreshes live competitor data when explicitly requested via
+    refresh_competitors=true, matching the same live-network-call
+    discipline as go_deep_evidence. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py risk_intelligence_scan
+    '{"niche":"...","refresh_competitors":false}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import enterprise_readiness as er
+    return er.run_risk_intelligence_scan(niche, refresh_competitors=bool(payload.get("refresh_competitors")))
+
+
 def _check_paddle_checkout_status():
     """ADR-085/ADR-086: re-attempts Paddle checkout-link creation for
     every real product in data/paddle_products.json (5 as of ADR-086 --
@@ -992,6 +1039,8 @@ _ENDPOINTS = {
     "check_paddle_checkout_status": _check_paddle_checkout_status,
     "executive_quality_gate": _executive_quality_gate,
     "record_market_evidence": _record_market_evidence,
+    "enterprise_readiness_gate": _enterprise_readiness_gate,
+    "risk_intelligence_scan": _risk_intelligence_scan,
 }
 
 
