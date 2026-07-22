@@ -42,6 +42,7 @@ from datetime import datetime, timezone
 
 from decision_engine import ranking
 import profit_oracle
+import business_dossier as bd
 
 
 def _unknown(reason):
@@ -117,14 +118,29 @@ def _annotate(decision):
     # (the synthesis needs ladder-specific components); honestly omitted,
     # never fabricated, otherwise.
     strategic_investment = None
+    reconstructed_ladder_result = None
     if ladder and ladder_components:
-        strategic_investment = profit_oracle.strategic_investment_layer({
+        reconstructed_ladder_result = {
             "niche": decision.get("niche"), "ladder": ladder, "price": price,
             "components": ladder_components,
             "defensibility": snap.get("defensibility"),
             "market_signal": snap.get("market_signal"),
             "ai_leverage": snap.get("ai_leverage"),
-        })
+        }
+        strategic_investment = profit_oracle.strategic_investment_layer(reconstructed_ladder_result)
+
+    # Autonomous Digital Venture Studio (2026-07-22): every ACCEPTED
+    # opportunity automatically gets a full Business Dossier (thesis,
+    # customer profile, product architecture, MVP roadmap, revenue model,
+    # pricing strategy, competitive moat, expansion strategy) -- pure
+    # synthesis over the same real reconstructed_ladder_result, no new
+    # data gathering, never fabricated. Not built for backlog items --
+    # only requested for opportunities already accepted by the real gate.
+    business_dossier = None
+    if decision.get("status") == "ACCEPTED" and reconstructed_ladder_result is not None:
+        business_dossier = bd.build_business_dossier(
+            reconstructed_ladder_result, customer_pain=snap.get("customer_pain"),
+        )
 
     return {
         "niche": decision.get("niche"),
@@ -157,6 +173,12 @@ def _annotate(decision):
         # synthesized from the real fields above. None (not fabricated)
         # when no real ladder exists to synthesize from.
         "strategic_investment": strategic_investment,
+
+        # Autonomous Digital Venture Studio (2026-07-22): only present for
+        # ACCEPTED opportunities, per the founder's own scoping ("every
+        # accepted opportunity must automatically generate..."). None
+        # (never fabricated) for backlog items.
+        "business_dossier": business_dossier,
 
         # Additional real, already-computed context (not part of the
         # named fields, kept for transparency):

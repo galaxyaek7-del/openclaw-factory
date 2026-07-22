@@ -133,6 +133,34 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
         self.assertEqual(entry["ai_leverage"]["level"], "عالية")
         self.assertEqual(entry["automation_potential"], 40)
 
+    def test_business_dossier_auto_generated_only_for_accepted_opportunities(self):
+        """Autonomous Digital Venture Studio (2026-07-22): 'every accepted
+        opportunity must automatically generate' the 8 named sections --
+        never for backlog items."""
+        self._record(
+            "an accepted niche for dossier test", "automation_tools", accepted=True, score=90.0, price=150,
+            defensibility={"score": 75, "level": "عالية نسبياً", "note": "test"},
+        )
+        self._record("a rejected niche for dossier test", "kdp_books", accepted=False, score=30.0, price=10)
+        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        accepted_entry = result["product_laboratory"][0]
+        rejected_entry = result["backlog"][0]
+        self.assertIsNotNone(accepted_entry["business_dossier"])
+        self.assertIsNone(rejected_entry["business_dossier"])
+
+    def test_business_dossier_has_all_eight_sections(self):
+        self._record(
+            "a dossier completeness test niche", "ai_saas", accepted=True, score=90.0, price=300,
+            defensibility={"score": 75, "level": "عالية نسبياً", "note": "test"},
+        )
+        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        dossier = result["product_laboratory"][0]["business_dossier"]
+        for key in (
+            "business_thesis", "customer_profile", "product_architecture", "mvp_roadmap",
+            "revenue_model", "pricing_strategy", "competitive_moat", "expansion_strategy",
+        ):
+            self.assertIn(key, dossier)
+
     def test_strategic_investment_layer_present_for_ladder_tagged_decisions(self):
         self._record(
             "a niche for strategic layer test", "ai_saas", accepted=True, score=90.0, price=300,

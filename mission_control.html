@@ -527,6 +527,29 @@ function strategicVerdictSummary(layer) {
   return `<span class="badge ${cls}" title="${escapeHtml(tooltip)}">${yesCount}/7 Yes</span>`;
 }
 
+// Autonomous Digital Venture Studio (2026-07-22): renders business_
+// dossier.py's 8 sections for one ACCEPTED opportunity -- every value
+// here is real (or an honest disclosed gap), never LLM-generated prose.
+function renderBusinessDossier(niche, dossier) {
+  if (!dossier) return '';
+  const section = (title, body) => `<div class="card"><h4>${title}</h4>${body}</div>`;
+  return `
+    <details class="card">
+      <summary><strong>${escapeHtml(niche)}</strong> — الملف التجاري الكامل</summary>
+      ${section('الأطروحة التجارية', `<p>${escapeHtml(dossier.business_thesis?.text)}</p>`)}
+      ${section('ملف العميل', `<p class="muted">${escapeHtml(dossier.customer_profile?.note)}</p>`)}
+      ${section('بنية المنتج', `<p>${escapeHtml(dossier.product_architecture?.note)}</p>`)}
+      ${section('خارطة MVP', `
+        <ul>${(dossier.mvp_roadmap?.steps || []).map(s => `<li><strong>${escapeHtml(s.step)}</strong> — ${escapeHtml(s.status)}<br><span class="muted">${escapeHtml(s.evidence)}</span></li>`).join('')}</ul>
+        <p class="muted">${escapeHtml(dossier.mvp_roadmap?.note)}</p>
+      `)}
+      ${section('نموذج الإيراد', `<p>${escapeHtml(dossier.revenue_model?.note)}</p>`)}
+      ${section('استراتيجية التسعير', `<p>${escapeHtml(dossier.pricing_strategy?.note)}</p>`)}
+      ${section('الحصانة التنافسية', `<p>${escapeHtml(dossier.competitive_moat?.level)} — ${escapeHtml(dossier.competitive_moat?.note)}</p>`)}
+      ${section('استراتيجية التوسع طويلة المدى', `<p>${escapeHtml(dossier.expansion_strategy?.note)}</p>`)}
+    </details>`;
+}
+
 function renderOpportunityPipelineTable(rows) {
   if (!rows.length) return '<p class="muted">لا فرص هنا.</p>';
   return `<div style="overflow-x:auto;"><table><thead><tr>
@@ -1039,6 +1062,10 @@ const loaders = {
           ? '<p class="muted">لا فرصة مقبولة فعلاً اليوم عبر البوابة الحقيقية — الاحتياطي أدناه يعرض كل الفرص الحالية.</p>'
           : renderOpportunityPipelineTable(d.product_laboratory)}
       </div>
+      ${d.product_laboratory_count > 0 ? `
+      <div class="tabHeader"><h3>الملفات التجارية الكاملة (Business Dossiers)</h3></div>
+      ${d.product_laboratory.map(o => renderBusinessDossier(o.niche, o.business_dossier)).join('')}
+      ` : ''}
       <details><summary>الاحتياطي (Backlog) — ${d.backlog_count}${d.backlog_truncated ? ` (عرض أول ${d.backlog.length} فقط)` : ''}</summary>
         ${renderOpportunityPipelineTable(d.backlog)}
       </details>
