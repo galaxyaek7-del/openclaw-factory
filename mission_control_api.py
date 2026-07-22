@@ -893,6 +893,19 @@ def _full_cycle():
     }
 
 
+def _check_paddle_checkout_status():
+    """ADR-085: re-attempts Paddle checkout-link creation for the real,
+    already-created $388 techdoc price (ADR-074). Sends a real, one-time
+    Arabic Telegram message the moment Paddle's account-onboarding gate
+    clears (direct Bot API send -- bypasses n8n, same precedent as
+    ADR-072/ADR-074's addenda). Reports honestly, with no message sent,
+    while transaction_checkout_not_enabled is still the real Paddle
+    response -- this is the expected result on every run before the
+    founder finishes onboarding in vendors.paddle.com."""
+    from scripts import check_paddle_checkout_status
+    return check_paddle_checkout_status.check_and_notify()
+
+
 _ENDPOINTS = {
     "opportunities": _opportunities,
     "production": _production,
@@ -926,6 +939,7 @@ _ENDPOINTS = {
     "go_deep_evidence": _go_deep_evidence,
     "product_concept_comparison": _product_concept_comparison,
     "opportunity_pipeline": _opportunity_pipeline,
+    "check_paddle_checkout_status": _check_paddle_checkout_status,
 }
 
 

@@ -1053,6 +1053,26 @@ const ACTION_REGISTRY = [
     run: confirmSafeToResumeAction,
   },
   {
+    // ADR-085 (2026-07-22): Paddle checkout creation for the real $388
+    // techdoc has been blocked since ADR-074 by Paddle's own account-
+    // onboarding gate (transaction_checkout_not_enabled) -- entirely on
+    // Paddle's side, nothing here can clear it. This action re-attempts
+    // checkout-link creation for that exact, already-existing price and,
+    // the moment it succeeds, sends the real link directly to the
+    // founder's Telegram in Arabic (bypasses n8n -- same precedent as
+    // ADR-072/074's addenda for critical one-off messages). Idempotent:
+    // a second run after a real link was already sent reports
+    // already_notified=true rather than re-sending. This factory
+    // deliberately has no scheduler (CLAUDE.md) -- "automatic" here means
+    // zero further code changes, one click away, not a background timer.
+    name: 'check-paddle-checkout-status',
+    description: 'Re-attempts Paddle checkout-link creation for the real $388 techdoc price. Sends a one-time Arabic Telegram message with the real link the moment Paddle onboarding clears. Reports honestly, with no message sent, while still blocked.',
+    reused: 'scripts/check_paddle_checkout_status.py (ADR-085)',
+    reversible: true, // read-only check; the real Telegram send is idempotent, never repeats
+    kind: 'async',
+    section: 'check_paddle_checkout_status',
+  },
+  {
     name: 'run-validation',
     description: 'Generates the real daily validation report (opportunities, bottlenecks, stalled items, reliability, recommendations).',
     reused: 'validation_layer/daily_report.py (ADR-053)',
