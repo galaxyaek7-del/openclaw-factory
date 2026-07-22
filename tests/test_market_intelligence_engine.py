@@ -215,6 +215,9 @@ class TestAnalyzeOpportunityOrchestration(unittest.TestCase):
         self.assertIn("scores", result)
         self.assertIn("risk", result)
         self.assertIn("confidence", result)
+        # Opportunity Intelligence Round 2 (2026-07-22): was silently
+        # discarded before the fix, same pattern as risk/confidence above.
+        self.assertIn("defensibility", result)
         self.assertIn("customer_pain", result)
         self.assertIn("demand_pattern", result)
         self.assertIn("competitors", result)

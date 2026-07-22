@@ -342,6 +342,13 @@ def analyze_opportunity(niche, external_signal=None, tier="tier4", max_results=1
         "scores": scored["components"],
         "risk": scored["risk"],
         "confidence": scored["confidence"],
+        # Opportunity Intelligence Round 2 (2026-07-22): scored (profit_
+        # oracle.opportunity_score()) already computes this -- was silently
+        # discarded before this fix, same pattern as record_ladder_decision()
+        # (decision_engine/engine.py) found and fixed the same day. .get()
+        # so a caller/mock on the older pre-defensibility shape degrades to
+        # None rather than raising KeyError.
+        "defensibility": scored.get("defensibility"),
         "customer_pain": pain,
         "demand_pattern": demand_pattern,
         "competitors": {"total_found": competitors["total_found"], "by_category": competitors["by_category"]},

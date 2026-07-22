@@ -184,6 +184,17 @@ def record_ladder_decision(niche, ladder, ladder_result, decisions_path=None, pr
             "ladder": ladder,
             "price": ladder_result.get("price"),
             "components": ladder_result.get("components"),
+            # Opportunity Intelligence Round 2 (2026-07-22): ladder_result
+            # (profit_oracle.ladder_opportunity_score()) already computes
+            # these -- they were silently discarded before persisting here,
+            # the same "real data computed then thrown away" pattern
+            # ADR-041/043 found elsewhere. Purely additive: 3 new keys,
+            # nothing existing changed. .get() so callers on an older
+            # ladder_result shape (pre-defensibility) degrade to None,
+            # never crash.
+            "risk": ladder_result.get("risk"),
+            "confidence": ladder_result.get("confidence"),
+            "defensibility": ladder_result.get("defensibility"),
         },
         external_signal=None,
         ladder=ladder,

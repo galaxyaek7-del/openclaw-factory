@@ -349,6 +349,17 @@ const SERVICE_REGISTRY = [
     health: fsHealthCheck(() => readNextDollarActions(), 'FACTORY_STATUS.md read check ok'),
   },
   {
+    // Opportunity Intelligence Round 2 (2026-07-22): fast, local-only
+    // (reads already-recorded decisions.jsonl, zero live network) -- a
+    // plain GET service, same reasoning as product-concept-comparison
+    // below.
+    name: 'opportunity-pipeline',
+    description: "The real, ranked Opportunity Pipeline: every currently-scored opportunity annotated with 10 real fields (market size, customer type, pain level, competition, price, recurring revenue, technical complexity, time to MVP, defensibility, scalability) -- real data where it exists, honestly Unknown where it doesn't. Product Laboratory = decisions already ACCEPTED by the real existing gate; everything else stays in the backlog.",
+    reused: 'opportunity_pipeline.py build_opportunity_pipeline() (Opportunity Intelligence Round 2, 2026-07-22) -- reuses decision_engine.ranking.rank_all() verbatim, never recomputes accept/reject.',
+    handler: () => runPythonService('opportunity_pipeline'),
+    health: pythonHealthCheck('opportunity_pipeline'),
+  },
+  {
     // Strategic Phase 3, Round 1 (2026-07-22): Product Laboratory MVP --
     // fast, local-only (no live network), so a plain query-param GET
     // service, unlike go-deep-evidence's async job (which does real

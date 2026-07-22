@@ -219,6 +219,11 @@
     <div id="opportunitiesContent" class="loading">جارٍ التحميل…</div>
   </section>
 
+  <section id="tab-opportunitypipeline" class="tab">
+    <div class="tabHeader"><h2>خط أنابيب الفرص (Opportunity Pipeline)</h2></div>
+    <div id="opportunitypipelineContent" class="loading">جارٍ التحميل…</div>
+  </section>
+
   <section id="tab-research" class="tab">
     <div class="tabHeader"><h2>قسم الأبحاث (Research Department)</h2></div>
     <div id="researchContent" class="loading">جارٍ التحميل…</div>
@@ -369,6 +374,7 @@ const TABS = [
   { id: 'goldenhunter', label: 'الصياد الذهبي' },
   { id: 'pioneer', label: 'الرائد' },
   { id: 'opportunities', label: 'الفرص' },
+  { id: 'opportunitypipeline', label: 'خط أنابيب الفرص' },
   { id: 'research', label: 'قسم الأبحاث' },
   { id: 'production', label: 'الإنتاج' },
   { id: 'publishing', label: 'النشر' },
@@ -477,6 +483,46 @@ function renderGoDeepEvidenceResult(result) {
   `));
 
   return `<p class="muted">إشارات معلوماتية فقط — لا تُغيّر أي بوابة قبول/رفض حقيقية.</p>${pain}${competitors}${coverage}`;
+}
+
+// Opportunity Intelligence Round 2 (2026-07-22): renders one of
+// opportunity_pipeline.py's 10 annotated fields -- either a real value or
+// an honest {answer:"Unknown", reason} dict (same convention already used
+// by the research tab's honestOrList()).
+function fieldCell(value) {
+  if (value === null || value === undefined) return '<span class="muted">—</span>';
+  if (typeof value === 'object' && value.answer === 'Unknown') {
+    return `<span class="muted" title="${escapeHtml(value.reason)}">Unknown</span>`;
+  }
+  if (typeof value === 'object') {
+    if ('value' in value) return escapeHtml(String(value.value)); // customer_type
+    if ('favorability_score' in value) return escapeHtml(String(value.favorability_score)); // competition
+    return escapeHtml(JSON.stringify(value));
+  }
+  return escapeHtml(String(value));
+}
+
+function renderOpportunityPipelineTable(rows) {
+  if (!rows.length) return '<p class="muted">لا فرص هنا.</p>';
+  return `<div style="overflow-x:auto;"><table><thead><tr>
+    <th>النيتش</th><th>الدرجة</th><th>حجم السوق</th><th>نوع العميل</th><th>الألم</th>
+    <th>المنافسة</th><th>السعر</th><th>إيراد متكرر</th><th>التعقيد التقني</th>
+    <th>وقت MVP</th><th>الدفاعية</th><th>قابلية التوسع العالمي</th>
+  </tr></thead><tbody>${rows.map(o => `
+    <tr>
+      <td>${escapeHtml(o.niche)}</td>
+      <td>${o.opportunity_score ?? '—'}</td>
+      <td>${fieldCell(o.market_size)}</td>
+      <td>${fieldCell(o.customer_type)}</td>
+      <td>${fieldCell(o.pain_level?.value ?? o.pain_level)}</td>
+      <td>${fieldCell(o.competition)}</td>
+      <td>${fieldCell(o.estimated_selling_price)}</td>
+      <td>${fieldCell(o.recurring_revenue_potential)}</td>
+      <td>${fieldCell(o.technical_complexity)}</td>
+      <td>${fieldCell(o.time_to_mvp)}</td>
+      <td>${fieldCell(o.defensibility)}</td>
+      <td>${fieldCell(o.global_scalability)}</td>
+    </tr>`).join('')}</tbody></table></div>`;
 }
 
 function fmtTime(iso) {
@@ -942,6 +988,30 @@ const loaders = {
       <p class="muted">طابور القبول (ACCEPTED جاهزة للتنفيذ): ${d.queue?.length ?? 0}</p>
       <table><thead><tr><th>النيتش</th><th>الدرجة</th><th>الحالة</th><th>قرار AI CEO</th><th>مسار القرار</th></tr></thead>
       <tbody>${rows || '<tr><td colspan="5" class="muted">لا فرص مُقيَّمة بعد</td></tr>'}</tbody></table>
+    `;
+  },
+
+  opportunitypipeline: async () => {
+    const el = document.getElementById('opportunitypipelineContent');
+    const res = await fetchJson('/api/v1/opportunity-pipeline');
+    if (!res.success) { el.innerHTML = `<p class="muted">${escapeHtml(res.error?.message)}</p>`; return; }
+    const d = res.data;
+    el.innerHTML = `
+      <p class="muted">${escapeHtml(d.note)}</p>
+      <div class="grid">
+        <div class="card"><h3>إجمالي الفرص</h3><div class="big">${d.total_opportunities}</div></div>
+        <div class="card"><h3>مختبَر المنتجات (مقبولة فعلاً)</h3><div class="big">${d.product_laboratory_count}</div></div>
+        <div class="card"><h3>الاحتياطي (Backlog)</h3><div class="big">${d.backlog_count}</div></div>
+      </div>
+      <div class="card">
+        <h3>مختبَر المنتجات — Product Laboratory</h3>
+        ${d.product_laboratory_count === 0
+          ? '<p class="muted">لا فرصة مقبولة فعلاً اليوم عبر البوابة الحقيقية — الاحتياطي أدناه يعرض كل الفرص الحالية.</p>'
+          : renderOpportunityPipelineTable(d.product_laboratory)}
+      </div>
+      <details><summary>الاحتياطي (Backlog) — ${d.backlog_count}${d.backlog_truncated ? ` (عرض أول ${d.backlog.length} فقط)` : ''}</summary>
+        ${renderOpportunityPipelineTable(d.backlog)}
+      </details>
     `;
   },
 

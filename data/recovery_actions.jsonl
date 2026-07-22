@@ -105,3 +105,5 @@
 {"timestamp":"2026-07-22T00:02:33.374Z","operator":"Dell","reason":"regression test (no prior local file)","affected_systems":["requirements.txt"],"result":"success — restored to HEAD (no prior file existed to back up)"}
 {"timestamp":"2026-07-22T00:04:43.575Z","operator":"Dell","reason":"regression test (no-op restore to HEAD)","affected_systems":["CLAUDE.md"],"result":"success — restored to HEAD, pre-restore state backed up to CLAUDE.md.pre-restore-backup"}
 {"timestamp":"2026-07-22T00:04:44.361Z","operator":"Dell","reason":"regression test (no prior local file)","affected_systems":["requirements.txt"],"result":"success — restored to HEAD (no prior file existed to back up)"}
+{"timestamp":"2026-07-22T00:24:57.656Z","operator":"Dell","reason":"regression test (no-op restore to HEAD)","affected_systems":["CLAUDE.md"],"result":"success — restored to HEAD, pre-restore state backed up to CLAUDE.md.pre-restore-backup"}
+{"timestamp":"2026-07-22T00:24:58.592Z","operator":"Dell","reason":"regression test (no prior local file)","affected_systems":["requirements.txt"],"result":"success — restored to HEAD (no prior file existed to back up)"}

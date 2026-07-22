@@ -371,6 +371,14 @@ def _trigger_opportunity_evaluation():
     return operating_mode.run_real_world_cycle(execute_production=False)
 
 
+def _opportunity_pipeline():
+    """Opportunity Intelligence Round 2 (2026-07-22): the real, ranked
+    Opportunity Pipeline -- passthrough only, no new logic here (see
+    opportunity_pipeline.py's own docstring for the real rules)."""
+    from opportunity_pipeline import build_opportunity_pipeline
+    return build_opportunity_pipeline()
+
+
 def _product_concept_comparison():
     """Strategic Phase 3, Round 1 (2026-07-22): Product Laboratory MVP --
     revenue_pipeline.plan.compare_ladder_variants() (real per-ladder
@@ -917,6 +925,7 @@ _ENDPOINTS = {
     "full_cycle": _full_cycle,
     "go_deep_evidence": _go_deep_evidence,
     "product_concept_comparison": _product_concept_comparison,
+    "opportunity_pipeline": _opportunity_pipeline,
 }
 
 

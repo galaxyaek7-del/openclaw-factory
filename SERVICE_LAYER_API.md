@@ -2,7 +2,7 @@
 
 _Auto-generated from SERVICE_REGISTRY in server.js at server startup — do not hand-edit, it is overwritten on every restart. Source of truth: server.js._
 
-Generated at: 2026-07-22T00:04:39.508Z
+Generated at: 2026-07-22T00:24:53.179Z
 
 Every endpoint below requires an authenticated Mission Control session (`POST /api/mission-control/login`) and returns the standard envelope:
 
@@ -48,6 +48,14 @@ EOS Phase 2, Round 2 (2026-07-19): three real priority signals shown side by sid
 - Data: `GET /api/v1/unified-priorities`
 - Health: `GET /api/v1/unified-priorities/health`
 - Reuses: server.js readNextDollarActions() (existing, also used by company-health) + decision_engine/ranking.py rank_queue() via the existing opportunity-queue service + a new MASTER_CHARTER.md markdown-section read using the same technique as readNextDollarActions().
+
+### opportunity-pipeline
+
+The real, ranked Opportunity Pipeline: every currently-scored opportunity annotated with 10 real fields (market size, customer type, pain level, competition, price, recurring revenue, technical complexity, time to MVP, defensibility, scalability) -- real data where it exists, honestly Unknown where it doesn't. Product Laboratory = decisions already ACCEPTED by the real existing gate; everything else stays in the backlog.
+
+- Data: `GET /api/v1/opportunity-pipeline`
+- Health: `GET /api/v1/opportunity-pipeline/health`
+- Reuses: opportunity_pipeline.py build_opportunity_pipeline() (Opportunity Intelligence Round 2, 2026-07-22) -- reuses decision_engine.ranking.rank_all() verbatim, never recomputes accept/reject.
 
 ### product-concept-comparison
 

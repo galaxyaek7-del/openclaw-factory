@@ -274,6 +274,28 @@ class TestRecordLadderDecision(unittest.TestCase):
         )
         self.assertEqual(d.product_family, "knowledge_bases")
 
+    def test_risk_confidence_defensibility_are_persisted_not_dropped(self):
+        """Opportunity Intelligence Round 2 (2026-07-22): these 3 fields
+        were already computed by profit_oracle.ladder_opportunity_score()
+        but silently discarded before this fix."""
+        ladder_result = {
+            "accepted": True, "ladder_score": 85.3, "price": 388, "reason": "accepted: test", "components": {},
+            "risk": {"score": 90, "level": "low", "notes": []},
+            "confidence": {"score": 55, "level": "متوسطة", "note": "x"},
+            "defensibility": {"score": 75, "level": "عالية نسبياً", "note": "y"},
+        }
+        d = engine.record_ladder_decision("test niche", "ai_saas", ladder_result, decisions_path=self.decisions_path)
+        self.assertEqual(d.evaluation_snapshot["risk"]["score"], 90)
+        self.assertEqual(d.evaluation_snapshot["confidence"]["level"], "متوسطة")
+        self.assertEqual(d.evaluation_snapshot["defensibility"]["level"], "عالية نسبياً")
+
+    def test_missing_risk_confidence_defensibility_degrade_to_none_never_crash(self):
+        ladder_result = {"accepted": True, "ladder_score": 85.3, "price": 388, "reason": "accepted: test", "components": {}}
+        d = engine.record_ladder_decision("test niche", "ai_saas", ladder_result, decisions_path=self.decisions_path)
+        self.assertIsNone(d.evaluation_snapshot["risk"])
+        self.assertIsNone(d.evaluation_snapshot["confidence"])
+        self.assertIsNone(d.evaluation_snapshot["defensibility"])
+
     def test_reads_via_the_same_ranking_and_mission_control_path(self):
         """Confirms the actual unification claim: a fast-path decision is
         indistinguishable, to a reader of decision_engine.store/ranking
