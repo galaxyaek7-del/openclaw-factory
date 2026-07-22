@@ -39,6 +39,19 @@ def _build_documentation(spec):
 
 
 def _parse_marketing_copy(text):
+    """Real bug found live (2026-07-22, product quality pass): the model
+    doesn't reliably echo the literal HEADLINE/DESCRIPTION/KEYWORDS tag
+    words as their own header line — it writes a real headline as the
+    header itself (e.g. "##SOC 2 Compliance Made Easy with AI##") with
+    the description following as body text, and often drops the KEYWORDS
+    marker line entirely. Same class of failure as
+    book_generator._parse_sectioned_techdoc()'s real bug and identical
+    resilience-over-strictness fix: when the strict tag match leaves
+    headline/description empty, recover the model's real first header
+    text as the headline and its body as the description (both genuinely
+    written by the model, just under a header it invented), and fall
+    back to a plausible comma-heavy final paragraph for keywords rather
+    than leaving it blank."""
     parts = re.split(r'(?m)^#{1,4}\s*(HEADLINE|DESCRIPTION|KEYWORDS)\s*#{0,4}\s*$', text, flags=re.IGNORECASE)
     fields = {"headline": "", "description": "", "keywords": ""}
     for i in range(1, len(parts), 2):
@@ -46,6 +59,22 @@ def _parse_marketing_copy(text):
         body = parts[i + 1].strip() if i + 1 < len(parts) else ""
         if key in fields:
             fields[key] = body
+
+    if not fields["headline"] or not fields["description"]:
+        loose_parts = re.split(r'(?m)^#{1,4}\s*(.+?)\s*#{0,4}\s*$', text)
+        if len(loose_parts) >= 3 and loose_parts[1].strip():
+            if not fields["headline"]:
+                fields["headline"] = loose_parts[1].strip()
+            if not fields["description"]:
+                fields["description"] = loose_parts[2].strip()
+
+    if not fields["keywords"]:
+        paragraphs = [p.strip() for p in text.strip().split("\n\n") if p.strip()]
+        if paragraphs:
+            last = paragraphs[-1].lstrip("#").strip()
+            if last.count(",") >= 3 and last.count(".") == 0:
+                fields["keywords"] = last
+
     return fields
 
 

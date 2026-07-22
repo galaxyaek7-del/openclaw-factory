@@ -95,6 +95,40 @@ class TestAiGenerateTechdocContent(unittest.TestCase):
         for c in result:
             self.assertIn("unavailable", c["content"].lower())
 
+    def test_real_bug_2026_07_22_model_uses_its_own_headers_not_the_exact_tags(self):
+        """Live-confirmed against the real Groq API (product quality pass,
+        2026-07-22): llama-3.1-8b-instant writes real, good content but
+        under its own header wording (e.g. "##PRODUCT OVERVIEW##"), not
+        the literal "SECTION N TITLE/CONTENT" tags requested. Before the
+        fix, this silently produced "Content for Overview." placeholder-
+        grade text in a real $388 paid product with no error at all. Must
+        now recover the real content positionally instead."""
+        raw = (
+            "##PRODUCT OVERVIEW##\n\n"
+            "This is real, substantial overview content the model actually wrote, "
+            "just under a header it invented instead of the requested tag.\n\n"
+            "##GETTING STARTED GUIDE##\n\n"
+            "This is real, substantial getting-started content, same situation."
+        )
+        with patch.object(bg, "groq_chat", return_value=raw):
+            result = bg.ai_generate_techdoc_content("T", "topic", ["Overview", "Getting Started"])
+        self.assertEqual(result[0]["content"], "This is real, substantial overview content the model actually wrote, just under a header it invented instead of the requested tag.")
+        self.assertEqual(result[1]["content"], "This is real, substantial getting-started content, same situation.")
+        # never the honest-but-empty placeholder when real content was recoverable
+        self.assertNotIn("Content for", result[0]["content"])
+        self.assertNotIn("Content for", result[1]["content"])
+
+    def test_loose_fallback_still_honestly_placeholders_a_section_the_model_truly_dropped(self):
+        """If the model's own-headers output has fewer real body chunks
+        than requested sections, the missing ones must still get the
+        honest placeholder — never fabricated content for a section that
+        genuinely never came back."""
+        raw = "##ONLY ONE HEADER##\n\nOnly one real section came back this time."
+        with patch.object(bg, "groq_chat", return_value=raw):
+            result = bg.ai_generate_techdoc_content("T", "topic", ["Overview", "Getting Started"])
+        self.assertEqual(result[0]["content"], "Only one real section came back this time.")
+        self.assertEqual(result[1]["content"], "Content for Getting Started.")
+
 
 class TestGenerateProductPackage(unittest.TestCase):
     def setUp(self):

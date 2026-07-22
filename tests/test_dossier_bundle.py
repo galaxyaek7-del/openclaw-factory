@@ -65,6 +65,27 @@ class TestMarketingCopy(unittest.TestCase):
         self.assertEqual(result["source"], "fallback")
         self.assertIn("unavailable", result["content"]["description"])
 
+    def test_real_bug_2026_07_22_model_uses_its_own_headline_as_the_header(self):
+        """Live-confirmed against the real Groq API (product quality pass,
+        2026-07-22): the model writes a real headline/description but
+        under its own invented header text (e.g. its actual headline,
+        not the literal "HEADLINE" tag), and often drops the KEYWORDS
+        marker line entirely, leaving a trailing comma-separated
+        paragraph with no tag at all. Must recover all three from the
+        model's real output, never leave a real field silently empty."""
+        raw = (
+            "##SOC 2 Compliance Made Easy with AI##\n\n"
+            "As an accounting firm, navigating SOC 2 compliance can be daunting. "
+            "Our system automates evidence collection so you can focus on clients.\n\n"
+            "##accounting compliance, SOC 2 automation, AI compliance, audit prep, evidence collection"
+        )
+        with patch.object(bg, "groq_chat", return_value=raw):
+            result = bb._generate_marketing_copy({"title": "T", "niche": "n"})
+        self.assertEqual(result["content"]["headline"], "SOC 2 Compliance Made Easy with AI")
+        self.assertIn("automates evidence collection", result["content"]["description"])
+        self.assertIn("accounting compliance", result["content"]["keywords"])
+        self.assertIn("evidence collection", result["content"]["keywords"])
+
 
 class TestSupportCopy(unittest.TestCase):
     def test_returns_real_groq_content_on_success(self):

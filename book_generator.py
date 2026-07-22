@@ -2645,10 +2645,26 @@ def _parse_sectioned_techdoc(text, section_titles):
     """Parses the ##SECTION N TITLE##/##SECTION N CONTENT## marker format
     above into real content, positionally by index marker — never by
     matching the model's own possibly-reworded title text back to
-    `section_titles`. Same resilience-over-strictness philosophy as
-    _parse_sectioned_book(). A section the model dropped entirely still
-    gets an honest, non-empty placeholder rather than a blank chapter
-    (generate_book_from_content() requires non-empty content)."""
+    `section_titles`.
+
+    Real bug found live (2026-07-22, product quality pass on the $388
+    techdoc): llama-3.1-8b-instant does not reliably echo the literal
+    "SECTION N TITLE"/"SECTION N CONTENT" tag text — it writes real, good
+    content but under its own headers (e.g. "##PRODUCT OVERVIEW##",
+    "##GETTING STARTED GUIDE##"). The strict regex then matched nothing
+    for every section, silently shipping "Content for X." placeholder-
+    grade text into a real paid product with no error, no retry, nothing
+    for a caller to catch. Same class of "small model won't echo exact
+    tags" behavior _parse_sectioned_book() already documented and solved
+    for chapters — applying the identical resilience-over-strictness fix
+    here: if the strict pass finds zero real content anywhere, fall back
+    to splitting on ANY '##header##'-style line (regardless of wording)
+    and take the body chunks in the order they appear, positionally,
+    since the model reliably produces N header+body pairs in the
+    requested order even when it renames the headers. Only a section the
+    model dropped entirely (fewer body chunks than section_titles) still
+    gets the honest, clearly-empty placeholder — never fabricated.
+    """
     contents = [None] * len(section_titles)
     parts = re.split(r'(?m)^#{1,4}\s*SECTION\s+(\d+)\s+(TITLE|CONTENT)\s*#{0,4}\s*$', text, flags=re.IGNORECASE)
     for i in range(1, len(parts), 3):
@@ -2660,6 +2676,13 @@ def _parse_sectioned_techdoc(text, section_titles):
             continue
         if 0 <= idx < len(section_titles) and kind == 'CONTENT' and body:
             contents[idx] = body
+
+    if not any(contents):
+        loose_parts = re.split(r'(?m)^#{1,4}\s*(.+?)\s*#{0,4}\s*$', text)
+        bodies = [loose_parts[i].strip() for i in range(2, len(loose_parts), 2) if loose_parts[i].strip()]
+        for idx, body in enumerate(bodies[:len(section_titles)]):
+            contents[idx] = body
+
     return [
         {"title": section_titles[i], "content": contents[i] or f"Content for {section_titles[i]}."}
         for i in range(len(section_titles))
