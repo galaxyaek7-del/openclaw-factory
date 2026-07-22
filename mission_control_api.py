@@ -893,6 +893,35 @@ def _full_cycle():
     }
 
 
+def _executive_quality_gate():
+    """Executive Quality Gate (Executive Directive, 2026-07-22) -- the
+    permanent core layer every opportunity/product must pass before
+    entering production. Reads the real, already-recorded decision for
+    the given niche (never re-scores it) and runs all 20 real/honest
+    criteria against it. Reads its niche as a JSON payload in
+    sys.argv[2]: `python mission_control_api.py executive_quality_gate
+    '{"niche":"..."}'`."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    from decision_engine import ranking
+    import executive_quality_gate as eqg
+
+    decisions = ranking.rank_all()
+    decision = next((d for d in decisions if d.get("niche") == niche), None)
+    if decision is None:
+        raise ValueError(f"لا قرار مسجَّل لهذا النيتش: {niche!r}")
+
+    return eqg.run_executive_quality_gate({
+        "niche": decision.get("niche"),
+        "ladder": decision.get("ladder"),
+        "evaluation_snapshot": decision.get("evaluation_snapshot"),
+        "decided_at": decision.get("decided_at"),
+    })
+
+
 def _check_paddle_checkout_status():
     """ADR-085/ADR-086: re-attempts Paddle checkout-link creation for
     every real product in data/paddle_products.json (5 as of ADR-086 --
@@ -941,6 +970,7 @@ _ENDPOINTS = {
     "product_concept_comparison": _product_concept_comparison,
     "opportunity_pipeline": _opportunity_pipeline,
     "check_paddle_checkout_status": _check_paddle_checkout_status,
+    "executive_quality_gate": _executive_quality_gate,
 }
 
 

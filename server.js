@@ -1078,6 +1078,26 @@ const ACTION_REGISTRY = [
     section: 'check_paddle_checkout_status',
   },
   {
+    // Executive Directive (2026-07-22): the permanent core Executive
+    // Quality Gate every opportunity/product must pass before entering
+    // production. Reads the real, already-recorded decision -- never
+    // re-scores anything. Where this factory has no real data source at
+    // all (willingness-to-pay, per-niche customer-acquisition-difficulty,
+    // customer-retention -- zero real sales exist to measure retention
+    // from) the gate reports Unknown honestly and routes to
+    // NEEDS_HUMAN_REVIEW rather than a fabricated PASS.
+    name: 'executive-quality-gate',
+    description: 'Runs the real Executive Quality Gate (20 criteria) against an already-recorded decision. Never re-scores, never fabricates a criterion with no real data source -- Unknown criteria route to NEEDS_HUMAN_REVIEW, never a silent APPROVED.',
+    reused: 'executive_quality_gate.py (Executive Directive)',
+    reversible: true, // read-only evaluation; changes no data
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('executive-quality-gate', 'executive_quality_gate', [JSON.stringify({ niche })]);
+    },
+  },
+  {
     name: 'run-validation',
     description: 'Generates the real daily validation report (opportunities, bottlenecks, stalled items, reliability, recommendations).',
     reused: 'validation_layer/daily_report.py (ADR-053)',
