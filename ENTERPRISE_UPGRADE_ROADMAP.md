@@ -250,4 +250,4 @@ Full findings and decisions: `ADR-092`. Founder-confirmed before building: exten
 
 **Documented:** `ADR-092`.
 
-**Commit:** `[pending]`.
+**Commit:** `c6cfbf6`.
