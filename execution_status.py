@@ -96,8 +96,10 @@ def build_execution_status(niche, decisions_path=None, board_path=None, alerts_p
         "business_value": board_summary.get("strategic_value"),
         "estimated_revenue": board_summary.get("estimated_lifetime_value"),
         "estimated_effort": board_summary.get("estimated_build_cost"),
+        "expected_roi": board_summary.get("expected_roi"),
         "confidence": annotated.get("confidence"),
         "priority": board_summary.get("priority_score"),
+        "dependencies": {"value": None, "reason": "لا تتبّع اعتمادية حقيقي بين الفرص التجارية في هذا المصنع اليوم — dependency_graph.py يحسب اعتمادية ملفات الكود، لا اعتمادية فرص العمل"},
         "learning_feedback": _derive_learning_feedback(profile, annotated),
         "expected_completion": {"value": None, "reason": "لا نموذج تقدير مدة حقيقي (لا تتبّع تاريخي لمدة كل مرحلة) في هذا المصنع بعد"},
         "final_outcome": lifecycle.get("final_outcome"),
@@ -155,20 +157,45 @@ def build_execution_status_report(decisions_path=None, board_path=None, alerts_p
     `limit` (Autonomous Global Commercial Company Layer, 2026-07-24):
     forwarded to value_engine.build_value_engine_report()'s own real
     scale valve — see its docstring for the measured cost and the
-    honest tradeoff. Default None preserves exact prior behavior."""
+    honest tradeoff. Default None preserves exact prior behavior.
+
+    Global Autonomous Business Operating System (2026-07-24): each
+    opportunity also gets a real `next_action` — scheduler.py's own
+    5-bucket classification for this exact niche, joined from one real,
+    UNLIMITED scheduling pass (never limited even when this report's own
+    `limit` is set, so a bucket assignment is never silently wrong for
+    an opportunity this report happens to be showing). When `limit` is
+    None, the already-computed unlimited portfolio is reused for
+    scheduling too — zero redundant computation; a `limit` costs that
+    one optimization, not correctness."""
     import value_engine
+    import scheduler
 
     portfolio = value_engine.build_value_engine_report(
         decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
         reopen_log_path=reopen_log_path, evidence_path=evidence_path,
         timeline_path=timeline_path, outcomes_path=outcomes_path, limit=limit,
     )
+    scheduling = scheduler.decide_next_actions(
+        decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
+        reopen_log_path=reopen_log_path, evidence_path=evidence_path,
+        timeline_path=timeline_path, outcomes_path=outcomes_path,
+        portfolio=portfolio if limit is None else None,
+    )
+    next_action_by_niche = {}
+    for bucket_name, items in scheduling["buckets"].items():
+        for item in items:
+            next_action_by_niche[item["niche"]] = {"bucket": bucket_name, "reason": item["reason"]}
+
     statuses = [
-        build_execution_status(
-            p["niche"], decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
-            reopen_log_path=reopen_log_path, evidence_path=evidence_path,
-            timeline_path=timeline_path, outcomes_path=outcomes_path, profile=p,
-        )
+        {
+            **build_execution_status(
+                p["niche"], decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
+                reopen_log_path=reopen_log_path, evidence_path=evidence_path,
+                timeline_path=timeline_path, outcomes_path=outcomes_path, profile=p,
+            ),
+            "next_action": next_action_by_niche.get(p["niche"], {"bucket": "wait", "reason": "لا تصنيف حقيقي بعد"}),
+        }
         for p in portfolio.get("profiles", [])
     ]
     return {
@@ -177,4 +204,18 @@ def build_execution_status_report(decisions_path=None, board_path=None, alerts_p
         "total_accepted": portfolio.get("total_accepted"),
         "limited_to": limit,
         "opportunities": statuses,
+        "bottleneck_summary": _summarize_bottlenecks(statuses),
+    }
+
+
+def _summarize_bottlenecks(statuses):
+    """Real, portfolio-wide tally of blocking_issue reasons — never a
+    separately invented category, purely a count over what's already
+    real per opportunity."""
+    from collections import Counter
+
+    reasons = Counter(s["blocking_issue"] for s in statuses if s.get("blocking_issue"))
+    return {
+        "opportunities_with_a_real_blocker": sum(reasons.values()),
+        "top_reasons": [{"reason": r, "count": c} for r, c in reasons.most_common(5)],
     }

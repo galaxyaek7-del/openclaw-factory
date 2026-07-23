@@ -39,16 +39,28 @@ from datetime import datetime, timezone
 
 
 def decide_next_actions(decisions_path=None, board_path=None, alerts_path=None,
-                         reopen_log_path=None, evidence_path=None, timeline_path=None, outcomes_path=None):
+                         reopen_log_path=None, evidence_path=None, timeline_path=None,
+                         outcomes_path=None, portfolio=None):
+    """`portfolio` (Global Autonomous Business Operating System, 2026-07-24)
+    lets a caller that already has a real, UNLIMITED value_engine.build_
+    value_engine_report() result pass it straight through instead of
+    triggering a second, redundant, full-portfolio computation. Must be
+    an unlimited portfolio (built with limit=None) — passing one built
+    with a real `limit` would silently drop every opportunity outside
+    that limit from scheduling entirely, which a dashboard view may
+    accept but a real scheduling decision never should. Callers that
+    only have a limited portfolio must leave this as None so a real,
+    complete one gets computed here instead."""
     import value_engine
     import market_memory
     from decision_engine import ranking
 
-    portfolio = value_engine.build_value_engine_report(
-        decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
-        reopen_log_path=reopen_log_path, evidence_path=evidence_path,
-        timeline_path=timeline_path, outcomes_path=outcomes_path,
-    )
+    if portfolio is None:
+        portfolio = value_engine.build_value_engine_report(
+            decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
+            reopen_log_path=reopen_log_path, evidence_path=evidence_path,
+            timeline_path=timeline_path, outcomes_path=outcomes_path,
+        )
     recs = market_memory.recommend_actions(evidence_path=evidence_path)
     accelerate_niches = {
         r["niche"] for r in recs.get("recommendations", []) if r.get("type") == "increase_investment"

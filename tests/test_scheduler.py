@@ -133,6 +133,31 @@ class TestDecideNextActions(unittest.TestCase):
         result = self._decide()
         self.assertEqual(len(result["buckets"]["run_now"]), 1)
 
+    def test_a_reused_portfolio_produces_the_same_result_as_computing_one(self):
+        """Global Autonomous Business Operating System (2026-07-24):
+        the portfolio= reuse param must never change the real
+        classification, only skip a redundant computation."""
+        import value_engine
+        self._record("a", score=95.0)
+        self._record("b", score=40.0)
+
+        portfolio = value_engine.build_value_engine_report(
+            decisions_path=self.decisions_path, board_path=self.board_path, alerts_path=self.alerts_path,
+            reopen_log_path=self.reopen_log_path, evidence_path=self.evidence_path,
+            timeline_path=self.timeline_path, outcomes_path=self.outcomes_path,
+        )
+        fresh = self._decide()
+        reused = scheduler.decide_next_actions(
+            decisions_path=self.decisions_path, board_path=self.board_path, alerts_path=self.alerts_path,
+            reopen_log_path=self.reopen_log_path, evidence_path=self.evidence_path,
+            timeline_path=self.timeline_path, outcomes_path=self.outcomes_path, portfolio=portfolio,
+        )
+        self.assertEqual(fresh["counts"], reused["counts"])
+        self.assertEqual(
+            [c["niche"] for c in fresh["buckets"]["run_now"]],
+            [c["niche"] for c in reused["buckets"]["run_now"]],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

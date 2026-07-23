@@ -1239,9 +1239,28 @@ def _get_global_execution_view():
     grows large — see value_engine.build_value_engine_report()'s
     docstring for the exact, honest tradeoff. `scheduling` intentionally
     stays unlimited: classification decisions must cover every real
-    opportunity, never silently drop one from a bucket."""
+    opportunity, never silently drop one from a bucket.
+
+    Global Autonomous Business Operating System (2026-07-24) added:
+      - portfolio_growth: growth_engine.py's real "Premium Products" /
+        "AI Products" / "Automation Status" CEO-dashboard tally.
+      - production_capacity: real historical throughput (never a
+        forecast — this factory has no live worker pool to size).
+      - growth_forecast: real and evidence-gated; honestly reports no
+        forecast is computable while real sales evidence is this
+        scarce, rather than projecting from nothing.
+      - `commercial_recommendations` above already IS the real
+        "Strategic Recommendations" the founder named — not duplicated
+        under a second key.
+    Deliberately NOT added: "Global Markets" / "China Division" — the
+    same ADR-103 deferral reaffirmed twice already today (ADR-106,
+    ADR-108); nothing has changed to unblock it. "Every completed
+    commercial event automatically improves future decisions" (real
+    scoring-weight auto-adjustment) — unchanged from ADR-109's own
+    deliberate non-build, for the same real-risk reason."""
     import execution_status
     import scheduler
+    import growth_engine
     import market_memory
     from ai_capability import registry as ai_registry
     from ai_capability import orchestrator as ai_orchestrator
@@ -1254,13 +1273,16 @@ def _get_global_execution_view():
         "scheduling": scheduler.decide_next_actions(),
         "revenue": _revenue(),
         "production": _production(),
+        "production_capacity": growth_engine.production_capacity_summary(),
         "market_learning": market_memory.monthly_evolution_report(),
         "commercial_recommendations": market_memory.recommend_actions(),
+        "portfolio_growth": growth_engine.portfolio_growth_summary(),
+        "growth_forecast": growth_engine.growth_forecast(),
         "ai_utilization": {
             "providers": ai_registry.list_providers(),
             "resource_allocation": ai_orchestrator.resource_allocation_status(),
         },
-        "note": "Health -> GET /health. Security -> risk-intelligence-scan / enterprise-readiness-gate actions (not duplicated here).",
+        "note": "Health -> GET /health. Security -> risk-intelligence-scan / enterprise-readiness-gate actions (not duplicated here). Global Markets/China Division deliberately deferred (ADR-103, reaffirmed ADR-106/108) -- see this action's own docstring.",
     }
 
 

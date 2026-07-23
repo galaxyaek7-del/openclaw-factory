@@ -76,12 +76,33 @@ class TestBuildExecutionStatus(unittest.TestCase):
         self._record("a fresh execution status niche")
         status = self._status("a fresh execution status niche")
         for field in ("current_phase", "current_owner", "completion_pct", "blocking_issue",
-                      "business_value", "estimated_revenue", "estimated_effort",
-                      "confidence", "priority", "expected_completion", "final_outcome"):
+                      "business_value", "estimated_revenue", "estimated_effort", "expected_roi",
+                      "confidence", "priority", "dependencies", "expected_completion", "final_outcome"):
             self.assertIn(field, status)
         # Expected completion has no real source in this factory today.
         self.assertIsNone(status["expected_completion"]["value"])
         self.assertTrue(status["expected_completion"]["reason"])
+
+    def test_dependencies_is_always_honestly_unavailable(self):
+        """Global Autonomous Business Operating System (2026-07-24): no
+        real business-level opportunity dependency tracking exists in
+        this factory today -- dependency_graph.py tracks code-file
+        imports, not opportunities. Never conflated."""
+        self._record("a dependencies test niche")
+        status = self._status("a dependencies test niche")
+        self.assertIsNone(status["dependencies"]["value"])
+        self.assertTrue(status["dependencies"]["reason"])
+
+    def test_expected_roi_reuses_value_engine_verbatim(self):
+        self._record("an expected roi niche")
+        status = self._status("an expected roi niche")
+        import value_engine
+        profile = value_engine.compute_value_profile(
+            "an expected roi niche", decisions_path=self.decisions_path, board_path=self.board_path,
+            alerts_path=self.alerts_path, reopen_log_path=self.reopen_log_path, evidence_path=self.evidence_path,
+            timeline_path=self.timeline_path, outcomes_path=self.outcomes_path,
+        )
+        self.assertEqual(status["expected_roi"], profile["board_summary"]["expected_roi"])
 
     def test_completion_pct_reflects_real_reached_stage_count(self):
         self._record("a completion pct niche")
@@ -197,6 +218,42 @@ class TestBuildExecutionStatusReport(unittest.TestCase):
             [o["niche"] for o in report["opportunities"]],
             [p["niche"] for p in portfolio["profiles"]],
         )
+
+    def test_every_opportunity_gets_a_real_next_action_bucket(self):
+        self._record("run now candidate", 95.0)
+        self._record("wait candidate", 40.0)
+        report = es.build_execution_status_report(
+            decisions_path=self.decisions_path, board_path=self.board_path, alerts_path=self.alerts_path,
+            reopen_log_path=self.reopen_log_path, evidence_path=self.evidence_path,
+            timeline_path=self.timeline_path, outcomes_path=self.outcomes_path,
+        )
+        by_niche = {o["niche"]: o["next_action"] for o in report["opportunities"]}
+        self.assertEqual(by_niche["run now candidate"]["bucket"], "run_now")
+        self.assertEqual(by_niche["wait candidate"]["bucket"], "wait")
+
+    def test_bottleneck_summary_tallies_real_blocking_issues(self):
+        self._record("a bottleneck niche", 85.0)
+        report = es.build_execution_status_report(
+            decisions_path=self.decisions_path, board_path=self.board_path, alerts_path=self.alerts_path,
+            reopen_log_path=self.reopen_log_path, evidence_path=self.evidence_path,
+            timeline_path=self.timeline_path, outcomes_path=self.outcomes_path,
+        )
+        summary = report["bottleneck_summary"]
+        self.assertGreaterEqual(summary["opportunities_with_a_real_blocker"], 1)
+        self.assertTrue(summary["top_reasons"])
+
+    def test_a_real_limit_still_gives_every_shown_opportunity_a_correct_next_action(self):
+        """A limited report must not silently drop scheduling coverage
+        for the opportunities it DOES show -- scheduler.py always
+        computes its own unlimited pass when the report is limited."""
+        self._record("low priority limited", 40.0)
+        self._record("high priority limited", 95.0)
+        report = es.build_execution_status_report(
+            decisions_path=self.decisions_path, board_path=self.board_path, alerts_path=self.alerts_path,
+            reopen_log_path=self.reopen_log_path, evidence_path=self.evidence_path,
+            timeline_path=self.timeline_path, outcomes_path=self.outcomes_path, limit=1,
+        )
+        self.assertEqual(report["opportunities"][0]["next_action"]["bucket"], "run_now")
 
     def test_limit_forwards_to_value_engine_and_caps_the_report(self):
         self._record("low priority niche", 40.0)

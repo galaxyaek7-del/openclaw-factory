@@ -370,6 +370,9 @@ class TestGlobalMarketLearningEngineActions(unittest.TestCase):
              patch("scheduler.decide_next_actions", return_value={"counts": {}}) as m_sched, \
              patch("market_memory.monthly_evolution_report", return_value={"maturity": "DISCOVERY"}) as m_monthly, \
              patch("market_memory.recommend_actions", return_value={"recommendations": []}) as m_recs, \
+             patch("growth_engine.portfolio_growth_summary", return_value={"total_accepted_opportunities": 0}) as m_growth, \
+             patch("growth_engine.production_capacity_summary", return_value={"real_productions_in_window": 0}) as m_capacity, \
+             patch("growth_engine.growth_forecast", return_value={"maturity": "DISCOVERY", "forecast": None}) as m_forecast, \
              patch("ai_capability.registry.list_providers", return_value=[]) as m_providers, \
              patch("ai_capability.orchestrator.resource_allocation_status", return_value={}) as m_alloc, \
              patch.object(mission_control_api, "_revenue", return_value={"real": "revenue"}) as m_rev, \
@@ -380,12 +383,17 @@ class TestGlobalMarketLearningEngineActions(unittest.TestCase):
         m_sched.assert_called_once_with()
         m_monthly.assert_called_once_with()
         m_recs.assert_called_once_with()
+        m_growth.assert_called_once_with()
+        m_capacity.assert_called_once_with()
+        m_forecast.assert_called_once_with()
         m_providers.assert_called_once_with()
         m_alloc.assert_called_once_with()
         m_rev.assert_called_once_with()
         m_prod.assert_called_once_with()
         self.assertEqual(result["revenue"], {"real": "revenue"})
         self.assertEqual(result["production"], {"real": "production"})
+        self.assertEqual(result["portfolio_growth"]["total_accepted_opportunities"], 0)
+        self.assertEqual(result["growth_forecast"]["maturity"], "DISCOVERY")
         self.assertIn("note", result)
 
     def test_global_execution_view_forwards_an_optional_limit_to_execution_status(self):
@@ -397,6 +405,9 @@ class TestGlobalMarketLearningEngineActions(unittest.TestCase):
              patch("scheduler.decide_next_actions", return_value={"counts": {}}), \
              patch("market_memory.monthly_evolution_report", return_value={"maturity": "DISCOVERY"}), \
              patch("market_memory.recommend_actions", return_value={"recommendations": []}), \
+             patch("growth_engine.portfolio_growth_summary", return_value={}), \
+             patch("growth_engine.production_capacity_summary", return_value={}), \
+             patch("growth_engine.growth_forecast", return_value={}), \
              patch("ai_capability.registry.list_providers", return_value=[]), \
              patch("ai_capability.orchestrator.resource_allocation_status", return_value={}), \
              patch.object(mission_control_api, "_revenue", return_value={}), \

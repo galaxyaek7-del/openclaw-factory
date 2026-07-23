@@ -179,5 +179,96 @@ class TestBuildGrowthReport(unittest.TestCase):
         self.assertIn("channel_expansion", report)
 
 
+class TestPortfolioGrowthSummary(unittest.TestCase):
+    def setUp(self):
+        self.decisions_path = _temp_path()
+        self.board_path = _temp_path()
+        self.alerts_path = _temp_path()
+        self.reopen_log_path = _temp_path()
+        self.evidence_path = _temp_path()
+
+    def tearDown(self):
+        for p in (self.decisions_path, self.board_path, self.alerts_path, self.reopen_log_path, self.evidence_path):
+            if os.path.exists(p):
+                os.remove(p)
+
+    def _record(self, niche, automation_potential=40):
+        ladder_result = {
+            "accepted": True, "ladder_score": 85.0, "price": 250, "reason": "test",
+            "components": {
+                "market_demand": 60, "competition_favorability": 70, "profit_potential": 50,
+                "recurring_revenue_potential": 90, "reusability": 85, "automation_potential": automation_potential,
+            },
+            "risk": {"score": 90, "level": "low", "notes": []},
+            "confidence": {"score": 55, "level": "متوسطة", "note": "test"},
+        }
+        engine.record_ladder_decision(niche, "ai_saas", ladder_result, decisions_path=self.decisions_path)
+
+    def test_zero_accepted_reports_honestly(self):
+        result = growth_engine.portfolio_growth_summary(
+            decisions_path=self.decisions_path, board_path=self.board_path, alerts_path=self.alerts_path,
+            reopen_log_path=self.reopen_log_path, evidence_path=self.evidence_path,
+        )
+        self.assertEqual(result["total_accepted_opportunities"], 0)
+
+    def test_real_automation_potential_is_averaged_across_the_portfolio(self):
+        self._record("a", automation_potential=40)
+        self._record("b", automation_potential=80)
+        result = growth_engine.portfolio_growth_summary(
+            decisions_path=self.decisions_path, board_path=self.board_path, alerts_path=self.alerts_path,
+            reopen_log_path=self.reopen_log_path, evidence_path=self.evidence_path,
+        )
+        self.assertEqual(result["total_accepted_opportunities"], 2)
+        self.assertEqual(result["automation_potential_average"], 60.0)
+        self.assertEqual(result["automation_potential_sample_size"], 2)
+
+    def test_api_saas_family_status_is_real_not_fabricated(self):
+        self._record("a")
+        result = growth_engine.portfolio_growth_summary(
+            decisions_path=self.decisions_path, board_path=self.board_path, alerts_path=self.alerts_path,
+            reopen_log_path=self.reopen_log_path, evidence_path=self.evidence_path,
+        )
+        self.assertIn(result["api_product_family_status"], ("REAL", "NOT YET BUILT"))
+        self.assertIn(result["saas_product_family_status"], ("REAL", "NOT YET BUILT"))
+
+
+class TestProductionCapacitySummary(unittest.TestCase):
+    def test_missing_log_reports_honestly(self):
+        result = growth_engine.production_capacity_summary(days=30, log_path="/no/such/log.jsonl")
+        self.assertEqual(result["real_productions_in_window"], 0)
+        self.assertIn("reason", result)
+
+    def test_real_recent_entries_are_counted_old_entries_excluded(self):
+        import json
+        from datetime import datetime, timedelta
+
+        fd, path = tempfile.mkstemp(suffix=".jsonl")
+        os.close(fd)
+        try:
+            recent = (datetime.now() - timedelta(days=1)).isoformat()
+            old = (datetime.now() - timedelta(days=90)).isoformat()
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(json.dumps({"success": True, "timestamp": recent}) + "\n")
+                f.write(json.dumps({"success": False, "timestamp": recent}) + "\n")
+                f.write(json.dumps({"success": True, "timestamp": old}) + "\n")
+            result = growth_engine.production_capacity_summary(days=30, log_path=path)
+            self.assertEqual(result["real_productions_in_window"], 2)
+            self.assertEqual(result["real_successes_in_window"], 1)
+        finally:
+            os.remove(path)
+
+
+class TestGrowthForecast(unittest.TestCase):
+    def test_insufficient_real_evidence_never_projects_a_number(self):
+        evidence_path = _temp_path()
+        try:
+            result = growth_engine.growth_forecast(evidence_path=evidence_path)
+            self.assertEqual(result["maturity"], "DISCOVERY")
+            self.assertIsNone(result["forecast"])
+        finally:
+            if os.path.exists(evidence_path):
+                os.remove(evidence_path)
+
+
 if __name__ == "__main__":
     unittest.main()

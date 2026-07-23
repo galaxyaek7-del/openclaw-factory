@@ -204,3 +204,116 @@ def build_growth_report(niche, decisions_path=None, board_path=None, alerts_path
     if multiplication is None:
         return None
     return {**multiplication, "channel_expansion": evaluate_channel_expansion()}
+
+
+def portfolio_growth_summary(decisions_path=None, board_path=None, alerts_path=None,
+                              reopen_log_path=None, evidence_path=None, timeline_path=None, outcomes_path=None):
+    """Global Autonomous Business Operating System (2026-07-24): the
+    founder-named CEO-dashboard signals "Premium Products" / "AI
+    Products" / "Automation Status" — a real, factory-wide tally across
+    every real ACCEPTED opportunity's already-computed dimensions
+    (reused directly from value_engine.build_value_engine_report(),
+    never a second per-niche profile computation). Honestly reports
+    zero when this factory has zero real ACCEPTED opportunities."""
+    import value_engine
+    from product_families import registry as family_registry
+
+    portfolio = value_engine.build_value_engine_report(
+        decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
+        reopen_log_path=reopen_log_path, evidence_path=evidence_path,
+        timeline_path=timeline_path, outcomes_path=outcomes_path,
+    )
+    profiles = portfolio.get("profiles", [])
+    if not profiles:
+        return {"total_accepted_opportunities": 0, "reason": "لا فرص مقبولة فعلاً بعد لتلخيص النمو"}
+
+    premium_candidates = 0
+    automation_scores = []
+    for p in profiles:
+        upgrade = p["dimensions"].get("upgrade_potential")
+        if isinstance(upgrade, dict) and upgrade.get("available"):
+            premium_candidates += 1
+        automation = p["dimensions"].get("automation_potential")
+        if isinstance(automation, (int, float)):
+            automation_scores.append(automation)
+
+    return {
+        "total_accepted_opportunities": len(profiles),
+        "premium_version_candidates": premium_candidates,
+        "api_product_family_status": "REAL" if family_registry.get("api_products") is not None else "NOT YET BUILT",
+        "saas_product_family_status": "REAL" if family_registry.get("micro_saas") is not None else "NOT YET BUILT",
+        "automation_potential_average": round(sum(automation_scores) / len(automation_scores), 1) if automation_scores else None,
+        "automation_potential_sample_size": len(automation_scores),
+    }
+
+
+def production_capacity_summary(days=30, log_path=None):
+    """Global Autonomous Business Operating System (2026-07-24): the
+    founder-named "Production Capacity" CEO-dashboard signal. This
+    factory has no live worker pool or forward-looking capacity concept
+    (CLAUDE.md: no scheduler exists) — the honest substitute is real,
+    measured historical throughput from books/_generation_log.jsonl's
+    real timestamps (every real book_generator.py run, success or
+    failure), never a fabricated forward capacity number."""
+    import json
+    from datetime import datetime, timedelta
+    from pathlib import Path
+
+    path = Path(log_path) if log_path else Path(__file__).resolve().parent / "books" / "_generation_log.jsonl"
+    if not path.exists():
+        return {"window_days": days, "real_productions_in_window": 0, "reason": "لا سجل إنتاج حقيقي موجود بعد"}
+
+    cutoff = datetime.now() - timedelta(days=days)
+    total = successes = 0
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entry = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            ts = entry.get("timestamp")
+            if not ts:
+                continue
+            try:
+                dt = datetime.fromisoformat(ts)
+            except ValueError:
+                continue
+            if dt < cutoff:
+                continue
+            total += 1
+            if entry.get("success"):
+                successes += 1
+
+    return {
+        "window_days": days,
+        "real_productions_in_window": total,
+        "real_successes_in_window": successes,
+        "average_per_day": round(total / days, 2) if days else None,
+    }
+
+
+def growth_forecast(evidence_path=None):
+    """Global Autonomous Business Operating System (2026-07-24): the
+    founder-named "Growth Forecast" CEO-dashboard signal — deliberately
+    real and evidence-gated, never a projected number. A real forecast
+    needs a real trend across at least 2 comparable real time windows of
+    sales data; this factory has zero real sales today, so this
+    honestly reports that rather than extrapolating from nothing. The
+    mission's own stated rule ("zero fake data... no assumptions") is
+    exactly why no number is produced here yet."""
+    import market_memory
+
+    report = market_memory.monthly_evolution_report(evidence_path=evidence_path)
+    if report.get("maturity") != "REAL":
+        return {
+            "maturity": "DISCOVERY",
+            "forecast": None,
+            "reason": f"{report.get('sample_size', 0)} حدث بيع حقيقي فقط — لا يمكن حساب اتجاه نمو حقيقي، والتقدير بلا بيانات كافية يُعَد افتراضاً، وهو ممنوع صراحة",
+        }
+    return {
+        "maturity": "REAL",
+        "forecast": {"value": None, "reason": "يحتاج نافذتين زمنيتين حقيقيتين قابلتين للمقارنة لحساب اتجاه حقيقي — غير متاح بعد حتى مع عينة حقيقية واحدة كافية للتقرير الشهري"},
+    }
