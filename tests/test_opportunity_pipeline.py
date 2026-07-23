@@ -33,8 +33,16 @@ def _temp_path(suffix=".jsonl"):
 class TestBuildOpportunityPipeline(unittest.TestCase):
     def setUp(self):
         self.decisions_path = _temp_path()
+        self.board_path = _temp_path()
+
+    def _pipeline(self, **kwargs):
+        kwargs.setdefault("decisions_path", self.decisions_path)
+        kwargs.setdefault("board_path", self.board_path)
+        return op.build_opportunity_pipeline(**kwargs)
 
     def tearDown(self):
+        if os.path.exists(self.board_path):
+            os.remove(self.board_path)
         if os.path.exists(self.decisions_path):
             os.remove(self.decisions_path)
 
@@ -66,14 +74,14 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
     def test_accepted_decisions_land_in_product_laboratory(self):
         self._record("real ai saas niche", "ai_saas", accepted=True, score=85.0, price=250,
                      defensibility={"score": 75, "level": "عالية نسبياً", "note": "test"})
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         self.assertEqual(result["product_laboratory_count"], 1)
         self.assertEqual(result["product_laboratory"][0]["niche"], "real ai saas niche")
         self.assertEqual(result["product_laboratory"][0]["status"], "ACCEPTED")
 
     def test_rejected_decisions_land_in_backlog_never_product_laboratory(self):
         self._record("weak niche", "kdp_books", accepted=False, score=30.0, price=15)
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         self.assertEqual(result["product_laboratory_count"], 0)
         self.assertEqual(result["backlog_count"], 1)
         self.assertEqual(result["backlog"][0]["niche"], "weak niche")
@@ -82,19 +90,19 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
         """Product Laboratory membership must come from the real status
         field alone -- never a locally recomputed score comparison."""
         self._record("borderline high score but rejected on price", "kdp_books", accepted=False, score=90.0, price=10)
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         self.assertEqual(result["product_laboratory_count"], 0, "a high score with accepted=False must never land in Product Laboratory")
 
     def test_defensibility_surfaced_when_present(self):
         self._record("niche with real defensibility", "b2b_systems", accepted=True, score=80.0, price=200,
                      defensibility={"score": 75, "level": "عالية نسبياً", "note": "real"})
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         entry = result["product_laboratory"][0]
         self.assertEqual(entry["defensibility"]["level"], "عالية نسبياً")
 
     def test_defensibility_honestly_unknown_for_older_decisions_without_it(self):
         self._record("older niche pre-defensibility", "b2b_systems", accepted=True, score=80.0, price=200)
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         entry = result["product_laboratory"][0]
         self.assertEqual(entry["defensibility"]["answer"], "Unknown")
 
@@ -102,13 +110,13 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
         """No real dev-time-estimation model exists anywhere in this
         factory -- must never be fabricated."""
         self._record("any niche", "automation_tools", accepted=True, score=70.0, price=150)
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         entry = result["product_laboratory"][0]
         self.assertEqual(entry["time_to_mvp"]["answer"], "Unknown")
 
     def test_market_size_honestly_unknown_when_not_recorded(self):
         self._record("a niche with no market signal", "automation_tools", accepted=True, score=70.0, price=150)
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         entry = result["product_laboratory"][0]
         self.assertEqual(entry["market_size"]["answer"], "Unknown")
 
@@ -119,7 +127,7 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
             "a niche with real market signal", "automation_tools", accepted=True, score=70.0, price=150,
             market_signal={"score": 60, "level": "مرتفعة", "note": "حجم نقاش حقيقي: 50 نتيجة"},
         )
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         entry = result["product_laboratory"][0]
         self.assertEqual(entry["market_size"]["level"], "مرتفعة")
 
@@ -128,7 +136,7 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
             "a niche with real ai leverage", "ai_saas", accepted=True, score=90.0, price=300,
             ai_leverage={"score": 80, "level": "عالية", "note": "test"}, automation_potential=40,
         )
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         entry = result["product_laboratory"][0]
         self.assertEqual(entry["ai_leverage"]["level"], "عالية")
         self.assertEqual(entry["automation_potential"], 40)
@@ -142,7 +150,7 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
             defensibility={"score": 75, "level": "عالية نسبياً", "note": "test"},
         )
         self._record("a rejected niche for dossier test", "kdp_books", accepted=False, score=30.0, price=10)
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         accepted_entry = result["product_laboratory"][0]
         rejected_entry = result["backlog"][0]
         self.assertIsNotNone(accepted_entry["business_dossier"])
@@ -153,7 +161,7 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
             "a dossier completeness test niche", "ai_saas", accepted=True, score=90.0, price=300,
             defensibility={"score": 75, "level": "عالية نسبياً", "note": "test"},
         )
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         dossier = result["product_laboratory"][0]["business_dossier"]
         for key in (
             "business_thesis", "customer_profile", "product_architecture", "mvp_roadmap",
@@ -168,7 +176,7 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
             market_signal={"score": 60, "level": "مرتفعة", "note": "test"},
             ai_leverage={"score": 80, "level": "عالية", "note": "test"},
         )
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         entry = result["product_laboratory"][0]
         self.assertIsNotNone(entry["strategic_investment"])
         self.assertIn("can_become_premium_digital_asset", entry["strategic_investment"])
@@ -176,13 +184,13 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
 
     def test_customer_type_uses_ladder_as_an_honest_proxy(self):
         self._record("a b2b niche", "b2b_systems", accepted=True, score=75.0, price=180)
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         entry = result["product_laboratory"][0]
         self.assertEqual(entry["customer_type"]["value"], "b2b_systems")
 
     def test_recurring_revenue_and_scalability_come_from_real_ladder_components(self):
         self._record("a recurring niche", "ai_saas", accepted=True, score=90.0, price=300, recurring=100, reusability=95)
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         entry = result["product_laboratory"][0]
         self.assertEqual(entry["recurring_revenue_potential"], 100)
         self.assertEqual(entry["global_scalability"], 95)
@@ -190,21 +198,46 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
     def test_backlog_is_truncated_but_count_stays_honest(self):
         for i in range(5):
             self._record(f"backlog niche {i}", "kdp_books", accepted=False, score=30.0, price=10)
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path, backlog_limit=2)
+        result = self._pipeline(backlog_limit=2)
         self.assertEqual(len(result["backlog"]), 2)
         self.assertEqual(result["backlog_count"], 5)
         self.assertTrue(result["backlog_truncated"])
 
     def test_empty_decisions_file_reports_honestly_zero(self):
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         self.assertEqual(result["total_opportunities"], 0)
         self.assertEqual(result["product_laboratory"], [])
         self.assertEqual(result["backlog"], [])
 
+    def test_board_brief_is_honestly_none_with_no_real_meeting(self):
+        """Executive Board Integration (2026-07-23): read-only lookup,
+        isolated to board_path -- never a fabricated brief, never a read
+        against the live default board_meetings.jsonl."""
+        self._record("a niche never sent to the board", "kdp_books", accepted=True, score=70.0, price=97)
+        result = self._pipeline()
+        entry = result["product_laboratory"][0]
+        self.assertIn("board_brief", entry)
+        self.assertFalse(entry["board_brief"]["has_meeting"])
+
+    def test_board_brief_surfaces_a_real_prior_meeting(self):
+        import json
+        self._record("a niche with a real board meeting", "kdp_books", accepted=True, score=70.0, price=97)
+        meeting = {
+            "niche": "a niche with a real board meeting", "convened_at": "2026-07-23T00:00:00+00:00",
+            "decision_type": "production", "tally": {"board_decision": "APPROVED"},
+            "decision_summary": {"decision": "APPROVED"},
+        }
+        with open(self.board_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(meeting) + "\n")
+        result = self._pipeline()
+        entry = result["product_laboratory"][0]
+        self.assertTrue(entry["board_brief"]["has_meeting"])
+        self.assertEqual(entry["board_brief"]["board_decision"], "APPROVED")
+
     def test_latest_decision_per_niche_only_not_full_history(self):
         self._record("evolving niche", "kdp_books", accepted=False, score=30.0, price=10)
         self._record("evolving niche", "ai_saas", accepted=True, score=90.0, price=300)
-        result = op.build_opportunity_pipeline(decisions_path=self.decisions_path)
+        result = self._pipeline()
         matches = [a for a in (result["product_laboratory"] + result["backlog"]) if a["niche"] == "evolving niche"]
         self.assertEqual(len(matches), 1)
         self.assertEqual(matches[0]["status"], "ACCEPTED")

@@ -62,7 +62,13 @@ def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=No
     that already has a real ACCEPTED decision recorded. Returns a single
     unified result -- never raises for a missing decision (reports it
     honestly instead), never fabricates a criterion any stage has no
-    real data for (each stage's own UNKNOWN discipline is untouched)."""
+    real data for (each stage's own UNKNOWN discipline is untouched).
+
+    board_path (Executive Board Integration, 2026-07-23): threaded to
+    BOTH eb.convene_board() (the real board meeting this cycle itself
+    convenes) and, below, to revenue_pipeline.process_opportunity()'s own
+    read-only board_brief lookup -- the exact same meetings log,
+    deliberately shared, not two independent stores."""
     import executive_quality_gate as eqg
     import executive_board as eb
     from revenue_pipeline import pipeline as revenue_pipeline
@@ -91,7 +97,7 @@ def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=No
             decision, execute=True, timeline_path=timeline_path, decisions_path=decisions_path,
             analysis_db_file=analysis_db_file, outcomes_path=outcomes_path, state_path=state_path,
             competitor_db_file=competitor_db_file, ledger_path=ledger_path,
-            competitor_history_file=competitor_history_file,
+            competitor_history_file=competitor_history_file, board_path=board_path,
         )
     elif execute and board_blocks_production:
         production_result = {

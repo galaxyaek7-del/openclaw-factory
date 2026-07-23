@@ -185,6 +185,28 @@ class TestRiskIntelligenceScan(unittest.TestCase):
             er.run_risk_intelligence_scan("n", refresh_competitors=True)
             mock_refresh.assert_called_once()
 
+    def test_threat_assessment_is_honest_unknown_with_no_cached_competitor_snapshot(self):
+        """Executive Board Integration (2026-07-23): the Threat Engine
+        result must be attached, but a niche with no real competitor
+        discovery ever run for it must get an honest Unknown, never a
+        fabricated '0 competitors = no threat' answer."""
+        with patch("executive_quality_gate.check_market_saturation", return_value={"status": "UNKNOWN", "evidence": None, "reason": "x"}), \
+             patch("market_evidence.read_evidence", return_value=[]), \
+             patch("competitor_discovery.load_database", return_value={}):
+            result = er.run_risk_intelligence_scan("a niche never discovered")
+        self.assertIn("threat_assessment", result)
+        for dim in ("competitor_saturation", "market_concentration", "new_entrant_trajectory", "funding_pressure"):
+            self.assertEqual(result["threat_assessment"][dim]["level"], "Unknown")
+
+    def test_threat_assessment_uses_the_real_cached_snapshot_when_one_exists(self):
+        import competitor_discovery as cd
+        snapshot = {"total_found": 3, "competitors": [], "changes": None}
+        with patch("executive_quality_gate.check_market_saturation", return_value={"status": "UNKNOWN", "evidence": None, "reason": "x"}), \
+             patch("market_evidence.read_evidence", return_value=[]), \
+             patch("competitor_discovery.load_database", return_value={"a niche with data": snapshot}):
+            result = er.run_risk_intelligence_scan("a niche with data")
+        self.assertEqual(result["threat_assessment"]["competitor_saturation"], cd._score_competitor_saturation(snapshot))
+
 
 class TestBusinessContinuity(unittest.TestCase):
     def test_run_backup_now_wraps_the_real_snapshot_function(self):

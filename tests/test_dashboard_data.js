@@ -170,6 +170,7 @@ test('computeDashboard: composes every section, degrades gracefully with no heal
   assert.ok(result.needs_review);
   assert.ok(Array.isArray(result.activity));
   assert.ok(result.latest_market_intelligence);
+  assert.ok(result.latest_board_meeting);
 });
 
 test('computeDashboard: passes current_priorities through unchanged (reuse, not reimplementation)', () => {
@@ -240,6 +241,36 @@ test('readLatestMarketIntelligence: reads the LAST real analysis, not the first'
   assert.equal(result.available, true);
   assert.equal(result.niche, 'newest one');
   assert.equal(result.ai_ceo.decision, 'BUILD');
+});
+
+// Executive Board Integration (2026-07-23).
+test('readLatestBoardMeetingSummary: missing log -> available:false, never throws', () => {
+  const result = dd.readLatestBoardMeetingSummary(path.join(tmpDir, 'nope_board.jsonl'));
+  assert.equal(result.available, false);
+});
+
+test('readLatestBoardMeetingSummary: reads the LAST real meeting, surfaces a compact real summary', () => {
+  const p = path.join(tmpDir, 'board.jsonl');
+  fs.writeFileSync(p,
+    JSON.stringify({
+      niche: 'old niche', decision_type: 'production', tally: { board_decision: 'NOT_APPROVED' },
+      decision_summary: { confidence: 0.2, risks: ['a'], recommended_actions: [], follow_up_tasks: [] },
+      convened_at: '2026-07-01T00:00:00+00:00',
+    }) + '\n' +
+    JSON.stringify({
+      niche: 'newest niche', decision_type: 'production', tally: { board_decision: 'APPROVED' },
+      decision_summary: { confidence: 0.9, risks: [], recommended_actions: ['x', 'y'], follow_up_tasks: ['z'] },
+      convened_at: '2026-07-23T00:00:00+00:00',
+    }) + '\n'
+  );
+  const result = dd.readLatestBoardMeetingSummary(p);
+  assert.equal(result.available, true);
+  assert.equal(result.niche, 'newest niche');
+  assert.equal(result.board_decision, 'APPROVED');
+  assert.equal(result.confidence, 0.9);
+  assert.equal(result.risk_count, 0);
+  assert.equal(result.recommended_action_count, 2);
+  assert.equal(result.follow_up_task_count, 1);
 });
 
 // Phase 11 (Business Activation): products created / production throughput.

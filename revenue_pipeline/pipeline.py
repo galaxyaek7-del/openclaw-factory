@@ -66,7 +66,8 @@ def _validate_quality(niche, production_output, production_plan):
 
 def process_opportunity(decision, execute=False, timeline_path=None, decisions_path=None,
                          analysis_db_file=None, outcomes_path=None, state_path=None,
-                         competitor_db_file=None, ledger_path=None, competitor_history_file=None):
+                         competitor_db_file=None, ledger_path=None, competitor_history_file=None,
+                         board_path=None):
     """One ACCEPTED opportunity through the revenue pipeline. execute=False
     (default) never spends real money or publishes anything live — this
     only reuses orchestrator.run_cycle()'s own existing safety switch,
@@ -110,6 +111,15 @@ def process_opportunity(decision, execute=False, timeline_path=None, decisions_p
         platform=production_plan.get("economics_platform", production_plan["recommended_platform"]),
     )
 
+    # Executive Board Integration (2026-07-23): informational only, per
+    # founder decision -- the board's verdict does not block this
+    # function's own execute= safety switch (factory_orchestrator.py's
+    # advisory_only=True already covers hard-gating when a caller wants
+    # it at that layer). This is a read-only lookup, never a new meeting
+    # convened from inside a revenue run.
+    import executive_board as eb
+    board_brief = eb.get_latest_board_brief(decision["niche"], board_path=board_path)
+
     return {
         "niche": decision["niche"],
         "production_plan": production_plan,
@@ -118,13 +128,15 @@ def process_opportunity(decision, execute=False, timeline_path=None, decisions_p
         "time_to_market": _time_to_market(decision, evidence),
         "production_cost": cost,
         "expected_roi": roi,
+        "board_brief": board_brief,
         "executed": execute,
     }
 
 
 def run_revenue_pipeline(execute=False, timeline_path=None, decisions_path=None,
                           analysis_db_file=None, outcomes_path=None,
-                          competitor_db_file=None, ledger_path=None, competitor_history_file=None):
+                          competitor_db_file=None, ledger_path=None, competitor_history_file=None,
+                          board_path=None):
     """Requirement 1: select ONLY accepted opportunities — reuses
     decision_engine.ranking.rank_queue() (ADR-050) directly, the exact
     same real, ranked, ACCEPTED-and-not-yet-executed queue every other
@@ -144,7 +156,7 @@ def run_revenue_pipeline(execute=False, timeline_path=None, decisions_path=None,
             d, execute=execute, timeline_path=timeline_path, decisions_path=decisions_path,
             analysis_db_file=analysis_db_file, outcomes_path=outcomes_path,
             competitor_db_file=competitor_db_file, ledger_path=ledger_path,
-            competitor_history_file=competitor_history_file,
+            competitor_history_file=competitor_history_file, board_path=board_path,
         )
         for d in accepted
     ]

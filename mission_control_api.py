@@ -1032,6 +1032,21 @@ def _review_board_track_record():
     return {"reviews": eb.review_board_track_record(payload.get("niche"))}
 
 
+def _get_board_brief():
+    """Executive Board Integration (2026-07-23): read-only lookup of
+    whatever the board already decided for one niche (the 6-lens
+    strategic brief + the 6-field decision summary), without convening a
+    new meeting. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py get_board_brief '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import executive_board as eb
+    return eb.get_latest_board_brief(niche)
+
+
 def _run_master_cycle():
     """Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     -- the single real call that composes Executive Quality Gate + AI
@@ -1110,6 +1125,7 @@ _ENDPOINTS = {
     "risk_intelligence_scan": _risk_intelligence_scan,
     "convene_executive_board": _convene_executive_board,
     "review_board_track_record": _review_board_track_record,
+    "get_board_brief": _get_board_brief,
     "run_master_cycle": _run_master_cycle,
 }
 

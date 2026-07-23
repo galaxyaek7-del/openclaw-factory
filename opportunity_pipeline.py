@@ -43,6 +43,7 @@ from datetime import datetime, timezone
 from decision_engine import ranking
 import profit_oracle
 import business_dossier as bd
+import executive_board as eb
 
 
 def _unknown(reason):
@@ -56,7 +57,7 @@ def _first_not_none(*values):
     return None
 
 
-def _annotate(decision):
+def _annotate(decision, board_path=None):
     snap = decision.get("evaluation_snapshot") or {}
     ladder_components = snap.get("components") or {}
     ai_ceo_scores = snap.get("scores") or {}
@@ -142,6 +143,14 @@ def _annotate(decision):
             reconstructed_ladder_result, customer_pain=snap.get("customer_pain"),
         )
 
+    # Executive Board Integration (2026-07-23): read-only lookup of
+    # whatever the board already decided for this niche -- never
+    # convenes a new meeting from a backlog listing (that would mean a
+    # new "decision" on every page load, and a full Enterprise Readiness
+    # Gate run per row would be far too expensive for this bulk view).
+    # Honestly None when this niche never went before the board.
+    board_brief = eb.get_latest_board_brief(decision.get("niche"), board_path=board_path) if decision.get("niche") else None
+
     return {
         "niche": decision.get("niche"),
         "decision_id": decision.get("decision_id"),
@@ -180,6 +189,11 @@ def _annotate(decision):
         # (never fabricated) for backlog items.
         "business_dossier": business_dossier,
 
+        # Executive Board Integration (2026-07-23): the latest real board
+        # decision for this niche, if one has ever been convened. None
+        # (never fabricated) when it hasn't.
+        "board_brief": board_brief,
+
         # Additional real, already-computed context (not part of the
         # named fields, kept for transparency):
         "risk": snap.get("risk"),
@@ -188,14 +202,18 @@ def _annotate(decision):
     }
 
 
-def build_opportunity_pipeline(decisions_path=None, backlog_limit=100):
+def build_opportunity_pipeline(decisions_path=None, backlog_limit=100, board_path=None):
     """Product Laboratory = every real decision already ACCEPTED by the
     existing gate (never a new invented threshold). Backlog = everything
     else, capped at backlog_limit for a readable response -- the real
     total count is always reported honestly even when the list itself is
-    truncated."""
+    truncated.
+
+    board_path: test-isolation override for the board_brief lookup
+    (Executive Board Integration, 2026-07-23), same convention as
+    decisions_path -- omitting it reads the real default board_meetings.jsonl."""
     decisions = ranking.rank_all(path=decisions_path)
-    annotated = [_annotate(d) for d in decisions]
+    annotated = [_annotate(d, board_path=board_path) for d in decisions]
 
     product_laboratory = [a for a in annotated if a["status"] == "ACCEPTED"]
     backlog_all = [a for a in annotated if a["status"] != "ACCEPTED"]

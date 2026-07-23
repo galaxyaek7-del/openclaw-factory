@@ -284,4 +284,18 @@ Full findings and decisions: `ADR-093`. Founder-confirmed before building: exten
 
 **Commit:** `f05c33d`.
 
-**Next in this mission:** Executive Board competitor-brief integration + decision re-open trigger, `market_evidence.py` extension for the 9 non-auto-detectable event types, alerting — each a separate, sequenced piece.
+### 4.14 — Executive Board Integration: 6 lenses, 6-field decisions, 6 connected systems (2026-07-23)
+
+**Implemented:** `executive_board.py` gained `build_strategic_brief()` (Threat Assessment, Opportunity Assessment, Market Intelligence, Financial Impact, Technical Risk, Customer Trust Impact — all reused from already-computed evidence, zero new narrative) and `build_decision_summary()` (Decision, Confidence, Evidence, Risks, Recommended Actions, Follow-up Tasks — mechanically derived from the 10 executives' own real outputs). `convene_board()`'s `include_risk_intelligence` now defaults `True` (was `False`) so this happens automatically, and every meeting now carries both new fields. `enterprise_readiness.run_risk_intelligence_scan()` gained a real `threat_assessment` key reusing ADR-093's Threat Engine. New `get_latest_board_brief()` is the read-only connection point every other system now uses (never convenes a new meeting). Connected to Mission Control (new `get-board-brief` action), Executive Dashboard (`lib/dashboard_data.js`'s new `readLatestBoardMeetingSummary()`), Opportunity Queue (`opportunity_pipeline.py`'s `_annotate()` gained `board_brief`), and Revenue Engine (`revenue_pipeline.pipeline.process_opportunity()` gained `board_brief`, informational only per founder decision — board verdict stays advisory, matching `factory_orchestrator.py`'s existing `advisory_only=True` default). Market Intelligence and Decision Engine were already structurally connected; no new code needed there beyond the lenses/lookup above.
+
+**Real bug caught before commit:** the dashboard reader's first draft hand-rolled its own JSONL parse loop — the repo's own `scripts/check_jsonl_duplication.js` safeguard (Engineering Evolution Mode) caught it as a 3rd duplicate of an already-extracted idiom before commit; fixed to reuse `lib/jsonl.js`'s `readJsonlEntries()`.
+
+**Tested:** 12 new tests across `tests/test_executive_board.py` (+7), `tests/test_enterprise_readiness.py` (+2), `tests/test_opportunity_pipeline.py` (+2, plus isolation added to the whole test class via a new `board_path` fixture — the same isolation-gap bug class this session already found 3 times, caught proactively here before it shipped), `tests/test_revenue_pipeline.py` (+1, plus isolation added to 3 existing calls), `tests/test_dashboard_data.js` (+2).
+
+**Verified:** highest-risk existing suites run first (`test_executive_board.py`, `test_enterprise_readiness.py`, `test_opportunity_pipeline.py`, `test_revenue_pipeline.py`, `test_master_cycle_production_e2e.py`, `test_orchestrator.py`, `test_api_contract.js`, `test_dashboard_data.js`), then the full repository: Python 1084/1084 (up from 1074), Node 233/233 real tests (up from 231). `data/competitor_database.json`/`competitor_history.jsonl`/`board_meetings.jsonl`/`decisions.jsonl` confirmed untouched.
+
+**Documented:** `ADR-094`.
+
+**Commit:** `[pending]`.
+
+**Next in this mission:** Decision re-open trigger (deferred this pass, founder-confirmed), `market_evidence.py` extension for the 9 non-auto-detectable event types, alerting — each a separate, sequenced piece.

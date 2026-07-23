@@ -305,20 +305,40 @@ def run_risk_intelligence_scan(niche, refresh_competitors=False):
     signals: new/changed competitors (competitor_discovery.py, cache-
     only unless refresh_competitors=True is explicitly requested by a
     human), customer complaints (market_evidence.py), market saturation
-    (executive_quality_gate.py). Regulation changes, pricing changes
-    elsewhere in the market, broad technology disruption, and demand
-    decline have NO real, funded data source in this factory today --
-    reported as permanent, disclosed gaps, never faked with a shallow
-    check dressed up as real intelligence."""
+    (executive_quality_gate.py), and (Executive Board Integration,
+    2026-07-23) the real Threat Engine assessment (competitor_discovery.
+    compute_threat_assessment()) over whatever competitor snapshot is
+    already cached -- never a fresh network call from this path.
+    Regulation changes, pricing changes elsewhere in the market, broad
+    technology disruption, and demand decline have NO real, funded data
+    source in this factory today -- reported as permanent, disclosed
+    gaps, never faked with a shallow check dressed up as real
+    intelligence."""
     import executive_quality_gate as eqg
     import market_evidence
+    import competitor_discovery
 
     if refresh_competitors:
-        import competitor_discovery
         competitor_discovery.get_or_refresh_competitors(niche, force=True)
 
     saturation = eqg.check_market_saturation(niche)
     complaints = market_evidence.read_evidence(niche, "customer_objection")
+
+    cache_key = re.sub(r"\s+", " ", (niche or "").strip().lower())
+    cached_snapshot = competitor_discovery.load_database().get(cache_key)
+    if cached_snapshot:
+        threat_assessment = competitor_discovery.compute_threat_assessment(cached_snapshot)
+    else:
+        threat_assessment = {
+            dim: {
+                "level": "Unknown", "score": None,
+                "basis": "لا بيانات منافسين مخزَّنة لهذا النيتش بعد — لم يُشغَّل اكتشاف منافسين حقيقي",
+            }
+            for dim in (
+                "competitor_saturation", "market_concentration", "new_entrant_trajectory",
+                *competitor_discovery.THREAT_DIMENSIONS_WITHOUT_REAL_DATA.keys(),
+            )
+        }
 
     return {
         "niche": niche,
@@ -331,6 +351,7 @@ def run_risk_intelligence_scan(niche, refresh_competitors=False):
         "pricing_changes": _unknown("لا تتبّع تاريخي حقيقي لأسعار المنافسين مخزَّن بعد — يحتاج تشغيلات متكررة حقيقية لمقارنتها"),
         "technology_disruption": _unknown("لا مصدر بيانات حقيقي موثوق لرصد اضطراب تقني واسع في هذا المصنع — فجوة دائمة، غير مُغطّاة"),
         "demand_decline": _unknown("لا آلية تتبّع طلب حقيقية عبر الزمن في هذا المصنع — فجوة دائمة، غير مُغطّاة"),
+        "threat_assessment": threat_assessment,
         "scanned_at": datetime.now(timezone.utc).isoformat(),
     }
 

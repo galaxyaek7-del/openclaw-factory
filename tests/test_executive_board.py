@@ -209,6 +209,74 @@ class TestConveneBoard(unittest.TestCase):
             eb.convene_board({"niche": "test niche"}, board_path=self.board_path, include_risk_intelligence=True)
             mock_scan.assert_called_once()
 
+    def test_meeting_carries_the_6_lens_strategic_brief_and_decision_summary(self):
+        """Executive Board Integration (2026-07-23): every real board
+        decision must automatically include the 6 lenses and produce the
+        6-field decision summary."""
+        risk_intel = {
+            "market_saturation": _crit("PASS"), "customer_complaints": _crit("PASS"),
+            "threat_assessment": {"competitor_saturation": {"level": "متوسط", "score": 50, "basis": "x"}},
+        }
+        with patch("enterprise_readiness.run_enterprise_readiness_gate", return_value=self._mock_readiness_result(all_pass=True)), \
+             patch("enterprise_readiness.run_risk_intelligence_scan", return_value=risk_intel), \
+             patch("revenue_pipeline.plan.estimate_production_cost", return_value={"maturity": "DISCOVERY", "reason": "x"}):
+            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path)
+
+        brief = meeting["strategic_brief"]
+        for lens in ("threat_assessment", "opportunity_assessment", "market_intelligence",
+                     "financial_impact", "technical_risk", "customer_trust_impact"):
+            self.assertIn(lens, brief)
+        self.assertEqual(brief["threat_assessment"], risk_intel["threat_assessment"])
+
+        summary = meeting["decision_summary"]
+        for field in ("decision", "confidence", "evidence", "risks", "recommended_actions", "follow_up_tasks"):
+            self.assertIn(field, summary)
+        self.assertEqual(summary["decision"], "APPROVED")
+        self.assertEqual(summary["risks"], [])
+
+    def test_decision_summary_recommended_actions_trace_to_real_risks(self):
+        with patch("enterprise_readiness.run_enterprise_readiness_gate", return_value=self._mock_readiness_result(all_pass=False)), \
+             patch("enterprise_readiness.run_risk_intelligence_scan", return_value=None), \
+             patch("revenue_pipeline.plan.estimate_production_cost", return_value={"maturity": "DISCOVERY", "reason": "x"}):
+            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path)
+
+        summary = meeting["decision_summary"]
+        self.assertEqual(summary["decision"], "NOT_APPROVED")
+        self.assertGreater(len(summary["risks"]), 0)
+        self.assertTrue(any(r.replace("عالج: ", "") in summary["risks"][0] for r in summary["recommended_actions"][:1]))
+        self.assertTrue(all(a.startswith("عالج:") or a.startswith("اجمع دليلاً") for a in summary["recommended_actions"]))
+
+    def test_strategic_brief_threat_assessment_is_honest_when_risk_intelligence_skipped(self):
+        with patch("enterprise_readiness.run_enterprise_readiness_gate", return_value=self._mock_readiness_result(all_pass=True)):
+            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path, include_risk_intelligence=False)
+        self.assertIn("note", meeting["strategic_brief"]["threat_assessment"])
+
+
+class TestGetLatestBoardBrief(unittest.TestCase):
+    def setUp(self):
+        self.board_path = _temp_path()
+
+    def tearDown(self):
+        if os.path.exists(self.board_path):
+            os.remove(self.board_path)
+
+    def test_no_meeting_yet_is_honestly_reported(self):
+        result = eb.get_latest_board_brief("never convened niche", board_path=self.board_path)
+        self.assertFalse(result["has_meeting"])
+
+    def test_returns_the_latest_real_meeting_for_the_niche(self):
+        older = {"niche": "n", "convened_at": "2026-07-01T00:00:00+00:00",
+                 "tally": {"board_decision": "NOT_APPROVED"}, "decision_summary": {"decision": "NOT_APPROVED"}}
+        newer = {"niche": "n", "convened_at": "2026-07-23T00:00:00+00:00",
+                 "tally": {"board_decision": "APPROVED"}, "decision_summary": {"decision": "APPROVED"}}
+        with open(self.board_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(older) + "\n")
+            f.write(json.dumps(newer) + "\n")
+        result = eb.get_latest_board_brief("n", board_path=self.board_path)
+        self.assertTrue(result["has_meeting"])
+        self.assertEqual(result["board_decision"], "APPROVED")
+        self.assertEqual(result["convened_at"], "2026-07-23T00:00:00+00:00")
+
 
 class TestReviewBoardTrackRecord(unittest.TestCase):
     def setUp(self):

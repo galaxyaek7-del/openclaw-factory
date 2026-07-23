@@ -1220,6 +1220,22 @@ const ACTION_REGISTRY = [
     },
   },
   {
+    // Executive Board Integration (2026-07-23) -- read-only lookup of
+    // whatever the board already decided for one niche (6-lens
+    // strategic brief + 6-field decision summary), without convening a
+    // new meeting. Same real data convene-executive-board already wrote.
+    name: 'get-board-brief',
+    description: 'Read-only lookup of the latest real board decision for one niche (strategic brief: threat/opportunity/market/financial/technical/trust; decision summary: decision/confidence/evidence/risks/recommended actions/follow-up tasks). Never convenes a new meeting.',
+    reused: 'executive_board.py::get_latest_board_brief()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('get-board-brief', 'get_board_brief', [JSON.stringify({ niche })]);
+    },
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +
