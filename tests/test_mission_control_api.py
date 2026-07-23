@@ -344,6 +344,28 @@ class TestGlobalMarketLearningEngineActions(unittest.TestCase):
                 mission_control_api._get_investment_pipeline()
         mock_pipeline.assert_called_once_with(limit=5)
 
+    def test_portfolio_actions_are_registered(self):
+        for name in ("get_portfolio_entry", "get_portfolio_report"):
+            self.assertIn(name, mission_control_api._ENDPOINTS)
+
+    def test_portfolio_entry_requires_a_niche(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_portfolio_entry", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._get_portfolio_entry()
+
+    def test_portfolio_entry_delegates_to_the_real_module(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_portfolio_entry", json.dumps({"niche": "test niche"})]):
+            with patch("portfolio_engine.build_portfolio_entry", return_value={"niche": "test niche"}) as mock_entry:
+                result = mission_control_api._get_portfolio_entry()
+        mock_entry.assert_called_once_with("test niche")
+        self.assertEqual(result["portfolio_entry"]["niche"], "test niche")
+
+    def test_portfolio_report_delegates_to_the_real_module(self):
+        with patch("portfolio_engine.build_portfolio_report", return_value={"total_real_opportunities": 0}) as mock_report:
+            result = mission_control_api._get_portfolio_report()
+        mock_report.assert_called_once_with()
+        self.assertEqual(result["total_real_opportunities"], 0)
+
     def test_commercial_intelligence_report_requires_a_niche(self):
         with patch.object(sys, "argv", ["mission_control_api.py", "get_commercial_intelligence_report", json.dumps({})]):
             with self.assertRaises(ValueError):

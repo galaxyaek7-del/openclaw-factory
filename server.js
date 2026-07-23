@@ -1507,6 +1507,30 @@ const ACTION_REGISTRY = [
     },
   },
   {
+    // Global Product Portfolio Engine (2026-07-24) -- real 13-class
+    // portfolio entry for one niche.
+    name: 'get-portfolio-entry',
+    description: 'Read-only: the real portfolio entry for one niche -- 13-class classification (Premium SaaS, AI Agents, AI APIs, Enterprise Automation, Premium Digital Products, Online Courses, Bundles, Templates, AI Prompt Packs, Design Assets, Stock Images, Fonts/Icons/SVG Packs, Books), NOW/NEXT/LATER/REJECT bucket (reused from scheduler.py), and the founder-named metrics. Null when the niche has no real decision on record.',
+    reused: 'portfolio_engine.py::build_portfolio_entry()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('get-portfolio-entry', 'get_portfolio_entry', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    // Global Product Portfolio Engine (2026-07-24) -- the real
+    // Executive Board portfolio view.
+    name: 'get-portfolio-report',
+    description: 'Read-only: the real Executive Board portfolio view -- Top 100 worldwide, Top 25 enterprise, Top 25 recurring revenue, ordered by real founder-specified class priority then real Priority Score. Top 50 China always honestly empty -- no real China data connector exists in this factory today.',
+    reused: 'portfolio_engine.py::build_portfolio_report()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: () => runPythonActionAsync('get-portfolio-report', 'get_portfolio_report', []),
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +

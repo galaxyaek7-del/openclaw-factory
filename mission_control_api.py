@@ -1260,6 +1260,30 @@ def _get_investment_pipeline():
     return investment_pipeline.build_investment_pipeline(limit=limit)
 
 
+def _get_portfolio_entry():
+    """Global Product Portfolio Engine (2026-07-24): the real, unified
+    portfolio entry for one niche (13-class classification, NOW/NEXT/
+    LATER/REJECT via scheduler.py reuse). Honest null when this niche
+    has no real decision on record. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py get_portfolio_entry '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+    import portfolio_engine
+    return {"portfolio_entry": portfolio_engine.build_portfolio_entry(niche)}
+
+
+def _get_portfolio_report():
+    """Global Product Portfolio Engine (2026-07-24): the real,
+    whole-factory portfolio report the Executive Board sees (Top 100
+    worldwide, Top 25 enterprise, Top 25 recurring revenue; Top 50
+    China always honestly empty — same deferred reason as every other
+    China ask today). No payload required."""
+    import portfolio_engine
+    return portfolio_engine.build_portfolio_report()
+
+
 def _get_global_execution_view():
     """Autonomous Global Execution Engine (2026-07-23): the single real
     operational window the founder named, assembled entirely from
@@ -1433,6 +1457,8 @@ _ENDPOINTS = {
     "get_premium_product_catalog_status": _get_premium_product_catalog_status,
     "get_investment_pipeline_entry": _get_investment_pipeline_entry,
     "get_investment_pipeline": _get_investment_pipeline,
+    "get_portfolio_entry": _get_portfolio_entry,
+    "get_portfolio_report": _get_portfolio_report,
     "run_master_cycle": _run_master_cycle,
 }
 
