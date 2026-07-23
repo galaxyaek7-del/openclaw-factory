@@ -62,6 +62,13 @@ pip install reportlab
 # Start the server
 node server.js
 # Runs at http://localhost:3000 (or PORT env var)
+
+# Start it supervised instead (Enterprise Upgrade Roadmap Phase 1.1,
+# 2026-07-23) — auto-restarts on a real crash, gives up and alerts via
+# Telegram after too many restarts in a short window instead of looping
+# forever. Fully opt-in: the manual `node server.js` above still works
+# exactly as before, nothing about it changed.
+node scripts/supervisor.js
 ```
 
 There is no build step, test suite, or linter configured.

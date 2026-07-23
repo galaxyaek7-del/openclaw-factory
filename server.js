@@ -3236,6 +3236,104 @@ function detectPython() {
 // by default.
 const BIND_HOST = process.env.BIND_HOST || '127.0.0.1';
 
+// Enterprise Upgrade Roadmap Phase 1.1 (2026-07-23) — Critical finding,
+// fixed: this process had zero process.on('uncaughtException'/
+// 'unhandledRejection') handlers, so a single unhandled error anywhere
+// in the request path silently killed the entire factory with no log,
+// no alert, and (until scripts/supervisor.js, added alongside this)
+// nothing to restart it. Logs the real error to a dedicated crash log
+// (same flat, gitignored .log-at-repo-root convention as
+// factory_loop.log/finance_errors.log — never invents a new logs/
+// directory structure), best-effort alerts via the same real,
+// already-tested Telegram path factory_loop.js's own critical-error
+// alerting already uses (lib/telegram_direct.js — never a new alert
+// channel), then exits non-zero so scripts/supervisor.js can tell a
+// real crash apart from a clean, intentional shutdown and restart only
+// the former.
+const CRASH_LOG_PATH = path.join(__dirname, 'server_crashes.log');
+
+function logCrash(kind, err) {
+  const entry = {
+    at: new Date().toISOString(),
+    kind,
+    message: err && err.message,
+    stack: err && err.stack,
+  };
+  try {
+    fs.appendFileSync(CRASH_LOG_PATH, JSON.stringify(entry) + '\n');
+  } catch { /* a failing crash-log write must never block the crash-exit itself */ }
+  return entry;
+}
+
+function handleFatal(kind, err) {
+  const entry = logCrash(kind, err);
+  console.error(`🚨 ${kind}:`, err && err.stack ? err.stack : err);
+  const reasons = [`${kind}: ${entry.message || 'no error message'} — راجع server_crashes.log`];
+  telegramDirect.sendTelegramMessage(telegramDirect.buildCriticalErrorMessage(reasons))
+    .catch(() => {})
+    .finally(() => process.exit(1));
+  // Belt-and-suspenders: if the Telegram send hangs past its own
+  // internal timeout for any reason, still exit — a stuck alert must
+  // never keep a genuinely crashed process technically "running."
+  setTimeout(() => process.exit(1), telegramDirect.DEFAULT_TIMEOUT_MS + 2000).unref();
+}
+
+process.on('uncaughtException', (err) => handleFatal('uncaughtException', err));
+process.on('unhandledRejection', (reason) => {
+  handleFatal('unhandledRejection', reason instanceof Error ? reason : new Error(String(reason)));
+});
+
+// Test-only fault injection (tests/test_server_crash_handlers.js): the
+// only way to prove the two real handlers above actually fire in this
+// real process, not a reimplementation of their logic in a test file.
+// Gated behind an explicit, never-set-in-real-operation env var. The
+// 'uncaughtException' case throws synchronously here, before
+// app.listen() below ever runs, so that test never needs a live port at
+// all; the 'unhandledRejection' case schedules a microtask, so
+// app.listen() does start first in the same tick before the handler
+// fires and exits — the test only asserts on the crash log and exit
+// code, so this ordering doesn't matter for what it verifies.
+if (process.env.__OPENCLAW_TEST_FORCE_CRASH__ === 'uncaughtException') {
+  throw new Error('deliberate test crash (__OPENCLAW_TEST_FORCE_CRASH__)');
+} else if (process.env.__OPENCLAW_TEST_FORCE_CRASH__ === 'unhandledRejection') {
+  Promise.reject(new Error('deliberate test crash (__OPENCLAW_TEST_FORCE_CRASH__)'));
+}
+
+// Clean, intentional shutdown (Ctrl+C, or a supervisor's SIGTERM) exits
+// 0 — the supervisor must never treat this as a crash worth restarting.
+let shuttingDown = false;
+function handleShutdownSignal(signal) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  // Real bug found writing this feature's own test suite: console.log()
+  // immediately followed by process.exit() can drop the write when
+  // stdout is piped (not a TTY) rather than a real terminal — Node's
+  // piped-stdout writes aren't guaranteed synchronous, and exit() can
+  // race ahead of the flush. write()'s own completion callback is the
+  // documented, correct fix: exit only once the bytes are actually out.
+  process.stdout.write(`\n🛑 ${signal} received — shutting down cleanly\n`, () => process.exit(0));
+}
+process.on('SIGINT', () => handleShutdownSignal('SIGINT'));
+process.on('SIGTERM', () => handleShutdownSignal('SIGTERM'));
+
+// Test-only (tests/test_server_crash_handlers.js): emits a real SIGINT/
+// SIGTERM event directly, decoupled from how the OS actually delivers
+// one. Found live while writing this test: on Windows,
+// child_process.kill('SIGTERM'/'SIGINT') unconditionally hard-terminates
+// the target process (exit code null) rather than delivering a graceful
+// signal these process.on() handlers can intercept — a real, documented
+// Node-on-Windows platform limitation, not a bug in the handlers above.
+// Real interactive Ctrl+C in an attached console (the actual, common
+// solo-operator shutdown path) reaches process.on('SIGINT') correctly,
+// same as any standard Node CLI tool on Windows — this only isn't
+// reproducible from an automated, non-interactive test. What IS this
+// code's own responsibility, and what this test-only hook verifies for
+// real: that handleShutdownSignal() itself behaves correctly once Node
+// actually emits the event, regardless of how it got there.
+if (process.env.__OPENCLAW_TEST_EMIT_SHUTDOWN_SIGNAL__) {
+  process.emit(process.env.__OPENCLAW_TEST_EMIT_SHUTDOWN_SIGNAL__);
+}
+
 app.listen(PORT, BIND_HOST, () => {
   console.log(`✅ OpenClaw Factory — http://localhost:${PORT} (bound to ${BIND_HOST})`);
   console.log(`🔧 Static dir: ${path.join(__dirname)}`);

@@ -2171,35 +2171,57 @@ function main() {
   });
 }
 
-// Belt-and-suspenders: catch anything that somehow still escapes a tick
-// (e.g. an error thrown from inside a timer callback), so the loop process
-// itself stays alive indefinitely instead of needing a human to restart it.
-process.on('unhandledRejection', (err) => {
-  appendLoopLog({ diagnosis: { status: 'loop_error' }, actions: [{ step: 'unhandledRejection', action: 'error', detail: String(err) }] });
-});
-process.on('uncaughtException', (err) => {
-  appendLoopLog({ diagnosis: { status: 'loop_error' }, actions: [{ step: 'uncaughtException', action: 'error', detail: String(err) }] });
-});
-
-// Release the PID lockfile on every exit path — normal exit, Ctrl+C, or a
-// kill signal — so a clean shutdown never leaves a stale lock behind for
-// the next startup to have to detect-and-reclaim.
-//
-// Unified Recovery System §2 (2026-07-18) — real bug found while
-// verifying the new startup-safety check: Node's 'exit' event passes the
-// process's exit CODE as its listener's first argument. Passing
-// releaseLock directly made every natural exit call releaseLock(0) —
-// colliding with releaseLock(lockFile = LOCK_FILE)'s own first
-// parameter, so fs.unlinkSync(0) silently failed (caught by its own
-// empty catch) and the lock was NEVER actually released on ANY exit
-// path, clean or not. This made Safe Startup Detection unusable — every
-// restart looked like a crash. Wrapped in a no-arg arrow so the real
-// default path is always used.
-process.on('SIGINT', () => { releaseLock(); process.exit(0); });
-process.on('SIGTERM', () => { releaseLock(); process.exit(0); });
-process.on('exit', () => releaseLock());
-
+// Enterprise Upgrade Roadmap Phase 1.1 (2026-07-23) — real bug found
+// live while testing server.js's own new SIGINT/SIGTERM handlers: these
+// process.on() registrations below used to run unconditionally at
+// require() time, not gated behind require.main === module the way
+// main() already is. server.js requires this file only for two
+// functions (readLastGenerationRecord, getButterPrice) — but requiring
+// it also silently registered THIS module's SIGINT/SIGTERM/
+// uncaughtException/unhandledRejection handlers inside server.js's own
+// process. Because these were registered first (factory_loop is
+// required near the top of server.js), Node ran this SIGINT/SIGTERM
+// handler before server.js's own newer one ever got a chance to run,
+// and — worse — releaseLock() released THIS module's PID lockfile
+// (meant to detect a duplicate real `node factory_loop.js` process)
+// from inside server.js's process, which is never actually the real
+// factory_loop process. If a real, separate `node factory_loop.js` were
+// running at the same time, stopping server.js could have silently
+// released factory_loop's own lock out from under it. Gating this
+// behind the same require.main === module check main() already uses
+// fixes both: these handlers now only ever attach in factory_loop.js's
+// own real, standalone process, never as a side effect of another
+// module requiring it as a library.
 if (require.main === module) {
+  // Belt-and-suspenders: catch anything that somehow still escapes a
+  // tick (e.g. an error thrown from inside a timer callback), so the
+  // loop process itself stays alive indefinitely instead of needing a
+  // human to restart it.
+  process.on('unhandledRejection', (err) => {
+    appendLoopLog({ diagnosis: { status: 'loop_error' }, actions: [{ step: 'unhandledRejection', action: 'error', detail: String(err) }] });
+  });
+  process.on('uncaughtException', (err) => {
+    appendLoopLog({ diagnosis: { status: 'loop_error' }, actions: [{ step: 'uncaughtException', action: 'error', detail: String(err) }] });
+  });
+
+  // Release the PID lockfile on every exit path — normal exit, Ctrl+C,
+  // or a kill signal — so a clean shutdown never leaves a stale lock
+  // behind for the next startup to have to detect-and-reclaim.
+  //
+  // Unified Recovery System §2 (2026-07-18) — real bug found while
+  // verifying the new startup-safety check: Node's 'exit' event passes
+  // the process's exit CODE as its listener's first argument. Passing
+  // releaseLock directly made every natural exit call releaseLock(0) —
+  // colliding with releaseLock(lockFile = LOCK_FILE)'s own first
+  // parameter, so fs.unlinkSync(0) silently failed (caught by its own
+  // empty catch) and the lock was NEVER actually released on ANY exit
+  // path, clean or not. This made Safe Startup Detection unusable —
+  // every restart looked like a crash. Wrapped in a no-arg arrow so the
+  // real default path is always used.
+  process.on('SIGINT', () => { releaseLock(); process.exit(0); });
+  process.on('SIGTERM', () => { releaseLock(); process.exit(0); });
+  process.on('exit', () => releaseLock());
+
   main();
 }
 
