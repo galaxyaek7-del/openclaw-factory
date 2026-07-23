@@ -37,7 +37,7 @@
 | 2.5 | `npm audit`/dependency CVE status | Resolved | ☑ 0 CVEs across 94 real prod dependencies, verified against the real public registry (the earlier failure was the configured mirror not serving the audit endpoint) |
 | 2.6 | Pillow 12.2.0 has 10 real, published CVEs (found in Phase 1 Security Audit) | High | ☑ commit `14190a4` |
 | 2.7 | Real, confirmed XSS: `index.html:685` interpolates `${b.title}` into `innerHTML` with zero escaping — reachable via the manual book-title form field (self-contained) and via Scout/Pioneer's externally-sourced niche titles (Hacker News, attacker-postable) | High | ☑ commit `780f856` |
-| 2.8 | `.env`/`data/decisions.jsonl`/`finance_data.json` carry permissive, inherited default Windows ACLs (readable by `Users`, writable by `Authenticated Users`) — low real risk today (single enabled account on this machine) but no owner-only restriction exists | Medium | ☐ |
+| 2.8 | `.env`/`data/decisions.jsonl`/`finance_data.json` carry permissive, inherited default Windows ACLs (readable by `Users`, writable by `Authenticated Users`) — low real risk today (single enabled account on this machine) but no owner-only restriction exists | Medium | ☑ commit `[pending]` — applied live, founder-confirmed |
 | 2.9 | `factory_loop.js`'s `sendDesktopNotification()` has an incomplete shell-escaping boundary (escapes single quotes, embedded in a double-quoted PowerShell argument) — real defect, full exploit-chain not traced | Medium | ☑ commit `04664a2` |
 | 2.10 | LLM prompt construction interpolates niche/title text with no delimiter between instruction and data, repeated across 4 `groq_chat()` call sites — bounded by strict output-format parsing + Dual Inspection | Medium | ☐ |
 | 2.11 | Logout doesn't revoke sessions server-side (stateless tokens valid until natural 12h expiry or a server restart) | Low | ☐ |
@@ -53,7 +53,7 @@ Rules, binding: no simulation, no fake security, no fake certificates/compliance
 | Sub-phase | Scope | Status |
 |---|---|---|
 | Security Audit | Secrets, API keys, env vars, tokens, auth, authz, session mgmt, file permissions, dangerous subprocess use, command injection, path traversal, XSS, CSRF, SQLi, prompt injection, dependency/package/supply-chain risk, unsafe Python, unsafe JS, RCE risk — every finding with severity, impact, evidence, file, root cause, repair | ☑ Complete — [report](https://claude.ai/code/artifact/7cf11021-9fb4-4d3f-8c4c-36eb7e896872), findings 2.1, 2.6–2.13 above |
-| Security Architecture | Security Engine, Secret Manager, Permission Manager, Identity Manager, Access Controller, Security Policy Engine, Audit Logger, Incident Response, Security Dashboard, Threat Intelligence — real modules, only for gaps the audit actually proves exist | ◐ 2.1, 2.6, 2.13, 2.7, 2.9 done — 2.8/2.3/2.11/2.12 next |
+| Security Architecture | Security Engine, Secret Manager, Permission Manager, Identity Manager, Access Controller, Security Policy Engine, Audit Logger, Incident Response, Security Dashboard, Threat Intelligence — real modules, only for gaps the audit actually proves exist | ◐ 2.1, 2.6, 2.13, 2.7, 2.9, 2.8 done — 2.3/2.11/2.12 next |
 | Hardening | Rate limiting, input validation, output sanitization, secure defaults, least privilege, token expiration, encrypted secrets, secure config, dependency verification, automatic vuln scanning | ☐ Blocked on Architecture |
 | Attack Simulation | Controlled, real attempts against API/Mission Control/Publishing/Automation/Executive Board/Discovery/Revenue/Market Hunter — a real pass/fail report | ☐ Blocked on Hardening |
 | Continuous Security | Security/Threat/Dependency/Supply-chain/Code review gates every future feature must pass before production | ☐ Blocked on Attack Simulation |
@@ -268,7 +268,25 @@ Picked up after the Live Competitive Intelligence mission closed (ADR-096) and r
 
 ---
 
-*(Phase 2 continues from here — 2.8/2.3/2.11/2.12 remain, all Low/Medium severity, none yet started.)*
+### 2.8 — Windows ACL hardening (2026-07-23)
+
+**Implemented:** new `scripts/harden_file_acls.js` (opt-in, explicit) — disables ACL inheritance and grants Full control to only the real current user + SYSTEM + Administrators on `.env`/`data/decisions.jsonl`/`finance_data.json`, removing the broad `Users`/`Authenticated Users` grants.
+
+**2 real bugs found and fixed before this shipped** (neither found by inspection — both from actually running the tool against a real file): (1) `whoami` resolves to a different binary depending on invoking shell (Git Bash's own `whoami` silently produced a malformed principal) — fixed by reading `USERDOMAIN`/`USERNAME` env vars directly instead of shelling out; (2) this machine's Windows install is French-localized, so the hardcoded English `"SYSTEM"`/`"Administrators"` names failed outright — fixed with locale-independent well-known SIDs (`*S-1-5-18`, `*S-1-5-32-544`).
+
+**Tested:** 7 tests (`tests/test_harden_file_acls.js`), all against real throwaway temp files — dry-run makes zero changes, broad grant genuinely removed (locale-independent assertion), idempotent, and the file's own owner retains real read/write/delete immediately after hardening.
+
+**Applied live, founder-confirmed** (a real filesystem-permission change on the live factory's own sensitive files, correctly treated as requiring explicit confirmation before acting): dry-run first, then applied for real, then a full live end-to-end check with the real server — `/health` 200, real login 200, real `GET /finance` 200, real `POST /finance/add` 200, real `data/decisions.jsonl` read confirmed. The one real side effect (a $1 test sale) was removed and totals honestly recomputed immediately after.
+
+**Verified:** full JS suite 267/267 (up from 260).
+
+**Documented:** `ADR-100`.
+
+**Commit:** `[pending]`.
+
+---
+
+*(Phase 2 continues from here — 2.3/2.11/2.12 remain, all Low severity, none yet started.)*
 
 ### 4.7 — Real infrastructure health checks (2026-07-23)
 
