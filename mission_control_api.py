@@ -444,12 +444,15 @@ def _validation_report():
 
 
 def _ai_capability():
-    """Autonomous Digital Company v1, Track B2 (2026-07-19): the real AI
+    """Autonomous Digital Company v1, Track B2 (2026-07-19); extended for
+    the Technology Investment Council directive (2026-07-23): the real AI
     Capability Registry — every named provider candidate (Claude, GPT,
-    Gemini, Grok, DeepSeek, Qwen, Mistral, local models, plus Groq itself),
-    Groq's metrics computed live from data/ai_cost_log.jsonl, every other
-    provider honestly DISCOVERY-level (never a fabricated benchmark for a
-    provider never actually called). Passthrough only, no new logic here."""
+    Gemini, Grok, DeepSeek, Qwen, Mistral, Kimi, Doubao, local models, plus
+    Groq itself), Groq's metrics computed live from data/ai_cost_log.jsonl
+    across all 8 named criteria (quality/cost/speed/availability/security/
+    maintainability/customer_value/business_impact), every other provider
+    honestly DISCOVERY-level (never a fabricated benchmark for a provider
+    never actually called). Passthrough only, no new logic here."""
     from ai_capability import registry
     return {
         "providers": registry.list_providers(),

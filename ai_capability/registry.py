@@ -33,6 +33,13 @@ REQUESTS_LOG_PATH = _FACTORY_ROOT / "data" / "ai_capability_requests.jsonl"
 METRIC_NAMES = [
     "quality", "speed", "cost", "availability",
     "context_size", "reasoning_suitability", "multimodal_support",
+    # Technology Investment Council (2026-07-23): the 4 additional named
+    # criteria from that directive not already covered above ("stability"
+    # is already "availability"; "latency" is already "speed"; "quality"/
+    # "cost" already existed). Same DISCOVERY-by-default treatment as
+    # every metric above -- never a fabricated number for a provider this
+    # factory has no real credential or real call history for.
+    "security", "maintainability", "customer_value", "business_impact",
 ]
 
 # Real, named candidates the founder asked to be tracked. `task_types` are
@@ -55,6 +62,16 @@ PROVIDER_CATALOG = [
      "task_types": ["general_purpose", "multilingual"]},
     {"provider": "mistral", "display_name": "Mistral", "credential_env_var": "MISTRAL_API_KEY",
      "task_types": ["general_purpose", "code_generation"]},
+    # Technology Investment Council (2026-07-23), Technology-Agnostic
+    # Principle: "no loyalty to any AI model, company or platform" --
+    # 2 more real, named candidates the founder explicitly asked to be
+    # tracked. Same real discipline as every other candidate above: a
+    # real, honest catalog entry with DISCOVERY-level metrics only, until
+    # a real credential exists and is actually called.
+    {"provider": "moonshot_kimi", "display_name": "Kimi (Moonshot AI)", "credential_env_var": "MOONSHOT_API_KEY",
+     "task_types": ["general_purpose", "long_context_analysis", "multilingual"]},
+    {"provider": "bytedance_doubao", "display_name": "Doubao (ByteDance)", "credential_env_var": "DOUBAO_API_KEY",
+     "task_types": ["general_purpose", "multilingual", "multimodal"]},
     {"provider": "local", "display_name": "Local models (e.g. Ollama)", "credential_env_var": None,
      "task_types": ["offline_fallback", "no_api_cost"]},
 ]
@@ -123,6 +140,11 @@ def _groq_entry(catalog_entry, cost_log_entries):
         "context_size": _metric("DISCOVERY", note="مواصفة معلنة من المزوّد، لم تُتحقَّق مباشرة عبر استدعاء حقيقي -- لا تُسجَّل هنا لتفادي ذكر رقم لا يمكن لهذا المصنع تأكيده بنفسه."),
         "reasoning_suitability": _metric("DISCOVERY", note="لم يُجرَ أي اختبار مقارنة حقيقي للاستدلال بعد."),
         "multimodal_support": _metric("DISCOVERY", note="غير مُتحقَّق عبر استدعاء حقيقي -- هذا المصنع أرسل نصوصاً فقط حتى الآن."),
+        # Technology Investment Council (2026-07-23):
+        "security": _metric("DISCOVERY", note="لا مراجعة أمنية حقيقية لهذا المزوّد أُجريت بعد (سياسة استبقاء البيانات، شهادات الامتثال)."),
+        "maintainability": _metric("DISCOVERY", note="لا قياس حقيقي لاستقرار الواجهة/توثيقها/تكرار التغييرات الجذرية بعد."),
+        "customer_value": _metric("DISCOVERY", note="لا ربط حقيقي بين مخرجات هذا الموديل ورضا عميل حقيقي أو مبيعات حقيقية بعد."),
+        "business_impact": _metric("DISCOVERY", note="لا قياس حقيقي لأثر هذا المزوّد على إيراد أو تكلفة العمل الفعلية بعد."),
     }
     return {
         "provider": catalog_entry["provider"],

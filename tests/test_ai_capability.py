@@ -41,13 +41,24 @@ class TestRegistryListProviders(unittest.TestCase):
         if os.path.exists(self.cost_log):
             os.remove(self.cost_log)
 
-    def test_all_nine_providers_present(self):
+    def test_all_eleven_providers_present(self):
+        # Technology Investment Council (2026-07-23): 2 more real, named
+        # candidates (Kimi/Moonshot AI, Doubao/ByteDance) added per the
+        # Technology-Agnostic Principle directive.
         providers = registry.list_providers(self.cost_log)
         names = {p["provider"] for p in providers}
         self.assertEqual(names, {
             "groq", "anthropic", "openai", "google", "xai",
-            "deepseek", "alibaba_qwen", "mistral", "local",
+            "deepseek", "alibaba_qwen", "mistral", "moonshot_kimi", "bytedance_doubao", "local",
         })
+
+    def test_the_8_technology_investment_council_criteria_are_all_present(self):
+        # security/maintainability/customer_value/business_impact added
+        # 2026-07-23; quality/cost already existed; speed==latency and
+        # availability==stability from the directive's own naming.
+        for name in ("quality", "cost", "speed", "availability",
+                     "security", "maintainability", "customer_value", "business_impact"):
+            self.assertIn(name, registry.METRIC_NAMES)
 
     def test_non_groq_providers_are_always_discovery_level_never_fabricated(self):
         providers = registry.list_providers(self.cost_log)
