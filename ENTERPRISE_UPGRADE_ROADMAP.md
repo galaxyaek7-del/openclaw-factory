@@ -310,6 +310,6 @@ Full findings and decisions: `ADR-093`. Founder-confirmed before building: exten
 
 **Documented:** `ADR-095`.
 
-**Commit:** `[pending]`.
+**Commit:** `20f525e`.
 
 **Next in this mission:** Decision re-open trigger (deferred, founder-confirmed in ADR-094) is the one remaining piece from ADR-093's original scope.
