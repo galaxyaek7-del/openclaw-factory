@@ -35,14 +35,14 @@
 | 2.3 | Mission Control password check is not timing-safe; no brute-force/rate-limit protection on login | Low | ☐ |
 | 2.4 | No TLS/HTTPS anywhere (acceptable while `BIND_HOST=127.0.0.1`, real gap the moment that changes) | Medium (conditional) | ☐ |
 | 2.5 | `npm audit`/dependency CVE status | Resolved | ☑ 0 CVEs across 94 real prod dependencies, verified against the real public registry (the earlier failure was the configured mirror not serving the audit endpoint) |
-| 2.6 | Pillow 12.2.0 has 10 real, published CVEs (found in Phase 1 Security Audit) | High | ☐ |
+| 2.6 | Pillow 12.2.0 has 10 real, published CVEs (found in Phase 1 Security Audit) | High | ☑ commit `14190a4` |
 | 2.7 | Real, confirmed XSS: `index.html:685` interpolates `${b.title}` into `innerHTML` with zero escaping — reachable via the manual book-title form field (self-contained) and via Scout/Pioneer's externally-sourced niche titles (Hacker News, attacker-postable) | High | ☐ |
 | 2.8 | `.env`/`data/decisions.jsonl`/`finance_data.json` carry permissive, inherited default Windows ACLs (readable by `Users`, writable by `Authenticated Users`) — low real risk today (single enabled account on this machine) but no owner-only restriction exists | Medium | ☐ |
 | 2.9 | `factory_loop.js`'s `sendDesktopNotification()` has an incomplete shell-escaping boundary (escapes single quotes, embedded in a double-quoted PowerShell argument) — real defect, full exploit-chain not traced | Medium | ☐ |
 | 2.10 | LLM prompt construction interpolates niche/title text with no delimiter between instruction and data, repeated across 4 `groq_chat()` call sites — bounded by strict output-format parsing + Dual Inspection | Medium | ☐ |
 | 2.11 | Logout doesn't revoke sessions server-side (stateless tokens valid until natural 12h expiry or a server restart) | Low | ☐ |
 | 2.12 | No explicit CSRF token — protection is entirely implicit (SameSite=Lax + confirmed absence of any state-mutating GET route), real and sufficient today but no dedicated layer to catch a future mistake | Low | ☐ |
-| 2.13 | Unused, confusingly-named npm package `groq` (unrelated Sanity.io package, zero real call sites, distinct from the real `groq-sdk`) | Low | ☐ |
+| 2.13 | Unused, confusingly-named npm package `groq` (unrelated Sanity.io package, zero real call sites, distinct from the real `groq-sdk`) | Low | ☑ commit `14190a4` |
 
 **Full Phase 1 Security Audit report:** https://claude.ai/code/artifact/7cf11021-9fb4-4d3f-8c4c-36eb7e896872 — 2 Critical, 3 High, 4 Medium, 4 Low findings, 14 verified-clean results (no SQLi surface exists at all, zero RCE patterns anywhere in ~40k lines of Python, no command injection, path traversal genuinely defended, 0 npm CVEs, zero install-time script risk, dotenv's earlier supply-chain flag confirmed genuinely isolated), 2 explicitly-flagged not-verifiable items. Recommended repair order in the report: 2.6 and 2.13 first (free, zero-risk one-line fixes), then 2.1 (route auth) before any Security Architecture module gets built, then 2.7/2.9 (contained code fixes), then 2.8/2.3/2.11/2.12.
 
@@ -146,7 +146,7 @@ Rules, binding: no simulation, no fake security, no fake certificates/compliance
 
 **Documented:** inline comment in `requirements.txt` explaining the CVE list and why the bump happened.
 
-**Commit:** `[pending]`.
+**Commit:** `14190a4`.
 
 ---
 
