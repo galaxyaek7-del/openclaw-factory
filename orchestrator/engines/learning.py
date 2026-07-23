@@ -15,8 +15,9 @@ from orchestrator.registry import register_engine
 def run(context):
     decisions_path = context.get("decisions_path")
     outcomes_path = context.get("outcomes_path")
+    evidence_path = context.get("evidence_path")
     return {
-        "sync": feedback.sync_outcomes(decisions_path=decisions_path, outcomes_path=outcomes_path),
+        "sync": feedback.sync_outcomes(decisions_path=decisions_path, outcomes_path=outcomes_path, evidence_path=evidence_path),
         "accuracy": decision_learning.compute_prediction_accuracy(decisions_path=decisions_path, outcomes_path=outcomes_path),
         "recalibration": decision_learning.recalibration_report(decisions_path=decisions_path, outcomes_path=outcomes_path),
     }

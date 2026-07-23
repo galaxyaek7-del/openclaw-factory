@@ -338,6 +338,32 @@ class TestComputeValueProfileIntegration(unittest.TestCase):
             self.assertFalse(stages[stage]["reached"])
             self.assertTrue(stages[stage]["evidence"])  # a real, stated reason, never blank
 
+    def test_market_memory_field_is_present_and_honestly_empty_by_default(self):
+        """Global Market Learning Engine (2026-07-23): compute_value_profile()
+        must carry a real market_memory field, honestly empty until real
+        closed sales exist for this niche."""
+        self._record("a niche with no real sales yet", "ai_saas")
+        profile = self._profile("a niche with no real sales yet")
+        self.assertEqual(profile["market_memory"]["sample_size"], 0)
+
+    def test_real_closed_sales_flow_into_market_memory_and_lifetime_value(self):
+        """Closes the 2026-07-23 system integration audit's #2 finding:
+        Value Engine never read real reconciled sales data. A real
+        closed_sale event for this niche must now produce a real,
+        non-Unknown estimated_lifetime_value."""
+        import market_evidence
+        self._record("a niche with real closed sales", "ai_saas")
+        market_evidence.record_evidence("a niche with real closed sales", "closed_sale", {
+            "commercial_event": {"platform": "gumroad", "selling_price": 250.0, "season": "summer"},
+        }, evidence_path=self.evidence_path)
+
+        profile = self._profile("a niche with real closed sales")
+        self.assertEqual(profile["market_memory"]["sample_size"], 1)
+        self.assertEqual(profile["market_memory"]["total_revenue"], 250.0)
+        lifetime_value = profile["board_summary"]["estimated_lifetime_value"]
+        self.assertEqual(lifetime_value["value"], 250.0)
+        self.assertEqual(lifetime_value["sample_size"], 1)
+
     def test_synergy_reflects_real_sibling_decisions_sharing_a_ladder(self):
         self._record("sibling niche one", "b2b_systems")
         self._record("sibling niche two", "b2b_systems")

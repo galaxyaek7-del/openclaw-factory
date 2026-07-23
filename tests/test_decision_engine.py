@@ -386,21 +386,38 @@ class TestRanking(unittest.TestCase):
         queue = ranking.rank_queue(decisions_path=self.decisions_path, outcomes_path=self.outcomes_path)
         self.assertEqual([d["niche"] for d in queue], ["accepted no sale"])
 
+    def test_rank_queue_with_commercial_context_preserves_order_and_adds_real_market_memory(self):
+        """Global Market Learning Engine (2026-07-23): the Opportunity
+        Queue gains a real market_memory field per item, never re-ranked
+        by it (rank_queue()'s own opportunity_score order is untouched)."""
+        evidence_path = _temp_path()
+        try:
+            self._decision("queued niche", "ACCEPTED", 80)
+            enriched = ranking.rank_queue_with_commercial_context(
+                decisions_path=self.decisions_path, outcomes_path=self.outcomes_path, evidence_path=evidence_path,
+            )
+            self.assertEqual(enriched[0]["niche"], "queued niche")
+            self.assertEqual(enriched[0]["market_memory"]["sample_size"], 0)
+        finally:
+            if os.path.exists(evidence_path):
+                os.remove(evidence_path)
+
 
 class TestFeedbackNeverFabricatesAMatch(unittest.TestCase):
     def setUp(self):
         self.sales_ledger_path = _temp_path()
         self.decisions_path = _temp_path()
         self.outcomes_path = _temp_path()
+        self.evidence_path = _temp_path()
 
     def tearDown(self):
-        for p in (self.sales_ledger_path, self.decisions_path, self.outcomes_path):
+        for p in (self.sales_ledger_path, self.decisions_path, self.outcomes_path, self.evidence_path):
             if os.path.exists(p):
                 os.remove(p)
 
     def test_no_real_sales_reports_honestly(self):
         result = feedback.sync_outcomes(
-            sales_ledger_path=self.sales_ledger_path, decisions_path=self.decisions_path, outcomes_path=self.outcomes_path
+            sales_ledger_path=self.sales_ledger_path, decisions_path=self.decisions_path, outcomes_path=self.outcomes_path, evidence_path=self.evidence_path
         )
         self.assertEqual(result["synced"], 0)
         self.assertIn("لا مبيعات حقيقية", result["reason"])
@@ -426,7 +443,7 @@ class TestFeedbackNeverFabricatesAMatch(unittest.TestCase):
         }, ledger_path=self.sales_ledger_path)
 
         result = feedback.sync_outcomes(
-            sales_ledger_path=self.sales_ledger_path, decisions_path=self.decisions_path, outcomes_path=self.outcomes_path
+            sales_ledger_path=self.sales_ledger_path, decisions_path=self.decisions_path, outcomes_path=self.outcomes_path, evidence_path=self.evidence_path
         )
         self.assertEqual(result["synced"], 1)
         self.assertEqual(result["matched"], 1)
@@ -443,7 +460,7 @@ class TestFeedbackNeverFabricatesAMatch(unittest.TestCase):
         }, ledger_path=self.sales_ledger_path)
 
         result = feedback.sync_outcomes(
-            sales_ledger_path=self.sales_ledger_path, decisions_path=self.decisions_path, outcomes_path=self.outcomes_path
+            sales_ledger_path=self.sales_ledger_path, decisions_path=self.decisions_path, outcomes_path=self.outcomes_path, evidence_path=self.evidence_path
         )
         self.assertEqual(result["synced"], 1)
         self.assertEqual(result["matched"], 0)
@@ -459,9 +476,85 @@ class TestFeedbackNeverFabricatesAMatch(unittest.TestCase):
             "event_type": "sale", "platform": "gumroad", "raw": {"id": "sale_dup", "product_id": "x"},
         }, ledger_path=self.sales_ledger_path)
 
-        feedback.sync_outcomes(sales_ledger_path=self.sales_ledger_path, decisions_path=self.decisions_path, outcomes_path=self.outcomes_path)
-        second = feedback.sync_outcomes(sales_ledger_path=self.sales_ledger_path, decisions_path=self.decisions_path, outcomes_path=self.outcomes_path)
+        feedback.sync_outcomes(sales_ledger_path=self.sales_ledger_path, decisions_path=self.decisions_path, outcomes_path=self.outcomes_path, evidence_path=self.evidence_path)
+        second = feedback.sync_outcomes(sales_ledger_path=self.sales_ledger_path, decisions_path=self.decisions_path, outcomes_path=self.outcomes_path, evidence_path=self.evidence_path)
         self.assertEqual(second["synced"], 0)
+        self.assertEqual(len(list(store.read_outcomes(path=self.outcomes_path))), 1)
+
+    def test_matched_sale_writes_real_closed_sale_evidence_2026_07_23(self):
+        """Global Market Learning Engine: a matched sale must also reach
+        market_evidence.py, closing the gap flagged by two consecutive
+        audits (poll_sales.py never told the Quality Gate about a sale)."""
+        import market_evidence
+        from channels import ledger as sales_ledger
+
+        d = Decision(
+            decision_id=make_decision_id("gratitude journal for teens", "tier4", "2026-07-16T00:00:00"),
+            niche="gratitude journal for teens", tier="tier4", decided_at="2026-07-16T00:00:00",
+            status="ACCEPTED", ai_ceo_decision="BUILD", opportunity_score=80, opportunity_score_accepted=True,
+            reasoning=["test"], evaluation_snapshot={"dimension_scores": {}},
+        )
+        store.append_decision(d, path=self.decisions_path)
+        sales_ledger.append_event({
+            "event_type": "publish_attempt", "platform": "gumroad", "ok": True, "dry_run": False,
+            "product_id": "prod123", "url": "https://x", "error": None,
+            "product_title": "Gratitude Journal For Teens - Deluxe Edition", "product_source_id": "abc",
+        }, ledger_path=self.sales_ledger_path)
+        sales_ledger.append_event({
+            "event_type": "sale", "platform": "gumroad", "raw": {"id": "sale1", "product_id": "prod123", "price": 9.99},
+        }, ledger_path=self.sales_ledger_path)
+
+        result = feedback.sync_outcomes(
+            sales_ledger_path=self.sales_ledger_path, decisions_path=self.decisions_path,
+            outcomes_path=self.outcomes_path, evidence_path=self.evidence_path,
+        )
+        self.assertEqual(result["matched"], 1)
+
+        events = list(market_evidence.read_evidence(niche="gratitude journal for teens", evidence_path=self.evidence_path))
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0]["event_type"], "closed_sale")
+        self.assertEqual(events[0]["payload"]["platform"], "gumroad")
+
+    def test_unmatched_sale_writes_no_evidence(self):
+        import market_evidence
+        from channels import ledger as sales_ledger
+        sales_ledger.append_event({
+            "event_type": "sale", "platform": "gumroad", "raw": {"id": "sale_unknown", "product_id": "unknown_prod"},
+        }, ledger_path=self.sales_ledger_path)
+
+        feedback.sync_outcomes(
+            sales_ledger_path=self.sales_ledger_path, decisions_path=self.decisions_path,
+            outcomes_path=self.outcomes_path, evidence_path=self.evidence_path,
+        )
+        self.assertEqual(list(market_evidence.read_evidence(evidence_path=self.evidence_path)), [])
+
+    def test_market_evidence_write_failure_never_loses_the_real_outcome(self):
+        from channels import ledger as sales_ledger
+        from unittest.mock import patch
+
+        d = Decision(
+            decision_id=make_decision_id("gratitude journal for teens", "tier4", "2026-07-16T00:00:00"),
+            niche="gratitude journal for teens", tier="tier4", decided_at="2026-07-16T00:00:00",
+            status="ACCEPTED", ai_ceo_decision="BUILD", opportunity_score=80, opportunity_score_accepted=True,
+            reasoning=["test"], evaluation_snapshot={"dimension_scores": {}},
+        )
+        store.append_decision(d, path=self.decisions_path)
+        sales_ledger.append_event({
+            "event_type": "publish_attempt", "platform": "gumroad", "ok": True, "dry_run": False,
+            "product_id": "prod123", "url": "https://x", "error": None,
+            "product_title": "Gratitude Journal For Teens - Deluxe Edition", "product_source_id": "abc",
+        }, ledger_path=self.sales_ledger_path)
+        sales_ledger.append_event({
+            "event_type": "sale", "platform": "gumroad", "raw": {"id": "sale1", "product_id": "prod123"},
+        }, ledger_path=self.sales_ledger_path)
+
+        with patch("market_evidence.record_evidence", side_effect=RuntimeError("disk full")):
+            result = feedback.sync_outcomes(
+                sales_ledger_path=self.sales_ledger_path, decisions_path=self.decisions_path,
+                outcomes_path=self.outcomes_path, evidence_path=self.evidence_path,
+            )
+        self.assertEqual(result["synced"], 1)
+        self.assertEqual(result["matched"], 1)
         self.assertEqual(len(list(store.read_outcomes(path=self.outcomes_path))), 1)
 
 

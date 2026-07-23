@@ -34,3 +34,20 @@ def rank_queue(decisions_path=None, outcomes_path=None):
         if d.get("status") == "ACCEPTED" and d.get("decision_id") not in matched_decision_ids
     ]
     return sorted(pending, key=lambda d: d.get("opportunity_score") or 0, reverse=True)
+
+
+def rank_queue_with_commercial_context(decisions_path=None, outcomes_path=None, evidence_path=None):
+    """Global Market Learning Engine (2026-07-23): the Opportunity Queue,
+    with each item additionally carrying its real market_memory.py
+    commercial profile — informational only, never re-ranks anything
+    (rank_queue()'s own opportunity_score order is untouched). Every item
+    honestly reports zero real commercial evidence until a real sale for
+    a RELATED, already-ACCEPTED niche exists (queue items are, by
+    definition, not yet matched to any outcome themselves)."""
+    import market_memory
+
+    queue = rank_queue(decisions_path=decisions_path, outcomes_path=outcomes_path)
+    return [
+        {**d, "market_memory": market_memory.niche_commercial_profile(d.get("niche"), evidence_path=evidence_path)}
+        for d in queue
+    ]

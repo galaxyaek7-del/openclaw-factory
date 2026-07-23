@@ -3,12 +3,15 @@ Knowledge Graph v1 (EOS Phase 2, 2026-07-19) — a living, queryable
 company memory over real, already-recorded relationships. Not a graph
 database (same "plain Python/JSON over new dependencies" choice
 knowledge_brain.js already made against embeddings) — real nodes and
-edges built from 5 real sources already in this repo:
+edges built from 6 real sources already in this repo:
 
   - data/decisions.jsonl (Niche, Decision nodes)
   - data/market_intelligence_analyses.jsonl (MarketAnalysis nodes)
   - data/sales_ledger.jsonl (ProductionRun nodes, PublishChannel edges)
   - data/ai_cost_log.jsonl (AIProvider edges)
+  - data/market_evidence.jsonl's closed_sale events (CommercialEvent
+    nodes, Global Market Learning Engine, 2026-07-23 — market_memory.py's
+    real commercial dimensions, linked back to the Niche they sold)
   - channels/registry.py + ai_capability/registry.py (PublishChannel /
     AIProvider node catalogs)
 
@@ -43,6 +46,7 @@ DECISIONS_FILE = os.path.join(FACTORY_DIR, 'data', 'decisions.jsonl')
 MARKET_INTELLIGENCE_ANALYSES_FILE = os.path.join(FACTORY_DIR, 'data', 'market_intelligence_analyses.jsonl')
 SALES_LEDGER_FILE = os.path.join(FACTORY_DIR, 'data', 'sales_ledger.jsonl')
 AI_COST_LOG_FILE = os.path.join(FACTORY_DIR, 'data', 'ai_cost_log.jsonl')
+MARKET_EVIDENCE_FILE = os.path.join(FACTORY_DIR, 'data', 'market_evidence.jsonl')
 SNAPSHOT_FILE = os.path.join(FACTORY_DIR, 'data', 'knowledge_graph_snapshot.json')
 
 
@@ -74,11 +78,12 @@ def _edge(from_id, to_id, relation, confidence="exact"):
     return {"from": from_id, "to": to_id, "relation": relation, "edge_confidence": confidence}
 
 
-def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_cost_log_path=None):
+def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_cost_log_path=None, evidence_path=None):
     decisions = _read_jsonl(decisions_path or DECISIONS_FILE)
     analyses = _read_jsonl(analyses_path or MARKET_INTELLIGENCE_ANALYSES_FILE)
     ledger = _read_jsonl(ledger_path or SALES_LEDGER_FILE)
     ai_costs = _read_jsonl(ai_cost_log_path or AI_COST_LOG_FILE)
+    evidence = _read_jsonl(evidence_path or MARKET_EVIDENCE_FILE)
 
     nodes = {}
     edges = []
@@ -162,6 +167,28 @@ def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_co
         _add_node(_node(provider_id, "AIProvider", label=model))
         if niche_id in nodes:
             edges.append(_edge(niche_id, provider_id, "cost_incurred_from", confidence="approximate"))
+
+    # CommercialEvent nodes/edges (real, from market_evidence.jsonl's
+    # closed_sale events -- Global Market Learning Engine, 2026-07-23).
+    # Only events already carrying market_memory.py's real dimensional
+    # payload are graphed; an older/bare closed_sale event with no
+    # commercial_event field is skipped, never fabricated to fit.
+    for idx, ev in enumerate(evidence):
+        if ev.get("event_type") != "closed_sale":
+            continue
+        commercial_event = (ev.get("payload") or {}).get("commercial_event")
+        if not isinstance(commercial_event, dict):
+            continue
+        niche = ev.get("niche")
+        if not niche:
+            continue
+        niche_id = f"niche:{_normalize(niche)}"
+        event_id = f"commercial_event:{_normalize(niche)}:{ev.get('timestamp') or idx}"
+        _add_node(_node(niche_id, "Niche", label=niche))
+        _add_node(_node(event_id, "CommercialEvent", niche=niche, platform=commercial_event.get("platform"),
+                         selling_price=commercial_event.get("selling_price"), season=commercial_event.get("season"),
+                         recorded_at=ev.get("timestamp")))
+        edges.append(_edge(niche_id, event_id, "sold_as"))
 
     graph = {
         "schema_note": "DERIVED, DISPOSABLE snapshot -- rebuild any time via knowledge_graph.build.build_graph(). Never a source of truth; the real data lives in the JSONL files named in this module's docstring.",

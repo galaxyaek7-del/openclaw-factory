@@ -68,11 +68,23 @@ def _find_matching_decision(raw_sale_event, publish_attempts, decisions_by_niche
     return None, "product_title_matched_no_known_decision_niche"
 
 
-def sync_outcomes(sales_ledger_path=None, decisions_path=None, outcomes_path=None):
+def sync_outcomes(sales_ledger_path=None, decisions_path=None, outcomes_path=None, evidence_path=None):
     """Reads every real sale since the last sync, matches what it honestly
     can, and appends an Outcome for every one — matched or not. Never
     re-records a sale already processed (dedup by deterministic
-    outcome_id, same discipline as scripts/poll_sales.py's sale dedup)."""
+    outcome_id, same discipline as scripts/poll_sales.py's sale dedup).
+
+    Global Market Learning Engine (2026-07-23): a real match here is this
+    factory's only real, automatic sale->niche resolver (product_id ->
+    publish_attempt -> niche-substring-in-title, ADR-050) — it already
+    runs every real production cycle via orchestrator's "learning" stage.
+    Until today it fed only decision_engine's own outcomes store; a
+    matched sale now ALSO writes a real "closed_sale" event to
+    market_evidence.py, so the Executive Quality Gate's Market Learning
+    Loop (ADR-087/088) finally receives what this resolver already knows,
+    with no new matching logic invented. Best-effort, never fatal: a
+    market_evidence write failure must never lose the real Outcome record
+    itself."""
     sales = list(sales_ledger.read_events(event_type="sale", ledger_path=sales_ledger_path))
     if not sales:
         return {"synced": 0, "matched": 0, "unmatched": 0, "reason": "لا مبيعات حقيقية بعد في data/sales_ledger.jsonl"}
@@ -105,6 +117,24 @@ def sync_outcomes(sales_ledger_path=None, decisions_path=None, outcomes_path=Non
         synced += 1
         if decision is not None:
             matched += 1
+            try:
+                import market_evidence
+                import market_memory
+                commercial_event = market_memory.build_commercial_event(
+                    decision["niche"], decision.get("product_family"), sale.get("platform"),
+                    sale.get("raw") or {}, outcome.recorded_at, sales_ledger_path=sales_ledger_path,
+                )
+                market_evidence.record_evidence(
+                    decision["niche"], "closed_sale",
+                    {
+                        "platform": sale.get("platform"), "raw": sale.get("raw"), "match_method": method,
+                        "commercial_event": commercial_event,
+                    },
+                    source="decision_engine.feedback.sync_outcomes",
+                    evidence_path=evidence_path,
+                )
+            except Exception:
+                pass
         else:
             unmatched += 1
 

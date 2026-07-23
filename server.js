@@ -1372,6 +1372,41 @@ const ACTION_REGISTRY = [
     asyncRunner: () => runPythonActionAsync('get-value-engine-report', 'get_value_engine_report', []),
   },
   {
+    // Global Market Learning Engine (2026-07-23) -- real Market Memory
+    // aggregate for one niche. Honestly empty until real sales exist.
+    name: 'get-niche-commercial-profile',
+    description: 'Read-only: the real Market Memory commercial profile for one niche (sample size, real revenue to date, average price, platforms, seasons sold in). Honestly empty until real sales exist for it.',
+    reused: 'market_memory.py::niche_commercial_profile()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('get-niche-commercial-profile', 'get_niche_commercial_profile', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    // Global Market Learning Engine (2026-07-23) -- the founder-named
+    // monthly report, gated on a real minimum sample size.
+    name: 'get-monthly-market-evolution-report',
+    description: 'Read-only: top growing niches, best platforms, and related monthly commercial trends, computed only from real closed sales. Honestly reports insufficient data below the real minimum sample size, never a fabricated trend.',
+    reused: 'market_memory.py::monthly_evolution_report()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: () => runPythonActionAsync('get-monthly-market-evolution-report', 'get_monthly_market_evolution_report', []),
+  },
+  {
+    // Global Market Learning Engine (2026-07-23) -- evidence-gated
+    // autonomous recommendations. Empty list is the correct output
+    // while real sales are scarce, never a fabricated suggestion.
+    name: 'get-commercial-recommendations',
+    description: 'Read-only: evidence-gated commercial recommendations (increase investment, review pricing) -- only emitted once a niche has enough real closed sales to support one. Empty while evidence is scarce.',
+    reused: 'market_memory.py::recommend_actions()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: () => runPythonActionAsync('get-commercial-recommendations', 'get_commercial_recommendations', []),
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +

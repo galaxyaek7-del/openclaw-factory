@@ -234,17 +234,33 @@ def _compute_priority_score(decision_opportunity_score, strategic_value):
     return {"score": round(sum(parts) / len(parts), 1), "based_on": basis}
 
 
-def _financials(price, cost_result, roi_result, recurring_revenue_potential):
+def _financials(price, cost_result, roi_result, recurring_revenue_potential, market_memory_profile=None):
+    """Global Market Learning Engine (2026-07-23): estimated_lifetime_value
+    now reuses market_memory.niche_commercial_profile()'s real
+    total_revenue the moment real closed sales exist for this niche —
+    closing the gap the 2026-07-23 system integration audit found
+    (Value Engine never read real reconciled sales data). Still an
+    honest "revenue to date", never a forecast beyond what actually sold,
+    and still Unknown whenever no real sale has happened yet."""
     lifetime_value_reason = "لا سعر حقيقي مُوصى به محفوظ لهذا القرار"
     if price is not None:
         lifetime_value_reason = f"لا بيانات مبيعات متكررة/تجديد حقيقية بعد — السعر الحقيقي لمرة واحدة هو ${price}"
         if isinstance(recurring_revenue_potential, (int, float)):
             lifetime_value_reason += f"؛ إمكانية إيراد متكرر مُقدَّرة حسب الـ ladder بـ {recurring_revenue_potential}/100 (مؤشر تقديري، ليس مبلغاً مالياً)"
+
+    lifetime_value = _unknown(lifetime_value_reason)
+    if market_memory_profile and market_memory_profile.get("sample_size", 0) > 0 and market_memory_profile.get("total_revenue") is not None:
+        lifetime_value = {
+            "value": market_memory_profile["total_revenue"],
+            "basis": "real closed-sale revenue to date (Global Market Memory) — not a forecast",
+            "sample_size": market_memory_profile["sample_size"],
+        }
+
     return {
         "estimated_build_cost": cost_result,
         "estimated_maintenance_cost": _unknown("لا نظام تتبّع تكلفة صيانة حقيقي بعد الإطلاق موجود في هذا المصنع بعد"),
         "expected_roi": roi_result,
-        "estimated_lifetime_value": _unknown(lifetime_value_reason),
+        "estimated_lifetime_value": lifetime_value,
     }
 
 
@@ -460,6 +476,7 @@ def compute_value_profile(niche, decisions_path=None, board_path=None, alerts_pa
     from decision_engine import ranking
     from revenue_pipeline import plan as plan_module
     import market_evidence as me
+    import market_memory
 
     decision = fo.find_decision(niche, decisions_path=decisions_path)
     if decision is None or decision.get("status") != "ACCEPTED":
@@ -478,6 +495,7 @@ def compute_value_profile(niche, decisions_path=None, board_path=None, alerts_pa
     price_value = price if isinstance(price, (int, float)) else None
     variants_result = plan_module.compare_ladder_variants(niche) if niche else None
     market_evidence_summary = me.summarize_niche(niche, evidence_path=evidence_path) if niche else None
+    market_memory_profile = market_memory.niche_commercial_profile(niche, evidence_path=evidence_path) if niche else None
     roi_result = plan_module.estimate_roi(
         price_value, cost_result.get("estimated_cost_usd") if cost_result.get("maturity") == "REAL" else None,
         platform="gumroad_elite" if ladder else "gumroad_digital",
@@ -499,7 +517,7 @@ def compute_value_profile(niche, decisions_path=None, board_path=None, alerts_pa
 
     strategic_value = _compute_strategic_value_composite(reused, new_dims)
     priority_score = _compute_priority_score(decision.get("opportunity_score"), strategic_value)
-    financials = _financials(price_value, cost_result, roi_result, reused.get("recurring_revenue_potential"))
+    financials = _financials(price_value, cost_result, roi_result, reused.get("recurring_revenue_potential"), market_memory_profile)
     recommendation = _build_recommendation(priority_score, at_risk, upgrade, bundle)
     value_proposition = classify_value_proposition(annotated, reused, new_dims)
     lifecycle = classify_lifecycle_stage(niche, decisions_path=decisions_path, timeline_path=timeline_path, outcomes_path=outcomes_path)
@@ -512,6 +530,7 @@ def compute_value_profile(niche, decisions_path=None, board_path=None, alerts_pa
         "at_risk": at_risk,
         "value_proposition": value_proposition,
         "lifecycle_stage": lifecycle,
+        "market_memory": market_memory_profile,
         "board_summary": {
             "priority_score": priority_score,
             "expected_roi": roi_result,

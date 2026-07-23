@@ -298,6 +298,44 @@ class TestEndpointDispatch(unittest.TestCase):
         self.assertEqual(result, fake_result)
 
 
+class TestGlobalMarketLearningEngineActions(unittest.TestCase):
+    """_get_niche_commercial_profile / _get_monthly_market_evolution_report
+    / _get_commercial_recommendations (2026-07-23) -- real, non-stub
+    delegation to market_memory.py, reading data/market_evidence.jsonl
+    for real (no test-isolation override exists for these CLI actions,
+    same as the pre-existing get_value_profile/get_value_engine_report
+    actions), so these tests only assert the real shape/dispatch, never
+    a specific real value that would drift as real evidence accumulates."""
+
+    def test_all_three_actions_are_registered(self):
+        for name in ("get_niche_commercial_profile", "get_monthly_market_evolution_report", "get_commercial_recommendations"):
+            self.assertIn(name, mission_control_api._ENDPOINTS)
+
+    def test_niche_commercial_profile_requires_a_niche(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_niche_commercial_profile", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._get_niche_commercial_profile()
+
+    def test_niche_commercial_profile_delegates_to_market_memory(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_niche_commercial_profile", json.dumps({"niche": "test niche"})]):
+            with patch("market_memory.niche_commercial_profile", return_value={"niche": "test niche", "sample_size": 0}) as mock_profile:
+                result = mission_control_api._get_niche_commercial_profile()
+        mock_profile.assert_called_once_with("test niche")
+        self.assertEqual(result["commercial_profile"]["sample_size"], 0)
+
+    def test_monthly_market_evolution_report_delegates_to_market_memory(self):
+        with patch("market_memory.monthly_evolution_report", return_value={"maturity": "DISCOVERY"}) as mock_report:
+            result = mission_control_api._get_monthly_market_evolution_report()
+        mock_report.assert_called_once_with()
+        self.assertEqual(result["maturity"], "DISCOVERY")
+
+    def test_commercial_recommendations_delegates_to_market_memory(self):
+        with patch("market_memory.recommend_actions", return_value={"maturity": "DISCOVERY", "recommendations": []}) as mock_recs:
+            result = mission_control_api._get_commercial_recommendations()
+        mock_recs.assert_called_once_with()
+        self.assertEqual(result["recommendations"], [])
+
+
 class TestFullCycle(unittest.TestCase):
     """_full_cycle() (Phase 11 — Autonomous Production Launch). Every real
     module it calls is mocked here so these tests stay fast (the real

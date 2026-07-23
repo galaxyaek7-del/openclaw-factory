@@ -1155,6 +1155,38 @@ def _get_value_engine_report():
     return value_engine.build_value_engine_report()
 
 
+def _get_niche_commercial_profile():
+    """Global Market Learning Engine (2026-07-23): the real Market Memory
+    aggregate for one niche (sample size, total real revenue, average
+    price, platforms, seasons). Honestly empty until real sales exist.
+    `python mission_control_api.py get_niche_commercial_profile '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+    import market_memory
+    return {"commercial_profile": market_memory.niche_commercial_profile(niche)}
+
+
+def _get_monthly_market_evolution_report():
+    """Global Market Learning Engine (2026-07-23): the founder-named
+    monthly report (top growing niches, best platforms, etc.), gated on
+    a real minimum sample size — honestly reports insufficient data
+    rather than a fabricated trend. No payload required."""
+    import market_memory
+    return market_memory.monthly_evolution_report()
+
+
+def _get_commercial_recommendations():
+    """Global Market Learning Engine (2026-07-23): evidence-gated
+    autonomous recommendations (increase investment, review pricing).
+    Emits nothing for a niche below the real evidence threshold — an
+    empty list is the correct, honest output while real sales are
+    scarce, not a bug. No payload required."""
+    import market_memory
+    return market_memory.recommend_actions()
+
+
 def _run_master_cycle():
     """Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     -- the single real call that composes Executive Quality Gate + AI
@@ -1241,6 +1273,9 @@ _ENDPOINTS = {
     "get_decision_reopen_history": _get_decision_reopen_history,
     "get_value_profile": _get_value_profile,
     "get_value_engine_report": _get_value_engine_report,
+    "get_niche_commercial_profile": _get_niche_commercial_profile,
+    "get_monthly_market_evolution_report": _get_monthly_market_evolution_report,
+    "get_commercial_recommendations": _get_commercial_recommendations,
     "run_master_cycle": _run_master_cycle,
 }
 
