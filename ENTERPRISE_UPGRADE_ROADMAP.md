@@ -86,7 +86,7 @@ A real audit (not guessed) found this mission overlaps heavily with work already
 | Objective | Real status | Plan |
 |---|---|---|
 | 1. Service Supervisor | ☑ Built (Phase 1.1, `96ee731`) — restarts on crash, crash-loop guard, structured JSON event log | ◐ Gap: event log ≠ periodic health *report* — small addition |
-| 2. Health Checks | ☐ Only `/health` (API liveness) exists. No memory/CPU/disk/network checks anywhere | Building now — see 4.7 below |
+| 2. Health Checks | ☑ Real memory/CPU/disk/network/storage-integrity checks built, `f050414` — database/queue/worker honestly reported `not_applicable` | Done — see 4.7 |
 | 3. Automatic Recovery | ☑ Substantially built (Unified Recovery System, 2026-07-18) — real backoff, rollback, corrupted-state recovery, all tested | ◐ One disclosed gap: failed Groq/publish retries are counted, not yet auto-replayed |
 | 4. High Availability ("no single point of failure") | ⊘ Not buildable honestly at this stage — one Windows machine, one process, no redundant infrastructure exists or is appropriate pre-revenue | Document + modestly extend real graceful-degradation patterns already in place (Groq unreachable → honest `Unknown`, n8n down → real Telegram-direct fallback); true multi-machine HA stays gated on real scale (Phase 6/7) |
 | 5. Central Monitoring Dashboard | ◐ `dashboard.html` already shows real business health | Extend with new health-check + supervisor signals once built; "Queue/Worker status" reported honestly as N/A — neither exists |
@@ -97,7 +97,7 @@ A real audit (not guessed) found this mission overlaps heavily with work already
 
 | # | Finding | Severity | Status |
 |---|---|---|---|
-| 4.7 | No health checks beyond basic API liveness — no memory/CPU/disk/network monitoring anywhere | High | ☐ |
+| 4.7 | No health checks beyond basic API liveness — no memory/CPU/disk/network monitoring anywhere | High | ☑ commit `f050414` |
 | 4.8 | Supervisor produces crash/restart events, not a periodic structured health report | Low | ☐ |
 | 4.9 | No real network-interruption disaster-recovery simulation | Medium | ☐ |
 | 4.10 | Failed Groq/publish retries are counted and reported but not auto-replayed (disclosed scope limit from the 2026-07-18 Unified Recovery System) | Low | ☐ |
@@ -209,4 +209,4 @@ A real audit (not guessed) found this mission overlaps heavily with work already
 
 **Documented:** `CLAUDE.md`'s Executive Dashboard section now describes the extended `/health` shape and the honest `not_applicable` discipline.
 
-**Commit:** `[pending]`.
+**Commit:** `f050414`.
