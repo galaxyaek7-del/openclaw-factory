@@ -21,7 +21,7 @@
 
 | # | Finding | Severity | Status |
 |---|---|---|---|
-| 1.1 | No process supervisor — an unhandled exception silently kills the entire factory, nothing restarts it | Critical | ☑ commit `[pending]` |
+| 1.1 | No process supervisor — an unhandled exception silently kills the entire factory, nothing restarts it | Critical | ☑ commit `96ee731` |
 | 1.2 | No uptime monitoring or general-failure alerting — MTTD is unbounded | Critical | ⊘ Paused — founder redirected to the Enterprise Security & Cyber Defense Mission (2026-07-23) before 1.2 started. Not abandoned; resumes after the security mission's Phase 1 (audit) lands. |
 
 ## Phase 2 — Security
@@ -117,7 +117,7 @@ Rules, binding: no simulation, no fake security, no fake certificates/compliance
 
 **Documented:** `CLAUDE.md`'s "Running the project" section now describes the supervised-start option alongside the unchanged manual one.
 
-**Commit:** pending (this entry written just before commit).
+**Commit:** `96ee731`.
 
 ---
 
