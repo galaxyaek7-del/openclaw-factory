@@ -1082,6 +1082,51 @@ def _get_board_brief():
     return eb.get_latest_board_brief(niche)
 
 
+def _check_decision_reopen_trigger():
+    """Decision Re-open Trigger (2026-07-23): read-only -- would this
+    niche's board decision be reopened right now, given whatever real
+    alerts are already active? Never convenes a new meeting itself.
+    Reads its payload from sys.argv[2]:
+    `python mission_control_api.py check_decision_reopen_trigger '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import decision_reopen
+    return decision_reopen.check_for_reopen_trigger(niche)
+
+
+def _scan_and_maybe_reopen_decision():
+    """Decision Re-open Trigger (2026-07-23): the one real, on-demand,
+    do-everything entrypoint -- runs a real market-alert scan, then
+    reopens the board's decision for this niche ONLY if that scan finds
+    a materially new Critical alert (or 2+ new High alerts) since the
+    last real board meeting. Never reopens on speculation. Reads its
+    payload from sys.argv[2]:
+    `python mission_control_api.py scan_and_maybe_reopen_decision '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import decision_reopen
+    return decision_reopen.scan_and_maybe_reopen(niche)
+
+
+def _get_decision_reopen_history():
+    """Read-only -- the full real audit trail of every real reopen event
+    for one niche. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py get_decision_reopen_history '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import decision_reopen
+    return {"reopen_history": decision_reopen.get_reopen_history(niche)}
+
+
 def _run_master_cycle():
     """Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     -- the single real call that composes Executive Quality Gate + AI
@@ -1163,6 +1208,9 @@ _ENDPOINTS = {
     "get_board_brief": _get_board_brief,
     "scan_market_alerts": _scan_market_alerts,
     "get_market_alerts": _get_market_alerts,
+    "check_decision_reopen_trigger": _check_decision_reopen_trigger,
+    "scan_and_maybe_reopen_decision": _scan_and_maybe_reopen_decision,
+    "get_decision_reopen_history": _get_decision_reopen_history,
     "run_master_cycle": _run_master_cycle,
 }
 

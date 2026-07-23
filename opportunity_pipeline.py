@@ -45,6 +45,7 @@ import profit_oracle
 import business_dossier as bd
 import executive_board as eb
 import market_alerts
+import decision_reopen
 
 
 def _unknown(reason):
@@ -58,7 +59,7 @@ def _first_not_none(*values):
     return None
 
 
-def _annotate(decision, board_path=None, alerts_path=None):
+def _annotate(decision, board_path=None, alerts_path=None, reopen_log_path=None):
     snap = decision.get("evaluation_snapshot") or {}
     ladder_components = snap.get("components") or {}
     ai_ceo_scores = snap.get("scores") or {}
@@ -157,6 +158,11 @@ def _annotate(decision, board_path=None, alerts_path=None):
     # from a backlog listing.
     active_alerts = market_alerts.get_active_alerts(decision.get("niche"), alerts_path=alerts_path) if decision.get("niche") else None
 
+    # Decision Re-open Trigger (2026-07-23): the full real audit trail of
+    # every reopen event for this niche, if any -- same real, read-only
+    # connection as board_brief/active_alerts above.
+    reopen_history = decision_reopen.get_reopen_history(decision.get("niche"), reopen_log_path=reopen_log_path) if decision.get("niche") else None
+
     return {
         "niche": decision.get("niche"),
         "decision_id": decision.get("decision_id"),
@@ -205,6 +211,11 @@ def _annotate(decision, board_path=None, alerts_path=None):
         # scan has ever run. None (never fabricated) otherwise.
         "active_alerts": active_alerts,
 
+        # Decision Re-open Trigger (2026-07-23): [] when this niche has
+        # never been reopened (never fabricated as None-vs-empty-list
+        # confusion -- get_reopen_history() always returns a real list).
+        "reopen_history": reopen_history,
+
         # Additional real, already-computed context (not part of the
         # named fields, kept for transparency):
         "risk": snap.get("risk"),
@@ -213,7 +224,7 @@ def _annotate(decision, board_path=None, alerts_path=None):
     }
 
 
-def build_opportunity_pipeline(decisions_path=None, backlog_limit=100, board_path=None, alerts_path=None):
+def build_opportunity_pipeline(decisions_path=None, backlog_limit=100, board_path=None, alerts_path=None, reopen_log_path=None):
     """Product Laboratory = every real decision already ACCEPTED by the
     existing gate (never a new invented threshold). Backlog = everything
     else, capped at backlog_limit for a readable response -- the real
@@ -224,9 +235,11 @@ def build_opportunity_pipeline(decisions_path=None, backlog_limit=100, board_pat
     (Executive Board Integration, 2026-07-23), same convention as
     decisions_path -- omitting it reads the real default board_meetings.jsonl.
     alerts_path: same isolation convention for the active_alerts lookup
-    (Market Evidence & Alerting layer, 2026-07-23)."""
+    (Market Evidence & Alerting layer, 2026-07-23). reopen_log_path: same
+    isolation convention for the reopen_history lookup (Decision Re-open
+    Trigger, 2026-07-23)."""
     decisions = ranking.rank_all(path=decisions_path)
-    annotated = [_annotate(d, board_path=board_path, alerts_path=alerts_path) for d in decisions]
+    annotated = [_annotate(d, board_path=board_path, alerts_path=alerts_path, reopen_log_path=reopen_log_path) for d in decisions]
 
     product_laboratory = [a for a in annotated if a["status"] == "ACCEPTED"]
     backlog_all = [a for a in annotated if a["status"] != "ACCEPTED"]

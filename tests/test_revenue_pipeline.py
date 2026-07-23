@@ -220,10 +220,11 @@ class TestRunRevenuePipeline(unittest.TestCase):
         self.analysis_db_path = _temp_path()
         self.board_path = _temp_path()
         self.alerts_path = _temp_path()
+        self.reopen_log_path = _temp_path()
 
     def tearDown(self):
         for p in (self.decisions_path, self.timeline_path, self.outcomes_path, self.analysis_db_path,
-                  self.board_path, self.alerts_path):
+                  self.board_path, self.alerts_path, self.reopen_log_path):
             if os.path.exists(p):
                 os.remove(p)
 
@@ -237,7 +238,7 @@ class TestRunRevenuePipeline(unittest.TestCase):
         store.append_decision(d, path=self.decisions_path)
         result = pipeline.run_revenue_pipeline(
             decisions_path=self.decisions_path, outcomes_path=self.outcomes_path, timeline_path=self.timeline_path,
-            board_path=self.board_path, alerts_path=self.alerts_path,
+            board_path=self.board_path, alerts_path=self.alerts_path, reopen_log_path=self.reopen_log_path,
         )
         self.assertEqual(result["processed"], 1)
         self.assertFalse(result["results"][0]["executed"])
@@ -248,19 +249,30 @@ class TestRunRevenuePipeline(unittest.TestCase):
         store.append_decision(d, path=self.decisions_path)
         result = pipeline.run_revenue_pipeline(
             decisions_path=self.decisions_path, outcomes_path=self.outcomes_path, timeline_path=self.timeline_path,
-            board_path=self.board_path, alerts_path=self.alerts_path,
+            board_path=self.board_path, alerts_path=self.alerts_path, reopen_log_path=self.reopen_log_path,
         )
         r = result["results"][0]
         for key in ("production_plan", "quality_validation", "business_lifecycle",
-                    "time_to_market", "production_cost", "expected_roi", "board_brief", "active_alerts"):
+                    "time_to_market", "production_cost", "expected_roi", "board_brief", "active_alerts",
+                    "reopen_history"):
             self.assertIn(key, r)
+
+    def test_reopen_history_is_isolated_and_honestly_empty_with_no_real_reopen(self):
+        d = _accepted_decision()
+        store.append_decision(d, path=self.decisions_path)
+        result = pipeline.run_revenue_pipeline(
+            decisions_path=self.decisions_path, outcomes_path=self.outcomes_path, timeline_path=self.timeline_path,
+            board_path=self.board_path, alerts_path=self.alerts_path, reopen_log_path=self.reopen_log_path,
+        )
+        self.assertEqual(result["results"][0]["reopen_history"], [])
+        self.assertFalse(os.path.exists(self.reopen_log_path), "a read-only lookup must never create the reopen log")
 
     def test_active_alerts_is_isolated_and_honest_with_no_real_alerts(self):
         d = _accepted_decision()
         store.append_decision(d, path=self.decisions_path)
         result = pipeline.run_revenue_pipeline(
             decisions_path=self.decisions_path, outcomes_path=self.outcomes_path, timeline_path=self.timeline_path,
-            board_path=self.board_path, alerts_path=self.alerts_path,
+            board_path=self.board_path, alerts_path=self.alerts_path, reopen_log_path=self.reopen_log_path,
         )
         self.assertEqual(result["results"][0]["active_alerts"]["total"], 0)
         self.assertFalse(os.path.exists(self.alerts_path), "a read-only lookup must never create the alerts file")
@@ -273,7 +285,7 @@ class TestRunRevenuePipeline(unittest.TestCase):
         store.append_decision(d, path=self.decisions_path)
         result = pipeline.run_revenue_pipeline(
             decisions_path=self.decisions_path, outcomes_path=self.outcomes_path, timeline_path=self.timeline_path,
-            board_path=self.board_path, alerts_path=self.alerts_path,
+            board_path=self.board_path, alerts_path=self.alerts_path, reopen_log_path=self.reopen_log_path,
         )
         self.assertFalse(result["results"][0]["board_brief"]["has_meeting"])
         self.assertFalse(os.path.exists(self.board_path), "a read-only lookup must never create the board log")
@@ -299,7 +311,7 @@ class TestRunRevenuePipeline(unittest.TestCase):
         store.append_decision(d, path=self.decisions_path)
         pipeline.run_revenue_pipeline(
             execute=True, decisions_path=self.decisions_path, outcomes_path=self.outcomes_path,
-            timeline_path=self.timeline_path, analysis_db_file=self.analysis_db_path, board_path=self.board_path, alerts_path=self.alerts_path,
+            timeline_path=self.timeline_path, analysis_db_file=self.analysis_db_path, board_path=self.board_path, alerts_path=self.alerts_path, reopen_log_path=self.reopen_log_path,
         )
         self.assertTrue(mock_run_cycle.called)
         self.assertTrue(mock_run_cycle.call_args.kwargs["execute_production"])
@@ -320,7 +332,7 @@ class TestRunRevenuePipeline(unittest.TestCase):
         store.append_decision(d, path=self.decisions_path)
         pipeline.run_revenue_pipeline(
             execute=True, decisions_path=self.decisions_path, outcomes_path=self.outcomes_path,
-            timeline_path=self.timeline_path, analysis_db_file=self.analysis_db_path, board_path=self.board_path, alerts_path=self.alerts_path,
+            timeline_path=self.timeline_path, analysis_db_file=self.analysis_db_path, board_path=self.board_path, alerts_path=self.alerts_path, reopen_log_path=self.reopen_log_path,
         )
         self.assertTrue(mock_run_cycle.called)
         passed_decision = mock_run_cycle.call_args.kwargs.get("existing_decision")

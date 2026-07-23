@@ -312,4 +312,22 @@ Full findings and decisions: `ADR-093`. Founder-confirmed before building: exten
 
 **Commit:** `20f525e`.
 
-**Next in this mission:** Decision re-open trigger (deferred, founder-confirmed in ADR-094) is the one remaining piece from ADR-093's original scope.
+### 4.16 — Decision Re-open Trigger (2026-07-23)
+
+**Implemented:** New `decision_reopen.py`: `check_for_reopen_trigger()` (read-only, deterministic materiality rule — 1+ real Critical alert or 2+ real High alerts since the last board meeting, both from `market_alerts.py`, ADR-095), `execute_reopen()` (the only function that re-convenes the board — reuses `executive_board.convene_board()` directly, records one permanent event with timestamp/reason/previous decision/new evidence/confidence delta/new board outcome to `data/decision_reopens.jsonl`), `scan_and_maybe_reopen()` (the one real on-demand entrypoint), `get_reopen_history()` (read-only audit trail). `factory_orchestrator._build_spec()` made public (`build_spec()`) so this module reuses the exact same real decision→spec mapping rather than risking a second, diverging copy.
+
+**Real scoping finding:** a search into "connect to Decision Engine" found `decision_engine`'s `decision_outcomes.jsonl`/`Outcome` type is scoped specifically to real sales matched against decisions (`feedback.py`/`learning.py`'s prediction-accuracy math) — writing a "board reopened" event into that shape would misuse an already well-scoped structure and risk corrupting sale-outcome accuracy. The correct connection is read-only (`factory_orchestrator.find_decision()`/`build_spec()`), not a write.
+
+**Connected to the 5 named systems:** Executive Board (direct reuse of `convene_board()`), Mission Control (3 new actions: `check-decision-reopen-trigger`, `scan-and-maybe-reopen-decision`, `get-decision-reopen-history`), Decision Engine (read-only, see above), Opportunity Queue (`_annotate()` gains `reopen_history`), Revenue Engine (`process_opportunity()` gains `reopen_history`, informational only).
+
+**Audit trail / rollback, scoped honestly:** every reopen event is append-only; the previous board meeting is never mutated (verified byte-for-byte in the test suite). "Rollback" means the prior decision stays fully intact and readable — not undoing an already-executed real production/publish action, which this factory has no mechanism for and none was fabricated.
+
+**Tested:** 54 new tests — `tests/test_decision_reopen.py` (new, 21 tests), `tests/test_opportunity_pipeline.py` (+2), `tests/test_revenue_pipeline.py` (+1 plus isolation everywhere), `tests/test_master_cycle_production_e2e.py` (isolation added).
+
+**Verified:** highest-risk existing suites run first, then the full repository: Python 1141/1141 (up from 1117), Node 233/233 real tests (unchanged). All 7 live data files confirmed untouched.
+
+**Documented:** `ADR-096`.
+
+**Commit:** `[pending]`.
+
+**This closes the Live Competitive Intelligence mission (ADR-093) in full.** No further pieces are currently queued for this mission.

@@ -67,7 +67,7 @@ def _validate_quality(niche, production_output, production_plan):
 def process_opportunity(decision, execute=False, timeline_path=None, decisions_path=None,
                          analysis_db_file=None, outcomes_path=None, state_path=None,
                          competitor_db_file=None, ledger_path=None, competitor_history_file=None,
-                         board_path=None, alerts_path=None):
+                         board_path=None, alerts_path=None, reopen_log_path=None):
     """One ACCEPTED opportunity through the revenue pipeline. execute=False
     (default) never spends real money or publishes anything live — this
     only reuses orchestrator.run_cycle()'s own existing safety switch,
@@ -126,6 +126,11 @@ def process_opportunity(decision, execute=False, timeline_path=None, decisions_p
     import market_alerts
     active_alerts = market_alerts.get_active_alerts(decision["niche"], alerts_path=alerts_path)
 
+    # Decision Re-open Trigger (2026-07-23): same informational, read-only
+    # connection -- the full real reopen audit trail for this niche.
+    import decision_reopen
+    reopen_history = decision_reopen.get_reopen_history(decision["niche"], reopen_log_path=reopen_log_path)
+
     return {
         "niche": decision["niche"],
         "production_plan": production_plan,
@@ -136,6 +141,7 @@ def process_opportunity(decision, execute=False, timeline_path=None, decisions_p
         "expected_roi": roi,
         "board_brief": board_brief,
         "active_alerts": active_alerts,
+        "reopen_history": reopen_history,
         "executed": execute,
     }
 
@@ -143,7 +149,7 @@ def process_opportunity(decision, execute=False, timeline_path=None, decisions_p
 def run_revenue_pipeline(execute=False, timeline_path=None, decisions_path=None,
                           analysis_db_file=None, outcomes_path=None,
                           competitor_db_file=None, ledger_path=None, competitor_history_file=None,
-                          board_path=None, alerts_path=None):
+                          board_path=None, alerts_path=None, reopen_log_path=None):
     """Requirement 1: select ONLY accepted opportunities — reuses
     decision_engine.ranking.rank_queue() (ADR-050) directly, the exact
     same real, ranked, ACCEPTED-and-not-yet-executed queue every other
@@ -164,7 +170,7 @@ def run_revenue_pipeline(execute=False, timeline_path=None, decisions_path=None,
             analysis_db_file=analysis_db_file, outcomes_path=outcomes_path,
             competitor_db_file=competitor_db_file, ledger_path=ledger_path,
             competitor_history_file=competitor_history_file, board_path=board_path,
-            alerts_path=alerts_path,
+            alerts_path=alerts_path, reopen_log_path=reopen_log_path,
         )
         for d in accepted
     ]

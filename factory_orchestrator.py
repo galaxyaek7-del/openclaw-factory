@@ -33,10 +33,13 @@ import sys
 from datetime import datetime, timezone
 
 
-def _build_spec(decision):
+def build_spec(decision):
     """The exact spec shape already proven live via mission_control_api.py's
     3 separate gate endpoints -- reused here verbatim so all 3 gates see
-    identical real evidence, not 3 independently-built specs."""
+    identical real evidence, not 3 independently-built specs. Public
+    (not module-private) since decision_reopen.py (2026-07-23) needs this
+    exact same real decision->spec mapping to re-convene the board --
+    duplicating it there would risk the two ever silently diverging."""
     return {
         "niche": decision.get("niche"),
         "title": decision.get("niche"),
@@ -57,7 +60,8 @@ def find_decision(niche, decisions_path=None):
 def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=None,
                       timeline_path=None, analysis_db_file=None, outcomes_path=None,
                       state_path=None, board_path=None, competitor_db_file=None,
-                      ledger_path=None, competitor_history_file=None, alerts_path=None):
+                      ledger_path=None, competitor_history_file=None, alerts_path=None,
+                      reopen_log_path=None):
     """Runs the full real governance + production chain for ONE niche
     that already has a real ACCEPTED decision recorded. Returns a single
     unified result -- never raises for a missing decision (reports it
@@ -72,7 +76,11 @@ def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=No
     Evidence & Alerting layer, 2026-07-23): same sharing, for
     market_alerts.get_active_alerts() -- both eb.convene_board() (via its
     own strategic_brief) and revenue_pipeline.process_opportunity() read
-    the exact same real alerts ledger."""
+    the exact same real alerts ledger. reopen_log_path (Decision Re-open
+    Trigger, 2026-07-23): same isolation convention, threaded to
+    revenue_pipeline.process_opportunity()'s own read-only reopen_history
+    lookup -- this cycle itself never reopens a decision (that stays
+    decision_reopen.py's own, separately-invoked entrypoint)."""
     import executive_quality_gate as eqg
     import executive_board as eb
     from revenue_pipeline import pipeline as revenue_pipeline
@@ -86,7 +94,7 @@ def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=No
             "evaluated_at": datetime.now(timezone.utc).isoformat(),
         }
 
-    spec = _build_spec(decision)
+    spec = build_spec(decision)
 
     quality_gate = eqg.run_executive_quality_gate(spec)
     board_meeting = eb.convene_board(spec, decision_type="production", board_path=board_path, alerts_path=alerts_path)
@@ -102,7 +110,7 @@ def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=No
             analysis_db_file=analysis_db_file, outcomes_path=outcomes_path, state_path=state_path,
             competitor_db_file=competitor_db_file, ledger_path=ledger_path,
             competitor_history_file=competitor_history_file, board_path=board_path,
-            alerts_path=alerts_path,
+            alerts_path=alerts_path, reopen_log_path=reopen_log_path,
         )
     elif execute and board_blocks_production:
         production_result = {

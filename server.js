@@ -1265,6 +1265,51 @@ const ACTION_REGISTRY = [
     },
   },
   {
+    // Decision Re-open Trigger (2026-07-23) -- read-only: would this
+    // niche's board decision be reopened right now, given whatever real
+    // alerts are already active? Never convenes a new meeting.
+    name: 'check-decision-reopen-trigger',
+    description: 'Read-only: would this niche\'s board decision be reopened right now, given real alerts already active? Never convenes a new meeting.',
+    reused: 'decision_reopen.py::check_for_reopen_trigger()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('check-decision-reopen-trigger', 'check_decision_reopen_trigger', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    // Decision Re-open Trigger (2026-07-23) -- the one real, on-demand
+    // entrypoint: real alert scan, then reopens the board's decision for
+    // this niche ONLY if that scan finds a materially new Critical alert
+    // (or 2+ new High alerts) since the last real board meeting. Never
+    // reopens on speculation -- see decision_reopen.py's own docstring
+    // for the full deterministic rule.
+    name: 'scan-and-maybe-reopen-decision',
+    description: 'Real alert scan, then reopens this niche\'s board decision ONLY if materially warranted (1+ new Critical alert or 2+ new High alerts since the last meeting). Records a permanent reopen event with timestamp, reason, previous decision, new evidence, confidence delta, and the new board outcome.',
+    reused: 'decision_reopen.py::scan_and_maybe_reopen()',
+    reversible: true, // append-only reopen log + a new append-only board meeting; the previous meeting is never mutated
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('scan-and-maybe-reopen-decision', 'scan_and_maybe_reopen_decision', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    name: 'get-decision-reopen-history',
+    description: 'Read-only: the full real, permanent audit trail of every real reopen event for one niche.',
+    reused: 'decision_reopen.py::get_reopen_history()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('get-decision-reopen-history', 'get_decision_reopen_history', [JSON.stringify({ niche })]);
+    },
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +

@@ -35,15 +35,17 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
         self.decisions_path = _temp_path()
         self.board_path = _temp_path()
         self.alerts_path = _temp_path()
+        self.reopen_log_path = _temp_path()
 
     def _pipeline(self, **kwargs):
         kwargs.setdefault("decisions_path", self.decisions_path)
         kwargs.setdefault("board_path", self.board_path)
         kwargs.setdefault("alerts_path", self.alerts_path)
+        kwargs.setdefault("reopen_log_path", self.reopen_log_path)
         return op.build_opportunity_pipeline(**kwargs)
 
     def tearDown(self):
-        for p in (self.board_path, self.alerts_path, self.decisions_path):
+        for p in (self.board_path, self.alerts_path, self.reopen_log_path, self.decisions_path):
             if os.path.exists(p):
                 os.remove(p)
 
@@ -268,6 +270,29 @@ class TestBuildOpportunityPipeline(unittest.TestCase):
         entry = result["product_laboratory"][0]
         self.assertEqual(entry["active_alerts"]["total"], 1)
         self.assertEqual(entry["active_alerts"]["by_severity_counts"]["High"], 1)
+
+    def test_reopen_history_is_honestly_empty_list_with_no_real_reopen(self):
+        """Decision Re-open Trigger (2026-07-23): read-only lookup,
+        isolated to reopen_log_path -- [] never fabricated, never a read
+        against the live default decision_reopens.jsonl."""
+        self._record("a niche never reopened", "kdp_books", accepted=True, score=70.0, price=97)
+        result = self._pipeline()
+        entry = result["product_laboratory"][0]
+        self.assertEqual(entry["reopen_history"], [])
+
+    def test_reopen_history_surfaces_a_real_recorded_reopen(self):
+        import json
+        self._record("a niche with a real reopen", "kdp_books", accepted=True, score=70.0, price=97)
+        event = {
+            "niche": "a niche with a real reopen", "reopened_at": "2026-07-23T00:00:00+00:00",
+            "reason": "test", "confidence_delta": 0.3, "decision_changed": True,
+        }
+        with open(self.reopen_log_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(event) + "\n")
+        result = self._pipeline()
+        entry = result["product_laboratory"][0]
+        self.assertEqual(len(entry["reopen_history"]), 1)
+        self.assertEqual(entry["reopen_history"][0]["reason"], "test")
 
     def test_latest_decision_per_niche_only_not_full_history(self):
         self._record("evolving niche", "kdp_books", accepted=False, score=30.0, price=10)
