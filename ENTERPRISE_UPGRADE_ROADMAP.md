@@ -30,7 +30,7 @@
 
 | # | Finding | Severity | Status |
 |---|---|---|---|
-| 2.1 | Most API routes have zero authentication (~15+ routes, including real LLM spend and financial data) — `POST /api/agent/:name` specifically confirmed as an unauthenticated, unmetered direct proxy to the founder's paid Groq API key | Critical | ☐ |
+| 2.1 | Most API routes have zero authentication (~15+ routes, including real LLM spend and financial data) — `POST /api/agent/:name` specifically confirmed as an unauthenticated, unmetered direct proxy to the founder's paid Groq API key | Critical | ☑ commit `489c4bd` |
 | 2.2 | CORS fully open, no origin allowlist | High (compounds 2.1) | ☐ |
 | 2.3 | Mission Control password check is not timing-safe; no brute-force/rate-limit protection on login | Low | ☐ |
 | 2.4 | No TLS/HTTPS anywhere (acceptable while `BIND_HOST=127.0.0.1`, real gap the moment that changes) | Medium (conditional) | ☐ |
@@ -53,7 +53,7 @@ Rules, binding: no simulation, no fake security, no fake certificates/compliance
 | Sub-phase | Scope | Status |
 |---|---|---|
 | Security Audit | Secrets, API keys, env vars, tokens, auth, authz, session mgmt, file permissions, dangerous subprocess use, command injection, path traversal, XSS, CSRF, SQLi, prompt injection, dependency/package/supply-chain risk, unsafe Python, unsafe JS, RCE risk — every finding with severity, impact, evidence, file, root cause, repair | ☑ Complete — [report](https://claude.ai/code/artifact/7cf11021-9fb4-4d3f-8c4c-36eb7e896872), findings 2.1, 2.6–2.13 above |
-| Security Architecture | Security Engine, Secret Manager, Permission Manager, Identity Manager, Access Controller, Security Policy Engine, Audit Logger, Incident Response, Security Dashboard, Threat Intelligence — real modules, only for gaps the audit actually proves exist | ☐ Ready to start — ordered by 2.1 → 2.6/2.13 → 2.7/2.9 → 2.8/2.3/2.11/2.12 |
+| Security Architecture | Security Engine, Secret Manager, Permission Manager, Identity Manager, Access Controller, Security Policy Engine, Audit Logger, Incident Response, Security Dashboard, Threat Intelligence — real modules, only for gaps the audit actually proves exist | ◐ 2.1, 2.6, 2.13 done (`14190a4`, `489c4bd`) — 2.7 (XSS) and 2.9 (shell-escaping) next, then 2.8/2.3/2.11/2.12 |
 | Hardening | Rate limiting, input validation, output sanitization, secure defaults, least privilege, token expiration, encrypted secrets, secure config, dependency verification, automatic vuln scanning | ☐ Blocked on Architecture |
 | Attack Simulation | Controlled, real attempts against API/Mission Control/Publishing/Automation/Executive Board/Discovery/Revenue/Market Hunter — a real pass/fail report | ☐ Blocked on Hardening |
 | Continuous Security | Security/Threat/Dependency/Supply-chain/Code review gates every future feature must pass before production | ☐ Blocked on Attack Simulation |
@@ -166,7 +166,7 @@ Rules, binding: no simulation, no fake security, no fake certificates/compliance
 
 **Documented:** `CLAUDE.md` (the `/api/agent/:name` section, the env-var footnote); `n8n_workflows/README.md` (the 2 real remaining manual steps); this entry.
 
-**Commit:** `[pending]`.
+**Commit:** `489c4bd`.
 
 ---
 
