@@ -38,7 +38,7 @@
 | 2.6 | Pillow 12.2.0 has 10 real, published CVEs (found in Phase 1 Security Audit) | High | ☑ commit `14190a4` |
 | 2.7 | Real, confirmed XSS: `index.html:685` interpolates `${b.title}` into `innerHTML` with zero escaping — reachable via the manual book-title form field (self-contained) and via Scout/Pioneer's externally-sourced niche titles (Hacker News, attacker-postable) | High | ☑ commit `780f856` |
 | 2.8 | `.env`/`data/decisions.jsonl`/`finance_data.json` carry permissive, inherited default Windows ACLs (readable by `Users`, writable by `Authenticated Users`) — low real risk today (single enabled account on this machine) but no owner-only restriction exists | Medium | ☐ |
-| 2.9 | `factory_loop.js`'s `sendDesktopNotification()` has an incomplete shell-escaping boundary (escapes single quotes, embedded in a double-quoted PowerShell argument) — real defect, full exploit-chain not traced | Medium | ☑ commit `[pending]` |
+| 2.9 | `factory_loop.js`'s `sendDesktopNotification()` has an incomplete shell-escaping boundary (escapes single quotes, embedded in a double-quoted PowerShell argument) — real defect, full exploit-chain not traced | Medium | ☑ commit `04664a2` |
 | 2.10 | LLM prompt construction interpolates niche/title text with no delimiter between instruction and data, repeated across 4 `groq_chat()` call sites — bounded by strict output-format parsing + Dual Inspection | Medium | ☐ |
 | 2.11 | Logout doesn't revoke sessions server-side (stateless tokens valid until natural 12h expiry or a server restart) | Low | ☐ |
 | 2.12 | No explicit CSRF token — protection is entirely implicit (SameSite=Lax + confirmed absence of any state-mutating GET route), real and sufficient today but no dedicated layer to catch a future mistake | Low | ☐ |
@@ -264,7 +264,7 @@ Picked up after the Live Competitive Intelligence mission closed (ADR-096) and r
 
 **Documented:** `ADR-099`.
 
-**Commit:** `[pending]`.
+**Commit:** `04664a2`.
 
 ---
 
