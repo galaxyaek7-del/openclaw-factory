@@ -62,7 +62,7 @@ Rules, binding: no simulation, no fake security, no fake certificates/compliance
 
 | # | Finding | Severity | Status |
 |---|---|---|---|
-| 3.1 | Zero compliance documentation — no ToS, no Privacy Policy anywhere | Critical | ☐ |
+| 3.1 | Zero compliance documentation — no ToS, no Privacy Policy anywhere | Critical | ◐ Draft ToS/Privacy Policy/Refund Policy built (`eb5f7b4`, `trust/`) — explicitly labeled drafts, real lawyer review still required before they're final |
 | 3.2 | No data classification scheme (public/internal/confidential) | Low (no real PII exists yet) | ☐ |
 | 3.3 | No write-time integrity/tamper detection on `data/decisions.jsonl` beyond git history | Low | ☐ |
 
@@ -107,8 +107,8 @@ A real audit (not guessed) found this mission overlaps heavily with work already
 | # | Finding | Severity | Status |
 |---|---|---|---|
 | 5.1 | Zero completed live transactions on any channel — Gumroad has no working token, Paddle blocked on its own onboarding gate | Critical | ☐ |
-| 5.2 | No customer trust signals anywhere — no SLA, `security.txt`, responsible-disclosure policy, or status page | Critical | ◐ Trust Center + Security/Responsible AI/Incident Disclosure policies + real contact point built, `[pending]` — no SLA/status page yet (premature at zero real customers) |
-| 5.3 | No support channel or refund policy documented | High | ◐ Real contact point + a Refund Policy **draft** built, `[pending]` — needs lawyer review before being final |
+| 5.2 | No customer trust signals anywhere — no SLA, `security.txt`, responsible-disclosure policy, or status page | Critical | ◐ Trust Center + Security/Responsible AI/Incident Disclosure policies + real contact point built, `eb5f7b4` — no SLA/status page yet (premature at zero real customers) |
+| 5.3 | No support channel or refund policy documented | High | ◐ Real contact point + a Refund Policy **draft** built, `eb5f7b4` — needs lawyer review before being final |
 | 5.4 | No bookkeeping/financial system (triggers the moment a first real sale closes) | Critical, but gated on 5.1 | ☐ |
 | 5.5 | Market intelligence runs on ~4–6 of 11 intended real data sources | High | ☐ |
 | 5.6 | Single-vendor, single-model LLM dependency with no fallback; two divergent LLM call implementations | High | ☐ |
@@ -133,7 +133,7 @@ A real search before building anything found two direct duplication risks and on
 
 | # | Finding | Severity | Status |
 |---|---|---|---|
-| 5.7 | Trust Center + 6 real policy pages built (3 honest disclosures, 3 lawyer-review-pending drafts) | — | ☐ |
+| 5.7 | Trust Center + 6 real policy pages built (3 honest disclosures, 3 lawyer-review-pending drafts) | — | ☑ commit `eb5f7b4` |
 | 5.8 | Product Catalog / Pricing Engine — a real view over existing `product_families`/`economics.json` data, not a rebuild | — | ☐ Queued next |
 
 ## Phase 6 — Enterprise Scale
