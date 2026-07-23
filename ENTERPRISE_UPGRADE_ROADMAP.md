@@ -270,6 +270,6 @@ Full findings and decisions: `ADR-093`. Founder-confirmed before building: exten
 
 **Documented:** `ADR-093`.
 
-**Commit:** `[pending]`.
+**Commit:** `6d30438`.
 
 **Next in this mission:** Threat Engine (3 real dimensions + honest `Unknown` for the other 5), Executive Board competitor-brief integration + decision re-open trigger, `market_evidence.py` extension for the 9 non-auto-detectable event types, alerting — each a separate, sequenced piece.
