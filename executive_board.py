@@ -252,7 +252,8 @@ def _real_production_cost_estimate():
     return plan_module.estimate_production_cost()
 
 
-def build_strategic_brief(spec, readiness_result, risk_intel, alerts_path=None):
+def build_strategic_brief(spec, readiness_result, risk_intel, alerts_path=None, board_path=None,
+                           decisions_path=None, reopen_log_path=None, evidence_path=None):
     """The 6 lenses (Threat Assessment, Opportunity Assessment, Market
     Intelligence, Financial Impact, Technical Risk, Customer Trust
     Impact) every executive decision must automatically include. Every
@@ -264,9 +265,18 @@ def build_strategic_brief(spec, readiness_result, risk_intel, alerts_path=None):
     lens also carries active_alerts -- a real, read-only lookup of
     market_alerts.get_active_alerts() for this niche. Never triggers a
     new alert scan itself; only mission_control_api.py's dedicated scan
-    action does that."""
+    action does that.
+
+    Value Engine (2026-07-23): also attaches value_assessment -- the
+    real per-niche synthesis (Priority Score, Expected ROI, Strategic
+    Value, cost/lifetime-value estimates, Recommendation) from
+    value_engine.compute_value_profile(), reused directly. Honestly
+    None (never fabricated) when this niche has no real ACCEPTED
+    decision on record yet -- a full investment profile for a
+    not-yet-accepted opportunity would be premature."""
     import enterprise_readiness as er
     import market_alerts
+    import value_engine
 
     snapshot = spec.get("evaluation_snapshot") or {}
     product_review = readiness_result.get("product_review", {})
@@ -317,6 +327,14 @@ def build_strategic_brief(spec, readiness_result, risk_intel, alerts_path=None):
         "evidence_coverage": er.compute_evidence_score(gate_result),
     }
 
+    value_assessment = (
+        value_engine.compute_value_profile(
+            spec["niche"], decisions_path=decisions_path, board_path=board_path,
+            alerts_path=alerts_path, reopen_log_path=reopen_log_path, evidence_path=evidence_path,
+        )
+        if spec.get("niche") else None
+    )
+
     return {
         "threat_assessment": threat_assessment,
         "opportunity_assessment": opportunity_assessment,
@@ -324,6 +342,7 @@ def build_strategic_brief(spec, readiness_result, risk_intel, alerts_path=None):
         "financial_impact": financial_impact,
         "technical_risk": technical_risk,
         "customer_trust_impact": customer_trust_impact,
+        "value_assessment": value_assessment,
     }
 
 
@@ -402,7 +421,8 @@ def _write_meeting(meeting, board_path=None):
         f.write(json.dumps(meeting, ensure_ascii=False, default=str) + "\n")
 
 
-def convene_board(spec, decision_type="production", include_risk_intelligence=True, board_path=None, alerts_path=None):
+def convene_board(spec, decision_type="production", include_risk_intelligence=True, board_path=None, alerts_path=None,
+                   decisions_path=None, reopen_log_path=None, evidence_path=None):
     """The ONLY function in this module that produces a real board
     decision -- no individual executive function above is ever wired as
     a standalone approval path, enforcing "no single agent may approve
@@ -419,7 +439,11 @@ def convene_board(spec, decision_type="production", include_risk_intelligence=Tr
     never makes a live network call unless refresh_competitors=True is
     separately, explicitly requested (it isn't, here); it only reads
     already-cached local data. Pass False to skip it (e.g. a fast, cheap
-    board simulation with no niche yet)."""
+    board simulation with no niche yet).
+
+    decisions_path/reopen_log_path/evidence_path (Value Engine,
+    2026-07-23): test-isolation overrides for the new value_assessment
+    lens's own real lookups (value_engine.compute_value_profile())."""
     if decision_type not in DECISION_TYPES:
         raise ValueError(f"decision_type must be one of {DECISION_TYPES}, got {decision_type!r}")
 
@@ -449,7 +473,10 @@ def convene_board(spec, decision_type="production", include_risk_intelligence=Tr
     ]
 
     tally = _tally(executives, decision_type)
-    strategic_brief = build_strategic_brief(spec, readiness_result, risk_intel, alerts_path=alerts_path)
+    strategic_brief = build_strategic_brief(
+        spec, readiness_result, risk_intel, alerts_path=alerts_path, board_path=board_path,
+        decisions_path=decisions_path, reopen_log_path=reopen_log_path, evidence_path=evidence_path,
+    )
     decision_summary = build_decision_summary(executives, tally)
 
     meeting = {

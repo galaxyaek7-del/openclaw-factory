@@ -413,3 +413,23 @@ Full findings and decisions: `ADR-093`. Founder-confirmed before building: exten
 **Commit:** `2b6f434`.
 
 **This closes the Live Competitive Intelligence mission (ADR-093) in full.** No further pieces are currently queued for this mission.
+
+## OpenClaw Value Engine Mission (founder directive, 2026-07-23)
+
+Full findings and decisions: `ADR-102`. Founder-confirmed before building: a real search mapped all 17 requested value dimensions against the existing codebase first — 6 already real (reused verbatim from `profit_oracle.py`), 4 partially real (`strategic_investment_layer()`), 5 genuinely new but 100% evidence-grounded synthesis (knowledge accumulation, synergy, bundle potential, upgrade potential — real counts/comparisons over already-computed data, never fabricated), 3 with zero real data source anywhere in this factory (expected customer value, lifetime revenue potential, brand-building impact) — reported as honest `Unknown`, never estimated. "Retirement of weak products" has no real sales-performance data to justify it yet (the same gap `dossier_bundle.py` already discloses) — built as a real, evidence-grounded **at-risk signal** from existing governance data instead, explicitly never a retirement verdict.
+
+### 4.17 — The OpenClaw Value Engine (2026-07-23)
+
+**Implemented:** new `value_engine.py` — `compute_value_profile(niche, ...)` (the real per-opportunity synthesis: all 17 dimensions, a real at-risk signal, and the 7-field Executive-Board summary — Priority Score, Expected ROI, Strategic Value, Estimated Build/Maintenance Cost, Estimated Lifetime Value, Recommendation) and `build_value_engine_report(...)` (the real, whole-portfolio resource-allocation view, every real ACCEPTED opportunity ranked by real Priority Score descending). Priority Score is a real, transparent average of `decision_engine`'s own existing `opportunity_score` (unchanged, still the sole real acceptance gate) and a new Strategic Value composite (informational only, never blended into `profit_score`/`ladder_score`/`accepted`). `opportunity_pipeline._annotate()` made public as `annotate_decision()` for reuse.
+
+**Connected to the 6 named systems:** Executive Board (`build_strategic_brief()` gains `value_assessment`), Opportunity Intelligence (one-directional reuse of `opportunity_pipeline.py`), Threat Intelligence (reused via already-threaded `active_alerts`), Market Evidence (reused via `summarize_niche()`), Mission Control (2 new actions: `get-value-profile`, `get-value-engine-report`), Revenue Engine (`process_opportunity()` gains `value_profile`, reuses the already-computed cost result rather than a second call).
+
+**Tested:** 36 new tests (`tests/test_value_engine.py`) — every pure helper isolated, plus real integration tests via `decision_engine.engine.record_ladder_decision()` (non-ACCEPTED/nonexistent → honest `None`, all 17 dimensions present, the 3 no-real-source dimensions always `Unknown`, real sibling/bundle counting, a real persisted board rejection correctly flagged at-risk, a real 2-opportunity portfolio correctly ranked).
+
+**Verified:** highest-risk existing suites run first (306+23 tests), then the full repository: Python 1177/1177 (up from 1141), Node 272/272 real tests (unchanged — Python-only piece). All live data files confirmed untouched.
+
+**Documented:** `ADR-102`.
+
+**Commit:** `[pending]`.
+
+**Deliberately not built:** no new resource-allocation execution mechanism — the ranked report is the real allocation signal; a human still decides what to act on, matching this factory's own standing "no scheduler" architecture.

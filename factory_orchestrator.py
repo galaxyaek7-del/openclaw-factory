@@ -61,7 +61,7 @@ def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=No
                       timeline_path=None, analysis_db_file=None, outcomes_path=None,
                       state_path=None, board_path=None, competitor_db_file=None,
                       ledger_path=None, competitor_history_file=None, alerts_path=None,
-                      reopen_log_path=None):
+                      reopen_log_path=None, evidence_path=None):
     """Runs the full real governance + production chain for ONE niche
     that already has a real ACCEPTED decision recorded. Returns a single
     unified result -- never raises for a missing decision (reports it
@@ -97,7 +97,10 @@ def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=No
     spec = build_spec(decision)
 
     quality_gate = eqg.run_executive_quality_gate(spec)
-    board_meeting = eb.convene_board(spec, decision_type="production", board_path=board_path, alerts_path=alerts_path)
+    board_meeting = eb.convene_board(
+        spec, decision_type="production", board_path=board_path, alerts_path=alerts_path,
+        decisions_path=decisions_path, reopen_log_path=reopen_log_path, evidence_path=evidence_path,
+    )
 
     board_blocks_production = (
         not advisory_only and board_meeting["tally"]["board_decision"] != "APPROVED"
@@ -110,7 +113,7 @@ def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=No
             analysis_db_file=analysis_db_file, outcomes_path=outcomes_path, state_path=state_path,
             competitor_db_file=competitor_db_file, ledger_path=ledger_path,
             competitor_history_file=competitor_history_file, board_path=board_path,
-            alerts_path=alerts_path, reopen_log_path=reopen_log_path,
+            alerts_path=alerts_path, reopen_log_path=reopen_log_path, evidence_path=evidence_path,
         )
     elif execute and board_blocks_production:
         production_result = {

@@ -59,7 +59,13 @@ def _first_not_none(*values):
     return None
 
 
-def _annotate(decision, board_path=None, alerts_path=None, reopen_log_path=None):
+def annotate_decision(decision, board_path=None, alerts_path=None, reopen_log_path=None):
+    """Public (not module-private) since value_engine.py (2026-07-23)
+    needs this exact same real per-decision annotation for a single
+    niche, not just the full-batch view build_opportunity_pipeline()
+    below already provides -- reused directly rather than risking a
+    second, diverging copy (same reasoning as factory_orchestrator.
+    build_spec()'s own privateto-public move, ADR-096)."""
     snap = decision.get("evaluation_snapshot") or {}
     ladder_components = snap.get("components") or {}
     ai_ceo_scores = snap.get("scores") or {}
@@ -239,7 +245,7 @@ def build_opportunity_pipeline(decisions_path=None, backlog_limit=100, board_pat
     isolation convention for the reopen_history lookup (Decision Re-open
     Trigger, 2026-07-23)."""
     decisions = ranking.rank_all(path=decisions_path)
-    annotated = [_annotate(d, board_path=board_path, alerts_path=alerts_path, reopen_log_path=reopen_log_path) for d in decisions]
+    annotated = [annotate_decision(d, board_path=board_path, alerts_path=alerts_path, reopen_log_path=reopen_log_path) for d in decisions]
 
     product_laboratory = [a for a in annotated if a["status"] == "ACCEPTED"]
     backlog_all = [a for a in annotated if a["status"] != "ACCEPTED"]

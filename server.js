@@ -1344,6 +1344,34 @@ const ACTION_REGISTRY = [
     },
   },
   {
+    // OpenClaw Value Engine (2026-07-23) -- read-only per-niche synthesis:
+    // Priority Score, Expected ROI, Strategic Value, cost/lifetime-value
+    // estimates, Recommendation, and all 17 requested dimensions. Reuses
+    // opportunity_pipeline.py/revenue_pipeline/plan.py/market_evidence.py
+    // directly -- never a second, competing scoring system.
+    name: 'get-value-profile',
+    description: 'Read-only: the real Value Engine profile for one niche (Priority Score, Expected ROI, Strategic Value, Estimated Build/Maintenance Cost, Estimated Lifetime Value, Recommendation, and all 17 requested dimensions). Null when the niche has no real ACCEPTED decision.',
+    reused: 'value_engine.py::compute_value_profile()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('get-value-profile', 'get_value_profile', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    // OpenClaw Value Engine (2026-07-23) -- the real, automatic resource-
+    // allocation output: every real ACCEPTED opportunity, ranked by real
+    // Priority Score descending.
+    name: 'get-value-engine-report',
+    description: 'Read-only: every real ACCEPTED opportunity (Product Laboratory), each with a full Value Engine profile, ranked by real Priority Score descending -- the real resource-allocation view.',
+    reused: 'value_engine.py::build_value_engine_report()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: () => runPythonActionAsync('get-value-engine-report', 'get_value_engine_report', []),
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +

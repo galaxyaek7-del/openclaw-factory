@@ -1127,6 +1127,31 @@ def _get_decision_reopen_history():
     return {"reopen_history": decision_reopen.get_reopen_history(niche)}
 
 
+def _get_value_profile():
+    """Value Engine (2026-07-23): the real per-niche synthesis (Priority
+    Score, Expected ROI, Strategic Value, cost/lifetime-value estimates,
+    Recommendation, and all 17 requested dimensions). Honest null when
+    this niche has no real ACCEPTED decision on record. Reads its
+    payload from sys.argv[2]:
+    `python mission_control_api.py get_value_profile '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import value_engine
+    return {"value_profile": value_engine.compute_value_profile(niche)}
+
+
+def _get_value_engine_report():
+    """Value Engine (2026-07-23): the real, whole-portfolio resource-
+    allocation report — every real ACCEPTED opportunity, ranked by real
+    Priority Score descending. No payload required:
+    `python mission_control_api.py get_value_engine_report`"""
+    import value_engine
+    return value_engine.build_value_engine_report()
+
+
 def _run_master_cycle():
     """Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     -- the single real call that composes Executive Quality Gate + AI
@@ -1211,6 +1236,8 @@ _ENDPOINTS = {
     "check_decision_reopen_trigger": _check_decision_reopen_trigger,
     "scan_and_maybe_reopen_decision": _scan_and_maybe_reopen_decision,
     "get_decision_reopen_history": _get_decision_reopen_history,
+    "get_value_profile": _get_value_profile,
+    "get_value_engine_report": _get_value_engine_report,
     "run_master_cycle": _run_master_cycle,
 }
 
