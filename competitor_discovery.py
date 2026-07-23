@@ -50,6 +50,16 @@ for _stream in (sys.stdin, sys.stdout, sys.stderr):
 
 FACTORY_DIR = os.path.dirname(os.path.abspath(__file__))
 COMPETITOR_DB_FILE = os.path.join(FACTORY_DIR, 'data', 'competitor_database.json')
+# Live Competitive Intelligence Layer (2026-07-23, founder directive):
+# real historical tracking. Before this, save_database() overwrote each
+# niche's ONE cached snapshot on every refresh -- no prior state ever
+# survived to diff against, which is exactly the gap
+# enterprise_readiness.py's own run_risk_intelligence_scan() already
+# disclosed ("pricing_changes... needs repeated real runs to compare").
+# Append-only, same convention as every other *.jsonl ledger in this
+# factory -- never overwritten, so a real trend can be computed later
+# from more than the current + immediately-prior snapshot if needed.
+COMPETITOR_HISTORY_FILE = os.path.join(FACTORY_DIR, 'data', 'competitor_history.jsonl')
 MAX_AGE_DAYS_DEFAULT = 7  # "don't redo the full search unless needed" — a real, tunable freshness window
 
 HN_SEARCH_URL = "https://hn.algolia.com/api/v1/search_by_date"
@@ -186,6 +196,64 @@ def gather_real_metrics(hit, source):
     return metrics
 
 
+# Live Competitive Intelligence Layer (2026-07-23): a real comparison
+# between two real, previously-computed snapshots for the same niche --
+# never fabricates a trend from a single data point. Matched by
+# competitor name (the same real identity field discover_competitors()
+# already uses) -- pure, no I/O, independently unit-testable with
+# fixture data.
+def diff_competitor_snapshots(old_snapshot, new_snapshot):
+    if not old_snapshot:
+        return {
+            "has_history": False,
+            "new_competitors": [],
+            "disappeared_competitors": [],
+            "growth_signals": [],
+            "note": "لا لقطة سابقة لهذا النيتش — هذا أول رصد حقيقي، لا مقارنة ممكنة بعد",
+        }
+
+    old_by_name = {c["name"]: c for c in (old_snapshot.get("competitors") or [])}
+    new_by_name = {c["name"]: c for c in (new_snapshot.get("competitors") or [])}
+
+    new_names = set(new_by_name) - set(old_by_name)
+    gone_names = set(old_by_name) - set(new_by_name)
+    shared_names = set(new_by_name) & set(old_by_name)
+
+    growth_signals = []
+    for name in shared_names:
+        old_metrics = old_by_name[name].get("metrics") or {}
+        new_metrics = new_by_name[name].get("metrics") or {}
+        for metric_key in ("github_stars", "hacker_news_points"):
+            old_value, new_value = old_metrics.get(metric_key), new_metrics.get(metric_key)
+            if isinstance(old_value, (int, float)) and isinstance(new_value, (int, float)) and new_value > old_value:
+                growth_signals.append({
+                    "name": name, "metric": metric_key, "from": old_value, "to": new_value,
+                    "note": f"نمو حقيقي في {metric_key}: {old_value} → {new_value}",
+                })
+
+    return {
+        "has_history": True,
+        "compared_at": new_snapshot.get("discovered_at"),
+        "previous_discovered_at": old_snapshot.get("discovered_at"),
+        "new_competitors": [new_by_name[n] for n in sorted(new_names)],
+        "disappeared_competitors": [old_by_name[n] for n in sorted(gone_names)],
+        "growth_signals": growth_signals,
+    }
+
+
+def _append_history(snapshot, history_file=None):
+    """Best-effort, append-only — a failed history write must never block
+    the real refresh it's recording, same discipline as every other
+    non-critical ledger write in this factory."""
+    history_file = history_file or COMPETITOR_HISTORY_FILE
+    try:
+        os.makedirs(os.path.dirname(history_file), exist_ok=True)
+        with open(history_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(snapshot, ensure_ascii=False) + '\n')
+    except OSError as e:
+        print(f"[competitor_discovery] history write failed: {e}")
+
+
 def compute_opportunity_gap(demand_score, competition_score):
     """Honest derivation from two already-real/estimated components
     (profit_oracle.py's demand/competition, ADR-038/041) — not a new
@@ -206,6 +274,17 @@ def discover_competitors(niche, max_results=10):
             "name": hit.get('title') or hit.get('full_name') or hit.get('name') or 'unknown',
             "url": hit.get('url') or hit.get('html_url'),
             "source": source,
+            # Live Competitive Intelligence Layer (2026-07-23): real,
+            # 100%-verifiable fact straight from which API the hit came
+            # from -- not a heuristic. Closes "identify open-source
+            # substitutes" from the real Competitor Discovery request.
+            # "Bundled platform alternative" (the 6th requested type) is
+            # deliberately NOT tagged here -- no real signal in either
+            # API's response distinguishes "this is a feature of a
+            # larger platform" from a standalone product, and guessing
+            # would be exactly the fabricated classification this
+            # module's own docstring already refuses to do.
+            "is_open_source": source == "github",
             "category": category,
             "category_reason": reason,
             "metrics": gather_real_metrics(hit, source),
@@ -251,9 +330,21 @@ def _normalize_key(niche):
     return re.sub(r'\s+', ' ', niche.strip().lower())
 
 
-def get_or_refresh_competitors(niche, max_age_days=MAX_AGE_DAYS_DEFAULT, force=False, db_file=None, max_results=10):
+def get_or_refresh_competitors(niche, max_age_days=MAX_AGE_DAYS_DEFAULT, force=False, db_file=None, max_results=10, history_file=None):
     """The actual caching decision: real, stored data is reused until it's
-    genuinely stale, instead of re-querying live APIs on every call."""
+    genuinely stale, instead of re-querying live APIs on every call.
+
+    Live Competitive Intelligence Layer (2026-07-23): every real refresh
+    (never a cache hit) now also computes a real diff against whatever
+    snapshot it's about to replace, and preserves that outgoing snapshot
+    in COMPETITOR_HISTORY_FILE first — closing the exact gap
+    enterprise_readiness.py's own risk-intelligence scan already
+    disclosed ("needs repeated real runs to compare"). history_file
+    mirrors db_file's own test-isolation convention (omitting it uses
+    the real default; tests always override it) — the same real bug
+    class this factory already found once this session in
+    market_hunter.py's decisions_path, applied here from the start
+    rather than discovered later."""
     db = load_database(db_file)
     key = _normalize_key(niche)
     existing = db.get(key)
@@ -266,6 +357,9 @@ def get_or_refresh_competitors(niche, max_age_days=MAX_AGE_DAYS_DEFAULT, force=F
 
     result = discover_competitors(niche, max_results=max_results)
     result['_cache'] = {"hit": False, "age_days": 0}
+    result['changes'] = diff_competitor_snapshots(existing, result)
+    if existing:
+        _append_history(existing, history_file)
     db[key] = result
     save_database(db, db_file)
     return result

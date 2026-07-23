@@ -61,7 +61,7 @@ def make_idempotency_key(stage_name, niche, tier):
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
 
 
-def _enrich_with_real_competition(niche, external_signal, max_results, competitor_db_file=None):
+def _enrich_with_real_competition(niche, external_signal, max_results, competitor_db_file=None, competitor_history_file=None):
     """ADR-057: closes a real, long-documented gap (BLOCKERS.md #4) —
     profit_oracle._score_competition() already accepts a real
     external_signal['competition']['related_results_count'] (ADR-041),
@@ -70,10 +70,18 @@ def _enrich_with_real_competition(niche, external_signal, max_results, competito
     Purely additive to whatever demand-shaped external_signal the caller
     already provided; never overwrites it, never fabricates a count —
     any competitor_discovery failure degrades to the original
-    external_signal completely unchanged."""
+    external_signal completely unchanged.
+
+    competitor_history_file (Live Competitive Intelligence Layer,
+    2026-07-23): threaded alongside competitor_db_file for the exact
+    same reason it exists — get_or_refresh_competitors() now also
+    writes real snapshot history on every real refresh; omitting this
+    override here would leak real test-run history into the live
+    default file, the same bug class this session already found once
+    for competitor_db_file itself."""
     try:
         competitors = competitor_discovery.get_or_refresh_competitors(
-            niche, max_results=max_results, db_file=competitor_db_file)
+            niche, max_results=max_results, db_file=competitor_db_file, history_file=competitor_history_file)
         total_found = competitors.get("total_found")
     except Exception:
         return external_signal
@@ -146,7 +154,7 @@ def run_cycle(niche, external_signal=None, tier="tier4", max_results=10,
               execute_production=False, max_attempts=3, timeline_path=None,
               decisions_path=None, analysis_db_file=None, outcomes_path=None,
               ladder=None, state_path=None, existing_decision=None,
-              competitor_db_file=None, ledger_path=None):
+              competitor_db_file=None, ledger_path=None, competitor_history_file=None):
     """Runs the full coordinated pipeline for ONE opportunity signal.
 
     existing_decision (Strategic Phase, 2026-07-19): a real Decision dict
@@ -216,7 +224,10 @@ def run_cycle(niche, external_signal=None, tier="tier4", max_results=10,
     record into data/competitor_database.json and data/sales_ledger.jsonl
     with no way to redirect either. Omitting them (every caller before
     this parameter existed) reproduces the exact prior behavior."""
-    external_signal = _enrich_with_real_competition(niche, external_signal, max_results, competitor_db_file=competitor_db_file)
+    external_signal = _enrich_with_real_competition(
+        niche, external_signal, max_results,
+        competitor_db_file=competitor_db_file, competitor_history_file=competitor_history_file,
+    )
     context = {
         "niche": niche, "external_signal": external_signal, "tier": tier,
         "max_results": max_results, "dry_run": not execute_production,

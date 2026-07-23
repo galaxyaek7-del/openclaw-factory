@@ -251,3 +251,25 @@ Full findings and decisions: `ADR-092`. Founder-confirmed before building: exten
 **Documented:** `ADR-092`.
 
 **Commit:** `c6cfbf6`.
+
+---
+
+## Live Competitive Intelligence Mission (founder directive, 2026-07-23)
+
+Full findings and decisions: `ADR-093`. Founder-confirmed before building: extend `competitor_discovery.py`/`executive_board.py` (never a parallel system) — real search found `competitor_discovery.py` already covers 4 of 6 requested competitor types, and `executive_board.py`'s `analyze_as_cmio()` already has the exact real hook point (`risk_intel["pricing_changes"]`, already honestly disclosed as `Unknown` pending "repeated real runs to compare"). Of 11 requested live-tracking event types, only competitor-appearance and real metric growth (GitHub stars/HN points) have a real data source — the other 9 (funding, acquisitions, hiring, security incidents, regulatory, etc.) get a real evidence-recording path, never auto-detection or fabrication. Of the Threat Engine's 8 dimensions, only 3 are honestly derivable from real data today.
+
+### 4.12 — Historical competitor tracking foundation (2026-07-23)
+
+**Implemented:** `competitor_discovery.py` gained `COMPETITOR_HISTORY_FILE` (real, append-only snapshot preservation on every real refresh), `diff_competitor_snapshots()` (pure, real new/disappeared/growth-signal comparison, never fabricates a trend from one data point), and `is_open_source` per-competitor tagging (a real fact from API source, not a heuristic). `get_or_refresh_competitors()` now attaches a real `changes` key to every fresh result. Isolation (`history_file`) threaded through the full real call chain (`orchestrator.py` → `revenue_pipeline/pipeline.py` → `factory_orchestrator.py`), matching this session's own established `competitor_db_file`/`ledger_path` convention.
+
+**Real bug caught mid-verification, fixed before it shipped:** 2 pre-existing tests in `tests/test_competitor_discovery.py` were about to leak real history writes into the live default file the moment this landed — the same bug class this session already found twice before (`market_hunter.py`'s `decisions_path`, `competitor_db_file` itself). Fixed by threading isolation through those tests too, before running anything for real.
+
+**Tested:** 12 new tests (`tests/test_competitor_discovery.py`) — pure diff-function tests, real history-file integration tests, open-source tagging.
+
+**Verified:** highest-risk existing test files run first given the signature changes, then the full suite. Real `data/competitor_database.json` diffed byte-for-byte clean; `data/competitor_history.jsonl` confirmed never created outside test runs.
+
+**Documented:** `ADR-093`.
+
+**Commit:** `[pending]`.
+
+**Next in this mission:** Threat Engine (3 real dimensions + honest `Unknown` for the other 5), Executive Board competitor-brief integration + decision re-open trigger, `market_evidence.py` extension for the 9 non-auto-detectable event types, alerting — each a separate, sequenced piece.

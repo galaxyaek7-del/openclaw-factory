@@ -59,6 +59,7 @@ class TestRunMasterCycleExecuteTrueDrivesRealProductionAndPublishing(unittest.Te
         self.state_path = _temp_path(suffix=".json")
         self.changelog_path = _temp_path()
         self.competitor_db_file = _temp_path(suffix=".json")
+        self.competitor_history_file = _temp_path()
         self.ledger_path = _temp_path()
         self._generated_files = []
 
@@ -73,7 +74,7 @@ class TestRunMasterCycleExecuteTrueDrivesRealProductionAndPublishing(unittest.Te
     def tearDown(self):
         for p in (self.decisions_path, self.board_path, self.timeline_path, self.outcomes_path,
                   self.state_path, self.changelog_path, self.competitor_db_file, self.ledger_path,
-                  *self._generated_files):
+                  self.competitor_history_file, *self._generated_files):
             if p and os.path.exists(p):
                 os.remove(p)
 
@@ -114,6 +115,7 @@ class TestRunMasterCycleExecuteTrueDrivesRealProductionAndPublishing(unittest.Te
                 board_path=self.board_path, timeline_path=self.timeline_path,
                 outcomes_path=self.outcomes_path, state_path=self.state_path,
                 competitor_db_file=self.competitor_db_file, ledger_path=self.ledger_path,
+                competitor_history_file=self.competitor_history_file,
             )
 
         after = set(books_dir.glob("*.pdf")) | set(covers_dir.glob("*"))

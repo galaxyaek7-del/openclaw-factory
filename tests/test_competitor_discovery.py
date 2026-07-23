@@ -168,16 +168,34 @@ class TestDiscoverCompetitors(unittest.TestCase):
         self.assertIn("Unknown", result["barrier_to_entry"])
         self.assertIn("Unknown", result["pricing_power"])
 
+    @patch("competitor_discovery._query_github")
+    @patch("competitor_discovery._query_hn")
+    def test_is_open_source_is_a_real_fact_from_the_api_source_not_a_guess(self, mock_hn, mock_gh):
+        """Live Competitive Intelligence Layer (2026-07-23): GitHub-sourced
+        hits are real, 100%-verifiable open-source substitutes; HN-sourced
+        hits are not tagged as open source just because they got upvoted."""
+        mock_hn.return_value = [{"title": "Show HN: X", "points": 200, "num_comments": 50, "url": "https://x.com"}]
+        mock_gh.return_value = [{"full_name": "org/y", "stargazers_count": 3000, "owner": {"type": "Organization"}, "created_at": _iso_days_ago(1000)}]
+        result = cd.discover_competitors("test niche")
+        by_source = {c["source"]: c["is_open_source"] for c in result["competitors"]}
+        self.assertTrue(by_source["github"])
+        self.assertFalse(by_source["hacker_news"])
+
 
 class TestCompetitorDatabase(unittest.TestCase):
     def setUp(self):
         fd, self.db_path = tempfile.mkstemp(suffix=".json")
         os.close(fd)
         os.remove(self.db_path)
+        fd, self.history_path = tempfile.mkstemp(suffix=".jsonl")
+        os.close(fd)
+        os.remove(self.history_path)
 
     def tearDown(self):
         if os.path.exists(self.db_path):
             os.remove(self.db_path)
+        if os.path.exists(self.history_path):
+            os.remove(self.history_path)
 
     @patch("competitor_discovery._query_github")
     @patch("competitor_discovery._query_hn")
@@ -205,7 +223,7 @@ class TestCompetitorDatabase(unittest.TestCase):
         mock_gh.return_value = []
         db = {cd._normalize_key("niche a"): {"discovered_at": _iso_days_ago(30), "competitors": []}}
         cd.save_database(db, db_file=self.db_path)
-        result = cd.get_or_refresh_competitors("niche a", max_age_days=7, db_file=self.db_path)
+        result = cd.get_or_refresh_competitors("niche a", max_age_days=7, db_file=self.db_path, history_file=self.history_path)
         self.assertFalse(result["_cache"]["hit"])
         self.assertEqual(mock_hn.call_count, 1)
 
@@ -214,8 +232,8 @@ class TestCompetitorDatabase(unittest.TestCase):
     def test_force_always_refreshes_even_if_fresh(self, mock_hn, mock_gh):
         mock_hn.return_value = []
         mock_gh.return_value = []
-        cd.get_or_refresh_competitors("niche a", db_file=self.db_path)
-        cd.get_or_refresh_competitors("niche a", db_file=self.db_path, force=True)
+        cd.get_or_refresh_competitors("niche a", db_file=self.db_path, history_file=self.history_path)
+        cd.get_or_refresh_competitors("niche a", db_file=self.db_path, history_file=self.history_path, force=True)
         self.assertEqual(mock_hn.call_count, 2)
 
     def test_load_database_missing_file_returns_empty_dict_never_throws(self):
@@ -225,6 +243,98 @@ class TestCompetitorDatabase(unittest.TestCase):
         with open(self.db_path, "w", encoding="utf-8") as f:
             f.write("{not valid json")
         self.assertEqual(cd.load_database(db_file=self.db_path), {})
+
+    @patch("competitor_discovery._query_github")
+    @patch("competitor_discovery._query_hn")
+    def test_first_ever_discovery_has_no_history_to_diff_against(self, mock_hn, mock_gh):
+        mock_hn.return_value = []
+        mock_gh.return_value = []
+        result = cd.get_or_refresh_competitors("niche a", db_file=self.db_path, history_file=self.history_path)
+        self.assertFalse(result["changes"]["has_history"])
+        self.assertFalse(os.path.exists(self.history_path), "nothing existed yet to preserve — no history write should happen")
+
+    @patch("competitor_discovery._query_github")
+    @patch("competitor_discovery._query_hn")
+    def test_a_real_refresh_preserves_the_outgoing_snapshot_in_history(self, mock_hn, mock_gh):
+        mock_hn.return_value = [{"title": "a", "points": 5, "num_comments": 0}]
+        mock_gh.return_value = []
+        cd.get_or_refresh_competitors("niche a", db_file=self.db_path, history_file=self.history_path)
+        cd.get_or_refresh_competitors("niche a", db_file=self.db_path, history_file=self.history_path, force=True)
+        self.assertTrue(os.path.exists(self.history_path))
+        with open(self.history_path, encoding="utf-8") as f:
+            lines = [l for l in f if l.strip()]
+        self.assertEqual(len(lines), 1, "exactly one prior snapshot should have been preserved")
+
+    @patch("competitor_discovery._query_github")
+    @patch("competitor_discovery._query_hn")
+    def test_a_real_new_competitor_is_detected_on_the_second_refresh(self, mock_hn, mock_gh):
+        mock_gh.return_value = []
+        mock_hn.return_value = [{"title": "first competitor", "points": 5, "num_comments": 0}]
+        cd.get_or_refresh_competitors("niche a", db_file=self.db_path, history_file=self.history_path)
+        mock_hn.return_value = [
+            {"title": "first competitor", "points": 5, "num_comments": 0},
+            {"title": "a brand new competitor", "points": 8, "num_comments": 1},
+        ]
+        result = cd.get_or_refresh_competitors("niche a", db_file=self.db_path, history_file=self.history_path, force=True)
+        self.assertTrue(result["changes"]["has_history"])
+        new_names = [c["name"] for c in result["changes"]["new_competitors"]]
+        self.assertEqual(new_names, ["a brand new competitor"])
+
+    @patch("competitor_discovery._query_github")
+    @patch("competitor_discovery._query_hn")
+    def test_a_failed_history_write_never_blocks_the_real_refresh(self, mock_hn, mock_gh):
+        mock_hn.return_value = []
+        mock_gh.return_value = []
+        cd.get_or_refresh_competitors("niche a", db_file=self.db_path, history_file=self.history_path)
+        # An impossible path (a file where a directory is expected) makes
+        # the append fail — the real refresh itself must still succeed.
+        bad_history_path = os.path.join(self.db_path, "impossible", "history.jsonl")
+        result = cd.get_or_refresh_competitors("niche a", db_file=self.db_path, history_file=bad_history_path, force=True)
+        self.assertFalse(result["_cache"]["hit"])
+
+
+class TestDiffCompetitorSnapshots(unittest.TestCase):
+    """Pure function, no I/O — real comparison logic between two
+    real, previously-computed snapshots."""
+
+    def test_no_prior_snapshot_is_honestly_reported_not_a_fabricated_trend(self):
+        result = cd.diff_competitor_snapshots(None, {"competitors": []})
+        self.assertFalse(result["has_history"])
+        self.assertEqual(result["new_competitors"], [])
+
+    def test_a_real_new_competitor_is_detected(self):
+        old = {"competitors": [{"name": "a", "metrics": {}}]}
+        new = {"competitors": [{"name": "a", "metrics": {}}, {"name": "b", "metrics": {}}]}
+        result = cd.diff_competitor_snapshots(old, new)
+        self.assertEqual([c["name"] for c in result["new_competitors"]], ["b"])
+        self.assertEqual(result["disappeared_competitors"], [])
+
+    def test_a_real_disappeared_competitor_is_detected(self):
+        old = {"competitors": [{"name": "a", "metrics": {}}, {"name": "b", "metrics": {}}]}
+        new = {"competitors": [{"name": "a", "metrics": {}}]}
+        result = cd.diff_competitor_snapshots(old, new)
+        self.assertEqual(result["new_competitors"], [])
+        self.assertEqual([c["name"] for c in result["disappeared_competitors"]], ["b"])
+
+    def test_real_growth_in_stars_is_detected(self):
+        old = {"competitors": [{"name": "a", "metrics": {"github_stars": 100}}]}
+        new = {"competitors": [{"name": "a", "metrics": {"github_stars": 250}}]}
+        result = cd.diff_competitor_snapshots(old, new)
+        self.assertEqual(len(result["growth_signals"]), 1)
+        self.assertEqual(result["growth_signals"][0]["from"], 100)
+        self.assertEqual(result["growth_signals"][0]["to"], 250)
+
+    def test_a_decline_in_stars_is_never_reported_as_growth(self):
+        old = {"competitors": [{"name": "a", "metrics": {"github_stars": 250}}]}
+        new = {"competitors": [{"name": "a", "metrics": {"github_stars": 100}}]}
+        result = cd.diff_competitor_snapshots(old, new)
+        self.assertEqual(result["growth_signals"], [])
+
+    def test_unknown_metrics_never_fabricate_a_growth_signal(self):
+        old = {"competitors": [{"name": "a", "metrics": {"github_stars": None}}]}
+        new = {"competitors": [{"name": "a", "metrics": {"github_stars": None}}]}
+        result = cd.diff_competitor_snapshots(old, new)
+        self.assertEqual(result["growth_signals"], [])
 
 
 if __name__ == "__main__":
