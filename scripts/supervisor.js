@@ -78,6 +78,27 @@ function alertGivingUp(reason) {
   } catch { /* best-effort only — a failed alert must never block the real shutdown */ }
 }
 
+// Enterprise Upgrade Roadmap Phase 1.2 (2026-07-23): the real gap found
+// in this same commit's own research -- a single real crash that DID
+// get successfully restarted was previously completely silent, only
+// alertGivingUp() (above) ever notified anyone, and only once the
+// crash-loop guard had already been fully exhausted. MTTD for a real,
+// isolated crash was therefore unbounded (a human had to notice by
+// hand). Every real crash now alerts immediately, in real time --
+// bounded naturally by the same crash-loop guard that already caps
+// restartTimestamps within WINDOW_MS, so this can never spam beyond
+// MAX_RESTARTS real alerts per real crash-loop episode.
+function alertCrashRestart(code, signal, restartCount) {
+  try {
+    const telegramDirect = require(path.join(REPO_ROOT, 'lib', 'telegram_direct'));
+    telegramDirect
+      .sendTelegramMessage(
+        `⚠️ ${path.basename(TARGET_SCRIPT)} تعطّل (code=${code}, signal=${signal || 'none'}) — إعادة تشغيل تلقائية رقم ${restartCount}`,
+      )
+      .catch(() => {});
+  } catch { /* best-effort only — a failed alert must never block the real restart */ }
+}
+
 function withinCrashLoopLimit() {
   const now = Date.now();
   while (restartTimestamps.length && now - restartTimestamps[0] > WINDOW_MS) {
@@ -109,6 +130,7 @@ function spawnChild() {
 
     log({ event: 'crash', code, signal });
     restartTimestamps.push(Date.now());
+    alertCrashRestart(code, signal, restartTimestamps.length);
     if (!withinCrashLoopLimit()) {
       const reason = `${restartTimestamps.length} restarts within ${WINDOW_MS}ms — crash-loop guard tripped`;
       log({ event: 'giving_up', reason });
@@ -140,4 +162,4 @@ if (require.main === module) {
   spawnChild();
 }
 
-module.exports = { spawnChild, withinCrashLoopLimit, restartTimestamps, MAX_RESTARTS, WINDOW_MS };
+module.exports = { spawnChild, withinCrashLoopLimit, restartTimestamps, MAX_RESTARTS, WINDOW_MS, alertCrashRestart, alertGivingUp };

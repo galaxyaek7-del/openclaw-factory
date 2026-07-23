@@ -22,7 +22,7 @@
 | # | Finding | Severity | Status |
 |---|---|---|---|
 | 1.1 | No process supervisor — an unhandled exception silently kills the entire factory, nothing restarts it | Critical | ☑ commit `96ee731` |
-| 1.2 | No uptime monitoring or general-failure alerting — MTTD is unbounded | Critical | ⊘ Paused — founder redirected to the Enterprise Security & Cyber Defense Mission (2026-07-23) before 1.2 started. Not abandoned; resumes after the security mission's Phase 1 (audit) lands. |
+| 1.2 | No uptime monitoring or general-failure alerting — MTTD is unbounded | Critical | ☑ commit `[pending]` — see execution log below |
 
 ## Phase 2 — Security
 
@@ -179,7 +179,25 @@ A real search before building anything found two direct duplication risks and on
 
 ---
 
-*(Phase 1.2 — uptime monitoring — paused here per founder redirect to the Enterprise Security & Cyber Defense Mission. Resumes after that mission's Phase 1 audit lands.)*
+### 1.2 — Health monitor + real-time crash alerting (2026-07-23)
+
+Resumed after being paused for the Enterprise Security & Cyber Defense Mission, then the Live Competitive Intelligence mission (ADR-093–096) — picked as the next highest-priority *unblocked* engineering task once that mission closed, per the roadmap's own severity ranking (every other open Critical finding in Phases 5–7 is explicitly gated on real load/sales/team growth).
+
+**Implemented:**
+- `scripts/supervisor.js`: new `alertCrashRestart()` — every real crash now alerts via Telegram immediately, not just when the supervisor eventually gives up (the real, previously-silent gap this finding named). Bounded by the same pre-existing crash-loop guard.
+- `scripts/health_monitor.js` (new): opt-in, explicitly-started long-running process (same pattern as `supervisor.js`) that polls the real `GET /health` endpoint on an interval and alerts via Telegram only on a real status transition — never spams on an unchanged status.
+
+**Real scoping finding:** uptime tracking (`process.uptime()`) and the underlying health checks (`buildHealthReport()`, finding 4.7) already existed — the actual gap was narrow: nothing ever proactively read the health report or alerted on a bad result, and a single isolated supervisor restart was silent.
+
+**Tested:** 23 new tests (`tests/test_health_monitor.js`, 15; `tests/test_supervisor.js`, +1) — see `ADR-097` for the full breakdown.
+
+**Verified:** full JS suite 249/249 real tests green (up from 233), full Python suite reconfirmed 1141/1141 green (unaffected, this piece is JS-only).
+
+**Documented:** `ADR-097`.
+
+**Commit:** `[pending]`.
+
+---
 
 ### 2.6 + 2.13 — Pillow CVE fix + unused package removal (2026-07-23)
 

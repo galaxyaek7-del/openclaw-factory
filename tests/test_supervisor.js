@@ -85,3 +85,38 @@ test('gives up and exits non-zero after exceeding the crash-loop guard', async (
   const crashCount = (result.stdout.match(/"event":"crash"/g) || []).length;
   assert.equal(crashCount, 3, 'must stop restarting at exactly SUPERVISOR_MAX_RESTARTS, not before or after');
 });
+
+// Enterprise Upgrade Roadmap Phase 1.2 (2026-07-23): unlike the two
+// integration tests above (which spawn a real subprocess to prove real
+// restart/give-up behavior), alertCrashRestart()'s real message content
+// is tested by requiring supervisor.js directly in-process and mocking
+// global.fetch — the exact same pattern tests/test_telegram_direct.js's
+// own suite already established for sendTelegramMessage() itself.
+test('alertCrashRestart sends a real, immediate alert on every crash, not just on giving up', async () => {
+  const supervisor = require(SUPERVISOR_SCRIPT);
+  const originalFetch = global.fetch;
+  const originalToken = process.env.TELEGRAM_BOT_TOKEN;
+  const originalChat = process.env.OPENCLAW_TELEGRAM_CHAT_ID;
+  process.env.TELEGRAM_BOT_TOKEN = 'test-token';
+  process.env.OPENCLAW_TELEGRAM_CHAT_ID = 'test-chat';
+
+  let sentText = null;
+  global.fetch = async (url, opts) => {
+    sentText = JSON.parse(opts.body).text;
+    return { ok: true, json: async () => ({ ok: true, result: { message_id: 1 } }) };
+  };
+
+  try {
+    supervisor.alertCrashRestart(1, null, 2);
+    // sendTelegramMessage is fire-and-forget (.catch(() => {})) — give
+    // the real microtask/fetch chain a tick to actually run.
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    assert.match(sentText, /تعطّل/);
+    assert.match(sentText, /code=1/);
+    assert.match(sentText, /رقم 2/);
+  } finally {
+    global.fetch = originalFetch;
+    if (originalToken === undefined) delete process.env.TELEGRAM_BOT_TOKEN; else process.env.TELEGRAM_BOT_TOKEN = originalToken;
+    if (originalChat === undefined) delete process.env.OPENCLAW_TELEGRAM_CHAT_ID; else process.env.OPENCLAW_TELEGRAM_CHAT_ID = originalChat;
+  }
+});
