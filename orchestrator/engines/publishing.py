@@ -65,6 +65,7 @@ def run(context):
 
     record = run_publish_pipeline(
         product, product_family=product_family, dry_run=dry_run, version=version,
+        ledger_path=context.get("ledger_path"),
     )
     return {
         "executed": True,

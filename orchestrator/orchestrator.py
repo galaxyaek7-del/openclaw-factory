@@ -61,7 +61,7 @@ def make_idempotency_key(stage_name, niche, tier):
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
 
 
-def _enrich_with_real_competition(niche, external_signal, max_results):
+def _enrich_with_real_competition(niche, external_signal, max_results, competitor_db_file=None):
     """ADR-057: closes a real, long-documented gap (BLOCKERS.md #4) —
     profit_oracle._score_competition() already accepts a real
     external_signal['competition']['related_results_count'] (ADR-041),
@@ -72,7 +72,8 @@ def _enrich_with_real_competition(niche, external_signal, max_results):
     any competitor_discovery failure degrades to the original
     external_signal completely unchanged."""
     try:
-        competitors = competitor_discovery.get_or_refresh_competitors(niche, max_results=max_results)
+        competitors = competitor_discovery.get_or_refresh_competitors(
+            niche, max_results=max_results, db_file=competitor_db_file)
         total_found = competitors.get("total_found")
     except Exception:
         return external_signal
@@ -144,7 +145,8 @@ def _run_stage(stage_name, fn, context, idempotency_key, timeline_path, max_atte
 def run_cycle(niche, external_signal=None, tier="tier4", max_results=10,
               execute_production=False, max_attempts=3, timeline_path=None,
               decisions_path=None, analysis_db_file=None, outcomes_path=None,
-              ladder=None, state_path=None, existing_decision=None):
+              ladder=None, state_path=None, existing_decision=None,
+              competitor_db_file=None, ledger_path=None):
     """Runs the full coordinated pipeline for ONE opportunity signal.
 
     existing_decision (Strategic Phase, 2026-07-19): a real Decision dict
@@ -200,13 +202,26 @@ def run_cycle(niche, external_signal=None, tier="tier4", max_results=10,
     record_checkpoint() calls in _run_stage() — omitting it (every caller
     before this parameter existed) writes to the real data/
     factory_state.json, the same default-path convention every other
-    optional path parameter here already uses."""
-    external_signal = _enrich_with_real_competition(niche, external_signal, max_results)
+    optional path parameter here already uses.
+
+    competitor_db_file/ledger_path (post-reboot operational simulation,
+    2026-07-23): forwarded to _enrich_with_real_competition() and the
+    publishing engine respectively. Found missing by actually running
+    run_cycle(execute_production=True) end to end rather than only
+    reading the code — competitor_discovery.get_or_refresh_competitors()
+    and channels.ledger.record_publish_attempt() already accepted
+    db_file=/ledger_path= overrides, but nothing here threaded them
+    through, so every execute=True run (test or real) wrote a real
+    competitor-cache entry and a real sales-ledger publish-attempt
+    record into data/competitor_database.json and data/sales_ledger.jsonl
+    with no way to redirect either. Omitting them (every caller before
+    this parameter existed) reproduces the exact prior behavior."""
+    external_signal = _enrich_with_real_competition(niche, external_signal, max_results, competitor_db_file=competitor_db_file)
     context = {
         "niche": niche, "external_signal": external_signal, "tier": tier,
         "max_results": max_results, "dry_run": not execute_production,
         "decisions_path": decisions_path, "analysis_db_file": analysis_db_file,
-        "outcomes_path": outcomes_path, "ladder": ladder,
+        "outcomes_path": outcomes_path, "ladder": ladder, "ledger_path": ledger_path,
     }
     engines_map = get_engines()
     results = []

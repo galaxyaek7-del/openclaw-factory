@@ -56,7 +56,8 @@ def find_decision(niche, decisions_path=None):
 
 def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=None,
                       timeline_path=None, analysis_db_file=None, outcomes_path=None,
-                      state_path=None, board_path=None):
+                      state_path=None, board_path=None, competitor_db_file=None,
+                      ledger_path=None):
     """Runs the full real governance + production chain for ONE niche
     that already has a real ACCEPTED decision recorded. Returns a single
     unified result -- never raises for a missing decision (reports it
@@ -89,6 +90,7 @@ def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=No
         production_result = revenue_pipeline.process_opportunity(
             decision, execute=True, timeline_path=timeline_path, decisions_path=decisions_path,
             analysis_db_file=analysis_db_file, outcomes_path=outcomes_path, state_path=state_path,
+            competitor_db_file=competitor_db_file, ledger_path=ledger_path,
         )
     elif execute and board_blocks_production:
         production_result = {

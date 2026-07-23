@@ -65,11 +65,18 @@ def _validate_quality(niche, production_output, production_plan):
 
 
 def process_opportunity(decision, execute=False, timeline_path=None, decisions_path=None,
-                         analysis_db_file=None, outcomes_path=None, state_path=None):
+                         analysis_db_file=None, outcomes_path=None, state_path=None,
+                         competitor_db_file=None, ledger_path=None):
     """One ACCEPTED opportunity through the revenue pipeline. execute=False
     (default) never spends real money or publishes anything live — this
     only reuses orchestrator.run_cycle()'s own existing safety switch,
-    never bypasses it."""
+    never bypasses it.
+
+    competitor_db_file/ledger_path: forwarded to orchestrator.run_cycle()
+    (2026-07-23) — without these, every execute=True call here wrote real
+    competitor-cache and sales-ledger records with no test-isolation
+    switch, unlike every other stateful side effect this function already
+    exposes an override for."""
     from orchestrator import orchestrator as orch
 
     production_plan = plan_module.build_production_plan(decision)
@@ -82,6 +89,7 @@ def process_opportunity(decision, execute=False, timeline_path=None, decisions_p
             timeline_path=timeline_path, decisions_path=decisions_path,
             analysis_db_file=analysis_db_file, outcomes_path=outcomes_path,
             state_path=state_path, existing_decision=decision,
+            competitor_db_file=competitor_db_file, ledger_path=ledger_path,
         )
         production_stage = next((r for r in stage_results if r.engine == "production"), None)
         production_output = production_stage.output if production_stage else None
@@ -112,7 +120,8 @@ def process_opportunity(decision, execute=False, timeline_path=None, decisions_p
 
 
 def run_revenue_pipeline(execute=False, timeline_path=None, decisions_path=None,
-                          analysis_db_file=None, outcomes_path=None):
+                          analysis_db_file=None, outcomes_path=None,
+                          competitor_db_file=None, ledger_path=None):
     """Requirement 1: select ONLY accepted opportunities — reuses
     decision_engine.ranking.rank_queue() (ADR-050) directly, the exact
     same real, ranked, ACCEPTED-and-not-yet-executed queue every other
@@ -131,6 +140,7 @@ def run_revenue_pipeline(execute=False, timeline_path=None, decisions_path=None,
         process_opportunity(
             d, execute=execute, timeline_path=timeline_path, decisions_path=decisions_path,
             analysis_db_file=analysis_db_file, outcomes_path=outcomes_path,
+            competitor_db_file=competitor_db_file, ledger_path=ledger_path,
         )
         for d in accepted
     ]
