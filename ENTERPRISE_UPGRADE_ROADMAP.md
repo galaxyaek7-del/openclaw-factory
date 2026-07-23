@@ -282,6 +282,6 @@ Full findings and decisions: `ADR-093`. Founder-confirmed before building: exten
 
 **Documented:** `ADR-093` (updated).
 
-**Commit:** `[pending]`.
+**Commit:** `f05c33d`.
 
 **Next in this mission:** Executive Board competitor-brief integration + decision re-open trigger, `market_evidence.py` extension for the 9 non-auto-detectable event types, alerting — each a separate, sequenced piece.
