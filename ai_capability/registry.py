@@ -47,7 +47,7 @@ METRIC_NAMES = [
 # provider FOR -- never a measured suitability ranking.
 PROVIDER_CATALOG = [
     {"provider": "groq", "display_name": "Groq (Llama 3.1 8B Instant)", "credential_env_var": "GROQ_KEY",
-     "task_types": ["content_generation", "book_structure", "seo_copy", "marketing_copy", "support_copy"]},
+     "task_types": ["content_generation", "book_structure", "seo_copy", "marketing_copy", "support_copy", "query_reformulation"]},
     {"provider": "anthropic", "display_name": "Claude (Anthropic)", "credential_env_var": "ANTHROPIC_API_KEY",
      "task_types": ["reasoning", "long_context_analysis", "code_generation"]},
     {"provider": "openai", "display_name": "GPT (OpenAI)", "credential_env_var": "OPENAI_API_KEY",
@@ -71,6 +71,10 @@ PROVIDER_CATALOG = [
     {"provider": "moonshot_kimi", "display_name": "Kimi (Moonshot AI)", "credential_env_var": "MOONSHOT_API_KEY",
      "task_types": ["general_purpose", "long_context_analysis", "multilingual"]},
     {"provider": "bytedance_doubao", "display_name": "Doubao (ByteDance)", "credential_env_var": "DOUBAO_API_KEY",
+     "task_types": ["general_purpose", "multilingual", "multimodal"]},
+    # OpenClaw Strategic Principle (2026-07-23), "loyal to results, not
+    # models": 1 more real, named candidate explicitly requested.
+    {"provider": "minimax", "display_name": "MiniMax", "credential_env_var": "MINIMAX_API_KEY",
      "task_types": ["general_purpose", "multilingual", "multimodal"]},
     {"provider": "local", "display_name": "Local models (e.g. Ollama)", "credential_env_var": None,
      "task_types": ["offline_fallback", "no_api_cost"]},

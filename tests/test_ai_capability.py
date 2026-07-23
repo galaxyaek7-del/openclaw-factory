@@ -41,15 +41,16 @@ class TestRegistryListProviders(unittest.TestCase):
         if os.path.exists(self.cost_log):
             os.remove(self.cost_log)
 
-    def test_all_eleven_providers_present(self):
+    def test_all_twelve_providers_present(self):
         # Technology Investment Council (2026-07-23): 2 more real, named
         # candidates (Kimi/Moonshot AI, Doubao/ByteDance) added per the
-        # Technology-Agnostic Principle directive.
+        # Technology-Agnostic Principle directive; MiniMax added the same
+        # day per the OpenClaw Strategic Principle follow-up directive.
         providers = registry.list_providers(self.cost_log)
         names = {p["provider"] for p in providers}
         self.assertEqual(names, {
             "groq", "anthropic", "openai", "google", "xai",
-            "deepseek", "alibaba_qwen", "mistral", "moonshot_kimi", "bytedance_doubao", "local",
+            "deepseek", "alibaba_qwen", "mistral", "moonshot_kimi", "bytedance_doubao", "minimax", "local",
         })
 
     def test_the_8_technology_investment_council_criteria_are_all_present(self):

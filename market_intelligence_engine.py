@@ -193,7 +193,17 @@ def reformulate_pain_query(niche):
         return niche, "literal_fallback", "نيتش فارغ"
 
     try:
-        from book_generator import groq_chat
+        # OpenClaw Strategic Principle (2026-07-23), multi-model
+        # orchestration: routes through ai_capability.orchestrator.
+        # generate() instead of calling book_generator.groq_chat()
+        # directly -- the real provider is now chosen by
+        # ai_capability.evaluator.recommend_for_task() (evidence-based,
+        # never a hardcoded vendor), not a hardcoded import. Behavior is
+        # unchanged today (Groq is the only real, measured provider), but
+        # the moment a second provider gets real credentials and real
+        # usage data, this call site adopts it automatically, with zero
+        # further code change here.
+        from ai_capability import orchestrator
         system = (
             "You extract the real-world problem a product idea solves. "
             "Respond with ONLY a short phrase (5-12 words) describing the "
@@ -205,11 +215,14 @@ def reformulate_pain_query(niche):
         # caller (book_generator.py) -- knowledge_graph/build.py reads
         # context.niche to build a real AIProvider edge; a bare string here
         # broke that assumption (found live, 2026-07-22).
-        result = groq_chat(system, niche, max_tokens=40, retries=1, cost_context={"niche": niche, "purpose": "customer_pain_query_reformulation"})
-        query = (result or "").strip().strip('"').strip("'").strip()
+        response = orchestrator.generate(
+            "query_reformulation", system, niche, max_tokens=40, retries=1,
+            cost_context={"niche": niche, "purpose": "customer_pain_query_reformulation"},
+        )
+        query = (response["content"] or "").strip().strip('"').strip("'").strip()
         if query and len(query) >= 5:
-            return query, "groq_semantic", None
-        return _deterministic_query_fallback(niche), "deterministic_fallback", "رد Groq فارغ أو قصير جداً ليكون استعلاماً حقيقياً"
+            return query, f"{response['provider']}_semantic", None
+        return _deterministic_query_fallback(niche), "deterministic_fallback", f"رد {response['provider']} فارغ أو قصير جداً ليكون استعلاماً حقيقياً"
     except Exception as e:
         return _deterministic_query_fallback(niche), "deterministic_fallback", f"Groq غير متاح: {e}"
 

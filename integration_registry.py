@@ -11,9 +11,15 @@ today.
 Explicit anti-duplication rule: a vendor already covered by an existing
 registry is REFERENCED from it here, never re-derived independently --
   - AI providers -> ai_capability/registry.py's own PROVIDER_CATALOG
-    (Claude, GPT, Gemini, DeepSeek, Groq, Qwen, Mistral). Perplexity and
-    MiniMax are new-to-any-registry (not yet in ai_capability's catalog),
-    so they get a real entry in NEW_VENDOR_CATALOG below instead.
+    (Claude, GPT, Gemini, DeepSeek, Groq, Qwen, Mistral, Kimi, Doubao,
+    MiniMax). Perplexity is the one still new-to-any-registry provider
+    (not yet in ai_capability's catalog), so it keeps its own real entry
+    in NEW_VENDOR_CATALOG below. MiniMax moved OUT of NEW_VENDOR_CATALOG
+    (2026-07-23, OpenClaw Strategic Principle) the moment it was added to
+    ai_capability's own PROVIDER_CATALOG — the exact real duplicate this
+    module's own anti-duplication rule exists to prevent, caught by
+    tests/test_integration_registry.py's own duplicate-name test before
+    it could ship.
   - Commerce channels with a real, live BaseArm -> channels/registry.py
     ::all_arms() (Paddle, Gumroad, Payhip, Etsy).
 
@@ -52,7 +58,6 @@ NEW_VENDOR_CATALOG = [
     {"name": "Shopify", "category": "commerce", "credential_env_var": "SHOPIFY_ACCESS_TOKEN"},
     {"name": "KDP", "category": "commerce", "credential_env_var": None},
     {"name": "Perplexity", "category": "ai_provider", "credential_env_var": "PERPLEXITY_API_KEY"},
-    {"name": "MiniMax", "category": "ai_provider", "credential_env_var": "MINIMAX_API_KEY"},
 ]
 
 
