@@ -22,7 +22,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const { spawn, execSync } = require('child_process');
+const os = require('os');
+const { spawn, execSync, execFileSync } = require('child_process');
 const selfAwareness = require('./self_awareness');
 const n8nNotify = require('./lib/n8n_notify');
 const telegramDirect = require('./lib/telegram_direct');
@@ -1182,19 +1183,53 @@ function checkNeedsAttention(tickActions, logPath = GOLDEN_HUNTER_EVENTS_FILE) {
 // no desktop session, non-Windows) — a notification must never be able
 // to break a tick, exactly like every other best-effort side effect in
 // this file. A hard 5s timeout guarantees this can never hang the loop.
+// Security Mission Tracker finding 2.9 (2026-07-23), real fix: the
+// previous implementation only escaped single quotes for the INNER
+// PowerShell single-quoted string, then concatenated the whole script
+// into an OUTER double-quoted `-Command "..."` shell argument -- a real
+// double-quote character in title/message (both carry externally-
+// influenced text, e.g. this same file's own Scout/Hacker-News-sourced
+// niche titles) would terminate that outer double-quoted argument
+// early, letting the remainder be parsed as additional PowerShell/shell
+// tokens.
+//
+// Fixed by removing string interpolation of untrusted data from the
+// script text entirely: the PowerShell script is now a fixed, static
+// file written to a real temp path (never containing title/message),
+// with a `param([string]$title, [string]$message)` block. Real,
+// unescaped title/message are passed as separate, literal `-File`
+// script arguments via execFileSync -- PowerShell's own documented
+// contract for `-File` is that everything after the script path is the
+// script's own literal parameters, never re-parsed as PowerShell/shell
+// syntax (unlike `-Command`/`-EncodedCommand`'s trailing arguments,
+// which real testing while building this fix found PowerShell.exe
+// itself sometimes still misinterprets around embedded quotes). Proven
+// directly: a title/message containing `"`, `` ` ``, `$(...)`, `;`, and
+// `|` together reaches the script as inert literal text with zero
+// execution -- see tests/test_factory_loop_notification.js.
 function sendDesktopNotification(title, message) {
+  let scriptPath;
   try {
-    const escapedTitle = title.replace(/'/g, "''");
-    const escapedMessage = message.replace(/'/g, "''");
-    const script = `Add-Type -AssemblyName System.Windows.Forms; ` +
-      `$n = New-Object System.Windows.Forms.NotifyIcon; ` +
-      `$n.Icon = [System.Drawing.SystemIcons]::Warning; $n.Visible = $true; ` +
-      `$n.ShowBalloonTip(10000, '${escapedTitle}', '${escapedMessage}', [System.Windows.Forms.ToolTipIcon]::Warning); ` +
-      `Start-Sleep -Seconds 1; $n.Dispose()`;
-    execSync(`powershell -NoProfile -Command "${script}"`, { timeout: 5000, stdio: 'ignore' });
+    scriptPath = path.join(os.tmpdir(), `openclaw_notify_${process.pid}_${Date.now()}.ps1`);
+    fs.writeFileSync(scriptPath, [
+      'param([string]$title, [string]$message)',
+      'Add-Type -AssemblyName System.Windows.Forms',
+      '$n = New-Object System.Windows.Forms.NotifyIcon',
+      '$n.Icon = [System.Drawing.SystemIcons]::Warning; $n.Visible = $true',
+      '$n.ShowBalloonTip(10000, $title, $message, [System.Windows.Forms.ToolTipIcon]::Warning)',
+      'Start-Sleep -Seconds 1; $n.Dispose()',
+      '',
+    ].join('\n'), 'utf8');
+    execFileSync('powershell.exe', [
+      '-NoProfile', '-NonInteractive', '-File', scriptPath, title, message,
+    ], { timeout: 5000, stdio: 'ignore' });
     return true;
   } catch (_) {
     return false; // never let a notification failure affect the real tick
+  } finally {
+    if (scriptPath) {
+      try { fs.unlinkSync(scriptPath); } catch (_) { /* best-effort cleanup only */ }
+    }
   }
 }
 

@@ -38,7 +38,7 @@
 | 2.6 | Pillow 12.2.0 has 10 real, published CVEs (found in Phase 1 Security Audit) | High | ☑ commit `14190a4` |
 | 2.7 | Real, confirmed XSS: `index.html:685` interpolates `${b.title}` into `innerHTML` with zero escaping — reachable via the manual book-title form field (self-contained) and via Scout/Pioneer's externally-sourced niche titles (Hacker News, attacker-postable) | High | ☑ commit `780f856` |
 | 2.8 | `.env`/`data/decisions.jsonl`/`finance_data.json` carry permissive, inherited default Windows ACLs (readable by `Users`, writable by `Authenticated Users`) — low real risk today (single enabled account on this machine) but no owner-only restriction exists | Medium | ☐ |
-| 2.9 | `factory_loop.js`'s `sendDesktopNotification()` has an incomplete shell-escaping boundary (escapes single quotes, embedded in a double-quoted PowerShell argument) — real defect, full exploit-chain not traced | Medium | ☐ |
+| 2.9 | `factory_loop.js`'s `sendDesktopNotification()` has an incomplete shell-escaping boundary (escapes single quotes, embedded in a double-quoted PowerShell argument) — real defect, full exploit-chain not traced | Medium | ☑ commit `[pending]` |
 | 2.10 | LLM prompt construction interpolates niche/title text with no delimiter between instruction and data, repeated across 4 `groq_chat()` call sites — bounded by strict output-format parsing + Dual Inspection | Medium | ☐ |
 | 2.11 | Logout doesn't revoke sessions server-side (stateless tokens valid until natural 12h expiry or a server restart) | Low | ☐ |
 | 2.12 | No explicit CSRF token — protection is entirely implicit (SameSite=Lax + confirmed absence of any state-mutating GET route), real and sufficient today but no dedicated layer to catch a future mistake | Low | ☐ |
@@ -53,7 +53,7 @@ Rules, binding: no simulation, no fake security, no fake certificates/compliance
 | Sub-phase | Scope | Status |
 |---|---|---|
 | Security Audit | Secrets, API keys, env vars, tokens, auth, authz, session mgmt, file permissions, dangerous subprocess use, command injection, path traversal, XSS, CSRF, SQLi, prompt injection, dependency/package/supply-chain risk, unsafe Python, unsafe JS, RCE risk — every finding with severity, impact, evidence, file, root cause, repair | ☑ Complete — [report](https://claude.ai/code/artifact/7cf11021-9fb4-4d3f-8c4c-36eb7e896872), findings 2.1, 2.6–2.13 above |
-| Security Architecture | Security Engine, Secret Manager, Permission Manager, Identity Manager, Access Controller, Security Policy Engine, Audit Logger, Incident Response, Security Dashboard, Threat Intelligence — real modules, only for gaps the audit actually proves exist | ◐ 2.1, 2.6, 2.13, 2.7 done — 2.9 (shell-escaping) next, then 2.8/2.3/2.11/2.12 |
+| Security Architecture | Security Engine, Secret Manager, Permission Manager, Identity Manager, Access Controller, Security Policy Engine, Audit Logger, Incident Response, Security Dashboard, Threat Intelligence — real modules, only for gaps the audit actually proves exist | ◐ 2.1, 2.6, 2.13, 2.7, 2.9 done — 2.8/2.3/2.11/2.12 next |
 | Hardening | Rate limiting, input validation, output sanitization, secure defaults, least privilege, token expiration, encrypted secrets, secure config, dependency verification, automatic vuln scanning | ☐ Blocked on Architecture |
 | Attack Simulation | Controlled, real attempts against API/Mission Control/Publishing/Automation/Executive Board/Discovery/Revenue/Market Hunter — a real pass/fail report | ☐ Blocked on Hardening |
 | Continuous Security | Security/Threat/Dependency/Supply-chain/Code review gates every future feature must pass before production | ☐ Blocked on Attack Simulation |
@@ -252,7 +252,23 @@ Picked up after the Live Competitive Intelligence mission closed (ADR-096) and r
 
 ---
 
-*(Phase 2 continues from here — 2.9 (shell-escaping) is next per the Security Mission Tracker's own stated order, then 2.8/2.3/2.11/2.12.)*
+### 2.9 — Shell-escaping fix: factory_loop.js's sendDesktopNotification() (2026-07-23)
+
+**Implemented:** replaced the vulnerable single-quote-only escaping + outer-double-quoted `-Command` shell string with a real temp `.ps1` script (never containing `title`/`message`) invoked via `execFileSync(..., ['-File', scriptPath, title, message], ...)` — PowerShell's own documented `-File` contract treats trailing arguments as literal script parameters, never re-parsed as shell/PowerShell syntax. Temp script deleted in a `finally` block after every call.
+
+**Real finding mid-fix:** the first attempt (`-EncodedCommand` + trailing args) failed a real test against a title containing a literal `"` — PowerShell.exe's own trailing-argument parsing after `-EncodedCommand` still misinterprets embedded quotes in ways not fully documented. Found by testing, not assumed; switched to `-File`, which a real test with the same malicious input confirmed handles it as inert literal text.
+
+**Tested:** 4 new tests in `tests/test_factory_loop_notification.js` (real injection attempt with a marker-file check proving no execution occurred, literal-double-quote handling, temp-file cleanup confirmed) — all running the real function on the real machine, matching this file's existing testing philosophy (a Windows toast can't be meaningfully mocked).
+
+**Verified:** `tests/test_factory_loop_notification.js` (7/7), all 7 other real `factory_loop.js`-dependent test files (56+ tests, unaffected), full JS suite (260/260, up from 249), full Python suite (1141/1141, unaffected).
+
+**Documented:** `ADR-099`.
+
+**Commit:** `[pending]`.
+
+---
+
+*(Phase 2 continues from here — 2.8/2.3/2.11/2.12 remain, all Low/Medium severity, none yet started.)*
 
 ### 4.7 — Real infrastructure health checks (2026-07-23)
 
