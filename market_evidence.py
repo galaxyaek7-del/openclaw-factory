@@ -57,6 +57,33 @@ EVENT_TYPES = (
     "pricing_objection", "retention_signal", "feature_request",
 )
 
+# Live Competitive Intelligence Layer, Market Evidence & Alerting layer
+# (2026-07-23): real, human-observed facts about a COMPETITOR's business
+# — not about our own customers (the 15 categories above). ADR-093
+# identified these as the 9 real competitor-landscape event categories
+# with no automated sensor anywhere in this factory (no Crunchbase/
+# PitchBook/LinkedIn/CVE/regulatory-filing connector exists) — a human
+# (or Claude Code, asked to check a real public source during a session)
+# must observe each one and call record_evidence() once, same as every
+# category above. Unlike those 15 (a human's own first-hand account of
+# their own interaction), a claim about a THIRD PARTY's business carries
+# real fabrication risk — see the stricter verification gate in
+# record_evidence() below, scoped to only these 9 types.
+COMPETITOR_EVENT_TYPES = (
+    "competitor_funding_round", "competitor_acquisition", "competitor_hiring_spike",
+    "competitor_security_incident", "competitor_partnership", "competitor_regulatory_change",
+    "competitor_customer_migration", "competitor_feature_release", "competitor_pricing_change",
+)
+
+EVENT_TYPES = EVENT_TYPES + COMPETITOR_EVENT_TYPES
+
+# A real, checkable citation for WHERE this claim about a competitor was
+# observed (a news article, a press release, a public filing, a real
+# HN/GitHub URL) — required for the 9 competitor types only. This
+# factory cannot independently fact-check a third-party business claim;
+# requiring a real source is the honest substitute for that.
+_COMPETITOR_EVIDENCE_REQUIRED_FIELDS = ("competitor", "source_url")
+
 _WTP_POSITIVE_TYPES = ("demo_request", "trial_request", "purchase_attempt", "closed_sale")
 
 
@@ -64,12 +91,32 @@ def record_evidence(niche, event_type, payload=None, source="manual", evidence_p
     """Appends one real evidence event. Never silently invents or drops
     an event_type — an unrecognized one is still recorded (matching this
     factory's write-what-you-see discipline) but flagged with a note so
-    a caller can catch a real typo rather than lose the event."""
+    a caller can catch a real typo rather than lose the event.
+
+    Competitor-landscape events (COMPETITOR_EVENT_TYPES) are the one
+    real exception to "never reject" (Market Evidence & Alerting layer,
+    2026-07-23): a claim about a THIRD PARTY's business (a competitor's
+    funding, an acquisition, a security incident) is a fundamentally
+    different risk than a human's own first-hand account of their own
+    customer interaction — this factory has no way to independently
+    verify it. Recording one requires a real `competitor` name and a
+    real `source_url` citation in payload; missing either raises,
+    refusing to store an unverifiable claim as if it were real
+    intelligence. This does not change behavior for any of the 15
+    pre-existing event types."""
+    payload = payload or {}
+    if event_type in COMPETITOR_EVENT_TYPES:
+        missing = [f for f in _COMPETITOR_EVIDENCE_REQUIRED_FIELDS if not payload.get(f)]
+        if missing:
+            raise ValueError(
+                f"دليل منافس حقيقي يتطلب {', '.join(missing)} (اسم منافس حقيقي + رابط مصدر حقيقي قابل للتحقق) — "
+                f"لا يُسجَّل أي حدث منافس بلا استشهاد حقيقي: {event_type}"
+            )
     note = None if event_type in EVENT_TYPES else f"event_type غير معروف في القائمة الرسمية (لم يُرفَض، فقط مُسجَّل مع تنبيه): {event_type}"
     event = {
         "niche": niche,
         "event_type": event_type,
-        "payload": payload or {},
+        "payload": payload,
         "source": source,
         "recorded_at": datetime.now(timezone.utc).isoformat(),
         "note": note,
@@ -147,8 +194,16 @@ def get_retention_signal(niche, evidence_path=None):
     return {"renewed": renewed, "churned": churned}
 
 
+def get_competitor_events(niche, evidence_path=None):
+    """Real, human-observed competitor-landscape events recorded for
+    this niche (the 9 COMPETITOR_EVENT_TYPES) — reuses read_evidence()
+    directly, no new storage. Feeds market_alerts.py's manual-event
+    detection (Market Evidence & Alerting layer, 2026-07-23)."""
+    return [e for e in read_evidence(niche, evidence_path=evidence_path) if e["event_type"] in COMPETITOR_EVENT_TYPES]
+
+
 def summarize_niche(niche, evidence_path=None):
-    """One real, honest evidence summary across all 15 categories — this
+    """One real, honest evidence summary across all 24 categories — this
     is what the Executive Quality Gate consumes automatically."""
     all_events = read_evidence(niche, evidence_path=evidence_path)
     by_type = {}
@@ -165,6 +220,14 @@ def summarize_niche(niche, evidence_path=None):
         "pricing_objections": [e["payload"] for e in by_type.get("pricing_objection", [])],
         "feature_requests": [e["payload"] for e in by_type.get("feature_request", [])],
         "lost_opportunities": [e["payload"] for e in by_type.get("lost_opportunity", [])],
+        # Market Evidence & Alerting layer (2026-07-23): additive-only —
+        # every key above is unchanged, this is a new key, never a
+        # replacement, preserving full backward compatibility for every
+        # existing reader of this function's return shape.
+        "competitor_landscape_events": {
+            event_type: [e["payload"] for e in by_type.get(event_type, [])]
+            for event_type in COMPETITOR_EVENT_TYPES if event_type in by_type
+        },
     }
 
 

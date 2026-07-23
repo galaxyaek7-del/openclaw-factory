@@ -57,7 +57,7 @@ def find_decision(niche, decisions_path=None):
 def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=None,
                       timeline_path=None, analysis_db_file=None, outcomes_path=None,
                       state_path=None, board_path=None, competitor_db_file=None,
-                      ledger_path=None, competitor_history_file=None):
+                      ledger_path=None, competitor_history_file=None, alerts_path=None):
     """Runs the full real governance + production chain for ONE niche
     that already has a real ACCEPTED decision recorded. Returns a single
     unified result -- never raises for a missing decision (reports it
@@ -68,7 +68,11 @@ def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=No
     BOTH eb.convene_board() (the real board meeting this cycle itself
     convenes) and, below, to revenue_pipeline.process_opportunity()'s own
     read-only board_brief lookup -- the exact same meetings log,
-    deliberately shared, not two independent stores."""
+    deliberately shared, not two independent stores. alerts_path (Market
+    Evidence & Alerting layer, 2026-07-23): same sharing, for
+    market_alerts.get_active_alerts() -- both eb.convene_board() (via its
+    own strategic_brief) and revenue_pipeline.process_opportunity() read
+    the exact same real alerts ledger."""
     import executive_quality_gate as eqg
     import executive_board as eb
     from revenue_pipeline import pipeline as revenue_pipeline
@@ -85,7 +89,7 @@ def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=No
     spec = _build_spec(decision)
 
     quality_gate = eqg.run_executive_quality_gate(spec)
-    board_meeting = eb.convene_board(spec, decision_type="production", board_path=board_path)
+    board_meeting = eb.convene_board(spec, decision_type="production", board_path=board_path, alerts_path=alerts_path)
 
     board_blocks_production = (
         not advisory_only and board_meeting["tally"]["board_decision"] != "APPROVED"
@@ -98,6 +102,7 @@ def run_master_cycle(niche, execute=False, advisory_only=True, decisions_path=No
             analysis_db_file=analysis_db_file, outcomes_path=outcomes_path, state_path=state_path,
             competitor_db_file=competitor_db_file, ledger_path=ledger_path,
             competitor_history_file=competitor_history_file, board_path=board_path,
+            alerts_path=alerts_path,
         )
     elif execute and board_blocks_production:
         production_result = {

@@ -137,6 +137,78 @@ class TestRetentionSignal(unittest.TestCase):
         self.assertEqual(signal["churned"], 2)
 
 
+class TestCompetitorEvidence(unittest.TestCase):
+    """Market Evidence & Alerting layer (2026-07-23): the 9 competitor-
+    landscape event types are the one real exception to this module's
+    "never reject" convention -- a claim about a THIRD PARTY's business
+    requires a real, checkable citation."""
+
+    def setUp(self):
+        self.path = _temp_path()
+
+    def tearDown(self):
+        if os.path.exists(self.path):
+            os.remove(self.path)
+
+    def test_competitor_event_without_competitor_or_source_url_is_rejected(self):
+        with self.assertRaises(ValueError):
+            me.record_evidence("n", "competitor_funding_round", {}, evidence_path=self.path)
+
+    def test_competitor_event_missing_only_source_url_is_rejected(self):
+        with self.assertRaises(ValueError):
+            me.record_evidence("n", "competitor_funding_round", {"competitor": "Acme"}, evidence_path=self.path)
+
+    def test_competitor_event_missing_only_competitor_name_is_rejected(self):
+        with self.assertRaises(ValueError):
+            me.record_evidence("n", "competitor_funding_round", {"source_url": "https://example.com/news"}, evidence_path=self.path)
+
+    def test_fully_cited_competitor_event_is_recorded(self):
+        event = me.record_evidence(
+            "n", "competitor_funding_round",
+            {"competitor": "Acme", "source_url": "https://example.com/news", "amount": "$5M Series A"},
+            evidence_path=self.path,
+        )
+        self.assertIsNone(event["note"])
+        events = me.read_evidence("n", "competitor_funding_round", evidence_path=self.path)
+        self.assertEqual(len(events), 1)
+
+    def test_pre_existing_15_event_types_are_completely_unaffected(self):
+        """Backward compatibility: the stricter gate is scoped ONLY to
+        COMPETITOR_EVENT_TYPES -- every pre-existing category still
+        records with zero payload, exactly as before."""
+        event = me.record_evidence("n", "demo_request", {}, evidence_path=self.path)
+        self.assertIsNone(event["note"])
+
+    def test_get_competitor_events_filters_to_only_the_9_competitor_types(self):
+        me.record_evidence("n", "demo_request", {}, evidence_path=self.path)
+        me.record_evidence(
+            "n", "competitor_pricing_change",
+            {"competitor": "Acme", "source_url": "https://example.com/pricing"}, evidence_path=self.path,
+        )
+        events = me.get_competitor_events("n", evidence_path=self.path)
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0]["event_type"], "competitor_pricing_change")
+
+    def test_summarize_niche_surfaces_competitor_landscape_events_additively(self):
+        me.record_evidence("n", "demo_request", {}, evidence_path=self.path)
+        me.record_evidence(
+            "n", "competitor_acquisition",
+            {"competitor": "Acme", "source_url": "https://example.com/m-and-a"}, evidence_path=self.path,
+        )
+        summary = me.summarize_niche("n", evidence_path=self.path)
+        # every pre-existing key must still be present, unchanged in shape
+        for key in ("willingness_to_pay", "customer_acquisition", "retention",
+                    "customer_objections", "pricing_objections", "feature_requests", "lost_opportunities"):
+            self.assertIn(key, summary)
+        self.assertIn("competitor_landscape_events", summary)
+        self.assertEqual(len(summary["competitor_landscape_events"]["competitor_acquisition"]), 1)
+
+    def test_all_9_competitor_types_are_in_event_types(self):
+        for event_type in me.COMPETITOR_EVENT_TYPES:
+            self.assertIn(event_type, me.EVENT_TYPES)
+        self.assertEqual(len(me.COMPETITOR_EVENT_TYPES), 9)
+
+
 class TestSummarizeNiche(unittest.TestCase):
     def setUp(self):
         self.path = _temp_path()

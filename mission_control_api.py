@@ -1032,6 +1032,41 @@ def _review_board_track_record():
     return {"reviews": eb.review_board_track_record(payload.get("niche"))}
 
 
+def _scan_market_alerts():
+    """Market Evidence & Alerting layer (2026-07-23): the real, on-demand
+    alert scan -- no scheduler exists in this factory (CLAUDE.md), so
+    this only runs when explicitly triggered here. Detects real,
+    auto-observable competitor changes (competitor_discovery.py's
+    already-computed new/disappeared/growth-signal diff) plus real,
+    human-recorded competitor-landscape events (market_evidence.py's 9
+    new event types), dedupes against every already-recorded alert for
+    this niche, and persists only the genuinely new ones. Reads its
+    payload from sys.argv[2]:
+    `python mission_control_api.py scan_market_alerts '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import market_alerts
+    return market_alerts.scan_market_alerts(niche)
+
+
+def _get_market_alerts():
+    """Read-only lookup of every real alert already recorded for one
+    niche (Critical/High/Medium/Low), grouped by severity -- never
+    triggers a new scan itself (use scan_market_alerts for that). Reads
+    its payload from sys.argv[2]:
+    `python mission_control_api.py get_market_alerts '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import market_alerts
+    return market_alerts.get_active_alerts(niche)
+
+
 def _get_board_brief():
     """Executive Board Integration (2026-07-23): read-only lookup of
     whatever the board already decided for one niche (the 6-lens
@@ -1126,6 +1161,8 @@ _ENDPOINTS = {
     "convene_executive_board": _convene_executive_board,
     "review_board_track_record": _review_board_track_record,
     "get_board_brief": _get_board_brief,
+    "scan_market_alerts": _scan_market_alerts,
+    "get_market_alerts": _get_market_alerts,
     "run_master_cycle": _run_master_cycle,
 }
 

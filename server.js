@@ -1236,6 +1236,35 @@ const ACTION_REGISTRY = [
     },
   },
   {
+    // Market Evidence & Alerting layer (2026-07-23) -- real, on-demand
+    // scan (no scheduler exists): auto-detects competitor changes
+    // already computed by competitor_discovery.py plus real, human-
+    // recorded competitor-landscape events from market_evidence.py,
+    // dedupes against the persisted alert log, appends only new ones.
+    name: 'scan-market-alerts',
+    description: 'Scans for new real competitor alerts for one niche (auto-detected competitor changes + human-recorded competitor-landscape events), dedupes against already-recorded alerts, persists only genuinely new ones. Never fabricates an event.',
+    reused: 'market_alerts.py::scan_market_alerts()',
+    reversible: true, // append-only alert log; no destructive write
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('scan-market-alerts', 'scan_market_alerts', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    name: 'get-market-alerts',
+    description: 'Read-only lookup of every real alert already recorded for one niche (Critical/High/Medium/Low), grouped by severity. Never triggers a new scan.',
+    reused: 'market_alerts.py::get_active_alerts()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('get-market-alerts', 'get_market_alerts', [JSON.stringify({ niche })]);
+    },
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +

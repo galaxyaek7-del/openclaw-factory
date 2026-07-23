@@ -252,14 +252,21 @@ def _real_production_cost_estimate():
     return plan_module.estimate_production_cost()
 
 
-def build_strategic_brief(spec, readiness_result, risk_intel):
+def build_strategic_brief(spec, readiness_result, risk_intel, alerts_path=None):
     """The 6 lenses (Threat Assessment, Opportunity Assessment, Market
     Intelligence, Financial Impact, Technical Risk, Customer Trust
     Impact) every executive decision must automatically include. Every
     value here is read from readiness_result/risk_intel/spec -- already
     computed above in convene_board() -- never a second, independent
-    computation."""
+    computation.
+
+    Market Evidence & Alerting layer (2026-07-23): the Threat Assessment
+    lens also carries active_alerts -- a real, read-only lookup of
+    market_alerts.get_active_alerts() for this niche. Never triggers a
+    new alert scan itself; only mission_control_api.py's dedicated scan
+    action does that."""
     import enterprise_readiness as er
+    import market_alerts
 
     snapshot = spec.get("evaluation_snapshot") or {}
     product_review = readiness_result.get("product_review", {})
@@ -268,9 +275,11 @@ def build_strategic_brief(spec, readiness_result, risk_intel):
     criteria = gate_result.get("criteria", {})
 
     threat_assessment = (
-        risk_intel.get("threat_assessment") if risk_intel
+        dict(risk_intel.get("threat_assessment") or {}) if risk_intel
         else {"note": "لم يُشغَّل مسح استخبارات المخاطر لهذا الاجتماع (بلا نيتش، أو include_risk_intelligence=False)"}
     )
+    if spec.get("niche"):
+        threat_assessment["active_alerts"] = market_alerts.get_active_alerts(spec["niche"], alerts_path=alerts_path)
 
     opportunity_assessment = {
         "market_signal": _snapshot_field(snapshot, "market_signal", "لم يُحسَب لهذا القرار"),
@@ -393,7 +402,7 @@ def _write_meeting(meeting, board_path=None):
         f.write(json.dumps(meeting, ensure_ascii=False, default=str) + "\n")
 
 
-def convene_board(spec, decision_type="production", include_risk_intelligence=True, board_path=None):
+def convene_board(spec, decision_type="production", include_risk_intelligence=True, board_path=None, alerts_path=None):
     """The ONLY function in this module that produces a real board
     decision -- no individual executive function above is ever wired as
     a standalone approval path, enforcing "no single agent may approve
@@ -440,7 +449,7 @@ def convene_board(spec, decision_type="production", include_risk_intelligence=Tr
     ]
 
     tally = _tally(executives, decision_type)
-    strategic_brief = build_strategic_brief(spec, readiness_result, risk_intel)
+    strategic_brief = build_strategic_brief(spec, readiness_result, risk_intel, alerts_path=alerts_path)
     decision_summary = build_decision_summary(executives, tally)
 
     meeting = {

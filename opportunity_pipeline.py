@@ -44,6 +44,7 @@ from decision_engine import ranking
 import profit_oracle
 import business_dossier as bd
 import executive_board as eb
+import market_alerts
 
 
 def _unknown(reason):
@@ -57,7 +58,7 @@ def _first_not_none(*values):
     return None
 
 
-def _annotate(decision, board_path=None):
+def _annotate(decision, board_path=None, alerts_path=None):
     snap = decision.get("evaluation_snapshot") or {}
     ladder_components = snap.get("components") or {}
     ai_ceo_scores = snap.get("scores") or {}
@@ -151,6 +152,11 @@ def _annotate(decision, board_path=None):
     # Honestly None when this niche never went before the board.
     board_brief = eb.get_latest_board_brief(decision.get("niche"), board_path=board_path) if decision.get("niche") else None
 
+    # Market Evidence & Alerting layer (2026-07-23): same real, read-only
+    # connection as board_brief above -- never triggers a new alert scan
+    # from a backlog listing.
+    active_alerts = market_alerts.get_active_alerts(decision.get("niche"), alerts_path=alerts_path) if decision.get("niche") else None
+
     return {
         "niche": decision.get("niche"),
         "decision_id": decision.get("decision_id"),
@@ -194,6 +200,11 @@ def _annotate(decision, board_path=None):
         # (never fabricated) when it hasn't.
         "board_brief": board_brief,
 
+        # Market Evidence & Alerting layer (2026-07-23): active competitor
+        # alerts for this niche (Critical/High/Medium/Low), if any real
+        # scan has ever run. None (never fabricated) otherwise.
+        "active_alerts": active_alerts,
+
         # Additional real, already-computed context (not part of the
         # named fields, kept for transparency):
         "risk": snap.get("risk"),
@@ -202,7 +213,7 @@ def _annotate(decision, board_path=None):
     }
 
 
-def build_opportunity_pipeline(decisions_path=None, backlog_limit=100, board_path=None):
+def build_opportunity_pipeline(decisions_path=None, backlog_limit=100, board_path=None, alerts_path=None):
     """Product Laboratory = every real decision already ACCEPTED by the
     existing gate (never a new invented threshold). Backlog = everything
     else, capped at backlog_limit for a readable response -- the real
@@ -211,9 +222,11 @@ def build_opportunity_pipeline(decisions_path=None, backlog_limit=100, board_pat
 
     board_path: test-isolation override for the board_brief lookup
     (Executive Board Integration, 2026-07-23), same convention as
-    decisions_path -- omitting it reads the real default board_meetings.jsonl."""
+    decisions_path -- omitting it reads the real default board_meetings.jsonl.
+    alerts_path: same isolation convention for the active_alerts lookup
+    (Market Evidence & Alerting layer, 2026-07-23)."""
     decisions = ranking.rank_all(path=decisions_path)
-    annotated = [_annotate(d, board_path=board_path) for d in decisions]
+    annotated = [_annotate(d, board_path=board_path, alerts_path=alerts_path) for d in decisions]
 
     product_laboratory = [a for a in annotated if a["status"] == "ACCEPTED"]
     backlog_all = [a for a in annotated if a["status"] != "ACCEPTED"]

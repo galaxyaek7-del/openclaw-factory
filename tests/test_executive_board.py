@@ -149,10 +149,12 @@ class TestTally(unittest.TestCase):
 class TestConveneBoard(unittest.TestCase):
     def setUp(self):
         self.board_path = _temp_path()
+        self.alerts_path = _temp_path()
 
     def tearDown(self):
-        if os.path.exists(self.board_path):
-            os.remove(self.board_path)
+        for p in (self.board_path, self.alerts_path):
+            if os.path.exists(p):
+                os.remove(p)
 
     def _mock_readiness_result(self, all_pass=True):
         status = "PASS" if all_pass else "FAIL"
@@ -185,7 +187,7 @@ class TestConveneBoard(unittest.TestCase):
 
     def test_convene_board_writes_one_real_meeting(self):
         with patch("enterprise_readiness.run_enterprise_readiness_gate", return_value=self._mock_readiness_result(all_pass=True)):
-            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path)
+            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path, alerts_path=self.alerts_path)
         self.assertEqual(len(meeting["executives"]), 10)
         with open(self.board_path, encoding="utf-8") as f:
             lines = f.readlines()
@@ -193,20 +195,20 @@ class TestConveneBoard(unittest.TestCase):
 
     def test_all_clean_evidence_approves_the_board(self):
         with patch("enterprise_readiness.run_enterprise_readiness_gate", return_value=self._mock_readiness_result(all_pass=True)):
-            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path)
+            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path, alerts_path=self.alerts_path)
         self.assertEqual(meeting["tally"]["board_decision"], "APPROVED")
 
     def test_real_failures_reject_the_board(self):
         with patch("enterprise_readiness.run_enterprise_readiness_gate", return_value=self._mock_readiness_result(all_pass=False)):
-            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path)
+            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path, alerts_path=self.alerts_path)
         self.assertEqual(meeting["tally"]["board_decision"], "NOT_APPROVED")
 
     def test_never_triggers_risk_intelligence_unless_explicitly_requested(self):
         with patch("enterprise_readiness.run_enterprise_readiness_gate", return_value=self._mock_readiness_result()), \
              patch("enterprise_readiness.run_risk_intelligence_scan") as mock_scan:
-            eb.convene_board({"niche": "test niche"}, board_path=self.board_path, include_risk_intelligence=False)
+            eb.convene_board({"niche": "test niche"}, board_path=self.board_path, alerts_path=self.alerts_path, include_risk_intelligence=False)
             mock_scan.assert_not_called()
-            eb.convene_board({"niche": "test niche"}, board_path=self.board_path, include_risk_intelligence=True)
+            eb.convene_board({"niche": "test niche"}, board_path=self.board_path, alerts_path=self.alerts_path, include_risk_intelligence=True)
             mock_scan.assert_called_once()
 
     def test_meeting_carries_the_6_lens_strategic_brief_and_decision_summary(self):
@@ -220,13 +222,17 @@ class TestConveneBoard(unittest.TestCase):
         with patch("enterprise_readiness.run_enterprise_readiness_gate", return_value=self._mock_readiness_result(all_pass=True)), \
              patch("enterprise_readiness.run_risk_intelligence_scan", return_value=risk_intel), \
              patch("revenue_pipeline.plan.estimate_production_cost", return_value={"maturity": "DISCOVERY", "reason": "x"}):
-            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path)
+            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path, alerts_path=self.alerts_path)
 
         brief = meeting["strategic_brief"]
         for lens in ("threat_assessment", "opportunity_assessment", "market_intelligence",
                      "financial_impact", "technical_risk", "customer_trust_impact"):
             self.assertIn(lens, brief)
-        self.assertEqual(brief["threat_assessment"], risk_intel["threat_assessment"])
+        self.assertEqual(brief["threat_assessment"]["competitor_saturation"], risk_intel["threat_assessment"]["competitor_saturation"])
+        # Market Evidence & Alerting layer (2026-07-23): active_alerts is
+        # attached on top of whatever run_risk_intelligence_scan() already
+        # returned -- a real, isolated, read-only lookup, honestly empty here.
+        self.assertEqual(brief["threat_assessment"]["active_alerts"]["total"], 0)
 
         summary = meeting["decision_summary"]
         for field in ("decision", "confidence", "evidence", "risks", "recommended_actions", "follow_up_tasks"):
@@ -234,11 +240,38 @@ class TestConveneBoard(unittest.TestCase):
         self.assertEqual(summary["decision"], "APPROVED")
         self.assertEqual(summary["risks"], [])
 
+    def test_strategic_brief_surfaces_a_real_persisted_alert(self):
+        """Market Evidence & Alerting layer (2026-07-23): a real,
+        already-scanned alert for this niche must reach the board's
+        Threat Assessment lens automatically, isolated to alerts_path."""
+        import market_alerts
+        me_evidence_path = _temp_path()
+        try:
+            import market_evidence as me
+            me.record_evidence(
+                "test niche", "competitor_pricing_change",
+                {"competitor": "Acme", "source_url": "https://example.com/pricing"},
+                evidence_path=me_evidence_path,
+            )
+            market_alerts.scan_market_alerts("test niche", evidence_path=me_evidence_path, alerts_path=self.alerts_path)
+        finally:
+            if os.path.exists(me_evidence_path):
+                os.remove(me_evidence_path)
+
+        with patch("enterprise_readiness.run_enterprise_readiness_gate", return_value=self._mock_readiness_result(all_pass=True)), \
+             patch("enterprise_readiness.run_risk_intelligence_scan", return_value=None), \
+             patch("revenue_pipeline.plan.estimate_production_cost", return_value={"maturity": "DISCOVERY", "reason": "x"}):
+            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path, alerts_path=self.alerts_path)
+
+        active_alerts = meeting["strategic_brief"]["threat_assessment"]["active_alerts"]
+        self.assertEqual(active_alerts["total"], 1)
+        self.assertEqual(active_alerts["by_severity_counts"]["High"], 1)
+
     def test_decision_summary_recommended_actions_trace_to_real_risks(self):
         with patch("enterprise_readiness.run_enterprise_readiness_gate", return_value=self._mock_readiness_result(all_pass=False)), \
              patch("enterprise_readiness.run_risk_intelligence_scan", return_value=None), \
              patch("revenue_pipeline.plan.estimate_production_cost", return_value={"maturity": "DISCOVERY", "reason": "x"}):
-            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path)
+            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path, alerts_path=self.alerts_path)
 
         summary = meeting["decision_summary"]
         self.assertEqual(summary["decision"], "NOT_APPROVED")
@@ -248,7 +281,7 @@ class TestConveneBoard(unittest.TestCase):
 
     def test_strategic_brief_threat_assessment_is_honest_when_risk_intelligence_skipped(self):
         with patch("enterprise_readiness.run_enterprise_readiness_gate", return_value=self._mock_readiness_result(all_pass=True)):
-            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path, include_risk_intelligence=False)
+            meeting = eb.convene_board({"niche": "test niche"}, board_path=self.board_path, alerts_path=self.alerts_path, include_risk_intelligence=False)
         self.assertIn("note", meeting["strategic_brief"]["threat_assessment"])
 
 

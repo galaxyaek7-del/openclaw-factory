@@ -298,4 +298,18 @@ Full findings and decisions: `ADR-093`. Founder-confirmed before building: exten
 
 **Commit:** `74866d3`.
 
-**Next in this mission:** Decision re-open trigger (deferred this pass, founder-confirmed), `market_evidence.py` extension for the 9 non-auto-detectable event types, alerting — each a separate, sequenced piece.
+### 4.15 — Market Evidence & Alerting layer (2026-07-23)
+
+**Implemented:** `market_evidence.py` gained `COMPETITOR_EVENT_TYPES` (the 9 non-auto-detectable competitor event categories named in ADR-093 — funding, acquisition, hiring spike, security incident, partnership, regulatory change, customer migration, feature release, pricing change), a real citation-required gate in `record_evidence()` scoped only to these 9 types (a real `competitor` name + a real `source_url` are required, or it raises — this factory cannot independently fact-check a third-party claim), `get_competitor_events()`, and an additive `competitor_landscape_events` key in `summarize_niche()`. New `market_alerts.py` module: `detect_auto_alerts()` (reuses `competitor_discovery.py`'s already-computed `changes` diff, zero new computation), `detect_manual_alerts()` (reuses the new competitor evidence categories), `scan_market_alerts()` (the one real write path — dedupes via a stable key, "no alert spam"), `get_active_alerts()` (the one real read path, grouped by severity). Severity/confidence/recommended-action are all deterministic — a new competitor's severity comes from its real `classify_competitor()` category, a growth signal's severity from a real computed percentage change, never a freely-generated judgment.
+
+**Connected to the 4 named systems**, all via the same read-only `get_active_alerts()` pattern `get_latest_board_brief()` (ADR-094) already established: Executive Board (`build_strategic_brief()`'s Threat Assessment lens gains `active_alerts`), Mission Control (new `scan-market-alerts`/`get-market-alerts` actions), Revenue Engine (`process_opportunity()` gains `active_alerts`, informational only), Opportunity Queue (`_annotate()` gains `active_alerts`).
+
+**Tested:** 54 new tests across `tests/test_market_evidence.py` (+8), `tests/test_market_alerts.py` (new, 21), `tests/test_executive_board.py` (+2), `tests/test_opportunity_pipeline.py` (+2), `tests/test_revenue_pipeline.py` (+1 plus isolation added everywhere), `tests/test_master_cycle_production_e2e.py` (isolation added).
+
+**Verified:** highest-risk existing suites run first, then the full repository: Python 1117/1117 (up from 1084), Node 233/233 real tests (unchanged — Python-only piece). All 6 live data files (`competitor_database.json`, `competitor_history.jsonl`, `board_meetings.jsonl`, `decisions.jsonl`, `market_evidence.jsonl`, `market_alerts.jsonl`) confirmed untouched by the test run.
+
+**Documented:** `ADR-095`.
+
+**Commit:** `[pending]`.
+
+**Next in this mission:** Decision re-open trigger (deferred, founder-confirmed in ADR-094) is the one remaining piece from ADR-093's original scope.
