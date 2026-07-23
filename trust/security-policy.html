@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security Policy — OpenClaw Factory</title>
+<style>
+  :root { --bg: #f8fafc; --bg-card: #ffffff; --border: #e2e8f0; --text: #0f172a; --text-dim: #64748b; --accent: #2563eb; --accent-soft: #eff6ff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b1120; --bg-card: #131c31; --border: #1f2b45; --text: #e5edff; --text-dim: #8ba0c4; --accent: #60a5fa; --accent-soft: #16233f; } }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0 20px 60px; line-height: 1.65; }
+  .wrap { max-width: 680px; margin: 0 auto; }
+  .back { display: inline-block; margin: 28px 0 8px; color: var(--accent); text-decoration: none; font-size: 13px; }
+  h1 { font-size: 26px; margin: 8px 0 4px; }
+  .updated { color: var(--text-dim); font-size: 13px; margin-bottom: 28px; }
+  h2 { font-size: 17px; margin: 32px 0 10px; }
+  p, li { color: var(--text); font-size: 15px; }
+  ul { padding-left: 22px; }
+  .box { background: var(--accent-soft); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 14px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="/trust/index.html">&larr; Trust Center</a>
+  <h1>Security Policy</h1>
+  <div class="updated">Last reviewed: July 23, 2026</div>
+
+  <p>We're a small, early-stage business, not a security team of hundreds — but we treat security as a real discipline, not an afterthought. Here's how, honestly.</p>
+
+  <h2>What we build</h2>
+  <ul>
+    <li>Administrative access to our own systems requires authentication, with signed sessions verified using constant-time comparison (to resist timing-based attacks) and a fixed session lifetime.</li>
+    <li>We run automated dependency scanning and keep our software dependencies current against known vulnerabilities.</li>
+    <li>Our systems undergo regular internal security review — checking for injection vulnerabilities, unsafe code patterns, and unauthorized access paths — and real findings get fixed, not just logged.</li>
+    <li>We don't store payment card details, ever. Every purchase is processed by the platform you buy through (Paddle, Gumroad, Etsy, or Amazon KDP) under their own security and compliance programs.</li>
+  </ul>
+
+  <h2>What we don't do (yet), stated plainly</h2>
+  <ul>
+    <li>We do not currently hold a formal third-party security certification (such as SOC 2 or ISO 27001). These require an ongoing compliance program that isn't justified at our current size — we'll pursue this if and when we have the customer base to warrant it.</li>
+    <li>We have not commissioned a professional penetration test. Our own internal review process is real, but it isn't a substitute for one, and we don't claim it is.</li>
+  </ul>
+
+  <h2>Reporting a security issue</h2>
+  <div class="box">
+    If you believe you've found a security vulnerability in any OpenClaw Factory product or system, please email <a href="mailto:galaxyaek7@gmail.com">galaxyaek7@gmail.com</a> with details. We read every message ourselves, and we'll acknowledge real reports promptly. Please give us a reasonable window to investigate and fix an issue before disclosing it publicly.
+  </div>
+
+  <h2>Changes to this policy</h2>
+  <p>As this business grows, this policy will be updated to reflect what's actually true at the time — we'd rather under-claim than over-promise.</p>
+</div>
+</body>
+</html>

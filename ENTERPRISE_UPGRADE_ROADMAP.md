@@ -107,11 +107,34 @@ A real audit (not guessed) found this mission overlaps heavily with work already
 | # | Finding | Severity | Status |
 |---|---|---|---|
 | 5.1 | Zero completed live transactions on any channel — Gumroad has no working token, Paddle blocked on its own onboarding gate | Critical | ☐ |
-| 5.2 | No customer trust signals anywhere — no SLA, `security.txt`, responsible-disclosure policy, or status page | Critical | ☐ |
-| 5.3 | No support channel or refund policy documented | High | ☐ |
+| 5.2 | No customer trust signals anywhere — no SLA, `security.txt`, responsible-disclosure policy, or status page | Critical | ◐ Trust Center + Security/Responsible AI/Incident Disclosure policies + real contact point built, `[pending]` — no SLA/status page yet (premature at zero real customers) |
+| 5.3 | No support channel or refund policy documented | High | ◐ Real contact point + a Refund Policy **draft** built, `[pending]` — needs lawyer review before being final |
 | 5.4 | No bookkeeping/financial system (triggers the moment a first real sale closes) | Critical, but gated on 5.1 | ☐ |
 | 5.5 | Market intelligence runs on ~4–6 of 11 intended real data sources | High | ☐ |
 | 5.6 | Single-vendor, single-model LLM dependency with no fallback; two divergent LLM call implementations | High | ☐ |
+
+### Global Commercial Readiness Mission Tracker (founder directive, 2026-07-23)
+
+Rules, binding: search/verify/integrate before building anything new, never duplicate existing functionality, production-grade code only, commit only after verification.
+
+A real search before building anything found two direct duplication risks and one business-model mismatch, all raised to the founder before writing any code:
+
+| Requested item | Real finding | Decision |
+|---|---|---|
+| Product Catalog | `product_families/` (a real, mature family/registry/manifest system) already exists | Declined to rebuild — a catalog *view* over the existing real data is the right scope, queued separately, not built this round |
+| Pricing Engine | `config/economics.json` already exists — real per-platform royalty tiers, profit floors, delivery costs | Declined to rebuild — same reasoning |
+| Invoice generation | Paddle and Gumroad, as the actual payment processors, already generate real, compliant receipts/invoices for every transaction | Declined — a hand-rolled system would duplicate (and likely be less compliant than) what they already provide |
+| Enterprise Sales Layer (Demo Mode, ROI Calculator, Enterprise Presentation, sales decks) | `channels/paddle_publisher.py`'s own code comment explicitly notes this factory is *not* built for "invoiced B2B" sales — it sells consumer digital products at $19–200 price points on Etsy/Gumroad/KDP/Paddle | Declined — building this would fabricate a sales motion this business doesn't have |
+| Licensing System, Subscription Support, Enterprise Pricing | No real subscription/enterprise customer exists to justify this infrastructure | Declined, same "premature infrastructure" reasoning as Phase 6/7's HA gating |
+| Customer Success Layer (onboarding, support workflows, FAQ, tutorials, knowledge base) | Zero real customers exist today — no real support history to document, no real onboarding flow to build for | Declined for now — real triggers to revisit: first real sale, first real support request |
+| Legal documents (ToS, Privacy Policy, Refund Policy) | Not a duplication risk, but a real capability limit: an AI-generated legal document presented as final, binding protection would be a real liability, not a real fix | Built as clearly-labeled **drafts** pending real lawyer review, not published as final |
+
+**What was actually built, real subset, founder-approved before starting:** a Trust Center (`trust/index.html`) linking a Security Policy, Responsible AI Policy, and Incident Disclosure Policy (honest engineering disclosures, written from real findings already established this session — no legal review needed, no legal claims made) plus draft Privacy Policy / Terms of Service / Refund Policy (clearly marked, `[FOUNDER: fill in]`-style placeholders for anything requiring real legal/jurisdictional facts this session doesn't have), and a real contact point.
+
+| # | Finding | Severity | Status |
+|---|---|---|---|
+| 5.7 | Trust Center + 6 real policy pages built (3 honest disclosures, 3 lawyer-review-pending drafts) | — | ☐ |
+| 5.8 | Product Catalog / Pricing Engine — a real view over existing `product_families`/`economics.json` data, not a rebuild | — | ☐ Queued next |
 
 ## Phase 6 — Enterprise Scale
 

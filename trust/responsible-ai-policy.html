@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Responsible AI Policy — OpenClaw Factory</title>
+<style>
+  :root { --bg: #f8fafc; --bg-card: #ffffff; --border: #e2e8f0; --text: #0f172a; --text-dim: #64748b; --accent: #2563eb; --accent-soft: #eff6ff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b1120; --bg-card: #131c31; --border: #1f2b45; --text: #e5edff; --text-dim: #8ba0c4; --accent: #60a5fa; --accent-soft: #16233f; } }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0 20px 60px; line-height: 1.65; }
+  .wrap { max-width: 680px; margin: 0 auto; }
+  .back { display: inline-block; margin: 28px 0 8px; color: var(--accent); text-decoration: none; font-size: 13px; }
+  h1 { font-size: 26px; margin: 8px 0 4px; }
+  .updated { color: var(--text-dim); font-size: 13px; margin-bottom: 28px; }
+  h2 { font-size: 17px; margin: 32px 0 10px; }
+  p, li { color: var(--text); font-size: 15px; }
+  ul { padding-left: 22px; }
+  .box { background: var(--accent-soft); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 14px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="/trust/index.html">&larr; Trust Center</a>
+  <h1>Responsible AI Policy</h1>
+  <div class="updated">Last reviewed: July 23, 2026</div>
+
+  <p>AI (a large language model) is part of how we build our products. Here's exactly where, and what keeps it in check.</p>
+
+  <h2>Where AI is used</h2>
+  <ul>
+    <li>Generating draft content for digital products (books, templates, guides) based on a chosen topic and structure.</li>
+    <li>Assisting with market research — summarizing publicly available signals about a topic's demand.</li>
+  </ul>
+
+  <h2>Where AI is deliberately not used</h2>
+  <p>Decisions about which products to build and publish are made by a set of fixed, rule-based checks over real, logged evidence — not by asking an AI model to "decide." We made this choice specifically because we found, in our own testing, that language models can confidently state things that aren't true when asked to make an open-ended judgment call. For decisions that matter, we don't want that risk — so those decisions are deterministic, not generated.</p>
+
+  <h2>Quality control on AI-generated content</h2>
+  <p>Every AI-generated product goes through an automated quality check before it's eligible to publish — checking real, structural things like file integrity, page count, and the absence of leftover placeholder text. This check does <strong>not</strong> verify that AI-generated content is factually accurate. We're honest about that limit: automated fact-checking of open-ended generated text is a hard, unsolved problem, and we won't claim a guarantee we can't back up. If accuracy matters for a specific product, a human reviews it before it ships.</p>
+
+  <h2>Provider and continuity</h2>
+  <p>We currently use a single AI provider (Groq, running Meta's Llama models) for content generation. If that provider becomes unavailable, content generation pauses until it's restored or we add an alternative — we don't have a live failover today, and we won't claim otherwise.</p>
+
+  <h2>Questions</h2>
+  <div class="box">
+    If you have a question about how AI was used in a specific product you purchased, email <a href="mailto:galaxyaek7@gmail.com">galaxyaek7@gmail.com</a>.
+  </div>
+</div>
+</body>
+</html>

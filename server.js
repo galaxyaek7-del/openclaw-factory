@@ -3267,6 +3267,24 @@ app.get('/mission_control_login.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'mission_control_login.html'));
 });
 
+// Global Commercial Readiness Mission (2026-07-23) — Customer Trust
+// System. A real bug found by this feature's own test suite, not
+// assumed safe: without this, GET /trust/* fell through to the
+// wildcard catch-all below and silently served the wrong file (the
+// UTF-16-encoded root index.html, garbled when read as UTF-8) instead
+// of any real trust-center page — a 200 status code with completely
+// wrong content, which a status-code-only check would have missed.
+//
+// This is deliberately NOT the same mistake as the removed repo-root
+// express.static() above (the real prior CRITICAL finding): that one
+// exposed the entire repository, including finance_data.json and
+// every real data file, because its root was `__dirname` itself. This
+// one is scoped to `trust/` alone — a small, dedicated directory that
+// contains nothing but these public-by-design pages, the same
+// "intentionally public, nothing sensitive can end up here" reasoning
+// dashboard.html's own bare-path route already relies on.
+app.use('/trust', express.static(path.join(__dirname, 'trust')));
+
 app.get('/{*path}', (req, res) => {
   sendIndexHtml(res);
 });

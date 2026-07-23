@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenClaw Factory — Trust Center</title>
+<style>
+  :root {
+    --bg: #f8fafc; --bg-card: #ffffff; --border: #e2e8f0; --text: #0f172a; --text-dim: #64748b;
+    --accent: #2563eb; --accent-soft: #eff6ff; --ok: #16a34a; --warn: #d97706; --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0b1120; --bg-card: #131c31; --border: #1f2b45; --text: #e5edff; --text-dim: #8ba0c4; --accent: #60a5fa; --accent-soft: #16233f; --ok: #4ade80; --warn: #fbbf24; --shadow: 0 1px 3px rgba(0,0,0,0.4); }
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0 20px 60px; line-height: 1.6; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  header { padding: 48px 0 32px; }
+  .eyebrow { color: var(--accent); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+  h1 { font-size: 30px; margin: 0 0 12px; }
+  p.lede { color: var(--text-dim); font-size: 16px; max-width: 60ch; }
+  .stage-note { background: var(--accent-soft); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin: 24px 0; font-size: 14px; color: var(--text); }
+  .stage-note strong { color: var(--accent); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 28px; }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+  a.card { display: block; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; text-decoration: none; color: var(--text); box-shadow: var(--shadow); transition: transform .12s ease, border-color .12s ease; }
+  a.card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  a.card .title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  a.card .desc { color: var(--text-dim); font-size: 13px; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 8px; border-radius: 5px; margin-left: 8px; vertical-align: middle; }
+  .badge.draft { background: #fef3c7; color: #92400e; }
+  @media (prefers-color-scheme: dark) { .badge.draft { background: #3a2f13; color: #fbbf24; } }
+  footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 13px; }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">OpenClaw Factory</div>
+    <h1>Trust Center</h1>
+    <p class="lede">How we build, secure, and stand behind the products we sell — written plainly, kept accurate as this business grows.</p>
+  </header>
+
+  <div class="stage-note">
+    <strong>Honest note on where we are today:</strong> OpenClaw Factory is an early-stage, single-operator business. We collect no customer personal data directly — every purchase and payment is handled by the platform you buy through (Paddle, Gumroad, Etsy, or Amazon KDP), and each of those platforms has its own privacy and payment terms that also apply to your purchase. We'd rather tell you that plainly than dress up a bigger operation than we are.
+  </div>
+
+  <div class="grid">
+    <a class="card" href="/trust/security-policy.html">
+      <div class="title">Security Policy</div>
+      <div class="desc">How we build securely, and how to report a security issue.</div>
+    </a>
+    <a class="card" href="/trust/responsible-ai-policy.html">
+      <div class="title">Responsible AI Policy</div>
+      <div class="desc">Where AI is used in our products, and what keeps it in check.</div>
+    </a>
+    <a class="card" href="/trust/incident-disclosure-policy.html">
+      <div class="title">Incident Disclosure Policy</div>
+      <div class="desc">What we commit to if something ever goes wrong.</div>
+    </a>
+    <a class="card" href="/trust/privacy-policy.html">
+      <div class="title">Privacy Policy <span class="badge draft">Draft</span></div>
+      <div class="desc">What data we do (and mostly don't) handle.</div>
+    </a>
+    <a class="card" href="/trust/terms-of-service.html">
+      <div class="title">Terms of Service <span class="badge draft">Draft</span></div>
+      <div class="desc">The terms of buying and using our products.</div>
+    </a>
+    <a class="card" href="/trust/refund-policy.html">
+      <div class="title">Refund Policy <span class="badge draft">Draft</span></div>
+      <div class="desc">What happens if a purchase doesn't work out.</div>
+    </a>
+  </div>
+
+  <footer>
+    Questions, a security report, or anything else — reach us directly at <a href="mailto:galaxyaek7@gmail.com">galaxyaek7@gmail.com</a>. We're a small team; we read every message ourselves.
+    <br><br>
+    Pages marked <span class="badge draft">Draft</span> are honest, evidence-based drafts pending review by a qualified lawyer before they're treated as final. We'd rather show you an accurate draft than a polished document we can't stand behind.
+  </footer>
+</div>
+</body>
+</html>
