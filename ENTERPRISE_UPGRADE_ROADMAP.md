@@ -132,3 +132,22 @@ Rules, binding: no simulation, no fake security, no fake certificates/compliance
 ---
 
 *(Phase 1.2 — uptime monitoring — paused here per founder redirect to the Enterprise Security & Cyber Defense Mission. Resumes after that mission's Phase 1 audit lands.)*
+
+### 2.6 + 2.13 — Pillow CVE fix + unused package removal (2026-07-23)
+
+**Implemented:**
+- `requirements.txt`: `Pillow==12.2.0` → `12.3.0`.
+- `package.json`: removed the unused `groq` dependency (unrelated Sanity.io package, confused with the real `groq-sdk`, zero real call sites).
+
+**Tested/Verified:**
+- `python -m pip_audit -r requirements.txt` after the real install: `No known vulnerabilities found` (was 10 real advisories against 12.2.0 before).
+- Full Python suite: 1040/1040 passing with Pillow 12.3.0 actually installed, not just pinned on paper.
+- `grep -rn "require(['\"]groq['\"])"` confirmed zero real call sites before removal; `npm uninstall groq` run for real; `node_modules/groq` confirmed gone; full JS suite: 205/205 passing.
+
+**Documented:** inline comment in `requirements.txt` explaining the CVE list and why the bump happened.
+
+**Commit:** `[pending]`.
+
+---
+
+*(Phase 2 — Security — begins now with 2.1, the single largest finding: route authentication, per founder direction to fix this before any Security Architecture module is built.)*
