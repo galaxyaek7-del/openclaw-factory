@@ -328,6 +328,6 @@ Full findings and decisions: `ADR-093`. Founder-confirmed before building: exten
 
 **Documented:** `ADR-096`.
 
-**Commit:** `[pending]`.
+**Commit:** `2b6f434`.
 
 **This closes the Live Competitive Intelligence mission (ADR-093) in full.** No further pieces are currently queued for this mission.
