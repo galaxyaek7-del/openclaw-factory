@@ -254,6 +254,122 @@ def _append_history(snapshot, history_file=None):
         print(f"[competitor_discovery] history write failed: {e}")
 
 
+# Threat Engine (Live Competitive Intelligence Layer, 2026-07-23): 8
+# dimensions were requested; a real search for a data source behind each
+# found only 3 this factory can honestly derive today from HN/GitHub
+# data already gathered above. The other 5 have no real, accessible
+# source anywhere in this factory (no Crunchbase/PitchBook/LinkedIn/CVE/
+# regulatory-filing connector exists) -- reported as explicit Unknown
+# with the exact reason, never guessed or defaulted to a neutral number.
+THREAT_DIMENSIONS_WITHOUT_REAL_DATA = {
+    "funding_pressure": "لا مصدر بيانات تمويل حقيقي متصل (Crunchbase/PitchBook يحتاجان اشتراكاً مدفوعاً)",
+    "pricing_pressure": "لا بيانات تسعير منافسين حقيقية مرصودة — لا مصدر مجاني يكشف أسعار المنافسين الفعلية",
+    "technology_disruption": "لا مصدر حقيقي لرصد نقلات تقنية جوهرية لدى المنافسين (براءات اختراع/تقارير تقنية) متاح اليوم",
+    "regulatory_threat": "لا اتصال حقيقي بمصدر تنظيمي/قانوني — لا قاعدة بيانات لوائح متصلة",
+    "talent_competition": "لا مصدر حقيقي لبيانات التوظيف لدى المنافسين (LinkedIn/Indeed API تحتاج اعتماداً غير متوفر)",
+}
+
+
+def _score_competitor_saturation(snapshot):
+    """Real, derived directly from the real competitor count
+    discover_competitors() already found — no new measurement, no
+    fabricated market-size denominator."""
+    total = snapshot.get("total_found", 0)
+    if total == 0:
+        level, score = "لا تشبع ملحوظ", 0
+    elif total <= 2:
+        level, score = "منخفض", 25
+    elif total <= 5:
+        level, score = "متوسط", 50
+    elif total <= 9:
+        level, score = "مرتفع", 75
+    else:
+        level, score = "مرتفع جداً", 100
+    return {"level": level, "score": score, "basis": f"{total} منافس حقيقي مكتشف (HN+GitHub)"}
+
+
+def _score_market_concentration(snapshot):
+    """A real Herfindahl-Hirschman Index computed over each competitor's
+    real popularity metric (GitHub stars or HN points — whichever that
+    competitor actually has). Honest Unknown when no competitor carries
+    either real metric, rather than treating an empty/zero weight as
+    'perfectly competitive'."""
+    weights = []
+    for c in snapshot.get("competitors") or []:
+        metrics = c.get("metrics") or {}
+        w = metrics.get("github_stars") or metrics.get("hacker_news_points") or 0
+        if isinstance(w, (int, float)) and w > 0:
+            weights.append(w)
+
+    total_weight = sum(weights)
+    if total_weight <= 0:
+        return {
+            "level": "Unknown", "score": None,
+            "basis": "لا مقياس شعبية حقيقي (نجوم GitHub/نقاط HN) لأي منافس مكتشف — لا يمكن حساب التركّز",
+        }
+
+    hhi = sum((w / total_weight) ** 2 for w in weights) * 10000
+    if hhi < 1500:
+        level = "غير مركّز — منافسة موزّعة بين لاعبين متعددين"
+    elif hhi < 2500:
+        level = "تركّز معتدل"
+    else:
+        level = "تركّز عالٍ — سوق يهيمن عليه عدد قليل من اللاعبين"
+    return {
+        "level": level, "score": round(hhi / 100, 1),
+        "basis": f"مؤشر HHI محسوب من {len(weights)} قيمة شعبية حقيقية (نجوم/نقاط)، إجمالي الوزن={total_weight}",
+    }
+
+
+def _score_new_entrant_trajectory(snapshot):
+    """Reuses diff_competitor_snapshots()'s real 'changes' key — never a
+    trend from a single data point. Honest Unknown until a real second
+    refresh exists for this niche."""
+    changes = snapshot.get("changes")
+    if not changes or not changes.get("has_history"):
+        return {
+            "level": "Unknown", "score": None,
+            "basis": "لا سجل تاريخي كافٍ بعد لهذا النيتش — يحتاج تشغيلات حقيقية متكررة للمقارنة",
+        }
+
+    new_count = len(changes.get("new_competitors") or [])
+    gone_count = len(changes.get("disappeared_competitors") or [])
+    growth_count = len(changes.get("growth_signals") or [])
+    net = new_count - gone_count
+    if net > 0:
+        level = "تصاعدي — داخلون جدد حقيقيون يفوقون عدد من اختفى"
+    elif net < 0:
+        level = "تراجعي — عدد من اختفى أكبر من الداخلين الجدد"
+    else:
+        level = "مستقر"
+    return {
+        "level": level, "score": net,
+        "basis": (
+            f"{new_count} داخل جديد حقيقي، {gone_count} اختفى، {growth_count} إشارة نمو حقيقية "
+            f"منذ اللقطة السابقة ({changes.get('previous_discovered_at')})"
+        ),
+    }
+
+
+def compute_threat_assessment(snapshot):
+    """Threat Engine: pure function over an already-computed real
+    snapshot (the same shape discover_competitors()/
+    get_or_refresh_competitors() produce) — no I/O, no new network call,
+    fully unit-testable with fixture data. Returns all 8 requested
+    dimensions; 5 are explicit, reasoned Unknown rather than a fabricated
+    number."""
+    return {
+        "competitor_saturation": _score_competitor_saturation(snapshot),
+        "market_concentration": _score_market_concentration(snapshot),
+        "new_entrant_trajectory": _score_new_entrant_trajectory(snapshot),
+        **{
+            dim: {"level": "Unknown", "score": None, "basis": reason}
+            for dim, reason in THREAT_DIMENSIONS_WITHOUT_REAL_DATA.items()
+        },
+        "computed_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
 def compute_opportunity_gap(demand_score, competition_score):
     """Honest derivation from two already-real/estimated components
     (profit_oracle.py's demand/competition, ADR-038/041) — not a new
@@ -353,11 +469,16 @@ def get_or_refresh_competitors(niche, max_age_days=MAX_AGE_DAYS_DEFAULT, force=F
         age_days = _days_since(existing.get('discovered_at'))
         if age_days is not None and age_days <= max_age_days:
             existing['_cache'] = {"hit": True, "age_days": age_days}
+            # Threat Engine (2026-07-23): cheap, pure, re-derived from
+            # already-cached real fields on every call — never a stale
+            # cached score, and never a new network call.
+            existing['threat_assessment'] = compute_threat_assessment(existing)
             return existing
 
     result = discover_competitors(niche, max_results=max_results)
     result['_cache'] = {"hit": False, "age_days": 0}
     result['changes'] = diff_competitor_snapshots(existing, result)
+    result['threat_assessment'] = compute_threat_assessment(result)
     if existing:
         _append_history(existing, history_file)
     db[key] = result

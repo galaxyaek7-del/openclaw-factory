@@ -34,3 +34,13 @@ Of the 11 requested live-tracking event types, only competitor appearance/disapp
 ## What's next
 
 This ADR covers the historical-tracking foundation only. The Threat Engine (3 real dimensions: competitor saturation, market concentration, new-entrant trajectory — the other 5 requested dimensions stay honest `Unknown`), the Executive Board competitor-brief integration, the decision re-open trigger, the real evidence-recording extension to `market_evidence.py` for the 9 non-auto-detectable event types, and alerting are each separate, sequenced pieces — not built in this pass, per this session's own "one real, verified piece at a time" discipline.
+
+## Addendum, 2026-07-23: Threat Engine (roadmap 4.13)
+
+Built as the next sequenced piece. `compute_threat_assessment(snapshot)` in `competitor_discovery.py` — a pure function over the same real snapshot shape this module already produces, no new I/O. The 3 real dimensions:
+
+- **Competitor saturation** — a real bucketed score from `total_found`, the competitor count `discover_competitors()` already computed.
+- **Market concentration** — a real Herfindahl-Hirschman Index over each competitor's real GitHub-stars/HN-points weight. Honest `Unknown` (not a fabricated "perfectly competitive" 0) when no competitor in the snapshot carries either real metric.
+- **New-entrant trajectory** — reuses `diff_competitor_snapshots()`'s real `changes` key (new/disappeared competitor counts). Honest `Unknown` until a real second refresh exists for the niche — never a trend derived from a single snapshot.
+
+The other 5 (funding pressure, pricing pressure, technology disruption, regulatory threat, talent competition) remain explicit, reasoned `Unknown` — no real, accessible data source exists in this factory for any of them today. `get_or_refresh_competitors()` attaches `threat_assessment` on both the cache-hit and fresh-refresh return paths, since the computation is cheap, pure, and derived only from data already gathered — a cached result is never left stale on this specific field. 12 new tests, full regression suite (Python 1074 tests, Node 231 real tests) green, no regressions.

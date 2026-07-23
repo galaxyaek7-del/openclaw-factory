@@ -272,4 +272,16 @@ Full findings and decisions: `ADR-093`. Founder-confirmed before building: exten
 
 **Commit:** `6d30438`.
 
-**Next in this mission:** Threat Engine (3 real dimensions + honest `Unknown` for the other 5), Executive Board competitor-brief integration + decision re-open trigger, `market_evidence.py` extension for the 9 non-auto-detectable event types, alerting — each a separate, sequenced piece.
+### 4.13 — Threat Engine: 3 real dimensions, 5 honest Unknowns (2026-07-23)
+
+**Implemented:** `competitor_discovery.py` gained `compute_threat_assessment(snapshot)` — a pure function (no I/O, no network) returning all 8 originally-requested dimensions. 3 are real: `_score_competitor_saturation()` (derived from the real competitor count `discover_competitors()` already found), `_score_market_concentration()` (a real Herfindahl-Hirschman Index computed over each competitor's real GitHub-stars/HN-points weight — honest `Unknown` when no competitor carries either real metric), `_score_new_entrant_trajectory()` (reuses `diff_competitor_snapshots()`'s real `changes` key — honest `Unknown` until a real second refresh exists for a niche, never a trend from one data point). The other 5 (`funding_pressure`, `pricing_pressure`, `technology_disruption`, `regulatory_threat`, `talent_competition`) always return an explicit `Unknown` with the exact real reason (no connector exists for any of them). `get_or_refresh_competitors()` now attaches `threat_assessment` on both the cache-hit and fresh-refresh paths — cheap and pure, so cached results are never left with a stale or missing assessment, and no new network call is added.
+
+**Tested:** 12 new tests (`tests/test_competitor_discovery.py`, `TestThreatAssessment` + `TestGetOrRefreshCompetitorsAttachesThreatAssessment`) — bucket boundaries for saturation, HHI concentration (even distribution vs. one dominant competitor vs. no real metric at all), trajectory rising/declining/stable/unknown, and the full 8-dimension shape.
+
+**Verified:** `tests/test_competitor_discovery.py` (48 tests) green; highest-risk existing suites (`test_orchestrator.py`, `test_master_cycle_production_e2e.py`, `test_decision_engine.py`, 83 tests) green; full Python suite (1074 tests, up from 1062) green; full Node suite (231 real tests) green — the 2 apparent failures were `tests/fixtures/always_crash.js`/`crash_n_times.js`, deliberately-crashing helper scripts for `test_supervisor.js` incidentally matched by an ad-hoc glob, not real test regressions. `data/competitor_database.json`/`data/competitor_history.jsonl` confirmed untouched by the test run.
+
+**Documented:** `ADR-093` (updated).
+
+**Commit:** `[pending]`.
+
+**Next in this mission:** Executive Board competitor-brief integration + decision re-open trigger, `market_evidence.py` extension for the 9 non-auto-detectable event types, alerting — each a separate, sequenced piece.

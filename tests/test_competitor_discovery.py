@@ -293,6 +293,131 @@ class TestCompetitorDatabase(unittest.TestCase):
         self.assertFalse(result["_cache"]["hit"])
 
 
+class TestThreatAssessment(unittest.TestCase):
+    """Threat Engine (Live Competitive Intelligence Layer, 2026-07-23):
+    pure functions over already-computed real snapshot data — no I/O, no
+    network. 3 dimensions are real; the other 5 requested dimensions must
+    always come back as an explicit, reasoned Unknown, never a number."""
+
+    def test_all_8_dimensions_present_and_5_are_explicit_unknown(self):
+        result = cd.compute_threat_assessment({"total_found": 0, "competitors": []})
+        expected_unknown = {
+            "funding_pressure", "pricing_pressure", "technology_disruption",
+            "regulatory_threat", "talent_competition",
+        }
+        for dim in expected_unknown:
+            self.assertEqual(result[dim]["level"], "Unknown")
+            self.assertIsNone(result[dim]["score"])
+            self.assertTrue(result[dim]["basis"], f"{dim} must state a real reason, not just say Unknown")
+        for dim in ("competitor_saturation", "market_concentration", "new_entrant_trajectory"):
+            self.assertIn(dim, result)
+        # this empty fixture has no competitors/history, so saturation is the
+        # only one of the 3 real dimensions with a non-Unknown answer here —
+        # concentration/trajectory correctly stay Unknown too, just for a
+        # different, real reason (no popularity metric / no history yet)
+        self.assertNotEqual(result["competitor_saturation"]["level"], "Unknown")
+
+    def test_saturation_scales_with_real_competitor_count(self):
+        self.assertEqual(cd._score_competitor_saturation({"total_found": 0})["level"], "لا تشبع ملحوظ")
+        self.assertEqual(cd._score_competitor_saturation({"total_found": 1})["score"], 25)
+        self.assertEqual(cd._score_competitor_saturation({"total_found": 4})["score"], 50)
+        self.assertEqual(cd._score_competitor_saturation({"total_found": 8})["score"], 75)
+        self.assertEqual(cd._score_competitor_saturation({"total_found": 12})["score"], 100)
+
+    def test_concentration_is_unknown_with_no_real_popularity_metric(self):
+        snapshot = {"competitors": [{"name": "a", "metrics": {}}, {"name": "b", "metrics": {}}]}
+        result = cd._score_market_concentration(snapshot)
+        self.assertEqual(result["level"], "Unknown")
+        self.assertIsNone(result["score"])
+
+    def test_concentration_is_low_when_evenly_distributed(self):
+        snapshot = {"competitors": [
+            {"name": f"c{i}", "metrics": {"github_stars": 100}} for i in range(10)
+        ]}
+        result = cd._score_market_concentration(snapshot)
+        self.assertIn("غير مركّز", result["level"])
+
+    def test_concentration_is_high_when_one_competitor_dominates(self):
+        snapshot = {"competitors": [
+            {"name": "a", "metrics": {"github_stars": 9900}},
+            {"name": "b", "metrics": {"github_stars": 50}},
+            {"name": "c", "metrics": {"github_stars": 50}},
+        ]}
+        result = cd._score_market_concentration(snapshot)
+        self.assertIn("تركّز عالٍ", result["level"])
+
+    def test_new_entrant_trajectory_unknown_without_real_history(self):
+        result = cd._score_new_entrant_trajectory({"total_found": 3})
+        self.assertEqual(result["level"], "Unknown")
+        self.assertIsNone(result["score"])
+
+    def test_new_entrant_trajectory_unknown_on_first_ever_discovery(self):
+        snapshot = {"changes": {"has_history": False}}
+        result = cd._score_new_entrant_trajectory(snapshot)
+        self.assertEqual(result["level"], "Unknown")
+
+    def test_new_entrant_trajectory_rising_when_more_new_than_gone(self):
+        snapshot = {"changes": {
+            "has_history": True, "new_competitors": [{"name": "x"}, {"name": "y"}],
+            "disappeared_competitors": [], "growth_signals": [], "previous_discovered_at": "2026-07-01",
+        }}
+        result = cd._score_new_entrant_trajectory(snapshot)
+        self.assertIn("تصاعدي", result["level"])
+        self.assertEqual(result["score"], 2)
+
+    def test_new_entrant_trajectory_declining_when_more_gone_than_new(self):
+        snapshot = {"changes": {
+            "has_history": True, "new_competitors": [], "disappeared_competitors": [{"name": "x"}, {"name": "y"}],
+            "growth_signals": [], "previous_discovered_at": "2026-07-01",
+        }}
+        result = cd._score_new_entrant_trajectory(snapshot)
+        self.assertIn("تراجعي", result["level"])
+        self.assertEqual(result["score"], -2)
+
+    def test_new_entrant_trajectory_stable_when_net_zero(self):
+        snapshot = {"changes": {
+            "has_history": True, "new_competitors": [{"name": "x"}], "disappeared_competitors": [{"name": "y"}],
+            "growth_signals": [], "previous_discovered_at": "2026-07-01",
+        }}
+        result = cd._score_new_entrant_trajectory(snapshot)
+        self.assertEqual(result["level"], "مستقر")
+        self.assertEqual(result["score"], 0)
+
+
+class TestGetOrRefreshCompetitorsAttachesThreatAssessment(unittest.TestCase):
+    def setUp(self):
+        fd, self.db_path = tempfile.mkstemp(suffix=".json")
+        os.close(fd)
+        os.remove(self.db_path)
+        fd, self.history_path = tempfile.mkstemp(suffix=".jsonl")
+        os.close(fd)
+        os.remove(self.history_path)
+
+    def tearDown(self):
+        for p in (self.db_path, self.history_path):
+            if os.path.exists(p):
+                os.remove(p)
+
+    @patch("competitor_discovery._query_github")
+    @patch("competitor_discovery._query_hn")
+    def test_fresh_refresh_carries_a_real_threat_assessment(self, mock_hn, mock_gh):
+        mock_hn.return_value = [{"title": "a", "points": 5, "num_comments": 0}]
+        mock_gh.return_value = []
+        result = cd.get_or_refresh_competitors("niche a", db_file=self.db_path, history_file=self.history_path)
+        self.assertIn("threat_assessment", result)
+        self.assertIn("competitor_saturation", result["threat_assessment"])
+
+    @patch("competitor_discovery._query_github")
+    @patch("competitor_discovery._query_hn")
+    def test_cache_hit_also_carries_a_real_threat_assessment(self, mock_hn, mock_gh):
+        mock_hn.return_value = []
+        mock_gh.return_value = []
+        cd.get_or_refresh_competitors("niche a", db_file=self.db_path, history_file=self.history_path)
+        result = cd.get_or_refresh_competitors("niche a", db_file=self.db_path, history_file=self.history_path)
+        self.assertTrue(result["_cache"]["hit"])
+        self.assertIn("threat_assessment", result)
+
+
 class TestDiffCompetitorSnapshots(unittest.TestCase):
     """Pure function, no I/O — real comparison logic between two
     real, previously-computed snapshots."""
