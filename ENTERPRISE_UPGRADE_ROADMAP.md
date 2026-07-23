@@ -77,6 +77,31 @@ Rules, binding: no simulation, no fake security, no fake certificates/compliance
 | 4.5 | One real module import cycle: `product_families ↔ asset_generation` via `pdf_builder.py` (non-fatal today, confirmed by direct import) | Medium | ☐ |
 | 4.6 | No CD pipeline; deployment is a manual, tested script; no environment separation | High | ☐ |
 
+### Infrastructure & HA Mission Tracker (founder directive, 2026-07-23)
+
+Rules, binding: everything based on the real repository, never fake uptime/monitoring, never invent infrastructure that doesn't exist, build only what actually exists, real tests, commit only after verification, zero regressions.
+
+A real audit (not guessed) found this mission overlaps heavily with work already done: Objective 1 (Service Supervisor) is largely built already (Phase 1.1, `scripts/supervisor.js`). Objective 3 (Automatic Recovery) and Objective 7 (DR Validation) are **substantially more real than assumed** — a full "Unified Recovery System" already exists (`factory_state.py`, `recovery/snapshot.py`, `DISASTER_RECOVERY_PLAN.md`) with real exponential backoff, a real tested rollback path (`scripts/rollback_simulate.js`), and real *executed* crash/corruption/data-loss tests, not simulated theory.
+
+| Objective | Real status | Plan |
+|---|---|---|
+| 1. Service Supervisor | ☑ Built (Phase 1.1, `96ee731`) — restarts on crash, crash-loop guard, structured JSON event log | ◐ Gap: event log ≠ periodic health *report* — small addition |
+| 2. Health Checks | ☐ Only `/health` (API liveness) exists. No memory/CPU/disk/network checks anywhere | Building now — see 4.7 below |
+| 3. Automatic Recovery | ☑ Substantially built (Unified Recovery System, 2026-07-18) — real backoff, rollback, corrupted-state recovery, all tested | ◐ One disclosed gap: failed Groq/publish retries are counted, not yet auto-replayed |
+| 4. High Availability ("no single point of failure") | ⊘ Not buildable honestly at this stage — one Windows machine, one process, no redundant infrastructure exists or is appropriate pre-revenue | Document + modestly extend real graceful-degradation patterns already in place (Groq unreachable → honest `Unknown`, n8n down → real Telegram-direct fallback); true multi-machine HA stays gated on real scale (Phase 6/7) |
+| 5. Central Monitoring Dashboard | ◐ `dashboard.html` already shows real business health | Extend with new health-check + supervisor signals once built; "Queue/Worker status" reported honestly as N/A — neither exists |
+| 6. Unified Logging | ☐ Real gap, already tracked as 4.1 above | Same item — no duplicate tracking |
+| 7. Disaster Recovery Validation | ☑ Substantially done — real executed crash/corruption/data-loss tests, `DISASTER_RECOVERY_PLAN.md` | ◐ Gap: no real network-interruption simulation yet |
+
+**Explicitly declined as fabrication, not silently skipped:** a "Database" health check (no database exists — flat JSON/JSONL files), a "Queue system" health check (no message queue exists anywhere in this repo), a "Worker" health check (no worker pool exists — one Express process). These will be reported as real, honest "N/A" states wherever the mission's dashboard/health-report surfaces them, never faked as green.
+
+| # | Finding | Severity | Status |
+|---|---|---|---|
+| 4.7 | No health checks beyond basic API liveness — no memory/CPU/disk/network monitoring anywhere | High | ☐ |
+| 4.8 | Supervisor produces crash/restart events, not a periodic structured health report | Low | ☐ |
+| 4.9 | No real network-interruption disaster-recovery simulation | Medium | ☐ |
+| 4.10 | Failed Groq/publish retries are counted and reported but not auto-replayed (disclosed scope limit from the 2026-07-18 Unified Recovery System) | Low | ☐ |
+
 ## Phase 5 — Commercial Readiness
 
 | # | Finding | Severity | Status |
