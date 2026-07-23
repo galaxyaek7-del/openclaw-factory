@@ -145,6 +145,27 @@ function requireMissionControlOrInternalToken(req, res, next) {
   return res.status(401).json({ success: false, error: 'unauthenticated' });
 }
 
+// Security Mission Tracker finding 2.3 (2026-07-23): the password
+// comparison below used to be a plain `!==` -- a real, if minor, timing
+// side-channel -- and there was no brute-force/rate-limit protection on
+// login at all. Real fix: reuse timingSafeEqualStrings() (the same
+// helper requireMissionControlOrInternalToken() already uses for the
+// internal-token comparison) for the password check, and a real,
+// in-memory rate limiter -- the same bounded-sliding-window-of-real-
+// timestamps pattern scripts/supervisor.js's own crash-loop guard
+// already established, reset on success. Global, not per-IP: this
+// factory is single-tenant (BIND_HOST=127.0.0.1, one real founder
+// account) -- an IP-keyed limiter would add real complexity for a
+// threat model this deployment doesn't actually have.
+const LOGIN_MAX_ATTEMPTS = parseInt(process.env.MISSION_CONTROL_LOGIN_MAX_ATTEMPTS || '5', 10);
+const LOGIN_WINDOW_MS = parseInt(process.env.MISSION_CONTROL_LOGIN_WINDOW_MS || String(15 * 60 * 1000), 10);
+let loginFailureTimestamps = [];
+
+function pruneLoginFailures() {
+  const now = Date.now();
+  loginFailureTimestamps = loginFailureTimestamps.filter(t => now - t < LOGIN_WINDOW_MS);
+}
+
 app.post('/api/mission-control/login', (req, res) => {
   if (!MISSION_CONTROL_PASSWORD) {
     return res.status(500).json({
@@ -152,10 +173,23 @@ app.post('/api/mission-control/login', (req, res) => {
       error: 'MISSION_CONTROL_PASSWORD غير مُعرَّف في .env — أضِفه أولاً (سطر واحد: MISSION_CONTROL_PASSWORD=...)',
     });
   }
+
+  pruneLoginFailures();
+  if (loginFailureTimestamps.length >= LOGIN_MAX_ATTEMPTS) {
+    const retryAfterMs = LOGIN_WINDOW_MS - (Date.now() - loginFailureTimestamps[0]);
+    return res.status(429).json({
+      success: false,
+      error: `محاولات كثيرة جداً — أعد المحاولة بعد ${Math.max(1, Math.ceil(retryAfterMs / 1000))} ثانية`,
+    });
+  }
+
   const { password } = req.body || {};
-  if (password !== MISSION_CONTROL_PASSWORD) {
+  if (!timingSafeEqualStrings(password || '', MISSION_CONTROL_PASSWORD)) {
+    loginFailureTimestamps.push(Date.now());
     return res.status(401).json({ success: false, error: 'كلمة مرور خاطئة' });
   }
+
+  loginFailureTimestamps = [];
   const token = signMissionControlSession(`mc|${Date.now()}`);
   res.cookie('mc_session', token, { httpOnly: true, sameSite: 'lax', maxAge: 12 * 60 * 60 * 1000 });
   res.json({ success: true });
