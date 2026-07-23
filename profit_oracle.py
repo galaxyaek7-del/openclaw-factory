@@ -77,6 +77,19 @@ try:
 except (Exception, SystemExit):
     ECONOMICS = None
 
+# Global Opportunity Intelligence extension (2026-07-23, founder
+# directive "think like an investment company"): product_families/
+# mapping.py and registry.py have zero imports of their own (confirmed)
+# — zero circular-import risk, same reasoning as every guarded import
+# above. Reused (never rebuilt) for _score_time_to_market()'s real
+# "does a working production pipeline already exist" check.
+try:
+    from product_families import mapping as PRODUCT_FAMILY_MAPPING
+    from product_families import registry as PRODUCT_FAMILY_REGISTRY
+except (Exception, SystemExit):
+    PRODUCT_FAMILY_MAPPING = None
+    PRODUCT_FAMILY_REGISTRY = None
+
 FACTORY_DIR = os.path.dirname(os.path.abspath(__file__))
 OPPORTUNITIES_FILE = os.path.join(FACTORY_DIR, 'OPPORTUNITIES.md')
 AI_COST_LOG_FILE = os.path.join(FACTORY_DIR, 'data', 'ai_cost_log.jsonl')  # book_generator.py's real per-call Groq cost log (ADR-041)
@@ -730,6 +743,81 @@ def _score_ai_leverage(niche):
     return score, level, reason
 
 
+# Global Opportunity Intelligence extension (2026-07-23, founder
+# directive "think like an investment company, not a software
+# project"): 3 real dimensions this factory's own opportunity-scoring
+# pipeline genuinely didn't name yet, added the same way defensibility/
+# market_signal/ai_leverage already were -- additive, informational
+# only, never blended into profit_score's own weighted formula (that
+# formula is already tested and load-bearing; changing its weights was
+# not asked for and would be a much larger, riskier change than adding
+# 3 new informational fields).
+#
+# Explicitly NOT duplicating _score_defensibility() (current
+# competitive intensity) or _score_competition() (current rival count):
+# _score_barrier_to_entry() below answers a different real question --
+# how technically hard would this be for a NEW entrant to replicate --
+# reusing _score_execution()'s own real technical-complexity signal
+# rather than re-deriving competitive intensity under a new name.
+
+def _score_time_to_market(ladder):
+    """Real, deterministic, never a guessed day/week estimate (this
+    factory has no real evidence to support one): does a working
+    production pipeline already exist for this ladder's default product
+    family? Reuses product_families.registry directly -- the same real
+    registration state production_factory/dossier.py's own
+    _product_type_capability() already relies on -- rather than
+    re-deriving a second, possibly-diverging answer to the same
+    question."""
+    if PRODUCT_FAMILY_MAPPING is None or PRODUCT_FAMILY_REGISTRY is None:
+        return None, "Unknown", "product_families غير متوفر"
+    family = PRODUCT_FAMILY_MAPPING.resolve_product_family(ladder)
+    if not family:
+        return None, "Unknown", f"لا تعيين معروف لهذا التصنيف ({ladder}) إلى عائلة منتج حقيقية — لا تخمين"
+    adapter = PRODUCT_FAMILY_REGISTRY.get(family)
+    if adapter is not None:
+        return 100, "فوري", f"خط إنتاج حقيقي مُسجَّل بالفعل لعائلة {family} — لا هندسة جديدة مطلوبة قبل الشحن"
+    return 20, "يتطلب هندسة جديدة", f"عائلة {family} معروفة في التصنيف الكامل لكن بلا محوّل إنتاج مُسجَّل بعد — تحتاج بناءً حقيقياً أولاً"
+
+
+def _score_urgency(niche, external_signal=None):
+    """Real, evidence-only: reuses willingness_to_pay_hits/
+    pain_language_hits when a caller has already computed real customer-
+    pain evidence and passed it in via external_signal -- the same
+    enrich-before-scoring pattern orchestrator.py's
+    _enrich_with_real_competition() already established for competitor
+    data. Deliberately never triggers a live query itself (same
+    cache/pass-in-only discipline _score_defensibility()'s own comment
+    documents) -- a niche with no pain evidence computed yet reports
+    Unknown, not a guessed urgency."""
+    pain = (external_signal or {}).get("customer_pain") or {}
+    wtp_hits = pain.get("willingness_to_pay_hits")
+    pain_hits = pain.get("pain_language_hits")
+    if wtp_hits is None and pain_hits is None:
+        return None, "Unknown", "لا دليل ألم عملاء حقيقي مُمرَّر لهذا النيتش بعد — لا تخمين للإلحاح"
+    wtp_hits = wtp_hits or 0
+    pain_hits = pain_hits or 0
+    score = max(0, min(100, wtp_hits * 25 + pain_hits * 10))
+    level = "عالية" if score >= 60 else "متوسطة" if score >= 25 else "منخفضة"
+    return score, level, f"{wtp_hits} إشارة استعداد للدفع حقيقية، {pain_hits} إشارة ألم حقيقية من الأدلة المُمرَّرة"
+
+
+def _score_barrier_to_entry(niche):
+    """Real, distinct from _score_defensibility() above: answers
+    'how technically hard would a new entrant find building this,'
+    reusing _score_execution()'s own real complexity signal, not
+    'how many rivals currently exist' (that's competition/defensibility's
+    job, not re-derived here under a new name)."""
+    execution_score, execution_notes, _platform = _score_execution(niche)
+    if execution_score is None:
+        return None, "Unknown", "لا تقييم تنفيذ حقيقي متاح لهذا النيتش بعد"
+    # Inverted: EASY execution for this factory (high execution_score)
+    # means a new entrant finds it easy too -- low real barrier.
+    barrier_score = max(0, min(100, 100 - execution_score))
+    level = "عالية" if barrier_score >= 65 else "متوسطة" if barrier_score >= 35 else "منخفضة"
+    return barrier_score, level, f"مُشتقّ من تعقيد التنفيذ الحقيقي (execution={execution_score}) — ليس من عدد المنافسين"
+
+
 def score_opportunity(niche, now=None, external_signal=None):
     niche = str(niche or '').strip()
     if not niche:
@@ -773,6 +861,8 @@ def score_opportunity(niche, now=None, external_signal=None):
     defensibility_score, defensibility_level, defensibility_note = _score_defensibility(niche)
     market_signal_score, market_signal_level, market_signal_note = _score_market_signal(niche, external_signal)
     ai_leverage_score, ai_leverage_level, ai_leverage_note = _score_ai_leverage(niche)
+    urgency_score, urgency_level, urgency_note = _score_urgency(niche, external_signal)
+    barrier_score, barrier_level, barrier_note = _score_barrier_to_entry(niche)
 
     return {
         "niche": niche,
@@ -803,6 +893,11 @@ def score_opportunity(niche, now=None, external_signal=None):
         # factored into profit_score/verdict.
         "market_signal": {"score": market_signal_score, "level": market_signal_level, "note": market_signal_note},
         "ai_leverage": {"score": ai_leverage_score, "level": ai_leverage_level, "note": ai_leverage_note},
+        # Global Opportunity Intelligence extension (2026-07-23): same
+        # additive discipline as every field above -- real evidence or
+        # honest Unknown, never factored into profit_score/verdict.
+        "urgency": {"score": urgency_score, "level": urgency_level, "note": urgency_note},
+        "barrier_to_entry": {"score": barrier_score, "level": barrier_level, "note": barrier_note},
     }
 
 
@@ -1033,6 +1128,8 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None):
     else:
         reason = f"accepted: ladder_score {ladder_score}/100 >= {LADDER_MIN_SCORE}, price ${price} >= ${MIN_LADDER_PROFIT_FLOOR} (ladder={ladder})"
 
+    ttm_score, ttm_level, ttm_note = _score_time_to_market(ladder)
+
     return {
         "niche": niche,
         "ladder": ladder,
@@ -1056,6 +1153,11 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None):
         "defensibility": result["defensibility"],
         "market_signal": result["market_signal"],
         "ai_leverage": result["ai_leverage"],
+        # Global Opportunity Intelligence extension (2026-07-23): same
+        # additive discipline as every field above.
+        "urgency": result["urgency"],
+        "barrier_to_entry": result["barrier_to_entry"],
+        "time_to_market": {"score": ttm_score, "level": ttm_level, "note": ttm_note},
     }
 
 

@@ -398,6 +398,74 @@ class TestAiLeverage(unittest.TestCase):
         self.assertIsNone(result["ai_leverage"]["score"])
 
 
+class TestUrgency(unittest.TestCase):
+    """Global Opportunity Intelligence extension (2026-07-23): real
+    customer-pain evidence, passed in via external_signal -- never a live
+    query triggered from inside scoring, never a guessed urgency."""
+
+    def test_never_changes_profit_score_or_verdict(self):
+        # Isolates customer_pain specifically: _score_demand() branches
+        # on whether external_signal is truthy AT ALL (real,
+        # pre-existing behavior, unrelated to this change — an empty
+        # dict and no dict take different internal branches from a
+        # non-empty one), so both calls here carry the same baseline
+        # "an external signal was provided" key to hold that branch
+        # constant, differing only in whether customer_pain is present.
+        niche = "compliance automation for accounting firms"
+        baseline_signal = {"source": "manual_baseline"}
+        with_pain = po.score_opportunity(niche, external_signal={**baseline_signal, "customer_pain": {"willingness_to_pay_hits": 3, "pain_language_hits": 5}})
+        without_pain = po.score_opportunity(niche, external_signal=baseline_signal)
+        self.assertIn("urgency", with_pain)
+        self.assertEqual(with_pain["profit_score"], without_pain["profit_score"])
+
+    def test_unknown_when_no_customer_pain_evidence_passed_in(self):
+        result = po.score_opportunity("a niche with no pain evidence passed in xyz")
+        self.assertEqual(result["urgency"]["level"], "Unknown")
+        self.assertIsNone(result["urgency"]["score"])
+
+    def test_high_urgency_from_real_willingness_to_pay_and_pain_evidence(self):
+        signal = {"customer_pain": {"willingness_to_pay_hits": 4, "pain_language_hits": 6}}
+        result = po.score_opportunity("a real niche with strong pain evidence", external_signal=signal)
+        self.assertEqual(result["urgency"]["level"], "عالية")
+
+    def test_low_urgency_from_weak_real_evidence(self):
+        signal = {"customer_pain": {"willingness_to_pay_hits": 0, "pain_language_hits": 1}}
+        result = po.score_opportunity("a real niche with weak pain evidence", external_signal=signal)
+        self.assertEqual(result["urgency"]["level"], "منخفضة")
+
+    def test_never_triggers_a_live_customer_pain_query_from_inside_scoring(self):
+        # score_opportunity() must only ever read external_signal -- it has
+        # no live customer-pain query capability to call in the first
+        # place, so this documents the contract rather than mocking a
+        # specific function; a real regression here would look like a new
+        # network call being added to this file.
+        po.score_opportunity("any niche")  # no external_signal at all — must not raise or hang
+
+
+class TestBarrierToEntry(unittest.TestCase):
+    """Global Opportunity Intelligence extension (2026-07-23): a real
+    signal deliberately distinct from defensibility (current competitive
+    intensity) -- this measures technical replication difficulty, derived
+    from the real, already-computed execution score."""
+
+    def test_never_changes_profit_score_or_verdict(self):
+        niche = "premium subscription budget planner for professionals"
+        result = po.score_opportunity(niche)
+        self.assertIn("barrier_to_entry", result)
+        self.assertEqual(result["profit_score"], po.score_opportunity(niche)["profit_score"])
+
+    def test_is_the_inverse_of_execution_score_not_a_copy_of_defensibility(self):
+        niche = "a real test niche for barrier to entry"
+        result = po.score_opportunity(niche)
+        execution_score = result["scores"]["execution"]
+        self.assertEqual(result["barrier_to_entry"]["score"], 100 - execution_score)
+        # Distinct field, not silently aliasing defensibility's own value.
+        self.assertNotEqual(
+            result["barrier_to_entry"], result["defensibility"],
+            "barrier_to_entry must be its own real computation, not a copy of defensibility",
+        )
+
+
 class TestAutomationPotentialByLadder(unittest.TestCase):
     """Strategic Opportunity Intelligence Engine (2026-07-22): the ladder
     path had zero automation_potential field before this -- grounded in

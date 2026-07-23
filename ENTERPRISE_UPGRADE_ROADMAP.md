@@ -233,3 +233,21 @@ A real search before building anything found two direct duplication risks and on
 **Documented:** `CLAUDE.md`'s Executive Dashboard section now describes the extended `/health` shape and the honest `not_applicable` discipline.
 
 **Commit:** `f050414`.
+
+---
+
+## Global Opportunity Intelligence Mission (founder directive, 2026-07-23)
+
+Full findings and decisions: `ADR-092`. Founder-confirmed before building: extend the existing real opportunity pipeline (`market_hunter.py` → `market_intelligence_core/` → `profit_oracle.py` → `decision_engine/` → `executive_board.py`), not a new parallel "GOIS" system — real search found this mission overlaps substantially with `ADR-026`/`050`/`060`/`066` and prior sessions' "Strategic Investment Layer"/"Business Dossier" work. Discovery domain scope kept to what real data connectors and real execution capability can serve (Developer Tools, Vertical AI, tech-adjacent Professional Services/Education) — the other 14 requested domains (Healthcare, Finance, Government, Insurance, Energy, Construction, Real Estate, Agriculture, etc.) explicitly out of scope, not silently dropped or fabricated.
+
+### 4.11 — Three genuinely new opportunity-scoring dimensions (2026-07-23)
+
+**Implemented:** `profit_oracle.py` gained `_score_time_to_market()` (reuses `product_families.registry`'s real registration state — never re-derives it), `_score_urgency()` (reuses real customer-pain evidence passed via `external_signal`, never a live query from inside scoring), `_score_barrier_to_entry()` (deliberately distinct from `_score_defensibility()` — technical replication difficulty, not competitive intensity). All 3 additive-only, matching the existing `risk`/`confidence`/`defensibility`/`market_signal`/`ai_leverage` pattern exactly — never blended into `profit_score`/`ladder_score`/`accepted`.
+
+**Tested:** `tests/test_opportunity_score.py` (`TestUrgency`, `TestBarrierToEntry` — 7 tests) + `tests/test_ladder_opportunity_score.py` (`TestTimeToMarket` — 4 tests). One real test bug found and fixed before it could hide a false pass: a pre-existing, unrelated quirk in `_score_demand()` (branches on whether `external_signal` is truthy at all, not on which keys it has) confounded an initial "never changes profit_score" assertion — fixed by holding a baseline signal key constant across the comparison.
+
+**Verified:** full Python regression suite, run in full after the change given how widely `profit_oracle.py` is used (`market_hunter.py`, `decision_engine`, `mission_control_api.py`, `orchestrator`, and more).
+
+**Documented:** `ADR-092`.
+
+**Commit:** `[pending]`.

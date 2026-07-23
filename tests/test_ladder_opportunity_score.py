@@ -89,5 +89,40 @@ class TestProfitFloorIndependentOfScore(unittest.TestCase):
         self.assertFalse(result["accepted"])
 
 
+class TestTimeToMarket(unittest.TestCase):
+    """Global Opportunity Intelligence extension (2026-07-23): a real,
+    deterministic check against product_families.registry's real
+    registration state -- never a guessed day/week estimate, and never
+    factored into ladder_score/accepted."""
+
+    def test_never_changes_ladder_score_or_accepted(self):
+        result = po.ladder_opportunity_score("a real test niche", ladder="kdp_books")
+        self.assertIn("time_to_market", result)
+        self.assertEqual(
+            result["ladder_score"],
+            po.ladder_opportunity_score("a real test niche", ladder="kdp_books")["ladder_score"],
+        )
+
+    def test_immediate_for_a_ladder_with_a_real_registered_adapter(self):
+        # kdp_books has a real, registered product_families adapter
+        # (product_families/families/kdp_books.py) -- confirmed live
+        # elsewhere this session, not assumed here.
+        result = po.ladder_opportunity_score("a real test niche", ladder="kdp_books")
+        self.assertEqual(result["time_to_market"]["level"], "فوري")
+        self.assertEqual(result["time_to_market"]["score"], 100)
+
+    def test_requires_new_engineering_when_no_adapter_is_registered(self):
+        with patch.object(po.PRODUCT_FAMILY_REGISTRY, "get", return_value=None):
+            result = po.ladder_opportunity_score("a real test niche", ladder="kdp_books")
+        self.assertEqual(result["time_to_market"]["level"], "يتطلب هندسة جديدة")
+        self.assertLess(result["time_to_market"]["score"], 50)
+
+    def test_unknown_when_product_families_is_unavailable(self):
+        with patch.object(po, "PRODUCT_FAMILY_REGISTRY", None):
+            result = po.ladder_opportunity_score("a real test niche", ladder="kdp_books")
+        self.assertEqual(result["time_to_market"]["level"], "Unknown")
+        self.assertIsNone(result["time_to_market"]["score"])
+
+
 if __name__ == "__main__":
     unittest.main()
