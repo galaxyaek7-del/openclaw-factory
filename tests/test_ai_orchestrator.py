@@ -71,5 +71,32 @@ class TestGenerate(unittest.TestCase):
                 orchestrator.generate("query_reformulation", "sys", "user")
 
 
+class TestResourceAllocationStatus(unittest.TestCase):
+    """Autonomous Global Execution Engine (2026-07-23): a real, zero-cost
+    read of which provider each of the 9 named task categories currently
+    resolves to -- never a live generation call."""
+
+    def test_all_9_named_categories_are_covered(self):
+        with patch("ai_capability.evaluator.recommend_for_task", return_value={"recommendation": None, "reason": "x"}):
+            status = orchestrator.resource_allocation_status()
+        self.assertEqual(set(status), set(orchestrator.RESOURCE_ALLOCATION_TASK_TYPES))
+        self.assertEqual(len(status), 9)
+
+    def test_honest_groq_fallback_when_nothing_measured_for_any_category(self):
+        with patch("ai_capability.evaluator.recommend_for_task", return_value={"recommendation": None, "reason": "x"}):
+            status = orchestrator.resource_allocation_status()
+        for task_type in orchestrator.RESOURCE_ALLOCATION_TASK_TYPES:
+            self.assertEqual(status[task_type]["provider"], "groq")
+
+    def test_never_a_live_generation_call(self):
+        """resource_allocation_status() must be safe to call freely --
+        zero cost, zero network side effect -- so it can back a real-time
+        Mission Control view without spending anything."""
+        with patch("ai_capability.evaluator.recommend_for_task", return_value={"recommendation": "groq", "reason": "x"}), \
+             patch("book_generator.groq_chat") as mock_groq:
+            orchestrator.resource_allocation_status()
+        mock_groq.assert_not_called()
+
+
 if __name__ == "__main__":
     unittest.main()

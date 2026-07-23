@@ -1407,6 +1407,29 @@ const ACTION_REGISTRY = [
     asyncRunner: () => runPythonActionAsync('get-commercial-recommendations', 'get_commercial_recommendations', []),
   },
   {
+    // Autonomous Global Execution Engine (2026-07-23) -- Mission
+    // Control's single operational window. Assembled entirely from
+    // already-real sources on the Python side (execution_status.py,
+    // scheduler.py, market_memory.py, ai_capability), merged here with
+    // the real, already-live computeHealthStatus() this server already
+    // has synchronously -- never a second health computation.
+    name: 'get-global-execution-view',
+    description: 'Read-only: the single unified operational view (execution status, real scheduling buckets, revenue, production, market learning, AI utilization, health) -- every field reused from an already-real, already-tested source, nothing recomputed.',
+    reused: 'mission_control_api.py::_get_global_execution_view() + computeHealthStatus()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: async () => {
+      const view = await runPythonActionAsync('get-global-execution-view', 'get_global_execution_view', []);
+      let health;
+      try {
+        health = await computeHealthStatus();
+      } catch (e) {
+        health = { error: e.message };
+      }
+      return { ...view, health };
+    },
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +

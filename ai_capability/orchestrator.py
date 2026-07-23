@@ -86,3 +86,33 @@ def generate(task_type, system_prompt, user_prompt, cost_log_path=None, **kwargs
         )
     content = caller(system_prompt, user_prompt, **kwargs)
     return {"content": content, "provider": provider, "selection": recommendation}
+
+
+# The 9 real, named business task categories the Autonomous Global
+# Execution Engine directive (2026-07-23) asked to be continuously
+# resource-allocated across. select_provider()/generate() above already
+# dispatch on ANY task_type string generically -- these names don't
+# unlock new capability, they're the canonical vocabulary this factory's
+# own real modules should call generate() with, so real usage data (and
+# therefore real future comparative selection) accumulates under a
+# consistent label instead of a different ad-hoc string per call site.
+RESOURCE_ALLOCATION_TASK_TYPES = (
+    "research", "writing", "coding", "design", "video",
+    "translation", "analysis", "localization", "customer_support",
+)
+
+
+def resource_allocation_status(cost_log_path=None):
+    """Real, read-only, zero-cost view of which real provider
+    select_provider() currently resolves each of the 9 named task
+    categories to -- never a live generation call. Honest by
+    construction: with exactly one real provider today (Groq), every
+    category resolves to 'groq' via the same real fallback path
+    select_provider() already uses everywhere else; this is not a
+    hardcoded binding, it becomes genuinely comparative the moment real
+    usage data exists for more than one provider for a given task_type."""
+    status = {}
+    for task_type in RESOURCE_ALLOCATION_TASK_TYPES:
+        provider, recommendation = select_provider(task_type, cost_log_path=cost_log_path)
+        status[task_type] = {"provider": provider, "selection": recommendation}
+    return status

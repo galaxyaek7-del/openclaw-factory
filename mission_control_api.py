@@ -1187,6 +1187,49 @@ def _get_commercial_recommendations():
     return market_memory.recommend_actions()
 
 
+def _get_global_execution_view():
+    """Autonomous Global Execution Engine (2026-07-23): the single real
+    operational window the founder named, assembled entirely from
+    already-real, already-tested sources — never a second computation
+    of anything shown elsewhere:
+      - execution: execution_status.py's real per-opportunity status
+      - scheduling: scheduler.py's real 5-bucket classification
+        (on-demand only — this call does not execute anything, it only
+        reports what the real evidence currently supports)
+      - revenue / production: this module's own existing _revenue()/
+        _production() actions, reused verbatim
+      - market_learning / commercial_recommendations: market_memory.py
+      - ai_utilization: ai_capability.registry.list_providers() (real
+        measured usage) + orchestrator.resource_allocation_status()
+        (real, zero-cost provider selection per named task category)
+
+    Health and Security are deliberately NOT re-derived here — GET
+    /health (lib/health_checks.js) and the existing risk-intelligence-
+    scan/enterprise-readiness-gate Mission Control actions are already
+    the real, live views for those; duplicating them here would be
+    exactly the kind of second, competing computation this factory's
+    own discipline refuses."""
+    import execution_status
+    import scheduler
+    import market_memory
+    from ai_capability import registry as ai_registry
+    from ai_capability import orchestrator as ai_orchestrator
+
+    return {
+        "execution": execution_status.build_execution_status_report(),
+        "scheduling": scheduler.decide_next_actions(),
+        "revenue": _revenue(),
+        "production": _production(),
+        "market_learning": market_memory.monthly_evolution_report(),
+        "commercial_recommendations": market_memory.recommend_actions(),
+        "ai_utilization": {
+            "providers": ai_registry.list_providers(),
+            "resource_allocation": ai_orchestrator.resource_allocation_status(),
+        },
+        "note": "Health -> GET /health. Security -> risk-intelligence-scan / enterprise-readiness-gate actions (not duplicated here).",
+    }
+
+
 def _run_master_cycle():
     """Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     -- the single real call that composes Executive Quality Gate + AI
@@ -1276,6 +1319,7 @@ _ENDPOINTS = {
     "get_niche_commercial_profile": _get_niche_commercial_profile,
     "get_monthly_market_evolution_report": _get_monthly_market_evolution_report,
     "get_commercial_recommendations": _get_commercial_recommendations,
+    "get_global_execution_view": _get_global_execution_view,
     "run_master_cycle": _run_master_cycle,
 }
 

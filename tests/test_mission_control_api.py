@@ -311,6 +311,9 @@ class TestGlobalMarketLearningEngineActions(unittest.TestCase):
         for name in ("get_niche_commercial_profile", "get_monthly_market_evolution_report", "get_commercial_recommendations"):
             self.assertIn(name, mission_control_api._ENDPOINTS)
 
+    def test_global_execution_view_is_registered(self):
+        self.assertIn("get_global_execution_view", mission_control_api._ENDPOINTS)
+
     def test_niche_commercial_profile_requires_a_niche(self):
         with patch.object(sys, "argv", ["mission_control_api.py", "get_niche_commercial_profile", json.dumps({})]):
             with self.assertRaises(ValueError):
@@ -334,6 +337,33 @@ class TestGlobalMarketLearningEngineActions(unittest.TestCase):
             result = mission_control_api._get_commercial_recommendations()
         mock_recs.assert_called_once_with()
         self.assertEqual(result["recommendations"], [])
+
+    def test_global_execution_view_assembles_every_real_source_never_recomputes(self):
+        """Autonomous Global Execution Engine (2026-07-23): confirms
+        every field comes from an already-real function call, not a
+        second competing computation -- each source mocked distinctly
+        so a wrong wiring would fail this test."""
+        with patch("execution_status.build_execution_status_report", return_value={"count": 0, "opportunities": []}) as m_exec, \
+             patch("scheduler.decide_next_actions", return_value={"counts": {}}) as m_sched, \
+             patch("market_memory.monthly_evolution_report", return_value={"maturity": "DISCOVERY"}) as m_monthly, \
+             patch("market_memory.recommend_actions", return_value={"recommendations": []}) as m_recs, \
+             patch("ai_capability.registry.list_providers", return_value=[]) as m_providers, \
+             patch("ai_capability.orchestrator.resource_allocation_status", return_value={}) as m_alloc, \
+             patch.object(mission_control_api, "_revenue", return_value={"real": "revenue"}) as m_rev, \
+             patch.object(mission_control_api, "_production", return_value={"real": "production"}) as m_prod:
+            result = mission_control_api._get_global_execution_view()
+
+        m_exec.assert_called_once_with()
+        m_sched.assert_called_once_with()
+        m_monthly.assert_called_once_with()
+        m_recs.assert_called_once_with()
+        m_providers.assert_called_once_with()
+        m_alloc.assert_called_once_with()
+        m_rev.assert_called_once_with()
+        m_prod.assert_called_once_with()
+        self.assertEqual(result["revenue"], {"real": "revenue"})
+        self.assertEqual(result["production"], {"real": "production"})
+        self.assertIn("note", result)
 
 
 class TestFullCycle(unittest.TestCase):
