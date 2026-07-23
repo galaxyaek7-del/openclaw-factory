@@ -32,7 +32,7 @@
 |---|---|---|---|
 | 2.1 | Most API routes have zero authentication (~15+ routes, including real LLM spend and financial data) — `POST /api/agent/:name` specifically confirmed as an unauthenticated, unmetered direct proxy to the founder's paid Groq API key | Critical | ☑ commit `489c4bd` |
 | 2.2 | CORS fully open, no origin allowlist | High (compounds 2.1) | ☐ |
-| 2.3 | Mission Control password check is not timing-safe; no brute-force/rate-limit protection on login | Low | ☑ commit `[pending]` |
+| 2.3 | Mission Control password check is not timing-safe; no brute-force/rate-limit protection on login | Low | ☑ commit `78a4436` |
 | 2.4 | No TLS/HTTPS anywhere (acceptable while `BIND_HOST=127.0.0.1`, real gap the moment that changes) | Medium (conditional) | ☐ |
 | 2.5 | `npm audit`/dependency CVE status | Resolved | ☑ 0 CVEs across 94 real prod dependencies, verified against the real public registry (the earlier failure was the configured mirror not serving the audit endpoint) |
 | 2.6 | Pillow 12.2.0 has 10 real, published CVEs (found in Phase 1 Security Audit) | High | ☑ commit `14190a4` |
@@ -296,7 +296,7 @@ Picked up after the Live Competitive Intelligence mission closed (ADR-096) and r
 
 **Documented:** `ADR-101`.
 
-**Commit:** `[pending]`.
+**Commit:** `78a4436`.
 
 ---
 
