@@ -39,7 +39,7 @@ class TestHuntMarketRecordsToSharedDecisionStore(unittest.TestCase):
     def test_every_actually_scored_candidate_is_recorded_regardless_of_accept_reject(self):
         from decision_engine.engine import record_ladder_decision
 
-        def _record_to_temp_path(niche, ladder, scored):
+        def _record_to_temp_path(niche, ladder, scored, decisions_path=None):
             return record_ladder_decision(niche, ladder, scored, decisions_path=self.decisions_path)
 
         with patch.object(mh, "RECORD_LADDER_DECISION", _record_to_temp_path), \

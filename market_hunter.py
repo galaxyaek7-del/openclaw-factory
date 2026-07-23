@@ -224,7 +224,7 @@ def _check_knowledge_brain(niche):
     return False, None
 
 
-def hunt_market(limit=10, write_opportunities=True):
+def hunt_market(limit=10, write_opportunities=True, decisions_path=None):
     """The main hunt: generate (niche, ladder) candidates → consult the
     Brain FIRST → score survivors via profit_oracle.ladder_opportunity_score()
     (ADR-066, the Strategic Production Priority Ladder gate) → keep accepted
@@ -313,7 +313,7 @@ def hunt_market(limit=10, write_opportunities=True):
         # never lets a recording failure block the real hunt.
         if RECORD_LADDER_DECISION is not None:
             try:
-                RECORD_LADDER_DECISION(niche, ladder, scored)
+                RECORD_LADDER_DECISION(niche, ladder, scored, decisions_path=decisions_path)
             except Exception:
                 pass
 

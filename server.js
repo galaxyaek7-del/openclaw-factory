@@ -1178,6 +1178,24 @@ const ACTION_REGISTRY = [
     },
   },
   {
+    // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
+    // -- the single real call composing Executive Quality Gate + AI
+    // Executive Board (which itself calls Enterprise Readiness) +
+    // Revenue Pipeline production, instead of 3+ separate manual
+    // actions. advisory_only by default: the Board's verdict is
+    // reported but does not block a real execute=true production run.
+    name: 'run-master-cycle',
+    description: 'Runs the full real governance + production chain for one already-accepted niche in a single call: Quality Gate, Executive Board, and (if execute=true) real production. Board verdict is advisory unless enforce_board=true.',
+    reused: 'factory_orchestrator.py (Full Architecture Review)',
+    reversible: true, // read-only evaluation unless execute=true is explicitly passed, which reuses run_cycle's own existing safety switch
+    kind: 'async',
+    asyncRunner: (req) => {
+      const { niche, execute, enforce_board } = req.body || {};
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('run-master-cycle', 'run_master_cycle', [JSON.stringify({ niche, execute: !!execute, enforce_board: !!enforce_board })]);
+    },
+  },
+  {
     name: 'run-validation',
     description: 'Generates the real daily validation report (opportunities, bottlenecks, stalled items, reliability, recommendations).',
     reused: 'validation_layer/daily_report.py (ADR-053)',

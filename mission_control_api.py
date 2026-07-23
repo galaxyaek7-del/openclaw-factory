@@ -1032,6 +1032,30 @@ def _review_board_track_record():
     return {"reviews": eb.review_board_track_record(payload.get("niche"))}
 
 
+def _run_master_cycle():
+    """Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
+    -- the single real call that composes Executive Quality Gate + AI
+    Executive Board (which itself calls Enterprise Readiness) + Revenue
+    Pipeline production for one real, already-accepted niche, instead of
+    3+ separate manual actions. advisory_only defaults true: the Board's
+    verdict is reported but does not block execute=True's own real
+    production run (avoids silently freezing all production given zero
+    real market evidence exists today) -- pass "enforce_board": true to
+    make a real board rejection actually block production. Reads its
+    payload from sys.argv[2]: `python mission_control_api.py
+    run_master_cycle '{"niche":"...","execute":false,"enforce_board":false}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import factory_orchestrator as fo
+    return fo.run_master_cycle(
+        niche, execute=bool(payload.get("execute")),
+        advisory_only=not bool(payload.get("enforce_board")),
+    )
+
+
 def _check_paddle_checkout_status():
     """ADR-085/ADR-086: re-attempts Paddle checkout-link creation for
     every real product in data/paddle_products.json (5 as of ADR-086 --
@@ -1086,6 +1110,7 @@ _ENDPOINTS = {
     "risk_intelligence_scan": _risk_intelligence_scan,
     "convene_executive_board": _convene_executive_board,
     "review_board_track_record": _review_board_track_record,
+    "run_master_cycle": _run_master_cycle,
 }
 
 

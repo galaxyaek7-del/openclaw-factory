@@ -69,17 +69,35 @@ class TestHuntMarketLinksSensingEngine(unittest.TestCase):
     """Pioneer (Strategic Phase, 2026-07-19) is mocked to an empty list in
     every test here -- its own real HN network calls are tested once,
     deliberately, in tests/test_pioneer.py, not repeated on every
-    market_hunter test run."""
+    market_hunter test run.
+
+    decisions_path is always redirected to a temp file: hunt_market()'s
+    RECORD_LADDER_DECISION() call has no other test-isolation switch, and
+    without this every run here was writing real ladder decisions for
+    fixture niches ("what is a monsoon", "a real pioneer test candidate
+    niche xyz") straight into the live data/decisions.jsonl governance
+    ledger -- 174 such lines had already accumulated there across prior
+    sessions before this was found and fixed (2026-07-23 post-reboot
+    integrity audit)."""
+
+    def setUp(self):
+        fd, self.decisions_path = tempfile.mkstemp(suffix=".jsonl")
+        os.close(fd)
+        os.remove(self.decisions_path)
+
+    def tearDown(self):
+        if os.path.exists(self.decisions_path):
+            os.remove(self.decisions_path)
 
     def test_hunt_market_result_reports_sensing_engine_linked_count(self):
         with patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
-            result = mh.hunt_market(limit=1, write_opportunities=False)
+            result = mh.hunt_market(limit=1, write_opportunities=False, decisions_path=self.decisions_path)
         self.assertIn("sensing_engine_linked_count", result)
         self.assertIsInstance(result["sensing_engine_linked_count"], int)
 
     def test_scanned_entries_are_labeled_with_their_real_source(self):
         with patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
-            result = mh.hunt_market(limit=1, write_opportunities=False)
+            result = mh.hunt_market(limit=1, write_opportunities=False, decisions_path=self.decisions_path)
         for entry in result["scanned"]:
             self.assertIn(entry["source"], ("seed", "sensing_engine", "pioneer"))
 
@@ -87,7 +105,7 @@ class TestHuntMarketLinksSensingEngine(unittest.TestCase):
         with patch.object(mh, "PIONEER_DISCOVER", return_value=[
             {"niche": "a real pioneer test candidate niche xyz", "source": "hacker_news_top_stories"},
         ]):
-            result = mh.hunt_market(limit=1, write_opportunities=False)
+            result = mh.hunt_market(limit=1, write_opportunities=False, decisions_path=self.decisions_path)
         self.assertEqual(result["pioneer_linked_count"], 1)
         pioneer_entries = [e for e in result["scanned"] if e["source"] == "pioneer"]
         self.assertEqual(len(pioneer_entries), 1)
@@ -96,9 +114,14 @@ class TestHuntMarketLinksSensingEngine(unittest.TestCase):
 
     def test_a_pioneer_failure_never_blocks_the_real_hunt(self):
         with patch.object(mh, "PIONEER_DISCOVER", side_effect=RuntimeError("HN unreachable")):
-            result = mh.hunt_market(limit=1, write_opportunities=False)
+            result = mh.hunt_market(limit=1, write_opportunities=False, decisions_path=self.decisions_path)
         self.assertIn("scanned_count", result)
         self.assertEqual(result["pioneer_linked_count"], 0)
+
+    def test_real_decisions_are_written_to_the_given_path_not_the_live_ledger(self):
+        with patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
+            mh.hunt_market(limit=1, write_opportunities=False, decisions_path=self.decisions_path)
+        self.assertTrue(os.path.exists(self.decisions_path))
 
 
 if __name__ == "__main__":
