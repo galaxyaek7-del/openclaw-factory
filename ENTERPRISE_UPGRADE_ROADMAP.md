@@ -22,7 +22,7 @@
 | # | Finding | Severity | Status |
 |---|---|---|---|
 | 1.1 | No process supervisor — an unhandled exception silently kills the entire factory, nothing restarts it | Critical | ☑ commit `96ee731` |
-| 1.2 | No uptime monitoring or general-failure alerting — MTTD is unbounded | Critical | ☑ commit `[pending]` — see execution log below |
+| 1.2 | No uptime monitoring or general-failure alerting — MTTD is unbounded | Critical | ☑ commit `8d32ad0` |
 
 ## Phase 2 — Security
 
@@ -195,7 +195,7 @@ Resumed after being paused for the Enterprise Security & Cyber Defense Mission, 
 
 **Documented:** `ADR-097`.
 
-**Commit:** `[pending]`.
+**Commit:** `8d32ad0`.
 
 ---
 
