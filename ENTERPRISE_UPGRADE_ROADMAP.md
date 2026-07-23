@@ -150,4 +150,24 @@ Rules, binding: no simulation, no fake security, no fake certificates/compliance
 
 ---
 
-*(Phase 2 — Security — begins now with 2.1, the single largest finding: route authentication, per founder direction to fix this before any Security Architecture module is built.)*
+### 2.1 — Route authentication (2026-07-23)
+
+**Implemented:**
+- `server.js`: new `INTERNAL_SERVICE_TOKEN` (`.env`, generated once, a real random 32-byte hex value — not committed, `.env` is gitignored) and `requireMissionControlOrInternalToken` middleware — accepts either a real Mission Control session or a timing-safe-compared `X-Internal-Token` header. Fails **closed**: if `INTERNAL_SERVICE_TOKEN` is ever unset, these routes require a real session, never a silent unauthenticated fallback.
+- Classified every one of the 32 real routes in `server.js` before touching any of them: 4 have a real, working, non-browser caller with no session available (`factory_loop.js`'s own automated pipeline calling `/api/distribute`, `/api/sales/poll`, `/generate-book`; the `01_Market_Scout` n8n workflow calling `/api/scout/run`) — these got `requireMissionControlOrInternalToken`. 14 others (`/api/safety/check`, `/api/agent/:name`, `/api/trends`, `/api/market-analyze`, `/api/qa-check`, `/api/reality`, `/factory-loop/status`, `/good-morning`, `/oracle`, `/inspections`, `/brain`, `/hunter`, `/awareness`, `GET /finance`) have no internal caller at all — plain `requireMissionControlAuth`. Left deliberately public, matching already-established design: the auth gateway itself (`login`/`logout`/`session`), `/health`, `/api/dashboard` (matches `dashboard.html`'s own already-public design, not something this fix unilaterally reversed), and the static SPA shell/login page routes (must be loadable before authentication exists).
+- `factory_loop.js`: its 3 real calls to the now-protected routes now send `X-Internal-Token`, read from the same `.env` both processes already load.
+- `n8n_workflows/01_Market_Scout.fixed.json`: its `HTTP Request` node now sends `X-Internal-Token: ={{ $env.INTERNAL_SERVICE_TOKEN }}`. **Not yet live** — editing this file doesn't change the running n8n instance; `n8n_workflows/README.md` documents the 2 real manual steps left (make the token available to n8n's own `$env`, re-import the workflow), neither of which this session can do without n8n's own login (the same blocker `BLOCKERS.md` #1 already documents).
+
+**Real UX consequence, not a bug — documented in `CLAUDE.md`:** `index.html` (the main dashboard) has no login flow of its own; it already required having logged in once via `mission_control_login.html` for `/finance/add`/`/finance/delete` (pre-existing, before this fix) because cookies are domain-wide by default. This fix extends the exact same, already-established requirement to more buttons (Generate Book, Scout, etc.) — not a new pattern, the intended effect of actually closing the gap.
+
+**Tested:** `tests/test_api_contract.js` — 3 new tests (a representative plain-auth route via `/oracle`, `/api/agent/:name`'s unauthenticated path specifically — deliberately never exercising its authenticated path in an automated test, since that would make a real, billed Groq call on every run — and the full session-OR-token matrix via `/api/sales/poll`: no auth → 401, wrong token → 401, real token → 200, real session → 200). One real test bug caught and fixed before it could hide behind a false pass: the `/oracle` test initially asserted 401, but a non-`/api/` GET route actually redirects (302) and `fetch()` follows redirects by default, so the test was silently checking the public login page's own 200 instead of the real auth behavior — fixed with `redirect: 'manual'`.
+
+**Verified:** Full JS suite (208 tests, +3 new) and full Python suite (1040 tests) both green. Live, real end-to-end check with the actual `.env` token (not a test double): unauthenticated `POST /api/sales/poll` → 401; with the real token → 200.
+
+**Documented:** `CLAUDE.md` (the `/api/agent/:name` section, the env-var footnote); `n8n_workflows/README.md` (the 2 real remaining manual steps); this entry.
+
+**Commit:** `[pending]`.
+
+---
+
+*(Phase 2 continues from here — the Security Architecture sub-phase (Secret Manager, Identity Manager, Access Controller, etc.) is next, scoped to what findings 2.6–2.13 above actually still need, not built speculatively.)*

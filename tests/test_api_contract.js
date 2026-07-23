@@ -25,6 +25,7 @@ const path = require('path');
 const PORT = 3199; // distinct from the interactive-session convention (3099), to avoid any collision if both ever run at once
 const BASE_URL = `http://localhost:${PORT}`;
 const TEST_PASSWORD = 'contract-test-password';
+const TEST_INTERNAL_TOKEN = 'contract-test-internal-token';
 const REPO_ROOT = path.join(__dirname, '..');
 
 let serverProcess;
@@ -47,7 +48,7 @@ async function waitForServer(timeoutMs = 15000) {
 test.before(async () => {
   serverProcess = spawn(process.execPath, ['server.js'], {
     cwd: REPO_ROOT,
-    env: { ...process.env, PORT: String(PORT), MISSION_CONTROL_PASSWORD: TEST_PASSWORD },
+    env: { ...process.env, PORT: String(PORT), MISSION_CONTROL_PASSWORD: TEST_PASSWORD, INTERNAL_SERVICE_TOKEN: TEST_INTERNAL_TOKEN },
   });
   await waitForServer();
 
@@ -258,7 +259,7 @@ test('POST /finance/add accepts Paddle + a ladder rank, and GET /finance rolls b
   assert.equal(body.success, true);
   assert.equal(body.sale.ladder, 'ai_saas');
 
-  const fin = await (await fetch(`${BASE_URL}/finance`)).json();
+  const fin = await (await fetch(`${BASE_URL}/finance`, { headers: { Cookie: cookie } })).json();
   assert.ok(fin.totalPaddle >= 150);
   assert.ok(fin.byLadder && fin.byLadder.ai_saas >= 150);
 
@@ -284,6 +285,73 @@ test('DELETE /finance/delete/:id now requires Mission Control auth', async () =>
   assert.equal(authed.status, 200, 'an authenticated call for a non-existent id must still succeed cleanly (idempotent delete)');
 });
 
+// Enterprise Security & Cyber Defense Mission, Phase 2, finding 2.1
+// (2026-07-23) — Critical finding, fixed: ~15+ routes had zero
+// authentication, including a direct, unmetered proxy to the founder's
+// real Groq API key (POST /api/agent/:name). Every browser-only route
+// (no internal automation caller) now requires requireMissionControlAuth.
+// A representative sample is tested here, not every route — the
+// middleware itself is the thing under test, not each handler's business
+// logic (already covered elsewhere). /api/agent/:name's "authenticated"
+// path is deliberately NOT exercised here (it would make a real,
+// billed Groq call on every CI run) — only that it 401s unauthenticated,
+// which never reaches the Groq call.
+test('GET /oracle now requires Mission Control auth, and works when authenticated', async () => {
+  // A non-/api/ GET route redirects to the login page rather than
+  // returning 401 JSON (requireMissionControlAuth's own real behavior,
+  // already covered generally by the /api/v1/* test above) — redirect:
+  // 'manual' inspects that real redirect instead of letting fetch()
+  // silently follow it to the (intentionally public) login page's own
+  // 200, which would otherwise make this assertion pass for the wrong
+  // reason.
+  const unauth = await fetch(`${BASE_URL}/oracle`, { redirect: 'manual' });
+  assert.equal(unauth.status, 302);
+  assert.equal(unauth.headers.get('location'), '/mission_control_login.html');
+
+  const authed = await fetch(`${BASE_URL}/oracle`, { headers: { Cookie: cookie } });
+  assert.equal(authed.status, 200);
+});
+
+test('POST /api/agent/:name now requires Mission Control auth (never reaches the real Groq call unauthenticated)', async () => {
+  const unauth = await fetch(`${BASE_URL}/api/agent/scout`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: 'this must never reach Groq unauthenticated' }),
+  });
+  assert.equal(unauth.status, 401);
+  const body = await unauth.json();
+  assert.equal(body.success, false);
+});
+
+// The 4 routes real internal automation calls with no browser session
+// available (factory_loop.js's own pipeline, and the 01_Market_Scout n8n
+// workflow) — these accept EITHER a session OR X-Internal-Token, never
+// neither. /api/sales/poll is used as the representative case: safe to
+// fully execute repeatedly (no configured real sales-channel tokens in
+// this test environment, so it reports real skip_reasons, never a crash
+// or a real external call — same real, already-tested behavior
+// poll_sales.py's own test suite covers).
+test('POST /api/sales/poll requires a session OR the internal service token, never neither', async () => {
+  const noAuth = await fetch(`${BASE_URL}/api/sales/poll`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}',
+  });
+  assert.equal(noAuth.status, 401);
+
+  const wrongToken = await fetch(`${BASE_URL}/api/sales/poll`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Internal-Token': 'not-the-real-token' }, body: '{}',
+  });
+  assert.equal(wrongToken.status, 401, 'a wrong token must be rejected exactly like no token at all');
+
+  const withToken = await fetch(`${BASE_URL}/api/sales/poll`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Internal-Token': TEST_INTERNAL_TOKEN }, body: '{}',
+  });
+  assert.equal(withToken.status, 200, 'the real internal service token (what factory_loop.js and the Scout n8n workflow actually send) must be accepted');
+
+  const withCookie = await fetch(`${BASE_URL}/api/sales/poll`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: cookie }, body: '{}',
+  });
+  assert.equal(withCookie.status, 200, 'a real Mission Control session must also be accepted — this is (session OR token), not token-only');
+});
+
 // Zero-assumption audit follow-up — Medium-High finding, fixed: runReality()
 // spawned a fresh Python interpreter on every call with no caching (freshly
 // measured live: 3-4s per call on GET /api/dashboard, the exact endpoint
@@ -293,11 +361,11 @@ test('DELETE /finance/delete/:id now requires Mission Control auth', async () =>
 // back to "every call re-spawns Python" (which would consistently cost
 // multiple real seconds per call, not sub-second).
 test('GET /api/reality is cached — repeat calls within the TTL are consistently fast, not re-spawning Python each time', async () => {
-  await fetch(`${BASE_URL}/api/reality`); // warm the cache
+  await fetch(`${BASE_URL}/api/reality`, { headers: { Cookie: cookie } }); // warm the cache
   const timings = [];
   for (let i = 0; i < 3; i++) {
     const start = Date.now();
-    const res = await fetch(`${BASE_URL}/api/reality`);
+    const res = await fetch(`${BASE_URL}/api/reality`, { headers: { Cookie: cookie } });
     await res.json();
     timings.push(Date.now() - start);
   }

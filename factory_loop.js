@@ -38,6 +38,17 @@ const { checkStartupSafety } = require('./scripts/factory_startup_check');
 
 const FACTORY_DIR = __dirname;
 const DASHBOARD_URL = process.env.DASHBOARD_URL || 'http://localhost:3000';
+// Enterprise Security & Cyber Defense Mission, Phase 2, finding 2.1
+// (2026-07-23): server.js's /api/distribute, /api/sales/poll, and
+// /generate-book now require either a real Mission Control session (this
+// process has none) or this shared secret, read from the same .env file
+// server.js itself reads — same trust model as MISSION_CONTROL_PASSWORD,
+// a single shared credential for a single-operator factory's own
+// internal automation, not a fake per-service identity system.
+const INTERNAL_SERVICE_TOKEN = process.env.INTERNAL_SERVICE_TOKEN;
+function internalAuthHeaders() {
+  return INTERNAL_SERVICE_TOKEN ? { 'X-Internal-Token': INTERNAL_SERVICE_TOKEN } : {};
+}
 // ADR-065 Step 3(a): separate from server.js's N8N_PRODUCTION_WEBHOOK_URL
 // (a different, already-documented payload contract) — unset by default,
 // same fail-safe-if-unconfigured discipline as that one. Points at the
@@ -342,7 +353,7 @@ async function triggerDistribute(record) {
   try {
     const res = await fetchWithTimeout(`${DASHBOARD_URL}/api/distribute`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...internalAuthHeaders() },
       body: JSON.stringify({ record, dry_run: !LIVE_PUBLISH_ENABLED }),
     }, 140000, 'api-distribute');
     const data = await res.json();
@@ -380,7 +391,7 @@ async function pollSales(reachable) {
   try {
     const res = await fetchWithTimeout(`${DASHBOARD_URL}/api/sales/poll`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...internalAuthHeaders() },
       body: JSON.stringify({}),
     }, 30000, 'api-sales-poll');
     const data = await res.json();
@@ -418,7 +429,7 @@ async function triggerGenerateBook(brief) {
   try {
     const res = await fetchWithTimeout(`${DASHBOARD_URL}/generate-book`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...internalAuthHeaders() },
       body: JSON.stringify({
         title: brief.title,
         topic: brief.topic,

@@ -10,6 +10,13 @@ The files below are kept as the exact record of what was imported — historical
 
 **`00_CEO.fixed.json`** — same workflow (same `id`), but its `Execute Workflow` node previously referenced an **unresolved workflow ID** (`value: "="` — an incomplete n8n expression, not a real workflow reference, confirmed via the real export). Rather than guess which other workflow a "CEO" orchestrator should chain to (an arbitrary business decision with no evidence behind it), the node is replaced with a plain `GET http://localhost:3000/api/dashboard` HTTP Request — the real Executive Dashboard aggregator built today. Renamed to "View Executive Dashboard" to match what it actually does now.
 
+## Auth header added to `01_Market_Scout.fixed.json` — NOT yet live, manual import required (2026-07-23)
+
+Enterprise Security & Cyber Defense Mission, Phase 2, finding 2.1: `POST /api/scout/run` on the real server now requires either a Mission Control session or the `X-Internal-Token` header (server.js's new `requireMissionControlOrInternalToken`), since it was found completely unauthenticated. This workflow's `HTTP Request` node has been updated in this file (`sendHeaders: true`, `X-Internal-Token: ={{ $env.INTERNAL_SERVICE_TOKEN }}`) to match — but, same as every other change in this directory, **editing the JSON file here does not change the live, running n8n instance.** Two real steps remain, neither of which this session can do without n8n's own login (the same blocker `BLOCKERS.md` #1 already documents):
+
+1. Ensure `INTERNAL_SERVICE_TOKEN` (the real value now in this repo's own `.env`) is available to n8n's expression engine at `$env.INTERNAL_SERVICE_TOKEN` — n8n restricts `$env` access by default; this may need `N8N_BLOCK_ENV_ACCESS_IN_NODE=false` or the token added to n8n's own environment configuration, not this repo's.
+2. Re-import this updated workflow (same real process ADR-045 already used: backup → clean stop → `n8n import:workflow` → restart → verify) so the live workflow actually sends the header — until this happens, a real, manually-triggered run of this workflow will get a real `401` from the now-protected route, not a silent failure.
+
 ## Remaining manual step — activation only (UI-only, confirmed)
 
 1. Log into `http://localhost:5678`.

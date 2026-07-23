@@ -103,6 +103,47 @@ function requireMissionControlAuth(req, res, next) {
   return res.status(401).json({ success: false, error: 'unauthenticated' });
 }
 
+// Enterprise Security & Cyber Defense Mission, Phase 2 (2026-07-23),
+// finding 2.1: most routes had zero authentication, including a direct,
+// unmetered proxy to the founder's real, paid Groq API key
+// (/api/agent/:name). requireMissionControlAuth alone can't gate every
+// route, because 4 of them are real, working internal callers with no
+// browser session to present: factory_loop.js's own automated pipeline
+// (/api/distribute, /api/sales/poll, /generate-book) and the
+// 01_Market_Scout n8n workflow (/api/scout/run). Naively requiring a
+// session on those 4 would silently break real, already-working
+// automation, not fix a vulnerability -- exactly the "never introduce
+// regressions" rule this whole mission runs under.
+//
+// INTERNAL_SERVICE_TOKEN (.env, generated once) is that other real
+// credential: a shared secret only this process and its own known
+// internal callers hold, sent as X-Internal-Token. Same trust model as
+// MISSION_CONTROL_PASSWORD -- a single shared secret for a single-
+// operator factory, not a fake multi-tenant auth system this factory
+// doesn't need. If INTERNAL_SERVICE_TOKEN is ever unset (a fresh
+// checkout before .env is configured), this fails CLOSED -- these 4
+// routes require a real Mission Control session until it's set, the
+// same as every other route below, never a silent unauthenticated
+// fallback.
+const INTERNAL_SERVICE_TOKEN = process.env.INTERNAL_SERVICE_TOKEN;
+
+function timingSafeEqualStrings(a, b) {
+  const bufA = Buffer.from(String(a));
+  const bufB = Buffer.from(String(b));
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+}
+
+function requireMissionControlOrInternalToken(req, res, next) {
+  const cookies = parseCookies(req);
+  if (verifyMissionControlSession(cookies.mc_session)) return next();
+  const provided = req.headers['x-internal-token'];
+  if (INTERNAL_SERVICE_TOKEN && provided && timingSafeEqualStrings(provided, INTERNAL_SERVICE_TOKEN)) {
+    return next();
+  }
+  return res.status(401).json({ success: false, error: 'unauthenticated' });
+}
+
 app.post('/api/mission-control/login', (req, res) => {
   if (!MISSION_CONTROL_PASSWORD) {
     return res.status(500).json({
@@ -1402,7 +1443,7 @@ function runSafetyCheck(payload, timeoutMs = 5000) {
   });
 }
 
-app.post('/api/safety/check', async (req, res) => {
+app.post('/api/safety/check', requireMissionControlAuth, async (req, res) => {
   try {
     const result = await runSafetyCheck(req.body || {});
     res.json({ success: true, ...result });
@@ -1412,7 +1453,7 @@ app.post('/api/safety/check', async (req, res) => {
 });
 
 // ── GENERATE BOOK ──
-app.post('/generate-book', async (req, res) => {
+app.post('/generate-book', requireMissionControlOrInternalToken, async (req, res) => {
   // `output` is destructured as `outputName` to avoid colliding with the
   // `output`/`errOut` stdout-accumulator variables used below.
   const { title, subtitle, type, theme, pages, author, topic, chapters, audience, price, product_type, sections, output: outputName } = req.body;
@@ -1638,7 +1679,7 @@ async function runDistributor(record, { arms, dryRun = true } = {}, timeoutMs = 
   return { ...distributorResult, seo: { ok: seo.ok, content: seo.ok ? seo.content : null, error: seo.ok ? null : seo.error } };
 }
 
-app.post('/api/distribute', async (req, res) => {
+app.post('/api/distribute', requireMissionControlOrInternalToken, async (req, res) => {
   const { record, arms } = req.body || {};
 
   if (!record || typeof record !== 'object' || Array.isArray(record)) {
@@ -1708,7 +1749,7 @@ async function autoDistributeScoutBook(bookResult) {
 // which itself refuses (skip_reason, never a network call) without a real
 // GUMROAD_ACCESS_TOKEN, same fail-safe channels/gumroad_arm.py already
 // enforces for publish().
-app.post('/api/sales/poll', (req, res) => {
+app.post('/api/sales/poll', requireMissionControlOrInternalToken, (req, res) => {
   const { arms } = req.body || {};
   if (arms !== undefined && !Array.isArray(arms)) {
     return res.status(400).json({ success: false, error: 'arms must be an array of arm names, if provided' });
@@ -1919,7 +1960,7 @@ function recomputeFinTotals(data) {
   data.totalPaddle = data.sales.filter(s => s.platform === 'Paddle').reduce((a, s) => a + s.amount, 0);
 }
 
-app.get('/finance', (req, res) => {
+app.get('/finance', requireMissionControlAuth, (req, res) => {
   try {
     res.json(loadFin());
   } catch (err) {
@@ -2057,7 +2098,7 @@ const AGENT_PROMPTS = {
 };
 
 // ── AGENT ENDPOINTS ──
-app.post('/api/agent/:name', async (req, res) => {
+app.post('/api/agent/:name', requireMissionControlAuth, async (req, res) => {
   const { name } = req.params;
   const agentConfig = AGENT_PROMPTS[name];
 
@@ -2275,7 +2316,7 @@ function runBookGenerator(payload, timeoutMs = 150000) {
   });
 }
 
-app.post('/api/scout/run', async (req, res) => {
+app.post('/api/scout/run', requireMissionControlOrInternalToken, async (req, res) => {
   const startedAt = Date.now();
 
   // 1) Trigger the n8n Sensing Engine. Today the webhook responds immediately
@@ -2505,7 +2546,7 @@ function appendOpportunity(niche, gate) {
   fs.appendFileSync(OPPORTUNITIES_FILE, `- [${timestamp}] ${niche} — ${gate.reason}\n`, 'utf8');
 }
 
-app.post('/api/trends', async (req, res) => {
+app.post('/api/trends', requireMissionControlAuth, async (req, res) => {
   // Always 200 to n8n regardless of what happened downstream — a rejected
   // trend or a malformed payload is normal business logic, not a delivery
   // failure n8n should retry over.
@@ -2561,7 +2602,7 @@ app.post('/api/trends', async (req, res) => {
   res.json({ success: true, received: items.length, added: results.filter(r => r.added).length, results });
 });
 
-app.post('/api/market-analyze', (req, res) => {
+app.post('/api/market-analyze', requireMissionControlAuth, (req, res) => {
   try {
     const pythonPath = detectPython();
     const scriptPath = path.join(__dirname, 'market_analyzer.py');
@@ -2669,7 +2710,7 @@ app.post('/api/market-analyze', (req, res) => {
 // founder sign-off, not a default cleanup) but now self-disclosing, so
 // nothing built on top of it in the future can mistake it for a real
 // QA gate.
-app.post('/api/qa-check', (req, res) => {
+app.post('/api/qa-check', requireMissionControlAuth, (req, res) => {
   try {
     const pythonPath = detectPython();
     const scriptPath = path.join(__dirname, 'quality_doctor.py');
@@ -2787,7 +2828,7 @@ function runRealityCached(timeoutMs = 5000) {
   });
 }
 
-app.get('/api/reality', async (req, res) => {
+app.get('/api/reality', requireMissionControlAuth, async (req, res) => {
   res.json(await runRealityCached());
 });
 
@@ -2883,7 +2924,7 @@ app.get('/health', async (req, res) => {
 // Read-only view into factory_loop.js's own log (that script runs as a
 // separate process — see factory_loop.js — so this route only ever reads a
 // file; it never starts, stops, or depends on the loop being alive).
-app.get('/factory-loop/status', (req, res) => {
+app.get('/factory-loop/status', requireMissionControlAuth, (req, res) => {
   const logPath = path.join(__dirname, 'factory_loop.log');
   try {
     if (!fs.existsSync(logPath)) {
@@ -2995,7 +3036,7 @@ async function unifiedPrioritiesService() {
   };
 }
 
-app.get('/good-morning', async (req, res) => {
+app.get('/good-morning', requireMissionControlAuth, async (req, res) => {
   // Standing charter follow-up — same fix as GET /api/dashboard: this used
   // to run computeHealthStatus() and assessSelfAwareness() in Promise.all,
   // but assessSelfAwareness() independently re-fetched the identical
@@ -3029,7 +3070,7 @@ app.get('/good-morning', async (req, res) => {
 // on-demand or via factory_loop.js — this route never invokes it, it only
 // reads golden_opportunities.json, the same way /factory-loop/status only
 // reads factory_loop.log).
-app.get('/oracle', (req, res) => {
+app.get('/oracle', requireMissionControlAuth, (req, res) => {
   const jsonFile = path.join(__dirname, 'golden_opportunities.json');
   try {
     if (!fs.existsSync(jsonFile)) {
@@ -3058,7 +3099,7 @@ app.get('/oracle', (req, res) => {
 // route never runs an inspection itself — final_inspection() is invoked
 // automatically inside book_generator.py's generate_book(), right after a
 // product is written to disk; this only reads inspections.log afterward.
-app.get('/inspections', (req, res) => {
+app.get('/inspections', requireMissionControlAuth, (req, res) => {
   const logFile = path.join(__dirname, 'inspections.log');
   try {
     if (!fs.existsSync(logFile)) {
@@ -3079,7 +3120,7 @@ app.get('/inspections', (req, res) => {
 // OpenClaw_Brain/'s real, current folder map — computed from disk every
 // call, never a stale hardcoded copy. Optional ?q= does a keyword search
 // across every .md file instead (see knowledge_brain.js).
-app.get('/brain', (req, res) => {
+app.get('/brain', requireMissionControlAuth, (req, res) => {
   try {
     const q = req.query.q;
     if (q) {
@@ -3099,7 +3140,7 @@ app.get('/brain', (req, res) => {
 // cycle, or manually via `python market_hunter.py --run`); it only reads
 // the most recent entry from market_hunter_runs.log, the same pattern
 // /inspections and /oracle already use for their own logs.
-app.get('/hunter', (req, res) => {
+app.get('/hunter', requireMissionControlAuth, (req, res) => {
   const logFile = path.join(__dirname, 'market_hunter_runs.log');
   try {
     if (!fs.existsSync(logFile)) {
@@ -3129,7 +3170,7 @@ app.get('/hunter', (req, res) => {
 // diagnosis + verdict) but does NOT write to GROWTH_LOG.md itself — that
 // write happens once daily from factory_loop.js, the same read-vs-write
 // split /oracle and /hunter already use for their own logs.
-app.get('/awareness', async (req, res) => {
+app.get('/awareness', requireMissionControlAuth, async (req, res) => {
   try {
     const assessment = await selfAwareness.assessSelfAwareness();
     res.json({ success: true, ...assessment });
