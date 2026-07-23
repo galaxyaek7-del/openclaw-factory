@@ -196,3 +196,17 @@ A real audit (not guessed) found this mission overlaps heavily with work already
 ---
 
 *(Phase 2 continues from here — the Security Architecture sub-phase (Secret Manager, Identity Manager, Access Controller, etc.) is next, scoped to what findings 2.6–2.13 above actually still need, not built speculatively.)*
+
+### 4.7 — Real infrastructure health checks (2026-07-23)
+
+**Implemented:**
+- `lib/health_checks.js` (new): `checkMemory()` (real process + system memory), `checkCpu()` (core count, honestly reports `os.loadavg()` as meaningless on Windows rather than faking `[0,0,0]` as a real number), `checkDiskSpace()` (real Windows `Get-PSDrive` shell-out, explicitly scoped as Windows-only since no POSIX deployment exists to build/verify a cross-platform check against), `checkNetworkReachability()` (real reachability to this factory's actual external dependencies — Groq required, Telegram/GitHub only checked when actually configured/relevant), `checkStorageIntegrity()` (real per-line JSON/JSONL validation — the honest analog to "database health" for an architecture with no database), `notApplicableChecks()` (explicit, honest `not_applicable` for database/queue/worker — none exist, never faked as green).
+- Wired into `server.js`'s existing `computeHealthStatus()` (extends the established `checks` object pattern, doesn't replace it) — `GET /health` now returns all of the above alongside the pre-existing checks. Fixed the aggregation logic so `not_applicable` (`ok: null`) entries never count as failing (`!null` is `true` — would have wrongly dragged overall status down for infrastructure this factory was never supposed to have).
+
+**Tested:** `tests/test_health_checks.js`, 16 tests — real values from `checkMemory()`/`checkCpu()` (no mocking, these are cheap and deterministic-enough to assert real shape/bounds on), injectable `run`/`fetchImpl` for the two I/O-bound checks (disk shell-out, network fetch) so failure paths are tested without real flakiness, real temp-file corruption scenarios for `checkStorageIntegrity()` (missing file, valid JSON, corrupt JSON, JSONL with one corrupt trailing line — precisely counted, not treated as fully broken), and an explicit assertion that `not_applicable` checks never fabricate `ok: true`.
+
+**Verified:** every check also run for real (unmocked) against this actual machine — real disk space (155.3GB free of 255GB), real memory/CPU, real network reachability to Groq/GitHub/Telegram (all genuinely up), and `storage_integrity` correctly validated the real `data/decisions.jsonl` (1356 valid lines — the exact clean count from earlier in this session's ledger-pollution cleanup). Live-booted the real server and confirmed `GET /health` returns the full extended shape correctly, with `not_applicable` checks confirmed not affecting overall status. Full JS suite: 224/224 (+16 new). Full Python suite: 1040/1040 green (unrelated to this JS-only change, run for full regression discipline regardless).
+
+**Documented:** `CLAUDE.md`'s Executive Dashboard section now describes the extended `/health` shape and the honest `not_applicable` discipline.
+
+**Commit:** `[pending]`.

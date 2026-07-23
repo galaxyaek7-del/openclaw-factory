@@ -12,6 +12,7 @@ const metricsLib = require('./lib/metrics');
 const n8nNotify = require('./lib/n8n_notify');
 const telegramDirect = require('./lib/telegram_direct');
 const { nextSaleId } = require('./lib/next_sale_id');
+const healthChecks = require('./lib/health_checks');
 // readLastGenerationRecord is a pure file read (no side effects) — requiring
 // factory_loop.js here never starts its loop or acquires its lockfile: both
 // only happen inside main(), guarded by `if (require.main === module)`
@@ -2892,7 +2893,32 @@ async function computeHealthStatus() {
   }
   checks.books_folder = { ok: booksOk, severity: 'degraded', count: pdfCount, detail: booksDetail };
 
-  const failing = Object.values(checks).filter(c => !c.ok);
+  // Enterprise Infrastructure & HA Mission (2026-07-23), finding 4.7:
+  // real memory/CPU/disk/network/storage-integrity checks, plus honest
+  // "not_applicable" entries for infrastructure this factory genuinely
+  // does not have (database, message queue, worker pool) — see
+  // lib/health_checks.js's own module docstring for why those are
+  // reported this way instead of a fabricated green check.
+  const [diskCheck, networkCheck] = await Promise.all([
+    healthChecks.checkDiskSpace(__dirname),
+    healthChecks.checkNetworkReachability({ hasGitRemote: true }),
+  ]);
+  checks.memory = healthChecks.checkMemory();
+  checks.cpu = healthChecks.checkCpu();
+  checks.disk = diskCheck;
+  checks.network = networkCheck;
+  checks.storage_integrity = healthChecks.checkStorageIntegrity([
+    { name: 'decisions', filePath: path.join(__dirname, 'data', 'decisions.jsonl'), format: 'jsonl' },
+    { name: 'finance', filePath: FINANCE_FILE, format: 'json' },
+    { name: 'factory_state', filePath: path.join(__dirname, 'data', 'factory_state.json'), format: 'json' },
+  ]);
+  Object.assign(checks, healthChecks.notApplicableChecks());
+
+  // not_applicable checks (database/queue/worker — none exist) must
+  // never count as "failing": ok is deliberately null for them, and
+  // `!null` is true, which would otherwise wrongly drag overall status
+  // down for infrastructure this factory was never supposed to have.
+  const failing = Object.values(checks).filter(c => c.severity !== 'not_applicable' && !c.ok);
   let status = 'healthy';
   if (failing.some(c => c.severity === 'critical')) status = 'critical';
   else if (failing.length > 0) status = 'degraded';
