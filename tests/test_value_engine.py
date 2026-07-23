@@ -204,18 +204,21 @@ class TestComputeValueProfileIntegration(unittest.TestCase):
         self.alerts_path = _temp_path()
         self.reopen_log_path = _temp_path()
         self.evidence_path = _temp_path()
+        self.timeline_path = _temp_path()
+        self.outcomes_path = _temp_path()
 
     def tearDown(self):
-        for p in (self.decisions_path, self.board_path, self.alerts_path, self.reopen_log_path, self.evidence_path):
+        for p in (self.decisions_path, self.board_path, self.alerts_path, self.reopen_log_path,
+                  self.evidence_path, self.timeline_path, self.outcomes_path):
             if os.path.exists(p):
                 os.remove(p)
 
-    def _record(self, niche, ladder, accepted=True, score=85.0, price=250):
+    def _record(self, niche, ladder, accepted=True, score=85.0, price=250, automation_potential=40):
         ladder_result = {
             "accepted": accepted, "ladder_score": score, "price": price, "reason": "test",
             "components": {
                 "market_demand": 60, "competition_favorability": 70, "profit_potential": 50,
-                "recurring_revenue_potential": 90, "reusability": 85, "automation_potential": 40,
+                "recurring_revenue_potential": 90, "reusability": 85, "automation_potential": automation_potential,
             },
             "risk": {"score": 90, "level": "low", "notes": []},
             "confidence": {"score": 55, "level": "متوسطة", "note": "test"},
@@ -231,6 +234,8 @@ class TestComputeValueProfileIntegration(unittest.TestCase):
         kwargs.setdefault("alerts_path", self.alerts_path)
         kwargs.setdefault("reopen_log_path", self.reopen_log_path)
         kwargs.setdefault("evidence_path", self.evidence_path)
+        kwargs.setdefault("timeline_path", self.timeline_path)
+        kwargs.setdefault("outcomes_path", self.outcomes_path)
         return ve.compute_value_profile(niche, **kwargs)
 
     def test_no_real_decision_is_honestly_none(self):
@@ -270,6 +275,68 @@ class TestComputeValueProfileIntegration(unittest.TestCase):
         self._record("a niche for maintenance cost test", "ai_saas")
         profile = self._profile("a niche for maintenance cost test")
         self.assertEqual(profile["board_summary"]["estimated_maintenance_cost"]["answer"], "Unknown")
+
+    def test_value_proposition_is_present_with_all_6_conditions(self):
+        self._record("a niche for value proposition test", "ai_saas")
+        profile = self._profile("a niche for value proposition test")
+        vp = profile["value_proposition"]
+        self.assertIn("conditions", vp)
+        self.assertIn("satisfied_count", vp)
+        self.assertIn("meets_minimum_bar", vp)
+        for cond in ve._VALUE_PROPOSITION_CONDITIONS:
+            self.assertIn(cond, vp["conditions"])
+
+    def test_the_2_no_real_source_conditions_are_always_unsatisfied_and_honest(self):
+        self._record("a niche for unknown-condition test", "ai_saas")
+        profile = self._profile("a niche for unknown-condition test")
+        conditions = profile["value_proposition"]["conditions"]
+        for cond in ("creates_new_market", "increases_customer_revenue"):
+            self.assertFalse(conditions[cond]["satisfied"])
+            self.assertTrue(conditions[cond]["evidence"])  # a real, stated reason, never blank
+
+    def test_high_automation_potential_satisfies_2_real_conditions(self):
+        self._record("a niche with high real automation", "ai_saas", automation_potential=90)
+        profile = self._profile("a niche with high real automation")
+        conditions = profile["value_proposition"]["conditions"]
+        self.assertTrue(conditions["automates_manual_work"]["satisfied"])
+        self.assertTrue(conditions["saves_time_or_money"]["satisfied"])
+        self.assertGreaterEqual(profile["value_proposition"]["satisfied_count"], 2)
+        self.assertTrue(profile["value_proposition"]["meets_minimum_bar"])
+
+    def test_lifecycle_stage_is_present_with_all_10_stages(self):
+        self._record("a niche for lifecycle test", "ai_saas")
+        profile = self._profile("a niche for lifecycle test")
+        lifecycle = profile["lifecycle_stage"]
+        self.assertIn("stages", lifecycle)
+        self.assertIn("current_stage", lifecycle)
+        self.assertIn("final_outcome", lifecycle)
+        for stage in ve.LIFECYCLE_STAGES:
+            self.assertIn(stage, lifecycle["stages"])
+
+    def test_a_fresh_accepted_decision_has_reached_validation_but_not_yet_production(self):
+        """A decision recorded via record_ladder_decision() (this
+        fixture's own real path) has real decision_engine evidence but
+        no real orchestrator-timeline market_intelligence event -- so
+        global_opportunity_discovery (keyed to that real timeline
+        evidence, per validation_layer.lifecycle.build_lifecycle()'s own
+        real Signal definition) honestly stays unreached here, while
+        evidence_based_validation (keyed to the real decision itself)
+        correctly reflects reached."""
+        self._record("a fresh niche with no real production yet", "ai_saas")
+        profile = self._profile("a fresh niche with no real production yet")
+        stages = profile["lifecycle_stage"]["stages"]
+        self.assertTrue(stages["evidence_based_validation"]["reached"])
+        self.assertFalse(stages["prototype"]["reached"])
+        self.assertFalse(stages["premium_production"]["reached"])
+        self.assertFalse(stages["commercial_launch"]["reached"])
+
+    def test_the_4_no_real_source_lifecycle_stages_are_always_unreached_and_honest(self):
+        self._record("a niche for lifecycle unknown-stages test", "ai_saas")
+        profile = self._profile("a niche for lifecycle unknown-stages test")
+        stages = profile["lifecycle_stage"]["stages"]
+        for stage in ("customer_testing", "localization", "global_expansion", "long_term_maintenance"):
+            self.assertFalse(stages[stage]["reached"])
+            self.assertTrue(stages[stage]["evidence"])  # a real, stated reason, never blank
 
     def test_synergy_reflects_real_sibling_decisions_sharing_a_ladder(self):
         self._record("sibling niche one", "b2b_systems")

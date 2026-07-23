@@ -271,17 +271,190 @@ def _build_recommendation(priority_score, at_risk, upgrade, bundle):
     return actions
 
 
+# ── Market Creation & Product Leadership (2026-07-23): the 6 named ──
+# ── conditions every real product must satisfy at least one of.     ──
+# ── Informational only, same additive discipline as every other      ──
+# ── dimension above — never a new accept/reject gate, never blended  ──
+# ── into profit_score/ladder_score/accepted. A real search found 4 of ──
+# ── the 6 conditions have a real, already-computed evidence source;   ──
+# ── the other 2 (creates a genuinely new market; increases the        ──
+# ── customer's OWN revenue) have none anywhere in this factory today  ──
+# ── — reported as honest, reasoned "insufficient evidence", never     ──
+# ── forced into a yes/no this factory cannot actually back with real  ──
+# ── data.                                                             ──
+
+_VALUE_PROPOSITION_CONDITIONS = (
+    "creates_new_market", "solves_expensive_problem_better", "automates_manual_work",
+    "saves_time_or_money", "increases_customer_revenue", "becomes_indispensable_business_asset",
+)
+
+
+def _condition(satisfied, evidence):
+    return {"satisfied": satisfied, "evidence": evidence}
+
+
+def classify_value_proposition(annotated, reused, new_dims):
+    """Real, evidence-based check against the 6 named Market Creation &
+    Product Leadership conditions — reuses fields already computed
+    elsewhere in this profile, never a new measurement. "At least one
+    satisfied" is reported explicitly so a human/board can see the real
+    basis, never a bare pass/fail."""
+    strategic_investment = annotated.get("strategic_investment") or {}
+    pain_level = annotated.get("pain_level") or {}
+    automation = new_dims_automation = reused.get("automation_potential")
+    automation_score = automation if isinstance(automation, (int, float)) else (automation or {}).get("score")
+
+    conditions = {
+        # No real market-creation validation methodology exists in this
+        # factory (market_signal is explicitly a discussion-volume proxy,
+        # never proof a market didn't already exist) — honestly
+        # unresolved rather than forced.
+        "creates_new_market": _condition(
+            False, "لا منهجية تحقّق حقيقية لخلق سوق جديد فعلاً موجودة في هذا المصنع بعد — دليل غير كافٍ",
+        ),
+        "solves_expensive_problem_better": _condition(
+            bool(pain_level.get("value")) and strategic_investment.get("competitors_can_copy_it_easily") is False,
+            f"دليل ألم عملاء حقيقي: {pain_level.get('value')}؛ صعوبة تقليد حقيقية من طبقة الاستثمار الاستراتيجي"
+            if pain_level.get("value") else "لا دليل ألم عملاء حقيقي مسجَّل لهذا القرار",
+        ),
+        "automates_manual_work": _condition(
+            isinstance(automation_score, (int, float)) and automation_score >= 60,
+            f"إمكانية أتمتة حقيقية: {automation_score}/100" if isinstance(automation_score, (int, float)) else "لا مقياس أتمتة حقيقي متاح",
+        ),
+        "saves_time_or_money": _condition(
+            (isinstance(automation_score, (int, float)) and automation_score >= 60),
+            f"إمكانية أتمتة حقيقية مرتفعة ({automation_score}/100) تعني توفيراً حقيقياً محتملاً في الوقت/التكلفة"
+            if isinstance(automation_score, (int, float)) and automation_score >= 60
+            else "لا دليل حقيقي كافٍ على توفير وقت/تكلفة حقيقي بعد",
+        ),
+        # Zero real customers, zero real revenue-impact-on-customer data
+        # exist anywhere in this factory — always honest, never guessed.
+        "increases_customer_revenue": _condition(
+            False, "لا عملاء حقيقيون ولا بيانات أثر إيراد حقيقية على العميل موجودة في هذا المصنع بعد",
+        ),
+        "becomes_indispensable_business_asset": _condition(
+            strategic_investment.get("can_evolve_into_software_business") is True
+            or strategic_investment.get("can_create_a_product_ecosystem") is True,
+            "طبقة الاستثمار الاستراتيجي الحقيقية: قابلية تطوّر إلى منتج برمجي أو نظام منتجات حقيقية"
+            if (strategic_investment.get("can_evolve_into_software_business") or strategic_investment.get("can_create_a_product_ecosystem"))
+            else "لا دليل حقيقي كافٍ على أن هذا المنتج يصبح أصلاً تجارياً لا غنى عنه",
+        ),
+    }
+    satisfied_count = sum(1 for c in conditions.values() if c["satisfied"])
+    return {
+        "conditions": conditions,
+        "satisfied_count": satisfied_count,
+        "meets_minimum_bar": satisfied_count >= 1,
+    }
+
+
+# ── The 10-stage real product lifecycle. Reuses ──
+# ── production_evidence.record.build_evidence_record() directly (already ──
+# ── computes real discovery/decision/production/publishing/revenue/     ──
+# ── customer-feedback evidence) — never re-derives it. 4 of the 10      ──
+# ── stages (customer testing, localization, global expansion, long-term ──
+# ── maintenance) have no real data source anywhere in this factory      ──
+# ── today (ADR-102/ADR-103's own disclosed gaps) — always honestly      ──
+# ── reported as not-yet-reached with the real, disclosed reason.        ──
+
+LIFECYCLE_STAGES = (
+    "global_opportunity_discovery", "evidence_based_validation", "prototype",
+    "customer_testing", "premium_production", "commercial_launch",
+    "continuous_improvement", "localization", "global_expansion", "long_term_maintenance",
+)
+
+
+def _check_continuous_improvement(niche):
+    import enterprise_readiness as er
+    trail = er.get_audit_trail(niche)
+    count = len(trail.get("changelog_entries") or [])
+    return {
+        "reached": count > 0,
+        "evidence": f"{count} إدخال سجل تغييرات حقيقي" if count else "لا سجل تغييرات حقيقي بعد",
+    }
+
+
+def classify_lifecycle_stage(niche, decisions_path=None, timeline_path=None, outcomes_path=None):
+    """Real, evidence-based classification of which of the 10 named
+    product-lifecycle stages this niche has real, verifiable evidence of
+    having reached. Reuses production_evidence.record.build_evidence_
+    record() directly."""
+    from production_evidence import record as evidence_record
+
+    evidence = evidence_record.build_evidence_record(
+        niche, timeline_path=timeline_path, decisions_path=decisions_path, outcomes_path=outcomes_path,
+    )
+
+    production_events = evidence.get("execution_status") or []
+    production_attempted = bool(production_events)
+    production_succeeded = any(e.get("status") == "SUCCESS" for e in production_events)
+    platform = evidence.get("platform") or {}
+    publishing_succeeded = bool(platform.get("succeeded"))
+    customer_feedback = evidence.get("customer_feedback")
+    has_real_customer_feedback = isinstance(customer_feedback, dict) and isinstance(customer_feedback.get("answer"), list) and len(customer_feedback["answer"]) > 0
+    decision_status = (evidence.get("decision") or {}).get("status")
+
+    stages = {
+        "global_opportunity_discovery": {
+            "reached": evidence.get("discovery_timestamp") is not None,
+            "evidence": f"وقت اكتشاف حقيقي: {evidence['discovery_timestamp']}" if evidence.get("discovery_timestamp") else "لا اكتشاف حقيقي مسجَّل بعد",
+        },
+        "evidence_based_validation": {
+            "reached": decision_status not in (None, "Unknown"),
+            "evidence": f"قرار حقيقي: {decision_status}" if decision_status not in (None, "Unknown") else "لا قرار حقيقي بعد",
+        },
+        "prototype": {
+            "reached": production_attempted,
+            "evidence": f"{len(production_events)} محاولة إنتاج حقيقية مسجَّلة" if production_attempted else "لا محاولة إنتاج حقيقية بعد",
+        },
+        "customer_testing": {
+            "reached": has_real_customer_feedback,
+            "evidence": "ملاحظات عملاء حقيقية موجودة" if has_real_customer_feedback else
+                        (customer_feedback.get("reason") if isinstance(customer_feedback, dict) else "لا قناة ملاحظات عملاء حقيقية متصلة بهذا المصنع بعد"),
+        },
+        "premium_production": {
+            "reached": production_succeeded,
+            "evidence": "نجاح إنتاج حقيقي (Dual Inspection)" if production_succeeded else "لم ينجح إنتاج حقيقي بعد",
+        },
+        "commercial_launch": {
+            "reached": publishing_succeeded,
+            "evidence": f"نشر حقيقي ناجح على: {', '.join(platform.get('succeeded') or [])}" if publishing_succeeded else "لا نشر حقيقي ناجح بعد",
+        },
+        "continuous_improvement": _check_continuous_improvement(niche),
+        "localization": {"reached": False, "evidence": "لا موصّل بيانات محلي حقيقي لأي سوق بعد — تأجيل واعٍ (ADR-103)"},
+        "global_expansion": {"reached": False, "evidence": "لا بيانات مبيعات دولية حقيقية بعد — تأجيل واعٍ (ADR-103)"},
+        "long_term_maintenance": {"reached": False, "evidence": "لا نظام تتبّع صيانة حقيقي بعد الإطلاق موجود بعد (ADR-102)"},
+    }
+
+    current_stage = None
+    for stage_name in LIFECYCLE_STAGES:
+        if stages[stage_name]["reached"]:
+            current_stage = stage_name
+
+    return {
+        "niche": niche,
+        "stages": stages,
+        "current_stage": current_stage,
+        "final_outcome": evidence.get("final_outcome"),
+        "evaluated_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
 # ── Single-opportunity entrypoint (reused by both the bulk report and Executive Board integration) ──
 
 def compute_value_profile(niche, decisions_path=None, board_path=None, alerts_path=None,
                            reopen_log_path=None, evidence_path=None, ladder_counts=None,
-                           cost_result=None):
+                           cost_result=None, timeline_path=None, outcomes_path=None):
     """The real per-niche synthesis entrypoint. Reuses
     opportunity_pipeline.annotate_decision() for every already-computed
     real field, then layers the remaining requested Value Engine
     dimensions on top. Returns None (never fabricated) if this niche has
     no real ACCEPTED decision on record — matching business_dossier.py's
-    own scope."""
+    own scope.
+
+    timeline_path/outcomes_path (Market Creation & Product Leadership,
+    2026-07-23): test-isolation overrides for classify_lifecycle_stage()'s
+    own reuse of production_evidence.record.build_evidence_record()."""
     import opportunity_pipeline as op
     import factory_orchestrator as fo
     from decision_engine import ranking
@@ -328,6 +501,8 @@ def compute_value_profile(niche, decisions_path=None, board_path=None, alerts_pa
     priority_score = _compute_priority_score(decision.get("opportunity_score"), strategic_value)
     financials = _financials(price_value, cost_result, roi_result, reused.get("recurring_revenue_potential"))
     recommendation = _build_recommendation(priority_score, at_risk, upgrade, bundle)
+    value_proposition = classify_value_proposition(annotated, reused, new_dims)
+    lifecycle = classify_lifecycle_stage(niche, decisions_path=decisions_path, timeline_path=timeline_path, outcomes_path=outcomes_path)
 
     return {
         "niche": niche,
@@ -335,6 +510,8 @@ def compute_value_profile(niche, decisions_path=None, board_path=None, alerts_pa
         "ladder": ladder,
         "dimensions": {**reused, **new_dims, **no_source},
         "at_risk": at_risk,
+        "value_proposition": value_proposition,
+        "lifecycle_stage": lifecycle,
         "board_summary": {
             "priority_score": priority_score,
             "expected_roi": roi_result,
@@ -349,7 +526,8 @@ def compute_value_profile(niche, decisions_path=None, board_path=None, alerts_pa
 
 
 def build_value_engine_report(decisions_path=None, board_path=None, alerts_path=None,
-                               reopen_log_path=None, evidence_path=None):
+                               reopen_log_path=None, evidence_path=None,
+                               timeline_path=None, outcomes_path=None):
     """The one real, on-demand, whole-portfolio entrypoint — automatic
     resource-allocation prioritization: every real ACCEPTED opportunity
     (Product Laboratory), ranked by real Priority Score descending.
@@ -375,6 +553,7 @@ def build_value_engine_report(decisions_path=None, board_path=None, alerts_path=
             niche, decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
             reopen_log_path=reopen_log_path, evidence_path=evidence_path,
             ladder_counts=ladder_counts, cost_result=cost_result,
+            timeline_path=timeline_path, outcomes_path=outcomes_path,
         )
         for niche in accepted_niches
     ]
