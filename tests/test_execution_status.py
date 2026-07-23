@@ -120,6 +120,23 @@ class TestBuildExecutionStatus(unittest.TestCase):
         status = self._status("a niche with no risk yet")
         self.assertTrue(status["blocking_issue"])
 
+    def test_learning_feedback_is_honestly_empty_with_no_real_signal(self):
+        self._record("a niche with no learning signal")
+        status = self._status("a niche with no learning signal")
+        self.assertFalse(status["learning_feedback"]["has_real_signal"])
+
+    def test_learning_feedback_reflects_real_market_memory_evidence(self):
+        import market_evidence
+        self._record("a niche with real sales evidence")
+        market_evidence.record_evidence("a niche with real sales evidence", "closed_sale", {
+            "commercial_event": {"platform": "gumroad", "selling_price": 29.0, "season": "summer"},
+        }, evidence_path=self.evidence_path)
+        status = self._status("a niche with real sales evidence")
+        feedback = status["learning_feedback"]
+        self.assertTrue(feedback["has_real_signal"])
+        self.assertEqual(feedback["real_sales_sample_size"], 1)
+        self.assertEqual(feedback["total_revenue_to_date"], 29.0)
+
 
 class TestBuildExecutionStatusReport(unittest.TestCase):
     def setUp(self):
@@ -180,6 +197,19 @@ class TestBuildExecutionStatusReport(unittest.TestCase):
             [o["niche"] for o in report["opportunities"]],
             [p["niche"] for p in portfolio["profiles"]],
         )
+
+    def test_limit_forwards_to_value_engine_and_caps_the_report(self):
+        self._record("low priority niche", 40.0)
+        self._record("high priority niche", 95.0)
+        report = es.build_execution_status_report(
+            decisions_path=self.decisions_path, board_path=self.board_path, alerts_path=self.alerts_path,
+            reopen_log_path=self.reopen_log_path, evidence_path=self.evidence_path,
+            timeline_path=self.timeline_path, outcomes_path=self.outcomes_path, limit=1,
+        )
+        self.assertEqual(report["count"], 1)
+        self.assertEqual(report["total_accepted"], 2)
+        self.assertEqual(report["limited_to"], 1)
+        self.assertEqual(report["opportunities"][0]["niche"], "high priority niche")
 
 
 if __name__ == "__main__":

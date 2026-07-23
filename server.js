@@ -1414,12 +1414,13 @@ const ACTION_REGISTRY = [
     // the real, already-live computeHealthStatus() this server already
     // has synchronously -- never a second health computation.
     name: 'get-global-execution-view',
-    description: 'Read-only: the single unified operational view (execution status, real scheduling buckets, revenue, production, market learning, AI utilization, health) -- every field reused from an already-real, already-tested source, nothing recomputed.',
+    description: 'Read-only: the single unified operational view (execution status, real scheduling buckets, revenue, production, market learning, AI utilization, health) -- every field reused from an already-real, already-tested source, nothing recomputed. Optional { limit } caps how many opportunities get a full execution-status profile (scheduling always covers every real opportunity, unlimited).',
     reused: 'mission_control_api.py::_get_global_execution_view() + computeHealthStatus()',
     reversible: true,
     kind: 'async',
-    asyncRunner: async () => {
-      const view = await runPythonActionAsync('get-global-execution-view', 'get_global_execution_view', []);
+    asyncRunner: async (req) => {
+      const limit = req.body && Number.isFinite(req.body.limit) ? req.body.limit : undefined;
+      const view = await runPythonActionAsync('get-global-execution-view', 'get_global_execution_view', [JSON.stringify({ limit })]);
       let health;
       try {
         health = await computeHealthStatus();

@@ -546,14 +546,29 @@ def compute_value_profile(niche, decisions_path=None, board_path=None, alerts_pa
 
 def build_value_engine_report(decisions_path=None, board_path=None, alerts_path=None,
                                reopen_log_path=None, evidence_path=None,
-                               timeline_path=None, outcomes_path=None):
+                               timeline_path=None, outcomes_path=None, limit=None):
     """The one real, on-demand, whole-portfolio entrypoint — automatic
     resource-allocation prioritization: every real ACCEPTED opportunity
     (Product Laboratory), ranked by real Priority Score descending.
     Reuses compute_value_profile() per opportunity; the real ladder-
     count/cost lookups are computed once for the whole batch, not
     per-opportunity, matching opportunity_pipeline.py's own "safe to run
-    over the full real history" performance discipline."""
+    over the full real history" performance discipline.
+
+    `limit` (Autonomous Global Commercial Company Layer, 2026-07-24, a
+    real, measured scale finding — a full profile costs ~3s/opportunity
+    today, 3 real opportunities = 9.14s real, so an unbounded "thousands
+    of opportunities" Command Center view is not honestly viable as-is):
+    when set, only the top-N opportunities by the cheap, already-
+    available opportunity_score (no full profile needed to read it) get
+    a full profile computed at all — every profile that IS returned is
+    still exactly, fully real, nothing about it is approximated. Honest,
+    disclosed tradeoff: opportunity_score is a real proxy for the
+    eventual Priority Score (itself an average that also folds in
+    Strategic Value, only knowable after a full profile), so a niche
+    just outside this cheap cutoff could theoretically have had a
+    marginally higher true Priority Score. Default None preserves exact
+    prior behavior for every existing caller."""
     import opportunity_pipeline as op
     from decision_engine import ranking
     from revenue_pipeline import plan as plan_module
@@ -561,7 +576,14 @@ def build_value_engine_report(decisions_path=None, board_path=None, alerts_path=
     pipeline = op.build_opportunity_pipeline(
         decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path, reopen_log_path=reopen_log_path,
     )
-    accepted_niches = [e["niche"] for e in pipeline["product_laboratory"]]
+    lab = pipeline["product_laboratory"]
+    if limit is not None:
+        lab = sorted(
+            lab,
+            key=lambda e: e.get("opportunity_score") if isinstance(e.get("opportunity_score"), (int, float)) else -1,
+            reverse=True,
+        )[:limit]
+    accepted_niches = [e["niche"] for e in lab]
 
     all_decisions = ranking.rank_all(path=decisions_path)
     ladder_counts = Counter(d.get("ladder") for d in all_decisions if d.get("status") == "ACCEPTED" and d.get("ladder"))
@@ -586,6 +608,8 @@ def build_value_engine_report(decisions_path=None, board_path=None, alerts_path=
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "total_evaluated": len(profiles),
+        "total_accepted": len(pipeline["product_laboratory"]),
+        "limited_to": limit,
         "profiles": profiles,
         "note": (
             "يُقيَّم فقط الفرص المقبولة فعلاً (Product Laboratory) — نفس نطاق "

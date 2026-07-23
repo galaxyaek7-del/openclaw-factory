@@ -1230,15 +1230,27 @@ def _get_global_execution_view():
     scan/enterprise-readiness-gate Mission Control actions are already
     the real, live views for those; duplicating them here would be
     exactly the kind of second, competing computation this factory's
-    own discipline refuses."""
+    own discipline refuses.
+
+    Optional payload `{"limit": N}` (Autonomous Global Commercial
+    Company Layer, 2026-07-24): forwarded to execution_status.py's own
+    real scale valve (measured ~3s/opportunity today) so this Command
+    Center view stays usable if the real accepted-opportunity count ever
+    grows large — see value_engine.build_value_engine_report()'s
+    docstring for the exact, honest tradeoff. `scheduling` intentionally
+    stays unlimited: classification decisions must cover every real
+    opportunity, never silently drop one from a bucket."""
     import execution_status
     import scheduler
     import market_memory
     from ai_capability import registry as ai_registry
     from ai_capability import orchestrator as ai_orchestrator
 
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    limit = payload.get("limit")
+
     return {
-        "execution": execution_status.build_execution_status_report(),
+        "execution": execution_status.build_execution_status_report(limit=limit),
         "scheduling": scheduler.decide_next_actions(),
         "revenue": _revenue(),
         "production": _production(),

@@ -430,6 +430,31 @@ class TestBuildValueEngineReport(unittest.TestCase):
         self.assertEqual(scores, sorted(scores, reverse=True))
         self.assertEqual(result["profiles"][0]["niche"], "high score niche")
 
+    def test_limit_none_preserves_exact_prior_behavior(self):
+        self._record("a", "kdp_books", 40.0)
+        self._record("b", "ai_saas", 95.0)
+        result = ve.build_value_engine_report(
+            decisions_path=self.decisions_path, board_path=self.board_path, alerts_path=self.alerts_path,
+            reopen_log_path=self.reopen_log_path, evidence_path=self.evidence_path, limit=None,
+        )
+        self.assertEqual(result["total_evaluated"], 2)
+        self.assertIsNone(result["limited_to"])
+
+    def test_limit_caps_full_profiles_computed_to_the_top_n_by_cheap_score(self):
+        """Autonomous Global Commercial Company Layer (2026-07-24): a
+        real, measured scale valve — only the top-N by the cheap,
+        already-available opportunity_score get a full profile."""
+        self._record("low score niche", "kdp_books", 40.0)
+        self._record("high score niche", "ai_saas", 95.0)
+        result = ve.build_value_engine_report(
+            decisions_path=self.decisions_path, board_path=self.board_path, alerts_path=self.alerts_path,
+            reopen_log_path=self.reopen_log_path, evidence_path=self.evidence_path, limit=1,
+        )
+        self.assertEqual(result["limited_to"], 1)
+        self.assertEqual(result["total_evaluated"], 1)
+        self.assertEqual(result["total_accepted"], 2)
+        self.assertEqual(result["profiles"][0]["niche"], "high score niche")
+
 
 if __name__ == "__main__":
     unittest.main()

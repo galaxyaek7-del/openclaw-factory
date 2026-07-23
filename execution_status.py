@@ -98,9 +98,34 @@ def build_execution_status(niche, decisions_path=None, board_path=None, alerts_p
         "estimated_effort": board_summary.get("estimated_build_cost"),
         "confidence": annotated.get("confidence"),
         "priority": board_summary.get("priority_score"),
+        "learning_feedback": _derive_learning_feedback(profile, annotated),
         "expected_completion": {"value": None, "reason": "لا نموذج تقدير مدة حقيقي (لا تتبّع تاريخي لمدة كل مرحلة) في هذا المصنع بعد"},
         "final_outcome": lifecycle.get("final_outcome"),
         "evaluated_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+def _derive_learning_feedback(profile, annotated):
+    """Real, per-opportunity 'what has this factory actually learned
+    about this niche so far' signal (Autonomous Global Commercial
+    Company Layer, 2026-07-24) — pure aggregation over data
+    build_execution_status() already fetched, never a new computation:
+    market_memory.py's real commercial evidence (already in `profile`,
+    Global Market Learning Engine, ADR-106) + this niche's real Decision
+    Re-open history (already in `annotated`, ADR-096). Honestly reports
+    zero real learning signal when neither exists yet, rather than
+    padding the field with something that looks populated."""
+    market_memory_profile = profile.get("market_memory") or {}
+    reopen_history = annotated.get("reopen_history") or []
+
+    if not market_memory_profile.get("sample_size") and not reopen_history:
+        return {"has_real_signal": False, "reason": "لا أدلة مبيعات حقيقية ولا إعادة فتح قرار حقيقية بعد لهذا النيتش"}
+
+    return {
+        "has_real_signal": True,
+        "real_sales_sample_size": market_memory_profile.get("sample_size", 0),
+        "total_revenue_to_date": market_memory_profile.get("total_revenue"),
+        "real_reopen_events": len(reopen_history),
     }
 
 
@@ -119,18 +144,24 @@ def _derive_blocking_issue(profile, stages):
 
 
 def build_execution_status_report(decisions_path=None, board_path=None, alerts_path=None,
-                                   reopen_log_path=None, evidence_path=None, timeline_path=None, outcomes_path=None):
+                                   reopen_log_path=None, evidence_path=None, timeline_path=None,
+                                   outcomes_path=None, limit=None):
     """Every real ACCEPTED opportunity's execution status, ranked by real
     Priority Score descending — reuses value_engine.build_value_engine_
     report()'s own real ranking and already-computed profiles directly,
     never a second ranking pass or a redundant compute_value_profile()
-    call per niche."""
+    call per niche.
+
+    `limit` (Autonomous Global Commercial Company Layer, 2026-07-24):
+    forwarded to value_engine.build_value_engine_report()'s own real
+    scale valve — see its docstring for the measured cost and the
+    honest tradeoff. Default None preserves exact prior behavior."""
     import value_engine
 
     portfolio = value_engine.build_value_engine_report(
         decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
         reopen_log_path=reopen_log_path, evidence_path=evidence_path,
-        timeline_path=timeline_path, outcomes_path=outcomes_path,
+        timeline_path=timeline_path, outcomes_path=outcomes_path, limit=limit,
     )
     statuses = [
         build_execution_status(
@@ -143,5 +174,7 @@ def build_execution_status_report(decisions_path=None, board_path=None, alerts_p
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "count": len(statuses),
+        "total_accepted": portfolio.get("total_accepted"),
+        "limited_to": limit,
         "opportunities": statuses,
     }
