@@ -430,6 +430,6 @@ Full findings and decisions: `ADR-102`. Founder-confirmed before building: a rea
 
 **Documented:** `ADR-102`.
 
-**Commit:** `[pending]`.
+**Commit:** `780f609`.
 
 **Deliberately not built:** no new resource-allocation execution mechanism — the ranked report is the real allocation signal; a human still decides what to act on, matching this factory's own standing "no scheduler" architecture.
