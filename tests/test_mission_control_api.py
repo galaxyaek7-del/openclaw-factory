@@ -322,6 +322,28 @@ class TestGlobalMarketLearningEngineActions(unittest.TestCase):
         for name in ("get_commercial_intelligence_report", "get_premium_product_catalog_status"):
             self.assertIn(name, mission_control_api._ENDPOINTS)
 
+    def test_investment_pipeline_actions_are_registered(self):
+        for name in ("get_investment_pipeline_entry", "get_investment_pipeline"):
+            self.assertIn(name, mission_control_api._ENDPOINTS)
+
+    def test_investment_pipeline_entry_requires_a_niche(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_investment_pipeline_entry", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._get_investment_pipeline_entry()
+
+    def test_investment_pipeline_entry_delegates_to_the_real_module(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_investment_pipeline_entry", json.dumps({"niche": "test niche"})]):
+            with patch("investment_pipeline.build_investment_pipeline_entry", return_value={"niche": "test niche"}) as mock_entry:
+                result = mission_control_api._get_investment_pipeline_entry()
+        mock_entry.assert_called_once_with("test niche")
+        self.assertEqual(result["investment_pipeline_entry"]["niche"], "test niche")
+
+    def test_investment_pipeline_forwards_optional_limit(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_investment_pipeline", json.dumps({"limit": 5})]):
+            with patch("investment_pipeline.build_investment_pipeline", return_value={"count": 0}) as mock_pipeline:
+                mission_control_api._get_investment_pipeline()
+        mock_pipeline.assert_called_once_with(limit=5)
+
     def test_commercial_intelligence_report_requires_a_niche(self):
         with patch.object(sys, "argv", ["mission_control_api.py", "get_commercial_intelligence_report", json.dumps({})]):
             with self.assertRaises(ValueError):

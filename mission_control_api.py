@@ -1234,6 +1234,32 @@ def _get_premium_product_catalog_status():
     return growth_engine.premium_product_catalog_status()
 
 
+def _get_investment_pipeline_entry():
+    """Global Revenue Discovery Engine (2026-07-24): the real, unified
+    Investment Pipeline entry for one niche (10 ranking dimensions, 12
+    named fields). Honest null when this niche has no real decision on
+    record at all. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py get_investment_pipeline_entry '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+    import investment_pipeline
+    return {"investment_pipeline_entry": investment_pipeline.build_investment_pipeline_entry(niche)}
+
+
+def _get_investment_pipeline():
+    """Global Revenue Discovery Engine (2026-07-24): the real, whole-
+    factory Investment Pipeline, ranked by real opportunity_score
+    descending. Optional payload `{"limit": N}` — same real scale valve
+    as get-global-execution-view. No payload required for the
+    unlimited view."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    limit = payload.get("limit")
+    import investment_pipeline
+    return investment_pipeline.build_investment_pipeline(limit=limit)
+
+
 def _get_global_execution_view():
     """Autonomous Global Execution Engine (2026-07-23): the single real
     operational window the founder named, assembled entirely from
@@ -1405,6 +1431,8 @@ _ENDPOINTS = {
     "get_channel_expansion_status": _get_channel_expansion_status,
     "get_commercial_intelligence_report": _get_commercial_intelligence_report,
     "get_premium_product_catalog_status": _get_premium_product_catalog_status,
+    "get_investment_pipeline_entry": _get_investment_pipeline_entry,
+    "get_investment_pipeline": _get_investment_pipeline,
     "run_master_cycle": _run_master_cycle,
 }
 

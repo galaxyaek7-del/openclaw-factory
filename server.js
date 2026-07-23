@@ -1480,6 +1480,33 @@ const ACTION_REGISTRY = [
     asyncRunner: () => runPythonActionAsync('get-premium-product-catalog-status', 'get_premium_product_catalog_status', []),
   },
   {
+    // Global Revenue Discovery Engine (2026-07-24) -- real, unified
+    // Investment Pipeline entry for one niche.
+    name: 'get-investment-pipeline-entry',
+    description: 'Read-only: the real Investment Pipeline entry for one niche (10 ranking dimensions -- market size, competition, urgency, willingness to pay, production difficulty, long-term strategic value, defensibility, recurring revenue potential, global scalability, AI leverage -- plus 12 named commercial fields). country_priority always honestly deferred. Null when the niche has no real decision on record.',
+    reused: 'investment_pipeline.py::build_investment_pipeline_entry()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('get-investment-pipeline-entry', 'get_investment_pipeline_entry', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    // Global Revenue Discovery Engine (2026-07-24) -- the real, whole-
+    // factory Investment Pipeline.
+    name: 'get-investment-pipeline',
+    description: 'Read-only: every real decision (any status) as a full Investment Pipeline entry, ranked by real opportunity_score descending. Optional { limit } caps how many full entries get built.',
+    reused: 'investment_pipeline.py::build_investment_pipeline()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const limit = req.body && Number.isFinite(req.body.limit) ? req.body.limit : undefined;
+      return runPythonActionAsync('get-investment-pipeline', 'get_investment_pipeline', [JSON.stringify({ limit })]);
+    },
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +
