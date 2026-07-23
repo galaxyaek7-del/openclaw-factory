@@ -1430,6 +1430,30 @@ const ACTION_REGISTRY = [
     },
   },
   {
+    // Global Growth Engine (2026-07-24) -- real Product Multiplication +
+    // Channel Expansion for one real ACCEPTED niche.
+    name: 'get-growth-report',
+    description: 'Read-only: the real Product Multiplication (premium/subscription/bundle/API/SaaS candidates, each honestly available or not) and Channel Expansion evaluation for one niche. Null when the niche has no real ACCEPTED decision.',
+    reused: 'growth_engine.py::build_growth_report()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('get-growth-report', 'get_growth_report', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    // Global Growth Engine (2026-07-24) -- real, factory-wide channel
+    // readiness across the 10 founder-named channels.
+    name: 'get-channel-expansion-status',
+    description: 'Read-only: real channel readiness across the 10 founder-named channels -- live arms referenced from channels/registry.py, everything else an honest env-var-based catalog entry, never a live test-connection call.',
+    reused: 'growth_engine.py::evaluate_channel_expansion()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: () => runPythonActionAsync('get-channel-expansion-status', 'get_channel_expansion_status', []),
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +

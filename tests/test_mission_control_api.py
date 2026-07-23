@@ -314,6 +314,28 @@ class TestGlobalMarketLearningEngineActions(unittest.TestCase):
     def test_global_execution_view_is_registered(self):
         self.assertIn("get_global_execution_view", mission_control_api._ENDPOINTS)
 
+    def test_growth_report_and_channel_expansion_actions_are_registered(self):
+        for name in ("get_growth_report", "get_channel_expansion_status"):
+            self.assertIn(name, mission_control_api._ENDPOINTS)
+
+    def test_growth_report_requires_a_niche(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_growth_report", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._get_growth_report()
+
+    def test_growth_report_delegates_to_growth_engine(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_growth_report", json.dumps({"niche": "test niche"})]):
+            with patch("growth_engine.build_growth_report", return_value={"niche": "test niche"}) as mock_report:
+                result = mission_control_api._get_growth_report()
+        mock_report.assert_called_once_with("test niche")
+        self.assertEqual(result["growth_report"]["niche"], "test niche")
+
+    def test_channel_expansion_status_delegates_to_growth_engine(self):
+        with patch("growth_engine.evaluate_channel_expansion", return_value={"live_arms": [], "catalog_entries": []}) as mock_eval:
+            result = mission_control_api._get_channel_expansion_status()
+        mock_eval.assert_called_once_with()
+        self.assertEqual(result["live_arms"], [])
+
     def test_niche_commercial_profile_requires_a_niche(self):
         with patch.object(sys, "argv", ["mission_control_api.py", "get_niche_commercial_profile", json.dumps({})]):
             with self.assertRaises(ValueError):

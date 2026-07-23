@@ -1187,6 +1187,28 @@ def _get_commercial_recommendations():
     return market_memory.recommend_actions()
 
 
+def _get_growth_report():
+    """Global Growth Engine (2026-07-24): the real Product Multiplication
+    + Channel Expansion evaluation for one niche. Honest null when this
+    niche has no real ACCEPTED decision on record. Reads its payload
+    from sys.argv[2]:
+    `python mission_control_api.py get_growth_report '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+    import growth_engine
+    return {"growth_report": growth_engine.build_growth_report(niche)}
+
+
+def _get_channel_expansion_status():
+    """Global Growth Engine (2026-07-24): the real, factory-wide (not
+    niche-specific) channel readiness view across the 10 founder-named
+    channels. No payload required."""
+    import growth_engine
+    return growth_engine.evaluate_channel_expansion()
+
+
 def _get_global_execution_view():
     """Autonomous Global Execution Engine (2026-07-23): the single real
     operational window the founder named, assembled entirely from
@@ -1320,6 +1342,8 @@ _ENDPOINTS = {
     "get_monthly_market_evolution_report": _get_monthly_market_evolution_report,
     "get_commercial_recommendations": _get_commercial_recommendations,
     "get_global_execution_view": _get_global_execution_view,
+    "get_growth_report": _get_growth_report,
+    "get_channel_expansion_status": _get_channel_expansion_status,
     "run_master_cycle": _run_master_cycle,
 }
 
