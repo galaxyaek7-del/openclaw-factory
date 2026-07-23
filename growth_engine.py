@@ -317,3 +317,67 @@ def growth_forecast(evidence_path=None):
         "maturity": "REAL",
         "forecast": {"value": None, "reason": "يحتاج نافذتين زمنيتين حقيقيتين قابلتين للمقارنة لحساب اتجاه حقيقي — غير متاح بعد حتى مع عينة حقيقية واحدة كافية للتقرير الشهري"},
     }
+
+
+# Real World Commercial Expansion, Priority 3 (2026-07-24): the 7 named
+# premium categories mapped onto this factory's real, already-built
+# infrastructure — never a new, invented taxonomy. Each maps to a real
+# product_families adapter status where one genuinely corresponds, or
+# honestly has no distinct real family yet, exactly matching growth_
+# engine.py's existing no-real-source discipline for ai_agent_version.
+_PREMIUM_CATEGORY_FAMILY = {
+    "AI Business Systems": "automation_systems",
+    "Vertical AI Assistants": None,
+    "SaaS": "micro_saas",
+    "Enterprise Templates": "professional_templates",
+    "Professional Courses": "knowledge_bases",
+    "Automation Systems": "automation_systems",
+    "Decision Platforms": None,
+}
+
+
+def premium_product_catalog_status():
+    """Real status of the 7 founder-named $100-$5000 premium categories
+    against this factory's actual product_families adapters and actual
+    live pricing ceiling — never fabricated availability.
+
+    Real, disclosed finding: profit_oracle.py's real, documented elite
+    price band (ADR-027/ELITE_ASSET_DOCTRINE.md) caps at $497 today —
+    this factory's real pricing gate cannot price anything toward the
+    mission's own stated $5000 ceiling without a real, deliberate
+    pricing-policy change. Not silently raised here: MIN/MAX_BUTTER_
+    PRICE_ELITE are real business-policy constants tied to a real ADR,
+    not a bug — changing them is a pricing decision for the founder,
+    surfaced honestly rather than decided unilaterally."""
+    import product_families  # noqa: F401 — self-registers Phase A adapters
+    from product_families import registry as family_registry
+    import profit_oracle
+
+    categories = {}
+    for category, family in _PREMIUM_CATEGORY_FAMILY.items():
+        if family is None:
+            categories[category] = {
+                "family": None,
+                "status": "NO DISTINCT REAL FAMILY",
+                "reason": f"لا عائلة منتج حقيقية متمايزة لـ'{category}' اليوم — أقرب تشابه حقيقي موجود في الفئات الأخرى، غير مُدمَج هنا تجنباً للخلط",
+            }
+        else:
+            adapter = family_registry.get(family)
+            categories[category] = {
+                "family": family,
+                "status": "REAL" if adapter is not None else "NOT YET BUILT",
+            }
+
+    return {
+        "categories": categories,
+        "real_pricing_ceiling_finding": {
+            "current_max_price_usd": profit_oracle.MAX_BUTTER_PRICE_ELITE,
+            "current_min_price_usd": profit_oracle.MIN_BUTTER_PRICE_ELITE,
+            "mission_stated_range_usd": [100, 5000],
+            "note": (
+                f"السقف السعري الحقيقي الحالي (ADR-027) هو ${profit_oracle.MAX_BUTTER_PRICE_ELITE} — "
+                "أقل بكثير من طموح المهمة المُعلَن حتى $5000. رفعه قرار سياسة تسعير حقيقي يخص المؤسس، "
+                "لم يُتَّخذ من طرف واحد هنا."
+            ),
+        },
+    }

@@ -318,6 +318,28 @@ class TestGlobalMarketLearningEngineActions(unittest.TestCase):
         for name in ("get_growth_report", "get_channel_expansion_status"):
             self.assertIn(name, mission_control_api._ENDPOINTS)
 
+    def test_commercial_intelligence_and_premium_catalog_actions_are_registered(self):
+        for name in ("get_commercial_intelligence_report", "get_premium_product_catalog_status"):
+            self.assertIn(name, mission_control_api._ENDPOINTS)
+
+    def test_commercial_intelligence_report_requires_a_niche(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_commercial_intelligence_report", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._get_commercial_intelligence_report()
+
+    def test_commercial_intelligence_report_delegates_to_the_real_module(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_commercial_intelligence_report", json.dumps({"niche": "test niche"})]):
+            with patch("commercial_intelligence.build_commercial_intelligence_report", return_value={"niche": "test niche"}) as mock_report:
+                result = mission_control_api._get_commercial_intelligence_report()
+        mock_report.assert_called_once_with("test niche")
+        self.assertEqual(result["commercial_intelligence"]["niche"], "test niche")
+
+    def test_premium_product_catalog_status_delegates_to_growth_engine(self):
+        with patch("growth_engine.premium_product_catalog_status", return_value={"categories": {}}) as mock_status:
+            result = mission_control_api._get_premium_product_catalog_status()
+        mock_status.assert_called_once_with()
+        self.assertEqual(result["categories"], {})
+
     def test_growth_report_requires_a_niche(self):
         with patch.object(sys, "argv", ["mission_control_api.py", "get_growth_report", json.dumps({})]):
             with self.assertRaises(ValueError):

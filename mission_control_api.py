@@ -1209,6 +1209,31 @@ def _get_channel_expansion_status():
     return growth_engine.evaluate_channel_expansion()
 
 
+def _get_commercial_intelligence_report():
+    """Real World Commercial Expansion (2026-07-24): the real, unified
+    Commercial Intelligence report for one niche (demand, willingness to
+    pay, competition, price ranges, buying behavior, product
+    opportunities, customer pain — regional_differences always honestly
+    unavailable). Honest null when this niche has no real decision on
+    record at all. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py get_commercial_intelligence_report '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+    import commercial_intelligence
+    return {"commercial_intelligence": commercial_intelligence.build_commercial_intelligence_report(niche)}
+
+
+def _get_premium_product_catalog_status():
+    """Real World Commercial Expansion, Priority 3 (2026-07-24): the
+    real status of the 7 founder-named $100-$5000 premium categories
+    against this factory's actual product_families adapters, plus the
+    real, disclosed pricing-ceiling finding. No payload required."""
+    import growth_engine
+    return growth_engine.premium_product_catalog_status()
+
+
 def _get_global_execution_view():
     """Autonomous Global Execution Engine (2026-07-23): the single real
     operational window the founder named, assembled entirely from
@@ -1378,6 +1403,8 @@ _ENDPOINTS = {
     "get_global_execution_view": _get_global_execution_view,
     "get_growth_report": _get_growth_report,
     "get_channel_expansion_status": _get_channel_expansion_status,
+    "get_commercial_intelligence_report": _get_commercial_intelligence_report,
+    "get_premium_product_catalog_status": _get_premium_product_catalog_status,
     "run_master_cycle": _run_master_cycle,
 }
 

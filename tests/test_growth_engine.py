@@ -270,5 +270,33 @@ class TestGrowthForecast(unittest.TestCase):
                 os.remove(evidence_path)
 
 
+class TestPremiumProductCatalogStatus(unittest.TestCase):
+    def test_all_7_named_categories_are_present(self):
+        result = growth_engine.premium_product_catalog_status()
+        for category in ("AI Business Systems", "Vertical AI Assistants", "SaaS", "Enterprise Templates",
+                          "Professional Courses", "Automation Systems", "Decision Platforms"):
+            self.assertIn(category, result["categories"])
+
+    def test_no_distinct_family_categories_are_honestly_disclosed(self):
+        result = growth_engine.premium_product_catalog_status()
+        for category in ("Vertical AI Assistants", "Decision Platforms"):
+            self.assertEqual(result["categories"][category]["status"], "NO DISTINCT REAL FAMILY")
+            self.assertTrue(result["categories"][category]["reason"])
+
+    def test_real_family_categories_report_real_adapter_status(self):
+        result = growth_engine.premium_product_catalog_status()
+        for category in ("SaaS", "Enterprise Templates", "Automation Systems", "AI Business Systems", "Professional Courses"):
+            self.assertIn(result["categories"][category]["status"], ("REAL", "NOT YET BUILT"))
+
+    def test_real_pricing_ceiling_finding_is_disclosed_never_silently_changed(self):
+        import profit_oracle
+        result = growth_engine.premium_product_catalog_status()
+        finding = result["real_pricing_ceiling_finding"]
+        self.assertEqual(finding["current_max_price_usd"], profit_oracle.MAX_BUTTER_PRICE_ELITE)
+        self.assertEqual(finding["mission_stated_range_usd"], [100, 5000])
+        # Never silently raised: the real constant is untouched.
+        self.assertEqual(profit_oracle.MAX_BUTTER_PRICE_ELITE, 497)
+
+
 if __name__ == "__main__":
     unittest.main()

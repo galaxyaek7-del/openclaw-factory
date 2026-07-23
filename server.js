@@ -1455,6 +1455,31 @@ const ACTION_REGISTRY = [
     asyncRunner: () => runPythonActionAsync('get-channel-expansion-status', 'get_channel_expansion_status', []),
   },
   {
+    // Real World Commercial Expansion (2026-07-24) -- the real, unified
+    // Commercial Intelligence report for one niche.
+    name: 'get-commercial-intelligence-report',
+    description: 'Read-only: the real Commercial Intelligence report for one niche (demand, willingness to pay, competition, price ranges, buying behavior, product opportunities, customer pain). regional_differences always honestly unavailable -- no real country-level data exists in this factory today. Null when the niche has no real decision on record.',
+    reused: 'commercial_intelligence.py::build_commercial_intelligence_report()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('get-commercial-intelligence-report', 'get_commercial_intelligence_report', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    // Real World Commercial Expansion, Priority 3 (2026-07-24) -- real
+    // status of the 7 named premium categories + the real pricing-
+    // ceiling finding.
+    name: 'get-premium-product-catalog-status',
+    description: 'Read-only: real status of the 7 founder-named $100-$5000 premium categories against this factory\'s actual product family adapters, plus a disclosed real finding -- the live pricing ceiling (elite band, $497) is well below the mission\'s own stated $5000 ambition; raising it is a real pricing-policy decision for the founder, not made here.',
+    reused: 'growth_engine.py::premium_product_catalog_status()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: () => runPythonActionAsync('get-premium-product-catalog-status', 'get_premium_product_catalog_status', []),
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +
