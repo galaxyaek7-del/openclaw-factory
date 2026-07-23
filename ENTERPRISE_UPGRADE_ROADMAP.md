@@ -36,7 +36,7 @@
 | 2.4 | No TLS/HTTPS anywhere (acceptable while `BIND_HOST=127.0.0.1`, real gap the moment that changes) | Medium (conditional) | ☐ |
 | 2.5 | `npm audit`/dependency CVE status | Resolved | ☑ 0 CVEs across 94 real prod dependencies, verified against the real public registry (the earlier failure was the configured mirror not serving the audit endpoint) |
 | 2.6 | Pillow 12.2.0 has 10 real, published CVEs (found in Phase 1 Security Audit) | High | ☑ commit `14190a4` |
-| 2.7 | Real, confirmed XSS: `index.html:685` interpolates `${b.title}` into `innerHTML` with zero escaping — reachable via the manual book-title form field (self-contained) and via Scout/Pioneer's externally-sourced niche titles (Hacker News, attacker-postable) | High | ☐ |
+| 2.7 | Real, confirmed XSS: `index.html:685` interpolates `${b.title}` into `innerHTML` with zero escaping — reachable via the manual book-title form field (self-contained) and via Scout/Pioneer's externally-sourced niche titles (Hacker News, attacker-postable) | High | ☑ commit `[pending]` |
 | 2.8 | `.env`/`data/decisions.jsonl`/`finance_data.json` carry permissive, inherited default Windows ACLs (readable by `Users`, writable by `Authenticated Users`) — low real risk today (single enabled account on this machine) but no owner-only restriction exists | Medium | ☐ |
 | 2.9 | `factory_loop.js`'s `sendDesktopNotification()` has an incomplete shell-escaping boundary (escapes single quotes, embedded in a double-quoted PowerShell argument) — real defect, full exploit-chain not traced | Medium | ☐ |
 | 2.10 | LLM prompt construction interpolates niche/title text with no delimiter between instruction and data, repeated across 4 `groq_chat()` call sites — bounded by strict output-format parsing + Dual Inspection | Medium | ☐ |
@@ -53,7 +53,7 @@ Rules, binding: no simulation, no fake security, no fake certificates/compliance
 | Sub-phase | Scope | Status |
 |---|---|---|
 | Security Audit | Secrets, API keys, env vars, tokens, auth, authz, session mgmt, file permissions, dangerous subprocess use, command injection, path traversal, XSS, CSRF, SQLi, prompt injection, dependency/package/supply-chain risk, unsafe Python, unsafe JS, RCE risk — every finding with severity, impact, evidence, file, root cause, repair | ☑ Complete — [report](https://claude.ai/code/artifact/7cf11021-9fb4-4d3f-8c4c-36eb7e896872), findings 2.1, 2.6–2.13 above |
-| Security Architecture | Security Engine, Secret Manager, Permission Manager, Identity Manager, Access Controller, Security Policy Engine, Audit Logger, Incident Response, Security Dashboard, Threat Intelligence — real modules, only for gaps the audit actually proves exist | ◐ 2.1, 2.6, 2.13 done (`14190a4`, `489c4bd`) — 2.7 (XSS) and 2.9 (shell-escaping) next, then 2.8/2.3/2.11/2.12 |
+| Security Architecture | Security Engine, Secret Manager, Permission Manager, Identity Manager, Access Controller, Security Policy Engine, Audit Logger, Incident Response, Security Dashboard, Threat Intelligence — real modules, only for gaps the audit actually proves exist | ◐ 2.1, 2.6, 2.13, 2.7 done — 2.9 (shell-escaping) next, then 2.8/2.3/2.11/2.12 |
 | Hardening | Rate limiting, input validation, output sanitization, secure defaults, least privilege, token expiration, encrypted secrets, secure config, dependency verification, automatic vuln scanning | ☐ Blocked on Architecture |
 | Attack Simulation | Controlled, real attempts against API/Mission Control/Publishing/Automation/Executive Board/Discovery/Revenue/Market Hunter — a real pass/fail report | ☐ Blocked on Hardening |
 | Continuous Security | Security/Threat/Dependency/Supply-chain/Code review gates every future feature must pass before production | ☐ Blocked on Attack Simulation |
@@ -236,7 +236,23 @@ Resumed after being paused for the Enterprise Security & Cyber Defense Mission, 
 
 ---
 
-*(Phase 2 continues from here — the Security Architecture sub-phase (Secret Manager, Identity Manager, Access Controller, etc.) is next, scoped to what findings 2.6–2.13 above actually still need, not built speculatively.)*
+### 2.7 — XSS fix: index.html's updateBooksList() (2026-07-23)
+
+Picked up after the Live Competitive Intelligence mission closed (ADR-096) and roadmap 1.2 (ADR-097) — the next-highest-severity unblocked finding, per the Security Mission Tracker's own stated repair order.
+
+**Implemented:** `index.html` gained `escapeHtml()` (identical implementation already shipped in `dashboard.html`/`mission_control.html`, reused verbatim rather than duplicated-with-drift). `updateBooksList()`'s `innerHTML` template now escapes all 5 interpolated fields (`title`, `type`, `theme`, `pages`, `time`) — the audit named `title` specifically, but `theme` for Scout-sourced books (`d.brief.topic`) is equally externally-influenced, so the fix covers the whole template defensively rather than just the one named field. `clearLog()`'s unrelated, always-literal `innerHTML = ''` was confirmed real and left untouched.
+
+**Tested:** `tests/test_index_html_xss_fix.js` (new, 8 tests) — extracts and directly executes the actual shipped `escapeHtml()` function against real `<script>`/`<img onerror>`/quote-breakout payloads, confirming each is neutralized; confirms ordinary titles render unchanged; confirms `clearLog()` untouched.
+
+**Verified:** full regression run — `tests/test_index_html_xss_fix.js` (8/8), `tests/test_trust_center.js` + `tests/test_check_jsonl_duplication.js` (10/10), `tests/test_api_contract.js` (23/23), full Python suite (1141/1141, unaffected). **Honestly incomplete:** live-browser DOM confirmation was attempted 3 times but could not complete — the Claude-in-Chrome extension was not connected in this environment. The executable test above proves the real escaping logic, not browser-DOM rendering semantics specifically; a manual live check is recommended before/shortly after this ships.
+
+**Documented:** `ADR-098`.
+
+**Commit:** `[pending]`.
+
+---
+
+*(Phase 2 continues from here — 2.9 (shell-escaping) is next per the Security Mission Tracker's own stated order, then 2.8/2.3/2.11/2.12.)*
 
 ### 4.7 — Real infrastructure health checks (2026-07-23)
 
