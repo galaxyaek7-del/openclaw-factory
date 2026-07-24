@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## الهوية والرؤية
 
-🏭 OpenClaw Factory ليست مصنع كتب فقط - هي منصة إنتاج رقمي متعددة المنتجات، قابلة للتحول الفوري بين المسارات لضمان الاستمرارية.
+🏭 Galaxy Forge ليست مصنع كتب فقط - هي منصة إنتاج رقمي متعددة المنتجات، قابلة للتحول الفوري بين المسارات لضمان الاستمرارية.
 
 ### المسارات الستة المخطط لها
 
@@ -46,7 +46,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### 💰 الفلسفة الاستراتيجية — شركة استثمار رقمي (توجيه المؤسس، 2026-07-23)
 
-OpenClaw ليست شركة برمجيات — هي **شركة استثمار رقمي**. الكتب، القوالب، الأدوات، الكورسات هي أدوات استثمار، لا غاية بحد ذاتها. السؤال الدائم قبل أي بناء: "هل هذا يزيد القيمة طويلة المدى للشركة؟" — وليس "ماذا يمكننا أن نبني؟" (راجع `value_engine.py`، ADR-102 — الأداة الحقيقية التي تُجيب على هذا السؤال فعلياً لكل فرصة مقبولة اليوم).
+Galaxy Forge ليست شركة برمجيات — هي **شركة استثمار رقمي**. الكتب، القوالب، الأدوات، الكورسات هي أدوات استثمار، لا غاية بحد ذاتها. السؤال الدائم قبل أي بناء: "هل هذا يزيد القيمة طويلة المدى للشركة؟" — وليس "ماذا يمكننا أن نبني؟" (راجع `value_engine.py`، ADR-102 — الأداة الحقيقية التي تُجيب على هذا السؤال فعلياً لكل فرصة مقبولة اليوم).
 
 **مبدأ الحياد التقني:** لا ولاء لأي موديل ذكاء اصطناعي أو شركة أو منصة بعينها (Claude, GPT, Gemini, DeepSeek, Qwen, Kimi, Doubao, نماذج مفتوحة المصدر — جميعها أدوات إنتاج مرشَّحة). معيار الاختيار الوحيد: نتائج أفضل، جودة أفضل، سرعة أفضل، موثوقية أفضل، اقتصاديات أفضل، نتائج أفضل للعميل. الأداة الحقيقية لهذا موجودة بالفعل: `ai_capability/registry.py` (Technology Investment Council) — يُسجِّل بيانات حقيقية لكل مزوّد فعلاً تم استدعاؤه (Groq اليوم)، ويُبقي كل مزوّد آخر (بما فيهم Kimi/Doubao المُضافان 2026-07-23) بحالة DISCOVERY صريحة حتى تتوفر بيانات اعتماد حقيقية واستدعاء حقيقي فعلي — لا مقارنة أداء مُختلَقة أبداً.
 
@@ -54,7 +54,7 @@ OpenClaw ليست شركة برمجيات — هي **شركة استثمار ر�
 
 ### ⚠️ قبل اقتراح أي بنية أمنية أو فصل حسابات
 
-كل أداة/منصة في OpenClaw (GitHub، KDP، Gumroad، مستقبلاً Payhip/Etsy/Canva/Pinterest، Groq، Anthropic، n8n) مربوطة اليوم بحساب Google شخصي واحد، بلا استثناء. هذا قرار واعٍ (بساطة + تكلفة صفر لمرحلة مبكرة)، لا سهواً — راجع `OpenClaw_Brain/00_Governance/IDENTITY_ARCHITECTURE.md` والمخاطر الصريحة فيه، و`ADR-014` لمحفّزات إعادة النظر، **قبل** اقتراح أي تجزئة حسابات أو بنية أمنية جديدة.
+كل أداة/منصة في Galaxy Forge (GitHub، KDP، Gumroad، مستقبلاً Payhip/Etsy/Canva/Pinterest، Groq، Anthropic، n8n) مربوطة اليوم بحساب Google شخصي واحد، بلا استثناء. هذا قرار واعٍ (بساطة + تكلفة صفر لمرحلة مبكرة)، لا سهواً — راجع `OpenClaw_Brain/00_Governance/IDENTITY_ARCHITECTURE.md` والمخاطر الصريحة فيه، و`ADR-014` لمحفّزات إعادة النظر، **قبل** اقتراح أي تجزئة حسابات أو بنية أمنية جديدة.
 
 ---
 
@@ -83,7 +83,7 @@ There is no build step, test suite, or linter configured.
 
 ## Architecture
 
-**OpenClaw Factory** is an Arabic-language (RTL) dashboard for a self-publishing business selling digital products on KDP, Etsy, and Gumroad.
+**Galaxy Forge** is an Arabic-language (RTL) dashboard for a self-publishing business selling digital products on KDP, Etsy, and Gumroad.
 
 ### Stack
 
