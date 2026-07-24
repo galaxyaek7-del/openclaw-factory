@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Execution Scheduler (Autonomous Global Execution
+"""Galaxy Forge — Execution Scheduler (Autonomous Global Execution
 Engine, 2026-07-23).
 
 Real, evidence-based classification of every real ACCEPTED opportunity

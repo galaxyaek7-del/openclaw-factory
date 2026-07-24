@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory v7+ - Quality Doctor
+Galaxy Forge v7+ - Quality Doctor
 Self-healing quality assurance system
 Checks and automatically fixes product issues
 """

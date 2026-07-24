@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Canonical Product schema.
+"""Galaxy Forge — Canonical Product schema.
 
 The single translation point between books/_generation_log.jsonl (the real
 production log written by book_generator.py) and every distribution channel.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory — Real Competitor Discovery Engine (ADR-042)
+Galaxy Forge — Real Competitor Discovery Engine (ADR-042)
 
 Honesty note (same discipline as market_hunter.py/profit_oracle.py): this
 queries two real, free, keyless APIs — Hacker News Algolia
@@ -80,7 +80,7 @@ def _http_get_json(url, timeout=10):
     tests/test_competitor_discovery.py keeps intercepting every caller
     below unchanged."""
     return MIC_HTTP_CLIENT.http_get_json(
-        url, timeout=timeout, user_agent='Mozilla/5.0 (OpenClaw-Factory-CompetitorDiscovery)'
+        url, timeout=timeout, user_agent='Mozilla/5.0 (Galaxy-Forge-CompetitorDiscovery)'
     )
 
 

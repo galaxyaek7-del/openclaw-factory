@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Content Generator registry (Universal Production
+"""Galaxy Forge — Content Generator registry (Universal Production
 Engine §3/§6). Same shape as channels/registry.py: an implementation
 registers itself under a name at import time; the pipeline only ever
 calls get()/all(), never imports a concrete generator module directly.

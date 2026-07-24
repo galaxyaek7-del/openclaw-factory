@@ -1,5 +1,5 @@
 """
-OpenClaw Factory — Validation Layer (ADR-053).
+Galaxy Forge — Validation Layer (ADR-053).
 
 Not a new engine, not a new AI agent, not a new dashboard: a read-only
 reliability layer that reconstructs and measures what the existing

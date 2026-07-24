@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory — Gumroad Publisher
+Galaxy Forge — Gumroad Publisher
 Uploads digital products to Gumroad via REST API.
 Reads GUMROAD_ACCESS_TOKEN from .env. Never logs the token.
 
@@ -179,7 +179,7 @@ def main():
         except Exception:
             pass
 
-    parser = argparse.ArgumentParser(description="Gumroad publisher CLI (OpenClaw Factory)")
+    parser = argparse.ArgumentParser(description="Gumroad publisher CLI (Galaxy Forge)")
     parser.add_argument("--list", action="store_true", help="List existing Gumroad products")
     parser.add_argument("--create", metavar="SPEC_JSON", help="Create a product from a spec JSON file")
     parser.add_argument("--sales", action="store_true", help="List sales")

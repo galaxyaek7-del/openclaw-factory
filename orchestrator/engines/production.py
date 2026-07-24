@@ -51,7 +51,7 @@ def run(context):
         spec = build_product_specification(
             niche=niche, product_family=product_family, ladder=ladder,
             production_id=make_production_id(decision) if decision.get("decision_id") else None,
-            title=niche, topic=niche, author="OpenClaw Factory", price_hint=price,
+            title=niche, topic=niche, author="Galaxy Forge", price_hint=price,
         )
         result = adapter.generate(spec)
         return {"executed": True, **result}
@@ -66,7 +66,7 @@ def run(context):
         # a second real decision about what to build for the same
         # decision_path this factory just unified (ADR-076).
         price = (decision.get("evaluation_snapshot") or {}).get("price") or 197
-        payload = {"title": niche, "topic": niche, "product_type": "techdoc", "price": price, "author": "OpenClaw Factory"}
+        payload = {"title": niche, "topic": niche, "product_type": "techdoc", "price": price, "author": "Galaxy Forge"}
         # Requirement #5 (ADR-077): reuse production_factory.dossier's own
         # ID formula (f"PROD-{decision_id}") rather than a second one, so
         # the real generated file's own log entry, the dossier, and the
@@ -74,7 +74,7 @@ def run(context):
         if decision.get("decision_id"):
             payload["production_id"] = make_production_id(decision)
     else:
-        payload = {"topic": niche, "title": niche, "author": "OpenClaw Factory"}
+        payload = {"topic": niche, "title": niche, "author": "Galaxy Forge"}
 
     proc = subprocess.run(
         [sys.executable, str(_BOOK_GENERATOR), "--json"],

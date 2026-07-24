@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Factory State Manager, Python side (Operational
+"""Galaxy Forge — Factory State Manager, Python side (Operational
 Resilience Architecture, Phase A, 2026-07-18).
 
 The single authoritative "what's happening right now" view: data/

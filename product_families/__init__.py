@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Product Families (Packaging Architecture Plan, Phase A).
+"""Galaxy Forge — Product Families (Packaging Architecture Plan, Phase A).
 
 The modular, multi-product-family Generation layer approved 2026-07-18
 (see the Packaging Architecture Plan / ADR pending). Replaces the single

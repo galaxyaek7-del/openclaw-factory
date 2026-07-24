@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory — Paddle Publisher (ADR-065/MASTER_CHARTER.md §2)
+Galaxy Forge — Paddle Publisher (ADR-065/MASTER_CHARTER.md §2)
 
 Skeleton client for Paddle's real Billing API (https://api.paddle.com) —
 the merchant-of-record platform this factory's new AI SaaS/B2B ladder ranks
@@ -262,7 +262,7 @@ def main():
         except Exception:
             pass
 
-    parser = argparse.ArgumentParser(description="Paddle publisher CLI (OpenClaw Factory, ADR-065)")
+    parser = argparse.ArgumentParser(description="Paddle publisher CLI (Galaxy Forge, ADR-065)")
     parser.add_argument("--list", action="store_true", help="List existing Paddle products")
     parser.add_argument("--create", metavar="SPEC_JSON", help="Create a product from a spec JSON file")
     parser.add_argument("--transactions", action="store_true", help="List transactions (Paddle's 'sales')")

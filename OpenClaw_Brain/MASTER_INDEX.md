@@ -1,8 +1,8 @@
-# 🧠 OpenClaw Brain — Master Index
+# 🧠 Galaxy Forge Brain — Master Index
 
 > "Knowledge evolves the factory. Without permanent knowledge, there is no self-evolution." — OPENCLAW_OS_CONSTITUTION.md, Knowledge
 
-This is the home page of OpenClaw's permanent, organizational memory. Written in plain Markdown — works with or without the Obsidian app (open this folder as an Obsidian vault for backlinks/graph view, or just read it as files). Nothing here is fabricated: where real information didn't exist for a section, that gap is stated explicitly rather than invented. Search this Brain before building — see [knowledge_brain.js](../knowledge_brain.js).
+This is the home page of Galaxy Forge's permanent, organizational memory. Written in plain Markdown — works with or without the Obsidian app (open this folder as an Obsidian vault for backlinks/graph view, or just read it as files). Nothing here is fabricated: where real information didn't exist for a section, that gap is stated explicitly rather than invented. Search this Brain before building — see [knowledge_brain.js](../knowledge_brain.js).
 
 **New here, or Claude Code is unavailable? Start with [SURVIVAL_GUIDE.md](./SURVIVAL_GUIDE.md)** — how to start the factory, run every cell by hand, read GOLDEN_OPPORTUNITIES.md, and what to do when something breaks. Proof of OPENCLAW_OS_CONSTITUTION.md's Supreme Law: the factory survives the loss of any individual tool, Claude included.
 
@@ -11,7 +11,7 @@ This is the home page of OpenClaw's permanent, organizational memory. Written in
 This is the intended reading order — each link is a real, load-bearing relationship, not just a folder list:
 
 ```
-01_Vision            → why OpenClaw exists, the six tracks, the Golden Rule
+01_Vision            → why Galaxy Forge exists, the six tracks, the Golden Rule
    ↓
 00_Constitution      → the two governing documents that encode that vision into law
    ↓

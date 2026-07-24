@@ -120,7 +120,7 @@ function checkStorageUsage() {
 }
 
 (async () => {
-  console.log(`=== OpenClaw Daily Operational Checks (${new Date().toISOString()}) ===\n`);
+  console.log(`=== Galaxy Forge Daily Operational Checks (${new Date().toISOString()}) ===\n`);
   await checkServerAvailability();
   checkBackgroundAutomation();
   checkDecisionHistory();

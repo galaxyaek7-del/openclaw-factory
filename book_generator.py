@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory v9 - Ultimate Book Generator
+Galaxy Forge v9 - Ultimate Book Generator
 Types: journal, planner, habit, gratitude, fitness, tracker,
        healthy_eating, budget, mindfulness, cookbook
 """
@@ -1744,7 +1744,7 @@ def groq_chat(system_prompt, user_prompt, max_tokens=4096, timeout=30, retries=3
     headers = {
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {key}',
-        'User-Agent': 'Mozilla/5.0 (OpenClaw-Factory-BookGenerator)',
+        'User-Agent': 'Mozilla/5.0 (Galaxy-Forge-BookGenerator)',
         'Accept': 'application/json',
     }
 
@@ -1858,7 +1858,7 @@ def ai_generate_book_content(title, topic, chapters, audience):
     # option among several.
     n = max(2, min(int(chapters or 8), 20))
     system = (
-        "You are the content-building agent at OpenClaw Factory. You write real, complete digital "
+        "You are the content-building agent at Galaxy Forge. You write real, complete digital "
         "book content (not summaries or bare headings), at a quality bar suitable for direct "
         "publication on Amazon KDP or Gumroad, for an English-speaking EU/US audience."
     )
@@ -2289,7 +2289,7 @@ def quality_gate(niche, theme=None):
 
 
 def generate_book(title, topic, chapters=8, audience="القارئ العام", price=9.99,
-                   theme="blue", author="OpenClaw Press", output=None):
+                   theme="blue", author="Galaxy Forge Press", output=None):
     """يولّد كتاباً رقمياً كاملاً بمحتوى حقيقي من نفس الذكاء الاصطناعي (Groq) الذي يشغّل وكيل Scout.
     لا يتوقف عند فشل الـ AI أو الغلاف — ينتج نسخة بديلة أقل جودة بدلاً من ذلك."""
     title = str(title or '').strip()
@@ -2396,7 +2396,7 @@ def generate_book(title, topic, chapters=8, audience="القارئ العام", 
     return result
 
 
-def generate_printable(title, ptype, price, subtitle="", pages=15, theme="blue", author="OpenClaw Press", output=None):
+def generate_printable(title, ptype, price, subtitle="", pages=15, theme="blue", author="Galaxy Forge Press", output=None):
     """Generates a real English EU/US printable (planner/tracker/habit/
     budget/...) via the EXISTING create_book() — its internal drawing logic
     is untouched, called exactly as before — then wires the result through
@@ -2494,7 +2494,7 @@ def _economics_platform_for(product_type):
 
 
 def generate_book_from_content(title, subtitle, chapters, price, theme="blue",
-                                author="OpenClaw Press", output=None, product_type="book",
+                                author="Galaxy Forge Press", output=None, product_type="book",
                                 production_id=None):
     """ADR-022: assembles a real PDF from ALREADY-WRITTEN chapters — a human
     (the president) + Claude authoring/review collaboration, never Groq —
@@ -2618,7 +2618,7 @@ def ai_generate_techdoc_content(title, topic, section_titles):
     client. One call for every section together (not one per section),
     keeping real cost bounded and comparable to a single book generation."""
     system = (
-        "You are the technical content-writing agent at OpenClaw Factory. You write real, complete, "
+        "You are the technical content-writing agent at Galaxy Forge. You write real, complete, "
         "professional technical documentation for a B2B/SaaS software product (not summaries or bare "
         "headings), at a quality bar suitable for direct publication as a paid product package for an "
         "English-speaking B2B/SaaS audience."
@@ -2706,7 +2706,7 @@ def _fallback_techdoc_content(topic, section_titles):
 
 
 def generate_product_package(title, subtitle="", topic="", price=197.0, theme="blue",
-                              author="OpenClaw Press", output=None, sections=None,
+                              author="Galaxy Forge Press", output=None, sections=None,
                               production_id=None):
     """Technical-docs/product-package generator (ADR-065 Step 4, real
     content generation added ADR-077). Builds a real PDF from a standard
@@ -2774,7 +2774,7 @@ def main():
 
     if '--json' not in sys.argv:
         out = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'demo_cookbook.pdf')
-        n = create_cookbook(out, "The Complete Home Kitchen", "12 Chapters of Delicious Recipes", "orange", 60, "OpenClaw Press")
+        n = create_cookbook(out, "The Complete Home Kitchen", "12 Chapters of Delicious Recipes", "orange", 60, "Galaxy Forge Press")
         print("Done ->", out, "| pages:", n)
         return
     try:

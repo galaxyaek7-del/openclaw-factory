@@ -77,7 +77,7 @@ module.exports = { rotateLogIfNeeded, rotateAllKnownLogs, cleanupOldReports };
 
 if (require.main === module) {
   const apply = process.argv.includes('--apply');
-  console.log(`=== OpenClaw Maintenance (${apply ? 'APPLYING CHANGES' : 'DRY RUN — pass --apply to actually act'}) ===\n`);
+  console.log(`=== Galaxy Forge Maintenance (${apply ? 'APPLYING CHANGES' : 'DRY RUN — pass --apply to actually act'}) ===\n`);
   rotateAllKnownLogs(apply);
   console.log('');
   cleanupOldReports(apply);

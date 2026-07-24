@@ -1,4 +1,4 @@
-"""Tests for value_engine.py (OpenClaw Value Engine, 2026-07-23).
+"""Tests for value_engine.py (Galaxy Forge Value Engine, 2026-07-23).
 
 Runs with stdlib unittest. Pure helper functions are tested with zero
 I/O. Integration tests use real, temp-file-isolated decisions (via

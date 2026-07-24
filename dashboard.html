@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>OpenClaw — لوحة القيادة</title>
+<title>Galaxy Forge — لوحة القيادة</title>
 <style>
   :root {
     --bg: #f8fafc; --bg-card: #ffffff; --border: #e2e8f0; --text: #0f172a; --text-dim: #64748b;
@@ -65,7 +65,7 @@
 <body>
   <div class="topbar">
     <div>
-      <h1>🏭 OpenClaw — لوحة القيادة</h1>
+      <h1>🏭 Galaxy Forge — لوحة القيادة</h1>
       <div class="subtitle">تجميع حي لبيانات حقيقية موجودة فعلاً — لا مقاييس مُختلَقة. آخر تحديث: <span id="ts">...</span> <span id="fetchError" style="display:none; color:var(--crit); font-weight:600;"></span></div>
     </div>
     <div class="controls">
@@ -94,9 +94,9 @@
     function applyTheme(t) {
       document.documentElement.setAttribute('data-theme', t);
       document.getElementById('themeToggle').textContent = t === 'dark' ? '☀️ فاتح' : '🌙 داكن';
-      localStorage.setItem('openclaw_dashboard_theme', t);
+      localStorage.setItem('galaxy_forge_dashboard_theme', t);
     }
-    const savedTheme = localStorage.getItem('openclaw_dashboard_theme')
+    const savedTheme = localStorage.getItem('galaxy_forge_dashboard_theme')
       || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     applyTheme(savedTheme);
     document.getElementById('themeToggle').addEventListener('click', () => {

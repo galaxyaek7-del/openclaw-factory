@@ -39,7 +39,7 @@ class AiBookAssetBuilder:
             audience=family_config.get("audience", "القارئ العام"),
             price=spec.get("price_hint") or 9.99,
             theme=family_config.get("theme", "blue"),
-            author=spec.get("author") or "OpenClaw Press",
+            author=spec.get("author") or "Galaxy Forge Press",
             output=family_config.get("output"),
         )
 
@@ -64,7 +64,7 @@ class TechdocPackageAssetBuilder:
             topic=spec.get("topic") or spec.get("niche") or "",
             price=spec.get("price_hint") or 197.0,
             theme=family_config.get("theme", "blue"),
-            author=spec.get("author") or "OpenClaw Press",
+            author=spec.get("author") or "Galaxy Forge Press",
             output=family_config.get("output"),
             sections=components_to_sections(spec.get("components")),
             production_id=spec.get("production_id"),

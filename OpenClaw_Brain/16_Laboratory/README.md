@@ -15,4 +15,4 @@ There is no staging environment, feature-flag system, or "candidate" review step
 
 ## Gap worth naming
 
-If OpenClaw ever adopts a new AI provider, framework, or automation tool at meaningful scale, there is currently no defined process (a directory convention, a checklist, a review gate) for that to go through before it reaches `book_generator.py` or `server.js` directly. Worth building deliberately rather than continuing informally, once the cost of an informal mistake becomes higher than it is today.
+If Galaxy Forge ever adopts a new AI provider, framework, or automation tool at meaningful scale, there is currently no defined process (a directory convention, a checklist, a review gate) for that to go through before it reaches `book_generator.py` or `server.js` directly. Worth building deliberately rather than continuing informally, once the cost of an informal mistake becomes higher than it is today.

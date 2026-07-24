@@ -1,4 +1,4 @@
-"""OpenClaw Factory — BaseArm contract (OCTOPUS_ARCHITECTURE.md §3).
+"""Galaxy Forge — BaseArm contract (OCTOPUS_ARCHITECTURE.md §3).
 
 Every distribution arm (Gumroad, Payhip, ...) implements this contract so
 the future distributor can call any arm without knowing which platform it

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory v7+ - Market Analyzer & Niche Scout
+Galaxy Forge v7+ - Market Analyzer & Niche Scout
 Analyzes market trends and recommends profitable niches
 
 Honesty note (STRUCTURAL_DIAGNOSIS.md disease #2, added 2026-07-15 — same

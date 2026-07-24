@@ -1,4 +1,4 @@
-// OpenClaw Factory — Safe Startup Detection, JS wrapper (Unified Recovery
+// Galaxy Forge — Safe Startup Detection, JS wrapper (Unified Recovery
 // System §2, 2026-07-18). Thin shell around recovery/startup_check.py's
 // real implementation (stdin/stdout-JSON, same convention as
 // mission_control_api.py) — one real decision point, callable from

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Reality Mode (2026-07-24).
+"""Galaxy Forge — Reality Mode (2026-07-24).
 
 Formalizes, as one real named taxonomy, the discipline this entire
 session already followed informally in every module built today

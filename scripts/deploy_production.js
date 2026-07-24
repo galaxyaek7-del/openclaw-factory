@@ -65,7 +65,7 @@ async function waitForHealthy(port, timeoutMs = 15000, pollIntervalMs = 300) {
   return false;
 }
 
-// Prove-OpenClaw operational-excellence follow-up: a cheap pre-flight
+// Prove-Galaxy Forge operational-excellence follow-up: a cheap pre-flight
 // gate, checked before ever touching the live process — see the real
 // call site's own comment for why. Returns { ok, error } rather than
 // throwing, so the caller decides what to do (the real deploy flow
@@ -88,7 +88,7 @@ if (require.main === module) {
   const port = process.env.PORT || 3000;
   const existingPid = findListeningPid(port);
 
-  console.log('=== OpenClaw Production Deploy ===');
+  console.log('=== Galaxy Forge Production Deploy ===');
   console.log(confirmed ? 'Mode: LIVE (--confirm passed)' : 'Mode: DRY RUN (pass --confirm to actually deploy)');
   console.log(`\n1. Current production server on port ${port}: ${existingPid ? `PID ${existingPid}` : 'not running'}`);
   console.log('2. Would run: git pull origin main');
@@ -115,7 +115,7 @@ if (require.main === module) {
       console.log('\n=== npm ci ===');
       execSync('npm ci', { cwd: REPO_ROOT, stdio: 'inherit' });
 
-      // Prove-OpenClaw operational-excellence follow-up: this deploy has
+      // Prove-Galaxy Forge operational-excellence follow-up: this deploy has
       // now been run twice, for real, in one session. Both times worked —
       // but the script kills the existing server BEFORE checking anything
       // about the new code at all. A bad commit that doesn't even parse

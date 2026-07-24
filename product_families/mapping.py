@@ -1,4 +1,4 @@
-"""OpenClaw Factory — ladder rank -> default product_family mapping
+"""Galaxy Forge — ladder rank -> default product_family mapping
 (Packaging Architecture Plan §1).
 
 `ladder` (profit_oracle.py's Strategic Production Priority Ladder rank)

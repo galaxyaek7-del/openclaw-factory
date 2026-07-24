@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Enterprise Readiness Layer (Executive Directive,
+"""Galaxy Forge — Enterprise Readiness Layer (Executive Directive,
 2026-07-22).
 
 Founder-confirmed scope before any code was written (two clarifying

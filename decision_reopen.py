@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Decision Re-open Trigger (Live Competitive
+"""Galaxy Forge — Decision Re-open Trigger (Live Competitive
 Intelligence Layer, 2026-07-23).
 
 Closes the last deferred piece of ADR-093, named again in ADR-094 and

@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Content Generation (Universal Production Engine §3/§6,
+"""Galaxy Forge — Content Generation (Universal Production Engine §3/§6,
 2026-07-18).
 
 Formalizes the swappable `ContentGenerator` interface: any implementation

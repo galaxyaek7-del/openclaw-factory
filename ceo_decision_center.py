@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Global CEO Decision Center (2026-07-24).
+"""Galaxy Forge — Global CEO Decision Center (2026-07-24).
 
 **Explicit directive: "Do NOT build another production engine... No
 duplicated logic. Reuse every existing engine."** Like master_loop.py

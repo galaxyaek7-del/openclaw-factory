@@ -1,5 +1,5 @@
 """
-OpenClaw Factory — Strategic Intelligence Layer (ADR-054).
+Galaxy Forge — Strategic Intelligence Layer (ADR-054).
 
 The highest analytical layer of the company, completely separated from
 production logic: read-only, no execution, no publishing, no production

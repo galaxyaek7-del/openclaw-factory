@@ -1,5 +1,5 @@
 """
-OpenClaw Factory — Executive Orchestrator / Factory OS (ADR-051).
+Galaxy Forge — Executive Orchestrator / Factory OS (ADR-051).
 
 The single runtime coordinator: every engine (Market Intelligence,
 Decision Engine, Production, Publishing, Learning) is invoked only

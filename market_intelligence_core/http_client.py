@@ -25,7 +25,7 @@ exactly as before — nothing about their test surface changes.
 import json
 import urllib.request
 
-DEFAULT_USER_AGENT = "Mozilla/5.0 (OpenClaw-Factory-MarketIntelligence)"
+DEFAULT_USER_AGENT = "Mozilla/5.0 (Galaxy-Forge-MarketIntelligence)"
 
 
 def http_get_json(url, timeout=10, user_agent=DEFAULT_USER_AGENT):

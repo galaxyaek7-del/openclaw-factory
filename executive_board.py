@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — AI Executive Board (Executive Directive, 2026-07-22).
+"""Galaxy Forge — AI Executive Board (Executive Directive, 2026-07-22).
 
 The single most important design decision in this module, made before
 any code was written: each of the 10 executive roles is a fully

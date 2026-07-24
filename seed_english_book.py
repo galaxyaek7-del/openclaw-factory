@@ -1,4 +1,4 @@
-"""OpenClaw Factory — English Book Seed
+"""Galaxy Forge — English Book Seed
 
 Standalone. Produces ONE English DOCX manuscript ready for KDP.
 Does NOT touch the live factory pipeline. Safe to run/delete.
@@ -127,7 +127,7 @@ def call_groq(prompt, model="llama-3.1-8b-instant", max_tokens=4096, timeout=60)
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {key}",
-        "User-Agent": "Mozilla/5.0 (OpenClaw-Factory-EnglishSeed)",
+        "User-Agent": "Mozilla/5.0 (Galaxy-Forge-EnglishSeed)",
         "Accept": "application/json",
     }
 

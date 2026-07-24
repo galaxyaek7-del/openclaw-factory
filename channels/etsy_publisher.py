@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory — Etsy Publisher (ADR-025)
+Galaxy Forge — Etsy Publisher (ADR-025)
 Reads ETSY_API_KEY, ETSY_ACCESS_TOKEN, ETSY_SHOP_ID from .env. Never logs
 any of them.
 

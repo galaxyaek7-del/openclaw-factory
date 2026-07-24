@@ -1,13 +1,13 @@
 # 00 — Constitution
 
-The two governing documents of OpenClaw, in authority order:
+The two governing documents of Galaxy Forge, in authority order:
 
 1. **[OPENCLAW_OS_CONSTITUTION.md](../../OPENCLAW_OS_CONSTITUTION.md)** — supreme law. Mission, DNA, Living Cell Architecture, the Councils, Golden Hunter, Quality, Smart Publishing, Intelligent Marketing, Digital Sanitation, Knowledge, Security, Neutrality, Anti-Fragility. Installed 2026-07-08.
 2. **[CONSTITUTION.md](../../CONSTITUTION.md)** — engineering-specific implementation standard. 18 numbered principles (as of this Brain's creation) translating the supreme law into concrete code-level rules for this repository. Never contradicts document 1; where they'd conflict, document 1 wins.
 
 ## Why two documents, not one
 
-`OPENCLAW_OS_CONSTITUTION.md` describes what kind of company OpenClaw is and why (mission, culture, councils) — it doesn't mention a single file, function, or endpoint by name. `CONSTITUTION.md` is the opposite: every principle names the actual file that implements it (`inspectors.py`, `profit_oracle.py`, `factory_loop.js`...). Keeping them separate means the supreme law never needs to change just because the codebase does.
+`OPENCLAW_OS_CONSTITUTION.md` describes what kind of company Galaxy Forge is and why (mission, culture, councils) — it doesn't mention a single file, function, or endpoint by name. `CONSTITUTION.md` is the opposite: every principle names the actual file that implements it (`inspectors.py`, `profit_oracle.py`, `factory_loop.js`...). Keeping them separate means the supreme law never needs to change just because the codebase does.
 
 ## Amendment discipline (a real, recurring pattern worth knowing)
 

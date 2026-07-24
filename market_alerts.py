@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Market Alert Engine (Live Competitive Intelligence
+"""Galaxy Forge — Market Alert Engine (Live Competitive Intelligence
 Layer, Market Evidence & Alerting layer, 2026-07-23).
 
 Reuses, never duplicates: competitor_discovery.py's already-computed

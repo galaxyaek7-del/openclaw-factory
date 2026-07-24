@@ -1,6 +1,6 @@
 """
-AI Multi-Model Orchestrator — OpenClaw Strategic Principle (2026-07-23):
-"OpenClaw is not loyal to models. OpenClaw is loyal to results."
+AI Multi-Model Orchestrator — Galaxy Forge Strategic Principle (2026-07-23):
+"Galaxy Forge is not loyal to models. Galaxy Forge is loyal to results."
 
 The real, working dispatcher this directive's "every production workflow
 must support multi-model orchestration" asks for: automatically selects
@@ -23,7 +23,7 @@ substituting Groq and pretending multi-model orchestration happened, in
 case a future evaluator change ever could.
 
 "The company never depends on one vendor... if a better model appears
-tomorrow, OpenClaw adopts it": adding a real second provider is a real,
+tomorrow, Galaxy Forge adopts it": adding a real second provider is a real,
 three-step, non-breaking change — (1) a real credential in .env, (2) a
 real call-implementation function here, (3) one new dict entry in
 _REAL_PROVIDER_CALLERS. No call site that already routes through

@@ -635,7 +635,7 @@ const SERVICE_REGISTRY = [
 // documentation generated automatically", not a hand-maintained file.
 function generateServiceLayerDocs() {
   const lines = [
-    '# OpenClaw Unified Service Layer — API Reference (v1)',
+    '# Galaxy Forge Unified Service Layer — API Reference (v1)',
     '',
     '_Auto-generated from SERVICE_REGISTRY in server.js at server startup — do not hand-edit, it is overwritten on every restart. Source of truth: server.js._',
     '',
@@ -1344,7 +1344,7 @@ const ACTION_REGISTRY = [
     },
   },
   {
-    // OpenClaw Value Engine (2026-07-23) -- read-only per-niche synthesis:
+    // Galaxy Forge Value Engine (2026-07-23) -- read-only per-niche synthesis:
     // Priority Score, Expected ROI, Strategic Value, cost/lifetime-value
     // estimates, Recommendation, and all 17 requested dimensions. Reuses
     // opportunity_pipeline.py/revenue_pipeline/plan.py/market_evidence.py
@@ -1361,7 +1361,7 @@ const ACTION_REGISTRY = [
     },
   },
   {
-    // OpenClaw Value Engine (2026-07-23) -- the real, automatic resource-
+    // Galaxy Forge Value Engine (2026-07-23) -- the real, automatic resource-
     // allocation output: every real ACCEPTED opportunity, ranked by real
     // Priority Score descending.
     name: 'get-value-engine-report',
@@ -2485,7 +2485,7 @@ app.delete('/finance/delete/:id', requireMissionControlAuth, (req, res) => {
 // ── AGENT SYSTEM PROMPTS ──
 const AGENT_PROMPTS = {
   scout: {
-    system: `أنت وكيل استكشاف الأسواق في OpenClaw Factory. مهمتك تحليل أسواق الكتب الرقمية وتقديم أفكار رابحة لـ Amazon KDP وEtsy وGumroad.
+    system: `أنت وكيل استكشاف الأسواق في Galaxy Forge. مهمتك تحليل أسواق الكتب الرقمية وتقديم أفكار رابحة لـ Amazon KDP وEtsy وGumroad.
 عند تشغيلك قدّم:
 1. 3-5 أفكار كتب رابحة حالياً بناءً على اتجاهات السوق
 2. لكل فكرة: النيش، مستوى المنافسة (منخفض/متوسط/عالي)، السعر المقترح، الجمهور المستهدف
@@ -2495,7 +2495,7 @@ const AGENT_PROMPTS = {
   },
 
   builder: {
-    system: `أنت وكيل بناء المحتوى في OpenClaw Factory. مهمتك توليد محتوى الكتب الرقمية (journals, planners, trackers, cookbooks).
+    system: `أنت وكيل بناء المحتوى في Galaxy Forge. مهمتك توليد محتوى الكتب الرقمية (journals, planners, trackers, cookbooks).
 عند تشغيلك قدّم:
 1. هيكل كتاب جديد مقترح: عنوان، فصول رئيسية، عدد الصفحات
 2. مثال محتوى صفحة واحدة كاملة من الكتاب
@@ -2505,7 +2505,7 @@ const AGENT_PROMPTS = {
   },
 
   design: {
-    system: `أنت وكيل التصميم في OpenClaw Factory. مهمتك اقتراح أفكار تصميم احترافية للأغلفة والصفحات الداخلية للكتب الرقمية بحجم 6×9 إنش.
+    system: `أنت وكيل التصميم في Galaxy Forge. مهمتك اقتراح أفكار تصميم احترافية للأغلفة والصفحات الداخلية للكتب الرقمية بحجم 6×9 إنش.
 عند تشغيلك قدّم:
 1. مفهوم تصميم غلاف: الألوان الرئيسية، نوع الخط، الأسلوب البصري، العناصر الجرافيكية
 2. أفكار للصفحات الداخلية: التخطيط، التوزيع، الأيقونات، الفراغات
@@ -2515,7 +2515,7 @@ const AGENT_PROMPTS = {
   },
 
   qa: {
-    system: `أنت وكيل ضمان الجودة في OpenClaw Factory. مهمتك فحص المنتجات الرقمية وضمان جودتها قبل النشر على KDP وEtsy.
+    system: `أنت وكيل ضمان الجودة في Galaxy Forge. مهمتك فحص المنتجات الرقمية وضمان جودتها قبل النشر على KDP وEtsy.
 عند تشغيلك قدّم:
 1. قائمة تحقق شاملة لجودة الكتاب الرقمي (PDF، محتوى، تصميم، بيانات)
 2. أبرز 5 أخطاء تؤدي لرفض المنتج على KDP أو شكاوى على Etsy
@@ -2525,7 +2525,7 @@ const AGENT_PROMPTS = {
   },
 
   publisher: {
-    system: `أنت وكيل النشر في OpenClaw Factory. مهمتك تحضير بيانات النشر المحسّنة لـ SEO على Amazon KDP وEtsy وGumroad.
+    system: `أنت وكيل النشر في Galaxy Forge. مهمتك تحضير بيانات النشر المحسّنة لـ SEO على Amazon KDP وEtsy وGumroad.
 عند تشغيلك قدّم:
 1. عنوان محسّن لـ SEO يتضمن الكلمات المفتاحية الأكثر بحثاً (بالإنجليزية)
 2. وصف تسويقي جذاب 150-200 كلمة (بالإنجليزية)
@@ -2536,7 +2536,7 @@ const AGENT_PROMPTS = {
   },
 
   finance: {
-    system: `أنت وكيل التمويل في OpenClaw Factory. مهمتك تحليل الربحية واقتراح استراتيجيات تسعير للكتب الرقمية.
+    system: `أنت وكيل التمويل في Galaxy Forge. مهمتك تحليل الربحية واقتراح استراتيجيات تسعير للكتب الرقمية.
 عند تشغيلك قدّم:
 1. استراتيجية تسعير: سعر الإطلاق، السعر الدائم، أوقات التخفيض
 2. مقارنة هوامش الربح الصافي على KDP (35% أو 70%) وEtsy وGumroad
@@ -3531,7 +3531,7 @@ app.get('/good-morning', requireMissionControlAuth, async (req, res) => {
   res.json({
     success: true,
     generated_at: new Date().toISOString(),
-    title: '🏭 OpenClaw Factory — Daily Briefing',
+    title: '🏭 Galaxy Forge — Daily Briefing',
     factory_status: factoryStatus,
     top_opportunities: opportunities,
     last_night_actions: lastNightActions,
@@ -3869,6 +3869,6 @@ if (process.env.__OPENCLAW_TEST_EMIT_SHUTDOWN_SIGNAL__) {
 }
 
 app.listen(PORT, BIND_HOST, () => {
-  console.log(`✅ OpenClaw Factory — http://localhost:${PORT} (bound to ${BIND_HOST})`);
+  console.log(`✅ Galaxy Forge — http://localhost:${PORT} (bound to ${BIND_HOST})`);
   console.log(`🔧 Static dir: ${path.join(__dirname)}`);
 });

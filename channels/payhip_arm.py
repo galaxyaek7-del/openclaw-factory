@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Payhip arm (ADR-025).
+"""Galaxy Forge — Payhip arm (ADR-025).
 
 A thin adapter implementing BaseArm on top of channels/payhip_publisher.py.
 dry_run validates product shape only, exactly like GumroadArm — no network

@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Dossier Bundle builder (Universal Production Engine
+"""Galaxy Forge — Dossier Bundle builder (Universal Production Engine
 §3/§6, 2026-07-18).
 
 Mandatory per-product artifacts stage: every product generated must
@@ -88,7 +88,7 @@ def _generate_marketing_copy(spec):
     title = spec.get("title") or "Untitled Product"
     niche = spec.get("niche") or spec.get("topic") or title
     system = (
-        "You are the marketing/SEO copywriting agent at OpenClaw Factory. "
+        "You are the marketing/SEO copywriting agent at Galaxy Forge. "
         "Write real, concise, conversion-focused marketplace copy for a "
         "real digital product — never generic filler."
     )
@@ -124,7 +124,7 @@ def _generate_support_copy(spec):
     title = spec.get("title") or "Untitled Product"
     niche = spec.get("niche") or spec.get("topic") or title
     system = (
-        "You are the customer-support content agent at OpenClaw Factory. "
+        "You are the customer-support content agent at Galaxy Forge. "
         "Write a real, useful FAQ/troubleshooting section for a digital "
         "product buyer — never generic filler."
     )

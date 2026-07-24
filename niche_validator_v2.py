@@ -1,7 +1,7 @@
 """
 niche_validator_v2.py
 =====================
-OpenClaw Factory - Niche Validation Tool (SAFE VERSION)
+Galaxy Forge - Niche Validation Tool (SAFE VERSION)
 
 Built by Claude (General Manager & CTO) for Chairman Abdelkader Grafat
 Fully OFFLINE - reads a saved Amazon HTML file (Ctrl+S from browser).
@@ -14,7 +14,7 @@ USAGE:
 
     python niche_validator_v2.py
 
-Author: Claude (OpenClaw Factory)
+Author: Claude (Galaxy Forge)
 Date: July 2026
 """
 
@@ -328,7 +328,7 @@ def save_report(report: dict) -> str:
 
 def main():
     print("=" * 60)
-    print("🎯 OpenClaw Niche Validator v2 — SAFE OFFLINE MODE")
+    print("🎯 Galaxy Forge Niche Validator v2 — SAFE OFFLINE MODE")
     print("=" * 60)
     print()
     print("📖 خطوات الاستخدام:")

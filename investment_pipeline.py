@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Investment Pipeline (Global Revenue Discovery Engine,
+"""Galaxy Forge — Investment Pipeline (Global Revenue Discovery Engine,
 2026-07-24).
 
 The founder-named 10 ranking dimensions and 12 per-opportunity fields,

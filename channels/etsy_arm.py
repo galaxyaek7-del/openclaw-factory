@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Etsy arm (ADR-025).
+"""Galaxy Forge — Etsy arm (ADR-025).
 
 A thin adapter implementing BaseArm on top of channels/etsy_publisher.py.
 dry_run validates product shape only, exactly like GumroadArm — no

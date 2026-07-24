@@ -1,4 +1,4 @@
-# 🆘 OpenClaw Survival Guide
+# 🆘 Galaxy Forge Survival Guide
 
 > Per OPENCLAW_OS_CONSTITUTION.md's Supreme Law — *"System before individuals. Everything is replaceable except the constitutional system."* — and its Anti-Fragility principle. This document proves that law in practice: everything below can be done with a browser, a terminal, and the free tools listed in §4. **No AI assistant, including Claude, is required for the factory to run, be understood, or be extended.** If Claude Code is ever unavailable, expensive, or replaced, this file — plus [MASTER_INDEX.md](./MASTER_INDEX.md) — is what lets a human or a different AI pick the factory up cold.
 

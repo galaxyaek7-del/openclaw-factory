@@ -1,4 +1,4 @@
-"""Tests for ai_capability/orchestrator.py (OpenClaw Strategic Principle,
+"""Tests for ai_capability/orchestrator.py (Galaxy Forge Strategic Principle,
 2026-07-23 — "loyal to results, not models").
 
 Every test mocks book_generator.groq_chat (the one real, working

@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Paddle arm (ADR-065/MASTER_CHARTER.md §2, Step 4).
+"""Galaxy Forge — Paddle arm (ADR-065/MASTER_CHARTER.md §2, Step 4).
 
 A thin adapter that implements BaseArm on top of paddle_publisher.py, same
 role gumroad_arm.py plays for gumroad_publisher.py. paddle_publisher.py is

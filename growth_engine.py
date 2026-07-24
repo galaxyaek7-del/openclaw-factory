@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Global Growth Engine (2026-07-24).
+"""Galaxy Forge — Global Growth Engine (2026-07-24).
 
 Product Multiplication, Channel Expansion, and Compounding signals for
 every real ACCEPTED opportunity. Confirmed with the founder before

@@ -234,7 +234,7 @@ class TestEndpointDispatch(unittest.TestCase):
             with patch.object(mission_control_api, "_FACTORY_ROOT", Path(tmp)):
                 result = mission_control_api._export_executive_report()
             self.assertTrue(result["path"].startswith("reports/"))
-            self.assertIn("# OpenClaw Executive Report", result["markdown"])
+            self.assertIn("# Galaxy Forge Executive Report", result["markdown"])
             self.assertIn("## Executive Summary", result["markdown"])
             self.assertIn("## Strategic Recommendations", result["markdown"])
             self.assertIn("## Validation", result["markdown"])

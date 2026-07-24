@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Packager registry (Universal Production Engine
+"""Galaxy Forge — Packager registry (Universal Production Engine
 §3/§6). Same shape as content_generation/registry.py and
 asset_generation/registry.py: an implementation registers itself under
 a name at import time; callers only ever use get()/all(), never import

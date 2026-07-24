@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Packaging (Universal Production Engine §3/§6,
+"""Galaxy Forge — Packaging (Universal Production Engine §3/§6,
 2026-07-18): bundles Asset Generation's output into ONE distributable
 artifact per product.
 

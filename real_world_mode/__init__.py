@@ -1,5 +1,5 @@
 """
-OpenClaw Factory — Real World Operating Mode (ADR-056).
+Galaxy Forge — Real World Operating Mode (ADR-056).
 
 Not a new engine, not a new AI agent, not a dashboard, not a redesign.
 The current infrastructure (orchestrator.orchestrator.run_cycle(),

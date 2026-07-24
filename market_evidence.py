@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Market Evidence Ledger (Market Learning Loop, Executive
+"""Galaxy Forge — Market Evidence Ledger (Market Learning Loop, Executive
 Directive, 2026-07-22).
 
 The permanent evidence store the Executive Quality Gate (ADR-087) reads

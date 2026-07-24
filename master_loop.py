@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Complete Autonomous Company Master Loop (2026-07-24).
+"""Galaxy Forge — Complete Autonomous Company Master Loop (2026-07-24).
 
 **Explicit directive: "Do NOT create another isolated engine... Never
 duplicate existing logic. Reuse every existing module."** This module

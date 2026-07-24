@@ -1,4 +1,4 @@
-# MASTER_CHARTER.md — OpenClaw Factory
+# MASTER_CHARTER.md — Galaxy Forge
 
 **Date:** 2026-07-17
 **Status:** Adopted (`ADR-065`).

@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Reality Scorecard v1
+"""Galaxy Forge — Reality Scorecard v1
 
 Four numbers the factory cannot fake.
 A green cell is not a green business.

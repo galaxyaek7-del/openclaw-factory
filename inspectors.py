@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory — Dual-Inspector Quality System
+Galaxy Forge — Dual-Inspector Quality System
 
 Two independent quality guardians that MUST both approve before any product
 publishes (CONSTITUTION.md §17: Dual Inspection). Zero tolerance: one bad

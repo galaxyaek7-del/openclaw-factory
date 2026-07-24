@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Global Product Portfolio Engine (2026-07-24).
+"""Galaxy Forge — Global Product Portfolio Engine (2026-07-24).
 
 Classifies every real opportunity into one of the 13 founder-named
 portfolio classes and one of 4 execution buckets (NOW/NEXT/LATER/

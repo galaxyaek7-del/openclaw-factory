@@ -1,5 +1,5 @@
 """
-OpenClaw Factory — Executive Intelligence Layer (ADR-052).
+Galaxy Forge — Executive Intelligence Layer (ADR-052).
 
 A read-only reporting layer on top of the already-built infrastructure
 (orchestrator/, decision_engine/, market_intelligence_core/, channels/).

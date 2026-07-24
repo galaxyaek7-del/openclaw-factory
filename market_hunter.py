@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory — Market Hunter (The Golden Hunter)
+Galaxy Forge — Market Hunter (The Golden Hunter)
 
 Per OPENCLAW_OS_CONSTITUTION.md's Golden Hunter Council: "The factory follows
 opportunities, not platforms. Discover high-demand markets, profitable

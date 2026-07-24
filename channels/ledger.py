@@ -1,4 +1,4 @@
-"""OpenClaw Factory — unified sales ledger writer (OCTOPUS_ARCHITECTURE.md §10.4).
+"""Galaxy Forge — unified sales ledger writer (OCTOPUS_ARCHITECTURE.md §10.4).
 
 Single append-only source of truth for distribution events, replacing the
 "published: true" claim that OCTOPUS_ARCHITECTURE.md §7 identified as a

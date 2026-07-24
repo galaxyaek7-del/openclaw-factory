@@ -1,4 +1,4 @@
-# PROJECT.md — OpenClaw Factory, Current State
+# PROJECT.md — Galaxy Forge, Current State
 
 **Last updated:** 2026-07-22 (Opportunity Intelligence Round 2). **This is a pointer document, not a duplicate** — it orients a new reader to where the real, living state actually lives, and states the current one-paragraph truth. Don't hand-maintain the details here; update the documents it points to instead.
 
@@ -18,7 +18,7 @@
 
 ## What this is
 
-OpenClaw Factory is an AI-first digital-product company: a real, automated pipeline (opportunity discovery → decision → product generation → QA → distribution → revenue tracking → notification) with a human founder overseeing it, not running it by hand. See `CLAUDE.md` for the technical stack and `OpenClaw_Brain/00_Governance/PRINCIPAL_ARCHITECT_CHARTER.md` for how engineering decisions get made here.
+Galaxy Forge is an AI-first digital-product company: a real, automated pipeline (opportunity discovery → decision → product generation → QA → distribution → revenue tracking → notification) with a human founder overseeing it, not running it by hand. See `CLAUDE.md` for the technical stack and `OpenClaw_Brain/00_Governance/PRINCIPAL_ARCHITECT_CHARTER.md` for how engineering decisions get made here.
 
 ## Current priorities (governing document)
 

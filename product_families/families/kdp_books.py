@@ -23,7 +23,7 @@ class KdpBooksFamily:
             audience=family_config.get("audience", "القارئ العام"),
             price=spec.get("price_hint") or 9.99,
             theme=family_config.get("theme", "blue"),
-            author=spec.get("author") or "OpenClaw Press",
+            author=spec.get("author") or "Galaxy Forge Press",
             output=family_config.get("output"),
         )
 

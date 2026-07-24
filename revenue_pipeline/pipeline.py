@@ -52,7 +52,7 @@ def _validate_quality(niche, production_output, production_plan):
         "cover_path": (production_output.get("cover") or {}).get("path"),
         "title": production_output.get("topic") or niche,
         "subtitle": "",
-        "author": "OpenClaw Factory",
+        "author": "Galaxy Forge",
         "niche": niche,
         "price": production_plan.get("recommended_price"),
         # ADR-077: the ECONOMICS platform (which real fee/royalty band to
@@ -195,7 +195,7 @@ def run_revenue_pipeline(execute=False, timeline_path=None, decisions_path=None,
 
 def render_ceo_revenue_report(pipeline_result):
     lines = []
-    lines.append("# تقرير الإيراد التنفيذي — OpenClaw Factory")
+    lines.append("# تقرير الإيراد التنفيذي — Galaxy Forge")
     lines.append(f"**التوليد:** {pipeline_result['generated_at']}")
     lines.append("")
 

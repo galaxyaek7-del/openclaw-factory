@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Weekly Public Report cron entrypoint (Build in
+"""Galaxy Forge — Weekly Public Report cron entrypoint (Build in
 Public, 2026-07-24).
 
 Real, thin CLI wrapper — reuses build_in_public.py directly, adds no

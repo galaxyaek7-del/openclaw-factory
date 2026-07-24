@@ -72,7 +72,7 @@ PROVIDER_CATALOG = [
      "task_types": ["general_purpose", "long_context_analysis", "multilingual"]},
     {"provider": "bytedance_doubao", "display_name": "Doubao (ByteDance)", "credential_env_var": "DOUBAO_API_KEY",
      "task_types": ["general_purpose", "multilingual", "multimodal"]},
-    # OpenClaw Strategic Principle (2026-07-23), "loyal to results, not
+    # Galaxy Forge Strategic Principle (2026-07-23), "loyal to results, not
     # models": 1 more real, named candidate explicitly requested.
     {"provider": "minimax", "display_name": "MiniMax", "credential_env_var": "MINIMAX_API_KEY",
      "task_types": ["general_purpose", "multilingual", "multimodal"]},

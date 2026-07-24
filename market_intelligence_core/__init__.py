@@ -1,5 +1,5 @@
 """
-OpenClaw Factory — Market Intelligence Core (ADR-049).
+Galaxy Forge — Market Intelligence Core (ADR-049).
 
 The permanent, canonical entrypoint for opportunity evaluation — see
 market_intelligence_core.core.evaluate_opportunity() for the single

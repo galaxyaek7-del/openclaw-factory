@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory — Payhip Publisher (ADR-025)
+Galaxy Forge — Payhip Publisher (ADR-025)
 Reads PAYHIP_API_KEY from .env. Never logs the key.
 
 IMPORTANT — verified via a real web search on 2026-07-12 against

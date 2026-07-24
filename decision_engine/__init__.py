@@ -1,5 +1,5 @@
 """
-OpenClaw Factory — Opportunity Decision Engine (ADR-050).
+Galaxy Forge — Opportunity Decision Engine (ADR-050).
 
 The permanent Decision Brain: consumes market_intelligence_core.
 evaluate_opportunity() as one input among the real signals this factory

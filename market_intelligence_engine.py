@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory — Global Market Intelligence Engine (ADR-043)
+Galaxy Forge — Global Market Intelligence Engine (ADR-043)
 
 ONE integrated decision system, not separate tools — per explicit
 instruction. Every "engine" below is a section of this one module,
@@ -193,7 +193,7 @@ def reformulate_pain_query(niche):
         return niche, "literal_fallback", "نيتش فارغ"
 
     try:
-        # OpenClaw Strategic Principle (2026-07-23), multi-model
+        # Galaxy Forge Strategic Principle (2026-07-23), multi-model
         # orchestration: routes through ai_capability.orchestrator.
         # generate() instead of calling book_generator.groq_chat()
         # directly -- the real provider is now chosen by

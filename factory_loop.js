@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * OpenClaw Factory — Self-Healing Loop (Task [8])
+ * Galaxy Forge — Self-Healing Loop (Task [8])
  *
  * Runs as its OWN process, separate from server.js, so a bug here can never
  * crash the dashboard (Constitution §7: Self-Healing / never terminate the
@@ -1210,7 +1210,7 @@ function checkNeedsAttention(tickActions, logPath = GOLDEN_HUNTER_EVENTS_FILE) {
 function sendDesktopNotification(title, message) {
   let scriptPath;
   try {
-    scriptPath = path.join(os.tmpdir(), `openclaw_notify_${process.pid}_${Date.now()}.ps1`);
+    scriptPath = path.join(os.tmpdir(), `galaxy_forge_notify_${process.pid}_${Date.now()}.ps1`);
     fs.writeFileSync(scriptPath, [
       'param([string]$title, [string]$message)',
       'Add-Type -AssemblyName System.Windows.Forms',
@@ -1857,7 +1857,7 @@ async function generateWeeklyReport(diagnosis, now, { pythonPath } = {}) {
 
   const dateStr = isoDate(now);
   const lines = [];
-  lines.push('# تقرير OpenClaw Factory الأسبوعي');
+  lines.push('# تقرير Galaxy Forge الأسبوعي');
   lines.push('');
   lines.push(`**تاريخ التقرير:** ${dateStr}`);
   lines.push(`**الفترة المشمولة:** آخر 7 أيام (منذ ${isoDate(new Date(sinceMs))})`);
@@ -2081,7 +2081,7 @@ async function runTick() {
   const pendingReviewResult = checkPendingReview();
   actions.push({ step: 'pending_review', ...pendingReviewResult });
   if (!reviewWasActive && fs.existsSync(NEEDS_REVIEW_FILE)) {
-    sendDesktopNotification('📝 OpenClaw needs review', 'New drafts are waiting in pending_review/queue/.');
+    sendDesktopNotification('📝 Galaxy Forge needs review', 'New drafts are waiting in pending_review/queue/.');
     notifyFactoryRecoveryEvent(buildPendingReviewNeededPayload(countPendingReviewDrafts())).catch(() => {});
   }
 
@@ -2099,7 +2099,7 @@ async function runTick() {
   if (attentionReasons.length) {
     writeNeedsAttention(attentionReasons);
     if (!attentionWasActive) {
-      sendDesktopNotification('⚠️ OpenClaw needs attention', attentionReasons[0]);
+      sendDesktopNotification('⚠️ Galaxy Forge needs attention', attentionReasons[0]);
       // ADR-085: "Errors" was ADR-073's third named-but-unwired Telegram
       // category (NEEDS_ATTENTION.md/sendDesktopNotification existed, but
       // neither reached Telegram). Direct send, only on the same

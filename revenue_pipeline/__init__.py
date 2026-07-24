@@ -1,5 +1,5 @@
 """
-OpenClaw Factory — Revenue Pipeline (Phase 6).
+Galaxy Forge — Revenue Pipeline (Phase 6).
 
 Not a new engine, not a new architecture: every step reuses an already-
 built, already-tested component. This package's only job is to wire them

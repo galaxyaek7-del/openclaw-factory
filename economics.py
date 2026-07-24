@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Economics Engine v1
+"""Galaxy Forge — Economics Engine v1
 
 Single source of truth for unit economics. Replaces the $30 price floor.
 Constitution §16 (Butter Principle) = a PROFIT floor, not a price floor.

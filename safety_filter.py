@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Niche Safety Filter v1
+"""Galaxy Forge — Niche Safety Filter v1
 
 Gates every niche BEFORE it reaches book_generator.py.
 

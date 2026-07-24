@@ -30,7 +30,7 @@ test('sendDesktopNotification: a message containing single quotes does not break
   // A real, realistic case: attentionReasons/messages elsewhere in this
   // file are free-form Arabic/English text that could legitimately
   // contain an apostrophe or quoted phrase.
-  const result = sendDesktopNotification("OpenClaw's Status", "It's flagged: 'opportunity_score_below_floor'");
+  const result = sendDesktopNotification("Galaxy Forge's Status", "It's flagged: 'opportunity_score_below_floor'");
   assert.equal(result, true);
 });
 
@@ -65,7 +65,7 @@ test('sendDesktopNotification: a real double-quote/shell-metacharacter injection
   const os = require('os');
   const path = require('path');
   const fs = require('fs');
-  const marker = path.join(os.tmpdir(), `openclaw_2_9_injection_marker_${Date.now()}_${Math.random().toString(36).slice(2)}.txt`);
+  const marker = path.join(os.tmpdir(), `galaxy_forge_2_9_injection_marker_${Date.now()}_${Math.random().toString(36).slice(2)}.txt`);
 
   try {
     const maliciousTitle = `x" ; Add-Content -Path "${marker}" -Value "INJECTED" ; "`;
@@ -88,8 +88,8 @@ test('sendDesktopNotification: a literal double-quote character alone is treated
 test('sendDesktopNotification: the real temp .ps1 script is cleaned up, never left behind', () => {
   const os = require('os');
   const fs = require('fs');
-  const before = new Set(fs.readdirSync(os.tmpdir()).filter(f => f.startsWith('openclaw_notify_')));
+  const before = new Set(fs.readdirSync(os.tmpdir()).filter(f => f.startsWith('galaxy_forge_notify_')));
   sendDesktopNotification('Cleanup check', 'x');
-  const after = fs.readdirSync(os.tmpdir()).filter(f => f.startsWith('openclaw_notify_') && !before.has(f));
+  const after = fs.readdirSync(os.tmpdir()).filter(f => f.startsWith('galaxy_forge_notify_') && !before.has(f));
   assert.deepEqual(after, [], 'the real temp script must be deleted after use, not orphaned');
 });

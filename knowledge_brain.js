@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * OpenClaw Knowledge Brain — search helper (CONSTITUTION.md §18, Knowledge
+ * Galaxy Forge Knowledge Brain — search helper (CONSTITUTION.md §18, Knowledge
  * Brain: "search the brain before building").
  *
  * Reads OpenClaw_Brain/ directly off disk — no index to keep in sync, no

@@ -54,7 +54,7 @@ def generate_report(decisions_path=None, outcomes_path=None, timeline_path=None,
 
 def render_markdown(report):
     lines = []
-    lines.append(f"# التقرير التنفيذي اليومي — OpenClaw Factory")
+    lines.append(f"# التقرير التنفيذي اليومي — Galaxy Forge")
     lines.append(f"**التوليد:** {report['generated_at']}")
     lines.append("")
 

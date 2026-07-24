@@ -1,4 +1,4 @@
-// OpenClaw Mission Control — service worker (Phase 8).
+// Galaxy Forge Mission Control — service worker (Phase 8).
 // Minimal, real PWA installability: cache-first for the app shell
 // (static files, so the page still opens offline/on a flaky connection),
 // network-only for every /api/ call (Mission Control's whole point is

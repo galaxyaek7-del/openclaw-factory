@@ -87,17 +87,17 @@ test('renderPrometheusText: includes required HELP/TYPE lines and is well-formed
   const lines = text.split('\n');
   assert.ok(text.endsWith('\n'), 'must end with a trailing newline (Prometheus exposition format requirement)');
 
-  const metricNames = ['openclaw_uptime_seconds', 'openclaw_http_requests_total', 'openclaw_http_errors_total',
-    'openclaw_http_request_duration_ms_sum', 'openclaw_http_request_duration_ms_count',
-    'openclaw_http_request_duration_ms_bucket', 'openclaw_service_health'];
+  const metricNames = ['galaxy_forge_uptime_seconds', 'galaxy_forge_http_requests_total', 'galaxy_forge_http_errors_total',
+    'galaxy_forge_http_request_duration_ms_sum', 'galaxy_forge_http_request_duration_ms_count',
+    'galaxy_forge_http_request_duration_ms_bucket', 'galaxy_forge_service_health'];
   for (const name of metricNames) {
     assert.ok(lines.some(l => l.startsWith(`# HELP ${name} `)), `missing # HELP for ${name}`);
     assert.ok(lines.some(l => l.startsWith(`# TYPE ${name} `)), `missing # TYPE for ${name}`);
   }
 
-  assert.ok(text.includes('openclaw_uptime_seconds 123.456'));
-  assert.ok(text.includes('openclaw_http_requests_total{method="GET",route="/company-health",status="200"} 1'));
-  assert.ok(text.includes('openclaw_service_health{service="company-health"} 1'));
+  assert.ok(text.includes('galaxy_forge_uptime_seconds 123.456'));
+  assert.ok(text.includes('galaxy_forge_http_requests_total{method="GET",route="/company-health",status="200"} 1'));
+  assert.ok(text.includes('galaxy_forge_service_health{service="company-health"} 1'));
 });
 
 test('renderPrometheusText: every non-comment, non-empty line matches the Prometheus exposition shape', () => {
@@ -116,5 +116,5 @@ test('renderPrometheusText: every non-comment, non-empty line matches the Promet
 test('renderPrometheusText: a failing service renders as 0, not fabricated as healthy', () => {
   const registry = metrics.createMetricsRegistry();
   const text = metrics.renderPrometheusText(registry, { serviceHealth: [{ name: 'broken-service', status: 'error' }] });
-  assert.ok(text.includes('openclaw_service_health{service="broken-service"} 0'));
+  assert.ok(text.includes('galaxy_forge_service_health{service="broken-service"} 0'));
 });

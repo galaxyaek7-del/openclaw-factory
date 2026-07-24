@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory — direct Telegram send (bypasses n8n entirely).
+Galaxy Forge — direct Telegram send (bypasses n8n entirely).
 
 Every existing Telegram notification in this factory (ADR-073's Golden
 Hunter Bridge message) goes browser->n8n->Telegram, and depends on n8n

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Commercial Intelligence Engine (Real World Commercial
+"""Galaxy Forge — Commercial Intelligence Engine (Real World Commercial
 Expansion, 2026-07-24).
 
 The founder-named signals (demand, willingness to pay, competition, price

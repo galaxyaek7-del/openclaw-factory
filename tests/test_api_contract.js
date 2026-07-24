@@ -121,8 +121,8 @@ test('GET /api/v1/metrics returns valid Prometheus exposition format', async () 
   assert.equal(res.status, 200);
   assert.match(res.headers.get('content-type'), /text\/plain/);
   const text = await res.text();
-  assert.match(text, /^# HELP openclaw_uptime_seconds/m);
-  assert.match(text, /^# TYPE openclaw_uptime_seconds gauge/m);
+  assert.match(text, /^# HELP galaxy_forge_uptime_seconds/m);
+  assert.match(text, /^# TYPE galaxy_forge_uptime_seconds gauge/m);
 });
 
 test('GET /api/v1/actions lists every registered action with a name, description, and kind', async () => {

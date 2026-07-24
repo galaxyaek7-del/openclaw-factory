@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Gumroad arm (OCTOPUS_ARCHITECTURE.md ADR-2).
+"""Galaxy Forge — Gumroad arm (OCTOPUS_ARCHITECTURE.md ADR-2).
 
 ARCHIVED (ADR-065/MASTER_CHARTER.md §2, 2026-07-17): the Strategic
 Production Priority Ladder pivot ranks Gumroad's one-time-download model

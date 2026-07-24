@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Executive Quality Gate (Executive Directive, 2026-07-22).
+"""Galaxy Forge — Executive Quality Gate (Executive Directive, 2026-07-22).
 
 A permanent core layer every opportunity, product, report, or
 recommendation must pass before entering production. Reuses every real

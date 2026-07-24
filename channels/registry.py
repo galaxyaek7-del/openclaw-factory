@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Arm registry (OCTOPUS_ARCHITECTURE.md §5, ADR-4).
+"""Galaxy Forge — Arm registry (OCTOPUS_ARCHITECTURE.md §5, ADR-4).
 
 Open/Closed: adding a platform means a new arm file that calls register()
 on itself at import time — this module and the future distributor never

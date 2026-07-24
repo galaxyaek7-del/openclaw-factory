@@ -29,7 +29,7 @@ from market_intelligence_core import http_client as MIC_HTTP_CLIENT
 
 HN_TOP_STORIES_URL = "https://hacker-news.firebaseio.com/v0/topstories.json"
 HN_ITEM_URL = "https://hacker-news.firebaseio.com/v0/item/{}.json"
-_USER_AGENT = "Mozilla/5.0 (OpenClaw-Factory-Pioneer)"
+_USER_AGENT = "Mozilla/5.0 (Galaxy-Forge-Pioneer)"
 
 # A real, honest keyword heuristic for "this looks like a real product/
 # business opportunity" rather than plain news — same "keyword

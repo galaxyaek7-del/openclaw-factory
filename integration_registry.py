@@ -15,7 +15,7 @@ registry is REFERENCED from it here, never re-derived independently --
     MiniMax). Perplexity is the one still new-to-any-registry provider
     (not yet in ai_capability's catalog), so it keeps its own real entry
     in NEW_VENDOR_CATALOG below. MiniMax moved OUT of NEW_VENDOR_CATALOG
-    (2026-07-23, OpenClaw Strategic Principle) the moment it was added to
+    (2026-07-23, Galaxy Forge Strategic Principle) the moment it was added to
     ai_capability's own PROVIDER_CATALOG — the exact real duplicate this
     module's own anti-duplication rule exists to prevent, caught by
     tests/test_integration_registry.py's own duplicate-name test before

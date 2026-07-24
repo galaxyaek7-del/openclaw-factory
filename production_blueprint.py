@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Global Product Factory (Production Blueprint,
+"""Galaxy Forge — Global Product Factory (Production Blueprint,
 2026-07-24).
 
 The 15 named blueprint components and 6 named production statuses,

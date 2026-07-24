@@ -43,7 +43,7 @@ def generate_strategic_report(decisions_path=None, outcomes_path=None, timeline_
 
 def render_markdown(report):
     lines = []
-    lines.append("# التقرير الاستراتيجي — OpenClaw Factory")
+    lines.append("# التقرير الاستراتيجي — Galaxy Forge")
     lines.append(f"**التوليد:** {report['generated_at']}")
     lines.append("")
 

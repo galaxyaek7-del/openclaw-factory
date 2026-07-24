@@ -1,5 +1,5 @@
 """
-OpenClaw Factory — Golden Opportunity Hunter (ADR-060).
+Galaxy Forge — Golden Opportunity Hunter (ADR-060).
 
 Not infrastructure. This phase's explicit instruction: stop building
 architecture, find real opportunities using what already exists. Every

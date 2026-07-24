@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Global Market Memory (Global Market Learning Engine,
+"""Galaxy Forge — Global Market Memory (Global Market Learning Engine,
 2026-07-23).
 
 Turns every real "closed_sale" event (market_evidence.py, ADR-088) into a

@@ -1,5 +1,5 @@
 {
-  "_comment": "Single source of truth for OpenClaw unit economics. Edit this, not code.",
+  "_comment": "Single source of truth for Galaxy Forge unit economics. Edit this, not code.",
   "version": 1,
   "min_net_profit_per_unit_usd": 6.00,
   "_min_net_comment": "Floor derived from KDP's best case: $9.99 ebook nets ~$6.89. Setting floor at $6.00 admits that price point while rejecting genuinely weak margins.",

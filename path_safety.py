@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory — shared safe-output-path confinement.
+Galaxy Forge — shared safe-output-path confinement.
 
 Standing-charter continuous-improvement follow-up (verified via the
 zero-assumption production audit, Section C): book_generator.py and

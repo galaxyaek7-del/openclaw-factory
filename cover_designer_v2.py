@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory — Cover Designer v2
+Galaxy Forge — Cover Designer v2
 
 Professional book cover generator using Pillow, following the "70/20/10"
 visual hierarchy rule (Constitution): title carries 70% of the visual weight

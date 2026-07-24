@@ -39,7 +39,7 @@ function run(cmd, args, opts = {}) {
   const resolvedRef = run('git', ['rev-parse', '--short', targetRef]).trim();
   console.log(`Simulating rollback to ${targetRef} (${resolvedRef})...`);
 
-  const worktreeDir = fs.mkdtempSync(path.join(os.tmpdir(), 'openclaw-rollback-'));
+  const worktreeDir = fs.mkdtempSync(path.join(os.tmpdir(), 'galaxy forge-rollback-'));
   // git worktree needs the parent dir to not already exist as a git-managed path
   fs.rmdirSync(worktreeDir);
 

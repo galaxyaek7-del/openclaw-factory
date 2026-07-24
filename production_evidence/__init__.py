@@ -1,5 +1,5 @@
 """
-OpenClaw Factory — Production Evidence Layer (ADR-055).
+Galaxy Forge — Production Evidence Layer (ADR-055).
 
 Not a new engine, not a new AI agent, not a dashboard, not a new scoring
 dimension. The objective is no longer more intelligence — it is a

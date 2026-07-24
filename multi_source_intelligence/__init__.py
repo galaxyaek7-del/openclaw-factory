@@ -1,5 +1,5 @@
 """
-OpenClaw Factory — Multi-Source Market Intelligence Layer (ADR-059).
+Galaxy Forge — Multi-Source Market Intelligence Layer (ADR-059).
 
 Not a new engine, not a new decision engine, no acceptance threshold
 touched, no fabricated confidence. The only objective: increase the

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory — Mission Control API bridge (Phase 8).
+Galaxy Forge — Mission Control API bridge (Phase 8).
 
 A thin CLI dispatcher, zero new business logic: every branch below calls
 an already-built, already-tested function from this session's packages
@@ -758,7 +758,7 @@ def _export_executive_report():
     """'Export executive report' Mission Control action — see
     _build_combined_executive_report_markdown() for what's actually
     combined."""
-    combined_md, _revenue = _build_combined_executive_report_markdown("OpenClaw Executive Report")
+    combined_md, _revenue = _build_combined_executive_report_markdown("Galaxy Forge Executive Report")
 
     reports_dir = _FACTORY_ROOT / "reports"
     reports_dir.mkdir(exist_ok=True)

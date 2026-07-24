@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Build in Public / Marketing Arm (2026-07-24).
+"""Galaxy Forge — Build in Public / Marketing Arm (2026-07-24).
 
-Founder decision (2026-07-24): "Build in Public" is OpenClaw's official
+Founder decision (2026-07-24): "Build in Public" is Galaxy Forge's official
 marketing strategy — directly closing the "Marketing readiness: NOT
 READY" finding from the same day's Production Readiness Certification.
 
@@ -86,7 +86,7 @@ def build_weekly_progress_report(days=7, decisions_path=None, ledger_path=None):
                 real_revenue_this_week += amount
 
     lines = [
-        f"# OpenClaw — Weekly Progress Report",
+        f"# Galaxy Forge — Weekly Progress Report",
         f"**Window:** last {days} days, ending {datetime.now(timezone.utc).strftime('%Y-%m-%d')}",
         "",
         "All numbers below are real counts from this factory's own real, timestamped records. "
@@ -260,8 +260,8 @@ def build_public_site_structure(output_dir=None):
     )
 
     readme = (
-        "# OpenClaw\n\n"
-        "OpenClaw is a solo-founder digital investment company, built and operated in the open. "
+        "# Galaxy Forge\n\n"
+        "Galaxy Forge is a solo-founder digital investment company, built and operated in the open. "
         "This repository documents the real engineering decisions, real products, and real "
         "commercial evidence behind it — including the parts that don't work yet.\n\n"
         "## Real products, real prices\n\n"
@@ -278,9 +278,9 @@ def build_public_site_structure(output_dir=None):
         f'<tr><td>{p["title"]}</td><td>${p["price"]:.2f}</td></tr>' for p in products
     )
     index_html = f"""<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>OpenClaw</title></head>
+<html lang="en"><head><meta charset="utf-8"><title>Galaxy Forge</title></head>
 <body>
-<h1>OpenClaw</h1>
+<h1>Galaxy Forge</h1>
 <p>A solo-founder digital investment company, built and operated in the open.</p>
 <h2>Products</h2>
 <table>{html_rows}</table>

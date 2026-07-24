@@ -111,7 +111,7 @@ def generate_daily_report(decisions_path=None, outcomes_path=None, timeline_path
 
 def render_markdown(report):
     lines = []
-    lines.append("# تقرير التحقُّق اليومي — OpenClaw Factory")
+    lines.append("# تقرير التحقُّق اليومي — Galaxy Forge")
     lines.append(f"**التوليد:** {report['generated_at']}")
     lines.append("")
     lines.append(f"- **فرص مُكتشَفة:** {report['opportunities_discovered']}")

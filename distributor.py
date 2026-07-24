@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — distribution backbone (OCTOPUS_ARCHITECTURE.md §1).
+"""Galaxy Forge — distribution backbone (OCTOPUS_ARCHITECTURE.md §1).
 
 Fans one Product out to every registered, supporting arm; isolates each
 arm's failure from the others (ADR-5); records every attempt — success or
@@ -141,7 +141,7 @@ def main():
         except Exception:
             pass
 
-    parser = argparse.ArgumentParser(description="Distribution backbone (OpenClaw Factory)")
+    parser = argparse.ArgumentParser(description="Distribution backbone (Galaxy Forge)")
     parser.add_argument("--json", action="store_true", help="Read a JSON job from stdin, print a JSON result to stdout")
     args = parser.parse_args()
 

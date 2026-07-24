@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Asset Generator registry (Universal Production
+"""Galaxy Forge — Asset Generator registry (Universal Production
 Engine §3/§6). Same shape as content_generation/registry.py and
 channels/registry.py: an implementation registers itself under a name
 at import time; callers only ever use get()/all(), never import a

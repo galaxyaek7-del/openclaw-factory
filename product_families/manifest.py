@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Product Manifest (Universal Production Engine
+"""Galaxy Forge — Product Manifest (Universal Production Engine
 Roadmap Step 3, 2026-07-18): the Product Definition Registry.
 
 A ProductManifest is the "configuration, not code" answer for a product

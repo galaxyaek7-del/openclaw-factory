@@ -1,5 +1,5 @@
 """
-OpenClaw Factory — Real Market Evidence Engine (ADR-058).
+Galaxy Forge — Real Market Evidence Engine (ADR-058).
 
 Requirement: replace ESTIMATED competition/profit with VERIFIABLE
 evidence, never fabricate, "Unknown" when data cannot be verified.

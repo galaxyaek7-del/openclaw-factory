@@ -31,7 +31,7 @@ class KnowledgeBasesFamily:
             chapters=chapters,
             price=spec.get("price_hint") or 97.0,
             theme=family_config.get("theme", "blue"),
-            author=spec.get("author") or "OpenClaw Press",
+            author=spec.get("author") or "Galaxy Forge Press",
             output=family_config.get("output"),
             product_type="premium",
         )

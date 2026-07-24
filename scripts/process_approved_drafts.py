@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — pending_review/approved/ processor (Human-in-the-Loop
+"""Galaxy Forge — pending_review/approved/ processor (Human-in-the-Loop
 review model, HIGH_VALUE_EXECUTION_PLAN.md).
 
 This is the "المصنع يكمل الفحص المزدوج + التوزيع + السجل بلا تدخل بشري

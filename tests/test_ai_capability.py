@@ -45,7 +45,7 @@ class TestRegistryListProviders(unittest.TestCase):
         # Technology Investment Council (2026-07-23): 2 more real, named
         # candidates (Kimi/Moonshot AI, Doubao/ByteDance) added per the
         # Technology-Agnostic Principle directive; MiniMax added the same
-        # day per the OpenClaw Strategic Principle follow-up directive.
+        # day per the Galaxy Forge Strategic Principle follow-up directive.
         providers = registry.list_providers(self.cost_log)
         names = {p["provider"] for p in providers}
         self.assertEqual(names, {

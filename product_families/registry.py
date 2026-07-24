@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Product Family registry (Packaging Architecture Plan §5).
+"""Galaxy Forge — Product Family registry (Packaging Architecture Plan §5).
 
 Same shape as channels/registry.py: an adapter registers itself under
 adapter.name at import time; nothing here imports a concrete family

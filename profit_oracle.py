@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory — Profit Oracle (The Commercial Brain)
+Galaxy Forge — Profit Oracle (The Commercial Brain)
 
 Before any product is made, this oracle scores its profit potential (0-100)
 across four weighted signal groups, per CONSTITUTION.md §16 (The Butter
@@ -1162,7 +1162,7 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None):
 
 
 # ── STRATEGIC INVESTMENT LAYER (2026-07-22) ──
-# "Evaluate every opportunity as if OpenClaw were acquiring a company, not
+# "Evaluate every opportunity as if Galaxy Forge were acquiring a company, not
 # building a product." A pure synthesis over an already-computed
 # ladder_opportunity_score() result -- never recomputes anything, never
 # gathers new evidence, never changes ladder_result['accepted']. Every

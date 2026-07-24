@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenClaw Factory — FACTORY_AUTO_PRODUCE Readiness Certificate (ADR-011)
+Galaxy Forge — FACTORY_AUTO_PRODUCE Readiness Certificate (ADR-011)
 
 Answers exactly one question, with evidence, not feeling:
   "Has the factory proven in dry_run that it's ready for FACTORY_AUTO_PRODUCE=true?"

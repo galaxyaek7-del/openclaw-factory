@@ -1,5 +1,5 @@
 """
-OpenClaw Factory — Production Factory (Phase 7).
+Galaxy Forge — Production Factory (Phase 7).
 
 Not new infrastructure: every section of a Production Dossier reuses an
 already-built, already-real computation. Nothing here scores an

@@ -1,4 +1,4 @@
-"""Factory Master Orchestrator (OpenClaw Architecture Review, 2026-07-22)
+"""Factory Master Orchestrator (Galaxy Forge Architecture Review, 2026-07-22)
 
 The single, real control point that composes every stage this factory
 already has, instead of requiring 3+ separate manual Mission Control

@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Commercial Execution Layer (Universal Production
+"""Galaxy Forge — Commercial Execution Layer (Universal Production
 Engine Roadmap Step 4, 2026-07-19): the unified Publish Pipeline that
 turns a generated, QA'd product into a real (or dry-run) marketplace
 listing, with one explicit, auditable record per publish.

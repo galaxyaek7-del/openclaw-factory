@@ -1,4 +1,4 @@
-"""OpenClaw Factory — common Product Specification (Packaging Architecture
+"""Galaxy Forge — common Product Specification (Packaging Architecture
 Plan §3).
 
 The single structured-JSON shape every family adapter's generate(spec)
@@ -12,7 +12,7 @@ proved: a plain-string component means "generate this"; a
 
 def build_product_specification(
     niche, product_family, production_id=None, ladder=None, title=None,
-    subtitle="", topic=None, author="OpenClaw Factory", language="ar",
+    subtitle="", topic=None, author="Galaxy Forge", language="ar",
     price_hint=None, economics_platform=None, recommended_platform=None,
     components=None, family_config=None,
 ):

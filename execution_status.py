@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Execution Status (Autonomous Global Execution Engine,
+"""Galaxy Forge — Execution Status (Autonomous Global Execution Engine,
 2026-07-23).
 
 The real, per-opportunity status view the founder named: current phase,

@@ -2,7 +2,7 @@
 
 ## Identity
 
-OpenClaw Factory is not a book factory. Per [CLAUDE.md](../../CLAUDE.md): it is a multi-product digital production platform, built to switch instantly between product tracks so the business survives any single platform or product line dying.
+Galaxy Forge is not a book factory. Per [CLAUDE.md](../../CLAUDE.md): it is a multi-product digital production platform, built to switch instantly between product tracks so the business survives any single platform or product line dying.
 
 ## The Six Planned Tracks
 

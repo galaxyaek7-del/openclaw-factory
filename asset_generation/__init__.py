@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Asset Generation (Universal Production Engine §3/§6,
+"""Galaxy Forge — Asset Generation (Universal Production Engine §3/§6,
 2026-07-18).
 
 Formalizes the swappable `AssetGenerator` interface: any implementation

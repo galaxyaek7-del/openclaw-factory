@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — sales polling (ADR-016).
+"""Galaxy Forge — sales polling (ADR-016).
 
 Calls each registered arm's get_sales() (if it has one) and records any
 sale not already present in data/sales_ledger.jsonl via
@@ -104,7 +104,7 @@ def main():
         except Exception:
             pass
 
-    parser = argparse.ArgumentParser(description="Sales poller (OpenClaw Factory, ADR-016)")
+    parser = argparse.ArgumentParser(description="Sales poller (Galaxy Forge, ADR-016)")
     parser.add_argument("--json", action="store_true", help="Read a JSON job from stdin, print a JSON result to stdout")
     args = parser.parse_args()
 

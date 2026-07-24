@@ -1,4 +1,4 @@
-"""OpenClaw Factory — Seed Quality Auditor
+"""Galaxy Forge — Seed Quality Auditor
 
 Reads a seed DOCX, extracts one chapter, sends it to Groq for
 honest critique. Writes a markdown report. Zero factory impact.
@@ -139,7 +139,7 @@ def call_groq(prompt, model="llama-3.1-8b-instant", max_tokens=2048, timeout=60)
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {key}",
-        "User-Agent": "Mozilla/5.0 (OpenClaw-Factory-SeedAuditor)",
+        "User-Agent": "Mozilla/5.0 (Galaxy-Forge-SeedAuditor)",
         "Accept": "application/json",
     }
 

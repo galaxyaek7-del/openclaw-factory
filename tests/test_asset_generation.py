@@ -92,7 +92,7 @@ class TestAiBookAssetBuilder(_CleanupPdfMixin, unittest.TestCase):
             registry.get("ai_book").build({"title": "T"})
         mocked.assert_called_once_with(
             title="T", topic="", chapters=8, audience="القارئ العام",
-            price=9.99, theme="blue", author="OpenClaw Press", output=None,
+            price=9.99, theme="blue", author="Galaxy Forge Press", output=None,
         )
 
 

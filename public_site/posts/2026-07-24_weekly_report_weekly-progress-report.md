@@ -1,6 +1,6 @@
-# OpenClaw — Weekly Progress Report (2026-07-24)
+# Galaxy Forge — Weekly Progress Report (2026-07-24)
 
-# OpenClaw — Weekly Progress Report
+# Galaxy Forge — Weekly Progress Report
 **Window:** last 7 days, ending 2026-07-24
 
 All numbers below are real counts from this factory's own real, timestamped records. No projections, no rounding up, no marketing language.

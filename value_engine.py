@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Value Engine (2026-07-23).
+"""Galaxy Forge — Value Engine (2026-07-23).
 
 "Does this increase the long-term value of the company?" A permanent
 synthesis layer that evaluates every real ACCEPTED opportunity against
@@ -625,7 +625,7 @@ def emit(obj):
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description="OpenClaw Value Engine")
+    parser = argparse.ArgumentParser(description="Galaxy Forge Value Engine")
     parser.add_argument("--report", action="store_true", help="Full ranked portfolio report")
     parser.add_argument("--niche", metavar="NICHE", help="Single-opportunity value profile")
     args = parser.parse_args()

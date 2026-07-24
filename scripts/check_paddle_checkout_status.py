@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""OpenClaw Factory — Paddle checkout readiness check (ADR-085/ADR-086).
+"""Galaxy Forge — Paddle checkout readiness check (ADR-085/ADR-086).
 
 ADR-074 created the first real Paddle product+price (the $388 techdoc,
 "AI-Powered Compliance Automation System for Accounting Firms") and found

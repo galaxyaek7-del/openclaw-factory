@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * OpenClaw Factory — Self-Awareness Engine
+ * Galaxy Forge — Self-Awareness Engine
  *
  * Per OPENCLAW_OS_CONSTITUTION.md's North Star ("the factory must become
  * smarter every single day") and CONSTITUTION.md §20 (Self-Awareness): the

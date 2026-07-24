@@ -1,6 +1,6 @@
 # Building a Global Market Learning Engine (Market Memory + Commercial Evolution)
 
-We've started building a system that learns from every sale, failure, visitor, refund, and opportunity in OpenClaw. The system will capture 17 commercial dimensions for each event, track 10 minimum regions and a China-specific intelligence domain, produce a monthly Commercial Evolution report, and generate autonomous recommendations.
+We've started building a system that learns from every sale, failure, visitor, refund, and opportunity in Galaxy Forge. The system will capture 17 commercial dimensions for each event, track 10 minimum regions and a China-specific intelligence domain, produce a monthly Commercial Evolution report, and generate autonomous recommendations.
 
 Our approach is guided by the founder's explicit constraint: "No synthetic data. No assumptions. Only verified commercial evidence."
 

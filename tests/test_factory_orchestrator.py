@@ -1,4 +1,4 @@
-"""Tests for factory_orchestrator.py (OpenClaw Architecture Review,
+"""Tests for factory_orchestrator.py (Galaxy Forge Architecture Review,
 2026-07-22): the single real control point composing Executive Quality
 Gate + AI Executive Board + Revenue Pipeline production.
 
