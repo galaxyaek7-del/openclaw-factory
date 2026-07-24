@@ -1284,6 +1284,29 @@ def _get_portfolio_report():
     return portfolio_engine.build_portfolio_report()
 
 
+def _get_production_blueprint():
+    """Global Product Factory (2026-07-24): the real, unified 15-
+    component Production Blueprint for one niche. Honest null when
+    this niche has no real decision on record. Reads its payload from
+    sys.argv[2]:
+    `python mission_control_api.py get_production_blueprint '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+    import production_blueprint
+    return {"production_blueprint": production_blueprint.build_production_blueprint(niche)}
+
+
+def _get_production_missions_board():
+    """Global Product Factory (2026-07-24): Mission Control's real,
+    continuous view — every real ACCEPTED opportunity bucketed under
+    the 6 named production states (READY TO BUILD, BUILDING, QUALITY
+    REVIEW, READY TO SELL, LIVE, LEARNING). No payload required."""
+    import production_blueprint
+    return production_blueprint.build_production_missions_board()
+
+
 def _get_global_execution_view():
     """Autonomous Global Execution Engine (2026-07-23): the single real
     operational window the founder named, assembled entirely from
@@ -1459,6 +1482,8 @@ _ENDPOINTS = {
     "get_investment_pipeline": _get_investment_pipeline,
     "get_portfolio_entry": _get_portfolio_entry,
     "get_portfolio_report": _get_portfolio_report,
+    "get_production_blueprint": _get_production_blueprint,
+    "get_production_missions_board": _get_production_missions_board,
     "run_master_cycle": _run_master_cycle,
 }
 

@@ -1531,6 +1531,30 @@ const ACTION_REGISTRY = [
     asyncRunner: () => runPythonActionAsync('get-portfolio-report', 'get_portfolio_report', []),
   },
   {
+    // Global Product Factory (2026-07-24) -- real 15-component
+    // Production Blueprint for one niche.
+    name: 'get-production-blueprint',
+    description: 'Read-only: the real 15-component Production Blueprint for one niche (spec, architecture, persona, pain map, competitive analysis, UVP, pricing, brand position, checklist, required AI models, human review points, distribution, marketing assets, sales funnel, revenue projection) plus its real production pipeline and status. Null when the niche has no real decision on record.',
+    reused: 'production_blueprint.py::build_production_blueprint()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('get-production-blueprint', 'get_production_blueprint', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    // Global Product Factory (2026-07-24) -- Mission Control's real
+    // continuous production-status board.
+    name: 'get-production-missions-board',
+    description: 'Read-only: every real ACCEPTED opportunity bucketed under the 6 named production states (READY TO BUILD, BUILDING, QUALITY REVIEW, READY TO SELL, LIVE, LEARNING) -- reused from value_engine.classify_lifecycle_stage() and inspectors.py\'s real quarantine record, never a new state machine.',
+    reused: 'production_blueprint.py::build_production_missions_board()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: () => runPythonActionAsync('get-production-missions-board', 'get_production_missions_board', []),
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +

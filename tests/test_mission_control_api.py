@@ -366,6 +366,28 @@ class TestGlobalMarketLearningEngineActions(unittest.TestCase):
         mock_report.assert_called_once_with()
         self.assertEqual(result["total_real_opportunities"], 0)
 
+    def test_production_factory_actions_are_registered(self):
+        for name in ("get_production_blueprint", "get_production_missions_board"):
+            self.assertIn(name, mission_control_api._ENDPOINTS)
+
+    def test_production_blueprint_requires_a_niche(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_production_blueprint", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._get_production_blueprint()
+
+    def test_production_blueprint_delegates_to_the_real_module(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_production_blueprint", json.dumps({"niche": "test niche"})]):
+            with patch("production_blueprint.build_production_blueprint", return_value={"niche": "test niche"}) as mock_bp:
+                result = mission_control_api._get_production_blueprint()
+        mock_bp.assert_called_once_with("test niche")
+        self.assertEqual(result["production_blueprint"]["niche"], "test niche")
+
+    def test_production_missions_board_delegates_to_the_real_module(self):
+        with patch("production_blueprint.build_production_missions_board", return_value={"counts": {}}) as mock_board:
+            result = mission_control_api._get_production_missions_board()
+        mock_board.assert_called_once_with()
+        self.assertEqual(result["counts"], {})
+
     def test_commercial_intelligence_report_requires_a_niche(self):
         with patch.object(sys, "argv", ["mission_control_api.py", "get_commercial_intelligence_report", json.dumps({})]):
             with self.assertRaises(ValueError):
