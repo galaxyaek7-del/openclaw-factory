@@ -26,6 +26,7 @@ if str(_FACTORY_ROOT) not in sys.path:
 import book_generator as bg
 import dossier_bundle.build_bundle as bb
 import factory_state
+import market_evidence as me
 import market_hunter as mh
 import profit_oracle as po
 from decision_engine import ranking, store
@@ -62,6 +63,7 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
     def setUp(self):
         self.decisions_path = _temp_path()
         self.opps_path = _temp_path(suffix=".md")
+        self.evidence_path = _temp_path()
         # Patched in, not permanently added to the real module list: this
         # class's own tests need SYNTHETIC_NICHE to be a real seed-list
         # member (test_stage_1 below, and hunt_market() in test_stage_2),
@@ -73,8 +75,27 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         seed_patcher.start()
         self.addCleanup(seed_patcher.stop)
 
+        # Proof of Payment doctrine (ADR-121, 2026-07-24): ladder_
+        # opportunity_score() now hard-rejects any niche with zero real,
+        # cited payment evidence. Two real-shaped citations, in this
+        # test's own isolated ledger, clear both the evidence gate and
+        # the score floor for this fixture niche+ladder (one alone scores
+        # below the floor) -- these tests prove pipeline wiring/agreement,
+        # not the evidence gate itself (that's
+        # tests/test_ladder_opportunity_score.py's job).
+        me.record_evidence(
+            SYNTHETIC_NICHE, "paid_job_posting",
+            payload={"source_url": "https://example.com/job/fixture-1", "quote": "test-fixture citation, isolated ledger only"},
+            evidence_path=self.evidence_path,
+        )
+        me.record_evidence(
+            SYNTHETIC_NICHE, "freelancer_agency_pricing",
+            payload={"source_url": "https://example.com/job/fixture-2", "quote": "test-fixture citation, isolated ledger only"},
+            evidence_path=self.evidence_path,
+        )
+
     def tearDown(self):
-        for p in (self.decisions_path, self.opps_path):
+        for p in (self.decisions_path, self.opps_path, self.evidence_path):
             if os.path.exists(p):
                 os.remove(p)
 
@@ -87,7 +108,7 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         self.assertEqual(len(seeded), 1, "the synthetic fixture niche must be seeded")
         self.assertEqual(seeded[0]["ladder"], SYNTHETIC_LADDER)
 
-        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER)
+        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path)
         self.assertTrue(direct["accepted"])
         self.stage1_score = direct["ladder_score"]
         self.stage1_price = direct["price"]
@@ -101,7 +122,7 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
             lambda niche, ladder, scored, decisions_path=None: record_ladder_decision(
                 niche, ladder, scored, decisions_path=self.decisions_path),
         ), patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
-            mh.hunt_market(limit=len(mh.SEED_CATEGORIES), write_opportunities=False)
+            mh.hunt_market(limit=len(mh.SEED_CATEGORIES), write_opportunities=False, evidence_path=self.evidence_path)
 
         history = store.find_decisions_by_niche(SYNTHETIC_NICHE, path=self.decisions_path)
         self.assertEqual(len(history), 1)
@@ -114,7 +135,7 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         # ladder_opportunity_score() is deterministic, so this is a real
         # equality check, not a tautology: it proves market_hunter recorded
         # what it actually computed, not a stale or re-derived number.
-        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER)
+        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path)
         self.assertEqual(recorded["opportunity_score"], direct["ladder_score"])
         self.assertEqual(recorded["evaluation_snapshot"]["price"], direct["price"])
 
@@ -126,13 +147,14 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         mission_control_api.py calls for the Decision Queue — proving
         Mission Control would show this real opportunity, not a stale one."""
         record_ladder_decision(
-            SYNTHETIC_NICHE, SYNTHETIC_LADDER, po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER),
+            SYNTHETIC_NICHE, SYNTHETIC_LADDER,
+            po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path),
             decisions_path=self.decisions_path,
         )
         queue = ranking.rank_queue(decisions_path=self.decisions_path, outcomes_path=_temp_path())
         matches = [d for d in queue if d["niche"] == SYNTHETIC_NICHE]
         self.assertEqual(len(matches), 1)
-        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER)
+        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path)
         self.assertEqual(matches[0]["opportunity_score"], direct["ladder_score"], "Mission Control's queue must show the same real score, not a different one")
 
     def test_stage_4_factory_loop_gate_agrees_with_the_recorded_decision(self):
@@ -143,7 +165,7 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         mocking) that it returns the identical score/accepted/price."""
         script = f"""
         const fl = require({json.dumps(str(_FACTORY_ROOT / 'factory_loop.js'))});
-        fl.getLadderOpportunityScore({json.dumps(SYNTHETIC_NICHE)}, {json.dumps(SYNTHETIC_LADDER)}).then(r => {{
+        fl.getLadderOpportunityScore({json.dumps(SYNTHETIC_NICHE)}, {json.dumps(SYNTHETIC_LADDER)}, {{ evidencePath: {json.dumps(self.evidence_path)} }}).then(r => {{
           process.stdout.write(JSON.stringify(r));
         }});
         """
@@ -153,7 +175,7 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         self.assertTrue(gate_result["ok"])
         self.assertTrue(gate_result["accepted"])
 
-        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER)
+        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path)
         self.assertEqual(gate_result["score"], direct["ladder_score"], "the automatic tick's gate must agree exactly with the single source of truth")
         self.assertEqual(gate_result["price"], direct["price"])
 
@@ -163,7 +185,7 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         (briefFromGoldenOpportunity) both derive from the SAME real
         opportunity object — no separate re-scoring, no separate price
         source, verified via real subprocess calls."""
-        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER)
+        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path)
         opportunity = {
             "niche": SYNTHETIC_NICHE, "profit_score": 69, "verdict": "GOOD",
             "ladder": SYNTHETIC_LADDER, "ladder_score": direct["ladder_score"],
@@ -219,7 +241,22 @@ class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
         # for the duration of this test instead.
         self.changelog_path = _temp_path(suffix=".jsonl")
         self.state_path = _temp_path(suffix=".json")
+        self.evidence_path = _temp_path()
         self._generated_files = []
+
+        # Proof of Payment doctrine (ADR-121, 2026-07-24): see the sibling
+        # class's setUp above for the full reasoning -- same two real-shaped
+        # citations, this class's own isolated ledger.
+        me.record_evidence(
+            SYNTHETIC_NICHE, "paid_job_posting",
+            payload={"source_url": "https://example.com/job/fixture-1", "quote": "test-fixture citation, isolated ledger only"},
+            evidence_path=self.evidence_path,
+        )
+        me.record_evidence(
+            SYNTHETIC_NICHE, "freelancer_agency_pricing",
+            payload={"source_url": "https://example.com/job/fixture-2", "quote": "test-fixture citation, isolated ledger only"},
+            evidence_path=self.evidence_path,
+        )
 
         from channels import registry as channel_registry
         from channels.paddle_arm import PaddleArm
@@ -227,7 +264,7 @@ class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
 
     def tearDown(self):
         for p in (self.decisions_path, self.ledger_path, self.finance_path,
-                   self.changelog_path, self.state_path, *self._generated_files):
+                   self.changelog_path, self.state_path, self.evidence_path, *self._generated_files):
             if p and os.path.exists(p):
                 os.remove(p)
 
@@ -242,7 +279,7 @@ class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
         # the exact real scoring/recording path stages 1-2 above already
         # proved live (profit_oracle.ladder_opportunity_score() + the
         # ADR-076 single-source-of-truth recorder).
-        scored = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER)
+        scored = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path)
         self.assertTrue(scored["accepted"])
         record_ladder_decision(SYNTHETIC_NICHE, SYNTHETIC_LADDER, scored, decisions_path=self.decisions_path)
         decision = store.find_decisions_by_niche(SYNTHETIC_NICHE, path=self.decisions_path)[0]

@@ -33,6 +33,7 @@ if str(_FACTORY_ROOT) not in sys.path:
 import book_generator as bg
 import dossier_bundle.build_bundle as bb
 import factory_state
+import market_evidence as me
 import profit_oracle as po
 from decision_engine import store
 from decision_engine.engine import record_ladder_decision
@@ -75,9 +76,27 @@ class TestRunMasterCycleExecuteTrueDrivesRealProductionAndPublishing(unittest.Te
         self.ledger_path = _temp_path()
         self.alerts_path = _temp_path()
         self.reopen_log_path = _temp_path()
+        self.evidence_path = _temp_path()
         self._generated_files = []
 
-        scored = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER)
+        # Proof of Payment doctrine (ADR-121, 2026-07-24): ladder_
+        # opportunity_score() now hard-rejects any niche with zero real,
+        # cited payment evidence. Two real-shaped citations, in this
+        # test's own isolated ledger, clear both the evidence gate and
+        # the score floor for this fixture niche+ladder (one alone scores
+        # below the floor here) -- this test's purpose is proving
+        # run_master_cycle's wiring, not the evidence gate itself.
+        me.record_evidence(
+            SYNTHETIC_NICHE, "paid_job_posting",
+            payload={"source_url": "https://example.com/job/fixture-1", "quote": "test-fixture citation, isolated ledger only"},
+            evidence_path=self.evidence_path,
+        )
+        me.record_evidence(
+            SYNTHETIC_NICHE, "freelancer_agency_pricing",
+            payload={"source_url": "https://example.com/job/fixture-2", "quote": "test-fixture citation, isolated ledger only"},
+            evidence_path=self.evidence_path,
+        )
+        scored = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path)
         self.assertTrue(scored["accepted"], "fixture niche must still be a real ACCEPT")
         record_ladder_decision(SYNTHETIC_NICHE, SYNTHETIC_LADDER, scored, decisions_path=self.decisions_path)
 
@@ -88,7 +107,8 @@ class TestRunMasterCycleExecuteTrueDrivesRealProductionAndPublishing(unittest.Te
     def tearDown(self):
         for p in (self.decisions_path, self.board_path, self.timeline_path, self.outcomes_path,
                   self.state_path, self.changelog_path, self.competitor_db_file, self.ledger_path,
-                  self.competitor_history_file, self.alerts_path, self.reopen_log_path, *self._generated_files):
+                  self.competitor_history_file, self.alerts_path, self.reopen_log_path, self.evidence_path,
+                  *self._generated_files):
             if p and os.path.exists(p):
                 os.remove(p)
 

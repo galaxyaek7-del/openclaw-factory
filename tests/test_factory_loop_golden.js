@@ -127,10 +127,28 @@ async function main() {
   // ── getLadderOpportunityScore (ADR-070) — real subprocess, real profit_oracle.py ──
 
   await test('getLadderOpportunityScore: real call on a real accepted AI SaaS niche', async () => {
-    const r = await fl.getLadderOpportunityScore(
-      'AI-powered compliance automation subscription system for accounting firms',
-      'ai_saas'
-    );
+    // Proof of Payment doctrine (ADR-121, 2026-07-24): ladder_opportunity_
+    // score() now hard-rejects any niche with zero real, cited payment
+    // evidence. Two real-shaped citations, written directly in
+    // market_evidence.py's own real JSONL schema to an isolated fixture
+    // file, clear both the evidence gate and the score floor for this
+    // niche+ladder (one alone scores below the floor) — this test's
+    // purpose is proving the JS<->Python bridge agrees with the real
+    // scoring function, not re-litigating the evidence gate itself (that's
+    // tests/test_ladder_opportunity_score.py's job).
+    const niche = 'AI-powered compliance automation subscription system for accounting firms';
+    const evidencePath = path.join(tmpDir, 'evidence_ai_saas.jsonl');
+    const evidenceLine = (eventType, i) => JSON.stringify({
+      niche, event_type: eventType,
+      payload: { source_url: `https://example.com/fixture-${i}`, quote: 'test-fixture citation, isolated ledger only' },
+      source: 'manual', recorded_at: new Date().toISOString(), note: null,
+    });
+    fs.writeFileSync(evidencePath, [
+      evidenceLine('paid_job_posting', 1),
+      evidenceLine('freelancer_agency_pricing', 2),
+    ].join('\n') + '\n');
+
+    const r = await fl.getLadderOpportunityScore(niche, 'ai_saas', { evidencePath });
     assert.strictEqual(r.ok, true);
     assert.strictEqual(r.accepted, true);
     assert.ok(r.score > 0);

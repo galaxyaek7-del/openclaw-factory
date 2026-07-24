@@ -209,6 +209,80 @@ class TestCompetitorEvidence(unittest.TestCase):
         self.assertEqual(len(me.COMPETITOR_EVENT_TYPES), 9)
 
 
+class TestPaymentEvidence(unittest.TestCase):
+    """Proof of Payment doctrine (ADR-121, 2026-07-24): the 4 payment-
+    evidence event types are the second real exception to this module's
+    "never reject" convention -- same reasoning as TestCompetitorEvidence
+    above (a claim this factory cannot independently verify requires a
+    real, checkable citation), except source_url + quote (not competitor
+    name) are what's required."""
+
+    def setUp(self):
+        self.path = _temp_path()
+
+    def tearDown(self):
+        if os.path.exists(self.path):
+            os.remove(self.path)
+
+    def test_payment_evidence_without_source_url_or_quote_is_rejected(self):
+        with self.assertRaises(ValueError):
+            me.record_evidence("n", "complaining_review", {}, evidence_path=self.path)
+
+    def test_payment_evidence_missing_only_quote_is_rejected(self):
+        with self.assertRaises(ValueError):
+            me.record_evidence("n", "paid_job_posting", {"source_url": "https://example.com"}, evidence_path=self.path)
+
+    def test_payment_evidence_missing_only_source_url_is_rejected(self):
+        with self.assertRaises(ValueError):
+            me.record_evidence("n", "freelancer_agency_pricing", {"quote": "$50/hr"}, evidence_path=self.path)
+
+    def test_fully_cited_payment_evidence_is_recorded(self):
+        event = me.record_evidence(
+            "n", "subscription_escape",
+            {"source_url": "https://example.com/complaint", "quote": "cancelling because it's too expensive"},
+            evidence_path=self.path,
+        )
+        self.assertIsNone(event["note"])
+        events = me.read_evidence("n", "subscription_escape", evidence_path=self.path)
+        self.assertEqual(len(events), 1)
+
+    def test_pre_existing_event_types_are_completely_unaffected(self):
+        event = me.record_evidence("n", "demo_request", {}, evidence_path=self.path)
+        self.assertIsNone(event["note"])
+
+    def test_get_payment_evidence_filters_to_only_the_4_payment_types(self):
+        me.record_evidence("n", "demo_request", {}, evidence_path=self.path)
+        me.record_evidence(
+            "n", "complaining_review",
+            {"source_url": "https://g2.com/review/123", "quote": "hate paying for this every month"},
+            evidence_path=self.path,
+        )
+        events = me.get_payment_evidence("n", evidence_path=self.path)
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0]["event_type"], "complaining_review")
+
+    def test_summarize_niche_surfaces_payment_evidence_additively(self):
+        me.record_evidence("n", "demo_request", {}, evidence_path=self.path)
+        me.record_evidence(
+            "n", "paid_job_posting",
+            {"source_url": "https://example.com/job/456", "quote": "hiring for manual invoice entry, $20/hr"},
+            evidence_path=self.path,
+        )
+        summary = me.summarize_niche("n", evidence_path=self.path)
+        for key in ("willingness_to_pay", "customer_acquisition", "retention",
+                    "customer_objections", "pricing_objections", "feature_requests",
+                    "lost_opportunities", "competitor_landscape_events"):
+            self.assertIn(key, summary)
+        self.assertIn("payment_evidence", summary)
+        self.assertEqual(len(summary["payment_evidence"]), 1)
+        self.assertEqual(summary["payment_evidence"][0]["event_type"], "paid_job_posting")
+
+    def test_all_4_payment_types_are_in_event_types(self):
+        for event_type in me.PAYMENT_EVIDENCE_EVENT_TYPES:
+            self.assertIn(event_type, me.EVENT_TYPES)
+        self.assertEqual(len(me.PAYMENT_EVIDENCE_EVENT_TYPES), 4)
+
+
 class TestSummarizeNiche(unittest.TestCase):
     def setUp(self):
         self.path = _temp_path()

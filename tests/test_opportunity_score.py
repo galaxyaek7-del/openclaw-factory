@@ -482,14 +482,26 @@ class TestAutomationPotentialByLadder(unittest.TestCase):
         self.assertEqual(result["components"]["automation_potential"], 100)
 
     def test_never_changes_ladder_score_formula_weights(self):
-        """The core weighted formula must stay exactly as ADR-065 defined
-        it -- automation_potential is additive context, not a 6th weighted
-        component silently added to the gate."""
-        with_it = po.ladder_opportunity_score("a formula stability test niche", ladder="automation_tools")
-        # ladder_score is computed from exactly 5 weighted components; confirm the value is unchanged from before this dimension existed by recomputing the same formula manually.
-        c = with_it["components"]
-        expected = round(min(100.0, 0.15 * c["market_demand"] + 0.15 * c["competition_favorability"] + 0.15 * c["profit_potential"] + 0.25 * c["recurring_revenue_potential"] + 0.30 * c["reusability"]), 1)
-        self.assertEqual(with_it["ladder_score"], expected)
+        """The core weighted formula must stay exactly as ADR-121 (Proof
+        of Payment doctrine, 2026-07-24) reweighted it -- automation_
+        potential is additive context, not a 7th weighted component
+        silently added to the gate."""
+        import tempfile, os
+        fd, evidence_path = tempfile.mkstemp(suffix=".jsonl")
+        os.close(fd)
+        os.remove(evidence_path)
+        try:
+            with_it = po.ladder_opportunity_score("a formula stability test niche", ladder="automation_tools", evidence_path=evidence_path)
+            # ladder_score is computed from exactly 6 weighted components; confirm the value matches the documented weights by recomputing the same formula manually.
+            c = with_it["components"]
+            expected = round(min(100.0,
+                0.35 * c["payment_evidence_score"] + 0.10 * c["market_demand"] + 0.10 * c["competition_favorability"] +
+                0.10 * c["profit_potential"] + 0.15 * c["recurring_revenue_potential"] + 0.20 * c["reusability"]
+            ), 1)
+            self.assertEqual(with_it["ladder_score"], expected)
+        finally:
+            if os.path.exists(evidence_path):
+                os.remove(evidence_path)
 
 
 class TestStrategicInvestmentLayer(unittest.TestCase):

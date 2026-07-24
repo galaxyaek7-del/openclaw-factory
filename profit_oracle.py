@@ -1086,15 +1086,45 @@ MIN_LADDER_PROFIT_FLOOR = 97
 LADDER_MIN_SCORE = 65  # same bar as MIN_OPPORTUNITY_SCORE, applied to this new formula
 
 
-def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None):
-    """Ladder-aware composite score (ADR-065). Reuses score_opportunity()'s
-    real demand/competition/margin components unchanged and adds two new
-    ladder-derived factors, weighted highest per the mission's instruction
-    ('recurring revenue + reusability weighted highest'). Also enforces a
-    hard $97 profit floor via the ladder's real butter_price() band —
-    independent of the weighted score, so a well-scoring but cheaply-priced
-    niche still can't pass. Unknown ladder values fall back to "kdp_books"
-    (the strictest band), never silently accepted."""
+def _score_payment_evidence(niche, evidence_path=None):
+    """Proof of Payment doctrine (ADR-121, 2026-07-24): real, human-
+    recorded evidence that someone is already paying money to solve
+    this exact problem (market_evidence.py's PAYMENT_EVIDENCE_EVENT_
+    TYPES) — never inferred, never estimated from keywords. More
+    independent real citations raise confidence; the score itself is
+    almost beside the point next to the hard gate in
+    ladder_opportunity_score() below, which rejects as UNPROVEN
+    regardless of this score when the evidence list is empty."""
+    import market_evidence as me
+    evidence = me.get_payment_evidence(niche, evidence_path=evidence_path)
+    n = len(evidence)
+    if n >= 3:
+        score = 100.0
+    elif n == 2:
+        score = 70.0
+    elif n == 1:
+        score = 40.0
+    else:
+        score = 0.0
+    return score, evidence
+
+
+def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, evidence_path=None):
+    """Ladder-aware composite score (ADR-065; reweighted under the Proof
+    of Payment doctrine, ADR-121, 2026-07-24). Reuses score_opportunity()'s
+    real demand/competition/margin components unchanged. Real payment
+    evidence (market_evidence.py, human-recorded, source-cited) is now
+    the single highest-weighted factor — founder directive: weight
+    evidence of EXISTING SPEND above inferred demand. Unknown ladder
+    values fall back to "kdp_books" (the strictest band), never silently
+    accepted.
+
+    Three independent hard gates, checked in this order, ANY of which
+    rejects regardless of the weighted score: (1) real payment evidence
+    must exist at all — an opportunity with zero real citations is
+    UNPROVEN, never accepted purely on desk-researched/keyword-inferred
+    signals, no matter how high those score; (2) the ladder's real
+    butter_price() floor ($97); (3) the weighted ladder_score floor."""
     ladder = ladder if ladder in RECURRING_REVENUE_BY_LADDER else "kdp_books"
     result = score_opportunity(niche, external_signal=external_signal)
     scores = result["scores"]
@@ -1105,28 +1135,39 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None):
     recurring_revenue_potential = RECURRING_REVENUE_BY_LADDER[ladder]
     reusability = REUSABILITY_BY_LADDER[ladder]
     automation_potential = AUTOMATION_POTENTIAL_BY_LADDER[ladder]
+    payment_evidence_score, payment_evidence = _score_payment_evidence(niche, evidence_path=evidence_path)
 
     raw = (
-        0.15 * market_demand +
-        0.15 * competition_favorability +
-        0.15 * profit_potential +
-        0.25 * recurring_revenue_potential +
-        0.30 * reusability
+        0.35 * payment_evidence_score +
+        0.10 * market_demand +
+        0.10 * competition_favorability +
+        0.10 * profit_potential +
+        0.15 * recurring_revenue_potential +
+        0.20 * reusability
     )
     ladder_score = round(min(100.0, raw), 1)
 
     price_band = LADDER_PRICE_BAND[ladder]
     price = butter_price(niche, product_type=price_band)
+    has_payment_evidence = len(payment_evidence) > 0
     clears_profit_floor = price >= MIN_LADDER_PROFIT_FLOOR
     clears_score_floor = ladder_score >= LADDER_MIN_SCORE
-    accepted = clears_score_floor and clears_profit_floor
+    accepted = has_payment_evidence and clears_score_floor and clears_profit_floor
 
-    if not clears_profit_floor:
+    if not has_payment_evidence:
+        reason = (
+            f"rejected: UNPROVEN — no real payment evidence recorded (Proof of Payment doctrine, ADR-121); "
+            f"ladder_score {ladder_score}/100 and price ${price} are not evaluated further until real evidence exists"
+        )
+    elif not clears_profit_floor:
         reason = f"rejected: price ${price} below ${MIN_LADDER_PROFIT_FLOOR} profit floor (ladder={ladder})"
     elif not clears_score_floor:
         reason = f"rejected: ladder_score {ladder_score}/100 < {LADDER_MIN_SCORE} (ladder={ladder})"
     else:
-        reason = f"accepted: ladder_score {ladder_score}/100 >= {LADDER_MIN_SCORE}, price ${price} >= ${MIN_LADDER_PROFIT_FLOOR} (ladder={ladder})"
+        reason = (
+            f"accepted: {len(payment_evidence)} real payment evidence record(s) confirmed, "
+            f"ladder_score {ladder_score}/100 >= {LADDER_MIN_SCORE}, price ${price} >= ${MIN_LADDER_PROFIT_FLOOR} (ladder={ladder})"
+        )
 
     ttm_score, ttm_level, ttm_note = _score_time_to_market(ladder)
 
@@ -1137,7 +1178,21 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None):
         "price": price,
         "accepted": accepted,
         "reason": reason,
+        # Proof of Payment doctrine (ADR-121): the actual recorded
+        # evidence for this niche, each entry carrying the real
+        # source_url + quote required at record time — empty list, never
+        # fabricated, when nothing has been recorded yet.
+        "payment_evidence": [
+            {
+                "event_type": e["event_type"],
+                "source_url": e["payload"].get("source_url"),
+                "quote": e["payload"].get("quote"),
+                "recorded_at": e["recorded_at"],
+            }
+            for e in payment_evidence
+        ],
         "components": {
+            "payment_evidence_score": payment_evidence_score,
             "market_demand": market_demand,
             "competition_favorability": competition_favorability,
             "profit_potential": profit_potential,
@@ -1559,6 +1614,10 @@ def main():
                 data.get('niche', ''),
                 ladder=data.get('ladder', 'kdp_books'),
                 external_signal=data.get('external_signal'),
+                # Test isolation only (Proof of Payment doctrine, ADR-121):
+                # a real caller never passes this, so it defaults to the
+                # real data/market_evidence.jsonl exactly as before.
+                evidence_path=data.get('evidence_path'),
             )
             print(json.dumps({"success": True, **result}, ensure_ascii=False))
         except Exception as e:

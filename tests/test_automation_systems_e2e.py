@@ -40,6 +40,7 @@ import profit_oracle
 from decision_engine import engine as decision_engine
 from orchestrator.engines import production
 import product_families  # noqa: F401 — self-registers every family
+import market_evidence as me
 from schemas.product import Product
 from channels import registry as channel_registry
 from channels.paddle_arm import PaddleArm
@@ -77,7 +78,26 @@ class TestAutomationSystemsEndToEnd(unittest.TestCase):
         self.tmp_changelog = tempfile.mktemp(suffix=".jsonl")
         self.tmp_state = tempfile.mktemp(suffix=".json")
         self.tmp_decisions = tempfile.mktemp(suffix=".jsonl")
+        self.tmp_evidence = tempfile.mktemp(suffix=".jsonl")
         self._created_files = []
+
+        # Proof of Payment doctrine (ADR-121, 2026-07-24): ladder_
+        # opportunity_score() now hard-rejects any niche with zero real,
+        # cited payment evidence, regardless of every other score. This
+        # test's own purpose is proving the production pipeline's wiring,
+        # not re-litigating the evidence gate itself (that's
+        # tests/test_ladder_opportunity_score.py's job) -- one real-shaped
+        # citation, in this test's own isolated ledger, clears it.
+        me.record_evidence(
+            self.NICHE, "paid_job_posting",
+            payload={"source_url": "https://example.com/job/e2e-fixture-1", "quote": "test-fixture citation, isolated ledger only"},
+            evidence_path=self.tmp_evidence,
+        )
+        me.record_evidence(
+            self.NICHE, "freelancer_agency_pricing",
+            payload={"source_url": "https://example.com/job/e2e-fixture-2", "quote": "test-fixture citation, isolated ledger only"},
+            evidence_path=self.tmp_evidence,
+        )
 
         # channels.registry is global, mutable, module-level state shared
         # across the whole test process (see test_production_factory.py's
@@ -107,12 +127,12 @@ class TestAutomationSystemsEndToEnd(unittest.TestCase):
             self.addCleanup(p.stop)
 
     def tearDown(self):
-        for p in (self.tmp_changelog, self.tmp_state, self.tmp_decisions, *self._created_files):
+        for p in (self.tmp_changelog, self.tmp_state, self.tmp_decisions, self.tmp_evidence, *self._created_files):
             if p and os.path.exists(p):
                 os.remove(p)
 
     def _run_full_pipeline(self):
-        ladder_result = profit_oracle.ladder_opportunity_score(self.NICHE, ladder="b2b_systems")
+        ladder_result = profit_oracle.ladder_opportunity_score(self.NICHE, ladder="b2b_systems", evidence_path=self.tmp_evidence)
         self.assertTrue(ladder_result["accepted"], f"seed niche must clear the real ladder gate: {ladder_result}")
 
         decision = decision_engine.record_ladder_decision(

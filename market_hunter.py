@@ -224,14 +224,18 @@ def _check_knowledge_brain(niche):
     return False, None
 
 
-def hunt_market(limit=10, write_opportunities=True, decisions_path=None):
+def hunt_market(limit=10, write_opportunities=True, decisions_path=None, evidence_path=None):
     """The main hunt: generate (niche, ladder) candidates → consult the
     Brain FIRST → score survivors via profit_oracle.ladder_opportunity_score()
     (ADR-066, the Strategic Production Priority Ladder gate) → keep accepted
     only → append to OPPORTUNITIES.md → re-run profit_oracle so
     GOLDEN_OPPORTUNITIES.md stays the single, consistent authority for the
     older, still-live score_opportunity() gate (this module never writes
-    that file itself — see module docstring)."""
+    that file itself — see module docstring).
+
+    evidence_path (Proof of Payment doctrine, ADR-121, 2026-07-24): test
+    isolation only — omitting it (every real caller) uses the real
+    data/market_evidence.jsonl, exactly as before this parameter existed."""
     seed_candidates = _generate_candidates(limit)  # [(niche, ladder), ...]
     seed_niches = [n for n, _ladder in seed_candidates]
     # Real link (ADR-065 Step 3(b)): Sensing Engine signals already sitting
@@ -294,7 +298,7 @@ def hunt_market(limit=10, write_opportunities=True, decisions_path=None):
             continue
 
         try:
-            scored = PROFIT_ORACLE.ladder_opportunity_score(niche, ladder=ladder)
+            scored = PROFIT_ORACLE.ladder_opportunity_score(niche, ladder=ladder, evidence_path=evidence_path)
         except Exception as e:
             entry["error"] = str(e)
             skipped.append(entry)

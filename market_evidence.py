@@ -84,6 +84,35 @@ EVENT_TYPES = EVENT_TYPES + COMPETITOR_EVENT_TYPES
 # requiring a real source is the honest substitute for that.
 _COMPETITOR_EVIDENCE_REQUIRED_FIELDS = ("competitor", "source_url")
 
+# Proof of Payment doctrine (ADR-121, 2026-07-24): founder directive to
+# weight real evidence of EXISTING SPEND above inferred demand in
+# opportunity scoring. Real, third-party evidence that someone is
+# already paying money to solve this exact problem today — a
+# competitor selling with a real, findable complaining review; a real
+# paid job posting for the exact manual task; a real freelancer/agency
+# actually charging money for the manual version; a real subscription
+# someone is trying to replace or escape. Same fabrication risk as
+# COMPETITOR_EVENT_TYPES above (a claim about something outside this
+# factory's own first-hand experience) plus the same "no automated
+# sensor" reality confirmed 2026-07-24: no review-site, job-board,
+# freelance-marketplace, or subscription-churn connector exists
+# anywhere in this factory. Recording one of these requires a human
+# (or Claude Code, checking a real public page during a session) to
+# actually find it and cite it — same manual-observation discipline as
+# every other category in this ledger, never automatic.
+PAYMENT_EVIDENCE_EVENT_TYPES = (
+    "complaining_review", "paid_job_posting", "freelancer_agency_pricing", "subscription_escape",
+)
+EVENT_TYPES = EVENT_TYPES + PAYMENT_EVIDENCE_EVENT_TYPES
+
+# A real, checkable citation for WHERE this payment evidence was found
+# (the actual review URL, job posting URL, freelancer profile/gig URL,
+# or public complaint about a subscription) plus the actual quoted text
+# — required for all 4 payment-evidence types, same reasoning as
+# _COMPETITOR_EVIDENCE_REQUIRED_FIELDS above: this factory cannot
+# independently verify an unsourced claim, so it refuses to store one.
+_PAYMENT_EVIDENCE_REQUIRED_FIELDS = ("source_url", "quote")
+
 _WTP_POSITIVE_TYPES = ("demo_request", "trial_request", "purchase_attempt", "closed_sale")
 
 
@@ -111,6 +140,13 @@ def record_evidence(niche, event_type, payload=None, source="manual", evidence_p
             raise ValueError(
                 f"دليل منافس حقيقي يتطلب {', '.join(missing)} (اسم منافس حقيقي + رابط مصدر حقيقي قابل للتحقق) — "
                 f"لا يُسجَّل أي حدث منافس بلا استشهاد حقيقي: {event_type}"
+            )
+    if event_type in PAYMENT_EVIDENCE_EVENT_TYPES:
+        missing = [f for f in _PAYMENT_EVIDENCE_REQUIRED_FIELDS if not payload.get(f)]
+        if missing:
+            raise ValueError(
+                f"دليل دفع حقيقي (Proof of Payment) يتطلب {', '.join(missing)} (رابط مصدر حقيقي + اقتباس حرفي) — "
+                f"لا يُسجَّل أي دليل دفع بلا استشهاد حقيقي: {event_type}"
             )
     note = None if event_type in EVENT_TYPES else f"event_type غير معروف في القائمة الرسمية (لم يُرفَض، فقط مُسجَّل مع تنبيه): {event_type}"
     event = {
@@ -202,6 +238,16 @@ def get_competitor_events(niche, evidence_path=None):
     return [e for e in read_evidence(niche, evidence_path=evidence_path) if e["event_type"] in COMPETITOR_EVENT_TYPES]
 
 
+def get_payment_evidence(niche, evidence_path=None):
+    """Real, human-observed proof of existing spend for this niche (the
+    4 PAYMENT_EVIDENCE_EVENT_TYPES) — reuses read_evidence() directly,
+    no new storage. Empty list, never None, when nothing real has been
+    recorded yet — profit_oracle.ladder_opportunity_score() treats an
+    empty list as UNPROVEN and rejects regardless of every other score
+    (Proof of Payment doctrine, ADR-121)."""
+    return [e for e in read_evidence(niche, evidence_path=evidence_path) if e["event_type"] in PAYMENT_EVIDENCE_EVENT_TYPES]
+
+
 def summarize_niche(niche, evidence_path=None):
     """One real, honest evidence summary across all 24 categories — this
     is what the Executive Quality Gate consumes automatically."""
@@ -228,6 +274,9 @@ def summarize_niche(niche, evidence_path=None):
             event_type: [e["payload"] for e in by_type.get(event_type, [])]
             for event_type in COMPETITOR_EVENT_TYPES if event_type in by_type
         },
+        # Proof of Payment doctrine (2026-07-24): same additive-only
+        # discipline as competitor_landscape_events above.
+        "payment_evidence": get_payment_evidence(niche, evidence_path),
     }
 
 

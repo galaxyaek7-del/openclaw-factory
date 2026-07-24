@@ -211,6 +211,12 @@ def record_ladder_decision(niche, ladder, ladder_result, decisions_path=None, pr
             # reactively three times this week.
             "market_signal": ladder_result.get("market_signal"),
             "ai_leverage": ladder_result.get("ai_leverage"),
+            # Proof of Payment doctrine (ADR-121, 2026-07-24): the real
+            # cited evidence ladder_opportunity_score() already computed
+            # -- persisted proactively this time rather than silently
+            # discarded, same "computed then dropped" pattern this
+            # function's own history above was fixed reactively for.
+            "payment_evidence": ladder_result.get("payment_evidence"),
         },
         external_signal=None,
         ladder=ladder,

@@ -693,7 +693,7 @@ function getOpportunityScore(niche, { timeoutMs = 15000, scriptPath = path.join(
 // reason, components} shape so every downstream caller in huntGolden()
 // (skip-detail logging, notifyGoldenHunterAccepted()) works identically
 // regardless of which gate produced the result.
-function getLadderOpportunityScore(niche, ladder, { timeoutMs = 15000, scriptPath = path.join(FACTORY_DIR, 'profit_oracle.py'), pythonPath } = {}) {
+function getLadderOpportunityScore(niche, ladder, { timeoutMs = 15000, scriptPath = path.join(FACTORY_DIR, 'profit_oracle.py'), pythonPath, evidencePath } = {}) {
   return new Promise((resolve) => {
     let python;
     try {
@@ -735,7 +735,10 @@ function getLadderOpportunityScore(niche, ladder, { timeoutMs = 15000, scriptPat
     });
 
     try {
-      python.stdin.write(JSON.stringify({ niche, ladder }));
+      // evidencePath (Proof of Payment doctrine, ADR-121): test isolation
+      // only -- a real caller never passes this, so profit_oracle.py falls
+      // back to the real data/market_evidence.jsonl exactly as before.
+      python.stdin.write(JSON.stringify({ niche, ladder, evidence_path: evidencePath }));
       python.stdin.end();
     } catch (err) {
       finish({ ok: false, error: err.message });
