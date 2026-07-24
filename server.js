@@ -1626,6 +1626,49 @@ const ACTION_REGISTRY = [
     asyncRunner: () => runPythonActionAsync('get-ceo-dashboard', 'get_ceo_dashboard', []),
   },
   {
+    // Build in Public (2026-07-24) -- real, honest-numbers-only weekly
+    // progress report.
+    name: 'get-weekly-progress-report',
+    description: 'Read-only: the real weekly progress report (opportunities scored/accepted/rejected, real revenue) in English, honest numbers only, no hype language.',
+    reused: 'build_in_public.py::build_weekly_progress_report()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: () => runPythonActionAsync('get-weekly-progress-report', 'get_weekly_progress_report', []),
+  },
+  {
+    // Build in Public (2026-07-24) -- real AI-generated public post
+    // draft from one real ADR. Never auto-published.
+    name: 'draft-adr-post',
+    description: 'Generates a real AI-drafted public post from one real ADR file (never auto-published -- returns the draft for review/queuing). Uses real Groq API calls; subject to real rate limits.',
+    reused: 'build_in_public.py::draft_adr_post()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const adrPath = (req.body && req.body.adr_path || '').trim();
+      if (!adrPath) return Promise.reject(new Error('{ adr_path } is required in the request body'));
+      return runPythonActionAsync('draft-adr-post', 'draft_adr_post', [JSON.stringify({ adr_path: adrPath })]);
+    },
+  },
+  {
+    // Build in Public (2026-07-24) -- writes a real draft to a real
+    // pending-review file and sends a real Arabic Telegram approval
+    // notification. Never auto-publishes anything.
+    name: 'queue-draft-for-approval',
+    description: 'Writes a real draft (weekly report or ADR post) to a real pending-review file and sends a real Arabic Telegram notification for the founder\'s approval. Never publishes anything automatically.',
+    reused: 'build_in_public.py::queue_draft_for_approval()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const body = req.body || {};
+      for (const field of ['draft_type', 'title', 'content_markdown', 'telegram_summary_arabic']) {
+        if (!body[field] || !String(body[field]).trim()) {
+          return Promise.reject(new Error(`{ ${field} } is required in the request body`));
+        }
+      }
+      return runPythonActionAsync('queue-draft-for-approval', 'queue_draft_for_approval', [JSON.stringify(body)]);
+    },
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +

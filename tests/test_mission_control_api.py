@@ -441,6 +441,41 @@ class TestGlobalMarketLearningEngineActions(unittest.TestCase):
         mock_dash.assert_called_once_with()
         self.assertIsNone(result["current_strategic_priority"])
 
+    def test_build_in_public_actions_are_registered(self):
+        for name in ("get_weekly_progress_report", "draft_adr_post", "queue_draft_for_approval"):
+            self.assertIn(name, mission_control_api._ENDPOINTS)
+
+    def test_weekly_progress_report_delegates_to_the_real_module(self):
+        with patch("build_in_public.build_weekly_progress_report", return_value={"scored": 0}) as mock_report:
+            result = mission_control_api._get_weekly_progress_report()
+        mock_report.assert_called_once_with()
+        self.assertEqual(result["scored"], 0)
+
+    def test_draft_adr_post_requires_an_adr_path(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "draft_adr_post", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._draft_adr_post()
+
+    def test_draft_adr_post_delegates_to_the_real_module(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "draft_adr_post", json.dumps({"adr_path": "x.md"})]):
+            with patch("build_in_public.draft_adr_post", return_value={"draft_text": "d"}) as mock_draft:
+                result = mission_control_api._draft_adr_post()
+        mock_draft.assert_called_once_with("x.md")
+        self.assertEqual(result["draft_text"], "d")
+
+    def test_queue_draft_for_approval_requires_all_fields(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "queue_draft_for_approval", json.dumps({"draft_type": "x"})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._queue_draft_for_approval()
+
+    def test_queue_draft_for_approval_delegates_to_the_real_module(self):
+        payload = {"draft_type": "weekly_report", "title": "t", "content_markdown": "c", "telegram_summary_arabic": "s"}
+        with patch.object(sys, "argv", ["mission_control_api.py", "queue_draft_for_approval", json.dumps(payload)]):
+            with patch("build_in_public.queue_draft_for_approval", return_value={"draft_path": "p"}) as mock_queue:
+                result = mission_control_api._queue_draft_for_approval()
+        mock_queue.assert_called_once_with("weekly_report", "t", "c", "s")
+        self.assertEqual(result["draft_path"], "p")
+
     def test_commercial_intelligence_report_requires_a_niche(self):
         with patch.object(sys, "argv", ["mission_control_api.py", "get_commercial_intelligence_report", json.dumps({})]):
             with self.assertRaises(ValueError):

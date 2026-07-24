@@ -1367,6 +1367,43 @@ def _get_ceo_dashboard():
     return ceo_decision_center.ceo_dashboard()
 
 
+def _get_weekly_progress_report():
+    """Build in Public (2026-07-24): the real, honest-numbers-only
+    weekly progress report. No payload required."""
+    import build_in_public
+    return build_in_public.build_weekly_progress_report()
+
+
+def _draft_adr_post():
+    """Build in Public (2026-07-24): a real AI-generated public post
+    draft from one real ADR file — never auto-published, always
+    returned for the caller to queue via queue-draft-for-approval.
+    Reads its payload from sys.argv[2]:
+    `python mission_control_api.py draft_adr_post '{"adr_path":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    adr_path = (payload.get("adr_path") or "").strip()
+    if not adr_path:
+        raise ValueError("{ adr_path } is required")
+    import build_in_public
+    return build_in_public.draft_adr_post(adr_path)
+
+
+def _queue_draft_for_approval():
+    """Build in Public (2026-07-24): writes a real draft to a real
+    pending-review file and sends a real Arabic Telegram approval
+    notification — never auto-publishes anything. Reads its payload
+    from sys.argv[2]:
+    `python mission_control_api.py queue_draft_for_approval '{"draft_type":"...","title":"...","content_markdown":"...","telegram_summary_arabic":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    for field in ("draft_type", "title", "content_markdown", "telegram_summary_arabic"):
+        if not (payload.get(field) or "").strip():
+            raise ValueError(f"{{ {field} }} is required")
+    import build_in_public
+    return build_in_public.queue_draft_for_approval(
+        payload["draft_type"], payload["title"], payload["content_markdown"], payload["telegram_summary_arabic"],
+    )
+
+
 def _get_global_execution_view():
     """Autonomous Global Execution Engine (2026-07-23): the single real
     operational window the founder named, assembled entirely from
@@ -1550,6 +1587,9 @@ _ENDPOINTS = {
     "get_ceo_questions": _get_ceo_questions,
     "get_capital_allocation_snapshot": _get_capital_allocation_snapshot,
     "get_ceo_dashboard": _get_ceo_dashboard,
+    "get_weekly_progress_report": _get_weekly_progress_report,
+    "draft_adr_post": _draft_adr_post,
+    "queue_draft_for_approval": _queue_draft_for_approval,
     "run_master_cycle": _run_master_cycle,
 }
 
