@@ -1,8 +1,8 @@
-# OpenClaw Unified Service Layer — API Reference (v1)
+# Galaxy Forge Unified Service Layer — API Reference (v1)
 
 _Auto-generated from SERVICE_REGISTRY in server.js at server startup — do not hand-edit, it is overwritten on every restart. Source of truth: server.js._
 
-Generated at: 2026-07-22T01:38:12.833Z
+Generated at: 2026-07-24T21:41:23.366Z
 
 Every endpoint below requires an authenticated Mission Control session (`POST /api/mission-control/login`) and returns the standard envelope:
 
@@ -264,6 +264,38 @@ Real CPU/memory/disk (Node's os/fs modules) plus a real AI cost-rate trend over 
 - Data: `GET /api/v1/infrastructure-status`
 - Health: `GET /api/v1/infrastructure-status/health`
 - Reuses: lib/infrastructure_intelligence.js getInfrastructureStatus() (Autonomous Digital Company v1, Track B1, 2026-07-19) — pure os/fs + JSONL reads, no new dependency.
+
+### evidence-engine-status
+
+Galaxy Forge Executive Mission Control v1 (2026-07-24): real aggregate over the Market Evidence Ledger (ADR-088, extended by ADR-121/122) — total real events, how many real niches have any, a breakdown by event type, and how many are Proof-of-Payment-qualifying. Honestly reports the ledger as empty when it is (it has never been populated automatically, by design — ADR-121).
+
+- Data: `GET /api/v1/evidence-engine-status`
+- Health: `GET /api/v1/evidence-engine-status/health`
+- Reuses: data/market_evidence.jsonl, the exact same real ledger market_evidence.py/profit_oracle.py already read — no new engine, a plain read + count.
+
+### scheduler-status
+
+Galaxy Forge Executive Mission Control v1 (2026-07-24): the one real, durable scheduler in this factory — the Windows Scheduled Task OpenClaw-WeeklyPublicReport (ADR-119), queried live via Get-ScheduledTask. Honestly reports unavailable on non-Windows or if the task cannot be found.
+
+- Data: `GET /api/v1/scheduler-status`
+- Health: `GET /api/v1/scheduler-status/health`
+- Reuses: Windows Task Scheduler itself, via a real PowerShell Get-ScheduledTask call — same pattern lib/health_checks.js checkDiskSpace() already established for real Windows-only checks.
+
+### recent-adr-decisions
+
+Galaxy Forge Executive Mission Control v1 (2026-07-24): the 20 most recent real ADRs (title/date/status parsed from each file's own real header) — every governance decision this factory has actually made, newest first.
+
+- Data: `GET /api/v1/recent-adr-decisions`
+- Health: `GET /api/v1/recent-adr-decisions/health`
+- Reuses: OpenClaw_Brain/00_Governance/ADR-*.md — a plain directory read, no new engine.
+
+### system-logs
+
+Galaxy Forge Executive Mission Control v1 (2026-07-24): the real tail (last 20 lines) of every real operational log file this factory writes — factory_loop.log, scout_runs.log, finance_errors.log, supervisor.log, server_crashes.log. Honestly reports a file as not existing if it has never been written.
+
+- Data: `GET /api/v1/system-logs`
+- Health: `GET /api/v1/system-logs/health`
+- Reuses: the real log files themselves, at the repo root — a plain tail read, no new engine.
 
 ### docs
 

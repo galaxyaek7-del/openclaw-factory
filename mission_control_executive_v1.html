@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galaxy Forge — Executive Mission Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c11; --bg-elev:#12151d; --bg-card:#161a24; --bg-hover:#1c212e;
+  --border:#242938; --border-soft:#1a1e2a;
+  --ink:#e9ebf2; --ink-dim:#9198ad; --ink-faint:#5c6379;
+  --accent:#d97a3f; --accent-soft:#3a2818; --accent-ink:#f0a468;
+  --cool:#5b7fd9; --cool-soft:#182238;
+  --good:#4a9d6f; --good-soft:#132a1e;
+  --warn:#d9a441; --warn-soft:#2e2412;
+  --bad:#c9524f; --bad-soft:#2e1615;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --sans: 'IBM Plex Sans', -apple-system, sans-serif;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -8px rgba(0,0,0,.5);
+  --radius: 10px;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;}
+html,body{margin:0; padding:0; background:var(--bg); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased;}
+body{display:flex; min-height:100vh;}
+a{color:var(--cool);}
+::selection{background:var(--accent-soft); color:var(--accent-ink);}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:260px; flex-shrink:0; background:var(--bg-elev); border-right:1px solid var(--border-soft);
+  position:fixed; top:0; bottom:0; left:0; overflow-y:auto; padding:1.1rem .9rem; z-index:20;
+  display:flex; flex-direction:column; gap:1rem;
+}
+.brand{display:flex; align-items:center; gap:.6rem; padding:.3rem .2rem .8rem; border-bottom:1px solid var(--border-soft);}
+.brand-mark{width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg, var(--accent), #8a4a1f); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:.9rem; font-weight:700; color:#1a0e05;}
+.brand-name{font-weight:700; font-size:.95rem; letter-spacing:-.01em;}
+.brand-sub{font-size:.68rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.08em; margin-top:.1rem;}
+
+#searchWrap{position:relative;}
+#globalSearch{
+  width:100%; background:var(--bg-card); border:1px solid var(--border); color:var(--ink);
+  border-radius:8px; padding:.55rem .7rem .55rem 2rem; font-size:.82rem; font-family:var(--sans);
+}
+#searchWrap::before{content:"⌕"; position:absolute; left:.6rem; top:50%; transform:translateY(-50%); color:var(--ink-faint); font-size:.95rem;}
+#globalSearch:focus{outline:none; border-color:var(--accent);}
+
+.sidebar-actions{display:flex; gap:.4rem;}
+.sidebar-actions button{flex:1;}
+
+nav#sectionNav{display:flex; flex-direction:column; gap:.1rem; flex:1; overflow-y:auto;}
+nav#sectionNav a{
+  display:flex; align-items:center; justify-content:space-between; gap:.5rem;
+  color:var(--ink-dim); text-decoration:none; font-size:.82rem; padding:.5rem .6rem; border-radius:7px;
+}
+nav#sectionNav a:hover{background:var(--bg-hover); color:var(--ink);}
+nav#sectionNav a.active{background:var(--accent-soft); color:var(--accent-ink);}
+nav#sectionNav a .navdot{width:6px; height:6px; border-radius:50%; flex-shrink:0;}
+.navdot.ok{background:var(--good);} .navdot.warn{background:var(--warn);} .navdot.bad{background:var(--ink-faint);} .navdot.pending{background:var(--ink-faint); opacity:.4;}
+
+.sidebar-foot{border-top:1px solid var(--border-soft); padding-top:.8rem; font-size:.7rem; color:var(--ink-faint); line-height:1.5;}
+
+button.btn{
+  font-family:var(--sans); font-size:.78rem; font-weight:600; padding:.5rem .7rem; border-radius:7px;
+  border:1px solid var(--border); background:var(--bg-card); color:var(--ink); cursor:pointer;
+}
+button.btn:hover{background:var(--bg-hover); border-color:var(--accent);}
+button.btn.primary{background:var(--accent); border-color:var(--accent); color:#1a0e05;}
+button.btn.primary:hover{background:var(--accent-ink);}
+button.btn:disabled{opacity:.5; cursor:not-allowed;}
+
+/* ── Main ── */
+#main{margin-left:260px; flex:1; min-width:0; padding:1.4rem 1.8rem 4rem;}
+#topbar{display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1.6rem; flex-wrap:wrap;}
+#topbar h1{font-size:1.3rem; margin:0; font-weight:700; letter-spacing:-.01em;}
+#topbar .meta{font-size:.76rem; color:var(--ink-faint); font-family:var(--mono);}
+#topStatus{display:flex; align-items:center; gap:.5rem; font-size:.78rem; color:var(--ink-dim);}
+#topStatus .pulse{width:8px; height:8px; border-radius:50%; background:var(--good); box-shadow:0 0 0 3px var(--good-soft);}
+
+section.section{margin-bottom:2.2rem; scroll-margin-top:1rem;}
+.section-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:.7rem;}
+.section-head h2{font-size:1rem; margin:0; font-weight:700;}
+.section-head .section-note{font-size:.72rem; color:var(--ink-faint);}
+
+.card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:.9rem;}
+.card{
+  background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius);
+  padding:1rem 1.1rem; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:.6rem;
+}
+.card.filtered-out{display:none;}
+.card-top{display:flex; align-items:flex-start; justify-content:space-between; gap:.6rem;}
+.card-title{font-size:.88rem; font-weight:600;}
+.pill{font-size:.65rem; font-weight:600; padding:.18rem .55rem; border-radius:99px; text-transform:uppercase; letter-spacing:.04em; white-space:nowrap;}
+.pill.ok{background:var(--good-soft); color:var(--good);}
+.pill.warn{background:var(--warn-soft); color:var(--warn);}
+.pill.bad{background:var(--bad-soft); color:var(--bad);}
+.pill.pending{background:var(--bg-elev); color:var(--ink-faint);}
+
+.card-meta{display:flex; flex-wrap:wrap; gap:.5rem 1rem; font-size:.68rem; color:var(--ink-faint); font-family:var(--mono);}
+.card-meta span b{color:var(--ink-dim); font-weight:500;}
+
+.card-body{font-size:.82rem; color:var(--ink-dim); line-height:1.6;}
+.card-body .empty{color:var(--ink-faint); font-style:italic;}
+.kv-grid{display:grid; grid-template-columns:1fr auto; gap:.35rem .8rem; font-size:.8rem;}
+.kv-grid .k{color:var(--ink-faint);}
+.kv-grid .v{color:var(--ink); font-family:var(--mono); text-align:right; font-variant-numeric:tabular-nums;}
+.stat-row{display:flex; gap:1.1rem; flex-wrap:wrap;}
+.stat{display:flex; flex-direction:column; gap:.1rem;}
+.stat .num{font-family:var(--mono); font-size:1.35rem; font-weight:600; color:var(--ink);}
+.stat .label{font-size:.68rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em;}
+ul.card-list{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:.4rem; max-height:260px; overflow-y:auto;}
+ul.card-list li{border-bottom:1px solid var(--border-soft); padding-bottom:.4rem; font-size:.79rem;}
+ul.card-list li:last-child{border-bottom:none; padding-bottom:0;}
+table.card-table{width:100%; border-collapse:collapse; font-size:.78rem;}
+table.card-table th{text-align:left; color:var(--ink-faint); font-weight:500; font-size:.68rem; text-transform:uppercase; letter-spacing:.03em; padding:.2rem .4rem .4rem 0;}
+table.card-table td{padding:.3rem .4rem .3rem 0; border-top:1px solid var(--border-soft); font-family:var(--mono); font-variant-numeric:tabular-nums;}
+.note-line{font-size:.74rem; color:var(--ink-faint); border-left:2px solid var(--border); padding-left:.6rem; margin-top:.2rem;}
+pre.raw{background:var(--bg-elev); border-radius:6px; padding:.6rem .7rem; font-size:.72rem; overflow-x:auto; margin:0; color:var(--ink-dim); max-height:220px;}
+
+@media (max-width: 880px){
+  #sidebar{position:fixed; transform:translateX(-100%); transition:transform .2s; width:82%; max-width:300px;}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0; padding:1rem 1rem 3rem;}
+  #menuToggle{display:inline-flex !important;}
+}
+#menuToggle{display:none; align-items:center; justify-content:center;}
+
+@media print{
+  #sidebar, #topbar, .sidebar-actions{display:none !important;}
+  #main{margin-left:0;}
+  body{background:#fff; color:#000;}
+  .card{break-inside:avoid; border:1px solid #ccc; box-shadow:none;}
+}
+</style>
+</head>
+<body>
+
+<aside id="sidebar">
+  <div class="brand">
+    <div class="brand-mark">GF</div>
+    <div>
+      <div class="brand-name">Galaxy Forge</div>
+      <div class="brand-sub">Executive Mission Control</div>
+    </div>
+  </div>
+  <div id="searchWrap">
+    <input id="globalSearch" type="search" placeholder="Search everything…">
+  </div>
+  <div class="sidebar-actions">
+    <button class="btn" id="refreshBtn" title="Re-fetch every real source">↻ Refresh</button>
+    <button class="btn" id="exportBtn" title="Download the currently loaded real data as JSON">⇩ Export</button>
+  </div>
+  <button class="btn primary" id="pdfBtn" style="width:100%;">📄 Executive PDF Report</button>
+  <nav id="sectionNav"></nav>
+  <div class="sidebar-foot">
+    Every value below comes from a real endpoint or existing module — never fabricated.
+    Unavailable data reads "No verified data," not a guess.
+  </div>
+</aside>
+
+<button id="menuToggle" class="btn" style="position:fixed; top:.8rem; left:.8rem; z-index:30;">☰</button>
+
+<main id="main">
+  <div id="topbar">
+    <div>
+      <h1>Executive Mission Control</h1>
+      <div class="meta" id="lastRefreshLine">not yet loaded</div>
+    </div>
+    <div id="topStatus"><span class="pulse"></span><span id="topStatusText">Loading real data…</span></div>
+  </div>
+  <div id="sections"></div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  // ── Section registry: each maps 1:1 to a real, already-existing v1 service. ──
+  // No new engines — every "service" below is a real function this factory
+  // already had (widened onto /api/v1/*), or one of the 4 new, explicitly
+  // thin, read-only aggregations built alongside this dashboard (evidence-
+  // engine-status, scheduler-status, recent-adr-decisions, system-logs —
+  // each a plain read over an existing real file/log, not a new engine).
+  const SECTIONS = [
+    { id:'company-health', title:'Company Health', service:'company-health', kind:'health' },
+    { id:'executive-summary', title:'Executive Summary', service:'get-ceo-dashboard', via:'action', kind:'summary' },
+    { id:'opportunity-pipeline', title:'Opportunity Pipeline', service:'opportunity-pipeline', kind:'list', listKey:'product_laboratory' },
+    { id:'investment-pipeline', title:'Investment Pipeline', service:'get-investment-pipeline', via:'action', kind:'list', listKey:'pipeline' },
+    { id:'commercial-intelligence', title:'Commercial Intelligence', service:'market-intelligence', kind:'kv' },
+    { id:'product-portfolio', title:'Product Portfolio', service:'get-portfolio-report', via:'action', kind:'kv' },
+    { id:'production-status', title:'Production Status', service:'production-queue', kind:'kv' },
+    { id:'distribution-status', title:'Distribution Status', service:'publishing-status', kind:'kv' },
+    { id:'revenue-status', title:'Revenue Status', service:'revenue-summary', kind:'kv' },
+    { id:'evidence-engine', title:'Evidence Engine', service:'evidence-engine-status', kind:'kv' },
+    { id:'market-memory', title:'Market Memory', service:'get-monthly-market-evolution-report', via:'action', kind:'kv' },
+    { id:'knowledge-graph', title:'Knowledge Graph', service:'knowledge-graph', kind:'kv' },
+    { id:'ai-agents-status', title:'AI Agents Status', service:'ai-capability-registry', kind:'kv' },
+    { id:'automation-status', title:'Automation Status (n8n)', service:'automation-status', kind:'kv' },
+    { id:'scheduler', title:'Scheduler', service:'scheduler-status', kind:'kv' },
+    { id:'alerts', title:'Alerts', service:'alerts', kind:'kv' },
+    { id:'recent-adrs', title:'Recent ADR Decisions', service:'recent-adr-decisions', kind:'list', listKey:'recent' },
+    { id:'system-diagnostics', title:'Live Logs & System Diagnostics', service:'system-logs', kind:'logs' },
+  ];
+
+  const state = {}; // id -> { status: 'pending'|'ok'|'empty'|'error', payload, fetchedAt }
+
+  function el(tag, attrs, children){
+    const e = document.createElement(tag);
+    if (attrs) for (const k in attrs){
+      if (k === 'class') e.className = attrs[k];
+      else if (k === 'html') e.innerHTML = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    }
+    (children||[]).forEach(c => { if (c != null) e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return e;
+  }
+
+  function relTime(iso){
+    if (!iso) return '—';
+    const d = new Date(iso), s = Math.round((Date.now() - d.getTime())/1000);
+    if (s < 5) return 'just now';
+    if (s < 60) return s + 's ago';
+    if (s < 3600) return Math.round(s/60) + 'm ago';
+    if (s < 86400) return Math.round(s/3600) + 'h ago';
+    return Math.round(s/86400) + 'd ago';
+  }
+
+  // ── Honesty classification: real fields already carry the confidence
+  // signal wherever this factory already tags one (this Reality Mode-
+  // adjacent convention already exists elsewhere in the codebase) — this
+  // never invents a confidence percentage, only reads what's really there
+  // or falls back to a plain presence/absence check. ──
+  function isMeaningfullyEmpty(payload){
+    if (payload == null) return true;
+    if (Array.isArray(payload)) return payload.length === 0;
+    if (typeof payload === 'object'){
+      const keys = Object.keys(payload).filter(k => !['note','generated_at','niche'].includes(k));
+      if (keys.length === 0) return true;
+      return keys.every(k => {
+        const v = payload[k];
+        if (v == null) return true;
+        if (Array.isArray(v)) return v.length === 0;
+        if (typeof v === 'object') return Object.keys(v).length === 0;
+        if (typeof v === 'number') return false;
+        return v === '' || v === false;
+      });
+    }
+    return false;
+  }
+
+  function confidenceFor(payload){
+    if (payload && typeof payload === 'object'){
+      if (typeof payload.confidence === 'string') return payload.confidence;
+      if (payload.confidence && payload.confidence.level) return payload.confidence.level;
+      if (typeof payload.maturity === 'string') return payload.maturity;
+    }
+    return isMeaningfullyEmpty(payload) ? 'No verified data' : 'Verified — real source';
+  }
+
+  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+  // A handful of real reports (Executive Summary, Investment Pipeline,
+  // Product Portfolio, Market Memory) are registered as real, ASYNC
+  // actions (POST /api/v1/actions/<name>, {confirmed:true} -> a job id,
+  // polled via GET /api/v1/actions/:id until it really finishes) rather
+  // than plain GET services — same real underlying report either way,
+  // just a different real transport this factory already uses for a
+  // Python subprocess call. Never invents a result before the real job
+  // actually completes.
+  async function fetchActionResult(name, timeoutMs = 25000){
+    const start = await fetch('/api/v1/actions/' + name, {
+      method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ confirmed:true }),
+    });
+    const startBody = await start.json();
+    if (!start.ok || startBody.success === false){
+      throw new Error((startBody.error && startBody.error.message) || startBody.error || ('HTTP ' + start.status));
+    }
+    const jobId = startBody.job.id;
+    const deadline = Date.now() + timeoutMs;
+    let job = startBody.job;
+    while (job.status === 'running' && Date.now() < deadline){
+      await sleep(700);
+      const poll = await fetch('/api/v1/actions/' + jobId, { credentials:'same-origin' });
+      const pollBody = await poll.json();
+      if (!poll.ok || pollBody.success === false) throw new Error('lost track of job ' + jobId);
+      job = pollBody.job;
+    }
+    if (job.status === 'running') throw new Error('timed out waiting for a real result (' + (timeoutMs/1000) + 's)');
+    if (job.status === 'failed') throw new Error(job.error || 'action failed');
+    return { data: job.result, finishedAt: job.finished_at };
+  }
+
+  async function fetchSection(sec){
+    state[sec.id] = { status:'pending', payload:null, fetchedAt:null };
+    renderSection(sec);
+    try {
+      let data, fetchedAt;
+      if (sec.via === 'action'){
+        const r = await fetchActionResult(sec.service, 45000);
+        data = r.data; fetchedAt = r.finishedAt;
+      } else {
+        const res = await fetch('/api/v1/' + sec.service, { credentials:'same-origin' });
+        const body = await res.json();
+        if (!res.ok || body.success === false) throw new Error((body.error && body.error.message) || body.error || ('HTTP ' + res.status));
+        data = body.data; fetchedAt = body.generated_at;
+      }
+      const empty = isMeaningfullyEmpty(data);
+      state[sec.id] = { status: empty ? 'empty' : 'ok', payload: data, fetchedAt: fetchedAt || new Date().toISOString() };
+    } catch (err) {
+      state[sec.id] = { status:'error', payload:null, error: err.message, fetchedAt: new Date().toISOString() };
+    }
+    renderSection(sec);
+    renderNav();
+    updateTopStatus();
+  }
+
+  // ── Generic real-data renderers — no section invents a chart or a
+  // number; every branch below just formats whatever the real payload
+  // actually contains. ──
+  function renderValue(v){
+    if (v == null) return el('span', { class:'empty' }, ['—']);
+    if (Array.isArray(v)){
+      if (v.length === 0) return el('span', { class:'empty' }, ['none']);
+      if (v.length <= 6 && v.every(x => typeof x !== 'object')) return document.createTextNode(v.join(', '));
+      return el('pre', { class:'raw' }, [JSON.stringify(v, null, 2)]);
+    }
+    if (typeof v === 'object') return el('pre', { class:'raw' }, [JSON.stringify(v, null, 2)]);
+    return document.createTextNode(String(v));
+  }
+
+  function isComplex(v){
+    if (Array.isArray(v)) return v.length > 6 || v.some(x => typeof x === 'object' && x !== null);
+    return typeof v === 'object' && v !== null;
+  }
+
+  function renderKV(payload){
+    const entries = Object.entries(payload).filter(([k]) => k !== 'note');
+    const numeric = entries.filter(([,v]) => typeof v === 'number');
+    const simple = entries.filter(([,v]) => typeof v !== 'number' && !isComplex(v));
+    const complex = entries.filter(([,v]) => isComplex(v));
+    const frag = document.createDocumentFragment();
+
+    if (numeric.length){
+      const row = el('div', { class:'stat-row' });
+      numeric.slice(0, 6).forEach(([k,v]) => {
+        row.appendChild(el('div', { class:'stat' }, [
+          el('div', { class:'num' }, [String(v)]),
+          el('div', { class:'label' }, [k.replace(/_/g,' ')]),
+        ]));
+      });
+      frag.appendChild(row);
+    }
+
+    if (simple.length){
+      const wrap = el('div', { class:'kv-grid' });
+      simple.slice(0, 12).forEach(([k,v]) => {
+        wrap.appendChild(el('div', { class:'k' }, [k.replace(/_/g,' ')]));
+        const vcell = el('div', { class:'v' });
+        vcell.appendChild(renderValue(v));
+        wrap.appendChild(vcell);
+      });
+      frag.appendChild(wrap);
+    }
+
+    // Nested objects/long arrays get their own full-width block instead of
+    // being squeezed into the 2-column kv-grid, which broke real layouts
+    // (e.g. company-health's nested health/risk/self_awareness objects).
+    complex.slice(0, 8).forEach(([k, v]) => {
+      const block = el('div', { style:'margin-top:.3rem;' });
+      block.appendChild(el('div', { class:'card-title', style:'font-size:.74rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.03em; margin-bottom:.3rem;' }, [k.replace(/_/g,' ')]));
+      block.appendChild(renderValue(v));
+      frag.appendChild(block);
+    });
+
+    if (payload.note) frag.appendChild(el('div', { class:'note-line' }, [payload.note]));
+    return frag;
+  }
+
+  function renderList(payload, listKey){
+    const items = listKey ? payload[listKey] : payload;
+    if (!Array.isArray(items) || items.length === 0){
+      return el('div', { class:'empty' }, ['No verified data']);
+    }
+    const ul = el('ul', { class:'card-list' });
+    items.slice(0, 25).forEach(item => {
+      const label = item.niche || item.title || item.filename || item.name || JSON.stringify(item).slice(0, 80);
+      const sub = [item.status, item.date, item.ladder_score != null ? ('score ' + item.ladder_score) : null, item.opportunity_score != null ? ('score ' + item.opportunity_score) : null].filter(Boolean).join(' · ');
+      ul.appendChild(el('li', null, [
+        el('div', null, [String(label)]),
+        sub ? el('div', { class:'note-line' }, [sub]) : null,
+      ]));
+    });
+    return ul;
+  }
+
+  function renderLogs(payload){
+    const frag = document.createDocumentFragment();
+    Object.entries(payload).forEach(([file, info]) => {
+      const box = el('div', { style:'margin-bottom:.7rem;' });
+      box.appendChild(el('div', { class:'card-title', style:'font-size:.78rem; margin-bottom:.3rem;' }, [
+        file + (info.exists ? ' (' + info.total_lines + ' lines)' : ' — not written yet')
+      ]));
+      if (info.exists && info.last_lines && info.last_lines.length){
+        box.appendChild(el('pre', { class:'raw' }, [info.last_lines.slice(-8).join('\n')]));
+      }
+      frag.appendChild(box);
+    });
+    return frag;
+  }
+
+  function pillFor(status){
+    if (status === 'pending') return { cls:'pending', label:'Loading' };
+    if (status === 'error') return { cls:'bad', label:'Unavailable' };
+    if (status === 'empty') return { cls:'warn', label:'No verified data' };
+    return { cls:'ok', label:'Live' };
+  }
+
+  function renderSection(sec){
+    let container = document.getElementById('sec-' + sec.id);
+    const s = state[sec.id] || { status:'pending' };
+    const pill = pillFor(s.status);
+
+    if (!container){
+      const section = el('section', { class:'section', id:'sec-' + sec.id });
+      section.appendChild(el('div', { class:'section-head' }, [
+        el('h2', null, [sec.title]),
+      ]));
+      const grid = el('div', { class:'card-grid', id:'grid-' + sec.id });
+      section.appendChild(grid);
+      document.getElementById('sections').appendChild(section);
+      container = grid;
+    }
+    container.innerHTML = '';
+
+    const card = el('div', { class:'card' });
+    card.appendChild(el('div', { class:'card-top' }, [
+      el('div', { class:'card-title' }, [sec.title]),
+      el('span', { class:'pill ' + pill.cls }, [pill.label]),
+    ]));
+    card.appendChild(el('div', { class:'card-meta' }, [
+      el('span', null, [el('b', null, ['Source: ']), sec.via === 'action' ? ('/api/v1/actions/' + sec.service) : ('/api/v1/' + sec.service)]),
+      el('span', null, [el('b', null, ['Updated: ']), relTime(s.fetchedAt)]),
+      el('span', null, [el('b', null, ['Confidence: ']), s.status === 'pending' ? '—' : confidenceFor(s.payload)]),
+    ]));
+
+    const body = el('div', { class:'card-body' });
+    if (s.status === 'pending'){
+      body.appendChild(el('div', { class:'empty' }, ['Loading real data…']));
+    } else if (s.status === 'error'){
+      body.appendChild(el('div', { class:'empty' }, ['No verified data — ' + (s.error || 'request failed')]));
+    } else if (s.status === 'empty'){
+      body.appendChild(el('div', { class:'empty' }, ['No verified data']));
+    } else if (sec.kind === 'logs'){
+      body.appendChild(renderLogs(s.payload));
+    } else if (sec.kind === 'list'){
+      body.appendChild(renderList(s.payload, sec.listKey));
+    } else {
+      body.appendChild(renderKV(s.payload));
+    }
+    card.appendChild(body);
+    container.appendChild(card);
+  }
+
+  function renderNav(){
+    const nav = document.getElementById('sectionNav');
+    nav.innerHTML = '';
+    SECTIONS.forEach(sec => {
+      const s = state[sec.id] || { status:'pending' };
+      const dotCls = s.status === 'ok' ? 'ok' : s.status === 'empty' ? 'warn' : s.status === 'error' ? 'bad' : 'pending';
+      const a = el('a', { href:'#sec-' + sec.id }, [
+        el('span', null, [sec.title]),
+        el('span', { class:'navdot ' + dotCls }),
+      ]);
+      nav.appendChild(a);
+    });
+  }
+
+  function updateTopStatus(){
+    const values = Object.values(state);
+    const loaded = values.filter(s => s.status !== 'pending').length;
+    const ok = values.filter(s => s.status === 'ok').length;
+    const errored = values.filter(s => s.status === 'error').length;
+    const textEl = document.getElementById('topStatusText');
+    const lineEl = document.getElementById('lastRefreshLine');
+    if (loaded < SECTIONS.length){
+      textEl.textContent = 'Loading real data… (' + loaded + '/' + SECTIONS.length + ')';
+    } else {
+      textEl.textContent = ok + '/' + SECTIONS.length + ' sections live' + (errored ? ', ' + errored + ' unavailable' : '');
+      lineEl.textContent = 'Last refreshed ' + new Date().toLocaleString();
+    }
+  }
+
+  async function loadAll(){
+    SECTIONS.forEach(renderSection);
+    renderNav();
+    await Promise.all(SECTIONS.map(fetchSection));
+  }
+
+  // ── Global search: filters already-rendered real cards by their own
+  // real text content — never a server round-trip, never invents a
+  // result that wasn't already loaded. ──
+  document.getElementById('globalSearch').addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    document.querySelectorAll('.card').forEach(card => {
+      const hit = !q || card.textContent.toLowerCase().includes(q);
+      card.classList.toggle('filtered-out', !hit);
+    });
+    document.querySelectorAll('.section').forEach(sec => {
+      const anyVisible = [...sec.querySelectorAll('.card')].some(c => !c.classList.contains('filtered-out'));
+      sec.style.display = anyVisible ? '' : 'none';
+    });
+  });
+
+  document.getElementById('refreshBtn').addEventListener('click', loadAll);
+
+  // ── Export: a real, timestamped JSON snapshot of exactly what's
+  // currently loaded on screen — no server round-trip, no reformatting. ──
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    const snapshot = {};
+    SECTIONS.forEach(sec => { snapshot[sec.id] = state[sec.id]; });
+    const blob = new Blob([JSON.stringify({ exported_at: new Date().toISOString(), sections: snapshot }, null, 2)], { type:'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'galaxy-forge-mission-control-' + new Date().toISOString().slice(0,19).replace(/[:T]/g,'-') + '.json';
+    a.click();
+  });
+
+  // ── Executive PDF report: reuses the real export-executive-report
+  // action (validation_layer/daily_report.py + revenue_pipeline/
+  // pipeline.py) rather than inventing a second report generator, then
+  // opens the browser's own print dialog (Save as PDF) — no new PDF
+  // library dependency. ──
+  document.getElementById('pdfBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('pdfBtn');
+    btn.disabled = true; btn.textContent = 'Generating…';
+    try {
+      const res = await fetch('/api/v1/actions/export-executive-report', {
+        method:'POST', credentials:'same-origin',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ confirmed:true }),
+      });
+      const body = await res.json();
+      if (!res.ok || body.success === false){
+        alert('Report generation failed: ' + ((body.error && body.error.message) || body.error || 'unknown error'));
+        return;
+      }
+      const job = body.job || {};
+      const result = job.result || {};
+      const win = window.open('', '_blank');
+      win.document.write(
+        '<title>Galaxy Forge — Executive Report</title>' +
+        '<pre style="font-family:IBM Plex Mono,monospace; white-space:pre-wrap; padding:2rem; max-width:800px; margin:0 auto;">' +
+        (result.markdown || result.report || JSON.stringify(result, null, 2)).replace(/</g,'&lt;') +
+        '</pre>'
+      );
+      win.document.close();
+      win.focus();
+      setTimeout(() => win.print(), 400);
+    } catch (err) {
+      alert('Report generation failed: ' + err.message);
+    } finally {
+      btn.disabled = false; btn.textContent = '📄 Executive PDF Report';
+    }
+  });
+
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+
+  window.addEventListener('scroll', () => {
+    let current = null;
+    document.querySelectorAll('.section').forEach(sec => {
+      if (sec.getBoundingClientRect().top < 140) current = sec.id;
+    });
+    document.querySelectorAll('#sectionNav a').forEach(a => {
+      a.classList.toggle('active', current && a.getAttribute('href') === '#' + current);
+    });
+  }, { passive:true });
+
+  loadAll();
+})();
+</script>
+</body>
+</html>

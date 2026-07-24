@@ -125,6 +125,60 @@ test('GET /api/v1/metrics returns valid Prometheus exposition format', async () 
   assert.match(text, /^# TYPE galaxy_forge_uptime_seconds gauge/m);
 });
 
+// Galaxy Forge Executive Mission Control v1 (2026-07-24): the 4 new,
+// thin, read-only services this dashboard added. Shape-only, real-data
+// assertions here (the generic "every documented service" tests above
+// already cover the envelope contract) — never asserts a specific
+// count/value that would make this test flaky against real, changing
+// factory state.
+
+test('evidence-engine-status reports the real Market Evidence Ledger honestly', async () => {
+  const res = await fetch(`${BASE_URL}/api/v1/evidence-engine-status`, { headers: { Cookie: cookie } });
+  assert.equal(res.status, 200);
+  const { data } = await res.json();
+  assert.ok(typeof data.total_events === 'number');
+  assert.ok(typeof data.niches_with_evidence === 'number');
+  assert.ok(typeof data.by_event_type === 'object');
+  assert.ok(typeof data.payment_evidence_events === 'number');
+});
+
+test('scheduler-status reports a real shape regardless of platform (never fabricates availability)', async () => {
+  const res = await fetch(`${BASE_URL}/api/v1/scheduler-status`, { headers: { Cookie: cookie } });
+  assert.equal(res.status, 200);
+  const { data } = await res.json();
+  assert.ok(typeof data.available === 'boolean');
+  if (data.available) {
+    assert.equal(typeof data.task_name, 'string');
+    assert.equal(typeof data.state, 'string');
+  } else {
+    assert.ok(typeof data.note === 'string' && data.note.length > 0, 'unavailable must explain why, never a silent false');
+  }
+});
+
+test('recent-adr-decisions lists real ADRs, sorted newest-number-first', async () => {
+  const res = await fetch(`${BASE_URL}/api/v1/recent-adr-decisions`, { headers: { Cookie: cookie } });
+  assert.equal(res.status, 200);
+  const { data } = await res.json();
+  assert.ok(data.total > 100, `expected 100+ real ADRs on record, got ${data.total}`);
+  assert.ok(Array.isArray(data.recent) && data.recent.length > 0);
+  for (let i = 1; i < data.recent.length; i++) {
+    assert.ok(data.recent[i - 1].number >= data.recent[i].number, 'must be sorted newest-first');
+  }
+  assert.ok(data.recent[0].title && data.recent[0].title.length > 0);
+});
+
+test('system-logs reads the real log files this factory actually writes', async () => {
+  const res = await fetch(`${BASE_URL}/api/v1/system-logs`, { headers: { Cookie: cookie } });
+  assert.equal(res.status, 200);
+  const { data } = await res.json();
+  assert.ok('factory_loop.log' in data);
+  assert.ok('server_crashes.log' in data);
+  for (const info of Object.values(data)) {
+    assert.equal(typeof info.exists, 'boolean');
+    if (info.exists && !info.error) assert.ok(Array.isArray(info.last_lines));
+  }
+});
+
 test('GET /api/v1/actions lists every registered action with a name, description, and kind', async () => {
   const res = await fetch(`${BASE_URL}/api/v1/actions`, { headers: { Cookie: cookie } });
   assert.equal(res.status, 200);

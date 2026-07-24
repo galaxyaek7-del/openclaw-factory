@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
-const { spawn } = require('child_process');
+const { spawn, execFile } = require('child_process');
 const Groq = require('groq-sdk');
 const knowledgeBrain = require('./knowledge_brain');
 const selfAwareness = require('./self_awareness');
@@ -13,6 +13,7 @@ const n8nNotify = require('./lib/n8n_notify');
 const telegramDirect = require('./lib/telegram_direct');
 const { nextSaleId } = require('./lib/next_sale_id');
 const healthChecks = require('./lib/health_checks');
+const { readJsonlEntries } = require('./lib/jsonl');
 // readLastGenerationRecord is a pure file read (no side effects) — requiring
 // factory_loop.js here never starts its loop or acquires its lockfile: both
 // only happen inside main(), guarded by `if (require.main === module)`
@@ -209,6 +210,15 @@ app.get('/mission_control.html', requireMissionControlAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'mission_control.html'));
 });
 
+// Galaxy Forge Executive Mission Control v1 (2026-07-24): a separate,
+// purpose-built executive presentation layer over the exact same real
+// /api/v1/* services above — not a replacement for mission_control.html
+// (the day-to-day Arabic ops console), a distinct dark, English,
+// boardroom-facing view. Same auth as every other Mission Control page.
+app.get('/mission_control_executive_v1.html', requireMissionControlAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'mission_control_executive_v1.html'));
+});
+
 // ── UNIFIED SERVICE LAYER (Phase 8 — Unified Service Layer) ──
 // Every core capability exposed through one stable, versioned internal
 // API: GET /api/v1/<service> (data) + GET /api/v1/<service>/health
@@ -349,6 +359,112 @@ async function alertsService() {
     needs_attention: dashboardData.readAttentionFlag(),
     needs_review: dashboardData.readReviewFlag(),
   };
+}
+
+// Galaxy Forge Executive Mission Control v1 (2026-07-24): 4 new, thin,
+// read-only services -- zero new engines, each reuses a real, already-
+// existing data source verbatim. "No verified data" is returned honestly
+// wherever the real source is genuinely empty or unavailable, never a
+// fabricated placeholder.
+
+const EVIDENCE_PAYMENT_TYPES = new Set(['complaining_review', 'paid_job_posting', 'freelancer_agency_pricing', 'subscription_escape']);
+
+async function evidenceEngineService() {
+  const evidencePath = path.join(__dirname, 'data', 'market_evidence.jsonl');
+  if (!fs.existsSync(evidencePath)) {
+    return { total_events: 0, niches_with_evidence: 0, by_event_type: {}, payment_evidence_events: 0, note: 'السجل فارغ حقيقةً — لا أحداث دليل سوق مسجَّلة بعد لأي نيتش' };
+  }
+  const events = readJsonlEntries(evidencePath);
+  const byType = {};
+  const niches = new Set();
+  let paymentCount = 0;
+  for (const e of events) {
+    byType[e.event_type] = (byType[e.event_type] || 0) + 1;
+    if (e.niche) niches.add(e.niche);
+    if (EVIDENCE_PAYMENT_TYPES.has(e.event_type)) paymentCount += 1;
+  }
+  return {
+    total_events: events.length,
+    niches_with_evidence: niches.size,
+    by_event_type: byType,
+    payment_evidence_events: paymentCount,
+  };
+}
+
+function schedulerStatusService() {
+  return new Promise((resolve) => {
+    if (process.platform !== 'win32') {
+      resolve({ available: false, note: 'فحص المجدول مبني لـ Windows فقط اليوم — لا نشر آخر لاختباره بعد' });
+      return;
+    }
+    const psCommand = [
+      "$t = Get-ScheduledTask -TaskName 'OpenClaw-WeeklyPublicReport' -ErrorAction SilentlyContinue;",
+      "if ($t) {",
+      "  $trig = $t.Triggers | Select-Object -First 1;",
+      "  [PSCustomObject]@{",
+      "    TaskName = $t.TaskName; State = $t.State.ToString(); Enabled = $t.Settings.Enabled;",
+      "    StartBoundary = $trig.StartBoundary; DaysOfWeek = $trig.DaysOfWeek;",
+      "  } | ConvertTo-Json",
+      "}",
+    ].join(' ');
+    execFile('powershell', ['-NoProfile', '-Command', psCommand], { timeout: 5000 }, (err, stdout) => {
+      if (err || !stdout || !stdout.trim()) {
+        resolve({ available: false, note: 'تعذّر العثور على المهمة المجدولة الحقيقية في Windows Task Scheduler، أو خطأ في الاستعلام' });
+        return;
+      }
+      try {
+        const parsed = JSON.parse(stdout);
+        resolve({
+          available: true, task_name: parsed.TaskName, state: parsed.State, enabled: parsed.Enabled,
+          next_trigger_days_of_week_bitmask: parsed.DaysOfWeek, start_boundary: parsed.StartBoundary,
+        });
+      } catch {
+        resolve({ available: false, note: 'تعذّر تحليل استجابة PowerShell الحقيقية' });
+      }
+    });
+  });
+}
+
+async function recentAdrDecisionsService() {
+  const govDir = path.join(__dirname, 'OpenClaw_Brain', '00_Governance');
+  if (!fs.existsSync(govDir)) {
+    return { total: 0, recent: [], note: 'مجلد الحوكمة غير موجود' };
+  }
+  const files = fs.readdirSync(govDir).filter((f) => /^ADR-\d+/.test(f));
+  const parsed = files.map((f) => {
+    const match = f.match(/^ADR-(\d+)/);
+    const number = match ? parseInt(match[1], 10) : 0;
+    let title = f, date = null, status = null;
+    try {
+      const content = fs.readFileSync(path.join(govDir, f), 'utf8');
+      const lines = content.split('\n');
+      const h1 = lines.find((l) => l.startsWith('# '));
+      if (h1) title = h1.replace(/^#\s*/, '').trim();
+      const dateLine = lines.find((l) => l.startsWith('**Date:**'));
+      if (dateLine) date = dateLine.replace('**Date:**', '').trim();
+      const statusLine = lines.find((l) => l.startsWith('**Status:**'));
+      if (statusLine) status = statusLine.replace('**Status:**', '').trim();
+    } catch { /* a single unreadable ADR file must never break the whole listing */ }
+    return { number, filename: f, title, date, status };
+  }).sort((a, b) => b.number - a.number);
+  return { total: parsed.length, recent: parsed.slice(0, 20) };
+}
+
+const SYSTEM_LOG_FILES = ['factory_loop.log', 'scout_runs.log', 'finance_errors.log', 'supervisor.log', 'server_crashes.log'];
+
+async function systemLogsService() {
+  const result = {};
+  for (const f of SYSTEM_LOG_FILES) {
+    const p = path.join(__dirname, f);
+    if (!fs.existsSync(p)) { result[f] = { exists: false }; continue; }
+    try {
+      const lines = fs.readFileSync(p, 'utf8').split('\n').filter(Boolean);
+      result[f] = { exists: true, total_lines: lines.length, last_lines: lines.slice(-20) };
+    } catch (e) {
+      result[f] = { exists: true, error: e.message };
+    }
+  }
+  return result;
 }
 
 // EOS Phase 1 (2026-07-19): "show only decisions that require founder
@@ -627,6 +743,34 @@ const SERVICE_REGISTRY = [
     reused: 'lib/infrastructure_intelligence.js getInfrastructureStatus() (Autonomous Digital Company v1, Track B1, 2026-07-19) — pure os/fs + JSONL reads, no new dependency.',
     handler: async () => infrastructureIntelligence.getInfrastructureStatus(),
     health: fsHealthCheck(() => infrastructureIntelligence.getSystemResources(), 'os/fs resource read check ok'),
+  },
+  {
+    name: 'evidence-engine-status',
+    description: 'Galaxy Forge Executive Mission Control v1 (2026-07-24): real aggregate over the Market Evidence Ledger (ADR-088, extended by ADR-121/122) — total real events, how many real niches have any, a breakdown by event type, and how many are Proof-of-Payment-qualifying. Honestly reports the ledger as empty when it is (it has never been populated automatically, by design — ADR-121).',
+    reused: 'data/market_evidence.jsonl, the exact same real ledger market_evidence.py/profit_oracle.py already read — no new engine, a plain read + count.',
+    handler: evidenceEngineService,
+    health: fsHealthCheck(() => fs.existsSync(path.join(__dirname, 'data')), 'data/ directory reachable'),
+  },
+  {
+    name: 'scheduler-status',
+    description: 'Galaxy Forge Executive Mission Control v1 (2026-07-24): the one real, durable scheduler in this factory — the Windows Scheduled Task OpenClaw-WeeklyPublicReport (ADR-119), queried live via Get-ScheduledTask. Honestly reports unavailable on non-Windows or if the task cannot be found.',
+    reused: 'Windows Task Scheduler itself, via a real PowerShell Get-ScheduledTask call — same pattern lib/health_checks.js checkDiskSpace() already established for real Windows-only checks.',
+    handler: schedulerStatusService,
+    health: async () => ({ status: 'ok', detail: 'dependency check only: PowerShell availability assumed on this Windows host' }),
+  },
+  {
+    name: 'recent-adr-decisions',
+    description: 'Galaxy Forge Executive Mission Control v1 (2026-07-24): the 20 most recent real ADRs (title/date/status parsed from each file\'s own real header) — every governance decision this factory has actually made, newest first.',
+    reused: 'OpenClaw_Brain/00_Governance/ADR-*.md — a plain directory read, no new engine.',
+    handler: recentAdrDecisionsService,
+    health: fsHealthCheck(() => fs.existsSync(path.join(__dirname, 'OpenClaw_Brain', '00_Governance')), 'governance directory reachable'),
+  },
+  {
+    name: 'system-logs',
+    description: 'Galaxy Forge Executive Mission Control v1 (2026-07-24): the real tail (last 20 lines) of every real operational log file this factory writes — factory_loop.log, scout_runs.log, finance_errors.log, supervisor.log, server_crashes.log. Honestly reports a file as not existing if it has never been written.',
+    reused: 'the real log files themselves, at the repo root — a plain tail read, no new engine.',
+    handler: systemLogsService,
+    health: async () => ({ status: 'ok', detail: 'dependency check only: fs module reachable' }),
   },
 ];
 
