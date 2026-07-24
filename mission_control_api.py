@@ -1342,6 +1342,31 @@ def _get_company_reality_score():
     return reality_mode.compute_company_reality_score()
 
 
+def _get_ceo_questions():
+    """Global CEO Decision Center (2026-07-24): real, evidence-based
+    answers to the 10 named CEO questions. No payload required."""
+    import ceo_decision_center
+    return ceo_decision_center.answer_ceo_questions()
+
+
+def _get_capital_allocation_snapshot():
+    """Global CEO Decision Center (2026-07-24): the real, descriptive
+    snapshot of where real opportunities/evidence currently concentrate
+    across the 10 named functions — never a fabricated dollar budget.
+    No payload required."""
+    import ceo_decision_center
+    return ceo_decision_center.capital_allocation_snapshot()
+
+
+def _get_ceo_dashboard():
+    """Global CEO Decision Center (2026-07-24): the real 8-field CEO
+    dashboard (Company Health, Capital Allocation, Growth Rate, Revenue
+    Trend, Top Opportunities, Top Risks, Current Strategic Priority,
+    Next Executive Decision). No payload required."""
+    import ceo_decision_center
+    return ceo_decision_center.ceo_dashboard()
+
+
 def _get_global_execution_view():
     """Autonomous Global Execution Engine (2026-07-23): the single real
     operational window the founder named, assembled entirely from
@@ -1522,6 +1547,9 @@ _ENDPOINTS = {
     "get_lifecycle_trace": _get_lifecycle_trace,
     "get_mission_control_heartbeat": _get_mission_control_heartbeat,
     "get_company_reality_score": _get_company_reality_score,
+    "get_ceo_questions": _get_ceo_questions,
+    "get_capital_allocation_snapshot": _get_capital_allocation_snapshot,
+    "get_ceo_dashboard": _get_ceo_dashboard,
     "run_master_cycle": _run_master_cycle,
 }
 

@@ -1594,6 +1594,38 @@ const ACTION_REGISTRY = [
     asyncRunner: () => runPythonActionAsync('get-company-reality-score', 'get_company_reality_score', []),
   },
   {
+    // Global CEO Decision Center (2026-07-24) -- real, evidence-based
+    // answers to the 10 named CEO questions. Pure orchestration over
+    // investment_pipeline.py/scheduler.py/production_blueprint.py/
+    // competitor_discovery.py/ai_capability.orchestrator.py.
+    name: 'get-ceo-questions',
+    description: 'Read-only: real answers to the 10 named CEO questions (most profitable opportunity, opportunity to abandon, deserves more investment, country priority, saturating market, strengthening niche, best AI model per department, highest real ROI products, wasted production pipelines, next commercial experiment). Country question always honestly deferred.',
+    reused: 'ceo_decision_center.py::answer_ceo_questions()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: () => runPythonActionAsync('get-ceo-questions', 'get_ceo_questions', []),
+  },
+  {
+    // Global CEO Decision Center (2026-07-24) -- real, descriptive
+    // capital allocation snapshot across the 10 named functions.
+    name: 'get-capital-allocation-snapshot',
+    description: 'Read-only: a real, descriptive snapshot of where real opportunities/evidence currently concentrate across the 10 named functions (Research, Production, Automation, Marketing, Publishing, Sales, Commercial Intelligence, China Division, Enterprise Division, Premium Products) -- real counts only, never a fabricated dollar budget.',
+    reused: 'ceo_decision_center.py::capital_allocation_snapshot()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: () => runPythonActionAsync('get-capital-allocation-snapshot', 'get_capital_allocation_snapshot', []),
+  },
+  {
+    // Global CEO Decision Center (2026-07-24) -- the real 8-field CEO
+    // dashboard.
+    name: 'get-ceo-dashboard',
+    description: 'Read-only: the real 8-field CEO dashboard (Company Health, Capital Allocation, Growth Rate, Revenue Trend, Top Opportunities, Top Risks, Current Strategic Priority, Next Executive Decision) -- thin reuse only, Company Health referenced from GET /health rather than re-derived.',
+    reused: 'ceo_decision_center.py::ceo_dashboard()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: () => runPythonActionAsync('get-ceo-dashboard', 'get_ceo_dashboard', []),
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +

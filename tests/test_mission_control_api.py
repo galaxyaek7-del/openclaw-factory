@@ -419,6 +419,28 @@ class TestGlobalMarketLearningEngineActions(unittest.TestCase):
         mock_score.assert_called_once_with()
         self.assertIsNone(result["score_pct"])
 
+    def test_ceo_decision_center_actions_are_registered(self):
+        for name in ("get_ceo_questions", "get_capital_allocation_snapshot", "get_ceo_dashboard"):
+            self.assertIn(name, mission_control_api._ENDPOINTS)
+
+    def test_ceo_questions_delegates_to_the_real_module(self):
+        with patch("ceo_decision_center.answer_ceo_questions", return_value={"1_most_profitable_opportunity_now": None}) as mock_q:
+            result = mission_control_api._get_ceo_questions()
+        mock_q.assert_called_once_with()
+        self.assertIsNone(result["1_most_profitable_opportunity_now"])
+
+    def test_capital_allocation_snapshot_delegates_to_the_real_module(self):
+        with patch("ceo_decision_center.capital_allocation_snapshot", return_value={"Research": {}}) as mock_alloc:
+            result = mission_control_api._get_capital_allocation_snapshot()
+        mock_alloc.assert_called_once_with()
+        self.assertEqual(result["Research"], {})
+
+    def test_ceo_dashboard_delegates_to_the_real_module(self):
+        with patch("ceo_decision_center.ceo_dashboard", return_value={"current_strategic_priority": None}) as mock_dash:
+            result = mission_control_api._get_ceo_dashboard()
+        mock_dash.assert_called_once_with()
+        self.assertIsNone(result["current_strategic_priority"])
+
     def test_commercial_intelligence_report_requires_a_niche(self):
         with patch.object(sys, "argv", ["mission_control_api.py", "get_commercial_intelligence_report", json.dumps({})]):
             with self.assertRaises(ValueError):
