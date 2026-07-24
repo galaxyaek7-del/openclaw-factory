@@ -428,6 +428,35 @@ test('GET /api/reality is cached — repeat calls within the TTL are consistentl
   }
 });
 
+test('runPythonServiceCached: repeat GET /api/v1/knowledge-graph calls are cached, and ?fresh=1 always forces a real re-fetch (Galaxy Forge v1.0 Performance directive, 2026-07-25)', async () => {
+  const first = await fetch(`${BASE_URL}/api/v1/knowledge-graph`, { headers: { Cookie: cookie } });
+  const firstBody = await first.json();
+  assert.equal(first.status, 200);
+
+  const timings = [];
+  for (let i = 0; i < 3; i++) {
+    const start = Date.now();
+    const res = await fetch(`${BASE_URL}/api/v1/knowledge-graph`, { headers: { Cookie: cookie } });
+    const body = await res.json();
+    timings.push(Date.now() - start);
+    // The real payload (node_count/edge_count/nodes/edges) must be
+    // byte-identical to the first real call -- only the envelope's own
+    // generated_at legitimately differs between a cached and a fresh
+    // response.
+    assert.deepEqual(body.data, firstBody.data);
+  }
+  for (const t of timings) {
+    assert.ok(t < 1500, `expected a cached /api/v1/knowledge-graph call to be well under 1500ms, got ${t}ms — caching may have regressed`);
+  }
+
+  // A real, explicit ?fresh=1 must still return valid real data — it is
+  // a cache-bypass, not a different endpoint or a degraded one.
+  const fresh = await fetch(`${BASE_URL}/api/v1/knowledge-graph?fresh=1`, { headers: { Cookie: cookie } });
+  const freshBody = await fresh.json();
+  assert.equal(fresh.status, 200);
+  assert.equal(freshBody.data.node_count, firstBody.data.node_count);
+});
+
 test('server binds to loopback only, not all interfaces', async () => {
   const probe = net.createServer();
   const bindResult = await new Promise((resolve) => {

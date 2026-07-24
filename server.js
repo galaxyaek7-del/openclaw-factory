@@ -298,6 +298,48 @@ function runPythonService(section, extraArgs = []) {
   });
 }
 
+// Galaxy Forge v1.0 "World-Class Quality" directive (2026-07-25),
+// Performance bucket: "cache expensive operations... optimize Python/
+// Node communication." Same real pattern already adopted for
+// runRealityCached() (reality.py was costing 3-4 real seconds per call
+// with zero caching) -- applied here to runPythonService() itself, the
+// one real chokepoint every Python-backed SERVICE_REGISTRY read spawns
+// through. Every service wrapped with this (see call sites below) is a
+// pure read of slow-moving business state -- decisions, production,
+// revenue, knowledge graph, AI capability -- never per-request-sensitive,
+// and independently measured (Mission Control CEO review, ADR-124) at
+// 1-14 real seconds per call. A short TTL removes the redundant spawn
+// cost without ever serving meaningfully stale data.
+//
+// Deliberately NOT applied to runPythonService() itself, nor to every
+// call site: several existing callers are real MUTATIONS (e.g.
+// ai_capability_request, resolve_recovery) or route through the
+// separate, already-job-tracked ACTION_REGISTRY -- caching those would
+// be a real correctness bug (a mutation silently not re-executing on a
+// repeat call inside the TTL window), not a performance win. Only the
+// confirmed pure-read SERVICE_REGISTRY handlers below use this wrapper;
+// runPythonService() itself stays available, uncached, for every other
+// real caller exactly as before.
+const PYTHON_SERVICE_CACHE_TTL_MS = 20000;
+const pythonServiceCache = new Map(); // "section|args" -> { result, expiresAt }
+
+// `req` is optional -- passed through so a caller can force a real,
+// uncached re-fetch via `?fresh=1` (Mission Control's own Refresh button
+// does this: a founder clicking "Refresh" should always get a genuinely
+// fresh read, never a stale cached one, even inside the TTL window).
+function runPythonServiceCached(section, extraArgs = [], req = null) {
+  const bypass = !!(req && req.query && (req.query.fresh === '1' || req.query.fresh === 'true'));
+  const key = section + '|' + JSON.stringify(extraArgs);
+  if (!bypass) {
+    const cached = pythonServiceCache.get(key);
+    if (cached && Date.now() < cached.expiresAt) return Promise.resolve(cached.result);
+  }
+  return runPythonService(section, extraArgs).then(result => {
+    pythonServiceCache.set(key, { result, expiresAt: Date.now() + PYTHON_SERVICE_CACHE_TTL_MS });
+    return result;
+  });
+}
+
 // Cheap dependency check, not a full data run: confirms the Python
 // interpreter is resolvable and the dispatcher script exists on disk.
 // Deliberately does NOT spawn mission_control_api.py itself — that would
@@ -498,8 +540,8 @@ async function founderConsoleService() {
   };
 }
 
-async function publishingStatusService() {
-  const production = await runPythonService('production');
+async function publishingStatusService(req) {
+  const production = await runPythonServiceCached('production', [], req);
   const dossiers = production.dossiers || [];
   return {
     processed: production.processed,
@@ -531,7 +573,7 @@ const SERVICE_REGISTRY = [
     name: 'opportunity-queue',
     description: 'Every ranked opportunity plus the ACCEPTED queue ready for production.',
     reused: 'decision_engine/ranking.py rank_all()/rank_queue(), via mission_control_api.py.',
-    handler: () => runPythonService('opportunities'),
+    handler: (req) => runPythonServiceCached('opportunities', [], req),
     health: pythonHealthCheck('opportunities'),
   },
   {
@@ -549,7 +591,7 @@ const SERVICE_REGISTRY = [
     name: 'opportunity-pipeline',
     description: "The real, ranked Opportunity Pipeline: every currently-scored opportunity annotated with 10 real fields (market size, customer type, pain level, competition, price, recurring revenue, technical complexity, time to MVP, defensibility, scalability) -- real data where it exists, honestly Unknown where it doesn't. Product Laboratory = decisions already ACCEPTED by the real existing gate; everything else stays in the backlog.",
     reused: 'opportunity_pipeline.py build_opportunity_pipeline() (Opportunity Intelligence Round 2, 2026-07-22) -- reuses decision_engine.ranking.rank_all() verbatim, never recomputes accept/reject.',
-    handler: () => runPythonService('opportunity_pipeline'),
+    handler: (req) => runPythonServiceCached('opportunity_pipeline', [], req),
     health: pythonHealthCheck('opportunity_pipeline'),
   },
   {
@@ -565,7 +607,7 @@ const SERVICE_REGISTRY = [
       if (!niche) {
         return Promise.resolve({ variants: [], note: 'مرِّر ?niche=<النيتش> لمقارنة مسارات إنتاج فرصة محدَّدة — لا نيتش مُحدَّد بعد' });
       }
-      return runPythonService('product_concept_comparison', [JSON.stringify({ niche })]);
+      return runPythonServiceCached('product_concept_comparison', [JSON.stringify({ niche })], req);
     },
     health: pythonHealthCheck('product_concept_comparison'),
   },
@@ -573,14 +615,14 @@ const SERVICE_REGISTRY = [
     name: 'decision-history',
     description: 'Every ACCEPTED/REJECTED/DEFERRED decision ever recorded, newest first, summary fields only.',
     reused: 'decision_engine/store.py read_decisions(), via mission_control_api.py.',
-    handler: () => runPythonService('decision_history'),
+    handler: (req) => runPythonServiceCached('decision_history', [], req),
     health: pythonHealthCheck('decision_history'),
   },
   {
     name: 'production-queue',
     description: 'Production dossiers for every ACCEPTED opportunity (pricing, assets, pre-production verification), plus the current pause/resume state (Phase 9).',
     reused: 'production_factory/factory.py run_production_factory(), via mission_control_api.py, plus server.js readProductionControl() (Phase 9 pause/resume flag).',
-    handler: async () => ({ ...(await runPythonService('production')), production_control: readProductionControl() }),
+    handler: async (req) => ({ ...(await runPythonServiceCached('production', [], req)), production_control: readProductionControl() }),
     health: pythonHealthCheck('production'),
   },
   {
@@ -594,14 +636,14 @@ const SERVICE_REGISTRY = [
     name: 'revenue-summary',
     description: 'Revenue pipeline results for every ACCEPTED opportunity plus the rendered CEO revenue report.',
     reused: 'revenue_pipeline/pipeline.py run_revenue_pipeline()/render_ceo_revenue_report(), via mission_control_api.py.',
-    handler: () => runPythonService('revenue'),
+    handler: (req) => runPythonServiceCached('revenue', [], req),
     health: pythonHealthCheck('revenue'),
   },
   {
     name: 'automation-status',
     description: 'n8n workflow status from the last real exported definitions (n8n_workflows/*.fixed.json) — honestly labelled as a static export, not live state (n8n REST API still needs a manual login, BLOCKERS.md #1).',
     reused: 'mission_control_api.py\'s existing n8n_workflows/*.fixed.json reader.',
-    handler: () => runPythonService('automation'),
+    handler: (req) => runPythonServiceCached('automation', [], req),
     health: pythonHealthCheck('automation'),
   },
   {
@@ -622,84 +664,84 @@ const SERVICE_REGISTRY = [
     name: 'system-configuration',
     description: 'Real, non-secret configuration: unit economics (config/economics.json), tier weights/floor and per-tier automation/long-term-value constants (profit_oracle.py), and the capability maturity registry.',
     reused: 'config/economics.json, config/capability_registry.json, profit_oracle.py\'s TIER_WEIGHTS/MIN_OPPORTUNITY_SCORE/AUTOMATION_POTENTIAL_BY_TIER/LONG_TERM_VALUE_BY_TIER, via mission_control_api.py.',
-    handler: () => runPythonService('system_configuration'),
+    handler: (req) => runPythonServiceCached('system_configuration', [], req),
     health: pythonHealthCheck('system_configuration'),
   },
   {
     name: 'recovery-status',
     description: 'Unified Recovery System (2026-07-18) dashboard: current in-flight task, recovery state, pending retries, last checkpoint, and the last real recovery action.',
     reused: 'factory_state.py load_state() + data/recovery_actions.jsonl, via mission_control_api.py.',
-    handler: () => runPythonService('recovery'),
+    handler: (req) => runPythonServiceCached('recovery', [], req),
     health: pythonHealthCheck('recovery'),
   },
   {
     name: 'production-families',
     description: 'Universal Production Engine (2026-07-18): which of the 11 UPE product families have a real registered adapter today, under the founder-approved canonical family names, plus each manifest-driven family\'s real Product Manifest (Roadmap Step 3) — category, generators, pricing, supported marketplaces.',
     reused: 'product_families.registry + product_families.manifest, via mission_control_api.py — same data-driven discipline as production_factory/dossier.py\'s _product_type_capability().',
-    handler: () => runPythonService('production_families'),
+    handler: (req) => runPythonServiceCached('production_families', [], req),
     health: pythonHealthCheck('production_families'),
   },
   {
     name: 'commercial-execution',
     description: 'Universal Production Engine (2026-07-19): the Commercial Execution Layer — which marketplaces are autonomous vs need real founder action right now (approval gates, computed off every arm\'s own live status()), plus the most recent real publish attempts from the ledger.',
     reused: 'commercial_execution.approval_gates + channels.ledger, via mission_control_api.py.',
-    handler: () => runPythonService('commercial_execution'),
+    handler: (req) => runPythonServiceCached('commercial_execution', [], req),
     health: pythonHealthCheck('commercial_execution'),
   },
   {
     name: 'ai-capability-registry',
     description: 'Real AI provider capability registry (Claude, GPT, Gemini, Grok, DeepSeek, Qwen, Mistral, local models, plus Groq itself) — Groq metrics computed live from data/ai_cost_log.jsonl (REAL where measured), every other provider honestly DISCOVERY-level until a credential exists and is actually called. Plus the append-only log of real department requests for a different/better model.',
     reused: 'ai_capability/registry.py list_providers()/read_capability_requests() (Autonomous Digital Company v1, Track B2, 2026-07-19), via mission_control_api.py.',
-    handler: () => runPythonService('ai_capability'),
+    handler: (req) => runPythonServiceCached('ai_capability', [], req),
     health: pythonHealthCheck('ai_capability'),
   },
   {
     name: 'golden-hunter-status',
     description: "Golden Hunter Evolution -- real recent activity + top currently-scored opportunities, each with a real, informational pre-acceptance ROI estimate. Never changes the real accept/reject gate.",
     reused: 'mission_control_api.py _golden_hunter_status() (EOS Phase 2, 2026-07-19) -- reuses golden_opportunities.json, data/golden_hunter_events.jsonl, and revenue_pipeline.plan.estimate_pre_acceptance_roi() verbatim.',
-    handler: () => runPythonService('golden_hunter_status'),
+    handler: (req) => runPythonServiceCached('golden_hunter_status', [], req),
     health: pythonHealthCheck('golden_hunter_status'),
   },
   {
     name: 'pioneer-status',
     description: "Pioneer -- real discovery activity. Honestly discloses that Pioneer's candidates share the same event log as Golden Hunter (no separate Pioneer-only counter exists).",
     reused: 'mission_control_api.py _pioneer_status() (EOS Phase 2, 2026-07-19).',
-    handler: () => runPythonService('pioneer_status'),
+    handler: (req) => runPythonServiceCached('pioneer_status', [], req),
     health: pythonHealthCheck('pioneer_status'),
   },
   {
     name: 'knowledge-graph',
     description: "A real, queryable company memory -- nodes (Niche, Decision, ProductionRun, PublishChannel, AIProvider) and edges built fresh from 5 real data sources on every call. The Decision->ProductionRun edge is honestly labelled 'exact' (real production_id match) or 'approximate' (best-effort niche-text fallback) -- never presented as certain when it isn't.",
     reused: 'knowledge_graph/build.py build_graph() (EOS Phase 2, 2026-07-19) -- reuses data/decisions.jsonl, data/market_intelligence_analyses.jsonl, data/sales_ledger.jsonl, data/ai_cost_log.jsonl verbatim, no new data collection.',
-    handler: () => runPythonService('knowledge_graph'),
+    handler: (req) => runPythonServiceCached('knowledge_graph', [], req),
     health: pythonHealthCheck('knowledge_graph'),
   },
   {
     name: 'department-health',
     description: "Per-named-department health rollup -- pure assembly of already-computed real signals (orchestrator engine success rates, channel approval status, real activity counts, AI provider status, infrastructure status, recovery/retry state). Researchers and Customer Intelligence are honestly 'no real data' -- never a fabricated score.",
     reused: 'department_health.py build_department_health() (EOS Phase 2, 2026-07-19) -- reuses executive_intelligence.engine_health, commercial_execution.approval_gates, ai_capability.registry, infrastructure_bridge.py, channels.ledger, and factory_state.py verbatim.',
-    handler: () => runPythonService('department_health'),
+    handler: (req) => runPythonServiceCached('department_health', [], req),
     health: pythonHealthCheck('department_health'),
   },
   {
     name: 'research-department',
     description: "Real analysis assembled under 7 named research categories (Market, Competitor, Pricing, Publishing, Automation, Technology, Customer) -- pure assembly of already-real signals, no new analysis logic. Technology and Customer research are honestly 'Unknown' -- no module evaluates tech choices, and this factory has zero real customer data.",
     reused: 'research_department.py build_research_report() (EOS Phase 2, 2026-07-19) -- reuses market_intelligence_analyses.jsonl, competitor_discovery.py, profit_oracle.py constants, commercial_execution.approval_gates, and evolution_engine.py verbatim.',
-    handler: () => runPythonService('research_department'),
+    handler: (req) => runPythonServiceCached('research_department', [], req),
     health: pythonHealthCheck('research_department'),
   },
   {
     name: 'ai-doctor',
     description: "The real, non-fabricated engineering-health system replacing quality_doctor.py's confirmed-fake pattern -- combines evolution_engine's bottleneck/tech-debt/ROI/capability-gap signals with real infrastructure status and a real (never-fabricated) dependency-pinning + npm-audit check.",
     reused: 'ai_doctor.py build_ai_doctor_report() (EOS Phase 2, 2026-07-19) -- reuses evolution_engine.py and infrastructure_bridge.py verbatim, no reimplementation.',
-    handler: () => runPythonService('ai_doctor'),
+    handler: (req) => runPythonServiceCached('ai_doctor', [], req),
     health: pythonHealthCheck('ai_doctor'),
   },
   {
     name: 'integration-registry',
     description: "Real, adapter-based extension points for every founder-named future vendor (n8n, GitHub, Notion, Slack, Discord, Cloudflare, Docker, Supabase, PostgreSQL, vector databases, Shopify, KDP, Perplexity, MiniMax, etc.), plus AI providers/commerce channels referenced from their own real registries -- never a second, duplicate source of truth for those. No live 'test connection' calls -- real env-var presence only.",
     reused: 'integration_registry.py list_integrations() (EOS Phase 2, 2026-07-19) -- references ai_capability/registry.py and channels/registry.py rather than duplicating them.',
-    handler: () => runPythonService('integration_registry'),
+    handler: (req) => runPythonServiceCached('integration_registry', [], req),
     health: pythonHealthCheck('integration_registry'),
   },
   {
@@ -713,28 +755,28 @@ const SERVICE_REGISTRY = [
     name: 'evolution-report',
     description: "Company Evolution Engine -- real bottleneck detection, technical debt, high-ROI opportunity ranking, tool-integration proposals, and a new capability-gap scan (config/capability_registry.json entries not yet REAL). Detection only, never automatic execution.",
     reused: 'evolution_engine.py build_evolution_report() (EOS Phase 1, 2026-07-19) -- combines executive_intelligence.bottlenecks, strategic_intelligence.technical_debt, revenue_pipeline.pipeline, tool_intelligence.proposals, and the new capability_registry_scanner.py.',
-    handler: () => runPythonService('evolution_report'),
+    handler: (req) => runPythonServiceCached('evolution_report', [], req),
     health: pythonHealthCheck('evolution_report'),
   },
   {
     name: 'market-review',
     description: "Weekly Market Review -- niches scanned, real opportunity-gap/customer-pain trend (period vs. all-time), and top rejection reasons. The one weekly Continuous Improvement Engine review type that had no real generator before EOS Phase 1.",
     reused: 'market_intelligence_core/market_review.py generate_market_review() (EOS Phase 1, 2026-07-19) -- reuses strategic_intelligence.rejection_patterns.most_frequent_rejection_reasons() verbatim, no reimplementation.',
-    handler: () => runPythonService('market_review'),
+    handler: (req) => runPythonServiceCached('market_review', [], req),
     health: pythonHealthCheck('market_review'),
   },
   {
     name: 'strategic-recommendations',
     description: "Strategic Recommendations tab: strategic_intelligence's real decision-pattern/rejection/technical-debt report (ADR-054), previously only reachable bundled inside the combined executive report, plus the same real tool-integration proposals as tool-recommendations.",
     reused: 'strategic_intelligence/report.py generate_strategic_report() (ADR-054) + tool_intelligence/proposals.py, via mission_control_api.py.',
-    handler: () => runPythonService('strategic_report'),
+    handler: (req) => runPythonServiceCached('strategic_report', [], req),
     health: pythonHealthCheck('strategic_report'),
   },
   {
     name: 'tool-recommendations',
     description: "Real, evidence-cited software/AI-tool integration proposals -- '(مقترَح، لا تنفيذ)' (proposed, not implemented), matching the existing ADR-024 convention. Every proposal is grounded in a real gap this factory's own audits found, with why/business-value/effort/ROI/dependencies/risks fields — never a generic tool pitch.",
     reused: 'tool_intelligence/proposals.py list_proposals() (Autonomous Digital Company v1, Track B3, 2026-07-19), via mission_control_api.py.',
-    handler: () => runPythonService('tool_intelligence'),
+    handler: (req) => runPythonServiceCached('tool_intelligence', [], req),
     health: pythonHealthCheck('tool_intelligence'),
   },
   {
