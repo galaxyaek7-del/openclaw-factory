@@ -136,6 +136,31 @@ class TestQueueDraftForApproval(unittest.TestCase):
             self.assertFalse(result["telegram"]["sent"])
 
 
+class TestApproveDraft(unittest.TestCase):
+    def test_moves_a_real_draft_from_pending_to_approved(self):
+        with tempfile.TemporaryDirectory() as pending, tempfile.TemporaryDirectory() as approved:
+            src = os.path.join(pending, "2026-07-24_weekly_report_test.md")
+            with open(src, "w", encoding="utf-8") as f:
+                f.write("# Final real content")
+
+            result = bip.approve_draft(
+                "2026-07-24_weekly_report_test.md", drafts_dir=pending, approved_dir=approved,
+            )
+
+            self.assertTrue(result["approved"])
+            self.assertFalse(os.path.exists(src))
+            dest = os.path.join(approved, "2026-07-24_weekly_report_test.md")
+            self.assertTrue(os.path.exists(dest))
+            with open(dest, "r", encoding="utf-8") as f:
+                self.assertEqual(f.read(), "# Final real content")
+
+    def test_missing_draft_reports_honestly_not_fabricated_success(self):
+        with tempfile.TemporaryDirectory() as pending, tempfile.TemporaryDirectory() as approved:
+            result = bip.approve_draft("does-not-exist.md", drafts_dir=pending, approved_dir=approved)
+            self.assertFalse(result["approved"])
+            self.assertIn("not found", result["error"])
+
+
 class TestBuildPublicSiteStructure(unittest.TestCase):
     def test_real_product_catalog_is_reused_verbatim(self):
         with tempfile.TemporaryDirectory() as tmpdir:

@@ -167,6 +167,27 @@ def queue_draft_for_approval(draft_type, title, content_markdown, telegram_summa
     }
 
 
+def approve_draft(filename, drafts_dir=None, approved_dir=None):
+    """Moves a real draft from drafts/pending_review/ to drafts/approved/
+    once the founder has approved it (2026-07-24, via Telegram reply) --
+    the file's content is already the final text; this only marks it
+    approved and ready. No auto-posting integration exists for any real
+    public channel today, so "final publishable" means ready for the
+    founder to post manually, not an automated publish."""
+    pending = Path(drafts_dir) if drafts_dir else DRAFTS_DIR
+    approved = Path(approved_dir) if approved_dir else (_FACTORY_ROOT / "drafts" / "approved")
+    approved.mkdir(parents=True, exist_ok=True)
+
+    src = pending / filename
+    if not src.exists():
+        return {"approved": False, "path": None, "error": f"{filename} not found in {pending}"}
+
+    dest = approved / filename
+    dest.write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
+    src.unlink()
+    return {"approved": True, "path": str(dest), "approved_at": datetime.now(timezone.utc).isoformat()}
+
+
 def build_public_site_structure(output_dir=None):
     """Real, local scaffolding for a future public GitHub repo — never
     creates or pushes an actual public repository (a real, hard-to-

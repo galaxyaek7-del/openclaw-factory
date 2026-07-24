@@ -27,11 +27,25 @@ const { spawn } = require('child_process');
 const REPO_ROOT = path.join(__dirname, '..');
 const SUPERVISOR_SCRIPT = path.join(REPO_ROOT, 'scripts', 'supervisor.js');
 
+// Real finding (2026-07-24): the two integration tests below spawn the
+// real supervisor.js, which calls alertCrashRestart()/alertGivingUp() on
+// every real child exit it observes -- if the invoking shell happens to
+// have real TELEGRAM_BOT_TOKEN/OPENCLAW_TELEGRAM_CHAT_ID set (as any real
+// dev/production shell for this factory will), every run of this test
+// suite silently fired real Telegram alerts for its own simulated
+// crashes. Force-cleared here regardless of the invoking shell's real
+// env, so this harness can never leak a real send no matter where it
+// runs; the third test below verifies alert content by mocking fetch
+// directly instead, so it never lets a real network call through either.
+function buildSupervisorTestEnv(env) {
+  return { ...process.env, TELEGRAM_BOT_TOKEN: '', OPENCLAW_TELEGRAM_CHAT_ID: '', ...env };
+}
+
 function runSupervisor(env, timeoutMs = 15000) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [SUPERVISOR_SCRIPT], {
       cwd: REPO_ROOT,
-      env: { ...process.env, ...env },
+      env: buildSupervisorTestEnv(env),
     });
     let stdout = '';
     child.stdout.on('data', (d) => { stdout += d; });
@@ -116,6 +130,27 @@ test('alertCrashRestart sends a real, immediate alert on every crash, not just o
     assert.match(sentText, /رقم 2/);
   } finally {
     global.fetch = originalFetch;
+    if (originalToken === undefined) delete process.env.TELEGRAM_BOT_TOKEN; else process.env.TELEGRAM_BOT_TOKEN = originalToken;
+    if (originalChat === undefined) delete process.env.OPENCLAW_TELEGRAM_CHAT_ID; else process.env.OPENCLAW_TELEGRAM_CHAT_ID = originalChat;
+  }
+});
+
+// Regression test for the real leak found 2026-07-24: real crash alerts
+// reached the founder's actual Telegram from ordinary test runs, because
+// the two integration tests above inherited whatever real credentials
+// happened to be in the invoking shell's env. Proves the fix holds even
+// when the parent process env has real-looking (but fake) credentials
+// set, exactly the scenario that leaked before.
+test('the test harness clears real Telegram credentials even if the invoking shell has them set', () => {
+  const originalToken = process.env.TELEGRAM_BOT_TOKEN;
+  const originalChat = process.env.OPENCLAW_TELEGRAM_CHAT_ID;
+  process.env.TELEGRAM_BOT_TOKEN = 'a-real-looking-token-from-the-invoking-shell';
+  process.env.OPENCLAW_TELEGRAM_CHAT_ID = 'a-real-looking-chat-id-from-the-invoking-shell';
+  try {
+    const merged = buildSupervisorTestEnv({ SUPERVISOR_TARGET: 'irrelevant.js' });
+    assert.equal(merged.TELEGRAM_BOT_TOKEN, '');
+    assert.equal(merged.OPENCLAW_TELEGRAM_CHAT_ID, '');
+  } finally {
     if (originalToken === undefined) delete process.env.TELEGRAM_BOT_TOKEN; else process.env.TELEGRAM_BOT_TOKEN = originalToken;
     if (originalChat === undefined) delete process.env.OPENCLAW_TELEGRAM_CHAT_ID; else process.env.OPENCLAW_TELEGRAM_CHAT_ID = originalChat;
   }
