@@ -149,15 +149,22 @@ def trace_lifecycle(niche, decisions_path=None, board_path=None, alerts_path=Non
 
 
 def mission_control_heartbeat(decisions_path=None, board_path=None, alerts_path=None,
-                               reopen_log_path=None, evidence_path=None, timeline_path=None, outcomes_path=None):
+                               reopen_log_path=None, evidence_path=None, timeline_path=None,
+                               outcomes_path=None, db_file=None):
     """The real, thin 6-field heartbeat the directive named. Every
     field is a real value already computed elsewhere — reused, not
     re-derived. 'Current Opportunity' is scheduler.py's own real
     run_now pick (the single highest real-Priority-Score opportunity
-    with no active risk); honestly None when nothing qualifies today."""
+    with no active risk); honestly None when nothing qualifies today.
+
+    Reality Mode (2026-07-24): also carries the real, transparent
+    Company Reality Score (reality_mode.compute_company_reality_score(),
+    reused directly) — Mission Control's own real evidence-level
+    display, per that directive."""
     import scheduler
     import production_blueprint
     import market_memory
+    import reality_mode
     from decision_engine import learning as decision_learning
     import mission_control_api
 
@@ -191,5 +198,8 @@ def mission_control_heartbeat(decisions_path=None, board_path=None, alerts_path=
             "recalibration": decision_learning.recalibration_report(decisions_path=decisions_path, outcomes_path=outcomes_path),
         },
         "current_next_action": scheduling,
+        "company_reality_score": reality_mode.compute_company_reality_score(
+            decisions_path=decisions_path, evidence_path=evidence_path, board_path=board_path, db_file=db_file,
+        ),
         "evaluated_at": datetime.now(timezone.utc).isoformat(),
     }

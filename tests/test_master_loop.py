@@ -116,10 +116,11 @@ class TestMissionControlHeartbeat(unittest.TestCase):
         self.evidence_path = _temp_path()
         self.timeline_path = _temp_path()
         self.outcomes_path = _temp_path()
+        self.db_file = _temp_path()
 
     def tearDown(self):
         for p in (self.decisions_path, self.board_path, self.alerts_path, self.reopen_log_path,
-                  self.evidence_path, self.timeline_path, self.outcomes_path):
+                  self.evidence_path, self.timeline_path, self.outcomes_path, self.db_file):
             if os.path.exists(p):
                 os.remove(p)
 
@@ -140,14 +141,14 @@ class TestMissionControlHeartbeat(unittest.TestCase):
             return ml.mission_control_heartbeat(
                 decisions_path=self.decisions_path, board_path=self.board_path, alerts_path=self.alerts_path,
                 reopen_log_path=self.reopen_log_path, evidence_path=self.evidence_path,
-                timeline_path=self.timeline_path, outcomes_path=self.outcomes_path,
+                timeline_path=self.timeline_path, outcomes_path=self.outcomes_path, db_file=self.db_file,
             )
 
     def test_all_6_named_fields_present(self):
         self._record("a heartbeat niche", 85.0)
         result = self._heartbeat()
         for field in ("current_opportunity", "current_product", "current_stage",
-                      "current_revenue", "current_learning", "current_next_action"):
+                      "current_revenue", "current_learning", "current_next_action", "company_reality_score"):
             self.assertIn(field, result)
 
     def test_empty_factory_has_honestly_no_current_opportunity(self):

@@ -1332,6 +1332,16 @@ def _get_mission_control_heartbeat():
     return master_loop.mission_control_heartbeat()
 
 
+def _get_company_reality_score():
+    """Reality Mode (2026-07-24): the real, transparent Company Reality
+    Score Mission Control must display — built entirely from real
+    counts (real closed sales, real market evidence events, real
+    cached competitor snapshots, real convened board meetings), never a
+    fabricated single number. No payload required."""
+    import reality_mode
+    return reality_mode.compute_company_reality_score()
+
+
 def _get_global_execution_view():
     """Autonomous Global Execution Engine (2026-07-23): the single real
     operational window the founder named, assembled entirely from
@@ -1511,6 +1521,7 @@ _ENDPOINTS = {
     "get_production_missions_board": _get_production_missions_board,
     "get_lifecycle_trace": _get_lifecycle_trace,
     "get_mission_control_heartbeat": _get_mission_control_heartbeat,
+    "get_company_reality_score": _get_company_reality_score,
     "run_master_cycle": _run_master_cycle,
 }
 

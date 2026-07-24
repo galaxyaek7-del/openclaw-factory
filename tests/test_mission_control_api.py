@@ -410,6 +410,15 @@ class TestGlobalMarketLearningEngineActions(unittest.TestCase):
         mock_hb.assert_called_once_with()
         self.assertIsNone(result["current_opportunity"])
 
+    def test_company_reality_score_action_is_registered(self):
+        self.assertIn("get_company_reality_score", mission_control_api._ENDPOINTS)
+
+    def test_company_reality_score_delegates_to_the_real_module(self):
+        with patch("reality_mode.compute_company_reality_score", return_value={"score_pct": None}) as mock_score:
+            result = mission_control_api._get_company_reality_score()
+        mock_score.assert_called_once_with()
+        self.assertIsNone(result["score_pct"])
+
     def test_commercial_intelligence_report_requires_a_niche(self):
         with patch.object(sys, "argv", ["mission_control_api.py", "get_commercial_intelligence_report", json.dumps({})]):
             with self.assertRaises(ValueError):

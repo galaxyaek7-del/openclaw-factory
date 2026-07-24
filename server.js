@@ -1581,6 +1581,19 @@ const ACTION_REGISTRY = [
     asyncRunner: () => runPythonActionAsync('get-mission-control-heartbeat', 'get_mission_control_heartbeat', []),
   },
   {
+    // Reality Mode (2026-07-24) -- the real, transparent Company
+    // Reality Score. Every 4-level evidence taxonomy field this
+    // directive named (VERIFIED_REALITY/ESTIMATED/SIMULATED/UNKNOWN)
+    // is available via reality_mode.py for any future action; this is
+    // the one dedicated, dashboard-facing score.
+    name: 'get-company-reality-score',
+    description: 'Read-only: the real, transparent Company Reality Score -- share of real ACCEPTED opportunities backed by at least one real external evidence source (a real sale, real market evidence, a real cached competitor snapshot, a real board meeting). Built entirely from real counts, all disclosed alongside the score. Increases only when real evidence increases.',
+    reused: 'reality_mode.py::compute_company_reality_score()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: () => runPythonActionAsync('get-company-reality-score', 'get_company_reality_score', []),
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +
