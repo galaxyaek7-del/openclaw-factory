@@ -31,16 +31,24 @@ import profit_oracle as po
 from decision_engine import ranking, store
 from decision_engine.engine import record_ladder_decision
 
-REAL_NICHE = "automated invoice processing toolkit for small businesses"
-REAL_LADDER = "automation_tools"
-# ADR-085 (2026-07-22): a real production run (this session's "pipeline
-# depth" work) generated a real, permanent books/_generation_log.jsonl
-# entry for the PREVIOUS REAL_NICHE ("workflow automation system for
-# logistics companies") — exactly the collision this file's own comments
-# below already anticipated for test-internal writes, just from a real
-# external run instead. Switched to another real, currently-unproduced
-# SEED_CATEGORIES entry rather than leaving this suite permanently
-# broken by tonight's legitimate real work.
+SYNTHETIC_NICHE = "synthetic test fixture automation toolkit zzz-do-not-produce"
+SYNTHETIC_LADDER = "automation_tools"
+# Founder-directed fix (2026-07-24): this file previously used a REAL
+# SEED_CATEGORIES niche (first "workflow automation system for logistics
+# companies", ADR-085, then "automated invoice processing toolkit for
+# small businesses") as its fixture. Both were, in turn, actually
+# produced for real outside this test process — once by legitimate
+# factory work, once by a founder-requested live full-cycle verification
+# — and each time the resulting real books/_generation_log.jsonl /
+# QUARANTINE.md entries made this suite's own duplicate/quarantine
+# checks fail, because those checks correctly read real global
+# production history by design. Cycling through more real seed niches
+# only defers the same collision. Fixed properly this time: a synthetic
+# niche name no real product will ever be named, patched into a LOCAL
+# copy of market_hunter.SEED_CATEGORIES for the duration of the one test
+# that needs seed-list membership (below) rather than either reusing a
+# real niche or permanently adding fake data to the real seed list that
+# feeds actual hunt_market() runs.
 
 
 def _temp_path(suffix=".jsonl"):
@@ -54,6 +62,16 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
     def setUp(self):
         self.decisions_path = _temp_path()
         self.opps_path = _temp_path(suffix=".md")
+        # Patched in, not permanently added to the real module list: this
+        # class's own tests need SYNTHETIC_NICHE to be a real seed-list
+        # member (test_stage_1 below, and hunt_market() in test_stage_2),
+        # but the real SEED_CATEGORIES that feeds actual hunt_market()
+        # runs outside tests must never contain fake data.
+        seed_patcher = patch.object(mh, "SEED_CATEGORIES", mh.SEED_CATEGORIES + [
+            {"niche": SYNTHETIC_NICHE, "ladder": SYNTHETIC_LADDER},
+        ])
+        seed_patcher.start()
+        self.addCleanup(seed_patcher.stop)
 
     def tearDown(self):
         for p in (self.decisions_path, self.opps_path):
@@ -61,14 +79,15 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
                 os.remove(p)
 
     def test_stage_1_golden_hunter_discovers_and_scores_it(self):
-        """Golden Hunter (market_hunter.py) — the real seed list already
-        tags this exact niche ai_saas; confirms it's still there and still
-        a real, live ACCEPT under ladder_opportunity_score()."""
-        seeded = [c for c in mh.SEED_CATEGORIES if c["niche"] == REAL_NICHE]
-        self.assertEqual(len(seeded), 1, "the proven real niche must still be seeded")
-        self.assertEqual(seeded[0]["ladder"], REAL_LADDER)
+        """Golden Hunter (market_hunter.py) — SYNTHETIC_NICHE is patched
+        into the seed list for this test only (see setUp); confirms it's
+        seeded correctly and still a real, live ACCEPT under
+        ladder_opportunity_score() — the scoring itself is never mocked."""
+        seeded = [c for c in mh.SEED_CATEGORIES if c["niche"] == SYNTHETIC_NICHE]
+        self.assertEqual(len(seeded), 1, "the synthetic fixture niche must be seeded")
+        self.assertEqual(seeded[0]["ladder"], SYNTHETIC_LADDER)
 
-        direct = po.ladder_opportunity_score(REAL_NICHE, ladder=REAL_LADDER)
+        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER)
         self.assertTrue(direct["accepted"])
         self.stage1_score = direct["ladder_score"]
         self.stage1_price = direct["price"]
@@ -84,18 +103,18 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         ), patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
             mh.hunt_market(limit=len(mh.SEED_CATEGORIES), write_opportunities=False)
 
-        history = store.find_decisions_by_niche(REAL_NICHE, path=self.decisions_path)
+        history = store.find_decisions_by_niche(SYNTHETIC_NICHE, path=self.decisions_path)
         self.assertEqual(len(history), 1)
         recorded = history[0]
         self.assertEqual(recorded["status"], "ACCEPTED")
-        self.assertEqual(recorded["ladder"], REAL_LADDER)
+        self.assertEqual(recorded["ladder"], SYNTHETIC_LADDER)
         self.assertEqual(recorded["decision_path"], "ladder_fast_gate")
 
         # The exact same real score as a direct, independent call —
         # ladder_opportunity_score() is deterministic, so this is a real
         # equality check, not a tautology: it proves market_hunter recorded
         # what it actually computed, not a stale or re-derived number.
-        direct = po.ladder_opportunity_score(REAL_NICHE, ladder=REAL_LADDER)
+        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER)
         self.assertEqual(recorded["opportunity_score"], direct["ladder_score"])
         self.assertEqual(recorded["evaluation_snapshot"]["price"], direct["price"])
 
@@ -107,13 +126,13 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         mission_control_api.py calls for the Decision Queue — proving
         Mission Control would show this real opportunity, not a stale one."""
         record_ladder_decision(
-            REAL_NICHE, REAL_LADDER, po.ladder_opportunity_score(REAL_NICHE, ladder=REAL_LADDER),
+            SYNTHETIC_NICHE, SYNTHETIC_LADDER, po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER),
             decisions_path=self.decisions_path,
         )
         queue = ranking.rank_queue(decisions_path=self.decisions_path, outcomes_path=_temp_path())
-        matches = [d for d in queue if d["niche"] == REAL_NICHE]
+        matches = [d for d in queue if d["niche"] == SYNTHETIC_NICHE]
         self.assertEqual(len(matches), 1)
-        direct = po.ladder_opportunity_score(REAL_NICHE, ladder=REAL_LADDER)
+        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER)
         self.assertEqual(matches[0]["opportunity_score"], direct["ladder_score"], "Mission Control's queue must show the same real score, not a different one")
 
     def test_stage_4_factory_loop_gate_agrees_with_the_recorded_decision(self):
@@ -124,7 +143,7 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         mocking) that it returns the identical score/accepted/price."""
         script = f"""
         const fl = require({json.dumps(str(_FACTORY_ROOT / 'factory_loop.js'))});
-        fl.getLadderOpportunityScore({json.dumps(REAL_NICHE)}, {json.dumps(REAL_LADDER)}).then(r => {{
+        fl.getLadderOpportunityScore({json.dumps(SYNTHETIC_NICHE)}, {json.dumps(SYNTHETIC_LADDER)}).then(r => {{
           process.stdout.write(JSON.stringify(r));
         }});
         """
@@ -134,7 +153,7 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         self.assertTrue(gate_result["ok"])
         self.assertTrue(gate_result["accepted"])
 
-        direct = po.ladder_opportunity_score(REAL_NICHE, ladder=REAL_LADDER)
+        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER)
         self.assertEqual(gate_result["score"], direct["ladder_score"], "the automatic tick's gate must agree exactly with the single source of truth")
         self.assertEqual(gate_result["price"], direct["price"])
 
@@ -144,10 +163,10 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         (briefFromGoldenOpportunity) both derive from the SAME real
         opportunity object — no separate re-scoring, no separate price
         source, verified via real subprocess calls."""
-        direct = po.ladder_opportunity_score(REAL_NICHE, ladder=REAL_LADDER)
+        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER)
         opportunity = {
-            "niche": REAL_NICHE, "profit_score": 69, "verdict": "GOOD",
-            "ladder": REAL_LADDER, "ladder_score": direct["ladder_score"],
+            "niche": SYNTHETIC_NICHE, "profit_score": 69, "verdict": "GOOD",
+            "ladder": SYNTHETIC_LADDER, "ladder_score": direct["ladder_score"],
             "ladder_accepted": True, "ladder_price": direct["price"],
         }
         script = f"""
@@ -191,7 +210,7 @@ class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
         self.decisions_path = _temp_path()
         self.ledger_path = _temp_path(suffix=".jsonl")
         self.finance_path = _temp_path(suffix=".json")
-        # Universal Production Engine Roadmap Step 2 (2026-07-18): REAL_LADDER
+        # Universal Production Engine Roadmap Step 2 (2026-07-18): SYNTHETIC_LADDER
         # ("b2b_systems") now resolves to the real, registered
         # automation_systems adapter, which routes through dossier_bundle
         # (changelog) and factory_state (recovery queue) — neither of which
@@ -223,10 +242,10 @@ class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
         # the exact real scoring/recording path stages 1-2 above already
         # proved live (profit_oracle.ladder_opportunity_score() + the
         # ADR-076 single-source-of-truth recorder).
-        scored = po.ladder_opportunity_score(REAL_NICHE, ladder=REAL_LADDER)
+        scored = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER)
         self.assertTrue(scored["accepted"])
-        record_ladder_decision(REAL_NICHE, REAL_LADDER, scored, decisions_path=self.decisions_path)
-        decision = store.find_decisions_by_niche(REAL_NICHE, path=self.decisions_path)[0]
+        record_ladder_decision(SYNTHETIC_NICHE, SYNTHETIC_LADDER, scored, decisions_path=self.decisions_path)
+        decision = store.find_decisions_by_niche(SYNTHETIC_NICHE, path=self.decisions_path)[0]
         self.assertEqual(decision["status"], "ACCEPTED")
 
         # Stage 3: Product Specification / Metadata — the real dossier,
@@ -239,7 +258,7 @@ class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
             self.assertIn(key, dossier)
 
         # Stage 4: Content Generation + Asset Generation + Packaging + QA —
-        # the real orchestrator production engine. REAL_LADDER
+        # the real orchestrator production engine. SYNTHETIC_LADDER
         # ("b2b_systems") now resolves to the real, registered
         # automation_systems adapter (Universal Production Engine Roadmap
         # Step 2, 2026-07-18) and dispatches IN-PROCESS — the "nothing
@@ -249,7 +268,7 @@ class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
         # content call is mocked — the real PDF/QA/dossier-bundle pipeline
         # runs for real. Proves the SAME production_id computed above is
         # the one actually threaded through generation.
-        context = {"niche": REAL_NICHE, "dry_run": False, "decision_result": decision}
+        context = {"niche": SYNTHETIC_NICHE, "dry_run": False, "decision_result": decision}
 
         def _fake_generated(title, topic, titles):
             return [{"title": t, "content": f"real content for {t}"} for t in titles]
@@ -257,14 +276,14 @@ class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
         # This test's thin fake content will likely fail real Dual
         # Inspection (a real, honest verdict — not mocked), which would
         # otherwise write a real entry to REJECTED_NICHES.md/QUARANTINE.md
-        # for REAL_NICHE — a real, shared market_hunter.py seed niche other
-        # tests in this same suite (TestOneOpportunityFlowsThroughEvery...)
+        # for SYNTHETIC_NICHE — shared with other tests in this same suite
+        # (TestOneOpportunityFlowsThroughEvery...)
         # rely on never being circuit-broken. The inspection verdict itself
         # stays real; only the disk-logging side effect is suppressed, same
         # isolation principle as the changelog/state path patches above.
-        # _log_generation is also suppressed: it writes topic=REAL_NICHE
+        # _log_generation is also suppressed: it writes topic=SYNTHETIC_NICHE
         # into the real books/_generation_log.jsonl unconditionally, which
-        # would make inspectors._is_duplicate() flag REAL_NICHE as a
+        # would make inspectors._is_duplicate() flag SYNTHETIC_NICHE as a
         # duplicate on this same file's OWN next real hunt_market() call
         # (TestOneOpportunityFlowsThroughEveryStageWithNoDivergence, same
         # process) — found live, 2026-07-18.

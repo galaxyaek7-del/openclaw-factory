@@ -39,8 +39,20 @@ from decision_engine.engine import record_ladder_decision
 
 import factory_orchestrator as orch
 
-REAL_NICHE = "automated invoice processing toolkit for small businesses"
-REAL_LADDER = "automation_tools"
+SYNTHETIC_NICHE = "synthetic test fixture automation toolkit zzz-do-not-produce"
+SYNTHETIC_LADDER = "automation_tools"
+# Founder-directed fix (2026-07-24): previously used a REAL SEED_CATEGORIES
+# niche ("automated invoice processing toolkit for small businesses") --
+# a founder-requested live full-cycle verification then actually produced
+# it for real outside this test process, and dual inspection's real
+# duplicate/quarantine checks (correctly reading real global production
+# history) started failing this test. A synthetic niche name no real
+# product will ever be named removes the collision permanently rather
+# than deferring it to the next real niche this file happens to reuse.
+# Unlike tests/test_unified_pipeline_e2e.py, this file never checks
+# SEED_CATEGORIES membership -- ladder_opportunity_score() and
+# run_master_cycle() both work on any niche string -- so no seed-list
+# patch is needed here.
 
 
 def _temp_path(suffix=".jsonl"):
@@ -65,9 +77,9 @@ class TestRunMasterCycleExecuteTrueDrivesRealProductionAndPublishing(unittest.Te
         self.reopen_log_path = _temp_path()
         self._generated_files = []
 
-        scored = po.ladder_opportunity_score(REAL_NICHE, ladder=REAL_LADDER)
+        scored = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER)
         self.assertTrue(scored["accepted"], "fixture niche must still be a real ACCEPT")
-        record_ladder_decision(REAL_NICHE, REAL_LADDER, scored, decisions_path=self.decisions_path)
+        record_ladder_decision(SYNTHETIC_NICHE, SYNTHETIC_LADDER, scored, decisions_path=self.decisions_path)
 
         from channels import registry as channel_registry
         from channels.paddle_arm import PaddleArm
@@ -113,7 +125,7 @@ class TestRunMasterCycleExecuteTrueDrivesRealProductionAndPublishing(unittest.Te
              patch.object(bg.INSPECTORS, "_log_quarantine"), \
              patch.dict(os.environ, {"FACTORY_LIVE_PUBLISH": ""}, clear=False):
             result = orch.run_master_cycle(
-                REAL_NICHE, execute=True, decisions_path=self.decisions_path,
+                SYNTHETIC_NICHE, execute=True, decisions_path=self.decisions_path,
                 board_path=self.board_path, timeline_path=self.timeline_path,
                 outcomes_path=self.outcomes_path, state_path=self.state_path,
                 competitor_db_file=self.competitor_db_file, ledger_path=self.ledger_path,
