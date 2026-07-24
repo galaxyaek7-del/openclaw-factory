@@ -81,9 +81,9 @@ button.btn:disabled{opacity:.5; cursor:not-allowed;}
 #topStatus .pulse{width:8px; height:8px; border-radius:50%; background:var(--good); box-shadow:0 0 0 3px var(--good-soft);}
 
 section.section{margin-bottom:2.2rem; scroll-margin-top:1rem;}
-.section-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:.7rem;}
+.section-head{display:flex; flex-direction:column; gap:.15rem; margin-bottom:.7rem;}
 .section-head h2{font-size:1rem; margin:0; font-weight:700;}
-.section-head .section-note{font-size:.72rem; color:var(--ink-faint);}
+.section-head .section-note{font-size:.74rem; color:var(--ink-faint); max-width:64ch; line-height:1.4;}
 
 .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:.9rem;}
 .card{
@@ -104,9 +104,10 @@ section.section{margin-bottom:2.2rem; scroll-margin-top:1rem;}
 
 .card-body{font-size:.82rem; color:var(--ink-dim); line-height:1.6;}
 .card-body .empty{color:var(--ink-faint); font-style:italic;}
-.kv-grid{display:grid; grid-template-columns:1fr auto; gap:.35rem .8rem; font-size:.8rem;}
-.kv-grid .k{color:var(--ink-faint);}
-.kv-grid .v{color:var(--ink); font-family:var(--mono); text-align:right; font-variant-numeric:tabular-nums;}
+.kv-grid{display:grid; grid-template-columns:minmax(100px,1fr) minmax(0,2.1fr); gap:.35rem 1rem; font-size:.8rem; align-items:baseline;}
+.kv-grid .k{color:var(--ink-faint); cursor:default;}
+.kv-grid .v{color:var(--ink); font-family:var(--mono); text-align:right; font-variant-numeric:tabular-nums; word-break:break-word;}
+.kv-grid .v.text{text-align:left; font-family:var(--sans);}
 .stat-row{display:flex; gap:1.1rem; flex-wrap:wrap;}
 .stat{display:flex; flex-direction:column; gap:.1rem;}
 .stat .num{font-family:var(--mono); font-size:1.35rem; font-weight:600; color:var(--ink);}
@@ -118,7 +119,18 @@ table.card-table{width:100%; border-collapse:collapse; font-size:.78rem;}
 table.card-table th{text-align:left; color:var(--ink-faint); font-weight:500; font-size:.68rem; text-transform:uppercase; letter-spacing:.03em; padding:.2rem .4rem .4rem 0;}
 table.card-table td{padding:.3rem .4rem .3rem 0; border-top:1px solid var(--border-soft); font-family:var(--mono); font-variant-numeric:tabular-nums;}
 .note-line{font-size:.74rem; color:var(--ink-faint); border-left:2px solid var(--border); padding-left:.6rem; margin-top:.2rem;}
-pre.raw{background:var(--bg-elev); border-radius:6px; padding:.6rem .7rem; font-size:.72rem; overflow-x:auto; margin:0; color:var(--ink-dim); max-height:220px;}
+pre.raw{
+  background:var(--bg-elev); border-radius:6px; padding:.6rem .7rem; font-size:.72rem; margin:.3rem 0 0;
+  color:var(--ink-dim); max-height:280px; overflow-y:auto; overflow-x:auto;
+  white-space:pre-wrap; word-break:break-word; font-family:var(--mono);
+}
+.card-body details{border:1px solid var(--border-soft); border-radius:8px; padding:.5rem .7rem; background:var(--bg-elev);}
+.card-body details[open]{padding-bottom:.7rem;}
+.card-body details summary{list-style:none;}
+.card-body details summary::-webkit-details-marker{display:none;}
+.card-body details summary::before{content:"▸ "; color:var(--ink-faint);}
+.card-body details[open] summary::before{content:"▾ "; color:var(--accent-ink);}
+.card-body details + details{margin-top:.5rem;}
 
 @media (max-width: 880px){
   #sidebar{position:fixed; transform:translateX(-100%); transition:transform .2s; width:82%; max-width:300px;}
@@ -185,24 +197,42 @@ pre.raw{background:var(--bg-elev); border-radius:6px; padding:.6rem .7rem; font-
   // engine-status, scheduler-status, recent-adr-decisions, system-logs —
   // each a plain read over an existing real file/log, not a new engine).
   const SECTIONS = [
-    { id:'company-health', title:'Company Health', service:'company-health', kind:'health' },
-    { id:'executive-summary', title:'Executive Summary', service:'get-ceo-dashboard', via:'action', kind:'summary' },
-    { id:'opportunity-pipeline', title:'Opportunity Pipeline', service:'opportunity-pipeline', kind:'list', listKey:'product_laboratory' },
-    { id:'investment-pipeline', title:'Investment Pipeline', service:'get-investment-pipeline', via:'action', kind:'list', listKey:'pipeline' },
-    { id:'commercial-intelligence', title:'Commercial Intelligence', service:'market-intelligence', kind:'kv' },
-    { id:'product-portfolio', title:'Product Portfolio', service:'get-portfolio-report', via:'action', kind:'kv' },
-    { id:'production-status', title:'Production Status', service:'production-queue', kind:'kv' },
-    { id:'distribution-status', title:'Distribution Status', service:'publishing-status', kind:'kv' },
-    { id:'revenue-status', title:'Revenue Status', service:'revenue-summary', kind:'kv' },
-    { id:'evidence-engine', title:'Evidence Engine', service:'evidence-engine-status', kind:'kv' },
-    { id:'market-memory', title:'Market Memory', service:'get-monthly-market-evolution-report', via:'action', kind:'kv' },
-    { id:'knowledge-graph', title:'Knowledge Graph', service:'knowledge-graph', kind:'kv' },
-    { id:'ai-agents-status', title:'AI Agents Status', service:'ai-capability-registry', kind:'kv' },
-    { id:'automation-status', title:'Automation Status (n8n)', service:'automation-status', kind:'kv' },
-    { id:'scheduler', title:'Scheduler', service:'scheduler-status', kind:'kv' },
-    { id:'alerts', title:'Alerts', service:'alerts', kind:'kv' },
-    { id:'recent-adrs', title:'Recent ADR Decisions', service:'recent-adr-decisions', kind:'list', listKey:'recent' },
-    { id:'system-diagnostics', title:'Live Logs & System Diagnostics', service:'system-logs', kind:'logs' },
+    { id:'company-health', title:'Company Health', service:'company-health', kind:'kv',
+      note:'Live infra + business-reality health checks (lib/health_checks.js + reality.py).' },
+    { id:'executive-summary', title:'Executive Summary', service:'get-ceo-dashboard', via:'action', kind:'kv',
+      note:'The real CEO dashboard snapshot — capital allocation, growth, risk, next decision.' },
+    { id:'opportunity-pipeline', title:'Opportunity Pipeline', service:'opportunity-pipeline', kind:'list', listKey:'product_laboratory',
+      note:'Every real decision the ladder has evaluated, ranked.' },
+    { id:'investment-pipeline', title:'Investment Pipeline', service:'get-investment-pipeline', via:'action', kind:'list', listKey:'entries',
+      note:'All real decisions scored across every ranking dimension.' },
+    { id:'commercial-intelligence', title:'Commercial Intelligence', service:'market-intelligence', kind:'kv',
+      note:'The single most recent real niche market-intelligence analysis (a snapshot, not a trend).' },
+    { id:'product-portfolio', title:'Product Portfolio', service:'get-portfolio-report', via:'action', kind:'kv',
+      note:'Real accepted opportunities, ranked 4 ways: worldwide, enterprise, recurring-revenue, China.' },
+    { id:'production-status', title:'Production Status', service:'production-queue', kind:'kv',
+      note:'Real dossiers generated by the production pipeline.' },
+    { id:'distribution-status', title:'Distribution Status', service:'publishing-status', kind:'kv',
+      note:'Real per-platform publishing checklist status.' },
+    { id:'revenue-status', title:'Revenue Status', service:'revenue-summary', kind:'kv',
+      note:'Real revenue_pipeline results for every ACCEPTED opportunity.' },
+    { id:'evidence-engine', title:'Evidence Engine', service:'evidence-engine-status', kind:'kv',
+      note:'The Market Evidence Ledger — real payment/pain citations per niche (ADR-121/122).' },
+    { id:'market-memory', title:'Market Memory', service:'get-monthly-market-evolution-report', via:'action', kind:'kv',
+      note:'Monthly niche-scoring trend across time (distinct from the single-snapshot Commercial Intelligence above) — honestly reports DISCOVERY until enough months of history exist.' },
+    { id:'knowledge-graph', title:'Knowledge Graph', service:'knowledge-graph', kind:'kv',
+      note:'Every real niche/decision/production node this factory has ever recorded, as a graph.' },
+    { id:'ai-agents-status', title:'AI Agents Status', service:'ai-capability-registry', kind:'kv',
+      note:'Which AI providers are actually configured and callable today.' },
+    { id:'automation-status', title:'Automation Status (n8n)', service:'automation-status', kind:'kv',
+      note:'Real n8n workflow files on disk; live status needs a one-time manual n8n login (BLOCKERS.md #1).' },
+    { id:'scheduler', title:'Scheduler', service:'scheduler-status', kind:'kv',
+      note:'The one real, durable OS-level scheduled task this factory has.' },
+    { id:'alerts', title:'Alerts', service:'alerts', kind:'kv',
+      note:'Two real flags: does anything need founder attention or review right now.' },
+    { id:'recent-adrs', title:'Recent ADR Decisions', service:'recent-adr-decisions', kind:'list', listKey:'recent',
+      note:'Every governance decision this factory has actually made, newest first.' },
+    { id:'system-diagnostics', title:'Live Logs & System Diagnostics', service:'system-logs', kind:'logs',
+      note:'Real tail of the 5 operational log files this factory writes.' },
   ];
 
   const state = {}; // id -> { status: 'pending'|'ok'|'empty'|'error', payload, fetchedAt }
@@ -233,8 +263,18 @@ pre.raw{background:var(--bg-elev); border-radius:6px; padding:.6rem .7rem; font-
   // adjacent convention already exists elsewhere in the codebase) — this
   // never invents a confidence percentage, only reads what's really there
   // or falls back to a plain presence/absence check. ──
-  function isMeaningfullyEmpty(payload){
+  // `sec` is required whenever the caller knows which section this payload
+  // belongs to: a 'list' section's real envelope (success/generated_at/etc.)
+  // is routinely non-empty even when the one array a CEO actually cares
+  // about (sec.listKey) is empty or missing -- checking the envelope alone
+  // previously produced a real bug (Investment Pipeline showing a "Live"
+  // pill while its own body said "No verified data").
+  function isMeaningfullyEmpty(payload, sec){
     if (payload == null) return true;
+    if (sec && sec.kind === 'list'){
+      const items = sec.listKey ? payload[sec.listKey] : payload;
+      return !Array.isArray(items) || items.length === 0;
+    }
     if (Array.isArray(payload)) return payload.length === 0;
     if (typeof payload === 'object'){
       const keys = Object.keys(payload).filter(k => !['note','generated_at','niche'].includes(k));
@@ -251,13 +291,13 @@ pre.raw{background:var(--bg-elev); border-radius:6px; padding:.6rem .7rem; font-
     return false;
   }
 
-  function confidenceFor(payload){
+  function confidenceFor(payload, sec){
     if (payload && typeof payload === 'object'){
       if (typeof payload.confidence === 'string') return payload.confidence;
       if (payload.confidence && payload.confidence.level) return payload.confidence.level;
       if (typeof payload.maturity === 'string') return payload.maturity;
     }
-    return isMeaningfullyEmpty(payload) ? 'No verified data' : 'Verified — real source';
+    return isMeaningfullyEmpty(payload, sec) ? 'No verified data' : 'Verified — real source';
   }
 
   function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
@@ -281,8 +321,14 @@ pre.raw{background:var(--bg-elev); border-radius:6px; padding:.6rem .7rem; font-
     const jobId = startBody.job.id;
     const deadline = Date.now() + timeoutMs;
     let job = startBody.job;
+    // Backs off from 600ms towards a 3s ceiling instead of a flat 700ms --
+    // these real jobs measure 3-25s in practice, so a flat interval means
+    // dozens of redundant polls near the end of a long-running report for
+    // no real benefit. Still responsive on the fast (~3s) reports.
+    let pollDelay = 600;
     while (job.status === 'running' && Date.now() < deadline){
-      await sleep(700);
+      await sleep(pollDelay);
+      pollDelay = Math.min(pollDelay * 1.4, 3000);
       const poll = await fetch('/api/v1/actions/' + jobId, { credentials:'same-origin' });
       const pollBody = await poll.json();
       if (!poll.ok || pollBody.success === false) throw new Error('lost track of job ' + jobId);
@@ -307,7 +353,7 @@ pre.raw{background:var(--bg-elev); border-radius:6px; padding:.6rem .7rem; font-
         if (!res.ok || body.success === false) throw new Error((body.error && body.error.message) || body.error || ('HTTP ' + res.status));
         data = body.data; fetchedAt = body.generated_at;
       }
-      const empty = isMeaningfullyEmpty(data);
+      const empty = isMeaningfullyEmpty(data, sec);
       state[sec.id] = { status: empty ? 'empty' : 'ok', payload: data, fetchedAt: fetchedAt || new Date().toISOString() };
     } catch (err) {
       state[sec.id] = { status:'error', payload:null, error: err.message, fetchedAt: new Date().toISOString() };
@@ -320,12 +366,28 @@ pre.raw{background:var(--bg-elev); border-radius:6px; padding:.6rem .7rem; font-
   // ── Generic real-data renderers — no section invents a chart or a
   // number; every branch below just formats whatever the real payload
   // actually contains. ──
+  // A very large real array (e.g. Knowledge Graph's 2785 nodes / 2747
+  // edges) previously got JSON.stringify'd and dumped into the DOM in
+  // full, freezing the tab for 10-30+ real seconds on every load. Capping
+  // at a bounded preview keeps every render fast regardless of how much
+  // real data exists behind it -- the full set is always still one real
+  // API call away (the card's own "Source:" line), never lost.
+  const ARRAY_PREVIEW_CAP = 40;
+
   function renderValue(v){
     if (v == null) return el('span', { class:'empty' }, ['—']);
     if (Array.isArray(v)){
       if (v.length === 0) return el('span', { class:'empty' }, ['none']);
       if (v.length <= 6 && v.every(x => typeof x !== 'object')) return document.createTextNode(v.join(', '));
-      return el('pre', { class:'raw' }, [JSON.stringify(v, null, 2)]);
+      const frag = document.createDocumentFragment();
+      const shown = v.length > ARRAY_PREVIEW_CAP ? v.slice(0, ARRAY_PREVIEW_CAP) : v;
+      frag.appendChild(el('pre', { class:'raw' }, [JSON.stringify(shown, null, 2)]));
+      if (v.length > ARRAY_PREVIEW_CAP){
+        frag.appendChild(el('div', { class:'note-line' }, [
+          'Showing the first ' + ARRAY_PREVIEW_CAP + ' of ' + v.length + ' real items — not a fabricated summary, just a preview cap.'
+        ]));
+      }
+      return frag;
     }
     if (typeof v === 'object') return el('pre', { class:'raw' }, [JSON.stringify(v, null, 2)]);
     return document.createTextNode(String(v));
@@ -336,43 +398,146 @@ pre.raw{background:var(--bg-elev); border-radius:6px; padding:.6rem .7rem; font-
     return typeof v === 'object' && v !== null;
   }
 
+  function isScalar(v){
+    return v == null || typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean';
+  }
+
+  // A 3-segment dotted path (e.g. "health.reality.total_published") reads
+  // fine as a hover tooltip but wraps into an ugly 3-line label in the
+  // narrow kv-grid column -- shown form keeps only the last 2 segments,
+  // full path is still one hover away via the element's title attribute.
+  function fullLabelFor(path){
+    return path.split('.').map(seg => seg.replace(/_/g,' ')).join(' › ');
+  }
+  function labelFor(path){
+    const segs = path.split('.');
+    return (segs.length > 2 ? segs.slice(-2) : segs).map(seg => seg.replace(/_/g,' ')).join(' › ');
+  }
+
+  function summaryHint(v){
+    if (Array.isArray(v)) return ' (' + v.length + (v.length === 1 ? ' item)' : ' items)');
+    if (typeof v === 'object' && v !== null){
+      const n = Object.keys(v).length;
+      return ' (' + n + (n === 1 ? ' field)' : ' fields)');
+    }
+    return '';
+  }
+
+  // Windows Task Scheduler's real DaysOfWeek trigger property is a bitmask
+  // (Sunday=1 ... Saturday=64, per Microsoft's own documented enum) -- a
+  // real, standard, publicly-fixed mapping, not an invented one. Decoding
+  // it is a pure display transform of the same real field scheduler-
+  // status already returns; the raw bitmask integer alone (e.g. "32") is
+  // meaningless to a reader and was previously the single most prominent
+  // number on the Scheduler card.
+  const DAYS_OF_WEEK_BITS = [[1,'Sun'],[2,'Mon'],[4,'Tue'],[8,'Wed'],[16,'Thu'],[32,'Fri'],[64,'Sat']];
+  function decodeDaysOfWeekBitmask(n){
+    const days = DAYS_OF_WEEK_BITS.filter(([bit]) => (n & bit) === bit).map(([,name]) => name);
+    return (days.length ? days.join(', ') : 'none') + ' (bitmask ' + n + ')';
+  }
+
+  // Recursively flattens a real payload into ["dotted.path", leafValue]
+  // pairs so a nested object reads as clear rows instead of its own raw
+  // JSON block. Bounded on DEPTH only (2 levels) -- an earlier breadth-
+  // gated version (>6 keys = give up and keep the whole object as one
+  // raw block) made real, useful objects like Commercial Intelligence's
+  // 15-field "latest" snapshot fully opaque by default even though every
+  // one of those 15 fields is a plain scalar. Recursing by depth instead
+  // lets each individual scalar surface while only genuinely nested
+  // structures (arrays, depth > 2) stay as their own "complex" leaf --
+  // handled by renderValue's own array cap above. The out.length safety
+  // valve only guards against a pathologically wide real payload; nothing
+  // observed in this factory's real services comes close to it. Never
+  // renames or invents a value, only relocates it.
+  function flattenLeaves(obj, prefix, out, depth){
+    Object.entries(obj).forEach(([k, v]) => {
+      if (k === 'note' || out.length > 80) return;
+      const path = prefix ? prefix + '.' + k : k;
+      if (isScalar(v)){
+        if (/days_of_week_bitmask$/.test(path) && typeof v === 'number'){
+          out.push([path, decodeDaysOfWeekBitmask(v)]);
+        } else {
+          out.push([path, v]);
+        }
+      } else if (Array.isArray(v)){
+        out.push([path, v]);
+      } else if (typeof v === 'object'){
+        if (depth < 2){
+          flattenLeaves(v, path, out, depth + 1);
+        } else {
+          out.push([path, v]);
+        }
+      }
+    });
+    return out;
+  }
+
+  // A right-aligned, single-line kv-grid row reads badly once the real
+  // value is a full paragraph (e.g. a Next-Dollar-Actions text blob) --
+  // found live once the flattening above started surfacing these strings
+  // at all (they were previously buried inside an un-opened raw dump).
+  // Long strings get their own left-aligned, readable block instead.
+  const LONG_STRING_THRESHOLD = 220;
+
   function renderKV(payload){
-    const entries = Object.entries(payload).filter(([k]) => k !== 'note');
-    const numeric = entries.filter(([,v]) => typeof v === 'number');
-    const simple = entries.filter(([,v]) => typeof v !== 'number' && !isComplex(v));
-    const complex = entries.filter(([,v]) => isComplex(v));
+    const leaves = flattenLeaves(payload, '', [], 0);
+    const isLongText = (v) => typeof v === 'string' && v.length > LONG_STRING_THRESHOLD;
+    const numeric = leaves.filter(([,v]) => typeof v === 'number');
+    const longText = leaves.filter(([,v]) => isLongText(v));
+    const simple = leaves.filter(([,v]) => typeof v !== 'number' && !isComplex(v) && !isLongText(v));
+    const complex = leaves.filter(([,v]) => isComplex(v));
     const frag = document.createDocumentFragment();
 
     if (numeric.length){
       const row = el('div', { class:'stat-row' });
       numeric.slice(0, 6).forEach(([k,v]) => {
-        row.appendChild(el('div', { class:'stat' }, [
+        row.appendChild(el('div', { class:'stat', title: fullLabelFor(k) }, [
           el('div', { class:'num' }, [String(v)]),
-          el('div', { class:'label' }, [k.replace(/_/g,' ')]),
+          el('div', { class:'label' }, [labelFor(k)]),
         ]));
       });
       frag.appendChild(row);
+      if (numeric.length > 6){
+        frag.appendChild(el('div', { class:'note-line' }, [(numeric.length - 6) + ' more real numeric field(s) not shown here — see the full source.']));
+      }
     }
 
     if (simple.length){
       const wrap = el('div', { class:'kv-grid' });
-      simple.slice(0, 12).forEach(([k,v]) => {
-        wrap.appendChild(el('div', { class:'k' }, [k.replace(/_/g,' ')]));
-        const vcell = el('div', { class:'v' });
+      simple.slice(0, 16).forEach(([k,v]) => {
+        wrap.appendChild(el('div', { class:'k', title: fullLabelFor(k) }, [labelFor(k)]));
+        const isProse = typeof v === 'string' && v.length > 40;
+        const vcell = el('div', { class:'v' + (isProse ? ' text' : '') });
         vcell.appendChild(renderValue(v));
         wrap.appendChild(vcell);
       });
       frag.appendChild(wrap);
+      if (simple.length > 16){
+        frag.appendChild(el('div', { class:'note-line' }, [(simple.length - 16) + ' more real field(s) not shown here — see the full source.']));
+      }
     }
 
-    // Nested objects/long arrays get their own full-width block instead of
-    // being squeezed into the 2-column kv-grid, which broke real layouts
-    // (e.g. company-health's nested health/risk/self_awareness objects).
-    complex.slice(0, 8).forEach(([k, v]) => {
+    longText.slice(0, 4).forEach(([k, v]) => {
       const block = el('div', { style:'margin-top:.3rem;' });
-      block.appendChild(el('div', { class:'card-title', style:'font-size:.74rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.03em; margin-bottom:.3rem;' }, [k.replace(/_/g,' ')]));
-      block.appendChild(renderValue(v));
+      block.appendChild(el('div', { class:'card-title', style:'font-size:.74rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.03em; margin-bottom:.3rem;' }, [labelFor(k)]));
+      block.appendChild(el('div', { style:'white-space:pre-wrap; line-height:1.55; color:var(--ink-dim);' }, [v]));
       frag.appendChild(block);
+    });
+
+    // Genuinely large/deep real structures get their own collapsed
+    // <details> block instead of an always-expanded, always-scrolling
+    // <pre> -- the previous always-open raw dumps made cards so tall that
+    // the mouse wheel got trapped inside their internal scrollbox before
+    // ever reaching the rest of the page (confirmed live). Collapsed by
+    // default: nothing is hidden permanently, a reader who wants the full
+    // real detail clicks to open it.
+    complex.slice(0, 8).forEach(([k, v]) => {
+      const details = el('details', { style:'margin-top:.3rem;' });
+      details.appendChild(el('summary', {
+        style:'cursor:pointer; font-size:.74rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.03em; padding:.2rem 0;'
+      }, [labelFor(k) + summaryHint(v)]));
+      details.appendChild(renderValue(v));
+      frag.appendChild(details);
     });
 
     if (payload.note) frag.appendChild(el('div', { class:'note-line' }, [payload.note]));
@@ -427,6 +592,7 @@ pre.raw{background:var(--bg-elev); border-radius:6px; padding:.6rem .7rem; font-
       const section = el('section', { class:'section', id:'sec-' + sec.id });
       section.appendChild(el('div', { class:'section-head' }, [
         el('h2', null, [sec.title]),
+        sec.note ? el('span', { class:'section-note' }, [sec.note]) : null,
       ]));
       const grid = el('div', { class:'card-grid', id:'grid-' + sec.id });
       section.appendChild(grid);
@@ -441,9 +607,9 @@ pre.raw{background:var(--bg-elev); border-radius:6px; padding:.6rem .7rem; font-
       el('span', { class:'pill ' + pill.cls }, [pill.label]),
     ]));
     card.appendChild(el('div', { class:'card-meta' }, [
-      el('span', null, [el('b', null, ['Source: ']), sec.via === 'action' ? ('/api/v1/actions/' + sec.service) : ('/api/v1/' + sec.service)]),
+      el('span', null, [el('b', null, ['Source: ']), sec.via === 'action' ? ('/api/v1/actions/' + sec.service + ' (async report)') : ('/api/v1/' + sec.service)]),
       el('span', null, [el('b', null, ['Updated: ']), relTime(s.fetchedAt)]),
-      el('span', null, [el('b', null, ['Confidence: ']), s.status === 'pending' ? '—' : confidenceFor(s.payload)]),
+      el('span', null, [el('b', null, ['Confidence: ']), s.status === 'pending' ? '—' : confidenceFor(s.payload, sec)]),
     ]));
 
     const body = el('div', { class:'card-body' });

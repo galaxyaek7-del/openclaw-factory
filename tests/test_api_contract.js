@@ -448,3 +448,13 @@ test('dashboard.html and mission_control_login.html still serve correctly (no re
   assert.equal(loginRes.status, 200);
   assert.match(loginRes.headers.get('content-type'), /text\/html/);
 });
+
+test('mission_control_executive_v1.html requires Mission Control auth, and serves when authenticated (CEO review, 2026-07-25 polish pass)', async () => {
+  const unauth = await fetch(`${BASE_URL}/mission_control_executive_v1.html`, { redirect: 'manual' });
+  assert.equal(unauth.status, 302);
+  assert.equal(unauth.headers.get('location'), '/mission_control_login.html');
+
+  const authed = await fetch(`${BASE_URL}/mission_control_executive_v1.html`, { headers: { Cookie: cookie } });
+  assert.equal(authed.status, 200);
+  assert.match(authed.headers.get('content-type'), /text\/html/);
+});
