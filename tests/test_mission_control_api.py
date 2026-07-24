@@ -388,6 +388,28 @@ class TestGlobalMarketLearningEngineActions(unittest.TestCase):
         mock_board.assert_called_once_with()
         self.assertEqual(result["counts"], {})
 
+    def test_master_loop_actions_are_registered(self):
+        for name in ("get_lifecycle_trace", "get_mission_control_heartbeat"):
+            self.assertIn(name, mission_control_api._ENDPOINTS)
+
+    def test_lifecycle_trace_requires_a_niche(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_lifecycle_trace", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._get_lifecycle_trace()
+
+    def test_lifecycle_trace_delegates_to_the_real_module(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "get_lifecycle_trace", json.dumps({"niche": "test niche"})]):
+            with patch("master_loop.trace_lifecycle", return_value={"niche": "test niche"}) as mock_trace:
+                result = mission_control_api._get_lifecycle_trace()
+        mock_trace.assert_called_once_with("test niche")
+        self.assertEqual(result["lifecycle_trace"]["niche"], "test niche")
+
+    def test_mission_control_heartbeat_delegates_to_the_real_module(self):
+        with patch("master_loop.mission_control_heartbeat", return_value={"current_opportunity": None}) as mock_hb:
+            result = mission_control_api._get_mission_control_heartbeat()
+        mock_hb.assert_called_once_with()
+        self.assertIsNone(result["current_opportunity"])
+
     def test_commercial_intelligence_report_requires_a_niche(self):
         with patch.object(sys, "argv", ["mission_control_api.py", "get_commercial_intelligence_report", json.dumps({})]):
             with self.assertRaises(ValueError):

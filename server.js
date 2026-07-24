@@ -1555,6 +1555,32 @@ const ACTION_REGISTRY = [
     asyncRunner: () => runPythonActionAsync('get-production-missions-board', 'get_production_missions_board', []),
   },
   {
+    // Complete Autonomous Company Master Loop (2026-07-24) -- real
+    // 20-named-stage evidence trace for one niche. Pure orchestration
+    // over already-real modules, per the directive's own explicit
+    // "do not create another isolated engine" rule.
+    name: 'get-lifecycle-trace',
+    description: 'Read-only: the real 20-named-stage evidence trace for one niche (Global Opportunity Discovery through Automatic Discovery of Next Opportunity), each stage naming its real owning module. Several stages share the same underlying real signal, reported honestly rather than split into fabricated independent booleans. Null when the niche has no real decision on record.',
+    reused: 'master_loop.py::trace_lifecycle()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('get-lifecycle-trace', 'get_lifecycle_trace', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    // Complete Autonomous Company Master Loop (2026-07-24) -- the real
+    // 6-field Mission Control heartbeat.
+    name: 'get-mission-control-heartbeat',
+    description: 'Read-only: the real 6-field heartbeat (Current Opportunity, Current Product, Current Stage, Current Revenue, Current Learning, Current Next Action) -- thin reuse of scheduler.py\'s real run_now pick, production_blueprint.py, and this server\'s own revenue action. On-demand only, never a live process.',
+    reused: 'master_loop.py::mission_control_heartbeat()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: () => runPythonActionAsync('get-mission-control-heartbeat', 'get_mission_control_heartbeat', []),
+  },
+  {
     // Factory Master Orchestrator (Full Architecture Review, 2026-07-22)
     // -- the single real call composing Executive Quality Gate + AI
     // Executive Board (which itself calls Enterprise Readiness) +

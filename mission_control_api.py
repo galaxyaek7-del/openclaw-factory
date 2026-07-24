@@ -1307,6 +1307,31 @@ def _get_production_missions_board():
     return production_blueprint.build_production_missions_board()
 
 
+def _get_lifecycle_trace():
+    """Complete Autonomous Company Master Loop (2026-07-24): the real,
+    20-named-stage evidence trace for one niche — pure remap over
+    already-real signals, zero new evidence computed. Honest null when
+    this niche has no real decision on record. Reads its payload from
+    sys.argv[2]:
+    `python mission_control_api.py get_lifecycle_trace '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+    import master_loop
+    return {"lifecycle_trace": master_loop.trace_lifecycle(niche)}
+
+
+def _get_mission_control_heartbeat():
+    """Complete Autonomous Company Master Loop (2026-07-24): the real,
+    6-field heartbeat (Current Opportunity/Product/Stage/Revenue/
+    Learning/Next Action) — thin reuse of scheduler.py, production_
+    blueprint.py, and this module's own _revenue(). No payload
+    required."""
+    import master_loop
+    return master_loop.mission_control_heartbeat()
+
+
 def _get_global_execution_view():
     """Autonomous Global Execution Engine (2026-07-23): the single real
     operational window the founder named, assembled entirely from
@@ -1484,6 +1509,8 @@ _ENDPOINTS = {
     "get_portfolio_report": _get_portfolio_report,
     "get_production_blueprint": _get_production_blueprint,
     "get_production_missions_board": _get_production_missions_board,
+    "get_lifecycle_trace": _get_lifecycle_trace,
+    "get_mission_control_heartbeat": _get_mission_control_heartbeat,
     "run_master_cycle": _run_master_cycle,
 }
 
