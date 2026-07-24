@@ -188,17 +188,76 @@ def approve_draft(filename, drafts_dir=None, approved_dir=None):
     return {"approved": True, "path": str(dest), "approved_at": datetime.now(timezone.utc).isoformat()}
 
 
+def publish_approved_draft(filename, title, approved_dir=None, public_site_dir=None):
+    """Copies one real approved draft (drafts/approved/) into
+    public_site/posts/ as a real, publishable file -- never touches the
+    source approved file. `title` is supplied by the caller rather than
+    re-derived, since draft_adr_post()'s AI output sometimes leaves its
+    own source filename as a leftover '# adr-106-....md' heading; that
+    artifact line is stripped here if present, the real approved body is
+    otherwise reused verbatim."""
+    approved = Path(approved_dir) if approved_dir else (_FACTORY_ROOT / "drafts" / "approved")
+    posts_dir = (Path(public_site_dir) if public_site_dir else (_FACTORY_ROOT / "public_site")) / "posts"
+    posts_dir.mkdir(parents=True, exist_ok=True)
+
+    src = approved / filename
+    if not src.exists():
+        return {"published": False, "path": None, "error": f"{filename} not found in {approved}"}
+
+    lines = src.read_text(encoding="utf-8").splitlines()
+    if lines and lines[0].startswith("# ") and lines[0].strip().endswith(".md"):
+        lines = lines[1:]
+    body = "\n".join(lines).strip()
+
+    slug = filename.rsplit(".", 1)[0]
+    dest = posts_dir / f"{slug}.md"
+    dest.write_text(f"# {title}\n\n{body}\n", encoding="utf-8")
+    return {"published": True, "path": str(dest), "slug": slug}
+
+
+def _post_title(post_path):
+    """First H1 line of a real published post file, falling back to the
+    filename if the file has no heading (should not happen in practice,
+    since publish_approved_draft() always writes one)."""
+    for line in post_path.read_text(encoding="utf-8").splitlines():
+        if line.startswith("# "):
+            return line[2:].strip()
+    return post_path.stem
+
+
 def build_public_site_structure(output_dir=None):
     """Real, local scaffolding for a future public GitHub repo — never
     creates or pushes an actual public repository (a real, hard-to-
     reverse, publicly-visible action outside this function's scope).
     Product catalog reused verbatim from data/paddle_products.json —
-    the real, only products this factory has ever priced and listed."""
+    the real, only products this factory has ever priced and listed.
+    Lists real posts already published under public_site/posts/ (see
+    publish_approved_draft()) if any exist yet — never fabricates a
+    post list when none has been published."""
     output = Path(output_dir) if output_dir else (_FACTORY_ROOT / "public_site")
     output.mkdir(parents=True, exist_ok=True)
 
     products_path = _FACTORY_ROOT / "data" / "paddle_products.json"
     products = json.loads(products_path.read_text(encoding="utf-8")) if products_path.exists() else []
+
+    posts_dir = output / "posts"
+    post_files = sorted(posts_dir.glob("*.md")) if posts_dir.exists() else []
+
+    posts_section_md = ""
+    posts_section_html = "<p>No posts published yet — check back soon.</p>"
+    if post_files:
+        posts_section_md = "\n## Posts\n\n" + "\n".join(
+            f"- [{_post_title(p)}](posts/{p.name})" for p in post_files
+        ) + "\n"
+        posts_section_html = "<ul>\n" + "\n".join(
+            f'<li><a href="posts/{p.name}">{_post_title(p)}</a></li>' for p in post_files
+        ) + "\n</ul>"
+
+    follow_note = (
+        "This repository is updated as the factory operates — weekly progress reports and "
+        "engineering decision posts land here as they happen, not on a fixed schedule. "
+        "Watch or star this repo to follow along."
+    )
 
     readme = (
         "# OpenClaw\n\n"
@@ -210,6 +269,8 @@ def build_public_site_structure(output_dir=None):
         + "\n\n## Build in public\n\n"
         "Weekly progress reports and engineering decision records (ADRs) are published here as "
         "they happen — honest numbers, no hype.\n"
+        + posts_section_md
+        + f"\n## Follow the build\n\n{follow_note}\n"
     )
     (output / "README.md").write_text(readme, encoding="utf-8")
 
@@ -223,6 +284,10 @@ def build_public_site_structure(output_dir=None):
 <p>A solo-founder digital investment company, built and operated in the open.</p>
 <h2>Products</h2>
 <table>{html_rows}</table>
+<h2>Posts</h2>
+{posts_section_html}
+<h2>Follow the build</h2>
+<p>{follow_note}</p>
 </body></html>
 """
     (output / "index.html").write_text(index_html, encoding="utf-8")
@@ -232,4 +297,5 @@ def build_public_site_structure(output_dir=None):
         "output_dir": str(output),
         "files_written": ["README.md", "index.html", "products.json"],
         "real_product_count": len(products),
+        "real_post_count": len(post_files),
     }

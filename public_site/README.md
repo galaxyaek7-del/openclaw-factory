@@ -13,3 +13,13 @@ OpenClaw is a solo-founder digital investment company, built and operated in the
 ## Build in public
 
 Weekly progress reports and engineering decision records (ADRs) are published here as they happen — honest numbers, no hype.
+
+## Posts
+
+- [Building a Global Market Learning Engine (Market Memory + Commercial Evolution)](posts/2026-07-24_adr_post_adr-106-global-market-learning-engine.md)
+- [Company-Wide Commitment to Reality Mode](posts/2026-07-24_adr_post_adr-116-reality-mode.md)
+- [OpenClaw — Weekly Progress Report (2026-07-24)](posts/2026-07-24_weekly_report_weekly-progress-report.md)
+
+## Follow the build
+
+This repository is updated as the factory operates — weekly progress reports and engineering decision posts land here as they happen, not on a fixed schedule. Watch or star this repo to follow along.

@@ -161,6 +161,38 @@ class TestApproveDraft(unittest.TestCase):
             self.assertIn("not found", result["error"])
 
 
+class TestPublishApprovedDraft(unittest.TestCase):
+    def test_publishes_a_real_approved_draft_as_a_post(self):
+        with tempfile.TemporaryDirectory() as approved, tempfile.TemporaryDirectory() as site:
+            src = os.path.join(approved, "2026-07-24_adr_post_adr-999-test.md")
+            with open(src, "w", encoding="utf-8") as f:
+                f.write("# adr-999-test.md\n\n**Real Title**\n\nReal body content.")
+
+            result = bip.publish_approved_draft(
+                "2026-07-24_adr_post_adr-999-test.md", "Real Title",
+                approved_dir=approved, public_site_dir=site,
+            )
+
+            self.assertTrue(result["published"])
+            dest = os.path.join(site, "posts", "2026-07-24_adr_post_adr-999-test.md")
+            self.assertTrue(os.path.exists(dest))
+            with open(dest, "r", encoding="utf-8") as f:
+                content = f.read()
+            self.assertTrue(content.startswith("# Real Title"))
+            self.assertNotIn("adr-999-test.md", content)
+            self.assertIn("Real body content.", content)
+            # source approved file must be untouched
+            self.assertTrue(os.path.exists(src))
+
+    def test_missing_draft_reports_honestly(self):
+        with tempfile.TemporaryDirectory() as approved, tempfile.TemporaryDirectory() as site:
+            result = bip.publish_approved_draft(
+                "does-not-exist.md", "Title", approved_dir=approved, public_site_dir=site,
+            )
+            self.assertFalse(result["published"])
+            self.assertIn("not found", result["error"])
+
+
 class TestBuildPublicSiteStructure(unittest.TestCase):
     def test_real_product_catalog_is_reused_verbatim(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -180,6 +212,31 @@ class TestBuildPublicSiteStructure(unittest.TestCase):
         source = inspect.getsource(bip.build_public_site_structure)
         for forbidden in ("subprocess", "git push", "gh repo", "requests."):
             self.assertNotIn(forbidden, source)
+
+    def test_zero_posts_is_honestly_reported_not_fabricated(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = bip.build_public_site_structure(output_dir=tmpdir)
+            self.assertEqual(result["real_post_count"], 0)
+            with open(os.path.join(tmpdir, "README.md"), "r", encoding="utf-8") as f:
+                self.assertNotIn("## Posts", f.read())
+            with open(os.path.join(tmpdir, "index.html"), "r", encoding="utf-8") as f:
+                self.assertIn("No posts published yet", f.read())
+
+    def test_real_published_posts_are_listed(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            posts_dir = os.path.join(tmpdir, "posts")
+            os.makedirs(posts_dir)
+            with open(os.path.join(posts_dir, "2026-07-24_test.md"), "w", encoding="utf-8") as f:
+                f.write("# A Real Published Post\n\nBody.")
+
+            result = bip.build_public_site_structure(output_dir=tmpdir)
+            self.assertEqual(result["real_post_count"], 1)
+            with open(os.path.join(tmpdir, "README.md"), "r", encoding="utf-8") as f:
+                readme = f.read()
+            self.assertIn("A Real Published Post", readme)
+            self.assertIn("posts/2026-07-24_test.md", readme)
+            with open(os.path.join(tmpdir, "index.html"), "r", encoding="utf-8") as f:
+                self.assertIn("A Real Published Post", f.read())
 
 
 if __name__ == "__main__":
