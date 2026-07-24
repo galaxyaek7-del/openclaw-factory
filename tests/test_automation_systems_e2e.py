@@ -63,7 +63,13 @@ class TestAutomationSystemsEndToEnd(unittest.TestCase):
     # ladder_score 76.3/100, price $327, same as the real seed) without
     # colliding with it — real Market Discovery/Opportunity Scoring proven
     # via test_discovery_tags_this_ladder_with_a_real_seed_niche below instead.
-    NICHE = "automated compliance workflow system for mid-size logistics firms"
+    # "logistics" swapped for "professional services" + "reporting" added
+    # (Strategic Doctrine v2, ADR-122, 2026-07-24): the original text mixed
+    # a real AI_LEVERAGE_HIGH_KEYWORDS hit ("compliance") with a real
+    # AI_LEVERAGE_LOW_KEYWORDS hit ("logistics"), netting 45/100 -- below
+    # the new Competitive Advantage gate's 50 floor. Two real HIGH hits,
+    # zero LOW hits now nets 90/100.
+    NICHE = "automated compliance workflow reporting system for mid-size professional services firms"
 
     def test_discovery_tags_this_ladder_with_a_real_seed_niche(self):
         """Real Market Discovery integration proof, kept separate from the
@@ -132,7 +138,12 @@ class TestAutomationSystemsEndToEnd(unittest.TestCase):
                 os.remove(p)
 
     def _run_full_pipeline(self):
-        ladder_result = profit_oracle.ladder_opportunity_score(self.NICHE, ladder="b2b_systems", evidence_path=self.tmp_evidence)
+        # Strategic Doctrine v2 (ADR-122, 2026-07-24): real customer-pain
+        # evidence, same real-shape passthrough as payment evidence above.
+        ladder_result = profit_oracle.ladder_opportunity_score(
+            self.NICHE, ladder="b2b_systems", evidence_path=self.tmp_evidence,
+            external_signal={"customer_pain": {"pain_language_hits": 1, "willingness_to_pay_hits": 1}},
+        )
         self.assertTrue(ladder_result["accepted"], f"seed niche must clear the real ladder gate: {ladder_result}")
 
         decision = decision_engine.record_ladder_decision(

@@ -148,7 +148,13 @@ async function main() {
       evidenceLine('freelancer_agency_pricing', 2),
     ].join('\n') + '\n');
 
-    const r = await fl.getLadderOpportunityScore(niche, 'ai_saas', { evidencePath });
+    // Strategic Doctrine v2 (ADR-122, 2026-07-24): real customer-pain
+    // evidence, in the exact shape _score_urgency() expects, same
+    // "caller already computed this real signal elsewhere" passthrough
+    // as evidencePath above.
+    const externalSignal = { customer_pain: { pain_language_hits: 1, willingness_to_pay_hits: 1 } };
+
+    const r = await fl.getLadderOpportunityScore(niche, 'ai_saas', { evidencePath, externalSignal });
     assert.strictEqual(r.ok, true);
     assert.strictEqual(r.accepted, true);
     assert.ok(r.score > 0);

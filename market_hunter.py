@@ -224,7 +224,7 @@ def _check_knowledge_brain(niche):
     return False, None
 
 
-def hunt_market(limit=10, write_opportunities=True, decisions_path=None, evidence_path=None):
+def hunt_market(limit=10, write_opportunities=True, decisions_path=None, evidence_path=None, external_signal=None):
     """The main hunt: generate (niche, ladder) candidates → consult the
     Brain FIRST → score survivors via profit_oracle.ladder_opportunity_score()
     (ADR-066, the Strategic Production Priority Ladder gate) → keep accepted
@@ -232,6 +232,15 @@ def hunt_market(limit=10, write_opportunities=True, decisions_path=None, evidenc
     GOLDEN_OPPORTUNITIES.md stays the single, consistent authority for the
     older, still-live score_opportunity() gate (this module never writes
     that file itself — see module docstring).
+
+    external_signal (Strategic Doctrine v2, ADR-122, 2026-07-24): test
+    isolation / explicit passthrough only, same as evidence_path below —
+    real hunts never auto-gather real customer-pain evidence per
+    candidate here (that would mean 3 real GitHub/HN/StackOverflow calls
+    per candidate per hunt, a real cost/rate-limit change this factory's
+    "no live query inside scoring" architecture deliberately avoids); a
+    real caller who HAS already computed it for a specific niche via
+    market_intelligence_engine.analyze_customer_pain() may pass it here.
 
     evidence_path (Proof of Payment doctrine, ADR-121, 2026-07-24): test
     isolation only — omitting it (every real caller) uses the real
@@ -298,7 +307,7 @@ def hunt_market(limit=10, write_opportunities=True, decisions_path=None, evidenc
             continue
 
         try:
-            scored = PROFIT_ORACLE.ladder_opportunity_score(niche, ladder=ladder, evidence_path=evidence_path)
+            scored = PROFIT_ORACLE.ladder_opportunity_score(niche, ladder=ladder, evidence_path=evidence_path, external_signal=external_signal)
         except Exception as e:
             entry["error"] = str(e)
             skipped.append(entry)

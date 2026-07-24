@@ -40,7 +40,7 @@ from decision_engine.engine import record_ladder_decision
 
 import factory_orchestrator as orch
 
-SYNTHETIC_NICHE = "synthetic test fixture automation toolkit zzz-do-not-produce"
+SYNTHETIC_NICHE = "synthetic test fixture automation reporting toolkit zzz-do-not-produce"
 SYNTHETIC_LADDER = "automation_tools"
 # Founder-directed fix (2026-07-24): previously used a REAL SEED_CATEGORIES
 # niche ("automated invoice processing toolkit for small businesses") --
@@ -96,7 +96,12 @@ class TestRunMasterCycleExecuteTrueDrivesRealProductionAndPublishing(unittest.Te
             payload={"source_url": "https://example.com/job/fixture-2", "quote": "test-fixture citation, isolated ledger only"},
             evidence_path=self.evidence_path,
         )
-        scored = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path)
+        # Strategic Doctrine v2 (ADR-122, 2026-07-24): real customer-pain
+        # evidence, same real-shape passthrough as payment evidence above.
+        scored = po.ladder_opportunity_score(
+            SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path,
+            external_signal={"customer_pain": {"pain_language_hits": 1, "willingness_to_pay_hits": 1}},
+        )
         self.assertTrue(scored["accepted"], "fixture niche must still be a real ACCEPT")
         record_ladder_decision(SYNTHETIC_NICHE, SYNTHETIC_LADDER, scored, decisions_path=self.decisions_path)
 

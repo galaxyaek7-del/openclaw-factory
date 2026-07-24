@@ -32,8 +32,17 @@ import profit_oracle as po
 from decision_engine import ranking, store
 from decision_engine.engine import record_ladder_decision
 
-SYNTHETIC_NICHE = "synthetic test fixture automation toolkit zzz-do-not-produce"
+SYNTHETIC_NICHE = "synthetic test fixture automation reporting toolkit zzz-do-not-produce"
 SYNTHETIC_LADDER = "automation_tools"
+# Strategic Doctrine v2 (ADR-122, 2026-07-24): real customer-pain evidence,
+# in the exact shape _score_urgency() expects (a caller's own real,
+# already-computed market_intelligence_engine.analyze_customer_pain()
+# result) -- never gathered by ladder_opportunity_score()/hunt_market()
+# themselves. "reporting" in SYNTHETIC_NICHE above is a real
+# AI_LEVERAGE_HIGH_KEYWORDS hit, clearing the Competitive Advantage gate;
+# automation_tools clears the Long-Term Strategic Asset gate
+# (recurring=55/reusability=80, both >=55).
+PAIN_EVIDENCE_SIGNAL = {"customer_pain": {"pain_language_hits": 1, "willingness_to_pay_hits": 1}}
 # Founder-directed fix (2026-07-24): this file previously used a REAL
 # SEED_CATEGORIES niche (first "workflow automation system for logistics
 # companies", ADR-085, then "automated invoice processing toolkit for
@@ -108,7 +117,10 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         self.assertEqual(len(seeded), 1, "the synthetic fixture niche must be seeded")
         self.assertEqual(seeded[0]["ladder"], SYNTHETIC_LADDER)
 
-        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path)
+        direct = po.ladder_opportunity_score(
+            SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path,
+            external_signal=PAIN_EVIDENCE_SIGNAL,
+        )
         self.assertTrue(direct["accepted"])
         self.stage1_score = direct["ladder_score"]
         self.stage1_price = direct["price"]
@@ -122,7 +134,10 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
             lambda niche, ladder, scored, decisions_path=None: record_ladder_decision(
                 niche, ladder, scored, decisions_path=self.decisions_path),
         ), patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
-            mh.hunt_market(limit=len(mh.SEED_CATEGORIES), write_opportunities=False, evidence_path=self.evidence_path)
+            mh.hunt_market(
+                limit=len(mh.SEED_CATEGORIES), write_opportunities=False,
+                evidence_path=self.evidence_path, external_signal=PAIN_EVIDENCE_SIGNAL,
+            )
 
         history = store.find_decisions_by_niche(SYNTHETIC_NICHE, path=self.decisions_path)
         self.assertEqual(len(history), 1)
@@ -135,7 +150,10 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         # ladder_opportunity_score() is deterministic, so this is a real
         # equality check, not a tautology: it proves market_hunter recorded
         # what it actually computed, not a stale or re-derived number.
-        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path)
+        direct = po.ladder_opportunity_score(
+            SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path,
+            external_signal=PAIN_EVIDENCE_SIGNAL,
+        )
         self.assertEqual(recorded["opportunity_score"], direct["ladder_score"])
         self.assertEqual(recorded["evaluation_snapshot"]["price"], direct["price"])
 
@@ -148,13 +166,19 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         Mission Control would show this real opportunity, not a stale one."""
         record_ladder_decision(
             SYNTHETIC_NICHE, SYNTHETIC_LADDER,
-            po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path),
+            po.ladder_opportunity_score(
+                SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path,
+                external_signal=PAIN_EVIDENCE_SIGNAL,
+            ),
             decisions_path=self.decisions_path,
         )
         queue = ranking.rank_queue(decisions_path=self.decisions_path, outcomes_path=_temp_path())
         matches = [d for d in queue if d["niche"] == SYNTHETIC_NICHE]
         self.assertEqual(len(matches), 1)
-        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path)
+        direct = po.ladder_opportunity_score(
+            SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path,
+            external_signal=PAIN_EVIDENCE_SIGNAL,
+        )
         self.assertEqual(matches[0]["opportunity_score"], direct["ladder_score"], "Mission Control's queue must show the same real score, not a different one")
 
     def test_stage_4_factory_loop_gate_agrees_with_the_recorded_decision(self):
@@ -165,7 +189,7 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         mocking) that it returns the identical score/accepted/price."""
         script = f"""
         const fl = require({json.dumps(str(_FACTORY_ROOT / 'factory_loop.js'))});
-        fl.getLadderOpportunityScore({json.dumps(SYNTHETIC_NICHE)}, {json.dumps(SYNTHETIC_LADDER)}, {{ evidencePath: {json.dumps(self.evidence_path)} }}).then(r => {{
+        fl.getLadderOpportunityScore({json.dumps(SYNTHETIC_NICHE)}, {json.dumps(SYNTHETIC_LADDER)}, {{ evidencePath: {json.dumps(self.evidence_path)}, externalSignal: {json.dumps(PAIN_EVIDENCE_SIGNAL)} }}).then(r => {{
           process.stdout.write(JSON.stringify(r));
         }});
         """
@@ -175,7 +199,10 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         self.assertTrue(gate_result["ok"])
         self.assertTrue(gate_result["accepted"])
 
-        direct = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path)
+        direct = po.ladder_opportunity_score(
+            SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path,
+            external_signal=PAIN_EVIDENCE_SIGNAL,
+        )
         self.assertEqual(gate_result["score"], direct["ladder_score"], "the automatic tick's gate must agree exactly with the single source of truth")
         self.assertEqual(gate_result["price"], direct["price"])
 
@@ -279,7 +306,10 @@ class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
         # the exact real scoring/recording path stages 1-2 above already
         # proved live (profit_oracle.ladder_opportunity_score() + the
         # ADR-076 single-source-of-truth recorder).
-        scored = po.ladder_opportunity_score(SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path)
+        scored = po.ladder_opportunity_score(
+            SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path,
+            external_signal=PAIN_EVIDENCE_SIGNAL,
+        )
         self.assertTrue(scored["accepted"])
         record_ladder_decision(SYNTHETIC_NICHE, SYNTHETIC_LADDER, scored, decisions_path=self.decisions_path)
         decision = store.find_decisions_by_niche(SYNTHETIC_NICHE, path=self.decisions_path)[0]

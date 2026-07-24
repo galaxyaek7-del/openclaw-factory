@@ -1111,20 +1111,35 @@ def _score_payment_evidence(niche, evidence_path=None):
 
 def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, evidence_path=None):
     """Ladder-aware composite score (ADR-065; reweighted under the Proof
-    of Payment doctrine, ADR-121, 2026-07-24). Reuses score_opportunity()'s
-    real demand/competition/margin components unchanged. Real payment
-    evidence (market_evidence.py, human-recorded, source-cited) is now
-    the single highest-weighted factor — founder directive: weight
-    evidence of EXISTING SPEND above inferred demand. Unknown ladder
-    values fall back to "kdp_books" (the strictest band), never silently
-    accepted.
+    of Payment doctrine, ADR-121, and extended to the full Strategic
+    Doctrine v2 decision hierarchy, ADR-122, 2026-07-24). Reuses
+    score_opportunity()'s real demand/competition/margin components
+    unchanged. Unknown ladder values fall back to "kdp_books" (the
+    strictest band), never silently accepted.
 
-    Three independent hard gates, checked in this order, ANY of which
-    rejects regardless of the weighted score: (1) real payment evidence
-    must exist at all — an opportunity with zero real citations is
-    UNPROVEN, never accepted purely on desk-researched/keyword-inferred
-    signals, no matter how high those score; (2) the ladder's real
-    butter_price() floor ($97); (3) the weighted ladder_score floor."""
+    Six independent hard gates, checked in this exact order (the
+    founder's own decision hierarchy), ANY of which rejects regardless
+    of the weighted score:
+      1. Proof of Payment (ADR-121) — real, cited spend evidence
+         (market_evidence.py) must exist at all.
+      2. Pain Severity (ADR-122) — real customer-pain evidence
+         (market_intelligence_engine.analyze_customer_pain(), passed in
+         via external_signal["customer_pain"] by the caller — this
+         function never triggers that live GitHub/HN/StackOverflow
+         query itself, same "no live query inside scoring" discipline
+         _score_defensibility()/_score_market_signal() already
+         established) must exist and clear a real severity floor.
+      3. Competitive Advantage (ADR-122) — real AI-leverage keyword
+         signal (this factory's own genuine capability edge) must
+         exist and be net-positive.
+      4. Long-Term Strategic Asset (ADR-122) — the ladder's own real,
+         documented recurring-revenue + reusability constants must both
+         clear a real durability floor.
+      5. The ladder's real butter_price() floor ($97).
+      6. The weighted ladder_score floor.
+    Absence of real evidence is never treated as a pass for gates 1-4 —
+    same "Unknown never defaults to accepted" principle as every other
+    honesty gate in this factory."""
     ladder = ladder if ladder in RECURRING_REVENUE_BY_LADDER else "kdp_books"
     result = score_opportunity(niche, external_signal=external_signal)
     scores = result["scores"]
@@ -1136,6 +1151,8 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, ev
     reusability = REUSABILITY_BY_LADDER[ladder]
     automation_potential = AUTOMATION_POTENTIAL_BY_LADDER[ladder]
     payment_evidence_score, payment_evidence = _score_payment_evidence(niche, evidence_path=evidence_path)
+    urgency_score = result["urgency"]["score"]
+    ai_leverage_score = result["ai_leverage"]["score"]
 
     raw = (
         0.35 * payment_evidence_score +
@@ -1150,14 +1167,48 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, ev
     price_band = LADDER_PRICE_BAND[ladder]
     price = butter_price(niche, product_type=price_band)
     has_payment_evidence = len(payment_evidence) > 0
+    # Pain Severity floor (ADR-122): "عالية"/"متوسطة" per _score_urgency's
+    # own level bands start at score>=25 — real customer-pain evidence must
+    # not just exist, it must clear the same floor _score_urgency() itself
+    # already uses to call a signal "متوسطة" (medium) rather than "منخفضة".
+    has_pain_evidence = urgency_score is not None and urgency_score >= 25
+    # Competitive Advantage floor (ADR-122): net-positive real AI-leverage
+    # keyword signal — >=50 means at least as many real AI-suitable-task
+    # keyword hits as physical/real-time-task keyword hits in the niche's
+    # own text (_score_ai_leverage()'s own 50-baseline scoring floor).
+    has_competitive_advantage = ai_leverage_score is not None and ai_leverage_score >= 50
+    # Long-Term Strategic Asset floor (ADR-122): the ladder's own real,
+    # already-documented per-rank constants (MASTER_CHARTER.md §2) — never
+    # re-derived, never a new per-niche guess. >=55 on both is exactly the
+    # threshold strategic_investment_layer()'s own q3/q6 already use to
+    # answer "Yes" to recurring revenue / long-term value questions.
+    is_durable_strategic_asset = recurring_revenue_potential >= 55 and reusability >= 55
     clears_profit_floor = price >= MIN_LADDER_PROFIT_FLOOR
     clears_score_floor = ladder_score >= LADDER_MIN_SCORE
-    accepted = has_payment_evidence and clears_score_floor and clears_profit_floor
+    accepted = (
+        has_payment_evidence and has_pain_evidence and has_competitive_advantage and
+        is_durable_strategic_asset and clears_score_floor and clears_profit_floor
+    )
 
     if not has_payment_evidence:
         reason = (
             f"rejected: UNPROVEN — no real payment evidence recorded (Proof of Payment doctrine, ADR-121); "
             f"ladder_score {ladder_score}/100 and price ${price} are not evaluated further until real evidence exists"
+        )
+    elif not has_pain_evidence:
+        reason = (
+            "rejected: PAIN NOT ESTABLISHED — no real customer-pain evidence passed in (Strategic Doctrine v2, ADR-122); "
+            f"urgency={result['urgency']['note']}"
+        )
+    elif not has_competitive_advantage:
+        reason = (
+            "rejected: NO PROVEN COMPETITIVE ADVANTAGE — real AI-leverage signal is Unknown or net-negative "
+            f"(Strategic Doctrine v2, ADR-122); {result['ai_leverage']['note']}"
+        )
+    elif not is_durable_strategic_asset:
+        reason = (
+            f"rejected: NOT A DURABLE STRATEGIC ASSET — ladder={ladder}'s real recurring_revenue_potential="
+            f"{recurring_revenue_potential}/reusability={reusability} does not clear the 55/55 durability floor (Strategic Doctrine v2, ADR-122)"
         )
     elif not clears_profit_floor:
         reason = f"rejected: price ${price} below ${MIN_LADDER_PROFIT_FLOOR} profit floor (ladder={ladder})"
@@ -1165,7 +1216,9 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, ev
         reason = f"rejected: ladder_score {ladder_score}/100 < {LADDER_MIN_SCORE} (ladder={ladder})"
     else:
         reason = (
-            f"accepted: {len(payment_evidence)} real payment evidence record(s) confirmed, "
+            f"accepted: all 4 Strategic Doctrine v2 conditions satisfied — {len(payment_evidence)} real payment "
+            f"evidence record(s), pain urgency {urgency_score}/100, AI-leverage {ai_leverage_score}/100, "
+            f"durable asset (recurring={recurring_revenue_potential}/reusability={reusability}); "
             f"ladder_score {ladder_score}/100 >= {LADDER_MIN_SCORE}, price ${price} >= ${MIN_LADDER_PROFIT_FLOOR} (ladder={ladder})"
         )
 
@@ -1213,6 +1266,17 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, ev
         "urgency": result["urgency"],
         "barrier_to_entry": result["barrier_to_entry"],
         "time_to_market": {"score": ttm_score, "level": ttm_level, "note": ttm_note},
+        # Strategic Doctrine v2 (ADR-122, 2026-07-24): the 4 gate results
+        # directly, in decision-hierarchy order — never re-derive these
+        # from the fields above elsewhere; this is the single source of
+        # truth for which of the 4 conditions this niche actually cleared.
+        "strategic_doctrine_v2": {
+            "proof_of_payment": has_payment_evidence,
+            "pain_severity": has_pain_evidence,
+            "competitive_advantage": has_competitive_advantage,
+            "long_term_strategic_asset": is_durable_strategic_asset,
+            "all_4_satisfied": has_payment_evidence and has_pain_evidence and has_competitive_advantage and is_durable_strategic_asset,
+        },
     }
 
 

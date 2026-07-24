@@ -51,6 +51,14 @@ def _seed_payment_evidence(niche, evidence_path, n=1, event_type="complaining_re
         )
 
 
+def _pain_evidence_signal(pain_hits=1, wtp_hits=1):
+    """Strategic Doctrine v2 (ADR-122): the exact external_signal shape
+    _score_urgency() expects -- a caller's own real, already-computed
+    market_intelligence_engine.analyze_customer_pain() result (real_evidence
+    sub-dict), never gathered by ladder_opportunity_score() itself."""
+    return {"customer_pain": {"pain_language_hits": pain_hits, "willingness_to_pay_hits": wtp_hits}}
+
+
 class TestLadderFallback(unittest.TestCase):
     def setUp(self):
         self.evidence_path = _temp_evidence_path()
@@ -125,7 +133,10 @@ class TestProofOfPaymentDoctrine(unittest.TestCase):
     def test_real_cited_evidence_clears_the_gate(self):
         niche = "AI-powered compliance automation subscription system for accounting firms"
         _seed_payment_evidence(niche, self.evidence_path, n=1, event_type="paid_job_posting")
-        result = po.ladder_opportunity_score(niche, ladder="ai_saas", evidence_path=self.evidence_path)
+        result = po.ladder_opportunity_score(
+            niche, ladder="ai_saas", evidence_path=self.evidence_path,
+            external_signal=_pain_evidence_signal(),
+        )
         self.assertTrue(result["accepted"], result)
         self.assertEqual(len(result["payment_evidence"]), 1)
         self.assertEqual(result["payment_evidence"][0]["event_type"], "paid_job_posting")
@@ -177,6 +188,114 @@ class TestProofOfPaymentDoctrine(unittest.TestCase):
             )  # missing "quote"
 
 
+class TestStrategicDoctrineV2(unittest.TestCase):
+    """ADR-122 (2026-07-24): the 4-condition decision hierarchy — Proof of
+    Payment -> Pain Severity -> Competitive Advantage -> Long-Term
+    Strategic Asset. Each of the 3 new gates is independently provable:
+    a niche/ladder combination engineered to pass every OTHER gate still
+    gets rejected on exactly the one gate under test."""
+
+    NICHE = "AI-powered compliance automation subscription system for accounting firms"  # real ai_leverage hit ("compliance"), ai_saas-eligible
+
+    def setUp(self):
+        self.evidence_path = _temp_evidence_path()
+        _seed_payment_evidence(self.NICHE, self.evidence_path, n=1)
+
+    def tearDown(self):
+        if os.path.exists(self.evidence_path):
+            os.remove(self.evidence_path)
+
+    def test_all_4_conditions_satisfied_is_accepted(self):
+        result = po.ladder_opportunity_score(
+            self.NICHE, ladder="ai_saas", evidence_path=self.evidence_path,
+            external_signal=_pain_evidence_signal(),
+        )
+        self.assertTrue(result["accepted"], result)
+        self.assertEqual(result["strategic_doctrine_v2"], {
+            "proof_of_payment": True, "pain_severity": True,
+            "competitive_advantage": True, "long_term_strategic_asset": True,
+            "all_4_satisfied": True,
+        })
+
+    def test_missing_pain_evidence_rejects_even_with_payment_evidence_and_high_score(self):
+        result = po.ladder_opportunity_score(self.NICHE, ladder="ai_saas", evidence_path=self.evidence_path)
+        self.assertFalse(result["accepted"])
+        self.assertIn("PAIN NOT ESTABLISHED", result["reason"])
+        self.assertFalse(result["strategic_doctrine_v2"]["pain_severity"])
+
+    def test_pain_evidence_below_the_real_severity_floor_still_rejects(self):
+        # _score_urgency: score = wtp*25 + pain*10; 1 pain hit alone = 10,
+        # below the 25 floor -- real evidence that doesn't clear urgency's
+        # own "منخفضة" (low) band must not pass the gate either.
+        result = po.ladder_opportunity_score(
+            self.NICHE, ladder="ai_saas", evidence_path=self.evidence_path,
+            external_signal=_pain_evidence_signal(pain_hits=1, wtp_hits=0),
+        )
+        self.assertFalse(result["accepted"])
+        self.assertIn("PAIN NOT ESTABLISHED", result["reason"])
+
+    def test_no_ai_leverage_keywords_rejects_on_competitive_advantage(self):
+        # Real niche text with zero AI_LEVERAGE_HIGH/LOW_KEYWORDS matches ->
+        # ai_leverage stays genuinely Unknown, same "absence of evidence
+        # never defaults to a pass" principle as every other gate here.
+        niche = "zzz neutral placeholder niche text"
+        _seed_payment_evidence(niche, self.evidence_path, n=1)
+        result = po.ladder_opportunity_score(
+            niche, ladder="ai_saas", evidence_path=self.evidence_path,
+            external_signal=_pain_evidence_signal(),
+        )
+        self.assertFalse(result["accepted"])
+        self.assertIn("NO PROVEN COMPETITIVE ADVANTAGE", result["reason"])
+        self.assertIsNone(result["ai_leverage"]["score"])
+
+    def test_physical_task_niche_rejects_on_competitive_advantage(self):
+        # A real, net-negative ai_leverage niche (physical/logistics
+        # keywords outweigh AI-suitable ones) -- proves the gate rejects a
+        # genuinely poor AI fit, not just an Unknown one.
+        niche = "warehouse physical delivery logistics manual shipping coordination"
+        _seed_payment_evidence(niche, self.evidence_path, n=1)
+        result = po.ladder_opportunity_score(
+            niche, ladder="ai_saas", evidence_path=self.evidence_path,
+            external_signal=_pain_evidence_signal(),
+        )
+        self.assertFalse(result["accepted"])
+        self.assertIn("NO PROVEN COMPETITIVE ADVANTAGE", result["reason"])
+        self.assertLess(result["ai_leverage"]["score"], 50)
+
+    def test_non_durable_ladder_rejects_on_long_term_strategic_asset(self):
+        # kdp_books: recurring=10, reusability=20 -- both real, both far
+        # below the 55/55 durability floor, regardless of every other gate.
+        _seed_payment_evidence(self.NICHE, self.evidence_path, n=1)
+        result = po.ladder_opportunity_score(
+            self.NICHE, ladder="kdp_books", evidence_path=self.evidence_path,
+            external_signal=_pain_evidence_signal(),
+        )
+        self.assertFalse(result["accepted"])
+        self.assertIn("NOT A DURABLE STRATEGIC ASSET", result["reason"])
+        self.assertFalse(result["strategic_doctrine_v2"]["long_term_strategic_asset"])
+
+    def test_durable_ladders_clear_the_strategic_asset_gate(self):
+        for ladder in ("ai_saas", "b2b_systems", "automation_tools"):
+            with self.subTest(ladder=ladder):
+                result = po.ladder_opportunity_score(
+                    self.NICHE, ladder=ladder, evidence_path=self.evidence_path,
+                    external_signal=_pain_evidence_signal(),
+                )
+                self.assertTrue(result["strategic_doctrine_v2"]["long_term_strategic_asset"], result)
+
+    def test_gates_are_checked_in_the_founders_own_hierarchy_order(self):
+        """Proof of Payment -> Pain -> Competitive Advantage -> Strategic
+        Asset. Zero payment evidence must report UNPROVEN even when every
+        other condition would also independently fail."""
+        empty_path = _temp_evidence_path()
+        try:
+            result = po.ladder_opportunity_score("zzz neutral placeholder niche text", ladder="kdp_books", evidence_path=empty_path)
+            self.assertIn("UNPROVEN", result["reason"])
+        finally:
+            if os.path.exists(empty_path):
+                os.remove(empty_path)
+
+
 class TestRealCandidatesDifferentiate(unittest.TestCase):
     """Real, unmocked niches. Under the Proof of Payment doctrine these
     are UNPROVEN with zero recorded evidence — proving that, and proving
@@ -201,7 +320,10 @@ class TestRealCandidatesDifferentiate(unittest.TestCase):
     def test_ai_saas_candidate_is_accepted_once_real_evidence_exists(self):
         niche = "AI-powered compliance automation subscription system for accounting firms"
         _seed_payment_evidence(niche, self.evidence_path, n=1)
-        result = po.ladder_opportunity_score(niche, ladder="ai_saas", evidence_path=self.evidence_path)
+        result = po.ladder_opportunity_score(
+            niche, ladder="ai_saas", evidence_path=self.evidence_path,
+            external_signal=_pain_evidence_signal(),
+        )
         self.assertTrue(result["accepted"], result)
         self.assertGreaterEqual(result["price"], po.MIN_LADDER_PROFIT_FLOOR)
 
@@ -229,9 +351,15 @@ class TestProfitFloorIndependentOfScore(unittest.TestCase):
 
     @patch("profit_oracle.butter_price", return_value=50)
     def test_high_scoring_niche_still_rejected_below_price_floor(self, mock_price):
-        niche = "premium subscription enterprise automation system"
+        # "reporting" is a real AI_LEVERAGE_HIGH_KEYWORDS hit -- clears the
+        # Competitive Advantage gate (ADR-122) so this test isolates the
+        # price floor specifically, not an incidental earlier-gate failure.
+        niche = "premium subscription enterprise automation reporting system"
         _seed_payment_evidence(niche, self.evidence_path, n=3)
-        result = po.ladder_opportunity_score(niche, ladder="ai_saas", evidence_path=self.evidence_path)
+        result = po.ladder_opportunity_score(
+            niche, ladder="ai_saas", evidence_path=self.evidence_path,
+            external_signal=_pain_evidence_signal(),
+        )
         self.assertGreaterEqual(result["ladder_score"], po.LADDER_MIN_SCORE)
         self.assertFalse(result["accepted"])
         self.assertIn("profit floor", result["reason"])
