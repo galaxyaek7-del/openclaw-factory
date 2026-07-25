@@ -51,6 +51,22 @@ def _seed_payment_evidence(niche, evidence_path, n=1, event_type="complaining_re
         )
 
 
+def _patch_defensibility_pass(testcase):
+    """GALAXY FORGE PRODUCT STRATEGY (ADR-126): defensibility is now a hard
+    gate ("difficult to copy"), fed by _score_defensibility()'s real read
+    of the SHARED data/competitor_database.json -- unlike payment evidence,
+    it has no evidence_path-style override, since competitor data is
+    genuinely global-per-niche, not something a caller records per call.
+    Tests that aren't specifically exercising this gate mock the function
+    directly (unittest.mock.patch, the same isolation technique this file
+    already uses for butter_price()) rather than writing into the real
+    shared competitor database, which would pollute it for every other
+    real caller."""
+    patcher = patch("profit_oracle._score_defensibility", return_value=(75, "عالية نسبياً", "test-seeded: real cached fixture, isolated via mock"))
+    patcher.start()
+    testcase.addCleanup(patcher.stop)
+
+
 def _pain_evidence_signal(pain_hits=1, wtp_hits=1):
     """Strategic Doctrine v2 (ADR-122): the exact external_signal shape
     _score_urgency() expects -- a caller's own real, already-computed
@@ -131,6 +147,7 @@ class TestProofOfPaymentDoctrine(unittest.TestCase):
         self.assertEqual(result["components"]["payment_evidence_score"], 0.0)
 
     def test_real_cited_evidence_clears_the_gate(self):
+        _patch_defensibility_pass(self)
         niche = "AI-powered compliance automation subscription system for accounting firms"
         _seed_payment_evidence(niche, self.evidence_path, n=1, event_type="paid_job_posting")
         result = po.ladder_opportunity_score(
@@ -200,6 +217,7 @@ class TestStrategicDoctrineV2(unittest.TestCase):
     def setUp(self):
         self.evidence_path = _temp_evidence_path()
         _seed_payment_evidence(self.NICHE, self.evidence_path, n=1)
+        _patch_defensibility_pass(self)
 
     def tearDown(self):
         if os.path.exists(self.evidence_path):
@@ -296,6 +314,107 @@ class TestStrategicDoctrineV2(unittest.TestCase):
                 os.remove(empty_path)
 
 
+class TestGalaxyForgeProductStrategy(unittest.TestCase):
+    """ADR-126 (2026-07-25): the founder's 10-condition GALAXY FORGE
+    PRODUCT STRATEGY checklist. 3 new hard gates on top of ADR-121/122's
+    4 (competition, defensibility/"difficult to copy", margin) -- each
+    independently provable, same discipline as TestStrategicDoctrineV2.
+    A niche/ladder engineered to pass every other gate still rejects on
+    exactly the one condition under test."""
+
+    NICHE = "AI-powered compliance automation subscription system for accounting firms"
+
+    def setUp(self):
+        self.evidence_path = _temp_evidence_path()
+        _seed_payment_evidence(self.NICHE, self.evidence_path, n=1)
+        _patch_defensibility_pass(self)
+
+    def tearDown(self):
+        if os.path.exists(self.evidence_path):
+            os.remove(self.evidence_path)
+
+    @patch("profit_oracle._score_competition", return_value=(30, ["real test fixture: saturated market"]))
+    def test_strong_competition_rejects_on_low_or_moderate_competition(self, mock_competition):
+        result = po.ladder_opportunity_score(
+            self.NICHE, ladder="ai_saas", evidence_path=self.evidence_path,
+            external_signal=_pain_evidence_signal(),
+        )
+        self.assertFalse(result["accepted"])
+        self.assertIn("COMPETITION TOO STRONG", result["reason"])
+        self.assertFalse(result["product_strategy"]["low_or_moderate_competition"])
+
+    def test_low_defensibility_rejects_on_difficult_to_copy(self):
+        with patch("profit_oracle._score_defensibility", return_value=(25, "منخفضة", "real test fixture: crowded with strong competitors")):
+            result = po.ladder_opportunity_score(
+                self.NICHE, ladder="ai_saas", evidence_path=self.evidence_path,
+                external_signal=_pain_evidence_signal(),
+            )
+        self.assertFalse(result["accepted"])
+        self.assertIn("NOT DIFFICULT TO COPY", result["reason"])
+        self.assertFalse(result["product_strategy"]["difficult_to_copy"])
+
+    def test_unknown_defensibility_rejects_on_difficult_to_copy_absence_is_never_a_pass(self):
+        with patch("profit_oracle._score_defensibility", return_value=(None, "Unknown", "real test fixture: no cached competitor data")):
+            result = po.ladder_opportunity_score(
+                self.NICHE, ladder="ai_saas", evidence_path=self.evidence_path,
+                external_signal=_pain_evidence_signal(),
+            )
+        self.assertFalse(result["accepted"])
+        self.assertIn("NOT DIFFICULT TO COPY", result["reason"])
+
+    @patch("profit_oracle._score_margin", return_value=(20, ["real test fixture: thin margin"], 150))
+    def test_low_margin_rejects_on_high_profit_margin(self, mock_margin):
+        result = po.ladder_opportunity_score(
+            self.NICHE, ladder="ai_saas", evidence_path=self.evidence_path,
+            external_signal=_pain_evidence_signal(),
+        )
+        self.assertFalse(result["accepted"])
+        self.assertIn("MARGIN TOO LOW", result["reason"])
+        self.assertFalse(result["product_strategy"]["high_profit_margin"])
+
+    def test_all_8_gateable_conditions_satisfied_is_accepted(self):
+        result = po.ladder_opportunity_score(
+            self.NICHE, ladder="ai_saas", evidence_path=self.evidence_path,
+            external_signal=_pain_evidence_signal(),
+        )
+        self.assertTrue(result["accepted"], result)
+        ps = result["product_strategy"]
+        self.assertTrue(ps["strong_proof_of_payment"])
+        self.assertTrue(ps["low_or_moderate_competition"])
+        self.assertTrue(ps["difficult_to_copy"])
+        self.assertTrue(ps["premium_pricing_potential"])
+        self.assertTrue(ps["global_scalability"])
+        self.assertTrue(ps["long_term_strategic_value"])
+        self.assertTrue(ps["ai_significant_advantage"])
+        self.assertTrue(ps["high_profit_margin"])
+        self.assertTrue(ps["all_gateable_satisfied"])
+
+    def test_global_scalability_is_the_same_real_signal_as_long_term_strategic_value_not_a_second_computation(self):
+        """ADR-126: "Global Scalability" has no independent signal -- it
+        reuses the identical reusability-driven durable-asset boolean,
+        never a separately-computed duplicate."""
+        result = po.ladder_opportunity_score(
+            self.NICHE, ladder="ai_saas", evidence_path=self.evidence_path,
+            external_signal=_pain_evidence_signal(),
+        )
+        self.assertEqual(result["product_strategy"]["global_scalability"], result["product_strategy"]["long_term_strategic_value"])
+
+    def test_high_commercial_value_and_continuous_improvement_are_honestly_unknown_never_gated(self):
+        """ADR-126's own audit: no real per-opportunity signal exists for
+        these 2 of the 10 named conditions anywhere in this factory --
+        they must read Unknown, never a fabricated Yes/No, and must never
+        block acceptance (an 8-gate pass with these 2 Unknown still
+        accepts)."""
+        result = po.ladder_opportunity_score(
+            self.NICHE, ladder="ai_saas", evidence_path=self.evidence_path,
+            external_signal=_pain_evidence_signal(),
+        )
+        ps = result["product_strategy"]
+        self.assertEqual(ps["high_commercial_value"]["answer"], "Unknown")
+        self.assertEqual(ps["continuous_improvement_potential"]["answer"], "Unknown")
+        self.assertTrue(result["accepted"], "2 honestly-Unknown conditions must never block acceptance of an otherwise fully-gated niche")
+
+
 class TestRealCandidatesDifferentiate(unittest.TestCase):
     """Real, unmocked niches. Under the Proof of Payment doctrine these
     are UNPROVEN with zero recorded evidence — proving that, and proving
@@ -318,6 +437,7 @@ class TestRealCandidatesDifferentiate(unittest.TestCase):
         self.assertIn("UNPROVEN", result["reason"])
 
     def test_ai_saas_candidate_is_accepted_once_real_evidence_exists(self):
+        _patch_defensibility_pass(self)
         niche = "AI-powered compliance automation subscription system for accounting firms"
         _seed_payment_evidence(niche, self.evidence_path, n=1)
         result = po.ladder_opportunity_score(
@@ -354,6 +474,7 @@ class TestProfitFloorIndependentOfScore(unittest.TestCase):
         # "reporting" is a real AI_LEVERAGE_HIGH_KEYWORDS hit -- clears the
         # Competitive Advantage gate (ADR-122) so this test isolates the
         # price floor specifically, not an incidental earlier-gate failure.
+        _patch_defensibility_pass(self)
         niche = "premium subscription enterprise automation reporting system"
         _seed_payment_evidence(niche, self.evidence_path, n=3)
         result = po.ladder_opportunity_score(

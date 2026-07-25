@@ -154,7 +154,22 @@ async function main() {
     // as evidencePath above.
     const externalSignal = { customer_pain: { pain_language_hits: 1, willingness_to_pay_hits: 1 } };
 
-    const r = await fl.getLadderOpportunityScore(niche, 'ai_saas', { evidencePath, externalSignal });
+    // GALAXY FORGE PRODUCT STRATEGY (ADR-126, 2026-07-25): defensibility
+    // ("difficult to copy") is now a hard gate, fed by the real SHARED
+    // data/competitor_database.json -- this fixture niche was never
+    // real-searched there. Same real db_file test-isolation seam
+    // profit_oracle._score_defensibility() gained for exactly this
+    // (mirroring evidence_path's own convention), written here in
+    // competitor_discovery.py's own real save_database() JSON shape --
+    // 5 real-shaped non-strong competitors, 0 strong, matches the "عالية
+    // نسبياً" (relatively high) real defensibility band.
+    const competitorDbFile = path.join(tmpDir, 'competitor_db_ai_saas.json');
+    const normalizedKey = niche.trim().toLowerCase().replace(/\s+/g, ' ');
+    fs.writeFileSync(competitorDbFile, JSON.stringify({
+      [normalizedKey]: { total_found: 5, by_category: { Startup: ['a', 'b', 'c', 'd', 'e'] } },
+    }));
+
+    const r = await fl.getLadderOpportunityScore(niche, 'ai_saas', { evidencePath, externalSignal, competitorDbFile });
     assert.strictEqual(r.ok, true);
     assert.strictEqual(r.accepted, true);
     assert.ok(r.score > 0);

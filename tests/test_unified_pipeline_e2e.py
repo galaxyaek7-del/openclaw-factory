@@ -24,6 +24,7 @@ if str(_FACTORY_ROOT) not in sys.path:
     sys.path.insert(0, str(_FACTORY_ROOT))
 
 import book_generator as bg
+import competitor_discovery as cd
 import dossier_bundle.build_bundle as bb
 import factory_state
 import market_evidence as me
@@ -83,6 +84,16 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         ])
         seed_patcher.start()
         self.addCleanup(seed_patcher.stop)
+
+        # GALAXY FORGE PRODUCT STRATEGY (ADR-126, 2026-07-25): defensibility
+        # ("difficult to copy") is now a hard gate, fed by the real SHARED
+        # data/competitor_database.json -- this synthetic fixture niche is
+        # genuinely Unknown there. These tests prove pipeline wiring/
+        # agreement, not the defensibility gate itself
+        # (test_ladder_opportunity_score.py's job) -- mocked passing.
+        defensibility_patcher = patch("profit_oracle._score_defensibility", return_value=(75, "عالية نسبياً", "test-fixture: mocked passing, isolated"))
+        defensibility_patcher.start()
+        self.addCleanup(defensibility_patcher.stop)
 
         # Proof of Payment doctrine (ADR-121, 2026-07-24): ladder_
         # opportunity_score() now hard-rejects any niche with zero real,
@@ -186,22 +197,52 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
         automatic-tick gate) is a thin JS wrapper around profit_oracle.py
         --ladder-score — the literal same Python function decision_engine
         and market_hunter call. Verified via a real subprocess call (no
-        mocking) that it returns the identical score/accepted/price."""
+        mocking of the Python process itself) that it returns the
+        identical score/accepted/price.
+
+        This test's own real subprocess spawns a genuinely separate
+        Python interpreter -- setUp's class-wide _score_defensibility
+        mock (an in-process patch) does not reach it. GALAXY FORGE
+        PRODUCT STRATEGY (ADR-126) gave _score_defensibility() a real
+        db_file test-isolation seam for exactly this reason (mirroring
+        evidence_path's own convention) -- seeded here with real-shaped
+        passing data instead of writing into the real shared
+        data/competitor_database.json."""
+        competitor_db_file = _temp_path(suffix=".json")
+        cd.save_database(
+            {cd._normalize_key(SYNTHETIC_NICHE): {"total_found": 5, "by_category": {"Startup": ["a", "b", "c", "d", "e"]}}},
+            db_file=competitor_db_file,
+        )
+        self.addCleanup(lambda: os.path.exists(competitor_db_file) and os.remove(competitor_db_file))
+
         script = f"""
         const fl = require({json.dumps(str(_FACTORY_ROOT / 'factory_loop.js'))});
-        fl.getLadderOpportunityScore({json.dumps(SYNTHETIC_NICHE)}, {json.dumps(SYNTHETIC_LADDER)}, {{ evidencePath: {json.dumps(self.evidence_path)}, externalSignal: {json.dumps(PAIN_EVIDENCE_SIGNAL)} }}).then(r => {{
+        fl.getLadderOpportunityScore({json.dumps(SYNTHETIC_NICHE)}, {json.dumps(SYNTHETIC_LADDER)}, {{ evidencePath: {json.dumps(self.evidence_path)}, externalSignal: {json.dumps(PAIN_EVIDENCE_SIGNAL)}, competitorDbFile: {json.dumps(competitor_db_file)} }}).then(r => {{
           process.stdout.write(JSON.stringify(r));
         }});
         """
-        result = subprocess.run(["node", "-e", script], capture_output=True, text=True, timeout=30, cwd=str(_FACTORY_ROOT))
+        # encoding='utf-8' explicit (GALAXY FORGE PRODUCT STRATEGY, ADR-126,
+        # 2026-07-25): without it, Python's subprocess text-mode decode
+        # falls back to the OS locale's preferred encoding (cp1252 on this
+        # Windows machine) instead of the UTF-8 Node.js actually writes --
+        # a real, previously-latent crash (UnicodeDecodeError on a raw
+        # Arabic byte) that this file's own real Arabic-language JSON
+        # payloads (defensibility/ai_leverage/product_strategy notes, all
+        # real, all Arabic) were always one unlucky byte away from
+        # triggering, first surfaced live by ADR-126's added Arabic text.
+        result = subprocess.run(["node", "-e", script], capture_output=True, text=True, encoding="utf-8", timeout=30, cwd=str(_FACTORY_ROOT))
         self.assertEqual(result.returncode, 0, result.stderr)
         gate_result = json.loads(result.stdout.strip())
         self.assertTrue(gate_result["ok"])
         self.assertTrue(gate_result["accepted"])
 
+        # db_file=competitor_db_file (not the class-wide mock): the real
+        # subprocess above reads the real seeded file, not the in-process
+        # mock, so this comparison call uses the identical real source for
+        # a genuine apples-to-apples check, not a coincidental number match.
         direct = po.ladder_opportunity_score(
             SYNTHETIC_NICHE, ladder=SYNTHETIC_LADDER, evidence_path=self.evidence_path,
-            external_signal=PAIN_EVIDENCE_SIGNAL,
+            external_signal=PAIN_EVIDENCE_SIGNAL, db_file=competitor_db_file,
         )
         self.assertEqual(gate_result["score"], direct["ladder_score"], "the automatic tick's gate must agree exactly with the single source of truth")
         self.assertEqual(gate_result["price"], direct["price"])
@@ -227,7 +268,16 @@ class TestOneOpportunityFlowsThroughEveryStageWithNoDivergence(unittest.TestCase
           process.stdout.write(JSON.stringify({{ payload, brief }}));
         }});
         """
-        result = subprocess.run(["node", "-e", script], capture_output=True, text=True, timeout=30, cwd=str(_FACTORY_ROOT))
+        # encoding='utf-8' explicit (GALAXY FORGE PRODUCT STRATEGY, ADR-126,
+        # 2026-07-25): without it, Python's subprocess text-mode decode
+        # falls back to the OS locale's preferred encoding (cp1252 on this
+        # Windows machine) instead of the UTF-8 Node.js actually writes --
+        # a real, previously-latent crash (UnicodeDecodeError on a raw
+        # Arabic byte) that this file's own real Arabic-language JSON
+        # payloads (defensibility/ai_leverage/product_strategy notes, all
+        # real, all Arabic) were always one unlucky byte away from
+        # triggering, first surfaced live by ADR-126's added Arabic text.
+        result = subprocess.run(["node", "-e", script], capture_output=True, text=True, encoding="utf-8", timeout=30, cwd=str(_FACTORY_ROOT))
         self.assertEqual(result.returncode, 0, result.stderr)
         out = json.loads(result.stdout.strip())
 
@@ -284,6 +334,12 @@ class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
             payload={"source_url": "https://example.com/job/fixture-2", "quote": "test-fixture citation, isolated ledger only"},
             evidence_path=self.evidence_path,
         )
+
+        # GALAXY FORGE PRODUCT STRATEGY (ADR-126, 2026-07-25): see the
+        # sibling class's setUp above for the full reasoning -- same mock.
+        defensibility_patcher = patch("profit_oracle._score_defensibility", return_value=(75, "عالية نسبياً", "test-fixture: mocked passing, isolated"))
+        defensibility_patcher.start()
+        self.addCleanup(defensibility_patcher.stop)
 
         from channels import registry as channel_registry
         from channels.paddle_arm import PaddleArm
@@ -411,7 +467,16 @@ class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
         const dossier = {json.dumps(dossier, default=str)};
         process.stdout.write(JSON.stringify(buildProductionNotifyPayload(dossier)));
         """
-        result = subprocess.run(["node", "-e", script], capture_output=True, text=True, timeout=30, cwd=str(_FACTORY_ROOT))
+        # encoding='utf-8' explicit (GALAXY FORGE PRODUCT STRATEGY, ADR-126,
+        # 2026-07-25): without it, Python's subprocess text-mode decode
+        # falls back to the OS locale's preferred encoding (cp1252 on this
+        # Windows machine) instead of the UTF-8 Node.js actually writes --
+        # a real, previously-latent crash (UnicodeDecodeError on a raw
+        # Arabic byte) that this file's own real Arabic-language JSON
+        # payloads (defensibility/ai_leverage/product_strategy notes, all
+        # real, all Arabic) were always one unlucky byte away from
+        # triggering, first surfaced live by ADR-126's added Arabic text.
+        result = subprocess.run(["node", "-e", script], capture_output=True, text=True, encoding="utf-8", timeout=30, cwd=str(_FACTORY_ROOT))
         self.assertEqual(result.returncode, 0, result.stderr)
         telegram_payload = json.loads(result.stdout.strip())
         self.assertEqual(telegram_payload["production_id"], production_id)

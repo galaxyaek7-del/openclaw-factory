@@ -127,6 +127,16 @@ class TestAutomationSystemsEndToEnd(unittest.TestCase):
             # polluted both files for a real market_hunter.py seed niche).
             patch.object(bg, "_record_rejected_niche"),
             patch.object(bg.INSPECTORS, "_log_quarantine"),
+            # GALAXY FORGE PRODUCT STRATEGY (ADR-126, 2026-07-25):
+            # defensibility ("difficult to copy") is now a hard gate, fed
+            # by the real SHARED data/competitor_database.json -- this
+            # fixture niche was never real-searched, so it's genuinely
+            # Unknown there. This test's own purpose is proving the
+            # production pipeline's wiring, not re-litigating the
+            # defensibility gate itself (test_ladder_opportunity_score.py's
+            # job) -- mocked passing, same isolation technique as every
+            # other patch in this list.
+            patch("profit_oracle._score_defensibility", return_value=(75, "عالية نسبياً", "test-fixture: mocked passing, isolated")),
         ]
         for p in patches:
             p.start()

@@ -96,6 +96,18 @@ class TestRunMasterCycleExecuteTrueDrivesRealProductionAndPublishing(unittest.Te
             payload={"source_url": "https://example.com/job/fixture-2", "quote": "test-fixture citation, isolated ledger only"},
             evidence_path=self.evidence_path,
         )
+        # GALAXY FORGE PRODUCT STRATEGY (ADR-126, 2026-07-25): defensibility
+        # ("difficult to copy") is now a hard gate, fed by the real SHARED
+        # data/competitor_database.json -- self.competitor_db_file (above)
+        # is passed to run_master_cycle() later, not to this setUp-time
+        # ladder_opportunity_score() call, so this synthetic fixture niche
+        # is genuinely Unknown there. This test's purpose is proving
+        # run_master_cycle's wiring, not the defensibility gate itself
+        # (test_ladder_opportunity_score.py's job) -- mocked passing.
+        defensibility_patcher = patch("profit_oracle._score_defensibility", return_value=(75, "عالية نسبياً", "test-fixture: mocked passing, isolated"))
+        defensibility_patcher.start()
+        self.addCleanup(defensibility_patcher.stop)
+
         # Strategic Doctrine v2 (ADR-122, 2026-07-24): real customer-pain
         # evidence, same real-shape passthrough as payment evidence above.
         scored = po.ladder_opportunity_score(

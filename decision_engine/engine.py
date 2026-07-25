@@ -217,6 +217,15 @@ def record_ladder_decision(niche, ladder, ladder_result, decisions_path=None, pr
             # discarded, same "computed then dropped" pattern this
             # function's own history above was fixed reactively for.
             "payment_evidence": ladder_result.get("payment_evidence"),
+            # GALAXY FORGE PRODUCT STRATEGY (ADR-126, 2026-07-25): the
+            # 10-condition checklist result ladder_opportunity_score()
+            # already computes -- persisted proactively this time,
+            # continuing this same function's own documented "computed
+            # then dropped" fix history rather than adding a 4th instance
+            # of it. strategic_doctrine_v2 (ADR-122) was never persisted
+            # either -- added alongside for the same reason.
+            "strategic_doctrine_v2": ladder_result.get("strategic_doctrine_v2"),
+            "product_strategy": ladder_result.get("product_strategy"),
         },
         external_signal=None,
         ladder=ladder,

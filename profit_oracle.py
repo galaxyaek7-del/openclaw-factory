@@ -641,12 +641,19 @@ def _score_confidence(niche, external_signal):
 # get_or_refresh_competitors()/discover_competitors() from here -- doing
 # so would add a live HN+GitHub network call to every synchronous score,
 # exactly what ADR-042 built competitor_discovery.py standalone to avoid.
-def _score_defensibility(niche):
+def _score_defensibility(niche, db_file=None):
+    """db_file: test isolation only (GALAXY FORGE PRODUCT STRATEGY,
+    ADR-126, 2026-07-25) -- a real caller never passes this, so it
+    defaults to the real, shared data/competitor_database.json exactly
+    as before. Mirrors evidence_path's own isolation convention
+    (ADR-121), added once this function became a hard gate and tests
+    needed a way to control its outcome without writing into the real
+    shared competitor database."""
     if COMPETITOR_DISCOVERY is None:
         return None, "Unknown", "competitor_discovery.py غير متوفر"
 
     try:
-        db = COMPETITOR_DISCOVERY.load_database()
+        db = COMPETITOR_DISCOVERY.load_database(db_file=db_file)
         key = COMPETITOR_DISCOVERY._normalize_key(niche)
     except Exception as e:
         return None, "Unknown", f"تعذّر قراءة قاعدة بيانات المنافسين: {e}"
@@ -818,7 +825,7 @@ def _score_barrier_to_entry(niche):
     return barrier_score, level, f"مُشتقّ من تعقيد التنفيذ الحقيقي (execution={execution_score}) — ليس من عدد المنافسين"
 
 
-def score_opportunity(niche, now=None, external_signal=None):
+def score_opportunity(niche, now=None, external_signal=None, db_file=None):
     niche = str(niche or '').strip()
     if not niche:
         raise ValueError("النيتش (niche) مطلوب")
@@ -858,7 +865,7 @@ def score_opportunity(niche, now=None, external_signal=None):
 
     risk_score, risk_level, risk_notes = _score_risk(niche)
     confidence_score, confidence_level, confidence_note = _score_confidence(niche, external_signal)
-    defensibility_score, defensibility_level, defensibility_note = _score_defensibility(niche)
+    defensibility_score, defensibility_level, defensibility_note = _score_defensibility(niche, db_file=db_file)
     market_signal_score, market_signal_level, market_signal_note = _score_market_signal(niche, external_signal)
     ai_leverage_score, ai_leverage_level, ai_leverage_note = _score_ai_leverage(niche)
     urgency_score, urgency_level, urgency_note = _score_urgency(niche, external_signal)
@@ -1109,17 +1116,18 @@ def _score_payment_evidence(niche, evidence_path=None):
     return score, evidence
 
 
-def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, evidence_path=None):
+def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, evidence_path=None, db_file=None):
     """Ladder-aware composite score (ADR-065; reweighted under the Proof
-    of Payment doctrine, ADR-121, and extended to the full Strategic
-    Doctrine v2 decision hierarchy, ADR-122, 2026-07-24). Reuses
-    score_opportunity()'s real demand/competition/margin components
-    unchanged. Unknown ladder values fall back to "kdp_books" (the
-    strictest band), never silently accepted.
+    of Payment doctrine, ADR-121, extended to the full Strategic Doctrine
+    v2 decision hierarchy, ADR-122, and further extended to the
+    GALAXY FORGE PRODUCT STRATEGY's 10-condition checklist, ADR-126,
+    2026-07-25). Reuses score_opportunity()'s real demand/competition/
+    margin components unchanged. Unknown ladder values fall back to
+    "kdp_books" (the strictest band), never silently accepted.
 
-    Six independent hard gates, checked in this exact order (the
-    founder's own decision hierarchy), ANY of which rejects regardless
-    of the weighted score:
+    Nine independent hard gates, checked in this exact order (the
+    founder's own decision hierarchy across ADR-122 and ADR-126), ANY of
+    which rejects regardless of the weighted score:
       1. Proof of Payment (ADR-121) — real, cited spend evidence
          (market_evidence.py) must exist at all.
       2. Pain Severity (ADR-122) — real customer-pain evidence
@@ -1129,19 +1137,41 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, ev
          query itself, same "no live query inside scoring" discipline
          _score_defensibility()/_score_market_signal() already
          established) must exist and clear a real severity floor.
-      3. Competitive Advantage (ADR-122) — real AI-leverage keyword
-         signal (this factory's own genuine capability edge) must
-         exist and be net-positive.
-      4. Long-Term Strategic Asset (ADR-122) — the ladder's own real,
-         documented recurring-revenue + reusability constants must both
-         clear a real durability floor.
-      5. The ladder's real butter_price() floor ($97).
-      6. The weighted ladder_score floor.
-    Absence of real evidence is never treated as a pass for gates 1-4 —
-    same "Unknown never defaults to accepted" principle as every other
-    honesty gate in this factory."""
+      3. Low or Moderate Competition (ADR-126) — real competition_
+         favorability (score_opportunity()'s own component) must clear
+         the same >=60 "favorable enough" floor strategic_investment_
+         layer()'s own q4 already uses.
+      4. Difficult to Copy (ADR-126) — real defensibility level
+         (_score_defensibility(), cached competitor_discovery.py data)
+         must not be Unknown or low.
+      5. The ladder's real butter_price() floor ($97) — Premium Pricing
+         Potential (ADR-126).
+      6. Long-Term Strategic Asset / Global Scalability (ADR-122/126) —
+         the ladder's own real, documented recurring-revenue +
+         reusability constants must both clear a real durability floor.
+         "Global Scalability" is not a separate signal — it is the same
+         real reusability component, not a second, duplicate check.
+      7. Competitive Advantage / AI Can Provide a Significant Advantage
+         (ADR-122/126) — real AI-leverage keyword signal (this factory's
+         own genuine capability edge) must exist and be net-positive.
+      8. High Profit Margin (ADR-126) — score_opportunity()'s own real
+         margin component must clear the same >=50 floor the AI-leverage
+         gate already uses.
+      9. The weighted ladder_score floor.
+    Absence of real evidence is never treated as a pass for gates 1-4,7,8
+    — same "Unknown never defaults to accepted" principle as every other
+    honesty gate in this factory.
+
+    Two of the founder's 10 named conditions (ADR-126) — "High Commercial
+    Value" and "Continuous Improvement Potential" — have no real,
+    existing per-opportunity signal anywhere in this factory today (see
+    ADR-126's own audit). They are surfaced honestly as "Unknown" in the
+    returned product_strategy dict and are NOT hard gates: fabricating a
+    signal to gate on would be exactly the invented-market-signal this
+    factory's culture exists to prevent, and silently treating Unknown as
+    a pass would be worse than not gating on it at all."""
     ladder = ladder if ladder in RECURRING_REVENUE_BY_LADDER else "kdp_books"
-    result = score_opportunity(niche, external_signal=external_signal)
+    result = score_opportunity(niche, external_signal=external_signal, db_file=db_file)
     scores = result["scores"]
 
     market_demand = scores["demand"]
@@ -1172,22 +1202,39 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, ev
     # not just exist, it must clear the same floor _score_urgency() itself
     # already uses to call a signal "متوسطة" (medium) rather than "منخفضة".
     has_pain_evidence = urgency_score is not None and urgency_score >= 25
+    # Low or Moderate Competition floor (ADR-126): reuses the exact >=60
+    # threshold strategic_investment_layer()'s own q4 already treats as
+    # "favorable enough" — not a new, invented number.
+    has_low_or_moderate_competition = competition_favorability is not None and competition_favorability >= 60
+    # Difficult to Copy floor (ADR-126): real defensibility level from
+    # _score_defensibility() (cached competitor_discovery.py data) — never
+    # a live query from inside scoring. Unknown or "منخفضة" (low) both
+    # fail, same "absence of evidence is never a pass" principle as every
+    # other gate here.
+    defensibility_level = result["defensibility"].get("level")
+    is_difficult_to_copy = defensibility_level not in (None, "Unknown", "منخفضة")
     # Competitive Advantage floor (ADR-122): net-positive real AI-leverage
     # keyword signal — >=50 means at least as many real AI-suitable-task
     # keyword hits as physical/real-time-task keyword hits in the niche's
     # own text (_score_ai_leverage()'s own 50-baseline scoring floor).
     has_competitive_advantage = ai_leverage_score is not None and ai_leverage_score >= 50
-    # Long-Term Strategic Asset floor (ADR-122): the ladder's own real,
+    # Long-Term Strategic Asset floor (ADR-122) / Global Scalability
+    # (ADR-126, same real signal — see docstring): the ladder's own real,
     # already-documented per-rank constants (MASTER_CHARTER.md §2) — never
     # re-derived, never a new per-niche guess. >=55 on both is exactly the
     # threshold strategic_investment_layer()'s own q3/q6 already use to
     # answer "Yes" to recurring revenue / long-term value questions.
     is_durable_strategic_asset = recurring_revenue_potential >= 55 and reusability >= 55
+    # High Profit Margin floor (ADR-126): reuses the exact >=50 threshold
+    # the Competitive Advantage gate already uses, for consistency rather
+    # than inventing a fresh number for this factory's own margin scale.
+    has_high_profit_margin = profit_potential is not None and profit_potential >= 50
     clears_profit_floor = price >= MIN_LADDER_PROFIT_FLOOR
     clears_score_floor = ladder_score >= LADDER_MIN_SCORE
     accepted = (
-        has_payment_evidence and has_pain_evidence and has_competitive_advantage and
-        is_durable_strategic_asset and clears_score_floor and clears_profit_floor
+        has_payment_evidence and has_pain_evidence and has_low_or_moderate_competition and
+        is_difficult_to_copy and clears_profit_floor and is_durable_strategic_asset and
+        has_competitive_advantage and has_high_profit_margin and clears_score_floor
     )
 
     if not has_payment_evidence:
@@ -1200,6 +1247,16 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, ev
             "rejected: PAIN NOT ESTABLISHED — no real customer-pain evidence passed in (Strategic Doctrine v2, ADR-122); "
             f"urgency={result['urgency']['note']}"
         )
+    elif not has_low_or_moderate_competition:
+        reason = (
+            f"rejected: COMPETITION TOO STRONG — competition_favorability {competition_favorability}/100 < 60 "
+            f"(GALAXY FORGE PRODUCT STRATEGY, ADR-126)"
+        )
+    elif not is_difficult_to_copy:
+        reason = (
+            f"rejected: NOT DIFFICULT TO COPY — real defensibility level is "
+            f"{defensibility_level or 'Unknown'} (GALAXY FORGE PRODUCT STRATEGY, ADR-126); {result['defensibility'].get('note')}"
+        )
     elif not has_competitive_advantage:
         reason = (
             "rejected: NO PROVEN COMPETITIVE ADVANTAGE — real AI-leverage signal is Unknown or net-negative "
@@ -1207,17 +1264,23 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, ev
         )
     elif not is_durable_strategic_asset:
         reason = (
-            f"rejected: NOT A DURABLE STRATEGIC ASSET — ladder={ladder}'s real recurring_revenue_potential="
-            f"{recurring_revenue_potential}/reusability={reusability} does not clear the 55/55 durability floor (Strategic Doctrine v2, ADR-122)"
+            f"rejected: NOT A DURABLE STRATEGIC ASSET / NOT GLOBALLY SCALABLE — ladder={ladder}'s real recurring_revenue_potential="
+            f"{recurring_revenue_potential}/reusability={reusability} does not clear the 55/55 durability floor (Strategic Doctrine v2/ADR-126)"
+        )
+    elif not has_high_profit_margin:
+        reason = (
+            f"rejected: MARGIN TOO LOW — real profit_potential {profit_potential}/100 < 50 "
+            f"(GALAXY FORGE PRODUCT STRATEGY, ADR-126)"
         )
     elif not clears_profit_floor:
-        reason = f"rejected: price ${price} below ${MIN_LADDER_PROFIT_FLOOR} profit floor (ladder={ladder})"
+        reason = f"rejected: price ${price} below ${MIN_LADDER_PROFIT_FLOOR} profit floor (premium-pricing potential, ladder={ladder}, ADR-126)"
     elif not clears_score_floor:
         reason = f"rejected: ladder_score {ladder_score}/100 < {LADDER_MIN_SCORE} (ladder={ladder})"
     else:
         reason = (
-            f"accepted: all 4 Strategic Doctrine v2 conditions satisfied — {len(payment_evidence)} real payment "
-            f"evidence record(s), pain urgency {urgency_score}/100, AI-leverage {ai_leverage_score}/100, "
+            f"accepted: all 8 GALAXY FORGE PRODUCT STRATEGY gates satisfied (ADR-121/122/126) — {len(payment_evidence)} real payment "
+            f"evidence record(s), pain urgency {urgency_score}/100, competition_favorability {competition_favorability}/100, "
+            f"defensibility {defensibility_level}, AI-leverage {ai_leverage_score}/100, margin {profit_potential}/100, "
             f"durable asset (recurring={recurring_revenue_potential}/reusability={reusability}); "
             f"ladder_score {ladder_score}/100 >= {LADDER_MIN_SCORE}, price ${price} >= ${MIN_LADDER_PROFIT_FLOOR} (ladder={ladder})"
         )
@@ -1276,6 +1339,33 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, ev
             "competitive_advantage": has_competitive_advantage,
             "long_term_strategic_asset": is_durable_strategic_asset,
             "all_4_satisfied": has_payment_evidence and has_pain_evidence and has_competitive_advantage and is_durable_strategic_asset,
+        },
+        # GALAXY FORGE PRODUCT STRATEGY (ADR-126, 2026-07-25): the
+        # founder's own 10-condition checklist, mapped 1:1 onto real
+        # signals wherever one exists (8 of 10 — 7 are hard gates above,
+        # "premium_pricing_potential" reuses the pre-existing profit-floor
+        # gate). "high_commercial_value" and "continuous_improvement_
+        # potential" have no real per-opportunity signal anywhere in this
+        # factory today (ADR-126's own audit) -- honestly "Unknown", never
+        # fabricated, and NOT hard gates: gating on an invented number
+        # would be exactly the fabricated-market-signal this factory's
+        # culture exists to prevent. "global_scalability" is not a
+        # separate, second computation -- it is the identical real
+        # reusability component long_term_strategic_asset already gates
+        # on, cited here rather than silently duplicated.
+        "product_strategy": {
+            "high_commercial_value": {"answer": "Unknown", "reason": "لا مؤشر حقيقي مخصَّص لهذا البُعد بعد في هذا المصنع — لا اختلاق (ADR-126 audit)"},
+            "strong_proof_of_payment": has_payment_evidence,
+            "low_or_moderate_competition": has_low_or_moderate_competition,
+            "difficult_to_copy": is_difficult_to_copy,
+            "premium_pricing_potential": clears_profit_floor,
+            "global_scalability": is_durable_strategic_asset,
+            "long_term_strategic_value": is_durable_strategic_asset,
+            "ai_significant_advantage": has_competitive_advantage,
+            "continuous_improvement_potential": {"answer": "Unknown", "reason": "لا مؤشر حقيقي مخصَّص لهذا البُعد بعد في هذا المصنع — لا اختلاق (ADR-126 audit)"},
+            "high_profit_margin": has_high_profit_margin,
+            "all_gateable_satisfied": accepted,
+            "note": "2 من 10 شروط (القيمة التجارية العالية، إمكانية التحسين المستمر) لا مؤشر حقيقي لها بعد — معروضة Unknown بصراحة، لا تُستخدم كبوابة قبول/رفض.",
         },
     }
 
@@ -1682,6 +1772,10 @@ def main():
                 # a real caller never passes this, so it defaults to the
                 # real data/market_evidence.jsonl exactly as before.
                 evidence_path=data.get('evidence_path'),
+                # Test isolation only (GALAXY FORGE PRODUCT STRATEGY,
+                # ADR-126): same convention, defaults to the real, shared
+                # data/competitor_database.json exactly as before.
+                db_file=data.get('competitor_db_file'),
             )
             print(json.dumps({"success": True, **result}, ensure_ascii=False))
         except Exception as e:

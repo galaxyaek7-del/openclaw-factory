@@ -693,7 +693,7 @@ function getOpportunityScore(niche, { timeoutMs = 15000, scriptPath = path.join(
 // reason, components} shape so every downstream caller in huntGolden()
 // (skip-detail logging, notifyGoldenHunterAccepted()) works identically
 // regardless of which gate produced the result.
-function getLadderOpportunityScore(niche, ladder, { timeoutMs = 15000, scriptPath = path.join(FACTORY_DIR, 'profit_oracle.py'), pythonPath, evidencePath, externalSignal } = {}) {
+function getLadderOpportunityScore(niche, ladder, { timeoutMs = 15000, scriptPath = path.join(FACTORY_DIR, 'profit_oracle.py'), pythonPath, evidencePath, externalSignal, competitorDbFile } = {}) {
   return new Promise((resolve) => {
     let python;
     try {
@@ -737,12 +737,14 @@ function getLadderOpportunityScore(niche, ladder, { timeoutMs = 15000, scriptPat
     try {
       // evidencePath (Proof of Payment doctrine, ADR-121) / externalSignal
       // (Strategic Doctrine v2, ADR-122, real customer-pain evidence a
-      // caller already computed via analyze_customer_pain() elsewhere):
-      // test isolation / explicit real evidence passthrough only -- a
-      // real automatic-tick caller never sets either, so profit_oracle.py
-      // falls back to its real defaults (real ledger, no pain evidence)
-      // exactly as before these parameters existed.
-      python.stdin.write(JSON.stringify({ niche, ladder, evidence_path: evidencePath, external_signal: externalSignal }));
+      // caller already computed via analyze_customer_pain() elsewhere) /
+      // competitorDbFile (GALAXY FORGE PRODUCT STRATEGY, ADR-126): test
+      // isolation / explicit real evidence passthrough only -- a real
+      // automatic-tick caller never sets any of these, so profit_oracle.py
+      // falls back to its real defaults (real ledger, no pain evidence,
+      // real shared competitor database) exactly as before these
+      // parameters existed.
+      python.stdin.write(JSON.stringify({ niche, ladder, evidence_path: evidencePath, external_signal: externalSignal, competitor_db_file: competitorDbFile }));
       python.stdin.end();
     } catch (err) {
       finish({ ok: false, error: err.message });

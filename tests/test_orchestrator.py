@@ -243,7 +243,7 @@ class TestCliRunLadderOpportunity(unittest.TestCase):
         proc = subprocess.run(
             [sys.executable, "-m", "orchestrator.orchestrator", "--run-ladder-opportunity"],
             input=json.dumps({"niche": "zzz_never_a_real_accepted_niche_test_probe_998877", "ladder": "b2b_systems"}),
-            capture_output=True, text=True, cwd=str(_FACTORY_ROOT), timeout=30,
+            capture_output=True, text=True, encoding="utf-8", cwd=str(_FACTORY_ROOT), timeout=30,
         )
         self.assertEqual(proc.returncode, 1)
         result = json.loads(proc.stdout)
@@ -254,7 +254,7 @@ class TestCliRunLadderOpportunity(unittest.TestCase):
         import subprocess
         proc = subprocess.run(
             [sys.executable, "-m", "orchestrator.orchestrator", "--run-ladder-opportunity"],
-            input="not valid json", capture_output=True, text=True, cwd=str(_FACTORY_ROOT), timeout=30,
+            input="not valid json", capture_output=True, text=True, encoding="utf-8", cwd=str(_FACTORY_ROOT), timeout=30,
         )
         self.assertEqual(proc.returncode, 1)
         result = json.loads(proc.stdout)
