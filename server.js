@@ -3969,6 +3969,31 @@ app.use('/trust', express.static(path.join(__dirname, 'trust')));
 // public-by-design pages.
 app.use('/site', express.static(path.join(__dirname, 'customer_site')));
 
+// Deploy-readiness (Phase 1, Quality Supremacy directive, 2026-07-25):
+// real, standard-convention crawler files. /site/ and /trust/ are the only
+// two mounts meant for public search indexing -- everything else in this
+// repo is either an authenticated internal surface (Mission Control) or an
+// API with nothing worth indexing. Disallow those explicitly rather than
+// relying on crawlers just not finding them.
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain').send(
+    'User-agent: *\n' +
+    'Allow: /site/\n' +
+    'Allow: /trust/\n' +
+    'Disallow: /site/status.html\n' +
+    'Disallow: /api/\n' +
+    'Disallow: /mission_control\n' +
+    'Disallow: /dashboard.html\n' +
+    'Sitemap: /site/sitemap.xml\n'
+  );
+});
+
+app.get('/site/sitemap.xml', (req, res) => {
+  const pages = ['/site/', '/site/#approach', '/site/#how-it-works', '/site/#services', '/site/#support', '/site/#knowledge-base', '/trust/index.html'];
+  const urls = pages.map(p => `  <url><loc>${p}</loc></url>`).join('\n');
+  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
+});
+
 const PADDLE_PRODUCTS_FILE = path.join(__dirname, 'data', 'paddle_products.json');
 const CUSTOMER_REQUESTS_FILE = path.join(__dirname, 'data', 'customer_requests.jsonl');
 const CUSTOMER_REQUEST_FIELD_MAX = 2000;
