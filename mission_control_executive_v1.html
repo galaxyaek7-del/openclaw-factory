@@ -237,6 +237,8 @@ pre.raw{
       note:'ADR-128: real evidence coverage/unknown-count/research-queue/top-missing-signals across every decision that carries evidence tracking, plus real freshness of the 2 real evidence caches.' },
     { id:'evidence-network', title:'Evidence Network', service:'evidence-network-status', kind:'kv',
       note:'ADR-128: which evidence sources are actually real and callable today vs. declared-but-not-built — the competitive advantage is owning this network, not a better score.' },
+    { id:'customer-pipeline', title:'Customer Pipeline', service:'customer-pipeline-status', kind:'kv',
+      note:'ADR-130: real per-request Status/Progress/Logs/Failures/Recovery for every real customer request — stage distribution, and which ones need a real founder action right now (Paddle onboarding gate, a missing custom product, or a real failure). Trigger new evaluations via POST /api/v1/actions/advance-customer-pipeline.' },
   ];
 
   const state = {}; // id -> { status: 'pending'|'ok'|'empty'|'error', payload, fetchedAt }

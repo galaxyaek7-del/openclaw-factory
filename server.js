@@ -710,6 +710,13 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('evidence_coverage_status'),
   },
   {
+    name: 'customer-pipeline-status',
+    description: "Galaxy Forge Customer Platform, Phase 2 Round 1 (ADR-130, 2026-07-25): real Mission Control supervision over every real customer request's pipeline -- per-request Status/Progress/Logs/Failures/Recovery/Estimated-completion, stage distribution, and which requests need a real founder action right now (Paddle onboarding gate, missing custom product, or a real failure).",
+    reused: 'customer_pipeline.py list_pipeline_overview(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('customer_pipeline_status', [], req),
+    health: pythonHealthCheck('customer_pipeline_status'),
+  },
+  {
     name: 'golden-hunter-status',
     description: "Golden Hunter Evolution -- real recent activity + top currently-scored opportunities, each with a real, informational pre-acceptance ROI estimate. Never changes the real accept/reject gate.",
     reused: 'mission_control_api.py _golden_hunter_status() (EOS Phase 2, 2026-07-19) -- reuses golden_opportunities.json, data/golden_hunter_events.jsonl, and revenue_pipeline.plan.estimate_pre_acceptance_roi() verbatim.',
@@ -1352,6 +1359,19 @@ const ACTION_REGISTRY = [
     reversible: true, // read-only check; the real Telegram send is idempotent, never repeats
     kind: 'async',
     section: 'check_paddle_checkout_status',
+  },
+  {
+    // ADR-130 (2026-07-25): batch-sweeps every real customer request
+    // still in NEW through real Qualification + Opportunity Evaluation +
+    // Price Generation + Proposal. Async for the same reason rerun-
+    // market-analysis/trigger-opportunity-evaluation are: each NEW
+    // request runs a real, live Groq market-research call.
+    name: 'advance-customer-pipeline',
+    description: 'Runs every real customer request still in NEW through the real evidence gate, real pricing, and real proposal generation (customer_pipeline.py). Never attempts payment -- that only happens once the customer approves their own proposal.',
+    reused: 'customer_pipeline.py advance_all_new_requests() (ADR-130)',
+    reversible: true, // evaluates/prices/proposes only; no purchase/production side effect
+    kind: 'async',
+    section: 'advance_customer_pipeline',
   },
   {
     // Executive Directive (2026-07-22): the permanent core Executive
@@ -3971,6 +3991,57 @@ function isRateLimited(ip) {
   return timestamps.length > CUSTOMER_REQUEST_RATE_LIMIT.maxPerWindow;
 }
 
+// ADR-130 (2026-07-25): direct spawn of customer_pipeline.py -- a single-
+// purpose CLI script (command + JSON payload), same pattern as /generate-
+// book spawning book_generator.py directly rather than going through
+// mission_control_api.py's read-only aggregation layer, which stays
+// Mission-Control-auth-only. These three commands (status/approve/reject)
+// are public and customer-facing, a different trust boundary entirely.
+const CUSTOMER_PIPELINE_SYNC_TIMEOUT_MS = 45000; // a real single Paddle API call, well under this
+function runCustomerPipelineCommand(command, payload = {}) {
+  return new Promise((resolve, reject) => {
+    const pythonPath = detectPython();
+    const scriptPath = path.join(__dirname, 'customer_pipeline.py');
+    const python = spawn(pythonPath, [scriptPath, command, JSON.stringify(payload)], { cwd: __dirname });
+    let output = '', errOut = '', timedOut = false;
+    killAfterTimeout(python, CUSTOMER_PIPELINE_SYNC_TIMEOUT_MS, () => { timedOut = true; });
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', reject);
+    python.on('close', () => {
+      if (timedOut) return reject(new Error(`customer_pipeline ${command} timed out after ${CUSTOMER_PIPELINE_SYNC_TIMEOUT_MS}ms`));
+      let parsed;
+      try {
+        parsed = JSON.parse(output.trim());
+      } catch {
+        return reject(new Error(`parse error: ${output}${errOut}`));
+      }
+      if (parsed.success === false) return reject(new Error(parsed.error || 'customer_pipeline command reported failure'));
+      resolve(parsed);
+    });
+  });
+}
+
+// Fire-and-forget post-intake trigger -- real Qualification/Evaluation can
+// take minutes (live Groq call), and nothing here waits on it, so this
+// gets the SAME generous 15-minute hang-safety-net timeout as the other
+// slow real async actions (PYTHON_ACTION_TIMEOUT_MS), not the 45s sync
+// budget above. Errors are swallowed by design -- the request stays
+// safely in NEW and customer_pipeline.py's own stuck-NEW detection
+// surfaces it to the founder instead of failing the (already-sent)
+// customer response.
+function triggerCustomerPipelineAdvanceFireAndForget(requestId) {
+  try {
+    const pythonPath = detectPython();
+    const scriptPath = path.join(__dirname, 'customer_pipeline.py');
+    const python = spawn(pythonPath, [scriptPath, 'advance', JSON.stringify({ request_id: requestId })], { cwd: __dirname, detached: false });
+    killAfterTimeout(python, PYTHON_ACTION_TIMEOUT_MS, () => {});
+    python.on('error', () => {});
+  } catch {
+    // best-effort only -- see stuck-NEW detection above
+  }
+}
+
 // Public, read-only, real: the exact same real Paddle catalog
 // data/paddle_products.json already holds (5 real products, real
 // product_id/price_id/price -- ADR-085/086). Never a second, hand-
@@ -3994,6 +4065,79 @@ app.get('/api/customer/catalog', (req, res) => {
 // overwritten, and the founder is notified via the same real, already-
 // live Telegram channel every other real factory event already uses --
 // no second notification system.
+// ── AI Consultation (ADR-130, 2026-07-25) ──
+// Public, unauthenticated -- unlike /api/agent/:name (Mission Control-
+// gated since the Phase 1 Security Audit's finding 2.1: an arbitrary
+// `message` reaching a real Groq call with no rate limit is a real spend
+// vector). This route is deliberately public (a prospective customer has
+// no login), so it closes that same hole differently: a FIXED system
+// prompt (never user-controllable), a hard per-message length cap, a low
+// max_tokens ceiling, and its own tighter rate limit (real Groq spend per
+// call, tighter than the free-to-persist request-product route above).
+const CUSTOMER_CONSULTATION_RATE_LIMIT = { windowMs: 10 * 60 * 1000, maxPerWindow: 8 };
+const customerConsultationRateState = new Map();
+const CUSTOMER_CONSULTATION_MESSAGE_MAX = 500;
+const CUSTOMER_CONSULTATION_LOG_FILE = path.join(__dirname, 'data', 'consultation_log.jsonl');
+const CONSULTATION_SYSTEM_PROMPT = `You are Galaxy Forge's pre-sales consultant. Your ONLY job: help a visitor articulate a business software problem clearly enough to submit as a real product request (compliance automation, workflow systems, customer operations tools, or similar B2B software).
+
+Rules:
+- Ask ONE clarifying question if their description is vague, or write a tightened 2-3 sentence version they could paste into a request form if it's already clear.
+- Never invent pricing, timelines, or promises Galaxy Forge hasn't made elsewhere on this site.
+- If asked about anything unrelated to describing a software need (general chat, other companies, personal advice, anything else), politely decline and redirect to describing their software problem.
+- Keep replies under 100 words.`;
+
+function isConsultationRateLimited(ip) {
+  const now = Date.now();
+  const windowStart = now - CUSTOMER_CONSULTATION_RATE_LIMIT.windowMs;
+  const timestamps = (customerConsultationRateState.get(ip) || []).filter(t => t > windowStart);
+  timestamps.push(now);
+  customerConsultationRateState.set(ip, timestamps);
+  if (customerConsultationRateState.size > 5000) customerConsultationRateState.clear();
+  return timestamps.length > CUSTOMER_CONSULTATION_RATE_LIMIT.maxPerWindow;
+}
+
+app.post('/api/customer/consultation', async (req, res) => {
+  try {
+    const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
+    if (isConsultationRateLimited(ip)) {
+      return res.status(429).json({ success: false, error: 'too many messages — please try again later' });
+    }
+    if (!GROQ_KEY) {
+      return res.status(503).json({ success: false, error: 'consultation temporarily unavailable' });
+    }
+    const message = String((req.body && req.body.message) || '').trim();
+    if (!message) {
+      return res.status(400).json({ success: false, error: 'message is required' });
+    }
+    if (message.length > CUSTOMER_CONSULTATION_MESSAGE_MAX) {
+      return res.status(400).json({ success: false, error: `message exceeds ${CUSTOMER_CONSULTATION_MESSAGE_MAX} characters` });
+    }
+
+    const response = await groq.chat.completions.create({
+      model: 'llama-3.1-8b-instant',
+      max_tokens: 220,
+      messages: [
+        { role: 'system', content: CONSULTATION_SYSTEM_PROMPT },
+        { role: 'user', content: message },
+      ],
+    });
+    const reply = response.choices[0].message.content;
+
+    // Every customer action must be logged (directive requirement 7) --
+    // real, append-only, no PII beyond what the visitor typed themselves.
+    try {
+      fs.mkdirSync(path.dirname(CUSTOMER_CONSULTATION_LOG_FILE), { recursive: true });
+      fs.appendFileSync(CUSTOMER_CONSULTATION_LOG_FILE, JSON.stringify({
+        at: new Date().toISOString(), ip, message: message.slice(0, 500), reply: reply.slice(0, 1000),
+      }) + '\n');
+    } catch { /* logging failure never blocks the real reply */ }
+
+    res.json({ success: true, reply });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'consultation temporarily unavailable — please try again' });
+  }
+});
+
 app.post('/api/customer/request-product', (req, res) => {
   try {
     const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
@@ -4044,8 +4188,113 @@ app.post('/api/customer/request-product', (req, res) => {
     ).catch(() => {});
 
     res.json({ success: true, request_id: requestId });
+
+    // ADR-130 (2026-07-25): fire real Qualification + Opportunity
+    // Evaluation + Price Generation + Proposal immediately, without
+    // making the customer's own submit request wait on a live Groq call
+    // (observed 3-5 real minutes for similar evaluations elsewhere in
+    // this factory). Fire-and-forget, generous timeout since nothing is
+    // waiting on it -- if it's ever killed or crashes, the request stays
+    // safely in NEW (customer_pipeline.py's state is only ever written
+    // AFTER a real stage completes) and customer_pipeline.list_pipeline_
+    // overview()'s stuck-NEW check surfaces it to the founder rather than
+    // leaving it silently invisible.
+    triggerCustomerPipelineAdvanceFireAndForget(requestId);
   } catch (err) {
     res.status(500).json({ success: false, error: 'could not submit request — please try again' });
+  }
+});
+
+// ── Support Center (ADR-130, 2026-07-25) ──
+// Real ticket intake -- same validation/honeypot/rate-limit/Telegram-
+// notify shape as request-product above (deliberately not a new pattern),
+// persisted to its own real, separate ledger since a support ticket and a
+// sales request are different real workflows with different founder
+// triage needs.
+const CUSTOMER_SUPPORT_TICKETS_FILE = path.join(__dirname, 'data', 'support_tickets.jsonl');
+app.post('/api/customer/support-ticket', (req, res) => {
+  try {
+    const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
+    if (isRateLimited(ip)) {
+      return res.status(429).json({ success: false, error: 'too many requests — please try again later' });
+    }
+    const body = req.body || {};
+    if (body.website) {
+      return res.json({ success: true, ticket_id: null });
+    }
+    const name = String(body.name || '').trim();
+    const email = String(body.email || '').trim();
+    const message = String(body.message || '').trim();
+    const requestId = String(body.request_id || '').trim();
+
+    if (!name || !email || !message) {
+      return res.status(400).json({ success: false, error: 'name, email, and message are required' });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ success: false, error: 'a valid email address is required' });
+    }
+    for (const [field, value] of Object.entries({ name, email, message, requestId })) {
+      if (value.length > CUSTOMER_REQUEST_FIELD_MAX) {
+        return res.status(400).json({ success: false, error: `${field} exceeds the maximum length` });
+      }
+    }
+
+    const ticketId = 'tix_' + crypto.randomBytes(8).toString('hex');
+    const record = {
+      ticket_id: ticketId, submitted_at: new Date().toISOString(),
+      name, email, message, related_request_id: requestId || null, status: 'OPEN',
+    };
+    fs.mkdirSync(path.dirname(CUSTOMER_SUPPORT_TICKETS_FILE), { recursive: true });
+    fs.appendFileSync(CUSTOMER_SUPPORT_TICKETS_FILE, JSON.stringify(record) + '\n');
+
+    telegramDirect.sendTelegramMessage(
+      `🎫 تذكرة دعم جديدة\nالاسم: ${name}\nالبريد: ${email}\n${requestId ? 'مرتبطة بطلب: ' + requestId + '\n' : ''}الرسالة: ${message.slice(0, 300)}`
+    ).catch(() => {});
+
+    res.json({ success: true, ticket_id: ticketId });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'could not submit ticket — please try again' });
+  }
+});
+
+// Real, request_id-scoped status lookup -- request_id itself is the real
+// bearer token (crypto.randomBytes(8) = 64 bits of entropy, generated
+// server-side, never guessable), same trust model as any unlisted-link
+// status page. Email is never included in the response (customer_
+// pipeline.get_pipeline_status() strips it).
+app.get('/api/customer/requests/:id', async (req, res) => {
+  try {
+    const result = await runCustomerPipelineCommand('status', { request_id: req.params.id });
+    res.json(result);
+  } catch (err) {
+    res.status(404).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/customer/requests/:id/approve', async (req, res) => {
+  try {
+    const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
+    if (isRateLimited(ip)) {
+      return res.status(429).json({ success: false, error: 'too many requests — please try again later' });
+    }
+    const result = await runCustomerPipelineCommand('approve', { request_id: req.params.id });
+    res.json(result);
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/customer/requests/:id/reject', async (req, res) => {
+  try {
+    const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
+    if (isRateLimited(ip)) {
+      return res.status(429).json({ success: false, error: 'too many requests — please try again later' });
+    }
+    const reason = String((req.body && req.body.reason) || '').trim().slice(0, CUSTOMER_REQUEST_FIELD_MAX);
+    const result = await runCustomerPipelineCommand('reject', { request_id: req.params.id, reason });
+    res.json(result);
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
   }
 });
 

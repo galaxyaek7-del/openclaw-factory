@@ -485,6 +485,31 @@ def _evidence_coverage_status():
     }
 
 
+def _customer_pipeline_status():
+    """Galaxy Forge Customer Platform, Phase 2 Round 1 (ADR-130, 2026-07-25):
+    the real Mission Control supervision view over every real customer
+    request's pipeline state -- stage distribution, per-request Status/
+    Progress/Logs/Failures/Recovery/Estimated-completion, and which
+    requests need a real founder action right now (blocked on Paddle
+    onboarding, needs a bespoke product, or failed). Passthrough only, no
+    new logic here."""
+    import customer_pipeline
+    return customer_pipeline.list_pipeline_overview()
+
+
+def _advance_customer_pipeline():
+    """Batch-sweeps every real customer request still in NEW through real
+    Qualification + Opportunity Evaluation + Price Generation + Proposal
+    (customer_pipeline.advance_all_new_requests()). This factory has no
+    scheduler (CLAUDE.md) -- this is the one-click-away manual trigger,
+    same convention as check-paddle-checkout-status. Slow: each NEW
+    request runs a real live Groq market-research call, same reason
+    rerun-market-analysis/trigger-opportunity-evaluation run as
+    background jobs in server.js."""
+    import customer_pipeline
+    return customer_pipeline.advance_all_new_requests()
+
+
 def _ai_capability_request():
     """Records a real department request for a different/better AI model
     (Autonomous Digital Company v1 §8) — an append-only logged request,
@@ -1563,6 +1588,8 @@ _ENDPOINTS = {
     "ai_capability_request": _ai_capability_request,
     "evidence_network_status": _evidence_network_status,
     "evidence_coverage_status": _evidence_coverage_status,
+    "customer_pipeline_status": _customer_pipeline_status,
+    "advance_customer_pipeline": _advance_customer_pipeline,
     "tool_intelligence": _tool_intelligence,
     "strategic_report": _strategic_report,
     "market_review": _market_review,

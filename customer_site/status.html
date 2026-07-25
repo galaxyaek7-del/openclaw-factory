@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galaxy Forge — Order Tracking</title>
+<meta name="description" content="Real-time status for your Galaxy Forge request — every field on this page is read live from our own pipeline records.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c11; --bg-elev:#12151d; --bg-card:#161a24; --bg-hover:#1c212e;
+  --border:#242938; --border-soft:#1a1e2a;
+  --ink:#eef0f6; --ink-dim:#9198ad; --ink-faint:#5c6379;
+  --accent:#d97a3f; --accent-soft:#3a2818; --accent-ink:#f0a468;
+  --cool:#5b7fd9; --cool-soft:#182238;
+  --good:#4a9d6f; --good-soft:#132a1e;
+  --bad:#c9524f; --bad-soft:#2e1615;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  --radius:12px;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; line-height:1.6;}
+a{color:inherit;}
+.wrap{max-width:760px; margin:0 auto; padding:0 1.5rem;}
+h1,h2,h3{font-weight:700; letter-spacing:-.02em; text-wrap:balance; margin:0;}
+p{margin:0;}
+
+header{position:sticky; top:0; z-index:50; background:rgba(10,12,17,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--border-soft);}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; max-width:1120px; margin:0 auto;}
+.brand{display:flex; align-items:center; gap:.6rem; text-decoration:none;}
+.brand-mark{width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg, var(--accent), #8a4a1f); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.9rem; color:#1a0e05; flex-shrink:0;}
+.brand-name{font-weight:700; font-size:1.02rem; color:var(--ink);}
+.nav-cta{font-family:var(--sans); font-size:.85rem; font-weight:600; padding:.55rem 1.1rem; border-radius:8px; background:transparent; color:var(--ink); text-decoration:none; border:1px solid var(--border); transition:border-color .15s; white-space:nowrap;}
+.nav-cta:hover{border-color:var(--cool);}
+
+main{padding:3.5rem 0 5rem;}
+.eyebrow{display:inline-flex; align-items:center; gap:.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); background:var(--accent-soft); border:1px solid rgba(217,122,63,.3); padding:.4rem .8rem; border-radius:99px; margin-bottom:1.2rem;}
+
+/* Lookup form (no ?id present) */
+.lookup-card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.8rem; display:flex; flex-direction:column; gap:1rem; max-width:480px;}
+.lookup-card input{font-family:var(--mono); font-size:.9rem; background:var(--bg-elev); border:1px solid var(--border); color:var(--ink); border-radius:8px; padding:.7rem .85rem; width:100%;}
+.btn{font-family:var(--sans); font-size:.9rem; font-weight:600; padding:.75rem 1.3rem; border-radius:9px; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:.5rem; cursor:pointer; border:1px solid transparent; transition:background .15s, border-color .15s; background:none;}
+.btn-primary{background:var(--accent); color:#1a0e05; border-color:var(--accent);}
+.btn-primary:hover{background:var(--accent-ink);}
+.btn-primary:disabled{opacity:.5; cursor:default;}
+.btn-ghost{background:transparent; color:var(--ink); border-color:var(--border);}
+.btn-ghost:hover{border-color:var(--cool);}
+.btn-danger{background:transparent; color:var(--bad); border-color:rgba(201,82,79,.4);}
+.btn-danger:hover{border-color:var(--bad);}
+
+/* Status card */
+.status-card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.8rem; display:flex; flex-direction:column; gap:1.4rem;}
+.status-head{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.8rem;}
+.pill{font-family:var(--mono); font-size:.76rem; font-weight:600; letter-spacing:.03em; padding:.35rem .75rem; border-radius:99px; white-space:nowrap;}
+.pill.cool{background:var(--cool-soft); color:var(--cool);}
+.pill.accent{background:var(--accent-soft); color:var(--accent-ink);}
+.pill.good{background:var(--good-soft); color:var(--good);}
+.pill.bad{background:var(--bad-soft); color:var(--bad);}
+
+.progress-track{height:6px; border-radius:99px; background:var(--bg-elev); overflow:hidden;}
+.progress-fill{height:100%; background:var(--accent); border-radius:99px; transition:width .4s ease;}
+
+.recovery-box{background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:9px; padding:1rem 1.1rem; font-size:.88rem; color:var(--ink-dim);}
+.recovery-box strong{color:var(--ink);}
+
+.proposal-box{background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:9px; padding:1.3rem; display:flex; flex-direction:column; gap:.9rem;}
+.proposal-price{font-family:var(--mono); font-size:1.8rem; font-weight:600;}
+.proposal-price small{font-size:.85rem; color:var(--ink-faint); font-weight:400;}
+.proposal-actions{display:flex; gap:.8rem; flex-wrap:wrap;}
+.evidence-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.4rem; font-size:.85rem; color:var(--ink-dim);}
+.evidence-list li::before{content:"— "; color:var(--ink-faint);}
+
+.log-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.6rem; max-height:260px; overflow-y:auto;}
+.log-list li{font-size:.82rem; color:var(--ink-dim); border-left:2px solid var(--border); padding-left:.8rem;}
+.log-list .log-stage{font-family:var(--mono); color:var(--ink); font-weight:600;}
+.log-list .log-time{color:var(--ink-faint); font-size:.75rem;}
+
+#loadError{background:var(--bad-soft); color:var(--bad); border-radius:9px; padding:1rem; font-size:.88rem; display:none;}
+#refreshHint{font-size:.78rem; color:var(--ink-faint); text-align:right;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a href="/site/" class="brand">
+      <div class="brand-mark">GF</div>
+      <div class="brand-name">Galaxy Forge</div>
+    </a>
+    <a href="/site/" class="nav-cta">← Back to site</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="eyebrow"><span>●</span> Order Tracking &amp; Customer Dashboard</div>
+
+    <div id="lookupCard" class="lookup-card" style="display:none;">
+      <h2>Track a request</h2>
+      <p style="color:var(--ink-dim); font-size:.9rem;">Paste the request ID from your submission confirmation.</p>
+      <input id="lookupInput" placeholder="req_xxxxxxxxxxxxxxxx" autocomplete="off">
+      <button id="lookupBtn" class="btn btn-primary">Track request →</button>
+    </div>
+
+    <div id="statusCard" class="status-card" style="display:none;">
+      <div class="status-head">
+        <div>
+          <h2 id="reqTitle">Request</h2>
+          <div style="font-family:var(--mono); font-size:.78rem; color:var(--ink-faint); margin-top:.3rem;" id="reqId"></div>
+        </div>
+        <div id="statusPill" class="pill cool">—</div>
+      </div>
+
+      <div>
+        <div class="progress-track"><div id="progressFill" class="progress-fill" style="width:0%;"></div></div>
+      </div>
+
+      <div id="proposalBox" class="proposal-box" style="display:none;">
+        <div>
+          <div class="proposal-price" id="proposalPrice"></div>
+          <div style="font-size:.82rem; color:var(--ink-faint);" id="proposalBasis"></div>
+        </div>
+        <ul class="evidence-list" id="evidenceList"></ul>
+        <div class="proposal-actions" id="proposalActions"></div>
+      </div>
+
+      <div id="paymentBox" style="display:none;">
+        <a id="checkoutLink" class="btn btn-primary" href="#" target="_blank" rel="noopener">Complete payment →</a>
+      </div>
+
+      <div class="recovery-box"><strong>Next step:</strong> <span id="recoveryText"></span></div>
+
+      <div>
+        <h3 style="font-size:.86rem; color:var(--ink-dim); margin-bottom:.7rem;">Activity log</h3>
+        <ul class="log-list" id="logList"></ul>
+      </div>
+
+      <div id="refreshHint"></div>
+    </div>
+
+    <div id="loadError"></div>
+  </div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  var STAGE_PILL = {
+    NEW: 'cool', QUALIFIED: 'cool', PROPOSED: 'accent', APPROVED: 'cool',
+    AWAITING_PAYMENT: 'accent', PAID: 'good', PRODUCTION: 'cool',
+    QUALITY_INSPECTION: 'cool', PACKAGING: 'cool', DELIVERED: 'good', FOLLOWED_UP: 'good',
+    REJECTED_AT_QUALIFICATION: 'bad', REJECTED_BY_CUSTOMER: 'bad',
+    PAYMENT_BLOCKED_PADDLE_ONBOARDING: 'bad', PENDING_CUSTOM_PRODUCT_SETUP: 'bad',
+    FAILED: 'bad', PENDING_FOUNDER_REVIEW: 'cool', RESEARCH_REQUIRED: 'cool',
+  };
+  var LIVE_STAGES = ['NEW', 'QUALIFIED', 'APPROVED']; // transient -- worth auto-polling
+
+  function money(n){ return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); }
+  function fmtTime(iso){ try { return new Date(iso).toLocaleString(); } catch(e){ return iso; } }
+  function qs(name){ return new URLSearchParams(window.location.search).get(name); }
+
+  var requestId = qs('id');
+  var pollTimer = null;
+
+  function renderProposal(body){
+    var box = document.getElementById('proposalBox');
+    if (body.status !== 'PROPOSED' || !body.proposal){ box.style.display = 'none'; return; }
+    box.style.display = 'flex';
+    document.getElementById('proposalPrice').innerHTML = money(body.proposal.price) + ' <small>one-time, USD</small>';
+    document.getElementById('proposalBasis').textContent = body.proposal.price_basis || '';
+    var list = document.getElementById('evidenceList');
+    list.innerHTML = '';
+    (body.proposal.evidence_summary || []).forEach(function(line){
+      var li = document.createElement('li');
+      li.textContent = line;
+      list.appendChild(li);
+    });
+    var actions = document.getElementById('proposalActions');
+    actions.innerHTML = '';
+    var approveBtn = document.createElement('button');
+    approveBtn.className = 'btn btn-primary';
+    approveBtn.textContent = 'Approve proposal';
+    approveBtn.addEventListener('click', function(){ act('approve', approveBtn); });
+    var declineBtn = document.createElement('button');
+    declineBtn.className = 'btn btn-danger';
+    declineBtn.textContent = 'Decline';
+    declineBtn.addEventListener('click', function(){ act('reject', declineBtn); });
+    actions.appendChild(approveBtn);
+    actions.appendChild(declineBtn);
+  }
+
+  function renderPayment(body){
+    var box = document.getElementById('paymentBox');
+    if (body.status !== 'AWAITING_PAYMENT' || !body.payment){ box.style.display = 'none'; return; }
+    box.style.display = 'block';
+    document.getElementById('checkoutLink').href = body.payment.checkout_url;
+  }
+
+  function render(body){
+    document.getElementById('statusCard').style.display = 'flex';
+    document.getElementById('lookupCard').style.display = 'none';
+    document.getElementById('loadError').style.display = 'none';
+
+    document.getElementById('reqTitle').textContent = (body.request && body.request.name) ? body.request.name + '’s request' : 'Your request';
+    document.getElementById('reqId').textContent = body.request_id;
+
+    var pill = document.getElementById('statusPill');
+    pill.textContent = body.status.replace(/_/g, ' ');
+    pill.className = 'pill ' + (STAGE_PILL[body.status] || 'cool');
+
+    // A side-state (rejected/blocked/pending) isn't a point along the happy-
+    // path pipeline -- showing it as "80% full" would misleadingly read as
+    // near-complete progress rather than a real stop. Only the real
+    // STAGE_ORDER states get a percent; side-states get a status-colored
+    // bar instead (red/green/neutral), not a fabricated completion amount.
+    var track = document.getElementById('progressFill');
+    var pillClass = STAGE_PILL[body.status] || 'cool';
+    track.style.background = pillClass === 'bad' ? 'var(--bad)' : pillClass === 'good' ? 'var(--good)' : 'var(--accent)';
+    if (body.progress && body.progress.percent != null){
+      track.style.width = body.progress.percent + '%';
+    } else {
+      track.style.width = (pillClass === 'good' ? 100 : pillClass === 'bad' ? 100 : 30) + '%';
+    }
+
+    renderProposal(body);
+    renderPayment(body);
+
+    document.getElementById('recoveryText').textContent = body.recovery || '';
+
+    var logList = document.getElementById('logList');
+    logList.innerHTML = '';
+    (body.logs || []).slice().reverse().forEach(function(entry){
+      var li = document.createElement('li');
+      var stage = document.createElement('div');
+      stage.className = 'log-stage';
+      stage.textContent = entry.stage;
+      var time = document.createElement('div');
+      time.className = 'log-time';
+      time.textContent = fmtTime(entry.at) + (entry.detail ? ' — ' + entry.detail : '');
+      li.appendChild(stage);
+      li.appendChild(time);
+      logList.appendChild(li);
+    });
+
+    var refreshHint = document.getElementById('refreshHint');
+    if (LIVE_STAGES.indexOf(body.status) !== -1){
+      refreshHint.textContent = 'Still evaluating — this page refreshes automatically every 10s.';
+      if (!pollTimer) pollTimer = setInterval(load, 10000);
+    } else {
+      refreshHint.textContent = 'Last updated ' + fmtTime(body.updated_at);
+      if (pollTimer){ clearInterval(pollTimer); pollTimer = null; }
+    }
+  }
+
+  function showError(msg){
+    document.getElementById('statusCard').style.display = 'none';
+    var err = document.getElementById('loadError');
+    err.style.display = 'block';
+    err.textContent = msg;
+    if (pollTimer){ clearInterval(pollTimer); pollTimer = null; }
+  }
+
+  function load(){
+    if (!requestId) return;
+    fetch('/api/customer/requests/' + encodeURIComponent(requestId), { credentials: 'same-origin' })
+      .then(function(r){ return r.json(); })
+      .then(function(body){
+        if (body.success === false){ throw new Error(body.error || 'request not found'); }
+        render(body);
+      })
+      .catch(function(err){ showError(err.message || 'Could not load this request — check the ID and try again.'); });
+  }
+
+  function act(kind, btn){
+    btn.disabled = true;
+    var original = btn.textContent;
+    btn.textContent = kind === 'approve' ? 'Approving…' : 'Declining…';
+    fetch('/api/customer/requests/' + encodeURIComponent(requestId) + '/' + kind, {
+      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: '{}',
+    })
+      .then(function(r){ return r.json(); })
+      .then(function(body){
+        if (body.success === false) throw new Error(body.error || 'action failed');
+        load();
+      })
+      .catch(function(err){
+        btn.disabled = false;
+        btn.textContent = original;
+        alert(err.message);
+      });
+  }
+
+  if (requestId){
+    load();
+  } else {
+    document.getElementById('lookupCard').style.display = 'flex';
+    document.getElementById('lookupBtn').addEventListener('click', function(){
+      var id = document.getElementById('lookupInput').value.trim();
+      if (!id) return;
+      window.location.search = '?id=' + encodeURIComponent(id);
+    });
+  }
+})();
+</script>
+</body>
+</html>

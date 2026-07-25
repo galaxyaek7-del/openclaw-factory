@@ -104,9 +104,27 @@ form.request-form{background:var(--bg-card); border:1px solid var(--border-soft)
 .field-row{display:grid; grid-template-columns:1fr 1fr; gap:1rem;}
 @media (max-width:520px){.field-row{grid-template-columns:1fr;}}
 .hp-field{position:absolute; left:-9999px; opacity:0; height:0; overflow:hidden;}
-#formStatus{font-size:.86rem; padding:.7rem .9rem; border-radius:8px; display:none;}
-#formStatus.success{display:block; background:var(--good-soft); color:var(--good);}
-#formStatus.error{display:block; background:#2e1615; color:#c9524f;}
+#formStatus, #supportStatus{font-size:.86rem; padding:.7rem .9rem; border-radius:8px; display:none;}
+#formStatus.success, #supportStatus.success{display:block; background:var(--good-soft); color:var(--good);}
+#formStatus.error, #supportStatus.error{display:block; background:#2e1615; color:#c9524f;}
+
+/* AI Consultation */
+.consult-toggle{font-size:.84rem; color:var(--cool); cursor:pointer; user-select:none;}
+.consult-toggle span{text-decoration:underline; text-underline-offset:2px;}
+.consult-box{background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:9px; padding:1rem; display:flex; flex-direction:column; gap:.8rem;}
+.consult-log{display:flex; flex-direction:column; gap:.6rem; max-height:220px; overflow-y:auto;}
+.consult-msg{font-size:.85rem; padding:.6rem .8rem; border-radius:8px; max-width:90%;}
+.consult-msg.user{align-self:flex-end; background:var(--accent-soft); color:var(--accent-ink);}
+.consult-msg.ai{align-self:flex-start; background:var(--bg-card); color:var(--ink-dim); border:1px solid var(--border-soft);}
+.consult-msg .use-btn{display:block; margin-top:.5rem; font-family:var(--mono); font-size:.72rem; color:var(--cool); cursor:pointer; text-decoration:underline;}
+.consult-input-row{display:flex; gap:.6rem;}
+.consult-input-row input{flex:1; font-family:var(--sans); font-size:.86rem; background:var(--bg-card); border:1px solid var(--border); color:var(--ink); border-radius:8px; padding:.6rem .8rem;}
+.consult-input-row input:focus{outline:none; border-color:var(--accent);}
+
+/* Support Center */
+.support-panel{display:grid; grid-template-columns:1fr 1fr; gap:2rem;}
+@media (max-width:760px){.support-panel{grid-template-columns:1fr;}}
+form.support-form{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.6rem; display:flex; flex-direction:column; gap:1rem;}
 
 /* Knowledge base */
 .kb-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1.25rem;}
@@ -154,6 +172,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
     <nav class="nav-links">
       <a href="#approach">Approach</a>
       <a href="#services">Services</a>
+      <a href="#support">Support</a>
       <a href="#knowledge-base">Knowledge Base</a>
       <a href="/trust/index.html">Trust Center</a>
     </nav>
@@ -251,6 +270,14 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
             </div>
           </div>
           <div class="field"><label for="f-desc">What do you need built? *</label><textarea id="f-desc" name="description" required maxlength="2000" placeholder="Describe the problem you're trying to solve — the more specific, the better we can evaluate it."></textarea></div>
+          <div class="consult-toggle" id="consultToggle">Not sure how to describe this? <span>Ask our AI →</span></div>
+          <div class="consult-box" id="consultBox" style="display:none;">
+            <div class="consult-log" id="consultLog"></div>
+            <div class="consult-input-row">
+              <input id="consultInput" type="text" maxlength="500" placeholder="Describe your problem in a sentence or two…">
+              <button type="button" class="btn btn-ghost" id="consultSend">Ask</button>
+            </div>
+          </div>
           <button type="submit" class="btn btn-primary" id="submitBtn">Submit request</button>
           <div id="formStatus"></div>
         </form>
@@ -272,6 +299,33 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
         <a class="kb-card" href="/trust/refund-policy.html"><h3>Refund Policy</h3><p>Plain terms, no fine-print surprises.</p><span class="go">Open →</span></a>
         <a class="kb-card" href="/trust/privacy-policy.html"><h3>Privacy Policy</h3><p>What we collect and why — nothing more.</p><span class="go">Open →</span></a>
         <a class="kb-card" href="/trust/incident-disclosure-policy.html"><h3>Incident Disclosure</h3><p>How we'd tell you if something real went wrong.</p><span class="go">Open →</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="support">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow"><span class="dot"></span> Support center</div>
+        <h2>Already working with us? Get real help.</h2>
+        <p>Every ticket reaches a real person — no bot triage, no ticket queue theater. If it's about an existing request, include the request ID from your tracking link.</p>
+      </div>
+      <div class="support-panel">
+        <div class="request-notes">
+          <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Track your own request first.</strong> <a href="/site/status.html" style="color:var(--cool);">Order tracking</a> answers most status questions instantly, without waiting on a reply.</p></div>
+          <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Real triage.</strong> Every ticket is logged and reviewed by a real person — see our <a href="/trust/incident-disclosure-policy.html" style="color:var(--cool);">Incident Disclosure Policy</a> for how we handle anything serious.</p></div>
+        </div>
+        <form class="support-form" id="supportForm">
+          <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off">
+          <div class="field-row">
+            <div class="field"><label for="s-name">Name *</label><input id="s-name" name="name" type="text" required maxlength="200"></div>
+            <div class="field"><label for="s-email">Email *</label><input id="s-email" name="email" type="email" required maxlength="200"></div>
+          </div>
+          <div class="field"><label for="s-reqid">Related request ID (optional)</label><input id="s-reqid" name="request_id" type="text" maxlength="64" placeholder="req_xxxxxxxxxxxxxxxx"></div>
+          <div class="field"><label for="s-message">How can we help? *</label><textarea id="s-message" name="message" required maxlength="2000"></textarea></div>
+          <button type="submit" class="btn btn-primary" id="supportSubmitBtn">Submit ticket</button>
+          <div id="supportStatus"></div>
+        </form>
       </div>
     </div>
   </section>
@@ -303,6 +357,11 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
           <a href="/trust/security-policy.html">Security</a>
           <a href="/trust/responsible-ai-policy.html">Responsible AI</a>
           <a href="/trust/incident-disclosure-policy.html">Incident Disclosure</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#support">Submit a ticket</a>
+          <a href="/site/status.html">Track your request</a>
         </div>
       </div>
     </div>
@@ -386,7 +445,9 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
         if (!res.ok || res.body.success === false){
           throw new Error((res.body && res.body.error) || 'Something went wrong — please try again.');
         }
-        statusEl.textContent = 'Request received. A real person will review it and reply by email.';
+        var requestId = res.body.request_id;
+        statusEl.innerHTML = 'Request received and already running through our real evaluation gate. '
+          + (requestId ? 'Track it live: <a href="/site/status.html?id=' + encodeURIComponent(requestId) + '">' + requestId + '</a> — bookmark this link, it\'s the only way back to your status.' : 'A real person will review it and reply by email.');
         statusEl.className = 'success';
         form.reset();
       })
@@ -397,6 +458,92 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
       .finally(function(){
         submitBtn.disabled = false;
         submitBtn.textContent = 'Submit request';
+      });
+  });
+
+  // ── AI Consultation ──
+  var consultToggle = document.getElementById('consultToggle');
+  var consultBox = document.getElementById('consultBox');
+  var consultLog = document.getElementById('consultLog');
+  var consultInput = document.getElementById('consultInput');
+  var consultSend = document.getElementById('consultSend');
+
+  consultToggle.addEventListener('click', function(){
+    var open = consultBox.style.display !== 'none';
+    consultBox.style.display = open ? 'none' : 'flex';
+    if (!open) consultInput.focus();
+  });
+
+  function addConsultMsg(role, text, aiRawText){
+    var msg = document.createElement('div');
+    msg.className = 'consult-msg ' + role;
+    msg.textContent = text;
+    if (role === 'ai'){
+      var use = document.createElement('span');
+      use.className = 'use-btn';
+      use.textContent = 'Use this in my request →';
+      use.addEventListener('click', function(){
+        document.getElementById('f-desc').value = aiRawText;
+        document.getElementById('f-desc').focus();
+      });
+      msg.appendChild(use);
+    }
+    consultLog.appendChild(msg);
+    consultLog.scrollTop = consultLog.scrollHeight;
+  }
+
+  function sendConsult(){
+    var text = consultInput.value.trim();
+    if (!text) return;
+    addConsultMsg('user', text);
+    consultInput.value = '';
+    consultSend.disabled = true;
+    fetch('/api/customer/consultation', {
+      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text }),
+    })
+      .then(function(r){ return r.json(); })
+      .then(function(body){
+        if (body.success === false) throw new Error(body.error || 'unavailable');
+        addConsultMsg('ai', body.reply, body.reply);
+      })
+      .catch(function(err){ addConsultMsg('ai', 'Sorry — ' + err.message); })
+      .finally(function(){ consultSend.disabled = false; });
+  }
+  consultSend.addEventListener('click', sendConsult);
+  consultInput.addEventListener('keydown', function(e){ if (e.key === 'Enter'){ e.preventDefault(); sendConsult(); } });
+
+  // ── Support ticket submission ──
+  var supportForm = document.getElementById('supportForm');
+  var supportStatus = document.getElementById('supportStatus');
+  var supportSubmitBtn = document.getElementById('supportSubmitBtn');
+
+  supportForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    supportStatus.className = '';
+    supportStatus.style.display = 'none';
+    supportSubmitBtn.disabled = true;
+    supportSubmitBtn.textContent = 'Submitting…';
+
+    var data = Object.fromEntries(new FormData(supportForm).entries());
+    fetch('/api/customer/support-ticket', {
+      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+      .then(function(r){ return r.json().then(function(body){ return { ok: r.ok, body: body }; }); })
+      .then(function(res){
+        if (!res.ok || res.body.success === false) throw new Error((res.body && res.body.error) || 'Something went wrong — please try again.');
+        supportStatus.textContent = 'Ticket received. A real person will reply by email.';
+        supportStatus.className = 'success';
+        supportForm.reset();
+      })
+      .catch(function(err){
+        supportStatus.textContent = err.message;
+        supportStatus.className = 'error';
+      })
+      .finally(function(){
+        supportSubmitBtn.disabled = false;
+        supportSubmitBtn.textContent = 'Submit ticket';
       });
   });
 })();
