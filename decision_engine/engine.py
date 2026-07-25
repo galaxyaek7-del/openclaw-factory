@@ -168,7 +168,7 @@ def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=1
 # evaluate_and_decide() path, still available for deliberate manual
 # review) — ai_ceo_decision is honestly recorded as "N/A", never a
 # fabricated verdict.
-def record_ladder_decision(niche, ladder, ladder_result, decisions_path=None, product_family=None):
+def record_ladder_decision(niche, ladder, ladder_result, decisions_path=None, product_family=None, evidence_report=None):
     """ladder_result: the exact dict profit_oracle.ladder_opportunity_score()
     already returned for this niche — never recomputed here, so this can
     never silently disagree with the score the caller actually acted on.
@@ -177,14 +177,27 @@ def record_ladder_decision(niche, ladder, ladder_result, decisions_path=None, pr
     an explicit family always wins; with none given, resolved from
     `ladder` via the same product_families.mapping.resolve_product_family()
     evaluate_and_decide() uses — market_hunter.py's fast discovery path
-    and the deliberate manual-review path never diverge on this either."""
+    and the deliberate manual-review path never diverge on this either.
+
+    evidence_report (Evidence Completeness Engine, ADR-127, 2026-07-25):
+    the real, already-computed evidence_completeness.assess() result for
+    this exact niche/ladder_result — never recomputed here either. When
+    given, its real lifecycle_status ("ACCEPTED"/"REJECTED"/
+    "RESEARCH_REQUIRED") replaces the plain accepted/rejected binary
+    below: a real opportunity whose evidence coverage is genuinely too
+    thin to honestly finalize a REJECT, and which still has at least one
+    real, acquirable Unknown criterion, is recorded as RESEARCH_REQUIRED
+    instead — "Unknown must never automatically behave like False."
+    Omitting it (every pre-ADR-127 caller) reproduces the exact prior
+    binary behavior unchanged."""
     now = datetime.now(timezone.utc).isoformat()
+    status = evidence_report["lifecycle_status"] if evidence_report else ("ACCEPTED" if ladder_result.get("accepted") else "REJECTED")
     decision = Decision(
         decision_id=make_decision_id(niche, ladder or "kdp_books", now),
         niche=niche,
         tier="tier4",  # every real market_hunter.py candidate is sourced as tier4 today (ADR-026's meaning, unchanged) — a separate axis from ladder
         decided_at=now,
-        status="ACCEPTED" if ladder_result.get("accepted") else "REJECTED",
+        status=status,
         ai_ceo_decision="N/A",
         opportunity_score=ladder_result.get("ladder_score"),
         opportunity_score_accepted=ladder_result.get("accepted"),
@@ -226,6 +239,11 @@ def record_ladder_decision(niche, ladder, ladder_result, decisions_path=None, pr
             # either -- added alongside for the same reason.
             "strategic_doctrine_v2": ladder_result.get("strategic_doctrine_v2"),
             "product_strategy": ladder_result.get("product_strategy"),
+            # Evidence Completeness Engine (ADR-127, 2026-07-25): persisted
+            # proactively, same discipline as every field above -- None
+            # when no caller passed one (every pre-ADR-127 decision keeps
+            # its exact real prior meaning).
+            "evidence_completeness": evidence_report,
         },
         external_signal=None,
         ladder=ladder,

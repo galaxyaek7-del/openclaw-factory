@@ -6,7 +6,14 @@ import hashlib
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-STATUSES = ("ACCEPTED", "REJECTED", "DEFERRED")
+# RESEARCH_REQUIRED (Evidence Completeness Engine, ADR-127, 2026-07-25):
+# a real opportunity whose evidence coverage is too thin to honestly
+# finalize a REJECT, and which still has at least one real, acquirable
+# Unknown criterion -- "Unknown must never automatically behave like
+# False." Set only by record_ladder_decision() when a caller passes a
+# real evidence_completeness.assess() report; every existing caller that
+# doesn't is unaffected.
+STATUSES = ("ACCEPTED", "REJECTED", "DEFERRED", "RESEARCH_REQUIRED")
 
 
 def make_decision_id(niche, tier, analyzed_at):
