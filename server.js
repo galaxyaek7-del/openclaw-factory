@@ -3934,6 +3934,121 @@ app.get('/mission_control_login.html', (req, res) => {
 // dashboard.html's own bare-path route already relies on.
 app.use('/trust', express.static(path.join(__dirname, 'trust')));
 
+// ── GALAXY FORGE CUSTOMER PLATFORM, Phase 1 (2026-07-25) ──
+// Real, public-facing site — landing page + company presentation +
+// services catalog + a real "Request a Custom Product" intake. Scoped
+// deliberately to what can operate on 100% real data today: the real
+// Paddle product catalog (data/paddle_products.json) and a real,
+// persisted customer request ledger. Payment/Order Tracking/Customer
+// Dashboard are honestly NOT built this round — Paddle's own account
+// onboarding gate blocks real checkout completion today (confirmed live,
+// channels/paddle_publisher.py's create_checkout_transaction()), and
+// zero real orders exist yet for any dashboard to honestly show. Same
+// "intentionally public, nothing sensitive can end up here" scoping as
+// the /trust mount just above -- customer_site/ contains only these
+// public-by-design pages.
+app.use('/site', express.static(path.join(__dirname, 'customer_site')));
+
+const PADDLE_PRODUCTS_FILE = path.join(__dirname, 'data', 'paddle_products.json');
+const CUSTOMER_REQUESTS_FILE = path.join(__dirname, 'data', 'customer_requests.jsonl');
+const CUSTOMER_REQUEST_FIELD_MAX = 2000;
+// Simple, bounded, in-memory sliding-window rate limit -- this endpoint has
+// no session/auth (it's a public intake form), so it's the one real spam
+// vector this Phase 1 surface introduces. Proportionate to the real risk:
+// a small in-memory map, not a new rate-limiting engine/dependency.
+const CUSTOMER_REQUEST_RATE_LIMIT = { windowMs: 10 * 60 * 1000, maxPerWindow: 5 };
+const customerRequestRateState = new Map(); // ip -> [timestamps]
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const windowStart = now - CUSTOMER_REQUEST_RATE_LIMIT.windowMs;
+  const timestamps = (customerRequestRateState.get(ip) || []).filter(t => t > windowStart);
+  timestamps.push(now);
+  customerRequestRateState.set(ip, timestamps);
+  // Bound total memory regardless of how many distinct IPs ever hit this --
+  // a real, cheap safeguard, not a full LRU cache.
+  if (customerRequestRateState.size > 5000) customerRequestRateState.clear();
+  return timestamps.length > CUSTOMER_REQUEST_RATE_LIMIT.maxPerWindow;
+}
+
+// Public, read-only, real: the exact same real Paddle catalog
+// data/paddle_products.json already holds (5 real products, real
+// product_id/price_id/price -- ADR-085/086). Never a second, hand-
+// maintained copy on the customer_site page itself, which would drift
+// stale the moment a real product/price changes.
+app.get('/api/customer/catalog', (req, res) => {
+  try {
+    if (!fs.existsSync(PADDLE_PRODUCTS_FILE)) {
+      return res.json({ success: true, products: [] });
+    }
+    const products = JSON.parse(fs.readFileSync(PADDLE_PRODUCTS_FILE, 'utf8'));
+    res.json({ success: true, products: Array.isArray(products) ? products : [] });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'catalog temporarily unavailable' });
+  }
+});
+
+// Real, persisted customer intake -- no fabricated qualification/scoring
+// pipeline behind this yet (that's genuinely new logic, Phase 2, not
+// built this round). Every real submission is appended, never
+// overwritten, and the founder is notified via the same real, already-
+// live Telegram channel every other real factory event already uses --
+// no second notification system.
+app.post('/api/customer/request-product', (req, res) => {
+  try {
+    const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
+    if (isRateLimited(ip)) {
+      return res.status(429).json({ success: false, error: 'too many requests — please try again later' });
+    }
+
+    const body = req.body || {};
+    // Honeypot: a real field named to look attractive to bots, invisible
+    // to real users via customer_site's own CSS -- a non-empty value
+    // means an automated submission, silently accepted-but-dropped
+    // (never reveals to the caller that it was detected).
+    if (body.website) {
+      return res.json({ success: true, request_id: null });
+    }
+
+    const name = String(body.name || '').trim();
+    const email = String(body.email || '').trim();
+    const description = String(body.description || '').trim();
+    const company = String(body.company || '').trim();
+    const budgetRange = String(body.budget_range || '').trim();
+
+    if (!name || !email || !description) {
+      return res.status(400).json({ success: false, error: 'name, email, and description are required' });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ success: false, error: 'a valid email address is required' });
+    }
+    for (const [field, value] of Object.entries({ name, email, description, company, budgetRange })) {
+      if (value.length > CUSTOMER_REQUEST_FIELD_MAX) {
+        return res.status(400).json({ success: false, error: `${field} exceeds the maximum length` });
+      }
+    }
+
+    const requestId = 'req_' + crypto.randomBytes(8).toString('hex');
+    const record = {
+      request_id: requestId,
+      submitted_at: new Date().toISOString(),
+      name, email, company, description,
+      budget_range: budgetRange || null,
+      status: 'NEW',
+    };
+    fs.mkdirSync(path.dirname(CUSTOMER_REQUESTS_FILE), { recursive: true });
+    fs.appendFileSync(CUSTOMER_REQUESTS_FILE, JSON.stringify(record) + '\n');
+
+    telegramDirect.sendTelegramMessage(
+      `📩 طلب عميل حقيقي جديد\nالاسم: ${name}\nالبريد: ${email}\nالشركة: ${company || '—'}\nالميزانية: ${budgetRange || '—'}\nالوصف: ${description.slice(0, 300)}`
+    ).catch(() => {});
+
+    res.json({ success: true, request_id: requestId });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'could not submit request — please try again' });
+  }
+});
+
 app.get('/{*path}', (req, res) => {
   sendIndexHtml(res);
 });

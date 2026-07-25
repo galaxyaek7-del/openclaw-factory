@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galaxy Forge — Evidence-Verified AI Software</title>
+<meta name="description" content="Galaxy Forge builds AI-powered business software — but only after real market evidence proves it's worth building. No guesses, no hype, no vaporware.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c11; --bg-elev:#12151d; --bg-card:#161a24; --bg-hover:#1c212e;
+  --border:#242938; --border-soft:#1a1e2a;
+  --ink:#eef0f6; --ink-dim:#9198ad; --ink-faint:#5c6379;
+  --accent:#d97a3f; --accent-soft:#3a2818; --accent-ink:#f0a468;
+  --cool:#5b7fd9; --cool-soft:#182238;
+  --good:#4a9d6f; --good-soft:#132a1e;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  --radius:12px;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; line-height:1.6; overflow-x:hidden;}
+a{color:inherit;}
+img{max-width:100%;}
+.wrap{max-width:1120px; margin:0 auto; padding:0 1.5rem;}
+h1,h2,h3{font-weight:700; letter-spacing:-.02em; text-wrap:balance; margin:0;}
+p{margin:0;}
+
+/* ── Header ── */
+header{position:sticky; top:0; z-index:50; background:rgba(10,12,17,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--border-soft);}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; max-width:1120px; margin:0 auto;}
+.brand{display:flex; align-items:center; gap:.6rem; text-decoration:none;}
+.brand-mark{width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg, var(--accent), #8a4a1f); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.9rem; color:#1a0e05; flex-shrink:0;}
+.brand-name{font-weight:700; font-size:1.02rem; color:var(--ink);}
+.nav-links{display:flex; gap:1.8rem; font-size:.88rem; color:var(--ink-dim);}
+.nav-links a{text-decoration:none; transition:color .15s;}
+.nav-links a:hover{color:var(--ink);}
+.nav-cta{font-family:var(--sans); font-size:.85rem; font-weight:600; padding:.55rem 1.1rem; border-radius:8px; background:var(--accent); color:#1a0e05; text-decoration:none; border:1px solid var(--accent); transition:background .15s; white-space:nowrap;}
+.nav-cta:hover{background:var(--accent-ink);}
+
+/* ── Hero ── */
+.hero{position:relative; padding:6.5rem 0 5rem; overflow:hidden;}
+.hero::before{content:""; position:absolute; top:-20%; left:50%; transform:translateX(-50%); width:900px; height:900px; background:radial-gradient(circle, rgba(217,122,63,.14) 0%, rgba(91,127,217,.06) 45%, transparent 70%); pointer-events:none;}
+.eyebrow{display:inline-flex; align-items:center; gap:.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); background:var(--accent-soft); border:1px solid rgba(217,122,63,.3); padding:.4rem .8rem; border-radius:99px; margin-bottom:1.5rem;}
+.eyebrow .dot{width:6px; height:6px; border-radius:50%; background:var(--good); box-shadow:0 0 0 3px var(--good-soft);}
+.hero h1{font-size:clamp(2.2rem, 5vw, 3.6rem); line-height:1.08; max-width:820px; position:relative;}
+.hero h1 em{font-style:normal; color:var(--accent-ink);}
+.hero p.lede{font-size:1.15rem; color:var(--ink-dim); max-width:600px; margin-top:1.3rem; position:relative;}
+.hero-ctas{display:flex; gap:.9rem; margin-top:2.2rem; flex-wrap:wrap; position:relative;}
+.btn{font-family:var(--sans); font-size:.92rem; font-weight:600; padding:.85rem 1.5rem; border-radius:9px; text-decoration:none; display:inline-flex; align-items:center; gap:.5rem; cursor:pointer; border:1px solid transparent; transition:transform .12s, background .15s, border-color .15s;}
+.btn:active{transform:translateY(1px);}
+.btn-primary{background:var(--accent); color:#1a0e05; border-color:var(--accent);}
+.btn-primary:hover{background:var(--accent-ink);}
+.btn-ghost{background:transparent; color:var(--ink); border-color:var(--border);}
+.btn-ghost:hover{border-color:var(--cool); color:var(--cool);}
+
+.proof-strip{display:flex; flex-wrap:wrap; gap:2.5rem; margin-top:3.2rem; padding-top:2.2rem; border-top:1px solid var(--border-soft); position:relative;}
+.proof-item{display:flex; flex-direction:column; gap:.2rem;}
+.proof-item .num{font-family:var(--mono); font-size:1.4rem; font-weight:600; color:var(--ink);}
+.proof-item .label{font-size:.76rem; color:var(--ink-faint); max-width:220px;}
+
+/* ── Sections ── */
+section{padding:5rem 0;}
+section.alt{background:var(--bg-elev); border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft);}
+.section-head{max-width:640px; margin-bottom:3rem;}
+.section-head .eyebrow{margin-bottom:1rem;}
+.section-head h2{font-size:clamp(1.6rem, 3vw, 2.2rem);}
+.section-head p{color:var(--ink-dim); margin-top:.9rem; font-size:1.02rem;}
+
+/* Approach */
+.approach-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1.5rem;}
+.approach-card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.6rem; display:flex; flex-direction:column; gap:.8rem;}
+.approach-card .step{font-family:var(--mono); font-size:.72rem; color:var(--accent-ink); letter-spacing:.05em;}
+.approach-card h3{font-size:1.05rem;}
+.approach-card p{color:var(--ink-dim); font-size:.92rem;}
+
+/* Catalog */
+.catalog-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:1.25rem;}
+.product-card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.5rem; display:flex; flex-direction:column; gap:1rem;}
+.product-card h3{font-size:1.05rem; line-height:1.35;}
+.product-price{font-family:var(--mono); font-size:1.5rem; font-weight:600; color:var(--ink);}
+.product-price small{font-size:.8rem; color:var(--ink-faint); font-weight:400;}
+.product-meta{font-family:var(--mono); font-size:.68rem; color:var(--ink-faint); word-break:break-all;}
+.product-card .btn{align-self:flex-start; margin-top:.2rem;}
+#catalogStatus{color:var(--ink-faint); font-size:.88rem;}
+
+/* Request form */
+.request-panel{display:grid; grid-template-columns:1fr 1.1fr; gap:3rem; align-items:start;}
+@media (max-width:860px){.request-panel{grid-template-columns:1fr;}}
+.request-notes{display:flex; flex-direction:column; gap:1.2rem;}
+.request-note{display:flex; gap:.8rem; align-items:flex-start;}
+.request-note .mark{width:22px; height:22px; border-radius:50%; background:var(--good-soft); color:var(--good); display:flex; align-items:center; justify-content:center; font-size:.7rem; flex-shrink:0; margin-top:.15rem;}
+.request-note p{color:var(--ink-dim); font-size:.92rem;}
+form.request-form{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.8rem; display:flex; flex-direction:column; gap:1rem;}
+.field{display:flex; flex-direction:column; gap:.4rem;}
+.field label{font-size:.8rem; color:var(--ink-dim); font-weight:500;}
+.field input, .field textarea, .field select{font-family:var(--sans); font-size:.92rem; background:var(--bg-elev); border:1px solid var(--border); color:var(--ink); border-radius:8px; padding:.7rem .85rem; width:100%;}
+.field input:focus, .field textarea:focus, .field select:focus{outline:none; border-color:var(--accent);}
+.field textarea{resize:vertical; min-height:100px; font-family:var(--sans);}
+.field-row{display:grid; grid-template-columns:1fr 1fr; gap:1rem;}
+@media (max-width:520px){.field-row{grid-template-columns:1fr;}}
+.hp-field{position:absolute; left:-9999px; opacity:0; height:0; overflow:hidden;}
+#formStatus{font-size:.86rem; padding:.7rem .9rem; border-radius:8px; display:none;}
+#formStatus.success{display:block; background:var(--good-soft); color:var(--good);}
+#formStatus.error{display:block; background:#2e1615; color:#c9524f;}
+
+/* Knowledge base */
+.kb-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1.25rem;}
+.kb-card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.4rem; text-decoration:none; display:flex; flex-direction:column; gap:.5rem; transition:border-color .15s;}
+.kb-card:hover{border-color:var(--cool);}
+.kb-card h3{font-size:.95rem; color:var(--ink);}
+.kb-card p{font-size:.84rem; color:var(--ink-dim);}
+.kb-card .go{font-family:var(--mono); font-size:.72rem; color:var(--cool);}
+
+/* Footer */
+footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
+.footer-grid{display:flex; flex-wrap:wrap; justify-content:space-between; gap:2rem;}
+.footer-brand p{color:var(--ink-faint); font-size:.84rem; margin-top:.6rem; max-width:320px;}
+.footer-links{display:flex; gap:3rem; flex-wrap:wrap;}
+.footer-col h4{font-size:.76rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin-bottom:.8rem;}
+.footer-col a{display:block; font-size:.86rem; color:var(--ink-dim); text-decoration:none; margin-bottom:.55rem;}
+.footer-col a:hover{color:var(--ink);}
+.footer-bottom{margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid var(--border-soft); font-size:.76rem; color:var(--ink-faint);}
+
+@media (max-width:760px){
+  .nav-links{gap:1rem; font-size:.82rem;}
+  .proof-strip{gap:1.6rem;}
+  .hero{padding:4.5rem 0 3.5rem;}
+  section{padding:3.5rem 0;}
+}
+@media (max-width:600px){
+  /* Every nav link is a same-page anchor already reachable by scrolling
+     -- hiding them here declutters a cramped header instead of leaving a
+     half-built hamburger menu with no real toggle behind it. The primary
+     CTA (Request a Product) and brand mark stay visible at every width. */
+  .nav-links{display:none;}
+  .nav{padding:.85rem 1.2rem;}
+}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a href="#top" class="brand">
+      <div class="brand-mark">GF</div>
+      <div class="brand-name">Galaxy Forge</div>
+    </a>
+    <nav class="nav-links">
+      <a href="#approach">Approach</a>
+      <a href="#services">Services</a>
+      <a href="#knowledge-base">Knowledge Base</a>
+      <a href="/trust/index.html">Trust Center</a>
+    </nav>
+    <a href="#request" class="nav-cta">Request a Product</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow"><span class="dot"></span> Evidence-verified before we build a single line</div>
+      <h1>We don't guess what the market wants. <em>We prove it first.</em></h1>
+      <p class="lede">Galaxy Forge builds AI-powered business software — compliance automation, workflow systems, customer operations tools — but only after real market evidence clears a strict, documented acceptance gate. No guessed demand. No vanity metrics. No vaporware.</p>
+      <div class="hero-ctas">
+        <a href="#services" class="btn btn-primary">See what we build →</a>
+        <a href="#request" class="btn btn-ghost">Request a custom product</a>
+      </div>
+      <div class="proof-strip">
+        <div class="proof-item"><div class="num">10</div><div class="label">named acceptance conditions every opportunity must clear before we build it</div></div>
+        <div class="proof-item"><div class="num">4</div><div class="label">independent evidence states per criterion — Verified True, Verified False, Unknown, Not Applicable. Unknown never silently becomes "no."</div></div>
+        <div class="proof-item"><div class="num">100%</div><div class="label">of our product decisions are logged, reasoned, and traceable — including every rejection.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="approach">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow"><span class="dot"></span> Our approach</div>
+        <h2>An evidence-first production doctrine, not a pitch deck.</h2>
+        <p>Most software gets built on assumptions. Ours gets built on documented, citable evidence — and if the evidence isn't there yet, we say so and go get it instead of shipping a guess.</p>
+      </div>
+      <div class="approach-grid">
+        <div class="approach-card">
+          <div class="step">01 — Proof of Payment</div>
+          <h3>Real spend evidence outweighs inferred demand</h3>
+          <p>We require real, cited evidence that people already pay for a version of this problem — a job posting, an agency's rate card, a competitor's pricing page — before "looks promising" ever becomes "let's build it."</p>
+        </div>
+        <div class="approach-card">
+          <div class="step">02 — Evidence Completeness</div>
+          <h3>"Unknown" is never treated as "no"</h3>
+          <p>When evidence is missing, we say Unknown and go acquire it — real competitor research, real customer-pain signal — before finalizing a rejection. Every opportunity carries a real, disclosed evidence-coverage score.</p>
+        </div>
+        <div class="approach-card">
+          <div class="step">03 — Ten-Condition Gate</div>
+          <h3>Commercial value, defensibility, and durability — all required</h3>
+          <p>Competition, defensibility, pricing power, AI-leverage, long-term durability, and profit margin are each independently verified. An opportunity that fails even one still gets rejected, regardless of how good the rest looks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="alt">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow"><span class="dot"></span> Live catalog</div>
+        <h2>Products that have already cleared the gate.</h2>
+        <p>Every item below is real: a real product, a real price, a real evidence-backed acceptance decision behind it — pulled live from our own commerce records, not a marketing copy that can drift out of date.</p>
+      </div>
+      <div id="catalogStatus">Loading the real catalog…</div>
+      <div class="catalog-grid" id="catalogGrid"></div>
+    </div>
+  </section>
+
+  <section id="request">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow"><span class="dot"></span> Custom work</div>
+        <h2>Have a specific problem? Tell us — we'll evaluate it honestly.</h2>
+        <p>We'll run your request through the same real evidence gate every internal opportunity goes through. If it clears, we build it. If it doesn't yet, we'll tell you exactly why and what evidence would change that.</p>
+      </div>
+      <div class="request-panel">
+        <div class="request-notes">
+          <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Real evaluation, not a sales script.</strong> Your request goes through the same acceptance doctrine every internally-discovered opportunity does.</p></div>
+          <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Honest turnaround.</strong> We reply once a real person has actually reviewed the request — no automated "thanks, we'll be in touch" that goes nowhere.</p></div>
+          <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">No spam, no resale.</strong> Your details are used only to evaluate and respond to this request.</p></div>
+        </div>
+        <form class="request-form" id="requestForm">
+          <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off">
+          <div class="field-row">
+            <div class="field"><label for="f-name">Name *</label><input id="f-name" name="name" type="text" required maxlength="200"></div>
+            <div class="field"><label for="f-email">Email *</label><input id="f-email" name="email" type="email" required maxlength="200"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="f-company">Company</label><input id="f-company" name="company" type="text" maxlength="200"></div>
+            <div class="field"><label for="f-budget">Budget range</label>
+              <select id="f-budget" name="budget_range">
+                <option value="">Prefer not to say</option>
+                <option>Under $500</option>
+                <option>$500 – $2,000</option>
+                <option>$2,000 – $10,000</option>
+                <option>$10,000+</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label for="f-desc">What do you need built? *</label><textarea id="f-desc" name="description" required maxlength="2000" placeholder="Describe the problem you're trying to solve — the more specific, the better we can evaluate it."></textarea></div>
+          <button type="submit" class="btn btn-primary" id="submitBtn">Submit request</button>
+          <div id="formStatus"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section id="knowledge-base" class="alt">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow"><span class="dot"></span> Knowledge base</div>
+        <h2>How we operate — in the open.</h2>
+        <p>Real policy pages, not boilerplate. Read exactly what we do with data, how refunds work, and how we disclose incidents.</p>
+      </div>
+      <div class="kb-grid">
+        <a class="kb-card" href="/trust/index.html"><h3>Trust Center</h3><p>Every real policy in one place — the starting point.</p><span class="go">Open →</span></a>
+        <a class="kb-card" href="/trust/security-policy.html"><h3>Security</h3><p>How we handle credentials, access, and infrastructure.</p><span class="go">Open →</span></a>
+        <a class="kb-card" href="/trust/responsible-ai-policy.html"><h3>Responsible AI</h3><p>Our real position on AI-assisted development and disclosure.</p><span class="go">Open →</span></a>
+        <a class="kb-card" href="/trust/refund-policy.html"><h3>Refund Policy</h3><p>Plain terms, no fine-print surprises.</p><span class="go">Open →</span></a>
+        <a class="kb-card" href="/trust/privacy-policy.html"><h3>Privacy Policy</h3><p>What we collect and why — nothing more.</p><span class="go">Open →</span></a>
+        <a class="kb-card" href="/trust/incident-disclosure-policy.html"><h3>Incident Disclosure</h3><p>How we'd tell you if something real went wrong.</p><span class="go">Open →</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand"><div class="brand-mark">GF</div><div class="brand-name">Galaxy Forge</div></div>
+        <p>An evidence-first AI product studio. We build what real market evidence proves is worth building — and say so honestly when it isn't there yet.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#approach">Approach</a>
+          <a href="#services">Services</a>
+          <a href="#request">Request a product</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="/trust/privacy-policy.html">Privacy</a>
+          <a href="/trust/terms-of-service.html">Terms</a>
+          <a href="/trust/refund-policy.html">Refunds</a>
+        </div>
+        <div class="footer-col">
+          <h4>Trust</h4>
+          <a href="/trust/security-policy.html">Security</a>
+          <a href="/trust/responsible-ai-policy.html">Responsible AI</a>
+          <a href="/trust/incident-disclosure-policy.html">Incident Disclosure</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">© <span id="year"></span> Galaxy Forge. Every figure on this page is read live from our own real records.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ── Real catalog, fetched live — never a hand-copied, driftable list. ──
+  function money(n){
+    return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  }
+
+  fetch('/api/customer/catalog', { credentials: 'same-origin' })
+    .then(function(r){ return r.json(); })
+    .then(function(body){
+      const grid = document.getElementById('catalogGrid');
+      const status = document.getElementById('catalogStatus');
+      const products = (body && body.products) || [];
+      if (!products.length){
+        status.textContent = 'No verified products in the live catalog right now — check back soon.';
+        return;
+      }
+      status.style.display = 'none';
+      products.forEach(function(p){
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        const title = document.createElement('h3');
+        title.textContent = p.title || 'Untitled product';
+        const price = document.createElement('div');
+        price.className = 'product-price';
+        price.innerHTML = money(p.price) + ' <small>one-time</small>';
+        const meta = document.createElement('div');
+        meta.className = 'product-meta';
+        meta.textContent = 'product_id: ' + (p.product_id || 'n/a');
+        const cta = document.createElement('a');
+        cta.className = 'btn btn-ghost';
+        cta.href = '#request';
+        cta.textContent = 'Request access →';
+        cta.addEventListener('click', function(){
+          const descField = document.getElementById('f-desc');
+          if (descField && !descField.value) descField.value = 'Interested in: ' + (p.title || '');
+        });
+        card.appendChild(title);
+        card.appendChild(price);
+        card.appendChild(meta);
+        card.appendChild(cta);
+        grid.appendChild(card);
+      });
+    })
+    .catch(function(){
+      document.getElementById('catalogStatus').textContent = 'Catalog temporarily unavailable — please try again shortly.';
+    });
+
+  // ── Real intake submission ──
+  const form = document.getElementById('requestForm');
+  const statusEl = document.getElementById('formStatus');
+  const submitBtn = document.getElementById('submitBtn');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    statusEl.className = '';
+    statusEl.style.display = 'none';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    fetch('/api/customer/request-product', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+      .then(function(r){ return r.json().then(function(body){ return { ok: r.ok, body: body }; }); })
+      .then(function(res){
+        if (!res.ok || res.body.success === false){
+          throw new Error((res.body && res.body.error) || 'Something went wrong — please try again.');
+        }
+        statusEl.textContent = 'Request received. A real person will review it and reply by email.';
+        statusEl.className = 'success';
+        form.reset();
+      })
+      .catch(function(err){
+        statusEl.textContent = err.message;
+        statusEl.className = 'error';
+      })
+      .finally(function(){
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit request';
+      });
+  });
+})();
+</script>
+</body>
+</html>
