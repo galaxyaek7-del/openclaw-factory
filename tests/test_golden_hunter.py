@@ -114,6 +114,7 @@ class TestRunHuntEndToEnd(unittest.TestCase):
         self.decisions_path = _temp_path()
         self.analysis_db_path = _temp_path()
         self.competitor_db_path = _temp_path(".json")
+        self.pain_db_path = _temp_path(".json")
         self.state_path = _temp_path(".json")
         for p in (
             patch("competitor_discovery._query_hn", return_value=[]),
@@ -128,13 +129,20 @@ class TestRunHuntEndToEnd(unittest.TestCase):
             # network call unless mocked.
             patch("market_intelligence_engine.reformulate_pain_query", return_value=("test", "literal_fallback", None)),
             patch("market_intelligence_engine._query_stack_overflow_for_pain", return_value=([], 0)),
+            # Evidence Network (ADR-128, 2026-07-25): analyze_customer_pain()
+            # now caches to data/pain_evidence_cache.json by default -- same
+            # exact real bug class this class's own docstring above already
+            # documents for COMPETITOR_DB_FILE. Found live: a real full
+            # regression run wrote "hunt test low"/"hunt cap test 0-3"/etc.
+            # into the real shared cache before this fix.
+            patch("market_intelligence_engine.PAIN_EVIDENCE_DB_FILE", self.pain_db_path),
         ):
             p.start()
             self.addCleanup(p.stop)
 
     def tearDown(self):
         for p in (self.timeline_path, self.decisions_path, self.analysis_db_path,
-                  self.competitor_db_path, self.state_path):
+                  self.competitor_db_path, self.pain_db_path, self.state_path):
             if os.path.exists(p):
                 os.remove(p)
 

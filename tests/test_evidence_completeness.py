@@ -204,12 +204,21 @@ class TestAssessLifecycleStatus(unittest.TestCase):
 
 
 class TestAcquireMissingEvidence(unittest.TestCase):
+    """ADR-128: acquire_missing_evidence() dispatches through
+    evidence_network's registry rather than hard-coding which function
+    resolves which criterion -- these tests patch the real, original
+    functions (competitor_discovery.get_or_refresh_competitors,
+    market_intelligence_engine.analyze_customer_pain) directly, since
+    evidence_network.py's connector lambdas look those up by module
+    attribute at call time, not at import time."""
+
     def test_pain_severity_not_attempted_without_explicit_opt_in(self):
-        """analyze_customer_pain() is a real, UNCACHED live network call
-        every time -- must never fire without gather_pain=True."""
+        """analyze_customer_pain() has a real per-call cost even with its
+        own new cache (ADR-128) -- must never fire without
+        gather_pain=True."""
         result = _base_ladder_result(urgency={"score": None, "level": "Unknown", "note": "n/a"})
         c = ec.classify_criteria(result)
-        with patch("evidence_completeness.market_intelligence_engine.analyze_customer_pain") as mock_pain:
+        with patch("market_intelligence_engine.analyze_customer_pain") as mock_pain:
             acq = ec.acquire_missing_evidence("test niche", c, gather_pain=False)
             mock_pain.assert_not_called()
         self.assertFalse(acq["pain_severity"]["attempted"])
@@ -217,7 +226,7 @@ class TestAcquireMissingEvidence(unittest.TestCase):
     def test_pain_severity_attempted_with_explicit_opt_in(self):
         result = _base_ladder_result(urgency={"score": None, "level": "Unknown", "note": "n/a"})
         c = ec.classify_criteria(result)
-        with patch("evidence_completeness.market_intelligence_engine.analyze_customer_pain", return_value={"pain_score": 50}) as mock_pain:
+        with patch("market_intelligence_engine.analyze_customer_pain", return_value={"pain_score": 50}) as mock_pain:
             acq = ec.acquire_missing_evidence("test niche", c, gather_pain=True)
             mock_pain.assert_called_once()
         self.assertTrue(acq["pain_severity"]["attempted"])
@@ -228,18 +237,19 @@ class TestAcquireMissingEvidence(unittest.TestCase):
         so unlike pain_severity, this fires without a separate opt-in."""
         result = _base_ladder_result(defensibility={"score": None, "level": "Unknown", "note": "n/a"})
         c = ec.classify_criteria(result)
-        with patch("evidence_completeness.competitor_discovery.get_or_refresh_competitors", return_value={"total_found": 3}) as mock_cd:
+        with patch("competitor_discovery.get_or_refresh_competitors", return_value={"total_found": 3}) as mock_cd:
             acq = ec.acquire_missing_evidence("test niche", c)
             mock_cd.assert_called_once()
         self.assertTrue(acq["difficult_to_copy"]["attempted"])
         self.assertTrue(acq["difficult_to_copy"]["acquired"])
+        self.assertEqual(acq["difficult_to_copy"]["connector"], "competitor_discovery")
 
     def test_non_acquirable_criteria_are_never_attempted_and_carry_a_real_note(self):
         result = _base_ladder_result(payment_evidence=[])
         c = ec.classify_criteria(result)
         acq = ec.acquire_missing_evidence("test niche", c)
         self.assertFalse(acq["proof_of_payment"]["attempted"])
-        self.assertIn("لا بحث آلي", acq["proof_of_payment"]["note"])
+        self.assertIn("مصادر مُعلَنة", acq["proof_of_payment"]["note"])
 
     def test_real_acquisition_against_an_isolated_competitor_database_not_the_real_shared_one(self):
         """Proves the real wiring end-to-end (no mocking) against an
@@ -251,12 +261,22 @@ class TestAcquireMissingEvidence(unittest.TestCase):
         c = ec.classify_criteria(result)
         tmp_db = tempfile.mktemp(suffix=".json")
         try:
-            acq = ec.acquire_missing_evidence(niche, c, db_file=tmp_db)
+            acq = ec.acquire_missing_evidence(niche, c, competitor_db_file=tmp_db)
             self.assertTrue(acq["difficult_to_copy"]["attempted"])
             self.assertTrue(os.path.exists(tmp_db), "must write to the isolated db_file, proving it never touched the real shared one")
         finally:
             if os.path.exists(tmp_db):
                 os.remove(tmp_db)
+
+    def test_registry_declares_a_source_for_every_criterion_even_unbuilt_ones(self):
+        """Founder rule 1 (ADR-128): every UNKNOWN criterion must declare
+        which evidence source could resolve it, even ones this factory
+        cannot query yet."""
+        result = _base_ladder_result(payment_evidence=[])
+        c = ec.classify_criteria(result)
+        acq = ec.acquire_missing_evidence("test niche", c)
+        self.assertIn("note", acq["proof_of_payment"])
+        self.assertTrue(len(acq["proof_of_payment"]["note"]) > 0)
 
 
 class TestRecordLadderDecisionWithEvidenceReport(unittest.TestCase):

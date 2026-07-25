@@ -125,12 +125,25 @@ class TestCoreEvaluateOpportunity(unittest.TestCase):
         patcher = patch("competitor_discovery.COMPETITOR_DB_FILE", self.competitor_db_path)
         patcher.start()
         self.addCleanup(patcher.stop)
+        # Evidence Network (ADR-128, 2026-07-25): analyze_customer_pain()
+        # now caches to data/pain_evidence_cache.json by default -- same
+        # exact real bug class this class's own docstring already
+        # documents fixing once for competitor_discovery.COMPETITOR_DB_FILE
+        # above. Redirected here too.
+        fd, self.pain_db_path = tempfile.mkstemp(suffix=".json")
+        os.close(fd)
+        os.remove(self.pain_db_path)
+        pain_patcher = patch("market_intelligence_engine.PAIN_EVIDENCE_DB_FILE", self.pain_db_path)
+        pain_patcher.start()
+        self.addCleanup(pain_patcher.stop)
 
     def tearDown(self):
         if os.path.exists(self.db_path):
             os.remove(self.db_path)
         if os.path.exists(self.competitor_db_path):
             os.remove(self.competitor_db_path)
+        if os.path.exists(self.pain_db_path):
+            os.remove(self.pain_db_path)
 
     def test_empty_niche_degrades_honestly_never_crashes(self):
         from market_intelligence_core import core
@@ -170,7 +183,23 @@ class TestCoreEvaluateOpportunity(unittest.TestCase):
 
         for key in ("niche", "scores", "risk", "confidence", "customer_pain",
                     "demand_pattern", "competitors", "opportunity_gap", "pricing", "ai_ceo"):
-            self.assertEqual(result[key], legacy[key], key)
+            if key == "customer_pain":
+                # Evidence Network (ADR-128, 2026-07-25): analyze_customer_
+                # pain() is now cached -- the second call (inside
+                # core.evaluate_opportunity() -> analyze_opportunity()) is a
+                # real cache hit against the first call's own real write, so
+                # _cache/cached_at legitimately differ between the two (that
+                # is the entire point of caching) even though every other
+                # real field is identical. Excluded from this specific
+                # equality check; asserted separately below instead.
+                a, b = dict(result[key]), dict(legacy[key])
+                a.pop('_cache', None); a.pop('cached_at', None)
+                b.pop('_cache', None); b.pop('cached_at', None)
+                self.assertEqual(a, b, key)
+                self.assertFalse(legacy[key]['_cache']['hit'], "the first real call must be a genuine cache miss")
+                self.assertTrue(result[key]['_cache']['hit'], "the second call must be a real cache hit against the first")
+            else:
+                self.assertEqual(result[key], legacy[key], key)
 
         self.assertIn("dimension_scores", result)
         self.assertNotIn("dimension_scores", legacy)

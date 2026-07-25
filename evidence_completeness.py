@@ -33,8 +33,7 @@
 # exists yet" research recommendation instead of a fabricated search --
 # see RESEARCH_ACTIONS below.
 
-import competitor_discovery
-import market_intelligence_engine
+import evidence_network
 
 VERIFIED_TRUE = "VERIFIED_TRUE"
 VERIFIED_FALSE = "VERIFIED_FALSE"
@@ -62,39 +61,44 @@ CRITERIA = (
     "continuous_improvement_potential",
 )
 
-# Real, concrete, honest recommendation per criterion -- "REAL ACQUIRABLE"
-# ones have a real function this module can actually call
-# (acquire_missing_evidence() below); every other one names the real
-# manual research this factory has no automated substitute for yet,
-# never a fabricated "search X" that doesn't exist.
-RESEARCH_ACTIONS = {
-    "proof_of_payment": (
-        "لا بحث آلي حقيقي متاح بعد لدليل الدفع (صفحات تسعير، إعلانات وظائف، أسواق، تسعير وكالات) — "
-        "يحتاج بحثاً يدوياً حقيقياً ثم تسجيلاً عبر market_evidence.record_evidence()"
-    ),
-    "pain_severity": (
-        "REAL ACQUIRABLE — market_intelligence_engine.analyze_customer_pain(niche): بحث حي حقيقي عبر "
-        "GitHub Issues + Hacker News + Stack Overflow، بلا تخزين مؤقت (تكلفة/حد معدل حقيقيان — استدعاء صريح فقط)"
-    ),
-    "low_or_moderate_competition": "مؤشر حتمي حقيقي دائماً متاح (تقرير محفوظ أو تقدير كلمات) — لا يكون Unknown فعلياً",
-    "difficult_to_copy": (
-        "REAL ACQUIRABLE — competitor_discovery.get_or_refresh_competitors(niche): بحث حي حقيقي مخزَّن "
-        "عبر GitHub + Hacker News (يُعاد استخدام النسخة المخزَّنة حتى تُصبح قديمة فعلياً)"
-    ),
-    "premium_pricing_potential": "مؤشر حتمي حقيقي دائماً متاح (butter_price) — لا يكون Unknown فعلياً",
-    "global_scalability": "مؤشر حتمي حقيقي دائماً متاح (ثوابت المسار الموثَّقة) — لا يكون Unknown فعلياً",
-    "long_term_strategic_value": "مؤشر حتمي حقيقي دائماً متاح (ثوابت المسار الموثَّقة) — لا يكون Unknown فعلياً",
-    "ai_significant_advantage": (
-        "لا بيانات ناقصة هنا فعلياً — هذا تصنيف نصي حتمي لنص النيتش نفسه؛ Unknown تعني أن النص لا يحتوي أي "
-        "كلمة مفتاحية واضحة بأي اتجاه — أعد صياغة وصف المنتج إن كانت الاستفادة من AI حقيقية فعلاً، لا يوجد بحث آلي بديل"
-    ),
-    "high_profit_margin": "مؤشر حتمي حقيقي دائماً متاح (تقدير هامش/تسعير) — لا يكون Unknown فعلياً",
-    "high_commercial_value": "لا مؤشر حقيقي لهذا البُعد في هذا المصنع اليوم — فجوة حقيقية معروفة (ADR-126 audit)، لا اختلاق",
-    "continuous_improvement_potential": "لا مؤشر حقيقي لهذا البُعد في هذا المصنع اليوم — فجوة حقيقية معروفة (ADR-126 audit)، لا اختلاق",
-}
+# Evidence Network (ADR-128, 2026-07-25): research recommendations are no
+# longer a hard-coded per-criterion dict -- they're derived live from
+# evidence_network.EVIDENCE_CONNECTOR_REGISTRY, the founder's own rule 3
+# ("never hard-code scoring logic around one source"). Adding a new
+# connector to that registry automatically updates what gets recommended
+# here; nothing in this module needs to change.
+AI_ADVANTAGE_NOTE = (
+    "لا بيانات ناقصة هنا فعلياً — هذا تصنيف نصي حتمي لنص النيتش نفسه؛ Unknown تعني أن النص لا يحتوي أي "
+    "كلمة مفتاحية واضحة بأي اتجاه — أعد صياغة وصف المنتج إن كانت الاستفادة من AI حقيقية فعلاً، لا يوجد بحث آلي بديل"
+)
+DETERMINISTIC_NOTE = "مؤشر حتمي حقيقي دائماً متاح — لا يكون Unknown فعلياً، لا مصدر أدلة مطلوب"
 
-# Only these 2 have acquire_missing_evidence() actually do something real.
-REAL_ACQUIRABLE_CRITERIA = ("pain_severity", "difficult_to_copy")
+
+def _research_action_for(criterion):
+    """Real, live-derived recommendation: real connectors (REAL status)
+    are named as such with their real source; DISCOVERY connectors are
+    named honestly as declared-but-not-built; criteria with no connector
+    at all in the registry (the always-deterministic 5) get the
+    deterministic note; ai_significant_advantage gets its own real
+    explanation (it's not a missing-data situation)."""
+    if criterion == "ai_significant_advantage":
+        return AI_ADVANTAGE_NOTE
+    connectors = evidence_network.connectors_for_criterion(criterion)
+    if not connectors:
+        return DETERMINISTIC_NOTE
+    real = [c for c in connectors if c.status == evidence_network.REAL]
+    if real:
+        c = real[0]
+        return f"REAL ACQUIRABLE — {c.name} ({c.source}): {c.confidence_contribution}"
+    names = ", ".join(c.name for c in connectors)
+    return f"لا بحث آلي حقيقي متاح بعد لهذا المعيار — مصادر مُعلَنة لكن غير مبنية بعد: {names} — يحتاج بحثاً يدوياً حالياً"
+
+
+RESEARCH_ACTIONS = {criterion: _research_action_for(criterion) for criterion in CRITERIA}
+
+# Derived live from the registry, not a hard-coded tuple: any criterion
+# with at least one REAL connector.
+REAL_ACQUIRABLE_CRITERIA = tuple(c for c in CRITERIA if evidence_network.real_connector_for_criterion(c) is not None)
 
 
 def _classify_bool_or_none(value_is_none, passes):
@@ -305,36 +309,47 @@ def assess(niche, ladder_result, research_threshold=DEFAULT_RESEARCH_THRESHOLD_P
     }
 
 
-def acquire_missing_evidence(niche, classification, db_file=None, gather_pain=False, evidence_path=None):
+def acquire_missing_evidence(niche, classification, competitor_db_file=None, gather_pain=False, pain_db_file=None):
     """Real, deliberate acquisition -- a caller invokes this ONCE per
-    niche, never automatically per hunt-tick. Only touches the 2 real
-    criteria with a genuine automated path (REAL_ACQUIRABLE_CRITERIA);
-    every other Unknown criterion is reported honestly as not having one.
+    niche, never automatically per hunt-tick. Dispatches through
+    evidence_network.resolve_criterion() (ADR-128) -- never hard-codes
+    which function resolves which criterion here; registering a new
+    connector in evidence_network.py is picked up automatically, with no
+    change needed in this function.
+
     gather_pain defaults to False: unlike competitor_discovery's cached
-    search, analyze_customer_pain() is a real, UNCACHED live call every
-    time -- opt-in only, same cost-consciousness ADR-122 already
-    established."""
+    search (fires without a separate opt-in -- a cache hit is nearly
+    free), analyze_customer_pain() is a real per-call cost even with
+    ADR-128's own new caching (a genuine cache miss is still 3 real live
+    HTTP calls) -- opt-in only, same cost-consciousness ADR-122 already
+    established. competitor_db_file/pain_db_file: test isolation only,
+    routed to the matching real connector by name -- real callers never
+    pass either."""
     missing = [k for k, v in classification.items() if v["state"] == UNKNOWN]
     results = {}
 
     for criterion in missing:
-        if criterion == "difficult_to_copy" and criterion in missing:
-            try:
-                refreshed = competitor_discovery.get_or_refresh_competitors(niche, db_file=db_file)
-                results[criterion] = {"attempted": True, "acquired": True, "result": refreshed}
-            except Exception as e:
-                results[criterion] = {"attempted": True, "acquired": False, "error": str(e)}
-        elif criterion == "pain_severity" and gather_pain:
-            try:
-                pain = market_intelligence_engine.analyze_customer_pain(niche)
-                results[criterion] = {"attempted": True, "acquired": True, "result": pain}
-            except Exception as e:
-                results[criterion] = {"attempted": True, "acquired": False, "error": str(e)}
-        else:
+        if criterion == "pain_severity" and not gather_pain:
             results[criterion] = {
                 "attempted": False, "acquired": False,
                 "note": RESEARCH_ACTIONS.get(criterion, "لا إجراء بحث آلي مسجَّل لهذا المعيار"),
             }
+            continue
+
+        connector = evidence_network.real_connector_for_criterion(criterion)
+        if connector is None:
+            results[criterion] = {
+                "attempted": False, "acquired": False,
+                "note": RESEARCH_ACTIONS.get(criterion, "لا إجراء بحث آلي مسجَّل لهذا المعيار"),
+            }
+            continue
+
+        kwargs = {}
+        if connector.name == "competitor_discovery" and competitor_db_file:
+            kwargs["db_file"] = competitor_db_file
+        elif connector.name == "customer_pain" and pain_db_file:
+            kwargs["db_file"] = pain_db_file
+        results[criterion] = evidence_network.resolve_criterion(criterion, niche, **kwargs)
 
     return results
 

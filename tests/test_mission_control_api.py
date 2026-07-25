@@ -31,6 +31,28 @@ class TestEndpointDispatch(unittest.TestCase):
                      "production_families", "commercial_execution"):
             self.assertIn(name, mission_control_api._ENDPOINTS)
 
+    def test_evidence_network_endpoints_are_registered(self):
+        for name in ("evidence_network_status", "evidence_coverage_status"):
+            self.assertIn(name, mission_control_api._ENDPOINTS)
+
+    def test_evidence_network_status_reports_the_real_connector_registry(self):
+        """Evidence Network (ADR-128, 2026-07-25) — Mission Control's real
+        view of which evidence sources are actually callable today."""
+        result = mission_control_api._evidence_network_status()
+        self.assertIn("real_connectors", result)
+        self.assertIn("discovery_connectors", result)
+        real_names = {c["name"] for c in result["real_connectors"]}
+        self.assertIn("competitor_discovery", real_names)
+        self.assertIn("customer_pain", real_names)
+
+    def test_evidence_coverage_status_reports_real_aggregate_and_freshness(self):
+        result = mission_control_api._evidence_coverage_status()
+        self.assertIn("aggregate", result)
+        self.assertIn("freshness", result)
+        self.assertIn("research_queue", result["aggregate"])
+        self.assertIn("competitor_discovery", result["freshness"])
+        self.assertIn("customer_pain", result["freshness"])
+
     def test_commercial_execution_reports_real_approval_gates_and_ledger_history(self):
         """Universal Production Engine Roadmap Step 4 (2026-07-19) —
         Mission Control's real view of the Commercial Execution Layer."""

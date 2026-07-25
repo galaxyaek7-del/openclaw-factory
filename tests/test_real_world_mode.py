@@ -117,6 +117,7 @@ class TestRunRealWorldCycle(unittest.TestCase):
         self.decisions_path = _temp_path()
         self.analysis_db_path = _temp_path()
         self.competitor_db_path = _temp_path(".json")
+        self.pain_db_path = _temp_path(".json")
         self.state_path = _temp_path(".json")
         for p in (
             patch("competitor_discovery._query_hn", return_value=[]),
@@ -129,13 +130,23 @@ class TestRunRealWorldCycle(unittest.TestCase):
             # _query_stack_overflow_for_pain() a real network call unless mocked.
             patch("market_intelligence_engine.reformulate_pain_query", return_value=("test", "literal_fallback", None)),
             patch("market_intelligence_engine._query_stack_overflow_for_pain", return_value=([], 0)),
+            # Evidence Network (ADR-128, 2026-07-25): analyze_customer_pain()
+            # now caches to data/pain_evidence_cache.json by default -- same
+            # exact real bug class this file's own COMPETITOR_DB_FILE
+            # redirection already guards against. Found live: a real full
+            # regression run wrote "real world mode test niche one/two",
+            # "safety default test niche", "evidence auto update test niche"
+            # into the real shared cache before this fix (3rd wave of the
+            # same bug this session, after test_decision_engine.py and
+            # test_golden_hunter.py/test_orchestrator.py).
+            patch("market_intelligence_engine.PAIN_EVIDENCE_DB_FILE", self.pain_db_path),
         ):
             p.start()
             self.addCleanup(p.stop)
 
     def tearDown(self):
         for p in (self.timeline_path, self.decisions_path, self.analysis_db_path,
-                  self.competitor_db_path, self.state_path):
+                  self.competitor_db_path, self.pain_db_path, self.state_path):
             if os.path.exists(p):
                 os.remove(p)
 

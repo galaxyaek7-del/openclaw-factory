@@ -696,6 +696,20 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('ai_capability'),
   },
   {
+    name: 'evidence-network-status',
+    description: "Galaxy Forge Evidence Network (ADR-128, 2026-07-25): the real, honest connector inventory -- which evidence sources are actually callable today (competitor_discovery.py, market_intelligence_engine.py) vs. declared-but-not-built (job postings, pricing pages, marketplaces, patents, enterprise demand, iteration tracking). Never fabricates a connector that doesn't exist.",
+    reused: 'evidence_network.py network_status_report(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('evidence_network_status', [], req),
+    health: pythonHealthCheck('evidence_network_status'),
+  },
+  {
+    name: 'evidence-coverage-status',
+    description: "Galaxy Forge Evidence Network (ADR-128, 2026-07-25): real, aggregate Evidence Coverage / Unknown Count / Research Queue / Top Missing Signals across every real decision carrying a persisted evidence_completeness snapshot (ADR-127 onward), plus real freshness stats over the two real persistent evidence caches (competitor_discovery.py, market_intelligence_engine.py).",
+    reused: 'evidence_network.py aggregate_evidence_report()/evidence_freshness_report(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('evidence_coverage_status', [], req),
+    health: pythonHealthCheck('evidence_coverage_status'),
+  },
+  {
     name: 'golden-hunter-status',
     description: "Golden Hunter Evolution -- real recent activity + top currently-scored opportunities, each with a real, informational pre-acceptance ROI estimate. Never changes the real accept/reject gate.",
     reused: 'mission_control_api.py _golden_hunter_status() (EOS Phase 2, 2026-07-19) -- reuses golden_opportunities.json, data/golden_hunter_events.jsonl, and revenue_pipeline.plan.estimate_pre_acceptance_roi() verbatim.',

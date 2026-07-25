@@ -91,6 +91,7 @@ class TestEvaluateAndDecide(unittest.TestCase):
         self.decisions_path = _temp_path()
         self.analysis_db_path = _temp_path()
         self.competitor_db_path = _temp_path(suffix=".json")
+        self.pain_db_path = _temp_path(suffix=".json")
         patcher1 = patch("competitor_discovery._query_hn", return_value=[])
         patcher2 = patch("competitor_discovery._query_github", return_value=[])
         patcher3 = patch("market_intelligence_engine._query_hn_discussions", return_value=([], 0))
@@ -101,12 +102,20 @@ class TestEvaluateAndDecide(unittest.TestCase):
         # a real network call unless mocked.
         patcher6 = patch("market_intelligence_engine.reformulate_pain_query", return_value=("test", "literal_fallback", None))
         patcher7 = patch("market_intelligence_engine._query_stack_overflow_for_pain", return_value=([], 0))
-        for p in (patcher1, patcher2, patcher3, patcher4, patcher5, patcher6, patcher7):
+        # Evidence Network (ADR-128, 2026-07-25): analyze_customer_pain()
+        # now caches to data/pain_evidence_cache.json by default -- same
+        # exact real bug class this class's own docstring already
+        # documents fixing once for competitor_discovery.COMPETITOR_DB_FILE
+        # above. Redirected here too (found live: a real full regression
+        # run wrote "a reproducibility test niche" into the real shared
+        # cache before this fix).
+        patcher8 = patch("market_intelligence_engine.PAIN_EVIDENCE_DB_FILE", self.pain_db_path)
+        for p in (patcher1, patcher2, patcher3, patcher4, patcher5, patcher6, patcher7, patcher8):
             p.start()
             self.addCleanup(p.stop)
 
     def tearDown(self):
-        for p in (self.decisions_path, self.analysis_db_path, self.competitor_db_path):
+        for p in (self.decisions_path, self.analysis_db_path, self.competitor_db_path, self.pain_db_path):
             if os.path.exists(p):
                 os.remove(p)
 

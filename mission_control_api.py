@@ -460,6 +460,31 @@ def _ai_capability():
     }
 
 
+def _evidence_network_status():
+    """Evidence Network (ADR-128, 2026-07-25): the real, honest connector
+    inventory -- which evidence sources are actually callable today
+    (competitor_discovery.py, market_intelligence_engine.py) vs.
+    declared-but-not-built (job postings, pricing pages, marketplaces,
+    patents, enterprise demand, iteration tracking). Passthrough only, no
+    new logic here."""
+    import evidence_network
+    return evidence_network.network_status_report()
+
+
+def _evidence_coverage_status():
+    """Evidence Network (ADR-128, 2026-07-25): real, aggregate Evidence
+    Coverage / Freshness / Unknown Count / Research Queue / Top Missing
+    Signals — across every real decision that carries a persisted
+    evidence_completeness snapshot (ADR-127 onward), plus real freshness
+    stats over the two real persistent evidence caches. Passthrough only,
+    no new logic here."""
+    import evidence_network
+    return {
+        "aggregate": evidence_network.aggregate_evidence_report(),
+        "freshness": evidence_network.evidence_freshness_report(),
+    }
+
+
 def _ai_capability_request():
     """Records a real department request for a different/better AI model
     (Autonomous Digital Company v1 §8) — an append-only logged request,
@@ -1536,6 +1561,8 @@ _ENDPOINTS = {
     "export_executive_report": _export_executive_report,
     "ai_capability": _ai_capability,
     "ai_capability_request": _ai_capability_request,
+    "evidence_network_status": _evidence_network_status,
+    "evidence_coverage_status": _evidence_coverage_status,
     "tool_intelligence": _tool_intelligence,
     "strategic_report": _strategic_report,
     "market_review": _market_review,

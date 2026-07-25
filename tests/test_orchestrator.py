@@ -145,6 +145,7 @@ class _IsolatedRunCycleTestCase(unittest.TestCase):
         self.analysis_db_path = _temp_path()
         self.outcomes_path = _temp_path()
         self.competitor_db_path = _temp_path(".json")
+        self.pain_db_path = _temp_path(".json")
         self.state_path = _temp_path(".json")
         patcher1 = patch("competitor_discovery._query_hn", return_value=[])
         patcher2 = patch("competitor_discovery._query_github", return_value=[])
@@ -158,13 +159,21 @@ class _IsolatedRunCycleTestCase(unittest.TestCase):
         # two mocks leaked 38 real Groq calls into data/ai_cost_log.jsonl.
         patcher6 = patch("market_intelligence_engine.reformulate_pain_query", return_value=("test", "literal_fallback", None))
         patcher7 = patch("market_intelligence_engine._query_stack_overflow_for_pain", return_value=([], 0))
-        for p in (patcher1, patcher2, patcher3, patcher4, patcher5, patcher6, patcher7):
+        # Evidence Network (ADR-128, 2026-07-25): analyze_customer_pain() now
+        # caches to data/pain_evidence_cache.json by default -- same exact
+        # real bug class this class's own docstring already documents fixing
+        # once for COMPETITOR_DB_FILE. Found live: a real full regression run
+        # wrote this suite's own niche fixtures ("a dry run safety test
+        # niche", "a re-evaluation allowed test niche", etc.) into the real
+        # shared cache before this fix.
+        patcher8 = patch("market_intelligence_engine.PAIN_EVIDENCE_DB_FILE", self.pain_db_path)
+        for p in (patcher1, patcher2, patcher3, patcher4, patcher5, patcher6, patcher7, patcher8):
             p.start()
             self.addCleanup(p.stop)
 
     def tearDown(self):
         for p in (self.timeline_path, self.decisions_path, self.analysis_db_path,
-                  self.outcomes_path, self.competitor_db_path, self.state_path):
+                  self.outcomes_path, self.competitor_db_path, self.pain_db_path, self.state_path):
             if os.path.exists(p):
                 os.remove(p)
 

@@ -36,6 +36,22 @@ class TestCustomerPainIntelligence(unittest.TestCase):
         so_patcher = patch("market_intelligence_engine._query_stack_overflow_for_pain", return_value=([], 0))
         self.mock_so = so_patcher.start()
         self.addCleanup(so_patcher.stop)
+        # Evidence Network (ADR-128, 2026-07-25): analyze_customer_pain()
+        # now caches to data/pain_evidence_cache.json by default -- every
+        # test here calls it without a db_file override, which would
+        # otherwise write real fixture entries ("niche", "a totally
+        # obscure niche") into the real shared cache on every test run.
+        # Redirects the module-level default path for this whole class,
+        # same isolation technique test_automation_systems_e2e.py already
+        # uses for other real shared paths (patch.object on the module
+        # constant, not a per-call-site db_file argument).
+        import tempfile
+        import os
+        self.tmp_pain_db = tempfile.mktemp(suffix=".json")
+        db_patcher = patch.object(mie, "PAIN_EVIDENCE_DB_FILE", self.tmp_pain_db)
+        db_patcher.start()
+        self.addCleanup(db_patcher.stop)
+        self.addCleanup(lambda: os.path.exists(self.tmp_pain_db) and os.remove(self.tmp_pain_db))
 
     @patch("market_intelligence_engine._query_hn_discussions")
     @patch("market_intelligence_engine._query_github_issues")
@@ -285,12 +301,28 @@ class TestAnalyzeOpportunityOrchestration(unittest.TestCase):
         so_patcher = patch("market_intelligence_engine._query_stack_overflow_for_pain", return_value=([], 0))
         so_patcher.start()
         self.addCleanup(so_patcher.stop)
+        # Evidence Network (ADR-128, 2026-07-25): analyze_opportunity()
+        # calls analyze_customer_pain() internally, which now caches to
+        # data/pain_evidence_cache.json by default -- same exact real bug
+        # class this class's own docstring already documents fixing once
+        # for competitor_discovery.COMPETITOR_DB_FILE above. Redirected
+        # here for the same reason: without this, every run of this class
+        # would silently write this suite's fixture niches into the real
+        # shared pain-evidence cache.
+        fd, self.pain_db_path = tempfile.mkstemp(suffix=".json")
+        os.close(fd)
+        os.remove(self.pain_db_path)
+        pain_patcher = patch("market_intelligence_engine.PAIN_EVIDENCE_DB_FILE", self.pain_db_path)
+        pain_patcher.start()
+        self.addCleanup(pain_patcher.stop)
 
     def tearDown(self):
         if os.path.exists(self.db_path):
             os.remove(self.db_path)
         if os.path.exists(self.competitor_db_path):
             os.remove(self.competitor_db_path)
+        if os.path.exists(self.pain_db_path):
+            os.remove(self.pain_db_path)
 
     def test_empty_niche_degrades_honestly_never_crashes(self):
         """Regression test for a self-audit finding (2026-07-15):

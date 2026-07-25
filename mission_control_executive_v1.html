@@ -233,6 +233,10 @@ pre.raw{
       note:'Every governance decision this factory has actually made, newest first.' },
     { id:'system-diagnostics', title:'Live Logs & System Diagnostics', service:'system-logs', kind:'logs',
       note:'Real tail of the 5 operational log files this factory writes.' },
+    { id:'evidence-coverage', title:'Evidence Coverage & Research Queue', service:'evidence-coverage-status', kind:'kv',
+      note:'ADR-128: real evidence coverage/unknown-count/research-queue/top-missing-signals across every decision that carries evidence tracking, plus real freshness of the 2 real evidence caches.' },
+    { id:'evidence-network', title:'Evidence Network', service:'evidence-network-status', kind:'kv',
+      note:'ADR-128: which evidence sources are actually real and callable today vs. declared-but-not-built — the competitive advantage is owning this network, not a better score.' },
   ];
 
   const state = {}; // id -> { status: 'pending'|'ok'|'empty'|'error', payload, fetchedAt }

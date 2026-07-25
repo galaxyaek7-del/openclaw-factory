@@ -80,6 +80,20 @@ from market_intelligence_core import http_client as MIC_HTTP_CLIENT
 FACTORY_DIR = os.path.dirname(os.path.abspath(__file__))
 ANALYSIS_DB_FILE = os.path.join(FACTORY_DIR, 'data', 'market_intelligence_analyses.jsonl')
 
+# Evidence Network (ADR-128, 2026-07-25): analyze_customer_pain() was a
+# real but UNCACHED live search on every call -- competitor_discovery.py
+# had already solved this exact problem for competitor data
+# (load_database()/save_database()/MAX_AGE_DAYS_DEFAULT). Mirrors that
+# same real pattern here so a real pain search becomes proprietary,
+# accumulated intelligence instead of a repeated live query -- "every new
+# connector must increase long-term intelligence for every future
+# opportunity," not just the one call that triggered it. A longer default
+# window than competitor_discovery's 7 days: customer pain signals (real
+# GitHub Issues/HN/Stack Overflow activity) move slower than a
+# competitor roster.
+PAIN_EVIDENCE_DB_FILE = os.path.join(FACTORY_DIR, 'data', 'pain_evidence_cache.json')
+PAIN_EVIDENCE_MAX_AGE_DAYS_DEFAULT = 14
+
 GITHUB_ISSUES_SEARCH_URL = "https://api.github.com/search/issues"
 HN_SEARCH_URL = "https://hn.algolia.com/api/v1/search"
 
@@ -243,7 +257,25 @@ def _query_stack_overflow_for_pain(query, limit=10):
         return [], 0
 
 
-def analyze_customer_pain(niche, max_results=10):
+def _load_pain_db(db_file=None):
+    db_file = db_file or PAIN_EVIDENCE_DB_FILE
+    if not os.path.exists(db_file):
+        return {}
+    try:
+        with open(db_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def _save_pain_db(db, db_file=None):
+    db_file = db_file or PAIN_EVIDENCE_DB_FILE
+    os.makedirs(os.path.dirname(db_file), exist_ok=True)
+    with open(db_file, 'w', encoding='utf-8') as f:
+        json.dump(db, f, ensure_ascii=False, indent=2)
+
+
+def analyze_customer_pain(niche, max_results=10, db_file=None, max_age_days=PAIN_EVIDENCE_MAX_AGE_DAYS_DEFAULT, force=False):
     """Real signal only: severity from real reaction/comment/view counts,
     frequency from real result counts, willingness-to-pay from real
     keyword presence in real issue/discussion/question text. Reddit and
@@ -253,7 +285,24 @@ def analyze_customer_pain(niche, max_results=10):
     reformulated problem-description query (reformulate_pain_query()),
     never the literal niche/product name -- see that function's docstring
     for why. Also now checks Stack Overflow, a genuine third real source
-    (mission point 2), alongside GitHub Issues and Hacker News."""
+    (mission point 2), alongside GitHub Issues and Hacker News.
+
+    Evidence Network (ADR-128, 2026-07-25): now cached, same real
+    "don't redo the full search unless needed" discipline
+    competitor_discovery.get_or_refresh_competitors() already established
+    -- db_file/max_age_days/force mirror that function's own real
+    parameters exactly. Real callers never pass db_file (uses the real
+    shared data/pain_evidence_cache.json); tests always override it."""
+    key = COMPETITOR_DISCOVERY._normalize_key(niche)
+    if not force:
+        cached = _load_pain_db(db_file).get(key)
+        if cached:
+            age_days = COMPETITOR_DISCOVERY._days_since(cached.get('cached_at'))
+            if age_days is not None and age_days <= max_age_days:
+                result = dict(cached)
+                result['_cache'] = {"hit": True, "age_days": age_days}
+                return result
+
     query, query_method, query_note = reformulate_pain_query(niche)
 
     issues, issues_total = _query_github_issues(query, max_results)
@@ -306,7 +355,7 @@ def analyze_customer_pain(niche, max_results=10):
             f"(استعلام: \"{query}\", طريقة: {query_method})"
         )
 
-    return {
+    result = {
         "pain_score": pain_score,
         "confidence": confidence,
         "reason": reason,
@@ -332,6 +381,17 @@ def analyze_customer_pain(niche, max_results=10):
             "reviews_marketplaces": "لا API مجاني لمراجعات Amazon/Etsy",
         },
     }
+
+    # Evidence Network (ADR-128): persist this real search so the NEXT
+    # call for this same niche (within max_age_days) is a real, free
+    # cache hit instead of a repeated live query -- proprietary
+    # accumulated intelligence, not a one-off lookup.
+    result['cached_at'] = datetime.now(timezone.utc).isoformat()
+    result['_cache'] = {"hit": False, "age_days": 0}
+    db = _load_pain_db(db_file)
+    db[key] = result
+    _save_pain_db(db, db_file)
+    return result
 
 
 # ── DEMAND CLASSIFICATION (Evergreen/Seasonal real; Exploding/Declining honest) ──
