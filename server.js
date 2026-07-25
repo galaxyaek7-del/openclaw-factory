@@ -3976,6 +3976,19 @@ const CUSTOMER_REQUEST_FIELD_MAX = 2000;
 // no session/auth (it's a public intake form), so it's the one real spam
 // vector this Phase 1 surface introduces. Proportionate to the real risk:
 // a small in-memory map, not a new rate-limiting engine/dependency.
+// CEO Review cycle (2026-07-25) finding: every rate limiter on the
+// customer-facing routes below keys on req.ip. That's correct today --
+// this server binds to 127.0.0.1 only (see the startup log / test_api_
+// contract.js's "server binds to loopback only" check) and no reverse
+// proxy or tunnel config exists anywhere in this repo (confirmed by
+// grep), so req.ip is always the real caller. PRE-LAUNCH REQUIREMENT:
+// the moment this site goes behind any reverse proxy/tunnel for real
+// public exposure, req.ip will report the proxy's address for every
+// customer unless `app.set('trust proxy', ...)` is configured to read
+// the real forwarded-for header -- silently collapsing every customer
+// into one shared rate-limit bucket (or none at all). Not built around
+// speculatively since the real proxy topology isn't chosen yet -- revisit
+// the moment one is.
 const CUSTOMER_REQUEST_RATE_LIMIT = { windowMs: 10 * 60 * 1000, maxPerWindow: 5 };
 const customerRequestRateState = new Map(); // ip -> [timestamps]
 
@@ -4271,13 +4284,33 @@ app.get('/api/customer/requests/:id', async (req, res) => {
   }
 });
 
+// CEO Review cycle (2026-07-25) finding: two concurrent approve calls for
+// the SAME request_id (a double-click, or a client retry racing the first
+// attempt) could both read stage=="PROPOSED" from disk before either
+// finishes writing back -- customer_pipeline.py itself has no lock, so
+// both would proceed into a real Payment Verification attempt, risking
+// two real Paddle checkout transactions once the account unblocks (low
+// financial risk -- a transaction isn't a charge until paid -- but a
+// real, confusing duplicate-data/reputation issue). Small, safe,
+// no architecture change: a per-request_id in-process lock, same
+// mutual-exclusion idea as isActionRunning()/ACTION_JOBS above, scoped to
+// these two customer-facing mutating actions only.
+const customerRequestActionLocks = new Set();
+function withCustomerRequestLock(requestId, fn) {
+  if (customerRequestActionLocks.has(requestId)) {
+    return Promise.reject(new Error('this request is already being processed — please wait a moment and check its status'));
+  }
+  customerRequestActionLocks.add(requestId);
+  return Promise.resolve().then(fn).finally(() => customerRequestActionLocks.delete(requestId));
+}
+
 app.post('/api/customer/requests/:id/approve', async (req, res) => {
   try {
     const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
     if (isRateLimited(ip)) {
       return res.status(429).json({ success: false, error: 'too many requests — please try again later' });
     }
-    const result = await runCustomerPipelineCommand('approve', { request_id: req.params.id });
+    const result = await withCustomerRequestLock(req.params.id, () => runCustomerPipelineCommand('approve', { request_id: req.params.id }));
     res.json(result);
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
@@ -4291,7 +4324,7 @@ app.post('/api/customer/requests/:id/reject', async (req, res) => {
       return res.status(429).json({ success: false, error: 'too many requests — please try again later' });
     }
     const reason = String((req.body && req.body.reason) || '').trim().slice(0, CUSTOMER_REQUEST_FIELD_MAX);
-    const result = await runCustomerPipelineCommand('reject', { request_id: req.params.id, reason });
+    const result = await withCustomerRequestLock(req.params.id, () => runCustomerPipelineCommand('reject', { request_id: req.params.id, reason }));
     res.json(result);
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
