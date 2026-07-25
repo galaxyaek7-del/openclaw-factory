@@ -265,6 +265,120 @@ class TestStatusAndOverview(BasePipelineTest):
         self.assertEqual(overview["needs_attention"][0]["stage"], "PAYMENT_BLOCKED_PADDLE_ONBOARDING")
 
 
+class TestCatalogPriceLock(BasePipelineTest):
+    """Commercial Readiness Report (2026-07-25), finding P1: a request for
+    an existing catalog item must be quoted EXACTLY the catalog's real
+    price, never re-derived via evaluate_and_decide()/butter_price()."""
+
+    def test_catalog_match_skips_evaluation_and_pricing_entirely(self):
+        self._write_request(catalog_product_id="pro_real123")
+        self._write_paddle_products([{"title": "Real Catalog Item", "product_id": "pro_real123", "price_id": "pri_real123", "price": 126.0}])
+
+        def boom_evaluate(*a, **k):
+            raise AssertionError("evaluate_and_decide must never be called for a catalog-matched request")
+
+        def boom_price(*a, **k):
+            raise AssertionError("butter_price must never be called for a catalog-matched request")
+
+        result = cp.advance_request(
+            "req_abc123", requests_path=self.requests_path, state_path=self.state_path,
+            paddle_products_path=self.paddle_products_path, evaluate_fn=boom_evaluate, price_fn=boom_price,
+        )
+        self.assertEqual(result["stage"], "PROPOSED")
+        self.assertEqual(result["proposal"]["price"], 126.0)
+        self.assertIn("live catalog price", result["proposal"]["price_basis"])
+
+    def test_catalog_price_matches_exactly_even_with_odd_cents(self):
+        self._write_request(catalog_product_id="pro_odd")
+        self._write_paddle_products([{"title": "Odd Cents Item", "product_id": "pro_odd", "price_id": "pri_odd", "price": 149.99}])
+        result = cp.advance_request(
+            "req_abc123", requests_path=self.requests_path, state_path=self.state_path,
+            paddle_products_path=self.paddle_products_path,
+        )
+        self.assertEqual(result["proposal"]["price"], 149.99)
+
+    def test_unknown_catalog_product_id_falls_back_to_full_evaluation(self):
+        """A stale/bad product_id (e.g. the item was removed after the
+        page loaded) must never silently drop the request -- it falls
+        back to the real evaluation path instead."""
+        self._write_request(catalog_product_id="pro_does_not_exist")
+        self._write_paddle_products([{"title": "Unrelated", "product_id": "pro_other", "price_id": "pri_other", "price": 50.0}])
+        result = cp.advance_request(
+            "req_abc123", requests_path=self.requests_path, state_path=self.state_path,
+            paddle_products_path=self.paddle_products_path,
+            evaluate_fn=lambda *a, **k: _accepted_decision(), price_fn=lambda *a, **k: 199.0,
+        )
+        self.assertEqual(result["stage"], "PROPOSED")
+        self.assertEqual(result["proposal"]["price"], 199.0)
+
+    def test_no_catalog_product_id_uses_normal_evaluation_path(self):
+        self._write_request()  # no catalog_product_id at all -- freeform custom request
+        result = cp.advance_request(
+            "req_abc123", requests_path=self.requests_path, state_path=self.state_path,
+            evaluate_fn=lambda *a, **k: _accepted_decision(), price_fn=lambda *a, **k: 199.0,
+        )
+        self.assertEqual(result["proposal"]["price"], 199.0)
+
+    def test_approval_uses_exact_catalog_price_id_not_tolerance_search(self):
+        self._write_request(catalog_product_id="pro_real123")
+        self._write_paddle_products([
+            {"title": "Real Catalog Item", "product_id": "pro_real123", "price_id": "pri_real123", "price": 126.0},
+            {"title": "Decoy — same price, different product", "product_id": "pro_decoy", "price_id": "pri_decoy", "price": 126.0},
+        ])
+        cp.advance_request("req_abc123", requests_path=self.requests_path, state_path=self.state_path, paddle_products_path=self.paddle_products_path)
+        captured = {}
+
+        def capture_checkout(api_key, price_id):
+            captured["price_id"] = price_id
+            return ({"id": "txn_1"}, "https://checkout.paddle.com/real")
+
+        result = cp.approve_request(
+            "req_abc123", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
+            checkout_fn=capture_checkout, api_key_loader=lambda: "fake-key",
+        )
+        self.assertEqual(result["stage"], "AWAITING_PAYMENT")
+        self.assertEqual(captured["price_id"], "pri_real123")
+
+
+class TestCustomerSafeCopy(BasePipelineTest):
+    """Commercial Readiness Report (2026-07-25), finding PY1: the
+    customer's own status page must never show internal function names
+    or module-style jargon."""
+
+    def _assert_no_leaked_identifiers(self, text):
+        self.assertNotIn("(", text)
+        self.assertNotIn(")", text)
+        for leaked in ("advance_request", "retry_payment_verification", "ADR-", "vendors.paddle.com"):
+            self.assertNotIn(leaked, text)
+
+    def test_customer_status_recovery_text_has_no_function_names(self):
+        self._write_request()
+        result = cp.get_pipeline_status("req_abc123", requests_path=self.requests_path, state_path=self.state_path)
+        self._assert_no_leaked_identifiers(result["recovery"])
+
+    def test_customer_status_recovery_text_clean_for_every_real_stage(self):
+        for stage in cp._CUSTOMER_RECOVERY_HINTS:
+            self._assert_no_leaked_identifiers(cp._CUSTOMER_RECOVERY_HINTS[stage])
+
+    def test_internal_mission_control_view_is_unaffected_still_technical(self):
+        """The internal dict is allowed to keep function names -- only the
+        customer-facing one had to change."""
+        self.assertIn("retry_payment_verification()", cp._RECOVERY_HINTS["PAYMENT_BLOCKED_PADDLE_ONBOARDING"])
+
+    def test_missing_request_error_is_customer_friendly(self):
+        result = cp.get_pipeline_status("req_totally_made_up", requests_path=self.requests_path, state_path=self.state_path)
+        self.assertFalse(result["success"])
+        self.assertNotIn("!r", result["error"])
+        self.assertNotIn("'req_totally_made_up'", result["error"])
+
+    def test_approve_reject_errors_are_customer_friendly(self):
+        self._write_request()
+        result = cp.approve_request("req_abc123", state_path=self.state_path)
+        self.assertFalse(result["success"])
+        self.assertNotIn("!r", result["error"])
+        self.assertNotIn("'req_abc123'", result["error"])
+
+
 class TestAdvanceAllNewRequests(BasePipelineTest):
     def test_advances_only_new_requests(self):
         self._write_request("req_one")

@@ -291,11 +291,12 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
       <div class="request-panel">
         <div class="request-notes">
           <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Real evaluation, not a sales script.</strong> Your request goes through the same acceptance doctrine every internally-discovered opportunity does.</p></div>
-          <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Honest turnaround.</strong> We reply once a real person has actually reviewed the request — no automated "thanks, we'll be in touch" that goes nowhere.</p></div>
+          <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Real evaluation, automatically — not a form-letter queue.</strong> Your request runs through our real evaluation gate within about a minute of submitting. Track it live at the link we give you; anything that needs a closer human look gets one.</p></div>
           <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">No spam, no resale.</strong> Your details are used only to evaluate and respond to this request.</p></div>
         </div>
         <form class="request-form" id="requestForm">
           <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off">
+          <input type="hidden" name="product_id" id="f-product-id" value="">
           <div class="field-row">
             <div class="field"><label for="f-name">Name *</label><input id="f-name" name="name" type="text" required maxlength="200"></div>
             <div class="field"><label for="f-email">Email *</label><input id="f-email" name="email" type="email" required maxlength="200"></div>
@@ -450,7 +451,16 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
         cta.textContent = 'Request access →';
         cta.addEventListener('click', function(){
           const descField = document.getElementById('f-desc');
+          const productIdField = document.getElementById('f-product-id');
           if (descField && !descField.value) descField.value = 'Interested in: ' + (p.title || '');
+          // Quote-consistency fix (Commercial Readiness Report P1): lock
+          // this request to the catalog's real product_id so the price
+          // shown here is EXACTLY the price quoted — never re-derived.
+          // Cleared automatically the moment the customer actually edits
+          // the pre-filled description (see the 'input' listener below),
+          // since editing it means they're no longer just confirming this
+          // exact catalog item.
+          if (productIdField) productIdField.value = p.product_id || '';
         });
         card.appendChild(title);
         card.appendChild(price);
@@ -467,6 +477,16 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
   const form = document.getElementById('requestForm');
   const statusEl = document.getElementById('formStatus');
   const submitBtn = document.getElementById('submitBtn');
+
+  // If the customer edits the description after a catalog click pre-
+  // filled it, they're describing something other than that exact
+  // catalog item — clear the price-lock so it goes through real
+  // evaluation like any other custom request, rather than silently
+  // keeping a stale catalog price attached to different text.
+  document.getElementById('f-desc').addEventListener('input', function(){
+    const productIdField = document.getElementById('f-product-id');
+    if (productIdField) productIdField.value = '';
+  });
 
   form.addEventListener('submit', function(e){
     e.preventDefault();

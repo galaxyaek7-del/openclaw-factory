@@ -4197,6 +4197,7 @@ app.post('/api/customer/request-product', (req, res) => {
     const description = String(body.description || '').trim();
     const company = String(body.company || '').trim();
     const budgetRange = String(body.budget_range || '').trim();
+    const productId = String(body.product_id || '').trim();
 
     if (!name || !email || !description) {
       return res.status(400).json({ success: false, error: 'name, email, and description are required' });
@@ -4204,10 +4205,25 @@ app.post('/api/customer/request-product', (req, res) => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return res.status(400).json({ success: false, error: 'a valid email address is required' });
     }
-    for (const [field, value] of Object.entries({ name, email, description, company, budgetRange })) {
+    for (const [field, value] of Object.entries({ name, email, description, company, budgetRange, productId })) {
       if (value.length > CUSTOMER_REQUEST_FIELD_MAX) {
         return res.status(400).json({ success: false, error: `${field} exceeds the maximum length` });
       }
+    }
+
+    // Commercial Readiness Report (2026-07-25), finding P1: validate
+    // product_id against the REAL live catalog before persisting it --
+    // never trust a client-supplied ID blindly, and never reject the
+    // whole submission over a stale/bad one (fails open to the normal
+    // custom-evaluation path in customer_pipeline.py instead).
+    let catalogProductId = null;
+    if (productId) {
+      try {
+        const products = fs.existsSync(PADDLE_PRODUCTS_FILE) ? JSON.parse(fs.readFileSync(PADDLE_PRODUCTS_FILE, 'utf8')) : [];
+        if (Array.isArray(products) && products.some(p => p.product_id === productId)) {
+          catalogProductId = productId;
+        }
+      } catch { /* malformed catalog file -- fail open, treat as no match */ }
     }
 
     const requestId = 'req_' + crypto.randomBytes(8).toString('hex');
@@ -4216,6 +4232,7 @@ app.post('/api/customer/request-product', (req, res) => {
       submitted_at: new Date().toISOString(),
       name, email, company, description,
       budget_range: budgetRange || null,
+      catalog_product_id: catalogProductId,
       status: 'NEW',
     };
     fs.mkdirSync(path.dirname(CUSTOMER_REQUESTS_FILE), { recursive: true });

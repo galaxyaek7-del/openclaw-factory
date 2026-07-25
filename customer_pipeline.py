@@ -82,6 +82,9 @@ _SIDE_STATES = {
     "PENDING_CUSTOM_PRODUCT_SETUP", "FAILED",
 }
 
+# Internal/technical -- Mission Control audience only (list_pipeline_
+# overview()). Function names and implementation jargon are fine here;
+# this is read by the founder, not a customer.
 _RECOVERY_HINTS = {
     "NEW": "Waiting for advance_request() to run real qualification -- automatic, no human action needed.",
     "QUALIFIED": "Internal state only (pricing runs immediately after) -- should never be seen at rest.",
@@ -95,6 +98,28 @@ _RECOVERY_HINTS = {
     "PAYMENT_BLOCKED_PADDLE_ONBOARDING": "Blocked on Paddle's real account-onboarding gate (transaction_checkout_not_enabled) -- founder action required at vendors.paddle.com. Re-attempt via retry_payment_verification() once cleared.",
     "PENDING_CUSTOM_PRODUCT_SETUP": "This proposal's price has no matching real Paddle product/price yet -- creating a bespoke Paddle product per custom request isn't automated (real, disclosed gap). Founder can create one manually in vendors.paddle.com, then re-run retry_payment_verification().",
     "FAILED": "A real error interrupted this request's pipeline -- see the error field. Safe to retry via advance_request()/retry_payment_verification(), state was saved before the failure.",
+}
+
+# Commercial Readiness Report (2026-07-25), finding PY1: the internal
+# dict above was being reused verbatim for the customer's own status
+# page -- a real paying customer would see raw function-call syntax like
+# "retry_payment_verification()" under "Next step." This is the
+# customer-safe equivalent: plain language, no function/module names, no
+# internal jargon (ADR numbers, "the real evidence gate" internals),
+# never dangles a reference to something not actually shown on the page.
+_CUSTOMER_RECOVERY_HINTS = {
+    "NEW": "We're reviewing your request — this usually takes under a minute.",
+    "QUALIFIED": "Finalizing your quote.",
+    "PROPOSED": "Your quote is ready below — approve to move forward, or decline if it's not a fit.",
+    "APPROVED": "Setting up your payment.",
+    "AWAITING_PAYMENT": "Complete your payment using the link below to move forward.",
+    "REJECTED_AT_QUALIFICATION": "This request didn't meet our acceptance criteria this time. If circumstances change, feel free to submit an updated request.",
+    "PENDING_FOUNDER_REVIEW": "Your request needs a closer look from our team before we can quote it — we'll follow up.",
+    "RESEARCH_REQUIRED": "We're gathering more evidence before finalizing this — check back soon.",
+    "REJECTED_BY_CUSTOMER": "You declined this proposal. Reach out any time if you'd like to revisit it.",
+    "PAYMENT_BLOCKED_PADDLE_ONBOARDING": "Payment setup is still being finalized on our end. We'll notify you the moment it's ready — no action needed from you.",
+    "PENDING_CUSTOM_PRODUCT_SETUP": "We're finishing setup for this item before payment can open. We'll notify you as soon as it's ready.",
+    "FAILED": "Something went wrong on our end while processing this request. Our team has been notified — please check back shortly, or contact support.",
 }
 
 
@@ -189,13 +214,63 @@ def _new_record(request_id):
     }
 
 
-def _run_qualification_and_pricing(record, request, decisions_path=None, analysis_db_file=None, evaluate_fn=None, price_fn=None):
+def _run_qualification_and_pricing(record, request, decisions_path=None, analysis_db_file=None,
+                                    evaluate_fn=None, price_fn=None, paddle_products_path=None):
     """Real Qualification + Opportunity Evaluation + Price Generation +
     Proposal, chained -- these four directive stages have no human
     decision point between them, so running them together in one
     resumable call matches the "end-to-end automation" requirement
     without inventing a separate manual gate that doesn't exist anywhere
-    else in this factory's own opportunity pipeline."""
+    else in this factory's own opportunity pipeline.
+
+    Commercial Readiness Report (2026-07-25), finding P1: when the
+    request references an existing live catalog product (catalog_
+    product_id, set by server.js when a customer clicks "Request
+    access" on a specific catalog card), that product has ALREADY
+    cleared the real evidence gate -- it exists as a real, priced, live
+    Paddle product. Re-running evaluate_and_decide()/butter_price() on a
+    freeform "Interested in: X" description could legitimately produce a
+    DIFFERENT price than the one just shown on the catalog card (butter_
+    price() computes independently, never reads the catalog). The fix:
+    never re-evaluate a known catalog item -- the displayed price IS the
+    quote, exactly, every time."""
+    catalog_product_id = request.get("catalog_product_id")
+    if catalog_product_id:
+        catalog_match = next(
+            (p for p in _load_paddle_products(paddle_products_path) if p.get("product_id") == catalog_product_id),
+            None,
+        )
+        if catalog_match is not None:
+            record["decision_id"] = None
+            record["evaluation_summary"] = {
+                "status": "CATALOG_MATCH",
+                "ai_ceo_decision": "N/A",
+                "opportunity_score": None,
+                "reasoning": ["This is an existing Galaxy Forge product that already cleared our evidence gate — no re-evaluation needed."],
+            }
+            _record_history(record, "QUALIFIED", f"matched live catalog product {catalog_product_id}")
+            proposal = {
+                "price": round(float(catalog_match["price"]), 2),
+                "currency": "USD",
+                "price_basis": "Galaxy Forge live catalog price — the exact price shown on the site for this product",
+                "opportunity_score": None,
+                "evidence_summary": record["evaluation_summary"]["reasoning"],
+                "proposed_at": _now(),
+            }
+            record["proposal"] = proposal
+            record["catalog_match"] = {
+                "product_id": catalog_match["product_id"], "price_id": catalog_match["price_id"], "title": catalog_match["title"],
+            }
+            _record_history(record, "PROPOSED", f"${proposal['price']:.2f} (live catalog price, no re-evaluation)")
+            _notify_founder(
+                f"\U0001F4C4 طلب شراء منتج جاهز من الكتالوج\nطلب: {request.get('request_id')}\nالمنتج: {catalog_match['title']}\nالسعر: ${proposal['price']:.2f}"
+            )
+            return record
+        # catalog_product_id given but not found in the real catalog (a
+        # stale reference -- e.g. the product was removed after the page
+        # loaded) -- fail safe to the normal full-evaluation path below
+        # rather than silently dropping the request.
+
     from decision_engine import engine as decision_engine
 
     description = (request.get("description") or "").strip()
@@ -251,7 +326,7 @@ def _run_qualification_and_pricing(record, request, decisions_path=None, analysi
 
 
 def advance_request(request_id, requests_path=None, state_path=None, decisions_path=None,
-                     analysis_db_file=None, evaluate_fn=None, price_fn=None):
+                     analysis_db_file=None, evaluate_fn=None, price_fn=None, paddle_products_path=None):
     """Idempotent entry point: safe to call repeatedly (retries after a
     crash, a manual re-trigger, a batch sweep). A request already past
     NEW is returned unchanged -- never re-evaluated, never re-priced."""
@@ -271,7 +346,7 @@ def advance_request(request_id, requests_path=None, state_path=None, decisions_p
     try:
         record = _run_qualification_and_pricing(
             record, request, decisions_path=decisions_path, analysis_db_file=analysis_db_file,
-            evaluate_fn=evaluate_fn, price_fn=price_fn,
+            evaluate_fn=evaluate_fn, price_fn=price_fn, paddle_products_path=paddle_products_path,
         )
     except Exception as e:
         record["error"] = str(e)
@@ -288,10 +363,18 @@ def _attempt_payment_verification(record, paddle_products_path=None, checkout_fn
     fabricates a checkout_url, never silently swallows a real error."""
     from channels import paddle_publisher
 
-    proposal = record.get("proposal") or {}
-    price = proposal.get("price")
-    products = _load_paddle_products(paddle_products_path)
-    match = next((p for p in products if abs(float(p.get("price", -1e9)) - float(price or -1e9)) <= _PRICE_MATCH_TOLERANCE), None)
+    catalog_match = record.get("catalog_match")
+    if catalog_match:
+        # Exact, no ambiguity: this request was locked to a real catalog
+        # product_id/price_id at Qualification time -- never re-searched
+        # by price proximity (that tolerance-based search is only for
+        # genuinely custom requests, which have no known price_id yet).
+        match = {"price_id": catalog_match["price_id"], "title": catalog_match["title"]}
+    else:
+        proposal = record.get("proposal") or {}
+        price = proposal.get("price")
+        products = _load_paddle_products(paddle_products_path)
+        match = next((p for p in products if abs(float(p.get("price", -1e9)) - float(price or -1e9)) <= _PRICE_MATCH_TOLERANCE), None)
 
     if match is None:
         _record_history(record, "PENDING_CUSTOM_PRODUCT_SETUP", f"no existing Paddle price within ${_PRICE_MATCH_TOLERANCE} of ${price}")
@@ -336,9 +419,9 @@ def approve_request(request_id, requests_path=None, state_path=None, paddle_prod
     state = _load_state(state_path)
     record = state.get(request_id)
     if record is None:
-        return {"success": False, "error": f"no pipeline state for request {request_id!r} -- has it been qualified yet?"}
+        return {"success": False, "error": "We couldn't find an active quote for this request yet — please refresh in a moment."}
     if record["stage"] != "PROPOSED":
-        return {"success": False, "error": f"cannot approve from stage {record['stage']!r} -- only PROPOSED accepts approval"}
+        return {"success": False, "error": "This request isn't ready for approval right now — refresh the page to see its current status."}
 
     _record_history(record, "APPROVED", "customer approved the real proposal")
     try:
@@ -357,9 +440,9 @@ def reject_request(request_id, reason=None, state_path=None):
     state = _load_state(state_path)
     record = state.get(request_id)
     if record is None:
-        return {"success": False, "error": f"no pipeline state for request {request_id!r}"}
+        return {"success": False, "error": "We couldn't find an active quote for this request yet — please refresh in a moment."}
     if record["stage"] != "PROPOSED":
-        return {"success": False, "error": f"cannot reject from stage {record['stage']!r} -- only PROPOSED accepts rejection"}
+        return {"success": False, "error": "This request isn't ready to decline right now — refresh the page to see its current status."}
 
     _record_history(record, "REJECTED_BY_CUSTOMER", (reason or "").strip()[:300] or "no reason given")
     state[request_id] = record
@@ -397,19 +480,28 @@ def _progress(stage):
     return {"stage_index": None, "total_stages": len(STAGE_ORDER), "percent": None}
 
 
-def _supervision_view(record):
+def _supervision_view(record, audience="internal"):
     """The exact 6 fields the directive requires every workflow to
     expose: Status, Progress, Logs, Failures, Recovery, Estimated
     completion. estimated_completion is honestly null -- zero real
     completions exist yet to derive a real estimate from (no fabricated
-    ETA)."""
+    ETA).
+
+    audience="internal" (default, Mission Control) uses _RECOVERY_HINTS
+    (technical, function names allowed). audience="customer" (the
+    customer's own status page) uses _CUSTOMER_RECOVERY_HINTS -- plain
+    language only. Same underlying real state either way; only the
+    recovery wording differs per Commercial Readiness Report finding
+    PY1."""
+    hints = _CUSTOMER_RECOVERY_HINTS if audience == "customer" else _RECOVERY_HINTS
+    fallback = "We'll update this shortly." if audience == "customer" else "no recovery guidance defined for this stage"
     return {
         "request_id": record["request_id"],
         "status": record["stage"],
         "progress": _progress(record["stage"]),
         "logs": record.get("stage_history", []),
         "failures": record.get("error"),
-        "recovery": _RECOVERY_HINTS.get(record["stage"], "no recovery guidance defined for this stage"),
+        "recovery": hints.get(record["stage"], fallback),
         "estimated_completion": None,
         "proposal": record.get("proposal"),
         "payment": record.get("payment"),
@@ -421,10 +513,10 @@ def get_pipeline_status(request_id, requests_path=None, state_path=None):
     requests = _load_requests(requests_path)
     request = requests.get(request_id)
     if request is None:
-        return {"success": False, "error": f"no such customer request: {request_id!r}"}
+        return {"success": False, "error": "We couldn't find a request with that ID — please double-check it and try again."}
     state = _load_state(state_path)
     record = state.get(request_id) or _new_record(request_id)
-    return {"success": True, "request": {k: v for k, v in request.items() if k != "email"}, **_supervision_view(record)}
+    return {"success": True, "request": {k: v for k, v in request.items() if k != "email"}, **_supervision_view(record, audience="customer")}
 
 
 def list_pipeline_overview(requests_path=None, state_path=None):

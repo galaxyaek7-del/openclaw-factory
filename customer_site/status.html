@@ -69,6 +69,14 @@ main{padding:3.5rem 0 5rem;}
 .recovery-box{background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:9px; padding:1rem 1.1rem; font-size:.88rem; color:var(--ink-dim);}
 .recovery-box strong{color:var(--ink);}
 
+.decline-box{background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:9px; padding:1.1rem; display:flex; flex-direction:column; gap:.7rem;}
+.decline-box textarea{font-family:inherit; font-size:.88rem; background:var(--bg-card); border:1px solid var(--border); color:var(--ink); border-radius:8px; padding:.7rem .85rem; width:100%; min-height:70px; resize:vertical;}
+.decline-box textarea:focus{outline:none; border-color:var(--bad);}
+.decline-box .row{display:flex; gap:.6rem; flex-wrap:wrap;}
+
+#actionStatus{font-size:.86rem; padding:.7rem .9rem; border-radius:8px; display:none;}
+#actionStatus.error{display:block; background:var(--bad-soft); color:var(--bad);}
+
 .proposal-box{background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:9px; padding:1.3rem; display:flex; flex-direction:column; gap:.9rem;}
 .proposal-price{font-family:var(--mono); font-size:1.8rem; font-weight:600;}
 .proposal-price small{font-size:.85rem; color:var(--ink-faint); font-weight:400;}
@@ -134,6 +142,17 @@ main{padding:3.5rem 0 5rem;}
         <a id="checkoutLink" class="btn btn-primary" href="#" target="_blank" rel="noopener">Complete payment →</a>
       </div>
 
+      <div id="declineBox" class="decline-box" style="display:none;">
+        <label for="declineReason" style="font-size:.84rem; color:var(--ink-dim);">Mind telling us why? Optional, but it helps us improve.</label>
+        <textarea id="declineReason" maxlength="500" placeholder="e.g. price, timing, went another direction…"></textarea>
+        <div class="row">
+          <button id="declineConfirmBtn" class="btn btn-danger">Confirm decline</button>
+          <button id="declineCancelBtn" class="btn btn-ghost">Cancel</button>
+        </div>
+      </div>
+
+      <div id="actionStatus"></div>
+
       <div class="recovery-box"><strong>Next step:</strong> <span id="recoveryText"></span></div>
 
       <div>
@@ -187,11 +206,14 @@ main{padding:3.5rem 0 5rem;}
     var approveBtn = document.createElement('button');
     approveBtn.className = 'btn btn-primary';
     approveBtn.textContent = 'Approve proposal';
-    approveBtn.addEventListener('click', function(){ act('approve', approveBtn); });
+    approveBtn.addEventListener('click', function(){ act('approve', approveBtn, {}); });
     var declineBtn = document.createElement('button');
     declineBtn.className = 'btn btn-danger';
     declineBtn.textContent = 'Decline';
-    declineBtn.addEventListener('click', function(){ act('reject', declineBtn); });
+    declineBtn.addEventListener('click', function(){
+      document.getElementById('declineBox').style.display = 'flex';
+      document.getElementById('declineReason').focus();
+    });
     actions.appendChild(approveBtn);
     actions.appendChild(declineBtn);
   }
@@ -207,6 +229,12 @@ main{padding:3.5rem 0 5rem;}
     document.getElementById('statusCard').style.display = 'flex';
     document.getElementById('lookupCard').style.display = 'none';
     document.getElementById('loadError').style.display = 'none';
+    // declineBox/actionStatus are transient UI state, not server state --
+    // always reset on a fresh render so a stale reason box or old error
+    // never lingers after the real status has moved on.
+    document.getElementById('declineBox').style.display = 'none';
+    document.getElementById('declineReason').value = '';
+    document.getElementById('actionStatus').className = '';
 
     document.getElementById('reqTitle').textContent = (body.request && body.request.name) ? body.request.name + '’s request' : 'Your request';
     document.getElementById('reqId').textContent = body.request_id;
@@ -278,24 +306,40 @@ main{padding:3.5rem 0 5rem;}
       .catch(function(err){ showError(err.message || 'Could not load this request — check the ID and try again.'); });
   }
 
-  function act(kind, btn){
+  function showActionError(msg){
+    var el = document.getElementById('actionStatus');
+    el.textContent = msg;
+    el.className = 'error';
+  }
+
+  function act(kind, btn, payload){
     btn.disabled = true;
     var original = btn.textContent;
     btn.textContent = kind === 'approve' ? 'Approving…' : 'Declining…';
+    document.getElementById('actionStatus').className = '';
     fetch('/api/customer/requests/' + encodeURIComponent(requestId) + '/' + kind, {
-      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: '{}',
+      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload || {}),
     })
       .then(function(r){ return r.json(); })
       .then(function(body){
-        if (body.success === false) throw new Error(body.error || 'action failed');
+        if (body.success === false) throw new Error(body.error || 'That didn\'t go through — please try again.');
         load();
       })
       .catch(function(err){
         btn.disabled = false;
         btn.textContent = original;
-        alert(err.message);
+        showActionError(err.message);
       });
   }
+
+  document.getElementById('declineConfirmBtn').addEventListener('click', function(){
+    var reason = document.getElementById('declineReason').value.trim();
+    act('reject', document.getElementById('declineConfirmBtn'), { reason: reason });
+  });
+  document.getElementById('declineCancelBtn').addEventListener('click', function(){
+    document.getElementById('declineBox').style.display = 'none';
+    document.getElementById('declineReason').value = '';
+  });
 
   if (requestId){
     load();
