@@ -1105,5 +1105,40 @@ class TestGlobalOpportunityExchangeEndpoints(unittest.TestCase):
         self.assertEqual(result, fake_report)
 
 
+class TestAutonomousBusinessBuilderEndpoints(unittest.TestCase):
+    """Autonomous Business Builder (2026-07-29): the dispatch layer for
+    the real Business Blueprint/Pipeline/Execution Phases.
+    autonomous_business_builder.py's own logic has its own isolated
+    unit tests in tests/test_autonomous_business_builder.py."""
+
+    def test_business_blueprint_delegates_with_the_given_niche(self):
+        payload = {"niche": "n"}
+        fake_blueprint = {"niche": "n", "sections": {}, "estimates": {}}
+        with patch.object(sys, "argv", ["mission_control_api.py", "business_blueprint", json.dumps(payload)]):
+            with patch("autonomous_business_builder.business_blueprint", return_value=fake_blueprint) as mock_blueprint:
+                result = mission_control_api._business_blueprint()
+        mock_blueprint.assert_called_once_with("n")
+        self.assertEqual(result, fake_blueprint)
+
+    def test_business_blueprint_requires_a_niche(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "business_blueprint", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._business_blueprint()
+
+    def test_business_pipeline_summary_is_a_passthrough(self):
+        fake_summary = {"buckets": {}, "counts": {}}
+        with patch("autonomous_business_builder.business_pipeline_summary", return_value=fake_summary) as mock_summary:
+            result = mission_control_api._business_pipeline_summary()
+        mock_summary.assert_called_once_with()
+        self.assertEqual(result, fake_summary)
+
+    def test_execution_phases_is_a_passthrough(self):
+        fake_phases = {"phases": [], "required_ai_models": {}}
+        with patch("autonomous_business_builder.execution_phases", return_value=fake_phases) as mock_phases:
+            result = mission_control_api._execution_phases()
+        mock_phases.assert_called_once_with()
+        self.assertEqual(result, fake_phases)
+
+
 if __name__ == "__main__":
     unittest.main()

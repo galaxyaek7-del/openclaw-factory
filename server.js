@@ -1008,6 +1008,24 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('global_opportunity_exchange_dashboard'),
   },
   {
+    // Autonomous Business Builder (2026-07-29): a thin citation of
+    // production_blueprint.py's already-real, already-cheap 6-bucket
+    // missions board (its own existing callers already treat this as
+    // fast -- no new timeout disclosure needed beyond the shared default).
+    name: 'business-pipeline',
+    description: "ABB's real Business Pipeline / Blueprint Status: every real ACCEPTED opportunity bucketed into 6 real production statuses (READY TO BUILD/BUILDING/QUALITY REVIEW/READY TO SELL/LIVE/LEARNING). Investment Required/Expected Return/Priority/Risk/Confidence are direct citations of investment_score()'s/value_engine's already-real fields, available per-niche via the build-business-blueprint action.",
+    reused: 'autonomous_business_builder.py::business_pipeline_summary() -> production_blueprint.py::build_production_missions_board()',
+    handler: (req) => runPythonServiceCached('business_pipeline_summary', [], req),
+    health: pythonHealthCheck('business_pipeline_summary'),
+  },
+  {
+    name: 'execution-phases',
+    description: "The real, company-wide 5-phase execution roadmap (orchestrator.types.EXECUTION_ORDER): market_intelligence -> decision -> production -> publishing -> learning, each with real per-stage engine health and a real, disclosed deterministic rollback plan (Dual Inspection quarantine, publish-protection emergency stop, etc.) -- never a fabricated task list this factory doesn't track.",
+    reused: 'autonomous_business_builder.py::execution_phases()',
+    handler: (req) => runPythonServiceCached('execution_phases', [], req),
+    health: pythonHealthCheck('execution_phases'),
+  },
+  {
     // Global Trust & Resilience Layer, Round 2 (2026-07-29): real
     // per-subsystem Safe Mode -- an unstable subsystem is isolated on
     // its own, the rest of the company keeps running. Read-only here;
@@ -1979,6 +1997,22 @@ const ACTION_REGISTRY = [
       const niche = (req.body && req.body.niche || '').trim();
       if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
       return runPythonActionAsync('investment-score', 'investment_score', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    // Autonomous Business Builder (2026-07-29) -- the real 12-section/
+    // 8-estimate Business Blueprint for one niche. Async-job shape
+    // (chains production_blueprint + value_engine + investment_score),
+    // same precedent as investment-score/convene-galaxy-council.
+    name: 'build-business-blueprint',
+    description: "The real Business Blueprint: business model, revenue model, customer profile, competitor map, product roadmap, pricing/marketing/distribution strategy, launch checklist, risk assessment, growth plan, automation plan -- reshaping business_dossier.py/production_blueprint.py/capital_allocation_engine.py's already-real output, never a second blueprint generator. 4 of 8 named estimates (monthly/yearly revenue, break-even time, market durability) are honestly Unknown -- zero real signal exists anywhere in this factory for them today.",
+    reused: 'autonomous_business_builder.py::business_blueprint()',
+    reversible: true, // read-only
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('build-business-blueprint', 'business_blueprint', [JSON.stringify({ niche })]);
     },
   },
   {

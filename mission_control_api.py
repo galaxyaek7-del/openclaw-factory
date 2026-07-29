@@ -843,6 +843,40 @@ def _concentration_risk_report():
     return global_opportunity_exchange.concentration_risk_report()
 
 
+def _business_blueprint():
+    """Autonomous Business Builder (2026-07-29): the real 12-section/
+    8-estimate Business Blueprint for one niche -- reshapes business_
+    dossier.py/production_blueprint.py/capital_allocation_engine.py's
+    already-real output, never a second, competing blueprint generator.
+    Reads its payload from sys.argv[2]:
+    `python mission_control_api.py business_blueprint '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import autonomous_business_builder
+    return autonomous_business_builder.business_blueprint(niche)
+
+
+def _business_pipeline_summary():
+    """Autonomous Business Builder (2026-07-29): "Business Pipeline"/
+    "Blueprint Status" -- a thin citation of production_blueprint.py's
+    already-real 6-bucket production missions board. Passthrough
+    only."""
+    import autonomous_business_builder
+    return autonomous_business_builder.business_pipeline_summary()
+
+
+def _execution_phases():
+    """Autonomous Business Builder (2026-07-29): the real, company-wide
+    5-phase execution roadmap (orchestrator.types.EXECUTION_ORDER),
+    each phase's real engine health + a real, disclosed deterministic
+    rollback plan. Passthrough only."""
+    import autonomous_business_builder
+    return autonomous_business_builder.execution_phases()
+
+
 def _evolution_queue_daily_cycle():
     """Autonomous Company Evolution Engine, Round 4 (2026-07-29): the one
     automatic path the founder approved -- intake real proposals, simulate
@@ -2049,6 +2083,9 @@ _ENDPOINTS = {
     "capital_allocation_dashboard": _capital_allocation_dashboard,
     "global_opportunity_exchange_dashboard": _global_opportunity_exchange_dashboard,
     "concentration_risk_report": _concentration_risk_report,
+    "business_blueprint": _business_blueprint,
+    "business_pipeline_summary": _business_pipeline_summary,
+    "execution_phases": _execution_phases,
 }
 
 

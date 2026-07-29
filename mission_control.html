@@ -215,6 +215,7 @@
         <button id="productConceptComparisonBtn" class="btn">🧪 قارن مسارات الإنتاج</button>
         <button class="btn" data-action="convene-galaxy-council">🏛️ استدعِ مجلس المجرة (Galaxy Council)</button>
         <button class="btn" data-action="investment-score">💰 درجة الاستثمار (Investment Score)</button>
+        <button class="btn" data-action="build-business-blueprint">📋 مخطّط الأعمال (Business Blueprint)</button>
       </div>
     </div>
     <div id="productConceptComparisonResult"></div>
@@ -560,6 +561,42 @@ function renderInvestmentScoreResult(result) {
   return `<div class="card"><h3>درجة الاستثمار — 14 بُعداً حقيقياً</h3>${rows}</div>`;
 }
 
+// Autonomous Business Builder (2026-07-29): renders business_
+// blueprint()'s real 12-section/8-estimate result -- a direct display
+// of already-real business_dossier.py/production_blueprint.py/
+// capital_allocation_engine.py output, fabricates nothing.
+const BUSINESS_BLUEPRINT_SECTION_LABELS = {
+  business_model: 'نموذج العمل', revenue_model: 'نموذج الإيراد', customer_profile: 'ملف العميل',
+  competitor_map: 'خريطة المنافسين', product_roadmap: 'خارطة طريق المنتج', pricing_strategy: 'استراتيجية التسعير',
+  marketing_strategy: 'استراتيجية التسويق', distribution_strategy: 'استراتيجية التوزيع',
+  launch_checklist: 'قائمة تحقق الإطلاق', risk_assessment: 'تقييم المخاطر', growth_plan: 'خطة النمو',
+  automation_plan: 'خطة الأتمتة',
+};
+const BUSINESS_BLUEPRINT_ESTIMATE_LABELS = {
+  development_effort: 'جهد التطوير', expected_monthly_revenue: 'الإيراد الشهري المتوقَّع',
+  expected_yearly_revenue: 'الإيراد السنوي المتوقَّع', roi: 'العائد على الاستثمار', break_even_time: 'زمن التعادل',
+  recurring_revenue_potential: 'إمكانية الإيراد المتكرر', market_durability: 'متانة السوق',
+  ai_automation_percentage: 'نسبة الأتمتة بالذكاء الاصطناعي',
+};
+
+function renderBusinessBlueprintResult(result) {
+  if (!result) return '<p class="muted">لا قرار حقيقي مسجَّل لهذا النيتش بعد — لا مخطّط أعمال ممكن.</p>';
+
+  const sections = `<div class="card"><h3>مخطّط الأعمال — 12 قسماً</h3>${Object.entries(BUSINESS_BLUEPRINT_SECTION_LABELS).map(([key, label]) => `
+      <div style="border-bottom:1px solid #33415555; padding:6px 0">
+        <p><strong>${escapeHtml(label)}:</strong></p>
+        <pre style="white-space:pre-wrap; font-size:0.85em">${escapeHtml(JSON.stringify(result.sections?.[key] ?? null, null, 2))}</pre>
+      </div>`).join('')}</div>`;
+
+  const estimates = `<div class="card"><h3>التقديرات — 8 مقاييس</h3>${Object.entries(BUSINESS_BLUEPRINT_ESTIMATE_LABELS).map(([key, label]) => {
+      const est = result.estimates?.[key];
+      const value = est && typeof est === 'object' ? (est.value ?? JSON.stringify(est)) : est;
+      return `<p><strong>${escapeHtml(label)}:</strong> ${escapeHtml(String(value ?? 'Unknown'))}${est?.reason ? ` <span class="muted">(${escapeHtml(est.reason)})</span>` : ''}</p>`;
+    }).join('')}</div>`;
+
+  return `${estimates}${sections}`;
+}
+
 // Opportunity Intelligence Round 2 (2026-07-22): renders one of
 // opportunity_pipeline.py's 10 annotated fields -- either a real value or
 // an honest {answer:"Unknown", reason} dict (same convention already used
@@ -778,6 +815,8 @@ function openActionModal(actionName) {
     ? '<input type="text" id="galaxyCouncilNicheInput" placeholder="النيتش المطلوب استدعاء المجلس بشأنه (مطلوب)">'
     : actionName === 'investment-score'
     ? '<input type="text" id="investmentScoreNicheInput" placeholder="النيتش المطلوب حساب درجة الاستثمار له (مطلوب)">'
+    : actionName === 'build-business-blueprint'
+    ? '<input type="text" id="businessBlueprintNicheInput" placeholder="النيتش المطلوب بناء مخطّط الأعمال له (مطلوب)">'
     : '';
   actionModalProgress.style.display = 'none';
   actionModalResult.textContent = '';
@@ -858,6 +897,17 @@ async function confirmAction(actionName) {
     }
     body.niche = niche;
   }
+  if (actionName === 'build-business-blueprint') {
+    const nicheEl = document.getElementById('businessBlueprintNicheInput');
+    const niche = nicheEl ? nicheEl.value.trim() : '';
+    if (!niche) {
+      actionModalProgress.style.display = 'none';
+      actionModalResult.textContent = 'النيتش مطلوب.';
+      actionModalConfirm.disabled = false;
+      return;
+    }
+    body.niche = niche;
+  }
 
   let res;
   try {
@@ -902,6 +952,9 @@ async function confirmAction(actionName) {
       } else if (actionName === 'investment-score') {
         actionModalResult.innerHTML = renderInvestmentScoreResult(job.result);
         pushNotification('success', `درجة الاستثمار جاهزة لـ"${job.result?.niche ?? ''}"`);
+      } else if (actionName === 'build-business-blueprint') {
+        actionModalResult.innerHTML = renderBusinessBlueprintResult(job.result);
+        pushNotification('success', `مخطّط الأعمال جاهز لـ"${job.result?.niche ?? ''}"`);
       } else if (degradation) {
         actionModalResult.textContent = `اكتمل مع تدهور جزئي: ${degradation}`;
         pushNotification('warning', `${actionName}: اكتمل مع تدهور جزئي — ${degradation}`);

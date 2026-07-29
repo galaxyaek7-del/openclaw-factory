@@ -176,6 +176,12 @@ def build_production_blueprint(niche, decisions_path=None, board_path=None, aler
         "competitive_analysis": annotated.get("competition"),
         "unique_value_proposition": value_proposition,
         "pricing_strategy": business_dossier.get("pricing_strategy"),
+        # Additive (Autonomous Business Builder, 2026-07-29): already
+        # computed above via business_dossier -- re-exposed here so a
+        # caller needing it (autonomous_business_builder.py::
+        # business_blueprint()) never has to call opportunity_pipeline.
+        # annotate_decision() a second time just to read one field.
+        "expansion_strategy": business_dossier.get("expansion_strategy"),
         "brand_position": {"value": None, "reason": _NO_SOURCE_BLUEPRINT_FIELDS["brand_position"]},
         "production_checklist": {
             "stages": ["inspect_technical (inspectors.py)", "audit_commercial (inspectors.py)"],
