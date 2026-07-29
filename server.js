@@ -274,18 +274,25 @@ const PYTHON_SERVICE_TIMEOUT_MS = 30000;
 // only in /api/mission-control/:section (Phase 8 Mission Control), so
 // there is exactly one place that knows how to run a Python service,
 // not two copies of the same spawn/parse glue.
-function runPythonService(section, extraArgs = []) {
+// `timeoutMs` (Strategic Intelligence Core, 2026-07-29): optional
+// override, defaulting to PYTHON_SERVICE_TIMEOUT_MS -- every existing
+// caller is unaffected. Added because executive_brief is a real,
+// disclosed outlier: it aggregates ceo_dashboard() + evolution_report,
+// each independently already a real ~20s full-portfolio computation,
+// so the shared 30s default was measured to time it out (confirmed via
+// a live run: 500 "executive_brief timed out after 30000ms").
+function runPythonService(section, extraArgs = [], timeoutMs = PYTHON_SERVICE_TIMEOUT_MS) {
   return new Promise((resolve, reject) => {
     const pythonPath = detectPython();
     const scriptPath = path.join(__dirname, 'mission_control_api.py');
     const python = spawn(pythonPath, [scriptPath, section, ...extraArgs], { cwd: __dirname });
     let output = '', errOut = '', timedOut = false;
-    killAfterTimeout(python, PYTHON_SERVICE_TIMEOUT_MS, () => { timedOut = true; });
+    killAfterTimeout(python, timeoutMs, () => { timedOut = true; });
     python.stdout.on('data', d => { output += d.toString(); });
     python.stderr.on('data', d => { errOut += d.toString(); });
     python.on('error', reject);
     python.on('close', () => {
-      if (timedOut) return reject(new Error(`${section} timed out after ${PYTHON_SERVICE_TIMEOUT_MS}ms`));
+      if (timedOut) return reject(new Error(`${section} timed out after ${timeoutMs}ms`));
       let parsed;
       try {
         parsed = JSON.parse(output.trim());
@@ -327,14 +334,14 @@ const pythonServiceCache = new Map(); // "section|args" -> { result, expiresAt }
 // uncached re-fetch via `?fresh=1` (Mission Control's own Refresh button
 // does this: a founder clicking "Refresh" should always get a genuinely
 // fresh read, never a stale cached one, even inside the TTL window).
-function runPythonServiceCached(section, extraArgs = [], req = null) {
+function runPythonServiceCached(section, extraArgs = [], req = null, timeoutMs = PYTHON_SERVICE_TIMEOUT_MS) {
   const bypass = !!(req && req.query && (req.query.fresh === '1' || req.query.fresh === 'true'));
   const key = section + '|' + JSON.stringify(extraArgs);
   if (!bypass) {
     const cached = pythonServiceCache.get(key);
     if (cached && Date.now() < cached.expiresAt) return Promise.resolve(cached.result);
   }
-  return runPythonService(section, extraArgs).then(result => {
+  return runPythonService(section, extraArgs, timeoutMs).then(result => {
     pythonServiceCache.set(key, { result, expiresAt: Date.now() + PYTHON_SERVICE_CACHE_TTL_MS });
     return result;
   });
@@ -935,6 +942,29 @@ const SERVICE_REGISTRY = [
     reused: 'resilience_monitor.py list_incidents()/record_incident() (Continuous Trust & Resilience Monitoring, 2026-07-29), via mission_control_api.py.',
     handler: (req) => runPythonServiceCached('resilience_incidents', [], req),
     health: pythonHealthCheck('resilience_incidents'),
+  },
+  {
+    // Strategic Intelligence Core (2026-07-29): the one real aggregator
+    // this factory never had. Every one of its 9 named fields cites an
+    // already-real function (resilience_monitor, ceo_decision_center,
+    // evolution_engine, scheduler, founder_console, this module's own
+    // evaluate_strategic_horizons()/customer_pipeline's cost-trend
+    // signal) -- read-only, recommend-only, exactly like every panel
+    // above it. Nothing here executes autonomously on anything
+    // irreversible; Constitution-first + no-autonomous-high-risk-
+    // decisions are already real everywhere a real decision is made.
+    name: 'executive-brief',
+    description: "The real Executive Brief: company_health, top_risks, top_opportunities, top_bottlenecks, recommended_priorities, products_to_accelerate/pause, research_needed (the real, current NOT ENOUGH EVIDENCE gaps -- multi-year horizons and customer-problem cost trend, never an invented topic), founder_decisions_required.",
+    reused: 'strategic_intelligence_core.py build_executive_brief() (Strategic Intelligence Core, 2026-07-29), via mission_control_api.py.',
+    // Real, disclosed outlier timeout (measured ~45-55s cold, well past
+    // the shared 30s default): this aggregator's own two dominant real
+    // sub-computations (ceo_dashboard()'s investment pipeline + full
+    // scheduling scan, evolution_engine's bottleneck/tech-debt/ROI scan)
+    // are each independently already ~20s. The 20s cache TTL still
+    // absorbs repeat cost the same as every other panel; this only
+    // affects the first, cold call.
+    handler: (req) => runPythonServiceCached('executive_brief', [], req, 90000),
+    health: pythonHealthCheck('executive_brief'),
   },
   {
     // Global Trust & Resilience Layer, Round 2 (2026-07-29): real

@@ -1032,6 +1032,67 @@ def delivery_delay_summary(state_path=None):
     return {"sample_size": len(delays_hours), "average_hours": average, "delays": delays_hours}
 
 
+_PROBLEM_STAGES = ("PAYMENT_BLOCKED_PADDLE_ONBOARDING", "FAILED", "PENDING_CUSTOM_PRODUCT_SETUP", "PENDING_FOUNDER_REVIEW")
+
+
+def customer_problem_cost_trend(state_path=None, now=None):
+    """Real Observe signal (Strategic Intelligence Core, 2026-07-29):
+    is the real volume of customer requests entering a real problem
+    state (payment-blocked, failed, needs-custom-product-setup, needs-
+    founder-review) growing over time -- a real trend, not just the
+    current-state snapshot resilience_monitor.py::_classify_customer_
+    risk() already covers. Same real "recent window vs. trailing daily
+    average" technique channels/ledger.py::revenue_trend() already
+    established -- never a second, divergent trend algorithm. Honestly
+    "NOT ENOUGH EVIDENCE" until real requests exist across at least two
+    comparable real time windows -- never estimated from a single real
+    problem occurrence."""
+    now = now or datetime.now(timezone.utc)
+    state = _load_state(state_path)
+    if not state:
+        return {"answer": "NOT ENOUGH EVIDENCE", "reason": "لا طلبات عملاء حقيقية بعد لحساب اتجاه تكلفة حقيقي"}
+
+    problem_entries = []
+    for request_id, record in state.items():
+        for h in record.get("stage_history", []):
+            if h.get("stage") in _PROBLEM_STAGES:
+                problem_entries.append({"request_id": request_id, "stage": h["stage"], "at": h.get("at")})
+
+    if not problem_entries:
+        return {"answer": "NOT ENOUGH EVIDENCE", "reason": "لا طلب عميل حقيقي واحد دخل حالة مشكلة حقيقية بعد -- لا بيانات لقياس اتجاه"}
+
+    since_recent = now - timedelta(days=7)
+    recent_count = 0
+    trailing_by_day = {}
+    for entry in problem_entries:
+        try:
+            dt = datetime.fromisoformat((entry["at"] or "").replace("Z", "+00:00"))
+        except (TypeError, ValueError):
+            continue
+        if dt >= since_recent:
+            recent_count += 1
+        else:
+            day_key = dt.strftime("%Y-%m-%d")
+            trailing_by_day[day_key] = trailing_by_day.get(day_key, 0) + 1
+
+    if not trailing_by_day:
+        return {
+            "answer": "NOT ENOUGH EVIDENCE",
+            "reason": f"{recent_count} مشكلة حقيقية في آخر 7 أيام لكن لا تاريخ سابق كافٍ (أقل من أسبوع من البيانات) لحساب اتجاه موثوق",
+            "recent_7d_problem_count": recent_count,
+        }
+
+    trailing_daily_avg = sum(trailing_by_day.values()) / len(trailing_by_day)
+    recent_daily_avg = recent_count / 7
+    return {
+        "recent_7d_problem_count": recent_count,
+        "recent_daily_avg": round(recent_daily_avg, 2),
+        "trailing_daily_avg": round(trailing_daily_avg, 2),
+        "worsening": recent_daily_avg > trailing_daily_avg,
+        "by_stage": {stage: sum(1 for e in problem_entries if e["stage"] == stage) for stage in _PROBLEM_STAGES},
+    }
+
+
 def advance_all_new_requests(requests_path=None, state_path=None, decisions_path=None, analysis_db_file=None):
     """Batch sweep -- this factory has no scheduler (CLAUDE.md), so
     'automatic' means zero further code changes, one Mission Control
@@ -1110,6 +1171,8 @@ def main():
             result = {"success": True, **funnel_conversion_summary()}
         elif command == "delivery_delay":
             result = {"success": True, **delivery_delay_summary()}
+        elif command == "customer_problem_cost_trend":
+            result = {"success": True, **customer_problem_cost_trend()}
         else:
             result = {"success": False, "error": f"unknown command: {command!r}"}
         print(json.dumps(result, ensure_ascii=False, default=str))

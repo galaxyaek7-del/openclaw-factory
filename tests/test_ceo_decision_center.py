@@ -206,6 +206,19 @@ class TestCeoDashboard(unittest.TestCase):
         self.assertIsNone(result["company_health"]["value"])
         self.assertTrue(result["company_health"]["reason"])
 
+    def test_scheduling_buckets_additive_field_exposes_the_full_real_buckets(self):
+        # Strategic Intelligence Core (2026-07-29): additive field so a
+        # caller needing e.g. "accelerate" (strategic_intelligence_core.py
+        # ::build_executive_brief()) never has to trigger a second, real,
+        # ~10s+ full-portfolio scheduler.decide_next_actions() call just
+        # to read a bucket this function already computed.
+        result = self._dashboard()
+        self.assertIn("scheduling_buckets", result)
+        for bucket in ("accelerate", "stop", "cancel", "run_now", "wait"):
+            self.assertIn(bucket, result["scheduling_buckets"])
+        self.assertEqual(result["scheduling_buckets"]["stop"], result["top_risks"]["stop"])
+        self.assertEqual(result["scheduling_buckets"]["cancel"], result["top_risks"]["cancel"])
+
 
 if __name__ == "__main__":
     unittest.main()

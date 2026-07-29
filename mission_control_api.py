@@ -704,6 +704,39 @@ def _resilience_monitor_tick():
     return {"resilience_score": result["resilience_score"], "active_alert_count": len(result["active_alerts"]), "recorded_incidents": recorded}
 
 
+def _executive_brief():
+    """Strategic Intelligence Core (2026-07-29): the real, read-only
+    Executive Brief -- company_health/top_risks/top_opportunities/
+    top_bottlenecks/recommended_priorities/products_to_accelerate/
+    products_to_pause/research_needed/founder_decisions_required, every
+    field a citation of an already-real function
+    (strategic_intelligence_core.build_executive_brief() itself never
+    computes a new signal). Same {report, markdown} shape as
+    _evolution_report()/_ai_doctor()/_department_health() -- this one
+    section serves both the live Mission Control panel and
+    factory_loop.js's daily dated-report generation. Passthrough only --
+    Constitution-first and no-autonomous-high-risk-decisions are both
+    already real everywhere an irreversible action exists in this
+    factory; this endpoint reads, never acts."""
+    import strategic_intelligence_core
+    report = strategic_intelligence_core.build_executive_brief()
+    return {"report": report, "markdown": strategic_intelligence_core.render_markdown(report)}
+
+
+def _strategic_score():
+    """Real, read-only Strategic Score for one niche -- the directive's
+    11 named dimensions, each `{value, source, reason}` citing an
+    already-real source. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py strategic_score '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import strategic_intelligence_core
+    return strategic_intelligence_core.strategic_score(niche)
+
+
 def _evolution_queue_daily_cycle():
     """Autonomous Company Evolution Engine, Round 4 (2026-07-29): the one
     automatic path the founder approved -- intake real proposals, simulate
@@ -1900,6 +1933,8 @@ _ENDPOINTS = {
     "resilience_status": _resilience_status,
     "resilience_incidents": _resilience_incidents,
     "resilience_monitor_tick": _resilience_monitor_tick,
+    "executive_brief": _executive_brief,
+    "strategic_score": _strategic_score,
 }
 
 

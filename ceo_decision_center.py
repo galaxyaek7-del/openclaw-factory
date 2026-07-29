@@ -213,5 +213,12 @@ def ceo_dashboard(decisions_path=None, board_path=None, alerts_path=None,
         "next_executive_decision": scheduling["buckets"]["accelerate"][0] if scheduling["buckets"]["accelerate"] else (
             scheduling["buckets"]["run_now"][0] if scheduling["buckets"]["run_now"] else None
         ),
+        # Additive (Strategic Intelligence Core, 2026-07-29): the full,
+        # already-computed real buckets, so a caller needing e.g.
+        # "accelerate"/"wait" (strategic_intelligence_core.py::
+        # build_executive_brief()) never has to trigger a second, real,
+        # ~10s+ full-portfolio decide_next_actions() computation just to
+        # read a bucket this function already has in memory.
+        "scheduling_buckets": scheduling["buckets"],
         "evaluated_at": datetime.now(timezone.utc).isoformat(),
     }

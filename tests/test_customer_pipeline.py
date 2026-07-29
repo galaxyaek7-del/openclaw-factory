@@ -325,6 +325,56 @@ class TestObserveSignals(BasePipelineTest):
         self.assertEqual(result["sample_size"], 1)
         self.assertEqual(result["average_hours"], 24.0)
 
+    def test_customer_problem_cost_trend_is_honestly_not_enough_evidence_with_no_requests(self):
+        result = cp.customer_problem_cost_trend(state_path=self.state_path)
+        self.assertEqual(result["answer"], "NOT ENOUGH EVIDENCE")
+
+    def test_customer_problem_cost_trend_is_honestly_not_enough_evidence_with_no_real_problems(self):
+        state = {"req_1": {"stage_history": [{"stage": "NEW", "at": "2026-07-01T00:00:00+00:00"}]}}
+        cp._save_state(state, self.state_path)
+        result = cp.customer_problem_cost_trend(state_path=self.state_path)
+        self.assertEqual(result["answer"], "NOT ENOUGH EVIDENCE")
+
+    def test_customer_problem_cost_trend_with_only_recent_data_is_honestly_not_enough_evidence(self):
+        from datetime import datetime, timezone, timedelta
+        now = datetime(2026, 7, 29, tzinfo=timezone.utc)
+        state = {
+            "req_1": {"stage_history": [{"stage": "FAILED", "at": (now - timedelta(days=1)).isoformat()}]},
+        }
+        cp._save_state(state, self.state_path)
+        result = cp.customer_problem_cost_trend(state_path=self.state_path, now=now)
+        self.assertEqual(result["answer"], "NOT ENOUGH EVIDENCE")
+        self.assertEqual(result["recent_7d_problem_count"], 1)
+
+    def test_customer_problem_cost_trend_detects_a_real_worsening_trend(self):
+        from datetime import datetime, timezone, timedelta
+        now = datetime(2026, 7, 29, tzinfo=timezone.utc)
+        state = {}
+        # Trailing history: 1 real problem each on 2 distinct, sparse days
+        # (trailing_daily_avg == 1.0 -- the average is per problem-day, same
+        # discipline channels/ledger.py::revenue_trend() already uses).
+        for i, days_ago in enumerate([15, 20]):
+            state[f"old_{i}"] = {"stage_history": [{"stage": "FAILED", "at": (now - timedelta(days=days_ago)).isoformat()}]}
+        # Recent: 10 real problems within the last 7 days -- recent_daily_avg
+        # (10/7 ~= 1.43) real-ly exceeds the trailing 1.0.
+        for i in range(10):
+            state[f"recent_{i}"] = {"stage_history": [{"stage": "FAILED", "at": (now - timedelta(days=i % 7)).isoformat()}]}
+        cp._save_state(state, self.state_path)
+        result = cp.customer_problem_cost_trend(state_path=self.state_path, now=now)
+        self.assertTrue(result["worsening"])
+        self.assertEqual(result["recent_7d_problem_count"], 10)
+
+    def test_customer_problem_cost_trend_never_worsening_when_rate_is_stable_or_improving(self):
+        from datetime import datetime, timezone, timedelta
+        now = datetime(2026, 7, 29, tzinfo=timezone.utc)
+        state = {}
+        for i, days_ago in enumerate([10, 15, 20, 25, 30]):
+            state[f"old_{i}"] = {"stage_history": [{"stage": "FAILED", "at": (now - timedelta(days=days_ago)).isoformat()}]}
+        state["recent_0"] = {"stage_history": [{"stage": "FAILED", "at": (now - timedelta(days=1)).isoformat()}]}
+        cp._save_state(state, self.state_path)
+        result = cp.customer_problem_cost_trend(state_path=self.state_path, now=now)
+        self.assertFalse(result["worsening"])
+
 
 class TestCatalogPriceLock(BasePipelineTest):
     """Commercial Readiness Report (2026-07-25), finding P1: a request for

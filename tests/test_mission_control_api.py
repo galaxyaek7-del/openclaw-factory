@@ -974,5 +974,36 @@ class TestResilienceMonitoringEndpoints(unittest.TestCase):
         self.assertEqual(result["recorded_incidents"], [{"incident_id": "x"}])
 
 
+class TestStrategicIntelligenceCoreEndpoints(unittest.TestCase):
+    """Strategic Intelligence Core (2026-07-29): the dispatch layer for
+    the real Executive Brief + Strategic Score citation layer.
+    strategic_intelligence_core.py's own logic has its own isolated unit
+    tests in tests/test_strategic_intelligence_core.py."""
+
+    def test_executive_brief_returns_report_and_markdown(self):
+        fake_brief = {"company_health": {}, "research_needed": []}
+        with patch("strategic_intelligence_core.build_executive_brief", return_value=fake_brief) as mock_build:
+            with patch("strategic_intelligence_core.render_markdown", return_value="## md") as mock_render:
+                result = mission_control_api._executive_brief()
+        mock_build.assert_called_once_with()
+        mock_render.assert_called_once_with(fake_brief)
+        self.assertEqual(result["report"], fake_brief)
+        self.assertEqual(result["markdown"], "## md")
+
+    def test_strategic_score_delegates_with_the_given_niche(self):
+        payload = {"niche": "workflow automation system for logistics companies"}
+        fake_score = {"niche": payload["niche"], "market": {"value": "Unknown"}}
+        with patch.object(sys, "argv", ["mission_control_api.py", "strategic_score", json.dumps(payload)]):
+            with patch("strategic_intelligence_core.strategic_score", return_value=fake_score) as mock_score:
+                result = mission_control_api._strategic_score()
+        mock_score.assert_called_once_with(payload["niche"])
+        self.assertEqual(result, fake_score)
+
+    def test_strategic_score_requires_a_niche(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "strategic_score", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._strategic_score()
+
+
 if __name__ == "__main__":
     unittest.main()

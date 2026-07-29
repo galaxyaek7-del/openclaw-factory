@@ -1,0 +1,57 @@
+# ADR-137 — Strategic Intelligence Core
+
+**Date:** 2026-07-29
+**Status:** Adopted.
+
+---
+
+## The directive
+
+"EXECUTIVE DIRECTIVE — STRATEGIC INTELLIGENCE CORE (THE COMPANY'S EXECUTIVE BRAIN)": a top-level decision layer permanently answering 10 strategic questions (greatest opportunity/risk right now, what to build/stop building, what deserves more investment, which markets to enter/abandon, which customer problems are becoming expensive, which competitors are becoming dangerous, what the internal bottlenecks are), a named 11-dimension "Strategic Score" (Market, Competition, Demand, Difficulty, Automation, Scalability, Recurring Revenue, Strategic Value, Risk, Trust, Long-Term Value — each explaining WHY), an "Executive Brief" once per operational cycle (Company Health, Top Risks, Top Opportunities, Top Bottlenecks, Recommended Priorities, Products to Accelerate, Products to Pause, Research Needed, Founder Decisions Required), multi-year thinking (30 days/90 days/1 year/3 years/10 years — honestly "NOT ENOUGH EVIDENCE" rather than inventing a projection), a Constitution-first compliance gate over everything, and a reconfirmation that nothing here executes autonomously on anything high-risk — recommend only, founder decides.
+
+## What research found before building anything
+
+A field-by-field research audit (this session's own, file:line verified against real code, not summaries) found this directive to be the most-already-built of the session's CEO-style directives — most of the 10 questions and the "Strategic Score" concept already existed under different names, built the previous day (2026-07-24, `ceo_decision_center.py`/`value_engine.py`), before this directive was even issued:
+
+| Directive ask | Real, already-built signal |
+|---|---|
+| Most of the 10 strategic questions | `ceo_decision_center.py::answer_ceo_questions()`/`ceo_dashboard()` |
+| "Strategic Score" | `value_engine.py::compute_value_profile()`'s 17-dimension `dimensions` dict + `board_summary`, `opportunity_pipeline.py::annotate_decision()`'s per-decision Market/Competition/Demand/Difficulty fields, `executive_score.py`'s `trust` sub-score |
+| Products to accelerate/pause | `scheduler.py::decide_next_actions()`'s real `accelerate`/`stop`/`cancel`/`run_now`/`wait` buckets |
+| Which markets to enter/abandon | Already a founder-confirmed, deliberately deferred decision (CLAUDE.md's "التوسّع العالمي" section) — not a gap |
+| Dangerous competitors | `competitor_discovery.py`, already wired into `ceo_decision_center.py` |
+| Internal bottlenecks | `evolution_engine.py::build_evolution_report()` (bottlenecks + `customer_success_bottleneck`, ADR-135) |
+| Company health / current risk | `resilience_monitor.py::assess_resilience()` (ADR-136) — real, but not yet wired into any CEO-level report |
+| Founder Decisions Required | `founder_console.py::build_founder_queue_partial()` |
+| "NOT ENOUGH EVIDENCE" precedent | `growth_engine.py::growth_forecast()`'s own real DISCOVERY/REAL maturity gate |
+| Constitution-first + no-autonomous-high-risk | Already real and satisfied everywhere an irreversible action exists (`executive_quality_gate.py::check_constitution_alignment()`, `evolution_queue.py`, `channels/publish_protection.py`, `safe_mode.py`) |
+
+The real, narrow gap: multi-year horizon evaluation (confirmed absent anywhere in the codebase), a customer-problem cost/trend signal (only current-state detection existed, never a trend), a real citation layer assembling the 11 named Strategic Score dimensions from the sources above, and — the single biggest real gap — no aggregator ever combined all of the above into one literal Executive Brief.
+
+## What was built
+
+**`customer_pipeline.py::customer_problem_cost_trend()`** — a new Observe signal (same "recent 7-day window vs. trailing daily average" technique `channels/ledger.py::revenue_trend()` already established) answering "is the real volume of customer requests entering a real problem state growing?" Honestly `"NOT ENOUGH EVIDENCE"` until real requests exist across at least two comparable real time windows.
+
+**`strategic_intelligence_core.py` (new)** — three functions, each a real citation layer, none a new judgment engine:
+
+- `evaluate_strategic_horizons()` — 5 named horizons (30d/90d/1y/3y/10y). 30d/90d reuse `growth_engine.growth_forecast()`'s real DISCOVERY/REAL gate verbatim (today: always `NOT ENOUGH EVIDENCE`, since `growth_forecast()` itself has no real windowed-comparison algorithm built yet even at `REAL` maturity — an honest, disclosed limitation, not a bug in this round). 1y/3y/10y each require a real elapsed sales-history span of at least 2 comparable windows of that length (via `channels/ledger.py::revenue_trend()`'s real `by_day` data) — this factory (founded 2026-07-05) cannot possibly have that yet, so every long horizon honestly reports `NOT ENOUGH EVIDENCE` with the real span vs. the real requirement, never a projected guess.
+- `strategic_score(niche)` — the directive's 11 named dimensions, each `{value, source, reason}`. A real normalization layer (`_extract_signal()`) handles the genuinely different shapes real signals already arrive in across this factory (`{"value":...}` from strategic-investment/executive_score fields, `{"level":...}` from opportunity_pipeline's market_signal/ai_leverage/defensibility, `{"favorability_score":...}` from its competition field, `{"score":...}` from value_engine's strategic_value composite, a bare number for ladder-component fields, or `{"answer":"Unknown","reason":...}` wherever no real source exists yet) without recomputing any of them. Market/Automation/Scalability/Recurring Revenue/Strategic Value/Long-Term Value come from `value_engine.compute_value_profile()`; Competition/Demand (`pain_level`, a genuinely distinct real customer-pain signal, not a re-citation of Market)/Difficulty come directly from `opportunity_pipeline.annotate_decision()`, since `value_engine`'s own `dimensions` dict does not re-expose those three fields; Trust comes from `executive_score._trust()`; Risk comes from `value_engine`'s `at_risk` flag. Honestly all-`Unknown` when the niche has no real ACCEPTED decision on record.
+- `build_executive_brief()` — the real aggregator this factory never had. Its 9 named fields each cite one already-real function: `resilience_monitor.assess_resilience()` (company_health), `ceo_decision_center.ceo_dashboard()` (top_risks/top_opportunities/recommended_priorities), `evolution_engine.build_evolution_report()` (top_bottlenecks), `scheduler.decide_next_actions()` (products_to_accelerate/pause), `founder_console.build_founder_queue_partial()` (founder_decisions_required), and this module's own `evaluate_strategic_horizons()` + `customer_pipeline.customer_problem_cost_trend()` (research_needed — listing exactly the real, current `NOT ENOUGH EVIDENCE` gaps found this cycle, never an invented topic; honestly empty when every signal resolves). `render_markdown()` renders it deterministically, same mechanical-template convention as `evolution_engine.py`/`ai_doctor.py`.
+
+**Mission Control.** `mission_control_api.py`'s `executive_brief` section (`{report, markdown}`, same shape as `evolution_report`/`ai_doctor`/`department_health` — one dispatch serves both the live panel and the daily report generator) and `strategic_score` section (per-niche, read-only). New `executive-brief` panel in `mission_control_executive_v1.html`.
+
+**`factory_loop.js` wiring.** `maybeGenerateDailyExecutiveBrief()` — the same once-per-calendar-day gate (`EXECUTIVE_BRIEF_<date>.md` existence check) as `evolution_report`/`ai_doctor_report`/`department_health_report`, since this is a strategic-level report, not a per-tick monitor like `resilience_monitor`.
+
+## Constitution-first / no-autonomous-high-risk boundary (deliberately unchanged)
+
+Every function in `strategic_intelligence_core.py` is read-only and recommend-only — none spends money, publishes anything, deletes data, or changes any legal/payment/strategy setting. This round adds zero new auto-executing code path. Constitution-first (`executive_quality_gate.py::check_constitution_alignment()`) and no-autonomous-high-risk-decisions (`evolution_queue.py`, `channels/publish_protection.py`, `safe_mode.py`, all already human-gated for anything irreversible) were both already real and already applied everywhere a real decision is made in this factory before this round began — this ADR cites that fact rather than re-litigating or re-implementing it.
+
+## Validation
+
+New tests: `tests/test_customer_pipeline.py` (+5, `customer_problem_cost_trend()`), `tests/test_strategic_intelligence_core.py` (new, 24 — `evaluate_strategic_horizons()`, `_extract_signal()`'s every real shape, `strategic_score()`'s per-dimension sourcing including the no-ACCEPTED-decision path, `build_executive_brief()`'s field citation and honest-`research_needed` behavior, every real source function mocked), `tests/test_mission_control_api.py` (+3, the new dispatch endpoints), `tests/test_factory_loop_daily_executive_brief.js` (new, 3 — error paths only, same discipline as every other daily-report test in this factory: the real success path unconditionally touches `reports/`, so it's excluded from automated tests by design).
+
+Live E2E against real factory data: `build_executive_brief()` run directly against this factory's actual (young) state produced a real `resilience_score` of 93, real top_risks (rejected/at-risk niches from `data/decisions.jsonl`, a real active security-drift alert), real top_opportunities/products_to_accelerate/pause from the real investment pipeline and scheduler, and a `research_needed` list honestly containing all 5 multi-year horizons plus the customer-problem cost trend — proving the honesty discipline holds under real, not mocked, conditions. `render_markdown()` was confirmed to produce a real, readable Arabic report from this live data. `strategic_score()` was run against a real ACCEPTED niche ("workflow automation system for logistics companies") and correctly resolved a mix of real numeric values (competition=70, scalability=85, recurring_revenue=85, strategic_value=47.0), a real nested Strategic Investment Layer answer (long_term_value), and honest `Unknown`s (market, demand, difficulty) exactly where the underlying real sources have no signal for that niche yet — never fabricated. Full regression: 1796 Python tests + 309 Node tests, both clean.
+
+## What's still honestly Unknown / not built
+
+30-day/90-day forecasts stay `NOT ENOUGH EVIDENCE` even once this factory eventually has 2 real comparable sales windows, because `growth_engine.growth_forecast()` itself has no real windowed-comparison algorithm implemented yet at `REAL` maturity — this ADR did not build one, since doing so was out of this round's real, narrow scope (citation layer, not a new forecasting engine) and would have risked inventing a projection formula with zero real data to validate it against. 1-year/3-year/10-year horizons are structurally unable to produce anything but `NOT ENOUGH EVIDENCE` for years to come, by design — this ADR is the record of that being the honest, correct behavior for a factory founded 2026-07-05, not a gap to "finish later." `strategic_score()`'s Market/Demand fields will stay `Unknown` for any decision made before the Strategic Opportunity Intelligence Engine (2026-07-22) added real `market_signal`/`pain_level` collection — an already-disclosed, pre-existing limitation, not new here.

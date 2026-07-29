@@ -1804,6 +1804,74 @@ async function maybeGenerateDailyDepartmentHealthReport(now = new Date()) {
   }
 }
 
+// Strategic Intelligence Core (2026-07-29): same subprocess + daily-gate
+// pattern as runDepartmentHealthReport() immediately above, calling
+// mission_control_api.py's executive_brief section
+// (strategic_intelligence_core.build_executive_brief() + its own
+// render_markdown() -- no new business logic here, this is a report
+// generator only).
+function runExecutiveBrief({ timeoutMs = 30000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'executive_brief'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة executive_brief (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من executive_brief' });
+          return;
+        }
+        finish({ ok: true, markdown: result.markdown });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج executive_brief: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+function executiveBriefReportPath(now) {
+  return path.join(REPORTS_DIR, `EXECUTIVE_BRIEF_${isoDate(now)}.md`);
+}
+
+async function maybeGenerateDailyExecutiveBrief(now = new Date()) {
+  const datedPath = executiveBriefReportPath(now);
+  if (fs.existsSync(datedPath)) {
+    return { action: 'none', detail: `الموجَز التنفيذي اليومي موجود بالفعل: ${path.basename(datedPath)}` };
+  }
+  const result = await runExecutiveBrief();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(REPORTS_DIR, { recursive: true });
+    fs.writeFileSync(datedPath, result.markdown, 'utf8');
+    return { action: 'generated', detail: `تم إنشاء الموجَز التنفيذي اليومي: ${path.basename(datedPath)}` };
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ الموجَز التنفيذي: ${err.message}` };
+  }
+}
+
 // ── AUTONOMOUS COMPANY EVOLUTION ENGINE — DAILY INTAKE/SIMULATE/DECIDE ──
 // Runs mission_control_api.py's evolution_queue_daily_cycle: real
 // proposals get pulled into the Evolution Queue, simulated, and decided
@@ -2345,6 +2413,13 @@ async function runTick() {
   markStep('department_health_report');
   actions.push({ step: 'department_health_report', ...(await maybeGenerateDailyDepartmentHealthReport()) });
 
+  // Strategic Intelligence Core (2026-07-29): same once-per-calendar-day
+  // pattern as the two report engines immediately above — a strategic-
+  // level report (Executive Brief), not a per-tick monitor like
+  // resilience_monitor below.
+  markStep('executive_brief');
+  actions.push({ step: 'executive_brief', ...(await maybeGenerateDailyExecutiveBrief()) });
+
   // Autonomous Company Evolution Engine, Round 4 (2026-07-29): same
   // once-per-calendar-day pattern as the two report engines immediately
   // above — intake/simulate/decide only, never approve/reject/mark-
@@ -2579,6 +2654,7 @@ module.exports = {
   runEvolutionReport, evolutionReportPath, maybeGenerateDailyEvolutionReport,
   runAiDoctorReport, aiDoctorReportPath, maybeGenerateDailyAiDoctorReport,
   runDepartmentHealthReport, departmentHealthReportPath, maybeGenerateDailyDepartmentHealthReport,
+  runExecutiveBrief, executiveBriefReportPath, maybeGenerateDailyExecutiveBrief,
   runEvolutionQueueDailyCycle, maybeGenerateDailyEvolutionQueueIntake,
   runResilienceMonitorTick,
   booksProducedSince, revenueSince, healingActionsSince,
