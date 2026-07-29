@@ -1084,5 +1084,26 @@ class TestCapitalAllocationEngineEndpoints(unittest.TestCase):
         self.assertEqual(result, fake_dashboard)
 
 
+class TestGlobalOpportunityExchangeEndpoints(unittest.TestCase):
+    """Global Opportunity Exchange (2026-07-29): the dispatch layer for
+    the real marketplace catalog/concentration-risk/dashboard.
+    global_opportunity_exchange.py's own logic has its own isolated
+    unit tests in tests/test_global_opportunity_exchange.py."""
+
+    def test_global_opportunity_exchange_dashboard_is_a_passthrough(self):
+        fake_dashboard = {"global_opportunity_map": {}, "diversification_recommendations": []}
+        with patch("global_opportunity_exchange.build_global_opportunity_exchange_dashboard", return_value=fake_dashboard) as mock_dashboard:
+            result = mission_control_api._global_opportunity_exchange_dashboard()
+        mock_dashboard.assert_called_once_with()
+        self.assertEqual(result, fake_dashboard)
+
+    def test_concentration_risk_report_is_a_passthrough(self):
+        fake_report = {"platform": {}, "product_family": {}, "country": {}, "ai_provider": {}}
+        with patch("global_opportunity_exchange.concentration_risk_report", return_value=fake_report) as mock_report:
+            result = mission_control_api._concentration_risk_report()
+        mock_report.assert_called_once_with()
+        self.assertEqual(result, fake_report)
+
+
 if __name__ == "__main__":
     unittest.main()

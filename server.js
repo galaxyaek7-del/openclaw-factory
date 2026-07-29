@@ -995,6 +995,19 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('capital_allocation_dashboard'),
   },
   {
+    // Global Opportunity Exchange (2026-07-29): measured live at ~11s of
+    // real compute (build_value_engine_report() + the 4 concentration
+    // checks); given this machine's disclosed `python3` startup-tax
+    // variability (0-30s, confirmed across earlier rounds this session),
+    // a 60s timeout gives real margin without the full 90s the heavier
+    // capital-allocation-dashboard/executive-brief outliers needed.
+    name: 'global-opportunity-exchange',
+    description: "Global Opportunity Map, Capital Flow Between Markets, Market Health/Saturation, Opportunity Ranking, Revenue Distribution, Market Dependency Index (platform/product_family/country/ai_provider concentration vs. named thresholds), and real diversification recommendations. Honestly DISCOVERY-heavy today -- only 4 of 15 named marketplaces have a real channel arm, 0 real sale events exist, country dependency is a permanent structural DISCOVERY per CLAUDE.md's own founder-confirmed 2026-07-23 decision.",
+    reused: 'global_opportunity_exchange.py::build_global_opportunity_exchange_dashboard()',
+    handler: (req) => runPythonServiceCached('global_opportunity_exchange_dashboard', [], req, 60000),
+    health: pythonHealthCheck('global_opportunity_exchange_dashboard'),
+  },
+  {
     // Global Trust & Resilience Layer, Round 2 (2026-07-29): real
     // per-subsystem Safe Mode -- an unstable subsystem is isolated on
     // its own, the rest of the company keeps running. Read-only here;

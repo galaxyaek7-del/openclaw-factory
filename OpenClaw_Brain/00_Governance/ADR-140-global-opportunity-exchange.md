@@ -1,0 +1,53 @@
+# ADR-140 — Global Opportunity Exchange (GOX)
+
+**Date:** 2026-07-29
+**Status:** Adopted.
+
+---
+
+## The directive
+
+"EXECUTIVE DIRECTIVE — GLOBAL OPPORTUNITY EXCHANGE": treat every monitored marketplace as a live asset. 15 named examples (Amazon KDP, Gumroad, Etsy, Creative Market, ThemeForest, Envato, AliExpress Affiliate, Amazon Associates, Booking Affiliate, Travel Affiliate Networks, Software Affiliate Programs, AI API Marketplace, Education Platforms, Developer Platforms, Enterprise B2B). Every opportunity gets a continuously updated 13-dimension profile. Never optimize for one marketplace — optimize for portfolio value. Mission Control exposes: Global Opportunity Map, Capital Flow Between Markets, Market Health, Market Saturation, Opportunity Ranking, Revenue Distribution, Market Dependency Index. Detect concentration risk against 4 named thresholds (>40% one platform, >30% one product family, >25% one country, >20% one AI provider). Recommend diversification automatically — the Founder always approves.
+
+## The reality this build had to be honest about
+
+A research audit (this session's own, file:line verified) found this directive collides directly with facts this factory's own CLAUDE.md already documents as a deliberate, founder-confirmed 2026-07-23 decision: **zero real local-market data connectors exist for any country** — Hacker News and GitHub are this factory's only two real external signal sources, both global/English, and country-level market intelligence is explicitly, consciously deferred, not an oversight.
+
+Confirmed directly against the real code before writing anything:
+
+- **Only 4 of the 15 named marketplaces have a real registered channel arm today**: `channels/{etsy,gumroad,paddle,payhip}_arm.py`. `data/sales_ledger.jsonl`'s real `platform` values are exactly `{etsy, gumroad, paddle, payhip}` — nothing else has ever been recorded. 11 of 15 named marketplaces have zero real presence. **Notably, 2 of this factory's own 4 real channels (Payhip, Paddle) aren't even named in the directive's own 15-marketplace list** — the founder's mental model of "the markets" and this factory's actual real channel set genuinely differ; surfaced honestly in `marketplace_catalog()`'s output, not silently corrected.
+- **Zero real sale events exist** (`grep -c '"event_type": "sale"' data/sales_ledger.jsonl` → 0; only 33 dry-run `publish_attempt` events). Every revenue-based metric (Revenue Distribution, platform concentration %) has no real data to compute from *today* — a data gap, not a code gap.
+- **AI-provider concentration is real but trivial**: `ai_capability/registry.py`'s real Groq usage stats are the only real per-provider data that exists. A ">20% one provider" check is real and computable, but reports Groq at ~100% by structural necessity (no second real provider has ever been called) — an honest finding, explicitly disclosed as "not yet a real diversification signal," never presented as an urgent risk with nothing real to compare against.
+- **Product-family concentration is the one concentration check with real, computable data today**: all 3 real ACCEPTED decisions share the same `product_family` (`automation_systems`) — a genuine, real 100% concentration, correctly exceeding the real 30% threshold. This is a real finding this factory did not know it had until this module computed it.
+- **`config/economics.json`'s real per-platform commission data only covers `kdp_ebook`/`kdp_paperback`/`gumroad_*`** — not Etsy/Payhip/Paddle, despite those 3 having real registered arms and real sales history. Two independently real, honestly different facts about each marketplace (has a real distribution arm vs. has real commission-rate config) — cited separately in `marketplace_catalog()`, never conflated.
+
+## What was built
+
+**`global_opportunity_exchange.py` (new)**, reusing `growth_engine.py::premium_product_catalog_status()`'s exact "map N founder-named categories onto real adapters, honestly DISCOVERY for the rest" pattern as its literal template for `marketplace_catalog()` — the correct existing precedent, not a new one invented for this round.
+
+- **`marketplace_catalog()`** — the 15 named marketplaces mapped onto real registered arms (imports `distributor.py` first for self-registration, same precedent as `founder_console.py`) + real `economics.json` commission config, both cited independently.
+- **`product_family_distribution()`** — genuinely new, tiny: a real `Counter` over every real ACCEPTED decision's `product_family`, mirroring `value_engine.py::_score_synergy_and_bundle()`'s exact `ladder`-counting technique. **Live-confirmed today: a real 100% concentration in `automation_systems`** across all 3 real ACCEPTED decisions.
+- **`revenue_distribution()`** — genuinely new, tiny: groups real logged sale events (`channels/ledger.py`) by real `platform`, sums real amounts. Honestly `NOT ENOUGH EVIDENCE` today (0 real sales) — the correct, disclosed answer.
+- **`ai_provider_concentration()`** — cites `ai_capability.registry.list_providers()`'s real per-provider cost stats verbatim; explicitly discloses the "single real provider" caveat rather than presenting 100% as an urgent finding.
+- **`country_dependency_note()`** — **not a computation.** A permanent, real citation of this factory's own founder-confirmed 2026-07-23 decision. Always returns the same structural `DISCOVERY` — never computes a percentage that cannot exist without a real local-market data connector this factory genuinely does not have.
+- **`market_health()`** — "Market Health"/"Market Saturation" for marketplaces-as-distribution-channels (a genuinely different real concept from `competitor_discovery.py`'s niche/product-category saturation, confirmed not currently confused anywhere in this codebase) — cites `channels/publish_protection.py::list_publish_protection_status()`'s already-real per-arm state (risk score, cooldowns, consecutive failures) verbatim.
+- **`concentration_risk_report()`** — aggregates the 4 named thresholds, each `{value_pct, threshold_pct, exceeded, top, reason}` — `exceeded` is a real boolean only when real data exists to compute it, else the honest string `"NOT ENOUGH EVIDENCE"` or `"structural DISCOVERY"`, never a fabricated True/False.
+- **`build_global_opportunity_exchange_dashboard()`** — the one real aggregator, computing the real portfolio scan (`value_engine.build_value_engine_report()`) exactly once. `market_saturation` explicitly discloses that it reuses `market_health`'s exact real signal rather than silently duplicating it (no distinct real platform-saturation metric exists beyond per-arm publish-protection state today). `diversification_recommendations` is real and mechanical: one line per concentration check that actually, currently crosses its real threshold, citing the real number — empty when nothing real crosses, never padded to look more actionable.
+
+## Mission Control
+
+`mission_control_api.py` gained `global_opportunity_exchange_dashboard`/`concentration_risk_report` endpoints. `server.js`'s `SERVICE_REGISTRY` gained `global-opportunity-exchange` — measured live at ~11-15s, given a disclosed 60-second timeout (a middle ground between the shared 30s default and the 90s the heavier `executive-brief`/`capital-allocation-dashboard` outliers needed, sized against this machine's own previously-disclosed `python3` subprocess-startup-tax variability). `mission_control_executive_v1.html` gained a no-input panel. No niche-scoped `ACTION_REGISTRY` entry was added — GOX is portfolio-wide by its own "never optimize for one marketplace" mandate, so there is no single-niche view to wire.
+
+## Constitution-first / no-autonomous-high-risk boundary (deliberately unchanged)
+
+Every function in `global_opportunity_exchange.py` is read-only and recommend-only. `diversification_recommendations` never executes anything — no code path in this module reallocates a real resource, halts a real channel, or changes any real configuration. This matches the directive's own explicit closing line ("The Founder always approves") and this factory's universal recommend-only discipline, already real everywhere else an irreversible action exists.
+
+## Validation
+
+New tests: `tests/test_global_opportunity_exchange.py` (new, 24 — `marketplace_catalog()`'s real-arm-vs-DISCOVERY mapping including the KDP-has-commission-config-but-no-arm distinction and the real-arms-not-named-in-directive disclosure, `product_family_distribution()`/`revenue_distribution()`'s real-data and honest-empty paths, `ai_provider_concentration()`'s single-vs-multiple-real-provider disclosure, `country_dependency_note()`'s permanent structural DISCOVERY, `market_health()`'s unhealthy-arm detection, `concentration_risk_report()`'s per-threshold exceeded/not-exceeded/DISCOVERY logic, `build_global_opportunity_exchange_dashboard()`'s field-by-field citation and the never-fabricate-a-recommendation guarantee, every real source mocked), `tests/test_mission_control_api.py` (+2, the new dispatch endpoints).
+
+Live E2E against real factory data: `build_global_opportunity_exchange_dashboard()` run directly took ~11s and correctly produced exactly 2 real, honest diversification recommendations (product_family at 100% vs. a 30% threshold; ai_provider at 100% vs. a 20% threshold, with its "not yet a real signal" caveat preserved end-to-end) while `revenue_distribution`/the platform concentration check honestly reported `NOT ENOUGH EVIDENCE` and `country` reported the permanent structural `DISCOVERY` — exactly the expected, disclosed state of this young factory, not a build failure. The full `global-opportunity-exchange` service was verified live through a real, logged-in `server.js` HTTP round-trip (200 OK, real data) before declaring the wiring done.
+
+## What's still honestly Unknown / not built
+
+11 of 15 named marketplaces will report `DISCOVERY` for the foreseeable future — this ADR is the record of that being the honest, correct output for a factory with only 4 real channel arms, not a gap to "finish later" by inventing a placeholder integration. `revenue_distribution`/the platform-concentration check will stay `NOT ENOUGH EVIDENCE` until this factory's first real sale. `country_dependency_note()` will never resolve to a real percentage without a real local-market data connector this factory has deliberately chosen not to build yet (per CLAUDE.md's own 2026-07-23 decision) — re-evaluate only when that decision itself is revisited, never by inventing a workaround inside this module. `ai_provider_concentration()`'s "not yet a real signal" caveat should be removed only once a second real AI provider credential exists and has actually been called — never removed preemptively.

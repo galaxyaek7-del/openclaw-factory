@@ -819,6 +819,30 @@ def _capital_allocation_dashboard():
     return capital_allocation_engine.build_capital_allocation_dashboard()
 
 
+def _global_opportunity_exchange_dashboard():
+    """Global Opportunity Exchange (2026-07-29): the real aggregator --
+    Global Opportunity Map, Capital Flow Between Markets, Market Health/
+    Saturation, Opportunity Ranking, Revenue Distribution, Market
+    Dependency Index, and real diversification recommendations. Honestly
+    DISCOVERY-heavy today (only 4 of 15 named marketplaces have a real
+    channel arm, 0 real sale events exist, country dependency is a
+    permanent structural DISCOVERY per CLAUDE.md's own founder-confirmed
+    decision) -- never fabricated to look more built-out. Passthrough
+    only; the Founder remains final authority on every real
+    reallocation."""
+    import global_opportunity_exchange
+    return global_opportunity_exchange.build_global_opportunity_exchange_dashboard()
+
+
+def _concentration_risk_report():
+    """Global Opportunity Exchange (2026-07-29): the real 4 named
+    concentration-risk checks (platform/product_family/country/
+    ai_provider) on their own, without the full dashboard. Passthrough
+    only."""
+    import global_opportunity_exchange
+    return global_opportunity_exchange.concentration_risk_report()
+
+
 def _evolution_queue_daily_cycle():
     """Autonomous Company Evolution Engine, Round 4 (2026-07-29): the one
     automatic path the founder approved -- intake real proposals, simulate
@@ -2023,6 +2047,8 @@ _ENDPOINTS = {
     "investment_score": _investment_score,
     "opportunity_cost_report": _opportunity_cost_report,
     "capital_allocation_dashboard": _capital_allocation_dashboard,
+    "global_opportunity_exchange_dashboard": _global_opportunity_exchange_dashboard,
+    "concentration_risk_report": _concentration_risk_report,
 }
 
 
