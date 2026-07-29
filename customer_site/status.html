@@ -164,6 +164,11 @@ main{padding:3.5rem 0 5rem;}
         <a id="checkoutLink" class="btn btn-primary" href="#" target="_blank" rel="noopener">Complete payment →</a>
       </div>
 
+      <div id="invoiceBox" class="contract-box" style="display:none;">
+        <h4>Invoice</h4>
+        <div id="invoiceBody"></div>
+      </div>
+
       <div id="declineBox" class="decline-box" style="display:none;">
         <label for="declineReason" style="font-size:.84rem; color:var(--ink-dim);">Mind telling us why? Optional, but it helps us improve.</label>
         <textarea id="declineReason" maxlength="500" placeholder="e.g. price, timing, went another direction…"></textarea>
@@ -294,6 +299,34 @@ main{padding:3.5rem 0 5rem;}
     document.getElementById('checkoutLink').href = body.payment.checkout_url;
   }
 
+  function renderInvoice(invoice){
+    var box = document.getElementById('invoiceBox');
+    if (!invoice){ box.style.display = 'none'; return; }
+    box.style.display = 'flex';
+    var el = document.getElementById('invoiceBody');
+    el.innerHTML = '';
+    var rows = [
+      ['Invoice #', invoice.invoice_number],
+      ['Issued', fmtTime(invoice.issued_at)],
+      ['Bill to', invoice.bill_to || ''],
+      ['Total', money(invoice.total) + ' ' + (invoice.currency || 'USD')],
+      ['Payment reference', invoice.payment_reference || ''],
+    ];
+    rows.forEach(function(pair){
+      var wrap = document.createElement('div');
+      wrap.className = 'term';
+      var label = document.createElement('div');
+      label.style.fontWeight = '600';
+      label.style.color = 'var(--ink)';
+      label.textContent = pair[0];
+      var value = document.createElement('div');
+      value.textContent = pair[1];
+      wrap.appendChild(label);
+      wrap.appendChild(value);
+      el.appendChild(wrap);
+    });
+  }
+
   function render(body){
     document.getElementById('statusCard').style.display = 'flex';
     document.getElementById('lookupCard').style.display = 'none';
@@ -328,6 +361,7 @@ main{padding:3.5rem 0 5rem;}
 
     renderProposal(body);
     renderPayment(body);
+    renderInvoice(body.invoice);
 
     document.getElementById('recoveryText').textContent = body.recovery || '';
 

@@ -1374,6 +1374,18 @@ const ACTION_REGISTRY = [
     section: 'advance_customer_pipeline',
   },
   {
+    // Customer Platform Round 3 (2026-07-29): batch-sweeps every real
+    // customer request AWAITING_PAYMENT against Paddle's real transaction
+    // list. No scheduler exists (CLAUDE.md) -- this is the one-click-away
+    // manual trigger until real payment completion is wired to a webhook.
+    name: 'check-customer-payments',
+    description: 'Checks every real customer request currently awaiting payment against Paddle\'s real transaction list, moving any that actually completed to PAID and generating a real invoice. Never fabricates a completion.',
+    reused: 'customer_pipeline.py check_all_awaiting_payments() (Round 3)',
+    reversible: true, // read-only check against Paddle; only advances a record that Paddle itself already confirmed paid
+    kind: 'async',
+    section: 'check_customer_payments',
+  },
+  {
     // Executive Directive (2026-07-22): the permanent core Executive
     // Quality Gate every opportunity/product must pass before entering
     // production. Reads the real, already-recorded decision -- never

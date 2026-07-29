@@ -510,6 +510,16 @@ def _advance_customer_pipeline():
     return customer_pipeline.advance_all_new_requests()
 
 
+def _check_customer_payments():
+    """Customer Platform Round 3 (2026-07-29): batch-sweeps every real
+    customer request currently AWAITING_PAYMENT against Paddle's real
+    transaction list, transitioning to PAID + generating a real invoice
+    for any that actually completed. Same one-click-away manual trigger
+    convention as _advance_customer_pipeline (no scheduler exists)."""
+    import customer_pipeline
+    return customer_pipeline.check_all_awaiting_payments()
+
+
 def _ai_capability_request():
     """Records a real department request for a different/better AI model
     (Autonomous Digital Company v1 §8) — an append-only logged request,
@@ -1590,6 +1600,7 @@ _ENDPOINTS = {
     "evidence_coverage_status": _evidence_coverage_status,
     "customer_pipeline_status": _customer_pipeline_status,
     "advance_customer_pipeline": _advance_customer_pipeline,
+    "check_customer_payments": _check_customer_payments,
     "tool_intelligence": _tool_intelligence,
     "strategic_report": _strategic_report,
     "market_review": _market_review,

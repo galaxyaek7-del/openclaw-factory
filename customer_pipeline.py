@@ -393,7 +393,7 @@ def _attempt_payment_verification(record, paddle_products_path=None, checkout_fn
 
     create_checkout = checkout_fn or paddle_publisher.create_checkout_transaction
     try:
-        _txn, checkout_url = create_checkout(api_key, match["price_id"])
+        txn, checkout_url = create_checkout(api_key, match["price_id"])
     except RuntimeError as e:
         msg = str(e).lower()
         if "checkout" in msg and "enabled" in msg and "account" in msg:
@@ -408,7 +408,12 @@ def _attempt_payment_verification(record, paddle_products_path=None, checkout_fn
         _record_history(record, "FAILED", record["error"])
         return record
 
-    record["payment"] = {"checkout_url": checkout_url, "price_id": match["price_id"], "matched_product": match["title"]}
+    # Customer Platform Round 3 (2026-07-29): persist the full real Paddle
+    # transaction object (previously discarded right after extracting
+    # checkout_url) -- check_payment_status() below needs its real "id" to
+    # later confirm this exact transaction, and the invoice needs a real
+    # payment reference.
+    record["payment"] = {"checkout_url": checkout_url, "price_id": match["price_id"], "matched_product": match["title"], "transaction": txn}
     _record_history(record, "AWAITING_PAYMENT", "real Paddle checkout link created")
     _notify_founder(f"\U0001F4B0 رابط دفع حقيقي جاهز لعميل\nطلب: {record['request_id']}\nالرابط: {checkout_url}")
     return record
@@ -489,6 +494,66 @@ def retry_payment_verification(request_id, state_path=None, paddle_products_path
     return {"success": True, **record}
 
 
+def check_payment_status(request_id, requests_path=None, state_path=None, api_key_loader=None, get_transactions_fn=None):
+    """Real Payment completion check (Customer Platform Round 3,
+    2026-07-29): confirms the real Paddle transaction created in
+    AWAITING_PAYMENT actually completed, transitions AWAITING_PAYMENT ->
+    PAID, and generates a real invoice from the locked contract price.
+
+    Never fabricates a completion -- an unreachable Paddle API, a
+    transaction that isn't visible yet, or a still-pending status all
+    leave the record exactly where it was, no state changed. Paddle's own
+    real "paid" status value for a transaction has never been observed
+    against a live account (channels/paddle_publisher.py's own docstring
+    caveat) -- every plausible value is checked rather than assuming one,
+    and this is the one real seam that stays untested against live Paddle
+    data until the account's own onboarding gate clears."""
+    state = _load_state(state_path)
+    record = state.get(request_id)
+    if record is None:
+        return {"success": False, "error": f"no pipeline state for request {request_id!r}"}
+    if record["stage"] != "AWAITING_PAYMENT":
+        return {"success": False, "error": f"cannot check payment status from stage {record['stage']!r} (must be AWAITING_PAYMENT)"}
+
+    payment = record.get("payment") or {}
+    txn = payment.get("transaction") or {}
+    txn_id = txn.get("id")
+    if not txn_id:
+        return {"success": False, "error": "no real Paddle transaction id was recorded for this request"}
+
+    from channels import paddle_publisher
+    try:
+        api_key = (api_key_loader or paddle_publisher.load_api_key)()
+    except paddle_publisher.ConfigError as e:
+        return {"success": False, "error": str(e)}
+
+    get_transactions = get_transactions_fn or paddle_publisher.get_transactions
+    try:
+        transactions = get_transactions(api_key)
+    except RuntimeError as e:
+        # A real but transient API error -- stay in AWAITING_PAYMENT, never
+        # fail the request over a temporary Paddle API hiccup.
+        return {"success": False, "error": str(e)}
+
+    match = next((t for t in transactions if t.get("id") == txn_id), None)
+    if match is None:
+        return {"success": True, "already_paid": False, "stage": record["stage"], "note": "transaction not yet visible in Paddle's transaction list"}
+
+    status = str(match.get("status") or "").lower()
+    if status not in ("completed", "paid", "billed"):
+        return {"success": True, "already_paid": False, "stage": record["stage"], "paddle_status": status}
+
+    record["payment"]["transaction"] = match
+    _record_history(record, "PAID", f"real Paddle transaction {txn_id} confirmed ({status})")
+    from invoice_generator import generate_invoice
+    record["invoice"] = generate_invoice(record, match)
+
+    state[request_id] = record
+    _save_state(state, state_path)
+    _notify_founder(f"✅ دفعة حقيقية مؤكدة\nطلب: {request_id}\nالمبلغ: ${(record.get('proposal') or {}).get('price', 0):.2f}")
+    return {"success": True, "already_paid": True, **record}
+
+
 def _progress(stage):
     if stage in STAGE_ORDER:
         idx = STAGE_ORDER.index(stage)
@@ -522,6 +587,7 @@ def _supervision_view(record, audience="internal"):
         "proposal": record.get("proposal"),
         "contract": record.get("contract"),
         "payment": record.get("payment"),
+        "invoice": record.get("invoice"),
         "updated_at": record.get("updated_at"),
     }
 
@@ -599,6 +665,19 @@ def advance_all_new_requests(requests_path=None, state_path=None, decisions_path
     return {"advanced_count": len(advanced), "advanced": advanced}
 
 
+def check_all_awaiting_payments(requests_path=None, state_path=None):
+    """Batch sweep, same one-click convention as advance_all_new_requests
+    (this factory has no scheduler) -- checks every real request currently
+    AWAITING_PAYMENT against Paddle's real transaction list."""
+    state = _load_state(state_path)
+    checked = []
+    for request_id, record in list(state.items()):
+        if record.get("stage") == "AWAITING_PAYMENT":
+            result = check_payment_status(request_id, requests_path=requests_path, state_path=state_path)
+            checked.append({"request_id": request_id, "success": result.get("success"), "already_paid": result.get("already_paid")})
+    return {"checked_count": len(checked), "checked": checked}
+
+
 def main():
     for stream in (sys.stdin, sys.stdout, sys.stderr):
         try:
@@ -619,12 +698,16 @@ def main():
             result = reject_request(payload["request_id"], reason=payload.get("reason"))
         elif command == "retry_payment":
             result = retry_payment_verification(payload["request_id"])
+        elif command == "check_payment":
+            result = check_payment_status(payload["request_id"])
         elif command == "status":
             result = get_pipeline_status(payload["request_id"])
         elif command == "overview":
             result = {"success": True, **list_pipeline_overview()}
         elif command == "advance_all":
             result = {"success": True, **advance_all_new_requests()}
+        elif command == "check_all_payments":
+            result = {"success": True, **check_all_awaiting_payments()}
         else:
             result = {"success": False, "error": f"unknown command: {command!r}"}
         print(json.dumps(result, ensure_ascii=False, default=str))

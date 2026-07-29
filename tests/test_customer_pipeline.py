@@ -395,6 +395,79 @@ class TestContractGeneration(BasePipelineTest):
         self.assertIsNotNone(result["contract"]["accepted_at"])
 
 
+class TestPaymentCompletionAndInvoice(BasePipelineTest):
+    """Customer Platform Round 3 (2026-07-29): a real Paddle transaction
+    object is persisted (not discarded) and check_payment_status() can
+    confirm real completion + generate a real invoice."""
+
+    def _awaiting_payment(self, price=126.0, txn_id="txn_real1"):
+        self._write_request()
+        cp.advance_request("req_abc123", requests_path=self.requests_path, state_path=self.state_path,
+                            evaluate_fn=lambda *a, **k: _accepted_decision(), price_fn=lambda *a, **k: price)
+        self._write_paddle_products([{"title": "match", "price_id": "pri_match", "price": price}])
+        cp.approve_request(
+            "req_abc123", accepted_name="Test Customer", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
+            checkout_fn=lambda k, p: ({"id": txn_id, "status": "draft"}, "https://checkout.paddle.com/real"),
+            api_key_loader=lambda: "fake-key",
+        )
+
+    def test_approve_persists_full_transaction_object(self):
+        self._awaiting_payment()
+        state = cp._load_state(self.state_path)
+        self.assertEqual(state["req_abc123"]["payment"]["transaction"]["id"], "txn_real1")
+
+    def test_check_payment_status_wrong_stage_is_rejected(self):
+        self._write_request()
+        result = cp.check_payment_status("req_abc123", state_path=self.state_path)
+        self.assertFalse(result["success"])
+
+    def test_check_payment_status_transaction_not_yet_visible(self):
+        self._awaiting_payment()
+        result = cp.check_payment_status(
+            "req_abc123", state_path=self.state_path, api_key_loader=lambda: "fake-key",
+            get_transactions_fn=lambda k: [],
+        )
+        self.assertTrue(result["success"])
+        self.assertFalse(result["already_paid"])
+        state = cp._load_state(self.state_path)
+        self.assertEqual(state["req_abc123"]["stage"], "AWAITING_PAYMENT")
+
+    def test_check_payment_status_still_pending_does_not_advance(self):
+        self._awaiting_payment()
+        result = cp.check_payment_status(
+            "req_abc123", state_path=self.state_path, api_key_loader=lambda: "fake-key",
+            get_transactions_fn=lambda k: [{"id": "txn_real1", "status": "draft"}],
+        )
+        self.assertTrue(result["success"])
+        self.assertFalse(result["already_paid"])
+        self.assertEqual(result["paddle_status"], "draft")
+
+    def test_check_payment_status_completed_transitions_to_paid_with_real_invoice(self):
+        self._awaiting_payment(price=126.0, txn_id="txn_real1")
+        result = cp.check_payment_status(
+            "req_abc123", state_path=self.state_path, api_key_loader=lambda: "fake-key",
+            get_transactions_fn=lambda k: [{"id": "txn_real1", "status": "completed"}],
+        )
+        self.assertTrue(result["success"])
+        self.assertTrue(result["already_paid"])
+        self.assertEqual(result["stage"], "PAID")
+        self.assertIsNotNone(result["invoice"])
+        self.assertEqual(result["invoice"]["total"], 126.0)
+        self.assertEqual(result["invoice"]["payment_reference"], "txn_real1")
+        self.assertTrue(result["invoice"]["invoice_number"].startswith("INV-"))
+
+    def test_check_all_awaiting_payments_sweeps_only_that_stage(self):
+        self._awaiting_payment(price=126.0, txn_id="txn_real1")
+        self._write_request("req_new_one")  # stays NEW -- never advanced
+        with patch("channels.paddle_publisher.load_api_key", return_value="fake-key"), \
+             patch("channels.paddle_publisher.get_transactions", return_value=[{"id": "txn_real1", "status": "completed"}]):
+            result = cp.check_all_awaiting_payments(requests_path=self.requests_path, state_path=self.state_path)
+        self.assertEqual(result["checked_count"], 1)
+        self.assertEqual(result["checked"][0]["request_id"], "req_abc123")
+        state = cp._load_state(self.state_path)
+        self.assertEqual(state["req_abc123"]["stage"], "PAID")
+
+
 class TestCustomerSafeCopy(BasePipelineTest):
     """Commercial Readiness Report (2026-07-25), finding PY1: the
     customer's own status page must never show internal function names
