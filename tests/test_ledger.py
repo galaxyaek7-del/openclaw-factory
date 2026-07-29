@@ -21,6 +21,7 @@ if str(_FACTORY_ROOT) not in sys.path:
     sys.path.insert(0, str(_FACTORY_ROOT))
 
 from channels import ledger
+from channels.base_arm import PublishResult
 
 
 def _temp_path(suffix):
@@ -28,6 +29,43 @@ def _temp_path(suffix):
     os.close(fd)
     os.remove(path)
     return path
+
+
+class TestRecordPublishAttemptProtectionFields(unittest.TestCase):
+    """Global Commercial Hardening, Phase 1 (2026-07-29): record_publish_
+    attempt()'s new optional risk_score/protection_decision kwargs must be
+    backward compatible -- omitted entirely from the event when not given,
+    exactly the pre-existing shape."""
+
+    def setUp(self):
+        self.ledger_path = _temp_path(".jsonl")
+
+    def tearDown(self):
+        if os.path.exists(self.ledger_path):
+            os.remove(self.ledger_path)
+
+    def _fake_product(self):
+        product = mock.Mock()
+        product.title = "t"
+        product.source_id = "PROD-test-1"
+        product.product_type = "book"
+        return product
+
+    def _fake_result(self):
+        return PublishResult(ok=True, platform="gumroad", product_id="p1", url="http://x", error=None, dry_run=False)
+
+    def test_omitted_kwargs_produce_the_original_event_shape(self):
+        event = ledger.record_publish_attempt(self._fake_product(), self._fake_result(), ledger_path=self.ledger_path)
+        self.assertNotIn("risk_score", event)
+        self.assertNotIn("protection_decision", event)
+
+    def test_given_kwargs_are_recorded_verbatim(self):
+        event = ledger.record_publish_attempt(
+            self._fake_product(), self._fake_result(), ledger_path=self.ledger_path,
+            risk_score=42, protection_decision="allowed",
+        )
+        self.assertEqual(event["risk_score"], 42)
+        self.assertEqual(event["protection_decision"], "allowed")
 
 
 class TestRecordSaleMarketEvidenceHook(unittest.TestCase):

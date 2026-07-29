@@ -995,6 +995,22 @@ def opportunity_score(niche, tier="tier4", external_signal=None):
             "automation_potential": automation_potential,
             "long_term_value": long_term_value,
         },
+        # Human Trust (Global Trust & Resilience Layer, Round 5,
+        # 2026-07-29): a real, honest per-field tag -- "real" only when a
+        # live signal actually fed that component (market_demand/
+        # competition_favorability, and only when external_signal was
+        # actually given), "estimated" everywhere else (profit_potential
+        # is always a pricing-tier calculation, never live market data;
+        # automation_potential/long_term_value are always fixed per-tier
+        # policy constants, never per-niche signal). Read-only metadata
+        # -- does not change `components`' numeric values or `accepted`.
+        "components_basis": {
+            "market_demand": "real" if external_signal else "estimated",
+            "competition_favorability": "real" if external_signal else "estimated",
+            "profit_potential": "estimated",
+            "automation_potential": "estimated",
+            "long_term_value": "estimated",
+        },
         # Red-team audit (Phase 10 follow-up) — MEDIUM finding, fixed: this
         # used to compare `weighted` against the literal MIN_OPPORTUNITY_SCORE
         # constant, but `accepted` is actually decided by `raw >= raw_floor`

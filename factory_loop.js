@@ -35,6 +35,7 @@ const {
   buildPendingReviewNeededPayload, buildNewSaleDetectedPayload,
 } = n8nNotify;
 const factoryState = require('./lib/factory_state');
+const healthTrend = require('./lib/health_trend');
 const { checkStartupSafety } = require('./scripts/factory_startup_check');
 
 const FACTORY_DIR = __dirname;
@@ -2223,6 +2224,14 @@ async function runTick() {
   const actions = [];
 
   if (diagnosis.reachable) {
+    // Global Trust & Resilience Layer, Round 1 (2026-07-29): a real
+    // health snapshot every tick (cheap append, unlike the daily-gated
+    // reports below) -- this factory's own health-trend history, so
+    // detectHealthDegradation() (lib/health_trend.js) has real readings
+    // to compare instead of only ever seeing the current instant.
+    markStep('health_snapshot');
+    healthTrend.recordHealthSnapshot(diagnosis.health.status);
+
     markStep('heal_finance');
     actions.push({ step: 'heal_finance', ...healFinance(diagnosis.health) });
 

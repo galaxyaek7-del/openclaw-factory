@@ -50,6 +50,42 @@ class TestOpportunityScoreComponents(unittest.TestCase):
         self.assertEqual(result["tier_weight"], po.TIER_WEIGHTS["tier4"])
 
 
+class TestComponentsBasis(unittest.TestCase):
+    """Human Trust (Global Trust & Resilience Layer, Round 5, 2026-07-29):
+    each component gets a real, honest "real"/"estimated" tag -- never a
+    blended composite with no way to tell which inputs were live data vs.
+    a fixed policy constant."""
+
+    def test_without_external_signal_market_demand_and_competition_are_estimated(self):
+        result = po.opportunity_score("a plain niche with no signal", tier="tier4")
+        self.assertEqual(result["components_basis"]["market_demand"], "estimated")
+        self.assertEqual(result["components_basis"]["competition_favorability"], "estimated")
+
+    def test_with_external_signal_market_demand_and_competition_are_real(self):
+        result = po.opportunity_score("x", tier="tier4", external_signal={"source": "hacker_news", "points": 100})
+        self.assertEqual(result["components_basis"]["market_demand"], "real")
+        self.assertEqual(result["components_basis"]["competition_favorability"], "real")
+
+    def test_profit_potential_is_always_estimated_never_a_live_signal(self):
+        with_signal = po.opportunity_score("x", tier="tier4", external_signal={"source": "github", "stars": 500})
+        without_signal = po.opportunity_score("a plain niche", tier="tier4")
+        self.assertEqual(with_signal["components_basis"]["profit_potential"], "estimated")
+        self.assertEqual(without_signal["components_basis"]["profit_potential"], "estimated")
+
+    def test_tier_constants_are_always_estimated(self):
+        result = po.opportunity_score("x", tier="tier1", external_signal={"source": "github", "stars": 500})
+        self.assertEqual(result["components_basis"]["automation_potential"], "estimated")
+        self.assertEqual(result["components_basis"]["long_term_value"], "estimated")
+
+    def test_components_basis_never_changes_the_real_numeric_components(self):
+        """Read-only metadata addition -- the real components dict and
+        accepted decision must be provably unchanged."""
+        with_signal = po.opportunity_score("x", tier="tier4", external_signal={"source": "hacker_news", "points": 50})
+        self.assertIn("components", with_signal)
+        self.assertIsInstance(with_signal["components"]["market_demand"], (int, float))
+        self.assertIn("components_basis", with_signal)
+
+
 class TestOpportunityScoreTierWeighting(unittest.TestCase):
     def test_same_niche_scores_higher_at_higher_tier(self):
         """The whole point of tier_weight: identical underlying signals,

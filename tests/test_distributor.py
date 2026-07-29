@@ -20,6 +20,8 @@ if str(_FACTORY_ROOT) not in sys.path:
 import distributor
 import factory_state
 from channels import registry
+from channels import ledger
+from channels import publish_protection
 from channels.base_arm import PublishResult
 from schemas.product import Product
 
@@ -100,6 +102,87 @@ class TestDistributeRetryEnqueue(unittest.TestCase):
         ))
         distributor.distribute(_fake_product(), ledger_path=self.ledger_path)
         self.assertEqual(self._enqueued, [])
+
+
+class TestDistributePublishProtectionIntegration(unittest.TestCase):
+    """Global Commercial Hardening, Phase 1 (2026-07-29): a real (non-dry-
+    run) publish now passes through channels/publish_protection.py's gate
+    first. Never touches the real data/sales_ledger.jsonl or
+    data/publish_protection_state.json — every test passes explicit temp
+    paths."""
+
+    def setUp(self):
+        self._saved_arms = registry.all_arms()
+        registry.clear()
+        self.ledger_path = _temp_path(".jsonl")
+        self.protection_state_path = _temp_path(".json")
+
+    def tearDown(self):
+        registry.clear()
+        for a in self._saved_arms:
+            registry.register(a)
+        for p in (self.ledger_path, self.protection_state_path):
+            if os.path.exists(p):
+                os.remove(p)
+
+    def _register_fake_arm(self, name, publish_result):
+        fake_arm = MagicMock()
+        fake_arm.name = name
+        fake_arm.supports.return_value = True
+        fake_arm.publish.return_value = publish_result
+        registry.register(fake_arm)
+        return fake_arm
+
+    def test_a_blocked_arm_never_reaches_real_publish(self):
+        fake_arm = self._register_fake_arm("kdp", PublishResult(
+            ok=True, platform="kdp", product_id="p1", url="http://x", error=None, dry_run=False,
+        ))
+        publish_protection.trigger_emergency_stop("test", state_path=self.protection_state_path)
+        outcomes = distributor.distribute(
+            _fake_product(), dry_run=False, ledger_path=self.ledger_path,
+            protection_state_path=self.protection_state_path,
+        )
+        fake_arm.publish.assert_not_called()
+        self.assertFalse(outcomes[0]["attempted"])
+        self.assertIn("publish protection", outcomes[0]["skip_reason"])
+
+    def test_a_blocked_attempt_is_still_recorded_to_the_ledger(self):
+        self._register_fake_arm("kdp", PublishResult(
+            ok=True, platform="kdp", product_id="p1", url="http://x", error=None, dry_run=False,
+        ))
+        publish_protection.trigger_emergency_stop("test", state_path=self.protection_state_path)
+        distributor.distribute(
+            _fake_product(), dry_run=False, ledger_path=self.ledger_path,
+            protection_state_path=self.protection_state_path,
+        )
+        events = list(ledger.read_events(event_type="publish_attempt", ledger_path=self.ledger_path))
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0]["protection_decision"], "blocked")
+        self.assertFalse(events[0]["ok"])
+
+    def test_an_allowed_arm_publishes_normally_and_notes_the_outcome(self):
+        fake_arm = self._register_fake_arm("gumroad", PublishResult(
+            ok=True, platform="gumroad", product_id="p1", url="http://x", error=None, dry_run=False,
+        ))
+        distributor.distribute(
+            _fake_product(), dry_run=False, ledger_path=self.ledger_path,
+            protection_state_path=self.protection_state_path,
+        )
+        fake_arm.publish.assert_called_once()
+        status = publish_protection.list_publish_protection_status(state_path=self.protection_state_path)
+        self.assertEqual(status["arms"]["gumroad"]["publishes_today"], 1)
+
+    def test_dry_run_never_engages_the_protection_layer(self):
+        fake_arm = self._register_fake_arm("kdp", PublishResult(
+            ok=True, platform="kdp", product_id="p1", url="http://x", error=None, dry_run=True,
+        ))
+        publish_protection.trigger_emergency_stop("test", state_path=self.protection_state_path)
+        outcomes = distributor.distribute(
+            _fake_product(), dry_run=True, ledger_path=self.ledger_path,
+            protection_state_path=self.protection_state_path,
+        )
+        fake_arm.publish.assert_called_once()
+        self.assertTrue(outcomes[0]["attempted"])
 
 
 if __name__ == "__main__":

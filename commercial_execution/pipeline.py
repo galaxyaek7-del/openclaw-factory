@@ -117,16 +117,28 @@ def build_publish_record(product, outcomes, version=None, ledger_path=None, stat
 
 
 def run_publish_pipeline(product, product_family=None, dry_run=True,
-                          ledger_path=None, state_path=None, version=None):
+                          ledger_path=None, state_path=None, version=None, protection_state_path=None):
     """The unified Publish Pipeline. Reuses distributor.distribute()
     unchanged for the actual fan-out/ledger/retry mechanism — the one new
     integration is arm selection: a product_family with a registered
     ProductManifest (Step 3) publishes only to its declared
     supported_marketplaces, computed for real against channels.registry;
     a family with no manifest (or none given) keeps today's exact
-    behavior — every registered arm."""
+    behavior — every registered arm.
+
+    protection_state_path (Global Trust & Resilience Layer, Round 0,
+    2026-07-29): threads through to distributor.distribute()'s own
+    channels/publish_protection.py gate. Without this, every real-mode
+    caller (including every real-mode test) silently shared the real
+    data/publish_protection_state.json -- a real regression this session
+    found via the full suite failing once (a real-mode test tripped the
+    real min-publish-spacing cooldown left behind by an earlier test in
+    the same run)."""
     target_arms = resolve_target_arms(product_family)
-    outcomes = distributor.distribute(product, arm_names=target_arms, dry_run=dry_run, ledger_path=ledger_path)
+    outcomes = distributor.distribute(
+        product, arm_names=target_arms, dry_run=dry_run, ledger_path=ledger_path,
+        protection_state_path=protection_state_path,
+    )
     return build_publish_record(
         product, outcomes, version=version, ledger_path=ledger_path, state_path=state_path,
     )

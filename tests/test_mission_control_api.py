@@ -833,5 +833,113 @@ class TestEvolutionQueueEndpoints(unittest.TestCase):
         self.assertEqual(result["stage"], "IMPLEMENTED")
 
 
+class TestPublishProtectionEndpoints(unittest.TestCase):
+    """Global Commercial Hardening, Phase 1 (2026-07-29): the dispatch
+    layer for the real marketplace publish-protection status view and the
+    founder-only global emergency stop/resume actions. Every real state
+    mutation is mocked here; channels/publish_protection.py's own logic
+    has its own isolated unit tests in tests/test_publish_protection.py."""
+
+    def test_publish_protection_status_is_a_passthrough(self):
+        fake_status = {"arms": {}, "global": {"emergency_stopped": False}}
+        with patch("channels.publish_protection.list_publish_protection_status", return_value=fake_status) as mock_list:
+            result = mission_control_api._publish_protection_status()
+        mock_list.assert_called_once_with()
+        self.assertEqual(result, fake_status)
+
+    def test_publish_emergency_stop_requires_a_reason(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "publish_emergency_stop", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._publish_emergency_stop()
+
+    def test_publish_emergency_stop_delegates_with_founder_as_triggered_by(self):
+        payload = {"reason": "suspicious behaviour detected"}
+        with patch.object(sys, "argv", ["mission_control_api.py", "publish_emergency_stop", json.dumps(payload)]):
+            with patch("channels.publish_protection.trigger_emergency_stop", return_value={"emergency_stopped": True}) as mock_stop:
+                result = mission_control_api._publish_emergency_stop()
+        mock_stop.assert_called_once_with("suspicious behaviour detected", triggered_by="founder")
+        self.assertTrue(result["emergency_stopped"])
+
+    def test_publish_emergency_resume_delegates(self):
+        with patch("channels.publish_protection.clear_emergency_stop", return_value={"emergency_stopped": False}) as mock_clear:
+            result = mission_control_api._publish_emergency_resume()
+        mock_clear.assert_called_once_with()
+        self.assertFalse(result["emergency_stopped"])
+
+
+class TestSafeModeEndpoints(unittest.TestCase):
+    """Global Trust & Resilience Layer, Round 2 (2026-07-29): the
+    dispatch layer for per-subsystem Safe Mode. Every real state
+    mutation is mocked here; safe_mode.py's own logic has its own
+    isolated unit tests in tests/test_safe_mode.py."""
+
+    def test_safe_mode_status_is_a_passthrough(self):
+        fake_status = {"ai_generation": {"unstable": False}, "any_subsystem_unstable": False}
+        with patch("safe_mode.list_safe_mode_status", return_value=fake_status) as mock_list:
+            result = mission_control_api._safe_mode_status()
+        mock_list.assert_called_once_with()
+        self.assertEqual(result, fake_status)
+
+    def test_mark_subsystem_unstable_requires_name_and_reason(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "mark_subsystem_unstable", json.dumps({"name": "ai_generation"})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._mark_subsystem_unstable()
+
+    def test_mark_subsystem_unstable_delegates_with_founder_as_triggered_by(self):
+        payload = {"name": "ai_generation", "reason": "real Groq outage"}
+        with patch.object(sys, "argv", ["mission_control_api.py", "mark_subsystem_unstable", json.dumps(payload)]):
+            with patch("safe_mode.mark_subsystem_unstable", return_value={"unstable": True}) as mock_mark:
+                result = mission_control_api._mark_subsystem_unstable()
+        mock_mark.assert_called_once_with("ai_generation", "real Groq outage", triggered_by="founder")
+        self.assertTrue(result["unstable"])
+
+    def test_clear_subsystem_unstable_requires_a_name(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "clear_subsystem_unstable", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._clear_subsystem_unstable()
+
+    def test_clear_subsystem_unstable_delegates(self):
+        payload = {"name": "ai_generation"}
+        with patch.object(sys, "argv", ["mission_control_api.py", "clear_subsystem_unstable", json.dumps(payload)]):
+            with patch("safe_mode.clear_subsystem_unstable", return_value={"unstable": False}) as mock_clear:
+                result = mission_control_api._clear_subsystem_unstable()
+        mock_clear.assert_called_once_with("ai_generation")
+        self.assertFalse(result["unstable"])
+
+
+class TestFounderProtectionEndpoints(unittest.TestCase):
+    """Global Trust & Resilience Layer, Round 4 (2026-07-29): the
+    dispatch layer for Founder Protection's new-platform/high-risk
+    publish approval gate. Every real state mutation is mocked here;
+    channels/publish_protection.py's own logic has its own isolated
+    unit tests in tests/test_publish_protection.py."""
+
+    def test_approve_first_publish_requires_an_arm_name(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "approve_first_publish", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._approve_first_publish()
+
+    def test_approve_first_publish_delegates_with_founder_as_approved_by(self):
+        payload = {"arm_name": "kdp"}
+        with patch.object(sys, "argv", ["mission_control_api.py", "approve_first_publish", json.dumps(payload)]):
+            with patch("channels.publish_protection.approve_first_publish", return_value={"first_publish_approved": True}) as mock_approve:
+                result = mission_control_api._approve_first_publish()
+        mock_approve.assert_called_once_with("kdp", approved_by="founder")
+        self.assertTrue(result["first_publish_approved"])
+
+    def test_approve_elevated_risk_publish_requires_an_arm_name(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "approve_elevated_risk_publish", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._approve_elevated_risk_publish()
+
+    def test_approve_elevated_risk_publish_delegates_with_founder_as_approved_by(self):
+        payload = {"arm_name": "gumroad"}
+        with patch.object(sys, "argv", ["mission_control_api.py", "approve_elevated_risk_publish", json.dumps(payload)]):
+            with patch("channels.publish_protection.approve_elevated_risk_publish", return_value={"elevated_risk_approved_at": "t"}) as mock_approve:
+                result = mission_control_api._approve_elevated_risk_publish()
+        mock_approve.assert_called_once_with("gumroad", approved_by="founder")
+        self.assertEqual(result["elevated_risk_approved_at"], "t")
+
+
 if __name__ == "__main__":
     unittest.main()

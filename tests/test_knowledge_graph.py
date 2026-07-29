@@ -140,6 +140,7 @@ class TestBuildGraph(unittest.TestCase):
             lessons_dir="C:/definitely/not/a/real/lessons/dir",
             governance_dir="C:/definitely/not/a/real/governance/dir",
             evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
+            decision_outcomes_path="C:/definitely/not/a/real/decision_outcomes.jsonl",
         )
         self.assertEqual(graph["node_count"], 0)
         self.assertEqual(graph["edge_count"], 0)
@@ -298,11 +299,86 @@ class TestLessonAndAdrNodes(unittest.TestCase):
             decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e,
             lessons_dir=lessons_dir, governance_dir=gov_dir,
             evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
+            decision_outcomes_path="C:/definitely/not/a/real/decision_outcomes.jsonl",
         )
         types = {n["type"] for n in graph["nodes"]}
         self.assertIn("Lesson", types)
         self.assertIn("ADR", types)
         self.assertEqual(graph["node_count"], 2)
+
+
+class TestDecisionOutcomeNodes(unittest.TestCase):
+    """Decision Memory (Global Trust & Resilience Layer, Round 6,
+    2026-07-29): real Outcome nodes/edges parsed from
+    data/decision_outcomes.jsonl, mechanically joined back to their real
+    Decision node by decision_id -- never a fabricated or guessed link."""
+
+    def setUp(self):
+        self._paths = []
+
+    def tearDown(self):
+        for p in self._paths:
+            if os.path.exists(p):
+                os.remove(p)
+
+    def _paths_for(self, decisions=None, outcomes=None):
+        d = _write_jsonl(decisions or [])
+        empty = _write_jsonl([])
+        o = _write_jsonl(outcomes or [])
+        self._paths.extend([d, empty, o])
+        return d, empty, o
+
+    def test_matched_outcome_creates_a_real_edge_to_its_decision(self):
+        d, empty, o = self._paths_for(
+            decisions=[{"niche": "test niche", "decision_id": "dec1", "status": "ACCEPTED"}],
+            outcomes=[{"outcome_id": "out1", "decision_id": "dec1", "niche": "test niche",
+                       "recorded_at": "2026-07-29T00:00:00Z", "matched": True,
+                       "match_method": "niche_substring_in_product_text", "raw_sale_event": {}}],
+        )
+        graph = build.build_graph(
+            decisions_path=d, analyses_path=empty, ledger_path=empty, ai_cost_log_path=empty, evidence_path=empty,
+            lessons_dir="C:/definitely/not/a/real/lessons/dir",
+            governance_dir="C:/definitely/not/a/real/governance/dir",
+            evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
+            decision_outcomes_path=o,
+        )
+        node_ids = {n["id"] for n in graph["nodes"]}
+        self.assertIn("outcome:out1", node_ids)
+        relations = [(e["from"], e["to"], e["relation"]) for e in graph["edges"]]
+        self.assertIn(("decision:dec1", "outcome:out1", "resulted_in"), relations)
+
+    def test_unmatched_outcome_never_creates_a_fabricated_edge(self):
+        d, empty, o = self._paths_for(
+            decisions=[{"niche": "test niche", "decision_id": "dec1", "status": "ACCEPTED"}],
+            outcomes=[{"outcome_id": "out2", "decision_id": None, "niche": None,
+                       "recorded_at": "2026-07-29T00:00:00Z", "matched": False,
+                       "match_method": "unmatched", "raw_sale_event": {}}],
+        )
+        graph = build.build_graph(
+            decisions_path=d, analyses_path=empty, ledger_path=empty, ai_cost_log_path=empty, evidence_path=empty,
+            lessons_dir="C:/definitely/not/a/real/lessons/dir",
+            governance_dir="C:/definitely/not/a/real/governance/dir",
+            evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
+            decision_outcomes_path=o,
+        )
+        node_ids = {n["id"] for n in graph["nodes"]}
+        self.assertNotIn("outcome:out2", node_ids)
+
+    def test_outcome_for_a_decision_not_in_this_build_is_skipped(self):
+        d, empty, o = self._paths_for(
+            decisions=[],
+            outcomes=[{"outcome_id": "out3", "decision_id": "dec_not_present", "niche": "x",
+                       "recorded_at": "t", "matched": True, "match_method": "x", "raw_sale_event": {}}],
+        )
+        graph = build.build_graph(
+            decisions_path=d, analyses_path=empty, ledger_path=empty, ai_cost_log_path=empty, evidence_path=empty,
+            lessons_dir="C:/definitely/not/a/real/lessons/dir",
+            governance_dir="C:/definitely/not/a/real/governance/dir",
+            evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
+            decision_outcomes_path=o,
+        )
+        node_ids = {n["id"] for n in graph["nodes"]}
+        self.assertNotIn("outcome:out3", node_ids)
 
 
 class TestProposalNodes(unittest.TestCase):

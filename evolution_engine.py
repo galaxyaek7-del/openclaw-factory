@@ -52,6 +52,28 @@ def _high_roi_opportunities(decisions_path=None, outcomes_path=None, timeline_pa
     }
 
 
+def _customer_success_bottleneck(proposals):
+    """Continuous Improvement (Global Trust & Resilience Layer, Round 7,
+    2026-07-29): "what is the biggest bottleneck preventing customer
+    success?" -- reuses tool_intelligence.proposals' own real, already-
+    wired customer-funnel signal (_customer_funnel_proposal(), fed by
+    customer_pipeline.list_pipeline_overview()'s real stuck-request
+    detection) rather than computing a second, competing bottleneck
+    detector. Honestly reports none detected when it didn't fire."""
+    customer_proposal = next((p for p in proposals if p.get("id") == "resolve_stuck_customer_requests"), None)
+    if not customer_proposal:
+        return {
+            "detected": False,
+            "reason": "لا اختناق حقيقي يمسّ نجاح العميل مكتشَف هذه الدورة (customer_pipeline.list_pipeline_overview())",
+        }
+    return {
+        "detected": True,
+        "summary": customer_proposal["tool"],
+        "evidence": customer_proposal["evidence"],
+        "source": "tool_intelligence.proposals._customer_funnel_proposal()",
+    }
+
+
 def build_evolution_report(decisions_path=None, outcomes_path=None, timeline_path=None,
                             sales_ledger_path=None, capability_registry_path=None):
     from executive_intelligence import bottlenecks as bottleneck_module
@@ -78,6 +100,7 @@ def build_evolution_report(decisions_path=None, outcomes_path=None, timeline_pat
         "high_roi_opportunities": high_roi,
         "capability_gaps": gaps,
         "tool_proposals": proposals,
+        "customer_success_bottleneck": _customer_success_bottleneck(proposals),
     }
 
 
@@ -116,5 +139,12 @@ def render_markdown(report):
     lines.append("\n## اقتراحات الأدوات (مقترَح، لا تنفيذ)")
     for p in report["tool_proposals"]:
         lines.append(f"- {p['tool']}")
+
+    lines.append("\n## أكبر اختناق حقيقي أمام نجاح العميل")
+    bottleneck = report.get("customer_success_bottleneck") or {}
+    if bottleneck.get("detected"):
+        lines.append(f"- {bottleneck['summary']}")
+    else:
+        lines.append(f"- {bottleneck.get('reason', 'غير محسوب')}")
 
     return "\n".join(lines) + "\n"

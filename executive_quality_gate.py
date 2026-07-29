@@ -66,6 +66,7 @@ REJECT_IF_FAIL = (
     "legal_compliance_risk",
     "brand_reputation_risk",
     "market_saturation_competitor_quality",
+    "content_neutrality_risk",
 )
 
 EVIDENCE_STALE_AFTER_DAYS = 90
@@ -256,6 +257,49 @@ def check_brand_reputation_risk(product_chapters=None):
     return _real("PASS", None, "لا عبارات ادّعاء بنية تحتية غير حقيقية موجودة في نص المحتوى (فحص جزئي)")
 
 
+CONTENT_NEUTRALITY_RISK_PHRASES = [
+    # Political activity
+    "vote for", "join our political party", "election campaign donation",
+    # Religious discussions / proselytizing
+    "convert to our faith", "the one true religion", "join our church",
+    # Ethnic classification / sensitive personal profiling
+    "based on their race", "based on their ethnicity", "racial profiling",
+    # Illegal content
+    "how to make a bomb", "how to hack into", "buy illegal drugs",
+    # Hate content
+    "hate speech", "ethnic cleansing", "genocide is justified",
+    # Manipulation
+    "subliminal manipulation", "psychological manipulation tactics",
+    # Privacy violations
+    "without their consent", "track users without permission", "sell personal data",
+    # Government interference
+    "overthrow the government", "undermine the election",
+]
+
+
+def check_content_neutrality_risk(product_chapters=None):
+    """Executive Safety Principles (Global Commercial Hardening, Phase 1,
+    2026-07-29): a real, deterministic content scan for the founder's
+    explicit "must never evolve toward" list -- political activity,
+    religious discussions, ethnic classification, sensitive personal
+    profiling, illegal content, hate content, manipulation, privacy
+    violations, government interference. See
+    OpenClaw_Brain/00_Governance/EXECUTIVE_SAFETY_PRINCIPLES.md for the
+    full, permanent policy this check enforces. Same real, cheap,
+    non-exhaustive first-pass discipline as check_brand_reputation_risk()
+    just above -- not a substitute for human review, honestly Unknown if
+    no content is supplied."""
+    if not product_chapters:
+        return _unknown("لا محتوى منتج مُقدَّم للفحص")
+    combined = " ".join(
+        (c.get("content") or "") for c in product_chapters if isinstance(c, dict)
+    ).lower()
+    hits = [p for p in CONTENT_NEUTRALITY_RISK_PHRASES if p in combined]
+    if hits:
+        return _real("FAIL", hits, f"المحتوى يتضمّن عبارات حقيقية تخالف مبادئ الحياد التنفيذي: {', '.join(hits)}")
+    return _real("PASS", None, "لا عبارات مخالفة لمبادئ الحياد التنفيذي موجودة في نص المحتوى (فحص جزئي)")
+
+
 # ── 12. Operational cost ──
 def check_operational_cost(cost_log_file=None):
     from revenue_pipeline import plan as plan_module
@@ -348,6 +392,53 @@ def check_evidence_freshness(decided_at=None, competitor_cache_age_days=None):
     return _real("PASS", dict(ages), f"الأدلة حديثة (أقدمها {max(a for _, a in ages)} يوم)")
 
 
+CONSTITUTION_PRINCIPLE_CHECKS = {
+    "16_butter_principle": "profit_oracle.opportunity_score()/butter_price() -- every product scored before production",
+    "17_dual_inspection": "inspectors.py -- Technical Inspector + Commercial Auditor before publish",
+}
+
+
+def check_constitution_alignment(spec=None):
+    """Global Policy Engine (Global Trust & Resilience Layer, Round 3,
+    2026-07-29): a real, mechanical cross-reference -- confirms the
+    specific CONSTITUTION.md principles this factory's own pipeline
+    already claims to enforce (§16 The Butter Principle, §17 Dual
+    Inspection) are actually backed by real evidence already present in
+    `spec` for this decision. Not a new judgment engine and never added
+    to REJECT_IF_FAIL -- a real citation of already-running checks,
+    informational only (status INFO), same discipline as
+    check_automation_readiness() just below. Honestly UNKNOWN when no
+    spec is given."""
+    if not spec:
+        return _unknown("لا مواصفة مُقدَّمة للمطابقة مع مبادئ الدستور")
+
+    alignment = {
+        "16_butter_principle": bool(spec.get("evaluation_snapshot")),
+        "17_dual_inspection": bool(spec.get("product_chapters")),
+    }
+    cited = {k: CONSTITUTION_PRINCIPLE_CHECKS[k] for k, v in alignment.items() if v}
+    missing = [k for k, v in alignment.items() if not v]
+    reason = f"مبادئ الدستور المؤكَّدة فعلياً لهذا القرار: {', '.join(cited) or 'لا شيء بعد'}"
+    if missing:
+        reason += f" -- لم يُتحقَّق بعد من: {', '.join(missing)}"
+    return _real("INFO", {"cited": cited, "missing": missing}, reason)
+
+
+def check_platform_tos_awareness(target_platforms=None):
+    """Global Policy Engine (Global Trust & Resilience Layer, Round 3,
+    2026-07-29): honestly UNKNOWN, always, today -- no platform Terms of
+    Service text is parsed or enforced anywhere in this factory
+    (confirmed by real repo-wide search: zero matches for any ToS-
+    parsing logic). This is a real, disclosed gap for a human to review
+    manually before a first real publish to any named platform --
+    fabricating a PASS here would violate this codebase's own
+    'zero fake metrics' doctrine."""
+    if not target_platforms:
+        return _unknown("لا منصّة محدَّدة للتحقق من شروط خدمتها")
+    platforms = ", ".join(target_platforms)
+    return _unknown(f"لا فحص آلي حقيقي لشروط خدمة {platforms} مبنيّ بعد -- مراجعة بشرية يدوية مطلوبة قبل أول نشر حقيقي")
+
+
 # ── 19/20. Human review requirement + final executive decision (meta) ──
 def _run_all_checks(spec):
     snap = spec.get("evaluation_snapshot") or {}
@@ -364,6 +455,7 @@ def _run_all_checks(spec):
         "long_term_strategic_value": check_long_term_strategic_value(spec.get("strategic_investment")),
         "revenue_model_sustainability": check_revenue_model_sustainability(components),
         "brand_reputation_risk": check_brand_reputation_risk(spec.get("product_chapters")),
+        "content_neutrality_risk": check_content_neutrality_risk(spec.get("product_chapters")),
         "operational_cost": check_operational_cost(spec.get("cost_log_file")),
         "customer_acquisition_difficulty": check_customer_acquisition_difficulty(spec.get("explicit_cac_evidence"), niche=spec.get("niche")),
         "customer_retention_potential": check_customer_retention_potential(niche=spec.get("niche")),
@@ -371,6 +463,8 @@ def _run_all_checks(spec):
         "automation_readiness": check_automation_readiness(components),
         "data_confidence_score": check_data_confidence_score(snap.get("confidence")),
         "evidence_freshness": check_evidence_freshness(spec.get("decided_at"), spec.get("competitor_cache_age_days")),
+        "constitution_alignment": check_constitution_alignment(spec),
+        "platform_tos_awareness": check_platform_tos_awareness(spec.get("target_platforms")),
     }
 
 

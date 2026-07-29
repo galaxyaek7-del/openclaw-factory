@@ -187,6 +187,31 @@ def _growth():
     return _real(value, "growth_engine.growth_forecast()", detail=result)
 
 
+def _publishing_safety():
+    """Global Commercial Hardening, Phase 1 (2026-07-29): real, from
+    channels/publish_protection.py's own persisted state -- honestly
+    Unknown until at least one real (non-dry-run) publish attempt has
+    ever been recorded for any arm. An active global emergency stop is a
+    real, directly-measured 0 (not Unknown -- the founder's own real
+    action, not an absence of data)."""
+    from channels import publish_protection
+
+    status = publish_protection.list_publish_protection_status()
+    if status["global"]["emergency_stopped"]:
+        return _real(0, "channels/publish_protection.py (global publish emergency stop is active)", detail=status["global"])
+
+    arms = status["arms"]
+    if not arms:
+        return _unknown("لا محاولة نشر حقيقية (غير تجريبية) مسجَّلة بعد لأي قناة توزيع", detail=status)
+
+    avg_risk = sum(a["risk_score"] for a in arms.values()) / len(arms)
+    return _real(
+        round(100 - avg_risk),
+        "channels/publish_protection.py list_publish_protection_status() -- 100 ناقص متوسط risk_score الحقيقي لكل قناة",
+        detail=status,
+    )
+
+
 def _architecture_health():
     """Always Unknown -- ai_doctor.py's own docstring already declined to
     build real architecture-drift detection ('no architecture baseline
@@ -208,5 +233,6 @@ def compute_executive_score(inspections_log=None):
         "automation": _automation(),
         "growth": _growth(),
         "architecture_health": _architecture_health(),
+        "publishing_safety": _publishing_safety(),
     }
     return {"sub_scores": sub_scores}

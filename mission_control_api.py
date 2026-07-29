@@ -578,6 +578,101 @@ def _tool_intelligence():
     return {"proposals": proposals.list_proposals()}
 
 
+def _publish_protection_status():
+    """Global Commercial Hardening, Phase 1 (2026-07-29): read-only Mission
+    Control panel over channels/publish_protection.py's real per-arm state
+    (publish counts, cooldowns, risk_score) plus the global emergency-stop
+    flag. Passthrough only."""
+    from channels import publish_protection
+    return publish_protection.list_publish_protection_status()
+
+
+def _publish_emergency_stop():
+    """The founder's own real, immediate halt across every marketplace
+    arm. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py publish_emergency_stop '{"reason":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    reason = (payload.get("reason") or "").strip()
+    if not reason:
+        raise ValueError("{ reason } is required")
+
+    from channels import publish_protection
+    return publish_protection.trigger_emergency_stop(reason, triggered_by="founder")
+
+
+def _publish_emergency_resume():
+    """Reverses publish_emergency_stop."""
+    from channels import publish_protection
+    return publish_protection.clear_emergency_stop()
+
+
+def _safe_mode_status():
+    """Global Trust & Resilience Layer, Round 2 (2026-07-29): read-only
+    Mission Control panel over safe_mode.py's real per-subsystem
+    isolation state (ai_generation, market_intelligence -- their own
+    real flags; marketplace_publishing -- a real passthrough to
+    channels/publish_protection.py's global emergency stop). Passthrough
+    only."""
+    import safe_mode
+    return safe_mode.list_safe_mode_status()
+
+
+def _mark_subsystem_unstable():
+    """The founder's own real action to isolate one named subsystem
+    without halting the rest of the company. Reads its payload from
+    sys.argv[2]:
+    `python mission_control_api.py mark_subsystem_unstable '{"name":"ai_generation","reason":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    name = (payload.get("name") or "").strip()
+    reason = (payload.get("reason") or "").strip()
+    if not name or not reason:
+        raise ValueError("{ name, reason } are required")
+
+    import safe_mode
+    return safe_mode.mark_subsystem_unstable(name, reason, triggered_by="founder")
+
+
+def _clear_subsystem_unstable():
+    """Reverses mark_subsystem_unstable. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py clear_subsystem_unstable '{"name":"ai_generation"}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    name = (payload.get("name") or "").strip()
+    if not name:
+        raise ValueError("{ name } is required")
+
+    import safe_mode
+    return safe_mode.clear_subsystem_unstable(name)
+
+
+def _approve_first_publish():
+    """Founder Protection (Global Trust & Resilience Layer, Round 4,
+    2026-07-29): the founder's own real, explicit clearance for a
+    genuinely new arm's very first real publish. Reads its payload from
+    sys.argv[2]:
+    `python mission_control_api.py approve_first_publish '{"arm_name":"kdp"}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    arm_name = (payload.get("arm_name") or "").strip()
+    if not arm_name:
+        raise ValueError("{ arm_name } is required")
+
+    from channels import publish_protection
+    return publish_protection.approve_first_publish(arm_name, approved_by="founder")
+
+
+def _approve_elevated_risk_publish():
+    """The founder's own real, explicit, single-use clearance for one
+    publish attempt whose computed risk_score crossed the real
+    high-risk threshold. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py approve_elevated_risk_publish '{"arm_name":"gumroad"}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    arm_name = (payload.get("arm_name") or "").strip()
+    if not arm_name:
+        raise ValueError("{ arm_name } is required")
+
+    from channels import publish_protection
+    return publish_protection.approve_elevated_risk_publish(arm_name, approved_by="founder")
+
+
 def _evolution_queue_daily_cycle():
     """Autonomous Company Evolution Engine, Round 4 (2026-07-29): the one
     automatic path the founder approved -- intake real proposals, simulate
@@ -1763,6 +1858,14 @@ _ENDPOINTS = {
     "approve_evolution_proposal": _approve_evolution_proposal,
     "reject_evolution_proposal": _reject_evolution_proposal,
     "mark_evolution_proposal_implemented": _mark_evolution_proposal_implemented,
+    "publish_protection_status": _publish_protection_status,
+    "publish_emergency_stop": _publish_emergency_stop,
+    "publish_emergency_resume": _publish_emergency_resume,
+    "safe_mode_status": _safe_mode_status,
+    "mark_subsystem_unstable": _mark_subsystem_unstable,
+    "clear_subsystem_unstable": _clear_subsystem_unstable,
+    "approve_first_publish": _approve_first_publish,
+    "approve_elevated_risk_publish": _approve_elevated_risk_publish,
 }
 
 

@@ -77,6 +77,7 @@ SALES_LEDGER_FILE = os.path.join(FACTORY_DIR, 'data', 'sales_ledger.jsonl')
 AI_COST_LOG_FILE = os.path.join(FACTORY_DIR, 'data', 'ai_cost_log.jsonl')
 MARKET_EVIDENCE_FILE = os.path.join(FACTORY_DIR, 'data', 'market_evidence.jsonl')
 SNAPSHOT_FILE = os.path.join(FACTORY_DIR, 'data', 'knowledge_graph_snapshot.json')
+DECISION_OUTCOMES_FILE = os.path.join(FACTORY_DIR, 'data', 'decision_outcomes.jsonl')
 LESSONS_LEARNED_DIR = os.path.join(FACTORY_DIR, 'OpenClaw_Brain', '19_Lessons_Learned')
 GOVERNANCE_DIR = os.path.join(FACTORY_DIR, 'OpenClaw_Brain', '00_Governance')
 EVOLUTION_QUEUE_STATE_FILE = os.path.join(FACTORY_DIR, 'data', 'evolution_queue_state.json')
@@ -191,12 +192,14 @@ def _proposal_nodes(evolution_queue_state_path=None):
 
 
 def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_cost_log_path=None,
-                 evidence_path=None, lessons_dir=None, governance_dir=None, evolution_queue_state_path=None):
+                 evidence_path=None, lessons_dir=None, governance_dir=None, evolution_queue_state_path=None,
+                 decision_outcomes_path=None):
     decisions = _read_jsonl(decisions_path or DECISIONS_FILE)
     analyses = _read_jsonl(analyses_path or MARKET_INTELLIGENCE_ANALYSES_FILE)
     ledger = _read_jsonl(ledger_path or SALES_LEDGER_FILE)
     ai_costs = _read_jsonl(ai_cost_log_path or AI_COST_LOG_FILE)
     evidence = _read_jsonl(evidence_path or MARKET_EVIDENCE_FILE)
+    decision_outcomes = _read_jsonl(decision_outcomes_path or DECISION_OUTCOMES_FILE)
 
     nodes = {}
     edges = []
@@ -216,6 +219,28 @@ def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_co
             _add_node(_node(f"decision:{decision_id}", "Decision", niche=niche, status=d.get("status"),
                              ladder=d.get("ladder"), reasoning=d.get("reasoning")))
             edges.append(_edge(niche_id, f"decision:{decision_id}", "evaluated_as"))
+
+    # Outcome nodes/edges (real, from data/decision_outcomes.jsonl --
+    # Decision Memory, Round 6, 2026-07-29): decision_engine/feedback.py's
+    # already-real sync_outcomes() is what populates this file; here it's
+    # only ever read and mechanically joined back to its real Decision
+    # node by decision_id -- never a second computation. Only a real,
+    # matched outcome (decision_engine/types.py's Outcome.matched=True,
+    # a real decision_id) gets a real edge -- an unmatched sale
+    # (decision_id is None) has no real Decision to link to honestly, so
+    # it's skipped here, never guessed at.
+    for o in decision_outcomes:
+        decision_id = o.get("decision_id")
+        if not o.get("matched") or not decision_id:
+            continue
+        decision_node_id = f"decision:{decision_id}"
+        if decision_node_id not in nodes:
+            continue
+        outcome_id = o.get("outcome_id") or f"{decision_id}:{o.get('recorded_at')}"
+        outcome_node_id = f"outcome:{outcome_id}"
+        _add_node(_node(outcome_node_id, "Outcome", matched=True,
+                         match_method=o.get("match_method"), recorded_at=o.get("recorded_at")))
+        edges.append(_edge(decision_node_id, outcome_node_id, "resulted_in"))
 
     # MarketAnalysis nodes/edges (real, from market_intelligence_analyses.jsonl)
     for a in analyses:

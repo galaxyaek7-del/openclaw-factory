@@ -33,6 +33,7 @@ if str(_FACTORY_ROOT) not in sys.path:
 
 from channels import registry
 from channels import ledger
+from channels import publish_protection
 from channels.base_arm import PublishResult
 from schemas.product import Product
 import factory_state
@@ -54,7 +55,7 @@ import channels.etsy_arm  # noqa: F401,E402
 import channels.paddle_arm  # noqa: F401,E402
 
 
-def distribute(product, arm_names=None, dry_run=True, ledger_path=None):
+def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protection_state_path=None):
     """Fan `product` out to arms and record every attempt in the ledger.
 
     arm_names=None means every currently registered arm. ledger_path
@@ -62,6 +63,16 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None):
     run never writes synthetic rows into the real, production ledger.
     Returns a list of outcome dicts: {"arm": str, "attempted": bool,
     "ok": bool|None, "skip_reason": str|None, "result": PublishResult|None}.
+
+    Global Commercial Hardening, Phase 1 (2026-07-29): every REAL (non-dry-
+    run) publish now passes through channels/publish_protection.py's
+    pre-publish gate first — a blocked arm never reaches arm.publish(),
+    exactly like an unsupported product or an unregistered arm above.
+    Dry runs never touch real platforms, so the gate is skipped for them
+    (no real risk to protect against, and no behavior change to this
+    module's existing dry-run-by-default safety net). protection_state_path
+    overrides the default data/publish_protection_state.json, same reason
+    ledger_path exists.
     """
     targets = arm_names if arm_names is not None else [a.name for a in registry.all_arms()]
     outcomes = []
@@ -75,6 +86,7 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None):
             })
             continue
 
+        gate = None
         try:
             if not arm.supports(product):
                 outcomes.append({
@@ -82,6 +94,24 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None):
                     "skip_reason": "unsupported product", "result": None,
                 })
                 continue
+
+            if not dry_run:
+                gate = publish_protection.check_publish_allowed(name, state_path=protection_state_path)
+                if not gate["allowed"]:
+                    blocked_result = PublishResult(
+                        ok=False, platform=name, product_id=None, url=None,
+                        error=f"blocked by publish protection layer: {gate['reason']}", dry_run=dry_run,
+                    )
+                    ledger.record_publish_attempt(
+                        product, blocked_result, ledger_path=ledger_path,
+                        risk_score=gate["risk_score"], protection_decision="blocked",
+                    )
+                    outcomes.append({
+                        "arm": name, "attempted": False, "ok": None,
+                        "skip_reason": f"blocked by publish protection layer: {gate['reason']}", "result": None,
+                    })
+                    continue
+
             result = arm.publish(product, dry_run=dry_run)
         except Exception as e:
             # Defense in depth (ADR-5): even if an arm breaks its own
@@ -92,7 +122,14 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None):
                 error=f"arm raised unexpectedly: {e}", dry_run=dry_run,
             )
 
-        ledger.record_publish_attempt(product, result, ledger_path=ledger_path)
+        ledger.record_publish_attempt(
+            product, result, ledger_path=ledger_path,
+            risk_score=(gate or {}).get("risk_score"),
+            protection_decision=("allowed" if gate else None),
+        )
+
+        if not dry_run:
+            publish_protection.note_publish_outcome(name, result.ok, state_path=protection_state_path)
 
         # Unified Recovery System §3 (2026-07-18): a real (non-dry-run)
         # publish attempt that failed is remembered for a later retry —

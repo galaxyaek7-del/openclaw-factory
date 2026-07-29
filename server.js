@@ -859,6 +859,29 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('evolution_report'),
   },
   {
+    // Global Trust & Resilience Layer, Round 2 (2026-07-29): real
+    // per-subsystem Safe Mode -- an unstable subsystem is isolated on
+    // its own, the rest of the company keeps running. Read-only here;
+    // the founder-only mark/clear actions are in ACTION_REGISTRY below.
+    name: 'safe-mode-status',
+    description: "Real per-subsystem isolation state -- ai_generation and market_intelligence have their own real flag; marketplace_publishing is a live passthrough to channels/publish_protection.py's global emergency stop (never a second, duplicated flag for the same real concern). Never auto-clears -- only a real founder action does.",
+    reused: 'safe_mode.py list_safe_mode_status() (Global Trust & Resilience Layer, Round 2), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('safe_mode_status', [], req),
+    health: pythonHealthCheck('safe_mode_status'),
+  },
+  {
+    // Global Commercial Hardening, Phase 1 (2026-07-29): the real
+    // Marketplace Publish Protection Layer -- per-arm publish counts,
+    // cooldowns, and a real risk_score, plus the global emergency-stop
+    // flag. Read-only here; the two founder actions that actually halt/
+    // resume publishing are in ACTION_REGISTRY below, never auto-fired.
+    name: 'publish-protection-status',
+    description: "Real marketplace publish-protection state -- per-arm daily/hourly publish counts, active cooldowns (from repeated real failures), a real risk_score, and whether each arm is currently allowed to publish. Honestly empty until a real (non-dry-run) publish attempt has ever been recorded for an arm.",
+    reused: 'channels/publish_protection.py list_publish_protection_status() (Global Commercial Hardening, Phase 1), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('publish_protection_status', [], req),
+    health: pythonHealthCheck('publish_protection_status'),
+  },
+  {
     // Autonomous Company Evolution Engine, Round 6 (2026-07-29): the real
     // Evolution Queue -- every real proposal's stage, the founder's own
     // real approval backlog (with a real, informational stuck-too-long
@@ -1328,6 +1351,58 @@ async function resumeProductionAction() {
   return writeProductionControl({ paused: false, changed_at: new Date().toISOString(), reason: null });
 }
 
+// Global Commercial Hardening, Phase 1 (2026-07-29): the founder's own
+// real, immediate halt across every marketplace arm -- reuses
+// channels/publish_protection.py's trigger_emergency_stop()/
+// clear_emergency_stop() via mission_control_api.py, same spawn pattern
+// as requestAiCapabilityAction below. Never fired automatically anywhere
+// in this factory.
+async function publishEmergencyStopAction(req) {
+  const reason = (req.body && req.body.reason) || '';
+  if (!reason.trim()) throw new Error('{ reason } is required');
+  return runPythonService('publish_emergency_stop', [JSON.stringify({ reason })]);
+}
+
+async function publishEmergencyResumeAction() {
+  return runPythonService('publish_emergency_resume');
+}
+
+// Global Trust & Resilience Layer, Round 2 (2026-07-29): the founder's
+// own real action to isolate one named subsystem (ai_generation,
+// market_intelligence) without halting the rest of the company.
+// marketplace_publishing has no mark/clear action here by design -- use
+// publish-emergency-stop/publish-emergency-resume above, its own real
+// signal.
+async function markSubsystemUnstableAction(req) {
+  const name = (req.body && req.body.name) || '';
+  const reason = (req.body && req.body.reason) || '';
+  if (!name.trim() || !reason.trim()) throw new Error('{ name, reason } are required');
+  return runPythonService('mark_subsystem_unstable', [JSON.stringify({ name, reason })]);
+}
+
+async function clearSubsystemUnstableAction(req) {
+  const name = (req.body && req.body.name) || '';
+  if (!name.trim()) throw new Error('{ name } is required');
+  return runPythonService('clear_subsystem_unstable', [JSON.stringify({ name })]);
+}
+
+// Founder Protection (Global Trust & Resilience Layer, Round 4,
+// 2026-07-29): the founder's own real, explicit clearance for a
+// genuinely new arm's first real publish, or one publish attempt whose
+// computed risk_score crossed the real high-risk threshold. Never
+// fired automatically anywhere in this factory.
+async function approveFirstPublishAction(req) {
+  const armName = (req.body && req.body.arm_name) || '';
+  if (!armName.trim()) throw new Error('{ arm_name } is required');
+  return runPythonService('approve_first_publish', [JSON.stringify({ arm_name: armName })]);
+}
+
+async function approveElevatedRiskPublishAction(req) {
+  const armName = (req.body && req.body.arm_name) || '';
+  if (!armName.trim()) throw new Error('{ arm_name } is required');
+  return runPythonService('approve_elevated_risk_publish', [JSON.stringify({ arm_name: armName })]);
+}
+
 // Autonomous Digital Company v1, Track B2 (2026-07-19): a real, logged
 // department request for a different/better AI model — never an
 // autonomous model switch (ai_capability/evaluator.py's own recommendation
@@ -1470,6 +1545,46 @@ const ACTION_REGISTRY = [
     reversible: true,
     kind: 'sync',
     run: resumeProductionAction,
+  },
+  {
+    // Global Commercial Hardening, Phase 1 (2026-07-29): the founder's
+    // real, instant, all-arms publish halt -- registered `kind: 'sync'`
+    // (not async/Python-spawned as a background job) for exactly the
+    // same reliability reason pause-production above is sync: no
+    // subprocess/timeout risk on an action meant to be immediate.
+    name: 'publish-emergency-stop',
+    description: 'Immediately blocks every marketplace arm from publishing, real or dry-run notwithstanding -- the real pre-publish gate in channels/publish_protection.py checks this first. Requires { reason } in the request body.',
+    reused: 'channels/publish_protection.py trigger_emergency_stop() (Global Commercial Hardening, Phase 1)',
+    reversible: true,
+    kind: 'sync',
+    run: publishEmergencyStopAction,
+  },
+  {
+    name: 'publish-emergency-resume',
+    description: 'Reverses publish-emergency-stop.',
+    reused: 'channels/publish_protection.py clear_emergency_stop() (Global Commercial Hardening, Phase 1)',
+    reversible: true,
+    kind: 'sync',
+    run: publishEmergencyResumeAction,
+  },
+  {
+    // Founder Protection (Global Trust & Resilience Layer, Round 4,
+    // 2026-07-29): the one new piece of Priority 9 actually built --
+    // proven arms (Gumroad et al.) stay fully autonomous, unchanged.
+    name: 'approve-first-publish',
+    description: 'Clears a genuinely new marketplace arm (never a proven one -- KDP/Shopify/AliExpress today) for its very first real publish. Requires { arm_name } in the request body.',
+    reused: 'channels/publish_protection.py approve_first_publish() (Global Trust & Resilience Layer, Round 4)',
+    reversible: false,
+    kind: 'sync',
+    run: approveFirstPublishAction,
+  },
+  {
+    name: 'approve-elevated-risk-publish',
+    description: 'A real, single-use clearance for one publish attempt whose computed risk_score crossed the real high-risk threshold -- consumed by the very next real attempt for that arm, whatever its outcome. Requires { arm_name } in the request body.',
+    reused: 'channels/publish_protection.py approve_elevated_risk_publish() (Global Trust & Resilience Layer, Round 4)',
+    reversible: false,
+    kind: 'sync',
+    run: approveElevatedRiskPublishAction,
   },
   {
     name: 'confirm-safe-to-resume',
@@ -2129,6 +2244,23 @@ const ACTION_REGISTRY = [
     reversible: false,
     kind: 'sync',
     run: rejectEvolutionProposalAction,
+  },
+  {
+    // Global Trust & Resilience Layer, Round 2 (2026-07-29).
+    name: 'mark-subsystem-unstable',
+    description: 'Isolates one real, named subsystem (ai_generation or market_intelligence) without halting the rest of the company. Requires { name, reason } in the request body. marketplace_publishing is not accepted here -- use publish-emergency-stop instead.',
+    reused: 'safe_mode.py mark_subsystem_unstable() (Global Trust & Resilience Layer, Round 2)',
+    reversible: true,
+    kind: 'sync',
+    run: markSubsystemUnstableAction,
+  },
+  {
+    name: 'clear-subsystem-unstable',
+    description: 'Reverses mark-subsystem-unstable. Requires { name } in the request body.',
+    reused: 'safe_mode.py clear_subsystem_unstable() (Global Trust & Resilience Layer, Round 2)',
+    reversible: true,
+    kind: 'sync',
+    run: clearSubsystemUnstableAction,
   },
   {
     name: 'mark-evolution-proposal-implemented',

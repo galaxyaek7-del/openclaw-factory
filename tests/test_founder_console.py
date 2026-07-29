@@ -63,6 +63,7 @@ class TestBuildFounderQueuePartial(unittest.TestCase):
         result = founder_console.build_founder_queue_partial(
             decisions_path=self.decisions_path,
             evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
+            publish_protection_state_path="C:/definitely/not/a/real/publish_protection_state.json",
         )
         self.assertEqual(len(result["blocked_channels"]), 1)
         self.assertEqual(result["blocked_channels"][0]["marketplace"], "gumroad")
@@ -77,6 +78,7 @@ class TestBuildFounderQueuePartial(unittest.TestCase):
         result = founder_console.build_founder_queue_partial(
             decisions_path=self.decisions_path,
             evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
+            publish_protection_state_path="C:/definitely/not/a/real/publish_protection_state.json",
         )
         self.assertEqual(result["pending_decisions"], [])
 
@@ -99,6 +101,7 @@ class TestBuildFounderQueuePartial(unittest.TestCase):
             )
             result = founder_console.build_founder_queue_partial(
                 decisions_path=self.decisions_path, evolution_queue_state_path=queue_path,
+                publish_protection_state_path="C:/definitely/not/a/real/publish_protection_state.json",
             )
             self.assertEqual(len(result["pending_evolution_proposals"]), 1)
             self.assertEqual(result["pending_evolution_proposals"][0]["proposal_id"], "p1")
@@ -106,11 +109,41 @@ class TestBuildFounderQueuePartial(unittest.TestCase):
             if os.path.exists(queue_path):
                 os.remove(queue_path)
 
+    @patch("commercial_execution.approval_gates.check_approval_gates")
+    def test_publish_emergency_stop_reflects_real_protection_state(self, mock_gates):
+        """Global Commercial Hardening, Phase 1 (2026-07-29)."""
+        mock_gates.return_value = {"gated": [], "autonomous": []}
+        from channels import publish_protection
+        protection_path = _temp_path().replace(".jsonl", ".json")
+        try:
+            publish_protection.trigger_emergency_stop("suspicious pattern", triggered_by="founder", state_path=protection_path)
+            result = founder_console.build_founder_queue_partial(
+                decisions_path=self.decisions_path,
+                evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
+                publish_protection_state_path=protection_path,
+            )
+            self.assertIsNotNone(result["publish_emergency_stop"])
+            self.assertEqual(result["publish_emergency_stop"]["emergency_reason"], "suspicious pattern")
+        finally:
+            if os.path.exists(protection_path):
+                os.remove(protection_path)
+
+    @patch("commercial_execution.approval_gates.check_approval_gates")
+    def test_no_emergency_stop_is_honestly_none(self, mock_gates):
+        mock_gates.return_value = {"gated": [], "autonomous": []}
+        result = founder_console.build_founder_queue_partial(
+            decisions_path=self.decisions_path,
+            evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
+            publish_protection_state_path="C:/definitely/not/a/real/publish_protection_state.json",
+        )
+        self.assertIsNone(result["publish_emergency_stop"])
+
     def test_real_call_against_real_data_never_throws(self):
         result = founder_console.build_founder_queue_partial()
         self.assertIn("blocked_channels", result)
         self.assertIn("pending_decisions", result)
         self.assertIn("pending_evolution_proposals", result)
+        self.assertIn("publish_emergency_stop", result)
 
 
 if __name__ == "__main__":

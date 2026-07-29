@@ -93,6 +93,8 @@ class TestDynamicProposals(unittest.TestCase):
             capability_registry_path="C:/definitely/not/a/real/registry.json",
             requests_path="C:/definitely/not/a/real/requests.jsonl",
             state_path="C:/definitely/not/a/real/pipeline_state.json",
+            protection_state_path="C:/definitely/not/a/real/publish_protection_state.json",
+            health_snapshots_path="C:/definitely/not/a/real/health_snapshots.jsonl",
         )
         self.assertIsInstance(result, list)
         for p in result:
@@ -165,9 +167,112 @@ class TestCustomerFunnelProposal(unittest.TestCase):
                 timeline_path="C:/definitely/not/a/real/timeline.jsonl",
                 sales_ledger_path="C:/definitely/not/a/real/ledger.jsonl",
                 capability_registry_path="C:/definitely/not/a/real/registry.json",
+                protection_state_path="C:/definitely/not/a/real/publish_protection_state.json",
+                health_snapshots_path="C:/definitely/not/a/real/health_snapshots.jsonl",
             )
         ids = {p["id"] for p in result}
         self.assertIn("resolve_stuck_customer_requests", ids)
+
+
+class TestMarketplaceProtectionProposal(unittest.TestCase):
+    """Global Commercial Hardening, Phase 1 (2026-07-29): a new dynamic
+    proposal source built from channels/publish_protection.py's own real
+    state (an active emergency stop, or a real arm showing repeated
+    publish problems)."""
+
+    def test_honestly_absent_with_no_real_protection_state(self):
+        result = proposals._marketplace_protection_proposal(
+            protection_state_path="C:/definitely/not/a/real/publish_protection_state.json",
+        )
+        self.assertIsNone(result)
+
+    def test_active_emergency_stop_generates_a_real_proposal(self):
+        fake_status = {"arms": {}, "global": {"emergency_stopped": True, "emergency_reason": "suspicious pattern"}}
+        with patch("channels.publish_protection.list_publish_protection_status", return_value=fake_status):
+            result = proposals._marketplace_protection_proposal()
+        self.assertIsNotNone(result)
+        for field in REQUIRED_FIELDS:
+            self.assertIn(field, result)
+            self.assertTrue(result[field])
+        self.assertIn("suspicious pattern", result["tool"])
+
+    def test_troubled_arm_generates_a_real_proposal(self):
+        fake_status = {
+            "arms": {"kdp": {"cooldown_until": "2026-07-29T12:00:00+00:00", "consecutive_failures": 3, "risk_score": 90}},
+            "global": {"emergency_stopped": False},
+        }
+        with patch("channels.publish_protection.list_publish_protection_status", return_value=fake_status):
+            result = proposals._marketplace_protection_proposal()
+        self.assertIsNotNone(result)
+        self.assertIn("kdp", result["tool"])
+
+    def test_healthy_arm_is_honestly_absent(self):
+        fake_status = {
+            "arms": {"gumroad": {"cooldown_until": None, "consecutive_failures": 0, "risk_score": 10}},
+            "global": {"emergency_stopped": False},
+        }
+        with patch("channels.publish_protection.list_publish_protection_status", return_value=fake_status):
+            result = proposals._marketplace_protection_proposal()
+        self.assertIsNone(result)
+
+    def test_is_included_in_dynamic_proposals_when_present(self):
+        fake_status = {"arms": {}, "global": {"emergency_stopped": True, "emergency_reason": "test"}}
+        with patch("channels.publish_protection.list_publish_protection_status", return_value=fake_status):
+            result = proposals._dynamic_proposals(
+                decisions_path="C:/definitely/not/a/real/decisions.jsonl",
+                outcomes_path="C:/definitely/not/a/real/outcomes.jsonl",
+                timeline_path="C:/definitely/not/a/real/timeline.jsonl",
+                sales_ledger_path="C:/definitely/not/a/real/ledger.jsonl",
+                capability_registry_path="C:/definitely/not/a/real/registry.json",
+                requests_path="C:/definitely/not/a/real/requests.jsonl",
+                state_path="C:/definitely/not/a/real/pipeline_state.json",
+                health_snapshots_path="C:/definitely/not/a/real/health_snapshots.jsonl",
+            )
+        ids = {p["id"] for p in result}
+        self.assertIn("resolve_publish_emergency_stop", ids)
+
+
+class TestHealthDegradationProposal(unittest.TestCase):
+    """Global Trust & Resilience Layer, Round 1 (2026-07-29): a new
+    dynamic proposal source built from health_trend.py's own real
+    degradation heuristic over real GET /health history."""
+
+    def test_honestly_absent_with_no_real_snapshots(self):
+        result = proposals._health_degradation_proposal(
+            snapshots_path="C:/definitely/not/a/real/health_snapshots.jsonl",
+        )
+        self.assertIsNone(result)
+
+    def test_degrading_trend_generates_a_real_proposal(self):
+        fake_result = {"degrading": True, "reason": "3 قراءات حقيقية متتالية تزداد سوءاً", "window": []}
+        with patch("health_trend.detect_health_degradation", return_value=fake_result):
+            result = proposals._health_degradation_proposal()
+        self.assertIsNotNone(result)
+        for field in REQUIRED_FIELDS:
+            self.assertIn(field, result)
+            self.assertTrue(result[field])
+
+    def test_stable_trend_is_honestly_absent(self):
+        fake_result = {"degrading": False, "reason": "لا اتجاه تدهور حقيقي", "window": []}
+        with patch("health_trend.detect_health_degradation", return_value=fake_result):
+            result = proposals._health_degradation_proposal()
+        self.assertIsNone(result)
+
+    def test_is_included_in_dynamic_proposals_when_present(self):
+        fake_result = {"degrading": True, "reason": "test", "window": []}
+        with patch("health_trend.detect_health_degradation", return_value=fake_result):
+            result = proposals._dynamic_proposals(
+                decisions_path="C:/definitely/not/a/real/decisions.jsonl",
+                outcomes_path="C:/definitely/not/a/real/outcomes.jsonl",
+                timeline_path="C:/definitely/not/a/real/timeline.jsonl",
+                sales_ledger_path="C:/definitely/not/a/real/ledger.jsonl",
+                capability_registry_path="C:/definitely/not/a/real/registry.json",
+                requests_path="C:/definitely/not/a/real/requests.jsonl",
+                state_path="C:/definitely/not/a/real/pipeline_state.json",
+                protection_state_path="C:/definitely/not/a/real/publish_protection_state.json",
+            )
+        ids = {p["id"] for p in result}
+        self.assertIn("investigate_health_degradation_trend", ids)
 
 
 if __name__ == "__main__":

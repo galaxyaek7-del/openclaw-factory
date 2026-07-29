@@ -240,33 +240,111 @@ def _customer_funnel_proposal(requests_path=None, state_path=None):
     }
 
 
+def _marketplace_protection_proposal(protection_state_path=None):
+    """Global Commercial Hardening, Phase 1 (2026-07-29): a real proposal
+    from channels/publish_protection.py's own state -- an active global
+    emergency stop, or a real arm showing repeated publish failures/an
+    open cooldown. Honestly returns None while every real arm is healthy,
+    same discipline as every other generator here."""
+    from channels import publish_protection
+
+    status = publish_protection.list_publish_protection_status(state_path=protection_state_path)
+    if status["global"]["emergency_stopped"]:
+        return {
+            "id": "resolve_publish_emergency_stop",
+            "tool": f"Resolve the active global publish emergency stop: {status['global']['emergency_reason']}",
+            "status": "مقترَح، لا تنفيذ",
+            "why_needed": "طابور الحماية أوقف كل النشر عبر كل القنوات فعلياً -- توقف كامل حقيقي للنشر التجاري.",
+            "expected_business_value": "استئناف الإيرادات الحقيقية بمجرد التأكد من زوال السبب الحقيقي للإيقاف.",
+            "implementation_effort": "مراجعة السبب الحقيقي، ثم استئناف عبر publish-emergency-resume في Mission Control.",
+            "estimated_roi": "غير مقاس بعد.",
+            "dependencies": ["تأكيد بشري أن السبب الحقيقي للإيقاف زال فعلاً"],
+            "risks": ["استئناف النشر قبل التأكد الفعلي يكرر نفس الخطر الذي أوقفه هذا الإيقاف"],
+            "evidence": "channels/publish_protection.py's global.emergency_stopped",
+            "generated_at": _now(),
+        }
+
+    troubled = [
+        name for name, arm in status["arms"].items()
+        if arm.get("cooldown_until") or arm.get("consecutive_failures", 0) >= 2
+    ]
+    if not troubled:
+        return None
+
+    return {
+        "id": "investigate_marketplace_publish_health",
+        "tool": f"Investigate {len(troubled)} real marketplace arm(s) showing repeated publish problems: {', '.join(troubled[:5])}",
+        "status": "مقترَح، لا تنفيذ",
+        "why_needed": "channels/publish_protection.py يُظهر فشلاً متكرراً حقيقياً أو تهدئة نشطة لهذه القناة/القنوات.",
+        "expected_business_value": "منع تعليق حساب حقيقي في منصة قبل أن يحدث فعلاً.",
+        "implementation_effort": "مراجعة سبب الفشل الحقيقي (بيانات اعتماد، تغيير في API المنصة، أو حد فعلي تجاوزته).",
+        "estimated_roi": "غير مقاس بعد -- يعتمد على قيمة القناة المتأثرة.",
+        "dependencies": ["الوصول الفعلي لسجلات فشل النشر الحقيقية لهذه القناة"],
+        "risks": ["الاستمرار دون تحقيق قد يؤدي لتعليق حساب حقيقي على المنصة"],
+        "evidence": "channels/publish_protection.py list_publish_protection_status()",
+        "generated_at": _now(),
+    }
+
+
+def _health_degradation_proposal(snapshots_path=None):
+    """Global Trust & Resilience Layer, Round 1 (2026-07-29): a real
+    proposal from health_trend.py's own real, disclosed degradation
+    heuristic over real GET /health history -- honestly returns None
+    while fewer than 3 real snapshots exist yet or the real trend isn't
+    degrading, same discipline as every other generator here."""
+    import health_trend
+
+    result = health_trend.detect_health_degradation(snapshots_path)
+    if not result["degrading"]:
+        return None
+
+    return {
+        "id": "investigate_health_degradation_trend",
+        "tool": "Investigate a real degrading health trend across recent factory ticks",
+        "status": "مقترَح، لا تنفيذ",
+        "why_needed": f"health_trend.py يُظهر اتجاهاً حقيقياً: {result['reason']}",
+        "expected_business_value": "معالجة مشكلة حقيقية قبل أن تتحوّل إلى عطل كامل -- اكتشاف مبكر حقيقي، لا تخمين.",
+        "implementation_effort": "مراجعة سجل GET /health الحقيقي (memory/cpu/disk/network/storage_integrity) لتحديد أي فحص فعلي يتدهور.",
+        "estimated_roi": "غير مقاس بعد.",
+        "dependencies": ["الوصول الفعلي لسجل data/health_snapshots.jsonl والفحوصات التفصيلية في GET /health"],
+        "risks": ["تجاهل اتجاه تدهور حقيقي متكرر قد يتحوّل إلى عطل كامل غير متوقَّع"],
+        "evidence": "health_trend.py detect_health_degradation()",
+        "generated_at": _now(),
+    }
+
+
 def _dynamic_proposals(decisions_path=None, outcomes_path=None, timeline_path=None,
                         sales_ledger_path=None, capability_registry_path=None,
-                        requests_path=None, state_path=None):
+                        requests_path=None, state_path=None, protection_state_path=None,
+                        health_snapshots_path=None):
     """Real proposals generated fresh from current factory signals -- the
-    same signals evolution_engine.py/customer_pipeline.py already assemble,
-    reused (not recomputed) here. Honestly returns fewer than 4 (down to
-    zero) when a signal detects nothing real to act on -- never pads the
-    list."""
+    same signals evolution_engine.py/customer_pipeline.py/channels.
+    publish_protection/health_trend already assemble, reused (not
+    recomputed) here. Honestly returns fewer than 6 (down to zero) when a
+    signal detects nothing real to act on -- never pads the list."""
     generators = [
         lambda: _bottleneck_proposal(decisions_path=decisions_path, outcomes_path=outcomes_path, timeline_path=timeline_path),
         lambda: _technical_debt_proposal(decisions_path=decisions_path, timeline_path=timeline_path, sales_ledger_path=sales_ledger_path),
         lambda: _capability_gap_proposal(capability_registry_path=capability_registry_path),
         lambda: _customer_funnel_proposal(requests_path=requests_path, state_path=state_path),
+        lambda: _marketplace_protection_proposal(protection_state_path=protection_state_path),
+        lambda: _health_degradation_proposal(snapshots_path=health_snapshots_path),
     ]
     return [p for p in (gen() for gen in generators) if p is not None]
 
 
 def list_proposals(decisions_path=None, outcomes_path=None, timeline_path=None,
                     sales_ledger_path=None, capability_registry_path=None,
-                    requests_path=None, state_path=None):
+                    requests_path=None, state_path=None, protection_state_path=None,
+                    health_snapshots_path=None):
     """The hand-curated seed proposals (still real, still evidence-cited)
     plus proposals generated fresh from current factory signals -- computed
     at call time, not static after Round 2 (2026-07-29)."""
     return SEED_PROPOSALS + _dynamic_proposals(
         decisions_path=decisions_path, outcomes_path=outcomes_path, timeline_path=timeline_path,
         sales_ledger_path=sales_ledger_path, capability_registry_path=capability_registry_path,
-        requests_path=requests_path, state_path=state_path,
+        requests_path=requests_path, state_path=state_path, protection_state_path=protection_state_path,
+        health_snapshots_path=health_snapshots_path,
     )
 
 

@@ -48,10 +48,15 @@ def append_event(event: dict, ledger_path=None) -> dict:
     return record
 
 
-def record_publish_attempt(product, result, ledger_path=None) -> dict:
+def record_publish_attempt(product, result, ledger_path=None, risk_score=None, protection_decision=None) -> dict:
     """Build a publish_attempt event from a Product + PublishResult and
     append it. Never raises on a failed publish — a failure is exactly what
-    this ledger exists to record honestly."""
+    this ledger exists to record honestly.
+
+    risk_score/protection_decision (Global Commercial Hardening, Phase 1,
+    2026-07-29): optional fields from channels/publish_protection.py's
+    real pre-publish gate — only added to the event when actually given,
+    so every pre-existing caller's event shape is unchanged."""
     event = {
         "event_type": "publish_attempt",
         "platform": result.platform,
@@ -64,6 +69,10 @@ def record_publish_attempt(product, result, ledger_path=None) -> dict:
         "product_source_id": getattr(product, "source_id", None),
         "product_type": getattr(product, "product_type", None),
     }
+    if risk_score is not None:
+        event["risk_score"] = risk_score
+    if protection_decision is not None:
+        event["protection_decision"] = protection_decision
     return append_event(event, ledger_path=ledger_path)
 
 

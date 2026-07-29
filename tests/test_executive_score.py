@@ -141,6 +141,31 @@ class TestGrowth(unittest.TestCase):
         self.assertEqual(result["value"], 12.5)
 
 
+class TestPublishingSafety(unittest.TestCase):
+    """Global Commercial Hardening, Phase 1 (2026-07-29)."""
+
+    def test_no_arms_recorded_yet_is_honestly_unknown(self):
+        fake_status = {"arms": {}, "global": {"emergency_stopped": False}}
+        with patch("channels.publish_protection.list_publish_protection_status", return_value=fake_status):
+            result = es._publishing_safety()
+        self.assertEqual(result["value"], "Unknown")
+
+    def test_active_emergency_stop_is_a_real_zero_not_unknown(self):
+        fake_status = {"arms": {"gumroad": {"risk_score": 0}}, "global": {"emergency_stopped": True, "emergency_reason": "test"}}
+        with patch("channels.publish_protection.list_publish_protection_status", return_value=fake_status):
+            result = es._publishing_safety()
+        self.assertEqual(result["value"], 0)
+
+    def test_real_risk_scores_average_into_a_real_value(self):
+        fake_status = {
+            "arms": {"gumroad": {"risk_score": 20}, "etsy": {"risk_score": 40}},
+            "global": {"emergency_stopped": False},
+        }
+        with patch("channels.publish_protection.list_publish_protection_status", return_value=fake_status):
+            result = es._publishing_safety()
+        self.assertEqual(result["value"], 70)  # 100 - avg(20, 40)
+
+
 class TestArchitectureHealth(unittest.TestCase):
     def test_always_honestly_unknown(self):
         result = es._architecture_health()

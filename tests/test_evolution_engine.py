@@ -49,10 +49,34 @@ class TestHighRoiOpportunities(unittest.TestCase):
         self.assertEqual(result["measured_count"], 2)
 
 
+class TestCustomerSuccessBottleneck(unittest.TestCase):
+    """Continuous Improvement (Global Trust & Resilience Layer, Round 7,
+    2026-07-29): reuses tool_intelligence.proposals' own real
+    customer-funnel signal, never a second bottleneck detector."""
+
+    def test_no_customer_proposal_is_honestly_not_detected(self):
+        result = ee._customer_success_bottleneck([{"id": "fix_detected_bottlenecks", "tool": "x", "evidence": "y"}])
+        self.assertFalse(result["detected"])
+
+    def test_real_customer_proposal_is_surfaced(self):
+        proposals = [{
+            "id": "resolve_stuck_customer_requests", "tool": "Resolve 2 real customer request(s) stuck in the funnel",
+            "evidence": "customer_pipeline.list_pipeline_overview()'s needs_attention",
+        }]
+        result = ee._customer_success_bottleneck(proposals)
+        self.assertTrue(result["detected"])
+        self.assertEqual(result["summary"], proposals[0]["tool"])
+        self.assertEqual(result["evidence"], proposals[0]["evidence"])
+
+    def test_empty_proposal_list_is_honestly_not_detected(self):
+        result = ee._customer_success_bottleneck([])
+        self.assertFalse(result["detected"])
+
+
 class TestBuildEvolutionReport(unittest.TestCase):
     def test_real_call_against_real_data_never_throws(self):
         report = ee.build_evolution_report()
-        for key in ("bottlenecks", "technical_debt", "high_roi_opportunities", "capability_gaps", "tool_proposals"):
+        for key in ("bottlenecks", "technical_debt", "high_roi_opportunities", "capability_gaps", "tool_proposals", "customer_success_bottleneck"):
             self.assertIn(key, report)
 
     def test_render_markdown_never_throws_on_real_report(self):

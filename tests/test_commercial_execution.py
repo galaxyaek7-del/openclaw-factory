@@ -200,10 +200,11 @@ class TestRunPublishPipelineDryRun(_FakeArmMixin, unittest.TestCase):
         super().setUp()
         self.ledger_path = _temp_path(".jsonl")
         self.state_path = _temp_path(".json")
+        self.protection_state_path = _temp_path(".json")
 
     def tearDown(self):
         super().tearDown()
-        for p in (self.ledger_path, self.state_path):
+        for p in (self.ledger_path, self.state_path, self.protection_state_path):
             if os.path.exists(p):
                 os.remove(p)
 
@@ -225,7 +226,10 @@ class TestRunPublishPipelineDryRun(_FakeArmMixin, unittest.TestCase):
                 return self._dry_run_result()
 
         channel_registry.register(DryRunOnlyArm())
-        record = run_publish_pipeline(_fake_product(), ledger_path=self.ledger_path, state_path=self.state_path)
+        record = run_publish_pipeline(
+            _fake_product(), ledger_path=self.ledger_path, state_path=self.state_path,
+            protection_state_path=self.protection_state_path,
+        )
         self.assertEqual(record["marketplaces"][0]["publish_status"], "ok")
         self.assertTrue(record["marketplaces"][0]["dry_run"])
 
@@ -235,10 +239,11 @@ class TestRunPublishPipelineRealMode(_FakeArmMixin, unittest.TestCase):
         super().setUp()
         self.ledger_path = _temp_path(".jsonl")
         self.state_path = _temp_path(".json")
+        self.protection_state_path = _temp_path(".json")
 
     def tearDown(self):
         super().tearDown()
-        for p in (self.ledger_path, self.state_path):
+        for p in (self.ledger_path, self.state_path, self.protection_state_path):
             if os.path.exists(p):
                 os.remove(p)
 
@@ -249,6 +254,7 @@ class TestRunPublishPipelineRealMode(_FakeArmMixin, unittest.TestCase):
         ))
         record = run_publish_pipeline(
             _fake_product(), dry_run=False, ledger_path=self.ledger_path, state_path=self.state_path,
+            protection_state_path=self.protection_state_path,
         )
         self.assertEqual(record["marketplaces"][0]["marketplace_id"], "pdl_real_1")
         self.assertEqual(record["revenue_status"]["listed_on"], ["paddle"])
@@ -266,8 +272,14 @@ class TestRunPublishPipelineRealMode(_FakeArmMixin, unittest.TestCase):
             ok=True, platform="paddle", product_id="pdl_dup_1", url=None, error=None, dry_run=False,
         ))
         product = _fake_product()
-        run_publish_pipeline(product, dry_run=False, ledger_path=self.ledger_path, state_path=self.state_path)
-        second = run_publish_pipeline(product, dry_run=False, ledger_path=self.ledger_path, state_path=self.state_path)
+        run_publish_pipeline(
+            product, dry_run=False, ledger_path=self.ledger_path, state_path=self.state_path,
+            protection_state_path=self.protection_state_path,
+        )
+        second = run_publish_pipeline(
+            product, dry_run=False, ledger_path=self.ledger_path, state_path=self.state_path,
+            protection_state_path=self.protection_state_path,
+        )
         self.assertEqual(len(second["audit_trail"]), 2)  # both real attempts honestly recorded
 
 
@@ -276,10 +288,11 @@ class TestApiTimeoutRetry(_FakeArmMixin, unittest.TestCase):
         super().setUp()
         self.ledger_path = _temp_path(".jsonl")
         self.state_path = _temp_path(".json")
+        self.protection_state_path = _temp_path(".json")
 
     def tearDown(self):
         super().tearDown()
-        for p in (self.ledger_path, self.state_path):
+        for p in (self.ledger_path, self.state_path, self.protection_state_path):
             if os.path.exists(p):
                 os.remove(p)
 
@@ -296,6 +309,7 @@ class TestApiTimeoutRetry(_FakeArmMixin, unittest.TestCase):
         with patch.object(factory_state, "DEFAULT_STATE_PATH", Path(self.state_path)):
             record = run_publish_pipeline(
                 _fake_product(), dry_run=False, ledger_path=self.ledger_path, state_path=self.state_path,
+                protection_state_path=self.protection_state_path,
             )
         m = record["marketplaces"][0]
         self.assertEqual(m["publish_status"], "failed")

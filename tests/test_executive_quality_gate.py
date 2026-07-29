@@ -206,6 +206,79 @@ class TestBrandReputationRisk(unittest.TestCase):
         self.assertEqual(result["status"], "PASS")
 
 
+class TestContentNeutralityRisk(unittest.TestCase):
+    """Executive Safety Principles (Global Commercial Hardening, Phase 1,
+    2026-07-29)."""
+
+    def test_no_content_is_unknown(self):
+        result = eqg.check_content_neutrality_risk(None)
+        self.assertEqual(result["status"], "UNKNOWN")
+
+    def test_political_content_fails(self):
+        chapters = [{"title": "Chapter 1", "content": "Please vote for our preferred candidate this November."}]
+        result = eqg.check_content_neutrality_risk(chapters)
+        self.assertEqual(result["status"], "FAIL")
+        self.assertTrue(any("vote for" in h for h in result["evidence"]))
+
+    def test_hate_content_fails(self):
+        chapters = [{"title": "Chapter 1", "content": "This section contains real hate speech examples."}]
+        result = eqg.check_content_neutrality_risk(chapters)
+        self.assertEqual(result["status"], "FAIL")
+
+    def test_neutral_business_content_passes(self):
+        chapters = [{"title": "Overview", "content": "A practical guide to budgeting for freelancers."}]
+        result = eqg.check_content_neutrality_risk(chapters)
+        self.assertEqual(result["status"], "PASS")
+
+    def test_is_a_real_hard_reject_criterion(self):
+        self.assertIn("content_neutrality_risk", eqg.REJECT_IF_FAIL)
+
+
+class TestConstitutionAlignment(unittest.TestCase):
+    """Global Policy Engine (Global Trust & Resilience Layer, Round 3,
+    2026-07-29)."""
+
+    def test_no_spec_is_unknown(self):
+        result = eqg.check_constitution_alignment(None)
+        self.assertEqual(result["status"], "UNKNOWN")
+
+    def test_spec_with_neither_field_cites_nothing_but_never_fails(self):
+        result = eqg.check_constitution_alignment({"niche": "test niche"})
+        self.assertEqual(result["status"], "INFO")
+        self.assertEqual(result["evidence"]["cited"], {})
+        self.assertIn("16_butter_principle", result["evidence"]["missing"])
+
+    def test_real_evaluation_snapshot_cites_butter_principle(self):
+        result = eqg.check_constitution_alignment({"evaluation_snapshot": {"components": {}}})
+        self.assertIn("16_butter_principle", result["evidence"]["cited"])
+
+    def test_real_product_chapters_cites_dual_inspection(self):
+        result = eqg.check_constitution_alignment({"product_chapters": [{"content": "x"}]})
+        self.assertIn("17_dual_inspection", result["evidence"]["cited"])
+
+    def test_never_added_to_hard_reject_criteria(self):
+        self.assertNotIn("constitution_alignment", eqg.REJECT_IF_FAIL)
+
+
+class TestPlatformTosAwareness(unittest.TestCase):
+    """Global Policy Engine (Global Trust & Resilience Layer, Round 3,
+    2026-07-29): honestly UNKNOWN always -- no platform ToS is parsed
+    anywhere in this factory."""
+
+    def test_no_platform_is_unknown(self):
+        result = eqg.check_platform_tos_awareness(None)
+        self.assertEqual(result["status"], "UNKNOWN")
+
+    def test_named_platform_is_still_honestly_unknown_never_a_fabricated_pass(self):
+        result = eqg.check_platform_tos_awareness(["kdp", "shopify"])
+        self.assertEqual(result["status"], "UNKNOWN")
+        self.assertIn("kdp", result["reason"])
+        self.assertIn("shopify", result["reason"])
+
+    def test_never_added_to_hard_reject_criteria(self):
+        self.assertNotIn("platform_tos_awareness", eqg.REJECT_IF_FAIL)
+
+
 class TestEvidenceFreshness(unittest.TestCase):
     def test_no_timestamps_is_unknown(self):
         result = eqg.check_evidence_freshness()

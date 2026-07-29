@@ -51,6 +51,18 @@ class Decision:
     # Additive, default None — every decision recorded before this field
     # existed keeps its real meaning (no family was ever decided for it).
     product_family: Optional[str] = None
+    # Decision Memory (Global Trust & Resilience Layer, Round 6,
+    # 2026-07-29): additive, default None — never backfilled for a
+    # decision recorded before these fields existed (an honest "not
+    # captured for this one," not a guessed value). alternatives_rejected
+    # is a real, human-readable list of what else was considered and why
+    # it lost; expected_outcome is the real, stated prediction this
+    # decision was made against — decision_engine/feedback.py's
+    # sync_outcomes() (already real, already wired) is what later
+    # supplies the matching *actual* outcome, joined by decision_id in
+    # knowledge_graph/build.py, not duplicated here.
+    alternatives_rejected: Optional[List[str]] = None
+    expected_outcome: Optional[str] = None
 
     def to_dict(self):
         return {
@@ -68,6 +80,8 @@ class Decision:
             "ladder": self.ladder,
             "decision_path": self.decision_path,
             "product_family": self.product_family,
+            "alternatives_rejected": self.alternatives_rejected,
+            "expected_outcome": self.expected_outcome,
         }
 
 
