@@ -424,6 +424,63 @@ async function executiveScoreService(req) {
   };
 }
 
+// Continuous Trust & Resilience Monitoring (2026-07-29): merges
+// resilience_monitor.py's real Python-side findings (safe_mode,
+// publish_protection, customer_risk, security_drift, health_trend) with
+// the 2 JS-native signals (storage_integrity from the same
+// computeHealthStatus() operational_stability already trusts;
+// customer reviews/support tickets from lib/dashboard_data.js) --
+// exact same merge pattern executiveScoreService() already established.
+// Informational only; never gates anything.
+const RESILIENCE_SEVERITY_SCORE = { informational: 100, warning: 60, critical: 20, emergency: 0 };
+
+async function resilienceStatusService(req) {
+  const pythonResult = await runPythonServiceCached('resilience_status', [], req);
+  const findings = [...(pythonResult.findings || [])];
+
+  const health = await computeHealthStatus().catch(err => ({ status: 'error', checks: {}, error: err.message }));
+  const storageIntegrity = health.checks && health.checks.storage_integrity;
+  if (storageIntegrity) {
+    findings.push({
+      area: 'data_integrity:storage',
+      severity: storageIntegrity.ok ? 'informational' : (storageIntegrity.severity === 'critical' ? 'critical' : 'warning'),
+      detail: storageIntegrity.detail, evidence: storageIntegrity, data_available: true,
+    });
+  } else {
+    findings.push({ area: 'data_integrity:storage', severity: 'informational', detail: 'تعذّر تشغيل فحص storage_integrity', evidence: {}, data_available: false });
+  }
+
+  const reviews = dashboardData.readCustomerReviewsSummary();
+  if (reviews.average_rating != null) {
+    const severity = reviews.average_rating < 3 ? 'critical' : (reviews.average_rating < 4 ? 'warning' : 'informational');
+    findings.push({ area: 'customer_trust:reviews', severity, detail: `متوسط تقييم حقيقي ${reviews.average_rating} (${reviews.count} مراجعة)`, evidence: reviews, data_available: true });
+  } else {
+    findings.push({ area: 'customer_trust:reviews', severity: 'informational', detail: reviews.note || 'لا مراجعات عملاء حقيقية بعد', evidence: {}, data_available: false });
+  }
+
+  const tickets = dashboardData.readSupportTicketSummary();
+  if (tickets.count > 0) {
+    const severity = tickets.open_count >= 5 ? 'critical' : (tickets.open_count >= 1 ? 'warning' : 'informational');
+    findings.push({ area: 'customer_trust:support_tickets', severity, detail: `${tickets.open_count} تذكرة مفتوحة حقيقية من أصل ${tickets.count}`, evidence: tickets, data_available: true });
+  } else {
+    findings.push({ area: 'customer_trust:support_tickets', severity: 'informational', detail: tickets.note || 'لا تذاكر دعم حقيقية بعد', evidence: {}, data_available: false });
+  }
+
+  const activeAlerts = findings.filter(f => ['warning', 'critical', 'emergency'].includes(f.severity));
+  const scored = findings.filter(f => f.data_available);
+  const resilienceScore = scored.length
+    ? Math.round(scored.reduce((sum, f) => sum + RESILIENCE_SEVERITY_SCORE[f.severity], 0) / scored.length)
+    : 'Unknown';
+
+  return {
+    findings,
+    active_alerts: activeAlerts,
+    resilience_score: resilienceScore,
+    resilience_score_note: `متوسط شفّاف لـ ${scored.length} من ${findings.length} مجالات مُقيَّمة فعلياً اليوم (Python + JS مدمجان) — ${findings.length - scored.length} بلا بيانات حقيقية بعد، لم تُدرَج في المتوسط. معلوماتي فقط — لا يُستخدَم في أي بوابة قبول/رفض حقيقية.`,
+    generated_at: new Date().toISOString(),
+  };
+}
+
 async function knowledgeBaseService(req) {
   const q = req.query.q;
   if (q) {
@@ -857,6 +914,27 @@ const SERVICE_REGISTRY = [
     reused: 'evolution_engine.py build_evolution_report() (EOS Phase 1, 2026-07-19) -- combines executive_intelligence.bottlenecks, strategic_intelligence.technical_debt, revenue_pipeline.pipeline, tool_intelligence.proposals, and the new capability_registry_scanner.py.',
     handler: (req) => runPythonServiceCached('evolution_report', [], req),
     health: pythonHealthCheck('evolution_report'),
+  },
+  {
+    // Continuous Trust & Resilience Monitoring (2026-07-29): the real,
+    // unified Monitor + Classify + Report view over every signal built
+    // across the Global Trust & Resilience Layer + Global Commercial
+    // Hardening. Read-only -- Respond/Protect/Founder-approval stay
+    // exactly as gated as they already were (safe-mode/publish-
+    // protection actions above); this panel only makes the evidence for
+    // using them more visible, faster.
+    name: 'resilience-status',
+    description: "The real, unified resilience view: every monitored area (unstable subsystems, publish/marketplace risk, customer/payment risk, security drift, data integrity, health trend, customer trust) classified informational/warning/critical/emergency, plus a transparent resilience_score (an average of only the real, data-available areas -- never gates anything, never fabricates a severity when no real data exists yet).",
+    reused: 'resilience_monitor.py assess_resilience() (Python signals) merged with server.js computeHealthStatus() storage_integrity + lib/dashboard_data.js reviews/tickets (JS-native signals) -- same merge pattern as executive-score.',
+    handler: resilienceStatusService,
+    health: pythonHealthCheck('resilience_status'),
+  },
+  {
+    name: 'resilience-incidents',
+    description: "Learn: the real incident history (opened/resolved), each with a real root_cause/prevention_rule/detection_rule citing the actual existing mechanism, a live-checked improvement_proposal_id when one currently exists, and rollback_guidance pointing at the real founder action that reverses it. Honestly empty until a real critical/emergency finding has ever occurred.",
+    reused: 'resilience_monitor.py list_incidents()/record_incident() (Continuous Trust & Resilience Monitoring, 2026-07-29), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('resilience_incidents', [], req),
+    health: pythonHealthCheck('resilience_incidents'),
   },
   {
     // Global Trust & Resilience Layer, Round 2 (2026-07-29): real

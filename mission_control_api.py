@@ -673,6 +673,37 @@ def _approve_elevated_risk_publish():
     return publish_protection.approve_elevated_risk_publish(arm_name, approved_by="founder")
 
 
+def _resilience_status():
+    """Continuous Trust & Resilience Monitoring (2026-07-29): the real
+    Python-side half of Monitor+Classify+Report -- resilience_monitor.py's
+    assess_resilience(), reusing every signal (safe_mode, publish_
+    protection, customer risk, security drift, health trend) verbatim.
+    server.js merges in the 2 JS-native signals (storage_integrity,
+    customer reviews/support tickets), same executiveScoreService()
+    merge pattern. Passthrough only."""
+    import resilience_monitor
+    return resilience_monitor.assess_resilience()
+
+
+def _resilience_incidents():
+    """Read-only Mission Control panel: the real incident history
+    (Learn) -- resilience_monitor.py's list_incidents(). Passthrough
+    only."""
+    import resilience_monitor
+    return {"incidents": resilience_monitor.list_incidents()}
+
+
+def _resilience_monitor_tick():
+    """The one real automatic path -- Monitor + Classify (Python signals
+    only) + Learn (record any new critical/emergency incident). Never
+    calls trigger_emergency_stop()/mark_subsystem_unstable() -- those
+    stay exclusively founder-triggered Mission Control actions."""
+    import resilience_monitor
+    result = resilience_monitor.assess_resilience()
+    recorded = resilience_monitor.record_incidents_for_findings(result["findings"])
+    return {"resilience_score": result["resilience_score"], "active_alert_count": len(result["active_alerts"]), "recorded_incidents": recorded}
+
+
 def _evolution_queue_daily_cycle():
     """Autonomous Company Evolution Engine, Round 4 (2026-07-29): the one
     automatic path the founder approved -- intake real proposals, simulate
@@ -1866,6 +1897,9 @@ _ENDPOINTS = {
     "clear_subsystem_unstable": _clear_subsystem_unstable,
     "approve_first_publish": _approve_first_publish,
     "approve_elevated_risk_publish": _approve_elevated_risk_publish,
+    "resilience_status": _resilience_status,
+    "resilience_incidents": _resilience_incidents,
+    "resilience_monitor_tick": _resilience_monitor_tick,
 }
 
 

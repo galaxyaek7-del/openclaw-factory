@@ -941,5 +941,38 @@ class TestFounderProtectionEndpoints(unittest.TestCase):
         self.assertEqual(result["elevated_risk_approved_at"], "t")
 
 
+class TestResilienceMonitoringEndpoints(unittest.TestCase):
+    """Continuous Trust & Resilience Monitoring (2026-07-29): the
+    dispatch layer for the real Monitor/Classify/Report/Learn loop.
+    resilience_monitor.py's own logic has its own isolated unit tests in
+    tests/test_resilience_monitor.py."""
+
+    def test_resilience_status_is_a_passthrough(self):
+        fake_result = {"findings": [], "active_alerts": [], "resilience_score": "Unknown"}
+        with patch("resilience_monitor.assess_resilience", return_value=fake_result) as mock_assess:
+            result = mission_control_api._resilience_status()
+        mock_assess.assert_called_once_with()
+        self.assertEqual(result, fake_result)
+
+    def test_resilience_incidents_is_a_passthrough(self):
+        fake_incidents = [{"incident_id": "x", "event": "opened"}]
+        with patch("resilience_monitor.list_incidents", return_value=fake_incidents) as mock_list:
+            result = mission_control_api._resilience_incidents()
+        mock_list.assert_called_once_with()
+        self.assertEqual(result["incidents"], fake_incidents)
+
+    def test_resilience_monitor_tick_assesses_and_records_incidents(self):
+        fake_findings = [{"area": "safe_mode:ai_generation", "severity": "critical"}]
+        fake_result = {"findings": fake_findings, "active_alerts": fake_findings, "resilience_score": 50}
+        with patch("resilience_monitor.assess_resilience", return_value=fake_result) as mock_assess:
+            with patch("resilience_monitor.record_incidents_for_findings", return_value=[{"incident_id": "x"}]) as mock_record:
+                result = mission_control_api._resilience_monitor_tick()
+        mock_assess.assert_called_once_with()
+        mock_record.assert_called_once_with(fake_findings)
+        self.assertEqual(result["resilience_score"], 50)
+        self.assertEqual(result["active_alert_count"], 1)
+        self.assertEqual(result["recorded_incidents"], [{"incident_id": "x"}])
+
+
 if __name__ == "__main__":
     unittest.main()

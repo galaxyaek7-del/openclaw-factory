@@ -1881,6 +1881,55 @@ async function maybeGenerateDailyEvolutionQueueIntake(now = new Date()) {
   return { action: 'processed', detail: `تمت معالجة ${result.added_count} اقتراح جديد في طابور التطوّر (${result.processed.join(', ') || 'لا شيء'})` };
 }
 
+// ── CONTINUOUS TRUST & RESILIENCE MONITORING ──
+// resilience_monitor.py's assess_resilience() + record_incidents_for_
+// findings() in one call (mission_control_api.py's resilience_monitor_
+// tick). Runs every tick, unlike the daily-gated reports above — see
+// the call site's own comment for why "every tick" is the honest
+// definition of "real-time" here.
+function runResilienceMonitorTick({ timeoutMs = 30000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'resilience_monitor_tick'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ action: 'failed', detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ action: 'failed', detail: `انتهت مهلة resilience_monitor_tick (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ action: 'failed', detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ action: 'failed', detail: result.error || 'فشل غير محدَّد من resilience_monitor_tick' });
+          return;
+        }
+        finish({
+          action: 'assessed',
+          detail: `resilience_score=${result.resilience_score}, تنبيهات نشطة=${result.active_alert_count}, حوادث جديدة مُسجَّلة=${result.recorded_incidents.length}`,
+        });
+      } catch (e) {
+        finish({ action: 'failed', detail: `فشل تحليل ناتج resilience_monitor_tick: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
 // ── SELF-AWARENESS ──
 // CONSTITUTION.md §20. self_awareness.js is a plain Node module — required
 // directly (no subprocess needed, unlike market_hunter.py). Gated to once
@@ -2303,6 +2352,16 @@ async function runTick() {
   markStep('evolution_queue_intake');
   actions.push({ step: 'evolution_queue_intake', ...(await maybeGenerateDailyEvolutionQueueIntake()) });
 
+  // Continuous Trust & Resilience Monitoring (2026-07-29): runs every
+  // tick, not daily-gated — this is meant to be the closest thing to
+  // "real-time" a scheduler-less factory can honestly offer, same
+  // reasoning healthTrend.recordHealthSnapshot() above already uses.
+  // Monitor + Classify + Learn only — never calls trigger_emergency_
+  // stop()/mark_subsystem_unstable() itself; those stay exclusively
+  // founder-triggered Mission Control actions.
+  markStep('resilience_monitor');
+  actions.push({ step: 'resilience_monitor', ...(await runResilienceMonitorTick()) });
+
   // Golden Hunter also runs regardless of dashboard reachability — it's a
   // standalone local Python process, not an HTTP call to the dashboard.
   markStep('golden_hunter');
@@ -2521,6 +2580,7 @@ module.exports = {
   runAiDoctorReport, aiDoctorReportPath, maybeGenerateDailyAiDoctorReport,
   runDepartmentHealthReport, departmentHealthReportPath, maybeGenerateDailyDepartmentHealthReport,
   runEvolutionQueueDailyCycle, maybeGenerateDailyEvolutionQueueIntake,
+  runResilienceMonitorTick,
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
   maybeRunMarketHunter, maybeRunSelfAwareness,
