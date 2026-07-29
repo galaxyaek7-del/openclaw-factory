@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galaxy Forge — Account</title>
+<meta name="description" content="Sign in or create a Galaxy Forge account to track every request, contract, invoice, and delivery in one place.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23d97a3f'/%3E%3Cstop offset='1' stop-color='%238a4a1f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-family='IBM Plex Sans,Arial,sans-serif' font-weight='800' font-size='14' fill='%231a0e05' text-anchor='middle'%3EGF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c11; --bg-elev:#12151d; --bg-card:#161a24; --bg-hover:#1c212e;
+  --border:#242938; --border-soft:#1a1e2a;
+  --ink:#eef0f6; --ink-dim:#9198ad; --ink-faint:#5c6379;
+  --accent:#d97a3f; --accent-soft:#3a2818; --accent-ink:#f0a468;
+  --cool:#5b7fd9; --cool-soft:#182238;
+  --good:#4a9d6f; --good-soft:#132a1e;
+  --bad:#c9524f; --bad-soft:#2e1615;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  --radius:12px;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; line-height:1.6;}
+a{color:inherit;}
+.wrap{max-width:440px; margin:0 auto; padding:0 1.5rem;}
+h1,h2,h3{font-weight:700; letter-spacing:-.02em; text-wrap:balance; margin:0;}
+p{margin:0;}
+
+header{position:sticky; top:0; z-index:50; background:rgba(10,12,17,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--border-soft);}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; max-width:1120px; margin:0 auto;}
+.brand{display:flex; align-items:center; gap:.6rem; text-decoration:none;}
+.brand-mark{width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg, var(--accent), #8a4a1f); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.9rem; color:#1a0e05; flex-shrink:0;}
+.brand-name{font-weight:700; font-size:1.02rem; color:var(--ink);}
+.nav-cta{font-family:var(--sans); font-size:.85rem; font-weight:600; padding:.55rem 1.1rem; border-radius:8px; background:transparent; color:var(--ink); text-decoration:none; border:1px solid var(--border); transition:border-color .15s; white-space:nowrap;}
+.nav-cta:hover{border-color:var(--cool);}
+
+main{padding:3.5rem 0 5rem;}
+.eyebrow{display:inline-flex; align-items:center; gap:.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); background:var(--accent-soft); border:1px solid rgba(217,122,63,.3); padding:.4rem .8rem; border-radius:99px; margin-bottom:1.2rem;}
+
+.card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.8rem; display:flex; flex-direction:column; gap:1rem;}
+.card input{font-family:var(--sans); font-size:.9rem; background:var(--bg-elev); border:1px solid var(--border); color:var(--ink); border-radius:8px; padding:.7rem .85rem; width:100%;}
+.card input:focus{outline:none; border-color:var(--cool);}
+.field{display:flex; flex-direction:column; gap:.35rem;}
+.field label{font-size:.8rem; color:var(--ink-dim);}
+.hp-field{position:absolute; left:-9999px; opacity:0;}
+
+.btn{font-family:var(--sans); font-size:.9rem; font-weight:600; padding:.75rem 1.3rem; border-radius:9px; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:.5rem; cursor:pointer; border:1px solid transparent; transition:background .15s, border-color .15s; background:none; width:100%;}
+.btn-primary{background:var(--accent); color:#1a0e05; border-color:var(--accent);}
+.btn-primary:hover{background:var(--accent-ink);}
+.btn-primary:disabled{opacity:.5; cursor:default;}
+
+.toggle-row{display:flex; gap:.5rem; background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:9px; padding:.3rem;}
+.toggle-btn{flex:1; text-align:center; padding:.55rem; border-radius:7px; font-size:.85rem; font-weight:600; color:var(--ink-dim); cursor:pointer; user-select:none;}
+.toggle-btn.active{background:var(--bg-card); color:var(--ink);}
+
+#formStatus{font-size:.86rem; padding:.7rem .9rem; border-radius:8px; display:none;}
+#formStatus.error{display:block; background:var(--bad-soft); color:var(--bad);}
+#formStatus.good{display:block; background:var(--good-soft); color:var(--good);}
+
+.hint{font-size:.8rem; color:var(--ink-faint);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a href="/site/" class="brand">
+      <div class="brand-mark">GF</div>
+      <div class="brand-name">Galaxy Forge</div>
+    </a>
+    <a href="/site/" class="nav-cta">← Back to site</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="eyebrow"><span>●</span> Customer Account</div>
+
+    <div class="card">
+      <div class="toggle-row">
+        <div class="toggle-btn active" id="tabLogin">Sign in</div>
+        <div class="toggle-btn" id="tabSignup">Create account</div>
+      </div>
+
+      <h2 id="formTitle">Sign in</h2>
+      <p class="hint" id="formHint">Track your requests, contracts, invoices, and deliveries in one place.</p>
+
+      <form id="authForm" style="display:flex; flex-direction:column; gap:1rem;">
+        <input class="hp-field" type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+
+        <div class="field" id="nameField" style="display:none;">
+          <label for="name">Full name</label>
+          <input id="name" autocomplete="name">
+        </div>
+        <div class="field" id="companyField" style="display:none;">
+          <label for="company">Company (optional)</label>
+          <input id="company" autocomplete="organization">
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" required>
+        </div>
+
+        <div id="formStatus"></div>
+
+        <button type="submit" class="btn btn-primary" id="submitBtn">Sign in →</button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  var mode = 'login'; // 'login' | 'signup'
+  var tabLogin = document.getElementById('tabLogin');
+  var tabSignup = document.getElementById('tabSignup');
+  var formTitle = document.getElementById('formTitle');
+  var formHint = document.getElementById('formHint');
+  var nameField = document.getElementById('nameField');
+  var companyField = document.getElementById('companyField');
+  var submitBtn = document.getElementById('submitBtn');
+  var passwordInput = document.getElementById('password');
+  var statusEl = document.getElementById('formStatus');
+  var form = document.getElementById('authForm');
+
+  function setMode(next){
+    mode = next;
+    var isSignup = mode === 'signup';
+    tabLogin.classList.toggle('active', !isSignup);
+    tabSignup.classList.toggle('active', isSignup);
+    nameField.style.display = isSignup ? '' : 'none';
+    companyField.style.display = isSignup ? '' : 'none';
+    formTitle.textContent = isSignup ? 'Create your account' : 'Sign in';
+    formHint.textContent = isSignup
+      ? 'One account for every request you submit to Galaxy Forge.'
+      : 'Track your requests, contracts, invoices, and deliveries in one place.';
+    passwordInput.autocomplete = isSignup ? 'new-password' : 'current-password';
+    submitBtn.textContent = isSignup ? 'Create account →' : 'Sign in →';
+    statusEl.className = '';
+    statusEl.textContent = '';
+  }
+
+  tabLogin.addEventListener('click', function(){ setMode('login'); });
+  tabSignup.addEventListener('click', function(){ setMode('signup'); });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    statusEl.className = '';
+    statusEl.textContent = '';
+    submitBtn.disabled = true;
+
+    var payload = {
+      email: document.getElementById('email').value.trim(),
+      password: passwordInput.value,
+      website: document.getElementById('website').value,
+    };
+    var endpoint = '/api/customer/login';
+    if (mode === 'signup') {
+      endpoint = '/api/customer/signup';
+      payload.name = document.getElementById('name').value.trim();
+      payload.company = document.getElementById('company').value.trim();
+    }
+
+    fetch(endpoint, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload),
+    })
+      .then(function(r){ return r.json().then(function(data){ return {ok: r.ok, data: data}; }); })
+      .then(function(res){
+        submitBtn.disabled = false;
+        if (!res.ok || !res.data.success) {
+          statusEl.className = 'error';
+          statusEl.textContent = (res.data && res.data.error) || 'Something went wrong — please try again.';
+          return;
+        }
+        statusEl.className = 'good';
+        statusEl.textContent = mode === 'signup' ? 'Account created — redirecting…' : 'Signed in — redirecting…';
+        setTimeout(function(){ window.location.href = '/site/'; }, 600);
+      })
+      .catch(function(){
+        submitBtn.disabled = false;
+        statusEl.className = 'error';
+        statusEl.textContent = 'Network error — please try again.';
+      });
+  });
+})();
+</script>
+
+</body>
+</html>

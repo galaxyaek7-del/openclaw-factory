@@ -4029,6 +4029,172 @@ function isRateLimited(ip) {
   return timestamps.length > CUSTOMER_REQUEST_RATE_LIMIT.maxPerWindow;
 }
 
+// ── Customer Accounts (Customer Platform Round 1, 2026-07-29) ──
+// Real per-customer login, replacing "possession of the request_id URL" as
+// the only way to look at your own order. Deliberately its own signing
+// scheme/cookie, separate from MISSION_CONTROL_SESSION_SECRET (lib/
+// customer_auth.js's own header explains why) -- a customer must never be
+// able to forge a founder Mission Control session, or vice versa. Guest
+// (no-login) submission via /api/customer/request-product is UNCHANGED --
+// this only adds an optional account layer on top, never a requirement to
+// use the site.
+const customerAuth = require('./lib/customer_auth');
+const CUSTOMER_ACCOUNTS_FILE = path.join(__dirname, 'data', 'customer_accounts.json');
+const CUSTOMER_SESSION_SECRET_FILE = path.join(__dirname, 'data', '.customer_session_secret');
+const CUSTOMER_SESSION_SECRET = customerAuth.loadOrCreateSessionSecret(CUSTOMER_SESSION_SECRET_FILE);
+const CUSTOMER_SESSION_COOKIE = 'cust_session';
+const CUSTOMER_SESSION_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days -- real customers, not a founder daily tool
+const CUSTOMER_DUMMY_PASSWORD_HASH = customerAuth.hashPassword('dummy-timing-equalizer'); // fixed once at startup, login's no-such-account timing equalizer
+
+function loadCustomerAccounts() {
+  try {
+    if (!fs.existsSync(CUSTOMER_ACCOUNTS_FILE)) return {};
+    const data = JSON.parse(fs.readFileSync(CUSTOMER_ACCOUNTS_FILE, 'utf8'));
+    return (data && typeof data === 'object' && !Array.isArray(data)) ? data : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveCustomerAccounts(accounts) {
+  fs.mkdirSync(path.dirname(CUSTOMER_ACCOUNTS_FILE), { recursive: true });
+  fs.writeFileSync(CUSTOMER_ACCOUNTS_FILE, JSON.stringify(accounts, null, 2));
+}
+
+function findCustomerAccountByEmail(accounts, email) {
+  const target = email.trim().toLowerCase();
+  return Object.values(accounts).find(a => (a.email || '').trim().toLowerCase() === target) || null;
+}
+
+// Same dedicated-limiter-per-surface convention as isConsultationRateLimited
+// -- an auth-brute-force attempt must not also exhaust a customer's own
+// request-product quota, and vice versa.
+const CUSTOMER_AUTH_RATE_LIMIT = { windowMs: 10 * 60 * 1000, maxPerWindow: 8 };
+const customerAuthRateState = new Map();
+function isCustomerAuthRateLimited(ip) {
+  const now = Date.now();
+  const windowStart = now - CUSTOMER_AUTH_RATE_LIMIT.windowMs;
+  const timestamps = (customerAuthRateState.get(ip) || []).filter(t => t > windowStart);
+  timestamps.push(now);
+  customerAuthRateState.set(ip, timestamps);
+  if (customerAuthRateState.size > 5000) customerAuthRateState.clear();
+  return timestamps.length > CUSTOMER_AUTH_RATE_LIMIT.maxPerWindow;
+}
+
+function publicAccountView(account) {
+  return { account_id: account.account_id, email: account.email, name: account.name, company: account.company || '' };
+}
+
+// Reusable for any future customer-facing route that needs a real logged-in
+// account (order history, invoices, downloads -- later rounds).
+function getAuthenticatedCustomerAccount(req) {
+  const cookies = parseCookies(req);
+  const accountId = customerAuth.verifyCustomerSession(CUSTOMER_SESSION_SECRET, cookies[CUSTOMER_SESSION_COOKIE]);
+  if (!accountId) return null;
+  const accounts = loadCustomerAccounts();
+  return accounts[accountId] || null;
+}
+
+function requireCustomerAuth(req, res, next) {
+  const account = getAuthenticatedCustomerAccount(req);
+  if (!account) return res.status(401).json({ success: false, error: 'please log in to continue' });
+  req.customerAccount = account;
+  next();
+}
+
+app.post('/api/customer/signup', (req, res) => {
+  try {
+    const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
+    if (isCustomerAuthRateLimited(ip)) {
+      return res.status(429).json({ success: false, error: 'too many attempts — please try again later' });
+    }
+    const body = req.body || {};
+    if (body.website) {
+      // Honeypot -- same silent-accept-but-drop convention as request-product.
+      return res.json({ success: true });
+    }
+    const name = String(body.name || '').trim();
+    const email = String(body.email || '').trim();
+    const company = String(body.company || '').trim();
+    const password = String(body.password || '');
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ success: false, error: 'name, email, and password are required' });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ success: false, error: 'a valid email address is required' });
+    }
+    if (password.length < 8) {
+      return res.status(400).json({ success: false, error: 'password must be at least 8 characters' });
+    }
+    if (name.length > CUSTOMER_REQUEST_FIELD_MAX || company.length > CUSTOMER_REQUEST_FIELD_MAX) {
+      return res.status(400).json({ success: false, error: 'field exceeds the maximum length' });
+    }
+
+    const accounts = loadCustomerAccounts();
+    if (findCustomerAccountByEmail(accounts, email)) {
+      return res.status(409).json({ success: false, error: 'an account with this email already exists' });
+    }
+
+    const accountId = customerAuth.generateAccountId();
+    const account = {
+      account_id: accountId,
+      email, name, company,
+      password_hash: customerAuth.hashPassword(password),
+      created_at: new Date().toISOString(),
+    };
+    accounts[accountId] = account;
+    saveCustomerAccounts(accounts);
+
+    const token = customerAuth.signCustomerSession(CUSTOMER_SESSION_SECRET, accountId);
+    res.cookie(CUSTOMER_SESSION_COOKIE, token, { httpOnly: true, sameSite: 'lax', maxAge: CUSTOMER_SESSION_MAX_AGE_MS });
+    res.json({ success: true, account: publicAccountView(account) });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'could not create account — please try again' });
+  }
+});
+
+app.post('/api/customer/login', (req, res) => {
+  try {
+    const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
+    if (isCustomerAuthRateLimited(ip)) {
+      return res.status(429).json({ success: false, error: 'too many attempts — please try again later' });
+    }
+    const email = String((req.body && req.body.email) || '').trim();
+    const password = String((req.body && req.body.password) || '');
+    if (!email || !password) {
+      return res.status(400).json({ success: false, error: 'email and password are required' });
+    }
+
+    const accounts = loadCustomerAccounts();
+    const account = findCustomerAccountByEmail(accounts, email);
+    // Same shape of response whether the email doesn't exist or the
+    // password is wrong -- never confirms which one to an attacker.
+    // Running verifyPassword against a fixed dummy hash even when no
+    // account was found keeps the timing roughly consistent either way.
+    const passwordOk = customerAuth.verifyPassword(password, account ? account.password_hash : CUSTOMER_DUMMY_PASSWORD_HASH);
+    if (!account || !passwordOk) {
+      return res.status(401).json({ success: false, error: 'invalid email or password' });
+    }
+
+    const token = customerAuth.signCustomerSession(CUSTOMER_SESSION_SECRET, account.account_id);
+    res.cookie(CUSTOMER_SESSION_COOKIE, token, { httpOnly: true, sameSite: 'lax', maxAge: CUSTOMER_SESSION_MAX_AGE_MS });
+    res.json({ success: true, account: publicAccountView(account) });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'could not log in — please try again' });
+  }
+});
+
+app.post('/api/customer/logout', (req, res) => {
+  res.clearCookie(CUSTOMER_SESSION_COOKIE);
+  res.json({ success: true });
+});
+
+app.get('/api/customer/session', (req, res) => {
+  const account = getAuthenticatedCustomerAccount(req);
+  res.json({ success: true, authenticated: !!account, account: account ? publicAccountView(account) : null });
+});
+
 // ADR-130 (2026-07-25): direct spawn of customer_pipeline.py -- a single-
 // purpose CLI script (command + JSON payload), same pattern as /generate-
 // book spawning book_generator.py directly rather than going through
@@ -4226,6 +4392,12 @@ app.post('/api/customer/request-product', (req, res) => {
       } catch { /* malformed catalog file -- fail open, treat as no match */ }
     }
 
+    // Optional: if the visitor is logged in, stamp their account_id onto
+    // the request so it shows up in their real Customer History (Round 5)
+    // -- guest (no-login) submission is completely unchanged, this never
+    // requires an account.
+    const authenticatedAccount = getAuthenticatedCustomerAccount(req);
+
     const requestId = 'req_' + crypto.randomBytes(8).toString('hex');
     const record = {
       request_id: requestId,
@@ -4233,6 +4405,7 @@ app.post('/api/customer/request-product', (req, res) => {
       name, email, company, description,
       budget_range: budgetRange || null,
       catalog_product_id: catalogProductId,
+      account_id: authenticatedAccount ? authenticatedAccount.account_id : null,
       status: 'NEW',
     };
     fs.mkdirSync(path.dirname(CUSTOMER_REQUESTS_FILE), { recursive: true });

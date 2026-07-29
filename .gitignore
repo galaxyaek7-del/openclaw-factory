@@ -24,3 +24,18 @@ __pycache__/
 /test_output.pdf
 books/regression_test_draft_with_content.pdf
 books/covers/regression_test_draft_with_content_cover.png
+
+# Real customer PII (name/email/company/description) and auth secrets --
+# unlike this repo's internal business data (decisions.jsonl, finance_data.json,
+# etc., which ARE committed by convention), these must never land in git.
+# Customer Platform Round 1 (2026-07-29) audit finding: customer_requests.jsonl/
+# support_tickets.jsonl/consultation_log.jsonl/customer_pipeline_state.json were
+# never added here even though the code that writes them has existed since
+# ADR-129/130 (2026-07-25) -- fixed now, before any real request data exists.
+data/customer_accounts.json
+data/customer_requests.jsonl
+data/support_tickets.jsonl
+data/consultation_log.jsonl
+data/customer_pipeline_state.json
+data/customer_reviews.jsonl
+data/.customer_session_secret
