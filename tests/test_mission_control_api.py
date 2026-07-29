@@ -1005,5 +1005,49 @@ class TestStrategicIntelligenceCoreEndpoints(unittest.TestCase):
                 mission_control_api._strategic_score()
 
 
+class TestGalaxyCouncilEndpoints(unittest.TestCase):
+    """Galaxy Council (2026-07-29): the dispatch layer for the real
+    9-member convening + Learning join. galaxy_council.py's own logic
+    has its own isolated unit tests in tests/test_galaxy_council.py."""
+
+    def test_convene_galaxy_council_delegates_with_the_given_niche(self):
+        payload = {"niche": "n"}
+        fake_session = {"niche": "n", "members": [], "disagreement_detected": False}
+        with patch.object(sys, "argv", ["mission_control_api.py", "convene_galaxy_council", json.dumps(payload)]):
+            with patch("galaxy_council.convene_council", return_value=fake_session) as mock_convene:
+                result = mission_control_api._convene_galaxy_council()
+        mock_convene.assert_called_once_with("n")
+        self.assertEqual(result, fake_session)
+
+    def test_convene_galaxy_council_requires_a_niche(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "convene_galaxy_council", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._convene_galaxy_council()
+
+    def test_record_council_recommendation_reconvenes_fresh_then_records(self):
+        payload = {"niche": "n", "decision_id": "d1"}
+        fake_session = {"niche": "n", "members": [], "disagreement_detected": False}
+        fake_record = {"council_id": "c1", "niche": "n", "decision_id": "d1"}
+        with patch.object(sys, "argv", ["mission_control_api.py", "record_council_recommendation", json.dumps(payload)]):
+            with patch("galaxy_council.convene_council", return_value=fake_session) as mock_convene:
+                with patch("galaxy_council.record_council_recommendation", return_value=fake_record) as mock_record:
+                    result = mission_control_api._record_council_recommendation()
+        mock_convene.assert_called_once_with("n")
+        mock_record.assert_called_once_with(fake_session, decision_id="d1")
+        self.assertEqual(result, fake_record)
+
+    def test_record_council_recommendation_requires_a_niche(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "record_council_recommendation", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._record_council_recommendation()
+
+    def test_council_learning_summary_is_a_passthrough(self):
+        fake_summary = {"answer": "NOT ENOUGH EVIDENCE", "reviews": []}
+        with patch("galaxy_council.council_learning_summary", return_value=fake_summary) as mock_summary:
+            result = mission_control_api._council_learning_summary()
+        mock_summary.assert_called_once_with()
+        self.assertEqual(result, fake_summary)
+
+
 if __name__ == "__main__":
     unittest.main()

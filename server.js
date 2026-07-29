@@ -967,6 +967,20 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('executive_brief'),
   },
   {
+    // Galaxy Council Learning (2026-07-29): the real, cheap, no-input
+    // read (JSONL reads + decision_engine.store joins only -- never a
+    // per-opportunity value_engine scan) for the auto-refreshing
+    // Mission Control panel. Same underlying python section as the
+    // ACTION_REGISTRY's get-council-learning-summary below (dual
+    // exposure, same precedent as evolution_report/department_health/
+    // ai_doctor being both a live panel and a factory_loop.js caller).
+    name: 'galaxy-council-learning',
+    description: "The real 3-way join: Council Recommendation vs. the real Founder Decision that followed vs. the real eventual Outcome. Honestly NOT ENOUGH EVIDENCE until real triples accumulate -- never backfilled for a niche/decision that predates the Council's existence.",
+    reused: 'galaxy_council.py::council_learning_summary()',
+    handler: (req) => runPythonServiceCached('council_learning_summary', [], req),
+    health: pythonHealthCheck('council_learning_summary'),
+  },
+  {
     // Global Trust & Resilience Layer, Round 2 (2026-07-29): real
     // per-subsystem Safe Mode -- an unstable subsystem is isolated on
     // its own, the rest of the company keeps running. Read-only here;
@@ -1883,6 +1897,46 @@ const ACTION_REGISTRY = [
       if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
       return runPythonActionAsync('get-board-brief', 'get_board_brief', [JSON.stringify({ niche })]);
     },
+  },
+  {
+    // Galaxy Council (2026-07-29) -- "no single module dominates": all 9
+    // real intelligence-domain members convened side by side for one
+    // niche, honest disagreement never averaged into a fake consensus.
+    // Answers a different question than convene-executive-board above
+    // ("what does each intelligence domain currently believe" vs.
+    // "should we approve this one already-evaluated decision") -- both
+    // stay, deliberately distinct (ADR-138). Read-only -- does not
+    // persist anything; use record-council-recommendation for that.
+    name: 'convene-galaxy-council',
+    description: "Convenes all 9 real Council members (Strategic/Market/Production/Customer/Financial/Security/Resilience/Innovation/Executive-Memory) for one niche -- each with opinion/confidence/evidence/risk/recommendation/founder_approval_required, honest stance-based disagreement detection, and Expected Impact/Long-term Effect citing Strategic Intelligence Core's own real dimensions. Never fabricates consensus, never hides disagreement.",
+    reused: 'galaxy_council.py::convene_council()',
+    reversible: true, // read-only -- persists nothing by itself
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('convene-galaxy-council', 'convene_galaxy_council', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    name: 'record-council-recommendation',
+    description: 'Re-convenes the Galaxy Council fresh for one niche and permanently appends the real result to data/council_recommendations.jsonl -- the real substrate get-council-learning-summary needs (Recommendation vs Founder Decision vs Real Outcome). Explicit, founder-triggered only -- never automatic.',
+    reused: 'galaxy_council.py::record_council_recommendation()',
+    reversible: true, // append-only, same convention as data/board_meetings.jsonl
+    kind: 'async',
+    asyncRunner: (req) => {
+      const { niche, decision_id } = req.body || {};
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('record-council-recommendation', 'record_council_recommendation', [JSON.stringify({ niche, decision_id: decision_id || null })]);
+    },
+  },
+  {
+    name: 'get-council-learning-summary',
+    description: "The real 3-way join: Council Recommendation vs. the real Founder Decision that followed vs. the real eventual Outcome -- same True/False/None non-forced-verdict discipline as review-board-track-record. Honestly NOT ENOUGH EVIDENCE until real triples accumulate.",
+    reused: 'galaxy_council.py::council_learning_summary()',
+    reversible: true,
+    kind: 'async',
+    asyncRunner: () => runPythonActionAsync('get-council-learning-summary', 'council_learning_summary', []),
   },
   {
     // Market Evidence & Alerting layer (2026-07-23) -- real, on-demand

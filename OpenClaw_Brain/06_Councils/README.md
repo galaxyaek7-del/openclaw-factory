@@ -20,3 +20,12 @@ OPENCLAW_OS_CONSTITUTION.md names 12 Councils but doesn't say which code impleme
 ## Reading this table
 
 Five Councils (Quality, Golden Hunter, Knowledge, Publishing, and Engineering as the substrate all of them run on) have real, working code. Security and Digital Sanitation are *practiced* — real habits enforced in every task this session — but have no single file to point to. The rest are named in the supreme law but have nothing built for them yet, which is expected: [01_Vision](../01_Vision/)'s Golden Rule says don't build ahead of proven need.
+
+## Not the same as two other rosters (2026-07-29)
+
+This table's 12 Constitution-named Councils are a **third, distinct roster** from two later, code-real bodies — don't confuse them:
+
+- **Executive Board** (`executive_board.py`, Executive Directive, 2026-07-22) — 10 C-suite roles (CEO/CTO/CFO/COO/CPO/Chief Market Intelligence/Chief Risk/Chief Revenue/Chief Customer/Chief Innovation Officer) that vote APPROVE/REJECT/DEFER on one already-evaluated decision.
+- **Galaxy Council** (`galaxy_council.py`, ADR-138, 2026-07-29) — 10 named members (Strategic/Market/Production/Customer/Financial/Security/Resilience/Innovation Intelligence, Executive Memory, Mission Control) that each state what they currently believe about a niche, side by side, honest disagreement never hidden.
+
+None of the three rosters share membership. This is deliberate, not an oversight — see ADR-138 for the reasoning.

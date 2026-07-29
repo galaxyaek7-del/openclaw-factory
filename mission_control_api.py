@@ -737,6 +737,52 @@ def _strategic_score():
     return strategic_intelligence_core.strategic_score(niche)
 
 
+def _convene_galaxy_council():
+    """Galaxy Council (2026-07-29): the real 9-member intelligence
+    convening for one niche -- every member's opinion/confidence/
+    evidence/risk/recommendation/founder_approval_required, honest
+    disagreement detection (never a fabricated consensus). Read-only --
+    does not persist anything by itself; use record_council_
+    recommendation to append it to institutional memory. Reads its
+    payload from sys.argv[2]:
+    `python mission_control_api.py convene_galaxy_council '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import galaxy_council
+    return galaxy_council.convene_council(niche)
+
+
+def _record_council_recommendation():
+    """Explicit, human-triggered append only -- never automatic (this
+    factory has no scheduler). Re-convenes the Council fresh for this
+    niche (never records a stale/passed-in session) and immediately
+    appends the real result to data/council_recommendations.jsonl, the
+    real substrate council_learning_summary() needs. Reads its payload
+    from sys.argv[2]:
+    `python mission_control_api.py record_council_recommendation
+    '{"niche":"...","decision_id":"..."}'` (decision_id optional)."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import galaxy_council
+    session = galaxy_council.convene_council(niche)
+    return galaxy_council.record_council_recommendation(session, decision_id=payload.get("decision_id"))
+
+
+def _council_learning_summary():
+    """Galaxy Council Learning (2026-07-29): the real 3-way join
+    (Council Recommendation -> real Founder Decision -> real Outcome).
+    Honestly NOT ENOUGH EVIDENCE until real recommendation/decision/
+    outcome triples accumulate -- never backfilled. Passthrough only."""
+    import galaxy_council
+    return galaxy_council.council_learning_summary()
+
+
 def _evolution_queue_daily_cycle():
     """Autonomous Company Evolution Engine, Round 4 (2026-07-29): the one
     automatic path the founder approved -- intake real proposals, simulate
@@ -1935,6 +1981,9 @@ _ENDPOINTS = {
     "resilience_monitor_tick": _resilience_monitor_tick,
     "executive_brief": _executive_brief,
     "strategic_score": _strategic_score,
+    "convene_galaxy_council": _convene_galaxy_council,
+    "record_council_recommendation": _record_council_recommendation,
+    "council_learning_summary": _council_learning_summary,
 }
 
 

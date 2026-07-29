@@ -213,6 +213,7 @@
         <button class="btn primary" data-action="trigger-opportunity-evaluation">⚡ تقييم الفرص الآن</button>
         <button class="btn" data-action="go-deep-evidence">🔎 تعمّق في فرصة محدَّدة</button>
         <button id="productConceptComparisonBtn" class="btn">🧪 قارن مسارات الإنتاج</button>
+        <button class="btn" data-action="convene-galaxy-council">🏛️ استدعِ مجلس المجرة (Galaxy Council)</button>
       </div>
     </div>
     <div id="productConceptComparisonResult"></div>
@@ -487,6 +488,50 @@ function renderGoDeepEvidenceResult(result) {
   return `<p class="muted">إشارات معلوماتية فقط — لا تُغيّر أي بوابة قبول/رفض حقيقية.</p>${pain}${competitors}${coverage}`;
 }
 
+// Galaxy Council (2026-07-29): renders convene_council()'s real session --
+// every field here is a direct display of what galaxy_council.py already
+// computed; this function fabricates nothing, blends nothing. A SPLIT
+// (disagreement_detected) is shown as a real split, never smoothed into
+// one fake consensus number.
+function renderImpactDim(dim, label) {
+  if (!dim || typeof dim !== 'object') return `<p class="muted">${escapeHtml(label)}: —</p>`;
+  const value = typeof dim.value === 'object' ? JSON.stringify(dim.value) : String(dim.value ?? 'Unknown');
+  return `<p><strong>${escapeHtml(label)}:</strong> ${escapeHtml(value)}${dim.reason ? ` <span class="muted">(${escapeHtml(dim.reason)})</span>` : ''}</p>`;
+}
+
+function renderGalaxyCouncilResult(result) {
+  if (!result) return '<p class="muted">لا نتيجة.</p>';
+
+  const headline = result.disagreement_detected
+    ? `<div class="card"><h3>⚠ انقسام حقيقي — لا إجماع</h3>
+        <p class="muted">${escapeHtml(result.council_recommendation)}</p>
+        ${(result.disagreeing_members || []).map(d => `<p><strong>${escapeHtml(d.member)}</strong> [${escapeHtml(d.stance)}]: ${escapeHtml(d.recommendation)} — <span class="muted">${escapeHtml(d.risk)}</span></p>`).join('')}
+      </div>`
+    : `<div class="card"><h3>توصية المجلس</h3>
+        <p>${escapeHtml(result.council_recommendation)}</p>
+        <p class="muted">الثقة: ${escapeHtml(String(result.council_confidence))}</p>
+      </div>`;
+
+  const founderNote = result.founder_approval_required
+    ? '<p class="muted" style="color:#b45309">⚠ يتطلب موافقة المؤسس — عضو واحد على الأقل رفع علامة founder_approval_required</p>'
+    : '<p class="muted">لا موافقة مؤسس مطلوبة من أي عضو حالياً</p>';
+
+  const impact = `<div class="card"><h3>الأثر المتوقَّع والأثر طويل المدى</h3>
+      ${renderImpactDim(result.expected_impact, 'الأثر المتوقَّع (Strategic Value)')}
+      ${renderImpactDim(result.long_term_effect, 'الأثر طويل المدى (Long-Term Value)')}
+    </div>`;
+
+  const members = `<div class="card"><h3>كل الأعضاء (9)</h3>${(result.members || []).map(m => `
+      <div style="border-bottom:1px solid #33415555; padding:8px 0">
+        <p><strong>${escapeHtml(m.member)}</strong> — <span class="muted">[${escapeHtml(m.stance)}${m.scope === 'company_wide' ? '، على مستوى الشركة' : ''}]</span> ${m.founder_approval_required ? '⚠' : ''}</p>
+        <p>${escapeHtml(m.opinion)}</p>
+        <p class="muted">التوصية: ${escapeHtml(m.recommendation)} — الثقة: ${escapeHtml(String(m.confidence))}</p>
+        <p class="muted">الخطر: ${escapeHtml(m.risk)}</p>
+      </div>`).join('')}</div>`;
+
+  return `${headline}${founderNote}${impact}${members}`;
+}
+
 // Opportunity Intelligence Round 2 (2026-07-22): renders one of
 // opportunity_pipeline.py's 10 annotated fields -- either a real value or
 // an honest {answer:"Unknown", reason} dict (same convention already used
@@ -701,6 +746,8 @@ function openActionModal(actionName) {
     ? '<input type="text" id="pauseReasonInput" placeholder="سبب الإيقاف (اختياري)">'
     : actionName === 'go-deep-evidence'
     ? '<input type="text" id="goDeepNicheInput" placeholder="النيتش المطلوب التعمّق فيه (مطلوب)">'
+    : actionName === 'convene-galaxy-council'
+    ? '<input type="text" id="galaxyCouncilNicheInput" placeholder="النيتش المطلوب استدعاء المجلس بشأنه (مطلوب)">'
     : '';
   actionModalProgress.style.display = 'none';
   actionModalResult.textContent = '';
@@ -759,6 +806,17 @@ async function confirmAction(actionName) {
     }
     body.niche = niche;
   }
+  if (actionName === 'convene-galaxy-council') {
+    const nicheEl = document.getElementById('galaxyCouncilNicheInput');
+    const niche = nicheEl ? nicheEl.value.trim() : '';
+    if (!niche) {
+      actionModalProgress.style.display = 'none';
+      actionModalResult.textContent = 'النيتش مطلوب.';
+      actionModalConfirm.disabled = false;
+      return;
+    }
+    body.niche = niche;
+  }
 
   let res;
   try {
@@ -793,6 +851,13 @@ async function confirmAction(actionName) {
       if (actionName === 'go-deep-evidence') {
         actionModalResult.innerHTML = renderGoDeepEvidenceResult(job.result);
         pushNotification('success', `go-deep-evidence: تقرير أدلة جاهز لـ"${job.result?.niche ?? ''}"`);
+      } else if (actionName === 'convene-galaxy-council') {
+        actionModalResult.innerHTML = renderGalaxyCouncilResult(job.result);
+        const rec = job.result || {};
+        pushNotification(
+          rec.disagreement_detected ? 'warning' : 'success',
+          `مجلس المجرة لـ"${rec.niche ?? ''}": ${rec.disagreement_detected ? 'انقسام حقيقي بين الأعضاء' : (rec.council_recommendation || 'اكتمل')}`,
+        );
       } else if (degradation) {
         actionModalResult.textContent = `اكتمل مع تدهور جزئي: ${degradation}`;
         pushNotification('warning', `${actionName}: اكتمل مع تدهور جزئي — ${degradation}`);
