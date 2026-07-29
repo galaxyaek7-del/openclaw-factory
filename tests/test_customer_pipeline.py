@@ -688,6 +688,44 @@ class TestCustomerHistoryAndReviews(BasePipelineTest):
         self.assertEqual(result["stage"], "FOLLOWED_UP")
 
 
+class TestMissionControlAggregators(BasePipelineTest):
+    """Customer Platform Round 6 (2026-07-29): real Mission Control
+    aggregators over already-real pipeline state -- no new scoring/logic,
+    passthrough only."""
+
+    def test_fulfillment_queue_filters_to_paid_and_later_stages_only(self):
+        state = {
+            "req_new": {"request_id": "req_new", "stage": "NEW", "stage_history": []},
+            "req_paid": {"request_id": "req_paid", "stage": "PAID", "stage_history": [], "updated_at": "t1"},
+            "req_pending": {"request_id": "req_pending", "stage": "PENDING_FOUNDER_FULFILLMENT", "stage_history": [], "updated_at": "t2"},
+            "req_delivered": {"request_id": "req_delivered", "stage": "DELIVERED", "stage_history": [], "updated_at": "t3"},
+        }
+        cp._save_state(state, self.state_path)
+        result = cp.list_fulfillment_queue(requests_path=self.requests_path, state_path=self.state_path)
+        ids = {e["request_id"] for e in result["entries"]}
+        self.assertEqual(ids, {"req_paid", "req_pending", "req_delivered"})
+        self.assertEqual(len(result["needs_fulfillment"]), 1)
+        self.assertEqual(result["needs_fulfillment"][0]["request_id"], "req_pending")
+
+    def test_invoices_lists_only_requests_with_a_real_invoice(self):
+        state = {
+            "req_no_invoice": {"request_id": "req_no_invoice", "stage": "AWAITING_PAYMENT", "stage_history": []},
+            "req_paid": {"request_id": "req_paid", "stage": "PAID", "stage_history": [],
+                         "invoice": {"invoice_number": "INV-1", "total": 126.0, "issued_at": "t1"}},
+        }
+        cp._save_state(state, self.state_path)
+        result = cp.list_invoices(state_path=self.state_path)
+        self.assertEqual(result["count"], 1)
+        self.assertEqual(result["total_revenue"], 126.0)
+        self.assertEqual(result["invoices"][0]["request_id"], "req_paid")
+
+    def test_invoices_empty_is_honest_zero(self):
+        cp._save_state({}, self.state_path)
+        result = cp.list_invoices(state_path=self.state_path)
+        self.assertEqual(result["count"], 0)
+        self.assertEqual(result["total_revenue"], 0)
+
+
 class TestCustomerSafeCopy(BasePipelineTest):
     """Commercial Readiness Report (2026-07-25), finding PY1: the
     customer's own status page must never show internal function names

@@ -510,6 +510,23 @@ def _advance_customer_pipeline():
     return customer_pipeline.advance_all_new_requests()
 
 
+def _customer_fulfillment_queue():
+    """Customer Platform Round 6 (2026-07-29): real Production/QA/
+    Packaging/Delivery queue for Mission Control's executive cockpit --
+    passthrough over customer_pipeline.list_fulfillment_queue(), no new
+    logic here."""
+    import customer_pipeline
+    return customer_pipeline.list_fulfillment_queue()
+
+
+def _customer_invoices():
+    """Customer Platform Round 6 (2026-07-29): real invoices generated
+    from actual completed Paddle payments -- passthrough over
+    customer_pipeline.list_invoices(), no new logic here."""
+    import customer_pipeline
+    return customer_pipeline.list_invoices()
+
+
 def _check_customer_payments():
     """Customer Platform Round 3 (2026-07-29): batch-sweeps every real
     customer request currently AWAITING_PAYMENT against Paddle's real
@@ -1601,6 +1618,8 @@ _ENDPOINTS = {
     "customer_pipeline_status": _customer_pipeline_status,
     "advance_customer_pipeline": _advance_customer_pipeline,
     "check_customer_payments": _check_customer_payments,
+    "customer_fulfillment_queue": _customer_fulfillment_queue,
+    "customer_invoices": _customer_invoices,
     "tool_intelligence": _tool_intelligence,
     "strategic_report": _strategic_report,
     "market_review": _market_review,

@@ -239,6 +239,14 @@ pre.raw{
       note:'ADR-128: which evidence sources are actually real and callable today vs. declared-but-not-built — the competitive advantage is owning this network, not a better score.' },
     { id:'customer-pipeline', title:'Customer Pipeline', service:'customer-pipeline-status', kind:'kv',
       note:'ADR-130: real per-request Status/Progress/Logs/Failures/Recovery for every real customer request — stage distribution, and which ones need a real founder action right now (Paddle onboarding gate, a missing custom product, or a real failure). Trigger new evaluations via POST /api/v1/actions/advance-customer-pipeline.' },
+    { id:'customer-accounts', title:'Customer Accounts', service:'customer-accounts', kind:'kv',
+      note:'Round 6 (2026-07-29): real signed-up customer accounts — count + most recently created, never a password hash.' },
+    { id:'customer-fulfillment-queue', title:'Production & Fulfillment Queue', service:'customer-fulfillment-queue', kind:'kv',
+      note:'Round 6: every real request that reached PAID or later — the real founder-action queue (PENDING_FOUNDER_FULFILLMENT, no automated production trigger exists for this product) is surfaced separately. Attach a real deliverable via POST /api/v1/actions/fulfill-customer-request-manually.' },
+    { id:'customer-invoices', title:'Invoices', service:'customer-invoices', kind:'kv',
+      note:'Round 6: real invoices generated only from actual completed Paddle payments — honestly empty until a real payment completes. Check for new completions via POST /api/v1/actions/check-customer-payments.' },
+    { id:'customer-reviews', title:'Customer Reviews', service:'customer-reviews', kind:'kv',
+      note:'Round 5/6: real customer reviews, one per delivered order — honestly empty until a real review exists, never a placeholder testimonial.' },
   ];
 
   const state = {}; // id -> { status: 'pending'|'ok'|'empty'|'error', payload, fetchedAt }

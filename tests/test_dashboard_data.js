@@ -370,6 +370,24 @@ test('readFailedJobsSummary: counts only real action:"failed" entries, ignores r
   assert.equal(result.recent[0].step, 'sales_poll', 'most recent failure must be first');
 });
 
+test('readCustomerAccountsSummary: missing file -> honest zero, never throws', () => {
+  const result = dd.readCustomerAccountsSummary(path.join(tmpDir, 'nope_accounts.json'));
+  assert.equal(result.count, 0);
+  assert.deepEqual(result.recent, []);
+});
+
+test('readCustomerAccountsSummary: real accounts -> count + recent, never leaks password_hash', () => {
+  const p = path.join(tmpDir, 'accounts.json');
+  fs.writeFileSync(p, JSON.stringify({
+    acct_1: { account_id: 'acct_1', email: 'a@example.com', name: 'A', password_hash: 'scrypt$x$y', created_at: '2026-07-29T00:00:00Z' },
+    acct_2: { account_id: 'acct_2', email: 'b@example.com', name: 'B', password_hash: 'scrypt$x$y', created_at: '2026-07-28T00:00:00Z' },
+  }));
+  const result = dd.readCustomerAccountsSummary(p);
+  assert.equal(result.count, 2);
+  assert.equal(result.recent[0].email, 'a@example.com', 'most recently created account must be first');
+  assert.equal(result.recent.every(a => !('password_hash' in a)), true);
+});
+
 test('readCustomerReviewsSummary: missing file -> honest zero, never a fabricated testimonial', () => {
   const result = dd.readCustomerReviewsSummary(path.join(tmpDir, 'nope_reviews.jsonl'));
   assert.equal(result.count, 0);

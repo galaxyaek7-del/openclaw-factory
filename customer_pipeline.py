@@ -889,6 +889,61 @@ def mark_followed_up(request_id, state_path=None):
     return {"success": True, **record}
 
 
+_FULFILLMENT_STAGES = (
+    "PAID", "PRODUCTION", "QUALITY_INSPECTION", "PACKAGING",
+    "PENDING_FOUNDER_FULFILLMENT", "DELIVERED", "FOLLOWED_UP",
+)
+
+
+def list_fulfillment_queue(requests_path=None, state_path=None):
+    """Real Production/QA/Packaging/Delivery queue for Mission Control
+    (Round 6, 2026-07-29) -- every real request that has reached PAID or
+    later, plus the real founder-action queue (PENDING_FOUNDER_FULFILLMENT)
+    surfaced separately. Passthrough over already-real pipeline state, no
+    new logic/scoring here."""
+    state = _load_state(state_path)
+    requests = _load_requests(requests_path)
+    entries = []
+    needs_fulfillment = []
+    stage_counts = {}
+    for request_id, record in state.items():
+        stage = record.get("stage")
+        if stage not in _FULFILLMENT_STAGES:
+            continue
+        stage_counts[stage] = stage_counts.get(stage, 0) + 1
+        request = requests.get(request_id, {})
+        entry = {
+            "request_id": request_id,
+            "name": request.get("name"),
+            "stage": stage,
+            "fulfillment_type": record.get("fulfillment_type"),
+            "delivery": record.get("delivery"),
+            "updated_at": record.get("updated_at"),
+        }
+        entries.append(entry)
+        if stage == "PENDING_FOUNDER_FULFILLMENT":
+            needs_fulfillment.append(entry)
+    entries.sort(key=lambda e: e.get("updated_at") or "", reverse=True)
+    return {"stage_distribution": stage_counts, "needs_fulfillment": needs_fulfillment, "entries": entries}
+
+
+def list_invoices(state_path=None):
+    """Real invoices for Mission Control (Round 6, 2026-07-29) -- every
+    request that actually reached PAID or later, i.e. has a real
+    record["invoice"] (invoice_generator.generate_invoice() output).
+    Zero invoices is an honest state until a real Paddle payment
+    completes -- never backfilled."""
+    state = _load_state(state_path)
+    invoices = []
+    for request_id, record in state.items():
+        invoice = record.get("invoice")
+        if invoice:
+            invoices.append({"request_id": request_id, **invoice})
+    invoices.sort(key=lambda i: i.get("issued_at") or "", reverse=True)
+    total_revenue = round(sum(float(i.get("total") or 0) for i in invoices), 2)
+    return {"count": len(invoices), "total_revenue": total_revenue, "invoices": invoices}
+
+
 def advance_all_new_requests(requests_path=None, state_path=None, decisions_path=None, analysis_db_file=None):
     """Batch sweep -- this factory has no scheduler (CLAUDE.md), so
     'automatic' means zero further code changes, one Mission Control
@@ -959,6 +1014,10 @@ def main():
             result = {"success": True, **advance_all_new_requests()}
         elif command == "check_all_payments":
             result = {"success": True, **check_all_awaiting_payments()}
+        elif command == "fulfillment_queue":
+            result = {"success": True, **list_fulfillment_queue()}
+        elif command == "invoices":
+            result = {"success": True, **list_invoices()}
         else:
             result = {"success": False, "error": f"unknown command: {command!r}"}
         print(json.dumps(result, ensure_ascii=False, default=str))
