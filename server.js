@@ -4525,7 +4525,12 @@ app.post('/api/customer/requests/:id/approve', async (req, res) => {
     if (isRateLimited(ip)) {
       return res.status(429).json({ success: false, error: 'too many requests — please try again later' });
     }
-    const result = await withCustomerRequestLock(req.params.id, () => runCustomerPipelineCommand('approve', { request_id: req.params.id }));
+    // Contract acceptance (Round 2, 2026-07-29): approval doubles as a real
+    // e-signature -- the typed name is the customer's acceptance of the
+    // contract text shown on their status page, validated server-side in
+    // customer_pipeline.py's approve_request().
+    const acceptedName = String((req.body && req.body.accepted_name) || '').trim().slice(0, CUSTOMER_REQUEST_FIELD_MAX);
+    const result = await withCustomerRequestLock(req.params.id, () => runCustomerPipelineCommand('approve', { request_id: req.params.id, accepted_name: acceptedName }));
     res.json(result);
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });

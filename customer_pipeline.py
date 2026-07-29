@@ -261,6 +261,8 @@ def _run_qualification_and_pricing(record, request, decisions_path=None, analysi
             record["catalog_match"] = {
                 "product_id": catalog_match["product_id"], "price_id": catalog_match["price_id"], "title": catalog_match["title"],
             }
+            from contract_generator import generate_contract
+            record["contract"] = generate_contract(request, proposal, catalog_match=record["catalog_match"])
             _record_history(record, "PROPOSED", f"${proposal['price']:.2f} (live catalog price, no re-evaluation)")
             _notify_founder(
                 f"\U0001F4C4 طلب شراء منتج جاهز من الكتالوج\nطلب: {request.get('request_id')}\nالمنتج: {catalog_match['title']}\nالسعر: ${proposal['price']:.2f}"
@@ -317,6 +319,8 @@ def _run_qualification_and_pricing(record, request, decisions_path=None, analysi
         "proposed_at": _now(),
     }
     record["proposal"] = proposal
+    from contract_generator import generate_contract
+    record["contract"] = generate_contract(request, proposal, catalog_match=None)
     _record_history(record, "PROPOSED", f"${proposal['price']:.2f}")
     _notify_founder(
         f"\U0001F4C4 اقتراح عرض جاهز لعميل\nطلب: {request.get('request_id')}\nالسعر: ${proposal['price']:.2f}\n"
@@ -410,20 +414,32 @@ def _attempt_payment_verification(record, paddle_products_path=None, checkout_fn
     return record
 
 
-def approve_request(request_id, requests_path=None, state_path=None, paddle_products_path=None,
+def approve_request(request_id, accepted_name=None, requests_path=None, state_path=None, paddle_products_path=None,
                      checkout_fn=None, api_key_loader=None):
     """The customer's own real action -- only valid from PROPOSED.
     Immediately attempts real Payment Verification in the same call
     (no separate human gate exists between approval and payment for an
-    already-accepted, already-priced request)."""
+    already-accepted, already-priced request).
+
+    Customer Platform Round 2 (2026-07-29): approval now doubles as real
+    contract acceptance -- the customer must type their name as an
+    e-signature (no e-signature integration exists, this is the honest
+    real equivalent) before payment verification is attempted."""
     state = _load_state(state_path)
     record = state.get(request_id)
     if record is None:
         return {"success": False, "error": "We couldn't find an active quote for this request yet — please refresh in a moment."}
     if record["stage"] != "PROPOSED":
         return {"success": False, "error": "This request isn't ready for approval right now — refresh the page to see its current status."}
+    accepted_name = (accepted_name or "").strip()
+    if not accepted_name:
+        return {"success": False, "error": "Please type your full name to confirm you accept the contract terms before approving."}
 
-    _record_history(record, "APPROVED", "customer approved the real proposal")
+    if record.get("contract"):
+        record["contract"]["accepted"] = True
+        record["contract"]["accepted_name"] = accepted_name[:200]
+        record["contract"]["accepted_at"] = _now()
+    _record_history(record, "APPROVED", f"customer approved the real proposal and accepted the contract as {accepted_name[:100]!r}")
     try:
         record = _attempt_payment_verification(record, paddle_products_path=paddle_products_path, checkout_fn=checkout_fn, api_key_loader=api_key_loader)
     except Exception as e:
@@ -504,6 +520,7 @@ def _supervision_view(record, audience="internal"):
         "recovery": hints.get(record["stage"], fallback),
         "estimated_completion": None,
         "proposal": record.get("proposal"),
+        "contract": record.get("contract"),
         "payment": record.get("payment"),
         "updated_at": record.get("updated_at"),
     }
@@ -597,7 +614,7 @@ def main():
         if command == "advance":
             result = advance_request(payload["request_id"])
         elif command == "approve":
-            result = approve_request(payload["request_id"])
+            result = approve_request(payload["request_id"], accepted_name=payload.get("accepted_name"))
         elif command == "reject":
             result = reject_request(payload["request_id"], reason=payload.get("reason"))
         elif command == "retry_payment":

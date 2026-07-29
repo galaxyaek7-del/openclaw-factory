@@ -84,6 +84,16 @@ main{padding:3.5rem 0 5rem;}
 .evidence-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.4rem; font-size:.85rem; color:var(--ink-dim);}
 .evidence-list li::before{content:"— "; color:var(--ink-faint);}
 
+.contract-box{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:9px; padding:1.1rem; display:flex; flex-direction:column; gap:.7rem; font-size:.85rem; color:var(--ink-dim);}
+.contract-box h4{font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); margin:0;}
+.contract-box .term{padding-bottom:.6rem; border-bottom:1px solid var(--border-soft);}
+.contract-box .term:last-child{border-bottom:none; padding-bottom:0;}
+.contract-box .draft-note{color:var(--accent-ink);}
+.accept-row{display:flex; align-items:flex-start; gap:.6rem; font-size:.85rem; color:var(--ink-dim);}
+.accept-row input[type="checkbox"]{margin-top:.25rem;}
+.accept-name-input{font-family:inherit; font-size:.88rem; background:var(--bg-elev); border:1px solid var(--border); color:var(--ink); border-radius:8px; padding:.6rem .8rem; width:100%;}
+.accept-name-input:focus{outline:none; border-color:var(--cool);}
+
 .log-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.6rem; max-height:260px; overflow-y:auto;}
 .log-list li{font-size:.82rem; color:var(--ink-dim); border-left:2px solid var(--border); padding-left:.8rem;}
 .log-list .log-stage{font-family:var(--mono); color:var(--ink); font-weight:600;}
@@ -135,6 +145,18 @@ main{padding:3.5rem 0 5rem;}
           <div style="font-size:.82rem; color:var(--ink-faint);" id="proposalBasis"></div>
         </div>
         <ul class="evidence-list" id="evidenceList"></ul>
+
+        <div id="contractBox" class="contract-box" style="display:none;">
+          <h4>Contract terms</h4>
+          <div id="contractTerms"></div>
+        </div>
+
+        <div id="acceptRow" class="accept-row" style="display:none;">
+          <input type="checkbox" id="acceptCheckbox">
+          <label for="acceptCheckbox">I've read and accept the contract terms above.</label>
+        </div>
+        <input id="acceptNameInput" class="accept-name-input" style="display:none;" placeholder="Type your full name to sign">
+
         <div class="proposal-actions" id="proposalActions"></div>
       </div>
 
@@ -188,6 +210,38 @@ main{padding:3.5rem 0 5rem;}
   var requestId = qs('id');
   var pollTimer = null;
 
+  function renderContract(contract){
+    var box = document.getElementById('contractBox');
+    var acceptRow = document.getElementById('acceptRow');
+    var nameInput = document.getElementById('acceptNameInput');
+    if (!contract){ box.style.display = 'none'; acceptRow.style.display = 'none'; nameInput.style.display = 'none'; return; }
+    box.style.display = 'flex';
+    acceptRow.style.display = 'flex';
+    nameInput.style.display = 'block';
+    var terms = document.getElementById('contractTerms');
+    terms.innerHTML = '';
+    var rows = [
+      ['Scope', contract.scope],
+      ['Payment terms', contract.payment_terms],
+      ['Delivery', contract.delivery_expectations],
+      ['License', contract.ip_terms],
+      ['Governing law', contract.governing_law],
+    ];
+    rows.forEach(function(pair){
+      var wrap = document.createElement('div');
+      wrap.className = 'term' + (pair[0] === 'Governing law' ? ' draft-note' : '');
+      var label = document.createElement('div');
+      label.style.fontWeight = '600';
+      label.style.color = 'var(--ink)';
+      label.textContent = pair[0];
+      var value = document.createElement('div');
+      value.textContent = pair[1] || '';
+      wrap.appendChild(label);
+      wrap.appendChild(value);
+      terms.appendChild(wrap);
+    });
+  }
+
   function renderProposal(body){
     var box = document.getElementById('proposalBox');
     if (body.status !== 'PROPOSED' || !body.proposal){ box.style.display = 'none'; return; }
@@ -201,12 +255,27 @@ main{padding:3.5rem 0 5rem;}
       li.textContent = line;
       list.appendChild(li);
     });
+    renderContract(body.contract);
+
+    var checkbox = document.getElementById('acceptCheckbox');
+    var nameInput = document.getElementById('acceptNameInput');
+    checkbox.checked = false;
+    nameInput.value = '';
+
     var actions = document.getElementById('proposalActions');
     actions.innerHTML = '';
     var approveBtn = document.createElement('button');
     approveBtn.className = 'btn btn-primary';
     approveBtn.textContent = 'Approve proposal';
-    approveBtn.addEventListener('click', function(){ act('approve', approveBtn, {}); });
+    approveBtn.disabled = true;
+    function refreshApproveEnabled(){
+      approveBtn.disabled = !(checkbox.checked && nameInput.value.trim().length > 0);
+    }
+    checkbox.addEventListener('change', refreshApproveEnabled);
+    nameInput.addEventListener('input', refreshApproveEnabled);
+    approveBtn.addEventListener('click', function(){
+      act('approve', approveBtn, { accepted_name: nameInput.value.trim() });
+    });
     var declineBtn = document.createElement('button');
     declineBtn.className = 'btn btn-danger';
     declineBtn.textContent = 'Decline';

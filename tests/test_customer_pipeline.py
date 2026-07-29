@@ -165,7 +165,7 @@ class TestApproveAndReject(BasePipelineTest):
         self._propose(price=126.0)
         self._write_paddle_products([{"title": "match", "price_id": "pri_match", "price": 126.0}])
         result = cp.approve_request(
-            "req_abc123", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
+            "req_abc123", accepted_name="Test Customer", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
             checkout_fn=lambda api_key, price_id: ({"id": "txn_1"}, "https://checkout.paddle.com/real"),
             api_key_loader=lambda: "fake-key",
         )
@@ -180,7 +180,7 @@ class TestApproveAndReject(BasePipelineTest):
             raise RuntimeError("Checkouts aren't enabled for this account.")
 
         result = cp.approve_request(
-            "req_abc123", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
+            "req_abc123", accepted_name="Test Customer", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
             checkout_fn=blocked, api_key_loader=lambda: "fake-key",
         )
         self.assertEqual(result["stage"], "PAYMENT_BLOCKED_PADDLE_ONBOARDING")
@@ -189,7 +189,7 @@ class TestApproveAndReject(BasePipelineTest):
         self._propose(price=9999.0)
         self._write_paddle_products([{"title": "no match", "price_id": "pri_x", "price": 50.0}])
         result = cp.approve_request(
-            "req_abc123", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
+            "req_abc123", accepted_name="Test Customer", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
         )
         self.assertEqual(result["stage"], "PENDING_CUSTOM_PRODUCT_SETUP")
 
@@ -211,7 +211,7 @@ class TestRetryPaymentVerification(BasePipelineTest):
         cp.advance_request("req_abc123", requests_path=self.requests_path, state_path=self.state_path,
                             evaluate_fn=lambda *a, **k: _accepted_decision(), price_fn=lambda *a, **k: 126.0)
         self._write_paddle_products([{"title": "match", "price_id": "pri_match", "price": 126.0}])
-        cp.approve_request("req_abc123", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
+        cp.approve_request("req_abc123", accepted_name="Test Customer", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
                             checkout_fn=lambda k, p: (_ for _ in ()).throw(RuntimeError("checkout not enabled for this account")))
         blocked_state = cp._load_state(self.state_path)
         self.assertEqual(blocked_state["req_abc123"]["stage"], "PAYMENT_BLOCKED_PADDLE_ONBOARDING")
@@ -258,7 +258,7 @@ class TestStatusAndOverview(BasePipelineTest):
         cp.advance_request("req_abc123", requests_path=self.requests_path, state_path=self.state_path,
                             evaluate_fn=lambda *a, **k: _accepted_decision(), price_fn=lambda *a, **k: 126.0)
         self._write_paddle_products([{"title": "match", "price_id": "pri_match", "price": 126.0}])
-        cp.approve_request("req_abc123", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
+        cp.approve_request("req_abc123", accepted_name="Test Customer", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
                             checkout_fn=lambda k, p: (_ for _ in ()).throw(RuntimeError("checkout not enabled for this account")))
         overview = cp.list_pipeline_overview(requests_path=self.requests_path, state_path=self.state_path)
         self.assertEqual(len(overview["needs_attention"]), 1)
@@ -333,11 +333,66 @@ class TestCatalogPriceLock(BasePipelineTest):
             return ({"id": "txn_1"}, "https://checkout.paddle.com/real")
 
         result = cp.approve_request(
-            "req_abc123", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
+            "req_abc123", accepted_name="Test Customer", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
             checkout_fn=capture_checkout, api_key_loader=lambda: "fake-key",
         )
         self.assertEqual(result["stage"], "AWAITING_PAYMENT")
         self.assertEqual(captured["price_id"], "pri_real123")
+
+
+class TestContractGeneration(BasePipelineTest):
+    """Customer Platform Round 2 (2026-07-29): a real, deterministic
+    contract is generated alongside every proposal, and approval now
+    doubles as contract acceptance (a typed-name e-signature)."""
+
+    def test_proposal_includes_a_real_contract(self):
+        self._write_request()
+        result = cp.advance_request(
+            "req_abc123", requests_path=self.requests_path, state_path=self.state_path,
+            evaluate_fn=lambda *a, **k: _accepted_decision(), price_fn=lambda *a, **k: 199.0,
+        )
+        self.assertIn("contract", result)
+        contract = result["contract"]
+        self.assertEqual(contract["price"]["amount"], 199.0)
+        self.assertFalse(contract["accepted"])
+        self.assertIsNone(contract["accepted_name"])
+        self.assertIn("Draft", contract["governing_law"])
+
+    def test_catalog_match_also_gets_a_real_contract(self):
+        self._write_request(catalog_product_id="pro_real123")
+        self._write_paddle_products([{"title": "Real Catalog Item", "product_id": "pro_real123", "price_id": "pri_real123", "price": 126.0}])
+        result = cp.advance_request(
+            "req_abc123", requests_path=self.requests_path, state_path=self.state_path,
+            paddle_products_path=self.paddle_products_path,
+        )
+        self.assertIn("contract", result)
+        self.assertEqual(result["contract"]["scope"], "Real Catalog Item")
+        self.assertEqual(result["contract"]["price"]["amount"], 126.0)
+
+    def test_approve_without_accepted_name_is_rejected(self):
+        self._write_request()
+        cp.advance_request("req_abc123", requests_path=self.requests_path, state_path=self.state_path,
+                            evaluate_fn=lambda *a, **k: _accepted_decision(), price_fn=lambda *a, **k: 199.0)
+        result = cp.approve_request("req_abc123", state_path=self.state_path)
+        self.assertFalse(result["success"])
+        self.assertIn("accept the contract", result["error"])
+        # Still PROPOSED -- a rejected approve attempt must not advance the stage.
+        state = cp._load_state(self.state_path)
+        self.assertEqual(state["req_abc123"]["stage"], "PROPOSED")
+
+    def test_approve_with_accepted_name_records_real_acceptance(self):
+        self._write_request()
+        cp.advance_request("req_abc123", requests_path=self.requests_path, state_path=self.state_path,
+                            evaluate_fn=lambda *a, **k: _accepted_decision(), price_fn=lambda *a, **k: 126.0)
+        self._write_paddle_products([{"title": "match", "price_id": "pri_match", "price": 126.0}])
+        result = cp.approve_request(
+            "req_abc123", accepted_name="  Jane Customer  ", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
+            checkout_fn=lambda k, p: ({"id": "txn_1"}, "https://checkout.paddle.com/real"), api_key_loader=lambda: "fake-key",
+        )
+        self.assertTrue(result["success"])
+        self.assertTrue(result["contract"]["accepted"])
+        self.assertEqual(result["contract"]["accepted_name"], "Jane Customer")
+        self.assertIsNotNone(result["contract"]["accepted_at"])
 
 
 class TestCustomerSafeCopy(BasePipelineTest):
