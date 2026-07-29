@@ -981,6 +981,20 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('council_learning_summary'),
   },
   {
+    // Capital Allocation Engine (2026-07-29): reuses value_engine.
+    // build_value_engine_report() + scheduler.decide_next_actions() --
+    // the same real, disclosed outlier class as executive-brief above
+    // (measured live: ~22s of real compute alone; this machine's
+    // `python3` alias adds a further real ~30s startup tax on top of
+    // that per subprocess, confirmed live during the Galaxy Council
+    // round -- so the shared 30s default is not safely enough margin).
+    name: 'capital-allocation-dashboard',
+    description: "Top ROI Initiatives, Projects Losing Value, Projects Consuming Resources Without Results, Resource Distribution, Expected Portfolio Return, and real opportunity-cost pairings -- every field a citation of an already-real portfolio/scheduling/lifecycle function, computed exactly once and threaded through, never a second scan.",
+    reused: 'capital_allocation_engine.py::build_capital_allocation_dashboard()',
+    handler: (req) => runPythonServiceCached('capital_allocation_dashboard', [], req, 90000),
+    health: pythonHealthCheck('capital_allocation_dashboard'),
+  },
+  {
     // Global Trust & Resilience Layer, Round 2 (2026-07-29): real
     // per-subsystem Safe Mode -- an unstable subsystem is isolated on
     // its own, the rest of the company keeps running. Read-only here;
@@ -1937,6 +1951,22 @@ const ACTION_REGISTRY = [
     reversible: true,
     kind: 'async',
     asyncRunner: () => runPythonActionAsync('get-council-learning-summary', 'council_learning_summary', []),
+  },
+  {
+    // Capital Allocation Engine (2026-07-29) -- the real, per-niche
+    // 14-dimension Investment Score. Async-job shape (not SERVICE_
+    // REGISTRY) since it chains real sub-calls (strategic_score() +
+    // compute_value_profile()), same precedent as convene-galaxy-council.
+    name: 'investment-score',
+    description: "The real 14-dimension Investment Score for one niche (Expected Revenue, Recurring Revenue Potential, Customer Impact, Strategic Importance, Market Defensibility, Competition Level, Automation Potential, Engineering Cost, Maintenance Cost, Risk, Execution Complexity, Knowledge Reuse, Brand Value, Long-Term Asset Value) -- 7 delegated verbatim to strategic_score(), 7 newly cited from value_engine, each honestly Unknown wherever no real signal exists.",
+    reused: 'capital_allocation_engine.py::investment_score()',
+    reversible: true, // read-only
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('investment-score', 'investment_score', [JSON.stringify({ niche })]);
+    },
   },
   {
     // Market Evidence & Alerting layer (2026-07-23) -- real, on-demand

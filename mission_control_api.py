@@ -783,6 +783,42 @@ def _council_learning_summary():
     return galaxy_council.council_learning_summary()
 
 
+def _investment_score():
+    """Capital Allocation Engine (2026-07-29): the real 14-dimension
+    Investment Score for one niche -- 7 delegated verbatim to
+    strategic_intelligence_core.strategic_score(), 7 new real citations
+    from value_engine.compute_value_profile(). Reads its payload from
+    sys.argv[2]: `python mission_control_api.py investment_score
+    '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import capital_allocation_engine
+    return capital_allocation_engine.investment_score(niche)
+
+
+def _opportunity_cost_report():
+    """Capital Allocation Engine (2026-07-29): real opportunity-cost
+    pairing across the whole real portfolio -- which real ACCEPTED
+    opportunities are effectively delaying which other, higher real
+    Priority Score opportunities. Passthrough only."""
+    import capital_allocation_engine
+    return capital_allocation_engine.opportunity_cost()
+
+
+def _capital_allocation_dashboard():
+    """Capital Allocation Engine (2026-07-29): the real aggregator --
+    Top ROI Initiatives, Projects Losing Value, Projects Consuming
+    Resources Without Results, Resource Distribution, Expected Portfolio
+    Return, and the real opportunity-cost pairings. Passthrough only --
+    read-only, recommend-only; the Founder remains final authority on
+    every real reallocation."""
+    import capital_allocation_engine
+    return capital_allocation_engine.build_capital_allocation_dashboard()
+
+
 def _evolution_queue_daily_cycle():
     """Autonomous Company Evolution Engine, Round 4 (2026-07-29): the one
     automatic path the founder approved -- intake real proposals, simulate
@@ -1984,6 +2020,9 @@ _ENDPOINTS = {
     "convene_galaxy_council": _convene_galaxy_council,
     "record_council_recommendation": _record_council_recommendation,
     "council_learning_summary": _council_learning_summary,
+    "investment_score": _investment_score,
+    "opportunity_cost_report": _opportunity_cost_report,
+    "capital_allocation_dashboard": _capital_allocation_dashboard,
 }
 
 

@@ -1049,5 +1049,40 @@ class TestGalaxyCouncilEndpoints(unittest.TestCase):
         self.assertEqual(result, fake_summary)
 
 
+class TestCapitalAllocationEngineEndpoints(unittest.TestCase):
+    """Capital Allocation Engine (2026-07-29): the dispatch layer for the
+    real 14-dimension Investment Score, opportunity-cost pairing, and
+    dashboard aggregator. capital_allocation_engine.py's own logic has
+    its own isolated unit tests in tests/test_capital_allocation_engine.py."""
+
+    def test_investment_score_delegates_with_the_given_niche(self):
+        payload = {"niche": "n"}
+        fake_score = {"niche": "n", "risk": {"value": "not_flagged"}}
+        with patch.object(sys, "argv", ["mission_control_api.py", "investment_score", json.dumps(payload)]):
+            with patch("capital_allocation_engine.investment_score", return_value=fake_score) as mock_score:
+                result = mission_control_api._investment_score()
+        mock_score.assert_called_once_with("n")
+        self.assertEqual(result, fake_score)
+
+    def test_investment_score_requires_a_niche(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "investment_score", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._investment_score()
+
+    def test_opportunity_cost_report_is_a_passthrough(self):
+        fake_report = {"pairings": [], "portfolio_size": 0}
+        with patch("capital_allocation_engine.opportunity_cost", return_value=fake_report) as mock_report:
+            result = mission_control_api._opportunity_cost_report()
+        mock_report.assert_called_once_with()
+        self.assertEqual(result, fake_report)
+
+    def test_capital_allocation_dashboard_is_a_passthrough(self):
+        fake_dashboard = {"top_roi_initiatives": [], "projects_losing_value": []}
+        with patch("capital_allocation_engine.build_capital_allocation_dashboard", return_value=fake_dashboard) as mock_dashboard:
+            result = mission_control_api._capital_allocation_dashboard()
+        mock_dashboard.assert_called_once_with()
+        self.assertEqual(result, fake_dashboard)
+
+
 if __name__ == "__main__":
     unittest.main()

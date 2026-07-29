@@ -214,6 +214,7 @@
         <button class="btn" data-action="go-deep-evidence">🔎 تعمّق في فرصة محدَّدة</button>
         <button id="productConceptComparisonBtn" class="btn">🧪 قارن مسارات الإنتاج</button>
         <button class="btn" data-action="convene-galaxy-council">🏛️ استدعِ مجلس المجرة (Galaxy Council)</button>
+        <button class="btn" data-action="investment-score">💰 درجة الاستثمار (Investment Score)</button>
       </div>
     </div>
     <div id="productConceptComparisonResult"></div>
@@ -532,6 +533,33 @@ function renderGalaxyCouncilResult(result) {
   return `${headline}${founderNote}${impact}${members}`;
 }
 
+// Capital Allocation Engine (2026-07-29): renders investment_score()'s
+// real 14-dimension result -- every field a direct display of an
+// already-real {value, source, reason} citation; fabricates nothing.
+const INVESTMENT_SCORE_DIMENSION_LABELS = {
+  recurring_revenue_potential: 'الإيراد المتكرر المحتمل', competition_level: 'مستوى المنافسة',
+  automation_potential: 'إمكانية الأتمتة', risk: 'الخطر', strategic_importance: 'الأهمية الاستراتيجية',
+  long_term_asset_value: 'قيمة الأصل طويلة المدى', execution_complexity: 'تعقيد التنفيذ',
+  expected_revenue: 'الإيراد المتوقَّع', customer_impact: 'أثر العميل', market_defensibility: 'الدفاعية السوقية',
+  engineering_cost: 'تكلفة الهندسة', maintenance_cost: 'تكلفة الصيانة', knowledge_reuse: 'إعادة استخدام المعرفة',
+  brand_value: 'قيمة العلامة التجارية',
+};
+
+function renderInvestmentScoreResult(result) {
+  if (!result) return '<p class="muted">لا نتيجة.</p>';
+  const rows = Object.entries(INVESTMENT_SCORE_DIMENSION_LABELS).map(([key, label]) => {
+    const dim = result[key];
+    if (!dim) return '';
+    const value = typeof dim.value === 'object' ? JSON.stringify(dim.value) : String(dim.value ?? 'Unknown');
+    return `<div style="border-bottom:1px solid #33415555; padding:6px 0">
+      <p><strong>${escapeHtml(label)}:</strong> ${escapeHtml(value)}</p>
+      ${dim.reason ? `<p class="muted">${escapeHtml(dim.reason)}</p>` : ''}
+      <p class="muted" style="font-size:0.85em">${escapeHtml(dim.source)}</p>
+    </div>`;
+  }).join('');
+  return `<div class="card"><h3>درجة الاستثمار — 14 بُعداً حقيقياً</h3>${rows}</div>`;
+}
+
 // Opportunity Intelligence Round 2 (2026-07-22): renders one of
 // opportunity_pipeline.py's 10 annotated fields -- either a real value or
 // an honest {answer:"Unknown", reason} dict (same convention already used
@@ -748,6 +776,8 @@ function openActionModal(actionName) {
     ? '<input type="text" id="goDeepNicheInput" placeholder="النيتش المطلوب التعمّق فيه (مطلوب)">'
     : actionName === 'convene-galaxy-council'
     ? '<input type="text" id="galaxyCouncilNicheInput" placeholder="النيتش المطلوب استدعاء المجلس بشأنه (مطلوب)">'
+    : actionName === 'investment-score'
+    ? '<input type="text" id="investmentScoreNicheInput" placeholder="النيتش المطلوب حساب درجة الاستثمار له (مطلوب)">'
     : '';
   actionModalProgress.style.display = 'none';
   actionModalResult.textContent = '';
@@ -817,6 +847,17 @@ async function confirmAction(actionName) {
     }
     body.niche = niche;
   }
+  if (actionName === 'investment-score') {
+    const nicheEl = document.getElementById('investmentScoreNicheInput');
+    const niche = nicheEl ? nicheEl.value.trim() : '';
+    if (!niche) {
+      actionModalProgress.style.display = 'none';
+      actionModalResult.textContent = 'النيتش مطلوب.';
+      actionModalConfirm.disabled = false;
+      return;
+    }
+    body.niche = niche;
+  }
 
   let res;
   try {
@@ -858,6 +899,9 @@ async function confirmAction(actionName) {
           rec.disagreement_detected ? 'warning' : 'success',
           `مجلس المجرة لـ"${rec.niche ?? ''}": ${rec.disagreement_detected ? 'انقسام حقيقي بين الأعضاء' : (rec.council_recommendation || 'اكتمل')}`,
         );
+      } else if (actionName === 'investment-score') {
+        actionModalResult.innerHTML = renderInvestmentScoreResult(job.result);
+        pushNotification('success', `درجة الاستثمار جاهزة لـ"${job.result?.niche ?? ''}"`);
       } else if (degradation) {
         actionModalResult.textContent = `اكتمل مع تدهور جزئي: ${degradation}`;
         pushNotification('warning', `${actionName}: اكتمل مع تدهور جزئي — ${degradation}`);
