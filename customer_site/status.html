@@ -169,6 +169,10 @@ main{padding:3.5rem 0 5rem;}
         <div id="invoiceBody"></div>
       </div>
 
+      <div id="deliveryBox" style="display:none;">
+        <a id="deliveryLink" class="btn btn-primary" href="#" target="_blank" rel="noopener">Download your deliverable →</a>
+      </div>
+
       <div id="declineBox" class="decline-box" style="display:none;">
         <label for="declineReason" style="font-size:.84rem; color:var(--ink-dim);">Mind telling us why? Optional, but it helps us improve.</label>
         <textarea id="declineReason" maxlength="500" placeholder="e.g. price, timing, went another direction…"></textarea>
@@ -204,6 +208,7 @@ main{padding:3.5rem 0 5rem;}
     QUALITY_INSPECTION: 'cool', PACKAGING: 'cool', DELIVERED: 'good', FOLLOWED_UP: 'good',
     REJECTED_AT_QUALIFICATION: 'bad', REJECTED_BY_CUSTOMER: 'bad',
     PAYMENT_BLOCKED_PADDLE_ONBOARDING: 'bad', PENDING_CUSTOM_PRODUCT_SETUP: 'bad',
+    PENDING_FOUNDER_FULFILLMENT: 'cool',
     FAILED: 'bad', PENDING_FOUNDER_REVIEW: 'cool', RESEARCH_REQUIRED: 'cool',
   };
   var LIVE_STAGES = ['NEW', 'QUALIFIED', 'APPROVED']; // transient -- worth auto-polling
@@ -327,6 +332,20 @@ main{padding:3.5rem 0 5rem;}
     });
   }
 
+  function renderDelivery(body){
+    var box = document.getElementById('deliveryBox');
+    if (body.status !== 'DELIVERED' || !body.delivery){ box.style.display = 'none'; return; }
+    box.style.display = 'block';
+    var link = document.getElementById('deliveryLink');
+    if (body.delivery.url){
+      link.href = body.delivery.url;
+      link.textContent = 'Open your deliverable →';
+    } else {
+      link.href = '/api/customer/requests/' + encodeURIComponent(requestId) + '/download';
+      link.textContent = 'Download your deliverable →';
+    }
+  }
+
   function render(body){
     document.getElementById('statusCard').style.display = 'flex';
     document.getElementById('lookupCard').style.display = 'none';
@@ -362,6 +381,7 @@ main{padding:3.5rem 0 5rem;}
     renderProposal(body);
     renderPayment(body);
     renderInvoice(body.invoice);
+    renderDelivery(body);
 
     document.getElementById('recoveryText').textContent = body.recovery || '';
 

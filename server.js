@@ -1250,6 +1250,20 @@ async function requestAiCapabilityAction(req) {
   return runPythonService('ai_capability_request', [payload]);
 }
 
+// Customer Platform Round 4 (2026-07-29): the founder's own real action --
+// attaches a real deliverable (a local file path or a real URL) to a
+// request stuck in PENDING_FOUNDER_FULFILLMENT (a genuinely bespoke
+// request with no automated production trigger). Never a fabricated
+// placeholder -- customer_pipeline.fulfill_manually() itself refuses an
+// empty or nonexistent local path.
+async function fulfillCustomerRequestManuallyAction(req) {
+  const { request_id, delivery_ref, note } = req.body || {};
+  if (!request_id || !delivery_ref) {
+    throw new Error('{ request_id, delivery_ref } are required');
+  }
+  return runCustomerPipelineCommand('fulfill_manually', { request_id, delivery_ref, note: note || '' });
+}
+
 // Unified Recovery System §2/§6 (2026-07-18): the founder's explicit
 // clear-to-proceed after startup classified a real interruption as
 // NEEDS_CONFIRMATION (recovery/startup_check.py) — e.g. they checked the
@@ -1384,6 +1398,19 @@ const ACTION_REGISTRY = [
     reversible: true, // read-only check against Paddle; only advances a record that Paddle itself already confirmed paid
     kind: 'async',
     section: 'check_customer_payments',
+  },
+  {
+    // Round 4 (2026-07-29): the honest founder-in-the-loop completion for
+    // requests with no automated production trigger (see customer_
+    // pipeline.py's _fulfill_paid_request()). Requires a real payload --
+    // { request_id, delivery_ref } -- so this is a sync action, not a
+    // zero-payload async sweep.
+    name: 'fulfill-customer-request-manually',
+    description: 'Attaches a real deliverable (local file path or URL) to a customer request stuck in PENDING_FOUNDER_FULFILLMENT, moving it to DELIVERED. Requires { request_id, delivery_ref } in the request body, optional { note }.',
+    reused: 'customer_pipeline.py fulfill_manually() (Round 4)',
+    reversible: false, // moves a real request to DELIVERED -- the customer sees this immediately
+    kind: 'sync',
+    run: fulfillCustomerRequestManuallyAction,
   },
   {
     // Executive Directive (2026-07-22): the permanent core Executive
@@ -4560,6 +4587,25 @@ app.post('/api/customer/requests/:id/reject', async (req, res) => {
     res.json(result);
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// Round 4 (2026-07-29): real download center -- same trust model as the
+// status lookup above (request_id itself is the bearer token). The real
+// local file path is resolved server-side only via customer_pipeline.py's
+// get_download_path() and streamed directly -- it never appears in any
+// client-visible JSON response, and books/ is never served as a public
+// static directory.
+app.get('/api/customer/requests/:id/download', async (req, res) => {
+  try {
+    const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
+    if (isRateLimited(ip)) {
+      return res.status(429).json({ success: false, error: 'too many requests — please try again later' });
+    }
+    const result = await runCustomerPipelineCommand('get_download_path', { request_id: req.params.id });
+    res.download(result.path, result.filename || path.basename(result.path));
+  } catch (err) {
+    res.status(404).json({ success: false, error: err.message });
   }
 });
 

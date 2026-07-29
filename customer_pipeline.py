@@ -79,7 +79,7 @@ _STUCK_NEW_MINUTES = 10
 _SIDE_STATES = {
     "REJECTED_AT_QUALIFICATION", "PENDING_FOUNDER_REVIEW", "RESEARCH_REQUIRED",
     "REJECTED_BY_CUSTOMER", "PAYMENT_BLOCKED_PADDLE_ONBOARDING",
-    "PENDING_CUSTOM_PRODUCT_SETUP", "FAILED",
+    "PENDING_CUSTOM_PRODUCT_SETUP", "PENDING_FOUNDER_FULFILLMENT", "FAILED",
 }
 
 # Internal/technical -- Mission Control audience only (list_pipeline_
@@ -97,6 +97,7 @@ _RECOVERY_HINTS = {
     "REJECTED_BY_CUSTOMER": "Terminal -- the customer declined the real proposal.",
     "PAYMENT_BLOCKED_PADDLE_ONBOARDING": "Blocked on Paddle's real account-onboarding gate (transaction_checkout_not_enabled) -- founder action required at vendors.paddle.com. Re-attempt via retry_payment_verification() once cleared.",
     "PENDING_CUSTOM_PRODUCT_SETUP": "This proposal's price has no matching real Paddle product/price yet -- creating a bespoke Paddle product per custom request isn't automated (real, disclosed gap). Founder can create one manually in vendors.paddle.com, then re-run retry_payment_verification().",
+    "PENDING_FOUNDER_FULFILLMENT": "Round 4 (2026-07-29): no already-produced, already-published artifact exists in books/_generation_log.jsonl for this exact product -- this is a genuinely bespoke request with no automated production trigger wired yet (real, disclosed gap, same class as PENDING_CUSTOM_PRODUCT_SETUP). Founder must produce/attach a real deliverable via fulfill_manually() in Mission Control.",
     "FAILED": "A real error interrupted this request's pipeline -- see the error field. Safe to retry via advance_request()/retry_payment_verification(), state was saved before the failure.",
 }
 
@@ -119,6 +120,7 @@ _CUSTOMER_RECOVERY_HINTS = {
     "REJECTED_BY_CUSTOMER": "You declined this proposal. Reach out any time if you'd like to revisit it.",
     "PAYMENT_BLOCKED_PADDLE_ONBOARDING": "Payment setup is still being finalized on our end. We'll notify you the moment it's ready — no action needed from you.",
     "PENDING_CUSTOM_PRODUCT_SETUP": "We're finishing setup for this item before payment can open. We'll notify you as soon as it's ready.",
+    "PENDING_FOUNDER_FULFILLMENT": "Your payment is confirmed — we're preparing your deliverable now. We'll notify you the moment it's ready.",
     "FAILED": "Something went wrong on our end while processing this request. Our team has been notified — please check back shortly, or contact support.",
 }
 
@@ -177,6 +179,126 @@ def _load_paddle_products(paddle_products_path=None):
         return data if isinstance(data, list) else []
     except (json.JSONDecodeError, OSError):
         return []
+
+
+DEFAULT_GENERATION_LOG_PATH = _FACTORY_ROOT / "books" / "_generation_log.jsonl"
+
+
+def _find_published_generation_record(title, generation_log_path=None):
+    """Real-artifact lookup for Round 4 (2026-07-29): every live catalog
+    product was, in fact, already produced and passed Dual Inspection once
+    (verified 2026-07-29 against the real books/_generation_log.jsonl --
+    all 5 real Paddle catalog products have a real, published=true entry
+    here, including the 4 non-fiction "system" niches via book_generator.
+    py's techdoc product type, not just literal books). A brand-new,
+    genuinely bespoke request has no such entry -- that's the real,
+    honest signal for routing PAID -> automated delivery vs.
+    PENDING_FOUNDER_FULFILLMENT below, never a guess based on the
+    product's category/name."""
+    path = Path(generation_log_path) if generation_log_path else DEFAULT_GENERATION_LOG_PATH
+    if not title or not path.exists():
+        return None
+    found = None
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            # File is append-only chronological -- keep the LAST matching
+            # published record, i.e. the most recent real pass.
+            if rec.get("title") == title and rec.get("published"):
+                found = rec
+    return found
+
+
+def _fulfill_paid_request(record, generation_log_path=None):
+    """Real Production -> Quality Inspection -> Packaging -> Delivery for
+    a request that just reached PAID (Customer Platform Round 4,
+    2026-07-29). Honestly routed, never simulated:
+
+    - If a real, already-published artifact exists for this exact product
+      (every live catalog item does today), that artifact IS the real
+      delivery -- reusing its already-real Dual Inspection pass rather
+      than re-fabricating a second inspection that would tell us nothing
+      new.
+    - Otherwise (a genuinely bespoke/custom request -- no automated
+      production trigger has ever been wired for a brand-new niche inside
+      this pipeline), the record honestly stops at PENDING_FOUNDER_
+      FULFILLMENT rather than faking automation that doesn't exist."""
+    catalog_match = record.get("catalog_match")
+    title = catalog_match.get("title") if catalog_match else None
+    published_record = _find_published_generation_record(title, generation_log_path) if title else None
+    artifact_path = published_record.get("path") if published_record else None
+
+    if artifact_path and os.path.exists(artifact_path):
+        record["fulfillment_type"] = "existing_catalog_artifact"
+        _record_history(record, "PRODUCTION", f"real artifact already produced ({published_record.get('timestamp')})")
+        _record_history(record, "QUALITY_INSPECTION", "reusing the real, already-passed Dual Inspection result for this exact product -- never re-fabricated")
+        _record_history(record, "PACKAGING", "real file ready for secure delivery")
+        record["delivery"] = {"type": "download", "path": artifact_path, "filename": os.path.basename(artifact_path)}
+        _record_history(record, "DELIVERED", "real download ready")
+        _notify_founder(f"\U0001F4E6 تسليم حقيقي جاهز لعميل\nطلب: {record['request_id']}\nالملف: {record['delivery']['filename']}")
+    else:
+        record["fulfillment_type"] = "manual_fulfillment"
+        _record_history(record, "PRODUCTION", "no automated production trigger exists yet for this request")
+        _record_history(record, "PENDING_FOUNDER_FULFILLMENT", "no real, already-produced artifact matches this request -- requires real founder fulfillment")
+        _notify_founder(f"\U0001F477 طلب يحتاج تسليم يدوي حقيقي\nطلب: {record['request_id']}\nلا يوجد ملف منتَج مسبقاً لهذا المنتج")
+    return record
+
+
+def fulfill_manually(request_id, delivery_ref, note=None, state_path=None):
+    """The founder's own real action (Mission Control only) -- completes a
+    request stuck in PENDING_FOUNDER_FULFILLMENT by attaching a real
+    deliverable: either a real local file path (validated to exist) or a
+    real URL (e.g. a Gumroad/Etsy listing link, a shared-drive link).
+    Never a fabricated placeholder -- refuses if delivery_ref is empty."""
+    delivery_ref = (delivery_ref or "").strip()
+    if not delivery_ref:
+        return {"success": False, "error": "delivery_ref (a real file path or URL) is required"}
+
+    state = _load_state(state_path)
+    record = state.get(request_id)
+    if record is None:
+        return {"success": False, "error": f"no pipeline state for request {request_id!r}"}
+    if record["stage"] != "PENDING_FOUNDER_FULFILLMENT":
+        return {"success": False, "error": f"cannot manually fulfill from stage {record['stage']!r} (must be PENDING_FOUNDER_FULFILLMENT)"}
+
+    is_url = delivery_ref.startswith("http://") or delivery_ref.startswith("https://")
+    if not is_url and not os.path.exists(delivery_ref):
+        return {"success": False, "error": f"real local file not found: {delivery_ref!r} (use a real path or a real https:// URL)"}
+
+    record["delivery"] = {
+        "type": "link" if is_url else "download",
+        "path": None if is_url else delivery_ref,
+        "url": delivery_ref if is_url else None,
+        "filename": None if is_url else os.path.basename(delivery_ref),
+        "note": (note or "").strip()[:500] or None,
+    }
+    _record_history(record, "DELIVERED", f"founder attached a real deliverable ({'URL' if is_url else 'file'})")
+    state[request_id] = record
+    _save_state(state, state_path)
+    return {"success": True, **record}
+
+
+def get_download_path(request_id, state_path=None):
+    """Server-side-only lookup (never returned raw to a browser) -- the
+    real local file path for a DELIVERED request's own download route."""
+    state = _load_state(state_path)
+    record = state.get(request_id)
+    if record is None:
+        return {"success": False, "error": f"no pipeline state for request {request_id!r}"}
+    if record["stage"] != "DELIVERED":
+        return {"success": False, "error": "this request has no download ready yet"}
+    delivery = record.get("delivery") or {}
+    if delivery.get("type") != "download" or not delivery.get("path"):
+        return {"success": False, "error": "this request's delivery is a link, not a downloadable file"}
+    if not os.path.exists(delivery["path"]):
+        return {"success": False, "error": "the real file for this delivery is missing on disk"}
+    return {"success": True, "path": delivery["path"], "filename": delivery.get("filename") or os.path.basename(delivery["path"])}
 
 
 def _notify_founder(text):
@@ -547,6 +669,7 @@ def check_payment_status(request_id, requests_path=None, state_path=None, api_ke
     _record_history(record, "PAID", f"real Paddle transaction {txn_id} confirmed ({status})")
     from invoice_generator import generate_invoice
     record["invoice"] = generate_invoice(record, match)
+    record = _fulfill_paid_request(record)
 
     state[request_id] = record
     _save_state(state, state_path)
@@ -576,6 +699,15 @@ def _supervision_view(record, audience="internal"):
     PY1."""
     hints = _CUSTOMER_RECOVERY_HINTS if audience == "customer" else _RECOVERY_HINTS
     fallback = "We'll update this shortly." if audience == "customer" else "no recovery guidance defined for this stage"
+    delivery = record.get("delivery")
+    # Round 4 (2026-07-29): the real local filesystem path/founder note
+    # never needs to reach the browser -- the customer's own download
+    # route resolves the path server-side via get_download_path(). The
+    # internal (Mission Control) view keeps the full real record.
+    if delivery and audience == "customer":
+        delivery_view = {"ready": True, "filename": delivery.get("filename"), "url": delivery.get("url")}
+    else:
+        delivery_view = delivery
     return {
         "request_id": record["request_id"],
         "status": record["stage"],
@@ -588,6 +720,7 @@ def _supervision_view(record, audience="internal"):
         "contract": record.get("contract"),
         "payment": record.get("payment"),
         "invoice": record.get("invoice"),
+        "delivery": delivery_view,
         "updated_at": record.get("updated_at"),
     }
 
@@ -700,6 +833,10 @@ def main():
             result = retry_payment_verification(payload["request_id"])
         elif command == "check_payment":
             result = check_payment_status(payload["request_id"])
+        elif command == "fulfill_manually":
+            result = fulfill_manually(payload["request_id"], payload.get("delivery_ref"), note=payload.get("note"))
+        elif command == "get_download_path":
+            result = get_download_path(payload["request_id"])
         elif command == "status":
             result = get_pipeline_status(payload["request_id"])
         elif command == "overview":

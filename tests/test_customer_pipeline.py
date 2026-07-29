@@ -450,7 +450,12 @@ class TestPaymentCompletionAndInvoice(BasePipelineTest):
         )
         self.assertTrue(result["success"])
         self.assertTrue(result["already_paid"])
-        self.assertEqual(result["stage"], "PAID")
+        # PAID immediately continues into real fulfillment routing (Round
+        # 4) -- this freeform (non-catalog) request has no already-
+        # produced artifact, so it honestly lands at PENDING_FOUNDER_
+        # FULFILLMENT rather than staying at the intermediate PAID stage.
+        self.assertEqual(result["stage"], "PENDING_FOUNDER_FULFILLMENT")
+        self.assertEqual(result["fulfillment_type"], "manual_fulfillment")
         self.assertIsNotNone(result["invoice"])
         self.assertEqual(result["invoice"]["total"], 126.0)
         self.assertEqual(result["invoice"]["payment_reference"], "txn_real1")
@@ -465,7 +470,144 @@ class TestPaymentCompletionAndInvoice(BasePipelineTest):
         self.assertEqual(result["checked_count"], 1)
         self.assertEqual(result["checked"][0]["request_id"], "req_abc123")
         state = cp._load_state(self.state_path)
-        self.assertEqual(state["req_abc123"]["stage"], "PAID")
+        self.assertEqual(state["req_abc123"]["stage"], "PENDING_FOUNDER_FULFILLMENT")
+
+
+class TestPaidFulfillment(BasePipelineTest):
+    """Customer Platform Round 4 (2026-07-29): honest PAID -> Production/
+    QA/Packaging/Delivery routing -- reuse a real already-published
+    artifact when one exists for this exact product, otherwise route to
+    real founder fulfillment. Never simulates production that didn't
+    happen."""
+
+    def setUp(self):
+        super().setUp()
+        self.generation_log_path = _temp_path(".jsonl")
+
+    def tearDown(self):
+        super().tearDown()
+        if os.path.exists(self.generation_log_path):
+            os.remove(self.generation_log_path)
+
+    def _write_generation_log(self, entries):
+        with open(self.generation_log_path, "w", encoding="utf-8") as f:
+            for entry in entries:
+                f.write(json.dumps(entry) + "\n")
+
+    def test_catalog_match_with_real_published_artifact_delivers_automatically(self):
+        real_pdf = _temp_path(".pdf")
+        with open(real_pdf, "w", encoding="utf-8") as f:
+            f.write("fake pdf bytes for test")
+        self.addCleanup(lambda: os.path.exists(real_pdf) and os.remove(real_pdf))
+
+        self._write_generation_log([
+            {"title": "Real Catalog Item", "path": real_pdf, "published": False, "timestamp": "t0"},
+            {"title": "Real Catalog Item", "path": real_pdf, "published": True, "timestamp": "t1"},
+        ])
+        self._write_request(catalog_product_id="pro_real123")
+        self._write_paddle_products([{"title": "Real Catalog Item", "product_id": "pro_real123", "price_id": "pri_real123", "price": 126.0}])
+        cp.advance_request("req_abc123", requests_path=self.requests_path, state_path=self.state_path, paddle_products_path=self.paddle_products_path)
+        cp.approve_request("req_abc123", accepted_name="Test Customer", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
+                            checkout_fn=lambda k, p: ({"id": "txn_1", "status": "draft"}, "https://checkout.paddle.com/real"),
+                            api_key_loader=lambda: "fake-key")
+        # check_payment_status uses the real default generation log path --
+        # patch the module-level default just for this call.
+        with patch.object(cp, "DEFAULT_GENERATION_LOG_PATH", Path(self.generation_log_path)):
+            result = cp.check_payment_status(
+                "req_abc123", state_path=self.state_path, api_key_loader=lambda: "fake-key",
+                get_transactions_fn=lambda k: [{"id": "txn_1", "status": "completed"}],
+            )
+        self.assertEqual(result["stage"], "DELIVERED")
+        self.assertEqual(result["fulfillment_type"], "existing_catalog_artifact")
+        self.assertEqual(result["delivery"]["path"], real_pdf)
+        stages = [h["stage"] for h in result["stage_history"]]
+        self.assertIn("PRODUCTION", stages)
+        self.assertIn("QUALITY_INSPECTION", stages)
+        self.assertIn("PACKAGING", stages)
+
+    def test_find_published_generation_record_ignores_unpublished_and_keeps_last(self):
+        self._write_generation_log([
+            {"title": "X", "path": "/a.pdf", "published": False, "timestamp": "t0"},
+            {"title": "X", "path": "/b.pdf", "published": True, "timestamp": "t1"},
+            {"title": "X", "path": "/c.pdf", "published": True, "timestamp": "t2"},
+            {"title": "Y", "path": "/y.pdf", "published": True, "timestamp": "t3"},
+        ])
+        found = cp._find_published_generation_record("X", self.generation_log_path)
+        self.assertEqual(found["path"], "/c.pdf")
+
+    def test_no_matching_artifact_routes_to_pending_founder_fulfillment(self):
+        self._write_generation_log([])  # empty log -- no artifact ever produced
+        self._write_request()  # freeform, no catalog_product_id
+        cp.advance_request("req_abc123", requests_path=self.requests_path, state_path=self.state_path,
+                            evaluate_fn=lambda *a, **k: _accepted_decision(), price_fn=lambda *a, **k: 199.0)
+        self._write_paddle_products([{"title": "match", "price_id": "pri_match", "price": 199.0}])
+        cp.approve_request("req_abc123", accepted_name="Test Customer", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
+                            checkout_fn=lambda k, p: ({"id": "txn_1", "status": "draft"}, "https://checkout.paddle.com/real"),
+                            api_key_loader=lambda: "fake-key")
+        with patch.object(cp, "DEFAULT_GENERATION_LOG_PATH", Path(self.generation_log_path)):
+            result = cp.check_payment_status(
+                "req_abc123", state_path=self.state_path, api_key_loader=lambda: "fake-key",
+                get_transactions_fn=lambda k: [{"id": "txn_1", "status": "completed"}],
+            )
+        self.assertEqual(result["stage"], "PENDING_FOUNDER_FULFILLMENT")
+        self.assertEqual(result["fulfillment_type"], "manual_fulfillment")
+
+    def test_fulfill_manually_requires_a_real_delivery_ref(self):
+        self._write_request()
+        result = cp.fulfill_manually("req_abc123", "", state_path=self.state_path)
+        self.assertFalse(result["success"])
+
+    def test_fulfill_manually_wrong_stage_is_rejected(self):
+        self._write_request()
+        result = cp.fulfill_manually("req_abc123", "https://example.com/file.pdf", state_path=self.state_path)
+        self.assertFalse(result["success"])
+
+    def test_fulfill_manually_rejects_nonexistent_local_path(self):
+        state = {"req_x": {"request_id": "req_x", "stage": "PENDING_FOUNDER_FULFILLMENT", "stage_history": []}}
+        cp._save_state(state, self.state_path)
+        result = cp.fulfill_manually("req_x", "C:/definitely/not/a/real/file.pdf", state_path=self.state_path)
+        self.assertFalse(result["success"])
+
+    def test_fulfill_manually_accepts_a_real_url(self):
+        state = {"req_x": {"request_id": "req_x", "stage": "PENDING_FOUNDER_FULFILLMENT", "stage_history": []}}
+        cp._save_state(state, self.state_path)
+        result = cp.fulfill_manually("req_x", "https://example.com/deliverable.pdf", note="shipped via Gumroad listing", state_path=self.state_path)
+        self.assertTrue(result["success"])
+        self.assertEqual(result["stage"], "DELIVERED")
+        self.assertEqual(result["delivery"]["url"], "https://example.com/deliverable.pdf")
+        self.assertEqual(result["delivery"]["type"], "link")
+
+    def test_get_download_path_requires_delivered_stage(self):
+        state = {"req_x": {"request_id": "req_x", "stage": "PAID", "stage_history": []}}
+        cp._save_state(state, self.state_path)
+        result = cp.get_download_path("req_x", state_path=self.state_path)
+        self.assertFalse(result["success"])
+
+    def test_get_download_path_returns_real_path_when_delivered(self):
+        real_file = _temp_path(".pdf")
+        with open(real_file, "w", encoding="utf-8") as f:
+            f.write("data")
+        self.addCleanup(lambda: os.path.exists(real_file) and os.remove(real_file))
+        state = {"req_x": {"request_id": "req_x", "stage": "DELIVERED", "stage_history": [],
+                            "delivery": {"type": "download", "path": real_file, "filename": "deliverable.pdf"}}}
+        cp._save_state(state, self.state_path)
+        result = cp.get_download_path("req_x", state_path=self.state_path)
+        self.assertTrue(result["success"])
+        self.assertEqual(result["path"], real_file)
+
+    def test_customer_facing_delivery_view_never_leaks_local_path(self):
+        real_file = _temp_path(".pdf")
+        with open(real_file, "w", encoding="utf-8") as f:
+            f.write("data")
+        self.addCleanup(lambda: os.path.exists(real_file) and os.remove(real_file))
+        self._write_request()
+        state = {"req_abc123": {"request_id": "req_abc123", "stage": "DELIVERED", "stage_history": [],
+                                 "delivery": {"type": "download", "path": real_file, "filename": "deliverable.pdf"}}}
+        cp._save_state(state, self.state_path)
+        result = cp.get_pipeline_status("req_abc123", requests_path=self.requests_path, state_path=self.state_path)
+        self.assertTrue(result["success"])
+        self.assertEqual(result["delivery"]["filename"], "deliverable.pdf")
+        self.assertNotIn("path", result["delivery"])
 
 
 class TestCustomerSafeCopy(BasePipelineTest):
