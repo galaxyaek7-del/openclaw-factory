@@ -370,6 +370,42 @@ test('readFailedJobsSummary: counts only real action:"failed" entries, ignores r
   assert.equal(result.recent[0].step, 'sales_poll', 'most recent failure must be first');
 });
 
+test('readFailedJobsSummary: by_step groups real failures by step name', () => {
+  const p = path.join(tmpDir, 'floop_by_step.log');
+  fs.writeFileSync(p,
+    JSON.stringify({ timestamp: 't1', actions: [{ step: 'sales_poll', action: 'failed', detail: 'a' }] }) + '\n' +
+    JSON.stringify({ timestamp: 't2', actions: [{ step: 'sales_poll', action: 'failed', detail: 'b' }] }) + '\n' +
+    JSON.stringify({ timestamp: 't3', actions: [{ step: 'golden_hunter_bridge', action: 'failed', detail: 'c' }] }) + '\n'
+  );
+  const result = dd.readFailedJobsSummary(p);
+  assert.deepEqual(result.by_step, { sales_poll: 2, golden_hunter_bridge: 1 });
+});
+
+test('readFailedJobsSummary: missing log -> by_step is an honest empty object', () => {
+  const result = dd.readFailedJobsSummary(path.join(tmpDir, 'nope_floop2.log'));
+  assert.deepEqual(result.by_step, {});
+});
+
+test('readSupportTicketSummary: missing file -> honest zero, never fabricates a ticket', () => {
+  const result = dd.readSupportTicketSummary(path.join(tmpDir, 'nope_tickets.jsonl'));
+  assert.equal(result.count, 0);
+  assert.equal(result.open_count, 0);
+  assert.deepEqual(result.recent, []);
+  assert.ok(result.note);
+});
+
+test('readSupportTicketSummary: real tickets -> counts open + most-recent-first order', () => {
+  const p = path.join(tmpDir, 'tickets.jsonl');
+  fs.writeFileSync(p,
+    JSON.stringify({ ticket_id: 'tix_1', submitted_at: 't1', status: 'OPEN', message: 'first issue' }) + '\n' +
+    JSON.stringify({ ticket_id: 'tix_2', submitted_at: 't2', status: 'CLOSED', message: 'second issue' }) + '\n'
+  );
+  const result = dd.readSupportTicketSummary(p);
+  assert.equal(result.count, 2);
+  assert.equal(result.open_count, 1);
+  assert.equal(result.recent[0].ticket_id, 'tix_2', 'most recent ticket must be first');
+});
+
 test('readCustomerAccountsSummary: missing file -> honest zero, never throws', () => {
   const result = dd.readCustomerAccountsSummary(path.join(tmpDir, 'nope_accounts.json'));
   assert.equal(result.count, 0);

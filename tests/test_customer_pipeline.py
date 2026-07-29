@@ -265,6 +265,67 @@ class TestStatusAndOverview(BasePipelineTest):
         self.assertEqual(overview["needs_attention"][0]["stage"], "PAYMENT_BLOCKED_PADDLE_ONBOARDING")
 
 
+class TestObserveSignals(BasePipelineTest):
+    """Autonomous Company Evolution Engine, Observe (2026-07-29): real
+    abandoned-proposal detection, funnel conversion, and delivery-delay
+    signals derived from real pipeline state."""
+
+    def test_stuck_proposed_is_flagged_as_abandoned(self):
+        old_time = "2020-01-01T00:00:00+00:00"
+        state = {
+            "req_x": {
+                "request_id": "req_x", "stage": "PROPOSED", "updated_at": old_time,
+                "stage_history": [{"stage": "PROPOSED", "at": old_time}],
+                "proposal": None, "payment": None, "contract": None, "error": None,
+            },
+        }
+        cp._save_state(state, self.state_path)
+        self._write_request("req_x")
+        overview = cp.list_pipeline_overview(requests_path=self.requests_path, state_path=self.state_path)
+        self.assertEqual(len(overview["needs_attention"]), 1)
+        self.assertEqual(overview["needs_attention"][0]["stage"], "PROPOSED")
+
+    def test_recent_proposed_is_not_flagged(self):
+        self._write_request()
+        cp.advance_request("req_abc123", requests_path=self.requests_path, state_path=self.state_path,
+                            evaluate_fn=lambda *a, **k: _accepted_decision(), price_fn=lambda *a, **k: 100.0)
+        overview = cp.list_pipeline_overview(requests_path=self.requests_path, state_path=self.state_path)
+        self.assertEqual(overview["needs_attention"], [])
+
+    def test_funnel_conversion_is_honestly_unknown_with_no_requests(self):
+        result = cp.funnel_conversion_summary(state_path=self.state_path)
+        self.assertEqual(result["answer"], "Unknown")
+
+    def test_funnel_conversion_computes_real_ratios_from_stage_history(self):
+        state = {
+            "req_1": {"stage_history": [{"stage": "NEW"}, {"stage": "QUALIFIED"}, {"stage": "PROPOSED"}]},
+            "req_2": {"stage_history": [{"stage": "NEW"}]},
+        }
+        cp._save_state(state, self.state_path)
+        result = cp.funnel_conversion_summary(state_path=self.state_path)
+        self.assertEqual(result["total_requests"], 2)
+        self.assertEqual(result["stage_reach_counts"]["NEW"], 2)
+        self.assertEqual(result["stage_reach_counts"]["PROPOSED"], 1)
+        new_to_qualified = next(c for c in result["conversions"] if c["from_stage"] == "NEW")
+        self.assertEqual(new_to_qualified["conversion_pct"], 50.0)
+
+    def test_delivery_delay_is_honestly_unknown_with_no_deliveries(self):
+        result = cp.delivery_delay_summary(state_path=self.state_path)
+        self.assertEqual(result["answer"], "Unknown")
+
+    def test_delivery_delay_computes_real_elapsed_hours(self):
+        state = {
+            "req_1": {"stage_history": [
+                {"stage": "PAID", "at": "2026-07-01T00:00:00+00:00"},
+                {"stage": "DELIVERED", "at": "2026-07-02T00:00:00+00:00"},
+            ]},
+        }
+        cp._save_state(state, self.state_path)
+        result = cp.delivery_delay_summary(state_path=self.state_path)
+        self.assertEqual(result["sample_size"], 1)
+        self.assertEqual(result["average_hours"], 24.0)
+
+
 class TestCatalogPriceLock(BasePipelineTest):
     """Commercial Readiness Report (2026-07-25), finding P1: a request for
     an existing catalog item must be quoted EXACTLY the catalog's real

@@ -1673,6 +1673,213 @@ async function maybeGenerateDailyEvolutionReport(now = new Date()) {
   }
 }
 
+// Executive Intelligence Core, Round 1 (2026-07-29): ai_doctor.py and
+// department_health.py already had the exact real report shape
+// (render_markdown() + a mission_control_api.py dispatch command) that
+// evolution_report/self_awareness above already run daily -- they were
+// just never wired into the tick. Same subprocess pattern verbatim,
+// nothing new invented.
+function runAiDoctorReport({ timeoutMs = 30000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'ai_doctor'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة ai_doctor (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من ai_doctor' });
+          return;
+        }
+        finish({ ok: true, markdown: result.markdown });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج ai_doctor: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+function aiDoctorReportPath(now) {
+  return path.join(REPORTS_DIR, `AI_DOCTOR_${isoDate(now)}.md`);
+}
+
+async function maybeGenerateDailyAiDoctorReport(now = new Date()) {
+  const datedPath = aiDoctorReportPath(now);
+  if (fs.existsSync(datedPath)) {
+    return { action: 'none', detail: `تقرير AI Doctor اليومي موجود بالفعل: ${path.basename(datedPath)}` };
+  }
+  const result = await runAiDoctorReport();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(REPORTS_DIR, { recursive: true });
+    fs.writeFileSync(datedPath, result.markdown, 'utf8');
+    return { action: 'generated', detail: `تم إنشاء تقرير AI Doctor اليومي: ${path.basename(datedPath)}` };
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ تقرير AI Doctor: ${err.message}` };
+  }
+}
+
+function runDepartmentHealthReport({ timeoutMs = 30000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'department_health'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة department_health (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من department_health' });
+          return;
+        }
+        finish({ ok: true, markdown: result.markdown });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج department_health: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+function departmentHealthReportPath(now) {
+  return path.join(REPORTS_DIR, `DEPARTMENT_HEALTH_${isoDate(now)}.md`);
+}
+
+async function maybeGenerateDailyDepartmentHealthReport(now = new Date()) {
+  const datedPath = departmentHealthReportPath(now);
+  if (fs.existsSync(datedPath)) {
+    return { action: 'none', detail: `تقرير صحة الأقسام اليومي موجود بالفعل: ${path.basename(datedPath)}` };
+  }
+  const result = await runDepartmentHealthReport();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(REPORTS_DIR, { recursive: true });
+    fs.writeFileSync(datedPath, result.markdown, 'utf8');
+    return { action: 'generated', detail: `تم إنشاء تقرير صحة الأقسام اليومي: ${path.basename(datedPath)}` };
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ تقرير صحة الأقسام: ${err.message}` };
+  }
+}
+
+// ── AUTONOMOUS COMPANY EVOLUTION ENGINE — DAILY INTAKE/SIMULATE/DECIDE ──
+// Runs mission_control_api.py's evolution_queue_daily_cycle: real
+// proposals get pulled into the Evolution Queue, simulated, and decided
+// (routed to AWAITING_FOUNDER_APPROVAL) — never approved, rejected, or
+// marked implemented automatically. This is the one concrete code
+// enforcement of the founder's explicit "human-gated always" choice for
+// Execute, not just a policy note — approve/reject/mark-implemented stay
+// exclusively founder-triggered Mission Control actions. Gated to once
+// per calendar day via a plain marker file: run_daily_cycle() is
+// naturally idempotent (it only ever touches newly-intake proposals,
+// per evolution_queue.py's own contract), but there's no real value in
+// spawning a Python subprocess every ~10-minute tick when nothing new
+// can exist that fast.
+const EVOLUTION_QUEUE_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.evolution_queue_daily_marker');
+
+function runEvolutionQueueDailyCycle({ timeoutMs = 30000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'evolution_queue_daily_cycle'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة evolution_queue_daily_cycle (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من evolution_queue_daily_cycle' });
+          return;
+        }
+        finish({ ok: true, added_count: result.added_count, processed: result.processed });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج evolution_queue_daily_cycle: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeGenerateDailyEvolutionQueueIntake(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(EVOLUTION_QUEUE_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet -- first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم تحديث طابور التطوّر اليوم بالفعل (${today})` };
+  }
+  const result = await runEvolutionQueueDailyCycle();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(path.dirname(EVOLUTION_QUEUE_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(EVOLUTION_QUEUE_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ علامة طابور التطوّر: ${err.message}` };
+  }
+  return { action: 'processed', detail: `تمت معالجة ${result.added_count} اقتراح جديد في طابور التطوّر (${result.processed.join(', ') || 'لا شيء'})` };
+}
+
 // ── SELF-AWARENESS ──
 // CONSTITUTION.md §20. self_awareness.js is a plain Node module — required
 // directly (no subprocess needed, unlike market_hunter.py). Gated to once
@@ -2069,6 +2276,24 @@ async function runTick() {
   markStep('evolution_report');
   actions.push({ step: 'evolution_report', ...(await maybeGenerateDailyEvolutionReport()) });
 
+  // Executive Intelligence Core, Round 1 (2026-07-29): same once-per-
+  // calendar-day pattern as evolution_report immediately above -- these
+  // two report engines already had the real render_markdown()/dispatch
+  // shape, just never had the daily tick wiring evolution_report/
+  // self_awareness already do.
+  markStep('ai_doctor_report');
+  actions.push({ step: 'ai_doctor_report', ...(await maybeGenerateDailyAiDoctorReport()) });
+
+  markStep('department_health_report');
+  actions.push({ step: 'department_health_report', ...(await maybeGenerateDailyDepartmentHealthReport()) });
+
+  // Autonomous Company Evolution Engine, Round 4 (2026-07-29): same
+  // once-per-calendar-day pattern as the two report engines immediately
+  // above — intake/simulate/decide only, never approve/reject/mark-
+  // implemented (those stay exclusively founder-triggered).
+  markStep('evolution_queue_intake');
+  actions.push({ step: 'evolution_queue_intake', ...(await maybeGenerateDailyEvolutionQueueIntake()) });
+
   // Golden Hunter also runs regardless of dashboard reachability — it's a
   // standalone local Python process, not an HTTP call to the dashboard.
   markStep('golden_hunter');
@@ -2284,6 +2509,9 @@ module.exports = {
   runTick, healFinance, healEmptyBooks, healN8n, hunt, diagnose,
   generateWeeklyReport, maybeGenerateWeeklyReport, weekReportPath, runExportExecutiveReport,
   runEvolutionReport, evolutionReportPath, maybeGenerateDailyEvolutionReport,
+  runAiDoctorReport, aiDoctorReportPath, maybeGenerateDailyAiDoctorReport,
+  runDepartmentHealthReport, departmentHealthReportPath, maybeGenerateDailyDepartmentHealthReport,
+  runEvolutionQueueDailyCycle, maybeGenerateDailyEvolutionQueueIntake,
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
   maybeRunMarketHunter, maybeRunSelfAwareness,

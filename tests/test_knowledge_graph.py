@@ -135,7 +135,12 @@ class TestBuildGraph(unittest.TestCase):
 
     def test_empty_everything_never_throws(self):
         d, a, l, c, e = self._paths_for()
-        graph = build.build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
+        graph = build.build_graph(
+            decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e,
+            lessons_dir="C:/definitely/not/a/real/lessons/dir",
+            governance_dir="C:/definitely/not/a/real/governance/dir",
+            evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
+        )
         self.assertEqual(graph["node_count"], 0)
         self.assertEqual(graph["edge_count"], 0)
 
@@ -226,6 +231,141 @@ class TestQueryRelated(unittest.TestCase):
         graph = self._sample_graph()
         result = build.query_related(graph, "niche", "niche:does-not-exist")
         self.assertFalse(result["found"])
+
+
+class TestLessonAndAdrNodes(unittest.TestCase):
+    """Executive Intelligence Core, Round 5 (2026-07-29): real Lesson/ADR
+    nodes parsed from real markdown files -- mechanical (filename + first
+    heading), never semantic."""
+
+    def setUp(self):
+        self.tmpdir = tempfile.mkdtemp()
+        self._paths = []
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+        for p in self._paths:
+            if os.path.exists(p):
+                os.remove(p)
+
+    def _write(self, relpath, content):
+        full = os.path.join(self.tmpdir, relpath)
+        os.makedirs(os.path.dirname(full), exist_ok=True)
+        with open(full, "w", encoding="utf-8") as f:
+            f.write(content)
+        return full
+
+    def test_lesson_nodes_use_the_real_first_heading_as_label(self):
+        lessons_dir = os.path.join(self.tmpdir, "lessons")
+        os.makedirs(lessons_dir)
+        self._write("lessons/README.md", "# Not a real lesson\n")
+        self._write("lessons/The_Test_Lesson.md", "# The Real Test Lesson\n\nBody text.\n")
+        nodes = build._lesson_nodes(lessons_dir)
+        self.assertEqual(len(nodes), 1, "README.md must be excluded")
+        self.assertEqual(nodes[0]["id"], "lesson:The_Test_Lesson")
+        self.assertEqual(nodes[0]["label"], "The Real Test Lesson")
+        self.assertEqual(nodes[0]["type"], "Lesson")
+
+    def test_lesson_nodes_missing_directory_is_honestly_empty(self):
+        nodes = build._lesson_nodes("C:/definitely/not/a/real/dir")
+        self.assertEqual(nodes, [])
+
+    def test_adr_nodes_use_the_real_number_and_heading(self):
+        gov_dir = os.path.join(self.tmpdir, "governance")
+        os.makedirs(gov_dir)
+        self._write("governance/ADR-999-a-test-decision.md", "# ADR-999 — A Test Decision\n")
+        self._write("governance/NOT_AN_ADR.md", "# Should be ignored\n")
+        nodes = build._adr_nodes(gov_dir)
+        self.assertEqual(len(nodes), 1, "non-ADR-prefixed files must be excluded")
+        self.assertEqual(nodes[0]["id"], "adr:ADR-999")
+        self.assertEqual(nodes[0]["label"], "ADR-999 — A Test Decision")
+        self.assertEqual(nodes[0]["type"], "ADR")
+
+    def test_adr_nodes_missing_directory_is_honestly_empty(self):
+        nodes = build._adr_nodes("C:/definitely/not/a/real/dir")
+        self.assertEqual(nodes, [])
+
+    def test_build_graph_includes_lesson_and_adr_nodes(self):
+        lessons_dir = os.path.join(self.tmpdir, "lessons")
+        gov_dir = os.path.join(self.tmpdir, "governance")
+        os.makedirs(lessons_dir)
+        os.makedirs(gov_dir)
+        self._write("lessons/A_Lesson.md", "# A Real Lesson\n")
+        self._write("governance/ADR-001-first.md", "# ADR-001 — First\n")
+        d, a, l, c, e = TestBuildGraph._paths_for(self)
+        graph = build.build_graph(
+            decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e,
+            lessons_dir=lessons_dir, governance_dir=gov_dir,
+            evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
+        )
+        types = {n["type"] for n in graph["nodes"]}
+        self.assertIn("Lesson", types)
+        self.assertIn("ADR", types)
+        self.assertEqual(graph["node_count"], 2)
+
+
+class TestProposalNodes(unittest.TestCase):
+    """Autonomous Company Evolution Engine, Round 5 (2026-07-29): real
+    Proposal nodes parsed from data/evolution_queue_state.json -- same
+    standalone, non-semantic discipline as Lesson/ADR nodes."""
+
+    def setUp(self):
+        fd, self.state_path = tempfile.mkstemp(suffix=".json")
+        os.close(fd)
+        self._paths = []
+
+    def tearDown(self):
+        if os.path.exists(self.state_path):
+            os.remove(self.state_path)
+        for p in self._paths:
+            if os.path.exists(p):
+                os.remove(p)
+
+    def _write_state(self, state):
+        with open(self.state_path, "w", encoding="utf-8") as f:
+            json.dump(state, f)
+
+    def test_missing_file_is_honestly_empty(self):
+        os.remove(self.state_path)
+        nodes = build._proposal_nodes("C:/definitely/not/a/real/evolution_queue_state.json")
+        self.assertEqual(nodes, [])
+
+    def test_malformed_json_is_honestly_empty_never_crashes(self):
+        with open(self.state_path, "w", encoding="utf-8") as f:
+            f.write("not valid json {{{")
+        nodes = build._proposal_nodes(self.state_path)
+        self.assertEqual(nodes, [])
+
+    def test_real_record_becomes_a_real_proposal_node(self):
+        self._write_state({
+            "test_proposal_1": {
+                "proposal_id": "test_proposal_1", "stage": "AWAITING_FOUNDER_APPROVAL",
+                "created_at": "2026-07-29T00:00:00+00:00",
+                "proposal": {"id": "test_proposal_1", "tool": "A real proposed tool"},
+            },
+        })
+        nodes = build._proposal_nodes(self.state_path)
+        self.assertEqual(len(nodes), 1)
+        self.assertEqual(nodes[0]["id"], "proposal:test_proposal_1")
+        self.assertEqual(nodes[0]["type"], "Proposal")
+        self.assertEqual(nodes[0]["label"], "A real proposed tool")
+        self.assertEqual(nodes[0]["stage"], "AWAITING_FOUNDER_APPROVAL")
+
+    def test_build_graph_includes_proposal_nodes(self):
+        self._write_state({
+            "test_proposal_1": {"stage": "PROPOSED", "created_at": "2026-07-29T00:00:00+00:00", "proposal": {"id": "test_proposal_1", "tool": "x"}},
+        })
+        d, a, l, c, e = TestBuildGraph._paths_for(self)
+        graph = build.build_graph(
+            decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e,
+            lessons_dir="C:/definitely/not/a/real/lessons/dir",
+            governance_dir="C:/definitely/not/a/real/governance/dir",
+            evolution_queue_state_path=self.state_path,
+        )
+        types = {n["type"] for n in graph["nodes"]}
+        self.assertIn("Proposal", types)
+        self.assertEqual(graph["node_count"], 1)
 
 
 if __name__ == "__main__":

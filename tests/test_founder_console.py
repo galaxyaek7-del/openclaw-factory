@@ -60,7 +60,10 @@ class TestBuildFounderQueuePartial(unittest.TestCase):
         store.append_decision(_decision("deferred niche", "DEFERRED"), path=self.decisions_path)
         store.append_decision(_decision("accepted niche", "ACCEPTED"), path=self.decisions_path)
 
-        result = founder_console.build_founder_queue_partial(decisions_path=self.decisions_path)
+        result = founder_console.build_founder_queue_partial(
+            decisions_path=self.decisions_path,
+            evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
+        )
         self.assertEqual(len(result["blocked_channels"]), 1)
         self.assertEqual(result["blocked_channels"][0]["marketplace"], "gumroad")
         self.assertEqual(len(result["autonomous_channels"]), 1)
@@ -71,13 +74,43 @@ class TestBuildFounderQueuePartial(unittest.TestCase):
     def test_no_deferred_decisions_is_honestly_empty(self, mock_gates):
         mock_gates.return_value = {"gated": [], "autonomous": []}
         store.append_decision(_decision("accepted niche", "ACCEPTED"), path=self.decisions_path)
-        result = founder_console.build_founder_queue_partial(decisions_path=self.decisions_path)
+        result = founder_console.build_founder_queue_partial(
+            decisions_path=self.decisions_path,
+            evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
+        )
         self.assertEqual(result["pending_decisions"], [])
+
+    @patch("commercial_execution.approval_gates.check_approval_gates")
+    def test_pending_evolution_proposals_reflects_real_queue_state(self, mock_gates):
+        """Autonomous Company Evolution Engine, Round 6 (2026-07-29)."""
+        mock_gates.return_value = {"gated": [], "autonomous": []}
+        import evolution_queue
+        queue_path = _temp_path().replace(".jsonl", ".json")
+        try:
+            evolution_queue.run_daily_cycle(
+                proposals=[{
+                    "id": "p1", "tool": "Test tool", "status": "مقترَح، لا تنفيذ",
+                    "why_needed": "a real reason", "expected_business_value": "a real value",
+                    "implementation_effort": "low", "estimated_roi": "unmeasured",
+                    "dependencies": ["a real dependency"], "risks": ["a real risk"],
+                    "evidence": "some_module.py's some_function()",
+                }],
+                state_path=queue_path,
+            )
+            result = founder_console.build_founder_queue_partial(
+                decisions_path=self.decisions_path, evolution_queue_state_path=queue_path,
+            )
+            self.assertEqual(len(result["pending_evolution_proposals"]), 1)
+            self.assertEqual(result["pending_evolution_proposals"][0]["proposal_id"], "p1")
+        finally:
+            if os.path.exists(queue_path):
+                os.remove(queue_path)
 
     def test_real_call_against_real_data_never_throws(self):
         result = founder_console.build_founder_queue_partial()
         self.assertIn("blocked_channels", result)
         self.assertIn("pending_decisions", result)
+        self.assertIn("pending_evolution_proposals", result)
 
 
 if __name__ == "__main__":

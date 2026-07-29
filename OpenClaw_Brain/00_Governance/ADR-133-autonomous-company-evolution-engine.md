@@ -1,0 +1,53 @@
+# ADR-133 — Autonomous Company Evolution Engine (Observe → Think → Simulate → Decide → Execute → Learn → Protect → Dashboard)
+
+**Date:** 2026-07-29
+**Status:** Adopted.
+
+---
+
+## The directive
+
+"EXECUTIVE DIRECTIVE — PHASE: AUTONOMOUS COMPANY EVOLUTION ENGINE": the engineering foundation is now considered mature; do NOT continue adding isolated features. Instead, transform Galaxy Forge into a self-improving company via a permanent 8-part system — Observe (customer behavior, production failures, delivery delays, conversion, revenue trend, system/architecture health, technical debt), Think (generate real improvement proposals from evidence, never invent), Simulate (estimate impact/risk/affected modules/rollback complexity before applying), Decide (use Executive Intelligence scoring; reject proposals that reduce trust/increase complexity/duplicate architecture/break consistency/introduce policy risk), Execute (only low-risk improvements may execute automatically; medium/high require Founder approval), Learn (every accepted/rejected proposal enriches company memory), Protect (self-improvement must never modify production/architecture/security/financial/customer-contract logic directly unless explicitly approved), and Dashboard (Evolution Queue, Improvement Proposals, Architecture Health, Company Intelligence Score, Learning History, Growth Forecast, Technical Debt, Customer Happiness, Trust Index, Automation Confidence — every proposal traceable, no black-box AI, no fake intelligence).
+
+## The one real decision this ADR exists to record: Execute stays human-gated always
+
+The directive's literal Execute wording ("low-risk improvements may execute automatically") asks for something genuinely new and higher-stakes: an AI mechanism that modifies this factory's own code/config without a human reviewing that specific change first. This repo has **no CI, no rollback mechanism, no staging environment, and no scheduler beyond `factory_loop.js`'s manual tick** — a real Claude Code session, observed by the founder, is the only real mechanism by which code changes happen here (this is not a gap to fix; it's this factory's actual, honestly-disclosed engineering maturity today).
+
+Rather than either blindly building literal auto-execution, or silently overriding the directive with a narrower interpretation, the founder was asked directly. **Explicit choice: "Human-gated always."** Every proposal — regardless of its computed risk tier — lands in a real Evolution Queue and requires an explicit founder approval action in Mission Control before any code is touched. Risk/impact is still computed and shown (it tells the founder how much scrutiny a given approval deserves), but it never bypasses that review.
+
+This is not a weaker version of the directive's "Protect" section — it's that section, applied consistently: Protect already demands explicit approval for production/architecture/security/financial/customer-contract changes. Given this factory's real safety-net maturity, treating *every* proposal that way (not just the ones that happen to touch a named sensitive area) is the same principle taken at face value, not diluted.
+
+**One concrete code enforcement, not just a policy note:** `factory_loop.js`'s daily tick (Round 4) calls `run_daily_cycle()`, which only ever runs intake → simulate → decide and stops at `AWAITING_FOUNDER_APPROVAL`. `approve_proposal()` / `reject_proposal()` / `mark_implemented()` exist only as Mission Control actions requiring an explicit `{ proposal_id }` in a founder-authenticated request body — there is no code path from the daily tick to any of the three.
+
+## What already existed, reused not rebuilt
+
+Confirmed fresh from the immediately preceding Executive Intelligence Core round (ADR-132), same session:
+
+- **Think** — `tool_intelligence/proposals.py::list_proposals()` already generated real, evidence-cited proposals from live bottleneck/technical-debt/capability-gap signals. This round only added a 4th signal source, never replaced the mechanism.
+- **Dashboard's named metrics** — Architecture Health, Technical Debt, Customer Happiness, Trust Index, Growth Forecast, Automation Confidence were already real Mission Control panels via `executive_score.py`'s sub-scores (ADR-132, Round 6). Only **Evolution Queue** and **Learning History** were genuinely new Dashboard items.
+- **Company Memory** — `knowledge_graph/build.py` already had `Lesson`/`ADR` node types (ADR-132, Round 5); this round adds a `Proposal` node type, identical mechanical pattern.
+- **Protect** — structurally satisfied by the human-gated-always decision above: nothing can touch production/architecture/security/financial/customer-contract code without a real, human-observed Claude Code session, exactly as every change in this repo's history has been made.
+
+## What was genuinely new (confirmed by search: no `simulate`/`rollback_complexity`/`affected_modules`/proposal-queue concept existed anywhere in this repo before this round)
+
+**Round 1 — `evolution_queue.py` (new).** The real state machine: `PROPOSED → SIMULATED → AWAITING_FOUNDER_APPROVAL → APPROVED/REJECTED → IMPLEMENTED`, keyed by proposal id in `data/evolution_queue_state.json` (same ledger/mutable-state split as `customer_pipeline.py`), each record carrying an append-only `stage_history` (real Learning History). `simulate_proposal()` is a mechanical, disclosed heuristic — not a dynamic execution sandbox this factory doesn't have: `affected_modules` regex-extracted from the proposal's own evidence text, `rollback_complexity` escalated to `high` on any named sensitive-area match (`security`, `financial`, `customer_contracts`), `medium`/`low` otherwise. `decide_proposal()` computes two narrow, honest flags — `policy_risk` (a sensitive area was touched) and `duplicate_architecture_risk` (3+ distinct modules cited) — and **always** routes to `AWAITING_FOUNDER_APPROVAL` regardless of either flag; they inform the founder's review, they never substitute for it.
+
+**Round 2 — New Observe signals in `customer_pipeline.py`.** `funnel_conversion_summary()` (real stage-to-stage conversion ratios from every request's actual `stage_history`, honestly `Unknown`/empty with zero real requests — same discipline as `growth_engine.py`'s own sales-window gate), a stuck-`PROPOSED` check extending `list_pipeline_overview()`'s existing stuck-`NEW` detection (an honest "abandoned at proposal" signal, distinct from "the trigger may have failed"), and `delivery_delay_summary()` (real PAID→DELIVERED elapsed hours, honestly empty until a real delivery exists).
+
+**Round 3 — `tool_intelligence/proposals.py` gains a 4th dynamic generator.** `_customer_funnel_proposal()` reads `customer_pipeline.list_pipeline_overview()`'s `needs_attention` and generates a real, evidence-cited proposal only when a real stuck request exists — honestly `None` today (zero real customer requests exist yet).
+
+**Round 4 — `factory_loop.js` daily wiring.** `maybeGenerateDailyEvolutionQueueIntake()` runs `run_daily_cycle()` once per calendar day (gated by a plain marker file — the cycle itself is naturally idempotent, but there's no value spawning a Python subprocess every ~10-minute tick). Intake/simulate/decide only, as established above.
+
+**Round 5 — Company memory.** `knowledge_graph/build.py::_proposal_nodes()` — every real `data/evolution_queue_state.json` record becomes a queryable `Proposal` node (label, stage, created_at). Same standalone, non-semantic discipline as `Lesson`/`ADR` nodes — no fabricated edge to the Niche/Decision/module a proposal is actually about.
+
+**Round 6 — Mission Control.** A new read-only `evolution-queue` panel (`SERVICE_REGISTRY`, reusing the existing generic `kv` panel rendering — zero new dashboard file) plus three sync actions in `ACTION_REGISTRY` — `approve-evolution-proposal`, `reject-evolution-proposal`, `mark-evolution-proposal-implemented` — each requiring `{ proposal_id }`, same `run(req)` pattern as `fulfill-customer-request-manually`. `founder_console.py::build_founder_queue_partial()` gained a real `pending_evolution_proposals` field (the real `AWAITING_FOUNDER_APPROVAL` bucket), same integration style as its existing DEFERRED-decisions count.
+
+## Validation
+
+New/updated tests: `tests/test_evolution_queue.py` (new, 23 tests — full state-machine coverage, injected proposals/temp state paths, never the real queue file), `tests/test_customer_pipeline.py` (+6, new Observe signals), `tests/test_tool_intelligence.py` (+4, the customer-funnel generator, `customer_pipeline.list_pipeline_overview` mocked), `tests/test_factory_loop_daily_evolution_queue_intake.js` (new, 2 — error paths only; the real success path unconditionally mutates real state, so it's excluded from automated tests by the same discipline `test_factory_loop_daily_department_health_report.js` already established), `tests/test_knowledge_graph.py` (+5, `Proposal` nodes), `tests/test_founder_console.py` (+1, plus 2 existing tests updated for isolation), `tests/test_mission_control_api.py` (+8, the five new dispatch endpoints, all mocked). Full regression (`tests/test_api_contract.js` — 29/29, `tests/test_mission_control_api.py` — 87/87, and the full `python -m unittest discover` suite — 1636/1636) re-run clean.
+
+Live E2E: `python mission_control_api.py evolution_queue_daily_cycle` was run directly against real factory data — 5 real proposals (from the existing bottleneck/technical-debt/capability-gap/AI-capability signals) were intook, simulated, and decided for real, landing in `data/evolution_queue_state.json` at `AWAITING_FOUNDER_APPROVAL` with correct, real flags (e.g. the AI-provider-credential proposal correctly flagged `policy_risk: true` / `sensitive_areas_touched: ["security"]`; the capability-gap proposal correctly flagged the `financial` area). Zero real customer requests exist yet, so the customer-funnel proposal source and all three new Observe signals in `customer_pipeline.py` are honestly absent/empty today — never padded to look active.
+
+## What's still honestly Unknown / not built
+
+The customer-funnel proposal generator and `funnel_conversion_summary()`/`delivery_delay_summary()` stay empty until real customer traffic exists — same standing disclosure as every other customer-platform metric in this factory. `simulate_proposal()`'s impact estimate is explicitly a static, evidence-text heuristic, not a guaranteed measurement — this factory has no sandbox to run a real execution simulation in, and building a fake one would repeat the exact `quality_doctor.py` mistake ADR-132 removed. Execute has, and is intended to permanently have, zero auto-apply code path — this is the design, not a phase to "finish later."

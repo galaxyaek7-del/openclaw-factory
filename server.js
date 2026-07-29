@@ -387,6 +387,43 @@ async function companyHealthService() {
   return { health, risk, self_awareness: awareness, current_priorities, activity };
 }
 
+// Executive Score (Executive Intelligence Core, Round 6, 2026-07-29) --
+// merges executive_score.py's Python-side real sub-scores with the two
+// JS-native real signals it can't reach across the language boundary
+// (Operational Stability: the same computeHealthStatus() every other
+// health surface already trusts, including the Reality Scorecard
+// override; Customer Happiness: real average review rating, scaled to
+// 0-100). "overall" is a transparent average of only the real (non-
+// Unknown) sub-scores, computed fresh here -- same value_engine.py/
+// reality.py precedent this whole module follows: never a single
+// invented number, an honest Unknown count always disclosed alongside it.
+async function executiveScoreService(req) {
+  const pythonResult = await runPythonServiceCached('executive_score', [], req);
+  const subScores = { ...pythonResult.sub_scores };
+
+  const health = await computeHealthStatus().catch(err => ({ status: 'error', error: err.message }));
+  const HEALTH_STATUS_MAP = { healthy: 100, degraded: 50, critical: 0 };
+  subScores.operational_stability = (health.status in HEALTH_STATUS_MAP)
+    ? { value: HEALTH_STATUS_MAP[health.status], source: 'server.js computeHealthStatus() (real infra checks + Reality Scorecard override, never softened)' }
+    : { value: 'Unknown', reason: `computeHealthStatus() رجع حالة غير متوقَّعة أو تعذّر الوصول: ${health.status}` };
+
+  const reviews = dashboardData.readCustomerReviewsSummary();
+  subScores.customer_happiness = (reviews.average_rating != null)
+    ? { value: Math.round(reviews.average_rating / 5 * 100), source: 'lib/dashboard_data.js readCustomerReviewsSummary() (average_rating, 1-5 scaled to 0-100)', detail: reviews }
+    : { value: 'Unknown', reason: reviews.note || 'لا مراجعات عملاء حقيقية بعد' };
+
+  const numericValues = Object.values(subScores).filter(s => typeof s.value === 'number').map(s => s.value);
+  const unknownCount = Object.values(subScores).filter(s => s.value === 'Unknown').length;
+  const overall = numericValues.length ? Math.round(numericValues.reduce((a, b) => a + b, 0) / numericValues.length) : 'Unknown';
+
+  return {
+    sub_scores: subScores,
+    overall,
+    overall_note: `متوسط شفّاف لـ ${numericValues.length} من ${Object.keys(subScores).length} مكوّنات حقيقية معروفة اليوم — ${unknownCount} مكوّن غير معروف بصدق (لا بيانات حقيقية كافية بعد)، لم يُدرَج في المتوسط ولم يُفترَض صفراً. لا يُستخدَم هذا الرقم في أي بوابة قبول/رفض حقيقية — معلوماتي فقط.`,
+    generated_at: new Date().toISOString(),
+  };
+}
+
 async function knowledgeBaseService(req) {
   const q = req.query.q;
   if (q) {
@@ -745,6 +782,20 @@ const SERVICE_REGISTRY = [
     health: fsHealthCheck(() => dashboardData.readCustomerReviewsSummary(), 'dashboardData module reachable, customer_reviews.jsonl read check ok'),
   },
   {
+    name: 'executive-score',
+    description: 'Executive Score (Round 6, 2026-07-29) -- a transparent, real-component composite (Trust, Production Quality, Technical Debt, Security Health, Delivery Quality, Automation, Growth, Architecture Health, Operational Stability, Customer Happiness). Every sub-score is a real number from an existing real function or an honest "Unknown" -- never blended into any accept/reject/production gate, informational only.',
+    reused: 'executive_score.py compute_executive_score() (Python sub-scores) merged with server.js computeHealthStatus() and lib/dashboard_data.js readCustomerReviewsSummary() (JS-native sub-scores).',
+    handler: executiveScoreService,
+    health: pythonHealthCheck('executive_score'),
+  },
+  {
+    name: 'support-tickets',
+    description: 'Real support ticket summary (Executive Intelligence Core, Round 3, 2026-07-29) -- count, open count, most recent tickets. data/support_tickets.jsonl was write-only until now; honestly empty today, zero real customer traffic yet.',
+    reused: 'lib/dashboard_data.js readSupportTicketSummary() over data/support_tickets.jsonl.',
+    handler: async () => dashboardData.readSupportTicketSummary(),
+    health: fsHealthCheck(() => dashboardData.readSupportTicketSummary(), 'dashboardData module reachable, support_tickets.jsonl read check ok'),
+  },
+  {
     name: 'golden-hunter-status',
     description: "Golden Hunter Evolution -- real recent activity + top currently-scored opportunities, each with a real, informational pre-acceptance ROI estimate. Never changes the real accept/reject gate.",
     reused: 'mission_control_api.py _golden_hunter_status() (EOS Phase 2, 2026-07-19) -- reuses golden_opportunities.json, data/golden_hunter_events.jsonl, and revenue_pipeline.plan.estimate_pre_acceptance_roi() verbatim.',
@@ -806,6 +857,19 @@ const SERVICE_REGISTRY = [
     reused: 'evolution_engine.py build_evolution_report() (EOS Phase 1, 2026-07-19) -- combines executive_intelligence.bottlenecks, strategic_intelligence.technical_debt, revenue_pipeline.pipeline, tool_intelligence.proposals, and the new capability_registry_scanner.py.',
     handler: (req) => runPythonServiceCached('evolution_report', [], req),
     health: pythonHealthCheck('evolution_report'),
+  },
+  {
+    // Autonomous Company Evolution Engine, Round 6 (2026-07-29): the real
+    // Evolution Queue -- every real proposal's stage, the founder's own
+    // real approval backlog (with a real, informational stuck-too-long
+    // flag), and the full Learning History. Read-only here; the three
+    // founder actions that actually move a proposal (approve/reject/
+    // mark-implemented) are in ACTION_REGISTRY below, never auto-fired.
+    name: 'evolution-queue',
+    description: "The real Evolution Queue -- every real proposal from tool_intelligence.proposals.list_proposals(), its real simulated impact/rollback-complexity, and its real stage (PROPOSED/SIMULATED/AWAITING_FOUNDER_APPROVAL/APPROVED/REJECTED/IMPLEMENTED). Nothing auto-approves or auto-executes; every proposal, whatever its computed risk tier, waits for a real founder decision.",
+    reused: 'evolution_queue.py list_evolution_queue() (Round 1), fed daily by factory_loop.js maybeGenerateDailyEvolutionQueueIntake() (Round 4), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('evolution_queue', [], req),
+    health: pythonHealthCheck('evolution_queue'),
   },
   {
     name: 'market-review',
@@ -1290,6 +1354,30 @@ async function fulfillCustomerRequestManuallyAction(req) {
     throw new Error('{ request_id, delivery_ref } are required');
   }
   return runCustomerPipelineCommand('fulfill_manually', { request_id, delivery_ref, note: note || '' });
+}
+
+// Autonomous Company Evolution Engine, Round 6 (2026-07-29): the three
+// founder-only actions that actually move a real proposal past
+// AWAITING_FOUNDER_APPROVAL. Never fired automatically -- factory_loop.js's
+// daily tick only ever runs intake/simulate/decide (Round 4), which stops
+// at AWAITING_FOUNDER_APPROVAL by design. This is the one concrete code
+// enforcement of the founder's explicit "human-gated always" choice.
+async function approveEvolutionProposalAction(req) {
+  const { proposal_id, note } = req.body || {};
+  if (!proposal_id) throw new Error('{ proposal_id } is required');
+  return runPythonService('approve_evolution_proposal', [JSON.stringify({ proposal_id, note: note || '' })]);
+}
+
+async function rejectEvolutionProposalAction(req) {
+  const { proposal_id, reason } = req.body || {};
+  if (!proposal_id) throw new Error('{ proposal_id } is required');
+  return runPythonService('reject_evolution_proposal', [JSON.stringify({ proposal_id, reason: reason || '' })]);
+}
+
+async function markEvolutionProposalImplementedAction(req) {
+  const { proposal_id, note } = req.body || {};
+  if (!proposal_id) throw new Error('{ proposal_id } is required');
+  return runPythonService('mark_evolution_proposal_implemented', [JSON.stringify({ proposal_id, note: note || '' })]);
 }
 
 // Round 5 (2026-07-29): the founder's own real, manual confirmation that
@@ -2021,6 +2109,34 @@ const ACTION_REGISTRY = [
     reversible: true, // read/append only — no destructive action, no real publish, no real spend beyond what the reused modules already do
     kind: 'async',
     asyncRunner: () => runFullCycleActionAsync('run-full-cycle'),
+  },
+  {
+    // Autonomous Company Evolution Engine, Round 6 (2026-07-29): the
+    // founder's real approval -- the one concrete code enforcement of
+    // "human-gated always" for Execute (see the plan's Architecture
+    // decisions). Requires { proposal_id } in the request body.
+    name: 'approve-evolution-proposal',
+    description: 'Moves a real Evolution Queue proposal from AWAITING_FOUNDER_APPROVAL to APPROVED. Requires { proposal_id } in the request body, optional { note }. Never fired automatically -- factory_loop.js only ever runs intake/simulate/decide.',
+    reused: 'evolution_queue.py approve_proposal() (Round 1)',
+    reversible: false, // a real founder decision, permanently recorded in stage_history
+    kind: 'sync',
+    run: approveEvolutionProposalAction,
+  },
+  {
+    name: 'reject-evolution-proposal',
+    description: 'Moves a real Evolution Queue proposal from AWAITING_FOUNDER_APPROVAL to REJECTED. Requires { proposal_id } in the request body, optional { reason }.',
+    reused: 'evolution_queue.py reject_proposal() (Round 1)',
+    reversible: false,
+    kind: 'sync',
+    run: rejectEvolutionProposalAction,
+  },
+  {
+    name: 'mark-evolution-proposal-implemented',
+    description: 'Closes the loop after a real, separately-reviewed Claude Code session has actually shipped an APPROVED proposal. Requires { proposal_id } in the request body, optional { note }. Requires the proposal to already be APPROVED -- can never be used to skip founder review.',
+    reused: 'evolution_queue.py mark_implemented() (Round 1)',
+    reversible: false,
+    kind: 'sync',
+    run: markEvolutionProposalImplementedAction,
   },
 ];
 const ACTION_BY_NAME = new Map(ACTION_REGISTRY.map(a => [a.name, a]));
@@ -3444,49 +3560,6 @@ app.post('/api/market-analyze', requireMissionControlAuth, (req, res) => {
         res.json({ success: false, error: err.message });
       }
     });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-// ── QA CHECK ──
-// Strategic Phase audit (2026-07-19): quality_doctor.py's "fixes_applied"
-// list is fabricated — every _check_*() method appends a plausible-
-// sounding fix string ("Increasing pages to 120", "Generated
-// professional cover") without ever regenerating a page, drawing a
-// cover, or touching a price; health_score is `100 - issues*15`, not
-// derived from any real check. inspectors.py's Dual Inspection already
-// does the real version of every one of these checks (real pypdf page
-// counts, real Pillow cover dimensions, real profit_oracle pricing) and
-// is what every actual product in this factory is gated on — this
-// endpoint has zero real callers today (confirmed: no UI button, no
-// pipeline stage). Left live (not removed — a behavior change needing
-// founder sign-off, not a default cleanup) but now self-disclosing, so
-// nothing built on top of it in the future can mistake it for a real
-// QA gate.
-app.post('/api/qa-check', requireMissionControlAuth, (req, res) => {
-  try {
-    const pythonPath = detectPython();
-    const scriptPath = path.join(__dirname, 'quality_doctor.py');
-    if (!fs.existsSync(scriptPath)) {
-      return res.json({ success: false, error: 'quality_doctor.py not found' });
-    }
-    const productData = JSON.stringify(req.body || {});
-    const python = require('child_process').execFile(
-      pythonPath, [scriptPath, productData],
-      { cwd: __dirname },
-      (err, stdout, stderr) => {
-        try {
-          const result = JSON.parse(stdout.trim());
-          res.json({
-            success: true, ...result,
-            warning: 'quality_doctor.py is a legacy prototype: its "fixes_applied" entries are fabricated (nothing is actually regenerated, redrawn, or repriced) and health_score/ready_to_publish are not derived from any real check. The real, load-bearing QA gate is inspectors.py\'s Dual Inspection — every actual generated product is gated on that, not this.',
-          });
-        } catch {
-          res.json({ success: false, error: stderr || stdout || String(err) });
-        }
-      }
-    );
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

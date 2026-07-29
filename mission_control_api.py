@@ -537,6 +537,16 @@ def _check_customer_payments():
     return customer_pipeline.check_all_awaiting_payments()
 
 
+def _executive_score():
+    """Executive Score, Python-side sub-scores only (Executive
+    Intelligence Core, Round 6, 2026-07-29) -- Operational Stability and
+    Customer Happiness are merged in by server.js's Mission Control panel
+    handler (JS-native signals, see executive_score.py's own docstring
+    for why). Passthrough only -- see executive_score.py."""
+    import executive_score
+    return executive_score.compute_executive_score()
+
+
 def _ai_capability_request():
     """Records a real department request for a different/better AI model
     (Autonomous Digital Company v1 §8) — an append-only logged request,
@@ -566,6 +576,69 @@ def _tool_intelligence():
     new logic here."""
     from tool_intelligence import proposals
     return {"proposals": proposals.list_proposals()}
+
+
+def _evolution_queue_daily_cycle():
+    """Autonomous Company Evolution Engine, Round 4 (2026-07-29): the one
+    automatic path the founder approved -- intake real proposals, simulate
+    them, and decide (route to AWAITING_FOUNDER_APPROVAL). Never approves,
+    rejects, or marks implemented -- those three stay exclusively
+    founder-triggered Mission Control actions (see _evolution_queue below
+    and the corresponding server.js routes)."""
+    from tool_intelligence import proposals
+    import evolution_queue
+    return evolution_queue.run_daily_cycle(proposals=proposals.list_proposals())
+
+
+def _evolution_queue():
+    """Read-only Mission Control panel: the real Evolution Queue state --
+    stage distribution, entries awaiting founder approval (with a stuck
+    flag when one has sat unreviewed too long), and the full learning
+    history. Passthrough only."""
+    import evolution_queue
+    return evolution_queue.list_evolution_queue()
+
+
+def _approve_evolution_proposal():
+    """The founder's own real approval -- the one concrete code enforcement
+    of 'human-gated always' for Execute: no proposal, whatever its
+    computed risk tier, reaches APPROVED without this real, explicit
+    call. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py approve_evolution_proposal '{"proposal_id":"...","note":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    proposal_id = (payload.get("proposal_id") or "").strip()
+    if not proposal_id:
+        raise ValueError("{ proposal_id } is required")
+
+    import evolution_queue
+    return evolution_queue.approve_proposal(proposal_id, decided_by="founder", note=payload.get("note"))
+
+
+def _reject_evolution_proposal():
+    """The founder's own real rejection. Reads its payload from
+    sys.argv[2]:
+    `python mission_control_api.py reject_evolution_proposal '{"proposal_id":"...","reason":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    proposal_id = (payload.get("proposal_id") or "").strip()
+    if not proposal_id:
+        raise ValueError("{ proposal_id } is required")
+
+    import evolution_queue
+    return evolution_queue.reject_proposal(proposal_id, decided_by="founder", reason=payload.get("reason"))
+
+
+def _mark_evolution_proposal_implemented():
+    """Closes the loop after a real, separately-reviewed Claude Code
+    session has actually shipped an APPROVED proposal -- never called
+    automatically. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py mark_evolution_proposal_implemented '{"proposal_id":"...","note":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    proposal_id = (payload.get("proposal_id") or "").strip()
+    if not proposal_id:
+        raise ValueError("{ proposal_id } is required")
+
+    import evolution_queue
+    return evolution_queue.mark_implemented(proposal_id, note=payload.get("note"))
 
 
 def _strategic_report():
@@ -718,10 +791,19 @@ def _knowledge_graph():
 def _department_health():
     """Department Health -- EOS Phase 2 (2026-07-19): pure assembly of
     already-computed real health signals per named department, zero new
-    health computation. Passthrough only -- see department_health.py."""
+    health computation. Passthrough only -- see department_health.py.
+
+    Round 4 (2026-07-29) adds `weakness`: a real, honest classification
+    (no_data / below_threshold / healthy) over the same report -- never a
+    blended cross-department score, see department_health.rank_department_
+    weakness()'s own docstring for why."""
     import department_health
     report = department_health.build_department_health()
-    return {"report": report, "markdown": department_health.render_markdown(report)}
+    return {
+        "report": report,
+        "weakness": department_health.rank_department_weakness(report),
+        "markdown": department_health.render_markdown(report),
+    }
 
 
 def _research_department():
@@ -1620,6 +1702,7 @@ _ENDPOINTS = {
     "check_customer_payments": _check_customer_payments,
     "customer_fulfillment_queue": _customer_fulfillment_queue,
     "customer_invoices": _customer_invoices,
+    "executive_score": _executive_score,
     "tool_intelligence": _tool_intelligence,
     "strategic_report": _strategic_report,
     "market_review": _market_review,
@@ -1675,6 +1758,11 @@ _ENDPOINTS = {
     "draft_adr_post": _draft_adr_post,
     "queue_draft_for_approval": _queue_draft_for_approval,
     "run_master_cycle": _run_master_cycle,
+    "evolution_queue_daily_cycle": _evolution_queue_daily_cycle,
+    "evolution_queue": _evolution_queue,
+    "approve_evolution_proposal": _approve_evolution_proposal,
+    "reject_evolution_proposal": _reject_evolution_proposal,
+    "mark_evolution_proposal_implemented": _mark_evolution_proposal_implemented,
 }
 
 

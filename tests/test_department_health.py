@@ -78,5 +78,51 @@ class TestBuildDepartmentHealth(unittest.TestCase):
         self.assertIn("صحة الأقسام", md)
 
 
+class TestRankDepartmentWeakness(unittest.TestCase):
+    """Executive Intelligence Core, Round 4 (2026-07-29)."""
+
+    def test_no_data_departments_are_bucketed_with_their_real_reason(self):
+        report = {
+            "researchers": {"data_source": "none", "reason": "غير مؤتمَت بعد"},
+            "production": {"data_source": "real", "success_rate": 95.0},
+        }
+        result = dh.rank_department_weakness(report=report)
+        self.assertEqual(result["no_data"], [{"department": "researchers", "reason": "غير مؤتمَت بعد"}])
+        self.assertEqual(result["healthy"], ["production"])
+        self.assertEqual(result["below_threshold"], [])
+
+    def test_low_success_rate_is_flagged_below_threshold_not_healthy(self):
+        report = {
+            "production": {"data_source": "real", "success_rate": 50.0},
+            "finance": {"data_source": "real", "recorded_sales": 3},  # no success_rate field at all
+        }
+        result = dh.rank_department_weakness(report=report)
+        self.assertEqual(result["below_threshold"], [{"department": "production", "success_rate": 50.0}])
+        self.assertEqual(result["healthy"], ["finance"])
+
+    def test_weakest_combines_no_data_and_below_threshold_only(self):
+        report = {
+            "a": {"data_source": "none", "reason": "r"},
+            "b": {"data_source": "real", "success_rate": 10.0},
+            "c": {"data_source": "real", "success_rate": 99.0},
+        }
+        result = dh.rank_department_weakness(report=report)
+        weakest_names = {w.get("department") for w in result["weakest"]}
+        self.assertEqual(weakest_names, {"a", "b"})
+
+    def test_never_computes_a_single_blended_score(self):
+        # The real, standing rule this module documents -- no key named
+        # anything like "score"/"rank"/"index" should ever appear.
+        report = dh.build_department_health()
+        result = dh.rank_department_weakness(report=report)
+        for forbidden in ("score", "rank", "index"):
+            self.assertNotIn(forbidden, result)
+
+    def test_real_call_never_throws(self):
+        result = dh.rank_department_weakness()
+        for key in ("no_data", "below_threshold", "healthy", "weakest"):
+            self.assertIn(key, result)
+
+
 if __name__ == "__main__":
     unittest.main()

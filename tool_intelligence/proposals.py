@@ -1,5 +1,6 @@
 """
 Tool Intelligence -- Autonomous Digital Company v1, Track B3 (2026-07-19).
+Made dynamic -- Executive Intelligence Core, Round 2 (2026-07-29).
 
 "The system should produce integration proposals instead of assuming
 tools exist" (the founder's own instruction, verbatim). Every proposal
@@ -18,9 +19,23 @@ specific, cited fact about this factory. Where a real number (ROI, risk
 probability) doesn't exist yet, the field says so honestly instead of
 inventing one -- same discipline as economics.py's price_landscape()
 ("NO DEMAND MODEL EXISTS...").
+
+Round 2 (2026-07-29): list_proposals() used to return only the 3
+hand-written entries below, unchanged since 2026-07-19 -- real and
+evidence-cited when written, but never regenerated as new evidence
+accumulated, which the founder's "generates improvement proposals
+automatically... nothing evolves randomly" Executive Intelligence Core
+directive calls out directly. list_proposals() now also computes fresh
+proposals at call time from the SAME real signals evolution_engine.py
+already assembles (bottlenecks, technical debt, capability gaps) --
+deterministic templating, never an LLM call (same discipline as
+contract_generator.py/invoice_generator.py), and honestly produces zero
+dynamic proposals when a signal detects nothing real to act on.
 """
 
-PROPOSALS = [
+from datetime import datetime, timezone
+
+SEED_PROPOSALS = [
     {
         "id": "vector_store_for_evidence_corpus",
         "tool": "A local, embeddable vector store (e.g. sqlite-vec or Chroma) for Golden Hunter/Pioneer's evidence corpus",
@@ -117,12 +132,146 @@ PROPOSALS = [
 ]
 
 
-def list_proposals():
-    return PROPOSALS
+def _now():
+    return datetime.now(timezone.utc).isoformat()
 
 
-def get_proposal(proposal_id):
-    return next((p for p in PROPOSALS if p["id"] == proposal_id), None)
+def _bottleneck_proposal(decisions_path=None, outcomes_path=None, timeline_path=None):
+    from executive_intelligence import bottlenecks as bottleneck_module
+    from executive_intelligence import engine_health as engine_health_module
+
+    health = engine_health_module.compute_engine_health(timeline_path=timeline_path)
+    result = bottleneck_module.detect_bottlenecks(health, decisions_path=decisions_path, outcomes_path=outcomes_path)
+    if not result.get("detected"):
+        return None
+
+    items = result["items"]
+    evidence_lines = [i["evidence"] for i in items]
+    return {
+        "id": "fix_detected_bottlenecks",
+        "tool": f"Investigate and resolve {len(items)} real detected bottleneck(s)",
+        "status": "مقترَح، لا تنفيذ",
+        "why_needed": "اختناقات حقيقية اكتُشِفت اليوم من بيانات المصنع الفعلية: " + "؛ ".join(evidence_lines[:5]),
+        "expected_business_value": "إزالة عائق حقيقي يبطئ دورة القرار→الإنتاج→النشر لكل فرصة تعتمد على المرحلة المتأثرة.",
+        "implementation_effort": "غير مقاس بعد -- يحتاج تشخيصاً هندسياً حقيقياً لكل حالة على حدة.",
+        "estimated_roi": "غير مقاس بعد -- الأثر يعتمد على عدد الفرص الحقيقية المتأثرة فعلياً بهذا الاختناق.",
+        "dependencies": ["تشخيص هندسي حقيقي للسبب الجذري لكل اختناق مُدرَج قبل أي إصلاح"],
+        "risks": ["استمرار الاختناق يؤخر كل فرصة حقيقية تمر بهذه المرحلة"],
+        "evidence": "executive_intelligence.bottlenecks.detect_bottlenecks() -- " + "؛ ".join(evidence_lines[:5]),
+        "generated_at": _now(),
+    }
+
+
+def _technical_debt_proposal(decisions_path=None, timeline_path=None, sales_ledger_path=None):
+    from strategic_intelligence import technical_debt as tech_debt_module
+
+    result = tech_debt_module.components_at_risk_of_technical_debt(
+        decisions_path=decisions_path, timeline_path=timeline_path, sales_ledger_path=sales_ledger_path,
+    )
+    if result.get("answer") == "Unknown":
+        return None
+
+    components = result["answer"]
+    return {
+        "id": "review_inactive_components",
+        "tool": f"Review {len(components)} real component(s) at risk of technical debt: {', '.join(components)}",
+        "status": "مقترَح، لا تنفيذ",
+        "why_needed": "مكوّنات حقيقية لم تشهد أي نشاط فعلي بعد (data/orchestrator_timeline.jsonl/sales_ledger.jsonl) -- قد تكون معطَّلة بصمت أو غير مُستخدَمة فعلياً.",
+        "expected_business_value": "تأكيد أن كل مكوّن مسجَّل يعمل فعلاً أو إزالته إن كان زائداً -- يقلّل سطح الصيانة الحقيقي.",
+        "implementation_effort": "منخفض -- مراجعة يدوية قصيرة لكل مكوّن مُدرَج.",
+        "estimated_roi": "غير مقاس بعد.",
+        "dependencies": [],
+        "risks": ["مكوّن حقيقي ولكنه نادر الاستخدام قد يُزال بالخطأ إن لم تُراجَع الأسباب أولاً"],
+        "evidence": result["source"],
+        "generated_at": _now(),
+    }
+
+
+def _capability_gap_proposal(capability_registry_path=None):
+    from capability_registry_scanner import find_capability_gaps
+
+    gaps = find_capability_gaps(registry_path=capability_registry_path)
+    discovery = gaps.get("discovery_level", [])
+    if not discovery:
+        return None
+
+    names = [c.get("name", c.get("id")) for c in discovery[:5]]
+    return {
+        "id": "close_capability_gaps",
+        "tool": f"Close {len(discovery)} real capability gap(s) at DISCOVERY level: {', '.join(str(n) for n in names)}",
+        "status": "مقترَح، لا تنفيذ",
+        "why_needed": f"config/capability_registry.json يُدرِج {len(discovery)} قدرة عند مستوى DISCOVERY (غير مقاسة بعد) من أصل {gaps.get('total_capabilities', 0)}.",
+        "expected_business_value": "قرارات حقيقية مبنية على قياس فعلي بدل تقدير غير مؤكَّد لكل قدرة مُدرَجة.",
+        "implementation_effort": "يختلف حسب القدرة المحدَّدة -- راجع كل إدخال في السجل على حدة.",
+        "estimated_roi": "غير مقاس بعد.",
+        "dependencies": ["مصدر قياس حقيقي لكل قدرة (استخدام فعلي مسجَّل، أو اختبار مباشر)"],
+        "risks": ["الاستمرار دون قياس يعني قرارات مبنية على تقدير غير مؤكَّد"],
+        "evidence": gaps.get("source", "config/capability_registry.json"),
+        "generated_at": _now(),
+    }
+
+
+def _customer_funnel_proposal(requests_path=None, state_path=None):
+    """Autonomous Company Evolution Engine, Round 3 (2026-07-29): a real
+    proposal from customer_pipeline.py's own Observe signals (stuck-NEW,
+    abandoned-at-PROPOSED) -- honestly returns None while zero real
+    customer requests exist, same discipline as every other generator
+    here."""
+    from customer_pipeline import list_pipeline_overview
+
+    overview = list_pipeline_overview(requests_path=requests_path, state_path=state_path)
+    stuck = [a for a in overview.get("needs_attention", []) if a.get("stage") in ("NEW", "PROPOSED")]
+    if not stuck:
+        return None
+
+    request_ids = [a["request_id"] for a in stuck[:5]]
+    return {
+        "id": "resolve_stuck_customer_requests",
+        "tool": f"Resolve {len(stuck)} real customer request(s) stuck in the funnel: {', '.join(str(r) for r in request_ids)}",
+        "status": "مقترَح، لا تنفيذ",
+        "why_needed": f"customer_pipeline.list_pipeline_overview() يُظهر {len(stuck)} طلب عميل حقيقي عالق (NEW بلا تقدّم، أو PROPOSED بلا رد) -- إشارة تسرّب حقيقية في القمع.",
+        "expected_business_value": "استرجاع عملاء حقيقيين محتملين قبل أن يُهجروا نهائياً -- تأثير مباشر على الإيرادات، لا تحسين تقني.",
+        "implementation_effort": "يختلف حسب السبب -- راجع 'recovery' الحقيقي لكل طلب في القائمة.",
+        "estimated_roi": "غير مقاس بعد -- يعتمد على قيمة كل طلب عالق فعلياً.",
+        "dependencies": ["مراجعة يدوية لكل طلب عالق عبر Mission Control قبل أي إجراء تلقائي"],
+        "risks": ["التواصل الآلي مع عميل حقيقي دون مراجعة بشرية قد يضر بالثقة -- هذا الاقتراح لا يُنفَّذ تلقائياً"],
+        "evidence": "customer_pipeline.list_pipeline_overview()'s needs_attention",
+        "generated_at": _now(),
+    }
+
+
+def _dynamic_proposals(decisions_path=None, outcomes_path=None, timeline_path=None,
+                        sales_ledger_path=None, capability_registry_path=None,
+                        requests_path=None, state_path=None):
+    """Real proposals generated fresh from current factory signals -- the
+    same signals evolution_engine.py/customer_pipeline.py already assemble,
+    reused (not recomputed) here. Honestly returns fewer than 4 (down to
+    zero) when a signal detects nothing real to act on -- never pads the
+    list."""
+    generators = [
+        lambda: _bottleneck_proposal(decisions_path=decisions_path, outcomes_path=outcomes_path, timeline_path=timeline_path),
+        lambda: _technical_debt_proposal(decisions_path=decisions_path, timeline_path=timeline_path, sales_ledger_path=sales_ledger_path),
+        lambda: _capability_gap_proposal(capability_registry_path=capability_registry_path),
+        lambda: _customer_funnel_proposal(requests_path=requests_path, state_path=state_path),
+    ]
+    return [p for p in (gen() for gen in generators) if p is not None]
+
+
+def list_proposals(decisions_path=None, outcomes_path=None, timeline_path=None,
+                    sales_ledger_path=None, capability_registry_path=None,
+                    requests_path=None, state_path=None):
+    """The hand-curated seed proposals (still real, still evidence-cited)
+    plus proposals generated fresh from current factory signals -- computed
+    at call time, not static after Round 2 (2026-07-29)."""
+    return SEED_PROPOSALS + _dynamic_proposals(
+        decisions_path=decisions_path, outcomes_path=outcomes_path, timeline_path=timeline_path,
+        sales_ledger_path=sales_ledger_path, capability_registry_path=capability_registry_path,
+        requests_path=requests_path, state_path=state_path,
+    )
+
+
+def get_proposal(proposal_id, **kwargs):
+    return next((p for p in list_proposals(**kwargs) if p["id"] == proposal_id), None)
 
 
 def render_markdown_proposal(proposal):
@@ -153,4 +302,4 @@ def render_markdown_proposal(proposal):
 
 
 def render_markdown_all():
-    return "\n\n---\n\n".join(render_markdown_proposal(p) for p in PROPOSALS)
+    return "\n\n---\n\n".join(render_markdown_proposal(p) for p in list_proposals())

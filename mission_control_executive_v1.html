@@ -247,6 +247,12 @@ pre.raw{
       note:'Round 6: real invoices generated only from actual completed Paddle payments — honestly empty until a real payment completes. Check for new completions via POST /api/v1/actions/check-customer-payments.' },
     { id:'customer-reviews', title:'Customer Reviews', service:'customer-reviews', kind:'kv',
       note:'Round 5/6: real customer reviews, one per delivered order — honestly empty until a real review exists, never a placeholder testimonial.' },
+    { id:'support-tickets', title:'Support Tickets', service:'support-tickets', kind:'kv',
+      note:'Executive Intelligence Core, Round 3 (2026-07-29): real support ticket count/open-count/recent — data/support_tickets.jsonl was write-only until now, honestly empty today (zero real customer traffic yet).' },
+    { id:'executive-score', title:'Executive Score', service:'executive-score', kind:'kv',
+      note:'Executive Intelligence Core, Round 6 (2026-07-29): a transparent, real-component composite (Trust/Production Quality/Technical Debt/Security Health/Delivery Quality/Automation/Growth/Architecture Health/Operational Stability/Customer Happiness). Every sub-score is real or an honest "Unknown" — never blended into any accept/reject/production gate.' },
+    { id:'evolution-queue', title:'Evolution Queue', service:'evolution-queue', kind:'kv',
+      note:'Autonomous Company Evolution Engine, Round 6 (2026-07-29): every real proposal, its real simulated impact/rollback-complexity, and its real stage. factory_loop.js\'s daily tick only ever intakes/simulates/decides (stopping at AWAITING_FOUNDER_APPROVAL) — nothing auto-approves or auto-executes, whatever the computed risk tier. Approve via POST /api/v1/actions/approve-evolution-proposal, reject via .../reject-evolution-proposal, close the loop after a real reviewed implementation via .../mark-evolution-proposal-implemented — each requires { proposal_id } in the request body.' },
   ];
 
   const state = {}; // id -> { status: 'pending'|'ok'|'empty'|'error', payload, fetchedAt }

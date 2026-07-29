@@ -770,5 +770,68 @@ class TestCliDispatch(unittest.TestCase):
     # session (real_world_mode/golden_hunter test suites + manual runs).
 
 
+class TestEvolutionQueueEndpoints(unittest.TestCase):
+    """Autonomous Company Evolution Engine, Round 6 (2026-07-29): the
+    dispatch layer for the Evolution Queue -- daily intake/simulate/decide,
+    read-only queue view, and the three founder-only approve/reject/
+    mark-implemented actions. Every real state mutation is mocked here;
+    evolution_queue.py's own logic has its own isolated unit tests in
+    tests/test_evolution_queue.py."""
+
+    def test_evolution_queue_daily_cycle_delegates_to_real_proposals_and_queue(self):
+        with patch("tool_intelligence.proposals.list_proposals", return_value=[{"id": "p1"}]) as mock_props:
+            with patch("evolution_queue.run_daily_cycle", return_value={"added_count": 1, "processed": ["p1"]}) as mock_cycle:
+                result = mission_control_api._evolution_queue_daily_cycle()
+        mock_props.assert_called_once_with()
+        mock_cycle.assert_called_once_with(proposals=[{"id": "p1"}])
+        self.assertEqual(result["added_count"], 1)
+
+    def test_evolution_queue_is_a_passthrough(self):
+        fake_queue = {"stage_distribution": {}, "awaiting_approval": [], "entries": []}
+        with patch("evolution_queue.list_evolution_queue", return_value=fake_queue) as mock_list:
+            result = mission_control_api._evolution_queue()
+        mock_list.assert_called_once_with()
+        self.assertEqual(result, fake_queue)
+
+    def test_approve_evolution_proposal_requires_a_proposal_id(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "approve_evolution_proposal", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._approve_evolution_proposal()
+
+    def test_approve_evolution_proposal_delegates_with_founder_as_decided_by(self):
+        payload = {"proposal_id": "p1", "note": "looks good"}
+        with patch.object(sys, "argv", ["mission_control_api.py", "approve_evolution_proposal", json.dumps(payload)]):
+            with patch("evolution_queue.approve_proposal", return_value={"success": True, "stage": "APPROVED"}) as mock_approve:
+                result = mission_control_api._approve_evolution_proposal()
+        mock_approve.assert_called_once_with("p1", decided_by="founder", note="looks good")
+        self.assertEqual(result["stage"], "APPROVED")
+
+    def test_reject_evolution_proposal_requires_a_proposal_id(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "reject_evolution_proposal", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._reject_evolution_proposal()
+
+    def test_reject_evolution_proposal_delegates_with_founder_as_decided_by(self):
+        payload = {"proposal_id": "p1", "reason": "not worth it"}
+        with patch.object(sys, "argv", ["mission_control_api.py", "reject_evolution_proposal", json.dumps(payload)]):
+            with patch("evolution_queue.reject_proposal", return_value={"success": True, "stage": "REJECTED"}) as mock_reject:
+                result = mission_control_api._reject_evolution_proposal()
+        mock_reject.assert_called_once_with("p1", decided_by="founder", reason="not worth it")
+        self.assertEqual(result["stage"], "REJECTED")
+
+    def test_mark_evolution_proposal_implemented_requires_a_proposal_id(self):
+        with patch.object(sys, "argv", ["mission_control_api.py", "mark_evolution_proposal_implemented", json.dumps({})]):
+            with self.assertRaises(ValueError):
+                mission_control_api._mark_evolution_proposal_implemented()
+
+    def test_mark_evolution_proposal_implemented_delegates(self):
+        payload = {"proposal_id": "p1", "note": "shipped in commit abc123"}
+        with patch.object(sys, "argv", ["mission_control_api.py", "mark_evolution_proposal_implemented", json.dumps(payload)]):
+            with patch("evolution_queue.mark_implemented", return_value={"success": True, "stage": "IMPLEMENTED"}) as mock_mark:
+                result = mission_control_api._mark_evolution_proposal_implemented()
+        mock_mark.assert_called_once_with("p1", note="shipped in commit abc123")
+        self.assertEqual(result["stage"], "IMPLEMENTED")
+
+
 if __name__ == "__main__":
     unittest.main()

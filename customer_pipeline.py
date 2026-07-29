@@ -74,6 +74,14 @@ STAGE_ORDER = [
 # invisibly stuck forever.
 _STUCK_NEW_MINUTES = 10
 
+# Autonomous Company Evolution Engine, Observe (2026-07-29): a real
+# "abandoned at proposal" signal -- a customer who never approves or
+# declines a real proposal within a real, generous window. Hours, not
+# minutes (unlike _STUCK_NEW_MINUTES above): a customer deciding on a
+# real purchase reasonably takes longer than an automatic post-intake
+# trigger should ever take.
+_STUCK_PROPOSED_HOURS = 48
+
 # Terminal/side states a request can also land in -- not part of the
 # "happy path" STAGE_ORDER progress bar, but real, honest, valid outcomes.
 _SIDE_STATES = {
@@ -775,6 +783,25 @@ def list_pipeline_overview(requests_path=None, state_path=None):
                     "request_id": request_id, "stage": "NEW",
                     "recovery": f"still NEW after {_STUCK_NEW_MINUTES}+ minutes -- the automatic post-intake trigger may have failed; run 'Advance Customer Pipeline' in Mission Control.",
                 })
+        elif stage == "PROPOSED":
+            # Autonomous Company Evolution Engine, Observe (2026-07-29):
+            # a real "abandoned at proposal" signal -- distinct from the
+            # stuck-NEW check above (that one suspects a broken trigger;
+            # this one is a real customer who saw a real quote and simply
+            # hasn't acted). Purely observational -- never auto-advances
+            # or auto-decides anything on the customer's behalf.
+            try:
+                updated_at = datetime.fromisoformat((record.get("updated_at") or "").replace("Z", "+00:00"))
+                if updated_at.tzinfo is None:
+                    updated_at = updated_at.replace(tzinfo=timezone.utc)
+                abandoned = now - updated_at > timedelta(hours=_STUCK_PROPOSED_HOURS)
+            except (TypeError, ValueError):
+                abandoned = False
+            if abandoned:
+                needs_attention.append({
+                    "request_id": request_id, "stage": "PROPOSED",
+                    "recovery": f"proposal shown but neither approved nor declined for {_STUCK_PROPOSED_HOURS}+ hours -- a real, honest 'abandoned at proposal' signal, not a broken trigger.",
+                })
 
     entries.sort(key=lambda e: e.get("updated_at") or e.get("submitted_at") or "", reverse=True)
     return {
@@ -944,6 +971,67 @@ def list_invoices(state_path=None):
     return {"count": len(invoices), "total_revenue": total_revenue, "invoices": invoices}
 
 
+def funnel_conversion_summary(state_path=None):
+    """Real Observe signal (Autonomous Company Evolution Engine,
+    2026-07-29): conversion ratio between adjacent real pipeline stages,
+    derived from every request's own real stage_history -- which stages
+    it actually passed through, not just its current one (a request now
+    at PAID also really passed through NEW/QUALIFIED/PROPOSED/APPROVED/
+    AWAITING_PAYMENT, and counts toward each). Honestly empty until real
+    requests exist -- same discipline as growth_engine.py's own
+    real-sales-window gate."""
+    state = _load_state(state_path)
+    if not state:
+        return {"answer": "Unknown", "reason": "لا طلبات عملاء حقيقية بعد لحساب قمع تحويل حقيقي"}
+
+    passed_through = {stage: 0 for stage in STAGE_ORDER}
+    for record in state.values():
+        stages_reached = {h["stage"] for h in record.get("stage_history", [])}
+        for stage in STAGE_ORDER:
+            if stage in stages_reached:
+                passed_through[stage] += 1
+
+    conversions = []
+    for i in range(len(STAGE_ORDER) - 1):
+        from_stage, to_stage = STAGE_ORDER[i], STAGE_ORDER[i + 1]
+        from_count = passed_through[from_stage]
+        if from_count == 0:
+            continue
+        conversions.append({
+            "from_stage": from_stage, "to_stage": to_stage,
+            "from_count": from_count, "to_count": passed_through[to_stage],
+            "conversion_pct": round(passed_through[to_stage] / from_count * 100, 1),
+        })
+    return {"total_requests": len(state), "stage_reach_counts": passed_through, "conversions": conversions}
+
+
+def delivery_delay_summary(state_path=None):
+    """Real Observe signal (Autonomous Company Evolution Engine,
+    2026-07-29): real elapsed time from PAID to DELIVERED, computed
+    directly from each request's own real stage_history timestamps.
+    Honestly empty until at least one real request has actually reached
+    DELIVERED -- never estimated from an incomplete journey."""
+    state = _load_state(state_path)
+    delays_hours = []
+    for request_id, record in state.items():
+        history = record.get("stage_history", [])
+        paid_at = next((h["at"] for h in history if h["stage"] == "PAID"), None)
+        delivered_at = next((h["at"] for h in history if h["stage"] == "DELIVERED"), None)
+        if not paid_at or not delivered_at:
+            continue
+        try:
+            paid_dt = datetime.fromisoformat(paid_at.replace("Z", "+00:00"))
+            delivered_dt = datetime.fromisoformat(delivered_at.replace("Z", "+00:00"))
+            delays_hours.append({"request_id": request_id, "hours": round((delivered_dt - paid_dt).total_seconds() / 3600, 1)})
+        except (TypeError, ValueError):
+            continue
+
+    if not delays_hours:
+        return {"answer": "Unknown", "reason": "لا طلب حقيقي واحد وصل DELIVERED بعد لحساب تأخير تسليم حقيقي"}
+    average = round(sum(d["hours"] for d in delays_hours) / len(delays_hours), 1)
+    return {"sample_size": len(delays_hours), "average_hours": average, "delays": delays_hours}
+
+
 def advance_all_new_requests(requests_path=None, state_path=None, decisions_path=None, analysis_db_file=None):
     """Batch sweep -- this factory has no scheduler (CLAUDE.md), so
     'automatic' means zero further code changes, one Mission Control
@@ -1018,6 +1106,10 @@ def main():
             result = {"success": True, **list_fulfillment_queue()}
         elif command == "invoices":
             result = {"success": True, **list_invoices()}
+        elif command == "funnel_conversion":
+            result = {"success": True, **funnel_conversion_summary()}
+        elif command == "delivery_delay":
+            result = {"success": True, **delivery_delay_summary()}
         else:
             result = {"success": False, "error": f"unknown command: {command!r}"}
         print(json.dumps(result, ensure_ascii=False, default=str))

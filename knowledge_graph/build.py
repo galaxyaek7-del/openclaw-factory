@@ -15,6 +15,35 @@ edges built from 6 real sources already in this repo:
   - channels/registry.py + ai_capability/registry.py (PublishChannel /
     AIProvider node catalogs)
 
+Executive Intelligence Core, Round 5 (2026-07-29) adds two more real
+sources, closing the "company memory is 4 disconnected systems" gap an
+audit of this factory's governance stack found: hand-written
+institutional memory (ADRs, lessons learned) previously lived only as
+markdown files `knowledge_brain.js` could grep, with no node of their
+own in this graph.
+
+  - OpenClaw_Brain/19_Lessons_Learned/*.md (Lesson nodes)
+  - OpenClaw_Brain/00_Governance/ADR-*.md (ADR nodes)
+
+Both are mechanical (real filename + real first markdown heading),
+never semantic. Linking a Lesson/ADR to the specific Decision/Niche it's
+actually about would need real similarity matching this factory has no
+embeddings infrastructure for — the same disclosed non-goal
+tool_intelligence/proposals.py's own vector-store proposal already
+documents, not attempted here either.
+
+Autonomous Company Evolution Engine, Round 5 (2026-07-29) adds a ninth
+real source — this is the "Learn" step's Company Memory: every real
+Evolution Queue proposal, whatever stage it actually reached (still
+awaiting founder approval, approved, rejected, or implemented), becomes
+a queryable Proposal node.
+
+  - data/evolution_queue_state.json (Proposal nodes)
+
+Same mechanical, non-semantic discipline as Lesson/ADR — no edge from a
+Proposal to the Niche/Decision/module it's actually about; that would
+again need real similarity matching this factory doesn't have.
+
 `build_graph()` writes a DISPOSABLE, REGENERABLE snapshot
 (data/knowledge_graph_snapshot.json) — explicitly a derived cache,
 never a source of truth. Rebuild it any time by calling build_graph()
@@ -48,6 +77,10 @@ SALES_LEDGER_FILE = os.path.join(FACTORY_DIR, 'data', 'sales_ledger.jsonl')
 AI_COST_LOG_FILE = os.path.join(FACTORY_DIR, 'data', 'ai_cost_log.jsonl')
 MARKET_EVIDENCE_FILE = os.path.join(FACTORY_DIR, 'data', 'market_evidence.jsonl')
 SNAPSHOT_FILE = os.path.join(FACTORY_DIR, 'data', 'knowledge_graph_snapshot.json')
+LESSONS_LEARNED_DIR = os.path.join(FACTORY_DIR, 'OpenClaw_Brain', '19_Lessons_Learned')
+GOVERNANCE_DIR = os.path.join(FACTORY_DIR, 'OpenClaw_Brain', '00_Governance')
+EVOLUTION_QUEUE_STATE_FILE = os.path.join(FACTORY_DIR, 'data', 'evolution_queue_state.json')
+_ADR_FILENAME_RE = re.compile(r'^(ADR-\d+)-')
 
 
 def _read_jsonl(path):
@@ -78,7 +111,87 @@ def _edge(from_id, to_id, relation, confidence="exact"):
     return {"from": from_id, "to": to_id, "relation": relation, "edge_confidence": confidence}
 
 
-def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_cost_log_path=None, evidence_path=None):
+def _first_heading(path):
+    """Real, mechanical title extraction -- the file's own first markdown
+    heading line, verbatim. Never inferred/summarized."""
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('#'):
+                    return line.lstrip('#').strip()
+    except OSError:
+        pass
+    return None
+
+
+def _lesson_nodes(lessons_dir=None):
+    """Real Lesson nodes (Round 5, 2026-07-29) -- every real markdown
+    file in OpenClaw_Brain/19_Lessons_Learned/ (excluding README), title
+    taken verbatim from the file's own first heading."""
+    directory = lessons_dir or LESSONS_LEARNED_DIR
+    nodes = []
+    if not os.path.isdir(directory):
+        return nodes
+    for filename in sorted(os.listdir(directory)):
+        if not filename.endswith('.md') or filename.upper() == 'README.MD':
+            continue
+        path = os.path.join(directory, filename)
+        stem = filename[:-3]
+        title = _first_heading(path) or stem.replace('_', ' ')
+        nodes.append(_node(f"lesson:{stem}", "Lesson", label=title, source_file=filename))
+    return nodes
+
+
+def _adr_nodes(governance_dir=None):
+    """Real ADR nodes (Round 5, 2026-07-29) -- every real ADR-*.md file
+    in OpenClaw_Brain/00_Governance/, title taken verbatim from the
+    file's own first heading."""
+    directory = governance_dir or GOVERNANCE_DIR
+    nodes = []
+    if not os.path.isdir(directory):
+        return nodes
+    for filename in sorted(os.listdir(directory)):
+        match = _ADR_FILENAME_RE.match(filename)
+        if not match or not filename.endswith('.md'):
+            continue
+        path = os.path.join(directory, filename)
+        title = _first_heading(path) or filename[:-3].replace('-', ' ')
+        nodes.append(_node(f"adr:{match.group(1)}", "ADR", label=title, source_file=filename))
+    return nodes
+
+
+def _proposal_nodes(evolution_queue_state_path=None):
+    """Real Proposal nodes (Autonomous Company Evolution Engine, Round 5,
+    2026-07-29) -- every real record in data/evolution_queue_state.json,
+    whatever stage it actually reached. Honestly empty until a real
+    proposal has been through at least one daily intake cycle."""
+    path = evolution_queue_state_path or EVOLUTION_QUEUE_STATE_FILE
+    nodes = []
+    if not os.path.exists(path):
+        return nodes
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            state = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return nodes
+    if not isinstance(state, dict):
+        return nodes
+    for proposal_id, record in state.items():
+        if not isinstance(record, dict):
+            continue
+        tool = (record.get("proposal") or {}).get("tool") if isinstance(record.get("proposal"), dict) else None
+        nodes.append(_node(
+            f"proposal:{proposal_id}", "Proposal",
+            label=tool or proposal_id,
+            stage=record.get("stage"),
+            created_at=record.get("created_at"),
+        ))
+    return nodes
+
+
+def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_cost_log_path=None,
+                 evidence_path=None, lessons_dir=None, governance_dir=None, evolution_queue_state_path=None):
     decisions = _read_jsonl(decisions_path or DECISIONS_FILE)
     analyses = _read_jsonl(analyses_path or MARKET_INTELLIGENCE_ANALYSES_FILE)
     ledger = _read_jsonl(ledger_path or SALES_LEDGER_FILE)
@@ -189,6 +302,22 @@ def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_co
                          selling_price=commercial_event.get("selling_price"), season=commercial_event.get("season"),
                          recorded_at=ev.get("timestamp")))
         edges.append(_edge(niche_id, event_id, "sold_as"))
+
+    # Lesson + ADR nodes (real, from hand-written institutional-memory
+    # markdown -- Round 5, 2026-07-29). Standalone nodes, no edges to
+    # Niche/Decision: linking them for real would need semantic
+    # similarity this factory has no embeddings infra for (see this
+    # module's own docstring) -- never a guessed/fabricated edge instead.
+    for node in _lesson_nodes(lessons_dir):
+        _add_node(node)
+    for node in _adr_nodes(governance_dir):
+        _add_node(node)
+
+    # Proposal nodes (real, from data/evolution_queue_state.json --
+    # Autonomous Company Evolution Engine, Round 5, 2026-07-29). Same
+    # standalone discipline as Lesson/ADR just above -- no fabricated edge.
+    for node in _proposal_nodes(evolution_queue_state_path):
+        _add_node(node)
 
     graph = {
         "schema_note": "DERIVED, DISPOSABLE snapshot -- rebuild any time via knowledge_graph.build.build_graph(). Never a source of truth; the real data lives in the JSONL files named in this module's docstring.",

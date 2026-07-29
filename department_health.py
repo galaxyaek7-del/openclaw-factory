@@ -150,6 +150,54 @@ def build_department_health(timeline_path=None, events_path=None, ledger_path=No
     }
 
 
+# Executive Intelligence Core, Round 4 (2026-07-29): same real threshold
+# executive_intelligence.bottlenecks already uses for "a real engine is
+# struggling" -- reused here, not reinvented, so the two real signals stay
+# consistent with each other.
+_FAILURE_RATE_ALERT_BELOW = 80
+
+
+def rank_department_weakness(report=None, **kwargs):
+    """Real, honest weakness classification over this module's own real
+    per-department fields. Deliberately NOT a blended cross-department
+    score -- this module's own docstring already establishes that rule
+    (department fields have no common unit: success_rate is a percentage,
+    recent_activity_count_7d is a raw count, autonomous_channels is a
+    count of channels -- averaging them would be a fabrication, not a
+    real signal). Three honest buckets instead:
+
+      - no_data: data_source == "none" -- the department's own real,
+        stated reason (e.g. Researchers/Customer Intelligence, both
+        deliberately unbuilt).
+      - below_threshold: a real success_rate exists and is below the
+        same real alert threshold executive_intelligence.bottlenecks
+        already uses for "engine failure rate" bottleneck detection.
+      - healthy: every other department with real, unremarkable data.
+    """
+    if report is None:
+        report = build_department_health(**kwargs)
+
+    no_data = []
+    below_threshold = []
+    healthy = []
+    for name, d in report.items():
+        if d.get("data_source") == "none":
+            no_data.append({"department": name, "reason": d.get("reason")})
+        elif d.get("success_rate") is not None and d["success_rate"] < _FAILURE_RATE_ALERT_BELOW:
+            below_threshold.append({"department": name, "success_rate": d["success_rate"]})
+        else:
+            healthy.append(name)
+
+    return {
+        "no_data": no_data,
+        "below_threshold": below_threshold,
+        "healthy": healthy,
+        # Real departments that need real attention -- no fabricated
+        # score attached, just the two honest reasons above, concatenated.
+        "weakest": no_data + below_threshold,
+    }
+
+
 def render_markdown(report):
     lines = ["## صحة الأقسام\n"]
     for name, d in report.items():

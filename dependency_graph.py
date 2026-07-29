@@ -38,7 +38,7 @@ KNOWN_STANDALONE_ENTRY_POINTS = {
     "audit_seed", "hive_logbook_generator", "seed_english_book",
     "scripts.readiness_certificate", "scripts.process_approved_drafts",
     "scripts.poll_sales", "scripts.check_paddle_checkout_status", "scripts.ops_maintenance",
-    "book_generator", "market_hunter", "market_analyzer", "quality_doctor", "reality",
+    "book_generator", "market_hunter", "market_analyzer", "reality",
     "profit_oracle", "distributor", "safety_filter", "executive_quality_gate",
     "enterprise_readiness", "executive_board", "factory_orchestrator", "dependency_graph",
     "mission_control_api", "factory_health_monitor", "chaos_testing_engine",
