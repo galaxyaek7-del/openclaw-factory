@@ -173,6 +173,15 @@ main{padding:3.5rem 0 5rem;}
         <a id="deliveryLink" class="btn btn-primary" href="#" target="_blank" rel="noopener">Download your deliverable →</a>
       </div>
 
+      <div id="reviewBox" class="contract-box" style="display:none;">
+        <h4>Leave a review</h4>
+        <div id="reviewStars" style="font-size:1.4rem; letter-spacing:.15em; cursor:pointer;"></div>
+        <textarea id="reviewText" maxlength="1000" placeholder="Optional — tell us how it went…" style="font-family:inherit; font-size:.88rem; background:var(--bg-elev); border:1px solid var(--border); color:var(--ink); border-radius:8px; padding:.7rem .85rem; width:100%; min-height:70px; resize:vertical;"></textarea>
+        <button id="reviewSubmitBtn" class="btn btn-primary" disabled>Submit review</button>
+        <div id="reviewStatus"></div>
+      </div>
+      <div id="reviewThanks" style="display:none; color:var(--ink-dim); font-size:.86rem;">Thanks for your review!</div>
+
       <div id="declineBox" class="decline-box" style="display:none;">
         <label for="declineReason" style="font-size:.84rem; color:var(--ink-dim);">Mind telling us why? Optional, but it helps us improve.</label>
         <textarea id="declineReason" maxlength="500" placeholder="e.g. price, timing, went another direction…"></textarea>
@@ -346,6 +355,53 @@ main{padding:3.5rem 0 5rem;}
     }
   }
 
+  var selectedRating = 0;
+
+  function renderReview(body){
+    var box = document.getElementById('reviewBox');
+    var thanks = document.getElementById('reviewThanks');
+    var eligible = (body.status === 'DELIVERED' || body.status === 'FOLLOWED_UP');
+    if (!eligible){ box.style.display = 'none'; thanks.style.display = 'none'; return; }
+    if (body.has_review){ box.style.display = 'none'; thanks.style.display = 'block'; return; }
+    thanks.style.display = 'none';
+    box.style.display = 'flex';
+    selectedRating = 0;
+    document.getElementById('reviewText').value = '';
+    document.getElementById('reviewStatus').textContent = '';
+    var stars = document.getElementById('reviewStars');
+    stars.innerHTML = '';
+    var submitBtn = document.getElementById('reviewSubmitBtn');
+    submitBtn.disabled = true;
+    function redraw(){
+      stars.innerHTML = '';
+      for (var i = 1; i <= 5; i++){
+        var span = document.createElement('span');
+        span.textContent = i <= selectedRating ? '★' : '☆';
+        span.style.color = i <= selectedRating ? 'var(--accent-ink)' : 'var(--ink-faint)';
+        (function(n){ span.addEventListener('click', function(){ selectedRating = n; submitBtn.disabled = false; redraw(); }); })(i);
+        stars.appendChild(span);
+      }
+    }
+    redraw();
+    submitBtn.onclick = function(){
+      submitBtn.disabled = true;
+      fetch('/api/customer/requests/' + encodeURIComponent(requestId) + '/review', {
+        method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating: selectedRating, text: document.getElementById('reviewText').value.trim() }),
+      })
+        .then(function(r){ return r.json(); })
+        .then(function(res){
+          if (res.success === false) throw new Error(res.error || 'Could not submit your review.');
+          box.style.display = 'none';
+          thanks.style.display = 'block';
+        })
+        .catch(function(err){
+          submitBtn.disabled = false;
+          document.getElementById('reviewStatus').textContent = err.message;
+        });
+    };
+  }
+
   function render(body){
     document.getElementById('statusCard').style.display = 'flex';
     document.getElementById('lookupCard').style.display = 'none';
@@ -382,6 +438,7 @@ main{padding:3.5rem 0 5rem;}
     renderPayment(body);
     renderInvoice(body.invoice);
     renderDelivery(body);
+    renderReview(body);
 
     document.getElementById('recoveryText').textContent = body.recovery || '';
 

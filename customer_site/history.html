@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galaxy Forge — Order History</title>
+<meta name="description" content="Every real request you've submitted to Galaxy Forge, in one place.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23d97a3f'/%3E%3Cstop offset='1' stop-color='%238a4a1f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-family='IBM Plex Sans,Arial,sans-serif' font-weight='800' font-size='14' fill='%231a0e05' text-anchor='middle'%3EGF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c11; --bg-elev:#12151d; --bg-card:#161a24; --bg-hover:#1c212e;
+  --border:#242938; --border-soft:#1a1e2a;
+  --ink:#eef0f6; --ink-dim:#9198ad; --ink-faint:#5c6379;
+  --accent:#d97a3f; --accent-soft:#3a2818; --accent-ink:#f0a468;
+  --cool:#5b7fd9; --cool-soft:#182238;
+  --good:#4a9d6f; --good-soft:#132a1e;
+  --bad:#c9524f; --bad-soft:#2e1615;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  --radius:12px;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; line-height:1.6;}
+a{color:inherit;}
+.wrap{max-width:760px; margin:0 auto; padding:0 1.5rem;}
+h1,h2,h3{font-weight:700; letter-spacing:-.02em; text-wrap:balance; margin:0;}
+p{margin:0;}
+
+header{position:sticky; top:0; z-index:50; background:rgba(10,12,17,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--border-soft);}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; max-width:1120px; margin:0 auto;}
+.brand{display:flex; align-items:center; gap:.6rem; text-decoration:none;}
+.brand-mark{width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg, var(--accent), #8a4a1f); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.9rem; color:#1a0e05; flex-shrink:0;}
+.brand-name{font-weight:700; font-size:1.02rem; color:var(--ink);}
+.nav-cta{font-family:var(--sans); font-size:.85rem; font-weight:600; padding:.55rem 1.1rem; border-radius:8px; background:transparent; color:var(--ink); text-decoration:none; border:1px solid var(--border); transition:border-color .15s; white-space:nowrap;}
+.nav-cta:hover{border-color:var(--cool);}
+
+main{padding:3.5rem 0 5rem;}
+.eyebrow{display:inline-flex; align-items:center; gap:.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); background:var(--accent-soft); border:1px solid rgba(217,122,63,.3); padding:.4rem .8rem; border-radius:99px; margin-bottom:1.2rem;}
+
+.card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.6rem; display:flex; flex-direction:column; gap:.8rem; margin-bottom:1rem;}
+.pill{font-family:var(--mono); font-size:.76rem; font-weight:600; letter-spacing:.03em; padding:.35rem .75rem; border-radius:99px; white-space:nowrap;}
+.pill.cool{background:var(--cool-soft); color:var(--cool);}
+.pill.accent{background:var(--accent-soft); color:var(--accent-ink);}
+.pill.good{background:var(--good-soft); color:var(--good);}
+.pill.bad{background:var(--bad-soft); color:var(--bad);}
+.row{display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;}
+.meta{font-size:.82rem; color:var(--ink-faint);}
+.btn{font-family:var(--sans); font-size:.85rem; font-weight:600; padding:.55rem 1rem; border-radius:9px; text-decoration:none; display:inline-flex; align-items:center; gap:.4rem; border:1px solid var(--border); color:var(--ink);}
+.btn:hover{border-color:var(--cool);}
+#empty, #signedOut, #loadError{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.8rem; color:var(--ink-dim); display:none;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a href="/site/" class="brand">
+      <div class="brand-mark">GF</div>
+      <div class="brand-name">Galaxy Forge</div>
+    </a>
+    <a href="/site/" class="nav-cta">← Back to site</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="eyebrow"><span>●</span> Order History</div>
+    <h2 style="margin-bottom:1.5rem;">Your requests</h2>
+
+    <div id="list"></div>
+    <div id="empty">No requests yet — <a href="/site/#request" style="color:var(--cool);">submit your first one</a>.</div>
+    <div id="signedOut">Please <a href="/site/login.html" style="color:var(--cool);">sign in</a> to see your order history.</div>
+    <div id="loadError"></div>
+  </div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  var STAGE_PILL = {
+    NEW: 'cool', QUALIFIED: 'cool', PROPOSED: 'accent', APPROVED: 'cool',
+    AWAITING_PAYMENT: 'accent', PAID: 'good', PRODUCTION: 'cool',
+    QUALITY_INSPECTION: 'cool', PACKAGING: 'cool', DELIVERED: 'good', FOLLOWED_UP: 'good',
+    REJECTED_AT_QUALIFICATION: 'bad', REJECTED_BY_CUSTOMER: 'bad',
+    PAYMENT_BLOCKED_PADDLE_ONBOARDING: 'bad', PENDING_CUSTOM_PRODUCT_SETUP: 'bad',
+    PENDING_FOUNDER_FULFILLMENT: 'cool',
+    FAILED: 'bad', PENDING_FOUNDER_REVIEW: 'cool', RESEARCH_REQUIRED: 'cool',
+  };
+
+  function fmtTime(iso){ try { return new Date(iso).toLocaleDateString(); } catch(e){ return iso; } }
+
+  fetch('/api/customer/account/requests', { credentials: 'same-origin' })
+    .then(function(r){
+      if (r.status === 401){ document.getElementById('signedOut').style.display = 'block'; return null; }
+      return r.json();
+    })
+    .then(function(body){
+      if (!body) return;
+      if (body.success === false){ throw new Error(body.error || 'Could not load your history.'); }
+      if (!body.requests.length){ document.getElementById('empty').style.display = 'block'; return; }
+      var list = document.getElementById('list');
+      body.requests.forEach(function(r){
+        var card = document.createElement('div');
+        card.className = 'card';
+        var row = document.createElement('div');
+        row.className = 'row';
+        var title = document.createElement('div');
+        title.innerHTML = '<strong>' + (r.request && r.request.name ? r.request.name + '’s request' : 'Request') + '</strong>';
+        var pill = document.createElement('div');
+        pill.className = 'pill ' + (STAGE_PILL[r.status] || 'cool');
+        pill.textContent = r.status.replace(/_/g, ' ');
+        row.appendChild(title);
+        row.appendChild(pill);
+        var meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = r.request_id + ' · submitted ' + fmtTime(r.submitted_at);
+        var link = document.createElement('a');
+        link.className = 'btn';
+        link.href = '/site/status.html?id=' + encodeURIComponent(r.request_id);
+        link.textContent = 'View status →';
+        card.appendChild(row);
+        card.appendChild(meta);
+        card.appendChild(link);
+        list.appendChild(card);
+      });
+    })
+    .catch(function(err){
+      var el = document.getElementById('loadError');
+      el.style.display = 'block';
+      el.textContent = err.message || 'Could not load your history.';
+    });
+})();
+</script>
+
+</body>
+</html>

@@ -725,14 +725,18 @@ def _supervision_view(record, audience="internal"):
     }
 
 
-def get_pipeline_status(request_id, requests_path=None, state_path=None):
+def get_pipeline_status(request_id, requests_path=None, state_path=None, reviews_path=None):
     requests = _load_requests(requests_path)
     request = requests.get(request_id)
     if request is None:
         return {"success": False, "error": "We couldn't find a request with that ID — please double-check it and try again."}
     state = _load_state(state_path)
     record = state.get(request_id) or _new_record(request_id)
-    return {"success": True, "request": {k: v for k, v in request.items() if k != "email"}, **_supervision_view(record, audience="customer")}
+    return {
+        "success": True, "request": {k: v for k, v in request.items() if k != "email"},
+        "has_review": request_id in _load_reviews(reviews_path),
+        **_supervision_view(record, audience="customer"),
+    }
 
 
 def list_pipeline_overview(requests_path=None, state_path=None):
@@ -779,6 +783,110 @@ def list_pipeline_overview(requests_path=None, state_path=None):
         "needs_attention": needs_attention,
         "requests": entries,
     }
+
+
+def list_requests_for_account(account_id=None, email=None, requests_path=None, state_path=None):
+    """Real Customer History (Round 5, 2026-07-29): every real request
+    matching this account -- either stamped with the real account_id at
+    submission time (server.js does this whenever the customer was logged
+    in), or matching their real email (reconciles a guest submission made
+    with the same email before they ever created an account -- no data
+    silently lost just because an account came later)."""
+    if not account_id and not email:
+        return {"success": False, "error": "account_id or email is required"}
+    target_email = (email or "").strip().lower()
+    requests = _load_requests(requests_path)
+    state = _load_state(state_path)
+    entries = []
+    for request_id, request in requests.items():
+        matches_account = bool(account_id) and request.get("account_id") == account_id
+        matches_email = bool(target_email) and (request.get("email") or "").strip().lower() == target_email
+        if not (matches_account or matches_email):
+            continue
+        record = state.get(request_id) or _new_record(request_id)
+        entries.append({
+            "request_id": request_id,
+            "name": request.get("name"),
+            "company": request.get("company"),
+            "submitted_at": request.get("submitted_at"),
+            **_supervision_view(record, audience="customer"),
+        })
+    entries.sort(key=lambda e: e.get("updated_at") or e.get("submitted_at") or "", reverse=True)
+    return {"success": True, "requests": entries}
+
+
+DEFAULT_REVIEWS_PATH = _FACTORY_ROOT / "data" / "customer_reviews.jsonl"
+
+
+def _load_reviews(reviews_path=None):
+    path = Path(reviews_path) if reviews_path else DEFAULT_REVIEWS_PATH
+    if not path.exists():
+        return {}
+    out = {}
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if rec.get("request_id"):
+                out[rec["request_id"]] = rec
+    return out
+
+
+def submit_review(request_id, rating, text=None, state_path=None, reviews_path=None):
+    """A real customer review -- one per request, only once the real order
+    reached DELIVERED/FOLLOWED_UP. Append-only, same convention as every
+    other real ledger in this factory; never editable after submission,
+    never fabricated to pad a display."""
+    try:
+        rating = int(rating)
+    except (TypeError, ValueError):
+        return {"success": False, "error": "rating must be a whole number from 1 to 5"}
+    if rating < 1 or rating > 5:
+        return {"success": False, "error": "rating must be between 1 and 5"}
+
+    state = _load_state(state_path)
+    record = state.get(request_id)
+    if record is None:
+        return {"success": False, "error": f"no pipeline state for request {request_id!r}"}
+    if record["stage"] not in ("DELIVERED", "FOLLOWED_UP"):
+        return {"success": False, "error": "reviews can only be left after your order is delivered"}
+
+    if request_id in _load_reviews(reviews_path):
+        return {"success": False, "error": "a review has already been submitted for this request"}
+
+    review = {
+        "request_id": request_id,
+        "rating": rating,
+        "text": (text or "").strip()[:1000],
+        "submitted_at": _now(),
+    }
+    path = Path(reviews_path) if reviews_path else DEFAULT_REVIEWS_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(review, ensure_ascii=False) + "\n")
+    _notify_founder(f"⭐ مراجعة حقيقية جديدة\nطلب: {request_id}\nالتقييم: {rating}/5")
+    return {"success": True, **review}
+
+
+def mark_followed_up(request_id, state_path=None):
+    """The founder's own real, manual action -- this factory has no
+    scheduler (CLAUDE.md), so a real follow-up check-in is never
+    automated or faked; this just records that it genuinely happened."""
+    state = _load_state(state_path)
+    record = state.get(request_id)
+    if record is None:
+        return {"success": False, "error": f"no pipeline state for request {request_id!r}"}
+    if record["stage"] != "DELIVERED":
+        return {"success": False, "error": f"cannot mark followed up from stage {record['stage']!r} (must be DELIVERED)"}
+    _record_history(record, "FOLLOWED_UP", "founder confirmed a real follow-up with the customer")
+    state[request_id] = record
+    _save_state(state, state_path)
+    return {"success": True, **record}
 
 
 def advance_all_new_requests(requests_path=None, state_path=None, decisions_path=None, analysis_db_file=None):
@@ -837,6 +945,12 @@ def main():
             result = fulfill_manually(payload["request_id"], payload.get("delivery_ref"), note=payload.get("note"))
         elif command == "get_download_path":
             result = get_download_path(payload["request_id"])
+        elif command == "list_for_account":
+            result = list_requests_for_account(account_id=payload.get("account_id"), email=payload.get("email"))
+        elif command == "submit_review":
+            result = submit_review(payload["request_id"], payload.get("rating"), text=payload.get("text"))
+        elif command == "mark_followed_up":
+            result = mark_followed_up(payload["request_id"])
         elif command == "status":
             result = get_pipeline_status(payload["request_id"])
         elif command == "overview":

@@ -370,6 +370,26 @@ test('readFailedJobsSummary: counts only real action:"failed" entries, ignores r
   assert.equal(result.recent[0].step, 'sales_poll', 'most recent failure must be first');
 });
 
+test('readCustomerReviewsSummary: missing file -> honest zero, never a fabricated testimonial', () => {
+  const result = dd.readCustomerReviewsSummary(path.join(tmpDir, 'nope_reviews.jsonl'));
+  assert.equal(result.count, 0);
+  assert.equal(result.average_rating, null);
+  assert.deepEqual(result.recent, []);
+  assert.ok(result.note);
+});
+
+test('readCustomerReviewsSummary: real reviews -> real average and most-recent-first order', () => {
+  const p = path.join(tmpDir, 'reviews.jsonl');
+  fs.writeFileSync(p,
+    JSON.stringify({ request_id: 'req_1', rating: 5, text: 'great', submitted_at: 't1' }) + '\n' +
+    JSON.stringify({ request_id: 'req_2', rating: 3, text: 'ok', submitted_at: 't2' }) + '\n'
+  );
+  const result = dd.readCustomerReviewsSummary(p);
+  assert.equal(result.count, 2);
+  assert.equal(result.average_rating, 4);
+  assert.equal(result.recent[0].text, 'ok', 'most recent review must be first');
+});
+
 test('readCapabilityMaturity: the real repo registry is well-formed and non-empty', () => {
   const result = dd.readCapabilityMaturity();
   assert.ok(result.total > 0, 'expected config/capability_registry.json to exist with real entries');

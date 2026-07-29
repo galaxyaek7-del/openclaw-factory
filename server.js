@@ -1264,6 +1264,15 @@ async function fulfillCustomerRequestManuallyAction(req) {
   return runCustomerPipelineCommand('fulfill_manually', { request_id, delivery_ref, note: note || '' });
 }
 
+// Round 5 (2026-07-29): the founder's own real, manual confirmation that
+// they actually followed up with a delivered customer -- no scheduler
+// exists in this factory (CLAUDE.md), so this is never auto-fired.
+async function markCustomerFollowedUpAction(req) {
+  const { request_id } = req.body || {};
+  if (!request_id) throw new Error('{ request_id } is required');
+  return runCustomerPipelineCommand('mark_followed_up', { request_id });
+}
+
 // Unified Recovery System §2/§6 (2026-07-18): the founder's explicit
 // clear-to-proceed after startup classified a real interruption as
 // NEEDS_CONFIRMATION (recovery/startup_check.py) — e.g. they checked the
@@ -1411,6 +1420,14 @@ const ACTION_REGISTRY = [
     reversible: false, // moves a real request to DELIVERED -- the customer sees this immediately
     kind: 'sync',
     run: fulfillCustomerRequestManuallyAction,
+  },
+  {
+    name: 'mark-customer-followed-up',
+    description: 'Marks a real DELIVERED customer request as FOLLOWED_UP once the founder has actually checked in with the customer. Requires { request_id } in the request body.',
+    reused: 'customer_pipeline.py mark_followed_up() (Round 5)',
+    reversible: false,
+    kind: 'sync',
+    run: markCustomerFollowedUpAction,
   },
   {
     // Executive Directive (2026-07-22): the permanent core Executive
@@ -4234,6 +4251,21 @@ app.get('/api/customer/session', (req, res) => {
   res.json({ success: true, authenticated: !!account, account: account ? publicAccountView(account) : null });
 });
 
+// Real Customer History (Round 5, 2026-07-29) -- every real request tied
+// to this logged-in account, either by account_id (stamped at submission
+// time while logged in) or by matching email (reconciles guest requests
+// made before the customer ever created an account).
+app.get('/api/customer/account/requests', requireCustomerAuth, async (req, res) => {
+  try {
+    const result = await runCustomerPipelineCommand('list_for_account', {
+      account_id: req.customerAccount.account_id, email: req.customerAccount.email,
+    });
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // ADR-130 (2026-07-25): direct spawn of customer_pipeline.py -- a single-
 // purpose CLI script (command + JSON payload), same pattern as /generate-
 // book spawning book_generator.py directly rather than going through
@@ -4606,6 +4638,37 @@ app.get('/api/customer/requests/:id/download', async (req, res) => {
     res.download(result.path, result.filename || path.basename(result.path));
   } catch (err) {
     res.status(404).json({ success: false, error: err.message });
+  }
+});
+
+// Real customer review -- same request_id-as-bearer-token trust model as
+// the rest of this request's routes, gated server-side (customer_pipeline.
+// submit_review()) on the real order actually being DELIVERED/FOLLOWED_UP,
+// one per request, never editable after submission.
+app.post('/api/customer/requests/:id/review', async (req, res) => {
+  try {
+    const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
+    if (isRateLimited(ip)) {
+      return res.status(429).json({ success: false, error: 'too many requests — please try again later' });
+    }
+    const rating = (req.body && req.body.rating);
+    const text = String((req.body && req.body.text) || '').trim().slice(0, 1000);
+    const result = await runCustomerPipelineCommand('submit_review', { request_id: req.params.id, rating, text });
+    res.json(result);
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// Public, read-only real reviews for the site's "What customers say"
+// section -- honest empty state until a real review exists (never a
+// placeholder testimonial). Same pure-reader pattern lib/dashboard_data.js
+// already uses everywhere else, reused (not duplicated) here.
+app.get('/api/customer/reviews', (req, res) => {
+  try {
+    res.json({ success: true, ...dashboardData.readCustomerReviewsSummary() });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'reviews temporarily unavailable' });
   }
 });
 

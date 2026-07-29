@@ -610,6 +610,84 @@ class TestPaidFulfillment(BasePipelineTest):
         self.assertNotIn("path", result["delivery"])
 
 
+class TestCustomerHistoryAndReviews(BasePipelineTest):
+    """Customer Platform Round 5 (2026-07-29): real Customer History
+    (matched by account_id or email) and a real, greenfield review
+    system (one per DELIVERED/FOLLOWED_UP request, append-only)."""
+
+    def setUp(self):
+        super().setUp()
+        self.reviews_path = _temp_path(".jsonl")
+
+    def tearDown(self):
+        super().tearDown()
+        if os.path.exists(self.reviews_path):
+            os.remove(self.reviews_path)
+
+    def test_list_requires_account_id_or_email(self):
+        result = cp.list_requests_for_account(requests_path=self.requests_path, state_path=self.state_path)
+        self.assertFalse(result["success"])
+
+    def test_list_matches_by_account_id(self):
+        self._write_request("req_one", account_id="acct_123", email="a@example.com")
+        self._write_request("req_two", account_id="acct_other", email="b@example.com")
+        result = cp.list_requests_for_account(account_id="acct_123", requests_path=self.requests_path, state_path=self.state_path)
+        self.assertTrue(result["success"])
+        ids = [r["request_id"] for r in result["requests"]]
+        self.assertEqual(ids, ["req_one"])
+
+    def test_list_matches_by_email_reconciling_pre_account_guest_requests(self):
+        self._write_request("req_guest", account_id=None, email="Same@Example.com")
+        result = cp.list_requests_for_account(email="same@example.com", requests_path=self.requests_path, state_path=self.state_path)
+        self.assertTrue(result["success"])
+        self.assertEqual(len(result["requests"]), 1)
+        self.assertEqual(result["requests"][0]["request_id"], "req_guest")
+
+    def test_submit_review_requires_delivered_or_followed_up(self):
+        self._write_request()
+        cp.advance_request("req_abc123", requests_path=self.requests_path, state_path=self.state_path,
+                            evaluate_fn=lambda *a, **k: _accepted_decision(), price_fn=lambda *a, **k: 100.0)
+        result = cp.submit_review("req_abc123", 5, text="great", state_path=self.state_path, reviews_path=self.reviews_path)
+        self.assertFalse(result["success"])
+
+    def test_submit_review_rejects_invalid_rating(self):
+        state = {"req_x": {"request_id": "req_x", "stage": "DELIVERED", "stage_history": []}}
+        cp._save_state(state, self.state_path)
+        result = cp.submit_review("req_x", 7, state_path=self.state_path, reviews_path=self.reviews_path)
+        self.assertFalse(result["success"])
+        result2 = cp.submit_review("req_x", "not-a-number", state_path=self.state_path, reviews_path=self.reviews_path)
+        self.assertFalse(result2["success"])
+
+    def test_submit_review_succeeds_once_delivered(self):
+        state = {"req_x": {"request_id": "req_x", "stage": "DELIVERED", "stage_history": []}}
+        cp._save_state(state, self.state_path)
+        result = cp.submit_review("req_x", 5, text="Excellent real work", state_path=self.state_path, reviews_path=self.reviews_path)
+        self.assertTrue(result["success"])
+        self.assertEqual(result["rating"], 5)
+        reviews = cp._load_reviews(self.reviews_path)
+        self.assertIn("req_x", reviews)
+
+    def test_submit_review_refuses_a_second_review_for_the_same_request(self):
+        state = {"req_x": {"request_id": "req_x", "stage": "FOLLOWED_UP", "stage_history": []}}
+        cp._save_state(state, self.state_path)
+        cp.submit_review("req_x", 4, state_path=self.state_path, reviews_path=self.reviews_path)
+        result = cp.submit_review("req_x", 2, state_path=self.state_path, reviews_path=self.reviews_path)
+        self.assertFalse(result["success"])
+
+    def test_mark_followed_up_requires_delivered_stage(self):
+        state = {"req_x": {"request_id": "req_x", "stage": "PAID", "stage_history": []}}
+        cp._save_state(state, self.state_path)
+        result = cp.mark_followed_up("req_x", state_path=self.state_path)
+        self.assertFalse(result["success"])
+
+    def test_mark_followed_up_succeeds_from_delivered(self):
+        state = {"req_x": {"request_id": "req_x", "stage": "DELIVERED", "stage_history": []}}
+        cp._save_state(state, self.state_path)
+        result = cp.mark_followed_up("req_x", state_path=self.state_path)
+        self.assertTrue(result["success"])
+        self.assertEqual(result["stage"], "FOLLOWED_UP")
+
+
 class TestCustomerSafeCopy(BasePipelineTest):
     """Commercial Readiness Report (2026-07-25), finding PY1: the
     customer's own status page must never show internal function names

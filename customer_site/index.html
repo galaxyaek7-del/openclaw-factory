@@ -186,6 +186,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
       <a href="#support">Support</a>
       <a href="#knowledge-base">Knowledge Base</a>
       <a href="/trust/index.html">Trust Center</a>
+      <a href="/site/history.html">My Orders</a>
       <a href="/site/login.html">Sign in</a>
     </nav>
     <a href="#request" class="nav-cta">Request a Product</a>
@@ -327,6 +328,17 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
           <div id="formStatus"></div>
         </form>
       </div>
+    </div>
+  </section>
+
+  <section id="reviews">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow"><span class="dot"></span> Customer reviews</div>
+        <h2>What customers say.</h2>
+        <p>Every review here is real, submitted by a customer after their real order was delivered — never a placeholder testimonial.</p>
+      </div>
+      <div id="reviewsBody">Loading…</div>
     </div>
   </section>
 
@@ -472,6 +484,43 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
     })
     .catch(function(){
       document.getElementById('catalogStatus').textContent = 'Catalog temporarily unavailable — please try again shortly.';
+    });
+
+  fetch('/api/customer/reviews', { credentials: 'same-origin' })
+    .then(function(r){ return r.json(); })
+    .then(function(body){
+      const el = document.getElementById('reviewsBody');
+      el.innerHTML = '';
+      if (!body || !body.success || !body.count){
+        el.textContent = (body && body.note) || 'No customer reviews yet.';
+        el.style.color = 'var(--ink-faint)';
+        return;
+      }
+      const summary = document.createElement('p');
+      summary.style.color = 'var(--ink-dim)';
+      summary.style.marginBottom = '1rem';
+      summary.textContent = body.average_rating + ' / 5 average across ' + body.count + ' real review' + (body.count === 1 ? '' : 's') + '.';
+      el.appendChild(summary);
+      const grid = document.createElement('div');
+      grid.className = 'catalog-grid';
+      (body.recent || []).forEach(function(rev){
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        const rating = document.createElement('div');
+        rating.className = 'product-price';
+        rating.textContent = '★'.repeat(rev.rating) + '☆'.repeat(5 - rev.rating);
+        const text = document.createElement('p');
+        text.style.color = 'var(--ink-dim)';
+        text.style.fontSize = '.9rem';
+        text.textContent = rev.text || '';
+        card.appendChild(rating);
+        if (rev.text) card.appendChild(text);
+        grid.appendChild(card);
+      });
+      el.appendChild(grid);
+    })
+    .catch(function(){
+      document.getElementById('reviewsBody').textContent = 'Reviews temporarily unavailable.';
     });
 
   // ── Real intake submission ──
