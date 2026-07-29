@@ -39,3 +39,16 @@ data/consultation_log.jsonl
 data/customer_pipeline_state.json
 data/customer_reviews.jsonl
 data/.customer_session_secret
+
+# Final Executive Directive (2026-07-29): pure ephemeral tick run-state,
+# same .factory_loop.lock precedent above -- data/generated_business_
+# blueprints.jsonl (the real, meaningful append-only ledger these markers
+# gate) IS committed by the same convention as decisions.jsonl/etc.
+data/.knowledge_graph_daily_marker
+data/.business_blueprint_daily_marker
+# Disposable rebuild cache -- knowledge_graph.build.build_graph() derives
+# this deterministically from already-tracked real ledgers (decisions.jsonl,
+# market_intelligence_analyses.jsonl, sales_ledger.jsonl, ai_cost_log.jsonl);
+# mission_control_api.py's own _knowledge_graph() docstring already called
+# save_snapshot()'s output "a disposable on-disk copy".
+data/knowledge_graph_snapshot.json

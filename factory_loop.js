@@ -1949,6 +1949,154 @@ async function maybeGenerateDailyEvolutionQueueIntake(now = new Date()) {
   return { action: 'processed', detail: `تمت معالجة ${result.added_count} اقتراح جديد في طابور التطوّر (${result.processed.join(', ') || 'لا شيء'})` };
 }
 
+// Final Executive Directive (2026-07-29): "maintain institutional
+// knowledge" — knowledge_graph.build_graph() has zero prior callers in
+// this tick (confirmed via direct grep before adding this). Pure,
+// read-only rebuild from already-real data (decisions.jsonl/market_
+// intelligence_analyses.jsonl/sales_ledger.jsonl/ai_cost_log.jsonl),
+// persisted via knowledge_graph.build.save_snapshot() (already existed,
+// never called until now) — no side effects on any decision, production,
+// or publish state. Same once-per-calendar-day gate as the report
+// engines above.
+const KNOWLEDGE_GRAPH_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.knowledge_graph_daily_marker');
+
+function runKnowledgeGraphDailySnapshot({ timeoutMs = 30000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'knowledge_graph_daily_snapshot'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة knowledge_graph_daily_snapshot (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من knowledge_graph_daily_snapshot' });
+          return;
+        }
+        finish({ ok: true, node_count: result.node_count, edge_count: result.edge_count });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج knowledge_graph_daily_snapshot: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeGenerateDailyKnowledgeGraph(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(KNOWLEDGE_GRAPH_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم تحديث خريطة المعرفة اليوم بالفعل (${today})` };
+  }
+  const result = await runKnowledgeGraphDailySnapshot();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(path.dirname(KNOWLEDGE_GRAPH_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(KNOWLEDGE_GRAPH_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ علامة خريطة المعرفة: ${err.message}` };
+  }
+  return { action: 'generated', detail: `تم بناء خريطة المعرفة (${result.node_count} عقدة، ${result.edge_count} رابط)` };
+}
+
+// Final Executive Directive (2026-07-29): "create business blueprints" —
+// autonomous_business_builder.generate_pending_business_blueprints() was
+// built earlier the same day with zero automatic wiring (ACTION_REGISTRY-
+// only until now). Read-only/no-execution (a blueprint is pure analysis,
+// never a publish or spend) — safe to add to the tick without touching
+// any of the 4 Founder-protected gates. Capped at a small real batch per
+// call (each blueprint costs ~16s real compute) and diffed against
+// data/generated_business_blueprints.jsonl inside the Python call itself
+// — this wrapper only needs its own once-per-calendar-day gate so a
+// ~10-minute tick doesn't re-spawn Python for a cheap, already-empty diff.
+const BUSINESS_BLUEPRINT_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.business_blueprint_daily_marker');
+
+function runGeneratePendingBusinessBlueprints({ timeoutMs = 120000, pythonPath, limit = 2 } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'generate_pending_business_blueprints', JSON.stringify({ limit })], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة generate_pending_business_blueprints (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من generate_pending_business_blueprints' });
+          return;
+        }
+        finish({ ok: true, generated: result.generated, remaining_pending: result.remaining_pending });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج generate_pending_business_blueprints: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeGenerateBusinessBlueprintsForNewAcceptedDecisions(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(BUSINESS_BLUEPRINT_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم توليد مخططات الأعمال اليوم بالفعل (${today})` };
+  }
+  const result = await runGeneratePendingBusinessBlueprints();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(path.dirname(BUSINESS_BLUEPRINT_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(BUSINESS_BLUEPRINT_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ علامة مخططات الأعمال: ${err.message}` };
+  }
+  const generatedNiches = (result.generated || []).map(g => g.niche).join(', ') || 'لا شيء';
+  return { action: 'generated', detail: `تم توليد ${(result.generated || []).length} مخطط أعمال جديد (${generatedNiches}) — المتبقي: ${result.remaining_pending}` };
+}
+
 // ── CONTINUOUS TRUST & RESILIENCE MONITORING ──
 // resilience_monitor.py's assess_resilience() + record_incidents_for_
 // findings() in one call (mission_control_api.py's resilience_monitor_
@@ -2427,6 +2575,17 @@ async function runTick() {
   markStep('evolution_queue_intake');
   actions.push({ step: 'evolution_queue_intake', ...(await maybeGenerateDailyEvolutionQueueIntake()) });
 
+  // Final Executive Directive (2026-07-29): same once-per-calendar-day
+  // pattern as the report engines above — the 2 confirmed-safe, genuinely
+  // new autonomy additions ("maintain institutional knowledge" +
+  // "create business blueprints"), see the two functions' own docstrings
+  // for why each is safe to run without founder gating.
+  markStep('knowledge_graph_snapshot');
+  actions.push({ step: 'knowledge_graph_snapshot', ...(await maybeGenerateDailyKnowledgeGraph()) });
+
+  markStep('business_blueprint_generation');
+  actions.push({ step: 'business_blueprint_generation', ...(await maybeGenerateBusinessBlueprintsForNewAcceptedDecisions()) });
+
   // Continuous Trust & Resilience Monitoring (2026-07-29): runs every
   // tick, not daily-gated — this is meant to be the closest thing to
   // "real-time" a scheduler-less factory can honestly offer, same
@@ -2656,6 +2815,8 @@ module.exports = {
   runDepartmentHealthReport, departmentHealthReportPath, maybeGenerateDailyDepartmentHealthReport,
   runExecutiveBrief, executiveBriefReportPath, maybeGenerateDailyExecutiveBrief,
   runEvolutionQueueDailyCycle, maybeGenerateDailyEvolutionQueueIntake,
+  runKnowledgeGraphDailySnapshot, maybeGenerateDailyKnowledgeGraph,
+  runGeneratePendingBusinessBlueprints, maybeGenerateBusinessBlueprintsForNewAcceptedDecisions,
   runResilienceMonitorTick,
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,

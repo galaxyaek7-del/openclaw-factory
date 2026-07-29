@@ -6,7 +6,9 @@ each have their own isolated unit tests elsewhere.
     python -m unittest tests.test_autonomous_business_builder -v
 """
 
+import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -16,6 +18,13 @@ if str(_FACTORY_ROOT) not in sys.path:
     sys.path.insert(0, str(_FACTORY_ROOT))
 
 import autonomous_business_builder as abb
+
+
+def _temp_path(suffix=".jsonl"):
+    fd, path = tempfile.mkstemp(suffix=suffix)
+    os.close(fd)
+    os.remove(path)
+    return path
 
 
 class TestCompetitorMap(unittest.TestCase):
@@ -197,6 +206,119 @@ class TestBusinessPipelineSummary(unittest.TestCase):
             result = abb.business_pipeline_summary()
         mock_board.assert_called_once()
         self.assertEqual(result, board)
+
+
+class TestReadGeneratedBlueprintNiches(unittest.TestCase):
+    def test_missing_file_is_an_empty_set(self):
+        path = _temp_path()
+        self.assertEqual(abb._read_generated_blueprint_niches(path), set())
+
+    def test_reads_niches_and_skips_blank_and_malformed_lines(self):
+        path = _temp_path()
+        with open(path, "w", encoding="utf-8") as f:
+            f.write('{"niche": "a", "decision_id": "d1"}\n')
+            f.write("\n")
+            f.write("not json\n")
+            f.write('{"niche": "b", "decision_id": "d2"}\n')
+        try:
+            self.assertEqual(abb._read_generated_blueprint_niches(path), {"a", "b"})
+        finally:
+            os.remove(path)
+
+
+class TestRecordGeneratedBlueprint(unittest.TestCase):
+    def test_appends_a_record_without_overwriting_existing_ones(self):
+        path = _temp_path()
+        try:
+            abb._record_generated_blueprint("a", "d1", path)
+            abb._record_generated_blueprint("b", "d2", path)
+            niches = abb._read_generated_blueprint_niches(path)
+            self.assertEqual(niches, {"a", "b"})
+        finally:
+            os.remove(path)
+
+
+class TestGeneratePendingBusinessBlueprints(unittest.TestCase):
+    def test_generates_up_to_limit_and_records_them(self):
+        accepted = [
+            {"decision_id": "d1", "niche": "n1", "status": "ACCEPTED"},
+            {"decision_id": "d2", "niche": "n2", "status": "ACCEPTED"},
+            {"decision_id": "d3", "niche": "n3", "status": "ACCEPTED"},
+        ]
+        path = _temp_path()
+        try:
+            with patch("decision_engine.ranking.rank_all", return_value=accepted), \
+                 patch("autonomous_business_builder.business_blueprint", return_value={"niche": "x"}):
+                result = abb.generate_pending_business_blueprints(limit=2, generated_path=path)
+            self.assertEqual(result["total_accepted"], 3)
+            self.assertEqual(len(result["generated"]), 2)
+            self.assertEqual(result["remaining_pending"], 1)
+            self.assertEqual(abb._read_generated_blueprint_niches(path), {"n1", "n2"})
+        finally:
+            os.remove(path)
+
+    def test_never_regenerates_an_already_covered_niche(self):
+        accepted = [
+            {"decision_id": "d1", "niche": "n1", "status": "ACCEPTED"},
+            {"decision_id": "d2", "niche": "n2", "status": "ACCEPTED"},
+        ]
+        path = _temp_path()
+        try:
+            abb._record_generated_blueprint("n1", "d1", path)
+            with patch("decision_engine.ranking.rank_all", return_value=accepted), \
+                 patch("autonomous_business_builder.business_blueprint", return_value={"niche": "x"}) as mock_bp:
+                result = abb.generate_pending_business_blueprints(limit=2, generated_path=path)
+            mock_bp.assert_called_once()
+            self.assertEqual(result["generated"], [{"niche": "n2", "decision_id": "d2"}])
+            self.assertEqual(result["remaining_pending"], 0)
+        finally:
+            os.remove(path)
+
+    def test_zero_or_negative_limit_generates_nothing(self):
+        accepted = [{"decision_id": "d1", "niche": "n1", "status": "ACCEPTED"}]
+        path = _temp_path()
+        try:
+            with patch("decision_engine.ranking.rank_all", return_value=accepted), \
+                 patch("autonomous_business_builder.business_blueprint") as mock_bp:
+                result_zero = abb.generate_pending_business_blueprints(limit=0, generated_path=path)
+                result_negative = abb.generate_pending_business_blueprints(limit=-1, generated_path=path)
+            mock_bp.assert_not_called()
+            self.assertEqual(result_zero["generated"], [])
+            self.assertEqual(result_zero["remaining_pending"], 1)
+            self.assertEqual(result_negative["generated"], [])
+            self.assertEqual(result_negative["remaining_pending"], 1)
+        finally:
+            if os.path.exists(path):
+                os.remove(path)
+
+    def test_a_niche_whose_blueprint_is_none_is_never_recorded_as_generated(self):
+        accepted = [{"decision_id": "d1", "niche": "n1", "status": "ACCEPTED"}]
+        path = _temp_path()
+        try:
+            with patch("decision_engine.ranking.rank_all", return_value=accepted), \
+                 patch("autonomous_business_builder.business_blueprint", return_value=None):
+                result = abb.generate_pending_business_blueprints(limit=2, generated_path=path)
+            self.assertEqual(result["generated"], [])
+            self.assertEqual(abb._read_generated_blueprint_niches(path), set())
+        finally:
+            if os.path.exists(path):
+                os.remove(path)
+
+    def test_only_accepted_decisions_with_a_niche_are_considered(self):
+        decisions = [
+            {"decision_id": "d1", "niche": "n1", "status": "ACCEPTED"},
+            {"decision_id": "d2", "niche": None, "status": "ACCEPTED"},
+            {"decision_id": "d3", "niche": "n3", "status": "DEFERRED"},
+        ]
+        path = _temp_path()
+        try:
+            with patch("decision_engine.ranking.rank_all", return_value=decisions), \
+                 patch("autonomous_business_builder.business_blueprint", return_value={"niche": "x"}):
+                result = abb.generate_pending_business_blueprints(limit=5, generated_path=path)
+            self.assertEqual(result["total_accepted"], 1)
+            self.assertEqual(result["generated"], [{"niche": "n1", "decision_id": "d1"}])
+        finally:
+            os.remove(path)
 
 
 if __name__ == "__main__":

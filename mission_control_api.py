@@ -673,6 +673,18 @@ def _approve_elevated_risk_publish():
     return publish_protection.approve_elevated_risk_publish(arm_name, approved_by="founder")
 
 
+def _autonomous_operations_status():
+    """Final Executive Directive (2026-07-29): a real, citation-only
+    status map answering the directive's own implicit question -- "is
+    Galaxy Forge running autonomously right now, and exactly what does
+    that include." Passthrough only -- see autonomous_operations_status.py."""
+    import autonomous_operations_status
+    return {
+        "activities": autonomous_operations_status.activity_status()["activities"],
+        "summary": autonomous_operations_status.autonomous_operations_summary(),
+    }
+
+
 def _resilience_status():
     """Continuous Trust & Resilience Monitoring (2026-07-29): the real
     Python-side half of Monitor+Classify+Report -- resilience_monitor.py's
@@ -875,6 +887,21 @@ def _execution_phases():
     rollback plan. Passthrough only."""
     import autonomous_business_builder
     return autonomous_business_builder.execution_phases()
+
+
+def _generate_pending_business_blueprints():
+    """Final Executive Directive (2026-07-29): the real, capped, idempotent
+    autonomous-generation step -- every real ACCEPTED decision without an
+    already-recorded real Business Blueprint gets one, up to a small batch
+    per call (each blueprint costs real compute, ~16s measured live).
+    Read-only/no-execution, safe for factory_loop.js's daily tick. Reads
+    an optional payload from sys.argv[2] for `limit`:
+    `python mission_control_api.py generate_pending_business_blueprints '{"limit":2}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    limit = payload.get("limit", 2)
+
+    import autonomous_business_builder
+    return autonomous_business_builder.generate_pending_business_blueprints(limit=limit)
 
 
 def _evolution_queue_daily_cycle():
@@ -1085,6 +1112,20 @@ def _knowledge_graph():
         "node_count": graph["node_count"], "edge_count": graph["edge_count"],
         "nodes": graph["nodes"], "edges": graph["edges"],
     }
+
+
+def _knowledge_graph_daily_snapshot():
+    """Final Executive Directive (2026-07-29): the real, genuinely-new
+    daily tick step for "maintain institutional knowledge" -- builds the
+    same real graph _knowledge_graph() above reads live, and persists it
+    via knowledge_graph.build.save_snapshot() (already existed, never
+    called from anywhere until now). Pure read of existing real data,
+    zero side effects on any decision/production/publish state -- safe
+    for factory_loop.js's daily tick."""
+    from knowledge_graph import build
+    graph = build.build_graph()
+    path = build.save_snapshot(graph)
+    return {"node_count": graph["node_count"], "edge_count": graph["edge_count"], "path": path}
 
 
 def _department_health():
@@ -2012,6 +2053,7 @@ _ENDPOINTS = {
     "research_department": _research_department,
     "department_health": _department_health,
     "knowledge_graph": _knowledge_graph,
+    "knowledge_graph_daily_snapshot": _knowledge_graph_daily_snapshot,
     "golden_hunter_status": _golden_hunter_status,
     "pioneer_status": _pioneer_status,
     "full_cycle": _full_cycle,
@@ -2057,6 +2099,7 @@ _ENDPOINTS = {
     "draft_adr_post": _draft_adr_post,
     "queue_draft_for_approval": _queue_draft_for_approval,
     "run_master_cycle": _run_master_cycle,
+    "generate_pending_business_blueprints": _generate_pending_business_blueprints,
     "evolution_queue_daily_cycle": _evolution_queue_daily_cycle,
     "evolution_queue": _evolution_queue,
     "approve_evolution_proposal": _approve_evolution_proposal,
@@ -2070,6 +2113,7 @@ _ENDPOINTS = {
     "clear_subsystem_unstable": _clear_subsystem_unstable,
     "approve_first_publish": _approve_first_publish,
     "approve_elevated_risk_publish": _approve_elevated_risk_publish,
+    "autonomous_operations_status": _autonomous_operations_status,
     "resilience_status": _resilience_status,
     "resilience_incidents": _resilience_incidents,
     "resilience_monitor_tick": _resilience_monitor_tick,

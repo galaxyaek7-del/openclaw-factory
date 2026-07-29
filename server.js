@@ -1026,6 +1026,17 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('execution_phases'),
   },
   {
+    // Final Executive Directive (2026-07-29): pure citation, no real
+    // sub-computation beyond activity_status()/autonomous_operations_
+    // summary()'s own fixed dict lookups -- cheap, no timeout disclosure
+    // needed beyond the shared default.
+    name: 'autonomous-operations-status',
+    description: "Answers the directive's own implicit question -- is Galaxy Forge running autonomously right now, and exactly what does that include. The directive's ~21 named activities, each honestly tagged automatic/automatic_new/human_gated_by_design/ambiguous_not_touched against this factory's real, current code, plus the 4 Founder-protected gates and the master_loop.py always-on-daemon precedent (declined 3x: ADR-107/110/115) -- so this decision's history is never lost or silently re-litigated.",
+    reused: 'autonomous_operations_status.py::activity_status()/autonomous_operations_summary()',
+    handler: (req) => runPythonServiceCached('autonomous_operations_status', [], req),
+    health: pythonHealthCheck('autonomous_operations_status'),
+  },
+  {
     // Global Trust & Resilience Layer, Round 2 (2026-07-29): real
     // per-subsystem Safe Mode -- an unstable subsystem is isolated on
     // its own, the rest of the company keeps running. Read-only here;
