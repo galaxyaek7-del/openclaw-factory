@@ -858,6 +858,29 @@ def _executive_directives_history():
     return executive_brain.list_executive_directives()
 
 
+def _gfos_status():
+    """GF-OS (ADR-147, 2026-07-30): the single real coordination/citation
+    aggregate -- department registry (all 12 real departments), mission
+    lifecycle (real scheduler.py buckets + orchestrator.py stages, no
+    new queue), and the 10 most recent real Enterprise Timeline entries.
+    A citation layer only -- every module cited is still called directly
+    by every other real caller exactly as before; safe_mode.py's per-
+    subsystem independence (ADR-135) is unchanged. Expensive (~13s,
+    department_health.build_department_health() touches multiple real
+    subsystems) -- read-only."""
+    import gfos
+    return gfos.gfos_status()
+
+
+def _gfos_enterprise_timeline():
+    """GF-OS (ADR-147, 2026-07-30): the full real Enterprise Timeline
+    (up to 50 entries, vs. gfos-status's own 10-entry preview) -- a pure
+    merge of every real ledger this factory already keeps, most recent
+    first. Cheap (~0.2s measured live)."""
+    import gfos
+    return gfos.enterprise_timeline(limit=50)
+
+
 def _market_intelligence_source_status():
     """Executive Command Center (ADR-146, 2026-07-30): the real,
     registered external-evidence-source inventory for the Market
@@ -2253,6 +2276,8 @@ _ENDPOINTS = {
     "executive_brain_directive": _executive_brain_directive,
     "generate_daily_executive_directive": _generate_daily_executive_directive,
     "executive_directives_history": _executive_directives_history,
+    "gfos_status": _gfos_status,
+    "gfos_enterprise_timeline": _gfos_enterprise_timeline,
     "market_intelligence_source_status": _market_intelligence_source_status,
     "decision_memory_list": _decision_memory_list,
     "decision_memory_conflicts": _decision_memory_conflicts,

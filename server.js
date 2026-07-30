@@ -1013,6 +1013,28 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('executive_directives_history'),
   },
   {
+    // GF-OS (ADR-147, 2026-07-30): a coordination/citation layer, not a
+    // mandatory gateway -- confirmed via AskUserQuestion before building.
+    // Every department below is still called directly by every other
+    // real caller exactly as before; safe_mode.py's per-subsystem
+    // independence (ADR-135) is unchanged. "Mission Queue" is a pure
+    // citation of scheduler.py's real buckets + orchestrator.py's real
+    // stages -- no new queue infrastructure (a question already asked
+    // and declined 4x: ADR-107/110/115/142).
+    name: 'gfos-status',
+    description: "The single real Enterprise Operating System status view -- all 12 real departments (Identity/Capabilities/Dependencies/Workload/Health/Confidence, each a citation of an already-real signal), the real mission lifecycle (scheduler.py's 5 buckets + orchestrator.py's 5 execution stages, honestly None where no real per-mission signal exists), and the 10 most recent real Enterprise Timeline entries. A citation layer only -- nothing here executes, approves, or force-routes anything.",
+    reused: 'gfos.py::gfos_status() (ADR-147), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('gfos_status', [], req, 40000),
+    health: pythonHealthCheck('gfos_status'),
+  },
+  {
+    name: 'gfos-enterprise-timeline',
+    description: "The full real Enterprise Timeline (up to 50 entries) -- a real merge of decisions.jsonl + department_events.jsonl + evolution_queue_state.json + executive_directives.jsonl + council_recommendations.jsonl, most recent first. \"Nothing is lost\": every entry already existed in its own real ledger before this merge existed -- zero new logging call sites.",
+    reused: 'gfos.py::enterprise_timeline() (ADR-147), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('gfos_enterprise_timeline', [], req),
+    health: pythonHealthCheck('gfos_enterprise_timeline'),
+  },
+  {
     // Executive Command Center (ADR-146, 2026-07-30): reuses
     // multi_source_intelligence.registry.get_connectors() verbatim --
     // never a second connector list. Static-unavailable sources

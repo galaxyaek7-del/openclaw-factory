@@ -294,6 +294,16 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
       note:'Real, mechanical check across the most recent Executive Directives — the same real niche recommended both "accelerate" and "stop" within the lookback window. Never a semantic/AI judgment; honestly empty (checked_niches may still be >0) when no real conflict exists today.' },
     { id:'decision-memory-explain', group:'decisions', title:'Decision Memory — Explain a Decision', service:'decision-memory-explain', kind:'kv',
       note:'Pass ?decision_id=&lt;id&gt; (from any entry in the panel above) for the full real evidence/reasoning/conflict-check trail behind that exact decision — works for either a real niche Decision or a real Executive Directive. Reuses knowledge_graph.build.query_related() directly for connected real nodes, never a second graph traversal. Honestly reports found:false for an unknown id, never a guessed explanation.' },
+    // GF-OS (ADR-147, 2026-07-30): deliberately first in Executive
+    // Overview — "Mission Control becomes the visual interface of
+    // GF-OS." A coordination/citation layer, not a mandatory gateway
+    // (confirmed via AskUserQuestion): every department below still
+    // operates and is still called exactly as before; this only
+    // unifies their already-real signals into one view.
+    { id:'gfos-status', group:'overview', title:'🏛️ GF-OS — Enterprise Operating System Status', service:'gfos-status', kind:'kv',
+      note:'All 12 real departments (Identity/Capabilities/Dependencies/Workload/Health/Confidence — each a citation of an already-real signal, never invented), the real mission lifecycle (scheduler.py\'s 5 buckets + orchestrator.py\'s 5 stages — honestly None where no real per-mission signal exists, never a fabricated count), and the 10 most recent real Enterprise Timeline entries. Coordination/citation layer only: nothing here executes, approves, or force-routes anything — safe_mode.py\'s per-subsystem independence (ADR-135) is unchanged. Expensive (~13s) — the full 50-entry timeline is in the panel below.' },
+    { id:'gfos-enterprise-timeline', group:'overview', title:'Enterprise Timeline', service:'gfos-enterprise-timeline', kind:'list', listKey:'entries',
+      note:'"Nothing is lost": a real, chronologically-merged view of every decision, department event, evolution-proposal transition, executive directive, and council recommendation this factory has ever recorded — 5 real ledgers merged, zero new logging call sites.' },
     { id:'company-health', group:'overview', title:'Company Health', service:'company-health', kind:'kv',
       note:'Live infra + business-reality health checks (lib/health_checks.js + reality.py). Also cited inside the Executive Brain panel above as part of factory_health.' },
     { id:'executive-summary', group:'overview', title:'Executive Summary', service:'get-ceo-dashboard', via:'action', kind:'kv',
@@ -755,8 +765,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
     }
     const ul = el('ul', { class:'card-list' });
     items.slice(0, 25).forEach(item => {
-      const label = item.niche || item.title || item.filename || item.name || JSON.stringify(item).slice(0, 80);
-      const sub = [item.status, item.date, item.ladder_score != null ? ('score ' + item.ladder_score) : null, item.opportunity_score != null ? ('score ' + item.opportunity_score) : null].filter(Boolean).join(' · ');
+      const label = item.niche || item.title || item.filename || item.name || item.summary || JSON.stringify(item).slice(0, 80);
+      const sub = [item.status, item.date, item.timestamp, item.type, item.source, item.ladder_score != null ? ('score ' + item.ladder_score) : null, item.opportunity_score != null ? ('score ' + item.opportunity_score) : null].filter(Boolean).join(' · ');
       ul.appendChild(el('li', null, [
         el('div', null, [String(label)]),
         sub ? el('div', { class:'note-line' }, [sub]) : null,
