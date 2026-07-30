@@ -221,6 +221,62 @@ def _arbitrate(candidates):
     }
 
 
+def _make_directive_id(action, tier, generated_at):
+    """Deterministic -- same real (action, tier, generated_at) always
+    produces the same ID, same convention as decision_engine.types.
+    make_decision_id() (sha256, truncated to 16 hex chars). Not a call
+    into that function directly -- its own signature is niche-specific
+    (niche, tier, analyzed_at) and an executive directive is not always
+    about a niche (a Tier-1 stability alert isn't) -- same technique,
+    reused verbatim, applied to this module's own real identity fields."""
+    import hashlib
+    raw = f"{action}|{tier}|{generated_at}"
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
+
+
+def _confidence_estimate(directive, candidates):
+    """Executive Decision Memory (ADR-145, 2026-07-30): a disclosed
+    heuristic over fields this record already has -- never a fabricated
+    numeric confidence score, same discipline as evolution_queue.py's
+    own rank_proposal(). 'high' only when a single, unambiguous
+    real-evidence-backed candidate won outright with no competing
+    same-tier candidate; 'low' when the arbitration was itself a real
+    SPLIT (the honest opposite of confidence); 'n/a' when there was
+    nothing to decide."""
+    status = directive.get("status")
+    if status == "NO_ACTION_NEEDED":
+        return {"level": "n/a", "reason": "لا قرار فعلي اتُّخِذ هذه الدورة"}
+    if status == "SPLIT":
+        return {"level": "low", "reason": f"{len(directive.get('candidates', []))} مرشَّحين حقيقيين متعادلين في نفس الأولوية -- لا تفضيل واضح"}
+    evidence = directive.get("evidence") or {}
+    data_available = evidence.get("data_available") if isinstance(evidence, dict) else None
+    if data_available is False:
+        return {"level": "medium", "reason": "مرشَّح وحيد فاز لكن بلا بيانات حقيقية مؤكَّدة خلف دليله"}
+    return {"level": "high", "reason": f"مرشَّح وحيد حقيقي فاز بلا منافسة عند Tier {directive.get('tier')}، من أصل {len(candidates)} مرشَّحاً حقيقياً هذه الدورة"}
+
+
+def _detect_repeat(identity, tier, ledger_path=None, lookback=5):
+    """Executive Decision Memory (ADR-145, 2026-07-30): "prevent
+    duplicate decisions" -- a real, mechanical check against the most
+    recent real ledger entries (never a semantic/AI judgment). An
+    identical (identity, tier) recommended again is honestly tagged as a
+    real repeat -- still recorded (the alert may genuinely still be
+    active; silently dropping it would lose real information), but never
+    presented as N independent decisions when it is really the same
+    unresolved one seen again. `identity` is the same action-or-status
+    extraction used for both the new and every prior record, so a
+    NO_ACTION_NEEDED/SPLIT cycle can also be honestly recognized as a
+    repeat of its own kind."""
+    history = list_executive_directives(limit=lookback, ledger_path=ledger_path)
+    for prior in history["entries"]:
+        prior_directive = prior.get("directive") or {}
+        prior_identity = prior_directive.get("action") or prior_directive.get("status")
+        if prior_identity == identity and prior_directive.get("tier") == tier:
+            return {"is_repeat": True, "repeat_of_decision_id": prior_directive.get("decision_id"),
+                    "first_seen_at": prior.get("generated_at")}
+    return {"is_repeat": False}
+
+
 def _append_ledger(record, ledger_path=None):
     path = Path(ledger_path) if ledger_path else DEFAULT_LEDGER_PATH
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -271,8 +327,14 @@ def build_executive_directive(decisions_path=None, board_path=None, alerts_path=
     candidates = _candidate_directives(brief, gox, cap, evo_queue)
     directive = _arbitrate(candidates)
 
+    now = _now_iso()
+    identity = directive.get("action") or directive.get("status")
+    directive["decision_id"] = _make_directive_id(identity, directive.get("tier"), now)
+    directive["confidence"] = _confidence_estimate(directive, candidates)
+    directive["duplicate_check"] = _detect_repeat(identity, directive.get("tier"), ledger_path=ledger_path)
+
     record = {
-        "generated_at": _now_iso(),
+        "generated_at": now,
         "directive": directive,
         "all_candidates_count": len(candidates),
         "requires_founder_approval": True,

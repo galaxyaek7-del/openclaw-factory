@@ -198,5 +198,64 @@ class TestBuildExecutiveDirectiveIntegration(unittest.TestCase):
         os.remove(ledger_path)
 
 
+class TestDirectiveId(unittest.TestCase):
+    """Executive Decision Memory, ADR-145 (2026-07-30): _make_directive_id
+    determinism and _detect_repeat's real duplicate-prevention check."""
+
+    def test_same_inputs_produce_same_id(self):
+        id1 = eb._make_directive_id("action X", 1, "2026-01-01T00:00:00Z")
+        id2 = eb._make_directive_id("action X", 1, "2026-01-01T00:00:00Z")
+        self.assertEqual(id1, id2)
+
+    def test_different_inputs_produce_different_ids(self):
+        id1 = eb._make_directive_id("action X", 1, "2026-01-01T00:00:00Z")
+        id2 = eb._make_directive_id("action Y", 1, "2026-01-01T00:00:00Z")
+        self.assertNotEqual(id1, id2)
+
+
+class TestDetectRepeat(unittest.TestCase):
+    def setUp(self):
+        self.ledger_path = _temp_path()
+
+    def tearDown(self):
+        if os.path.exists(self.ledger_path):
+            os.remove(self.ledger_path)
+
+    def test_empty_ledger_is_honest_not_a_repeat(self):
+        result = eb._detect_repeat("some action", 1, ledger_path=self.ledger_path)
+        self.assertFalse(result["is_repeat"])
+
+    def test_identical_prior_action_and_tier_is_a_real_repeat(self):
+        eb._append_ledger({"generated_at": "2026-01-01T00:00:00Z", "directive": {"action": "fix X", "tier": 1, "decision_id": "prior1"}}, ledger_path=self.ledger_path)
+        result = eb._detect_repeat("fix X", 1, ledger_path=self.ledger_path)
+        self.assertTrue(result["is_repeat"])
+        self.assertEqual(result["repeat_of_decision_id"], "prior1")
+
+    def test_same_action_different_tier_is_honestly_not_a_repeat(self):
+        eb._append_ledger({"generated_at": "2026-01-01T00:00:00Z", "directive": {"action": "fix X", "tier": 1, "decision_id": "prior1"}}, ledger_path=self.ledger_path)
+        result = eb._detect_repeat("fix X", 3, ledger_path=self.ledger_path)
+        self.assertFalse(result["is_repeat"])
+
+
+class TestConfidenceEstimate(unittest.TestCase):
+    def test_no_action_needed_is_honest_na(self):
+        result = eb._confidence_estimate({"status": "NO_ACTION_NEEDED"}, [])
+        self.assertEqual(result["level"], "n/a")
+
+    def test_split_is_honestly_low_confidence(self):
+        result = eb._confidence_estimate({"status": "SPLIT", "candidates": [{}, {}]}, [{}, {}])
+        self.assertEqual(result["level"], "low")
+
+    def test_single_directive_with_real_data_is_high_confidence(self):
+        directive = {"status": "SINGLE_DIRECTIVE", "tier": 1, "evidence": {"data_available": True}}
+        result = eb._confidence_estimate(directive, [directive])
+        self.assertEqual(result["level"], "high")
+
+    def test_single_directive_without_confirmed_data_is_medium(self):
+        directive = {"status": "SINGLE_DIRECTIVE", "tier": 1, "evidence": {"data_available": False}}
+        result = eb._confidence_estimate(directive, [directive])
+        self.assertEqual(result["level"], "medium")
+
+
 if __name__ == "__main__":
     unittest.main()

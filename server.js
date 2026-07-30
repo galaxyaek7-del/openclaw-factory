@@ -1013,6 +1013,39 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('executive_directives_history'),
   },
   {
+    // Executive Decision Memory (ADR-145, 2026-07-30): distinct from the
+    // existing 'decision-history' panel below (niche decisions only) --
+    // this merges real niche decisions AND real Executive Directives
+    // into one unified, decision_id-tagged view with confidence/
+    // duplicate-check annotations. Cheap: two real file reads + a
+    // merge-sort, no dashboard rebuild.
+    name: 'decision-memory',
+    description: "The real unified recent-decision view across both real ledgers (decision_engine/store.py niche decisions + executive_brain.py Executive Directives), most recent first, each tagged with its own real decision_id/status/confidence/duplicate_check.",
+    reused: 'executive_decision_memory.py::list_decision_memory() (ADR-145), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('decision_memory_list', [], req),
+    health: pythonHealthCheck('decision_memory_list'),
+  },
+  {
+    name: 'decision-memory-conflicts',
+    description: "Real, mechanical conflict detection across the most recent Executive Directives -- the same real niche recommended both 'accelerate' and 'stop' within the lookback window. Never a semantic/AI judgment; honestly empty when no real conflict exists.",
+    reused: 'executive_decision_memory.py::detect_ledger_conflicts() (ADR-145), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('decision_memory_conflicts', [], req),
+    health: pythonHealthCheck('decision_memory_conflicts'),
+  },
+  {
+    name: 'decision-memory-explain',
+    description: "The real 'explain why' function -- pass ?decision_id=<id> to get the full real evidence/reasoning/conflict-check trail for either a real niche Decision or a real Executive Directive, whichever real ledger actually carries that decision_id.",
+    reused: 'executive_decision_memory.py::explain_decision() (ADR-145), via mission_control_api.py.',
+    handler: (req) => {
+      const decisionId = (req.query.decision_id || '').trim();
+      if (!decisionId) {
+        return Promise.resolve({ found: false, reason: 'مرِّر ?decision_id=<المعرِّف> لشرح قرار محدَّد -- لا معرِّف مُحدَّد بعد' });
+      }
+      return runPythonServiceCached('decision_memory_explain', [JSON.stringify({ decision_id: decisionId })], req);
+    },
+    health: pythonHealthCheck('decision_memory_explain'),
+  },
+  {
     name: 'capital-allocation-dashboard',
     description: "Top ROI Initiatives, Projects Losing Value, Projects Consuming Resources Without Results, Resource Distribution, Expected Portfolio Return, and real opportunity-cost pairings -- every field a citation of an already-real portfolio/scheduling/lifecycle function, computed exactly once and threaded through, never a second scan.",
     reused: 'capital_allocation_engine.py::build_capital_allocation_dashboard()',

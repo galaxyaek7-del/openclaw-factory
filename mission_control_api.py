@@ -858,6 +858,39 @@ def _executive_directives_history():
     return executive_brain.list_executive_directives()
 
 
+def _decision_memory_list():
+    """Executive Decision Memory (ADR-145, 2026-07-30): the real unified
+    recent-decision view across both real ledgers (niche decisions +
+    Executive Directives), most recent first. Read-only, cheap (two real
+    file reads + a merge-sort, no dashboard rebuild)."""
+    import executive_decision_memory
+    return executive_decision_memory.list_decision_memory()
+
+
+def _decision_memory_conflicts():
+    """Executive Decision Memory (ADR-145, 2026-07-30): real, mechanical
+    conflict detection across the most recent Executive Directives --
+    the same real niche recommended both 'accelerate' and 'stop' within
+    the lookback window. Never a semantic/AI judgment. Read-only."""
+    import executive_decision_memory
+    return executive_decision_memory.detect_ledger_conflicts()
+
+
+def _decision_memory_explain():
+    """Executive Decision Memory (ADR-145, 2026-07-30): the real
+    'explain why' function -- works for either a real niche Decision or
+    a real Executive Directive, whichever real ledger actually carries
+    the given decision_id. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py decision_memory_explain '{"decision_id":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    decision_id = (payload.get("decision_id") or "").strip()
+    if not decision_id:
+        raise ValueError("{ decision_id } is required")
+
+    import executive_decision_memory
+    return executive_decision_memory.explain_decision(decision_id)
+
+
 def _capital_allocation_dashboard():
     """Capital Allocation Engine (2026-07-29): the real aggregator --
     Top ROI Initiatives, Projects Losing Value, Projects Consuming
@@ -2186,6 +2219,9 @@ _ENDPOINTS = {
     "executive_brain_directive": _executive_brain_directive,
     "generate_daily_executive_directive": _generate_daily_executive_directive,
     "executive_directives_history": _executive_directives_history,
+    "decision_memory_list": _decision_memory_list,
+    "decision_memory_conflicts": _decision_memory_conflicts,
+    "decision_memory_explain": _decision_memory_explain,
     "capital_allocation_dashboard": _capital_allocation_dashboard,
     "global_opportunity_exchange_dashboard": _global_opportunity_exchange_dashboard,
     "concentration_risk_report": _concentration_risk_report,
