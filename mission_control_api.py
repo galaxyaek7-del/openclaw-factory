@@ -858,6 +858,40 @@ def _executive_directives_history():
     return executive_brain.list_executive_directives()
 
 
+def _market_intelligence_source_status():
+    """Executive Command Center (ADR-146, 2026-07-30): the real,
+    registered external-evidence-source inventory for the Market
+    Intelligence panel -- reuses multi_source_intelligence.registry.
+    get_connectors() verbatim, never a second connector list. For
+    sources that are UNCONDITIONALLY unavailable regardless of niche
+    (reddit, product_hunt, google_trends -- confirmed by reading each
+    connector: none of the three even touches its own `niche` argument
+    before returning a static unavailable_result), a real check(None)
+    call is safe and cheap -- it triggers no live network call, just
+    returns the same real, honest, already-written reason
+    (missing credentials / requires prior commercial contact / n8n gate
+    not activated). For sources that DO make a real live call given a
+    real niche (hacker_news, github, stack_overflow, public_search),
+    this deliberately does NOT invoke them with a placeholder niche --
+    same 'avoid an accidental live-call side effect from a read path'
+    discipline research_department.py already established -- they are
+    reported as real/registered/query-capable without being triggered."""
+    import multi_source_intelligence.connectors  # noqa: F401 -- triggers pkgutil auto-registration, see that package's own docstring
+    from multi_source_intelligence.registry import get_connectors
+
+    _STATIC_UNAVAILABLE = {"reddit", "product_hunt", "google_trends"}
+    connectors = get_connectors()
+    sources = []
+    for name, check_fn in sorted(connectors.items()):
+        if name in _STATIC_UNAVAILABLE:
+            result = check_fn(None)
+            sources.append({"name": name, "status": "unavailable", "reason": result.reason})
+        else:
+            sources.append({"name": name, "status": "registered_query_capable",
+                             "note": "متصل حقيقي وقابل للاستدعاء الحي -- غير مُستدعى هنا لتفادي أي استدعاء شبكي حي عرضي من مسار قراءة سلبي؛ يُستدعى فعلياً فقط عبر مسارات البحث الحقيقية (go-deep-evidence وغيرها)"})
+    return {"sources": sources, "total_registered": len(connectors)}
+
+
 def _decision_memory_list():
     """Executive Decision Memory (ADR-145, 2026-07-30): the real unified
     recent-decision view across both real ledgers (niche decisions +
@@ -2219,6 +2253,7 @@ _ENDPOINTS = {
     "executive_brain_directive": _executive_brain_directive,
     "generate_daily_executive_directive": _generate_daily_executive_directive,
     "executive_directives_history": _executive_directives_history,
+    "market_intelligence_source_status": _market_intelligence_source_status,
     "decision_memory_list": _decision_memory_list,
     "decision_memory_conflicts": _decision_memory_conflicts,
     "decision_memory_explain": _decision_memory_explain,

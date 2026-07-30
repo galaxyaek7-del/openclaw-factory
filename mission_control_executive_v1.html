@@ -80,6 +80,12 @@ button.btn:disabled{opacity:.5; cursor:not-allowed;}
 #topStatus{display:flex; align-items:center; gap:.5rem; font-size:.78rem; color:var(--ink-dim);}
 #topStatus .pulse{width:8px; height:8px; border-radius:50%; background:var(--good); box-shadow:0 0 0 3px var(--good-soft);}
 
+.group-block{margin-bottom:2.6rem;}
+.group-block + .group-block{border-top:1px solid var(--border-soft); padding-top:.4rem;}
+.group-head{display:flex; align-items:baseline; gap:.8rem; margin-bottom:1rem; flex-wrap:wrap;}
+.group-head .group-title{font-size:1.05rem; font-weight:700; margin:0; color:var(--accent-ink); letter-spacing:-.01em;}
+.group-head .group-note{font-size:.72rem; color:var(--ink-faint); max-width:70ch; line-height:1.4;}
+.group-body{display:flex; flex-direction:column; gap:0;}
 section.section{margin-bottom:2.2rem; scroll-margin-top:1rem;}
 .section-head{display:flex; flex-direction:column; gap:.15rem; margin-bottom:.7rem;}
 .section-head h2{font-size:1rem; margin:0; font-weight:700;}
@@ -132,11 +138,66 @@ pre.raw{
 .card-body details[open] summary::before{content:"▾ "; color:var(--accent-ink);}
 .card-body details + details{margin-top:.5rem;}
 
+/* ── Command bar (ADR-146) ── */
+.cmdk-overlay{
+  position:fixed; inset:0; background:rgba(6,7,11,.6); backdrop-filter:blur(2px);
+  z-index:100; display:flex; align-items:flex-start; justify-content:center; padding-top:12vh;
+}
+.cmdk-overlay[hidden]{display:none;}
+.cmdk-box{
+  width:min(640px, 92vw); background:var(--bg-card); border:1px solid var(--border);
+  border-radius:12px; box-shadow:0 20px 60px -10px rgba(0,0,0,.6); overflow:hidden;
+  display:flex; flex-direction:column; max-height:70vh;
+}
+.cmdk-input{
+  width:100%; background:transparent; border:none; border-bottom:1px solid var(--border-soft);
+  color:var(--ink); font-family:var(--sans); font-size:1rem; padding:1rem 1.1rem;
+}
+.cmdk-input:focus{outline:none;}
+.cmdk-param-row{padding:.7rem 1.1rem; border-bottom:1px solid var(--border-soft); background:var(--bg-elev);}
+.cmdk-param-label{display:block; font-size:.72rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; margin-bottom:.35rem;}
+.cmdk-param-row .cmdk-input{padding:.5rem .6rem; border:1px solid var(--border); border-radius:6px; font-size:.86rem;}
+.cmdk-hint{font-size:.68rem; color:var(--ink-faint); margin-top:.35rem;}
+.cmdk-results{overflow-y:auto; flex:1;}
+.cmdk-item{
+  display:flex; align-items:center; justify-content:space-between; gap:.8rem;
+  padding:.65rem 1.1rem; cursor:pointer; font-size:.86rem; color:var(--ink-dim);
+}
+.cmdk-item .cmdk-item-sub{font-size:.7rem; color:var(--ink-faint); font-family:var(--mono);}
+.cmdk-item.active{background:var(--bg-hover); color:var(--ink);}
+.cmdk-item .cmdk-tag{font-size:.64rem; padding:.12rem .45rem; border-radius:99px; text-transform:uppercase; letter-spacing:.03em; flex-shrink:0;}
+.cmdk-tag.nav{background:var(--cool-soft); color:var(--cool);}
+.cmdk-tag.action{background:var(--accent-soft); color:var(--accent-ink);}
+.cmdk-tag.permanent{background:var(--bad-soft); color:var(--bad);}
+.cmdk-status{padding:.6rem 1.1rem; font-size:.76rem; color:var(--ink-faint); border-top:1px solid var(--border-soft); min-height:1.2em;}
+.cmdk-status.ok{color:var(--good);}
+.cmdk-status.err{color:var(--bad);}
+#cmdkTrigger{display:flex; align-items:center; gap:.4rem;}
+#cmdkTrigger kbd{
+  font-family:var(--mono); font-size:.66rem; background:var(--bg-elev); border:1px solid var(--border);
+  border-radius:4px; padding:.1rem .35rem; color:var(--ink-faint);
+}
+
+/* ── Accessibility: visible focus ring on every interactive element,
+   dark-theme-appropriate (browser default outlines are often invisible
+   against this palette). :focus-visible only -- never shown for a mouse
+   click, matching platform convention. ── */
+a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focus-visible, [tabindex]:focus-visible{
+  outline:2px solid var(--accent-ink); outline-offset:2px; border-radius:4px;
+}
+.cmdk-item.active{outline:1px solid var(--accent-soft);}
+
 @media (max-width: 880px){
   #sidebar{position:fixed; transform:translateX(-100%); transition:transform .2s; width:82%; max-width:300px;}
   #sidebar.open{transform:translateX(0);}
   #main{margin-left:0; padding:1rem 1rem 3rem;}
   #menuToggle{display:inline-flex !important;}
+  #cmdkTrigger{padding:.5rem; font-size:0;} /* icon-only on narrow screens -- the shortcut text wraps badly at this width */
+  #cmdkTrigger::before{content:"⌘"; font-size:1rem;}
+  .stat-row{gap:.7rem;}
+  .stat .num{font-size:1.1rem;}
+  .group-head{margin-bottom:.6rem;}
+  .cmdk-box{max-height:80vh;}
 }
 #menuToggle{display:none; align-items:center; justify-content:center;}
 
@@ -173,7 +234,25 @@ pre.raw{
   </div>
 </aside>
 
-<button id="menuToggle" class="btn" style="position:fixed; top:.8rem; left:.8rem; z-index:30;">☰</button>
+<button id="menuToggle" class="btn" style="position:fixed; top:.8rem; left:.8rem; z-index:30;" aria-label="Toggle sidebar navigation" aria-expanded="false" aria-controls="sidebar">☰</button>
+
+<!-- Command bar (ADR-146, 2026-07-30): Ctrl+K / Cmd+K. Every entry is
+     either real client-side navigation (jump to a real section) or a
+     real, curated ACTION_REGISTRY entry -- never a fake "Deploy"/
+     "Restart" command, since no real backing action for either exists
+     anywhere in this factory (confirmed during planning). -->
+<div id="cmdkOverlay" class="cmdk-overlay" hidden>
+  <div id="cmdkBox" class="cmdk-box" role="dialog" aria-modal="true" aria-label="Command bar">
+    <input id="cmdkInput" class="cmdk-input" type="text" placeholder="Type a command or search a panel… (Esc to close)" autocomplete="off">
+    <div id="cmdkParamRow" class="cmdk-param-row" hidden>
+      <label id="cmdkParamLabel" class="cmdk-param-label" for="cmdkParamInput"></label>
+      <input id="cmdkParamInput" class="cmdk-input" type="text" autocomplete="off">
+      <div class="cmdk-hint">Enter to run · Esc to cancel</div>
+    </div>
+    <div id="cmdkResults" class="cmdk-results" role="listbox"></div>
+    <div id="cmdkStatus" class="cmdk-status"></div>
+  </div>
+</div>
 
 <main id="main">
   <div id="topbar">
@@ -182,6 +261,7 @@ pre.raw{
       <div class="meta" id="lastRefreshLine">not yet loaded</div>
     </div>
     <div id="topStatus"><span class="pulse"></span><span id="topStatusText">Loading real data…</span></div>
+    <button class="btn" id="cmdkTrigger" title="Open the command bar" aria-haspopup="dialog" aria-expanded="false" aria-controls="cmdkOverlay">⌘ Command Bar <kbd>Ctrl</kbd><kbd>K</kbd></button>
   </div>
   <div id="sections"></div>
 </main>
@@ -204,97 +284,141 @@ pre.raw{
     // exactly ONE directive per cycle. Every panel below it still exists
     // unchanged (backward-compatible, nothing removed) for drill-down —
     // this is the new recommended starting point, not a replacement.
-    { id:'executive-brain', title:'🧠 Executive Brain — Current Directive', service:'executive-brain', kind:'kv',
+    { id:'executive-brain', group:'decisions', title:'🧠 Executive Brain — Current Directive', service:'executive-brain', kind:'kv',
       note:'The one real, single Executive Directive for this cycle — Factory Health, Architecture Health (static citation of the last Architecture Stability Review), Market Health, Revenue Health, Current/Next Mission, Risk Level, Evolution Progress, Knowledge Growth, and the Opportunity Queue, all in one place. Arbitrates real candidate actions from every panel below via the founder\'s own Priority 1-5 framework (System Stability > Opportunity Discovery > Premium Product Creation > Revenue Growth > Self Evolution) — a genuine same-tier tie is honestly reported as SPLIT, never arbitrarily resolved. Read-only/recommend-only: requires_founder_approval is always true in the real response — nothing here executes, approves, rejects, publishes, or reallocates anything. Expensive (chains 3 full-portfolio scans, ~55-60s measured live) — regenerated once daily by factory_loop.js\'s tick; this view never itself records to the permanent ledger.' },
-    { id:'executive-directives-history', title:'Executive Brain — Learning History', service:'executive-directives-history', kind:'kv',
+    { id:'executive-directives-history', group:'decisions', title:'Executive Brain — Learning History', service:'executive-directives-history', kind:'kv',
       note:'Every real Executive Directive ever generated by the daily tick, most recent first — the permanent "store lessons permanently" ledger (data/executive_directives.jsonl), also mechanically parsed into the Knowledge Graph as real ExecutiveDirective nodes. Honestly empty until the daily tick has run at least once.' },
-    { id:'decision-memory', title:'🧭 Executive Decision Memory', service:'decision-memory', kind:'kv',
+    { id:'decision-memory', group:'decisions', title:'🧭 Executive Decision Memory', service:'decision-memory', kind:'kv',
       note:'Executive Decision Memory (ADR-145, 2026-07-30): the real unified view across both real decision ledgers — decision_engine/store.py niche decisions and executive_brain.py Executive Directives — each tagged with its own real decision_id, status, and (for directives) a disclosed-heuristic confidence level and duplicate_check. Distinct from the plain decision-history panel: this is the merged, decision-memory-specific view the directive asked for. "Why was this decided?" for any single entry is answered by the decision-memory-explain panel below.' },
-    { id:'decision-memory-conflicts', title:'Decision Memory — Conflicts', service:'decision-memory-conflicts', kind:'kv',
+    { id:'decision-memory-conflicts', group:'decisions', title:'Decision Memory — Conflicts', service:'decision-memory-conflicts', kind:'kv',
       note:'Real, mechanical check across the most recent Executive Directives — the same real niche recommended both "accelerate" and "stop" within the lookback window. Never a semantic/AI judgment; honestly empty (checked_niches may still be >0) when no real conflict exists today.' },
-    { id:'decision-memory-explain', title:'Decision Memory — Explain a Decision', service:'decision-memory-explain', kind:'kv',
+    { id:'decision-memory-explain', group:'decisions', title:'Decision Memory — Explain a Decision', service:'decision-memory-explain', kind:'kv',
       note:'Pass ?decision_id=&lt;id&gt; (from any entry in the panel above) for the full real evidence/reasoning/conflict-check trail behind that exact decision — works for either a real niche Decision or a real Executive Directive. Reuses knowledge_graph.build.query_related() directly for connected real nodes, never a second graph traversal. Honestly reports found:false for an unknown id, never a guessed explanation.' },
-    { id:'company-health', title:'Company Health', service:'company-health', kind:'kv',
+    { id:'company-health', group:'overview', title:'Company Health', service:'company-health', kind:'kv',
       note:'Live infra + business-reality health checks (lib/health_checks.js + reality.py). Also cited inside the Executive Brain panel above as part of factory_health.' },
-    { id:'executive-summary', title:'Executive Summary', service:'get-ceo-dashboard', via:'action', kind:'kv',
+    { id:'executive-summary', group:'overview', title:'Executive Summary', service:'get-ceo-dashboard', via:'action', kind:'kv',
       note:'The real CEO dashboard snapshot — capital allocation, growth, risk, next decision.' },
-    { id:'opportunity-pipeline', title:'Opportunity Pipeline', service:'opportunity-pipeline', kind:'list', listKey:'product_laboratory',
+    { id:'opportunity-pipeline', group:'opportunity', title:'Opportunity Pipeline', service:'opportunity-pipeline', kind:'list', listKey:'product_laboratory',
       note:'Every real decision the ladder has evaluated, ranked.' },
-    { id:'investment-pipeline', title:'Investment Pipeline', service:'get-investment-pipeline', via:'action', kind:'list', listKey:'entries',
+    { id:'investment-pipeline', group:'opportunity', title:'Investment Pipeline', service:'get-investment-pipeline', via:'action', kind:'list', listKey:'entries',
       note:'All real decisions scored across every ranking dimension.' },
-    { id:'commercial-intelligence', title:'Commercial Intelligence', service:'market-intelligence', kind:'kv',
+    { id:'commercial-intelligence', group:'market', title:'Commercial Intelligence', service:'market-intelligence', kind:'kv',
       note:'The single most recent real niche market-intelligence analysis (a snapshot, not a trend).' },
-    { id:'product-portfolio', title:'Product Portfolio', service:'get-portfolio-report', via:'action', kind:'kv',
+    { id:'product-portfolio', group:'production', title:'Product Portfolio', service:'get-portfolio-report', via:'action', kind:'kv',
       note:'Real accepted opportunities, ranked 4 ways: worldwide, enterprise, recurring-revenue, China.' },
-    { id:'production-status', title:'Production Status', service:'production-queue', kind:'kv',
+    { id:'production-status', group:'production', title:'Production Status', service:'production-queue', kind:'kv',
       note:'Real dossiers generated by the production pipeline.' },
-    { id:'distribution-status', title:'Distribution Status', service:'publishing-status', kind:'kv',
+    { id:'distribution-status', group:'production', title:'Distribution Status', service:'publishing-status', kind:'kv',
       note:'Real per-platform publishing checklist status.' },
-    { id:'revenue-status', title:'Revenue Status', service:'revenue-summary', kind:'kv',
+    { id:'revenue-status', group:'revenue', title:'Revenue Status', service:'revenue-summary', kind:'kv',
       note:'Real revenue_pipeline results for every ACCEPTED opportunity.' },
-    { id:'evidence-engine', title:'Evidence Engine', service:'evidence-engine-status', kind:'kv',
+    { id:'evidence-engine', group:'market', title:'Evidence Engine', service:'evidence-engine-status', kind:'kv',
       note:'The Market Evidence Ledger — real payment/pain citations per niche (ADR-121/122).' },
-    { id:'market-memory', title:'Market Memory', service:'get-monthly-market-evolution-report', via:'action', kind:'kv',
+    { id:'market-memory', group:'opportunity', title:'Market Memory', service:'get-monthly-market-evolution-report', via:'action', kind:'kv',
       note:'Monthly niche-scoring trend across time (distinct from the single-snapshot Commercial Intelligence above) — honestly reports DISCOVERY until enough months of history exist.' },
-    { id:'knowledge-graph', title:'Knowledge Graph', service:'knowledge-graph', kind:'kv',
+    { id:'knowledge-graph', group:'knowledge', title:'Knowledge Graph', service:'knowledge-graph', kind:'kv',
       note:'Every real niche/decision/production node this factory has ever recorded, as a graph.' },
-    { id:'ai-agents-status', title:'AI Agents Status', service:'ai-capability-registry', kind:'kv',
+    { id:'ai-agents-status', group:'council', title:'AI Agents Status', service:'ai-capability-registry', kind:'kv',
       note:'Which AI providers are actually configured and callable today.' },
-    { id:'automation-status', title:'Automation Status (n8n)', service:'automation-status', kind:'kv',
-      note:'Real n8n workflow files on disk; live status needs a one-time manual n8n login (BLOCKERS.md #1).' },
-    { id:'scheduler', title:'Scheduler', service:'scheduler-status', kind:'kv',
+    { id:'automation-status', group:'automation', title:'Automation Status (n8n)', service:'automation-status', kind:'kv',
+      note:'Real n8n workflow files on disk; live status needs a one-time manual n8n login (BLOCKERS.md #1). A real, live 3s reachability ping to n8n also already runs — see health.checks.sensing_engine inside the Company Health panel above (Executive Overview); not duplicated here as a second check.' },
+    { id:'scheduler', group:'automation', title:'Scheduler', service:'scheduler-status', kind:'kv',
       note:'The one real, durable OS-level scheduled task this factory has.' },
-    { id:'alerts', title:'Alerts', service:'alerts', kind:'kv',
+    { id:'alerts', group:'automation', title:'Alerts', service:'alerts', kind:'kv',
       note:'Two real flags: does anything need founder attention or review right now.' },
-    { id:'recent-adrs', title:'Recent ADR Decisions', service:'recent-adr-decisions', kind:'list', listKey:'recent',
+    { id:'recent-adrs', group:'automation', title:'Recent ADR Decisions', service:'recent-adr-decisions', kind:'list', listKey:'recent',
       note:'Every governance decision this factory has actually made, newest first.' },
-    { id:'system-diagnostics', title:'Live Logs & System Diagnostics', service:'system-logs', kind:'logs',
+    { id:'system-diagnostics', group:'automation', title:'Live Logs & System Diagnostics', service:'system-logs', kind:'logs',
       note:'Real tail of the 5 operational log files this factory writes.' },
-    { id:'evidence-coverage', title:'Evidence Coverage & Research Queue', service:'evidence-coverage-status', kind:'kv',
+    { id:'evidence-coverage', group:'market', title:'Evidence Coverage & Research Queue', service:'evidence-coverage-status', kind:'kv',
       note:'ADR-128: real evidence coverage/unknown-count/research-queue/top-missing-signals across every decision that carries evidence tracking, plus real freshness of the 2 real evidence caches.' },
-    { id:'evidence-network', title:'Evidence Network', service:'evidence-network-status', kind:'kv',
+    { id:'evidence-network', group:'market', title:'Evidence Network', service:'evidence-network-status', kind:'kv',
       note:'ADR-128: which evidence sources are actually real and callable today vs. declared-but-not-built — the competitive advantage is owning this network, not a better score.' },
-    { id:'customer-pipeline', title:'Customer Pipeline', service:'customer-pipeline-status', kind:'kv',
+    { id:'customer-pipeline', group:'customer', title:'Customer Pipeline', service:'customer-pipeline-status', kind:'kv',
       note:'ADR-130: real per-request Status/Progress/Logs/Failures/Recovery for every real customer request — stage distribution, and which ones need a real founder action right now (Paddle onboarding gate, a missing custom product, or a real failure). Trigger new evaluations via POST /api/v1/actions/advance-customer-pipeline.' },
-    { id:'customer-accounts', title:'Customer Accounts', service:'customer-accounts', kind:'kv',
+    { id:'customer-accounts', group:'customer', title:'Customer Accounts', service:'customer-accounts', kind:'kv',
       note:'Round 6 (2026-07-29): real signed-up customer accounts — count + most recently created, never a password hash.' },
-    { id:'customer-fulfillment-queue', title:'Production & Fulfillment Queue', service:'customer-fulfillment-queue', kind:'kv',
+    { id:'customer-fulfillment-queue', group:'customer', title:'Production & Fulfillment Queue', service:'customer-fulfillment-queue', kind:'kv',
       note:'Round 6: every real request that reached PAID or later — the real founder-action queue (PENDING_FOUNDER_FULFILLMENT, no automated production trigger exists for this product) is surfaced separately. Attach a real deliverable via POST /api/v1/actions/fulfill-customer-request-manually.' },
-    { id:'customer-invoices', title:'Invoices', service:'customer-invoices', kind:'kv',
+    { id:'customer-invoices', group:'customer', title:'Invoices', service:'customer-invoices', kind:'kv',
       note:'Round 6: real invoices generated only from actual completed Paddle payments — honestly empty until a real payment completes. Check for new completions via POST /api/v1/actions/check-customer-payments.' },
-    { id:'customer-reviews', title:'Customer Reviews', service:'customer-reviews', kind:'kv',
+    { id:'customer-reviews', group:'customer', title:'Customer Reviews', service:'customer-reviews', kind:'kv',
       note:'Round 5/6: real customer reviews, one per delivered order — honestly empty until a real review exists, never a placeholder testimonial.' },
-    { id:'support-tickets', title:'Support Tickets', service:'support-tickets', kind:'kv',
+    { id:'support-tickets', group:'customer', title:'Support Tickets', service:'support-tickets', kind:'kv',
       note:'Executive Intelligence Core, Round 3 (2026-07-29): real support ticket count/open-count/recent — data/support_tickets.jsonl was write-only until now, honestly empty today (zero real customer traffic yet).' },
-    { id:'executive-score', title:'Executive Score', service:'executive-score', kind:'kv',
+    { id:'executive-score', group:'kpi', title:'Executive Score', service:'executive-score', kind:'kv',
       note:'Executive Intelligence Core, Round 6 (2026-07-29): a transparent, real-component composite (Trust/Production Quality/Technical Debt/Security Health/Delivery Quality/Automation/Growth/Architecture Health/Operational Stability/Customer Happiness). Every sub-score is real or an honest "Unknown" — never blended into any accept/reject/production gate.' },
-    { id:'resilience-status', title:'Resilience Monitor', service:'resilience-status', kind:'kv',
+    { id:'resilience-status', group:'automation', title:'Resilience Monitor', service:'resilience-status', kind:'kv',
       note:'Continuous Trust & Resilience Monitoring (2026-07-29): every monitored area classified informational/warning/critical/emergency in one place, plus a transparent resilience_score. Reuses every existing signal — never a second detector. Respond stays exactly as founder-gated as before: use publish-emergency-stop / mark-subsystem-unstable / approve-* actions elsewhere on this page to act on an alert here.' },
-    { id:'resilience-incidents', title:'Resilience Incidents (Learn)', service:'resilience-incidents', kind:'kv',
+    { id:'resilience-incidents', group:'automation', title:'Resilience Incidents (Learn)', service:'resilience-incidents', kind:'kv',
       note:'Every real incident this factory has ever recorded — root cause, prevention rule, detection rule, a live-checked improvement proposal id, and rollback guidance. Honestly empty until a real critical/emergency finding has occurred.' },
-    { id:'safe-mode-status', title:'Safe Mode', service:'safe-mode-status', kind:'kv',
+    { id:'safe-mode-status', group:'automation', title:'Safe Mode', service:'safe-mode-status', kind:'kv',
       note:'Global Trust & Resilience Layer, Round 2 (2026-07-29): real per-subsystem isolation — an unstable subsystem stops on its own, the rest of the company keeps running, never a cascading halt. Isolate via POST /api/v1/actions/mark-subsystem-unstable ({ name, reason }), restore via .../clear-subsystem-unstable ({ name }). marketplace_publishing is a live passthrough to the Marketplace Publish Protection panel above — halt it via publish-emergency-stop instead.' },
-    { id:'publish-protection-status', title:'Marketplace Publish Protection', service:'publish-protection-status', kind:'kv',
+    { id:'publish-protection-status', group:'production', title:'Marketplace Publish Protection', service:'publish-protection-status', kind:'kv',
       note:'Global Commercial Hardening, Phase 1 (2026-07-29): real per-arm publish counts, active cooldowns, and a real risk_score for every marketplace channel this factory has ever really published to — honestly empty until then. Halt every arm instantly via POST /api/v1/actions/publish-emergency-stop ({ reason }), reverse via .../publish-emergency-resume. Founder Protection (Round 4, 2026-07-29): a genuinely new arm (never Gumroad/Etsy/Payhip/Paddle) is blocked pending .../approve-first-publish ({ arm_name }); any publish crossing the real high-risk threshold is blocked pending .../approve-elevated-risk-publish ({ arm_name }), single-use.' },
-    { id:'evolution-queue', title:'Evolution Queue', service:'evolution-queue', kind:'kv',
+    { id:'evolution-queue', group:'decisions', title:'Evolution Queue', service:'evolution-queue', kind:'kv',
       note:'Autonomous Company Evolution Engine, Round 6 (2026-07-29): every real proposal, its real simulated impact/rollback-complexity, a real disclosed-heuristic ranking (Round 2, 2026-07-30 — revenue_impact/execution_cost/long_term_sustainability_concern/risk/confidence; strategic_value honestly not_computed), and its real stage. factory_loop.js\'s daily tick only ever intakes/simulates/decides (stopping at AWAITING_FOUNDER_APPROVAL) — nothing auto-approves or auto-executes, whatever the computed risk tier. Approve via POST /api/v1/actions/approve-evolution-proposal, reject via .../reject-evolution-proposal, close the loop after a real reviewed implementation via .../mark-evolution-proposal-implemented — each requires { proposal_id } in the request body. Its highest-ranked awaiting_approval entry is now also cited as a real Tier-5 candidate by the Executive Brain panel above.' },
-    { id:'evolution-measured-outcomes', title:'Evolution Measured Outcomes', service:'evolution-measured-outcomes', kind:'kv',
+    { id:'evolution-measured-outcomes', group:'decisions', title:'Evolution Measured Outcomes', service:'evolution-measured-outcomes', kind:'kv',
       note:'Autonomous Evolution Engine directive, Round 2 (2026-07-30): "the system continuously measures whether every implemented evolution actually improved" revenue/reliability/customer value — a real baseline captured at mark-implemented time vs. a fresh snapshot no sooner than 7 real elapsed days later, appended to a real per-proposal trend by factory_loop.js\'s daily tick. Honestly NOT_YET_MEASURED until an IMPLEMENTED proposal actually exists (none do yet) — scalability/automation/execution_speed report NO_REAL_SIGNAL rather than a fabricated verdict, since no real per-proposal signal for any of them exists in this factory today.' },
-    { id:'executive-brief', title:'Executive Brief', service:'executive-brief', kind:'kv',
+    { id:'executive-brief', group:'decisions', title:'Executive Brief', service:'executive-brief', kind:'kv',
       note:'Strategic Intelligence Core (2026-07-29): company_health, top_risks, top_opportunities, top_bottlenecks, recommended_priorities, products_to_accelerate/pause, research_needed, and founder_decisions_required — every field a citation of an already-real panel above, never a second computation. research_needed honestly lists the real, current NOT ENOUGH EVIDENCE gaps (multi-year horizons, customer-problem cost trend) rather than inventing one. Read-only, recommend-only — nothing here executes autonomously on anything irreversible. Fully subsumed by the Executive Brain panel above (ADR-144), which calls this exact same function as its own first input, unchanged.' },
-    { id:'galaxy-council-learning', title:'Galaxy Council Learning', service:'galaxy-council-learning', kind:'kv',
+    { id:'galaxy-council-learning', group:'council', title:'Galaxy Council Learning', service:'galaxy-council-learning', kind:'kv',
       note:'Galaxy Council (2026-07-29): the real 3-way join — Council Recommendation vs. the real Founder Decision that followed vs. the real eventual Outcome, the same True/False/None non-forced-verdict discipline as Executive Board\'s review-board-track-record. Honestly NOT ENOUGH EVIDENCE until real triples accumulate — never backfilled for a niche/decision that predates the Council\'s existence. Convene the Council itself, per-niche, from the Opportunities tab in mission_control.html ("🏛️ استدعِ مجلس المجرة").' },
-    { id:'capital-allocation-dashboard', title:'Capital Allocation Dashboard', service:'capital-allocation-dashboard', kind:'kv',
+    { id:'capital-allocation-dashboard', group:'revenue', title:'Capital Allocation Dashboard', service:'capital-allocation-dashboard', kind:'kv',
       note:'Capital Allocation Engine (2026-07-29): Top ROI Initiatives (real Priority Score ranking, value_engine.build_value_engine_report()), Projects Losing Value (real at_risk-flagged opportunities), Projects Consuming Resources Without Results (real ACCEPTED opportunities with zero real production attempt after 7+ real days), Resource Distribution (real scheduler.py buckets + department attention counts), Expected Portfolio Return (transparent average of only real ROI values), and real opportunity-cost pairings (which real opportunities are effectively delaying which). Sunk-cost protection is structural, by omission — neither this nor any underlying function ever looks at cumulative past spend. Read-only, recommend-only — the Founder remains final authority on every real reallocation. Per-niche Investment Score (14 dimensions) via the "💰 Investment Score" button in mission_control.html\'s Opportunities tab. Its top_roi_initiatives entry is now also cited as a real Tier-4 candidate by the Executive Brain panel above.' },
-    { id:'global-opportunity-exchange', title:'Global Opportunity Exchange', service:'global-opportunity-exchange', kind:'kv',
+    { id:'global-opportunity-exchange', group:'opportunity', title:'Global Opportunity Exchange', service:'global-opportunity-exchange', kind:'kv',
       note:'Global Opportunity Exchange (2026-07-29): Global Opportunity Map, Capital Flow Between Markets, Market Health/Saturation (real per-arm publish state — distinct from niche/product-category saturation, which stays competitor_discovery.py\'s domain), Opportunity Ranking, Revenue Distribution, and the Market Dependency Index (the 4 named concentration checks: >40% one platform, >30% one product family, >25% one country, >20% one AI provider). Honestly DISCOVERY-heavy today — only 4 of the directive\'s 15 named marketplaces (Gumroad, Etsy, plus Payhip/Paddle, which the directive itself never named) have a real registered channel arm, 0 real sale events exist yet, and country dependency is a permanent structural DISCOVERY citing this factory\'s own founder-confirmed 2026-07-23 decision (CLAUDE.md) — never fabricated to look more built-out. Real diversification recommendations only ever cite a check that actually, currently crosses its real threshold. Read-only, recommend-only — the Founder remains final authority on every real reallocation. Its market_health and diversification_recommendations are now also cited directly by the Executive Brain panel above.' },
-    { id:'business-pipeline', title:'Business Pipeline', service:'business-pipeline', kind:'kv',
+    { id:'business-pipeline', group:'production', title:'Business Pipeline', service:'business-pipeline', kind:'kv',
       note:'Autonomous Business Builder (2026-07-29): a thin citation of production_blueprint.py\'s already-real 6-bucket production missions board (READY TO BUILD/BUILDING/QUALITY REVIEW/READY TO SELL/LIVE/LEARNING) — ABB\'s own "Business Pipeline"/"Blueprint Status" ask, no new bucketing logic. Investment Required/Expected Return/Priority/Risk/Confidence, and the full 12-section/8-estimate Business Blueprint, are available per-niche via the "📋 Business Blueprint" button in mission_control.html\'s Opportunities tab.' },
-    { id:'execution-phases', title:'Execution Phases', service:'execution-phases', kind:'kv',
+    { id:'execution-phases', group:'production', title:'Execution Phases', service:'execution-phases', kind:'kv',
       note:'Autonomous Business Builder (2026-07-29): the real, company-wide 5-phase execution roadmap (orchestrator.types.EXECUTION_ORDER: market_intelligence → decision → production → publishing → learning), each phase with real per-stage engine health (executive_intelligence.engine_health.compute_engine_health()) and a real, disclosed deterministic rollback plan (Dual Inspection quarantine, publish-protection emergency stop, etc.) — never a fabricated task list this factory doesn\'t track. required_ai_models is cited once, company-wide (ai_capability.orchestrator.resource_allocation_status()) — no real per-phase AI-provider breakdown exists yet.' },
-    { id:'autonomous-operations-status', title:'Autonomous Operations Status', service:'autonomous-operations-status', kind:'kv',
+    { id:'autonomous-operations-status', group:'automation', title:'Autonomous Operations Status', service:'autonomous-operations-status', kind:'kv',
       note:'Final Executive Directive (2026-07-29): the directive\'s ~21 named activities, each honestly tagged automatic / automatic_new (2 genuinely new tick additions: Knowledge Graph daily snapshot, auto-generated Business Blueprints for new ACCEPTED decisions) / human_gated_by_design (4 Founder-protected gates: capital reallocation/reinvestment, business retirement, evolution-queue Execute) / ambiguous_not_touched (deferred, disclosed, never guessed at: competitor auto-refresh, learn-from-results, channel expansion). Also cites the master_loop.py always-on-daemon precedent, already proposed and declined 3x (ADR-107/110/115) — this directive\'s own additions extend the already-approved factory_loop.js tick only, never that rejected daemon.' },
+
+    // Executive Command Center (ADR-146, 2026-07-30): the one genuinely
+    // new real service this round adds.
+    { id:'market-intelligence-source-status', group:'market', title:'External Evidence Sources (Reddit / Product Hunt / News / …)', service:'market-intelligence-source-status', kind:'kv',
+      note:'The real, registered external-evidence-source inventory — 11 connectors registered today. Reddit/Product Hunt/Google Trends are honestly "unavailable" with their own specific real reason (missing API credentials / requires prior commercial contact / n8n gate not activated) — same honesty pattern this factory already used for Google Trends. Hacker News/GitHub/Stack Exchange/etc. are real and live-capable but deliberately not triggered from this passive read — they run only via real search paths like go-deep-evidence.' },
+
+    // Executive Command Center (ADR-146, 2026-07-30): honest "not
+    // tracked" tiles — this directive explicitly asked for MRR/ARR/
+    // Runway, a country map, Enterprise/Subscription/Licensing/API
+    // revenue, and a Workers/Queues view, none of which have any real
+    // backing data in this factory today (confirmed by direct code
+    // search during planning, cited below). Rendered as real, static,
+    // clearly-labeled gaps — never a fabricated number pretending to be
+    // live. kind:'static' skips any network fetch entirely.
+    { id:'kpi-mrr-arr-runway', group:'overview', title:'MRR / ARR / Cash / Runway', kind:'static',
+      reason:'Not tracked — no subscription or cash/treasury ledger exists in this factory today (finance_data.json only holds per-sale/per-platform totals: totalKDP/totalEtsy/totalGumroad/totalPaddle/byLadder). Adding this would require new financial infrastructure this factory does not have, not a dashboard change — disclosed here rather than fabricated.' },
+    { id:'kpi-enterprise-subscription-licensing-api', group:'revenue', title:'Enterprise / Subscriptions / Licensing / API Revenue', kind:'static',
+      reason:'$0 — none of these are real revenue channels yet. Real revenue today is limited to KDP/Etsy/Gumroad/Paddle per-sale totals (see Revenue Status above). Global Commercial Hardening (2026-07-29) explicitly deferred a commission/subscription engine, citing the same real gap: no payables/liability ledger exists anywhere in this factory\'s financial model yet.' },
+    { id:'kpi-country-map', group:'opportunity', title:'Opportunity Radar — Geographic / Country Map', kind:'static',
+      reason:'Not tracked — a real geographic breakdown would need a real per-country data connector, and zero exist for any market (confirmed across 5 independent real functions: get-commercial-intelligence-report, get-investment-pipeline-entry, get-ceo-questions, get-portfolio-report, global-opportunity-exchange — all cite the same founder-confirmed 2026-07-23 decision in CLAUDE.md to defer country-level expansion until a real local connector exists or the first real dollar arrives). See Opportunity Pipeline / Global Opportunity Exchange above for the real ranked list this factory can actually produce today.' },
+    { id:'kpi-workers-queues', group:'automation', title:'Workers / Job Queues', kind:'static',
+      reason:'not_applicable — this factory runs a single Express process with no message queue and no worker pool (lib/health_checks.js\'s own real, permanent classification). The only "job" concept that exists is an in-memory Map tracking async Mission Control action polling state (ACTION_JOBS, capped at 200 entries) — not a durable queue.' },
   ];
+
+  // ── Executive Command Center (ADR-146, 2026-07-30): the founder's
+  // requested information architecture, as a real visual regrouping of
+  // the SECTIONS above -- no section's real service binding changes,
+  // this only changes which heading it renders under. 11th group
+  // ("Customer Operations") is not one of the directive's named 10 --
+  // added because 6 real, working customer panels already exist and
+  // dropping them to hit an exact count would discard real data. ──
+  const GROUPS = [
+    { id:'overview', title:'1 · Executive Overview' },
+    { id:'council', title:'2 · Executive AI Council' },
+    { id:'opportunity', title:'3 · Opportunity Radar' },
+    { id:'revenue', title:'4 · Revenue Command Center' },
+    { id:'production', title:'5 · Production Factory' },
+    { id:'market', title:'6 · Market Intelligence' },
+    { id:'decisions', title:'7 · Executive Decisions' },
+    { id:'knowledge', title:'8 · Knowledge Graph' },
+    { id:'automation', title:'9 · Automation Center' },
+    { id:'kpi', title:'10 · Strategic KPI Wall' },
+    { id:'customer', title:'11 · Customer Operations', note:'Not one of the directive’s 10 named sections — kept because 6 real, working customer panels exist and dropping them to fit an exact count would discard real data.' },
+  ];
+  const GROUP_BY_ID = Object.fromEntries(GROUPS.map(g => [g.id, g]));
 
   const state = {}; // id -> { status: 'pending'|'ok'|'empty'|'error', payload, fetchedAt }
 
@@ -409,6 +533,18 @@ pre.raw{
   async function fetchSection(sec, { fresh = false } = {}){
     state[sec.id] = { status:'pending', payload:null, fetchedAt:null };
     renderSection(sec);
+    // 'static' sections have no real live service to call -- honest
+    // gaps (MRR/ARR/Runway, country map, Workers/Queues, etc. -- see
+    // ADR-146) where this factory genuinely has no backing data today.
+    // Rendered immediately from the section's own fixed `reason` field,
+    // never a fetch that would pretend to check something real.
+    if (sec.kind === 'static'){
+      state[sec.id] = { status:'static', payload:{ reason: sec.reason }, fetchedAt: null };
+      renderSection(sec);
+      renderNav();
+      updateTopStatus();
+      return;
+    }
     try {
       let data, fetchedAt;
       if (sec.via === 'action'){
@@ -646,9 +782,31 @@ pre.raw{
 
   function pillFor(status){
     if (status === 'pending') return { cls:'pending', label:'Loading' };
+    if (status === 'static') return { cls:'pending', label:'Not Tracked' };
     if (status === 'error') return { cls:'bad', label:'Unavailable' };
     if (status === 'empty') return { cls:'warn', label:'No verified data' };
     return { cls:'ok', label:'Live' };
+  }
+
+  // Pre-creates every group wrapper, once, in the founder's requested
+  // GROUPS order -- so a group's real DOM position never depends on
+  // which of its member sections happens to fetch/render first.
+  function initGroupContainers(){
+    const root = document.getElementById('sections');
+    GROUPS.forEach(g => {
+      if (document.getElementById('group-' + g.id)) return;
+      const wrap = el('div', { class:'group-block', id:'group-' + g.id });
+      wrap.appendChild(el('div', { class:'group-head' }, [
+        el('div', { class:'group-title', role:'heading', 'aria-level':'2' }, [g.title]),
+        g.note ? el('span', { class:'group-note' }, [g.note]) : null,
+      ]));
+      wrap.appendChild(el('div', { class:'group-body', id:'group-body-' + g.id }));
+      root.appendChild(wrap);
+    });
+  }
+  function groupContainerFor(groupId){
+    const el2 = document.getElementById('group-body-' + groupId);
+    return el2 || document.getElementById('sections'); // honest fallback: an untagged section still renders, just outside any group
   }
 
   function renderSection(sec){
@@ -664,7 +822,7 @@ pre.raw{
       ]));
       const grid = el('div', { class:'card-grid', id:'grid-' + sec.id });
       section.appendChild(grid);
-      document.getElementById('sections').appendChild(section);
+      groupContainerFor(sec.group).appendChild(section);
       container = grid;
     }
     container.innerHTML = '';
@@ -675,14 +833,16 @@ pre.raw{
       el('span', { class:'pill ' + pill.cls }, [pill.label]),
     ]));
     card.appendChild(el('div', { class:'card-meta' }, [
-      el('span', null, [el('b', null, ['Source: ']), sec.via === 'action' ? ('/api/v1/actions/' + sec.service + ' (async report)') : ('/api/v1/' + sec.service)]),
-      el('span', null, [el('b', null, ['Updated: ']), relTime(s.fetchedAt)]),
-      el('span', null, [el('b', null, ['Confidence: ']), s.status === 'pending' ? '—' : confidenceFor(s.payload, sec)]),
+      el('span', null, [el('b', null, ['Source: ']), s.status === 'static' ? 'none — honest gap, no live check' : (sec.via === 'action' ? ('/api/v1/actions/' + sec.service + ' (async report)') : ('/api/v1/' + sec.service))]),
+      el('span', null, [el('b', null, ['Updated: ']), s.status === 'static' ? 'n/a' : relTime(s.fetchedAt)]),
+      el('span', null, [el('b', null, ['Confidence: ']), s.status === 'pending' ? '—' : s.status === 'static' ? 'Not tracked' : confidenceFor(s.payload, sec)]),
     ]));
 
     const body = el('div', { class:'card-body' });
     if (s.status === 'pending'){
       body.appendChild(el('div', { class:'empty' }, ['Loading real data…']));
+    } else if (s.status === 'static'){
+      body.appendChild(el('div', { class:'empty' }, [s.payload.reason]));
     } else if (s.status === 'error'){
       body.appendChild(el('div', { class:'empty' }, ['No verified data — ' + (s.error || 'request failed')]));
     } else if (s.status === 'empty'){
@@ -703,7 +863,7 @@ pre.raw{
     nav.innerHTML = '';
     SECTIONS.forEach(sec => {
       const s = state[sec.id] || { status:'pending' };
-      const dotCls = s.status === 'ok' ? 'ok' : s.status === 'empty' ? 'warn' : s.status === 'error' ? 'bad' : 'pending';
+      const dotCls = s.status === 'ok' ? 'ok' : s.status === 'empty' ? 'warn' : s.status === 'error' ? 'bad' : s.status === 'static' ? 'pending' : 'pending';
       const a = el('a', { href:'#sec-' + sec.id }, [
         el('span', null, [sec.title]),
         el('span', { class:'navdot ' + dotCls }),
@@ -728,6 +888,7 @@ pre.raw{
   }
 
   async function loadAll({ fresh = false } = {}){
+    initGroupContainers();
     SECTIONS.forEach(renderSection);
     renderNav();
     await Promise.all(SECTIONS.map(sec => fetchSection(sec, { fresh })));
@@ -815,8 +976,9 @@ pre.raw{
     }
   });
 
-  document.getElementById('menuToggle').addEventListener('click', () => {
-    document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('menuToggle').addEventListener('click', (e) => {
+    const open = document.getElementById('sidebar').classList.toggle('open');
+    e.currentTarget.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
 
   window.addEventListener('scroll', () => {
@@ -828,6 +990,172 @@ pre.raw{
       a.classList.toggle('active', current && a.getAttribute('href') === '#' + current);
     });
   }, { passive:true });
+
+  // ── Command bar (ADR-146, 2026-07-30): Ctrl+K / Cmd+K. Real navigation
+  // (jump to any real section) plus a real, curated subset of already-
+  // existing ACTION_REGISTRY entries -- never a fake "Deploy"/"Restart"
+  // (confirmed during planning: no real backing action for either exists
+  // anywhere in this factory). Actions needing a real parameter prompt
+  // for exactly that one field inline; nothing fires on a bare keystroke.
+  // reversible:false actions (a real, permanent founder decision) are
+  // visibly tagged "Permanent" -- same real flag server.js's own
+  // ACTION_REGISTRY already carries for each of these, not invented here.
+  const CMDK_ACTIONS = [
+    { name:'refresh-data', label:'Refresh all data now', kind:'sync' },
+    { name:'risk-intelligence-scan', label:'Run risk intelligence scan', kind:'async', param:'niche', paramLabel:'Niche to scan' },
+    { name:'scan-market-alerts', label:'Scan market alerts', kind:'async' },
+    { name:'convene-galaxy-council', label:'Convene Galaxy Council', kind:'async', param:'niche', paramLabel:'Niche to convene the Council for' },
+    { name:'investment-score', label:'Compute Investment Score', kind:'async', param:'niche', paramLabel:'Niche to score' },
+    { name:'build-business-blueprint', label:'Build Business Blueprint', kind:'async', param:'niche', paramLabel:'Niche to build a blueprint for' },
+    { name:'start-production-pipeline', label:'Start production pipeline', kind:'sync' },
+    { name:'pause-production', label:'Pause production', kind:'sync' },
+    { name:'resume-production', label:'Resume production', kind:'sync' },
+    { name:'publish-emergency-stop', label:'⚠ Publish emergency stop (ALL channels)', kind:'sync', param:'reason', paramLabel:'Reason for the emergency stop' },
+    { name:'publish-emergency-resume', label:'Resume publishing after emergency stop', kind:'sync' },
+    { name:'approve-evolution-proposal', label:'Approve an Evolution Queue proposal', kind:'sync', param:'proposal_id', paramLabel:'proposal_id (see Evolution Queue panel)', permanent:true },
+    { name:'reject-evolution-proposal', label:'Reject an Evolution Queue proposal', kind:'sync', param:'proposal_id', paramLabel:'proposal_id (see Evolution Queue panel)', permanent:true },
+  ];
+
+  const cmdkOverlay = document.getElementById('cmdkOverlay');
+  const cmdkInput = document.getElementById('cmdkInput');
+  const cmdkResults = document.getElementById('cmdkResults');
+  const cmdkStatus = document.getElementById('cmdkStatus');
+  const cmdkParamRow = document.getElementById('cmdkParamRow');
+  const cmdkParamLabel = document.getElementById('cmdkParamLabel');
+  const cmdkParamInput = document.getElementById('cmdkParamInput');
+  let cmdkActiveIndex = 0;
+  let cmdkPendingAction = null; // the CMDK_ACTIONS entry currently awaiting its param
+
+  function cmdkAllCommands(){
+    const nav = SECTIONS.map(sec => ({ type:'nav', id:sec.id, label:sec.title, sub:sec.group ? (GROUP_BY_ID[sec.group] || {}).title : '' }));
+    const actions = CMDK_ACTIONS.map(a => ({ type:'action', action:a, label:a.label, sub:'/api/v1/actions/' + a.name }));
+    return [...actions, ...nav];
+  }
+
+  function cmdkFilter(query){
+    const q = query.trim().toLowerCase();
+    const all = cmdkAllCommands();
+    if (!q) return all.slice(0, 30);
+    return all.filter(c => c.label.toLowerCase().includes(q) || (c.sub && c.sub.toLowerCase().includes(q))).slice(0, 30);
+  }
+
+  function cmdkRender(){
+    const items = cmdkFilter(cmdkInput.value);
+    cmdkResults.innerHTML = '';
+    if (items.length === 0){
+      cmdkResults.appendChild(el('div', { class:'cmdk-item' }, ['No matching panel or command']));
+      return;
+    }
+    cmdkActiveIndex = Math.min(cmdkActiveIndex, items.length - 1);
+    items.forEach((item, i) => {
+      const tag = item.type === 'nav'
+        ? el('span', { class:'cmdk-tag nav' }, ['Go to'])
+        : el('span', { class:'cmdk-tag ' + (item.action.permanent ? 'permanent' : 'action') }, [item.action.permanent ? 'Permanent' : 'Action']);
+      const row = el('div', { class:'cmdk-item' + (i === cmdkActiveIndex ? ' active' : ''), role:'option', 'aria-selected': i === cmdkActiveIndex ? 'true' : 'false' }, [
+        el('div', null, [
+          el('div', null, [item.label]),
+          item.sub ? el('div', { class:'cmdk-item-sub' }, [item.sub]) : null,
+        ]),
+        tag,
+      ]);
+      row.addEventListener('mouseenter', () => { cmdkActiveIndex = i; cmdkRender(); });
+      row.addEventListener('click', () => cmdkChoose(item));
+      cmdkResults.appendChild(row);
+    });
+  }
+
+  function cmdkOpen(){
+    cmdkOverlay.hidden = false;
+    document.getElementById('cmdkTrigger').setAttribute('aria-expanded', 'true');
+    cmdkInput.value = '';
+    cmdkParamRow.hidden = true;
+    cmdkPendingAction = null;
+    cmdkStatus.textContent = '';
+    cmdkStatus.className = 'cmdk-status';
+    cmdkActiveIndex = 0;
+    cmdkRender();
+    cmdkInput.focus();
+  }
+  function cmdkClose(){
+    cmdkOverlay.hidden = true;
+    document.getElementById('cmdkTrigger').setAttribute('aria-expanded', 'false');
+    cmdkPendingAction = null;
+  }
+
+  async function cmdkRunAction(action, paramValue){
+    cmdkStatus.className = 'cmdk-status';
+    cmdkStatus.textContent = 'Running ' + action.name + '…';
+    try {
+      const body = {};
+      if (action.param) body[action.param] = paramValue;
+      const res = await fetch('/api/v1/actions/' + action.name, {
+        method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!res.ok || data.success === false){
+        throw new Error((data.error && data.error.message) || data.error || ('HTTP ' + res.status));
+      }
+      cmdkStatus.className = 'cmdk-status ok';
+      cmdkStatus.textContent = '✓ ' + action.name + ' — ' + (action.kind === 'async' ? 'job ' + (data.job && data.job.id) + ' started (poll Actions log for the real result)' : 'done');
+      loadAll({ fresh: true }); // real state may have changed — reflect it, never assume
+    } catch (err) {
+      cmdkStatus.className = 'cmdk-status err';
+      cmdkStatus.textContent = '✗ ' + err.message;
+    }
+  }
+
+  function cmdkChoose(item){
+    if (item.type === 'nav'){
+      cmdkClose();
+      const target = document.getElementById('sec-' + item.id);
+      if (target) target.scrollIntoView({ behavior:'smooth', block:'start' });
+      return;
+    }
+    const action = item.action;
+    if (action.param){
+      cmdkPendingAction = action;
+      cmdkParamRow.hidden = false;
+      cmdkParamLabel.textContent = action.paramLabel + (action.permanent ? ' — this is a permanent, real founder decision' : '');
+      cmdkParamInput.value = '';
+      cmdkParamInput.focus();
+      return;
+    }
+    cmdkRunAction(action, null);
+  }
+
+  document.getElementById('cmdkTrigger').addEventListener('click', cmdkOpen);
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+      e.preventDefault();
+      cmdkOverlay.hidden ? cmdkOpen() : cmdkClose();
+    } else if (e.key === 'Escape' && !cmdkOverlay.hidden){
+      cmdkClose();
+    }
+  });
+  cmdkOverlay.addEventListener('click', (e) => { if (e.target === cmdkOverlay) cmdkClose(); });
+  cmdkInput.addEventListener('input', () => { cmdkActiveIndex = 0; cmdkRender(); });
+  cmdkInput.addEventListener('keydown', (e) => {
+    const items = cmdkFilter(cmdkInput.value);
+    if (e.key === 'ArrowDown'){ e.preventDefault(); cmdkActiveIndex = Math.min(cmdkActiveIndex + 1, items.length - 1); cmdkRender(); }
+    else if (e.key === 'ArrowUp'){ e.preventDefault(); cmdkActiveIndex = Math.max(cmdkActiveIndex - 1, 0); cmdkRender(); }
+    else if (e.key === 'Enter'){ e.preventDefault(); if (items[cmdkActiveIndex]) cmdkChoose(items[cmdkActiveIndex]); }
+  });
+  cmdkParamInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && cmdkPendingAction){
+      e.preventDefault();
+      const action = cmdkPendingAction;
+      const value = cmdkParamInput.value.trim();
+      cmdkParamRow.hidden = true;
+      cmdkPendingAction = null;
+      if (!value){ cmdkStatus.className = 'cmdk-status err'; cmdkStatus.textContent = '✗ a real value is required'; return; }
+      cmdkRunAction(action, value);
+    } else if (e.key === 'Escape'){
+      e.preventDefault();
+      cmdkParamRow.hidden = true;
+      cmdkPendingAction = null;
+      cmdkInput.focus();
+    }
+  });
 
   loadAll();
 })();

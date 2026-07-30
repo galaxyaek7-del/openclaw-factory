@@ -1013,6 +1013,21 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('executive_directives_history'),
   },
   {
+    // Executive Command Center (ADR-146, 2026-07-30): reuses
+    // multi_source_intelligence.registry.get_connectors() verbatim --
+    // never a second connector list. Static-unavailable sources
+    // (reddit/product_hunt/google_trends) are cheaply checked (none of
+    // the three touches its own niche argument, confirmed by reading
+    // each); real live-capable sources (hacker_news/github/etc.) are
+    // listed as registered without being triggered, avoiding an
+    // accidental live network call from a passive dashboard read.
+    name: 'market-intelligence-source-status',
+    description: "The real, registered external-evidence-source inventory for the Market Intelligence panel -- which real connectors exist, which are honestly unavailable today and why (missing credentials, requires prior commercial contact, n8n gate not activated), and which are real/live-capable but not triggered from this read-only view.",
+    reused: 'multi_source_intelligence/registry.py::get_connectors() (ADR-059) + each connector real check() (ADR-146), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('market_intelligence_source_status', [], req),
+    health: pythonHealthCheck('market_intelligence_source_status'),
+  },
+  {
     // Executive Decision Memory (ADR-145, 2026-07-30): distinct from the
     // existing 'decision-history' panel below (niche decisions only) --
     // this merges real niche decisions AND real Executive Directives
