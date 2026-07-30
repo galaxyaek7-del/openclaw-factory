@@ -1050,6 +1050,36 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('affiliate_commerce_status'),
   },
   {
+    // Simulation-First Company Build (ADR-153, 2026-07-30): generalizes
+    // this factory's own already-real dry_run discipline
+    // (channels/base_arm.py/distributor.py/reality.py's real dry_run
+    // filter) to "don't really transact." Every field is explicitly
+    // labeled SIMULATED -- never merged with affiliate-commerce-status's
+    // real click counts above, never written to any real financial
+    // ledger. NOT cached (runPythonServiceCached would serve a stale
+    // simulated funnel) -- cheap, and each call triggers one real
+    // simulation cycle over the real click ledger.
+    name: 'affiliate-simulation-report',
+    description: "The real, honestly SIMULATED Affiliate Commerce funnel (clicks -> conversion -> commission), drawn from the real click ledger with a disclosed, labeled assumed conversion rate and commission rate -- never a confirmed real number, never counted in any real revenue figure. Exercises the pipeline end-to-end before ADR-150's real Phase 2 gate (real Associates tag + real confirmed conversion) clears.",
+    reused: 'affiliate_commerce/simulation.py + simulation_mode.py (ADR-153), via mission_control_api.py.',
+    handler: () => runPythonService('affiliate_simulation_report'),
+    health: pythonHealthCheck('affiliate_simulation_report'),
+  },
+  {
+    // Simulation-First Company Build (ADR-153, 2026-07-30): a per-
+    // division scorecard, distinct from executive_score.py's own
+    // company-wide score. Every dimension is a real, mechanical,
+    // disclosed-heuristic check (file existence, real test-function
+    // counts, real text-marker presence) -- SaaS/AI Services/Licensing
+    // report honestly not_architected (no real code exists for any of
+    // them), never invented to look more built-out.
+    name: 'launch-readiness-score',
+    description: "The real, per-division 8-dimension Launch Readiness Score (Architecture/Automation/Testing/Compliance/Monitoring/Documentation/Integration/Operational readiness) -- Affiliate Commerce and Digital Products score real signals today; SaaS/AI Services/Licensing honestly report not_architected (zero real code exists for any of them in this factory).",
+    reused: 'launch_readiness.py (ADR-153), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('launch_readiness_score', [], req),
+    health: pythonHealthCheck('launch_readiness_score'),
+  },
+  {
     // Executive Command Center (ADR-146, 2026-07-30): reuses
     // multi_source_intelligence.registry.get_connectors() verbatim --
     // never a second connector list. Static-unavailable sources

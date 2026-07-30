@@ -940,6 +940,30 @@ def _affiliate_commerce_status():
     }
 
 
+def _affiliate_simulation_report():
+    """Simulation-First Company Build (ADR-153, 2026-07-30): triggers one
+    real simulation cycle over the real click ledger (never a real
+    financial ledger -- see affiliate_commerce/simulation.py's own
+    guards) and returns the real, honestly SIMULATED funnel report.
+    Every field is explicitly labeled -- never presented as real
+    revenue, never merged with the real affiliate-commerce-status
+    panel's real click counts."""
+    from affiliate_commerce import simulation
+    if simulation.is_simulation_mode("affiliate_commerce"):
+        simulation.run_simulation_cycle()
+    return simulation.simulation_funnel_report()
+
+
+def _launch_readiness_score():
+    """Simulation-First Company Build (ADR-153, 2026-07-30): the real,
+    per-division 8-dimension Launch Readiness Score. Every dimension is
+    a real, mechanical, disclosed-heuristic check -- never a semantic
+    quality judgment, never fabricated for a division with no real
+    architecture yet."""
+    from launch_readiness import launch_readiness_score
+    return launch_readiness_score()
+
+
 def _market_intelligence_source_status():
     """Executive Command Center (ADR-146, 2026-07-30): the real,
     registered external-evidence-source inventory for the Market
@@ -2340,6 +2364,8 @@ _ENDPOINTS = {
     "affiliate_products": _affiliate_products,
     "affiliate_click": _affiliate_click,
     "affiliate_commerce_status": _affiliate_commerce_status,
+    "affiliate_simulation_report": _affiliate_simulation_report,
+    "launch_readiness_score": _launch_readiness_score,
     "market_intelligence_source_status": _market_intelligence_source_status,
     "decision_memory_list": _decision_memory_list,
     "decision_memory_conflicts": _decision_memory_conflicts,

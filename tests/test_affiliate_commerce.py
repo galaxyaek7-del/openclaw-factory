@@ -7,6 +7,7 @@ tracking only (never conversion -- that needs Amazon's real postback).
 """
 
 import os
+import random
 import sys
 import tempfile
 import unittest
@@ -16,7 +17,7 @@ _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
     sys.path.insert(0, str(_FACTORY_ROOT))
 
-from affiliate_commerce import networks, click_tracking, products
+from affiliate_commerce import networks, click_tracking, products, simulation
 
 
 class TestNetworks(unittest.TestCase):
@@ -136,6 +137,68 @@ class TestProducts(unittest.TestCase):
         p = products.get_product("B07LCCJD6B")
         self.assertIsNotNone(p)
         self.assertEqual(p["asin"], "B07LCCJD6B")
+
+
+class TestSimulation(unittest.TestCase):
+    """ADR-153, 2026-07-30: every simulated event must be explicitly
+    labeled and written to its own separate ledger -- never the real
+    click ledger, never a real financial ledger."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.click_path = Path(self._tmp.name) / "clicks.jsonl"
+        self.sim_path = Path(self._tmp.name) / "sim.jsonl"
+        self._old_mode = os.environ.get("AFFILIATE_MODE")
+
+    def tearDown(self):
+        self._tmp.cleanup()
+        if self._old_mode is None:
+            os.environ.pop("AFFILIATE_MODE", None)
+        else:
+            os.environ["AFFILIATE_MODE"] = self._old_mode
+
+    def test_blocked_outside_simulation_mode(self):
+        os.environ["AFFILIATE_MODE"] = "production"
+        with self.assertRaises(RuntimeError):
+            simulation.simulate_conversion("B07LCCJD6B", sim_ledger_path=self.sim_path)
+
+    def test_simulate_conversion_tags_event_and_writes_to_separate_ledger(self):
+        record = simulation.simulate_conversion("B07LCCJD6B", sim_ledger_path=self.sim_path)
+        self.assertTrue(record["simulation"])
+        self.assertEqual(record["product_id"], "B07LCCJD6B")
+        self.assertTrue(self.sim_path.exists())
+        self.assertFalse(self.click_path.exists())
+
+    def test_simulate_conversion_unknown_product_returns_none(self):
+        self.assertIsNone(simulation.simulate_conversion("NOT-A-REAL-ASIN", sim_ledger_path=self.sim_path))
+
+    def test_run_simulation_cycle_draws_from_real_click_ledger(self):
+        for _ in range(300):
+            click_tracking.record_click("B0864RSM5S", ledger_path=self.click_path)
+        generated = simulation.run_simulation_cycle(
+            rng=random.Random(3), click_ledger_path=self.click_path, sim_ledger_path=self.sim_path,
+        )
+        self.assertGreater(len(generated), 0)
+        for record in generated:
+            self.assertTrue(record["simulation"])
+
+    def test_run_simulation_cycle_with_no_real_clicks_generates_nothing(self):
+        generated = simulation.run_simulation_cycle(
+            rng=random.Random(1), click_ledger_path=self.click_path, sim_ledger_path=self.sim_path,
+        )
+        self.assertEqual(generated, [])
+
+    def test_funnel_report_is_explicitly_labeled_simulated(self):
+        report = simulation.simulation_funnel_report(click_ledger_path=self.click_path, sim_ledger_path=self.sim_path)
+        self.assertIn("SIMULATED", report["label"])
+        self.assertEqual(report["mode"], "simulation")
+
+    def test_funnel_report_never_touches_real_default_ledgers(self):
+        simulation.simulation_funnel_report(click_ledger_path=self.click_path, sim_ledger_path=self.sim_path)
+        self.assertFalse(click_tracking.DEFAULT_LEDGER_PATH.exists() and
+                          click_tracking.DEFAULT_LEDGER_PATH == self.click_path)
+        self.assertFalse(simulation.DEFAULT_SIM_LEDGER_PATH.exists() and
+                          simulation.DEFAULT_SIM_LEDGER_PATH == self.sim_path)
 
 
 if __name__ == "__main__":
