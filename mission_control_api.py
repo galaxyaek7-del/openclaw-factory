@@ -820,6 +820,44 @@ def _opportunity_cost_report():
     return capital_allocation_engine.opportunity_cost()
 
 
+def _executive_brain_directive():
+    """Executive Brain (ADR-144, 2026-07-30): a LIVE, read-only preview of
+    the current Executive Directive -- reuses strategic_intelligence_
+    core.build_executive_brief() + global_opportunity_exchange +
+    capital_allocation_engine + evolution_queue verbatim, arbitrates their
+    real candidate actions into exactly ONE recommendation via the
+    founder's own named Priority 1-5 framework. Deliberately does NOT
+    record to the permanent ledger (record_ledger=False) -- a Mission
+    Control page view must never itself grow the "permanent lessons"
+    ledger, or every refresh would append a near-duplicate entry,
+    directly violating the directive's own "no duplicated knowledge"
+    requirement. Only the daily tick (generate_daily_executive_directive
+    below) ever records. Expensive (chains 3 full-portfolio scans,
+    measured live ~55-60s) -- read-only/recommend-only; requires_founder_
+    approval is always True, nothing here executes, approves, rejects,
+    publishes, or reallocates anything."""
+    import executive_brain
+    return executive_brain.build_executive_directive(record_ledger=False)
+
+
+def _generate_daily_executive_directive():
+    """The one real path that grows the permanent ledger -- called once
+    per day by factory_loop.js's tick (see maybeGenerateDailyExecutive
+    Directive), never on a live Mission Control view. record_ledger=True
+    here is the deliberate exception to _executive_brain_directive()'s
+    own read-only default above."""
+    import executive_brain
+    return executive_brain.build_executive_directive(record_ledger=True)
+
+
+def _executive_directives_history():
+    """Read-only Mission Control panel: the real Learning History of every
+    Executive Directive this factory has ever generated, most recent
+    first. Passthrough only."""
+    import executive_brain
+    return executive_brain.list_executive_directives()
+
+
 def _capital_allocation_dashboard():
     """Capital Allocation Engine (2026-07-29): the real aggregator --
     Top ROI Initiatives, Projects Losing Value, Projects Consuming
@@ -2145,6 +2183,9 @@ _ENDPOINTS = {
     "council_learning_summary": _council_learning_summary,
     "investment_score": _investment_score,
     "opportunity_cost_report": _opportunity_cost_report,
+    "executive_brain_directive": _executive_brain_directive,
+    "generate_daily_executive_directive": _generate_daily_executive_directive,
+    "executive_directives_history": _executive_directives_history,
     "capital_allocation_dashboard": _capital_allocation_dashboard,
     "global_opportunity_exchange_dashboard": _global_opportunity_exchange_dashboard,
     "concentration_risk_report": _concentration_risk_report,

@@ -988,6 +988,31 @@ const SERVICE_REGISTRY = [
     // `python3` alias adds a further real ~30s startup tax on top of
     // that per subprocess, confirmed live during the Galaxy Council
     // round -- so the shared 30s default is not safely enough margin).
+    // Executive Brain (ADR-144, 2026-07-30): the founder's "one executive
+    // decision only, no conflicting actions" directive. Reuses
+    // strategic_intelligence_core.build_executive_brief() +
+    // global_opportunity_exchange + capital_allocation_engine +
+    // evolution_queue verbatim -- chains 3 full-portfolio scans, measured
+    // live ~55-60s, hence the long timeout below. Deliberately a LIVE
+    // preview only (record_ledger=False) -- never grows the permanent
+    // ledger on a page view; only the daily tick does that (see
+    // generate-daily-executive-directive action, factory_loop.js). Never
+    // executes/approves/rejects/publishes/reallocates anything --
+    // requires_founder_approval is always true in the real response.
+    name: 'executive-brain',
+    description: "The one real, single Executive Directive for this cycle -- arbitrates real candidate actions from every existing intelligence system into exactly ONE recommendation via the founder's own Priority 1-5 framework (System Stability > Opportunity Discovery > Premium Product Creation > Revenue Growth > Self Evolution). A genuine same-tier tie is honestly reported as SPLIT, never arbitrarily resolved. Read-only/recommend-only -- execution stays exactly as human-gated as every other irreversible action in this factory (evolution_queue.py's Execute step, capital reallocation, publish protection).",
+    reused: 'executive_brain.py::build_executive_directive() (ADR-144), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('executive_brain_directive', [], req, 120000),
+    health: pythonHealthCheck('executive_brain_directive'),
+  },
+  {
+    name: 'executive-directives-history',
+    description: "The real Learning History for the Executive Brain -- every real directive it has ever generated via the daily tick (never a live-view side effect), most recent first. Read-only.",
+    reused: 'executive_brain.py::list_executive_directives() (ADR-144), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('executive_directives_history', [], req),
+    health: pythonHealthCheck('executive_directives_history'),
+  },
+  {
     name: 'capital-allocation-dashboard',
     description: "Top ROI Initiatives, Projects Losing Value, Projects Consuming Resources Without Results, Resource Distribution, Expected Portfolio Return, and real opportunity-cost pairings -- every field a citation of an already-real portfolio/scheduling/lifecycle function, computed exactly once and threaded through, never a second scan.",
     reused: 'capital_allocation_engine.py::build_capital_allocation_dashboard()',

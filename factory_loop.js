@@ -1872,6 +1872,79 @@ async function maybeGenerateDailyExecutiveBrief(now = new Date()) {
   }
 }
 
+// ── EXECUTIVE BRAIN — DAILY DIRECTIVE (ADR-144, 2026-07-30) ──
+// The one real path that grows the permanent data/executive_directives.
+// jsonl ledger — a live Mission Control view (the 'executive-brain'
+// SERVICE_REGISTRY entry) deliberately never records, to avoid a page
+// refresh silently duplicating "permanent" knowledge. Chains 3 real
+// full-portfolio scans (measured live ~55-60s), so this is gated to once
+// per calendar day like every other daily report — never approves,
+// rejects, publishes, or reallocates anything; the returned directive is
+// a recommendation only, requires_founder_approval is always true.
+const EXECUTIVE_DIRECTIVE_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.executive_directive_daily_marker');
+
+function runGenerateDailyExecutiveDirective({ timeoutMs = 120000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'generate_daily_executive_directive'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة generate_daily_executive_directive (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من generate_daily_executive_directive' });
+          return;
+        }
+        finish({ ok: true, status: result.directive && result.directive.status, action: result.current_mission });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج generate_daily_executive_directive: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeGenerateDailyExecutiveDirective(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(EXECUTIVE_DIRECTIVE_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم إنشاء التوجيه التنفيذي اليومي بالفعل (${today})` };
+  }
+  const result = await runGenerateDailyExecutiveDirective();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(path.dirname(EXECUTIVE_DIRECTIVE_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(EXECUTIVE_DIRECTIVE_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ علامة التوجيه التنفيذي: ${err.message}` };
+  }
+  return { action: 'generated', detail: `تم إنشاء توجيه تنفيذي حقيقي (${result.status}): ${result.action || 'لا إجراء معلَّق'}` };
+}
+
 // ── AUTONOMOUS COMPANY EVOLUTION ENGINE — DAILY INTAKE/SIMULATE/DECIDE ──
 // Runs mission_control_api.py's evolution_queue_daily_cycle: real
 // proposals get pulled into the Evolution Queue, simulated, and decided
@@ -2653,6 +2726,14 @@ async function runTick() {
   markStep('evolution_outcome_measurement');
   actions.push({ step: 'evolution_outcome_measurement', ...(await maybeMeasureEvolutionOutcomes()) });
 
+  // Executive Brain (ADR-144, 2026-07-30): runs last among the daily
+  // report/measurement steps above so it arbitrates over today's freshest
+  // evolution-queue/outcome state. Same once-per-calendar-day pattern —
+  // never approves/rejects/publishes/reallocates anything, only appends
+  // a recommendation to the permanent ledger.
+  markStep('executive_directive');
+  actions.push({ step: 'executive_directive', ...(await maybeGenerateDailyExecutiveDirective()) });
+
   // Final Executive Directive (2026-07-29): same once-per-calendar-day
   // pattern as the report engines above — the 2 confirmed-safe, genuinely
   // new autonomy additions ("maintain institutional knowledge" +
@@ -2894,6 +2975,7 @@ module.exports = {
   runExecutiveBrief, executiveBriefReportPath, maybeGenerateDailyExecutiveBrief,
   runEvolutionQueueDailyCycle, maybeGenerateDailyEvolutionQueueIntake,
   runEvolutionOutcomeMeasurementCycle, maybeMeasureEvolutionOutcomes,
+  runGenerateDailyExecutiveDirective, maybeGenerateDailyExecutiveDirective,
   runKnowledgeGraphDailySnapshot, maybeGenerateDailyKnowledgeGraph,
   runGeneratePendingBusinessBlueprints, maybeGenerateBusinessBlueprintsForNewAcceptedDecisions,
   runResilienceMonitorTick,

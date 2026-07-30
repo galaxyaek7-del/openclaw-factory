@@ -191,9 +191,47 @@ def _proposal_nodes(evolution_queue_state_path=None):
     return nodes
 
 
+def _executive_directive_nodes(ledger_path=None):
+    """Real ExecutiveDirective nodes (Executive Brain, ADR-144,
+    2026-07-30) -- every real record ever appended to
+    data/executive_directives.jsonl, the permanent decision ledger
+    executive_brain.build_executive_directive() writes to. Same
+    standalone-unless-resolvable discipline as Proposal nodes above:
+    an edge to the real Proposal it cites is only ever added when the
+    directive's own evidence carries a real proposal_id already present
+    as a node -- never a guessed/fabricated edge otherwise."""
+    from executive_brain import DEFAULT_LEDGER_PATH
+    path = ledger_path or str(DEFAULT_LEDGER_PATH)
+    nodes, edges = [], []
+    if not os.path.exists(path):
+        return nodes, edges
+    with open(path, 'r', encoding='utf-8') as f:
+        for i, line in enumerate(f):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                record = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            directive = record.get("directive") or {}
+            node_id = f"executive_directive:{record.get('generated_at', i)}"
+            nodes.append(_node(
+                node_id, "ExecutiveDirective",
+                label=directive.get("action") or directive.get("status") or "directive",
+                status=directive.get("status"),
+                tier=directive.get("tier"),
+                generated_at=record.get("generated_at"),
+            ))
+            proposal_id = (directive.get("evidence") or {}).get("proposal_id") if isinstance(directive.get("evidence"), dict) else None
+            if proposal_id:
+                edges.append(_edge(node_id, f"proposal:{proposal_id}", "cites", confidence="exact"))
+    return nodes, edges
+
+
 def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_cost_log_path=None,
                  evidence_path=None, lessons_dir=None, governance_dir=None, evolution_queue_state_path=None,
-                 decision_outcomes_path=None):
+                 decision_outcomes_path=None, executive_directives_path=None):
     decisions = _read_jsonl(decisions_path or DECISIONS_FILE)
     analyses = _read_jsonl(analyses_path or MARKET_INTELLIGENCE_ANALYSES_FILE)
     ledger = _read_jsonl(ledger_path or SALES_LEDGER_FILE)
@@ -343,6 +381,15 @@ def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_co
     # standalone discipline as Lesson/ADR just above -- no fabricated edge.
     for node in _proposal_nodes(evolution_queue_state_path):
         _add_node(node)
+
+    # ExecutiveDirective nodes (real, from data/executive_directives.jsonl
+    # -- Executive Brain, ADR-144, 2026-07-30). Same standalone discipline
+    # as Proposal/Lesson/ADR nodes -- edges only when a real proposal_id
+    # is resolvable, never guessed.
+    directive_nodes, directive_edges = _executive_directive_nodes(executive_directives_path)
+    for node in directive_nodes:
+        _add_node(node)
+    edges.extend(directive_edges)
 
     graph = {
         "schema_note": "DERIVED, DISPOSABLE snapshot -- rebuild any time via knowledge_graph.build.build_graph(). Never a source of truth; the real data lives in the JSONL files named in this module's docstring.",
