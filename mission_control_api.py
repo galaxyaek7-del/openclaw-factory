@@ -964,6 +964,18 @@ def _launch_readiness_score():
     return launch_readiness_score()
 
 
+def _executive_intelligence_questions():
+    """Executive Intelligence Layer (ADR-154, 2026-07-31): the real
+    answers to the founder's 8 named strategic questions -- almost
+    entirely citation of already-real functions (executive_brain.py,
+    capital_allocation_engine.py, strategic_intelligence_core.py).
+    Named executive_questions.py (not executive_intelligence.py -- a
+    real, pre-existing, differently-scoped package of that exact name
+    already exists, ADR-052)."""
+    from executive_questions import answer_strategic_questions
+    return answer_strategic_questions()
+
+
 def _market_intelligence_source_status():
     """Executive Command Center (ADR-146, 2026-07-30): the real,
     registered external-evidence-source inventory for the Market
@@ -2366,6 +2378,7 @@ _ENDPOINTS = {
     "affiliate_commerce_status": _affiliate_commerce_status,
     "affiliate_simulation_report": _affiliate_simulation_report,
     "launch_readiness_score": _launch_readiness_score,
+    "executive_intelligence_questions": _executive_intelligence_questions,
     "market_intelligence_source_status": _market_intelligence_source_status,
     "decision_memory_list": _decision_memory_list,
     "decision_memory_conflicts": _decision_memory_conflicts,

@@ -175,7 +175,7 @@ def mission_lifecycle_summary(decisions_path=None, board_path=None, alerts_path=
 
 def enterprise_timeline(limit=50, decisions_path=None, ledger_path=None, evolution_queue_state_path=None,
                          executive_directives_path=None, council_recommendations_path=None,
-                         department_events_path=None):
+                         department_events_path=None, governance_dir=None):
     """The real "nothing is lost" Enterprise Timeline -- merges every
     real ledger this factory already keeps, most recent first. Zero new
     logging call sites: every entry already existed in its own real
@@ -231,6 +231,21 @@ def enterprise_timeline(limit=50, decisions_path=None, ledger_path=None, evoluti
                 except json.JSONDecodeError:
                     continue
                 entries.append({"type": "council_recommendation", "timestamp": c.get("convened_at"), "summary": f"{c.get('niche')}: {c.get('council_recommendation')}", "source": "council_recommendations.jsonl"})
+
+    # Executive Intelligence Layer (ADR-154, 2026-07-31): "Company Memory
+    # Timeline" architecture-change coverage -- every real ADR this
+    # factory has ever written IS a real architecture-change record.
+    # Reuses knowledge_graph.build._adr_nodes()'s already-parsed real
+    # list verbatim (never re-parses the governance directory a second
+    # time); honestly skips any ADR with no real `**Date:**` line rather
+    # than guessing a timestamp. Release/milestone events are NOT added
+    # here -- no real release log or milestone ledger exists anywhere in
+    # this factory to source one from (NOT ARCHITECTED, not invented).
+    from knowledge_graph.build import _adr_nodes
+    for node in _adr_nodes(governance_dir):
+        if not node.get("date"):
+            continue
+        entries.append({"type": "adr", "timestamp": node["date"], "summary": node["label"], "source": node.get("source_file", "OpenClaw_Brain/00_Governance/")})
 
     entries.sort(key=lambda e: e.get("timestamp") or "", reverse=True)
     return {"generated_at": _now_iso(), "entries": entries[:limit], "total_real_events_merged": len(entries),

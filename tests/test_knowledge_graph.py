@@ -141,6 +141,9 @@ class TestBuildGraph(unittest.TestCase):
             governance_dir="C:/definitely/not/a/real/governance/dir",
             evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
             decision_outcomes_path="C:/definitely/not/a/real/decision_outcomes.jsonl",
+            affiliate_clicks_path="C:/definitely/not/a/real/affiliate_clicks.jsonl",
+            affiliate_simulation_events_path="C:/definitely/not/a/real/affiliate_simulation_events.jsonl",
+            council_recommendations_path="C:/definitely/not/a/real/council_recommendations.jsonl",
         )
         self.assertEqual(graph["node_count"], 0)
         self.assertEqual(graph["edge_count"], 0)
@@ -300,6 +303,9 @@ class TestLessonAndAdrNodes(unittest.TestCase):
             lessons_dir=lessons_dir, governance_dir=gov_dir,
             evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
             decision_outcomes_path="C:/definitely/not/a/real/decision_outcomes.jsonl",
+            affiliate_clicks_path="C:/definitely/not/a/real/affiliate_clicks.jsonl",
+            affiliate_simulation_events_path="C:/definitely/not/a/real/affiliate_simulation_events.jsonl",
+            council_recommendations_path="C:/definitely/not/a/real/council_recommendations.jsonl",
         )
         types = {n["type"] for n in graph["nodes"]}
         self.assertIn("Lesson", types)
@@ -438,10 +444,62 @@ class TestProposalNodes(unittest.TestCase):
             lessons_dir="C:/definitely/not/a/real/lessons/dir",
             governance_dir="C:/definitely/not/a/real/governance/dir",
             evolution_queue_state_path=self.state_path,
+            decision_outcomes_path="C:/definitely/not/a/real/decision_outcomes.jsonl",
+            executive_directives_path="C:/definitely/not/a/real/executive_directives.jsonl",
+            affiliate_clicks_path="C:/definitely/not/a/real/affiliate_clicks.jsonl",
+            affiliate_simulation_events_path="C:/definitely/not/a/real/affiliate_simulation_events.jsonl",
+            council_recommendations_path="C:/definitely/not/a/real/council_recommendations.jsonl",
         )
         types = {n["type"] for n in graph["nodes"]}
         self.assertIn("Proposal", types)
         self.assertEqual(graph["node_count"], 1)
+
+
+class TestAffiliateEventNodes(unittest.TestCase):
+    """Executive Intelligence Layer (ADR-154, 2026-07-31): real
+    AffiliateEvent nodes -- every real click and every real simulated
+    conversion, each honestly tagged simulation=True/False so a
+    simulated event can never be confused with a real one."""
+
+    def test_missing_ledgers_are_honestly_empty(self):
+        nodes = build._affiliate_event_nodes(
+            clicks_path="C:/definitely/not/a/real/affiliate_clicks.jsonl",
+            simulation_path="C:/definitely/not/a/real/affiliate_simulation_events.jsonl",
+        )
+        self.assertEqual(nodes, [])
+
+    def test_real_click_becomes_a_real_untagged_simulation_false_node(self):
+        clicks_path = _write_jsonl([{"product_id": "B07LCCJD6B", "timestamp": "t1", "referrer": None}])
+        nodes = build._affiliate_event_nodes(
+            clicks_path=clicks_path, simulation_path="C:/definitely/not/a/real/affiliate_simulation_events.jsonl",
+        )
+        self.assertEqual(len(nodes), 1)
+        self.assertEqual(nodes[0]["type"], "AffiliateEvent")
+        self.assertFalse(nodes[0]["simulation"])
+        self.assertEqual(nodes[0]["event_kind"], "click")
+
+    def test_simulated_conversion_is_honestly_tagged_simulation_true(self):
+        sim_path = _write_jsonl([{"product_id": "B07LCCJD6B", "timestamp": "t1",
+                                   "simulated_commission_usd": 3.36, "simulation": True}])
+        nodes = build._affiliate_event_nodes(
+            clicks_path="C:/definitely/not/a/real/affiliate_clicks.jsonl", simulation_path=sim_path,
+        )
+        self.assertEqual(len(nodes), 1)
+        self.assertTrue(nodes[0]["simulation"])
+        self.assertEqual(nodes[0]["event_kind"], "simulated_conversion")
+
+
+class TestCouncilRecommendationNodes(unittest.TestCase):
+    def test_missing_ledger_is_honestly_empty(self):
+        nodes = build._council_recommendation_nodes("C:/definitely/not/a/real/council_recommendations.jsonl")
+        self.assertEqual(nodes, [])
+
+    def test_real_record_becomes_a_real_node(self):
+        path = _write_jsonl([{"niche": "n1", "council_recommendation": "SPLIT", "convened_at": "t1", "disagreement_detected": True}])
+        nodes = build._council_recommendation_nodes(path)
+        self.assertEqual(len(nodes), 1)
+        self.assertEqual(nodes[0]["type"], "CouncilRecommendation")
+        self.assertEqual(nodes[0]["niche"], "n1")
 
 
 if __name__ == "__main__":

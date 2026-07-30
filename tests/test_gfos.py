@@ -87,10 +87,47 @@ class TestEnterpriseTimeline(unittest.TestCase):
         result = gfos.enterprise_timeline(
             limit=10, decisions_path=tmp_decisions, evolution_queue_state_path=tmp_evo,
             executive_directives_path=tmp_directives, council_recommendations_path=tmp_council,
-            department_events_path=tmp_dept_events,
+            department_events_path=tmp_dept_events, governance_dir="C:/definitely/not/a/real/governance/dir",
         )
         self.assertEqual(result["entries"], [])
         self.assertEqual(result["total_real_events_merged"], 0)
+
+    def test_adr_events_included_when_a_real_dated_adr_exists(self):
+        # Executive Intelligence Layer (ADR-154, 2026-07-31): "Company
+        # Memory Timeline" architecture-change coverage -- a real ADR
+        # file with a real **Date:** line becomes a real `adr` event.
+        gov_dir = tempfile.mkdtemp()
+        with open(os.path.join(gov_dir, "ADR-999-test.md"), "w", encoding="utf-8") as f:
+            f.write("# ADR-999 — Test ADR\n\n**Date:** 2026-07-31\n\nBody.\n")
+        tmp_decisions = tempfile.mktemp(suffix=".jsonl")
+        tmp_evo = tempfile.mktemp(suffix=".json")
+        tmp_directives = tempfile.mktemp(suffix=".jsonl")
+        tmp_council = tempfile.mktemp(suffix=".jsonl")
+        tmp_dept_events = tempfile.mktemp(suffix=".jsonl")
+        result = gfos.enterprise_timeline(
+            limit=10, decisions_path=tmp_decisions, evolution_queue_state_path=tmp_evo,
+            executive_directives_path=tmp_directives, council_recommendations_path=tmp_council,
+            department_events_path=tmp_dept_events, governance_dir=gov_dir,
+        )
+        self.assertEqual(len(result["entries"]), 1)
+        self.assertEqual(result["entries"][0]["type"], "adr")
+        self.assertEqual(result["entries"][0]["timestamp"], "2026-07-31")
+
+    def test_adr_with_no_real_date_line_is_honestly_excluded(self):
+        gov_dir = tempfile.mkdtemp()
+        with open(os.path.join(gov_dir, "ADR-998-no-date.md"), "w", encoding="utf-8") as f:
+            f.write("# ADR-998 — No Date\n\nBody with no Date line.\n")
+        tmp_decisions = tempfile.mktemp(suffix=".jsonl")
+        tmp_evo = tempfile.mktemp(suffix=".json")
+        tmp_directives = tempfile.mktemp(suffix=".jsonl")
+        tmp_council = tempfile.mktemp(suffix=".jsonl")
+        tmp_dept_events = tempfile.mktemp(suffix=".jsonl")
+        result = gfos.enterprise_timeline(
+            limit=10, decisions_path=tmp_decisions, evolution_queue_state_path=tmp_evo,
+            executive_directives_path=tmp_directives, council_recommendations_path=tmp_council,
+            department_events_path=tmp_dept_events, governance_dir=gov_dir,
+        )
+        self.assertEqual(result["entries"], [])
 
 
 class TestGfosStatus(unittest.TestCase):

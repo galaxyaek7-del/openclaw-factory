@@ -1080,6 +1080,18 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('launch_readiness_score'),
   },
   {
+    // Executive Intelligence Layer (ADR-154, 2026-07-31): chains 3 real
+    // full-portfolio scans (capital_allocation_engine, strategic_
+    // intelligence_core, global_opportunity_exchange) exactly once each
+    // -- same real cost class as executive-brief/executive-brain, cached
+    // like them.
+    name: 'executive-intelligence-questions',
+    description: "The real answers to 8 named strategic questions (what deserves attention today / which division is slowing the company / where is revenue highest / which automations are underutilized / what to build next / what to pause / highest ROI / which bottleneck blocks scaling) -- almost entirely citation of already-real functions (executive_brain.py, capital_allocation_engine.py, strategic_intelligence_core.py). Honestly reports WAITING FOR REAL SOURCE where no real per-division or utilization signal exists, never a fabricated answer.",
+    reused: 'executive_questions.py (ADR-154), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('executive_intelligence_questions', [], req, 90000),
+    health: pythonHealthCheck('executive_intelligence_questions'),
+  },
+  {
     // Executive Command Center (ADR-146, 2026-07-30): reuses
     // multi_source_intelligence.registry.get_connectors() verbatim --
     // never a second connector list. Static-unavailable sources

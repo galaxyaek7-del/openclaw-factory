@@ -194,7 +194,7 @@ class TestStrategicScore(unittest.TestCase):
 class TestBuildExecutiveBrief(unittest.TestCase):
 
     def _patches(self, resilience=None, dashboard=None, evolution_report=None,
-                 founder_queue=None, horizons=None, cost_trend=None):
+                 founder_queue=None, horizons=None, cost_trend=None, measured_outcomes=None):
         resilience = resilience if resilience is not None else {
             "findings": [], "active_alerts": [], "resilience_score": "Unknown",
             "resilience_score_note": "n/a", "generated_at": "t",
@@ -215,6 +215,7 @@ class TestBuildExecutiveBrief(unittest.TestCase):
         }
         horizons = horizons if horizons is not None else {"horizons": {}, "real_span_days": 0}
         cost_trend = cost_trend if cost_trend is not None else {"answer": "NOT ENOUGH EVIDENCE", "reason": "no requests"}
+        measured_outcomes = measured_outcomes if measured_outcomes is not None else {"entries": []}
         return (
             patch("resilience_monitor.assess_resilience", return_value=resilience),
             patch("ceo_decision_center.ceo_dashboard", return_value=dashboard),
@@ -222,6 +223,7 @@ class TestBuildExecutiveBrief(unittest.TestCase):
             patch("founder_console.build_founder_queue_partial", return_value=founder_queue),
             patch("strategic_intelligence_core.evaluate_strategic_horizons", return_value=horizons),
             patch("customer_pipeline.customer_problem_cost_trend", return_value=cost_trend),
+            patch("evolution_queue.list_measured_outcomes", return_value=measured_outcomes),
         )
 
     def test_never_recomputes_scheduling_a_second_time(self):
@@ -232,9 +234,29 @@ class TestBuildExecutiveBrief(unittest.TestCase):
         # this test guards against regressing.
         with patch("scheduler.decide_next_actions") as mock_decide:
             patches = self._patches()
-            with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5]:
+            with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5], patches[6]:
                 sic.build_executive_brief()
         mock_decide.assert_not_called()
+
+    def test_wins_honestly_empty_when_no_measured_outcomes(self):
+        patches = self._patches()
+        with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5], patches[6]:
+            brief = sic.build_executive_brief()
+        self.assertEqual(brief["wins"], [])
+
+    def test_wins_includes_only_improved_verdicts(self):
+        measured = {"entries": [
+            {"proposal_id": "p1", "tool": "toolA", "implemented_at": "t1",
+             "latest_measurement": {"verdicts": {"revenue": "IMPROVED", "reliability": "NO_CHANGE"}}},
+            {"proposal_id": "p2", "tool": "toolB", "implemented_at": "t2",
+             "latest_measurement": {"verdicts": {"revenue": "DEGRADED", "reliability": "NO_CHANGE"}}},
+            {"proposal_id": "p3", "tool": "toolC", "implemented_at": "t3", "latest_measurement": None},
+        ]}
+        patches = self._patches(measured_outcomes=measured)
+        with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5], patches[6]:
+            brief = sic.build_executive_brief()
+        self.assertEqual(len(brief["wins"]), 1)
+        self.assertEqual(brief["wins"][0]["proposal_id"], "p1")
 
     def test_every_field_cites_its_real_source_with_no_gaps(self):
         resilience = {

@@ -81,6 +81,9 @@ DECISION_OUTCOMES_FILE = os.path.join(FACTORY_DIR, 'data', 'decision_outcomes.js
 LESSONS_LEARNED_DIR = os.path.join(FACTORY_DIR, 'OpenClaw_Brain', '19_Lessons_Learned')
 GOVERNANCE_DIR = os.path.join(FACTORY_DIR, 'OpenClaw_Brain', '00_Governance')
 EVOLUTION_QUEUE_STATE_FILE = os.path.join(FACTORY_DIR, 'data', 'evolution_queue_state.json')
+AFFILIATE_CLICKS_FILE = os.path.join(FACTORY_DIR, 'data', 'affiliate_clicks.jsonl')
+AFFILIATE_SIMULATION_EVENTS_FILE = os.path.join(FACTORY_DIR, 'data', 'affiliate_simulation_events.jsonl')
+COUNCIL_RECOMMENDATIONS_FILE = os.path.join(FACTORY_DIR, 'data', 'council_recommendations.jsonl')
 _ADR_FILENAME_RE = re.compile(r'^(ADR-\d+)-')
 
 
@@ -126,6 +129,27 @@ def _first_heading(path):
     return None
 
 
+_ADR_DATE_RE = re.compile(r'^\*\*Date:\*\*\s*(\d{4}-\d{2}-\d{2})')
+
+
+def _first_date(path):
+    """Real, mechanical date extraction -- this factory's own real ADR
+    convention (`**Date:** YYYY-MM-DD` on its own line, near the top of
+    every ADR written this session). Honestly None for any ADR that
+    predates this convention -- never a guessed or inferred date
+    (ADR-154, 2026-07-31, for gfos.py's enterprise_timeline() `adr`
+    event type)."""
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            for line in f:
+                m = _ADR_DATE_RE.match(line.strip())
+                if m:
+                    return m.group(1)
+    except OSError:
+        pass
+    return None
+
+
 def _lesson_nodes(lessons_dir=None):
     """Real Lesson nodes (Round 5, 2026-07-29) -- every real markdown
     file in OpenClaw_Brain/19_Lessons_Learned/ (excluding README), title
@@ -158,7 +182,7 @@ def _adr_nodes(governance_dir=None):
             continue
         path = os.path.join(directory, filename)
         title = _first_heading(path) or filename[:-3].replace('-', ' ')
-        nodes.append(_node(f"adr:{match.group(1)}", "ADR", label=title, source_file=filename))
+        nodes.append(_node(f"adr:{match.group(1)}", "ADR", label=title, source_file=filename, date=_first_date(path)))
     return nodes
 
 
@@ -229,9 +253,60 @@ def _executive_directive_nodes(ledger_path=None):
     return nodes, edges
 
 
+def _affiliate_event_nodes(clicks_path=None, simulation_path=None):
+    """Real AffiliateEvent nodes (Executive Intelligence Layer, ADR-154,
+    2026-07-31) -- every real real click (data/affiliate_clicks.jsonl,
+    ADR-149) and every real simulated conversion (data/
+    affiliate_simulation_events.jsonl, ADR-153). Every node carries its
+    own real `simulation` flag (False for real clicks, True for
+    simulated events) so a real event is never confused with a
+    simulated one when the graph is queried -- same discipline
+    simulation_mode.py's own tag_simulated() already enforces on the
+    ledgers themselves. Honestly 0 real nodes today (both ledgers are
+    empty) -- never backfilled or invented."""
+    nodes = []
+    clicks = _read_jsonl(clicks_path or AFFILIATE_CLICKS_FILE)
+    for i, c in enumerate(clicks):
+        nodes.append(_node(
+            f"affiliate_event:click:{i}:{c.get('timestamp', i)}", "AffiliateEvent",
+            label=f"click: {c.get('product_id')}", event_kind="click",
+            product_id=c.get("product_id"), timestamp=c.get("timestamp"),
+            referrer=c.get("referrer"), simulation=False,
+        ))
+    sim_events = _read_jsonl(simulation_path or AFFILIATE_SIMULATION_EVENTS_FILE)
+    for i, s in enumerate(sim_events):
+        nodes.append(_node(
+            f"affiliate_event:simulated_conversion:{i}:{s.get('timestamp', i)}", "AffiliateEvent",
+            label=f"SIMULATED conversion: {s.get('product_id')}", event_kind="simulated_conversion",
+            product_id=s.get("product_id"), timestamp=s.get("timestamp"),
+            simulated_commission_usd=s.get("simulated_commission_usd"), simulation=True,
+        ))
+    return nodes
+
+
+def _council_recommendation_nodes(council_recommendations_path=None):
+    """Real CouncilRecommendation nodes (Executive Intelligence Layer,
+    ADR-154, 2026-07-31) -- every real record in data/
+    council_recommendations.jsonl (Galaxy Council, ADR-138). This real
+    ledger already feeds gfos.py::enterprise_timeline() but was never
+    graphed until now -- a genuine, confirmed gap, not a duplicate."""
+    nodes = []
+    records = _read_jsonl(council_recommendations_path or COUNCIL_RECOMMENDATIONS_FILE)
+    for i, r in enumerate(records):
+        nodes.append(_node(
+            f"council_recommendation:{i}:{r.get('convened_at', i)}", "CouncilRecommendation",
+            label=f"{r.get('niche')}: {r.get('council_recommendation')}",
+            niche=r.get("niche"), convened_at=r.get("convened_at"),
+            disagreement_detected=r.get("disagreement_detected"),
+        ))
+    return nodes
+
+
 def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_cost_log_path=None,
                  evidence_path=None, lessons_dir=None, governance_dir=None, evolution_queue_state_path=None,
-                 decision_outcomes_path=None, executive_directives_path=None):
+                 decision_outcomes_path=None, executive_directives_path=None,
+                 affiliate_clicks_path=None, affiliate_simulation_events_path=None,
+                 council_recommendations_path=None):
     decisions = _read_jsonl(decisions_path or DECISIONS_FILE)
     analyses = _read_jsonl(analyses_path or MARKET_INTELLIGENCE_ANALYSES_FILE)
     ledger = _read_jsonl(ledger_path or SALES_LEDGER_FILE)
@@ -390,6 +465,15 @@ def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_co
     for node in directive_nodes:
         _add_node(node)
     edges.extend(directive_edges)
+
+    # AffiliateEvent + CouncilRecommendation nodes (real, Executive
+    # Intelligence Layer, ADR-154, 2026-07-31). Same standalone
+    # discipline as Proposal/Lesson/ADR/ExecutiveDirective above -- no
+    # fabricated edge to a Niche/Decision node.
+    for node in _affiliate_event_nodes(affiliate_clicks_path, affiliate_simulation_events_path):
+        _add_node(node)
+    for node in _council_recommendation_nodes(council_recommendations_path):
+        _add_node(node)
 
     graph = {
         "schema_note": "DERIVED, DISPOSABLE snapshot -- rebuild any time via knowledge_graph.build.build_graph(). Never a source of truth; the real data lives in the JSONL files named in this module's docstring.",

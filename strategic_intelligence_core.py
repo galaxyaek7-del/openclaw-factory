@@ -252,6 +252,7 @@ def build_executive_brief(decisions_path=None, board_path=None, alerts_path=None
     import evolution_engine
     import founder_console
     import customer_pipeline
+    import evolution_queue
 
     resilience = resilience_monitor.assess_resilience(
         safe_mode_state_path=safe_mode_state_path,
@@ -283,6 +284,26 @@ def build_executive_brief(decisions_path=None, board_path=None, alerts_path=None
     if cost_trend.get("answer") == "NOT ENOUGH EVIDENCE":
         research_needed.append({"topic": "اتجاه تكلفة مشاكل العملاء", "reason": cost_trend.get("reason")})
 
+    # Executive Intelligence Layer (ADR-154, 2026-07-31): "Wins" -- the
+    # one Executive Daily Briefing field with no prior real equivalent
+    # anywhere in this factory. Real source: evolution_queue.py's own
+    # real IMPLEMENTED-proposal outcome measurements (ADR-143) -- a real
+    # win is a real IMPROVED verdict on revenue or reliability, never a
+    # fabricated success story. Honestly empty until a real proposal has
+    # actually been measured as improved.
+    measured = evolution_queue.list_measured_outcomes(state_path=evolution_queue_state_path)
+    wins = [
+        {
+            "proposal_id": e["proposal_id"],
+            "tool": e["tool"],
+            "implemented_at": e["implemented_at"],
+            "verdicts": e["latest_measurement"]["verdicts"],
+        }
+        for e in measured["entries"]
+        if e.get("latest_measurement")
+        and ("IMPROVED" in (e["latest_measurement"]["verdicts"].get("revenue"), e["latest_measurement"]["verdicts"].get("reliability")))
+    ]
+
     return {
         "company_health": {
             "resilience_score": resilience["resilience_score"],
@@ -304,6 +325,7 @@ def build_executive_brief(decisions_path=None, board_path=None, alerts_path=None
         },
         "products_to_accelerate": scheduling_buckets["accelerate"],
         "products_to_pause": scheduling_buckets["stop"],
+        "wins": wins,
         "research_needed": research_needed,
         "founder_decisions_required": {
             "pending_decisions": founder_queue["pending_decisions"],
@@ -366,6 +388,13 @@ def render_markdown(brief):
     lines.append("\n## منتجات للإيقاف المؤقّت")
     for p in brief.get("products_to_pause") or []:
         lines.append(f"- {p['niche']}: {p['reason']}")
+
+    lines.append("\n## إنجازات حقيقية (Wins)")
+    if brief.get("wins"):
+        for w in brief["wins"]:
+            lines.append(f"- {w['tool']} ({w['proposal_id']}): {w['verdicts']}")
+    else:
+        lines.append("- لا إنجاز حقيقي مقاس بعد (IMPROVED) -- لا يُختلَق")
 
     lines.append("\n## أبحاث مطلوبة (لا أدلة كافية بعد)")
     if brief.get("research_needed"):
