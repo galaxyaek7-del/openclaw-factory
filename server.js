@@ -1347,6 +1347,14 @@ v1Router.get('/metrics', async (req, res) => {
   res.send(text);
 });
 
+// Executive Mission Control V3 (ADR-151, 2026-07-30): a JSON-shaped
+// sibling of /metrics above, for the dashboard's real per-division
+// "Performance Indicators" field -- same METRICS_REGISTRY, same real
+// counters recordRequest() already fills, no new instrumentation.
+v1Router.get('/metrics.json', (req, res) => {
+  res.json({ success: true, version: 'v1', generated_at: new Date().toISOString(), routes: metricsLib.summarizeRoutes(METRICS_REGISTRY) });
+});
+
 v1Router.get('/docs', (req, res) => {
   res.json({
     success: true,

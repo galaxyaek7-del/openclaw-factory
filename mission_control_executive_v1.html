@@ -91,6 +91,22 @@ section.section{margin-bottom:2.2rem; scroll-margin-top:1rem;}
 .section-head h2{font-size:1rem; margin:0; font-weight:700;}
 .section-head .section-note{font-size:.74rem; color:var(--ink-faint); max-width:64ch; line-height:1.4;}
 
+/* ── Executive Mission Control V3 (ADR-151, 2026-07-30): Executive
+   Summary + Division Command Center — reuses .card/.card-top/.card-meta/
+   .pill/.stat-row verbatim (same theme variables, no new visual
+   language), just a denser grid and a slightly more compact card. ── */
+.exec-tier{margin-bottom:2rem;}
+.exec-tier .section-head{border-bottom:1px solid var(--border-soft); padding-bottom:.6rem;}
+.division-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:.8rem;}
+.division-card{
+  background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius);
+  padding:.9rem 1rem; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:.5rem;
+}
+.division-card .card-meta{gap:.4rem .8rem;}
+.division-drilldown{font-size:.72rem; color:var(--accent-ink); text-decoration:none; margin-top:.1rem;}
+.division-drilldown:hover{text-decoration:underline;}
+.exec-tile{border-color:var(--accent-soft);}
+
 .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:.9rem;}
 .card{
   background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius);
@@ -263,6 +279,22 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
     <div id="topStatus"><span class="pulse"></span><span id="topStatusText">Loading real data…</span></div>
     <button class="btn" id="cmdkTrigger" title="Open the command bar" aria-haspopup="dialog" aria-expanded="false" aria-controls="cmdkOverlay">⌘ Command Bar <kbd>Ctrl</kbd><kbd>K</kbd></button>
   </div>
+
+  <!-- Executive Mission Control V3 (ADR-151, 2026-07-30): the new dense
+       summary tier — Executive Summary + 17 Division cards, composed
+       entirely from data the existing per-section fetches below already
+       load. The full 64-panel drill-down layer (#sections) is unchanged
+       beneath it. -->
+  <section class="exec-tier">
+    <div class="section-head"><h2>Executive Summary</h2></div>
+    <div id="execSummary" class="division-grid"></div>
+  </section>
+  <section class="exec-tier">
+    <div class="section-head"><h2>Division Command Center</h2>
+      <span class="section-note">17 named business divisions — condensed status, health, pending work, errors, and performance, each citing its real detail panel below.</span></div>
+    <div id="divisionGrid" class="division-grid"></div>
+  </section>
+
   <div id="sections"></div>
 </main>
 
@@ -387,6 +419,18 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
     { id:'autonomous-operations-status', group:'automation', title:'Autonomous Operations Status', service:'autonomous-operations-status', kind:'kv',
       note:'Final Executive Directive (2026-07-29): the directive\'s ~21 named activities, each honestly tagged automatic / automatic_new (2 genuinely new tick additions: Knowledge Graph daily snapshot, auto-generated Business Blueprints for new ACCEPTED decisions) / human_gated_by_design (4 Founder-protected gates: capital reallocation/reinvestment, business retirement, evolution-queue Execute) / ambiguous_not_touched (deferred, disclosed, never guessed at: competitor auto-refresh, learn-from-results, channel expansion). Also cites the master_loop.py always-on-daemon precedent, already proposed and declined 3x (ADR-107/110/115) — this directive\'s own additions extend the already-approved factory_loop.js tick only, never that rejected daemon.' },
 
+    // Executive Mission Control V3 (ADR-151, 2026-07-30): 3 real services
+    // that already existed in SERVICE_REGISTRY but had zero Mission
+    // Control panel until this round -- exact 1:1 gaps for 2 of the
+    // directive's 17 named divisions (Quality Assurance, Infrastructure)
+    // plus the Executive Summary's "Founder Actions Required" tile.
+    { id:'ai-doctor', group:'automation', title:'🩺 Quality Assurance — AI Doctor', service:'ai-doctor', kind:'kv',
+      note:'The real, non-fabricated engineering-health system (replaced quality_doctor.py\'s confirmed-fake pattern, EOS Phase 2, 2026-07-19) — real bottleneck/tech-debt/ROI/capability-gap signals plus a real dependency-pinning + npm-audit check. Existed in the real Service Layer since 2026-07-19 with no panel until V3.' },
+    { id:'infrastructure-status', group:'automation', title:'🖥️ Infrastructure', service:'infrastructure-status', kind:'kv',
+      note:'Real CPU/memory/disk (Node os/fs) plus a real AI cost-rate trend over data/ai_cost_log.jsonl. No fabricated "quota remaining" — Groq exposes no queryable quota API. Existed in the real Service Layer since 2026-07-19 (Autonomous Digital Company v1) with no panel until V3.' },
+    { id:'founder-console', group:'overview', title:'🎯 Founder Actions Required', service:'founder-console', kind:'kv',
+      note:'The one view in this whole dashboard framed as "you need to decide something": blocked marketplace channels + why, DEFERRED decisions awaiting a call, real attention/review flags, and BLOCKERS.md\'s founder-only action list. Everything else in Mission Control stays informational. Existed in the real Service Layer since 2026-07-19 (EOS Phase 1) with no panel until V3 — the exact real source for the Executive Summary\'s "Founder Actions Required" tile above.' },
+
     // Executive Command Center (ADR-146, 2026-07-30): the one genuinely
     // new real service this round adds.
     { id:'market-intelligence-source-status', group:'market', title:'External Evidence Sources (Reddit / Product Hunt / News / …)', service:'market-intelligence-source-status', kind:'kv',
@@ -431,8 +475,79 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
     { id:'customer', title:'11 · Customer Operations', note:'Not one of the directive’s 10 named sections — kept because 6 real, working customer panels exist and dropping them to fit an exact count would discard real data.' },
   ];
   const GROUP_BY_ID = Object.fromEntries(GROUPS.map(g => [g.id, g]));
+  const SECTIONS_BY_ID = Object.fromEntries(SECTIONS.map(s => [s.id, s]));
 
   const state = {}; // id -> { status: 'pending'|'ok'|'empty'|'error', payload, fetchedAt }
+
+  // ── Executive Mission Control V3 (ADR-151, 2026-07-30) ──
+  // Every entry below points at a real, already-fetched SECTIONS id —
+  // the Division Grid and Executive Summary never fetch anything a
+  // second time, they only compose data already sitting in `state`
+  // (plus the two lightweight, once-per-refresh /api/v1/health and
+  // /api/v1/metrics.json calls below). 3 divisions (Quality Assurance,
+  // Infrastructure, and the Executive Summary's own Founder Actions
+  // Required tile) point at real services that had zero panel until
+  // this round — see the 3 new SECTIONS entries above (ai-doctor,
+  // infrastructure-status, founder-console).
+  const DIVISIONS = [
+    { id:'executive-brain', title:'Executive Brain', icon:'🧠' },
+    { id:'commercial-intelligence', title:'Market Intelligence', icon:'🔎' },
+    { id:'global-opportunity-exchange', title:'Global Opportunity Exchange', icon:'🌐' },
+    { id:'capital-allocation-dashboard', title:'Capital Allocation Engine', icon:'💰' },
+    { id:'evolution-queue', title:'Evolution Queue', icon:'🧬', pendingArrayKey:'awaiting_approval' },
+    { id:'autonomous-operations-status', title:'Autonomous Operations', icon:'🚀' },
+    { id:'product-portfolio', title:'Digital Products Division', icon:'📚' },
+    { id:'distribution-status', title:'KDP Publishing', icon:'📤' },
+    { id:'affiliate-commerce-status', title:'Affiliate Commerce', icon:'🛒' },
+    { id:'revenue-status', title:'Finance', icon:'💵' },
+    { id:'knowledge-graph', title:'Knowledge Graph', icon:'🕸️' },
+    { id:'production-status', title:'Production', icon:'🏭' },
+    { id:'ai-doctor', title:'Quality Assurance', icon:'🩺' },
+    { id:'infrastructure-status', title:'Infrastructure', icon:'🖥️' },
+    { id:'automation-status', title:'Automation', icon:'🤖' },
+    { id:'alerts', title:'Alerts', icon:'🚨' },
+    { id:'decision-memory', title:'Executive Decisions', icon:'🧭' },
+  ];
+
+  // Publishing Status deliberately cites the same real distribution-
+  // status service as the KDP Publishing division above rather than a
+  // 4th new SECTIONS entry — a real, already-wired per-platform
+  // publishing checklist, honestly showing zero real publishes today.
+  const EXEC_SUMMARY_TILES = [
+    { id:'company-health', title:'Company Health Score' },
+    { id:'revenue-status', title:'Revenue Overview' },
+    { id:'opportunity-pipeline', title:'Active Opportunities' },
+    { id:'distribution-status', title:'Publishing Status' },
+    { id:'affiliate-commerce-status', title:'Affiliate Status' },
+    { id:'production-status', title:'Production Queue' },
+    { id:'alerts', title:'Strategic Alerts' },
+    { id:'founder-console', title:'Founder Actions Required', pendingArrayKey:'pending_decisions' },
+  ];
+
+  let healthMap = {}; // service name -> { status, detail }, from real GET /api/v1/health
+  let metricsMap = {}; // "/<service>" -> { count, errors, avg_latency_ms }, from real GET /api/v1/metrics.json
+
+  async function fetchHealthMap(){
+    try {
+      const res = await fetch('/api/v1/health', { credentials:'same-origin' });
+      const body = await res.json();
+      const map = {};
+      (body.services || []).forEach(s => { map[s.name] = { status: s.status, detail: s.detail }; });
+      healthMap = map;
+    } catch (err) {
+      healthMap = {}; // honest: no health data this cycle, never a fabricated "ok"
+    }
+  }
+
+  async function fetchMetricsSummary(){
+    try {
+      const res = await fetch('/api/v1/metrics.json', { credentials:'same-origin' });
+      const body = await res.json();
+      metricsMap = body.routes || {};
+    } catch (err) {
+      metricsMap = {};
+    }
+  }
 
   function el(tag, attrs, children){
     const e = document.createElement(tag);
@@ -870,6 +985,105 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
     container.appendChild(card);
   }
 
+  // ── Executive Mission Control V3 (ADR-151, 2026-07-30) ──
+  // Condensed body for a Division/Executive-Summary tile: the top 3 real
+  // numeric fields only (reusing flattenLeaves/labelFor verbatim from the
+  // full detail-card renderer above) — deliberately NOT a copy of
+  // renderKV's full kv-grid/long-text/complex-details output, so nothing
+  // here duplicates the full detail card already rendered below it.
+  function renderDivisionCardBody(payload){
+    if (payload == null) return el('div', { class:'empty' }, ['No verified data']);
+    const leaves = flattenLeaves(payload, '', [], 0);
+    const numeric = leaves.filter(([,v]) => typeof v === 'number').slice(0, 3);
+    if (!numeric.length) return el('div', { class:'empty' }, ['No real numeric summary field — see the full detail panel below.']);
+    const row = el('div', { class:'stat-row' });
+    numeric.forEach(([k,v]) => {
+      row.appendChild(el('div', { class:'stat', title: fullLabelFor(k) }, [
+        el('div', { class:'num' }, [String(v)]),
+        el('div', { class:'label' }, [labelFor(k)]),
+      ]));
+    });
+    return row;
+  }
+
+  // Real pending-work count for the small set of divisions with an
+  // explicit, named real array field for it (Evolution Queue's
+  // awaiting_approval, Founder Console's pending_decisions) — never a
+  // generic heuristic guess. Every other division honestly shows "—".
+  function pendingCountFor(cfg, payload){
+    if (!cfg.pendingArrayKey || !payload) return null;
+    const arr = payload[cfg.pendingArrayKey];
+    return Array.isArray(arr) ? arr.length : null;
+  }
+
+  function renderDivisionMeta(cfg, s){
+    const sec = SECTIONS_BY_ID[cfg.id];
+    const svcName = sec ? sec.service : cfg.id;
+    const health = healthMap[svcName];
+    const perf = metricsMap['/' + svcName];
+    const pending = pendingCountFor(cfg, s.payload);
+    return el('div', { class:'card-meta' }, [
+      el('span', null, [el('b', null, ['Health: ']), health ? health.status : 'not separately tracked']),
+      el('span', null, [el('b', null, ['Errors: ']), (health && health.status !== 'ok') ? (health.detail || 'reported, no detail') : 'No errors reported']),
+      el('span', null, [el('b', null, ['Performance: ']), perf ? (perf.count + ' req · avg ' + (perf.avg_latency_ms != null ? perf.avg_latency_ms + 'ms' : '—')) : 'No requests recorded yet']),
+      el('span', null, [el('b', null, ['Pending: ']), pending != null ? String(pending) : '—']),
+      el('span', null, [el('b', null, ['Updated: ']), s.status === 'pending' ? '—' : relTime(s.fetchedAt)]),
+    ]);
+  }
+
+  function renderDivisionBody(s){
+    const body = el('div', { class:'card-body' });
+    if (s.status === 'pending') body.appendChild(el('div', { class:'empty' }, ['Loading real data…']));
+    else if (s.status === 'error') body.appendChild(el('div', { class:'empty' }, ['No verified data — ' + (s.error || 'request failed')]));
+    else if (s.status === 'empty') body.appendChild(el('div', { class:'empty' }, ['No verified data']));
+    else body.appendChild(renderDivisionCardBody(s.payload));
+    return body;
+  }
+
+  // The dense, executive-facing summary tier -- sits above the existing
+  // 64-panel drill-down layer (#sections, unchanged) and reads only from
+  // data already fetched into `state` by the exact same fetchSection()
+  // calls that layer already makes, plus the two lightweight health/
+  // metrics fetches above. Zero duplicate fetching, zero duplicated
+  // detail -- each tile/card is a condensed citation of its own real
+  // detail panel below, not a second copy of it.
+  function renderExecutiveSummary(){
+    const container = document.getElementById('execSummary');
+    if (!container) return;
+    container.innerHTML = '';
+    EXEC_SUMMARY_TILES.forEach(tile => {
+      const s = state[tile.id] || { status:'pending' };
+      const pill = pillFor(s.status);
+      const card = el('div', { class:'division-card exec-tile' });
+      card.appendChild(el('div', { class:'card-top' }, [
+        el('div', { class:'card-title' }, [tile.title]),
+        el('span', { class:'pill ' + pill.cls }, [pill.label]),
+      ]));
+      card.appendChild(renderDivisionMeta(tile, s));
+      card.appendChild(renderDivisionBody(s));
+      container.appendChild(card);
+    });
+  }
+
+  function renderDivisionGrid(){
+    const container = document.getElementById('divisionGrid');
+    if (!container) return;
+    container.innerHTML = '';
+    DIVISIONS.forEach(div => {
+      const s = state[div.id] || { status:'pending' };
+      const pill = pillFor(s.status);
+      const card = el('div', { class:'division-card' });
+      card.appendChild(el('div', { class:'card-top' }, [
+        el('div', { class:'card-title' }, [(div.icon ? div.icon + ' ' : '') + div.title]),
+        el('span', { class:'pill ' + pill.cls }, [pill.label]),
+      ]));
+      card.appendChild(renderDivisionMeta(div, s));
+      card.appendChild(renderDivisionBody(s));
+      card.appendChild(el('a', { class:'division-drilldown', href:'#sec-' + div.id }, ['View full detail →']));
+      container.appendChild(card);
+    });
+  }
+
   function renderNav(){
     const nav = document.getElementById('sectionNav');
     nav.innerHTML = '';
@@ -903,7 +1117,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
     initGroupContainers();
     SECTIONS.forEach(renderSection);
     renderNav();
-    await Promise.all(SECTIONS.map(sec => fetchSection(sec, { fresh })));
+    await Promise.all([
+      ...SECTIONS.map(sec => fetchSection(sec, { fresh })),
+      fetchHealthMap(),
+      fetchMetricsSummary(),
+    ]);
+    renderExecutiveSummary();
+    renderDivisionGrid();
   }
 
   // ── Global search: filters already-rendered real cards by their own
