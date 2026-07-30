@@ -1035,6 +1035,21 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('gfos_enterprise_timeline'),
   },
   {
+    // Affiliate Commerce (ADR-149, 2026-07-30): the founder's explicit
+    // override of the ADR-148 Golden Rule deferral -- the smallest real,
+    // honest slice (one network, one category, real click tracking, no
+    // conversion/commission -- that needs Amazon's real postback). This
+    // is the internal, Mission-Control-authenticated status view; the
+    // customer-facing product data/click routes are public
+    // (/api/affiliate/products, /api/affiliate/click/:product_id above
+    // /api/customer/catalog), unauthenticated by design.
+    name: 'affiliate-commerce-status',
+    description: "The real Affiliate Commerce status -- real click counts per product (data/affiliate_clicks.jsonl, never fabricated), whether a real Amazon Associates tag is configured, the real static product dataset, and an honest not-implemented-yet list (real account signup, real conversion/commission tracking, SEO engine/multi-partner/auto-discovery -- explicitly excluded by the founder's own directive as premature).",
+    reused: 'affiliate_commerce/networks.py + click_tracking.py + products.py (ADR-149), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('affiliate_commerce_status', [], req),
+    health: pythonHealthCheck('affiliate_commerce_status'),
+  },
+  {
     // Executive Command Center (ADR-146, 2026-07-30): reuses
     // multi_source_intelligence.registry.get_connectors() verbatim --
     // never a second connector list. Static-unavailable sources
@@ -4922,6 +4937,44 @@ app.get('/api/customer/catalog', (req, res) => {
     res.json({ success: true, products: Array.isArray(products) ? products : [] });
   } catch (err) {
     res.status(500).json({ success: false, error: 'catalog temporarily unavailable' });
+  }
+});
+
+// ── Affiliate Commerce (ADR-149, 2026-07-30) ──
+// Public, unauthenticated -- a customer_site visitor has no Mission
+// Control login, same reasoning as /api/customer/catalog above. Real,
+// static, disclosed-source product data (affiliate_commerce/products.py)
+// -- never cached (runPythonService, not runPythonServiceCached): cheap,
+// static-in-Python-anyway, and click-adjacent routes on this same
+// surface must never be cached, so neither is kept behind a shared cache
+// key by accident.
+app.get('/api/affiliate/products', async (req, res) => {
+  try {
+    const category = req.query.category || 'standing_desk_converters';
+    const result = await runPythonService('affiliate_products', [JSON.stringify({ category })]);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'affiliate product data temporarily unavailable' });
+  }
+});
+
+// Real click tracking (not conversion -- that needs the real Amazon
+// Associates postback, which does not exist yet). Every call is a real,
+// distinct, honestly-recorded click -- appended to
+// data/affiliate_clicks.jsonl (affiliate_commerce/click_tracking.py)
+// before the real redirect fires. Amazon's own real product URL is
+// built by affiliate_commerce/networks.py, honestly untagged until the
+// founder's own real Amazon Associates account exists.
+app.get('/api/affiliate/click/:product_id', async (req, res) => {
+  try {
+    const payload = { product_id: req.params.product_id, referrer: req.get('referer') || null };
+    const result = await runPythonService('affiliate_click', [JSON.stringify(payload)]);
+    if (!result.found || !result.url) {
+      return res.status(404).json({ success: false, error: 'no real product with that id' });
+    }
+    res.redirect(302, result.url);
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'affiliate redirect temporarily unavailable' });
   }
 });
 

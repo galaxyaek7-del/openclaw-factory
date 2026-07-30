@@ -881,6 +881,65 @@ def _gfos_enterprise_timeline():
     return gfos.enterprise_timeline(limit=50)
 
 
+def _affiliate_products():
+    """Affiliate Commerce (ADR-149, 2026-07-30): the real, static,
+    disclosed-source product dataset -- reads sys.argv[2] for an
+    optional {"category": "..."} payload, defaults to
+    standing_desk_converters (the one real category this round built).
+    Public route -- called from server.js's unauthenticated
+    /api/affiliate/products, since customer-facing pages have no
+    Mission Control login."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    category = payload.get("category", "standing_desk_converters")
+
+    from affiliate_commerce import products
+    return products.list_products(category=category)
+
+
+def _affiliate_click():
+    """Affiliate Commerce (ADR-149, 2026-07-30): records one real click
+    and returns the real Amazon URL to redirect to (with a real
+    Associates tag if one is configured, honestly without one if not).
+    Reads {"product_id": "...", "referrer": "..."} from sys.argv[2]."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    product_id = (payload.get("product_id") or "").strip()
+    if not product_id:
+        raise ValueError("{ product_id } is required")
+
+    from affiliate_commerce import products, networks, click_tracking
+    product = products.get_product(product_id)
+    if not product:
+        # "success" here means the RPC itself succeeded, not that the
+        # product was found -- runPythonService() rejects on a literal
+        # success:false, which would turn an honest "no such product"
+        # into a generic 500 on the server.js side. "found" is the real
+        # honesty signal the caller checks.
+        return {"success": True, "found": False, "error": f"no real product with id {product_id!r}"}
+
+    click_tracking.record_click(product_id, referrer=payload.get("referrer"))
+    url = networks.build_amazon_url(product["asin"])
+    return {"success": True, "found": True, "url": url, "tag_configured": networks.amazon_associate_tag_configured()}
+
+
+def _affiliate_commerce_status():
+    """Affiliate Commerce (ADR-149, 2026-07-30): the real Mission
+    Control status panel -- real click counts per product, real
+    Associates-tag configuration status. Never a fabricated conversion
+    rate or commission figure -- both require the real affiliate
+    network's postback, which does not exist yet."""
+    from affiliate_commerce import networks, click_tracking, products
+    return {
+        "network": networks.network_status(),
+        "clicks": click_tracking.click_summary(),
+        "products": products.list_products(),
+        "not_implemented_yet": [
+            "Real Amazon Associates account (needs the founder's own real signup -- this system cannot create it)",
+            "Real conversion/commission tracking (needs the affiliate network's real postback API)",
+            "SEO engine, multi-partner comparison, auto-discovery (explicitly excluded by the founder's own directive as premature)",
+        ],
+    }
+
+
 def _market_intelligence_source_status():
     """Executive Command Center (ADR-146, 2026-07-30): the real,
     registered external-evidence-source inventory for the Market
@@ -2278,6 +2337,9 @@ _ENDPOINTS = {
     "executive_directives_history": _executive_directives_history,
     "gfos_status": _gfos_status,
     "gfos_enterprise_timeline": _gfos_enterprise_timeline,
+    "affiliate_products": _affiliate_products,
+    "affiliate_click": _affiliate_click,
+    "affiliate_commerce_status": _affiliate_commerce_status,
     "market_intelligence_source_status": _market_intelligence_source_status,
     "decision_memory_list": _decision_memory_list,
     "decision_memory_conflicts": _decision_memory_conflicts,
