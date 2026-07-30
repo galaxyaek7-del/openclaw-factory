@@ -1067,10 +1067,23 @@ const SERVICE_REGISTRY = [
     // founder actions that actually move a proposal (approve/reject/
     // mark-implemented) are in ACTION_REGISTRY below, never auto-fired.
     name: 'evolution-queue',
-    description: "The real Evolution Queue -- every real proposal from tool_intelligence.proposals.list_proposals(), its real simulated impact/rollback-complexity, and its real stage (PROPOSED/SIMULATED/AWAITING_FOUNDER_APPROVAL/APPROVED/REJECTED/IMPLEMENTED). Nothing auto-approves or auto-executes; every proposal, whatever its computed risk tier, waits for a real founder decision.",
-    reused: 'evolution_queue.py list_evolution_queue() (Round 1), fed daily by factory_loop.js maybeGenerateDailyEvolutionQueueIntake() (Round 4), via mission_control_api.py.',
+    description: "The real Evolution Queue -- every real proposal from tool_intelligence.proposals.list_proposals(), its real simulated impact/rollback-complexity, a real disclosed-heuristic ranking (revenue_impact/execution_cost/long_term_sustainability_concern/risk/confidence -- strategic_value honestly not_computed, no per-proposal signal exists), and its real stage (PROPOSED/SIMULATED/AWAITING_FOUNDER_APPROVAL/APPROVED/REJECTED/IMPLEMENTED). Nothing auto-approves or auto-executes; every proposal, whatever its computed risk tier, waits for a real founder decision.",
+    reused: 'evolution_queue.py list_evolution_queue() (Round 1) + rank_proposal() (Round 2), fed daily by factory_loop.js maybeGenerateDailyEvolutionQueueIntake() (Round 4), via mission_control_api.py.',
     handler: (req) => runPythonServiceCached('evolution_queue', [], req),
     health: pythonHealthCheck('evolution_queue'),
+  },
+  {
+    // Autonomous Evolution Engine directive, Round 2 (2026-07-30): "the
+    // system continuously measures whether every implemented evolution
+    // actually improved" revenue/reliability/customer value -- the real
+    // Measure step. Read-only here; the automatic daily measurement cycle
+    // is factory_loop.js's maybeMeasureEvolutionOutcomes(), never a new
+    // execute-capable action.
+    name: 'evolution-measured-outcomes',
+    description: "Real before/after outcome measurement for every real IMPLEMENTED evolution proposal -- a real baseline snapshot captured at mark-implemented time (revenue via channels/ledger.py revenue_trend(), reliability via health_trend.py's GET /health history, customer value via customer_pipeline.py funnel_conversion_summary()) compared against a fresh snapshot no sooner than 7 real elapsed days later. Reports IMPROVED/DEGRADED/NO_CHANGE/NOT_ENOUGH_DATA per dimension -- scalability/automation/execution_speed are honestly NO_REAL_SIGNAL, never fabricated. Each real measurement appends to the proposal's own trend, so this panel is a real Learning History of whether this factory's own self-changes actually helped.",
+    reused: 'evolution_queue.py list_measured_outcomes() + measure_outcome() (Round 2, 2026-07-30), fed daily by factory_loop.js maybeMeasureEvolutionOutcomes(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('evolution_measured_outcomes', [], req),
+    health: pythonHealthCheck('evolution_measured_outcomes'),
   },
   {
     name: 'market-review',

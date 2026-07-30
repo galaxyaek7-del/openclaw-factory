@@ -1949,6 +1949,78 @@ async function maybeGenerateDailyEvolutionQueueIntake(now = new Date()) {
   return { action: 'processed', detail: `تمت معالجة ${result.added_count} اقتراح جديد في طابور التطوّر (${result.processed.join(', ') || 'لا شيء'})` };
 }
 
+// Autonomous Evolution Engine directive, Round 2 (2026-07-30): "continuously
+// measures whether every implemented evolution actually improved" X — the
+// real automatic Measure path. Read-only against every decision field
+// (approve/reject/mark-implemented stay exclusively founder-triggered);
+// only ever appends a dated entry to an IMPLEMENTED record's own
+// outcome_measurements. Same once-per-calendar-day gate as the intake
+// cycle above — nothing here can produce a meaningfully different real
+// reading faster than that.
+const EVOLUTION_OUTCOME_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.evolution_outcome_daily_marker');
+
+function runEvolutionOutcomeMeasurementCycle({ timeoutMs = 30000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'evolution_outcome_daily_cycle'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة evolution_outcome_daily_cycle (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من evolution_outcome_daily_cycle' });
+          return;
+        }
+        finish({ ok: true, measured_count: result.measured_count, measured: result.measured, skipped: result.skipped });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج evolution_outcome_daily_cycle: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeMeasureEvolutionOutcomes(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(EVOLUTION_OUTCOME_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم قياس نتائج التطوّر اليوم بالفعل (${today})` };
+  }
+  const result = await runEvolutionOutcomeMeasurementCycle();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(path.dirname(EVOLUTION_OUTCOME_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(EVOLUTION_OUTCOME_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ علامة قياس نتائج التطوّر: ${err.message}` };
+  }
+  return { action: 'processed', detail: `تم قياس ${result.measured_count} مقترح مُنفَّذ (${result.measured.join(', ') || 'لا شيء'})` };
+}
+
 // Final Executive Directive (2026-07-29): "maintain institutional
 // knowledge" — knowledge_graph.build_graph() has zero prior callers in
 // this tick (confirmed via direct grep before adding this). Pure,
@@ -2575,6 +2647,12 @@ async function runTick() {
   markStep('evolution_queue_intake');
   actions.push({ step: 'evolution_queue_intake', ...(await maybeGenerateDailyEvolutionQueueIntake()) });
 
+  // Autonomous Evolution Engine directive, Round 2 (2026-07-30): the real
+  // automatic Measure path — never approves/rejects/marks-implemented,
+  // only appends a dated measurement to an already-IMPLEMENTED record.
+  markStep('evolution_outcome_measurement');
+  actions.push({ step: 'evolution_outcome_measurement', ...(await maybeMeasureEvolutionOutcomes()) });
+
   // Final Executive Directive (2026-07-29): same once-per-calendar-day
   // pattern as the report engines above — the 2 confirmed-safe, genuinely
   // new autonomy additions ("maintain institutional knowledge" +
@@ -2815,6 +2893,7 @@ module.exports = {
   runDepartmentHealthReport, departmentHealthReportPath, maybeGenerateDailyDepartmentHealthReport,
   runExecutiveBrief, executiveBriefReportPath, maybeGenerateDailyExecutiveBrief,
   runEvolutionQueueDailyCycle, maybeGenerateDailyEvolutionQueueIntake,
+  runEvolutionOutcomeMeasurementCycle, maybeMeasureEvolutionOutcomes,
   runKnowledgeGraphDailySnapshot, maybeGenerateDailyKnowledgeGraph,
   runGeneratePendingBusinessBlueprints, maybeGenerateBusinessBlueprintsForNewAcceptedDecisions,
   runResilienceMonitorTick,

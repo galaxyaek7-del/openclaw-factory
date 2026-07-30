@@ -953,6 +953,25 @@ def _reject_evolution_proposal():
     return evolution_queue.reject_proposal(proposal_id, decided_by="founder", reason=payload.get("reason"))
 
 
+def _evolution_outcome_daily_cycle():
+    """Autonomous Evolution Engine directive, Round 2 (2026-07-30): the
+    real automatic Measure path -- runs measure_outcome() for every real
+    IMPLEMENTED proposal whose real elapsed time has crossed the real
+    minimum window, honestly skipping (not silently) any still too new.
+    Read-only against every decision field; only ever appends to a
+    record's own outcome_measurements."""
+    import evolution_queue
+    return evolution_queue.run_daily_outcome_measurement_cycle()
+
+
+def _evolution_measured_outcomes():
+    """Read-only Mission Control panel: the real Measured Outcomes for
+    every IMPLEMENTED proposal -- latest verdict plus the full real
+    measurement trend. Passthrough only."""
+    import evolution_queue
+    return evolution_queue.list_measured_outcomes()
+
+
 def _mark_evolution_proposal_implemented():
     """Closes the loop after a real, separately-reviewed Claude Code
     session has actually shipped an APPROVED proposal -- never called
@@ -2105,6 +2124,8 @@ _ENDPOINTS = {
     "approve_evolution_proposal": _approve_evolution_proposal,
     "reject_evolution_proposal": _reject_evolution_proposal,
     "mark_evolution_proposal_implemented": _mark_evolution_proposal_implemented,
+    "evolution_outcome_daily_cycle": _evolution_outcome_daily_cycle,
+    "evolution_measured_outcomes": _evolution_measured_outcomes,
     "publish_protection_status": _publish_protection_status,
     "publish_emergency_stop": _publish_emergency_stop,
     "publish_emergency_resume": _publish_emergency_resume,

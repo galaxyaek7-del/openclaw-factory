@@ -9,11 +9,13 @@ tool_intelligence.proposals.list_proposals() output.
     python -m unittest tests.test_evolution_queue -v
 """
 
+import datetime as dt
 import os
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
@@ -214,6 +216,181 @@ class TestListEvolutionQueue(BaseQueueTest):
         # Still just informational -- stage must be unchanged.
         state = eq._load_state(self.state_path)
         self.assertEqual(state["p1"]["stage"], "AWAITING_FOUNDER_APPROVAL")
+
+
+def _fake_snapshot(now, revenue_avg=None, health_status=None, funnel_answer="Unknown"):
+    return {
+        "captured_at": now.isoformat(),
+        "revenue": {"recent_7d_revenue_usd": revenue_avg, "trailing_daily_avg_usd": revenue_avg, "source": "fake"},
+        "reliability": {"latest_health_status": health_status, "source": "fake"},
+        "customer_value": {"conversions": None, "answer": funnel_answer, "source": "fake"},
+    }
+
+
+class TestMarkImplementedBaseline(BaseQueueTest):
+    """Autonomous Evolution Engine directive, Round 2 (2026-07-30):
+    mark_implemented() must capture a real baseline snapshot -- the
+    "before" half of the outcome-measurement pipeline."""
+
+    def _approved(self):
+        eq.intake_proposals(proposals=[_sample_proposal()], state_path=self.state_path)
+        eq.simulate_proposal("test_proposal_1", state_path=self.state_path)
+        eq.decide_proposal("test_proposal_1", state_path=self.state_path)
+        eq.approve_proposal("test_proposal_1", state_path=self.state_path)
+
+    def test_baseline_snapshot_and_implemented_at_are_captured(self):
+        self._approved()
+        with patch.object(eq, "_capture_metrics_snapshot", return_value=_fake_snapshot(dt.datetime.now(dt.timezone.utc), revenue_avg=10.0, health_status="healthy")):
+            result = eq.mark_implemented("test_proposal_1", state_path=self.state_path)
+        self.assertTrue(result["success"])
+        self.assertEqual(result["baseline_snapshot"]["revenue"]["trailing_daily_avg_usd"], 10.0)
+        self.assertIsNotNone(result["implemented_at"])
+        self.assertEqual(result["outcome_measurements"], [])
+
+    def test_snapshot_capture_failure_does_not_block_the_real_state_transition(self):
+        self._approved()
+        with patch.object(eq, "_capture_metrics_snapshot", side_effect=RuntimeError("boom")):
+            result = eq.mark_implemented("test_proposal_1", state_path=self.state_path)
+        self.assertTrue(result["success"], "a snapshot failure must never block the real IMPLEMENTED transition itself")
+        self.assertIn("error", result["baseline_snapshot"])
+
+
+class TestMeasureOutcome(BaseQueueTest):
+    def _implemented(self, now, revenue_avg=10.0, health_status="healthy"):
+        eq.intake_proposals(proposals=[_sample_proposal()], state_path=self.state_path)
+        eq.simulate_proposal("test_proposal_1", state_path=self.state_path)
+        eq.decide_proposal("test_proposal_1", state_path=self.state_path)
+        eq.approve_proposal("test_proposal_1", state_path=self.state_path)
+        with patch.object(eq, "_capture_metrics_snapshot", return_value=_fake_snapshot(now, revenue_avg=revenue_avg, health_status=health_status)):
+            eq.mark_implemented("test_proposal_1", state_path=self.state_path, now=now)
+
+    def test_wrong_stage_is_rejected(self):
+        eq.intake_proposals(proposals=[_sample_proposal()], state_path=self.state_path)
+        result = eq.measure_outcome("test_proposal_1", state_path=self.state_path)
+        self.assertFalse(result["success"])
+
+    def test_refuses_to_measure_before_min_days_elapsed(self):
+        now = dt.datetime.now(dt.timezone.utc)
+        self._implemented(now)
+        result = eq.measure_outcome("test_proposal_1", state_path=self.state_path, now=now + dt.timedelta(days=1))
+        self.assertFalse(result["success"])
+        self.assertTrue(result["not_enough_time"])
+
+    def test_improved_revenue_and_reliability_are_reported_honestly(self):
+        now = dt.datetime.now(dt.timezone.utc)
+        self._implemented(now, revenue_avg=10.0, health_status="degraded")
+        later = now + dt.timedelta(days=8)
+        with patch.object(eq, "_capture_metrics_snapshot", return_value=_fake_snapshot(later, revenue_avg=20.0, health_status="healthy")):
+            result = eq.measure_outcome("test_proposal_1", state_path=self.state_path, now=later)
+        self.assertTrue(result["success"])
+        verdicts = result["measurement"]["verdicts"]
+        self.assertEqual(verdicts["revenue"], "IMPROVED")
+        self.assertEqual(verdicts["reliability"], "IMPROVED")
+        self.assertIn("NO_REAL_SIGNAL", verdicts["scalability"])
+        self.assertIn("NO_REAL_SIGNAL", verdicts["automation"])
+
+    def test_degraded_revenue_is_reported_honestly_never_hidden(self):
+        now = dt.datetime.now(dt.timezone.utc)
+        self._implemented(now, revenue_avg=20.0, health_status="healthy")
+        later = now + dt.timedelta(days=8)
+        with patch.object(eq, "_capture_metrics_snapshot", return_value=_fake_snapshot(later, revenue_avg=5.0, health_status="critical")):
+            result = eq.measure_outcome("test_proposal_1", state_path=self.state_path, now=later)
+        verdicts = result["measurement"]["verdicts"]
+        self.assertEqual(verdicts["revenue"], "DEGRADED")
+        self.assertEqual(verdicts["reliability"], "DEGRADED")
+
+    def test_missing_data_is_not_ever_data(self):
+        now = dt.datetime.now(dt.timezone.utc)
+        self._implemented(now, revenue_avg=None, health_status=None)
+        later = now + dt.timedelta(days=8)
+        with patch.object(eq, "_capture_metrics_snapshot", return_value=_fake_snapshot(later, revenue_avg=None, health_status=None)):
+            result = eq.measure_outcome("test_proposal_1", state_path=self.state_path, now=later)
+        verdicts = result["measurement"]["verdicts"]
+        self.assertEqual(verdicts["revenue"], "NOT_ENOUGH_DATA")
+        self.assertEqual(verdicts["reliability"], "NOT_ENOUGH_DATA")
+
+    def test_repeated_measurement_does_not_reset_the_elapsed_time_clock(self):
+        """Regression test for a real bug found during implementation:
+        _record_history() appends a second stage_history row still tagged
+        IMPLEMENTED every time a measurement logs its detail -- deriving
+        implemented_at from stage_history each call silently reset the
+        elapsed-time gate to zero on every second measurement."""
+        now = dt.datetime.now(dt.timezone.utc)
+        self._implemented(now)
+        later = now + dt.timedelta(days=8)
+        with patch.object(eq, "_capture_metrics_snapshot", return_value=_fake_snapshot(later, revenue_avg=20.0, health_status="healthy")):
+            first = eq.measure_outcome("test_proposal_1", state_path=self.state_path, now=later)
+            second = eq.measure_outcome("test_proposal_1", state_path=self.state_path, now=later + dt.timedelta(hours=1))
+        self.assertTrue(first["success"] and second["success"])
+        self.assertGreater(second["measurement"]["elapsed_days"], 7.9, "must still reflect real time since IMPLEMENTED, not reset by the prior measurement")
+        state = eq._load_state(self.state_path)
+        self.assertEqual(len(state["test_proposal_1"]["outcome_measurements"]), 2)
+
+
+class TestRunDailyOutcomeMeasurementCycle(BaseQueueTest):
+    def test_skips_records_under_the_time_window_honestly(self):
+        now = dt.datetime.now(dt.timezone.utc)
+        eq.intake_proposals(proposals=[_sample_proposal()], state_path=self.state_path)
+        eq.simulate_proposal("test_proposal_1", state_path=self.state_path)
+        eq.decide_proposal("test_proposal_1", state_path=self.state_path)
+        eq.approve_proposal("test_proposal_1", state_path=self.state_path)
+        with patch.object(eq, "_capture_metrics_snapshot", return_value=_fake_snapshot(now)):
+            eq.mark_implemented("test_proposal_1", state_path=self.state_path, now=now)
+        result = eq.run_daily_outcome_measurement_cycle(state_path=self.state_path, now=now + dt.timedelta(days=1))
+        self.assertEqual(result["measured_count"], 0)
+        self.assertEqual(len(result["skipped"]), 1)
+
+    def test_only_touches_implemented_records(self):
+        eq.run_daily_cycle(proposals=[_sample_proposal("p1")], state_path=self.state_path)
+        result = eq.run_daily_outcome_measurement_cycle(state_path=self.state_path)
+        self.assertEqual(result["measured_count"], 0)
+        self.assertEqual(result["skipped"], [])
+
+
+class TestListMeasuredOutcomes(BaseQueueTest):
+    def test_empty_is_honest(self):
+        result = eq.list_measured_outcomes(state_path=self.state_path)
+        self.assertEqual(result["entries"], [])
+
+    def test_implemented_without_measurement_is_honestly_not_yet_measured(self):
+        now = dt.datetime.now(dt.timezone.utc)
+        eq.intake_proposals(proposals=[_sample_proposal()], state_path=self.state_path)
+        eq.simulate_proposal("test_proposal_1", state_path=self.state_path)
+        eq.decide_proposal("test_proposal_1", state_path=self.state_path)
+        eq.approve_proposal("test_proposal_1", state_path=self.state_path)
+        with patch.object(eq, "_capture_metrics_snapshot", return_value=_fake_snapshot(now)):
+            eq.mark_implemented("test_proposal_1", state_path=self.state_path, now=now)
+        result = eq.list_measured_outcomes(state_path=self.state_path)
+        self.assertEqual(result["entries"][0]["status"], "NOT_YET_MEASURED")
+
+
+class TestRankProposal(BaseQueueTest):
+    def test_revenue_keyword_is_tagged_revenue_linked(self):
+        eq.intake_proposals(proposals=[_sample_proposal(evidence="customer_pipeline.py shows a real revenue issue")], state_path=self.state_path)
+        eq.simulate_proposal("test_proposal_1", state_path=self.state_path)
+        record = eq._load_state(self.state_path)["test_proposal_1"]
+        ranking = eq.rank_proposal(record)
+        self.assertEqual(ranking["revenue_impact"], "revenue_linked")
+
+    def test_strategic_value_is_honestly_not_computed_never_fabricated(self):
+        eq.intake_proposals(proposals=[_sample_proposal()], state_path=self.state_path)
+        eq.simulate_proposal("test_proposal_1", state_path=self.state_path)
+        record = eq._load_state(self.state_path)["test_proposal_1"]
+        ranking = eq.rank_proposal(record)
+        self.assertEqual(ranking["strategic_value"]["value"], "not_computed")
+
+    def test_policy_risk_flag_raises_risk_to_high(self):
+        eq.intake_proposals(proposals=[_sample_proposal(evidence="a real gap in profit_oracle.py's pricing logic")], state_path=self.state_path)
+        eq.simulate_proposal("test_proposal_1", state_path=self.state_path)
+        eq.decide_proposal("test_proposal_1", state_path=self.state_path)
+        record = eq._load_state(self.state_path)["test_proposal_1"]
+        ranking = eq.rank_proposal(record)
+        self.assertEqual(ranking["risk"], "high")
+
+    def test_ranking_is_attached_to_list_evolution_queue_entries(self):
+        eq.run_daily_cycle(proposals=[_sample_proposal("p1")], state_path=self.state_path)
+        result = eq.list_evolution_queue(state_path=self.state_path)
+        self.assertIsNotNone(result["entries"][0]["ranking"])
 
 
 if __name__ == "__main__":

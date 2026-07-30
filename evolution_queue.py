@@ -253,10 +253,59 @@ def reject_proposal(proposal_id, decided_by=None, reason=None, state_path=None):
     return {"success": True, **record}
 
 
-def mark_implemented(proposal_id, note=None, state_path=None):
+def _capture_metrics_snapshot(now=None):
+    """Real, source-cited snapshot across the only three post-implementation
+    signals this factory can actually measure today (Autonomous Evolution
+    Engine directive, 2026-07-30): revenue (channels/ledger.py's own
+    real revenue_trend()), reliability (health_trend.py's own real
+    GET /health snapshot history), and customer value (customer_pipeline.py's
+    own real funnel_conversion_summary()). Scalability/automation/execution
+    speed are deliberately NOT included -- no real signal for any of them
+    exists anywhere in this factory yet (confirmed by grep before writing
+    this); measure_outcome() below discloses that gap explicitly rather
+    than inventing a number for it."""
+    now = now or datetime.now(timezone.utc)
+
+    from channels import ledger as sales_ledger
+    revenue = sales_ledger.revenue_trend(now=now)
+
+    import health_trend
+    health_snapshots = health_trend.read_health_snapshots(limit=1)
+    latest_health_status = health_snapshots[-1].get("status") if health_snapshots else None
+
+    from customer_pipeline import funnel_conversion_summary
+    funnel = funnel_conversion_summary()
+
+    return {
+        "captured_at": now.isoformat(),
+        "revenue": {
+            "recent_7d_revenue_usd": revenue.get("recent_7d_revenue_usd"),
+            "trailing_daily_avg_usd": revenue.get("trailing_daily_avg_usd"),
+            "source": "channels/ledger.py revenue_trend()",
+        },
+        "reliability": {
+            "latest_health_status": latest_health_status,
+            "source": "health_trend.py read_health_snapshots() (GET /health history)",
+        },
+        "customer_value": {
+            "conversions": funnel.get("conversions") if funnel.get("answer") != "Unknown" else None,
+            "answer": funnel.get("answer"),
+            "source": "customer_pipeline.py funnel_conversion_summary()",
+        },
+    }
+
+
+def mark_implemented(proposal_id, note=None, state_path=None, now=None):
     """Closes the loop after real work was actually done in a reviewed
     Claude Code session -- only valid from APPROVED. Never called
-    automatically; this factory has no auto-apply mechanism by design."""
+    automatically; this factory has no auto-apply mechanism by design.
+
+    Autonomous Evolution Engine directive (2026-07-30): also captures a
+    real baseline metrics snapshot at the moment of implementation --
+    the "before" half of "continuously measures whether every implemented
+    evolution actually improved [revenue/reliability/customer value]".
+    Best-effort: a snapshot failure must never block the real state
+    transition itself."""
     state = _load_state(state_path)
     record = state.get(proposal_id)
     if record is None:
@@ -264,10 +313,217 @@ def mark_implemented(proposal_id, note=None, state_path=None):
     if record["stage"] != "APPROVED":
         return {"success": False, "error": f"cannot mark implemented from stage {record['stage']!r} (must be APPROVED)"}
 
+    try:
+        record["baseline_snapshot"] = _capture_metrics_snapshot(now=now)
+    except Exception as exc:
+        record["baseline_snapshot"] = {"error": f"فشل التقاط قياس مرجعي حقيقي: {exc}"}
+
+    record.setdefault("outcome_measurements", [])
     _record_history(record, "IMPLEMENTED", note or "real implementation completed")
+    # Stored once, explicitly -- stage_history gets a SECOND "IMPLEMENTED"
+    # entry every time measure_outcome() logs a detail below, so deriving
+    # "when was this really implemented" from the last matching
+    # stage_history row would silently reset the elapsed-time clock on
+    # every measurement. This field is the single source of truth instead.
+    record["implemented_at"] = record["updated_at"]
     state[proposal_id] = record
     _save_state(state, state_path)
     return {"success": True, **record}
+
+
+# Minimum real elapsed time before a before/after comparison is trusted --
+# short enough to catch a real regression reasonably soon, long enough that
+# a single noisy day doesn't get reported as a real trend.
+_MIN_DAYS_BEFORE_MEASURING_OUTCOME = 7
+
+
+def measure_outcome(proposal_id, min_days_elapsed=_MIN_DAYS_BEFORE_MEASURING_OUTCOME, state_path=None, now=None):
+    """Real Measure step (Autonomous Evolution Engine directive,
+    2026-07-30): compares the real baseline_snapshot captured at
+    mark_implemented() time against a fresh snapshot taken now, honestly
+    reporting IMPROVED/DEGRADED/NO_CHANGE/NOT_ENOUGH_DATA per dimension --
+    never a fabricated verdict. Refuses to measure before
+    min_days_elapsed real days have actually passed (disclosed, not
+    silently skipped). Callable repeatedly -- each real call appends a
+    dated entry to the record's own outcome_measurements list, which IS
+    the real trend ("continuously measures"), not a one-shot verdict."""
+    now = now or datetime.now(timezone.utc)
+    state = _load_state(state_path)
+    record = state.get(proposal_id)
+    if record is None:
+        return {"success": False, "error": f"no queue record for {proposal_id!r}"}
+    if record["stage"] != "IMPLEMENTED":
+        return {"success": False, "error": f"cannot measure outcome from stage {record['stage']!r} (must be IMPLEMENTED)"}
+
+    baseline = record.get("baseline_snapshot")
+    if not baseline or baseline.get("error"):
+        return {"success": False, "error": "لا يوجد قياس مرجعي حقيقي صالح لهذا الاقتراح (فشل عند التنفيذ)"}
+
+    implemented_at = record.get("implemented_at")
+    if implemented_at is None:
+        # Fallback for a record marked IMPLEMENTED before this field
+        # existed -- the FIRST real IMPLEMENTED stage_history entry (not
+        # the last, which could be a later measurement's own log line).
+        implemented_at = next((h["at"] for h in record.get("stage_history", []) if h["stage"] == "IMPLEMENTED"), None)
+    if implemented_at is None:
+        return {"success": False, "error": "لا يوجد طابع زمني حقيقي لمرحلة IMPLEMENTED"}
+
+    try:
+        implemented_dt = datetime.fromisoformat(implemented_at.replace("Z", "+00:00"))
+    except ValueError:
+        return {"success": False, "error": "طابع زمني غير صالح لمرحلة IMPLEMENTED"}
+
+    elapsed_days = (now - implemented_dt).total_seconds() / 86400
+    if elapsed_days < min_days_elapsed:
+        return {
+            "success": False,
+            "not_enough_time": True,
+            "elapsed_days": round(elapsed_days, 1),
+            "min_days_elapsed": min_days_elapsed,
+            "reason": f"مضى {elapsed_days:.1f} يوم فقط منذ التنفيذ الحقيقي -- يلزم {min_days_elapsed} يوم على الأقل لمقارنة موثوقة",
+        }
+
+    current = _capture_metrics_snapshot(now=now)
+
+    def _compare(dim, base_val, cur_val):
+        if base_val is None or cur_val is None:
+            return "NOT_ENOUGH_DATA"
+        if isinstance(base_val, (int, float)) and isinstance(cur_val, (int, float)):
+            if cur_val > base_val:
+                return "IMPROVED"
+            if cur_val < base_val:
+                return "DEGRADED"
+            return "NO_CHANGE"
+        return "NOT_ENOUGH_DATA"
+
+    revenue_verdict = _compare(
+        "revenue",
+        baseline["revenue"].get("trailing_daily_avg_usd"),
+        current["revenue"].get("trailing_daily_avg_usd"),
+    )
+    reliability_order = {"healthy": 0, "degraded": 1, "critical": 2}
+    base_rel = reliability_order.get(baseline["reliability"].get("latest_health_status"))
+    cur_rel = reliability_order.get(current["reliability"].get("latest_health_status"))
+    if base_rel is None or cur_rel is None:
+        reliability_verdict = "NOT_ENOUGH_DATA"
+    elif cur_rel < base_rel:
+        reliability_verdict = "IMPROVED"
+    elif cur_rel > base_rel:
+        reliability_verdict = "DEGRADED"
+    else:
+        reliability_verdict = "NO_CHANGE"
+
+    measurement = {
+        "measured_at": now.isoformat(),
+        "elapsed_days": round(elapsed_days, 1),
+        "baseline": baseline,
+        "current": current,
+        "verdicts": {
+            "revenue": revenue_verdict,
+            "reliability": reliability_verdict,
+            "customer_value": "NOT_ENOUGH_DATA" if current["customer_value"].get("answer") == "Unknown" else "SEE_CONVERSIONS",
+            "scalability": "NO_REAL_SIGNAL -- لا يوجد مقياس قابلية توسّع حقيقي في هذا المصنع بعد",
+            "automation": "NO_REAL_SIGNAL -- لا يوجد مقياس أتمتة حقيقي في هذا المصنع بعد",
+            "execution_speed": "NO_REAL_SIGNAL -- لا يوجد مقياس سرعة تنفيذ حقيقي مرتبط بمقترحات فردية بعد",
+        },
+        "method": "مقارنة حقيقية قبل/بعد لإشارات فعلية مسجَّلة فقط -- لا تنبّؤ، لا تقدير لأي بُعد بلا مصدر حقيقي",
+    }
+
+    record.setdefault("outcome_measurements", []).append(measurement)
+    _record_history(record, "IMPLEMENTED", f"outcome measured: revenue={revenue_verdict}, reliability={reliability_verdict}")
+    state[proposal_id] = record
+    _save_state(state, state_path)
+    return {"success": True, "proposal_id": proposal_id, "measurement": measurement}
+
+
+def run_daily_outcome_measurement_cycle(state_path=None, now=None, min_days_elapsed=_MIN_DAYS_BEFORE_MEASURING_OUTCOME):
+    """The only automatic path for Measure -- runs measure_outcome() for
+    every real IMPLEMENTED record. Read-only against every stage/decision
+    field; only ever appends to outcome_measurements. Honestly skips (not
+    silently) any record still under min_days_elapsed."""
+    state = _load_state(state_path)
+    measured, skipped = [], []
+    for pid, record in state.items():
+        if record["stage"] != "IMPLEMENTED":
+            continue
+        result = measure_outcome(pid, min_days_elapsed=min_days_elapsed, state_path=state_path, now=now)
+        if result.get("success"):
+            measured.append(pid)
+        else:
+            skipped.append({"proposal_id": pid, "reason": result.get("reason", result.get("error"))})
+    return {"measured_count": len(measured), "measured": measured, "skipped": skipped}
+
+
+def list_measured_outcomes(state_path=None):
+    """Mission Control aggregate -- every real IMPLEMENTED proposal's
+    latest measurement (or an honest NOT_YET_MEASURED/AWAITING_MIN_
+    ELAPSED_TIME) plus its full real measurement history (the actual
+    trend, not just a snapshot)."""
+    state = _load_state(state_path)
+    entries = []
+    for pid, record in state.items():
+        if record["stage"] != "IMPLEMENTED":
+            continue
+        measurements = record.get("outcome_measurements", [])
+        entries.append({
+            "proposal_id": pid,
+            "tool": record["proposal"].get("tool"),
+            "implemented_at": record.get("implemented_at"),
+            "measurement_count": len(measurements),
+            "latest_measurement": measurements[-1] if measurements else None,
+            "status": "MEASURED" if measurements else "NOT_YET_MEASURED",
+        })
+    entries.sort(key=lambda e: e.get("implemented_at") or "", reverse=True)
+    return {"entries": entries}
+
+
+# Real keyword tags, same discipline as SENSITIVE_AREA_KEYWORDS above --
+# never a semantic classifier, just a disclosed, mechanical text match.
+_REVENUE_KEYWORDS = ("عميل", "customer", "إيراد", "revenue", "مبيع", "sale", "دفع", "payment", "نشر", "publish")
+
+
+def rank_proposal(record):
+    """Real Rank step (Autonomous Evolution Engine directive, 2026-07-30):
+    a disclosed heuristic over fields this record ALREADY has (simulation/
+    decision_flags/proposal text) -- never a fabricated numeric priority
+    score. strategic_value is honestly reported as not computed: no
+    per-proposal strategic-value signal exists anywhere in this factory
+    today (strategic_intelligence_core.strategic_score() is per-niche,
+    not per-proposal, and most evolution proposals are company-wide)."""
+    proposal = record.get("proposal", {})
+    simulation = record.get("simulation") or {}
+    decision_flags = record.get("decision_flags") or {}
+
+    text = " ".join(str(proposal.get(k, "")) for k in ("why_needed", "evidence", "tool")).lower()
+    revenue_impact = "revenue_linked" if any(kw in text for kw in _REVENUE_KEYWORDS) else "not_revenue_linked"
+
+    execution_cost = simulation.get("rollback_complexity", "unknown")
+
+    unknown_marker = "غير مقاس بعد"
+    known_fields = sum(
+        1 for k in ("estimated_roi", "implementation_effort")
+        if unknown_marker not in str(proposal.get(k, ""))
+    )
+    confidence = "partial_real_data" if known_fields else "estimate_only"
+
+    if decision_flags.get("policy_risk") or execution_cost == "high":
+        risk = "high"
+    elif execution_cost == "medium":
+        risk = "medium"
+    elif execution_cost == "low":
+        risk = "low"
+    else:
+        risk = "unknown"
+
+    return {
+        "strategic_value": {"value": "not_computed", "reason": "لا يوجد مقياس قيمة استراتيجية على مستوى المقترح الفردي في هذا المصنع بعد"},
+        "revenue_impact": revenue_impact,
+        "execution_cost": execution_cost,
+        "long_term_sustainability_concern": bool(decision_flags.get("duplicate_architecture_risk")),
+        "risk": risk,
+        "confidence": confidence,
+        "method": "ترتيب استدلالي مُفصَح عنه فوق حقول حقيقية موجودة بالفعل (evidence keywords، rollback_complexity، decision_flags) -- ليس درجة أولوية رقمية مُختلَقة",
+    }
 
 
 def run_daily_cycle(proposals=None, state_path=None):
@@ -305,6 +561,7 @@ def list_evolution_queue(state_path=None, now=None):
             "decision_flags": record.get("decision_flags"),
             "founder_decision": record.get("founder_decision"),
             "updated_at": record.get("updated_at"),
+            "ranking": rank_proposal(record) if record.get("simulation") else None,
         }
         if stage == "AWAITING_FOUNDER_APPROVAL":
             try:
