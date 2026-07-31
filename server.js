@@ -1378,6 +1378,17 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('capital_allocation_dashboard'),
   },
   {
+    // Capital Allocation Engine (2026-07-29) -- the opportunity-cost
+    // pairing on its own, without the full dashboard above. Found
+    // orphaned by the Company Readiness Audit (2026-07-31); real,
+    // tested, callable, simply never wired into a route of its own.
+    name: 'opportunity-cost-report',
+    description: "The real opportunity-cost pairing alone -- for every real ACCEPTED opportunity in scheduler.py's own wait/stop/cancel buckets, which run_now/accelerate opportunities rank higher by the same real Priority Score order. A narrower, cheaper citation than the full capital-allocation-dashboard above for a caller that only needs this one field.",
+    reused: 'capital_allocation_engine.py::opportunity_cost()',
+    handler: (req) => runPythonServiceCached('opportunity_cost_report', [], req, 60000),
+    health: pythonHealthCheck('opportunity_cost_report'),
+  },
+  {
     // Global Opportunity Exchange (2026-07-29): measured live at ~11s of
     // real compute (build_value_engine_report() + the 4 concentration
     // checks); given this machine's disclosed `python3` startup-tax
@@ -1389,6 +1400,17 @@ const SERVICE_REGISTRY = [
     reused: 'global_opportunity_exchange.py::build_global_opportunity_exchange_dashboard()',
     handler: (req) => runPythonServiceCached('global_opportunity_exchange_dashboard', [], req, 60000),
     health: pythonHealthCheck('global_opportunity_exchange_dashboard'),
+  },
+  {
+    // Global Opportunity Exchange (2026-07-29) -- the 4 named
+    // concentration-risk checks alone, without the full dashboard
+    // above. Found orphaned by the Company Readiness Audit
+    // (2026-07-31); real, tested, callable, never wired to a route.
+    name: 'concentration-risk-report',
+    description: "The real 4 named concentration-risk checks alone (platform/product_family/country/ai_provider vs. their named thresholds: >40%/>30%/>25%/>20%) -- a narrower, cheaper citation than the full global-opportunity-exchange dashboard above for a caller that only needs this one field.",
+    reused: 'global_opportunity_exchange.py::concentration_risk_report()',
+    handler: (req) => runPythonServiceCached('concentration_risk_report', [], req, 30000),
+    health: pythonHealthCheck('concentration_risk_report'),
   },
   {
     // Autonomous Business Builder (2026-07-29): a thin citation of
@@ -2412,6 +2434,26 @@ const ACTION_REGISTRY = [
       const niche = (req.body && req.body.niche || '').trim();
       if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
       return runPythonActionAsync('investment-score', 'investment_score', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    // Strategic Intelligence Core (2026-07-29) -- the real, standalone
+    // 11-dimension Strategic Score for one niche. Found orphaned by
+    // the Enterprise Validation Phase (ADR-166) and the Company
+    // Readiness Audit (2026-07-31): investment-score above already
+    // calls strategic_score() internally for 7 of its own 14
+    // dimensions, but the full 11-dimension result was never exposed
+    // directly on its own. Real, tested, callable function -- wiring
+    // it is pure technical-debt closure, not new computation.
+    name: 'strategic-score',
+    description: "The real, standalone 11-dimension Strategic Score for one niche (Competition, Demand, Difficulty, and 8 more, each {value, source, reason} citing an already-real signal) -- the full result investment-score above only partially re-exposes (7 of its 14 dims delegate to this same function). Honestly NOT ENOUGH EVIDENCE per-dimension wherever no real signal exists.",
+    reused: 'strategic_intelligence_core.py::strategic_score()',
+    reversible: true, // read-only
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('strategic-score', 'strategic_score', [JSON.stringify({ niche })]);
     },
   },
   {
