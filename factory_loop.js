@@ -2390,6 +2390,66 @@ function runResilienceMonitorTick({ timeoutMs = 30000, pythonPath } = {}) {
   });
 }
 
+// ── CUSTOMER PAYMENT STATUS CHECK ──
+// Revenue Mode directive (2026-07-31): "check-customer-payments" (Customer
+// Platform Round 3, 2026-07-29) has existed as a real, tested, ACTION_
+// REGISTRY-only manual trigger since it shipped -- "the one-click-away
+// manual trigger until real payment completion is wired to a webhook" per
+// its own server.js comment. No webhook exists yet (would need a public
+// endpoint + Paddle-side configuration, out of scope here), but wiring the
+// existing real function into the tick removes the *human* step: the
+// instant a real customer's Paddle transaction completes, the next tick
+// (not the next time someone remembers to click a button) confirms it,
+// generates the real invoice, and fires the founder Telegram notification
+// that already lives inside check_payment_status() itself -- zero new
+// notification code needed here. Runs every tick, not daily-gated, same
+// as resilience_monitor above: payment confirmation latency directly
+// affects real customer experience once real revenue exists, unlike the
+// daily reports where a once-a-day cadence is genuinely sufficient.
+function runPaymentStatusCheckTick({ timeoutMs = 30000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'check_customer_payments'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ action: 'failed', detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ action: 'failed', detail: `انتهت مهلة check_customer_payments (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ action: 'failed', detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ action: 'failed', detail: result.error || 'فشل غير محدَّد من check_customer_payments' });
+          return;
+        }
+        const paidCount = (result.checked || []).filter(c => c.already_paid).length;
+        finish({
+          action: 'checked',
+          detail: `تم فحص ${result.checked_count || 0} طلب بانتظار الدفع، ${paidCount} دفعة حقيقية مؤكَّدة الآن`,
+        });
+      } catch (e) {
+        finish({ action: 'failed', detail: `فشل تحليل ناتج check_customer_payments: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
 // ── SELF-AWARENESS ──
 // CONSTITUTION.md §20. self_awareness.js is a plain Node module — required
 // directly (no subprocess needed, unlike market_hunter.py). Gated to once
@@ -2861,6 +2921,15 @@ async function runTick() {
   markStep('resilience_monitor');
   actions.push({ step: 'resilience_monitor', ...(await runResilienceMonitorTick()) });
 
+  // Revenue Mode directive (2026-07-31): every tick, not daily-gated, same
+  // reasoning as resilience_monitor above — a real customer's payment
+  // confirmation latency should be one tick, not "whenever someone next
+  // opens Mission Control." check_payment_status() already fires the real
+  // founder Telegram notification itself; this step only removes the
+  // human click that used to be required to trigger the check at all.
+  markStep('payment_status_check');
+  actions.push({ step: 'payment_status_check', ...(await runPaymentStatusCheckTick()) });
+
   // Golden Hunter also runs regardless of dashboard reachability — it's a
   // standalone local Python process, not an HTTP call to the dashboard.
   markStep('golden_hunter');
@@ -3085,7 +3154,7 @@ module.exports = {
   runRecordDailyGrowthStageSnapshot, maybeRecordDailyGrowthStageSnapshot,
   runKnowledgeGraphDailySnapshot, maybeGenerateDailyKnowledgeGraph,
   runGeneratePendingBusinessBlueprints, maybeGenerateBusinessBlueprintsForNewAcceptedDecisions,
-  runResilienceMonitorTick, newIncidentTelegramReasons,
+  runResilienceMonitorTick, newIncidentTelegramReasons, runPaymentStatusCheckTick,
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
   maybeRunMarketHunter, maybeRunSelfAwareness,
