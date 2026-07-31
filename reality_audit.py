@@ -246,17 +246,35 @@ def _call_with_timeout(fn, timeout_s):
     return {"timed_out": False, "result": box["result"], "error": box["error"]}
 
 
-def audit_all_endpoints(names=None):
+def audit_all_endpoints(names=None, record_evidence=True):
     """Real, live, code-only audit of every function registered in
     mission_control_api.py::_ENDPOINTS (or a real subset, for testing).
-    Sequential, real elapsed time -- no fabricated parallelism."""
+    Sequential, real elapsed time -- no fabricated parallelism.
+
+    Enterprise Evidence Engine (ADR-163): each real classification is
+    itself recorded as one real piece of EXECUTION evidence -- the
+    most natural, immediately-relevant real integration point, since
+    this function already runs a real, disclosed pass over every real
+    endpoint. `record_evidence=False` (tests, or a caller that doesn't
+    want to grow the real evidence ledger) skips this."""
     import mission_control_api as mca
 
     targets = names or list(mca._ENDPOINTS.keys())
     results = []
     for name in targets:
         fn = mca._ENDPOINTS[name]
-        results.append(classify_endpoint(name, fn))
+        t0 = time.time()
+        result = classify_endpoint(name, fn)
+        if record_evidence:
+            import evidence_engine
+            evidence_engine.record_evidence(
+                evidence_type="EXECUTION", module=f"reality_audit:{name}",
+                input_summary=f"classify_endpoint({name!r})",
+                output_summary=result["classification"],
+                duration_ms=round((time.time() - t0) * 1000, 1),
+                success=True, validation_result=result.get("evidence"),
+            )
+        results.append(result)
     return results
 
 
