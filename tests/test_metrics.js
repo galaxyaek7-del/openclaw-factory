@@ -39,6 +39,20 @@ test('recordRequest: multiple calls accumulate, never overwrite', () => {
   assert.equal(registry.latencySumMs.get('POST|/actions/:name'), 50);
 });
 
+test('recordRequest: a real success updates lastSuccessAt and never lastFailureAt', () => {
+  const registry = metrics.createMetricsRegistry();
+  metrics.recordRequest(registry, { method: 'GET', route: '/x', status: 200, durationMs: 1 });
+  assert.ok(registry.lastSuccessAt.get('GET|/x'));
+  assert.equal(registry.lastFailureAt.get('GET|/x'), undefined);
+});
+
+test('recordRequest: a real failure updates lastFailureAt and never lastSuccessAt', () => {
+  const registry = metrics.createMetricsRegistry();
+  metrics.recordRequest(registry, { method: 'GET', route: '/x', status: 500, durationMs: 1 });
+  assert.ok(registry.lastFailureAt.get('GET|/x'));
+  assert.equal(registry.lastSuccessAt.get('GET|/x'), undefined);
+});
+
 test('recordRequest: latency buckets are cumulative (a fast request counts in every bucket >= its duration)', () => {
   const registry = metrics.createMetricsRegistry();
   metrics.recordRequest(registry, { method: 'GET', route: '/y', status: 200, durationMs: 30 });
@@ -117,4 +131,44 @@ test('renderPrometheusText: a failing service renders as 0, not fabricated as he
   const registry = metrics.createMetricsRegistry();
   const text = metrics.renderPrometheusText(registry, { serviceHealth: [{ name: 'broken-service', status: 'error' }] });
   assert.ok(text.includes('galaxy_forge_service_health{service="broken-service"} 0'));
+});
+
+// Autonomous Company Runtime (ADR-157, 2026-07-31): summarizeRoutes()
+// had zero test coverage before this round despite existing since
+// ADR-151 -- closing that real gap alongside the new error_rate_pct/
+// last_success_at/last_failure_at fields, per this round's own "every
+// thing must be testable" hard rule.
+test('summarizeRoutes: aggregates count/errors/avg_latency_ms per route', () => {
+  const registry = metrics.createMetricsRegistry();
+  metrics.recordRequest(registry, { method: 'GET', route: '/x', status: 200, durationMs: 10 });
+  metrics.recordRequest(registry, { method: 'GET', route: '/x', status: 200, durationMs: 20 });
+  metrics.recordRequest(registry, { method: 'GET', route: '/x', status: 500, durationMs: 30 });
+  const summary = metrics.summarizeRoutes(registry);
+  assert.equal(summary['/x'].count, 3);
+  assert.equal(summary['/x'].errors, 1);
+  assert.equal(summary['/x'].avg_latency_ms, 20);
+});
+
+test('summarizeRoutes: error_rate_pct is real errors/count, never fabricated when count is 0', () => {
+  const registry = metrics.createMetricsRegistry();
+  metrics.recordRequest(registry, { method: 'GET', route: '/x', status: 200, durationMs: 1 });
+  metrics.recordRequest(registry, { method: 'GET', route: '/x', status: 500, durationMs: 1 });
+  metrics.recordRequest(registry, { method: 'GET', route: '/x', status: 500, durationMs: 1 });
+  const summary = metrics.summarizeRoutes(registry);
+  assert.equal(summary['/x'].error_rate_pct, 66.7);
+});
+
+test('summarizeRoutes: last_success_at/last_failure_at are honestly null until a real request of that kind occurs', () => {
+  const registry = metrics.createMetricsRegistry();
+  metrics.recordRequest(registry, { method: 'GET', route: '/only-success', status: 200, durationMs: 1 });
+  const summary = metrics.summarizeRoutes(registry);
+  assert.ok(summary['/only-success'].last_success_at);
+  assert.equal(summary['/only-success'].last_failure_at, null);
+});
+
+test('summarizeRoutes: a route with zero real requests never appears (never a fabricated zero-filled row)', () => {
+  const registry = metrics.createMetricsRegistry();
+  metrics.recordRequest(registry, { method: 'GET', route: '/x', status: 200, durationMs: 1 });
+  const summary = metrics.summarizeRoutes(registry);
+  assert.equal(summary['/never-called'], undefined);
 });

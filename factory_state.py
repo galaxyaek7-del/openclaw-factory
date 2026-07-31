@@ -104,6 +104,17 @@ def clear_current_task(path=None):
     try:
         state = load_state(path)
         state["current_task"] = None
+        # Autonomous Company Runtime (ADR-157, 2026-07-31): a real,
+        # pre-existing bug found while building company_state() --
+        # active_workflow was set by set_current_task() but never
+        # cleared here, so it stayed permanently "sticky" to whatever
+        # task last started, even long after it finished. This made the
+        # already-shipped recovery-status Mission Control panel show a
+        # stale "active workflow" forever after the first real task ever
+        # ran. Fixed: cleared alongside current_task, the same "in
+        # flight, not yet resolved" real signal this function already
+        # exists to retire.
+        state["active_workflow"] = None
         return save_state(state, path)
     except OSError as e:
         print(f"[factory_state] clear_current_task failed: {e}")

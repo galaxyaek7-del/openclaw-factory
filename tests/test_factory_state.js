@@ -97,6 +97,11 @@ test('setCurrentTask marks in-flight, clearCurrentTask resolves it', () => {
     factoryState.clearCurrentTask(p);
     state = factoryState.loadState(p);
     assert.equal(state.current_task, null);
+    // Autonomous Company Runtime (ADR-157, 2026-07-31): a real,
+    // pre-existing bug this test didn't catch -- active_workflow was
+    // never cleared here, staying permanently "sticky" to whatever task
+    // last started even long after it finished.
+    assert.equal(state.active_workflow, null);
   } finally {
     cleanup(p);
   }

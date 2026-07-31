@@ -1158,6 +1158,46 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('executive_scenario_simulator'),
   },
   {
+    // Autonomous Company Runtime (ADR-157, 2026-07-31): flagged via
+    // AskUserQuestion before any code -- the directive's Company
+    // Runtime/Event Bus/Workflow Engine/Queue Manager asks together
+    // describe an always-on daemon + new queue/event infrastructure,
+    // declined 5x already (ADR-107/110/115/142/147). Founder's answer:
+    // document only, build the genuinely safe citation-only parts
+    // below. No daemon, no event bus, no queue exists here or anywhere
+    // in this factory.
+    name: 'executive-replay',
+    description: "Real chronological replay over gfos.py's real Enterprise Timeline (6 merged real ledgers), optionally date-filtered, plus executive_decision_memory.py's real explain-decision detail for one decision_id. No new storage, no new event log. Accepts optional ?from_date=&to_date=&decision_id= query params.",
+    reused: 'company_runtime.py::executive_replay() (ADR-157) + gfos.py (ADR-147) + executive_decision_memory.py (ADR-145), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('executive_replay', [JSON.stringify({ from_date: req.query && req.query.from_date, to_date: req.query && req.query.to_date, decision_id: req.query && req.query.decision_id })], req),
+    health: pythonHealthCheck('executive_replay'),
+  },
+  {
+    name: 'autonomous-daily-cycle-status',
+    description: "A real, disclosed, static citation of factory_loop.js's real tick-driven functions for each of the directive's 9 named daily-cycle stages (morning review/opportunity scan/production/QA/publishing/affiliate updates/analytics/knowledge update/executive report) -- honestly NOT_ARCHITECTED where no real tick-wired function exists (morning review, affiliate updates). factory_loop.js has no cron/systemd -- 'tick-wired' only means it runs when someone runs `node factory_loop.js` and leaves it running.",
+    reused: 'company_runtime.py::autonomous_daily_cycle_status() (ADR-157), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('autonomous_daily_cycle_status', [], req),
+    health: pythonHealthCheck('autonomous_daily_cycle_status'),
+  },
+  {
+    name: 'company-state',
+    description: "A real, priority-ordered, disclosed read-only status label (BOOT/RECOVERY/MAINTENANCE/PRODUCTION/OPTIMIZING/LEARNING/READY/SCALING) -- every condition cites a real signal (resilience_monitor.py, safe_mode.py, factory_state.py, evolution_queue.py). SCALING is defined (per the directive) but never selected -- no real scale-out signal exists anywhere in this factory. BOOT is checked here, not in Python (mission_control_api.py runs as a fresh, stateless subprocess per call -- it has no real process uptime to measure) -- reuses this real Node server process's own real process.uptime(), the same real signal GET /api/v1/health already exposes. Informational only: nothing in this factory reads this label to change its own behavior.",
+    reused: 'company_runtime.py::company_state() (ADR-157) + this process\'s own real process.uptime(), via mission_control_api.py.',
+    handler: async (req) => {
+      const BOOT_WINDOW_SECONDS = 60;
+      if (process.uptime() < BOOT_WINDOW_SECONDS) {
+        return {
+          success: true,
+          state: 'BOOT',
+          reason: `This real Node server process started ${Math.round(process.uptime())}s ago (< ${BOOT_WINDOW_SECONDS}s window) -- process.uptime(), the same real signal GET /api/v1/health already exposes.`,
+          generated_at: new Date().toISOString(),
+        };
+      }
+      return runPythonServiceCached('company_state', [], req);
+    },
+    health: pythonHealthCheck('company_state'),
+  },
+  {
     // Executive Command Center (ADR-146, 2026-07-30): reuses
     // multi_source_intelligence.registry.get_connectors() verbatim --
     // never a second connector list. Static-unavailable sources

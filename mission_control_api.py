@@ -250,6 +250,12 @@ def _recovery():
         "last_successful_checkpoint": state["last_successful_checkpoint"],
         "last_successful_recovery": last_recovery_action,
         "updated_at": state["updated_at"],
+        # Autonomous Company Runtime (ADR-157, 2026-07-31): Objective 7
+        # "Self-Healing" folded into this existing panel rather than a
+        # 4th new one -- pending_retries above already IS the real
+        # "retry transient failures" mechanism; this adds the one
+        # genuinely missing citation, the real escalation path.
+        "escalation_when_recovery_fails": "factory_loop.js::checkNeedsAttention()/writeNeedsAttention() -- real, writes NEEDS_ATTENTION.md and notifies the founder via the existing Telegram channel on a real recovery failure. Never a silent auto-retry loop, never a new auto-restart daemon.",
     }
 
 
@@ -1046,6 +1052,37 @@ def _executive_scenario_simulator():
     payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
     from enterprise_executive_brain import executive_scenario_simulator
     return executive_scenario_simulator(cascade_department=payload.get("cascade_department"))
+
+
+def _executive_replay():
+    """Autonomous Company Runtime (ADR-157, 2026-07-31): real
+    chronological replay over gfos.py::enterprise_timeline(), optionally
+    date-filtered, plus executive_decision_memory.py's real explain
+    detail for one decision_id. Reads sys.argv[2] for optional
+    {"from_date":"...", "to_date":"...", "decision_id":"..."}."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    from company_runtime import executive_replay
+    return executive_replay(
+        from_date=payload.get("from_date"), to_date=payload.get("to_date"), decision_id=payload.get("decision_id"),
+    )
+
+
+def _autonomous_daily_cycle_status():
+    """Autonomous Company Runtime (ADR-157, 2026-07-31): a real,
+    disclosed, static citation of factory_loop.js's real tick-driven
+    functions for each of the directive's 9 named daily-cycle stages --
+    never adds a new automatic call."""
+    from company_runtime import autonomous_daily_cycle_status
+    return autonomous_daily_cycle_status()
+
+
+def _company_state():
+    """Autonomous Company Runtime (ADR-157, 2026-07-31): a real,
+    priority-ordered, read-only status label -- never a live behavioral
+    switch. SCALING is defined but never selected -- no real scale-out
+    signal exists anywhere in this factory."""
+    from company_runtime import company_state
+    return company_state()
 
 
 def _market_intelligence_source_status():
@@ -2459,6 +2496,9 @@ _ENDPOINTS = {
     "enterprise_dependency_graph": _enterprise_dependency_graph,
     "enterprise_scheduler": _enterprise_scheduler,
     "executive_scenario_simulator": _executive_scenario_simulator,
+    "executive_replay": _executive_replay,
+    "autonomous_daily_cycle_status": _autonomous_daily_cycle_status,
+    "company_state": _company_state,
     "market_intelligence_source_status": _market_intelligence_source_status,
     "decision_memory_list": _decision_memory_list,
     "decision_memory_conflicts": _decision_memory_conflicts,

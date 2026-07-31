@@ -106,6 +106,11 @@ class TestCurrentTaskLifecycle(unittest.TestCase):
         factory_state.clear_current_task(path=self.path)
         state = factory_state.load_state(self.path)
         self.assertIsNone(state["current_task"])
+        # Autonomous Company Runtime (ADR-157, 2026-07-31): a real,
+        # pre-existing bug this test didn't catch -- active_workflow was
+        # never cleared here, staying permanently "sticky" to whatever
+        # task last started even long after it finished.
+        self.assertIsNone(state["active_workflow"])
 
     def test_never_cleared_task_stays_in_flight_this_is_the_crash_evidence(self):
         """The whole point: if the process dies between set and clear, the
