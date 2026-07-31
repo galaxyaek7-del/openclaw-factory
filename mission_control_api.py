@@ -1108,6 +1108,15 @@ def _company_state():
     return company_state()
 
 
+def _truth_first_compliance():
+    """Truth First Constitution (ADR-160, 2026-07-31): the real
+    vocabulary census + citations of the 3 already-real standing
+    controls this directive's other requirements are satisfied by --
+    cheap (a local *.py file scan, no full-portfolio computation)."""
+    import truth_first
+    return truth_first.truth_first_compliance_report()
+
+
 def _strategic_planning_dashboard():
     """Enterprise Strategic Planning System (ADR-159, 2026-07-31): the
     real rolling roadmap (5 time horizons), per-division status board,
@@ -2571,6 +2580,7 @@ _ENDPOINTS = {
     "strategic_planning_dashboard": _strategic_planning_dashboard,
     "simulate_roadmap_execution": _simulate_roadmap_execution,
     "record_daily_growth_stage_snapshot": _record_daily_growth_stage_snapshot,
+    "truth_first_compliance": _truth_first_compliance,
 }
 
 

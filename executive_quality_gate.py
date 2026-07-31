@@ -67,6 +67,7 @@ REJECT_IF_FAIL = (
     "brand_reputation_risk",
     "market_saturation_competitor_quality",
     "content_neutrality_risk",
+    "copyright_trademark_risk",
 )
 
 EVIDENCE_STALE_AFTER_DAYS = 90
@@ -300,6 +301,38 @@ def check_content_neutrality_risk(product_chapters=None):
     return _real("PASS", None, "لا عبارات مخالفة لمبادئ الحياد التنفيذي موجودة في نص المحتوى (فحص جزئي)")
 
 
+COPYRIGHT_TRADEMARK_RISK_PHRASES = [
+    # Claimed affiliation with / endorsement by a real named brand
+    "officially licensed by", "endorsed by", "in partnership with amazon",
+    "authorized reseller of", "certified partner of", "sponsored by",
+    # Reuse of another company's registered product/brand name as your own
+    "powered by microsoft office", "compatible with disney", "official apple product",
+]
+
+
+def check_copyright_trademark_risk(product_chapters=None):
+    """Truth First Constitution (ADR-160, 2026-07-31): the one genuine
+    Legal Safety Review gap found by direct search -- no prior check
+    scanned for claimed affiliation with a real named brand or reuse of
+    a registered product name. Same real, deterministic, non-exhaustive
+    phrase-list discipline as check_content_neutrality_risk()/
+    check_brand_reputation_risk() immediately above -- not a substitute
+    for real legal review, honestly Unknown if no content is supplied.
+    Deliberately does NOT scan for fake testimonials/reviews -- that
+    directive item is already satisfied architecturally by customer_
+    pipeline.py::submit_review()'s real request_id requirement, not a
+    content scan (see TRUTH_FIRST_CONSTITUTION.md's full audit)."""
+    if not product_chapters:
+        return _unknown("لا محتوى منتج مُقدَّم للفحص")
+    combined = " ".join(
+        (c.get("content") or "") for c in product_chapters if isinstance(c, dict)
+    ).lower()
+    hits = [p for p in COPYRIGHT_TRADEMARK_RISK_PHRASES if p in combined]
+    if hits:
+        return _real("FAIL", hits, f"المحتوى يدّعي انتماءً/ترخيصاً حقيقياً لعلامة تجارية غير موجود فعلياً: {', '.join(hits)}")
+    return _real("PASS", None, "لا عبارات ادّعاء انتماء/ترخيص علامة تجارية موجودة في نص المحتوى (فحص جزئي)")
+
+
 # ── 12. Operational cost ──
 def check_operational_cost(cost_log_file=None):
     from revenue_pipeline import plan as plan_module
@@ -456,6 +489,7 @@ def _run_all_checks(spec):
         "revenue_model_sustainability": check_revenue_model_sustainability(components),
         "brand_reputation_risk": check_brand_reputation_risk(spec.get("product_chapters")),
         "content_neutrality_risk": check_content_neutrality_risk(spec.get("product_chapters")),
+        "copyright_trademark_risk": check_copyright_trademark_risk(spec.get("product_chapters")),
         "operational_cost": check_operational_cost(spec.get("cost_log_file")),
         "customer_acquisition_difficulty": check_customer_acquisition_difficulty(spec.get("explicit_cac_evidence"), niche=spec.get("niche")),
         "customer_retention_potential": check_customer_retention_potential(niche=spec.get("niche")),

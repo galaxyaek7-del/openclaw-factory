@@ -1198,6 +1198,20 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('company_state'),
   },
   {
+    // Truth First Constitution (ADR-160, 2026-07-31): the company's
+    // highest law (OPENCLAW_OS_CONSTITUTION.md's new "TRUTH FIRST"
+    // section). A governance-ratification round, not a feature build --
+    // this factory already practiced this discipline all session under
+    // inconsistent vocabulary (350 real honest-disclosure instances
+    // across 9 variants, grandfathered not retrofitted); the canonical
+    // 9-term vocabulary governs new code going forward.
+    name: 'truth-first-compliance',
+    description: "The real vocabulary census (a mechanical *.py file scan for the 9 pre-ADR-160 honest-disclosure variants, re-runnable, not a one-time snapshot) + citations of the 3 already-real standing controls: simulation_mode.py's real production/simulation separation (ADR-153), executive_quality_gate.py's real REJECT_IF_FAIL hard-reject pipeline (now including the new check_copyright_trademark_risk, the one genuine Legal Safety Review gap this round found and closed), and the 3 existing self-audit subsystems (resilience_monitor.py/ai_doctor.py/self_awareness.js). Never a fabricated compliance score -- see OpenClaw_Brain/00_Governance/TRUTH_FIRST_CONSTITUTION.md for the full per-item audit.",
+    reused: 'truth_first.py::truth_first_compliance_report() (ADR-160) + simulation_mode.py (ADR-153) + executive_quality_gate.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('truth_first_compliance', [], req),
+    health: pythonHealthCheck('truth_first_compliance'),
+  },
+  {
     // Enterprise Growth Engine (ADR-158, 2026-07-31): "automatic
     // fallback" (the directive's Objective 3) is implemented as
     // non-cached, non-sticky recomputation, not a triggered action --
