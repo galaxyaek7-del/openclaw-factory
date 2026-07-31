@@ -1252,6 +1252,21 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('executive_evidence_dashboard'),
   },
   {
+    // AI Automation Revenue Engine (ADR-164, 2026-07-31 -- the
+    // directive itself said "ADR-162", already allocated to Enterprise
+    // Truth Audit; renumbered). Reuses profit_oracle.py::
+    // ladder_opportunity_score() verbatim -- never a second scoring
+    // algorithm. Deliberately never calls golden_hunter.hunt.run_hunt()
+    // (real, passive-only scanner -- see automation_opportunity_
+    // scanner.py's own docstring for why, an ADR-162-addendum-informed
+    // design decision made proactively this time).
+    name: 'automation-revenue-dashboard',
+    description: "Real opportunity discovery/scoring for AI automation-product categories (workflow systems, n8n templates, CRM/email/invoice/HR/sales/ops automation, AI copilots, knowledge assistants, etc.) -- 15 named categories mapped to real ladders, real candidates from market_hunter.py's static seed list + already-recorded real decisions (never a new live evaluation triggered), scored via profit_oracle.py's real 9-hard-gate ladder_opportunity_score(), ranked B2B-first. Honestly returns 'NO VERIFIED OPPORTUNITY FOUND' when no real candidate clears the real gates -- never invents one. 'Do NOT build products' honored literally -- zero product-generation code.",
+    reused: 'automation_dashboard.py::build_automation_dashboard() (ADR-164) + profit_oracle.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('automation_revenue_dashboard', [], req),
+    health: pythonHealthCheck('automation_revenue_dashboard'),
+  },
+  {
     // Enterprise Growth Engine (ADR-158, 2026-07-31): "automatic
     // fallback" (the directive's Objective 3) is implemented as
     // non-cached, non-sticky recomputation, not a triggered action --

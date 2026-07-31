@@ -1144,6 +1144,18 @@ def _executive_evidence_dashboard():
     return {"verification_by_type": verification_by_type, "coverage": evidence_engine.evidence_coverage_report()}
 
 
+def _automation_revenue_dashboard():
+    """AI Automation Revenue Engine (ADR-164, 2026-07-31): real
+    opportunity discovery/scoring for automation-product categories --
+    reuses profit_oracle.py::ladder_opportunity_score() verbatim, never
+    a second scoring algorithm. Honestly returns NO VERIFIED
+    OPPORTUNITY FOUND when no real candidate clears the real hard
+    gates -- never invents one. Never triggers golden_hunter.hunt.
+    run_hunt() (a real, passive-only scanner)."""
+    import automation_dashboard
+    return automation_dashboard.build_automation_dashboard()
+
+
 def _digital_twin_dashboard():
     """Enterprise Digital Twin (ADR-161, 2026-07-31): advisory-only real
     REAL STATE + DIGITAL TWIN view across 17 named domains, 8 named
@@ -2636,6 +2648,7 @@ _ENDPOINTS = {
     "evidence_coverage_report": _evidence_coverage_report,
     "evidence_viewer": _evidence_viewer,
     "executive_evidence_dashboard": _executive_evidence_dashboard,
+    "automation_revenue_dashboard": _automation_revenue_dashboard,
 }
 
 
