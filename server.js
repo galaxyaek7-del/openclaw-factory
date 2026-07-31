@@ -1279,6 +1279,23 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('enterprise_capital_allocation_dashboard'),
   },
   {
+    // Enterprise Truth Registry (ADR-168, 2026-07-31): the real,
+    // mechanical per-component inventory over all ~246 real internal
+    // Python modules -- name/category/purpose/location/owner/
+    // dependencies/dependents/status/production usage/live verified/
+    // test coverage/last verification/last commit/confidence/
+    // criticality -- plus the directive's 10 named summary sections
+    // and an Enterprise Truth Score. Re-invokes reality_audit.py's own
+    // live 152-endpoint scan internally -- genuinely the most
+    // expensive panel in this factory (measured live ~255s for the
+    // registry alone, before the report's own cheap aggregation).
+    name: 'truth-registry-report',
+    description: "The single authoritative real inventory of every one of this factory's ~246 real internal Python modules -- never invented, never inferred, every field traced to a real signal (reality_audit.py's live endpoint classification attributed down to the modules each endpoint's own source imports, dependency_graph.py's real AST-based import graph, gfos.py's real per-department module citation, real git history per file). Most modules honestly report UNKNOWN status/confidence -- reality_audit.py only classifies the ~152 Mission Control endpoint wrapper functions, not every module they transitively import, and this scan never inflates that gap. Produces Company Inventory / Operational / Experimental / Missing / Broken / Duplicate / Dead Code / Orphan / Never-Verified Components + Enterprise Truth Score (0-100, a disclosed additive heuristic), and answers 'could the company be reconstructed from this registry alone' -- always honestly NO, with the real reasons why (gitignored secrets, live third-party account state, the real UNKNOWN-status modules themselves). Extremely expensive: measured live ~255s.",
+    reused: 'truth_registry.py::build_truth_registry()/build_truth_registry_report() (ADR-168) + reality_audit.py (ADR-162) + dependency_graph.py + gfos.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('truth_registry_report', [], req, 600000),
+    health: pythonHealthCheck('truth_registry_report'),
+  },
+  {
     // Enterprise Growth Engine (ADR-158, 2026-07-31): "automatic
     // fallback" (the directive's Objective 3) is implemented as
     // non-cached, non-sticky recomputation, not a triggered action --

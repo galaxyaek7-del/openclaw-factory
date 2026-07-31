@@ -1154,6 +1154,20 @@ def _enterprise_capital_allocation_dashboard():
     return eca.build_enterprise_capital_allocation_dashboard()
 
 
+def _truth_registry_report():
+    """Enterprise Truth Registry (ADR-168, 2026-07-31): the real,
+    mechanical per-component inventory (name/category/purpose/location/
+    owner/dependencies/dependents/status/production usage/live
+    verified/test coverage/last verification/last commit/confidence/
+    criticality) over all ~246 real internal Python modules, plus the
+    directive's 10 named summary sections and Enterprise Truth Score.
+    Expensive -- re-invokes reality_audit.py's own live 152-endpoint
+    scan internally (measured live ~255s for the registry alone)."""
+    import truth_registry as tr
+    registry = tr.build_truth_registry()
+    return tr.build_truth_registry_report(registry=registry)
+
+
 def _automation_revenue_dashboard():
     """AI Automation Revenue Engine (ADR-164, 2026-07-31): real
     opportunity discovery/scoring for automation-product categories --
@@ -2660,6 +2674,7 @@ _ENDPOINTS = {
     "executive_evidence_dashboard": _executive_evidence_dashboard,
     "automation_revenue_dashboard": _automation_revenue_dashboard,
     "enterprise_capital_allocation_dashboard": _enterprise_capital_allocation_dashboard,
+    "truth_registry_report": _truth_registry_report,
 }
 
 
