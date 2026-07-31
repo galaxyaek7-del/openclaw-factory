@@ -72,6 +72,23 @@ While preparing ADR-163, a real discrepancy was found: `data/decisions.jsonl` ha
 
 **Standing lesson, recorded in memory**: [[feedback_diff_data_files_around_test_runs]] already existed as a standing instruction before this incident — this is the 4th real, confirmed instance of exactly the bug class it warns about, and this time the warning was not followed before running a ~20-minute, 2x-repeated live audit. Any future tool that live-invokes real functions across a large, unfamiliar surface must diff real `data/*.jsonl` ledgers before and after, every time, regardless of how "read-only" an endpoint's own docstring or top-level source claims to be.
 
+## Addendum 2 (2026-07-31, discovered during ADR-165) — correction: the real severity was understated above
+
+While preparing ADR-165, this factory's entire real ACCEPTED-opportunity portfolio was found to be empty — investigation traced this directly to the same incident described above, and found the original Addendum's own severity assessment ("not data corruption... real, non-fabricated evaluation output... the records are not reverted") was **incomplete**: it correctly identified that no record was fabricated or deleted, but failed to check whether the ~630 new evaluations had *changed the real, live status* of any previously-real-ACCEPTED niche, rather than merely adding inert new history for new candidates.
+
+**They had.** All 4 of this factory's real, previously-ACCEPTED opportunities were re-evaluated by the incident's `run_hunt()`/`trigger_opportunity_evaluation()` calls and downgraded to `DEFERRED`/`REJECTED`, each with a real, multi-attempt re-evaluation trail between `2026-07-31T14:28` and `14:34`:
+
+- "AI customer support automation platform for e-commerce businesses" → `REJECTED`
+- "workflow automation system for logistics companies" → `DEFERRED`
+- "inventory management system for wholesale distributors" → `DEFERRED`
+- "automated invoice processing toolkit for small businesses" → `DEFERRED`
+
+This is a real, substantive change to current company state — not "extra historical noise" as originally characterized — and directly affected every real signal several later rounds this session cited as fact (`Growth Stage` classification, `Enterprise Priority Matrix`, `capital_allocation_engine`'s portfolio, etc. all silently operated against a real-but-degraded portfolio without this being flagged at the time).
+
+**Still not reverted** — the same reasoning holds even at this corrected severity: these are real, non-fabricated evaluation outputs of the real pipeline; fabricating a replacement `ACCEPTED` record to restore the prior state would itself be a Truth First violation, worse than leaving the real (if unintentionally triggered) outcome in place. The correct remedy is a real, founder-initiated re-evaluation of these 4 niches if their real underlying evidence still supports acceptance — not an automated rollback.
+
+**Second standing lesson**: a data-file diff that only checks *line counts* or *new-entry presence* is not sufcient to catch a status-mutation-of-an-existing-real-thing — it must also check whether any previously-real-accepted entity's *current, latest status* changed. This is a real, generalizable refinement to [[feedback_diff_data_files_around_test_runs]], recorded there.
+
 ## Validation
 
 Live-verified end-to-end: `reality_audit.py`'s classification engine tested against known cases before the full run (correctly distinguished a real simulation-tagged endpoint from one that merely mentions the word "SIMULATION" in an unrelated vocabulary-definition string — a real false positive caught and fixed before the full run). Full 147-endpoint live audit run in the background, real elapsed time recorded, results persisted to `data/reality_audit_raw.json`.
