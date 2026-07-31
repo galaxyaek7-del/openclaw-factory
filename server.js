@@ -1118,6 +1118,46 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('executive_analytics'),
   },
   {
+    // Enterprise Executive Brain (ADR-156, 2026-07-31): computes
+    // build_executive_brief()/global_opportunity_exchange/capital_
+    // allocation_engine exactly once (the exact redundant-computation
+    // bug class ADR-155's company_pulse() hit and fixed) -- same real
+    // cost class as executive-brain/company-pulse above.
+    name: 'unified-decision-engine',
+    description: "The real prioritized executive action list, plus real conflict/duplicated-work/idle-division/bottleneck/missing-dependency detection -- each citing an already-real function (executive_brain.py, executive_decision_memory.py, executive_intelligence/inactivity.py) or a new, small, disclosed mechanical heuristic (duplicated work: department pairs sharing 3+ real imported modules; missing dependencies: divisions with zero real architecture).",
+    reused: 'enterprise_executive_brain.py::unified_decision_engine() (ADR-156), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('unified_decision_engine', [], req, 120000),
+    health: pythonHealthCheck('unified_decision_engine'),
+  },
+  {
+    name: 'executive-kpi-system',
+    description: "The real per-division 8-KPI scorecard (Health/Readiness/Progress/Revenue Potential/Automation Level/Intelligence Score/Production Capacity/Risk Level), reusing launch_readiness.py's real 5-division registry. Most fields honestly disclose a real company-wide (not yet per-division) signal rather than fabricating a division-specific number; Intelligence Score and Production Capacity are honestly NOT_ARCHITECTED -- no real source exists for either.",
+    reused: 'enterprise_executive_brain.py::executive_kpi_system() (ADR-156), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('executive_kpi_system', [], req),
+    health: pythonHealthCheck('executive_kpi_system'),
+  },
+  {
+    name: 'enterprise-dependency-graph',
+    description: "Extends the real department dependency matrix (ADR-155) with real reverse-dependents, real cascade-impact ('what breaks if this department fails'), and real cycle detection -- all from dependency_graph.py's already-real functions, never surfaced in Mission Control until now.",
+    reused: 'enterprise_executive_brain.py::enterprise_dependency_graph() (ADR-156) + dependency_graph.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('enterprise_dependency_graph', [], req),
+    health: pythonHealthCheck('enterprise_dependency_graph'),
+  },
+  {
+    name: 'enterprise-scheduler',
+    description: "Merges capital_allocation_engine's real ROI ranking with gfos.py's real scheduler buckets into one ranked view -- no new ranking algorithm, no new queue. Execution time is honestly 'Unknown' -- no real historical per-stage duration tracking exists anywhere in this factory.",
+    reused: 'enterprise_executive_brain.py::enterprise_scheduler() (ADR-156), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('enterprise_scheduler', [], req, 60000),
+    health: pythonHealthCheck('enterprise_scheduler'),
+  },
+  {
+    name: 'executive-scenario-simulator',
+    description: "3 real, disclosed-assumption HYPOTHETICAL projections (revenue growth off channels/ledger.py's real baseline, AI cost increase off data/ai_cost_log.jsonl's real baseline, infrastructure-failure cascade off the real dependency graph) + 4 scenarios honestly reported NOT_ARCHITECTED (traffic spikes, publishing delays, affiliate expansion, digital product expansion -- no real, distinct baseline exists to honestly perturb). Never a prediction, never written to any ledger, never touches Simulation Mode's AFFILIATE_MODE switch or any production code path. Accepts optional ?cascade_department=<name> query param.",
+    reused: 'enterprise_executive_brain.py::executive_scenario_simulator() (ADR-156), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('executive_scenario_simulator', [JSON.stringify({ cascade_department: req.query && req.query.cascade_department })], req),
+    health: pythonHealthCheck('executive_scenario_simulator'),
+  },
+  {
     // Executive Command Center (ADR-146, 2026-07-30): reuses
     // multi_source_intelligence.registry.get_connectors() verbatim --
     // never a second connector list. Static-unavailable sources

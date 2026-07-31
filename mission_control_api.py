@@ -1003,6 +1003,51 @@ def _executive_analytics():
     return executive_analytics()
 
 
+def _unified_decision_engine():
+    """Enterprise Executive Brain (ADR-156, 2026-07-31): the real
+    prioritized action list + conflicts + duplicated work + idle
+    divisions + bottlenecks + missing dependencies, each citing an
+    already-real function."""
+    from enterprise_executive_brain import unified_decision_engine
+    return unified_decision_engine()
+
+
+def _executive_kpi_system():
+    """Enterprise Executive Brain (ADR-156, 2026-07-31): the real
+    per-division 8-KPI scorecard, reusing launch_readiness.py's real
+    5-division registry. Intelligence Score and Production Capacity
+    are honestly NOT_ARCHITECTED -- no real source exists."""
+    from enterprise_executive_brain import executive_kpi_system
+    return executive_kpi_system()
+
+
+def _enterprise_dependency_graph():
+    """Enterprise Executive Brain (ADR-156, 2026-07-31): extends
+    enterprise_operations.py's dependency_matrix() with real reverse-
+    dependents, cascade-impact, and cycle detection (dependency_graph.py)."""
+    from enterprise_executive_brain import enterprise_dependency_graph
+    return enterprise_dependency_graph()
+
+
+def _enterprise_scheduler():
+    """Enterprise Executive Brain (ADR-156, 2026-07-31): merges
+    capital_allocation_engine's real ROI ranking with gfos.py's real
+    scheduler buckets into one ranked view -- no new ranking algorithm."""
+    from enterprise_executive_brain import enterprise_scheduler
+    return enterprise_scheduler()
+
+
+def _executive_scenario_simulator():
+    """Enterprise Executive Brain (ADR-156, 2026-07-31): 3 real,
+    disclosed-assumption HYPOTHETICAL projections (revenue growth, AI
+    cost increase, infrastructure-failure cascade) + 4 honestly
+    NOT_ARCHITECTED scenarios. Never a prediction, never written to any
+    ledger. Reads sys.argv[2] for optional {"cascade_department": "..."}."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    from enterprise_executive_brain import executive_scenario_simulator
+    return executive_scenario_simulator(cascade_department=payload.get("cascade_department"))
+
+
 def _market_intelligence_source_status():
     """Executive Command Center (ADR-146, 2026-07-30): the real,
     registered external-evidence-source inventory for the Market
@@ -2409,6 +2454,11 @@ _ENDPOINTS = {
     "company_pulse": _company_pulse,
     "dependency_matrix": _dependency_matrix,
     "executive_analytics": _executive_analytics,
+    "unified_decision_engine": _unified_decision_engine,
+    "executive_kpi_system": _executive_kpi_system,
+    "enterprise_dependency_graph": _enterprise_dependency_graph,
+    "enterprise_scheduler": _enterprise_scheduler,
+    "executive_scenario_simulator": _executive_scenario_simulator,
     "market_intelligence_source_status": _market_intelligence_source_status,
     "decision_memory_list": _decision_memory_list,
     "decision_memory_conflicts": _decision_memory_conflicts,
