@@ -1267,6 +1267,18 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('automation_revenue_dashboard'),
   },
   {
+    // Enterprise Capital Allocation Engine (ADR-165, 2026-07-31 -- the
+    // directive itself said "ADR-163", already allocated to Enterprise
+    // Evidence Engine; renumbered). Extends -- never duplicates --
+    // capital_allocation_engine.py's real 14-dim Investment Score
+    // (ADR-139), reused verbatim via injection.
+    name: 'enterprise-capital-allocation-dashboard',
+    description: "Extends the real 14-dim Investment Score (ADR-139) with 5 more: 2 already-real-but-previously-uncited (expected_roi, scalability, both already inside value_engine.py) + 3 genuinely new (market_maturity -- honestly INSUFFICIENT EVIDENCE per niche, company-wide market_health() cited for context; legal_risk -- real per-niche executive_quality_gate.py citation; operational_risk -- real but company-wide only, disclosed). Also: Resource Allocation across 10 named strategic resources (6 have a real signal today, 4 honestly INSUFFICIENT EVIDENCE -- development time/research capacity/marketing effort/infrastructure have no real tracking anywhere in this factory), Company Capacity Utilization, Top Investments/Projects Starved of Resources/Expected Long-Term ROI (all reused verbatim from capital_allocation_engine.py), and a real, disclosed 'Projects Overfunded' heuristic (real production-run-count vs. real priority rank -- no prior analog). Expensive (reuses capital-allocation-dashboard's own real ~90s cost).",
+    reused: 'enterprise_capital_allocation.py::build_enterprise_capital_allocation_dashboard() (ADR-165) + capital_allocation_engine.py (ADR-139), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('enterprise_capital_allocation_dashboard', [], req, 100000),
+    health: pythonHealthCheck('enterprise_capital_allocation_dashboard'),
+  },
+  {
     // Enterprise Growth Engine (ADR-158, 2026-07-31): "automatic
     // fallback" (the directive's Objective 3) is implemented as
     // non-cached, non-sticky recomputation, not a triggered action --

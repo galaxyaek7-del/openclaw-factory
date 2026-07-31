@@ -1144,6 +1144,16 @@ def _executive_evidence_dashboard():
     return {"verification_by_type": verification_by_type, "coverage": evidence_engine.evidence_coverage_report()}
 
 
+def _enterprise_capital_allocation_dashboard():
+    """Enterprise Capital Allocation Engine (ADR-165, 2026-07-31):
+    extends -- never duplicates -- capital_allocation_engine.py's real
+    14-dim Investment Score + dashboard (ADR-139). Adds the 10-named-
+    strategic-resource allocation map, company capacity utilization,
+    and a real, disclosed 'projects overfunded' heuristic."""
+    import enterprise_capital_allocation as eca
+    return eca.build_enterprise_capital_allocation_dashboard()
+
+
 def _automation_revenue_dashboard():
     """AI Automation Revenue Engine (ADR-164, 2026-07-31): real
     opportunity discovery/scoring for automation-product categories --
@@ -2649,6 +2659,7 @@ _ENDPOINTS = {
     "evidence_viewer": _evidence_viewer,
     "executive_evidence_dashboard": _executive_evidence_dashboard,
     "automation_revenue_dashboard": _automation_revenue_dashboard,
+    "enterprise_capital_allocation_dashboard": _enterprise_capital_allocation_dashboard,
 }
 
 
