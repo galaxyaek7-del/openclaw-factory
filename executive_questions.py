@@ -35,7 +35,16 @@ recompute brief/gox/cap again internally).
 WAITING_FOR_REAL_SOURCE = "WAITING FOR REAL SOURCE"
 
 
-def answer_strategic_questions(decisions_path=None, board_path=None, alerts_path=None):
+def answer_strategic_questions(decisions_path=None, board_path=None, alerts_path=None,
+                                brief=None, gox=None, cap=None):
+    """`brief`/`gox`/`cap` (Enterprise Operations Center, ADR-155,
+    2026-07-31): let a caller that already has a real, freshly-computed
+    build_executive_brief()/build_global_opportunity_exchange_dashboard()/
+    build_capital_allocation_dashboard() result pass it straight through
+    instead of triggering a second, redundant, real full-portfolio
+    computation -- the same real pattern scheduler.decide_next_actions()'s
+    own `portfolio` parameter already established. Leave as None (the
+    default) to compute all three fresh, exactly as before."""
     import strategic_intelligence_core
     import global_opportunity_exchange
     import capital_allocation_engine
@@ -45,15 +54,18 @@ def answer_strategic_questions(decisions_path=None, board_path=None, alerts_path
     import autonomous_operations_status
     import launch_readiness
 
-    brief = strategic_intelligence_core.build_executive_brief(
-        decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
-    )
-    gox = global_opportunity_exchange.build_global_opportunity_exchange_dashboard(
-        decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
-    )
-    cap = capital_allocation_engine.build_capital_allocation_dashboard(
-        decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
-    )
+    if brief is None:
+        brief = strategic_intelligence_core.build_executive_brief(
+            decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
+        )
+    if gox is None:
+        gox = global_opportunity_exchange.build_global_opportunity_exchange_dashboard(
+            decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
+        )
+    if cap is None:
+        cap = capital_allocation_engine.build_capital_allocation_dashboard(
+            decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
+        )
     evo_queue = evolution_queue.list_evolution_queue()
 
     # Q1 -- reuses executive_brain's own real arbitration helpers against

@@ -1092,6 +1092,32 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('executive_intelligence_questions'),
   },
   {
+    // Enterprise Operations Center (ADR-155, 2026-07-31): chains
+    // build_executive_brief() + founder_console + capital_allocation_
+    // engine + executive_questions.py + executive_intelligence/
+    // inactivity.py, each exactly once. Same real cost class as
+    // executive-brain/executive-intelligence-questions above.
+    name: 'company-pulse',
+    description: "The real \"Company Pulse\" -- 7 named questions (is the company healthy / what's working / what's blocked / where's money expected / which division needs attention / which automations are idle / which opportunities are waiting), each citing an already-real source. \"Which automations are idle\" reuses a real, previously-unwired module (executive_intelligence/inactivity.py, ADR-052) -- zero-execution orchestrator engines + zero-publish-attempt channel arms.",
+    reused: 'enterprise_operations.py::company_pulse() (ADR-155), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('company_pulse', [], req, 120000),
+    health: pythonHealthCheck('company_pulse'),
+  },
+  {
+    name: 'dependency-matrix',
+    description: "A real, mechanical, AST-based Python-import dependency analysis (dependency_graph.py) over each of the 12 real departments' one primary module -- a disclosed code-level proxy for operational dependency, never a fabricated business-relationship graph.",
+    reused: 'enterprise_operations.py::dependency_matrix() (ADR-155) + dependency_graph.py + gfos.py\'s real department->primary-module mapping, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('dependency_matrix', [], req),
+    health: pythonHealthCheck('dependency_matrix'),
+  },
+  {
+    name: 'executive-analytics',
+    description: "Real trends over time -- health_trend.py's real GET /health snapshot trend, channels/ledger.py's real revenue_trend(), evolution_queue.py's real per-proposal outcome measurements (ADR-143) -- consolidated into one view, zero new computation, never an isolated snapshot number presented as a trend.",
+    reused: 'enterprise_operations.py::executive_analytics() (ADR-155), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('executive_analytics', [], req),
+    health: pythonHealthCheck('executive_analytics'),
+  },
+  {
     // Executive Command Center (ADR-146, 2026-07-30): reuses
     // multi_source_intelligence.registry.get_connectors() verbatim --
     // never a second connector list. Static-unavailable sources

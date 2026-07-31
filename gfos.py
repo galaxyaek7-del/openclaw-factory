@@ -169,6 +169,15 @@ def mission_lifecycle_summary(decisions_path=None, board_path=None, alerts_path=
         "real_buckets": buckets,
         "lifecycle": lifecycle,
         "execution_order": list(orchestrator_types.EXECUTION_ORDER),
+        # Enterprise Operations Center (ADR-155, 2026-07-31): "what can
+        # run in parallel" -- honestly NOT_ARCHITECTED. orchestrator.
+        # types.EXECUTION_ORDER is a real, fixed, strictly SEQUENTIAL
+        # 5-stage tuple by design -- no real concurrency model exists
+        # anywhere in this factory's real pipeline. Never fabricated.
+        "parallel_execution": {
+            "value": "NOT_ARCHITECTED",
+            "reason": "orchestrator.types.EXECUTION_ORDER is a real, strictly sequential pipeline by design -- no real parallel-execution capability exists in this factory today.",
+        },
         "source": "scheduler.py::decide_next_actions() + orchestrator.types.EXECUTION_ORDER -- no new queue, no new state machine",
     }
 

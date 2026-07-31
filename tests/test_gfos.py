@@ -62,6 +62,14 @@ class TestMissionLifecycleSummary(unittest.TestCase):
         result = gfos.mission_lifecycle_summary()
         self.assertEqual(result["execution_order"], list(orchestrator_types.EXECUTION_ORDER))
 
+    def test_parallel_execution_is_honestly_not_architected(self):
+        # Enterprise Operations Center (ADR-155, 2026-07-31): the real
+        # pipeline is strictly sequential by design -- never a
+        # fabricated concurrency model.
+        result = gfos.mission_lifecycle_summary()
+        self.assertEqual(result["parallel_execution"]["value"], "NOT_ARCHITECTED")
+        self.assertTrue(result["parallel_execution"]["reason"])
+
 
 class TestEnterpriseTimeline(unittest.TestCase):
     def test_merges_multiple_real_sources_sorted_most_recent_first(self):

@@ -2248,6 +2248,20 @@ async function maybeGenerateBusinessBlueprintsForNewAcceptedDecisions(now = new 
 // tick). Runs every tick, unlike the daily-gated reports above — see
 // the call site's own comment for why "every tick" is the honest
 // definition of "real-time" here.
+
+// Enterprise Operations Center (ADR-155, 2026-07-31): pure, side-effect-
+// free extraction of "which of this tick's real recorded incidents are
+// actually new, high-value alerts worth a Telegram push" -- filters to
+// event:'opened' only (a 'resolved' event is good news, not an alert)
+// and formats each into buildCriticalErrorMessage()'s expected string
+// shape. Extracted as its own function so this real filtering logic is
+// unit-testable without spawning a real Python subprocess.
+function newIncidentTelegramReasons(recordedIncidents) {
+  return (recordedIncidents || [])
+    .filter(inc => inc && inc.event === 'opened')
+    .map(inc => `${inc.area}: ${inc.detail}`);
+}
+
 function runResilienceMonitorTick({ timeoutMs = 30000, pythonPath } = {}) {
   return new Promise((resolve) => {
     let python;
@@ -2279,6 +2293,19 @@ function runResilienceMonitorTick({ timeoutMs = 30000, pythonPath } = {}) {
         if (!result.success) {
           finish({ action: 'failed', detail: result.error || 'فشل غير محدَّد من resilience_monitor_tick' });
           return;
+        }
+        // Enterprise Operations Center (ADR-155, 2026-07-31): "executive
+        // notifications, only high-value alerts, no spam." Reuses two
+        // already-real pieces verbatim -- resilience_monitor.py's own
+        // real severity gate (only critical/emergency ever reaches
+        // recorded_incidents) and dedup (an already-open incident is
+        // never re-recorded, so this fires once per real new incident,
+        // not once per tick) -- and telegramDirect's existing send path
+        // + buildCriticalErrorMessage() convention. No new notification
+        // infrastructure.
+        const reasons = newIncidentTelegramReasons(result.recorded_incidents);
+        if (reasons.length > 0) {
+          telegramDirect.sendTelegramMessage(telegramDirect.buildCriticalErrorMessage(reasons)).catch(() => {});
         }
         finish({
           action: 'assessed',
@@ -2978,7 +3005,7 @@ module.exports = {
   runGenerateDailyExecutiveDirective, maybeGenerateDailyExecutiveDirective,
   runKnowledgeGraphDailySnapshot, maybeGenerateDailyKnowledgeGraph,
   runGeneratePendingBusinessBlueprints, maybeGenerateBusinessBlueprintsForNewAcceptedDecisions,
-  runResilienceMonitorTick,
+  runResilienceMonitorTick, newIncidentTelegramReasons,
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
   maybeRunMarketHunter, maybeRunSelfAwareness,

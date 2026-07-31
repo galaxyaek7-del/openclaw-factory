@@ -9,6 +9,7 @@ second, competing computation.
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
@@ -49,6 +50,29 @@ class TestAnswerStrategicQuestions(unittest.TestCase):
             if key == "generated_at":
                 continue
             self.assertTrue(val.get("source") or val.get("reason"), f"{key} missing a source/reason citation")
+
+    def test_injected_brief_gox_cap_avoid_redundant_computation(self):
+        # Enterprise Operations Center (ADR-155, 2026-07-31): a real bug
+        # this test guards against regressing -- enterprise_operations.py
+        # ::company_pulse() computes brief/gox/cap once and passes them
+        # in; without this injection path, answer_strategic_questions()
+        # would recompute all three internally a second time (a real,
+        # confirmed timeout caught during live verification).
+        fake_brief = {
+            "company_health": {}, "top_risks": {"stop": [], "cancel": []}, "top_opportunities": [],
+            "top_bottlenecks": {"bottlenecks": {"detected": False}, "customer_success_bottleneck": {"detected": False}},
+            "recommended_priorities": {}, "products_to_accelerate": [], "products_to_pause": [],
+            "wins": [], "research_needed": [], "founder_decisions_required": {}, "generated_at": "t",
+        }
+        fake_gox = {"market_health": {}}
+        fake_cap = {"top_roi_initiatives": []}
+        with patch("strategic_intelligence_core.build_executive_brief") as mock_brief, \
+             patch("global_opportunity_exchange.build_global_opportunity_exchange_dashboard") as mock_gox, \
+             patch("capital_allocation_engine.build_capital_allocation_dashboard") as mock_cap:
+            executive_questions.answer_strategic_questions(brief=fake_brief, gox=fake_gox, cap=fake_cap)
+        mock_brief.assert_not_called()
+        mock_gox.assert_not_called()
+        mock_cap.assert_not_called()
 
 
 class TestWhichDivisionIsSlowing(unittest.TestCase):

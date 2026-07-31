@@ -31,6 +31,34 @@ async function test(name, fn) {
 }
 
 async function main() {
+  // Enterprise Operations Center (ADR-155, 2026-07-31): pure filter/
+  // format logic extracted specifically so this real "only high-value
+  // alerts, no spam" behavior is testable without spawning a real
+  // Python subprocess or sending a real Telegram message.
+  await test('newIncidentTelegramReasons: filters to event:"opened" only, formats area+detail', async () => {
+    const reasons = fl.newIncidentTelegramReasons([
+      { event: 'opened', area: 'security_drift:node', detail: '0/5 pinned' },
+      { event: 'resolved', area: 'other_area', detail: 'fixed now' },
+      { event: 'opened', area: 'customer_risk:pipeline', detail: 'stuck request' },
+    ]);
+    assert.deepStrictEqual(reasons, [
+      'security_drift:node: 0/5 pinned',
+      'customer_risk:pipeline: stuck request',
+    ]);
+  });
+
+  await test('newIncidentTelegramReasons: empty/undefined input never throws, returns []', async () => {
+    assert.deepStrictEqual(fl.newIncidentTelegramReasons([]), []);
+    assert.deepStrictEqual(fl.newIncidentTelegramReasons(undefined), []);
+  });
+
+  await test('newIncidentTelegramReasons: no opened incidents -> no reasons (no spam)', async () => {
+    const reasons = fl.newIncidentTelegramReasons([
+      { event: 'resolved', area: 'x', detail: 'y' },
+    ]);
+    assert.deepStrictEqual(reasons, []);
+  });
+
   await test('runResilienceMonitorTick: nonexistent interpreter -> action:failed with a spawn-error detail', async () => {
     const result = await fl.runResilienceMonitorTick({ pythonPath: 'this-binary-does-not-exist-anywhere' });
     assert.strictEqual(result.action, 'failed');

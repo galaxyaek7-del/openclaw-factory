@@ -976,6 +976,33 @@ def _executive_intelligence_questions():
     return answer_strategic_questions()
 
 
+def _company_pulse():
+    """Enterprise Operations Center (ADR-155, 2026-07-31): the real
+    "Company Pulse" -- 7 named questions, each citing an already-real
+    source. Never a fabricated composite health score."""
+    from enterprise_operations import company_pulse
+    return company_pulse()
+
+
+def _dependency_matrix():
+    """Enterprise Operations Center (ADR-155, 2026-07-31): a real,
+    mechanical, AST-based Python-import dependency analysis
+    (dependency_graph.py) over each department's one real primary
+    module -- a disclosed code-level proxy for operational dependency,
+    never a fabricated business-relationship graph."""
+    from enterprise_operations import dependency_matrix
+    return dependency_matrix()
+
+
+def _executive_analytics():
+    """Enterprise Operations Center (ADR-155, 2026-07-31): real trends
+    over time -- health_trend.py, channels/ledger.py's revenue_trend(),
+    evolution_queue.py's real outcome measurements -- consolidated,
+    zero new computation."""
+    from enterprise_operations import executive_analytics
+    return executive_analytics()
+
+
 def _market_intelligence_source_status():
     """Executive Command Center (ADR-146, 2026-07-30): the real,
     registered external-evidence-source inventory for the Market
@@ -2379,6 +2406,9 @@ _ENDPOINTS = {
     "affiliate_simulation_report": _affiliate_simulation_report,
     "launch_readiness_score": _launch_readiness_score,
     "executive_intelligence_questions": _executive_intelligence_questions,
+    "company_pulse": _company_pulse,
+    "dependency_matrix": _dependency_matrix,
+    "executive_analytics": _executive_analytics,
     "market_intelligence_source_status": _market_intelligence_source_status,
     "decision_memory_list": _decision_memory_list,
     "decision_memory_conflicts": _decision_memory_conflicts,
