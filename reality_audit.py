@@ -48,7 +48,21 @@ _WRITE_PATTERNS = re.compile(
     r"resolve_recovery|note_publish_outcome|append_decision|append_outcome|submit_review|"
     r"\.write\(|open\([^)]*['\"]a['\"]|_save_state|advance_request|approve_request|"
     r"distribute\(|dry_run=False|fulfill_manually|check_all_awaiting_payments|"
-    r"generate_daily_|finance/add|record_click|record_publish_attempt",
+    r"generate_daily_|finance/add|record_click|record_publish_attempt|"
+    # Real, confirmed-the-hard-way additions (ADR-163 addendum): the
+    # initial ADR-162 audit run live-invoked rerun_market_analysis /
+    # trigger_opportunity_evaluation -- both real, read-sounding
+    # endpoints whose own docstrings say "runs each through the
+    # existing orchestrator cycle" / "this action only ever evaluates
+    # AND RECORDS DECISIONS" -- real, intentional, append-only writes to
+    # data/decisions.jsonl, several real function calls deep, which the
+    # original single-level source scan never saw. ~630 real new
+    # decision records were appended to the live ledger as a direct
+    # result -- real, non-fabricated evaluation output, not corrupted,
+    # but a genuine, disclosed audit-tooling side effect (see ADR-162's
+    # addendum). Never auto-invoke anything that runs a real evaluation/
+    # hunt/orchestrator cycle from a read-only audit again.
+    r"run_hunt\(|run_cycle\(|evaluate_and_decide|orchestrator\.run_cycle|hunt\.run_hunt",
     re.IGNORECASE,
 )
 
@@ -59,16 +73,69 @@ def _now_iso():
     return datetime.now(timezone.utc).isoformat()
 
 
+_CALL_PATTERN = re.compile(r"\b([\w.]+)\s*\(")
+
+
+def _one_level_deep_sources(src, fn):
+    """Real resolution of every name the endpoint's own source actually
+    calls, one level deep -- fixes a genuine gap: an earlier version of
+    this function only scanned the endpoint's own ~10-line wrapper, and
+    a real, disclosed-the-hard-way incident (ADR-162 addendum) found
+    that was not enough -- rerun_market_analysis/trigger_opportunity_
+    evaluation both looked like thin passthroughs but called into a
+    real, several-layers-deep evaluation pipeline that writes real
+    decisions. Best-effort: resolves names found in the endpoint's own
+    module globals (imports), skips anything it can't resolve or get
+    source for -- never raises, since a resolution failure must fail
+    SAFE (unsafe=True), never silently skip the deeper scan."""
+    sources = []
+    try:
+        mod = inspect.getmodule(fn)
+    except Exception:
+        return sources, True  # can't even find the module -- fail safe
+
+    called_names = set(m.group(1) for m in _CALL_PATTERN.finditer(src))
+    for name in called_names:
+        parts = name.split(".")
+        obj = None
+        try:
+            if len(parts) == 1:
+                obj = getattr(mod, parts[0], None)
+            else:
+                obj = getattr(mod, parts[0], None)
+                for p in parts[1:]:
+                    obj = getattr(obj, p, None) if obj is not None else None
+        except Exception:
+            obj = None
+        if obj is None or not (inspect.isfunction(obj) or inspect.ismethod(obj)):
+            continue
+        try:
+            sources.append(inspect.getsource(obj))
+        except (OSError, TypeError):
+            continue
+    return sources, False
+
+
 def _is_write_endpoint(fn):
-    """Real, mechanical source-text scan -- the safety gate described
-    above. Returns (unsafe: bool, matched_pattern_or_None)."""
+    """Real, mechanical source-text scan, now genuinely one level deep
+    (see _one_level_deep_sources() -- fixes the real gap the ADR-162
+    addendum discloses). Returns (unsafe: bool, matched_pattern_or_None)."""
     try:
         src = inspect.getsource(fn)
     except (OSError, TypeError):
         return True, "source_unavailable_assume_unsafe"
+
     m = _WRITE_PATTERNS.search(src)
     if m:
         return True, m.group(0)
+
+    nested_sources, resolution_failed = _one_level_deep_sources(src, fn)
+    if resolution_failed:
+        return True, "could_not_resolve_module_assume_unsafe"
+    for nested_src in nested_sources:
+        m = _WRITE_PATTERNS.search(nested_src)
+        if m:
+            return True, f"nested_call:{m.group(0)}"
     return False, None
 
 

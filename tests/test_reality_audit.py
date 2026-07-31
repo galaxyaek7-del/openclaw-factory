@@ -26,6 +26,20 @@ class TestWriteEndpointSafetyGate(unittest.TestCase):
         unsafe, pattern = ra._is_write_endpoint(fake_resolve_recovery)
         self.assertTrue(unsafe)
 
+    def test_flags_the_real_confirmed_incident_endpoints(self):
+        # Regression test for a real incident: the first ADR-162 audit
+        # run live-invoked these 2 real endpoints, whose own shallow
+        # wrapper source looked read-only but called several layers
+        # into a real evaluation pipeline that appends real decisions
+        # to data/decisions.jsonl -- ~630 real new records were written
+        # as a direct, disclosed side effect (ADR-162 addendum). Must
+        # never regress.
+        import mission_control_api as mca
+        for name in ("rerun_market_analysis", "trigger_opportunity_evaluation"):
+            fn = mca._ENDPOINTS[name]
+            unsafe, pattern = ra._is_write_endpoint(fn)
+            self.assertTrue(unsafe, f"{name} must be flagged unsafe (real decision-recording pipeline)")
+
     def test_does_not_flag_a_pure_read(self):
         def fake_read_only():
             from decision_engine import ranking
