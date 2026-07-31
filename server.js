@@ -1212,6 +1212,20 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('truth_first_compliance'),
   },
   {
+    // Enterprise Digital Twin (ADR-161, 2026-07-31): flagged via
+    // AskUserQuestion before any code -- "mandatory approval layer
+    // before production" read as an automated execution gate,
+    // colliding with the 4 standing founder-protected human-gates.
+    // Founder's answer: advisory preview only. This service, and every
+    // digital_twin.py function it calls, NEVER authorizes or blocks a
+    // real action -- see digital_twin.py's own top docstring.
+    name: 'digital-twin-dashboard',
+    description: "Real REAL STATE + DIGITAL TWIN across 17 named domains (inventory honestly not_applicable -- a digital-only business), 8 named 'what happens if...' scenarios (mostly citing enterprise_scenario_simulator() and ai_provider_concentration() directly), and the real preview-action registry (5 named production action types: growth stage progression, roadmap execution, affiliate simulation cycle, publish, capital reallocation -- each honestly disclosing which of PREVIEW/SIMULATE/ESTIMATE IMPACT/ROLLBACK PLAN it can really provide). Advisory only -- never authorizes or blocks any real action. Expensive (~40s, chains growth_stages/strategic_planning/gfos/customer_pipeline/etc.).",
+    reused: 'digital_twin.py::build_digital_twin_dashboard() (ADR-161) + growth_stages.py/strategic_planning.py/enterprise_executive_brain.py/global_opportunity_exchange.py/gfos.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('digital_twin_dashboard', [], req, 60000),
+    health: pythonHealthCheck('digital_twin_dashboard'),
+  },
+  {
     // Enterprise Growth Engine (ADR-158, 2026-07-31): "automatic
     // fallback" (the directive's Objective 3) is implemented as
     // non-cached, non-sticky recomputation, not a triggered action --
@@ -2380,6 +2394,22 @@ const ACTION_REGISTRY = [
     asyncRunner: (req) => {
       const { confirmed, ...overrides } = req.body || {};
       return runPythonActionAsync('simulate-roadmap-execution', 'simulate_roadmap_execution', [JSON.stringify(overrides)]);
+    },
+  },
+  {
+    // Enterprise Digital Twin (ADR-161, 2026-07-31) -- advisory only.
+    // Dispatches to one of 5 real, named production action types
+    // (digital_twin.py::PREVIEW_ACTIONS); never calls a real
+    // approve/reject/publish/reallocate function itself.
+    name: 'preview-production-action',
+    description: "Real PREVIEW/SIMULATE/ESTIMATE IMPACT/ROLLBACK PLAN for one named production action type (growth_stage_progression, roadmap_execution, affiliate_simulation_cycle, publish, capital_reallocation) -- each honestly discloses which of the 4 it can really provide. Body: { action_type, ...params }. Advisory only.",
+    reused: 'digital_twin.py::preview_action() (ADR-161)',
+    reversible: true, // read-only, writes nothing to disk
+    kind: 'async',
+    asyncRunner: (req) => {
+      const { confirmed, action_type, ...params } = req.body || {};
+      if (!action_type) return Promise.reject(new Error('{ action_type } is required in the request body'));
+      return runPythonActionAsync('preview-production-action', 'preview_production_action', [JSON.stringify({ action_type, ...params })]);
     },
   },
   {

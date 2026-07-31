@@ -1117,6 +1117,29 @@ def _truth_first_compliance():
     return truth_first.truth_first_compliance_report()
 
 
+def _digital_twin_dashboard():
+    """Enterprise Digital Twin (ADR-161, 2026-07-31): advisory-only real
+    REAL STATE + DIGITAL TWIN view across 17 named domains, 8 named
+    what-if scenarios, and the real preview-action registry. Never
+    calls a real approve/reject/publish/reallocate function -- see
+    digital_twin.py's own top docstring for the founder-confirmed
+    architecture (AskUserQuestion, advisory preview only)."""
+    import digital_twin
+    return digital_twin.build_digital_twin_dashboard()
+
+
+def _preview_production_action():
+    """Enterprise Digital Twin (ADR-161, 2026-07-31): PREVIEW/SIMULATE/
+    ESTIMATE IMPACT/ROLLBACK PLAN for one real, named production action
+    type. Reads sys.argv[2] for {"action_type": "...", ...params}."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    action_type = payload.pop("action_type", None)
+    if not action_type:
+        raise ValueError("{ action_type } is required")
+    import digital_twin
+    return digital_twin.preview_action(action_type, **payload)
+
+
 def _strategic_planning_dashboard():
     """Enterprise Strategic Planning System (ADR-159, 2026-07-31): the
     real rolling roadmap (5 time horizons), per-division status board,
@@ -2581,6 +2604,8 @@ _ENDPOINTS = {
     "simulate_roadmap_execution": _simulate_roadmap_execution,
     "record_daily_growth_stage_snapshot": _record_daily_growth_stage_snapshot,
     "truth_first_compliance": _truth_first_compliance,
+    "digital_twin_dashboard": _digital_twin_dashboard,
+    "preview_production_action": _preview_production_action,
 }
 
 
