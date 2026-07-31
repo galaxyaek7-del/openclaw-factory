@@ -1226,6 +1226,32 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('digital_twin_dashboard'),
   },
   {
+    // Enterprise Evidence Engine (ADR-163, 2026-07-31): a real,
+    // immutable, append-only evidence framework. Deliberately does NOT
+    // retrofit the 18 pre-existing real data/*.jsonl ledgers or
+    // logs/service_layer.log into this new schema -- they remain real,
+    // valid evidence sources in their own right, cited here.
+    name: 'evidence-coverage-report',
+    description: "The real Evidence Coverage Report: for each of the 10 named evidence types (EXECUTION/TEST/PUBLICATION/MARKET_RESEARCH/AI_DECISION/AUTOMATION/FINANCIAL/CUSTOMER/SYSTEM/SECURITY), cites the real, already-existing evidence source(s) confirmed in this factory (18 real data/*.jsonl ledgers, logs/service_layer.log, books/_generation_log.jsonl, inspections.log/QUARANTINE.md), or honestly lists it as lacking evidence if none exists. Never invents a source.",
+    reused: 'evidence_engine.py::evidence_coverage_report() (ADR-163), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('evidence_coverage_report', [], req),
+    health: pythonHealthCheck('evidence_coverage_report'),
+  },
+  {
+    name: 'evidence-viewer',
+    description: "Real chronological reader over the new evidence_engine.py ledger (data/evidence_ledger.jsonl) -- honestly empty until real evidence has been recorded. Accepts optional ?evidence_type=&module= query params.",
+    reused: 'evidence_engine.py::read_evidence() (ADR-163), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('evidence_viewer', [JSON.stringify({ evidence_type: req.query && req.query.evidence_type, module: req.query && req.query.module })], req),
+    health: pythonHealthCheck('evidence_viewer'),
+  },
+  {
+    name: 'executive-evidence-dashboard',
+    description: "Merges real per-type Evidence Verification (last_verified/verification_status/evidence_count/source -- honestly 'NOT VERIFIED' when a type has zero real evidence recorded) with the Evidence Coverage Report summary. Never displays a fabricated success.",
+    reused: 'evidence_engine.py::verify()/evidence_coverage_report() (ADR-163), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('executive_evidence_dashboard', [], req),
+    health: pythonHealthCheck('executive_evidence_dashboard'),
+  },
+  {
     // Enterprise Growth Engine (ADR-158, 2026-07-31): "automatic
     // fallback" (the directive's Objective 3) is implemented as
     // non-cached, non-sticky recomputation, not a triggered action --

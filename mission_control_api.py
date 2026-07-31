@@ -1117,6 +1117,33 @@ def _truth_first_compliance():
     return truth_first.truth_first_compliance_report()
 
 
+def _evidence_coverage_report():
+    """Enterprise Evidence Engine (ADR-163, 2026-07-31): the real
+    Evidence Coverage Report deliverable -- for each of the 10 named
+    evidence types, cites the real existing evidence source(s) already
+    confirmed in this factory, or honestly lists it as lacking."""
+    import evidence_engine
+    return evidence_engine.evidence_coverage_report()
+
+
+def _evidence_viewer():
+    """Enterprise Evidence Engine (ADR-163, 2026-07-31): real
+    chronological reader over data/evidence_ledger.jsonl. Reads
+    sys.argv[2] for optional {"evidence_type": "...", "module": "..."}."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    import evidence_engine
+    return {"entries": evidence_engine.read_evidence(evidence_type=payload.get("evidence_type"), module=payload.get("module"))}
+
+
+def _executive_evidence_dashboard():
+    """Enterprise Evidence Engine (ADR-163, 2026-07-31): merges verify()
+    (per named type) + the Evidence Coverage Report summary -- the
+    Executive Evidence Dashboard deliverable."""
+    import evidence_engine
+    verification_by_type = {etype: evidence_engine.verify(evidence_type=etype) for etype in evidence_engine.EVIDENCE_TYPES}
+    return {"verification_by_type": verification_by_type, "coverage": evidence_engine.evidence_coverage_report()}
+
+
 def _digital_twin_dashboard():
     """Enterprise Digital Twin (ADR-161, 2026-07-31): advisory-only real
     REAL STATE + DIGITAL TWIN view across 17 named domains, 8 named
@@ -2606,6 +2633,9 @@ _ENDPOINTS = {
     "truth_first_compliance": _truth_first_compliance,
     "digital_twin_dashboard": _digital_twin_dashboard,
     "preview_production_action": _preview_production_action,
+    "evidence_coverage_report": _evidence_coverage_report,
+    "evidence_viewer": _evidence_viewer,
+    "executive_evidence_dashboard": _executive_evidence_dashboard,
 }
 
 

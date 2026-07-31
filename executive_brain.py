@@ -333,6 +333,18 @@ def build_executive_directive(decisions_path=None, board_path=None, alerts_path=
     directive["confidence"] = _confidence_estimate(directive, candidates)
     directive["duplicate_check"] = _detect_repeat(identity, directive.get("tier"), ledger_path=ledger_path)
 
+    # Enterprise Evidence Engine (ADR-163) Executive Rules -- a real,
+    # disclosed proof-of-concept application of check_unsupported_
+    # completion_claims() to this factory's own generated executive
+    # text, not a claim that every text-generating function has been
+    # retrofitted. This factory's internal directive text is Arabic;
+    # the check's 5 named English phrases will rarely fire here in
+    # practice -- disclosed honestly, not silently omitted.
+    import evidence_engine
+    directive["completion_claim_check"] = evidence_engine.check_unsupported_completion_claims(
+        f"{directive.get('action') or ''} {directive.get('reasoning') or ''}"
+    )
+
     record = {
         "generated_at": now,
         "directive": directive,
