@@ -1108,6 +1108,40 @@ def _company_state():
     return company_state()
 
 
+def _strategic_planning_dashboard():
+    """Enterprise Strategic Planning System (ADR-159, 2026-07-31): the
+    real rolling roadmap (5 time horizons), per-division status board,
+    Enterprise Priority Matrix, instant Mission Control Q&A, and
+    extended Executive Timeline -- almost entirely a citation layer
+    over gfos.py/growth_stages.py/executive_questions.py/execution_
+    status.py, each computed exactly once. Expensive (chains
+    answer_strategic_questions() + build_growth_dashboard() +
+    build_execution_status_report(), measured live ~70s)."""
+    import strategic_planning
+    return strategic_planning.build_strategic_planning_dashboard()
+
+
+def _simulate_roadmap_execution():
+    """Enterprise Strategic Planning System (ADR-159, 2026-07-31):
+    Simulation Mode integration -- recomputes the rolling roadmap
+    against a hypothetical Growth Stage result, writes nothing to disk.
+    Reads sys.argv[2] for the hypothetical override dict."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    import strategic_planning
+    return strategic_planning.simulate_roadmap_execution(**payload)
+
+
+def _record_daily_growth_stage_snapshot():
+    """Enterprise Strategic Planning System (ADR-159, 2026-07-31): the
+    ONE real write path for Growth Stage history -- called only by
+    factory_loop.js's own once-per-calendar-day tick gate, never from a
+    live Mission Control view (same discipline as generate_daily_
+    executive_directive avoiding a page-refresh-duplicates-the-ledger
+    bug, ADR-144)."""
+    import growth_stages
+    return {"snapshot": growth_stages.record_growth_stage_snapshot()}
+
+
 def _market_intelligence_source_status():
     """Executive Command Center (ADR-146, 2026-07-30): the real,
     registered external-evidence-source inventory for the Market
@@ -2534,6 +2568,9 @@ _ENDPOINTS = {
     "execution_phases": _execution_phases,
     "growth_stage_status": _growth_stage_status,
     "simulate_growth_stage_progression": _simulate_growth_stage_progression,
+    "strategic_planning_dashboard": _strategic_planning_dashboard,
+    "simulate_roadmap_execution": _simulate_roadmap_execution,
+    "record_daily_growth_stage_snapshot": _record_daily_growth_stage_snapshot,
 }
 
 

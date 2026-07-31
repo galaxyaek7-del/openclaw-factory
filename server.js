@@ -1212,6 +1212,19 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('growth_stage_status'),
   },
   {
+    // Enterprise Strategic Planning System (ADR-159, 2026-07-31): almost
+    // entirely a citation/relabeling layer over gfos.py/growth_stages.py/
+    // executive_questions.py/execution_status.py, each computed exactly
+    // once inside strategic_planning.py::build_strategic_planning_
+    // dashboard() -- the 4th consecutive round this session guarding
+    // against the redundant-full-portfolio-scan bug class (ADR-155/156).
+    name: 'strategic-planning-dashboard',
+    description: "The real rolling roadmap (Today/This Week/This Month/This Quarter/This Year -- a disclosed heuristic re-bucketing of scheduler.py's real buckets + Growth Stage requirements, never a committed calendar date, since this factory has no scheduler and no real historical duration model), per-division status board (7 divisions: objectives/progress/risks/dependencies/blocked tasks/estimated completion -- estimated completion is honestly Unknown), the Enterprise Priority Matrix (8 real columns per ACCEPTED opportunity, execution_status.py's own real Priority Score order, never a second ranking algorithm), instant answers to 'build next / delay / highest ROI / blocks growth', and an extended Executive Timeline (milestones + real Growth Stage history + architectural decisions). Expensive (measured live ~70s, chains answer_strategic_questions() + build_growth_dashboard() + build_execution_status_report()).",
+    reused: 'strategic_planning.py::build_strategic_planning_dashboard() (ADR-159) + gfos.py/growth_stages.py/executive_questions.py/execution_status.py/launch_readiness.py/enterprise_operations.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('strategic_planning_dashboard', [], req, 90000),
+    health: pythonHealthCheck('strategic_planning_dashboard'),
+  },
+  {
     // Executive Command Center (ADR-146, 2026-07-30): reuses
     // multi_source_intelligence.registry.get_connectors() verbatim --
     // never a second connector list. Static-unavailable sources
@@ -2338,6 +2351,21 @@ const ACTION_REGISTRY = [
       // override, exactly as designed; `confirmed` is HTTP-layer-only.
       const { confirmed, ...overrides } = req.body || {};
       return runPythonActionAsync('simulate-growth-stage-progression', 'simulate_growth_stage_progression', [JSON.stringify(overrides)]);
+    },
+  },
+  {
+    // Enterprise Strategic Planning System (ADR-159, 2026-07-31),
+    // Objective 7 -- reuses growth_stages.py's exact overrides
+    // mechanism/known-key rejection via simulate_stage_progression().
+    // Same confirmed-stripping fix ADR-158's own action just needed.
+    name: 'simulate-roadmap-execution',
+    description: "Recomputes the real rolling roadmap against a hypothetical Growth Stage (same override keys as simulate-growth-stage-progression) -- proves what the roadmap would look like under hypothetical conditions without touching production data.",
+    reused: 'strategic_planning.py::simulate_roadmap_execution() (ADR-159) + growth_stages.py::simulate_stage_progression() (ADR-158) + simulation_mode.py (ADR-153)',
+    reversible: true, // read-only, writes nothing to disk
+    kind: 'async',
+    asyncRunner: (req) => {
+      const { confirmed, ...overrides } = req.body || {};
+      return runPythonActionAsync('simulate-roadmap-execution', 'simulate_roadmap_execution', [JSON.stringify(overrides)]);
     },
   },
   {

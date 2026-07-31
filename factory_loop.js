@@ -1945,6 +1945,78 @@ async function maybeGenerateDailyExecutiveDirective(now = new Date()) {
   return { action: 'generated', detail: `تم إنشاء توجيه تنفيذي حقيقي (${result.status}): ${result.action || 'لا إجراء معلَّق'}` };
 }
 
+// ── ENTERPRISE GROWTH ENGINE — DAILY GROWTH STAGE SNAPSHOT (ADR-159, 2026-07-31) ──
+// The ONE real write path for Growth Stage history: appends the current
+// real Growth Stage to data/growth_stage_snapshots.jsonl. growth_stages.
+// py's own classifier (current_growth_stage()) stays exactly as stateless
+// as ADR-158 left it — never calls this itself. Same once-per-calendar-
+// day pattern as every other daily report above; cheap (a single real
+// growth_stages.build_growth_dashboard() call, not the ~70s Strategic
+// Planning Dashboard chain).
+const GROWTH_STAGE_SNAPSHOT_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.growth_stage_snapshot_daily_marker');
+
+function runRecordDailyGrowthStageSnapshot({ timeoutMs = 60000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'record_daily_growth_stage_snapshot'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة record_daily_growth_stage_snapshot (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من record_daily_growth_stage_snapshot' });
+          return;
+        }
+        finish({ ok: true, stage: result.snapshot && result.snapshot.stage });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج record_daily_growth_stage_snapshot: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeRecordDailyGrowthStageSnapshot(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(GROWTH_STAGE_SNAPSHOT_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم تسجيل لقطة مرحلة النمو اليومية بالفعل (${today})` };
+  }
+  const result = await runRecordDailyGrowthStageSnapshot();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(path.dirname(GROWTH_STAGE_SNAPSHOT_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(GROWTH_STAGE_SNAPSHOT_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ علامة لقطة مرحلة النمو: ${err.message}` };
+  }
+  return { action: 'generated', detail: `تم تسجيل لقطة مرحلة نمو حقيقية: ${result.stage}` };
+}
+
 // ── AUTONOMOUS COMPANY EVOLUTION ENGINE — DAILY INTAKE/SIMULATE/DECIDE ──
 // Runs mission_control_api.py's evolution_queue_daily_cycle: real
 // proposals get pulled into the Evolution Queue, simulated, and decided
@@ -2761,6 +2833,13 @@ async function runTick() {
   markStep('executive_directive');
   actions.push({ step: 'executive_directive', ...(await maybeGenerateDailyExecutiveDirective()) });
 
+  // Enterprise Growth Engine (ADR-159, 2026-07-31): runs after the
+  // executive directive step so it records the freshest real Growth
+  // Stage each day. Same once-per-calendar-day pattern — never called
+  // from growth_stages.py's own stateless classifier.
+  markStep('growth_stage_snapshot');
+  actions.push({ step: 'growth_stage_snapshot', ...(await maybeRecordDailyGrowthStageSnapshot()) });
+
   // Final Executive Directive (2026-07-29): same once-per-calendar-day
   // pattern as the report engines above — the 2 confirmed-safe, genuinely
   // new autonomy additions ("maintain institutional knowledge" +
@@ -3003,6 +3082,7 @@ module.exports = {
   runEvolutionQueueDailyCycle, maybeGenerateDailyEvolutionQueueIntake,
   runEvolutionOutcomeMeasurementCycle, maybeMeasureEvolutionOutcomes,
   runGenerateDailyExecutiveDirective, maybeGenerateDailyExecutiveDirective,
+  runRecordDailyGrowthStageSnapshot, maybeRecordDailyGrowthStageSnapshot,
   runKnowledgeGraphDailySnapshot, maybeGenerateDailyKnowledgeGraph,
   runGeneratePendingBusinessBlueprints, maybeGenerateBusinessBlueprintsForNewAcceptedDecisions,
   runResilienceMonitorTick, newIncidentTelegramReasons,
