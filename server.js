@@ -1198,6 +1198,20 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('company_state'),
   },
   {
+    // Enterprise Growth Engine (ADR-158, 2026-07-31): "automatic
+    // fallback" (the directive's Objective 3) is implemented as
+    // non-cached, non-sticky recomputation, not a triggered action --
+    // same read-only-status-label discipline as company_state() above
+    // (ADR-157). Stage 5 is honestly reported as blocked by standing
+    // founder policy (the 4 protected gates), never a fabricated data
+    // threshold.
+    name: 'growth-stage-status',
+    description: "The real Executive Growth Dashboard: current company-wide Growth Stage (0 Bootstrap - 5 Autonomous Enterprise, recomputed fresh every call from real signals -- decision_engine ACCEPTED count, real production runs, channels/ledger.py revenue, resilience_monitor incidents, launch_readiness.py per-division scores), remaining requirements/blocking factors for the next stage, estimated readiness %, per-division stage objectives (7 named divisions, a disclosed strategic-guidance template paired with each division's real signal), and the highest-ROI action to advance (pure citation of enterprise_scheduler(), no new ranking). Answers the directive's 3 named questions directly. Expensive (chains enterprise_scheduler() -> capital_allocation_engine, measured live ~30s).",
+    reused: 'growth_stages.py::build_growth_dashboard()/answer_growth_questions() (ADR-158) + enterprise_executive_brain.py::enterprise_scheduler() (ADR-156), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('growth_stage_status', [], req, 60000),
+    health: pythonHealthCheck('growth_stage_status'),
+  },
+  {
     // Executive Command Center (ADR-146, 2026-07-30): reuses
     // multi_source_intelligence.registry.get_connectors() verbatim --
     // never a second connector list. Static-unavailable sources
@@ -2303,6 +2317,27 @@ const ACTION_REGISTRY = [
       const niche = (req.body && req.body.niche || '').trim();
       if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
       return runPythonActionAsync('build-business-blueprint', 'business_blueprint', [JSON.stringify({ niche })]);
+    },
+  },
+  {
+    // Enterprise Growth Engine (ADR-158, 2026-07-31), Objective 7 --
+    // Simulation Mode integration. Every accepted override key
+    // replaces exactly one real signal (e.g. total_revenue_usd) with a
+    // hypothetical value; growth_stages.py rejects any unknown key.
+    // Writes nothing to disk -- a stateless what-if, not a production
+    // action, same simulation_mode.py framework as ADR-153.
+    name: 'simulate-growth-stage-progression',
+    description: "Recomputes the real Growth Stage classification against hypothetical overrides (e.g. { total_revenue_usd: 500 }) instead of real signals -- proves 'what would it take to reach the next stage' without touching production data. Accepts any subset of: accepted_opportunities_count, real_production_runs, total_revenue_usd, open_critical_incidents, launch_readiness, automation_level_pct, quality_score_pct, platforms_with_real_revenue.",
+    reused: 'growth_stages.py::simulate_stage_progression() (ADR-158) + simulation_mode.py (ADR-153)',
+    reversible: true, // read-only, writes nothing to disk
+    kind: 'async',
+    asyncRunner: (req) => {
+      // Strip the confirmation-gate's own `confirmed` field before
+      // forwarding -- growth_stages.py::simulate_stage_progression()
+      // rejects any key it doesn't recognize as a real hypothetical
+      // override, exactly as designed; `confirmed` is HTTP-layer-only.
+      const { confirmed, ...overrides } = req.body || {};
+      return runPythonActionAsync('simulate-growth-stage-progression', 'simulate_growth_stage_progression', [JSON.stringify(overrides)]);
     },
   },
   {

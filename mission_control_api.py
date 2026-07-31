@@ -1076,6 +1076,29 @@ def _autonomous_daily_cycle_status():
     return autonomous_daily_cycle_status()
 
 
+def _growth_stage_status():
+    """Enterprise Growth Engine (ADR-158, 2026-07-31): the real Executive
+    Growth Dashboard -- current Growth Stage (0-5, non-cached, recomputed
+    fresh every call), remaining requirements/blocking factors, estimated
+    readiness, per-division stage objectives, and the highest-ROI action
+    to advance (pure citation of enterprise_scheduler()). Expensive
+    (chains enterprise_scheduler() -> capital_allocation_engine, measured
+    live ~30s) -- read-only, never triggers any action."""
+    import growth_stages
+    dashboard = growth_stages.build_growth_dashboard()
+    return {"dashboard": dashboard, "questions": growth_stages.answer_growth_questions(dashboard)}
+
+
+def _simulate_growth_stage_progression():
+    """Enterprise Growth Engine (ADR-158, 2026-07-31): Simulation Mode
+    integration -- recomputes the Growth Stage against hypothetical
+    overrides (e.g. {"total_revenue_usd": 500}), writes nothing to disk.
+    Reads sys.argv[2] for the hypothetical override dict."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    import growth_stages
+    return growth_stages.simulate_stage_progression(**payload)
+
+
 def _company_state():
     """Autonomous Company Runtime (ADR-157, 2026-07-31): a real,
     priority-ordered, read-only status label -- never a live behavioral
@@ -2509,6 +2532,8 @@ _ENDPOINTS = {
     "business_blueprint": _business_blueprint,
     "business_pipeline_summary": _business_pipeline_summary,
     "execution_phases": _execution_phases,
+    "growth_stage_status": _growth_stage_status,
+    "simulate_growth_stage_progression": _simulate_growth_stage_progression,
 }
 
 
