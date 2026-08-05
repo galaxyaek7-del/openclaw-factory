@@ -2468,6 +2468,26 @@ const ACTION_REGISTRY = [
     },
   },
   {
+    // Galaxy Opportunity Operating System (ADR-171, 2026-08-05): a real
+    // consolidation/citation layer over profit_oracle.py/executive_
+    // quality_gate.py/strategic_intelligence_core.py/capital_allocation_
+    // engine.py/autonomous_business_builder.py -- never a second decision
+    // engine, never gates production itself. Its own 0-100 score is
+    // advisory only (an 85-line for visibility); the real production gate
+    // remains decision_engine's ACCEPTED/REJECTED/DEFERRED status and
+    // profit_oracle.py's real 65/100 weighted floor, both unchanged.
+    name: 'goos-evaluate-opportunity',
+    description: "The real 15-section Opportunity Intelligence Report for one niche (Executive Summary/Problem/Customer/Competitor/Market Analysis/Business Model/Revenue Potential/Strategic Advantages/Weaknesses/Implementation Difficulty/Automation Possibilities/Estimated ROI/Recommended Pricing/Expansion Potential/Overall Recommendation) + the 20 named GOOS evaluation dimensions, each a real citation of an already-real signal. TAM/SAM/SOM is honestly NOT_MEASURABLE -- no free real market-sizing data source exists anywhere in this factory. Post-acceptance sections (Business Model/Revenue Potential/Estimated ROI/Competitor Analysis/Weaknesses) are only available for a real ACCEPTED opportunity, honestly NOT_AVAILABLE otherwise. The GOOS score's 85-line is advisory only -- it never replaces or tightens the real 65/100 weighted production floor.",
+    reused: 'goos.py::build_opportunity_intelligence_report() (ADR-171) + decision_engine/store.py + value_engine.py + capital_allocation_engine.py + autonomous_business_builder.py, via mission_control_api.py.',
+    reversible: true, // read-only
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('goos-evaluate-opportunity', 'goos_evaluate_opportunity', [JSON.stringify({ niche })]);
+    },
+  },
+  {
     // Autonomous Business Builder (2026-07-29) -- the real 12-section/
     // 8-estimate Business Blueprint for one niche. Async-job shape
     // (chains production_blueprint + value_engine + investment_score),

@@ -1154,6 +1154,24 @@ def _enterprise_capital_allocation_dashboard():
     return eca.build_enterprise_capital_allocation_dashboard()
 
 
+def _goos_evaluate_opportunity():
+    """Galaxy Opportunity Operating System (ADR-171, 2026-08-05): the
+    real 15-section Opportunity Intelligence Report + 20-dimension
+    evaluation + advisory 0-100 score for one real niche. Consolidation
+    layer only -- never a second decision engine, never gates
+    production itself (decision_engine's real ACCEPTED/REJECTED/
+    DEFERRED status + profit_oracle.py's real 65/100 weighted floor are
+    unchanged). Reads its payload from sys.argv[2]:
+    `python mission_control_api.py goos_evaluate_opportunity '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    import goos
+    return goos.build_opportunity_intelligence_report(niche)
+
+
 def _brand_dna_report():
     """Customer Experience & Brand DNA (ADR-170, 2026-08-05): the real
     Company Personality / Communication Standards / Customer Journey
@@ -2686,6 +2704,7 @@ _ENDPOINTS = {
     "enterprise_capital_allocation_dashboard": _enterprise_capital_allocation_dashboard,
     "truth_registry_report": _truth_registry_report,
     "brand_dna_report": _brand_dna_report,
+    "goos_evaluate_opportunity": _goos_evaluate_opportunity,
 }
 
 
