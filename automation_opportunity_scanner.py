@@ -38,23 +38,28 @@ def _now_iso():
     return datetime.now(timezone.utc).isoformat()
 
 
-def _seed_candidates():
+def _seed_candidates(ladders=None):
+    """`ladders=None` (Market Domination Engine, ADR-175, 2026-08-05)
+    means no filter -- every real SEED_CATEGORIES entry, any ladder.
+    Default unchanged (_AUTOMATION_LADDERS) so every existing real
+    caller of this module keeps its exact original behavior."""
     import market_hunter
     return [
         {"niche": c["niche"], "ladder": c["ladder"], "source": "market_hunter.py::SEED_CATEGORIES (real, static, deterministic candidate list)"}
         for c in market_hunter.SEED_CATEGORIES
-        if c["ladder"] in _AUTOMATION_LADDERS
+        if ladders is None or c["ladder"] in ladders
     ]
 
 
-def _historical_candidates(decisions_path=None):
+def _historical_candidates(decisions_path=None, ladders=None):
+    """Same `ladders=None` = no filter convention as _seed_candidates()."""
     import decision_engine.ranking as ranking
     seen = set()
     out = []
     for d in ranking.rank_all(path=decisions_path):
         ladder = d.get("ladder")
         niche = d.get("niche")
-        if ladder in _AUTOMATION_LADDERS and niche and niche not in seen:
+        if (ladders is None or ladder in ladders) and niche and niche not in seen:
             seen.add(niche)
             out.append({
                 "niche": niche, "ladder": ladder,
@@ -69,7 +74,7 @@ def scan_candidates(limit=20, decisions_path=None):
     evaluation cycle. Deduplicates by niche, seed candidates first."""
     seen_niches = set()
     candidates = []
-    for c in _seed_candidates() + _historical_candidates(decisions_path=decisions_path):
+    for c in _seed_candidates(ladders=_AUTOMATION_LADDERS) + _historical_candidates(decisions_path=decisions_path, ladders=_AUTOMATION_LADDERS):
         if c["niche"] in seen_niches:
             continue
         seen_niches.add(c["niche"])

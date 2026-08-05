@@ -1226,6 +1226,18 @@ def _automation_revenue_dashboard():
     return automation_dashboard.build_automation_dashboard()
 
 
+def _market_domination_dashboard():
+    """Global Market Domination Engine (ADR-175, 2026-08-05): real
+    candidate discovery across all 6 real ladders (not automation-only)
+    + real GOOS 10-dimension evaluation, ranked by profit_oracle.py's
+    real LADDER_RANKS priority. 6 of the directive's 8 named regions
+    are honestly NOT_MEASURABLE -- a standing, 3x-reconfirmed founder
+    deferral (2026-07-23), never fabricated. Passive-only, never
+    triggers a new evaluation cycle."""
+    import market_domination_engine
+    return market_domination_engine.build_market_domination_dashboard()
+
+
 def _digital_twin_dashboard():
     """Enterprise Digital Twin (ADR-161, 2026-07-31): advisory-only real
     REAL STATE + DIGITAL TWIN view across 17 named domains, 8 named
@@ -2744,6 +2756,7 @@ _ENDPOINTS = {
     "evidence_viewer": _evidence_viewer,
     "executive_evidence_dashboard": _executive_evidence_dashboard,
     "automation_revenue_dashboard": _automation_revenue_dashboard,
+    "market_domination_dashboard": _market_domination_dashboard,
     "enterprise_capital_allocation_dashboard": _enterprise_capital_allocation_dashboard,
     "truth_registry_report": _truth_registry_report,
     "brand_dna_report": _brand_dna_report,

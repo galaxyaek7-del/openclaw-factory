@@ -1321,6 +1321,22 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('automation_revenue_dashboard'),
   },
   {
+    // Global Market Domination Engine (ADR-175, 2026-08-05): a real
+    // consolidation over market_hunter.py/automation_opportunity_
+    // scanner.py's real candidate discovery (now un-scoped from
+    // automation-only) + GOOS's real 10-dimension evaluation (ADR-171,
+    // which happens to name the exact 10 dimensions this directive
+    // asks for). 6 of 8 named regions are honestly NOT_MEASURABLE -- a
+    // standing, 3x-reconfirmed founder deferral (GCID/ADR-148, Global
+    // Affiliate Commerce Engine/ADR-152, growth_stages.py's Stage 4),
+    // applied directly here rather than re-asked a 4th time.
+    name: 'market-domination-dashboard',
+    description: "Real, ranked, high-value opportunity candidates across all 6 real ladders (ai_saas/b2b_systems/automation_tools/reusable_assets/educational/kdp_books, ranked by profit_oracle.py's real LADDER_RANKS priority order), each evaluated via GOOS's real 10-dimension citation (real_customer_pain/willingness_to_pay/competition_level/difficulty_of_copying/scalability/recurring_revenue_potential/automation_potential/strategic_fit/long_term_asset_value + market_size honestly NOT_MEASURABLE). Global reach: 8 of 11 registered multi_source_intelligence connectors (Amazon/Etsy/Gumroad/GitHub/Hacker News/arXiv/public search/Stack Overflow) are real and query-capable. Regional coverage for 6 of the directive's 8 named regions (everywhere except North America and 'Global online markets') is honestly NOT_MEASURABLE -- zero real local-market data connector exists anywhere in this factory, the founder's own standing 2026-07-23 deferral. Never triggers a new live evaluation cycle.",
+    reused: 'market_domination_engine.py::build_market_domination_dashboard() (ADR-175) + automation_opportunity_scanner.py (ADR-164) + goos.py (ADR-171) + profit_oracle.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('market_domination_dashboard', [], req),
+    health: pythonHealthCheck('market_domination_dashboard'),
+  },
+  {
     // Enterprise Capital Allocation Engine (ADR-165, 2026-07-31 -- the
     // directive itself said "ADR-163", already allocated to Enterprise
     // Evidence Engine; renumbered). Extends -- never duplicates --
