@@ -1652,6 +1652,78 @@ function evolutionReportPath(now) {
   return path.join(REPORTS_DIR, `EVOLUTION_${isoDate(now)}.md`);
 }
 
+// Company Evolution Protocol V1 (ADR-173, 2026-08-05): same subprocess
+// pattern as runEvolutionReport() above, calling mission_control_api.py's
+// galaxy_evolution_report section (evolution_engine.build_galaxy_
+// evolution_report(), a real relabel/extension of build_evolution_report()
+// -- no new business logic here).
+function runGalaxyEvolutionReport({ timeoutMs = 30000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'galaxy_evolution_report'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة galaxy_evolution_report (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من galaxy_evolution_report' });
+          return;
+        }
+        finish({ ok: true, markdown: result.markdown });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج galaxy_evolution_report: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+function galaxyEvolutionReportPath(now) {
+  return path.join(REPORTS_DIR, `GALAXY_EVOLUTION_${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}.md`);
+}
+
+// The directive's own "monthly" cadence, genuinely new (every other real
+// report in this factory is daily or weekly-on-Sunday) -- same file-
+// existence gate technique, one real file per real calendar month instead
+// of per day. First tick of a new real month generates it; every other
+// tick that real month is a real no-op.
+async function maybeGenerateMonthlyGalaxyEvolutionReport(now = new Date()) {
+  const datedPath = galaxyEvolutionReportPath(now);
+  if (fs.existsSync(datedPath)) {
+    return { action: 'none', detail: `تقرير التطوّر الشهري لهذا الشهر موجود بالفعل: ${path.basename(datedPath)}` };
+  }
+  const result = await runGalaxyEvolutionReport();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(REPORTS_DIR, { recursive: true });
+    fs.writeFileSync(datedPath, result.markdown, 'utf-8');
+    return { action: 'generated', detail: `تقرير تطوّر شهري جديد: ${path.basename(datedPath)}` };
+  } catch (err) {
+    return { action: 'failed', detail: `تعذّر كتابة تقرير التطوّر الشهري: ${err.message}` };
+  }
+}
+
 // Same once-per-calendar-day gating pattern as maybeGenerateWeeklyReport()
 // (file-existence check for today's dated report) -- no new scheduler,
 // reuses the exact existing daily-gate shape already proven for Golden
@@ -2854,6 +2926,14 @@ async function runTick() {
   markStep('evolution_report');
   actions.push({ step: 'evolution_report', ...(await maybeGenerateDailyEvolutionReport()) });
 
+  // Company Evolution Protocol V1 (ADR-173, 2026-08-05): the directive's
+  // own "monthly" cadence -- once-per-calendar-month gate, same file-
+  // existence technique as every daily/weekly report above, just a wider
+  // window. Runs regardless of dashboard reachability, same as
+  // evolution_report immediately above.
+  markStep('galaxy_evolution_report');
+  actions.push({ step: 'galaxy_evolution_report', ...(await maybeGenerateMonthlyGalaxyEvolutionReport()) });
+
   // Executive Intelligence Core, Round 1 (2026-07-29): same once-per-
   // calendar-day pattern as evolution_report immediately above -- these
   // two report engines already had the real render_markdown()/dispatch
@@ -3145,6 +3225,7 @@ module.exports = {
   runTick, healFinance, healEmptyBooks, healN8n, hunt, diagnose,
   generateWeeklyReport, maybeGenerateWeeklyReport, weekReportPath, runExportExecutiveReport,
   runEvolutionReport, evolutionReportPath, maybeGenerateDailyEvolutionReport,
+  runGalaxyEvolutionReport, galaxyEvolutionReportPath, maybeGenerateMonthlyGalaxyEvolutionReport,
   runAiDoctorReport, aiDoctorReportPath, maybeGenerateDailyAiDoctorReport,
   runDepartmentHealthReport, departmentHealthReportPath, maybeGenerateDailyDepartmentHealthReport,
   runExecutiveBrief, executiveBriefReportPath, maybeGenerateDailyExecutiveBrief,

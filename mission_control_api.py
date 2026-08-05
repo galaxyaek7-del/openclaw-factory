@@ -1742,6 +1742,21 @@ def _evolution_report():
     return {"report": report, "markdown": evolution_engine.render_markdown(report)}
 
 
+def _galaxy_evolution_report():
+    """Company Evolution Protocol V1 (ADR-173, 2026-08-05): the real
+    monthly Galaxy Evolution Report -- relabels/extends evolution_
+    engine.build_evolution_report() (this same module, EOS Phase 1)
+    onto the directive's 10 named sections, ROI-ranked via capital_
+    allocation_engine.py's real top_roi_initiatives. Potential Monthly
+    Revenue Impact and Estimated Implementation Effort are honestly
+    NOT_MEASURABLE (zero real signal exists for either anywhere in this
+    factory); Global Benchmark is honestly NOT_BUILT (no real external
+    company-research pipeline exists). Passthrough only."""
+    import evolution_engine
+    report = evolution_engine.build_galaxy_evolution_report()
+    return {"report": report, "markdown": evolution_engine.render_galaxy_evolution_report_markdown(report)}
+
+
 def _market_review():
     """'Market Review' -- EOS Phase 1 (2026-07-19), the one genuinely
     missing weekly Continuous Improvement Engine review type. Exposed
@@ -2603,6 +2618,7 @@ _ENDPOINTS = {
     "strategic_report": _strategic_report,
     "market_review": _market_review,
     "evolution_report": _evolution_report,
+    "galaxy_evolution_report": _galaxy_evolution_report,
     "founder_console": _founder_console,
     "integration_registry": _integration_registry,
     "ai_doctor": _ai_doctor,

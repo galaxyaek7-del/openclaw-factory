@@ -87,5 +87,66 @@ class TestBuildEvolutionReport(unittest.TestCase):
         self.assertIn("فجوات القدرات", md)
 
 
+class TestBuildGalaxyEvolutionReport(unittest.TestCase):
+    """Company Evolution Protocol V1 (ADR-173, 2026-08-05)."""
+
+    _FAKE_BASE = {
+        "generated_at": "2026-08-05T00:00:00Z",
+        "bottlenecks": {"detected": False, "items": [], "reason": "x"},
+        "technical_debt": {"answer": "Unknown", "reason": "x"},
+        "high_roi_opportunities": {"answer": "Unknown", "reason": "x"},
+        "capability_gaps": {"discovery_level": [], "estimated_level": [], "total_capabilities": 0},
+        "tool_proposals": [],
+        "customer_success_bottleneck": {"detected": False, "reason": "x"},
+    }
+    _FAKE_CAPITAL = {"top_roi_initiatives": [{"niche": "n1", "expected_roi": 12.0}], "opportunity_cost_summary": []}
+
+    def test_never_recomputes_base_evolution_report(self):
+        with patch("capital_allocation_engine.build_capital_allocation_dashboard", return_value=self._FAKE_CAPITAL):
+            report = ee.build_galaxy_evolution_report(base_report=self._FAKE_BASE)
+        self.assertEqual(report["generated_at"], "2026-08-05T00:00:00Z")
+
+    def test_revenue_impact_and_effort_are_honestly_not_measurable(self):
+        with patch("capital_allocation_engine.build_capital_allocation_dashboard", return_value=self._FAKE_CAPITAL):
+            report = ee.build_galaxy_evolution_report(base_report=self._FAKE_BASE)
+        self.assertIn("NOT_MEASURABLE", report["potential_monthly_revenue_impact"])
+        self.assertIn("NOT_MEASURABLE", report["estimated_implementation_effort"])
+
+    def test_global_benchmark_is_honestly_not_built(self):
+        with patch("capital_allocation_engine.build_capital_allocation_dashboard", return_value=self._FAKE_CAPITAL):
+            report = ee.build_galaxy_evolution_report(base_report=self._FAKE_BASE)
+        self.assertEqual(report["global_benchmark"]["status"], "NOT_BUILT")
+
+    def test_high_priority_actions_ranked_by_roi_cites_real_capital_data(self):
+        with patch("capital_allocation_engine.build_capital_allocation_dashboard", return_value=self._FAKE_CAPITAL):
+            report = ee.build_galaxy_evolution_report(base_report=self._FAKE_BASE)
+        self.assertEqual(report["high_priority_actions_ranked_by_roi"][0]["initiative"], "n1")
+        self.assertEqual(report["high_priority_actions_ranked_by_roi"][0]["expected_roi"], 12.0)
+
+    def test_real_call_against_real_data_never_throws(self):
+        report = ee.build_galaxy_evolution_report()
+        for key in ("current_strengths", "current_weaknesses", "critical_risks", "hidden_opportunities",
+                    "recommended_improvements", "high_priority_actions_ranked_by_roi",
+                    "expected_long_term_impact", "potential_monthly_revenue_impact",
+                    "estimated_implementation_effort", "global_benchmark"):
+            self.assertIn(key, report)
+
+
+class TestRenderGalaxyEvolutionReportMarkdown(unittest.TestCase):
+    def test_renders_all_10_named_sections(self):
+        fake_report = {
+            "generated_at": "x", "current_strengths": "a", "current_weaknesses": "b",
+            "critical_risks": "c", "hidden_opportunities": "d", "recommended_improvements": "e",
+            "high_priority_actions_ranked_by_roi": "f", "expected_long_term_impact": "g",
+            "potential_monthly_revenue_impact": "h", "estimated_implementation_effort": "i",
+            "global_benchmark": "j",
+        }
+        md = ee.render_galaxy_evolution_report_markdown(fake_report)
+        for label in ("Current Strengths", "Current Weaknesses", "Critical Risks", "Hidden Opportunities",
+                      "Recommended Improvements", "High Priority Actions", "Expected Long-Term Impact",
+                      "Potential Monthly Revenue Impact", "Estimated Implementation Effort", "Global Benchmark"):
+            self.assertIn(label, md)
+
+
 if __name__ == "__main__":
     unittest.main()

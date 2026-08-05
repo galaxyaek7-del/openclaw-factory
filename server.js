@@ -923,6 +923,16 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('evolution_report'),
   },
   {
+    // Company Evolution Protocol V1 (ADR-173, 2026-08-05): a real
+    // relabel/extension of evolution_report above onto the directive's
+    // 10 named sections, ROI-ranked. No new judgment engine.
+    name: 'galaxy-evolution-report',
+    description: "The real monthly Galaxy Evolution Report -- Current Strengths/Weaknesses, Critical Risks, Hidden Opportunities, Recommended Improvements, High Priority Actions (ranked by real capital_allocation_engine.py ROI data), Expected Long-Term Impact, Potential Monthly Revenue Impact, Estimated Implementation Effort, Global Benchmark. The last 3 are honestly disclosed gaps, never fabricated: zero real revenue exists to model an impact against, zero real historical per-task duration data exists to estimate effort from, and no real external company-research pipeline exists to study world-class companies with. Already wired into factory_loop.js's tick with a genuinely new once-per-calendar-month gate (this factory's first monthly cadence, alongside its existing daily/weekly ones).",
+    reused: 'evolution_engine.py::build_galaxy_evolution_report() (ADR-173) + capital_allocation_engine.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('galaxy_evolution_report', [], req),
+    health: pythonHealthCheck('galaxy_evolution_report'),
+  },
+  {
     // Continuous Trust & Resilience Monitoring (2026-07-29): the real,
     // unified Monitor + Classify + Report view over every signal built
     // across the Global Trust & Resilience Layer + Global Commercial
