@@ -330,21 +330,43 @@ function runPythonService(section, extraArgs = [], timeoutMs = PYTHON_SERVICE_TI
 const PYTHON_SERVICE_CACHE_TTL_MS = 20000;
 const pythonServiceCache = new Map(); // "section|args" -> { result, expiresAt }
 
+// Execution Roadmap Phase 2 (ADR-174, 2026-08-05): real request-coalescing,
+// closing the operational risk ADR-168's own text disclosed and left
+// unfixed ("no request-coalescing exists... an operator leaving the panel
+// open could pile up overlapping subprocesses"). For the heaviest panels
+// (Truth Registry ~255-485s, Strategic Planning ~70s, etc.) two requests
+// landing seconds apart -- two browser tabs, an accidental double-click, a
+// page reload during a slow first load -- used to each spawn their own
+// full-cost Python subprocess computing the exact same real answer. Now
+// the second request awaits the first's already-in-flight promise instead.
+// Deliberately keyed identically to pythonServiceCache (same "section|args"
+// key) so it only ever coalesces truly-identical concurrent calls, never a
+// different section or different args.
+const pythonServiceInFlight = new Map(); // "section|args" -> Promise
+
 // `req` is optional -- passed through so a caller can force a real,
 // uncached re-fetch via `?fresh=1` (Mission Control's own Refresh button
 // does this: a founder clicking "Refresh" should always get a genuinely
 // fresh read, never a stale cached one, even inside the TTL window).
+// `?fresh=1` also skips coalescing -- a founder explicitly asking for a
+// fresh read should never be handed someone else's in-flight result.
 function runPythonServiceCached(section, extraArgs = [], req = null, timeoutMs = PYTHON_SERVICE_TIMEOUT_MS) {
   const bypass = !!(req && req.query && (req.query.fresh === '1' || req.query.fresh === 'true'));
   const key = section + '|' + JSON.stringify(extraArgs);
   if (!bypass) {
     const cached = pythonServiceCache.get(key);
     if (cached && Date.now() < cached.expiresAt) return Promise.resolve(cached.result);
+    const inFlight = pythonServiceInFlight.get(key);
+    if (inFlight) return inFlight;
   }
-  return runPythonService(section, extraArgs, timeoutMs).then(result => {
+  const promise = runPythonService(section, extraArgs, timeoutMs).then(result => {
     pythonServiceCache.set(key, { result, expiresAt: Date.now() + PYTHON_SERVICE_CACHE_TTL_MS });
     return result;
+  }).finally(() => {
+    pythonServiceInFlight.delete(key);
   });
+  if (!bypass) pythonServiceInFlight.set(key, promise);
+  return promise;
 }
 
 // Cheap dependency check, not a full data run: confirms the Python
