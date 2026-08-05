@@ -878,6 +878,24 @@ def _gfos_status():
     return gfos.gfos_status()
 
 
+def _engine_registry():
+    """Galaxy Operating System (ADR-172, 2026-08-05): the real 9-engine
+    map -- every entry a citation of an already-real module. Cheap, no
+    live scan."""
+    import gfos
+    return gfos.engine_registry()
+
+
+def _if_i_were_the_ceo_report():
+    """Galaxy Operating System (ADR-172, 2026-08-05): the real weekly
+    self-governance report, answering the directive's 7 named questions
+    entirely from already-real citations (ceo_decision_center.py,
+    evolution_engine.py). Expensive (~56s, chains ceo_decision_center.
+    answer_ceo_questions()'s own real sub-calls) -- read-only."""
+    import gfos
+    return gfos.if_i_were_the_ceo_report()
+
+
 def _gfos_enterprise_timeline():
     """GF-OS (ADR-147, 2026-07-30): the full real Enterprise Timeline
     (up to 50 entries, vs. gfos-status's own 10-entry preview) -- a pure
@@ -1770,10 +1788,17 @@ def _build_combined_executive_report_markdown(title):
     market = market_review.generate_market_review()
     market_md = market_review.render_markdown(market)
 
+    # Galaxy Operating System (ADR-172, 2026-08-05): the real weekly
+    # self-governance report, reusing this already-real Sunday-gated
+    # weekly export as its own delivery mechanism -- no new scheduling.
+    import gfos
+    ceo_md = gfos.render_if_i_were_the_ceo_markdown()
+
     combined_md = (
         f"# {title}\n\n"
         f"Generated: {datetime.now(timezone.utc).isoformat()}\n\n"
         "---\n\n## Executive Summary\n\n" + executive_md +
+        "\n\n---\n\n## If I Were The CEO\n\n" + ceo_md +
         "\n\n---\n\n## Strategic Recommendations\n\n" + strategic_md +
         "\n\n---\n\n## Validation\n\n" + validation_md +
         "\n\n---\n\n## Revenue\n\n" + revenue_md +
@@ -2661,6 +2686,8 @@ _ENDPOINTS = {
     "generate_daily_executive_directive": _generate_daily_executive_directive,
     "executive_directives_history": _executive_directives_history,
     "gfos_status": _gfos_status,
+    "engine_registry": _engine_registry,
+    "if_i_were_the_ceo_report": _if_i_were_the_ceo_report,
     "gfos_enterprise_timeline": _gfos_enterprise_timeline,
     "affiliate_products": _affiliate_products,
     "affiliate_click": _affiliate_click,

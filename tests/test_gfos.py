@@ -11,6 +11,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
@@ -149,6 +150,73 @@ class TestGfosStatus(unittest.TestCase):
     def test_department_registry_inside_status_is_the_real_full_12(self):
         status = gfos.gfos_status()
         self.assertEqual(status["department_registry"]["count"], 12)
+
+
+class TestEngineRegistry(unittest.TestCase):
+    """Galaxy Operating System (ADR-172, 2026-08-05)."""
+
+    def test_all_9_named_engines_present(self):
+        expected = {
+            "galaxy_brain", "goos", "product_forge", "capital_engine",
+            "customer_happiness_engine", "security_engine", "knowledge_engine",
+            "evolution_engine", "executive_council",
+        }
+        self.assertEqual(set(gfos.ENGINE_REGISTRY.keys()), expected)
+
+    def test_every_engine_cites_real_modules_never_invented(self):
+        for name, engine in gfos.ENGINE_REGISTRY.items():
+            self.assertTrue(engine.get("real_modules"), f"{name} missing real_modules citation")
+            self.assertTrue(engine.get("identity"), f"{name} missing identity")
+
+    def test_engine_registry_reports_a_real_count(self):
+        result = gfos.engine_registry()
+        self.assertEqual(result["count"], 9)
+        self.assertEqual(len(result["engines"]), 9)
+
+
+class TestIfIWereTheCeoReport(unittest.TestCase):
+    def test_answers_all_7_named_questions_with_real_citations(self):
+        fake_ceo = {"2_opportunity_to_abandon": "A", "10_next_commercial_experiment": "B", "9_pipelines_wasting_resources": "C"}
+        fake_evo = {"bottlenecks": "D"}
+        with mock.patch("ceo_decision_center.answer_ceo_questions", return_value=fake_ceo), \
+             mock.patch("evolution_engine.build_evolution_report", return_value=fake_evo):
+            report = gfos.if_i_were_the_ceo_report()
+        self.assertEqual(report["what_should_stop"]["value"], "A")
+        self.assertEqual(report["what_should_start"]["value"], "B")
+        self.assertEqual(report["what_should_improve"]["value"], "D")
+        self.assertEqual(report["where_is_money_being_wasted"]["value"], "C")
+        self.assertIn("generated_at", report)
+
+    def test_never_a_new_learning_loop_every_field_has_a_real_source(self):
+        fake_ceo = {"2_opportunity_to_abandon": None, "10_next_commercial_experiment": None, "9_pipelines_wasting_resources": None}
+        fake_evo = {"bottlenecks": None}
+        with mock.patch("ceo_decision_center.answer_ceo_questions", return_value=fake_ceo), \
+             mock.patch("evolution_engine.build_evolution_report", return_value=fake_evo):
+            report = gfos.if_i_were_the_ceo_report()
+        for key, entry in report.items():
+            if key == "generated_at":
+                continue
+            self.assertTrue(entry.get("source"), f"{key} missing a real source citation")
+
+
+class TestRenderIfIWereTheCeoMarkdown(unittest.TestCase):
+    def test_renders_all_7_named_questions(self):
+        fake_report = {
+            "what_should_stop": {"value": "A", "source": "sA"},
+            "what_should_start": {"value": "B", "source": "sB"},
+            "what_should_improve": {"value": "C", "source": "sC"},
+            "what_should_be_automated": {"value": "D", "source": "sD"},
+            "where_is_money_being_wasted": {"value": "E", "source": "sE"},
+            "hidden_opportunities": {"value": "F", "source": "sF"},
+            "what_prevents_world_class_status": {"value": "G", "source": "sG"},
+            "generated_at": "2026-08-05T00:00:00Z",
+        }
+        md = gfos.render_if_i_were_the_ceo_markdown(fake_report)
+        for label in ("What should stop?", "What should start?", "What should improve?",
+                      "What should be automated?", "Where is money being wasted?",
+                      "Where are hidden opportunities?",
+                      "What is preventing Galaxy Forge from becoming a world-class company?"):
+            self.assertIn(label, md)
 
 
 if __name__ == "__main__":

@@ -1028,6 +1028,28 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('gfos_status'),
   },
   {
+    // Galaxy Operating System (ADR-172, 2026-08-05): the real 9-engine
+    // map. All 9 named engines (Galaxy Brain/GOOS/Product Forge/Capital
+    // Engine/Customer Happiness Engine/Security Engine/Knowledge Engine/
+    // Evolution Engine/Executive Council) already exist as real modules
+    // -- this is a citation layer, not a 10th parallel system.
+    name: 'engine-registry',
+    description: "The real 9-engine map the founder's 'Galaxy Operating System' directive asked for -- each entry citing its already-real module(s) and identity. 'Evolution Engine' is already this factory's literal, existing module name; GOOS/Capital Engine/Executive Council/Knowledge Engine were all built in prior rounds this session. Cheap, no live scan.",
+    reused: 'gfos.py::engine_registry() (ADR-172), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('engine_registry', [], req),
+    health: pythonHealthCheck('engine_registry'),
+  },
+  {
+    // Galaxy Operating System (ADR-172, 2026-08-05): the real weekly
+    // self-governance report -- already wired into factory_loop.js's
+    // existing Sunday-gated weekly executive report (no new scheduling).
+    name: 'if-i-were-the-ceo-report',
+    description: "The real weekly 'IF I WERE THE CEO' report -- 7 named questions (what should stop/start/improve/be automated, where money is wasted, hidden opportunities, what prevents world-class status), each answered from an already-real citation (ceo_decision_center.py's real answer_ceo_questions(), evolution_engine.py's real bottleneck detection, the real Company Readiness Audit/Enterprise Truth/Factory Audits for the final question). Never a new judgment engine. Expensive (~56s, chains ceo_decision_center's own real sub-calls).",
+    reused: 'gfos.py::if_i_were_the_ceo_report() (ADR-172) + ceo_decision_center.py + evolution_engine.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('if_i_were_the_ceo_report', [], req, 90000),
+    health: pythonHealthCheck('if_i_were_the_ceo_report'),
+  },
+  {
     name: 'gfos-enterprise-timeline',
     description: "The full real Enterprise Timeline (up to 50 entries) -- a real merge of decisions.jsonl + department_events.jsonl + evolution_queue_state.json + executive_directives.jsonl + council_recommendations.jsonl, most recent first. \"Nothing is lost\": every entry already existed in its own real ledger before this merge existed -- zero new logging call sites.",
     reused: 'gfos.py::enterprise_timeline() (ADR-147), via mission_control_api.py.',

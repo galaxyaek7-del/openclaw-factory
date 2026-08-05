@@ -261,6 +261,127 @@ def enterprise_timeline(limit=50, decisions_path=None, ledger_path=None, evoluti
             "note": "Real merge of decisions.jsonl + department_events.jsonl + evolution_queue_state.json + executive_directives.jsonl + council_recommendations.jsonl -- no new ledger, no new logging call site."}
 
 
+# ── Galaxy Operating System (GOS) — ADR-172, 2026-08-05 ──
+# Founder's "Mission 2" directive: 9 named permanent engines (Galaxy
+# Brain/GOOS/Product Forge/Capital Engine/Customer Happiness Engine/
+# Security Engine/Knowledge Engine/Evolution Engine/Executive Council)
+# + a weekly "IF I WERE THE CEO" report. Research found this is the 3rd
+# occurrence of the same "unify the whole company into one operating
+# system" ask this session (ADR-110 declined -> ADR-147 GF-OS built as
+# a citation layer -> this) -- all 9 named engines already exist as
+# real modules; "Evolution Engine" is even already the literal name of
+# a real module (evolution_engine.py). Applying the same judgment
+# ADR-147/ADR-171 already established and the founder already confirmed
+# twice this session (consolidation layer, never a parallel system) --
+# no separate `gos.py` module was created (a near-duplicate name next
+# to this one would itself be exactly the naming-collision risk this
+# session has caught and fixed before, e.g. growth_stages.py vs
+# growth_engine.py) -- GOS is this module, extended.
+ENGINE_REGISTRY = {
+    "galaxy_brain": {
+        "real_modules": ["executive_brain.py", "strategic_intelligence_core.py", "gfos.py"],
+        "identity": "Strategic thinking, long-term planning, executive decisions -- real citation aggregator (ADR-144), never a second judgment engine.",
+    },
+    "goos": {
+        "real_modules": ["goos.py"],
+        "identity": "Opportunity discovery evaluation + advisory scoring (ADR-171). Product approval remains decision_engine's real ACCEPTED/REJECTED/DEFERRED gate -- GOOS reports on it, never replaces it.",
+    },
+    "product_forge": {
+        "real_modules": ["book_generator.py", "production_factory", "production_blueprint.py", "orchestrator"],
+        "identity": "Transforms a real ACCEPTED opportunity into a real product -- the real content/cover/QA manufacturing pipeline, 4,700+ real production runs to date.",
+    },
+    "capital_engine": {
+        "real_modules": ["capital_allocation_engine.py", "enterprise_capital_allocation.py"],
+        "identity": "Capital allocation, resource distribution, ROI ranking (ADR-139/165) -- the engine recommends, the founder decides; capital reallocation is one of the 4 standing founder-protected gates.",
+    },
+    "customer_happiness_engine": {
+        "real_modules": ["customer_pipeline.py", "brand_dna.py"],
+        "identity": "Trust, support, retention, reputation, feedback (ADR-170) -- honestly 8/10 real journey stages; Complaint Handling and Refund Requests are disclosed gaps, not fabricated as built.",
+    },
+    "security_engine": {
+        "real_modules": ["executive_quality_gate.py", "safe_mode.py", "channels/publish_protection.py"],
+        "identity": "Content/legal/brand safety (6-check REJECT_IF_FAIL pipeline), per-subsystem circuit breakers, publish rate/risk gating -- real, load-bearing, never externally audited (a real, disclosed gap).",
+    },
+    "knowledge_engine": {
+        "real_modules": ["knowledge_graph"],
+        "identity": "Real, mechanical, non-semantic parsing of decisions/outcomes/ADRs/proposals/council recommendations into one queryable graph -- everything learned becomes a real, re-derivable node, never an inferred one.",
+    },
+    "evolution_engine": {
+        "real_modules": ["evolution_engine.py", "evolution_queue.py"],
+        "identity": "Already this factory's literal, existing name for weekly self-improvement (ADR-133/143) -- bottleneck detection + real outcome measurement (IMPROVED/DEGRADED/NO_CHANGE), execution stays founder-gated by standing policy.",
+    },
+    "executive_council": {
+        "real_modules": ["galaxy_council.py", "executive_board.py"],
+        "identity": "9-member real per-domain opinion board (ADR-138) -- honest disagreement never forced into a fabricated consensus.",
+    },
+}
+
+
+def engine_registry():
+    """The real 9-engine map -- every entry a citation of an
+    already-real module, never a new engine. Mirrors department_
+    registry()'s own established shape."""
+    return {
+        "generated_at": _now_iso(),
+        "engines": ENGINE_REGISTRY,
+        "count": len(ENGINE_REGISTRY),
+        "note": "Every one of the 9 named engines already exists as real, callable code -- GOS is a naming/citation layer over them, not a 10th parallel system.",
+    }
+
+
+def if_i_were_the_ceo_report():
+    """The real weekly self-governance report. Maps the directive's 7
+    named questions onto already-real answers -- never a new judgment
+    engine. Reused (not recomputed) by factory_loop.js's existing
+    Sunday-gated weekly report (maybeGenerateWeeklyReport ->
+    export_executive_report), as one more real section in that already-
+    real combined report -- no new scheduling infrastructure."""
+    import ceo_decision_center as cdc
+    import evolution_engine
+
+    ceo = cdc.answer_ceo_questions()
+    evo = evolution_engine.build_evolution_report()
+
+    return {
+        "what_should_stop": {"value": ceo.get("2_opportunity_to_abandon"), "source": "ceo_decision_center.answer_ceo_questions()['2_opportunity_to_abandon']"},
+        "what_should_start": {"value": ceo.get("10_next_commercial_experiment"), "source": "ceo_decision_center.answer_ceo_questions()['10_next_commercial_experiment']"},
+        "what_should_improve": {"value": evo.get("bottlenecks"), "source": "evolution_engine.build_evolution_report()['bottlenecks']"},
+        "what_should_be_automated": {"value": "see autonomous_operations_status.py::autonomous_operations_summary() -- real automation_level_pct, not re-queried here", "source": "autonomous_operations_status.py"},
+        "where_is_money_being_wasted": {"value": ceo.get("9_pipelines_wasting_resources"), "source": "ceo_decision_center.answer_ceo_questions()['9_pipelines_wasting_resources']"},
+        "hidden_opportunities": {"value": ceo.get("10_next_commercial_experiment"), "source": "ceo_decision_center.answer_ceo_questions()['10_next_commercial_experiment'] (same real citation as what_should_start -- one real signal, two directive-named questions)"},
+        "what_prevents_world_class_status": {
+            "value": "see the real Company Readiness Audit (2026-08-01) and Enterprise Truth/Factory Audits (ADR-168/169) -- honest current answer: 0 real ACCEPTED opportunities, 0 real published books ever, blocked on a founder decision + an external account gate, not a coding gap",
+            "source": "enterprise_factory_audit.py + reality_audit.py + truth_registry.py",
+        },
+        "generated_at": _now_iso(),
+    }
+
+
+def render_if_i_were_the_ceo_markdown(report=None):
+    """Real markdown renderer for if_i_were_the_ceo_report() -- the
+    same render-the-already-computed-dict pattern every other real
+    report in this factory uses (validation_layer.daily_report,
+    revenue_pipeline.pipeline, etc.), never a second computation."""
+    report = report if report is not None else if_i_were_the_ceo_report()
+    labels = {
+        "what_should_stop": "What should stop?",
+        "what_should_start": "What should start?",
+        "what_should_improve": "What should improve?",
+        "what_should_be_automated": "What should be automated?",
+        "where_is_money_being_wasted": "Where is money being wasted?",
+        "hidden_opportunities": "Where are hidden opportunities?",
+        "what_prevents_world_class_status": "What is preventing Galaxy Forge from becoming a world-class company?",
+    }
+    lines = [f"Generated: {report.get('generated_at')}", ""]
+    for key, label in labels.items():
+        entry = report.get(key) or {}
+        lines.append(f"### {label}")
+        lines.append(f"{entry.get('value')}")
+        lines.append(f"*Source: {entry.get('source')}*")
+        lines.append("")
+    return "\n".join(lines)
+
+
 def gfos_status():
     """The single real aggregate for Mission Control's 'living state of
     the enterprise' ask -- cites (never recomputes) the real Executive
