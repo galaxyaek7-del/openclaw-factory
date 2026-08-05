@@ -234,6 +234,33 @@ class TestContentNeutralityRisk(unittest.TestCase):
         self.assertIn("content_neutrality_risk", eqg.REJECT_IF_FAIL)
 
 
+class TestFakeUrgencyRisk(unittest.TestCase):
+    """Customer Experience & Brand DNA (ADR-170, 2026-08-05)."""
+
+    def test_no_content_is_unknown(self):
+        result = eqg.check_fake_urgency_risk(None)
+        self.assertEqual(result["status"], "UNKNOWN")
+
+    def test_deceptive_scarcity_fails(self):
+        chapters = [{"title": "Pricing", "content": "Only 2 left in stock, almost sold out!"}]
+        result = eqg.check_fake_urgency_risk(chapters)
+        self.assertEqual(result["status"], "FAIL")
+        self.assertTrue(any("only 2 left" in h for h in result["evidence"]))
+
+    def test_deceptive_time_pressure_fails(self):
+        chapters = [{"title": "Offer", "content": "Hurry, offer ends in 10 minutes -- act now before it's gone."}]
+        result = eqg.check_fake_urgency_risk(chapters)
+        self.assertEqual(result["status"], "FAIL")
+
+    def test_honest_content_passes(self):
+        chapters = [{"title": "Overview", "content": "This guide covers automation setup for support teams."}]
+        result = eqg.check_fake_urgency_risk(chapters)
+        self.assertEqual(result["status"], "PASS")
+
+    def test_is_a_real_hard_reject_criterion(self):
+        self.assertIn("fake_urgency_risk", eqg.REJECT_IF_FAIL)
+
+
 class TestConstitutionAlignment(unittest.TestCase):
     """Global Policy Engine (Global Trust & Resilience Layer, Round 3,
     2026-07-29)."""

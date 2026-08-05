@@ -1296,6 +1296,17 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('truth_registry_report'),
   },
   {
+    // Customer Experience & Brand DNA (ADR-170, 2026-08-05): the real
+    // Company Personality/Communication Standards/Customer Journey
+    // Standards/Trust Framework/Customer Memory Architecture/Continuous
+    // Improvement citation report. Cheap -- no live scan.
+    name: 'brand-dna-report',
+    description: "Company Personality (9 named traits, each a real behavioral rule + a real citation of where this factory already demonstrates it in practice, e.g. customer_site/index.html's own copy), Communication Standards (8 named rules), Customer Journey Standards (10 named stages, honestly 8/10 REAL against customer_pipeline.py's real STAGE_ORDER -- Complaint Handling and Refund Requests are genuine, disclosed gaps, not fabricated as done), Trust Framework (5 named principles, 5/5 REAL -- 4 already-existing executive_quality_gate.py checks + one new one, check_fake_urgency_risk(), the one genuine gap found), Customer Memory Architecture (honestly FUTURE_INSTRUMENTATION -- a real design sketch, not a built system, since zero real customer preference data exists yet), and Continuous Improvement sources (citing evolution_queue.py's real signals, never a second learning loop).",
+    reused: 'brand_dna.py::brand_dna_report() (ADR-170) + executive_quality_gate.py + customer_pipeline.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('brand_dna_report', [], req),
+    health: pythonHealthCheck('brand_dna_report'),
+  },
+  {
     // Enterprise Growth Engine (ADR-158, 2026-07-31): "automatic
     // fallback" (the directive's Objective 3) is implemented as
     // non-cached, non-sticky recomputation, not a triggered action --
@@ -3363,7 +3374,7 @@ async function generatePublisherSEO(record) {
   return generatePublisherSEOCore(record, {
     groqClient: groq,
     groqKey: GROQ_KEY,
-    systemPrompt: AGENT_PROMPTS.publisher.system,
+    systemPrompt: COMPANY_PERSONALITY_PREAMBLE + AGENT_PROMPTS.publisher.system,
   });
 }
 
@@ -3847,6 +3858,23 @@ const AGENT_PROMPTS = {
   }
 };
 
+// Customer Experience & Brand DNA (ADR-170, 2026-08-05): the real
+// mechanism by which "every AI agent must reflect one unified company
+// personality" is enforced -- one shared preamble, injected at every
+// real call site an AGENT_PROMPTS system prompt passes through (3 real
+// ones found by direct search: this route, generatePublisherSEO()'s
+// reuse of AGENT_PROMPTS.publisher.system, and the real Scout pipeline's
+// reuse of AGENT_PROMPTS.scout.system below) -- so a future agent or
+// call site inherits it the moment it references AGENT_PROMPTS, without
+// anyone needing to remember a checklist. Canonical definition lives in
+// brand_dna.py::COMPANY_PERSONALITY -- keep this text in sync with that
+// module's real behavioral rules (checked by tests/test_brand_dna.js's
+// key-phrase cross-check, not a live Python call at request time, per
+// this ADR's own "do not overengineer" instruction).
+const COMPANY_PERSONALITY_PREAMBLE = `أنت جزء من Galaxy Forge. شخصية الشركة الموحّدة: احترافي، صادق، محترم، هادئ، متعاون، شفّاف، ذكي (دليل لا تخمين)، متميز، وطبيعي في أسلوبك دون التظاهر بأنك إنسان. لا تبالغ، لا تستخدم لغة استعجال أو ندرة مصطنعة، اذكر السبب الحقيقي دائماً بدلاً من اعتذار عام، واحترم وقت من يقرأ ردّك.
+
+`;
+
 // ── AGENT ENDPOINTS ──
 app.post('/api/agent/:name', requireMissionControlAuth, async (req, res) => {
   const { name } = req.params;
@@ -3865,7 +3893,7 @@ app.post('/api/agent/:name', requireMissionControlAuth, async (req, res) => {
       model: 'llama-3.1-8b-instant',
       max_tokens: 1024,
       messages: [
-        { role: 'system', content: agentConfig.system },
+        { role: 'system', content: COMPANY_PERSONALITY_PREAMBLE + agentConfig.system },
         { role: 'user',   content: userMessage }
       ]
     });
@@ -4102,7 +4130,7 @@ app.post('/api/scout/run', requireMissionControlOrInternalToken, async (req, res
   } else {
     try {
       const raw = await groqChatWithRetry([
-        { role: 'system', content: AGENT_PROMPTS.scout.system },
+        { role: 'system', content: COMPANY_PERSONALITY_PREAMBLE + AGENT_PROMPTS.scout.system },
         { role: 'user', content: scoutBriefPrompt(trendsHint) },
       ]);
       const parsed = parseScoutBrief(raw);

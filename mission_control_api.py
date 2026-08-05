@@ -1154,6 +1154,16 @@ def _enterprise_capital_allocation_dashboard():
     return eca.build_enterprise_capital_allocation_dashboard()
 
 
+def _brand_dna_report():
+    """Customer Experience & Brand DNA (ADR-170, 2026-08-05): the real
+    Company Personality / Communication Standards / Customer Journey
+    Standards / Trust Framework / Customer Memory Architecture / Continuous
+    Improvement citation report. Cheap -- no live scan, all inputs static
+    or already-computed."""
+    import brand_dna
+    return brand_dna.brand_dna_report()
+
+
 def _truth_registry_report():
     """Enterprise Truth Registry (ADR-168, 2026-07-31): the real,
     mechanical per-component inventory (name/category/purpose/location/
@@ -2675,6 +2685,7 @@ _ENDPOINTS = {
     "automation_revenue_dashboard": _automation_revenue_dashboard,
     "enterprise_capital_allocation_dashboard": _enterprise_capital_allocation_dashboard,
     "truth_registry_report": _truth_registry_report,
+    "brand_dna_report": _brand_dna_report,
 }
 
 

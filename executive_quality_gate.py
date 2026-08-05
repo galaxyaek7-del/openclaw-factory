@@ -68,6 +68,7 @@ REJECT_IF_FAIL = (
     "market_saturation_competitor_quality",
     "content_neutrality_risk",
     "copyright_trademark_risk",
+    "fake_urgency_risk",
 )
 
 EVIDENCE_STALE_AFTER_DAYS = 90
@@ -333,6 +334,40 @@ def check_copyright_trademark_risk(product_chapters=None):
     return _real("PASS", None, "لا عبارات ادّعاء انتماء/ترخيص علامة تجارية موجودة في نص المحتوى (فحص جزئي)")
 
 
+FAKE_URGENCY_RISK_PHRASES = [
+    # Deceptive scarcity
+    "only 1 left", "only 2 left", "only 3 left", "almost sold out", "selling fast",
+    "won't last long", "stock running out",
+    # Deceptive time pressure
+    "offer ends in", "offer expires in", "hurry, offer ends", "act now before",
+    "price goes up in", "limited time only", "today only", "last chance",
+    # Fabricated social-proof pressure
+    "everyone is buying", "join thousands who", "don't miss out like others did",
+]
+
+
+def check_fake_urgency_risk(product_chapters=None):
+    """Customer Experience & Brand DNA (ADR-170, 2026-08-05): the one
+    genuine Trust Framework gap found by direct search -- the 3 existing
+    content scans (brand_reputation/content_neutrality/copyright_
+    trademark) never checked for deceptive urgency/scarcity language.
+    Same real, deterministic, non-exhaustive phrase-list discipline as
+    those three -- not a substitute for human review, honestly Unknown
+    if no content is supplied. Deliberately distinct from profit_oracle.
+    py's _score_urgency(), which scores REAL customer-pain-evidence
+    urgency (a market-research signal) -- this checks the opposite
+    direction: fabricated urgency in customer-facing copy."""
+    if not product_chapters:
+        return _unknown("لا محتوى منتج مُقدَّم للفحص")
+    combined = " ".join(
+        (c.get("content") or "") for c in product_chapters if isinstance(c, dict)
+    ).lower()
+    hits = [p for p in FAKE_URGENCY_RISK_PHRASES if p in combined]
+    if hits:
+        return _real("FAIL", hits, f"المحتوى يستخدم لغة استعجال/ندرة مصطنعة: {', '.join(hits)}")
+    return _real("PASS", None, "لا عبارات استعجال/ندرة مصطنعة موجودة في نص المحتوى (فحص جزئي)")
+
+
 # ── 12. Operational cost ──
 def check_operational_cost(cost_log_file=None):
     from revenue_pipeline import plan as plan_module
@@ -490,6 +525,7 @@ def _run_all_checks(spec):
         "brand_reputation_risk": check_brand_reputation_risk(spec.get("product_chapters")),
         "content_neutrality_risk": check_content_neutrality_risk(spec.get("product_chapters")),
         "copyright_trademark_risk": check_copyright_trademark_risk(spec.get("product_chapters")),
+        "fake_urgency_risk": check_fake_urgency_risk(spec.get("product_chapters")),
         "operational_cost": check_operational_cost(spec.get("cost_log_file")),
         "customer_acquisition_difficulty": check_customer_acquisition_difficulty(spec.get("explicit_cac_evidence"), niche=spec.get("niche")),
         "customer_retention_potential": check_customer_retention_potential(niche=spec.get("niche")),
