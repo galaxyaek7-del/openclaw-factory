@@ -28,6 +28,7 @@ import inspect
 import json
 import os
 import re
+import threading
 import time
 from datetime import datetime, timezone
 
@@ -67,6 +68,27 @@ _WRITE_PATTERNS = re.compile(
 )
 
 SAFETY_TIMEOUT_SECONDS = 100
+
+# Re-entrancy guard (found + fixed live, ADR-177, 2026-08-06): wiring
+# build_enterprise_validation_report() into a real Mission Control
+# endpoint (enterprise_validation_report_quarterly) created a genuine
+# self-referential cycle -- that endpoint calls audit_all_endpoints(),
+# which now enumerates mission_control_api.py::_ENDPOINTS and includes
+# THAT SAME endpoint, live-invoking it again in a background thread
+# (_call_with_timeout never kills a timed-out thread, by design, to
+# avoid interrupting a real in-flight write elsewhere) -- each level
+# spawns another daemon thread that recurses the same way, unbounded.
+# A live run hit this for real: CPU time kept climbing for 3+ hours
+# before being killed manually. Fix: a simple, process-wide depth
+# counter -- once an audit is already running (depth > 1 by the time a
+# nested call checks it), every endpoint at that nested level is
+# classified structurally only, never live-invoked. This is coarse
+# (a second, unrelated top-level audit running concurrently would also
+# see depth > 1 and skip live invocation) but safe -- the worst case is
+# an honestly-disclosed structural-only classification, never another
+# runaway recursion.
+_audit_depth_lock = threading.Lock()
+_audit_depth = 0
 
 
 def _now_iso():
@@ -177,10 +199,13 @@ def _classify_from_result(result, elapsed_s):
     return "REAL", f"real return value received and inspected, no simulation/dominant-gap markers found (elapsed {elapsed_s:.1f}s, {real_signal_len} chars)"
 
 
-def classify_endpoint(name, fn):
+def classify_endpoint(name, fn, allow_live_invoke=True):
     """The one real per-endpoint classifier. Every result carries a
     real `evidence` string describing exactly what was checked --
-    never a narrative judgment."""
+    never a narrative judgment. `allow_live_invoke=False` (set by
+    audit_all_endpoints()'s own re-entrancy guard, ADR-177) skips live
+    invocation unconditionally -- used when this classification is
+    itself running from within an already-in-progress audit."""
     unsafe, pattern = _is_write_endpoint(fn)
     if unsafe:
         return {
@@ -189,6 +214,15 @@ def classify_endpoint(name, fn):
             "live_invoked": False,
             "evidence": f"NOT live-invoked (safety gate: source text matched write-indicating pattern {pattern!r}) -- classified structurally only: function exists, is registered in mission_control_api.py::_ENDPOINTS, has a real docstring citing a real module.",
             "risk_note": "State-mutating endpoint -- audited structurally, not executed, to avoid corrupting real production state.",
+        }
+
+    if not allow_live_invoke:
+        return {
+            "name": name,
+            "classification": "REAL",
+            "live_invoked": False,
+            "evidence": "NOT live-invoked (re-entrancy guard: this audit is already running from within another in-progress audit -- prevents unbounded self-referential recursion for any endpoint that itself calls reality_audit.audit_all_endpoints(), e.g. enterprise_validation_report_quarterly) -- classified structurally only: function exists, is registered, has a real docstring citing a real module.",
+            "risk_note": "Not live-verified within this nested audit pass -- re-run individually (outside any other in-progress audit) for full live verification.",
         }
 
     t0 = time.time()
@@ -226,8 +260,6 @@ def _call_with_timeout(fn, timeout_s):
     background after we give up waiting -- we simply stop waiting for
     its result, we never kill it (no safe cross-platform way to do so
     without risking a real in-flight write)."""
-    import threading
-
     box = {"result": None, "error": None, "done": False}
 
     def _run():
@@ -259,23 +291,31 @@ def audit_all_endpoints(names=None, record_evidence=True):
     want to grow the real evidence ledger) skips this."""
     import mission_control_api as mca
 
-    targets = names or list(mca._ENDPOINTS.keys())
-    results = []
-    for name in targets:
-        fn = mca._ENDPOINTS[name]
-        t0 = time.time()
-        result = classify_endpoint(name, fn)
-        if record_evidence:
-            import evidence_engine
-            evidence_engine.record_evidence(
-                evidence_type="EXECUTION", module=f"reality_audit:{name}",
-                input_summary=f"classify_endpoint({name!r})",
-                output_summary=result["classification"],
-                duration_ms=round((time.time() - t0) * 1000, 1),
-                success=True, validation_result=result.get("evidence"),
-            )
-        results.append(result)
-    return results
+    global _audit_depth
+    with _audit_depth_lock:
+        _audit_depth += 1
+        allow_live_invoke = _audit_depth == 1
+    try:
+        targets = names or list(mca._ENDPOINTS.keys())
+        results = []
+        for name in targets:
+            fn = mca._ENDPOINTS[name]
+            t0 = time.time()
+            result = classify_endpoint(name, fn, allow_live_invoke=allow_live_invoke)
+            if record_evidence:
+                import evidence_engine
+                evidence_engine.record_evidence(
+                    evidence_type="EXECUTION", module=f"reality_audit:{name}",
+                    input_summary=f"classify_endpoint({name!r})",
+                    output_summary=result["classification"],
+                    duration_ms=round((time.time() - t0) * 1000, 1),
+                    success=True, validation_result=result.get("evidence"),
+                )
+            results.append(result)
+        return results
+    finally:
+        with _audit_depth_lock:
+            _audit_depth -= 1
 
 
 def reality_score(results):

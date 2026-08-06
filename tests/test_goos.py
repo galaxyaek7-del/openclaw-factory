@@ -126,5 +126,30 @@ class TestSelfImprovementSources(unittest.TestCase):
         self.assertIn("does not add a 4th", sources["note"])
 
 
+class TestStrategicImpactScore(unittest.TestCase):
+    """Galaxy Forge Executive Constitution (ADR-177, 2026-08-06)."""
+
+    def test_composite_averages_both_real_components(self):
+        with mock.patch("goos.goos_score", return_value={"score": 60.0}), \
+             mock.patch("enterprise_capital_allocation.extended_investment_score", return_value={"a": {"value": 80}, "b": {"value": 40}}):
+            result = goos.strategic_impact_score("some niche")
+        self.assertEqual(result["components"]["goos_advisory_score"], 60.0)
+        self.assertEqual(result["components"]["capital_allocation_investment_score_avg"], 60.0)
+        self.assertEqual(result["strategic_impact_score"], 60.0)
+
+    def test_falls_back_honestly_when_investment_score_unavailable(self):
+        with mock.patch("goos.goos_score", return_value={"score": 63.2}), \
+             mock.patch("enterprise_capital_allocation.extended_investment_score", side_effect=Exception("no ACCEPTED decision")):
+            result = goos.strategic_impact_score("some niche")
+        self.assertIsNone(result["components"]["capital_allocation_investment_score_avg"])
+        self.assertEqual(result["strategic_impact_score"], 63.2)
+
+    def test_honestly_none_when_neither_component_available(self):
+        with mock.patch("goos.goos_score", return_value={"score": None}), \
+             mock.patch("enterprise_capital_allocation.extended_investment_score", side_effect=Exception("x")):
+            result = goos.strategic_impact_score("some niche")
+        self.assertIsNone(result["strategic_impact_score"])
+
+
 if __name__ == "__main__":
     unittest.main()

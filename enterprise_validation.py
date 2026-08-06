@@ -163,3 +163,37 @@ def build_enterprise_validation_report():
         "enterprise_reality_score": score,
         "generated_at": _now_iso(),
     }
+
+
+def render_enterprise_validation_report_markdown(report=None):
+    """Real markdown renderer for build_enterprise_validation_report()
+    (Galaxy Forge Executive Constitution, ADR-177, 2026-08-06) -- the
+    real quarterly Architecture Review delivery format. Never a second
+    computation."""
+    report = report if report is not None else build_enterprise_validation_report()
+    score = report["enterprise_reality_score"]
+    lines = [
+        "# Enterprise Validation Report (Quarterly Architecture Review)",
+        f"Generated: {report.get('generated_at')}", "",
+        f"## Enterprise Reality Score: {score.get('percentages', {}).get('REAL')}% REAL ({score.get('counts', {}).get('REAL')}/{score.get('total')})",
+        "",
+        f"## Working Systems: {report['working_systems']['count']}",
+        f"## Partially Working Systems: {report['partially_working_systems']['count']}",
+        f"## Not Implemented Systems: {report['not_implemented_systems']['count']}",
+        "",
+        "## Duplicated Logic",
+        f"{report['duplicated_logic']}",
+        "",
+        "## Unused Services",
+        f"{report['unused_services'].get('count_unreferenced', 'n/a')} real endpoint(s) unreferenced: {report['unused_services'].get('unreferenced_in_server_or_factory_loop')}",
+        "",
+        "## Bottlenecks",
+        f"{report['bottlenecks']}",
+        "",
+        f"## Highest Priorities ({len(report['highest_priorities'])})",
+        f"{report['highest_priorities']}",
+        "",
+        "## Readiness Score",
+        f"{report['readiness_score']}",
+    ]
+    return "\n".join(lines) + "\n"

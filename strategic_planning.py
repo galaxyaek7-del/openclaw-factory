@@ -345,6 +345,24 @@ def build_strategic_planning_dashboard():
     }
 
 
+def render_strategic_planning_report_markdown(report=None):
+    """Real markdown renderer for build_strategic_planning_dashboard()
+    (Galaxy Forge Executive Constitution, ADR-177, 2026-08-06) -- the
+    real annual Strategic Review delivery format. Never a second
+    computation."""
+    report = report if report is not None else build_strategic_planning_dashboard()
+    lines = [
+        "# Strategic Planning Report (Annual Strategic Review)",
+        f"Generated: {report.get('generated_at')}", "",
+        "## Rolling Roadmap", f"{report['rolling_roadmap']}", "",
+        "## Division Status Board", f"{report['division_status_board']}", "",
+        "## Enterprise Priority Matrix", f"{report['enterprise_priority_matrix']}", "",
+        "## Planning Questions", f"{report['planning_questions']}", "",
+        "## Executive Timeline", f"{report['executive_timeline']}",
+    ]
+    return "\n".join(lines) + "\n"
+
+
 def simulate_roadmap_execution(**hypothetical):
     """Objective 7: reuses growth_stages.py's exact Simulation Mode
     overrides mechanism, recomputes rolling_roadmap() against the

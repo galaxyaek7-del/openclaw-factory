@@ -1285,6 +1285,18 @@ def _strategic_planning_dashboard():
     return strategic_planning.build_strategic_planning_dashboard()
 
 
+def _strategic_planning_report_annual():
+    """Galaxy Forge Executive Constitution (ADR-177, 2026-08-06): the
+    real annual Strategic Review, reusing strategic_planning.py's
+    already-real build_strategic_planning_dashboard() (ADR-159) --
+    never a second computation. A separate, {report, markdown}-shaped
+    wrapper from _strategic_planning_dashboard() above, whose raw-dict
+    shape the existing Mission Control panel already depends on."""
+    import strategic_planning
+    report = strategic_planning.build_strategic_planning_dashboard()
+    return {"report": report, "markdown": strategic_planning.render_strategic_planning_report_markdown(report)}
+
+
 def _simulate_roadmap_execution():
     """Enterprise Strategic Planning System (ADR-159, 2026-07-31):
     Simulation Mode integration -- recomputes the rolling roadmap
@@ -1763,6 +1775,17 @@ def _evolution_report():
     import evolution_engine
     report = evolution_engine.build_evolution_report()
     return {"report": report, "markdown": evolution_engine.render_markdown(report)}
+
+
+def _enterprise_validation_report_quarterly():
+    """Galaxy Forge Executive Constitution (ADR-177, 2026-08-06): the
+    real quarterly Architecture Review, reusing enterprise_validation.py
+    (ADR-166) verbatim -- never a second validation pass. Expensive
+    (~270-920s, re-runs reality_audit.py live) -- appropriate for a
+    quarterly, not daily, cadence."""
+    import enterprise_validation as ev
+    report = ev.build_enterprise_validation_report()
+    return {"report": report, "markdown": ev.render_enterprise_validation_report_markdown(report)}
 
 
 def _galaxy_evolution_report():
@@ -2641,6 +2664,8 @@ _ENDPOINTS = {
     "strategic_report": _strategic_report,
     "market_review": _market_review,
     "evolution_report": _evolution_report,
+    "enterprise_validation_report_quarterly": _enterprise_validation_report_quarterly,
+    "strategic_planning_report_annual": _strategic_planning_report_annual,
     "galaxy_evolution_report": _galaxy_evolution_report,
     "founder_console": _founder_console,
     "integration_registry": _integration_registry,

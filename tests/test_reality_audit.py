@@ -130,6 +130,79 @@ class TestClassifyEndpoint(unittest.TestCase):
         self.assertEqual(result["classification"], "NOT_IMPLEMENTED")
 
 
+class TestReentrancyGuard(unittest.TestCase):
+    """Regression test for a real incident (ADR-177, 2026-08-06): wiring
+    build_enterprise_validation_report() into a live endpoint
+    (enterprise_validation_report_quarterly) created a genuine
+    self-referential cycle -- that endpoint calls
+    reality_audit.audit_all_endpoints(), which enumerates
+    mission_control_api.py::_ENDPOINTS and includes that same endpoint,
+    live-invoking it again in a new background thread, which recurses
+    the same way, unbounded. A live run hit this for real: CPU time
+    kept climbing for 3+ hours before being killed manually."""
+
+    def test_nested_audit_never_live_invokes_and_terminates_quickly(self):
+        import mission_control_api as mca
+        import time as _time
+
+        def self_referential_endpoint():
+            return {"nested": ra.audit_all_endpoints(names=["self_ref", "normal"], record_evidence=False)}
+
+        def normal_endpoint():
+            return {"ok": True}
+
+        original_endpoints = mca._ENDPOINTS
+        mca._ENDPOINTS = {"self_ref": self_referential_endpoint, "normal": normal_endpoint}
+        try:
+            start = _time.time()
+            results = ra.audit_all_endpoints(names=["self_ref", "normal"], record_evidence=False)
+            elapsed = _time.time() - start
+        finally:
+            mca._ENDPOINTS = original_endpoints
+
+        # Must terminate almost immediately -- the un-fixed version hung
+        # for hours (recursive daemon threads each waiting up to
+        # SAFETY_TIMEOUT_SECONDS). A generous 15s bound proves no
+        # unbounded recursion, without being flaky under real load.
+        self.assertLess(elapsed, 15, "nested self-referential audit must not hang/recurse unboundedly")
+
+        top_level_self_ref = next(r for r in results if r["name"] == "self_ref")
+        self.assertTrue(top_level_self_ref["live_invoked"], "the TOP-level call must still live-invoke normally")
+
+        # classify_endpoint's REAL branch doesn't re-expose the raw
+        # return value, so assert indirectly: the depth counter must be
+        # back to 0 once everything settles (proves no leaked state).
+        self.assertEqual(ra._audit_depth, 0, "depth counter must never leak across calls")
+
+    def test_classify_endpoint_respects_allow_live_invoke_false(self):
+        called = {"n": 0}
+
+        def fn():
+            called["n"] += 1
+            return {"ok": True}
+
+        result = ra.classify_endpoint("fn", fn, allow_live_invoke=False)
+        self.assertFalse(result["live_invoked"])
+        self.assertEqual(called["n"], 0, "must never call the function when allow_live_invoke=False")
+        self.assertIn("re-entrancy guard", result["evidence"])
+
+    def test_top_level_audit_still_live_invokes_normally(self):
+        # Guard rail: the fix must not accidentally disable live
+        # invocation for ordinary, non-recursive top-level audits.
+        import mission_control_api as mca
+
+        def normal_endpoint():
+            return {"ok": True}
+
+        original_endpoints = mca._ENDPOINTS
+        mca._ENDPOINTS = {"normal": normal_endpoint}
+        try:
+            results = ra.audit_all_endpoints(names=["normal"], record_evidence=False)
+        finally:
+            mca._ENDPOINTS = original_endpoints
+        self.assertTrue(results[0]["live_invoked"])
+
+
 class TestRealityScore(unittest.TestCase):
     def test_computed_directly_no_estimates(self):
         results = [

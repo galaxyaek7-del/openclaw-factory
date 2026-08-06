@@ -1724,6 +1724,117 @@ async function maybeGenerateMonthlyGalaxyEvolutionReport(now = new Date()) {
   }
 }
 
+// Galaxy Forge Executive Constitution (ADR-177, 2026-08-06): the real
+// quarterly Architecture Review + annual Strategic Review cadences --
+// this factory's first quarterly/annual gates, alongside its existing
+// daily/weekly/monthly ones. Same subprocess pattern as every report
+// function above, calling mission_control_api.py's real endpoints
+// (enterprise_validation.py/strategic_planning.py, both already real,
+// never a second computation).
+function runEnterpriseValidationReportQuarterly({ timeoutMs = 1000000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'enterprise_validation_report_quarterly'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => { if (settled) return; settled = true; clearTimeout(timer); resolve(result); };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة enterprise_validation_report_quarterly (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) { finish({ ok: false, detail: result.error || 'فشل غير محدَّد' }); return; }
+        finish({ ok: true, markdown: result.markdown });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل الناتج: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+function runStrategicPlanningReportAnnual({ timeoutMs = 200000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'strategic_planning_report_annual'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => { if (settled) return; settled = true; clearTimeout(timer); resolve(result); };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة strategic_planning_report_annual (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) { finish({ ok: false, detail: result.error || 'فشل غير محدَّد' }); return; }
+        finish({ ok: true, markdown: result.markdown });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل الناتج: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+function architectureReviewReportPath(now) {
+  const quarter = Math.floor(now.getUTCMonth() / 3) + 1;
+  return path.join(REPORTS_DIR, `ARCHITECTURE_REVIEW_${now.getUTCFullYear()}-Q${quarter}.md`);
+}
+
+function annualStrategicReviewReportPath(now) {
+  return path.join(REPORTS_DIR, `ANNUAL_STRATEGIC_REVIEW_${now.getUTCFullYear()}.md`);
+}
+
+// Once-per-calendar-quarter gate, same file-existence technique as the
+// monthly/weekly/daily gates above, just widened to 3 real months.
+async function maybeGenerateQuarterlyArchitectureReview(now = new Date()) {
+  const datedPath = architectureReviewReportPath(now);
+  if (fs.existsSync(datedPath)) {
+    return { action: 'none', detail: `مراجعة العمارة الفصلية لهذا الفصل موجودة بالفعل: ${path.basename(datedPath)}` };
+  }
+  const result = await runEnterpriseValidationReportQuarterly();
+  if (!result.ok) return { action: 'failed', detail: result.detail };
+  try {
+    fs.mkdirSync(REPORTS_DIR, { recursive: true });
+    fs.writeFileSync(datedPath, result.markdown, 'utf-8');
+    return { action: 'generated', detail: `مراجعة عمارة فصلية جديدة: ${path.basename(datedPath)}` };
+  } catch (err) {
+    return { action: 'failed', detail: `تعذّر كتابة مراجعة العمارة الفصلية: ${err.message}` };
+  }
+}
+
+// Once-per-calendar-year gate.
+async function maybeGenerateAnnualStrategicReview(now = new Date()) {
+  const datedPath = annualStrategicReviewReportPath(now);
+  if (fs.existsSync(datedPath)) {
+    return { action: 'none', detail: `المراجعة الاستراتيجية السنوية لهذا العام موجودة بالفعل: ${path.basename(datedPath)}` };
+  }
+  const result = await runStrategicPlanningReportAnnual();
+  if (!result.ok) return { action: 'failed', detail: result.detail };
+  try {
+    fs.mkdirSync(REPORTS_DIR, { recursive: true });
+    fs.writeFileSync(datedPath, result.markdown, 'utf-8');
+    return { action: 'generated', detail: `مراجعة استراتيجية سنوية جديدة: ${path.basename(datedPath)}` };
+  } catch (err) {
+    return { action: 'failed', detail: `تعذّر كتابة المراجعة الاستراتيجية السنوية: ${err.message}` };
+  }
+}
+
 // Same once-per-calendar-day gating pattern as maybeGenerateWeeklyReport()
 // (file-existence check for today's dated report) -- no new scheduler,
 // reuses the exact existing daily-gate shape already proven for Golden
@@ -2934,6 +3045,15 @@ async function runTick() {
   markStep('galaxy_evolution_report');
   actions.push({ step: 'galaxy_evolution_report', ...(await maybeGenerateMonthlyGalaxyEvolutionReport()) });
 
+  // Galaxy Forge Executive Constitution (ADR-177, 2026-08-06): the
+  // directive's own "quarterly architecture review" and "annual
+  // strategic review" cadences -- genuinely new gates, same
+  // once-per-calendar-window technique widened further.
+  markStep('architecture_review_quarterly');
+  actions.push({ step: 'architecture_review_quarterly', ...(await maybeGenerateQuarterlyArchitectureReview()) });
+  markStep('annual_strategic_review');
+  actions.push({ step: 'annual_strategic_review', ...(await maybeGenerateAnnualStrategicReview()) });
+
   // Executive Intelligence Core, Round 1 (2026-07-29): same once-per-
   // calendar-day pattern as evolution_report immediately above -- these
   // two report engines already had the real render_markdown()/dispatch
@@ -3226,6 +3346,8 @@ module.exports = {
   generateWeeklyReport, maybeGenerateWeeklyReport, weekReportPath, runExportExecutiveReport,
   runEvolutionReport, evolutionReportPath, maybeGenerateDailyEvolutionReport,
   runGalaxyEvolutionReport, galaxyEvolutionReportPath, maybeGenerateMonthlyGalaxyEvolutionReport,
+  runEnterpriseValidationReportQuarterly, architectureReviewReportPath, maybeGenerateQuarterlyArchitectureReview,
+  runStrategicPlanningReportAnnual, annualStrategicReviewReportPath, maybeGenerateAnnualStrategicReview,
   runAiDoctorReport, aiDoctorReportPath, maybeGenerateDailyAiDoctorReport,
   runDepartmentHealthReport, departmentHealthReportPath, maybeGenerateDailyDepartmentHealthReport,
   runExecutiveBrief, executiveBriefReportPath, maybeGenerateDailyExecutiveBrief,

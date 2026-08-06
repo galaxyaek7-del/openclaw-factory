@@ -245,3 +245,39 @@ def self_improvement_sources():
         "market_changes_and_competitor_movements": "competitor_discovery.py's real cached database + market_hunter.py's real live HN/GitHub ingestion.",
         "note": "GOOS does not add a 4th, competing learning loop -- it cites the 3 that already exist.",
     }
+
+
+# -- Strategic Impact Score (Galaxy Forge Executive Constitution, ADR-177, 2026-08-06) --
+# The Global Dominance Directive asked for every project to receive a
+# "Strategic Impact Score." Real, disclosed composite of 2 already-real
+# scores -- GOOS's own advisory score (this module) and the Capital
+# Allocation Engine's Investment Score (enterprise_capital_allocation.py,
+# ADR-165/176) -- never a 3rd, independent scoring computation.
+def strategic_impact_score(niche):
+    """Real composite: avg(GOOS advisory score, extended Investment
+    Score's own real numeric dimensions) when both exist; honestly
+    reports whichever real component is unavailable rather than
+    silently defaulting to the other alone."""
+    import enterprise_capital_allocation as eca
+
+    goos_result = goos_score(niche)
+    try:
+        investment = eca.extended_investment_score(niche)
+        numeric_investment = [v["value"] for v in investment.values() if isinstance(v, dict) and isinstance(v.get("value"), (int, float))]
+        investment_avg = round(sum(numeric_investment) / len(numeric_investment), 1) if numeric_investment else None
+    except Exception as e:
+        investment_avg = None
+        investment = {"error": str(e)}
+
+    components = [v for v in (goos_result.get("score"), investment_avg) if v is not None]
+    composite = round(sum(components) / len(components), 1) if components else None
+
+    return {
+        "strategic_impact_score": composite,
+        "components": {
+            "goos_advisory_score": goos_result.get("score"),
+            "capital_allocation_investment_score_avg": investment_avg,
+        },
+        "note": "A disclosed avg of 2 already-real scores (GOOS's advisory score, ADR-171; Capital Allocation's extended Investment Score, ADR-165/176) -- never a 3rd independent computation. Honestly None if neither real component is available.",
+        "generated_at": _now_iso(),
+    }
