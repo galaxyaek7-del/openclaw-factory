@@ -151,5 +151,108 @@ class TestStrategicImpactScore(unittest.TestCase):
         self.assertIsNone(result["strategic_impact_score"])
 
 
+class TestRankBuildCandidates(unittest.TestCase):
+    """Strategic Intelligence Engine, Revenue Mode (ADR-178, 2026-08-06):
+    the one genuine gap -- global ranking of candidate niches AGAINST
+    EACH OTHER, real duplicate-family/engineering-without-revenue
+    rejection, passive-only (never triggers a new live evaluation)."""
+
+    def _write_decisions(self, tmp_path, records):
+        import json
+        with open(tmp_path, "w", encoding="utf-8") as f:
+            for r in records:
+                f.write(json.dumps(r) + "\n")
+
+    def setUp(self):
+        import tempfile
+        self._tmp = tempfile.NamedTemporaryFile(suffix=".jsonl", delete=False)
+        self._tmp.close()
+        self.decisions_path = self._tmp.name
+
+    def tearDown(self):
+        import os
+        if os.path.exists(self.decisions_path):
+            os.remove(self.decisions_path)
+
+    def test_never_calls_run_hunt(self):
+        """Same passive-only discipline as automation_opportunity_scanner.py's
+        own test_never_calls_run_hunt() -- a ranking/dashboard read must
+        never trigger a new real evaluation cycle (ADR-162's addendum
+        incident class)."""
+        self._write_decisions(self.decisions_path, [
+            {**_FAKE_SNAPSHOT, "niche": "niche a", "ladder": "automation_tools"},
+        ])
+        with mock.patch("golden_hunter.hunt.run_hunt") as run_hunt:
+            goos.rank_build_candidates(decisions_path=self.decisions_path)
+            run_hunt.assert_not_called()
+
+    def test_ranks_scored_candidates_by_goos_advisory_score_descending(self):
+        low = {**_FAKE_SNAPSHOT, "niche": "low score niche", "ladder": "automation_tools", "status": "DEFERRED"}
+        high = {
+            **_FAKE_SNAPSHOT, "niche": "high score niche", "ladder": "automation_tools", "status": "DEFERRED",
+            "evaluation_snapshot": {
+                **_FAKE_SNAPSHOT["evaluation_snapshot"],
+                "scores": {**_FAKE_SNAPSHOT["evaluation_snapshot"]["scores"], "market_demand": 95, "profit_potential": 95},
+            },
+        }
+        self._write_decisions(self.decisions_path, [low, high])
+        result = goos.rank_build_candidates(decisions_path=self.decisions_path)
+        build_next_niches = [e["niche"] for e in result["build_next"]]
+        self.assertEqual(build_next_niches.index("high score niche"), 0)
+
+    def test_rejected_prior_status_is_honestly_bucketed_as_ignore(self):
+        self._write_decisions(self.decisions_path, [
+            {**_FAKE_SNAPSHOT, "niche": "rejected niche", "ladder": "automation_tools", "status": "REJECTED"},
+        ])
+        result = goos.rank_build_candidates(decisions_path=self.decisions_path)
+        ignored_niches = [e["niche"] for e in result["ignore"]]
+        self.assertIn("rejected niche", ignored_niches)
+        self.assertNotIn("rejected niche", [e["niche"] for e in result["build_next"]])
+
+    def test_empty_portfolio_never_fabricates_a_duplicate_finding(self):
+        self._write_decisions(self.decisions_path, [
+            {**_FAKE_SNAPSHOT, "niche": "solo niche", "ladder": "automation_tools", "status": "DEFERRED"},
+        ])
+        result = goos.rank_build_candidates(decisions_path=self.decisions_path)
+        entry = result["build_next"][0]
+        self.assertFalse(entry["duplicate_check"]["duplicates_existing_family"])
+        self.assertIn("لا محفظة ACCEPTED", entry["duplicate_check"]["reason"])
+
+    def test_pre_acceptance_engineering_without_revenue_is_honestly_unknown(self):
+        self._write_decisions(self.decisions_path, [
+            {**_FAKE_SNAPSHOT, "niche": "unaccepted niche", "ladder": "automation_tools", "status": "DEFERRED"},
+        ])
+        result = goos.rank_build_candidates(decisions_path=self.decisions_path)
+        entry = result["build_next"][0]
+        self.assertEqual(entry["engineering_without_revenue_check"]["engineering_without_revenue"], "Unknown")
+
+    def test_every_build_next_entry_carries_all_8_required_fields(self):
+        self._write_decisions(self.decisions_path, [
+            {**_FAKE_SNAPSHOT, "niche": "field check niche", "ladder": "automation_tools", "status": "DEFERRED"},
+        ])
+        result = goos.rank_build_candidates(decisions_path=self.decisions_path)
+        entry = result["build_next"][0]
+        for field in (
+            "confidence_score", "evidence_sources", "expected_roi", "competition_score",
+            "difficulty", "time_to_first_revenue", "long_term_recurring_potential", "strategic_importance",
+        ):
+            self.assertIn(field, entry)
+
+    def test_real_accepted_portfolio_size_is_honest(self):
+        self._write_decisions(self.decisions_path, [
+            {**_FAKE_SNAPSHOT, "niche": "a", "ladder": "automation_tools", "status": "DEFERRED"},
+            {**_FAKE_SNAPSHOT, "niche": "b", "ladder": "automation_tools", "status": "ACCEPTED"},
+        ])
+        result = goos.rank_build_candidates(decisions_path=self.decisions_path)
+        self.assertEqual(result["real_accepted_portfolio_size"], 1)
+
+
+class TestStrategicIntelligenceEngineReport(unittest.TestCase):
+    def test_real_production_gate_is_explicitly_disclosed_unchanged(self):
+        report = goos.strategic_intelligence_engine_report(decisions_path=self.__class__.__module__ + "-nonexistent-path.jsonl")
+        self.assertIn("unchanged", report["real_production_gate"])
+        self.assertIn("65/100", report["real_production_gate"])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -39,13 +39,18 @@ def company_pulse():
     import founder_console
     import capital_allocation_engine
     import executive_questions
+    import goos
     from executive_intelligence import inactivity
 
     brief = strategic_intelligence_core.build_executive_brief()
     gox = global_opportunity_exchange.build_global_opportunity_exchange_dashboard()
     cap = capital_allocation_engine.build_capital_allocation_dashboard()
     founder_queue = founder_console.build_founder_queue_partial()
-    questions = executive_questions.answer_strategic_questions(brief=brief, gox=gox, cap=cap)
+    # Strategic Intelligence Engine (ADR-178, 2026-08-06): computed once
+    # here and injected, same discipline as brief/gox/cap above -- avoids
+    # a 2nd redundant call inside answer_strategic_questions().
+    sie = goos.strategic_intelligence_engine_report(top_n=1)
+    questions = executive_questions.answer_strategic_questions(brief=brief, gox=gox, cap=cap, sie=sie)
     idle = inactivity.detect_inactive_components()
 
     return {

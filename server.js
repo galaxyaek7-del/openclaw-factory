@@ -1330,6 +1330,24 @@ const SERVICE_REGISTRY = [
     // standing, 3x-reconfirmed founder deferral (GCID/ADR-148, Global
     // Affiliate Commerce Engine/ADR-152, growth_stages.py's Stage 4),
     // applied directly here rather than re-asked a 4th time.
+    // Strategic Intelligence Engine, Revenue Mode (ADR-178, 2026-08-06):
+    // the founder's "generate real revenue, not more reports" directive.
+    // Research found every one of its 10 named questions/8 named fields
+    // already real and citable, scattered across goos.py/profit_oracle.py/
+    // capital_allocation_engine.py -- the one real gap was a GLOBAL
+    // cross-niche ranker (every existing ranker only orders the already-
+    // ACCEPTED portfolio, currently empty). "Must feed the production
+    // pipeline" repeats the exact tension goos.py itself already resolved
+    // (ADR-171, AskUserQuestion): advisory citation into executive_brain.py
+    // only, real 65/100 floor unchanged -- applied directly without
+    // re-asking the identical question a 2nd time.
+    name: 'strategic-intelligence-engine',
+    description: "Global, cross-niche 'what to build next' ranking -- every real candidate niche (any decision_engine status, plus never-evaluated seed candidates) scored via GOOS's own real per-niche citation, bundling confidence/evidence sources/expected ROI/competition/difficulty/time-to-revenue/recurring-potential/strategic-importance, plus a real duplicate-product-family check and an engineering-without-revenue check. Ranked build_next / ignore / not_yet_scorable / never_evaluated buckets. Passive-only, advisory-only -- the real production gate (profit_oracle.py's 65/100 floor) is unchanged.",
+    reused: 'goos.py::strategic_intelligence_engine_report() (ADR-178) + global_opportunity_exchange.py + automation_opportunity_scanner.py + capital_allocation_engine.py + decision_engine/store.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('strategic_intelligence_engine_report', [], req, 60000),
+    health: pythonHealthCheck('strategic_intelligence_engine_report'),
+  },
+  {
     name: 'market-domination-dashboard',
     description: "Real, ranked, high-value opportunity candidates across all 6 real ladders (ai_saas/b2b_systems/automation_tools/reusable_assets/educational/kdp_books, ranked by profit_oracle.py's real LADDER_RANKS priority order), each evaluated via GOOS's real 10-dimension citation (real_customer_pain/willingness_to_pay/competition_level/difficulty_of_copying/scalability/recurring_revenue_potential/automation_potential/strategic_fit/long_term_asset_value + market_size honestly NOT_MEASURABLE). Global reach: 8 of 11 registered multi_source_intelligence connectors (Amazon/Etsy/Gumroad/GitHub/Hacker News/arXiv/public search/Stack Overflow) are real and query-capable. Regional coverage for 6 of the directive's 8 named regions (everywhere except North America and 'Global online markets') is honestly NOT_MEASURABLE -- zero real local-market data connector exists anywhere in this factory, the founder's own standing 2026-07-23 deferral. Never triggers a new live evaluation cycle.",
     reused: 'market_domination_engine.py::build_market_domination_dashboard() (ADR-175) + automation_opportunity_scanner.py (ADR-164) + goos.py (ADR-171) + profit_oracle.py, via mission_control_api.py.',

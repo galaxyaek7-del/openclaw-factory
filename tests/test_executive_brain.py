@@ -157,17 +157,19 @@ class TestBuildExecutiveDirectiveIntegration(unittest.TestCase):
             "founder_decisions_required": {"pending_decisions": [], "pending_evolution_proposals": [], "publish_emergency_stop": None},
         }
 
+    @patch("goos.strategic_intelligence_engine_report")
     @patch("channels.ledger.revenue_trend")
     @patch("evolution_queue.list_evolution_queue")
     @patch("capital_allocation_engine.build_capital_allocation_dashboard")
     @patch("global_opportunity_exchange.build_global_opportunity_exchange_dashboard")
     @patch("strategic_intelligence_core.build_executive_brief")
-    def test_record_ledger_false_never_writes(self, mock_brief, mock_gox, mock_cap, mock_evo, mock_rev):
+    def test_record_ledger_false_never_writes(self, mock_brief, mock_gox, mock_cap, mock_evo, mock_rev, mock_sie):
         mock_brief.return_value = self._mock_brief()
         mock_gox.return_value = {"market_health": {}, "diversification_recommendations": []}
         mock_cap.return_value = {"top_roi_initiatives": []}
         mock_evo.return_value = {"awaiting_approval": [], "stage_distribution": {}}
         mock_rev.return_value = {"recent_7d_revenue_usd": 0, "trailing_daily_avg_usd": None, "note": None}
+        mock_sie.return_value = {"ranking": {"build_next": [], "real_accepted_portfolio_size": 0, "total_real_candidates": 0}}
 
         ledger_path = _temp_path()
         record = eb.build_executive_directive(ledger_path=ledger_path, record_ledger=False)
@@ -175,17 +177,19 @@ class TestBuildExecutiveDirectiveIntegration(unittest.TestCase):
         self.assertTrue(record["requires_founder_approval"], "must always require founder approval -- never auto-executes")
         self.assertFalse(os.path.exists(ledger_path), "record_ledger=False must never write to the permanent ledger")
 
+    @patch("goos.strategic_intelligence_engine_report")
     @patch("channels.ledger.revenue_trend")
     @patch("evolution_queue.list_evolution_queue")
     @patch("capital_allocation_engine.build_capital_allocation_dashboard")
     @patch("global_opportunity_exchange.build_global_opportunity_exchange_dashboard")
     @patch("strategic_intelligence_core.build_executive_brief")
-    def test_record_ledger_true_writes_exactly_once(self, mock_brief, mock_gox, mock_cap, mock_evo, mock_rev):
+    def test_record_ledger_true_writes_exactly_once(self, mock_brief, mock_gox, mock_cap, mock_evo, mock_rev, mock_sie):
         mock_brief.return_value = self._mock_brief(alerts=[{"area": "test", "severity": "warning"}])
         mock_gox.return_value = {"market_health": {}, "diversification_recommendations": []}
         mock_cap.return_value = {"top_roi_initiatives": []}
         mock_evo.return_value = {"awaiting_approval": [], "stage_distribution": {}}
         mock_rev.return_value = {"recent_7d_revenue_usd": 0, "trailing_daily_avg_usd": None, "note": None}
+        mock_sie.return_value = {"ranking": {"build_next": [], "real_accepted_portfolio_size": 0, "total_real_candidates": 0}}
 
         ledger_path = _temp_path()
         record = eb.build_executive_directive(ledger_path=ledger_path, record_ledger=True)

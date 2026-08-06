@@ -36,15 +36,17 @@ WAITING_FOR_REAL_SOURCE = "WAITING FOR REAL SOURCE"
 
 
 def answer_strategic_questions(decisions_path=None, board_path=None, alerts_path=None,
-                                brief=None, gox=None, cap=None):
-    """`brief`/`gox`/`cap` (Enterprise Operations Center, ADR-155,
-    2026-07-31): let a caller that already has a real, freshly-computed
+                                brief=None, gox=None, cap=None, sie=None):
+    """`brief`/`gox`/`cap`/`sie` (Enterprise Operations Center, ADR-155,
+    2026-07-31; `sie` added ADR-178, 2026-08-06): let a caller that
+    already has a real, freshly-computed
     build_executive_brief()/build_global_opportunity_exchange_dashboard()/
-    build_capital_allocation_dashboard() result pass it straight through
-    instead of triggering a second, redundant, real full-portfolio
-    computation -- the same real pattern scheduler.decide_next_actions()'s
-    own `portfolio` parameter already established. Leave as None (the
-    default) to compute all three fresh, exactly as before."""
+    build_capital_allocation_dashboard()/strategic_intelligence_engine_report()
+    result pass it straight through instead of triggering a second,
+    redundant, real full-portfolio computation -- the same real pattern
+    scheduler.decide_next_actions()'s own `portfolio` parameter already
+    established. Leave as None (the default) to compute all four fresh,
+    exactly as before."""
     import strategic_intelligence_core
     import global_opportunity_exchange
     import capital_allocation_engine
@@ -53,6 +55,7 @@ def answer_strategic_questions(decisions_path=None, board_path=None, alerts_path
     import resilience_monitor
     import autonomous_operations_status
     import launch_readiness
+    import goos
 
     if brief is None:
         brief = strategic_intelligence_core.build_executive_brief(
@@ -66,13 +69,15 @@ def answer_strategic_questions(decisions_path=None, board_path=None, alerts_path
         cap = capital_allocation_engine.build_capital_allocation_dashboard(
             decisions_path=decisions_path, board_path=board_path, alerts_path=alerts_path,
         )
+    if sie is None:
+        sie = goos.strategic_intelligence_engine_report(decisions_path=decisions_path, top_n=1)
     evo_queue = evolution_queue.list_evolution_queue()
 
     # Q1 -- reuses executive_brain's own real arbitration helpers against
-    # the single brief/gox/cap already computed above, rather than
-    # calling build_executive_directive() (which would recompute all
-    # three internally a second time).
-    candidates = executive_brain._candidate_directives(brief, gox, cap, evo_queue)
+    # the single brief/gox/cap/sie already computed above, rather than
+    # calling build_executive_directive() (which would recompute
+    # everything internally a second time).
+    candidates = executive_brain._candidate_directives(brief, gox, cap, evo_queue, sie)
     directive = executive_brain._arbitrate(candidates)
 
     resilience = resilience_monitor.assess_resilience()

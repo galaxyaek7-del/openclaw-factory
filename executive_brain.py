@@ -137,10 +137,15 @@ def _risk_level(active_alerts):
     return {"level": worst["severity"], "evidence": worst}
 
 
-def _candidate_directives(brief, gox, cap, evo_queue):
+def _candidate_directives(brief, gox, cap, evo_queue, sie=None):
     """Real candidate actions pulled from already-computed real signals
     only -- never invented. Each candidate cites the exact real
-    function/field it came from."""
+    function/field it came from. `sie` (Strategic Intelligence Engine,
+    ADR-178, 2026-08-06) defaults to None/{} so every pre-existing
+    caller (enterprise_executive_brain.py, tests/test_executive_brain.py)
+    keeps working unchanged -- the same optional-injection convention
+    brief/gox/cap already use elsewhere in this factory."""
+    sie = sie or {}
     candidates = []
 
     for alert in brief["top_risks"].get("resilience_active_alerts", []):
@@ -172,6 +177,22 @@ def _candidate_directives(brief, gox, cap, evo_queue):
             "action": f"تسريع إنتاج فرصة حقيقية: {item.get('niche', item) if isinstance(item, dict) else item}",
             "evidence": item,
             "source": "scheduler.decide_next_actions().buckets.accelerate (via ceo_decision_center.ceo_dashboard)",
+        })
+
+    # Strategic Intelligence Engine, Revenue Mode (ADR-178, 2026-08-06):
+    # the one real "what to build next" candidate this factory's global
+    # cross-niche ranker surfaces -- Tier 2 (Opportunity Discovery),
+    # since 0 real ACCEPTED opportunities exist today and this factory's
+    # shortest real path to revenue runs through deciding on a new one,
+    # not accelerating a portfolio that doesn't yet exist. Advisory
+    # only, same as every other candidate here -- never auto-approved.
+    top_candidate = (sie.get("ranking", {}).get("build_next") or [None])[0]
+    if top_candidate:
+        candidates.append({
+            "tier": 2, "tier_name": PRIORITY_TIERS[2],
+            "action": f"تقييم/إعادة نظر في أعلى فرصة حقيقية مُرتَّبة عالمياً: {top_candidate.get('niche')} (نتيجة GOOS استشارية: {top_candidate.get('goos_advisory_score')})",
+            "evidence": top_candidate,
+            "source": "goos.rank_build_candidates() (Strategic Intelligence Engine, ADR-178)",
         })
 
     for item in cap.get("top_roi_initiatives", [])[:1]:
@@ -303,6 +324,7 @@ def build_executive_directive(decisions_path=None, board_path=None, alerts_path=
     import global_opportunity_exchange
     import capital_allocation_engine
     import evolution_queue
+    import goos
     from channels import ledger as sales_ledger
 
     brief = strategic_intelligence_core.build_executive_brief(
@@ -322,9 +344,10 @@ def build_executive_directive(decisions_path=None, board_path=None, alerts_path=
     )
     evo_queue = evolution_queue.list_evolution_queue(state_path=evolution_queue_state_path)
     revenue = sales_ledger.revenue_trend(ledger_path=sales_ledger_path)
+    sie = goos.strategic_intelligence_engine_report(decisions_path=decisions_path, top_n=1)
 
     active_alerts = brief["top_risks"].get("resilience_active_alerts", [])
-    candidates = _candidate_directives(brief, gox, cap, evo_queue)
+    candidates = _candidate_directives(brief, gox, cap, evo_queue, sie)
     directive = _arbitrate(candidates)
 
     now = _now_iso()
@@ -362,6 +385,12 @@ def build_executive_directive(decisions_path=None, board_path=None, alerts_path=
         "evolution_progress": evo_queue["stage_distribution"],
         "knowledge_growth": _knowledge_growth_trend(),
         "opportunity_queue": brief.get("top_opportunities", []),
+        "strategic_intelligence_engine": {
+            "top_build_candidate": sie.get("ranking", {}).get("build_next", [None])[0] if sie.get("ranking", {}).get("build_next") else None,
+            "real_accepted_portfolio_size": sie.get("ranking", {}).get("real_accepted_portfolio_size"),
+            "total_real_candidates": sie.get("ranking", {}).get("total_real_candidates"),
+            "source": "goos.strategic_intelligence_engine_report() (ADR-178)",
+        },
         "current_mission": directive.get("action") if directive.get("status") == "SINGLE_DIRECTIVE" else None,
         "next_mission": candidates[1]["action"] if len(candidates) > 1 and directive.get("status") == "SINGLE_DIRECTIVE" else None,
     }

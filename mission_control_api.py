@@ -1237,6 +1237,22 @@ def _automation_revenue_dashboard():
     return automation_dashboard.build_automation_dashboard()
 
 
+def _strategic_intelligence_engine_report():
+    """Strategic Intelligence Engine, Revenue Mode (ADR-178, 2026-08-06):
+    the real, global, cross-niche 'what to build next' ranking this
+    factory never had -- every existing ranker only orders an already-
+    ACCEPTED portfolio (currently empty, 0 real ACCEPTED opportunities).
+    Bundles the directive's 8 named recommendation fields per real
+    candidate niche from goos.py's own real per-niche citation
+    (never a 2nd scoring engine), plus a genuinely new duplicate-
+    product-family check and an engineering-without-revenue check.
+    Passive-only -- never triggers a new live evaluation. Advisory
+    only; the real production gate (decision_engine ACCEPTED status +
+    profit_oracle.py's real 65/100 floor) is unchanged."""
+    import goos
+    return goos.strategic_intelligence_engine_report()
+
+
 def _market_domination_dashboard():
     """Global Market Domination Engine (ADR-175, 2026-08-05): real
     candidate discovery across all 6 real ladders (not automation-only)
@@ -2798,6 +2814,7 @@ _ENDPOINTS = {
     "truth_registry_report": _truth_registry_report,
     "brand_dna_report": _brand_dna_report,
     "goos_evaluate_opportunity": _goos_evaluate_opportunity,
+    "strategic_intelligence_engine_report": _strategic_intelligence_engine_report,
 }
 
 

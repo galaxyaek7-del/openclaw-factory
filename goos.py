@@ -281,3 +281,227 @@ def strategic_impact_score(niche):
         "note": "A disclosed avg of 2 already-real scores (GOOS's advisory score, ADR-171; Capital Allocation's extended Investment Score, ADR-165/176) -- never a 3rd independent computation. Honestly None if neither real component is available.",
         "generated_at": _now_iso(),
     }
+
+
+# -- Strategic Intelligence Engine, Revenue Mode (ADR-178, 2026-08-06) --
+#
+# The founder's "STRATEGIC INTELLIGENCE LAYER -- REVENUE MODE" directive
+# asks for a permanent engine that ranks opportunities GLOBALLY --
+# what to build next, why it beats the alternatives, evidence,
+# realistic revenue, difficulty, defensibility, copyability, customer
+# pain, underserved market, what to ignore -- rejecting anything that
+# duplicates existing capability or creates engineering work without
+# revenue, integrated permanently into the Executive Brain, feeding the
+# production pipeline.
+#
+# Research before writing code found every one of the 10 named
+# questions and 8 named recommendation fields already has a real,
+# citable answer scattered across this module's own evaluate_
+# dimensions()/goos_score(), profit_oracle.py, and capital_allocation_
+# engine.py. The one genuine, verified gap: nothing in this factory
+# ranks candidate niches AGAINST EACH OTHER -- every existing ranker
+# (scheduler.py, execution_status.py) only orders an already-ACCEPTED
+# portfolio, which is currently EMPTY (0 real ACCEPTED opportunities,
+# verified live via decision_engine.store as of 2026-08-06) -- and
+# nothing rejects a candidate niche/product specifically for
+# duplicating an existing product family or creating cost without
+# revenue (the two existing mechanical duplicate-checks in this
+# factory, evolution_queue.py's _duplicate_architecture_check() and
+# enterprise_executive_brain.py's _detect_duplicated_work(), both
+# operate on engineering proposals/department code overlap, never on
+# candidate products).
+#
+# "must directly feed the production pipeline" repeats the exact
+# tension this module's own docstring already resolved for GOOS itself
+# (ADR-171, confirmed via a real AskUserQuestion): advisory citation
+# into executive_brain.py's arbitration, never a second competing gate.
+# Applied directly here without a fresh AskUserQuestion -- the
+# identical question, for this identical module, has already been
+# asked and answered once; re-asking it again would be redundant, not
+# careful.
+#
+# Passive-only, same discipline as automation_opportunity_scanner.py's
+# own docstring: ranking never triggers a new live evaluation.
+# Candidate niches come from real decision_engine.store records (any
+# status -- DEFERRED/REJECTED niches are real, searchable
+# reconsideration candidates per store.find_decisions_by_niche()'s own
+# contract) plus automation_opportunity_scanner.py's real static seed
+# list (ladders=None, ADR-175) for niches never evaluated at all.
+
+def _confidence_from_coverage(dimensions_scored, dimensions_total):
+    """Disclosed heuristic label, same class as executive_brain.py's own
+    _confidence_estimate() -- never a fabricated precision number."""
+    if not dimensions_total:
+        return "n/a"
+    ratio = dimensions_scored / dimensions_total
+    if ratio >= 0.6:
+        return "high"
+    if ratio >= 0.3:
+        return "medium"
+    return "low"
+
+
+def _is_real_value(value):
+    """A real, disclosed heuristic for 'this dimension actually has a
+    citable real value' -- excludes Unknown/NOT_MEASURABLE and the
+    pointer-only strings evaluate_dimensions() uses for checks that
+    exist but weren't re-queried here."""
+    if isinstance(value, (int, float)):
+        return True
+    if isinstance(value, str):
+        return value not in ("Unknown", NOT_MEASURABLE) and not value.startswith(("NOT_", "see "))
+    return False
+
+
+def _candidate_evidence_and_fields(niche, snapshot):
+    """The directive's 8 required per-recommendation fields (confidence
+    score, evidence sources, expected ROI, competition score,
+    difficulty, time to first revenue, long-term recurring potential,
+    strategic importance), bundled from this module's own real
+    evaluate_dimensions()/goos_score() -- never a 9th, competing
+    scoring computation."""
+    dims_result = evaluate_dimensions(niche, snapshot=snapshot)
+    score_result = goos_score(niche, snapshot=snapshot)
+    dims = dims_result.get("dimensions", {})
+
+    evidence_sources = sorted({
+        d["source"] for d in dims.values() if _is_real_value(d.get("value"))
+    })
+
+    return {
+        "confidence_score": _confidence_from_coverage(score_result.get("dimensions_scored"), score_result.get("dimensions_total")),
+        "evidence_sources": evidence_sources,
+        "expected_roi": dims.get("profitability", {"value": "Unknown"}),
+        "competition_score": dims.get("competition_level", {"value": "Unknown"}),
+        "difficulty": dims.get("development_complexity", {"value": "Unknown"}),
+        "time_to_first_revenue": dims.get("time_to_mvp", {"value": "Unknown"}),
+        "long_term_recurring_potential": dims.get("recurring_revenue_potential", {"value": "Unknown"}),
+        "strategic_importance": dims.get("strategic_fit", {"value": "Unknown"}),
+        "goos_advisory_score": score_result.get("score"),
+        "score_status": score_result.get("status"),
+    }
+
+
+def _duplicates_existing_family(ladder, family_distribution):
+    """Real, mechanical duplicate-capability check at the candidate-
+    PRODUCT level -- genuinely new (the 2 existing duplicate-checks in
+    this factory both operate on engineering proposals, never
+    products). Cites global_opportunity_exchange.product_family_
+    distribution()'s own real Counter over ACCEPTED decisions -- never
+    a second concentration computation."""
+    from product_families.mapping import resolve_product_family
+
+    family = resolve_product_family(ladder)
+    if not family:
+        return {"duplicates_existing_family": False, "reason": f"لا عائلة منتج معروفة لـ ladder={ladder!r} -- لا فحص تكرار ممكن"}
+    if family_distribution.get("answer") == "NOT ENOUGH EVIDENCE":
+        return {"duplicates_existing_family": False, "family": family,
+                "reason": "لا محفظة ACCEPTED حقيقية بعد للمقارنة -- لا تكرار قابل للاكتشاف اليوم"}
+    distribution = family_distribution.get("distribution", {})
+    if family in distribution:
+        return {"duplicates_existing_family": True, "family": family,
+                "reason": f"عائلة المنتج '{family}' موجودة فعلاً في {distribution[family]['count']} قرار ACCEPTED حقيقي ({distribution[family]['pct']}%)",
+                "source": "global_opportunity_exchange.product_family_distribution()"}
+    return {"duplicates_existing_family": False, "family": family,
+            "reason": f"عائلة المنتج '{family}' غير ممثَّلة بعد في المحفظة الحقيقية ACCEPTED"}
+
+
+def _engineering_without_revenue(niche, snapshot):
+    """Only computable post-acceptance -- real engineering_cost/
+    expected_revenue both need a real ACCEPTED decision's value_engine
+    profile. Honestly Unknown pre-acceptance -- never a fabricated
+    rejection off a guessed cost/revenue pair."""
+    if snapshot.get("status") != "ACCEPTED":
+        return {"engineering_without_revenue": "Unknown", "reason": "يتطلب فحصاً حقيقياً بعد قرار ACCEPTED فعلي -- لا يُخمَّن قبل ذلك"}
+    import capital_allocation_engine as cae
+    investment = cae.investment_score(niche)
+    cost = investment.get("engineering_cost", {}).get("value")
+    revenue = investment.get("expected_revenue", {}).get("value")
+    if not isinstance(cost, (int, float)) or not isinstance(revenue, (int, float)):
+        return {"engineering_without_revenue": "Unknown", "reason": "تكلفة الهندسة و/أو الإيراد المتوقع غير مسجَّلين بعد كرقمين حقيقيين"}
+    flagged = cost > 0 and revenue <= 0
+    return {"engineering_without_revenue": flagged, "engineering_cost": cost, "expected_revenue": revenue,
+            "source": "capital_allocation_engine.investment_score()"}
+
+
+def rank_build_candidates(decisions_path=None, top_n=10):
+    """The one genuine gap: global ranking of candidate niches AGAINST
+    EACH OTHER -- not just within an ACCEPTED portfolio (which
+    scheduler.py/execution_status.py already rank, and which is
+    currently empty). Real candidate sources only, both passive: every
+    niche with a real decision_engine record (any status), plus
+    automation_opportunity_scanner.py's real static seed list for
+    niches never evaluated at all. Never triggers a new live
+    evaluation -- reads only decision_engine.store and market_hunter.
+    SEED_CATEGORIES, the same passive discipline automation_
+    opportunity_scanner.py's own docstring establishes."""
+    from decision_engine import store
+    import automation_opportunity_scanner as scanner
+    import global_opportunity_exchange as gox
+
+    latest = store.latest_decision_per_niche(decisions_path)
+    family_distribution = gox.product_family_distribution(decisions_path)
+
+    scored, not_yet_scorable = [], []
+    for decision in latest.values():
+        niche = decision.get("niche")
+        ladder = decision.get("ladder")
+        fields = _candidate_evidence_and_fields(niche, decision)
+        duplicate_check = _duplicates_existing_family(ladder, family_distribution)
+        revenue_check = _engineering_without_revenue(niche, decision)
+        prior_status = decision.get("status")
+        entry = {
+            "niche": niche, "ladder": ladder, "prior_status": prior_status,
+            "decided_at": decision.get("decided_at"),
+            **fields,
+            "duplicate_check": duplicate_check,
+            "engineering_without_revenue_check": revenue_check,
+            "reject_recommended": (
+                bool(duplicate_check.get("duplicates_existing_family"))
+                or revenue_check.get("engineering_without_revenue") is True
+                or prior_status == "REJECTED"
+            ),
+        }
+        if isinstance(fields.get("goos_advisory_score"), (int, float)):
+            scored.append(entry)
+        else:
+            entry["reason"] = fields.get("score_status")
+            not_yet_scorable.append(entry)
+
+    seen_niches = {store._normalize_key(d.get("niche")) for d in latest.values()}
+    never_evaluated = [
+        {
+            "niche": seed["niche"], "ladder": seed["ladder"], "prior_status": "NEVER_EVALUATED",
+            "source": seed["source"],
+            "reason": "لم يُقيَّم عبر decision_engine قط -- يحتاج تقييماً حقيقياً قبل ترتيبه برقم حقيقي، لا تخمين",
+        }
+        for seed in scanner._seed_candidates(ladders=None)
+        if store._normalize_key(seed["niche"]) not in seen_niches
+    ]
+
+    scored.sort(key=lambda e: e["goos_advisory_score"], reverse=True)
+
+    return {
+        "build_next": [e for e in scored if not e["reject_recommended"]][:top_n],
+        "ignore": [e for e in scored if e["reject_recommended"]],
+        "not_yet_scorable": not_yet_scorable,
+        "never_evaluated": never_evaluated[:top_n],
+        "total_real_candidates": len(latest) + len(never_evaluated),
+        "real_accepted_portfolio_size": sum(1 for d in latest.values() if d.get("status") == "ACCEPTED"),
+        "generated_at": _now_iso(),
+    }
+
+
+def strategic_intelligence_engine_report(decisions_path=None, top_n=10):
+    """The one real aggregator the directive asked for -- 'what should
+    be built next,' as a permanent, re-runnable report. Feeds
+    executive_brain.py's arbitration as an advisory citation only; the
+    real production gate is unchanged (see note below and this
+    module's own header)."""
+    ranking = rank_build_candidates(decisions_path=decisions_path, top_n=top_n)
+    return {
+        "ranking": ranking,
+        "real_production_gate": "unchanged -- decision_engine's own real ACCEPTED/REJECTED/DEFERRED status, profit_oracle.py's real 65/100 weighted floor. This report never gates or triggers production itself.",
+        "note": "Advisory-only global ranking layer -- same resolution as goos_score() (ADR-171, confirmed via AskUserQuestion) applied directly to this identical 'must feed the pipeline' tension without re-asking.",
+        "generated_at": _now_iso(),
+    }
