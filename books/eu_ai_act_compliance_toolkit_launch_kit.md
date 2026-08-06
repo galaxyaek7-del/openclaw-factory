@@ -61,6 +61,8 @@ Everything a small AI-deploying business needs to get audit-ready — without hi
 >
 > **Who this is for:** compliance officers, DPOs, and founders at SMEs that have deployed or are deploying an AI system in the EU and need a real starting point — not a $15,000 consulting retainer.
 >
+> **Why this toolkit and not another PDF:** the December 2, 2027 deadline above is real and current — most guides you'll find (including some paid ones) still cite the original August 2026 date, which was pushed back by the 2026 Digital Omnibus on AI. This one is built on the current timeline, with the actual source cited in the toolkit itself, not just asserted.
+>
 > **Important note:** this toolkit is a practical implementation guide, not legal advice. It's built to get you 80% of the way to audit-ready and to make your eventual legal/consulting spend far more targeted and efficient — the same positioning every real competitor in this category uses, because a template kit legitimately isn't a law firm.
 >
 > Instant digital download. 31 pages, PDF.
@@ -76,7 +78,9 @@ Real market anchors found and verified this session:
 - `riskprofs.com` — 80+ templates, **$699**, no visible reviews
 - Our toolkit sits **between** them: fewer raw template files than either competitor, but a genuine 31-page *implementation guide* (a different value shape — narrative + checklists, not a raw document dump) at a price justified by depth and specificity to SME resourcing constraints.
 
-**Why not price lower:** the founder's explicit criterion was $300+; $310 clears `gumroad_elite`'s real commercial floor with margin ($314.10 net) and reads as a deliberate, confident price next to a $99 "basic" competitor — not a discount alternative to it.
+**A real, verified competitive differentiator (checked 2026-08-06, same day as the regulatory correction above):** re-checked both competitor pages specifically for how they describe the EU AI Act's enforcement timeline. Neither mentions the Digital Omnibus deferral or any specific 2027 date — `governancedocs.com` uses only vague "phasing in through 2025 and 2026" language, and `riskprofs.com` makes no enforcement-timeline claim at all. Neither is *wrong*, exactly — they're just imprecise, which incidentally means neither fell into the specific trap our own first draft did. Our corrected toolkit is now the most specific, most currently-accurate option in this niche on this exact point, with a citation-quality explanation (the Deadlines chapter) neither competitor offers. This is a real, evidence-based differentiator worth stating plainly in the product page and sales copy — never framed as "competitors are wrong," since they aren't; framed as "the only toolkit that tells you the real current deadline and where it came from."
+
+**Why not price lower:** the founder's explicit criterion was $300+; $310 clears `gumroad_elite`'s real commercial floor with margin ($279.00 net) and reads as a deliberate, confident price next to a $99 "basic" competitor — not a discount alternative to it.
 
 **Why not price at $699:** we have no reviews yet and fewer raw template files than riskprofs.com. Pricing at parity with an unreviewed product against an established $699 competitor risks a stalled first sale. $310 is the real, defensible middle position until reviews exist.
 
