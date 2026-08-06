@@ -137,15 +137,18 @@ def _risk_level(active_alerts):
     return {"level": worst["severity"], "evidence": worst}
 
 
-def _candidate_directives(brief, gox, cap, evo_queue, sie=None):
+def _candidate_directives(brief, gox, cap, evo_queue, sie=None, commercial_kits=None):
     """Real candidate actions pulled from already-computed real signals
     only -- never invented. Each candidate cites the exact real
     function/field it came from. `sie` (Strategic Intelligence Engine,
-    ADR-178, 2026-08-06) defaults to None/{} so every pre-existing
-    caller (enterprise_executive_brain.py, tests/test_executive_brain.py)
-    keeps working unchanged -- the same optional-injection convention
-    brief/gox/cap already use elsewhere in this factory."""
+    ADR-178, 2026-08-06) and `commercial_kits` (Commercial Execution
+    Engine v1, ADR-180, 2026-08-06) both default to None/{} so every
+    pre-existing caller (enterprise_executive_brain.py, tests/
+    test_executive_brain.py) keeps working unchanged -- the same
+    optional-injection convention brief/gox/cap already use elsewhere
+    in this factory."""
     sie = sie or {}
+    commercial_kits = commercial_kits or {}
     candidates = []
 
     for alert in brief["top_risks"].get("resilience_active_alerts", []):
@@ -193,6 +196,21 @@ def _candidate_directives(brief, gox, cap, evo_queue, sie=None):
             "action": f"تقييم/إعادة نظر في أعلى فرصة حقيقية مُرتَّبة عالمياً: {top_candidate.get('niche')} (نتيجة GOOS استشارية: {top_candidate.get('goos_advisory_score')})",
             "evidence": top_candidate,
             "source": "goos.rank_build_candidates() (Strategic Intelligence Engine, ADR-178)",
+        })
+
+    # Commercial Execution Engine v1 (ADR-180, 2026-08-06): a real
+    # ACCEPTED opportunity with no commercial launch kit generated yet
+    # is a genuine "ready to sell, not yet packaged" gap -- Tier 3
+    # (Premium Product Creation), advisory only, never auto-generated
+    # from inside the Brain itself (product_marketing_engine.py's own
+    # generate_pending_commercial_kits() is the real generator, wired
+    # into factory_loop.js's daily tick, not called from here).
+    if commercial_kits.get("remaining_pending"):
+        candidates.append({
+            "tier": 3, "tier_name": PRIORITY_TIERS[3],
+            "action": f"توليد حزمة تسويق تجارية حقيقية لـ {commercial_kits.get('remaining_pending')} فرصة ACCEPTED بلا حزمة بعد",
+            "evidence": {"remaining_pending": commercial_kits.get("remaining_pending"), "total_accepted": commercial_kits.get("total_accepted")},
+            "source": "product_marketing_engine.generate_pending_commercial_kits() (Commercial Execution Engine v1, ADR-180)",
         })
 
     for item in cap.get("top_roi_initiatives", [])[:1]:
@@ -325,6 +343,7 @@ def build_executive_directive(decisions_path=None, board_path=None, alerts_path=
     import capital_allocation_engine
     import evolution_queue
     import goos
+    import product_marketing_engine
     from channels import ledger as sales_ledger
 
     brief = strategic_intelligence_core.build_executive_brief(
@@ -345,9 +364,10 @@ def build_executive_directive(decisions_path=None, board_path=None, alerts_path=
     evo_queue = evolution_queue.list_evolution_queue(state_path=evolution_queue_state_path)
     revenue = sales_ledger.revenue_trend(ledger_path=sales_ledger_path)
     sie = goos.strategic_intelligence_engine_report(decisions_path=decisions_path, top_n=1)
+    commercial_kits = product_marketing_engine.pending_commercial_kits_status(decisions_path=decisions_path)
 
     active_alerts = brief["top_risks"].get("resilience_active_alerts", [])
-    candidates = _candidate_directives(brief, gox, cap, evo_queue, sie)
+    candidates = _candidate_directives(brief, gox, cap, evo_queue, sie, commercial_kits)
     directive = _arbitrate(candidates)
 
     now = _now_iso()
@@ -390,6 +410,11 @@ def build_executive_directive(decisions_path=None, board_path=None, alerts_path=
             "real_accepted_portfolio_size": sie.get("ranking", {}).get("real_accepted_portfolio_size"),
             "total_real_candidates": sie.get("ranking", {}).get("total_real_candidates"),
             "source": "goos.strategic_intelligence_engine_report() (ADR-178)",
+        },
+        "commercial_execution_engine": {
+            "total_accepted": commercial_kits.get("total_accepted"),
+            "remaining_pending_kits": commercial_kits.get("remaining_pending"),
+            "source": "product_marketing_engine.pending_commercial_kits_status() (ADR-180) -- read-only, never generates from inside the Brain",
         },
         "current_mission": directive.get("action") if directive.get("status") == "SINGLE_DIRECTIVE" else None,
         "next_mission": candidates[1]["action"] if len(candidates) > 1 and directive.get("status") == "SINGLE_DIRECTIVE" else None,

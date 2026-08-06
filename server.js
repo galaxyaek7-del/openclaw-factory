@@ -1535,6 +1535,18 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('business_pipeline_summary'),
   },
   {
+    // Commercial Execution Engine v1 (ADR-180, 2026-08-06): read-only
+    // ledger passthrough -- real generation happens exclusively in
+    // factory_loop.js's daily tick (maybeGenerateCommercialKitsForNew
+    // AcceptedDecisions()) or via a real founder-triggered run; this
+    // panel never generates anything itself.
+    name: 'generated-commercial-kits',
+    description: "Real, append-only record of every commercial launch kit this factory has auto-generated for a real ACCEPTED opportunity (product positioning, pricing strategy, Gumroad/sales/landing page copy, SEO package, launch checklist, marketing assets, email + social campaigns, customer acquisition plan, continuous optimization plan) -- product_marketing_engine.py, most recent first.",
+    reused: 'product_marketing_engine.py::list_generated_commercial_kits()',
+    handler: (req) => runPythonServiceCached('list_generated_commercial_kits', [], req),
+    health: pythonHealthCheck('list_generated_commercial_kits'),
+  },
+  {
     name: 'execution-phases',
     description: "The real, company-wide 5-phase execution roadmap (orchestrator.types.EXECUTION_ORDER): market_intelligence -> decision -> production -> publishing -> learning, each with real per-stage engine health and a real, disclosed deterministic rollback plan (Dual Inspection quarantine, publish-protection emergency stop, etc.) -- never a fabricated task list this factory doesn't track.",
     reused: 'autonomous_business_builder.py::execution_phases()',

@@ -2497,6 +2497,79 @@ async function maybeGenerateBusinessBlueprintsForNewAcceptedDecisions(now = new 
   return { action: 'generated', detail: `تم توليد ${(result.generated || []).length} مخطط أعمال جديد (${generatedNiches}) — المتبقي: ${result.remaining_pending}` };
 }
 
+// ── COMMERCIAL EXECUTION ENGINE v1 (ADR-180, 2026-08-06) ──
+// Exact mirror of the Business Blueprint auto-generation pattern above:
+// every real ACCEPTED decision without an already-recorded real
+// commercial launch kit gets one, up to a small real batch per call
+// (each kit costs one real Groq call, generate_pending_commercial_kits()
+// itself dedups against data/generated_commercial_kits.jsonl) — this
+// wrapper only needs its own once-per-calendar-day gate so a
+// ~10-minute tick doesn't re-spawn Python for a cheap, already-empty diff.
+const COMMERCIAL_KIT_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.commercial_kit_daily_marker');
+
+function runGeneratePendingCommercialKits({ timeoutMs = 120000, pythonPath, limit = 2 } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'generate_pending_commercial_kits', JSON.stringify({ limit })], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة generate_pending_commercial_kits (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من generate_pending_commercial_kits' });
+          return;
+        }
+        finish({ ok: true, generated: result.generated, remaining_pending: result.remaining_pending });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج generate_pending_commercial_kits: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeGenerateCommercialKitsForNewAcceptedDecisions(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(COMMERCIAL_KIT_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم توليد حزم تسويق تجارية اليوم بالفعل (${today})` };
+  }
+  const result = await runGeneratePendingCommercialKits();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(path.dirname(COMMERCIAL_KIT_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(COMMERCIAL_KIT_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ علامة حزم التسويق: ${err.message}` };
+  }
+  const generatedNiches = (result.generated || []).map(g => g.niche).join(', ') || 'لا شيء';
+  return { action: 'generated', detail: `تم توليد ${(result.generated || []).length} حزمة تسويق تجارية جديدة (${generatedNiches}) — المتبقي: ${result.remaining_pending}` };
+}
+
 // ── CONTINUOUS TRUST & RESILIENCE MONITORING ──
 // resilience_monitor.py's assess_resilience() + record_incidents_for_
 // findings() in one call (mission_control_api.py's resilience_monitor_
@@ -3110,6 +3183,15 @@ async function runTick() {
 
   markStep('business_blueprint_generation');
   actions.push({ step: 'business_blueprint_generation', ...(await maybeGenerateBusinessBlueprintsForNewAcceptedDecisions()) });
+
+  // Commercial Execution Engine v1 (ADR-180, 2026-08-06): same real,
+  // capped, dedup'd auto-generation discipline as the business-blueprint
+  // step immediately above -- every real ACCEPTED decision without a
+  // commercial launch kit gets one automatically, never triggered from
+  // inside executive_brain.py itself (that only cites the real pending
+  // count, read-only).
+  markStep('commercial_kit_generation');
+  actions.push({ step: 'commercial_kit_generation', ...(await maybeGenerateCommercialKitsForNewAcceptedDecisions()) });
 
   // Continuous Trust & Resilience Monitoring (2026-07-29): runs every
   // tick, not daily-gated — this is meant to be the closest thing to

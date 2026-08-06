@@ -96,6 +96,27 @@ class TestCandidateDirectives(unittest.TestCase):
         for c in candidates:
             self.assertTrue(c.get("source"), "every candidate must cite a real source, never silent")
 
+    def test_pending_commercial_kits_becomes_tier_3_candidate(self):
+        """Commercial Execution Engine v1 (ADR-180, 2026-08-06)."""
+        brief, gox, cap, evo_queue = self._empty_inputs()
+        commercial_kits = {"total_accepted": 2, "generated": [], "remaining_pending": 2}
+        candidates = eb._candidate_directives(brief, gox, cap, evo_queue, commercial_kits=commercial_kits)
+        self.assertEqual(len(candidates), 1)
+        self.assertEqual(candidates[0]["tier"], 3)
+        self.assertIn("product_marketing_engine", candidates[0]["source"])
+
+    def test_zero_pending_commercial_kits_is_no_candidate(self):
+        brief, gox, cap, evo_queue = self._empty_inputs()
+        commercial_kits = {"total_accepted": 2, "generated": [{"niche": "a"}, {"niche": "b"}], "remaining_pending": 0}
+        candidates = eb._candidate_directives(brief, gox, cap, evo_queue, commercial_kits=commercial_kits)
+        self.assertEqual(candidates, [])
+
+    def test_missing_commercial_kits_param_is_backward_compatible(self):
+        """Pre-existing callers (enterprise_executive_brain.py) that don't
+        pass commercial_kits at all must keep working unchanged."""
+        candidates = eb._candidate_directives(*self._empty_inputs())
+        self.assertEqual(candidates, [])
+
 
 class TestArchitectureHealthCitation(unittest.TestCase):
     def test_missing_report_is_honest_none(self):
@@ -157,19 +178,21 @@ class TestBuildExecutiveDirectiveIntegration(unittest.TestCase):
             "founder_decisions_required": {"pending_decisions": [], "pending_evolution_proposals": [], "publish_emergency_stop": None},
         }
 
+    @patch("product_marketing_engine.pending_commercial_kits_status")
     @patch("goos.strategic_intelligence_engine_report")
     @patch("channels.ledger.revenue_trend")
     @patch("evolution_queue.list_evolution_queue")
     @patch("capital_allocation_engine.build_capital_allocation_dashboard")
     @patch("global_opportunity_exchange.build_global_opportunity_exchange_dashboard")
     @patch("strategic_intelligence_core.build_executive_brief")
-    def test_record_ledger_false_never_writes(self, mock_brief, mock_gox, mock_cap, mock_evo, mock_rev, mock_sie):
+    def test_record_ledger_false_never_writes(self, mock_brief, mock_gox, mock_cap, mock_evo, mock_rev, mock_sie, mock_kits):
         mock_brief.return_value = self._mock_brief()
         mock_gox.return_value = {"market_health": {}, "diversification_recommendations": []}
         mock_cap.return_value = {"top_roi_initiatives": []}
         mock_evo.return_value = {"awaiting_approval": [], "stage_distribution": {}}
         mock_rev.return_value = {"recent_7d_revenue_usd": 0, "trailing_daily_avg_usd": None, "note": None}
         mock_sie.return_value = {"ranking": {"build_next": [], "real_accepted_portfolio_size": 0, "total_real_candidates": 0}}
+        mock_kits.return_value = {"total_accepted": 0, "generated": [], "remaining_pending": 0}
 
         ledger_path = _temp_path()
         record = eb.build_executive_directive(ledger_path=ledger_path, record_ledger=False)
@@ -177,19 +200,21 @@ class TestBuildExecutiveDirectiveIntegration(unittest.TestCase):
         self.assertTrue(record["requires_founder_approval"], "must always require founder approval -- never auto-executes")
         self.assertFalse(os.path.exists(ledger_path), "record_ledger=False must never write to the permanent ledger")
 
+    @patch("product_marketing_engine.pending_commercial_kits_status")
     @patch("goos.strategic_intelligence_engine_report")
     @patch("channels.ledger.revenue_trend")
     @patch("evolution_queue.list_evolution_queue")
     @patch("capital_allocation_engine.build_capital_allocation_dashboard")
     @patch("global_opportunity_exchange.build_global_opportunity_exchange_dashboard")
     @patch("strategic_intelligence_core.build_executive_brief")
-    def test_record_ledger_true_writes_exactly_once(self, mock_brief, mock_gox, mock_cap, mock_evo, mock_rev, mock_sie):
+    def test_record_ledger_true_writes_exactly_once(self, mock_brief, mock_gox, mock_cap, mock_evo, mock_rev, mock_sie, mock_kits):
         mock_brief.return_value = self._mock_brief(alerts=[{"area": "test", "severity": "warning"}])
         mock_gox.return_value = {"market_health": {}, "diversification_recommendations": []}
         mock_cap.return_value = {"top_roi_initiatives": []}
         mock_evo.return_value = {"awaiting_approval": [], "stage_distribution": {}}
         mock_rev.return_value = {"recent_7d_revenue_usd": 0, "trailing_daily_avg_usd": None, "note": None}
         mock_sie.return_value = {"ranking": {"build_next": [], "real_accepted_portfolio_size": 0, "total_real_candidates": 0}}
+        mock_kits.return_value = {"total_accepted": 0, "generated": [], "remaining_pending": 0}
 
         ledger_path = _temp_path()
         record = eb.build_executive_directive(ledger_path=ledger_path, record_ledger=True)

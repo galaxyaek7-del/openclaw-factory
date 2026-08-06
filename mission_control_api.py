@@ -1503,6 +1503,28 @@ def _generate_pending_business_blueprints():
     return autonomous_business_builder.generate_pending_business_blueprints(limit=limit)
 
 
+def _generate_pending_commercial_kits():
+    """Commercial Execution Engine v1 (ADR-180, 2026-08-06): the real,
+    capped, idempotent autonomous-generation step -- every real ACCEPTED
+    decision without an already-recorded real commercial launch kit
+    gets one, up to a small batch per call (each kit costs one real
+    Groq call). Read-only/no-execution, safe for factory_loop.js's
+    daily tick. Reads an optional payload from sys.argv[2] for `limit`:
+    `python mission_control_api.py generate_pending_commercial_kits '{"limit":2}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    limit = payload.get("limit", 2)
+
+    import product_marketing_engine
+    return product_marketing_engine.generate_pending_commercial_kits(limit=limit)
+
+
+def _list_generated_commercial_kits():
+    """Mission Control read-model -- real ledger passthrough, most
+    recent first."""
+    import product_marketing_engine
+    return product_marketing_engine.list_generated_commercial_kits()
+
+
 def _evolution_queue_daily_cycle():
     """Autonomous Company Evolution Engine, Round 4 (2026-07-29): the one
     automatic path the founder approved -- intake real proposals, simulate
@@ -2754,6 +2776,8 @@ _ENDPOINTS = {
     "queue_draft_for_approval": _queue_draft_for_approval,
     "run_master_cycle": _run_master_cycle,
     "generate_pending_business_blueprints": _generate_pending_business_blueprints,
+    "generate_pending_commercial_kits": _generate_pending_commercial_kits,
+    "list_generated_commercial_kits": _list_generated_commercial_kits,
     "evolution_queue_daily_cycle": _evolution_queue_daily_cycle,
     "evolution_queue": _evolution_queue,
     "approve_evolution_proposal": _approve_evolution_proposal,
