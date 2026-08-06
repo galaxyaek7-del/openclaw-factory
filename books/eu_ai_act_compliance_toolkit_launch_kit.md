@@ -1,8 +1,10 @@
 # EU AI Act Compliance Toolkit — Commercial Launch Kit
 
 Product: `books/eu_ai_act_compliance_toolkit.pdf` (31 pages, real, technically + commercially validated)
-Price: **$310** | Channel: Gumroad (`gumroad_elite` tier, 90% royalty, net $314.10/unit)
+Price: **$310** | Channel: Gumroad (`gumroad_elite` tier, 90% royalty, net $279.00/unit)
 Status: MVP built and validated. Publishing blocked only on a real external gate (no live Gumroad credential / Paddle onboarding incomplete — founder action required).
+
+**Regulatory correction (2026-08-06):** a live regulatory check found the original content and every section below had been built around a claim that is no longer accurate — that EU AI Act high-risk system obligations reached full enforcement on August 2, 2026. Current, multi-source evidence (the European Commission's own official enforcement announcement, corroborated by independent law-firm analysis) indicates the 2026 Digital Omnibus on AI deferred that specific deadline to December 2, 2027, while only Article 50 transparency obligations (chatbot/deepfake disclosure) actually took effect August 2, 2026. Both the shipped PDF and every section below have been corrected to reflect this. This is disclosed with an honest caveat in the product itself: as of correction, the Digital Omnibus amendments were provisionally agreed but pending final formal adoption — treat any specific date as needing a live re-check before final reliance.
 
 No fabricated social proof anywhere in this document. This factory has 0 real sales and 0 real reviews for this product today — every placeholder below is labeled as a placeholder, never presented as real.
 
@@ -11,7 +13,7 @@ No fabricated social proof anywhere in this document. This factory has 0 real sa
 ## 1. Pre-Publication Checklist (do this the moment a channel is live)
 
 - [ ] Confirm Gumroad account is live and `GUMROAD_ACCESS_TOKEN` is set, **or** confirm Paddle checkout is enabled (`python scripts/check_paddle_checkout_status.py --json` — re-check live, don't trust yesterday's result)
-- [ ] Upload `books/eu_ai_act_compliance_toolkit.pdf` (137,952 bytes, 31 pages — verified non-corrupt, opens via pypdf, includes a real front-matter legal disclaimer)
+- [ ] Upload `books/eu_ai_act_compliance_toolkit.pdf` (139,121 bytes, 31 pages — verified non-corrupt, opens via pypdf, includes a real front-matter legal disclaimer and the corrected December 2027 regulatory timeline)
 - [ ] Upload cover `books/covers/eu_ai_act_compliance_toolkit_cover.png` (1600×2560, quality-checked)
 - [ ] Set price to $310.00 (validated: clears `gumroad_elite`'s $70 net floor and $10/page market-realism cap at 31 pages)
 - [ ] Paste product page copy from Section 2 below
@@ -34,9 +36,9 @@ Everything a small AI-deploying business needs to get audit-ready — without hi
 
 **Full description (Gumroad body):**
 
-> **The EU AI Act is now fully enforced. Most small AI companies still aren't ready.**
+> **The EU AI Act's transparency rules are already enforced. The high-risk deadline just moved to December 2027 — which means you have real runway, if you start now.**
 >
-> Full enforcement of high-risk AI system obligations hit on August 2, 2026. Penalties reach €35 million or 7% of global annual turnover — and most compliance consultancies charge five figures for a scoping engagement most SMEs can't afford or don't have time for.
+> As of August 2, 2026, EU AI Act transparency obligations (chatbot disclosure, deepfake labeling) are actively enforced. The bigger obligations — risk classification, technical documentation, conformity assessment for high-risk systems — were deferred by the 2026 Digital Omnibus on AI to December 2, 2027. That's real, genuine runway. It's also the exact reason to start now instead of month fourteen of sixteen: penalties for getting classification wrong once the deadline hits reach €35 million or 7% of global annual turnover, and most compliance consultancies charge five figures for a scoping engagement most SMEs can't afford or don't have time for.
 >
 > This 31-page toolkit gives you the practical, plain-English path through it — built for compliance officers, DPOs, and founders who need to move now, not after a two-week consulting sprint.
 >
@@ -110,10 +112,10 @@ Recommended primary: **#1** — it's the exact product name, includes the real t
 
 ## 7. Sales Copy (long-form, for the product page or a dedicated sales page)
 
-**Headline:** The EU AI Act is enforced. Your compliance program isn't. Fix that this week — not next quarter.
+**Headline:** The EU AI Act's high-risk deadline just moved to December 2027. That's real runway — and the reason to start now, not the reason to wait.
 
 **Opening (problem):**
-If your business has deployed an AI system that touches EU users, full enforcement of the EU AI Act's high-risk obligations began August 2, 2026. Penalties reach €35 million or 7% of global annual turnover — whichever is higher. Most compliance consultancies want a two-week scoping sprint before they'll even quote you, and their retainers start well into five figures. If you're a small or mid-sized team, you don't have that runway, and you don't have that budget.
+If your business has deployed an AI system that touches EU users: transparency obligations (chatbot disclosure, deepfake labeling) are enforced today, and the 2026 Digital Omnibus on AI pushed the high-risk system deadline — risk classification, documentation, conformity assessment — to December 2, 2027. Sixteen months sounds like plenty of time. It also means most SMEs will do nothing until month fourteen, then need a two-week consultancy scoping sprint they can't get on short notice, with retainers that start well into five figures. Penalties for getting classification wrong once the deadline arrives reach €35 million or 7% of global annual turnover — whichever is higher.
 
 **Agitation (real stakes, no exaggeration beyond what's cited):**
 The real risk isn't just the fine. It's misclassifying your own system — treating a high-risk AI deployment as "limited-risk" because nobody on your team has read Annex III closely enough to know the difference. That's the single most common, most expensive mistake this toolkit is built to prevent.
@@ -138,7 +140,7 @@ Get audit-ready this week for less than one hour of most compliance consultants'
 - Headline: "Get audit-ready for the EU AI Act — without a consultancy retainer"
 - Subhead: "The practical 31-page toolkit built for SME compliance officers, DPOs, and founders."
 - CTA button: "Get the Toolkit — $310"
-- Real urgency line (not fabricated scarcity): "Full enforcement began August 2, 2026."
+- Real urgency line (not fabricated scarcity): "Transparency rules are enforced today. The high-risk deadline is December 2, 2027 — real runway, not indefinite."
 
 **Section 2 — The problem**
 Three real, specific pain points: (1) misclassification risk under Annex III, (2) consultancy cost/timeline mismatch for SMEs, (3) no single source that translates the regulation into an operational checklist.
@@ -215,7 +217,7 @@ Recommendation: the founder (or a design tool like Canva) turns these copy block
 3. Direct/cold outreach to compliance officers at AI-deploying SMEs (Section 12)
 4. SEO — the Gumroad listing itself, optimized per Sections 4–6, is a real organic-search asset from day one
 
-**Core message across every channel:** "The deadline already passed. Most SMEs still aren't compliant. Here's a $310 starting point instead of a $15,000 retainer."
+**Core message across every channel:** "The high-risk deadline just moved to December 2027 — real runway, and the exact reason to start now instead of month fourteen. Here's a $310 starting point instead of a $15,000 retainer."
 
 **Budget:** $0 paid ads at launch — this factory has zero real customer-acquisition data yet; spending on ads before knowing real conversion rate would be guessing with money. Revisit paid channels only after organic traffic produces real conversion data (Section 15).
 
@@ -245,7 +247,7 @@ Given this factory has **zero existing email list, zero existing audience, and z
 >
 > Hi [Name],
 >
-> I noticed [Company] has an AI product live in the EU — with full enforcement of the Act's high-risk obligations now in effect, I imagine compliance is on your plate.
+> I noticed [Company] has an AI product live in the EU — with the high-risk obligations deadline now set for December 2027, I imagine compliance planning is on your radar even if it's not urgent yet.
 >
 > I put together a practical 31-page implementation toolkit (risk classification, technical documentation, audit-readiness checklist, 90-day SME roadmap) — built as a faster, cheaper starting point than a consultancy scoping engagement. $310, not legal advice, but genuinely useful before you talk to counsel.
 >
@@ -275,7 +277,7 @@ Given this factory has **zero existing email list, zero existing audience, and z
 **Primary channel: LinkedIn** (matches the buyer persona directly).
 
 **Post 1 — Launch announcement:**
-> The EU AI Act's high-risk obligations are now fully enforced (as of Aug 2, 2026). Most SMEs I talk to still haven't done a real risk classification of their AI systems.
+> The EU AI Act's high-risk deadline just moved to December 2027 (the 2026 Digital Omnibus on AI). Most SMEs I talk to are treating that as "later" — which means most of them will still be doing their first real risk classification in month fourteen of sixteen.
 >
 > I put together a 31-page practical toolkit — risk classification, technical documentation, conformity assessment, audit-readiness checklist, 90-day roadmap. Built for teams without an in-house compliance department. $310, link in comments.
 
