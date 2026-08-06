@@ -1172,6 +1172,17 @@ def _enterprise_capital_allocation_dashboard():
     return eca.build_enterprise_capital_allocation_dashboard()
 
 
+def _capital_decisions_report():
+    """Capital Allocation Engine: Investment Decisions & Portfolio
+    Balance (ADR-176, 2026-08-05): the real INVEST NOW/BUILD LATER/
+    EXPERIMENT/REJECT decision + written reasoning for every real niche
+    in scheduler.py's real buckets, portfolio balance by real ladder
+    character, and resource-optimization citation. A real relabeling of
+    already-real systems, never a second decision engine."""
+    import enterprise_capital_allocation as eca
+    return eca.build_capital_decisions_report()
+
+
 def _goos_evaluate_opportunity():
     """Galaxy Opportunity Operating System (ADR-171, 2026-08-05): the
     real 15-section Opportunity Intelligence Report + 20-dimension
@@ -2758,6 +2769,7 @@ _ENDPOINTS = {
     "automation_revenue_dashboard": _automation_revenue_dashboard,
     "market_domination_dashboard": _market_domination_dashboard,
     "enterprise_capital_allocation_dashboard": _enterprise_capital_allocation_dashboard,
+    "capital_decisions_report": _capital_decisions_report,
     "truth_registry_report": _truth_registry_report,
     "brand_dna_report": _brand_dna_report,
     "goos_evaluate_opportunity": _goos_evaluate_opportunity,

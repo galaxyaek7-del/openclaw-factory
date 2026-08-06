@@ -133,5 +133,121 @@ class TestBuildDashboard(unittest.TestCase):
             self.assertIn(field, result)
 
 
+class TestForwardLookingDimensions(unittest.TestCase):
+    """Capital Allocation Engine: Investment Decisions & Portfolio Balance (ADR-176, 2026-08-05)."""
+
+    def test_all_3_are_honestly_not_measurable(self):
+        result = eca._forward_looking_dimensions("some niche")
+        self.assertEqual(result["expected_monthly_revenue"]["value"], eca.NOT_MEASURABLE)
+        self.assertEqual(result["expected_annual_revenue"]["value"], eca.NOT_MEASURABLE)
+        self.assertEqual(result["time_to_first_sale"]["value"], eca.NOT_MEASURABLE)
+
+    def test_never_derives_annual_from_monthly(self):
+        result = eca._forward_looking_dimensions("some niche")
+        self.assertIn("fabricated projection", result["expected_annual_revenue"]["reason"])
+
+
+class TestCustomerTrustImpact(unittest.TestCase):
+    def test_no_text_is_honestly_unknown(self):
+        result = eca.customer_trust_impact(None)
+        self.assertEqual(result["value"], "UNKNOWN")
+
+    def test_deceptive_text_fails(self):
+        result = eca.customer_trust_impact("Only 2 left! Hurry, offer ends soon!")
+        self.assertEqual(result["value"], "FAIL")
+        self.assertIn("fake_urgency", result["failed_checks"])
+
+    def test_honest_text_passes(self):
+        result = eca.customer_trust_impact("This guide covers automation setup steps.")
+        self.assertEqual(result["value"], "PASS")
+
+
+class TestCompoundingValue(unittest.TestCase):
+    def test_real_average_of_2_existing_dimensions(self):
+        score = {"knowledge_reuse": {"value": 80}, "long_term_asset_value": {"value": 60}}
+        result = eca.compounding_value(extended_score=score)
+        self.assertEqual(result["value"], 70.0)
+
+    def test_missing_numeric_dims_is_honestly_not_measurable(self):
+        score = {"knowledge_reuse": {"value": "Unknown"}, "long_term_asset_value": {"value": 60}}
+        result = eca.compounding_value(extended_score=score)
+        self.assertEqual(result["value"], eca.NOT_MEASURABLE)
+
+    def test_no_input_at_all_is_honestly_not_measurable(self):
+        result = eca.compounding_value()
+        self.assertEqual(result["value"], eca.NOT_MEASURABLE)
+
+
+class TestCapitalDecision(unittest.TestCase):
+    _FAKE_BUCKETS = {
+        "run_now": [{"niche": "invest-me", "reason": "top priority"}],
+        "accelerate": [{"niche": "accelerate-me", "reason": "market signal"}],
+        "wait": [{"niche": "wait-high-conf", "reason": "queued"}, {"niche": "wait-low-conf", "reason": "queued"}],
+        "cancel": [{"niche": "cancel-me", "reason": "rejected"}],
+        "stop": [{"niche": "stop-me", "reason": "flagged"}],
+    }
+
+    def test_run_now_and_accelerate_map_to_invest_now(self):
+        sched = {"buckets": self._FAKE_BUCKETS}
+        self.assertEqual(eca.capital_decision("invest-me", scheduler_result=sched)["decision"], eca.DECISION_INVEST_NOW)
+        self.assertEqual(eca.capital_decision("accelerate-me", scheduler_result=sched)["decision"], eca.DECISION_INVEST_NOW)
+
+    def test_cancel_and_stop_map_to_reject(self):
+        sched = {"buckets": self._FAKE_BUCKETS}
+        self.assertEqual(eca.capital_decision("cancel-me", scheduler_result=sched)["decision"], eca.DECISION_REJECT)
+        self.assertEqual(eca.capital_decision("stop-me", scheduler_result=sched)["decision"], eca.DECISION_REJECT)
+
+    def test_wait_with_low_confidence_is_experiment(self):
+        sched = {"buckets": self._FAKE_BUCKETS}
+        fake_record = {"evaluation_snapshot": {"confidence": {"level": "low"}}}
+        result = eca.capital_decision("wait-low-conf", scheduler_result=sched, decision_record=fake_record)
+        self.assertEqual(result["decision"], eca.DECISION_EXPERIMENT)
+
+    def test_wait_with_high_confidence_is_build_later(self):
+        sched = {"buckets": self._FAKE_BUCKETS}
+        fake_record = {"evaluation_snapshot": {"confidence": {"level": "high"}}}
+        result = eca.capital_decision("wait-high-conf", scheduler_result=sched, decision_record=fake_record)
+        self.assertEqual(result["decision"], eca.DECISION_BUILD_LATER)
+
+    def test_niche_not_in_any_bucket_is_honestly_none(self):
+        sched = {"buckets": self._FAKE_BUCKETS}
+        result = eca.capital_decision("not-a-real-niche", scheduler_result=sched)
+        self.assertIsNone(result["decision"])
+
+
+class TestPortfolioBalance(unittest.TestCase):
+    def test_never_fabricates_risk_maturity_buckets(self):
+        result = eca.portfolio_balance()
+        self.assertEqual(result["high_risk_innovations"], eca.NOT_MEASURABLE)
+        self.assertEqual(result["stable_cash_flow_products"], eca.NOT_MEASURABLE)
+        self.assertEqual(result["long_term_strategic_assets"], eca.NOT_MEASURABLE)
+
+    def test_real_call_never_throws(self):
+        result = eca.portfolio_balance()
+        self.assertIn("real_accepted_portfolio_size", result)
+        self.assertIn("by_character", result)
+
+
+class TestResourceOptimizationRecommendation(unittest.TestCase):
+    def test_next_hour_cites_the_same_today_bucket_as_next_day(self):
+        result = eca.resource_optimization_recommendation()
+        self.assertEqual(result["next_hour"]["value"], result["next_day"])
+
+
+class TestSelfImprovementSources(unittest.TestCase):
+    def test_cites_real_sources_never_a_4th_learning_loop(self):
+        sources = eca.self_improvement_sources()
+        self.assertIn("recalibration_report", sources["successful_and_failed_launches"])
+        self.assertIn("measure_outcome", sources["outcome_tracking"])
+        self.assertIn("never a second, parallel learning loop", sources["note"])
+
+
+class TestBuildCapitalDecisionsReport(unittest.TestCase):
+    def test_real_call_against_real_data_never_throws(self):
+        report = eca.build_capital_decisions_report()
+        for key in ("decisions", "portfolio_balance", "resource_optimization", "self_improvement_sources"):
+            self.assertIn(key, report)
+
+
 if __name__ == "__main__":
     unittest.main()

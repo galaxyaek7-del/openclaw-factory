@@ -1349,6 +1349,18 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('enterprise_capital_allocation_dashboard'),
   },
   {
+    // Capital Allocation Engine: Investment Decisions & Portfolio
+    // Balance (ADR-176, 2026-08-05) -- the same name as ADR-139/165,
+    // both already real. 17 of 20 named dimensions already covered;
+    // the INVEST NOW/BUILD LATER/EXPERIMENT/REJECT output is a real
+    // relabeling of scheduler.py's already-real 5 buckets.
+    name: 'capital-decisions-report',
+    description: "Real INVEST NOW/BUILD LATER/EXPERIMENT/REJECT decision + written reasoning for every real niche in scheduler.py's real buckets (run_now/accelerate -> INVEST NOW, cancel/stop -> REJECT, wait split into BUILD LATER/EXPERIMENT by the niche's own real decision-confidence level). Portfolio Balance by real ladder character (recurring income vs one-time sales; high-risk/stable/long-term-strategic honestly NOT_MEASURABLE -- no real per-niche risk-maturity signal exists). Resource optimization citing strategic_planning.py's real rolling roadmap. Expected Monthly/Annual Revenue and Time to First Sale are honestly NOT_MEASURABLE as forward projections (this factory's real 'expected_revenue' is retrospective closed-sale revenue to date, never a forecast -- multiplying it by 12 would be a fabricated projection). Customer Trust Impact and Compounding Value cite brand_dna.py's Trust Framework and a real combination of 2 already-real Investment Score dimensions, respectively.",
+    reused: 'enterprise_capital_allocation.py::build_capital_decisions_report() (ADR-176) + scheduler.py + strategic_planning.py + brand_dna.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('capital_decisions_report', [], req, 60000),
+    health: pythonHealthCheck('capital_decisions_report'),
+  },
+  {
     // Enterprise Truth Registry (ADR-168, 2026-07-31): the real,
     // mechanical per-component inventory over all ~246 real internal
     // Python modules -- name/category/purpose/location/owner/

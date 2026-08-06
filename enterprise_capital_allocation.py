@@ -222,3 +222,200 @@ def build_enterprise_capital_allocation_dashboard(decisions_path=None, board_pat
         "portfolio_size": base_dashboard["portfolio_size"],
         "generated_at": _now_iso(),
     }
+
+
+# -- Capital Allocation Engine: Investment Decisions and Portfolio Balance (ADR-176, 2026-08-05) --
+# Founder's "Capital Allocation Engine" directive -- the same name as
+# ADR-139/ADR-165, both already real. Research found 17 of 20 named
+# dimensions already covered (14 from capital_allocation_engine.py +
+# 3 from this module's own extended_investment_score()); only 3
+# genuinely missing: Expected Monthly/Annual Revenue and Time to First
+# Sale as FORWARD projections (the real "expected_revenue" field this
+# factory has is retrospective -- real closed-sale revenue TO DATE,
+# never a forecast, per extended_investment_score()'s own docstring --
+# multiplying it by 12 would be a fabricated projection dressed as real
+# data); Customer Trust Impact (no prior citation); Compounding Value
+# (no prior citation). The directive's own 4-value decision output
+# (INVEST NOW/BUILD LATER/EXPERIMENT/REJECT) is a real relabeling of
+# scheduler.py's already-real 5 buckets, never a second decision engine.
+
+NOT_MEASURABLE = "NOT_MEASURABLE"
+
+DECISION_INVEST_NOW = "INVEST NOW"
+DECISION_BUILD_LATER = "BUILD LATER"
+DECISION_EXPERIMENT = "EXPERIMENT"
+DECISION_REJECT = "REJECT"
+
+
+def _forward_looking_dimensions(niche):
+    """Expected Monthly Revenue / Expected Annual Revenue / Time to
+    First Sale -- all 3 honestly NOT_MEASURABLE as forward projections.
+    This factory's real 'expected_revenue' field (capital_allocation_
+    engine.py) is retrospective (real closed-sale revenue to date,
+    currently $0 for every niche) -- citing it as a forward monthly/
+    annual figure, or deriving one by multiplying by 12, would be a
+    fabricated projection, forbidden by this factory's own Truth First
+    Constitution (ADR-160)."""
+    return {
+        "expected_monthly_revenue": {"value": NOT_MEASURABLE, "reason": "No real forward-revenue-forecasting signal exists anywhere in this factory -- the real expected_revenue field is retrospective (real closed-sale revenue to date), never a forecast."},
+        "expected_annual_revenue": {"value": NOT_MEASURABLE, "reason": "Same real limitation -- deriving this by multiplying a retrospective figure by 12 would be a fabricated projection, not a real one."},
+        "time_to_first_sale": {"value": NOT_MEASURABLE, "reason": "No real historical per-niche time-to-first-sale data exists anywhere in this factory (same disclosed-gap class as execution_status.py's own estimated_completion: Unknown)."},
+    }
+
+
+def customer_trust_impact(text=None):
+    """Real citation of brand_dna.py's Trust Framework (ADR-170) --
+    never a second trust-scoring mechanism. Honestly Unknown without
+    real product-facing text to check."""
+    if not text:
+        return {"value": "UNKNOWN", "reason": "no real product-facing text supplied for this check", "source": "brand_dna.py::validate_customer_facing_text() (ADR-170)"}
+    import brand_dna
+    result = brand_dna.validate_customer_facing_text(text)
+    return {"value": "PASS" if result["passed"] else "FAIL", "failed_checks": result["failed_checks"], "source": "brand_dna.py::validate_customer_facing_text() (ADR-170)"}
+
+
+def compounding_value(extended_score=None, niche=None):
+    """Real, disclosed combination of 2 already-real dimensions --
+    knowledge_reuse (does this asset make future work cheaper) and
+    long_term_asset_value (does it keep producing value after launch).
+    Never a new, independent scoring computation -- 'compounding' is a
+    real property of these 2 existing signals together, not a 3rd one."""
+    if extended_score is None:
+        if not niche:
+            return {"value": NOT_MEASURABLE, "reason": "no real niche or extended_score supplied"}
+        extended_score = extended_investment_score(niche)
+    knowledge_reuse = extended_score.get("knowledge_reuse", {}).get("value")
+    long_term = extended_score.get("long_term_asset_value", {}).get("value")
+    if not isinstance(knowledge_reuse, (int, float)) or not isinstance(long_term, (int, float)):
+        return {"value": NOT_MEASURABLE, "reason": "knowledge_reuse or long_term_asset_value has no real numeric value for this niche", "source": "extended_investment_score()'s own real dimensions"}
+    return {"value": round((knowledge_reuse + long_term) / 2, 1), "source": "avg(knowledge_reuse, long_term_asset_value) -- a disclosed, real combination of 2 already-real dimensions, never a 3rd independent computation"}
+
+
+def capital_decision(niche, scheduler_result=None, decision_record=None):
+    """The directive's own required output: one of INVEST NOW/BUILD
+    LATER/EXPERIMENT/REJECT + written reasoning. A real relabeling of
+    scheduler.py::decide_next_actions()'s already-real 5 buckets --
+    run_now/accelerate -> INVEST NOW, cancel/stop -> REJECT. EXPERIMENT
+    is the one genuinely new distinction: within the real 'wait' bucket,
+    a niche whose own real decision-confidence level is low/medium is
+    tagged EXPERIMENT (worth a small, cheap real test) rather than
+    BUILD LATER (already confident, just queued) -- a real, disclosed
+    heuristic over the real confidence field decision_engine already
+    computes, never a fabricated distinction."""
+    import scheduler
+    from decision_engine import store
+
+    if scheduler_result is None:
+        scheduler_result = scheduler.decide_next_actions()
+    buckets = scheduler_result["buckets"]
+
+    for entry in buckets.get("cancel", []) + buckets.get("stop", []):
+        if entry["niche"] == niche:
+            return {"decision": DECISION_REJECT, "reasoning": entry["reason"], "source": "scheduler.py::decide_next_actions()"}
+    for entry in buckets.get("run_now", []) + buckets.get("accelerate", []):
+        if entry["niche"] == niche:
+            return {"decision": DECISION_INVEST_NOW, "reasoning": entry["reason"], "source": "scheduler.py::decide_next_actions()"}
+    for entry in buckets.get("wait", []):
+        if entry["niche"] == niche:
+            if decision_record is None:
+                records = store.find_decisions_by_niche(niche)
+                decision_record = records[-1] if records else None
+            confidence_level = ((decision_record or {}).get("evaluation_snapshot") or {}).get("confidence", {}).get("level")
+            if confidence_level in ("منخفضة", "متوسطة", "low", "medium"):
+                return {"decision": DECISION_EXPERIMENT, "reasoning": f"{entry['reason']} -- real confidence level: {confidence_level} (real, disclosed threshold, not a new evaluation)", "source": "scheduler.py + decision_engine's real confidence field"}
+            return {"decision": DECISION_BUILD_LATER, "reasoning": entry["reason"], "source": "scheduler.py::decide_next_actions()"}
+    return {"decision": None, "reasoning": f"{niche!r} not found in any real scheduler bucket -- likely not a real ACCEPTED opportunity today", "source": "scheduler.py::decide_next_actions()"}
+
+
+def portfolio_balance(portfolio=None, decisions_path=None):
+    """Portfolio thinking, not single-product optimization: real
+    aggregation by ladder category -- profit_oracle.LADDER_RANKS
+    already encodes recurring-income-vs-one-time character (ai_saas/
+    b2b_systems = recurring, kdp_books/reusable_assets = closer to
+    one-time), never an invented taxonomy."""
+    from decision_engine import ranking
+
+    recurring_ladders = {"ai_saas", "b2b_systems", "automation_tools"}
+    one_time_ladders = {"kdp_books", "reusable_assets", "educational"}
+
+    counts = {"recurring_income": 0, "one_time_sales": 0, "unclassified": 0}
+    accepted = [d for d in ranking.rank_all(path=decisions_path) if d.get("status") == "ACCEPTED"]
+    for d in accepted:
+        ladder = d.get("ladder")
+        if ladder in recurring_ladders:
+            counts["recurring_income"] += 1
+        elif ladder in one_time_ladders:
+            counts["one_time_sales"] += 1
+        else:
+            counts["unclassified"] += 1
+
+    return {
+        "real_accepted_portfolio_size": len(accepted),
+        "by_character": counts,
+        "high_risk_innovations": NOT_MEASURABLE,
+        "stable_cash_flow_products": NOT_MEASURABLE,
+        "long_term_strategic_assets": NOT_MEASURABLE,
+        "note": "High-risk-innovation/stable-cash-flow/long-term-strategic need a real per-niche risk-maturity signal this factory doesn't compute yet -- honestly NOT_MEASURABLE rather than guessed from the same 2 ladder-derived buckets above.",
+        "source": "profit_oracle.LADDER_RANKS' real recurring-vs-one-time character + decision_engine.ranking.rank_all()",
+        "generated_at": _now_iso(),
+    }
+
+
+def resource_optimization_recommendation():
+    """'Where should the next hour/day/week/month be invested' -- real
+    citation of strategic_planning.py's real rolling_roadmap() (ADR-159),
+    never a new time-bucketing mechanism. 'Next hour' has no real signal
+    finer than 'Today' anywhere in this factory -- both cite the same
+    real Today bucket, disclosed rather than invented."""
+    import strategic_planning
+    roadmap = strategic_planning.rolling_roadmap()
+    today = roadmap.get("today")
+    return {
+        "next_hour": {"value": today, "note": "No real signal exists at finer granularity than Today -- cites the same real bucket."},
+        "next_day": today,
+        "next_week": roadmap.get("this_week"),
+        "next_month": roadmap.get("this_month"),
+        "source": "strategic_planning.py::rolling_roadmap() (ADR-159)",
+        "generated_at": _now_iso(),
+    }
+
+
+def self_improvement_sources():
+    """Pure citation -- never a 4th competing learning loop (same
+    discipline as evolution_engine.py's own function of this name,
+    ADR-173)."""
+    return {
+        "successful_and_failed_launches": "decision_engine/learning.py::recalibration_report() -- real per-dimension historical-evidence statistics, deliberately never auto-applied.",
+        "outcome_tracking": "evolution_queue.py's real measure_outcome() -- IMPROVED/DEGRADED/NO_CHANGE/NOT_ENOUGH_DATA.",
+        "revenue_concentration": "global_opportunity_exchange.py's real concentration_risk_report() (platform/product_family/country/ai_provider vs named thresholds).",
+        "market_shifts": "competitor_discovery.py's real cached database + market_hunter.py's real live HN/GitHub/Amazon/Etsy/Gumroad ingestion.",
+        "note": "All 4 feed real, already-existing signal sources -- never a second, parallel learning loop.",
+    }
+
+
+def build_capital_decisions_report(limit=20, decisions_path=None):
+    """The one real aggregator for this round -- computes scheduler.py's
+    real buckets exactly once, produces a real decision + reasoning for
+    every real niche found in them, plus portfolio balance and resource
+    optimization, all computed exactly once."""
+    import scheduler
+
+    scheduler_result = scheduler.decide_next_actions()
+    buckets = scheduler_result["buckets"]
+    all_niches = []
+    for bucket_name in ("run_now", "accelerate", "wait", "cancel", "stop"):
+        all_niches.extend(e["niche"] for e in buckets.get(bucket_name, []))
+
+    decisions = [
+        {"niche": n, **capital_decision(n, scheduler_result=scheduler_result)}
+        for n in all_niches[:limit]
+    ]
+
+    return {
+        "decisions": decisions,
+        "portfolio_balance": portfolio_balance(decisions_path=decisions_path),
+        "resource_optimization": resource_optimization_recommendation(),
+        "self_improvement_sources": self_improvement_sources(),
+        "forward_looking_dimensions_note": "Expected Monthly/Annual Revenue and Time to First Sale are honestly NOT_MEASURABLE for every real niche -- see _forward_looking_dimensions() for the real reason.",
+        "generated_at": _now_iso(),
+    }
