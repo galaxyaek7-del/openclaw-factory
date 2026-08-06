@@ -538,5 +538,50 @@ class TestTimeToMarket(unittest.TestCase):
         self.assertIsNone(result["time_to_market"]["score"])
 
 
+class TestScoreUrgencyRealShape(unittest.TestCase):
+    """Real bug found and fixed (2026-08-06, "EXECUTION MODE" first-revenue
+    attempt): market_intelligence_engine.analyze_customer_pain()'s real,
+    tested return shape always nests willingness_to_pay_hits/
+    pain_language_hits under a "real_evidence" sub-dict -- _score_urgency()
+    was reading them at the top level instead, so every real caller that
+    ever passed a REAL analyze_customer_pain() result through here
+    silently got "Unknown" regardless of real evidence found. No prior
+    real caller had ever exercised this path end-to-end (confirmed by
+    repo-wide search) before this was caught. Fixed to read the real
+    nested shape, falling back to a flat top-level shape for backward
+    compatibility with this file's own pre-existing _pain_evidence_signal()
+    fixture."""
+
+    def test_real_analyze_customer_pain_shape_is_read_correctly(self):
+        real_shaped_pain = {
+            "pain_score": 8, "confidence": "medium",
+            "real_evidence": {"pain_language_hits": 2, "willingness_to_pay_hits": 1},
+        }
+        score, level, reason = po._score_urgency("a niche", external_signal={"customer_pain": real_shaped_pain})
+        self.assertEqual(score, 45)  # 1*25 + 2*10
+        self.assertEqual(level, "متوسطة")
+
+    def test_legacy_flat_shape_still_works(self):
+        score, level, reason = po._score_urgency("a niche", external_signal=_pain_evidence_signal(pain_hits=1, wtp_hits=1))
+        self.assertEqual(score, 35)  # 1*25 + 1*10
+        self.assertEqual(level, "متوسطة")
+
+    def test_real_zero_hits_is_a_real_low_score_not_unknown(self):
+        """The exact real scenario this bug hid: analyze_customer_pain()
+        genuinely found real GitHub issues but 0 real pain-language/WTP
+        keyword matches -- a real, honest low signal, never "Unknown"
+        (which would wrongly suggest no evidence was ever gathered)."""
+        real_shaped_pain = {"pain_score": 8, "real_evidence": {"pain_language_hits": 0, "willingness_to_pay_hits": 0}}
+        score, level, reason = po._score_urgency("a niche", external_signal={"customer_pain": real_shaped_pain})
+        self.assertEqual(score, 0)
+        self.assertEqual(level, "منخفضة")
+        self.assertNotEqual(level, "Unknown")
+
+    def test_no_evidence_at_all_is_honestly_unknown(self):
+        score, level, reason = po._score_urgency("a niche", external_signal=None)
+        self.assertIsNone(score)
+        self.assertEqual(level, "Unknown")
+
+
 if __name__ == "__main__":
     unittest.main()

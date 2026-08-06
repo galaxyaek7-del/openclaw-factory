@@ -798,8 +798,20 @@ def _score_urgency(niche, external_signal=None):
     documents) -- a niche with no pain evidence computed yet reports
     Unknown, not a guessed urgency."""
     pain = (external_signal or {}).get("customer_pain") or {}
-    wtp_hits = pain.get("willingness_to_pay_hits")
-    pain_hits = pain.get("pain_language_hits")
+    # Real bug found and fixed (2026-08-06, "EXECUTION MODE" first-revenue
+    # attempt): market_intelligence_engine.analyze_customer_pain()'s real,
+    # tested return shape always nests these two fields under
+    # "real_evidence" (confirmed by direct source read) -- this function
+    # was reading them at the top level instead, so every real evaluation
+    # that ever passed a real analyze_customer_pain() result through here
+    # silently got "Unknown" regardless of real evidence found. No prior
+    # real caller ever exercised this path end-to-end (confirmed by
+    # repo-wide search), so this had never been caught. Falls back to the
+    # top level too, in case a caller ever passes an already-flattened
+    # dict -- never assumes only one shape is valid.
+    real_evidence = pain.get("real_evidence") or {}
+    wtp_hits = real_evidence.get("willingness_to_pay_hits", pain.get("willingness_to_pay_hits"))
+    pain_hits = real_evidence.get("pain_language_hits", pain.get("pain_language_hits"))
     if wtp_hits is None and pain_hits is None:
         return None, "Unknown", "لا دليل ألم عملاء حقيقي مُمرَّر لهذا النيتش بعد — لا تخمين للإلحاح"
     wtp_hits = wtp_hits or 0
