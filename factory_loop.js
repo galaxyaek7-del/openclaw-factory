@@ -2570,6 +2570,78 @@ async function maybeGenerateCommercialKitsForNewAcceptedDecisions(now = new Date
   return { action: 'generated', detail: `تم توليد ${(result.generated || []).length} حزمة تسويق تجارية جديدة (${generatedNiches}) — المتبقي: ${result.remaining_pending}` };
 }
 
+// ── PADDLE CHECKOUT READINESS NOTIFICATION (CEO Directive, 2026-08-06) ──
+// A real, already-built, already-tested function
+// (scripts/check_paddle_checkout_status.py::check_and_notify_all()) that
+// re-checks Paddle's real account-onboarding status live and sends a
+// real Telegram message the moment checkout_ready flips true — existed
+// since ADR-085/086 but was never wired into the automatic tick, so
+// nobody was actually notified without someone remembering to re-run it
+// by hand. Runs every tick (not daily-gated), same "closest thing to
+// real-time a scheduler-less factory can offer" reasoning as the
+// resilience monitor immediately below: this is the one real external
+// gate blocking first revenue, so minimizing detection latency directly
+// serves time-to-first-dollar. Safe to run every ~10 minutes — the
+// underlying function is a lightweight read + is already idempotent
+// (already_notified guards against ever re-sending).
+function runCheckPaddleCheckoutStatus({ timeoutMs = 60000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'scripts', 'check_paddle_checkout_status.py'), '--json'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل check_paddle_checkout_status.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة check_paddle_checkout_status.py (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من check_paddle_checkout_status.py' });
+          return;
+        }
+        finish({
+          ok: true,
+          totalProducts: result.total_products,
+          newlyReady: result.newly_ready,
+        });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج check_paddle_checkout_status.py: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+
+    python.stdin.write('{}');
+    python.stdin.end();
+  });
+}
+
+async function maybeNotifyPaddleCheckoutReady() {
+  const result = await runCheckPaddleCheckoutStatus();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  if (result.newlyReady > 0) {
+    return { action: 'notified', detail: `Paddle checkout أصبح جاهزاً فعلاً لـ ${result.newlyReady} منتج حقيقي — تم إرسال تنبيه Telegram حقيقي` };
+  }
+  return { action: 'none', detail: `لا يزال Paddle checkout غير مفعَّل (${result.totalProducts} منتج حقيقي مفحوص) — لا تنبيه جديد` };
+}
+
 // ── CONTINUOUS TRUST & RESILIENCE MONITORING ──
 // resilience_monitor.py's assess_resilience() + record_incidents_for_
 // findings() in one call (mission_control_api.py's resilience_monitor_
@@ -3192,6 +3264,16 @@ async function runTick() {
   // count, read-only).
   markStep('commercial_kit_generation');
   actions.push({ step: 'commercial_kit_generation', ...(await maybeGenerateCommercialKitsForNewAcceptedDecisions()) });
+
+  // Paddle Checkout Readiness Notification (CEO Directive, 2026-08-06):
+  // every tick, not daily-gated -- this is the one real external gate
+  // blocking first revenue today, so minimizing detection latency
+  // directly serves time-to-first-dollar. Never publishes, never
+  // transacts -- a real, idempotent read + an already-approved
+  // Telegram notification channel this factory already uses for dozens
+  // of other real events.
+  markStep('paddle_checkout_notification');
+  actions.push({ step: 'paddle_checkout_notification', ...(await maybeNotifyPaddleCheckoutReady()) });
 
   // Continuous Trust & Resilience Monitoring (2026-07-29): runs every
   // tick, not daily-gated — this is meant to be the closest thing to
