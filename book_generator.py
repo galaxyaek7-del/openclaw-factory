@@ -1765,9 +1765,39 @@ def groq_chat(system_prompt, user_prompt, max_tokens=4096, timeout=30, retries=3
         except Exception as e:
             last_error = e
         if attempt < retries:
-            time.sleep(min(2 ** (attempt - 1), 4))
+            time.sleep(_retry_delay_seconds(attempt, last_error))
 
     raise RuntimeError(f"فشل استدعاء Groq بعد {retries} محاولات: {last_error}")
+
+
+# Real reliability fix (2026-08-06): a real HTTP 429 (Too Many Requests)
+# was observed live this session -- multiple real callers of this one
+# shared Groq key (factory_loop.js's own tick, plus a direct Python call)
+# collided, and the fixed 1s/2s/4s exponential backoff below had no way
+# to know the real, server-told wait time, so it either retried too soon
+# (failing again) or waited longer than necessary. Standard rate-limited
+# APIs (Groq included) return a real `Retry-After` header on 429/503
+# telling the caller exactly how long to actually wait -- this was never
+# read. Purely additive: when the header is present and parses to a real
+# number, it is respected (capped at 30s so a misbehaving/malicious
+# header can never hang a real caller indefinitely); every other case
+# (header absent, unparseable, or any non-HTTPError failure) falls back
+# to the exact original exponential-backoff behavior, byte-for-byte.
+_MAX_RETRY_AFTER_SECONDS = 30
+
+
+def _retry_delay_seconds(attempt, last_error):
+    default = min(2 ** (attempt - 1), 4)
+    if isinstance(last_error, urllib.error.HTTPError) and last_error.code in (429, 503):
+        header = last_error.headers.get('Retry-After') if last_error.headers else None
+        if header:
+            try:
+                seconds = float(header)
+                if seconds >= 0:
+                    return min(seconds, _MAX_RETRY_AFTER_SECONDS)
+            except (TypeError, ValueError):
+                pass  # not a numeric Retry-After (e.g. an HTTP-date) -- fall back below
+    return default
 
 
 def _parse_sectioned_book(text, expected_chapters):
