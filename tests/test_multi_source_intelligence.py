@@ -17,16 +17,20 @@ _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
     sys.path.insert(0, str(_FACTORY_ROOT))
 
-from multi_source_intelligence import aggregator, coverage, registry
-from multi_source_intelligence.types import SOURCES, unavailable_result
+from multi_source_intelligence import aggregator, coverage, manual_verification, registry
+from multi_source_intelligence.types import EVIDENCE_SOURCE_PRIORITY, SOURCES, blocked_result, not_architected_result, unavailable_result
 
 
 class TestRegistryAutoDiscovery(unittest.TestCase):
-    def test_all_eleven_sources_are_registered(self):
+    def test_all_fourteen_sources_are_registered(self):
         import multi_source_intelligence.connectors  # noqa: F401
         connectors_map = registry.get_connectors()
+        self.assertEqual(len(SOURCES), 14)
         for source in SOURCES:
             self.assertIn(source, connectors_map)
+
+    def test_evidence_source_priority_covers_every_registered_source(self):
+        self.assertEqual(set(EVIDENCE_SOURCE_PRIORITY), set(SOURCES))
 
 
 class TestRealConnectorsWork(unittest.TestCase):
@@ -156,9 +160,9 @@ class TestEvidenceCoverageScore(unittest.TestCase):
     @patch("competitor_discovery._query_github", return_value=[])
     @patch("multi_source_intelligence.connectors.stack_overflow._query_stack_overflow", return_value=[])
     @patch("multi_source_intelligence.connectors.arxiv._query_arxiv", return_value=[])
-    def test_coverage_score_reports_all_eleven_sources_checked(self, mock_arxiv, mock_so, mock_gh, mock_hn):
+    def test_coverage_score_reports_all_fourteen_sources_checked(self, mock_arxiv, mock_so, mock_gh, mock_hn):
         result = coverage.evidence_coverage_score("a coverage test niche", max_results=3)
-        self.assertEqual(len(result["checked"]), 11)
+        self.assertEqual(len(result["checked"]), 14)
         self.assertEqual(set(result["checked"]), set(SOURCES))
 
     @patch("competitor_discovery._query_hn", return_value=[{"title": "x", "points": 10, "num_comments": 1}])
@@ -168,8 +172,8 @@ class TestEvidenceCoverageScore(unittest.TestCase):
     def test_coverage_score_correctly_tallies_succeeded_vs_unknown(self, mock_arxiv, mock_so, mock_gh, mock_hn):
         result = coverage.evidence_coverage_score("a tally test niche", max_results=3)
         self.assertEqual(set(result["succeeded"]), {"hacker_news", "github", "stack_overflow", "arxiv"})
-        self.assertEqual(len(result["unknown"]), 7)
-        self.assertAlmostEqual(result["coverage_pct"], 36.4, places=1)
+        self.assertEqual(len(result["unknown"]), 10)
+        self.assertAlmostEqual(result["coverage_pct"], 28.6, places=1)
 
     @patch("competitor_discovery._query_github", return_value=[])
     @patch("multi_source_intelligence.connectors.stack_overflow._query_stack_overflow", return_value=[])
@@ -179,7 +183,217 @@ class TestEvidenceCoverageScore(unittest.TestCase):
             result = coverage.evidence_coverage_score("a raising connector test niche", max_results=3)
         self.assertIn("hacker_news", result["failed"])
         # every other source is still checked -- one source's crash never stops the rest
-        self.assertEqual(len(result["checked"]), 11)
+        self.assertEqual(len(result["checked"]), 14)
+
+
+class TestBlockedAndNotArchitectedResults(unittest.TestCase):
+    """Real Evidence Provider abstraction (ADR-179, 2026-08-06)."""
+
+    def test_blocked_result_shape(self):
+        r = blocked_result("stack_overflow", "HTTP 403 rejected the request", status_code=403)
+        self.assertEqual(r.verification_status, "BLOCKED")
+        self.assertEqual(r.availability, "unavailable")
+        self.assertEqual(r.confidence, 0)
+        self.assertEqual(r.status_code, 403)
+
+    def test_not_architected_result_shape(self):
+        r = not_architected_result("rss_feeds", "no real connector built")
+        self.assertEqual(r.verification_status, "NOT_ARCHITECTED")
+        self.assertEqual(r.availability, "unavailable")
+        self.assertIsNone(r.status_code)
+
+    def test_blocked_is_distinguishable_from_unavailable(self):
+        blocked = blocked_result("x", "blocked")
+        unavailable = unavailable_result("x", "no credentials")
+        self.assertNotEqual(blocked.verification_status, unavailable.verification_status)
+
+
+class TestHttpClientBlockedDetection(unittest.TestCase):
+    def test_403_raises_evidence_source_blocked(self):
+        import urllib.error
+        from market_intelligence_core import http_client
+
+        def raise_403(*a, **kw):
+            raise urllib.error.HTTPError("http://x", 403, "Forbidden", {}, None)
+
+        with patch("urllib.request.urlopen", side_effect=raise_403):
+            with self.assertRaises(http_client.EvidenceSourceBlocked) as ctx:
+                http_client.http_get_json("http://x")
+        self.assertEqual(ctx.exception.status_code, 403)
+
+    def test_404_is_not_treated_as_blocked(self):
+        import urllib.error
+        from market_intelligence_core import http_client
+
+        def raise_404(*a, **kw):
+            raise urllib.error.HTTPError("http://x", 404, "Not Found", {}, None)
+
+        with patch("urllib.request.urlopen", side_effect=raise_404):
+            with self.assertRaises(urllib.error.HTTPError):
+                http_client.http_get_json("http://x")
+
+    def test_evidence_source_blocked_is_still_a_plain_exception(self):
+        """Every pre-existing `except Exception` call site in this
+        factory's connectors must keep catching this — zero behavior
+        change for any caller that predates ADR-179."""
+        from market_intelligence_core import http_client
+        self.assertTrue(issubclass(http_client.EvidenceSourceBlocked, Exception))
+
+
+class TestStackOverflowAndArxivBlockedDetection(unittest.TestCase):
+    def test_stack_overflow_reports_blocked_not_generic_unavailable(self):
+        from market_intelligence_core import http_client
+        from multi_source_intelligence.connectors import stack_overflow
+        with patch(
+            "multi_source_intelligence.connectors.stack_overflow._query_stack_overflow",
+            side_effect=http_client.EvidenceSourceBlocked(403, "http://x"),
+        ):
+            result = stack_overflow.check("a blocked test niche")
+        self.assertEqual(result.verification_status, "BLOCKED")
+        self.assertEqual(result.status_code, 403)
+
+    def test_arxiv_reports_blocked_not_generic_unavailable(self):
+        from market_intelligence_core import http_client
+        from multi_source_intelligence.connectors import arxiv
+        with patch(
+            "multi_source_intelligence.connectors.arxiv._query_arxiv",
+            side_effect=http_client.EvidenceSourceBlocked(429, "http://x"),
+        ):
+            result = arxiv.check("a blocked test niche")
+        self.assertEqual(result.verification_status, "BLOCKED")
+        self.assertEqual(result.status_code, 429)
+
+
+class TestManualVerificationLedger(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        self._tmp = tempfile.NamedTemporaryFile(suffix=".jsonl", delete=False)
+        self._tmp.close()
+        self.ledger_path = self._tmp.name
+
+    def tearDown(self):
+        import os
+        if os.path.exists(self.ledger_path):
+            os.remove(self.ledger_path)
+
+    def test_record_and_read_round_trip(self):
+        manual_verification.record_verification(
+            "a niche", "https://example.com/real-page", "BLOCKED",
+            reason="HTTP 403", status_code=403, ledger_path=self.ledger_path,
+        )
+        attempts = manual_verification.get_verification_attempts("a niche", ledger_path=self.ledger_path)
+        self.assertEqual(len(attempts), 1)
+        self.assertEqual(attempts[0]["status"], "BLOCKED")
+        self.assertEqual(attempts[0]["status_code"], 403)
+
+    def test_rejects_a_fabricated_status(self):
+        with self.assertRaises(ValueError):
+            manual_verification.record_verification("a niche", "https://example.com", "PROBABLY_FINE", ledger_path=self.ledger_path)
+
+    def test_rejects_missing_source_url(self):
+        with self.assertRaises(ValueError):
+            manual_verification.record_verification("a niche", "", "VERIFIED", ledger_path=self.ledger_path)
+
+    def test_a_different_niche_never_sees_another_niches_attempts(self):
+        manual_verification.record_verification("niche a", "https://example.com/a", "BLOCKED", status_code=403, ledger_path=self.ledger_path)
+        attempts = manual_verification.get_verification_attempts("niche b", ledger_path=self.ledger_path)
+        self.assertEqual(attempts, [])
+
+    def test_no_recorded_attempts_is_honestly_empty(self):
+        attempts = manual_verification.get_verification_attempts("a never-checked niche", ledger_path=self.ledger_path)
+        self.assertEqual(attempts, [])
+
+
+class TestWebPagesConnector(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        self._tmp = tempfile.NamedTemporaryFile(suffix=".jsonl", delete=False)
+        self._tmp.close()
+        self.ledger_path = self._tmp.name
+
+    def tearDown(self):
+        import os
+        if os.path.exists(self.ledger_path):
+            os.remove(self.ledger_path)
+
+    def test_no_attempt_is_honestly_not_architected(self):
+        from multi_source_intelligence.connectors import web_pages
+        with patch("multi_source_intelligence.manual_verification.DEFAULT_LEDGER_PATH", self.ledger_path):
+            result = web_pages.check("a never-checked web_pages niche")
+        self.assertEqual(result.verification_status, "NOT_ARCHITECTED")
+
+    def test_a_real_blocked_attempt_is_reported_as_blocked_never_halts(self):
+        from multi_source_intelligence.connectors import web_pages
+        manual_verification.record_verification("a blocked web_pages niche", "https://example.com/x", "BLOCKED", status_code=403, ledger_path=self.ledger_path)
+        with patch("multi_source_intelligence.manual_verification.DEFAULT_LEDGER_PATH", self.ledger_path):
+            result = web_pages.check("a blocked web_pages niche")
+        self.assertEqual(result.verification_status, "BLOCKED")
+        self.assertEqual(result.status_code, 403)
+
+    def test_a_real_verified_attempt_is_reported_as_verified(self):
+        from multi_source_intelligence.connectors import web_pages
+        manual_verification.record_verification("a verified web_pages niche", "https://example.com/x", "VERIFIED", quote="real quoted text", ledger_path=self.ledger_path)
+        with patch("multi_source_intelligence.manual_verification.DEFAULT_LEDGER_PATH", self.ledger_path):
+            result = web_pages.check("a verified web_pages niche")
+        self.assertEqual(result.verification_status, "VERIFIED")
+
+
+class TestPrioritizedEvidenceSummary(unittest.TestCase):
+    """Real Evidence Provider abstraction (ADR-179, 2026-08-06) --
+    the exact 4-field-per-opportunity shape the founder's directive
+    asked for, and the "never terminate evaluation" guarantee."""
+
+    @patch("competitor_discovery._query_hn", return_value=[])
+    @patch("competitor_discovery._query_github", return_value=[])
+    @patch("multi_source_intelligence.connectors.stack_overflow._query_stack_overflow", return_value=[])
+    @patch("multi_source_intelligence.connectors.arxiv._query_arxiv", return_value=[])
+    def test_returns_exactly_the_4_required_fields(self, mock_arxiv, mock_so, mock_gh, mock_hn):
+        result = coverage.prioritized_evidence_summary("a 4-field test niche")
+        for field in ("confidence", "evidence_count", "verification_status", "missing_evidence"):
+            self.assertIn(field, result)
+
+    def test_a_connector_raising_a_brand_new_unforeseen_exception_never_halts_the_others(self):
+        with patch.dict(registry._CONNECTORS, {"github": lambda niche, max_results: (_ for _ in ()).throw(RuntimeError("totally unexpected"))}):
+            result = coverage.prioritized_evidence_summary("a resilience test niche")
+        # every other source was still evaluated -- one unforeseen crash never stops the priority walk
+        self.assertEqual(len(result["sources"]), len(EVIDENCE_SOURCE_PRIORITY))
+        self.assertIn("github", [m["source"] for m in result["missing_evidence"]])
+
+    @patch("competitor_discovery._query_hn", return_value=[{"title": "x", "points": 10, "num_comments": 1}])
+    @patch("competitor_discovery._query_github", return_value=[])
+    @patch("multi_source_intelligence.connectors.stack_overflow._query_stack_overflow", return_value=[])
+    @patch("multi_source_intelligence.connectors.arxiv._query_arxiv", return_value=[])
+    def test_a_verified_source_raises_confidence_and_evidence_count(self, mock_arxiv, mock_so, mock_gh, mock_hn):
+        result = coverage.prioritized_evidence_summary("a verified test niche")
+        self.assertEqual(result["verification_status"], "VERIFIED")
+        self.assertGreater(result["confidence"], 0)
+        self.assertGreaterEqual(result["evidence_count"], 1)
+
+    def test_a_blocked_source_never_raises_confidence_only_the_status_reflects_it(self):
+        # Every source in the registry is deterministically stubbed --
+        # exactly one BLOCKED, the rest honestly unavailable -- so this
+        # test isolates the one real claim under test (a blocked source
+        # alone can never raise confidence) from every other real
+        # connector's own live/unmocked behavior.
+        blocked = blocked_result("hacker_news", "HTTP 429", status_code=429)
+        stub_connectors = {
+            source: (lambda niche, max_results, source=source: blocked if source == "hacker_news" else unavailable_result(source, "stub"))
+            for source in EVIDENCE_SOURCE_PRIORITY
+        }
+        with patch.dict(registry._CONNECTORS, stub_connectors, clear=True):
+            result = coverage.prioritized_evidence_summary("a blocked-only test niche")
+        self.assertEqual(result["confidence"], 0, "a blocked source must never raise confidence")
+        self.assertEqual(result["verification_status"], "BLOCKED")
+        self.assertIn("hacker_news", result["blocked_sources"])
+
+    def test_missing_evidence_never_includes_a_verified_source(self):
+        with patch("competitor_discovery._query_hn", return_value=[{"title": "x", "points": 1, "num_comments": 0}]), \
+             patch("competitor_discovery._query_github", return_value=[]), \
+             patch("multi_source_intelligence.connectors.stack_overflow._query_stack_overflow", return_value=[]), \
+             patch("multi_source_intelligence.connectors.arxiv._query_arxiv", return_value=[]):
+            result = coverage.prioritized_evidence_summary("a missing-evidence test niche")
+        missing_sources = {m["source"] for m in result["missing_evidence"]}
+        self.assertNotIn("hacker_news", missing_sources)
 
 
 class TestAggregatorIsStandaloneNotWiredIntoScoring(unittest.TestCase):

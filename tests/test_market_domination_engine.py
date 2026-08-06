@@ -44,7 +44,9 @@ class TestRegionalCoverage(unittest.TestCase):
 class TestGlobalSourceStatus(unittest.TestCase):
     def test_reports_a_real_total(self):
         result = mde.global_source_status()
-        self.assertEqual(result["total_registered"], 11)
+        # Real Evidence Provider abstraction (ADR-179, 2026-08-06) added
+        # 3 more registered sources (rss_feeds/public_reports/web_pages).
+        self.assertEqual(result["total_registered"], 14)
 
     def test_static_unavailable_sources_are_honestly_marked(self):
         result = mde.global_source_status()

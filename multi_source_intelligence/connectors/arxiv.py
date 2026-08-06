@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 
 from market_intelligence_core import http_client
 from multi_source_intelligence.registry import register_connector
-from multi_source_intelligence.types import CONFIDENCE_SCALE, ConnectorResult, unavailable_result
+from multi_source_intelligence.types import CONFIDENCE_SCALE, ConnectorResult, blocked_result, unavailable_result
 
 SEARCH_URL = "http://export.arxiv.org/api/query"
 ATOM_NS = "{http://www.w3.org/2005/Atom}"
@@ -51,6 +51,8 @@ def _query_arxiv(niche, max_results=10):
 def check(niche, max_results=10):
     try:
         entries = _query_arxiv(niche, max_results)
+    except http_client.EvidenceSourceBlocked as e:
+        return blocked_result("arxiv", f"arXiv API رفض الطلب فعلياً (HTTP {e.status_code})", status_code=e.status_code)
     except Exception as e:
         return unavailable_result("arxiv", f"فشل استعلام arXiv API: {e}")
 

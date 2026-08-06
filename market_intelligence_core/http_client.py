@@ -23,9 +23,31 @@ exactly as before — nothing about their test surface changes.
 """
 
 import json
+import urllib.error
 import urllib.request
 
 DEFAULT_USER_AGENT = "Mozilla/5.0 (Galaxy-Forge-MarketIntelligence)"
+
+# Real Evidence Provider abstraction (ADR-179, 2026-08-06): the codes a
+# real server uses to actively refuse a request (bot-protection,
+# rate-limiting, missing auth) rather than simply not having the
+# resource (404) or failing internally (5xx) -- a real, meaningful
+# distinction the founder's directive asked to preserve ("record it as
+# verification blocked"), not collapse into one generic failure.
+BLOCKED_STATUS_CODES = (401, 403, 429)
+
+
+class EvidenceSourceBlocked(Exception):
+    """A subclass of Exception (not a new exception hierarchy) so every
+    existing `except Exception` call site in this factory's connectors
+    keeps catching it exactly as before -- zero behavior change for any
+    pre-existing caller. New code that wants to distinguish "actively
+    blocked" from "any other failure" can `isinstance()`-check for this
+    specific type."""
+    def __init__(self, status_code, url):
+        self.status_code = status_code
+        self.url = url
+        super().__init__(f"HTTP {status_code} (verification blocked): {url}")
 
 
 def http_get_json(url, timeout=10, user_agent=DEFAULT_USER_AGENT):
@@ -33,8 +55,13 @@ def http_get_json(url, timeout=10, user_agent=DEFAULT_USER_AGENT):
         'User-Agent': user_agent,
         'Accept': 'application/json',
     })
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return json.loads(r.read().decode('utf-8'))
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return json.loads(r.read().decode('utf-8'))
+    except urllib.error.HTTPError as e:
+        if e.code in BLOCKED_STATUS_CODES:
+            raise EvidenceSourceBlocked(e.code, url) from e
+        raise
 
 
 # Strategic Phase 3, Round 1 (2026-07-22): a second canonical primitive for
@@ -47,5 +74,10 @@ def http_get_text(url, timeout=10, user_agent=DEFAULT_USER_AGENT):
         'User-Agent': user_agent,
         'Accept': 'application/atom+xml, text/xml, */*',
     })
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read().decode('utf-8')
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.read().decode('utf-8')
+    except urllib.error.HTTPError as e:
+        if e.code in BLOCKED_STATUS_CODES:
+            raise EvidenceSourceBlocked(e.code, url) from e
+        raise

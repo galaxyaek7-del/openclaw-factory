@@ -2588,6 +2588,31 @@ const ACTION_REGISTRY = [
     },
   },
   {
+    // Real Evidence Provider abstraction (ADR-179, 2026-08-06): the
+    // founder's directive after a real session hit HTTP 403s trying to
+    // manually gather Proof of Payment evidence against Upwork/Fiverr/
+    // G2/Etsy -- never let one blocked marketplace source stop
+    // evaluation. Queries every real evidence source for one niche in
+    // the founder's own named priority order (Official APIs > RSS
+    // feeds > Public reports > Google Trends > GitHub > Product Hunt >
+    // Reddit > Hacker News > Stack Overflow > Web pages), catching
+    // every failure (including an actively-blocked one) per source --
+    // never raises, never halts. RSS feeds/Public reports are honestly
+    // NOT_ARCHITECTED (no real connector exists); Web pages is
+    // honestly Claude-session-only (reads the real manual_verification
+    // ledger, never an autonomous scraper).
+    name: 'evidence-provider-summary',
+    description: "Confidence/evidence_count/verification_status/missing_evidence for one real niche, queried across every registered evidence source in the founder's own named priority order. A blocked source (real HTTP 403/429/401) is recorded as BLOCKED, distinct from NOT_ARCHITECTED (no connector exists) and UNKNOWN (connector exists, no credentials) -- confidence only ever rises from a real VERIFIED source, never from a source merely being attempted.",
+    reused: 'multi_source_intelligence/coverage.py::prioritized_evidence_summary() (ADR-179) + multi_source_intelligence/manual_verification.py, via mission_control_api.py.',
+    reversible: true, // read-only
+    kind: 'async',
+    asyncRunner: (req) => {
+      const niche = (req.body && req.body.niche || '').trim();
+      if (!niche) return Promise.reject(new Error('{ niche } is required in the request body'));
+      return runPythonActionAsync('evidence-provider-summary', 'prioritized_evidence_summary', [JSON.stringify({ niche })]);
+    },
+  },
+  {
     // Autonomous Business Builder (2026-07-29) -- the real 12-section/
     // 8-estimate Business Blueprint for one niche. Async-job shape
     // (chains production_blueprint + value_engine + investment_score),

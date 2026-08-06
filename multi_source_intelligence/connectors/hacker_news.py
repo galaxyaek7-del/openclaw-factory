@@ -3,6 +3,12 @@ Hacker News connector (ADR-059) — real, since ADR-042. Reuses
 competitor_discovery._query_hn() directly (Show HN search via HN
 Algolia, free/keyless) rather than a second implementation of the same
 query.
+
+Real Evidence Provider abstraction (ADR-179, 2026-08-06): same
+disclosed limitation as github.py — competitor_discovery._query_hn()'s
+own "never raises" contract swallows a real block before it reaches
+here. Not retrofitted for the same reason (shared, load-bearing
+function, other real callers depend on it never raising).
 """
 
 from datetime import datetime, timezone

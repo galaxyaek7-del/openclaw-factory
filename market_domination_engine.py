@@ -46,7 +46,7 @@ REGIONAL_COVERAGE = {
     "africa": {"status": "NOT_MEASURABLE", "reason": "Zero real regional data source exists -- standing founder deferral, 2026-07-23, reconfirmed ADR-148/150/152."},
     "asia": {"status": "NOT_MEASURABLE", "reason": "Zero real regional data source exists (includes the founder's own named 'China strategic program' deferral) -- standing founder deferral, 2026-07-23, reconfirmed ADR-148/150/152."},
     "oceania": {"status": "NOT_MEASURABLE", "reason": "Zero real regional data source exists -- standing founder deferral, 2026-07-23, reconfirmed ADR-148/150/152."},
-    "global_online_markets": {"status": "REAL", "reason": "8 of 11 registered multi_source_intelligence connectors are real and query-capable today: amazon, arxiv, etsy, github, gumroad, hacker_news, public_search, stack_overflow."},
+    "global_online_markets": {"status": "REAL", "reason": "8 of 14 registered multi_source_intelligence connectors are real and query-capable today: amazon, arxiv, etsy, github, gumroad, hacker_news, public_search, stack_overflow (the other 6 -- product_hunt/reddit/google_trends/rss_feeds/public_reports/web_pages -- are honestly unavailable/not-architected/manual-session-only, ADR-179)."},
 }
 
 

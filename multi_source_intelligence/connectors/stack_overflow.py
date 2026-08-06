@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 
 from market_intelligence_core import http_client
 from multi_source_intelligence.registry import register_connector
-from multi_source_intelligence.types import CONFIDENCE_SCALE, ConnectorResult, unavailable_result
+from multi_source_intelligence.types import CONFIDENCE_SCALE, ConnectorResult, blocked_result, unavailable_result
 
 SEARCH_URL = "https://api.stackexchange.com/2.3/search/advanced"
 
@@ -30,6 +30,8 @@ def _query_stack_overflow(niche, max_results=10):
 def check(niche, max_results=10):
     try:
         items = _query_stack_overflow(niche, max_results)
+    except http_client.EvidenceSourceBlocked as e:
+        return blocked_result("stack_overflow", f"Stack Exchange API رفض الطلب فعلياً (HTTP {e.status_code})", status_code=e.status_code)
     except Exception as e:
         return unavailable_result("stack_overflow", f"فشل استعلام Stack Exchange API: {e}")
 

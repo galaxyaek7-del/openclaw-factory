@@ -1201,6 +1201,24 @@ def _goos_evaluate_opportunity():
     return goos.build_opportunity_intelligence_report(niche)
 
 
+def _prioritized_evidence_summary():
+    """Real Evidence Provider abstraction (ADR-179, 2026-08-06): the
+    founder's directive to never let one blocked source stop
+    evaluation. Queries every real evidence source for one niche in the
+    founder's own named priority order, returns confidence/evidence_
+    count/verification_status/missing_evidence. Never raises -- every
+    source failure, including an actively-blocked one, is caught and
+    recorded, never propagated. Reads its payload from sys.argv[2]:
+    `python mission_control_api.py prioritized_evidence_summary '{"niche":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    niche = (payload.get("niche") or "").strip()
+    if not niche:
+        raise ValueError("{ niche } is required")
+
+    from multi_source_intelligence import coverage
+    return coverage.prioritized_evidence_summary(niche)
+
+
 def _brand_dna_report():
     """Customer Experience & Brand DNA (ADR-170, 2026-08-05): the real
     Company Personality / Communication Standards / Customer Journey
@@ -2815,6 +2833,7 @@ _ENDPOINTS = {
     "brand_dna_report": _brand_dna_report,
     "goos_evaluate_opportunity": _goos_evaluate_opportunity,
     "strategic_intelligence_engine_report": _strategic_intelligence_engine_report,
+    "prioritized_evidence_summary": _prioritized_evidence_summary,
 }
 
 
