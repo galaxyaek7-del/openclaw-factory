@@ -451,6 +451,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
       note:'The real CEO dashboard snapshot — capital allocation, growth, risk, next decision.' },
     { id:'ceo-home', group:'overview', title:'🏠 CEO Home', service:'ceo-home', kind:'kv',
       note:'ADR-184 (2026-08-07): the literal 60-second-glance test — company health, 6 readiness dimensions (commercial/financial/technical/marketing/legal/global), operational state, AI systems status, open critical risks, revenue/expenses/cash flow, products ready/selling/waiting, the highest-ROI real opportunity, and today\'s real executive recommendation. Every field cites an already-real, already-computed source — deliberately fast, never a fresh multi-minute scan.' },
+    { id:'eos-decision-feed', group:'overview', title:'🧭 EOS Decision Feed', service:'eos-decision-feed', kind:'list', listKey:'recommendations',
+      note:'ADR-186 (2026-08-07): every open real recommendation, each carrying Problem/Evidence/Business impact/Financial impact/Confidence/Recommended action/Estimated ROI/Time to execute/Priority — reshapes executive_brain.py, resilience_monitor.py, commercial_readiness.py, and goos.py, never a new judgment engine. Unknown fields are shown honestly, never fabricated.' },
     { id:'opportunity-pipeline', group:'opportunity', title:'Opportunity Pipeline', service:'opportunity-pipeline', kind:'list', listKey:'product_laboratory',
       note:'Every real decision the ladder has evaluated, ranked.' },
     { id:'investment-pipeline', group:'opportunity', title:'Investment Pipeline', service:'get-investment-pipeline', via:'action', kind:'list', listKey:'entries',
@@ -643,6 +645,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
   // publishing checklist, honestly showing zero real publishes today.
   const EXEC_SUMMARY_TILES = [
     { id:'ceo-home', title:'CEO Home — 60-Second Briefing' },
+    { id:'eos-decision-feed', title:'EOS Decision Feed' },
     { id:'company-health', title:'Company Health Score' },
     { id:'revenue-status', title:'Revenue Overview' },
     { id:'opportunity-pipeline', title:'Active Opportunities' },

@@ -715,6 +715,16 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('ceo_home_briefing'),
   },
   {
+    // EOS Decision Feed (ADR-186, 2026-08-07): reshapes 4 already-real
+    // engines into one consistent 9-field recommendation card shape --
+    // zero new judgment/scoring, zero fabricated ROI/time-to-execute.
+    name: 'eos-decision-feed',
+    description: "Every open real recommendation the company currently has, each carrying Problem/Evidence/Business impact/Financial impact/Confidence/Recommended action/Estimated ROI/Time to execute/Priority -- sourced from executive_brain.py (today's arbitrated directive), resilience_monitor.py (active critical/emergency risks), commercial_readiness.py (the lowest-scoring readiness dimension), and goos.py (top-ranked unbuilt opportunities). Fields with no real signal anywhere in this factory read 'Unknown', never a fabricated number.",
+    reused: 'eos_decision_feed.py::build_eos_decision_feed(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('eos_decision_feed', [], req),
+    health: pythonHealthCheck('eos_decision_feed'),
+  },
+  {
     name: 'market-intelligence',
     description: 'The most recent real market intelligence analysis (scores, risk, customer pain, pricing, AI CEO verdict).',
     reused: 'lib/dashboard_data.js readLatestMarketIntelligence() — same field this session already confirmed is served by GET /api/dashboard.',

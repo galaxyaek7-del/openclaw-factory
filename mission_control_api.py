@@ -1201,6 +1201,16 @@ def _goos_evaluate_opportunity():
     return goos.build_opportunity_intelligence_report(niche)
 
 
+def _eos_decision_feed():
+    """EOS Decision Feed (ADR-186, 2026-08-07): reshapes 4 already-real
+    engines (executive_brain, resilience_monitor, commercial_readiness,
+    goos) into the founder's exact 9-field recommendation card shape.
+    Zero new judgment/scoring -- see eos_decision_feed.py's own module
+    docstring for the full reuse rationale."""
+    from eos_decision_feed import build_eos_decision_feed
+    return build_eos_decision_feed()
+
+
 def _global_search():
     """Global Search (ADR-185, 2026-08-07): real substring search over
     the real knowledge graph snapshot + competitors + generated
@@ -2917,6 +2927,7 @@ _ENDPOINTS = {
     "create_paddle_checkout": _create_paddle_checkout,
     "ceo_home_briefing": _ceo_home_briefing,
     "global_search": _global_search,
+    "eos_decision_feed": _eos_decision_feed,
 }
 
 
