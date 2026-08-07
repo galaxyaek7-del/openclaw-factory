@@ -145,6 +145,7 @@ class TestBuildGraph(unittest.TestCase):
             affiliate_clicks_path="C:/definitely/not/a/real/affiliate_clicks.jsonl",
             affiliate_simulation_events_path="C:/definitely/not/a/real/affiliate_simulation_events.jsonl",
             council_recommendations_path="C:/definitely/not/a/real/council_recommendations.jsonl",
+            competitor_database_path="C:/definitely/not/a/real/competitor_database.json",
         )
         self.assertEqual(graph["node_count"], 0)
         self.assertEqual(graph["edge_count"], 0)
@@ -308,6 +309,7 @@ class TestLessonAndAdrNodes(unittest.TestCase):
             affiliate_clicks_path="C:/definitely/not/a/real/affiliate_clicks.jsonl",
             affiliate_simulation_events_path="C:/definitely/not/a/real/affiliate_simulation_events.jsonl",
             council_recommendations_path="C:/definitely/not/a/real/council_recommendations.jsonl",
+            competitor_database_path="C:/definitely/not/a/real/competitor_database.json",
         )
         types = {n["type"] for n in graph["nodes"]}
         self.assertIn("Lesson", types)
@@ -451,6 +453,7 @@ class TestProposalNodes(unittest.TestCase):
             affiliate_clicks_path="C:/definitely/not/a/real/affiliate_clicks.jsonl",
             affiliate_simulation_events_path="C:/definitely/not/a/real/affiliate_simulation_events.jsonl",
             council_recommendations_path="C:/definitely/not/a/real/council_recommendations.jsonl",
+            competitor_database_path="C:/definitely/not/a/real/competitor_database.json",
         )
         types = {n["type"] for n in graph["nodes"]}
         self.assertIn("Proposal", types)
@@ -502,6 +505,80 @@ class TestCouncilRecommendationNodes(unittest.TestCase):
         self.assertEqual(len(nodes), 1)
         self.assertEqual(nodes[0]["type"], "CouncilRecommendation")
         self.assertEqual(nodes[0]["niche"], "n1")
+
+
+class TestCompetitorNodes(unittest.TestCase):
+    """Knowledge Graph & Institutional Memory Engine (ADR-208, Phase 18,
+    2026-08-08): closes the real gap Phase 17's INTELLIGENCE_KNOWLEDGE_
+    GRAPH.md disclosed -- competitor data was not yet a graphed node type."""
+
+    def _write_db(self, tmp_path, db):
+        import json
+        with open(tmp_path, "w", encoding="utf-8") as f:
+            json.dump(db, f)
+        return tmp_path
+
+    def test_missing_file_is_honestly_empty(self):
+        nodes, edges = build._competitor_nodes("C:/definitely/not/a/real/competitor_database.json")
+        self.assertEqual(nodes, [])
+        self.assertEqual(edges, [])
+
+    def test_real_entry_becomes_real_competitor_nodes_and_edges(self):
+        import tempfile, os
+        path = os.path.join(tempfile.mkdtemp(), "competitor_database.json")
+        self._write_db(path, {
+            "test niche": {
+                "niche": "test niche",
+                "competitors": [
+                    {"name": "Acme Corp", "url": "https://acme.example", "source": "hacker_news", "category": "Direct Competitor", "category_reason": "real signal"},
+                ],
+            },
+        })
+        nodes, edges = build._competitor_nodes(path)
+        self.assertEqual(len(nodes), 1)
+        self.assertEqual(nodes[0]["type"], "Competitor")
+        self.assertEqual(nodes[0]["label"], "Acme Corp")
+        self.assertEqual(nodes[0]["category"], "Direct Competitor")
+        self.assertEqual(len(edges), 1)
+        self.assertEqual(edges[0]["relation"], "COMPETITOR_SOLVES_PROBLEM")
+        self.assertEqual(edges[0]["to"], "niche:test niche")
+
+    def test_competitor_with_no_name_is_skipped_never_fabricated(self):
+        import tempfile, os
+        path = os.path.join(tempfile.mkdtemp(), "competitor_database.json")
+        self._write_db(path, {"test niche": {"niche": "test niche", "competitors": [{"url": "https://x.example"}]}})
+        nodes, edges = build._competitor_nodes(path)
+        self.assertEqual(nodes, [])
+
+    def test_malformed_json_is_honestly_empty_never_crashes(self):
+        import tempfile, os
+        path = os.path.join(tempfile.mkdtemp(), "competitor_database.json")
+        with open(path, "w", encoding="utf-8") as f:
+            f.write("{not valid json")
+        nodes, edges = build._competitor_nodes(path)
+        self.assertEqual(nodes, [])
+        self.assertEqual(edges, [])
+
+    def test_build_graph_includes_real_competitor_nodes(self):
+        import tempfile, os
+        db_path = os.path.join(tempfile.mkdtemp(), "competitor_database.json")
+        self._write_db(db_path, {"test niche": {"niche": "test niche", "competitors": [{"name": "Acme Corp"}]}})
+        d, a, l, c, e = _write_jsonl([]), _write_jsonl([]), _write_jsonl([]), _write_jsonl([]), _write_jsonl([])
+        graph = build.build_graph(
+            decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e,
+            lessons_dir="C:/definitely/not/a/real/lessons/dir",
+            governance_dir="C:/definitely/not/a/real/governance/dir",
+            evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
+            decision_outcomes_path="C:/definitely/not/a/real/decision_outcomes.jsonl",
+            executive_directives_path="C:/definitely/not/a/real/executive_directives.jsonl",
+            affiliate_clicks_path="C:/definitely/not/a/real/affiliate_clicks.jsonl",
+            affiliate_simulation_events_path="C:/definitely/not/a/real/affiliate_simulation_events.jsonl",
+            council_recommendations_path="C:/definitely/not/a/real/council_recommendations.jsonl",
+            competitor_database_path=db_path,
+        )
+        types = {n["type"] for n in graph["nodes"]}
+        self.assertIn("Competitor", types)
+        self.assertEqual(graph["node_count"], 1)
 
 
 if __name__ == "__main__":

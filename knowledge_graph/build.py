@@ -84,6 +84,7 @@ EVOLUTION_QUEUE_STATE_FILE = os.path.join(FACTORY_DIR, 'data', 'evolution_queue_
 AFFILIATE_CLICKS_FILE = os.path.join(FACTORY_DIR, 'data', 'affiliate_clicks.jsonl')
 AFFILIATE_SIMULATION_EVENTS_FILE = os.path.join(FACTORY_DIR, 'data', 'affiliate_simulation_events.jsonl')
 COUNCIL_RECOMMENDATIONS_FILE = os.path.join(FACTORY_DIR, 'data', 'council_recommendations.jsonl')
+COMPETITOR_DATABASE_FILE = os.path.join(FACTORY_DIR, 'data', 'competitor_database.json')
 _ADR_FILENAME_RE = re.compile(r'^(ADR-\d+)-')
 
 
@@ -284,6 +285,46 @@ def _affiliate_event_nodes(clicks_path=None, simulation_path=None):
     return nodes
 
 
+def _competitor_nodes(competitor_database_path=None):
+    """Real Competitor nodes (Knowledge Graph & Institutional Memory
+    Engine, ADR-208, Phase 18, 2026-08-08) -- closes the exact gap
+    Phase 17's INTELLIGENCE_KNOWLEDGE_GRAPH.md disclosed and left open:
+    "competitor data is not yet a graphed node type." Every real entry
+    in data/competitor_database.json (57 real niches as of Phase 17)
+    becomes a real Competitor node, with a real edge back to its Niche
+    node ONLY when that niche was also real-evaluated in decisions.jsonl
+    (i.e. the Niche node already exists) -- never a fabricated edge to
+    a niche node that isn't real. category_reason is carried verbatim
+    (already real, disclosed confidence text -- see COMPETITOR_
+    INTELLIGENCE.md) rather than re-summarized."""
+    nodes, edges = [], []
+    path = competitor_database_path or COMPETITOR_DATABASE_FILE
+    if not os.path.exists(path):
+        return nodes, edges
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            db = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return nodes, edges
+
+    for key, entry in (db.items() if isinstance(db, dict) else []):
+        niche = entry.get("niche") or key
+        niche_id = f"niche:{_normalize(niche)}"
+        for i, comp in enumerate(entry.get("competitors") or []):
+            name = comp.get("name")
+            if not name:
+                continue
+            comp_id = f"competitor:{_normalize(niche)}:{i}"
+            nodes.append(_node(
+                comp_id, "Competitor",
+                label=name, url=comp.get("url"), source=comp.get("source"),
+                category=comp.get("category"), category_reason=comp.get("category_reason"),
+                niche=niche,
+            ))
+            edges.append(_edge(comp_id, niche_id, "COMPETITOR_SOLVES_PROBLEM", confidence="approximate"))
+    return nodes, edges
+
+
 def _council_recommendation_nodes(council_recommendations_path=None):
     """Real CouncilRecommendation nodes (Executive Intelligence Layer,
     ADR-154, 2026-07-31) -- every real record in data/
@@ -306,7 +347,7 @@ def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_co
                  evidence_path=None, lessons_dir=None, governance_dir=None, evolution_queue_state_path=None,
                  decision_outcomes_path=None, executive_directives_path=None,
                  affiliate_clicks_path=None, affiliate_simulation_events_path=None,
-                 council_recommendations_path=None):
+                 council_recommendations_path=None, competitor_database_path=None):
     decisions = _read_jsonl(decisions_path or DECISIONS_FILE)
     analyses = _read_jsonl(analyses_path or MARKET_INTELLIGENCE_ANALYSES_FILE)
     ledger = _read_jsonl(ledger_path or SALES_LEDGER_FILE)
@@ -474,6 +515,10 @@ def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_co
         _add_node(node)
     for node in _council_recommendation_nodes(council_recommendations_path):
         _add_node(node)
+    competitor_nodes, competitor_edges = _competitor_nodes(competitor_database_path)
+    for node in competitor_nodes:
+        _add_node(node)
+    edges.extend(competitor_edges)
 
     graph = {
         "schema_note": "DERIVED, DISPOSABLE snapshot -- rebuild any time via knowledge_graph.build.build_graph(). Never a source of truth; the real data lives in the JSONL files named in this module's docstring.",
