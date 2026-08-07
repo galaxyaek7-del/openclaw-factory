@@ -100,5 +100,31 @@ class GumroadArm(BaseArm):
             return [], str(e)
         return sales, None
 
+    # ── Global Commercial Revenue Operating System (ADR-202, 2026-08-07) ──
+    # Real overrides of BaseArm's default-NOT_IMPLEMENTED methods, only
+    # where gumroad_publisher.py already has the underlying real call.
+
+    def list_products(self):
+        current_status = self.status()
+        if current_status is not ArmStatus.READY:
+            return {"status": "NOT_READY", "platform": self.name, "reason": current_status.value}
+        try:
+            token = gumroad_publisher.load_token()
+            products = gumroad_publisher.list_products(token)
+        except Exception as e:
+            return {"status": "ERROR", "platform": self.name, "error": str(e)}
+        return {"status": "OK", "platform": self.name, "products": products}
+
+    def update_product(self, product_id, updates):
+        current_status = self.status()
+        if current_status is not ArmStatus.READY:
+            return {"status": "NOT_READY", "platform": self.name, "reason": current_status.value}
+        try:
+            token = gumroad_publisher.load_token()
+            result = gumroad_publisher.update_product(token, product_id, updates)
+        except Exception as e:
+            return {"status": "ERROR", "platform": self.name, "error": str(e)}
+        return {"status": "OK", "platform": self.name, "product": result}
+
 
 registry.register(GumroadArm())

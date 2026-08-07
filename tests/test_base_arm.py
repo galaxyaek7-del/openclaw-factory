@@ -191,5 +191,87 @@ class TestGumroadArm(unittest.TestCase):
             self.assertEqual(self.arm.status(), ArmStatus.COOLDOWN)
 
 
+class TestBaseArmAdditiveMethods(unittest.TestCase):
+    """ADR-202 (2026-08-07): the 6 new default-NOT_IMPLEMENTED methods
+    (list_products/update_product/verify_product/retrieve_fees/
+    retrieve_refunds/retrieve_affiliate_data) plus the real, generic
+    health_check() -- never break an arm that doesn't override them."""
+
+    def setUp(self):
+        class MinimalArm(BaseArm):
+            name = "minimal"
+
+            def status(self):
+                return ArmStatus.READY
+
+            def publish(self, product, dry_run=True):
+                return PublishResult(True, self.name, None, None, None, dry_run)
+
+        self.arm = MinimalArm()
+
+    def test_list_products_defaults_to_honest_not_implemented(self):
+        result = self.arm.list_products()
+        self.assertEqual(result["status"], "NOT_IMPLEMENTED")
+        self.assertIn("reason", result)
+
+    def test_update_product_defaults_to_honest_not_implemented(self):
+        result = self.arm.update_product("some-id", {"title": "x"})
+        self.assertEqual(result["status"], "NOT_IMPLEMENTED")
+
+    def test_retrieve_fees_defaults_to_honest_not_implemented(self):
+        self.assertEqual(self.arm.retrieve_fees()["status"], "NOT_IMPLEMENTED")
+
+    def test_retrieve_refunds_defaults_to_honest_not_implemented(self):
+        self.assertEqual(self.arm.retrieve_refunds()["status"], "NOT_IMPLEMENTED")
+
+    def test_retrieve_affiliate_data_defaults_to_honest_not_implemented(self):
+        self.assertEqual(self.arm.retrieve_affiliate_data()["status"], "NOT_IMPLEMENTED")
+
+    def test_verify_product_reports_not_implemented_when_list_products_is(self):
+        result = self.arm.verify_product("some-id")
+        self.assertEqual(result["status"], "NOT_IMPLEMENTED")
+
+    def test_health_check_reuses_status_never_a_second_network_call(self):
+        result = self.arm.health_check()
+        self.assertTrue(result["healthy"])
+        self.assertEqual(result["status"], "ready")
+        self.assertIn("checked_at", result)
+
+
+class TestGumroadArmAdditiveOverrides(unittest.TestCase):
+    def setUp(self):
+        self.arm = GumroadArm()
+
+    def test_list_products_not_ready_without_token(self):
+        with patch.object(
+            gumroad_arm_module.gumroad_publisher,
+            "load_token",
+            side_effect=gumroad_arm_module.gumroad_publisher.ConfigError("no token"),
+        ):
+            result = self.arm.list_products()
+            self.assertEqual(result["status"], "NOT_READY")
+
+    def test_list_products_real_call_when_ready(self):
+        with patch.object(
+            gumroad_arm_module.gumroad_publisher, "load_token", return_value="fake-token"
+        ), patch.object(
+            gumroad_arm_module.gumroad_publisher, "list_products", return_value=[{"id": "p1"}],
+        ) as mock_list:
+            result = self.arm.list_products()
+            self.assertEqual(result["status"], "OK")
+            self.assertEqual(result["products"], [{"id": "p1"}])
+            mock_list.assert_called_once()
+
+    def test_update_product_real_call_when_ready(self):
+        with patch.object(
+            gumroad_arm_module.gumroad_publisher, "load_token", return_value="fake-token"
+        ), patch.object(
+            gumroad_arm_module.gumroad_publisher, "update_product", return_value={"id": "p1", "name": "x"},
+        ) as mock_update:
+            result = self.arm.update_product("p1", {"name": "x"})
+            self.assertEqual(result["status"], "OK")
+            mock_update.assert_called_once_with("fake-token", "p1", {"name": "x"})
+
+
 if __name__ == "__main__":
     unittest.main()

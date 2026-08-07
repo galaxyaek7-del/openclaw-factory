@@ -332,5 +332,54 @@ class TestPaddleArmIdempotentPublish(unittest.TestCase):
         mock_create.assert_called_once()
 
 
+class TestPaddleArmAdditiveOverrides(unittest.TestCase):
+    """ADR-202 (2026-08-07): real overrides of BaseArm's default methods,
+    reusing paddle_publisher.py's already-real list_products/update_product,
+    plus retrieve_fees() parsing the fee field already present in
+    get_transactions()'s existing real response -- no new endpoint."""
+
+    def test_list_products_not_ready_without_api_key(self):
+        arm = PaddleArm()
+        with patch.object(pp, "load_api_key", side_effect=pp.ConfigError("no key")):
+            result = arm.list_products()
+        self.assertEqual(result["status"], "NOT_READY")
+
+    def test_list_products_real_call_when_ready(self):
+        arm = PaddleArm()
+        with patch.object(pp, "load_api_key", return_value="fake-key"), \
+             patch.object(pp, "list_products", return_value=[{"id": "pro_1"}]) as mock_list:
+            result = arm.list_products()
+        self.assertEqual(result["status"], "OK")
+        self.assertEqual(result["products"], [{"id": "pro_1"}])
+        mock_list.assert_called_once_with("fake-key")
+
+    def test_update_product_real_call_when_ready(self):
+        arm = PaddleArm()
+        with patch.object(pp, "load_api_key", return_value="fake-key"), \
+             patch.object(pp, "update_product", return_value={"id": "pro_1", "name": "y"}) as mock_update:
+            result = arm.update_product("pro_1", {"name": "y"})
+        self.assertEqual(result["status"], "OK")
+        mock_update.assert_called_once_with("fake-key", "pro_1", {"name": "y"})
+
+    def test_retrieve_fees_parses_real_fee_field_from_get_transactions(self):
+        arm = PaddleArm()
+        transactions = [
+            {"id": "txn_1", "details": {"totals": {"fee": "150", "grand_total": "1000"}}},
+            {"id": "txn_2", "details": {}},  # real, honest: fee field genuinely absent
+        ]
+        with patch.object(pp, "load_api_key", return_value="fake-key"), \
+             patch.object(pp, "get_transactions", return_value=transactions):
+            result = arm.retrieve_fees()
+        self.assertEqual(result["status"], "OK")
+        self.assertEqual(result["fees"][0], {"transaction_id": "txn_1", "fee_usd": 1.5})
+        self.assertEqual(result["fees"][1], {"transaction_id": "txn_2", "fee_usd": None})
+
+    def test_retrieve_fees_reports_error_when_arm_not_ready(self):
+        arm = PaddleArm()
+        with patch.object(pp, "load_api_key", side_effect=pp.ConfigError("no key")):
+            result = arm.retrieve_fees()
+        self.assertEqual(result["status"], "ERROR")
+
+
 if __name__ == "__main__":
     unittest.main()

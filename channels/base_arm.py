@@ -105,3 +105,88 @@ class BaseArm(ABC):
         """Upload the product. dry_run=True by default: validate and report,
         never call the live platform API."""
         raise NotImplementedError
+
+    # ── Global Commercial Revenue Operating System (ADR-202, 2026-08-07) ──
+    # Section 2's "common Marketplace Adapter architecture" named 14
+    # conceptual methods. 4 already exist under different, established
+    # names and are NOT duplicated here: authenticate/validate_connection
+    # both map to the real status() above (a credential-presence/format
+    # check, never a live network call -- this factory's own established
+    # discipline for every arm since ADR-4); create_product/publish_product
+    # both map to publish() (dry_run=False); retrieve_sales/
+    # retrieve_transactions map to whichever ad-hoc get_sales() an arm
+    # already defines (Paddle/Gumroad have one; Etsy/Payhip honestly
+    # don't). retrieve_checkout_url is PaddleArm.publish()'s own real
+    # PublishResult.url field, produced at publish time -- not a separate
+    # retrievable-after-the-fact call, since no arm's publisher module
+    # exposes one.
+    #
+    # The remaining 6 (list_products, update_product, verify_product,
+    # retrieve_fees, retrieve_refunds, retrieve_affiliate_data) plus
+    # health_check are genuinely new here -- added as safe, non-abstract,
+    # default-NOT_IMPLEMENTED methods so adding them can never break any
+    # of the 4 existing concrete arms (Gumroad/Etsy/Payhip/Paddle), which
+    # override none of them unless a real underlying publisher function
+    # already exists (paddle_publisher.py/gumroad_publisher.py both real
+    # already have list_products()/update_product(); neither
+    # etsy_publisher.py nor payhip_publisher.py does -- confirmed by
+    # direct grep, not assumed). "Never invent endpoints" (directive's
+    # own words): retrieve_fees/retrieve_refunds/retrieve_affiliate_data
+    # stay NOT_IMPLEMENTED on every arm today -- no publisher module in
+    # this factory has ever called a real fees/refunds/affiliate endpoint
+    # on any platform, so none is fabricated here either.
+
+    def list_products(self):
+        """Real product list from the platform, when the arm's publisher
+        module actually supports it. Default: honest gap, not a guess."""
+        return {"status": "NOT_IMPLEMENTED", "platform": self.name, "reason": "no real list-products call wired for this arm"}
+
+    def update_product(self, product_id, updates):
+        """Real product update, when supported. Default: honest gap."""
+        return {"status": "NOT_IMPLEMENTED", "platform": self.name, "reason": "no real update-product call wired for this arm"}
+
+    def verify_product(self, product_id):
+        """Confirms a previously-published product_id still exists on the
+        platform by re-listing and matching -- never assumes success from
+        the original publish() call alone. Built generically here (not
+        per-arm) since the logic is identical wherever list_products() is
+        real: any arm that implements list_products() gets this for free."""
+        listing = self.list_products()
+        if isinstance(listing, dict) and listing.get("status") == "NOT_IMPLEMENTED":
+            return {"status": "NOT_IMPLEMENTED", "platform": self.name, "reason": "verification requires a real list_products() call, not wired for this arm"}
+        products = listing if isinstance(listing, list) else listing.get("products", [])
+        found = any(str(p.get("id")) == str(product_id) for p in products if isinstance(p, dict))
+        return {"status": "VERIFIED" if found else "NOT_FOUND", "platform": self.name, "product_id": product_id}
+
+    def retrieve_fees(self):
+        """Real per-transaction platform fees, when the platform's own
+        already-fetched transaction/sale payload actually carries a fee
+        field. Default: honest gap -- no publisher module in this
+        factory has ever parsed a fee field from any platform response."""
+        return {"status": "NOT_IMPLEMENTED", "platform": self.name, "reason": "no real fee field parsed from this arm's transaction/sale data"}
+
+    def retrieve_refunds(self):
+        """Default: honest gap. No arm's publisher module calls a real
+        refunds/adjustments endpoint anywhere in this factory today --
+        confirmed by direct grep before this method was added, not
+        assumed. Never call an unverified endpoint to fill this in."""
+        return {"status": "NOT_IMPLEMENTED", "platform": self.name, "reason": "no real refunds endpoint is called by this arm's publisher module"}
+
+    def retrieve_affiliate_data(self):
+        """Default: honest gap. Distinct from affiliate_commerce/ (a
+        separate, real Amazon Associates system, not part of any
+        BaseArm) -- no distribution arm here has its own affiliate API."""
+        return {"status": "NOT_IMPLEMENTED", "platform": self.name, "reason": "no real affiliate-program API is wired for this arm"}
+
+    def health_check(self):
+        """A real, safe, generic implementation: reuses status() exactly
+        (never a second live network call) and adds a timestamp so a
+        caller can distinguish a fresh check from a cached one."""
+        from datetime import datetime, timezone
+        current_status = self.status()
+        return {
+            "platform": self.name,
+            "status": current_status.value,
+            "healthy": current_status == ArmStatus.READY,
+            "checked_at": datetime.now(timezone.utc).isoformat(),
+        }

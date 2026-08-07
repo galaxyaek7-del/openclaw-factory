@@ -135,5 +135,50 @@ class PaddleArm(BaseArm):
             return [], str(e)
         return transactions, None
 
+    # ── Global Commercial Revenue Operating System (ADR-202, 2026-08-07) ──
+    # Real overrides of BaseArm's default-NOT_IMPLEMENTED methods, only
+    # where paddle_publisher.py already has the underlying real call.
+
+    def list_products(self):
+        current_status = self.status()
+        if current_status is not ArmStatus.READY:
+            return {"status": "NOT_READY", "platform": self.name, "reason": current_status.value}
+        try:
+            api_key = paddle_publisher.load_api_key()
+            products = paddle_publisher.list_products(api_key)
+        except Exception as e:
+            return {"status": "ERROR", "platform": self.name, "error": str(e)}
+        return {"status": "OK", "platform": self.name, "products": products}
+
+    def update_product(self, product_id, updates):
+        current_status = self.status()
+        if current_status is not ArmStatus.READY:
+            return {"status": "NOT_READY", "platform": self.name, "reason": current_status.value}
+        try:
+            api_key = paddle_publisher.load_api_key()
+            result = paddle_publisher.update_product(api_key, product_id, updates)
+        except Exception as e:
+            return {"status": "ERROR", "platform": self.name, "error": str(e)}
+        return {"status": "OK", "platform": self.name, "product": result}
+
+    def retrieve_fees(self):
+        """Reads the `details.totals.fee` field Paddle's own real
+        /transactions response already carries (same endpoint get_sales()
+        already calls -- no new endpoint) -- never invented, and honestly
+        per-transaction Unknown when the field is genuinely absent rather
+        than defaulted to 0."""
+        transactions, error = self.get_sales()
+        if error:
+            return {"status": "ERROR", "platform": self.name, "error": error}
+        fees = []
+        for txn in transactions:
+            try:
+                fee_cents = txn.get("details", {}).get("totals", {}).get("fee")
+                fee = round(int(fee_cents) / 100, 2) if fee_cents is not None else None
+            except (TypeError, ValueError, AttributeError):
+                fee = None
+            fees.append({"transaction_id": txn.get("id"), "fee_usd": fee})
+        return {"status": "OK", "platform": self.name, "fees": fees}
+
 
 registry.register(PaddleArm())
