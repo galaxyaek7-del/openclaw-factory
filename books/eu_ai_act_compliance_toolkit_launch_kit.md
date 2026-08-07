@@ -1,8 +1,10 @@
 # EU AI Act Compliance Toolkit — Commercial Launch Kit
 
 Product: `books/eu_ai_act_compliance_toolkit.pdf` (31 pages, real, technically + commercially validated)
-Price: **$310** | Channel: Gumroad (`gumroad_elite` tier, 90% royalty, net $279.00/unit)
-Status: MVP built and validated. Publishing blocked only on a real external gate (no live Gumroad credential / Paddle onboarding incomplete — founder action required).
+Price: **$155** (Premium tier) | Channel: **Paddle** — real, live product created 2026-08-07 (`pro_01kzdzzh4kv6bkpzfhd5r1jnkn`, price `pri_01kzdzzhhnfs8b3jraewg022kp`, $155.00 active)
+Status: MVP built and validated. Product and price are real and live in the founder's Paddle account. Checkout itself is blocked only on a real external gate (Paddle account onboarding still incomplete — founder action required); Gumroad remains a second option, still with no live credential. The moment either clears, this exact listing is purchasable with zero further engineering.
+
+**Pricing correction (2026-08-07):** the original $310 price was validated only against `gumroad_elite`, a higher, more exclusive tier (ADR-027 Elite Asset Doctrine, $97+ floor) — and $310 sat exactly at that tier's $10/page ceiling (31 × $10), not comfortably under it. Direct verification against `economics.py`'s actual default tier for this product type (`gumroad_premium`, $5/page cap) found $310 flagged `market_realistic=False`, honest suggested price $155. The founder approved Premium-tier positioning at $155 as the official launch price. Elite tier ($310) remains real and validated (`gumroad_elite`, `market_realistic=True`) — `pricing_review.py` now runs automatically, once per day, and will notify the founder the moment there is real, evidence-backed reason (a real paid customer *and* a real review) to revisit it. Never on elapsed time.
 
 **Regulatory correction (2026-08-06):** a live regulatory check found the original content and every section below had been built around a claim that is no longer accurate — that EU AI Act high-risk system obligations reached full enforcement on August 2, 2026. Current, multi-source evidence (the European Commission's own official enforcement announcement, corroborated by independent law-firm analysis) indicates the 2026 Digital Omnibus on AI deferred that specific deadline to December 2, 2027, while only Article 50 transparency obligations (chatbot/deepfake disclosure) actually took effect August 2, 2026. Both the shipped PDF and every section below have been corrected to reflect this. This is disclosed with an honest caveat in the product itself: as of correction, the Digital Omnibus amendments were provisionally agreed but pending final formal adoption — treat any specific date as needing a live re-check before final reliance.
 
@@ -10,31 +12,32 @@ No fabricated social proof anywhere in this document. This factory has 0 real sa
 
 ---
 
-## 1. Pre-Publication Checklist (do this the moment a channel is live)
+## 1. Pre-Publication Checklist (do this the moment checkout is live)
 
-- [ ] Confirm Gumroad account is live and `GUMROAD_ACCESS_TOKEN` is set, **or** confirm Paddle checkout is enabled (`python scripts/check_paddle_checkout_status.py --json` — re-check live, don't trust yesterday's result)
-- [ ] Upload `books/eu_ai_act_compliance_toolkit.pdf` (139,121 bytes, 31 pages — verified non-corrupt, opens via pypdf, includes a real front-matter legal disclaimer and the corrected December 2027 regulatory timeline)
-- [ ] Upload cover `books/covers/eu_ai_act_compliance_toolkit_cover.png` (1600×2560, quality-checked)
-- [ ] Set price to $310.00 (validated: clears `gumroad_elite`'s $70 net floor and $10/page market-realism cap at 31 pages)
+- [x] Real Paddle product + price created (`pro_01kzdzzh4kv6bkpzfhd5r1jnkn` / `pri_01kzdzzhhnfs8b3jraewg022kp`, $155.00)
+- [ ] Confirm Paddle checkout is enabled (`python scripts/check_paddle_checkout_status.py --json` — re-check live, don't trust yesterday's result) **or** confirm Gumroad account is live and `GUMROAD_ACCESS_TOKEN` is set
+- [x] `books/eu_ai_act_compliance_toolkit.pdf` ready (139,121 bytes, 31 pages — verified non-corrupt, opens via pypdf, includes a real front-matter legal disclaimer and the corrected December 2027 regulatory timeline)
+- [x] Cover ready: `books/covers/eu_ai_act_compliance_toolkit_cover.png` (1600×2560, quality-checked)
+- [x] Price set to $155.00 (verified: `economics.evaluate(155, 'gumroad_premium', config, page_count=31)` → `market_realistic=True`, net $139.50 clears the $25 floor)
 - [ ] Paste product page copy from Section 2 below
 - [ ] Paste SEO title/description/tags from Sections 4–6
 - [ ] Add the legal disclaimer verbatim (Section 2, "Important note") — this factory makes no legal-advice claims, matching how both real competitors (governancedocs.com, riskprofs.com) position themselves
-- [ ] Enable Gumroad's "pay what you want" OFF — fixed $310, no discount code live at launch (see Section 3 for when to introduce one)
-- [ ] Turn on Gumroad's review/rating collection (this is the real, honest way to start accumulating real social proof — never fabricate it in the meantime)
+- [ ] No discount code live at launch — fixed $155, see Section 3 for the real, evidence-gated path to a higher tier
+- [ ] Turn on real review/rating collection (this is the real, honest way to start accumulating real social proof — never fabricate it in the meantime; each real review also feeds `pricing_review.py`'s automatic Elite-tier check)
 - [ ] Confirm delivery is instant digital download (already true — PDF is self-contained, no follow-up fulfillment needed)
-- [ ] Once live: run `python scripts/check_paddle_checkout_status.py --json` or the Gumroad-equivalent real check to confirm the listing is actually purchasable end-to-end (a real test purchase if affordable, or Gumroad's own preview-checkout tool) before any promotion goes out
+- [ ] Once checkout is live: run `python scripts/check_paddle_checkout_status.py --json` to confirm the listing is actually purchasable end-to-end (a real test purchase if affordable) before any promotion goes out
 
 ---
 
-## 2. Gumroad Product Page
+## 2. Product Page (Paddle checkout page / Gumroad, whichever activates first)
 
 **Product name:**
 EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs
 
-**Tagline (Gumroad subheadline, ~120 chars):**
+**Tagline (~120 chars):**
 Everything a small AI-deploying business needs to get audit-ready — without hiring a compliance consultancy.
 
-**Full description (Gumroad body):**
+**Full description:**
 
 > **The EU AI Act's transparency rules are already enforced. The high-risk deadline just moved to December 2027 — which means you have real runway, if you start now.**
 >
@@ -71,28 +74,31 @@ Everything a small AI-deploying business needs to get audit-ready — without hi
 
 ## 3. Pricing Strategy
 
-**Launch price: $310** (one-time).
+**Launch price: $155** (one-time, Premium tier — founder-approved 2026-08-07).
 
 Real market anchors found and verified this session:
 - `governancedocs.com` — 60 templates, **$99**, real dated customer reviews (Aug 2026)
 - `riskprofs.com` — 80+ templates, **$699**, no visible reviews
-- Our toolkit sits **between** them: fewer raw template files than either competitor, but a genuine 31-page *implementation guide* (a different value shape — narrative + checklists, not a raw document dump) at a price justified by depth and specificity to SME resourcing constraints.
+- Our toolkit sits **between** them: fewer raw template files than either competitor, but a genuine 31-page *implementation guide* (a different value shape — narrative + checklists, not a raw document dump).
 
-**A real, verified competitive differentiator (checked 2026-08-06, same day as the regulatory correction above):** re-checked both competitor pages specifically for how they describe the EU AI Act's enforcement timeline. Neither mentions the Digital Omnibus deferral or any specific 2027 date — `governancedocs.com` uses only vague "phasing in through 2025 and 2026" language, and `riskprofs.com` makes no enforcement-timeline claim at all. Neither is *wrong*, exactly — they're just imprecise, which incidentally means neither fell into the specific trap our own first draft did. Our corrected toolkit is now the most specific, most currently-accurate option in this niche on this exact point, with a citation-quality explanation (the Deadlines chapter) neither competitor offers. This is a real, evidence-based differentiator worth stating plainly in the product page and sales copy — never framed as "competitors are wrong," since they aren't; framed as "the only toolkit that tells you the real current deadline and where it came from."
+**A real, verified competitive differentiator (checked 2026-08-06):** re-checked both competitor pages specifically for how they describe the EU AI Act's enforcement timeline. Neither mentions the Digital Omnibus deferral or any specific 2027 date — `governancedocs.com` uses only vague "phasing in through 2025 and 2026" language, and `riskprofs.com` makes no enforcement-timeline claim at all. Our corrected toolkit is the most specific, most currently-accurate option in this niche on this exact point, with a citation-quality explanation (the Deadlines chapter) neither competitor offers — framed as "the only toolkit that tells you the real current deadline and where it came from," never "competitors are wrong."
 
-**Why not price lower:** the founder's explicit criterion was $300+; $310 clears `gumroad_elite`'s real commercial floor with margin ($279.00 net) and reads as a deliberate, confident price next to a $99 "basic" competitor — not a discount alternative to it.
+**Why $155, not $310:** $310 was only ever validated against `gumroad_elite`, a tier this product was never deliberately positioned for, and it sat exactly at that tier's per-page ceiling — a marginal justification, not a robust one. $155 is the honest figure under `gumroad_premium`, the tier this product's own generation pipeline actually defaults to (`product_type: "premium"`), verified `market_realistic=True` with real margin (net $139.50 against a $25 floor, not a boundary case). It also reads as a confident, credible price against the $99 "basic" competitor without needing an Elite-tier justification this specific product hasn't yet earned through real sales.
 
-**Why not price at $699:** we have no reviews yet and fewer raw template files than riskprofs.com. Pricing at parity with an unreviewed product against an established $699 competitor risks a stalled first sale. $310 is the real, defensible middle position until reviews exist.
+**Why not price at $699:** we have no reviews yet and fewer raw template files than riskprofs.com. Pricing at parity with an unreviewed product against an established $699 competitor risks a stalled first sale.
 
-**Progression plan (do NOT do any of this at launch — sequence matters):**
-1. **Weeks 1–4:** hold at $310 flat. No discount code. The goal is the first 3–5 real sales and real reviews, not maximum volume.
-2. **After 3+ real reviews exist:** consider a $50 "founding price" increase to $399, framed honestly ("price increases as the toolkit is updated for new enforcement guidance") — never framed as fake scarcity.
-3. **Recurring-revenue extension (the founder's stated preference):** once the base toolkit has real sales, offer a **$29/quarter "Regulatory Update Subscription"** — the EU AI Act's obligations continue phasing in through 2027 (GPAI model rules, further Annex III categories), so quarterly updates are a real, legitimate recurring value-add, not an artificial paywall on unchanged content. This is the real path to the founder's "recurring revenue preferred" criterion.
-4. **Never** run a launch-day discount — a $310 product discounted on day one undermines the exact "we are not the cheap option" positioning that justifies the price against the $99 competitor.
+**The real, automatic path to Elite tier ($310) — not a manual guess, a mechanical trigger:**
+`pricing_review.py` (wired into `factory_loop.js`'s daily tick) checks, once per day, whether this product has **both** (a) at least one real paid customer whose request matched this exact Paddle `product_id` and reached `PAID` or later, and (b) at least one real review left on one of those same real requests. Neither condition alone triggers anything — no review-less sale, no elapsed time, no manual reminder. The moment both are real, the founder gets a real Telegram notification citing the exact evidence and a live re-run of `economics.evaluate(310, 'gumroad_elite', ...)`, which is already confirmed to pass (`market_realistic=True`) — the Elite-tier number itself was never in question, only whether there's evidence to justify moving to it.
+
+**Progression plan:**
+1. **Now, until the trigger fires:** hold at $155 flat. No discount code. The goal is the first real sale and the first real review — both, not just one.
+2. **Once `pricing_review.py` reports ready:** re-evaluate moving new listings to $310 Elite-tier positioning, informed by whatever the real review actually said, not assumed in advance.
+3. **Recurring-revenue extension (the founder's stated preference):** once the base toolkit has real sales, offer a **$29/quarter "Regulatory Update Subscription"** — the EU AI Act's obligations continue phasing in through 2027 (GPAI model rules, further Annex III categories), so quarterly updates are a real, legitimate recurring value-add, not an artificial paywall on unchanged content.
+4. **Never** run a launch-day discount — undermines the "not the cheap option" positioning against the $99 competitor.
 
 ---
 
-## 4. SEO Title (3 real variants — test on Gumroad, pick the better performer once there's data)
+## 4. SEO Title (3 real variants — test live, pick the better performer once there's data)
 
 1. `EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs`
 2. `EU AI Act Compliance Toolkit 2026: Risk Classification, Documentation & Audit Checklist`
@@ -134,16 +140,16 @@ Most compliance kits on the market are raw document dumps — 60, 80 templates w
 Not legal advice — and we say that plainly, not as a disclaimer buried in fine print. This toolkit gets you most of the way to audit-ready and makes whatever legal or consulting spend you do need dramatically more targeted, instead of paying a law firm to explain Annex III to you from scratch.
 
 **Call to action:**
-Get audit-ready this week for less than one hour of most compliance consultants' time. $310, instant download.
+Get audit-ready this week for less than one hour of most compliance consultants' time. $155, instant download.
 
 ---
 
-## 8. Landing Page (standalone, for a future direct-sale page — same structure works on `customer_site/` or a Gumroad-linked page)
+## 8. Landing Page (standalone, for a future direct-sale page — same structure works on `customer_site/` or a Paddle/Gumroad-linked page)
 
 **Section 1 — Hero**
 - Headline: "Get audit-ready for the EU AI Act — without a consultancy retainer"
 - Subhead: "The practical 31-page toolkit built for SME compliance officers, DPOs, and founders."
-- CTA button: "Get the Toolkit — $310"
+- CTA button: "Get the Toolkit — $155"
 - Real urgency line (not fabricated scarcity): "Transparency rules are enforced today. The high-risk deadline is December 2, 2027 — real runway, not indefinite."
 
 **Section 2 — The problem**
@@ -157,10 +163,10 @@ For: SME compliance officers, DPOs, founders directly responsible for AI deploym
 Not for: enterprises with an existing in-house legal/compliance team who need bespoke counsel — this is a starting toolkit, not a law firm replacement.
 
 **Section 5 — Social proof**
-`[PLACEHOLDER — do not populate until real reviews exist. Once ≥1 real Gumroad review exists, quote it verbatim with the reviewer's real name/initials, exactly the discipline this factory already applies to every other evidence citation. An empty section here is more honest than a fabricated one.]`
+`[PLACEHOLDER — do not populate until real reviews exist. Once >=1 real review exists, quote it verbatim with the reviewer's real name/initials, exactly the discipline this factory already applies to every other evidence citation. An empty section here is more honest than a fabricated one. That same real review is also what pricing_review.py checks for.]`
 
 **Section 6 — Pricing**
-$310, one-time, instant digital download. (Recurring update subscription introduced later, per Section 3.)
+$155, one-time, instant digital download. (Recurring update subscription introduced later, per Section 3.)
 
 **Section 7 — FAQ**
 - "Is this legal advice?" → No. It's a practical implementation toolkit that makes your eventual legal counsel more efficient, not a replacement for it.
@@ -180,18 +186,19 @@ Real asset that already exists: `books/covers/eu_ai_act_compliance_toolkit_cover
 Copy for assets that would need actual image generation/design work (out of this factory's current automated capability — book_generator.py produces book covers, not social graphics — disclosed honestly rather than fabricating a capability that doesn't exist):
 
 - **LinkedIn post graphic copy:** "The EU AI Act is enforced. Is your compliance program?" over the product cover image.
-- **Square social tile copy (1080×1080):** "31-page EU AI Act Compliance Toolkit — $310" with the cover thumbnail.
-- **Before/after comparison graphic copy (for organic posts):** "Consultancy retainer: $15,000+, 2-week wait. This toolkit: $310, instant." — a real, honest cost comparison, not a fabricated one (consultancy pricing is a general market fact, not a specific claim about any named competitor).
+- **Square social tile copy (1080×1080):** "31-page EU AI Act Compliance Toolkit — $155" with the cover thumbnail.
+- **Before/after comparison graphic copy (for organic posts):** "Consultancy retainer: $15,000+, 2-week wait. This toolkit: $155, instant." — a real, honest cost comparison, not a fabricated one (consultancy pricing is a general market fact, not a specific claim about any named competitor).
 
-Recommendation: the founder (or a design tool like Canva) turns these copy blocks into actual graphics — no new code is needed for this, and building an image-generation pipeline now would be exactly the "more architecture" this directive said to stop doing.
+Recommendation: the founder (or a design tool like Canva) turns these copy blocks into actual graphics — no new code is needed for this, and building an image-generation pipeline now would be more architecture than this directive calls for.
 
 ---
 
 ## 10. Launch Checklist (sequenced)
 
 **Day 0 (publish):**
-- [ ] Complete Section 1's pre-publication checklist
-- [ ] Product live on Gumroad at $310
+- [x] Real Paddle product + price created
+- [ ] Complete Section 1's remaining pre-publication checklist
+- [ ] Product purchasable the moment Paddle checkout (or Gumroad) activates, at $155
 - [ ] Verify a real test checkout completes end-to-end
 
 **Day 0–1 (first-wave outreach):**
@@ -201,11 +208,12 @@ Recommendation: the founder (or a design tool like Canva) turns these copy block
 
 **Day 2–7:**
 - [ ] Publish 1 piece of real, genuinely useful free content (e.g., a short "how EU AI Act risk classification actually works" post) that links to the toolkit — value-first, not pure pitch
-- [ ] Monitor Gumroad analytics for real traffic/conversion data (Section 15)
+- [ ] Monitor real analytics for real traffic/conversion data (Section 15)
 
 **Day 7+:**
 - [ ] After the first real sale: request a review, respond personally, and only then update the landing page's social-proof section with the real quote
-- [ ] Begin the recurring-subscription offer only after ≥3 real base-toolkit sales (validates the market before adding a second commitment ask)
+- [ ] `pricing_review.py` picks up the real sale + review automatically on its next daily check — no manual step needed to trigger the Elite-tier evaluation
+- [ ] Begin the recurring-subscription offer only after >=3 real base-toolkit sales (validates the market before adding a second commitment ask)
 
 ---
 
@@ -219,9 +227,9 @@ Recommendation: the founder (or a design tool like Canva) turns these copy block
 1. LinkedIn (organic) — highest-fit channel for this buyer persona (compliance/DPO professionals are LinkedIn-native)
 2. Relevant compliance/GRC communities and newsletters (where self-promotion is permitted)
 3. Direct/cold outreach to compliance officers at AI-deploying SMEs (Section 12)
-4. SEO — the Gumroad listing itself, optimized per Sections 4–6, is a real organic-search asset from day one
+4. SEO — the product listing itself, optimized per Sections 4–6, is a real organic-search asset from day one
 
-**Core message across every channel:** "The high-risk deadline just moved to December 2027 — real runway, and the exact reason to start now instead of month fourteen. Here's a $310 starting point instead of a $15,000 retainer."
+**Core message across every channel:** "The high-risk deadline just moved to December 2027 — real runway, and the exact reason to start now instead of month fourteen. Here's a $155 starting point instead of a $15,000 retainer."
 
 **Budget:** $0 paid ads at launch — this factory has zero real customer-acquisition data yet; spending on ads before knowing real conversion rate would be guessing with money. Revisit paid channels only after organic traffic produces real conversion data (Section 15).
 
@@ -235,7 +243,7 @@ Given this factory has **zero existing email list, zero existing audience, and z
 2. **Compliance/GRC online communities**: r/gdpr, r/msp-adjacent compliance forums, GRC-focused Slack/Discord communities, and AI governance LinkedIn Groups — participate with real value first.
 3. **Direct/cold outreach**: a short, honest cold-email/LinkedIn-DM template (see Section 13) sent to compliance officers at real, identifiable SMEs with visible AI products — never at scale/spam volume, genuinely targeted.
 4. **Content marketing / SEO**: publish short, genuinely useful explainer content (e.g., "How to classify your AI system under the EU AI Act in 15 minutes") that links to the toolkit — this is real, compounding, zero-cost acquisition once a few pieces exist.
-5. **Gumroad's own discovery**: properly tagged/SEO'd listings (Sections 4–6) get real organic Gumroad search traffic without any outside promotion.
+5. **Direct/organic discovery**: properly tagged/SEO'd listings (Sections 4–6) get real organic search traffic without any outside promotion.
 
 **What this factory is explicitly NOT doing at launch:** paid ads, affiliate programs, or influencer partnerships — all three require either budget or negotiated relationships this factory doesn't have yet. Revisit each only after real organic data justifies the spend.
 
@@ -253,7 +261,7 @@ Given this factory has **zero existing email list, zero existing audience, and z
 >
 > I noticed [Company] has an AI product live in the EU — with the high-risk obligations deadline now set for December 2027, I imagine compliance planning is on your radar even if it's not urgent yet.
 >
-> I put together a practical 31-page implementation toolkit (risk classification, technical documentation, audit-readiness checklist, 90-day SME roadmap) — built as a faster, cheaper starting point than a consultancy scoping engagement. $310, not legal advice, but genuinely useful before you talk to counsel.
+> I put together a practical 31-page implementation toolkit (risk classification, technical documentation, audit-readiness checklist, 90-day SME roadmap) — built as a faster, cheaper starting point than a consultancy scoping engagement. $155, not legal advice, but genuinely useful before you talk to counsel.
 >
 > Here's the link if it's useful: [link]
 >
@@ -263,10 +271,10 @@ Given this factory has **zero existing email list, zero existing audience, and z
 
 **B. Post-purchase sequence (real, triggers on an actual sale — 2 emails):**
 
-*Email 1 — instant delivery confirmation (Gumroad sends this automatically; this is the optional personal follow-up):*
+*Email 1 — instant delivery confirmation (optional personal follow-up):*
 > Subject: Your EU AI Act Compliance Toolkit + one quick ask
 >
-> Thanks for picking this up. If you get value from it, a real review on Gumroad genuinely helps other compliance teams find it — takes 60 seconds.
+> Thanks for picking this up. If you get value from it, a real review genuinely helps other compliance teams find it — takes 60 seconds.
 > If anything in the toolkit is unclear, just reply — I read every message.
 
 *Email 2 — 7 days later:*
@@ -283,12 +291,12 @@ Given this factory has **zero existing email list, zero existing audience, and z
 **Post 1 — Launch announcement:**
 > The EU AI Act's high-risk deadline just moved to December 2027 (the 2026 Digital Omnibus on AI). Most SMEs I talk to are treating that as "later" — which means most of them will still be doing their first real risk classification in month fourteen of sixteen.
 >
-> I put together a 31-page practical toolkit — risk classification, technical documentation, conformity assessment, audit-readiness checklist, 90-day roadmap. Built for teams without an in-house compliance department. $310, link in comments.
+> I put together a 31-page practical toolkit — risk classification, technical documentation, conformity assessment, audit-readiness checklist, 90-day roadmap. Built for teams without an in-house compliance department. $155, link in comments.
 
 **Post 2 — Value-first (no direct pitch), ~3 days later:**
 > The single most expensive mistake I see in EU AI Act compliance isn't missing a document — it's misclassifying your own system under Annex III. Here's the actual decision logic: [short real breakdown, 3-4 bullet points from the toolkit's own risk-classification chapter]
 
-**Post 3 — Social proof (only once real, ≥1):**
+**Post 3 — Social proof (only once real, >=1):**
 > `[PLACEHOLDER — publish only when a real customer review exists; quote it verbatim with attribution]`
 
 **Secondary channel: X/Twitter** — shorter versions of the same 3 posts, since this factory has no existing audience there either; treat as a secondary distribution of the same real content, not a separate strategy.
@@ -300,18 +308,18 @@ Given this factory has **zero existing email list, zero existing audience, and z
 ## 15. Continuous Optimization Plan
 
 **What to measure (once real data exists):**
-- Gumroad's own real analytics: page views → checkout starts → completed sales (real conversion funnel, no fabrication needed since Gumroad tracks this natively)
-- Traffic source breakdown (LinkedIn vs. community posts vs. Gumroad organic search) — tells you which of Section 12's channels is actually real
+- Real Paddle analytics: page views → checkout starts → completed sales (real conversion funnel)
+- Traffic source breakdown (LinkedIn vs. community posts vs. organic search) — tells you which of Section 12's channels is actually real
 - Time-to-first-sale from launch (a real, single data point worth recording)
 
 **What to iterate, in order:**
 1. **If traffic exists but conversion is low:** the product page copy (Section 2/7) is the first thing to test — try the alternate SEO titles (Section 4) and a shorter vs. longer description.
 2. **If traffic is low:** the acquisition channel mix (Section 12) needs more real outreach volume before concluding the product itself is the problem.
-3. **After 3+ real sales:** introduce real review quotes into the landing page (Section 8) and re-test conversion — this is the single highest-leverage, zero-cost lever available once it's real.
-4. **After 5+ real sales:** revisit the pricing progression in Section 3 (consider the $399 step, and pilot the $29/quarter recurring-update offer to convert one-time buyers into recurring revenue — directly serving the founder's stated recurring-income priority).
+3. **After the first real sale + review:** `pricing_review.py` automatically flags Elite-tier ($310) readiness — re-test conversion at whichever price is chosen next, informed by the real review content, not assumed in advance.
+4. **After 5+ real sales:** pilot the $29/quarter recurring-update offer to convert one-time buyers into recurring revenue — directly serving the founder's stated recurring-income priority.
 
-**Cadence:** review real Gumroad analytics weekly for the first month, then monthly. Never optimize based on fewer than ~10 real visits or ~3 real sales — sample sizes below that produce noise, not signal, and this factory's own Truth First discipline applies here exactly as everywhere else: no conclusion without real evidence behind it.
+**Cadence:** review real analytics weekly for the first month, then monthly. Never optimize based on fewer than ~10 real visits or ~3 real sales — sample sizes below that produce noise, not signal, and this factory's own Truth First discipline applies here exactly as everywhere else: no conclusion without real evidence behind it.
 
 ---
 
-*All 15 deliverables complete. Every number, price, and evidence citation above traces to a real source already recorded this session (`data/market_evidence.jsonl`, the real technical/commercial inspection results, and the real competitor pages verified via WebFetch). No fabricated testimonials, sales counts, or urgency claims — placeholders are explicitly marked as placeholders, to be filled only with real data as it exists.*
+*All 15 deliverables complete and price-corrected 2026-08-07. Every number, price, and evidence citation above traces to a real source (`data/market_evidence.jsonl`, `economics.py`'s live evaluation, the real technical/commercial inspection results, the real competitor pages verified via WebFetch, and the real Paddle product/price IDs created this session). No fabricated testimonials, sales counts, or urgency claims — placeholders are explicitly marked as placeholders, to be filled only with real data as it exists.*
