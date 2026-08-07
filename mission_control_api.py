@@ -1201,6 +1201,17 @@ def _goos_evaluate_opportunity():
     return goos.build_opportunity_intelligence_report(niche)
 
 
+def _business_development_dashboard():
+    """Global Business Development Division (ADR-188, 2026-08-07):
+    founder's explicit Golden Rule override, matching the ADR-149/150
+    precedent. Real, WebSearch-verified opportunity registry across 19
+    platforms + a real, persisted CRM-style partnership pipeline -- see
+    business_development.py's own module docstring for the full
+    evidence discipline."""
+    from business_development import build_business_development_dashboard
+    return build_business_development_dashboard()
+
+
 def _eos_decision_feed():
     """EOS Decision Feed (ADR-186, 2026-08-07): reshapes 4 already-real
     engines (executive_brain, resilience_monitor, commercial_readiness,
@@ -1976,11 +1987,27 @@ def _build_combined_executive_report_markdown(title):
     import gfos
     ceo_md = gfos.render_if_i_were_the_ceo_markdown()
 
+    # Autonomous Evolution Protocol (ADR-187, 2026-08-07): the founder's
+    # "every week generate automatically: OPENCLAW EVOLUTION REPORT"
+    # directive. evolution_engine.py's Galaxy Evolution Report (ADR-173)
+    # already covers 9 of the 10 named sections monthly; extended with
+    # the 4 missing ones (commercial/strategic debt, competitive
+    # threats, what should never be built) and folded into this same
+    # already-real Sunday-gated weekly export -- exact same precedent as
+    # the "If I Were The CEO" line above, never a new report generator
+    # or a new scheduling mechanism. The standalone monthly cadence
+    # (factory_loop.js's maybeGenerateMonthlyGalaxyEvolutionReport)
+    # stays as-is for its own dated report file; this is the weekly
+    # inline copy the directive specifically asked for.
+    import evolution_engine
+    evolution_md = evolution_engine.render_galaxy_evolution_report_markdown()
+
     combined_md = (
         f"# {title}\n\n"
         f"Generated: {datetime.now(timezone.utc).isoformat()}\n\n"
         "---\n\n## Executive Summary\n\n" + executive_md +
         "\n\n---\n\n## If I Were The CEO\n\n" + ceo_md +
+        "\n\n---\n\n## Evolution Report\n\n" + evolution_md +
         "\n\n---\n\n## Strategic Recommendations\n\n" + strategic_md +
         "\n\n---\n\n## Validation\n\n" + validation_md +
         "\n\n---\n\n## Revenue\n\n" + revenue_md +
@@ -2928,6 +2955,7 @@ _ENDPOINTS = {
     "ceo_home_briefing": _ceo_home_briefing,
     "global_search": _global_search,
     "eos_decision_feed": _eos_decision_feed,
+    "business_development_dashboard": _business_development_dashboard,
 }
 
 

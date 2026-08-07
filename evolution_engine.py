@@ -232,6 +232,84 @@ def build_galaxy_evolution_report(decisions_path=None, outcomes_path=None, timel
         },
         "customer_success_bottleneck": base["customer_success_bottleneck"],
         "generated_at": base["generated_at"],
+        # Autonomous Evolution Protocol (ADR-187, 2026-08-07): 4 sections
+        # the founder's directive named that build_galaxy_evolution_report()
+        # didn't yet carry explicitly. Each is pure citation over an
+        # already-real, already-cheap source -- no new judgment engine,
+        # same discipline as every field above.
+        "commercial_debt": _commercial_debt(),
+        "strategic_debt": _strategic_debt(),
+        "competitive_threats": _competitive_threats(),
+        "never_build": _never_build_list(),
+    }
+
+
+def _commercial_debt():
+    try:
+        from commercial_readiness import commercial_readiness_score
+        result = commercial_readiness_score()
+        return {
+            "bottleneck_dimension": result.get("bottleneck"),
+            "overall_score": result.get("overall"),
+            "dimensions": result.get("dimensions"),
+            "source": "commercial_readiness.py::commercial_readiness_score() (ADR-181)",
+        }
+    except Exception as e:
+        return {"status": "unavailable", "reason": str(e)}
+
+
+def _strategic_debt():
+    try:
+        from strategic_intelligence_core import evaluate_strategic_horizons
+        horizons = evaluate_strategic_horizons()
+        return {
+            "value": horizons,
+            "interpretation": "Every horizon reporting 'NOT ENOUGH EVIDENCE' (rather than a real projection) IS the real strategic debt -- no real multi-horizon planning signal exists yet, honestly disclosed rather than estimated.",
+            "source": "strategic_intelligence_core.py::evaluate_strategic_horizons() (ADR-137)",
+        }
+    except Exception as e:
+        return {"status": "unavailable", "reason": str(e)}
+
+
+def _competitive_threats():
+    """Deliberately does NOT trigger a fresh live competitor_discovery.py
+    query (real network calls, per-niche, not cheap) just to render a
+    report section -- cites the already-persisted real snapshot count
+    instead, honestly labeled as passive/dated, not a live threat scan."""
+    import json
+    from pathlib import Path
+    path = Path(__file__).resolve().parent / "data" / "competitor_database.json"
+    try:
+        with open(path, encoding="utf-8") as f:
+            db = json.load(f)
+        return {
+            "real_niches_with_tracked_competitor_data": len(db) if isinstance(db, dict) else None,
+            "note": "Passive citation of already-persisted real snapshots (data/competitor_database.json) -- not a fresh live scan, which would mean real per-niche network calls on every report generation. See competitor_discovery.py for the real, on-demand per-niche researcher.",
+            "source": "data/competitor_database.json",
+        }
+    except (OSError, json.JSONDecodeError) as e:
+        return {"status": "unavailable", "reason": str(e)}
+
+
+# Autonomous Evolution Protocol (ADR-187): a real, static, disclosed list
+# of standing founder-confirmed deferrals already decided and recorded
+# elsewhere in this factory's own governance history -- never a guess,
+# never new judgment. Update this list only when a real new standing
+# "not now" decision is made (an AskUserQuestion the founder actually
+# answered), not speculatively.
+_NEVER_BUILD_DECISIONS = [
+    {"item": "Global Commerce Intelligence Division (GCID)", "decision": "Deferred (ADR-148, 2026-07-30)", "reason": "Zero real dollars at time of decision -- same Golden Rule that blocked earlier global expansion."},
+    {"item": "Global Affiliate Commerce Engine (20-network connector architecture)", "decision": "Architecture documented, zero code authorized (ADR-152, 2026-07-30)", "reason": "Contradicted the founder's own immediately-preceding directive to pause Affiliate Commerce expansion until a real account is approved."},
+    {"item": "Country-level market intelligence (per-country data connectors)", "decision": "Deferred (standing decision, 2026-07-23, re-confirmed ADR-175)", "reason": "Zero real local-market data connector exists for any market; re-triggers at the first real dollar or a real connector becoming available."},
+    {"item": "Always-on autonomous daemon / global event bus / queue infrastructure", "decision": "Declined 6+ times (ADR-107, 110, 115, 142, 147, 157)", "reason": "New always-on execution infrastructure the founder has never approved; existing tick-based automation covers the real need."},
+    {"item": "Automated execution of Evolution Queue proposals without founder approval", "decision": "Permanently human-gated by explicit founder decision (ADR-133, reconfirmed ADR-142/144/147/157)", "reason": "The one standing rule this factory has never revisited: 'Execute is, by explicit founder decision, human-gated always.'"},
+]
+
+
+def _never_build_list():
+    return {
+        "items": _NEVER_BUILD_DECISIONS,
+        "note": "Real, already-decided standing deferrals cited from this factory's own governance history -- never invented, never re-litigated automatically. Only grows when the founder actually makes a new such decision.",
     }
 
 
@@ -249,6 +327,10 @@ def render_galaxy_evolution_report_markdown(report=None):
         ("Potential Monthly Revenue Impact", "potential_monthly_revenue_impact"),
         ("Estimated Implementation Effort", "estimated_implementation_effort"),
         ("Global Benchmark", "global_benchmark"),
+        ("Commercial Debt", "commercial_debt"),
+        ("Strategic Debt", "strategic_debt"),
+        ("Competitive Threats", "competitive_threats"),
+        ("What Should Never Be Built", "never_build"),
     ]
     for label, key in sections:
         lines.append(f"## {label}")

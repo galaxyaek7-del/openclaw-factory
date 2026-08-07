@@ -133,19 +133,56 @@ class TestBuildGalaxyEvolutionReport(unittest.TestCase):
 
 
 class TestRenderGalaxyEvolutionReportMarkdown(unittest.TestCase):
-    def test_renders_all_10_named_sections(self):
+    def test_renders_all_14_named_sections(self):
         fake_report = {
             "generated_at": "x", "current_strengths": "a", "current_weaknesses": "b",
             "critical_risks": "c", "hidden_opportunities": "d", "recommended_improvements": "e",
             "high_priority_actions_ranked_by_roi": "f", "expected_long_term_impact": "g",
             "potential_monthly_revenue_impact": "h", "estimated_implementation_effort": "i",
-            "global_benchmark": "j",
+            "global_benchmark": "j", "commercial_debt": "k", "strategic_debt": "l",
+            "competitive_threats": "m", "never_build": "n",
         }
         md = ee.render_galaxy_evolution_report_markdown(fake_report)
         for label in ("Current Strengths", "Current Weaknesses", "Critical Risks", "Hidden Opportunities",
                       "Recommended Improvements", "High Priority Actions", "Expected Long-Term Impact",
-                      "Potential Monthly Revenue Impact", "Estimated Implementation Effort", "Global Benchmark"):
+                      "Potential Monthly Revenue Impact", "Estimated Implementation Effort", "Global Benchmark",
+                      "Commercial Debt", "Strategic Debt", "Competitive Threats", "What Should Never Be Built"):
             self.assertIn(label, md)
+
+
+class TestAutonomousEvolutionProtocolSections(unittest.TestCase):
+    """ADR-187 (2026-08-07): the 4 sections added for the founder's
+    Autonomous Evolution Protocol directive."""
+
+    def test_commercial_debt_cites_real_readiness_score(self):
+        result = ee._commercial_debt()
+        self.assertIn("bottleneck_dimension", result)
+        self.assertIn("commercial_readiness.py", result["source"])
+
+    def test_strategic_debt_cites_real_horizons(self):
+        result = ee._strategic_debt()
+        self.assertIn("value", result)
+        self.assertIn("strategic_intelligence_core.py", result["source"])
+
+    def test_competitive_threats_never_triggers_a_live_network_call(self):
+        # Real, mechanical proof: patch the only live-network-capable
+        # function this module could reach for competitor data and
+        # confirm it's never called by a report generation.
+        with patch("competitor_discovery.gather_real_metrics") as mock_gather:
+            ee._competitive_threats()
+            mock_gather.assert_not_called()
+
+    def test_never_build_list_is_static_and_real(self):
+        result = ee._never_build_list()
+        self.assertGreaterEqual(len(result["items"]), 5)
+        for item in result["items"]:
+            self.assertIn("decision", item)
+            self.assertIn("reason", item)
+
+    def test_full_report_includes_all_4_new_sections(self):
+        report = ee.build_galaxy_evolution_report()
+        for key in ("commercial_debt", "strategic_debt", "competitive_threats", "never_build"):
+            self.assertIn(key, report)
 
 
 if __name__ == "__main__":

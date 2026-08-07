@@ -725,6 +725,18 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('eos_decision_feed'),
   },
   {
+    // Global Business Development Division (ADR-188, 2026-08-07):
+    // founder's explicit Golden Rule override, matching the ADR-149/150
+    // precedent for Affiliate Commerce. Real, WebSearch-verified
+    // opportunity registry, never fabricated per the directive's own
+    // "never recommend partnerships without evidence" rule.
+    name: 'business-development-dashboard',
+    description: "Real partnership/affiliate/integration opportunity registry across 19 named platforms (Amazon, Gumroad, Paddle, Etsy, Shopify, Creative Market, Envato, Adobe, Microsoft, Google, OpenAI, Anthropic, Stripe, Notion, Canva, Figma, GitHub, Zapier, n8n) -- every entry cites real, WebSearch-verified program evidence or is honestly marked DISCOVERY. Top 20 partnership / Top 10 affiliate / Top 10 integration / Top 10 recurring-revenue opportunities, plus the real CRM-style pipeline board (Discovery/Evaluation/Preparation/Negotiation/Implementation/Active/Optimization).",
+    reused: 'business_development.py::build_business_development_dashboard(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('business_development_dashboard', [], req),
+    health: pythonHealthCheck('business_development_dashboard'),
+  },
+  {
     name: 'market-intelligence',
     description: 'The most recent real market intelligence analysis (scores, risk, customer pain, pricing, AI CEO verdict).',
     reused: 'lib/dashboard_data.js readLatestMarketIntelligence() — same field this session already confirmed is served by GET /api/dashboard.',
