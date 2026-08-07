@@ -79,6 +79,18 @@ node server.js
 # forever. Fully opt-in: the manual `node server.js` above still works
 # exactly as before, nothing about it changed.
 node scripts/supervisor.js
+
+# Start factory_loop.js supervised too (2026-08-07 — Autonomous CEO
+# continuous-improvement round): scripts/supervisor.js's own
+# SUPERVISOR_TARGET override (already real, already tested,
+# tests/test_supervisor.js) was documented as "testing only" but is a
+# real, unconditional code path with no such restriction -- factory_loop.js
+# had been manually restarted twice in one real session after the
+# environment killed it (once found already-dead, once mid-tick) with
+# nothing watching it. Same real crash-loop guard + real Telegram alert
+# on every crash + safe backoff, now covering factory_loop.js too, zero
+# new code.
+SUPERVISOR_TARGET=factory_loop.js node scripts/supervisor.js
 ```
 
 There is no build step, test suite, or linter configured.
@@ -529,6 +541,8 @@ This surfaced a second real, previously-unverified issue: the original $349 pric
 This was corrected at the source, not just noted: the deterministic "Key EU AI Act Deadlines & Enforcement Timeline" reference chapter (Claude-authored, ADR-022's real human/Claude-content path) was rewritten with the corrected dates and an honest, disclosed caveat that the Digital Omnibus amendments were, as of correction, provisionally agreed but pending final formal adoption — never presented as more certain than the real evidence supports. Two scattered "August 2026 enforcement deadline" claims baked into the AI-generated chapters were corrected via precise, verified text substitution (confirmed absent from the final rendered PDF via direct `pypdf` re-extraction) rather than a full, costly regeneration. Two FAQ answers were reframed from implying current exposure to correctly describing the real December 2027 deadline. The entire launch kit (`books/eu_ai_act_compliance_toolkit_launch_kit.md`) — product description, sales copy, landing page hero, cold-outreach template, and both LinkedIn posts — was rewritten to the same standard: real, current urgency (transparency rules already enforced, a 16-month runway that rewards starting early) instead of the false "already enforced, buy now" framing, honoring the standing "no fake urgency" rule literally rather than just avoiding invented scarcity. Final re-verified state: still 31 pages, technical inspection passes, commercial floor clears at the same honest $310 price.
 
 This is disclosed as a genuinely significant catch, not a minor correction: it was found and fixed before the product had ever been offered for sale, at zero real cost to any real customer — but it is a direct, concrete demonstration of why continuous regulatory monitoring (not a one-time research pass hours earlier in the same session) is real, standing, non-optional work for any company whose product's value proposition is itself regulation-dependent.
+
+**Real operational fix — `factory_loop.js` now runs supervised (2026-08-07):** during this same "Autonomous CEO" round, the environment killed the manually-started `factory_loop.js` process twice in one real session (once found already dead at a later check-in, once caught live, mid-`golden_hunter_tick`, via a task notification) — each time requiring a human-equivalent (Claude) to notice and restart it by hand. `scripts/supervisor.js` (ADR/Enterprise Upgrade Roadmap Phase 1.1, 2026-07-23) already solves exactly this class of problem for `server.js`, and its `SUPERVISOR_TARGET` environment-variable override is real, unconditional, already-tested code (`tests/test_supervisor.js`, 4 tests covering crash-loop guarding and real Telegram alerting) — its own comment labeled the override "testing only," but nothing in the actual implementation restricts it that way. Rather than writing a second supervisor, `factory_loop.js` is now started via `SUPERVISOR_TARGET=factory_loop.js node scripts/supervisor.js` — zero new code, live-verified end-to-end (real crash-loop guard, real auto-restart, real recovery-on-unclean-death all confirmed working together in the actual live process). See "Running the project" above for the exact command.
 
 ### Other Python utilities
 
