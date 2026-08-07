@@ -1824,6 +1824,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('commercial_acquisition_and_funnel', [], req),
     health: pythonHealthCheck('commercial_acquisition_and_funnel'),
   },
+  {
+    // Adaptive Growth & Resource Allocation Engine, Section 16 (ADR-206,
+    // Phase 16, 2026-08-08).
+    name: 'adaptive-priority-queue',
+    description: "Dynamic priority queue -- wraps eos-decision-feed's real, already-cited cards with the 4 genuinely missing structural fields (Actual Value, Owner, Status, Last Evaluation) plus a real weak-evidence flag per item via anti_bias_check.py. Actual Value is never backfilled from Expected Value -- it stays NOT_YET_MEASURED until a real outcome exists.",
+    reused: 'adaptive_priority_queue.py::build_adaptive_priority_queue(), via mission_control_api.py -- reuses eos_decision_feed.py verbatim, never a second ranking engine.',
+    handler: (req) => runPythonServiceCached('adaptive_priority_queue', [], req),
+    health: pythonHealthCheck('adaptive_priority_queue'),
+  },
+  {
+    name: 'capital-efficiency-report',
+    description: "Revenue per unit of development effort/AI cost/marketing cost/human intervention/product/platform/customer -- computed where a real denominator exists (AI cost, product count, platform count), honestly UNKNOWN where no real tracking exists anywhere in this factory (development time, marketing spend, human intervention time). $0 real revenue today means every computable ratio correctly evaluates to $0.",
+    reused: 'capital_efficiency.py::capital_efficiency_report(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('capital_efficiency_report', [], req),
+    health: pythonHealthCheck('capital_efficiency_report'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

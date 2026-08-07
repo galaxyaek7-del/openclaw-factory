@@ -1270,6 +1270,23 @@ def _commercial_acquisition_and_funnel():
     return {"acquisition": caq.customer_acquisition_report(), "funnel": caq.commercial_funnel()}
 
 
+def _adaptive_priority_queue():
+    """Adaptive Growth & Resource Allocation Engine, Section 16
+    (ADR-206, Phase 16, 2026-08-08): wraps eos_decision_feed.py's real
+    cards with the 4 genuinely missing structural fields + a real
+    weak-evidence flag via anti_bias_check.py."""
+    from adaptive_priority_queue import build_adaptive_priority_queue
+    return build_adaptive_priority_queue()
+
+
+def _capital_efficiency_report():
+    """Adaptive Growth & Resource Allocation Engine, Section 12
+    (ADR-206, Phase 16, 2026-08-08): real revenue-per-X ratios, honestly
+    UNKNOWN for every untracked denominator."""
+    from capital_efficiency import capital_efficiency_report
+    return capital_efficiency_report()
+
+
 def _golden_hunter_room():
     """Golden Hunter Room (ADR-192, 2026-08-07): CEO View over
     goos.py::rank_build_candidates() -- reused, not recomputed."""
@@ -3090,6 +3107,8 @@ _ENDPOINTS = {
     "product_master_catalog": _product_master_catalog,
     "commercial_alerts_status": _commercial_alerts_status,
     "commercial_acquisition_and_funnel": _commercial_acquisition_and_funnel,
+    "adaptive_priority_queue": _adaptive_priority_queue,
+    "capital_efficiency_report": _capital_efficiency_report,
 }
 
 
