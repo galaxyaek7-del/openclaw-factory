@@ -26,7 +26,15 @@ discloses this honestly (expected_roi is a 0-100 score, never a dollar
 figure; time_to_first_revenue is literally "NOT_MEASURABLE"). This
 module reports that same honesty per card rather than inventing a
 number to fill the field, directly satisfying the directive's own
-"never generate recommendations without evidence" rule."""
+"never generate recommendations without evidence" rule.
+
+ADR-196 (2026-08-07, "Digital War Room" directive): added a 10th field,
+consequence_of_inaction, answering "what will happen if we do nothing?"
+-- not answered anywhere else in this factory. Always a real, mechanical
+statement that the current known state simply continues (an unbuilt
+opportunity stays unbuilt, an open risk stays open) -- never a
+predicted magnitude, timeline, or dollar figure, since no real
+forecasting signal exists to back one honestly."""
 
 import json
 from pathlib import Path
@@ -53,9 +61,16 @@ def _read_jsonl(path):
 
 
 def _card(problem, evidence, business_impact, financial_impact, confidence,
-          action, roi, time_to_execute, priority, source):
-    """Every card carries all 9 requested fields, always -- a field with
-    no real signal is the literal string 'Unknown', never a guess."""
+          action, roi, time_to_execute, priority, source, consequence_of_inaction):
+    """Every card carries all 9 original requested fields plus one more
+    (ADR-196, 2026-08-07 -- the Digital War Room directive's "what will
+    happen if we do nothing?" question, not answered anywhere in this
+    factory until now). consequence_of_inaction is always a real,
+    mechanical statement of the current known state simply continuing --
+    never a predicted magnitude, timeline, or dollar figure, since no
+    real forecasting signal exists for any of these to cite honestly. A
+    field with no real signal is the literal string 'Unknown', never a
+    guess."""
     return {
         "problem": problem,
         "evidence": evidence,
@@ -67,6 +82,7 @@ def _card(problem, evidence, business_impact, financial_impact, confidence,
         "time_to_execute": time_to_execute,
         "priority": priority,
         "source": source,
+        "consequence_of_inaction": consequence_of_inaction,
     }
 
 
@@ -89,6 +105,7 @@ def _opportunity_cards(top_n=3, decisions_path=None):
             time_to_execute=(tte.get("value") if isinstance(tte, dict) else tte) or "Unknown",
             priority=f"rank {i + 1} of {len(ranking.get('build_next') or [])}",
             source="goos.py::rank_build_candidates() (Opportunity Ranking Engine)",
+            consequence_of_inaction=f"'{cand.get('niche')}' remains unbuilt; its real evidence and score stay on record but generate no revenue while it does.",
         ))
     return cards
 
@@ -111,6 +128,7 @@ def _risk_cards(max_findings=3):
             time_to_execute="Unknown",
             priority=f.get("severity"),
             source="resilience_monitor.py::assess_resilience() (Risk Engine)",
+            consequence_of_inaction=f"The real, open finding in '{f.get('area')}' stays active and unresolved until someone investigates it.",
         ))
     return cards
 
@@ -136,6 +154,7 @@ def _todays_directive_card():
         time_to_execute="Unknown",
         priority=latest.get("tier") or "Tier 1 (highest — this is the arbitrated top pick)",
         source="executive_brain.py::build_executive_directive() (Executive Decision Engine), most recent daily entry",
+        consequence_of_inaction="This is the single highest-arbitrated action across all real inputs available today; every other real candidate action was ranked below it and stays unaddressed while this one does too.",
     )
 
 
@@ -158,6 +177,7 @@ def _commercial_priority_card(decisions_path=None):
         time_to_execute="Unknown",
         priority="highest real gap in the commercial readiness scorecard",
         source="commercial_readiness.py::commercial_readiness_score() (Commercial/Financial Priority Engine)",
+        consequence_of_inaction=f"'{bottleneck}' remains the lowest-scoring real dimension, holding down overall commercial readiness ({result.get('overall')}/100) until it's addressed.",
     )
 
 

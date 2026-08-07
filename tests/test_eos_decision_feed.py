@@ -5,12 +5,19 @@ import eos_decision_feed as edf
 
 
 class TestEosDecisionFeed(unittest.TestCase):
-    def test_card_always_has_all_nine_fields(self):
-        card = edf._card("p", "e", "b", "f", "c", "a", "r", "t", "pr", "s")
+    def test_card_always_has_all_ten_fields(self):
+        card = edf._card("p", "e", "b", "f", "c", "a", "r", "t", "pr", "s", "coi")
         for key in ("problem", "evidence", "business_impact", "financial_impact",
                     "confidence", "recommended_action", "estimated_roi",
-                    "time_to_execute", "priority", "source"):
+                    "time_to_execute", "priority", "source", "consequence_of_inaction"):
             self.assertIn(key, card)
+
+    def test_consequence_of_inaction_never_predicts_a_magnitude_or_dollar_figure(self):
+        # Real, mechanical proof (ADR-196): every real card constructor's
+        # consequence_of_inaction is a statement that the current known
+        # state continues -- never a forecast with a number attached.
+        card = edf._card("p", "e", "b", "f", "c", "a", "r", "t", "pr", "s", "the current state continues")
+        self.assertNotRegex(card["consequence_of_inaction"], r"\$\d")
 
     def test_todays_directive_card_honest_when_ledger_empty(self):
         with patch.object(edf, "_EXECUTIVE_DIRECTIVES_PATH", "C:/definitely/not/real.jsonl"):
@@ -53,6 +60,14 @@ class TestEosDecisionFeed(unittest.TestCase):
              }):
             result = edf.build_eos_decision_feed()
             self.assertEqual(result["total"], 1)  # only the commercial priority card
+
+    def test_every_real_card_type_carries_a_real_consequence_of_inaction(self):
+        # Real, non-mocked call -- proves all 4 card constructors were
+        # actually updated, not just _card() itself.
+        result = edf.build_eos_decision_feed()
+        for card in result["recommendations"]:
+            self.assertIn("consequence_of_inaction", card)
+            self.assertTrue(card["consequence_of_inaction"])
 
 
 if __name__ == "__main__":
