@@ -747,6 +747,16 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('trust_audit_report'),
   },
   {
+    // Golden Hunter Room (ADR-192, 2026-08-07): "Galaxy Forge becomes
+    // the visual brain of Golden Hunter" -- CEO View over
+    // goos.py::rank_build_candidates(), never a new scoring engine.
+    name: 'golden-hunter-room',
+    description: "The CEO's window into Golden Hunter: best opportunity today, second best, the highest real long-term-potential candidate (ranked by real ROI score, never a fabricated dollar figure), and which candidates should be ignored -- reshapes goos.py::rank_build_candidates() into the founder's named CEO View questions.",
+    reused: 'golden_hunter_room.py::ceo_view(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('golden_hunter_room', [], req),
+    health: pythonHealthCheck('golden_hunter_room'),
+  },
+  {
     name: 'market-intelligence',
     description: 'The most recent real market intelligence analysis (scores, risk, customer pain, pricing, AI CEO verdict).',
     reused: 'lib/dashboard_data.js readLatestMarketIntelligence() — same field this session already confirmed is served by GET /api/dashboard.',

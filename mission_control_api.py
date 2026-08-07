@@ -1201,6 +1201,13 @@ def _goos_evaluate_opportunity():
     return goos.build_opportunity_intelligence_report(niche)
 
 
+def _golden_hunter_room():
+    """Golden Hunter Room (ADR-192, 2026-08-07): CEO View over
+    goos.py::rank_build_candidates() -- reused, not recomputed."""
+    from golden_hunter_room import ceo_view
+    return ceo_view()
+
+
 def _trust_audit_report():
     """Trust & Excellence Constitution (ADR-189, 2026-08-07): the
     on-demand view of the same real report the weekly export now
@@ -2977,6 +2984,7 @@ _ENDPOINTS = {
     "eos_decision_feed": _eos_decision_feed,
     "business_development_dashboard": _business_development_dashboard,
     "trust_audit_report": _trust_audit_report,
+    "golden_hunter_room": _golden_hunter_room,
 }
 
 
