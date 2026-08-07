@@ -463,6 +463,21 @@ async function executiveScoreService(req) {
 // Informational only; never gates anything.
 const RESILIENCE_SEVERITY_SCORE = { informational: 100, warning: 60, critical: 20, emergency: 0 };
 
+// CEO Home (ADR-184, 2026-08-07): "Company Health Score" is the one
+// field ceo_home.py deliberately does not compute itself --
+// computeHealthStatus() is JS-only, no Python port exists, same
+// resilience-status merge pattern below. Cached like every other
+// service (60s window, matches Mission Control's own polling cadence,
+// so the 60-second-glance page never re-runs a fresh scan per view).
+async function ceoHomeService(req) {
+  const pythonResult = await runPythonServiceCached('ceo_home_briefing', [], req);
+  const health = await computeHealthStatus().catch(err => ({ status: 'error', checks: {}, error: err.message }));
+  return {
+    ...pythonResult,
+    company_health: { status: health.status, status_source: health.status_source, checks_summary: health.checks ? Object.keys(health.checks).length : 0 },
+  };
+}
+
 async function resilienceStatusService(req) {
   const pythonResult = await runPythonServiceCached('resilience_status', [], req);
   const findings = [...(pythonResult.findings || [])];
@@ -684,6 +699,20 @@ const SERVICE_REGISTRY = [
     reused: 'server.js computeHealthStatus() + self_awareness.js assessSelfAwareness() + lib/dashboard_data.js deriveRiskLevel()/readAttentionFlag()/readActivityTimeline() + server.js readNextDollarActions() — identical composition to the pre-existing GET /api/dashboard.',
     handler: companyHealthService,
     health: fsHealthCheck(() => dashboardData.readAttentionFlag(), 'dashboardData module reachable, NEEDS_ATTENTION.md read check ok'),
+  },
+  {
+    // CEO Home (ADR-184, 2026-08-07): the founder's EOS directive's
+    // literal 60-second test. Pure citation over 8 already-real
+    // modules/ledgers (commercial_readiness.py, the daily evidence
+    // ledger, decisions.jsonl, finance_data.json, ai_cost_log.jsonl,
+    // incidents.jsonl, executive_directives.jsonl, ai_capability
+    // registry) plus the real GET /health check -- zero new judgment
+    // engine, deliberately fast (no fresh multi-minute scans).
+    name: 'ceo-home',
+    description: "The single 60-second executive briefing: company health, commercial/financial/technical/marketing/legal/global/operational readiness, AI systems status, open critical risks, revenue/expenses/cash flow, products ready/selling/waiting, the highest-ROI real opportunity, and today's real executive recommendation. Every field cites a real, already-computed source -- never fabricated, never re-scanned live just to render this page.",
+    reused: 'ceo_home.py::build_ceo_home_briefing() merged with server.js computeHealthStatus() -- same merge pattern as resilience-status/executive-score.',
+    handler: ceoHomeService,
+    health: pythonHealthCheck('ceo_home_briefing'),
   },
   {
     name: 'market-intelligence',

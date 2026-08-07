@@ -1201,6 +1201,15 @@ def _goos_evaluate_opportunity():
     return goos.build_opportunity_intelligence_report(niche)
 
 
+def _ceo_home_briefing():
+    """CEO Home (ADR-184, 2026-08-07): the founder's EOS directive's
+    literal 60-second test. Pure citation over already-real signals,
+    deliberately fast (no fresh multi-minute scans) -- see ceo_home.py's
+    own module docstring for the full design rationale."""
+    from ceo_home import build_ceo_home_briefing
+    return build_ceo_home_briefing()
+
+
 def _create_paddle_checkout():
     """Instant Checkout (ADR-183, 2026-08-07): the founder's readiness-
     audit-driven fix -- Stage 6's worst real friction point was that
@@ -2896,6 +2905,7 @@ _ENDPOINTS = {
     "prioritized_evidence_summary": _prioritized_evidence_summary,
     "eu_ai_act_pricing_review": _eu_ai_act_pricing_review,
     "create_paddle_checkout": _create_paddle_checkout,
+    "ceo_home_briefing": _ceo_home_briefing,
 }
 
 
