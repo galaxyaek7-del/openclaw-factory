@@ -250,5 +250,38 @@ class TestRevenueTrend(unittest.TestCase):
         self.assertEqual(result["total_sales_count"], 0)
 
 
+class TestRecordSaleAttribution(unittest.TestCase):
+    """Global Commercial Revenue OS, Section 4 (ADR-202, 2026-08-07)."""
+
+    def setUp(self):
+        self.ledger_path = _temp_path(".jsonl")
+
+    def tearDown(self):
+        if os.path.exists(self.ledger_path):
+            os.remove(self.ledger_path)
+
+    def test_omitted_attribution_fields_produce_the_original_event_shape(self):
+        recorded = ledger.record_sale("gumroad", {"id": "s1"}, ledger_path=self.ledger_path)
+        for key in ("country", "channel", "campaign", "partner", "customer_segment"):
+            self.assertNotIn(key, recorded)
+
+    def test_given_attribution_fields_are_recorded_verbatim(self):
+        recorded = ledger.record_sale(
+            "gumroad", {"id": "s1"}, ledger_path=self.ledger_path,
+            country="EG", channel="affiliate", campaign="launch_week", partner="acme", customer_segment="smb",
+        )
+        self.assertEqual(recorded["country"], "EG")
+        self.assertEqual(recorded["channel"], "affiliate")
+        self.assertEqual(recorded["campaign"], "launch_week")
+        self.assertEqual(recorded["partner"], "acme")
+        self.assertEqual(recorded["customer_segment"], "smb")
+
+    def test_partial_attribution_only_records_given_fields(self):
+        recorded = ledger.record_sale("gumroad", {"id": "s1"}, ledger_path=self.ledger_path, country="EG")
+        self.assertEqual(recorded["country"], "EG")
+        self.assertNotIn("channel", recorded)
+        self.assertNotIn("campaign", recorded)
+
+
 if __name__ == "__main__":
     unittest.main()

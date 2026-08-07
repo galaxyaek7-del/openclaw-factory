@@ -76,7 +76,8 @@ def record_publish_attempt(product, result, ledger_path=None, risk_score=None, p
     return append_event(event, ledger_path=ledger_path)
 
 
-def record_sale(platform: str, sale: dict, ledger_path=None, niche=None) -> dict:
+def record_sale(platform: str, sale: dict, ledger_path=None, niche=None,
+                 country=None, channel=None, campaign=None, partner=None, customer_segment=None) -> dict:
     """Append one real sale as reported by a platform's get_sales(). The raw
     sale dict is kept under "raw" verbatim — never reshaped/guessed, since a
     ledger meant to replace a lie must not introduce a new one.
@@ -94,12 +95,30 @@ def record_sale(platform: str, sale: dict, ledger_path=None, niche=None) -> dict
     not recording it at all. Wire this for real once the first real sale
     happens and its actual shape can be checked. A failure logging
     evidence must never lose the real sale record itself — wrapped in
-    try/except, best-effort only."""
+    try/except, best-effort only.
+
+    Commercial Attribution (Global Commercial Revenue OS, Section 4,
+    ADR-202, 2026-08-07): country/channel/campaign/partner/customer_segment
+    are optional, additive attribution fields — omitted entirely from the
+    event when not given (every pre-existing caller's event shape is
+    unchanged, same convention as risk_score/protection_decision on
+    record_publish_attempt() above). No arm in this factory extracts any
+    of these from a real platform response today, so every real caller
+    currently omits them — this is the real attribution *capability*,
+    not a claim that attribution is currently populated. Per the
+    directive's own rule: "When attribution is unavailable from a
+    platform, explicitly mark it as UNKNOWN. Never invent attribution" —
+    a caller that does have a real value passes it; one that doesn't
+    simply omits the field, and any reader must treat an absent field as
+    UNKNOWN, never as $0/none/default."""
     event = {
         "event_type": "sale",
         "platform": platform,
         "raw": sale,
     }
+    for key, value in (("country", country), ("channel", channel), ("campaign", campaign), ("partner", partner), ("customer_segment", customer_segment)):
+        if value is not None:
+            event[key] = value
     recorded = append_event(event, ledger_path=ledger_path)
     if niche:
         try:

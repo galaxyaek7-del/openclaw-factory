@@ -34,7 +34,32 @@ from pathlib import Path
 _FACTORY_ROOT = Path(__file__).resolve().parent
 DEFAULT_PIPELINE_PATH = _FACTORY_ROOT / "data" / "partnership_pipeline.jsonl"
 
-STAGES = ("DISCOVERY", "EVALUATION", "PREPARATION", "NEGOTIATION", "IMPLEMENTATION", "ACTIVE", "OPTIMIZATION")
+STAGES = ("DISCOVERY", "EVALUATION", "PREPARATION", "NEGOTIATION", "IMPLEMENTATION", "ACTIVE", "OPTIMIZATION", "REJECTED", "ARCHIVED")
+
+# Global Commercial Revenue Operating System, Section 7 (ADR-202,
+# 2026-08-07): the directive's own 12-stage vocabulary (Discovered ->
+# Qualified -> Researching -> Contact Required -> Application Submitted
+# -> Negotiation -> Approved -> Integration -> Active -> Optimizing ->
+# Rejected -> Archived) does not match this factory's real, already-
+# persisted 7-stage pipeline (ADR-188) 1:1. Rather than renaming the
+# real ledger's stage vocabulary -- which would silently reinterpret
+# every already-recorded real record (Paddle=ACTIVE, Amazon=PREPARATION)
+# -- this is a real, disclosed, deterministic mapping layer. REJECTED/
+# ARCHIVED were genuinely missing terminal stages and are added to
+# STAGES above (additive -- advance_partnership() already validates
+# against this tuple, so no other code changes were needed for them to
+# become real, usable stages).
+STAGE_V2_MAPPING = {
+    "DISCOVERY": ("Discovered", "Researching"),
+    "EVALUATION": ("Qualified",),
+    "PREPARATION": ("Contact Required", "Application Submitted"),
+    "NEGOTIATION": ("Negotiation",),
+    "IMPLEMENTATION": ("Approved", "Integration"),
+    "ACTIVE": ("Active",),
+    "OPTIMIZATION": ("Optimizing",),
+    "REJECTED": ("Rejected",),
+    "ARCHIVED": ("Archived",),
+}
 OPPORTUNITY_TYPES = ("partnership", "affiliate", "api_integration", "marketplace", "white_label", "enterprise", "commission")
 
 
@@ -133,8 +158,26 @@ def evaluate_platform(platform_key, pipeline_path=None):
         "long_term_value": entry.get("long_term_value", "Unknown"),
         "risk": entry.get("risk", "Unknown"),
         "automation_potential": entry.get("automation_potential", "Unknown"),
+        # Global Commercial Revenue Operating System, Section 6 (ADR-202,
+        # 2026-08-07): the 5 additional named fields this directive asked
+        # for. Only "amazon" has been WebSearch-verified so far (the one
+        # real, live-coded channel) -- every other platform honestly
+        # defaults to "not yet researched" rather than a guessed value.
+        "cookie_attribution_rules": entry.get("cookie_attribution_rules", "Unknown -- not yet researched"),
+        "geographic_restrictions": entry.get("geographic_restrictions", "Unknown -- not yet researched"),
+        "payment_method": entry.get("payment_method", "Unknown -- not yet researched"),
+        "minimum_payout": entry.get("minimum_payout", "Unknown -- not yet researched"),
+        "terms": entry.get("terms", "Unknown -- not yet researched"),
         "evidence": entry.get("evidence", []),
         "score": _opportunity_score(entry),
+        # Section 7's 7 named per-opportunity fields -- 5 already existed
+        # under different names (score=Strategic Score, expected_recurring_
+        # revenue=Revenue/Recurring Revenue Potential, difficulty=Difficulty,
+        # time_to_implement=Time to Revenue, automation_potential=Automation
+        # Potential), cited here rather than duplicated. Confidence is the
+        # one genuinely new field -- honestly Unknown, since no real
+        # confidence metric is tracked anywhere in this pipeline today.
+        "confidence": entry.get("confidence", "Unknown -- no real confidence metric tracked for partnership opportunities yet"),
     }
 
 
@@ -198,6 +241,31 @@ def build_partnership_pipeline_board(pipeline_path=None):
     return board
 
 
+def build_partnership_pipeline_board_v2(pipeline_path=None):
+    """Section 7's exact 12-stage vocabulary, real-projected from the real
+    7(+2)-stage pipeline board above via STAGE_V2_MAPPING -- the real
+    underlying ledger and its stage names are completely unchanged;
+    this is purely a display-layer relabeling, safe to discard/regenerate
+    at any time."""
+    real_board = build_partnership_pipeline_board(pipeline_path)
+    v2_board = {}
+    for real_stage, v2_stages in STAGE_V2_MAPPING.items():
+        entries = real_board.get(real_stage, [])
+        for v2_stage in v2_stages:
+            # A real-stage that fans out to >1 v2 stage (DISCOVERY ->
+            # Discovered/Researching, PREPARATION -> Contact Required/
+            # Application Submitted) cannot be split further without a
+            # real sub-stage signal this pipeline doesn't track -- every
+            # real entry is honestly placed under the FIRST v2 stage name
+            # in the mapping, disclosed here rather than duplicated
+            # silently across both.
+            v2_board[v2_stage] = entries if v2_stage == v2_stages[0] else []
+    return {
+        "board": v2_board,
+        "note": "Real-projected from the underlying 7(+2)-stage pipeline (STAGES) via STAGE_V2_MAPPING -- the real ledger's own stage names are unchanged. A real-stage that maps to multiple v2 stages places its entries under the first v2 stage name only (no real sub-stage signal exists to split further).",
+    }
+
+
 # Real, WebSearch-researched 2026-08-07 (18 named platforms + 1 already
 # covered by real code). Each entry's "opportunities" dict only contains
 # real, confirmed program types -- an omitted type is intentional, not
@@ -221,7 +289,12 @@ PLATFORM_REGISTRY = {
         "long_term_value": "Medium -- low commission rate on digital-adjacent categories caps upside",
         "risk": "Low",
         "automation_potential": "High -- click tracking and product data already automated (affiliate_commerce/)",
-        "evidence": ["https://azonpress.com/amazon-affiliate-commission-rates/"],
+        "cookie_attribution_rules": "24-hour cookie window; extends to 90 days (or checkout, whichever first) if a product is added to cart within that window",
+        "geographic_restrictions": "Unknown -- WebSearch found no specific real per-country eligibility list; Amazon Associates Central is the authoritative real source, not yet directly checked",
+        "payment_method": "Direct deposit, Amazon gift card, or check",
+        "minimum_payout": "No minimum for gift card payout; direct deposit/check have real but unconfirmed-exact thresholds (higher for check, fees apply)",
+        "terms": "https://affiliate-program.amazon.com/help/operating/agreement",
+        "evidence": ["https://azonpress.com/amazon-affiliate-commission-rates/", "https://sellvia.com/blog/amazon-associates-affiliate-program/"],
     },
     "gumroad": {
         "display_name": "Gumroad",

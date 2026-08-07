@@ -112,5 +112,50 @@ class TestBusinessDevelopment(unittest.TestCase):
             self.assertIn("evidence", platform_eval)
 
 
+class TestSection6AttributionFields(unittest.TestCase):
+    """Global Commercial Revenue OS, Section 6 (ADR-202, 2026-08-07)."""
+
+    def test_amazon_has_real_researched_values(self):
+        result = bd.evaluate_platform("amazon")
+        self.assertIn("24-hour", result["cookie_attribution_rules"])
+        self.assertNotIn("not yet researched", result["payment_method"])
+
+    def test_platform_with_no_real_research_defaults_honestly(self):
+        with patch.object(bd, "PLATFORM_REGISTRY", _FAKE_REGISTRY):
+            result = bd.evaluate_platform("real_program")
+            self.assertIn("not yet researched", result["cookie_attribution_rules"])
+            self.assertIn("not yet researched", result["geographic_restrictions"])
+            self.assertIn("not yet researched", result["minimum_payout"])
+
+    def test_confidence_field_present_and_honest(self):
+        result = bd.evaluate_platform("amazon")
+        self.assertIn("confidence", result)
+
+
+class TestSection7StageVocabulary(unittest.TestCase):
+    """Global Commercial Revenue OS, Section 7 (ADR-202, 2026-08-07)."""
+
+    def test_rejected_and_archived_are_valid_stages(self):
+        self.assertIn("REJECTED", bd.STAGES)
+        self.assertIn("ARCHIVED", bd.STAGES)
+
+    def test_advance_partnership_accepts_new_terminal_stages(self):
+        path = os.path.join(tempfile.mkdtemp(), "pipeline.jsonl")
+        record = bd.advance_partnership("gumroad", "REJECTED", pipeline_path=path)
+        self.assertEqual(record["stage"], "REJECTED")
+
+    def test_v2_board_never_loses_real_entries(self):
+        with patch.object(bd, "PLATFORM_REGISTRY", _FAKE_REGISTRY):
+            path = os.path.join(tempfile.mkdtemp(), "pipeline.jsonl")
+            bd.advance_partnership("real_program", "ACTIVE", pipeline_path=path)
+            v2 = bd.build_partnership_pipeline_board_v2(pipeline_path=path)
+            self.assertEqual(len(v2["board"]["Active"]), 1)
+
+    def test_v2_board_covers_every_real_stage(self):
+        v2 = bd.build_partnership_pipeline_board_v2()
+        mapped_real_stages = set(bd.STAGE_V2_MAPPING.keys())
+        self.assertEqual(mapped_real_stages, set(bd.STAGES))
+
+
 if __name__ == "__main__":
     unittest.main()
