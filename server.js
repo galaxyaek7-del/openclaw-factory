@@ -1778,6 +1778,52 @@ const SERVICE_REGISTRY = [
     handler: systemLogsService,
     health: async () => ({ status: 'ok', detail: 'dependency check only: fs module reachable' }),
   },
+  {
+    // Global Commercial Revenue Operating System, Sections 1 + 18
+    // (ADR-202, 2026-08-07): the CEO's real revenue dashboard, tagged
+    // ACTUAL/ESTIMATED/PROJECTED explicitly, + the Global Commercial
+    // Score.
+    name: 'commercial-control-center',
+    description: "Real revenue dashboard (Total/Today/Week/Month/MRR/ARR/Net/Refunds/Fees/by-Platform/by-Product/by-Country/Trend/Conversion/CAC/CLV), every field tagged ACTUAL/ESTIMATED/PROJECTED explicitly, plus a Global Commercial Score averaging only the dimensions with a real computed value. $0 real revenue today -- honestly reported, not hidden.",
+    reused: 'commercial_control_center.py::revenue_snapshot()/global_commercial_score(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_control_center', [], req),
+    health: pythonHealthCheck('commercial_control_center'),
+  },
+  {
+    name: 'commercial-daily-brief',
+    description: "CEO Daily Commercial Brief: Revenue/Net Revenue/Best Product/Best Platform/Best Market/Best Acquisition Channel/Top Opportunity/Top Partnership/Top Affiliate Opportunity/Biggest Commercial Risk/Biggest Revenue Leak/Recommended Action -- every field a real citation, never a fabricated 'best' when all real values are tied at $0.",
+    reused: 'commercial_control_center.py::commercial_daily_brief(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_daily_brief', [], req),
+    health: pythonHealthCheck('commercial_daily_brief'),
+  },
+  {
+    name: 'commercial-reconciliation',
+    description: "Real, read-only reconciliation of Paddle's live /transactions API against internal finance_data.json -- Gumroad/Etsy/Payhip honestly report NOT_RECONCILABLE (no real credential configured) rather than a fabricated zero-discrepancy match. Never modifies any financial record.",
+    reused: 'commercial_reconciliation.py::reconcile_all(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_reconciliation_report', [], req),
+    health: pythonHealthCheck('commercial_reconciliation_report'),
+  },
+  {
+    name: 'product-master-catalog',
+    description: "Real, read-only merged product catalog over data/paddle_products.json (real Paddle products), affiliate_commerce/products.py (real Amazon Associates products), and config/reality.json's published_books -- never a second mutable source of truth. Deliberately not built from books/_generation_log.jsonl's 5,000+ mostly-test entries.",
+    reused: 'product_master_catalog.py::build_product_master_catalog(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('product_master_catalog', [], req),
+    health: pythonHealthCheck('product_master_catalog'),
+  },
+  {
+    name: 'commercial-alerts',
+    description: "6 of 11 named commercial alert triggers with a real, mechanical check (revenue drop, platform failure, checkout unavailable, payment integration failure, high-value partnership, commercial discrepancy) -- the other 5 honestly disclosed NOT_ARCHITECTED with a specific real reason each (no fabricated refund/trend/competitor-pricing signal exists anywhere in this factory).",
+    reused: 'commercial_alerts.py::assess_commercial_alerts(), via mission_control_api.py; reuses resilience_monitor.py\'s own _finding() shape.',
+    handler: (req) => runPythonServiceCached('commercial_alerts_status', [], req),
+    health: pythonHealthCheck('commercial_alerts_status'),
+  },
+  {
+    name: 'commercial-acquisition-and-funnel',
+    description: "Customer Acquisition (9 named channels) + Commercial Funnel (11 named stages) -- top-of-funnel and per-channel CAC/LTV/ROI honestly report INSUFFICIENT_DATA/NO_REAL_SOURCE (no web analytics, lead-capture, or per-channel attribution exists yet); bottom-funnel stages real-cite customer_pipeline.py's own STAGE_ORDER and business_development.py's real partnership pipeline.",
+    reused: 'commercial_acquisition.py::customer_acquisition_report()/commercial_funnel(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_acquisition_and_funnel', [], req),
+    health: pythonHealthCheck('commercial_acquisition_and_funnel'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

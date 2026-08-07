@@ -1220,6 +1220,56 @@ def _eu_ai_act_readiness_score():
     )
 
 
+def _commercial_control_center():
+    """Global Commercial Revenue Operating System, Sections 1 + 18
+    (ADR-202, 2026-08-07): the CEO's real revenue dashboard + Global
+    Commercial Score, computed together to avoid a redundant second
+    revenue_snapshot() call (same discipline company_pulse()/
+    executive_brain.py already established)."""
+    import commercial_control_center as ccc
+    snapshot = ccc.revenue_snapshot()
+    score = ccc.global_commercial_score()
+    return {"revenue_snapshot": snapshot, "global_commercial_score": score}
+
+
+def _commercial_daily_brief():
+    """Global Commercial Revenue Operating System, Section 13
+    (ADR-202, 2026-08-07)."""
+    import commercial_control_center as ccc
+    return {"brief": ccc.commercial_daily_brief()}
+
+
+def _commercial_reconciliation_report():
+    """Global Commercial Revenue Operating System, Section 5
+    (ADR-202, 2026-08-07). Read-only -- never modifies finance_data.json."""
+    import commercial_reconciliation as recon
+    return {"reconciliation": recon.reconcile_all()}
+
+
+def _product_master_catalog():
+    """Global Commercial Revenue Operating System, Section 3
+    (ADR-202, 2026-08-07). Read-only merged view -- see module docstring
+    for why books/_generation_log.jsonl is deliberately not the primary
+    source."""
+    import product_master_catalog as pmc
+    return {"catalog": pmc.build_product_master_catalog()}
+
+
+def _commercial_alerts_status():
+    """Global Commercial Revenue Operating System, Section 12
+    (ADR-202, 2026-08-07)."""
+    import commercial_alerts
+    return {"alerts": commercial_alerts.assess_commercial_alerts()}
+
+
+def _commercial_acquisition_and_funnel():
+    """Global Commercial Revenue Operating System, Sections 9 + 10
+    (ADR-202, 2026-08-07), computed together -- both are honest-gap-heavy
+    reports that share the same real conversion-summary citation."""
+    import commercial_acquisition as caq
+    return {"acquisition": caq.customer_acquisition_report(), "funnel": caq.commercial_funnel()}
+
+
 def _golden_hunter_room():
     """Golden Hunter Room (ADR-192, 2026-08-07): CEO View over
     goos.py::rank_build_candidates() -- reused, not recomputed."""
@@ -3034,6 +3084,12 @@ _ENDPOINTS = {
     "trust_audit_report": _trust_audit_report,
     "golden_hunter_room": _golden_hunter_room,
     "eu_ai_act_readiness_score": _eu_ai_act_readiness_score,
+    "commercial_control_center": _commercial_control_center,
+    "commercial_daily_brief": _commercial_daily_brief,
+    "commercial_reconciliation_report": _commercial_reconciliation_report,
+    "product_master_catalog": _product_master_catalog,
+    "commercial_alerts_status": _commercial_alerts_status,
+    "commercial_acquisition_and_funnel": _commercial_acquisition_and_funnel,
 }
 
 
