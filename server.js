@@ -1849,6 +1849,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('competitive_moat_assessment', [], req),
     health: pythonHealthCheck('competitive_moat_assessment'),
   },
+  {
+    // Knowledge Graph & Institutional Memory Engine, Section 15
+    // (ADR-208, Phase 18, 2026-08-08).
+    name: 'contradiction-report',
+    description: "Real, mechanical contradiction detection: conflicting market-estimate scores or ACCEPTED/REJECTED status flip-flops for the same real niche across its own real evaluation history (decisions.jsonl), plus a live price cross-check between the internal Paddle product record and the live Paddle API. 19 real contradictions found in this factory's own decision history as of this build -- never silently resolved to whichever value is convenient.",
+    reused: 'contradiction_engine.py::detect_all_contradictions(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('contradiction_report', [], req),
+    health: pythonHealthCheck('contradiction_report'),
+  },
+  {
+    name: 'knowledge-staleness-report',
+    description: "Real staleness check over a manually-maintained registry of already-dated facts (Payhip API status, commission rates, EU AI Act regulatory timeline, AI model capabilities) against real, disclosed per-category thresholds. A real, disclosed limitation: this registry does not automatically discover new facts to track.",
+    reused: 'knowledge_decay.py::assess_all_known_knowledge(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('knowledge_staleness_report', [], req),
+    health: pythonHealthCheck('knowledge_staleness_report'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

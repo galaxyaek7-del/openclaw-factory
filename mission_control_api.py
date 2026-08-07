@@ -1287,6 +1287,23 @@ def _capital_efficiency_report():
     return capital_efficiency_report()
 
 
+def _contradiction_report():
+    """Knowledge Graph & Institutional Memory Engine, Section 15
+    (ADR-208, Phase 18, 2026-08-08): real, mechanical contradiction
+    detection over decisions.jsonl's own real evaluation history plus
+    a live price cross-check against Paddle."""
+    from contradiction_engine import detect_all_contradictions
+    return detect_all_contradictions()
+
+
+def _knowledge_staleness_report():
+    """Knowledge Graph & Institutional Memory Engine, Section 16
+    (ADR-208, Phase 18, 2026-08-08): real staleness check over a
+    manually-maintained registry of already-dated facts."""
+    from knowledge_decay import assess_all_known_knowledge
+    return assess_all_known_knowledge()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3118,6 +3135,8 @@ _ENDPOINTS = {
     "adaptive_priority_queue": _adaptive_priority_queue,
     "capital_efficiency_report": _capital_efficiency_report,
     "competitive_moat_assessment": _competitive_moat_assessment,
+    "contradiction_report": _contradiction_report,
+    "knowledge_staleness_report": _knowledge_staleness_report,
 }
 
 
