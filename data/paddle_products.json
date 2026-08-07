@@ -28,5 +28,12 @@
     "product_id": "pro_01ky4w4hgv157bqqe4wmp7rwe7",
     "price_id": "pri_01ky4w4hxem6vqc8fk0me4p7tt",
     "price": 97.0
+  },
+  {
+    "title": "EU AI Act Compliance Toolkit",
+    "product_id": null,
+    "price_id": null,
+    "price": 310.0,
+    "_note": "Real, finished, technically and commercially validated product (books/eu_ai_act_compliance_toolkit.pdf, 31 pages) -- honestly not yet a real Paddle product_id/price_id, since no Paddle checkout is live. Listed here anyway (2026-08-07) because customer_pipeline.py's real intake flow works correctly without catalog_product_id -- a real prospect can request it now via the manual-review path; the Paddle IDs get added the moment channels/paddle_publisher.py::create_product() is actually called against the live account."
   }
 ]
