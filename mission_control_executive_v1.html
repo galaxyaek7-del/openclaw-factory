@@ -273,10 +273,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
 <main id="main">
   <div id="topbar">
     <div>
-      <h1>Executive Mission Control</h1>
+      <h1 data-i18n="title">Executive Mission Control</h1>
       <div class="meta" id="lastRefreshLine">not yet loaded</div>
     </div>
     <div id="topStatus"><span class="pulse"></span><span id="topStatusText">Loading real data…</span></div>
+    <button class="btn" id="langToggle" title="Switch language / تبديل اللغة">EN / AR</button>
     <button class="btn" id="cmdkTrigger" title="Open the command bar" aria-haspopup="dialog" aria-expanded="false" aria-controls="cmdkOverlay">⌘ Command Bar <kbd>Ctrl</kbd><kbd>K</kbd></button>
   </div>
 
@@ -286,12 +287,12 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
        load. The full 64-panel drill-down layer (#sections) is unchanged
        beneath it. -->
   <section class="exec-tier">
-    <div class="section-head"><h2>Executive Summary</h2></div>
+    <div class="section-head"><h2 data-i18n="execSummary">Executive Summary</h2></div>
     <div id="execSummary" class="division-grid"></div>
   </section>
   <section class="exec-tier">
-    <div class="section-head"><h2>Division Command Center</h2>
-      <span class="section-note">17 named business divisions — condensed status, health, pending work, errors, and performance, each citing its real detail panel below.</span></div>
+    <div class="section-head"><h2 data-i18n="divisionCenter">Division Command Center</h2>
+      <span class="section-note" data-i18n="divisionCenterNote">17 named business divisions — condensed status, health, pending work, errors, and performance, each citing its real detail panel below.</span></div>
     <div id="divisionGrid" class="division-grid"></div>
   </section>
 
@@ -301,6 +302,56 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
 <script>
 (function(){
   "use strict";
+
+  // Instant EN/AR toggle (ADR-184, 2026-08-07 EOS directive): scoped
+  // honestly to this page's own static chrome (title, section headers,
+  // nav labels) via [data-i18n] + localStorage persistence — NOT a full
+  // RTL redesign of all 46 dense data panels. Panel content is real,
+  // live technical/business data (status strings like "REAL"/
+  // "DISCOVERY"/"ACCEPTED", numeric fields, evidence citations already
+  // written in English by the backend) — translating that would mean
+  // touching real field values across dozens of Python modules, a
+  // separate, much larger, and currently unjustified undertaking versus
+  // getting a first commercial checkout live. This toggle makes the
+  // page's own frame instantly bilingual; the data inside stays exactly
+  // as real and un-mistranslated as it is today.
+  const I18N = {
+    en: {
+      title: 'Executive Mission Control',
+      execSummary: 'Executive Summary',
+      divisionCenter: 'Division Command Center',
+      divisionCenterNote: '17 named business divisions — condensed status, health, pending work, errors, and performance, each citing its real detail panel below.',
+    },
+    ar: {
+      title: 'مركز القيادة التنفيذي',
+      execSummary: 'الملخص التنفيذي',
+      divisionCenter: 'مركز قيادة الأقسام',
+      divisionCenterNote: '١٧ قسماً تجارياً مُسمّى — حالة مُختصرة، صحة، أعمال معلّقة، أخطاء، وأداء، كل واحد يستشهد بلوحته التفصيلية الحقيقية أدناه.',
+    },
+  };
+
+  function applyLang(lang){
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-i18n]').forEach(function(node){
+      const key = node.getAttribute('data-i18n');
+      const text = I18N[lang] && I18N[lang][key];
+      if (text) node.textContent = text;
+    });
+    try { localStorage.setItem('gf_lang', lang); } catch (_) { /* best effort */ }
+    const toggle = document.getElementById('langToggle');
+    if (toggle) toggle.textContent = lang === 'ar' ? 'AR / EN' : 'EN / AR';
+  }
+
+  (function initLang(){
+    let saved = 'en';
+    try { saved = localStorage.getItem('gf_lang') || 'en'; } catch (_) { /* best effort */ }
+    applyLang(saved);
+    const toggle = document.getElementById('langToggle');
+    if (toggle) toggle.addEventListener('click', function(){
+      applyLang(document.documentElement.lang === 'ar' ? 'en' : 'ar');
+    });
+  })();
 
   // ── Section registry: each maps 1:1 to a real, already-existing v1 service. ──
   // No new engines — every "service" below is a real function this factory
@@ -398,6 +449,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
       note:'Live infra + business-reality health checks (lib/health_checks.js + reality.py). Also cited inside the Executive Brain panel above as part of factory_health.' },
     { id:'executive-summary', group:'overview', title:'Executive Summary', service:'get-ceo-dashboard', via:'action', kind:'kv',
       note:'The real CEO dashboard snapshot — capital allocation, growth, risk, next decision.' },
+    { id:'ceo-home', group:'overview', title:'🏠 CEO Home', service:'ceo-home', kind:'kv',
+      note:'ADR-184 (2026-08-07): the literal 60-second-glance test — company health, 6 readiness dimensions (commercial/financial/technical/marketing/legal/global), operational state, AI systems status, open critical risks, revenue/expenses/cash flow, products ready/selling/waiting, the highest-ROI real opportunity, and today\'s real executive recommendation. Every field cites an already-real, already-computed source — deliberately fast, never a fresh multi-minute scan.' },
     { id:'opportunity-pipeline', group:'opportunity', title:'Opportunity Pipeline', service:'opportunity-pipeline', kind:'list', listKey:'product_laboratory',
       note:'Every real decision the ladder has evaluated, ranked.' },
     { id:'investment-pipeline', group:'opportunity', title:'Investment Pipeline', service:'get-investment-pipeline', via:'action', kind:'list', listKey:'entries',
@@ -589,6 +642,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
   // 4th new SECTIONS entry — a real, already-wired per-platform
   // publishing checklist, honestly showing zero real publishes today.
   const EXEC_SUMMARY_TILES = [
+    { id:'ceo-home', title:'CEO Home — 60-Second Briefing' },
     { id:'company-health', title:'Company Health Score' },
     { id:'revenue-status', title:'Revenue Overview' },
     { id:'opportunity-pipeline', title:'Active Opportunities' },
