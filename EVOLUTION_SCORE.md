@@ -16,14 +16,15 @@
 
 ## The one genuine, disclosed gap: Previous Score and Improvement Trend
 
-**No real, persisted, per-department historical score exists anywhere in this factory to compare "today" against "yesterday."** `launch_readiness.py` and `commercial_readiness.py` are both computed fresh, live, every time they're called — neither writes its own result to a dated ledger. Verified directly while writing this document, not assumed: a day-over-day comparison was attempted using the one real per-day trend source that does exist (`data/evidence_ledger.jsonl`'s daily technical-readiness recording, ADR-182) — it currently holds exactly one real day of data (2026-08-07), not enough to show a trend yet.
+**Half-closed (ADR-200, 2026-08-07).** `commercial_readiness.py` gained the real, persisted daily snapshot this section named as the correct fix: `record_commercial_readiness_snapshot()` (the one real write path, wired into `factory_loop.js`'s daily tick, never called from the live score function itself), `commercial_readiness_history()`, and `commercial_readiness_trend()` — honestly `NOT_ENOUGH_DATA` until >=2 real snapshots exist, exactly the same discipline `growth_stages.py::growth_stage_history()` already established. `launch_readiness.py` (division-level readiness) still has no persisted snapshot — still computed fresh, live, every call, still no real Previous Score/Improvement Trend for that specific signal.
 
-**Real, partial trend signals that do exist, company-wide (not yet per-department):**
+**Real, partial trend signals that exist today:**
 - `health_trend.py` / `resilience_monitor.py` — real, recorded reliability trend over time (this is what caught the real "3 consecutive critical readings" incident found earlier this session)
 - `growth_stages.py::growth_stage_history()` — real, recorded company-wide growth-stage snapshots over time
-- `data/evidence_ledger.jsonl` — real, daily technical-readiness recording (ADR-182), one real day old as of this writing
+- `commercial_readiness.py::commercial_readiness_history()`/`commercial_readiness_trend()` — real, recorded company-wide commercial-readiness snapshots over time (new, ADR-200)
+- `data/evidence_ledger.jsonl` — real, daily technical-readiness recording (ADR-182)
 
-**The honest conclusion:** building a fabricated "improvement trend" today, with one real data point, would mean inventing a slope from a single dot — exactly the kind of number `COMPANY_DNA.md`'s evidence-over-assumptions principle forbids. The correct fix is not a document — it is `commercial_readiness.py` and `launch_readiness.py` gaining a real, persisted daily snapshot the same way `growth_stages.py` and the evidence ledger already do, so a real Previous Score and a real Improvement Trend exist to report the next time this document is revisited. Named here as the real, specific next step, not silently deferred without a plan.
+**Remaining honest gap:** `launch_readiness.py` (per-division, not per-company) has no persisted snapshot yet — the same fix pattern applies whenever that specific signal is next revisited; not built today because ADR-200 was scoped to the company-wide score this document named first.
 
 ## Why this gap is disclosed rather than filled today
 
