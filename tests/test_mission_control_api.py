@@ -259,6 +259,7 @@ class TestEndpointDispatch(unittest.TestCase):
             self.assertIn("# Galaxy Forge Executive Report", result["markdown"])
             self.assertIn("## Executive Summary", result["markdown"])
             self.assertIn("## Evolution Report", result["markdown"])
+            self.assertIn("## Trust Audit", result["markdown"])
             self.assertIn("## Strategic Recommendations", result["markdown"])
             self.assertIn("## Validation", result["markdown"])
             self.assertIn("## Revenue", result["markdown"])

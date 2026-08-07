@@ -737,6 +737,16 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('business_development_dashboard'),
   },
   {
+    // Trust & Excellence Constitution (ADR-189, 2026-08-07): pure
+    // citation over 6 already-real enforcement mechanisms -- same
+    // on-demand view the weekly export now also includes.
+    name: 'trust-audit-report',
+    description: "Weekly Trust Audit: potential misleading claims, product weaknesses (the real REJECT_IF_FAIL gate), customer risks, quality regressions (honestly disclosed as having no real trend metric), reputation risks, security risks, ethical risks, and recent real QUARANTINE.md rejection activity. Every section cites an already-real enforcement mechanism -- zero new judgment engine, zero fabricated risk scores.",
+    reused: 'trust_audit.py::build_trust_audit_report(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('trust_audit_report', [], req),
+    health: pythonHealthCheck('trust_audit_report'),
+  },
+  {
     name: 'market-intelligence',
     description: 'The most recent real market intelligence analysis (scores, risk, customer pain, pricing, AI CEO verdict).',
     reused: 'lib/dashboard_data.js readLatestMarketIntelligence() — same field this session already confirmed is served by GET /api/dashboard.',

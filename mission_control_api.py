@@ -1201,6 +1201,14 @@ def _goos_evaluate_opportunity():
     return goos.build_opportunity_intelligence_report(niche)
 
 
+def _trust_audit_report():
+    """Trust & Excellence Constitution (ADR-189, 2026-08-07): the
+    on-demand view of the same real report the weekly export now
+    includes -- never a second computation."""
+    from trust_audit import build_trust_audit_report
+    return build_trust_audit_report()
+
+
 def _business_development_dashboard():
     """Global Business Development Division (ADR-188, 2026-08-07):
     founder's explicit Golden Rule override, matching the ADR-149/150
@@ -2002,12 +2010,24 @@ def _build_combined_executive_report_markdown(title):
     import evolution_engine
     evolution_md = evolution_engine.render_galaxy_evolution_report_markdown()
 
+    # Trust & Excellence Constitution (ADR-189, 2026-08-07): the
+    # founder's weekly "TRUST AUDIT REPORT" ask, folded into this same
+    # already-real Sunday-gated weekly export -- same precedent as the
+    # 2 sections immediately above. trust_audit.py is pure citation over
+    # 6 already-real enforcement mechanisms (brand_dna.py's
+    # TRUST_PRINCIPLES, executive_quality_gate.py's REJECT_IF_FAIL,
+    # resilience_monitor.py, QUARANTINE.md, customer_reviews.jsonl) --
+    # zero new judgment engine.
+    import trust_audit
+    trust_md = trust_audit.render_trust_audit_report_markdown()
+
     combined_md = (
         f"# {title}\n\n"
         f"Generated: {datetime.now(timezone.utc).isoformat()}\n\n"
         "---\n\n## Executive Summary\n\n" + executive_md +
         "\n\n---\n\n## If I Were The CEO\n\n" + ceo_md +
         "\n\n---\n\n## Evolution Report\n\n" + evolution_md +
+        "\n\n---\n\n## Trust Audit\n\n" + trust_md +
         "\n\n---\n\n## Strategic Recommendations\n\n" + strategic_md +
         "\n\n---\n\n## Validation\n\n" + validation_md +
         "\n\n---\n\n## Revenue\n\n" + revenue_md +
@@ -2956,6 +2976,7 @@ _ENDPOINTS = {
     "global_search": _global_search,
     "eos_decision_feed": _eos_decision_feed,
     "business_development_dashboard": _business_development_dashboard,
+    "trust_audit_report": _trust_audit_report,
 }
 
 
