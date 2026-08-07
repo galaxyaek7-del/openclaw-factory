@@ -1201,6 +1201,32 @@ def _goos_evaluate_opportunity():
     return goos.build_opportunity_intelligence_report(niche)
 
 
+def _create_paddle_checkout():
+    """Instant Checkout (ADR-183, 2026-08-07): the founder's readiness-
+    audit-driven fix -- Stage 6's worst real friction point was that
+    every catalog product routed into a manual request/review flow
+    instead of a direct buy button, even for products with an
+    already-real, already-priced Paddle price_id. Reads price_id from
+    sys.argv[2]: `python mission_control_api.py create_paddle_checkout
+    '{"price_id":"pri_..."}'`. Real, distinct-failure-aware: Paddle can
+    legitimately refuse with transaction_checkout_not_enabled while
+    account onboarding is incomplete -- that's surfaced as a normal,
+    expected error string for server.js to route around gracefully,
+    never as a crash."""
+    import channels.paddle_publisher as paddle_publisher
+
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    price_id = (payload.get("price_id") or "").strip()
+    if not price_id:
+        raise ValueError("price_id is required")
+
+    api_key = paddle_publisher.load_api_key()
+    _txn, checkout_url = paddle_publisher.create_checkout_transaction(api_key, price_id)
+    if not checkout_url:
+        raise RuntimeError("Paddle did not return a checkout URL (account onboarding likely incomplete)")
+    return {"checkout_url": checkout_url}
+
+
 def _eu_ai_act_pricing_review():
     """Pricing Review Trigger (ADR-182, 2026-08-07): real, mechanical
     check of whether the EU AI Act Compliance Toolkit has earned an
@@ -2869,6 +2895,7 @@ _ENDPOINTS = {
     "strategic_intelligence_engine_report": _strategic_intelligence_engine_report,
     "prioritized_evidence_summary": _prioritized_evidence_summary,
     "eu_ai_act_pricing_review": _eu_ai_act_pricing_review,
+    "create_paddle_checkout": _create_paddle_checkout,
 }
 
 

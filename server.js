@@ -5512,6 +5512,44 @@ app.get('/api/customer/catalog', (req, res) => {
   }
 });
 
+// Instant Checkout (ADR-183, 2026-08-07): Readiness Audit Stage 6 found
+// the worst real friction in the entire funnel -- every catalog product
+// routed into a manual multi-step request/review flow, even ones with an
+// already-real, already-priced Paddle price_id. This is the fix: a
+// direct redirect straight to a real Paddle-hosted checkout URL for any
+// catalog product that has one, skipping manual review entirely for a
+// pre-cleared digital SKU. Public, unauthenticated, same trust boundary
+// as /api/customer/catalog -- a stranger reaching this route has no
+// Mission Control session by definition. Falls back gracefully (never a
+// dead end) to the existing, working manual-request flow the moment
+// Paddle's real transaction_checkout_not_enabled account-onboarding gate
+// fires -- confirmed via direct testing this session that this gate is
+// still active, so every real click through this route will genuinely
+// hit that fallback until onboarding clears, not a hypothetical path.
+app.get('/api/customer/checkout/:product_id', async (req, res) => {
+  try {
+    const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
+    if (isRateLimited(ip)) {
+      return res.redirect(302, `/site/index.html?checkout_unavailable=${encodeURIComponent(req.params.product_id)}#request`);
+    }
+    if (!fs.existsSync(PADDLE_PRODUCTS_FILE)) {
+      return res.redirect(302, `/site/index.html?checkout_unavailable=${encodeURIComponent(req.params.product_id)}#request`);
+    }
+    const products = JSON.parse(fs.readFileSync(PADDLE_PRODUCTS_FILE, 'utf8'));
+    const product = (Array.isArray(products) ? products : []).find(p => p.product_id === req.params.product_id);
+    if (!product || !product.price_id) {
+      return res.redirect(302, `/site/index.html?checkout_unavailable=${encodeURIComponent(req.params.product_id)}#request`);
+    }
+    const result = await runPythonService('create_paddle_checkout', [JSON.stringify({ price_id: product.price_id })]);
+    if (result && result.success && result.checkout_url) {
+      return res.redirect(302, result.checkout_url);
+    }
+    return res.redirect(302, `/site/index.html?checkout_unavailable=${encodeURIComponent(req.params.product_id)}#request`);
+  } catch (err) {
+    return res.redirect(302, `/site/index.html?checkout_unavailable=${encodeURIComponent(req.params.product_id)}#request`);
+  }
+});
+
 // ── Affiliate Commerce (ADR-149, 2026-07-30) ──
 // Public, unauthenticated -- a customer_site visitor has no Mission
 // Control login, same reasoning as /api/customer/catalog above. Real,

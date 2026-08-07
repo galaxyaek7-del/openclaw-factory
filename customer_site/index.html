@@ -431,6 +431,32 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
   "use strict";
   document.getElementById('year').textContent = new Date().getFullYear();
 
+  // Instant Checkout fallback (ADR-183, 2026-08-07): /api/customer/checkout/:id
+  // redirects here with ?checkout_unavailable=<product_id> when Paddle's
+  // real transaction_checkout_not_enabled gate fires (still active as of
+  // this session — confirmed, not hypothetical). Never a dead end: shows
+  // a real, honest reason and pre-fills + focuses the existing manual
+  // request flow with the exact product they tried to buy.
+  (function(){
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('checkout_unavailable');
+    if (!productId) return;
+    const panel = document.querySelector('#request .request-panel');
+    if (panel) {
+      const banner = document.createElement('div');
+      banner.className = 'request-note';
+      banner.style.marginBottom = '1rem';
+      banner.innerHTML = '<div class="mark">i</div><p><strong style="color:var(--ink);">Instant checkout isn\'t fully live yet</strong> — our payment processor is still finishing account setup on our end, not a problem with your order. Submit the request below and we\'ll follow up personally, usually within a day.</p>';
+      panel.parentNode.insertBefore(banner, panel);
+    }
+    const productIdField = document.getElementById('f-product-id');
+    if (productIdField) productIdField.value = productId;
+    const descField = document.getElementById('f-desc');
+    if (descField && !descField.value) descField.value = 'Wanted to buy product_id: ' + productId + ' — instant checkout redirected me here.';
+    const target = document.getElementById('request');
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  })();
+
   // ── Real catalog, fetched live — never a hand-copied, driftable list. ──
   function money(n){
     return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
@@ -478,6 +504,22 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
         card.appendChild(title);
         card.appendChild(price);
         card.appendChild(meta);
+        // Instant Checkout (ADR-183, 2026-08-07): a real, direct buy
+        // button for any catalog product with a real Paddle price_id —
+        // Readiness Audit Stage 6's single highest-leverage fix. Falls
+        // back to the existing "Request access" flow automatically
+        // server-side if Paddle's account-onboarding gate is still
+        // closed (see the checkout_unavailable handling below) — this
+        // ghost button always stays visible as the real safety net, not
+        // replaced.
+        if (p.product_id && p.price_id) {
+          const buyCta = document.createElement('a');
+          buyCta.className = 'btn btn-primary';
+          buyCta.href = '/api/customer/checkout/' + encodeURIComponent(p.product_id);
+          buyCta.textContent = 'Buy now — ' + money(p.price);
+          buyCta.style.marginBottom = '.6rem';
+          card.appendChild(buyCta);
+        }
         card.appendChild(cta);
         grid.appendChild(card);
       });

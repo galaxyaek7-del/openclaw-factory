@@ -63,7 +63,19 @@ _WRITE_PATTERNS = re.compile(
     # but a genuine, disclosed audit-tooling side effect (see ADR-162's
     # addendum). Never auto-invoke anything that runs a real evaluation/
     # hunt/orchestrator cycle from a read-only audit again.
-    r"run_hunt\(|run_cycle\(|evaluate_and_decide|orchestrator\.run_cycle|hunt\.run_hunt",
+    r"run_hunt\(|run_cycle\(|evaluate_and_decide|orchestrator\.run_cycle|hunt\.run_hunt|"
+    # Instant Checkout (ADR-183, 2026-08-07): create_paddle_checkout()
+    # is a real, external write -- it creates a real Paddle Transaction.
+    # Its own source has no other pattern above (no dry_run=False, no
+    # .write(), no distribute() call) -- confirmed by direct grep before
+    # this addition, not assumed. Currently safe only because it reads
+    # a required price_id from sys.argv[2], which is empty during a
+    # bare fn() live-invoke, so it fails closed rather than actually
+    # creating a transaction -- but relying on that accident is exactly
+    # the class of assumption this factory's own Truth First discipline
+    # says not to trust. Listed explicitly so it is structurally,
+    # never accidentally, excluded from live invocation.
+    r"create_checkout_transaction|create_paddle_checkout",
     re.IGNORECASE,
 )
 
