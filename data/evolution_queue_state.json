@@ -1,0 +1,402 @@
+{
+  "vector_store_for_evidence_corpus": {
+    "proposal_id": "vector_store_for_evidence_corpus",
+    "proposal": {
+      "id": "vector_store_for_evidence_corpus",
+      "tool": "A local, embeddable vector store (e.g. sqlite-vec or Chroma) for Golden Hunter/Pioneer's evidence corpus",
+      "status": "مقترَح، لا تنفيذ",
+      "why_needed": "Golden Hunter + Pioneer append real evidence continuously to data/golden_hunter_events.jsonl and reports/tier1_intake candidates. The only lookup mechanism today is a linear JSONL scan (factory_loop.js's checkGoldenStagnation()/goldenNicheAlreadyAttempted()) -- fine at today's real volume, but growing linearly with every real cycle, with no way to detect a niche that's semantically similar (not just string-identical) to one already rejected or attempted.",
+      "expected_business_value": "Faster, smarter opportunity de-duplication as the real evidence corpus grows -- avoids re-evaluating niches that are semantically similar to ones already rejected/attempted, not just exact string matches.",
+      "implementation_effort": "متوسط -- needs an embedding step at the existing append points (could reuse Groq or a small local model) plus a new query module; no schema migration, since the JSONL files stay the real source of truth and the vector store is a derived, rebuildable index.",
+      "estimated_roi": "غير مقاس بعد -- لا يوجد دليل حقيقي على تقييم مكرَّر تم إهداره حتى الآن؛ يصبح قابلاً للقياس عند رصد أول حالة تشابه حقيقية.",
+      "dependencies": [
+        "حجم حقيقي كافٍ من الأدلة المتراكمة (اليوم: حقيقي لكن ما زال صغيراً)",
+        "مصدر تضمين (embedding) -- Groq أو نموذج محلي"
+      ],
+      "risks": [
+        "تعقيد إضافي مقابل فائدة غير مقاسة بعد على الحجم الحقيقي",
+        "فهرس مشتق قد ينحرف بصمت عن مصدر الحقيقة (JSONL) إن لم يُعَد بناؤه بانضباط"
+      ],
+      "evidence": "factory_loop.js's own checkGoldenStagnation()/goldenNicheAlreadyAttempted() -- both real, both currently linear-scan only."
+    },
+    "stage": "AWAITING_FOUNDER_APPROVAL",
+    "stage_history": [
+      {
+        "stage": "PROPOSED",
+        "at": "2026-07-29T11:28:04.749938+00:00",
+        "detail": "real proposal intake from tool_intelligence.proposals.list_proposals()"
+      },
+      {
+        "stage": "SIMULATED",
+        "at": "2026-07-29T11:28:04.754087+00:00",
+        "detail": "rollback_complexity=medium, sensitive_areas=none"
+      },
+      {
+        "stage": "AWAITING_FOUNDER_APPROVAL",
+        "at": "2026-07-29T11:28:04.757302+00:00",
+        "detail": "policy_risk=False, duplicate_architecture_risk=True"
+      }
+    ],
+    "created_at": "2026-07-29T11:28:04.749938+00:00",
+    "updated_at": "2026-07-29T11:28:04.757302+00:00",
+    "simulation": {
+      "affected_modules": [
+        "factory_loop.js",
+        "golden_hunter_events.jsonl",
+        "e.g"
+      ],
+      "sensitive_areas_touched": [],
+      "rollback_complexity": "medium",
+      "method": "static evidence-text analysis -- no dynamic execution sandbox exists in this factory; this is a heuristic, not a guaranteed impact measurement",
+      "simulated_at": "2026-07-29T11:28:04.754062+00:00"
+    },
+    "decision_flags": {
+      "policy_risk": false,
+      "duplicate_architecture_risk": true,
+      "note": "Real, narrow flags only -- never an auto-approve/auto-reject. Founder approval is always required regardless of these flags."
+    },
+    "founder_decision": null
+  },
+  "image_diff_for_visual_cover_qa": {
+    "proposal_id": "image_diff_for_visual_cover_qa",
+    "proposal": {
+      "id": "image_diff_for_visual_cover_qa",
+      "tool": "A lightweight image-diff library (e.g. Pillow-based pixel/structural diff) for generated book covers -- Playwright only if the cover pipeline ever moves to HTML/CSS rendering",
+      "status": "مقترَح، لا تنفيذ",
+      "why_needed": "quality_doctor.py was found (Strategic Phase audit, 2026-07-19) to be functionally fake -- every _check_*() method fabricates a fix string without ever rendering or visually inspecting the actual generated cover. inspectors.py's Dual Inspection is the real QA gate today, but it has no visual check of cover_designer_v2.py's real PNG output beyond file-existence.",
+      "expected_business_value": "A real, automated visual regression check (e.g. cover text isn't clipped, colors render as configured) before a product reaches KDP -- catching a real class of defect no current check covers.",
+      "implementation_effort": "منخفض إلى متوسط -- cover_designer_v2.py already outputs a real PIL-rendered PNG, so a Pillow-based image diff is the lighter-weight fit; Playwright (a full browser binary) would only be justified if the cover pipeline moves to HTML/CSS rendering, which it doesn't today.",
+      "estimated_roi": "غير مقاس بعد -- لا يوجد رفض حقيقي من KDP يُعزى لعيب بصري في الغلاف حتى الآن لقياس الأثر عليه.",
+      "dependencies": [
+        "قرار مؤسِّس بشأن ما إذا كان مسار الأغلفة سيبقى قائماً على PIL أم ينتقل إلى HTML/CSS"
+      ],
+      "risks": [
+        "اقتراح Playwright تحديداً يضيف تبعية ثقيلة حقيقية (متصفح كامل) لمشكلة قد تُحل بأداة أخف بكثير إن بقي مسار الأغلفة على PIL",
+        "لا يوجد عيب حقيقي مرصود بعد لتحديد أولوية هذا مقابل أعمال أخرى"
+      ],
+      "evidence": "OpenClaw_Brain/00_Governance's own Strategic Phase audit finding on quality_doctor.py's fabricated _check_*() methods; cover_designer_v2.py as the real, live cover engine."
+    },
+    "stage": "AWAITING_FOUNDER_APPROVAL",
+    "stage_history": [
+      {
+        "stage": "PROPOSED",
+        "at": "2026-07-29T11:28:04.749964+00:00",
+        "detail": "real proposal intake from tool_intelligence.proposals.list_proposals()"
+      },
+      {
+        "stage": "SIMULATED",
+        "at": "2026-07-29T11:28:04.760480+00:00",
+        "detail": "rollback_complexity=medium, sensitive_areas=none"
+      },
+      {
+        "stage": "AWAITING_FOUNDER_APPROVAL",
+        "at": "2026-07-29T11:28:04.763546+00:00",
+        "detail": "policy_risk=False, duplicate_architecture_risk=True"
+      }
+    ],
+    "created_at": "2026-07-29T11:28:04.749964+00:00",
+    "updated_at": "2026-07-29T11:28:04.763546+00:00",
+    "simulation": {
+      "affected_modules": [
+        "quality_doctor.py",
+        "cover_designer_v2.py",
+        "inspectors.py",
+        "e.g"
+      ],
+      "sensitive_areas_touched": [],
+      "rollback_complexity": "medium",
+      "method": "static evidence-text analysis -- no dynamic execution sandbox exists in this factory; this is a heuristic, not a guaranteed impact measurement",
+      "simulated_at": "2026-07-29T11:28:04.760458+00:00"
+    },
+    "decision_flags": {
+      "policy_risk": false,
+      "duplicate_architecture_risk": true,
+      "note": "Real, narrow flags only -- never an auto-approve/auto-reject. Founder approval is always required regardless of these flags."
+    },
+    "founder_decision": null
+  },
+  "second_ai_provider_credential_for_comparison": {
+    "proposal_id": "second_ai_provider_credential_for_comparison",
+    "proposal": {
+      "id": "second_ai_provider_credential_for_comparison",
+      "tool": "One additional AI provider credential (e.g. ANTHROPIC_API_KEY or OPENAI_API_KEY) -- not a software tool, but the single highest-leverage unblock for ai_capability/'s own registry",
+      "status": "مقترَح، لا تنفيذ",
+      "why_needed": "ai_capability/registry.py (Track B2, 2026-07-19) can only ever report DISCOVERY-level (unmeasured) metrics for every provider except Groq, because zero credentials for any other provider exist in .env. This is the literal blocker on the founder's own explicit ask -- 'compare AI systems using measurable metrics only' -- ever becoming a real multi-provider comparison.",
+      "expected_business_value": "Turns the AI Capability Registry from a single-provider report into a genuinely comparative one -- real quality/speed/cost data across at least two providers, informing real model-routing decisions per task type.",
+      "implementation_effort": "منخفض -- قرار مؤسِّس + سطر واحد في .env؛ الكود في registry.py/evaluator.py يدعم بالفعل أي مزوّد له استخدام حقيقي مسجَّل دون أي تعديل إضافي بمجرد وجود بيانات اعتماد واستدعاء حقيقي واحد على الأقل.",
+      "estimated_roi": "غير مقاس بعد -- يعتمد كلياً على المزوّد ونوع المهمة؛ يصبح قابلاً للقياس فور وجود بيانات مقارنة حقيقية.",
+      "dependencies": [
+        "قرار الرئيس بشأن أي مزوّد يُضاف أولاً",
+        "بيانات اعتماد حقيقية + استدعاء حقيقي واحد على الأقل مسجَّل"
+      ],
+      "risks": [
+        "مزوّد API ثانٍ مدفوع يضيف تكلفة متكرِّرة حقيقية دون عائد مثبت بعد -- يُفضَّل البدء بأصغر حِمل عمل حقيقي، لا استبدال شامل"
+      ],
+      "evidence": "ai_capability/registry.py's own PROVIDER_CATALOG -- 8 من 9 مزوّدين اليوم DISCOVERY-level لسبب واحد فقط: غياب بيانات الاعتماد."
+    },
+    "stage": "AWAITING_FOUNDER_APPROVAL",
+    "stage_history": [
+      {
+        "stage": "PROPOSED",
+        "at": "2026-07-29T11:28:04.749975+00:00",
+        "detail": "real proposal intake from tool_intelligence.proposals.list_proposals()"
+      },
+      {
+        "stage": "SIMULATED",
+        "at": "2026-07-29T11:28:04.766723+00:00",
+        "detail": "rollback_complexity=high, sensitive_areas=['security']"
+      },
+      {
+        "stage": "AWAITING_FOUNDER_APPROVAL",
+        "at": "2026-07-29T11:28:04.769957+00:00",
+        "detail": "policy_risk=True, duplicate_architecture_risk=False"
+      }
+    ],
+    "created_at": "2026-07-29T11:28:04.749975+00:00",
+    "updated_at": "2026-07-29T11:28:04.769957+00:00",
+    "simulation": {
+      "affected_modules": [
+        "registry.py",
+        "e.g"
+      ],
+      "sensitive_areas_touched": [
+        "security"
+      ],
+      "rollback_complexity": "high",
+      "method": "static evidence-text analysis -- no dynamic execution sandbox exists in this factory; this is a heuristic, not a guaranteed impact measurement",
+      "simulated_at": "2026-07-29T11:28:04.766694+00:00"
+    },
+    "decision_flags": {
+      "policy_risk": true,
+      "duplicate_architecture_risk": false,
+      "note": "Real, narrow flags only -- never an auto-approve/auto-reject. Founder approval is always required regardless of these flags."
+    },
+    "founder_decision": null
+  },
+  "fix_detected_bottlenecks": {
+    "proposal_id": "fix_detected_bottlenecks",
+    "proposal": {
+      "id": "fix_detected_bottlenecks",
+      "tool": "Investigate and resolve 3 real detected bottleneck(s)",
+      "status": "مقترَح، لا تنفيذ",
+      "why_needed": "اختناقات حقيقية اكتُشِفت اليوم من بيانات المصنع الفعلية: مقبول منذ 7 يوماً بلا تنفيذ إنتاج/نشر حقيقي بعد — decision_engine.ranking.rank_queue()؛ مقبول منذ 7 يوماً بلا تنفيذ إنتاج/نشر حقيقي بعد — decision_engine.ranking.rank_queue()؛ مقبول منذ 7 يوماً بلا تنفيذ إنتاج/نشر حقيقي بعد — decision_engine.ranking.rank_queue()",
+      "expected_business_value": "إزالة عائق حقيقي يبطئ دورة القرار→الإنتاج→النشر لكل فرصة تعتمد على المرحلة المتأثرة.",
+      "implementation_effort": "غير مقاس بعد -- يحتاج تشخيصاً هندسياً حقيقياً لكل حالة على حدة.",
+      "estimated_roi": "غير مقاس بعد -- الأثر يعتمد على عدد الفرص الحقيقية المتأثرة فعلياً بهذا الاختناق.",
+      "dependencies": [
+        "تشخيص هندسي حقيقي للسبب الجذري لكل اختناق مُدرَج قبل أي إصلاح"
+      ],
+      "risks": [
+        "استمرار الاختناق يؤخر كل فرصة حقيقية تمر بهذه المرحلة"
+      ],
+      "evidence": "executive_intelligence.bottlenecks.detect_bottlenecks() -- مقبول منذ 7 يوماً بلا تنفيذ إنتاج/نشر حقيقي بعد — decision_engine.ranking.rank_queue()؛ مقبول منذ 7 يوماً بلا تنفيذ إنتاج/نشر حقيقي بعد — decision_engine.ranking.rank_queue()؛ مقبول منذ 7 يوماً بلا تنفيذ إنتاج/نشر حقيقي بعد — decision_engine.ranking.rank_queue()",
+      "generated_at": "2026-07-29T11:28:03.270991+00:00"
+    },
+    "stage": "AWAITING_FOUNDER_APPROVAL",
+    "stage_history": [
+      {
+        "stage": "PROPOSED",
+        "at": "2026-07-29T11:28:04.749983+00:00",
+        "detail": "real proposal intake from tool_intelligence.proposals.list_proposals()"
+      },
+      {
+        "stage": "SIMULATED",
+        "at": "2026-07-29T11:28:04.773201+00:00",
+        "detail": "rollback_complexity=medium, sensitive_areas=none"
+      },
+      {
+        "stage": "AWAITING_FOUNDER_APPROVAL",
+        "at": "2026-07-29T11:28:04.776331+00:00",
+        "detail": "policy_risk=False, duplicate_architecture_risk=False"
+      }
+    ],
+    "created_at": "2026-07-29T11:28:04.749983+00:00",
+    "updated_at": "2026-07-29T11:28:04.776331+00:00",
+    "simulation": {
+      "affected_modules": [
+        "executive_intelligence.bottlenecks.detect_bottlenecks",
+        "decision_engine.ranking.rank_queue"
+      ],
+      "sensitive_areas_touched": [],
+      "rollback_complexity": "medium",
+      "method": "static evidence-text analysis -- no dynamic execution sandbox exists in this factory; this is a heuristic, not a guaranteed impact measurement",
+      "simulated_at": "2026-07-29T11:28:04.773178+00:00"
+    },
+    "decision_flags": {
+      "policy_risk": false,
+      "duplicate_architecture_risk": false,
+      "note": "Real, narrow flags only -- never an auto-approve/auto-reject. Founder approval is always required regardless of these flags."
+    },
+    "founder_decision": null
+  },
+  "close_capability_gaps": {
+    "proposal_id": "close_capability_gaps",
+    "proposal": {
+      "id": "close_capability_gaps",
+      "tool": "Close 19 real capability gap(s) at DISCOVERY level: Demand Pattern — Exploding/Declining, Pricing Intelligence — real competitor prices / Price Position / Pricing Power / Revenue Potential, Pricing Power, Customer Pain, Market Growth",
+      "status": "مقترَح، لا تنفيذ",
+      "why_needed": "config/capability_registry.json يُدرِج 19 قدرة عند مستوى DISCOVERY (غير مقاسة بعد) من أصل 37.",
+      "expected_business_value": "قرارات حقيقية مبنية على قياس فعلي بدل تقدير غير مؤكَّد لكل قدرة مُدرَجة.",
+      "implementation_effort": "يختلف حسب القدرة المحدَّدة -- راجع كل إدخال في السجل على حدة.",
+      "estimated_roi": "غير مقاس بعد.",
+      "dependencies": [
+        "مصدر قياس حقيقي لكل قدرة (استخدام فعلي مسجَّل، أو اختبار مباشر)"
+      ],
+      "risks": [
+        "الاستمرار دون قياس يعني قرارات مبنية على تقدير غير مؤكَّد"
+      ],
+      "evidence": "config/capability_registry.json",
+      "generated_at": "2026-07-29T11:28:04.747751+00:00"
+    },
+    "stage": "AWAITING_FOUNDER_APPROVAL",
+    "stage_history": [
+      {
+        "stage": "PROPOSED",
+        "at": "2026-07-29T11:28:04.749991+00:00",
+        "detail": "real proposal intake from tool_intelligence.proposals.list_proposals()"
+      },
+      {
+        "stage": "SIMULATED",
+        "at": "2026-07-29T11:28:04.779730+00:00",
+        "detail": "rollback_complexity=high, sensitive_areas=['financial']"
+      },
+      {
+        "stage": "AWAITING_FOUNDER_APPROVAL",
+        "at": "2026-07-29T11:28:04.783021+00:00",
+        "detail": "policy_risk=True, duplicate_architecture_risk=False"
+      }
+    ],
+    "created_at": "2026-07-29T11:28:04.749991+00:00",
+    "updated_at": "2026-07-29T11:28:04.783021+00:00",
+    "simulation": {
+      "affected_modules": [
+        "capability_registry.json"
+      ],
+      "sensitive_areas_touched": [
+        "financial"
+      ],
+      "rollback_complexity": "high",
+      "method": "static evidence-text analysis -- no dynamic execution sandbox exists in this factory; this is a heuristic, not a guaranteed impact measurement",
+      "simulated_at": "2026-07-29T11:28:04.779702+00:00"
+    },
+    "decision_flags": {
+      "policy_risk": true,
+      "duplicate_architecture_risk": false,
+      "note": "Real, narrow flags only -- never an auto-approve/auto-reject. Founder approval is always required regardless of these flags."
+    },
+    "founder_decision": null
+  },
+  "register_os_reboot_survival_task_scheduler": {
+    "proposal_id": "register_os_reboot_survival_task_scheduler",
+    "proposal": {
+      "id": "register_os_reboot_survival_task_scheduler",
+      "tool": "Register scripts/register_startup_tasks.ps1 as real Windows Scheduled Tasks for factory_loop.js and server.js",
+      "status": "مقترَح، لا تنفيذ -- مبني ومختبر، غير مُفعَّل",
+      "why_needed": "A real, working, tested PowerShell script (scripts/register_startup_tasks.ps1) that registers factory_loop.js/server.js as Windows Scheduled Tasks -- surviving reboot, Claude Code restart, and VS Code closing -- was written and verified this session (2026-08-07) but was deliberately never run, since it is a real, persistent, system-level change with real ongoing AI-cost implications every time it auto-starts. Flagged again in the Independent Executive Gap Analysis (2026-08-07) as a real, cheap, still-open gap under Operations and Business Continuity.",
+      "expected_business_value": "Closes a real single point of failure for a single-operator, single-machine company -- the automation loop currently only survives as long as someone manually restarts it after a reboot or an unattended process kill (both have already happened for real this session).",
+      "implementation_effort": "منخفض جداً -- سطر أمر واحد فعلي جاهز: powershell -File scripts/register_startup_tasks.ps1",
+      "estimated_roi": "غير مقاس بالدولار -- يقلل احتمال توقف كامل غير مكتشَف للمصنع، لا يُنتج إيراداً مباشرة",
+      "dependencies": [
+        "لا شيء -- السكربت جاهز وتم اختباره منطقياً هذه الجلسة"
+      ],
+      "risks": [
+        "تشغيل تلقائي حقيقي عند كل إقلاع/تسجيل دخول يعني استدعاءات AI حقيقية دورية بلا جلسة عمل نشطة"
+      ],
+      "evidence": "scripts/register_startup_tasks.ps1 (written 2026-08-07); OPENCLAW_GAP_ANALYSIS.md §8/§17."
+    },
+    "stage": "AWAITING_FOUNDER_APPROVAL",
+    "stage_history": [
+      {
+        "stage": "PROPOSED",
+        "at": "2026-08-07T16:38:45.061873+00:00",
+        "detail": "real proposal intake from tool_intelligence.proposals.list_proposals()"
+      },
+      {
+        "stage": "SIMULATED",
+        "at": "2026-08-07T16:39:06.433836+00:00",
+        "detail": "rollback_complexity=medium, sensitive_areas=none"
+      },
+      {
+        "stage": "AWAITING_FOUNDER_APPROVAL",
+        "at": "2026-08-07T16:39:06.437520+00:00",
+        "detail": "policy_risk=False, duplicate_architecture_risk=True"
+      }
+    ],
+    "created_at": "2026-08-07T16:38:45.061873+00:00",
+    "updated_at": "2026-08-07T16:39:06.437520+00:00",
+    "simulation": {
+      "affected_modules": [
+        "register_startup_tasks.ps1",
+        "OPENCLAW_GAP_ANALYSIS.md",
+        "factory_loop.js",
+        "server.js"
+      ],
+      "sensitive_areas_touched": [],
+      "rollback_complexity": "medium",
+      "method": "static evidence-text analysis -- no dynamic execution sandbox exists in this factory; this is a heuristic, not a guaranteed impact measurement",
+      "simulated_at": "2026-08-07T16:39:06.433804+00:00"
+    },
+    "decision_flags": {
+      "policy_risk": false,
+      "duplicate_architecture_risk": true,
+      "note": "Real, narrow flags only -- never an auto-approve/auto-reject. Founder approval is always required regardless of these flags."
+    },
+    "founder_decision": null
+  },
+  "refresh_golden_hunter_seed_candidates": {
+    "proposal_id": "refresh_golden_hunter_seed_candidates",
+    "proposal": {
+      "id": "refresh_golden_hunter_seed_candidates",
+      "tool": "Grow market_hunter.py's SEED_CATEGORIES with real new candidate niches",
+      "status": "مقترَح، لا تنفيذ",
+      "why_needed": "A real, live hunt_market() run on 2026-08-07 (investigating why golden_opportunities.json had gone 16 days stale) scanned 13 real candidates from the static SEED_CATEGORIES list and correctly found 0 new golden opportunities -- every candidate was a real duplicate, a real prior rejection, or failed a real hard gate. The evaluation logic is working correctly; the seed list itself is the confirmed, current constraint on new-opportunity discovery.",
+      "expected_business_value": "Directly increases real candidate flow into the one pipeline this company's entire revenue strategy depends on -- more real candidates means more real chances to clear the Proof of Payment gate, without changing the gate itself.",
+      "implementation_effort": "منخفض -- إضافة أسماء نيتشات جديدة حقيقية إلى SEED_CATEGORIES، لا تغيير بنيوي",
+      "estimated_roi": "غير مقاس -- يعتمد على جودة النيتشات الجديدة المضافة فعلياً",
+      "dependencies": [
+        "بحث حقيقي جديد لنيتشات مرشحة لم تُقيَّم من قبل"
+      ],
+      "risks": [
+        "إضافة نيتشات ضعيفة الدليل تُنتج رفضاً إضافياً بلا فائدة حقيقية"
+      ],
+      "evidence": "GOLDEN_HUNTER_ENGINE.md (2026-08-07); real hunt_market() run, golden_count: 0 of 13 scanned."
+    },
+    "stage": "AWAITING_FOUNDER_APPROVAL",
+    "stage_history": [
+      {
+        "stage": "PROPOSED",
+        "at": "2026-08-07T16:38:45.061915+00:00",
+        "detail": "real proposal intake from tool_intelligence.proposals.list_proposals()"
+      },
+      {
+        "stage": "SIMULATED",
+        "at": "2026-08-07T16:39:06.441294+00:00",
+        "detail": "rollback_complexity=medium, sensitive_areas=none"
+      },
+      {
+        "stage": "AWAITING_FOUNDER_APPROVAL",
+        "at": "2026-08-07T16:39:06.445271+00:00",
+        "detail": "policy_risk=False, duplicate_architecture_risk=True"
+      }
+    ],
+    "created_at": "2026-08-07T16:38:45.061915+00:00",
+    "updated_at": "2026-08-07T16:39:06.445271+00:00",
+    "simulation": {
+      "affected_modules": [
+        "GOLDEN_HUNTER_ENGINE.md",
+        "golden_opportunities.json",
+        "market_hunter.py"
+      ],
+      "sensitive_areas_touched": [],
+      "rollback_complexity": "medium",
+      "method": "static evidence-text analysis -- no dynamic execution sandbox exists in this factory; this is a heuristic, not a guaranteed impact measurement",
+      "simulated_at": "2026-08-07T16:39:06.441271+00:00"
+    },
+    "decision_flags": {
+      "policy_risk": false,
+      "duplicate_architecture_risk": true,
+      "note": "Real, narrow flags only -- never an auto-approve/auto-reject. Founder approval is always required regardless of these flags."
+    },
+    "founder_decision": null
+  }
+}
