@@ -46,6 +46,7 @@ STATES = ("REAL", "SIMULATION", "ARCHITECTURE_ONLY", "NOT_IMPLEMENTED", "DEPRECA
 _WRITE_PATTERNS = re.compile(
     r"approve_|reject_|mark_.*implemented|mark_subsystem_unstable|clear_subsystem_unstable|"
     r"trigger_emergency_stop|resume_publish|record_council_recommendation|record_growth_stage_snapshot|"
+    r"record_commercial_readiness_snapshot|"
     r"resolve_recovery|note_publish_outcome|append_decision|append_outcome|submit_review|"
     r"\.write\(|open\([^)]*['\"]a['\"]|_save_state|advance_request|approve_request|"
     r"distribute\(|dry_run=False|fulfill_manually|check_all_awaiting_payments|"

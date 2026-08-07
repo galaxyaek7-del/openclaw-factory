@@ -2355,6 +2355,70 @@ async function maybeRecordDailyGrowthStageSnapshot(now = new Date()) {
   return { action: 'generated', detail: `تم تسجيل لقطة مرحلة نمو حقيقية: ${result.stage}` };
 }
 
+const COMMERCIAL_READINESS_SNAPSHOT_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.commercial_readiness_snapshot_daily_marker');
+
+function runRecordDailyCommercialReadinessSnapshot({ timeoutMs = 60000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'record_daily_commercial_readiness_snapshot'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة record_daily_commercial_readiness_snapshot (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من record_daily_commercial_readiness_snapshot' });
+          return;
+        }
+        finish({ ok: true, overall: result.snapshot && result.snapshot.overall });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج record_daily_commercial_readiness_snapshot: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeRecordDailyCommercialReadinessSnapshot(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(COMMERCIAL_READINESS_SNAPSHOT_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم تسجيل لقطة الجاهزية التجارية اليومية بالفعل (${today})` };
+  }
+  const result = await runRecordDailyCommercialReadinessSnapshot();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(path.dirname(COMMERCIAL_READINESS_SNAPSHOT_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(COMMERCIAL_READINESS_SNAPSHOT_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ علامة لقطة الجاهزية التجارية: ${err.message}` };
+  }
+  return { action: 'generated', detail: `تم تسجيل لقطة جاهزية تجارية حقيقية: ${result.overall}` };
+}
+
 // ── AUTONOMOUS COMPANY EVOLUTION ENGINE — DAILY INTAKE/SIMULATE/DECIDE ──
 // Runs mission_control_api.py's evolution_queue_daily_cycle: real
 // proposals get pulled into the Evolution Queue, simulated, and decided
@@ -3400,6 +3464,13 @@ async function runTick() {
   markStep('growth_stage_snapshot');
   actions.push({ step: 'growth_stage_snapshot', ...(await maybeRecordDailyGrowthStageSnapshot()) });
 
+  // Commercial Readiness historical trend (ADR-200, 2026-08-07): closes
+  // EVOLUTION_SCORE.md's disclosed gap ("no real per-company historical
+  // readiness score exists") — same once-per-calendar-day snapshot
+  // pattern as growth_stage_snapshot immediately above.
+  markStep('commercial_readiness_snapshot');
+  actions.push({ step: 'commercial_readiness_snapshot', ...(await maybeRecordDailyCommercialReadinessSnapshot()) });
+
   // Enterprise Evidence Engine (ADR-163) daily recording pass (2026-08-07):
   // the only real caller of reality_audit.audit_all_endpoints(record_evidence=True),
   // gated once per calendar day. See runDailyEvidenceRecordingAudit's own
@@ -3689,6 +3760,7 @@ module.exports = {
   runEvolutionOutcomeMeasurementCycle, maybeMeasureEvolutionOutcomes,
   runGenerateDailyExecutiveDirective, maybeGenerateDailyExecutiveDirective,
   runRecordDailyGrowthStageSnapshot, maybeRecordDailyGrowthStageSnapshot,
+  runRecordDailyCommercialReadinessSnapshot, maybeRecordDailyCommercialReadinessSnapshot,
   runDailyEvidenceRecordingAudit, maybeRunDailyEvidenceRecordingAudit,
   runEuAiActPricingReview, maybeCheckEuAiActPricingReview,
   runKnowledgeGraphDailySnapshot, maybeGenerateDailyKnowledgeGraph,

@@ -228,3 +228,85 @@ def commercial_readiness_score(reality_audit_results=None, channel_statuses=None
             key=lambda kv: kv[1]["score"],
         )[0],
     }
+
+
+# Commercial Readiness History (ADR-200, 2026-08-07) -- closes the real,
+# disclosed gap EVOLUTION_SCORE.md (Phase 4, ADR-193) named explicitly:
+# "no real per-department historical score exists anywhere... the
+# correct fix is not a document -- it is commercial_readiness.py and
+# launch_readiness.py gaining a real, persisted daily snapshot the same
+# way growth_stages.py and the evidence ledger already do." Exact same
+# real pattern as growth_stages.py::record_growth_stage_snapshot() /
+# growth_stage_history() -- append-only, never called from
+# commercial_readiness_score() itself, only from factory_loop.js's own
+# once-per-calendar-day tick gate.
+DEFAULT_SNAPSHOTS_PATH = _FACTORY_ROOT / "data" / "commercial_readiness_snapshots.jsonl"
+
+
+def record_commercial_readiness_snapshot(score_result=None, snapshots_path=None, decisions_path=None):
+    """The ONE real, additive write path -- appends {overall, bottleneck,
+    dimension_scores, generated_at} to data/commercial_readiness_snapshots.jsonl.
+    Never called from commercial_readiness_score() itself. Existing
+    entries are never rewritten -- append-only, same convention as every
+    other *.jsonl ledger in this factory."""
+    from datetime import datetime, timezone
+
+    if score_result is None:
+        score_result = commercial_readiness_score(decisions_path=decisions_path)
+
+    path = Path(snapshots_path) if snapshots_path else DEFAULT_SNAPSHOTS_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    entry = {
+        "overall": score_result.get("overall"),
+        "bottleneck": score_result.get("bottleneck"),
+        "dimension_scores": {k: v.get("score") for k, v in (score_result.get("dimensions") or {}).items()},
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    return entry
+
+
+def commercial_readiness_history(limit=50, snapshots_path=None):
+    """Real, chronological read of the snapshot ledger -- honestly
+    empty (never fabricated) until the daily tick has recorded at least
+    one real snapshot."""
+    path = Path(snapshots_path) if snapshots_path else DEFAULT_SNAPSHOTS_PATH
+    if not path.exists():
+        return {"entries": [], "reason": "No real commercial readiness snapshot recorded yet -- one is recorded automatically with the first real daily factory_loop.js cycle."}
+
+    entries = []
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entries.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+    return {"entries": entries[-limit:]}
+
+
+def commercial_readiness_trend(snapshots_path=None):
+    """The real answer EVOLUTION_SCORE.md couldn't give honestly with
+    zero/one data points -- computed only once >=2 real snapshots exist.
+    Never a fabricated slope from a single dot."""
+    history = commercial_readiness_history(snapshots_path=snapshots_path)
+    entries = [e for e in history["entries"] if e.get("overall") is not None]
+    if len(entries) < 2:
+        return {
+            "trend": "NOT_ENOUGH_DATA",
+            "reason": f"{len(entries)} real snapshot(s) with a real overall score recorded so far -- at least 2 are needed for an honest trend, never estimated from fewer.",
+            "real_snapshot_count": len(entries),
+        }
+    first, last = entries[0], entries[-1]
+    delta = round(last["overall"] - first["overall"], 1)
+    direction = "IMPROVING" if delta > 0 else ("DECLINING" if delta < 0 else "FLAT")
+    return {
+        "trend": direction,
+        "delta": delta,
+        "first_snapshot": {"overall": first["overall"], "generated_at": first["generated_at"]},
+        "latest_snapshot": {"overall": last["overall"], "generated_at": last["generated_at"]},
+        "real_snapshot_count": len(entries),
+    }

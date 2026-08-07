@@ -1462,6 +1462,32 @@ def _record_daily_growth_stage_snapshot():
     return {"snapshot": growth_stages.record_growth_stage_snapshot()}
 
 
+def _record_daily_commercial_readiness_snapshot():
+    """ADR-200 (2026-08-07): closes EVOLUTION_SCORE.md's disclosed gap --
+    "no real per-company historical readiness score exists" -- the ONE
+    real write path for Commercial Readiness history, called only by
+    factory_loop.js's own once-per-calendar-day tick gate, never from a
+    live Mission Control view (same discipline as
+    _record_daily_growth_stage_snapshot immediately above)."""
+    import commercial_readiness
+    return {"snapshot": commercial_readiness.record_commercial_readiness_snapshot()}
+
+
+def _commercial_readiness_history():
+    """Real, chronological read of data/commercial_readiness_snapshots.jsonl
+    -- honestly empty until the daily tick has recorded at least one real
+    snapshot."""
+    import commercial_readiness
+    return commercial_readiness.commercial_readiness_history()
+
+
+def _commercial_readiness_trend():
+    """Real trend over the recorded snapshots -- NOT_ENOUGH_DATA until
+    >=2 real snapshots exist, never a fabricated slope from one dot."""
+    import commercial_readiness
+    return commercial_readiness.commercial_readiness_trend()
+
+
 def _market_intelligence_source_status():
     """Executive Command Center (ADR-146, 2026-07-30): the real,
     registered external-evidence-source inventory for the Market
@@ -2981,6 +3007,9 @@ _ENDPOINTS = {
     "strategic_planning_dashboard": _strategic_planning_dashboard,
     "simulate_roadmap_execution": _simulate_roadmap_execution,
     "record_daily_growth_stage_snapshot": _record_daily_growth_stage_snapshot,
+    "record_daily_commercial_readiness_snapshot": _record_daily_commercial_readiness_snapshot,
+    "commercial_readiness_history": _commercial_readiness_history,
+    "commercial_readiness_trend": _commercial_readiness_trend,
     "truth_first_compliance": _truth_first_compliance,
     "digital_twin_dashboard": _digital_twin_dashboard,
     "preview_production_action": _preview_production_action,
