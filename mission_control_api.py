@@ -2861,8 +2861,41 @@ _ENDPOINTS = {
 }
 
 
+def _run_daily_evidence_recording_audit():
+    """The one deliberate real caller of reality_audit.audit_all_endpoints()
+    with record_evidence=True (its own default) -- every other real
+    caller (enterprise_validation.py, truth_registry.py) explicitly
+    passes record_evidence=False to avoid growing the evidence ledger on
+    every routine report view, the same live-view-must-not-record lesson
+    executive_brain.py's ADR-144 bug already taught this factory.
+
+    Deliberately kept OUT of _ENDPOINTS and dispatched via a special
+    case in main() below, never through the shared table: if this
+    function were itself discoverable by mca._ENDPOINTS.keys(), another
+    audit pass could live-invoke it as a side effect of enumerating
+    endpoints, firing its real evidence_engine.record_evidence() writes
+    just because someone viewed an unrelated report -- exactly the
+    uncontrolled-side-effect class of bug the ADR-162 incident already
+    taught this factory to avoid. Called only from factory_loop.js's own
+    once-per-calendar-day marker-gated tick."""
+    import reality_audit
+    results = reality_audit.audit_all_endpoints(record_evidence=True)
+    score = reality_audit.reality_score(results)
+    return {"recorded": len(results), "reality_score": score}
+
+
 def main():
     endpoint = sys.argv[1] if len(sys.argv) > 1 else None
+
+    if endpoint == "run_daily_evidence_recording_audit":
+        try:
+            result = _run_daily_evidence_recording_audit()
+            print(json.dumps({"success": True, **result}, ensure_ascii=False, default=str))
+        except Exception as e:
+            print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))
+            sys.exit(1)
+        return
+
     fn = _ENDPOINTS.get(endpoint)
     if fn is None:
         print(json.dumps({"success": False, "error": f"unknown endpoint: {endpoint!r}, expected one of {list(_ENDPOINTS)}"}, ensure_ascii=False))

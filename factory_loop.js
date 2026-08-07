@@ -2136,6 +2136,84 @@ async function maybeGenerateDailyExecutiveDirective(now = new Date()) {
 // day pattern as every other daily report above; cheap (a single real
 // growth_stages.build_growth_dashboard() call, not the ~70s Strategic
 // Planning Dashboard chain).
+// Enterprise Evidence Engine (ADR-163) closed a real, disclosed gap
+// (ADR-166, ADR-169): reality_audit.audit_all_endpoints()'s own
+// record_evidence=True default had never actually been exercised --
+// both real callers (enterprise_validation.py, truth_registry.py)
+// deliberately pass record_evidence=False to avoid growing the ledger
+// on every routine report view. This is the one deliberate real caller
+// that DOES record, gated to once per calendar day (a full sequential
+// audit is real, measured minutes of work -- no value running it every
+// ~10-minute tick), dispatched via a special case in
+// mission_control_api.py's main() that is kept OUT of _ENDPOINTS on
+// purpose so no other audit pass can ever discover and live-invoke it
+// as a side effect (the exact class of bug ADR-162 already taught this
+// factory to avoid).
+const EVIDENCE_RECORDING_AUDIT_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.evidence_recording_audit_daily_marker');
+
+function runDailyEvidenceRecordingAudit({ timeoutMs = 600000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'run_daily_evidence_recording_audit'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة run_daily_evidence_recording_audit (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من run_daily_evidence_recording_audit' });
+          return;
+        }
+        finish({ ok: true, recorded: result.recorded, reality_score: result.reality_score });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج run_daily_evidence_recording_audit: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeRunDailyEvidenceRecordingAudit(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(EVIDENCE_RECORDING_AUDIT_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم تسجيل تدقيق الأدلة اليومي بالفعل (${today})` };
+  }
+  const result = await runDailyEvidenceRecordingAudit();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(path.dirname(EVIDENCE_RECORDING_AUDIT_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(EVIDENCE_RECORDING_AUDIT_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ علامة تدقيق الأدلة: ${err.message}` };
+  }
+  const pct = result.reality_score && result.reality_score.percentages;
+  return { action: 'generated', detail: `تم تسجيل ${result.recorded} دليل حقيقي — Reality Score: ${pct ? pct.REAL : '؟'}%` };
+}
+
 const GROWTH_STAGE_SNAPSHOT_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.growth_stage_snapshot_daily_marker');
 
 function runRecordDailyGrowthStageSnapshot({ timeoutMs = 60000, pythonPath } = {}) {
@@ -3245,6 +3323,13 @@ async function runTick() {
   markStep('growth_stage_snapshot');
   actions.push({ step: 'growth_stage_snapshot', ...(await maybeRecordDailyGrowthStageSnapshot()) });
 
+  // Enterprise Evidence Engine (ADR-163) daily recording pass (2026-08-07):
+  // the only real caller of reality_audit.audit_all_endpoints(record_evidence=True),
+  // gated once per calendar day. See runDailyEvidenceRecordingAudit's own
+  // comment for why this is dispatched outside _ENDPOINTS.
+  markStep('evidence_recording_audit');
+  actions.push({ step: 'evidence_recording_audit', ...(await maybeRunDailyEvidenceRecordingAudit()) });
+
   // Final Executive Directive (2026-07-29): same once-per-calendar-day
   // pattern as the report engines above — the 2 confirmed-safe, genuinely
   // new autonomy additions ("maintain institutional knowledge" +
@@ -3519,6 +3604,7 @@ module.exports = {
   runEvolutionOutcomeMeasurementCycle, maybeMeasureEvolutionOutcomes,
   runGenerateDailyExecutiveDirective, maybeGenerateDailyExecutiveDirective,
   runRecordDailyGrowthStageSnapshot, maybeRecordDailyGrowthStageSnapshot,
+  runDailyEvidenceRecordingAudit, maybeRunDailyEvidenceRecordingAudit,
   runKnowledgeGraphDailySnapshot, maybeGenerateDailyKnowledgeGraph,
   runGeneratePendingBusinessBlueprints, maybeGenerateBusinessBlueprintsForNewAcceptedDecisions,
   runResilienceMonitorTick, newIncidentTelegramReasons, runPaymentStatusCheckTick,
