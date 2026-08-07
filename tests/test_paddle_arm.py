@@ -381,5 +381,91 @@ class TestPaddleArmAdditiveOverrides(unittest.TestCase):
         self.assertEqual(result["status"], "ERROR")
 
 
+class TestRateLimitRetry(unittest.TestCase):
+    """Production Hardening (ADR-204, Phase 14, 2026-08-08): regression
+    tests for FAILURE_REGISTER.md F6 -- a 429 used to be treated as an
+    immediate, never-retried return; now it retries with a real
+    Retry-After-aware delay, capped at 30s, same discipline as
+    book_generator.py::groq_chat()'s own real fix."""
+
+    def test_retry_delay_respects_real_retry_after_header_on_429(self):
+        resp = _fake_response(status_code=429, text="rate limited")
+        resp.headers = {"Retry-After": "5"}
+        delay = pp._retry_delay_seconds(1, resp)
+        self.assertEqual(delay, 5.0)
+
+    def test_retry_delay_caps_at_30_seconds(self):
+        resp = _fake_response(status_code=429, text="rate limited")
+        resp.headers = {"Retry-After": "9999"}
+        delay = pp._retry_delay_seconds(1, resp)
+        self.assertEqual(delay, 30)
+
+    def test_retry_delay_falls_back_to_fixed_backoff_when_header_absent(self):
+        resp = _fake_response(status_code=429, text="rate limited")
+        resp.headers = {}
+        delay = pp._retry_delay_seconds(2, resp)
+        self.assertEqual(delay, pp._RETRY_BACKOFF_SECONDS * 2)
+
+    def test_retry_delay_ignores_non_numeric_retry_after(self):
+        resp = _fake_response(status_code=429, text="rate limited")
+        resp.headers = {"Retry-After": "Wed, 21 Oct 2026 07:28:00 GMT"}
+        delay = pp._retry_delay_seconds(1, resp)
+        self.assertEqual(delay, pp._RETRY_BACKOFF_SECONDS * 1)
+
+    def test_429_is_now_actually_retried_not_returned_immediately(self):
+        """The real, confirmed F6 bug: a 429 used to satisfy
+        `status_code < 500` and return immediately, never retried."""
+        responses = [_fake_response(status_code=429, text="rate limited"), _fake_response(status_code=200, json_data={"data": []})]
+        responses[0].headers = {"Retry-After": "0"}
+        with patch.object(pp.requests, "request", side_effect=responses), \
+             patch.object(pp.time, "sleep") as mock_sleep:
+            result = pp._request_with_retry("GET", "https://api.paddle.com/products")
+        self.assertEqual(result.status_code, 200)
+        mock_sleep.assert_called_once()
+
+    def test_permanent_4xx_still_never_retried(self):
+        resp = _fake_response(status_code=403, text="forbidden")
+        with patch.object(pp.requests, "request", return_value=resp) as mock_request:
+            result = pp._request_with_retry("GET", "https://api.paddle.com/products")
+        self.assertEqual(result.status_code, 403)
+        mock_request.assert_called_once()
+
+
+class TestMalformedResponseHandling(unittest.TestCase):
+    """Production Hardening (ADR-204, Phase 14, 2026-08-08): regression
+    tests for FAILURE_REGISTER.md F8 -- a malformed JSON response used
+    to raise a raw, unwrapped ValueError from every publisher-layer
+    .json() call; now every call site raises a clear RuntimeError via
+    the shared _safe_json() helper."""
+
+    def _malformed_response(self, status_code=200):
+        resp = MagicMock()
+        resp.status_code = status_code
+        resp.ok = status_code < 400
+        resp.raise_for_status.side_effect = None
+        resp.json.side_effect = ValueError("Expecting value: line 1 column 1 (char 0)")
+        return resp
+
+    def test_list_products_raises_clear_runtime_error_on_malformed_json(self):
+        with patch.object(pp, "_request_with_retry", return_value=self._malformed_response()):
+            with self.assertRaises(RuntimeError) as ctx:
+                pp.list_products("fake-key")
+        self.assertIn("malformed response", str(ctx.exception))
+        self.assertNotIsInstance(ctx.exception, ValueError)
+
+    def test_get_transactions_raises_clear_runtime_error_on_malformed_json(self):
+        with patch.object(pp, "_request_with_retry", return_value=self._malformed_response()):
+            with self.assertRaises(RuntimeError) as ctx:
+                pp.get_transactions("fake-key")
+        self.assertIn("malformed response", str(ctx.exception))
+
+    def test_create_product_raises_clear_runtime_error_on_malformed_json(self):
+        resp = self._malformed_response()
+        with patch.object(pp.requests, "post", return_value=resp):
+            with self.assertRaises(RuntimeError) as ctx:
+                pp.create_product("fake-key", {"title": "x"})
+        self.assertIn("malformed response", str(ctx.exception))
+
+
 if __name__ == "__main__":
     unittest.main()

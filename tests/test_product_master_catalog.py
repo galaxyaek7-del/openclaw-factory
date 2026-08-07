@@ -103,6 +103,83 @@ class TestPaddleCatalogEntries(unittest.TestCase):
             self.assertNotIn("save", name.lower())
 
 
+class TestGenerationLogCrossReference(unittest.TestCase):
+    """Production Hardening (ADR-204, Phase 14, 2026-08-08): regression
+    tests for FAILURE_REGISTER.md F5 -- description/source_files/version
+    used to always report "Unknown" even when real data existed in
+    books/_generation_log.jsonl."""
+
+    def test_real_generation_record_populates_description_and_source_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            paddle_path = os.path.join(tmp, "paddle_products.json")
+            with open(paddle_path, "w", encoding="utf-8") as f:
+                json.dump([{"title": "Real Widget", "product_id": "pro_1", "price_id": "pri_1", "price": 50.0}], f)
+            gen_log_path = os.path.join(tmp, "_generation_log.jsonl")
+            with open(gen_log_path, "w", encoding="utf-8") as f:
+                f.write(json.dumps({"success": True, "title": "Real Widget", "path": "/books/real_widget.pdf", "cover": {"path": "/books/covers/real_widget.png"}}) + "\n")
+            reality_path = os.path.join(tmp, "reality.json")
+            with open(reality_path, "w", encoding="utf-8") as f:
+                json.dump({"published_books": []}, f)
+
+            result = pmc.build_product_master_catalog(paddle_products_path=paddle_path, reality_path=reality_path, generation_log_path=gen_log_path)
+            entry = next(p for p in result["products"] if p["product_name"] == "Real Widget")
+            self.assertEqual(entry["description"], "Real Widget")
+            self.assertIn("/books/real_widget.pdf", entry["source_files"])
+            self.assertIn("/books/covers/real_widget.png", entry["source_files"])
+            self.assertNotEqual(entry["version"], "Unknown")
+
+    def test_version_reflects_real_generation_attempt_count(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            paddle_path = os.path.join(tmp, "paddle_products.json")
+            with open(paddle_path, "w", encoding="utf-8") as f:
+                json.dump([{"title": "Real Widget", "product_id": "pro_1", "price_id": "pri_1", "price": 50.0}], f)
+            gen_log_path = os.path.join(tmp, "_generation_log.jsonl")
+            with open(gen_log_path, "w", encoding="utf-8") as f:
+                for _ in range(3):
+                    f.write(json.dumps({"success": True, "title": "Real Widget", "path": "/books/real_widget.pdf"}) + "\n")
+            reality_path = os.path.join(tmp, "reality.json")
+            with open(reality_path, "w", encoding="utf-8") as f:
+                json.dump({"published_books": []}, f)
+
+            result = pmc.build_product_master_catalog(paddle_products_path=paddle_path, reality_path=reality_path, generation_log_path=gen_log_path)
+            entry = next(p for p in result["products"] if p["product_name"] == "Real Widget")
+            self.assertTrue(entry["version"].startswith("3 "))
+
+    def test_no_matching_generation_record_stays_honestly_unknown(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            paddle_path = os.path.join(tmp, "paddle_products.json")
+            with open(paddle_path, "w", encoding="utf-8") as f:
+                json.dump([{"title": "No Log Entry Product", "product_id": "pro_1", "price_id": "pri_1", "price": 50.0}], f)
+            gen_log_path = os.path.join(tmp, "_generation_log.jsonl")
+            with open(gen_log_path, "w", encoding="utf-8") as f:
+                pass  # empty log
+            reality_path = os.path.join(tmp, "reality.json")
+            with open(reality_path, "w", encoding="utf-8") as f:
+                json.dump({"published_books": []}, f)
+
+            result = pmc.build_product_master_catalog(paddle_products_path=paddle_path, reality_path=reality_path, generation_log_path=gen_log_path)
+            entry = next(p for p in result["products"] if p["product_name"] == "No Log Entry Product")
+            self.assertEqual(entry["description"], "Unknown")
+            self.assertEqual(entry["source_files"], [])
+            self.assertEqual(entry["version"], "Unknown")
+
+    def test_only_successful_generation_records_match(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            paddle_path = os.path.join(tmp, "paddle_products.json")
+            with open(paddle_path, "w", encoding="utf-8") as f:
+                json.dump([{"title": "Failed Widget", "product_id": "pro_1", "price_id": "pri_1", "price": 50.0}], f)
+            gen_log_path = os.path.join(tmp, "_generation_log.jsonl")
+            with open(gen_log_path, "w", encoding="utf-8") as f:
+                f.write(json.dumps({"success": False, "title": "Failed Widget", "path": "/books/failed.pdf"}) + "\n")
+            reality_path = os.path.join(tmp, "reality.json")
+            with open(reality_path, "w", encoding="utf-8") as f:
+                json.dump({"published_books": []}, f)
+
+            result = pmc.build_product_master_catalog(paddle_products_path=paddle_path, reality_path=reality_path, generation_log_path=gen_log_path)
+            entry = next(p for p in result["products"] if p["product_name"] == "Failed Widget")
+            self.assertEqual(entry["description"], "Unknown")
+
+
 class TestAllGenerationAttempts(unittest.TestCase):
     def test_only_successful_attempts_included(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -67,6 +67,21 @@ class TestRecordPublishAttemptProtectionFields(unittest.TestCase):
         self.assertEqual(event["risk_score"], 42)
         self.assertEqual(event["protection_decision"], "allowed")
 
+    def test_backfill_reason_omitted_produces_original_shape(self):
+        """Production Hardening (ADR-204, Phase 14, 2026-08-08):
+        regression test for FAILURE_REGISTER.md F3's fix."""
+        event = ledger.record_publish_attempt(self._fake_product(), self._fake_result(), ledger_path=self.ledger_path)
+        self.assertNotIn("backfilled", event)
+        self.assertNotIn("backfill_reason", event)
+
+    def test_backfill_reason_given_tags_event_honestly(self):
+        event = ledger.record_publish_attempt(
+            self._fake_product(), self._fake_result(), ledger_path=self.ledger_path,
+            backfill_reason="real event confirmed live against the Paddle account, never recorded at the time",
+        )
+        self.assertTrue(event["backfilled"])
+        self.assertIn("real event confirmed live", event["backfill_reason"])
+
 
 class TestRecordSaleMarketEvidenceHook(unittest.TestCase):
     """Market Learning Loop (2026-07-22): record_sale()'s new optional

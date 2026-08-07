@@ -48,7 +48,7 @@ def append_event(event: dict, ledger_path=None) -> dict:
     return record
 
 
-def record_publish_attempt(product, result, ledger_path=None, risk_score=None, protection_decision=None) -> dict:
+def record_publish_attempt(product, result, ledger_path=None, risk_score=None, protection_decision=None, backfill_reason=None) -> dict:
     """Build a publish_attempt event from a Product + PublishResult and
     append it. Never raises on a failed publish — a failure is exactly what
     this ledger exists to record honestly.
@@ -56,7 +56,16 @@ def record_publish_attempt(product, result, ledger_path=None, risk_score=None, p
     risk_score/protection_decision (Global Commercial Hardening, Phase 1,
     2026-07-29): optional fields from channels/publish_protection.py's
     real pre-publish gate — only added to the event when actually given,
-    so every pre-existing caller's event shape is unchanged."""
+    so every pre-existing caller's event shape is unchanged.
+
+    backfill_reason (Production Hardening, ADR-204, Phase 14, 2026-08-08):
+    closes FAILURE_REGISTER.md F3 — a real, live Paddle product-creation
+    event that happened outside the standard distributor.py path (a
+    direct paddle_arm.py::publish() call) was never recorded here.
+    When given, tags the event `backfilled: true` with the real,
+    disclosed reason — an honest, auditable correction, never a silent
+    one (Section 19's own rule). Omitted for every real-time caller —
+    the event shape for a live publish is completely unchanged."""
     event = {
         "event_type": "publish_attempt",
         "platform": result.platform,
@@ -73,6 +82,9 @@ def record_publish_attempt(product, result, ledger_path=None, risk_score=None, p
         event["risk_score"] = risk_score
     if protection_decision is not None:
         event["protection_decision"] = protection_decision
+    if backfill_reason is not None:
+        event["backfilled"] = True
+        event["backfill_reason"] = backfill_reason
     return append_event(event, ledger_path=ledger_path)
 
 

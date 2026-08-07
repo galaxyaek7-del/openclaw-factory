@@ -46,6 +46,33 @@ PADDLE_API_BASE = "https://api.paddle.com"  # sandbox: https://sandbox-api.paddl
 _RETRY_ATTEMPTS = 3
 _RETRY_BACKOFF_SECONDS = 1.5
 
+# Production Hardening (ADR-204, Phase 14, 2026-08-08): a real, confirmed
+# gap found in Phase 13's reality test (FAILURE_REGISTER.md F6) --
+# _request_with_retry() treated a 429 (rate limit) as an immediate,
+# never-retried return (status_code < 500), unlike book_generator.py::
+# groq_chat()'s own real Retry-After-aware retry (fixed 2026-08-06 after
+# a real 429 was observed live). Same discipline, mirrored here: when a
+# 429/503 response carries a real Retry-After header, it is respected
+# (capped at 30s so a misbehaving header can never hang a caller
+# indefinitely); every other case falls back to the original fixed
+# backoff, byte-for-byte -- a genuine 400/401/403/404 is still never
+# retried (a permanent client error, not a rate limit).
+_MAX_RETRY_AFTER_SECONDS = 30
+
+
+def _retry_delay_seconds(attempt, response=None):
+    default = _RETRY_BACKOFF_SECONDS * attempt
+    if response is not None and response.status_code in (429, 503):
+        header = response.headers.get("Retry-After")
+        if header:
+            try:
+                seconds = float(header)
+                if seconds >= 0:
+                    return min(seconds, _MAX_RETRY_AFTER_SECONDS)
+            except (TypeError, ValueError):
+                pass  # not a numeric Retry-After (e.g. an HTTP-date) -- fall back below
+    return default
+
 
 class ConfigError(Exception):
     """A missing/invalid local configuration — never a Paddle API error."""
@@ -53,21 +80,26 @@ class ConfigError(Exception):
 
 
 def _request_with_retry(method, url, **kwargs):
-    """Same retry discipline as gumroad_publisher.py's own helper: only
-    idempotent methods are safe to retry blindly, a 4xx is a permanent
-    client error, never retried."""
+    """Same retry discipline as gumroad_publisher.py's own helper: a real
+    4xx client error (400/401/403/404/...) is permanent, never retried.
+    429 (rate limit) and 503 (service unavailable) are the one real
+    exception -- both are genuinely transient and are retried with a
+    real Retry-After-aware delay (see _retry_delay_seconds() above,
+    ADR-204 fix for FAILURE_REGISTER.md F6)."""
     last_exc = None
     for attempt in range(1, _RETRY_ATTEMPTS + 1):
         try:
             r = requests.request(method, url, **kwargs)
         except requests.RequestException as e:
             last_exc = e
+            response = None
         else:
-            if r.status_code < 500:
+            if r.status_code not in (429, 503) and r.status_code < 500:
                 return r
             last_exc = requests.RequestException(f"HTTP {r.status_code}: {r.text[:200]}")
+            response = r
         if attempt < _RETRY_ATTEMPTS:
-            time.sleep(_RETRY_BACKOFF_SECONDS * attempt)
+            time.sleep(_retry_delay_seconds(attempt, response))
     raise last_exc
 
 
@@ -93,13 +125,27 @@ def _headers(api_key):
     return {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
 
+def _safe_json(r, action, api_key=None):
+    """Production Hardening (ADR-204, Phase 14, 2026-08-08): closes
+    FAILURE_REGISTER.md F8 -- a malformed JSON response used to raise a
+    raw, unwrapped ValueError from every `.json()` call site below.
+    PaddleArm's own layer already caught this correctly (confirmed live
+    during Phase 13), but the publisher layer itself did not -- this is
+    the real fix at the actual source, for defense in depth and a
+    clearer error message at either layer."""
+    try:
+        return r.json()
+    except ValueError as e:
+        raise RuntimeError(f"Paddle {action} returned a malformed response: {_safe_err(e, api_key)}")
+
+
 def list_products(api_key):
     try:
         r = _request_with_retry("GET", f"{PADDLE_API_BASE}/products", headers=_headers(api_key), timeout=30)
         r.raise_for_status()
     except requests.RequestException as e:
         raise RuntimeError(f"Paddle list_products request failed: {_safe_err(e, api_key)}")
-    return r.json().get("data", [])
+    return _safe_json(r, "list_products", api_key).get("data", [])
 
 
 def _raise_with_paddle_error(r, action, api_key):
@@ -153,7 +199,8 @@ def create_product(api_key, product_spec):
             _raise_with_paddle_error(r, "create_product", api_key)
     except requests.RequestException as e:
         raise RuntimeError(f"Paddle create_product request failed: {_safe_err(e, api_key)}")
-    return r.json().get("data", r.json())
+    body = _safe_json(r, "create_product", api_key)
+    return body.get("data", body)
 
 
 def update_product(api_key, product_id, updates):
@@ -168,7 +215,8 @@ def update_product(api_key, product_id, updates):
             _raise_with_paddle_error(r, "update_product", api_key)
     except requests.RequestException as e:
         raise RuntimeError(f"Paddle update_product request failed: {_safe_err(e, api_key)}")
-    return r.json().get("data", r.json())
+    body = _safe_json(r, "update_product", api_key)
+    return body.get("data", body)
 
 
 def create_price(api_key, product_id, price_spec):
@@ -195,7 +243,8 @@ def create_price(api_key, product_id, price_spec):
             _raise_with_paddle_error(r, "create_price", api_key)
     except requests.RequestException as e:
         raise RuntimeError(f"Paddle create_price request failed: {_safe_err(e, api_key)}")
-    return r.json().get("data", r.json())
+    body = _safe_json(r, "create_price", api_key)
+    return body.get("data", body)
 
 
 def create_checkout_transaction(api_key, price_id, quantity=1):
@@ -217,7 +266,8 @@ def create_checkout_transaction(api_key, price_id, quantity=1):
             _raise_with_paddle_error(r, "create_checkout_transaction", api_key)
     except requests.RequestException as e:
         raise RuntimeError(f"Paddle create_checkout_transaction request failed: {_safe_err(e, api_key)}")
-    data = r.json().get("data", r.json())
+    body = _safe_json(r, "create_checkout_transaction", api_key)
+    data = body.get("data", body)
     checkout_url = (data.get("checkout") or {}).get("url")
     return data, checkout_url
 
@@ -230,7 +280,7 @@ def get_transactions(api_key):
         r.raise_for_status()
     except requests.RequestException as e:
         raise RuntimeError(f"Paddle get_transactions request failed: {_safe_err(e, api_key)}")
-    return r.json().get("data", [])
+    return _safe_json(r, "get_transactions", api_key).get("data", [])
 
 
 def _safe_err(exc, api_key=None):

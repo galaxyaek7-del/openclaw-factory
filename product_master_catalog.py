@@ -84,17 +84,68 @@ def _catalog_entry(**fields):
     return defaults
 
 
-def _paddle_catalog_entries(paddle_products_path=None, finance_path=None):
+def _generation_log_record_for_title(title, generation_log_path=None):
+    """Production Hardening (ADR-204, Phase 14, 2026-08-08): closes
+    FAILURE_REGISTER.md F5 -- the catalog used to report description/
+    source_files/version as "Unknown" even when a real answer already
+    existed in books/_generation_log.jsonl. Real generation-log entries
+    use `topic` (not `title`) as their real product-name field for most
+    entries, confirmed by direct inspection in Phase 13 -- both are
+    checked. Returns the LATEST real successful entry matching this
+    title/topic, plus a real occurrence count (used as a disclosed,
+    mechanical proxy for `version` -- how many times this exact product
+    was actually (re)generated, a real signal, not invented)."""
+    path = Path(generation_log_path) if generation_log_path else _GENERATION_LOG_PATH
+    matches = []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    r = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if not r.get("success"):
+                    continue
+                if r.get("title") == title or r.get("topic") == title:
+                    matches.append(r)
+    except OSError:
+        return None, 0
+    if not matches:
+        return None, 0
+    return matches[-1], len(matches)
+
+
+def _paddle_catalog_entries(paddle_products_path=None, finance_path=None, generation_log_path=None):
     products = _read_json(Path(paddle_products_path) if paddle_products_path else _PADDLE_PRODUCTS_PATH, [])
     entries = []
     for p in products if isinstance(products, list) else []:
         title = p.get("title", "Unknown")
         sales = _real_sales_matching(title, finance_path=finance_path)
+        gen_record, gen_count = _generation_log_record_for_title(title, generation_log_path=generation_log_path)
+
+        source_files = []
+        description = "Unknown"
+        version = "Unknown"
+        if gen_record:
+            if gen_record.get("path"):
+                source_files.append(gen_record["path"])
+            cover_path = (gen_record.get("cover") or {}).get("path")
+            if cover_path:
+                source_files.append(cover_path)
+            description = gen_record.get("topic") or gen_record.get("title") or "Unknown"
+            version = f"{gen_count} (real count of successful generation attempts for this title in books/_generation_log.jsonl -- not a semantic version, a disclosed proxy)"
+
         entries.append(_catalog_entry(
             internal_product_id=p.get("product_id"),
             product_name=title,
             product_type="ai_saas_or_b2b_ladder_product",
             pricing_usd=p.get("price"),
+            description=description,
+            source_files=source_files,
+            version=version,
             platforms={"paddle": {"status": "PRODUCT_CREATED", "product_id": p.get("product_id"), "price_id": p.get("price_id"), "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."}},
             publication_status="PRODUCT_CREATED_NOT_CONFIRMED_LIVE",
             revenue_usd=sales["revenue_usd"], refunds_usd=sales["refunds_usd"],
@@ -138,11 +189,11 @@ def _kdp_catalog_entries(reality_path=None):
     return entries
 
 
-def build_product_master_catalog(paddle_products_path=None, reality_path=None, finance_path=None, now=None):
+def build_product_master_catalog(paddle_products_path=None, reality_path=None, finance_path=None, generation_log_path=None, now=None):
     """The one real aggregator. Computes each real source exactly once."""
     now = now or datetime.now(timezone.utc)
     entries = (
-        _paddle_catalog_entries(paddle_products_path=paddle_products_path, finance_path=finance_path)
+        _paddle_catalog_entries(paddle_products_path=paddle_products_path, finance_path=finance_path, generation_log_path=generation_log_path)
         + _affiliate_catalog_entries()
         + _kdp_catalog_entries(reality_path=reality_path)
     )
