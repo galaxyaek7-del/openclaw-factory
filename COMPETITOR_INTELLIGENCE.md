@@ -30,4 +30,12 @@ Every one of the 5 real gaps above requires either a paid tool (SimilarWeb, Ahre
 
 ---
 
-*See also: `MARKET_INTELLIGENCE_ENGINE.md`, `MARKET_GAP_ENGINE.md`, `EXECUTIVE_MARKET_REPORT.md`.*
+## Phase 17 update (2026-08-08, ADR-207) — Competitor Change Detection
+
+The founder's "Global Intelligence & Competitive Moat Engine" directive (Section 5) asked for detection of 12 named competitor change types (new product, price change, new subscription, new market, new partnership, new feature, new platform, complaint patterns, technology change, business model change, shutdown, acquisition/expansion). Checked against this document's own real, disclosed gaps above before building anything: `competitor_discovery.py::diff_competitor_snapshots()` (cited above, "Update continuously") already real-detects exactly 1 of these 12 — real `github_stars`/`hacker_news_points` growth, a genuine but narrow proxy for "new feature"/"expansion" activity. **The other 11 named change types have no real data source anywhere in this factory** — each would require either a paid tool (price-tracking, SimilarWeb) or a real, credentialed platform API this company does not have, the exact same 5 gaps this document already disclosed in 2026-07-29 and re-confirmed unchanged this round. No new detection code was built to paper over this — the honest state is 1/12, not fabricated coverage of the rest.
+
+Also re-verified this round: the 2 real named competitors for the EU AI Act Compliance Toolkit (governancedocs.com, riskprofs.com) remain this factory's only instance of genuinely current, human-verified competitor intelligence — see `competitive_moat_engine.py` (new, ADR-207) for how that evidence now feeds a real, product-level moat assessment.
+
+---
+
+*See also: `MARKET_INTELLIGENCE_ENGINE.md`, `MARKET_GAP_ENGINE.md`, `EXECUTIVE_MARKET_REPORT.md`, `COMPETITIVE_MOAT_ENGINE.md` (Phase 17).*

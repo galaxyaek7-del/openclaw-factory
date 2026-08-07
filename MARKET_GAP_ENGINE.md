@@ -26,4 +26,10 @@ All three questions answered with real, cited evidence — not two out of three,
 
 ---
 
-*See also: `MARKET_INTELLIGENCE_ENGINE.md`, `CUSTOMER_PAIN_ENGINE.md`, `COMPETITOR_INTELLIGENCE.md`, `DECISION_FILTERS.md`.*
+## Phase 17 update (2026-08-08, ADR-207) — the 10 named per-gap fields
+
+The founder's "Global Intelligence & Competitive Moat Engine" directive (Section 6) named 10 fields for every identified gap: Problem/Affected Customer/Current Solutions/Solution Weakness/Evidence/Market Size Evidence/Willingness-to-Pay Evidence/Competition/Difficulty/Potential Revenue/Recurring Potential/Strategic Value/Confidence (12, not 10, on direct count). Checked against this document's own real mechanisms, field by field: Problem/Current Solutions/Solution Weakness/Evidence/Competition are real, covered by `competitor_discovery.py` + `goos.py`'s `competition_level`; Market Size Evidence is honestly `NOT_MEASURABLE` (ADR-042/043's standing, twice-confirmed finding — no free real TAM source exists); Willingness-to-Pay Evidence is `profit_oracle.py`'s real Proof of Payment hard gate (ADR-121) — the single strictest, most load-bearing real check in this factory; Potential Revenue/Recurring Potential/Strategic Value/Confidence are `capital_allocation_engine.py::investment_score()`'s real dimensions. **No new module was built** — every field this directive named already has a real, cited answer or an honestly disclosed gap in this factory's existing pipeline.
+
+---
+
+*See also: `MARKET_INTELLIGENCE_ENGINE.md`, `CUSTOMER_PAIN_ENGINE.md`, `COMPETITOR_INTELLIGENCE.md`, `DECISION_FILTERS.md`, `MARKET_WHITE_SPACE_MAP.md` (Phase 17).*
