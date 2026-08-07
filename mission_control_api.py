@@ -1201,6 +1201,25 @@ def _goos_evaluate_opportunity():
     return goos.build_opportunity_intelligence_report(niche)
 
 
+def _eu_ai_act_readiness_score():
+    """Product Readiness Score (ADR-199, 2026-08-07): live for the one
+    real product this factory has shipped. Reads price_id from
+    data/paddle_products.json rather than hardcoding it twice."""
+    import json
+    from pathlib import Path
+    from product_readiness_score import compute_product_readiness_score
+
+    products = json.loads((Path(__file__).resolve().parent / "data" / "paddle_products.json").read_text(encoding="utf-8"))
+    product = next((p for p in products if p.get("title") == "EU AI Act Compliance Toolkit"), None)
+    price = product["price"] if product else 155.0
+
+    return compute_product_readiness_score(
+        "books/eu_ai_act_compliance_toolkit.pdf", price, "EU AI Act Compliance Toolkit",
+        cover_path="books/covers/eu_ai_act_compliance_toolkit_cover.png",
+        title="EU AI Act Compliance Toolkit", platform="gumroad_premium", page_count=31,
+    )
+
+
 def _golden_hunter_room():
     """Golden Hunter Room (ADR-192, 2026-08-07): CEO View over
     goos.py::rank_build_candidates() -- reused, not recomputed."""
@@ -2985,6 +3004,7 @@ _ENDPOINTS = {
     "business_development_dashboard": _business_development_dashboard,
     "trust_audit_report": _trust_audit_report,
     "golden_hunter_room": _golden_hunter_room,
+    "eu_ai_act_readiness_score": _eu_ai_act_readiness_score,
 }
 
 

@@ -737,6 +737,18 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('business_development_dashboard'),
   },
   {
+    // Product Readiness Score (ADR-199, 2026-08-07): the one genuine,
+    // buildable gap READINESS_SCORE_ENGINE.md (Phase 9) named --
+    // threads the 3 already-per-product real scores through instead of
+    // leaving them scattered across 3 modules. Live for the one real
+    // shipped product.
+    name: 'eu-ai-act-readiness-score',
+    description: "Real, per-product Overall Readiness for the EU AI Act Compliance Toolkit -- averages only the 3 dimensions with a real per-product signal (technical/commercial/strategic), honestly excluding customer/automation/security (no real per-product signal exists for any of them anywhere in this factory).",
+    reused: 'product_readiness_score.py::compute_product_readiness_score(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('eu_ai_act_readiness_score', [], req),
+    health: pythonHealthCheck('eu_ai_act_readiness_score'),
+  },
+  {
     // Trust & Excellence Constitution (ADR-189, 2026-08-07): pure
     // citation over 6 already-real enforcement mechanisms -- same
     // on-demand view the weekly export now also includes.

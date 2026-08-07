@@ -22,13 +22,15 @@
 
 **3 of 6 have real, product-level coverage. 3 are real but company-wide or division-level only, not per-product.**
 
-## Why "Overall Readiness" isn't fabricated here
+## Why "Overall Readiness" wasn't fabricated when this document was first written
 
-Averaging scores from different granularities (a per-niche strategic score, a company-wide security finding, a per-division automation score) into one number would produce something that looks precise and means very little — the exact failure mode `commercial_readiness.py`'s own design already avoids by excluding uncomputed dimensions rather than treating them as zero. This document names the real gap instead: a genuine per-product Overall Readiness score is real, buildable future work (thread the 3 already-per-product scores through, honestly exclude the 3 that aren't), not something to compute today by force-averaging incompatible real numbers.
+Averaging scores from different granularities (a per-niche strategic score, a company-wide security finding, a per-division automation score) into one number would produce something that looks precise and means very little — the exact failure mode `commercial_readiness.py`'s own design already avoids by excluding uncomputed dimensions rather than treating them as zero.
 
-## What a real per-product readiness score would look like right now
+## Built (ADR-199, same session): `product_readiness_score.py`
 
-For the one real product that exists — the EU AI Act Compliance Toolkit — the 3 real, per-product-computable scores: Technical (real, passed Dual Inspection), Commercial (real, `$155` cleared the market-realism floor after correction), Strategic (real, `strategic_intelligence_core.strategic_score()` citable). Customer, Automation, and Security stay honestly at the company-wide/division level for this product specifically, same as every other product would today.
+The gap above is now closed for the real, per-product-computable dimensions. `product_readiness_score.py::compute_product_readiness_score()` threads `inspectors.py::inspect_technical()`/`audit_commercial()` and `strategic_intelligence_core.strategic_score()` through exactly once, averaging only the dimensions with a real numeric value that call — never force-averaging in Customer/Automation/Security, which stay honestly excluded (`not_scored`, with the same reasons named above). Mission Control: `eu-ai-act-readiness-score`.
+
+**Live for the one real product:** Technical 100/100 (9/9 real checks), Commercial 66/100 (the real `profit_score`, reported separately from 2 procedural re-run artifacts — `not_duplicate`/`not_previously_rejected` correctly fire on any re-check of an already-shipped product, and are not a live commercial defect), Strategic honestly `None` (0 of 11 real dimensions have a value — `strategic_score()` only produces real numbers for a niche with a real ACCEPTED decision, and this niche doesn't have one). **Overall Readiness: 83.0/100**, the real average of the 2 dimensions that did compute.
 
 ---
 
