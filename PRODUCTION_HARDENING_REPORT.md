@@ -29,3 +29,25 @@ Audited, no new vulnerabilities found:
 - **Input validation**: action names and job IDs are looked up via `Map.get()` against an allowlist (never `eval`'d or used to build a file path/command); the one user-influenced value written to disk (`pause-production`'s `reason` field) is escaped with `escapeHtml()` everywhere it's rendered; report/log filenames are built only from server-generated timestamps, never from user input (no path-traversal surface).
 
 **Result: a clean bill of health.** No new vulnerability was found or needed fixing this phase.
+
+---
+
+## Phase 14 update (2026-08-08, ADR-204) — Production Hardening & Autonomous Reliability
+
+A second, later, much larger hardening round, triggered by Phase 13's real reality-test findings (`FAILURE_REGISTER.md`) rather than a general audit. Preserved above verbatim as the real historical record of the 2026-07-17 round; this section is the current state.
+
+**Real code fixes made this round** (each with regression tests, see `channels/paddle_publisher.py`/`product_master_catalog.py`/`channels/ledger.py`):
+- F6 (P2): Paddle API calls now retry a real 429/503 with a `Retry-After`-aware delay, mirroring the Groq fix from 2026-08-06. Previously, a 429 was treated as an immediate, never-retried failure.
+- F8 (P3): a malformed JSON response from Paddle used to raise a raw, unwrapped `ValueError` at the publisher layer; now every call site raises a clear `RuntimeError` via a shared `_safe_json()` helper.
+- F5 (P2): the Product Master Catalog's `description`/`source_files`/`version` fields used to report `"Unknown"` even when real data existed in `books/_generation_log.jsonl`; now cross-referenced correctly.
+- F3 (P1): the real, live Paddle product-creation event for the EU AI Act Compliance Toolkit (created outside the standard `distributor.py` path) was never recorded in `data/sales_ledger.jsonl`. `record_publish_attempt()` gained an optional, additive `backfill_reason` kwarg; the one real historical event was backfilled once, tagged `backfilled: true`, with a full disclosed reason — an addition, never a silent correction.
+
+**New this round, not fixed (real, disclosed, deliberately out of scope):**
+- F1 (P1): no Paddle sandbox exists anywhere — payment/refund testing remains structurally BLOCKED, not simulated. Not fixable by code (requires a real Paddle sandbox account).
+- F2 (P1): no checkout URL exists in this factory's own records for its one real product — generating one requires a live, mutating call on production Paddle, appropriately requiring explicit founder authorization rather than unilateral action.
+- F10 (P1): legal-jurisdiction placeholders on the trust pages — a real founder decision, not an engineering task.
+- A real, safe, low-cost `restore_from_snapshot()` function is genuinely missing (`BACKUP_AND_RESTORE.md`) — deliberately not built this round to keep a real data-recovery code path as its own focused, reviewed change rather than a rushed addition.
+
+**New real finding, not in the original Phase 13 register**: a real, measured concurrency test this round (10 simultaneous requests to `GET /api/v1/health`) took ~2.4s total wall time versus ~0.22s for a single request — suggesting the server processes concurrent requests closer to sequentially than in parallel, at least for this route. Not investigated further this round (see `PRODUCTION_READINESS_REPORT.md`'s Performance section) — flagged as a real, disclosed observation, not a diagnosed root cause.
+
+See `RELIABILITY_ARCHITECTURE.md`, `SECURITY_HARDENING_REPORT.md`, `AI_RELIABILITY_REPORT.md`, `OBSERVABILITY.md`, `BACKUP_AND_RESTORE.md`, `DISASTER_RECOVERY.md`, `ROLLBACK_PROCEDURE.md` for the full Phase 14 body of work.

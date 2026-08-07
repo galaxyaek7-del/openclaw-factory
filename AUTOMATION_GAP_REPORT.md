@@ -1,6 +1,8 @@
 # Galaxy Forge — Automation Gap Report
 
-**Date:** 2026-08-07 | The real, current automation ceiling (Test Scenario 20, cross-referenced with `MANUAL_INTERVENTION_REGISTER.md`).
+**Date:** 2026-08-07 (Phase 13), updated 2026-08-08 (Phase 14, ADR-204) | The real, current automation ceiling (Test Scenario 20, cross-referenced with `MANUAL_INTERVENTION_REGISTER.md`).
+
+**Update note (2026-08-08):** the rate-limit row and the "genuinely missing" lists below described F6/F5 as open gaps — both are now fixed and regression-tested (see `PRODUCTION_HARDENING_REPORT.md`'s Phase 14 section and `FAILURE_REGISTER.md`). The original table is left below verbatim as the honest historical record of the Phase 13 finding it was written against; corrected current status follows in the new "Phase 14 update" section at the end of this document.
 
 ---
 
@@ -39,4 +41,21 @@
 
 ---
 
-*See also: `MANUAL_INTERVENTION_REGISTER.md`, `FAILURE_REGISTER.md`.*
+## Phase 14 update (2026-08-08, ADR-204)
+
+Per Section 23's own instruction ("review the Manual Intervention Register, automate what's safe, document why not otherwise"):
+
+| Item | Status as of Phase 14 |
+|---|---|
+| F6 — Paddle rate-limit retry | **FIXED** — real `Retry-After`-aware retry now in `channels/paddle_publisher.py`, 6 new regression tests |
+| F5 — Product Master Catalog field completeness | **FIXED** — real cross-reference against `books/_generation_log.jsonl`, 4 new regression tests |
+| F8 — malformed-response ValueError leak | **FIXED** — a real, additional finding closed alongside F6, 3 new regression tests |
+| F3 — missing ledger event for the real EU AI Act Toolkit publish | **FIXED** — disclosed, auditable backfill (`backfilled: true`), the underlying `record_publish_attempt()` capability extended, never a silent correction |
+| Daily-tick wiring for `commercial_reconciliation.py`/`commercial_alerts.py` | Still open — genuinely AUTOMATABLE, deliberately deferred again this round in favor of the higher-priority P1/P2 fixes above (Section 2's own priority-order instruction) |
+| Real checkout-URL generation | Still `REQUIRED HUMAN DECISION` — unchanged; see `MANUAL_INTERVENTION_REGISTER.md` |
+| Refund processing | Still not built — correctly so; 0 real transactions exist to build tested automation against |
+| Automated restore function (`recovery/snapshot.py`) | **New finding this round** — real, safe, low-cost `restore_from_snapshot()` gap; see `BACKUP_AND_RESTORE.md`. Not built this round (a real data-recovery code path deserves its own focused, reviewed round, not a rushed addition inside an already-large hardening pass) |
+
+---
+
+*See also: `MANUAL_INTERVENTION_REGISTER.md`, `FAILURE_REGISTER.md`, `PRODUCTION_HARDENING_REPORT.md`.*
