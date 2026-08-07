@@ -1201,6 +1201,16 @@ def _goos_evaluate_opportunity():
     return goos.build_opportunity_intelligence_report(niche)
 
 
+def _global_search():
+    """Global Search (ADR-185, 2026-08-07): real substring search over
+    the real knowledge graph snapshot + competitors + generated
+    products. Reads query from sys.argv[2]: `python mission_control_api.py
+    global_search '{"query":"...", "limit":50}'`."""
+    from global_search import search
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    return search(payload.get("query", ""), limit=payload.get("limit", 50))
+
+
 def _ceo_home_briefing():
     """CEO Home (ADR-184, 2026-08-07): the founder's EOS directive's
     literal 60-second test. Pure citation over already-real signals,
@@ -2906,6 +2916,7 @@ _ENDPOINTS = {
     "eu_ai_act_pricing_review": _eu_ai_act_pricing_review,
     "create_paddle_checkout": _create_paddle_checkout,
     "ceo_home_briefing": _ceo_home_briefing,
+    "global_search": _global_search,
 }
 
 

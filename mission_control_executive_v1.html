@@ -259,7 +259,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
      anywhere in this factory (confirmed during planning). -->
 <div id="cmdkOverlay" class="cmdk-overlay" hidden>
   <div id="cmdkBox" class="cmdk-box" role="dialog" aria-modal="true" aria-label="Command bar">
-    <input id="cmdkInput" class="cmdk-input" type="text" placeholder="Type a command or search a panel… (Esc to close)" autocomplete="off">
+    <input id="cmdkInput" class="cmdk-input" type="text" placeholder="Type a command, search a panel, or search everything… (Esc to close)" autocomplete="off">
     <div id="cmdkParamRow" class="cmdk-param-row" hidden>
       <label id="cmdkParamLabel" class="cmdk-param-label" for="cmdkParamInput"></label>
       <input id="cmdkParamInput" class="cmdk-input" type="text" autocomplete="off">
@@ -1430,11 +1430,39 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
     return [...actions, ...nav];
   }
 
+  // Global Search (ADR-185, 2026-08-07): real results from
+  // global_search.py merged into the same command bar rather than a
+  // second UI surface — "everything reachable in one place." Debounced;
+  // only fires for a query of real search-worthy length (commands/nav
+  // already filter instantly above this length threshold).
+  let cmdkSearchResults = [];
+  let cmdkSearchTimer = null;
+  let cmdkSearchSeq = 0;
+  function cmdkTriggerSearch(query){
+    clearTimeout(cmdkSearchTimer);
+    const q = query.trim();
+    if (q.length < 2) { cmdkSearchResults = []; cmdkRender(); return; }
+    cmdkSearchTimer = setTimeout(async () => {
+      const seq = ++cmdkSearchSeq;
+      try {
+        const res = await fetch('/api/v1/services/global-search?q=' + encodeURIComponent(q) + '&limit=15', { credentials:'same-origin' });
+        const body = await res.json();
+        if (seq !== cmdkSearchSeq) return; // a newer keystroke already superseded this response
+        const results = (body && body.results) || [];
+        cmdkSearchResults = results.map(r => ({ type:'search', label:r.label || r.id, sub:(r.type || r.source) + ' · ' + r.source, raw:r }));
+      } catch (_) {
+        cmdkSearchResults = [];
+      }
+      cmdkRender();
+    }, 250);
+  }
+
   function cmdkFilter(query){
     const q = query.trim().toLowerCase();
     const all = cmdkAllCommands();
     if (!q) return all.slice(0, 30);
-    return all.filter(c => c.label.toLowerCase().includes(q) || (c.sub && c.sub.toLowerCase().includes(q))).slice(0, 30);
+    const matched = all.filter(c => c.label.toLowerCase().includes(q) || (c.sub && c.sub.toLowerCase().includes(q))).slice(0, 20);
+    return [...matched, ...cmdkSearchResults];
   }
 
   function cmdkRender(){
@@ -1448,6 +1476,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
     items.forEach((item, i) => {
       const tag = item.type === 'nav'
         ? el('span', { class:'cmdk-tag nav' }, ['Go to'])
+        : item.type === 'search'
+        ? el('span', { class:'cmdk-tag nav' }, ['Result'])
         : el('span', { class:'cmdk-tag ' + (item.action.permanent ? 'permanent' : 'action') }, [item.action.permanent ? 'Permanent' : 'Action']);
       const row = el('div', { class:'cmdk-item' + (i === cmdkActiveIndex ? ' active' : ''), role:'option', 'aria-selected': i === cmdkActiveIndex ? 'true' : 'false' }, [
         el('div', null, [
@@ -1509,6 +1539,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
       if (target) target.scrollIntoView({ behavior:'smooth', block:'start' });
       return;
     }
+    if (item.type === 'search'){
+      // Real knowledge-graph/competitor/product records don't all have
+      // a dedicated detail page — show the real raw record inline
+      // rather than fabricating a link that may not resolve anywhere.
+      cmdkStatus.className = 'cmdk-status ok';
+      cmdkStatus.textContent = JSON.stringify(item.raw);
+      return;
+    }
     const action = item.action;
     if (action.param){
       cmdkPendingAction = action;
@@ -1531,7 +1569,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, [role="option"]:focu
     }
   });
   cmdkOverlay.addEventListener('click', (e) => { if (e.target === cmdkOverlay) cmdkClose(); });
-  cmdkInput.addEventListener('input', () => { cmdkActiveIndex = 0; cmdkRender(); });
+  cmdkInput.addEventListener('input', () => { cmdkActiveIndex = 0; cmdkRender(); cmdkTriggerSearch(cmdkInput.value); });
   cmdkInput.addEventListener('keydown', (e) => {
     const items = cmdkFilter(cmdkInput.value);
     if (e.key === 'ArrowDown'){ e.preventDefault(); cmdkActiveIndex = Math.min(cmdkActiveIndex + 1, items.length - 1); cmdkRender(); }

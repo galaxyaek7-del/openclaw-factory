@@ -1328,6 +1328,20 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('evidence_viewer'),
   },
   {
+    // Global Search (ADR-185, 2026-08-07): a real substring search over
+    // the real knowledge graph snapshot (4308+ real nodes) + competitors
+    // + generated products -- never a fabricated "AI semantic search"
+    // claim. Customers/files/agents/logs/tasks are honestly NOT indexed
+    // (see global_search.py's own sources_not_indexed field) -- zero
+    // real customer records exist, and file/log/agent indexing is a
+    // separate, larger undertaking not attempted here.
+    name: 'global-search',
+    description: "Real substring search across the knowledge graph, competitors, and generated products. Accepts ?q= (query) and optional &limit=. Honestly discloses which named categories (customers, files, agents, logs, tasks) are not yet indexed rather than silently omitting them.",
+    reused: 'global_search.py::search(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('global_search', [JSON.stringify({ query: req.query && req.query.q, limit: req.query && req.query.limit ? parseInt(req.query.limit, 10) : undefined })], req),
+    health: pythonHealthCheck('global_search'),
+  },
+  {
     name: 'executive-evidence-dashboard',
     description: "Merges real per-type Evidence Verification (last_verified/verification_status/evidence_count/source -- honestly 'NOT VERIFIED' when a type has zero real evidence recorded) with the Evidence Coverage Report summary. Never displays a fabricated success.",
     reused: 'evidence_engine.py::verify()/evidence_coverage_report() (ADR-163), via mission_control_api.py.',
