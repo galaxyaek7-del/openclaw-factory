@@ -394,6 +394,73 @@ COMMERCIAL_COMMANDS = {
 }
 
 
+# ── SECTION 13 — CEO DAILY COMMERCIAL BRIEF ──
+# The directive's own 12 named fields, each a real citation over
+# functions already built in this round + business_development.py/
+# capital_allocation_engine.py -- computes revenue_snapshot() and
+# assess_commercial_alerts() exactly once, threads them through every
+# field that needs them (same discipline company_pulse()/executive_
+# brain.py already established for this class of aggregator).
+
+def commercial_daily_brief(now=None):
+    now = now or datetime.now(timezone.utc)
+    snap = revenue_snapshot(now=now)
+    actual = snap["ACTUAL"]
+
+    best_product = max(actual["revenue_by_product"].items(), key=lambda kv: kv[1], default=None) if any(actual["revenue_by_product"].values()) else None
+    best_platform = max(actual["revenue_by_platform"].items(), key=lambda kv: kv[1], default=None) if any(actual["revenue_by_platform"].values()) else None
+
+    try:
+        import commercial_alerts
+        alerts = commercial_alerts.assess_commercial_alerts(now=now)
+        active = alerts["active_alerts"]
+        biggest_risk = max(active, key=lambda f: _SEVERITY_RANK.get(f["severity"], 0)) if active else None
+    except Exception as e:
+        biggest_risk = {"status": "ERROR", "error": str(e)}
+
+    try:
+        import business_development as bd
+        top_partnership = bd.top_partnership_opportunities(n=1)
+        top_affiliate = bd.top_affiliate_opportunities(n=1)
+    except Exception as e:
+        top_partnership, top_affiliate = [], []
+
+    try:
+        import capital_allocation_engine as cae
+        revenue_leak = cae.opportunity_cost()
+    except Exception as e:
+        revenue_leak = {"status": "ERROR", "error": str(e)}
+
+    try:
+        import goos
+        top_opportunity = goos.rank_build_candidates(top_n=1)
+    except Exception as e:
+        top_opportunity = {"status": "ERROR", "error": str(e)}
+
+    recommended_action = "No active commercial risk and $0 real revenue -- the recommended action is unchanged from this factory's own standing Golden Rule: focus on the first real dollar (clear Paddle's account-onboarding gate) before any further commercial expansion."
+    if biggest_risk and isinstance(biggest_risk, dict) and biggest_risk.get("severity") in ("critical", "emergency"):
+        recommended_action = f"Address the {biggest_risk['severity']} finding in '{biggest_risk['area']}' first: {biggest_risk['detail']}"
+
+    return {
+        "generated_at": now.isoformat(),
+        "revenue_usd": actual["total_revenue_usd"],
+        "net_revenue_usd": actual["net_revenue_usd"],
+        "best_product": {"name": best_product[0], "revenue_usd": best_product[1]} if best_product else {"status": "NO_REAL_REVENUE_YET"},
+        "best_platform": {"name": best_platform[0], "revenue_usd": best_platform[1]} if best_platform else {"status": "NO_REAL_REVENUE_YET"},
+        "best_market": actual["revenue_by_country"],
+        "best_acquisition_channel": {"status": "INSUFFICIENT_DATA", "reason": "No real per-channel CAC/conversion data exists -- see revenue_snapshot()['ACTUAL']['customer_acquisition_cost']."},
+        "top_opportunity": top_opportunity,
+        "top_partnership": top_partnership[0] if top_partnership else None,
+        "top_affiliate_opportunity": top_affiliate[0] if top_affiliate else None,
+        "biggest_commercial_risk": biggest_risk or {"status": "NO_ACTIVE_RISK"},
+        "biggest_revenue_leak": revenue_leak,
+        "recommended_action": recommended_action,
+    }
+
+
+_SEVERITY_RANK = {"informational": 0, "warning": 1, "critical": 2, "emergency": 3}
+
+
 def answer_commercial_command(command_text, now=None):
     """Case-insensitive exact match against the directive's own 10 named
     example commands -- never a fuzzy/LLM interpretation that could

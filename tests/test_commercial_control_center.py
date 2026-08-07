@@ -9,6 +9,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
@@ -165,6 +166,31 @@ class TestCommercialCommands(unittest.TestCase):
         r = ccc.answer_commercial_command("Show me today's revenue.", now=now)
         snap = ccc.revenue_snapshot(now=now)
         self.assertEqual(r["answer"], snap["ACTUAL"]["revenue_today_usd"])
+
+
+class TestCommercialDailyBrief(unittest.TestCase):
+    def test_all_12_named_fields_present(self):
+        r = ccc.commercial_daily_brief()
+        expected = {
+            "revenue_usd", "net_revenue_usd", "best_product", "best_platform", "best_market",
+            "best_acquisition_channel", "top_opportunity", "top_partnership", "top_affiliate_opportunity",
+            "biggest_commercial_risk", "biggest_revenue_leak", "recommended_action",
+        }
+        self.assertTrue(expected.issubset(r.keys()))
+
+    def test_best_product_honestly_no_revenue_yet(self):
+        r = ccc.commercial_daily_brief()
+        self.assertEqual(r["best_product"]["status"], "NO_REAL_REVENUE_YET")
+
+    def test_recommended_action_is_a_nonempty_string(self):
+        r = ccc.commercial_daily_brief()
+        self.assertIsInstance(r["recommended_action"], str)
+        self.assertGreater(len(r["recommended_action"]), 10)
+
+    def test_never_raises_even_if_a_sub_call_fails(self):
+        with patch("business_development.top_partnership_opportunities", side_effect=RuntimeError("boom")):
+            r = ccc.commercial_daily_brief()
+        self.assertIsNotNone(r)
 
 
 if __name__ == "__main__":
