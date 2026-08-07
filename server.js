@@ -1840,6 +1840,15 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('capital_efficiency_report', [], req),
     health: pythonHealthCheck('capital_efficiency_report'),
   },
+  {
+    // Global Intelligence & Competitive Moat Engine, Sections 16-17
+    // (ADR-207, Phase 17, 2026-08-08).
+    name: 'competitive-moat-assessment',
+    description: "Real, evidence-cited classification of the 12 named defensibility mechanisms (WEAK/MODERATE/STRONG/NON-EXISTENT) for the one real product with real evidence -- distinct from profit_oracle.py's own market-crowding defensibility score, cited not duplicated. 0 of 12 mechanisms are STRONG today; unique_intelligence (the real, verified regulatory timeline) is the strongest real moat this product has.",
+    reused: 'competitive_moat_engine.py::assess_eu_ai_act_toolkit_moat(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('competitive_moat_assessment', [], req),
+    health: pythonHealthCheck('competitive_moat_assessment'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

@@ -1287,6 +1287,14 @@ def _capital_efficiency_report():
     return capital_efficiency_report()
 
 
+def _competitive_moat_assessment():
+    """Global Intelligence & Competitive Moat Engine, Sections 16-17
+    (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
+    classification for the one real product with real evidence."""
+    from competitive_moat_engine import assess_eu_ai_act_toolkit_moat
+    return assess_eu_ai_act_toolkit_moat()
+
+
 def _golden_hunter_room():
     """Golden Hunter Room (ADR-192, 2026-08-07): CEO View over
     goos.py::rank_build_candidates() -- reused, not recomputed."""
@@ -3109,6 +3117,7 @@ _ENDPOINTS = {
     "commercial_acquisition_and_funnel": _commercial_acquisition_and_funnel,
     "adaptive_priority_queue": _adaptive_priority_queue,
     "capital_efficiency_report": _capital_efficiency_report,
+    "competitive_moat_assessment": _competitive_moat_assessment,
 }
 
 
