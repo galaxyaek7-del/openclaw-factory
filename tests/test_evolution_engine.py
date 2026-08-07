@@ -133,20 +133,21 @@ class TestBuildGalaxyEvolutionReport(unittest.TestCase):
 
 
 class TestRenderGalaxyEvolutionReportMarkdown(unittest.TestCase):
-    def test_renders_all_14_named_sections(self):
+    def test_renders_all_15_named_sections(self):
         fake_report = {
             "generated_at": "x", "current_strengths": "a", "current_weaknesses": "b",
             "critical_risks": "c", "hidden_opportunities": "d", "recommended_improvements": "e",
             "high_priority_actions_ranked_by_roi": "f", "expected_long_term_impact": "g",
             "potential_monthly_revenue_impact": "h", "estimated_implementation_effort": "i",
             "global_benchmark": "j", "commercial_debt": "k", "strategic_debt": "l",
-            "competitive_threats": "m", "never_build": "n",
+            "competitive_threats": "m", "never_build": "n", "obsolete_components": "o",
         }
         md = ee.render_galaxy_evolution_report_markdown(fake_report)
         for label in ("Current Strengths", "Current Weaknesses", "Critical Risks", "Hidden Opportunities",
                       "Recommended Improvements", "High Priority Actions", "Expected Long-Term Impact",
                       "Potential Monthly Revenue Impact", "Estimated Implementation Effort", "Global Benchmark",
-                      "Commercial Debt", "Strategic Debt", "Competitive Threats", "What Should Never Be Built"):
+                      "Commercial Debt", "Strategic Debt", "Competitive Threats", "What Should Never Be Built",
+                      "Obsolete Components"):
             self.assertIn(label, md)
 
 
@@ -183,6 +184,21 @@ class TestAutonomousEvolutionProtocolSections(unittest.TestCase):
         report = ee.build_galaxy_evolution_report()
         for key in ("commercial_debt", "strategic_debt", "competitive_threats", "never_build"):
             self.assertIn(key, report)
+
+
+class TestObsoleteComponents(unittest.TestCase):
+    """ADR-193 (2026-08-07): closes MONTHLY_EVOLUTION_REPORT.md's own
+    disclosed gap -- "what should be removed" now cites
+    enterprise_validation.py::detect_unused_services() directly."""
+
+    def test_cites_real_detect_unused_services(self):
+        result = ee._obsolete_components()
+        self.assertIn("source", result)
+        self.assertIn("detect_unused_services", result["source"])
+
+    def test_full_report_includes_obsolete_components(self):
+        report = ee.build_galaxy_evolution_report()
+        self.assertIn("obsolete_components", report)
 
 
 if __name__ == "__main__":

@@ -241,7 +241,26 @@ def build_galaxy_evolution_report(decisions_path=None, outcomes_path=None, timel
         "strategic_debt": _strategic_debt(),
         "competitive_threats": _competitive_threats(),
         "never_build": _never_build_list(),
+        # Autonomous Evolution Engine (ADR-193, 2026-08-07): closes the
+        # one real gap MONTHLY_EVOLUTION_REPORT.md found -- "what became
+        # obsolete / should be removed" had no real citation anywhere in
+        # this report, even though a real, cheap, mechanical answer
+        # already existed (enterprise_validation.py::detect_unused_services(),
+        # ADR-166) and had simply never been threaded in.
+        "obsolete_components": _obsolete_components(),
     }
+
+
+def _obsolete_components():
+    try:
+        from enterprise_validation import detect_unused_services
+        result = detect_unused_services()
+        return {
+            "value": result,
+            "source": "enterprise_validation.py::detect_unused_services() (ADR-166) -- real, mechanical, re-runnable name-diff over server.js/factory_loop.js's real dispatch call sites.",
+        }
+    except Exception as e:
+        return {"status": "unavailable", "reason": str(e)}
 
 
 def _commercial_debt():
@@ -331,6 +350,7 @@ def render_galaxy_evolution_report_markdown(report=None):
         ("Strategic Debt", "strategic_debt"),
         ("Competitive Threats", "competitive_threats"),
         ("What Should Never Be Built", "never_build"),
+        ("Obsolete Components", "obsolete_components"),
     ]
     for label, key in sections:
         lines.append(f"## {label}")
