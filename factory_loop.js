@@ -2214,6 +2214,83 @@ async function maybeRunDailyEvidenceRecordingAudit(now = new Date()) {
   return { action: 'generated', detail: `تم تسجيل ${result.recorded} دليل حقيقي — Reality Score: ${pct ? pct.REAL : '؟'}%` };
 }
 
+// Pricing Review Trigger (ADR-182, 2026-08-07): founder directive after
+// approving Premium-tier ($155) for the EU AI Act Compliance Toolkit --
+// "after the first verified customer and testimonials, schedule an
+// automatic pricing review" toward Elite tier ($310, already validated
+// real). Real, mechanical, daily-gated: only ever notifies once real
+// evidence (>=1 real paid customer + >=1 real review) exists, never on
+// elapsed time.
+const PRICING_REVIEW_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.eu_ai_act_pricing_review_daily_marker');
+
+function runEuAiActPricingReview({ timeoutMs = 60000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'eu_ai_act_pricing_review'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة eu_ai_act_pricing_review (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من eu_ai_act_pricing_review' });
+          return;
+        }
+        finish({ ok: true, ready: result.ready_for_elite_tier_review, evidence: result.evidence, eliteEvaluation: result.elite_tier_evaluation });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج eu_ai_act_pricing_review: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeCheckEuAiActPricingReview(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(PRICING_REVIEW_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم فحص جاهزية مراجعة التسعير اليوم بالفعل (${today})` };
+  }
+  const result = await runEuAiActPricingReview();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(path.dirname(PRICING_REVIEW_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(PRICING_REVIEW_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ علامة مراجعة التسعير: ${err.message}` };
+  }
+  if (result.ready) {
+    telegramDirect.sendTelegramMessage(
+      `\u{1F4B0} جاهز لمراجعة تسعير Elite tier\nEU AI Act Compliance Toolkit: ${result.evidence}\nتقييم Elite ($310): ${result.eliteEvaluation ? JSON.stringify(result.eliteEvaluation) : 'غير محسوب'}`
+    ).catch(() => {});
+    return { action: 'ready', detail: result.evidence };
+  }
+  return { action: 'not_ready', detail: result.evidence };
+}
+
 const GROWTH_STAGE_SNAPSHOT_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.growth_stage_snapshot_daily_marker');
 
 function runRecordDailyGrowthStageSnapshot({ timeoutMs = 60000, pythonPath } = {}) {
@@ -3330,6 +3407,14 @@ async function runTick() {
   markStep('evidence_recording_audit');
   actions.push({ step: 'evidence_recording_audit', ...(await maybeRunDailyEvidenceRecordingAudit()) });
 
+  // Pricing Review Trigger (ADR-182, 2026-08-07): once per calendar day,
+  // checks whether the EU AI Act Compliance Toolkit has earned a real,
+  // evidence-backed Elite-tier pricing review. Never fires on elapsed
+  // time -- only ever notifies once a real paid customer AND a real
+  // review both exist.
+  markStep('eu_ai_act_pricing_review');
+  actions.push({ step: 'eu_ai_act_pricing_review', ...(await maybeCheckEuAiActPricingReview()) });
+
   // Final Executive Directive (2026-07-29): same once-per-calendar-day
   // pattern as the report engines above — the 2 confirmed-safe, genuinely
   // new autonomy additions ("maintain institutional knowledge" +
@@ -3605,6 +3690,7 @@ module.exports = {
   runGenerateDailyExecutiveDirective, maybeGenerateDailyExecutiveDirective,
   runRecordDailyGrowthStageSnapshot, maybeRecordDailyGrowthStageSnapshot,
   runDailyEvidenceRecordingAudit, maybeRunDailyEvidenceRecordingAudit,
+  runEuAiActPricingReview, maybeCheckEuAiActPricingReview,
   runKnowledgeGraphDailySnapshot, maybeGenerateDailyKnowledgeGraph,
   runGeneratePendingBusinessBlueprints, maybeGenerateBusinessBlueprintsForNewAcceptedDecisions,
   runResilienceMonitorTick, newIncidentTelegramReasons, runPaymentStatusCheckTick,

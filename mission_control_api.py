@@ -1201,6 +1201,16 @@ def _goos_evaluate_opportunity():
     return goos.build_opportunity_intelligence_report(niche)
 
 
+def _eu_ai_act_pricing_review():
+    """Pricing Review Trigger (ADR-182, 2026-08-07): real, mechanical
+    check of whether the EU AI Act Compliance Toolkit has earned an
+    Elite-tier ($310) pricing review yet -- >=1 real paid customer with
+    >=1 real review. Cheap, read-only, safe as both a Mission Control
+    panel and a daily factory_loop.js dispatch target."""
+    import pricing_review
+    return pricing_review.check_eu_ai_act_toolkit_pricing_review()
+
+
 def _prioritized_evidence_summary():
     """Real Evidence Provider abstraction (ADR-179, 2026-08-06): the
     founder's directive to never let one blocked source stop
@@ -2858,6 +2868,7 @@ _ENDPOINTS = {
     "goos_evaluate_opportunity": _goos_evaluate_opportunity,
     "strategic_intelligence_engine_report": _strategic_intelligence_engine_report,
     "prioritized_evidence_summary": _prioritized_evidence_summary,
+    "eu_ai_act_pricing_review": _eu_ai_act_pricing_review,
 }
 
 

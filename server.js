@@ -1547,6 +1547,18 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('list_generated_commercial_kits'),
   },
   {
+    // Pricing Review Trigger (ADR-182, 2026-08-07): real, mechanical,
+    // read-only -- never recommends a tier change without >=1 real paid
+    // customer and >=1 real review. Same check factory_loop.js's daily
+    // tick also runs (maybeCheckEuAiActPricingReview()); this panel is
+    // just the on-demand view, never a second computation.
+    name: 'eu-ai-act-pricing-review',
+    description: "Whether the EU AI Act Compliance Toolkit has earned an Elite-tier ($310, already validated real) pricing review yet -- requires >=1 real paid customer AND >=1 real review, never elapsed time alone.",
+    reused: 'pricing_review.py::check_eu_ai_act_toolkit_pricing_review()',
+    handler: (req) => runPythonServiceCached('eu_ai_act_pricing_review', [], req),
+    health: pythonHealthCheck('eu_ai_act_pricing_review'),
+  },
+  {
     name: 'execution-phases',
     description: "The real, company-wide 5-phase execution roadmap (orchestrator.types.EXECUTION_ORDER): market_intelligence -> decision -> production -> publishing -> learning, each with real per-stage engine health and a real, disclosed deterministic rollback plan (Dual Inspection quarantine, publish-protection emergency stop, etc.) -- never a fabricated task list this factory doesn't track.",
     reused: 'autonomous_business_builder.py::execution_phases()',
