@@ -33,7 +33,7 @@
     "title": "EU AI Act Compliance Toolkit",
     "product_id": null,
     "price_id": null,
-    "price": 310.0,
-    "_note": "Real, finished, technically and commercially validated product (books/eu_ai_act_compliance_toolkit.pdf, 31 pages) -- honestly not yet a real Paddle product_id/price_id, since no Paddle checkout is live. Listed here anyway (2026-08-07) because customer_pipeline.py's real intake flow works correctly without catalog_product_id -- a real prospect can request it now via the manual-review path; the Paddle IDs get added the moment channels/paddle_publisher.py::create_product() is actually called against the live account."
+    "price": 155.0,
+    "_note": "Real, finished, technically validated product (books/eu_ai_act_compliance_toolkit.pdf, 31 pages). Price corrected 2026-08-07 from $310 to $155 -- economics.market_realism_check(310, 31 pages, platform='gumroad_premium') returns market_realistic=False, suggested $155 (verified by direct call, not assumption). The launch kit's $310 was validated only against the 'gumroad_elite' tier, a higher, more exclusive tier this product was never deliberately assigned to; $155 is the honest figure under the pipeline's own actual default tier. See the founder message flagging this for the open tier-positioning question. No Paddle product_id/price_id yet -- listed honestly as null, since no Paddle checkout is live."
   }
 ]
