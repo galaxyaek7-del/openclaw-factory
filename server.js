@@ -34,7 +34,15 @@ const groq = new Groq({ apiKey: GROQ_KEY || 'missing' });
 const LIVE_PUBLISH_ENABLED = process.env.FACTORY_LIVE_PUBLISH === 'true';
 
 app.use(cors());
-app.use(express.json());
+// verify callback stashes the exact raw request bytes onto req.rawBody
+// before JSON-parsing -- needed only by POST /webhooks/paddle (real
+// Paddle HMAC signatures are computed over the exact raw body, and
+// re-serializing req.body would silently break verification on any
+// key-order/whitespace difference). Every other route's behavior is
+// completely unchanged -- req.body still parses exactly as before.
+app.use(express.json({
+  verify: (req, res, buf) => { req.rawBody = buf; },
+}));
 
 // ── MISSION CONTROL: simple password gate (Phase 8) ──
 // Deliberately NOT express-session/cookie-parser — no new npm dependency
@@ -2092,6 +2100,14 @@ const SERVICE_REGISTRY = [
     reused: 'institutional_truth_dashboard.py::build_executive_truth_dashboard(), via mission_control_api.py. Measured live ~0.6s.',
     handler: (req) => runPythonServiceCached('executive_truth_dashboard', [], req),
     health: pythonHealthCheck('executive_truth_dashboard'),
+  },
+  {
+    // Commercial Activation & First Real Dollar (ADR-223, Phase 31, 2026-08-08).
+    name: 'commercial-activation-status',
+    description: "Per-platform 8-dimension readiness (TECHNICAL/COMMERCIAL/CHECKOUT/PAYMENT/DELIVERY/FINANCE/WEBHOOK/PAYOUT_READY, never collapsed into one score) for Paddle/Gumroad/Etsy/Payhip, including a live re-check of real Paddle checkout status. Founder Action Center (real human actions only -- account onboarding, webhook secret, credentials, payout destination). Golden Hunter freshness (real, live-checked -- honestly reports STALE, never silently fresh). Refunds/disputes/chargebacks (NOT_AVAILABLE, never confused with a verified $0).",
+    reused: 'commercial_activation.py::build_commercial_activation_status() + scripts/check_paddle_checkout_status.py, via mission_control_api.py. Measured live ~4s.',
+    handler: (req) => runPythonServiceCached('commercial_activation_status', [], req, 30000),
+    health: pythonHealthCheck('commercial_activation_status'),
   },
 ];
 
@@ -4372,6 +4388,45 @@ app.delete('/finance/delete/:id', requireMissionControlAuth, (req, res) => {
     logFinanceError('delete', err);
     res.status(500).json({ success: false, error: 'تعذّر حذف العملية' });
   }
+});
+
+// Real inbound Paddle payment webhook (ADR-223, Phase 31, 2026-08-08).
+// Deliberately unauthenticated by Mission Control session -- Paddle's
+// own servers never have a mc_session cookie. Trust comes entirely
+// from channels/paddle_webhook.py's real HMAC-SHA256 signature
+// verification against PADDLE_WEBHOOK_SECRET (not yet configured in
+// this factory -- every real event is honestly rejected as
+// MISSING_SECRET until the founder sets it, never bypassed). req.rawBody
+// (captured by the express.json() verify callback above) is passed
+// through base64-encoded so the exact bytes Paddle signed are never
+// altered by a Node<->Python JSON round-trip.
+app.post('/webhooks/paddle', (req, res) => {
+  const pythonPath = detectPython();
+  const scriptPath = path.join(__dirname, 'channels', 'paddle_webhook.py');
+  const python = spawn(pythonPath, [scriptPath, '--json'], { cwd: __dirname });
+  let output = '', errOut = '';
+  const timer = setTimeout(() => { try { python.kill(); } catch (_) {} }, 15000);
+  python.stdout.on('data', d => { output += d.toString(); });
+  python.stderr.on('data', d => { errOut += d.toString(); });
+  python.on('close', () => {
+    clearTimeout(timer);
+    let parsed;
+    try {
+      parsed = JSON.parse(output.trim());
+    } catch (e) {
+      // A parse failure here is this factory's own bug, not evidence
+      // about the webhook event itself -- still respond 200 (Paddle
+      // retries on non-2xx) so a transient Node-side issue doesn't
+      // trigger Paddle's own retry storm on top of it.
+      return res.status(200).json({ status: 'ERROR', detail: `local parse error: ${e.message}${errOut ? ' -- ' + errOut.slice(0, 200) : ''}` });
+    }
+    res.status(200).json(parsed);
+  });
+  python.stdin.write(JSON.stringify({
+    raw_body_base64: (req.rawBody || Buffer.from(JSON.stringify(req.body || {}))).toString('base64'),
+    signature_header: req.get('Paddle-Signature') || null,
+  }));
+  python.stdin.end();
 });
 
 // ── AGENT SYSTEM PROMPTS ──

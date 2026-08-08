@@ -1568,6 +1568,20 @@ def _executive_truth_dashboard():
     return build_executive_truth_dashboard()
 
 
+def _commercial_activation_status():
+    """Commercial Activation & First Real Dollar (ADR-223, Phase 31,
+    2026-08-08): real per-platform 8-dimension readiness (never
+    collapsed into one score), the Founder Action Center (real human
+    actions only), live Golden Hunter staleness, and refunds/disputes/
+    chargebacks (NOT_AVAILABLE vs. $0, never confused). Calls the real,
+    live Paddle checkout-status re-check exactly once and threads it
+    through -- never a second, redundant live call."""
+    from commercial_activation import build_commercial_activation_status
+    from scripts.check_paddle_checkout_status import check_and_notify_all
+    checkout_status = check_and_notify_all()
+    return build_commercial_activation_status(checkout_status=checkout_status)
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3429,6 +3443,7 @@ _ENDPOINTS = {
     "customer_success_simulations": _customer_success_simulations,
     "enterprise_sales_dashboard": _enterprise_sales_dashboard,
     "executive_truth_dashboard": _executive_truth_dashboard,
+    "commercial_activation_status": _commercial_activation_status,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
 }
 
