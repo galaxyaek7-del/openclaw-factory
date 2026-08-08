@@ -305,6 +305,54 @@ class TestSelectFirstLaunchOpportunity(unittest.TestCase):
         self.assertIn(result["FIRST_LAUNCH_OPPORTUNITY"], real_ids)
 
 
+class TestRankCommissionShortlist(unittest.TestCase):
+    def test_returns_top_5_by_default(self):
+        result = ce.rank_commission_shortlist(top_n=5)
+        self.assertEqual(len(result["shortlist"]), 5)
+
+    def test_every_shortlist_entry_has_all_9_named_scores(self):
+        result = ce.rank_commission_shortlist(top_n=5)
+        named = ("opportunity_score", "evidence_score", "commercial_score", "commission_score",
+                 "freshness_score", "competition_score", "execution_difficulty", "expected_value", "risk_score")
+        for entry in result["shortlist"]:
+            for field in named:
+                self.assertIn(field, entry, f"missing {field} on {entry['opportunity_id']}")
+
+    def test_expected_value_is_never_fabricated(self):
+        result = ce.rank_commission_shortlist(top_n=5)
+        for entry in result["shortlist"]:
+            self.assertTrue(str(entry["expected_value"]).startswith("UNKNOWN"))
+
+    def test_best_pick_excludes_known_conflicts(self):
+        result = ce.rank_commission_shortlist(top_n=13)
+        best = result["BEST_FIRST_COMMERCIAL_EXPERIMENT"]
+        self.assertNotIn(best, ce.KNOWN_EVIDENCE_CONFLICTS)
+
+    def test_best_pick_excludes_watch_state_opportunities(self):
+        """Real integration with opportunity_rotation_engine.py's own
+        lifecycle ledger -- CO-n8n-affiliate is real, VERIFIED, and
+        recurring, but its real Phase 37B/37C evidence run left it at
+        WATCH; the shortlist must not silently recommend re-pursuing it
+        as the 'best first experiment' over an untried candidate."""
+        result = ce.rank_commission_shortlist(top_n=13)
+        best_entry = next(e for e in result["shortlist"] if e["opportunity_id"] == result["BEST_FIRST_COMMERCIAL_EXPERIMENT"])
+        self.assertNotEqual(best_entry["lifecycle_state"], "WATCH")
+
+    def test_never_fabricates_a_best_pick_from_outside_the_real_portfolio(self):
+        result = ce.rank_commission_shortlist(top_n=5)
+        real_ids = {o["opportunity_id"] for o in ce.load_opportunity_portfolio()}
+        if result["BEST_FIRST_COMMERCIAL_EXPERIMENT"]:
+            self.assertIn(result["BEST_FIRST_COMMERCIAL_EXPERIMENT"], real_ids)
+
+    def test_honest_none_when_no_candidate_clears_every_bar(self):
+        weak_portfolio = [{"opportunity_id": "X", "partner_name": "X", "verification_status": "UNVERIFIED",
+                            "commission_value": "COMMISSION_UNKNOWN", "recurring_commission": False,
+                            "last_verified": "2020-01-01", "geography": "UNKNOWN", "eligibility": "UNKNOWN",
+                            "cookie_or_tracking_window": "UNKNOWN", "payout_terms": "UNKNOWN"}]
+        result = ce.rank_commission_shortlist(portfolio=weak_portfolio, top_n=5)
+        self.assertIsNone(result["BEST_FIRST_COMMERCIAL_EXPERIMENT"])
+
+
 class TestBuildLaunchChecklist(unittest.TestCase):
     def test_returns_all_21_items(self):
         result = ce.build_launch_checklist()

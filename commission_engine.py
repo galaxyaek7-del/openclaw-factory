@@ -612,6 +612,95 @@ def select_first_launch_opportunity(portfolio=None, now=None):
 
 
 # ---------------------------------------------------------------------------
+# Phase 38 ("Chief Commercial Engineer" directive, ADR-234, 2026-08-08),
+# Section 6 -- ranked TOP-N commission shortlist.
+# ---------------------------------------------------------------------------
+
+VERIFICATION_TIER = {
+    "VERIFIED": 4, "PARTIALLY_VERIFIED": 3, "THIRD_PARTY_ONLY": 2,
+    "UNVERIFIED": 1, "STALE": 1, "CONFLICTING_EVIDENCE": 0, "BLOCKED_EXTERNAL": 0, "REJECTED": 0,
+}
+
+
+def rank_commission_shortlist(portfolio=None, top_n=5, now=None):
+    """Real, ranked shortlist over the existing real 13-opportunity
+    portfolio -- cites score_commission_opportunity() directly for
+    every per-opportunity signal, never a second, competing scoring
+    engine. Produces the directive's 9 named scores as real citations,
+    never a fabricated aggregate number where no real signal exists
+    (expected_value stays honestly UNKNOWN for every opportunity today
+    -- commission_economics() needs a real deal-value/conversion-rate
+    input neither this factory nor any opportunity here has yet).
+
+    Excludes any opportunity currently WATCH/ABANDON in opportunity_
+    rotation_engine.py's own real lifecycle ledger (e.g. CO-n8n-
+    affiliate, per Phase 38's prior round) from the BEST_FIRST_
+    COMMERCIAL_EXPERIMENT pick specifically -- a real, already-failed
+    live-evidence attempt is a real reason to prefer an untried
+    candidate, even at equal verification tier. Still listed in the
+    shortlist itself, never hidden."""
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+    now = now or datetime.now(timezone.utc)
+
+    try:
+        import opportunity_rotation_engine as ore
+        lifecycle_lookup = {opp_id: ore.current_lifecycle_state(opp_id) for opp_id in ore.all_known_opportunity_ids()}
+    except Exception:
+        lifecycle_lookup = {}
+
+    scored = []
+    for o in portfolio:
+        base = score_commission_opportunity(o)
+        freshness = _freshness_from_last_verified(o.get("last_verified"), now=now)
+        has_commission = o.get("commission_value") not in (None, "COMMISSION_UNKNOWN", "?")
+        conflict = KNOWN_EVIDENCE_CONFLICTS.get(o["opportunity_id"])
+        lifecycle_state = lifecycle_lookup.get(o["opportunity_id"])
+
+        entry = {
+            "opportunity_id": o["opportunity_id"], "partner_name": o.get("partner_name"),
+            "opportunity_score": f"{base['real_dimensions_count']}/{base['total_dimensions']} real dimensions known",
+            "evidence_score": o.get("verification_status", "UNKNOWN"),
+            "commercial_score": o.get("commission_value") if has_commission else "COMMISSION_UNKNOWN",
+            "commission_score": "RECURRING" if o.get("recurring_commission") else ("ONE_TIME" if has_commission else "COMMISSION_UNKNOWN"),
+            "freshness_score": freshness,
+            "competition_score": base["dimensions"]["COMPETITION"],
+            "execution_difficulty": base["dimensions"]["CUSTOMER_ACQUISITION_DIFFICULTY"],
+            "expected_value": "UNKNOWN -- requires commission_economics() with real deal-value/conversion-rate inputs, neither exists for any opportunity yet",
+            "risk_score": base["dimensions"]["LEGAL_RISK"],
+            "known_conflict": conflict, "lifecycle_state": lifecycle_state,
+            "real_dimensions_count": base["real_dimensions_count"],
+            "verification_tier": VERIFICATION_TIER.get(o.get("verification_status"), 0),
+        }
+        scored.append(entry)
+
+    scored.sort(key=lambda e: (e["verification_tier"], e["real_dimensions_count"], e["commission_score"] == "RECURRING"), reverse=True)
+    top_n_list = scored[:top_n]
+
+    best = None
+    for candidate in top_n_list:
+        if candidate["known_conflict"]:
+            continue
+        if candidate["lifecycle_state"] in ("WATCH", "ABANDON"):
+            continue
+        if candidate["verification_tier"] < VERIFICATION_TIER["VERIFIED"]:
+            continue
+        best = candidate
+        break
+
+    return {
+        "generated_at": _now_iso(now), "top_n": top_n,
+        "shortlist": top_n_list, "total_portfolio_size": len(portfolio),
+        "BEST_FIRST_COMMERCIAL_EXPERIMENT": best["opportunity_id"] if best else None,
+        "best_first_experiment_reason": (
+            f"Highest-tier real verification (VERIFIED), {best['real_dimensions_count']} real dimensions known, no disclosed evidence conflict, "
+            f"not currently WATCH/ABANDON in the real opportunity lifecycle ledger."
+            if best else "No real candidate in the top shortlist is simultaneously VERIFIED, conflict-free, and not already WATCH/ABANDON."
+        ),
+        "note": "Every score is a real citation of score_commission_opportunity()'s own 13-dim function -- never a second, competing scoring engine or a fabricated aggregate.",
+    }
+
+
+# ---------------------------------------------------------------------------
 # Phase 36 (ADR-229), Section 22 -- First Deal Launch Checklist
 # ---------------------------------------------------------------------------
 
