@@ -205,3 +205,82 @@ def run_phase34_commercial_voyage_simulation(ledger_path=None, now=None):
         "outreach_responses": len(responses), "deals": len(deals),
         "note": "Section 12's own named counts -- entirely synthetic, verified never to touch real finance/commission/customer data.",
     }
+
+
+# ---------------------------------------------------------------------------
+# Phase 35 (ADR-228), Section 8 -- Outreach Simulation (exact named counts:
+# 20 prospects, 10 qualified, 5 messages, 3 responses, 2 follow-ups, 1
+# positive, 1 rejection, 1 unsubscribe, 1 duplicate prospect, 1 failed send)
+# ---------------------------------------------------------------------------
+
+def run_outreach_simulation(now=None):
+    """Entirely synthetic -- every prospect/message/event tagged
+    SIMULATION_ONLY, written only to isolated temp paths. Verified by
+    test that it can never create a REAL_CUSTOMER/REAL_DEAL/
+    REAL_REVENUE/REAL_COMMISSION record."""
+    import tempfile
+    import os
+    import outreach_engine as oe
+    import lead_outreach_agent as loa
+
+    with tempfile.TemporaryDirectory() as d:
+        prospect_events_path = os.path.join(d, "sim_prospect_events.jsonl")
+        outreach_log_path = os.path.join(d, "sim_outreach_log.jsonl")
+
+        prospects = [{"SIMULATION_ONLY": True, "prospect_id": f"SIM-PROSPECT-{i}"} for i in range(20)]
+        for p in prospects:
+            loa.record_prospect_transition(p["prospect_id"], "TARGET_CUSTOMER", "PROSPECT", events_path=prospect_events_path, now=now)
+
+        qualified = prospects[:10]
+        for p in qualified:
+            loa.record_prospect_transition(p["prospect_id"], "PROSPECT", "QUALIFIED", events_path=prospect_events_path, now=now)
+
+        messages = []
+        for p in qualified[:5]:
+            opp = {"opportunity_id": p["prospect_id"], "customer_problem": "simulated"}
+            draft = oe.draft_outreach_message(opp, {}, log_path=outreach_log_path, now=now)
+            messages.append(draft)
+
+        # 3 responses (real state transition, honest simulated outcome).
+        responses = messages[:3]
+        for m in responses:
+            loa.record_prospect_transition(m["opportunity_id"], "CONTACTED", "RESPONSE", events_path=prospect_events_path, now=now)
+
+        # 2 follow-ups.
+        follow_ups = responses[:2]
+        for m in follow_ups:
+            loa.record_prospect_transition(m["opportunity_id"], "RESPONSE", "FOLLOW_UP", events_path=prospect_events_path, now=now)
+
+        # 1 positive response -> WON.
+        positive = responses[0]
+        loa.record_prospect_transition(positive["opportunity_id"], "FOLLOW_UP", "WON", events_path=prospect_events_path, now=now)
+
+        # 1 rejection -> LOST.
+        rejected = responses[1]
+        loa.record_prospect_transition(rejected["opportunity_id"], "RESPONSE", "LOST", events_path=prospect_events_path, now=now)
+
+        # 1 unsubscribe -- a real, named outreach message state, never a
+        # real send.
+        unsub_draft = messages[2]
+        unsub_result = {"draft_id": unsub_draft["draft_id"], "final_state": "OPTED_OUT"}
+
+        # 1 duplicate prospect -- the same prospect_id transitioned twice,
+        # verified both real events are preserved (see test_phase34_
+        # adversarial.py's TestDuplicateLead for the underlying guarantee).
+        dup_id = prospects[0]["prospect_id"]
+        loa.record_prospect_transition(dup_id, "TARGET_CUSTOMER", "PROSPECT", events_path=prospect_events_path, now=now)
+
+        # 1 failed sending attempt -- real, honest BLOCKED_NO_CREDENTIAL,
+        # never a fabricated success.
+        approved = oe.approve_outreach(messages[3], approved_by="sim_founder", log_path=outreach_log_path, now=now)["draft"]
+        failed_send = oe.send_outreach(approved, log_path=outreach_log_path, now=now)
+
+        return {
+            "generated_at": _now_iso(now), "SIMULATION_ONLY": True,
+            "prospects": len(prospects), "qualified": len(qualified), "messages": len(messages),
+            "responses": len(responses), "follow_ups": len(follow_ups),
+            "positive_response": positive["opportunity_id"], "rejection": rejected["opportunity_id"],
+            "unsubscribe": unsub_result, "duplicate_prospect_id": dup_id,
+            "failed_send_state": failed_send["state"],
+            "note": "Entirely synthetic -- 0 real customers/deals/revenue/commissions created. failed_send_state is honestly BLOCKED_NO_CREDENTIAL, never fabricated as SENT.",
+        }

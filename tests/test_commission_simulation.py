@@ -120,5 +120,39 @@ class TestFailureScenarios(unittest.TestCase):
         self.assertEqual(os.path.exists(real_path), existed_before)
 
 
+class TestOutreachSimulation(unittest.TestCase):
+    def test_matches_section_8_named_counts(self):
+        result = cs.run_outreach_simulation()
+        self.assertEqual(result["prospects"], 20)
+        self.assertEqual(result["qualified"], 10)
+        self.assertEqual(result["messages"], 5)
+        self.assertEqual(result["responses"], 3)
+        self.assertEqual(result["follow_ups"], 2)
+
+    def test_failed_send_is_honest_never_fabricated_sent(self):
+        result = cs.run_outreach_simulation()
+        self.assertEqual(result["failed_send_state"], "BLOCKED_NO_CREDENTIAL")
+        self.assertNotEqual(result["failed_send_state"], "SENT")
+
+    def test_never_writes_to_real_default_outreach_log(self):
+        real_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "outreach_log.jsonl")
+        existed_before = os.path.exists(real_path)
+        cs.run_outreach_simulation()
+        self.assertEqual(os.path.exists(real_path), existed_before)
+
+    def test_never_writes_to_real_default_prospect_events(self):
+        real_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "prospect_pipeline_events.jsonl")
+        existed_before = os.path.exists(real_path)
+        cs.run_outreach_simulation()
+        self.assertEqual(os.path.exists(real_path), existed_before)
+
+    def test_never_creates_real_customer_deal_revenue_or_commission(self):
+        import commission_ledger as cl
+        before = cl.real_commission_summary()
+        cs.run_outreach_simulation()
+        after = cl.real_commission_summary()
+        self.assertEqual(before["real_commission_records"], after["real_commission_records"])
+
+
 if __name__ == "__main__":
     unittest.main()

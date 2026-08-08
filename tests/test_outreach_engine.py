@@ -90,5 +90,27 @@ class TestAuditTrail(unittest.TestCase):
             self.assertIn("SEND_ATTEMPT_BLOCKED", events)
 
 
+class TestOutreachAdapterStatus(unittest.TestCase):
+    def test_no_credential_reports_no_credential_state(self):
+        result = oe.outreach_adapter_status(sending_credential_env_var="DEFINITELY_NOT_A_REAL_ENV_VAR")
+        self.assertEqual(result["state"], "NO_CREDENTIAL")
+
+    def test_never_claims_live_when_only_code_exists(self):
+        result = oe.outreach_adapter_status()
+        self.assertNotEqual(result["state"], "LIVE")
+
+    def test_returns_all_11_named_capabilities(self):
+        result = oe.outreach_adapter_status()
+        self.assertEqual(len(result["capabilities"]), 11)
+
+    def test_sending_adapter_honestly_reports_not_existing(self):
+        result = oe.outreach_adapter_status()
+        self.assertFalse(result["capabilities"]["sending_adapter"]["exists"])
+
+    def test_all_named_states_are_valid(self):
+        for state in ("NO_CREDENTIAL", "NOT_CONFIGURED", "READY_FOR_TEST", "READY_FOR_APPROVAL", "LIVE", "BLOCKED"):
+            self.assertIn(state, oe.ADAPTER_STATES)
+
+
 if __name__ == "__main__":
     unittest.main()

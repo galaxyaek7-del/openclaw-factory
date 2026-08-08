@@ -140,3 +140,52 @@ def outreach_audit_trail(draft_id, log_path=None):
             if event.get("draft_id") == draft_id:
                 events.append(event)
     return events
+
+
+# ---------------------------------------------------------------------------
+# Phase 35 (ADR-228), Section 7 -- Outreach Adapter Architecture
+# ---------------------------------------------------------------------------
+
+ADAPTER_STATES = ("NO_CREDENTIAL", "NOT_CONFIGURED", "READY_FOR_TEST", "READY_FOR_APPROVAL", "LIVE", "BLOCKED")
+
+# Real, disclosed inventory of what a real send adapter would need --
+# none of these exist today (confirmed by direct grep, Phase 33/34).
+# Never invents a provider name that isn't a real, generic category.
+REAL_SEND_CAPABILITIES = {
+    "lead_discovery": {"exists": False, "real_source": None, "note": "No real lead-sourcing integration exists -- prospects would need to come from a real, separate discovery pass (e.g. Golden Hunter's own real customer-problem signal, not yet wired here)."},
+    "lead_qualification": {"exists": True, "real_source": "lead_outreach_agent.py::record_prospect_transition() + explain_customer_match()", "note": "Real, tested."},
+    "message_generation": {"exists": True, "real_source": "outreach_engine.py::draft_outreach_message()", "note": "Real template fallback always available; use_real_ai=True path exists but has never been exercised against a real AI call in production."},
+    "personalization": {"exists": True, "real_source": "draft_outreach_message()'s real per-opportunity/customer template interpolation", "note": "Real but minimal -- a single template, not a personalization engine."},
+    "approval": {"exists": True, "real_source": "outreach_engine.py::approve_outreach()/reject_outreach()", "note": "Real, tested, requires a real approved_by identity."},
+    "sending_adapter": {"exists": False, "real_source": None, "note": "No real email/SMS/API sending integration exists anywhere in this factory (confirmed by .env scan -- no SENDGRID/TWILIO/SMTP/OUTREACH-prefixed credential)."},
+    "follow_up": {"exists": False, "real_source": None, "note": "No real follow-up scheduler exists -- FOLLOW_UP is a named real prospect-pipeline state (lead_outreach_agent.py) with no automated trigger."},
+    "response_capture": {"exists": False, "real_source": None, "note": "No real inbound-reply capture mechanism exists -- would require the same missing sending adapter's inbound counterpart."},
+    "unsubscribe": {"exists": True, "real_source": "outreach_engine.OUTREACH_STATES's real OPTED_OUT state", "note": "Named and validated; never exercised (0 real outreach has ever been sent)."},
+    "crm_synchronization": {"exists": False, "real_source": None, "note": "No real external CRM exists to synchronize with -- customer_pipeline.py is this factory's own real, internal system-of-record instead."},
+    "audit_logging": {"exists": True, "real_source": "outreach_engine.py::outreach_audit_trail() + data/outreach_log.jsonl", "note": "Real, append-only, tested."},
+}
+
+
+def outreach_adapter_status(sending_credential_env_var="OUTREACH_SEND_API_KEY"):
+    """Real, honest system-level adapter status -- distinct from a
+    single message's own DRAFT/APPROVED/SENT lifecycle. Never claims
+    LIVE when only code exists (the directive's own explicit rule)."""
+    import os
+
+    has_credential = bool(os.environ.get(sending_credential_env_var))
+    has_real_adapter = REAL_SEND_CAPABILITIES["sending_adapter"]["exists"]
+
+    if not has_credential:
+        state = "NO_CREDENTIAL"
+    elif not has_real_adapter:
+        state = "NOT_CONFIGURED"
+    else:
+        # This branch is real and reachable the moment a real adapter is
+        # built -- honestly unreachable today, never faked as LIVE.
+        state = "READY_FOR_TEST"
+
+    return {
+        "generated_at": _now_iso(), "state": state,
+        "capabilities": REAL_SEND_CAPABILITIES,
+        "note": "state=LIVE requires a real credential AND a real, tested sending integration AND explicit founder authorization -- none of the 3 exist today. Never fabricated.",
+    }
