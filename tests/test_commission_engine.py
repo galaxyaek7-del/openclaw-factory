@@ -305,6 +305,57 @@ class TestSelectFirstLaunchOpportunity(unittest.TestCase):
         self.assertIn(result["FIRST_LAUNCH_OPPORTUNITY"], real_ids)
 
 
+class TestCommercialLedgerView(unittest.TestCase):
+    def setUp(self):
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.portfolio_path = os.path.join(self._tmpdir.name, "portfolio.jsonl")
+        self.pipeline_path = os.path.join(self._tmpdir.name, "pipeline.jsonl")
+        self.leads_path = os.path.join(self._tmpdir.name, "leads.jsonl")
+        self.outreach_path = os.path.join(self._tmpdir.name, "outreach.jsonl")
+        self.adapter_path = os.path.join(self._tmpdir.name, "adapter.jsonl")
+        self.ledger_path = os.path.join(self._tmpdir.name, "ledger.jsonl")
+
+    def tearDown(self):
+        self._tmpdir.cleanup()
+
+    def test_unknown_opportunity_returns_honest_empty_view(self):
+        result = ce.commercial_ledger_view(
+            "CO-does-not-exist", portfolio_path=self.portfolio_path, pipeline_events_path=self.pipeline_path,
+            leads_path=self.leads_path, outreach_log_path=self.outreach_path, adapter_log_path=self.adapter_path,
+            commission_ledger_path=self.ledger_path,
+        )
+        self.assertIsNone(result["opportunity"])
+        self.assertEqual(result["lead_count"], 0)
+        self.assertEqual(result["REAL_REVENUE"], 0)
+
+    def test_joins_real_commission_records_by_opportunity_id(self):
+        import commission_ledger as cl
+        cl.record_commission("n8n", "CO-n8n-affiliate", "CONFIRMED", 100.0, "REAL",
+                              evidence="real webhook", external_transaction_id="txn_1", ledger_path=self.ledger_path)
+        cl.record_commission("n8n", "CO-other-opportunity", "CONFIRMED", 999.0, "REAL",
+                              evidence="real webhook", external_transaction_id="txn_2", ledger_path=self.ledger_path)
+        result = ce.commercial_ledger_view(
+            "CO-n8n-affiliate", portfolio_path=self.portfolio_path, pipeline_events_path=self.pipeline_path,
+            leads_path=self.leads_path, outreach_log_path=self.outreach_path, adapter_log_path=self.adapter_path,
+            commission_ledger_path=self.ledger_path,
+        )
+        self.assertEqual(len(result["commission_records"]), 1)
+        self.assertEqual(result["REAL_REVENUE"], 100.0)
+
+    def test_test_and_simulation_commissions_never_counted_in_real_revenue(self):
+        import commission_ledger as cl
+        cl.record_commission("n8n", "CO-n8n-affiliate", "PAID", 500.0, "SIMULATION", ledger_path=self.ledger_path)
+        cl.record_commission("n8n", "CO-n8n-affiliate", "PAID", 500.0, "TEST", ledger_path=self.ledger_path)
+        result = ce.commercial_ledger_view(
+            "CO-n8n-affiliate", portfolio_path=self.portfolio_path, pipeline_events_path=self.pipeline_path,
+            leads_path=self.leads_path, outreach_log_path=self.outreach_path, adapter_log_path=self.adapter_path,
+            commission_ledger_path=self.ledger_path,
+        )
+        self.assertEqual(result["REAL_REVENUE"], 0)
+        self.assertEqual(len(result["commission_records"]), 2)
+        self.assertEqual(len(result["real_commission_records"]), 0)
+
+
 class TestRankCommissionShortlist(unittest.TestCase):
     def test_returns_top_5_by_default(self):
         result = ce.rank_commission_shortlist(top_n=5)

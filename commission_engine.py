@@ -537,6 +537,65 @@ def build_commission_commerce_dashboard(portfolio_path=None, ledger_path=None, n
 
 
 # ---------------------------------------------------------------------------
+# Phase 38b ("Chief Commercial Engineer" directive, ADR-234, 2026-08-08),
+# Section 10 -- Commercial Ledger View.
+# ---------------------------------------------------------------------------
+
+def commercial_ledger_view(opportunity_id, portfolio_path=None, pipeline_events_path=None,
+                            leads_path=None, outreach_log_path=None, adapter_log_path=None,
+                            commission_ledger_path=None):
+    """A real, read-only JOIN across every already-real, separately-
+    persisted ledger this factory has -- opportunity + pipeline history
+    (commission_engine.py), leads (lead_discovery.py), outreach drafts/
+    approvals (outreach_engine.py), real send attempts (outreach_
+    adapter.py), and commission/payout records (commission_ledger.py) --
+    all keyed by the one real join field every one of them already
+    carries: opportunity_id. Never physically merges storage (that
+    would be real architectural bloat for zero real benefit) -- same
+    precedent as gfos.py::enterprise_timeline() and executive_decision_
+    memory.py::list_decision_memory(), both real merge-views over
+    already-separate real ledgers."""
+    import commission_ledger as cl
+    import lead_discovery as ld
+    import outreach_adapter as oa
+    import outreach_engine as oe
+
+    portfolio = load_opportunity_portfolio(path=portfolio_path)
+    opportunity = next((o for o in portfolio if o["opportunity_id"] == opportunity_id), None)
+
+    pipeline = pipeline_history(opportunity_id, events_path=pipeline_events_path)
+
+    all_leads = ld.load_leads(leads_path=leads_path)
+    leads = [l for l in all_leads if l.get("opportunity_id") == opportunity_id]
+
+    outreach_events = ld._read_jsonl(outreach_log_path or oe.DEFAULT_OUTREACH_LOG_PATH)
+    outreach = [e for e in outreach_events if e.get("opportunity_id") == opportunity_id]
+
+    adapter_events = ld._read_jsonl(adapter_log_path or oa.DEFAULT_ADAPTER_LOG_PATH)
+    lead_ids_for_opportunity = {l.get("lead_id") for l in leads}
+    real_sends = [e for e in adapter_events if e.get("lead_id") in lead_ids_for_opportunity and e.get("mode") == "REAL"]
+
+    commission_records = [r for r in cl.load_ledger(commission_ledger_path) if r.get("opportunity_id") == opportunity_id]
+    real_commission_records = [r for r in commission_records if r.get("environment") == "REAL"]
+
+    return {
+        "generated_at": _now_iso(), "opportunity_id": opportunity_id,
+        "opportunity": opportunity,
+        "pipeline_history": pipeline,
+        "leads": leads, "lead_count": len(leads),
+        "outreach_drafts_and_approvals": outreach, "outreach_event_count": len(outreach),
+        "real_send_attempts": real_sends,
+        "commission_records": commission_records,
+        "real_commission_records": real_commission_records,
+        "REAL_REVENUE": sum(r["net_commission"] for r in real_commission_records if r.get("commission_status") in ("CONFIRMED", "PAID")),
+        "note": (
+            "Read-only join across the real, already-separate ledgers by opportunity_id -- never a physical merge, "
+            "never a second source of truth. Empty sections are real absence, not a query failure."
+        ),
+    }
+
+
+# ---------------------------------------------------------------------------
 # Phase 36 (ADR-229), Section 4 -- First Launch Opportunity Selection
 # ---------------------------------------------------------------------------
 
