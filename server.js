@@ -2069,6 +2069,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('customer_success_simulations', [], req, 60000),
     health: pythonHealthCheck('customer_success_simulations'),
   },
+  {
+    // Enterprise & High-Value Transformation Sales Engine, Sections
+    // 2-3/9-31/36-38 (ADR-220, Phase 30, 2026-08-08).
+    name: 'enterprise-sales-dashboard',
+    description: "Opportunity Registry, Sales Pipeline (real 13-stage relabeling of business_development.py's real 9-stage pipeline -- a 3rd relabeling this session), Pipeline Priority, Account Registry (0 real accounts, honestly disclosed), Stakeholder Map (never fabricates identity/authority), Contract Value, Recurring Revenue (reuses customer_success_engine.py's real 6-question gate), Expansion, Partnership, Objections, Security & Trust, AI Governance, Delivery Handoff, Contract Risk (11 named categories, never auto-clears without a real contract), Forecast, Autonomy Boundaries.",
+    reused: 'enterprise_sales_engine.py::build_enterprise_sales_dashboard(), via mission_control_api.py. Measured live ~0.1s.',
+    handler: (req) => runPythonServiceCached('enterprise_sales_dashboard', [], req),
+    health: pythonHealthCheck('enterprise_sales_dashboard'),
+  },
+  {
+    name: 'enterprise-sales-simulations',
+    description: "10 named enterprise sales simulations (Section 45) -- real logic over disclosed hypothetical assumptions (value-based pricing/budget-shortfall/pilot-expansion/margin/contract-risk/competitor/evidence-gate scenarios). Simulation 8 is real (not hypothetical) -- reuses global_opportunity_exchange.py's concentration risk directly. Simulation 10 reuses the real AI Council + Red Team (6th reuse this session). Verified by a regression test that none ever writes to a real ledger.",
+    reused: 'enterprise_sales_engine.py::run_all_phase30_simulations(), via mission_control_api.py. Measured live ~15s.',
+    handler: (req) => runPythonServiceCached('enterprise_sales_simulations', [], req, 60000),
+    health: pythonHealthCheck('enterprise_sales_simulations'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

@@ -1537,6 +1537,26 @@ def _customer_success_simulations():
     return run_all_phase29_simulations()
 
 
+def _enterprise_sales_dashboard():
+    """Enterprise & High-Value Transformation Sales Engine, Sections
+    2-3/9-31/36-38 (ADR-220, Phase 30, 2026-08-08): the one real
+    aggregator -- Opportunity Registry, Sales Pipeline, Pipeline
+    Priority, Account Registry, Stakeholder Map, Contract Value,
+    Recurring Revenue, Expansion, Partnership, Objections, Security &
+    Trust, AI Governance, Delivery Handoff, Contract Risk, Forecast,
+    Autonomy Boundaries."""
+    from enterprise_sales_engine import build_enterprise_sales_dashboard
+    return build_enterprise_sales_dashboard()
+
+
+def _enterprise_sales_simulations():
+    """Section 45 (ADR-220): 10 named enterprise sales simulations --
+    real logic over disclosed hypothetical assumptions. Never written
+    to any ledger."""
+    from enterprise_sales_engine import run_all_phase30_simulations
+    return run_all_phase30_simulations()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3396,6 +3416,8 @@ _ENDPOINTS = {
     "growth_simulations": _growth_simulations,
     "customer_success_dashboard": _customer_success_dashboard,
     "customer_success_simulations": _customer_success_simulations,
+    "enterprise_sales_dashboard": _enterprise_sales_dashboard,
+    "enterprise_sales_simulations": _enterprise_sales_simulations,
 }
 
 
