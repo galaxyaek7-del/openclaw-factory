@@ -28,4 +28,10 @@
 
 ---
 
-*See also: `DIGITAL_EMPIRE_ENGINE.md`, `GLOBAL_REVENUE_ARCHITECTURE.md`, `EMPIRE_SCORE.md`, `COMPETITOR_INTELLIGENCE.md`.*
+## Phase 20 update (2026-08-08, ADR-210)
+
+The "GLOBAL COMMERCIAL SCALE & EXPANSION ENGINE" directive's Section 17 (Partnership Engine) re-asks this exact question. Re-checked live: `business_development.py`'s real pipeline is unchanged since the entry above — Paddle still the only real `ACTIVE` relationship, Amazon still `PREPARATION`, every other platform still `DISCOVERY`. No new partnership evaluation was run this round; `global_commercial_scale.py::build_global_commercial_scale_dashboard()` cites `business_development.build_business_development_dashboard()` directly under its `partnerships` field, never a second, competing partnership ranker.
+
+---
+
+*See also: `DIGITAL_EMPIRE_ENGINE.md`, `GLOBAL_REVENUE_ARCHITECTURE.md`, `EMPIRE_SCORE.md`, `COMPETITOR_INTELLIGENCE.md`, `GLOBAL_SCALE_ENGINE.md`.*
