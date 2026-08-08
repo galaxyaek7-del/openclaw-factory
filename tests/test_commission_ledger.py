@@ -18,6 +18,24 @@ class TestAntiFabricationGuard(unittest.TestCase):
         with self.assertRaises(cl.AntiFabricationError):
             cl.record_commission("p", "o", "EXPECTED", 10.0, "REAL", ledger_path=self.path)
 
+    def test_whitespace_only_evidence_rejected(self):
+        # Phase 35 (ADR-228) regression: a real, found firewall gap --
+        # "   " is truthy in Python and previously bypassed the bare
+        # `not evidence` check.
+        with self.assertRaises(cl.AntiFabricationError):
+            cl.record_commission("p", "o", "PAID", 999.0, "REAL", evidence="   ",
+                                  external_transaction_id="fake_txn", ledger_path=self.path)
+
+    def test_trivially_short_transaction_id_rejected(self):
+        with self.assertRaises(cl.AntiFabricationError):
+            cl.record_commission("p", "o", "PAID", 999.0, "REAL", evidence="real evidence here",
+                                  external_transaction_id="ab", ledger_path=self.path)
+
+    def test_whitespace_transaction_id_rejected(self):
+        with self.assertRaises(cl.AntiFabricationError):
+            cl.record_commission("p", "o", "CONFIRMED", 999.0, "REAL", evidence="real evidence here",
+                                  external_transaction_id="   ", ledger_path=self.path)
+
     def test_real_without_evidence_never_writes_to_disk(self):
         try:
             cl.record_commission("p", "o", "EXPECTED", 10.0, "REAL", ledger_path=self.path)
@@ -104,7 +122,7 @@ class TestRealCommissionSummary(unittest.TestCase):
         self.assertEqual(summary["real_confirmed_or_paid_commission_usd"], 500.0)
 
     def test_duplicate_environments_all_tracked_separately(self):
-        cl.record_commission("p", "o", "PAID", 100.0, "REAL", evidence="real", external_transaction_id="t1", ledger_path=self.path)
+        cl.record_commission("p", "o", "PAID", 100.0, "REAL", evidence="real evidence", external_transaction_id="txn_1", ledger_path=self.path)
         cl.record_commission("p", "o", "PAID", 200.0, "TEST", ledger_path=self.path)
         cl.record_commission("p", "o", "PAID", 300.0, "SIMULATION", ledger_path=self.path)
         summary = cl.real_commission_summary(ledger_path=self.path)

@@ -39,6 +39,25 @@ def _now_iso(now=None):
     return (now or datetime.now(timezone.utc)).isoformat()
 
 
+_MIN_MEANINGFUL_LENGTH = 4
+
+
+def _is_meaningful(value):
+    """Real, minimal content check -- closes a real firewall gap found
+    in Phase 35 (ADR-228): a non-empty-but-whitespace-only or trivially
+    short string (e.g. "   ", "x") previously passed the bare `not
+    value` check and could fabricate a REAL commission record with no
+    actual evidence content. This is deliberately NOT a claim that any
+    string of sufficient length is genuinely real evidence -- it only
+    closes the specific, cheap bypass; real evidentiary weight is still
+    the caller's responsibility."""
+    if value is None:
+        return False
+    if not isinstance(value, str):
+        return bool(value)
+    return len(value.strip()) >= _MIN_MEANINGFUL_LENGTH
+
+
 def record_commission(partner_id, opportunity_id, commission_status, gross_commission,
                        environment, customer_id=None, lead_id=None, deal_id=None,
                        external_transaction_id=None, fees=0.0, currency="USD", evidence=None,
@@ -54,15 +73,17 @@ def record_commission(partner_id, opportunity_id, commission_status, gross_commi
     if commission_status not in COMMISSION_STATUSES:
         raise ValueError(f"commission_status must be one of {COMMISSION_STATUSES}, got {commission_status!r}")
 
-    if environment == "REAL" and not evidence:
+    if environment == "REAL" and not _is_meaningful(evidence):
         raise AntiFabricationError(
             "Cannot record a REAL commission without real evidence. "
-            "Provide evidence= (e.g. a real webhook event_id, a real transaction confirmation) "
+            "Provide evidence= (e.g. a real webhook event_id, a real transaction confirmation) -- "
+            "a whitespace-only or trivially short string does not count -- "
             "or use environment='TEST'/'SIMULATION' instead."
         )
-    if environment == "REAL" and commission_status in ("CONFIRMED", "PAID") and not external_transaction_id:
+    if environment == "REAL" and commission_status in ("CONFIRMED", "PAID") and not _is_meaningful(external_transaction_id):
         raise AntiFabricationError(
-            "A REAL commission cannot be CONFIRMED or PAID without a real external_transaction_id."
+            "A REAL commission cannot be CONFIRMED or PAID without a real, meaningful external_transaction_id "
+            "(whitespace-only or trivially short values are rejected)."
         )
 
     net_commission = gross_commission - fees

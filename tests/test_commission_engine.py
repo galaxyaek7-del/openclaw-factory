@@ -245,6 +245,20 @@ class TestCommissionCommerceDashboard(unittest.TestCase):
         self.assertEqual(result["real_orders"], 0)
         self.assertEqual(result["real_payouts_usd"], 0)
 
+    def test_huge_test_and_simulation_amounts_never_leak_into_dashboard_totals(self):
+        # Phase 35 (ADR-228) adversarial firewall audit: a large,
+        # fraudulent-looking TEST/SIMULATION commission must never move
+        # the dashboard's real totals, regardless of size.
+        import commission_ledger as cl
+        with tempfile.TemporaryDirectory() as d:
+            ledger_path = os.path.join(d, "ledger.jsonl")
+            cl.record_commission("p", "o", "PAID", 9999999.0, "TEST", ledger_path=ledger_path)
+            cl.record_commission("p", "o", "CONFIRMED", 5555555.0, "SIMULATION", ledger_path=ledger_path)
+            result = ce.build_commission_commerce_dashboard(ledger_path=ledger_path)
+        self.assertEqual(result["confirmed_commission_usd"], 0)
+        self.assertEqual(result["paid_commission_usd"], 0)
+        self.assertEqual(result["real_revenue_usd"], 0)
+
     def test_never_writes_any_file(self):
         import os
         before = set(os.listdir("data"))

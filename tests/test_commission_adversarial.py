@@ -62,9 +62,9 @@ class TestDuplicateCommission(unittest.TestCase):
         # reconciliation can detect the duplicate rather than losing it.
         with tempfile.TemporaryDirectory() as d:
             path = os.path.join(d, "ledger.jsonl")
-            cl.record_commission("p", "o", "PAID", 100.0, "REAL", evidence="e1",
+            cl.record_commission("p", "o", "PAID", 100.0, "REAL", evidence="evidence-1",
                                   external_transaction_id="txn_dup", ledger_path=path)
-            cl.record_commission("p", "o", "PAID", 100.0, "REAL", evidence="e2",
+            cl.record_commission("p", "o", "PAID", 100.0, "REAL", evidence="evidence-2",
                                   external_transaction_id="txn_dup", ledger_path=path)
             records = cl.load_ledger(ledger_path=path)
             txn_ids = [r["external_transaction_id"] for r in records]
