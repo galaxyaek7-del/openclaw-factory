@@ -1865,6 +1865,50 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('knowledge_staleness_report', [], req),
     health: pythonHealthCheck('knowledge_staleness_report'),
   },
+  {
+    // Autonomous Operations & Continuous Improvement Engine, Section 4
+    // (ADR-209, Phase 19, 2026-08-08).
+    name: 'unified-operations-queue',
+    description: "Merges 5 already-real sources (adaptive priority queue, open resilience incidents, evolution proposals awaiting founder approval, DEFERRED decisions, automation candidates) into one shape -- never a second, competing priority engine. Priority/Risk/Confidence stay honestly heterogeneous across source types.",
+    reused: 'autonomous_operations.py::unified_operations_queue(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('unified_operations_queue', [], req),
+    health: pythonHealthCheck('unified_operations_queue'),
+  },
+  {
+    name: 'autonomy-levels',
+    description: "The 7 named autonomy levels (0 OBSERVE ONLY through 6 NEVER AUTOMATE) plus the real, disclosed action-category registry every authorize_action() call is checked against, each citing the real function that already enforces it.",
+    reused: 'autonomous_operations.py::AUTONOMY_LEVELS/ACTION_CATEGORY_AUTONOMY, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('autonomy_levels', [], req),
+    health: pythonHealthCheck('autonomy_levels'),
+  },
+  {
+    name: 'automation-candidates',
+    description: "Real, disclosed catalog of this factory's known repeated human tasks (manual evidence verification, founder approvals), each classified AUTOMATE_NOW/AUTOMATE_LATER/KEEP_HUMAN/REMOVE with a cited real reason -- never 'automate because repetitive.'",
+    reused: 'autonomous_operations.py::automation_candidate_report(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('automation_candidates', [], req),
+    health: pythonHealthCheck('automation_candidates'),
+  },
+  {
+    name: 'incident-lifecycle',
+    description: "Honest 8-stage lifecycle view (DETECTED...LEARNED) over resilience_monitor.py's real incident record -- only DETECTED/CLOSED have a real, separately-timestamped signal today; the other 6 stages are disclosed as unmeasured, never inferred.",
+    reused: 'autonomous_operations.py::incident_lifecycle_view(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('incident_lifecycle', [], req),
+    health: pythonHealthCheck('incident_lifecycle'),
+  },
+  {
+    name: 'daily-autonomous-review',
+    description: "Citation-only aggregator over ceo_home.build_ceo_home_briefing() (ADR-184) + the real unified operations queue, reshaped into Top-5 Risks/Actions/Opportunities/Improvements + items requiring CEO approval. Computes nothing new.",
+    reused: 'autonomous_operations.py::daily_autonomous_review(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('daily_autonomous_review', [], req),
+    health: pythonHealthCheck('daily_autonomous_review'),
+  },
+  {
+    name: 'autonomous-daily-score',
+    description: "10 named operational indicators (Automation Success, Recovery Success, Human Intervention, Commercial Reliability, Customer Trust, AI Reliability, Data Integrity, Knowledge Growth, Decision Accuracy, Continuous Improvement) -- each a real citation of an already-computed value or an honest NOT_MEASURABLE. No single fabricated composite score.",
+    reused: 'autonomous_operations.py::autonomous_daily_score(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('autonomous_daily_score', [], req),
+    health: pythonHealthCheck('autonomous_daily_score'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

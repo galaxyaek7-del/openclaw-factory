@@ -137,18 +137,20 @@ def _risk_level(active_alerts):
     return {"level": worst["severity"], "evidence": worst}
 
 
-def _candidate_directives(brief, gox, cap, evo_queue, sie=None, commercial_kits=None):
+def _candidate_directives(brief, gox, cap, evo_queue, sie=None, commercial_kits=None, contradictions=None):
     """Real candidate actions pulled from already-computed real signals
     only -- never invented. Each candidate cites the exact real
     function/field it came from. `sie` (Strategic Intelligence Engine,
-    ADR-178, 2026-08-06) and `commercial_kits` (Commercial Execution
-    Engine v1, ADR-180, 2026-08-06) both default to None/{} so every
-    pre-existing caller (enterprise_executive_brain.py, tests/
+    ADR-178, 2026-08-06), `commercial_kits` (Commercial Execution
+    Engine v1, ADR-180, 2026-08-06), and `contradictions` (Autonomous
+    Operations Layer, ADR-209, 2026-08-08) all default to None/{} so
+    every pre-existing caller (enterprise_executive_brain.py, tests/
     test_executive_brain.py) keeps working unchanged -- the same
     optional-injection convention brief/gox/cap already use elsewhere
     in this factory."""
     sie = sie or {}
     commercial_kits = commercial_kits or {}
+    contradictions = contradictions or {}
     candidates = []
 
     for alert in brief["top_risks"].get("resilience_active_alerts", []):
@@ -234,6 +236,22 @@ def _candidate_directives(brief, gox, cap, evo_queue, sie=None, commercial_kits=
             "action": f"مراجعة مقترح تطوّر ذاتي حقيقي: {entry.get('tool', entry.get('proposal_id'))}",
             "evidence": entry,
             "source": "evolution_queue.list_evolution_queue().awaiting_approval",
+        })
+
+    # Autonomous Operations Layer (ADR-209, 2026-08-08): closes the gap
+    # AI_MEMORY_POLICY.md (Phase 18) disclosed and deliberately left
+    # open -- contradiction_engine.py's real findings were never before
+    # cited inside the Brain's own arbitration pass. Tier 1 (System
+    # Stability): an unresolved contradiction in this factory's own
+    # decision history is a knowledge-integrity risk, the same class
+    # as an active resilience alert above.
+    top_contradiction = (contradictions.get("contradictions") or [None])[0]
+    if top_contradiction:
+        candidates.append({
+            "tier": 1, "tier_name": PRIORITY_TIERS[1],
+            "action": f"حل تناقض حقيقي غير مُعالَج في سجل القرارات: {top_contradiction.get('niche', top_contradiction.get('type'))}",
+            "evidence": top_contradiction,
+            "source": "contradiction_engine.detect_all_contradictions() (ADR-208, cited here for the first time per ADR-209)",
         })
 
     return candidates
@@ -366,8 +384,15 @@ def build_executive_directive(decisions_path=None, board_path=None, alerts_path=
     sie = goos.strategic_intelligence_engine_report(decisions_path=decisions_path, top_n=1)
     commercial_kits = product_marketing_engine.pending_commercial_kits_status(decisions_path=decisions_path)
 
+    # check_prices=False: skips contradiction_engine's own real, live
+    # Paddle network call -- this aggregator already chains 3 real
+    # full-portfolio scans (~59s measured), and the decision-volatility
+    # check alone is the real signal this Tier-1 candidate needs.
+    import contradiction_engine
+    contradictions = contradiction_engine.detect_all_contradictions(decisions_path=decisions_path, check_prices=False)
+
     active_alerts = brief["top_risks"].get("resilience_active_alerts", [])
-    candidates = _candidate_directives(brief, gox, cap, evo_queue, sie, commercial_kits)
+    candidates = _candidate_directives(brief, gox, cap, evo_queue, sie, commercial_kits, contradictions)
     directive = _arbitrate(candidates)
 
     now = _now_iso()

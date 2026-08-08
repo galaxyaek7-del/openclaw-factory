@@ -178,6 +178,7 @@ class TestBuildExecutiveDirectiveIntegration(unittest.TestCase):
             "founder_decisions_required": {"pending_decisions": [], "pending_evolution_proposals": [], "publish_emergency_stop": None},
         }
 
+    @patch("contradiction_engine.detect_all_contradictions")
     @patch("product_marketing_engine.pending_commercial_kits_status")
     @patch("goos.strategic_intelligence_engine_report")
     @patch("channels.ledger.revenue_trend")
@@ -185,7 +186,7 @@ class TestBuildExecutiveDirectiveIntegration(unittest.TestCase):
     @patch("capital_allocation_engine.build_capital_allocation_dashboard")
     @patch("global_opportunity_exchange.build_global_opportunity_exchange_dashboard")
     @patch("strategic_intelligence_core.build_executive_brief")
-    def test_record_ledger_false_never_writes(self, mock_brief, mock_gox, mock_cap, mock_evo, mock_rev, mock_sie, mock_kits):
+    def test_record_ledger_false_never_writes(self, mock_brief, mock_gox, mock_cap, mock_evo, mock_rev, mock_sie, mock_kits, mock_contra):
         mock_brief.return_value = self._mock_brief()
         mock_gox.return_value = {"market_health": {}, "diversification_recommendations": []}
         mock_cap.return_value = {"top_roi_initiatives": []}
@@ -193,6 +194,7 @@ class TestBuildExecutiveDirectiveIntegration(unittest.TestCase):
         mock_rev.return_value = {"recent_7d_revenue_usd": 0, "trailing_daily_avg_usd": None, "note": None}
         mock_sie.return_value = {"ranking": {"build_next": [], "real_accepted_portfolio_size": 0, "total_real_candidates": 0}}
         mock_kits.return_value = {"total_accepted": 0, "generated": [], "remaining_pending": 0}
+        mock_contra.return_value = {"contradictions": [], "total_contradictions": 0}
 
         ledger_path = _temp_path()
         record = eb.build_executive_directive(ledger_path=ledger_path, record_ledger=False)
@@ -200,6 +202,7 @@ class TestBuildExecutiveDirectiveIntegration(unittest.TestCase):
         self.assertTrue(record["requires_founder_approval"], "must always require founder approval -- never auto-executes")
         self.assertFalse(os.path.exists(ledger_path), "record_ledger=False must never write to the permanent ledger")
 
+    @patch("contradiction_engine.detect_all_contradictions")
     @patch("product_marketing_engine.pending_commercial_kits_status")
     @patch("goos.strategic_intelligence_engine_report")
     @patch("channels.ledger.revenue_trend")
@@ -207,7 +210,7 @@ class TestBuildExecutiveDirectiveIntegration(unittest.TestCase):
     @patch("capital_allocation_engine.build_capital_allocation_dashboard")
     @patch("global_opportunity_exchange.build_global_opportunity_exchange_dashboard")
     @patch("strategic_intelligence_core.build_executive_brief")
-    def test_record_ledger_true_writes_exactly_once(self, mock_brief, mock_gox, mock_cap, mock_evo, mock_rev, mock_sie, mock_kits):
+    def test_record_ledger_true_writes_exactly_once(self, mock_brief, mock_gox, mock_cap, mock_evo, mock_rev, mock_sie, mock_kits, mock_contra):
         mock_brief.return_value = self._mock_brief(alerts=[{"area": "test", "severity": "warning"}])
         mock_gox.return_value = {"market_health": {}, "diversification_recommendations": []}
         mock_cap.return_value = {"top_roi_initiatives": []}
@@ -215,6 +218,7 @@ class TestBuildExecutiveDirectiveIntegration(unittest.TestCase):
         mock_rev.return_value = {"recent_7d_revenue_usd": 0, "trailing_daily_avg_usd": None, "note": None}
         mock_sie.return_value = {"ranking": {"build_next": [], "real_accepted_portfolio_size": 0, "total_real_candidates": 0}}
         mock_kits.return_value = {"total_accepted": 0, "generated": [], "remaining_pending": 0}
+        mock_contra.return_value = {"contradictions": [], "total_contradictions": 0}
 
         ledger_path = _temp_path()
         record = eb.build_executive_directive(ledger_path=ledger_path, record_ledger=True)
@@ -225,6 +229,32 @@ class TestBuildExecutiveDirectiveIntegration(unittest.TestCase):
         result = eb.list_executive_directives(ledger_path=ledger_path)
         self.assertEqual(result["count"], 1, "exactly one ledger entry per real generation call")
         os.remove(ledger_path)
+
+    @patch("contradiction_engine.detect_all_contradictions")
+    @patch("product_marketing_engine.pending_commercial_kits_status")
+    @patch("goos.strategic_intelligence_engine_report")
+    @patch("channels.ledger.revenue_trend")
+    @patch("evolution_queue.list_evolution_queue")
+    @patch("capital_allocation_engine.build_capital_allocation_dashboard")
+    @patch("global_opportunity_exchange.build_global_opportunity_exchange_dashboard")
+    @patch("strategic_intelligence_core.build_executive_brief")
+    def test_unresolved_contradiction_surfaces_as_tier_1(self, mock_brief, mock_gox, mock_cap, mock_evo, mock_rev, mock_sie, mock_kits, mock_contra):
+        """ADR-209: a real, unresolved contradiction must reach the
+        Brain's own Tier-1 arbitration, not stay siloed in
+        contradiction_engine.py's own separate report."""
+        mock_brief.return_value = self._mock_brief()
+        mock_gox.return_value = {"market_health": {}, "diversification_recommendations": []}
+        mock_cap.return_value = {"top_roi_initiatives": []}
+        mock_evo.return_value = {"awaiting_approval": [], "stage_distribution": {}}
+        mock_rev.return_value = {"recent_7d_revenue_usd": 0, "trailing_daily_avg_usd": None, "note": None}
+        mock_sie.return_value = {"ranking": {"build_next": [], "real_accepted_portfolio_size": 0, "total_real_candidates": 0}}
+        mock_kits.return_value = {"total_accepted": 0, "generated": [], "remaining_pending": 0}
+        mock_contra.return_value = {"contradictions": [{"type": "conflicting_market_estimate", "niche": "test niche"}], "total_contradictions": 1}
+
+        record = eb.build_executive_directive(ledger_path=_temp_path(), record_ledger=False)
+        self.assertEqual(record["directive"]["status"], "SINGLE_DIRECTIVE")
+        self.assertEqual(record["directive"]["tier"], 1)
+        self.assertIn("test niche", record["directive"]["action"])
 
 
 class TestDirectiveId(unittest.TestCase):

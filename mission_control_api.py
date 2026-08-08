@@ -1304,6 +1304,54 @@ def _knowledge_staleness_report():
     return assess_all_known_knowledge()
 
 
+def _unified_operations_queue():
+    """Autonomous Operations & Continuous Improvement Engine, Section 4
+    (ADR-209, Phase 19, 2026-08-08): merges 5 already-real sources into
+    one shape -- never a second, competing priority engine."""
+    from autonomous_operations import unified_operations_queue
+    return unified_operations_queue()
+
+
+def _autonomy_levels():
+    """Section 2 (ADR-209): the 7 named autonomy levels + the real,
+    disclosed action-category registry every authorize_action() call
+    is checked against."""
+    from autonomous_operations import AUTONOMY_LEVELS, ACTION_CATEGORY_AUTONOMY
+    return {"levels": AUTONOMY_LEVELS, "action_categories": ACTION_CATEGORY_AUTONOMY}
+
+
+def _automation_candidates():
+    """Section 15 (ADR-209): real, disclosed catalog of this factory's
+    known repeated tasks, each classified with a cited reason -- never
+    'automate because repetitive.'"""
+    from autonomous_operations import automation_candidate_report
+    return automation_candidate_report()
+
+
+def _incident_lifecycle():
+    """Section 24 (ADR-209): honest 8-stage lifecycle view over
+    resilience_monitor.py's real incident record -- only 2 of 8 stages
+    have a real, separately-timestamped signal today."""
+    from autonomous_operations import incident_lifecycle_view
+    return incident_lifecycle_view()
+
+
+def _daily_autonomous_review():
+    """Section 12 (ADR-209): citation-only aggregator over
+    ceo_home.build_ceo_home_briefing() (ADR-184) + the real unified
+    operations queue -- computes nothing new."""
+    from autonomous_operations import daily_autonomous_review
+    return daily_autonomous_review()
+
+
+def _autonomous_daily_score():
+    """Section 26 (ADR-209): 10 named operational indicators, each a
+    real citation or an honest NOT_MEASURABLE -- no single fabricated
+    composite score."""
+    from autonomous_operations import autonomous_daily_score
+    return autonomous_daily_score()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3137,6 +3185,12 @@ _ENDPOINTS = {
     "competitive_moat_assessment": _competitive_moat_assessment,
     "contradiction_report": _contradiction_report,
     "knowledge_staleness_report": _knowledge_staleness_report,
+    "unified_operations_queue": _unified_operations_queue,
+    "autonomy_levels": _autonomy_levels,
+    "automation_candidates": _automation_candidates,
+    "incident_lifecycle": _incident_lifecycle,
+    "daily_autonomous_review": _daily_autonomous_review,
+    "autonomous_daily_score": _autonomous_daily_score,
 }
 
 
