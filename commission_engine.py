@@ -1647,10 +1647,16 @@ def real_vs_test_commission_metrics(ledger_path=None, now=None):
     simulation_sum = _confirmed_or_paid_sum("SIMULATION")
 
     # Real cross-check against the independently-computed authoritative
-    # source (real_commission_summary()) -- proves this view's REAL sum
-    # never silently diverges from the one every other real caller trusts,
-    # rather than asserting isolation without checking it.
+    # source (real_commission_summary()) -- proves this view's REAL and
+    # PROVISIONAL sums never silently diverge from the ones every other
+    # real caller trusts, rather than asserting isolation without
+    # checking it. PROVISIONAL is summed across all commission_status
+    # values (not just CONFIRMED/PAID) since a provisional claim is, by
+    # definition, not yet confirmed -- matching real_commission_
+    # summary()'s own provisional_commission_usd computation exactly,
+    # reused directly rather than re-derived a second way.
     authoritative = cl.real_commission_summary(ledger_path=ledger_path)
+    provisional_sum = authoritative["provisional_commission_usd"]
     isolation_verified = real_sum == authoritative["real_confirmed_or_paid_commission_usd"]
 
     return {
@@ -1660,13 +1666,16 @@ def real_vs_test_commission_metrics(ledger_path=None, now=None):
         "TEST_REVENUE": test_sum,
         "TEST_COMMISSION": test_sum,
         "SIMULATION_COMMISSION": simulation_sum,
+        "PROVISIONAL_COMMISSION": provisional_sum,
         "FIRST_REAL_DOLLAR": dollar_status["FIRST_REAL_DOLLAR"],
         "isolation_verified": isolation_verified,
         "note": (
             "REAL_REVENUE and REAL_COMMISSION_REVENUE cite the identical real sum within this commission-only ledger -- "
             "this factory's broader company revenue (books/digital products) is tracked separately in channels/ledger.py, "
-            "never blended here. isolation_verified is a real cross-check against real_commission_summary()'s own "
-            "independently-computed total, not an assumed-true flag."
+            "never blended here. PROVISIONAL_COMMISSION (Phase 41/ADR-238) covers real, in-progress claims not yet "
+            "backed by authoritative confirmation -- never counted toward REAL_REVENUE regardless of amount. "
+            "isolation_verified is a real cross-check against real_commission_summary()'s own independently-computed "
+            "total, not an assumed-true flag."
         ),
     }
 
@@ -1876,4 +1885,80 @@ def commission_economic_scorecard(opportunity_id, portfolio=None, expected_conve
         "EXPECTED_COMMISSION_VALUE": expected_commission_value,
         "EXPECTED_VALUE_PER_PROSPECT": expected_value_per_prospect,
         "note": "Never ranked by advertised commission alone -- extends score_commission_opportunity()'s real 13 dimensions, never a second competing scorer. Expected-value fields require real, explicitly-supplied conversion-rate/deal-value inputs -- never derived from the advertised commission rate by itself.",
+    }
+
+
+# ---------------------------------------------------------------------------
+# Phase 41 (ADR-238), Section A -- Commission Opportunity Engine.
+#
+# derive_initial_opportunity_portfolio() already has 27 real fields
+# (opportunity_id/source/partner_id/program_name/partner_name/category/
+# target_customer/customer_problem/product_or_service/commission_type/
+# commission_value/commission_currency/recurring_commission/
+# commission_duration/minimum_conditions/cookie_or_tracking_window/
+# payout_terms/eligibility/geography/terms_url/evidence_url/
+# evidence_timestamp/verification_status/confidence/economic_score/
+# risk_score/status/last_verified) -- most of the directive's own 27
+# named fields map directly, just under different real names. This
+# function is a pure reshaping VIEW into the directive's exact field
+# list, deliberately NOT a rewrite of the tested core data model
+# (which would risk the real "every record has all 20 named fields"
+# regression test for a cosmetic rename). Genuinely new fields
+# (market, evidence_freshness, evidence_quality, estimated_deal_value,
+# estimated_commission, rejection_reason) are honestly computed where
+# a real signal exists, UNKNOWN where none does -- payout_method/
+# payout_threshold are deliberately NOT split out of the real,
+# combined payout_terms field via heuristic string parsing, which
+# would risk fabricating a false precision this factory's real data
+# doesn't actually have.
+# ---------------------------------------------------------------------------
+
+def commission_opportunity_record(opportunity_id, portfolio=None, now=None):
+    """The directive's Section A field list, real citation only."""
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+    now = now or datetime.now(timezone.utc)
+    record = next((o for o in portfolio if o["opportunity_id"] == opportunity_id), None)
+    if record is None:
+        return {"generated_at": _now_iso(now), "opportunity_id": opportunity_id, "error": "not found in the real portfolio -- never fabricated"}
+
+    freshness = _freshness_from_last_verified(record.get("last_verified"), now=now)
+    verification = verify_commission_opportunity(opportunity_id, portfolio=portfolio, now=now)
+    rejection_reason = None
+    if verification["status"] in ("REJECTED", "BLOCKED"):
+        rejection_reason = "; ".join(name for name, c in verification["checks"].items() if not c["ok"]) or "no specific failing check recorded"
+
+    return {
+        "opportunity_id": record["opportunity_id"],
+        "market": f"{record.get('category', 'UNKNOWN')} / {record.get('target_customer', 'UNKNOWN')} -- no distinct 'market' field exists in this factory's real data model; category+target_customer is the closest real citation",
+        "category": record.get("category"),
+        "vendor": record.get("partner_name"),
+        "offer": record.get("product_or_service"),
+        "source_url": record.get("evidence_url") or record.get("terms_url"),
+        "affiliate_referral_program_url": record.get("terms_url"),
+        "commission_model": record.get("commission_type"),
+        "commission_amount_rate": record.get("commission_value"),
+        "recurring_non_recurring": "RECURRING" if record.get("recurring_commission") else "NON_RECURRING",
+        "cookie_attribution_window": record.get("cookie_or_tracking_window"),
+        "qualification_requirements": record.get("minimum_conditions") or record.get("eligibility"),
+        "geography_restrictions": record.get("geography", "UNKNOWN"),
+        "payout_method": record.get("payout_terms", "UNKNOWN"),
+        "payout_threshold": record.get("payout_terms", "UNKNOWN"),
+        "evidence_urls": record.get("evidence_url"),
+        "evidence_freshness": freshness,
+        "evidence_quality": record.get("verification_status", "UNKNOWN"),
+        "terms": record.get("terms_url"),
+        "risk": record.get("risk_score", "UNKNOWN"),
+        "estimated_deal_value": "UNKNOWN -- no real customer-specific deal value has ever been captured for this opportunity",
+        "estimated_commission": "UNKNOWN -- requires estimated_deal_value, which does not exist yet",
+        "confidence": record.get("confidence", "UNKNOWN"),
+        "status": verification["status"],
+        "rejection_reason": rejection_reason,
+        "last_verified_at": record.get("last_verified"),
+        "note": (
+            "payout_method/payout_threshold both cite the same real, combined payout_terms field -- this factory's real "
+            "data does not separately track method vs. threshold, and heuristically splitting the string would risk "
+            "fabricating false precision. 'market' likewise has no distinct real field; category+target_customer is the "
+            "honest citation. status/rejection_reason are computed live from verify_commission_opportunity(), never a "
+            "second, independent status source."
+        ),
     }

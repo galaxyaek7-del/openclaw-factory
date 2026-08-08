@@ -1045,5 +1045,101 @@ class TestCommissionEconomicScorecard(unittest.TestCase):
         self.assertIn("error", result)
 
 
+class TestCommissionOpportunityRecord(unittest.TestCase):
+    """Phase 41 (ADR-238), Section A."""
+
+    def test_covers_all_named_fields(self):
+        result = ce.commission_opportunity_record("CO-amazon-affiliate")
+        for field in ("opportunity_id", "market", "category", "vendor", "offer", "source_url",
+                      "affiliate_referral_program_url", "commission_model", "commission_amount_rate",
+                      "recurring_non_recurring", "cookie_attribution_window", "qualification_requirements",
+                      "geography_restrictions", "payout_method", "payout_threshold", "evidence_urls",
+                      "evidence_freshness", "evidence_quality", "terms", "risk", "estimated_deal_value",
+                      "estimated_commission", "confidence", "status", "rejection_reason", "last_verified_at"):
+            self.assertIn(field, result)
+
+    def test_status_matches_verify_commission_opportunity(self):
+        record = ce.commission_opportunity_record("CO-amazon-affiliate")
+        verification = ce.verify_commission_opportunity("CO-amazon-affiliate")
+        self.assertEqual(record["status"], verification["status"])
+
+    def test_blocked_opportunity_has_a_real_rejection_reason(self):
+        record = ce.commission_opportunity_record("CO-google-affiliate")
+        self.assertEqual(record["status"], "BLOCKED")
+        self.assertIsNotNone(record["rejection_reason"])
+        self.assertGreater(len(record["rejection_reason"]), 5)
+
+    def test_verified_opportunity_has_no_rejection_reason(self):
+        record = ce.commission_opportunity_record("CO-amazon-affiliate")
+        self.assertIsNone(record["rejection_reason"])
+
+    def test_estimated_deal_value_honestly_unknown(self):
+        record = ce.commission_opportunity_record("CO-amazon-affiliate")
+        self.assertIn("UNKNOWN", record["estimated_deal_value"])
+
+    def test_unknown_opportunity_never_fabricates_a_record(self):
+        result = ce.commission_opportunity_record("does-not-exist")
+        self.assertIn("error", result)
+
+
+class TestProvisionalLedgerEnvironment(unittest.TestCase):
+    """Phase 41 (ADR-238), Section G."""
+
+    def setUp(self):
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.path = os.path.join(self._tmpdir.name, "ledger.jsonl")
+
+    def tearDown(self):
+        self._tmpdir.cleanup()
+
+    def test_provisional_requires_real_evidence(self):
+        import commission_ledger as cl
+        with self.assertRaises(cl.AntiFabricationError):
+            cl.record_commission("p", "o", "PENDING", 100.0, "PROVISIONAL", ledger_path=self.path)
+
+    def test_provisional_with_evidence_succeeds(self):
+        import commission_ledger as cl
+        record = cl.record_commission("p", "o", "PENDING", 100.0, "PROVISIONAL", evidence="real referral confirmation",
+                                       external_transaction_id="prov1", ledger_path=self.path)
+        self.assertEqual(record["environment"], "PROVISIONAL")
+
+    def test_duplicate_provisional_transaction_id_blocked(self):
+        import commission_ledger as cl
+        cl.record_commission("p", "o", "PENDING", 100.0, "PROVISIONAL", evidence="real evidence 1",
+                              external_transaction_id="prov_dup", ledger_path=self.path)
+        with self.assertRaises(cl.DuplicateCommissionError):
+            cl.record_commission("p", "o", "PENDING", 100.0, "PROVISIONAL", evidence="real evidence 2",
+                                  external_transaction_id="prov_dup", ledger_path=self.path)
+
+    def test_provisional_never_counted_as_real_revenue(self):
+        import commission_ledger as cl
+        cl.record_commission("p", "o", "PENDING", 500.0, "PROVISIONAL", evidence="real referral confirmation",
+                              external_transaction_id="prov2", ledger_path=self.path)
+        summary = cl.real_commission_summary(ledger_path=self.path)
+        self.assertEqual(summary["real_confirmed_or_paid_commission_usd"], 0)
+        self.assertEqual(summary["provisional_commission_usd"], 500.0)
+        dollar_status = cl.first_real_dollar_status(ledger_path=self.path)
+        self.assertFalse(dollar_status["FIRST_REAL_DOLLAR"])
+
+    def test_provisional_and_real_same_transaction_id_are_independent(self):
+        # A REAL and a PROVISIONAL record sharing a transaction_id is a
+        # real, separate promotion event (the claim getting confirmed),
+        # never flagged as a duplicate of each other.
+        import commission_ledger as cl
+        cl.record_commission("p", "o", "PENDING", 100.0, "PROVISIONAL", evidence="real referral confirmation",
+                              external_transaction_id="promoted_txn", ledger_path=self.path)
+        record = cl.record_commission("p", "o", "CONFIRMED", 100.0, "REAL", evidence="real vendor confirmation",
+                                       external_transaction_id="promoted_txn", ledger_path=self.path)
+        self.assertEqual(record["environment"], "REAL")
+
+    def test_real_vs_test_commission_metrics_includes_provisional(self):
+        import commission_ledger as cl
+        cl.record_commission("p", "o", "PENDING", 250.0, "PROVISIONAL", evidence="real referral confirmation",
+                              external_transaction_id="prov3", ledger_path=self.path)
+        result = ce.real_vs_test_commission_metrics(ledger_path=self.path)
+        self.assertEqual(result["PROVISIONAL_COMMISSION"], 250.0)
+        self.assertEqual(result["REAL_REVENUE"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()

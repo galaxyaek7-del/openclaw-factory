@@ -28,7 +28,20 @@ DEFAULT_LEDGER_PATH = _FACTORY_ROOT / "data" / "commission_ledger.jsonl"
 COMMISSION_STATUSES = (
     "EXPECTED", "PENDING", "CONFIRMED", "PAID", "REVERSED", "REFUNDED", "DISPUTED", "UNKNOWN",
 )
-LEDGER_ENVIRONMENTS = ("REAL", "TEST", "SIMULATION")
+LEDGER_ENVIRONMENTS = ("REAL", "TEST", "SIMULATION", "PROVISIONAL")
+# Phase 41 (ADR-238), Section G: PROVISIONAL is a real, disclosed
+# fourth environment -- a genuine real-world claim (real prospect,
+# real vendor, real referral attribution) not yet backed by real
+# vendor confirmation or authoritative transaction evidence. It is
+# NOT a fabrication bypass: PROVISIONAL still requires real evidence
+# (the same _is_meaningful() gate as REAL), just not yet the
+# CONFIRMED/PAID-specific external_transaction_id REAL itself
+# requires. PROVISIONAL records are never counted toward REAL_REVENUE/
+# REAL_COMMISSION_REVENUE/first_real_dollar_status() -- promoting a
+# PROVISIONAL record to REAL requires a fresh, real record_commission()
+# call once authoritative confirmation exists, never an in-place
+# mutation of the provisional one (preserves the original evidence
+# trail).
 
 
 class AntiFabricationError(ValueError):
@@ -158,19 +171,23 @@ def record_commission(partner_id, opportunity_id, commission_status, gross_commi
                        external_transaction_id=None, fees=0.0, currency="USD", evidence=None,
                        source=None, ledger_path=None, now=None):
     """The one real write path into the commission ledger. Hard rule:
-    environment="REAL" requires real, non-empty evidence (e.g. a real
-    external_transaction_id plus a real evidence citation) -- raises
-    AntiFabricationError otherwise, before anything is written to disk.
-    TEST/SIMULATION records never require evidence, since they carry no
-    real financial claim."""
+    environment="REAL" or "PROVISIONAL" requires real, non-empty
+    evidence (e.g. a real webhook event_id, a real referral
+    confirmation) -- raises AntiFabricationError otherwise, before
+    anything is written to disk. PROVISIONAL is a genuine real-world
+    claim awaiting authoritative confirmation, never a fabrication
+    bypass -- the same evidence bar as REAL applies, only the
+    CONFIRMED/PAID-specific external_transaction_id requirement is
+    REAL-only. TEST/SIMULATION records never require evidence, since
+    they carry no real financial claim."""
     if environment not in LEDGER_ENVIRONMENTS:
         raise ValueError(f"environment must be one of {LEDGER_ENVIRONMENTS}, got {environment!r}")
     if commission_status not in COMMISSION_STATUSES:
         raise ValueError(f"commission_status must be one of {COMMISSION_STATUSES}, got {commission_status!r}")
 
-    if environment == "REAL" and not _is_meaningful(evidence):
+    if environment in ("REAL", "PROVISIONAL") and not _is_meaningful(evidence):
         raise AntiFabricationError(
-            "Cannot record a REAL commission without real evidence. "
+            f"Cannot record a {environment} commission without real evidence. "
             "Provide evidence= (e.g. a real webhook event_id, a real transaction confirmation) -- "
             "a whitespace-only or trivially short string does not count -- "
             "or use environment='TEST'/'SIMULATION' instead."
@@ -196,17 +213,23 @@ def record_commission(partner_id, opportunity_id, commission_status, gross_commi
     path = Path(ledger_path) if ledger_path else DEFAULT_LEDGER_PATH
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    if environment == "REAL" and _is_meaningful(external_transaction_id):
-        # Section 9 fix: the duplicate-check + write must happen as one
-        # atomic critical section under a real cross-process lock --
-        # doing the check and the write as two separate, unlocked
-        # operations (the pre-Phase-39 behavior) is a genuine
-        # check-then-write race under true concurrency.
+    if environment in ("REAL", "PROVISIONAL") and _is_meaningful(external_transaction_id):
+        # Section 9 fix (Phase 39) + Phase 41 (ADR-238) extension: the
+        # duplicate-check + write must happen as one atomic critical
+        # section under a real cross-process lock -- doing the check
+        # and the write as two separate, unlocked operations is a
+        # genuine check-then-write race under true concurrency.
+        # PROVISIONAL is included here (not just REAL) because a real,
+        # in-progress referral claim can be retried/duplicated exactly
+        # like a confirmed one -- duplicate-checked against records in
+        # its own environment only (a REAL and a PROVISIONAL record
+        # sharing a transaction_id is a real, separate promotion event,
+        # never flagged as a duplicate of each other).
         with _LedgerLock(path):
-            existing = [r for r in load_ledger(ledger_path) if r.get("environment") == "REAL" and r.get("external_transaction_id") == external_transaction_id]
+            existing = [r for r in load_ledger(ledger_path) if r.get("environment") == environment and r.get("external_transaction_id") == external_transaction_id]
             if existing:
                 raise DuplicateCommissionError(
-                    f"A REAL commission with external_transaction_id={external_transaction_id!r} already exists "
+                    f"A {environment} commission with external_transaction_id={external_transaction_id!r} already exists "
                     f"(commission_id={existing[0]['commission_id']}) -- the same real transaction must never be "
                     f"recorded twice. If this is a real, separate refund/reversal/correction, use the appropriate "
                     f"commission_status on the existing record's own follow-up event instead of a new record."
@@ -239,14 +262,15 @@ def load_ledger(ledger_path=None):
 
 def real_commission_summary(ledger_path=None):
     """The one real, authoritative summary -- filters strictly on
-    environment='REAL'. TEST/SIMULATION records are counted separately
-    and never blended into these totals, per the directive's own
-    explicit rule (Section 9's REAL/TEST/SIMULATION separation, applied
-    here to commissions specifically)."""
+    environment='REAL'. TEST/SIMULATION/PROVISIONAL records are
+    counted separately and never blended into these totals, per the
+    directive's own explicit rule (Section 9's REAL/TEST/SIMULATION
+    separation, extended Phase 41/ADR-238 to include PROVISIONAL)."""
     records = load_ledger(ledger_path)
     real = [r for r in records if r.get("environment") == "REAL"]
     test = [r for r in records if r.get("environment") == "TEST"]
     simulation = [r for r in records if r.get("environment") == "SIMULATION"]
+    provisional = [r for r in records if r.get("environment") == "PROVISIONAL"]
 
     confirmed_or_paid = [r for r in real if r.get("commission_status") in ("CONFIRMED", "PAID")]
     paid = [r for r in real if r.get("commission_status") == "PAID"]
@@ -258,7 +282,9 @@ def real_commission_summary(ledger_path=None):
         "real_paid_commission_usd": round(sum(r["net_commission"] for r in paid), 2),
         "test_records": len(test),
         "simulation_records": len(simulation),
-        "note": "Only CONFIRMED/PAID REAL records count as real commercial revenue -- EXPECTED/PENDING REAL records exist but are explicitly excluded from this total, matching the directive's own rule that only CONFIRMED/PAID commissions become real commercial revenue.",
+        "provisional_records": len(provisional),
+        "provisional_commission_usd": round(sum(r["net_commission"] for r in provisional), 2),
+        "note": "Only CONFIRMED/PAID REAL records count as real commercial revenue -- EXPECTED/PENDING REAL records exist but are explicitly excluded from this total. PROVISIONAL records (real, in-progress claims awaiting authoritative confirmation) are tracked in their own bucket, never blended into real_confirmed_or_paid_commission_usd -- promoting a claim to REAL requires a fresh, separately-evidenced record_commission() call.",
     }
 
 
