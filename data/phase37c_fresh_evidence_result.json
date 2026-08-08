@@ -1,0 +1,121 @@
+{
+  "generated_at": "2026-08-08T18:17:57.902530+00:00",
+  "pre_run_firewall_check": {
+    "REAL_OUTREACH_SENT": 0,
+    "REAL_MESSAGES_SENT": 0,
+    "REAL_PROSPECTS_CONTACTED": 0,
+    "REAL_DEALS": 0,
+    "REAL_CUSTOMERS": 0,
+    "REAL_REVENUE": 0,
+    "REAL_COMMISSION_records": 0,
+    "REAL_PAYOUTS": 0
+  },
+  "opportunity_id": "CO-n8n-affiliate",
+  "opportunity_frozen_check": {
+    "verification_status": "VERIFIED",
+    "matches_phase37b_selection": true
+  },
+  "phase37b_recheck": {
+    "lead_id": "LEAD-f0d1fd8d9bc0895a",
+    "company_name": "Automattic",
+    "source_url": "https://github.com/Automattic/jetpack/issues/14078",
+    "previous_status": "REJECTED",
+    "previous_score": "4/5 real factors known -- never a fabricated single number",
+    "previous_reason": "evidence exists but is STALE (>45 days old)",
+    "recheck_query": "repo:Automattic/jetpack workflow",
+    "recheck_hits_examined": 10,
+    "NEW_EVIDENCE": null,
+    "newer_but_topically_unrelated_hits_disclosed": [
+      {
+        "url": "https://github.com/Automattic/jetpack/issues/49406",
+        "created_at": "2026-06-04T17:08:18Z",
+        "title": "Jetpack Autoloader: in-place plugin upgrade fatals when classmap snapshot points to a since-removed file"
+      },
+      {
+        "url": "https://github.com/Automattic/jetpack/issues/50787",
+        "created_at": "2026-07-23T16:47:17Z",
+        "title": "i18n: Jetpack Forms wp-build dashboard: script-module strings are not translated"
+      }
+    ],
+    "NEW_STATUS": "UNCHANGED -- still REJECTED (STALE)",
+    "REASON_FOR_CHANGE": "No genuinely on-topic newer evidence found for this same real signal (Automattic/jetpack repo) as of this run. 2 newer issue(s) existed in the repo but were correctly excluded as topically unrelated (matched only incidentally via body-text search, not real corroboration -- Section 5 forbids manufacturing corroboration)."
+  },
+  "query_used": "zapier alternative self hosted",
+  "source_notes": {
+    "hacker_news": {
+      "ok": true,
+      "total_hits_reported": 7,
+      "candidate_count": 3,
+      "note": null
+    },
+    "github_issues": {
+      "ok": true,
+      "total_hits_reported": 85,
+      "candidate_count": 3,
+      "note": null
+    },
+    "stack_overflow": {
+      "ok": true,
+      "total_hits_reported": 1,
+      "candidate_count": 1,
+      "note": null
+    }
+  },
+  "raw_candidates_fetched": 7,
+  "evidence_source_breakdown": {
+    "hacker_news": 0,
+    "github_issues": 0,
+    "stack_overflow": 1
+  },
+  "evidence_freshness_breakdown": {
+    "FRESH": 0,
+    "STALE": 1,
+    "UNKNOWN": 0
+  },
+  "new_candidates_found": 1,
+  "qualified_candidates": 0,
+  "provisional_candidates": 0,
+  "rejected_candidates": 1,
+  "duplicate_candidates": 0,
+  "candidate_explanations": [
+    {
+      "lead_id": "LEAD-004e9a6fb5862500",
+      "status": "REJECTED",
+      "source_type": "stack_overflow",
+      "source_tier": 4,
+      "WHY_THIS_COMPANY": "UNKNOWN -- Stack Overflow questions are individual-authored, no real company field in this source",
+      "WHY_THIS_PROBLEM": "no strong keyword match",
+      "WHY_THIS_PARTNER": "n8n directly addresses workflow-automation pain",
+      "WHY_NOW": "freshness=STALE, age_days=3127",
+      "EVIDENCE_SUPPORTING_MATCH": "https://stackoverflow.com/questions/48262936/alternative-stride-integration-with-jira-and-confluence-servers",
+      "CORROBORATING_EVIDENCE": {
+        "has_corroboration": false,
+        "corroborating_lead_ids": []
+      },
+      "MAIN_RISK": "company identity unconfirmed",
+      "CONFIDENCE": "MEDIUM",
+      "RECOMMENDED_NEXT_ACTION": "DO_NOT_PURSUE"
+    }
+  ],
+  "best_current_prospect": "LEAD-004e9a6fb5862500",
+  "best_current_prospect_status": "REJECTED",
+  "golden_hunter_trace": {
+    "opportunity_source": "business_development.py::PLATFORM_REGISTRY (ADR-188, WebSearch-evidenced 2026-08-07)",
+    "traceable_to_golden_hunter": false,
+    "golden_hunter_role_confirmed": "DISCOVERY/PRIORITIZATION/RECOMMENDATION only -- no outreach import, no self-approval, no revenue creation, no evidence-status override (regression-tested)."
+  },
+  "commercial_deal_agent_trace": {
+    "note": "no qualified/provisional candidate -- Commercial Deal Agent trace not applicable this run"
+  },
+  "post_run_firewall_check": {
+    "REAL_OUTREACH_SENT": 0,
+    "REAL_MESSAGES_SENT": 0,
+    "REAL_PROSPECTS_CONTACTED": 0,
+    "REAL_DEALS": 0,
+    "REAL_CUSTOMERS": 0,
+    "REAL_REVENUE": 0,
+    "REAL_COMMISSION_records": 0,
+    "REAL_PAYOUTS": 0
+  },
+  "firewall_unchanged": true
+}
