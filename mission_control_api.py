@@ -623,6 +623,36 @@ def _safe_mode_status():
     return safe_mode.list_safe_mode_status()
 
 
+def _approve_commission_opportunity():
+    """CEO Commercial Control (ADR-226, Section 17): approve a real
+    commission opportunity for the next pipeline stage. Reads its
+    payload from sys.argv[2]:
+    `python mission_control_api.py approve_commission_opportunity '{"opportunity_id":"...","from_state":"OPPORTUNITY","to_state":"VERIFIED_PARTNER","evidence":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    opportunity_id = (payload.get("opportunity_id") or "").strip()
+    from_state = (payload.get("from_state") or "").strip()
+    to_state = (payload.get("to_state") or "").strip()
+    if not opportunity_id or not from_state or not to_state:
+        raise ValueError("{ opportunity_id, from_state, to_state } are required")
+
+    import commission_engine
+    return commission_engine.record_pipeline_transition(opportunity_id, from_state, to_state, evidence=payload.get("evidence"))
+
+
+def _reject_commission_opportunity():
+    """CEO Commercial Control: reject a real commission opportunity.
+    Reads its payload from sys.argv[2]:
+    `python mission_control_api.py reject_commission_opportunity '{"opportunity_id":"...","from_state":"...","reason":"..."}'`"""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    opportunity_id = (payload.get("opportunity_id") or "").strip()
+    from_state = (payload.get("from_state") or "").strip()
+    if not opportunity_id or not from_state:
+        raise ValueError("{ opportunity_id, from_state } are required")
+
+    import commission_engine
+    return commission_engine.record_pipeline_transition(opportunity_id, from_state, "REJECTED", evidence=payload.get("reason"))
+
+
 def _mark_subsystem_unstable():
     """The founder's own real action to isolate one named subsystem
     without halting the rest of the company. Reads its payload from
@@ -1580,6 +1610,28 @@ def _commercial_activation_status():
     from scripts.check_paddle_checkout_status import check_and_notify_all
     checkout_status = check_and_notify_all()
     return build_commercial_activation_status(checkout_status=checkout_status)
+
+
+def _commission_commerce_dashboard():
+    """Commission Commerce Engine (ADR-226, Phase 33, 2026-08-08): the
+    real, evidence-cited opportunity portfolio (13 real records derived
+    directly from business_development.py's existing WebSearch-verified
+    registry, ADR-188 -- no new research performed), real vs.
+    partially-verified vs. unverified counts, the real commission
+    ledger summary (REAL/TEST/SIMULATION kept separate, only CONFIRMED/
+    PAID REAL records count), and honest INCOMPLETE/UNKNOWN markers
+    everywhere real customer/economic data doesn't exist yet."""
+    from commission_engine import build_commission_commerce_dashboard
+    return build_commission_commerce_dashboard()
+
+
+def _commission_daily_brief():
+    """Golden Hunter Daily Commercial Brief (ADR-226, Section 13): the
+    10 named questions, every answer citing real portfolio/pipeline
+    data. Never claims a sale unless verified in commission_ledger.py's
+    REAL environment."""
+    from commission_engine import build_daily_commercial_brief
+    return build_daily_commercial_brief()
 
 
 def _competitive_moat_assessment():
@@ -3325,6 +3377,8 @@ _ENDPOINTS = {
     "safe_mode_status": _safe_mode_status,
     "mark_subsystem_unstable": _mark_subsystem_unstable,
     "clear_subsystem_unstable": _clear_subsystem_unstable,
+    "approve_commission_opportunity": _approve_commission_opportunity,
+    "reject_commission_opportunity": _reject_commission_opportunity,
     "approve_first_publish": _approve_first_publish,
     "approve_elevated_risk_publish": _approve_elevated_risk_publish,
     "autonomous_operations_status": _autonomous_operations_status,
@@ -3444,6 +3498,8 @@ _ENDPOINTS = {
     "enterprise_sales_dashboard": _enterprise_sales_dashboard,
     "executive_truth_dashboard": _executive_truth_dashboard,
     "commercial_activation_status": _commercial_activation_status,
+    "commission_commerce_dashboard": _commission_commerce_dashboard,
+    "commission_daily_brief": _commission_daily_brief,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
 }
 

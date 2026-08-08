@@ -431,3 +431,47 @@ def detect_conflicting_terms(opportunity_a, opportunity_b):
     if conflicts:
         return {"conflict": True, "status": "FLAG_CONFLICT", "conflicts": conflicts}
     return {"conflict": False, "status": "NO_CONFLICT"}
+
+
+# ---------------------------------------------------------------------------
+# Section 12 -- Reality Dashboard aggregator (Mission Control)
+# ---------------------------------------------------------------------------
+
+def build_commission_commerce_dashboard(portfolio_path=None, ledger_path=None, now=None):
+    """The one real aggregator this section asked for -- computes every
+    real sub-report exactly once, citing already-real functions/
+    modules directly. Never a second, competing commission dashboard."""
+    import commission_ledger as cl
+
+    portfolio = load_opportunity_portfolio(path=portfolio_path)
+    now = now or datetime.now(timezone.utc)
+
+    verified = [o for o in portfolio if o["verification_status"] == "VERIFIED"]
+    partially_verified = [o for o in portfolio if o["verification_status"] == "PARTIALLY_VERIFIED"]
+    unverified = [o for o in portfolio if o["verification_status"] == "UNVERIFIED"]
+    stale = [o for o in portfolio if _freshness_from_last_verified(o.get("last_verified"), now=now) == "STALE"]
+
+    real_summary = cl.real_commission_summary(ledger_path=ledger_path)
+
+    return {
+        "generated_at": _now_iso(now),
+        "commission_opportunities": {
+            "total": len(portfolio), "verified": len(verified), "partially_verified": len(partially_verified),
+            "unverified": len(unverified), "stale": len(stale),
+        },
+        "verified_partners": [o["partner_name"] for o in verified],
+        "top_commission_opportunities": sorted(portfolio, key=lambda o: 0 if o["commission_value"] == "COMMISSION_UNKNOWN" else 1, reverse=True)[:10],
+        "new_leads": 0, "qualified_leads": 0, "active_deals": 0,
+        "expected_commission_usd": "INCOMPLETE -- no real deal-value input exists yet for any opportunity",
+        "confirmed_commission_usd": real_summary["real_confirmed_or_paid_commission_usd"],
+        "paid_commission_usd": real_summary["real_paid_commission_usd"],
+        "real_revenue_usd": 0, "real_customers": 0, "real_orders": 0, "real_payouts_usd": 0,
+        "partner_health": {"verified": len(verified), "partially_verified": len(partially_verified), "unverified": len(unverified)},
+        "outreach_health": "0 real drafts sent -- no real outbound-send credential exists (see outreach_engine.py)",
+        "stale_opportunities": [o["opportunity_id"] for o in stale],
+        "blocked_external_services": ["Paddle checkout (see commercial_activation.py)", "All outreach sending (no real send credential)"],
+        "founder_actions": "See commission_engine.build_daily_commercial_brief()'s q10 + commercial_activation.founder_action_center()",
+        "unknown_data": [o["opportunity_id"] for o in portfolio if o["commission_value"] == "COMMISSION_UNKNOWN"],
+        "evidence_level": "E3 (real, cited evidence per opportunity; no real customer/economic data yet -- see each opportunity's own evidence_url field)",
+        "note": "Every number above is real or explicitly INCOMPLETE/UNKNOWN -- never a fabricated forecast presented as current performance.",
+    }

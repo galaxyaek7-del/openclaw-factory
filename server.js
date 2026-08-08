@@ -2109,6 +2109,21 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('commercial_activation_status', [], req, 30000),
     health: pythonHealthCheck('commercial_activation_status'),
   },
+  {
+    // Commission Commerce Engine (ADR-226, Phase 33, 2026-08-08).
+    name: 'commission-commerce-dashboard',
+    description: "Real, evidence-cited commission opportunity portfolio (13 real records derived from business_development.py's existing WebSearch-verified registry, ADR-188 -- no new research performed this round), verified/partially-verified/unverified counts, real commission ledger summary (REAL/TEST/SIMULATION kept strictly separate -- only CONFIRMED/PAID REAL records count), stale-opportunity detection, and honest INCOMPLETE/UNKNOWN markers everywhere real customer or economic data doesn't exist yet.",
+    reused: 'commission_engine.py::build_commission_commerce_dashboard() + commission_ledger.py::real_commission_summary(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commission_commerce_dashboard', [], req),
+    health: pythonHealthCheck('commission_commerce_dashboard'),
+  },
+  {
+    name: 'commission-daily-brief',
+    description: "Golden Hunter Daily Commercial Brief (Section 13) -- the 10 named questions, every answer citing real portfolio/pipeline data. Never claims a sale unless independently verified in commission_ledger.py's REAL environment.",
+    reused: 'commission_engine.py::build_daily_commercial_brief(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commission_daily_brief', [], req),
+    health: pythonHealthCheck('commission_daily_brief'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
@@ -2540,6 +2555,27 @@ async function publishEmergencyResumeAction() {
 // marketplace_publishing has no mark/clear action here by design -- use
 // publish-emergency-stop/publish-emergency-resume above, its own real
 // signal.
+async function approveCommissionOpportunityAction(req) {
+  const opportunity_id = (req.body && req.body.opportunity_id) || '';
+  const from_state = (req.body && req.body.from_state) || '';
+  const to_state = (req.body && req.body.to_state) || '';
+  const evidence = (req.body && req.body.evidence) || '';
+  if (!opportunity_id.trim() || !from_state.trim() || !to_state.trim()) {
+    throw new Error('{ opportunity_id, from_state, to_state } are required');
+  }
+  return runPythonService('approve_commission_opportunity', [JSON.stringify({ opportunity_id, from_state, to_state, evidence })]);
+}
+
+async function rejectCommissionOpportunityAction(req) {
+  const opportunity_id = (req.body && req.body.opportunity_id) || '';
+  const from_state = (req.body && req.body.from_state) || '';
+  const reason = (req.body && req.body.reason) || '';
+  if (!opportunity_id.trim() || !from_state.trim()) {
+    throw new Error('{ opportunity_id, from_state } are required');
+  }
+  return runPythonService('reject_commission_opportunity', [JSON.stringify({ opportunity_id, from_state, reason })]);
+}
+
 async function markSubsystemUnstableAction(req) {
   const name = (req.body && req.body.name) || '';
   const reason = (req.body && req.body.reason) || '';
@@ -3603,6 +3639,22 @@ const ACTION_REGISTRY = [
   },
   {
     // Global Trust & Resilience Layer, Round 2 (2026-07-29).
+    name: 'approve-commission-opportunity',
+    description: 'CEO Commercial Control (ADR-226, Section 17): approves a real commission opportunity into its next real pipeline stage. Requires { opportunity_id, from_state, to_state } in the request body, optional { evidence }. Creates a real, append-only audit event -- never silently advances a stage without a human-triggered call.',
+    reused: 'commission_engine.py record_pipeline_transition()',
+    reversible: false,
+    kind: 'sync',
+    run: approveCommissionOpportunityAction,
+  },
+  {
+    name: 'reject-commission-opportunity',
+    description: 'CEO Commercial Control: rejects a real commission opportunity. Requires { opportunity_id, from_state } in the request body, optional { reason }.',
+    reused: 'commission_engine.py record_pipeline_transition()',
+    reversible: false,
+    kind: 'sync',
+    run: rejectCommissionOpportunityAction,
+  },
+  {
     name: 'mark-subsystem-unstable',
     description: 'Isolates one real, named subsystem (ai_generation or market_intelligence) without halting the rest of the company. Requires { name, reason } in the request body. marketplace_publishing is not accepted here -- use publish-emergency-stop instead.',
     reused: 'safe_mode.py mark_subsystem_unstable() (Global Trust & Resilience Layer, Round 2)',

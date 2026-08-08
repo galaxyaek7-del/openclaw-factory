@@ -186,5 +186,43 @@ class TestDailyBrief(unittest.TestCase):
         self.assertIn("0", brief["q9_leads_requiring_action"])
 
 
+class TestConflictDetection(unittest.TestCase):
+    def test_different_partners_never_compared(self):
+        a = {"partner_id": "x", "commission_value": "10%"}
+        b = {"partner_id": "y", "commission_value": "50%"}
+        result = ce.detect_conflicting_terms(a, b)
+        self.assertFalse(result["conflict"])
+
+    def test_conflicting_values_flagged(self):
+        a = {"partner_id": "x", "commission_value": "10%"}
+        b = {"partner_id": "x", "commission_value": "20%"}
+        result = ce.detect_conflicting_terms(a, b)
+        self.assertEqual(result["status"], "FLAG_CONFLICT")
+
+
+class TestCommissionCommerceDashboard(unittest.TestCase):
+    def test_returns_all_required_sections(self):
+        result = ce.build_commission_commerce_dashboard()
+        for key in ("commission_opportunities", "verified_partners", "top_commission_opportunities",
+                    "expected_commission_usd", "confirmed_commission_usd", "paid_commission_usd",
+                    "real_revenue_usd", "real_customers", "real_orders", "real_payouts_usd",
+                    "stale_opportunities", "founder_actions", "unknown_data", "evidence_level"):
+            self.assertIn(key, result)
+
+    def test_real_metrics_are_zero_with_no_real_ledger_data(self):
+        result = ce.build_commission_commerce_dashboard()
+        self.assertEqual(result["real_revenue_usd"], 0)
+        self.assertEqual(result["real_customers"], 0)
+        self.assertEqual(result["real_orders"], 0)
+        self.assertEqual(result["real_payouts_usd"], 0)
+
+    def test_never_writes_any_file(self):
+        import os
+        before = set(os.listdir("data"))
+        ce.build_commission_commerce_dashboard()
+        after = set(os.listdir("data"))
+        self.assertEqual(before, after)
+
+
 if __name__ == "__main__":
     unittest.main()
