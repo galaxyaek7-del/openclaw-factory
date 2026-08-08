@@ -1658,6 +1658,30 @@ def _first_real_dollar_status():
     return first_real_dollar_status()
 
 
+def _commercial_flight_control_status():
+    """Commercial Flight-Control Gate (Phase 39, 'Commercial Flight
+    Control & First-Real-Dollar Execution' directive, ADR-236,
+    2026-08-08, Section 1): the one authoritative gate, returning
+    exactly one of LAUNCH_READY/FIRST_CONTROLLED_ACTION_READY/
+    CEO_APPROVAL_REQUIRED/BLOCKED, derived from live system state.
+    Read-only -- never executes an outreach send, never publishes an
+    affiliate link, never bypasses the CEO exact-scope approval gate."""
+    from commission_engine import commercial_flight_control_status
+    return commercial_flight_control_status()
+
+
+def _commercial_control_panel():
+    """Commercial Control Panel (Phase 39, ADR-236, Section 10): the
+    one concise 12-field commercial control view -- CURRENT_OPPORTUNITY,
+    EVIDENCE_STATUS, FRESHNESS, COMMISSION_ECONOMICS, CEO_APPROVAL_
+    STATUS, ACTION_READINESS, REAL_COMMISSION_USD, PENDING_COMMISSION,
+    PAYOUT_STATUS, FIRST_REAL_DOLLAR_STATUS, BLOCKERS, LAST_VERIFIED_
+    TIMESTAMP. Read-only citation of commercial_flight_control_status()
+    + the real commission ledger -- no independently computed field."""
+    from commission_engine import commercial_control_panel
+    return commercial_control_panel()
+
+
 def _lead_discovery_status():
     """Lead Discovery (Phase 37A, ADR-230; extended Phase 37C, ADR-232,
     2026-08-08): real, read-only summary of already-persisted
@@ -3651,6 +3675,8 @@ _ENDPOINTS = {
     "lead_discovery_status": _lead_discovery_status,
     "outreach_infrastructure_status": _outreach_infrastructure_status,
     "golden_hunter_rotation_status": _golden_hunter_rotation_status,
+    "commercial_flight_control_status": _commercial_flight_control_status,
+    "commercial_control_panel": _commercial_control_panel,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
 }
 

@@ -580,5 +580,33 @@ class TestCommercialFailureRecoveryStatus(unittest.TestCase):
                 self.assertEqual(entry["status"], "OPEN_GAP")
 
 
+class TestCommercialControlPanel(unittest.TestCase):
+    """Phase 39 (ADR-236), Section 10."""
+
+    def test_returns_exactly_the_12_named_fields_plus_generated_at_and_note(self):
+        result = ce.commercial_control_panel()
+        expected = {
+            "generated_at", "CURRENT_OPPORTUNITY", "EVIDENCE_STATUS", "FRESHNESS", "COMMISSION_ECONOMICS",
+            "CEO_APPROVAL_STATUS", "ACTION_READINESS", "REAL_COMMISSION_USD", "PENDING_COMMISSION_COUNT",
+            "PENDING_COMMISSION_USD", "PAYOUT_STATUS", "FIRST_REAL_DOLLAR_STATUS", "BLOCKERS",
+            "LAST_VERIFIED_TIMESTAMP", "note",
+        }
+        self.assertEqual(set(result.keys()), expected)
+
+    def test_action_readiness_matches_the_gates_own_verdict(self):
+        gate = ce.commercial_flight_control_status()
+        panel = ce.commercial_control_panel()
+        self.assertEqual(panel["ACTION_READINESS"], gate["VERDICT"])
+
+    def test_never_fabricates_real_commission_when_ledger_is_empty(self):
+        result = ce.commercial_control_panel()
+        self.assertEqual(result["REAL_COMMISSION_USD"], 0)
+        self.assertFalse(result["FIRST_REAL_DOLLAR_STATUS"])
+
+    def test_blockers_are_a_real_list_not_a_count(self):
+        result = ce.commercial_control_panel()
+        self.assertIsInstance(result["BLOCKERS"], list)
+
+
 if __name__ == "__main__":
     unittest.main()

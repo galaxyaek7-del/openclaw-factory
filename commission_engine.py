@@ -1223,3 +1223,55 @@ def commercial_failure_recovery_status():
         "real_count": len(real), "open_gap_count": len(gaps), "open_gaps": gaps,
         "note": "11/13 named failure cases have a real, tested recovery mechanism, cited directly rather than re-implemented. 2 (disk_full, supervisor_restart) are genuine, disclosed, unfixed gaps -- carried forward from AUDIT/RESILIENCE_CERTIFICATION.md, not silently resolved here.",
     }
+
+
+# ---------------------------------------------------------------------------
+# Phase 39 (ADR-236), Section 10 -- one concise Commercial Control
+# Panel, citing commercial_flight_control_status() + the real ledger
+# directly. Deliberately NOT a new dashboard-building framework or a
+# second aggregator competing with commission_commerce_dashboard() --
+# this is the one, narrow, directive-named 12-field view, built by
+# reshaping 2 already-real functions, never recomputing their logic.
+# ---------------------------------------------------------------------------
+
+def commercial_control_panel(opportunity_id=None, action_type=None, now=None):
+    """The Section 10 view: CURRENT OPPORTUNITY, EVIDENCE STATUS,
+    FRESHNESS, COMMISSION ECONOMICS, CEO APPROVAL STATUS, ACTION
+    READINESS, REAL COMMISSION, PENDING COMMISSION, PAYOUT STATUS,
+    FIRST_REAL_DOLLAR STATUS, BLOCKERS, LAST VERIFIED TIMESTAMP -- no
+    decorative fields beyond these 12. Real citation only: the gate's
+    own checks for the first 6, commission_ledger.py's real ledger for
+    the next 4."""
+    import commission_ledger as cl
+
+    now = now or datetime.now(timezone.utc)
+    gate = commercial_flight_control_status(opportunity_id=opportunity_id, action_type=action_type, now=now)
+    checks = gate["checks"]
+
+    ledger = cl.load_ledger()
+    real_records = [r for r in ledger if r.get("environment") == "REAL"]
+    pending_records = [r for r in real_records if r.get("commission_status") in ("EXPECTED", "PENDING")]
+    payout_pending_records = [r for r in real_records if r.get("commission_status") == "CONFIRMED"]
+    paid_records = [r for r in real_records if r.get("commission_status") == "PAID"]
+    dollar_status = cl.first_real_dollar_status()
+
+    return {
+        "generated_at": _now_iso(now),
+        "CURRENT_OPPORTUNITY": gate["resolved_opportunity_id"],
+        "EVIDENCE_STATUS": checks["opportunity_evidence_quality"]["verification_status"],
+        "FRESHNESS": checks["freshness"]["freshness"],
+        "COMMISSION_ECONOMICS": checks["commission_economics"]["commission_value"],
+        "CEO_APPROVAL_STATUS": "VERIFIED" if checks["ceo_approval_scope"]["ok"] else checks["ceo_approval_scope"].get("reason", "NOT_PROVIDED"),
+        "ACTION_READINESS": gate["VERDICT"],
+        "REAL_COMMISSION_USD": dollar_status["REAL_COMMISSION_REVENUE"],
+        "PENDING_COMMISSION_COUNT": len(pending_records),
+        "PENDING_COMMISSION_USD": round(sum(r.get("net_commission", 0) for r in pending_records), 2),
+        "PAYOUT_STATUS": {
+            "confirmed_awaiting_payout": len(payout_pending_records),
+            "paid": len(paid_records),
+        },
+        "FIRST_REAL_DOLLAR_STATUS": dollar_status["FIRST_REAL_DOLLAR"],
+        "BLOCKERS": gate["blockers"],
+        "LAST_VERIFIED_TIMESTAMP": now.isoformat(),
+        "note": "Real citation of commercial_flight_control_status() + commission_ledger.py's own real ledger -- no field here is independently computed or estimated.",
+    }

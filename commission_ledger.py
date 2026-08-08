@@ -17,6 +17,8 @@ when it does.
 """
 
 import json
+import platform
+import threading
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -51,6 +53,88 @@ def _now_iso(now=None):
 
 
 _MIN_MEANINGFUL_LENGTH = 4
+
+
+# ---------------------------------------------------------------------------
+# Phase 39 (ADR-236), Section 9 -- real cross-process advisory file lock.
+#
+# Found while stress-testing the actual expected workload (10 real,
+# genuinely concurrent threads racing to record the same real
+# external_transaction_id): the duplicate-check above is a
+# check-then-write race -- load_ledger() reads, then a separate append
+# writes, with no lock between them. Under true concurrency (a real,
+# expected scenario: Paddle and most webhook providers document
+# at-least-once delivery, so two near-simultaneous deliveries of the
+# same event are a real, not hypothetical, occurrence) 3 of 10
+# concurrent calls for the identical transaction_id were each recorded
+# as separate REAL commission records before this fix -- a genuine,
+# serious gap in exactly the guarantee Section 7 of this same
+# directive names ("prove the same ... commission event cannot be
+# counted twice"). The sequential 10x retry-storm test this factory
+# already had (tests/test_resilience_idempotency.py) only proved
+# safety for sequential retries, never genuine concurrency -- a real,
+# previously-uncaught blind spot in that test's own coverage.
+#
+# Fixed with a minimal, real, disclosed advisory lock file
+# (data/commission_ledger.jsonl.lock) held only around the duplicate-
+# check + write critical section, REAL environment only (TEST/
+# SIMULATION records carry no real financial claim and are
+# unaffected). Windows-native msvcrt.locking() on this platform; a
+# real fcntl.flock() branch for POSIX, since this same module may run
+# in either environment. No behavior change for any existing caller
+# outside of true concurrent REAL writes -- the lock is acquired and
+# released within the same function call, transparently.
+# ---------------------------------------------------------------------------
+
+class _LedgerLock:
+    """A real, minimal, cross-process advisory lock -- blocks until
+    acquired, released even on exception via context-manager __exit__.
+
+    Real production topology (per CLAUDE.md) spawns a separate Python
+    subprocess per Mission Control action, so genuinely concurrent
+    commission writes are almost always separate OS processes -- the
+    real case this lock exists for, handled by msvcrt.locking()
+    (Windows) / fcntl.flock() (POSIX). A dedicated intra-process
+    threading.Lock() is held first: Windows' msvcrt.locking(LK_LOCK)
+    was found, while writing this round's own concurrency stress test
+    (Section 9), to raise a real 'Resource deadlock avoided' OSError
+    when multiple THREADS in the same process race for the same
+    byte-range lock via separate handles -- a genuine Windows same-
+    process locking quirk, not a hypothetical. The threading.Lock()
+    serializes same-process callers before they ever reach msvcrt,
+    while the file lock still protects the real cross-process case."""
+
+    _thread_lock = threading.Lock()
+
+    def __init__(self, ledger_path):
+        self._lock_path = str(ledger_path) + ".lock"
+        self._fh = None
+
+    def __enter__(self):
+        self._thread_lock.acquire()
+        self._fh = open(self._lock_path, "a+")
+        if platform.system() == "Windows":
+            import msvcrt
+            self._fh.seek(0)
+            msvcrt.locking(self._fh.fileno(), msvcrt.LK_LOCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(self._fh.fileno(), fcntl.LOCK_EX)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        try:
+            if platform.system() == "Windows":
+                import msvcrt
+                self._fh.seek(0)
+                msvcrt.locking(self._fh.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(self._fh.fileno(), fcntl.LOCK_UN)
+        finally:
+            self._fh.close()
+            self._thread_lock.release()
+        return False
 
 
 def _is_meaningful(value):
@@ -97,16 +181,6 @@ def record_commission(partner_id, opportunity_id, commission_status, gross_commi
             "(whitespace-only or trivially short values are rejected)."
         )
 
-    if environment == "REAL" and _is_meaningful(external_transaction_id):
-        existing = [r for r in load_ledger(ledger_path) if r.get("environment") == "REAL" and r.get("external_transaction_id") == external_transaction_id]
-        if existing:
-            raise DuplicateCommissionError(
-                f"A REAL commission with external_transaction_id={external_transaction_id!r} already exists "
-                f"(commission_id={existing[0]['commission_id']}) -- the same real transaction must never be "
-                f"recorded twice. If this is a real, separate refund/reversal/correction, use the appropriate "
-                f"commission_status on the existing record's own follow-up event instead of a new record."
-            )
-
     net_commission = gross_commission - fees
     record = {
         "commission_id": f"COM-{partner_id}-{opportunity_id}-{_now_iso(now)}",
@@ -121,6 +195,26 @@ def record_commission(partner_id, opportunity_id, commission_status, gross_commi
     }
     path = Path(ledger_path) if ledger_path else DEFAULT_LEDGER_PATH
     path.parent.mkdir(parents=True, exist_ok=True)
+
+    if environment == "REAL" and _is_meaningful(external_transaction_id):
+        # Section 9 fix: the duplicate-check + write must happen as one
+        # atomic critical section under a real cross-process lock --
+        # doing the check and the write as two separate, unlocked
+        # operations (the pre-Phase-39 behavior) is a genuine
+        # check-then-write race under true concurrency.
+        with _LedgerLock(path):
+            existing = [r for r in load_ledger(ledger_path) if r.get("environment") == "REAL" and r.get("external_transaction_id") == external_transaction_id]
+            if existing:
+                raise DuplicateCommissionError(
+                    f"A REAL commission with external_transaction_id={external_transaction_id!r} already exists "
+                    f"(commission_id={existing[0]['commission_id']}) -- the same real transaction must never be "
+                    f"recorded twice. If this is a real, separate refund/reversal/correction, use the appropriate "
+                    f"commission_status on the existing record's own follow-up event instead of a new record."
+                )
+            with open(path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(record, ensure_ascii=False) + "\n")
+        return record
+
     with open(path, "a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
     return record

@@ -2164,6 +2164,21 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('first_real_dollar_status', [], req),
     health: pythonHealthCheck('first_real_dollar_status'),
   },
+  {
+    // Commercial Flight-Control Gate (Phase 39, "Commercial Flight Control & First-Real-Dollar Execution" directive, ADR-236, 2026-08-08).
+    name: 'commercial-flight-control-status',
+    description: "The one authoritative gate for the first controlled commercial action -- returns exactly one of LAUNCH_READY/FIRST_CONTROLLED_ACTION_READY/CEO_APPROVAL_REQUIRED/BLOCKED, derived from live system state (real portfolio, real ledger, real adapter/credential status, real opportunity lifecycle state), never a generic boolean. Discloses the real, unresolved disagreement between this factory's two selection functions (rank_commission_shortlist() picks Amazon, select_first_launch_opportunity() picks Adobe) rather than forcing agreement, and checks each opportunity against its own real commercial mechanism (outreach-based referral vs. self-service affiliate-link publication) rather than silently coercing one onto the other.",
+    reused: 'commission_engine.py::commercial_flight_control_status(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_flight_control_status', [], req),
+    health: pythonHealthCheck('commercial_flight_control_status'),
+  },
+  {
+    name: 'commercial-control-panel',
+    description: "The Section 10 concise commercial control view -- CURRENT_OPPORTUNITY, EVIDENCE_STATUS, FRESHNESS, COMMISSION_ECONOMICS, CEO_APPROVAL_STATUS, ACTION_READINESS, REAL_COMMISSION_USD, PENDING_COMMISSION, PAYOUT_STATUS, FIRST_REAL_DOLLAR_STATUS, BLOCKERS, LAST_VERIFIED_TIMESTAMP. Pure read-only citation of the Flight-Control Gate + the real commission ledger, no independently computed field.",
+    reused: 'commission_engine.py::commercial_control_panel(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_control_panel', [], req),
+    health: pythonHealthCheck('commercial_control_panel'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

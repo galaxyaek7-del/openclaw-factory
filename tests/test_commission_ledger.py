@@ -2,6 +2,7 @@ import json
 import os
 import tempfile
 import unittest
+from concurrent.futures import ThreadPoolExecutor
 
 import commission_ledger as cl
 
@@ -232,6 +233,60 @@ class TestDuplicateCommissionGuard(unittest.TestCase):
         record = cl.record_commission("p", "o", "CONFIRMED", 100.0, "REAL", evidence="real evidence",
                                        external_transaction_id="txn_shared", ledger_path=other_path)
         self.assertIsNotNone(record)
+
+
+class TestDuplicateCommissionGuardUnderRealConcurrency(unittest.TestCase):
+    """Phase 39 (ADR-236), Section 9. Found via a real, small-scale
+    stress test matching the actual expected workload (near-simultaneous
+    webhook deliveries are a real, documented occurrence, not a
+    hypothetical): the pre-Phase-39 duplicate-check was a check-then-
+    write race with no lock between the read and the write. 10 genuinely
+    concurrent threads recording the identical external_transaction_id
+    produced 3 duplicate REAL records before the fix (_LedgerLock).
+    This test proves the fix holds at both 10x and 25x real thread
+    concurrency -- exactly one real record survives, every single time."""
+
+    def setUp(self):
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.path = os.path.join(self._tmpdir.name, "ledger.jsonl")
+
+    def tearDown(self):
+        self._tmpdir.cleanup()
+
+    def _race(self, n_threads, txn_id):
+        def attempt(_):
+            try:
+                cl.record_commission("p", "o", "CONFIRMED", 100.0, "REAL", evidence="real evidence",
+                                      external_transaction_id=txn_id, ledger_path=self.path)
+                return "SUCCESS"
+            except cl.DuplicateCommissionError:
+                return "BLOCKED"
+        with ThreadPoolExecutor(max_workers=n_threads) as ex:
+            return list(ex.map(attempt, range(n_threads)))
+
+    def test_10_genuinely_concurrent_threads_record_exactly_once(self):
+        results = self._race(10, "txn_race_10")
+        self.assertEqual(results.count("SUCCESS"), 1)
+        self.assertEqual(len(cl.load_ledger(self.path)), 1)
+
+    def test_25_genuinely_concurrent_threads_record_exactly_once(self):
+        results = self._race(25, "txn_race_25")
+        self.assertEqual(results.count("SUCCESS"), 1)
+        self.assertEqual(len(cl.load_ledger(self.path)), 1)
+
+    def test_different_transaction_ids_racing_concurrently_all_succeed(self):
+        def attempt(i):
+            return cl.record_commission("p", "o", "CONFIRMED", 100.0, "REAL", evidence="real evidence",
+                                         external_transaction_id=f"txn_distinct_{i}", ledger_path=self.path)
+        with ThreadPoolExecutor(max_workers=10) as ex:
+            results = list(ex.map(attempt, range(10)))
+        self.assertEqual(len(results), 10)
+        self.assertEqual(len(cl.load_ledger(self.path)), 10)
+
+    def test_lock_file_never_leaks_into_the_real_ledger_data(self):
+        self._race(10, "txn_race_lock_leak")
+        for record in cl.load_ledger(self.path):
+            self.assertNotIn("lock", record)
 
 
 if __name__ == "__main__":
