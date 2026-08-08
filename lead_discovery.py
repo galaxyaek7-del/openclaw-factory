@@ -54,9 +54,60 @@ DEFAULT_LEAD_EVENTS_PATH = _FACTORY_ROOT / "data" / "lead_discovery_events.jsonl
 # SUPPORTED; STALE/UNKNOWN are honest degraded states.
 EVIDENCE_STATES = ("VERIFIED", "SUPPORTED", "THIRD_PARTY_ONLY", "STALE", "CONFLICTING", "UNKNOWN")
 
-LEAD_STATUSES = ("DISCOVERED", "QUALIFIED", "REJECTED", "BLOCKED", "DUPLICATE")
+LEAD_STATUSES = ("DISCOVERED", "QUALIFIED", "PROVISIONAL", "REJECTED", "BLOCKED", "DUPLICATE")
 
+# Phase 37C (ADR-232, 2026-08-08): the 45-day freshness gate is a
+# permanent, non-negotiable constant. The founder's own directive
+# explicitly forbids raising it -- if a future round needs a different
+# number, that requires its own explicit directive, never a silent
+# tuning here. See classify_freshness()/FRESHNESS_STATES below for the
+# fuller Section 4 freshness record, additive to _evidence_status()'s
+# existing STALE_DAYS-driven check (unchanged, still used everywhere
+# it already was, so no Phase 37A test breaks).
 _STALE_DAYS = 45
+FRESHNESS_STATES = ("FRESH", "STALE", "UNKNOWN")
+
+# Phase 37C, Section 3 — explicit source hierarchy. Never treats a
+# lower tier as equivalent to a higher one; used only to annotate
+# evidence quality, never to silently override the real freshness gate.
+EVIDENCE_HIERARCHY = (
+    "OFFICIAL_COMPANY_OR_PROJECT_SOURCE",
+    "OFFICIAL_GITHUB_REPO_ISSUE_OR_RELEASE",
+    "OFFICIAL_API_OR_STRUCTURED_SOURCE",
+    "STACK_OVERFLOW_TECHNICAL_QA",
+    "REPUTABLE_THIRD_PARTY_SOURCE",
+    "GENERIC_BLOG_OR_FORUM",
+)
+# Real, disclosed per-source_type mapping onto that hierarchy (1-indexed
+# tier number, lower = higher authority). hacker_news posts are general
+# community discussion, not an official source -- tier 5, never elevated.
+SOURCE_TIER = {"github_issues": 2, "stack_overflow": 4, "hacker_news": 5}
+
+
+def classify_freshness(published_at, now=None):
+    """Phase 37C, Section 4 -- the fuller freshness record every
+    evidence item must carry. Reuses commission_engine's own real
+    freshness math (_freshness_from_last_verified) for the actual
+    date comparison rather than a second date-parsing implementation;
+    adds the explicit age_days/retrieved_at/published_or_updated_at
+    fields and the FRESH/STALE/UNKNOWN vocabulary this phase's
+    directive names literally (distinct from _evidence_status()'s
+    SUPPORTED/STALE/UNKNOWN, which stays unchanged for backward
+    compatibility with Phase 37A). Never guesses a date: a missing or
+    unparseable timestamp is always UNKNOWN, never defaulted to FRESH."""
+    now = now or datetime.now(timezone.utc)
+    retrieved_at = now.isoformat()
+    if not published_at:
+        return {"published_or_updated_at": None, "retrieved_at": retrieved_at, "age_days": None, "freshness_status": "UNKNOWN"}
+    try:
+        dt = datetime.fromisoformat(str(published_at).replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+    except ValueError:
+        return {"published_or_updated_at": str(published_at), "retrieved_at": retrieved_at, "age_days": None, "freshness_status": "UNKNOWN"}
+    age_days = (now - dt).days
+    status = "FRESH" if age_days <= _STALE_DAYS else "STALE"
+    return {"published_or_updated_at": dt.isoformat(), "retrieved_at": retrieved_at, "age_days": age_days, "freshness_status": status}
 
 
 def _now_iso(now=None):
@@ -178,22 +229,55 @@ def _lead_from_github_issue(hit, opportunity_id=None, now=None):
     }
 
 
-_HIT_ADAPTERS = {"hacker_news": _lead_from_hn_hit, "github_issues": _lead_from_github_issue}
+def _lead_from_stack_overflow_hit(hit, opportunity_id=None, now=None):
+    """Phase 37C (ADR-232) -- the 3rd real source. Real Stack Exchange
+    API raw item shape (creation_date is a real, precise Unix
+    timestamp -- more trustworthy than either prior source's own
+    timestamp field)."""
+    owner = hit.get("owner") or {}
+    display_name = owner.get("display_name")
+    title = hit.get("title") or ""
+    tags = hit.get("tags") or []
+    problem_signal = (title + " tags: " + ", ".join(tags)).strip()
+    source_url = hit.get("link")
+    creation_date = hit.get("creation_date")
+    source_timestamp = datetime.fromtimestamp(creation_date, tz=timezone.utc).isoformat() if creation_date else None
+    contact_channel = owner.get("link")
+
+    return {
+        "company_name": "UNKNOWN -- Stack Overflow questions are individual-authored, no real company field in this source",
+        "website": None,
+        "industry": "UNKNOWN", "country": "UNKNOWN",
+        "company_size_if_available": "UNKNOWN", "business_type": "UNKNOWN",
+        "contact_name_if_public_and_necessary": display_name,
+        "contact_role_if_public": "UNKNOWN -- Stack Overflow does not expose a role field",
+        "contact_channel": contact_channel,
+        "source_url": source_url, "source_type": "stack_overflow", "source_timestamp": source_timestamp,
+        "problem_signal": problem_signal[:500],
+        "opportunity_id": opportunity_id,
+        "_raw_source_ref": hit.get("question_id"),
+    }
+
+
+_HIT_ADAPTERS = {"hacker_news": _lead_from_hn_hit, "github_issues": _lead_from_github_issue, "stack_overflow": _lead_from_stack_overflow_hit}
 
 
 def discover_raw_candidates(query, source="hacker_news", max_results=10, opportunity_id=None,
-                             hn_query_fn=None, github_query_fn=None, now=None):
+                             hn_query_fn=None, github_query_fn=None, stack_overflow_query_fn=None, now=None):
     """Real query against a real, legitimate, keyless public API.
     Injectable query functions exist purely for test isolation (no live
     network call in the test suite) -- default to the real, existing
     market_intelligence_engine functions, never a second implementation."""
     hn_query_fn = hn_query_fn or mie._query_hn_discussions
     github_query_fn = github_query_fn or mie._query_github_issues
+    stack_overflow_query_fn = stack_overflow_query_fn or mie._query_stack_overflow_for_pain
 
     if source == "hacker_news":
         hits, total = hn_query_fn(query, limit=max_results)
     elif source == "github_issues":
         hits, total = github_query_fn(query, limit=max_results)
+    elif source == "stack_overflow":
+        hits, total = stack_overflow_query_fn(query, limit=max_results)
     else:
         return {"ok": False, "reason": f"'{source}' is not a permitted source -- SOURCE_UNAVAILABLE", "leads": []}
 
@@ -283,6 +367,22 @@ def qualify_lead(candidate, opportunity=None, problem_keywords=None, now=None):
         and bool(candidate.get("contact_channel"))
     )
 
+    # Phase 37C (ADR-232), Section 8 -- explicit 3-way QUALIFICATION_STATUS,
+    # additive to the existing `qualifies` bool (unchanged, still ==
+    # QUALIFIED). PROVISIONAL means "meets every real bar except
+    # freshness" -- a real, meaningful middle state, never a way to
+    # sneak a STALE candidate past the 45-day gate (a PROVISIONAL
+    # candidate is still not QUALIFIED, and outreach_adapter.py's own
+    # gates don't treat it any differently from REJECTED).
+    freshness = classify_freshness(candidate.get("source_timestamp"), now=now)
+    close_except_freshness = score >= 2 and bool(matched_keywords) and bool(candidate.get("contact_channel"))
+    if qualifies:
+        qualification_status = "QUALIFIED"
+    elif close_except_freshness and evidence_status == "STALE":
+        qualification_status = "PROVISIONAL"
+    else:
+        qualification_status = "REJECTED"
+
     return {
         "LEAD_SCORE": f"{score}/{max_score} real factors known -- never a fabricated single number",
         "LEAD_SCORE_REASON": reasons,
@@ -296,6 +396,9 @@ def qualify_lead(candidate, opportunity=None, problem_keywords=None, now=None):
         "qualification_score_numeric": score,
         "qualifies": qualifies,
         "evidence_status": evidence_status,
+        "QUALIFICATION_STATUS": qualification_status,
+        "freshness": freshness,
+        "source_tier": SOURCE_TIER.get(candidate.get("source_type")),
     }
 
 
@@ -360,7 +463,8 @@ def add_to_do_not_contact(contact_channel=None, website=None, reason="founder-re
 
 def discover_lead_for_opportunity(opportunity, problem_keywords=None, sources=("hacker_news", "github_issues"),
                                    max_results=5, simulation_only=False, leads_path=None, dnc_path=None,
-                                   events_path=None, hn_query_fn=None, github_query_fn=None, now=None):
+                                   events_path=None, hn_query_fn=None, github_query_fn=None,
+                                   stack_overflow_query_fn=None, now=None):
     """The real Section 2 orchestration: DISCOVER ONE REAL, RELEVANT,
     AUDITABLE PROSPECT. Never mass-scrapes -- caps at max_results per
     source, returns the single best-qualified, non-blocked, non-
@@ -388,7 +492,8 @@ def discover_lead_for_opportunity(opportunity, problem_keywords=None, sources=("
     source_notes = {}
     for source in sources:
         result = discover_raw_candidates(query, source=source, max_results=max_results, opportunity_id=opportunity_id,
-                                          hn_query_fn=hn_query_fn, github_query_fn=github_query_fn, now=now)
+                                          hn_query_fn=hn_query_fn, github_query_fn=github_query_fn,
+                                          stack_overflow_query_fn=stack_overflow_query_fn, now=now)
         if not result.get("ok"):
             source_notes[source] = "SOURCE_UNAVAILABLE"
             continue
