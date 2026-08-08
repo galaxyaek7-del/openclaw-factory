@@ -1634,6 +1634,20 @@ def _commission_daily_brief():
     return build_daily_commercial_brief()
 
 
+def _commission_opportunity_scan():
+    """Golden Hunter periodic commission-opportunity scan (Phase 38b,
+    'Chief Commercial Engineer' directive, ADR-234, 2026-08-08, Section
+    12): discover (real portfolio) -> verify (real verification_status
+    citation) -> score (score_commission_opportunity(), 13 real dims)
+    -> compare (rank_commission_shortlist()'s real ranking) -> recommend
+    (BEST_FIRST_COMMERCIAL_EXPERIMENT). Read-only -- never contacts a
+    prospect, fabricates revenue, or bypasses CEO approval; this
+    dispatch function itself has no side effect beyond the real,
+    disclosed daily-marker write factory_loop.js's own caller performs."""
+    from commission_engine import rank_commission_shortlist
+    return rank_commission_shortlist(top_n=5)
+
+
 def _lead_discovery_status():
     """Lead Discovery (Phase 37A, ADR-230; extended Phase 37C, ADR-232,
     2026-08-08): real, read-only summary of already-persisted
@@ -3622,6 +3636,7 @@ _ENDPOINTS = {
     "commercial_activation_status": _commercial_activation_status,
     "commission_commerce_dashboard": _commission_commerce_dashboard,
     "commission_daily_brief": _commission_daily_brief,
+    "commission_opportunity_scan": _commission_opportunity_scan,
     "lead_discovery_status": _lead_discovery_status,
     "outreach_infrastructure_status": _outreach_infrastructure_status,
     "golden_hunter_rotation_status": _golden_hunter_rotation_status,

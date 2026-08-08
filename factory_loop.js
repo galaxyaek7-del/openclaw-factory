@@ -2128,6 +2128,79 @@ async function maybeGenerateDailyExecutiveDirective(now = new Date()) {
   return { action: 'generated', detail: `تم إنشاء توجيه تنفيذي حقيقي (${result.status}): ${result.action || 'لا إجراء معلَّق'}` };
 }
 
+// ── GOLDEN HUNTER — DAILY COMMISSION OPPORTUNITY SCAN (ADR-234, 2026-08-08) ──
+// Phase 38b ("Chief Commercial Engineer" directive), Section 12: Golden
+// Hunter must periodically discover/verify/score/compare/recommend
+// commission opportunities. Reuses commission_engine.py::
+// rank_commission_shortlist() directly (no new scoring engine) via the
+// same spawn+marker-file daily-gate pattern as every other daily report
+// in this file. Read-only: never contacts a prospect, never fabricates
+// revenue, never bypasses CEO approval -- the dispatch it calls has no
+// side effect beyond this marker write.
+const COMMISSION_OPPORTUNITY_SCAN_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.commission_opportunity_scan_daily_marker');
+
+function runCommissionOpportunityScan({ timeoutMs = 60000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'commission_opportunity_scan'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة commission_opportunity_scan (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من commission_opportunity_scan' });
+          return;
+        }
+        finish({ ok: true, best: result.BEST_FIRST_COMMERCIAL_EXPERIMENT, total: result.total_portfolio_size });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج commission_opportunity_scan: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeRunDailyCommissionOpportunityScan(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(COMMISSION_OPPORTUNITY_SCAN_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم مسح فرص العمولة اليومي بالفعل (${today})` };
+  }
+  const result = await runCommissionOpportunityScan();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(path.dirname(COMMISSION_OPPORTUNITY_SCAN_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(COMMISSION_OPPORTUNITY_SCAN_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ علامة مسح فرص العمولة: ${err.message}` };
+  }
+  return { action: 'generated', detail: `مسح فرص عمولة حقيقي (${result.total} فرصة) — الأفضل: ${result.best || 'لا يوجد مرشَّح مؤهَّل'}` };
+}
+
 // ── ENTERPRISE GROWTH ENGINE — DAILY GROWTH STAGE SNAPSHOT (ADR-159, 2026-07-31) ──
 // The ONE real write path for Growth Stage history: appends the current
 // real Growth Stage to data/growth_stage_snapshots.jsonl. growth_stages.
@@ -3436,6 +3509,13 @@ async function runTick() {
   markStep('executive_brief');
   actions.push({ step: 'executive_brief', ...(await maybeGenerateDailyExecutiveBrief()) });
 
+  // Golden Hunter — Daily Commission Opportunity Scan (ADR-234, 2026-08-08):
+  // same once-per-calendar-day pattern as the report engines around it.
+  // Read-only discover/verify/score/compare/recommend -- never contacts a
+  // prospect, never bypasses CEO approval.
+  markStep('commission_opportunity_scan');
+  actions.push({ step: 'commission_opportunity_scan', ...(await maybeRunDailyCommissionOpportunityScan()) });
+
   // Autonomous Company Evolution Engine, Round 4 (2026-07-29): same
   // once-per-calendar-day pattern as the two report engines immediately
   // above — intake/simulate/decide only, never approve/reject/mark-
@@ -3759,6 +3839,7 @@ module.exports = {
   runEvolutionQueueDailyCycle, maybeGenerateDailyEvolutionQueueIntake,
   runEvolutionOutcomeMeasurementCycle, maybeMeasureEvolutionOutcomes,
   runGenerateDailyExecutiveDirective, maybeGenerateDailyExecutiveDirective,
+  runCommissionOpportunityScan, maybeRunDailyCommissionOpportunityScan,
   runRecordDailyGrowthStageSnapshot, maybeRecordDailyGrowthStageSnapshot,
   runRecordDailyCommercialReadinessSnapshot, maybeRecordDailyCommercialReadinessSnapshot,
   runDailyEvidenceRecordingAudit, maybeRunDailyEvidenceRecordingAudit,
