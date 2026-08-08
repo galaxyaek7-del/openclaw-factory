@@ -1370,6 +1370,25 @@ def _autonomous_scale_recommendations():
     return autonomous_scale_recommendations()
 
 
+def _revenue_operating_system_dashboard():
+    """Global Revenue Operating System, Section 24/35 (ADR-211, Phase
+    21, 2026-08-08): the one real aggregator -- Source of Truth,
+    Revenue Classification, Gross/Net, Currency, Ledger Conformance,
+    Idempotency, Reconciliation, Payment-vs-Revenue, Subscriptions,
+    Commissions, B2B Revenue, Receivables, Payouts, Leakage, Data
+    Quality, Revenue Health -- 16 real sub-reports, computed once each."""
+    from revenue_operating_system import build_revenue_operating_system_dashboard
+    return build_revenue_operating_system_dashboard()
+
+
+def _revenue_leakage_report():
+    """Section 16 (ADR-211): real, mechanical revenue-leakage checks --
+    unpublished-but-sellable products, order/revenue mismatches,
+    duplicate ledger entries, broken attribution."""
+    from revenue_operating_system import revenue_leakage_report
+    return revenue_leakage_report()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3211,6 +3230,8 @@ _ENDPOINTS = {
     "autonomous_daily_score": _autonomous_daily_score,
     "global_commercial_scale_dashboard": _global_commercial_scale_dashboard,
     "autonomous_scale_recommendations": _autonomous_scale_recommendations,
+    "revenue_operating_system_dashboard": _revenue_operating_system_dashboard,
+    "revenue_leakage_report": _revenue_leakage_report,
 }
 
 

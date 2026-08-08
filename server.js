@@ -1925,6 +1925,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('autonomous_scale_recommendations', [], req),
     health: pythonHealthCheck('autonomous_scale_recommendations'),
   },
+  {
+    // Global Revenue Operating System, Section 24/35 (ADR-211, Phase
+    // 21, 2026-08-08).
+    name: 'revenue-operating-system-dashboard',
+    description: "Financial Source of Truth, Revenue Classification (17 named types), Gross vs Net ($0/$0 today, never conflated with profit), Currency (honestly single-USD, NOT_BUILT for multi-currency), Ledger Conformance, Idempotency (real: finance-layer dedup is real via source_ledger_key, raw-ledger-append dedup is honestly NOT_IDEMPOTENT), Reconciliation (relabeled onto the 8 named states, never a 2nd reconciliation engine), Payment-vs-Revenue, Subscriptions/Commissions/B2B/Receivables/Payouts (all honestly $0/NOT_BUILT), Leakage, Data Quality, and an explainable 10-component Revenue Health view with no fabricated composite score.",
+    reused: 'revenue_operating_system.py::build_revenue_operating_system_dashboard(), via mission_control_api.py. Measured live ~4s.',
+    handler: (req) => runPythonServiceCached('revenue_operating_system_dashboard', [], req),
+    health: pythonHealthCheck('revenue_operating_system_dashboard'),
+  },
+  {
+    name: 'revenue-leakage-report',
+    description: "Real, mechanical leakage checks: unpublished-but-sellable products, order/revenue mismatches (via commercial_reconciliation.py), duplicate raw ledger entries, broken attribution -- plus 4 honestly disclosed NOT_ARCHITECTED categories (unclaimed commission, fee auditing, subscription renewal failures, currency anomalies), never a fabricated 'no leakage found.'",
+    reused: 'revenue_operating_system.py::revenue_leakage_report(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('revenue_leakage_report', [], req),
+    health: pythonHealthCheck('revenue_leakage_report'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
