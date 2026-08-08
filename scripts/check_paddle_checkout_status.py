@@ -38,6 +38,7 @@ CLI mirrors scripts/poll_sales.py's stdin/stdout JSON convention:
 
 import argparse
 import json
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -77,10 +78,20 @@ def _read_state(state_path=None):
 
 
 def _write_state(state, state_path=None):
+    """Atomic write -- same tmp-file-then-os.replace pattern as
+    factory_state.py/safe_mode.py. Resilience & Stress Hardening audit
+    (2026-08-08) found this real notification-idempotency state was
+    also written non-atomically; a crash mid-write here has a lower
+    real consequence than the evolution-queue fix (worst case: a
+    forgotten notification, at most one duplicate Telegram message,
+    not a lost financial record) but the fix is the same well-tested
+    4 lines, so it's applied here too."""
     path = Path(state_path) if state_path else DEFAULT_STATE_PATH
     path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
+    tmp_path = path.parent / f"{path.name}.tmp-{os.getpid()}"
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(state, f, ensure_ascii=False, indent=2)
+    os.replace(tmp_path, path)
 
 
 def _build_arabic_message(title, price, checkout_url):
