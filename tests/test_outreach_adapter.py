@@ -175,6 +175,22 @@ class TestCeoApprovalMissingOrWrongScope(AdapterTestCase):
         self.assertEqual(result["reason"], "APPROVAL_SCOPE_MISMATCH")
         self.assertIn("approved_lead_id does not match this draft's lead_id", result["mismatches"])
 
+    def test_wrong_channel_refused(self):
+        """Section 13's named 'wrong channel' adversarial case."""
+        _, draft = self._approved_draft()
+        approval = self._full_approval(draft, approved_channel="linkedin")  # draft's real channel is "email"
+        result = oa.verify_exact_scope_approval(draft, approval, opportunity=OPPORTUNITY, now=self.now)
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["reason"], "APPROVAL_SCOPE_MISMATCH")
+        self.assertIn("approved_channel does not match this draft's channel", result["mismatches"])
+
+    def test_wrong_partner_id_refused(self):
+        _, draft = self._approved_draft()
+        approval = self._full_approval(draft, approved_partner_id="a-completely-different-partner")
+        result = oa.verify_exact_scope_approval(draft, approval, opportunity=OPPORTUNITY, now=self.now)
+        self.assertFalse(result["ok"])
+        self.assertIn("approved_partner_id does not match the opportunity's real partner_id", result["mismatches"])
+
 
 class TestApprovalExpiration(AdapterTestCase):
     """Phase 38b ('Chief Commercial Engineer' directive, ADR-234), Section 8."""

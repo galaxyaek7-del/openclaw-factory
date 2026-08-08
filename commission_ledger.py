@@ -35,6 +35,17 @@ class AntiFabricationError(ValueError):
     the caller must supply real evidence or use TEST/SIMULATION."""
 
 
+class DuplicateCommissionError(ValueError):
+    """Phase 38b ('Chief Commercial Engineer' directive, ADR-234,
+    2026-08-08), Section 13's named 'duplicate commission' adversarial
+    case. Raised when a REAL commission with a given
+    external_transaction_id is recorded a second time -- the same real
+    transaction must never double-count as two separate real
+    commission events. Scoped to REAL only: TEST/SIMULATION records
+    carry no real financial claim, so a repeated test transaction_id
+    is harmless and never blocked."""
+
+
 def _now_iso(now=None):
     return (now or datetime.now(timezone.utc)).isoformat()
 
@@ -85,6 +96,16 @@ def record_commission(partner_id, opportunity_id, commission_status, gross_commi
             "A REAL commission cannot be CONFIRMED or PAID without a real, meaningful external_transaction_id "
             "(whitespace-only or trivially short values are rejected)."
         )
+
+    if environment == "REAL" and _is_meaningful(external_transaction_id):
+        existing = [r for r in load_ledger(ledger_path) if r.get("environment") == "REAL" and r.get("external_transaction_id") == external_transaction_id]
+        if existing:
+            raise DuplicateCommissionError(
+                f"A REAL commission with external_transaction_id={external_transaction_id!r} already exists "
+                f"(commission_id={existing[0]['commission_id']}) -- the same real transaction must never be "
+                f"recorded twice. If this is a real, separate refund/reversal/correction, use the appropriate "
+                f"commission_status on the existing record's own follow-up event instead of a new record."
+            )
 
     net_commission = gross_commission - fees
     record = {

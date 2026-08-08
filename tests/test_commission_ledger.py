@@ -179,5 +179,60 @@ class TestFirstRealDollarStatus(unittest.TestCase):
         self.assertEqual(result["REAL_PAYOUTS"], 0)
 
 
+class TestDuplicateCommissionGuard(unittest.TestCase):
+    """Phase 38b ('Chief Commercial Engineer' directive, ADR-234), Section 13."""
+
+    def setUp(self):
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.path = os.path.join(self._tmpdir.name, "ledger.jsonl")
+
+    def tearDown(self):
+        self._tmpdir.cleanup()
+
+    def test_same_real_transaction_id_recorded_twice_raises(self):
+        cl.record_commission("p", "o", "CONFIRMED", 100.0, "REAL", evidence="real evidence 1",
+                              external_transaction_id="txn_1", ledger_path=self.path)
+        with self.assertRaises(cl.DuplicateCommissionError):
+            cl.record_commission("p", "o", "CONFIRMED", 100.0, "REAL", evidence="real evidence 2",
+                                  external_transaction_id="txn_1", ledger_path=self.path)
+
+    def test_duplicate_check_never_writes_the_second_record(self):
+        cl.record_commission("p", "o", "CONFIRMED", 100.0, "REAL", evidence="real evidence 1",
+                              external_transaction_id="txn_1", ledger_path=self.path)
+        try:
+            cl.record_commission("p", "o", "CONFIRMED", 999.0, "REAL", evidence="real evidence 2",
+                                  external_transaction_id="txn_1", ledger_path=self.path)
+        except cl.DuplicateCommissionError:
+            pass
+        records = cl.load_ledger(self.path)
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["gross_commission"], 100.0)
+
+    def test_same_transaction_id_in_test_environment_never_blocked(self):
+        """TEST/SIMULATION records carry no real financial claim -- a
+        repeated test transaction_id is harmless."""
+        cl.record_commission("p", "o", "PAID", 100.0, "TEST", external_transaction_id="txn_test", ledger_path=self.path)
+        cl.record_commission("p", "o", "PAID", 100.0, "TEST", external_transaction_id="txn_test", ledger_path=self.path)
+        records = cl.load_ledger(self.path)
+        self.assertEqual(len(records), 2)
+
+    def test_different_real_transaction_ids_both_succeed(self):
+        cl.record_commission("p", "o", "CONFIRMED", 100.0, "REAL", evidence="real evidence 1",
+                              external_transaction_id="txn_a", ledger_path=self.path)
+        cl.record_commission("p", "o", "CONFIRMED", 200.0, "REAL", evidence="real evidence 2",
+                              external_transaction_id="txn_b", ledger_path=self.path)
+        records = cl.load_ledger(self.path)
+        self.assertEqual(len(records), 2)
+
+    def test_duplicate_check_does_not_apply_across_different_ledgers(self):
+        other_path = os.path.join(self._tmpdir.name, "other_ledger.jsonl")
+        cl.record_commission("p", "o", "CONFIRMED", 100.0, "REAL", evidence="real evidence",
+                              external_transaction_id="txn_shared", ledger_path=self.path)
+        # A different real ledger file is a genuinely separate real store -- no cross-file dedup claimed.
+        record = cl.record_commission("p", "o", "CONFIRMED", 100.0, "REAL", evidence="real evidence",
+                                       external_transaction_id="txn_shared", ledger_path=other_path)
+        self.assertIsNotNone(record)
+
+
 if __name__ == "__main__":
     unittest.main()
