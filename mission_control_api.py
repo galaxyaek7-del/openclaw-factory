@@ -1480,6 +1480,25 @@ def _commercial_operations_simulations():
     return run_all_commercial_simulations()
 
 
+def _commercial_autonomy_dashboard():
+    """Commercial Autonomy & Revenue Optimization Engine, Section
+    34/41 (ADR-217, Phase 27, 2026-08-08): the one real aggregator --
+    Forecast, Scenario Engine, Risk, Revenue Leakage, Margin
+    Protection, Anomaly Response, Autonomous Recommendations, Resource
+    Allocation, Queue, Prediction vs Reality, Experiment Learning,
+    Execution/Rollback status, Commercial Health Score."""
+    from commercial_autonomy_engine import build_commercial_autonomy_dashboard
+    return build_commercial_autonomy_dashboard()
+
+
+def _commercial_autonomy_simulations():
+    """Section 40 (ADR-217): 10 named commercial simulations -- clearly
+    HYPOTHETICAL except where real, live data is reused. Never written
+    to any ledger."""
+    from commercial_autonomy_engine import run_all_phase27_simulations
+    return run_all_phase27_simulations()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3333,6 +3352,8 @@ _ENDPOINTS = {
     "distribution_network_health": _distribution_network_health,
     "commercial_operations_dashboard": _commercial_operations_dashboard,
     "commercial_operations_simulations": _commercial_operations_simulations,
+    "commercial_autonomy_dashboard": _commercial_autonomy_dashboard,
+    "commercial_autonomy_simulations": _commercial_autonomy_simulations,
 }
 
 

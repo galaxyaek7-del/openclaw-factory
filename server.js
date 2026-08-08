@@ -2021,6 +2021,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('commercial_operations_simulations', [], req),
     health: pythonHealthCheck('commercial_operations_simulations'),
   },
+  {
+    // Commercial Autonomy & Revenue Optimization Engine, Section 34/41
+    // (ADR-217, Phase 27, 2026-08-08).
+    name: 'commercial-autonomy-dashboard',
+    description: "Commercial Forecast, Scenario Engine (real BASE/UPSIDE/DOWNSIDE/STRESS cases off a real revenue baseline, all HYPOTHETICAL PROJECTION-labeled), Risk Engine, Revenue Leakage Tasks, Margin Protection, Anomaly Response, Autonomous Recommendations (real, evidence-cited, never fabricated), Resource Allocation, Commercial Queue (real NOW/NEXT/HUMAN_REVIEW/BLOCKED states derived from real authorization levels), Prediction vs Reality, Experiment Learning, Execution/Rollback status (0 real automated executions, 0 real rollbacks), and an 11-component Commercial Health Score with no fabricated composite.",
+    reused: 'commercial_autonomy_engine.py::build_commercial_autonomy_dashboard(), via mission_control_api.py. Measured live ~18-19s.',
+    handler: (req) => runPythonServiceCached('commercial_autonomy_dashboard', [], req, 60000),
+    health: pythonHealthCheck('commercial_autonomy_dashboard'),
+  },
+  {
+    name: 'commercial-autonomy-simulations',
+    description: "10 named commercial simulations (Sections 1-10) -- real arithmetic over disclosed hypothetical assumptions (margin/fee/refund-rate scenarios), Simulation 5/7/9/10 reuse real, live concentration/AI-Council/payout/partner data. Verified by a regression test that none ever writes to a real ledger.",
+    reused: 'commercial_autonomy_engine.py::run_all_phase27_simulations(), via mission_control_api.py. Measured live ~19s.',
+    handler: (req) => runPythonServiceCached('commercial_autonomy_simulations', [], req, 60000),
+    health: pythonHealthCheck('commercial_autonomy_simulations'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
