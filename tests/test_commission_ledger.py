@@ -131,5 +131,53 @@ class TestRealCommissionSummary(unittest.TestCase):
         self.assertEqual(summary["simulation_records"], 1)
 
 
+class TestFirstRealDollarStatus(unittest.TestCase):
+    """Phase 38b ('Chief Commercial Engineer' directive, ADR-234), Section 11."""
+
+    def setUp(self):
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.path = os.path.join(self._tmpdir.name, "ledger.jsonl")
+
+    def tearDown(self):
+        self._tmpdir.cleanup()
+
+    def test_false_on_empty_ledger(self):
+        result = cl.first_real_dollar_status(ledger_path=self.path)
+        self.assertFalse(result["FIRST_REAL_DOLLAR"])
+        self.assertEqual(result["REAL_REVENUE"], 0)
+        self.assertEqual(result["REAL_COMMISSION_REVENUE"], 0)
+        self.assertEqual(result["REAL_CUSTOMERS"], 0)
+        self.assertEqual(result["REAL_DEALS"], 0)
+        self.assertEqual(result["REAL_PAYOUTS"], 0)
+
+    def test_false_when_only_test_or_simulation_records_exist(self):
+        cl.record_commission("p", "o", "PAID", 500.0, "TEST", ledger_path=self.path)
+        cl.record_commission("p", "o", "PAID", 500.0, "SIMULATION", ledger_path=self.path)
+        result = cl.first_real_dollar_status(ledger_path=self.path)
+        self.assertFalse(result["FIRST_REAL_DOLLAR"])
+
+    def test_false_when_real_but_only_expected_or_pending(self):
+        cl.record_commission("p", "o", "EXPECTED", 500.0, "REAL", evidence="real evidence", ledger_path=self.path)
+        result = cl.first_real_dollar_status(ledger_path=self.path)
+        self.assertFalse(result["FIRST_REAL_DOLLAR"])
+        self.assertEqual(result["REAL_REVENUE"], 0)
+
+    def test_true_only_after_real_confirmed_with_evidence(self):
+        cl.record_commission("p", "o", "CONFIRMED", 500.0, "REAL", evidence="real webhook event",
+                              external_transaction_id="txn_real_1", customer_id="cust_1", deal_id="deal_1", ledger_path=self.path)
+        result = cl.first_real_dollar_status(ledger_path=self.path)
+        self.assertTrue(result["FIRST_REAL_DOLLAR"])
+        self.assertEqual(result["REAL_REVENUE"], 500.0)
+        self.assertEqual(result["REAL_CUSTOMERS"], 1)
+        self.assertEqual(result["REAL_DEALS"], 1)
+        self.assertEqual(len(result["evidence"]), 1)
+
+    def test_real_payouts_only_counts_paid_not_confirmed(self):
+        cl.record_commission("p", "o", "CONFIRMED", 500.0, "REAL", evidence="real evidence", external_transaction_id="txn_1", ledger_path=self.path)
+        result = cl.first_real_dollar_status(ledger_path=self.path)
+        self.assertTrue(result["FIRST_REAL_DOLLAR"])
+        self.assertEqual(result["REAL_PAYOUTS"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()
