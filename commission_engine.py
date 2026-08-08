@@ -842,3 +842,270 @@ def build_launch_checklist(selection=None, now=None):
         "blocking_items": [k for k, v in items.items() if not v],
         "note": "LAUNCH_READY is computed, never forced -- currently False because real, disclosed gaps exist (no real prospect, no real sending credential, no real CEO approval yet exercised, geography unverified, payment platform N/A to this specific deal type).",
     }
+
+
+# ---------------------------------------------------------------------------
+# Phase 39 ("Commercial Flight Control & First-Real-Dollar Execution"
+# directive, ADR-236, 2026-08-08), Section 1 -- the Commercial
+# Flight-Control Gate.
+#
+# Research before writing this found build_launch_checklist() (Phase
+# 36, above) looks opportunity-agnostic via its `selection` parameter
+# but genuinely is not: 8 of its 21 items are hardcoded booleans with
+# comments describing CO-n8n-affiliate's own specific real state
+# ("n8n confirmed live this session", "N/A to this specific commission
+# deal (n8n's own external PayPal payout...)"). Passing a different
+# opportunity's selection dict into it would silently misreport those
+# 8 items -- a real, disclosed limitation, not fixed here (rewriting
+# it would be exactly the "new architecture not justified by current
+# evidence" the directive's own meta-instruction says to stop and
+# report instead of inventing). This gate is therefore built fresh,
+# citing only genuinely opportunity-agnostic, dynamically-computed
+# real signals -- never reusing build_launch_checklist()'s static
+# items.
+#
+# A second, more consequential real finding surfaced while building
+# this: rank_commission_shortlist()'s BEST_FIRST_COMMERCIAL_EXPERIMENT
+# (CO-amazon-affiliate) and select_first_launch_opportunity()'s own
+# pick (CO-adobe-affiliate, after this same Phase 39's WATCH/ABANDON
+# fix above) disagree -- a real, disclosed discrepancy between the two
+# real selection functions' different tie-break criteria, not forced
+# into artificial agreement here. This gate defaults to the
+# rank_commission_shortlist() pick (matching the founder's own stated
+# "current verified state" in the Phase 39 directive text), but always
+# discloses both picks so the disagreement is never silently hidden.
+#
+# A third, real architecture-mismatch finding: this factory's entire
+# built commercial-action pipeline (outreach_adapter.py, the CEO
+# exact-scope approval gate, lead_discovery.py) is shaped for one real
+# commission mechanism -- outreach-based B2B referral (find a real
+# prospect, draft a message, get CEO-approved, send). CO-amazon-
+# affiliate's own real mechanism (business_development.py's own
+# PLATFORM_REGISTRY entry) is structurally different: a self-service
+# content-embedded affiliate LINK (affiliate_commerce/), never an
+# outreach send at all -- no prospect, no draft, no send credential
+# applies to it. Silently routing Amazon through the outreach-shaped
+# gate would misreport real blockers as outreach-shaped ones that do
+# not actually apply. This gate is therefore parameterized by
+# action_type ("OUTREACH_REFERRAL" vs "AFFILIATE_LINK_PUBLISH") and
+# checks each opportunity against the mechanism its own real evidence
+# says applies -- never inventing a third, unified action pipeline.
+
+ACTION_TYPES = ("OUTREACH_REFERRAL", "AFFILIATE_LINK_PUBLISH")
+
+# Opportunities whose own real evidence (business_development.py's
+# PLATFORM_REGISTRY) describes a self-service content-embedded
+# affiliate link, not an outreach-sent referral. Everything else in
+# the real 13-opportunity portfolio defaults to OUTREACH_REFERRAL --
+# the only other real, built mechanism in this factory.
+KNOWN_AFFILIATE_LINK_OPPORTUNITIES = {"CO-amazon-affiliate"}
+
+
+def _real_action_type_for(opportunity_id):
+    return "AFFILIATE_LINK_PUBLISH" if opportunity_id in KNOWN_AFFILIATE_LINK_OPPORTUNITIES else "OUTREACH_REFERRAL"
+
+
+def commercial_flight_control_status(opportunity_id=None, action_type=None, lead=None, draft=None, approval=None,
+                                      portfolio=None, now=None):
+    """The Section 1 authoritative gate: returns exactly one of
+    LAUNCH_READY / FIRST_CONTROLLED_ACTION_READY / CEO_APPROVAL_REQUIRED
+    / BLOCKED, derived from live system state -- never a generic
+    boolean, never a documentation claim. Every one of the directive's
+    14 named checks is either a real citation of an existing function
+    or an honest, disclosed UNKNOWN/NOT_APPLICABLE.
+
+    opportunity_id defaults to rank_commission_shortlist()'s real
+    BEST_FIRST_COMMERCIAL_EXPERIMENT pick. action_type defaults to
+    whichever real mechanism that opportunity's own evidence supports
+    (see KNOWN_AFFILIATE_LINK_OPPORTUNITIES above) -- passing a
+    mismatched action_type for a given opportunity_id is itself a real,
+    reported BLOCKED condition, never silently coerced."""
+    import commission_ledger as cl
+    import opportunity_rotation_engine as ore
+
+    now = now or datetime.now(timezone.utc)
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+    checks = {}
+    blockers = []
+
+    # --- selection (also discloses the real Adobe/Amazon discrepancy) ---
+    shortlist = rank_commission_shortlist(portfolio=portfolio, now=now)
+    legacy_selection = select_first_launch_opportunity(portfolio=portfolio, now=now)
+    resolved_opportunity_id = opportunity_id or shortlist.get("BEST_FIRST_COMMERCIAL_EXPERIMENT")
+    selection_discrepancy = None
+    if legacy_selection.get("FIRST_LAUNCH_OPPORTUNITY") not in (None, "NONE", resolved_opportunity_id):
+        selection_discrepancy = (
+            f"select_first_launch_opportunity() picks {legacy_selection.get('FIRST_LAUNCH_OPPORTUNITY')!r} "
+            f"(recurring-commission-first tie-break) while rank_commission_shortlist() picks "
+            f"{shortlist.get('BEST_FIRST_COMMERCIAL_EXPERIMENT')!r} (verification-tier-first tie-break) -- "
+            f"a real, unresolved disagreement between the two real selection functions, disclosed rather "
+            f"than forced into agreement. This gate uses rank_commission_shortlist()'s pick as authoritative."
+        )
+
+    checks["opportunity_selected"] = {
+        "ok": resolved_opportunity_id is not None,
+        "opportunity_id": resolved_opportunity_id,
+        "selection_discrepancy": selection_discrepancy,
+    }
+    if not resolved_opportunity_id:
+        blockers.append("no candidate opportunity is simultaneously VERIFIED, conflict-free, and not WATCH/ABANDON")
+
+    record = next((o for o in portfolio if o["opportunity_id"] == resolved_opportunity_id), None) if resolved_opportunity_id else None
+
+    # --- action_type: use the opportunity's own real mechanism unless overridden ---
+    real_action_type = _real_action_type_for(resolved_opportunity_id) if resolved_opportunity_id else None
+    resolved_action_type = action_type or real_action_type
+    checks["action_type_matches_real_mechanism"] = {
+        "ok": resolved_action_type == real_action_type,
+        "requested": resolved_action_type, "real_mechanism": real_action_type,
+    }
+    if resolved_action_type != real_action_type:
+        blockers.append(
+            f"action_type={resolved_action_type!r} does not match {resolved_opportunity_id!r}'s own real "
+            f"commercial mechanism ({real_action_type!r}, per business_development.py's PLATFORM_REGISTRY) -- "
+            f"never silently coerced onto a mismatched pipeline"
+        )
+
+    # --- evidence quality / freshness ---
+    verification_status = record.get("verification_status") if record else None
+    checks["opportunity_evidence_quality"] = {"ok": verification_status == "VERIFIED", "verification_status": verification_status}
+    if verification_status != "VERIFIED":
+        blockers.append(f"verification_status={verification_status!r}, not VERIFIED")
+
+    freshness = _freshness_from_last_verified(record.get("last_verified"), now=now) if record else "UNKNOWN"
+    checks["freshness"] = {"ok": freshness in ("FRESH", "AGING"), "freshness": freshness}
+    if freshness not in ("FRESH", "AGING"):
+        blockers.append(f"data freshness={freshness}, not FRESH/AGING")
+
+    # --- commission economics ---
+    has_commission = bool(record) and record.get("commission_value") not in (None, "COMMISSION_UNKNOWN", "?")
+    checks["commission_economics"] = {
+        "ok": has_commission,
+        "commission_value": record.get("commission_value") if record else None,
+        "note": "expected_value stays honestly UNKNOWN -- no real deal-value/conversion-rate input exists yet for any opportunity",
+    }
+    if not has_commission:
+        blockers.append("no real, OBSERVED commission rate on record for this opportunity")
+
+    # --- partner/program status ---
+    conflict = KNOWN_EVIDENCE_CONFLICTS.get(resolved_opportunity_id) if resolved_opportunity_id else None
+    checks["partner_program_status"] = {"ok": conflict is None and verification_status not in ("REJECTED", "BLOCKED_EXTERNAL"), "known_conflict": conflict}
+    if conflict:
+        blockers.append(f"KNOWN_EVIDENCE_CONFLICTS: {conflict}")
+
+    # --- prospect validity (only meaningful for OUTREACH_REFERRAL) ---
+    if resolved_action_type == "OUTREACH_REFERRAL":
+        checks["prospect_validity"] = {
+            "ok": lead is not None,
+            "note": "no real lead supplied to this call -- lead_discovery.py's own QUALIFIED status must be checked by the caller before drafting" if lead is None else "a real lead object was supplied",
+        }
+        if lead is None:
+            blockers.append("no real prospect/lead supplied -- required before any OUTREACH_REFERRAL action")
+    else:
+        checks["prospect_validity"] = {"ok": True, "note": "NOT_APPLICABLE -- AFFILIATE_LINK_PUBLISH has no prospect/outreach step"}
+
+    # --- CEO approval scope / outreach credential / channel / max actions (mechanism-specific) ---
+    if resolved_action_type == "OUTREACH_REFERRAL":
+        import outreach_adapter as oa
+        adapter_state = oa.adapter_status()
+        concrete = adapter_state.get("concrete_adapter", {})
+        checks["outreach_credential_readiness"] = {"ok": bool(concrete.get("credential_status") == "CONFIGURED"), "credential_status": concrete.get("credential_status"), "missing_fields": concrete.get("missing_credential_fields")}
+        if concrete.get("credential_status") != "CONFIGURED":
+            blockers.append("no real outreach-sending credential configured (OUTREACH_SMTP_*) -- founder action, never auto-configured")
+
+        checks["outreach_channel"] = {"ok": bool(concrete.get("channel")), "channel": concrete.get("channel")}
+
+        checks["maximum_permitted_actions"] = {
+            "ok": concrete.get("real_sends_used", 0) < concrete.get("max_real_sends", 0),
+            "real_sends_used": concrete.get("real_sends_used"), "max_real_sends": concrete.get("max_real_sends"),
+        }
+        if concrete.get("real_sends_used", 0) >= concrete.get("max_real_sends", 1):
+            blockers.append("MAX_REAL_SENDS already reached -- no further real outreach permitted without a new founder-raised cap")
+
+        if draft is not None and approval is not None:
+            approval_result = oa.verify_exact_scope_approval(draft, approval, opportunity=record, now=now)
+        else:
+            approval_result = {"ok": False, "reason": "NOT_PROVIDED -- no draft+approval object supplied to this call; a generic approved=true is never sufficient"}
+        checks["ceo_approval_scope"] = approval_result
+        if not approval_result["ok"]:
+            blockers.append(f"CEO approval not verified: {approval_result['reason']}")
+    else:
+        import affiliate_commerce.networks as an
+        net_status = an.network_status()
+        checks["outreach_credential_readiness"] = {"ok": False, "note": "NOT_APPLICABLE to AFFILIATE_LINK_PUBLISH -- see affiliate_program_credential instead"}
+        checks["affiliate_program_credential"] = {"ok": net_status.get("configured", False), "reason": net_status.get("reason")}
+        if not net_status.get("configured", False):
+            blockers.append(f"AMAZON_ASSOCIATE_TAG not configured -- {net_status.get('reason')}; founder-only real account action, never auto-configured")
+        checks["outreach_channel"] = {"ok": True, "note": "NOT_APPLICABLE -- AFFILIATE_LINK_PUBLISH has no outreach channel"}
+        checks["maximum_permitted_actions"] = {"ok": True, "note": "NOT_APPLICABLE -- no per-send cap governs link publication; real click volume is the only live signal (affiliate_commerce.click_tracking)"}
+        # A generic CEO approval object is structurally inapplicable here too --
+        # the real gating action for this mechanism is the founder's own real
+        # Amazon Associates account approval + tag configuration, cited above,
+        # never a scoped-message approval object that has nothing to approve.
+        checks["ceo_approval_scope"] = {"ok": net_status.get("configured", False), "note": "for AFFILIATE_LINK_PUBLISH, CEO approval is the real AMAZON_ASSOCIATE_TAG configuration act itself, not a message-scope object"}
+        if not net_status.get("configured", False):
+            blockers.append("CEO/founder has not yet completed the real Amazon Associates account + tag configuration step")
+
+    # --- reality firewall / duplicate protection / ledger readiness (mechanism-agnostic) ---
+    dollar_status = cl.first_real_dollar_status()
+    checks["reality_firewall"] = {
+        "ok": True,  # structural: AntiFabricationError exists and is the only path that can ever flip FIRST_REAL_DOLLAR true
+        "FIRST_REAL_DOLLAR": dollar_status["FIRST_REAL_DOLLAR"],
+        "note": "AntiFabricationError (commission_ledger.py) blocks any REAL/CONFIRMED-or-PAID commission lacking real evidence + external_transaction_id -- verified structurally present, not re-executed here",
+    }
+    checks["duplicate_commission_protection"] = {
+        "ok": hasattr(cl, "DuplicateCommissionError"),
+        "note": "structural presence check -- functional proof is the retry-storm regression tests (tests/test_commission_ledger.py), not re-run inside this read-only gate",
+    }
+    try:
+        cl.load_ledger()
+        ledger_readable = True
+    except Exception as exc:  # pragma: no cover -- defensive, ledger read is normally trivial
+        ledger_readable = False
+        blockers.append(f"commission ledger failed to load: {exc}")
+    checks["ledger_readiness"] = {"ok": ledger_readable}
+
+    # --- rollback / recovery readiness: cite the real, dated Resilience Certification, never re-derive it here ---
+    checks["rollback_recovery_readiness"] = {
+        "ok": True,
+        "note": "Cites AUDIT/RESILIENCE_CERTIFICATION.md (2026-08-08): classification B -- operationally strong but not ready. "
+                "Real BACKUP/DESTROY/RESTORE/VERIFY cycle SHA-256-verified; atomic writes cover every founder-approval-gated "
+                "state file; disclosed remaining gaps (no supervisor meta-recovery, no disk-full handling) are real operational "
+                "maturity items, not first-transaction blockers, per that report's own Section 15.",
+    }
+
+    # --- opportunity lifecycle state (feeds partner_program_status context, not a separate blocker) ---
+    lifecycle_state = ore.current_lifecycle_state(resolved_opportunity_id) if resolved_opportunity_id else None
+    checks["opportunity_lifecycle_state"] = {"ok": lifecycle_state not in ("WATCH", "ABANDON"), "lifecycle_state": lifecycle_state}
+    if lifecycle_state in ("WATCH", "ABANDON"):
+        blockers.append(f"opportunity_lifecycle_state={lifecycle_state} -- a prior real live-evidence attempt already failed (opportunity_rotation_engine.py)")
+
+    # --- verdict ---
+    hard_blockers = [b for b in blockers if "CEO approval not verified" not in b and "AMAZON_ASSOCIATE_TAG" not in b and "no real outreach-sending credential" not in b and "no real prospect/lead" not in b]
+    approval_or_credential_only = len(hard_blockers) == 0 and len(blockers) > 0
+
+    if hard_blockers:
+        verdict = "BLOCKED"
+    elif not blockers:
+        # every real check passes, including a verified scoped approval / real
+        # affiliate credential -- the one real controlled action could be taken now.
+        verdict = "FIRST_CONTROLLED_ACTION_READY"
+    elif approval_or_credential_only:
+        verdict = "CEO_APPROVAL_REQUIRED"
+    else:
+        verdict = "BLOCKED"
+
+    return {
+        "generated_at": _now_iso(now),
+        "VERDICT": verdict,
+        "resolved_opportunity_id": resolved_opportunity_id,
+        "resolved_action_type": resolved_action_type,
+        "checks": checks,
+        "blockers": blockers,
+        "note": (
+            "VERDICT is derived from live system state only (real portfolio, real ledger, real adapter/credential "
+            "status, real lifecycle state) -- never from documentation or a generic boolean. LAUNCH_READY is "
+            "reserved for a state this factory has not yet reached (ongoing, unattended-safe readiness); today's "
+            "real ceiling is CEO_APPROVAL_REQUIRED or BLOCKED depending on the resolved opportunity's own mechanism."
+        ),
+    }

@@ -445,5 +445,86 @@ class TestBuildLaunchChecklist(unittest.TestCase):
         self.assertIn("sending_infrastructure_ready", result["blocking_items"])
 
 
+class TestCommercialFlightControlStatus(unittest.TestCase):
+    """Phase 39 (ADR-236), Section 1 -- the authoritative gate."""
+
+    def test_returns_one_of_exactly_four_named_verdicts(self):
+        result = ce.commercial_flight_control_status()
+        self.assertIn(result["VERDICT"], ("LAUNCH_READY", "FIRST_CONTROLLED_ACTION_READY", "CEO_APPROVAL_REQUIRED", "BLOCKED"))
+
+    def test_never_returns_a_bare_boolean(self):
+        result = ce.commercial_flight_control_status()
+        self.assertIsInstance(result["VERDICT"], str)
+        self.assertNotIsInstance(result["VERDICT"], bool)
+
+    def test_default_call_resolves_to_rank_commission_shortlists_pick(self):
+        shortlist = ce.rank_commission_shortlist()
+        result = ce.commercial_flight_control_status()
+        self.assertEqual(result["resolved_opportunity_id"], shortlist["BEST_FIRST_COMMERCIAL_EXPERIMENT"])
+
+    def test_discloses_the_real_adobe_amazon_selection_discrepancy(self):
+        result = ce.commercial_flight_control_status()
+        self.assertIsNotNone(result["checks"]["opportunity_selected"]["selection_discrepancy"])
+
+    def test_amazon_resolves_to_affiliate_link_publish_not_outreach(self):
+        result = ce.commercial_flight_control_status(opportunity_id="CO-amazon-affiliate")
+        self.assertEqual(result["resolved_action_type"], "AFFILIATE_LINK_PUBLISH")
+
+    def test_mismatched_action_type_is_never_silently_coerced(self):
+        result = ce.commercial_flight_control_status(opportunity_id="CO-amazon-affiliate", action_type="OUTREACH_REFERRAL")
+        self.assertEqual(result["VERDICT"], "BLOCKED")
+        self.assertFalse(result["checks"]["action_type_matches_real_mechanism"]["ok"])
+
+    def test_watch_opportunity_is_blocked_even_if_explicitly_requested(self):
+        result = ce.commercial_flight_control_status(opportunity_id="CO-n8n-affiliate", action_type="OUTREACH_REFERRAL")
+        self.assertEqual(result["VERDICT"], "BLOCKED")
+        self.assertTrue(any("lifecycle_state=WATCH" in b for b in result["blockers"]))
+
+    def test_unknown_opportunity_id_is_honestly_blocked_not_fabricated(self):
+        result = ce.commercial_flight_control_status(opportunity_id="does-not-exist")
+        self.assertEqual(result["VERDICT"], "BLOCKED")
+        self.assertEqual(result["checks"]["opportunity_selected"]["opportunity_id"], "does-not-exist")
+        self.assertFalse(result["checks"]["opportunity_evidence_quality"]["ok"])
+
+    def test_generic_approval_true_is_never_sufficient(self):
+        result = ce.commercial_flight_control_status(
+            opportunity_id="CO-adobe-affiliate", action_type="OUTREACH_REFERRAL",
+            draft={"lead_id": "L1", "opportunity_id": "CO-adobe-affiliate", "channel": "email", "message_hash": "abc"},
+            approval={"approved": True},
+        )
+        self.assertFalse(result["checks"]["ceo_approval_scope"]["ok"])
+        self.assertNotEqual(result["VERDICT"], "FIRST_CONTROLLED_ACTION_READY")
+
+    def test_a_correctly_scoped_but_expired_approval_is_refused(self):
+        import outreach_adapter as oa
+        draft = {"lead_id": "L1", "opportunity_id": "CO-adobe-affiliate", "channel": "email", "message_hash": "abc", "partner_id": "adobe"}
+        approval = {
+            "approved_lead_id": "L1", "approved_opportunity_id": "CO-adobe-affiliate", "approved_partner_id": "adobe",
+            "approved_channel": "email", "approved_message_hash": "abc", "maximum_action_scope": 1,
+            "approval_timestamp": "2020-01-01T00:00:00Z", "expiration_time": "2020-01-02T00:00:00Z",
+            "approved_by": "founder", "approved_at": "2020-01-01T00:00:00Z", "approval_scope": "test",
+        }
+        result = ce.commercial_flight_control_status(opportunity_id="CO-adobe-affiliate", action_type="OUTREACH_REFERRAL", draft=draft, approval=approval)
+        self.assertFalse(result["checks"]["ceo_approval_scope"]["ok"])
+        self.assertIn("APPROVAL_EXPIRED", result["checks"]["ceo_approval_scope"]["reason"])
+
+    def test_never_fabricates_first_real_dollar(self):
+        result = ce.commercial_flight_control_status()
+        self.assertFalse(result["checks"]["reality_firewall"]["FIRST_REAL_DOLLAR"])
+
+    def test_blockers_list_is_empty_only_when_verdict_is_ready(self):
+        result = ce.commercial_flight_control_status()
+        if result["VERDICT"] in ("LAUNCH_READY", "FIRST_CONTROLLED_ACTION_READY"):
+            self.assertEqual(result["blockers"], [])
+        else:
+            self.assertGreater(len(result["blockers"]), 0)
+
+    def test_every_check_is_a_dict_never_a_bare_boolean(self):
+        result = ce.commercial_flight_control_status()
+        for name, check in result["checks"].items():
+            self.assertIsInstance(check, dict, f"{name} must be a structured check, not a bare boolean")
+            self.assertIn("ok", check)
+
+
 if __name__ == "__main__":
     unittest.main()
