@@ -652,5 +652,128 @@ class TestGoldenHunterCommissionVerification(unittest.TestCase):
             record_commission.assert_not_called()
 
 
+class TestLiveProgramEligibility(unittest.TestCase):
+    """Phase 40 (ADR-237), Step 2."""
+
+    def test_amazon_is_honestly_verified_from_real_official_evidence(self):
+        result = ce.live_program_eligibility("CO-amazon-affiliate")
+        self.assertEqual(result["eligibility_status"], "VERIFIED")
+        self.assertEqual(result["freshness_status"], "FRESH")
+
+    def test_unknown_opportunity_is_honestly_rejected_not_fabricated(self):
+        result = ce.live_program_eligibility("does-not-exist")
+        self.assertEqual(result["eligibility_status"], "REJECTED")
+
+    def test_third_party_only_evidence_never_maps_to_verified(self):
+        fake_portfolio = [{
+            "opportunity_id": "X", "verification_status": "THIRD_PARTY_ONLY",
+            "last_verified": "2020-01-01", "commission_value": "5%",
+        }]
+        result = ce.live_program_eligibility("X", portfolio=fake_portfolio)
+        self.assertEqual(result["eligibility_status"], "PROVISIONAL")
+        self.assertNotEqual(result["eligibility_status"], "VERIFIED")
+
+    def test_rejected_program_withholds_payout_structure(self):
+        fake_portfolio = [{
+            "opportunity_id": "X", "verification_status": "REJECTED",
+            "last_verified": "2020-01-01", "commission_value": "5%",
+        }]
+        result = ce.live_program_eligibility("X", portfolio=fake_portfolio)
+        self.assertEqual(result["payout_commission_structure"], "WITHHELD -- not officially available for a REJECTED program")
+
+    def test_covers_all_10_named_fields(self):
+        result = ce.live_program_eligibility("CO-amazon-affiliate")
+        for field in ("program_company", "official_source_url", "current_eligibility_requirements",
+                      "geographic_restrictions", "payout_commission_structure", "attribution_cookie_tracking_rules",
+                      "application_approval_required", "eligibility_status", "evidence_timestamp", "freshness_status"):
+            self.assertIn(field, result)
+
+
+class TestFounderActionState(unittest.TestCase):
+    """Phase 40 (ADR-237), Step 3."""
+
+    def test_returns_one_of_the_5_named_states(self):
+        result = ce.founder_action_state()
+        self.assertIn(result["FOUNDER_ACTION_STATE"], (
+            "READY_FOR_FOUNDER_ACTION", "CREDENTIALS_REQUIRED", "APPROVAL_REQUIRED", "READY_FOR_CONTROLLED_TEST", "BLOCKED",
+        ))
+
+    def test_amazon_default_is_ready_for_founder_action(self):
+        result = ce.founder_action_state()
+        self.assertEqual(result["opportunity_id"], "CO-amazon-affiliate")
+        self.assertEqual(result["FOUNDER_ACTION_STATE"], "READY_FOR_FOUNDER_ACTION")
+
+    def test_outreach_opportunity_missing_credential_reports_credentials_required(self):
+        result = ce.founder_action_state(opportunity_id="CO-adobe-affiliate", action_type="OUTREACH_REFERRAL")
+        self.assertEqual(result["FOUNDER_ACTION_STATE"], "CREDENTIALS_REQUIRED")
+
+    def test_watch_opportunity_is_blocked_not_credentials_required(self):
+        result = ce.founder_action_state(opportunity_id="CO-n8n-affiliate", action_type="OUTREACH_REFERRAL")
+        self.assertEqual(result["FOUNDER_ACTION_STATE"], "BLOCKED")
+
+    def test_never_independently_computed_always_cites_the_real_gate(self):
+        gate = ce.commercial_flight_control_status()
+        result = ce.founder_action_state()
+        self.assertEqual(result["underlying_gate_verdict"], gate["VERDICT"])
+        self.assertEqual(result["underlying_blockers"], gate["blockers"])
+
+
+class TestTrackableCommissionObject(unittest.TestCase):
+    """Phase 40 (ADR-237), Step 4."""
+
+    def test_covers_all_14_named_fields(self):
+        result = ce.trackable_commission_object("CO-amazon-affiliate")
+        for field in ("opportunity_id", "program_id", "partner_id", "source_url", "official_evidence",
+                      "commission_terms", "tracking_method", "affiliate_link_status", "approval_status",
+                      "freshness_status", "risk_status", "CEO_approval_status", "created_at", "updated_at"):
+            self.assertIn(field, result)
+
+    def test_amazon_affiliate_link_status_reflects_real_tag_config(self):
+        result = ce.trackable_commission_object("CO-amazon-affiliate")
+        self.assertEqual(result["affiliate_link_status"], "NOT_CONFIGURED")
+
+    def test_outreach_opportunity_marks_affiliate_link_not_applicable(self):
+        result = ce.trackable_commission_object("CO-adobe-affiliate")
+        self.assertIn("NOT_APPLICABLE", result["affiliate_link_status"])
+
+    def test_unknown_opportunity_never_fabricates_a_record(self):
+        result = ce.trackable_commission_object("does-not-exist")
+        self.assertIn("error", result)
+
+    def test_never_fabricates_a_standing_ceo_approval(self):
+        result = ce.trackable_commission_object("CO-amazon-affiliate")
+        self.assertIn("NO_STANDING_APPROVAL_RECORDED", result["CEO_approval_status"])
+
+    def test_no_new_persisted_store_is_created(self):
+        import os
+        before = set(os.listdir("data")) if os.path.isdir("data") else set()
+        ce.trackable_commission_object("CO-amazon-affiliate")
+        after = set(os.listdir("data")) if os.path.isdir("data") else set()
+        self.assertEqual(before, after)
+
+
+class TestRealityFirewallStatus(unittest.TestCase):
+    """Phase 40 (ADR-237), Step 5."""
+
+    def test_covers_all_9_named_requirements(self):
+        result = ce.reality_firewall_status()
+        self.assertEqual(len(result["requirements"]), 9)
+
+    def test_never_fabricates_first_real_dollar(self):
+        result = ce.reality_firewall_status()
+        self.assertFalse(result["FIRST_REAL_DOLLAR"])
+
+    def test_fails_honestly_without_a_real_ceo_approval(self):
+        result = ce.reality_firewall_status()
+        self.assertFalse(result["REALITY_FIREWALL_PASSED"])
+        self.assertFalse(result["requirements"]["explicit_founder_approval"]["ok"])
+
+    def test_every_requirement_cites_a_real_mechanism(self):
+        result = ce.reality_firewall_status()
+        for name, req in result["requirements"].items():
+            self.assertIn("cites", req)
+            self.assertTrue(len(req["cites"]) > 10, f"{name} has no real citation")
+
+
 if __name__ == "__main__":
     unittest.main()

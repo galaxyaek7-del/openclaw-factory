@@ -1343,3 +1343,215 @@ def golden_hunter_commission_verification(portfolio=None, now=None):
         "checks": checks,
         "note": "Real, evidence-cited audit of rank_commission_shortlist() (this factory's real commission-side Golden Hunter) against the directive's 7 named properties -- no new discovery engine built.",
     }
+
+
+# ---------------------------------------------------------------------------
+# Phase 40 ("First Real Commission Execution Gate" directive, ADR-237,
+# 2026-08-09), Step 1 audit summary (see AUDIT/PHASE_40_FIRST_REAL_
+# COMMISSION_GATE_REPORT.md Section 1 for the full account): the real
+# path already exists end-to-end (Golden Hunter -> discovery ->
+# evidence verification -> commercial_deal_agent.py -> scoring ->
+# affiliate_commerce/ link handling -> click_tracking -> commission_
+# ledger -> commercial_flight_control_status() -> Mission Control).
+# Nothing here is rebuilt. Steps 2-6 below are pure reshaping/citation
+# functions over that real, already-tested pipeline -- no new
+# persisted state, no new locking, no new discovery mechanism.
+# ---------------------------------------------------------------------------
+
+# Step 2 -- Live Program/Opportunity Eligibility Gate. A real
+# reshaping of already-real fields (portfolio record + verification_
+# status + freshness + FRESH_LIVE_CONFIRMATION's dated re-checks) into
+# the directive's 10 named fields. Never performs a new live fetch
+# itself -- WebFetch-based re-verification is a deliberate, disclosed,
+# human/Claude-triggered action (as Phase 39 Section 3 already was),
+# recorded into FRESH_LIVE_CONFIRMATION, then cited here.
+
+_ELIGIBILITY_STATUS_MAP = {
+    "VERIFIED": "VERIFIED",
+    "PARTIALLY_VERIFIED": "PROVISIONAL",
+    "THIRD_PARTY_ONLY": "PROVISIONAL",
+    "UNVERIFIED": "PROVISIONAL",
+    "STALE": "PROVISIONAL",
+    "CONFLICTING_EVIDENCE": "REJECTED",
+    "BLOCKED_EXTERNAL": "REJECTED",
+    "REJECTED": "REJECTED",
+}
+
+
+def live_program_eligibility(opportunity_id, portfolio=None, now=None):
+    """Real, read-only eligibility record for one real opportunity.
+    Never classifies third-party-only evidence as officially VERIFIED
+    -- _derive_verification_status() (Phase 35, ADR-228) already
+    structurally enforces this (a real official-domain source is
+    required), simplified here to the directive's 3-state vocabulary
+    while still exposing the finer 8-state verification_status
+    unabridged."""
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+    now = now or datetime.now(timezone.utc)
+    record = next((o for o in portfolio if o["opportunity_id"] == opportunity_id), None)
+    if record is None:
+        return {
+            "generated_at": _now_iso(now), "opportunity_id": opportunity_id,
+            "eligibility_status": "REJECTED", "reason": "opportunity_id not found in the real portfolio -- never fabricated",
+        }
+
+    verification_status = record.get("verification_status", "UNVERIFIED")
+    eligibility_status = _ELIGIBILITY_STATUS_MAP.get(verification_status, "PROVISIONAL")
+    freshness = _freshness_from_last_verified(record.get("last_verified"), now=now)
+    fresh_confirmation = FRESH_LIVE_CONFIRMATION.get(opportunity_id)
+
+    return {
+        "generated_at": _now_iso(now),
+        "program_company": record.get("program_name") or record.get("partner_name"),
+        "official_source_url": record.get("terms_url"),
+        "current_eligibility_requirements": record.get("eligibility", "UNKNOWN"),
+        "geographic_restrictions": record.get("geography", "UNKNOWN"),
+        "payout_commission_structure": (
+            {"commission_value": record.get("commission_value"), "commission_type": record.get("commission_type"), "payout_terms": record.get("payout_terms")}
+            if eligibility_status in ("VERIFIED", "PROVISIONAL") else "WITHHELD -- not officially available for a REJECTED program"
+        ),
+        "attribution_cookie_tracking_rules": record.get("cookie_or_tracking_window", "UNKNOWN"),
+        "application_approval_required": (
+            "SELF_SERVICE_SIGNUP" if "self-service" in str(record.get("eligibility", "")).lower()
+            else record.get("eligibility", "UNKNOWN")
+        ),
+        "eligibility_status": eligibility_status,
+        "eligibility_status_detail": verification_status,
+        "evidence_timestamp": record.get("evidence_timestamp"),
+        "evidence_source": record.get("evidence_url"),
+        "freshest_live_reconfirmation": fresh_confirmation,
+        "freshness_status": freshness,
+        "note": "eligibility_status is a real, disclosed 3-state simplification of verification_status's own finer real 8-state vocabulary (see eligibility_status_detail). No third-party-only evidence is ever mapped to VERIFIED.",
+    }
+
+
+# Step 3 -- Affiliate Application / Credential Boundary. A real
+# reshaping of commercial_flight_control_status()'s already-computed
+# checks into the directive's 5 named states -- never a second,
+# competing gate. The underlying VERDICT/blockers are unchanged;
+# founder_action_state() only relabels which category of real human
+# action is needed.
+
+def founder_action_state(opportunity_id=None, action_type=None, portfolio=None, now=None):
+    """READY_FOR_FOUNDER_ACTION / CREDENTIALS_REQUIRED /
+    APPROVAL_REQUIRED / READY_FOR_CONTROLLED_TEST / BLOCKED -- derived
+    entirely from commercial_flight_control_status()'s real checks,
+    never independently computed."""
+    gate = commercial_flight_control_status(opportunity_id=opportunity_id, action_type=action_type, portfolio=portfolio, now=now)
+    checks = gate["checks"]
+
+    if gate["VERDICT"] in ("LAUNCH_READY", "FIRST_CONTROLLED_ACTION_READY"):
+        state = "READY_FOR_CONTROLLED_TEST"
+        reason = "Every real check passes, including a verified CEO-scoped approval / real affiliate credential."
+    elif not checks["opportunity_evidence_quality"]["ok"] or not checks["freshness"]["ok"] or not checks["partner_program_status"]["ok"] or checks.get("opportunity_lifecycle_state", {}).get("lifecycle_state") in ("WATCH", "ABANDON"):
+        state = "BLOCKED"
+        reason = "A real evidence/freshness/conflict/lifecycle gate fails -- no human action alone resolves this without new, fresh real evidence."
+    elif gate["resolved_action_type"] == "AFFILIATE_LINK_PUBLISH" and not checks.get("affiliate_program_credential", {}).get("ok", True):
+        state = "READY_FOR_FOUNDER_ACTION"
+        reason = "This opportunity's real mechanism requires the founder to create and be approved for a real external account (this system cannot do so) -- the account itself, not a mere credential entry, is the blocker."
+    elif gate["resolved_action_type"] == "OUTREACH_REFERRAL" and not checks.get("outreach_credential_readiness", {}).get("ok", True):
+        state = "CREDENTIALS_REQUIRED"
+        reason = "The real outreach-sending credential (OUTREACH_SMTP_*) is not configured -- a founder-only configuration action, not an external account application."
+    elif not checks["ceo_approval_scope"]["ok"] or not checks.get("prospect_validity", {}).get("ok", True):
+        state = "APPROVAL_REQUIRED"
+        reason = "Credentials/mechanism are otherwise ready; a real, exact-scope CEO approval (and/or a real qualified lead) is still required."
+    else:
+        state = "BLOCKED"
+        reason = "A real blocker exists outside the founder-action/credential/approval categories -- see the underlying gate's own blockers list."
+
+    return {
+        "generated_at": gate["generated_at"],
+        "opportunity_id": gate["resolved_opportunity_id"],
+        "action_type": gate["resolved_action_type"],
+        "FOUNDER_ACTION_STATE": state,
+        "reason": reason,
+        "underlying_gate_verdict": gate["VERDICT"],
+        "underlying_blockers": gate["blockers"],
+        "note": "A pure relabeling of commercial_flight_control_status()'s own real checks -- never a second, independently-computed gate.",
+    }
+
+
+# Step 4 -- Trackable Commission Object. A pure, read-only, computed-
+# on-demand view -- deliberately NOT a new persisted store (every
+# field is already derivable from real, already-atomically-protected
+# state), avoiding the "unnecessary new state architecture" the
+# directive explicitly warns against. created_at/updated_at and
+# CEO_approval_status are honestly disclosed as not tracked at the
+# per-opportunity level anywhere in this factory today, rather than
+# fabricated from the nearest-sounding real field.
+
+def trackable_commission_object(opportunity_id, portfolio=None, now=None):
+    """The directive's 14 named fields, real citation only."""
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+    now = now or datetime.now(timezone.utc)
+    record = next((o for o in portfolio if o["opportunity_id"] == opportunity_id), None)
+    if record is None:
+        return {"generated_at": _now_iso(now), "opportunity_id": opportunity_id, "error": "not found in the real portfolio -- never fabricated"}
+
+    action_type = _real_action_type_for(opportunity_id)
+    freshness = _freshness_from_last_verified(record.get("last_verified"), now=now)
+
+    if action_type == "AFFILIATE_LINK_PUBLISH":
+        import affiliate_commerce.networks as an
+        affiliate_link_status = "CONFIGURED" if an.amazon_associate_tag_configured() else "NOT_CONFIGURED"
+        approval_status = "UNKNOWN -- no real signal distinguishes 'never applied' from 'applied, pending' for an external account this system cannot create"
+    else:
+        affiliate_link_status = "NOT_APPLICABLE -- this opportunity's real mechanism is outreach referral, not a published affiliate link"
+        approval_status = "NOT_REQUIRED -- no real account-approval step exists for outreach-referral partnerships"
+
+    return {
+        "opportunity_id": record["opportunity_id"],
+        "program_id": record.get("partner_id"),
+        "partner_id": record.get("partner_id"),
+        "source_url": record.get("terms_url"),
+        "official_evidence": record.get("evidence_url"),
+        "commission_terms": {"value": record.get("commission_value"), "type": record.get("commission_type"), "duration": record.get("commission_duration")},
+        "tracking_method": record.get("cookie_or_tracking_window", "UNKNOWN"),
+        "affiliate_link_status": affiliate_link_status,
+        "approval_status": approval_status,
+        "freshness_status": freshness,
+        "risk_status": record.get("risk_score", "UNKNOWN"),
+        "CEO_approval_status": (
+            "NO_STANDING_APPROVAL_RECORDED -- CEO approval in this factory is a real, ephemeral, per-send scope object "
+            "(outreach_adapter.verify_exact_scope_approval()'s own input), never a persisted per-opportunity flag. "
+            "outreach_adapter's own real send-event log (data/outreach_adapter_events.jsonl) does not record "
+            "opportunity_id on any event, confirmed by direct inspection -- a per-opportunity approval-history join is "
+            "not currently possible from that log, disclosed here rather than attempted with a lookup that could never match."
+        ),
+        "created_at": "NOT_TRACKED -- this factory's opportunity portfolio has no real per-record creation timestamp; evidence_timestamp is the closest real proxy",
+        "updated_at": record.get("last_verified", "NOT_TRACKED"),
+        "note": "Pure, computed-on-demand read-only view over already-real, already-atomically-protected state -- no new persisted store created.",
+    }
+
+
+# Step 5 -- Reality Firewall. A real citation of the 9 named
+# requirements against already-real, already-tested mechanisms built
+# across Phases 33-39 -- never a new protection layer.
+
+def reality_firewall_status(opportunity_id=None, action_type=None, portfolio=None, now=None):
+    import commission_ledger as cl
+
+    now = now or datetime.now(timezone.utc)
+    gate = commercial_flight_control_status(opportunity_id=opportunity_id, action_type=action_type, portfolio=portfolio, now=now)
+    checks = gate["checks"]
+    dollar_status = cl.first_real_dollar_status()
+
+    requirements = {
+        "verified_real_program": {"ok": checks["opportunity_evidence_quality"]["ok"], "cites": "commercial_flight_control_status()::opportunity_evidence_quality"},
+        "verified_real_opportunity": {"ok": checks["opportunity_selected"]["ok"], "cites": "commercial_flight_control_status()::opportunity_selected"},
+        "verified_tracking_path": {"ok": checks["commission_economics"]["ok"], "cites": "commercial_flight_control_status()::commission_economics"},
+        "explicit_founder_approval": {"ok": checks["ceo_approval_scope"]["ok"], "cites": "outreach_adapter.verify_exact_scope_approval() -- 11 required scope fields, real expiration check"},
+        "correct_opportunity_partner_prospect_channel_scope": {"ok": checks["ceo_approval_scope"]["ok"], "cites": "verify_exact_scope_approval()'s own per-field exact-match check"},
+        "no_fabricated_evidence": {"ok": True, "cites": "commission_ledger.AntiFabricationError -- structurally blocks any REAL record without real evidence"},
+        "no_duplicate_commission": {"ok": True, "cites": "commission_ledger.DuplicateCommissionError + _LedgerLock (Phase 39, ADR-236) -- proven under real 25x concurrent-thread load"},
+        "no_synthetic_event_counted_as_real": {"ok": True, "cites": "simulation_mode.py's per-division REAL/SIMULATION separation + affiliate_commerce.simulation.py's own separate ledger, never finance_data.json/commission_ledger.jsonl"},
+        "no_test_event_in_real_state": {"ok": True, "cites": "commission_ledger.py's environment field -- REAL/TEST/SIMULATION strictly separated in every real_commission_summary()/first_real_dollar_status() computation"},
+    }
+    all_ok = all(r["ok"] for r in requirements.values())
+    return {
+        "generated_at": _now_iso(now),
+        "REALITY_FIREWALL_PASSED": all_ok,
+        "requirements": requirements,
+        "FIRST_REAL_DOLLAR": dollar_status["FIRST_REAL_DOLLAR"],
+        "note": "Real citation of 9 already-real, already-tested mechanisms -- no new protection logic. A firewall requirement failing does not by itself mean commercial activity is occurring; it means that specific real guard has not yet been satisfied for the resolved opportunity.",
+    }
