@@ -305,5 +305,29 @@ class TestSelectFirstLaunchOpportunity(unittest.TestCase):
         self.assertIn(result["FIRST_LAUNCH_OPPORTUNITY"], real_ids)
 
 
+class TestBuildLaunchChecklist(unittest.TestCase):
+    def test_returns_all_21_items(self):
+        result = ce.build_launch_checklist()
+        self.assertEqual(result["total"], 21)
+
+    def test_launch_ready_is_never_forced_true(self):
+        result = ce.build_launch_checklist()
+        self.assertFalse(result["LAUNCH_READY"])
+        self.assertGreater(len(result["blocking_items"]), 0)
+
+    def test_launch_ready_true_only_when_every_item_passes(self):
+        result = ce.build_launch_checklist()
+        all_pass = all(result["items"].values())
+        self.assertEqual(result["LAUNCH_READY"], all_pass)
+
+    def test_prospect_sourcing_honestly_blocks(self):
+        result = ce.build_launch_checklist()
+        self.assertIn("prospect_legitimately_sourced", result["blocking_items"])
+
+    def test_sending_infrastructure_honestly_blocks(self):
+        result = ce.build_launch_checklist()
+        self.assertIn("sending_infrastructure_ready", result["blocking_items"])
+
+
 if __name__ == "__main__":
     unittest.main()
