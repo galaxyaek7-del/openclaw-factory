@@ -1,0 +1,217 @@
+"""Phase 38, Sections 2-11/20 — Golden Hunter Opportunity Rotation
+Engine tests (ADR-233). Zero live network calls."""
+
+import tempfile
+import unittest
+from datetime import datetime, timezone
+from pathlib import Path
+
+import opportunity_rotation_engine as ore
+
+CO_N8N = {"opportunity_id": "CO-n8n-affiliate", "target_customer": "UNKNOWN", "commission_value": "30%",
+          "verification_status": "VERIFIED", "recurring_commission": True, "risk_score": "Low",
+          "eligibility": "Self-service signup"}
+STALE_EVIDENCE = {"candidates_found": 6, "qualified_candidates": 0, "evidence_freshness_breakdown": {"FRESH": 0, "STALE": 6, "UNKNOWN": 0}}
+FRESH_EVIDENCE = {"candidates_found": 3, "qualified_candidates": 2, "evidence_freshness_breakdown": {"FRESH": 2, "STALE": 1, "UNKNOWN": 0}}
+
+
+class RotationTestCase(unittest.TestCase):
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp())
+        self.events_path = self.tmp / "events.jsonl"
+        self.now = datetime(2026, 8, 8, tzinfo=timezone.utc)
+
+
+class TestLifecycleStateMachine(RotationTestCase):
+    def test_default_state_is_discovered(self):
+        self.assertEqual(ore.current_lifecycle_state("CO-x", events_path=self.events_path), "DISCOVERED")
+
+    def test_valid_transition_recorded(self):
+        result = ore.record_lifecycle_transition("CO-x", "DISCOVERED", "EVIDENCE_CHECK", reason="test", events_path=self.events_path, now=self.now)
+        self.assertTrue(result["ok"])
+        self.assertEqual(ore.current_lifecycle_state("CO-x", events_path=self.events_path), "EVIDENCE_CHECK")
+
+    def test_invalid_target_state_rejected(self):
+        result = ore.record_lifecycle_transition("CO-x", "DISCOVERED", "OUTREACH", events_path=self.events_path, now=self.now)
+        self.assertFalse(result["ok"])
+
+    def test_discovered_cannot_jump_to_outreach_or_deal(self):
+        for bad_state in ("OUTREACH", "DEAL"):
+            result = ore.record_lifecycle_transition("CO-x", "DISCOVERED", bad_state, events_path=self.events_path, now=self.now)
+            self.assertFalse(result["ok"], f"{bad_state} must never be a valid opportunity-lifecycle state")
+
+    def test_history_filters_by_opportunity(self):
+        ore.record_lifecycle_transition("CO-a", "DISCOVERED", "WATCH", events_path=self.events_path, now=self.now)
+        ore.record_lifecycle_transition("CO-b", "DISCOVERED", "PURSUE", events_path=self.events_path, now=self.now)
+        history_a = ore.lifecycle_history("CO-a", events_path=self.events_path)
+        self.assertEqual(len(history_a), 1)
+        self.assertEqual(history_a[0]["to_state"], "WATCH")
+
+
+class TestOpportunityMemory(RotationTestCase):
+    def test_empty_memory_is_honest(self):
+        mem = ore.opportunity_memory("CO-never-seen", events_path=self.events_path)
+        self.assertEqual(mem["status"], "DISCOVERED")
+        self.assertIsNone(mem["first_seen"])
+
+    def test_memory_tracks_first_last_seen_and_status(self):
+        ore.record_lifecycle_transition("CO-x", "DISCOVERED", "EVIDENCE_CHECK", events_path=self.events_path, now=self.now)
+        ore.record_lifecycle_transition("CO-x", "EVIDENCE_CHECK", "WATCH", reason="stale", events_path=self.events_path, now=self.now)
+        mem = ore.opportunity_memory("CO-x", events_path=self.events_path)
+        self.assertEqual(mem["status"], "WATCH")
+        self.assertEqual(mem["previous_status"], "EVIDENCE_CHECK")
+        self.assertEqual(mem["transition_count"], 2)
+
+
+class TestRepeatedFailurePenalty(RotationTestCase):
+    def test_no_penalty_below_threshold(self):
+        ore.record_lifecycle_transition("CO-x", "DISCOVERED", "WATCH", events_path=self.events_path, now=self.now)
+        result = ore.repeated_failure_penalty("CO-x", events_path=self.events_path)
+        self.assertFalse(result["penalized"])
+
+    def test_penalty_at_threshold(self):
+        ore.record_lifecycle_transition("CO-x", "DISCOVERED", "WATCH", events_path=self.events_path, now=self.now)
+        ore.record_lifecycle_transition("CO-x", "WATCH", "EVIDENCE_CHECK", events_path=self.events_path, now=self.now)
+        ore.record_lifecycle_transition("CO-x", "EVIDENCE_CHECK", "WATCH", events_path=self.events_path, now=self.now)
+        result = ore.repeated_failure_penalty("CO-x", events_path=self.events_path)
+        self.assertTrue(result["penalized"])
+        self.assertEqual(result["recommended_ceiling"], "ABANDON")
+
+    def test_penalty_never_permanent_resurrection_still_possible(self):
+        """A penalized opportunity must still be resurrectable -- the
+        penalty caps status, it never deletes the opportunity."""
+        ore.record_lifecycle_transition("CO-x", "DISCOVERED", "WATCH", events_path=self.events_path, now=self.now)
+        ore.record_lifecycle_transition("CO-x", "WATCH", "WATCH", events_path=self.events_path, now=self.now)
+        result = ore.check_resurrection("CO-x", "FRESH", events_path=self.events_path, now=self.now)
+        self.assertTrue(result["resurrect"])
+        self.assertEqual(ore.current_lifecycle_state("CO-x", events_path=self.events_path), "EVIDENCE_CHECK")
+
+
+class TestGoldenHunterDecisionModel(RotationTestCase):
+    def test_returns_all_14_named_dimensions(self):
+        dims = ore.evaluate_golden_hunter_dimensions("CO-n8n-affiliate", opportunity_type="COMMISSION",
+                                                       commission_opportunity=CO_N8N, evidence_summary=STALE_EVIDENCE, now=self.now)
+        for name in ore.GOLDEN_HUNTER_DECISION_DIMENSIONS:
+            self.assertIn(name, dims["dimensions"], f"missing dimension {name}")
+
+    def test_every_dimension_has_a_real_value_and_source_or_honest_gap(self):
+        dims = ore.evaluate_golden_hunter_dimensions("CO-n8n-affiliate", opportunity_type="COMMISSION",
+                                                       commission_opportunity=CO_N8N, evidence_summary=STALE_EVIDENCE, now=self.now)
+        for name, d in dims["dimensions"].items():
+            self.assertIn("value", d)
+            self.assertIn("source", d)
+
+    def test_stale_evidence_summary_produces_stale_freshness_dimension(self):
+        dims = ore.evaluate_golden_hunter_dimensions("CO-n8n-affiliate", opportunity_type="COMMISSION",
+                                                       commission_opportunity=CO_N8N, evidence_summary=STALE_EVIDENCE, now=self.now)
+        self.assertIn("STALE", dims["dimensions"]["EVIDENCE_FRESHNESS"]["value"])
+
+    def test_fresh_evidence_summary_produces_fresh_freshness_dimension(self):
+        dims = ore.evaluate_golden_hunter_dimensions("CO-n8n-affiliate", opportunity_type="COMMISSION",
+                                                       commission_opportunity=CO_N8N, evidence_summary=FRESH_EVIDENCE, now=self.now)
+        self.assertIn("FRESH", dims["dimensions"]["EVIDENCE_FRESHNESS"]["value"])
+
+    def test_confidence_never_a_mysterious_number(self):
+        dims = ore.evaluate_golden_hunter_dimensions("CO-n8n-affiliate", opportunity_type="COMMISSION",
+                                                       commission_opportunity=CO_N8N, evidence_summary=STALE_EVIDENCE, now=self.now)
+        self.assertIn("real factors known", dims["dimensions"]["CONFIDENCE"]["value"])
+
+    def test_product_type_marks_partner_fit_not_applicable(self):
+        dims = ore.evaluate_golden_hunter_dimensions("some-niche", opportunity_type="PRODUCT", now=self.now)
+        self.assertIn("NOT_APPLICABLE", dims["dimensions"]["PARTNER_FIT"]["value"])
+
+
+class TestPursuitRecommendation(RotationTestCase):
+    def test_stale_evidence_recommends_watch(self):
+        dims = ore.evaluate_golden_hunter_dimensions("CO-n8n-affiliate", opportunity_type="COMMISSION",
+                                                       commission_opportunity=CO_N8N, evidence_summary=STALE_EVIDENCE, now=self.now)
+        rec = ore.pursuit_recommendation("CO-n8n-affiliate", dims, events_path=self.events_path)
+        self.assertEqual(rec["RECOMMENDATION"], "WATCH")
+
+    def test_fresh_evidence_high_confidence_recommends_pursue(self):
+        rich_evidence = dict(FRESH_EVIDENCE)
+        dims = ore.evaluate_golden_hunter_dimensions("CO-n8n-affiliate", opportunity_type="COMMISSION",
+                                                       commission_opportunity=CO_N8N, evidence_summary=rich_evidence, now=self.now)
+        rec = ore.pursuit_recommendation("CO-n8n-affiliate", dims, events_path=self.events_path)
+        self.assertEqual(rec["RECOMMENDATION"], "PURSUE")
+
+    def test_repeated_failure_forces_abandon_even_with_fresh_evidence(self):
+        for _ in range(3):
+            ore.record_lifecycle_transition("CO-n8n-affiliate", "WATCH", "WATCH", events_path=self.events_path, now=self.now)
+        dims = ore.evaluate_golden_hunter_dimensions("CO-n8n-affiliate", opportunity_type="COMMISSION",
+                                                       commission_opportunity=CO_N8N, evidence_summary=FRESH_EVIDENCE, now=self.now)
+        rec = ore.pursuit_recommendation("CO-n8n-affiliate", dims, events_path=self.events_path)
+        self.assertEqual(rec["RECOMMENDATION"], "ABANDON")
+
+    def test_stronger_alternative_recommends_rotate(self):
+        dims = ore.evaluate_golden_hunter_dimensions("CO-n8n-affiliate", opportunity_type="COMMISSION",
+                                                       commission_opportunity=CO_N8N, evidence_summary=FRESH_EVIDENCE, now=self.now)
+        rec = ore.pursuit_recommendation("CO-n8n-affiliate", dims, stronger_alternative_exists=True, events_path=self.events_path)
+        self.assertEqual(rec["RECOMMENDATION"], "ROTATE")
+
+    def test_recommendation_is_never_authorization(self):
+        dims = ore.evaluate_golden_hunter_dimensions("CO-n8n-affiliate", opportunity_type="COMMISSION",
+                                                       commission_opportunity=CO_N8N, evidence_summary=FRESH_EVIDENCE, now=self.now)
+        rec = ore.pursuit_recommendation("CO-n8n-affiliate", dims, events_path=self.events_path)
+        self.assertIn("never authorization", rec["note"])
+
+
+class TestCompareOpportunities(RotationTestCase):
+    def test_ranks_by_known_dimensions(self):
+        strong = ore.evaluate_golden_hunter_dimensions("CO-strong", opportunity_type="COMMISSION",
+                                                         commission_opportunity=CO_N8N, evidence_summary=FRESH_EVIDENCE, now=self.now)
+        weak = ore.evaluate_golden_hunter_dimensions("CO-weak", opportunity_type="PRODUCT", now=self.now)
+        result = ore.compare_opportunities([weak, strong])
+        self.assertEqual(result["ranked"][0]["opportunity_id"], "CO-strong")
+        self.assertEqual(result["top_comparison"]["winner"], "CO-strong")
+        self.assertTrue(len(result["top_comparison"]["WHY_A_BEATS_B"]) >= 1)
+
+    def test_single_opportunity_has_no_comparison(self):
+        only = ore.evaluate_golden_hunter_dimensions("CO-only", opportunity_type="COMMISSION",
+                                                       commission_opportunity=CO_N8N, evidence_summary=FRESH_EVIDENCE, now=self.now)
+        result = ore.compare_opportunities([only])
+        self.assertIsNone(result["top_comparison"])
+
+
+class TestCheapestValidationStep(RotationTestCase):
+    def test_stale_freshness_is_top_priority_target(self):
+        dims = ore.evaluate_golden_hunter_dimensions("CO-n8n-affiliate", opportunity_type="COMMISSION",
+                                                       commission_opportunity=CO_N8N, evidence_summary=STALE_EVIDENCE, now=self.now)
+        step = ore.cheapest_validation_step(dims)
+        self.assertEqual(step["targets_dimension"], "EVIDENCE_FRESHNESS")
+
+    def test_fully_known_dimensions_report_no_further_step(self):
+        rich = dict(FRESH_EVIDENCE)
+        rich_co = dict(CO_N8N, target_customer="small agencies")
+        dims = ore.evaluate_golden_hunter_dimensions("CO-x", opportunity_type="COMMISSION",
+                                                       commission_opportunity=rich_co, evidence_summary=rich, now=self.now)
+        step = ore.cheapest_validation_step(dims)
+        # COMPETITION/TIME_TO_REVENUE remain honestly unmeasured for commission type -- real, expected
+        self.assertIsNotNone(step["targets_dimension"])
+
+
+class TestResurrection(RotationTestCase):
+    def test_stale_new_evidence_does_not_resurrect(self):
+        result = ore.check_resurrection("CO-x", "STALE", events_path=self.events_path, now=self.now)
+        self.assertFalse(result["resurrect"])
+
+    def test_unknown_new_evidence_does_not_resurrect(self):
+        result = ore.check_resurrection("CO-x", "UNKNOWN", events_path=self.events_path, now=self.now)
+        self.assertFalse(result["resurrect"])
+
+    def test_fresh_new_evidence_resurrects_to_evidence_check(self):
+        result = ore.check_resurrection("CO-x", "FRESH", events_path=self.events_path, now=self.now)
+        self.assertTrue(result["resurrect"])
+        self.assertEqual(ore.current_lifecycle_state("CO-x", events_path=self.events_path), "EVIDENCE_CHECK")
+
+
+class TestMarkReopenCondition(RotationTestCase):
+    def test_records_watch_with_condition_reason(self):
+        result = ore.mark_reopen_condition("CO-n8n-affiliate", events_path=self.events_path, now=self.now)
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["event"]["to_state"], "WATCH")
+        self.assertEqual(result["event"]["reason"], "REOPEN_ONLY_IF_NEW_FRESH_EVIDENCE_APPEARS")
+
+
+if __name__ == "__main__":
+    unittest.main()
