@@ -1389,6 +1389,25 @@ def _revenue_leakage_report():
     return revenue_leakage_report()
 
 
+def _customer_intelligence_dashboard():
+    """Customer Intelligence & Retention Engine, Section 4/38 (ADR-212,
+    Phase 22, 2026-08-08): the one real aggregator -- Data Minimization,
+    Purchase/Non-Purchase Reasons, Problem Mining, Feedback, Sentiment
+    Safety, Trust, Refunds, Churn, Retention, Customer Value,
+    Segmentation, Support, Cohorts, Privacy, Incident Protection,
+    Revenue link, Executive Questions -- 19 real sub-reports."""
+    from customer_intelligence import build_customer_intelligence_dashboard
+    return build_customer_intelligence_dashboard()
+
+
+def _customer_trust_score():
+    """Sections 11/29 (ADR-212): 9 named trust components, each a real
+    citation of trust_audit.py or an honest gap -- no fabricated
+    composite score."""
+    from customer_intelligence import customer_trust_score
+    return customer_trust_score()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3232,6 +3251,8 @@ _ENDPOINTS = {
     "autonomous_scale_recommendations": _autonomous_scale_recommendations,
     "revenue_operating_system_dashboard": _revenue_operating_system_dashboard,
     "revenue_leakage_report": _revenue_leakage_report,
+    "customer_intelligence_dashboard": _customer_intelligence_dashboard,
+    "customer_trust_score": _customer_trust_score,
 }
 
 

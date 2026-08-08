@@ -1941,6 +1941,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('revenue_leakage_report', [], req),
     health: pythonHealthCheck('revenue_leakage_report'),
   },
+  {
+    // Customer Intelligence & Retention Engine, Section 4/38 (ADR-212,
+    // Phase 22, 2026-08-08).
+    name: 'customer-intelligence-dashboard',
+    description: "Data Minimization, Purchase/Non-Purchase Reason taxonomy, Customer Problem Mining, Feedback, Sentiment Safety (honestly NOT_BUILT), Customer Trust, Refunds, Churn (NOT_APPLICABLE -- 0 real subscriptions), Retention (real action taxonomy, no dark patterns), Customer Value/LTV, Segmentation, Support, Cohorts, Privacy, Incident Protection, Revenue link, and the 10 named Executive Customer Questions each tagged FACT/INFERENCE/ESTIMATE/UNKNOWN. 19 real sub-reports, honestly empty across the board at 0 real customers.",
+    reused: 'customer_intelligence.py::build_customer_intelligence_dashboard(), via mission_control_api.py. Measured live ~4s.',
+    handler: (req) => runPythonServiceCached('customer_intelligence_dashboard', [], req),
+    health: pythonHealthCheck('customer_intelligence_dashboard'),
+  },
+  {
+    name: 'customer-trust-score',
+    description: "9 named trust components (Product Accuracy, Delivery Reliability, Support Quality, Refund Experience, Pricing Transparency, Communication Quality, Privacy, Complaint Rate, Satisfaction) -- each a real citation of trust_audit.py (ADR-189) or an honest gap. No single fabricated composite Trust score.",
+    reused: 'customer_intelligence.py::customer_trust_score(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('customer_trust_score', [], req),
+    health: pythonHealthCheck('customer_trust_score'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
