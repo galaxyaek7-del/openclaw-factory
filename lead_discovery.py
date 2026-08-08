@@ -149,12 +149,14 @@ def _read_jsonl(path):
     return records
 
 
-def _record_event(event_type, lead_id, reason=None, events_path=None, now=None):
+def _record_event(event_type, lead_id, reason=None, extra=None, events_path=None, now=None):
     event = {
         "event_id": f"LDE-{lead_id}-{event_type}-{_now_iso(now)}",
         "generated_at": _now_iso(now), "event": event_type,
         "lead_id": lead_id, "reason": reason,
     }
+    if extra:
+        event.update(extra)
     return _append_jsonl(event, events_path or DEFAULT_LEAD_EVENTS_PATH)
 
 
@@ -528,9 +530,20 @@ def discover_lead_for_opportunity(opportunity, problem_keywords=None, sources=("
         candidate["created_at"] = _now_iso(now)
         candidate["updated_at"] = _now_iso(now)
         candidate["simulation_only"] = bool(simulation_only)
+        candidate["QUALIFICATION_STATUS"] = qual["QUALIFICATION_STATUS"]
+        candidate["freshness_status"] = qual["freshness"]["freshness_status"]
         evaluated.append({**candidate, "qualification": qual})
-        _record_event("LEAD_QUALIFIED" if qual["qualifies"] else "LEAD_REJECTED", candidate["lead_id"],
-                       reason=qual["LEAD_SCORE"], events_path=events_path, now=now)
+        # Phase 37C (ADR-232), Section 13 -- extra fields feed Mission
+        # Control's real fresh/stale/unknown/provisional breakdown
+        # (mission_control_api.py::_lead_discovery_status()), additive
+        # to the pre-existing event shape every Phase 37A test already
+        # depends on.
+        _record_event(
+            "LEAD_QUALIFIED" if qual["qualifies"] else "LEAD_REJECTED", candidate["lead_id"],
+            reason=qual["LEAD_SCORE"],
+            extra={"qualification_status": qual["QUALIFICATION_STATUS"], "freshness_status": qual["freshness"]["freshness_status"], "source_type": candidate.get("source_type")},
+            events_path=events_path, now=now,
+        )
 
     qualified = [c for c in evaluated if c.get("status") == "QUALIFIED"]
     qualified.sort(key=lambda c: c["qualification"]["qualification_score_numeric"], reverse=True)
@@ -542,7 +555,28 @@ def discover_lead_for_opportunity(opportunity, problem_keywords=None, sources=("
         # Reality Firewall (Section 7) — only the persisted record's own
         # simulation_only flag decides what this lead is allowed to become
         # next; this function never writes to commission_ledger.py.
-        _append_jsonl(best, leads_path or DEFAULT_LEADS_PATH)
+        #
+        # Phase 41 (ADR-238), Section O ("duplicate referrals"/
+        # "concurrent referral creation"): the per-candidate dedup check
+        # above is a real check-then-write race under true concurrency --
+        # 2 genuinely concurrent calls discovering the identical real
+        # candidate could both pass find_duplicate_lead() before either
+        # writes. Found via a real 5-thread concurrency test during this
+        # round (5 duplicate records written for one real candidate before
+        # this fix). Closed with the same real cross-process lock
+        # commission_ledger.py's own duplicate-commission fix (Phase 39)
+        # uses -- reused directly, not reimplemented -- around one final,
+        # authoritative re-check immediately before the actual write.
+        write_path = Path(leads_path) if leads_path else DEFAULT_LEADS_PATH
+        from ledger_lock import LedgerLock
+        with LedgerLock(write_path):
+            final_dup = find_duplicate_lead(best, leads_path=leads_path)
+            if final_dup is None:
+                _append_jsonl(best, write_path)
+            else:
+                best["status"] = "DUPLICATE"
+                best["_dedup_of"] = final_dup.get("lead_id")
+                best["_dedup_detected_at_final_write_check"] = True
 
     return {
         "generated_at": _now_iso(now), "opportunity_id": opportunity_id, "query": query,

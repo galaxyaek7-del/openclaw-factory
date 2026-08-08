@@ -17,8 +17,6 @@ when it does.
 """
 
 import json
-import platform
-import threading
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -99,55 +97,14 @@ _MIN_MEANINGFUL_LENGTH = 4
 # released within the same function call, transparently.
 # ---------------------------------------------------------------------------
 
-class _LedgerLock:
-    """A real, minimal, cross-process advisory lock -- blocks until
-    acquired, released even on exception via context-manager __exit__.
-
-    Real production topology (per CLAUDE.md) spawns a separate Python
-    subprocess per Mission Control action, so genuinely concurrent
-    commission writes are almost always separate OS processes -- the
-    real case this lock exists for, handled by msvcrt.locking()
-    (Windows) / fcntl.flock() (POSIX). A dedicated intra-process
-    threading.Lock() is held first: Windows' msvcrt.locking(LK_LOCK)
-    was found, while writing this round's own concurrency stress test
-    (Section 9), to raise a real 'Resource deadlock avoided' OSError
-    when multiple THREADS in the same process race for the same
-    byte-range lock via separate handles -- a genuine Windows same-
-    process locking quirk, not a hypothetical. The threading.Lock()
-    serializes same-process callers before they ever reach msvcrt,
-    while the file lock still protects the real cross-process case."""
-
-    _thread_lock = threading.Lock()
-
-    def __init__(self, ledger_path):
-        self._lock_path = str(ledger_path) + ".lock"
-        self._fh = None
-
-    def __enter__(self):
-        self._thread_lock.acquire()
-        self._fh = open(self._lock_path, "a+")
-        if platform.system() == "Windows":
-            import msvcrt
-            self._fh.seek(0)
-            msvcrt.locking(self._fh.fileno(), msvcrt.LK_LOCK, 1)
-        else:
-            import fcntl
-            fcntl.flock(self._fh.fileno(), fcntl.LOCK_EX)
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        try:
-            if platform.system() == "Windows":
-                import msvcrt
-                self._fh.seek(0)
-                msvcrt.locking(self._fh.fileno(), msvcrt.LK_UNLCK, 1)
-            else:
-                import fcntl
-                fcntl.flock(self._fh.fileno(), fcntl.LOCK_UN)
-        finally:
-            self._fh.close()
-            self._thread_lock.release()
-        return False
+# Phase 41 (ADR-238), 2026-08-09: extracted to ledger_lock.py so
+# lead_discovery.py's own real duplicate-lead concurrency fix could
+# reuse this identical mechanism without importing commission_ledger
+# (which would break lead_discovery.py's own tested Reality Firewall
+# structural guarantee -- see ledger_lock.py's own docstring for the
+# full account). _LedgerLock kept as a name here for 100% backward
+# compatibility with every existing internal caller in this module.
+from ledger_lock import LedgerLock as _LedgerLock
 
 
 def _is_meaningful(value):

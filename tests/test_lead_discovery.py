@@ -194,5 +194,87 @@ class TestAgentHealth(LeadDiscoveryTestCase):
         self.assertEqual(health["status"], "ACTIVE")
 
 
+class TestDuplicateLeadUnderRealConcurrency(LeadDiscoveryTestCase):
+    """Phase 41 (ADR-238), Section O ('duplicate referrals'/'concurrent
+    referral creation'). Found via a real 5-thread concurrency stress
+    test: discover_lead_for_opportunity()'s duplicate-check + persist
+    was a check-then-write race with no lock -- 5 genuinely concurrent
+    calls discovering the identical real candidate wrote 5 duplicate
+    lead records before this fix. Closed by reusing ledger_lock.
+    LedgerLock (extracted from commission_ledger.py's own Phase 39 fix
+    into its own financially-neutral module specifically so this fix
+    would never need to import commission_ledger -- see
+    TestSimulationLeakage::test_reality_firewall_module_has_no_ledger_import
+    directly below, still passing unmodified)."""
+
+    def test_5_genuinely_concurrent_identical_discoveries_persist_exactly_once(self):
+        from concurrent.futures import ThreadPoolExecutor
+        hn_hit = _hn_hit(oid="race-fixed-id")
+
+        def attempt(_):
+            return ld.discover_lead_for_opportunity(
+                OPPORTUNITY, problem_keywords=["workflow", "manual", "connecting apps"],
+                leads_path=self.leads_path, dnc_path=self.dnc_path, events_path=self.events_path,
+                hn_query_fn=lambda q, limit=10: ([hn_hit], 1),
+                github_query_fn=lambda q, limit=10: ([], 0),
+                now=self.now,
+            )
+
+        with ThreadPoolExecutor(max_workers=5) as ex:
+            list(ex.map(attempt, range(5)))
+
+        leads = ld.load_leads(self.leads_path)
+        self.assertEqual(len(leads), 1)
+
+    def test_10_genuinely_concurrent_identical_discoveries_persist_exactly_once(self):
+        from concurrent.futures import ThreadPoolExecutor
+        hn_hit = _hn_hit(oid="race-fixed-id-10x")
+
+        def attempt(_):
+            return ld.discover_lead_for_opportunity(
+                OPPORTUNITY, problem_keywords=["workflow", "manual", "connecting apps"],
+                leads_path=self.leads_path, dnc_path=self.dnc_path, events_path=self.events_path,
+                hn_query_fn=lambda q, limit=10: ([hn_hit], 1),
+                github_query_fn=lambda q, limit=10: ([], 0),
+                now=self.now,
+            )
+
+        with ThreadPoolExecutor(max_workers=10) as ex:
+            list(ex.map(attempt, range(10)))
+
+        leads = ld.load_leads(self.leads_path)
+        self.assertEqual(len(leads), 1)
+
+    def test_distinct_concurrent_candidates_all_persist(self):
+        # Real, disclosed finding while writing this test: contact_channel
+        # is derived from the real HN author, not the objectID/URL -- an
+        # earlier draft of this test varied only oid/url and kept the
+        # same default author for all 5 candidates, so find_duplicate_
+        # lead() correctly deduped them as the same real HN user (the
+        # fix working as intended, not a bug). Fixed by varying author too.
+        from concurrent.futures import ThreadPoolExecutor
+
+        def attempt(i):
+            hit = _hn_hit(oid=f"distinct-{i}", url=f"https://example.com/post-{i}", author=f"dev{i}")
+            return ld.discover_lead_for_opportunity(
+                OPPORTUNITY, problem_keywords=["workflow", "manual", "connecting apps"],
+                leads_path=self.leads_path, dnc_path=self.dnc_path, events_path=self.events_path,
+                hn_query_fn=lambda q, limit=10, hit=hit: ([hit], 1),
+                github_query_fn=lambda q, limit=10: ([], 0),
+                now=self.now,
+            )
+
+        with ThreadPoolExecutor(max_workers=5) as ex:
+            list(ex.map(attempt, range(5)))
+
+        leads = ld.load_leads(self.leads_path)
+        self.assertEqual(len(leads), 5)
+
+    def test_lock_file_never_leaks_into_persisted_lead_data(self):
+        self._discover()
+        for lead in ld.load_leads(self.leads_path):
+            self.assertNotIn("lock", lead)
+
+
 if __name__ == "__main__":
     unittest.main()
