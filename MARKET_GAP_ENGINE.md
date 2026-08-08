@@ -32,4 +32,10 @@ The founder's "Global Intelligence & Competitive Moat Engine" directive (Section
 
 ---
 
-*See also: `MARKET_INTELLIGENCE_ENGINE.md`, `CUSTOMER_PAIN_ENGINE.md`, `COMPETITOR_INTELLIGENCE.md`, `DECISION_FILTERS.md`, `MARKET_WHITE_SPACE_MAP.md` (Phase 17).*
+## Phase 23 update (2026-08-08, ADR-213) — Section 6's 10 named questions
+
+The "AUTONOMOUS PRODUCT INNOVATION ENGINE" directive's Section 6 names 10 questions (what solutions exist / who provides them / cost / who buys / complaints / unsolved / workaround / unnecessarily complicated / unnecessarily expensive / missing). `product_innovation_engine.py::market_gap_and_competitive_view(niche)` answers them via a real, thin citation wrapper: `goos.py::evaluate_dimensions()` for the market-size/competition/WTP questions, `competitor_discovery.py::get_or_refresh_competitors()` (the real, cached per-niche competitor scan — never a fresh live call on every dashboard build) for the provider/cost/complaint questions. **No new module was built** — every question already has a real, cited answer or an honestly disclosed `NOT_MEASURABLE` in this factory's existing pipeline, same finding as the Phase 17 update above.
+
+---
+
+*See also: `MARKET_INTELLIGENCE_ENGINE.md`, `CUSTOMER_PAIN_ENGINE.md`, `COMPETITOR_INTELLIGENCE.md`, `DECISION_FILTERS.md`, `MARKET_WHITE_SPACE_MAP.md` (Phase 17), `PRODUCT_INNOVATION_ENGINE.md` (Phase 23).*
