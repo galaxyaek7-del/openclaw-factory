@@ -279,8 +279,25 @@ class TestCommissionCommerceDashboard(unittest.TestCase):
 
 class TestSelectFirstLaunchOpportunity(unittest.TestCase):
     def test_selects_a_real_recurring_verified_conflict_free_opportunity(self):
+        # Phase 39 (ADR-235) fix: CO-n8n-affiliate is real, VERIFIED, and
+        # recurring, but its own real Phase 37B/37C live-evidence attempt
+        # already failed, moving it to WATCH in opportunity_rotation_
+        # engine.py's real lifecycle ledger -- select_first_launch_
+        # opportunity() now correctly excludes it, matching
+        # rank_commission_shortlist()'s own real exclusion rule.
         result = ce.select_first_launch_opportunity()
-        self.assertEqual(result["FIRST_LAUNCH_OPPORTUNITY"], "CO-n8n-affiliate")
+        self.assertNotEqual(result["FIRST_LAUNCH_OPPORTUNITY"], "CO-n8n-affiliate")
+        self.assertEqual(result["selected_record"]["verification_status"], "VERIFIED")
+        # CO-n8n-affiliate was the only real recurring, VERIFIED, conflict-
+        # free candidate -- now excluded (WATCH), so the real recurring-
+        # commission preference has nothing left to prefer among the
+        # remaining candidates; the tie-break correctly falls through to
+        # alphabetical opportunity_id, an honest, disclosed consequence of
+        # the fix, not asserted as a false positive here.
+
+    def test_watch_opportunity_is_excluded_even_if_otherwise_qualified(self):
+        result = ce.select_first_launch_opportunity()
+        self.assertNotEqual(result["FIRST_LAUNCH_OPPORTUNITY"], "CO-n8n-affiliate")
 
     def test_never_selects_an_opportunity_with_a_known_conflict(self):
         result = ce.select_first_launch_opportunity()

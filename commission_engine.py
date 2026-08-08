@@ -633,9 +633,29 @@ def select_first_launch_opportunity(portfolio=None, now=None):
     """Real, deterministic selection over the directive's own 11 named
     criteria. Never invents a candidate -- if none of the real 13
     opportunities satisfies every criterion, honestly returns
-    FIRST_LAUNCH_OPPORTUNITY=NONE with the specific blocker."""
+    FIRST_LAUNCH_OPPORTUNITY=NONE with the specific blocker.
+
+    Phase 39 (ADR-235, 2026-08-08) fix: this function previously
+    disagreed with rank_commission_shortlist() (ADR-234, Phase 38b),
+    which already excludes any opportunity currently WATCH/ABANDON in
+    opportunity_rotation_engine.py's real lifecycle ledger --
+    discovered because this function still selected CO-n8n-affiliate
+    (real, verified, recurring, but its own real Phase 37B/37C
+    live-evidence attempt already failed and moved it to WATCH) while
+    the shortlist correctly preferred an untried candidate. Fixed by
+    applying the identical exclusion here, so both real selection
+    functions in this factory now agree."""
     portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
     now = now or datetime.now(timezone.utc)
+
+    try:
+        import opportunity_rotation_engine as ore
+        watched_or_abandoned = {
+            opp_id for opp_id in ore.all_known_opportunity_ids()
+            if ore.current_lifecycle_state(opp_id) in ("WATCH", "ABANDON")
+        }
+    except Exception:
+        watched_or_abandoned = set()
 
     candidates = []
     for o in portfolio:
@@ -646,6 +666,9 @@ def select_first_launch_opportunity(portfolio=None, now=None):
 
         if o["opportunity_id"] in KNOWN_EVIDENCE_CONFLICTS:
             reasons_excluded.append(f"CONFLICTING_EVIDENCE: {KNOWN_EVIDENCE_CONFLICTS[o['opportunity_id']]}")
+
+        if o["opportunity_id"] in watched_or_abandoned:
+            reasons_excluded.append("currently WATCH/ABANDON in opportunity_rotation_engine.py's real lifecycle ledger -- a prior real live-evidence attempt already failed")
 
         freshness = _freshness_from_last_verified(o.get("last_verified"), now=now)
         if freshness == "STALE":
