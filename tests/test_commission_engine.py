@@ -238,6 +238,16 @@ class TestCommissionCommerceDashboard(unittest.TestCase):
         for agent in ("commercial_deal_agent", "partner_intelligence_agent", "lead_outreach_agent"):
             self.assertIn(agent, result["agents_health"])
 
+    def test_commission_opportunities_breakdown_accounts_for_every_record(self):
+        # Phase 35 (ADR-228) regression: adding THIRD_PARTY_ONLY as a
+        # real status without updating this breakdown silently dropped
+        # those records from the total -- verified counts must always
+        # sum to the real portfolio size.
+        result = ce.build_commission_commerce_dashboard()
+        breakdown = result["commission_opportunities"]
+        summed = breakdown["verified"] + breakdown["partially_verified"] + breakdown["third_party_only"] + breakdown["unverified"]
+        self.assertEqual(summed, breakdown["total"])
+
     def test_real_metrics_are_zero_with_no_real_ledger_data(self):
         result = ce.build_commission_commerce_dashboard()
         self.assertEqual(result["real_revenue_usd"], 0)

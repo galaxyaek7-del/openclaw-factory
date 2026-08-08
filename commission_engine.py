@@ -490,6 +490,7 @@ def build_commission_commerce_dashboard(portfolio_path=None, ledger_path=None, n
 
     verified = [o for o in portfolio if o["verification_status"] == "VERIFIED"]
     partially_verified = [o for o in portfolio if o["verification_status"] == "PARTIALLY_VERIFIED"]
+    third_party_only = [o for o in portfolio if o["verification_status"] == "THIRD_PARTY_ONLY"]
     unverified = [o for o in portfolio if o["verification_status"] == "UNVERIFIED"]
     stale = [o for o in portfolio if _freshness_from_last_verified(o.get("last_verified"), now=now) == "STALE"]
 
@@ -514,7 +515,7 @@ def build_commission_commerce_dashboard(portfolio_path=None, ledger_path=None, n
         "agents_health": agents_health,
         "commission_opportunities": {
             "total": len(portfolio), "verified": len(verified), "partially_verified": len(partially_verified),
-            "unverified": len(unverified), "stale": len(stale),
+            "third_party_only": len(third_party_only), "unverified": len(unverified), "stale": len(stale),
         },
         "verified_partners": [o["partner_name"] for o in verified],
         "top_commission_opportunities": sorted(portfolio, key=lambda o: 0 if o["commission_value"] == "COMMISSION_UNKNOWN" else 1, reverse=True)[:10],
@@ -523,7 +524,8 @@ def build_commission_commerce_dashboard(portfolio_path=None, ledger_path=None, n
         "confirmed_commission_usd": real_summary["real_confirmed_or_paid_commission_usd"],
         "paid_commission_usd": real_summary["real_paid_commission_usd"],
         "real_revenue_usd": 0, "real_customers": 0, "real_orders": 0, "real_payouts_usd": 0,
-        "partner_health": {"verified": len(verified), "partially_verified": len(partially_verified), "unverified": len(unverified)},
+        "partner_health": {"verified": len(verified), "partially_verified": len(partially_verified),
+                            "third_party_only": len(third_party_only), "unverified": len(unverified)},
         "outreach_health": "0 real drafts sent -- no real outbound-send credential exists (see outreach_engine.py)",
         "stale_opportunities": [o["opportunity_id"] for o in stale],
         "blocked_external_services": ["Paddle checkout (see commercial_activation.py)", "All outreach sending (no real send credential)"],
