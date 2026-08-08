@@ -2124,6 +2124,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('commission_daily_brief', [], req),
     health: pythonHealthCheck('commission_daily_brief'),
   },
+  {
+    // Lead Discovery (Phase 37A, ADR-230, 2026-08-08).
+    name: 'lead-discovery-status',
+    description: "Real, read-only summary of already-discovered leads (via lead_discovery.py's legitimate, keyless HN Algolia + GitHub Search queries -- no scraping, no purchased data). Qualified/rejected/blocked counts, top real candidate, agent health. Real vs. simulation-only leads shown separately -- simulation activity is never displayed as real commercial activity. Does NOT trigger a new live discovery pass on every poll.",
+    reused: 'lead_discovery.py::load_leads()/agent_health(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('lead_discovery_status', [], req),
+    health: pythonHealthCheck('lead_discovery_status'),
+  },
+  {
+    // Outreach Adapter Infrastructure (Phase 37A, ADR-230, 2026-08-08).
+    name: 'outreach-infrastructure-status',
+    description: "Real, read-only outreach adapter status -- extends outreach_engine.py's capability inventory with outreach_adapter.py's concrete SMTPOutreachAdapter state: credential presence (values never exposed), MAX_REAL_SENDS usage, channel documentation. Never claims LIVE/real-send-capability without a real, present credential -- CREDENTIAL_STATUS=MISSING today.",
+    reused: 'outreach_adapter.py::adapter_status(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('outreach_infrastructure_status', [], req),
+    health: pythonHealthCheck('outreach_infrastructure_status'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

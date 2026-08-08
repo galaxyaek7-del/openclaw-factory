@@ -1634,6 +1634,43 @@ def _commission_daily_brief():
     return build_daily_commercial_brief()
 
 
+def _lead_discovery_status():
+    """Lead Discovery (Phase 37A, ADR-230, 2026-08-08): real, read-only
+    summary of already-persisted leads.jsonl -- deliberately does NOT
+    trigger a new live discovery pass on every poll (same precedent as
+    commission-commerce-dashboard not re-scanning the portfolio live);
+    a real discovery run is a deliberate, separate action. Never
+    displays test/simulation leads as real commercial activity --
+    simulation_only=true leads are counted in their own field."""
+    import lead_discovery as ld
+    leads = ld.load_leads()
+    real_leads = [l for l in leads if not l.get("simulation_only")]
+    simulation_leads = [l for l in leads if l.get("simulation_only")]
+    qualified = [l for l in real_leads if l.get("status") == "QUALIFIED"]
+    rejected = [l for l in real_leads if l.get("status") == "REJECTED"]
+    blocked = [l for l in real_leads if l.get("status") == "BLOCKED"]
+    top_candidate = qualified[-1] if qualified else None
+    return {
+        "generated_at": ld._now_iso(),
+        "leads_discovered": len(real_leads), "qualified_leads": len(qualified),
+        "rejected_leads": len(rejected), "blocked_leads": len(blocked),
+        "simulation_leads_recorded_separately": len(simulation_leads),
+        "top_candidate": top_candidate,
+        "agent_health": ld.agent_health(),
+        "note": "Read-only summary of already-persisted real leads.jsonl -- does not trigger a new live discovery pass, which would make a real external HN/GitHub API call on every Mission Control poll.",
+    }
+
+
+def _outreach_infrastructure_status():
+    """Outreach Adapter Infrastructure (Phase 37A, ADR-230, 2026-08-08):
+    real, read-only adapter/credential/channel status -- extends
+    outreach_engine.py's own outreach_adapter_status() with the
+    concrete SMTPOutreachAdapter's real state. Never claims a real send
+    capability without a real, present credential."""
+    import outreach_adapter as oa
+    return oa.adapter_status()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3500,6 +3537,8 @@ _ENDPOINTS = {
     "commercial_activation_status": _commercial_activation_status,
     "commission_commerce_dashboard": _commission_commerce_dashboard,
     "commission_daily_brief": _commission_daily_brief,
+    "lead_discovery_status": _lead_discovery_status,
+    "outreach_infrastructure_status": _outreach_infrastructure_status,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
 }
 
