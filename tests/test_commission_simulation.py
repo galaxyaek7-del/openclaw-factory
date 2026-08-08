@@ -108,6 +108,17 @@ class TestFailureScenarios(unittest.TestCase):
             cs.simulate_failure_scenarios(ledger_path=ledger_path)
         self.assertEqual(os.path.exists(real_path), existed_before)
 
+    def test_never_writes_to_real_default_outreach_log(self):
+        # Phase 34 regression: the ai_failure_fallback scenario originally
+        # called draft_outreach_message() without an isolated log_path,
+        # silently polluting data/outreach_log.jsonl on every test run.
+        real_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "outreach_log.jsonl")
+        existed_before = os.path.exists(real_path)
+        with tempfile.TemporaryDirectory() as d:
+            ledger_path = os.path.join(d, "ledger.jsonl")
+            cs.simulate_failure_scenarios(ledger_path=ledger_path)
+        self.assertEqual(os.path.exists(real_path), existed_before)
+
 
 if __name__ == "__main__":
     unittest.main()

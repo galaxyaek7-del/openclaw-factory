@@ -175,7 +175,9 @@ def simulate_failure_scenarios(ledger_path=None, pipeline_events_path=None, now=
     # verify the template (non-AI) path always succeeds as the real
     # fallback discipline.
     import outreach_engine as oe
-    fallback_draft = oe.draft_outreach_message({"opportunity_id": "SIM-OPP-ai-fail"}, {}, use_real_ai=False)
+    with tempfile.TemporaryDirectory() as outreach_tmp:
+        outreach_log_path = os.path.join(outreach_tmp, "sim_outreach_log.jsonl")
+        fallback_draft = oe.draft_outreach_message({"opportunity_id": "SIM-OPP-ai-fail"}, {}, use_real_ai=False, log_path=outreach_log_path)
     results["ai_failure_fallback"] = {"draft_state": fallback_draft["state"], "used_template_fallback": not fallback_draft["use_real_ai"], "handled": True}
 
     return {"generated_at": _now_iso(now), "SIMULATION_ONLY": True, "scenarios": results}
