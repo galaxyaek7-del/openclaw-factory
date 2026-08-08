@@ -18,4 +18,10 @@ Customer Value, Economic Impact, Risk Reduction, Time Saved, Revenue Potential, 
 
 ---
 
+## Phase 30 update (2026-08-08, ADR-220) — High-Ticket Pricing + Value-Based ROI
+
+`enterprise_sales_engine.py::high_ticket_pricing_view()` reuses this document's own real `value_based_pricing_view()` directly. The genuinely new piece: `value_based_roi()`, which tags `current_cost`/`expected_savings`/`expected_revenue_impact`/`implementation_cost` each through `enterprise_transformation_engine.py::roi_evidence_tier()` (Phase 24) — live-verified: with no real inputs supplied, `estimated_roi` honestly returns `"UNKNOWN -- requires real cost + real savings, neither exists for any real deal yet"`, never a fabricated ROI percentage. **No real enterprise price has ever been set** — unchanged from Phase 24.
+
+---
+
 *See also: `TURNKEY_TRANSFORMATION_PACKAGES.md`, `GLOBAL_PRICING_INTELLIGENCE.md` (Phase 20).*

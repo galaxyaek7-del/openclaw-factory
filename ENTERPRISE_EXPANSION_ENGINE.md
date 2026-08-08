@@ -18,4 +18,10 @@ The 12 named expansion categories (more departments/users/workflows/locations/au
 
 ---
 
+## Phase 30 update (2026-08-08, ADR-220) — reused verbatim in the sales pipeline
+
+`enterprise_sales_engine.py::enterprise_expansion_engine()` calls this document's own real `expansion_opportunities()` directly — the EXPAND stage in the new 13-stage sales pipeline cites this same real, disciplined-empty function. No 2nd expansion engine was built. **0 real expansion signals** — unchanged from Phase 24.
+
+---
+
 *See also: `ENTERPRISE_SUCCESS_ENGINE.md`, `AI_AGENT_GOVERNANCE.md`.*
