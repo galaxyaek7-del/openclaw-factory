@@ -2229,6 +2229,56 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('real_vs_test_commission_metrics', [], req),
     health: pythonHealthCheck('real_vs_test_commission_metrics'),
   },
+  {
+    // OpenClaw Directive — Commission Commerce Launch (Phase 41, ADR-238, 2026-08-09).
+    name: 'opportunity-economics',
+    description: "The real, top-ranked commission opportunity's full economic scorecard -- 12 named factors (extending score_commission_opportunity()'s real 13 dimensions with sales-cycle length/probability-of-conversion/prospect-availability), plus EXPECTED_COMMISSION_VALUE/EXPECTED_VALUE_PER_PROSPECT (honestly UNKNOWN without real conversion-rate/deal-value inputs). Never ranks by advertised commission alone.",
+    reused: 'commission_engine.py::opportunity_economics_panel(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('opportunity_economics_panel', [], req),
+    health: pythonHealthCheck('opportunity_economics_panel'),
+  },
+  {
+    name: 'qualified-prospect-queue',
+    description: "Real, read-only citation of lead_discovery.py's own already-persisted qualified leads -- company identity, public source, evidence, freshness, confidence per lead. Never triggers a new live discovery pass on view; no email/credential harvesting anywhere in the underlying discovery.",
+    reused: 'commission_engine.py::qualified_prospect_queue(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('qualified_prospect_queue', [], req),
+    health: pythonHealthCheck('qualified_prospect_queue'),
+  },
+  {
+    name: 'referral-deal-pipeline',
+    description: "Real citation of commercial_deal_agent.track_deal_state() per real opportunity -- every real recorded pipeline transition, no fabricated stage. Opportunities with zero real pipeline activity are listed separately and honestly, never silently omitted.",
+    reused: 'commission_engine.py::referral_deal_pipeline(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('referral_deal_pipeline', [], req),
+    health: pythonHealthCheck('referral_deal_pipeline'),
+  },
+  {
+    name: 'first-dollar-mode-status',
+    description: "ARMED_WAITING_FOR_FIRST_VERIFIED_COMMISSION until a real commission exists -- every post-first-dollar metric (acquisition_path/conversion_economics/time_to_deal/commission_margin/repeatable) explicitly NOT_YET_TRIGGERED, never estimated in advance. After a real commission exists, computes all 5 from the real, preserved ledger record.",
+    reused: 'commission_engine.py::first_dollar_mode_status(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('first_dollar_mode_status', [], req),
+    health: pythonHealthCheck('first_dollar_mode_status'),
+  },
+  {
+    name: 'thousand-dollar-month-status',
+    description: "TARGET=$1,000 REAL COMMISSION for the first commercial month (a target, never a guaranteed outcome). Realized revenue (REAL_REVENUE/REAL_COMMISSION/REAL_CUSTOMERS/REAL_DEALS/REAL_PAYOUTS) and pipeline value (VERIFIED_OPPORTUNITIES/QUALIFIED_PROSPECTS/ACTIVE_REFERRALS/OPEN_DEALS/EXPECTED_COMMISSION) are structurally separate sections, never summed or blended.",
+    reused: 'commission_engine.py::thousand_dollar_month_status(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('thousand_dollar_month_status', [], req),
+    health: pythonHealthCheck('thousand_dollar_month_status'),
+  },
+  {
+    name: 'commercial-blockers',
+    description: "Aggregates every real blocker already surfaced by commercial-flight-control-status, founder-action-state, and verify_commission_opportunity() for the real top-ranked opportunity, plus the standing, factory-wide geography/jurisdiction gap (this factory's own real operating jurisdiction has never been confirmed anywhere in code). Never an independently-computed blocker list.",
+    reused: 'commission_engine.py::commercial_blockers_panel(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_blockers_panel', [], req),
+    health: pythonHealthCheck('commercial_blockers_panel'),
+  },
+  {
+    name: 'opportunity-experiments-report',
+    description: "The directive's 4 named experiment categories (B2B SaaS recurring affiliate, high-ticket B2B referral, AI automation/service referral, one evidence-supported other) over the real 13-opportunity portfolio -- a disclosed, manually-curated categorization, not derived from any existing field. Every per-experiment metric is honestly zero/N-A today, since zero real outreach has occurred in any category.",
+    reused: 'commission_engine.py::opportunity_experiments_report(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('opportunity_experiments_report', [], req),
+    health: pythonHealthCheck('opportunity_experiments_report'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

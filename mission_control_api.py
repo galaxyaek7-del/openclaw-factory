@@ -1756,6 +1756,66 @@ def _real_vs_test_commission_metrics():
     return real_vs_test_commission_metrics()
 
 
+def _opportunity_economics_panel():
+    """Opportunity Economics (Phase 41, 'Commission Commerce Launch'
+    directive, ADR-238, 2026-08-09, Section M): the real, top-ranked
+    opportunity's full economic scorecard (commission_economic_
+    scorecard()) -- never ranks by advertised commission alone."""
+    from commission_engine import opportunity_economics_panel
+    return opportunity_economics_panel()
+
+
+def _qualified_prospect_queue():
+    """Qualified Prospect Queue (Phase 41, ADR-238, Section M):
+    real, read-only citation of lead_discovery.py's own already-
+    persisted qualified leads -- never triggers a new live discovery
+    pass on view."""
+    from commission_engine import qualified_prospect_queue
+    return qualified_prospect_queue()
+
+
+def _referral_deal_pipeline():
+    """Referral/Deal Pipeline (Phase 41, ADR-238, Section M): real
+    citation of commercial_deal_agent.track_deal_state() per real
+    opportunity -- no fabricated pipeline stage."""
+    from commission_engine import referral_deal_pipeline
+    return referral_deal_pipeline()
+
+
+def _first_dollar_mode_status():
+    """First Dollar Progress (Phase 41, ADR-238, Section H): ARMED_
+    WAITING_FOR_FIRST_VERIFIED_COMMISSION until a real commission
+    exists -- every post-first-dollar metric explicitly NOT_YET_
+    TRIGGERED, never estimated in advance."""
+    from commission_engine import first_dollar_mode_status
+    return first_dollar_mode_status()
+
+
+def _thousand_dollar_month_status():
+    """$1K Monthly Target (Phase 41, ADR-238, Section I): TARGET=
+    $1,000 REAL COMMISSION, with realized revenue and pipeline value
+    as structurally separate sections -- never summed or blended."""
+    from commission_engine import thousand_dollar_month_status
+    return thousand_dollar_month_status()
+
+
+def _commercial_blockers_panel():
+    """Commercial Blockers (Phase 41, ADR-238, Section M): aggregates
+    real blockers from commercial_flight_control_status(),
+    founder_action_state(), and verify_commission_opportunity() --
+    never an independently-computed blocker list."""
+    from commission_engine import commercial_blockers_panel
+    return commercial_blockers_panel()
+
+
+def _opportunity_experiments_report():
+    """Opportunity Experiments (Phase 41, ADR-238, Section J): the 4
+    named experiment categories over the real portfolio, honest
+    zero/N-A metrics until real outreach occurs in any category."""
+    from commission_engine import opportunity_experiments_report
+    return opportunity_experiments_report()
+
+
 def _lead_discovery_status():
     """Lead Discovery (Phase 37A, ADR-230; extended Phase 37C, ADR-232,
     2026-08-08): real, read-only summary of already-persisted
@@ -3758,6 +3818,13 @@ _ENDPOINTS = {
     "reality_firewall_status": _reality_firewall_status,
     "first_controlled_action_gate": _first_controlled_action_gate,
     "real_vs_test_commission_metrics": _real_vs_test_commission_metrics,
+    "opportunity_economics_panel": _opportunity_economics_panel,
+    "qualified_prospect_queue": _qualified_prospect_queue,
+    "referral_deal_pipeline": _referral_deal_pipeline,
+    "first_dollar_mode_status": _first_dollar_mode_status,
+    "thousand_dollar_month_status": _thousand_dollar_month_status,
+    "commercial_blockers_panel": _commercial_blockers_panel,
+    "opportunity_experiments_report": _opportunity_experiments_report,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
 }
 

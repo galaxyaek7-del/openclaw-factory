@@ -2129,3 +2129,96 @@ def opportunity_experiments_report(portfolio=None, leads_path=None, pipeline_eve
         "experiments": results,
         "note": "Categorization is a real, disclosed, manually-curated judgment call over each vendor's known real business nature -- not derived from a portfolio field, since none distinguishes these categories today. Every metric is honestly zero/N-A -- no real outreach has occurred in any category yet.",
     }
+
+
+# ---------------------------------------------------------------------------
+# Phase 41 (ADR-238), Section M -- the 3 remaining, genuinely new
+# Mission Control panels (Opportunity Economics/Qualified Prospect
+# Queue/Referral-Deal Pipeline/Commercial Blockers). Commission Flight
+# Control, Real Commission Ledger, First Dollar Progress, and $1K
+# Monthly Target all already exist (Phase 39/40/this round's Section
+# H/I above) -- cited directly in Mission Control wiring, never
+# duplicated here.
+# ---------------------------------------------------------------------------
+
+def opportunity_economics_panel(portfolio=None, now=None):
+    """Opportunity Economics panel -- the real, top-ranked opportunity's
+    full economic scorecard, real citation only."""
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+    now = now or datetime.now(timezone.utc)
+    shortlist = rank_commission_shortlist(portfolio=portfolio, now=now)
+    opportunity_id = shortlist.get("BEST_FIRST_COMMERCIAL_EXPERIMENT")
+    if not opportunity_id:
+        return {"generated_at": _now_iso(now), "error": "no real candidate opportunity resolved"}
+    return commission_economic_scorecard(opportunity_id, portfolio=portfolio, now=now)
+
+
+def qualified_prospect_queue(leads_path=None, now=None):
+    """Qualified Prospect Queue panel -- real, read-only citation of
+    lead_discovery.py's own already-persisted leads, never a new
+    discovery pass triggered by viewing this panel."""
+    now = now or datetime.now(timezone.utc)
+    try:
+        import lead_discovery as ld
+        leads = ld.load_leads(leads_path) if leads_path else ld.load_leads()
+    except Exception as e:
+        return {"generated_at": _now_iso(now), "error": f"lead_discovery.py's real ledger could not be read: {e}", "qualified_prospects": []}
+
+    qualified = [l for l in leads if l.get("status") == "QUALIFIED"]
+    return {
+        "generated_at": _now_iso(now),
+        "qualified_prospects": qualified,
+        "total_qualified": len(qualified),
+        "total_leads_discovered": len(leads),
+        "note": "Real, read-only citation of lead_discovery.py's already-persisted leads.jsonl -- does not trigger a new live discovery pass.",
+    }
+
+
+def referral_deal_pipeline(portfolio=None, events_path=None, now=None):
+    """Referral/Deal Pipeline panel -- real citation of commercial_
+    deal_agent.track_deal_state() per real opportunity, never a
+    second, duplicated pipeline store."""
+    import commercial_deal_agent as cda
+
+    now = now or datetime.now(timezone.utc)
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+    pipelines = {}
+    for o in portfolio:
+        history = cda.track_deal_state(o["opportunity_id"], events_path=events_path)
+        if history:
+            pipelines[o["opportunity_id"]] = history
+    return {
+        "generated_at": _now_iso(now),
+        "pipelines_with_real_activity": pipelines,
+        "opportunities_with_no_pipeline_activity_yet": [o["opportunity_id"] for o in portfolio if o["opportunity_id"] not in pipelines],
+        "note": "Real citation of commercial_deal_agent.track_deal_state() (itself a citation of commission_engine.pipeline_history()) per real opportunity -- no fabricated pipeline stage.",
+    }
+
+
+def commercial_blockers_panel(portfolio=None, now=None):
+    """Commercial Blockers panel -- aggregates every real blocker
+    already surfaced by commercial_flight_control_status(),
+    founder_action_state(), and verify_commission_opportunity() for
+    the real top-ranked opportunity, plus the structural, factory-wide
+    geography-jurisdiction gap. Never a second, independently-computed
+    blocker list."""
+    now = now or datetime.now(timezone.utc)
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+
+    gate = commercial_flight_control_status(portfolio=portfolio, now=now)
+    action_state = founder_action_state(portfolio=portfolio, now=now)
+    verification = verify_commission_opportunity(gate["resolved_opportunity_id"], portfolio=portfolio, now=now) if gate["resolved_opportunity_id"] else None
+
+    blockers = list(gate["blockers"])
+    if verification:
+        blockers += [f"verify_commission_opportunity: {name} failed" for name, c in verification["checks"].items() if not c["ok"]]
+    blockers.append("FACTORY_WIDE: this factory's own real operating jurisdiction has never been confirmed anywhere in code -- blocks geography_eligibility_verification for every real opportunity")
+
+    return {
+        "generated_at": _now_iso(now),
+        "resolved_opportunity_id": gate["resolved_opportunity_id"],
+        "FOUNDER_ACTION_STATE": action_state["FOUNDER_ACTION_STATE"],
+        "blockers": sorted(set(blockers)),
+        "total_blockers": len(set(blockers)),
+        "note": "Aggregates real blockers from 3 already-real functions -- never an independently-computed blocker list.",
+    }
