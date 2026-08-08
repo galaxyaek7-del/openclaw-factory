@@ -2,6 +2,7 @@ import json
 import os
 import tempfile
 import unittest
+from unittest import mock
 
 import commission_engine as ce
 
@@ -606,6 +607,49 @@ class TestCommercialControlPanel(unittest.TestCase):
     def test_blockers_are_a_real_list_not_a_count(self):
         result = ce.commercial_control_panel()
         self.assertIsInstance(result["BLOCKERS"], list)
+
+
+class TestGoldenHunterCommissionVerification(unittest.TestCase):
+    """Phase 39 (ADR-236), Section 11."""
+
+    def test_all_7_named_properties_pass_against_the_real_live_portfolio(self):
+        result = ce.golden_hunter_commission_verification()
+        self.assertTrue(result["PASSED"])
+        for name, check in result["checks"].items():
+            self.assertTrue(check["ok"], f"{name} failed: {check}")
+
+    def test_checks_covers_all_8_named_checks(self):
+        result = ce.golden_hunter_commission_verification()
+        self.assertEqual(set(result["checks"].keys()), {
+            "discovers_opportunities", "never_fabricates_opportunities", "never_manufactures_evidence",
+            "respects_freshness", "respects_verification_status", "ranks_by_expected_value_and_confidence",
+            "exposes_uncertainty", "never_bypasses_ceo_gates",
+        })
+
+    def test_fabricated_shortlist_entry_is_honestly_caught(self):
+        real_portfolio = ce.load_opportunity_portfolio()
+        with mock.patch.object(ce, "rank_commission_shortlist") as mocked:
+            mocked.return_value = {
+                "shortlist": [{"opportunity_id": "FAKE-NOT-REAL", "verification_tier": 3, "real_dimensions_count": 5,
+                                "commission_score": "RECURRING", "evidence_score": "VERIFIED", "freshness_score": "FRESH",
+                                "expected_value": "UNKNOWN -- x"}],
+                "total_portfolio_size": len(real_portfolio),
+                "BEST_FIRST_COMMERCIAL_EXPERIMENT": "FAKE-NOT-REAL",
+            }
+            result = ce.golden_hunter_commission_verification(portfolio=real_portfolio)
+        self.assertFalse(result["checks"]["never_fabricates_opportunities"]["ok"])
+        self.assertFalse(result["PASSED"])
+
+    def test_golden_hunter_commission_scan_never_calls_a_write_or_send_function(self):
+        # Structural regression, cited by golden_hunter_commission_verification()'s
+        # own never_bypasses_ceo_gates check -- mirrors automation_opportunity_
+        # scanner.py's own test_never_calls_run_hunt precedent.
+        import commission_ledger as cl
+        with mock.patch.object(cl, "record_commission") as record_commission:
+            ce.rank_commission_shortlist()
+            ce.commercial_flight_control_status()
+            ce.commercial_control_panel()
+            record_commission.assert_not_called()
 
 
 if __name__ == "__main__":

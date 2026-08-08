@@ -1682,6 +1682,19 @@ def _commercial_control_panel():
     return commercial_control_panel()
 
 
+def _golden_hunter_commission_verification():
+    """Golden Hunter Commission Verification (Phase 39, ADR-236,
+    Section 11): real, evidence-cited audit of rank_commission_
+    shortlist() (this factory's real commission-side Golden Hunter)
+    against the directive's 7 named properties -- discovers real
+    opportunities, never fabricates, never manufactures evidence,
+    respects freshness/verification status, ranks by expected value
+    and confidence, exposes uncertainty, never bypasses CEO gates.
+    Read-only -- no new discovery engine, no write/send call."""
+    from commission_engine import golden_hunter_commission_verification
+    return golden_hunter_commission_verification()
+
+
 def _lead_discovery_status():
     """Lead Discovery (Phase 37A, ADR-230; extended Phase 37C, ADR-232,
     2026-08-08): real, read-only summary of already-persisted
@@ -3677,6 +3690,7 @@ _ENDPOINTS = {
     "golden_hunter_rotation_status": _golden_hunter_rotation_status,
     "commercial_flight_control_status": _commercial_flight_control_status,
     "commercial_control_panel": _commercial_control_panel,
+    "golden_hunter_commission_verification": _golden_hunter_commission_verification,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
 }
 

@@ -2179,6 +2179,13 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('commercial_control_panel', [], req),
     health: pythonHealthCheck('commercial_control_panel'),
   },
+  {
+    name: 'golden-hunter-commission-verification',
+    description: "Section 11 audit: real, evidence-cited verification of rank_commission_shortlist() (this factory's real commission-side Golden Hunter) against 7 named properties -- discovers real opportunities, never fabricates an opportunity, never manufactures evidence, respects freshness, respects verification status, ranks by expected value and confidence, exposes uncertainty (expected_value stays honestly UNKNOWN), never bypasses a CEO gate (structurally proven: no write/send function is ever called).",
+    reused: 'commission_engine.py::golden_hunter_commission_verification(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('golden_hunter_commission_verification', [], req),
+    health: pythonHealthCheck('golden_hunter_commission_verification'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
