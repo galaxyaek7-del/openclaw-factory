@@ -146,6 +146,30 @@ def is_duplicate_contact(lead_id, outreach_log_path=None, frequency_days=7, now=
 
 
 # ---------------------------------------------------------------------------
+# Phase 37A (ADR-230), Section 26 -- Lead Outreach Agent owns message
+# preparation/quality/personalization/approval request/adapter
+# invocation. REAL SEND stays a gated external action -- this function
+# never calls outreach_adapter.send(), only prepare_scoped_draft().
+# ---------------------------------------------------------------------------
+
+def prepare_outreach_for_lead(opportunity, lead, channel="email", use_real_ai=False, log_path=None, now=None):
+    """Reuses outreach_adapter.py's prepare_scoped_draft() directly --
+    never a second message-generation path. Returns a real DRAFT,
+    awaiting a real, separately-required CEO approval
+    (outreach_engine.approve_outreach() + outreach_adapter.
+    verify_exact_scope_approval()) before any send is even attempted."""
+    import outreach_adapter as oa
+
+    draft = oa.prepare_scoped_draft(opportunity, lead, channel=channel, use_real_ai=use_real_ai, log_path=log_path, now=now)
+    return {
+        "draft": draft,
+        "state": draft["state"],
+        "next_step": "REQUIRES real CEO approval via outreach_engine.approve_outreach() + an exact-scope approval record (outreach_adapter.verify_exact_scope_approval()) before send() can even be attempted.",
+        "note": "This function never calls send() -- REAL SEND remains a gated external action, per Section 26.",
+    }
+
+
+# ---------------------------------------------------------------------------
 # Section 17 -- Agent Health
 # ---------------------------------------------------------------------------
 

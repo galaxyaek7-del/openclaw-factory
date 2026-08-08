@@ -87,6 +87,68 @@ def deal_priority_score(customer_profile, opportunity, economics=None, match=Non
 
 
 # ---------------------------------------------------------------------------
+# Phase 37A (ADR-230), Sections 24-25 -- Golden Hunter -> Partner
+# Intelligence -> Commercial Deal Agent -> Lead Discovery chain. This
+# agent QUALIFIES + RECOMMENDS only; it never sends outreach itself
+# (lead_discovery.py never writes to any financial ledger either, so
+# no function in this chain can create a real commercial event).
+# ---------------------------------------------------------------------------
+
+def recommend_prospect(opportunity, customer_profile, problem_keywords=None, sources=("hacker_news", "github_issues"),
+                        leads_path=None, dnc_path=None, events_path=None, simulation_only=False,
+                        hn_query_fn=None, github_query_fn=None, now=None):
+    """The real Section 25 consumer: opportunity + partner (embedded in
+    opportunity) + customer_profile + lead evidence + lead score ->
+    RECOMMENDED_PROSPECT/MATCH_REASON/CONFIDENCE/RISKS/RECOMMENDED_ACTION.
+    Calls lead_discovery.py directly rather than re-implementing
+    discovery, and match_customer_to_opportunity()/deal_priority_score()
+    directly rather than re-scoring. Never sends a message -- that
+    remains lead_outreach_agent.py/outreach_adapter.py's job, gated
+    behind a real, separate CEO approval."""
+    import lead_discovery as ld
+
+    match = ce.match_customer_to_opportunity(customer_profile, opportunity)
+    deal = deal_priority_score(customer_profile, opportunity, match=match)
+    discovery = ld.discover_lead_for_opportunity(
+        opportunity, problem_keywords=problem_keywords, sources=sources, simulation_only=simulation_only,
+        leads_path=leads_path, dnc_path=dnc_path, events_path=events_path,
+        hn_query_fn=hn_query_fn, github_query_fn=github_query_fn, now=now,
+    )
+
+    best = discovery.get("best_candidate")
+    if not best:
+        return {
+            "generated_at": _now_iso(now), "opportunity_id": opportunity.get("opportunity_id"),
+            "RECOMMENDED_PROSPECT": None,
+            "MATCH_REASON": "No real, qualified prospect was found this run -- see discovery.source_notes for why.",
+            "CONFIDENCE": "LOW", "RISKS": ["no real prospect exists yet -- outreach cannot proceed"],
+            "RECOMMENDED_ACTION": "RETRY_DISCOVERY_LATER_OR_EXPAND_SOURCES",
+            "discovery": discovery, "deal": deal,
+        }
+
+    risks = []
+    if deal["CONFIDENCE"] == "LOW":
+        risks.append("deal-level confidence is LOW -- several real factors are still UNKNOWN")
+    if str(best.get("company_name", "")).startswith("UNKNOWN"):
+        risks.append("prospect's company identity is unconfirmed -- an individual public poster, not a verified business entity")
+    if opportunity.get("verification_status") not in ("VERIFIED", "PARTIALLY_VERIFIED"):
+        risks.append(f"opportunity verification_status={opportunity.get('verification_status')}")
+
+    action = "PROCEED_TO_OUTREACH_DRAFT" if (deal["RECOMMENDED_ACTION"] == "PROCEED_TO_QUALIFICATION" and not risks) else "GATHER_MORE_EVIDENCE_BEFORE_OUTREACH"
+
+    return {
+        "generated_at": _now_iso(now), "opportunity_id": opportunity.get("opportunity_id"),
+        "RECOMMENDED_PROSPECT": best.get("lead_id"),
+        "MATCH_REASON": f"{best.get('qualification_score')}; problem-signal evidence at {best.get('source_url')}",
+        "CONFIDENCE": best.get("confidence", "LOW"),
+        "RISKS": risks or ["no additional real risk identified beyond standard evidence limitations"],
+        "RECOMMENDED_ACTION": action,
+        "discovery": discovery, "deal": deal,
+        "note": "Recommend-only -- never sends outreach, never creates a deal/commission/payout.",
+    }
+
+
+# ---------------------------------------------------------------------------
 # Responsibilities -- track deal state, monitor commission state
 # ---------------------------------------------------------------------------
 
