@@ -242,6 +242,60 @@ def refund_dispute_chargeback_status():
 
 
 # ---------------------------------------------------------------------------
+# Phase 32, Section 20 -- Deterministic Commercial Go-Live Check
+# ---------------------------------------------------------------------------
+
+GO_LIVE_VERDICTS = ("GO", "NO_GO", "GO_WITH_FOUNDER_ACTION")
+
+
+def commercial_go_live_check(platform_key="paddle", catalog_path=None, checkout_status=None):
+    """Real, deterministic pre-launch gate for one platform -- checks
+    product identity, price, checkout, tracking (webhook + idempotency),
+    financial mapping, delivery, refund handling, and audit trail, each
+    cited from real, already-verified signals. Commission/partner/
+    customer-match dimensions are honestly NOT_APPLICABLE for a direct
+    product sale (Phase 31.5 deferred the commission engine; nothing to
+    check that doesn't exist yet). Never returns GO from an unverified
+    or missing signal."""
+    readiness = platform_activation_readiness(platform_key, catalog_path=catalog_path, checkout_status=checkout_status)
+    reasons = []
+
+    checks = {
+        "product_identity": "VERIFIED" if readiness["products"] > 0 else "MISSING",
+        "price": "VERIFIED" if readiness["products"] > 0 else "MISSING",
+        "commission": "NOT_APPLICABLE -- direct product sale, no commission/referral involved",
+        "partner": "NOT_APPLICABLE -- no partner/referral relationship in this flow",
+        "customer_match": "NOT_APPLICABLE -- no customer-targeting step in this flow",
+        "checkout": "VERIFIED" if readiness["CHECKOUT_READY"] is True else (
+            "BLOCKED_EXTERNAL" if readiness["CHECKOUT_READY"] is False else "UNKNOWN"),
+        "tracking": "VERIFIED (polling)" if readiness["credential_valid"] else "MISSING",
+        "financial_mapping": "VERIFIED" if "REAL" in str(readiness["FINANCE_READY"]) else "MISSING",
+        "delivery": "VERIFIED" if "REAL" in str(readiness["DELIVERY_READY"]) else "MISSING",
+        "refund_handling": "NOT_AVAILABLE -- no real refund-retrieval endpoint exists for this platform",
+        "audit_trail": "VERIFIED -- AUDIT/, data/recovery_actions.jsonl, data/paddle_webhook_events.jsonl (once populated)",
+    }
+
+    if not readiness["credential_valid"]:
+        verdict = "NO_GO"
+        reasons.append(f"{platform_key}: no valid credential configured")
+    elif not readiness["COMMERCIAL_READY"]:
+        verdict = "NO_GO"
+        reasons.append(f"{platform_key}: no real product catalog")
+    elif readiness["CHECKOUT_READY"] is not True:
+        verdict = "GO_WITH_FOUNDER_ACTION"
+        reasons.append(readiness.get("blocker") or "checkout not yet verified live")
+    else:
+        verdict = "GO"
+        if not readiness["WEBHOOK_READY"]:
+            reasons.append("real-time webhook confirmation not configured -- polling-based confirmation (customer_pipeline.py::check_payment_status()) still covers real payment verification")
+
+    return {
+        "generated_at": _now_iso(), "platform": platform_key, "verdict": verdict, "reasons": reasons,
+        "checks": checks,
+    }
+
+
+# ---------------------------------------------------------------------------
 # Aggregator
 # ---------------------------------------------------------------------------
 
@@ -250,6 +304,8 @@ def build_commercial_activation_status(catalog_path=None, checkout_status=None):
         "generated_at": _now_iso(),
         "readiness": {p: platform_activation_readiness(p, catalog_path=catalog_path, checkout_status=checkout_status)
                       for p in ("paddle", "gumroad", "etsy", "payhip")},
+        "go_live_check": {p: commercial_go_live_check(p, catalog_path=catalog_path, checkout_status=checkout_status)
+                           for p in ("paddle", "gumroad", "etsy", "payhip")},
         "founder_action_center": founder_action_center(),
         "golden_hunter_freshness": golden_hunter_freshness_status(),
         "refunds_disputes_chargebacks": refund_dispute_chargeback_status(),

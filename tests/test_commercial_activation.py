@@ -124,5 +124,39 @@ class TestAggregator(unittest.TestCase):
         self.assertEqual(before, after)
 
 
+class TestCommercialGoLiveCheck(unittest.TestCase):
+    def test_verdict_always_named(self):
+        result = ca.commercial_go_live_check("paddle")
+        self.assertIn(result["verdict"], ca.GO_LIVE_VERDICTS)
+
+    def test_uncredentialed_platform_is_no_go(self):
+        result = ca.commercial_go_live_check("gumroad")
+        self.assertEqual(result["verdict"], "NO_GO")
+
+    def test_paddle_checkout_blocked_is_go_with_founder_action(self):
+        checkout_status = {"results": [{"checkout_ready": False}]}
+        result = ca.commercial_go_live_check("paddle", checkout_status=checkout_status)
+        self.assertEqual(result["verdict"], "GO_WITH_FOUNDER_ACTION")
+
+    def test_never_returns_go_from_unverified_checkout(self):
+        result = ca.commercial_go_live_check("paddle", checkout_status=None)
+        self.assertNotEqual(result["verdict"], "GO")
+
+    def test_commission_and_partner_dimensions_are_honestly_not_applicable(self):
+        result = ca.commercial_go_live_check("paddle")
+        self.assertIn("NOT_APPLICABLE", result["checks"]["commission"])
+        self.assertIn("NOT_APPLICABLE", result["checks"]["partner"])
+
+    def test_refund_handling_is_not_available_not_fabricated(self):
+        result = ca.commercial_go_live_check("paddle")
+        self.assertIn("NOT_AVAILABLE", result["checks"]["refund_handling"])
+
+    def test_go_verdict_requires_real_checkout_ready_true(self):
+        checkout_status = {"results": [{"checkout_ready": True}]}
+        result = ca.commercial_go_live_check("paddle", checkout_status=checkout_status)
+        self.assertEqual(result["verdict"], "GO")
+        self.assertEqual(result["checks"]["checkout"], "VERIFIED")
+
+
 if __name__ == "__main__":
     unittest.main()
