@@ -27,4 +27,10 @@
 
 ---
 
-*See also: `CUSTOMER_DATA_MODEL.md`, `RETENTION_ENGINE.md`.*
+## Phase 28 update (2026-08-08, ADR-218) — Section 5's 10-stage growth journey
+
+The "GLOBAL GROWTH & CUSTOMER ACQUISITION ENGINE" directive names a genuinely different 10-stage vocabulary (`AWARENESS → INTEREST → CONSIDERATION → INTENT → PURCHASE → ACTIVATION → SUCCESS → RETENTION → EXPANSION → REFERRAL`) from Phase 22's own 12-stage journey above. `global_growth_engine.py::growth_journey_view()` is a **2nd, distinct real relabeling** of the same real `customer_pipeline.py::STAGE_ORDER` — deliberately not merged with the mapping above, since forcing one vocabulary onto the other would misrepresent which directive actually named which stage. `AWARENESS` and `EXPANSION` are honestly unmapped in the new relabeling — no real pre-intake or post-delivery signal exists for either.
+
+---
+
+*See also: `CUSTOMER_DATA_MODEL.md`, `RETENTION_ENGINE.md`, `GLOBAL_GROWTH_ENGINE.md` (Phase 28).*

@@ -28,4 +28,10 @@ This document is re-opened for real, active development only when:
 
 ---
 
-*See also: `DIGITAL_EMPIRE_ENGINE.md`, `PARTNERSHIP_ENGINE.md`, `EMPIRE_SCORE.md`, `INTEGRITY_RULES.md` §3 (the 4 permanently human-gated actions this document's own restraint is modeled on).*
+## Phase 28 disambiguation (2026-08-08, ADR-218)
+
+**A real naming collision, resolved by disclosure, not by renaming either document.** This filename ("Acquisition Engine") was already claimed by the document above — business/asset **acquisition** (M&A), deliberately kept framework-only per the founder's own standing decision. The "GLOBAL GROWTH & CUSTOMER ACQUISITION ENGINE" directive's Section 2 also names an "Acquisition Engine," but means **customer** acquisition — a completely different, real, already-built concept. That real content lives in `global_growth_engine.py::customer_acquisition_engine()` (reuses `commercial_acquisition.py`'s real 9-channel report directly) and is documented in `CAC_ENGINE.md`/`LTV_ENGINE.md`/`GLOBAL_GROWTH_ENGINE.md` — never merged into this document, since the two "acquisition" concepts (buying a business vs. acquiring a customer) share only a word, not a real system.
+
+---
+
+*See also: `DIGITAL_EMPIRE_ENGINE.md`, `PARTNERSHIP_ENGINE.md`, `EMPIRE_SCORE.md`, `INTEGRITY_RULES.md` §3 (the 4 permanently human-gated actions this document's own restraint is modeled on), `CAC_ENGINE.md` (Phase 28, the real customer-acquisition content).*

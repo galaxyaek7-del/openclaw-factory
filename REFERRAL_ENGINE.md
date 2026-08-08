@@ -18,4 +18,10 @@ A real, disclosed policy — moot today since 0 real referral programs are activ
 
 ---
 
-*See also: `AFFILIATE_ENGINE.md`, `PARTNER_ECONOMICS.md`.*
+## Phase 28 update (2026-08-08, ADR-218) — Sections 25-26
+
+`global_growth_engine.py::referral_engine_v2()` reuses `referral_engine_status()` above verbatim — no 2nd referral system was built. **Section 26, Customer Advocacy**: honestly `NOT_BUILT` — 0 real testimonials/reviews/case studies exist with real customer permission; `customer_pipeline.py::submit_review()` is architecturally fabrication-proof (a real `request_id` is required), confirmed by direct inspection, but 0 real reviews have ever been submitted. **Never fabricates social proof.**
+
+---
+
+*See also: `AFFILIATE_ENGINE.md`, `PARTNER_ECONOMICS.md`, `CUSTOMER_SUCCESS.md` (Phase 28).*

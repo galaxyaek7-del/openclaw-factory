@@ -18,4 +18,10 @@
 
 ---
 
-*See also: `CUSTOMER_TRUST_ENGINE.md`, `CHURN_INTELLIGENCE.md`.*
+## Phase 28 update (2026-08-08, ADR-218) — Section 23's real reuse
+
+`global_growth_engine.py::retention_recommendations_v2()` reuses `retention_engine_recommendations()` above verbatim — no 2nd retention-action taxonomy was built. **Never uses manipulative retention tactics** — already enforced by the same real, tested exclusion this document's Section 14 established (no dark pattern exists in `RETENTION_ACTIONS`).
+
+---
+
+*See also: `CUSTOMER_TRUST_ENGINE.md`, `CHURN_INTELLIGENCE.md`, `CHURN_ENGINE.md` (Phase 28).*
