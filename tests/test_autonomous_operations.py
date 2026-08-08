@@ -77,6 +77,21 @@ class TestAuthorizeAction(unittest.TestCase):
             entry = ao.classify_action_autonomy(category)
             self.assertEqual(entry["level"], 5, f"{category} must stay Level 5 -- never loosened")
 
+    def test_phase34_commission_categories_are_level_5(self):
+        # ADR-227, Phase 34: the 4 new commission-commerce CEO approval
+        # gates -- classified in anticipation, same precedent as
+        # business_retirement, never loosened below Level 5.
+        for category in ("high_value_commercial_outreach", "high_value_deal_approval",
+                          "new_partner_financial_or_legal_risk", "unusual_commission_arrangement"):
+            entry = ao.classify_action_autonomy(category)
+            self.assertEqual(entry["level"], 5, f"{category} must be Level 5")
+
+    def test_phase34_commission_categories_allow_with_real_approval(self):
+        for category in ("high_value_commercial_outreach", "high_value_deal_approval",
+                          "new_partner_financial_or_legal_risk", "unusual_commission_arrangement"):
+            result = ao.authorize_action(category, context={"founder_approved": True, "approval_reference": "ref-1"})
+            self.assertEqual(result["decision"], "ALLOW", f"{category} should allow with real approval")
+
 
 class TestAutomationCandidateReport(unittest.TestCase):
     def test_empty_ledger_produces_no_verification_candidate(self):

@@ -151,6 +151,29 @@ ACTION_CATEGORY_AUTONOMY = {
         "level": 5,
         "citation": "No real exclusivity/territory grant has ever been made to any partner -- classified Level 5 in anticipation, same precedent as business_retirement/enterprise_contract_commitment (ADR-142/214), never a real execution path to gate yet.",
     },
+    # Commission Commerce Engine, Phase 34 (ADR-227, 2026-08-08): 4 new,
+    # additive categories for the directive's own named CEO approval
+    # gates. Same classified-in-anticipation precedent as
+    # business_retirement/partner_exclusivity_or_territory_commitment
+    # above -- 0 real occurrences of any of these exist yet in this
+    # factory (0 real leads, 0 real deals, 0 real partners beyond
+    # discovery/verification), never a real execution path to gate yet.
+    "high_value_commercial_outreach": {
+        "level": 5,
+        "citation": "outreach_engine.py::send_outreach() is already structurally blocked (BLOCKED_NO_CREDENTIAL/BLOCKED_NO_SEND_ADAPTER) for every real outreach today -- this category governs the future decision to approve a large/high-value campaign once real sending exists.",
+    },
+    "high_value_deal_approval": {
+        "level": 5,
+        "citation": "commercial_deal_agent.py::deal_priority_score() never auto-advances a deal past GATHER_MORE_CUSTOMER_DATA/VERIFY_PARTNER_FIRST -- this category governs the founder's own approval of a real, high-value deal once one exists.",
+    },
+    "new_partner_financial_or_legal_risk": {
+        "level": 5,
+        "citation": "Distinct from partner_exclusivity_or_territory_commitment (a real, narrower grant) -- covers onboarding any new partner whose program carries real disclosed financial or legal risk (e.g. minimum commitments, indemnification clauses). 0 real partner programs have been joined yet.",
+    },
+    "unusual_commission_arrangement": {
+        "level": 5,
+        "citation": "commission_ledger.py's AntiFabricationError already blocks any REAL commission record without real evidence -- this category governs founder approval of a real commission structure that deviates from a partner's own standard, published terms.",
+    },
 }
 
 

@@ -181,3 +181,27 @@ def simulate_failure_scenarios(ledger_path=None, pipeline_events_path=None, now=
     results["ai_failure_fallback"] = {"draft_state": fallback_draft["state"], "used_template_fallback": not fallback_draft["use_real_ai"], "handled": True}
 
     return {"generated_at": _now_iso(now), "SIMULATION_ONLY": True, "scenarios": results}
+
+
+# ---------------------------------------------------------------------------
+# Phase 34 (ADR-227), Section 12 -- the directive's own named counts
+# (20 partners, 100 prospects, 30 qualified, 10 responses, 5 deals) --
+# a separate function from Phase 33's 10/50/100/20/10/5 voyage so
+# neither round's own regression tests need touching.
+# ---------------------------------------------------------------------------
+
+def run_phase34_commercial_voyage_simulation(ledger_path=None, now=None):
+    partners = generate_synthetic_partners(20)
+    customers = generate_synthetic_customers(100)
+    leads = generate_synthetic_leads(100, customers=customers)
+    qualified = qualify_leads(leads, 30)
+    responses = simulate_outreach_responses(qualified, 10)
+    referrals = simulate_referrals(responses, 5)
+    deals = simulate_deals(referrals, partners, 5, ledger_path=ledger_path, now=now)
+
+    return {
+        "generated_at": _now_iso(now), "SIMULATION_ONLY": True,
+        "partners": len(partners), "prospects": len(customers), "qualified_leads": len(qualified),
+        "outreach_responses": len(responses), "deals": len(deals),
+        "note": "Section 12's own named counts -- entirely synthetic, verified never to touch real finance/commission/customer data.",
+    }
