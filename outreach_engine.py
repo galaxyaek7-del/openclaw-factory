@@ -152,15 +152,26 @@ ADAPTER_STATES = ("NO_CREDENTIAL", "NOT_CONFIGURED", "READY_FOR_TEST", "READY_FO
 # none of these exist today (confirmed by direct grep, Phase 33/34).
 # Never invents a provider name that isn't a real, generic category.
 REAL_SEND_CAPABILITIES = {
-    "lead_discovery": {"exists": False, "real_source": None, "note": "No real lead-sourcing integration exists -- prospects would need to come from a real, separate discovery pass (e.g. Golden Hunter's own real customer-problem signal, not yet wired here)."},
+    # Phase 37A (ADR-230, 2026-08-08) closed this gap: lead_discovery.py
+    # now discovers real, evidence-backed leads via legitimate keyless
+    # public APIs (HN Algolia + GitHub Search). Real, tested, callable
+    # today -- distinct from having found a *specific* qualified prospect
+    # for this factory's current opportunity, which depends on live
+    # network results at call time.
+    "lead_discovery": {"exists": True, "real_source": "lead_discovery.py::discover_lead_for_opportunity()", "note": "Real, tested. Reuses market_intelligence_engine.py's existing HN/GitHub query functions -- no new HTTP logic."},
     "lead_qualification": {"exists": True, "real_source": "lead_outreach_agent.py::record_prospect_transition() + explain_customer_match()", "note": "Real, tested."},
     "message_generation": {"exists": True, "real_source": "outreach_engine.py::draft_outreach_message()", "note": "Real template fallback always available; use_real_ai=True path exists but has never been exercised against a real AI call in production."},
     "personalization": {"exists": True, "real_source": "draft_outreach_message()'s real per-opportunity/customer template interpolation", "note": "Real but minimal -- a single template, not a personalization engine."},
     "approval": {"exists": True, "real_source": "outreach_engine.py::approve_outreach()/reject_outreach()", "note": "Real, tested, requires a real approved_by identity."},
-    "sending_adapter": {"exists": False, "real_source": None, "note": "No real email/SMS/API sending integration exists anywhere in this factory (confirmed by .env scan -- no SENDGRID/TWILIO/SMTP/OUTREACH-prefixed credential)."},
+    # Phase 37A also closed this gap: outreach_adapter.py::SMTPOutreachAdapter
+    # is real, callable code with a real smtplib send path -- still
+    # genuinely blocked today by CREDENTIAL_STATUS=MISSING (no real SMTP
+    # credential configured anywhere in this factory), never fabricated
+    # as LIVE. See outreach_adapter.adapter_status() for the live check.
+    "sending_adapter": {"exists": True, "real_source": "outreach_adapter.py::SMTPOutreachAdapter", "note": "Real code, real smtplib call path, CREDENTIAL_STATUS=MISSING today -- no SMTP credential configured (confirmed by .env scan)."},
     "follow_up": {"exists": False, "real_source": None, "note": "No real follow-up scheduler exists -- FOLLOW_UP is a named real prospect-pipeline state (lead_outreach_agent.py) with no automated trigger."},
-    "response_capture": {"exists": False, "real_source": None, "note": "No real inbound-reply capture mechanism exists -- would require the same missing sending adapter's inbound counterpart."},
-    "unsubscribe": {"exists": True, "real_source": "outreach_engine.OUTREACH_STATES's real OPTED_OUT state", "note": "Named and validated; never exercised (0 real outreach has ever been sent)."},
+    "response_capture": {"exists": False, "real_source": None, "note": "No real inbound-reply capture mechanism exists -- outreach_adapter.py::handle_reply()/handle_bounce() are real recording functions, but nothing polls a real inbox automatically; a human or external process must report the event."},
+    "unsubscribe": {"exists": True, "real_source": "outreach_engine.OUTREACH_STATES's real OPTED_OUT state + outreach_adapter.py::handle_unsubscribe()", "note": "Named, validated, and now wired to lead_discovery.py's real do-not-contact ledger; never exercised against a real send (0 real outreach has ever been sent)."},
     "crm_synchronization": {"exists": False, "real_source": None, "note": "No real external CRM exists to synchronize with -- customer_pipeline.py is this factory's own real, internal system-of-record instead."},
     "audit_logging": {"exists": True, "real_source": "outreach_engine.py::outreach_audit_trail() + data/outreach_log.jsonl", "note": "Real, append-only, tested."},
 }

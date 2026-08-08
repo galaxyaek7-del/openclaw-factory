@@ -103,9 +103,15 @@ class TestOutreachAdapterStatus(unittest.TestCase):
         result = oe.outreach_adapter_status()
         self.assertEqual(len(result["capabilities"]), 11)
 
-    def test_sending_adapter_honestly_reports_not_existing(self):
+    def test_sending_adapter_exists_but_state_still_reports_no_credential(self):
+        """Phase 37A (ADR-230) built a real adapter (outreach_adapter.py::
+        SMTPOutreachAdapter) -- exists=True now honestly reflects that.
+        The overall state must still never claim LIVE just because code
+        exists: no real SMTP credential is configured, so state stays
+        NO_CREDENTIAL."""
         result = oe.outreach_adapter_status()
-        self.assertFalse(result["capabilities"]["sending_adapter"]["exists"])
+        self.assertTrue(result["capabilities"]["sending_adapter"]["exists"])
+        self.assertEqual(result["state"], "NO_CREDENTIAL")
 
     def test_all_named_states_are_valid(self):
         for state in ("NO_CREDENTIAL", "NOT_CONFIGURED", "READY_FOR_TEST", "READY_FOR_APPROVAL", "LIVE", "BLOCKED"):
