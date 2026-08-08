@@ -453,8 +453,23 @@ def build_commission_commerce_dashboard(portfolio_path=None, ledger_path=None, n
 
     real_summary = cl.real_commission_summary(ledger_path=ledger_path)
 
+    # Phase 34 (ADR-227), Section 17 -- the 3 agents' real health,
+    # computed from their own real event data. Imported here (not at
+    # module scope) to avoid a real circular import (commercial_deal_
+    # agent.py and partner_intelligence_agent.py both import
+    # commission_engine.py).
+    import commercial_deal_agent as cda
+    import partner_intelligence_agent as pia
+    import lead_outreach_agent as loa
+    agents_health = {
+        "commercial_deal_agent": cda.agent_health(now=now),
+        "partner_intelligence_agent": pia.agent_health(portfolio_path=portfolio_path, now=now),
+        "lead_outreach_agent": loa.agent_health(now=now),
+    }
+
     return {
         "generated_at": _now_iso(now),
+        "agents_health": agents_health,
         "commission_opportunities": {
             "total": len(portfolio), "verified": len(verified), "partially_verified": len(partially_verified),
             "unverified": len(unverified), "stale": len(stale),

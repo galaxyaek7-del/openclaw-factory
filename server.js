@@ -2112,8 +2112,8 @@ const SERVICE_REGISTRY = [
   {
     // Commission Commerce Engine (ADR-226, Phase 33, 2026-08-08).
     name: 'commission-commerce-dashboard',
-    description: "Real, evidence-cited commission opportunity portfolio (13 real records derived from business_development.py's existing WebSearch-verified registry, ADR-188 -- no new research performed this round), verified/partially-verified/unverified counts, real commission ledger summary (REAL/TEST/SIMULATION kept strictly separate -- only CONFIRMED/PAID REAL records count), stale-opportunity detection, and honest INCOMPLETE/UNKNOWN markers everywhere real customer or economic data doesn't exist yet.",
-    reused: 'commission_engine.py::build_commission_commerce_dashboard() + commission_ledger.py::real_commission_summary(), via mission_control_api.py.',
+    description: "Real, evidence-cited commission opportunity portfolio (13 real records derived from business_development.py's existing WebSearch-verified registry, ADR-188 -- no new research performed this round), verified/partially-verified/unverified counts, real commission ledger summary (REAL/TEST/SIMULATION kept strictly separate -- only CONFIRMED/PAID REAL records count), stale-opportunity detection, honest INCOMPLETE/UNKNOWN markers everywhere real customer or economic data doesn't exist yet, and the 3 Commission Commerce agents' real health (commercial_deal_agent/partner_intelligence_agent/lead_outreach_agent -- status/last_run/error_rate/queue_size/blocked_reason, computed from real event data, ADR-227).",
+    reused: 'commission_engine.py::build_commission_commerce_dashboard() + commission_ledger.py::real_commission_summary() + 3 agents\' agent_health(), via mission_control_api.py.',
     handler: (req) => runPythonServiceCached('commission_commerce_dashboard', [], req),
     health: pythonHealthCheck('commission_commerce_dashboard'),
   },

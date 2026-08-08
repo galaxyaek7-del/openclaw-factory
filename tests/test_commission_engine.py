@@ -206,8 +206,14 @@ class TestCommissionCommerceDashboard(unittest.TestCase):
         for key in ("commission_opportunities", "verified_partners", "top_commission_opportunities",
                     "expected_commission_usd", "confirmed_commission_usd", "paid_commission_usd",
                     "real_revenue_usd", "real_customers", "real_orders", "real_payouts_usd",
-                    "stale_opportunities", "founder_actions", "unknown_data", "evidence_level"):
+                    "stale_opportunities", "founder_actions", "unknown_data", "evidence_level",
+                    "agents_health"):
             self.assertIn(key, result)
+
+    def test_agents_health_covers_all_three_agents(self):
+        result = ce.build_commission_commerce_dashboard()
+        for agent in ("commercial_deal_agent", "partner_intelligence_agent", "lead_outreach_agent"):
+            self.assertIn(agent, result["agents_health"])
 
     def test_real_metrics_are_zero_with_no_real_ledger_data(self):
         result = ce.build_commission_commerce_dashboard()
