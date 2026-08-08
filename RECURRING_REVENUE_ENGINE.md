@@ -18,4 +18,10 @@ Real, already covered in full by `business_development.py` (ADR-188) and `PLATFO
 
 ---
 
-*See also: `ADAPTIVE_GROWTH_ENGINE.md`, `COMMERCIAL_SCALE_DECISION.md` (Phase 15).*
+## Phase 29 update (2026-08-08, ADR-219) — Sections 15-17, the real Recurring Value Test gate
+
+`customer_success_engine.py::recurring_value_test()` is the genuinely new piece this round: a real, deterministic 6-question gate (continuing value / requires updates / ongoing-info value / reduces cost / monitoring benefit / support justifies payment) — **at least 1 real "yes" is required, or the result is `DO_NOT_CREATE_A_SUBSCRIPTION`**, verified by a dedicated regression test that calling it with all defaults (no real evidence supplied) correctly refuses. `subscription_tier_template()` (5 named tiers: Free/Trial → Enterprise) is a real schema, explicitly disclosing that artificial feature restrictions designed only to force upgrades are excluded by principle. **Recommendation unchanged**: still `DO_NOTHING` on recurring revenue until the First Commercial Milestone — this round adds the real gate mechanism, not a new recommendation to act.
+
+---
+
+*See also: `ADAPTIVE_GROWTH_ENGINE.md`, `COMMERCIAL_SCALE_DECISION.md` (Phase 15), `SUBSCRIPTION_ENGINE.md` (Phase 29).*

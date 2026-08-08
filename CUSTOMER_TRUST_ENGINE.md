@@ -26,4 +26,10 @@ Confirmed by direct inspection of `customer_intelligence.RETENTION_ACTIONS` — 
 
 ---
 
-*See also: `RETENTION_ENGINE.md`, `REFUND_INTELLIGENCE.md`.*
+## Phase 29 update (2026-08-08, ADR-219) — Section 39, the 9 named "never" rules
+
+`customer_success_engine.py::customer_trust_v2()` reuses `customer_trust_score()` above verbatim — no 2nd trust system was built. The directive's 9 named prohibitions (never hide fees, hide subscription renewal, fabricate outcomes/reviews, manipulate cancellation, create false urgency, misrepresent AI capabilities) are each already real, structural exclusions elsewhere in this factory: no hidden-fee code path exists (`pricing_review.py`), no renewal-hiding mechanism exists (0 real subscriptions), `customer_pipeline.py::submit_review()` is fabrication-proof, `RETENTION_ACTIONS` excludes dark patterns (verified by test), `brand_dna.py::check_fake_urgency_risk()` (Phase 20/22) blocks false urgency, and every AI-generated customer-facing claim must pass `zero_hallucination_check()` (Phase 24/28/29).
+
+---
+
+*See also: `RETENTION_ENGINE.md`, `REFUND_INTELLIGENCE.md`, `CUSTOMER_SUCCESS_AUTONOMY.md` (Phase 29).*

@@ -22,4 +22,10 @@
 
 ---
 
-*See also: `CUSTOMER_INTELLIGENCE_ENGINE.md`, `SUPPORT_INTELLIGENCE.md`.*
+## Phase 29 update (2026-08-08, ADR-219) — Sections 12-14, feedback classification + Feature Request Intelligence
+
+`customer_success_engine.py::feedback_engine()` reuses `feedback_report()` above verbatim. `feature_request_decision()` relabels `classify_feedback_for_roadmap()` onto this directive's `BUILD`/`TEST`/`DEFER`/`REJECT` vocabulary (`HIGH_VALUE→BUILD`, `MEDIUM_VALUE→TEST`, `LOW_VALUE→DEFER`, `INSUFFICIENT_EVIDENCE→REJECT`) — **never builds every requested feature**: 0 customers affected always resolves to `REJECT`, verified by a dedicated regression test. The 7 named classification categories (Praise/Problem/Feature Request/Confusion/Objection/Expectation Gap/Opportunity) map onto the real, existing feedback shape — no new categorization pipeline was built, since none of this factory's real feedback has been classified into these categories yet (0 real reviews).
+
+---
+
+*See also: `CUSTOMER_INTELLIGENCE_ENGINE.md`, `SUPPORT_INTELLIGENCE.md`, `CUSTOMER_ROI_ENGINE.md` (Phase 29).*

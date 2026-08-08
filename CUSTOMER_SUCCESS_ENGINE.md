@@ -18,4 +18,10 @@ Reuses `global_commercial_scale.py::unit_economics_report()`'s real per-product 
 
 ---
 
-*See also: `B2B_COMMERCIAL_ENGINE.md`, `CUSTOMER_COHORT_ANALYSIS.md`.*
+## Phase 29 update (2026-08-08, ADR-219) — the full Customer Success, Retention & Recurring Revenue Engine
+
+`customer_success_engine.py` (new module) is the real aggregator this later directive asked for — it computes every real sub-report exactly once (`build_customer_success_dashboard()`) over this document's own real functions plus `global_growth_engine.py` (Phase 28), `enterprise_transformation_engine.py` (Phase 24), and `revenue_operating_system.py` (Phase 21). The genuinely new pieces this round: `customer_health_score()` (5-state explainable classifier, never reports `HEALTHY` from uncertainty), `recurring_value_test()` (real 6-question gate, refuses a subscription by default), `root_cause_analysis()`, `customer_profitability()` (real subtraction chain), and `customer_roi()`. See `CUSTOMER_VALUE_ENGINE.md`, `CUSTOMER_HEALTH_ENGINE.md`, `CUSTOMER_PROFITABILITY.md`, and `CUSTOMER_ROI_ENGINE.md` for the full detail — not duplicated here.
+
+---
+
+*See also: `B2B_COMMERCIAL_ENGINE.md`, `CUSTOMER_COHORT_ANALYSIS.md`, `CUSTOMER_VALUE_ENGINE.md` (Phase 29).*

@@ -24,4 +24,10 @@
 
 ---
 
-*See also: `CUSTOMER_TRUST_ENGINE.md`, `CHURN_INTELLIGENCE.md`, `CHURN_ENGINE.md` (Phase 28).*
+## Phase 29 update (2026-08-08, ADR-219) — Section 8, real intervention list
+
+`customer_success_engine.py::retention_recommendations()` reuses `retention_engine_recommendations()` above verbatim — no 3rd retention-action system was built. This directive names 11 specific interventions (Better Onboarding, Education, Support, Product Improvement, Documentation, Customer Success Contact, Relevant Feature, Relevant Upgrade, Renewal Reminder, Training, Consultation) — all map cleanly onto the existing `RETENTION_ACTIONS` taxonomy above. **Never uses manipulative dark patterns** — same real, tested exclusion this document's Section 14 already established.
+
+---
+
+*See also: `CUSTOMER_TRUST_ENGINE.md`, `CHURN_INTELLIGENCE.md`, `CHURN_ENGINE.md` (Phase 28/29).*
