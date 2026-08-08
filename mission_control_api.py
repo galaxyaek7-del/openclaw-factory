@@ -1517,6 +1517,26 @@ def _growth_simulations():
     return run_all_phase28_simulations()
 
 
+def _customer_success_dashboard():
+    """Customer Success, Retention & Recurring Revenue Engine, Section
+    41/48 (ADR-219, Phase 29, 2026-08-08): the one real aggregator --
+    Customer Outcome, Onboarding, Churn, Retention, Support, Root
+    Cause, Refunds, Feedback, Recurring Revenue, Renewal, Expansion,
+    LTV, Segment Profitability, Queue, Automation Boundaries,
+    Community, Enterprise Success, Forecast, Experiments, Trust,
+    Autonomy."""
+    from customer_success_engine import build_customer_success_dashboard
+    return build_customer_success_dashboard()
+
+
+def _customer_success_simulations():
+    """Section 47 (ADR-219): 10 named customer simulations -- real
+    logic over disclosed hypothetical assumptions. Never written to
+    any ledger."""
+    from customer_success_engine import run_all_phase29_simulations
+    return run_all_phase29_simulations()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3374,6 +3394,8 @@ _ENDPOINTS = {
     "commercial_autonomy_simulations": _commercial_autonomy_simulations,
     "growth_dashboard": _growth_dashboard,
     "growth_simulations": _growth_simulations,
+    "customer_success_dashboard": _customer_success_dashboard,
+    "customer_success_simulations": _customer_success_simulations,
 }
 
 

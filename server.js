@@ -2053,6 +2053,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('growth_simulations', [], req, 60000),
     health: pythonHealthCheck('growth_simulations'),
   },
+  {
+    // Customer Success, Retention & Recurring Revenue Engine, Section
+    // 41/48 (ADR-219, Phase 29, 2026-08-08).
+    name: 'customer-success-dashboard',
+    description: "Customer Outcome, Onboarding, Churn, Retention, Support, Root Cause (real clustering over customer_pipeline.py's real problem-cost signal), Refunds, Feedback, Recurring Revenue (real 6-question gate -- SUBSCRIPTION_JUSTIFIED requires at least 1 real yes, never defaults to yes), Renewal, Expansion, LTV, Segment Profitability, Queue, Automation Boundaries (7 named human-required categories, 9 safe-to-automate), Community, Enterprise Success, Forecast, Experiments, Trust, Autonomy (6th relabeling this session of autonomous_operations.py's Level 0-6 taxonomy).",
+    reused: 'customer_success_engine.py::build_customer_success_dashboard(), via mission_control_api.py. Measured live ~13s.',
+    handler: (req) => runPythonServiceCached('customer_success_dashboard', [], req),
+    health: pythonHealthCheck('customer_success_dashboard'),
+  },
+  {
+    name: 'customer-success-simulations',
+    description: "10 named customer simulations (Sections 1-10) -- real logic over disclosed hypothetical assumptions (activation/churn/refund-spike/expansion/subscription-redesign/feature-request scenarios). Simulation 10 reuses the real AI Council + Red Team. Verified by a regression test that none ever writes to a real ledger.",
+    reused: 'customer_success_engine.py::run_all_phase29_simulations(), via mission_control_api.py. Measured live ~18s.',
+    handler: (req) => runPythonServiceCached('customer_success_simulations', [], req, 60000),
+    health: pythonHealthCheck('customer_success_simulations'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
