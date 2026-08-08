@@ -34,8 +34,24 @@ DEFAULT_OPPORTUNITIES_PATH = _FACTORY_ROOT / "data" / "commission_opportunities.
 DEFAULT_PIPELINE_EVENTS_PATH = _FACTORY_ROOT / "data" / "commission_pipeline_events.jsonl"
 
 PARTNER_VERIFICATION_STATUSES = (
-    "VERIFIED", "PARTIALLY_VERIFIED", "UNVERIFIED", "STALE", "BLOCKED_EXTERNAL", "REJECTED",
+    "VERIFIED", "PARTIALLY_VERIFIED", "THIRD_PARTY_ONLY", "UNVERIFIED", "STALE",
+    "CONFLICTING_EVIDENCE", "BLOCKED_EXTERNAL", "REJECTED",
 )
+
+# Phase 35 (ADR-228, 2026-08-08), Section 2: real domain map so
+# categorize_evidence_source()'s official-vs-secondary check is
+# accurate for every platform -- a naive partner_id-as-domain heuristic
+# silently fails for 3 of 19 real platforms (creative_market has no
+# underscore in its real domain; notion.so and n8n.io aren't .com).
+# Verified against business_development.py::PLATFORM_REGISTRY's own
+# real keys.
+PARTNER_DOMAIN_MAP = {
+    "amazon": "amazon.com", "gumroad": "gumroad.com", "paddle": "paddle.com", "etsy": "etsy.com",
+    "shopify": "shopify.com", "creative_market": "creativemarket.com", "envato": "envato.com",
+    "adobe": "adobe.com", "microsoft": "microsoft.com", "google": "google.com", "openai": "openai.com",
+    "anthropic": "anthropic.com", "stripe": "stripe.com", "notion": "notion.so", "canva": "canva.com",
+    "figma": "figma.com", "github": "github.com", "zapier": "zapier.com", "n8n": "n8n.io",
+}
 
 COMMISSION_PIPELINE_STATES = [
     "OPPORTUNITY", "VERIFIED_PARTNER", "CUSTOMER_MATCH", "LEAD", "QUALIFIED", "OUTREACH",
@@ -103,9 +119,10 @@ def derive_initial_opportunity_portfolio(now=None):
                 "payout_terms": entry.get("minimum_payout", "UNKNOWN"),
                 "eligibility": "Self-service signup" if "self-service" in str(entry.get("difficulty", "")).lower() else "UNKNOWN",
                 "geography": entry.get("geographic_restrictions", "UNKNOWN"),
+                "terms_url": entry.get("terms"),
                 "evidence_url": entry.get("evidence", []),
                 "evidence_timestamp": "2026-08-07 (business_development.py WebSearch pass, ADR-188)",
-                "verification_status": _derive_verification_status(entry, odata),
+                "verification_status": _derive_verification_status(entry, odata, platform=platform),
                 "confidence": "MEDIUM" if entry.get("evidence") else "LOW",
                 "economic_score": None,  # computed separately by score_commission_opportunity()
                 "risk_score": entry.get("risk", "UNKNOWN"),
@@ -116,20 +133,45 @@ def derive_initial_opportunity_portfolio(now=None):
     return portfolio
 
 
-def _derive_verification_status(entry, odata):
+def _derive_verification_status(entry, odata, platform=None):
     """Real, mechanical derivation -- never marks VERIFIED merely
-    because an AI model found a webpage. Requires a real terms URL AND
-    at least one real evidence URL AND a real, non-placeholder
-    commission figure."""
-    has_terms = bool(entry.get("terms")) and str(entry.get("terms")).startswith("http")
-    has_evidence = bool(entry.get("evidence"))
+    because an AI model found a webpage, and never merely because SOME
+    evidence exists. Fixed in Phase 35 (ADR-228) after a real finding
+    in Phase 34: the original version granted VERIFIED to Amazon
+    Associates purely because a real terms URL + 2 real evidence URLs +
+    a real commission figure were all present -- without ever checking
+    that the 2 evidence URLs were both third-party blogs
+    (azonpress.com, sellvia.com), not amazon.com itself. This version
+    categorizes every real evidence URL (and the real terms URL) via
+    partner_intelligence_agent.categorize_evidence_source() and
+    requires at least one genuinely OFFICIAL_* source before granting
+    VERIFIED -- third-party evidence alone, however abundant, caps the
+    result at THIRD_PARTY_ONLY."""
+    from partner_intelligence_agent import categorize_evidence_source
+
+    terms_url = entry.get("terms")
+    has_terms = bool(terms_url) and str(terms_url).startswith("http")
+    evidence_urls = entry.get("evidence") or []
     has_commission = odata.get("commission") not in (None, "?", "")
-    if has_terms and has_evidence and has_commission:
+
+    domain = PARTNER_DOMAIN_MAP.get(platform) if platform else None
+    categorized = []
+    if has_terms:
+        categorized.append(categorize_evidence_source(terms_url, partner_domain=domain))
+    for url in evidence_urls:
+        categorized.append(categorize_evidence_source(url, partner_domain=domain))
+
+    has_official = any(c["category"] != "TRUSTED_SECONDARY_SOURCE" and c["category"] != "UNKNOWN" for c in categorized)
+    has_any_evidence = len(categorized) > 0
+
+    if has_official and has_commission:
         return "VERIFIED"
-    if has_evidence and has_commission:
+    if has_official:
         return "PARTIALLY_VERIFIED"
-    if has_evidence:
-        return "UNVERIFIED"
+    if has_any_evidence and has_commission:
+        return "THIRD_PARTY_ONLY"
+    if has_any_evidence:
+        return "THIRD_PARTY_ONLY"
     return "UNVERIFIED"
 
 

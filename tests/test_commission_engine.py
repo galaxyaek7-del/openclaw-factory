@@ -53,10 +53,33 @@ class TestVerificationStatus(unittest.TestCase):
         self.assertNotEqual(status, "VERIFIED")
 
     def test_verified_requires_all_three_signals(self):
+        # Phase 35 (ADR-228): VERIFIED now requires the evidence to be
+        # genuinely official (on the real partner's own domain), not
+        # merely present -- a real terms/evidence URL on an unrelated
+        # domain (example.com) with no partner_domain to match against
+        # correctly stays THIRD_PARTY_ONLY, never VERIFIED.
         entry = {"terms": "https://example.com/terms", "evidence": ["https://example.com/proof"]}
         odata = {"commission": "10%"}
         status = ce._derive_verification_status(entry, odata)
+        self.assertEqual(status, "THIRD_PARTY_ONLY")
+
+    def test_unmapped_platform_never_silently_trusted(self):
+        entry = {"terms": "https://realpartner.com/affiliate/terms", "evidence": ["https://realpartner.com/affiliate/signup"]}
+        odata = {"commission": "10%"}
+        status = ce._derive_verification_status(entry, odata, platform="a_platform_not_in_the_domain_map")
+        self.assertEqual(status, "THIRD_PARTY_ONLY")
+
+    def test_verified_when_evidence_is_genuinely_official_and_mapped(self):
+        entry = {"terms": "https://amazon.com/affiliate/agreement", "evidence": []}
+        odata = {"commission": "10%"}
+        status = ce._derive_verification_status(entry, odata, platform="amazon")
         self.assertEqual(status, "VERIFIED")
+
+    def test_third_party_only_when_evidence_exists_but_off_domain(self):
+        entry = {"terms": None, "evidence": ["https://some-random-blog.com/amazon-review"]}
+        odata = {"commission": "10%"}
+        status = ce._derive_verification_status(entry, odata, platform="amazon")
+        self.assertEqual(status, "THIRD_PARTY_ONLY")
 
     def test_all_statuses_are_named(self):
         for status in ("VERIFIED", "PARTIALLY_VERIFIED", "UNVERIFIED"):
