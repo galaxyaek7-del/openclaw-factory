@@ -65,6 +65,17 @@ class AdapterTestCase(unittest.TestCase):
         self.draft_log = self.tmp / "drafts.jsonl"
         self.now = datetime(2026, 8, 8, tzinfo=timezone.utc)
 
+    def _full_approval(self, draft, **overrides):
+        approval = {
+            "approved_lead_id": draft["lead_id"], "approved_opportunity_id": draft["opportunity_id"],
+            "approved_partner_id": OPPORTUNITY["partner_id"], "approved_channel": draft["channel"],
+            "approved_message_hash": draft["message_hash"], "maximum_action_scope": "single_message_send",
+            "approval_timestamp": "2026-08-08T00:00:00Z", "expiration_time": "2026-08-09T00:00:00Z",
+            "approved_by": "test-ceo", "approved_at": "2026-08-08T00:00:00Z", "approval_scope": "REF-1",
+        }
+        approval.update(overrides)
+        return approval
+
     def _approved_draft(self, env=None):
         adapter = oa.SMTPOutreachAdapter(env=env or {})
         draft = oa.prepare_scoped_draft(OPPORTUNITY, LEAD, channel="email", log_path=self.draft_log, now=self.now)
@@ -158,42 +169,56 @@ class TestCeoApprovalMissingOrWrongScope(AdapterTestCase):
 
     def test_wrong_scope_lead_id_refused(self):
         _, draft = self._approved_draft()
-        approval = {
-            "approved_lead_id": "LEAD-someone-else", "approved_opportunity_id": draft["opportunity_id"],
-            "approved_partner_id": OPPORTUNITY["partner_id"], "approved_channel": draft["channel"],
-            "approved_message_hash": draft["message_hash"], "approval_timestamp": "2026-08-08T00:00:00Z",
-            "approval_scope": "REF-1",
-        }
-        result = oa.verify_exact_scope_approval(draft, approval, opportunity=OPPORTUNITY)
+        approval = self._full_approval(draft, approved_lead_id="LEAD-someone-else")
+        result = oa.verify_exact_scope_approval(draft, approval, opportunity=OPPORTUNITY, now=self.now)
         self.assertFalse(result["ok"])
         self.assertEqual(result["reason"], "APPROVAL_SCOPE_MISMATCH")
         self.assertIn("approved_lead_id does not match this draft's lead_id", result["mismatches"])
 
 
+class TestApprovalExpiration(AdapterTestCase):
+    """Phase 38b ('Chief Commercial Engineer' directive, ADR-234), Section 8."""
+
+    def test_expired_approval_is_refused(self):
+        _, draft = self._approved_draft()
+        approval = self._full_approval(draft, expiration_time="2026-08-07T00:00:00Z")  # before self.now (2026-08-08)
+        result = oa.verify_exact_scope_approval(draft, approval, opportunity=OPPORTUNITY, now=self.now)
+        self.assertFalse(result["ok"])
+        self.assertIn("APPROVAL_EXPIRED", result["reason"])
+
+    def test_approval_expiring_exactly_now_is_refused_not_a_grace_period(self):
+        _, draft = self._approved_draft()
+        approval = self._full_approval(draft, expiration_time=self.now.isoformat())
+        result = oa.verify_exact_scope_approval(draft, approval, opportunity=OPPORTUNITY, now=self.now)
+        self.assertFalse(result["ok"])
+
+    def test_unparseable_expiration_time_is_refused_never_treated_as_non_expiring(self):
+        _, draft = self._approved_draft()
+        approval = self._full_approval(draft, expiration_time="not-a-real-timestamp")
+        result = oa.verify_exact_scope_approval(draft, approval, opportunity=OPPORTUNITY, now=self.now)
+        self.assertFalse(result["ok"])
+
+    def test_future_expiration_allows(self):
+        _, draft = self._approved_draft()
+        approval = self._full_approval(draft, expiration_time="2026-08-09T00:00:00Z")
+        result = oa.verify_exact_scope_approval(draft, approval, opportunity=OPPORTUNITY, now=self.now)
+        self.assertTrue(result["ok"])
+
+
 class TestMessageChangedAfterApproval(AdapterTestCase):
     def test_message_hash_mismatch_after_approval_is_caught(self):
         _, draft = self._approved_draft()
-        good_approval = {
-            "approved_lead_id": draft["lead_id"], "approved_opportunity_id": draft["opportunity_id"],
-            "approved_partner_id": OPPORTUNITY["partner_id"], "approved_channel": draft["channel"],
-            "approved_message_hash": draft["message_hash"], "approval_timestamp": "2026-08-08T00:00:00Z",
-            "approval_scope": "REF-1",
-        }
+        good_approval = self._full_approval(draft)
         # message changes after approval was granted
         draft["message_hash"] = "different-hash-because-message-changed"
-        result = oa.verify_exact_scope_approval(draft, good_approval, opportunity=OPPORTUNITY)
+        result = oa.verify_exact_scope_approval(draft, good_approval, opportunity=OPPORTUNITY, now=self.now)
         self.assertFalse(result["ok"])
         self.assertTrue(any("approved_message_hash does not match" in m for m in result["mismatches"]))
 
     def test_exact_scope_approval_with_real_ceo_gate_allows(self):
         _, draft = self._approved_draft()
-        approval = {
-            "approved_lead_id": draft["lead_id"], "approved_opportunity_id": draft["opportunity_id"],
-            "approved_partner_id": OPPORTUNITY["partner_id"], "approved_channel": draft["channel"],
-            "approved_message_hash": draft["message_hash"], "approval_timestamp": "2026-08-08T00:00:00Z",
-            "approval_scope": "REF-1",
-        }
-        result = oa.verify_exact_scope_approval(draft, approval, opportunity=OPPORTUNITY)
+        approval = self._full_approval(draft)
+        result = oa.verify_exact_scope_approval(draft, approval, opportunity=OPPORTUNITY, now=self.now)
         self.assertTrue(result["ok"])
 
 

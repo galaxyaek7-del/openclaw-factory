@@ -334,19 +334,38 @@ def prepare_scoped_draft(opportunity, lead, channel="email", use_real_ai=False, 
 
 REQUIRED_APPROVAL_SCOPE_FIELDS = (
     "approved_lead_id", "approved_opportunity_id", "approved_partner_id",
-    "approved_channel", "approved_message_hash", "approval_timestamp", "approval_scope",
+    "approved_channel", "approved_message_hash", "maximum_action_scope",
+    "approval_timestamp", "expiration_time", "approved_by", "approved_at", "approval_scope",
 )
 
 
-def verify_exact_scope_approval(draft, approval, opportunity=None):
+def verify_exact_scope_approval(draft, approval, opportunity=None, now=None):
     """A generic CEO_APPROVAL=true is explicitly not enough (Section
-    18). Every one of the 7 named scope fields must be present AND
-    must exactly match the specific draft being sent -- and the
-    underlying autonomous_operations.py Level 5 gate must also ALLOW."""
+    18/8 of the two founder directives naming this exact requirement).
+    Every one of the 11 named scope fields must be present AND must
+    exactly match the specific draft being sent -- and the underlying
+    autonomous_operations.py Level 5 gate must also ALLOW.
+
+    Phase 38b ("Chief Commercial Engineer" directive, ADR-234, 2026-08-08),
+    Section 8: extends the real Phase 37A approval object (4 identity/
+    scope fields) with the 4 remaining directive-named fields --
+    maximum_action_scope, expiration_time, approved_by, approved_at --
+    and adds the one genuinely new check: an approval whose real
+    expiration_time has passed is refused, never silently honored."""
+    now = now or datetime.now(timezone.utc)
     approval = approval or {}
     missing = [f for f in REQUIRED_APPROVAL_SCOPE_FIELDS if not approval.get(f)]
     if missing:
         return {"ok": False, "reason": f"approval is missing required scope fields: {missing}"}
+
+    try:
+        expires_at = datetime.fromisoformat(str(approval["expiration_time"]).replace("Z", "+00:00"))
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+    except ValueError:
+        return {"ok": False, "reason": f"expiration_time={approval['expiration_time']!r} is not a real, parseable timestamp -- never treated as non-expiring"}
+    if now >= expires_at:
+        return {"ok": False, "reason": f"APPROVAL_EXPIRED -- expiration_time={approval['expiration_time']} has passed (now={now.isoformat()})"}
 
     mismatches = []
     if approval["approved_lead_id"] != draft.get("lead_id"):
