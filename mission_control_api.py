@@ -1352,6 +1352,24 @@ def _autonomous_daily_score():
     return autonomous_daily_score()
 
 
+def _global_commercial_scale_dashboard():
+    """Global Commercial Scale & Expansion Engine, Section 26/33
+    (ADR-210, Phase 20, 2026-08-08): the one real aggregator -- Evidence
+    Gate, Scaling Eligibility, Unit Economics, Concentration Risk,
+    Market Prioritization, B2B Engine, Partnerships, Revenue Forecast,
+    Commercial Reputation, computed exactly once each."""
+    from global_commercial_scale import build_global_commercial_scale_dashboard
+    return build_global_commercial_scale_dashboard()
+
+
+def _autonomous_scale_recommendations():
+    """Section 25 (ADR-210): real, per-product scale recommendations,
+    each checked through autonomous_operations.authorize_action()
+    (ADR-209) -- never self-executes anything."""
+    from global_commercial_scale import autonomous_scale_recommendations
+    return autonomous_scale_recommendations()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3191,6 +3209,8 @@ _ENDPOINTS = {
     "incident_lifecycle": _incident_lifecycle,
     "daily_autonomous_review": _daily_autonomous_review,
     "autonomous_daily_score": _autonomous_daily_score,
+    "global_commercial_scale_dashboard": _global_commercial_scale_dashboard,
+    "autonomous_scale_recommendations": _autonomous_scale_recommendations,
 }
 
 

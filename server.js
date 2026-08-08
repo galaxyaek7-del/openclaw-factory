@@ -1909,6 +1909,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('autonomous_daily_score', [], req),
     health: pythonHealthCheck('autonomous_daily_score'),
   },
+  {
+    // Global Commercial Scale & Expansion Engine, Section 26/33
+    // (ADR-210, Phase 20, 2026-08-08).
+    name: 'global-commercial-scale-dashboard',
+    description: "The Evidence Gate (16 named fields, honestly INSUFFICIENT_EVIDENCE today -- $0 real revenue), Scaling Eligibility (per real product, evidence-driven, never above TESTING/VALIDATED today), Unit Economics (real fee model for 5 tiers, every untracked cost honestly UNKNOWN), Concentration Risk (reused verbatim), Market Prioritization (reused verbatim), the real B2B Commercial Engine finding (0 of 98 real niches ever tagged ai_saas/b2b_systems), Partnerships, Revenue Forecast (6 categories kept structurally separate), and Commercial Reputation -- 9 real sub-reports computed exactly once.",
+    reused: 'global_commercial_scale.py::build_global_commercial_scale_dashboard(), via mission_control_api.py. Measured live ~23s.',
+    handler: (req) => runPythonServiceCached('global_commercial_scale_dashboard', [], req, 60000),
+    health: pythonHealthCheck('global_commercial_scale_dashboard'),
+  },
+  {
+    name: 'autonomous-scale-recommendations',
+    description: "Real, per-product scale recommendations (TEST/MEASURE/SCALE/MAINTAIN), each checked through autonomous_operations.py's real authorize_action() (ADR-209) -- never self-executes anything; irreversible actions stay founder-gated exactly as before.",
+    reused: 'global_commercial_scale.py::autonomous_scale_recommendations(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('autonomous_scale_recommendations', [], req),
+    health: pythonHealthCheck('autonomous_scale_recommendations'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
