@@ -1635,13 +1635,25 @@ def _commission_daily_brief():
 
 
 def _lead_discovery_status():
-    """Lead Discovery (Phase 37A, ADR-230, 2026-08-08): real, read-only
-    summary of already-persisted leads.jsonl -- deliberately does NOT
-    trigger a new live discovery pass on every poll (same precedent as
-    commission-commerce-dashboard not re-scanning the portfolio live);
-    a real discovery run is a deliberate, separate action. Never
-    displays test/simulation leads as real commercial activity --
-    simulation_only=true leads are counted in their own field."""
+    """Lead Discovery (Phase 37A, ADR-230; extended Phase 37C, ADR-232,
+    2026-08-08): real, read-only summary of already-persisted
+    leads.jsonl -- deliberately does NOT trigger a new live discovery
+    pass on every poll (same precedent as commission-commerce-dashboard
+    not re-scanning the portfolio live); a real discovery run is a
+    deliberate, separate action. Never displays test/simulation leads
+    as real commercial activity -- simulation_only=true leads are
+    counted in their own field.
+
+    Phase 37C, Section 13: candidate/qualified/provisional/rejected and
+    fresh/stale/unknown-evidence breakdowns now read from the real,
+    persisted lead_discovery_events.jsonl (every LEAD_QUALIFIED/
+    LEAD_REJECTED event carries qualification_status/freshness_status
+    since this round) -- a cumulative, all-time real count across every
+    real discovery run, not just the currently-persisted (accepted-only)
+    leads.jsonl. Distinct from LIVE_DISCOVERY (this data) vs SIMULATION
+    (simulation_only=true leads, own field) vs REAL_COMMERCIAL_EVENT
+    (never derived from this panel at all -- commission_ledger.py's own
+    real ledger is the only source of that)."""
     import lead_discovery as ld
     leads = ld.load_leads()
     real_leads = [l for l in leads if not l.get("simulation_only")]
@@ -1650,14 +1662,38 @@ def _lead_discovery_status():
     rejected = [l for l in real_leads if l.get("status") == "REJECTED"]
     blocked = [l for l in real_leads if l.get("status") == "BLOCKED"]
     top_candidate = qualified[-1] if qualified else None
+
+    events = ld._read_jsonl(ld.DEFAULT_LEAD_EVENTS_PATH)
+    candidate_events = [e for e in events if e.get("event") in ("LEAD_QUALIFIED", "LEAD_REJECTED")]
+    status_breakdown = {
+        "QUALIFIED": sum(1 for e in candidate_events if e.get("qualification_status") == "QUALIFIED"),
+        "PROVISIONAL": sum(1 for e in candidate_events if e.get("qualification_status") == "PROVISIONAL"),
+        "REJECTED": sum(1 for e in candidate_events if e.get("qualification_status") == "REJECTED"),
+    }
+    freshness_breakdown = {
+        "FRESH": sum(1 for e in candidate_events if e.get("freshness_status") == "FRESH"),
+        "STALE": sum(1 for e in candidate_events if e.get("freshness_status") == "STALE"),
+        "UNKNOWN": sum(1 for e in candidate_events if e.get("freshness_status") == "UNKNOWN"),
+    }
+
     return {
         "generated_at": ld._now_iso(),
         "leads_discovered": len(real_leads), "qualified_leads": len(qualified),
         "rejected_leads": len(rejected), "blocked_leads": len(blocked),
         "simulation_leads_recorded_separately": len(simulation_leads),
         "top_candidate": top_candidate,
+        "candidate_evaluations_all_time": len(candidate_events),
+        "qualification_status_breakdown_all_time": status_breakdown,
+        "evidence_freshness_breakdown_all_time": freshness_breakdown,
         "agent_health": ld.agent_health(),
-        "note": "Read-only summary of already-persisted real leads.jsonl -- does not trigger a new live discovery pass, which would make a real external HN/GitHub API call on every Mission Control poll.",
+        "note": (
+            "Read-only summary of already-persisted real leads.jsonl + the real lead_discovery_events.jsonl audit trail -- "
+            "does not trigger a new live discovery pass, which would make a real external HN/GitHub/Stack Overflow API call "
+            "on every Mission Control poll. Never counts a discovery event as a customer, deal, or revenue. "
+            "The breakdown fields only count events carrying qualification_status/freshness_status, a schema added Phase 37C "
+            "(2026-08-08) -- earlier real events (Phase 37B) are still present in candidate_evaluations_all_time's underlying "
+            "file but predate that schema and are honestly excluded from the two breakdown dicts rather than miscounted."
+        ),
     }
 
 
