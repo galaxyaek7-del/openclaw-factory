@@ -56,19 +56,24 @@ class TestConflictingTerms(unittest.TestCase):
 
 
 class TestDuplicateCommission(unittest.TestCase):
-    def test_duplicate_commission_ids_both_recorded_but_distinguishable(self):
-        # commission_ledger.py does not silently merge -- both real
-        # records exist with their own real created_at, so a downstream
-        # reconciliation can detect the duplicate rather than losing it.
+    def test_duplicate_real_transaction_id_is_refused_not_merely_distinguishable(self):
+        # Phase 38b ("Chief Commercial Engineer" directive, ADR-234,
+        # 2026-08-08), Section 13's named "duplicate commission" case
+        # tightened this: the same real external_transaction_id must
+        # never be recorded twice at all (previously this test asserted
+        # the older, weaker "both recorded but distinguishable"
+        # behavior -- superseded by DuplicateCommissionError, which
+        # rejects the second write outright rather than relying on a
+        # downstream reconciliation pass to catch it after the fact).
         with tempfile.TemporaryDirectory() as d:
             path = os.path.join(d, "ledger.jsonl")
             cl.record_commission("p", "o", "PAID", 100.0, "REAL", evidence="evidence-1",
                                   external_transaction_id="txn_dup", ledger_path=path)
-            cl.record_commission("p", "o", "PAID", 100.0, "REAL", evidence="evidence-2",
-                                  external_transaction_id="txn_dup", ledger_path=path)
+            with self.assertRaises(cl.DuplicateCommissionError):
+                cl.record_commission("p", "o", "PAID", 100.0, "REAL", evidence="evidence-2",
+                                      external_transaction_id="txn_dup", ledger_path=path)
             records = cl.load_ledger(ledger_path=path)
-            txn_ids = [r["external_transaction_id"] for r in records]
-            self.assertEqual(txn_ids.count("txn_dup"), 2, "both records preserved for real reconciliation, never silently dropped")
+            self.assertEqual(len(records), 1, "the second, duplicate write must never reach disk")
 
 
 class TestFakeOrderAndPayout(unittest.TestCase):
