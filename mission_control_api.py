@@ -1442,6 +1442,24 @@ def _enterprise_reusability_inventory():
     return reusability_inventory()
 
 
+def _partnership_network_dashboard():
+    """Global Partnership & Distribution Network, Section 37/42
+    (ADR-215, Phase 25, 2026-08-08): the one real aggregator over
+    business_development.py's real 21-platform registry -- Lifecycle,
+    Affiliate/Referral/Reseller/Distributor, Attribution, Conflict
+    Check, Fraud Status, Security, Network Health, Integration
+    Signals."""
+    from global_partnership_network import build_partnership_network_dashboard
+    return build_partnership_network_dashboard()
+
+
+def _distribution_network_health():
+    """Section 38 (ADR-215): 10 named components, each a real citation
+    or an honest gap -- no fabricated composite score."""
+    from global_partnership_network import distribution_network_health
+    return distribution_network_health()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3291,6 +3309,8 @@ _ENDPOINTS = {
     "product_innovation_efficiency": _product_innovation_efficiency,
     "enterprise_transformation_dashboard": _enterprise_transformation_dashboard,
     "enterprise_reusability_inventory": _enterprise_reusability_inventory,
+    "partnership_network_dashboard": _partnership_network_dashboard,
+    "distribution_network_health": _distribution_network_health,
 }
 
 

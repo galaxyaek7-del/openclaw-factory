@@ -141,6 +141,16 @@ ACTION_CATEGORY_AUTONOMY = {
         "level": 6,
         "citation": "Legal terms, liability, indemnification, data-processing obligations, and regulatory commitments always require real human/legal review -- no automated path may ever agree to these, per Section 26 of ADR-214's own directive.",
     },
+    # Global Partnership & Distribution Network (ADR-215, Phase 25,
+    # 2026-08-08): 1 real, additive category -- partner exclusivity/
+    # territory commitments are distinct enough from the generic
+    # enterprise_contract_commitment category above to warrant their
+    # own citation (a territory grant restricts this factory's own
+    # future options in a way a generic contract signature doesn't).
+    "partner_exclusivity_or_territory_commitment": {
+        "level": 5,
+        "citation": "No real exclusivity/territory grant has ever been made to any partner -- classified Level 5 in anticipation, same precedent as business_retirement/enterprise_contract_commitment (ADR-142/214), never a real execution path to gate yet.",
+    },
 }
 
 

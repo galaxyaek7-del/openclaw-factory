@@ -1989,6 +1989,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('enterprise_reusability_inventory', [], req),
     health: pythonHealthCheck('enterprise_reusability_inventory'),
   },
+  {
+    // Global Partnership & Distribution Network, Section 37/42
+    // (ADR-215, Phase 25, 2026-08-08).
+    name: 'partnership-network-dashboard',
+    description: "Relabels business_development.py's real 21-platform registry (ADR-188, WebSearch-verified, never a partner's own self-reported claim) onto the directive's shape: real 11-stage Lifecycle mapping, Affiliate/Referral/Reseller/Distributor engines (referral/reseller/distributor honestly NOT_BUILT), Partner Attribution, Conflict Check, a real SUSPICION->INVESTIGATION->EVIDENCE->DECISION Fraud state machine (never auto-accuses), Security (honestly NOT_BUILT), and Distribution Network Health.",
+    reused: 'global_partnership_network.py::build_partnership_network_dashboard(), via mission_control_api.py. Measured live ~0.5s.',
+    handler: (req) => runPythonServiceCached('partnership_network_dashboard', [], req),
+    health: pythonHealthCheck('partnership_network_dashboard'),
+  },
+  {
+    name: 'distribution-network-health',
+    description: "10 named health components (Revenue Diversity, Partner Quality, Reliability, Customer Quality, Channel Stability, Concentration, Recurring Revenue, Security, Compliance, Confidence) -- each a real citation or an honest gap. No fabricated composite score. Real finding: 1 real ACTIVE relationship (Paddle, a payment processor, not a distribution partner), confidence LOW.",
+    reused: 'global_partnership_network.py::distribution_network_health(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('distribution_network_health', [], req),
+    health: pythonHealthCheck('distribution_network_health'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
