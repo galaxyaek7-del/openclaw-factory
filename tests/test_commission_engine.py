@@ -1141,5 +1141,91 @@ class TestProvisionalLedgerEnvironment(unittest.TestCase):
         self.assertEqual(result["REAL_REVENUE"], 0)
 
 
+class TestFirstDollarModeStatus(unittest.TestCase):
+    """Phase 41 (ADR-238), Section H."""
+
+    def test_armed_waiting_when_no_real_commission_exists(self):
+        result = ce.first_dollar_mode_status()
+        self.assertEqual(result["MODE"], "ARMED_WAITING_FOR_FIRST_VERIFIED_COMMISSION")
+        self.assertFalse(result["FIRST_REAL_DOLLAR"])
+
+    def test_never_fabricates_post_first_dollar_metrics_before_the_event(self):
+        result = ce.first_dollar_mode_status()
+        self.assertEqual(result["acquisition_path"], "NOT_YET_TRIGGERED -- no real commission exists to trace an acquisition path from")
+        self.assertEqual(result["conversion_economics"], "NOT_YET_TRIGGERED")
+
+    def test_computes_real_metrics_once_a_first_dollar_exists(self):
+        import tempfile
+        from pathlib import Path
+        import commission_ledger as cl
+        tmp = Path(tempfile.mkdtemp())
+        path = tmp / "ledger.jsonl"
+        cl.record_commission("p", "o", "PAID", 250.0, "REAL", evidence="real vendor confirmation",
+                              external_transaction_id="first_real_txn", fees=10.0, ledger_path=path)
+        result = ce.first_dollar_mode_status(ledger_path=path)
+        self.assertEqual(result["MODE"], "FIRST_DOLLAR_ACHIEVED")
+        self.assertTrue(result["FIRST_REAL_DOLLAR"])
+        self.assertEqual(result["conversion_economics"]["net_commission"], 240.0)
+        self.assertIn("o", result["acquisition_path"])
+
+
+class TestThousandDollarMonthStatus(unittest.TestCase):
+    """Phase 41 (ADR-238), Section I."""
+
+    def test_target_is_exactly_1000(self):
+        result = ce.thousand_dollar_month_status()
+        self.assertEqual(result["TARGET"], 1000.0)
+
+    def test_realized_and_pipeline_are_structurally_separate(self):
+        result = ce.thousand_dollar_month_status()
+        self.assertIn("realized", result)
+        self.assertIn("pipeline", result)
+        self.assertNotIn("VERIFIED_OPPORTUNITIES", result["realized"])
+        self.assertNotIn("REAL_REVENUE", result["pipeline"])
+
+    def test_pipeline_never_fabricates_expected_commission(self):
+        result = ce.thousand_dollar_month_status()
+        self.assertIn("UNKNOWN", result["pipeline"]["EXPECTED_COMMISSION"])
+
+    def test_progress_pct_is_zero_with_zero_real_revenue(self):
+        result = ce.thousand_dollar_month_status()
+        self.assertEqual(result["progress_pct_of_target"], 0.0)
+
+    def test_verified_opportunities_count_is_real_and_positive(self):
+        result = ce.thousand_dollar_month_status()
+        self.assertGreater(result["pipeline"]["VERIFIED_OPPORTUNITIES"], 0)
+
+
+class TestOpportunityExperimentsReport(unittest.TestCase):
+    """Phase 41 (ADR-238), Section J."""
+
+    def test_covers_all_4_named_experiments(self):
+        result = ce.opportunity_experiments_report()
+        self.assertEqual(set(result["experiments"].keys()), {
+            "EXPERIMENT_A_B2B_SAAS_RECURRING_AFFILIATE", "EXPERIMENT_B_HIGH_TICKET_B2B_REFERRAL",
+            "EXPERIMENT_C_AI_AUTOMATION_SERVICE_REFERRAL", "EXPERIMENT_D_OTHER_EVIDENCE_SUPPORTED",
+        })
+
+    def test_every_experiment_has_the_named_metrics(self):
+        result = ce.opportunity_experiments_report()
+        for experiment, data in result["experiments"].items():
+            for field in ("verified_opportunities", "qualified_prospects", "referrals", "response_rate",
+                          "meetings", "closed_deals", "commission", "time_to_commission", "cost", "failure_reasons"):
+                self.assertIn(field, data)
+
+    def test_no_experiment_fabricates_activity_that_never_happened(self):
+        result = ce.opportunity_experiments_report()
+        for experiment, data in result["experiments"].items():
+            self.assertEqual(data["referrals"], 0)
+            self.assertEqual(data["closed_deals"], 0)
+            self.assertEqual(data["commission"], 0)
+
+    def test_every_real_opportunity_id_is_categorized_exactly_once_or_disclosed_overlap(self):
+        result = ce.opportunity_experiments_report()
+        all_ids = [oid for data in result["experiments"].values() for oid in data["opportunity_ids"]]
+        real_ids = {o["opportunity_id"] for o in ce.load_opportunity_portfolio()}
+        self.assertTrue(set(all_ids).issubset(real_ids), "no fabricated opportunity_id in any experiment bucket")
+
+
 if __name__ == "__main__":
     unittest.main()

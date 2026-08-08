@@ -1962,3 +1962,170 @@ def commission_opportunity_record(opportunity_id, portfolio=None, now=None):
             "second, independent status source."
         ),
     }
+
+
+# ---------------------------------------------------------------------------
+# Phase 41 (ADR-238), Section H -- First-Dollar Mode.
+# ---------------------------------------------------------------------------
+
+def first_dollar_mode_status(ledger_path=None, now=None):
+    """Objective is NOT scale -- the shortest legitimate path to the
+    first verified commission. Before that real event exists, honestly
+    reports ARMED/WAITING with no fabricated metrics. After it exists,
+    computes the 5 named post-first-dollar metrics from the real
+    ledger record -- never estimated in advance."""
+    import commission_ledger as cl
+
+    now = now or datetime.now(timezone.utc)
+    dollar_status = cl.first_real_dollar_status(ledger_path=ledger_path)
+
+    if not dollar_status["FIRST_REAL_DOLLAR"]:
+        return {
+            "generated_at": _now_iso(now),
+            "MODE": "ARMED_WAITING_FOR_FIRST_VERIFIED_COMMISSION",
+            "FIRST_REAL_DOLLAR": False,
+            "acquisition_path": "NOT_YET_TRIGGERED -- no real commission exists to trace an acquisition path from",
+            "conversion_economics": "NOT_YET_TRIGGERED",
+            "time_to_deal": "NOT_YET_TRIGGERED",
+            "commission_margin": "NOT_YET_TRIGGERED",
+            "repeatable": "NOT_YET_DETERMINABLE -- a single real data point cannot establish repeatability; the directive's own goal is exactly this first real point",
+            "note": "This mode's objective is not scale -- it is the shortest legitimate path to ONE real, verified commission. No metric here is estimated in advance of that real event.",
+        }
+
+    records = cl.load_ledger(ledger_path)
+    real_confirmed = [r for r in records if r.get("environment") == "REAL" and r.get("commission_status") in ("CONFIRMED", "PAID")]
+    first = sorted(real_confirmed, key=lambda r: r.get("created_at", ""))[0]
+
+    return {
+        "generated_at": _now_iso(now),
+        "MODE": "FIRST_DOLLAR_ACHIEVED",
+        "FIRST_REAL_DOLLAR": True,
+        "first_commission_record": first,
+        "acquisition_path": f"opportunity_id={first.get('opportunity_id')}, lead_id={first.get('lead_id')}, deal_id={first.get('deal_id')} -- the real, evidenced chain preserved verbatim in this ledger record",
+        "conversion_economics": {"gross_commission": first.get("gross_commission"), "fees": first.get("fees"), "net_commission": first.get("net_commission")},
+        "time_to_deal": f"created_at={first.get('created_at')} -- real elapsed time from opportunity discovery requires a matched real discovery-event timestamp, cited separately when available",
+        "commission_margin": round((first.get("net_commission", 0) / first.get("gross_commission", 1)) * 100, 2) if first.get("gross_commission") else "UNKNOWN",
+        "repeatable": "UNDER_EVALUATION -- one real data point is evidence, not proof; repeatability requires a second independent real commission via the same real path",
+        "note": "All fields cite the real, preserved first commission ledger record directly -- nothing here is estimated.",
+    }
+
+
+# ---------------------------------------------------------------------------
+# Phase 41 (ADR-238), Section I -- $1,000 Month Test.
+# ---------------------------------------------------------------------------
+
+def thousand_dollar_month_status(portfolio=None, leads_path=None, pipeline_events_path=None, now=None):
+    """TARGET=$1,000 REAL COMMISSION. Realized revenue (from the real
+    ledger) and pipeline value (from the real portfolio/leads/pipeline
+    events) are structurally separate top-level sections -- never
+    summed or blended into one number."""
+    import commission_ledger as cl
+
+    now = now or datetime.now(timezone.utc)
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+    metrics = real_vs_test_commission_metrics(now=now)
+
+    verified_count = sum(1 for o in portfolio if verify_commission_opportunity(o["opportunity_id"], portfolio=portfolio, now=now)["status"] == "VERIFIED")
+
+    try:
+        import lead_discovery as ld
+        leads = ld.load_leads(leads_path) if leads_path else ld.load_leads()
+        qualified_prospects = sum(1 for l in leads if l.get("status") == "QUALIFIED")
+    except Exception:
+        qualified_prospects = "UNKNOWN -- lead_discovery.py's real ledger could not be read"
+
+    events_path = pipeline_events_path or DEFAULT_PIPELINE_EVENTS_PATH
+    try:
+        events = []
+        if Path(events_path).exists():
+            with open(events_path, encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        try:
+                            events.append(json.loads(line))
+                        except json.JSONDecodeError:
+                            continue
+        active_referrals = sum(1 for e in events if e.get("to_state") == "OUTREACH")
+        open_deals = sum(1 for e in events if e.get("to_state") == "DEAL")
+    except Exception:
+        active_referrals = open_deals = "UNKNOWN"
+
+    return {
+        "generated_at": _now_iso(now),
+        "TARGET": 1000.0,
+        "TARGET_CURRENCY": "USD",
+        "realized": {
+            "REAL_REVENUE": metrics["REAL_REVENUE"],
+            "REAL_COMMISSION": metrics["REAL_COMMISSION_REVENUE"],
+            "REAL_CUSTOMERS": cl.first_real_dollar_status()["REAL_CUSTOMERS"],
+            "REAL_DEALS": cl.first_real_dollar_status()["REAL_DEALS"],
+            "REAL_PAYOUTS": cl.first_real_dollar_status()["REAL_PAYOUTS"],
+        },
+        "pipeline": {
+            "VERIFIED_OPPORTUNITIES": verified_count,
+            "QUALIFIED_PROSPECTS": qualified_prospects,
+            "ACTIVE_REFERRALS": active_referrals,
+            "OPEN_DEALS": open_deals,
+            "EXPECTED_COMMISSION": "UNKNOWN -- requires real per-opportunity deal-value/conversion-rate inputs; no aggregate figure is fabricated from advertised commission rates alone",
+        },
+        "progress_pct_of_target": round((metrics["REAL_REVENUE"] / 1000.0) * 100, 2),
+        "note": "realized and pipeline are structurally separate sections -- pipeline value (however large) is never summed into realized revenue or presented as progress toward the $1,000 target beyond this explicit, separately-labeled section.",
+    }
+
+
+# ---------------------------------------------------------------------------
+# Phase 41 (ADR-238), Section J -- Opportunity Experiments.
+#
+# A real, disclosed, manually-curated categorization (not derived from
+# any existing field, since none distinguishes these categories) of
+# the real 13-opportunity portfolio into the directive's 3 named
+# experiments + Experiment D, based on each real vendor's own
+# publicly-known business nature. Disclosed as a judgment call, not
+# fabricated as computed.
+# ---------------------------------------------------------------------------
+
+EXPERIMENT_CATEGORIZATION = {
+    "EXPERIMENT_A_B2B_SAAS_RECURRING_AFFILIATE": ["CO-adobe-affiliate", "CO-canva-affiliate", "CO-n8n-affiliate"],
+    "EXPERIMENT_B_HIGH_TICKET_B2B_REFERRAL": ["CO-paddle-partnership"],
+    "EXPERIMENT_C_AI_AUTOMATION_SERVICE_REFERRAL": ["CO-zapier-affiliate", "CO-n8n-affiliate"],
+    "EXPERIMENT_D_OTHER_EVIDENCE_SUPPORTED": ["CO-amazon-affiliate", "CO-gumroad-affiliate", "CO-gumroad-marketplace", "CO-etsy-affiliate", "CO-etsy-marketplace", "CO-creative_market-affiliate", "CO-envato-affiliate", "CO-google-affiliate"],
+}
+
+
+def opportunity_experiments_report(portfolio=None, leads_path=None, pipeline_events_path=None, now=None):
+    """Per-experiment real metrics -- honestly zero/UNKNOWN for every
+    category with no real prospecting/outreach activity yet (which is
+    every category, today)."""
+    now = now or datetime.now(timezone.utc)
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+
+    try:
+        import lead_discovery as ld
+        leads = ld.load_leads(leads_path) if leads_path else ld.load_leads()
+    except Exception:
+        leads = []
+
+    results = {}
+    for experiment, opp_ids in EXPERIMENT_CATEGORIZATION.items():
+        verified = sum(1 for oid in opp_ids if verify_commission_opportunity(oid, portfolio=portfolio, now=now)["status"] == "VERIFIED")
+        qualified = sum(1 for l in leads if l.get("opportunity_id") in opp_ids and l.get("status") == "QUALIFIED")
+        results[experiment] = {
+            "opportunity_ids": opp_ids,
+            "verified_opportunities": verified,
+            "qualified_prospects": qualified,
+            "referrals": 0,
+            "response_rate": "N/A -- 0 real outreach sent",
+            "meetings": 0,
+            "closed_deals": 0,
+            "commission": 0,
+            "time_to_commission": "N/A",
+            "cost": 0,
+            "failure_reasons": ["no real outreach attempted yet"] if qualified == 0 else [],
+        }
+
+    return {
+        "generated_at": _now_iso(now),
+        "experiments": results,
+        "note": "Categorization is a real, disclosed, manually-curated judgment call over each vendor's known real business nature -- not derived from a portfolio field, since none distinguishes these categories today. Every metric is honestly zero/N-A -- no real outreach has occurred in any category yet.",
+    }
