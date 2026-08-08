@@ -1,0 +1,182 @@
+{
+  "generated_at": "2026-08-08T18:03:42.253652+00:00",
+  "pre_run_firewall_check": {
+    "REAL_OUTREACH_SENT": 0,
+    "real_commission_records": 0,
+    "existing_real_leads": 0
+  },
+  "opportunity_id": "CO-n8n-affiliate",
+  "opportunity_frozen_check": {
+    "verification_status": "VERIFIED",
+    "commission_value": "30% revenue share for 12 months on Starter/Pro plans, self-service application, open to anyone with an audience",
+    "matches_phase36_selection": true
+  },
+  "source_notes": {
+    "hacker_news": {
+      "ok": true,
+      "total_hits_reported": 7,
+      "candidate_count": 3,
+      "note": null
+    },
+    "github_issues": {
+      "ok": true,
+      "total_hits_reported": 85,
+      "candidate_count": 3,
+      "note": null
+    }
+  },
+  "raw_candidates_fetched": 6,
+  "candidates_found": 6,
+  "qualified_candidates": 0,
+  "accepted_candidates": 0,
+  "rejected_candidates": 6,
+  "blocked_candidates": 0,
+  "duplicate_candidates": 0,
+  "candidate_explanations": [],
+  "all_evaluated_candidates_explained": [
+    {
+      "lead_id": "LEAD-153919010468daf8",
+      "status": "REJECTED",
+      "WHY_THIS_COMPANY": "UNKNOWN -- HN posts are individual-authored, no real company field in this source",
+      "WHY_THIS_PROBLEM": "real problem-signal keyword match found in public post",
+      "WHY_THIS_PARTNER": "n8n directly addresses workflow-automation pain (n8n's own real product category)",
+      "WHY_NOW": "evidence freshness: STALE",
+      "EVIDENCE_SUPPORTING_MATCH": "https://news.ycombinator.com/item?id=14489123",
+      "MAIN_RISK": "company identity unconfirmed (individual public poster)",
+      "CONFIDENCE": "MEDIUM",
+      "QUALIFICATION_SCORE_NUMERIC": 3,
+      "REJECTION_REASONS": [
+        "evidence exists but is STALE (>45 days old) -- https://news.ycombinator.com/item?id=14489123",
+        "real problem-signal keyword match: ['self-hosted']",
+        "real, public contact channel identified",
+        "company_name UNKNOWN -- individual poster, not a confirmed business entity",
+        "partner opportunity itself is VERIFIED"
+      ],
+      "RECOMMENDED_NEXT_ACTION": "DO_NOT_PURSUE -- did not clear the real qualification bar this run"
+    },
+    {
+      "lead_id": "LEAD-47aef1816b97f914",
+      "status": "REJECTED",
+      "WHY_THIS_COMPANY": "UNKNOWN -- HN posts are individual-authored, no real company field in this source",
+      "WHY_THIS_PROBLEM": "real problem-signal keyword match found in public post",
+      "WHY_THIS_PARTNER": "n8n directly addresses workflow-automation pain (n8n's own real product category)",
+      "WHY_NOW": "evidence freshness: STALE",
+      "EVIDENCE_SUPPORTING_MATCH": "https://news.ycombinator.com/item?id=34723989",
+      "MAIN_RISK": "company identity unconfirmed (individual public poster)",
+      "CONFIDENCE": "MEDIUM",
+      "QUALIFICATION_SCORE_NUMERIC": 3,
+      "REJECTION_REASONS": [
+        "evidence exists but is STALE (>45 days old) -- https://news.ycombinator.com/item?id=34723989",
+        "real problem-signal keyword match: ['zapier alternative', 'automation tool', 'no-code']",
+        "real, public contact channel identified",
+        "company_name UNKNOWN -- individual poster, not a confirmed business entity",
+        "partner opportunity itself is VERIFIED"
+      ],
+      "RECOMMENDED_NEXT_ACTION": "DO_NOT_PURSUE -- did not clear the real qualification bar this run"
+    },
+    {
+      "lead_id": "LEAD-4b5e9be8e24df23d",
+      "status": "REJECTED",
+      "WHY_THIS_COMPANY": "UNKNOWN -- HN posts are individual-authored, no real company field in this source",
+      "WHY_THIS_PROBLEM": "real problem-signal keyword match found in public post",
+      "WHY_THIS_PARTNER": "n8n directly addresses workflow-automation pain (n8n's own real product category)",
+      "WHY_NOW": "evidence freshness: STALE",
+      "EVIDENCE_SUPPORTING_MATCH": "https://www.stevennatera.com/how-to-build-a-self-hosted-zapier-app-using-nodejs-google-cloud-run/",
+      "MAIN_RISK": "company identity unconfirmed (individual public poster)",
+      "CONFIDENCE": "MEDIUM",
+      "QUALIFICATION_SCORE_NUMERIC": 3,
+      "REJECTION_REASONS": [
+        "evidence exists but is STALE (>45 days old) -- https://www.stevennatera.com/how-to-build-a-self-hosted-zapier-app-using-nodejs-google-cloud-run/",
+        "real problem-signal keyword match: ['zapier alternative']",
+        "real, public contact channel identified",
+        "company_name UNKNOWN -- individual poster, not a confirmed business entity",
+        "partner opportunity itself is VERIFIED"
+      ],
+      "RECOMMENDED_NEXT_ACTION": "DO_NOT_PURSUE -- did not clear the real qualification bar this run"
+    },
+    {
+      "lead_id": "LEAD-f8063ee885aca423",
+      "status": "REJECTED",
+      "WHY_THIS_COMPANY": "PostHog",
+      "WHY_THIS_PROBLEM": "no real problem-signal keyword match found -- commercial relevance unproven",
+      "WHY_THIS_PARTNER": "n8n directly addresses workflow-automation pain (n8n's own real product category)",
+      "WHY_NOW": "evidence freshness: STALE",
+      "EVIDENCE_SUPPORTING_MATCH": "https://github.com/PostHog/posthog/issues/26730",
+      "MAIN_RISK": "no additional risk identified beyond standard evidence limitations",
+      "CONFIDENCE": "MEDIUM",
+      "QUALIFICATION_SCORE_NUMERIC": 3,
+      "REJECTION_REASONS": [
+        "evidence exists but is STALE (>45 days old) -- https://github.com/PostHog/posthog/issues/26730",
+        "no real problem-signal keyword match -- commercial relevance unproven",
+        "real, public contact channel identified",
+        "real company signal: PostHog",
+        "partner opportunity itself is VERIFIED"
+      ],
+      "RECOMMENDED_NEXT_ACTION": "DO_NOT_PURSUE -- did not clear the real qualification bar this run"
+    },
+    {
+      "lead_id": "LEAD-f0d1fd8d9bc0895a",
+      "status": "REJECTED",
+      "WHY_THIS_COMPANY": "Automattic",
+      "WHY_THIS_PROBLEM": "real problem-signal keyword match found in public post",
+      "WHY_THIS_PARTNER": "n8n directly addresses workflow-automation pain (n8n's own real product category)",
+      "WHY_NOW": "evidence freshness: STALE",
+      "EVIDENCE_SUPPORTING_MATCH": "https://github.com/Automattic/jetpack/issues/14078",
+      "MAIN_RISK": "no additional risk identified beyond standard evidence limitations",
+      "CONFIDENCE": "HIGH",
+      "QUALIFICATION_SCORE_NUMERIC": 4,
+      "REJECTION_REASONS": [
+        "evidence exists but is STALE (>45 days old) -- https://github.com/Automattic/jetpack/issues/14078",
+        "real problem-signal keyword match: ['automate tasks', 'self-hosted']",
+        "real, public contact channel identified",
+        "real company signal: Automattic",
+        "partner opportunity itself is VERIFIED"
+      ],
+      "RECOMMENDED_NEXT_ACTION": "DO_NOT_PURSUE -- did not clear the real qualification bar this run"
+    },
+    {
+      "lead_id": "LEAD-3bce4b5c1426a549",
+      "status": "REJECTED",
+      "WHY_THIS_COMPANY": "PostHog",
+      "WHY_THIS_PROBLEM": "no real problem-signal keyword match found -- commercial relevance unproven",
+      "WHY_THIS_PARTNER": "n8n directly addresses workflow-automation pain (n8n's own real product category)",
+      "WHY_NOW": "evidence freshness: STALE",
+      "EVIDENCE_SUPPORTING_MATCH": "https://github.com/PostHog/posthog/issues/28743",
+      "MAIN_RISK": "no additional risk identified beyond standard evidence limitations",
+      "CONFIDENCE": "MEDIUM",
+      "QUALIFICATION_SCORE_NUMERIC": 3,
+      "REJECTION_REASONS": [
+        "evidence exists but is STALE (>45 days old) -- https://github.com/PostHog/posthog/issues/28743",
+        "no real problem-signal keyword match -- commercial relevance unproven",
+        "real, public contact channel identified",
+        "real company signal: PostHog",
+        "partner opportunity itself is VERIFIED"
+      ],
+      "RECOMMENDED_NEXT_ACTION": "DO_NOT_PURSUE -- did not clear the real qualification bar this run"
+    }
+  ],
+  "best_prospect": "LEAD-f0d1fd8d9bc0895a",
+  "best_prospect_qualified": false,
+  "best_prospect_note": "NONE_QUALIFIED_THIS_RUN -- closest real signal was LEAD-f0d1fd8d9bc0895a (4/5 real factors known -- never a fabricated single number), honestly disclosed as REJECTED, not accepted.",
+  "golden_hunter_trace": {
+    "opportunity_source": "business_development.py::PLATFORM_REGISTRY (ADR-188, WebSearch-evidenced 2026-08-07)",
+    "traceable_to_golden_hunter": false,
+    "reason": "CO-n8n-affiliate originates from business_development.py's real partnership registry (ADR-188), not a Golden Hunter niche-discovery run -- honestly disclosed rather than a fabricated trace.",
+    "golden_hunter_role_confirmed": "DISCOVERY/PRIORITIZATION/RECOMMENDATION only -- no outreach import (regression-tested in tests/test_phase37a_integration.py)."
+  },
+  "commercial_deal_agent_trace": {
+    "note": "no accepted candidate -- Commercial Deal Agent trace not applicable this run"
+  },
+  "post_run_firewall_check": {
+    "REAL_OUTREACH_SENT": 0,
+    "REAL_MESSAGES_SENT": 0,
+    "REAL_PROSPECTS_CONTACTED": 0,
+    "REAL_DEALS_CREATED": 0,
+    "real_commission_records": 0,
+    "REAL_REVENUE": 0,
+    "REAL_COMMISSION": 0,
+    "REAL_PAYOUTS": 0
+  },
+  "firewall_unchanged": true,
+  "accepted_candidate_records": []
+}
