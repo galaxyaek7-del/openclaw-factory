@@ -1707,6 +1707,55 @@ def _outreach_infrastructure_status():
     return oa.adapter_status()
 
 
+def _golden_hunter_rotation_status():
+    """Golden Hunter Opportunity Rotation Engine (Phase 38, ADR-233,
+    2026-08-08): real, read-only summary of every real opportunity's
+    lifecycle state, bucketed PURSUE/WATCH/ABANDON/ROTATE, plus the
+    top-2 opportunity comparison from the most recent real live
+    validation run (data/phase38_rotation_validation_result.json,
+    committed, not recomputed live -- goos.rank_build_candidates()
+    itself is a real but non-trivial scan; this panel cites its most
+    recent real result rather than re-running it on every poll, same
+    precedent as commission-commerce-dashboard/lead-discovery-status).
+    Never counts a WATCH/PURSUE opportunity as a customer, deal, or
+    revenue."""
+    import json as _json
+    from pathlib import Path as _Path
+    import opportunity_rotation_engine as ore
+
+    opportunity_ids = ore.all_known_opportunity_ids()
+    memories = {opp_id: ore.opportunity_memory(opp_id) for opp_id in opportunity_ids}
+    buckets = {"PURSUE": [], "WATCH": [], "ABANDON": [], "ROTATE": [], "DISCOVERED": [], "EVIDENCE_CHECK": [], "QUALIFICATION": []}
+    for opp_id, mem in memories.items():
+        buckets.setdefault(mem["status"], []).append(opp_id)
+
+    validation_path = _Path(__file__).resolve().parent / "data" / "phase38_rotation_validation_result.json"
+    top_opportunity = second_opportunity = why_this = why_not_others = None
+    if validation_path.exists():
+        validation = _json.loads(validation_path.read_text(encoding="utf-8"))
+        comparison = validation.get("comparison") or {}
+        top_comparison = comparison.get("top_comparison")
+        if top_comparison:
+            top_opportunity = top_comparison.get("winner")
+            second_opportunity = top_comparison.get("runner_up")
+            why_this = top_comparison.get("WHY_A_BEATS_B")
+            why_not_others = f"ranking_criterion={top_comparison.get('ranking_criterion')}"
+
+    return {
+        "generated_at": ore._now_iso(),
+        "active_opportunities": len(opportunity_ids),
+        "pursue": buckets.get("PURSUE", []), "watch": buckets.get("WATCH", []),
+        "abandoned": buckets.get("ABANDON", []), "rotated": buckets.get("ROTATE", []),
+        "top_opportunity": top_opportunity, "second_opportunity": second_opportunity,
+        "why_this_opportunity": why_this, "why_not_the_others": why_not_others,
+        "note": (
+            "Read-only citation of real lifecycle events + the most recent committed live validation run -- "
+            "does not trigger a new goos.rank_build_candidates() scan on every poll. A WATCH/PURSUE opportunity "
+            "is never a customer, deal, or revenue -- see commission_ledger.py's own real ledger for that."
+        ),
+    }
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3575,6 +3624,7 @@ _ENDPOINTS = {
     "commission_daily_brief": _commission_daily_brief,
     "lead_discovery_status": _lead_discovery_status,
     "outreach_infrastructure_status": _outreach_infrastructure_status,
+    "golden_hunter_rotation_status": _golden_hunter_rotation_status,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
 }
 

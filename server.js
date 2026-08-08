@@ -2140,6 +2140,14 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('outreach_infrastructure_status', [], req),
     health: pythonHealthCheck('outreach_infrastructure_status'),
   },
+  {
+    // Golden Hunter Opportunity Rotation Engine (Phase 38, ADR-233, 2026-08-08).
+    name: 'golden-hunter-rotation-status',
+    description: "Real, read-only opportunity-lifecycle summary -- every real opportunity's PURSUE/WATCH/ABANDON/ROTATE state (opportunity_rotation_engine.py's own real, append-only lifecycle ledger), plus the top-2 opportunity comparison from the most recent committed live validation run, with a real 'why this beats that' citation. A WATCH/PURSUE opportunity is never displayed as a customer, deal, or revenue.",
+    reused: 'opportunity_rotation_engine.py::all_known_opportunity_ids()/opportunity_memory() + the committed data/phase38_rotation_validation_result.json, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('golden_hunter_rotation_status', [], req),
+    health: pythonHealthCheck('golden_hunter_rotation_status'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
