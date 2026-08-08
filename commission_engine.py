@@ -1555,3 +1555,117 @@ def reality_firewall_status(opportunity_id=None, action_type=None, portfolio=Non
         "FIRST_REAL_DOLLAR": dollar_status["FIRST_REAL_DOLLAR"],
         "note": "Real citation of 9 already-real, already-tested mechanisms -- no new protection logic. A firewall requirement failing does not by itself mean commercial activity is occurring; it means that specific real guard has not yet been satisfied for the resolved opportunity.",
     }
+
+
+# ---------------------------------------------------------------------------
+# Phase 40 (ADR-237), Step 6 -- Controlled First-Action Mode.
+#
+# EXECUTION_AUTHORIZED requires THREE independent, redundant real
+# conditions to ALL hold: an explicit ceo_approval=True intent flag
+# (distinct from the scoped approval object -- a caller must
+# deliberately pass this, it is never inferred or defaulted true),
+# the gate's own real FIRST_CONTROLLED_ACTION_READY verdict, and
+# reality_firewall_status()'s own real PASSED flag. This function
+# NEVER executes anything itself -- no send call, no publish call, no
+# ledger write -- it only ever returns an authorization signal a
+# separate, human-triggered caller could act on. Defense in depth: a
+# bug or a mistaken call elsewhere that only checks one of these three
+# real signals still cannot produce a false EXECUTION_AUTHORIZED.
+# ---------------------------------------------------------------------------
+
+def first_controlled_action_gate(ceo_approval=False, opportunity_id=None, action_type=None, draft=None, approval=None,
+                                  portfolio=None, now=None):
+    """Prepares (never executes) the exact next real action. Returns
+    EXECUTION_AUTHORIZED=True only when all three named conditions
+    hold; otherwise honestly reports exactly which one(s) failed."""
+    now = now or datetime.now(timezone.utc)
+    gate = commercial_flight_control_status(opportunity_id=opportunity_id, action_type=action_type,
+                                             draft=draft, approval=approval, portfolio=portfolio, now=now)
+    firewall = reality_firewall_status(opportunity_id=opportunity_id, action_type=action_type, portfolio=portfolio, now=now)
+
+    conditions = {
+        "CEO_APPROVAL": bool(ceo_approval is True),
+        "FIRST_CONTROLLED_ACTION_READY": gate["VERDICT"] == "FIRST_CONTROLLED_ACTION_READY",
+        "REALITY_FIREWALL_PASSED": firewall["REALITY_FIREWALL_PASSED"],
+    }
+    execution_authorized = all(conditions.values())
+
+    if gate["resolved_action_type"] == "OUTREACH_REFERRAL":
+        prepared_next_action = f"Send the one real, approved outreach message for {gate['resolved_opportunity_id']} via {gate['checks'].get('outreach_channel', {}).get('channel', 'the configured channel')} (MAX_REAL_SENDS=1)."
+    elif gate["resolved_action_type"] == "AFFILIATE_LINK_PUBLISH":
+        prepared_next_action = f"Publish the real tagged affiliate link for {gate['resolved_opportunity_id']} (requires AMAZON_ASSOCIATE_TAG already configured)."
+    else:
+        prepared_next_action = "No real opportunity resolved -- no action to prepare."
+
+    return {
+        "generated_at": _now_iso(now),
+        "EXECUTION_AUTHORIZED": execution_authorized,
+        "conditions": conditions,
+        "unmet_conditions": [name for name, ok in conditions.items() if not ok],
+        "prepared_next_action": prepared_next_action,
+        "resolved_opportunity_id": gate["resolved_opportunity_id"],
+        "resolved_action_type": gate["resolved_action_type"],
+        "note": (
+            "This function NEVER executes an action -- it only computes whether all 3 named conditions hold. "
+            "ceo_approval=True must be explicitly passed by a real, deliberate human-triggered caller; it is never "
+            "inferred from a scoped approval object alone, and never defaults to True."
+        ),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Phase 40 (ADR-237), Step 7 -- REAL vs TEST metric isolation.
+#
+# commission_ledger.py's real REAL/TEST/SIMULATION environment
+# separation already exists and is already tested (real_commission_
+# summary(), first_real_dollar_status()) -- this is a pure relabeling
+# citation under the directive's exact named fields, computing nothing
+# new. Scoped specifically to the commission ledger (data/commission_
+# ledger.jsonl) -- this factory's broader company revenue (books/
+# digital products) is tracked separately in channels/ledger.py, not
+# duplicated or blended here.
+# ---------------------------------------------------------------------------
+
+def real_vs_test_commission_metrics(ledger_path=None, now=None):
+    """TEST_REVENUE/REAL_REVENUE/TEST_COMMISSION/REAL_COMMISSION_REVENUE,
+    plus SIMULATION_REVENUE for completeness (never blended into either).
+    Within this commission-only ledger, 'revenue' and 'commission' cite
+    the identical real underlying sum -- disclosed explicitly rather
+    than silently duplicating one number under two different labels
+    without explanation."""
+    import commission_ledger as cl
+
+    now = now or datetime.now(timezone.utc)
+    records = cl.load_ledger(ledger_path)
+    dollar_status = cl.first_real_dollar_status(ledger_path=ledger_path)
+
+    def _confirmed_or_paid_sum(env):
+        return round(sum(r.get("net_commission", 0) for r in records if r.get("environment") == env and r.get("commission_status") in ("CONFIRMED", "PAID")), 2)
+
+    real_sum = _confirmed_or_paid_sum("REAL")
+    test_sum = _confirmed_or_paid_sum("TEST")
+    simulation_sum = _confirmed_or_paid_sum("SIMULATION")
+
+    # Real cross-check against the independently-computed authoritative
+    # source (real_commission_summary()) -- proves this view's REAL sum
+    # never silently diverges from the one every other real caller trusts,
+    # rather than asserting isolation without checking it.
+    authoritative = cl.real_commission_summary(ledger_path=ledger_path)
+    isolation_verified = real_sum == authoritative["real_confirmed_or_paid_commission_usd"]
+
+    return {
+        "generated_at": _now_iso(now),
+        "REAL_REVENUE": real_sum,
+        "REAL_COMMISSION_REVENUE": real_sum,
+        "TEST_REVENUE": test_sum,
+        "TEST_COMMISSION": test_sum,
+        "SIMULATION_COMMISSION": simulation_sum,
+        "FIRST_REAL_DOLLAR": dollar_status["FIRST_REAL_DOLLAR"],
+        "isolation_verified": isolation_verified,
+        "note": (
+            "REAL_REVENUE and REAL_COMMISSION_REVENUE cite the identical real sum within this commission-only ledger -- "
+            "this factory's broader company revenue (books/digital products) is tracked separately in channels/ledger.py, "
+            "never blended here. isolation_verified is a real cross-check against real_commission_summary()'s own "
+            "independently-computed total, not an assumed-true flag."
+        ),
+    }

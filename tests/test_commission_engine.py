@@ -775,5 +775,84 @@ class TestRealityFirewallStatus(unittest.TestCase):
             self.assertTrue(len(req["cites"]) > 10, f"{name} has no real citation")
 
 
+class TestFirstControlledActionGate(unittest.TestCase):
+    """Phase 40 (ADR-237), Step 6."""
+
+    def test_never_authorized_with_zero_conditions_met(self):
+        result = ce.first_controlled_action_gate()
+        self.assertFalse(result["EXECUTION_AUTHORIZED"])
+        self.assertEqual(len(result["unmet_conditions"]), 3)
+
+    def test_ceo_approval_alone_never_authorizes_execution(self):
+        result = ce.first_controlled_action_gate(ceo_approval=True)
+        self.assertFalse(result["EXECUTION_AUTHORIZED"])
+        self.assertNotIn("CEO_APPROVAL", result["unmet_conditions"])
+        self.assertIn("FIRST_CONTROLLED_ACTION_READY", result["unmet_conditions"])
+
+    def test_ceo_approval_defaults_false_never_inferred_true(self):
+        result = ce.first_controlled_action_gate(opportunity_id="CO-amazon-affiliate")
+        self.assertIn("CEO_APPROVAL", result["unmet_conditions"])
+
+    def test_never_executes_a_real_send_or_ledger_write(self):
+        import commission_ledger as cl
+        import outreach_adapter as oa
+        with mock.patch.object(cl, "record_commission") as record_commission, \
+             mock.patch.object(oa.SMTPOutreachAdapter, "send") as send:
+            ce.first_controlled_action_gate(ceo_approval=True)
+            record_commission.assert_not_called()
+            send.assert_not_called()
+
+    def test_prepared_next_action_is_a_real_string_never_empty(self):
+        result = ce.first_controlled_action_gate()
+        self.assertIsInstance(result["prepared_next_action"], str)
+        self.assertGreater(len(result["prepared_next_action"]), 10)
+
+
+class TestRealVsTestCommissionMetrics(unittest.TestCase):
+    """Phase 40 (ADR-237), Step 7."""
+
+    def setUp(self):
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.path = os.path.join(self._tmpdir.name, "ledger.jsonl")
+
+    def tearDown(self):
+        self._tmpdir.cleanup()
+
+    def test_covers_all_named_fields(self):
+        result = ce.real_vs_test_commission_metrics(ledger_path=self.path)
+        for field in ("REAL_REVENUE", "REAL_COMMISSION_REVENUE", "TEST_REVENUE", "TEST_COMMISSION",
+                      "SIMULATION_COMMISSION", "FIRST_REAL_DOLLAR", "isolation_verified"):
+            self.assertIn(field, result)
+
+    def test_test_dollars_never_leak_into_real_revenue(self):
+        import commission_ledger as cl
+        cl.record_commission("p", "o", "PAID", 500.0, "TEST", external_transaction_id="t1", ledger_path=self.path)
+        result = ce.real_vs_test_commission_metrics(ledger_path=self.path)
+        self.assertEqual(result["REAL_REVENUE"], 0)
+        self.assertEqual(result["TEST_COMMISSION"], 500.0)
+
+    def test_simulation_dollars_never_leak_into_real_revenue(self):
+        import commission_ledger as cl
+        cl.record_commission("p", "o", "CONFIRMED", 300.0, "SIMULATION", ledger_path=self.path)
+        result = ce.real_vs_test_commission_metrics(ledger_path=self.path)
+        self.assertEqual(result["REAL_REVENUE"], 0)
+        self.assertEqual(result["SIMULATION_COMMISSION"], 300.0)
+
+    def test_real_revenue_and_real_commission_revenue_always_match(self):
+        import commission_ledger as cl
+        cl.record_commission("p", "o", "PAID", 100.0, "REAL", evidence="real evidence", external_transaction_id="txn1", ledger_path=self.path)
+        result = ce.real_vs_test_commission_metrics(ledger_path=self.path)
+        self.assertEqual(result["REAL_REVENUE"], result["REAL_COMMISSION_REVENUE"])
+        self.assertEqual(result["REAL_REVENUE"], 100.0)
+
+    def test_isolation_verified_cross_checks_the_authoritative_source(self):
+        import commission_ledger as cl
+        cl.record_commission("p", "o", "PAID", 100.0, "REAL", evidence="real evidence", external_transaction_id="txn2", ledger_path=self.path)
+        result = ce.real_vs_test_commission_metrics(ledger_path=self.path)
+        authoritative = cl.real_commission_summary(ledger_path=self.path)
+        self.assertEqual(result["REAL_REVENUE"], authoritative["real_confirmed_or_paid_commission_usd"])
+        self.assertTrue(result["isolation_verified"])
+
+
 if __name__ == "__main__":
     unittest.main()

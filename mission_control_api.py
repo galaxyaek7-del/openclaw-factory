@@ -1695,6 +1695,67 @@ def _golden_hunter_commission_verification():
     return golden_hunter_commission_verification()
 
 
+def _live_program_eligibility():
+    """Live Program/Opportunity Eligibility (Phase 40, 'First Real
+    Commission Execution Gate' directive, ADR-237, 2026-08-09, Step
+    2): the 10 named eligibility fields for the real, resolved
+    top-ranked commission opportunity -- VERIFIED/PROVISIONAL/REJECTED,
+    never classifying third-party-only evidence as officially
+    verified. Defaults to rank_commission_shortlist()'s real pick."""
+    from commission_engine import live_program_eligibility, rank_commission_shortlist
+    opportunity_id = rank_commission_shortlist()["BEST_FIRST_COMMERCIAL_EXPERIMENT"]
+    return live_program_eligibility(opportunity_id) if opportunity_id else {"error": "no real candidate opportunity resolved"}
+
+
+def _founder_action_state():
+    """Founder Action State (Phase 40, ADR-237, Step 3):
+    READY_FOR_FOUNDER_ACTION/CREDENTIALS_REQUIRED/APPROVAL_REQUIRED/
+    READY_FOR_CONTROLLED_TEST/BLOCKED -- a pure relabeling of
+    commercial_flight_control_status()'s own real checks."""
+    from commission_engine import founder_action_state
+    return founder_action_state()
+
+
+def _trackable_commission_object():
+    """Trackable Commission Object (Phase 40, ADR-237, Step 4): the 14
+    named fields for the real, resolved top-ranked opportunity, a
+    pure computed-on-demand view -- no new persisted store."""
+    from commission_engine import trackable_commission_object, rank_commission_shortlist
+    opportunity_id = rank_commission_shortlist()["BEST_FIRST_COMMERCIAL_EXPERIMENT"]
+    return trackable_commission_object(opportunity_id) if opportunity_id else {"error": "no real candidate opportunity resolved"}
+
+
+def _reality_firewall_status():
+    """Reality Firewall Status (Phase 40, ADR-237, Step 5): the 9
+    named requirements, real citation of already-real, already-tested
+    guards (AntiFabricationError, DuplicateCommissionError +
+    _LedgerLock, verify_exact_scope_approval(), REAL/TEST/SIMULATION
+    separation) -- zero new protection logic."""
+    from commission_engine import reality_firewall_status
+    return reality_firewall_status()
+
+
+def _first_controlled_action_gate():
+    """First Controlled Action Gate (Phase 40, ADR-237, Step 6):
+    EXECUTION_AUTHORIZED requires CEO_APPROVAL=true AND FIRST_
+    CONTROLLED_ACTION_READY=true AND REALITY_FIREWALL_PASSED=true, all
+    three independently checked. This read-only Mission Control view
+    never passes ceo_approval=True -- founder approval is a real,
+    separate, deliberate act, never a side effect of viewing a
+    dashboard panel."""
+    from commission_engine import first_controlled_action_gate
+    return first_controlled_action_gate(ceo_approval=False)
+
+
+def _real_vs_test_commission_metrics():
+    """REAL vs TEST Commission Metrics (Phase 40, ADR-237, Step 7):
+    REAL_REVENUE/REAL_COMMISSION_REVENUE/TEST_REVENUE/TEST_COMMISSION/
+    SIMULATION_COMMISSION, cross-checked against real_commission_
+    summary()'s own independently-computed total."""
+    from commission_engine import real_vs_test_commission_metrics
+    return real_vs_test_commission_metrics()
+
+
 def _lead_discovery_status():
     """Lead Discovery (Phase 37A, ADR-230; extended Phase 37C, ADR-232,
     2026-08-08): real, read-only summary of already-persisted
@@ -3691,6 +3752,12 @@ _ENDPOINTS = {
     "commercial_flight_control_status": _commercial_flight_control_status,
     "commercial_control_panel": _commercial_control_panel,
     "golden_hunter_commission_verification": _golden_hunter_commission_verification,
+    "live_program_eligibility": _live_program_eligibility,
+    "founder_action_state": _founder_action_state,
+    "trackable_commission_object": _trackable_commission_object,
+    "reality_firewall_status": _reality_firewall_status,
+    "first_controlled_action_gate": _first_controlled_action_gate,
+    "real_vs_test_commission_metrics": _real_vs_test_commission_metrics,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
 }
 

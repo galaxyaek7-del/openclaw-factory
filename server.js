@@ -2186,6 +2186,49 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('golden_hunter_commission_verification', [], req),
     health: pythonHealthCheck('golden_hunter_commission_verification'),
   },
+  {
+    // First Real Commission Execution Gate (Phase 40, ADR-237, 2026-08-09).
+    name: 'live-program-eligibility',
+    description: "Step 2: the 10 named eligibility fields (program/company, official source URL, current eligibility requirements, geographic restrictions, payout/commission structure, attribution/cookie rules, application/approval requirement, VERIFIED/PROVISIONAL/REJECTED status, evidence timestamp, evidence source, freshness) for the real, top-ranked commission opportunity. Third-party-only evidence is never classified as officially VERIFIED -- a REJECTED program's payout structure is explicitly withheld, never leaked as if officially confirmed.",
+    reused: 'commission_engine.py::live_program_eligibility(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('live_program_eligibility', [], req),
+    health: pythonHealthCheck('live_program_eligibility'),
+  },
+  {
+    name: 'founder-action-state',
+    description: "Step 3: READY_FOR_FOUNDER_ACTION/CREDENTIALS_REQUIRED/APPROVAL_REQUIRED/READY_FOR_CONTROLLED_TEST/BLOCKED -- a pure relabeling of commercial-flight-control-status's own real checks, distinguishing 'founder must create a real external account' from 'founder must configure a credential' from 'founder must issue a real approval'. Never invents credentials, fabricates approval, or bypasses an external platform's onboarding.",
+    reused: 'commission_engine.py::founder_action_state(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('founder_action_state', [], req),
+    health: pythonHealthCheck('founder_action_state'),
+  },
+  {
+    name: 'trackable-commission-object',
+    description: "Step 4: the 14 named canonical commission-opportunity fields (opportunity_id/program_id/partner_id/source_url/official_evidence/commission_terms/tracking_method/affiliate_link_status/approval_status/freshness_status/risk_status/CEO_approval_status/created_at/updated_at) for the real, top-ranked opportunity. A pure, computed-on-demand read-only view -- no new persisted store created.",
+    reused: 'commission_engine.py::trackable_commission_object(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('trackable_commission_object', [], req),
+    health: pythonHealthCheck('trackable_commission_object'),
+  },
+  {
+    name: 'reality-firewall-status',
+    description: "Step 5: the 9 named reality-firewall requirements (verified real program/opportunity/tracking path, explicit founder approval, correct scope, no fabricated evidence, no duplicate commission, no synthetic event counted as real, no test event in real state), each citing an already-real, already-tested mechanism. Zero new protection logic.",
+    reused: 'commission_engine.py::reality_firewall_status(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('reality_firewall_status', [], req),
+    health: pythonHealthCheck('reality_firewall_status'),
+  },
+  {
+    name: 'first-controlled-action-gate',
+    description: "Step 6: EXECUTION_AUTHORIZED requires CEO_APPROVAL=true AND FIRST_CONTROLLED_ACTION_READY=true AND REALITY_FIREWALL_PASSED=true -- all three independently checked, defense in depth. This function never executes a real send/publish/ledger-write itself; the Mission Control view always calls it with ceo_approval=false, since founder approval must be a real, separate, deliberate act, never a side effect of viewing a dashboard.",
+    reused: 'commission_engine.py::first_controlled_action_gate(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('first_controlled_action_gate', [], req),
+    health: pythonHealthCheck('first_controlled_action_gate'),
+  },
+  {
+    name: 'real-vs-test-commission-metrics',
+    description: "Step 7: REAL_REVENUE/REAL_COMMISSION_REVENUE vs TEST_REVENUE/TEST_COMMISSION vs SIMULATION_COMMISSION, cross-checked (isolation_verified) against real_commission_summary()'s own independently-computed total. TEST/SIMULATION dollar amounts can never contaminate REAL_REVENUE -- structurally guaranteed by commission_ledger.py's environment field, not merely asserted.",
+    reused: 'commission_engine.py::real_vs_test_commission_metrics(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('real_vs_test_commission_metrics', [], req),
+    health: pythonHealthCheck('real_vs_test_commission_metrics'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
