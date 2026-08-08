@@ -195,12 +195,23 @@ def repeated_failure_penalty(opportunity_id, events_path=None):
 
 def evaluate_golden_hunter_dimensions(opportunity_id, opportunity_type="COMMISSION",
                                        commission_opportunity=None, niche=None,
-                                       evidence_summary=None, now=None):
+                                       evidence_summary=None, real_composite_score=None, now=None):
     """Real, per-dimension citation -- never a mysterious collapsed
     score. `evidence_summary` (optional) is a real lead_discovery.py
     result dict (e.g. Phase 37B/37C's own committed JSON) providing the
     real EVIDENCE_QUALITY/FRESHNESS signal when a live discovery run
-    has actually happened for this opportunity."""
+    has actually happened for this opportunity. `real_composite_score`
+    (optional) passes through an already-real, already-computed score
+    from another real system (e.g. goos.py's own goos_advisory_score
+    for a PRODUCT candidate) -- this function never computes one
+    itself; it only carries it so compare_opportunities() can rank on
+    real economics instead of a weaker "how many dimensions have we
+    bothered to investigate" proxy (a real bug found and fixed this
+    round: known_dimensions rewards investigation effort, not
+    opportunity quality -- a commission opportunity searched twice via
+    lead_discovery naturally has more populated fields than an
+    unsearched product candidate, even when the product candidate's
+    own real economics are stronger)."""
     now = now or datetime.now(timezone.utc)
     dims = {}
 
@@ -291,6 +302,7 @@ def evaluate_golden_hunter_dimensions(opportunity_id, opportunity_type="COMMISSI
         "generated_at": _now_iso(now), "opportunity_id": opportunity_id, "opportunity_type": opportunity_type,
         "dimensions": dims, "known_dimensions": known, "total_dimensions": len(GOLDEN_HUNTER_DECISION_DIMENSIONS) - 1,
         "overall_confidence": confidence,
+        "real_composite_score": real_composite_score,
     }
 
 
@@ -338,24 +350,46 @@ def pursuit_recommendation(opportunity_id, dimensions_result, stronger_alternati
 
 def compare_opportunities(evaluations):
     """`evaluations` is a list of evaluate_golden_hunter_dimensions()
-    results. Ranks by known_dimensions (a real, disclosed proxy for
-    expected-value confidence -- never a fabricated blended score
-    across heterogeneous COMMISSION/PRODUCT opportunity types) and
-    produces a real, cited "A beats B because" explanation for the
-    top pair."""
-    ranked = sorted(evaluations, key=lambda e: e["known_dimensions"], reverse=True)
+    results. Real bug found and fixed this round: ranking by
+    known_dimensions alone rewards how much an opportunity has been
+    *investigated*, not its actual economics -- a commission
+    opportunity searched twice via lead_discovery naturally
+    accumulates more populated fields than an unsearched product
+    candidate with genuinely stronger real economics. Fixed:
+    real_composite_score (when present on an evaluation, e.g. goos.py's
+    own goos_advisory_score) is now the primary sort key; known_
+    dimensions is used only as the fallback/tiebreaker when no real
+    composite score exists on either side, and the comparison always
+    discloses which criterion actually decided the ranking rather than
+    silently mixing them."""
+    def _sort_key(e):
+        score = e.get("real_composite_score")
+        has_score = isinstance(score, (int, float))
+        return (1 if has_score else 0, score if has_score else 0, e["known_dimensions"])
+
+    ranked = sorted(evaluations, key=_sort_key, reverse=True)
     explanation = None
     if len(ranked) >= 2:
         a, b = ranked[0], ranked[1]
         reasons = []
-        if a["known_dimensions"] > b["known_dimensions"]:
-            reasons.append(f"{a['opportunity_id']} has {a['known_dimensions']} real known dimensions vs. {b['opportunity_id']}'s {b['known_dimensions']}")
+        a_score, b_score = a.get("real_composite_score"), b.get("real_composite_score")
+        if isinstance(a_score, (int, float)) and isinstance(b_score, (int, float)):
+            criterion = "real_composite_score"
+            if a_score > b_score:
+                reasons.append(f"{a['opportunity_id']} has a real composite score of {a_score} vs. {b['opportunity_id']}'s {b_score}")
+        elif isinstance(a_score, (int, float)) and not isinstance(b_score, (int, float)):
+            criterion = "real_composite_score (only A has one -- not a like-for-like comparison, disclosed)"
+            reasons.append(f"{a['opportunity_id']} has a real composite score ({a_score}); {b['opportunity_id']} has none to compare -- ranking is not strictly like-for-like across these two opportunity types.")
+        else:
+            criterion = "known_dimensions (fallback -- no real composite score exists on either side for this comparison)"
+            if a["known_dimensions"] > b["known_dimensions"]:
+                reasons.append(f"{a['opportunity_id']} has {a['known_dimensions']} real known dimensions vs. {b['opportunity_id']}'s {b['known_dimensions']} -- a weaker proxy than a real composite score, used only because neither opportunity has one yet.")
         a_fresh = "FRESH evidence exists" in str(a["dimensions"].get("EVIDENCE_FRESHNESS", {}).get("value", ""))
         b_fresh = "FRESH evidence exists" in str(b["dimensions"].get("EVIDENCE_FRESHNESS", {}).get("value", ""))
         if a_fresh and not b_fresh:
             reasons.append(f"{a['opportunity_id']} has real FRESH evidence; {b['opportunity_id']} does not")
         explanation = {
-            "winner": a["opportunity_id"], "runner_up": b["opportunity_id"],
+            "winner": a["opportunity_id"], "runner_up": b["opportunity_id"], "ranking_criterion": criterion,
             "WHY_A_BEATS_B": reasons or ["Both opportunities are real but comparably evidenced -- no material real differentiator found this comparison."],
         }
     return {"ranked": ranked, "top_comparison": explanation, "generated_at": _now_iso()}
@@ -433,13 +467,19 @@ def cheapest_validation_step(dimensions_result):
 
 def daily_golden_hunter_recommendation(current_opportunity_id=None, current_dimensions=None,
                                         current_evidence_summary=None, product_candidates_ranked=None,
-                                        events_path=None, now=None):
+                                        comparison=None, events_path=None, now=None):
     """Answers the 8 named questions (Section 19) from real, already-
     computed inputs -- never triggers a new live discovery pass or a
     new goos.rank_build_candidates() scan itself (the caller supplies
     those, matching this factory's established 'compute the expensive
     real scan once, thread it through' discipline, e.g.
-    strategic_planning.py/enterprise_operations.py)."""
+    strategic_planning.py/enterprise_operations.py).
+
+    `comparison` (optional) is a real compare_opportunities() result --
+    when supplied, its winner is the single source of truth for Q1/Q4,
+    avoiding the exact bug found and fixed this round where this
+    function's own separate goos_advisory_score>=60 threshold could
+    disagree with compare_opportunities()'s real ranking."""
     now = now or datetime.now(timezone.utc)
 
     strongest_product_candidate = None
@@ -454,9 +494,20 @@ def daily_golden_hunter_recommendation(current_opportunity_id=None, current_dime
 
     stronger_than_current = False
     why_better = "No real product candidate is currently ranked, or no current opportunity to compare against."
-    if strongest_product_candidate and current_dimensions:
+    q1_answer = current_opportunity_id
+
+    if comparison and comparison.get("top_comparison"):
+        winner = comparison["top_comparison"]["winner"]
+        q1_answer = winner
+        if winner != current_opportunity_id:
+            stronger_than_current = True
+            why_better = "; ".join(comparison["top_comparison"]["WHY_A_BEATS_B"])
+        else:
+            why_better = f"{current_opportunity_id} is itself the real, current winner of compare_opportunities() -- no stronger real alternative was found this round."
+    elif strongest_product_candidate and current_dimensions:
         product_score = strongest_product_candidate.get("goos_advisory_score")
         current_known = current_dimensions["known_dimensions"]
+        q1_answer = strongest_product_candidate["niche"]
         if isinstance(product_score, (int, float)) and product_score >= 60:
             stronger_than_current = True
             why_better = f"{strongest_product_candidate['niche']} has a real goos_advisory_score of {product_score} (a real, evidence-cited signal); current opportunity {current_opportunity_id} has {current_known} known dimensions but is gated at WATCH by real evidence freshness."
@@ -470,7 +521,7 @@ def daily_golden_hunter_recommendation(current_opportunity_id=None, current_dime
 
     return {
         "generated_at": _now_iso(now),
-        "Q1_strongest_opportunity_today": strongest_product_candidate["niche"] if strongest_product_candidate else current_opportunity_id,
+        "Q1_strongest_opportunity_today": q1_answer,
         "Q2_evidence_supporting_it": (
             f"real goos_advisory_score={strongest_product_candidate.get('goos_advisory_score')}, real prior_status={strongest_product_candidate.get('prior_status')}"
             if strongest_product_candidate else "See current_dimensions' real per-dimension citations."

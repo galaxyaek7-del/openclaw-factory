@@ -1,0 +1,1193 @@
+{
+  "generated_at": "2026-08-08T18:46:39.726373+00:00",
+  "pre_run_firewall_check": {
+    "REAL_OUTREACH_SENT": 0,
+    "REAL_MESSAGES_SENT": 0,
+    "REAL_PROSPECTS_CONTACTED": 0,
+    "REAL_DEALS": 0,
+    "REAL_CUSTOMERS": 0,
+    "REAL_REVENUE": 0,
+    "REAL_COMMISSION_records": 0,
+    "REAL_PAYOUTS": 0
+  },
+  "co_n8n_affiliate_lifecycle_transition": {
+    "ok": true,
+    "event": {
+      "generated_at": "2026-08-08T18:46:39.726373+00:00",
+      "opportunity_id": "CO-n8n-affiliate",
+      "from_state": "QUALIFICATION",
+      "to_state": "WATCH",
+      "reason": "REOPEN_ONLY_IF_NEW_FRESH_EVIDENCE_APPEARS",
+      "evidence": null,
+      "golden_hunter_reasoning": null
+    }
+  },
+  "co_n8n_affiliate_dimensions": {
+    "generated_at": "2026-08-08T18:46:39.726373+00:00",
+    "opportunity_id": "CO-n8n-affiliate",
+    "opportunity_type": "COMMISSION",
+    "dimensions": {
+      "MARKET_SIGNAL": {
+        "value": "UNKNOWN -- not captured at this granularity in the source registry",
+        "source": "commission_engine portfolio record"
+      },
+      "COMMERCIAL_POTENTIAL": {
+        "value": "30% revenue share for 12 months on Starter/Pro plans, self-service application, open to anyone with an audience",
+        "source": "commission_engine portfolio record"
+      },
+      "PARTNER_FIT": {
+        "value": "VERIFIED",
+        "source": "commission_engine._derive_verification_status()"
+      },
+      "RECURRENCE_POTENTIAL": {
+        "value": "recurring",
+        "source": "commission_engine portfolio record"
+      },
+      "RISK": {
+        "value": "Low",
+        "source": "commission_engine portfolio record"
+      },
+      "ACCESSIBILITY": {
+        "value": "Self-service signup",
+        "source": "commission_engine portfolio record (eligibility field)"
+      },
+      "PROBLEM_SEVERITY": {
+        "value": "UNKNOWN",
+        "source": "lead_discovery.py real discovery run result"
+      },
+      "CUSTOMER_EXISTENCE": {
+        "value": "1 real candidate(s) found",
+        "source": "lead_discovery.py real discovery run result"
+      },
+      "EVIDENCE_FRESHNESS": {
+        "value": "STALE -- no fresh (<=45 day) evidence found in the most recent real discovery run",
+        "source": "lead_discovery.py::classify_freshness() (45-day gate, unchanged)"
+      },
+      "EVIDENCE_QUALITY": {
+        "value": "best real candidate confidence: no qualified candidate",
+        "source": "lead_discovery.py::qualify_lead()"
+      },
+      "COMPETITION": {
+        "value": "NOT_MEASURED -- no real competition signal captured at this opportunity granularity",
+        "source": null
+      },
+      "TIME_TO_REVENUE": {
+        "value": "NOT_MEASURABLE -- no real historical per-opportunity time-to-first-revenue signal exists anywhere in this factory",
+        "source": null
+      },
+      "REPEATABILITY": {
+        "value": "1 real prior WATCH/ABANDON cycle(s)",
+        "source": "opportunity_rotation_engine.py::repeated_failure_penalty() (this module's own real lifecycle ledger)"
+      },
+      "CONFIDENCE": {
+        "value": "9/13 real factors known",
+        "source": "computed from the other 13 dimensions above"
+      }
+    },
+    "known_dimensions": 9,
+    "total_dimensions": 13,
+    "overall_confidence": "MEDIUM",
+    "real_composite_score": null
+  },
+  "co_n8n_affiliate_recommendation": {
+    "opportunity_id": "CO-n8n-affiliate",
+    "RECOMMENDATION": "WATCH",
+    "REASON": [
+      "EVIDENCE_FRESHNESS=STALE -- no fresh (<=45 day) evidence found in the most recent real discovery run -- the 45-day freshness gate is not met; insufficient to justify continued focused pursuit today."
+    ],
+    "note": "Golden Hunter recommends only -- this is never authorization for outreach, a deal, or any commercial commitment (Section 17)."
+  },
+  "co_n8n_affiliate_cheapest_next_step": {
+    "cheapest_next_step": "re-run lead_discovery.py's real discovery pass after a real time gap (evidence naturally refreshes)",
+    "targets_dimension": "EVIDENCE_FRESHNESS"
+  },
+  "co_n8n_affiliate_memory": {
+    "opportunity_id": "CO-n8n-affiliate",
+    "first_seen": "2026-08-08T18:46:39.726373+00:00",
+    "last_seen": "2026-08-08T18:46:39.726373+00:00",
+    "status": "WATCH",
+    "previous_status": "QUALIFICATION",
+    "score_history": [
+      {
+        "generated_at": "2026-08-08T18:46:39.726373+00:00",
+        "to_state": "EVIDENCE_CHECK",
+        "reason": "Phase 36: opportunity selected via select_first_launch_opportunity()"
+      },
+      {
+        "generated_at": "2026-08-08T18:46:39.726373+00:00",
+        "to_state": "QUALIFICATION",
+        "reason": "Phase 37B/37C: 2 real live discovery rounds, 3 sources, 0 qualified -- all real evidence STALE"
+      },
+      {
+        "generated_at": "2026-08-08T18:46:39.726373+00:00",
+        "to_state": "WATCH",
+        "reason": "REOPEN_ONLY_IF_NEW_FRESH_EVIDENCE_APPEARS"
+      }
+    ],
+    "evidence_history": [
+      "AUDIT/PHASE_36_COMMERCIAL_LAUNCH_CONTROL_REPORT.md",
+      "AUDIT/PHASE_37C_FRESH_EVIDENCE_REPORT.md"
+    ],
+    "rejection_history": [
+      {
+        "generated_at": "2026-08-08T18:46:39.726373+00:00",
+        "opportunity_id": "CO-n8n-affiliate",
+        "from_state": "QUALIFICATION",
+        "to_state": "WATCH",
+        "reason": "REOPEN_ONLY_IF_NEW_FRESH_EVIDENCE_APPEARS",
+        "evidence": null,
+        "golden_hunter_reasoning": null
+      }
+    ],
+    "qualification_history": [
+      {
+        "generated_at": "2026-08-08T18:46:39.726373+00:00",
+        "opportunity_id": "CO-n8n-affiliate",
+        "from_state": "EVIDENCE_CHECK",
+        "to_state": "QUALIFICATION",
+        "reason": "Phase 37B/37C: 2 real live discovery rounds, 3 sources, 0 qualified -- all real evidence STALE",
+        "evidence": "AUDIT/PHASE_37C_FRESH_EVIDENCE_REPORT.md",
+        "golden_hunter_reasoning": null
+      }
+    ],
+    "golden_hunter_reasoning": [],
+    "resurrection_events": [],
+    "transition_count": 3
+  },
+  "goos_rank_build_candidates_summary": {
+    "total_real_candidates": 98,
+    "real_accepted_portfolio_size": 0,
+    "build_next_count": 10,
+    "never_evaluated_count": 0
+  },
+  "top_10_candidates_raw": [
+    {
+      "niche": "مخطط شهري قابل للطباعة العودة للمدارس",
+      "ladder": null,
+      "prior_status": "DEFERRED",
+      "decided_at": "2026-07-31T14:31:00.312863+00:00",
+      "confidence_score": "low",
+      "evidence_sources": [
+        "evaluation_snapshot.risk",
+        "evaluation_snapshot.scores.automation_potential",
+        "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()",
+        "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance",
+        "executive_quality_gate.check_customer_pain_evidence() + evaluation_snapshot.scores.market_demand",
+        "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      ],
+      "expected_roi": {
+        "value": 78,
+        "source": "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      },
+      "competition_score": {
+        "value": 95,
+        "source": "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()"
+      },
+      "difficulty": {
+        "value": null,
+        "source": "strategic_intelligence_core.strategic_score()'s difficulty dimension (technical_complexity)"
+      },
+      "time_to_first_revenue": {
+        "value": "NOT_MEASURABLE",
+        "source": "NOT_MEASURABLE -- no real historical per-niche build-duration signal exists anywhere in this factory (same disclosed gap class as execution_status.py's own 'estimated_completion: Unknown')"
+      },
+      "long_term_recurring_potential": {
+        "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+        "source": "capital_allocation_engine.investment_score()'s recurring_revenue_potential (ACCEPTED opportunities only)"
+      },
+      "strategic_importance": {
+        "value": 25,
+        "source": "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance"
+      },
+      "goos_advisory_score": 72.8,
+      "score_status": "EVALUATED",
+      "duplicate_check": {
+        "duplicates_existing_family": false,
+        "reason": "لا عائلة منتج معروفة لـ ladder=None -- لا فحص تكرار ممكن"
+      },
+      "engineering_without_revenue_check": {
+        "engineering_without_revenue": "Unknown",
+        "reason": "يتطلب فحصاً حقيقياً بعد قرار ACCEPTED فعلي -- لا يُخمَّن قبل ذلك"
+      },
+      "reject_recommended": false
+    },
+    {
+      "niche": "printable monthly planner back to school",
+      "ladder": null,
+      "prior_status": "DEFERRED",
+      "decided_at": "2026-07-31T14:32:19.335633+00:00",
+      "confidence_score": "low",
+      "evidence_sources": [
+        "evaluation_snapshot.risk",
+        "evaluation_snapshot.scores.automation_potential",
+        "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()",
+        "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance",
+        "executive_quality_gate.check_customer_pain_evidence() + evaluation_snapshot.scores.market_demand",
+        "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      ],
+      "expected_roi": {
+        "value": 78,
+        "source": "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      },
+      "competition_score": {
+        "value": 95,
+        "source": "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()"
+      },
+      "difficulty": {
+        "value": null,
+        "source": "strategic_intelligence_core.strategic_score()'s difficulty dimension (technical_complexity)"
+      },
+      "time_to_first_revenue": {
+        "value": "NOT_MEASURABLE",
+        "source": "NOT_MEASURABLE -- no real historical per-niche build-duration signal exists anywhere in this factory (same disclosed gap class as execution_status.py's own 'estimated_completion: Unknown')"
+      },
+      "long_term_recurring_potential": {
+        "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+        "source": "capital_allocation_engine.investment_score()'s recurring_revenue_potential (ACCEPTED opportunities only)"
+      },
+      "strategic_importance": {
+        "value": 25,
+        "source": "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance"
+      },
+      "goos_advisory_score": 72.8,
+      "score_status": "EVALUATED",
+      "duplicate_check": {
+        "duplicates_existing_family": false,
+        "reason": "لا عائلة منتج معروفة لـ ladder=None -- لا فحص تكرار ممكن"
+      },
+      "engineering_without_revenue_check": {
+        "engineering_without_revenue": "Unknown",
+        "reason": "يتطلب فحصاً حقيقياً بعد قرار ACCEPTED فعلي -- لا يُخمَّن قبل ذلك"
+      },
+      "reject_recommended": false
+    },
+    {
+      "niche": "AI-powered compliance automation subscription system for accounting firms",
+      "ladder": null,
+      "prior_status": "DEFERRED",
+      "decided_at": "2026-07-31T14:32:55.306568+00:00",
+      "confidence_score": "low",
+      "evidence_sources": [
+        "evaluation_snapshot.risk",
+        "evaluation_snapshot.scores.automation_potential",
+        "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()",
+        "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance",
+        "executive_quality_gate.check_customer_pain_evidence() + evaluation_snapshot.scores.market_demand",
+        "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      ],
+      "expected_roi": {
+        "value": 90,
+        "source": "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      },
+      "competition_score": {
+        "value": 95,
+        "source": "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()"
+      },
+      "difficulty": {
+        "value": null,
+        "source": "strategic_intelligence_core.strategic_score()'s difficulty dimension (technical_complexity)"
+      },
+      "time_to_first_revenue": {
+        "value": "NOT_MEASURABLE",
+        "source": "NOT_MEASURABLE -- no real historical per-niche build-duration signal exists anywhere in this factory (same disclosed gap class as execution_status.py's own 'estimated_completion: Unknown')"
+      },
+      "long_term_recurring_potential": {
+        "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+        "source": "capital_allocation_engine.investment_score()'s recurring_revenue_potential (ACCEPTED opportunities only)"
+      },
+      "strategic_importance": {
+        "value": 25,
+        "source": "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance"
+      },
+      "goos_advisory_score": 72.8,
+      "score_status": "EVALUATED",
+      "duplicate_check": {
+        "duplicates_existing_family": false,
+        "reason": "لا عائلة منتج معروفة لـ ladder=None -- لا فحص تكرار ممكن"
+      },
+      "engineering_without_revenue_check": {
+        "engineering_without_revenue": "Unknown",
+        "reason": "يتطلب فحصاً حقيقياً بعد قرار ACCEPTED فعلي -- لا يُخمَّن قبل ذلك"
+      },
+      "reject_recommended": false
+    },
+    {
+      "niche": "قوالب تصميم SVG قابلة للقص العودة للمدارس",
+      "ladder": null,
+      "prior_status": "DEFERRED",
+      "decided_at": "2026-07-31T14:31:10.846046+00:00",
+      "confidence_score": "low",
+      "evidence_sources": [
+        "evaluation_snapshot.risk",
+        "evaluation_snapshot.scores.automation_potential",
+        "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()",
+        "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance",
+        "executive_quality_gate.check_customer_pain_evidence() + evaluation_snapshot.scores.market_demand",
+        "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      ],
+      "expected_roi": {
+        "value": 75,
+        "source": "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      },
+      "competition_score": {
+        "value": 95,
+        "source": "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()"
+      },
+      "difficulty": {
+        "value": null,
+        "source": "strategic_intelligence_core.strategic_score()'s difficulty dimension (technical_complexity)"
+      },
+      "time_to_first_revenue": {
+        "value": "NOT_MEASURABLE",
+        "source": "NOT_MEASURABLE -- no real historical per-niche build-duration signal exists anywhere in this factory (same disclosed gap class as execution_status.py's own 'estimated_completion: Unknown')"
+      },
+      "long_term_recurring_potential": {
+        "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+        "source": "capital_allocation_engine.investment_score()'s recurring_revenue_potential (ACCEPTED opportunities only)"
+      },
+      "strategic_importance": {
+        "value": 25,
+        "source": "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance"
+      },
+      "goos_advisory_score": 72.2,
+      "score_status": "EVALUATED",
+      "duplicate_check": {
+        "duplicates_existing_family": false,
+        "reason": "لا عائلة منتج معروفة لـ ladder=None -- لا فحص تكرار ممكن"
+      },
+      "engineering_without_revenue_check": {
+        "engineering_without_revenue": "Unknown",
+        "reason": "يتطلب فحصاً حقيقياً بعد قرار ACCEPTED فعلي -- لا يُخمَّن قبل ذلك"
+      },
+      "reject_recommended": false
+    },
+    {
+      "niche": "cuttable SVG design templates back to school",
+      "ladder": null,
+      "prior_status": "DEFERRED",
+      "decided_at": "2026-07-31T14:32:30.572287+00:00",
+      "confidence_score": "low",
+      "evidence_sources": [
+        "evaluation_snapshot.risk",
+        "evaluation_snapshot.scores.automation_potential",
+        "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()",
+        "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance",
+        "executive_quality_gate.check_customer_pain_evidence() + evaluation_snapshot.scores.market_demand",
+        "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      ],
+      "expected_roi": {
+        "value": 75,
+        "source": "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      },
+      "competition_score": {
+        "value": 95,
+        "source": "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()"
+      },
+      "difficulty": {
+        "value": null,
+        "source": "strategic_intelligence_core.strategic_score()'s difficulty dimension (technical_complexity)"
+      },
+      "time_to_first_revenue": {
+        "value": "NOT_MEASURABLE",
+        "source": "NOT_MEASURABLE -- no real historical per-niche build-duration signal exists anywhere in this factory (same disclosed gap class as execution_status.py's own 'estimated_completion: Unknown')"
+      },
+      "long_term_recurring_potential": {
+        "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+        "source": "capital_allocation_engine.investment_score()'s recurring_revenue_potential (ACCEPTED opportunities only)"
+      },
+      "strategic_importance": {
+        "value": 25,
+        "source": "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance"
+      },
+      "goos_advisory_score": 72.2,
+      "score_status": "EVALUATED",
+      "duplicate_check": {
+        "duplicates_existing_family": false,
+        "reason": "لا عائلة منتج معروفة لـ ladder=None -- لا فحص تكرار ممكن"
+      },
+      "engineering_without_revenue_check": {
+        "engineering_without_revenue": "Unknown",
+        "reason": "يتطلب فحصاً حقيقياً بعد قرار ACCEPTED فعلي -- لا يُخمَّن قبل ذلك"
+      },
+      "reject_recommended": false
+    },
+    {
+      "niche": "EU AI Act Compliance Document and Template Toolkit",
+      "ladder": "reusable_assets",
+      "prior_status": "DEFERRED",
+      "decided_at": "2026-08-06T11:21:57.348904+00:00",
+      "confidence_score": "low",
+      "evidence_sources": [
+        "evaluation_snapshot.risk",
+        "evaluation_snapshot.scores.automation_potential",
+        "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()",
+        "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance",
+        "executive_quality_gate.check_customer_pain_evidence() + evaluation_snapshot.scores.market_demand",
+        "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      ],
+      "expected_roi": {
+        "value": 75,
+        "source": "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      },
+      "competition_score": {
+        "value": 95,
+        "source": "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()"
+      },
+      "difficulty": {
+        "value": null,
+        "source": "strategic_intelligence_core.strategic_score()'s difficulty dimension (technical_complexity)"
+      },
+      "time_to_first_revenue": {
+        "value": "NOT_MEASURABLE",
+        "source": "NOT_MEASURABLE -- no real historical per-niche build-duration signal exists anywhere in this factory (same disclosed gap class as execution_status.py's own 'estimated_completion: Unknown')"
+      },
+      "long_term_recurring_potential": {
+        "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+        "source": "capital_allocation_engine.investment_score()'s recurring_revenue_potential (ACCEPTED opportunities only)"
+      },
+      "strategic_importance": {
+        "value": 95,
+        "source": "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance"
+      },
+      "goos_advisory_score": 71.8,
+      "score_status": "EVALUATED",
+      "duplicate_check": {
+        "duplicates_existing_family": false,
+        "family": "professional_templates",
+        "reason": "لا محفظة ACCEPTED حقيقية بعد للمقارنة -- لا تكرار قابل للاكتشاف اليوم"
+      },
+      "engineering_without_revenue_check": {
+        "engineering_without_revenue": "Unknown",
+        "reason": "يتطلب فحصاً حقيقياً بعد قرار ACCEPTED فعلي -- لا يُخمَّن قبل ذلك"
+      },
+      "reject_recommended": false
+    },
+    {
+      "niche": "مخطط شهري قابل للطباعة للنساء",
+      "ladder": null,
+      "prior_status": "DEFERRED",
+      "decided_at": "2026-07-31T14:30:01.167666+00:00",
+      "confidence_score": "low",
+      "evidence_sources": [
+        "evaluation_snapshot.risk",
+        "evaluation_snapshot.scores.automation_potential",
+        "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()",
+        "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance",
+        "executive_quality_gate.check_customer_pain_evidence() + evaluation_snapshot.scores.market_demand",
+        "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      ],
+      "expected_roi": {
+        "value": 78,
+        "source": "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      },
+      "competition_score": {
+        "value": 100,
+        "source": "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()"
+      },
+      "difficulty": {
+        "value": null,
+        "source": "strategic_intelligence_core.strategic_score()'s difficulty dimension (technical_complexity)"
+      },
+      "time_to_first_revenue": {
+        "value": "NOT_MEASURABLE",
+        "source": "NOT_MEASURABLE -- no real historical per-niche build-duration signal exists anywhere in this factory (same disclosed gap class as execution_status.py's own 'estimated_completion: Unknown')"
+      },
+      "long_term_recurring_potential": {
+        "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+        "source": "capital_allocation_engine.investment_score()'s recurring_revenue_potential (ACCEPTED opportunities only)"
+      },
+      "strategic_importance": {
+        "value": 25,
+        "source": "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance"
+      },
+      "goos_advisory_score": 71.4,
+      "score_status": "EVALUATED",
+      "duplicate_check": {
+        "duplicates_existing_family": false,
+        "reason": "لا عائلة منتج معروفة لـ ladder=None -- لا فحص تكرار ممكن"
+      },
+      "engineering_without_revenue_check": {
+        "engineering_without_revenue": "Unknown",
+        "reason": "يتطلب فحصاً حقيقياً بعد قرار ACCEPTED فعلي -- لا يُخمَّن قبل ذلك"
+      },
+      "reject_recommended": false
+    },
+    {
+      "niche": "مخطط شهري قابل للطباعة للأطفال",
+      "ladder": null,
+      "prior_status": "DEFERRED",
+      "decided_at": "2026-07-31T14:31:03.746611+00:00",
+      "confidence_score": "low",
+      "evidence_sources": [
+        "evaluation_snapshot.risk",
+        "evaluation_snapshot.scores.automation_potential",
+        "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()",
+        "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance",
+        "executive_quality_gate.check_customer_pain_evidence() + evaluation_snapshot.scores.market_demand",
+        "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      ],
+      "expected_roi": {
+        "value": 78,
+        "source": "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      },
+      "competition_score": {
+        "value": 100,
+        "source": "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()"
+      },
+      "difficulty": {
+        "value": null,
+        "source": "strategic_intelligence_core.strategic_score()'s difficulty dimension (technical_complexity)"
+      },
+      "time_to_first_revenue": {
+        "value": "NOT_MEASURABLE",
+        "source": "NOT_MEASURABLE -- no real historical per-niche build-duration signal exists anywhere in this factory (same disclosed gap class as execution_status.py's own 'estimated_completion: Unknown')"
+      },
+      "long_term_recurring_potential": {
+        "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+        "source": "capital_allocation_engine.investment_score()'s recurring_revenue_potential (ACCEPTED opportunities only)"
+      },
+      "strategic_importance": {
+        "value": 25,
+        "source": "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance"
+      },
+      "goos_advisory_score": 71.4,
+      "score_status": "EVALUATED",
+      "duplicate_check": {
+        "duplicates_existing_family": false,
+        "reason": "لا عائلة منتج معروفة لـ ladder=None -- لا فحص تكرار ممكن"
+      },
+      "engineering_without_revenue_check": {
+        "engineering_without_revenue": "Unknown",
+        "reason": "يتطلب فحصاً حقيقياً بعد قرار ACCEPTED فعلي -- لا يُخمَّن قبل ذلك"
+      },
+      "reject_recommended": false
+    },
+    {
+      "niche": "مخطط شهري قابل للطباعة للمراهقين",
+      "ladder": null,
+      "prior_status": "DEFERRED",
+      "decided_at": "2026-07-31T14:30:32.745649+00:00",
+      "confidence_score": "low",
+      "evidence_sources": [
+        "evaluation_snapshot.risk",
+        "evaluation_snapshot.scores.automation_potential",
+        "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()",
+        "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance",
+        "executive_quality_gate.check_customer_pain_evidence() + evaluation_snapshot.scores.market_demand",
+        "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      ],
+      "expected_roi": {
+        "value": 78,
+        "source": "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      },
+      "competition_score": {
+        "value": 100,
+        "source": "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()"
+      },
+      "difficulty": {
+        "value": null,
+        "source": "strategic_intelligence_core.strategic_score()'s difficulty dimension (technical_complexity)"
+      },
+      "time_to_first_revenue": {
+        "value": "NOT_MEASURABLE",
+        "source": "NOT_MEASURABLE -- no real historical per-niche build-duration signal exists anywhere in this factory (same disclosed gap class as execution_status.py's own 'estimated_completion: Unknown')"
+      },
+      "long_term_recurring_potential": {
+        "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+        "source": "capital_allocation_engine.investment_score()'s recurring_revenue_potential (ACCEPTED opportunities only)"
+      },
+      "strategic_importance": {
+        "value": 25,
+        "source": "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance"
+      },
+      "goos_advisory_score": 71.4,
+      "score_status": "EVALUATED",
+      "duplicate_check": {
+        "duplicates_existing_family": false,
+        "reason": "لا عائلة منتج معروفة لـ ladder=None -- لا فحص تكرار ممكن"
+      },
+      "engineering_without_revenue_check": {
+        "engineering_without_revenue": "Unknown",
+        "reason": "يتطلب فحصاً حقيقياً بعد قرار ACCEPTED فعلي -- لا يُخمَّن قبل ذلك"
+      },
+      "reject_recommended": false
+    },
+    {
+      "niche": "printable monthly planner for kids",
+      "ladder": null,
+      "prior_status": "DEFERRED",
+      "decided_at": "2026-07-31T14:31:45.851766+00:00",
+      "confidence_score": "low",
+      "evidence_sources": [
+        "evaluation_snapshot.risk",
+        "evaluation_snapshot.scores.automation_potential",
+        "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()",
+        "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance",
+        "executive_quality_gate.check_customer_pain_evidence() + evaluation_snapshot.scores.market_demand",
+        "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      ],
+      "expected_roi": {
+        "value": 78,
+        "source": "profit_oracle.ladder_opportunity_score()'s profit_potential + butter_price()"
+      },
+      "competition_score": {
+        "value": 100,
+        "source": "evaluation_snapshot.scores.competition_favorability + executive_quality_gate.check_market_saturation()"
+      },
+      "difficulty": {
+        "value": null,
+        "source": "strategic_intelligence_core.strategic_score()'s difficulty dimension (technical_complexity)"
+      },
+      "time_to_first_revenue": {
+        "value": "NOT_MEASURABLE",
+        "source": "NOT_MEASURABLE -- no real historical per-niche build-duration signal exists anywhere in this factory (same disclosed gap class as execution_status.py's own 'estimated_completion: Unknown')"
+      },
+      "long_term_recurring_potential": {
+        "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+        "source": "capital_allocation_engine.investment_score()'s recurring_revenue_potential (ACCEPTED opportunities only)"
+      },
+      "strategic_importance": {
+        "value": 25,
+        "source": "evaluation_snapshot.scores.long_term_value + capital_allocation_engine.investment_score()'s strategic_importance"
+      },
+      "goos_advisory_score": 71.4,
+      "score_status": "EVALUATED",
+      "duplicate_check": {
+        "duplicates_existing_family": false,
+        "reason": "لا عائلة منتج معروفة لـ ladder=None -- لا فحص تكرار ممكن"
+      },
+      "engineering_without_revenue_check": {
+        "engineering_without_revenue": "Unknown",
+        "reason": "يتطلب فحصاً حقيقياً بعد قرار ACCEPTED فعلي -- لا يُخمَّن قبل ذلك"
+      },
+      "reject_recommended": false
+    }
+  ],
+  "top_3_product_candidates_evaluated": [
+    {
+      "generated_at": "2026-08-08T18:46:39.726373+00:00",
+      "opportunity_id": "مخطط شهري قابل للطباعة العودة للمدارس",
+      "opportunity_type": "PRODUCT",
+      "dimensions": {
+        "MARKET_SIGNAL": {
+          "value": 66,
+          "source": "goos.py::evaluate_dimensions()['real_customer_pain']"
+        },
+        "COMMERCIAL_POTENTIAL": {
+          "value": 78,
+          "source": "goos.py::evaluate_dimensions()['profitability']"
+        },
+        "PARTNER_FIT": {
+          "value": "NOT_APPLICABLE -- no partner program involved for a product-build candidate",
+          "source": null
+        },
+        "RECURRENCE_POTENTIAL": {
+          "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+          "source": "goos.py::evaluate_dimensions()['recurring_revenue_potential']"
+        },
+        "RISK": {
+          "value": "low",
+          "source": "goos.py::evaluate_dimensions()['risk_level']"
+        },
+        "ACCESSIBILITY": {
+          "value": "see executive_quality_gate.check_infrastructure_readiness()/check_automation_readiness()",
+          "source": "goos.py::evaluate_dimensions()['operational_complexity']"
+        },
+        "PROBLEM_SEVERITY": {
+          "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+          "source": null
+        },
+        "CUSTOMER_EXISTENCE": {
+          "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+          "source": null
+        },
+        "EVIDENCE_FRESHNESS": {
+          "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+          "source": null
+        },
+        "EVIDENCE_QUALITY": {
+          "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+          "source": null
+        },
+        "COMPETITION": {
+          "value": 95,
+          "source": "goos.py::evaluate_dimensions()['competition_level']"
+        },
+        "TIME_TO_REVENUE": {
+          "value": "NOT_MEASURABLE -- no real historical per-opportunity time-to-first-revenue signal exists anywhere in this factory",
+          "source": null
+        },
+        "REPEATABILITY": {
+          "value": "0 real prior WATCH/ABANDON cycle(s)",
+          "source": "opportunity_rotation_engine.py::repeated_failure_penalty() (this module's own real lifecycle ledger)"
+        },
+        "CONFIDENCE": {
+          "value": "6/13 real factors known",
+          "source": "computed from the other 13 dimensions above"
+        }
+      },
+      "known_dimensions": 6,
+      "total_dimensions": 13,
+      "overall_confidence": "MEDIUM",
+      "real_composite_score": 72.8
+    },
+    {
+      "generated_at": "2026-08-08T18:46:39.726373+00:00",
+      "opportunity_id": "printable monthly planner back to school",
+      "opportunity_type": "PRODUCT",
+      "dimensions": {
+        "MARKET_SIGNAL": {
+          "value": 66,
+          "source": "goos.py::evaluate_dimensions()['real_customer_pain']"
+        },
+        "COMMERCIAL_POTENTIAL": {
+          "value": 78,
+          "source": "goos.py::evaluate_dimensions()['profitability']"
+        },
+        "PARTNER_FIT": {
+          "value": "NOT_APPLICABLE -- no partner program involved for a product-build candidate",
+          "source": null
+        },
+        "RECURRENCE_POTENTIAL": {
+          "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+          "source": "goos.py::evaluate_dimensions()['recurring_revenue_potential']"
+        },
+        "RISK": {
+          "value": "low",
+          "source": "goos.py::evaluate_dimensions()['risk_level']"
+        },
+        "ACCESSIBILITY": {
+          "value": "see executive_quality_gate.check_infrastructure_readiness()/check_automation_readiness()",
+          "source": "goos.py::evaluate_dimensions()['operational_complexity']"
+        },
+        "PROBLEM_SEVERITY": {
+          "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+          "source": null
+        },
+        "CUSTOMER_EXISTENCE": {
+          "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+          "source": null
+        },
+        "EVIDENCE_FRESHNESS": {
+          "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+          "source": null
+        },
+        "EVIDENCE_QUALITY": {
+          "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+          "source": null
+        },
+        "COMPETITION": {
+          "value": 95,
+          "source": "goos.py::evaluate_dimensions()['competition_level']"
+        },
+        "TIME_TO_REVENUE": {
+          "value": "NOT_MEASURABLE -- no real historical per-opportunity time-to-first-revenue signal exists anywhere in this factory",
+          "source": null
+        },
+        "REPEATABILITY": {
+          "value": "0 real prior WATCH/ABANDON cycle(s)",
+          "source": "opportunity_rotation_engine.py::repeated_failure_penalty() (this module's own real lifecycle ledger)"
+        },
+        "CONFIDENCE": {
+          "value": "6/13 real factors known",
+          "source": "computed from the other 13 dimensions above"
+        }
+      },
+      "known_dimensions": 6,
+      "total_dimensions": 13,
+      "overall_confidence": "MEDIUM",
+      "real_composite_score": 72.8
+    },
+    {
+      "generated_at": "2026-08-08T18:46:39.726373+00:00",
+      "opportunity_id": "AI-powered compliance automation subscription system for accounting firms",
+      "opportunity_type": "PRODUCT",
+      "dimensions": {
+        "MARKET_SIGNAL": {
+          "value": 54,
+          "source": "goos.py::evaluate_dimensions()['real_customer_pain']"
+        },
+        "COMMERCIAL_POTENTIAL": {
+          "value": 90,
+          "source": "goos.py::evaluate_dimensions()['profitability']"
+        },
+        "PARTNER_FIT": {
+          "value": "NOT_APPLICABLE -- no partner program involved for a product-build candidate",
+          "source": null
+        },
+        "RECURRENCE_POTENTIAL": {
+          "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+          "source": "goos.py::evaluate_dimensions()['recurring_revenue_potential']"
+        },
+        "RISK": {
+          "value": "low",
+          "source": "goos.py::evaluate_dimensions()['risk_level']"
+        },
+        "ACCESSIBILITY": {
+          "value": "see executive_quality_gate.check_infrastructure_readiness()/check_automation_readiness()",
+          "source": "goos.py::evaluate_dimensions()['operational_complexity']"
+        },
+        "PROBLEM_SEVERITY": {
+          "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+          "source": null
+        },
+        "CUSTOMER_EXISTENCE": {
+          "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+          "source": null
+        },
+        "EVIDENCE_FRESHNESS": {
+          "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+          "source": null
+        },
+        "EVIDENCE_QUALITY": {
+          "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+          "source": null
+        },
+        "COMPETITION": {
+          "value": 95,
+          "source": "goos.py::evaluate_dimensions()['competition_level']"
+        },
+        "TIME_TO_REVENUE": {
+          "value": "NOT_MEASURABLE -- no real historical per-opportunity time-to-first-revenue signal exists anywhere in this factory",
+          "source": null
+        },
+        "REPEATABILITY": {
+          "value": "0 real prior WATCH/ABANDON cycle(s)",
+          "source": "opportunity_rotation_engine.py::repeated_failure_penalty() (this module's own real lifecycle ledger)"
+        },
+        "CONFIDENCE": {
+          "value": "6/13 real factors known",
+          "source": "computed from the other 13 dimensions above"
+        }
+      },
+      "known_dimensions": 6,
+      "total_dimensions": 13,
+      "overall_confidence": "MEDIUM",
+      "real_composite_score": 72.8
+    }
+  ],
+  "comparison": {
+    "ranked": [
+      {
+        "generated_at": "2026-08-08T18:46:39.726373+00:00",
+        "opportunity_id": "مخطط شهري قابل للطباعة العودة للمدارس",
+        "opportunity_type": "PRODUCT",
+        "dimensions": {
+          "MARKET_SIGNAL": {
+            "value": 66,
+            "source": "goos.py::evaluate_dimensions()['real_customer_pain']"
+          },
+          "COMMERCIAL_POTENTIAL": {
+            "value": 78,
+            "source": "goos.py::evaluate_dimensions()['profitability']"
+          },
+          "PARTNER_FIT": {
+            "value": "NOT_APPLICABLE -- no partner program involved for a product-build candidate",
+            "source": null
+          },
+          "RECURRENCE_POTENTIAL": {
+            "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+            "source": "goos.py::evaluate_dimensions()['recurring_revenue_potential']"
+          },
+          "RISK": {
+            "value": "low",
+            "source": "goos.py::evaluate_dimensions()['risk_level']"
+          },
+          "ACCESSIBILITY": {
+            "value": "see executive_quality_gate.check_infrastructure_readiness()/check_automation_readiness()",
+            "source": "goos.py::evaluate_dimensions()['operational_complexity']"
+          },
+          "PROBLEM_SEVERITY": {
+            "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+            "source": null
+          },
+          "CUSTOMER_EXISTENCE": {
+            "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+            "source": null
+          },
+          "EVIDENCE_FRESHNESS": {
+            "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+            "source": null
+          },
+          "EVIDENCE_QUALITY": {
+            "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+            "source": null
+          },
+          "COMPETITION": {
+            "value": 95,
+            "source": "goos.py::evaluate_dimensions()['competition_level']"
+          },
+          "TIME_TO_REVENUE": {
+            "value": "NOT_MEASURABLE -- no real historical per-opportunity time-to-first-revenue signal exists anywhere in this factory",
+            "source": null
+          },
+          "REPEATABILITY": {
+            "value": "0 real prior WATCH/ABANDON cycle(s)",
+            "source": "opportunity_rotation_engine.py::repeated_failure_penalty() (this module's own real lifecycle ledger)"
+          },
+          "CONFIDENCE": {
+            "value": "6/13 real factors known",
+            "source": "computed from the other 13 dimensions above"
+          }
+        },
+        "known_dimensions": 6,
+        "total_dimensions": 13,
+        "overall_confidence": "MEDIUM",
+        "real_composite_score": 72.8
+      },
+      {
+        "generated_at": "2026-08-08T18:46:39.726373+00:00",
+        "opportunity_id": "printable monthly planner back to school",
+        "opportunity_type": "PRODUCT",
+        "dimensions": {
+          "MARKET_SIGNAL": {
+            "value": 66,
+            "source": "goos.py::evaluate_dimensions()['real_customer_pain']"
+          },
+          "COMMERCIAL_POTENTIAL": {
+            "value": 78,
+            "source": "goos.py::evaluate_dimensions()['profitability']"
+          },
+          "PARTNER_FIT": {
+            "value": "NOT_APPLICABLE -- no partner program involved for a product-build candidate",
+            "source": null
+          },
+          "RECURRENCE_POTENTIAL": {
+            "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+            "source": "goos.py::evaluate_dimensions()['recurring_revenue_potential']"
+          },
+          "RISK": {
+            "value": "low",
+            "source": "goos.py::evaluate_dimensions()['risk_level']"
+          },
+          "ACCESSIBILITY": {
+            "value": "see executive_quality_gate.check_infrastructure_readiness()/check_automation_readiness()",
+            "source": "goos.py::evaluate_dimensions()['operational_complexity']"
+          },
+          "PROBLEM_SEVERITY": {
+            "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+            "source": null
+          },
+          "CUSTOMER_EXISTENCE": {
+            "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+            "source": null
+          },
+          "EVIDENCE_FRESHNESS": {
+            "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+            "source": null
+          },
+          "EVIDENCE_QUALITY": {
+            "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+            "source": null
+          },
+          "COMPETITION": {
+            "value": 95,
+            "source": "goos.py::evaluate_dimensions()['competition_level']"
+          },
+          "TIME_TO_REVENUE": {
+            "value": "NOT_MEASURABLE -- no real historical per-opportunity time-to-first-revenue signal exists anywhere in this factory",
+            "source": null
+          },
+          "REPEATABILITY": {
+            "value": "0 real prior WATCH/ABANDON cycle(s)",
+            "source": "opportunity_rotation_engine.py::repeated_failure_penalty() (this module's own real lifecycle ledger)"
+          },
+          "CONFIDENCE": {
+            "value": "6/13 real factors known",
+            "source": "computed from the other 13 dimensions above"
+          }
+        },
+        "known_dimensions": 6,
+        "total_dimensions": 13,
+        "overall_confidence": "MEDIUM",
+        "real_composite_score": 72.8
+      },
+      {
+        "generated_at": "2026-08-08T18:46:39.726373+00:00",
+        "opportunity_id": "AI-powered compliance automation subscription system for accounting firms",
+        "opportunity_type": "PRODUCT",
+        "dimensions": {
+          "MARKET_SIGNAL": {
+            "value": 54,
+            "source": "goos.py::evaluate_dimensions()['real_customer_pain']"
+          },
+          "COMMERCIAL_POTENTIAL": {
+            "value": 90,
+            "source": "goos.py::evaluate_dimensions()['profitability']"
+          },
+          "PARTNER_FIT": {
+            "value": "NOT_APPLICABLE -- no partner program involved for a product-build candidate",
+            "source": null
+          },
+          "RECURRENCE_POTENTIAL": {
+            "value": "NOT_MEASURABLE_PRE_ACCEPTANCE",
+            "source": "goos.py::evaluate_dimensions()['recurring_revenue_potential']"
+          },
+          "RISK": {
+            "value": "low",
+            "source": "goos.py::evaluate_dimensions()['risk_level']"
+          },
+          "ACCESSIBILITY": {
+            "value": "see executive_quality_gate.check_infrastructure_readiness()/check_automation_readiness()",
+            "source": "goos.py::evaluate_dimensions()['operational_complexity']"
+          },
+          "PROBLEM_SEVERITY": {
+            "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+            "source": null
+          },
+          "CUSTOMER_EXISTENCE": {
+            "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+            "source": null
+          },
+          "EVIDENCE_FRESHNESS": {
+            "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+            "source": null
+          },
+          "EVIDENCE_QUALITY": {
+            "value": "UNKNOWN -- no real discovery run exists for this opportunity yet",
+            "source": null
+          },
+          "COMPETITION": {
+            "value": 95,
+            "source": "goos.py::evaluate_dimensions()['competition_level']"
+          },
+          "TIME_TO_REVENUE": {
+            "value": "NOT_MEASURABLE -- no real historical per-opportunity time-to-first-revenue signal exists anywhere in this factory",
+            "source": null
+          },
+          "REPEATABILITY": {
+            "value": "0 real prior WATCH/ABANDON cycle(s)",
+            "source": "opportunity_rotation_engine.py::repeated_failure_penalty() (this module's own real lifecycle ledger)"
+          },
+          "CONFIDENCE": {
+            "value": "6/13 real factors known",
+            "source": "computed from the other 13 dimensions above"
+          }
+        },
+        "known_dimensions": 6,
+        "total_dimensions": 13,
+        "overall_confidence": "MEDIUM",
+        "real_composite_score": 72.8
+      },
+      {
+        "generated_at": "2026-08-08T18:46:39.726373+00:00",
+        "opportunity_id": "CO-n8n-affiliate",
+        "opportunity_type": "COMMISSION",
+        "dimensions": {
+          "MARKET_SIGNAL": {
+            "value": "UNKNOWN -- not captured at this granularity in the source registry",
+            "source": "commission_engine portfolio record"
+          },
+          "COMMERCIAL_POTENTIAL": {
+            "value": "30% revenue share for 12 months on Starter/Pro plans, self-service application, open to anyone with an audience",
+            "source": "commission_engine portfolio record"
+          },
+          "PARTNER_FIT": {
+            "value": "VERIFIED",
+            "source": "commission_engine._derive_verification_status()"
+          },
+          "RECURRENCE_POTENTIAL": {
+            "value": "recurring",
+            "source": "commission_engine portfolio record"
+          },
+          "RISK": {
+            "value": "Low",
+            "source": "commission_engine portfolio record"
+          },
+          "ACCESSIBILITY": {
+            "value": "Self-service signup",
+            "source": "commission_engine portfolio record (eligibility field)"
+          },
+          "PROBLEM_SEVERITY": {
+            "value": "UNKNOWN",
+            "source": "lead_discovery.py real discovery run result"
+          },
+          "CUSTOMER_EXISTENCE": {
+            "value": "1 real candidate(s) found",
+            "source": "lead_discovery.py real discovery run result"
+          },
+          "EVIDENCE_FRESHNESS": {
+            "value": "STALE -- no fresh (<=45 day) evidence found in the most recent real discovery run",
+            "source": "lead_discovery.py::classify_freshness() (45-day gate, unchanged)"
+          },
+          "EVIDENCE_QUALITY": {
+            "value": "best real candidate confidence: no qualified candidate",
+            "source": "lead_discovery.py::qualify_lead()"
+          },
+          "COMPETITION": {
+            "value": "NOT_MEASURED -- no real competition signal captured at this opportunity granularity",
+            "source": null
+          },
+          "TIME_TO_REVENUE": {
+            "value": "NOT_MEASURABLE -- no real historical per-opportunity time-to-first-revenue signal exists anywhere in this factory",
+            "source": null
+          },
+          "REPEATABILITY": {
+            "value": "1 real prior WATCH/ABANDON cycle(s)",
+            "source": "opportunity_rotation_engine.py::repeated_failure_penalty() (this module's own real lifecycle ledger)"
+          },
+          "CONFIDENCE": {
+            "value": "9/13 real factors known",
+            "source": "computed from the other 13 dimensions above"
+          }
+        },
+        "known_dimensions": 9,
+        "total_dimensions": 13,
+        "overall_confidence": "MEDIUM",
+        "real_composite_score": null
+      }
+    ],
+    "top_comparison": {
+      "winner": "مخطط شهري قابل للطباعة العودة للمدارس",
+      "runner_up": "printable monthly planner back to school",
+      "ranking_criterion": "real_composite_score",
+      "WHY_A_BEATS_B": [
+        "Both opportunities are real but comparably evidenced -- no material real differentiator found this comparison."
+      ]
+    },
+    "generated_at": "2026-08-08T18:46:43.238519+00:00"
+  },
+  "current_best_opportunity": "مخطط شهري قابل للطباعة العودة للمدارس",
+  "daily_recommendation": {
+    "generated_at": "2026-08-08T18:46:39.726373+00:00",
+    "Q1_strongest_opportunity_today": "مخطط شهري قابل للطباعة العودة للمدارس",
+    "Q2_evidence_supporting_it": "real goos_advisory_score=72.8, real prior_status=DEFERRED",
+    "Q3_evidence_missing": [
+      "MARKET_SIGNAL",
+      "PROBLEM_SEVERITY",
+      "EVIDENCE_FRESHNESS",
+      "COMPETITION",
+      "TIME_TO_REVENUE"
+    ],
+    "Q4_why_better_than_current": "Both opportunities are real but comparably evidenced -- no material real differentiator found this comparison.",
+    "Q5_cheapest_next_validation_step": {
+      "cheapest_next_step": "re-run lead_discovery.py's real discovery pass after a real time gap (evidence naturally refreshes)",
+      "targets_dimension": "EVIDENCE_FRESHNESS"
+    },
+    "Q6_what_should_be_abandoned": [],
+    "Q7_what_remains_under_watch": [
+      "CO-n8n-affiliate"
+    ],
+    "Q8_ceo_approval_required": true,
+    "current_recommendation": {
+      "opportunity_id": "CO-n8n-affiliate",
+      "RECOMMENDATION": "WATCH",
+      "REASON": [
+        "EVIDENCE_FRESHNESS=STALE -- no fresh (<=45 day) evidence found in the most recent real discovery run -- the 45-day freshness gate is not met; insufficient to justify continued focused pursuit today."
+      ],
+      "note": "Golden Hunter recommends only -- this is never authorization for outreach, a deal, or any commercial commitment (Section 17)."
+    },
+    "note": "Read-only recommendation infrastructure -- never sends outreach, never authorizes anything (Section 17). CEO approval is required before acting on Q6/Q8, never assumed."
+  },
+  "post_run_firewall_check": {
+    "REAL_OUTREACH_SENT": 0,
+    "REAL_MESSAGES_SENT": 0,
+    "REAL_PROSPECTS_CONTACTED": 0,
+    "REAL_DEALS": 0,
+    "REAL_CUSTOMERS": 0,
+    "REAL_REVENUE": 0,
+    "REAL_COMMISSION_records": 0,
+    "REAL_PAYOUTS": 0
+  },
+  "firewall_unchanged": true
+}

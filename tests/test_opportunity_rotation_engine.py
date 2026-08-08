@@ -177,11 +177,50 @@ class TestCompareOpportunities(RotationTestCase):
         self.assertEqual(result["top_comparison"]["winner"], "CO-strong")
         self.assertTrue(len(result["top_comparison"]["WHY_A_BEATS_B"]) >= 1)
 
+    def test_real_composite_score_outranks_known_dimensions_alone(self):
+        """Real bug found and fixed this round: an opportunity with
+        MORE populated dimensions (from being investigated more) must
+        not automatically outrank one with a real, strong composite
+        score from a more mature scoring system just because it has
+        fewer known fields."""
+        heavily_investigated_but_weak = ore.evaluate_golden_hunter_dimensions(
+            "CO-heavily-investigated", opportunity_type="COMMISSION", commission_opportunity=CO_N8N,
+            evidence_summary=FRESH_EVIDENCE, now=self.now,
+        )
+        # 2 known dims only, but a real, strong composite score from goos.
+        under_investigated_but_strong = ore.evaluate_golden_hunter_dimensions(
+            "niche-strong-score", opportunity_type="PRODUCT", real_composite_score=85.0, now=self.now,
+        )
+        self.assertGreater(heavily_investigated_but_weak["known_dimensions"], under_investigated_but_strong["known_dimensions"])
+        result = ore.compare_opportunities([heavily_investigated_but_weak, under_investigated_but_strong])
+        self.assertEqual(result["ranked"][0]["opportunity_id"], "niche-strong-score")
+        self.assertIn("real composite score", result["top_comparison"]["WHY_A_BEATS_B"][0])
+
     def test_single_opportunity_has_no_comparison(self):
         only = ore.evaluate_golden_hunter_dimensions("CO-only", opportunity_type="COMMISSION",
                                                        commission_opportunity=CO_N8N, evidence_summary=FRESH_EVIDENCE, now=self.now)
         result = ore.compare_opportunities([only])
         self.assertIsNone(result["top_comparison"])
+
+
+class TestDailyRecommendationUsesComparisonAsSourceOfTruth(RotationTestCase):
+    def test_q1_matches_comparison_winner_not_a_separate_threshold_check(self):
+        """Real bug found and fixed this round: daily_golden_hunter_
+        recommendation() used to compute its own separate 'stronger'
+        check (goos_advisory_score >= 60) that could disagree with
+        compare_opportunities()'s real ranking. Now, when a real
+        comparison is supplied, its winner is Q1's single source of
+        truth."""
+        current = ore.evaluate_golden_hunter_dimensions("CO-n8n-affiliate", opportunity_type="COMMISSION",
+                                                          commission_opportunity=CO_N8N, evidence_summary=STALE_EVIDENCE, now=self.now)
+        alt = ore.evaluate_golden_hunter_dimensions("niche-strong", opportunity_type="PRODUCT", real_composite_score=85.0, now=self.now)
+        comparison = ore.compare_opportunities([current, alt])
+        daily = ore.daily_golden_hunter_recommendation(
+            current_opportunity_id="CO-n8n-affiliate", current_dimensions=current,
+            comparison=comparison, events_path=self.events_path, now=self.now,
+        )
+        self.assertEqual(daily["Q1_strongest_opportunity_today"], comparison["top_comparison"]["winner"])
+        self.assertEqual(daily["Q1_strongest_opportunity_today"], "niche-strong")
 
 
 class TestCheapestValidationStep(RotationTestCase):
