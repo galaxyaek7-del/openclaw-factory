@@ -204,6 +204,7 @@ def evaluate_golden_hunter_dimensions(opportunity_id, opportunity_type="COMMISSI
     now = now or datetime.now(timezone.utc)
     dims = {}
 
+    goos_dims = None
     if opportunity_type == "COMMISSION" and commission_opportunity:
         co = commission_opportunity
         dims["MARKET_SIGNAL"] = {"value": co.get("target_customer", "UNKNOWN"), "source": "commission_engine portfolio record"}
@@ -213,12 +214,25 @@ def evaluate_golden_hunter_dimensions(opportunity_id, opportunity_type="COMMISSI
         dims["RISK"] = {"value": co.get("risk_score", "UNKNOWN"), "source": "commission_engine portfolio record"}
         dims["ACCESSIBILITY"] = {"value": co.get("eligibility", "UNKNOWN"), "source": "commission_engine portfolio record (eligibility field)"}
     else:
-        dims["MARKET_SIGNAL"] = {"value": "NOT_MEASURABLE" if not niche else "requires goos.evaluate_dimensions(niche)", "source": "goos.py::evaluate_dimensions()"}
-        dims["COMMERCIAL_POTENTIAL"] = {"value": "requires goos.evaluate_dimensions(niche)['profitability']", "source": "goos.py::evaluate_dimensions()"}
+        if niche:
+            import goos
+            goos_dims = goos.evaluate_dimensions(niche)
+        gd = (goos_dims or {}).get("dimensions", {}) if goos_dims and goos_dims.get("status") == "EVALUATED" else {}
+        not_evaluated_note = f"NOT_YET_EVALUATED -- {goos_dims.get('reason')}" if goos_dims and goos_dims.get("status") == "NOT_YET_EVALUATED" else "UNKNOWN -- no niche supplied"
+
+        def _gd(key):
+            entry = gd.get(key)
+            if entry is None:
+                return not_evaluated_note
+            val = entry.get("value")
+            return val if val not in (None, "") else "UNKNOWN"
+
+        dims["MARKET_SIGNAL"] = {"value": _gd("real_customer_pain"), "source": "goos.py::evaluate_dimensions()['real_customer_pain']"}
+        dims["COMMERCIAL_POTENTIAL"] = {"value": _gd("profitability"), "source": "goos.py::evaluate_dimensions()['profitability']"}
         dims["PARTNER_FIT"] = {"value": "NOT_APPLICABLE -- no partner program involved for a product-build candidate", "source": None}
-        dims["RECURRENCE_POTENTIAL"] = {"value": "requires goos.evaluate_dimensions(niche)['recurring_revenue_potential']", "source": "goos.py::evaluate_dimensions()"}
-        dims["RISK"] = {"value": "requires goos.evaluate_dimensions(niche)['risk_level']", "source": "goos.py::evaluate_dimensions()"}
-        dims["ACCESSIBILITY"] = {"value": "requires goos.evaluate_dimensions(niche)['operational_complexity']", "source": "goos.py::evaluate_dimensions()"}
+        dims["RECURRENCE_POTENTIAL"] = {"value": _gd("recurring_revenue_potential"), "source": "goos.py::evaluate_dimensions()['recurring_revenue_potential']"}
+        dims["RISK"] = {"value": _gd("risk_level"), "source": "goos.py::evaluate_dimensions()['risk_level']"}
+        dims["ACCESSIBILITY"] = {"value": _gd("operational_complexity"), "source": "goos.py::evaluate_dimensions()['operational_complexity']"}
 
     # PROBLEM_SEVERITY / CUSTOMER_EXISTENCE / EVIDENCE_QUALITY / EVIDENCE_FRESHNESS:
     # real only when a real lead_discovery.py run exists for this opportunity.
@@ -252,7 +266,12 @@ def evaluate_golden_hunter_dimensions(opportunity_id, opportunity_type="COMMISSI
     if opportunity_type == "COMMISSION" and commission_opportunity:
         dims["COMPETITION"] = {"value": "NOT_MEASURED -- no real competition signal captured at this opportunity granularity", "source": None}
     else:
-        dims["COMPETITION"] = {"value": "requires goos.evaluate_dimensions(niche)['competition_level']", "source": "goos.py::evaluate_dimensions()"}
+        gd = (goos_dims or {}).get("dimensions", {}) if goos_dims and goos_dims.get("status") == "EVALUATED" else {}
+        comp_val = gd.get("competition_level", {}).get("value") if gd.get("competition_level") else None
+        dims["COMPETITION"] = {
+            "value": comp_val if comp_val not in (None, "") else (f"NOT_YET_EVALUATED -- {goos_dims.get('reason')}" if goos_dims and goos_dims.get("status") == "NOT_YET_EVALUATED" else "UNKNOWN"),
+            "source": "goos.py::evaluate_dimensions()['competition_level']",
+        }
 
     dims["TIME_TO_REVENUE"] = {"value": "NOT_MEASURABLE -- no real historical per-opportunity time-to-first-revenue signal exists anywhere in this factory", "source": None}
 
@@ -402,4 +421,66 @@ def cheapest_validation_step(dimensions_result):
     return {
         "cheapest_next_step": suggestions.get(target, f"gather real evidence for {target} via an existing, already-approved discovery source"),
         "targets_dimension": target,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Section 19 -- daily autonomous recommendation infrastructure. Never
+# sends outreach automatically -- a real, read-only aggregator only,
+# reusing goos.py::rank_build_candidates() for real product-candidate
+# ranking rather than a second discovery mechanism (Section 12).
+# ---------------------------------------------------------------------------
+
+def daily_golden_hunter_recommendation(current_opportunity_id=None, current_dimensions=None,
+                                        current_evidence_summary=None, product_candidates_ranked=None,
+                                        events_path=None, now=None):
+    """Answers the 8 named questions (Section 19) from real, already-
+    computed inputs -- never triggers a new live discovery pass or a
+    new goos.rank_build_candidates() scan itself (the caller supplies
+    those, matching this factory's established 'compute the expensive
+    real scan once, thread it through' discipline, e.g.
+    strategic_planning.py/enterprise_operations.py)."""
+    now = now or datetime.now(timezone.utc)
+
+    strongest_product_candidate = None
+    if product_candidates_ranked and product_candidates_ranked.get("build_next"):
+        strongest_product_candidate = product_candidates_ranked["build_next"][0]
+
+    current_recommendation = None
+    cheapest_step = None
+    if current_dimensions:
+        current_recommendation = pursuit_recommendation(current_opportunity_id, current_dimensions, events_path=events_path)
+        cheapest_step = cheapest_validation_step(current_dimensions)
+
+    stronger_than_current = False
+    why_better = "No real product candidate is currently ranked, or no current opportunity to compare against."
+    if strongest_product_candidate and current_dimensions:
+        product_score = strongest_product_candidate.get("goos_advisory_score")
+        current_known = current_dimensions["known_dimensions"]
+        if isinstance(product_score, (int, float)) and product_score >= 60:
+            stronger_than_current = True
+            why_better = f"{strongest_product_candidate['niche']} has a real goos_advisory_score of {product_score} (a real, evidence-cited signal); current opportunity {current_opportunity_id} has {current_known} known dimensions but is gated at WATCH by real evidence freshness."
+
+    watch_list, abandon_list = [], []
+    if current_recommendation:
+        if current_recommendation["RECOMMENDATION"] == "WATCH":
+            watch_list.append(current_opportunity_id)
+        elif current_recommendation["RECOMMENDATION"] == "ABANDON":
+            abandon_list.append(current_opportunity_id)
+
+    return {
+        "generated_at": _now_iso(now),
+        "Q1_strongest_opportunity_today": strongest_product_candidate["niche"] if strongest_product_candidate else current_opportunity_id,
+        "Q2_evidence_supporting_it": (
+            f"real goos_advisory_score={strongest_product_candidate.get('goos_advisory_score')}, real prior_status={strongest_product_candidate.get('prior_status')}"
+            if strongest_product_candidate else "See current_dimensions' real per-dimension citations."
+        ),
+        "Q3_evidence_missing": [name for name, d in (current_dimensions or {}).get("dimensions", {}).items() if str(d["value"]).startswith(("UNKNOWN", "NOT_MEASURABLE", "NOT_MEASURED", "requires", "STALE"))],
+        "Q4_why_better_than_current": why_better,
+        "Q5_cheapest_next_validation_step": cheapest_step,
+        "Q6_what_should_be_abandoned": abandon_list,
+        "Q7_what_remains_under_watch": watch_list,
+        "Q8_ceo_approval_required": bool(stronger_than_current or abandon_list),
+        "current_recommendation": current_recommendation,
+        "note": "Read-only recommendation infrastructure -- never sends outreach, never authorizes anything (Section 17). CEO approval is required before acting on Q6/Q8, never assumed.",
     }

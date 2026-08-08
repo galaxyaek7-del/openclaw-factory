@@ -120,6 +120,17 @@ class TestGoldenHunterDecisionModel(RotationTestCase):
         dims = ore.evaluate_golden_hunter_dimensions("some-niche", opportunity_type="PRODUCT", now=self.now)
         self.assertIn("NOT_APPLICABLE", dims["dimensions"]["PARTNER_FIT"]["value"])
 
+    def test_product_type_with_real_never_evaluated_niche_cites_goos_honestly(self):
+        """Real integration with goos.py::evaluate_dimensions() -- a
+        genuinely never-evaluated niche must honestly report
+        NOT_YET_EVALUATED, never a guessed value."""
+        dims = ore.evaluate_golden_hunter_dimensions(
+            "a-niche-that-has-never-been-evaluated-xyz-999", opportunity_type="PRODUCT",
+            niche="a-niche-that-has-never-been-evaluated-xyz-999", now=self.now,
+        )
+        self.assertTrue(str(dims["dimensions"]["MARKET_SIGNAL"]["value"]).startswith("NOT_YET_EVALUATED"))
+        self.assertTrue(str(dims["dimensions"]["COMPETITION"]["value"]).startswith("NOT_YET_EVALUATED"))
+
 
 class TestPursuitRecommendation(RotationTestCase):
     def test_stale_evidence_recommends_watch(self):
