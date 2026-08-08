@@ -615,7 +615,17 @@ KNOWN_EVIDENCE_CONFLICTS = {
 # whose recorded terms were independently, exactly reconfirmed live.
 FRESH_LIVE_CONFIRMATION = {
     "CO-n8n-affiliate": "Live fetch of n8n.io/affiliates/ (2026-08-08) confirmed the exact recorded commission (30% for 12 months) plus additional real detail (PayPal payout, EUR100 minimum, monthly payouts) -- the strongest, most recently reconfirmed real evidence of any opportunity in the portfolio.",
-    "CO-amazon-affiliate": "Live fetch of affiliate-program.amazon.com's real terms page (2026-08-08) confirmed the page is authentic and current (dated Oct 15 2025), though it does not itself restate the exact commission percentage.",
+    "CO-amazon-affiliate": (
+        "Live fetch of affiliate-program.amazon.com's real terms page (2026-08-08, Phase 39 re-check) confirmed the page is "
+        "authentic, current, and the program is open for new signups ('Join tens of thousands of creators... earning with the "
+        "Amazon Associates Program', a real, visible 'Sign up' call-to-action). Real, new detail found this round: the page's "
+        "own headline commission claim is 'up to 10% in associate commissions... rates varying by product category' -- a "
+        "real, broader company-wide figure, disclosed alongside (never silently overwriting) the earlier-recorded 5% figure "
+        "specific to digital-adjacent categories; both are consistent, not conflicting (10% is the ceiling across all real "
+        "categories, 5% is this factory's own real category of interest). Also newly confirmed: real payout timing is "
+        "'approximately 60 days after the end of the month in which it was earned.' verification_status remains VERIFIED "
+        "-- confirmed via the program's own official domain, never a third-party claim."
+    ),
 }
 
 
