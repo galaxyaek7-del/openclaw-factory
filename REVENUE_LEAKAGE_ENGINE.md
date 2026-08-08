@@ -28,4 +28,10 @@ Each of the 4 real checks runs in its own `try/except` — a genuinely new, unfo
 
 ---
 
-*See also: `RECONCILIATION_ENGINE.md`, `REVENUE_HEALTH_REPORT.md`.*
+## Phase 27 update (2026-08-08, ADR-217) — Section 16's 9 named categories, made into tasks
+
+`commercial_autonomy_engine.revenue_leakage_tasks()` wraps this exact real report and converts every real finding into a real task entry (`{"task": "Investigate real leakage finding: <type>", "evidence": ...}`) — the directive's own "every detected leakage must become a task" rule, honored by construction rather than a separate task-generation system. The 9 named categories (Unreconciled Orders, Missing Payouts, Unexpected Fees, Incorrect Commission, Duplicate Refund, Incorrect Currency Conversion, Missing Subscription Payment, Unattributed Revenue, Unmatched Transactions) map onto this report's existing 4 real checks + 4 disclosed gaps above — no new detection logic was added, since the real underlying checks are unchanged.
+
+---
+
+*See also: `RECONCILIATION_ENGINE.md`, `REVENUE_HEALTH_REPORT.md`, `COMMERCIAL_QUEUE_ENGINE.md` (Phase 27).*
