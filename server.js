@@ -1973,6 +1973,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('product_innovation_efficiency', [], req),
     health: pythonHealthCheck('product_innovation_efficiency'),
   },
+  {
+    // Enterprise & Transformation Division, Section 37/41 (ADR-214,
+    // Phase 24, 2026-08-08).
+    name: 'enterprise-transformation-dashboard',
+    description: "Enterprise Problem Registry, 16-stage Discovery Pipeline, Vertical Solution status, Knowledge System/Security/Multi-Tenancy/Integrations (all honestly NOT_BUILT -- 0 real enterprise infrastructure exists), Revenue Model (10 named types, $0), Product-to-Enterprise Conversion, Reusability Inventory, Success Metrics, Expansion, and Autonomous Enterprise Boundaries (2 new real contract/legal-commitment authorization categories, both Level 5/6).",
+    reused: 'enterprise_transformation_engine.py::build_enterprise_transformation_dashboard(), via mission_control_api.py. Measured live ~2.9s.',
+    handler: (req) => runPythonServiceCached('enterprise_transformation_dashboard', [], req),
+    health: pythonHealthCheck('enterprise_transformation_dashboard'),
+  },
+  {
+    name: 'enterprise-reusability-inventory',
+    description: "Real, mechanical inventory over dependency_graph.py's AST-based import analysis -- a component counts as reusable only when 2+ real modules already import it (238 real components found live). Never asserted as reusable from intent alone.",
+    reused: 'enterprise_transformation_engine.py::reusability_inventory(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('enterprise_reusability_inventory', [], req),
+    health: pythonHealthCheck('enterprise_reusability_inventory'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

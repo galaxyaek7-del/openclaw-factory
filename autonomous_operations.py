@@ -130,6 +130,17 @@ ACTION_CATEGORY_AUTONOMY = {
         "level": 6,
         "citation": "Claude's own standing operating rule (never create accounts, never handle credentials) plus this factory's own architecture -- confirmed by direct search, zero account-creation code exists anywhere.",
     },
+    # Enterprise & Transformation Division (ADR-214, Phase 24,
+    # 2026-08-08): 2 real, additive categories -- no existing category
+    # precisely named contract/legal commitment before this round.
+    "enterprise_contract_commitment": {
+        "level": 5,
+        "citation": "No real contract-signing code path exists anywhere in this factory -- classified Level 5 in anticipation, matching business_retirement's own precedent (ADR-142), never a real execution path to gate yet.",
+    },
+    "enterprise_legal_or_liability_commitment": {
+        "level": 6,
+        "citation": "Legal terms, liability, indemnification, data-processing obligations, and regulatory commitments always require real human/legal review -- no automated path may ever agree to these, per Section 26 of ADR-214's own directive.",
+    },
 }
 
 

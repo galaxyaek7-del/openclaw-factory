@@ -1424,6 +1424,24 @@ def _product_innovation_efficiency():
     return innovation_efficiency_report()
 
 
+def _enterprise_transformation_dashboard():
+    """Enterprise & Transformation Division, Section 37/41 (ADR-214,
+    Phase 24, 2026-08-08): the one real aggregator -- Problem Registry,
+    Discovery Pipeline, Vertical Status, Knowledge System, Security,
+    Multi-Tenancy, Integrations, Revenue Model, Product Conversion,
+    Reusability, Success Metrics, Expansion, Autonomy Boundaries."""
+    from enterprise_transformation_engine import build_enterprise_transformation_dashboard
+    return build_enterprise_transformation_dashboard()
+
+
+def _enterprise_reusability_inventory():
+    """Section 31 (ADR-214): real, mechanical inventory over
+    dependency_graph.py's real import analysis -- a component counts
+    as reusable only when 2+ real modules already import it."""
+    from enterprise_transformation_engine import reusability_inventory
+    return reusability_inventory()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3271,6 +3289,8 @@ _ENDPOINTS = {
     "customer_trust_score": _customer_trust_score,
     "product_innovation_dashboard": _product_innovation_dashboard,
     "product_innovation_efficiency": _product_innovation_efficiency,
+    "enterprise_transformation_dashboard": _enterprise_transformation_dashboard,
+    "enterprise_reusability_inventory": _enterprise_reusability_inventory,
 }
 
 
