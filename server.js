@@ -1957,6 +1957,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('customer_trust_score', [], req),
     health: pythonHealthCheck('customer_trust_score'),
   },
+  {
+    // Autonomous Product Innovation Engine, Section 32/38 (ADR-213,
+    // Phase 23, 2026-08-08).
+    name: 'product-innovation-dashboard',
+    description: "Problem Registry, Product Portfolio (8 named buckets), Cannibalization check, Customer/Revenue innovation signals, Product Experiments, Innovation Efficiency, and Autonomous Innovation Boundaries -- relabels profit_oracle.py's real 9 hard gates onto Section 15's 6 named validation gates, galaxy_council.py's real 9-member council for AI Council challenge, and a new structured Red Team checklist that cites real signals rather than a fabricatable AI critique. Golden Hunter remains the primary opportunity-hunting intelligence throughout, never replaced.",
+    reused: 'product_innovation_engine.py::build_product_innovation_dashboard(), via mission_control_api.py. Measured live ~3.5s.',
+    handler: (req) => runPythonServiceCached('product_innovation_dashboard', [], req),
+    health: pythonHealthCheck('product_innovation_dashboard'),
+  },
+  {
+    name: 'product-innovation-efficiency',
+    description: "Real counts from decision_engine.store: ideas generated, problems validated, killed products, deferred-for-more-evidence -- honestly UNKNOWN for concepts tested/MVPs built/paid pilots/average validation cost/time-to-validation (no real tracking exists for any of these yet). Never optimized for idea count alone.",
+    reused: 'product_innovation_engine.py::innovation_efficiency_report(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('product_innovation_efficiency', [], req),
+    health: pythonHealthCheck('product_innovation_efficiency'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

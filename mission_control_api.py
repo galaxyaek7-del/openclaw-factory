@@ -1408,6 +1408,22 @@ def _customer_trust_score():
     return customer_trust_score()
 
 
+def _product_innovation_dashboard():
+    """Autonomous Product Innovation Engine, Section 32/38 (ADR-213,
+    Phase 23, 2026-08-08): the one real aggregator -- Problem Registry,
+    Portfolio, Cannibalization, Customer/Revenue signals, Experiments,
+    Innovation Efficiency, Autonomy Boundaries."""
+    from product_innovation_engine import build_product_innovation_dashboard
+    return build_product_innovation_dashboard()
+
+
+def _product_innovation_efficiency():
+    """Section 34 (ADR-213): real counts from decision_engine.store --
+    never optimized for idea count alone."""
+    from product_innovation_engine import innovation_efficiency_report
+    return innovation_efficiency_report()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3253,6 +3269,8 @@ _ENDPOINTS = {
     "revenue_leakage_report": _revenue_leakage_report,
     "customer_intelligence_dashboard": _customer_intelligence_dashboard,
     "customer_trust_score": _customer_trust_score,
+    "product_innovation_dashboard": _product_innovation_dashboard,
+    "product_innovation_efficiency": _product_innovation_efficiency,
 }
 
 
