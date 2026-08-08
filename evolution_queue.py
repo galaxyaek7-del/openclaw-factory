@@ -30,6 +30,7 @@ which IS the Learning History Dashboard item, nothing else needed.
 """
 
 import json
+import os
 import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -69,10 +70,21 @@ def _load_state(state_path=None):
 
 
 def _save_state(state, state_path=None):
+    """Atomic write -- exact tmp-file-then-os.replace pattern as
+    factory_state.py::save_state()/safe_mode.py::_save_state()/
+    channels/publish_protection.py. Resilience & Stress Hardening
+    audit (2026-08-08) found this was the one real sibling among this
+    factory's founder-approval-gated JSON state files still using a
+    direct, non-atomic write -- a crash mid-write could corrupt the
+    entire real evolution-queue state (PROPOSED/SIMULATED/AWAITING_
+    FOUNDER_APPROVAL/APPROVED/REJECTED/IMPLEMENTED), unlike its
+    already-hardened siblings."""
     path = Path(state_path) if state_path else DEFAULT_STATE_PATH
     path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
+    tmp_path = path.parent / f"{path.name}.tmp-{os.getpid()}"
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(state, f, ensure_ascii=False, indent=2)
+    os.replace(tmp_path, path)
 
 
 def _record_history(record, stage, detail=None):

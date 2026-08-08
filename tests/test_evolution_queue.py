@@ -393,5 +393,45 @@ class TestRankProposal(BaseQueueTest):
         self.assertIsNotNone(result["entries"][0]["ranking"])
 
 
+class TestAtomicStateWrite(BaseQueueTest):
+    """Resilience & Stress Hardening audit (2026-08-08), Section 5/10 --
+    _save_state() now uses the same tmp-file-then-os.replace pattern as
+    factory_state.py/safe_mode.py/channels/publish_protection.py."""
+
+    def test_no_leftover_tmp_file_after_a_successful_write(self):
+        eq.intake_proposals(proposals=[_sample_proposal()], state_path=self.state_path)
+        directory = os.path.dirname(self.state_path) or "."
+        leftover = [f for f in os.listdir(directory) if f.startswith(os.path.basename(self.state_path) + ".tmp-")]
+        self.assertEqual(leftover, [])
+
+    def test_existing_real_file_is_never_left_truncated_if_dump_raises(self):
+        """Simulates a crash mid-serialization: json.dump() raising
+        partway through must never leave the REAL state file
+        (only the .tmp file, which is never renamed over it)."""
+        eq.intake_proposals(proposals=[_sample_proposal()], state_path=self.state_path)
+        with open(self.state_path, encoding="utf-8") as f:
+            original_content = f.read()
+
+        class Unserializable:
+            def __repr__(self):
+                raise RuntimeError("simulated crash mid-write")
+
+        state = eq._load_state(self.state_path)
+        state["__poison__"] = Unserializable()
+        with self.assertRaises(TypeError):
+            eq._save_state(state, state_path=self.state_path)
+
+        with open(self.state_path, encoding="utf-8") as f:
+            after_content = f.read()
+        self.assertEqual(original_content, after_content, "the real state file must be byte-for-byte unchanged after a failed write")
+
+    def test_state_survives_and_is_valid_json_after_a_real_write(self):
+        eq.intake_proposals(proposals=[_sample_proposal()], state_path=self.state_path)
+        import json
+        with open(self.state_path, encoding="utf-8") as f:
+            parsed = json.load(f)  # must not raise
+        self.assertIn("test_proposal_1", parsed)
+
+
 if __name__ == "__main__":
     unittest.main()
