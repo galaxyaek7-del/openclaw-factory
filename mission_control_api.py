@@ -1499,6 +1499,24 @@ def _commercial_autonomy_simulations():
     return run_all_phase27_simulations()
 
 
+def _growth_dashboard():
+    """Global Growth & Customer Acquisition Engine, Section 41/46
+    (ADR-218, Phase 28, 2026-08-08): the one real aggregator -- Lead
+    Registry, Acquisition, CAC, LTV, LTV/CAC, Organic Growth, Customer
+    Success, Churn, Retention, Expansion, Referral, Growth Forecast/
+    Scenarios/Risk, Autonomy Boundaries."""
+    from global_growth_engine import build_growth_dashboard
+    return build_growth_dashboard()
+
+
+def _growth_simulations():
+    """Section 45 (ADR-218): 10 named growth simulations -- real
+    arithmetic over disclosed hypothetical assumptions. Never written
+    to any ledger."""
+    from global_growth_engine import run_all_phase28_simulations
+    return run_all_phase28_simulations()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3354,6 +3372,8 @@ _ENDPOINTS = {
     "commercial_operations_simulations": _commercial_operations_simulations,
     "commercial_autonomy_dashboard": _commercial_autonomy_dashboard,
     "commercial_autonomy_simulations": _commercial_autonomy_simulations,
+    "growth_dashboard": _growth_dashboard,
+    "growth_simulations": _growth_simulations,
 }
 
 

@@ -2037,6 +2037,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('commercial_autonomy_simulations', [], req, 60000),
     health: pythonHealthCheck('commercial_autonomy_simulations'),
   },
+  {
+    // Global Growth & Customer Acquisition Engine, Section 41/46
+    // (ADR-218, Phase 28, 2026-08-08).
+    name: 'growth-dashboard',
+    description: "Lead Registry (reuses customer_pipeline.py's real intake requests as this factory's real lead registry), Acquisition (real 9-channel report), CAC/LTV/LTV-CAC (honestly UNKNOWN -- 0 real ad spend), Organic Growth, Customer Success/Churn/Retention/Expansion/Referral (reused from Phase 22/25), Growth Forecast/Scenarios (reuses Phase 27's real BASE/UPSIDE/DOWNSIDE/STRESS scenario_engine() verbatim)/Risk, and real Autonomy Boundaries.",
+    reused: 'global_growth_engine.py::build_growth_dashboard(), via mission_control_api.py. Measured live ~10s.',
+    handler: (req) => runPythonServiceCached('growth_dashboard', [], req),
+    health: pythonHealthCheck('growth_dashboard'),
+  },
+  {
+    name: 'growth-simulations',
+    description: "10 named growth simulations (Sections 1-10) -- real arithmetic over disclosed hypothetical assumptions (traffic/conversion/CAC/retention/segment-value scenarios). Simulation 10 reuses the real AI Council + Red Team. Verified by a regression test that none ever writes to a real ledger.",
+    reused: 'global_growth_engine.py::run_all_phase28_simulations(), via mission_control_api.py. Measured live ~18-19s.',
+    handler: (req) => runPythonServiceCached('growth_simulations', [], req, 60000),
+    health: pythonHealthCheck('growth_simulations'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
