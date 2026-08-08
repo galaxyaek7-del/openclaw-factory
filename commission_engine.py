@@ -398,3 +398,36 @@ def build_daily_commercial_brief(portfolio=None, events_path=None, now=None):
         "q10_ceo_action_today": "Review the 11 real, evidence-cited opportunities in data/commission_opportunities.jsonl and decide which (if any) to pursue first -- no automated recommendation is made without real customer/economic evidence.",
         "note": "Never claims a sale unless independently verified in commission_ledger.py's REAL environment.",
     }
+
+
+# ---------------------------------------------------------------------------
+# Section 3 -- Conflict Detection (real, mechanical)
+# ---------------------------------------------------------------------------
+
+def detect_conflicting_terms(opportunity_a, opportunity_b):
+    """Real, mechanical conflict check for two records referencing the
+    same partner_id -- if their commission_value or commission_currency
+    genuinely disagree, flags FLAG_CONFLICT rather than silently
+    preferring one. Never resolves a conflict by guessing which is
+    correct."""
+    if opportunity_a.get("partner_id") != opportunity_b.get("partner_id"):
+        return {"conflict": False, "reason": "different partner_id -- not comparable"}
+
+    conflicts = []
+    if (opportunity_a.get("commission_value") not in (None, "COMMISSION_UNKNOWN")
+            and opportunity_b.get("commission_value") not in (None, "COMMISSION_UNKNOWN")
+            and opportunity_a.get("commission_value") != opportunity_b.get("commission_value")):
+        conflicts.append({
+            "field": "commission_value",
+            "a": opportunity_a.get("commission_value"), "b": opportunity_b.get("commission_value"),
+        })
+    if (opportunity_a.get("commission_currency") and opportunity_b.get("commission_currency")
+            and opportunity_a.get("commission_currency") != opportunity_b.get("commission_currency")):
+        conflicts.append({
+            "field": "commission_currency",
+            "a": opportunity_a.get("commission_currency"), "b": opportunity_b.get("commission_currency"),
+        })
+
+    if conflicts:
+        return {"conflict": True, "status": "FLAG_CONFLICT", "conflicts": conflicts}
+    return {"conflict": False, "status": "NO_CONFLICT"}
