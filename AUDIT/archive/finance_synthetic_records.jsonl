@@ -1,0 +1,1 @@
+{"ARCHIVED_FROM": "finance_data.json", "ARCHIVED_AT": "2026-08-08T13:05:00.000000+00:00", "ARCHIVED_BY": "Phase 30.5.1 cleanup, ADR-222", "SIMULATION_ONLY": true, "SOURCE": "SMOKE_TEST", "NOT_REAL_REVENUE": true, "ORIGINAL_RECORD": {"id": 1784854757424, "platform": "Paddle", "amount": 150, "product": "contract-test-ladder-DELETE-ME", "date": "2026-07-24", "ladder": "ai_saas"}}
