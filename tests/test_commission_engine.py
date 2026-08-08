@@ -526,5 +526,59 @@ class TestCommercialFlightControlStatus(unittest.TestCase):
             self.assertIn("ok", check)
 
 
+class TestDirectiveLedgerStateMapping(unittest.TestCase):
+    """Phase 39 (ADR-236), Section 6."""
+
+    def test_covers_all_8_directive_named_states(self):
+        result = ce.directive_ledger_state_mapping()
+        self.assertEqual(result["total_directive_states"], 8)
+        self.assertEqual(set(result["mapping"].keys()), {
+            "DISCOVERED", "QUALIFIED", "APPROVED", "ACTIONED", "CONVERTED",
+            "COMMISSION_PENDING", "COMMISSION_CONFIRMED", "PAYOUT_CONFIRMED",
+        })
+
+    def test_approved_is_honestly_disclosed_as_missing_not_fabricated(self):
+        result = ce.directive_ledger_state_mapping()
+        self.assertEqual(result["mapping"]["APPROVED"]["match"], "NO_REAL_PIPELINE_STATE")
+        self.assertIsNone(result["mapping"]["APPROVED"]["real_state"])
+
+    def test_every_non_missing_entry_cites_a_real_state_name(self):
+        import commission_ledger as cl
+        result = ce.directive_ledger_state_mapping()
+        for directive_state, entry in result["mapping"].items():
+            if entry["match"] == "NO_REAL_PIPELINE_STATE":
+                continue
+            real_state = entry["real_state"]
+            self.assertTrue(
+                real_state in ce.COMMISSION_PIPELINE_STATES or real_state in cl.COMMISSION_STATUSES,
+                f"{directive_state} -> {real_state} is not a real state in either vocabulary",
+            )
+
+    def test_counts_are_internally_consistent(self):
+        result = ce.directive_ledger_state_mapping()
+        self.assertEqual(result["exact_matches"] + result["nearest_analog_matches"] + result["genuinely_missing"], 8)
+
+
+class TestCommercialFailureRecoveryStatus(unittest.TestCase):
+    """Phase 39 (ADR-236), Sections 7-8."""
+
+    def test_covers_all_13_directive_named_cases(self):
+        result = ce.commercial_failure_recovery_status()
+        self.assertEqual(result["total_cases"], 13)
+
+    def test_honestly_discloses_exactly_the_two_known_open_gaps(self):
+        result = ce.commercial_failure_recovery_status()
+        self.assertEqual(set(result["open_gaps"]), {"disk_full", "supervisor_restart"})
+        self.assertEqual(result["open_gap_count"], 2)
+        self.assertEqual(result["real_count"], 11)
+
+    def test_never_silently_claims_an_open_gap_is_real(self):
+        result = ce.commercial_failure_recovery_status()
+        for case, entry in result["matrix"].items():
+            self.assertIn(entry["status"], ("REAL", "OPEN_GAP"))
+            if case in ("disk_full", "supervisor_restart"):
+                self.assertEqual(entry["status"], "OPEN_GAP")
+
+
 if __name__ == "__main__":
     unittest.main()

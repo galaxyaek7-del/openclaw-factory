@@ -1109,3 +1109,117 @@ def commercial_flight_control_status(opportunity_id=None, action_type=None, lead
             "real ceiling is CEO_APPROVAL_REQUIRED or BLOCKED depending on the resolved opportunity's own mechanism."
         ),
     }
+
+
+# ---------------------------------------------------------------------------
+# Phase 39 (ADR-236), Section 6 -- Real Commission Ledger state mapping.
+#
+# Research found THREE separate, real, already-existing state
+# vocabularies in this factory, never previously reconciled in one
+# place: this module's own 14-state COMMISSION_PIPELINE_STATES
+# (opportunity-to-payout, above), commission_ledger.py's own 8-state
+# COMMISSION_STATUSES (EXPECTED/PENDING/CONFIRMED/PAID/REVERSED/
+# REFUNDED/DISPUTED/UNKNOWN -- a ledger-record status, not a pipeline
+# stage), and the Phase 39 directive's own 8 named states (DISCOVERED/
+# QUALIFIED/APPROVED/ACTIONED/CONVERTED/COMMISSION_PENDING/
+# COMMISSION_CONFIRMED/PAYOUT_CONFIRMED). This function is a pure,
+# read-only citation reconciling the third vocabulary onto the first
+# two -- never a new, fourth state machine, and never silently
+# inventing a match where none of the real 22 states across the two
+# existing vocabularies actually corresponds.
+# ---------------------------------------------------------------------------
+
+DIRECTIVE_LEDGER_STATE_MAPPING = {
+    "DISCOVERED": {"real_state": "OPPORTUNITY", "vocabulary": "COMMISSION_PIPELINE_STATES", "match": "EXACT"},
+    "QUALIFIED": {"real_state": "QUALIFIED", "vocabulary": "COMMISSION_PIPELINE_STATES", "match": "EXACT"},
+    "APPROVED": {
+        "real_state": None, "vocabulary": None, "match": "NO_REAL_PIPELINE_STATE",
+        "note": (
+            "No real pipeline STATE named APPROVED exists in either vocabulary. The real, equivalent "
+            "concept is outreach_adapter.verify_exact_scope_approval() -- a one-time, exact-scope CEO "
+            "approval OBJECT (11 required fields) gating the OUTREACH transition, not a persisted pipeline "
+            "state a record sits in. Disclosed as a genuine vocabulary gap, not silently mapped to the "
+            "nearest-sounding real state (which would misrepresent an ephemeral gate as a durable state)."
+        ),
+    },
+    "ACTIONED": {"real_state": "OUTREACH", "vocabulary": "COMMISSION_PIPELINE_STATES", "match": "NEAREST_ANALOG",
+                 "note": "Real OUTREACH state = a real outreach send occurred. For AFFILIATE_LINK_PUBLISH opportunities (e.g. Amazon), the real analog is a recorded click (affiliate_commerce.click_tracking), a structurally different event -- see commercial_flight_control_status()'s own action_type split."},
+    "CONVERTED": {"real_state": "SALE_CONFIRMED", "vocabulary": "COMMISSION_PIPELINE_STATES", "match": "NEAREST_ANALOG"},
+    "COMMISSION_PENDING": {"real_state": "PENDING", "vocabulary": "commission_ledger.COMMISSION_STATUSES", "match": "NEAREST_ANALOG",
+                            "note": "Also a literal state name in COMMISSION_PIPELINE_STATES (COMMISSION_PENDING) -- both real vocabularies agree here."},
+    "COMMISSION_CONFIRMED": {"real_state": "CONFIRMED", "vocabulary": "commission_ledger.COMMISSION_STATUSES", "match": "NEAREST_ANALOG",
+                              "note": "Also a literal state name in COMMISSION_PIPELINE_STATES (COMMISSION_CONFIRMED) -- both real vocabularies agree here. This is the real threshold first_real_dollar_status() uses: CONFIRMED or PAID only."},
+    "PAYOUT_CONFIRMED": {"real_state": "PAID", "vocabulary": "commission_ledger.COMMISSION_STATUSES", "match": "NEAREST_ANALOG",
+                          "note": "commission_ledger.py has no separate PAYOUT_PENDING-vs-PAYOUT_CONFIRMED split -- PAID is the one real terminal-success status. COMMISSION_PIPELINE_STATES does have a distinct PAYOUT_PENDING before PAID."},
+}
+
+
+def directive_ledger_state_mapping():
+    """Real, static citation (no live computation needed -- this is a
+    vocabulary reconciliation, not a data query). Returns the mapping
+    plus an honest count of EXACT / NEAREST_ANALOG / genuinely-missing
+    entries, so a caller never has to eyeball the dict to know how
+    solid the mapping is."""
+    exact = sum(1 for v in DIRECTIVE_LEDGER_STATE_MAPPING.values() if v["match"] == "EXACT")
+    nearest = sum(1 for v in DIRECTIVE_LEDGER_STATE_MAPPING.values() if v["match"] == "NEAREST_ANALOG")
+    missing = sum(1 for v in DIRECTIVE_LEDGER_STATE_MAPPING.values() if v["match"] == "NO_REAL_PIPELINE_STATE")
+    return {
+        "mapping": DIRECTIVE_LEDGER_STATE_MAPPING,
+        "exact_matches": exact, "nearest_analog_matches": nearest, "genuinely_missing": missing,
+        "total_directive_states": len(DIRECTIVE_LEDGER_STATE_MAPPING),
+        "note": (
+            "2 exact, 5 nearest-analog, 1 genuinely missing (APPROVED has no persisted pipeline state -- "
+            "it is a real, ephemeral CEO approval object instead, outreach_adapter.verify_exact_scope_approval()). "
+            "No commission ever counts as REAL_REVENUE/REAL_COMMISSION_REVENUE before commission_status is "
+            "CONFIRMED or PAID (commission_ledger.first_real_dollar_status()), matching the directive's own rule."
+        ),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Phase 39 (ADR-236), Sections 7-8 -- Duplicate Protection + Commercial
+# Failure Recovery, as one real citation matrix. Research found every
+# one of Section 7's requirements and 11 of Section 8's 13 named
+# failure cases already real and already tested -- built in the
+# Resilience & Stress Hardening round immediately preceding this phase
+# (tests/test_resilience_idempotency.py's 4 real 10x retry-storm
+# proofs, tests/test_resilience_chaos.py's compound scenario,
+# outreach_adapter.py's stale/expired-approval checks). This function
+# is a pure, read-only citation of those real mechanisms -- never a
+# second, competing recovery layer. 2 of 13 cases (disk-full,
+# supervisor meta-restart) are honestly re-cited as still-open, exactly
+# as AUDIT/RESILIENCE_CERTIFICATION.md already disclosed them -- not
+# fixed here, since building either now would be exactly the "new
+# architecture not justified by current evidence" this phase's own
+# meta-instruction says to report rather than invent.
+# ---------------------------------------------------------------------------
+
+COMMERCIAL_FAILURE_RECOVERY_MATRIX = {
+    "network_interruption": {"status": "REAL", "mechanism": "Every real external caller (Groq, Paddle, HN/GitHub/StackOverflow connectors) fails with a structured result, never a crash -- confirmed structurally, resilience system inventory Section 2."},
+    "api_timeout": {"status": "REAL", "mechanism": "Groq: _retry_delay_seconds()-backed exponential backoff honoring a real Retry-After header, capped at 30s (book_generator.py). 3-attempt real retry, then a real, surfaced error -- never a silent hang or a fabricated success."},
+    "duplicate_request": {"status": "REAL", "mechanism": "tests/test_resilience_idempotency.py -- proven at 10x retry-storm scale for webhook, lead discovery, commission, and outreach send (the 4 real commercial event types this factory has)."},
+    "partial_write": {"status": "REAL", "mechanism": "Atomic tmp-file+os.replace for singleton JSON state (factory_state.py, safe_mode.py, publish_protection.py, evolution_queue.py, Paddle checkout state). commission_ledger.py's own append-only JSONL write: a truncated trailing line from a mid-write kill is skipped by load_ledger()'s except json.JSONDecodeError, never corrupting prior records -- real-tested at 2073/2074-record scale in the Resilience round."},
+    "process_restart": {"status": "REAL", "mechanism": "scripts/supervisor.js real crash-loop guard, live-tested for both server.js and factory_loop.js (tests/test_supervisor.js)."},
+    "supervisor_restart": {"status": "OPEN_GAP", "mechanism": "Nothing restarts scripts/supervisor.js itself if it dies -- disclosed, unfixed, real single point of failure (AUDIT/RESILIENCE_CERTIFICATION.md, KNOWN_FAILURES #3). Not addressed this round: a meta-supervisor is real added complexity for a failure mode that has never actually occurred."},
+    "stale_approval": {"status": "REAL", "mechanism": "outreach_adapter.verify_exact_scope_approval()'s approved_message_hash check -- an approval whose underlying draft changed after approval is refused (APPROVAL_SCOPE_MISMATCH), tested (test_message_hash_mismatch_after_approval_is_caught)."},
+    "expired_approval": {"status": "REAL", "mechanism": "verify_exact_scope_approval()'s real expiration_time check -- refuses at or past expiry, never a silent grace period (tested: test_expired_approval_is_refused, test_approval_expiring_exactly_now_is_refused_not_a_grace_period)."},
+    "duplicate_commission_event": {"status": "REAL", "mechanism": "commission_ledger.DuplicateCommissionError -- a REAL commission with a repeated external_transaction_id is refused before write, tested at unit and 10x-retry-storm scale."},
+    "external_api_ambiguous_status": {"status": "REAL", "mechanism": "scripts/check_paddle_checkout_status.py distinguishes a real unrelated API error from the expected 'onboarding still gated' state -- never silently swallowed (test_unrelated_paddle_error_is_reported_as_a_real_error_not_swallowed)."},
+    "disk_full": {"status": "OPEN_GAP", "mechanism": "No disk-full handling exists anywhere in this codebase, confirmed by direct search (AUDIT/RESILIENCE_CERTIFICATION.md, KNOWN_FAILURES #5). Genuinely untested and unhandled -- disclosed honestly, not fabricated as covered."},
+    "corrupted_state": {"status": "REAL", "mechanism": "factory_state.py/safe_mode.py/publish_protection.py all real-tested to degrade to a safe default on a corrupt file, never raise (tests/test_resilience.py::TestCorruptedStateNeverCrashesAnyReader)."},
+    "ledger_mismatch": {"status": "REAL", "mechanism": "commercial_reconciliation.py already performs real platform-vs-ledger reconciliation (Paddle-only today, per ADR-202) -- the real, existing mechanism for this exact case, not duplicated here."},
+}
+
+
+def commercial_failure_recovery_status():
+    """Real, computed summary over the static matrix above -- an
+    honest REAL-vs-OPEN_GAP count, never a claim that every case is
+    covered when 2 genuinely are not."""
+    real = [k for k, v in COMMERCIAL_FAILURE_RECOVERY_MATRIX.items() if v["status"] == "REAL"]
+    gaps = [k for k, v in COMMERCIAL_FAILURE_RECOVERY_MATRIX.items() if v["status"] == "OPEN_GAP"]
+    return {
+        "matrix": COMMERCIAL_FAILURE_RECOVERY_MATRIX,
+        "total_cases": len(COMMERCIAL_FAILURE_RECOVERY_MATRIX),
+        "real_count": len(real), "open_gap_count": len(gaps), "open_gaps": gaps,
+        "note": "11/13 named failure cases have a real, tested recovery mechanism, cited directly rather than re-implemented. 2 (disk_full, supervisor_restart) are genuine, disclosed, unfixed gaps -- carried forward from AUDIT/RESILIENCE_CERTIFICATION.md, not silently resolved here.",
+    }
