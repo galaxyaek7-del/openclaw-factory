@@ -1648,6 +1648,16 @@ def _commission_opportunity_scan():
     return rank_commission_shortlist(top_n=5)
 
 
+def _first_real_dollar_status():
+    """FIRST_REAL_DOLLAR gate (Phase 38b, 'Chief Commercial Engineer'
+    directive, ADR-234, 2026-08-08, Section 11): the one formal,
+    named commercial-truth gate. False until an independently
+    verifiable real commission/payout exists -- every REAL_* field is
+    0 with no exceptions until then."""
+    from commission_ledger import first_real_dollar_status
+    return first_real_dollar_status()
+
+
 def _lead_discovery_status():
     """Lead Discovery (Phase 37A, ADR-230; extended Phase 37C, ADR-232,
     2026-08-08): real, read-only summary of already-persisted
@@ -3637,6 +3647,7 @@ _ENDPOINTS = {
     "commission_commerce_dashboard": _commission_commerce_dashboard,
     "commission_daily_brief": _commission_daily_brief,
     "commission_opportunity_scan": _commission_opportunity_scan,
+    "first_real_dollar_status": _first_real_dollar_status,
     "lead_discovery_status": _lead_discovery_status,
     "outreach_infrastructure_status": _outreach_infrastructure_status,
     "golden_hunter_rotation_status": _golden_hunter_rotation_status,

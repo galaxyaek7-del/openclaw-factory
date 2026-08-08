@@ -2148,6 +2148,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('golden_hunter_rotation_status', [], req),
     health: pythonHealthCheck('golden_hunter_rotation_status'),
   },
+  {
+    // Ranked Commission Opportunity Shortlist (Phase 38b, "Chief Commercial Engineer" directive, ADR-234, 2026-08-08).
+    name: 'commission-opportunity-shortlist',
+    description: "Real, ranked top-5 shortlist over the 13-opportunity commission portfolio -- 9 named scores per opportunity (opportunity/evidence/commercial/commission/freshness/competition/execution-difficulty/expected-value/risk), citing score_commission_opportunity()'s existing 13-dim function directly. BEST_FIRST_COMMERCIAL_EXPERIMENT excludes known evidence conflicts and any opportunity currently WATCH/ABANDON in the real Golden Hunter Rotation lifecycle ledger.",
+    reused: 'commission_engine.py::rank_commission_shortlist(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commission_opportunity_scan', [], req),
+    health: pythonHealthCheck('commission_opportunity_scan'),
+  },
+  {
+    // FIRST_REAL_DOLLAR Gate (Phase 38b, "Chief Commercial Engineer" directive, ADR-234, 2026-08-08).
+    name: 'first-real-dollar-status',
+    description: "The one formal, named commercial-truth gate -- FIRST_REAL_DOLLAR is False until an independently verifiable real commission/payout exists in commission_ledger.py's own REAL/CONFIRMED-or-PAID records. Every REAL_REVENUE/REAL_COMMISSION_REVENUE/REAL_CUSTOMERS/REAL_DEALS/REAL_PAYOUTS field is 0 with no exceptions until then -- no partial credit, no averaging toward true.",
+    reused: 'commission_ledger.py::first_real_dollar_status(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('first_real_dollar_status', [], req),
+    health: pythonHealthCheck('first_real_dollar_status'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
