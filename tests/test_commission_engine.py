@@ -277,5 +277,33 @@ class TestCommissionCommerceDashboard(unittest.TestCase):
         self.assertEqual(before, after)
 
 
+class TestSelectFirstLaunchOpportunity(unittest.TestCase):
+    def test_selects_a_real_recurring_verified_conflict_free_opportunity(self):
+        result = ce.select_first_launch_opportunity()
+        self.assertEqual(result["FIRST_LAUNCH_OPPORTUNITY"], "CO-n8n-affiliate")
+
+    def test_never_selects_an_opportunity_with_a_known_conflict(self):
+        result = ce.select_first_launch_opportunity()
+        selected = result["FIRST_LAUNCH_OPPORTUNITY"]
+        self.assertNotIn(selected, ce.KNOWN_EVIDENCE_CONFLICTS)
+
+    def test_never_selects_an_unverified_or_third_party_only_opportunity(self):
+        result = ce.select_first_launch_opportunity()
+        self.assertEqual(result["selected_record"]["verification_status"], "VERIFIED")
+
+    def test_returns_none_honestly_when_no_candidate_qualifies(self):
+        empty_portfolio = [{"opportunity_id": "X", "verification_status": "UNVERIFIED",
+                            "commission_value": "COMMISSION_UNKNOWN", "recurring_commission": False,
+                            "last_verified": "2020-01-01"}]
+        result = ce.select_first_launch_opportunity(portfolio=empty_portfolio)
+        self.assertEqual(result["FIRST_LAUNCH_OPPORTUNITY"], "NONE")
+        self.assertIn("blocker", result)
+
+    def test_never_fabricates_a_candidate_not_in_the_real_portfolio(self):
+        result = ce.select_first_launch_opportunity()
+        real_ids = {o["opportunity_id"] for o in ce.load_opportunity_portfolio()}
+        self.assertIn(result["FIRST_LAUNCH_OPPORTUNITY"], real_ids)
+
+
 if __name__ == "__main__":
     unittest.main()
