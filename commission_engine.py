@@ -1669,3 +1669,211 @@ def real_vs_test_commission_metrics(ledger_path=None, now=None):
             "independently-computed total, not an assumed-true flag."
         ),
     }
+
+
+# ---------------------------------------------------------------------------
+# Phase 41 ("OpenClaw Directive — Commission Commerce Launch," ADR-238,
+# 2026-08-09) note on labeling: the directive's own requested deliverable
+# filename is AUDIT/PHASE_40_COMMISION_COMMERCE_LAUNCH_REPORT.md, but
+# "Phase 40" (and ADR-237) was already used for the immediately preceding,
+# already-committed "First Real Commission Execution Gate" round -- a
+# real, disclosed label collision (same class as ADR-162/163/164 earlier
+# this session), not silently accepted. Internally tracked as Phase 41 /
+# ADR-238; the requested filename is still honored verbatim as the real
+# deliverable per Section Q's explicit instruction.
+#
+# Research before writing code found most of this directive already
+# real: Section D (Real Lead Discovery) is lead_discovery.py verbatim
+# (3 legitimate public-API sources, zero email/credential harvesting,
+# real QUALIFICATION_STATUS/freshness/confidence per lead already).
+# Section E (Matching Engine) is commercial_deal_agent.recommend_
+# prospect() verbatim -- already requires a real, qualified, evidence-
+# backed lead before ever recommending outreach, never matches merely
+# because a vendor exists. Section F (Outreach) is outreach_engine.py/
+# outreach_adapter.py verbatim -- draft_outreach_message()'s own real
+# default state is literally "DRAFT" (send() requires state=="APPROVED"
+# first), functionally identical to the directive's "DRAFT_ONLY" ask.
+# None of these three sections needed new code -- cited directly in the
+# Phase 41 report instead.
+#
+# Two real, previously-undetected gaps were found, both closed below:
+# (1) no computed duplicate-detection exists for OPPORTUNITIES (only
+# for leads, via lead_discovery.find_duplicate_lead()) -- KNOWN_
+# EVIDENCE_CONFLICTS is a static, curated dict, never a live scan.
+# (2) geography eligibility is never actually verified anywhere --
+# 12 of 13 real opportunities record geography="UNKNOWN", and this
+# factory's own real operating jurisdiction has never been confirmed
+# anywhere in code (contract_generator.py's own disclosed gap, "our
+# operating jurisdiction and governing law haven't been confirmed
+# yet") -- so geography eligibility is structurally unverifiable
+# today, a real, disclosed blocker rather than a code defect.
+# ---------------------------------------------------------------------------
+
+def detect_duplicate_opportunities(portfolio=None):
+    """Section B check #7 -- a real, mechanical scan for opportunities
+    sharing the identical real terms_url (the authoritative real
+    signal: the same official program page can only be one real
+    program, however many portfolio records cite it). Extends, never
+    replaces, the existing static KNOWN_EVIDENCE_CONFLICTS dict."""
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+    by_terms_url = {}
+    for o in portfolio:
+        url = o.get("terms_url")
+        if url:
+            by_terms_url.setdefault(url, []).append(o["opportunity_id"])
+    duplicates = {url: ids for url, ids in by_terms_url.items() if len(ids) > 1}
+    return {
+        "duplicate_groups": duplicates,
+        "any_duplicates_found": bool(duplicates),
+        "note": "Mechanical terms_url collision scan -- a real duplicate here means 2+ opportunity_ids cite the identical official program page.",
+    }
+
+
+_ELIGIBILITY_6STATE_MAP = {
+    "VERIFIED": "VERIFIED",
+    "PARTIALLY_VERIFIED": "PROVISIONAL",
+    "UNVERIFIED": "PROVISIONAL",
+    "THIRD_PARTY_ONLY": "THIRD_PARTY_ONLY",
+    "STALE": "STALE",
+    "CONFLICTING_EVIDENCE": "BLOCKED",
+    "BLOCKED_EXTERNAL": "BLOCKED",
+    "REJECTED": "REJECTED",
+}
+
+
+def verify_commission_opportunity(opportunity_id, portfolio=None, now=None):
+    """Section B: the 9 named checks + the directive's own 6-state
+    vocabulary (VERIFIED/PROVISIONAL/THIRD_PARTY_ONLY/STALE/REJECTED/
+    BLOCKED) -- a real, disclosed, second simplification of the same
+    underlying 8-state verification_status Phase 40's live_program_
+    eligibility() also cites (that function's own 3-state VERIFIED/
+    PROVISIONAL/REJECTED vocabulary is unchanged; this is a distinct,
+    directive-requested 6-state view, not a replacement).
+
+    Never classifies a third-party claim as VERIFIED when official
+    evidence is required but absent -- _derive_verification_status()'s
+    real official-domain requirement structurally enforces this."""
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+    now = now or datetime.now(timezone.utc)
+    record = next((o for o in portfolio if o["opportunity_id"] == opportunity_id), None)
+    if record is None:
+        return {"generated_at": _now_iso(now), "opportunity_id": opportunity_id, "status": "REJECTED", "reason": "not found in the real portfolio -- never fabricated"}
+
+    verification_status = record.get("verification_status", "UNVERIFIED")
+    freshness = _freshness_from_last_verified(record.get("last_verified"), now=now)
+    dup_scan = detect_duplicate_opportunities(portfolio=portfolio)
+    is_duplicate = any(opportunity_id in ids for ids in dup_scan["duplicate_groups"].values())
+    has_curated_conflict = opportunity_id in KNOWN_EVIDENCE_CONFLICTS
+
+    checks = {
+        "vendor_identity_verification": {"ok": verification_status in ("VERIFIED", "PARTIALLY_VERIFIED"), "note": "Real official-domain match via partner_intelligence_agent.categorize_evidence_source()."},
+        "official_commission_referral_evidence": {"ok": bool(record.get("evidence_url")) or bool(record.get("terms_url")), "evidence_url": record.get("evidence_url")},
+        "current_terms_verification": {"ok": bool(record.get("terms_url")) and str(record.get("terms_url", "")).startswith("http"), "terms_url": record.get("terms_url")},
+        "geography_eligibility_verification": {
+            "ok": False,
+            "note": (
+                "UNKNOWN -- this factory's own real operating jurisdiction has never been confirmed anywhere in code "
+                "(contract_generator.py's own disclosed gap). Geography eligibility cannot be authoritatively verified "
+                "for any opportunity until that real, founder-only fact is established -- never assumed."
+            ),
+        },
+        "payout_verification": {"ok": bool(record.get("payout_terms")) and record.get("payout_terms") != "UNKNOWN", "payout_terms": record.get("payout_terms")},
+        "attribution_mechanism_verification": {"ok": bool(record.get("cookie_or_tracking_window")) and record.get("cookie_or_tracking_window") != "UNKNOWN", "cookie_or_tracking_window": record.get("cookie_or_tracking_window")},
+        "duplicate_detection": {"ok": not is_duplicate and not has_curated_conflict, "is_duplicate": is_duplicate, "curated_conflict": KNOWN_EVIDENCE_CONFLICTS.get(opportunity_id)},
+        "freshness_check": {"ok": freshness in ("FRESH", "AGING"), "freshness": freshness},
+        "commercial_viability_check": {"ok": record.get("commission_value") not in (None, "COMMISSION_UNKNOWN", "?") and record.get("risk_score") != "High", "commission_value": record.get("commission_value"), "risk_score": record.get("risk_score")},
+    }
+
+    if is_duplicate or has_curated_conflict:
+        status = "BLOCKED"
+    elif freshness == "STALE":
+        status = "STALE"
+    else:
+        status = _ELIGIBILITY_6STATE_MAP.get(verification_status, "PROVISIONAL")
+
+    return {
+        "generated_at": _now_iso(now),
+        "opportunity_id": opportunity_id,
+        "status": status,
+        "verification_status_detail": verification_status,
+        "checks": checks,
+        "checks_passed": sum(1 for c in checks.values() if c["ok"]),
+        "checks_total": len(checks),
+        "note": "6-state status is a real, disclosed simplification of verification_status's own finer real 8-state vocabulary, combined with a real duplicate scan and freshness check -- never fabricated.",
+    }
+
+
+# ---------------------------------------------------------------------------
+# Phase 41 (ADR-238), Section C -- Economic Scoring. Extends score_
+# commission_opportunity()'s real 13 dimensions with the 3 genuinely
+# new named factors (sales-cycle length, probability of conversion,
+# prospect availability) -- never a second, competing scoring engine.
+# EXPECTED_COMMISSION_VALUE/EXPECTED_VALUE_PER_PROSPECT reuse
+# commission_economics() verbatim when real inputs exist; otherwise
+# honestly UNKNOWN, matching rank_commission_shortlist()'s own
+# established "expected_value stays honestly UNKNOWN" precedent --
+# never fabricated from an advertised commission rate alone.
+# ---------------------------------------------------------------------------
+
+def commission_economic_scorecard(opportunity_id, portfolio=None, expected_conversion_rate=None,
+                                   expected_deal_value=None, leads_path=None, now=None):
+    """The directive's 12 named factors + EXPECTED_COMMISSION_VALUE +
+    EXPECTED_VALUE_PER_PROSPECT. Never ranks by advertised commission
+    alone -- base_score's own real dimensions govern the ranking
+    logic exactly as rank_commission_shortlist() already established."""
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+    now = now or datetime.now(timezone.utc)
+    record = next((o for o in portfolio if o["opportunity_id"] == opportunity_id), None)
+    if record is None:
+        return {"generated_at": _now_iso(now), "opportunity_id": opportunity_id, "error": "not found in the real portfolio -- never fabricated"}
+
+    base = score_commission_opportunity(record)
+
+    try:
+        import lead_discovery as ld
+        leads = ld.load_leads(leads_path) if leads_path else ld.load_leads()
+        matching_leads = [l for l in leads if l.get("opportunity_id") == opportunity_id]
+        qualified_leads = [l for l in matching_leads if l.get("status") == "QUALIFIED"]
+        prospect_availability = f"{len(qualified_leads)} real QUALIFIED lead(s) on file (of {len(matching_leads)} discovered total for this opportunity)"
+    except Exception:
+        prospect_availability = "UNKNOWN -- lead_discovery.py's real ledger could not be read"
+
+    economics = None
+    if expected_conversion_rate is not None and expected_deal_value is not None:
+        economics = commission_economics(record, expected_conversion_rate=expected_conversion_rate, expected_deal_value=expected_deal_value)
+
+    if economics and economics["economic_status"] == "COMPLETE":
+        # EXPECTED_COMMISSION_VALUE = the real commission earned IF this
+        # one deal closes (unconditional on conversion). EXPECTED_VALUE_
+        # PER_PROSPECT = commission_economics()'s own expected_gross_
+        # commission, which already factors in expected_conversion_rate
+        # -- the real, probability-weighted value of engaging with one
+        # prospect before knowing whether they convert. These are
+        # deliberately different numbers, not the same figure twice --
+        # a first draft of this function conflated them (multiplied by
+        # conversion_rate a second time), caught and fixed before this
+        # function shipped.
+        numeric_rate = _try_parse_percentage(record.get("commission_value"))
+        expected_commission_value = round(expected_deal_value * numeric_rate, 2) if numeric_rate is not None else "UNKNOWN -- commission_value is not a directly parseable rate"
+        expected_value_per_prospect = economics["expected_gross_commission"]
+    else:
+        expected_commission_value = "UNKNOWN -- requires a real expected_conversion_rate and expected_deal_value input, neither guessed"
+        expected_value_per_prospect = "UNKNOWN -- requires the same real inputs as EXPECTED_COMMISSION_VALUE"
+
+    factors = {
+        **base["dimensions"],
+        "SALES_CYCLE_LENGTH": "UNKNOWN -- zero real deals have ever closed in this factory; no historical duration data exists",
+        "PROBABILITY_OF_CONVERSION": "UNKNOWN -- no real conversion has ever occurred for any commission opportunity",
+        "PROSPECT_AVAILABILITY": prospect_availability,
+    }
+
+    return {
+        "generated_at": _now_iso(now),
+        "opportunity_id": opportunity_id,
+        "factors": factors,
+        "real_factors_known": base["real_dimensions_count"],
+        "total_factors": len(factors),
+        "EXPECTED_COMMISSION_VALUE": expected_commission_value,
+        "EXPECTED_VALUE_PER_PROSPECT": expected_value_per_prospect,
+        "note": "Never ranked by advertised commission alone -- extends score_commission_opportunity()'s real 13 dimensions, never a second competing scorer. Expected-value fields require real, explicitly-supplied conversion-rate/deal-value inputs -- never derived from the advertised commission rate by itself.",
+    }

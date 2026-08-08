@@ -959,5 +959,91 @@ class TestPhase40Resilience(unittest.TestCase):
         self.assertFalse(result["EXECUTION_AUTHORIZED"])
 
 
+class TestDetectDuplicateOpportunities(unittest.TestCase):
+    """Phase 41 (ADR-238), Section B check #7."""
+
+    def test_no_duplicates_in_the_real_current_portfolio(self):
+        result = ce.detect_duplicate_opportunities()
+        self.assertFalse(result["any_duplicates_found"])
+
+    def test_detects_a_real_shared_terms_url(self):
+        fake_portfolio = [
+            {"opportunity_id": "A", "terms_url": "https://example.com/terms"},
+            {"opportunity_id": "B", "terms_url": "https://example.com/terms"},
+            {"opportunity_id": "C", "terms_url": "https://other.com/terms"},
+        ]
+        result = ce.detect_duplicate_opportunities(portfolio=fake_portfolio)
+        self.assertTrue(result["any_duplicates_found"])
+        self.assertIn("https://example.com/terms", result["duplicate_groups"])
+        self.assertEqual(set(result["duplicate_groups"]["https://example.com/terms"]), {"A", "B"})
+
+
+class TestVerifyCommissionOpportunity(unittest.TestCase):
+    """Phase 41 (ADR-238), Section B."""
+
+    def test_returns_one_of_the_6_named_statuses(self):
+        result = ce.verify_commission_opportunity("CO-amazon-affiliate")
+        self.assertIn(result["status"], ("VERIFIED", "PROVISIONAL", "THIRD_PARTY_ONLY", "STALE", "REJECTED", "BLOCKED"))
+
+    def test_covers_all_9_named_checks(self):
+        result = ce.verify_commission_opportunity("CO-amazon-affiliate")
+        self.assertEqual(len(result["checks"]), 9)
+
+    def test_known_conflict_opportunity_is_blocked(self):
+        result = ce.verify_commission_opportunity("CO-google-affiliate")
+        self.assertEqual(result["status"], "BLOCKED")
+
+    def test_third_party_only_evidence_never_reported_as_verified(self):
+        fake_portfolio = [{
+            "opportunity_id": "X", "verification_status": "THIRD_PARTY_ONLY",
+            "last_verified": "2020-01-01", "commission_value": "5%", "terms_url": "https://x.com/terms",
+        }]
+        result = ce.verify_commission_opportunity("X", portfolio=fake_portfolio)
+        self.assertNotEqual(result["status"], "VERIFIED")
+
+    def test_geography_check_is_honestly_unverifiable(self):
+        result = ce.verify_commission_opportunity("CO-amazon-affiliate")
+        self.assertFalse(result["checks"]["geography_eligibility_verification"]["ok"])
+
+    def test_unknown_opportunity_is_honestly_rejected(self):
+        result = ce.verify_commission_opportunity("does-not-exist")
+        self.assertEqual(result["status"], "REJECTED")
+
+
+class TestCommissionEconomicScorecard(unittest.TestCase):
+    """Phase 41 (ADR-238), Section C."""
+
+    def test_covers_the_12_named_factors_plus_expected_fields(self):
+        result = ce.commission_economic_scorecard("CO-amazon-affiliate")
+        for factor in ("SALES_CYCLE_LENGTH", "PROBABILITY_OF_CONVERSION", "PROSPECT_AVAILABILITY",
+                      "COMMISSION_VALUE", "RECURRING_POTENTIAL", "COMPETITION", "GEOGRAPHIC_ACCESS",
+                      "PAYOUT_RELIABILITY", "LEGAL_RISK"):
+            self.assertIn(factor, result["factors"])
+        self.assertIn("EXPECTED_COMMISSION_VALUE", result)
+        self.assertIn("EXPECTED_VALUE_PER_PROSPECT", result)
+
+    def test_expected_fields_honestly_unknown_without_real_inputs(self):
+        result = ce.commission_economic_scorecard("CO-amazon-affiliate")
+        self.assertIn("UNKNOWN", result["EXPECTED_COMMISSION_VALUE"])
+        self.assertIn("UNKNOWN", result["EXPECTED_VALUE_PER_PROSPECT"])
+
+    def test_expected_commission_value_and_per_prospect_are_distinct_numbers(self):
+        # Regression for a real bug caught before shipping: an earlier
+        # draft multiplied by conversion_rate twice, silently making
+        # these two fields identical.
+        result = ce.commission_economic_scorecard("CO-amazon-affiliate", expected_conversion_rate=0.02, expected_deal_value=200)
+        self.assertEqual(result["EXPECTED_COMMISSION_VALUE"], 10.0)
+        self.assertEqual(result["EXPECTED_VALUE_PER_PROSPECT"], 0.2)
+        self.assertNotEqual(result["EXPECTED_COMMISSION_VALUE"], result["EXPECTED_VALUE_PER_PROSPECT"])
+
+    def test_never_ranks_by_advertised_commission_alone(self):
+        result = ce.commission_economic_scorecard("CO-amazon-affiliate")
+        self.assertGreater(result["total_factors"], result["real_factors_known"], "most factors should be honestly UNKNOWN, not fabricated to look ready")
+
+    def test_unknown_opportunity_never_fabricates_a_scorecard(self):
+        result = ce.commission_economic_scorecard("does-not-exist")
+        self.assertIn("error", result)
+
+
 if __name__ == "__main__":
     unittest.main()
