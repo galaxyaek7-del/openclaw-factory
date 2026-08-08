@@ -2005,6 +2005,22 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('distribution_network_health', [], req),
     health: pythonHealthCheck('distribution_network_health'),
   },
+  {
+    // Global Commercial Operations Engine, Section 38/47 (ADR-216,
+    // Phase 26, 2026-08-08).
+    name: 'commercial-operations-dashboard',
+    description: "Platform Registry (real 21-platform business_development.py registry), Product<->Platform Matrix, Currency (honest single-USD), Commission/Order/Refund Normalization, Payout Reconciliation, Platform Account Health, Payment Infrastructure, Commercial Task Queue, Alerts, Anomaly Detection, Fraud Protection (real SUSPICION->INVESTIGATION->EVIDENCE->DECISION), Channel Profitability, Concentration Risk, and a real Governance Level 0-4 relabeling of autonomous_operations.py's Level 0-6 taxonomy.",
+    reused: 'global_commercial_operations_engine.py::build_commercial_operations_dashboard(), via mission_control_api.py. Measured live ~7s.',
+    handler: (req) => runPythonServiceCached('commercial_operations_dashboard', [], req),
+    health: pythonHealthCheck('commercial_operations_dashboard'),
+  },
+  {
+    name: 'commercial-operations-simulations',
+    description: "8 named commercial simulations (Sections A-H) -- 7 clearly labeled HYPOTHETICAL (multi-platform net contribution, partner profitability with refunds, high-revenue-poor-margin, payout discrepancy, payment-provider outage, platform suspension, new-marketplace evaluation), never a real transaction, never written to any ledger (verified by a regression test); Simulation G reuses real, live concentration-risk data.",
+    reused: 'global_commercial_operations_engine.py::run_all_commercial_simulations(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_operations_simulations', [], req),
+    health: pythonHealthCheck('commercial_operations_simulations'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

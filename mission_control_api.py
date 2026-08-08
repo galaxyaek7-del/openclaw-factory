@@ -1460,6 +1460,26 @@ def _distribution_network_health():
     return distribution_network_health()
 
 
+def _commercial_operations_dashboard():
+    """Global Commercial Operations Engine, Section 38/47 (ADR-216,
+    Phase 26, 2026-08-08): the one real aggregator -- Platform
+    Registry, Product<->Platform Matrix, Currency, Commission, Order/
+    Refund Normalization, Payout Reconciliation, Platform Health,
+    Payment Infrastructure, Task Queue, Alerts, Anomaly Detection,
+    Fraud Protection, Channel Profitability, Concentration Risk,
+    Governance."""
+    from global_commercial_operations_engine import build_commercial_operations_dashboard
+    return build_commercial_operations_dashboard()
+
+
+def _commercial_operations_simulations():
+    """Section 46 (ADR-216): 8 real, clearly HYPOTHETICAL simulations
+    (A-F, H) plus 1 real, live one (G, concentration risk) -- never a
+    real transaction, never written to any ledger."""
+    from global_commercial_operations_engine import run_all_commercial_simulations
+    return run_all_commercial_simulations()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3311,6 +3331,8 @@ _ENDPOINTS = {
     "enterprise_reusability_inventory": _enterprise_reusability_inventory,
     "partnership_network_dashboard": _partnership_network_dashboard,
     "distribution_network_health": _distribution_network_health,
+    "commercial_operations_dashboard": _commercial_operations_dashboard,
+    "commercial_operations_simulations": _commercial_operations_simulations,
 }
 
 
