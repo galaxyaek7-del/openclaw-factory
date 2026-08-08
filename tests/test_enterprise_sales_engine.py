@@ -103,6 +103,13 @@ class TestDeliveryProfitability(unittest.TestCase):
         result = ese.delivery_profitability()
         self.assertEqual(result["margin_pct"], "UNKNOWN")
 
+    def test_negative_revenue_never_produces_a_fabricated_positive_margin(self):
+        # Phase 30.5 forensic audit, Financial Integrity Test case 5:
+        # -5000 revenue / -6000 contribution used to silently compute
+        # margin_pct=1.2, a nonsensical positive-looking ratio.
+        result = ese.delivery_profitability(contract_revenue=-5000, implementation_hours_cost=1000)
+        self.assertEqual(result["margin_pct"], "INVALID_NEGATIVE_REVENUE")
+
 
 class TestContractRiskCheck(unittest.TestCase):
     def test_eleven_named_categories(self):

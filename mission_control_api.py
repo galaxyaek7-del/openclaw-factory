@@ -1557,6 +1557,17 @@ def _enterprise_sales_simulations():
     return run_all_phase30_simulations()
 
 
+def _executive_truth_dashboard():
+    """Executive Truth Dashboard (ADR-221, Phase 30.5 forensic audit,
+    2026-08-08, Section 29): real, live-checked commercial-reality
+    citation -- real vs. simulated revenue/customers/orders, connected
+    vs. blocked platforms, automation freshness, manual tasks, critical
+    risks, unknown states. Never a frozen snapshot of this audit's own
+    findings -- every field is recomputed on each call."""
+    from institutional_truth_dashboard import build_executive_truth_dashboard
+    return build_executive_truth_dashboard()
+
+
 def _competitive_moat_assessment():
     """Global Intelligence & Competitive Moat Engine, Sections 16-17
     (ADR-207, Phase 17, 2026-08-08): real, evidence-cited moat
@@ -3417,6 +3428,7 @@ _ENDPOINTS = {
     "customer_success_dashboard": _customer_success_dashboard,
     "customer_success_simulations": _customer_success_simulations,
     "enterprise_sales_dashboard": _enterprise_sales_dashboard,
+    "executive_truth_dashboard": _executive_truth_dashboard,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
 }
 

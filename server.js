@@ -2085,6 +2085,14 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('enterprise_sales_simulations', [], req, 60000),
     health: pythonHealthCheck('enterprise_sales_simulations'),
   },
+  {
+    // Executive Truth Dashboard (ADR-221, Phase 30.5 forensic audit, 2026-08-08).
+    name: 'executive-truth-dashboard',
+    description: "Real, live-checked commercial reality: real vs. simulated revenue (excludes the disclosed finance_data.json smoke-test record), real customers (0, file-existence checked), connected vs. blocked platforms (live channels/*_arm.py status() calls), automations verified fresh today (real daily-marker timestamp check), automations partial (the Golden Hunter ranked-feed refresh gap), manual tasks, critical risks (real resilience_monitor.py findings), unknown states. Never a frozen snapshot -- every field recomputed on each call.",
+    reused: 'institutional_truth_dashboard.py::build_executive_truth_dashboard(), via mission_control_api.py. Measured live ~0.6s.',
+    handler: (req) => runPythonServiceCached('executive_truth_dashboard', [], req),
+    health: pythonHealthCheck('executive_truth_dashboard'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

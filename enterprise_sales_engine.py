@@ -347,11 +347,24 @@ def delivery_handoff_record():
 
 def delivery_profitability(contract_revenue=0, implementation_hours_cost=0, engineering_cost=0,
                             ai_compute_cost=0, infrastructure_cost=0, support_cost=0, partner_cost=0, external_cost=0):
+    """Real, deterministic contribution calculator. Fixed 2026-08-08
+    (Phase 30.5 forensic audit, Section 24, Financial Integrity Test
+    case 5): negative contract_revenue previously produced a
+    nonsensical positive-looking margin_pct (e.g. -$5,000 revenue /
+    -$5,000 net = 1.2) that silently passed as a normal margin --
+    fixed to flag it as INVALID_NEGATIVE_REVENUE instead of computing
+    a ratio from two negative numbers."""
     total_cost = implementation_hours_cost + engineering_cost + ai_compute_cost + infrastructure_cost + support_cost + partner_cost + external_cost
     contribution = contract_revenue - total_cost
+    if contract_revenue < 0:
+        margin_pct = "INVALID_NEGATIVE_REVENUE"
+    elif contract_revenue == 0:
+        margin_pct = "UNKNOWN"
+    else:
+        margin_pct = round(contribution / contract_revenue, 4)
     return {
         "generated_at": _now_iso(), "contract_revenue": contract_revenue, "total_delivery_cost": total_cost,
-        "contribution": contribution, "margin_pct": round(contribution / contract_revenue, 4) if contract_revenue else "UNKNOWN",
+        "contribution": contribution, "margin_pct": margin_pct,
         "note": "A large contract can still be a bad contract -- this function computes real contribution from an explicit cost chain, never assumes a large contract is automatically profitable.",
     }
 
