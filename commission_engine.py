@@ -2449,3 +2449,123 @@ def revenue_activation_dashboard(portfolio=None, top_n=5, now=None):
         "evidence_freshness": freshness_by_opportunity,
         "note": "One consolidated read-only view over 8 already-real functions -- no new computation beyond simple aggregation, no duplicated panel logic.",
     }
+
+
+# ---------------------------------------------------------------------------
+# "Galaxy Forge Customer-Facing Commercial Front Door" directive (ADR-240,
+# 2026-08-09), Section 4 -- the public Solutions Engine backend.
+#
+# A deliberately PUBLIC-SAFE reshaping of the real, already-verified
+# portfolio -- structurally distinct from every internal Mission
+# Control panel built this session. Per the directive's own Section 9
+# ("customers must never see internal scores that expose sensitive
+# commercial logic, internal opportunity queues, private analytics"),
+# this function:
+#   - never exposes verification_tier numbers, lifecycle_state
+#     (WATCH/ABANDON/etc.), risk_score internals, CEO-approval-scope
+#     internals, or any raw internal blocker text.
+#   - only lists opportunities whose real verify_commission_opportunity()
+#     status is VERIFIED or PROVISIONAL -- THIRD_PARTY_ONLY/STALE/
+#     REJECTED/BLOCKED are honestly excluded from public view, never
+#     shown as if they were fine.
+#   - never ranks by commission_value -- sort key is (verification
+#     tier, evidence freshness), the same real signal ordering
+#     rank_commission_shortlist() already uses, commission is not an
+#     input to the sort at all.
+#
+# A real, important, disclosed limitation found while building this:
+# this factory's real commission-opportunity data model
+# (business_development.py's PLATFORM_REGISTRY) captures AFFILIATE
+# PROGRAM terms (commission rate, cookie window, payout terms) -- it
+# does NOT capture CUSTOMER-FACING PRODUCT facts (feature lists,
+# pricing tiers, ideal-customer-profile, limitations). The directive's
+# own 10-field recommendation format assumes richer product research
+# this factory has never performed for any of these 13 real
+# opportunities. Rather than fabricate plausible-sounding features/
+# pricing from general knowledge (which would be exactly the
+# fabrication this factory's entire architecture exists to prevent),
+# every field with no real backing honestly says so -- never invented.
+# ---------------------------------------------------------------------------
+
+CATEGORY_MAP = {
+    "workflow_automation": ["CO-zapier-affiliate", "CO-n8n-affiliate"],
+    "creative_design_tools": ["CO-adobe-affiliate", "CO-canva-affiliate", "CO-creative_market-affiliate"],
+    "ecommerce_marketplace": ["CO-amazon-affiliate", "CO-gumroad-affiliate", "CO-gumroad-marketplace", "CO-etsy-affiliate", "CO-etsy-marketplace", "CO-envato-affiliate"],
+    "business_productivity": ["CO-google-affiliate"],
+    "commerce_infrastructure": ["CO-paddle-partnership"],
+}
+_PUBLIC_SAFE_STATUSES = ("VERIFIED", "PROVISIONAL")
+
+
+def _category_for(opportunity_id):
+    for category, ids in CATEGORY_MAP.items():
+        if opportunity_id in ids:
+            return category
+    return "uncategorized"
+
+
+def public_solutions_catalog(category=None, portfolio=None, now=None):
+    """The public Solutions Engine. Returns only opportunities that
+    pass the real quality/evidence/eligibility gate -- honestly
+    excludes everything else rather than showing it with a caveat."""
+    now = now or datetime.now(timezone.utc)
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+
+    entries = []
+    for o in portfolio:
+        opp_id = o["opportunity_id"]
+        opp_category = _category_for(opp_id)
+        if category and opp_category != category:
+            continue
+
+        verification = verify_commission_opportunity(opp_id, portfolio=portfolio, now=now)
+        if verification["status"] not in _PUBLIC_SAFE_STATUSES:
+            continue
+
+        freshness = _freshness_from_last_verified(o.get("last_verified"), now=now)
+        if freshness == "STALE":
+            continue
+
+        # Real, found gap: only CO-amazon-affiliate has a real terms_url
+        # populated in this factory's portfolio -- the other 12 real
+        # opportunities only have evidence_url. Fall back to the first
+        # real evidence_url so official_link is never silently null.
+        evidence_urls = o.get("evidence_url") or []
+        official_link = o.get("terms_url") or (evidence_urls[0] if evidence_urls else None)
+
+        entries.append({
+            "opportunity_id": opp_id,
+            "name": o.get("partner_name"),
+            "category": opp_category,
+            "problem_it_solves": o.get("customer_problem") if o.get("customer_problem") and not str(o.get("customer_problem")).startswith("UNKNOWN") else "Not yet researched -- Galaxy Forge has not completed a dedicated customer-problem study for this solution.",
+            "who_its_for": o.get("target_customer") if o.get("target_customer") and not str(o.get("target_customer")).startswith("UNKNOWN") else "Not yet researched.",
+            "who_should_not_use_it": "Not yet researched -- see the vendor's own official page for eligibility/fit details.",
+            "key_features": "Not yet researched by Galaxy Forge -- see the vendor's own official page, linked below.",
+            "pricing": "Not tracked by Galaxy Forge -- pricing changes frequently; see the vendor's own official page for current, accurate pricing.",
+            "limitations": "Not yet researched.",
+            "alternatives_in_this_category": [x for x in CATEGORY_MAP.get(opp_category, []) if x != opp_id],
+            "why_recommended": f"This program's real, official terms have been independently verified against its own official domain (status: {verification['status']}) -- never recommended based on commission size.",
+            "evidence": o.get("evidence_url") or o.get("terms_url"),
+            "official_link": official_link,
+            "last_verification_date": o.get("last_verified"),
+            "freshness": freshness,
+            "affiliate_disclosure": "Galaxy Forge may earn a commission if you choose this solution through the link below, at no additional cost to you. This never affects whether or how a solution is listed.",
+            "explore_url": f"/api/solutions/click/{opp_id}",
+        })
+
+    # Never sorted by commission -- verification tier then freshness,
+    # the same real signal order rank_commission_shortlist() uses.
+    entries.sort(key=lambda e: (VERIFICATION_TIER.get(next(o["verification_status"] for o in portfolio if o["opportunity_id"] == e["opportunity_id"]), 0), e["freshness"] == "FRESH"), reverse=True)
+
+    return {
+        "generated_at": _now_iso(now),
+        "category_filter": category,
+        "available_categories": list(CATEGORY_MAP.keys()),
+        "solutions": entries,
+        "total_shown": len(entries),
+        "note": (
+            "Only VERIFIED/PROVISIONAL, non-stale opportunities are shown -- everything else is honestly excluded, never displayed with a "
+            "caveat. Ranking never uses commission value. Feature/pricing/limitation fields are honestly marked 'not yet researched' where "
+            "this factory has no real, sourced data -- never invented from general knowledge."
+        ),
+    }

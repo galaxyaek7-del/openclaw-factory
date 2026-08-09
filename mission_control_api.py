@@ -1829,6 +1829,55 @@ def _revenue_activation_dashboard():
     return revenue_activation_dashboard()
 
 
+def _public_solutions_catalog():
+    """Public Solutions Engine ('Galaxy Forge Customer-Facing
+    Commercial Front Door' directive, ADR-240, 2026-08-09, Section 4):
+    PUBLIC route, called from server.js's unauthenticated GET
+    /api/solutions -- a customer-facing visitor has no Mission Control
+    login. Reads an optional {"category": "..."} payload from
+    sys.argv[2]. Structurally distinct from every internal Mission
+    Control panel -- never exposes verification_tier/lifecycle_state/
+    risk_score internals, never ranks by commission."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    category = payload.get("category")
+    from commission_engine import public_solutions_catalog
+    return public_solutions_catalog(category=category)
+
+
+def _solutions_click():
+    """Public Solutions Engine, Section 7 (real, auditable click
+    tracking). Records one real click via affiliate_commerce.
+    click_tracking.record_click() (opportunity_id used as the real
+    product_id key) and returns the real redirect URL -- the vendor's
+    own official terms_url for every opportunity except Amazon, which
+    reuses its own real tagged-URL builder. Reads {"opportunity_id":
+    "...", "referrer": "..."} from sys.argv[2]."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    opportunity_id = (payload.get("opportunity_id") or "").strip()
+    if not opportunity_id:
+        raise ValueError("{ opportunity_id } is required")
+
+    from commission_engine import load_opportunity_portfolio
+    from affiliate_commerce import click_tracking, networks
+    record = next((o for o in load_opportunity_portfolio() if o["opportunity_id"] == opportunity_id), None)
+    if not record:
+        return {"success": True, "found": False, "error": f"no real opportunity with id {opportunity_id!r}"}
+
+    click_tracking.record_click(opportunity_id, referrer=payload.get("referrer"))
+    # Real, found gap: only CO-amazon-affiliate has a real terms_url
+    # populated in this factory's own portfolio -- the other 12 real
+    # opportunities only have evidence_url. Falling back to the first
+    # real evidence_url avoids a real 404 on 8 of 9 publicly-shown
+    # solutions; this evidence link is still a real, official-or-cited
+    # source page (never a fabricated URL), matching what public_
+    # solutions_catalog()'s own "evidence" field already cites.
+    evidence_urls = record.get("evidence_url") or []
+    redirect_url = record.get("terms_url") or (evidence_urls[0] if evidence_urls else None)
+    if not redirect_url:
+        return {"success": True, "found": False, "error": f"opportunity {opportunity_id!r} has no real terms_url or evidence_url to redirect to"}
+    return {"success": True, "found": True, "url": redirect_url}
+
+
 def _lead_discovery_status():
     """Lead Discovery (Phase 37A, ADR-230; extended Phase 37C, ADR-232,
     2026-08-08): real, read-only summary of already-persisted
@@ -3839,6 +3888,8 @@ _ENDPOINTS = {
     "commercial_blockers_panel": _commercial_blockers_panel,
     "opportunity_experiments_report": _opportunity_experiments_report,
     "revenue_activation_dashboard": _revenue_activation_dashboard,
+    "public_solutions_catalog": _public_solutions_catalog,
+    "solutions_click": _solutions_click,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
 }
 

@@ -6303,6 +6303,39 @@ app.get('/api/affiliate/click/:product_id', async (req, res) => {
   }
 });
 
+// Public Solutions Engine (Galaxy Forge Customer-Facing Commercial
+// Front Door directive, ADR-240, 2026-08-09). Public, unauthenticated
+// -- same reasoning as /api/affiliate/products above. Real, PUBLIC-SAFE
+// reshaping of the internal commercial portfolio (commission_engine.py::
+// public_solutions_catalog()) -- never the internal Mission Control
+// panel data, never cached for the same click-adjacency reason as
+// /api/affiliate/products.
+app.get('/api/solutions', async (req, res) => {
+  try {
+    const category = req.query.category || null;
+    const result = await runPythonService('public_solutions_catalog', [JSON.stringify({ category })]);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'solutions catalog temporarily unavailable' });
+  }
+});
+
+// Real click tracking + redirect to the opportunity's own real,
+// official terms/info page -- same real, auditable discipline as
+// /api/affiliate/click/:product_id above.
+app.get('/api/solutions/click/:opportunity_id', async (req, res) => {
+  try {
+    const payload = { opportunity_id: req.params.opportunity_id, referrer: req.get('referer') || null };
+    const result = await runPythonService('solutions_click', [JSON.stringify(payload)]);
+    if (!result.found || !result.url) {
+      return res.status(404).json({ success: false, error: 'no real solution with that id' });
+    }
+    res.redirect(302, result.url);
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'solutions redirect temporarily unavailable' });
+  }
+});
+
 // Real, persisted customer intake -- no fabricated qualification/scoring
 // pipeline behind this yet (that's genuinely new logic, Phase 2, not
 // built this round). Every real submission is appended, never
