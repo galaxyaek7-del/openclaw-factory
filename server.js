@@ -6351,9 +6351,19 @@ app.get('/api/solutions/click/:opportunity_id', async (req, res) => {
 // Activation Directive, ADR-239) -- no second page-view mechanism.
 app.post('/api/page-view', async (req, res) => {
   try {
-    const payload = { page_id: (req.body && req.body.page_id) || null, referrer: req.get('referer') || null };
+    const rawPageId = req.body && req.body.page_id;
+    const payload = { page_id: rawPageId || null, referrer: req.get('referer') || null };
     if (!payload.page_id) {
       return res.status(400).json({ success: false, error: 'page_id is required' });
+    }
+    // Phase 41.1 fix (2026-08-09): a non-string truthy page_id (e.g. a
+    // JSON number/array/object) previously passed this falsy-only check
+    // and crashed record_public_page_view()'s real `.strip()` call in
+    // mission_control_api.py, surfacing as an unhandled 500 instead of a
+    // controlled 400. Reject wrong-typed input at the boundary, before
+    // it ever reaches the Python subprocess.
+    if (typeof payload.page_id !== 'string') {
+      return res.status(400).json({ success: false, error: 'page_id must be a string' });
     }
     const result = await runPythonService('record_public_page_view', [JSON.stringify(payload)]);
     res.json(result);

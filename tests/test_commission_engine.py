@@ -463,9 +463,25 @@ class TestCommercialFlightControlStatus(unittest.TestCase):
         result = ce.commercial_flight_control_status()
         self.assertEqual(result["resolved_opportunity_id"], shortlist["BEST_FIRST_COMMERCIAL_EXPERIMENT"])
 
-    def test_discloses_the_real_adobe_amazon_selection_discrepancy(self):
+    def test_no_selection_discrepancy_after_phase41_1_fix(self):
+        """Phase 41.1 (2026-08-09) fixed the real bug behind the
+        Adobe/Amazon disagreement this test used to assert as expected:
+        select_first_launch_opportunity()'s tie-break, when recurring
+        status also ties, fell through to a purely alphabetical
+        opportunity_id sort (picking Adobe over Amazon for no reason
+        other than string order). It now reuses
+        score_commission_opportunity()'s real_dimensions_count as the
+        second tie-break -- the same real evidence-depth signal
+        rank_commission_shortlist() already sorts by -- so both real
+        selection functions agree and this gate's discrepancy-disclosure
+        field is honestly None again."""
         result = ce.commercial_flight_control_status()
-        self.assertIsNotNone(result["checks"]["opportunity_selected"]["selection_discrepancy"])
+        self.assertIsNone(result["checks"]["opportunity_selected"]["selection_discrepancy"])
+
+    def test_select_first_launch_opportunity_agrees_with_shortlist_via_real_dimensions_tiebreak(self):
+        shortlist = ce.rank_commission_shortlist()
+        legacy = ce.select_first_launch_opportunity()
+        self.assertEqual(legacy["FIRST_LAUNCH_OPPORTUNITY"], shortlist["BEST_FIRST_COMMERCIAL_EXPERIMENT"])
 
     def test_amazon_resolves_to_affiliate_link_publish_not_outreach(self):
         result = ce.commercial_flight_control_status(opportunity_id="CO-amazon-affiliate")

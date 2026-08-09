@@ -689,8 +689,25 @@ def select_first_launch_opportunity(portfolio=None, now=None):
     # Among real candidates, prefer recurring commission (real,
     # disclosed tie-break -- matches Section 4's own "recurring" quality
     # signal and this factory's own standing preference for recurring
-    # over one-time revenue, CLAUDE.md's strategic ladder).
-    candidates.sort(key=lambda o: (not o["recurring_commission"], o["opportunity_id"]))
+    # over one-time revenue, CLAUDE.md's strategic ladder). Phase 41.1
+    # (2026-08-09) fix: when recurring status also ties (the real,
+    # observed case today -- every qualifying candidate is one-time),
+    # this previously fell through to a purely alphabetical
+    # opportunity_id sort, which silently disagreed with
+    # rank_commission_shortlist()'s real, evidence-based ranking (it
+    # picked CO-adobe-affiliate over CO-amazon-affiliate for no reason
+    # other than "adobe" < "amazon" as a string). Now reuses
+    # score_commission_opportunity()'s own real_dimensions_count --
+    # the identical real evidence-depth signal rank_commission_shortlist()
+    # already sorts by -- as the second tie-break, so both real
+    # selection functions in this factory agree again. opportunity_id
+    # remains the final, purely-cosmetic tiebreak only when both real
+    # signals are genuinely equal.
+    candidates.sort(key=lambda o: (
+        not o["recurring_commission"],
+        -score_commission_opportunity(o)["real_dimensions_count"],
+        o["opportunity_id"],
+    ))
     selected = candidates[0]
 
     return {
