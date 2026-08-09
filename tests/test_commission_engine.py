@@ -1376,5 +1376,56 @@ class TestCommercialOpportunityQueue(unittest.TestCase):
             self.assertIn(entry["opportunity"], real_ids)
 
 
+class TestRevenueLedgerView(unittest.TestCase):
+    """Revenue Activation Directive (ADR-239), Section G."""
+
+    def setUp(self):
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.path = os.path.join(self._tmpdir.name, "ledger.jsonl")
+
+    def tearDown(self):
+        self._tmpdir.cleanup()
+
+    def test_covers_all_6_named_buckets(self):
+        result = ce.revenue_ledger_view(ledger_path=self.path)
+        for field in ("REAL_REVENUE", "PENDING_COMMISSION", "APPROVED_COMMISSION", "PAID_COMMISSION", "REFUNDED_REVERSED", "ZERO_REVENUE"):
+            self.assertIn(field, result)
+
+    def test_zero_revenue_true_on_empty_ledger(self):
+        result = ce.revenue_ledger_view(ledger_path=self.path)
+        self.assertTrue(result["ZERO_REVENUE"])
+        self.assertEqual(result["REAL_REVENUE"], 0)
+
+    def test_pending_never_counted_as_real_revenue(self):
+        import commission_ledger as cl
+        cl.record_commission("p", "o", "PENDING", 500.0, "REAL", evidence="real evidence", external_transaction_id="t1", ledger_path=self.path)
+        result = ce.revenue_ledger_view(ledger_path=self.path)
+        self.assertEqual(result["REAL_REVENUE"], 0)
+        self.assertEqual(result["PENDING_COMMISSION"]["count"], 1)
+
+    def test_approved_confirmed_counts_as_real_revenue(self):
+        import commission_ledger as cl
+        cl.record_commission("p", "o", "CONFIRMED", 300.0, "REAL", evidence="real evidence", external_transaction_id="txn2", ledger_path=self.path)
+        result = ce.revenue_ledger_view(ledger_path=self.path)
+        self.assertEqual(result["REAL_REVENUE"], 300.0)
+        self.assertFalse(result["ZERO_REVENUE"])
+        self.assertEqual(result["APPROVED_COMMISSION"]["count"], 1)
+
+    def test_test_and_simulation_never_leak_into_any_bucket(self):
+        import commission_ledger as cl
+        cl.record_commission("p", "o", "PAID", 9999.0, "TEST", external_transaction_id="t3", ledger_path=self.path)
+        cl.record_commission("p", "o", "PAID", 9999.0, "SIMULATION", external_transaction_id="t4", ledger_path=self.path)
+        result = ce.revenue_ledger_view(ledger_path=self.path)
+        self.assertEqual(result["REAL_REVENUE"], 0)
+        self.assertTrue(result["ZERO_REVENUE"])
+
+    def test_refunded_and_reversed_tracked_separately(self):
+        import commission_ledger as cl
+        cl.record_commission("p", "o", "REFUNDED", 200.0, "REAL", evidence="real evidence", external_transaction_id="t5", ledger_path=self.path)
+        result = ce.revenue_ledger_view(ledger_path=self.path)
+        self.assertEqual(result["REFUNDED_REVERSED"]["count"], 1)
+        self.assertEqual(result["REAL_REVENUE"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()

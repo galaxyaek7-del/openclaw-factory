@@ -2352,3 +2352,42 @@ def commercial_opportunity_queue(portfolio=None, top_n=5, now=None):
         "BEST_FIRST_COMMERCIAL_EXPERIMENT": shortlist["BEST_FIRST_COMMERCIAL_EXPERIMENT"],
         "note": "Real citation of rank_commission_shortlist()'s own ranking -- never a second, competing ranking engine. Every field traces to a real, already-cited source.",
     }
+
+
+# ---------------------------------------------------------------------------
+# Revenue Activation Directive (ADR-239), Section G -- the directive's
+# own exact 6 named revenue buckets, reshaping commission_ledger.py's
+# already-real COMMISSION_STATUSES (EXPECTED/PENDING/CONFIRMED/PAID/
+# REVERSED/REFUNDED/DISPUTED/UNKNOWN) -- never a second ledger, never
+# a second write path.
+# ---------------------------------------------------------------------------
+
+def revenue_ledger_view(ledger_path=None, now=None):
+    """REAL_REVENUE/PENDING_COMMISSION/APPROVED_COMMISSION/
+    PAID_COMMISSION/REFUNDED_REVERSED/ZERO_REVENUE. PENDING/APPROVED/
+    PAID are REAL-environment-only, matching this factory's own
+    established rule that only REAL records represent real commercial
+    activity -- TEST/SIMULATION/PROVISIONAL are cited separately,
+    never blended in."""
+    import commission_ledger as cl
+
+    now = now or datetime.now(timezone.utc)
+    records = cl.load_ledger(ledger_path)
+    real = [r for r in records if r.get("environment") == "REAL"]
+
+    pending = [r for r in real if r.get("commission_status") in ("EXPECTED", "PENDING")]
+    approved = [r for r in real if r.get("commission_status") == "CONFIRMED"]
+    paid = [r for r in real if r.get("commission_status") == "PAID"]
+    refunded_reversed = [r for r in real if r.get("commission_status") in ("REFUNDED", "REVERSED", "DISPUTED")]
+    real_revenue = round(sum(r.get("net_commission", 0) for r in approved + paid), 2)
+
+    return {
+        "generated_at": _now_iso(now),
+        "REAL_REVENUE": real_revenue,
+        "PENDING_COMMISSION": {"count": len(pending), "usd": round(sum(r.get("net_commission", 0) for r in pending), 2)},
+        "APPROVED_COMMISSION": {"count": len(approved), "usd": round(sum(r.get("net_commission", 0) for r in approved), 2)},
+        "PAID_COMMISSION": {"count": len(paid), "usd": round(sum(r.get("net_commission", 0) for r in paid), 2)},
+        "REFUNDED_REVERSED": {"count": len(refunded_reversed), "usd": round(sum(r.get("net_commission", 0) for r in refunded_reversed), 2)},
+        "ZERO_REVENUE": real_revenue == 0,
+        "note": "PENDING/APPROVED/PAID/REFUNDED_REVERSED are REAL-environment-only -- TEST/SIMULATION/PROVISIONAL records exist separately (see real_vs_test_commission_metrics()) and are never blended into any of these 6 buckets. PENDING or APPROVED commission is never counted as REAL_REVENUE -- only CONFIRMED (APPROVED_COMMISSION) and PAID (PAID_COMMISSION) contribute, matching commission_ledger.first_real_dollar_status()'s own established rule.",
+    }

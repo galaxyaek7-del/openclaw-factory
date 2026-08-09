@@ -101,6 +101,76 @@ class TestClickTracking(unittest.TestCase):
         self.assertNotIn("revenue", summary)
 
 
+class TestPageViewTracking(unittest.TestCase):
+    """Revenue Activation Directive (ADR-239), Section F -- the
+    real 'traffic -> page' step of the conversion funnel."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.pv_path = Path(self._tmp.name) / "test_page_views.jsonl"
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def test_never_touches_the_real_production_ledger(self):
+        self.assertFalse(self.pv_path.exists())
+        click_tracking.record_page_view("standing_desk_page", referrer="google", ledger_path=self.pv_path)
+        self.assertTrue(self.pv_path.exists())
+        self.assertFalse(click_tracking.DEFAULT_PAGE_VIEW_LEDGER_PATH.exists() and
+                          click_tracking.DEFAULT_PAGE_VIEW_LEDGER_PATH == self.pv_path)
+
+    def test_record_and_read_round_trip(self):
+        click_tracking.record_page_view("standing_desk_page", referrer="https://google.com", ledger_path=self.pv_path)
+        click_tracking.record_page_view("standing_desk_page", referrer=None, ledger_path=self.pv_path)
+        entries = click_tracking.read_page_views(ledger_path=self.pv_path)
+        self.assertEqual(len(entries), 2)
+        self.assertEqual(entries[0]["page_id"], "standing_desk_page")
+        self.assertIn("timestamp", entries[0])
+
+    def test_read_page_views_on_missing_file_returns_empty_never_errors(self):
+        missing = Path(self._tmp.name) / "does_not_exist.jsonl"
+        self.assertEqual(click_tracking.read_page_views(ledger_path=missing), [])
+
+
+class TestConversionFunnelSummary(unittest.TestCase):
+    """Revenue Activation Directive (ADR-239), Section F."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.pv_path = Path(self._tmp.name) / "pv.jsonl"
+        self.click_path = Path(self._tmp.name) / "clicks.jsonl"
+        self.ledger_path = Path(self._tmp.name) / "commission_ledger.jsonl"
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def test_all_stages_honestly_zero_with_no_real_activity(self):
+        summary = click_tracking.conversion_funnel_summary(
+            page_views_path=self.pv_path, clicks_path=self.click_path, commission_ledger_path=self.ledger_path)
+        self.assertEqual(summary["TRAFFIC_PAGE_VIEWS"], 0)
+        self.assertEqual(summary["OUTBOUND_CLICKS"], 0)
+        self.assertEqual(summary["REAL_COMMISSIONS"], 0)
+        self.assertIn("N/A", summary["page_view_to_click_rate"])
+
+    def test_real_counts_and_rates_computed_correctly(self):
+        click_tracking.record_page_view("p", ledger_path=self.pv_path)
+        click_tracking.record_page_view("p", ledger_path=self.pv_path)
+        click_tracking.record_click("prod1", ledger_path=self.click_path)
+        summary = click_tracking.conversion_funnel_summary(
+            page_views_path=self.pv_path, clicks_path=self.click_path, commission_ledger_path=self.ledger_path)
+        self.assertEqual(summary["TRAFFIC_PAGE_VIEWS"], 2)
+        self.assertEqual(summary["OUTBOUND_CLICKS"], 1)
+        self.assertEqual(summary["page_view_to_click_rate"], 0.5)
+
+    def test_never_fabricates_a_commission_from_clicks_alone(self):
+        click_tracking.record_click("prod1", ledger_path=self.click_path)
+        click_tracking.record_click("prod1", ledger_path=self.click_path)
+        summary = click_tracking.conversion_funnel_summary(
+            page_views_path=self.pv_path, clicks_path=self.click_path, commission_ledger_path=self.ledger_path)
+        self.assertEqual(summary["REAL_COMMISSIONS"], 0)
+        self.assertEqual(summary["click_to_commission_rate"], 0.0)
+
+
 class TestProducts(unittest.TestCase):
     def test_lists_only_the_one_real_directive_named_category(self):
         result = products.list_products()
