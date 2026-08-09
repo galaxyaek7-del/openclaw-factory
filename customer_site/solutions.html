@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solutions — Galaxy Forge</title>
+<meta name="description" content="Discover real, independently-verified digital solutions for your business problem — every recommendation evidence-checked, never ranked by commission.">
+<link rel="canonical" href="/site/solutions.html">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23d97a3f'/%3E%3Cstop offset='1' stop-color='%238a4a1f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-family='IBM Plex Sans,Arial,sans-serif' font-weight='800' font-size='14' fill='%231a0e05' text-anchor='middle'%3EGF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c11; --bg-elev:#12151d; --bg-card:#161a24; --bg-hover:#1c212e;
+  --border:#242938; --border-soft:#1a1e2a;
+  --ink:#eef0f6; --ink-dim:#9198ad; --ink-faint:#5c6379;
+  --accent:#d97a3f; --accent-soft:#3a2818; --accent-ink:#f0a468;
+  --cool:#5b7fd9; --cool-soft:#182238;
+  --good:#4a9d6f; --good-soft:#132a1e;
+  --warn:#d9a441; --warn-soft:#332711;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  --radius:12px;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; line-height:1.6; overflow-x:hidden;}
+a{color:inherit;}
+img{max-width:100%;}
+.wrap{max-width:1120px; margin:0 auto; padding:0 1.5rem;}
+h1,h2,h3{font-weight:700; letter-spacing:-.02em; text-wrap:balance; margin:0;}
+p{margin:0;}
+header{position:sticky; top:0; z-index:50; background:rgba(10,12,17,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--border-soft);}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; max-width:1120px; margin:0 auto;}
+.brand{display:flex; align-items:center; gap:.6rem; text-decoration:none;}
+.brand-mark{width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg, var(--accent), #8a4a1f); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.9rem; color:#1a0e05; flex-shrink:0;}
+.brand-name{font-weight:700; font-size:1.02rem; color:var(--ink);}
+.nav-links{display:flex; gap:1.8rem; font-size:.88rem; color:var(--ink-dim);}
+.nav-links a{text-decoration:none; transition:color .15s;}
+.nav-links a:hover, .nav-links a.active{color:var(--ink);}
+.nav-cta{font-family:var(--sans); font-size:.85rem; font-weight:600; padding:.55rem 1.1rem; border-radius:8px; background:var(--accent); color:#1a0e05; text-decoration:none; border:1px solid var(--accent); transition:background .15s; white-space:nowrap;}
+.nav-cta:hover{background:var(--accent-ink);}
+main{padding:3rem 0 5rem;}
+.eyebrow{display:inline-flex; align-items:center; gap:.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); background:var(--accent-soft); border:1px solid rgba(217,122,63,.3); padding:.4rem .8rem; border-radius:99px; margin-bottom:1rem;}
+h1.page-title{font-size:clamp(1.8rem, 4vw, 2.6rem); max-width:760px;}
+p.page-lede{font-size:1.05rem; color:var(--ink-dim); max-width:640px; margin-top:1rem;}
+.disclosure{background:var(--warn-soft); border:1px solid rgba(217,164,65,.35); border-radius:var(--radius); padding:1rem 1.3rem; font-size:.86rem; color:var(--ink); margin:1.6rem 0 2rem; line-height:1.55;}
+.disclosure b{color:var(--warn);}
+.category-filter{display:flex; flex-wrap:wrap; gap:.6rem; margin-bottom:2rem;}
+.cat-btn{font-family:var(--mono); font-size:.78rem; padding:.5rem .95rem; border-radius:99px; background:var(--bg-card); border:1px solid var(--border); color:var(--ink-dim); cursor:pointer; transition:all .15s;}
+.cat-btn:hover, .cat-btn.active{border-color:var(--accent); color:var(--accent-ink);}
+.solutions-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:1.25rem;}
+.solution-card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.5rem; display:flex; flex-direction:column; gap:.8rem;}
+.solution-card h3{font-size:1.1rem;}
+.solution-card .cat-tag{font-family:var(--mono); font-size:.68rem; color:var(--accent-ink); text-transform:uppercase; letter-spacing:.04em;}
+.solution-card p{color:var(--ink-dim); font-size:.88rem;}
+.solution-card .meta-row{display:flex; justify-content:space-between; font-size:.76rem; color:var(--ink-faint); font-family:var(--mono);}
+.solution-card .btn{align-self:flex-start; margin-top:.3rem; font-family:var(--sans); font-size:.86rem; font-weight:600; padding:.65rem 1.1rem; border-radius:8px; background:var(--accent); color:#1a0e05; text-decoration:none; border:1px solid var(--accent);}
+.solution-card .btn:hover{background:var(--accent-ink);}
+.solution-card .why{font-size:.8rem; color:var(--ink-faint); border-top:1px solid var(--border-soft); padding-top:.7rem; margin-top:.2rem;}
+#status{color:var(--ink-faint); font-size:.9rem; padding:1rem 0;}
+footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-top:3rem;}
+.footer-grid{display:flex; flex-wrap:wrap; justify-content:space-between; gap:2rem;}
+.footer-brand p{color:var(--ink-faint); font-size:.84rem; margin-top:.6rem; max-width:320px;}
+.footer-links{display:flex; gap:3rem; flex-wrap:wrap;}
+.footer-col h4{font-size:.76rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin-bottom:.8rem;}
+.footer-col a{display:block; font-size:.86rem; color:var(--ink-dim); text-decoration:none; margin-bottom:.55rem;}
+.footer-col a:hover{color:var(--ink);}
+.footer-bottom{margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid var(--border-soft); font-size:.76rem; color:var(--ink-faint);}
+@media (max-width:600px){ .nav-links{display:none;} .nav{padding:.85rem 1.2rem;} }
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a href="/site/" class="brand"><div class="brand-mark">GF</div><div class="brand-name">Galaxy Forge</div></a>
+    <nav class="nav-links">
+      <a href="/site/solutions.html" class="active">Solutions</a>
+      <a href="/site/compare.html">Compare</a>
+      <a href="/site/guides.html">Guides</a>
+      <a href="/site/recommended.html">Recommended</a>
+      <a href="/site/about.html">About</a>
+      <a href="/site/contact.html">Contact</a>
+      <a href="/trust/index.html">Trust</a>
+    </nav>
+    <a href="/site/contact.html" class="nav-cta">Tell us your problem</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="eyebrow">Solutions Engine</div>
+    <h1 class="page-title">What are you trying to improve?</h1>
+    <p class="page-lede">Pick a category, or browse everything we've independently verified. Every solution below cleared a real evidence check against its own official source before it appears here — nothing is listed because it pays the highest commission.</p>
+
+    <div class="disclosure">
+      <b>Disclosure:</b> Some links on this page are partner links. If you choose a solution through one of these links, Galaxy Forge may receive a commission at no additional cost to you. This never affects whether or how a solution is listed — see our <a href="/trust/affiliate-disclosure.html" style="color:var(--warn); text-decoration:underline;">Affiliate Disclosure</a> for how our ranking actually works.
+    </div>
+
+    <div class="category-filter" id="categoryFilter">
+      <button class="cat-btn active" data-cat="">All</button>
+    </div>
+
+    <div id="status">Loading real, verified solutions…</div>
+    <div class="solutions-grid" id="solutionsGrid"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand"><div class="brand-mark">GF</div><div class="brand-name">Galaxy Forge</div></div>
+        <p>A global commercial intelligence company. We help you discover, evaluate, and choose better digital solutions for real problems.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Discover</h4>
+          <a href="/site/solutions.html">Solutions</a>
+          <a href="/site/compare.html">Compare</a>
+          <a href="/site/guides.html">Guides</a>
+          <a href="/site/recommended.html">Recommended</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="/site/about.html">About</a>
+          <a href="/site/contact.html">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="/trust/privacy-policy.html">Privacy</a>
+          <a href="/trust/terms-of-service.html">Terms</a>
+          <a href="/trust/cookie-policy.html">Cookies</a>
+          <a href="/trust/affiliate-disclosure.html">Affiliate Disclosure</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">© <span id="year"></span> Galaxy Forge. Every solution shown is read live from our own real, verified records.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const CATEGORY_LABELS = {
+    workflow_automation: "Workflow Automation",
+    creative_design_tools: "Creative & Design",
+    ecommerce_marketplace: "E-commerce & Marketplace",
+    business_productivity: "Business Productivity",
+    commerce_infrastructure: "Commerce Infrastructure",
+  };
+
+  function el(tag, attrs, children){
+    const e = document.createElement(tag);
+    if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]);
+    (children || []).forEach(c => e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c));
+    return e;
+  }
+
+  function recordPageView(){
+    fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'solutions' }), credentials: 'same-origin' }).catch(()=>{});
+  }
+
+  let allSolutions = [];
+
+  function renderCategoryFilter(categories){
+    const wrap = document.getElementById('categoryFilter');
+    categories.forEach(cat => {
+      const btn = el('button', { class: 'cat-btn', 'data-cat': cat }, [CATEGORY_LABELS[cat] || cat]);
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderGrid(cat);
+      });
+      wrap.appendChild(btn);
+    });
+    wrap.querySelector('[data-cat=""]').addEventListener('click', () => {
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      wrap.querySelector('[data-cat=""]').classList.add('active');
+      renderGrid('');
+    });
+  }
+
+  function renderGrid(categoryFilter){
+    const grid = document.getElementById('solutionsGrid');
+    grid.innerHTML = '';
+    const shown = categoryFilter ? allSolutions.filter(s => s.category === categoryFilter) : allSolutions;
+    if (shown.length === 0){
+      grid.appendChild(el('p', {}, ['No verified solutions in this category yet.']));
+      return;
+    }
+    shown.forEach(s => {
+      const card = el('div', { class: 'solution-card' }, [
+        el('div', { class: 'cat-tag' }, [CATEGORY_LABELS[s.category] || s.category]),
+        el('h3', {}, [s.name || s.opportunity_id]),
+        el('p', {}, [s.problem_it_solves]),
+        el('div', { class: 'meta-row' }, [
+          el('span', {}, ['Verified: ' + (s.freshness || 'unknown')]),
+          el('span', {}, ['Last check: ' + (s.last_verification_date || 'n/a')]),
+        ]),
+        el('div', { class: 'why' }, [s.why_recommended]),
+        el('a', { class: 'btn', href: s.explore_url, target: '_blank', rel: 'noopener sponsored' }, ['Explore solution →']),
+      ]);
+      grid.appendChild(card);
+    });
+  }
+
+  async function load(){
+    recordPageView();
+    try {
+      const res = await fetch('/api/solutions', { credentials: 'same-origin' });
+      const data = await res.json();
+      if (!data.success){ throw new Error('load failed'); }
+      allSolutions = data.solutions || [];
+      document.getElementById('status').textContent = allSolutions.length + ' verified solution(s) found.';
+      renderCategoryFilter(data.available_categories || []);
+      renderGrid('');
+    } catch (err) {
+      document.getElementById('status').textContent = 'Solutions data is temporarily unavailable — please try again shortly.';
+    }
+  }
+
+  load();
+})();
+</script>
+
+</body>
+</html>

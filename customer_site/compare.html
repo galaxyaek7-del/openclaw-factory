@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compare Solutions — Galaxy Forge</title>
+<meta name="description" content="Real, side-by-side comparisons of verified solutions in the same category — never a fabricated feature-by-feature claim we haven't confirmed.">
+<link rel="canonical" href="/site/compare.html">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23d97a3f'/%3E%3Cstop offset='1' stop-color='%238a4a1f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-family='IBM Plex Sans,Arial,sans-serif' font-weight='800' font-size='14' fill='%231a0e05' text-anchor='middle'%3EGF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c11; --bg-elev:#12151d; --bg-card:#161a24;
+  --border:#242938; --border-soft:#1a1e2a;
+  --ink:#eef0f6; --ink-dim:#9198ad; --ink-faint:#5c6379;
+  --accent:#d97a3f; --accent-soft:#3a2818; --accent-ink:#f0a468;
+  --cool:#5b7fd9; --good:#4a9d6f;
+  --warn:#d9a441; --warn-soft:#332711;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  --radius:12px; color-scheme: dark;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.6;}
+a{color:inherit;} .wrap{max-width:1120px; margin:0 auto; padding:0 1.5rem;}
+h1,h2,h3{font-weight:700; letter-spacing:-.02em; margin:0;} p{margin:0;}
+header{position:sticky; top:0; z-index:50; background:rgba(10,12,17,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--border-soft);}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; max-width:1120px; margin:0 auto;}
+.brand{display:flex; align-items:center; gap:.6rem; text-decoration:none;}
+.brand-mark{width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg, var(--accent), #8a4a1f); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.9rem; color:#1a0e05;}
+.brand-name{font-weight:700; font-size:1.02rem;}
+.nav-links{display:flex; gap:1.8rem; font-size:.88rem; color:var(--ink-dim);}
+.nav-links a{text-decoration:none;} .nav-links a:hover, .nav-links a.active{color:var(--ink);}
+.nav-cta{font-size:.85rem; font-weight:600; padding:.55rem 1.1rem; border-radius:8px; background:var(--accent); color:#1a0e05; text-decoration:none;}
+main{padding:3rem 0 5rem;}
+.eyebrow{display:inline-flex; align-items:center; gap:.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); background:var(--accent-soft); border:1px solid rgba(217,122,63,.3); padding:.4rem .8rem; border-radius:99px; margin-bottom:1rem;}
+h1.page-title{font-size:clamp(1.8rem, 4vw, 2.6rem); max-width:760px;}
+p.page-lede{font-size:1.05rem; color:var(--ink-dim); max-width:640px; margin-top:1rem;}
+.honesty-note{background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1rem 1.3rem; font-size:.86rem; color:var(--ink-dim); margin:1.6rem 0 2rem; line-height:1.55;}
+.compare-group{margin-bottom:2.5rem;}
+.compare-group h2{font-size:1.2rem; margin-bottom:1rem;}
+table.compare-table{width:100%; border-collapse:collapse; background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); overflow:hidden;}
+table.compare-table th, table.compare-table td{text-align:left; padding:.85rem 1.1rem; font-size:.88rem; border-bottom:1px solid var(--border-soft);}
+table.compare-table th{color:var(--ink-faint); font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; background:var(--bg-elev);}
+table.compare-table td.name{font-weight:600;}
+table.compare-table a.explore{color:var(--accent-ink); text-decoration:none; font-weight:600; font-size:.84rem;}
+#status{color:var(--ink-faint); font-size:.9rem; padding:1rem 0;}
+footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-top:3rem; font-size:.8rem; color:var(--ink-faint);}
+@media (max-width:600px){ .nav-links{display:none;} table.compare-table{font-size:.8rem;} }
+</style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <a href="/site/" class="brand"><div class="brand-mark">GF</div><div class="brand-name">Galaxy Forge</div></a>
+    <nav class="nav-links">
+      <a href="/site/solutions.html">Solutions</a>
+      <a href="/site/compare.html" class="active">Compare</a>
+      <a href="/site/guides.html">Guides</a>
+      <a href="/site/recommended.html">Recommended</a>
+      <a href="/site/about.html">About</a>
+      <a href="/site/contact.html">Contact</a>
+      <a href="/trust/index.html">Trust</a>
+    </nav>
+    <a href="/site/solutions.html" class="nav-cta">Browse all solutions</a>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <div class="eyebrow">Compare</div>
+    <h1 class="page-title">Compare verified solutions, category by category</h1>
+    <p class="page-lede">Real solutions we've independently verified, grouped by category so you can see what else exists before deciding.</p>
+    <div class="honesty-note">
+      <b>What this page does NOT do:</b> we don't yet track detailed feature-by-feature or pricing data for these solutions (see our <a href="/site/about.html" style="color:var(--cool); text-decoration:underline;">About</a> page for why). This comparison shows what we've genuinely verified — evidence source, verification status, and freshness — not a fabricated feature matrix. For features and current pricing, use the official link for each solution.
+    </div>
+    <div id="status">Loading categories…</div>
+    <div id="groups"></div>
+  </div>
+</main>
+<footer><div class="wrap">© <span id="year"></span> Galaxy Forge. Read live from our own real, verified records.</div></footer>
+<script>
+(function(){
+  "use strict";
+  document.getElementById('year').textContent = new Date().getFullYear();
+  fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'compare' }) }).catch(()=>{});
+
+  const CATEGORY_LABELS = {
+    workflow_automation: "Workflow Automation",
+    creative_design_tools: "Creative & Design",
+    ecommerce_marketplace: "E-commerce & Marketplace",
+    business_productivity: "Business Productivity",
+    commerce_infrastructure: "Commerce Infrastructure",
+  };
+
+  function el(tag, attrs, children){
+    const e = document.createElement(tag);
+    if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]);
+    (children || []).forEach(c => e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c));
+    return e;
+  }
+
+  fetch('/api/solutions', { credentials: 'same-origin' }).then(r => r.json()).then(data => {
+    if (!data.success) throw new Error('failed');
+    const byCategory = {};
+    (data.solutions || []).forEach(s => { (byCategory[s.category] = byCategory[s.category] || []).push(s); });
+
+    const groupsWithMultiple = Object.keys(byCategory).filter(c => byCategory[c].length >= 2);
+    document.getElementById('status').textContent = groupsWithMultiple.length + ' categor(ies) have 2+ verified solutions to compare.';
+
+    const container = document.getElementById('groups');
+    groupsWithMultiple.forEach(cat => {
+      const group = el('div', { class: 'compare-group' });
+      group.appendChild(el('h2', {}, [CATEGORY_LABELS[cat] || cat]));
+      const table = el('table', { class: 'compare-table' });
+      const thead = el('tr', {}, [
+        el('th', {}, ['Solution']),
+        el('th', {}, ['Verification']),
+        el('th', {}, ['Last Verified']),
+        el('th', {}, ['']),
+      ]);
+      table.appendChild(thead);
+      byCategory[cat].forEach(s => {
+        table.appendChild(el('tr', {}, [
+          el('td', { class: 'name' }, [s.name || s.opportunity_id]),
+          el('td', {}, [s.verification_status]),
+          el('td', {}, [s.last_verification_date || 'n/a']),
+          el('td', {}, [el('a', { class: 'explore', href: s.explore_url, target: '_blank', rel: 'noopener sponsored' }, ['View →'])]),
+        ]));
+      });
+      group.appendChild(table);
+      container.appendChild(group);
+    });
+
+    if (groupsWithMultiple.length === 0){
+      container.appendChild(el('p', { style: 'color:var(--ink-dim);' }, ['No category currently has 2 or more independently-verified solutions to compare side by side yet.']));
+    }
+  }).catch(() => { document.getElementById('status').textContent = 'Temporarily unavailable — please try again shortly.'; });
+})();
+</script>
+</body>
+</html>

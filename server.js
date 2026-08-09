@@ -6336,6 +6336,24 @@ app.get('/api/solutions/click/:opportunity_id', async (req, res) => {
   }
 });
 
+// Real "content published -> visitor" tracking (Customer Front Door
+// directive Section 7). Public, unauthenticated -- fires from every
+// new customer-facing page's own inline JS on load. Reuses affiliate_
+// commerce.click_tracking.record_page_view() directly (Revenue
+// Activation Directive, ADR-239) -- no second page-view mechanism.
+app.post('/api/page-view', async (req, res) => {
+  try {
+    const payload = { page_id: (req.body && req.body.page_id) || null, referrer: req.get('referer') || null };
+    if (!payload.page_id) {
+      return res.status(400).json({ success: false, error: 'page_id is required' });
+    }
+    const result = await runPythonService('record_public_page_view', [JSON.stringify(payload)]);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'page-view tracking temporarily unavailable' });
+  }
+});
+
 // Real, persisted customer intake -- no fabricated qualification/scoring
 // pipeline behind this yet (that's genuinely new logic, Phase 2, not
 // built this round). Every real submission is appended, never

@@ -2544,6 +2544,7 @@ def public_solutions_catalog(category=None, portfolio=None, now=None):
             "pricing": "Not tracked by Galaxy Forge -- pricing changes frequently; see the vendor's own official page for current, accurate pricing.",
             "limitations": "Not yet researched.",
             "alternatives_in_this_category": [x for x in CATEGORY_MAP.get(opp_category, []) if x != opp_id],
+            "verification_status": verification["status"],
             "why_recommended": f"This program's real, official terms have been independently verified against its own official domain (status: {verification['status']}) -- never recommended based on commission size.",
             "evidence": o.get("evidence_url") or o.get("terms_url"),
             "official_link": official_link,

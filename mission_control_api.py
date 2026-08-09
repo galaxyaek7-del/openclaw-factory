@@ -1858,7 +1858,7 @@ def _solutions_click():
         raise ValueError("{ opportunity_id } is required")
 
     from commission_engine import load_opportunity_portfolio
-    from affiliate_commerce import click_tracking, networks
+    from affiliate_commerce import click_tracking
     record = next((o for o in load_opportunity_portfolio() if o["opportunity_id"] == opportunity_id), None)
     if not record:
         return {"success": True, "found": False, "error": f"no real opportunity with id {opportunity_id!r}"}
@@ -1876,6 +1876,22 @@ def _solutions_click():
     if not redirect_url:
         return {"success": True, "found": False, "error": f"opportunity {opportunity_id!r} has no real terms_url or evidence_url to redirect to"}
     return {"success": True, "found": True, "url": redirect_url}
+
+
+def _record_public_page_view():
+    """Public Solutions Engine, Section 7 -- the real 'content published
+    -> visitor' step. Records one real page-view event via
+    affiliate_commerce.click_tracking.record_page_view() (already
+    real, from the Revenue Activation Directive, ADR-239) -- reused
+    directly, never a second page-view mechanism. Reads {"page_id":
+    "...", "referrer": "..."} from sys.argv[2]."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    page_id = (payload.get("page_id") or "").strip()
+    if not page_id:
+        raise ValueError("{ page_id } is required")
+    from affiliate_commerce import click_tracking
+    click_tracking.record_page_view(page_id, referrer=payload.get("referrer"))
+    return {"success": True, "recorded": True}
 
 
 def _lead_discovery_status():
@@ -3890,6 +3906,7 @@ _ENDPOINTS = {
     "revenue_activation_dashboard": _revenue_activation_dashboard,
     "public_solutions_catalog": _public_solutions_catalog,
     "solutions_click": _solutions_click,
+    "record_public_page_view": _record_public_page_view,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
 }
 
