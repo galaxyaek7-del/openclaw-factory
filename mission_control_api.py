@@ -3659,6 +3659,16 @@ def _check_paddle_checkout_status():
     return check_paddle_checkout_status.check_and_notify_all()
 
 
+def _account_routing_status():
+    """Account Routing & Payment Identity Policy (ADR-241, 2026-08-09):
+    the real, authoritative, read-only platform -> commercial_identity ->
+    payout_identity -> status table. Cheap -- pure in-memory lookup,
+    zero live scan, zero secret values (only the founder's own already-
+    disclosed non-secret account-routing emails)."""
+    import account_routing
+    return account_routing.account_routing_table()
+
+
 _ENDPOINTS = {
     "opportunities": _opportunities,
     "production": _production,
@@ -3908,6 +3918,7 @@ _ENDPOINTS = {
     "solutions_click": _solutions_click,
     "record_public_page_view": _record_public_page_view,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
+    "account_routing_status": _account_routing_status,
 }
 
 

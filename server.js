@@ -2094,6 +2094,14 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('enterprise_sales_simulations'),
   },
   {
+    // Account Routing & Payment Identity Policy (ADR-241, 2026-08-09).
+    name: 'account-routing-status',
+    description: "Read-only platform -> commercial_identity -> payout_identity -> status table. Amazon/KDP routes to aekgalaxy47@gmail.com with a real, founder-confirmed Payoneer payout identity (the only fully VERIFIED category); every other real commercial/affiliate platform (Gumroad, Paddle, Etsy, n8n, NordVPN, etc.) routes to the primary commercial identity galaxyaek7@gmail.com with an honestly UNKNOWN payout method, never assumed to be Payoneer. An unlisted platform is BLOCKED, never guessed -- no substring/fuzzy inference exists anywhere in account_routing.py. Holds only non-secret routing metadata (email addresses already disclosed by the founder); no password, API key, token, or other credential is stored or exposed here.",
+    reused: 'account_routing.py::account_routing_table(), via mission_control_api.py. Pure in-memory lookup, no live scan.',
+    handler: (req) => runPythonServiceCached('account_routing_status', [], req),
+    health: pythonHealthCheck('account_routing_status'),
+  },
+  {
     // Executive Truth Dashboard (ADR-221, Phase 30.5 forensic audit, 2026-08-08).
     name: 'executive-truth-dashboard',
     description: "Real, live-checked commercial reality: real vs. simulated revenue (excludes the disclosed finance_data.json smoke-test record), real customers (0, file-existence checked), connected vs. blocked platforms (live channels/*_arm.py status() calls), automations verified fresh today (real daily-marker timestamp check), automations partial (the Golden Hunter ranked-feed refresh gap), manual tasks, critical risks (real resilience_monitor.py findings), unknown states. Never a frozen snapshot -- every field recomputed on each call.",
