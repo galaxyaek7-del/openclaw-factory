@@ -22,8 +22,9 @@ const PAGES = [
   'index.html', 'security-policy.html', 'responsible-ai-policy.html',
   'incident-disclosure-policy.html', 'privacy-policy.html',
   'terms-of-service.html', 'refund-policy.html',
+  'cookie-policy.html', 'affiliate-disclosure.html',
 ];
-const DRAFT_PAGES = ['privacy-policy.html', 'terms-of-service.html', 'refund-policy.html'];
+const DRAFT_PAGES = ['privacy-policy.html', 'terms-of-service.html', 'refund-policy.html', 'cookie-policy.html'];
 
 let serverProcess;
 
@@ -85,7 +86,7 @@ test('draft (legal) pages are clearly labeled as drafts pending lawyer review', 
 });
 
 test('non-draft policy pages (Security, Responsible AI, Incident Disclosure) do NOT carry the draft warning', () => {
-  const nonDraft = ['security-policy.html', 'responsible-ai-policy.html', 'incident-disclosure-policy.html'];
+  const nonDraft = ['security-policy.html', 'responsible-ai-policy.html', 'incident-disclosure-policy.html', 'affiliate-disclosure.html'];
   for (const page of nonDraft) {
     const content = fs.readFileSync(path.join(TRUST_DIR, page), 'utf8');
     assert.doesNotMatch(content, /has not been reviewed by a lawyer/i, `${page} is an honest engineering disclosure, not a legal draft — it should not carry the legal-draft warning`);

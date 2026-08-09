@@ -1502,5 +1502,104 @@ class TestAttributionFailure(unittest.TestCase):
         self.assertEqual(result["REAL_REVENUE"], 50.0)
 
 
+class TestPublicSolutionsCatalog(unittest.TestCase):
+    """Customer-Facing Commercial Front Door directive (ADR-240)."""
+
+    _INTERNAL_ONLY_KEYS = ("verification_tier", "lifecycle_state", "risk_score", "known_conflict", "CEO_approval_status", "checks", "blockers")
+
+    def test_never_exposes_internal_only_fields(self):
+        # Section 9: customers must never see internal scores, lifecycle
+        # state, or CEO-approval internals. Real, recursive scan of the
+        # full public payload for any of the named internal-only keys.
+        result = ce.public_solutions_catalog()
+        dumped = json.dumps(result)
+        for key in self._INTERNAL_ONLY_KEYS:
+            self.assertNotIn(f'"{key}"', dumped, f"internal-only key {key!r} leaked into the public catalog")
+
+    def test_only_verified_or_provisional_opportunities_shown(self):
+        result = ce.public_solutions_catalog()
+        for s in result["solutions"]:
+            self.assertIn(s["verification_status"], ("VERIFIED", "PROVISIONAL"))
+
+    def test_blocked_and_third_party_only_opportunities_excluded(self):
+        result = ce.public_solutions_catalog()
+        shown_ids = {s["opportunity_id"] for s in result["solutions"]}
+        self.assertNotIn("CO-google-affiliate", shown_ids)  # real, known BLOCKED conflict
+        self.assertNotIn("CO-zapier-affiliate", shown_ids)  # real, known BLOCKED conflict
+
+    def test_stale_opportunity_excluded(self):
+        fake_portfolio = [{
+            "opportunity_id": "X", "verification_status": "VERIFIED", "last_verified": "2020-01-01",
+            "commission_value": "10%", "terms_url": "https://x.com/terms", "partner_name": "X",
+        }]
+        result = ce.public_solutions_catalog(portfolio=fake_portfolio)
+        self.assertEqual(result["total_shown"], 0)
+
+    def test_every_shown_solution_carries_an_affiliate_disclosure(self):
+        result = ce.public_solutions_catalog()
+        for s in result["solutions"]:
+            self.assertIn("affiliate_disclosure", s)
+            self.assertGreater(len(s["affiliate_disclosure"]), 20)
+
+    def test_never_ranked_by_commission_value(self):
+        # Real, direct proof: two fake opportunities where the LOWER-tier
+        # verification one has the higher commission -- if commission
+        # ever drove ranking, it would sort first. It must not.
+        fake_portfolio = [
+            {"opportunity_id": "HIGH_COMMISSION_LOW_TIER", "verification_status": "PROVISIONAL", "last_verified": "2026-08-08",
+             "commission_value": "90%", "terms_url": "https://a.com/terms", "partner_name": "A"},
+            {"opportunity_id": "LOW_COMMISSION_HIGH_TIER", "verification_status": "VERIFIED", "last_verified": "2026-08-08",
+             "commission_value": "1%", "terms_url": "https://b.com/terms", "partner_name": "B"},
+        ]
+        result = ce.public_solutions_catalog(portfolio=fake_portfolio)
+        self.assertEqual(result["solutions"][0]["opportunity_id"], "LOW_COMMISSION_HIGH_TIER")
+
+    def test_official_link_never_null_for_any_shown_solution(self):
+        result = ce.public_solutions_catalog()
+        for s in result["solutions"]:
+            self.assertIsNotNone(s["official_link"])
+
+    def test_unknown_field_data_honestly_marked_not_yet_researched_never_fabricated(self):
+        result = ce.public_solutions_catalog()
+        for s in result["solutions"]:
+            self.assertIn("Not yet researched", s["key_features"])
+            self.assertIn("Not tracked", s["pricing"])
+
+    def test_category_filter_returns_only_that_category(self):
+        result = ce.public_solutions_catalog(category="workflow_automation")
+        for s in result["solutions"]:
+            self.assertEqual(s["category"], "workflow_automation")
+
+    def test_unknown_category_filter_returns_honestly_empty(self):
+        result = ce.public_solutions_catalog(category="does-not-exist")
+        self.assertEqual(result["total_shown"], 0)
+
+
+class TestSolutionsInvalidHandling(unittest.TestCase):
+    """Customer-Facing Commercial Front Door directive (ADR-240),
+    Section 14 -- invalid recommendation handling."""
+
+    def test_unknown_opportunity_id_click_handled_gracefully(self):
+        import mission_control_api as mca
+        sys_argv_backup = list(__import__("sys").argv)
+        try:
+            __import__("sys").argv = ["mission_control_api.py", "solutions_click", json.dumps({"opportunity_id": "does-not-exist-xyz"})]
+            result = mca._solutions_click()
+            self.assertFalse(result["found"])
+            self.assertIn("error", result)
+        finally:
+            __import__("sys").argv = sys_argv_backup
+
+    def test_empty_opportunity_id_raises_a_clear_error_not_a_crash(self):
+        import mission_control_api as mca
+        sys_argv_backup = list(__import__("sys").argv)
+        try:
+            __import__("sys").argv = ["mission_control_api.py", "solutions_click", json.dumps({"opportunity_id": ""})]
+            with self.assertRaises(ValueError):
+                mca._solutions_click()
+        finally:
+            __import__("sys").argv = sys_argv_backup
+
+
 if __name__ == "__main__":
     unittest.main()
