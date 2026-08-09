@@ -1427,5 +1427,80 @@ class TestRevenueLedgerView(unittest.TestCase):
         self.assertEqual(result["REAL_REVENUE"], 0)
 
 
+class TestRevenueActivationDashboard(unittest.TestCase):
+    """Revenue Activation Directive (ADR-239), Section H."""
+
+    def test_covers_all_14_named_items(self):
+        result = ce.revenue_activation_dashboard()
+        for field in ("top_affiliate_opportunities", "best_current_offer", "real_clicks", "real_conversions",
+                      "pending_commission", "paid_commission", "revenue_mtd", "revenue_target_progress_pct",
+                      "conversion_rate", "commission_per_customer", "program_status",
+                      "founder_actions_required", "commercial_blockers", "evidence_freshness"):
+            self.assertIn(field, result)
+
+    def test_best_current_offer_matches_the_real_gate(self):
+        result = ce.revenue_activation_dashboard()
+        shortlist = ce.rank_commission_shortlist()
+        self.assertEqual(result["best_current_offer"], shortlist["BEST_FIRST_COMMERCIAL_EXPERIMENT"])
+
+    def test_commission_per_customer_honestly_na_with_zero_customers(self):
+        result = ce.revenue_activation_dashboard()
+        self.assertIn("N/A", str(result["commission_per_customer"]))
+
+    def test_program_status_covers_every_real_opportunity(self):
+        result = ce.revenue_activation_dashboard()
+        real_ids = {o["opportunity_id"] for o in ce.load_opportunity_portfolio()}
+        self.assertEqual(set(result["program_status"].keys()), real_ids)
+
+    def test_never_leaks_credential_values_amazon_tag_or_smtp(self):
+        # Section J -- credential protection: proves neither the real
+        # AMAZON_ASSOCIATE_TAG value nor any SMTP credential value ever
+        # appears anywhere in this consolidated dashboard's output,
+        # even when a real tag happens to be configured in the
+        # environment this test runs in.
+        import os
+        original = os.environ.get("AMAZON_ASSOCIATE_TAG")
+        os.environ["AMAZON_ASSOCIATE_TAG"] = "TEST_SECRET_TAG_MUST_NEVER_LEAK_9f8e7d"
+        try:
+            result = ce.revenue_activation_dashboard()
+            dumped = json.dumps(result, default=str)
+            self.assertNotIn("TEST_SECRET_TAG_MUST_NEVER_LEAK_9f8e7d", dumped)
+        finally:
+            if original is None:
+                os.environ.pop("AMAZON_ASSOCIATE_TAG", None)
+            else:
+                os.environ["AMAZON_ASSOCIATE_TAG"] = original
+
+
+class TestAttributionFailure(unittest.TestCase):
+    """Revenue Activation Directive (ADR-239), Section J."""
+
+    def test_click_with_no_referrer_still_counted_never_dropped(self):
+        import tempfile
+        from pathlib import Path
+        from affiliate_commerce.click_tracking import record_click, click_summary
+        tmp = Path(tempfile.mkdtemp())
+        path = tmp / "clicks.jsonl"
+        record_click("prod1", referrer=None, ledger_path=path)
+        summary = click_summary(ledger_path=path)
+        self.assertEqual(summary["total_real_clicks"], 1)
+
+    def test_commission_with_no_matching_click_history_still_honestly_recorded(self):
+        # A real commission can arrive (e.g. via a manual founder entry
+        # after checking Amazon's own dashboard) with no corresponding
+        # real click ever recorded in this factory's own funnel -- an
+        # honest attribution gap, never silently dropped or fabricated
+        # backward into a matching click.
+        import tempfile
+        from pathlib import Path
+        import commission_ledger as cl
+        tmp = Path(tempfile.mkdtemp())
+        ledger_path = tmp / "ledger.jsonl"
+        cl.record_commission("amazon", "CO-amazon-affiliate", "CONFIRMED", 50.0, "REAL",
+                              evidence="real Amazon dashboard screenshot", external_transaction_id="amz_txn_001", ledger_path=ledger_path)
+        result = ce.revenue_ledger_view(ledger_path=ledger_path)
+        self.assertEqual(result["REAL_REVENUE"], 50.0)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1816,6 +1816,19 @@ def _opportunity_experiments_report():
     return opportunity_experiments_report()
 
 
+def _revenue_activation_dashboard():
+    """Revenue Activation Dashboard ('OpenClaw Revenue Activation
+    Directive', ADR-239, 2026-08-09, Section H): one consolidated
+    read-only view over the 14 named items -- top affiliate
+    opportunities, best current offer, real clicks/conversions,
+    pending/paid commission, revenue MTD + target progress, conversion
+    rate, commission/customer, program status, founder actions
+    required, commercial blockers, evidence freshness. Zero new
+    computation beyond aggregating 8 already-real functions."""
+    from commission_engine import revenue_activation_dashboard
+    return revenue_activation_dashboard()
+
+
 def _lead_discovery_status():
     """Lead Discovery (Phase 37A, ADR-230; extended Phase 37C, ADR-232,
     2026-08-08): real, read-only summary of already-persisted
@@ -3825,6 +3838,7 @@ _ENDPOINTS = {
     "thousand_dollar_month_status": _thousand_dollar_month_status,
     "commercial_blockers_panel": _commercial_blockers_panel,
     "opportunity_experiments_report": _opportunity_experiments_report,
+    "revenue_activation_dashboard": _revenue_activation_dashboard,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
 }
 

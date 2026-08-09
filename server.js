@@ -2279,6 +2279,14 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('opportunity_experiments_report', [], req),
     health: pythonHealthCheck('opportunity_experiments_report'),
   },
+  {
+    // OpenClaw Revenue Activation Directive (ADR-239, 2026-08-09).
+    name: 'revenue-activation-dashboard',
+    description: "One consolidated read-only commercial view over the directive's 14 named items: top affiliate opportunities, best current offer, real clicks/conversions, pending/paid commission, revenue MTD + target progress, conversion rate, commission/customer, program status, founder actions required, commercial blockers, evidence freshness. Zero new computation -- aggregates 8 already-real functions rather than proliferating a dozen thin panels.",
+    reused: 'commission_engine.py::revenue_activation_dashboard(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('revenue_activation_dashboard', [], req),
+    health: pythonHealthCheck('revenue_activation_dashboard'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

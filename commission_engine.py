@@ -2391,3 +2391,61 @@ def revenue_ledger_view(ledger_path=None, now=None):
         "ZERO_REVENUE": real_revenue == 0,
         "note": "PENDING/APPROVED/PAID/REFUNDED_REVERSED are REAL-environment-only -- TEST/SIMULATION/PROVISIONAL records exist separately (see real_vs_test_commission_metrics()) and are never blended into any of these 6 buckets. PENDING or APPROVED commission is never counted as REAL_REVENUE -- only CONFIRMED (APPROVED_COMMISSION) and PAID (PAID_COMMISSION) contribute, matching commission_ledger.first_real_dollar_status()'s own established rule.",
     }
+
+
+# ---------------------------------------------------------------------------
+# Revenue Activation Directive (ADR-239), Section H -- one consolidated
+# Mission Control panel covering all 14 named items, rather than
+# proliferating a dozen thin, overlapping new panels (this session's
+# own repeated "consolidate, don't add an Nth panel" discipline).
+# "Best current offer"/"Revenue MTD"/"Revenue target progress"/
+# "Program status"/"Founder actions required"/"Commercial blockers"
+# already have real, wired panels from Phase 39-41 -- cited here, not
+# duplicated. Only the genuinely un-wired items (top opportunities,
+# clicks/conversions/rate, pending/paid commission, commission/
+# customer, portfolio-wide evidence freshness) are computed fresh.
+# ---------------------------------------------------------------------------
+
+def revenue_activation_dashboard(portfolio=None, top_n=5, now=None):
+    """The 14 named Section H items in one consolidated, read-only
+    view. Every field cites an already-real function -- zero new
+    computation beyond simple aggregation."""
+    import commission_ledger as cl
+    from affiliate_commerce.click_tracking import click_summary, conversion_funnel_summary
+
+    now = now or datetime.now(timezone.utc)
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+
+    queue = commercial_opportunity_queue(portfolio=portfolio, top_n=top_n, now=now)
+    ledger_view = revenue_ledger_view(now=now)
+    month = thousand_dollar_month_status(portfolio=portfolio, now=now)
+    funnel = conversion_funnel_summary()
+    clicks = click_summary()
+    dollar_status = cl.first_real_dollar_status()
+    real_customers = dollar_status["REAL_CUSTOMERS"]
+
+    freshness_by_opportunity = {
+        o["opportunity_id"]: _freshness_from_last_verified(o.get("last_verified"), now=now)
+        for o in portfolio
+    }
+
+    return {
+        "generated_at": _now_iso(now),
+        "top_affiliate_opportunities": queue["queue"],
+        "best_current_offer": queue["BEST_FIRST_COMMERCIAL_EXPERIMENT"],
+        "real_clicks": clicks["total_real_clicks"],
+        "real_conversions": funnel["REAL_COMMISSIONS"],
+        "pending_commission": ledger_view["PENDING_COMMISSION"],
+        "paid_commission": ledger_view["PAID_COMMISSION"],
+        "revenue_mtd": month["realized"]["REAL_REVENUE"],
+        "revenue_target_progress_pct": month["progress_pct_of_target"],
+        "conversion_rate": funnel["click_to_commission_rate"],
+        "commission_per_customer": (
+            round(ledger_view["REAL_REVENUE"] / real_customers, 2) if real_customers else "N/A -- 0 real customers"
+        ),
+        "program_status": {o["opportunity_id"]: verify_commission_opportunity(o["opportunity_id"], portfolio=portfolio, now=now)["status"] for o in portfolio},
+        "founder_actions_required": founder_action_state(portfolio=portfolio, now=now)["FOUNDER_ACTION_STATE"],
+        "commercial_blockers": commercial_blockers_panel(portfolio=portfolio, now=now)["blockers"],
+        "evidence_freshness": freshness_by_opportunity,
+        "note": "One consolidated read-only view over 8 already-real functions -- no new computation beyond simple aggregation, no duplicated panel logic.",
+    }
