@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — Galaxy Forge</title>
+<meta name="description" content="Get in touch with Galaxy Forge — every message is read by a real person.">
+<link rel="canonical" href="/site/contact.html">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23d97a3f'/%3E%3Cstop offset='1' stop-color='%238a4a1f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-family='IBM Plex Sans,Arial,sans-serif' font-weight='800' font-size='14' fill='%231a0e05' text-anchor='middle'%3EGF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c11; --bg-elev:#12151d; --bg-card:#161a24;
+  --border:#242938; --border-soft:#1a1e2a;
+  --ink:#eef0f6; --ink-dim:#9198ad; --ink-faint:#5c6379;
+  --accent:#d97a3f; --accent-soft:#3a2818; --accent-ink:#f0a468;
+  --cool:#5b7fd9; --good:#4a9d6f; --good-soft:#132a1e;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  --radius:12px; color-scheme: dark;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.6;}
+a{color:var(--cool);} .wrap{max-width:640px; margin:0 auto; padding:0 1.5rem;}
+h1,h2,h3{font-weight:700; letter-spacing:-.02em; margin:0;} p{margin:0;}
+header{position:sticky; top:0; z-index:50; background:rgba(10,12,17,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--border-soft);}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; max-width:1120px; margin:0 auto;}
+.brand{display:flex; align-items:center; gap:.6rem; text-decoration:none; color:var(--ink);}
+.brand-mark{width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg, var(--accent), #8a4a1f); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.9rem; color:#1a0e05;}
+.brand-name{font-weight:700; font-size:1.02rem;}
+.nav-links{display:flex; gap:1.8rem; font-size:.88rem; color:var(--ink-dim);}
+.nav-links a{text-decoration:none;} .nav-links a:hover, .nav-links a.active{color:var(--ink);}
+.nav-cta{font-size:.85rem; font-weight:600; padding:.55rem 1.1rem; border-radius:8px; background:var(--accent); color:#1a0e05; text-decoration:none;}
+main{padding:3.5rem 0 5rem;}
+.eyebrow{display:inline-flex; align-items:center; gap:.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); background:var(--accent-soft); border:1px solid rgba(217,122,63,.3); padding:.4rem .8rem; border-radius:99px; margin-bottom:1.2rem;}
+h1.page-title{font-size:clamp(1.8rem, 4vw, 2.4rem);}
+p.page-lede{font-size:1.02rem; color:var(--ink-dim); margin-top:1rem;}
+form{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.8rem; display:flex; flex-direction:column; gap:1rem; margin-top:2rem;}
+.field{display:flex; flex-direction:column; gap:.4rem;}
+.field label{font-size:.8rem; color:var(--ink-dim); font-weight:500;}
+.field input, .field textarea{font-family:var(--sans); font-size:.92rem; background:var(--bg-elev); border:1px solid var(--border); color:var(--ink); border-radius:8px; padding:.7rem .85rem; width:100%;}
+.field input:focus, .field textarea:focus{outline:none; border-color:var(--accent);}
+.field textarea{resize:vertical; min-height:110px; font-family:var(--sans);}
+.hp-field{position:absolute; left:-9999px; opacity:0; height:0; overflow:hidden;}
+.btn{font-family:var(--sans); font-size:.92rem; font-weight:600; padding:.85rem 1.5rem; border-radius:9px; background:var(--accent); color:#1a0e05; border:1px solid var(--accent); cursor:pointer;}
+.btn:disabled{opacity:.6; cursor:default;}
+#formStatus{font-size:.86rem; padding:.7rem .9rem; border-radius:8px; display:none;}
+#formStatus.success{display:block; background:var(--good-soft); color:var(--good);}
+#formStatus.error{display:block; background:#2e1615; color:#c9524f;}
+.direct-email{margin-top:1.5rem; font-size:.88rem; color:var(--ink-dim);}
+footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-top:3rem; font-size:.8rem; color:var(--ink-faint);}
+.footer-wrap{max-width:1120px; margin:0 auto; padding:0 1.5rem;}
+@media (max-width:600px){ .nav-links{display:none;} }
+</style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <a href="/site/" class="brand"><div class="brand-mark">GF</div><div class="brand-name">Galaxy Forge</div></a>
+    <nav class="nav-links">
+      <a href="/site/solutions.html">Solutions</a>
+      <a href="/site/compare.html">Compare</a>
+      <a href="/site/guides.html">Guides</a>
+      <a href="/site/recommended.html">Recommended</a>
+      <a href="/site/about.html">About</a>
+      <a href="/site/contact.html" class="active">Contact</a>
+      <a href="/trust/index.html">Trust</a>
+    </nav>
+    <a href="/site/solutions.html" class="nav-cta">Find the right solution</a>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <div class="eyebrow">Contact</div>
+    <h1 class="page-title">Get in touch</h1>
+    <p class="page-lede">A real person reads every message. We'll reply by email.</p>
+
+    <form id="contactForm">
+      <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off">
+      <div class="field"><label for="name">Name</label><input id="name" name="name" required maxlength="200"></div>
+      <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" required maxlength="200"></div>
+      <div class="field"><label for="message">Message</label><textarea id="message" name="message" required maxlength="4000"></textarea></div>
+      <button type="submit" class="btn" id="submitBtn">Send message</button>
+      <div id="formStatus"></div>
+    </form>
+
+    <p class="direct-email">Prefer email directly? <a href="mailto:galaxyaek7@gmail.com">galaxyaek7@gmail.com</a></p>
+  </div>
+</main>
+<footer><div class="footer-wrap">© <span id="year"></span> Galaxy Forge.</div></footer>
+<script>
+(function(){
+  "use strict";
+  document.getElementById('year').textContent = new Date().getFullYear();
+  fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'contact' }) }).catch(()=>{});
+
+  var form = document.getElementById('contactForm');
+  var status = document.getElementById('formStatus');
+  var btn = document.getElementById('submitBtn');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    status.className = ''; status.style.display = 'none';
+    btn.disabled = true; btn.textContent = 'Sending…';
+
+    var data = Object.fromEntries(new FormData(form).entries());
+    fetch('/api/customer/support-ticket', {
+      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+      .then(function(r){ return r.json().then(function(body){ return { ok: r.ok, body: body }; }); })
+      .then(function(res){
+        if (!res.ok || res.body.success === false) throw new Error((res.body && res.body.error) || 'Something went wrong — please try again.');
+        status.textContent = 'Message received. A real person will reply by email.';
+        status.className = 'success';
+        form.reset();
+      })
+      .catch(function(err){
+        status.textContent = err.message;
+        status.className = 'error';
+      })
+      .finally(function(){
+        btn.disabled = false; btn.textContent = 'Send message';
+      });
+  });
+})();
+</script>
+</body>
+</html>
