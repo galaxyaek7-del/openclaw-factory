@@ -2222,3 +2222,133 @@ def commercial_blockers_panel(portfolio=None, now=None):
         "total_blockers": len(set(blockers)),
         "note": "Aggregates real blockers from 3 already-real functions -- never an independently-computed blocker list.",
     }
+
+
+# ---------------------------------------------------------------------------
+# "OpenClaw Revenue Activation Directive" (ADR-239, 2026-08-09) --
+# Section A/B/C. Research before writing this found nearly the entire
+# directive already real from Phases 33-41: affiliate program
+# intelligence is commission_economic_scorecard() (12/15 named
+# factors already covered); ranking is rank_commission_shortlist();
+# the "one real first commercial path" is commercial_flight_control_
+# status(). Only 3 of Section A's 15 named factors were genuinely new
+# (retention_potential, traffic_difficulty, refund_risk -- confirmed
+# absent by direct search), and Section C's exact named field shape
+# didn't exist as one view. Both closed below as thin citation/
+# reshaping functions, never a second scoring engine.
+# ---------------------------------------------------------------------------
+
+def affiliate_program_intelligence(opportunity_id, portfolio=None, now=None):
+    """Section A: extends commission_economic_scorecard()'s real 12
+    factors with the 3 genuinely new named ones. Every new factor is
+    honestly UNKNOWN unless a real signal exists -- never guessed from
+    the advertised commission rate or program popularity."""
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+    now = now or datetime.now(timezone.utc)
+    scorecard = commission_economic_scorecard(opportunity_id, portfolio=portfolio, now=now)
+    if "error" in scorecard:
+        return scorecard
+
+    record = next((o for o in portfolio if o["opportunity_id"] == opportunity_id), None)
+    retention_potential = (
+        "REAL -- recurring commission structure (real, ongoing customer retention already implied by the commission model itself)"
+        if record.get("recurring_commission")
+        else "UNKNOWN -- one-time commission structure; no real repeat-purchase/retention data exists for this opportunity"
+    )
+    traffic_difficulty = "UNKNOWN -- no real, measured traffic-acquisition attempt has ever been made for this specific opportunity"
+    refund_risk = (
+        "UNKNOWN -- no real refund/reversal history exists yet"
+        if record.get("verification_status") != "REJECTED"
+        else "ELEVATED -- opportunity itself carries a real, disclosed evidence conflict"
+    )
+
+    return {
+        **scorecard,
+        "factors": {**scorecard["factors"], "RETENTION_POTENTIAL": retention_potential,
+                    "TRAFFIC_DIFFICULTY": traffic_difficulty, "REFUND_RISK": refund_risk},
+        "note": scorecard["note"] + " Extended with RETENTION_POTENTIAL/TRAFFIC_DIFFICULTY/REFUND_RISK (Revenue Activation Directive, ADR-239) -- honestly UNKNOWN wherever no real signal exists.",
+    }
+
+
+def real_market_demand_score(opportunity_id, portfolio=None, now=None):
+    """Section B: the directive's own named formula, DEMAND x
+    BUYING_INTENT x COMMISSION x CONVERSION_POTENTIAL x RETENTION x
+    ACCESSIBILITY. A real, disclosed multiplication only when every
+    factor is a real number -- if any factor is non-numeric (UNKNOWN,
+    the honest, expected state for nearly every real opportunity
+    today, since this factory has no live customer-intent signal for
+    commission opportunities), the product is honestly UNKNOWN too,
+    never silently treated as 0 or 1."""
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+    now = now or datetime.now(timezone.utc)
+    record = next((o for o in portfolio if o["opportunity_id"] == opportunity_id), None)
+    if record is None:
+        return {"generated_at": _now_iso(now), "opportunity_id": opportunity_id, "error": "not found in the real portfolio -- never fabricated"}
+
+    intel = affiliate_program_intelligence(opportunity_id, portfolio=portfolio, now=now)
+    numeric_commission = _try_parse_percentage(record.get("commission_value"))
+
+    factors = {
+        "DEMAND": "UNKNOWN -- no real, live customer-intent/search-demand signal exists for this opportunity",
+        "BUYING_INTENT": "UNKNOWN -- requires real prospect evidence; qualified_prospect_queue() is the real, live signal source, currently 0 real qualified prospects for any opportunity",
+        "COMMISSION": numeric_commission if numeric_commission is not None else "UNKNOWN -- commission_value is not a directly parseable numeric rate",
+        "CONVERSION_POTENTIAL": "UNKNOWN -- zero real conversions have ever occurred for any commission opportunity in this factory",
+        "RETENTION": intel["factors"]["RETENTION_POTENTIAL"],
+        "ACCESSIBILITY": record.get("geography", "UNKNOWN"),
+    }
+    numeric_factors = [v for v in factors.values() if isinstance(v, (int, float))]
+    all_numeric = len(numeric_factors) == len(factors)
+    product = None
+    for v in numeric_factors:
+        product = v if product is None else product * v
+
+    return {
+        "generated_at": _now_iso(now),
+        "opportunity_id": opportunity_id,
+        "factors": factors,
+        "SCORE": round(product, 6) if all_numeric else "UNKNOWN -- one or more real factors are non-numeric; never fabricated by substituting a placeholder value",
+        "real_numeric_factors_known": len(numeric_factors),
+        "total_factors": len(factors),
+        "note": "Never selects an offer by commission alone -- COMMISSION is exactly 1 of 6 real factors, and the overall SCORE stays honestly UNKNOWN unless every real factor is independently, numerically known.",
+    }
+
+
+def commercial_opportunity_queue(portfolio=None, top_n=5, now=None):
+    """Section C: the directive's own exact named field shape, over
+    rank_commission_shortlist()'s real ranking -- never a second,
+    competing ranking engine."""
+    now = now or datetime.now(timezone.utc)
+    portfolio = portfolio if portfolio is not None else load_opportunity_portfolio()
+    shortlist = rank_commission_shortlist(portfolio=portfolio, top_n=top_n, now=now)
+
+    queue = []
+    for entry in shortlist["shortlist"]:
+        opp_id = entry["opportunity_id"]
+        record = next((o for o in portfolio if o["opportunity_id"] == opp_id), None)
+        action_state = founder_action_state(opportunity_id=opp_id, portfolio=portfolio, now=now)
+        demand = real_market_demand_score(opp_id, portfolio=portfolio, now=now)
+        queue.append({
+            "opportunity": opp_id,
+            "problem": record.get("customer_problem", "UNKNOWN -- requires a separate real customer-discovery pass"),
+            "target_customer": record.get("target_customer", "UNKNOWN"),
+            "offer": record.get("product_or_service"),
+            "affiliate_program": record.get("program_name"),
+            "commission_economics": {"value": record.get("commission_value"), "recurring": record.get("recurring_commission")},
+            "evidence": record.get("evidence_url") or record.get("terms_url"),
+            "traffic_opportunity": "UNKNOWN -- no real, measured traffic-acquisition attempt exists for this opportunity",
+            "risk": record.get("risk_score", "UNKNOWN"),
+            "required_founder_action": action_state["FOUNDER_ACTION_STATE"],
+            "expected_next_measurable_event": (
+                "A real click on a real, tagged affiliate link (once the tag is configured)" if action_state["FOUNDER_ACTION_STATE"] == "READY_FOR_FOUNDER_ACTION"
+                else "A real, exact-scope CEO approval for the prepared draft" if action_state["FOUNDER_ACTION_STATE"] in ("CREDENTIALS_REQUIRED", "APPROVAL_REQUIRED")
+                else "A fresh, real live re-verification of this opportunity's evidence"
+            ),
+            "demand_score": demand["SCORE"],
+        })
+
+    return {
+        "generated_at": _now_iso(now),
+        "queue": queue,
+        "BEST_FIRST_COMMERCIAL_EXPERIMENT": shortlist["BEST_FIRST_COMMERCIAL_EXPERIMENT"],
+        "note": "Real citation of rank_commission_shortlist()'s own ranking -- never a second, competing ranking engine. Every field traces to a real, already-cited source.",
+    }

@@ -1298,5 +1298,83 @@ class TestPhase41AdversarialAndEdgeCases(unittest.TestCase):
         self.assertFalse(result["checks"]["geography_eligibility_verification"]["ok"])
 
 
+class TestAffiliateProgramIntelligence(unittest.TestCase):
+    """Revenue Activation Directive (ADR-239), Section A."""
+
+    def test_extends_economic_scorecard_with_3_new_factors(self):
+        result = ce.affiliate_program_intelligence("CO-amazon-affiliate")
+        for factor in ("RETENTION_POTENTIAL", "TRAFFIC_DIFFICULTY", "REFUND_RISK"):
+            self.assertIn(factor, result["factors"])
+
+    def test_recurring_opportunity_gets_real_retention_signal(self):
+        result = ce.affiliate_program_intelligence("CO-n8n-affiliate")
+        self.assertIn("REAL", result["factors"]["RETENTION_POTENTIAL"])
+
+    def test_non_recurring_opportunity_honestly_unknown_retention(self):
+        result = ce.affiliate_program_intelligence("CO-amazon-affiliate")
+        self.assertIn("UNKNOWN", result["factors"]["RETENTION_POTENTIAL"])
+
+    def test_unknown_opportunity_never_fabricates(self):
+        result = ce.affiliate_program_intelligence("does-not-exist")
+        self.assertIn("error", result)
+
+
+class TestRealMarketDemandScore(unittest.TestCase):
+    """Revenue Activation Directive (ADR-239), Section B."""
+
+    def test_covers_all_6_named_factors(self):
+        result = ce.real_market_demand_score("CO-amazon-affiliate")
+        self.assertEqual(set(result["factors"].keys()), {"DEMAND", "BUYING_INTENT", "COMMISSION", "CONVERSION_POTENTIAL", "RETENTION", "ACCESSIBILITY"})
+
+    def test_score_honestly_unknown_when_not_all_factors_numeric(self):
+        result = ce.real_market_demand_score("CO-amazon-affiliate")
+        self.assertIsInstance(result["SCORE"], str)
+        self.assertIn("UNKNOWN", result["SCORE"])
+
+    def test_never_selects_by_commission_alone(self):
+        result = ce.real_market_demand_score("CO-amazon-affiliate")
+        self.assertIsInstance(result["factors"]["COMMISSION"], (int, float))
+        # But the overall SCORE still requires all 6 -- commission alone never produces a real SCORE.
+        self.assertIn("UNKNOWN", str(result["SCORE"]))
+
+    def test_documents_the_current_real_structural_ceiling(self):
+        # DEMAND/BUYING_INTENT/CONVERSION_POTENTIAL are unconditionally
+        # non-numeric today (no live signal source exists for any of
+        # them in this factory) -- SCORE can therefore never be a real
+        # number today regardless of which opportunity is queried,
+        # honestly documented here rather than silently asserted only
+        # against one opportunity.
+        for opp in ce.load_opportunity_portfolio():
+            result = ce.real_market_demand_score(opp["opportunity_id"])
+            self.assertIsInstance(result["SCORE"], str)
+
+    def test_unknown_opportunity_never_fabricates(self):
+        result = ce.real_market_demand_score("does-not-exist")
+        self.assertIn("error", result)
+
+
+class TestCommercialOpportunityQueue(unittest.TestCase):
+    """Revenue Activation Directive (ADR-239), Section C."""
+
+    def test_every_entry_has_all_11_named_fields(self):
+        result = ce.commercial_opportunity_queue()
+        for entry in result["queue"]:
+            for field in ("opportunity", "problem", "target_customer", "offer", "affiliate_program",
+                          "commission_economics", "evidence", "traffic_opportunity", "risk",
+                          "required_founder_action", "expected_next_measurable_event"):
+                self.assertIn(field, entry)
+
+    def test_best_first_experiment_matches_rank_commission_shortlist(self):
+        result = ce.commercial_opportunity_queue()
+        shortlist = ce.rank_commission_shortlist()
+        self.assertEqual(result["BEST_FIRST_COMMERCIAL_EXPERIMENT"], shortlist["BEST_FIRST_COMMERCIAL_EXPERIMENT"])
+
+    def test_never_fabricates_an_opportunity_outside_the_real_portfolio(self):
+        result = ce.commercial_opportunity_queue()
+        real_ids = {o["opportunity_id"] for o in ce.load_opportunity_portfolio()}
+        for entry in result["queue"]:
+            self.assertIn(entry["opportunity"], real_ids)
+
+
 if __name__ == "__main__":
     unittest.main()
