@@ -33,6 +33,11 @@ GUMROAD_API_BASE = "https://api.gumroad.com/v2"
 _RETRY_ATTEMPTS = 3
 _RETRY_BACKOFF_SECONDS = 1.5
 
+# Gumroad presigns one S3 part per 100 MB chunk (see the official /api
+# "Files" documentation). The client must slice the local file to exactly
+# the same boundaries S3 enforces, or the uploaded parts will not reassemble.
+_PART_SIZE = 100 * 1024 * 1024
+
 
 class ConfigError(Exception):
     """A missing/invalid local configuration — never a Gumroad API error."""
@@ -85,17 +90,125 @@ def list_products(token):
         raise RuntimeError(f"Gumroad list_products request failed: {_safe_err(e)}")
     data = r.json()
     if not data.get("success", False):
-        raise RuntimeError(f"Gumroad API returned success=false: {data.get('message', 'unknown error')}")
+        raise RuntimeError(f"Gumroad API returned success=false: {_gumroad_error(data)}")
     return data.get("products", [])
 
+
+def _gumroad_error(data):
+    """Extract a truthful human-readable error string from a Gumroad response
+    body. Gumroad's v2 API reports failures under the `error` key on most
+    endpoints (and `message` on some legacy paths) — reading only `message`
+    produced the "presign failed: None" / "complete failed: None" messages in
+    the sales ledger. Prefer `error`, fall back to `message`, never fabricate."""
+    if not isinstance(data, dict):
+        return str(data)[:500]
+    error = data.get("error")
+    if error:
+        return str(error)
+    message = data.get("message")
+    if message:
+        return str(message)
+    return "unknown error"
+
+
+def _abort_upload(token, upload_id):
+    """Cancel an interrupted presigned upload (POST /v2/files/abort) so the
+    dangling S3 multipart session is released. Gumroad's contract: responses
+    carry a `status` of `accepted` (S3 took the cancellation but parts in
+    flight may finish seconds later) or `already_gone` (no session left).
+    Call again while `accepted`; stop on `already_gone`. Never raises — a
+    failed abort must never mask the original upload error."""
+    for _ in range(5):
+        try:
+            r = requests.post(
+                f"{GUMROAD_API_BASE}/files/abort",
+                data={"access_token": token, "upload_id": upload_id},
+                timeout=30,
+            )
+            data = r.json()
+        except requests.RequestException:
+            return
+        if not data.get("success"):
+            return
+        status = data.get("status")
+        if status in ("already_gone", None):
+            return
+        if status != "accepted":
+            return
+        time.sleep(2)
+
+
+def _upload_file(token, file_path):
+    file_path = Path(file_path)
+    file_size = os.path.getsize(file_path)
+
+    # 1. Presign
+    r = _request_with_retry("POST", f"{GUMROAD_API_BASE}/files/presign",
+                            data={"access_token": token, "filename": file_path.name, "file_size": file_size}, timeout=30)
+    data = r.json()
+    if not data.get("success"):
+        raise RuntimeError(f"Gumroad presign failed: {_gumroad_error(data)}")
+
+    upload_id = data.get("upload_id")
+    key = data.get("key")
+    parts = data.get("parts", [])
+    if not upload_id or not key or not parts:
+        raise RuntimeError(f"Gumroad presign incomplete: missing fields (upload_id: {bool(upload_id)}, key: {bool(key)}, parts: {bool(parts)})")
+
+    # 2. Upload each part's exact byte range to S3, capturing the ETag S3
+    # returns per part. S3 requires every non-last part to be >= 5 MB, which
+    # the 100 MB presigned boundaries satisfy by construction. Each part PUT
+    # is idempotent (same bytes, same presigned URL) so transient failures
+    # are safe to retry via _request_with_retry.
+    completed_parts = []
+    try:
+        with open(file_path, "rb") as fh:
+            for part in parts:
+                part_number = part.get("part_number")
+                part_url = part.get("presigned_url")
+                if not part_number or not part_url:
+                    raise RuntimeError(f"Gumroad presign part missing fields (part_number: {bool(part_number)}, presigned_url: {bool(part_url)})")
+                start = (int(part_number) - 1) * _PART_SIZE
+                fh.seek(start)
+                chunk = fh.read(min(_PART_SIZE, file_size - start))
+                put = _request_with_retry("PUT", part_url, data=chunk, timeout=300)
+                put.raise_for_status()
+                etag = put.headers.get("ETag")
+                if not etag:
+                    raise RuntimeError(f"Gumroad S3 part {part_number} upload returned no ETag header")
+                completed_parts.append({"part_number": int(part_number), "etag": etag})
+    except Exception:
+        # Any interrupted upload must be aborted so it does not linger in S3.
+        _abort_upload(token, upload_id)
+        raise
+
+    # 3. Complete. NEVER retried: the upload_id is single-use. If the first
+    # request succeeded on Gumroad's side but the response was lost, a blind
+    # retry would be rejected (the upload_id no longer exists) — start a
+    # fresh presign instead, exactly as Gumroad's docs instruct.
+    complete_data = [
+        ("access_token", token),
+        ("upload_id", upload_id),
+        ("key", key),
+    ]
+    for cp in completed_parts:
+        complete_data.append(("parts[][part_number]", cp["part_number"]))
+        complete_data.append(("parts[][etag]", cp["etag"]))
+    r = requests.post(f"{GUMROAD_API_BASE}/files/complete", data=complete_data, timeout=120)
+    data = r.json()
+    if not data.get("success"):
+        _abort_upload(token, upload_id)
+        raise RuntimeError(f"Gumroad complete failed: {_gumroad_error(data)}")
+
+    return data.get("file_url") or key
 
 def create_product(token, product_spec):
     file_path = product_spec.get("file_path")
     if not file_path:
         raise ConfigError("product_spec missing 'file_path'")
-    file_path = Path(file_path)
-    if not file_path.exists():
-        raise ConfigError(f"file_path not found: {file_path}")
+
+    # Presign -> Upload -> Complete -> Get URL, then attach files[][url].
+    file_url = _upload_file(token, file_path)
 
     price_cents = product_spec.get("price_cents")
     if price_cents is None:
@@ -111,18 +224,16 @@ def create_product(token, product_spec):
         "price": price_cents,
         "description": product_spec.get("description", ""),
         "customizable_price": "false",
+        "files[][url]": file_url
     }
     try:
-        # Deliberately not retried — see _request_with_retry's docstring.
-        with open(file_path, "rb") as fh:
-            files = {"file": (file_path.name, fh, "application/pdf")}
-            r = requests.post(f"{GUMROAD_API_BASE}/products", data=data, files=files, timeout=120)
+        r = requests.post(f"{GUMROAD_API_BASE}/products", data=data, timeout=120)
         r.raise_for_status()
     except requests.RequestException as e:
         raise RuntimeError(f"Gumroad create_product request failed: {_safe_err(e)}")
     result = r.json()
     if not result.get("success", False):
-        raise RuntimeError(f"Gumroad create_product failed: {result.get('message', 'unknown error')}")
+        raise RuntimeError(f"Gumroad create_product failed: {_gumroad_error(result)}")
     return result.get("product", result)
 
 
@@ -138,7 +249,7 @@ def update_product(token, product_id, updates):
         raise RuntimeError(f"Gumroad update_product request failed: {_safe_err(e)}")
     result = r.json()
     if not result.get("success", False):
-        raise RuntimeError(f"Gumroad update_product failed: {result.get('message', 'unknown error')}")
+        raise RuntimeError(f"Gumroad update_product failed: {_gumroad_error(result)}")
     return result.get("product", result)
 
 
@@ -153,7 +264,7 @@ def get_sales(token, product_id=None):
         raise RuntimeError(f"Gumroad get_sales request failed: {_safe_err(e)}")
     data = r.json()
     if not data.get("success", False):
-        raise RuntimeError(f"Gumroad get_sales failed: {data.get('message', 'unknown error')}")
+        raise RuntimeError(f"Gumroad get_sales failed: {_gumroad_error(data)}")
     return data.get("sales", [])
 
 

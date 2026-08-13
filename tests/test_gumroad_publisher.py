@@ -59,22 +59,43 @@ class TestRetryOnTransientFailure(unittest.TestCase):
 
     def test_create_product_is_never_retried_even_on_5xx(self):
         """create_product is a POST — never idempotent-safe to retry. A 5xx
-        must surface immediately as a single failed attempt, not be retried
-        (a lost-response retry could otherwise double-create a paid
-        listing on Gumroad's side)."""
+        on the final product create must surface immediately as a single
+        failed attempt, not be retried (a lost-response retry could otherwise
+        double-create a paid listing on Gumroad's side). The presign flow that
+        precedes it (presign -> S3 PUT -> complete) is mocked out; only the
+        final create POST is exercised."""
         import tempfile, os
         tmp = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
         tmp.write(b"%PDF-1.4 fake")
         tmp.close()
+
+        presign = _fake_response(status_code=200, json_data={
+            "success": True,
+            "upload_id": "u1",
+            "key": "k1",
+            "parts": [{"part_number": 1, "presigned_url": "https://s3/part1"}],
+        })
+        put_resp = _fake_response(status_code=200)
+        put_resp.headers = {"ETag": '"etag-1"'}
+        complete_ok = _fake_response(status_code=200, json_data={
+            "success": True,
+            "file_url": "https://s3/final.pdf",
+        })
+
         try:
-            with patch.object(gp.requests, "post", return_value=_fake_response(status_code=503)) as mock_post:
+            with patch.object(gp.requests, "request", side_effect=[presign, put_resp]) as mock_req, \
+                 patch.object(gp.time, "sleep"), \
+                 patch.object(gp.requests, "post",
+                              side_effect=[complete_ok, _fake_response(status_code=503)]) as mock_post:
                 with self.assertRaises(RuntimeError):
                     gp.create_product("fake-token", {
                         "title": "Test",
                         "price_cents": 999,
                         "file_path": tmp.name,
                     })
-            self.assertEqual(mock_post.call_count, 1)
+            # complete (1) + the single, un-retried create POST (1) = 2.
+            self.assertEqual(mock_post.call_count, 2)
+            self.assertEqual(mock_req.call_count, 2)
         finally:
             os.unlink(tmp.name)
 
