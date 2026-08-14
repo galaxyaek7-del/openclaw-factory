@@ -2295,6 +2295,78 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('revenue_activation_dashboard', [], req),
     health: pythonHealthCheck('revenue_activation_dashboard'),
   },
+  {
+    // CTO+COO audit closure (2026-08-15): expose the previously dead-code
+    // commercial orchestration layer through Mission Control.
+    name: 'commercial-ops',
+    description: "Unified commercial operations view: revenue-arm audit (READY/PARTIAL/BLOCKED), VERIFIED/PENDING revenue, blockers, consolidated founder queue, TOP revenue path, Paddle activation queue. Exposes autonomous_commerce_ops.mission_control() which was previously imported only by tests.",
+    reused: 'autonomous_commerce_ops.py::mission_control(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_mission_control', [], req),
+    health: pythonHealthCheck('commercial_mission_control'),
+  },
+  {
+    name: 'commercial-founder-queue',
+    description: "ONE consolidated founder queue with explicit horizons: TODAY (Gumroad payment), NEXT (Paddle onboarding), LATER (Etsy authorization), TOMORROW (Awin + DigitalOcean + Payoneer). The founder never has to search the codebase to discover what must be done.",
+    reused: 'autonomous_commerce_ops.py::founder_gate_consolidation(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_founder_queue', [], req),
+    health: pythonHealthCheck('commercial_founder_queue'),
+  },
+  {
+    name: 'commercial-revenue-router',
+    description: "Dynamic revenue-arm router: score = REVENUE POTENTIAL x SPEED x CONFIDENCE x AUTOMATION x PROFIT x RECURRING, ranked TOP TODAY / SECOND / THIRD / DEFERRED. Recomputed every call; no arm is permanently preferred.",
+    reused: 'autonomous_commerce_ops.py::revenue_router(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_revenue_router', [], req),
+    health: pythonHealthCheck('commercial_revenue_router'),
+  },
+  {
+    name: 'operational-readiness',
+    description: "Honest GALAXY_FORGE_OPERATIONAL_READINESS % + per-dimension scores (TECHNICAL/COMMERCIAL/AUTOMATION/REVENUE/SECURITY/RECOVERY), computed from real code/config signals. Never inflated.",
+    reused: 'commercial_operations.py::operational_readiness(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('operational_readiness', [], req),
+    health: pythonHealthCheck('operational_readiness'),
+  },
+  {
+    name: 'commercial-gap-register',
+    description: "Live COMMERCIAL_GAP_REGISTER: every gap with gap_id/category/severity/business_impact/current_state/target_state/automation_possible/human_gate/recommended_fix/status. Only gaps verified against actual code/config.",
+    reused: 'commercial_operations.py::commercial_gap_register(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_gap_register', [], req),
+    health: pythonHealthCheck('commercial_gap_register'),
+  },
+  {
+    name: 'revenue-event-model',
+    description: "Canonical revenue event model (CLICK/LEAD/ORDER/PAYMENT/COMMISSION/...) -- a READ-ONLY projection over the real ledgers. Only REAL VERIFIED events feed VERIFIED_REVENUE; TEST/MOCK/PROJECTED/UNKNOWN are reported separately and never summed.",
+    reused: 'commercial_operations.py::revenue_event_model(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('revenue_event_model', [], req),
+    health: pythonHealthCheck('revenue_event_model'),
+  },
+  {
+    name: 'profit-engine',
+    description: "Profit separation (revenue is not profit): gross_revenue/platform_fees/refunds/net_revenue/profit, with cash_received/pending/projected kept separate. Zero-discretionary-spend mode: no unapproved cost is ever introduced.",
+    reused: 'commercial_operations.py::profit_engine(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('profit_engine', [], req),
+    health: pythonHealthCheck('profit_engine'),
+  },
+  {
+    name: 'distribution-capability-matrix',
+    description: "Per-channel capability truth for Pinterest/TikTok/YouTube/X/Facebook/LinkedIn/SEO: CONTENT_AUTOMATED vs PUBLISHING_AUTOMATED vs ANALYTICS_AUTOMATED. Never claims automated merely because content can be generated.",
+    reused: 'commercial_operations.py::distribution_capability_matrix(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('distribution_capability_matrix', [], req),
+    health: pythonHealthCheck('distribution_capability_matrix'),
+  },
+  {
+    name: 'commercial-link-monitor',
+    description: "Safe link & destination monitor for known commercial links (dry-run registry check by default; live checks bounded and rate-limited). Never hammers external services.",
+    reused: 'commercial_operations.py::link_monitor(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_link_monitor', [], req),
+    health: pythonHealthCheck('commercial_link_monitor'),
+  },
+  {
+    name: 'commercial-treasury',
+    description: "Unified treasury with the real ledger values: cash / verified revenue / pending / cost / profit. Fixed the prior bug where verified was hardcoded to 0.0.",
+    reused: 'revenue_os.py::treasury_status(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_treasury', [], req),
+    health: pythonHealthCheck('commercial_treasury'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
@@ -4409,7 +4481,7 @@ app.post('/chat', requireMissionControlAuth, async (req, res) => {
   const { message, agent } = req.body;
   try {
     const response = await groq.chat.completions.create({
-      model: 'llama-3.1-8b-instant',
+      model: 'openai/gpt-oss-20b',
       max_tokens: 1024,
       messages: [{ role: 'user', content: message }]
     });
@@ -4749,7 +4821,7 @@ app.post('/api/agent/:name', requireMissionControlAuth, async (req, res) => {
   try {
     const userMessage = (req.body && req.body.message) || agentConfig.trigger;
     const response = await groq.chat.completions.create({
-      model: 'llama-3.1-8b-instant',
+      model: 'openai/gpt-oss-20b',
       max_tokens: 1024,
       messages: [
         { role: 'system', content: COMPANY_PERSONALITY_PREAMBLE + agentConfig.system },
@@ -4811,7 +4883,7 @@ async function groqChatWithRetry(messages, { maxTokens = 1024, retries = 2, time
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       const resp = await withTimeout(
-        groq.chat.completions.create({ model: 'llama-3.1-8b-instant', max_tokens: maxTokens, messages }),
+        groq.chat.completions.create({ model: 'openai/gpt-oss-20b', max_tokens: maxTokens, messages }),
         timeoutMs, 'Groq'
       );
       return resp.choices[0].message.content;
@@ -5183,7 +5255,7 @@ function appendOpportunity(niche, gate) {
   fs.appendFileSync(OPPORTUNITIES_FILE, `- [${timestamp}] ${niche} — ${gate.reason}\n`, 'utf8');
 }
 
-app.post('/api/trends', requireMissionControlAuth, async (req, res) => {
+app.post('/api/trends', requireMissionControlOrInternalToken, async (req, res) => {
   // Always 200 to n8n regardless of what happened downstream — a rejected
   // trend or a malformed payload is normal business logic, not a delivery
   // failure n8n should retry over.
@@ -6545,7 +6617,7 @@ app.post('/api/customer/consultation', async (req, res) => {
     }
 
     const response = await groq.chat.completions.create({
-      model: 'llama-3.1-8b-instant',
+      model: 'openai/gpt-oss-20b',
       max_tokens: 220,
       messages: [
         { role: 'system', content: CONSULTATION_SYSTEM_PROMPT },

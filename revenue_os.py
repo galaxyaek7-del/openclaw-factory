@@ -447,7 +447,7 @@ def treasury_status(commission_ledger_path: Optional[str] = None,
     finance view) + the real commission ledger. No spend authorization —
     reinvestment is only ever reported, never spent."""
     summary = real_commission_summary(ledger_path=commission_ledger_path)
-    verified = summary["real_confirmed_or_paid_commission_usd"]
+    verified = float(summary["real_confirmed_or_paid_commission_usd"])
 
     finance = {}
     try:
@@ -456,9 +456,12 @@ def treasury_status(commission_ledger_path: Optional[str] = None,
     except (OSError, json.JSONDecodeError):
         finance = {}
 
-    cash = 0.0
-    verified = 0.0
-    pending = 0.0
+    total_sales = finance.get("totalSales", 0) or 0
+    cash = float(finance.get("cashReceived", 0) or 0)
+    pending = float(summary.get("provisional_commission_usd", 0) or 0)
+    # Zero-discretionary-spend rule: cost is 0 until an explicitly approved
+    # real cost exists; nothing unapproved is ever introduced (directive:
+    # "unapproved costs must not be introduced").
     cost = 0.0
     return {
         "generated_at": _now_iso(),

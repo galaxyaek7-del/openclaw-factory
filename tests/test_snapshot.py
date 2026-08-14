@@ -68,17 +68,24 @@ class TestSnapshotBefore(unittest.TestCase):
 
 
 class TestDefaultSnapshotTargets(unittest.TestCase):
-    """Full Factory Integrity Audit (2026-07-22): confirms the 4 real data
-    files created this session (market_evidence, board_meetings,
-    paddle_products, paddle_checkout_notifications) are covered by the
-    same corruption-protection this system already gives factory_state/
-    production_control/decisions -- the audit's own found gap."""
+    """Full Factory Integrity Audit (2026-07-22) + CTO+COO audit closure
+    (2026-08-15, GAP-BACK-007): confirms the real data files that exist on
+    disk and carry corruption risk are covered by the snapshot system.
+    The prior assertion referenced paddle_checkout_notifications.json, which
+    was verified to never exist on disk (silently skipped); it has been
+    replaced by the real revenue/affiliate/state ledgers."""
 
     def test_all_session_data_files_are_covered(self):
         names = {p.name for p in snapshot.DEFAULT_SNAPSHOT_TARGETS}
         for expected in ("market_evidence.jsonl", "board_meetings.jsonl",
-                         "paddle_products.json", "paddle_checkout_notifications.json"):
+                         "paddle_products.json", "commission_ledger.jsonl",
+                         "affiliate_clicks.jsonl", "safe_mode_state.json",
+                         "publish_protection_state.json"):
             self.assertIn(expected, names)
+
+    def test_no_target_is_a_non_existent_file(self):
+        for p in snapshot.DEFAULT_SNAPSHOT_TARGETS:
+            self.assertTrue(p.exists(), f"stale snapshot target: {p}")
 
 
 if __name__ == "__main__":

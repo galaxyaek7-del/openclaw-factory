@@ -25,16 +25,23 @@ _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 
 DEFAULT_SNAPSHOT_TARGETS = (
     _FACTORY_ROOT / "data" / "factory_state.json",
-    _FACTORY_ROOT / "data" / "production_control.json",
     _FACTORY_ROOT / "data" / "decisions.jsonl",
-    # Full Factory Integrity Audit (2026-07-22): these 4 files didn't exist
-    # when this list was last written and carry the same duplicate-write/
-    # corruption risk this snapshot system exists to protect against.
+    # Full Factory Integrity Audit (2026-07-22): these files carry the same
+    # duplicate-write/corruption risk this snapshot system exists to protect
+    # against.
     _FACTORY_ROOT / "data" / "market_evidence.jsonl",
     _FACTORY_ROOT / "data" / "board_meetings.jsonl",
     _FACTORY_ROOT / "data" / "paddle_products.json",
-    _FACTORY_ROOT / "data" / "paddle_checkout_notifications.json",
-)
+    # CTO+COO audit closure (2026-08-15, GAP-BACK-007): the prior targets
+    # production_control.json + paddle_checkout_notifications.json never
+    # existed on disk (verified) and were silently skipped -- replaced with
+    # the real revenue/affiliate ledgers that ARE present and carry the same
+    # corruption risk. Missing targets are skipped, never an error.
+    _FACTORY_ROOT / "data" / "commission_ledger.jsonl",
+    _FACTORY_ROOT / "data" / "affiliate_clicks.jsonl",
+    _FACTORY_ROOT / "data" / "safe_mode_state.json",
+    _FACTORY_ROOT / "data" / "publish_protection_state.json",
+)  
 
 
 def snapshot_before(reason, paths=None):

@@ -3708,6 +3708,70 @@ def _account_routing_status():
     return account_routing.account_routing_table()
 
 
+def _commercial_mission_control():
+    """Commercial Operations bridge (CTO+COO audit closure, 2026-08-15):
+    exposes the commercial orchestration layer (previously dead code --
+    imported only by tests) through Mission Control. Read-only."""
+    import autonomous_commerce_ops as aco
+    return aco.mission_control()
+
+
+def _commercial_founder_queue():
+    """ONE consolidated founder queue (TODAY/NEXT/LATER/TOMORROW). Read-only."""
+    import autonomous_commerce_ops as aco
+    return aco.founder_gate_consolidation()
+
+
+def _commercial_revenue_router():
+    """Dynamic revenue-arm router (TOP TODAY/SECOND/THIRD/DEFERRED)."""
+    import autonomous_commerce_ops as aco
+    return aco.revenue_router()
+
+
+def _operational_readiness():
+    """Honest GALAXY_FORGE_OPERATIONAL_READINESS % + per-dimension scores."""
+    import commercial_operations as co
+    return co.operational_readiness()
+
+
+def _commercial_gap_register():
+    """Live COMMERCIAL_GAP_REGISTER view (gap_id/category/severity/status)."""
+    import commercial_operations as co
+    return co.commercial_gap_register()
+
+
+def _revenue_event_model():
+    """Canonical revenue event model -- READ-ONLY projection over real
+    ledgers (Phase 6). Only REAL VERIFIED events feed VERIFIED_REVENUE."""
+    import commercial_operations as co
+    return co.revenue_event_model()
+
+
+def _profit_engine():
+    """Profit separation: gross/fees/refunds/net/profit (Phase 7)."""
+    import commercial_operations as co
+    return co.profit_engine()
+
+
+def _distribution_capability_matrix():
+    """Per-channel CONTENT/PUBLISHING/ANALYTICS automation truth (Phase 9)."""
+    import commercial_operations as co
+    return co.distribution_capability_matrix()
+
+
+def _commercial_link_monitor():
+    """Safe link & destination monitor (Phase 5) -- dry-run registry check
+    by default (no external requests). Live checks require explicit use."""
+    import commercial_operations as co
+    return co.link_monitor()
+
+
+def _commercial_treasury():
+    """Unified treasury with the real ledger values (Phase 7)."""
+    import revenue_os
+    return revenue_os.treasury_status()
+
+
 _ENDPOINTS = {
     "opportunities": _opportunities,
     "production": _production,
@@ -3958,6 +4022,16 @@ _ENDPOINTS = {
     "record_public_page_view": _record_public_page_view,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
     "account_routing_status": _account_routing_status,
+    "commercial_mission_control": _commercial_mission_control,
+    "commercial_founder_queue": _commercial_founder_queue,
+    "commercial_revenue_router": _commercial_revenue_router,
+    "operational_readiness": _operational_readiness,
+    "commercial_gap_register": _commercial_gap_register,
+    "revenue_event_model": _revenue_event_model,
+    "profit_engine": _profit_engine,
+    "distribution_capability_matrix": _distribution_capability_matrix,
+    "commercial_link_monitor": _commercial_link_monitor,
+    "commercial_treasury": _commercial_treasury,
     "validation_submit": _validation_submit,
     "validation_dashboard": _validation_dashboard,
     "validation_page_view": _validation_page_view,
