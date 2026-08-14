@@ -782,7 +782,12 @@ def rank_commission_shortlist(portfolio=None, top_n=5, now=None):
         }
         scored.append(entry)
 
-    scored.sort(key=lambda e: (e["verification_tier"], e["real_dimensions_count"], e["commission_score"] == "RECURRING"), reverse=True)
+    scored.sort(key=lambda e: (
+        -e["verification_tier"],
+        not e["commission_score"] == "RECURRING",
+        -e["real_dimensions_count"],
+        e["opportunity_id"],
+    ))
     top_n_list = scored[:top_n]
 
     best = None
@@ -1338,10 +1343,13 @@ def golden_hunter_commission_verification(portfolio=None, now=None):
     verification_present = all(e.get("evidence_score") in PARTNER_VERIFICATION_STATUSES for e in shortlist["shortlist"])
     checks["respects_verification_status"] = {"ok": verification_present, "note": "BEST_FIRST_COMMERCIAL_EXPERIMENT is only ever chosen from VERIFIED-tier candidates (verification_tier >= VERIFICATION_TIER['VERIFIED']) -- tested in TestRankCommissionShortlist."}
 
-    ranked_by_tier = list(shortlist["shortlist"]) == sorted(shortlist["shortlist"], key=lambda e: (e["verification_tier"], e["real_dimensions_count"], e["commission_score"] == "RECURRING"), reverse=True)
+    ranked_by_tier = list(shortlist["shortlist"]) == sorted(
+        shortlist["shortlist"],
+        key=lambda e: (-e["verification_tier"], not e["commission_score"] == "RECURRING", -e["real_dimensions_count"], e["opportunity_id"]),
+    )
     checks["ranks_by_expected_value_and_confidence"] = {
         "ok": ranked_by_tier,
-        "note": "Ranked by (verification_tier, real_dimensions_count, recurring) -- expected_value itself is honestly 'UNKNOWN -- requires commission_economics()' for every real entry today, never a fabricated confidence number substituted in its place.",
+        "note": "Ranked by (verification_tier desc, recurring first, real_dimensions_count desc, opportunity_id) -- the identical deterministic key rank_commission_shortlist() itself sorts by (unified with select_first_launch_opportunity() on 2026-08-14 so both real selection functions agree). expected_value itself is honestly 'UNKNOWN -- requires commission_economics()' for every real entry today, never a fabricated confidence number substituted in its place.",
     }
 
     checks["exposes_uncertainty"] = {

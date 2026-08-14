@@ -178,6 +178,90 @@ def portfolio_decision_summary(decisions: List[RevenueDecision]) -> Dict[str, ob
 
 
 # ---------------------------------------------------------------------------
+# Full Revenue Intelligence dashboard (directive section 8): Revenue, Clicks,
+# CTR, Conversion, EPC, Commission, Recurring Commission, Top Products /
+# Channels / Content, Revenue per 1,000 views, Revenue per visitor. Every
+# metric is computed from REAL ledgers; any denominator of zero yields an
+# honest "N/A" rather than a fabricated rate.
+# ---------------------------------------------------------------------------
+
+def revenue_intelligence_dashboard(page_views_path=None, clicks_path=None,
+                                   commission_ledger_path=None,
+                                   recurring_commission_filter=None,
+                                   now: Optional[datetime] = None) -> Dict[str, object]:
+    """Full dashboard from real ledgers only. `recurring_commission_filter`
+    may be a set of opportunity_ids known to be recurring, to tag recurring
+    commission separately -- no metric is ever fabricated, and totals are
+    only summed from rows actually present."""
+    from affiliate_commerce import click_tracking
+    import commission_ledger as cl
+
+    views = click_tracking.read_page_views(page_views_path)
+    clicks = click_tracking.read_clicks(clicks_path)
+    ledger = cl.load_ledger(commission_ledger_path)
+    real_rows = [r for r in ledger if r.get("environment") == "REAL"]
+
+    # Commission/revenue only from REAL rows that are CONFIRMED or PAID.
+    paid_rows = [r for r in real_rows if r.get("commission_status") in ("CONFIRMED", "PAID")]
+    total_commission = sum(float(r.get("gross_commission") or 0) for r in paid_rows)
+    recurring_commission = sum(
+        float(r.get("gross_commission") or 0)
+        for r in paid_rows
+        if r.get("opportunity_id") in (recurring_commission_filter or set())
+    )
+
+    # Per-product aggregates over real clicks + real paid commissions.
+    clicks_per_product: Dict[str, int] = {}
+    for c in clicks:
+        pid = c.get("product_id")
+        if pid:
+            clicks_per_product[pid] = clicks_per_product.get(pid, 0) + 1
+    commission_per_product: Dict[str, float] = {}
+    conv_per_product: Dict[str, int] = {}
+    for r in paid_rows:
+        pid = r.get("opportunity_id")
+        if pid:
+            commission_per_product[pid] = commission_per_product.get(pid, 0) + float(r.get("gross_commission") or 0)
+            conv_per_product[pid] = conv_per_product.get(pid, 0) + 1
+
+    # Channel/content attribution over real clicks.
+    channel_clicks: Dict[str, int] = {}
+    content_clicks: Dict[str, int] = {}
+    for c in clicks:
+        ch = c.get("channel")
+        if ch:
+            channel_clicks[ch] = channel_clicks.get(ch, 0) + 1
+        co = c.get("content")
+        if co:
+            content_clicks[co] = content_clicks.get(co, 0) + 1
+
+    n_views = len(views)
+    n_clicks = len(clicks)
+    revenue_per_1000_views = (total_commission / n_views) * 1000 if n_views else "N/A -- 0 real page views"
+    revenue_per_visitor = total_commission / n_views if n_views else "N/A -- 0 real page views"
+    epc = total_commission / n_clicks if n_clicks else "N/A -- 0 real clicks"
+
+    return {
+        "generated_at": (now or datetime.now(timezone.utc)).isoformat(),
+        "REVENUE_COMMISSION_USD": round(total_commission, 2),
+        "CLICKS": n_clicks,
+        "PAGE_VIEWS": n_views,
+        "CTR": round(n_clicks / n_views, 4) if n_views else "N/A -- 0 real page views",
+        "CONVERSIONS": len(paid_rows),
+        "CONVERSION_RATE": round(len(paid_rows) / n_clicks, 4) if n_clicks else "N/A -- 0 real clicks",
+        "EPC_USD": epc,
+        "RECURRING_COMMISSION_USD": round(recurring_commission, 2),
+        "REVENUE_PER_1000_VIEWS": revenue_per_1000_views,
+        "REVENUE_PER_VISITOR": revenue_per_visitor,
+        "TOP_PRODUCTS_BY_CLICKS": sorted(clicks_per_product.items(), key=lambda kv: kv[1], reverse=True),
+        "TOP_PRODUCTS_BY_COMMISSION": sorted(commission_per_product.items(), key=lambda kv: kv[1], reverse=True),
+        "TOP_CHANNELS": sorted(channel_clicks.items(), key=lambda kv: kv[1], reverse=True),
+        "TOP_CONTENT": sorted(content_clicks.items(), key=lambda kv: kv[1], reverse=True),
+        "note": "كل مقياس محسوب من سجلات حقيقية فقط؛ المقام الصفري = N/A وليس رقمًا مختلقًا.",
+    }
+
+
+# ---------------------------------------------------------------------------
 # Real-data adapter: build AffiliateMetrics from the on-disk click ledger and
 # commission ledger (affiliate_commerce/click_tracking + commission_ledger).
 # Never fabricates: anything not measured stays 0/None.

@@ -178,7 +178,7 @@ def _append_routing(decision: RoutingDecision, routing_path: Optional[str] = Non
     a failed log write must not mask the decision."""
     if routing_path is None:
         from pathlib import Path
-        routing_path = Path(__file__).resolve().parent.parent / "data" / "affiliate_routing.jsonl"
+        routing_path = Path(__file__).resolve().parent / "data" / "affiliate_routing.jsonl"
     try:
         import json
         with open(routing_path, "a", encoding="utf-8") as f:

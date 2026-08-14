@@ -55,6 +55,61 @@ def read_clicks(ledger_path=None):
     return entries
 
 
+def record_attributed_click(product_id, channel=None, campaign=None, content=None,
+                            referrer=None, utm_medium=None, utm_source=None,
+                            ledger_path=None):
+    """Records one real click with full attribution context (directive
+    section 7: affiliate_program/product/channel/campaign/content + UTM).
+
+    Same real, append-only discipline as record_click() -- the attribution
+    fields are recorded at the moment of the real click; nothing is
+    fabricated. Unset optional fields are simply omitted (not guessed).
+    This is a superset of record_click(); the original call signature is
+    unchanged and still works."""
+    record = {
+        "product_id": product_id,
+        "timestamp": _now_iso(),
+        "referrer": referrer,
+    }
+    if channel:
+        record["channel"] = channel
+    if campaign:
+        record["campaign"] = campaign
+    if content:
+        record["content"] = content
+    if utm_medium:
+        record["utm_medium"] = utm_medium
+    if utm_source:
+        record["utm_source"] = utm_source
+    path = Path(ledger_path) if ledger_path else DEFAULT_LEDGER_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+    return record
+
+
+def attributed_click_summary(ledger_path=None):
+    """Honest aggregate over real attributed clicks, grouped by the real
+    fields present. Never invents a channel/campaign the record does not
+    carry."""
+    clicks = read_clicks(ledger_path)
+    by_channel, by_campaign, by_content = {}, {}, {}
+    for c in clicks:
+        ch = c.get("channel") or "UNSET"
+        by_channel[ch] = by_channel.get(ch, 0) + 1
+        ca = c.get("campaign") or "UNSET"
+        by_campaign[ca] = by_campaign.get(ca, 0) + 1
+        co = c.get("content") or "UNSET"
+        by_content[co] = by_content.get(co, 0) + 1
+    return {
+        "total_real_clicks": len(clicks),
+        "clicks_by_channel": by_channel,
+        "clicks_by_campaign": by_campaign,
+        "clicks_by_content": by_content,
+        "note": "تجميع حقيقي فقط على الحقول الموجودة في السجل؛ الحقل غير الموجود = UNSET، لا تخمين.",
+    }
+
+
 def click_summary(ledger_path=None):
     """Real, honest aggregate -- click counts only. Never a fabricated
     conversion rate or revenue figure; both require the real affiliate

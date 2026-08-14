@@ -715,9 +715,25 @@ class TestFounderActionState(unittest.TestCase):
         ))
 
     def test_amazon_default_is_ready_for_founder_action(self):
-        result = ce.founder_action_state()
-        self.assertEqual(result["opportunity_id"], "CO-amazon-affiliate")
-        self.assertEqual(result["FOUNDER_ACTION_STATE"], "READY_FOR_FOUNDER_ACTION")
+        # Phase 2026-08-14: the real portfolio expanded (affiliate engine
+        # directive) with more VERIFIED recurring programs (AWeber,
+        # DigitalOcean) that legitimately outrank Amazon in the selection
+        # engine. Amazon's own mechanism must still resolve to
+        # READY_FOR_FOUNDER_ACTION when selected -- the original intent of
+        # this test -- while the DEFAULT pick now reflects the real,
+        # expanded portfolio.
+        amazon = ce.founder_action_state(opportunity_id="CO-amazon-affiliate")
+        self.assertEqual(amazon["opportunity_id"], "CO-amazon-affiliate")
+        self.assertEqual(amazon["FOUNDER_ACTION_STATE"], "READY_FOR_FOUNDER_ACTION")
+        # The default pick is whatever the real ranked shortlist selects
+        # (a real VERIFIED recurring program today), with an honest state.
+        shortlist = ce.rank_commission_shortlist()
+        default = ce.founder_action_state()
+        self.assertEqual(default["opportunity_id"], shortlist["BEST_FIRST_COMMERCIAL_EXPERIMENT"])
+        self.assertIn(default["FOUNDER_ACTION_STATE"], (
+            "READY_FOR_FOUNDER_ACTION", "CREDENTIALS_REQUIRED", "APPROVAL_REQUIRED",
+            "READY_FOR_CONTROLLED_TEST", "BLOCKED",
+        ))
 
     def test_outreach_opportunity_missing_credential_reports_credentials_required(self):
         result = ce.founder_action_state(opportunity_id="CO-adobe-affiliate", action_type="OUTREACH_REFERRAL")
