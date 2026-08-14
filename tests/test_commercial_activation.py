@@ -43,7 +43,11 @@ class TestPlatformActivationReadiness(unittest.TestCase):
         self.assertNotIn("score", result)
 
     def test_uncredentialed_platform_reports_false_commercial_ready(self):
-        result = ca.platform_activation_readiness("gumroad")
+        # etsy has no credential configured in this factory today (unlike gumroad,
+        # which is genuinely credentialed -- see its live product). This test must
+        # pin a platform that is actually uncredentialed, not one that became
+        # real in .env, or it breaks the moment a real token lands.
+        result = ca.platform_activation_readiness("etsy")
         self.assertFalse(result["credential_valid"])
         self.assertFalse(result["COMMERCIAL_READY"])
 
@@ -130,7 +134,9 @@ class TestCommercialGoLiveCheck(unittest.TestCase):
         self.assertIn(result["verdict"], ca.GO_LIVE_VERDICTS)
 
     def test_uncredentialed_platform_is_no_go(self):
-        result = ca.commercial_go_live_check("gumroad")
+        # etsy is genuinely uncredentialed today (gumroad is not -- it has a real
+        # token and a real live product in .env). Pin the real uncredentialed arm.
+        result = ca.commercial_go_live_check("etsy")
         self.assertEqual(result["verdict"], "NO_GO")
 
     def test_paddle_checkout_blocked_is_go_with_founder_action(self):

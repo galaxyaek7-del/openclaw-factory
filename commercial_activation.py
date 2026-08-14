@@ -84,6 +84,20 @@ def platform_activation_readiness(platform_key, catalog_path=None, checkout_stat
                 catalog = []
     commercial_ready = len(catalog) > 0
 
+    # Real, live truth for Gumroad: the activation report must not claim
+    # "0 products" when the founder's real Gumroad account holds a real,
+    # already-created product (e.g. the EU AI Act Toolkit, created 2026-08-14).
+    # The API is the authoritative source, exactly like paddle_products.json
+    # is for Paddle -- never a stale local guess.
+    gumroad_product_count = None
+    if platform_key == "gumroad" and credential_valid:
+        try:
+            from channels.gumroad_publisher import list_products, load_token
+            gumroad_products = list_products(load_token())
+            gumroad_product_count = len(gumroad_products or [])
+        except Exception:
+            gumroad_product_count = None
+
     checkout_ready = None
     if platform_key == "paddle" and checkout_status is not None:
         checkout_ready = any(r.get("checkout_ready") for r in checkout_status.get("results", []))
@@ -112,6 +126,7 @@ def platform_activation_readiness(platform_key, catalog_path=None, checkout_stat
         "PAYOUT_READY": payout_ready,
         "credential_valid": credential_valid,
         "products": len(catalog),
+        "live_products": gumroad_product_count,
         "blocker": "founder onboarding (vendors.paddle.com)" if platform_key == "paddle" and checkout_ready is False else (
             "no credential configured" if not credential_valid else None
         ),
@@ -125,14 +140,33 @@ def platform_activation_readiness(platform_key, catalog_path=None, checkout_stat
 def founder_action_center():
     """Real, citation-only list -- lists ONLY actions a human founder must
     take, never engineering work this factory's own code can do itself."""
+    # Priority order mirrors profit-first reality: the DigitalOcean/Awin gate is
+    # the single highest-profit-first action (CO-digitalocean-affiliate, 0.25)
+    # and unlocks the ONLY recurring-commission stream. It is listed first.
     return {
         "generated_at": _now_iso(),
         "actions": [
+            {
+                "platform": "DigitalOcean (Awin network)",
+                "action": "Apply to the verified DigitalOcean affiliate program on Awin + confirm Payoneer payout",
+                "why_required": "Awin is the VERIFIED official network (live-checked 2026-08-14 from ui.awin.com/merchant-profile/123996 -- NOT CJ, as the prior report assumed). 10% recurring commission for the first 12 months, 30-day cookie, paid via Payoneer for international publishers. The real Awin tracking link is NOT_CONFIGURED until the founder's application is approved -- this is the single highest-profit-first opportunity (0.25) and the only recurring-commission stream, so it is the top founder action.",
+                "what_to_do": "Sign up at https://ui.awin.com/merchant-profile/123996, submit a publisher application to the DigitalOcean program, and connect/confirm the Payoneer payout destination.",
+                "unlocks": "A real, attributable, recurring 10%-commission affiliate link the factory can then wire into the already-generated 7-channel launch batch.",
+                "current_status": "FOUNDER_ACTION_REQUIRED -- TOP PRIORITY",
+            },
             {
                 "platform": "Paddle", "action": "Complete account onboarding (business/payment verification)",
                 "why_required": "The real, live Paddle credential and 6-product catalog already work -- checkout_ready is blocked purely by Paddle's own account-review gate, which no API call from this factory can clear.",
                 "what_to_do": "Log into vendors.paddle.com and complete every remaining onboarding step Paddle's own dashboard lists.",
                 "unlocks": "Real checkout on all 6 existing products, immediately, with zero further engineering.",
+                "current_status": "FOUNDER_ACTION_REQUIRED",
+            },
+            {
+                "platform": "Gumroad",
+                "action": "Connect a payment method so the already-created live product can be published",
+                "why_required": "GUMROAD_ACCESS_TOKEN is configured and the EU AI Act Compliance Toolkit product is live-created (gumroad_publisher list_products verified 1 product on 2026-08-14) -- but it remains published=False because Gumroad itself requires a connected payment method before publish, which only the founder can add in the dashboard.",
+                "what_to_do": "In the Gumroad dashboard (aekraft.gumroad.com), add/confirm a payment method for the account, then the factory can call enable_product() to publish.",
+                "unlocks": "The existing $155 live product becomes purchasable, a second credentialed sales channel.",
                 "current_status": "FOUNDER_ACTION_REQUIRED",
             },
             {
@@ -143,10 +177,11 @@ def founder_action_center():
                 "current_status": "FOUNDER_ACTION_REQUIRED",
             },
             {
-                "platform": "Gumroad/Etsy/Payhip", "action": "Add real credentials only for accounts the founder actually owns",
-                "why_required": "0 of these 3 have any credential configured today -- each is a real, disclosed manual step, not a code blocker.",
-                "what_to_do": "Set GUMROAD_ACCESS_TOKEN / the real Etsy/Payhip equivalents in .env once the founder has legitimate accounts.",
-                "unlocks": "A 2nd/3rd/4th credentialed sales channel, reducing single-platform concentration risk.",
+                "platform": "Etsy/Payhip",
+                "action": "Add real credentials only for accounts the founder actually owns",
+                "why_required": "0 of these 2 have any credential configured today -- each is a real, disclosed manual step, not a code blocker.",
+                "what_to_do": "Set the real Etsy/Payhip credentials in .env once the founder has legitimate accounts.",
+                "unlocks": "Extra credentialed sales channels, reducing single-platform concentration risk.",
                 "current_status": "FOUNDER_ACTION_REQUIRED, LOW_URGENCY",
             },
             {
@@ -157,7 +192,7 @@ def founder_action_center():
                 "current_status": "FOUNDER_ACTION_REQUIRED, NOT_YET_URGENT",
             },
         ],
-        "note": "Every item above requires a real human action this factory's own code cannot legitimately perform (account creation, business verification, secret issuance by a 3rd party). No engineering task appears here.",
+        "note": "Every item above requires a real human action this factory's own code cannot legitimately perform (account creation, business verification, application approval, secret issuance by a 3rd party). No engineering task appears here.",
     }
 
 
@@ -260,9 +295,13 @@ def commercial_go_live_check(platform_key="paddle", catalog_path=None, checkout_
     readiness = platform_activation_readiness(platform_key, catalog_path=catalog_path, checkout_status=checkout_status)
     reasons = []
 
+    # Real live product count: gumroad reports from its live API (live_products),
+    # paddle from its real catalog file (products). Never a stale "0".
+    real_products = readiness.get("live_products") if readiness.get("live_products") is not None else readiness["products"]
+
     checks = {
-        "product_identity": "VERIFIED" if readiness["products"] > 0 else "MISSING",
-        "price": "VERIFIED" if readiness["products"] > 0 else "MISSING",
+        "product_identity": "VERIFIED" if real_products > 0 else "MISSING",
+        "price": "VERIFIED" if real_products > 0 else "MISSING",
         "commission": "NOT_APPLICABLE -- direct product sale, no commission/referral involved",
         "partner": "NOT_APPLICABLE -- no partner/referral relationship in this flow",
         "customer_match": "NOT_APPLICABLE -- no customer-targeting step in this flow",
@@ -278,7 +317,7 @@ def commercial_go_live_check(platform_key="paddle", catalog_path=None, checkout_
     if not readiness["credential_valid"]:
         verdict = "NO_GO"
         reasons.append(f"{platform_key}: no valid credential configured")
-    elif not readiness["COMMERCIAL_READY"]:
+    elif real_products <= 0:
         verdict = "NO_GO"
         reasons.append(f"{platform_key}: no real product catalog")
     elif readiness["CHECKOUT_READY"] is not True:

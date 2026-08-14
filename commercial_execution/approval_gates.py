@@ -19,7 +19,7 @@ from channels.base_arm import ArmStatus
 
 _GATE_REASONS = {
     ArmStatus.UNAVAILABLE: (
-        "credentials missing or invalid — founder must add/fix the real API key/token in .env"
+        "credentials missing or invalid — founder must add/fix the real API credential in .env"
     ),
     ArmStatus.COOLDOWN: (
         "repeated real publish failures tripped the circuit breaker — founder should check the "
