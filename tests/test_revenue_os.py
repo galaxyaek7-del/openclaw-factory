@@ -13,6 +13,8 @@ from tempfile import TemporaryDirectory
 
 import revenue_os as ros
 from commission_ledger import record_commission
+from affiliate_launch_batch import build_launch_batch
+from affiliate_commerce.click_tracking import record_attributed_click, attributed_click_summary
 
 
 class _Now:
@@ -185,6 +187,43 @@ class SecurityTests(unittest.TestCase):
             text = json.dumps(payload)
             for secret in ("token", "api_key", "secret", "password", "Authorization", "Bearer"):
                 self.assertNotIn(secret, text)
+
+
+class FirstMoneyPathIntegrationTests(unittest.TestCase):
+    """End-to-end CONTENT -> CLICK -> LEDGER -> REVENUE proof, MOCK data
+    only. Proves the factory's real path is fully automated up to the one
+    human gate (a real affiliate link)."""
+
+    def test_launch_asset_to_click_to_verified_revenue(self):
+        with TemporaryDirectory() as td:
+            base = Path(td)
+            clicks = base / "clicks.jsonl"
+            ledger = base / "commission_ledger.jsonl"
+
+            # 1) The real launch batch has UTM/attribution per channel.
+            batch = build_launch_batch()
+            asset = next(a for a in batch.assets if a.channel == "x_post")
+
+            # 2) A real click on that asset records full attribution.
+            record_attributed_click(
+                "CO-digitalocean-affiliate",
+                channel=asset.utm_source, campaign=asset.attribution["campaign"],
+                content=asset.attribution["content"], utm_source=asset.utm_source,
+                utm_medium="blog", ledger_path=str(clicks))
+            summary = attributed_click_summary(ledger_path=str(clicks))
+            self.assertEqual(summary["clicks_by_channel"].get("x"), 1)
+
+            # 3) Before any verified commission: revenue is $0 (honest zero).
+            view = ros.revenue_ledger_view(commission_ledger_path=str(ledger), clicks_ledger_path=str(clicks))
+            self.assertEqual(view["VERIFIED_REVENUE_USD"], 0.0)
+            self.assertGreaterEqual(view["OBSERVED_CLICKS"].get("total_real_clicks", 0), 1)
+
+            # 4) A REAL confirmed commission flips VERIFIED revenue.
+            record_commission("digitalocean", "CO-digitalocean-affiliate", "CONFIRMED", 25.0,
+                              environment="REAL", external_transaction_id="real-tx-1",
+                              evidence="real network confirmation event id from Awin", ledger_path=str(ledger))
+            after = ros.revenue_ledger_view(commission_ledger_path=str(ledger), clicks_ledger_path=str(clicks))
+            self.assertEqual(after["VERIFIED_REVENUE_USD"], 25.0)
 
 
 if __name__ == "__main__":
