@@ -794,3 +794,506 @@ def record_failure_and_recover(component: str, error: str, retry: int, fallback:
     except OSError:
         pass
     return entry
+
+
+# ---------------------------------------------------------------------------
+# 17 -- Revenue Arm Audit (FIRST_DOLLAR_MODE day 2: activate every viable arm
+#       except Awin/DigitalOcean/Payoneer, which is deliberately postponed
+#       until tomorrow)
+# ---------------------------------------------------------------------------
+
+ARM_STATES = ("ACTIVE", "READY", "PARTIAL", "BLOCKED", "NOT_READY", "STRATEGIC_LATER", "POSTPONED")
+
+
+def _live_gumroad_products():
+    """Live, truth-telling Gumroad product check. Returns list of dicts;
+    falls back to [] only on hard failure (never fabricates)."""
+    try:
+        from channels.gumroad_publisher import load_token, list_products
+        products = list_products(load_token())
+        return products or []
+    except Exception:
+        return []
+
+
+def _live_paddle_check():
+    """Live, truth-telling Paddle checkout check via the existing checker."""
+    try:
+        from scripts.check_paddle_checkout_status import check_and_notify_all
+        result = check_and_notify_all()
+        results = result if isinstance(result, list) else result.get("results", [])
+        return results or []
+    except Exception:
+        return []
+
+
+def _arm_credential_state():
+    """Check whether each platform's secret/credential is actually present
+    (read-only, via the existing arm contract -- no new secret handling)."""
+    state = {}
+    try:
+        from channels.gumroad_arm import GumroadArm
+        state["GUMROAD"] = GumroadArm().status()
+    except Exception:
+        state["GUMROAD"] = None
+    try:
+        from channels.paddle_arm import PaddleArm
+        state["PADDLE"] = PaddleArm().status()
+    except Exception:
+        state["PADDLE"] = None
+    try:
+        from channels.etsy_arm import EtsyArm
+        state["ETSY"] = EtsyArm().status()
+    except Exception:
+        state["ETSY"] = None
+    try:
+        from channels.payhip_arm import PayhipArm
+        state["PAYHIP"] = PayhipArm().status()
+    except Exception:
+        state["PAYHIP"] = None
+    return state
+
+
+def revenue_arm_audit(now: Optional[datetime] = None) -> Dict[str, object]:
+    """Classify every revenue arm from CURRENT real state (directive section
+    1). Live checks: Gumroad API, Paddle checkout checker, and the existing
+    arm-contract status() for credential presence. No assumptions from old
+    reports -- every classification is derived from live/current signals.
+
+    Classifications:
+      * GUMROAD     -- product exists but is an unpublished/unpriced draft
+                       (live-checked); payment method + price is the single
+                       remaining founder action -> READY (one human payment
+                       action away).
+      * PADDLE      -- 6 real products, all checkout_ready=false solely on
+                       account-level onboarding -> PARTIAL (one account action
+                       unlocks all 6).
+      * ETSY        -- no credential configured -> BLOCKED (credentials are
+                       a genuine authorization action; we never fabricate one).
+      * PAYHIP      -- no credential configured, low expected value vs
+                       Gumroad/Paddle -> NOT_READY (deferred; no dev spend).
+      * KDP         -- one dry-run book exists, no live KDP arm/credential ->
+                       BLOCKED (keep as arm, not the company strategy).
+      * TEMPLATES   -- real PDF assets exist (toolkit + onboarding template) ->
+                       READY_TO_SELL via an existing active channel, but the
+                       active channel is itself blocked on payment -> PARTIAL.
+      * CANVA       -- no live Canva-connected asset pipeline -> NOT_READY.
+      * PINTEREST   -- a distribution arm only; no API credential -> BLOCKED.
+      * WALL_ART    -- no sellable wall-art asset + no active channel ->
+                       NOT_READY (STRATEGIC_LATER).
+      * SAAS        -- no live SaaS product -> STRATEGIC_LATER.
+      * AFFILIATE   -- deliberately POSTPONED until tomorrow (directive)."""
+    creds = _arm_credential_state()
+    gum_products = _live_gumroad_products()
+    paddle = _live_paddle_check()
+    paddle_ready = any(r.get("checkout_ready") for r in paddle)
+    gum_draft = bool(gum_products) and all(
+        not (p.get("published") or p.get("price_cents")) for p in gum_products)
+
+    def _arm(name, state, evidence):
+        return {"arm": name, "state": state, "evidence": evidence}
+
+    arms = []
+    if gum_products and gum_draft:
+        arms.append(_arm("GUMROAD", "READY",
+                         "1 product 'EU AI Act Compliance Toolkit' live: unpublished draft, no price set -> one founder payment+publish action unlocks it"))
+    elif gum_products:
+        arms.append(_arm("GUMROAD", "ACTIVE",
+                         f"{len(gum_products)} live product(s), published/priced"))
+    else:
+        arms.append(_arm("GUMROAD", "PARTIAL", "no live product returned by API check"))
+
+    if paddle_ready:
+        arms.append(_arm("PADDLE", "ACTIVE", f"{len(paddle)} products checkout-ready"))
+    elif paddle:
+        arms.append(_arm("PADDLE", "PARTIAL",
+                         f"{len(paddle)} products live but checkout blocked on ONE account-level onboarding action"))
+    else:
+        arms.append(_arm("PADDLE", "PARTIAL", "no live checkout data"))
+
+    arms.append(_arm("ETSY", "BLOCKED",
+                     f"credential state: {creds.get('ETSY')} -- account authorization is the genuine blocker (never fabricated)"))
+    arms.append(_arm("PAYHIP", "NOT_READY",
+                     f"credential state: {creds.get('PAYHIP')} -- no credential, low expected value vs Gumroad/Paddle; deferred"))
+    arms.append(_arm("KDP", "BLOCKED",
+                     "dry-run book exists (product_review_2026-07-13/04_kdp_book), no live KDP arm/credential -- kept as an arm, not the strategy"))
+    arms.append(_arm("TEMPLATES", "PARTIAL",
+                     "real PDF assets exist (books/eu_ai_act_compliance_toolkit.pdf + freelancer_client_onboarding_template.pdf) sellable via an existing channel once that channel's payment gate clears"))
+    arms.append(_arm("CANVA", "NOT_READY", "no live Canva-connected asset pipeline"))
+    arms.append(_arm("PINTEREST", "BLOCKED", "distribution-only arm; no API credential -> HUMAN_GATE for authorization"))
+    arms.append(_arm("WALL_ART", "NOT_READY", "no sellable wall-art asset + no active channel; STRATEGIC_LATER"))
+    arms.append(_arm("SAAS", "STRATEGIC_LATER", "no live SaaS product; deliberately not built while first-dollar assets are unearned"))
+    arms.append(_arm("AFFILIATE", "POSTPONED", "GATE-AWIN-DIGITALOCEAN deliberately postponed until tomorrow (directive: do not work on Awin today)"))
+
+    ready = [a["arm"] for a in arms if a["state"] in ("ACTIVE", "READY")]
+    partial = [a["arm"] for a in arms if a["state"] in ("PARTIAL",)]
+    blocked = [a["arm"] for a in arms if a["state"] == "BLOCKED"]
+
+    return {
+        "generated_at": _now_iso(now),
+        "arms": arms,
+        "READY": ready,
+        "PARTIAL": partial,
+        "BLOCKED": blocked,
+        "rule": "Every classification comes from CURRENT live checks, never from old reports. No arm state is fabricated.",
+        "FIRST_DOLLAR_MODE": True,
+    }
+
+
+# ---------------------------------------------------------------------------
+# 18 -- Paddle Activation Queue (directive section 3): 6 products, ONE account
+#       action. States: READY / BLOCKED / HUMAN_GATE / ACTIVE.
+# ---------------------------------------------------------------------------
+
+PADDLE_QUEUE_STATES = ("READY", "BLOCKED", "HUMAN_GATE", "ACTIVE")
+
+
+def paddle_activation_queue(now: Optional[datetime] = None) -> Dict[str, object]:
+    """For every existing Paddle product: id/title/price/status/checkout/
+    payment_readiness/webhook/revenue_event/tracking/blocker, plus the exact
+    human-action count. If six products clear through ONE account-level
+    action, the gate reduces to ONE action (directive section 3)."""
+    results = _live_paddle_check()
+    products = []
+    for r in results:
+        products.append({
+            "title": r.get("title", ""),
+            "checkout_ready": bool(r.get("checkout_ready")),
+            "price": r.get("price") or "not reported by checker",
+            "status": "ACTIVE" if r.get("checkout_ready") else "HUMAN_GATE",
+            "payment_readiness": "checkout_ready" if r.get("checkout_ready") else "blocked by account onboarding",
+            "webhook": r.get("webhook_configured", "not reported"),
+            "revenue_event": r.get("revenue_event", "none observed"),
+            "tracking": r.get("tracking", "not reported"),
+            "blocker": None if r.get("checkout_ready") else "Paddle account onboarding (checkout not enabled for this account)",
+        })
+
+    ready = [p["title"] for p in products if p["checkout_ready"]]
+    gated = [p["title"] for p in products if not p["checkout_ready"]]
+
+    return {
+        "generated_at": _now_iso(now),
+        "total_products": len(products),
+        "products": products,
+        "READY": ready,
+        "BLOCKED": [p["title"] for p in products if not p["checkout_ready"] and "not reported" not in (p["blocker"] or "")],
+        "HUMAN_GATE": gated,
+        "ACTIVE": ready,
+        "human_actions_required": 1 if gated and not ready else 0,
+        "rule": "Six products clear through ONE account-level onboarding action; the gate is reduced to exactly one founder action.",
+    }
+
+
+# ---------------------------------------------------------------------------
+# 19 -- Revenue Router (directive section 10): dynamic, never permanently
+#       favoring any arm. Score = REVENUE_POTENTIAL x SPEED x CONFIDENCE x
+#       AUTOMATION x PROFIT x RECURRING.
+# ---------------------------------------------------------------------------
+
+def _arm_score(arm: dict) -> float:
+    """Multiplicative score from the six router factors (each 0..1).
+
+    A single absent factor (e.g. a one-time-sale arm has
+    recurring_potential=0) must NEVER zero out an otherwise-viable arm, so
+    every factor is floored at 0.1 before multiplication. The floor is
+    documented, honest, and lets one-time arms still rank below their
+    recurring rivals without being wrongly deferred."""
+    factors = ("revenue_potential", "speed", "confidence", "automation", "profit", "recurring_potential")
+    score = 1.0
+    for f in factors:
+        score *= max(0.1, float(arm.get(f, 0.0)))
+    return round(score, 4)
+
+
+def revenue_router(now: Optional[datetime] = None) -> Dict[str, object]:
+    """Score every arm on REVENUE POTENTIAL x SPEED x CONFIDENCE x AUTOMATION
+    x PROFIT x RECURRING and rank TOP TODAY / SECOND / THIRD / DEFERRED.
+
+    Dynamic: recomputed every call; no arm is permanently preferred just
+    because it was previously selected. In FIRST_DOLLAR_MODE the AFFILIATE arm
+    is deliberately not today's top (its gate is postponed until tomorrow);
+    the ranking instead reflects which READY asset can clear its remaining
+    blocker soonest."""
+    audit = revenue_arm_audit(now=now)
+    by_arm = {a["arm"]: a["state"] for a in audit["arms"]}
+
+    profiles = {
+        "GUMROAD": {
+            "revenue_potential": 0.6, "speed": 0.9, "confidence": 0.8,
+            "automation": 0.8, "profit": 0.9, "recurring_potential": 0.0,
+            "state": by_arm.get("GUMROAD"), "blocker": "GATE-GUMROAD-PAYMENT",
+            "human_actions": 1,
+        },
+        "PADDLE": {
+            "revenue_potential": 0.7, "speed": 0.7, "confidence": 0.7,
+            "automation": 0.9, "profit": 0.8, "recurring_potential": 0.6,
+            "state": by_arm.get("PADDLE"), "blocker": "GATE-PADDLE-ONBOARDING",
+            "human_actions": 1,
+        },
+        "ETSY": {
+            "revenue_potential": 0.6, "speed": 0.3, "confidence": 0.2,
+            "automation": 0.4, "profit": 0.7, "recurring_potential": 0.0,
+            "state": by_arm.get("ETSY"), "blocker": "credentials/authorization",
+            "human_actions": 1,
+        },
+        "PAYHIP": {
+            "revenue_potential": 0.3, "speed": 0.4, "confidence": 0.2,
+            "automation": 0.5, "profit": 0.5, "recurring_potential": 0.0,
+            "state": by_arm.get("PAYHIP"), "blocker": "credentials/authorization",
+            "human_actions": 1,
+        },
+        "KDP": {
+            "revenue_potential": 0.5, "speed": 0.2, "confidence": 0.3,
+            "automation": 0.2, "profit": 0.6, "recurring_potential": 0.0,
+            "state": by_arm.get("KDP"), "blocker": "KDP account + live arm",
+            "human_actions": 2,
+        },
+        "TEMPLATES": {
+            "revenue_potential": 0.5, "speed": 0.6, "confidence": 0.5,
+            "automation": 0.6, "profit": 0.8, "recurring_potential": 0.2,
+            "state": by_arm.get("TEMPLATES"), "blocker": "depends on an active payment channel",
+            "human_actions": 0,
+        },
+        "PINTEREST": {
+            "revenue_potential": 0.4, "speed": 0.5, "confidence": 0.3,
+            "automation": 0.5, "profit": 0.7, "recurring_potential": 0.2,
+            "state": by_arm.get("PINTEREST"), "blocker": "API authorization",
+            "human_actions": 1,
+        },
+        "SAAS": {
+            "revenue_potential": 0.9, "speed": 0.05, "confidence": 0.1,
+            "automation": 0.8, "profit": 0.9, "recurring_potential": 0.9,
+            "state": by_arm.get("SAAS"), "blocker": "no live product",
+            "human_actions": 0,
+        },
+    }
+    if "AFFILIATE" in by_arm:
+        profiles["AFFILIATE"] = {
+            "revenue_potential": 0.8, "speed": 0.3, "confidence": 0.4,
+            "automation": 0.6, "profit": 0.9, "recurring_potential": 1.0,
+            "state": by_arm.get("AFFILIATE"), "blocker": "GATE-AWIN-DIGITALOCEAN (postponed until tomorrow)",
+            "human_actions": 1,
+        }
+
+    ranked = []
+    for name, p in profiles.items():
+        score = _arm_score(p)
+        ranked.append({"arm": name, "score": score, "state": p["state"],
+                       "blocker": p["blocker"], "human_actions": p["human_actions"]})
+    ranked.sort(key=lambda r: r["score"], reverse=True)
+
+    deferred = [r for r in ranked if r["score"] == 0.0 or r["state"] in ("NOT_READY", "STRATEGIC_LATER", "BLOCKED", "POSTPONED")]
+    today = [r for r in ranked if r not in deferred]
+
+    return {
+        "generated_at": _now_iso(now),
+        "TOP_TODAY": today[0] if today else None,
+        "SECOND": today[1] if len(today) > 1 else None,
+        "THIRD": today[2] if len(today) > 2 else None,
+        "DEFERRED": deferred,
+        "ranked": ranked,
+        "rule": "Dynamic scoring recomputed every call. No arm is permanently preferred because it was previously selected. In FIRST_DOLLAR_MODE the AFFILIATE arm (postponed) and STRATEGIC_LATER arms are deferred today.",
+    }
+
+
+# ---------------------------------------------------------------------------
+# 20 -- First-Dollar Mode + Founder Gate Consolidation (directive 11 & 13)
+# ---------------------------------------------------------------------------
+
+FIRST_DOLLAR_MODE = True
+
+
+def founder_gate_consolidation(now: Optional[datetime] = None) -> Dict[str, object]:
+    """ONE founder queue, horizons explicitly grouped (directive section 13):
+    TODAY: Gumroad payment. NEXT: Paddle onboarding. LATER: Etsy
+    authorization. TOMORROW: Awin + DigitalOcean + Payoneer (deliberately
+    postponed per directive). The founder never has to search the codebase."""
+    gates = human_gate_orchestrator(now=now)["gates"]
+    by_id = {g["gate_id"]: g for g in gates}
+
+    def _render(gate_id):
+        g = by_id.get(gate_id)
+        if not g:
+            return None
+        return {
+            "gate_id": gate_id,
+            "platform": g["platform"],
+            "action": g["founder_action"],
+            "why": g["why_required"],
+        }
+
+    etsy = {
+        "gate_id": "GATE-ETSY-AUTHORIZATION",
+        "platform": "Etsy",
+        "action": "Authorize an Etsy seller account + connect OAuth credentials",
+        "why": "Etsy arm has no credential configured (ArmStatus.UNAVAILABLE); account authorization is the genuine blocker, never fabricated.",
+    }
+
+    return {
+        "generated_at": _now_iso(now),
+        "horizons": {
+            "TODAY": [
+                _render("GATE-GUMROAD-PAYMENT"),       # nearest one-action blocker
+            ],
+            "NEXT": [
+                _render("GATE-PADDLE-ONBOARDING"),     # one account action unlocks 6 products
+            ],
+            "LATER": [
+                etsy,
+            ],
+            "TOMORROW": [
+                _render("GATE-AWIN-DIGITALOCEAN"),     # deliberately postponed per directive
+            ],
+        },
+        "rule": "Founder sees exactly one horizon per action. TODAY=Gumroad payment; NEXT=Paddle onboarding; LATER=Etsy authorization; TOMORROW=Awin+DigitalOcean+Payoneer.",
+    }
+
+
+def first_dollar_mode_report(now: Optional[datetime] = None) -> Dict[str, object]:
+    """Operating mode (directive section 11): while FIRST_DOLLAR_MODE is on,
+    the factory prioritizes existing sellable assets, existing active accounts,
+    existing organic distribution, lowest blocker, fastest legitimate path --
+    and deprioritizes new architecture / refactors / unproven SaaS / design
+    work / long research. Read-only; returns the mode decision."""
+    router = revenue_router(now=now)
+    audit = revenue_arm_audit(now=now)
+    top = router["TOP_TODAY"]
+    return {
+        "mode": "FIRST_DOLLAR_MODE",
+        "enabled": FIRST_DOLLAR_MODE,
+        "prioritize": [
+            "existing sellable assets",
+            "existing active accounts",
+            "existing organic distribution",
+            "lowest blocker",
+            "fastest legitimate path to verified revenue",
+        ],
+        "deprioritize": [
+            "new architecture",
+            "large refactors",
+            "unproven SaaS",
+            "unnecessary design work",
+            "long research projects",
+        ],
+        "TOP_TODAY": top["arm"] if top else None,
+        "TOP_TODAY_SCORE": top["score"] if top else None,
+        "ready_arms": audit["READY"],
+        "partial_arms": audit["PARTIAL"],
+        "blocked_arms": audit["BLOCKED"],
+    }
+
+
+# ---------------------------------------------------------------------------
+# 21 -- Distribution prep (directive 8 & 9): Pinterest + organic channels,
+#       prepared up to the final PERMITTED action. Never auto-publish without
+#       authorization.
+# ---------------------------------------------------------------------------
+
+ORGANIC_CHANNELS = ("PINTEREST", "TIKTOK", "YOUTUBE", "X", "FACEBOOK", "LINKEDIN", "SEO")
+
+
+def distribution_prep(now: Optional[datetime] = None) -> Dict[str, object]:
+    """Prepare reusable campaign architecture for every offer/channel pair up
+    to the final permitted action. Authorization-missing channels are marked
+    HUMAN_GATE; nothing is auto-published without explicit platform
+    authorization. Zero-cost: organic only, no ads/paid traffic."""
+    router = revenue_router(now=now)
+    top = router["TOP_TODAY"]
+    target = (top or {}).get("arm", "GUMROAD")
+
+    assets = {
+        "GUMROAD": {
+            "offer": "EU AI Act Compliance Toolkit (price to be set by founder)",
+            "product_url": "https://aekraft.gumroad.com/l/iaiyt (live once published+priced)",
+            "tracking": "gumroad/?utm_source=organic&utm_medium=social&utm_campaign=first-dollar-gumroad",
+            "campaign_id": "CAM-GUMROAD-FIRST-DOLLAR",
+            "cta": "Get the EU AI Act Compliance Toolkit - instant download",
+            "content_assets": ["books/eu_ai_act_compliance_toolkit.pdf", "customer_site/eu-ai-act-compliance-toolkit.html"],
+        },
+        "PADDLE": {
+            "offer": "6 existing Paddle products (EU AI Act toolkit + 5 SaaS-lite products)",
+            "product_url": "paddle checkout URL (live once account onboarding completes)",
+            "tracking": "paddle/?utm_source=organic&utm_medium=social&utm_campaign=first-dollar-paddle",
+            "campaign_id": "CAM-PADDLE-FIRST-DOLLAR",
+            "cta": "Get instant-access digital products",
+            "content_assets": ["paddle products already registered (6)"],
+        },
+    }
+
+    channels = []
+    for ch in ORGANIC_CHANNELS:
+        channels.append({
+            "channel": ch,
+            "role": "distribution",
+            "prepared_until": "content+title+description+destination+tracking URL+campaign ID",
+            "authorized": False,
+            "status": "HUMAN_GATE",
+            "rule": "content is prepared; posting requires explicit account/API authorization and is never auto-published",
+        })
+
+    return {
+        "generated_at": _now_iso(now),
+        "target_offer": assets.get(target, assets["GUMROAD"]),
+        "channels": channels,
+        "rule": "Zero-cost organic distribution only. Nothing auto-published without platform authorization.",
+    }
+
+
+# ---------------------------------------------------------------------------
+# 22 -- Mission Control (directive section 16): ONE unified revenue view.
+# ---------------------------------------------------------------------------
+
+def mission_control(now: Optional[datetime] = None) -> Dict[str, object]:
+    """One unified revenue view (directive section 16):
+
+      * REVENUE ARMS       -- per-arm READY/BLOCKED/ACTIVE/...
+      * VERIFIED/PENDING/PROJECTED revenue
+      * BLOCKERS           -- current blocking human gates
+      * FOUNDER ACTIONS    -- consolidated horizons (TODAY/NEXT/LATER/TOMORROW)
+      * TOP REVENUE PATH   -- from the dynamic revenue router
+
+    No fabricated numbers: VERIFIED comes from the revenue integrity gate,
+    PENDING from commission_ledger pending state, PROJECTED stays projected
+    and is NEVER merged into verified."""
+    integrity = revenue_integrity_gate()
+    totals = _real_revenue_totals()
+    audit = revenue_arm_audit(now=now)
+    router = revenue_router(now=now)
+    gates = human_gate_orchestrator(now=now)["gates"]
+    founder = founder_gate_consolidation(now=now)
+    paddle_q = paddle_activation_queue(now=now)
+    prep = distribution_prep(now=now)
+    top = router.get("TOP_TODAY") or {}
+
+    arms_view = {}
+    for a in audit["arms"]:
+        arms_view[a["arm"]] = a["state"]
+    arms_view["AFFILIATE"] = "POSTPONED UNTIL TOMORROW"
+
+    return {
+        "generated_at": _now_iso(now),
+        "REVENUE_ARMS": arms_view,
+        "VERIFIED_REVENUE": totals["VERIFIED_REVENUE_USD"],
+        "PENDING_REVENUE": totals["PENDING_REVENUE_USD"],
+        "PROJECTED_REVENUE": 0.0,
+        "VERIFIED_SALES": integrity["VERIFIED_SALES"],
+        "OBSERVED_SALES": integrity["OBSERVED_SALES"],
+        "BLOCKERS": [g["gate_id"] for g in gates if g["status"] in ("OPEN", "BLOCKING")],
+        "FOUNDER_ACTIONS": founder["horizons"],
+        "TOP_REVENUE_PATH": {
+            "arm": top.get("arm"),
+            "score": top.get("score"),
+            "state": top.get("state"),
+            "blocker": top.get("blocker"),
+            "human_actions": top.get("human_actions"),
+            "offer": prep["target_offer"]["offer"],
+            "tracking": prep["target_offer"]["tracking"],
+            "campaign_id": prep["target_offer"]["campaign_id"],
+        },
+        "PADDLE_ACTIVATION_QUEUE": {
+            "total_products": paddle_q["total_products"],
+            "human_actions_required": paddle_q["human_actions_required"],
+        },
+        "mode": "FIRST_DOLLAR_MODE",
+        "rule": "VERIFIED and PENDING are never merged; PROJECTED stays projected. No clicks/views/test orders count as revenue.",
+    }

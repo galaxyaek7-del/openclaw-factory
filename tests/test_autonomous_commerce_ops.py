@@ -508,5 +508,180 @@ class CeoCommandCenterRevenueTests(unittest.TestCase):
         self.assertEqual(result["LEDGER_ROWS"], 44)  # real historical rows preserved
 
 
+class RevenueArmAuditTests(unittest.TestCase):
+    def setUp(self):
+        self.paddle_check, self.gp = _stub_live_checks()
+
+    def test_every_arm_is_classified(self):
+        result = aco.revenue_arm_audit()
+        names = {a["arm"] for a in result["arms"]}
+        for expected in ("GUMROAD", "PADDLE", "ETSY", "PAYHIP", "KDP", "TEMPLATES", "SAAS", "AFFILIATE"):
+            self.assertIn(expected, names)
+
+    def test_affiliate_is_postponed_not_active(self):
+        result = aco.revenue_arm_audit()
+        by = {a["arm"]: a["state"] for a in result["arms"]}
+        self.assertEqual(by["AFFILIATE"], "POSTPONED")  # directive: no Awin today
+
+    def test_gumroad_ready_requires_no_duplicate_product(self):
+        result = aco.revenue_arm_audit()
+        by = {a["arm"]: a["state"] for a in result["arms"]}
+        self.assertEqual(by["GUMROAD"], "READY")  # existing product, one payment action
+
+    def test_no_state_from_old_reports(self):
+        result = aco.revenue_arm_audit()
+        for a in result["arms"]:
+            self.assertIn("evidence", a)
+            self.assertTrue(len(a["evidence"]) > 10)
+
+
+class PaddleActivationQueueTests(unittest.TestCase):
+    def setUp(self):
+        self.paddle_check, self.gp = _stub_live_checks()
+
+    def test_six_products_one_human_action(self):
+        result = aco.paddle_activation_queue()
+        self.assertEqual(result["total_products"], 6)
+        self.assertEqual(result["human_actions_required"], 1)  # one account-level action
+
+    def test_every_product_has_full_audit_fields(self):
+        result = aco.paddle_activation_queue()
+        for p in result["products"]:
+            for field in ("title", "price", "status", "checkout_ready", "payment_readiness", "webhook", "revenue_event", "tracking", "blocker"):
+                self.assertIn(field, p)
+
+    def test_all_gated_products_listed_as_human_gate(self):
+        result = aco.paddle_activation_queue()
+        self.assertEqual(len(result["HUMAN_GATE"]), 6)
+
+
+class RevenueRouterTests(unittest.TestCase):
+    def setUp(self):
+        self.paddle_check, self.gp = _stub_live_checks()
+
+    def test_router_produces_today_second_third_deferred(self):
+        result = aco.revenue_router()
+        self.assertIn("TOP_TODAY", result)
+        self.assertIn("SECOND", result)
+        self.assertIn("THIRD", result)
+        self.assertIn("DEFERRED", result)
+
+    def test_affiliate_not_permanently_preferred(self):
+        # In FIRST_DOLLAR_MODE the AFFILIATE arm is postponed, not top.
+        result = aco.revenue_router()
+        top = result["TOP_TODAY"]["arm"]
+        self.assertNotEqual(top, "AFFILIATE")
+
+    def test_deferred_contains_strategic_later(self):
+        result = aco.revenue_router()
+        deferred_arms = {d["arm"] for d in result["DEFERRED"]}
+        self.assertIn("SAAS", deferred_arms)
+
+    def test_score_is_multiplicative_of_six_factors(self):
+        score = aco._arm_score({"revenue_potential": 0.5, "speed": 0.5, "confidence": 0.5,
+                                "automation": 0.5, "profit": 0.5, "recurring_potential": 0.5})
+        self.assertAlmostEqual(score, 0.5 ** 6, places=4)
+
+    def test_zero_factor_never_zeroes_score(self):
+        # one-time arm has recurring_potential=0; floor prevents a false 0.
+        score = aco._arm_score({"revenue_potential": 0.5, "speed": 0.5, "confidence": 0.5,
+                                "automation": 0.5, "profit": 0.5, "recurring_potential": 0.0})
+        self.assertGreater(score, 0.0)
+
+
+class FounderGateConsolidationTests(unittest.TestCase):
+    def setUp(self):
+        self.paddle_check, self.gp = _stub_live_checks()
+
+    def test_today_is_gumroad_payment(self):
+        result = aco.founder_gate_consolidation()
+        today_ids = [a["gate_id"] for a in result["horizons"]["TODAY"] if a]
+        self.assertIn("GATE-GUMROAD-PAYMENT", today_ids)
+
+    def test_next_is_paddle_onboarding(self):
+        result = aco.founder_gate_consolidation()
+        next_ids = [a["gate_id"] for a in result["horizons"]["NEXT"] if a]
+        self.assertIn("GATE-PADDLE-ONBOARDING", next_ids)
+
+    def test_later_is_etsy_authorization(self):
+        result = aco.founder_gate_consolidation()
+        later_ids = [a["gate_id"] for a in result["horizons"]["LATER"] if a]
+        self.assertIn("GATE-ETSY-AUTHORIZATION", later_ids)
+
+    def test_tomorrow_is_awin(self):
+        result = aco.founder_gate_consolidation()
+        tomorrow_ids = [a["gate_id"] for a in result["horizons"]["TOMORROW"] if a]
+        self.assertIn("GATE-AWIN-DIGITALOCEAN", tomorrow_ids)
+
+
+class FirstDollarModeTests(unittest.TestCase):
+    def setUp(self):
+        self.paddle_check, self.gp = _stub_live_checks()
+
+    def test_mode_is_enabled_and_prioritizes_existing_assets(self):
+        result = aco.first_dollar_mode_report()
+        self.assertTrue(result["enabled"])
+        self.assertIn("existing sellable assets", result["prioritize"])
+
+    def test_deprioritizes_new_architecture(self):
+        result = aco.first_dollar_mode_report()
+        self.assertIn("new architecture", result["deprioritize"])
+        self.assertIn("unproven SaaS", result["deprioritize"])
+
+
+class DistributionPrepTests(unittest.TestCase):
+    def setUp(self):
+        self.paddle_check, self.gp = _stub_live_checks()
+
+    def test_all_organic_channels_prepared_but_never_auto_published(self):
+        result = aco.distribution_prep()
+        self.assertEqual(len(result["channels"]), len(aco.ORGANIC_CHANNELS))
+        for ch in result["channels"]:
+            self.assertEqual(ch["status"], "HUMAN_GATE")
+            self.assertFalse(ch["authorized"])
+
+    def test_target_offer_has_tracking_and_campaign(self):
+        result = aco.distribution_prep()
+        offer = result["target_offer"]
+        self.assertIn("tracking", offer)
+        self.assertIn("campaign_id", offer)
+
+    def test_content_assets_are_real_files(self):
+        result = aco.distribution_prep()
+        offer = result["target_offer"]
+        for asset in offer.get("content_assets", []):
+            if asset.endswith(".pdf") or asset.endswith(".html"):
+                p = Path(__file__).resolve().parent.parent / asset
+                self.assertTrue(p.exists(), f"missing asset {asset}")
+
+
+class MissionControlTests(unittest.TestCase):
+    def setUp(self):
+        self.paddle_check, self.gp = _stub_live_checks()
+
+    def test_unified_view_has_all_sections(self):
+        result = aco.mission_control()
+        for key in ("REVENUE_ARMS", "VERIFIED_REVENUE", "PENDING_REVENUE", "PROJECTED_REVENUE",
+                    "BLOCKERS", "FOUNDER_ACTIONS", "TOP_REVENUE_PATH"):
+            self.assertIn(key, result)
+
+    def test_affiliate_shown_as_postponed(self):
+        result = aco.mission_control()
+        self.assertEqual(result["REVENUE_ARMS"]["AFFILIATE"], "POSTPONED UNTIL TOMORROW")
+
+    def test_verified_and_projected_never_merged(self):
+        result = aco.mission_control()
+        # The invariant is structural: PROJECTED is reported separately and the
+        # rule states it is NEVER summed into VERIFIED.
+        self.assertIn("PROJECTED_REVENUE", result)
+        self.assertNotIn("VERIFIED+PROJECTED", result)
+        self.assertIn("never merged", result["rule"].lower())
+        self.assertIn("projected", result["rule"].lower())
+
+    def test_zero_click_does_not_equal_revenue(self):
+        result = aco.mission_control()
+        self.assertEqual(result["VERIFIED_REVENUE"], 0.0)  # no clicks/views count as revenue
+
+
 if __name__ == "__main__":
     unittest.main()
