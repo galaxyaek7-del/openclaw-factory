@@ -1894,6 +1894,17 @@ def _record_public_page_view():
     return {"success": True, "recorded": True}
 
 
+def _validation_page_view():
+    """Internal Market Validation System (2026-08-14): records one real
+    page visit for the validation page via market_validation.record_visit()
+    (which reuses the factory's single existing page-view ledger from
+    affiliate_commerce.click_tracking -- no second tracking mechanism)."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    import market_validation
+    market_validation.record_visit(payload.get("source"))
+    return {"success": True, "recorded": True}
+
+
 def _validation_submit():
     """Internal Market Validation System (Founder Directive, 2026-08-14):
     records one real validation response into data/validation_responses.jsonl
@@ -3949,6 +3960,7 @@ _ENDPOINTS = {
     "account_routing_status": _account_routing_status,
     "validation_submit": _validation_submit,
     "validation_dashboard": _validation_dashboard,
+    "validation_page_view": _validation_page_view,
 }
 
 

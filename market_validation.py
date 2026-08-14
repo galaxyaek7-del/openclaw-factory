@@ -30,6 +30,8 @@ Field schema (one JSON object per line, real responses only):
     "q3_pain": free text (the real pain statement),
     "contact": optional str (email/contact), not exposed by aggregate(),
     "session_id": optional str (validation session/source identifier),
+    "sample_request": optional "yes"|"no"|"" (signal E -- real request for the sample memo),
+    "waitlist": optional "yes"|"no"|"" (real waitlist interest),
   }
 
 Integrity rules (enforced here):
@@ -57,6 +59,7 @@ from pathlib import Path
 
 _FACTORY_ROOT = Path(__file__).resolve().parent
 DEFAULT_RESPONSES_PATH = _FACTORY_ROOT / "data" / "validation_responses.jsonl"
+VALIDATION_PAGE_ID = "market-validation"
 
 
 def _default_path():
@@ -149,6 +152,13 @@ def validate_payload(payload):
     area = str(payload.get("practice_area") or "").strip()[:200]
     contact = str(payload.get("contact") or "").strip()[:200]
     session_id = str(payload.get("session_id") or "").strip()[:100]
+    sample_request = str(payload.get("sample_request") or "").strip().lower()
+    waitlist = str(payload.get("waitlist") or "").strip().lower()
+
+    if sample_request not in ("yes", "no", ""):
+        errors.append("sample_request must be one of yes/no/empty")
+    if waitlist not in ("yes", "no", ""):
+        errors.append("waitlist must be one of yes/no/empty")
 
     if errors:
         return None, errors
@@ -162,6 +172,8 @@ def validate_payload(payload):
         "practice_area": area,
         "contact": contact,
         "session_id": session_id,
+        "sample_request": sample_request,
+        "waitlist": waitlist,
     }
     return clean, []
 
@@ -194,7 +206,29 @@ def _pain_theme(counter, label):
     return {"label": label, "count": counter[label]}
 
 
-def aggregate(responses_path=None):
+def record_visit(source, page_views_path=None):
+    """Records one real page visit for the validation page. Reuses the
+    factory's one existing page-view ledger mechanism
+    (affiliate_commerce.click_tracking.record_page_view) -- never a second
+    visit-tracking system. The page_id is the shared VALIDATION_PAGE_ID so
+    aggregate() can count visits for the validation page alone. A
+    VALIDATION_PAGE_VIEWS_PATH env override (integration test) redirects
+    the ledger to a temp file; otherwise the real shared ledger is used."""
+    from affiliate_commerce import click_tracking
+    path = page_views_path or os.environ.get("VALIDATION_PAGE_VIEWS_PATH")
+    click_tracking.record_page_view(VALIDATION_PAGE_ID, referrer=source, ledger_path=path)
+
+
+def read_visits(page_views_path=None):
+    """Real visit count for the validation page only, read from the shared
+    page-view ledger (FACT: counted directly from stored rows)."""
+    from affiliate_commerce import click_tracking
+    path = page_views_path or os.environ.get("VALIDATION_PAGE_VIEWS_PATH")
+    views = click_tracking.read_page_views(path)
+    return [v for v in views if v.get("page_id") == VALIDATION_PAGE_ID]
+
+
+def aggregate(responses_path=None, page_views_path=None):
     """Pure reading + counting of the real ledger. Every number is real
     and derived from stored rows. Returns summary ONLY — contact info and
     verbatim q3 statements are never included."""
@@ -205,6 +239,8 @@ def aggregate(responses_path=None):
     q2 = Counter(r.get("q2_intent") or "no" for r in rows)
     high_freq = sum(1 for r in rows if r.get("q1_frequency") in ("weekly", "several_times_per_week"))
     pain_signal = sum(1 for r in rows if (r.get("q3_pain") or "").strip())
+    sample_requests = sum(1 for r in rows if r.get("sample_request") == "yes")
+    waitlist = sum(1 for r in rows if r.get("waitlist") == "yes")
 
     # Qualified = a real respondent with both a professional role and a
     # practice area (a genuine professional signal, not an anonymous
@@ -232,12 +268,15 @@ def aggregate(responses_path=None):
 
     return {
         "total_responses": total,
+        "visits": len(read_visits(page_views_path)),
         "qualified_responses": qualified,
         "pain_signals": pain_signal,
         "weekly_or_more_pain": high_freq,
         "q2_yes": q2.get("yes", 0),
         "q2_maybe": q2.get("maybe", 0),
         "q2_no": q2.get("no", 0),
+        "sample_requests": sample_requests,
+        "waitlist_signups": waitlist,
         "qualified_conversion_rate_pct": conversion_rate,
         "source_breakdown": dict(by_source),
         "top_pain_themes": top_themes,

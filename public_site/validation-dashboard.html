@@ -61,6 +61,7 @@
       var s = d.summary;
       var cards = document.getElementById('cards');
       var items = [
+        { n: s.visits, l: 'Visits', t: 'FACT' },
         { n: s.total_responses, l: 'Total responses', t: 'FACT' },
         { n: s.qualified_responses, l: 'Qualified', t: 'FACT' },
         { n: s.pain_signals, l: 'Pain signals', t: 'FACT' },
@@ -68,6 +69,8 @@
         { n: s.q2_yes, l: '$194 Yes', t: 'FACT' },
         { n: s.q2_maybe, l: '$194 Maybe', t: 'FACT' },
         { n: s.q2_no, l: '$194 No', t: 'FACT' },
+        { n: s.sample_requests, l: 'Sample requests', t: 'FACT' },
+        { n: s.waitlist_signups, l: 'Waitlist', t: 'FACT' },
         { n: s.qualified_conversion_rate_pct === null ? '—' : s.qualified_conversion_rate_pct + '%', l: 'Qualified conversion', t: 'FACT' },
       ];
       cards.innerHTML = items.map(function (i) {
@@ -78,7 +81,9 @@
       intent.innerHTML = '<tr><th>Metric</th><th>Value</th></tr>'
         + '<tr><td>q2 = Yes (willing to reserve $194)</td><td>' + s.q2_yes + '</td></tr>'
         + '<tr><td>q2 = Maybe (need sample first)</td><td>' + s.q2_maybe + '</td></tr>'
-        + '<tr><td>q2 = No</td><td>' + s.q2_no + '</td></tr>';
+        + '<tr><td>q2 = No</td><td>' + s.q2_no + '</td></tr>'
+        + '<tr><td>Sample memo requests (signal E)</td><td>' + s.sample_requests + '</td></tr>'
+        + '<tr><td>Waitlist signups</td><td>' + s.waitlist_signups + '</td></tr>';
 
       var sources = document.getElementById('sources');
       var rows = Object.keys(s.source_breakdown || {}).map(function (k) {

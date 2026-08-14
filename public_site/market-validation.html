@@ -94,6 +94,10 @@
         <input type="email" id="contact" name="contact" maxlength="200" placeholder="you@yourfirm.com">
         <div class="hint">Only so we can follow up with validation results or the sample memo if we build it.</div>
       </div>
+      <div class="field">
+        <label class="opt"><input type="checkbox" id="sample_request" name="sample_request" value="yes"> I would like a sample memo to judge the quality myself.</label>
+        <label class="opt"><input type="checkbox" id="waitlist" name="waitlist" value="yes"> Add me to the waitlist if you build this.</label>
+      </div>
     </div>
 
     <button type="submit" id="submitBtn">Submit my answers</button>
@@ -113,6 +117,15 @@
     var m = location.search.match(/[?&]source=([a-z]+)/i);
     return m ? m[1].toLowerCase() : 'direct';
   }
+
+  var visitSource = sourceFromUrl();
+  try {
+    fetch('/api/validation/page-view', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ source: visitSource }),
+    }).catch(function () {});
+  } catch (e) { /* a failed visit ping must never break the form */ }
 
   form.addEventListener('submit', function (ev) {
     ev.preventDefault();
@@ -139,6 +152,8 @@
         professional_role: form.elements.role.value.trim(),
         practice_area: form.elements.area.value.trim(),
         contact: form.elements.contact.value.trim(),
+        sample_request: form.elements.sample_request.checked ? 'yes' : '',
+        waitlist: form.elements.waitlist.checked ? 'yes' : '',
       }),
     })
     .then(function (r) { return r.json().then(function (d) { return { status: r.status, data: d }; }); })

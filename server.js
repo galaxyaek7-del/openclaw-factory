@@ -6413,6 +6413,14 @@ app.post('/api/validation/submit', async (req, res) => {
     if (!VALIDATION_SOURCES.has(source)) {
       return res.status(400).json({ success: false, error: 'source must be one of: linkedin, facebook, x, direct, other' });
     }
+    const sampleRequest = (body.sample_request || '').toString().toLowerCase();
+    if (sampleRequest && !['yes', 'no'].includes(sampleRequest)) {
+      return res.status(400).json({ success: false, error: 'sample_request must be yes, no, or empty' });
+    }
+    const waitlist = (body.waitlist || '').toString().toLowerCase();
+    if (waitlist && !['yes', 'no'].includes(waitlist)) {
+      return res.status(400).json({ success: false, error: 'waitlist must be yes, no, or empty' });
+    }
 
     const payload = {
       q1_frequency: body.q1_frequency,
@@ -6423,6 +6431,8 @@ app.post('/api/validation/submit', async (req, res) => {
       practice_area: typeof body.practice_area === 'string' ? body.practice_area.trim() : '',
       contact: typeof body.contact === 'string' ? body.contact.trim() : '',
       session_id: typeof body.session_id === 'string' ? body.session_id.trim() : '',
+      sample_request: sampleRequest,
+      waitlist,
     };
 
     const result = await runPythonService('validation_submit', [JSON.stringify(payload)]);
@@ -6461,6 +6471,23 @@ app.get('/validation-dashboard.html', requireMissionControlAuth, (req, res) => {
 // Public validation page — intentionally public (a respondent has no login).
 app.get('/market-validation.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public_site', 'market-validation.html'));
+});
+
+// Public visit tracking for the validation page — fires on page load,
+// records one real visit into the factory's single existing page-view
+// ledger via market_validation.record_visit (never a second system).
+app.post('/api/validation/page-view', async (req, res) => {
+  try {
+    const body = req.body || {};
+    const source = (body.source || 'direct').toString().toLowerCase();
+    if (!VALIDATION_SOURCES.has(source)) {
+      return res.status(400).json({ success: false, error: 'source must be one of: linkedin, facebook, x, direct, other' });
+    }
+    const result = await runPythonService('validation_page_view', [JSON.stringify({ source })]);
+    res.json({ success: true, recorded: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'validation page-view tracking temporarily unavailable' });
+  }
 });
 
 // Real, persisted customer intake -- no fabricated qualification/scoring

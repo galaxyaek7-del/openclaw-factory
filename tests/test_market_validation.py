@@ -99,6 +99,21 @@ class ValidationStorageTests(unittest.TestCase):
         self.assertEqual(row["contact"], "")
         self.assertEqual(row["session_id"], "")
 
+    def test_sample_request_and_waitlist_stored(self):
+        row = market_validation.record_response(_valid_payload(sample_request="yes", waitlist="yes"))
+        self.assertEqual(row["sample_request"], "yes")
+        self.assertEqual(row["waitlist"], "yes")
+
+    def test_rejects_invalid_sample_request(self):
+        with self.assertRaises(ValueError) as ctx:
+            market_validation.record_response(_valid_payload(sample_request="maybe"))
+        self.assertIn("sample_request", str(ctx.exception))
+
+    def test_rejects_invalid_waitlist(self):
+        with self.assertRaises(ValueError) as ctx:
+            market_validation.record_response(_valid_payload(waitlist="certainly"))
+        self.assertIn("waitlist", str(ctx.exception))
+
 
 class ValidationAggregationTests(unittest.TestCase):
 
@@ -109,9 +124,11 @@ class ValidationAggregationTests(unittest.TestCase):
         self._old_env = os.environ.get("VALIDATION_RESPONSES_PATH")
         os.environ["VALIDATION_RESPONSES_PATH"] = self._path
         market_validation.record_response(_valid_payload(
-            session_id="a", q1_frequency="several_times_per_week", q2_intent="yes", source="linkedin"))
+            session_id="a", q1_frequency="several_times_per_week", q2_intent="yes", source="linkedin",
+            sample_request="yes", waitlist="yes"))
         market_validation.record_response(_valid_payload(
-            session_id="b", q1_frequency="weekly", q2_intent="maybe", source="facebook"))
+            session_id="b", q1_frequency="weekly", q2_intent="maybe", source="facebook",
+            waitlist="yes"))
         market_validation.record_response(_valid_payload(
             session_id="c", q1_frequency="rarely", q2_intent="no", source="direct",
             professional_role="", practice_area=""))
@@ -144,6 +161,25 @@ class ValidationAggregationTests(unittest.TestCase):
     def test_aggregate_source_breakdown(self):
         s = market_validation.aggregate()
         self.assertEqual(s["source_breakdown"], {"linkedin": 1, "facebook": 1, "direct": 1})
+
+    def test_aggregate_sample_requests_and_waitlist(self):
+        s = market_validation.aggregate()
+        self.assertEqual(s["sample_requests"], 1)
+        self.assertEqual(s["waitlist_signups"], 2)
+
+    def test_aggregate_visits_counts_validation_page_only(self):
+        self._views_tmp = tempfile.NamedTemporaryFile(prefix="val_views_", suffix=".jsonl", delete=False)
+        self._views_tmp.close()
+        self._views_path = self._views_tmp.name
+        market_validation.record_visit("linkedin", page_views_path=self._views_path)
+        market_validation.record_visit("facebook", page_views_path=self._views_path)
+        s = market_validation.aggregate(page_views_path=self._views_path)
+        self.assertEqual(s["visits"], 2)
+        views = market_validation.read_visits(self._views_path)
+        self.assertEqual(len(views), 2)
+        self.assertTrue(all(v["page_id"] == market_validation.VALIDATION_PAGE_ID for v in views))
+        if os.path.exists(self._views_path):
+            os.remove(self._views_path)
 
     def test_aggregate_never_exposes_pii_or_raw_text(self):
         s = market_validation.aggregate()

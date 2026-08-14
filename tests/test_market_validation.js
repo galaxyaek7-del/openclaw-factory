@@ -19,6 +19,7 @@ const BASE_URL = `http://localhost:${PORT}`;
 const TEST_PASSWORD = 'validation-test-password';
 const REPO_ROOT = path.join(__dirname, '..');
 const TEMP_LEDGER = path.join(os.tmpdir(), `val_ledger_${process.pid}.jsonl`);
+const TEMP_VIEWS = path.join(os.tmpdir(), `val_views_${process.pid}.jsonl`);
 
 let serverProcess;
 
@@ -50,13 +51,22 @@ const VALID_PAYLOAD = {
   professional_role: 'Solo attorney',
   practice_area: 'Family law',
   contact: 'real.prospect@example.com',
+  sample_request: 'yes',
+  waitlist: 'yes',
 };
 
 test.before(async () => {
   if (fs.existsSync(TEMP_LEDGER)) fs.unlinkSync(TEMP_LEDGER);
+  if (fs.existsSync(TEMP_VIEWS)) fs.unlinkSync(TEMP_VIEWS);
   serverProcess = spawn(process.execPath, ['server.js'], {
     cwd: REPO_ROOT,
-    env: { ...process.env, PORT: String(PORT), MISSION_CONTROL_PASSWORD: TEST_PASSWORD, VALIDATION_RESPONSES_PATH: TEMP_LEDGER },
+    env: {
+      ...process.env,
+      PORT: String(PORT),
+      MISSION_CONTROL_PASSWORD: TEST_PASSWORD,
+      VALIDATION_RESPONSES_PATH: TEMP_LEDGER,
+      VALIDATION_PAGE_VIEWS_PATH: TEMP_VIEWS,
+    },
   });
   await waitForServer();
 });
@@ -64,6 +74,7 @@ test.before(async () => {
 test.after(() => {
   if (serverProcess) serverProcess.kill();
   if (fs.existsSync(TEMP_LEDGER)) fs.unlinkSync(TEMP_LEDGER);
+  if (fs.existsSync(TEMP_VIEWS)) fs.unlinkSync(TEMP_VIEWS);
 });
 
 test('public validation page is reachable unauthenticated and is a real responsive HTML page', async () => {
@@ -153,11 +164,47 @@ test('dashboard API is reachable with a real login and exposes only aggregates',
   assert.equal(s.total_responses, 1);
   assert.equal(s.qualified_responses, 1);
   assert.equal(s.q2_maybe, 1);
+  assert.equal(s.sample_requests, 1);
+  assert.equal(s.waitlist_signups, 1);
   assert.equal(s.source_breakdown.linkedin, 1);
   assert.ok(Array.isArray(s.top_pain_themes));
   const dumped = JSON.stringify(body);
   assert.ok(!dumped.includes('real.prospect@example.com'), 'aggregate must never expose a contact email');
   assert.ok(!dumped.includes('I lose hours'), 'aggregate must never expose verbatim q3 text');
+});
+
+test('public validation page-view records one real visit per source', async () => {
+  const res = await fetch(`${BASE_URL}/api/validation/page-view`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ source: 'facebook' }),
+  });
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.equal(body.recorded, true);
+  const views = fs.readFileSync(TEMP_VIEWS, 'utf8').split('\n').filter(Boolean);
+  assert.equal(views.length, 1);
+  const parsed = JSON.parse(views[0]);
+  assert.equal(parsed.page_id, 'market-validation');
+  assert.equal(parsed.referrer, 'facebook');
+});
+
+test('public validation page-view rejects an unknown source at the boundary', async () => {
+  const res = await fetch(`${BASE_URL}/api/validation/page-view`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ source: 'tiktok' }),
+  });
+  assert.equal(res.status, 400);
+});
+
+test('dashboard API reports visits as a real count', async () => {
+  const loginRes = await login();
+  assert.equal(loginRes.status, 200);
+  const cookie = loginRes.headers.get('set-cookie').split(';')[0];
+  const res = await fetch(`${BASE_URL}/api/validation/dashboard`, { headers: { Cookie: cookie } });
+  const body = await res.json();
+  assert.equal(body.summary.visits, 1);
 });
 
 test('dashboard page is reachable with a real login', async () => {
