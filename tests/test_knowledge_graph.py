@@ -30,6 +30,22 @@ def _write_jsonl(records):
     return path
 
 
+def _temp_path(suffix=".jsonl"):
+    fd, path = tempfile.mkstemp(suffix=suffix)
+    os.close(fd)
+    os.remove(path)
+    return path
+
+
+def _build_graph(*args, **kwargs):
+    """Hermetic build_graph: always isolate the Repositioning Engine ledger
+    (data/repositioning_attempts.jsonl) to an empty temp file so these tests
+    never depend on the real ledger's current contents (which now includes
+    the real legal-case lineage record)."""
+    kwargs.setdefault("repositioning_attempts_path", _temp_path())
+    return build.build_graph(*args, **kwargs)
+
+
 class TestBuildGraph(unittest.TestCase):
     def setUp(self):
         self._paths = []
@@ -52,7 +68,7 @@ class TestBuildGraph(unittest.TestCase):
         d, a, l, c, e = self._paths_for(decisions=[
             {"niche": "test niche", "decision_id": "dec1", "status": "ACCEPTED", "ladder": "kdp_books", "reasoning": ["ok"]},
         ])
-        graph = build.build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
+        graph = _build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
         node_ids = {n["id"] for n in graph["nodes"]}
         self.assertIn("niche:test niche", node_ids)
         self.assertIn("decision:dec1", node_ids)
@@ -64,7 +80,7 @@ class TestBuildGraph(unittest.TestCase):
             decisions=[{"niche": "test niche", "decision_id": "dec1", "status": "ACCEPTED"}],
             ledger=[{"event_type": "publish_attempt", "product_source_id": "PROD-dec1", "product_title": "unrelated title", "platform": "paddle"}],
         )
-        graph = build.build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
+        graph = _build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
         produced_edges = [e for e in graph["edges"] if e["relation"] == "produced"]
         self.assertEqual(len(produced_edges), 1)
         self.assertEqual(produced_edges[0]["edge_confidence"], "exact")
@@ -75,7 +91,7 @@ class TestBuildGraph(unittest.TestCase):
             decisions=[{"niche": "test niche", "decision_id": "dec1", "status": "ACCEPTED"}],
             ledger=[{"event_type": "publish_attempt", "product_source_id": "legacy-id-1", "product_title": "test niche", "platform": "gumroad"}],
         )
-        graph = build.build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
+        graph = _build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
         produced_edges = [e for e in graph["edges"] if e["relation"] == "produced"]
         self.assertEqual(len(produced_edges), 1)
         self.assertEqual(produced_edges[0]["edge_confidence"], "approximate")
@@ -85,7 +101,7 @@ class TestBuildGraph(unittest.TestCase):
             decisions=[{"niche": "test niche", "decision_id": "dec1", "status": "ACCEPTED"}],
             ledger=[{"event_type": "publish_attempt", "product_source_id": "unrelated-id", "product_title": "totally different", "platform": "paddle"}],
         )
-        graph = build.build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
+        graph = _build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
         produced_edges = [e for e in graph["edges"] if e["relation"] == "produced"]
         self.assertEqual(len(produced_edges), 0)
 
@@ -93,7 +109,7 @@ class TestBuildGraph(unittest.TestCase):
         d, a, l, c, e = self._paths_for(
             ledger=[{"event_type": "publish_attempt", "product_source_id": "x1", "product_title": "t", "platform": "paddle"}],
         )
-        graph = build.build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
+        graph = _build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
         node_ids = {n["id"] for n in graph["nodes"]}
         self.assertIn("channel:paddle", node_ids)
         published_via = [e for e in graph["edges"] if e["relation"] == "published_via"]
@@ -104,7 +120,7 @@ class TestBuildGraph(unittest.TestCase):
             decisions=[{"niche": "test niche", "decision_id": "dec1", "status": "ACCEPTED"}],
             ai_costs=[{"model": "llama-3.1-8b-instant", "context": {"niche": "test niche"}, "cost_usd": 0.01}],
         )
-        graph = build.build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
+        graph = _build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
         cost_edges = [e for e in graph["edges"] if e["relation"] == "cost_incurred_from"]
         self.assertEqual(len(cost_edges), 1)
         self.assertEqual(cost_edges[0]["edge_confidence"], "approximate")
@@ -113,7 +129,7 @@ class TestBuildGraph(unittest.TestCase):
         d, a, l, c, e = self._paths_for(
             ai_costs=[{"model": "llama-3.1-8b-instant", "context": {"niche": "never seen anywhere"}, "cost_usd": 0.01}],
         )
-        graph = build.build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
+        graph = _build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
         cost_edges = [e for e in graph["edges"] if e["relation"] == "cost_incurred_from"]
         self.assertEqual(len(cost_edges), 0)
 
@@ -129,13 +145,13 @@ class TestBuildGraph(unittest.TestCase):
             ],
             decisions=[{"niche": "test niche", "decision_id": "dec1", "status": "ACCEPTED"}],
         )
-        graph = build.build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
+        graph = _build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
         cost_edges = [e for e in graph["edges"] if e["relation"] == "cost_incurred_from"]
         self.assertEqual(len(cost_edges), 1)  # the malformed entry contributed nothing, but didn't crash the good one either
 
     def test_empty_everything_never_throws(self):
         d, a, l, c, e = self._paths_for()
-        graph = build.build_graph(
+        graph = _build_graph(
             decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e,
             lessons_dir="C:/definitely/not/a/real/lessons/dir",
             governance_dir="C:/definitely/not/a/real/governance/dir",
@@ -161,7 +177,7 @@ class TestBuildGraph(unittest.TestCase):
                 "payload": {"commercial_event": {"platform": "gumroad", "selling_price": 29.0, "season": "summer"}},
             },
         ])
-        graph = build.build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
+        graph = _build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
         commercial_nodes = [n for n in graph["nodes"] if n["type"] == "CommercialEvent"]
         self.assertEqual(len(commercial_nodes), 1)
         self.assertEqual(commercial_nodes[0]["platform"], "gumroad")
@@ -175,14 +191,14 @@ class TestBuildGraph(unittest.TestCase):
         d, a, l, c, e = self._paths_for(evidence=[
             {"niche": "test niche", "event_type": "closed_sale", "timestamp": "2026-07-23T00:00:00+00:00", "payload": {}},
         ])
-        graph = build.build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
+        graph = _build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
         self.assertEqual([n for n in graph["nodes"] if n["type"] == "CommercialEvent"], [])
 
     def test_non_closed_sale_evidence_events_skipped(self):
         d, a, l, c, e = self._paths_for(evidence=[
             {"niche": "test niche", "event_type": "demo_request", "timestamp": "2026-07-23T00:00:00+00:00", "payload": {}},
         ])
-        graph = build.build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
+        graph = _build_graph(decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e)
         self.assertEqual([n for n in graph["nodes"] if n["type"] == "CommercialEvent"], [])
 
 
@@ -300,7 +316,7 @@ class TestLessonAndAdrNodes(unittest.TestCase):
         self._write("lessons/A_Lesson.md", "# A Real Lesson\n")
         self._write("governance/ADR-001-first.md", "# ADR-001 — First\n")
         d, a, l, c, e = TestBuildGraph._paths_for(self)
-        graph = build.build_graph(
+        graph = _build_graph(
             decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e,
             lessons_dir=lessons_dir, governance_dir=gov_dir,
             evolution_queue_state_path="C:/definitely/not/a/real/evolution_queue_state.json",
@@ -345,7 +361,7 @@ class TestDecisionOutcomeNodes(unittest.TestCase):
                        "recorded_at": "2026-07-29T00:00:00Z", "matched": True,
                        "match_method": "niche_substring_in_product_text", "raw_sale_event": {}}],
         )
-        graph = build.build_graph(
+        graph = _build_graph(
             decisions_path=d, analyses_path=empty, ledger_path=empty, ai_cost_log_path=empty, evidence_path=empty,
             lessons_dir="C:/definitely/not/a/real/lessons/dir",
             governance_dir="C:/definitely/not/a/real/governance/dir",
@@ -364,7 +380,7 @@ class TestDecisionOutcomeNodes(unittest.TestCase):
                        "recorded_at": "2026-07-29T00:00:00Z", "matched": False,
                        "match_method": "unmatched", "raw_sale_event": {}}],
         )
-        graph = build.build_graph(
+        graph = _build_graph(
             decisions_path=d, analyses_path=empty, ledger_path=empty, ai_cost_log_path=empty, evidence_path=empty,
             lessons_dir="C:/definitely/not/a/real/lessons/dir",
             governance_dir="C:/definitely/not/a/real/governance/dir",
@@ -380,7 +396,7 @@ class TestDecisionOutcomeNodes(unittest.TestCase):
             outcomes=[{"outcome_id": "out3", "decision_id": "dec_not_present", "niche": "x",
                        "recorded_at": "t", "matched": True, "match_method": "x", "raw_sale_event": {}}],
         )
-        graph = build.build_graph(
+        graph = _build_graph(
             decisions_path=d, analyses_path=empty, ledger_path=empty, ai_cost_log_path=empty, evidence_path=empty,
             lessons_dir="C:/definitely/not/a/real/lessons/dir",
             governance_dir="C:/definitely/not/a/real/governance/dir",
@@ -443,7 +459,7 @@ class TestProposalNodes(unittest.TestCase):
             "test_proposal_1": {"stage": "PROPOSED", "created_at": "2026-07-29T00:00:00+00:00", "proposal": {"id": "test_proposal_1", "tool": "x"}},
         })
         d, a, l, c, e = TestBuildGraph._paths_for(self)
-        graph = build.build_graph(
+        graph = _build_graph(
             decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e,
             lessons_dir="C:/definitely/not/a/real/lessons/dir",
             governance_dir="C:/definitely/not/a/real/governance/dir",
@@ -564,7 +580,7 @@ class TestCompetitorNodes(unittest.TestCase):
         db_path = os.path.join(tempfile.mkdtemp(), "competitor_database.json")
         self._write_db(db_path, {"test niche": {"niche": "test niche", "competitors": [{"name": "Acme Corp"}]}})
         d, a, l, c, e = _write_jsonl([]), _write_jsonl([]), _write_jsonl([]), _write_jsonl([]), _write_jsonl([])
-        graph = build.build_graph(
+        graph = _build_graph(
             decisions_path=d, analyses_path=a, ledger_path=l, ai_cost_log_path=c, evidence_path=e,
             lessons_dir="C:/definitely/not/a/real/lessons/dir",
             governance_dir="C:/definitely/not/a/real/governance/dir",
