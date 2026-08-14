@@ -40,6 +40,14 @@ a queryable Proposal node.
 
   - data/evolution_queue_state.json (Proposal nodes)
 
+Golden Hunter Repositioning Engine (2026-08-14, founder green-light) adds
+one more real source, closing the "rejected opportunities are dead ends"
+gap the founder's strategic directive named: every real repositioning
+attempt of a rejected opportunity becomes a queryable RepositionAttempt
+node, mechanically linked back to its original Decision node.
+
+  - data/repositioning_attempts.jsonl (RepositionAttempt nodes)
+
 Same mechanical, non-semantic discipline as Lesson/ADR — no edge from a
 Proposal to the Niche/Decision/module it's actually about; that would
 again need real similarity matching this factory doesn't have.
@@ -85,6 +93,7 @@ AFFILIATE_CLICKS_FILE = os.path.join(FACTORY_DIR, 'data', 'affiliate_clicks.json
 AFFILIATE_SIMULATION_EVENTS_FILE = os.path.join(FACTORY_DIR, 'data', 'affiliate_simulation_events.jsonl')
 COUNCIL_RECOMMENDATIONS_FILE = os.path.join(FACTORY_DIR, 'data', 'council_recommendations.jsonl')
 COMPETITOR_DATABASE_FILE = os.path.join(FACTORY_DIR, 'data', 'competitor_database.json')
+REPOSITIONING_ATTEMPTS_FILE = os.path.join(FACTORY_DIR, 'data', 'repositioning_attempts.jsonl')
 _ADR_FILENAME_RE = re.compile(r'^(ADR-\d+)-')
 
 
@@ -343,11 +352,51 @@ def _council_recommendation_nodes(council_recommendations_path=None):
     return nodes
 
 
+def _repositioning_attempt_nodes(repositioning_attempts_path=None, decision_node_ids=None):
+    """Real RepositionAttempt nodes (Golden Hunter Repositioning Engine,
+    2026-08-14) -- every real record in data/repositioning_attempts.jsonl
+    (golden_hunter/repositioning.py, founder green-light). Each node is
+    linked back to its original Decision node with an EXACT
+    decision_id match ONLY when that decision node already exists in this
+    build (`decision_node_ids`, the real ids of the Decision nodes added
+    from decisions.jsonl) -- never a fabricated/approximate edge to a
+    decision that isn't here. The proposed positioning becomes a Niche
+    node ONLY if it was also really evaluated in decisions.jsonl (same
+    discipline as _competitor_nodes()); otherwise it stays standalone,
+    honestly."""
+    nodes, edges = [], []
+    records = _read_jsonl(repositioning_attempts_path or REPOSITIONING_ATTEMPTS_FILE)
+    decision_node_ids = decision_node_ids or set()
+    for r in records:
+        attempt_id = r.get("attempt_id")
+        if not attempt_id:
+            continue
+        node_id = f"reposition_attempt:{attempt_id}"
+        nodes.append(_node(
+            node_id, "RepositionAttempt",
+            label=r.get("proposed_positioning") or attempt_id,
+            original_niche=r.get("original_niche"),
+            proposed_positioning=r.get("proposed_positioning"),
+            original_score=r.get("original_score"),
+            resulting_score=r.get("resulting_score"),
+            final_outcome=r.get("final_outcome"),
+            changed_pricing=r.get("changed_pricing"),
+            ladder=r.get("ladder"),
+            pattern=r.get("pattern"),
+            recorded_at=r.get("recorded_at"),
+        ))
+        original_decision_id = r.get("original_decision_id")
+        if original_decision_id and f"decision:{original_decision_id}" in decision_node_ids:
+            edges.append(_edge(node_id, f"decision:{original_decision_id}", "repositions", confidence="exact"))
+    return nodes, edges
+
+
 def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_cost_log_path=None,
                  evidence_path=None, lessons_dir=None, governance_dir=None, evolution_queue_state_path=None,
                  decision_outcomes_path=None, executive_directives_path=None,
                  affiliate_clicks_path=None, affiliate_simulation_events_path=None,
-                 council_recommendations_path=None, competitor_database_path=None):
+                 council_recommendations_path=None, competitor_database_path=None,
+                 repositioning_attempts_path=None):
     decisions = _read_jsonl(decisions_path or DECISIONS_FILE)
     analyses = _read_jsonl(analyses_path or MARKET_INTELLIGENCE_ANALYSES_FILE)
     ledger = _read_jsonl(ledger_path or SALES_LEDGER_FILE)
@@ -519,6 +568,19 @@ def build_graph(decisions_path=None, analyses_path=None, ledger_path=None, ai_co
     for node in competitor_nodes:
         _add_node(node)
     edges.extend(competitor_edges)
+
+    # RepositionAttempt nodes (real, from data/repositioning_attempts.jsonl
+    # -- Golden Hunter Repositioning Engine, 2026-08-14). Edges back to the
+    # original Decision node are EXACT decision_id matches only -- the ids
+    # of the Decision nodes this build actually added are passed in, so an
+    # attempt whose original decision isn't here contributes a standalone
+    # node, never a fabricated edge.
+    existing_decision_node_ids = {n["id"] for n in nodes.values() if n["type"] == "Decision"}
+    reposition_nodes, reposition_edges = _repositioning_attempt_nodes(
+        repositioning_attempts_path, existing_decision_node_ids)
+    for node in reposition_nodes:
+        _add_node(node)
+    edges.extend(reposition_edges)
 
     graph = {
         "schema_note": "DERIVED, DISPOSABLE snapshot -- rebuild any time via knowledge_graph.build.build_graph(). Never a source of truth; the real data lives in the JSONL files named in this module's docstring.",
