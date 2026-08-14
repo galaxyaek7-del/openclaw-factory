@@ -189,10 +189,12 @@ class TestAssessLifecycleStatus(unittest.TestCase):
     def test_rejected_with_low_coverage_but_no_real_acquirable_unknown_is_still_a_real_reject(self):
         """Honest final call: if the only Unknowns are ones this factory
         has no real automated way to research (commercial value,
-        continuous improvement, proof of payment), deferring forever
-        would never resolve anything — a real reject, clearly low-
-        confidence, is the honest outcome."""
-        result = _base_ladder_result(accepted=False, payment_evidence=[], ai_leverage={"score": 20, "level": "منخفضة", "note": "real negative"})
+        continuous improvement), deferring forever would never resolve
+        anything — a real reject, clearly low-confidence, is the honest
+        outcome. (proof_of_payment is no longer in this set: it gained a
+        REAL connector in payment_evidence_connector.py — an Unknown
+        there now legitimately triggers RESEARCH_REQUIRED.)"""
+        result = _base_ladder_result(accepted=False, ai_leverage={"score": 20, "level": "منخفضة", "note": "real negative"})
         report = ec.assess("test niche", result)
         self.assertEqual(report["lifecycle_status"], "REJECTED")
 
@@ -245,11 +247,35 @@ class TestAcquireMissingEvidence(unittest.TestCase):
         self.assertEqual(acq["difficult_to_copy"]["connector"], "competitor_discovery")
 
     def test_non_acquirable_criteria_are_never_attempted_and_carry_a_real_note(self):
-        result = _base_ladder_result(payment_evidence=[])
+        """Default fixture: the only Unknowns are the 2 permanently-
+        unacquirable criteria (high_commercial_value, continuous_
+        improvement_potential, ADR-126) -- proof_of_payment is VERIFIED_TRUE
+        so its new REAL connector (payment_evidence_connector.py) never
+        fires a live search here."""
+        result = _base_ladder_result()
         c = ec.classify_criteria(result)
         acq = ec.acquire_missing_evidence("test niche", c)
-        self.assertFalse(acq["proof_of_payment"]["attempted"])
-        self.assertIn("مصادر مُعلَنة", acq["proof_of_payment"]["note"])
+        # high_commercial_value still has no real connector (evidence_network
+        # upgrade made proof_of_payment acquirable, not this one) -- must be
+        # never attempted and still carry a real declared-source note.
+        self.assertFalse(acq["high_commercial_value"]["attempted"])
+        self.assertIn("note", acq["high_commercial_value"])
+
+    def test_proof_of_payment_is_now_a_real_acquirable_criterion(self):
+        """Evidence Network upgrade: proof_of_payment gained a REAL
+        connector (payment_evidence_connector.py) -- acquire_missing_
+        evidence() now genuinely attempts it instead of declaring it
+        unacquirable."""
+        result = _base_ladder_result(payment_evidence=[])
+        c = ec.classify_criteria(result)
+        self.assertIn("proof_of_payment", ec.REAL_ACQUIRABLE_CRITERIA)
+        with patch("payment_evidence_connector.collect_payment_evidence",
+                   return_value={"candidates_found": 1, "recorded": [{"source_url": "https://x.com", "quote": "$50/hr"}]}) as mock_pec:
+            acq = ec.acquire_missing_evidence("test niche", c)
+            mock_pec.assert_called_once()
+        self.assertTrue(acq["proof_of_payment"]["attempted"])
+        self.assertTrue(acq["proof_of_payment"]["acquired"])
+        self.assertEqual(acq["proof_of_payment"]["connector"], "payment_evidence")
 
     def test_real_acquisition_against_an_isolated_competitor_database_not_the_real_shared_one(self):
         """Proves the real wiring end-to-end (no mocking) against an
@@ -271,12 +297,17 @@ class TestAcquireMissingEvidence(unittest.TestCase):
     def test_registry_declares_a_source_for_every_criterion_even_unbuilt_ones(self):
         """Founder rule 1 (ADR-128): every UNKNOWN criterion must declare
         which evidence source could resolve it, even ones this factory
-        cannot query yet."""
-        result = _base_ladder_result(payment_evidence=[])
+        cannot query yet. Uses the default fixture so the only Unknowns
+        are the permanently-unbuilt ones (high_commercial_value,
+        continuous_improvement_potential) -- proof_of_payment is
+        VERIFIED_TRUE here, so its REAL connector never fires a live
+        search in this test."""
+        result = _base_ladder_result()
         c = ec.classify_criteria(result)
         acq = ec.acquire_missing_evidence("test niche", c)
-        self.assertIn("note", acq["proof_of_payment"])
-        self.assertTrue(len(acq["proof_of_payment"]["note"]) > 0)
+        self.assertIn("note", acq["high_commercial_value"])
+        self.assertTrue(len(acq["high_commercial_value"]["note"]) > 0)
+        self.assertFalse(acq["high_commercial_value"]["attempted"])
 
 
 class TestRecordLadderDecisionWithEvidenceReport(unittest.TestCase):

@@ -67,11 +67,14 @@ class TestConnectorsForCriterion(unittest.TestCase):
         connectors = en.connectors_for_criterion("pain_severity")
         self.assertTrue(any(c.status == en.REAL for c in connectors))
 
-    def test_proof_of_payment_has_only_discovery_connectors(self):
-        """Honest: no real automated source exists for this yet."""
+    def test_proof_of_payment_now_has_a_real_connector(self):
+        """Evidence Network upgrade (payment_evidence_connector.py): the
+        single highest-weighted gate (proof_of_payment, ADR-121) went from
+        DISCOVERY-only to a real, callable connector reusing the same three
+        free keyless sources as customer_pain."""
         connectors = en.connectors_for_criterion("proof_of_payment")
         self.assertTrue(len(connectors) > 0)
-        self.assertFalse(any(c.status == en.REAL for c in connectors))
+        self.assertTrue(any(c.status == en.REAL for c in connectors))
 
     def test_real_connectors_sort_before_discovery_ones(self):
         connectors = en.connectors_for_criterion("proof_of_payment")
@@ -79,7 +82,6 @@ class TestConnectorsForCriterion(unittest.TestCase):
         self.assertEqual(statuses, sorted(statuses, key=lambda s: s != en.REAL))
 
     def test_real_connector_for_criterion_returns_none_when_only_discovery_exists(self):
-        self.assertIsNone(en.real_connector_for_criterion("proof_of_payment"))
         self.assertIsNone(en.real_connector_for_criterion("high_commercial_value"))
 
     def test_real_connector_for_criterion_returns_the_real_one(self):
@@ -126,7 +128,11 @@ class TestNetworkStatusReport(unittest.TestCase):
     def test_declared_but_not_real_excludes_criteria_that_already_have_real_coverage(self):
         report = en.network_status_report()
         self.assertNotIn("difficult_to_copy", report["criteria_declared_but_not_yet_real"])
-        self.assertIn("proof_of_payment", report["criteria_declared_but_not_yet_real"])
+        self.assertNotIn("proof_of_payment", report["criteria_declared_but_not_yet_real"])
+
+    def test_proof_of_payment_now_in_real_automated_coverage(self):
+        report = en.network_status_report()
+        self.assertIn("proof_of_payment", report["criteria_with_real_automated_coverage"])
 
 
 if __name__ == "__main__":

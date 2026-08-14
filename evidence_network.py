@@ -20,6 +20,7 @@
 
 import competitor_discovery
 import market_intelligence_engine
+import payment_evidence_connector
 
 REAL = "REAL"
 DISCOVERY = "DISCOVERY"
@@ -99,6 +100,21 @@ CUSTOMER_PAIN_CONNECTOR = EvidenceConnector(
 # already established for AI providers this factory hasn't actually
 # called yet. ──
 
+PAYMENT_EVIDENCE_CONNECTOR = EvidenceConnector(
+    name="payment_evidence",
+    source="GitHub Issues Search API + Hacker News Algolia API + Stack Overflow API (real, keyless, public) — the same three real sources customer_pain already trusts, searching the niche's real problem query and extracting literal, currency-marked quotes with real https URLs",
+    criteria_resolved=("proof_of_payment",),
+    status=REAL,
+    reliability="real public APIs, no authentication required; extraction is strictly literal (verbatim quote containing a real currency marker) — a result with no money marker is skipped, never recorded",
+    refresh_frequency=f"cached {payment_evidence_connector.MAX_AGE_DAYS_DEFAULT} real days — a live refresh only on a genuine cache miss or force=True",
+    cost="free — no paid API key required",
+    latency="real cache hit: well under 100ms; real cache miss (live search): several real seconds (3 external HTTP calls)",
+    confidence_contribution="resolves proof_of_payment from UNKNOWN toward VERIFIED_TRUE by recording real, cited spend evidence through market_evidence.record_evidence() (which enforces source_url + quote, refusing anything uncited)",
+    fetch=lambda niche, **kw: payment_evidence_connector.collect_payment_evidence(
+        niche, **{k: v for k, v in kw.items() if k in ("max_results", "force", "cache_file", "evidence_path", "record")}
+    ),
+)
+
 JOB_POSTING_CONNECTOR = EvidenceConnector(
     name="job_posting_scanner",
     source="Indeed / LinkedIn job postings — no real integration built (BLOCKERS.md candidate)",
@@ -174,6 +190,7 @@ PRODUCT_ITERATION_CONNECTOR = EvidenceConnector(
 EVIDENCE_CONNECTOR_REGISTRY = (
     COMPETITOR_DISCOVERY_CONNECTOR,
     CUSTOMER_PAIN_CONNECTOR,
+    PAYMENT_EVIDENCE_CONNECTOR,
     JOB_POSTING_CONNECTOR,
     PRICING_PAGE_CONNECTOR,
     MARKETPLACE_LISTING_CONNECTOR,
