@@ -70,6 +70,22 @@ PROGRAM_PROBLEM_SPACE = {
         "workflow automation", "n8n", "ai agent", "automation", "no-code",
         "self-host", "workflow engine",
     ],
+    "CO-aweber-affiliate": [
+        "email marketing", "newsletter", "autoresponder", "email automation",
+        "email campaign", "broadcast", "email list",
+    ],
+    "CO-digitalocean-affiliate": [
+        "cloud infrastructure", "cloud hosting", "droplet", "kubernetes",
+        "app platform", "devops hosting", "vps", "deploy", "scalable hosting",
+    ],
+    "CO-brevo-affiliate": [
+        "email marketing", "crm", "transactional email", "smtp",
+        "email campaign", "marketing automation", "contact management",
+    ],
+    "CO-siteground-affiliate": [
+        "managed hosting", "wordpress hosting", "website hosting",
+        "site speed", "web hosting", "migration",
+    ],
     "CO-etsy-affiliate": [
         "handmade", "physical product", "printable", "craft", "digital download",
         "personalized", "gift",

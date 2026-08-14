@@ -73,6 +73,19 @@ class TestNicheMatching(unittest.TestCase):
             self.fail("unverified program leaked into matched_programs")
         self.assertIn(d.route, ("unknown", "affiliate"))
 
+    def test_new_verified_programs_route_by_problem_space(self):
+        # The 2026-08-14 discovery added AWeber/Brevo/DigitalOcean/SiteGround
+        # to the real portfolio; their problem-space keywords must route.
+        email = route_niche("email marketing newsletter for small creators", record=False)
+        self.assertIn("CO-aweber-affiliate", email.matched_programs)
+        self.assertIn("CO-brevo-affiliate", email.matched_programs)
+
+        cloud = route_niche("self-hosted cloud infrastructure for developers", record=False)
+        self.assertIn("CO-digitalocean-affiliate", cloud.matched_programs)
+
+        hosting = route_niche("managed wordpress hosting for agencies", record=False)
+        self.assertIn("CO-siteground-affiliate", hosting.matched_programs)
+
 
 class TestRouteMany(unittest.TestCase):
     def test_batch_routing_preserves_order_and_counts(self):
