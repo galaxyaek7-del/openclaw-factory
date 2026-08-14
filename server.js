@@ -6372,6 +6372,97 @@ app.post('/api/page-view', async (req, res) => {
   }
 });
 
+// ── INTERNAL MARKET VALIDATION SYSTEM (Founder Directive, 2026-08-14) ──
+// Purpose: test real market demand for the Legal Case Research opportunity
+// before any product is built. NOT an MVP, NOT a launch, NOT payments.
+//
+// Two distinct surfaces:
+//   1. Public validation page (market-validation.html) + a public, tightly
+//      validated POST that records exactly ONE response per call. Public
+//      because a prospective respondent has no login — the same reasoning
+//      the /api/consultations intake already uses. It stores real rows only
+//      and returns NO stored data (no contact info, no verbatim pain text).
+//   2. Internal dashboard (validation-dashboard.html + GET
+//      /api/validation/dashboard) — gated by the EXISTING Mission Control
+//      auth (requireMissionControlAuth), exactly like every other internal
+//      panel. Never exposes submitted personal information publicly.
+const VALIDATION_SOURCES = new Set(['linkedin', 'facebook', 'x', 'direct', 'other']);
+const VALIDATION_Q1 = new Set(['rarely', 'monthly', 'weekly', 'several_times_per_week']);
+const VALIDATION_Q2 = new Set(['yes', 'maybe', 'no']);
+
+app.post('/api/validation/submit', async (req, res) => {
+  try {
+    const body = req.body || {};
+    // Boundary validation, before anything reaches the Python subprocess —
+    // the same lesson /api/page-view learned (a wrong-typed truthy value
+    // crashing the real `.strip()` call downstream). q3 is the one free
+    // text field; cap it hard to keep a single POST cheap and honest.
+    if (typeof body.q1_frequency !== 'string' || !VALIDATION_Q1.has(body.q1_frequency)) {
+      return res.status(400).json({ success: false, error: 'q1_frequency must be one of: rarely, monthly, weekly, several_times_per_week' });
+    }
+    if (typeof body.q2_intent !== 'string' || !VALIDATION_Q2.has(body.q2_intent)) {
+      return res.status(400).json({ success: false, error: 'q2_intent must be one of: yes, maybe, no' });
+    }
+    if (typeof body.q3_pain !== 'string' || !body.q3_pain.trim()) {
+      return res.status(400).json({ success: false, error: 'q3_pain must be a non-empty statement' });
+    }
+    if (body.q3_pain.length > 2000) {
+      return res.status(400).json({ success: false, error: 'q3_pain too long (max 2000 chars)' });
+    }
+    const source = (body.source || 'other').toString().toLowerCase();
+    if (!VALIDATION_SOURCES.has(source)) {
+      return res.status(400).json({ success: false, error: 'source must be one of: linkedin, facebook, x, direct, other' });
+    }
+
+    const payload = {
+      q1_frequency: body.q1_frequency,
+      q2_intent: body.q2_intent,
+      q3_pain: body.q3_pain.trim(),
+      source,
+      professional_role: typeof body.professional_role === 'string' ? body.professional_role.trim() : '',
+      practice_area: typeof body.practice_area === 'string' ? body.practice_area.trim() : '',
+      contact: typeof body.contact === 'string' ? body.contact.trim() : '',
+      session_id: typeof body.session_id === 'string' ? body.session_id.trim() : '',
+    };
+
+    const result = await runPythonService('validation_submit', [JSON.stringify(payload)]);
+    if (result.success === false) {
+      return res.status(400).json({ success: false, error: result.error });
+    }
+    res.json({ success: true, recorded: true });
+  } catch (err) {
+    // The Python layer prefixes its validation errors with "validation: "
+    // as a stable contract — a duplicate or malformed-response rejection is
+    // the client's fault (400), not a server fault (500). Everything else
+    // (parse failure, subprocess failure, timeout) is a genuine server error.
+    if (err && typeof err.message === 'string' && err.message.startsWith('validation: ')) {
+      return res.status(400).json({ success: false, error: err.message.replace(/^validation: /, '') });
+    }
+    res.status(500).json({ success: false, error: 'validation submission temporarily unavailable' });
+  }
+});
+
+// Internal dashboard API — auth-gated. Returns aggregated counts only;
+// never contact info, never verbatim q3 text.
+app.get('/api/validation/dashboard', requireMissionControlAuth, async (req, res) => {
+  try {
+    const result = await runPythonService('validation_dashboard');
+    res.json({ success: true, summary: result.summary });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Internal dashboard page — auth-gated by the existing Mission Control login.
+app.get('/validation-dashboard.html', requireMissionControlAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public_site', 'validation-dashboard.html'));
+});
+
+// Public validation page — intentionally public (a respondent has no login).
+app.get('/market-validation.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public_site', 'market-validation.html'));
+});
+
 // Real, persisted customer intake -- no fabricated qualification/scoring
 // pipeline behind this yet (that's genuinely new logic, Phase 2, not
 // built this round). Every real submission is appended, never

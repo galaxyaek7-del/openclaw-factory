@@ -1894,6 +1894,34 @@ def _record_public_page_view():
     return {"success": True, "recorded": True}
 
 
+def _validation_submit():
+    """Internal Market Validation System (Founder Directive, 2026-08-14):
+    records one real validation response into data/validation_responses.jsonl
+    via market_validation.record_response() (same JSONL data-layer pattern
+    as market_evidence.py). Reads the full payload from sys.argv[2].
+    Validation errors are honest 400-style errors, never silently dropped."""
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    import market_validation
+    try:
+        row = market_validation.record_response(payload)
+        return {"success": True, "recorded": True, "timestamp": row.get("timestamp")}
+    except ValueError as e:
+        # The "validation: " prefix is a stable contract with server.js:
+        # its route branches on it to return a real 400 (client error)
+        # instead of letting runPythonService's generic success===false
+        # rejection surface as an indistinguishable 500.
+        return {"success": False, "error": f"validation: {e}"}
+
+
+def _validation_dashboard():
+    """Internal Market Validation System (2026-08-14): the internal
+    dashboard metrics — pure reading + counting of the real response
+    ledger via market_validation.aggregate(). Never returns contact info
+    or verbatim q3 text; every number is a real count of stored rows."""
+    import market_validation
+    return {"summary": market_validation.aggregate()}
+
+
 def _lead_discovery_status():
     """Lead Discovery (Phase 37A, ADR-230; extended Phase 37C, ADR-232,
     2026-08-08): real, read-only summary of already-persisted
@@ -3919,6 +3947,8 @@ _ENDPOINTS = {
     "record_public_page_view": _record_public_page_view,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
     "account_routing_status": _account_routing_status,
+    "validation_submit": _validation_submit,
+    "validation_dashboard": _validation_dashboard,
 }
 
 

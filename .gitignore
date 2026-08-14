@@ -39,6 +39,10 @@ data/consultation_log.jsonl
 data/customer_pipeline_state.json
 data/customer_reviews.jsonl
 data/.customer_session_secret
+# Internal Market Validation System (2026-08-14): real validation
+# responses carry optional contact PII (email/contact), so the ledger
+# must never land in git -- same customer-PII rule as the rows above.
+data/validation_responses.jsonl
 
 # Final Executive Directive (2026-07-29): pure ephemeral tick run-state,
 # same .factory_loop.lock precedent above -- data/generated_business_

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Market Validation Dashboard — Internal</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root{--ink:#e8eaed;--muted:#9aa0a6;--bg:#1e1f22;--panel:#282a2e;--line:#3c4043;--accent:#8ab4f8;--ok:#81c995}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  .wrap{max-width:960px;margin:0 auto;padding:1.5rem}
+  h1{font-size:1.4rem;margin:0 0 .25rem}
+  .sub{color:var(--muted);margin-bottom:1.25rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem}
+  .card .n{font-size:1.6rem;font-weight:700}
+  .card .l{font-size:.8rem;color:var(--muted)}
+  .card .tag{display:inline-block;font-size:.68rem;padding:1px 6px;border-radius:6px;margin-left:.35rem;vertical-align:middle}
+  .tag.fact{background:#1f3a2a;color:var(--ok)}
+  .tag.inf{background:#3a3120;color:#fdd663}
+  h2{font-size:1rem;margin:1.5rem 0 .5rem;color:var(--accent)}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{padding:.55rem .7rem;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600;font-size:.8rem}
+  tr:last-child td{border-bottom:none}
+  .themes{display:flex;flex-wrap:wrap;gap:.5rem}
+  .chip{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:.35rem .8rem;font-size:.85rem}
+  .chip b{color:var(--accent)}
+  .note{color:var(--muted);font-size:.8rem;margin-top:1.25rem;border-top:1px solid var(--line);padding-top:.75rem}
+  .err{color:#f28b82}
+  @media (max-width:520px){.grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Market Validation Dashboard <span style="font-size:.75rem;color:var(--muted)">(INTERNAL)</span></h1>
+  <p class="sub">Legal Case Research opportunity — $194 one-time. Real responses only.</p>
+
+  <div class="grid" id="cards"></div>
+
+  <h2>Qualification &amp; Intent</h2>
+  <table id="intent"></table>
+
+  <h2>Source Breakdown</h2>
+  <table id="sources"></table>
+
+  <h2>Top Pain Themes <span class="tag inf" style="display:inline-block">INFERENCE</span></h2>
+  <div class="themes" id="themes"></div>
+
+  <p class="note" id="note"></p>
+</div>
+<script>
+(function () {
+  var FACT = '<span class="tag fact">FACT</span>';
+  var INF = '<span class="tag inf">INFERENCE</span>';
+
+  fetch('/api/validation/dashboard')
+    .then(function (r) { if (r.status === 401) throw new Error('unauthenticated'); return r.json(); })
+    .then(function (d) {
+      var s = d.summary;
+      var cards = document.getElementById('cards');
+      var items = [
+        { n: s.total_responses, l: 'Total responses', t: 'FACT' },
+        { n: s.qualified_responses, l: 'Qualified', t: 'FACT' },
+        { n: s.pain_signals, l: 'Pain signals', t: 'FACT' },
+        { n: s.weekly_or_more_pain, l: 'Weekly+ pain', t: 'FACT' },
+        { n: s.q2_yes, l: '$194 Yes', t: 'FACT' },
+        { n: s.q2_maybe, l: '$194 Maybe', t: 'FACT' },
+        { n: s.q2_no, l: '$194 No', t: 'FACT' },
+        { n: s.qualified_conversion_rate_pct === null ? '—' : s.qualified_conversion_rate_pct + '%', l: 'Qualified conversion', t: 'FACT' },
+      ];
+      cards.innerHTML = items.map(function (i) {
+        return '<div class="card"><div class="n">' + i.n + '</div><div class="l">' + i.l + (i.t === 'FACT' ? FACT : INF) + '</div></div>';
+      }).join('');
+
+      var intent = document.getElementById('intent');
+      intent.innerHTML = '<tr><th>Metric</th><th>Value</th></tr>'
+        + '<tr><td>q2 = Yes (willing to reserve $194)</td><td>' + s.q2_yes + '</td></tr>'
+        + '<tr><td>q2 = Maybe (need sample first)</td><td>' + s.q2_maybe + '</td></tr>'
+        + '<tr><td>q2 = No</td><td>' + s.q2_no + '</td></tr>';
+
+      var sources = document.getElementById('sources');
+      var rows = Object.keys(s.source_breakdown || {}).map(function (k) {
+        return '<tr><td>' + k + '</td><td>' + s.source_breakdown[k] + '</td></tr>';
+      }).join('');
+      sources.innerHTML = '<tr><th>Source</th><th>Responses</th></tr>' + (rows || '<tr><td colspan="2">No responses yet</td></tr>');
+
+      var themes = document.getElementById('themes');
+      themes.innerHTML = (s.top_pain_themes || []).map(function (t) {
+        return '<span class="chip">' + t.theme + ' <b>' + t.count + '</b></span>';
+      }).join('') || 'No pain themes yet';
+
+      document.getElementById('note').innerHTML = 'Every number is an OBSERVED RESULT counted from the real response ledger '
+        + '(data/validation_responses.jsonl). Top pain themes are word-frequencies over real free-text answers — an INFERENCE, '
+        + 'never a fabricated customer claim. Contact info and verbatim answers are never displayed here. Generated at: ' + new Date().toISOString();
+    })
+    .catch(function (e) {
+      document.getElementById('cards').innerHTML = '<p class="err">Failed to load dashboard: ' + e.message + '</p>';
+    });
+})();
+</script>
+</body>
+</html>
