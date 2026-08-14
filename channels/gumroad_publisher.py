@@ -253,6 +253,47 @@ def update_product(token, product_id, updates):
     return result.get("product", result)
 
 
+def enable_product(token, product_id):
+    """Publish a draft product so it becomes purchasable (PUT
+    /v2/products/:id/enable -- the real publish endpoint; the 'publish'
+    field on PUT /v2/products/:id does NOT publish, it stays a draft).
+
+    Gumroad's publishing requirements (official docs, verified 2026-08-14):
+    user's email confirmed, at least one payment method connected, and
+    valid pricing. Any unmet requirement is surfaced honestly via
+    _gumroad_error() -- never faked into a success."""
+    if not product_id:
+        raise ConfigError("enable_product requires a product_id")
+    try:
+        r = _request_with_retry("PUT", f"{GUMROAD_API_BASE}/products/{product_id}/enable",
+                                data={"access_token": token}, timeout=60)
+        r.raise_for_status()
+    except requests.RequestException as e:
+        raise RuntimeError(f"Gumroad enable_product request failed: {_safe_err(e)}")
+    result = r.json()
+    if not result.get("success", False):
+        raise RuntimeError(f"Gumroad enable_product failed: {_gumroad_error(result)}")
+    return result.get("product", result)
+
+
+def get_product(token, product_id):
+    """Retrieve a single real product's current state (GET
+    /v2/products/:id) -- used to verify price/published/url after
+    create/enable without trusting the caller's own assumptions."""
+    if not product_id:
+        raise ConfigError("get_product requires a product_id")
+    try:
+        r = _request_with_retry("GET", f"{GUMROAD_API_BASE}/products/{product_id}",
+                                params={"access_token": token}, timeout=30)
+        r.raise_for_status()
+    except requests.RequestException as e:
+        raise RuntimeError(f"Gumroad get_product request failed: {_safe_err(e)}")
+    result = r.json()
+    if not result.get("success", False):
+        raise RuntimeError(f"Gumroad get_product failed: {_gumroad_error(result)}")
+    return result.get("product", result)
+
+
 def get_sales(token, product_id=None):
     params = {"access_token": token}
     if product_id:
@@ -295,6 +336,8 @@ def main():
     parser.add_argument("--create", metavar="SPEC_JSON", help="Create a product from a spec JSON file")
     parser.add_argument("--sales", action="store_true", help="List sales")
     parser.add_argument("--product-id", default=None, help="Optional product_id filter for --sales")
+    parser.add_argument("--enable", metavar="PRODUCT_ID", help="Publish a draft product so it becomes purchasable (PUT /products/:id/enable)")
+    parser.add_argument("--get", metavar="PRODUCT_ID", help="Retrieve one product's current real state")
     args = parser.parse_args()
 
     try:
@@ -315,6 +358,16 @@ def main():
         if args.sales:
             sales = get_sales(token, product_id=args.product_id)
             emit({"success": True, "sales": sales})
+            return
+
+        if args.enable:
+            product = enable_product(token, args.enable)
+            emit({"success": True, "product": product})
+            return
+
+        if args.get:
+            product = get_product(token, args.get)
+            emit({"success": True, "product": product})
             return
 
         parser.print_help()

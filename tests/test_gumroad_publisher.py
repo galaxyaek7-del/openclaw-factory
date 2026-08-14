@@ -110,5 +110,46 @@ class TestTokenNeverLeaksInErrors(unittest.TestCase):
         self.assertIn("REDACTED", text)
 
 
+class TestEnableProduct(unittest.TestCase):
+    def test_enable_hits_the_real_enable_endpoint(self):
+        ok = _fake_response(status_code=200, json_data={
+            "success": True,
+            "product": {"id": "p1", "published": True, "url": "https://aekraft.gumroad.com/l/x",
+                        "formatted_price": "$155"},
+        })
+        with patch.object(gp.requests, "request", return_value=ok) as mock_req, \
+             patch.object(gp.time, "sleep"):
+            product = gp.enable_product("fake-token", "p1")
+        self.assertTrue(product["published"])
+        self.assertEqual(product["url"], "https://aekraft.gumroad.com/l/x")
+        # Must hit /products/{id}/enable -- the real publish endpoint, not a
+        # 'publish' field on the generic PUT.
+        args, kwargs = mock_req.call_args
+        self.assertTrue(args[1].endswith("/products/p1/enable"))
+        self.assertEqual(kwargs["data"], {"access_token": "fake-token"})
+
+    def test_enable_surfaces_payment_method_blocker_honestly(self):
+        blocked = _fake_response(status_code=200, json_data={
+            "success": False,
+            "message": "You must connect at least one payment method before you can publish this product for sale.",
+        })
+        with patch.object(gp.requests, "request", return_value=blocked):
+            with self.assertRaisesRegex(RuntimeError, "payment method"):
+                gp.enable_product("fake-token", "p1")
+
+
+class TestGetProduct(unittest.TestCase):
+    def test_get_product_returns_real_state(self):
+        ok = _fake_response(status_code=200, json_data={
+            "success": True,
+            "product": {"id": "p1", "published": False, "price": 15500, "short_url": "https://aekraft.gumroad.com/l/iaiyt"},
+        })
+        with patch.object(gp.requests, "request", return_value=ok):
+            product = gp.get_product("fake-token", "p1")
+        self.assertEqual(product["price"], 15500)
+        self.assertFalse(product["published"])
+        self.assertEqual(product["short_url"], "https://aekraft.gumroad.com/l/iaiyt")
+
+
 if __name__ == "__main__":
     unittest.main()
