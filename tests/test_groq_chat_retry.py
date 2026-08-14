@@ -67,6 +67,50 @@ class TestRetryDelaySeconds(unittest.TestCase):
         self.assertEqual(bg._retry_delay_seconds(1, None), 1)
 
 
+class TestGroqChatReasoningFallback(unittest.TestCase):
+    """openai/gpt-oss-20b is a reasoning model: when max_tokens is tight
+    it fills message.reasoning and leaves message.content empty
+    (finish_reason="length"). Fix found live 2026-08-14 (revenue cycle):
+    groq_chat() returns the real reasoning text instead of silently
+    returning "" -- never fabricated, strictly better than the broken
+    empty state that degraded pain-query reformulation factory-wide."""
+
+    @patch("book_generator.get_groq_key", return_value="fake-key")
+    @patch("book_generator.urllib.request.urlopen")
+    def test_empty_content_returns_real_reasoning_text(self, mock_urlopen, mock_key):
+        resp = MagicMock()
+        resp.read.return_value = b'{"choices":[{"message":{"content":"","reasoning":"manual cloud ops lead to frequent errors and downtime"}}],"usage":{}}'
+        resp.__enter__ = lambda s: s
+        resp.__exit__ = lambda s, *a: None
+        mock_urlopen.return_value = resp
+
+        result = bg.groq_chat("sys", "user")
+        self.assertEqual(result, "manual cloud ops lead to frequent errors and downtime")
+
+    @patch("book_generator.get_groq_key", return_value="fake-key")
+    @patch("book_generator.urllib.request.urlopen")
+    def test_content_present_wins_over_reasoning(self, mock_urlopen, mock_key):
+        resp = MagicMock()
+        resp.read.return_value = b'{"choices":[{"message":{"content":"SOC 2 paperwork overwhelms small teams","reasoning":"thinking text"}}],"usage":{}}'
+        resp.__enter__ = lambda s: s
+        resp.__exit__ = lambda s, *a: None
+        mock_urlopen.return_value = resp
+
+        result = bg.groq_chat("sys", "user")
+        self.assertEqual(result, "SOC 2 paperwork overwhelms small teams")
+
+    @patch("book_generator.get_groq_key", return_value="fake-key")
+    @patch("book_generator.urllib.request.urlopen")
+    def test_empty_content_and_no_reasoning_still_returns_empty_string(self, mock_urlopen, mock_key):
+        resp = MagicMock()
+        resp.read.return_value = b'{"choices":[{"message":{"content":""}}],"usage":{}}'
+        resp.__enter__ = lambda s: s
+        resp.__exit__ = lambda s, *a: None
+        mock_urlopen.return_value = resp
+
+        self.assertEqual(bg.groq_chat("sys", "user"), "")
+
+
 class TestGroqChatRetryIntegration(unittest.TestCase):
     """Confirms groq_chat() itself actually calls the real delay
     function during its retry loop -- not just that the helper computes

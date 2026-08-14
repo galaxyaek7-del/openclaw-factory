@@ -105,7 +105,7 @@ PAYMENT_EVIDENCE_CONNECTOR = EvidenceConnector(
     source="GitHub Issues Search API + Hacker News Algolia API + Stack Overflow API (real, keyless, public) — the same three real sources customer_pain already trusts, searching the niche's real problem query and extracting literal, currency-marked quotes with real https URLs",
     criteria_resolved=("proof_of_payment",),
     status=REAL,
-    reliability="real public APIs, no authentication required; extraction is strictly literal (verbatim quote containing a real currency marker) — a result with no money marker is skipped, never recorded",
+    reliability="real public APIs, no authentication required; extraction is strictly literal (verbatim sentence containing a real currency marker AND a spend/payment-context phrase, with market-sizing/funding/price-table noise vetoed) — a result that is not genuine spend evidence is skipped, never recorded",
     refresh_frequency=f"cached {payment_evidence_connector.MAX_AGE_DAYS_DEFAULT} real days — a live refresh only on a genuine cache miss or force=True",
     cost="free — no paid API key required",
     latency="real cache hit: well under 100ms; real cache miss (live search): several real seconds (3 external HTTP calls)",

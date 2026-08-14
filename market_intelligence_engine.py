@@ -230,13 +230,17 @@ def reformulate_pain_query(niche):
         # context.niche to build a real AIProvider edge; a bare string here
         # broke that assumption (found live, 2026-07-22).
         response = orchestrator.generate(
-            "query_reformulation", system, niche, max_tokens=40, retries=1,
+            "query_reformulation", system, niche, max_tokens=600, retries=1,
             cost_context={"niche": niche, "purpose": "customer_pain_query_reformulation"},
         )
         query = (response["content"] or "").strip().strip('"').strip("'").strip()
-        if query and len(query) >= 5:
+        if query and 5 <= len(query) <= 100:
             return query, f"{response['provider']}_semantic", None
-        return _deterministic_query_fallback(niche), "deterministic_fallback", f"رد {response['provider']} فارغ أو قصير جداً ليكون استعلاماً حقيقياً"
+        # A reasoning model may emit its chain-of-thought instead of a
+        # clean phrase when max_tokens is tight (found live 2026-08-14) —
+        # a long CoT dump is NOT a usable search query; fall back honestly.
+        note = "رد قصير جداً ليكون استعلاماً حقيقياً" if (query and len(query) < 5) else "رد طويل جداً (تفكير النموذج وليس عبارة حقيقية) ليكون استعلاماً حقيقياً"
+        return _deterministic_query_fallback(niche), "deterministic_fallback", f"رد {response['provider']} {note}"
     except Exception as e:
         return _deterministic_query_fallback(niche), "deterministic_fallback", f"Groq غير متاح: {e}"
 

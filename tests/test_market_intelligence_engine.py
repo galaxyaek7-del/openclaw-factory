@@ -151,6 +151,18 @@ class TestReformulatePainQuery(unittest.TestCase):
         query, method, note = mie.reformulate_pain_query("AI Agent Blueprint for SOC 2 Compliance Automation")
         self.assertEqual(method, "deterministic_fallback")
 
+    @patch("book_generator.groq_chat")
+    def test_falls_back_to_deterministic_stripping_when_groq_returns_reasoning_dump(self, mock_groq):
+        """gpt-oss-20b can emit its chain-of-thought (way over 100 chars)
+        in message.reasoning when max_tokens is tight (found live
+        2026-08-14). A CoT dump is not a usable search query -- a long
+        "semantic" query is rejected, never searched against real sources."""
+        mock_groq.return_value = "We need to think about the underlying problem. " + "reasoning detail " * 30
+        query, method, note = mie.reformulate_pain_query("AI Agent Blueprint for SOC 2 Compliance Automation")
+        self.assertEqual(method, "deterministic_fallback")
+        self.assertIn("soc 2", query)
+        self.assertIsNotNone(note)
+
     def test_deterministic_fallback_strips_template_words_never_invents_meaning(self):
         query = mie._deterministic_query_fallback("AI Agent Blueprint for EU AI Act Compliance Audit Logging")
         self.assertNotIn("blueprint", query)

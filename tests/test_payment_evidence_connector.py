@@ -94,6 +94,57 @@ class TestRealCurrencyExtraction(unittest.TestCase):
         self.assertEqual(r["recorded"][0]["event_type"], "freelancer_agency_pricing")
 
 
+class TestSpendContextGate(unittest.TestCase):
+    """Found live 2026-08-14: a bare currency marker is NOT proof-of-
+    payment. Market-sizing forecasts, funding rounds, cloud price tables,
+    and security-news digests all contain $ but are not evidence a
+    customer pays money to solve this problem. The gate refuses them."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+        self.evidence_path = os.path.join(self.tmp, "market_evidence.jsonl")
+        self.cache_file = os.path.join(self.tmp, "payment_evidence_cache.json")
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def test_market_sizing_forecast_is_never_spend_evidence(self):
+        text = "The contract lifecycle management market is projected to reach $6.13 billion by 2030, expanding at a CAGR of 10.20%."
+        self.assertFalse(PEC._is_spend_evidence(text))
+        self.assertIsNone(PEC._extract_quote(text))
+
+    def test_funding_round_news_is_never_spend_evidence(self):
+        text = "Netic raised a $43M Series B funding round serving essential service businesses in the US."
+        self.assertFalse(PEC._is_spend_evidence(text))
+        self.assertIsNone(PEC._extract_quote(text))
+
+    def test_cloud_price_table_is_never_spend_evidence(self):
+        text = "S3 Standard costs $0.023 per GB/month for active raw data storage."
+        self.assertFalse(PEC._is_spend_evidence(text))
+
+    def test_security_news_digest_is_never_spend_evidence(self):
+        text = "The cost of a data breach hits another high, per the latest cybersecurity investment priorities report."
+        self.assertFalse(PEC._is_spend_evidence(text))
+
+    def test_real_we_pay_quote_is_spend_evidence(self):
+        text = "Users complain we have to pay $50/hr for manual review of every ticket."
+        self.assertTrue(PEC._is_spend_evidence(text))
+
+    def test_attorney_hourly_rate_is_spend_evidence(self):
+        text = "Talking to an IP attorney can go for $200+ an hour and those overhead costs are just too much."
+        self.assertTrue(PEC._is_spend_evidence(text))
+        self.assertIn("$200+ an hour", PEC._extract_quote(text))
+
+    def test_cloud_engineer_compensation_is_spend_evidence(self):
+        text = "Current total comp at Microsoft is ~250k. AWS pays $300k for an L5 Cloud Engineer."
+        self.assertTrue(PEC._is_spend_evidence(text))
+
+    def test_overpriced_complaint_is_spend_evidence(self):
+        text = "This tool is overpriced at $200/year — total rip-off."
+        self.assertTrue(PEC._is_spend_evidence(text))
+
+
 class TestDedupAndCache(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.mkdtemp()

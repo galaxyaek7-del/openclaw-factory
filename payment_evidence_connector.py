@@ -18,9 +18,12 @@ evidence.
 
 Honesty contract — never weakens a gate, never fabricates:
   1. Only real https source URLs from real API responses.
-  2. Only literal, verbatim quotes that contain a real currency/price
-     marker ($, USD, per month, /hr, salary, ...) — never a paraphrased
-     or invented price.
+  2. Only literal, verbatim quotes that are REAL spend evidence: the
+     sentence must contain a real currency marker AND a spend/payment-
+     context phrase (paying, salary, costs, charges, subscription,
+     rate, ...) AND no market-noise pattern (market sizing, funding
+     rounds, cloud price tables, news digests) — never a paraphrased or
+     invented price, never a bare $ from market context.
   3. Every record goes through market_evidence.record_evidence(), which
      REFUSES any payment-evidence item lacking source_url + quote — the
      exact same validation a human-recorded item must pass (ADR-121).
@@ -81,6 +84,40 @@ _CURRENCY_PATTERNS = (
     re.compile(r"\b\$[\d,.]+\s*(?:/|per)", re.I),
 )
 
+# Spend-context gate (2026-08-14, found live during the first real
+# revenue cycle): a currency marker ALONE is not proof-of-payment. Real
+# dev-source results constantly contain $ in market-sizing forecasts
+# ("market to reach $6.13B by 2030"), funding news ("raised $43M Series
+# B"), cloud pricing tables ("S3 Standard $0.023/GB/mo"), and security
+# news digests — none of which is evidence that a customer pays money to
+# solve THIS problem. A quote is recorded ONLY when its sentence contains
+# BOTH a currency marker AND a spend/payment-context phrase (paying,
+# salary, costs, charges, subscription, rate, price, ...), AND none of
+# the noise patterns. This raises the bar for what counts as real spend
+# evidence — it never invents anything, it only refuses to mislabel
+# market/industry noise as proof-of-payment.
+_SPEND_CONTEXT_PATTERNS = (
+    re.compile(r"\b(?:pay|pays|paid|paying|payout)\b", re.I),
+    re.compile(r"\b(?:salary|comp(?:ensation)?|offer(?:ed)?)\b", re.I),
+    re.compile(r"\b(?:costs?|costing|priced?|price|pricing|charges?|billing|invoice)\b", re.I),
+    re.compile(r"\bfee(?:s)?\b", re.I),
+    re.compile(r"\b(?:subscription|retainer|plan costs|renewal)\b", re.I),
+    re.compile(r"\b(?:hourly|rate|rates|quoted|quote)\b", re.I),
+    re.compile(r"\b(?:overpriced|expensive|rip-off|too much|not worth)\b", re.I),
+    re.compile(r"\$\s?\d[\d,.]*\s*(?:/\s*(?:hr|hour|mo|month|yr|year|day|week|seat|user|project)|per\s)", re.I),
+    re.compile(r"\$\s?\d[\d,.]*k\b", re.I),
+    re.compile(r"\b(?:per\s+(?:month|year|hour|day|week|seat|user|project))\b", re.I),
+)
+# Sentences matching any of these are market/industry context, NOT spend
+# evidence — vetoed even when they contain a currency marker.
+_NOISE_PATTERNS = (
+    re.compile(r"\b(?:market|industry|sector|segment|CAGR|forecast|projected|expected)\b.*\$[\d,.]*\s*(?:billion|million|trillion)", re.I),
+    re.compile(r"\$[\d,.]*\s*(?:billion|million|trillion)\b.*\b(?:market|industry|sector|segment)\b", re.I),
+    re.compile(r"\b(?:raised|funding|Series [A-E]|investors|valuation|valuation at)\b", re.I),
+    re.compile(r"\$\s?\d[\d,.]*\s*(?:/|per)\s*(?:GB|GiB|TB|GiB-mo|GB-mo|node|req|request|API call)", re.I),
+    re.compile(r"\b(?:by|to|from|reach|reach|grow(?:ing)?|expand(?:ing)?)\b.*\$[\d,.]*\s*(?:million|billion)", re.I),
+)
+
 # Keyword-gated event_type classification (ADR-121's 4 payment types).
 # Priority order matters: job markers first, then subscription, then
 # complaint; a verbatim money quote with none of those markers is still
@@ -102,18 +139,32 @@ def _has_currency_marker(text):
     return any(p.search(text) for p in _CURRENCY_PATTERNS)
 
 
+def _is_spend_evidence(text):
+    """A real proof-of-payment sentence must contain a currency marker,
+    a spend/payment-context phrase, and none of the market-noise
+    patterns. A bare $ in a market forecast, funding round, or cloud
+    price table is not spend evidence and is refused."""
+    text = (text or "")
+    if not _has_currency_marker(text):
+        return False
+    if any(p.search(text) for p in _NOISE_PATTERNS):
+        return False
+    return any(p.search(text) for p in _SPEND_CONTEXT_PATTERNS)
+
+
 def _extract_quote(text, max_len=400):
-    """The literal sentence (up to max_len chars) containing a real
-    currency marker — verbatim from the real result, never paraphrased.
-    Returns None when no marker is present."""
+    """The literal sentence (up to max_len chars) that is REAL spend
+    evidence — verbatim from the real result, never paraphrased.
+    Returns None when no sentence passes the currency + spend-context
+    + noise gate (a currency marker alone is never enough)."""
     text = (text or "").strip()
     if not text or not _has_currency_marker(text):
         return None
     sentences = re.split(r"(?<=[.!?])\s+", text)
     for s in sentences:
-        if _has_currency_marker(s):
+        if _is_spend_evidence(s):
             return s[:max_len].strip()
-    return text[:max_len].strip()
+    return None
 
 
 def _classify_event_type(text, quote):

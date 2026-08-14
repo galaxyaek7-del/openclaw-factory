@@ -1656,7 +1656,7 @@ def create_book(out_path, title, subtitle, ptype, theme, pages, author=""):
 # ══════════════════════════════════════════
 
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-GROQ_MODEL = "llama-3.1-8b-instant"
+GROQ_MODEL = "openai/gpt-oss-20b"
 
 
 def get_groq_key():
@@ -1676,11 +1676,13 @@ def get_groq_key():
 
 # ADR-041: real per-call AI cost, logged going forward — previously Groq's
 # response `usage` field was read and discarded. Rates confirmed directly
-# from Groq's own pricing docs (console.groq.com/docs/model/llama-3.1-8b-instant,
-# checked 2026-07-15): $0.05/M input tokens, $0.08/M output tokens. Update
-# this constant if the model or its published price ever changes — it is
-# not a guess, but it is a snapshot, and needs re-verifying periodically.
-GROQ_PRICING_USD_PER_MILLION_TOKENS = {"llama-3.1-8b-instant": {"input": 0.05, "output": 0.08}}
+# from Groq's own pricing docs (console.groq.com/docs/models, checked
+# 2026-08-14): $0.075/M input tokens, $0.30/M output tokens for
+# openai/gpt-oss-20b (Groq's recommended replacement for the retired
+# 8B-instant model, which shut down 2026-08-16). Update this constant
+# if the model or its published price ever changes — it is not a guess,
+# but it is a snapshot, and needs re-verifying periodically.
+GROQ_PRICING_USD_PER_MILLION_TOKENS = {"openai/gpt-oss-20b": {"input": 0.075, "output": 0.30}}
 AI_COST_LOG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'ai_cost_log.jsonl')
 
 
@@ -1757,7 +1759,22 @@ def groq_chat(system_prompt, user_prompt, max_tokens=4096, timeout=30, retries=3
                 result = json.loads(r.read().decode('utf-8'))
             latency_ms = round((time.time() - _request_started) * 1000)
             _log_ai_cost(GROQ_MODEL, result.get('usage'), cost_context, latency_ms=latency_ms)
-            return result['choices'][0]['message']['content']
+            msg = result['choices'][0]['message']
+            content = msg.get('content') or ""
+            # Reasoning-model fallback (found live 2026-08-14 revenue
+            # cycle): openai/gpt-oss-20b is a reasoning model — when
+            # max_tokens is tight it emits its thinking in
+            # message.reasoning and leaves message.content empty
+            # (finish_reason="length"). Returning "" to every caller
+            # silently degraded the whole factory (e.g. pain-query
+            # reformulation always fell back to deterministic strings).
+            # When content is empty but real reasoning text exists, that
+            # real model output is returned instead of an empty string —
+            # never fabricated, strictly better than the broken empty
+            # state, and harmless for callers that already got content.
+            if not content:
+                content = msg.get('reasoning') or ""
+            return content
         except urllib.error.HTTPError as e:
             last_error = e
             if e.code in (400, 401, 403):
@@ -2678,7 +2695,7 @@ def _parse_sectioned_techdoc(text, section_titles):
     `section_titles`.
 
     Real bug found live (2026-07-22, product quality pass on the $388
-    techdoc): llama-3.1-8b-instant does not reliably echo the literal
+    techdoc): the then-current 8B-class Groq model did not reliably echo the literal
     "SECTION N TITLE"/"SECTION N CONTENT" tag text — it writes real, good
     content but under its own headers (e.g. "##PRODUCT OVERVIEW##",
     "##GETTING STARTED GUIDE##"). The strict regex then matched nothing
