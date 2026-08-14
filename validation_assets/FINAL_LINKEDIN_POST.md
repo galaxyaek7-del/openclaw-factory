@@ -27,7 +27,8 @@ honest read on three quick questions:
    if the validation sample meets your requirements?
 3. What is the biggest problem you face with your current research process?
 
-Answer here (3 quick questions, 1 minute): **{VALIDATION_PAGE_URL}**
+Answer here (3 quick questions, 1 minute):
+**https://mild-crossword-wallet-undefined.trycloudflare.com/market-validation.html?source=linkedin**
 
 *This is a validation concept — NOT a launched product. Nothing is for sale, no payment
 is requested, and your answers are used only for research.*
@@ -36,12 +37,11 @@ is requested, and your answers are used only for research.*
 
 ## Exact URL (do not change the ?source= parameter)
 ```
-http://localhost:3000/market-validation.html?source=linkedin
+https://mild-crossword-wallet-undefined.trycloudflare.com/market-validation.html?source=linkedin
 ```
 > The `?source=linkedin` parameter is the tracking tag for this platform — every response
 > and page visit from this post is attributed to LinkedIn. Do not remove, shorten, or edit it.
-> (Before external publishing, the founder replaces the `localhost:3000` host with the
-> real public URL — keep `?source=linkedin` exactly as-is.)
+> Live public URL confirmed 200 on 2026-08-14.
 
 ---
 

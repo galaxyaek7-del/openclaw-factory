@@ -13,7 +13,7 @@
 ## Channels
 | Platform | Tracking URL (local dev) | Status |
 |---|---|---|
-| LinkedIn | `http://localhost:3000/market-validation.html?source=linkedin` | Organic post — MANUAL (founder posts). Post: `FINAL_LINKEDIN_POST.md` |
+| LinkedIn | `https://mild-crossword-wallet-undefined.trycloudflare.com/market-validation.html?source=linkedin` | Organic post — MANUAL (founder posts). Post: `FINAL_LINKEDIN_POST.md` |
 | Facebook | `http://localhost:3000/market-validation.html?source=facebook` | Organic post — MANUAL (founder posts). Post: `FINAL_FACEBOOK_POST.md` |
 | X (Twitter) | `http://localhost:3000/market-validation.html?source=x` | Organic post — MANUAL (founder posts). Post: `FINAL_X_POST.md` |
 | Direct/other | `http://localhost:3000/market-validation.html?source=direct` | Any manual share / other channel |
@@ -30,7 +30,7 @@
 
 ### LinkedIn
 - Post: `FINAL_LINKEDIN_POST.md` (updated 2026-08-14: exact URL + Q2 = reservation question)
-- Tracking URL: `http://localhost:3000/market-validation.html?source=linkedin`
+- Tracking URL: `https://mild-crossword-wallet-undefined.trycloudflare.com/market-validation.html?source=linkedin`
 - Date posted: ___
 - Views/visits (dashboard "visits" for source=linkedin): ___
 - Qualified respondents: ___
