@@ -43,7 +43,8 @@ class TestHuntMarketRecordsToSharedDecisionStore(unittest.TestCase):
             return record_ladder_decision(niche, ladder, scored, decisions_path=self.decisions_path)
 
         with patch.object(mh, "RECORD_LADDER_DECISION", _record_to_temp_path), \
-             patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
+             patch.object(mh, "PIONEER_DISCOVER", return_value=[]), \
+             patch.object(mh, "PIONEER_DISCOVER_ALL", return_value=[]):
             result = mh.hunt_market(limit=3, write_opportunities=False)
 
         # A candidate blocked by the Knowledge Brain (REJECTED_NICHES.md/
@@ -59,16 +60,37 @@ class TestHuntMarketRecordsToSharedDecisionStore(unittest.TestCase):
 
     def test_a_recording_failure_never_blocks_the_real_hunt(self):
         with patch.object(mh, "RECORD_LADDER_DECISION", side_effect=RuntimeError("store unavailable")), \
-             patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
+             patch.object(mh, "PIONEER_DISCOVER", return_value=[]), \
+             patch.object(mh, "PIONEER_DISCOVER_ALL", return_value=[]):
             result = mh.hunt_market(limit=1, write_opportunities=False)
         self.assertIn("scanned_count", result)
         self.assertGreater(result["scanned_count"], 0)
 
     def test_recording_disabled_entirely_never_crashes(self):
         with patch.object(mh, "RECORD_LADDER_DECISION", None), \
-             patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
+             patch.object(mh, "PIONEER_DISCOVER", return_value=[]), \
+             patch.object(mh, "PIONEER_DISCOVER_ALL", return_value=[]):
             result = mh.hunt_market(limit=1, write_opportunities=False)
         self.assertIn("scanned_count", result)
+
+    def test_discover_all_feed_is_consumed_as_pioneer_all_source(self):
+        """Golden Hunter v2 (2026-08-14): the multi-source discover_all()
+        feed (Ask HN / Show HN / GitHub) must flow into the real hunt as a
+        distinct source and be scored + recorded, never dropped."""
+        from decision_engine.engine import record_ladder_decision
+
+        def _record_to_temp_path(niche, ladder, scored, decisions_path=None):
+            return record_ladder_decision(niche, ladder, scored, decisions_path=self.decisions_path)
+
+        fake_all = [{"niche": "Ask HN: real contract-renewal tracking pain", "points": 40}]
+        with patch.object(mh, "RECORD_LADDER_DECISION", _record_to_temp_path), \
+             patch.object(mh, "PIONEER_DISCOVER", return_value=[]), \
+             patch.object(mh, "PIONEER_DISCOVER_ALL", return_value=fake_all):
+            result = mh.hunt_market(limit=1, write_opportunities=False)
+
+        self.assertGreaterEqual(result["pioneer_all_linked_count"], 1)
+        sources = {e.get("source") for e in result["scanned"]}
+        self.assertIn("pioneer_all", sources, "discover_all candidates must be tagged source=pioneer_all")
 
 
 if __name__ == "__main__":

@@ -81,6 +81,102 @@ class TestFetchHelpers(unittest.TestCase):
             self.assertIsNone(pioneer._fetch_item(123))
 
 
+class TestDiscoverHnFeed(unittest.TestCase):
+    """The shared HN feed builder (used for Ask HN / Show HN) follows the
+    same honesty discipline as discover_candidates: real titles only,
+    signal matches ranked first, empty on failure — never fabricated."""
+
+    def test_ask_hn_feed_ranks_signal_matches_first(self):
+        with patch.object(pioneer, "_fetch_story_ids", return_value=[1, 2]), \
+             patch.object(pioneer, "_fetch_item", side_effect=[
+                 {"title": "Ask HN: How do you handle contract renewal tracking?", "score": 40, "url": "http://a"},
+                 {"title": "Some general tech discussion", "score": 900, "url": "http://b"},
+             ]):
+            candidates = pioneer._discover_hn_feed(
+                pioneer.HN_ASK_STORIES_URL, "hacker_news_ask_hn", limit=10, scan_pool=2)
+        self.assertEqual(candidates[0]["niche"], "Ask HN: How do you handle contract renewal tracking?")
+        self.assertEqual(candidates[0]["source"], "hacker_news_ask_hn")
+        self.assertTrue(candidates[0]["signal_matched"])
+
+    def test_ask_hn_network_failure_returns_empty(self):
+        with patch.object(pioneer, "_fetch_story_ids", return_value=[]):
+            candidates = pioneer._discover_hn_feed(
+                pioneer.HN_ASK_STORIES_URL, "hacker_news_ask_hn", limit=10, scan_pool=2)
+        self.assertEqual(candidates, [])
+
+
+class TestDiscoverGithubRecentRepos(unittest.TestCase):
+    def test_real_github_shape_becomes_candidates(self):
+        fake = {"items": [
+            {"full_name": "acme/agent-toolkit", "description": "open source agent toolkit for startups",
+             "html_url": "http://gh/acme/agent-toolkit", "stargazers_count": 1200,
+             "language": "Python", "created_at": "2026-08-01T00:00:00Z"},
+            {"full_name": "nobody/blog", "description": "my personal blog",
+             "html_url": "http://gh/nobody/blog", "stargazers_count": 2,
+             "language": "HTML", "created_at": "2026-08-02T00:00:00Z"},
+        ]}
+        with patch.object(pioneer.MIC_HTTP_CLIENT, "http_get_json", return_value=fake):
+            candidates = pioneer.discover_github_recent_repos(limit=5, days=30)
+        self.assertEqual(len(candidates), 2)
+        self.assertEqual(candidates[0]["source"], "github_recent_repos")
+        self.assertTrue(candidates[0]["signal_matched"])  # "agent" keyword hit
+        self.assertEqual(candidates[0]["stars"], 1200)
+        self.assertIn("stars", candidates[0])
+        self.assertIn("language", candidates[0])
+
+    def test_github_network_failure_returns_empty(self):
+        with patch.object(pioneer.MIC_HTTP_CLIENT, "http_get_json", side_effect=RuntimeError("rate limited")):
+            self.assertEqual(pioneer.discover_github_recent_repos(limit=5), [])
+
+    def test_github_non_dict_response_returns_empty(self):
+        with patch.object(pioneer.MIC_HTTP_CLIENT, "http_get_json", return_value=["not", "a", "dict"]):
+            self.assertEqual(pioneer.discover_github_recent_repos(limit=5), [])
+
+    def test_github_items_without_names_are_skipped(self):
+        fake = {"items": [{"stargazers_count": 5}, {"full_name": "ok/repo", "stargazers_count": 3}]}
+        with patch.object(pioneer.MIC_HTTP_CLIENT, "http_get_json", return_value=fake):
+            candidates = pioneer.discover_github_recent_repos(limit=5)
+        self.assertEqual(len(candidates), 1)
+        self.assertEqual(candidates[0]["niche"], "ok/repo")
+
+
+class TestDiscoverAll(unittest.TestCase):
+    def test_discover_all_merges_sources_and_dedupes(self):
+        with patch.object(pioneer, "_discover_hn_feed", side_effect=[
+                [{"niche": "Ask HN: real pain question", "source": "hacker_news_ask_hn",
+                  "points": 10, "signal_matched": True}],
+                [{"niche": "Show HN: I built a tool", "source": "hacker_news_show_hn",
+                  "points": 5, "signal_matched": True}],
+            ]), \
+             patch.object(pioneer, "discover_github_recent_repos", return_value=[
+                 {"niche": "gh/agent-toolkit: build agents", "source": "github_recent_repos",
+                  "points": 1200, "signal_matched": True},
+             ]), \
+             patch.object(pioneer, "discover_candidates", return_value=[
+                 {"niche": "Ask HN: real pain question", "source": "hacker_news_top_stories",
+                  "points": 99, "signal_matched": True},
+                 {"niche": "a top story", "source": "hacker_news_top_stories",
+                  "points": 50, "signal_matched": False},
+             ]):
+            merged = pioneer.discover_all(limit_per_source=10, scan_pool=5)
+
+        niches = [c["niche"] for c in merged]
+        # The dedupe keeps the HIGHEST-point occurrence of the duplicate.
+        self.assertEqual(niches.count("Ask HN: real pain question"), 1)
+        dup = [c for c in merged if c["niche"] == "Ask HN: real pain question"][0]
+        self.assertEqual(dup["points"], 99)
+        self.assertIn("Show HN: I built a tool", niches)
+        self.assertIn("gh/agent-toolkit: build agents", niches)
+        self.assertIn("a top story", niches)
+
+    def test_discover_all_each_source_failure_never_blocks_others(self):
+        with patch.object(pioneer, "_discover_hn_feed", return_value=[]), \
+             patch.object(pioneer, "discover_github_recent_repos", return_value=[]), \
+             patch.object(pioneer, "discover_candidates", return_value=[]):
+            merged = pioneer.discover_all()
+        self.assertEqual(merged, [])
+
+
 class TestRealHackerNewsIntegration(unittest.TestCase):
     """Deliberately real: one live, free, keyless call to HN's Firebase
     API, proving Pioneer is genuinely connected to a real, current data

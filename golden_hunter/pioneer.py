@@ -13,22 +13,39 @@ unchanged scoring/accept-reject pipeline (`market_hunter.hunt_market()`).
 Pioneer never scores, accepts, or records a decision itself — that stays
 Golden Hunter's job, unduplicated.
 
-v1 source: Hacker News's real, free, keyless Firebase API
-(`/v0/topstories.json` + `/v0/item/{id}.json`) — a genuinely different
-endpoint from `competitor_discovery.py`'s existing HN Algolia SEARCH API
-(which needs a query already, confirmed by reading it directly). Reddit
-is a real, honest gap for v1 — it needs registered app credentials not
-present in `.env` today (same reason `multi_source_intelligence`'s own
-Reddit connector is honestly `unavailable`, see BLOCKERS.md) — and
-Product Hunt/Google Trends aren't wired to any discovery-mode endpoint
-in this codebase yet either. Both are real, named next steps, not
-silently skipped.
+v2 source expansion (2026-08-14, founding directive: "free and real
+evidence sources"): v1 was HN top stories only. v2 adds three more real,
+free, KEYLESS sources with no API key in `.env` required, each genuinely
+upstream of per-niche scoring and each a different KIND of real signal:
+
+  HN top stories        — what's trending in the developer world right now
+  HN Ask HN             — real questions/problems people are actively
+                          describing (HN Firebase /v0/askstories.json)
+  HN Show HN            — real things people have actually built
+                          (/v0/showstories.json)
+  GitHub recent repos   — real projects CREATED in the last 30 days,
+                          sorted by stars (api.github.com search API,
+                          keyless, ~10 req/min unauthenticated; returns
+                          real data, empty on any failure)
+
+Reddit remains an honest, documented gap (it needs registered app
+credentials not present in `.env` — same reason
+`multi_source_intelligence`'s own Reddit connector is honestly
+`unavailable`). Product Hunt / Google Trends likewise have no keyless
+discovery-mode endpoint in this codebase. Those stay named next steps,
+not silently skipped.
 """
 
 from market_intelligence_core import http_client as MIC_HTTP_CLIENT
 
 HN_TOP_STORIES_URL = "https://hacker-news.firebaseio.com/v0/topstories.json"
+HN_ASK_STORIES_URL = "https://hacker-news.firebaseio.com/v0/askstories.json"
+HN_SHOW_STORIES_URL = "https://hacker-news.firebaseio.com/v0/showstories.json"
 HN_ITEM_URL = "https://hacker-news.firebaseio.com/v0/item/{}.json"
+GITHUB_SEARCH_URL = (
+    "https://api.github.com/search/repositories"
+    "?q=created:%3E{}&sort=stars&order=desc&per_page={}"
+)
 _USER_AGENT = "Mozilla/5.0 (Galaxy-Forge-Pioneer)"
 
 # A real, honest keyword heuristic for "this looks like a real product/
@@ -39,20 +56,25 @@ _USER_AGENT = "Mozilla/5.0 (Galaxy-Forge-Pioneer)"
 # labeled `signal_matched=False` — an honest ranking signal, not a hard
 # filter, since the keyword list can't be exhaustive.
 OPPORTUNITY_SIGNAL_KEYWORDS = (
-    "show hn", "i built", "i made", "i launched", "launch hn",
+    "show hn", "ask hn", "i built", "i made", "i launched", "launch hn",
     "saas", "startup", "side project", "open source",
 )
 
 
-def _fetch_top_story_ids(limit):
-    """Real HN Firebase call. Returns [] on any network failure, never
-    raises — a discovery run must survive this one source being down,
-    same discipline competitor_discovery.py's own query functions use."""
+def _fetch_story_ids(url, limit):
+    """Real HN Firebase call for any of the story-id feeds (top/ask/show).
+    Returns [] on any network failure, never raises — a discovery run must
+    survive this one source being down, same discipline competitor_
+    discovery.py's own query functions use."""
     try:
-        ids = MIC_HTTP_CLIENT.http_get_json(HN_TOP_STORIES_URL, timeout=10, user_agent=_USER_AGENT)
+        ids = MIC_HTTP_CLIENT.http_get_json(url, timeout=10, user_agent=_USER_AGENT)
         return ids[:limit] if isinstance(ids, list) else []
     except Exception:
         return []
+
+
+def _fetch_top_story_ids(limit):
+    return _fetch_story_ids(HN_TOP_STORIES_URL, limit)
 
 
 def _fetch_item(item_id):
@@ -60,6 +82,71 @@ def _fetch_item(item_id):
         return MIC_HTTP_CLIENT.http_get_json(HN_ITEM_URL.format(item_id), timeout=10, user_agent=_USER_AGENT)
     except Exception:
         return None
+
+
+def _discover_hn_feed(feed_url, source_label, limit, scan_pool):
+    """Shared candidate builder for any HN story-id feed. Real discovery
+    with no niche input — the property that makes Pioneer genuinely
+    upstream of Golden Hunter. Opportunity-signal matches ranked first.
+    A network failure returns an honestly empty list, never fabricated
+    candidates."""
+    candidates = []
+    for story_id in _fetch_story_ids(feed_url, scan_pool):
+        item = _fetch_item(story_id)
+        if not item or not item.get("title"):
+            continue
+        title = item["title"]
+        matched = any(kw in title.lower() for kw in OPPORTUNITY_SIGNAL_KEYWORDS)
+        candidates.append({
+            "niche": title,
+            "source": source_label,
+            "source_url": item.get("url") or f"https://news.ycombinator.com/item?id={story_id}",
+            "points": item.get("score", 0),
+            "signal_matched": matched,
+        })
+    candidates.sort(key=lambda c: (not c["signal_matched"], -c["points"]))
+    return candidates[:limit]
+
+
+def _days_ago(days):
+    from datetime import datetime, timezone, timedelta
+    return (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%d")
+
+
+def discover_github_recent_repos(limit=10, days=30):
+    """Real discovery: GitHub's free, keyless search API for repositories
+    CREATED in the last `days` days, sorted by stars — a real "what is
+    actually being built right now" signal, different in kind from HN's
+    discussion/launch feeds. Any failure (rate limit, network) returns an
+    honestly empty list, never fabricated repos. Stars are real engagement
+    evidence (same ADR-036 discipline as tier1_intake)."""
+    try:
+        data = MIC_HTTP_CLIENT.http_get_json(
+            GITHUB_SEARCH_URL.format(_days_ago(days), limit),
+            timeout=15, user_agent=_USER_AGENT,
+        )
+    except Exception:
+        return []
+    items = data.get("items", []) if isinstance(data, dict) else []
+    candidates = []
+    for repo in items:
+        name = repo.get("full_name") or repo.get("name")
+        if not name:
+            continue
+        description = repo.get("description") or ""
+        candidates.append({
+            "niche": f"{name}: {description}".strip() if description else name,
+            "source": "github_recent_repos",
+            "source_url": repo.get("html_url") or f"https://github.com/{name}",
+            "points": repo.get("stargazers_count", 0),
+            "signal_matched": any(kw in name.lower() or kw in description.lower()
+                                  for kw in OPPORTUNITY_SIGNAL_KEYWORDS),
+            "stars": repo.get("stargazers_count", 0),
+            "language": repo.get("language"),
+            "created_at": repo.get("created_at"),
+        })
+    candidates.sort(key=lambda c: (not c["signal_matched"], -c["points"]))
+    return candidates[:limit]
 
 
 def discover_candidates(limit=10, scan_pool=30):
@@ -88,3 +175,28 @@ def discover_candidates(limit=10, scan_pool=30):
 
     candidates.sort(key=lambda c: (not c["signal_matched"], -c["points"]))
     return candidates[:limit]
+
+
+def discover_all(limit_per_source=10, scan_pool=30, github_days=30):
+    """Continuous global discovery across ALL wired free/keyless real
+    sources: HN top + Ask HN + Show HN + GitHub recent repos. Each source
+    is independent — one being down returns its own empty list and never
+    blocks the others. Returns a merged list; the caller (market_hunter's
+    unchanged hunt_market loop) still scores/accepts/rejects every
+    candidate — Pioneer never decides."""
+    merged = []
+    merged += _discover_hn_feed(HN_ASK_STORIES_URL, "hacker_news_ask_hn", limit_per_source, scan_pool)
+    merged += _discover_hn_feed(HN_SHOW_STORIES_URL, "hacker_news_show_hn", limit_per_source, scan_pool)
+    merged += discover_github_recent_repos(limit=limit_per_source, days=github_days)
+    merged += discover_candidates(limit=limit_per_source, scan_pool=scan_pool)
+
+    # Dedupe by normalized niche text, keeping the highest-point occurrence.
+    seen = {}
+    for c in merged:
+        key = (c.get("niche") or "").strip().lower()
+        if not key:
+            continue
+        if key in seen and (seen[key].get("points") or 0) >= (c.get("points") or 0):
+            continue
+        seen[key] = c
+    return list(seen.values())[:limit_per_source * 4]

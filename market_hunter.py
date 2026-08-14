@@ -66,6 +66,16 @@ try:
 except Exception:
     PIONEER_DISCOVER = None
 
+# Golden Hunter v2 expansion (2026-08-14, founding directive: "continuous
+# global discovery across real, free evidence sources"): Pioneer now also
+# offers discover_all() — Ask HN + Show HN + GitHub recent repos on top of
+# HN top stories. Guarded exactly like PIONEER_DISCOVER: a broken network
+# call must never crash the real hunt.
+try:
+    from golden_hunter.pioneer import discover_all as PIONEER_DISCOVER_ALL
+except Exception:
+    PIONEER_DISCOVER_ALL = None
+
 FACTORY_DIR = os.path.dirname(os.path.abspath(__file__))
 OPPORTUNITIES_FILE = os.path.join(FACTORY_DIR, 'OPPORTUNITIES.md')
 REJECTED_NICHES_FILE = os.path.join(FACTORY_DIR, 'REJECTED_NICHES.md')  # factory_loop.js's circuit breaker
@@ -277,7 +287,28 @@ def hunt_market(limit=10, write_opportunities=True, decisions_path=None, evidenc
             pioneer_niches = []
     pioneer_candidates = [(n, "kdp_books") for n in pioneer_niches]
 
-    candidates = seed_candidates + sensing_candidates + pioneer_candidates
+    # Golden Hunter v2 (2026-08-14): ALSO consume Pioneer's multi-source
+    # discover_all() feed (Ask HN / Show HN / GitHub recent repos), so the
+    # continuous hunt surfaces real problems people are actively describing
+    # and real projects being built today — not just HN top stories. Same
+    # honest "kdp_books" ladder fallback and same failure-degrades-to-empty
+    # discipline as every other untagged discovery source.
+    pioneer_all_niches = []
+    if PIONEER_DISCOVER_ALL is not None:
+        try:
+            pioneer_all_raw = PIONEER_DISCOVER_ALL(limit_per_source=limit)
+            pioneer_all_niches = [
+                c["niche"] for c in pioneer_all_raw
+                if c.get("niche")
+                and c["niche"] not in seed_niches
+                and c["niche"] not in sensing_niches
+                and c["niche"] not in pioneer_niches
+            ]
+        except Exception:
+            pioneer_all_niches = []
+    pioneer_all_candidates = [(n, "kdp_books") for n in pioneer_all_niches]
+
+    candidates = seed_candidates + sensing_candidates + pioneer_candidates + pioneer_all_candidates
     scanned = []
     skipped = []
     golden_catch = []
@@ -285,7 +316,9 @@ def hunt_market(limit=10, write_opportunities=True, decisions_path=None, evidenc
     for niche, ladder in candidates:
         should_skip, reason = _check_knowledge_brain(niche)
         brain_hits = _search_brain(niche.split()[0]) if niche.split() else []
-        if niche in pioneer_niches:
+        if niche in pioneer_all_niches:
+            source = "pioneer_all"
+        elif niche in pioneer_niches:
             source = "pioneer"
         elif niche in sensing_niches:
             source = "sensing_engine"
@@ -356,6 +389,7 @@ def hunt_market(limit=10, write_opportunities=True, decisions_path=None, evidenc
         "golden_count": len(golden_catch),
         "sensing_engine_linked_count": len(sensing_candidates),
         "pioneer_linked_count": len(pioneer_candidates),
+        "pioneer_all_linked_count": len(pioneer_all_candidates),
         "scanned": scanned,
         "golden_catch": golden_catch,
     }
