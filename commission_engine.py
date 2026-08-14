@@ -703,8 +703,17 @@ def select_first_launch_opportunity(portfolio=None, now=None):
     # selection functions in this factory agree again. opportunity_id
     # remains the final, purely-cosmetic tiebreak only when both real
     # signals are genuinely equal.
+    # Phase 2026-08-14 (First Revenue directive, Section 1): founder's
+    # standing requirement is an Algeria-receivable payout where
+    # verifiable (PayPal does not support receiving payments in Algeria;
+    # CJ via Payoneer does). payout_algeria_compatible is a real,
+    # verified field on the portfolio records -- it ranks Algeria-
+    # compatible recurring candidates above otherwise-equal recurring
+    # ones, keeping this function in agreement with
+    # rank_commission_shortlist()'s identical tie-break below.
     candidates.sort(key=lambda o: (
         not o["recurring_commission"],
+        not bool(o.get("payout_algeria_compatible", False)),
         -score_commission_opportunity(o)["real_dimensions_count"],
         o["opportunity_id"],
     ))
@@ -779,12 +788,14 @@ def rank_commission_shortlist(portfolio=None, top_n=5, now=None):
             "known_conflict": conflict, "lifecycle_state": lifecycle_state,
             "real_dimensions_count": base["real_dimensions_count"],
             "verification_tier": VERIFICATION_TIER.get(o.get("verification_status"), 0),
+            "payout_algeria_compatible": bool(o.get("payout_algeria_compatible", False)),
         }
         scored.append(entry)
 
     scored.sort(key=lambda e: (
         -e["verification_tier"],
         not e["commission_score"] == "RECURRING",
+        not e["payout_algeria_compatible"],
         -e["real_dimensions_count"],
         e["opportunity_id"],
     ))
@@ -1345,11 +1356,13 @@ def golden_hunter_commission_verification(portfolio=None, now=None):
 
     ranked_by_tier = list(shortlist["shortlist"]) == sorted(
         shortlist["shortlist"],
-        key=lambda e: (-e["verification_tier"], not e["commission_score"] == "RECURRING", -e["real_dimensions_count"], e["opportunity_id"]),
+        key=lambda e: (-e["verification_tier"], not e["commission_score"] == "RECURRING",
+                       not bool(e.get("payout_algeria_compatible", False)),
+                       -e["real_dimensions_count"], e["opportunity_id"]),
     )
     checks["ranks_by_expected_value_and_confidence"] = {
         "ok": ranked_by_tier,
-        "note": "Ranked by (verification_tier desc, recurring first, real_dimensions_count desc, opportunity_id) -- the identical deterministic key rank_commission_shortlist() itself sorts by (unified with select_first_launch_opportunity() on 2026-08-14 so both real selection functions agree). expected_value itself is honestly 'UNKNOWN -- requires commission_economics()' for every real entry today, never a fabricated confidence number substituted in its place.",
+        "note": "Ranked by (verification_tier desc, recurring first, payout_algeria_compatible first, real_dimensions_count desc, opportunity_id) -- the identical deterministic key rank_commission_shortlist() itself sorts by (unified with select_first_launch_opportunity() on 2026-08-14 so both real selection functions agree; Algeria-receivable payout added 2026-08-14 per First Revenue directive after official-source verification that PayPal does not support receiving payments in Algeria while CJ-via-Payoneer does). expected_value itself is honestly 'UNKNOWN -- requires commission_economics()' for every real entry today, never a fabricated confidence number substituted in its place.",
     }
 
     checks["exposes_uncertainty"] = {
