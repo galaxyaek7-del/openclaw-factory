@@ -1,0 +1,138 @@
+{
+  "opportunity_id": "CO-digitalocean-affiliate",
+  "program_name": "DigitalOcean Affiliate Program",
+  "campaign": {
+    "channel": "digitalocean-educational-blog",
+    "campaign": "first-revenue-cloud-infra",
+    "content": "digitalocean-cloud-infra-guide",
+    "utm_medium": "blog",
+    "utm_source": "galaxyforge"
+  },
+  "link_status": "NOT_CONFIGURED",
+  "disclosure": "Affiliate disclosure: this post contains affiliate links for DigitalOcean Affiliate Program. We may earn a commission if you purchase via our links, at no extra cost to you. Official commission terms: 10 percent of referred customer's monthly spend, paid monthly for one full year per paying user (via Awin network).",
+  "assets": [
+    {
+      "channel": "short_video_script",
+      "utm_source": "tiktok",
+      "attribution": {
+        "source": "tiktok",
+        "campaign": "first-revenue-cloud-infra",
+        "content": "CO-digitalocean-affiliate-short_video_script",
+        "opportunity_id": "CO-digitalocean-affiliate"
+      },
+      "destination_status": "NOT_CONFIGURED",
+      "destination_url": null,
+      "content": {
+        "hook": "Need Plain-language guide to solving: Needs cheap, simple cloud…?",
+        "body": "Plain-language guide to solving: Needs cheap, simple cloud infrastructure (droplets, Kubernetes, app platform) for Developers, cloud infra buyers, startups -- anyone provisioning cloud infrastructure",
+        "cta": "Grab the service — Pricing: see product page.. Link in bio.",
+        "hashtags": "#cloud #devops #developers #startups",
+        "duration_seconds": 25
+      }
+    },
+    {
+      "channel": "x_post",
+      "utm_source": "x",
+      "attribution": {
+        "source": "x",
+        "campaign": "first-revenue-cloud-infra",
+        "content": "CO-digitalocean-affiliate-x_post",
+        "opportunity_id": "CO-digitalocean-affiliate"
+      },
+      "destination_status": "NOT_CONFIGURED",
+      "destination_url": null,
+      "content": {
+        "text": "Deploy on cloud in minutes: DigitalOcean cloud infrastructure (droplets, managed DBs, app platform): Plain-language guide to solving: Needs cheap, simple cloud infrastructure (droplets, Kubernetes, app platform) for Developers, cloud infra buyers, startups -- anyone provisioning cloud infrastructure… Pricing: see product page. #galaxyforge",
+        "max_chars": 280
+      }
+    },
+    {
+      "channel": "facebook_post",
+      "utm_source": "facebook",
+      "attribution": {
+        "source": "facebook",
+        "campaign": "first-revenue-cloud-infra",
+        "content": "CO-digitalocean-affiliate-facebook_post",
+        "opportunity_id": "CO-digitalocean-affiliate"
+      },
+      "destination_status": "NOT_CONFIGURED",
+      "destination_url": null,
+      "content": {
+        "text": "Deploy on cloud in minutes: DigitalOcean cloud infrastructure (droplets, managed DBs, app platform)\n\nPlain-language guide to solving: Needs cheap, simple cloud infrastructure (droplets, Kubernetes, app platform) for Developers, cloud infra buyers, startups -- anyone provisioning cloud infrastructure. Official program terms: 10 percent of referred customer's monthly spend, paid monthly for one full year per paying user (via Awin network). No overpromises — see the official site before committing.\n\nPricing: see product page.",
+        "cta": "Learn more."
+      }
+    },
+    {
+      "channel": "pinterest_asset",
+      "utm_source": "pinterest",
+      "attribution": {
+        "source": "pinterest",
+        "campaign": "first-revenue-cloud-infra",
+        "content": "CO-digitalocean-affiliate-pinterest_asset",
+        "opportunity_id": "CO-digitalocean-affiliate"
+      },
+      "destination_status": "NOT_CONFIGURED",
+      "destination_url": null,
+      "content": {
+        "pin_title": "Deploy on cloud in minutes: DigitalOcean cloud infrastructure (droplets, managed DBs, app platform)",
+        "pin_description": "Plain-language guide to solving: Needs cheap, simple cloud infrastructure (droplets, Kubernetes, app platform) for Developers, cloud infra buyers, startups -- anyone provisioning cloud infrastructure…",
+        "image_alt_text": "Deploy on cloud in minutes: DigitalOcean cloud infrastructure (droplets, managed DBs, app platform) — service"
+      }
+    },
+    {
+      "channel": "linkedin_post",
+      "utm_source": "linkedin",
+      "attribution": {
+        "source": "linkedin",
+        "campaign": "first-revenue-cloud-infra",
+        "content": "CO-digitalocean-affiliate-linkedin_post",
+        "opportunity_id": "CO-digitalocean-affiliate"
+      },
+      "destination_status": "NOT_CONFIGURED",
+      "destination_url": null,
+      "content": {
+        "headline": "Deploy on cloud in minutes: DigitalOcean cloud infrastructure (droplets, managed DBs, app platform)",
+        "body": "Plain-language guide to solving: Needs cheap, simple cloud infrastructure (droplets, Kubernetes, app platform) for Developers, cloud infra buyers, startups -- anyone provisioning cloud infrastructure. Official program terms: 10 percent of referred customer's monthly spend, paid monthly for one full year per paying user (via Awin network). No overpromises — see the official site before committing.\n\nPricing: see product page. — one-time, no subscription, no seat minimum.\nThis is a service (validation concept — not a launched product).",
+        "cta": "Comments and DMs welcome.",
+        "post_length_chars": 538
+      }
+    },
+    {
+      "channel": "email_newsletter",
+      "utm_source": "email",
+      "attribution": {
+        "source": "email",
+        "campaign": "first-revenue-cloud-infra",
+        "content": "CO-digitalocean-affiliate-email_newsletter",
+        "opportunity_id": "CO-digitalocean-affiliate"
+      },
+      "destination_status": "NOT_CONFIGURED",
+      "destination_url": null,
+      "content": {
+        "subject": "Deploy on cloud in minutes: DigitalOcean cloud infrastructure (droplets, managed DBs, app platform)",
+        "preview_text": "Plain-language guide to solving: Needs cheap, simple cloud infrastructure (droplets, Kube…",
+        "body": "Hi,\n\nPlain-language guide to solving: Needs cheap, simple cloud infrastructure (droplets, Kubernetes, app platform) for Developers, cloud infra buyers, startups -- anyone provisioning cloud infrastructure. Official program terms: 10 percent of referred customer's monthly spend, paid monthly for one full year per paying user (via Awin network). No overpromises — see the official site before committing.\n\nPricing: see product page.. No subscription. Instant delivery.\n\n— Galaxy Forge"
+      }
+    },
+    {
+      "channel": "seo_content",
+      "utm_source": "seo",
+      "attribution": {
+        "source": "seo",
+        "campaign": "first-revenue-cloud-infra",
+        "content": "CO-digitalocean-affiliate-seo_content",
+        "opportunity_id": "CO-digitalocean-affiliate"
+      },
+      "destination_status": "NOT_CONFIGURED",
+      "destination_url": null,
+      "content": {
+        "meta_title": "Deploy on cloud in minutes: DigitalOcean cloud infrastructure (droplets, managed DBs, app platform)",
+        "meta_description": "Plain-language guide to solving: Needs cheap, simple cloud infrastructure (droplets, Kubernetes, app platform) for Developers, cloud infra buyers, startup…",
+        "keywords": "cloud, devops, developers, startups",
+        "h1": "Deploy on cloud in minutes: DigitalOcean cloud infrastructure (droplets, managed DBs, app platform)",
+        "body_preview": "Plain-language guide to solving: Needs cheap, simple cloud infrastructure (droplets, Kubernetes, app platform) for Developers, cloud infra buyers, startups -- anyone provisioning cloud infrastructure. Official program terms: 10 percent of referred customer's monthly spend, paid monthly for one full…"
+      }
+    }
+  ],
+  "generated_at": "2026-08-14T16:05:53.305422+00:00"
+}

@@ -63,8 +63,8 @@ class TestLaunchPrep(unittest.TestCase):
 
     def test_exactly_one_founder_action_defined(self):
         prep = prepare_launch()
-        self.assertEqual(prep.founder_action["action"], "APPLY_CJ_DIGITALOCEAN")
-        self.assertIn("CJ Affiliate", prep.founder_action["what"])
+        self.assertEqual(prep.founder_action["action"], "APPLY_AWIN_DIGITALOCEAN")
+        self.assertIn("Awin", prep.founder_action["what"])
         self.assertIn("Payoneer", prep.founder_action["what"])
 
     def test_measurement_is_honest_zero_never_fabricated(self):

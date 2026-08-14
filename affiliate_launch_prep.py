@@ -56,11 +56,14 @@ LAUNCH_TRACKING = {
     "utm_source": "galaxyforge",
 }
 
-# Official CJ link shape -- only filled once the founder's CJ application is
-# approved and the network issues the real tracking link. Until then the
-# placeholder is honest (NOT_CONFIGURED), never a guessed URL.
+# Official network is Awin (verified 2026-08-14 from digitalocean.com/affiliates:
+# the live "Become an affiliate" button resolves to ui.awin.com/merchant-profile/123996).
+# The real tracking link is only filled once the founder's Awin application is
+# approved and the network issues it. Until then the placeholder is honest
+# (NOT_CONFIGURED), never a guessed URL.
 LAUNCH_LINK_STATUS = "NOT_CONFIGURED"
-LAUNCH_LINK_OFFICIAL_PROGRAM_URL = "https://www.digitalocean.com/affiliates"
+LAUNCH_LINK_OFFICIAL_PROGRAM_URL = "https://ui.awin.com/merchant-profile/123996"
+LAUNCH_LINK_SIGNUP_URL = "https://ui.awin.com/merchant-profile/123996"
 
 
 @dataclass
@@ -134,23 +137,25 @@ def _measurement_now(now: Optional[datetime] = None) -> dict:
 
 
 def _founder_action(offer: dict) -> dict:
-    """Exactly ONE founder action -- everything else is automated. The CJ
-    application + Payoneer connection is the single legal/identity act only
-    the founder can complete; every other launch asset is already prepared."""
+    """Exactly ONE founder action -- everything else is automated. The Awin
+    publisher signup + DigitalOcean program application + Payoneer connection
+    is the single legal/identity act only the founder can complete; every
+    other launch asset is already prepared."""
     return {
-        "action": "APPLY_CJ_DIGITALOCEAN",
+        "action": "APPLY_AWIN_DIGITALOCEAN",
         "what": (
-            f"سجّل كمعلن (Publisher) على CJ Affiliate، قدّم طلب انضمام لبرنامج "
-            f"{offer.get('program_name', 'DigitalOcean Affiliate Program')}، "
-            f"وأضف حساب Payoneer كطريقة دفع (متوافقة مع الجزائر)."
+            f"سجّل كـ Publisher على شبكة Awin عبر الرابط الرسمي "
+            f"{LAUNCH_LINK_SIGNUP_URL} (برنامج DigitalOcean رقم 123996)، "
+            f"قدّم طلب انضمام، وأضف Payoneer كطريقة دفع (متوافقة مع الجزائر)."
         ),
         "why": (
-            "PayPal لا يدعم استلام المدفوعات في الجزائر (تحقق رسمي 2026-08-14)؛ "
-            "CJ تدفع عالميًا عبر Payoneer (متاح في الجزائر) -- هذا هو الممر "
-            "الوحيد الموثّق لاستلام أول عمولة فعلية."
+            "التحقق الرسمي 2026-08-14 من digitalocean.com/affiliates: زر التسجيل "
+            "الحي يؤدي إلى شبكة Awin وليس CJ. PayPal لا يدعم استلام المدفوعات في "
+            "الجزائر؛ Awin تدفع للناشرين الدوليين عبر Payoneer (متاح في الجزائر) -- "
+            "هذا هو الممر الموثّق لاستلام أول عمولة فعلية."
         ),
         "unlocks": (
-            "رابط CJ tracking الرسمي -> نشره عبر المحتوى المُعد + تسجيل النقرات "
+            "رابط Awin tracking الرسمي -> نشره عبر المحتوى المُعد + تسجيل النقرات "
             "بمعرّفات LAUNCH_TRACKING -> تتبعها في revenue_intelligence."
         ),
     }
@@ -165,6 +170,7 @@ def render_launch_prep_json(prep: LaunchPrep) -> str:
             "commission_value": prep.offer.get("commission_value"),
             "commission_currency": prep.offer.get("commission_currency"),
             "recurring_commission": prep.offer.get("recurring_commission"),
+            "affiliate_network": prep.offer.get("affiliate_network"),
             "payout_terms": prep.offer.get("payout_terms"),
             "payout_algeria_compatible": prep.offer.get("payout_algeria_compatible"),
             "evidence_url": prep.offer.get("evidence_url"),
@@ -172,6 +178,7 @@ def render_launch_prep_json(prep: LaunchPrep) -> str:
         "content_piece_formats": [p["format"] for p in prep.content_pieces],
         "tracking": prep.tracking,
         "affiliate_link_status": prep.affiliate_link_status,
+        "official_signup_url": LAUNCH_LINK_SIGNUP_URL,
         "measurement": prep.measurement,
         "founder_action": prep.founder_action,
         "prepared_at": prep.prepared_at,
