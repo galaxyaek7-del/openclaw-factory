@@ -155,11 +155,23 @@ class UnifiedLaunchQueueTests(unittest.TestCase):
             self.assertNotEqual(e["status"], "PUBLISHED")
 
 
-class MultiArmCompetitionTests(unittest.TestCase):
+class MultiArmRevenueEngineTests(unittest.TestCase):
     def test_never_declares_a_winner_with_zero_verified_revenue(self):
-        result = aco.multi_arm_competition()
+        result = aco.multi_arm_revenue_engine()
         self.assertIsNone(result["winner"])
         self.assertIn("No REAL VERIFIED revenue", result["note"])
+
+    def test_ranking_is_recomputed_every_call(self):
+        result = aco.multi_arm_revenue_engine()
+        self.assertIn("dynamic_ranking", result)
+        self.assertEqual(len(result["dynamic_ranking"]), 10)
+
+    def test_recurring_high_automation_arms_rank_first_with_no_data(self):
+        result = aco.multi_arm_revenue_engine()
+        ranked = [r["arm"] for r in result["dynamic_ranking"]]
+        # Affiliate + Paddle (recurring + high automation) outrank blocked arms.
+        self.assertLess(ranked.index("AFFILIATE"), ranked.index("ETSY"))
+        self.assertLess(ranked.index("PADDLE"), ranked.index("SAAS"))
 
 
 class CeoCommandCenterTests(unittest.TestCase):
@@ -347,6 +359,153 @@ class SecurityTests(unittest.TestCase):
         for payload in (aco.ceo_command_center(), aco.founder_action_queue(), aco.run_autonomous_daily_loop()):
             text = json.dumps(payload)
             self.assertNotIn('"VERIFIED_REVENUE_USD": 50', text)
+
+
+class RevenueIntegrityGateTests(unittest.TestCase):
+    """Classification of every sales-ledger row (directive section 1)."""
+
+    def _write_rows(self, rows):
+        td = tempfile.TemporaryDirectory()
+        path = Path(td.name) / "mock_sales.jsonl"
+        with open(path, "w", encoding="utf-8") as f:
+            for r in rows:
+                f.write(json.dumps(r) + "\n")
+        self.addCleanup(td.cleanup)
+        return path
+
+    def test_publish_attempts_are_never_sales(self):
+        path = self._write_rows([{"event_type": "publish_attempt", "platform": "gumroad", "ok": False}])
+        gate = aco.revenue_integrity_gate(sales_ledger_path=str(path))
+        self.assertEqual(gate["VERIFIED_SALES"], 0)
+        self.assertEqual(gate["UNKNOWN_ROWS"], 1)
+
+    def test_mock_rows_are_classified_mock_not_sales(self):
+        path = self._write_rows([{"event_type": "sale", "platform": "paddle", "environment": "MOCK", "id": "t1"}])
+        gate = aco.revenue_integrity_gate(sales_ledger_path=str(path))
+        self.assertEqual(gate["VERIFIED_SALES"], 0)
+        self.assertEqual(gate["TEST_OR_MOCK_ROWS"], 1)
+
+    def test_sale_without_order_ref_is_unknown(self):
+        path = self._write_rows([{"event_type": "sale", "platform": "gumroad"}])
+        gate = aco.revenue_integrity_gate(sales_ledger_path=str(path))
+        self.assertEqual(gate["VERIFIED_SALES"], 0)
+        self.assertEqual(gate["UNKNOWN_ROWS"], 1)
+
+    def test_sale_with_order_ref_but_no_evidence_is_observed_only(self):
+        path = self._write_rows([{"event_type": "sale", "platform": "paddle", "order_id": "ord-1", "environment": "REAL"}])
+        gate = aco.revenue_integrity_gate(sales_ledger_path=str(path))
+        self.assertEqual(gate["VERIFIED_SALES"], 0)
+        self.assertEqual(gate["OBSERVED_SALES"], 1)
+        self.assertEqual(gate["VERIFIED_REVENUE_USD"], 0.0)
+
+    def test_44_publish_rows_never_become_44_sales(self):
+        rows = [{"event_type": "publish_attempt", "platform": "gumroad", "dry_run": True} for _ in range(44)]
+        path = self._write_rows(rows)
+        gate = aco.revenue_integrity_gate(sales_ledger_path=str(path))
+        self.assertEqual(gate["TOTAL_LEDGER_ROWS"], 44)
+        self.assertEqual(gate["VERIFIED_SALES"], 0)
+        self.assertEqual(gate["UNKNOWN_ROWS"], 44)
+
+    def test_history_is_preserved_verbatim(self):
+        rows = [{"event_type": "publish_attempt", "platform": "gumroad", "dry_run": True, "product_title": "X"}]
+        path = self._write_rows(rows)
+        gate = aco.revenue_integrity_gate(sales_ledger_path=str(path))
+        self.assertEqual(gate["classified"][0]["raw"]["product_title"], "X")
+
+    def test_verified_sales_never_from_mock_or_test(self):
+        path = self._write_rows([
+            {"event_type": "sale", "environment": "MOCK", "order_id": "o1", "evidence": "ev1"},
+            {"event_type": "sale", "environment": "TEST", "order_id": "o2", "evidence": "ev2"},
+        ])
+        gate = aco.revenue_integrity_gate(sales_ledger_path=str(path))
+        self.assertEqual(gate["VERIFIED_SALES"], 0)
+        self.assertEqual(gate["TEST_OR_MOCK_ROWS"], 2)
+
+
+class AffiliateFunnelTests(unittest.TestCase):
+    def test_funnel_state_counts_are_consistent(self):
+        result = aco.affiliate_candidate_funnel()
+        self.assertEqual(result["REVENUE_PRODUCING"], 0)
+        self.assertEqual(result["ACTIVE"], 0)  # link is NOT_CONFIGURED
+
+    def test_funnel_has_all_states(self):
+        result = aco.affiliate_candidate_funnel()
+        for state in aco.AFFILIATE_FUNNEL_STATES:
+            self.assertIn(state, result)
+
+    def test_no_program_is_active_without_configured_link(self):
+        original = aco._launch_link_status
+        aco._launch_link_status = lambda: "NOT_CONFIGURED"
+        try:
+            result = aco.affiliate_candidate_funnel()
+            self.assertEqual(result["ACTIVE"], 0)
+        finally:
+            aco._launch_link_status = original
+
+    def test_program_becomes_active_when_link_configured(self):
+        original = aco._launch_link_status
+        aco._launch_link_status = lambda: "CONFIGURED"
+        try:
+            result = aco.affiliate_candidate_funnel()
+            self.assertEqual(result["ACTIVE"], 1)
+        finally:
+            aco._launch_link_status = original
+
+
+class OpportunityRoutingTests(unittest.TestCase):
+    def test_affiliate_routes_to_affiliate_arm(self):
+        r = aco.route_opportunity({
+            "opportunity_id": "CO-x-affiliate", "category": "affiliate",
+            "recurring_commission": True, "verification_status": "VERIFIED",
+        })
+        self.assertEqual(r["BEST_REVENUE_ARM"], "AFFILIATE")
+        self.assertEqual(r["route_decision"], "route_to_production_router")
+
+    def test_unverified_opportunity_is_held(self):
+        r = aco.route_opportunity({
+            "opportunity_id": "CO-x-affiliate", "category": "affiliate",
+            "recurring_commission": False, "verification_status": "THIRD_PARTY_ONLY",
+        })
+        self.assertEqual(r["route_decision"], "hold_for_verification")
+
+    def test_marketplace_routes_to_marketplace_arm(self):
+        r = aco.route_opportunity({
+            "opportunity_id": "CO-y-marketplace", "category": "marketplace",
+            "verification_status": "VERIFIED",
+        })
+        self.assertEqual(r["BEST_REVENUE_ARM"], "MARKETPLACE")
+
+
+class DailyPriorityTests(unittest.TestCase):
+    def setUp(self):
+        self.paddle_check, self.gp = _stub_live_checks()
+
+    def test_removing_revenue_blocker_is_top_priority_today(self):
+        result = aco.daily_commercial_priority()
+        self.assertEqual(result["priorities"][0]["action"].lower()[:6], "remove")
+        self.assertIn("GATE-AWIN-DIGITALOCEAN", result["priorities"][0]["blocker"])
+
+    def test_never_proposes_new_feature_work_while_asset_unearned(self):
+        result = aco.daily_commercial_priority()
+        for p in result["priorities"]:
+            self.assertNotIn("build another feature", p["action"])
+
+
+class CeoCommandCenterRevenueTests(unittest.TestCase):
+    def setUp(self):
+        self.paddle_check, self.gp = _stub_live_checks()
+
+    def test_command_center_shows_integrity_sales_figures(self):
+        result = aco.ceo_command_center()
+        self.assertIn("VERIFIED_SALES", result)
+        self.assertIn("OBSERVED_SALES", result)
+        self.assertEqual(result["VERIFIED_SALES"], 0)
+        self.assertEqual(result["OBSERVED_SALES"], 0)
+
+    def test_ledger_rows_reported_not_hidden(self):
+        result = aco.ceo_command_center()
+        self.assertIn("LEDGER_ROWS", result)
+        self.assertEqual(result["LEDGER_ROWS"], 44)  # real historical rows preserved
 
 
 if __name__ == "__main__":

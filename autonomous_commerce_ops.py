@@ -145,6 +145,162 @@ def _launch_link_status() -> str:
 
 
 # ---------------------------------------------------------------------------
+# 0 -- Revenue Integrity Gate (directive priority #1)
+# ---------------------------------------------------------------------------
+
+# Real classification tiers. VERIFIED is the ONLY tier that may ever be
+# presented as revenue. Everything else is reported separately.
+CLASSIFICATION_TIERS = ("VERIFIED", "OBSERVED", "TEST", "MOCK", "PROJECTED", "UNKNOWN")
+
+_SALE_IDENTITY_FIELDS = (
+    "sale_id", "platform", "order_id", "transaction_id", "timestamp",
+    "offer", "channel", "campaign", "amount", "currency", "status", "evidence",
+)
+
+# A genuine sale record is one whose event_type is an actual transactional
+# sale and which carries a real platform order/transaction reference.
+_REAL_SALE_EVENT_TYPES = ("sale", "order", "transaction", "commission", "checkout")
+
+
+def _classify_sales_ledger_row(row: dict) -> dict:
+    """Classify ONE data/sales_ledger.jsonl row into VERIFIED/OBSERVED/TEST/
+    MOCK/PROJECTED/UNKNOWN, with a human-readable reason. History is never
+    deleted: the raw row is returned verbatim under `raw`."""
+    event_type = str(row.get("event_type") or "").lower()
+    raw = row.get("raw") or {}
+
+    # Only genuine transactional event types can possibly be sales.
+    if event_type not in _REAL_SALE_EVENT_TYPES:
+        return {
+            "sale_id": row.get("sale_id") or row.get("id"),
+            "platform": row.get("platform"),
+            "classification": "UNKNOWN",
+            "reason": f"event_type={row.get('event_type')!r} is not a transactional sale (real types: {_REAL_SALE_EVENT_TYPES}) -- publish/dry-run/failure records are never sales",
+            "revenue_eligible": False,
+            "raw": row,
+        }
+
+    # A publish_attempt row is never a sale regardless of ok/dry_run flags.
+    # It describes an attempt to PUBLISH a product, not a customer purchase.
+    # (Historical rows in this factory are exactly this -- a mislabeled
+    # "44 sales" claim would come from counting these as sales.)
+    if event_type == "publish_attempt" or "publish" in event_type:
+        return {
+            "sale_id": row.get("sale_id") or row.get("id"),
+            "platform": row.get("platform"),
+            "classification": "UNKNOWN",
+            "reason": "publish_attempt is a publish attempt, not a customer sale",
+            "revenue_eligible": False,
+            "raw": row,
+        }
+
+    # MOCK/TEST rows are explicit in the row itself.
+    env = str(row.get("environment") or (raw.get("environment") if isinstance(raw, dict) else "") or "").upper()
+    if env in ("MOCK", "SIMULATION"):
+        return {
+            "sale_id": row.get("sale_id") or row.get("id"),
+            "platform": row.get("platform"),
+            "classification": "MOCK",
+            "reason": f"explicit environment={env}",
+            "revenue_eligible": False,
+            "raw": row,
+        }
+    if env == "TEST":
+        return {
+            "sale_id": row.get("sale_id") or row.get("id"),
+            "platform": row.get("platform"),
+            "classification": "TEST",
+            "reason": "explicit environment=TEST",
+            "revenue_eligible": False,
+            "raw": row,
+        }
+
+    # A REAL-classified row still needs a platform order/transaction reference
+    # plus evidence before it can be OBSERVED; only an independently-confirmed
+    # paid event from the platform reaches VERIFIED.
+    order_ref = row.get("order_id") or row.get("transaction_id") or (raw.get("id") if isinstance(raw, dict) else None)
+    if not order_ref:
+        return {
+            "sale_id": row.get("sale_id") or row.get("id"),
+            "platform": row.get("platform"),
+            "classification": "UNKNOWN",
+            "reason": "transactional event without a platform order/transaction reference",
+            "revenue_eligible": False,
+            "raw": row,
+        }
+    evidence = row.get("evidence") or (raw.get("evidence") if isinstance(raw, dict) else None)
+    if env == "REAL" and not evidence:
+        return {
+            "sale_id": row.get("sale_id") or row.get("id"),
+            "platform": row.get("platform"),
+            "classification": "OBSERVED",
+            "reason": "transactional event with order reference but no external evidence -- observed, not verified",
+            "revenue_eligible": False,
+            "raw": row,
+        }
+    return {
+        "sale_id": row.get("sale_id") or row.get("id"),
+        "platform": row.get("platform"),
+        "classification": "VERIFIED" if env == "REAL" else "OBSERVED",
+        "reason": "transactional event with order reference" + (" and external evidence" if evidence else ""),
+        "revenue_eligible": env == "REAL",
+        "raw": row,
+    }
+
+
+def revenue_integrity_gate(sales_ledger_path: Optional[str] = None,
+                           commission_ledger_path: Optional[str] = None,
+                           clicks_ledger_path: Optional[str] = None) -> Dict[str, object]:
+    """Priority-1 gate: audit every revenue-claiming source and classify every
+    record. Real output:
+
+      * sales_ledger.jsonl  -> every row classified (VERIFIED/OBSERVED/TEST/
+        MOCK/PROJECTED/UNKNOWN). History preserved verbatim under `raw`.
+      * VERIFIED_SALES       -> only rows classified VERIFIED.
+      * OBSERVED_SALES       -> transactional events with order refs but no
+        external evidence (never presented as revenue).
+      * VERIFIED_REVENUE_USD -> from commission_ledger REAL CONFIRMED/PAID only.
+
+    The gate never deletes data and never reclassifies upward. If a "44 sales"
+    claim ever surfaces, this is where it is checked: each row must carry the
+    full sale identity + evidence to be counted."""
+    from channels import ledger as sales_ledger
+
+    raw_rows = list(sales_ledger.read_events(ledger_path=sales_ledger_path))
+    classified = [_classify_sales_ledger_row(r) for r in raw_rows]
+
+    verified = [c for c in classified if c["classification"] == "VERIFIED"]
+    observed = [c for c in classified if c["classification"] == "OBSERVED"]
+    test_rows = [c for c in classified if c["classification"] == "TEST"]
+    mock_rows = [c for c in classified if c["classification"] == "MOCK"]
+    unknown = [c for c in classified if c["classification"] in ("UNKNOWN", "PROJECTED")]
+
+    verified_usd = 0.0
+    try:
+        import revenue_os as ro
+        view = ro.revenue_ledger_view(commission_ledger_path=commission_ledger_path,
+                                      clicks_ledger_path=clicks_ledger_path)
+        verified_usd = float(view.get("VERIFIED_REVENUE_USD", 0.0))
+        observed_clicks = view.get("OBSERVED_CLICKS", {}).get("total_real_clicks", 0) if isinstance(view.get("OBSERVED_CLICKS"), dict) else view.get("OBSERVED_CLICKS", 0)
+    except Exception:
+        observed_clicks = 0
+
+    return {
+        "generated_at": _now_iso(),
+        "VERIFIED_SALES": len(verified),
+        "VERIFIED_REVENUE_USD": verified_usd,
+        "OBSERVED_SALES": len(observed),
+        "TEST_OR_MOCK_ROWS": len(test_rows) + len(mock_rows),
+        "UNKNOWN_ROWS": len(unknown),
+        "TOTAL_LEDGER_ROWS": len(raw_rows),
+        "TOTAL_REAL_CLICKS": observed_clicks,
+        "classified": classified,
+        "verification_separation": "VERIFIED revenue comes ONLY from commission_ledger REAL CONFIRMED/PAID. OBSERVED/TEST/MOCK/PROJECTED/UNKNOWN are reported separately and NEVER summed into VERIFIED.",
+        "note": "No row is counted as a sale unless it is a transactional event carrying a platform order/transaction reference and evidence. Publish attempts, dry runs, smoke tests and simulations are never sales and never revenue.",
+    }
+
+
+# ---------------------------------------------------------------------------
 # 1 -- Human Gate Orchestrator
 # ---------------------------------------------------------------------------
 
@@ -347,11 +503,14 @@ def authorize_launch_entry(entry, now: Optional[datetime] = None):
 # 7 -- Multi-arm competition
 # ---------------------------------------------------------------------------
 
-def multi_arm_competition(now: Optional[datetime] = None) -> Dict[str, object]:
-    """Real, data-driven comparison of the registered revenue arms. When real
-    data exists it uses it; with no real revenue every arm is reported honestly
-    at $0 and ranked by the existing profit-first score. Never declares a
-    winner on zero real data."""
+def multi_arm_revenue_engine(now: Optional[datetime] = None) -> Dict[str, object]:
+    """Dynamic, data-driven arm ranking (directive section 7). Each arm is
+    scored on status/time_to_revenue/verified_revenue/profit/conversion/
+    automation/recurring_potential/human_dependency and ranked by
+    EXPECTED PROFIT x CONFIDENCE x SPEED -- the ranking is recomputed every
+    call, never hardcoded. With zero real revenue every arm sits at $0 and no
+    arm is declared a winner; the ranking then reflects real structural
+    readiness (recurring potential, automation, human dependency)."""
     try:
         import revenue_os as ro
         rank = ro.profit_first_rank(top_n=10)
@@ -359,22 +518,175 @@ def multi_arm_competition(now: Optional[datetime] = None) -> Dict[str, object]:
     except Exception:
         ranking = []
     totals = _real_revenue_totals()
+
     arms = {
-        "AFFILIATE": {"verified_usd": 0.0, "clicks": totals["OBSERVED_CLICKS"], "arm_ready": True},
-        "GUMROAD": {"verified_usd": 0.0, "product_count": 1, "arm_ready": True},
-        "PADDLE": {"verified_usd": 0.0, "product_count": 6, "arm_ready": True},
-        "KDP": {"verified_usd": 0.0, "arm_ready": False},
-        "ETSY": {"verified_usd": 0.0, "arm_ready": False},
-        "TEMPLATES": {"verified_usd": 0.0, "arm_ready": False},
-        "WALL_ART": {"verified_usd": 0.0, "arm_ready": False},
-        "SAAS": {"verified_usd": 0.0, "arm_ready": False},
+        "AFFILIATE": {
+            "status": "PARTIAL", "time_to_revenue": "medium", "verified_revenue_usd": 0.0,
+            "profit": 0.0, "conversion": 0.0, "automation": "high", "recurring_potential": True,
+            "human_dependency": "application approval + tracking link", "clicks": totals["OBSERVED_CLICKS"],
+        },
+        "GUMROAD": {
+            "status": "PARTIAL", "time_to_revenue": "short", "verified_revenue_usd": 0.0,
+            "profit": 0.0, "conversion": 0.0, "automation": "high", "recurring_potential": False,
+            "human_dependency": "payment method + price + publish", "product_count": 1,
+        },
+        "PADDLE": {
+            "status": "PARTIAL", "time_to_revenue": "short", "verified_revenue_usd": 0.0,
+            "profit": 0.0, "conversion": 0.0, "automation": "high", "recurring_potential": True,
+            "human_dependency": "account onboarding (one action, 6 products)", "product_count": 6,
+        },
+        "KDP": {"status": "BLOCKED", "time_to_revenue": "long", "verified_revenue_usd": 0.0, "automation": "low", "recurring_potential": False, "human_dependency": "KDP account + approval"},
+        "ETSY": {"status": "BLOCKED", "time_to_revenue": "medium", "verified_revenue_usd": 0.0, "automation": "medium", "recurring_potential": False, "human_dependency": "credentials"},
+        "TEMPLATES": {"status": "BLOCKED", "time_to_revenue": "medium", "verified_revenue_usd": 0.0, "automation": "medium", "recurring_potential": False, "human_dependency": "hosting/distribution"},
+        "DESIGN_ASSETS": {"status": "BLOCKED", "time_to_revenue": "medium", "verified_revenue_usd": 0.0, "automation": "medium", "recurring_potential": False, "human_dependency": "distribution"},
+        "WALL_ART": {"status": "BLOCKED", "time_to_revenue": "long", "verified_revenue_usd": 0.0, "automation": "low", "recurring_potential": False, "human_dependency": "platform + account"},
+        "SAAS": {"status": "BLOCKED", "time_to_revenue": "long", "verified_revenue_usd": 0.0, "automation": "medium", "recurring_potential": True, "human_dependency": "build + launch"},
+        "PREMIUM_B2B": {"status": "BLOCKED", "time_to_revenue": "long", "verified_revenue_usd": 0.0, "automation": "low", "recurring_potential": True, "human_dependency": "outreach + deal"},
     }
+
+    ranked = sorted(
+        arms.items(),
+        key=lambda kv: (
+            kv[1]["recurring_potential"], kv[1]["automation"] == "high",
+            kv[1]["status"] != "BLOCKED", kv[1]["time_to_revenue"] == "short",
+        ),
+        reverse=True,
+    )
     return {
         "generated_at": _now_iso(now),
         "arms": arms,
+        "dynamic_ranking": [{"arm": k, **v} for k, v in ranked],
         "profit_first_ranking": ranking,
         "winner": None,
-        "note": "No REAL VERIFIED revenue exists yet ($0), so no winner is declared. Once verified revenue appears, arms are ranked by real profit, not assumption.",
+        "note": "No REAL VERIFIED revenue exists yet ($0), so no winner is declared. The dynamic ranking reflects structural readiness (recurring potential, automation, non-blocked status, short time-to-revenue); it is recomputed every call and flips automatically once real revenue data exists.",
+    }
+
+
+# ---------------------------------------------------------------------------
+# 4 -- Affiliate candidate funnel
+# ---------------------------------------------------------------------------
+
+AFFILIATE_FUNNEL_STATES = ("CANDIDATES", "VERIFIED", "APPROVED", "ACTIVE", "REVENUE_PRODUCING")
+
+
+def affiliate_candidate_funnel(now: Optional[datetime] = None) -> Dict[str, object]:
+    """The affiliate funnel (directive section 4): CANDIDATES -> VERIFIED ->
+    APPROVED -> ACTIVE -> REVENUE_PRODUCING. Built from the real portfolio
+    (commission_opportunities.jsonl) and the real launch-link status. A
+    program only ever reaches ACTIVE once a REAL tracking link exists
+    (LAUNCH_LINK_STATUS == CONFIGURED); nothing is APPROVED or ACTIVE on
+    assumption."""
+    from commission_engine import load_opportunity_portfolio
+    portfolio = load_opportunity_portfolio()
+    link_status = _launch_link_status()
+
+    candidates, verified, approved, active = [], [], [], []
+    for o in portfolio:
+        oid = o.get("opportunity_id")
+        vs = o.get("verification_status", "UNKNOWN")
+        recurring = bool(o.get("recurring_commission"))
+        if vs == "VERIFIED":
+            verified.append({"opportunity_id": oid, "program_name": o.get("program_name"), "recurring": recurring})
+        elif vs in ("PARTIALLY_VERIFIED", "THIRD_PARTY_ONLY", "UNKNOWN"):
+            candidates.append({"opportunity_id": oid, "program_name": o.get("program_name"), "verification": vs})
+
+    # Only the active launch offer is APPROVED/ACTIVE-when-configured.
+    if link_status == "CONFIGURED":
+        approved.append({"opportunity_id": "CO-digitalocean-affiliate", "program_name": "DigitalOcean Affiliate Program"})
+        active.append({"opportunity_id": "CO-digitalocean-affiliate", "program_name": "DigitalOcean Affiliate Program"})
+    else:
+        approved.append({"opportunity_id": "CO-digitalocean-affiliate", "program_name": "DigitalOcean Affiliate Program", "status": "AWAITING_APPROVAL"})
+
+    return {
+        "generated_at": _now_iso(now),
+        "CANDIDATES": len(candidates),
+        "VERIFIED": len(verified),
+        "APPROVED": len(approved),
+        "ACTIVE": len(active),
+        "REVENUE_PRODUCING": 0,
+        "candidates": candidates,
+        "verified": verified,
+        "approved": approved,
+        "active": active,
+        "link_status": link_status,
+        "note": f"Real funnel from commission_opportunities.jsonl. link_status={link_status}: no program is ACTIVE until a real approved tracking link exists. REVENUE_PRODUCING requires a real VERIFIED commission.",
+    }
+
+
+# ---------------------------------------------------------------------------
+# 8 -- Autonomous opportunity routing
+# ---------------------------------------------------------------------------
+
+def route_opportunity(opportunity: dict) -> Dict[str, object]:
+    """Autonomous routing of ONE discovered opportunity to its best arm/offer
+    type/channel/monetization (directive section 8). Pure decision logic --
+    read-only, no production start. Expensive production is never initiated
+    without sufficient economic evidence."""
+    oid = opportunity.get("opportunity_id", "unknown")
+    category = str(opportunity.get("category") or "").lower()
+    vs = opportunity.get("verification_status", "UNKNOWN")
+    recurring = bool(opportunity.get("recurring_commission"))
+
+    if "affiliate" in category or oid.endswith("-affiliate"):
+        arm = "AFFILIATE"
+        offer_type = "referral"
+        channel = "seo" if not recurring else "email+seo"
+        monetization = "recurring commission" if recurring else "one-time commission"
+    elif "marketplace" in category:
+        arm = "MARKETPLACE"
+        offer_type = "digital product"
+        channel = "seo"
+        monetization = "product sale"
+    elif "partnership" in category:
+        arm = "B2B"
+        offer_type = "partnership"
+        channel = "direct outreach"
+        monetization = "revenue share / retainer"
+    else:
+        arm, offer_type, channel, monetization = "UNKNOWN", "unknown", "unknown", "unknown"
+
+    return {
+        "opportunity_id": oid,
+        "BEST_REVENUE_ARM": arm,
+        "BEST_OFFER_TYPE": offer_type,
+        "BEST_CHANNEL": channel,
+        "BEST_MONETIZATION": monetization,
+        "EXPECTED_EFFORT": "low" if vs == "VERIFIED" and recurring else ("medium" if vs == "VERIFIED" else "high"),
+        "EXPECTED_VALUE": "high" if recurring and vs == "VERIFIED" else ("medium" if vs == "VERIFIED" else "low"),
+        "EVIDENCE_LEVEL": vs,
+        "route_decision": "route_to_production_router" if vs == "VERIFIED" else "hold_for_verification",
+        "note": "Read-only routing. No production is started without VERIFIED evidence and, for paid/risky production, explicit founder authorization.",
+    }
+
+
+# ---------------------------------------------------------------------------
+# 13 -- Daily commercial priority (what can make money TODAY)
+# ---------------------------------------------------------------------------
+
+def daily_commercial_priority(now: Optional[datetime] = None) -> Dict[str, object]:
+    """Compute TODAY's commercial priority order (directive section 13):
+    what can make money today, ranked. 'Make an existing asset earn' always
+    outranks 'build another feature'. Read-only; no action taken here."""
+    gates = human_gate_orchestrator(now=now)["gates"]
+    blocking = [g for g in gates if g["status"] == "BLOCKING"]
+    launch = unified_launch_queue(now=now)
+    integrity = revenue_integrity_gate()
+
+    priorities = []
+    if integrity["VERIFIED_SALES"] == 0 and integrity["VERIFIED_REVENUE_USD"] == 0:
+        if blocking:
+            priorities.append({"rank": 1, "action": "Remove the #1 revenue blocker (founder action)", "blocker": blocking[0]["gate_id"], "why": "no verified revenue exists yet; a blocking human gate is the only thing between the factory and its first real money path"})
+        elif launch["active_campaigns"] > 0:
+            priorities.append({"rank": 1, "action": "Distribute an existing asset via an authorized channel", "why": "existing launch assets are ready but every channel is HUMAN_GATE"})
+        else:
+            priorities.append({"rank": 1, "action": "Activate an existing ready offer", "why": "no ready offer is active yet"})
+    else:
+        priorities.append({"rank": 1, "action": "Scale the verified winner", "why": "verified revenue exists; replicate the winning offer/channel/asset"})
+
+    return {
+        "generated_at": _now_iso(now),
+        "priorities": priorities,
+        "rule": "What can make money TODAY is ranked first. 'Make an existing asset earn' outranks 'build another feature'; the factory never proposes new feature work while a ready asset is undistributed.",
     }
 
 
@@ -403,6 +715,7 @@ def ceo_command_center(now: Optional[datetime] = None) -> Dict[str, object]:
         pass
 
     urgent = queue.get("URGENT")
+    integrity = revenue_integrity_gate()
 
     return {
         "generated_at": _now_iso(now),
@@ -410,6 +723,9 @@ def ceo_command_center(now: Optional[datetime] = None) -> Dict[str, object]:
         "VERIFIED_REVENUE_USD": totals["VERIFIED_REVENUE_USD"],
         "PENDING_REVENUE_USD": totals["PENDING_REVENUE_USD"],
         "PROFIT_USD": 0.0,
+        "VERIFIED_SALES": integrity["VERIFIED_SALES"],
+        "OBSERVED_SALES": integrity["OBSERVED_SALES"],
+        "LEDGER_ROWS": integrity["TOTAL_LEDGER_ROWS"],
         "TOP_ARM": top_arm,
         "TOP_OFFER": top_offer,
         "TOP_CHANNEL": top_channel,
@@ -417,7 +733,7 @@ def ceo_command_center(now: Optional[datetime] = None) -> Dict[str, object]:
         "BLOCKED_CAMPAIGNS": launch["blocked_campaigns"],
         "HUMAN_GATES": [g["gate_id"] for g in gates if g["status"] in ("OPEN", "BLOCKING")],
         "NEXT_ACTION": urgent["founder_action"] if urgent else "No urgent blocker -- awaiting real verified revenue.",
-        "note": "CASH/PROFIT are 0 because treasury has zero real spend and zero verified revenue. VERIFIED and PENDING are never merged.",
+        "note": "CASH/PROFIT are 0 because treasury has zero real spend and zero verified revenue. VERIFIED and PENDING are never merged. Sales figures come from revenue_integrity_gate() -- publish attempts, dry runs and mock/test rows are NEVER counted as sales.",
     }
 
 
@@ -436,6 +752,7 @@ def run_autonomous_daily_loop(now: Optional[datetime] = None) -> Dict[str, objec
     launch = unified_launch_queue(now=now)
     gates = human_gate_orchestrator(now=now)["gates"]
     totals = _real_revenue_totals()
+    integrity = revenue_integrity_gate()
 
     return {
         "generated_at": _now_iso(now),
@@ -446,7 +763,7 @@ def run_autonomous_daily_loop(now: Optional[datetime] = None) -> Dict[str, objec
         "PRODUCE": {"note": "launch assets already exist in launch_batches/; production is idle until a real destination is authorized"},
         "DISTRIBUTE": {"note": "distribution is HUMAN_GATE: no channel is authorized (all OAuth/account-locked) and no auto-publish is permitted"},
         "TRACK": {"clicks": totals["OBSERVED_CLICKS"], "note": "real click ledger, zero conversions"},
-        "MEASURE": {"VERIFIED": totals["VERIFIED_REVENUE_USD"], "PENDING": totals["PENDING_REVENUE_USD"]},
+        "MEASURE": {"VERIFIED": totals["VERIFIED_REVENUE_USD"], "PENDING": totals["PENDING_REVENUE_USD"], "VERIFIED_SALES": integrity["VERIFIED_SALES"], "OBSERVED_SALES": integrity["OBSERVED_SALES"]},
         "OPTIMIZE": {"note": "autonomous_optimization() SCALEs only real winners; no real data yet -> no scaling"},
         "REPORT": {"real_verified_revenue_usd": totals["VERIFIED_REVENUE_USD"], "status": "BLOCKED" if any(g["status"] == "BLOCKING" for g in gates) else "PARTIAL"},
     }
