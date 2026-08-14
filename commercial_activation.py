@@ -163,10 +163,10 @@ def founder_action_center():
             },
             {
                 "platform": "Gumroad",
-                "action": "Connect a payment method so the already-created live product can be published",
-                "why_required": "GUMROAD_ACCESS_TOKEN is configured and the EU AI Act Compliance Toolkit product is live-created (gumroad_publisher list_products verified 1 product on 2026-08-14) -- but it remains published=False because Gumroad itself requires a connected payment method before publish, which only the founder can add in the dashboard.",
-                "what_to_do": "In the Gumroad dashboard (aekraft.gumroad.com), add/confirm a payment method for the account, then the factory can call enable_product() to publish.",
-                "unlocks": "The existing $155 live product becomes purchasable, a second credentialed sales channel.",
+                "action": "Connect a payment method AND set a price so the created product can actually sell",
+                "why_required": "GUMROAD_ACCESS_TOKEN is configured and the EU AI Act Compliance Toolkit product exists (live API verified 1 product on 2026-08-14) -- but it is a bare draft: published=False, NO price set (price_cents=None, so it cannot be purchased at any amount), no URL, no file attached. Gumroad requires a connected payment method before publish, and the product itself needs real pricing, both of which only the founder can set in the dashboard.",
+                "what_to_do": "In the Gumroad dashboard (aekraft.gumroad.com): add/confirm a payment method, set the price (planned $155), and attach the toolkit PDF if not already present.",
+                "unlocks": "The product becomes purchasable (planned $155), a second credentialed sales channel.",
                 "current_status": "FOUNDER_ACTION_REQUIRED",
             },
             {
