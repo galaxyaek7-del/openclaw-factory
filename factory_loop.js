@@ -2659,6 +2659,86 @@ async function maybeRunDailyExperimentCycle(now = new Date()) {
   return { action: 'cycled', detail: `تجارب قيد التشغيل ${result.running}, ملاحظات ${result.recorded}, قرارات ${result.evaluated}, متقاعدة ${result.retired}` };
 }
 
+// ── EXECUTIVE ORCHESTRATOR (Autonomous Executive Orchestrator directive,
+// 2026-08-15) ──
+// ONE company state + ONE priority system + auditable decision state machine
+// + deduped work queue + executive memory. Composition-only (reuses revenue_os,
+// first_dollar_engine, founder_next_action, experiment loop, retry queue).
+// Runs AFTER ceo_loop + experiment_cycle so it consumes the freshest state.
+// Same once-per-calendar-day marker pattern as every other daily step.
+const EXEC_ORCHESTRATOR_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.executive_orchestrator_daily_marker');
+
+function runExecutiveOrchestrator({ timeoutMs = 90000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      // The DAILY step records one executive cycle decision per day. The
+      // Mission Control / server.js dashboard view is read-only (never
+      // records) and is served by mission_control_api.py 'executive_orchestrator'.
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'executive_orchestrator.py')], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل executive_orchestrator: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة executive_orchestrator (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        const priorities = result.PRIORITIES || {};
+        const machine = result.DECISION_STATE_MACHINE || {};
+        const queue = result.WORK_QUEUE || {};
+        finish({
+          ok: true,
+          top_opportunity: priorities.TOP_OPPORTUNITY,
+          top_arm: priorities.TOP_REVENUE_ARM,
+          top_human_gate: priorities.TOP_HUMAN_GATE ? (priorities.TOP_HUMAN_GATE.action || priorities.TOP_HUMAN_GATE.arm || '') : '',
+          work_queue_total: queue.total || 0,
+          transitions_recorded: machine.recorded_events || 0,
+        });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج executive_orchestrator: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeRunDailyExecutiveOrchestrator(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(EXEC_ORCHESTRATOR_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم تشغيل Executive Orchestrator اليومي بالفعل (${today})` };
+  }
+  try {
+    fs.mkdirSync(path.dirname(EXEC_ORCHESTRATOR_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(EXEC_ORCHESTRATOR_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    // Best effort only.
+  }
+  const result = await runExecutiveOrchestrator();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  return { action: 'orchestrated', detail: `TOP فرصة ${result.top_opportunity}, TOP ذراع ${result.top_arm}, قائمة عمل ${result.work_queue_total}` };
+}
+
 // ── GOLDEN HUNTER AUTO-REFRESH (Autonomous Enterprise Directive 2026-08-15,
 // gap closure #1) ──
 // DISCOVER->RE-RANK feed. golden_opportunities.json only refreshes on a new
@@ -3972,6 +4052,12 @@ async function runTick() {
   markStep('experiment_cycle');
   actions.push({ step: 'experiment_cycle', ...(await maybeRunDailyExperimentCycle()) });
 
+  // Executive Orchestrator (Autonomous Executive Orchestrator directive): the
+  // unified control layer. Consumes the freshest state (runs after ceo_loop
+  // and experiment_cycle); composition-only, no new engines.
+  markStep('executive_orchestrator');
+  actions.push({ step: 'executive_orchestrator', ...(await maybeRunDailyExecutiveOrchestrator()) });
+
   // Enterprise Evidence Engine (ADR-163) daily recording pass (2026-08-07):
   // the only real caller of reality_audit.audit_all_endpoints(record_evidence=True),
   // gated once per calendar day. See runDailyEvidenceRecordingAudit's own
@@ -4267,6 +4353,7 @@ module.exports = {
   runSeoDistribution, maybeRunDailySeoDistribution,
   runGoldenHunterRefresh, maybeRunDailyGoldenRefresh,
   runExperimentCycle, maybeRunDailyExperimentCycle,
+  runExecutiveOrchestrator, maybeRunDailyExecutiveOrchestrator,
   runEuAiActPricingReview, maybeCheckEuAiActPricingReview,
   runKnowledgeGraphDailySnapshot, maybeGenerateDailyKnowledgeGraph,
   runGeneratePendingBusinessBlueprints, maybeGenerateBusinessBlueprintsForNewAcceptedDecisions,

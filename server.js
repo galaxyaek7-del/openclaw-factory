@@ -2416,6 +2416,13 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('experiment_cycle', [], req),
     health: pythonHealthCheck('experiment_cycle'),
   },
+  {
+    name: 'executive-orchestrator',
+    description: "EXECUTIVE ORCHESTRATOR: the unified control layer. ONE company state + ONE priority system (TOP opportunity/arm/autonomous action/human gate/failure/experiment/learning) + auditable decision state machine + deduped work queue + executive memory. Composition-only, reusing revenue_os / first_dollar_engine / founder_next_action / experiment loop / retry queue.",
+    reused: 'executive_orchestrator.py::run_executive_orchestrator(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('executive_orchestrator', [], req),
+    health: pythonHealthCheck('executive_orchestrator'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

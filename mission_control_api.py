@@ -3790,6 +3790,21 @@ def _first_dollar_engine():
     return first_dollar_engine.run_first_dollar_cycle()
 
 
+def _executive_orchestrator():
+    """EXECUTIVE ORCHESTRATOR (Autonomous Executive Orchestrator directive,
+    2026-08-15): the unified control layer. ONE company state + ONE priority
+    system (TOP 7) + auditable decision state machine + deduped work queue +
+    executive memory. Composition-only -- every value comes from the real
+    existing engines; never spends, never publishes, never fabricates.
+
+    READ-ONLY OBSERVATION VIEW (Mission Control / server.js dashboard): the
+    daily state-transition/decision record is made exclusively by the
+    factory_loop daily step (executive_orchestrator.py), so a dashboard
+    refresh never grows the audit log."""
+    import executive_orchestrator
+    return executive_orchestrator.run_executive_orchestrator(record_cycle=False)
+
+
 def _experiment_cycle():
     """EXPERIMENT AUTO LOOP (Autonomous Enterprise Directive gap #3,
     2026-08-15): closes LEARN->SCALE/ITERATE/KILL. Records real observations
@@ -4079,6 +4094,7 @@ _ENDPOINTS = {
     "record_public_page_view": _record_public_page_view,
     "golden_hunter_refresh": _golden_hunter_refresh,
     "experiment_cycle": _experiment_cycle,
+    "executive_orchestrator": _executive_orchestrator,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
     "account_routing_status": _account_routing_status,
     "commercial_mission_control": _commercial_mission_control,

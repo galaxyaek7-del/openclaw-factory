@@ -38,6 +38,18 @@ from commission_ledger import (
 )
 from channels import registry as channel_registry
 from channels.ledger import read_events as read_sales_events
+# Final production-readiness audit (2026-08-15): the CEO loop's
+# check_approval_gates() reads channel_registry.all_arms(), but the arm
+# modules self-register only on import (there is no channels/__init__.py
+# importer). Without these imports run_daily_ceo_loop() saw an EMPTY
+# registry and always reported founder_gates={"gated":[],"autonomous":[]}
+# -- a false-zero honesty bug in the flagship daily decision report. Same
+# self-registration pattern distributor.py:42-55 already uses. Read-only:
+# importing an arm module never contacts a platform.
+import channels.gumroad_arm  # noqa: F401,E402
+import channels.payhip_arm  # noqa: F401,E402
+import channels.etsy_arm  # noqa: F401,E402
+import channels.paddle_arm  # noqa: F401,E402
 from affiliate_commerce.click_tracking import attributed_click_summary
 from revenue_intelligence import revenue_intelligence_dashboard
 from commercial_execution.approval_gates import check_approval_gates
@@ -521,6 +533,46 @@ def run_daily_ceo_loop() -> Dict[str, object]:
     except Exception as e:  # pragma: no cover - defensive; never breaks the loop
         first_dollar = {"error": str(e)}
 
+    # ONE-NEXT-ACTION (Autonomous Enterprise Master Plan Task 1, 2026-08-15):
+    # the founder receives one prioritized action, not twenty tasks. Computed
+    # from real state only (env presence + publish protection + paddle
+    # products + commission opportunities + real clicks). Read-only.
+    try:
+        import founder_next_action
+        next_action = founder_next_action.build_founder_next_action()
+    except Exception as e:  # pragma: no cover - defensive; never breaks the loop
+        next_action = {"error": str(e)}
+
+    # EXECUTIVE ORCHESTRATOR (Autonomous Executive Orchestrator directive,
+    # 2026-08-15): the CEO loop consumes the orchestrator rather than operating
+    # as an isolated scheduler. Composition-only; every TOP is computed by the
+    # real owning engine and composed here into ONE executive state. Read-only.
+    try:
+        import executive_orchestrator
+        orchestrator = {
+            "TOP_OPPORTUNITY": None, "TOP_REVENUE_ARM": None,
+            "TOP_AUTONOMOUS_ACTION": None, "TOP_HUMAN_GATE": None,
+            "TOP_EXPERIMENT": None, "WORK_QUEUE_TOTAL": 0,
+        }
+        try:
+            priorities = executive_orchestrator.unified_priorities(top_n=3)
+            orchestrator["TOP_OPPORTUNITY"] = priorities.get("TOP_OPPORTUNITY")
+            orchestrator["TOP_REVENUE_ARM"] = priorities.get("TOP_REVENUE_ARM")
+            orchestrator["TOP_AUTONOMOUS_ACTION"] = priorities.get("TOP_AUTONOMOUS_ACTION")
+            orchestrator["TOP_HUMAN_GATE"] = priorities.get("TOP_HUMAN_GATE")
+            orchestrator["TOP_EXPERIMENT"] = priorities.get("TOP_EXPERIMENT")
+        except Exception as e:  # pragma: no cover - defensive; never breaks the loop
+            orchestrator["error"] = str(e)
+        try:
+            queue = executive_orchestrator.build_work_queue()
+            orchestrator["WORK_QUEUE_TOTAL"] = len(queue)
+            orchestrator["TOP_WORK_ITEMS"] = queue[:3]
+        except Exception as e:  # pragma: no cover - defensive; never breaks the loop
+            orchestrator["work_queue_error"] = str(e)
+        orchestrator["note"] = "CEO loop consumes the Executive Orchestrator: one priority system, one decision state machine, no duplicate engines."
+    except Exception as e:  # pragma: no cover - defensive; never breaks the loop
+        orchestrator = {"error": str(e)}
+
     return {
         "generated_at": _now_iso(),
         "DISCOVER": {"opportunities_scanned": discover_count, "note": discovery.get("note", "read-only scan")},
@@ -533,6 +585,8 @@ def run_daily_ceo_loop() -> Dict[str, object]:
         "OPTIMIZE": autonomous_optimization(),
         "REINVEST": treasury_status(),
         "DISCOVER_AGAIN": {"note": "loop continues; next cycle re-scans real signals"},
+        "NEXT_ACTION": next_action,
+        "ORCHESTRATOR": orchestrator,
         "REAL_VERIFIED_REVENUE_USD": verified,
     }
 

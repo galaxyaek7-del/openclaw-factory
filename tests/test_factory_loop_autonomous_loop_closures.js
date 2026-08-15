@@ -48,3 +48,22 @@ test('runExperimentCycle: real interpreter -> ok:true with counts', async () => 
   assert.equal(result.ok, true);
   assert.ok(typeof result.running === 'number');
 });
+
+test('runExecutiveOrchestrator: nonexistent interpreter -> ok:false with a spawn-error detail', async () => {
+  const result = await fl.runExecutiveOrchestrator({ pythonPath: 'this-binary-does-not-exist-anywhere' });
+  assert.equal(result.ok, false);
+  assert.ok(result.detail && result.detail.length > 0);
+});
+
+test('runExecutiveOrchestrator: interpreter that cannot run mission_control_api.py -> ok:false parse-failure', async () => {
+  const result = await fl.runExecutiveOrchestrator({ pythonPath: 'node' });
+  assert.equal(result.ok, false);
+  assert.ok(result.detail && result.detail.length > 0);
+});
+
+test('runExecutiveOrchestrator: real interpreter -> ok:true with top fields', async () => {
+  const result = await fl.runExecutiveOrchestrator({ pythonPath: process.env.PYTHON || 'python' });
+  assert.equal(result.ok, true);
+  assert.ok(result.top_opportunity !== undefined);
+  assert.ok(typeof result.work_queue_total === 'number');
+});
