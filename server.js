@@ -2381,6 +2381,13 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('affiliate_chain_readiness', [], req),
     health: pythonHealthCheck('affiliate_chain_readiness'),
   },
+  {
+    name: 'first-dollar-engine',
+    description: "FIRST-DOLLAR ENGINE: read-only scoring/ranking/router over the existing infrastructure. Computes FIRST_DOLLAR_SCORE (12 weighted criteria), classifies AUTOMATABLE vs HUMAN_GATE, returns the best first-dollar path + scale ladder. Never writes a ledger, never spends.",
+    reused: 'first_dollar_engine.py::run_first_dollar_cycle(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('first_dollar_engine', [], req),
+    health: pythonHealthCheck('first_dollar_engine'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

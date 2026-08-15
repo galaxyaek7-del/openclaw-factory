@@ -502,11 +502,31 @@ def run_daily_ceo_loop() -> Dict[str, object]:
     intelligence = revenue_intelligence_dashboard()
     gates = check_approval_gates()
 
+    # FIRST-DOLLAR lens (FINAL OPERATING DIRECTIVE 2026-08-15): the CEO loop
+    # stays the central authority; the thin first-dollar engine adds its
+    # scoring/ranking on top without duplicating any engine here. Read-only.
+    try:
+        import first_dollar_engine
+        fd_rank = first_dollar_engine.rank_first_dollar(top_n=3)
+        fd_ladder = first_dollar_engine.first_dollar_ladder(verified)
+        first_dollar = {
+            "BEST_FIRST_DOLLAR": fd_rank["BEST_FIRST_DOLLAR"],
+            "TOP_3": [
+                {"opportunity_id": o["opportunity_id"], "first_dollar_score": o["first_dollar_score"],
+                 "classification": o["classification"]}
+                for o in fd_rank["ranking"]
+            ],
+            "LADDER": fd_ladder,
+        }
+    except Exception as e:  # pragma: no cover - defensive; never breaks the loop
+        first_dollar = {"error": str(e)}
+
     return {
         "generated_at": _now_iso(),
         "DISCOVER": {"opportunities_scanned": discover_count, "note": discovery.get("note", "read-only scan")},
         "VERIFY": {"note": "verified opportunities live in commission_opportunities.jsonl (VERIFIED tier)"},
         "RANK": profit_first_rank(top_n=3),
+        "FIRST_DOLLAR": first_dollar,
         "EXECUTE": {"note": "execution gated: no spend, no publish without founder authorization", "founder_gates": gates},
         "DISTRIBUTE": distribution_channel_status(),
         "MEASURE": intelligence,

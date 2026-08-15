@@ -3781,6 +3781,15 @@ def _affiliate_chain_readiness():
     return affiliate_chain_readiness()
 
 
+def _first_dollar_engine():
+    """FIRST-DOLLAR ENGINE (FINAL OPERATING DIRECTIVE 2026-08-15): read-only
+    scoring/ranking/router over the existing infrastructure. Computes
+    FIRST_DOLLAR_SCORE, classifies AUTOMATABLE vs HUMAN_GATE, and returns the
+    top first-dollar path. Never writes a ledger, never spends."""
+    import first_dollar_engine
+    return first_dollar_engine.run_first_dollar_cycle()
+
+
 _ENDPOINTS = {
     "opportunities": _opportunities,
     "production": _production,
@@ -4042,6 +4051,7 @@ _ENDPOINTS = {
     "commercial_link_monitor": _commercial_link_monitor,
     "commercial_treasury": _commercial_treasury,
     "affiliate_chain_readiness": _affiliate_chain_readiness,
+    "first_dollar_engine": _first_dollar_engine,
     "validation_submit": _validation_submit,
     "validation_dashboard": _validation_dashboard,
     "validation_page_view": _validation_page_view,
