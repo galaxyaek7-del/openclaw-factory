@@ -9,6 +9,7 @@ Galaxy Forge is a solo-founder digital investment company, built and operated in
 - **Workflow Automation System for Logistics Companies** — $327.00
 - **Inventory Management System for Wholesale Distributors** — $327.00
 - **How I Built an Autonomous AI Company Solo** — $97.00
+- **EU AI Act Compliance Toolkit** — $155.00
 
 ## Build in public
 

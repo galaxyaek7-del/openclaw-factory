@@ -28,5 +28,12 @@
     "product_id": "pro_01ky4w4hgv157bqqe4wmp7rwe7",
     "price_id": "pri_01ky4w4hxem6vqc8fk0me4p7tt",
     "price": 97.0
+  },
+  {
+    "title": "EU AI Act Compliance Toolkit",
+    "product_id": "pro_01kzdzzh4kv6bkpzfhd5r1jnkn",
+    "price_id": "pri_01kzdzzhhnfs8b3jraewg022kp",
+    "price": 155.0,
+    "_note": "Real, live Paddle product created 2026-08-07 (channels/paddle_arm.py::publish(), dry_run=False) at the founder-approved Premium-tier price of $155 -- verified market_realistic under economics.py's gumroad_premium tier (product_type='premium'). Checkout URL not yet available (Paddle account onboarding still incomplete) -- product and price are real and live regardless; checkout activates the moment onboarding clears, zero further engineering needed. Scheduled pricing review after the first verified customer + testimonials: see commercial_readiness.py / pricing_review.py."
   }
 ]

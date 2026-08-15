@@ -20,6 +20,12 @@
  * and a summary row is appended to FACTORY_STATUS.md.
  */
 
+// Same trust model as server.js: this loop reads the shared .env directly
+// (INTERNAL_SERVICE_TOKEN, PADDLE_API_KEY, GROQ_KEY, etc.) so the internal
+// /api/sales/poll call authenticates instead of failing `unauthenticated`
+// every tick (FINAL AUTONOMOUS REVENUE SWEEP 2026-08-15 finding).
+require('dotenv').config();
+
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
