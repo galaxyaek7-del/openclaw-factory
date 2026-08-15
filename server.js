@@ -2388,6 +2388,34 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('first_dollar_engine', [], req),
     health: pythonHealthCheck('first_dollar_engine'),
   },
+  {
+    name: 'founder-next-action',
+    description: "FOUNDER ONE-NEXT-ACTION: consolidates every human gate across all arms into one prioritized next action for the founder (mandate section 22 — one action, not twenty tasks). Real-state only: .env presence, publish protection, paddle products, commission opportunities, real clicks. Read-only, never publishes, never spends.",
+    reused: 'founder_next_action.py::build_founder_next_action(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('founder_next_action', [], req),
+    health: pythonHealthCheck('founder_next_action'),
+  },
+  {
+    name: 'seo-distribution',
+    description: "SEO DISTRIBUTION: the only READY distribution channel (zero-cost, no external approval). Publishes honest, problem-first SEO pages to the customer site from real portfolio opportunities; idempotent; never contacts a platform, never fabricates revenue.",
+    reused: 'seo_distribution.py::publish_seo_pages(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('seo_distribution', [], req),
+    health: pythonHealthCheck('seo_distribution'),
+  },
+  {
+    name: 'golden-hunter-refresh',
+    description: "GOLDEN HUNTER AUTO-REFRESH: closes the DISCOVER->RE-RANK feed. Re-ranks the same real, already-scored niches with a fresh generated_at so the golden bridge never stalls on the 24h freshness window; never fabricates an opportunity.",
+    reused: 'commercial_activation.py::force_refresh_golden_opportunities(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('golden_hunter_refresh', [], req),
+    health: pythonHealthCheck('golden_hunter_refresh'),
+  },
+  {
+    name: 'experiment-cycle',
+    description: "EXPERIMENT AUTO LOOP: closes LEARN->SCALE/ITERATE/KILL. Records real page-view observations into running experiments, auto-evaluates due experiments (ADOPT->SCALE / REJECT->KILL / NO_DIFF->WATCH / INSUFFICIENT->ITERATE), retires stale ones so none runs forever silently.",
+    reused: 'commercial_experiment_automation.py::run_experiment_cycle(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('experiment_cycle', [], req),
+    health: pythonHealthCheck('experiment_cycle'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
@@ -6058,6 +6086,19 @@ app.get('/robots.txt', (req, res) => {
 
 app.get('/site/sitemap.xml', (req, res) => {
   const pages = ['/site/', '/site/#approach', '/site/#how-it-works', '/site/#services', '/site/#support', '/site/#knowledge-base', '/trust/index.html'];
+  // Autonomous Enterprise Master Plan Task 2 (2026-08-15): the autonomous
+  // SEO distribution engine publishes real guide pages to the customer
+  // site; the sitemap must list them so crawlers can discover them. The
+  // registry (data/seo_pages.json) is the single source of truth — the
+  // sitemap can never drift from the real, published pages.
+  try {
+    const seoPages = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'seo_pages.json'), 'utf8'));
+    if (Array.isArray(seoPages)) {
+      for (const e of seoPages) {
+        if (e && typeof e.page === 'string') pages.push(e.page);
+      }
+    }
+  } catch (_) { /* no SEO pages yet — sitemap stays with the base pages */ }
   const urls = pages.map(p => `  <url><loc>${p}</loc></url>`).join('\n');
   res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
 });

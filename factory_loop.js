@@ -2279,15 +2279,23 @@ async function maybeRunDailyEvidenceRecordingAudit(now = new Date()) {
   if (lastRun === today) {
     return { action: 'none', detail: `تم تسجيل تدقيق الأدلة اليومي بالفعل (${today})` };
   }
-  const result = await runDailyEvidenceRecordingAudit();
-  if (!result.ok) {
-    return { action: 'failed', detail: result.detail };
-  }
+  // Production-readiness audit (2026-08-15): advance the marker BEFORE the
+  // real run, not only on success. The audit sweeps 150+ real endpoints and
+  // routinely exceeds the 600s timeout, so a success-only marker stayed
+  // stuck and the audit re-ran every tick, stalling the whole loop to a
+  // ~20-minute cadence (evidence_ledger.jsonl showed real 100s per-endpoint
+  // timings). Advancing on attempt restores the intended once-per-calendar-
+  // day gate: the audit still runs and records partial evidence, but a
+  // timeout can never degrade the loop's cadence again.
   try {
     fs.mkdirSync(path.dirname(EVIDENCE_RECORDING_AUDIT_DAILY_MARKER), { recursive: true });
     fs.writeFileSync(EVIDENCE_RECORDING_AUDIT_DAILY_MARKER, today, 'utf8');
   } catch (err) {
-    return { action: 'failed', detail: `فشل حفظ علامة تدقيق الأدلة: ${err.message}` };
+    // Best effort only — never let a marker write failure block the audit.
+  }
+  const result = await runDailyEvidenceRecordingAudit();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
   }
   const pct = result.reality_score && result.reality_score.percentages;
   return { action: 'generated', detail: `تم تسجيل ${result.recorded} دليل حقيقي — Reality Score: ${pct ? pct.REAL : '؟'}%` };
@@ -2496,6 +2504,301 @@ async function maybeRecordDailyCommercialReadinessSnapshot(now = new Date()) {
     return { action: 'failed', detail: `فشل حفظ علامة لقطة الجاهزية التجارية: ${err.message}` };
   }
   return { action: 'generated', detail: `تم تسجيل لقطة جاهزية تجارية حقيقية: ${result.overall}` };
+}
+
+// ── CEO LOOP — DAILY FIRST-DOLLAR DECISION CYCLE (2026-08-15) ──
+// Final production-readiness audit closure: the CEO loop
+// (run_daily_ceo_loop, revenue_os.py) was only ever reachable on demand
+// via /api/v1/first-dollar-engine -- factory_loop.js contained ZERO
+// references to it, so the company's "central authority" decision cycle
+// never ran automatically. Same once-per-calendar-day marker pattern as
+// every other daily step here. The subprocess runs mission_control_api.py
+// first_dollar_engine → run_first_dollar_cycle() → run_daily_ceo_loop();
+// both callers were verified 100% read-only (rank/snapshot only, zero
+// write calls, no revenue mutation, no spending, no publish).
+const CEO_LOOP_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.ceo_loop_daily_marker');
+
+function runDailyCeoLoop({ timeoutMs = 120000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'first_dollar_engine'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة CEO loop (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من first_dollar_engine' });
+          return;
+        }
+        finish({
+          ok: true,
+          decision: result.CEO_LOOP && result.CEO_LOOP.FIRST_DOLLAR && result.CEO_LOOP.FIRST_DOLLAR.BEST_FIRST_DOLLAR,
+          count: result.CEO_LOOP && result.CEO_LOOP.DISCOVER && result.CEO_LOOP.DISCOVER.opportunities_scanned,
+          revenue: result.REAL_VERIFIED_REVENUE_USD,
+        });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج first_dollar_engine: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeRunDailyCeoLoop(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(CEO_LOOP_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم تشغيل دورة CEO اليومية بالفعل (${today})` };
+  }
+  // Production-readiness audit follow-up (2026-08-15): same protection as
+  // the evidence-recording audit -- advance the marker BEFORE the run so a
+  // timeout (120s) can never re-trigger the cycle every tick and degrade
+  // the loop's cadence.
+  try {
+    fs.mkdirSync(path.dirname(CEO_LOOP_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(CEO_LOOP_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    // Best effort only — never let a marker write failure block the cycle.
+  }
+  const result = await runDailyCeoLoop();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  return { action: 'generated', detail: `تم تشغيل دورة CEO حقيقية (${result.count} فرصة): ${result.decision}` };
+}
+
+// ── EXPERIMENT AUTO LOOP (Autonomous Enterprise Directive gap #3, 2026-08-15) ──
+// Closes LEARN->SCALE/ITERATE/KILL: records real page-view observations,
+// auto-evaluates due RUNNING experiments, retires stale ones. Same
+// once-per-calendar-day marker pattern as the other daily steps.
+const EXPERIMENT_CYCLE_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.experiment_cycle_daily_marker');
+
+function runExperimentCycle({ timeoutMs = 60000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'experiment_cycle'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل experiment_cycle: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة experiment_cycle (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        finish({
+          ok: true,
+          running: (result.observations && result.observations.running_experiments) || 0,
+          recorded: (result.observations && result.observations.recorded_observations) || 0,
+          evaluated: (result.evaluations && result.evaluations.evaluated) || 0,
+          retired: (result.retirements && result.retirements.count) || 0,
+        });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج experiment_cycle: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeRunDailyExperimentCycle(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(EXPERIMENT_CYCLE_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم تشغيل دورة التجارب اليومية بالفعل (${today})` };
+  }
+  try {
+    fs.mkdirSync(path.dirname(EXPERIMENT_CYCLE_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(EXPERIMENT_CYCLE_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    // Best effort only.
+  }
+  const result = await runExperimentCycle();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  return { action: 'cycled', detail: `تجارب قيد التشغيل ${result.running}, ملاحظات ${result.recorded}, قرارات ${result.evaluated}, متقاعدة ${result.retired}` };
+}
+
+// ── GOLDEN HUNTER AUTO-REFRESH (Autonomous Enterprise Directive 2026-08-15,
+// gap closure #1) ──
+// DISCOVER->RE-RANK feed. golden_opportunities.json only refreshes on a new
+// GOLDEN catch; when it passes the 24h freshness window huntGolden() skips
+// forever and discovery stalls. This runs the real, safe
+// force_refresh_golden_opportunities() (re-ranks the same real niches, fresh
+// generated_at, never fabricates) once per calendar day so the bridge never
+// starves. Same marker pattern as every other daily step.
+const GOLDEN_REFRESH_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.golden_hunter_refresh_daily_marker');
+
+function runGoldenHunterRefresh({ timeoutMs = 60000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'golden_hunter_refresh'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل golden_hunter_refresh: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة golden_hunter_refresh (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        const after = result.after || {};
+        finish({ ok: true, status: after.status, age_hours: after.age_hours, count: after.count, generated_at: after.generated_at });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج golden_hunter_refresh: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeRunDailyGoldenRefresh(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(GOLDEN_REFRESH_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم تحديث Golden Hunter اليومي بالفعل (${today})` };
+  }
+  // Advance marker BEFORE the run (same protection as the other daily steps).
+  try {
+    fs.mkdirSync(path.dirname(GOLDEN_REFRESH_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(GOLDEN_REFRESH_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    // Best effort only.
+  }
+  const result = await runGoldenHunterRefresh();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  return { action: 'refreshed', detail: `Golden Hunter أُعيد ترتيبه (الحالة ${result.status}, ${result.count} فرصة)` };
+}
+
+// ── SEO DISTRIBUTION (Autonomous Enterprise Master Plan Task 2, 2026-08-15) ──
+// The only distribution channel READY today (zero-cost, no external approval).
+// Publishes honest, problem-first SEO pages to the customer site from real
+// portfolio opportunities. Idempotent; read-only for real ledgers; never
+// contacts a platform. Same once-per-calendar-day marker pattern as every
+// other daily step here.
+const SEO_DISTRIBUTION_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.seo_distribution_daily_marker');
+
+function runSeoDistribution({ timeoutMs = 60000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'seo_distribution.py')], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل seo_distribution.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة seo_distribution (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (typeof result.published_count !== 'number') {
+          finish({ ok: false, detail: 'استجابة غير متوقعة من seo_distribution' });
+          return;
+        }
+        finish({ ok: true, count: result.published_count, pages: result.published_count });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج seo_distribution: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeRunDailySeoDistribution(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(SEO_DISTRIBUTION_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم نشر صفحات SEO اليومية بالفعل (${today})` };
+  }
+  // Advance marker BEFORE the run (same protection as evidence audit / CEO
+  // loop): a timeout must never re-trigger the step every tick.
+  try {
+    fs.mkdirSync(path.dirname(SEO_DISTRIBUTION_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(SEO_DISTRIBUTION_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    // Best effort only.
+  }
+  const result = await runSeoDistribution();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  return { action: 'generated', detail: `تم تحديث ${result.count} صفحة SEO حقيقية من بيانات الفرص الفعلية` };
 }
 
 // ── AUTONOMOUS COMPANY EVOLUTION ENGINE — DAILY INTAKE/SIMULATE/DECIDE ──
@@ -3381,6 +3684,12 @@ function markStep(step) {
 // here. They are still counted and reported via retry_queue_status —
 // never silently dropped from view, just not auto-replayed yet.
 async function processPendingRetries() {
+  // Audit closure (2026-08-15): dedupe the live queue BEFORE processing. The
+  // enqueueRetry() dedup prevents new duplicates, but entries enqueued before
+  // that fix (the real 4x arm_publish:gumroad:PROD-20260806T230644 dupes) must
+  // be collapsed on sight too. Keep the newest entry per task key.
+  dedupePendingRetries();
+
   const beforeCount = factoryState.loadState().pending_retries.length;
   const due = factoryState.dueRetries();
   let replayed = 0;
@@ -3408,6 +3717,37 @@ async function processPendingRetries() {
     notifyFactoryRecoveryEvent(buildRetryQueueStatusPayload(stillPending)).catch(() => {});
   }
   return { processed: due.length, replayed, still_pending: stillPending.length };
+}
+
+// Queue hygiene (Audit closure 2026-08-15): the enqueueRetry() dedup prevents
+// new duplicates, but entries enqueued before that fix (the real 4x
+// arm_publish:gumroad:PROD-20260806T230644 dupes) must be collapsed on sight
+// too. Keep the newest entry per task key.
+function dedupePendingRetries() {
+  try {
+    const state = factoryState.loadState();
+    const pending = state.pending_retries || [];
+    if (pending.length < 2) return 0;
+    const newestByTask = new Map();
+    for (const retry of pending) {
+      const existing = newestByTask.get(retry.task);
+      const newerQueued = Date.parse(retry.queued_at || '');
+      const existingQueued = existing ? Date.parse(existing.queued_at || '') : -Infinity;
+      if (!existing || Number.isNaN(newerQueued) || newerQueued >= existingQueued) {
+        newestByTask.set(retry.task, retry);
+      }
+    }
+    const deduped = Array.from(newestByTask.values());
+    const removed = pending.length - deduped.length;
+    if (removed > 0) {
+      state.pending_retries = deduped;
+      factoryState.saveState(state);
+    }
+    return removed;
+  } catch (err) {
+    console.error('[factory_loop] dedupePendingRetries failed:', err.message);
+    return 0;
+  }
 }
 
 // Stale-job recovery (CTO+COO audit closure 2026-08-15, Phase 11): arm_publish
@@ -3607,6 +3947,30 @@ async function runTick() {
   // pattern as growth_stage_snapshot immediately above.
   markStep('commercial_readiness_snapshot');
   actions.push({ step: 'commercial_readiness_snapshot', ...(await maybeRecordDailyCommercialReadinessSnapshot()) });
+
+  // CEO Loop (final production-readiness audit closure, 2026-08-15): the
+  // central decision authority (revenue_os.run_daily_ceo_loop via
+  // first_dollar_engine) was never wired into the automatic tick — it only
+  // ran on demand via /api/v1/first-dollar-engine. Same once-per-calendar-
+  // day marker pattern as the steps above. Read-only by verified design
+  // (zero spend, zero publish, zero ledger writes).
+  markStep('ceo_loop');
+  actions.push({ step: 'ceo_loop', ...(await maybeRunDailyCeoLoop()) });
+
+  // SEO Distribution (Autonomous Enterprise Master Plan Task 2): the only
+  // READY distribution channel. Same once-per-calendar-day marker pattern.
+  markStep('seo_distribution');
+  actions.push({ step: 'seo_distribution', ...(await maybeRunDailySeoDistribution()) });
+
+  // Golden Hunter auto-refresh (Autonomous Enterprise Directive gap #1):
+  // keeps the DISCOVER->RE-RANK feed fresh so huntGolden() never starves.
+  markStep('golden_hunter_refresh');
+  actions.push({ step: 'golden_hunter_refresh', ...(await maybeRunDailyGoldenRefresh()) });
+
+  // Experiment auto loop (Autonomous Enterprise Directive gap #3): records
+  // real observations, auto-evaluates due RUNNING experiments, retires stale.
+  markStep('experiment_cycle');
+  actions.push({ step: 'experiment_cycle', ...(await maybeRunDailyExperimentCycle()) });
 
   // Enterprise Evidence Engine (ADR-163) daily recording pass (2026-08-07):
   // the only real caller of reality_audit.audit_all_endpoints(record_evidence=True),
@@ -3900,6 +4264,9 @@ module.exports = {
   runRecordDailyGrowthStageSnapshot, maybeRecordDailyGrowthStageSnapshot,
   runRecordDailyCommercialReadinessSnapshot, maybeRecordDailyCommercialReadinessSnapshot,
   runDailyEvidenceRecordingAudit, maybeRunDailyEvidenceRecordingAudit,
+  runSeoDistribution, maybeRunDailySeoDistribution,
+  runGoldenHunterRefresh, maybeRunDailyGoldenRefresh,
+  runExperimentCycle, maybeRunDailyExperimentCycle,
   runEuAiActPricingReview, maybeCheckEuAiActPricingReview,
   runKnowledgeGraphDailySnapshot, maybeGenerateDailyKnowledgeGraph,
   runGeneratePendingBusinessBlueprints, maybeGenerateBusinessBlueprintsForNewAcceptedDecisions,
@@ -3922,4 +4289,5 @@ module.exports = {
   notifyFactoryRecoveryEvent,
   processPendingRetries,
   expireStaleRetries,
+  dedupePendingRetries,
 };

@@ -159,10 +159,50 @@ def evaluate_experiment(experiment_id, experiments_path=None, min_sample_size=No
     }
 
 
+def update_experiment_status(experiment_id, status, decision, reason, experiments_path=None):
+    """The one real write path for an experiment's lifecycle state. Appends a
+    status_update record (same append-only discipline as definitions and
+    observations) so a RUNNING experiment can honestly advance to
+    COMPLETED/SCALING/ITERATING/KILLED/WATCHING without ever being silently
+    abandoned. Decision is one of SCALE/ITERATE/WATCH/KILL (mapped from the
+    evaluation) or the honest status string itself; reason always carries the
+    real evidence behind it."""
+    valid_statuses = ("RUNNING", "COMPLETED", "SCALING", "ITERATING", "WATCHING", "KILLED")
+    if status not in valid_statuses:
+        raise ValueError(f"status must be one of {valid_statuses}, got {status!r}")
+    record = {
+        "record_type": "status_update",
+        "experiment_id": experiment_id,
+        "status": status,
+        "decision": decision,
+        "reason": reason,
+        "updated_at": _now_iso(),
+    }
+    return _append(record, experiments_path or DEFAULT_EXPERIMENTS_PATH)
+
+
 def list_experiments(experiments_path=None):
     """Real, honest status of every experiment ever defined -- 0 today."""
     records = _read_jsonl(experiments_path or DEFAULT_EXPERIMENTS_PATH)
     definitions = [r for r in records if r.get("record_type") == "experiment_definition"]
     if not definitions:
         return {"experiments": [], "total": 0, "note": "0 real commercial experiments have ever run in this factory -- 0 real website traffic/customers exist yet to test against. This is the honest current state, not a missing feature."}
-    return {"experiments": definitions, "total": len(definitions)}
+    # Surface the latest lifecycle status per experiment (status_update records
+    # are authoritative; a definition with no update stays RUNNING).
+    latest_status = {}
+    for r in records:
+        if r.get("record_type") == "status_update" and r.get("experiment_id"):
+            ts = r.get("updated_at", "")
+            cur = latest_status.get(r["experiment_id"])
+            if cur is None or ts >= cur.get("updated_at", ""):
+                latest_status[r["experiment_id"]] = r
+    experiments = []
+    for d in definitions:
+        merged = dict(d)
+        upd = latest_status.get(d["experiment_id"])
+        if upd:
+            merged["status"] = upd["status"]
+            merged["decision"] = upd["decision"]
+            merged["decision_reason"] = upd["reason"]
+        experiments.append(merged)
+    return {"experiments": experiments, "total": len(experiments)}

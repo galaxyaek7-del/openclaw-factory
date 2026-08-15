@@ -3790,6 +3790,45 @@ def _first_dollar_engine():
     return first_dollar_engine.run_first_dollar_cycle()
 
 
+def _experiment_cycle():
+    """EXPERIMENT AUTO LOOP (Autonomous Enterprise Directive gap #3,
+    2026-08-15): closes LEARN->SCALE/ITERATE/KILL. Records real observations
+    from the real page-views ledger, auto-evaluates due RUNNING experiments,
+    and retires stale ones so none runs forever silently."""
+    import commercial_experiment_automation
+    return commercial_experiment_automation.run_experiment_cycle()
+
+
+def _golden_hunter_refresh():
+    """GOLDEN HUNTER AUTO-REFRESH (Autonomous Enterprise Directive,
+    2026-08-15, gap closure #1): the DISCOVER->RE-RANK feed. The golden
+    bridge stalls forever once golden_opportunities.json passes its 24h
+    freshness window, because profit_oracle.run_oracle() only re-fires
+    on a new GOLDEN catch and force_refresh_golden_opportunities() was
+    founder-triggered only. This wires that real, safe refresh into the
+    automatic tick: re-ranks the same real, already-scored niches and
+    writes a fresh generated_at (never fabricates a new opportunity)."""
+    import commercial_activation
+    return commercial_activation.force_refresh_golden_opportunities()
+
+
+def _founder_next_action():
+    """ONE-NEXT-ACTION (Autonomous Enterprise Master Plan Task 1, 2026-08-15):
+    consolidates every human gate into one prioritized next action for the
+    founder. Read-only, real-state only."""
+    import founder_next_action
+    return founder_next_action.build_founder_next_action()
+
+
+def _seo_distribution():
+    """SEO DISTRIBUTION (Autonomous Enterprise Master Plan Task 2, 2026-08-15):
+    the only READY distribution channel. Publishes honest, problem-first SEO
+    pages from real portfolio opportunities. Idempotent; never contacts a
+    platform; never fabricates revenue."""
+    import seo_distribution
+    return seo_distribution.publish_seo_pages()
+
+
 _ENDPOINTS = {
     "opportunities": _opportunities,
     "production": _production,
@@ -4038,6 +4077,8 @@ _ENDPOINTS = {
     "public_solutions_catalog": _public_solutions_catalog,
     "solutions_click": _solutions_click,
     "record_public_page_view": _record_public_page_view,
+    "golden_hunter_refresh": _golden_hunter_refresh,
+    "experiment_cycle": _experiment_cycle,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
     "account_routing_status": _account_routing_status,
     "commercial_mission_control": _commercial_mission_control,
@@ -4052,6 +4093,8 @@ _ENDPOINTS = {
     "commercial_treasury": _commercial_treasury,
     "affiliate_chain_readiness": _affiliate_chain_readiness,
     "first_dollar_engine": _first_dollar_engine,
+    "founder_next_action": _founder_next_action,
+    "seo_distribution": _seo_distribution,
     "validation_submit": _validation_submit,
     "validation_dashboard": _validation_dashboard,
     "validation_page_view": _validation_page_view,

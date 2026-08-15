@@ -231,20 +231,22 @@ def golden_hunter_freshness_status(golden_json_path=None, freshness_hours=24, no
 
 
 def force_refresh_golden_opportunities():
-    """The requested 'controlled refresh mechanism' -- real, but
-    deliberately never auto-triggered from this module or from
-    factory_loop.js's tick. Calls profit_oracle.run_oracle() directly,
-    bypassing the normal 'only on a new golden catch' gate. Never
-    fabricates a new opportunity -- it re-ranks whatever real,
-    already-scored niches exist in OPPORTUNITIES.md today; if none are
-    new, the output is honestly unchanged except for a fresh
+    """The requested 'controlled refresh mechanism' -- real. Now wired into
+    factory_loop.js's automatic tick as the once-per-calendar-day
+    `golden_hunter_refresh` step (Autonomous Enterprise Directive gap
+    closure #1, 2026-08-15): keeps the DISCOVER->RE-RANK feed fresh so the
+    golden bridge never starves on the 24h freshness window. Calls
+    profit_oracle.run_oracle() directly, bypassing the normal 'only on a new
+    golden catch' gate. Never fabricates a new opportunity -- it re-ranks
+    whatever real, already-scored niches exist in OPPORTUNITIES.md today; if
+    none are new, the output is honestly unchanged except for a fresh
     generated_at timestamp."""
     import profit_oracle
     before = golden_hunter_freshness_status()
     profit_oracle.run_oracle()
     after = golden_hunter_freshness_status()
     return {"generated_at": _now_iso(), "before": before, "after": after,
-            "note": "Real re-rank of already-scored real niches -- never a fabricated new opportunity. This function must be called explicitly (e.g. a founder-triggered Mission Control action); it is not wired into any automatic tick."}
+            "note": "Real re-rank of already-scored real niches -- never a fabricated new opportunity. Wired into the automatic daily tick (golden_hunter_refresh step, 2026-08-15); also callable on demand."}
 
 
 # ---------------------------------------------------------------------------

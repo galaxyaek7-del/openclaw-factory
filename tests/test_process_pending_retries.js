@@ -12,7 +12,7 @@ const assert = require('node:assert/strict');
 
 const factoryState = require('../lib/factory_state.js');
 const n8nNotify = require('../lib/n8n_notify.js');
-const { processPendingRetries, expireStaleRetries } = require('../factory_loop.js');
+const { processPendingRetries, expireStaleRetries, dedupePendingRetries } = require('../factory_loop.js');
 
 function withPatched(obj, patches, fn) {
   const originals = {};
@@ -150,4 +150,40 @@ test('replayable telegram_notify retries are never expired even when old', async
   } finally {
     fsModule.appendFileSync = origAppend;
   }
+});
+
+test('dedupePendingRetries collapses duplicates keeping the newest per task', async () => {
+  const older = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const newer = new Date(Date.now() - 60 * 1000).toISOString();
+  const pending = [
+    { task: 'arm_publish:gumroad:PROD-X', attempt: 1, context: null, queued_at: older },
+    { task: 'arm_publish:gumroad:PROD-X', attempt: 1, context: null, queued_at: newer },
+    { task: 'arm_publish:gumroad:', attempt: 1, context: null, queued_at: newer },
+    { task: 'telegram_notify:recovery', attempt: 1, context: { payload: {} }, queued_at: older },
+  ];
+  let saved = null;
+  await withPatched(factoryState, {
+    loadState: () => ({ pending_retries: pending }),
+    saveState: (state) => { saved = state; },
+  }, async () => {
+    const removed = dedupePendingRetries();
+    assert.equal(removed, 1, 'exactly the oldest duplicate must be removed');
+    assert.ok(saved, 'state must be saved when duplicates exist');
+    const tasks = saved.pending_retries.map(r => r.task).sort();
+    assert.deepEqual(tasks, ['arm_publish:gumroad:', 'arm_publish:gumroad:PROD-X', 'telegram_notify:recovery']);
+    const kept = saved.pending_retries.find(r => r.task === 'arm_publish:gumroad:PROD-X');
+    assert.equal(kept.queued_at, newer, 'the newest duplicate must survive');
+  });
+});
+
+test('dedupePendingRetries is a no-op on an already-clean queue', async () => {
+  let saved = null;
+  await withPatched(factoryState, {
+    loadState: () => ({ pending_retries: [{ task: 'telegram_notify:a', context: { payload: {} } }] }),
+    saveState: (state) => { saved = state; },
+  }, async () => {
+    const removed = dedupePendingRetries();
+    assert.equal(removed, 0);
+    assert.equal(saved, null, 'no save when nothing changed');
+  });
 });

@@ -1,6 +1,6 @@
 # 🏆 Golden Opportunities — مرتَّبة حسب Profit Score
 
-**آخر تحديث:** 2026-08-14T16:22:12.523784
+**آخر تحديث:** 2026-08-15T11:42:24.752100+00:00
 **تم بواسطة:** `profit_oracle.py` — CONSTITUTION.md §16 (The Butter Principle)
 
 | # | النيتش | النتيجة | الحكم | 🧈 | السعر | المنصة |

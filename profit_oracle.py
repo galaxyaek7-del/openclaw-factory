@@ -27,7 +27,7 @@ import re
 import sys
 import json
 import math
-from datetime import datetime
+from datetime import datetime, timezone
 
 # When spawned as a child process without a real console, Python's stdin/
 # stdout can silently fall back to the OS locale codepage instead of UTF-8,
@@ -1733,7 +1733,7 @@ def run_oracle():
         ),
         reverse=True,
     )
-    generated_at = datetime.now().isoformat()
+    generated_at = datetime.now(timezone.utc).isoformat()
     _write_golden_report(results, generated_at)
     return results
 
