@@ -2423,6 +2423,13 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('executive_orchestrator', [], req),
     health: pythonHealthCheck('executive_orchestrator'),
   },
+  {
+    name: 'portfolio-routing',
+    description: "GLOBAL REVENUE PORTFOLIO ROUTER (Task 6): selects the best existing business-model/channel for every VERIFIED opportunity by reusing the real engines (revenue_os arm router, profit-first rank, ladder_opportunity_score, offer/channel router, experiment registry). Read-only, evidence-gated (VERIFIED-tier + non-stale only).",
+    reused: 'portfolio_routing.py::portfolio_routing_report(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('portfolio_routing', [], req),
+    health: pythonHealthCheck('portfolio_routing'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc

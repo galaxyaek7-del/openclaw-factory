@@ -3814,6 +3814,17 @@ def _experiment_cycle():
     return commercial_experiment_automation.run_experiment_cycle()
 
 
+def _portfolio_routing():
+    """GLOBAL REVENUE PORTFOLIO ROUTER (Task 6, 2026-08-15): selects the best
+    existing business-model/channel for every VERIFIED opportunity by
+    REUSING the real engines (revenue_os arm router, profit-first rank,
+    ladder_opportunity_score, autonomous_commerce_ops offer/channel router,
+    experiment registry). Read-only: no spend, no publish, no gate changes.
+    Evidence-gated: only VERIFIED-tier, non-stale opportunities route."""
+    import portfolio_routing
+    return portfolio_routing.portfolio_routing_report()
+
+
 def _golden_hunter_refresh():
     """GOLDEN HUNTER AUTO-REFRESH (Autonomous Enterprise Directive,
     2026-08-15, gap closure #1): the DISCOVER->RE-RANK feed. The golden
@@ -4095,6 +4106,7 @@ _ENDPOINTS = {
     "golden_hunter_refresh": _golden_hunter_refresh,
     "experiment_cycle": _experiment_cycle,
     "executive_orchestrator": _executive_orchestrator,
+    "portfolio_routing": _portfolio_routing,
     "enterprise_sales_simulations": _enterprise_sales_simulations,
     "account_routing_status": _account_routing_status,
     "commercial_mission_control": _commercial_mission_control,

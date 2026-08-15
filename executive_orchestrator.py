@@ -308,8 +308,8 @@ def build_work_queue(now=None) -> List[Dict[str, object]]:
     except Exception:  # pragma: no cover - defensive
         pass
     for opp in _read_opportunities():
-        verification = opp.get("verification") or "DISCOVERED"
-        if verification == "VERIFIED":
+        verification = opp.get("verification_status") or opp.get("verification") or "DISCOVERED"
+        if verification in ("VERIFIED", "PARTIALLY_VERIFIED", "THIRD_PARTY_ONLY"):
             continue
         opp_id = opp.get("opportunity_id") or "unknown"
         queue.append({
@@ -347,11 +347,15 @@ def build_work_queue(now=None) -> List[Dict[str, object]]:
 def opportunity_state(opp: Dict[str, object]) -> str:
     """Map a real opportunity to its current state in DECISION_STATES using
     real fields only. Never guesses; unknown/absent -> DISCOVERED. The return
-    is always one of DECISION_STATES."""
-    verification = opp.get("verification") or "DISCOVERED"
-    if verification == "VERIFIED":
-        return "VERIFIED"
-    if verification in ("PARTIALLY_VERIFIED", "THIRD_PARTY_ONLY"):
+    is always one of DECISION_STATES.
+
+    The real portfolio ledger (commission_opportunities.jsonl) stores
+    verification in `verification_status`; `verification` is accepted as a
+    fallback for any caller that still writes the older key (Task 6 fix:
+    the Executive Orchestrator must honor the real VERIFIED tier so verified
+    opportunities are never shown as DISCOVERED at the control plane)."""
+    verification = opp.get("verification_status") or opp.get("verification") or "DISCOVERED"
+    if verification in ("VERIFIED", "PARTIALLY_VERIFIED", "THIRD_PARTY_ONLY"):
         return "VERIFIED"
     return "DISCOVERED"
 
