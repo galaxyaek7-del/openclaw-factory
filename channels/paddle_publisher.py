@@ -21,13 +21,15 @@ fake success. Graceful "not configured" state: a missing PADDLE_API_KEY
 raises ConfigError, which channels/paddle_arm.py's status() turns into
 ArmStatus.UNAVAILABLE — never a crash, same as every other arm.
 
-Honesty note: unlike gumroad_publisher.py, none of the functions below have
-ever been called against a real Paddle account (no PADDLE_API_KEY has ever
-existed in this factory) — this is a skeleton built from Paddle's public
-API documentation shape (Products/Prices/Transactions resources, Bearer
-auth), not something verified against a live response. Treat any real
-response-shape assumption here as unverified until a real key is added and
-this is actually exercised once.
+Honesty note (updated 2026-08-15, CTO+COO audit closure): PADDLE_API_KEY
+IS present in .env and this publisher has since been exercised against the
+real account — data/paddle_products.json shows 6 real products with real
+product_id/price_id/price created (incl. the EU AI Act Toolkit at $155,
+dry_run=False 2026-08-07). What remains blocked is the account-level
+`transaction_checkout_not_enabled` onboarding gate: product/price creation
+works, but create_checkout_transaction still returns that error, so no real
+checkout URL has ever been produced. That remaining block is a founder
+action at vendors.paddle.com, not this module.
 """
 
 import argparse

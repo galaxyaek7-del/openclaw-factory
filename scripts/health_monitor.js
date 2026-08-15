@@ -109,6 +109,58 @@ function sendAlert(message) {
   }
 }
 
+// Data-freshness watchdog (CTO+COO audit closure 2026-08-15, Phase 11):
+// the HTTP /health endpoint tells us the server is up, but a factory_loop
+// that silently stopped producing fresh artifacts would pass every HTTP
+// check while the factory went dormant -- a real, previously-undetected
+// MTTD gap (RED_TEAM_REPORT.md). These are the real files factory_loop's
+// tick/scheduler writes, each with a max-acceptable staleness:
+//   * tick-adjacent files update every ~10min tick
+//   * health_snapshots update every tick (per tick() in factory_loop.js)
+//   * daily reports have a 26h grace so one missed midnight tick (e.g. a
+//     laptop asleep overnight) is reported honestly, not as an alarm.
+const FRESHNESS_FILES = [
+  { file: 'data/factory_state.json', maxAgeMs: 25 * 60 * 1000 },
+  { file: 'data/golden_hunter_events.jsonl', maxAgeMs: 25 * 60 * 1000 },
+  { file: 'data/health_snapshots.jsonl', maxAgeMs: 25 * 60 * 1000 },
+  { file: 'data/orchestrator_timeline.jsonl', maxAgeMs: 2 * 60 * 60 * 1000 },
+  { file: 'data/decisions.jsonl', maxAgeMs: 26 * 60 * 60 * 1000 },
+];
+
+function checkFreshness(now = Date.now(), files = FRESHNESS_FILES) {
+  return files.map(({ file, maxAgeMs }) => {
+    const fullPath = path.join(REPO_ROOT, file);
+    let ageMs = null;
+    let exists = false;
+    try {
+      if (fs.existsSync(fullPath)) {
+        exists = true;
+        const mtime = fs.statSync(fullPath).mtimeMs;
+        ageMs = now - mtime;
+      }
+    } catch { /* stat failure treated as stale-below */ }
+    return {
+      file,
+      exists,
+      age_ms: ageMs,
+      stale: !exists || (ageMs !== null && ageMs > maxAgeMs),
+      max_age_ms: maxAgeMs,
+    };
+  });
+}
+
+function buildStalenessMessage(staleFiles) {
+  const lines = [
+    '⚠️ بيانات المصنع غير محدَّثة:',
+    '',
+    ...staleFiles.map((s) => {
+      const ageH = s.age_ms === null ? 'غير موجود' : `${Math.round(s.age_ms / 60000)}m`;
+      return `• ${s.file} — ${s.exists ? `آخر تحديث منذ ${ageH}` : 'الملف غير موجود'}`;
+    }),
+  ];
+  return lines.join('\n');
+}
+
 // previousStatus is passed in and the new status returned (not hidden
 // module state) -- keeps this pure and directly testable, the same
 // dependency-injection shape lib/health_checks.js's own run/fetchImpl
@@ -127,11 +179,38 @@ async function tick(previousStatus, { url = HEALTH_URL, fetchImpl = fetch, alert
   return report.status;
 }
 
+// Extends the per-tick check with data-freshness (CTO+COO audit closure
+// 2026-08-15): the HTTP endpoint only proves the server is up; a
+// factory_loop that silently stopped writing fresh artifacts would pass
+// every HTTP check while the factory went dormant -- the real MTTD gap
+// RED_TEAM_REPORT.md flagged. Alerts only on a staleness *transition*
+// (fresh -> stale, or back), never on an unchanged state -- the same no-
+// spam discipline as the HTTP status alerts.
+async function tickWithFreshness(previousState, { url = HEALTH_URL, fetchImpl = fetch, alertImpl = sendAlert, now = Date.now(), files = FRESHNESS_FILES } = {}) {
+  const status = await tick(previousState.status, { url, fetchImpl, alertImpl });
+  const freshness = checkFreshness(now, files);
+  const staleFiles = freshness.filter((f) => f.stale);
+  const staleNow = staleFiles.length > 0;
+  // previousState.stale === null means "first poll, nothing to compare yet" --
+  // never alert on startup, exactly like shouldAlert()'s first-poll rule.
+  const wasStale = previousState.stale === null ? null : Boolean(previousState.stale);
+
+  if (wasStale !== null && wasStale !== staleNow) {
+    const message = staleNow
+      ? buildStalenessMessage(staleFiles)
+      : '✅ بيانات المصنع عادت للتحديث';
+    log({ event: 'freshness_changed', stale: staleNow, files: staleFiles.length });
+    await alertImpl(message);
+  }
+
+  return { status, stale: staleNow, files: freshness };
+}
+
 function start() {
-  let lastStatus = null;
+  let lastState = { status: null, stale: null };
   log({ event: 'started', url: HEALTH_URL, interval_ms: INTERVAL_MS });
   const poll = async () => {
-    lastStatus = await tick(lastStatus);
+    lastState = await tickWithFreshness(lastState);
   };
   poll();
   return setInterval(poll, INTERVAL_MS);
@@ -142,6 +221,7 @@ if (require.main === module) {
 }
 
 module.exports = {
-  shouldAlert, extractFailingCheckNames, buildStatusChangeMessage, fetchHealth, sendAlert, tick, start,
-  HEALTH_URL, INTERVAL_MS,
+  shouldAlert, extractFailingCheckNames, buildStatusChangeMessage, fetchHealth, sendAlert,
+  checkFreshness, buildStalenessMessage, tick, tickWithFreshness, start,
+  HEALTH_URL, INTERVAL_MS, FRESHNESS_FILES,
 };

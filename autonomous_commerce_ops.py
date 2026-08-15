@@ -34,6 +34,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional
 
+import product_launch_kit
+
 _FACTORY_ROOT = Path(__file__).resolve().parent
 
 # ---------------------------------------------------------------------------
@@ -1203,8 +1205,8 @@ def distribution_prep(now: Optional[datetime] = None) -> Dict[str, object]:
 
     assets = {
         "GUMROAD": {
-            "offer": "EU AI Act Compliance Toolkit (price to be set by founder)",
-            "product_url": "https://aekraft.gumroad.com/l/iaiyt (live once published+priced)",
+            "offer": f"EU AI Act Compliance Toolkit — ${product_launch_kit.PRODUCT_PRICE_USD:.0f} (real product, created live 2026-08-14; draft until founder connects a payment method)",
+            "product_url": f"{product_launch_kit.GUMROAD_SHORT_URL} (live once published+priced)",
             "tracking": "gumroad/?utm_source=organic&utm_medium=social&utm_campaign=first-dollar-gumroad",
             "campaign_id": "CAM-GUMROAD-FIRST-DOLLAR",
             "cta": "Get the EU AI Act Compliance Toolkit - instant download",

@@ -18,7 +18,7 @@ Three real, existing backup snapshots (`data/factory_state.json.snapshot-2026080
 
 ## What "backup" actually means in this factory today
 
-`recovery/snapshot.py::snapshot_before(reason)` — copies a fixed list of 7 critical files (`factory_state.json`, `production_control.json`, `decisions.jsonl`, `market_evidence.jsonl`, `board_meetings.jsonl`, `paddle_products.json`, `paddle_checkout_notifications.json`) to a timestamped `.bak` sibling, **immediately before** a real risky operation (a real Paddle publish, an orchestrator production stage). This is event-triggered, not scheduled.
+`recovery/snapshot.py::snapshot_before(reason)` — copies a fixed list of critical files (as of the CTO+COO audit closure 2026-08-15: `factory_state.json`, `decisions.jsonl`, `market_evidence.jsonl`, `board_meetings.jsonl`, `paddle_products.json`, `commission_ledger.jsonl`, `affiliate_clicks.jsonl`, `safe_mode_state.json`, `publish_protection_state.json`) to a timestamped `.bak` sibling, **immediately before** a real risky operation (a real Paddle publish, an orchestrator production stage). This is event-triggered, not scheduled. (The prior two targets `production_control.json` and `paddle_checkout_notifications.json` were verified to never exist on disk and were silently skipped — replaced by the real revenue/affiliate/state ledgers.)
 
 | Property | Real answer |
 |---|---|

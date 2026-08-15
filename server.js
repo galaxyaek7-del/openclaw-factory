@@ -33,7 +33,14 @@ const groq = new Groq({ apiKey: GROQ_KEY || 'missing' });
 // checks that independently).
 const LIVE_PUBLISH_ENABLED = process.env.FACTORY_LIVE_PUBLISH === 'true';
 
-app.use(cors());
+// CORS hardening (CTO+COO audit closure 2026-08-15): the prior permissive
+// `cors()` reflected ANY origin. Every real caller (mission_control.html,
+// dashboard.html, customer_site/*, public_site/*) uses same-origin relative
+// /api/... fetches — there is no legitimate cross-origin consumer. origin:
+// false sends no Access-Control-Allow-Origin, so browsers refuse any
+// cross-origin request while same-origin calls are unaffected. A founder who
+// later deliberately widens BIND_HOST must also revisit this deliberately.
+app.use(cors({ origin: false }));
 // verify callback stashes the exact raw request bytes onto req.rawBody
 // before JSON-parsing -- needed only by POST /webhooks/paddle (real
 // Paddle HMAC signatures are computed over the exact raw body, and
@@ -2367,6 +2374,13 @@ const SERVICE_REGISTRY = [
     handler: (req) => runPythonServiceCached('commercial_treasury', [], req),
     health: pythonHealthCheck('commercial_treasury'),
   },
+  {
+    name: 'affiliate-chain-readiness',
+    description: "Affiliate chain readiness: portfolio count/verified, launch prep state, tracking IDs, click/conversion funnel, and the single remaining human gate (APPLY_AWIN_DIGITALOCEAN). Read-only; verifiably ready for a real affiliate link with zero further coding.",
+    reused: 'commercial_operations.py::affiliate_chain_readiness(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('affiliate_chain_readiness', [], req),
+    health: pythonHealthCheck('affiliate_chain_readiness'),
+  },
 ];
 
 // Renders SERVICE_LAYER_API.md straight from SERVICE_REGISTRY so the doc
@@ -4695,6 +4709,8 @@ app.delete('/finance/delete/:id', requireMissionControlAuth, (req, res) => {
 // (captured by the express.json() verify callback above) is passed
 // through base64-encoded so the exact bytes Paddle signed are never
 // altered by a Node<->Python JSON round-trip.
+const PADDLE_WEBHOOK_ALERT_MIN_INTERVAL_MS = 60 * 60 * 1000; // throttle per reason: 1h
+const paddleWebhookAlertLastSent = new Map();
 app.post('/webhooks/paddle', (req, res) => {
   const pythonPath = detectPython();
   const scriptPath = path.join(__dirname, 'channels', 'paddle_webhook.py');
@@ -4714,6 +4730,22 @@ app.post('/webhooks/paddle', (req, res) => {
       // retries on non-2xx) so a transient Node-side issue doesn't
       // trigger Paddle's own retry storm on top of it.
       return res.status(200).json({ status: 'ERROR', detail: `local parse error: ${e.message}${errOut ? ' -- ' + errOut.slice(0, 200) : ''}` });
+    }
+    // CTO+COO audit closure (2026-08-15): a REJECTED event (e.g.
+    // MISSING_SECRET because PADDLE_WEBHOOK_SECRET is unset) was previously
+    // only appended to the local ledger and returned as a blanket 200 -- a
+    // real Paddle event silently dropped once the founder sets the secret.
+    // Surface it via Telegram (throttled per reason) so it can't vanish
+    // unnoticed; the 200 response itself is kept to avoid a retry storm.
+    if (parsed && parsed.status === 'REJECTED' && parsed.reason !== 'DUPLICATE_EVENT') {
+      const nowMs = Date.now();
+      const last = paddleWebhookAlertLastSent.get(parsed.reason) || 0;
+      if (nowMs - last > PADDLE_WEBHOOK_ALERT_MIN_INTERVAL_MS) {
+        paddleWebhookAlertLastSent.set(parsed.reason, nowMs);
+        telegramDirect.sendTelegramMessage(
+          `[Paddle webhook] event REJECTED — ${parsed.reason}: ${parsed.detail || ''}${parsed.event_id ? ` (event ${parsed.event_id})` : ''}`
+        ).catch(() => {});
+      }
     }
     res.status(200).json(parsed);
   });

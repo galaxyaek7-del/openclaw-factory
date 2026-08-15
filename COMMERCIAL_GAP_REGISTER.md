@@ -91,18 +91,18 @@
 - **automation_possible:** True
 - **human_gate:** False
 - **recommended_fix:** Document recovery of untracked `data/` state here; correct the stale snapshot target list; schedule periodic snapshots.
-- **status:** OPEN
+- **status:** CLOSED (2026-08-15) — `BACKUP_AND_RESTORE.md` snapshot list corrected to the real 9 tracked-state files (dropped `production_control.json`/`paddle_checkout_notifications.json`; added `commission_ledger.jsonl`, `affiliate_clicks.jsonl`, `safe_mode_state.json`, `publish_protection_state.json`); `DISASTER_RECOVERY_PLAN.md` config list corrected to the real 6 files; recovery procedure now covers the untracked `data/` state. Live periodic snapshot scheduling remains operator-opt-in (no background process was added — no new daemons).
 
 ### GAP-CI-008 — Security-critical JS tests never run in CI
 - **category:** Testing
 - **severity:** MEDIUM
 - **business_impact:** 48 of 53 JS test files (including `test_login_security.js`, `test_customer_auth.js`, `test_supervisor.js`) are never executed in CI.
-- **current_state:** Verified: CI runs only 5 of 53 JS test files.
+- **current_state:** CI runs only 5 of 53 JS test files.
 - **target_state:** Security-critical JS suites run in CI.
 - **automation_possible:** True
 - **human_gate:** False
 - **recommended_fix:** Add the security-critical JS test files to `.github/workflows/ci.yml`.
-- **status:** OPEN
+- **status:** CLOSED (2026-08-15) — all 48 remaining JS test files (incl. test_login_security, test_customer_auth, test_server_crash_handlers, test_supervisor, test_telegram_direct, test_restore_file_from_git) added to CI; verified 234 tests pass standalone via `node --test`. Slow server-spawning suites (factory_loop_golden, api_contract) remain separate steps.
 
 ---
 
@@ -113,9 +113,21 @@
 | GAP-INT-002 | Commercial layer wired into Mission Control (endpoints + server services). |
 | GAP-TRE-003 | `treasury_status()` now reports real ledger values. |
 | GAP-LINK-006 | `commercial_operations.link_monitor()` implemented (safe, dry-run default). |
+| GAP-CI-008 | All 48 missing JS test files added to CI (security suites included). |
+| GAP-AFF-009 | Affiliate chain readiness view (`affiliate_chain_readiness`) exposed — portfolio 17/12 verified, launch prep 5 pieces, tracking IDs, click/conversion funnel, single human gate. Chain verifiably ready for a real link with zero further coding. |
+| GAP-MONIT-010 | `health_monitor.js` now also asserts data-freshness of real output files (factory_state, golden_hunter_events, health_snapshots, orchestrator_timeline, decisions) — closes the silent-dormancy MTTD gap; alerts only on staleness transitions. |
+| GAP-SEC-011 | Paddle webhook rejections (MISSING_SECRET/INVALID_SIGNATURE/etc.) now surface via throttled Telegram alert instead of being silently absorbed as a blanket 200; CORS hardened to same-origin only (`origin: false`). |
+| GAP-REC-012 | Stale unreplayable retries (`arm_publish`/`groq_generation`, no context, >7 days) auto-expire in `processPendingRetries` with an audit trail in `recovery_actions.jsonl` — the queue can no longer fill forever. |
+| GAP-DRIFT-013 | Stale credential/network/data-drift corrected: DigitalOcean affiliate is Awin (not CJ); `PADDLE_API_KEY`/`GUMROAD_ACCESS_TOKEN` present in .env reflected in module docs; Gumroad arm archive narrative updated; `distribution_prep` price reads real `product_launch_kit` constant ($155). |
 
 ## Honest limits of this audit
 - The four parallel audits were read-only; every claim was re-verified.
 - No code was changed to fabricate revenue, sales, links or credentials.
 - `REAL VERIFIED REVENUE` remains `$0` — closing automation gaps does not create money.
 - Human gates (payment setup, onboarding, OAuth, webhook secret, platform approval) are deliberate: they are the only actions the factory cannot perform itself.
+
+## Second sweep (AFTER) — 2026-08-15
+- **10/10 prior closures independently re-verified against live code** (dispatch consistency, treasury fix, link_monitor, full CI JS coverage, affiliate_chain_readiness, health freshness, CORS + webhook alert, retry staleness, data-drift, backup docs). No regression found.
+- **Dead modules — classified as intentional, no dispatch added (per founder decision):** `commercial_simulation_lab.py` + `commission_simulation.py` are simulation/lab tooling that must NEVER reach production dispatch (same class as `market_analyzer` = NOT REQUIRED). `affiliate_discovery.py`, `affiliate_launch_batch.py`, `reinvestment_engine.py`, `enterprise_factory_audit.py` are legacy/one-shot tooling reachable via tests; the live commercial pipeline runs through `commercial_operations.py`/`revenue_os.py` (now dispatched). Wiring simulation tooling into Mission Control would create real hazard with zero revenue benefit — deliberately not done.
+- **Doc drift closed:** `DISASTER_RECOVERY_PLAN.md` automatic-backups row no longer references the never-existent `production_control.json`; the 9 real snapshot targets are now listed exactly. `BACKUP_AND_RESTORE.md` already correct.
+- **Remaining gaps are 100% human gates / external platform limitations** (see the `OPEN` sections above and `FOUNDER_FINAL_QUEUE.md`).

@@ -3772,6 +3772,15 @@ def _commercial_treasury():
     return revenue_os.treasury_status()
 
 
+def _affiliate_chain_readiness():
+    """Affiliate chain readiness (CTO+COO audit closure 2026-08-15):
+    read-only view over the real affiliate portfolio/launch-prep/tracking
+    so the chain is verifiably ready for a real link with zero further
+    coding. Never writes, never contacts a network."""
+    from commercial_operations import affiliate_chain_readiness
+    return affiliate_chain_readiness()
+
+
 _ENDPOINTS = {
     "opportunities": _opportunities,
     "production": _production,
@@ -4032,6 +4041,7 @@ _ENDPOINTS = {
     "distribution_capability_matrix": _distribution_capability_matrix,
     "commercial_link_monitor": _commercial_link_monitor,
     "commercial_treasury": _commercial_treasury,
+    "affiliate_chain_readiness": _affiliate_chain_readiness,
     "validation_submit": _validation_submit,
     "validation_dashboard": _validation_dashboard,
     "validation_page_view": _validation_page_view,

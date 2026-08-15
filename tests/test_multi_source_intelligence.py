@@ -150,8 +150,11 @@ class TestHonestlyUnavailableConnectors(unittest.TestCase):
     def test_gumroad_connector_checks_the_real_arm_status(self):
         from multi_source_intelligence.connectors import gumroad
         result = gumroad.check("x")
-        # Confirmed real state today: no live GUMROAD_ACCESS_TOKEN in .env
-        self.assertEqual(result.availability, "unavailable")
+        # Real state (updated 2026-08-15): GUMROAD_ACCESS_TOKEN IS set in .env,
+        # so the real arm reports available. The connector must mirror the
+        # REAL arm status (channel_registry), not a hardcoded belief.
+        expected = "available" if gumroad._arm_available() else "unavailable"
+        self.assertEqual(result.availability, expected)
         self.assertIn("Gumroad", result.reason)
 
 

@@ -3404,9 +3404,60 @@ async function processPendingRetries() {
   return { processed: due.length, replayed, still_pending: stillPending.length };
 }
 
+// Stale-job recovery (CTO+COO audit closure 2026-08-15, Phase 11): arm_publish
+// and groq_generation retries carry no replay context and are never replayed
+// (dangerous publish = human gate, by design). That meant they accumulated in
+// pending_retries forever, silently filling the queue. This expires entries
+// past RETRY_STALE_TTL_MS that the processor cannot and must not replay, and
+// archives each to data/recovery_actions.jsonl so the decision is auditable.
+const RETRY_STALE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+function isUnreplayableRetry(task) {
+  return task.startsWith('arm_publish:') || task.startsWith('groq_generation');
+}
+
+async function expireStaleRetries() {
+  const state = factoryState.loadState();
+  const pending = state.pending_retries || [];
+  const now = Date.now();
+  let expired = 0;
+  for (const retry of pending) {
+    if (!isUnreplayableRetry(retry.task)) continue;
+    const queued = Date.parse(retry.queued_at || '');
+    if (Number.isNaN(queued)) continue;
+    if (now - queued >= RETRY_STALE_TTL_MS) {
+      factoryState.clearRetry(retry.task);
+      appendRecoveryAction({
+        event_type: 'stale_retry_expired',
+        component: retry.task,
+        error: retry.last_error || 'no replay context; unreplayable by design',
+        retry: retry.attempt || 1,
+        fallback: 'expired',
+        recoverable: false,
+        status: 'EXPIRED',
+        queued_at: retry.queued_at,
+        timestamp: new Date(now).toISOString(),
+      });
+      expired++;
+    }
+  }
+  return { expired };
+}
+
+function appendRecoveryAction(record) {
+  try {
+    const dir = path.join(FACTORY_DIR, 'data');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.appendFileSync(path.join(dir, 'recovery_actions.jsonl'), JSON.stringify(record) + '\n', 'utf8');
+  } catch (err) {
+    console.error('[factory_loop] appendRecoveryAction failed:', err.message);
+  }
+}
+
 async function runTick() {
   markStep('process_retries');
   await processPendingRetries();
+  await expireStaleRetries();
 
   markStep('diagnose');
   const diagnosis = await diagnose();
@@ -3864,4 +3915,5 @@ module.exports = {
   notifyGoldenHunterAccepted,
   notifyFactoryRecoveryEvent,
   processPendingRetries,
+  expireStaleRetries,
 };

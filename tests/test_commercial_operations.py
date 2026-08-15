@@ -184,16 +184,53 @@ class MissionControlEndpointTests(unittest.TestCase):
                    "commercial_revenue_router", "operational_readiness",
                    "commercial_gap_register", "revenue_event_model",
                    "profit_engine", "distribution_capability_matrix",
-                   "commercial_link_monitor", "commercial_treasury"):
+                   "commercial_link_monitor", "commercial_treasury",
+                   "affiliate_chain_readiness"):
             self.assertIn(ep, mca._ENDPOINTS)
 
     def test_read_only_endpoints_run(self):
         import mission_control_api as mca
         for ep in ("commercial_treasury", "profit_engine", "distribution_capability_matrix",
-                   "revenue_event_model", "commercial_link_monitor"):
+                   "revenue_event_model", "commercial_link_monitor",
+                   "affiliate_chain_readiness"):
             r = mca._ENDPOINTS[ep]()
             self.assertIsInstance(r, dict)
             self.assertNotIn("success", r)  # pure view, no envelope leakage
+
+
+class AffiliateChainReadinessTests(unittest.TestCase):
+    """The affiliate software chain must be ready to accept a real link
+    tomorrow with zero further coding (CTO+COO audit closure, Phase 8)."""
+
+    def test_read_only_never_writes_ledger(self):
+        import commercial_operations as co
+        r = co.affiliate_chain_readiness()
+        self.assertIn("rule", r)
+        self.assertIn("READ-ONLY", r["rule"])
+
+    def test_reports_real_portfolio_and_launch_prep(self):
+        import commercial_operations as co
+        r = co.affiliate_chain_readiness()
+        self.assertGreaterEqual(r["portfolio"]["count"], 1)
+        self.assertIsNotNone(r["launch_prep"])
+        self.assertIn("link_status", r["launch_prep"])
+        self.assertGreaterEqual(r["launch_prep"]["content_pieces"], 1)
+        self.assertIn("tracking_ids", r)
+        self.assertTrue(bool(r["tracking_ids"]))
+
+    def test_ready_for_link_state_is_deterministic(self):
+        import commercial_operations as co
+        r = co.affiliate_chain_readiness()
+        # NOT_CONFIGURED (the honest state before the founder acts) is exactly
+        # the state where the chain is ready to accept the link -- everything
+        # software-side exists and is verified.
+        self.assertEqual(r["launch_prep"]["link_status"], "NOT_CONFIGURED")
+        self.assertTrue(r["ready_for_real_link"])
+
+    def test_single_human_gate_identified(self):
+        import commercial_operations as co
+        r = co.affiliate_chain_readiness()
+        self.assertIn("APPLY_AWIN_DIGITALOCEAN", r["single_human_gate"])
 
 
 class TreasuryRegressionTests(unittest.TestCase):

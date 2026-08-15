@@ -1,12 +1,15 @@
 """Galaxy Forge — Gumroad arm (OCTOPUS_ARCHITECTURE.md ADR-2).
 
-ARCHIVED (ADR-065/MASTER_CHARTER.md §2, 2026-07-17): the Strategic
-Production Priority Ladder pivot ranks Gumroad's one-time-download model
-below the new AI SaaS/B2B tracks (see channels/paddle_arm.py, built the
-same day for that ladder) — Gumroad was never activated live in this
-factory (GUMROAD_ACCESS_TOKEN was always the missing piece, per
-CLOSING_NOTE.md 2026-07-15), and no new engineering effort defaults to it
-going forward.
+STATUS UPDATE (2026-08-15, CTO+COO audit closure): the earlier "ARCHIVED
+(ADR-065)" framing below is now stale. GUMROAD_ACCESS_TOKEN IS set in .env
+and a REAL live product was created on the account 2026-08-14 (EU AI Act
+Compliance Toolkit, product id pzTmMb4v8cih3nbWTj5TeA==, short URL
+https://aekraft.gumroad.com/l/iaiyt, $155). What remains: the product is a
+DRAFT (enable_product needs the account's payment method connected —
+founder action), and the publish-protection state still shows
+has_ever_published_successfully:false because that out-of-band creation was
+never written to sales_ledger. Deprioritized-vs-SaaS remains the *priority*
+stance, but "never activated / token missing" is no longer true.
 
 "Archived" here means deprioritized and frozen, NOT deleted or physically
 relocated: 7+ real, already-tested modules (distributor.py,

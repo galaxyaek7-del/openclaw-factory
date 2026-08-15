@@ -17,14 +17,14 @@
 - **Business Impact:** every "tests pass" claim made across this entire multi-week session was, in CI's eyes, only ever checking 28% of the real JS suite. A regression in lock handling, JSONL de-dup, deploy pre-flight checks, or pending-review/recovery logic could merge to `main` with a fully green CI run.
 - **Technical Impact:** false confidence — green CI does not mean the suite passed.
 - **Risk Level:** High.
-- **Dependency Chain:** `.github/workflows/ci.yml`'s hardcoded list → 13 real, passing test files silently excluded.
-- **Recommended Solution:** replace the hardcoded list with `node --test tests/*.js`; add a `"scripts"` block to `package.json` (currently absent) with `test:py`, `test:js`, and `test` running both.
+- **Dependency Chain:** `.github/workflows/ci.yml`'s hardcoded list → test files silently excluded. **Closed 2026-08-15 (CTO+COO audit):** CI now runs all 53 JS test files (security-critical suites included) across the unit + factory-loop + api-contract steps.
+- **Recommended Solution:** (implemented) expand the CI JS steps to cover every `tests/test_*.js` file.
 - **Estimated Effort:** S.
-- **Verification Method:** re-run CI, confirm all 18 files execute; locally, `node --test tests/*.js` reports the same 60+ passing count already verified by direct run.
+- **Verification Method:** re-run CI, confirm all 53 files execute; locally, `node --test` over the remaining 48 reports the same passing count already verified by direct run.
 
 ### GAP-02 — 8 internal routes cannot get real auth without a service-to-service credential
 - **Category:** Security, Architecture
-- **Description:** `/generate-book`, `/api/distribute`, `/api/scout/run`, `/api/agent/:name`, `/api/trends`, `/api/market-analyze`, `/api/qa-check`, `/api/sales/poll`, `/api/safety/check` carry no `requireMissionControlAuth` (unlike `/chat`, `/finance/add`, `/finance/delete/:id`, and all Mission Control routes, which do). `server.js:2678-2687`'s own comment confirms this is deliberate: `factory_loop.js` calls these over plain `http://localhost` with no credential, so adding session-cookie auth would break the live pipeline.
+- **Description:** `/generate-book`, `/api/distribute`, `/api/scout/run`, `/api/agent/:name`, `/api/trends`, `/api/market-analyze`, `/api/sales/poll`, `/api/safety/check` carry no `requireMissionControlAuth` (unlike `/chat`, `/finance/add`, `/finance/delete/:id`, and all Mission Control routes, which do). `/api/qa-check` no longer exists — `quality_doctor.py` was removed and CLAUDE.md:566 documents the removal. `server.js:2678-2687`'s own comment confirms this is deliberate: `factory_loop.js` calls these over plain `http://localhost` with no credential, so adding session-cookie auth would break the live pipeline.
 - **Root Cause:** no service-to-service auth mechanism exists between `factory_loop.js` and `server.js` — they trust each other by virtue of both running on the same loopback interface, nothing more.
 - **Business Impact:** every route that spends real Groq $ or triggers a real distribution attempt is reachable by anything that reaches `127.0.0.1:3000`.
 - **Technical Impact:** structural ceiling, not an oversight — cannot be closed piecemeal per-route.

@@ -138,3 +138,87 @@ test('sendAlert: a missing telegram_direct dependency never throws, reports hone
   const result = await hm.sendAlert('test message');
   assert.equal(typeof result, 'object');
 });
+
+test('checkFreshness: reports a recently-written real file as fresh', () => {
+  const now = Date.now();
+  const fresh = hm.checkFreshness(now);
+  const factoryState = fresh.find((f) => f.file === 'data/factory_state.json');
+  assert.ok(factoryState, 'factory_state.json must be one of the watched files');
+  assert.equal(factoryState.exists, true);
+  assert.equal(factoryState.stale, false);
+});
+
+test('checkFreshness: flags a file older than its threshold as stale', () => {
+  // Fake a very old mtime by checking against a far-future "now".
+  const future = Date.now() + 365 * 24 * 60 * 60 * 1000;
+  const fresh = hm.checkFreshness(future);
+  for (const f of fresh) {
+    if (f.exists) assert.equal(f.stale, true, `${f.file} must be stale vs a year in the future`);
+  }
+});
+
+test('checkFreshness: a missing file is reported as stale', () => {
+  const spec = [{ file: 'data/definitely-not-a-real-file.jsonl', maxAgeMs: 60000 }];
+  const result = hm.checkFreshness(Date.now(), spec)[0];
+  assert.equal(result.exists, false);
+  assert.equal(result.stale, true);
+  assert.equal(result.age_ms, null);
+});
+
+test('checkFreshness: a missing file is reported as stale (tickWithFreshness)', async () => {
+  let alertCount = 0;
+  const alertImpl = async () => { alertCount += 1; };
+  const fetchImpl = async () => ({ ok: true, json: async () => ({ status: 'healthy', checks: {} }) });
+  // Hermetic: drive freshness purely from the (missing) file spec; status
+  // stays healthy so the only possible alert is the staleness transition.
+  const first = await hm.tickWithFreshness(
+    { status: null, stale: null },
+    { fetchImpl, alertImpl, files: [{ file: 'data/definitely-not-a-real-file.jsonl', maxAgeMs: 60000 }] }
+  );
+  assert.equal(first.stale, true);
+  const second = await hm.tickWithFreshness(
+    { status: 'healthy', stale: true },
+    { fetchImpl, alertImpl, files: [{ file: 'data/definitely-not-a-real-file.jsonl', maxAgeMs: 60000 }] }
+  );
+  assert.equal(alertCount, 0, 'unchanged stale state must never re-alert');
+  const third = await hm.tickWithFreshness(
+    { status: 'healthy', stale: true },
+    { fetchImpl, alertImpl, files: [{ file: 'data/factory_state.json', maxAgeMs: 60000 }] }
+  );
+  assert.equal(third.stale, false, 'missing file dropped from watch -> fresh again');
+  assert.equal(alertCount, 1, 'stale -> fresh recovery must alert exactly once');
+});
+
+test('tickWithFreshness: alerts only on a staleness transition, not on every poll', async () => {
+  let alertCount = 0;
+  const alertImpl = async () => { alertCount += 1; };
+  const fetchImpl = async () => ({ ok: true, json: async () => ({ status: 'healthy', checks: {} }) });
+  const missing = [{ file: 'data/definitely-not-a-real-file.jsonl', maxAgeMs: 60000 }];
+
+  const first = await hm.tickWithFreshness({ status: null, stale: null }, { fetchImpl, alertImpl, files: missing });
+  assert.equal(first.stale, true, 'missing file -> stale');
+  assert.equal(first.status, 'healthy');
+
+  const second = await hm.tickWithFreshness({ status: 'healthy', stale: true }, { fetchImpl, alertImpl, files: missing });
+  assert.equal(alertCount, 0, 'unchanged stale state must never re-alert');
+  assert.equal(second.stale, true);
+
+  const third = await hm.tickWithFreshness(
+    { status: 'healthy', stale: true },
+    { fetchImpl, alertImpl, files: [{ file: 'data/factory_state.json', maxAgeMs: 60000 }] }
+  );
+  assert.equal(third.stale, false, 'missing file replaced by real one -> fresh again');
+  assert.equal(alertCount, 1, 'stale -> fresh recovery must alert exactly once');
+});
+
+test('tickWithFreshness: a fresh-forever state never alerts', async () => {
+  let alertCount = 0;
+  const alertImpl = async () => { alertCount += 1; };
+  const fetchImpl = async () => ({ ok: true, json: async () => ({ status: 'healthy', checks: {} }) });
+  const real = [{ file: 'data/factory_state.json', maxAgeMs: 60000 }];
+
+  const first = await hm.tickWithFreshness({ status: null, stale: null }, { fetchImpl, alertImpl, files: real });
+  assert.equal(first.stale, false);
+  const second = await hm.tickWithFreshness({ status: 'healthy', stale: false }, { fetchImpl, alertImpl, files: real });
+  assert.equal(alertCount, 0);
+});

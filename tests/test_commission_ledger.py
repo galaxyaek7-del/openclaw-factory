@@ -131,6 +131,61 @@ class TestRealCommissionSummary(unittest.TestCase):
         self.assertEqual(summary["test_records"], 1)
         self.assertEqual(summary["simulation_records"], 1)
 
+    def test_refunded_real_never_counted_as_revenue(self):
+        # Refund handling (Phase 10): a real REFUNDED commission must never
+        # inflate verified revenue -- it is tracked (the record exists) but
+        # excluded from real_confirmed_or_paid.
+        cl.record_commission("p", "o", "REFUNDED", 500.0, "REAL", evidence="real refund",
+                             external_transaction_id="txn_ref1", ledger_path=self.path)
+        summary = cl.real_commission_summary(ledger_path=self.path)
+        self.assertEqual(summary["real_confirmed_or_paid_commission_usd"], 0)
+        self.assertEqual(summary["real_commission_records"], 1)
+
+    def test_refund_and_live_sale_count_only_the_sale(self):
+        cl.record_commission("p", "o", "CONFIRMED", 100.0, "REAL", evidence="real sale",
+                             external_transaction_id="txn_live1", ledger_path=self.path)
+        cl.record_commission("p", "o", "REFUNDED", 100.0, "REAL", evidence="real refund",
+                             external_transaction_id="txn_ref1", ledger_path=self.path)
+        cl.record_commission("p", "o", "DISPUTED", 100.0, "REAL", evidence="chargeback",
+                             external_transaction_id="txn_dis1", ledger_path=self.path)
+        cl.record_commission("p", "o", "REVERSED", 100.0, "REAL", evidence="reversal",
+                             external_transaction_id="txn_rev1", ledger_path=self.path)
+        summary = cl.real_commission_summary(ledger_path=self.path)
+        self.assertEqual(summary["real_confirmed_or_paid_commission_usd"], 100.0)
+        self.assertEqual(summary["real_commission_records"], 4)
+
+    def test_test_transactions_never_enter_verified_revenue_under_refund_mix(self):
+        # A TEST REFUNDED alongside a REAL CONFIRMED must never change the
+        # real total -- full REAL/TEST separation is enforced even with
+        # refunds in the mix.
+        cl.record_commission("p", "o", "CONFIRMED", 100.0, "REAL", evidence="real sale",
+                             external_transaction_id="txn_live1", ledger_path=self.path)
+        cl.record_commission("p", "o", "REFUNDED", 99999.0, "TEST", ledger_path=self.path)
+        summary = cl.real_commission_summary(ledger_path=self.path)
+        self.assertEqual(summary["real_confirmed_or_paid_commission_usd"], 100.0)
+        self.assertEqual(summary["test_records"], 1)
+
+    def test_ledger_survives_a_fresh_process_restart(self):
+        # Restart persistence (Phase 19): the ledger is append-only JSONL on
+        # disk; a brand-new load (as after a process restart) must see every
+        # previously-written record, including a real one that was later
+        # refunded -- state persists, never held only in memory.
+        cl.record_commission("p", "o", "CONFIRMED", 50.0, "REAL", evidence="real sale",
+                             external_transaction_id="txn_restart1", ledger_path=self.path)
+        cl.record_commission("p", "o", "REFUNDED", 50.0, "REAL", evidence="real refund",
+                             external_transaction_id="txn_restart2", ledger_path=self.path)
+        # Simulate restart: a completely fresh read of the file.
+        rows = []
+        with open(self.path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    rows.append(json.loads(line))
+        self.assertEqual(len(rows), 2)
+        self.assertEqual({r["commission_status"] for r in rows}, {"CONFIRMED", "REFUNDED"})
+        summary = cl.real_commission_summary(ledger_path=self.path)
+        self.assertEqual(summary["real_confirmed_or_paid_commission_usd"], 50.0)
+
 
 class TestFirstRealDollarStatus(unittest.TestCase):
     """Phase 38b ('Chief Commercial Engineer' directive, ADR-234), Section 11."""

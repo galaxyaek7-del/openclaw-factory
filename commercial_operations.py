@@ -598,6 +598,86 @@ def _registered_commercial_links() -> List[dict]:
     return links
 
 
+def affiliate_chain_readiness(now: Optional[datetime] = None) -> Dict[str, object]:
+    """Affiliate chain readiness view (CTO+COO audit closure 2026-08-15,
+    Phase 8). The affiliate software infrastructure (portfolio, content
+    factory, tracking, launch prep, click/conversion ledgers) is built and
+    tested but was never surfaced or triggered in production -- the chain
+    must be ready to accept a real affiliate link tomorrow with zero further
+    coding. This is a READ-ONLY view: it never writes a ledger, never makes
+    a network call, never activates anything. It reports the real state so
+    the chain is visible, auditable, and verifiably ready for the one
+    human gate (APPLY_AWIN_DIGITALOCEAN)."""
+    from affiliate_launch_prep import LAUNCH_LINK_STATUS, prepare_launch
+
+    portfolio_count = 0
+    portfolio_verified = 0
+    portfolio_error = None
+    try:
+        from commission_engine import load_opportunity_portfolio
+        portfolio = load_opportunity_portfolio()
+        if isinstance(portfolio, list):
+            portfolio_count = len(portfolio)
+            portfolio_verified = sum(1 for o in portfolio if str(o.get("verification_status", "")).upper() == "VERIFIED")
+    except Exception as e:
+        portfolio_error = str(e)[:120]
+
+    launch = None
+    launch_error = None
+    try:
+        p = prepare_launch(now=now)
+        launch = {
+            "opportunity_id": p.opportunity_id,
+            "program_name": p.program_name,
+            "link_status": p.affiliate_link_status,
+            "content_pieces": len(p.content_pieces),
+            "tracking_keys": list(p.tracking.keys()),
+            "founder_action": p.founder_action,
+        }
+    except Exception as e:
+        launch_error = str(e)[:200]
+
+    clicks = 0
+    conversions = 0
+    funnel_error = None
+    try:
+        from affiliate_commerce.click_tracking import conversion_funnel_summary
+        funnel = conversion_funnel_summary()
+        clicks = funnel.get("total_clicks", 0)
+        conversions = funnel.get("conversions", 0) or funnel.get("total_conversions", 0)
+    except Exception as e:
+        funnel_error = str(e)[:200]
+
+    tracking_ids = {"LAUNCH_TRACKING": "configured in affiliate_launch_prep.py"}
+    try:
+        from affiliate_launch_prep import LAUNCH_TRACKING
+        tracking_ids = dict(LAUNCH_TRACKING)
+    except Exception:
+        pass
+
+    ready_for_link = (
+        launch is not None
+        and launch["content_pieces"] > 0
+        and bool(tracking_ids)
+        and launch["link_status"] == "NOT_CONFIGURED"  # the one remaining human gate
+    )
+
+    return {
+        "generated_at": _now_iso(now),
+        "portfolio": {"count": portfolio_count, "verified": portfolio_verified,
+                      "error": portfolio_error},
+        "launch_prep": launch,
+        "launch_error": launch_error,
+        "tracking_ids": tracking_ids,
+        "clicks_recorded": clicks,
+        "conversions_recorded": conversions,
+        "funnel_error": funnel_error,
+        "ready_for_real_link": ready_for_link,
+        "single_human_gate": "APPLY_AWIN_DIGITALOCEAN -- once the founder supplies the real Awin link, the chain accepts it with zero further coding",
+        "rule": "READ-ONLY: never writes a ledger, never makes a network call, never activates an arm.",
+    }
+
+
 def _check_one_link(url: str) -> Dict[str, object]:
     """Single bounded HTTP check (live mode). Fail-closed: any error is
     reported as FAILED, never as a silent success."""

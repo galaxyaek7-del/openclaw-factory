@@ -12,7 +12,7 @@ const assert = require('node:assert/strict');
 
 const factoryState = require('../lib/factory_state.js');
 const n8nNotify = require('../lib/n8n_notify.js');
-const { processPendingRetries } = require('../factory_loop.js');
+const { processPendingRetries, expireStaleRetries } = require('../factory_loop.js');
 
 function withPatched(obj, patches, fn) {
   const originals = {};
@@ -99,4 +99,55 @@ test('an empty queue processes cleanly with zero replays', async () => {
     assert.equal(result.processed, 0);
     assert.equal(result.replayed, 0);
   });
+});
+
+test('stale unreplayable arm_publish retries are expired, fresh ones kept', async () => {
+  const oldQueued = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString();
+  const freshQueued = new Date(Date.now() - 60 * 1000).toISOString();
+  const pending = [
+    { task: 'arm_publish:gumroad:PROD-old', attempt: 1, context: null, queued_at: oldQueued, last_error: 'presign failed' },
+    { task: 'arm_publish:gumroad:PROD-fresh', attempt: 1, context: null, queued_at: freshQueued, last_error: 'x' },
+    { task: 'groq_generation', attempt: 1, context: null, queued_at: oldQueued },
+  ];
+  const cleared = [];
+  const fsModule = require('fs');
+  const origAppend = fsModule.appendFileSync;
+  fsModule.appendFileSync = () => {};
+
+  try {
+    await withPatched(factoryState, {
+      loadState: () => ({ pending_retries: pending }),
+      clearRetry: (task) => { cleared.push(task); },
+    }, async () => {
+      const result = await expireStaleRetries();
+      assert.equal(result.expired, 2, 'the two old entries must expire');
+      assert.deepEqual(cleared.sort(), ['arm_publish:gumroad:PROD-old', 'groq_generation']);
+    });
+  } finally {
+    fsModule.appendFileSync = origAppend;
+  }
+});
+
+test('replayable telegram_notify retries are never expired even when old', async () => {
+  const oldQueued = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const pending = [
+    { task: 'telegram_notify:factory_recovered', attempt: 1, context: { payload: {} }, queued_at: oldQueued },
+  ];
+  const cleared = [];
+  const fsModule = require('fs');
+  const origAppend = fsModule.appendFileSync;
+  fsModule.appendFileSync = () => {};
+
+  try {
+    await withPatched(factoryState, {
+      loadState: () => ({ pending_retries: pending }),
+      clearRetry: (task) => { cleared.push(task); },
+    }, async () => {
+      const result = await expireStaleRetries();
+      assert.equal(result.expired, 0);
+      assert.equal(cleared.length, 0);
+    });
+  } finally {
+    fsModule.appendFileSync = origAppend;
+  }
 });

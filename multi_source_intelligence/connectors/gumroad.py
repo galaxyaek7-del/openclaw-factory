@@ -2,9 +2,10 @@
 Gumroad connector (ADR-059) — checks the REAL arm status
 (channels/registry.py, ADR-4) rather than a hardcoded "unavailable" —
 this factory has a fully built Gumroad arm (channels/gumroad_arm.py),
-just no live GUMROAD_ACCESS_TOKEN in .env today (BLOCKERS.md #2). The
-moment that token is added, this connector's status flips to available
-automatically, with zero code change, because it asks the real arm.
+and GUMROAD_ACCESS_TOKEN IS set in .env (updated 2026-08-15, CTO+COO
+audit closure; a real product was created on the account 2026-08-14).
+The connector asks the real arm, so its status reflects the current
+account state automatically, with zero code change.
 
 Note: even when READY, Gumroad's arm exposes account sales (get_sales())
 and publishing, not third-party competitor/market search — Gumroad has
@@ -22,6 +23,12 @@ from multi_source_intelligence.registry import register_connector
 from multi_source_intelligence.types import CONFIDENCE_SCALE, ConnectorResult, unavailable_result
 
 
+def _arm_available():
+    """True when the real Gumroad arm reports READY (token present)."""
+    arm = channel_registry.get("gumroad")
+    return arm is not None and arm.status() == ArmStatus.READY
+
+
 @register_connector("gumroad")
 def check(niche, max_results=10):
     arm = channel_registry.get("gumroad")
@@ -30,7 +37,7 @@ def check(niche, max_results=10):
 
     status = arm.status()
     if status != ArmStatus.READY:
-        return unavailable_result("gumroad", f"ذراع Gumroad الحقيقية: {status.value} — لا مفتاح API حي بعد (BLOCKERS.md #2)")
+        return unavailable_result("gumroad", f"ذراع Gumroad الحقيقية: {status.value} — الرمز قد لا يكون حيًا في .env")
 
     return ConnectorResult(
         source="gumroad", timestamp=datetime.now(timezone.utc).isoformat(), availability="available",

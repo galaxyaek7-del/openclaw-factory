@@ -80,6 +80,17 @@ jobs:
       - name: JavaScript unit tests (metrics, dashboard data, n8n notify)
         run: node --test tests/test_metrics.js tests/test_dashboard_data.js tests/test_n8n_notify.js
 
+      # CTO+COO audit closure (2026-08-15): previously only 5 of 53 JS test
+      # files ran in CI, silently excluding every security-critical suite
+      # (test_login_security, test_customer_auth, test_server_crash_handlers,
+      # test_supervisor, test_telegram_direct, test_restore_file_from_git, …).
+      # All remaining files verified to run standalone via node --test. The
+      # slow server-spawning suites (factory_loop_golden, api_contract) stay
+      # as their own steps below to keep the fast pure-unit set from blocking
+      # on a full server boot.
+      - name: JavaScript tests (all remaining test_*.js, incl. security suites)
+        run: node --test tests/test_brand_dna_preamble_consistency.js tests/test_check_jsonl_duplication.js tests/test_customer_auth.js tests/test_customer_front_door.js tests/test_department_events.js tests/test_deploy_production.js tests/test_factory_loop_business_blueprint_generation.js tests/test_factory_loop_commission_opportunity_scan.js tests/test_factory_loop_daily_ai_doctor_report.js tests/test_factory_loop_daily_commercial_readiness_snapshot.js tests/test_factory_loop_daily_department_health_report.js tests/test_factory_loop_daily_evolution_queue_intake.js tests/test_factory_loop_daily_evolution_report.js tests/test_factory_loop_daily_executive_brief.js tests/test_factory_loop_daily_growth_stage_snapshot.js tests/test_factory_loop_daily_knowledge_graph.js tests/test_factory_loop_evidence_recording_audit.js tests/test_factory_loop_lock.js tests/test_factory_loop_monthly_galaxy_evolution_report.js tests/test_factory_loop_notification.js tests/test_factory_loop_payment_status_check_tick.js tests/test_factory_loop_pricing_review.js tests/test_factory_loop_quarterly_annual_reviews.js tests/test_factory_loop_resilience_monitor_tick.js tests/test_factory_loop_tick_overlap.js tests/test_factory_loop_weekly_executive_report.js tests/test_factory_state.js tests/test_harden_file_acls.js tests/test_health_checks.js tests/test_health_monitor.js tests/test_health_trend.js tests/test_index_html_xss_fix.js tests/test_infrastructure_intelligence.js tests/test_jsonl.js tests/test_login_security.js tests/test_market_validation.js tests/test_next_sale_id.js tests/test_ops_maintenance.js tests/test_pending_review.js tests/test_process_pending_retries.js tests/test_publisher_seo.js tests/test_recovery_log.js tests/test_restore_file_from_git.js tests/test_self_awareness_precomputed_health.js tests/test_server_crash_handlers.js tests/test_supervisor.js tests/test_telegram_direct.js tests/test_trust_center.js
+
       # ── Factory Loop tests ──
       - name: Factory Loop tests
         run: node tests/test_factory_loop_golden.js
