@@ -2118,6 +2118,32 @@ def _ceo_home_briefing():
     return build_ceo_home_briefing()
 
 
+
+
+def _ceo_score():
+    """CEO Score (founder Priority #1, 2026-08-17): a read-only daily executive
+    dashboard with exactly 8 indicators (FINANCIAL_TRUTH / SYSTEM_HEALTH /
+    BEST_OPPORTUNITY / BIGGEST_RISK / TECHNOLOGY_THREAT / AI_CAPABILITY /
+    LEARNING_LOOP / COMMERCIAL_READINESS), each carrying a deterministic
+    green/yellow/red threshold (ceo_score.py THRESHOLDS) and a real, citable
+    data source. Missing data reads the literal string 'Unknown — no data yet.'
+    Never a guess, never a fabricated number. Also surfaces Today's 3 Decisions
+    (up to 3 real pending founder-gated decisions, fewer shown when fewer
+    exist) and 'What the founder can ignore today' (only items proven by the
+    current real state).
+
+    READ-ONLY: composition over already-real engines/ledgers (execution_
+    governance.py, scheduler.py, resilience_monitor.py, founder_next_action.py,
+    health_trend.py, ai_capability/observatory.py) and finance_data.json +
+    config/reality.json read exactly as ceo_brain.py reads them. Creates no
+    external action: never publishes, never spends, never contacts a
+    platform/customer, never changes any authority level, never records to any
+    ledger, never touches any founder-gated flow. HARD STOP remains fully in
+    effect."""
+    import ceo_score
+    return ceo_score.build_ceo_score()
+
+
 def _create_paddle_checkout():
     """Instant Checkout (ADR-183, 2026-08-07): the founder's readiness-
     audit-driven fix -- Stage 6's worst real friction point was that
@@ -4030,6 +4056,7 @@ _ENDPOINTS = {
     "eu_ai_act_pricing_review": _eu_ai_act_pricing_review,
     "create_paddle_checkout": _create_paddle_checkout,
     "ceo_home_briefing": _ceo_home_briefing,
+    "ceo_score": _ceo_score,
     "global_search": _global_search,
     "eos_decision_feed": _eos_decision_feed,
     "business_development_dashboard": _business_development_dashboard,

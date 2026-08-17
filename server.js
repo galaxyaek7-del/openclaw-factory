@@ -730,6 +730,23 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('ceo_home_briefing'),
   },
   {
+    // CEO Score (founder Priority #1, 2026-08-17): a read-only daily
+    // executive dashboard with exactly 8 indicators, each carrying a
+    // deterministic green/yellow/red threshold (ceo_score.py THRESHOLDS -- the
+    // ONLY place colors are decided) and a real, citable data source. Missing
+    // data reads the literal string 'Unknown — no data yet.' -- never a guess.
+    // Composition-only over already-real engines/ledgers; creates no external
+    // action; never touches any founder-gated flow. HARD STOP remains fully in
+    // effect (the one conditional-commit contract this task was authorized
+    // under -- commit only if all relevant tests pass, no founder gate
+    // modified, no financial truth modified, no external action occurred).
+    name: 'ceo-score',
+    description: "CEO Score (founder Priority #1, 2026-08-17): a read-only daily executive dashboard answering 'how is the company actually doing today' with exactly 8 indicators -- FINANCIAL_TRUTH (real revenue $0 / 0 real sales / $0 treasury / 0 published books, ground truth only, never adjusted), SYSTEM_HEALTH (real health trend + resilience + factory_loop runtime), BEST_OPPORTUNITY (the real Opportunity Queue's top run-now item, never a fabricated pick), BIGGEST_RISK (highest-severity unresolved gap in the most recent audit evidence), TECHNOLOGY_THREAT (real repo evidence only -- llama-3.1-8b-instant's retirement is already mitigated by openai/gpt-oss-20b), AI_CAPABILITY (currently verified model in use: openai/gpt-oss-20b / groq, ADOPTED), LEARNING_LOOP (decision->outcome->lesson actually exists -- honestly NOT CLOSED today), COMMERCIAL_READINESS (real products with ZERO founder-gate blockers -- preparation is never readiness; 0 today, every real candidate still carries a founder gate). Plus Today's 3 Decisions (up to 3 real pending founder-gated decisions) and 'What the founder can ignore today' (only items proven by current real state). Every value traces to a real repo data source; missing data reads 'Unknown — no data yet.'. Read-only: creates no external action, never spends, never publishes, never contacts a platform/customer, never changes any authority level, never records to any ledger.",
+    reused: 'ceo_score.py::build_ceo_score(), via mission_control_api.py. Reuses execution_governance.py, scheduler.py, resilience_monitor.py, founder_next_action.py, health_trend.py, ai_capability/observatory.py, finance_data.json, config/reality.json.',
+    handler: (req) => runPythonServiceCached('ceo_score', [], req),
+    health: pythonHealthCheck('ceo_score'),
+  },
+  {
     // EOS Decision Feed (ADR-186, 2026-08-07): reshapes 4 already-real
     // engines into one consistent 9-field recommendation card shape --
     // zero new judgment/scoring, zero fabricated ROI/time-to-execute.
