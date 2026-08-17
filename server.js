@@ -730,6 +730,81 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('ceo_home_briefing'),
   },
   {
+    // CEO BRAIN (Phase 1 -- CEO Brain & Founder-Light Governance,
+    // 2026-08-16): the compact executive layer -- ONE CEO state, the real
+    // founder-light governance classification (integrated with
+    // autonomous_operations.AUTONOMY_LEVELS 0-6, never a second model),
+    // the 18-field CEO Decision Queue, the 7-dimension explainable
+    // priority engine, the 10-question CEO Daily Brief, the real-time
+    // executive clock, the 8-trigger surface-only escalation layer, the
+    // founder attention budget, and the executive truth gate.
+    // Composition-only over the real existing engines; read-only, never
+    // spends/publishes/contacts a platform/changes authority.
+    // ELAPSED_TIME_NEVER_EQUALS_FOUNDER_APPROVAL -- informational timing
+    // only.
+    name: 'ceo-brain',
+    description: "CEO BRAIN (Phase 1, 2026-08-16): ONE authoritative company state (real revenue/published/commercial readiness/growth stage/autonomy model), real founder-light governance classification of every open decision onto AUTONOMY_LEVELS 0-6, the 18-field CEO Decision Queue (5 real founder gates open today), TOP 3 real risks, real-time executive clock, founder attention budget (AMBER at 9 real interruptions today), and the CEO Daily Brief's 10 questions -- every field citing its real engine, never fabricated.",
+    reused: 'ceo_brain.py::build_ceo_brain(), via mission_control_api.py. Composition-only over executive_orchestrator / autonomous_operations / founder_next_action / ceo_home / commercial_readiness / resilience ledgers.',
+    handler: (req) => runPythonServiceCached('ceo_brain', [], req, 120000),
+    health: pythonHealthCheck('ceo_brain'),
+  },
+  {
+    // AI Capability Observatory & Technology Foresight (Phase 2, 2026-08-16):
+    // the founder's technology-intelligence directive. Real per-model
+    // capability records (~24 fields), 20-category capability taxonomy,
+    // 12-task evaluation, model routing intelligence (advisory, never
+    // auto-switch), obsolescence detection (6 named states), append-only
+    // technology radar + foresight ledgers, multi-provider resilience
+    // status, real AI cost intelligence, and AI quality memory.
+    // Read-only observation over ai_capability/ + data/ai_cost_log.jsonl.
+    // Never spends, never purchases, never changes billing, never switches
+    // a production model. Every recommendation is AUTONOMY_LEVELS level 2.
+    name: 'technology-observatory',
+    description: "AI Capability Observatory & Technology Foresight (Phase 2, 2026-08-16): authoritative per-model capability records (2 real models, llama-3.1-8b-instant + openai/gpt-oss-20b), the 20-category capability taxonomy, 12-task evaluation, routing intelligence (advisory only -- will_auto_switch=false), obsolescence detection (6 named states -- llama-3.1-8b-instant REPLACEMENT-RECOMMENDED on real retirement evidence), the append-only technology radar (ADOPT/RETIRE/WATCH seeded from real events) + foresight ledger (FACT/SIGNAL/INFERENCE/PREDICTION never conflated), multi-provider resilience (1 real provider caller: groq), real AI cost intelligence (total across 369 real calls), and AI quality memory. Composition-only over ai_capability/registry.py + evaluator.py + orchestrator.py + data/ai_cost_log.jsonl -- never a parallel registry, never a fabricated benchmark.",
+    reused: 'ai_capability/observatory.py::build_observatory_report(), via mission_control_api.py. Reuses ai_capability/registry.py (provider catalog), evaluator.py (recommend_for_task), orchestrator.py (select_provider/_REAL_PROVIDER_CALLERS), data/ai_cost_log.jsonl (ADR-041 real cost/latency).',
+    handler: (req) => runPythonServiceCached('technology_observatory', [], req),
+    health: pythonHealthCheck('technology_observatory'),
+  },
+  {
+    // AI Capability Evolution & Multi-Model Intelligence (Phase 3, 2026-08-17):
+    // the observatory's Phase 3 extensions -- per-task SELECTION vs COMPARISON
+    // evaluation, authorization-gated routing (Level 5 HUMAN APPROVAL REQUIRED,
+    // never auto-switch), replacement-safety plans (compatibility validation +
+    // deterministic rollback guidance), and the append-only capability-decision
+    // memory (ACCEPTED/REJECTED/UNCERTAIN). Read-only: never switches a model,
+    // never purchases, never changes billing.
+    name: 'ai-capability-evolution',
+    description: "AI Capability Evolution & Multi-Model Intelligence (Phase 3, 2026-08-17): per-task model evaluation with explicit SELECTION vs COMPARISON separation (real measured criteria: calls/latency/cost/availability/last_seen; capability comparison honestly UNKNOWN with a single real provider), authorization-gated model routing (switch = Level 5 HUMAN APPROVAL REQUIRED, zero execution path, record_switch_proposal append-only), replacement-safety plans (llama-3.1-8b-instant REPLACEMENT-RECOMMENDED with a VALIDATED candidate openai/gpt-oss-20b + deterministic GROQ_MODEL rollback), and the capability-decision memory (real records seeded: ACCEPTED openai/gpt-oss-20b on real migration evidence, REJECTED llama-3.1-8b-instant on real retirement). Read-only composition over ai_capability/observatory.py Phase 3 functions + data/ai_cost_log.jsonl -- never switches a model, never a fabricated comparison.",
+    reused: 'ai_capability/observatory.py::evaluate_all_tasks_with_comparison()/routing_authorization_status()/replacement_plan()/capability_evolution_summary(), via mission_control_api.py. Reuses data/ai_cost_log.jsonl + data/ai_capability_decisions.jsonl.',
+    handler: (req) => runPythonServiceCached('ai_capability_evolution', [], req),
+    health: pythonHealthCheck('ai_capability_evolution'),
+  },
+  {
+    // AGI Readiness Foundation (Phase 3 WS7, 2026-08-17): READINESS vs
+    // ACTUALITY separated. Real structural readiness checks over this
+    // factory's own AI plumbing + an explicit, permanent NOT CLAIMED AGI
+    // actuality (no real AGI benchmark exists; Truth First ADR-160).
+    // Read-only: never claims AGI, never switches/purchases a model.
+    name: 'agi-readiness',
+    description: "AGI Readiness Foundation (Phase 3 WS7, 2026-08-17): READINESS vs ACTUALITY separated -- 4 real mechanical readiness checks over this factory's own AI plumbing (provider abstraction, per-task evaluation, cost/quality memory, founder-gated adoption) and an explicit structural ACTUALITY of NOT CLAIMED / UNKNOWN definition (no real verifiable AGI benchmark exists anywhere; Truth First, ADR-160). Model-agnostic, recommend-only -- never claims AGI exists or is imminent, never switches a model, never purchases.",
+    reused: 'ai_capability/agi_readiness.py::assess_agi_readiness(), via mission_control_api.py. Reuses ai_capability/observatory.py + registry.py + orchestrator.py + autonomous_operations.py AUTONOMY_LEVELS[5].',
+    handler: (req) => runPythonServiceCached('agi_readiness', [], req),
+    health: pythonHealthCheck('agi_readiness'),
+  },
+  {
+    // Execution Governance (Phase 4 -- AUTHORITATIVE AUTONOMOUS EXECUTION,
+    // 2026-08-17): the founder's Phase 4 execution-governance directive. The
+    // single thin composition-only source for its mandated 14-field completion
+    // report plus its own 12-section map and HARD STOP text. Read-only: never
+    // publishes, never spends, never contacts a platform, never changes any
+    // authority level, never records to any real ledger.
+    name: 'execution-governance',
+    description: "Execution Governance (Phase 4, 2026-08-17): the mandated 14-field completion report -- PHASE_4_STATUS (IN PROGRESS until the phase's real run marks it COMPLETE), AUTONOMY_MATURITY (LEVEL 3, evidence-based, STEP 4.x audit series, never raised by code), AGI_READINESS (FOUNDATIONAL / NOT CLAIMED), TECHNOLOGY_FORESIGHT (honestly NOT IMPLEMENTED -- radar 3 + signals 5 are the only real signals), TIME_AWARENESS (authoritative UTC; ETA UNKNOWN per execution_status.py:19; ELAPSED_TIME_NEVER_EQUALS_FOUNDER_APPROVAL), MODEL_GOVERNANCE (DISCOVERY/VERIFIED/ADOPTED -- openai/gpt-oss-20b ADOPTED on a real ACCEPTED decision + live production model, llama-3.1-8b-instant VERIFIED, never silent promotion), LEARNING_STATUS (NOT CLOSED, zero measured outcomes), TEST_STATE, FINANCIAL_TRUTH ($0 live ground truth), COMMERCIAL_TRUTH (0 published books), EXTERNAL_ACTION_STATE (0 actions), FOUNDER_BLOCKERS, STEP_5_READINESS (NOT READY / BLOCKED), REMAINING_GAPS -- plus the directive's 12-section map and HARD STOP.",
+    reused: 'execution_governance.py::build_execution_governance_report(), via mission_control_api.py. Reuses autonomous_operations.py AUTONOMY_LEVELS (ADR-209), ai_capability/observatory.py, founder_next_action.py, finance_data.json, config/reality.json, data/health_snapshots.jsonl, .factory_loop.lock.',
+    handler: (req) => runPythonServiceCached('execution_governance', [], req),
+    health: pythonHealthCheck('execution_governance'),
+  },
+  {
     // CEO Score (founder Priority #1, 2026-08-17): a read-only daily
     // executive dashboard with exactly 8 indicators, each carrying a
     // deterministic green/yellow/red threshold (ceo_score.py THRESHOLDS -- the

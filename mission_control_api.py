@@ -2118,6 +2118,101 @@ def _ceo_home_briefing():
     return build_ceo_home_briefing()
 
 
+def _ceo_brain():
+    """CEO BRAIN (Phase 1 -- CEO Brain & Founder-Light Governance,
+    2026-08-16): the compact executive layer. ONE CEO state, the real
+    founder-light governance classification (integrated with
+    autonomous_operations.AUTONOMY_LEVELS 0-6, never a second model), the
+    18-field CEO Decision Queue, the 7-dimension explainable priority
+    engine, the 10-question CEO Daily Brief, the real-time executive
+    clock, the 8-trigger surface-only escalation layer, the founder
+    attention budget, and the executive truth gate.
+
+    READ-ONLY OBSERVATION VIEW: composition-only over the real existing
+    engines (executive_orchestrator / autonomous_operations /
+    founder_next_action / ceo_home / commercial_readiness / resilience
+    ledgers). Never spends, never publishes, never contacts a platform,
+    never changes any authority level. ELAPSED_TIME_NEVER_EQUALS_
+    FOUNDER_APPROVAL -- informational timing only."""
+    import ceo_brain
+    return ceo_brain.build_ceo_brain()
+
+
+def _technology_observatory():
+    """AI Capability Observatory & Technology Foresight (Phase 2, 2026-08-16):
+    the founder's technology-intelligence directive -- the authoritative
+    per-model capability records (~24 fields), the 20-category capability
+    taxonomy, the 12-task evaluation, model routing intelligence (advisory,
+    never auto-switch), obsolescence detection (6 named states), the
+    append-only technology radar + foresight ledgers, multi-provider
+    resilience status, real AI cost intelligence, and AI quality memory.
+
+    READ-ONLY OBSERVATION VIEW: composition over ai_capability/registry.py,
+    evaluator.py, orchestrator.py, and data/ai_cost_log.jsonl + the three
+    observatory ledgers (data/technology_radar.jsonl, technology_signals.jsonl,
+    ai_quality_memory.jsonl). Never spends, never purchases, never changes
+    billing, never switches a production model, never contacts a platform.
+    Every routing recommendation is advisory (AUTONOMY_LEVELS level 2)."""
+    from ai_capability import observatory
+    return observatory.build_observatory_report()
+
+
+def _ai_capability_evolution():
+    """AI Capability Evolution & Multi-Model Intelligence (Phase 3, 2026-08-17):
+    the observatory's Phase 3 extensions -- per-task SELECTION vs COMPARISON
+    evaluation, authorization-gated routing (Level 5, never auto-switch),
+    replacement-safety plans (compatibility + deterministic rollback), and
+    the append-only capability-decision memory (ACCEPTED/REJECTED/UNCERTAIN).
+
+    READ-ONLY: composition over ai_capability/observatory.py's Phase 3
+    functions + data/ai_cost_log.jsonl. Never switches a model, never
+    purchases, never changes billing, never records anything to a real
+    ledger (the capability/switch ledgers are only ever appended by their
+    own explicit record_* functions, never from this view)."""
+    from ai_capability import observatory
+    return {
+        "task_evaluation_with_comparison": observatory.evaluate_all_tasks_with_comparison(),
+        "routing_authorization": observatory.routing_authorization_status(),
+        "replacement_plans": {
+            r["model"]: observatory.replacement_plan(r["model"])
+            for r in observatory.model_capability_records()
+        },
+        "capability_evolution": observatory.capability_evolution_summary(),
+    }
+
+
+def _agi_readiness():
+    """AGI Readiness Foundation (Phase 3 WS7, 2026-08-17): READINESS vs
+    ACTUALITY separated -- real structural readiness checks over this
+    factory's own AI plumbing, and an explicit, permanent NOT CLAIMED AGI
+    actuality (no real AGI benchmark exists; Truth First, ADR-160).
+
+    READ-ONLY: mechanical pass/fail over ai_capability/observatory.py +
+    registry.py + orchestrator.py. Never claims AGI, never switches a
+    model, never purchases."""
+    from ai_capability.agi_readiness import assess_agi_readiness
+    return assess_agi_readiness()
+
+
+def _execution_governance():
+    """Execution Governance (Phase 4 -- AUTHORITATIVE AUTONOMOUS EXECUTION,
+    2026-08-17): the single, thin composition-only source for the directive's
+    mandated 14-field completion report (PHASE_4_STATUS / AUTONOMY_MATURITY /
+    AGI_READINESS / TECHNOLOGY_FORESIGHT / TIME_AWARENESS / MODEL_GOVERNANCE /
+    LEARNING_STATUS / TEST_STATE / FINANCIAL_TRUTH / COMMERCIAL_TRUTH /
+    EXTERNAL_ACTION_STATE / FOUNDER_BLOCKERS / STEP_5_READINESS /
+    REMAINING_GAPS) plus the directive's own 12-section map and HARD STOP
+    text.
+
+    READ-ONLY: composition over execution_governance.py, which itself cites
+    only already-real engines/ledgers (autonomous_operations.py AUTONOMY_LEVELS,
+    ai_capability/observatory.py, founder_next_action.py, finance_data.json,
+    config/reality.json, health_snapshots.jsonl). Never publishes, never
+    spends, never contacts a platform, never changes any authority level,
+    never records to any real ledger. ELAPSED_TIME_NEVER_EQUALS_FOUNDER_
+    APPROVAL -- informational timing only."""
+    import execution_governance
+    return execution_governance.build_execution_governance_report()
 
 
 def _ceo_score():
@@ -4056,6 +4151,11 @@ _ENDPOINTS = {
     "eu_ai_act_pricing_review": _eu_ai_act_pricing_review,
     "create_paddle_checkout": _create_paddle_checkout,
     "ceo_home_briefing": _ceo_home_briefing,
+    "ceo_brain": _ceo_brain,
+    "technology_observatory": _technology_observatory,
+    "ai_capability_evolution": _ai_capability_evolution,
+    "agi_readiness": _agi_readiness,
+    "execution_governance": _execution_governance,
     "ceo_score": _ceo_score,
     "global_search": _global_search,
     "eos_decision_feed": _eos_decision_feed,
