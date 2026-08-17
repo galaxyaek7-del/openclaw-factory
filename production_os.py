@@ -18,12 +18,15 @@ AUDIT_2026-08-17.md) found in the existing, already-real production layer:
     invented bundle.
 
   * Build 2 -- a read-only Product Lifecycle view over real logs. Reads
-    the real generation log and real product_changelog.jsonl once, groups
-    by production_id (the real product identity every production stage
-    already uses), and reuses value_engine.classify_lifecycle_stage() --
-    the one real lifecycle classification this factory has -- verbatim for
-    a bounded, disclosed subset (classification is ~2-4s per distinct
-    niche and must not make a passive view minutes-long).
+    the real generation log, real product_changelog.jsonl, and real
+    factory_state.json once, groups by production_id (the real product
+    identity every production stage already uses), and reuses
+    value_engine.classify_lifecycle_stage() -- the one real lifecycle
+    classification this factory has -- verbatim for a bounded, disclosed
+    subset (classification is ~2-4s per distinct niche and must not make
+    a passive view minutes-long). The per-product factory_state signal is
+    dossier_bundle.build_bundle._recovery_metadata() -- the same real
+    lookup the bundle builder already uses -- never a re-derivation.
 
 No new infrastructure is created: this module is pure assembly over
 already-real ledgers, the same "reuse, don't duplicate" discipline this
@@ -174,6 +177,7 @@ def product_lifecycle_view(
     decisions_path: Optional[str] = None,
     timeline_path: Optional[str] = None,
     outcomes_path: Optional[str] = None,
+    state_path: Optional[str] = None,
 ):
     """Read-only Product Lifecycle view over the real generation log.
 
@@ -188,10 +192,18 @@ def product_lifecycle_view(
     niches. Anything not classified in this call is honestly reported as
     not-classified-in-this-call, never guessed.
 
-    Fully read-only: reads books/_generation_log.jsonl and
-    data/product_changelog.jsonl once each, writes nothing.
+    Per-product factory_state recovery facts reuse
+    dossier_bundle.build_bundle._recovery_metadata() -- the same real
+    pending_retries/checkpoint lookup the bundle builder already uses --
+    never a re-derivation. A product with no real pending retry honestly
+    reports had_pending_retry=False rather than a fabricated issue.
+
+    Fully read-only: reads books/_generation_log.jsonl,
+    data/product_changelog.jsonl, and factory_state.json once each, writes
+    nothing.
     """
     from value_engine import classify_lifecycle_stage
+    from dossier_bundle.build_bundle import _recovery_metadata
 
     records = _read_generation_log(generation_log_path)
     real_records = [r for r in records if r.get("production_id") and not _is_test_production_id(r.get("production_id"))]
@@ -239,6 +251,7 @@ def product_lifecycle_view(
             "inspection_published": bool((record.get("inspection") or {}).get("published")),
             "published": record.get("published"),
             "changelog_version": _changelog_version(pid, changelog_path=changelog_path),
+            "factory_state": _recovery_metadata(pid, state_path=state_path),
             "lifecycle_stage": (
                 lifecycle["current_stage"]
                 if lifecycle is not None
@@ -254,11 +267,13 @@ def product_lifecycle_view(
         "classify_limit": classify_limit,
         "products": products,
         "note": (
-            "Read-only view over real books/_generation_log.jsonl + data/product_changelog.jsonl. "
-            "Lifecycle stage reuses value_engine.classify_lifecycle_stage() -- the real evidence-based "
-            f"classifier -- for the {classified_niche_count} most recent distinct niches only "
-            f"(classify_limit={classify_limit}); remaining products honestly report not-classified rather "
-            "than a guessed stage. Total real production_ids in the log: " + str(len(by_production_id)) + "."
+            "Read-only view over real books/_generation_log.jsonl + data/product_changelog.jsonl + "
+            "factory_state.json. Lifecycle stage reuses value_engine.classify_lifecycle_stage() -- the real "
+            "evidence-based classifier -- for the " + str(classified_niche_count) + " most recent distinct "
+            "niches only (classify_limit=" + str(classify_limit) + "); remaining products honestly report "
+            "not-classified rather than a guessed stage. factory_state per product reuses "
+            "dossier_bundle.build_bundle._recovery_metadata(). Total real production_ids in the log: "
+            + str(len(by_production_id)) + "."
         ),
     }
 

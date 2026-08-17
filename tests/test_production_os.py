@@ -203,6 +203,60 @@ class TestProductLifecycleView(unittest.TestCase):
         )
         self.assertEqual(sorted(os.listdir(self.tmp)), before)
 
+    def test_reads_real_factory_state_per_product(self):
+        records = [dict(_REAL_RECORD, production_id="PROD-1", topic="real niche", timestamp="2026-07-18T00:00:00")]
+        state_path = os.path.join(self.tmp, "state.json")
+        with open(state_path, "w", encoding="utf-8") as f:
+            json.dump({
+                "pending_retries": [
+                    {"task": "regenerate", "attempt": 2,
+                     "context": {"production_id": "PROD-1"}},
+                ],
+                "last_successful_checkpoint": "2026-07-18T00:00:00",
+            }, f)
+        view = pos.product_lifecycle_view(
+            limit=10, classify_limit=0,
+            generation_log_path=_write_genlog(self.tmp, records),
+            changelog_path=os.path.join(self.tmp, "changelog.jsonl"),
+            state_path=state_path,
+        )
+        fs = view["products"][0]["factory_state"]
+        self.assertTrue(fs["had_pending_retry"])
+        self.assertEqual(len(fs["pending_retries"]), 1)
+        self.assertEqual(fs["factory_last_successful_checkpoint"], "2026-07-18T00:00:00")
+
+    def test_factory_state_never_invents_retry_for_other_products(self):
+        records = [dict(_REAL_RECORD, production_id="PROD-1", topic="real niche", timestamp="2026-07-18T00:00:00")]
+        state_path = os.path.join(self.tmp, "state.json")
+        with open(state_path, "w", encoding="utf-8") as f:
+            json.dump({
+                "pending_retries": [
+                    {"task": "regenerate", "attempt": 1,
+                     "context": {"production_id": "PROD-other"}},
+                ],
+            }, f)
+        view = pos.product_lifecycle_view(
+            limit=10, classify_limit=0,
+            generation_log_path=_write_genlog(self.tmp, records),
+            changelog_path=os.path.join(self.tmp, "changelog.jsonl"),
+            state_path=state_path,
+        )
+        fs = view["products"][0]["factory_state"]
+        self.assertFalse(fs["had_pending_retry"])
+        self.assertEqual(fs["pending_retries"], [])
+
+    def test_factory_state_missing_file_reads_as_safe_empty(self):
+        records = [dict(_REAL_RECORD, production_id="PROD-1", topic="real niche", timestamp="2026-07-18T00:00:00")]
+        view = pos.product_lifecycle_view(
+            limit=10, classify_limit=0,
+            generation_log_path=_write_genlog(self.tmp, records),
+            changelog_path=os.path.join(self.tmp, "changelog.jsonl"),
+            state_path=os.path.join(self.tmp, "does-not-exist.json"),
+        )
+        fs = view["products"][0]["factory_state"]
+        self.assertFalse(fs["had_pending_retry"])
+        self.assertIn("factory_state", view["note"])
+
 
 if __name__ == "__main__":
     unittest.main()
