@@ -1523,6 +1523,25 @@ def _distribution_network_health():
     return distribution_network_health()
 
 
+def _distribution_os():
+    """Distribution OS (2026-08-17): the founder-approved smallest safe
+    Distribution OS layer -- a READ-ONLY, per-production_id cross-channel
+    read model (Product -> Package -> Channel -> Listing -> Distribution
+    -> Attribution -> Learning) that MERGES -- never re-implements -- the
+    3 pre-existing distribution-status aggregators. Reads its payload
+    from sys.argv[2]: `python mission_control_api.py distribution_os
+    '{"production_id":"PROD-..."}'`. Without a production_id (or when the
+    given id matches no real record), returns the cross-product summary
+    instead of a fabricated per-product view."""
+    import distribution_os
+
+    payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    production_id = (payload.get("production_id") or "").strip()
+    if production_id:
+        return distribution_os.distribution_os_view(production_id)
+    return distribution_os.distribution_os_summary()
+
+
 def _commercial_operations_dashboard():
     """Global Commercial Operations Engine, Section 38/47 (ADR-216,
     Phase 26, 2026-08-08): the one real aggregator -- Platform
@@ -4248,6 +4267,7 @@ _ENDPOINTS = {
     "enterprise_reusability_inventory": _enterprise_reusability_inventory,
     "partnership_network_dashboard": _partnership_network_dashboard,
     "distribution_network_health": _distribution_network_health,
+    "distribution_os": _distribution_os,
     "commercial_operations_dashboard": _commercial_operations_dashboard,
     "commercial_operations_simulations": _commercial_operations_simulations,
     "commercial_autonomy_dashboard": _commercial_autonomy_dashboard,

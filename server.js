@@ -2126,6 +2126,16 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('distribution_network_health'),
   },
   {
+    name: 'distribution-os',
+    description: "The founder-approved smallest safe Distribution OS layer (2026-08-17): a READ-ONLY per-production_id cross-channel read model -- Product, Package, Channel, Listing, Distribution, Attribution, Learning -- joining the real ledgers this factory already writes (generation log, sales ledger, paddle_products, seo_pages, affiliate ledgers, webhook events), and MERGING the 3 pre-existing distribution-status aggregators (distribution_capability_matrix, distribution_network_health, product_platform_matrix) instead of building a 4th orchestrator. Pass ?production_id=<id> for the deep per-product 7-stage view; without it, returns the cross-product summary. Never writes, never publishes, never activates a channel, never calls a network.",
+    reused: 'distribution_os.py::distribution_os_view()/distribution_os_summary(), via mission_control_api.py.',
+    handler: (req) => {
+      const productionId = (req.query && req.query.production_id || '').trim();
+      return runPythonServiceCached('distribution_os', [JSON.stringify({ production_id: productionId })], req);
+    },
+    health: pythonHealthCheck('distribution_os'),
+  },
+  {
     // Global Commercial Operations Engine, Section 38/47 (ADR-216,
     // Phase 26, 2026-08-08).
     name: 'commercial-operations-dashboard',
