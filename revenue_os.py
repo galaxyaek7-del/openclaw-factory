@@ -418,6 +418,82 @@ def attribution_status() -> Dict[str, object]:
     }
 
 
+def attribution_linkage_report(clicks_path: Optional[str] = None,
+                               page_views_path: Optional[str] = None,
+                               commission_ledger_path: Optional[str] = None) -> Dict[str, object]:
+    """Evidence Chain + Attribution phase (2026-08-17): the real, read-only
+    Product -> Click -> Commission -> Revenue linkage where real data
+    exists. Joins the three real ledgers by product_id/opportunity_id --
+    never invents a stage, never infers a purchase from a click. Every
+    product with a real click OR real commission is listed with its real
+    counts; stages with zero real records report honest zeros (or the
+    explicit 'no real data' note for Checkout/Purchase, which have no
+    real event ledger anywhere in this factory)."""
+    from affiliate_commerce.click_tracking import read_clicks, read_page_views
+
+    clicks = read_clicks(clicks_path)
+    views = read_page_views(page_views_path)
+    ledger = load_commission_ledger(commission_ledger_path)
+    real_commissions = [
+        r for r in ledger
+        if r.get("environment") == "REAL"
+        and r.get("commission_status") in ("CONFIRMED", "PAID")
+    ]
+
+    products: Dict[str, dict] = {}
+    for c in clicks:
+        pid = c.get("product_id")
+        if not pid:
+            continue
+        p = products.setdefault(pid, {
+            "product_id": pid, "real_clicks": 0, "real_page_views": 0,
+            "real_commissions": 0, "verified_revenue_usd": 0.0,
+            "sources": {}, "checkout": "no real checkout ledger exists", "purchase": "no real purchase record exists",
+        })
+        p["real_clicks"] += 1
+        src = c.get("utm_source") or c.get("source") or "UNSET"
+        p["sources"][src] = p["sources"].get(src, 0) + 1
+
+    for v in views:
+        pid = v.get("page_id")
+        if not pid:
+            continue
+        p = products.setdefault(pid, {
+            "product_id": pid, "real_clicks": 0, "real_page_views": 0,
+            "real_commissions": 0, "verified_revenue_usd": 0.0,
+            "sources": {}, "checkout": "no real checkout ledger exists", "purchase": "no real purchase record exists",
+        })
+        p["real_page_views"] += 1
+        src = v.get("utm_source") or v.get("source") or "UNSET"
+        p["sources"][src] = p["sources"].get(src, 0) + 1
+
+    for r in real_commissions:
+        oid = r.get("opportunity_id")
+        if not oid:
+            continue
+        p = products.setdefault(oid, {
+            "product_id": oid, "real_clicks": 0, "real_page_views": 0,
+            "real_commissions": 0, "verified_revenue_usd": 0.0,
+            "sources": {}, "checkout": "no real checkout ledger exists", "purchase": "no real purchase record exists",
+        })
+        p["real_commissions"] += 1
+        p["verified_revenue_usd"] += float(r.get("net_commission") or 0)
+        p["purchase"] = "real purchase record exists"
+
+    return {
+        "generated_at": _now_iso(),
+        "products": sorted(products.values(), key=lambda p: p["verified_revenue_usd"], reverse=True),
+        "total_verified_revenue_usd": round(sum(p["verified_revenue_usd"] for p in products.values()), 2),
+        "stage_notes": {
+            "product": "real product/opportunity ids from the real click, page-view, and commission ledgers",
+            "click": "real click records (data/affiliate_clicks.jsonl), grouped by real utm_source/source",
+            "checkout": "NO real checkout event ledger exists anywhere in this factory -- honestly a gap, never fabricated",
+            "purchase": "real commission_ledger REAL CONFIRMED/PAID records only; zero exist today",
+            "revenue": "verified revenue = real CONFIRMED/PAID commissions only, never inferred from clicks",
+        },
+    }
+
+
 # ---------------------------------------------------------------------------
 # G) AUTONOMOUS OPTIMIZATION (real data only)
 # ---------------------------------------------------------------------------

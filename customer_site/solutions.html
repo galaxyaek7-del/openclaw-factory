@@ -163,8 +163,29 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
     return e;
   }
 
+  // Privacy-minimal attribution capture (Evidence Chain + Attribution
+  // phase, 2026-08-17): reads the visitor's own URL-query UTM fields
+  // (no cookies, no fingerprinting, no session reconstruction) and
+  // reuses them for the page-view beacon and the outbound click links.
+  var __att = {};
+  try {
+    var __qs = new URLSearchParams(window.location.search);
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) {
+      var v = __qs.get(k);
+      if (v) __att[k] = v;
+    });
+  } catch (e) {}
+
+  function withUtm(href){
+    var s = '';
+    for (var k in __att) s += (s ? '&' : '?') + k + '=' + encodeURIComponent(__att[k]);
+    return href + s;
+  }
+
   function recordPageView(){
-    fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'solutions' }), credentials: 'same-origin' }).catch(()=>{});
+    var __body = { page_id: 'solutions' };
+    Object.keys(__att).forEach(function (k) { __body[k] = __att[k]; });
+    fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(__body), credentials: 'same-origin' }).catch(()=>{});
   }
 
   let allSolutions = [];
@@ -205,7 +226,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
           el('span', {}, ['Last check: ' + (s.last_verification_date || 'n/a')]),
         ]),
         el('div', { class: 'why' }, [s.why_recommended]),
-        el('a', { class: 'btn', href: s.explore_url, target: '_blank', rel: 'noopener sponsored' }, ['Explore solution →']),
+        el('a', { class: 'btn', href: withUtm(s.explore_url), target: '_blank', rel: 'noopener sponsored' }, ['Explore solution →']),
       ]);
       grid.appendChild(card);
     });

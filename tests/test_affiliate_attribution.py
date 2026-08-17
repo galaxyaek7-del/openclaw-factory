@@ -26,6 +26,102 @@ def _temp_ledger():
     return path
 
 
+class TestUtmCapture(unittest.TestCase):
+    """Evidence Chain + Attribution phase (2026-08-17): privacy-minimal
+    UTM capture. parse_utm_query must extract ONLY the real UTM fields
+    that exist in a query dict -- never a guessed placeholder, never an
+    empty field for something absent."""
+
+    def test_extracts_only_present_utm_fields(self):
+        query = {
+            "utm_source": "x", "utm_medium": "social",
+            "utm_campaign": "standing-desk-launch", "utm_content": "top-link",
+            "page_id": "solutions", "foo": "bar",
+        }
+        out = click_tracking.parse_utm_query(query)
+        self.assertEqual(out, {
+            "utm_source": "x", "utm_medium": "social",
+            "utm_campaign": "standing-desk-launch", "utm_content": "top-link",
+        })
+
+    def test_partial_utm_returns_only_what_exists(self):
+        out = click_tracking.parse_utm_query({"utm_source": "linkedin"})
+        self.assertEqual(out, {"utm_source": "linkedin"})
+
+    def test_missing_or_empty_utm_returns_empty(self):
+        self.assertEqual(click_tracking.parse_utm_query({}), {})
+        self.assertEqual(click_tracking.parse_utm_query({"utm_source": "  "}), {})
+        self.assertEqual(click_tracking.parse_utm_query(None), {})
+
+    def test_non_string_utm_ignored(self):
+        self.assertEqual(click_tracking.parse_utm_query({"utm_source": 42}), {})
+
+
+class TestSourcePropagation(unittest.TestCase):
+    """Evidence Chain + Attribution phase (2026-08-17): a real recorded
+    click/page-view carries its real source into the read-model
+    (clicks_by_source/page_views_by_source). A record with NO attribution
+    is honestly grouped as UNSET -- never invented."""
+
+    def test_attributed_click_groups_under_real_source(self):
+        path = _temp_ledger()
+        try:
+            click_tracking.record_attributed_click(
+                "CO-zapier-affiliate", channel="linkedin", campaign="saas-automation",
+                content="post-01", utm_medium="social", utm_source="linkedin",
+                ledger_path=path)
+            summary = click_tracking.clicks_by_source(ledger_path=path)
+            self.assertEqual(summary["clicks_by_source"], {"linkedin": 1})
+            self.assertEqual(summary["total_real_clicks"], 1)
+        finally:
+            os.remove(path)
+
+    def test_explicit_source_field_used_when_no_utm(self):
+        path = _temp_ledger()
+        try:
+            click_tracking.record_attributed_click(
+                "CO-zapier-affiliate", source="manual-outreach",
+                ledger_path=path)
+            summary = click_tracking.clicks_by_source(ledger_path=path)
+            self.assertEqual(summary["clicks_by_source"], {"manual-outreach": 1})
+        finally:
+            os.remove(path)
+
+    def test_attributed_page_view_groups_under_real_source(self):
+        path = _temp_ledger()
+        try:
+            click_tracking.record_attributed_page_view(
+                "solutions", referrer="https://x.com/some/status", utm_source="x",
+                utm_medium="social", utm_campaign="solutions-launch",
+                ledger_path=path)
+            summary = click_tracking.page_views_by_source(ledger_path=path)
+            self.assertEqual(summary["page_views_by_source"], {"x": 1})
+            self.assertEqual(summary["total_real_page_views"], 1)
+        finally:
+            os.remove(path)
+
+    def test_missing_source_is_honest_unset(self):
+        path = _temp_ledger()
+        try:
+            click_tracking.record_attributed_click(
+                "CO-zapier-affiliate", ledger_path=path)
+            summary = click_tracking.clicks_by_source(ledger_path=path)
+            self.assertEqual(summary["clicks_by_source"], {"UNSET": 1})
+        finally:
+            os.remove(path)
+
+    def test_source_grouping_never_touches_real_ledger(self):
+        real_count = click_tracking.clicks_by_source()["total_real_clicks"]
+        path = _temp_ledger()
+        try:
+            click_tracking.record_attributed_click(
+                "CO-zapier-affiliate", utm_source="x", ledger_path=path)
+        finally:
+            os.remove(path)
+        after_count = click_tracking.clicks_by_source()["total_real_clicks"]
+        self.assertEqual(real_count, after_count)
+
+
 class TestAttributedClickTracking(unittest.TestCase):
     def test_attributed_click_records_full_context(self):
         path = _temp_ledger()

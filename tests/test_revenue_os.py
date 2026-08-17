@@ -14,7 +14,7 @@ from tempfile import TemporaryDirectory
 import revenue_os as ros
 from commission_ledger import record_commission
 from affiliate_launch_batch import build_launch_batch
-from affiliate_commerce.click_tracking import record_attributed_click, attributed_click_summary
+from affiliate_commerce.click_tracking import record_attributed_click, attributed_click_summary, record_attributed_page_view
 
 
 class _Now:
@@ -139,6 +139,81 @@ class AttributionTests(unittest.TestCase):
         chain = ros.attribution_chain("CO-x", "tiktok", "camp-1", "asset-1")
         for k in ("source", "campaign", "content", "channel", "opportunity_id", "utm_campaign", "utm_source"):
             self.assertIn(k, chain)
+
+
+class AttributionLinkageTests(unittest.TestCase):
+    """Evidence Chain + Attribution phase (2026-08-17): the real,
+    read-only Product -> Click -> Commission -> Revenue linkage
+    (attribution_linkage_report). Only real CONFIRMED/PAID commissions
+    count as VERIFIED revenue; MOCK/TEST/PENDING/REJECTED never do;
+    a product with no real records is honestly zero -- never fabricated.
+    Tests run against temporary ledgers only, never the real data/."""
+
+    def _linkage(self, td, clicks=None, views=None, ledger=None):
+        return ros.attribution_linkage_report(
+            clicks_path=str(clicks) if clicks else None,
+            page_views_path=str(views) if views else None,
+            commission_ledger_path=str(ledger) if ledger else None,
+        )
+
+    def test_zero_data_reports_zero_revenue_honestly(self):
+        with TemporaryDirectory() as td:
+            base = Path(td)
+            rep = self._linkage(td, base / "clicks.jsonl", base / "views.jsonl", base / "ledger.jsonl")
+            self.assertEqual(rep["products"], [])
+            self.assertEqual(rep["total_verified_revenue_usd"], 0.0)
+            self.assertIn("stage_notes", rep)
+
+    def test_clicks_views_and_commissions_link_by_id(self):
+        with TemporaryDirectory() as td:
+            base = Path(td)
+            clicks = base / "clicks.jsonl"
+            views = base / "views.jsonl"
+            ledger = base / "ledger.jsonl"
+            record_attributed_click("CO-zapier-affiliate", channel="x", utm_source="x",
+                                    campaign="camp-1", content="post-1", ledger_path=str(clicks))
+            record_attributed_page_view("CO-zapier-affiliate", referrer="https://x.com", utm_source="x",
+                                        utm_medium="social", ledger_path=str(views))
+            record_commission("zapier", "CO-zapier-affiliate", "CONFIRMED", 25.0,
+                              environment="REAL", external_transaction_id="real-tx-1",
+                              evidence="real network confirmation event id from partner",
+                              ledger_path=str(ledger))
+            rep = self._linkage(td, clicks, views, ledger)
+            self.assertEqual(len(rep["products"]), 1)
+            p = rep["products"][0]
+            self.assertEqual(p["product_id"], "CO-zapier-affiliate")
+            self.assertEqual(p["real_clicks"], 1)
+            self.assertEqual(p["real_page_views"], 1)
+            self.assertEqual(p["real_commissions"], 1)
+            self.assertEqual(p["verified_revenue_usd"], 25.0)
+            self.assertEqual(p["sources"], {"x": 2})
+            self.assertEqual(rep["total_verified_revenue_usd"], 25.0)
+
+    def test_mock_commission_never_counts_as_revenue(self):
+        with TemporaryDirectory() as td:
+            base = Path(td)
+            ledger = base / "ledger.jsonl"
+            clicks = base / "clicks.jsonl"
+            record_attributed_click("CO-zapier-affiliate", utm_source="x", ledger_path=str(clicks))
+            record_commission("zapier", "CO-zapier-affiliate", "CONFIRMED", 25.0,
+                              environment="TEST", external_transaction_id="mock-tx-1",
+                              evidence="mock evidence", ledger_path=str(ledger))
+            rep = self._linkage(td, clicks, None, ledger)
+            p = rep["products"][0]
+            self.assertEqual(p["real_commissions"], 0)
+            self.assertEqual(p["verified_revenue_usd"], 0.0)
+            self.assertEqual(rep["total_verified_revenue_usd"], 0.0)
+
+    def test_unattributed_records_report_unset_source(self):
+        with TemporaryDirectory() as td:
+            base = Path(td)
+            clicks = base / "clicks.jsonl"
+            record_attributed_click("CO-zapier-affiliate", ledger_path=str(clicks))
+            rep = self._linkage(td, clicks, None, None)
+            p = rep["products"][0]
+            self.assertEqual(p["sources"], {"UNSET": 1})
+            self.assertEqual(p["real_commissions"], 0)
+            self.assertEqual(p["verified_revenue_usd"], 0.0)
 
 
 class AutonomousOptimizationTests(unittest.TestCase):

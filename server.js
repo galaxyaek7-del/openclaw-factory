@@ -1294,6 +1294,19 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('affiliate_commerce_status'),
   },
   {
+    // Evidence Chain + Attribution phase (2026-08-17): the real, read-only
+    // source-attribution view. Pure read over the real click + page-view
+    // ledgers + revenue_os.attribution_linkage_report() -- never writes,
+    // never fabricates a source/click/purchase/revenue. Cached like every
+    // other SERVICE_REGISTRY read (the live capture happens on the public
+    // /api/*/click and /api/page-view routes, not on this internal view).
+    name: 'attribution-source-report',
+    description: "The real, read-only source-attribution view (Evidence Chain + Attribution): real click and page-view counts grouped by real source (utm_source/source, honestly UNSET for the pre-capture records), plus the Product -> Click -> Commission -> Revenue linkage where real data exists. VERIFIED revenue comes only from real CONFIRMED/PAID commission records (zero today). Checkout/Purchase have no real event ledger anywhere in this factory and are honestly reported as gaps, never fabricated.",
+    reused: 'click_tracking.clicks_by_source()/page_views_by_source() + revenue_os.attribution_linkage_report() (Evidence Chain + Attribution phase, 2026-08-17), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('attribution_source_report', [], req),
+    health: pythonHealthCheck('attribution_source_report'),
+  },
+  {
     // Simulation-First Company Build (ADR-153, 2026-07-30): generalizes
     // this factory's own already-real dry_run discipline
     // (channels/base_arm.py/distributor.py/reality.py's real dry_run
@@ -6556,9 +6569,27 @@ app.get('/api/affiliate/products', async (req, res) => {
 // before the real redirect fires. Amazon's own real product URL is
 // built by affiliate_commerce/networks.py, honestly untagged until the
 // founder's own real Amazon Associates account exists.
+// Real, privacy-minimal UTM/source capture (Evidence Chain + Attribution
+// phase, 2026-08-17): reads the visitor's own URL query for the standard
+// UTM fields and forwards ONLY those present into the Python payload --
+// no cookies, no fingerprinting, no session reconstruction. The click/
+// page-view handlers record what the visitor actually arrived with.
+function utmFromQuery(query) {
+  const out = {};
+  if (!query) return out;
+  for (const k of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content']) {
+    const v = query[k];
+    if (typeof v === 'string' && v.trim()) out[k] = v.trim();
+  }
+  return out;
+}
+
 app.get('/api/affiliate/click/:product_id', async (req, res) => {
   try {
-    const payload = { product_id: req.params.product_id, referrer: req.get('referer') || null };
+    const payload = Object.assign(
+      { product_id: req.params.product_id, referrer: req.get('referer') || null },
+      utmFromQuery(req.query)
+    );
     const result = await runPythonService('affiliate_click', [JSON.stringify(payload)]);
     if (!result.found || !result.url) {
       return res.status(404).json({ success: false, error: 'no real product with that id' });
@@ -6591,7 +6622,10 @@ app.get('/api/solutions', async (req, res) => {
 // /api/affiliate/click/:product_id above.
 app.get('/api/solutions/click/:opportunity_id', async (req, res) => {
   try {
-    const payload = { opportunity_id: req.params.opportunity_id, referrer: req.get('referer') || null };
+    const payload = Object.assign(
+      { opportunity_id: req.params.opportunity_id, referrer: req.get('referer') || null },
+      utmFromQuery(req.query)
+    );
     const result = await runPythonService('solutions_click', [JSON.stringify(payload)]);
     if (!result.found || !result.url) {
       return res.status(404).json({ success: false, error: 'no real solution with that id' });
@@ -6610,7 +6644,10 @@ app.get('/api/solutions/click/:opportunity_id', async (req, res) => {
 app.post('/api/page-view', async (req, res) => {
   try {
     const rawPageId = req.body && req.body.page_id;
-    const payload = { page_id: rawPageId || null, referrer: req.get('referer') || null };
+    const payload = Object.assign(
+      { page_id: rawPageId || null, referrer: req.get('referer') || null },
+      utmFromQuery(req.body || {})
+    );
     if (!payload.page_id) {
       return res.status(400).json({ success: false, error: 'page_id is required' });
     }

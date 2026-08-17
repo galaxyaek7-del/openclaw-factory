@@ -970,7 +970,21 @@ def _affiliate_click():
         # honesty signal the caller checks.
         return {"success": True, "found": False, "error": f"no real product with id {product_id!r}"}
 
-    click_tracking.record_click(product_id, referrer=payload.get("referrer"))
+    # Real, privacy-minimal UTM/source capture (Evidence Chain +
+    # Attribution phase, 2026-08-17): the payload's query fields were
+    # parsed from the visitor's own URL query by server.js; only the
+    # fields actually present are recorded, never a placeholder.
+    utm = click_tracking.parse_utm_query(payload)
+    click_tracking.record_attributed_click(
+        product_id,
+        channel=utm.get("utm_source"),
+        campaign=utm.get("utm_campaign"),
+        content=utm.get("utm_content"),
+        utm_medium=utm.get("utm_medium"),
+        utm_source=utm.get("utm_source"),
+        referrer=payload.get("referrer"),
+        source=payload.get("source"),
+    )
     url = networks.build_amazon_url(product["asin"])
     return {"success": True, "found": True, "url": url, "tag_configured": networks.amazon_associate_tag_configured()}
 
@@ -991,6 +1005,25 @@ def _affiliate_commerce_status():
             "Real conversion/commission tracking (needs the affiliate network's real postback API)",
             "SEO engine, multi-partner comparison, auto-discovery (explicitly excluded by the founder's own directive as premature)",
         ],
+    }
+
+
+def _attribution_source_report():
+    """Evidence Chain + Attribution phase (2026-08-17): the real, read-only
+    source-attribution view over the real click + page-view ledgers --
+    total counts, grouped by real source (utm_source/source, honestly
+    UNSET for the 18 pre-capture clicks), plus the Product -> Click ->
+    Commission -> Revenue linkage (revenue_os.attribution_linkage_report()).
+    Never fabricates a source, a click, a purchase, or revenue; VERIFIED
+    revenue comes only from real CONFIRMED/PAID commission records (zero
+    today)."""
+    from affiliate_commerce import click_tracking
+    import revenue_os
+    return {
+        "clicks_by_source": click_tracking.clicks_by_source(),
+        "page_views_by_source": click_tracking.page_views_by_source(),
+        "linkage": revenue_os.attribution_linkage_report(),
+        "note": "Real data only. Source is read strictly from the visitor's own URL query/referrer -- no cookies, no fingerprinting, no session reconstruction. Checkout/Purchase stages have no real event ledger anywhere in this factory and are honestly reported as gaps, never fabricated.",
     }
 
 
@@ -1863,7 +1896,19 @@ def _solutions_click():
     if not record:
         return {"success": True, "found": False, "error": f"no real opportunity with id {opportunity_id!r}"}
 
-    click_tracking.record_click(opportunity_id, referrer=payload.get("referrer"))
+    # Real, privacy-minimal UTM/source capture (Evidence Chain +
+    # Attribution phase, 2026-08-17) -- same discipline as _affiliate_click.
+    utm = click_tracking.parse_utm_query(payload)
+    click_tracking.record_attributed_click(
+        opportunity_id,
+        channel=utm.get("utm_source"),
+        campaign=utm.get("utm_campaign"),
+        content=utm.get("utm_content"),
+        utm_medium=utm.get("utm_medium"),
+        utm_source=utm.get("utm_source"),
+        referrer=payload.get("referrer"),
+        source=payload.get("source"),
+    )
     # Real, found gap: only CO-amazon-affiliate has a real terms_url
     # populated in this factory's own portfolio -- the other 12 real
     # opportunities only have evidence_url. Falling back to the first
@@ -1881,16 +1926,26 @@ def _solutions_click():
 def _record_public_page_view():
     """Public Solutions Engine, Section 7 -- the real 'content published
     -> visitor' step. Records one real page-view event via
-    affiliate_commerce.click_tracking.record_page_view() (already
-    real, from the Revenue Activation Directive, ADR-239) -- reused
-    directly, never a second page-view mechanism. Reads {"page_id":
-    "...", "referrer": "..."} from sys.argv[2]."""
+    affiliate_commerce.click_tracking.record_attributed_page_view()
+    (extended in the Evidence Chain + Attribution phase, 2026-08-17, to
+    carry the real UTM/source the visitor arrived with -- a superset of
+    the original record_page_view, ADR-239). Reads {"page_id": "...",
+    "referrer": "...", plus optional UTM query fields} from sys.argv[2]."""
     payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
     page_id = (payload.get("page_id") or "").strip()
     if not page_id:
         raise ValueError("{ page_id } is required")
     from affiliate_commerce import click_tracking
-    click_tracking.record_page_view(page_id, referrer=payload.get("referrer"))
+    utm = click_tracking.parse_utm_query(payload)
+    click_tracking.record_attributed_page_view(
+        page_id,
+        referrer=payload.get("referrer"),
+        utm_source=utm.get("utm_source"),
+        utm_medium=utm.get("utm_medium"),
+        utm_campaign=utm.get("utm_campaign"),
+        utm_content=utm.get("utm_content"),
+        source=payload.get("source"),
+    )
     return {"success": True, "recorded": True}
 
 
@@ -4101,6 +4156,7 @@ _ENDPOINTS = {
     "affiliate_products": _affiliate_products,
     "affiliate_click": _affiliate_click,
     "affiliate_commerce_status": _affiliate_commerce_status,
+    "attribution_source_report": _attribution_source_report,
     "affiliate_simulation_report": _affiliate_simulation_report,
     "launch_readiness_score": _launch_readiness_score,
     "executive_intelligence_questions": _executive_intelligence_questions,

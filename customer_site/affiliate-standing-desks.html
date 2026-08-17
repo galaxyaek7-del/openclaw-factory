@@ -111,6 +111,29 @@ footer{border-top:1px solid var(--border-soft); padding:2.5rem 0; text-align:cen
 <script>
 (function(){
   "use strict";
+  // Privacy-minimal page-view beacon (Evidence Chain + Attribution phase,
+  // 2026-08-17): records ONE real page view via the existing public
+  // /api/page-view route and forwards the visitor's own URL-query UTM
+  // fields when present -- no cookies, no fingerprinting, no session
+  // reconstruction.
+  try {
+    var __att = {};
+    try {
+      var __qs = new URLSearchParams(window.location.search);
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) {
+        var v = __qs.get(k);
+        if (v) __att[k] = v;
+      });
+    } catch (e2) {}
+    var __body = { page_id: 'affiliate-standing-desks' };
+    Object.keys(__att).forEach(function (k) { __body[k] = __att[k]; });
+    fetch('/api/page-view', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(__body),
+      keepalive: true,
+    }).catch(function () {});
+  } catch (e) {}
   function el(tag, attrs, children){
     const e = document.createElement(tag);
     if (attrs) for (const k in attrs){
@@ -156,7 +179,7 @@ footer{border-top:1px solid var(--border-soft); padding:2.5rem 0; text-align:cen
           el('span', { class: 'stars' }, [stars(p.rating)]),
           el('span', null, [p.rating.toFixed(1) + ' (' + p.rating_count.toLocaleString() + ' real ratings)']),
         ]),
-        el('a', { class: 'btn', href: '/api/affiliate/click/' + p.id, target: '_blank', rel: 'noopener sponsored' }, ['View on Amazon →']),
+        el('a', { class: 'btn', href: '/api/affiliate/click/' + p.id + (function(){ var s=''; for (var k in __att) s += (s ? '&' : '?') + k + '=' + encodeURIComponent(__att[k]); return s; })(), target: '_blank', rel: 'noopener sponsored' }, ['View on Amazon →']),
       ]);
       grid.appendChild(card);
     });

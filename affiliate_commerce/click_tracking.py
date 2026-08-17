@@ -18,12 +18,37 @@ _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_LEDGER_PATH = _FACTORY_ROOT / "data" / "affiliate_clicks.jsonl"
 DEFAULT_PAGE_VIEW_LEDGER_PATH = _FACTORY_ROOT / "data" / "affiliate_page_views.jsonl"
 
+_UTM_FIELDS = ("utm_source", "utm_medium", "utm_campaign", "utm_content")
+
+
+def parse_utm_query(query):
+    """Privacy-minimal UTM capture (Evidence Chain + Attribution phase,
+    2026-08-17). Extracts ONLY the known UTM fields from a query dict (a
+    parsed URL query string) and returns a dict of the fields present.
+    No cookies, no fingerprinting, no session reconstruction -- a visitor's
+    source is read strictly from the URL query they themselves arrived
+    with, and only the fields that actually exist are returned (never a
+    guessed/empty placeholder)."""
+    if not query or not isinstance(query, dict):
+        return {}
+    out = {}
+    for k, v in query.items():
+        if k in _UTM_FIELDS and isinstance(v, str) and v.strip():
+            out[k] = v.strip()
+    return out
+
+
+def _with_source(record, source):
+    if source:
+        record["source"] = source
+    return record
+
 
 def _now_iso():
     return datetime.now(timezone.utc).isoformat()
 
 
-def record_click(product_id, referrer=None, ledger_path=None):
+def record_click(product_id, referrer=None, ledger_path=None, source=None):
     """Records one real click event -- called at the moment a real user
     clicks a real affiliate link, before the real redirect fires."""
     record = {
@@ -31,6 +56,7 @@ def record_click(product_id, referrer=None, ledger_path=None):
         "timestamp": _now_iso(),
         "referrer": referrer,
     }
+    _with_source(record, source)
     path = Path(ledger_path) if ledger_path else DEFAULT_LEDGER_PATH
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "a", encoding="utf-8") as f:
@@ -57,7 +83,7 @@ def read_clicks(ledger_path=None):
 
 def record_attributed_click(product_id, channel=None, campaign=None, content=None,
                             referrer=None, utm_medium=None, utm_source=None,
-                            ledger_path=None):
+                            ledger_path=None, source=None):
     """Records one real click with full attribution context (directive
     section 7: affiliate_program/product/channel/campaign/content + UTM).
 
@@ -81,6 +107,7 @@ def record_attributed_click(product_id, channel=None, campaign=None, content=Non
         record["utm_medium"] = utm_medium
     if utm_source:
         record["utm_source"] = utm_source
+    _with_source(record, source)
     path = Path(ledger_path) if ledger_path else DEFAULT_LEDGER_PATH
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "a", encoding="utf-8") as f:
@@ -127,6 +154,24 @@ def click_summary(ledger_path=None):
     }
 
 
+def clicks_by_source(ledger_path=None):
+    """Real aggregate of click records grouped by their real source
+    (utm_source field, else source field, else UNSET). Never invents a
+    source the record does not carry -- a record with no attribution
+    fields is honestly grouped as UNSET (the current real state of the
+    18 existing click records, which predate UTM capture)."""
+    clicks = read_clicks(ledger_path)
+    by_source = {}
+    for c in clicks:
+        src = c.get("utm_source") or c.get("source")
+        by_source[src or "UNSET"] = by_source.get(src or "UNSET", 0) + 1
+    return {
+        "total_real_clicks": len(clicks),
+        "clicks_by_source": by_source,
+        "note": "Source is read strictly from the visitor's own URL query/referrer -- no cookies, no fingerprinting, no session reconstruction.",
+    }
+
+
 # ---------------------------------------------------------------------------
 # Revenue Activation Directive (ADR-239), 2026-08-09, Section F -- the
 # real "traffic -> page" step of the conversion funnel (traffic ->
@@ -138,7 +183,7 @@ def click_summary(ledger_path=None):
 # privacy-minimal precedent.
 # ---------------------------------------------------------------------------
 
-def record_page_view(page_id, referrer=None, ledger_path=None):
+def record_page_view(page_id, referrer=None, ledger_path=None, source=None):
     """Records one real page-view event -- called when a real visitor
     loads a real content page (e.g. customer_site/affiliate-standing-
     desks.html), before any outbound affiliate click occurs."""
@@ -147,6 +192,7 @@ def record_page_view(page_id, referrer=None, ledger_path=None):
         "timestamp": _now_iso(),
         "referrer": referrer,
     }
+    _with_source(record, source)
     path = Path(ledger_path) if ledger_path else DEFAULT_PAGE_VIEW_LEDGER_PATH
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "a", encoding="utf-8") as f:
@@ -193,4 +239,59 @@ def conversion_funnel_summary(page_views_path=None, clicks_path=None, commission
         "page_view_to_click_rate": round(len(clicks) / len(page_views), 4) if page_views else "N/A -- 0 real page views recorded",
         "click_to_commission_rate": round(len(real_confirmed_commissions) / len(clicks), 4) if clicks else "N/A -- 0 real clicks recorded",
         "note": "Every stage is a real, independent count from its own real, auditable ledger -- no rate is computed or displayed when its own denominator is 0.",
+    }
+
+
+def record_attributed_page_view(page_id, referrer=None, ledger_path=None,
+                                utm_source=None, utm_medium=None,
+                                utm_campaign=None, utm_content=None,
+                                source=None):
+    """Records one real page-view event carrying the full UTM/source
+    attribution the visitor arrived with (Evidence Chain + Attribution
+    phase, 2026-08-17). Privacy-minimal: fields are read strictly from the
+    visitor's own URL query and omitted when absent -- never a cookie,
+    never a fingerprint, never a guessed placeholder. A superset of
+    record_page_view(); the original signature is unchanged and still
+    works."""
+    record = {
+        "page_id": page_id,
+        "timestamp": _now_iso(),
+        "referrer": referrer,
+    }
+    if utm_source:
+        record["utm_source"] = utm_source
+    if utm_medium:
+        record["utm_medium"] = utm_medium
+    if utm_campaign:
+        record["utm_campaign"] = utm_campaign
+    if utm_content:
+        record["utm_content"] = utm_content
+    _with_source(record, source)
+    path = Path(ledger_path) if ledger_path else DEFAULT_PAGE_VIEW_LEDGER_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+    return record
+
+
+def page_views_by_source(ledger_path=None):
+    """Real aggregate of page-view records grouped by their real source
+    (utm_source field, else source field, else referrer host, else UNSET).
+    Never invents a source the record does not carry -- a record with no
+    attribution fields is honestly grouped as UNSET."""
+    from urllib.parse import urlparse
+    views = read_page_views(ledger_path)
+    by_source = {}
+    for v in views:
+        src = v.get("utm_source") or v.get("source")
+        if not src and v.get("referrer"):
+            try:
+                src = urlparse(v["referrer"]).netloc
+            except Exception:
+                src = v["referrer"]
+        by_source[src or "UNSET"] = by_source.get(src or "UNSET", 0) + 1
+    return {
+        "total_real_page_views": len(views),
+        "page_views_by_source": by_source,
+        "note": "Source is read strictly from the visitor's own URL query/referrer -- no cookies, no fingerprinting, no session reconstruction.",
     }
