@@ -167,6 +167,31 @@ def _classify_security_drift():
     return findings
 
 
+def _classify_ledger_integrity(ledgers=None, baseline_path=None):
+    """Data integrity -- integrity_monitor.py's real SHA-256 hash-chain
+    baseline over this factory's append-only ledgers (Security P1 C3,
+    2026-08-18). Never rewrites any ledger -- the check's only write is
+    its own baseline state (advance-on-clean). Every verdict is the real
+    one from integrity_monitor.check_ledger_integrity(), never a guess."""
+    import integrity_monitor
+
+    results = integrity_monitor.check_ledger_integrity(ledgers=ledgers, baseline_path=baseline_path)
+    findings = []
+    for r in results:
+        area = f"ledger_integrity:{os.path.basename(r['path'])}"
+        if r["status"] == "DRIFT":
+            findings.append(_finding(area, "critical", r["detail"], {"path": r["path"], "status": r["status"]}))
+        elif r["status"] == "MISSING":
+            findings.append(_finding(area, "warning", r["detail"], {"path": r["path"], "status": r["status"]}))
+        elif r["status"] == "TRUNCATED":
+            findings.append(_finding(area, "warning", r["detail"], {"path": r["path"], "status": r["status"]}))
+        elif r["status"] == "CLEAN":
+            findings.append(_finding(area, "informational", r["detail"], {"path": r["path"], "status": r["status"]}))
+        else:  # NOT_BASELINED
+            findings.append(_finding(area, "informational", r["detail"], {"path": r["path"], "status": r["status"]}, data_available=False))
+    return findings
+
+
 def _classify_health_trend(snapshots_path=None):
     """Health degradation -- health_trend.py::detect_health_degradation()
     verbatim (Round 1, already real)."""
@@ -183,7 +208,8 @@ def _classify_health_trend(snapshots_path=None):
 
 
 def assess_resilience(safe_mode_state_path=None, publish_protection_state_path=None,
-                       requests_path=None, pipeline_state_path=None, health_snapshots_path=None):
+                       requests_path=None, pipeline_state_path=None, health_snapshots_path=None,
+                       ledger_integrity_ledgers=None, ledger_integrity_baseline_path=None):
     """The one real aggregator -- Monitor + Classify + (the Python half
     of) Report. `resilience_score` follows executive_score.py's own
     precedent exactly: a transparent average of only the real,
@@ -194,6 +220,7 @@ def assess_resilience(safe_mode_state_path=None, publish_protection_state_path=N
     findings.extend(_classify_publish_protection(state_path=publish_protection_state_path))
     findings.extend(_classify_customer_risk(requests_path=requests_path, pipeline_state_path=pipeline_state_path))
     findings.extend(_classify_security_drift())
+    findings.extend(_classify_ledger_integrity(ledgers=ledger_integrity_ledgers, baseline_path=ledger_integrity_baseline_path))
     findings.extend(_classify_health_trend(snapshots_path=health_snapshots_path))
 
     scored = [f for f in findings if f["data_available"]]
@@ -229,6 +256,7 @@ _ROOT_CAUSE_TEMPLATES = {
     "publish_protection": "A real marketplace arm or the global publish state crossed a real risk threshold: {detail}",
     "customer_risk": "A real customer request is stuck in a state that blocks its own progress: {detail}",
     "security_drift": "A real dependency-pinning ratio fell below the safe threshold: {detail}",
+    "ledger_integrity": "A real append-only ledger's baselined content was modified, truncated, or removed (Security P1 C3): {detail}",
     "health_trend": "A real GET /health status trend is degrading: {detail}",
 }
 
@@ -237,6 +265,7 @@ _PREVENTION_RULE_TEMPLATES = {
     "publish_protection": "channels/publish_protection.py's per-arm daily/hourly caps and cooldown already exist to contain this -- see channels/publish_protection.py::check_publish_allowed().",
     "customer_risk": "customer_pipeline.py's real retry/founder-review routing already exists for this -- see customer_pipeline.py::list_pipeline_overview()'s needs_attention.",
     "security_drift": "Pin the real dependency version in requirements.txt/package.json.",
+    "ledger_integrity": "Restore the ledger from the real git-tracked history (scripts/restore_file_from_git.js) or the latest recovery/snapshot.py .bak, then rebuild the integrity baseline (integrity_monitor.build_baseline()).",
     "health_trend": "lib/health_checks.js's real infra checks are the diagnostic entry point -- see GET /health for which specific check is failing.",
 }
 

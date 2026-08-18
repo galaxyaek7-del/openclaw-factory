@@ -41,6 +41,14 @@ DEFAULT_SNAPSHOT_TARGETS = (
     _FACTORY_ROOT / "data" / "affiliate_clicks.jsonl",
     _FACTORY_ROOT / "data" / "safe_mode_state.json",
     _FACTORY_ROOT / "data" / "publish_protection_state.json",
+    # Security P1 C2 (2026-08-18): the real API keys/credentials live
+    # here and had zero snapshot coverage (a corrupted/truncated write
+    # would have been unrecoverable without a founder re-paste). The
+    # snapshot lands at ./.env.snapshot-*.bak, which is gitignored
+    # (.gitignore) -- the plaintext secret copy must never reach git.
+    # Best-effort copy only, same as every other target: snapshot_before
+    # never prints the file's contents, only paths on OSError.
+    _FACTORY_ROOT / ".env",
 )  
 
 

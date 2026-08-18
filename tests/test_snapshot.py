@@ -83,6 +83,13 @@ class TestDefaultSnapshotTargets(unittest.TestCase):
                          "publish_protection_state.json"):
             self.assertIn(expected, names)
 
+    def test_env_secret_config_is_covered_by_default_targets(self):
+        """Security P1 C2 (2026-08-18): the real API keys live in .env and
+        had zero snapshot coverage. Its snapshot copy is gitignored
+        (plaintext secrets must never reach git)."""
+        names = {p.name for p in snapshot.DEFAULT_SNAPSHOT_TARGETS}
+        self.assertIn(".env", names)
+
     def test_no_target_is_a_non_existent_file(self):
         for p in snapshot.DEFAULT_SNAPSHOT_TARGETS:
             self.assertTrue(p.exists(), f"stale snapshot target: {p}")

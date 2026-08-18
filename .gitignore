@@ -8,6 +8,11 @@ node_modules/
 /backups/
 *.log
 .env
+# Security P1 C2 (2026-08-18): recovery/snapshot.py's .env snapshot copies
+# are full plaintext secret bundles (all API keys). They live beside .env
+# at .env.snapshot-<ts>.bak -- unlike data/*.jsonl.snapshot-*.bak (internal
+# business data, committed by convention), these must never land in git.
+.env.snapshot-*.bak
 .factory_loop.lock
 __pycache__/
 *.pyc
@@ -56,3 +61,13 @@ data/.business_blueprint_daily_marker
 # mission_control_api.py's own _knowledge_graph() docstring already called
 # save_snapshot()'s output "a disposable on-disk copy".
 data/knowledge_graph_snapshot.json
+# Security P1 C3 (2026-08-18): integrity_monitor.py's own baseline state
+# (hashes + line counts only, no ledger content) -- a disposable derived
+# cache, advanced on every clean check, same precedent as the knowledge
+# graph snapshot above. Never a ledger itself.
+data/ledger_integrity_baseline.json
+# Security P1 item 5 (2026-08-18): Mission Control auth audit ledger --
+# records who-tried-when (at/event/ip only, never passwords or tokens).
+# Internal security metadata, not business data; gitignored so enabling
+# it never risks a secret commit. AUTH_AUDIT_FILE can point it elsewhere.
+data/auth_audit.jsonl

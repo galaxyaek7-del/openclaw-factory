@@ -51,6 +51,27 @@ app.use(express.json({
   verify: (req, res, buf) => { req.rawBody = buf; },
 }));
 
+// ── SECURITY RESPONSE HEADERS (Security P1 item 4, 2026-08-18) ──
+// Global hardening for a loopback-bound single-founder tool that serves a
+// real public customer site on the same origin. Every value was verified
+// against this repo's actual HTML/JS surface before being set: no external
+// script includes (no cdn.paddle / checkout.paddle / paddle.js anywhere in
+// any .html), no eval / new Function / document.write in any customer_site
+// script, no hotlinked <img src="https://...">, only Google Fonts
+// stylesheets + data: SVG favicons as the non-self origins (both allowed
+// below) plus one blob: download-link navigation (mission_control_
+// executive_v1.html's export button -- navigations are not governed by
+// default-src, so it is unaffected). Registered before every route and
+// static mount so all responses inherit it uniformly.
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'");
+  next();
+});
+
 // ── MISSION CONTROL: simple password gate (Phase 8) ──
 // Deliberately NOT express-session/cookie-parser — no new npm dependency
 // for a single-operator local tool (per explicit direction: "simple
@@ -182,6 +203,27 @@ function pruneLoginFailures() {
   loginFailureTimestamps = loginFailureTimestamps.filter(t => now - t < LOGIN_WINDOW_MS);
 }
 
+// ── AUTH AUDIT LEDGER (Security P1 item 5, 2026-08-18) ──
+// A real, append-only record of Mission Control auth events (login
+// success / login failure / logout). Fields are strictly {at, event, ip}
+// -- passwords, session tokens, and cookie values are NEVER written here.
+// AUTH_AUDIT_FILE is env-overridable so tests can point it at a temp
+// path; the default location is gitignored, so enabling it never risks a
+// secret commit. Failures to write are swallowed: auditing must never
+// break the auth flow it observes.
+const AUTH_AUDIT_FILE = process.env.AUTH_AUDIT_FILE || path.join(__dirname, 'data', 'auth_audit.jsonl');
+
+function appendAuthAudit(event, req) {
+  try {
+    fs.mkdirSync(path.dirname(AUTH_AUDIT_FILE), { recursive: true });
+    fs.appendFileSync(AUTH_AUDIT_FILE, JSON.stringify({
+      at: new Date().toISOString(),
+      event,
+      ip: (req && req.ip) || null,
+    }) + '\n');
+  } catch (_) { /* auditing must never break auth */ }
+}
+
 app.post('/api/mission-control/login', (req, res) => {
   if (!MISSION_CONTROL_PASSWORD) {
     return res.status(500).json({
@@ -202,16 +244,19 @@ app.post('/api/mission-control/login', (req, res) => {
   const { password } = req.body || {};
   if (!timingSafeEqualStrings(password || '', MISSION_CONTROL_PASSWORD)) {
     loginFailureTimestamps.push(Date.now());
+    appendAuthAudit('login_failure', req);
     return res.status(401).json({ success: false, error: 'كلمة مرور خاطئة' });
   }
 
   loginFailureTimestamps = [];
+  appendAuthAudit('login_success', req);
   const token = signMissionControlSession(`mc|${Date.now()}`);
   res.cookie('mc_session', token, { httpOnly: true, sameSite: 'lax', maxAge: 12 * 60 * 60 * 1000 });
   res.json({ success: true });
 });
 
 app.post('/api/mission-control/logout', (req, res) => {
+  appendAuthAudit('logout', req);
   res.clearCookie('mc_session');
   res.json({ success: true });
 });
@@ -4285,6 +4330,7 @@ app.post('/api/safety/check', requireMissionControlAuth, async (req, res) => {
 
 // ── GENERATE BOOK ──
 app.post('/generate-book', requireMissionControlOrInternalToken, async (req, res) => {
+  if (rateLimitProductionRequest(req, res)) return;
   // `output` is destructured as `outputName` to avoid colliding with the
   // `output`/`errOut` stdout-accumulator variables used below.
   const { title, subtitle, type, theme, pages, author, topic, chapters, audience, price, product_type, sections, output: outputName } = req.body;
@@ -4511,6 +4557,7 @@ async function runDistributor(record, { arms, dryRun = true } = {}, timeoutMs = 
 }
 
 app.post('/api/distribute', requireMissionControlOrInternalToken, async (req, res) => {
+  if (rateLimitProductionRequest(req, res)) return;
   const { record, arms } = req.body || {};
 
   if (!record || typeof record !== 'object' || Array.isArray(record)) {
@@ -4876,6 +4923,7 @@ app.delete('/finance/delete/:id', requireMissionControlAuth, (req, res) => {
 const PADDLE_WEBHOOK_ALERT_MIN_INTERVAL_MS = 60 * 60 * 1000; // throttle per reason: 1h
 const paddleWebhookAlertLastSent = new Map();
 app.post('/webhooks/paddle', (req, res) => {
+  if (rateLimitProductionRequest(req, res)) return;
   const pythonPath = detectPython();
   const scriptPath = path.join(__dirname, 'channels', 'paddle_webhook.py');
   const python = spawn(pythonPath, [scriptPath, '--json'], { cwd: __dirname });
@@ -5004,6 +5052,7 @@ const COMPANY_PERSONALITY_PREAMBLE = `أنت جزء من Galaxy Forge. شخصي�
 
 // ── AGENT ENDPOINTS ──
 app.post('/api/agent/:name', requireMissionControlAuth, async (req, res) => {
+  if (rateLimitProductionRequest(req, res)) return;
   const { name } = req.params;
   const agentConfig = AGENT_PROMPTS[name];
 
@@ -5222,6 +5271,7 @@ function runBookGenerator(payload, timeoutMs = 150000) {
 }
 
 app.post('/api/scout/run', requireMissionControlOrInternalToken, async (req, res) => {
+  if (rateLimitProductionRequest(req, res)) return;
   const startedAt = Date.now();
 
   // 1) Trigger the n8n Sensing Engine. Today the webhook responds immediately
@@ -6265,6 +6315,51 @@ function isRateLimited(ip) {
   // a real, cheap safeguard, not a full LRU cache.
   if (customerRequestRateState.size > 5000) customerRequestRateState.clear();
   return timestamps.length > CUSTOMER_REQUEST_RATE_LIMIT.maxPerWindow;
+}
+
+// ── PRODUCTION-ROUTE RATE LIMIT (Security P1 item 3, 2026-08-18) ──
+// The 5 routes that each spawn a real, costly subprocess and/or spend real
+// Groq budget (/generate-book, /api/distribute, /webhooks/paddle,
+// /api/agent/:name, /api/scout/run) previously had no per-IP limit beyond
+// auth itself. Reuses the exact bounded sliding-window-of-real-timestamps
+// pattern as isRateLimited()/isConsultationRateLimited() above, factored
+// into a small generic factory so each limiter keeps its own independent
+// state map. Config is env-overridable so tests can set a tiny max and hit
+// the cheap 400 path of /api/distribute:
+//   PRODUCTION_RATE_LIMIT_WINDOW_MS (default 10 min)
+//   PRODUCTION_RATE_LIMIT_MAX       (default 60 requests per window)
+// NOTE: this is per-IP, unlike the login limiter which is deliberately
+// global (see the comment above it). Same loopback-bound caveat as the
+// customer limiter: req.ip is the real caller only because BIND_HOST is
+// 127.0.0.1 and no reverse proxy exists yet.
+function makeSlidingWindowRateLimiter({ windowMs, maxPerWindow, maxDistinctClients = 5000 }) {
+  const state = new Map(); // ip -> [timestamps]
+  return function (ip) {
+    const now = Date.now();
+    const windowStart = now - windowMs;
+    const timestamps = (state.get(ip) || []).filter(t => t > windowStart);
+    timestamps.push(now);
+    state.set(ip, timestamps);
+    if (state.size > maxDistinctClients) state.clear();
+    return timestamps.length > maxPerWindow;
+  };
+}
+
+const PRODUCTION_REQUEST_RATE_LIMIT = makeSlidingWindowRateLimiter({
+  windowMs: parseInt(process.env.PRODUCTION_RATE_LIMIT_WINDOW_MS || String(10 * 60 * 1000), 10),
+  maxPerWindow: parseInt(process.env.PRODUCTION_RATE_LIMIT_MAX || '60', 10),
+});
+
+function isProductionRequestRateLimited(ip) {
+  return PRODUCTION_REQUEST_RATE_LIMIT(ip);
+}
+
+function rateLimitProductionRequest(req, res) {
+  if (isProductionRequestRateLimited(req.ip)) {
+    res.status(429).json({ success: false, error: 'Too many production requests from this address — try again later' });
+    return true;
+  }
+  return false;
 }
 
 // ── Customer Accounts (Customer Platform Round 1, 2026-07-29) ──

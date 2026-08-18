@@ -196,9 +196,11 @@ class TestAssessResilience(unittest.TestCase):
     @patch("customer_pipeline.list_pipeline_overview")
     @patch("channels.publish_protection.list_publish_protection_status")
     @patch("safe_mode.list_safe_mode_status")
+    @patch("resilience_monitor._classify_ledger_integrity")
     def test_all_clean_signals_produce_a_perfect_transparent_score(
-        self, mock_safe_mode, mock_publish, mock_pipeline, mock_py, mock_node, mock_health,
+        self, mock_ledger_integrity, mock_safe_mode, mock_publish, mock_pipeline, mock_py, mock_node, mock_health,
     ):
+        mock_ledger_integrity.return_value = []
         mock_safe_mode.return_value = _STABLE_SAFE_MODE
         mock_publish.return_value = {
             "arms": {"gumroad": {"risk_score": 0, "consecutive_failures": 0, "currently_allowed": True}},
@@ -219,9 +221,11 @@ class TestAssessResilience(unittest.TestCase):
     @patch("customer_pipeline.list_pipeline_overview")
     @patch("channels.publish_protection.list_publish_protection_status")
     @patch("safe_mode.list_safe_mode_status")
+    @patch("resilience_monitor._classify_ledger_integrity")
     def test_zero_real_data_anywhere_is_honestly_unknown_never_a_fabricated_score(
-        self, mock_safe_mode, mock_publish, mock_pipeline, mock_py, mock_node, mock_health,
+        self, mock_ledger_integrity, mock_safe_mode, mock_publish, mock_pipeline, mock_py, mock_node, mock_health,
     ):
+        mock_ledger_integrity.return_value = []
         mock_safe_mode.return_value = _STABLE_SAFE_MODE  # safe_mode always has real data (defaults are real)
         mock_publish.return_value = _HEALTHY_PUBLISH_PROTECTION  # no arms -> no data
         mock_pipeline.return_value = _EMPTY_PIPELINE_OVERVIEW  # no requests -> no data
@@ -241,9 +245,11 @@ class TestAssessResilience(unittest.TestCase):
     @patch("customer_pipeline.list_pipeline_overview")
     @patch("channels.publish_protection.list_publish_protection_status")
     @patch("safe_mode.list_safe_mode_status")
+    @patch("resilience_monitor._classify_ledger_integrity")
     def test_a_real_critical_finding_appears_in_active_alerts(
-        self, mock_safe_mode, mock_publish, mock_pipeline, mock_py, mock_node, mock_health,
+        self, mock_ledger_integrity, mock_safe_mode, mock_publish, mock_pipeline, mock_py, mock_node, mock_health,
     ):
+        mock_ledger_integrity.return_value = []
         mock_safe_mode.return_value = {
             **_STABLE_SAFE_MODE,
             "ai_generation": {"unstable": True, "reason": "real failure", "since": "t", "triggered_by": "system"},
@@ -313,6 +319,16 @@ class TestRecordIncident(unittest.TestCase):
         finding = {"area": "customer_risk:pipeline", "severity": "informational", "detail": "no data", "evidence": {}, "data_available": False}
         result = rm.record_incident(finding, incidents_path=self.path)
         self.assertIsNone(result)
+
+    def test_a_real_ledger_integrity_drift_gets_the_real_root_cause_template(self):
+        finding = _finding("ledger_integrity:decisions.jsonl", "critical",
+                           detail="ledger content drift: baselined prefix no longer matches",
+                           evidence={"path": "x", "status": "DRIFT"})
+        record = rm.record_incident(finding, incidents_path=self.path)
+        self.assertIsNotNone(record)
+        self.assertIn("append-only ledger", record["root_cause"])
+        self.assertIn("restore_file_from_git", record["prevention_rule"])
+        self.assertIn("ledger_integrity", record["detection_rule"])
 
 
 class TestMatchingProposalId(unittest.TestCase):
