@@ -20,6 +20,7 @@ const { readJsonlEntries } = require('./lib/jsonl');
 // (see factory_loop.js's own comment on that guard).
 const { readLastGenerationRecord, getButterPrice } = require('./factory_loop');
 const jobQueue = require('./lib/job_queue');
+const telegramCommands = require('./lib/telegram_commands');
 
 require('dotenv').config();
 
@@ -7358,6 +7359,7 @@ let shuttingDown = false;
 function handleShutdownSignal(signal) {
   if (shuttingDown) return;
   shuttingDown = true;
+  telegramCommands.stop();
   // Real bug found writing this feature's own test suite: console.log()
   // immediately followed by process.exit() can drop the write when
   // stdout is piped (not a TTY) rather than a real terminal — Node's
@@ -7390,4 +7392,5 @@ if (process.env.__OPENCLAW_TEST_EMIT_SHUTDOWN_SIGNAL__) {
 app.listen(PORT, BIND_HOST, () => {
   console.log(`✅ Galaxy Forge — http://localhost:${PORT} (bound to ${BIND_HOST})`);
   console.log(`🔧 Static dir: ${path.join(__dirname)}`);
+  telegramCommands.start();
 });
