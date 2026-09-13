@@ -19,6 +19,7 @@ const { readJsonlEntries } = require('./lib/jsonl');
 // only happen inside main(), guarded by `if (require.main === module)`
 // (see factory_loop.js's own comment on that guard).
 const { readLastGenerationRecord, getButterPrice } = require('./factory_loop');
+const jobQueue = require('./lib/job_queue');
 
 require('dotenv').config();
 
@@ -2769,6 +2770,16 @@ function newActionJob(action) {
   };
   ACTION_JOBS.set(id, job);
   pruneActionJobs();
+  // Phase 1 — Persisted Job Queue: also append to disk so the job
+  // survives process restart. The in-memory Map remains the fast
+  // read path for the existing /api/v1/actions/:id polling endpoint.
+  try {
+    jobQueue.createJob(action, {
+      job_id: id,
+      provenance: 'mission_control',
+      risk: jobQueue.classifyRisk(action),
+    });
+  } catch { /* persistence failure must never break action dispatch */ }
   return job;
 }
 
@@ -2826,6 +2837,11 @@ function runPythonActionAsync(action, section, extraArgs = []) {
     if (status === 'completed') job.result = resultOrError; else job.error = resultOrError;
     job.progress.push({ at: job.finished_at, message: status });
     logServiceCall({ service: 'actions', action, job_id: job.id, event: 'finished', status, duration_ms: Date.parse(job.finished_at) - Date.parse(job.started_at) });
+    // Phase 1 — Persisted Job Queue: record completion/failure on disk
+    try {
+      if (status === 'completed') jobQueue.completeJob(job.id, resultOrError);
+      else jobQueue.failJob(job.id, resultOrError);
+    } catch { /* persistence failure must never break action dispatch */ }
   };
   python.on('error', (err) => finish('failed', err.message));
   python.on('close', () => {
@@ -2868,6 +2884,11 @@ function runFullCycleActionAsync(action) {
     if (status === 'completed') job.result = resultOrError; else job.error = resultOrError;
     job.progress.push({ at: job.finished_at, message: status });
     logServiceCall({ service: 'actions', action, job_id: job.id, event: 'finished', status, duration_ms: Date.parse(job.finished_at) - Date.parse(job.started_at) });
+    // Phase 1 — Persisted Job Queue: record completion/failure on disk
+    try {
+      if (status === 'completed') jobQueue.completeJob(job.id, resultOrError);
+      else jobQueue.failJob(job.id, resultOrError);
+    } catch { /* persistence failure must never break action dispatch */ }
   };
   python.on('error', (err) => finish('failed', err.message));
   python.on('close', async () => {
@@ -2906,11 +2927,15 @@ async function runActionSync(action, fn, req) {
     job.result = result;
     job.finished_at = new Date().toISOString();
     logServiceCall({ service: 'actions', action, job_id: job.id, event: 'finished', status: 'completed', duration_ms: Date.parse(job.finished_at) - Date.parse(job.started_at) });
+    // Phase 1 — Persisted Job Queue: record completion on disk
+    try { jobQueue.completeJob(job.id, result); } catch { /* must never break action dispatch */ }
   } catch (err) {
     job.status = 'failed';
     job.error = err.message;
     job.finished_at = new Date().toISOString();
     logServiceCall({ service: 'actions', action, job_id: job.id, event: 'finished', status: 'failed', error: err.message });
+    // Phase 1 — Persisted Job Queue: record failure on disk
+    try { jobQueue.failJob(job.id, err.message); } catch { /* must never break action dispatch */ }
   }
   return job;
 }
