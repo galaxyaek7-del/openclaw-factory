@@ -30,6 +30,15 @@ __pycache__/
 books/regression_test_draft_with_content.pdf
 books/covers/regression_test_draft_with_content_cover.png
 
+# Commercial evidence audit (2026-09-24): this repo is served publicly via
+# GitHub Pages (founder-enabled), and 21 paid-product PDFs under books/ are
+# tracked, hence downloadable free by URL-guess — bypassing Gumroad checkout
+# entirely. Tracked files stay tracked (history rewrite is a founder
+# decision, never done autonomously); this stops the bleed for every future
+# product PDF. XLSX trackers were never tracked (verified 0) and stay that
+# way via the same rule.
+books/*.pdf
+
 # Real customer PII (name/email/company/description) and auth secrets --
 # unlike this repo's internal business data (decisions.jsonl, finance_data.json,
 # etc., which ARE committed by convention), these must never land in git.
