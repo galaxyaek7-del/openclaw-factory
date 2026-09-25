@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://galaxyaek7-del.github.io/openclaw-factory/sitemap.xml
