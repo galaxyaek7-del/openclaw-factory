@@ -181,16 +181,16 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
       <div class="brand-name">Galaxy Forge</div>
     </a>
     <nav class="nav-links">
-      <a href="/site/solutions.html">Solutions</a>
-      <a href="/site/compare.html">Compare</a>
-      <a href="/site/guides.html">Guides</a>
-      <a href="/site/recommended.html">Recommended</a>
-      <a href="/site/about.html">About</a>
-      <a href="/site/contact.html">Contact</a>
+      <a href="solutions.html">Solutions</a>
+      <a href="compare.html">Compare</a>
+      <a href="guides.html">Guides</a>
+      <a href="recommended.html">Recommended</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
       <a href="/trust/index.html">Trust</a>
-      <a href="/site/login.html">Sign in</a>
+      <a href="login.html">Sign in</a>
     </nav>
-    <a href="/site/solutions.html" class="nav-cta">Find the right solution</a>
+    <a href="solutions.html" class="nav-cta">Find the right solution</a>
   </div>
 </header>
 
@@ -202,8 +202,8 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
       <h1>Discover better solutions for real business problems. <em>Backed by evidence, not sponsorship.</em></h1>
       <p class="lede">Galaxy Forge helps businesses and professionals find, evaluate, and choose better digital solutions — automation, creative tools, e-commerce platforms, and more — every recommendation independently verified against official sources, never ranked by who pays the highest commission. We also build our own AI-powered software, but only after the same evidence bar clears.</p>
       <div class="hero-ctas">
-        <a href="/site/solutions.html" class="btn btn-primary">Find the right solution →</a>
-        <a href="/site/recommended.html" class="btn btn-ghost">Explore solutions</a>
+        <a href="solutions.html" class="btn btn-primary">Find the right solution →</a>
+        <a href="recommended.html" class="btn btn-ghost">Explore solutions</a>
       </div>
       <div class="proof-strip">
         <div class="proof-item"><div class="num">10</div><div class="label">named acceptance conditions every opportunity must clear before we build it</div></div>
@@ -370,7 +370,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
       </div>
       <div class="support-panel">
         <div class="request-notes">
-          <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Track your own request first.</strong> <a href="/site/status.html" style="color:var(--cool);">Order tracking</a> answers most status questions instantly, without waiting on a reply.</p></div>
+          <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Track your own request first.</strong> <a href="status.html" style="color:var(--cool);">Order tracking</a> answers most status questions instantly, without waiting on a reply.</p></div>
           <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Real triage.</strong> Every ticket is logged and reviewed by a real person — see our <a href="/trust/incident-disclosure-policy.html" style="color:var(--cool);">Incident Disclosure Policy</a> for how we handle anything serious.</p></div>
         </div>
         <form class="support-form" id="supportForm">
@@ -400,15 +400,15 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
       <div class="footer-links">
         <div class="footer-col">
           <h4>Discover</h4>
-          <a href="/site/solutions.html">Solutions</a>
-          <a href="/site/compare.html">Compare</a>
-          <a href="/site/guides.html">Guides</a>
-          <a href="/site/recommended.html">Recommended</a>
+          <a href="solutions.html">Solutions</a>
+          <a href="compare.html">Compare</a>
+          <a href="guides.html">Guides</a>
+          <a href="recommended.html">Recommended</a>
         </div>
         <div class="footer-col">
           <h4>Company</h4>
-          <a href="/site/about.html">About</a>
-          <a href="/site/contact.html">Contact</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
           <a href="#request">Request a custom product</a>
         </div>
         <div class="footer-col">
@@ -421,8 +421,8 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
         </div>
         <div class="footer-col">
           <h4>Support</h4>
-          <a href="/site/contact.html">Submit a ticket</a>
-          <a href="/site/status.html">Track your request</a>
+          <a href="contact.html">Submit a ticket</a>
+          <a href="status.html">Track your request</a>
         </div>
       </div>
     </div>
@@ -606,7 +606,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
         }
         var requestId = res.body.request_id;
         statusEl.innerHTML = 'Request received and already running through our real evaluation gate. '
-          + (requestId ? 'Track it live: <a href="/site/status.html?id=' + encodeURIComponent(requestId) + '">' + requestId + '</a> — bookmark this link, it\'s the only way back to your status.' : 'A real person will review it and reply by email.');
+          + (requestId ? 'Track it live: <a href="status.html?id=' + encodeURIComponent(requestId) + '">' + requestId + '</a> — bookmark this link, it\'s the only way back to your status.' : 'A real person will review it and reply by email.');
         statusEl.className = 'success';
         form.reset();
       })

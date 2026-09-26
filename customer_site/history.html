@@ -59,11 +59,11 @@ main{padding:3.5rem 0 5rem;}
 
 <header>
   <div class="nav">
-    <a href="/site/" class="brand">
+    <a href="index.html" class="brand">
       <div class="brand-mark">GF</div>
       <div class="brand-name">Galaxy Forge</div>
     </a>
-    <a href="/site/" class="nav-cta">← Back to site</a>
+    <a href="index.html" class="nav-cta">← Back to site</a>
   </div>
 </header>
 
@@ -73,8 +73,8 @@ main{padding:3.5rem 0 5rem;}
     <h2 style="margin-bottom:1.5rem;">Your requests</h2>
 
     <div id="list"></div>
-    <div id="empty">No requests yet — <a href="/site/#request" style="color:var(--cool);">submit your first one</a>.</div>
-    <div id="signedOut">Please <a href="/site/login.html" style="color:var(--cool);">sign in</a> to see your order history.</div>
+    <div id="empty">No requests yet — <a href="index.html#request" style="color:var(--cool);">submit your first one</a>.</div>
+    <div id="signedOut">Please <a href="login.html" style="color:var(--cool);">sign in</a> to see your order history.</div>
     <div id="loadError"></div>
   </div>
 </main>
@@ -122,7 +122,7 @@ main{padding:3.5rem 0 5rem;}
         meta.textContent = r.request_id + ' · submitted ' + fmtTime(r.submitted_at);
         var link = document.createElement('a');
         link.className = 'btn';
-        link.href = '/site/status.html?id=' + encodeURIComponent(r.request_id);
+        link.href = 'status.html?id=' + encodeURIComponent(r.request_id);
         link.textContent = 'View status →';
         card.appendChild(row);
         card.appendChild(meta);
