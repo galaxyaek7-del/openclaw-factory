@@ -53,7 +53,9 @@ def main():
     if not os.path.isfile(INBOX):
         return fail("inbox empty: paste ONLY the content token into .gsc_inbox/token.txt, then re-run")
     with open(INBOX, "r", encoding="utf-8") as fh:
-        token = fh.read().strip()
+        raw_inbox = fh.read().strip()
+    m = re.search(r'content="([^"]+)"', raw_inbox)
+    token = m.group(1).strip() if m else raw_inbox
     if not TOKEN_RE.match(token):
         return fail("token format invalid (expected 16-128 chars A-Za-z0-9_-)")
     for pat in SECRET_PATTERNS:
