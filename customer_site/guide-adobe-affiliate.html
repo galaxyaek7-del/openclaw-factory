@@ -36,6 +36,8 @@ p{margin:0 0 1rem}
 .status.warn{color:var(--warn);border-color:rgba(217,164,65,.4)}
 footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(--ink-faint);font-size:.8rem}
 </style>
+    <link rel="canonical" href="https://galaxyaek7-del.github.io/openclaw-factory/customer_site/guide-adobe-affiliate.html">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/guide-adobe-affiliate.html", "name": "Adobe affiliate: what to know before choosing", "publisher": {"@type": "Organization", "name": "Galaxy Forge"}}</script>
 </head>
 <body>
 <header>
@@ -56,30 +58,15 @@ footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(-
 </main>
 <footer>Galaxy Forge · 2026 · Content generated from verified program data; affiliate links activate only after founder approval.</footer>
 <script>
-// Privacy-minimal page-view beacon (Evidence Chain + Attribution phase,
-// 2026-08-17, extending the 2026-08-15 Autonomous Enterprise Directive
-// gap #2 beacon): records ONE real page view via the existing public
-// /api/page-view route (click_tracking.record_attributed_page_view) and
-// forwards the visitor's own URL-query UTM fields (utm_source/utm_medium/
-// utm_campaign/utm_content) when present. Reads ONLY the URL query the
-// visitor themselves arrived with -- no cookies, no fingerprinting, no
-// session reconstruction, no third party. Sends only what exists; absent
-// fields are omitted, never guessed.
+// Privacy-minimal page-view beacon (Autonomous Enterprise Directive gap #2,
+// 2026-08-15): records ONE real page view via the existing public
+// /api/page-view endpoint (click_tracking.record_page_view). Sends only the
+// page id + referrer -- no cookies, no fingerprinting, no third party.
 try {
-  var __att = {};
-  try {
-    var __qs = new URLSearchParams(window.location.search);
-    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) {
-      var v = __qs.get(k);
-      if (v) __att[k] = v;
-    });
-  } catch (e2) {}
-  var __body = { page_id: 'guide-adobe-affiliate' };
-  Object.keys(__att).forEach(function (k) { __body[k] = __att[k]; });
   fetch('/api/page-view', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(__body),
+    body: JSON.stringify({ page_id: 'guide-adobe-affiliate' }),
     keepalive: true,
   }).catch(function () {});
 } catch (e) {}

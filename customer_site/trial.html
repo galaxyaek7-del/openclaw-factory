@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TRIAL — Galaxy Forge (Simulation Only)</title>
+<meta name="description" content="Galaxy Forge trial sandbox — simulated only. No real money, no publishing, no customer contact, no financial ledger modifications.">
+<link rel="canonical" href="https://galaxyaek7-del.github.io/openclaw-factory/customer_site/trial.html">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23d97a3f'/%3E%3Cstop offset='1' stop-color='%238a4a1f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-family='IBM Plex Sans,Arial,sans-serif' font-weight='800' font-size='14' fill='%231a0e05' text-anchor='middle'%3EGF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c11; --bg-elev:#12151d; --bg-card:#161a24; --bg-hover:#1c212e;
+  --border:#242938; --border-soft:#1a1e2a;
+  --ink:#eef0f6; --ink-dim:#9198ad; --ink-faint:#5c6379;
+  --accent:#d97a3f; --accent-soft:#3a2818; --accent-ink:#f0a468;
+  --cool:#5b7fd9; --cool-soft:#182238;
+  --good:#4a9d6f; --good-soft:#132a1e;
+  --warn:#c9a84c; --warn-soft:#332e14;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  --radius:12px;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased;}
+a{color:var(--cool);}
+.wrap{max-width:1120px; margin:0 auto; padding:0 1.5rem;}
+header{position:sticky; top:0; z-index:50; background:rgba(10,12,17,.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--border-soft);}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; max-width:1120px; margin:0 auto;}
+.brand{display:flex; align-items:center; gap:.6rem; text-decoration:none; color:var(--ink);}
+.brand-mark{width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg, var(--accent), #8a4a1f); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.9rem; color:#1a0e05;}
+.brand-name{font-weight:700; font-size:1.02rem;}
+.nav-links{display:flex; gap:1.5rem; font-size:.85rem; color:var(--ink-dim);}
+.nav-links a{text-decoration:none; color:var(--ink-dim);} .nav-links a:hover{color:var(--ink);}
+.nav-links a.active{color:var(--warn);}
+.trial-banner{background:var(--warn-soft); border:1px solid rgba(201,168,76,.35); color:var(--warn); text-align:center; padding:.75rem 1rem; font-family:var(--mono); font-size:.8rem; letter-spacing:.04em; }
+.trial-banner strong{color:#f0d27a;}
+.hero{padding:3.5rem 0 2rem;}
+.eyebrow{display:inline-flex; align-items:center; gap:.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--warn); background:var(--warn-soft); border:1px solid rgba(201,168,76,.3); padding:.4rem .8rem; border-radius:99px; margin-bottom:1rem;}
+.hero h1{font-size:clamp(1.9rem, 4vw, 2.6rem); margin:0;}
+.hero h1 em{font-style:normal; color:var(--warn);}
+.hero p.lede{color:var(--ink-dim); font-size:1.05rem; margin-top:1rem; max-width:720px;}
+section{padding:2.2rem 0; border-top:1px solid var(--border-soft);}
+section h2{font-size:1.25rem; margin:0 0 .6rem;}
+section p.desc{color:var(--ink-dim); font-size:.95rem; margin:0 0 1.2rem;}
+.card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.4rem;}
+.mono{font-family:var(--mono); font-size:.78rem; color:var(--ink-faint); word-break:break-all;}
+.grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.2rem;}
+.badge{display:inline-flex; align-items:center; gap:.4rem; font-family:var(--mono); font-size:.7rem; padding:.35rem .6rem; border-radius:99px; font-weight:600; letter-spacing:.04em;}
+.badge-sim{background:var(--warn-soft); color:var(--warn); border:1px solid rgba(201,168,76,.35);}
+.badge-ok{background:var(--good-soft); color:var(--good); border:1px solid rgba(74,157,111,.35);}
+.badge-off{background:#2e1615; color:#c9524f; border:1px solid rgba(201,82,79,.25);}
+.field{display:flex; flex-direction:column; gap:.35rem;}
+.field label{font-size:.8rem; color:var(--ink-dim); font-weight:500;}
+.field input, .field select{font-family:var(--sans); font-size:.92rem; background:var(--bg-elev); border:1px solid var(--border); color:var(--ink); border-radius:8px; padding:.65rem .8rem; width:100%;}
+.field input:focus, .field select:focus{outline:none; border-color:var(--accent);}
+.btn{font-family:var(--sans); font-size:.88rem; font-weight:600; padding:.7rem 1.1rem; border-radius:8px; cursor:pointer; border:1px solid transparent; display:inline-flex; align-items:center; gap:.5rem; text-decoration:none;}
+.btn-warn{background:var(--warn); color:#1a1505; border-color:var(--warn);}
+.btn-ghost{background:transparent; color:var(--ink); border-color:var(--border);}
+.btn-ghost:hover{border-color:var(--warn); color:var(--warn);}
+.btn-danger{background:#2e1615; color:#c9524f; border-color:rgba(201,82,79,.35);}
+.status-line{font-family:var(--mono); font-size:.8rem; padding:.6rem .8rem; border-radius:8px; display:none; margin-top:.8rem;}
+.status-line.ok{display:block; background:var(--good-soft); color:var(--good);}
+.status-line.err{display:block; background:#2e1615; color:#c9524f;}
+.status-line.info{display:block; background:var(--cool-soft); color:var(--cool);}
+.catalog-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem; margin-top:1rem;}
+.product-card{background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:10px; padding:1.2rem; display:flex; flex-direction:column; gap:.6rem;}
+.product-card h3{font-size:1rem; margin:0;}
+.product-card .price{font-family:var(--mono); font-size:1.2rem; font-weight:600;}
+.product-card .meta{font-family:var(--mono); font-size:.7rem; color:var(--ink-faint);}
+.events-list{display:flex; flex-direction:column; gap:.6rem; max-height:380px; overflow-y:auto;}
+.event{font-family:var(--mono); font-size:.75rem; background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:8px; padding:.7rem .9rem; word-break:break-all;}
+footer{border-top:1px solid var(--border-soft); padding:2rem 0; margin-top:2rem; font-size:.78rem; color:var(--ink-faint);}
+@media (max-width:600px){ .nav-links{display:none;} }
+</style>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/trial.html", "name": "TRIAL — Galaxy Forge (Simulation Only)", "publisher": {"@type": "Organization", "name": "Galaxy Forge"}}</script>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <a href="/site/" class="brand"><div class="brand-mark">GF</div><div class="brand-name">Galaxy Forge</div></a>
+    <nav class="nav-links">
+      <a href="/site/solutions.html">Solutions</a>
+      <a href="/site/compare.html">Compare</a>
+      <a href="/site/guides.html">Guides</a>
+      <a href="/site/recommended.html">Recommended</a>
+      <a href="/site/about.html">About</a>
+      <a href="/site/trial.html" class="active">Trial</a>
+    </nav>
+    <a href="/site/" class="brand" style="font-size:.8rem; color:var(--ink-dim);">Back to site →</a>
+  </div>
+</header>
+<div class="trial-banner">
+  <strong>⚠ TRIAL MODE — SIMULATION ONLY</strong> &nbsp;·&nbsp; No real money · No publishing · No customer contact · No financial ledger writes · All data in <span style="color:var(--warn);">data/trial_events.jsonl</span> only
+</div>
+
+<main class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Isolated trial sandbox</div>
+    <h1>Try Galaxy Forge <em>without touching anything real.</em></h1>
+    <p class="lede">This page and every button on it are backed exclusively by <code style="font-family:var(--mono); background:var(--bg-card); padding:.15rem .4rem; border-radius:6px;">/api/trial/*</code>. Nothing here writes to <code style="font-family:var(--mono); background:var(--bg-card); padding:.15rem .4rem; border-radius:6px;">finance_data.json</code>, <code style="font-family:var(--mono); background:var(--bg-card); padding:.15rem .4rem; border-radius:6px;">config/reality.json</code>, or <code style="font-family:var(--mono); background:var(--bg-card); padding:.15rem .4rem; border-radius:6px;">data/sales_ledger.jsonl</code>. No publishing, no Paddle checkout, no Telegram message will ever be triggered from this surface.</p>
+    <div style="display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1rem;">
+      <span class="badge badge-sim">SIMULATION</span>
+      <span class="badge badge-off">PUBLISHING DISABLED</span>
+      <span class="badge badge-off">PAYMENTS DISABLED</span>
+      <span class="badge badge-off">CUSTOMER CONTACT DISABLED</span>
+      <span class="badge badge-ok">ISOLATED LEDGER ONLY</span>
+    </div>
+  </div>
+
+  <section id="isolation">
+    <h2>Isolation guarantees</h2>
+    <p class="desc">Verified by automated tests (<code style="font-family:var(--mono);">tests/test_trial_isolation.js</code>) — every <code style="font-family:var(--mono);">/api/trial/*</code> endpoint is asserted to never import or write the real financial modules.</p>
+    <div class="grid">
+      <div class="card">
+        <strong style="color:var(--good);">✓ Real financial files untouched</strong>
+        <p style="color:var(--ink-dim); font-size:.88rem; margin:.6rem 0 0;">finance_data.json — real revenue ledger<br>config/reality.json — ground-truth business state<br>data/sales_ledger.jsonl — publish/sale ledger</p>
+        <div class="mono" style="margin-top:.6rem;">Trial writes only to data/trial_events.jsonl</div>
+      </div>
+      <div class="card">
+        <strong style="color:var(--good);">✓ External systems disabled</strong>
+        <p style="color:var(--ink-dim); font-size:.88rem; margin:.6rem 0 0;">Publishing: no distributor.py / channel publish<br>Payments: no Paddle checkout / charge<br>Contact: no Telegram / email send<br>Spend: no real transaction</p>
+        <div class="mono" style="margin-top:.6rem;">Reuses Express + fs only (no duplicate infra)</div>
+      </div>
+      <div class="card">
+        <strong>Existing architecture, no duplicates</strong>
+        <p style="color:var(--ink-dim); font-size:.88rem; margin:.6rem 0 0;">Trial reuses: Express routing, same CORS/JSON middleware, same static serving (<code style="font-family:var(--mono);">/site</code>), same rate-limit pattern (<code style="font-family:var(--mono);">makeSlidingWindowRateLimiter</code>), and the same real <code style="font-family:var(--mono);">paddle_products.json</code> catalog as source (projected as simulated, never charged).</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="status">
+    <h2>Live trial status</h2>
+    <p class="desc">Reads <code style="font-family:var(--mono);">GET /api/trial/status</code> — proves isolation is active right now.</p>
+    <div class="card">
+      <div id="statusBody" class="mono">Loading trial status…</div>
+      <div id="statusBadges" style="display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.8rem;"></div>
+    </div>
+  </section>
+
+  <section id="catalog">
+    <h2>Simulated catalog</h2>
+    <p class="desc">Reads <code style="font-family:var(--mono);">GET /api/trial/catalog</code> — same real <code style="font-family:var(--mono);">paddle_products.json</code> projected as <strong>SIMULATED</strong> products. No checkout, no Paddle call.</p>
+    <div id="catalogStatus" class="mono">Loading simulated catalog…</div>
+    <div class="catalog-grid" id="catalogGrid"></div>
+  </section>
+
+  <section id="simulate">
+    <h2>Simulate a purchase (trial only)</h2>
+    <p class="desc">Posts to <code style="font-family:var(--mono);">POST /api/trial/simulate-purchase</code> — writes only to <code style="font-family:var(--mono);">data/trial_events.jsonl</code>. No Paddle, no Telegram, no finance_data.json.</p>
+    <div class="card" style="max-width:560px;">
+      <div class="field"><label for="t-product">Product</label><select id="t-product"><option value="">— select a simulated product —</option></select></div>
+      <div class="field"><label for="t-email">Email (optional, simulated only)</label><input id="t-email" type="email" placeholder="trial@example.com" maxlength="200"></div>
+      <button class="btn btn-warn" id="t-purchaseBtn" style="margin-top:.8rem;">Simulate purchase →</button>
+      <div id="t-purchaseStatus" class="status-line"></div>
+    </div>
+  </section>
+
+  <section id="events">
+    <h2>Trial events</h2>
+    <p class="desc">Reads <code style="font-family:var(--mono);">GET /api/trial/events</code> — only the isolated trial ledger. Real sales ledger is never queried here.</p>
+    <div class="card">
+      <div style="display:flex; gap:.6rem; flex-wrap:wrap; margin-bottom:1rem;">
+        <button class="btn btn-ghost" id="refreshEvents">Refresh events</button>
+        <button class="btn btn-danger" id="resetEvents">Reset trial ledger (isolated only)</button>
+      </div>
+      <div id="eventsBody" class="events-list"><div class="mono">Loading trial events…</div></div>
+    </div>
+  </section>
+
+  <section id="simulate-generic">
+    <h2>Generic trial event</h2>
+    <p class="desc">Posts to <code style="font-family:var(--mono);">POST /api/trial/simulate</code> — any simulated event type, still isolated.</p>
+    <div class="card" style="max-width:560px;">
+      <div class="field"><label for="g-type">Event type</label><input id="g-type" type="text" placeholder="trial_generic" maxlength="100"></div>
+      <div class="field"><label for="g-payload">Payload (JSON, optional)</label><input id="g-payload" type="text" placeholder='{"note":"hello"}' maxlength="500"></div>
+      <button class="btn btn-ghost" id="g-sendBtn">Send simulated event</button>
+      <div id="g-status" class="status-line"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer><div class="wrap">© <span id="year"></span> Galaxy Forge — TRIAL MODE. Every figure on this page is <strong>simulated</strong> and never becomes real revenue. Real site: <a href="/site/">/site/</a> · <a href="/site/about.html">About</a> · <a href="/trust/index.html">Trust</a></div></footer>
+
+<script>
+(function(){
+"use strict";
+document.getElementById('year').textContent = new Date().getFullYear();
+function money(n){ return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:2}); }
+function showStatus(el, msg, kind){ el.textContent = msg; el.className = 'status-line ' + kind; }
+
+function loadStatus(){
+  fetch('/api/trial/status').then(function(r){ return r.json(); }).then(function(body){
+    var el = document.getElementById('statusBody');
+    el.textContent = JSON.stringify(body, null, 2);
+    var badges = document.getElementById('statusBadges');
+    badges.innerHTML = '';
+    var defs = [
+      { label: 'ISOLATION: ' + (body.isolation ? 'ACTIVE' : 'UNKNOWN'), ok: !!body.isolation },
+      { label: 'MODE: ' + (body.mode || 'UNKNOWN'), ok: body.mode === 'SIMULATION' },
+      { label: 'LEDGER: ' + (body.ledger || 'UNKNOWN'), ok: true },
+      { label: 'EVENTS: ' + (body.trial_event_count != null ? body.trial_event_count : '?'), ok: true }
+    ];
+    defs.forEach(function(d){
+      var s = document.createElement('span');
+      s.className = 'badge ' + (d.ok ? 'badge-ok' : 'badge-off');
+      s.textContent = d.label;
+      badges.appendChild(s);
+    });
+  }).catch(function(){ document.getElementById('statusBody').textContent = 'Trial status temporarily unavailable.'; });
+}
+
+function loadCatalog(){
+  fetch('/api/trial/catalog').then(function(r){ return r.json(); }).then(function(body){
+    var grid = document.getElementById('catalogGrid');
+    var status = document.getElementById('catalogStatus');
+    var products = (body && body.products) || [];
+    grid.innerHTML = '';
+    if (!products.length){
+      status.textContent = 'No simulated products — real paddle_products.json is empty (honest). Add a real product there and it will appear here as SIMULATED.';
+      // also populate select as empty
+      return;
+    }
+    status.style.display = 'none';
+    var sel = document.getElementById('t-product');
+    sel.innerHTML = '<option value="">— select a simulated product —</option>';
+    products.forEach(function(p){
+      var card = document.createElement('div');
+      card.className = 'product-card';
+      var h = document.createElement('h3'); h.textContent = p.title || 'Untitled';
+      var price = document.createElement('div'); price.className = 'price'; price.textContent = money(p.price) + ' — SIMULATED';
+      var meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = 'product_id: ' + (p.product_id || 'n/a') + ' · SIMULATION · never charged';
+      var badge = document.createElement('div'); badge.innerHTML = '<span class="badge badge-sim">SIMULATED — NOT A REAL PURCHASE</span>';
+      card.appendChild(h); card.appendChild(price); card.appendChild(meta); card.appendChild(badge);
+      grid.appendChild(card);
+      var opt = document.createElement('option'); opt.value = p.product_id; opt.textContent = (p.title || p.product_id) + ' — ' + money(p.price);
+      sel.appendChild(opt);
+    });
+  }).catch(function(){ document.getElementById('catalogStatus').textContent = 'Simulated catalog temporarily unavailable.'; });
+}
+
+function loadEvents(){
+  fetch('/api/trial/events?limit=50').then(function(r){ return r.json(); }).then(function(body){
+    var el = document.getElementById('eventsBody');
+    el.innerHTML = '';
+    var events = (body && body.events) || [];
+    if (!events.length){
+      var m = document.createElement('div'); m.className = 'mono'; m.textContent = 'No trial events yet — simulate a purchase above to see one here. (Isolated ledger: data/trial_events.jsonl)';
+      el.appendChild(m); return;
+    }
+    events.forEach(function(ev){
+      var d = document.createElement('div'); d.className = 'event';
+      d.textContent = JSON.stringify(ev);
+      el.appendChild(d);
+    });
+  }).catch(function(){ document.getElementById('eventsBody').textContent = 'Trial events temporarily unavailable.'; });
+}
+
+document.getElementById('t-purchaseBtn').addEventListener('click', function(){
+  var btn = document.getElementById('t-purchaseBtn');
+  var status = document.getElementById('t-purchaseStatus');
+  var productId = document.getElementById('t-product').value.trim();
+  var email = document.getElementById('t-email').value.trim();
+  if (!productId){ showStatus(status, 'Select a simulated product first.', 'err'); return; }
+  btn.disabled = true; btn.textContent = 'Simulating…';
+  fetch('/api/trial/simulate-purchase', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ product_id: productId, email: email || undefined })
+  }).then(function(r){ return r.json().then(function(b){ return { ok:r.ok, body:b }; }); }).then(function(res){
+    if (!res.ok || res.body.success === false) throw new Error((res.body && res.body.error) || 'Simulation failed');
+    showStatus(status, res.body.message || 'Simulated — no real payment.', 'ok');
+    loadEvents(); loadStatus();
+  }).catch(function(err){ showStatus(status, err.message, 'err'); })
+  .finally(function(){ btn.disabled=false; btn.textContent='Simulate purchase →'; });
+});
+
+document.getElementById('g-sendBtn').addEventListener('click', function(){
+  var btn = document.getElementById('g-sendBtn');
+  var status = document.getElementById('g-status');
+  var type = document.getElementById('g-type').value.trim() || 'trial_generic';
+  var raw = document.getElementById('g-payload').value.trim();
+  var payload = null;
+  if (raw){ try{ payload = JSON.parse(raw); } catch(e){ showStatus(status, 'Payload must be valid JSON (or leave empty).', 'err'); return; } }
+  btn.disabled = true;
+  fetch('/api/trial/simulate', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ event_type: type, payload: payload })
+  }).then(function(r){ return r.json().then(function(b){ return { ok:r.ok, body:b }; }); }).then(function(res){
+    if (!res.ok || res.body.success === false) throw new Error((res.body && res.body.error) || 'failed');
+    showStatus(status, 'Simulated event recorded: ' + type, 'ok');
+    loadEvents();
+  }).catch(function(err){ showStatus(status, err.message, 'err'); })
+  .finally(function(){ btn.disabled=false; });
+});
+
+document.getElementById('refreshEvents').addEventListener('click', loadEvents);
+document.getElementById('resetEvents').addEventListener('click', function(){
+  if (!confirm('Reset trial ledger? This clears ONLY data/trial_events.jsonl — no real financial data will be touched.')) return;
+  fetch('/api/trial/reset', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' })
+    .then(function(r){ return r.json(); }).then(function(){
+      loadEvents(); loadStatus();
+    });
+});
+
+loadStatus(); loadCatalog(); loadEvents();
+})();
+</script>
+</body>
+</html>

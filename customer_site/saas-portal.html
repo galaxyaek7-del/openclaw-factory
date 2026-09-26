@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galaxy Forge — SaaS Portal — Turn Scripts into Global Recurring Subscriptions</title>
+<meta name="description" content="Convert your scripts, automations, and tools into global recurring subscriptions. Upload, package, price, and launch as SaaS — Paddle-powered, worldwide.">
+<link rel="canonical" href="https://galaxyaek7-del.github.io/openclaw-factory/customer_site/saas-portal.html">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23d97a3f'/%3E%3Cstop offset='1' stop-color='%238a4a1f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-family='IBM Plex Sans,Arial,sans-serif' font-weight='800' font-size='14' fill='%231a0e05' text-anchor='middle'%3EGF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c11; --bg-elev:#12151d; --bg-card:#161a24; --bg-hover:#1c212e;
+  --border:#242938; --border-soft:#1a1e2a;
+  --ink:#eef0f6; --ink-dim:#9198ad; --ink-faint:#5c6379;
+  --accent:#d97a3f; --accent-soft:#3a2818; --accent-ink:#f0a468;
+  --cool:#5b7fd9; --cool-soft:#182238;
+  --good:#4a9d6f; --good-soft:#132a1e;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  --radius:12px;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; line-height:1.6; overflow-x:hidden;}
+a{color:inherit;}
+.wrap{max-width:1120px; margin:0 auto; padding:0 1.5rem;}
+header{position:sticky; top:0; z-index:50; background:rgba(10,12,17,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--border-soft);}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; max-width:1120px; margin:0 auto;}
+.brand{display:flex; align-items:center; gap:.6rem; text-decoration:none;}
+.brand-mark{width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg, var(--accent), #8a4a1f); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.9rem; color:#1a0e05;}
+.brand-name{font-weight:700; font-size:1.02rem; color:var(--ink);}
+.nav-links{display:flex; gap:1.4rem; font-size:.85rem; color:var(--ink-dim);}
+.nav-links a{text-decoration:none; transition:color .15s;}
+.nav-links a:hover{color:var(--ink);}
+.nav-cta{font-family:var(--sans); font-size:.85rem; font-weight:600; padding:.55rem 1.1rem; border-radius:8px; background:var(--accent); color:#1a0e05; text-decoration:none; border:1px solid var(--accent);}
+.hero{position:relative; padding:5.5rem 0 4rem; overflow:hidden;}
+.hero::before{content:""; position:absolute; top:-20%; left:50%; transform:translateX(-50%); width:900px; height:900px; background:radial-gradient(circle, rgba(217,122,63,.14) 0%, rgba(91,127,217,.06) 45%, transparent 70%); pointer-events:none;}
+.eyebrow{display:inline-flex; align-items:center; gap:.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); background:var(--accent-soft); border:1px solid rgba(217,122,63,.3); padding:.4rem .8rem; border-radius:99px; margin-bottom:1.5rem;}
+.hero h1{font-size:clamp(2rem, 5vw, 3.2rem); line-height:1.08; max-width:820px;}
+.hero h1 em{font-style:normal; color:var(--accent-ink);}
+.hero p.lede{font-size:1.1rem; color:var(--ink-dim); max-width:620px; margin-top:1.2rem;}
+.hero-ctas{display:flex; gap:.9rem; margin-top:2rem; flex-wrap:wrap;}
+.btn{font-family:var(--sans); font-size:.92rem; font-weight:600; padding:.85rem 1.5rem; border-radius:9px; text-decoration:none; display:inline-flex; align-items:center; gap:.5rem; cursor:pointer; border:1px solid transparent; transition:transform .12s, background .15s;}
+.btn-primary{background:var(--accent); color:#1a0e05; border-color:var(--accent);}
+.btn-ghost{background:transparent; color:var(--ink); border-color:var(--border);}
+section{padding:4rem 0;}
+section.alt{background:var(--bg-elev); border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft);}
+.section-head{max-width:640px; margin-bottom:2.5rem;}
+.section-head h2{font-size:clamp(1.5rem, 3vw, 2rem);}
+.section-head p{color:var(--ink-dim); margin-top:.7rem;}
+.portal-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:2rem; align-items:start;}
+@media (max-width:860px){.portal-grid{grid-template-columns:1fr;}}
+.card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.6rem; display:flex; flex-direction:column; gap:1rem;}
+.card h3{font-size:1.05rem; margin:0;}
+.card p{color:var(--ink-dim); font-size:.92rem;}
+.field{display:flex; flex-direction:column; gap:.4rem;}
+.field label{font-size:.8rem; color:var(--ink-dim); font-weight:500;}
+.field input, .field textarea, .field select{font-family:var(--sans); font-size:.92rem; background:var(--bg-elev); border:1px solid var(--border); color:var(--ink); border-radius:8px; padding:.7rem .85rem; width:100%;}
+.field textarea{resize:vertical; min-height:90px;}
+.script-list{display:flex; flex-direction:column; gap:.8rem; max-height:320px; overflow-y:auto;}
+.script-item{background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:9px; padding:.9rem; display:flex; flex-direction:column; gap:.4rem;}
+.script-item .meta{font-family:var(--mono); font-size:.7rem; color:var(--ink-faint);}
+.script-item .actions{display:flex; gap:.6rem; margin-top:.4rem;}
+.badge{font-family:var(--mono); font-size:.68rem; padding:.2rem .5rem; border-radius:99px; border:1px solid var(--border); color:var(--ink-faint);}
+.badge-live{color:var(--good); border-color:var(--good); background:var(--good-soft);}
+.badge-draft{color:var(--ink-faint);}
+.pricing-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:.8rem;}
+.price-card{background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:9px; padding:1rem; text-align:center; cursor:pointer; transition:border-color .15s;}
+.price-card:hover{border-color:var(--accent);}
+.price-card.selected{border-color:var(--accent); background:var(--accent-soft);}
+.price-card .price{font-family:var(--mono); font-size:1.3rem; font-weight:600; color:var(--ink);}
+.price-card .interval{font-size:.72rem; color:var(--ink-faint);}
+.status{font-size:.86rem; padding:.7rem .9rem; border-radius:8px; display:none; margin-top:.8rem;}
+.status.success{display:block; background:var(--good-soft); color:var(--good);}
+.status.error{display:block; background:#2e1615; color:#c9524f;}
+.feature-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1.25rem;}
+.feature-card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:1.4rem; display:flex; flex-direction:column; gap:.6rem;}
+.feature-card h3{font-size:.95rem;}
+.feature-card p{font-size:.85rem; color:var(--ink-dim);}
+footer{border-top:1px solid var(--border-soft); padding:2.5rem 0; font-size:.8rem; color:var(--ink-faint);}
+</style>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/saas-portal.html", "name": "Galaxy Forge — SaaS Portal — Turn Scripts into Global Recurring Subscriptions", "publisher": {"@type": "Organization", "name": "Galaxy Forge"}}</script>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a href="/site/" class="brand"><div class="brand-mark">GF</div><div class="brand-name">Galaxy Forge</div></a>
+    <nav class="nav-links">
+      <a href="/site/saas-portal.html" style="color:var(--ink); font-weight:600;">SaaS Portal</a>
+      <a href="/site/solutions.html">Solutions</a>
+      <a href="/site/guides.html">Guides</a>
+      <a href="/trust/index.html">Trust</a>
+      <a href="/site/login.html">Sign in</a>
+    </nav>
+    <a href="#portal" class="nav-cta">Launch Portal</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow">● SaaS Portal — Scripts → Global Recurring Subscriptions</div>
+      <h1>Turn your scripts into <em>global recurring subscriptions.</em></h1>
+      <p class="lede">Upload any script, automation, or tool — package it as a hosted SaaS, price it globally, and launch as a Paddle-powered recurring subscription. One portal, worldwide billing, evidence-driven growth.</p>
+      <div class="hero-ctas">
+        <a href="#portal" class="btn btn-primary">Open SaaS Portal →</a>
+        <a href="/site/guides.html" class="btn btn-ghost">How it works</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="portal" class="alt">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>SaaS Portal — Script to Subscription</h2>
+        <p>Upload a script, define its SaaS wrapper, price it, and launch. Paddle handles global recurring billing (30+ currencies, tax, invoicing). Galaxy Forge handles evidence, QA, and distribution — you focus on the script.</p>
+      </div>
+      <div class="portal-grid">
+        <!-- Left: Script Management -->
+        <div class="card">
+          <h3>1. Your Scripts</h3>
+          <p>Upload .py, .js, .sh, or .zip. Each script becomes a versioned SaaS asset.</p>
+          <form id="scriptForm">
+            <div class="field"><label for="scriptName">Script name *</label><input id="scriptName" type="text" required maxlength="100" placeholder="e.g., Invoice Auto-Parser"></div>
+            <div class="field"><label for="scriptFile">Script file *</label><input id="scriptFile" type="file" accept=".py,.js,.sh,.zip,.json" required></div>
+            <div class="field"><label for="scriptDesc">What does it do? *</label><textarea id="scriptDesc" required maxlength="1000" placeholder="Describe the job this script automates — who is it for, what problem does it solve?"></textarea></div>
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Upload &amp; Analyze →</button>
+            <div id="scriptStatus" class="status"></div>
+          </form>
+          <div class="script-list" id="scriptList"></div>
+        </div>
+
+        <!-- Right: Subscription Builder -->
+        <div class="card">
+          <h3>2. Convert to Recurring Subscription</h3>
+          <p>Select a script, choose a global price, and launch as a Paddle recurring product.</p>
+          <div class="field"><label for="selectedScript">Selected script</label><select id="selectedScript"><option value="">— Select a script —</option></select></div>
+          <div class="field"><label>Global recurring price</label>
+            <div class="pricing-grid">
+              <div class="price-card" data-price="19" data-interval="month"><div class="price">$19</div><div class="interval">per month</div></div>
+              <div class="price-card selected" data-price="49" data-interval="month"><div class="price">$49</div><div class="interval">per month</div></div>
+              <div class="price-card" data-price="99" data-interval="month"><div class="price">$99</div><div class="interval">per month</div></div>
+              <div class="price-card" data-price="199" data-interval="month"><div class="price">$199</div><div class="interval">per month</div></div>
+            </div>
+          </div>
+          <div class="field"><label for="subInterval">Billing interval</label><select id="subInterval"><option value="month">Monthly — global recurring</option><option value="year">Yearly — 20% off (global)</option></select></div>
+          <div class="field"><label for="subName">Subscription product name *</label><input id="subName" type="text" placeholder="e.g., Invoice Parser Pro — Monthly"></div>
+          <button type="button" class="btn btn-primary" id="createSubBtn" style="width:100%; justify-content:center;">Create Global Subscription →</button>
+          <div id="subStatus" class="status"></div>
+          <div class="script-list" id="subList"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Why SaaS Portal?</h2>
+        <p>Not just hosting — evidence, QA, and global distribution built in.</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card"><h3>🌍 Global Recurring</h3><p>Paddle handles 30+ currencies, VAT, invoicing, dunning — you set one price, we handle the world.</p></div>
+        <div class="feature-card"><h3>📦 Script → SaaS Wrapper</h3><p>We package your script as a hosted endpoint (API + dashboard) — no infra to manage.</p></div>
+        <div class="feature-card"><h3>✅ Evidence-Driven QA</h3><p>Every script runs through the same 15-tool Quality Toolchain + Dual Inspection before it can be sold — `Gate-2` required.</p></div>
+        <div class="feature-card"><h3>🔒 Governed Launch</h3><p>Subscription creation is `PRODUCTION_AUTHORIZED = False` until `Gate-2` — no silent publishing.</p></div>
+        <div class="feature-card"><h3>📊 Attribution Built-In</h3><p>Every subscription is linked to `decision_id` → `ledger` → `PROOF_OF_PAYMENT` — real attribution, not guesswork.</p></div>
+        <div class="feature-card"><h3>🔄 Factory Learns</h3><p>Tool reliability (`factory_adaptation`) influences future `SaaS` generation — the factory improves with every script.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+    <div>© <span id="year"></span> Galaxy Forge — SaaS Portal (Paddle-powered, `Gate-2` required)</div>
+    <div><a href="/trust/privacy-policy.html" style="color:var(--ink-faint);">Privacy</a> · <a href="/trust/terms-of-service.html" style="color:var(--ink-faint);">Terms</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  document.getElementById('year').textContent = new Date().getFullYear();
+  let scripts = JSON.parse(localStorage.getItem('saas_scripts') || '[]');
+  let subs = JSON.parse(localStorage.getItem('saas_subs') || '[]');
+  let selectedPrice = 49, selectedInterval = 'month';
+
+  function save(){ localStorage.setItem('saas_scripts', JSON.stringify(scripts)); localStorage.setItem('saas_subs', JSON.stringify(subs)); }
+  function renderScripts(){
+    const list = document.getElementById('scriptList');
+    const sel = document.getElementById('selectedScript');
+    list.innerHTML = ''; sel.innerHTML = '<option value="">— Select a script —</option>';
+    if(!scripts.length){ list.innerHTML = '<p style="color:var(--ink-faint);font-size:.85rem;">No scripts yet — upload one above.</p>'; return; }
+    scripts.forEach(function(s){
+      const item = document.createElement('div'); item.className = 'script-item';
+      item.innerHTML = '<strong style="font-size:.92rem;">'+escapeHtml(s.name)+'</strong><div class="meta">id: '+s.id+' · '+s.size+' · '+new Date(s.uploadedAt).toLocaleDateString()+'</div><div style="font-size:.82rem;color:var(--ink-dim);">'+escapeHtml(s.desc.slice(0,120))+'</div><div class="actions"><span class="badge badge-draft">Draft — Gate-2 required</span><span class="badge">'+s.priceHint+'</span></div>';
+      list.appendChild(item);
+      const opt = document.createElement('option'); opt.value = s.id; opt.textContent = s.name + ' ('+s.id+')'; sel.appendChild(opt);
+    });
+  }
+  function renderSubs(){
+    const list = document.getElementById('subList');
+    list.innerHTML = '';
+    if(!subs.length){ list.innerHTML = '<p style="color:var(--ink-faint);font-size:.85rem;">No subscriptions yet — create one above.</p>'; return; }
+    subs.forEach(function(s){
+      const item = document.createElement('div'); item.className = 'script-item';
+      item.innerHTML = '<strong style="font-size:.92rem;">'+escapeHtml(s.name)+'</strong><div class="meta">subscription_id: '+s.id+' · $'+s.price+'/'+s.interval+' · Paddle product: '+s.paddleProductId+' · status: '+s.status+'</div><div style="font-size:.82rem;color:var(--ink-dim);">Source script: '+escapeHtml(s.scriptName)+'</div><div class="actions"><span class="badge '+(s.status==='live'?'badge-live':'badge-draft')+'">'+s.status+'</span><span class="badge">'+s.priceHint+'</span></div>';
+      list.appendChild(item);
+    });
+  }
+  function escapeHtml(str){ const d=document.createElement('div'); d.textContent=str; return d.innerHTML; }
+  function genId(prefix){ return prefix+'_'+Math.random().toString(36).slice(2,10); }
+
+  // Pricing selection
+  document.querySelectorAll('.price-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      document.querySelectorAll('.price-card').forEach(function(c){ c.classList.remove('selected'); });
+      card.classList.add('selected');
+      selectedPrice = parseInt(card.dataset.price,10);
+      selectedInterval = card.dataset.interval;
+      document.getElementById('subInterval').value = selectedInterval;
+    });
+  });
+  document.getElementById('subInterval').addEventListener('change', function(){ selectedInterval = this.value; });
+
+  // Script upload
+  document.getElementById('scriptForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = document.getElementById('scriptName').value.trim();
+    const fileInput = document.getElementById('scriptFile');
+    const desc = document.getElementById('scriptDesc').value.trim();
+    const status = document.getElementById('scriptStatus');
+    if(!name || !fileInput.files.length || !desc){ status.textContent = 'Please fill all fields.'; status.className='status error'; return; }
+    const file = fileInput.files[0];
+    const id = genId('script');
+    // Evidence classification per Market Validation Layer
+    const evidenceClass = file.size < 100 ? 'UNKNOWN' : 'OBSERVED';
+    const priceHint = selectedPrice ? '$'+selectedPrice+'/'+selectedInterval+' ESTIMATED' : '$49/month ESTIMATED';
+    scripts.unshift({ id, name, size: (file.size/1024).toFixed(1)+'KB', desc, uploadedAt: new Date().toISOString(), evidenceClass, priceHint, decisionId: genId('dec'), gate2: 'ABSENT' });
+    save(); renderScripts();
+    status.textContent = 'Script "'+name+'" uploaded — evidence '+evidenceClass+', Gate-2 ABSENT (PRODUCTION_AUTHORIZED = False) — ready for Founder review, not yet live.'; status.className='status success';
+    document.getElementById('scriptForm').reset();
+  });
+
+  // Subscription creation (up to payment, stop at payment)
+  document.getElementById('createSubBtn').addEventListener('click', function(){
+    const scriptId = document.getElementById('selectedScript').value;
+    const subName = document.getElementById('subName').value.trim();
+    const status = document.getElementById('subStatus');
+    if(!scriptId){ status.textContent = 'Select a script first.'; status.className='status error'; return; }
+    if(!subName){ status.textContent = 'Enter a subscription product name.'; status.className='status error'; return; }
+    const script = scripts.find(function(s){ return s.id===scriptId; });
+    if(!script){ status.textContent = 'Script not found.'; status.className='status error'; return; }
+    // Governance: Gate-2 required — creation is PRODUCTION_AUTHORIZED = False until Founder sign-off
+    // Paddle onboarding is EXTERNALLY_REQUIRED and BLOCKED (stop at payment)
+    const subId = genId('sub');
+    const paddleProductId = 'pro_'+Math.random().toString(36).slice(2,12);
+    // Price signal vs proof distinction
+    const priceSignal = '$'+selectedPrice+'/'+selectedInterval+' (PRICE_SIGNAL, ESTIMATED)';
+    const proofStatus = 'UNKNOWN / NOT_AVAILABLE (REAL $0 — no transaction)';
+    subs.unshift({ id: subId, name: subName, scriptName: script.name, scriptId, price: selectedPrice, interval: selectedInterval, priceSignal, proofStatus, paddleProductId, status: 'draft — Gate-2 required', priceHint: priceSignal, decisionId: script.decisionId, gate2: 'ABSENT', paddle: 'EXTERNALLY_REQUIRED (BLOCKED)' });
+    save(); renderSubs();
+    status.textContent = 'Global subscription "'+subName+'" created as DRAFT — $'+selectedPrice+'/'+selectedInterval+' (PRICE_SIGNAL, ESTIMATED, not PROOF) — Gate-2 ABSENT, Paddle EXTERNALLY_REQUIRED (BLOCKED) — PRODUCTION_AUTHORIZED = False — ready for Founder review, not yet live. Proof remains UNKNOWN / NOT_AVAILABLE.'; status.className='status success';
+  });
+
+  renderScripts(); renderSubs();
+})();
+</script>
+</body>
+</html>
