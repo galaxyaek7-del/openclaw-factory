@@ -80,3 +80,17 @@ data/ledger_integrity_baseline.json
 # Internal security metadata, not business data; gitignored so enabling
 # it never risks a secret commit. AUTH_AUDIT_FILE can point it elsewhere.
 data/auth_audit.jsonl
+
+# GSC verification inbox (2026-09-25): the founder drops Google's official
+# HTML file into gsc_inbox/; the tick auto-deploys the validated copy to
+# the repo root via scripts/deploy_gsc_verification.py. Inbox HTML is never
+# committed as-is (only the validated root file is added explicitly); the
+# README stays tracked as the plain-language handoff doc.
+gsc_inbox/*.html
+!gsc_inbox/README.md
+
+# GSC token-string inbox (2026-09-26): founder pastes ONLY the
+# google-site-verification content token into .gsc_inbox/token.txt locally;
+# scripts/gsc_token_watch.py validates, injects, commits, pushes, verifies,
+# then DELETES the inbox file. Never committed, never logged, never ledgered.
+.gsc_inbox/
