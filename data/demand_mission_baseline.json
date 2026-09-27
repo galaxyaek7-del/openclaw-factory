@@ -1,0 +1,59 @@
+{
+  "mission": "REAL MARKET DEMAND MISSION",
+  "ledger_baseline": 94,
+  "test_start_timestamp": "2026-09-27T22:15:00Z",
+  "product_version": "adyvd v1 (catalog, unchanged)",
+  "price_usd": 29,
+  "landing_url": "https://aekraft.gumroad.com/l/adyvd",
+  "telegraph_url": "https://telegra.ph/Turo-Damage-Claim-Dispute-How-Guests-Should-Respond-48-Hour-Guide-09-27",
+  "checkout_url": "https://gumroad.com/checkout?product=adyvd",
+  "target_audience": "US Turo guests facing damage/cleaning claims (r/turo)",
+  "phase1": {
+    "1_product_accessible": {
+      "status": 200,
+      "final_url": "https://aekraft.gumroad.com/l/adyvd"
+    },
+    "2_telegraph_accessible": {
+      "status": 200,
+      "final_url": "https://telegra.ph/Turo-Damage-Claim-Dispute-How-Guests-Should-Respond-48-Hour-Guide-09-27",
+      "bytes": 11058
+    },
+    "3_article_to_product": {
+      "adyvd_linked": true
+    },
+    "4_product_to_checkout": {
+      "has_checkout_marker": true,
+      "markers_found": []
+    },
+    "5_checkout_accessible": {
+      "status": 200,
+      "final_url": "https://gumroad.com/checkout?product=adyvd",
+      "pay_markers": true
+    },
+    "6_title_price": {
+      "title": "Turo Guest Dispute Toolkit",
+      "price": "29.0",
+      "matches_catalog_29": true
+    },
+    "7_disclosure": {
+      "article_has_disclosure_or_seller_note": true,
+      "pack1_disclosure_policy": "ask-gated, stated on follow-up (founder_action_packs.json)",
+      "fixed_in_phase1": "disclosure line appended via author token, verified live 200"
+    },
+    "8_redirects": {
+      "product_final": "https://aekraft.gumroad.com/l/adyvd",
+      "article_final": "https://telegra.ph/Turo-Damage-Claim-Dispute-How-Guests-Should-Respond-48-Hour-Guide-09-27",
+      "checkout_final": "https://gumroad.com/checkout?product=adyvd",
+      "unexpected_chain": false
+    },
+    "9_no_staging_urls": {
+      "found": [],
+      "clean": true
+    },
+    "10_no_misleading_claims": {
+      "hits": [],
+      "clean": true
+    }
+  },
+  "phase1_verdict": "LIVE_NO_BLOCKER_PROVEN"
+}
