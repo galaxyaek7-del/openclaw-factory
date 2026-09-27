@@ -1,0 +1,45 @@
+{
+ "generated": "2026-09-27T12:30:00Z",
+ "rule": "first third-party discovery event; no manufactured signals",
+ "tests": [
+  {
+   "offer": "pahxdv SaaS Spend Audit $49",
+   "problem": "unused seats + auto-renewals drain small-team budgets",
+   "buyer": "small-team ops lead",
+   "url": "https://aekraft.gumroad.com/l/pahxdv",
+   "channel": "nostr note + site catalog + gumroad search",
+   "message": "one-time audit system vs $39-79/mo tools",
+   "cta": "Get it on Gumroad (?ref=galaxyforge_products on site)",
+   "measurement": "nostr readback, gumroad matrix recheck, sales poll",
+   "success": "external visit/click/checkout",
+   "failure": "no signal in 30d",
+   "window": "30d"
+  },
+  {
+   "offer": "xwbbb STR Damage Kit $49",
+   "problem": "Airbnb 2026 terms demand verifiable evidence; claims denied without it",
+   "buyer": "STR host",
+   "url": "https://aekraft.gumroad.com/l/xwbbb",
+   "channel": "nostr note + site catalog + gumroad search",
+   "message": "documentation that holds up under 2026 AirCover rules",
+   "cta": "Get it on Gumroad",
+   "measurement": "same as above",
+   "success": "external visit/click/checkout",
+   "failure": "no signal in 30d",
+   "window": "30d"
+  },
+  {
+   "offer": "adyvd Turo Toolkit $29",
+   "problem": "unfair damage/invoice claims, 48h response pressure",
+   "buyer": "Turo guest/host",
+   "url": "https://aekraft.gumroad.com/l/adyvd",
+   "channel": "dedicated guide page + catalog + nostr if wave performs",
+   "message": "fight unfair claims in 48 hours",
+   "cta": "guide page + Get it",
+   "measurement": "same as above",
+   "success": "guide->product path use",
+   "failure": "no signal in 30d",
+   "window": "30d"
+  }
+ ]
+}
