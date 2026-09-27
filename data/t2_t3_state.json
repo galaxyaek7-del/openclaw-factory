@@ -1,0 +1,17 @@
+{
+ "generated": "2026-09-27T09:55:00Z",
+ "T2": {
+  "dependency": "GUMROAD_AFFILIATES_CHECK",
+  "human_required": true,
+  "compressed_to": "GUMROAD_AFFILIATES_CHECK gate",
+  "exec_now": "nothing (dashboard-gated)"
+ },
+ "T3": {
+  "dependency": "FIRST_EXPOSURE",
+  "human_required": false,
+  "exposure_defined_as": "indexed URL OR impression OR click OR referral OR external visit",
+  "measured_where": "data/commercial_evidence.jsonl + evidence_counters.json",
+  "action_follows": "activate T3 product-view->checkout measurement on the exposed product",
+  "exec_now": "watching; trigger armed"
+ }
+}

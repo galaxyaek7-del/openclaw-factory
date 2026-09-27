@@ -1,0 +1,36 @@
+{
+ "RESEARCH": {
+  "demand_probes": "SaaS-spend + STR mapped (DERIVED)",
+  "ledger_entries": "see commercial_evidence.jsonl count"
+ },
+ "TECHNICAL": {
+  "products_live": 32,
+  "urls_in_sitemap": 45,
+  "pages_200": "34/34 + trust/10 (last full audit)"
+ },
+ "DISCOVERY": {
+  "indexed_urls": "UNKNOWN",
+  "impressions": "UNKNOWN",
+  "referrals": 0,
+  "gumroad_search_surfaced": "0/5 queries"
+ },
+ "ENGAGEMENT": {
+  "external_visits": 0,
+  "clicks": "UNKNOWN",
+  "product_views_external": 0
+ },
+ "INTENT": {
+  "checkout_initiations": 0,
+  "qualified_inquiries": 0
+ },
+ "CHECKOUT": {
+  "checkout_initiations": 0
+ },
+ "TRANSACTION": {
+  "purchases": 0
+ },
+ "REVENUE": {
+  "revenue_usd": 0,
+  "payouts": 0
+ }
+}

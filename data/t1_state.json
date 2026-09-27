@@ -1,0 +1,6 @@
+{
+ "generated": "2026-09-27T09:55:00Z",
+ "state": "HUMAN_GATE",
+ "transition": "HUMAN_GATE -> READY -> ACTIVE -> MEASURING on GSC_VERIFY, no second approval",
+ "blocked_only_by": "GSC_VERIFY"
+}

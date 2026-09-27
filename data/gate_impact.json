@@ -1,0 +1,45 @@
+{
+ "generated": "2026-09-27T09:55:00Z",
+ "GSC_VERIFY": {
+  "unlocks": [
+   "T1 full run",
+   "index/impression/click measurement",
+   "query->product mapping",
+   "CTR/conversion diagnosis"
+  ],
+  "remains_blocked": [
+   "Shopify/Paddle/affiliate sessions (independent)"
+  ],
+  "runs_without_it": [
+   "Gumroad monitoring",
+   "listing maintenance",
+   "affiliate research",
+   "telemetry",
+   "category recheck"
+  ]
+ },
+ "SESSION_COMMERCE": {
+  "unlocks": [
+   "second surface",
+   "6 paddle checkouts",
+   "referral click tracking"
+  ],
+  "remains_blocked": [
+   "Google measurement (independent)"
+  ],
+  "runs_without_it": [
+   "everything Gumroad + site + telemetry"
+  ]
+ },
+ "GUMROAD_AFFILIATES_CHECK": {
+  "unlocks": [
+   "T2 recruit workflow"
+  ],
+  "remains_blocked": [
+   "nothing else depends on it"
+  ],
+  "runs_without_it": [
+   "all other branches"
+  ]
+ }
+}

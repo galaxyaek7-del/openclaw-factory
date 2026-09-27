@@ -1,0 +1,20 @@
+{
+ "generated": "2026-09-27T09:55:00Z",
+ "shopify": {
+  "session_requirement": "owner login + billing + KYC",
+  "catalog": "CSV 10 rows validated",
+  "metadata": "listing.json x10",
+  "pricing": "$59-79 set",
+  "sequence": "import->delivery->collections->plan->gateway->test->unpassword",
+  "human_action": "single admin session",
+  "post_checks": "storefront audit script armed"
+ },
+ "paddle": {
+  "onboarding": "INCOMPLETE (live-checked)",
+  "verification_needed": "vendors.paddle.com completion",
+  "products": "6 ready",
+  "webhooks": "existing infra (no new build)",
+  "human_action": "finish onboarding",
+  "post_checks": "status script per-tick armed"
+ }
+}

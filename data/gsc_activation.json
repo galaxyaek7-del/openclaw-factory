@@ -1,0 +1,13 @@
+{
+ "generated": "2026-09-27T09:55:00Z",
+ "verification_tag": "LIVE_PROVEN",
+ "sitemap": "LIVE_45",
+ "priority_urls": 5,
+ "product_url_map": "32/32",
+ "inspection_queue": "READY",
+ "telemetry": "LIVE",
+ "ledger": "READY",
+ "timestamps": "per-event",
+ "post_verify_workflow": "ARMED (submit->inspect->record->T1)",
+ "missing": "NOTHING on factory side"
+}
