@@ -1,0 +1,392 @@
+{
+  "timestamp": "2026-09-27T20:00:00Z",
+  "sales_pages": [
+    {
+      "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/compare.html",
+      "status": 200,
+      "bytes": 10229,
+      "has_gumroad_buy_link": false,
+      "error": ""
+    },
+    {
+      "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/eu-ai-act-compliance-toolkit.html",
+      "status": 200,
+      "bytes": 10358,
+      "has_gumroad_buy_link": true,
+      "error": ""
+    },
+    {
+      "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html",
+      "status": 200,
+      "bytes": 12089,
+      "has_gumroad_buy_link": true,
+      "error": ""
+    },
+    {
+      "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/recommended.html",
+      "status": 200,
+      "bytes": 8655,
+      "has_gumroad_buy_link": false,
+      "error": ""
+    },
+    {
+      "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/solutions.html",
+      "status": 200,
+      "bytes": 14585,
+      "has_gumroad_buy_link": false,
+      "error": ""
+    },
+    {
+      "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/turo-guest-dispute-toolkit.html",
+      "status": 200,
+      "bytes": 9967,
+      "has_gumroad_buy_link": true,
+      "error": ""
+    },
+    {
+      "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/interest.html",
+      "status": 200,
+      "bytes": 9073,
+      "has_gumroad_buy_link": false,
+      "error": ""
+    },
+    {
+      "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/saas-portal.html",
+      "status": 200,
+      "bytes": 21329,
+      "has_gumroad_buy_link": false,
+      "error": ""
+    },
+    {
+      "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/trial.html",
+      "status": 200,
+      "bytes": 21834,
+      "has_gumroad_buy_link": false,
+      "error": ""
+    }
+  ],
+  "gumroad_listings": [
+    {
+      "code": "adyvd",
+      "status": 200,
+      "bytes": 27406,
+      "prices_seen": [
+        "$575",
+        "$612"
+      ],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "behmhy",
+      "status": 200,
+      "bytes": 37601,
+      "prices_seen": [
+        "$2"
+      ],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "ceiwk",
+      "status": 200,
+      "bytes": 23691,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "dvfvm",
+      "status": 200,
+      "bytes": 27920,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "dyjavs",
+      "status": 200,
+      "bytes": 29106,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "ekhza",
+      "status": 200,
+      "bytes": 28295,
+      "prices_seen": [
+        "$5",
+        "$50"
+      ],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "esnpki",
+      "status": 200,
+      "bytes": 25037,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "fetmu",
+      "status": 200,
+      "bytes": 30500,
+      "prices_seen": [
+        "$79"
+      ],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "fgruzn",
+      "status": 200,
+      "bytes": 23521,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "fwxmms",
+      "status": 200,
+      "bytes": 23511,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "gfsvu",
+      "status": 200,
+      "bytes": 29115,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "iaiyt",
+      "status": 200,
+      "bytes": 40016,
+      "prices_seen": [
+        "$15"
+      ],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "iwbcmi",
+      "status": 200,
+      "bytes": 39198,
+      "prices_seen": [
+        "$1",
+        "$39",
+        "$499",
+        "$500",
+        "$99"
+      ],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "jibnyt",
+      "status": 200,
+      "bytes": 23676,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "jvuelq",
+      "status": 200,
+      "bytes": 29414,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "kaooj",
+      "status": 200,
+      "bytes": 23996,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "pahxdv",
+      "status": 200,
+      "bytes": 31403,
+      "prices_seen": [
+        "$3"
+      ],
+      "buy_path_present": true,
+      "error": ""
+    },
+    {
+      "code": "palmdr",
+      "status": 200,
+      "bytes": 28957,
+      "prices_seen": [
+        "$5"
+      ],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "ppsluq",
+      "status": 200,
+      "bytes": 28680,
+      "prices_seen": [
+        "$12",
+        "$8"
+      ],
+      "buy_path_present": true,
+      "error": ""
+    },
+    {
+      "code": "pyzqa",
+      "status": 200,
+      "bytes": 29090,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "qpuagh",
+      "status": 200,
+      "bytes": 37536,
+      "prices_seen": [
+        "$1",
+        "$197",
+        "$24",
+        "$49",
+        "$5"
+      ],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "sjmbrp",
+      "status": 200,
+      "bytes": 25127,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "tjbly",
+      "status": 200,
+      "bytes": 36840,
+      "prices_seen": [
+        "$3",
+        "$315",
+        "$35"
+      ],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "uldlwa",
+      "status": 200,
+      "bytes": 23716,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "vkqogv",
+      "status": 200,
+      "bytes": 28585,
+      "prices_seen": [
+        "$1",
+        "$100",
+        "$2",
+        "$200",
+        "$350"
+      ],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "vunrqm",
+      "status": 200,
+      "bytes": 23596,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "vzmswo",
+      "status": 200,
+      "bytes": 37409,
+      "prices_seen": [
+        "$25",
+        "$3"
+      ],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "wsbqr",
+      "status": 200,
+      "bytes": 31776,
+      "prices_seen": [
+        "$12",
+        "$3",
+        "$450",
+        "$75"
+      ],
+      "buy_path_present": true,
+      "error": ""
+    },
+    {
+      "code": "xmbxpz",
+      "status": 200,
+      "bytes": 37306,
+      "prices_seen": [
+        "$1",
+        "$300",
+        "$5",
+        "$600"
+      ],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "xwbbb",
+      "status": 200,
+      "bytes": 38846,
+      "prices_seen": [
+        "$1",
+        "$250",
+        "$285",
+        "$3",
+        "$60"
+      ],
+      "buy_path_present": true,
+      "error": ""
+    },
+    {
+      "code": "yiqba",
+      "status": 200,
+      "bytes": 23691,
+      "prices_seen": [],
+      "buy_path_present": false,
+      "error": ""
+    },
+    {
+      "code": "ykwdfc",
+      "status": 200,
+      "bytes": 32355,
+      "prices_seen": [
+        "$0",
+        "$0.68",
+        "$10",
+        "$14",
+        "$499"
+      ],
+      "buy_path_present": true,
+      "error": ""
+    }
+  ]
+}

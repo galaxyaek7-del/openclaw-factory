@@ -124,7 +124,9 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
         form.reset();
       })
       .catch(function(err){
-        status.textContent = err.message;
+        var lines = Object.keys(data).filter(function(k){ return k !== 'website'; }).map(function(k){ return k + ': ' + data[k]; });
+        var mailto = 'mailto:galaxyaek7@gmail.com?subject=' + encodeURIComponent('Contact message (web fallback)') + '&body=' + encodeURIComponent(lines.join('\n'));
+        status.innerHTML = 'Direct send is offline right now — <a href="' + mailto + '">click here to send the same message by email</a>.';
         status.className = 'error';
       })
       .finally(function(){
