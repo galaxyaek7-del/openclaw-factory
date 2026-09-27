@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-09-27T20:43:39Z",
+  "experiment_id": "EXP-NEXUS-001",
+  "channel": "nostr",
+  "event_id": "76d2c79119a06ebe832d58567d4735092cf02adf6c18c139e440b45421480c06",
+  "pubkey": "52516c0300bc4127c0be79d2ff84883a503fc3b367ad644eed32b1c2a35b1a05",
+  "relays": {
+    "relay.damus.io": "OK-accepted",
+    "nos.lol": "ERROR: unknown encoding: replace",
+    "relay.primal.net": "OK-accepted"
+  },
+  "accepted": 2
+}

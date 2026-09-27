@@ -2,12 +2,13 @@
   "generated": "2026-09-28T01:00:00Z",
   "rule": "NOT_EXPOSED until a real market test executes. UNTESTED, never FAILED.",
   "telegraph_api": {
-    "status": "DEGRADED",
+    "status": "DEGRADED_RECOVERING",
     "failures": 3,
     "error": "TCP timeout WinError 10060",
     "endpoint": "api.telegra.ph (createAccount)",
     "policy": "backoff, keep content ready, Telegraph not required for exposure",
-    "alternative": "Pages guide pages (this cycle: nexus guide live)"
+    "alternative": "Pages guide pages (this cycle: nexus guide live)",
+    "recovery": "1 success after 3 failures (nexus article live)"
   },
   "indexnow": {
     "status": "DEFERRED",
@@ -33,7 +34,7 @@
     },
     {
       "product_id": "GF-B10-02",
-      "market_test_status": "NOT_EXPOSED",
+      "market_test_status": "EXPOSURE_EXECUTED",
       "intent_priority": 1,
       "priority_basis": "DERIVED urgency + trigger sharpness, not demand evidence",
       "audience": "US remote sellers",
@@ -43,7 +44,8 @@
       "surface": "gumroad + pages-catalog + pages-guide",
       "allowed_action": "passive surfaces live; value-first human posts where accounts exist",
       "founder_action": "none new (pack-1 Turo post still the single pending item)",
-      "measurement": "poll_sales (purchase=ZERO measured); all upstream NO DATA"
+      "measurement": "poll_sales (purchase=ZERO measured); all upstream NO DATA",
+      "exposure_evidence": "nostr kind:1, 2/3 relay OK (damus+primal), event file data/nostr_nexus_exposure.json"
     },
     {
       "product_id": "GF-B10-03",
