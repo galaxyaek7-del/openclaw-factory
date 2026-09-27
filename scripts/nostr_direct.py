@@ -63,7 +63,7 @@ def _tagged(tag, msg):
     return hashlib.sha256(h + h + msg).digest()
 
 
-def schnorr_sign(seckey, msg32):
+def schnorr_sign(seckey, msg32, aux_rand=None):
     assert len(seckey) == 32 and len(msg32) == 32
     d = int.from_bytes(seckey, 'big')
     if not (1 <= d < N):
@@ -73,8 +73,10 @@ def schnorr_sign(seckey, msg32):
         d = N - d
         Ppub = _mul(d)
     pk = _bytes(_x(Ppub))
-    aux = hashlib.sha256(b'GALAXYFORGE' + seckey).digest()
-    t = bytes(a ^ b for a, b in zip(_bytes(d), aux))
+    if aux_rand is None:
+        aux_rand = os.urandom(32)
+    assert len(aux_rand) == 32
+    t = bytes(a ^ b for a, b in zip(_bytes(d), _tagged('BIP0340/aux', aux_rand)))
     rand = _tagged('BIP0340/nonce', t + pk + msg32)
     k = int.from_bytes(rand, 'big') % N
     if k == 0:
