@@ -94,6 +94,9 @@ gsc_inbox/*.html
 # scripts/gsc_token_watch.py validates, injects, commits, pushes, verifies,
 # then DELETES the inbox file. Never committed, never logged, never ledgered.
 .gsc_inbox/
+# Nostr owned identity (2026-09-27): self-generated keypair for public relay
+# publishing. Secret key material -- never committed, never logged.
+data/nostr_key.json
 # Commercial telemetry snapshot (2026-09-27): disposable derived state,
 # rewritten on every watcher run -- same precedent as knowledge_graph_snapshot.
 data/telemetry_state.json
