@@ -1,0 +1,91 @@
+{
+ "generated": "2026-09-27T10:35:00Z",
+ "ladders": [
+  "API",
+  "OAuth",
+  "webhook",
+  "persistent_session",
+  "browser_automation",
+  "scheduled_worker",
+  "event_driven",
+  "one_time_auth",
+  "credential_delegation"
+ ],
+ "gates": [
+  {
+   "gate": "GSC_VERIFY",
+   "paths": {
+    "API": "no (needs OAuth)",
+    "OAuth": "no creds exist; creating them needs human Google session",
+    "webhook": "n/a",
+    "persistent_session": "human session only",
+    "browser_automation": "needs human login (prohibited to bypass)",
+    "scheduled_worker": "n/a",
+    "event_driven": "detection armed post-verify",
+    "one_time_auth": "the VERIFY press IS the one-time auth; irreducible",
+    "credential_delegation": "no delegable credential exists"
+   },
+   "verdict": "IRREDUCIBLE_1_CLICK"
+  },
+  {
+   "gate": "GUMROAD_AFFILIATES_CHECK",
+   "paths": {
+    "API": "no endpoint exists (verified in docs)",
+    "OAuth": "n/a",
+    "webhook": "n/a",
+    "persistent_session": "dashboard login human-only",
+    "browser_automation": "needs login",
+    "scheduled_worker": "n/a",
+    "event_driven": "armed post-state",
+    "one_time_auth": "the read itself",
+    "credential_delegation": "none available"
+   },
+   "verdict": "IRREDUCIBLE_5MIN_READ"
+  },
+  {
+   "gate": "SHOPIFY_SESSION",
+   "paths": {
+    "API": "needs owner-created custom-app token (human step creates it)",
+    "OAuth": "owner OAuth (human)",
+    "webhook": "needs store access first",
+    "persistent_session": "owner login",
+    "browser_automation": "login/CAPTCHA bypass prohibited",
+    "scheduled_worker": "n/a",
+    "event_driven": "storefront audit armed",
+    "one_time_auth": "token creation converts future to API (still 1 human step)",
+    "credential_delegation": "token IS the delegation; creation is human"
+   },
+   "verdict": "REDUCIBLE_TO_TOKEN_PLUS_SESSION (still human, but one session)"
+  },
+  {
+   "gate": "PADDLE_ONBOARDING",
+   "paths": {
+    "API": "account-bound",
+    "OAuth": "n/a",
+    "webhook": "existing infra, needs live account",
+    "persistent_session": "human",
+    "browser_automation": "KYC forms need human",
+    "scheduled_worker": "status poll armed",
+    "event_driven": "flip detection armed",
+    "one_time_auth": "onboarding itself",
+    "credential_delegation": "none"
+   },
+   "verdict": "IRREDUCIBLE_HUMAN_PROCESS"
+  },
+  {
+   "gate": "AFFILIATE_SIGNUPS",
+   "paths": {
+    "API": "no join API",
+    "OAuth": "n/a",
+    "webhook": "n/a",
+    "persistent_session": "human identity",
+    "browser_automation": "automated join = fake identity, prohibited",
+    "scheduled_worker": "n/a",
+    "event_driven": "armed post-link",
+    "one_time_auth": "each join",
+    "credential_delegation": "none"
+   },
+   "verdict": "IRREDUCIBLE_IDENTITY_JOINS"
+  }
+ ]
+}

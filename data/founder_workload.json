@@ -1,23 +1,18 @@
 {
- "generated": "2026-09-27T10:15:00Z",
- "actions": [
-  {
-   "action": "GSC VERIFY press",
-   "minutes": 2,
-   "status": "PENDING"
-  },
-  {
-   "action": "Gumroad affiliates read",
-   "minutes": 5,
-   "status": "PENDING"
-  },
-  {
-   "action": "Combined commerce session",
-   "minutes": 150,
-   "status": "PENDING"
-  }
- ],
+ "generated": "2026-09-27T10:35:00Z",
  "FOUNDER_ACTION_COUNT": 3,
  "FOUNDER_MINUTES_REQUIRED": 157,
- "target": "reduce count, never by skipping security/compliance gates"
+ "AUTOMATABLE_ACTIONS_ELIMINATED": [
+  "token handoff",
+  "tag deploy+push+verify",
+  "all prep sequences",
+  "all follow-through sequences",
+  "repeat requests",
+  "dashboard reads (telemetry)"
+ ],
+ "ONE_TIME_AUTHORIZATIONS": [
+  "GSC VERIFY press",
+  "Shopify token creation"
+ ],
+ "REPEATED_MANUAL_ACTIONS": 0
 }

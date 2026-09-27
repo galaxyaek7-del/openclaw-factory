@@ -1,0 +1,25 @@
+{
+ "generated": "2026-09-27T10:35:00Z",
+ "A_automated_already": [
+  "CSV validated",
+  "zips verified",
+  "mapping 1:1",
+  "metadata/pricing set",
+  "sequence scripted",
+  "post-checks armed",
+  "paddle monitor armed",
+  "affiliate research + disclosure templates ready"
+ ],
+ "B_one_time_auth": [
+  "Shopify custom-app token creation (converts future publishes to API)"
+ ],
+ "C_founder_decision": [
+  "plan tier choice at displayed price",
+  "gateway provider choice",
+  "affiliate commission rates (T2: propose 30%)"
+ ],
+ "D_hold_with_reason": [
+  "Paddle KYC timing (vendor-side, no factory lever)",
+  "Amazon tag (deprioritized: no discovery value pre-measurement)"
+ ]
+}
