@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>n8n vs Zapier vs Make in 2026: A Cost &amp; Capability Guide for Small Business</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #1a1a1a; }
+  h1, h2 { line-height: 1.25; }
+  .disclosure { background: #fff7e6; border: 1px solid #f0c36d; padding: .8rem 1rem; border-radius: 8px; font-size: .9rem; margin: 1rem 0; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+  th, td { border: 1px solid #ddd; padding: .5rem .7rem; text-align: left; font-size: .9rem; }
+  th { background: #f5f5f5; }
+  .affiliate-link { font-weight: 600; }
+  .foot { font-size: .8rem; color: #666; margin-top: 2rem; border-top: 1px solid #eee; padding-top: 1rem; }
+</style>
+</head>
+<body>
+<div class="disclosure">
+  <strong>Disclosure:</strong> Galaxy Forge may participate in the Fiverr affiliate program.
+  As of this writing <strong>no affiliate account has been opened</strong> and this page contains
+  <strong>no affiliate links</strong>. If enrolled later, any Fiverr link would be clearly disclosed
+  per FTC rules.
+</div>
+
+<h1>n8n vs Zapier vs Make in 2026: A Cost &amp; Capability Guide for Small Business</h1>
+<p><em>A neutral framework for choosing an automation tool — without the affiliate hype.</em></p>
+<p>This guide compares three popular automation platforms on the dimensions that actually affect a small business: pricing model, capability ceiling, and total cost at real workflow volumes. It is written so you can make the call yourself.</p>
+
+<h2>1. The pricing-model difference that matters most</h2>
+<ul>
+  <li><strong>Zapier / Make</strong> charge per <strong>task/operation</strong>. A multi-step workflow that touches 10 apps can burn 30+ tasks per run.</li>
+  <li><strong>n8n</strong> charges per <strong>execution</strong> (one full workflow run = one execution), regardless of steps. For multi-step workflows this is often <strong>60–80% cheaper</strong> at the same volume (public 2026 comparisons).</li>
+</ul>
+
+<h2>2. Capability ceiling</h2>
+<ul>
+  <li><strong>Zapier</strong>: best-in-class app catalog, lowest learning curve, great for standard SaaS connections. Less flexible for custom code / AI-agent logic.</li>
+  <li><strong>Make</strong>: powerful visual scenarios, good for complex branching; steeper learning curve.</li>
+  <li><strong>n8n</strong>: open-source, self-hostable, full code/Python/JS when needed, strong AI/LLM nodes, 400+ integrations. Highest ceiling; requires more technical comfort (or a freelancer).</li>
+</ul>
+
+<h2>3. Self-host vs cloud</h2>
+<p>n8n can be self-hosted (Community Edition, free license; pay only for a server, ~$5–20/mo) or run on n8n Cloud. Self-hosting removes per-execution billing but adds DevOps. For most SMBs, n8n Cloud is the simpler start; self-host becomes attractive at higher volumes or for data-residency/privacy needs.</p>
+
+<h2>4. A simple decision framework</h2>
+<table>
+  <tr><th>If you…</th><th>Consider</th></tr>
+  <tr><td>Want the fastest setup, standard apps, low technical comfort</td><td>Zapier</td></tr>
+  <tr><td>Need complex branching/visual logic, comfortable learning</td><td>Make</td></tr>
+  <tr><td>Need AI agents, custom code, API work, or minimize per-run cost</td><td>n8n</td></tr>
+  <tr><td>Have compliance/privacy needs requiring self-hosting</td><td>n8n (self-hosted)</td></tr>
+</table>
+
+<h2>5. Migration reality</h2>
+<p>Moving from Zapier/Make to n8n isn't a button. It's rebuilding logic in a new editor. If you're already paying a high Zapier tier, the savings can justify a one-time migration project — but budget for the rebuild, not just the subscription delta.</p>
+
+<h2>6. When to bring in help</h2>
+<p>If the framework points to n8n but you don't want to learn the editor, a freelancer can build and (ideally) monitor the workflows for you. Judge helpers on <strong>error handling and monitoring</strong>, not just "they connected the apps."</p>
+<p class="affiliate-link" data-affiliate="fiverr-n8n"><em>[Affiliate link placeholder — insert Fiverr referral URL here once an account is opened by the Founder.]</em></p>
+
+<div class="foot">
+  Informational only. Pricing changes; verify current figures on each vendor's site before deciding.
+  No affiliate links are present in this version.
+</div>
+
+<script>
+(function () {
+  try {
+    var id = localStorage.getItem('gf_anon');
+    if (!id) { id = (crypto.randomUUID ? crypto.randomUUID() : 'anon-' + Date.now()); localStorage.setItem('gf_anon', id); }
+    function track(type, extra) {
+      var body = Object.assign({ anon_id: id, event_type: type, source_category: 'organic_validation', product_id: 'n8n_vs_zapier' }, extra || {});
+      fetch('/api/content/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).catch(function(){});
+    }
+    track('content_view');
+    document.querySelectorAll('.affiliate-link').forEach(function (el) {
+      el.addEventListener('click', function () { track('outbound_click', { product_id: el.getAttribute('data-affiliate') || 'affiliate' }); });
+    });
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>
