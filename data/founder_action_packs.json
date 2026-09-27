@@ -1,0 +1,39 @@
+{
+ "generated": "2026-09-27T18:30:00Z",
+ "rule": "REVIEW -> APPROVE/REJECT -> HUMAN POST. No bots, no mass, no automation.",
+ "packs": [
+  {
+   "thread": "https://www.reddit.com/r/turo/comments/1u07nob/turo_damage_claim/",
+   "why": "post-review surprise claim + no joint inspection = our exact documentation topic",
+   "draft": "That 5-star-then-claim sequence is exactly why the pickup/return photo set matters more than anything you say afterward. For right now: keep everything in Turo messaging, ask for itemized evidence tied to your trip dates, and don't agree to anything off-platform under time pressure. I put together a plain guide to the dispute method here [Telegraph-version pending]; disclosure: I sell a $29 toolkit with the letters and tracker if you want it done-for-you.",
+   "product": "adyvd $29",
+   "link_if_allowed": "Telegraph Turo guide https://telegra.ph/Turo-Damage-Claim-Dispute-How-Guests-Should-Respond-48-Hour-Guide-09-27 + gumroad only if asked",
+   "disclosure": "seller interest stated",
+   "measurement": "dashboard + sales poll + manual reply observation",
+   "expected": "helpful reply standing; any click-through directional only",
+   "risk": "low; standard dispute-advice thread"
+  },
+  {
+   "thread": "https://www.reddit.com/r/smallbusiness/comments/1rg36mi/is_your_company_conscious_of_unused_saas/",
+   "why": "$1420/mo waste + owner-rule discussion = our audit topic; hostile-to-solicitation sub needs care",
+   "draft": "The owner-rule is the highest-leverage fix. What makes it stick is a quarterly rhythm: inventory with owners and dates, utilization check (assigned is not used), and a renewal calendar set before notice windows, not on them. I wrote the method up here [Telegraph SaaS article link]; disclosure: I sell a $49 one-time audit system implementing it, no subscription.",
+   "product": "pahxdv $49",
+   "link_if_allowed": "existing Telegraph SaaS article",
+   "disclosure": "seller interest stated",
+   "measurement": "Telegraph views + dashboard + sales poll",
+   "expected": "method value stands alone; link secondary",
+   "risk": "medium: sub dislikes solicitation -> value-first, single link max"
+  },
+  {
+   "thread": "https://www.reddit.com/r/EtsySellers/comments/1se1nph/how_do_i_appeal/",
+   "why": "bot flag + no human contact = our appeal topic",
+   "draft": "Bot flags usually come from title/description triggers \u2014 pull the exact listing text and check it against the prohibited-items and IP lists word by word; the Havana/brown anecdote in this thread is the classic example. For the appeal itself: state what you changed, not just that you disagree, and attach the revised text. This checklist-style method is what our $29 appeal kit implements; happy to outline the steps here first if useful. Disclosure: seller.",
+   "product": "fgruzn $29",
+   "link_if_allowed": "only if asked or explicitly permitted",
+   "disclosure": "seller interest stated",
+   "measurement": "dashboard + sales poll",
+   "expected": "advice-first; link often better omitted here",
+   "risk": "medium-high: strict moderation -> follow sub rules exactly, advice may carry zero links"
+  }
+ ]
+}

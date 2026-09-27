@@ -1,0 +1,69 @@
+{
+ "generated": "2026-09-27T18:30:00Z",
+ "rule": "dollar figures are THEIR claims (MARKET_RESEARCH/ESTIMATED), never WTP. No validation = HOLD.",
+ "audiences": [
+  {
+   "id": "AUD_TURO",
+   "problem": "false/post-trip damage disputes, off-platform pressure, collections threats",
+   "public_evidence": [
+    "r/turo 1u07nob (2026-06, post-review claim)",
+    "r/turo 1u4d7wr (2026-06, claims playbook thread)",
+    "r/turo 1t3nvju (2026-05, hostile $150 deadline)",
+    "r/turo 1q5z7xu (2026-01, false claim + collections)",
+    "r/turo 2023 threads (false smoking claim, windshield dispute)"
+   ],
+   "source": "websearch quotes",
+   "date": "2026-01 to 2026-06 + 2023 baseline",
+   "frequency": "HIGH (multi-year, multi-thread, both sides)",
+   "severity": "HIGH (collections, bans, $100s-$1000s)",
+   "commercial_relevance": "direct: dispute-response method is the product",
+   "offer": "adyvd $29",
+   "price_note": "$29 vs dispute sums; WTP UNPROVEN",
+   "channel_access": "r/turo public threads; HUMAN post only",
+   "moderation": "standard Reddit norms; help-first, link only if decisive",
+   "evidence_class": "VALIDATED_PAIN (not demand, not WTP)"
+  },
+  {
+   "id": "AUD_SAAS_WASTE",
+   "problem": "subscription sprawl, renewal surprises, no ownership",
+   "public_evidence": [
+    "r/SaaS 1s3ejcz (2026-03, $40K/yr waste)",
+    "r/smallbusiness 1rg36mi (2026-02, $1420/mo)",
+    "r/smallbusiness 1mjer44 (2025-08, $2K agency waste)",
+    "r/smallbusiness 1nzqxhk (2025-10, tracking question)",
+    "G2 + guideflow 2026 comparisons (funded tools)"
+   ],
+   "source": "websearch quotes",
+   "date": "2025-08 to 2026-03 + buyer-tool market",
+   "frequency": "HIGH (recurring question format across subs)",
+   "severity": "MEDIUM-HIGH ($1.4K/mo-$40K/yr claimed)",
+   "commercial_relevance": "direct: audit method is the product; $49 one-time vs $39-79/mo tools",
+   "offer": "pahxdv $49",
+   "price_note": "positioning DERIVED; WTP UNPROVEN",
+   "channel_access": "r/smallbusiness, r/SaaS public threads; HUMAN post only",
+   "moderation": "r/smallbusiness hostile to SaaS solicitation (observed: 'spam and solicitation' complaint) -> extra care, value-first",
+   "evidence_class": "VALIDATED_PAIN (not demand, not WTP)"
+  },
+  {
+   "id": "AUD_ETSY_SELLERS",
+   "problem": "suspensions/bot flags/appeals with 6-month window, no human contact",
+   "public_evidence": [
+    "r/EtsySellers 1se1nph (2026-04, bot flag)",
+    "r/EtsySellers 1rk622h (2026-03, 4-5yr seller, 52 comments)",
+    "r/EtsyCommunity 1u3uzq9 (2026-06, fraud-ban confusion)",
+    "Etsy official appeals help (6-month rule, 2-week review)",
+    "r/Etsy checklist thread (strict posting rules)"
+   ],
+   "source": "websearch quotes",
+   "date": "2022 baseline to 2026-06",
+   "frequency": "HIGH (perennial + strict-rules subs = concentrated pain)",
+   "severity": "HIGH (livelihood at stake)",
+   "commercial_relevance": "direct: appeal method is the product",
+   "offer": "fgruzn $29",
+   "price_note": "WTP UNPROVEN",
+   "channel_access": "r/Etsy*, HUMAN post only, MUST follow sub checklists",
+   "moderation": "STRICT (removal checklists) -> drafts must include required details framing",
+   "evidence_class": "VALIDATED_PAIN (not demand, not WTP)"
+  }
+ ]
+}
