@@ -1,0 +1,55 @@
+{
+ "generated": "2026-09-27T09:30:00Z",
+ "gates": [
+  {
+   "gate_id": "GSC_VERIFY",
+   "reason": "property ownership provable only in founder Google session",
+   "exact_human_action": "press VERIFY in Search Console (tag already live)",
+   "expected_state_change": "GSC UNKNOWN_* -> measured values",
+   "automation_ready": "tag live+proven, sitemap ready, inspection queue + baselines + evidence store ready",
+   "auto_after": "submit sitemap, inspect 5 urls, record everything, activate T1",
+   "verification_method": "founder statement + subsequent GSC numbers",
+   "failure_recovery": "token mismatch -> founder re-copies, factory re-deploys"
+  },
+  {
+   "gate_id": "GUMROAD_AFFILIATES_CHECK",
+   "reason": "opt-in state API-invisible; no affiliate API exists",
+   "exact_human_action": "open Affiliates Dashboard, report opt-in state (5 min, $0)",
+   "expected_state_change": "UNKNOWN -> OPEN/CLOSED",
+   "automation_ready": "T2 test designed; sales poll + dashboard reads defined",
+   "auto_after": "if OPEN: recruit via owned pages; if CLOSED: enable or record",
+   "verification_method": "founder statement + subsequent affiliate sales poll",
+   "failure_recovery": "none needed; state just recorded"
+  },
+  {
+   "gate_id": "SHOPIFY_SESSION",
+   "reason": "admin login + billing + KYC are owner-only",
+   "exact_human_action": "single admin session per PUBLICATION_QUEUE_2026_09_26.json",
+   "expected_state_change": "0 -> 10 products live + checkout",
+   "automation_ready": "CSV validated, zips verified, mapping 1:1, queue current",
+   "auto_after": "monitor products/checkout/sales via storefront audit",
+   "verification_method": "live storefront reads",
+   "failure_recovery": "CSV re-importable; nothing destructive"
+  },
+  {
+   "gate_id": "PADDLE_ONBOARDING",
+   "reason": "vendor account identity is founder's",
+   "exact_human_action": "finish vendors.paddle.com onboarding",
+   "expected_state_change": "6 products checkout_ready=false -> true",
+   "automation_ready": "per-tick live re-check armed",
+   "auto_after": "detect flip, notify, route checkouts",
+   "verification_method": "check_paddle_checkout_status --json",
+   "failure_recovery": "n/a; external process"
+  },
+  {
+   "gate_id": "AFFILIATE_SIGNUPS",
+   "reason": "program accounts need human identity",
+   "exact_human_action": "join baremetrics/hostaway/lemsubs with own identity",
+   "expected_state_change": "DISCOVERY -> link-holding",
+   "automation_ready": "buyer-fit research recorded in pipeline",
+   "auto_after": "place links in matching guides with disclosure; track clicks",
+   "verification_method": "link presence + click ledger",
+   "failure_recovery": "n/a"
+  }
+ ]
+}

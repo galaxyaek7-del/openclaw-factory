@@ -1,0 +1,171 @@
+{
+ "generated": "2026-09-27T09:30:00Z",
+ "rule": "states gate resourcing; READY_FOR_TEST still needs exposure to run",
+ "products": [
+  {
+   "code": "pahxdv",
+   "state": "READY_FOR_TEST",
+   "why": "researched demand + price position vs $39-79/mo tools"
+  },
+  {
+   "code": "xwbbb",
+   "state": "READY_FOR_TEST",
+   "why": "2026 Airbnb terms tailwind + guides/tools confirm urgent pain"
+  },
+  {
+   "code": "ppsluq",
+   "state": "READY_FOR_TEST",
+   "why": "same STR buyer family as xwbbb"
+  },
+  {
+   "code": "adyvd",
+   "state": "READY_FOR_TEST",
+   "why": "content-backed (guide page) + concrete dispute pain"
+  },
+  {
+   "code": "iaiyt",
+   "state": "READY_FOR_TEST",
+   "why": "content-backed (page+blog) + SME compliance pain"
+  },
+  {
+   "code": "fetmu",
+   "state": "READY_FOR_TEST",
+   "why": "regulatory pain (GPSR), clear non-EU-seller buyer"
+  },
+  {
+   "code": "kaooj",
+   "state": "READY_FOR_TEST",
+   "why": "regulatory pain (DSAR deadlines), clear SMB buyer"
+  },
+  {
+   "code": "gfsvu",
+   "state": "READY_FOR_TEST",
+   "why": "regulatory pain (EPR), clear exporter buyer"
+  },
+  {
+   "code": "fwxmms",
+   "state": "READY_FOR_TEST",
+   "why": "regulatory pain (AI Act logging), clear startup buyer"
+  },
+  {
+   "code": "ekhza",
+   "state": "READY_FOR_TEST",
+   "why": "regulatory pain (FTC review rule), clear US-business buyer"
+  },
+  {
+   "code": "pyzqa",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "dyjavs",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "palmdr",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "fgruzn",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "ceiwk",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "jibnyt",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "yiqba",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "vunrqm",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "esnpki",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "sjmbrp",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "uldlwa",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "behmhy",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "xmbxpz",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "qpuagh",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "vzmswo",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "wsbqr",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "ykwdfc",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "tjbly",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "iwbcmi",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "dvfvm",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "vkqogv",
+   "state": "PREPARE",
+   "why": "plausible professional pain, identifiable buyer, demand unresearched"
+  },
+  {
+   "code": "jvuelq",
+   "state": "LOW_EVIDENCE",
+   "why": "B2C $7 outlier in B2B catalog; weak commercial hypothesis"
+  },
+  {
+   "code": "GSC_VERIFY_DEPENDENT",
+   "state": "HUMAN_GATE",
+   "why": "applies to T1 measurement only, not products"
+  }
+ ]
+}

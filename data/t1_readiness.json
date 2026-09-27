@@ -1,0 +1,32 @@
+{
+ "generated": "2026-09-27T09:30:00Z",
+ "sitemap": {
+  "url": "https://galaxyaek7-del.github.io/openclaw-factory/sitemap.xml",
+  "status": "LIVE_200_45_URLS",
+  "validated": "XML parses, all sampled resolve"
+ },
+ "priority_urls": [
+  "customer_site/index.html",
+  "customer_site/products.html",
+  "customer_site/guides.html",
+  "customer_site/solutions.html",
+  "customer_site/blog-eu-ai-act-compliance-sme-guide.html"
+ ],
+ "inspection_queue": "same 5, in order above",
+ "url_to_product_map": "products.html covers 32/32 codes with ?ref params",
+ "metadata": "34/34 titles+meta (last audit)",
+ "canonicals": "34/34 absolute (last audit)",
+ "robots": "Allow-all + sitemap ref, live 200",
+ "structured_data": "34/34 JSON-LD + trust/10 (last audit)",
+ "evidence_storage": "data/commercial_evidence.jsonl",
+ "baseline": "data/content_offer_baselines.json + evidence_counters.json",
+ "post_verify_workflow": [
+  "confirm property",
+  "submit sitemap URL",
+  "inspect 5 urls",
+  "record index/impressions/clicks/queries w/ timestamps",
+  "map exposure to catalog",
+  "activate T1 measurement"
+ ],
+ "blocked_on": "GSC_VERIFY"
+}

@@ -1,0 +1,86 @@
+{
+ "generated": "2026-09-27T09:30:00Z",
+ "routes": [
+  {
+   "channel": "site_seo",
+   "status": "LIVE",
+   "automatable": "done",
+   "requires_human": "GSC_VERIFY for measurement",
+   "expected_signal": "impressions/clicks",
+   "measurement": "GSC post-verify",
+   "next": "T1 on verify"
+  },
+  {
+   "channel": "gumroad_search",
+   "status": "LIVE_UNRANKED",
+   "automatable": "done (all metadata levers)",
+   "requires_human": "none available",
+   "expected_signal": "matrix surfacing",
+   "measurement": "later-window recheck only",
+   "next": "one recheck, then stop"
+  },
+  {
+   "channel": "gumroad_affiliates",
+   "status": "UNKNOWN_STATE",
+   "automatable": "T2 designed",
+   "requires_human": "dashboard check",
+   "expected_signal": "affiliate sale",
+   "measurement": "sales poll",
+   "next": "micro-gate"
+  },
+  {
+   "channel": "third_party_affiliates",
+   "status": "DISCOVERY",
+   "automatable": "research done",
+   "requires_human": "identity signup",
+   "expected_signal": "referral clicks",
+   "measurement": "click ledger",
+   "next": "signup gate"
+  },
+  {
+   "channel": "shopify",
+   "status": "GATED",
+   "automatable": "prep done",
+   "requires_human": "admin session",
+   "expected_signal": "second surface + checkout",
+   "measurement": "storefront audit",
+   "next": "session"
+  },
+  {
+   "channel": "paddle",
+   "status": "GATED",
+   "automatable": "monitor armed",
+   "requires_human": "onboarding",
+   "expected_signal": "checkout capability",
+   "measurement": "status script",
+   "next": "auto-detect flip"
+  },
+  {
+   "channel": "x",
+   "status": "FROZEN_402",
+   "automatable": "no",
+   "requires_human": "paid credits (not justified)",
+   "expected_signal": "none pursued",
+   "measurement": "n/a",
+   "next": "revisit with math only"
+  },
+  {
+   "channel": "metricool",
+   "status": "BLOCKED_401",
+   "automatable": "no",
+   "requires_human": "valid credential",
+   "expected_signal": "none",
+   "measurement": "n/a",
+   "next": "none planned"
+  },
+  {
+   "channel": "communities",
+   "status": "EXCLUDED",
+   "automatable": "no (spam policy)",
+   "requires_human": "manual participation (founder)",
+   "expected_signal": "n/a",
+   "measurement": "n/a",
+   "next": "none autonomous"
+  }
+ ]
+}
