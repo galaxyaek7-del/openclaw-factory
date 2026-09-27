@@ -97,6 +97,10 @@ gsc_inbox/*.html
 # Telegraph API credential (2026-09-27): anonymous account token for article
 # publishing. Never committed, never logged.
 data/telegraph.json
+# Fast-path derived state (P2/P5): hash-gate verdicts + fact cache.
+# Rebuilt deterministically; never source truth.
+data/hash_gate_state.json
+data/fact_cache.json
 # Nostr owned identity (2026-09-27): self-generated keypair for public relay
 # publishing. Secret key material -- never committed, never logged.
 data/nostr_key.json

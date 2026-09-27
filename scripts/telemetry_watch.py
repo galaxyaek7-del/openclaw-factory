@@ -4,14 +4,18 @@
 
 Polls only legitimate observable signals, writes data/telemetry_state.json:
 repo deploy sha vs origin, sitemap live+count, key pages live, Gumroad
-sales truth. Never mutates anything. Never claims what it cannot observe.
-GSC fields stay UNKNOWN (no OAuth) by design, never zero-filled.
+sales truth. Independent probes run in threads (P3); the snapshot carries
+a `changed` diff against the previous run so reasoning triggers on state
+change, not on timers (P4). Never mutates anything. Never claims what it
+cannot observe. GSC fields stay UNKNOWN (no OAuth) by design, never
+zero-filled.
 """
 import json
 import os
 import subprocess
 import time
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 
 F = 'C:\\openclaw-dasgboard'
 UA = {'User-Agent': 'GalaxyForge-Telemetry/1.0 AUTOMATED_MONITORING'}
@@ -50,12 +54,13 @@ def main():
         state['in_sync'] = state['deploy_sha'] == state['origin_sha']
     except Exception as e:
         state['git'] = 'ERROR:' + str(e)[:100]
-    sm = get('/sitemap.xml')
-    state['sitemap'] = sm
-    for name, path in [('index', '/customer_site/index.html'),
-                       ('products', '/customer_site/products.html'),
-                       ('trust', '/customer_site/trust/index.html')]:
-        state['page_' + name] = get(path)
+    probes = {'sitemap': '/sitemap.xml',
+              'page_index': '/customer_site/index.html',
+              'page_products': '/customer_site/products.html',
+              'page_trust': '/customer_site/trust/index.html'}
+    with ThreadPoolExecutor(max_workers=5) as pool:
+        for key, result in zip(probes, pool.map(get, probes.values())):
+            state[key] = result
     try:
         sales = gp.get_sales(os.environ.get('GUMROAD_ACCESS_TOKEN', ''))
         state['sales_events'] = len(sales) if isinstance(sales, list) else 'UNEXPECTED_SHAPE'
@@ -63,6 +68,15 @@ def main():
         state['sales_events'] = 'ERROR:' + str(e)[:100]
     state['gsc'] = 'UNKNOWN_NO_OAUTH'
     state['indexing'] = 'UNKNOWN_NO_GSC'
+    try:
+        with open(F + '\\data\\telemetry_state.json', encoding='utf-8') as fh:
+            prev = json.load(fh)
+        state['changed'] = sorted(
+            k for k in state if k != 'ts' and prev.get(k) != state[k])
+        state['reasoning_trigger'] = bool(state['changed'])
+    except (OSError, ValueError):
+        state['changed'] = ['FIRST_RUN']
+        state['reasoning_trigger'] = True
     with open(F + '\\data\\telemetry_state.json', 'w', encoding='utf-8') as f:
         json.dump(state, f, indent=1)
     print(json.dumps({k: v for k, v in state.items() if k != 'ts'}))
