@@ -173,5 +173,24 @@
    "measurement": "status script"
   }
  ],
- "conclusion": "COMMERCIAL_EXECUTION_BLOCKED: zero channels pass all seven; every path ends at a gate, a prohibition, or a missing asset"
+ "conclusion": "COMMERCIAL_EXECUTION_BLOCKED: zero channels pass all seven; every path ends at a gate, a prohibition, or a missing asset",
+ "reconciled": "2026-09-27T12:00:00Z",
+ "changes": [
+  {
+   "channel": "nostr_owned_identity",
+   "was": "untested",
+   "now": "ACTIVE exposure channel (3 notes relay-accepted + readable)",
+   "remaining": "relay-search indexing, clicks, visits"
+  }
+ ],
+ "stands": [
+  "google_organic (GSC gate)",
+  "gumroad_affiliates (dashboard read)",
+  "third_party_affiliates (identity)",
+  "communities (human-only)",
+  "directories (D)",
+  "social_video (creds/money)",
+  "email (no asset)",
+  "shopify/paddle (account/KYC)"
+ ]
 }

@@ -1,0 +1,23 @@
+{
+ "generated": "2026-09-27T12:00:00Z",
+ "rule": "evidence-backed only; no new products",
+ "offers": [
+  {
+   "code": "pahxdv",
+   "why": "researched SaaS-spend demand + $49-vs-subscription position + fresh positioning line live"
+  },
+  {
+   "code": "xwbbb",
+   "why": "2026 Airbnb terms tailwind + active guides/tools + fresh coverage line live"
+  },
+  {
+   "code": "adyvd",
+   "why": "only multi-entry product (guide + catalog)"
+  },
+  {
+   "code": "iaiyt",
+   "why": "page + blog + catalog; flagship price"
+  }
+ ],
+ "measure": "nostr readback, GSC post-verify, gumroad matrix recheck, sales poll"
+}
