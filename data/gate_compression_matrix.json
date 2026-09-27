@@ -1,0 +1,120 @@
+{
+ "generated": "2026-09-27T10:15:00Z",
+ "gates": [
+  {
+   "gate": "GSC_VERIFY",
+   "platform": "google",
+   "current_manual_steps": [
+    "open console",
+    "add property",
+    "choose method",
+    "copy token",
+    "hand to factory",
+    "press verify"
+   ],
+   "possible_automation": "everything except session-bound clicks (tag deploy, push, live-check, sitemap submit prep, inspection queue, recording)",
+   "one_time_authorization": "n/a (no OAuth creds exist; property session only)",
+   "remaining_true_decision": "VERIFY press",
+   "automatic_follow_through": "submit sitemap, inspect 5 urls, record, T1 ACTIVE (except GSC-number reads need dashboard paste/OAuth)",
+   "tech_path_audit": "API: no (needs OAuth). Browser automation: needs session (human). Bypass: prohibited. VERDICT: irreducible to 1 click",
+   "anti_loop_proof": [
+    "op: VERIFY press",
+    "no API/OAuth/browser path without human session",
+    "one-time auth impossible (session-bound)",
+    "surrounding workflow 100% automated",
+    "single action already",
+    "after: full auto sequence"
+   ]
+  },
+  {
+   "gate": "GUMROAD_AFFILIATES_CHECK",
+   "platform": "gumroad dashboard",
+   "current_manual_steps": [
+    "open dashboard",
+    "read opt-in state",
+    "report back"
+   ],
+   "possible_automation": "none (state API-invisible, no affiliate API)",
+   "one_time_authorization": "n/a",
+   "remaining_true_decision": "read + report state",
+   "automatic_follow_through": "T2 recruit workflow or closed-state record",
+   "tech_path_audit": "API: no endpoint. Browser: needs login. VERDICT: 5-min human read",
+   "anti_loop_proof": [
+    "op: read opt-in flag",
+    "no API/surface exposes it",
+    "n/a",
+    "T2 fully prepped",
+    "single read",
+    "after: auto T2"
+   ]
+  },
+  {
+   "gate": "SHOPIFY_SESSION",
+   "platform": "shopify admin",
+   "current_manual_steps": [
+    "login",
+    "import CSV",
+    "install app",
+    "attach zips",
+    "collections",
+    "plan",
+    "gateway KYC",
+    "test",
+    "unpassword"
+   ],
+   "possible_automation": "none without Admin API token, which itself needs owner creation",
+   "one_time_authorization": "custom-app token creation converts future work to API (still owner-created once)",
+   "remaining_true_decision": "session + billing + KYC approvals",
+   "automatic_follow_through": "storefront audit monitoring, sales polling",
+   "tech_path_audit": "API: needs owner-created token. Browser: login+CAPTCHA prohibited to bypass. VERDICT: one session",
+   "anti_loop_proof": [
+    "op: admin+billing+KYC",
+    "no legal path without owner",
+    "token creation IS the one-time auth (still human)",
+    "all assets prepped",
+    "single session",
+    "after: auto monitor"
+   ]
+  },
+  {
+   "gate": "PADDLE_ONBOARDING",
+   "platform": "vendors.paddle.com",
+   "current_manual_steps": [
+    "complete onboarding forms"
+   ],
+   "possible_automation": "status polling armed; nothing else without account",
+   "one_time_authorization": "the onboarding itself",
+   "remaining_true_decision": "identity/business approval",
+   "automatic_follow_through": "flip detection, notify, route checkouts",
+   "tech_path_audit": "API: account-bound. VERDICT: human process",
+   "anti_loop_proof": [
+    "op: KYC/business verify",
+    "no delegation possible",
+    "n/a",
+    "monitor armed",
+    "single process",
+    "after: auto"
+   ]
+  },
+  {
+   "gate": "AFFILIATE_SIGNUPS",
+   "platform": "baremetrics/hostaway/lemsubs",
+   "current_manual_steps": [
+    "join with own identity (x3)"
+   ],
+   "possible_automation": "research done; link placement + disclosure + tracking prepped",
+   "one_time_authorization": "each signup",
+   "remaining_true_decision": "identity-bound join",
+   "automatic_follow_through": "place links, track clicks, record commissions",
+   "tech_path_audit": "API: none for joining. Browser: identity fraud if automated. VERDICT: human joins",
+   "anti_loop_proof": [
+    "op: identity join",
+    "automation = fake identity, prohibited",
+    "n/a",
+    "placement prepped",
+    "3 joins",
+    "after: auto track"
+   ]
+  }
+ ]
+}

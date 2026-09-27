@@ -1,0 +1,6 @@
+{
+ "generated": "2026-09-27T10:15:00Z",
+ "architecture": "AUTHORIZE_SESSION -> SECURE_STORE -> WORKER -> ACT -> VERIFY -> EVIDENCE -> NEXT -> NOTIFY_ON_DECISION",
+ "status": "SPECIFIED_NOT_BUILT",
+ "reason": "zero credentialed browser targets exist; building the framework now would be unused code (theater). Builds on first authorized session."
+}

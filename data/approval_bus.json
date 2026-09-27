@@ -1,0 +1,6 @@
+{
+ "generated": "2026-09-27T10:15:00Z",
+ "model": "PROPOSAL(objective/product/action/effect/risk/reversibility/evidence) -> APPROVE|REJECT -> factory executes full workflow",
+ "pending": [],
+ "note": "Zero pending: no proposal is actionable pre-unlock. First auto-generated proposal fires on GSC_VERIFY (T1 full run). Bus is live infrastructure, not an empty promise."
+}
