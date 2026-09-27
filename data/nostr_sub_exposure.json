@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-09-27T21:17:08Z",
+  "experiment_id": "EXP-SUB-001",
+  "channel": "nostr",
+  "event_id": "15e9155b7e967663fc7612c459beb27117cf811322b7ff0ee7de0d6fe95eafc3",
+  "pubkey": "52516c0300bc4127c0be79d2ff84883a503fc3b367ad644eed32b1c2a35b1a05",
+  "relays": {
+    "relay.damus.io": "OK-accepted",
+    "relay.primal.net": "OK-accepted"
+  },
+  "accepted": 2
+}

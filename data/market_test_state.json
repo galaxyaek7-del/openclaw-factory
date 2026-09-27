@@ -20,7 +20,7 @@
   "states": [
     {
       "product_id": "GF-B10-01",
-      "market_test_status": "NOT_EXPOSED",
+      "market_test_status": "EXPOSURE_EXECUTED",
       "intent_priority": 3,
       "priority_basis": "DERIVED urgency + trigger sharpness, not demand evidence",
       "audience": "US businesses with subscriptions",
@@ -30,11 +30,12 @@
       "surface": "gumroad + pages-catalog",
       "allowed_action": "passive surfaces live; value-first human posts where accounts exist",
       "founder_action": "none new (pack-1 Turo post still the single pending item)",
-      "measurement": "poll_sales (purchase=ZERO measured); all upstream NO DATA"
+      "measurement": "poll_sales (purchase=ZERO measured); all upstream NO DATA",
+      "exposure_evidence": "nostr kind:1 EXP-SUB-001, 2/2 relay OK (damus+primal)"
     },
     {
       "product_id": "GF-B10-02",
-      "market_test_status": "EXPOSURE_EXECUTED",
+      "market_test_status": "EXPERIMENT_CLOSED_WITH_EVIDENCE",
       "intent_priority": 1,
       "priority_basis": "DERIVED urgency + trigger sharpness, not demand evidence",
       "audience": "US remote sellers",
@@ -45,7 +46,10 @@
       "allowed_action": "passive surfaces live; value-first human posts where accounts exist",
       "founder_action": "none new (pack-1 Turo post still the single pending item)",
       "measurement": "poll_sales (purchase=ZERO measured); all upstream NO DATA",
-      "exposure_evidence": "nostr kind:1, 2/3 relay OK (damus+primal), event file data/nostr_nexus_exposure.json"
+      "exposure_evidence": "nostr kind:1, 2/3 relay OK (damus+primal), event file data/nostr_nexus_exposure.json",
+      "close_classification": "EXPOSURE_VERIFIED / RESPONSE_UNOBSERVED",
+      "close_note": "early close authorized; 0 replies/reactions (proven instrument), views/clicks NO DATA, reach UNKNOWN, sales 0. Not product/demand failure.",
+      "closed_at": "2026-09-27T21:17:25Z"
     },
     {
       "product_id": "GF-B10-03",
@@ -159,5 +163,7 @@
       "founder_action": "none new (pack-1 Turo post still the single pending item)",
       "measurement": "poll_sales (purchase=ZERO measured); all upstream NO DATA"
     }
-  ]
+  ],
+  "active_test": "EXP-SUB-001",
+  "operating_state": "REAL_MARKET_TEST_ACTIVE"
 }
