@@ -1,0 +1,49 @@
+{
+ "generated": "2026-09-27T18:00:00Z",
+ "audiences": [
+  {
+   "id": "AUD_STR_HOSTS",
+   "problem": "denied damage claims",
+   "where": "r/airbnb_hosts, r/AirBnBHosts",
+   "pain_evidence": "5+ threads, $1500-$8500 stakes (their claims, ESTIMATED values)",
+   "offer": "xwbbb $49",
+   "allowed_action": "human helpful replies",
+   "measurement": "dashboard + sales poll",
+   "blocker": "human account",
+   "experiment": "AIRBNB_DISPUTE_EVIDENCE_V1 (built)"
+  },
+  {
+   "id": "AUD_TURO",
+   "problem": "false/guest-host damage disputes",
+   "where": "r/turo (guests + hosts threads, 2023-2026)",
+   "pain_evidence": "false smoking claims, post-review claims, off-platform pressure (OBSERVED threads)",
+   "offer": "adyvd $29",
+   "allowed_action": "human helpful replies",
+   "measurement": "dashboard + sales poll",
+   "blocker": "human account",
+   "experiment": "TO_BUILD on approval of pattern"
+  },
+  {
+   "id": "AUD_SAAS_WASTE",
+   "problem": "subscription sprawl ($2K-$40K/yr anecdotes = THEIR claims)",
+   "where": "r/smallbusiness, r/SaaS (2025-2026 threads)",
+   "pain_evidence": "spreadsheet pain, renewal surprises (OBSERVED threads)",
+   "offer": "pahxdv $49",
+   "allowed_action": "human helpful replies",
+   "measurement": "dashboard + sales poll",
+   "blocker": "human account",
+   "experiment": "TO_BUILD on approval of pattern"
+  },
+  {
+   "id": "AUD_ETSY_SELLERS",
+   "problem": "suspensions/appeals, strict sub rules incl. removal checklist",
+   "where": "r/Etsy, r/EtsySellers, r/EtsyCommunity",
+   "pain_evidence": "denied appeals, bot flags, 6-month window (OBSERVED threads + official help)",
+   "offer": "fgruzn $29",
+   "allowed_action": "human replies FOLLOWING sub checklist rules",
+   "measurement": "dashboard + sales poll",
+   "blocker": "human account + strict moderation",
+   "experiment": "TO_BUILD on approval of pattern"
+  }
+ ]
+}

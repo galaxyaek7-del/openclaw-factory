@@ -1,0 +1,55 @@
+{
+ "experiment_id": "AIRBNB_DISPUTE_EVIDENCE_V1",
+ "problem": "Hosts facing rejected damage/dispute evidence (14-day misses, shifting denial reasons)",
+ "product": {
+  "code": "xwbbb",
+  "title": "Short-Term Rental Damage Claim Evidence Kit",
+  "price_usd": 49,
+  "url": "https://aekraft.gumroad.com/l/xwbbb"
+ },
+ "resource": "https://telegra.ph/Airbnb-Damage-Claims-in-2026-What-Hosts-Must-Document-14-Day-Rule-09-27",
+ "surface": "r/airbnb_hosts (+ r/AirBnBHosts)",
+ "rules_status": "NOT machine-readable (JS-rendered); posture: help-first, link only if genuinely useful, expect strict moderation",
+ "candidates": [
+  {
+   "thread": "1kzb3em (flooded trailer, denied: not responsible guest)",
+   "fit": "causation-proof problem = our core topic",
+   "draft": "The causation fight is the hardest part. What worked for others: a dated baseline (pre-stay photos from the same positions every turnover) plus the guest message thread showing notice. Your appeal should foreground the loss-of-income angle the reps themselves mentioned, with booking records attached. I wrote up the full documentation method here [Telegraph link] after researching the April 2026 terms \u2014 disclosure: I also sell a $49 evidence-kit with the checklists if you want it done-for-you."
+  },
+  {
+   "thread": "1ddc02n ($1500 damage, 3 days past 14-day window)",
+   "fit": "missed-window pain = our headline topic",
+   "draft": "That 14-day window from checkout is the single most common denial reason \u2014 most hosts learn it exists the way you did. For this case, lead the appeal with everything timestamped you do have and be explicit about the 3-day delay reason. Going forward: a fixed photo set after every clean kills this entire failure mode. Method here [Telegraph link]; disclosure as above."
+  },
+  {
+   "thread": "1mvlv75 (shifting denial reasons, guest admitted damage)",
+   "fit": "evidence-standard dispute under 2026 terms",
+   "draft": "Shifting reasons usually means no single reviewer owned the file. Re-file as one organized batch: before/after photos, invoice on letterhead, ownership proof, message thread showing admission. Reference the April 2026 legitimate-and-verifiable-evidence standard explicitly. Full method [Telegraph link]; disclosure as above."
+  }
+ ],
+ "link_policy": "Telegraph guide link only where contextually decisive; product link only if asked or explicitly permitted; never both unsolicited",
+ "disclosure": "always state seller interest when linking own assets",
+ "fallback_no_links": "post the core advice text only (deadlines + baseline method), no URLs",
+ "tracking": {
+  "experiment_id": "AIRBNB_DISPUTE_EVIDENCE_V1",
+  "channel": "reddit_manual",
+  "content_ids": [
+   "1kzb3em",
+   "1ddc02n",
+   "1mvlv75"
+  ],
+  "destination": "telegraph guide -> xwbbb gumroad",
+  "measurement": "Gumroad dashboard reads (founder) + sales poll; Telegraph views; reply score/replies observed manually",
+  "limitation": "no UTM guarantee on Gumroad; attribution is directional, not exact"
+ },
+ "success_ladder": [
+  "DISCOVERY",
+  "REFERRAL",
+  "VISIT",
+  "ENGAGEMENT",
+  "INTENT",
+  "CHECKOUT",
+  "VERIFIED_SALE"
+ ],
+ "status": "AWAITING_FOUNDER_APPROVE_THEN_HUMAN_POST"
+}
