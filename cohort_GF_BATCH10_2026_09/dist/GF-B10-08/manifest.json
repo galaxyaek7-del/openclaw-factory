@@ -1,0 +1,20 @@
+{
+  "cohort": "GF_BATCH10_2026_09",
+  "id": "GF-B10-08",
+  "slug": "dtc_returns_abuse_playbook",
+  "name": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+  "price_cents": 5900,
+  "guide_words": 5864,
+  "guide_pages": 14,
+  "bundle": "dtc_returns_abuse_playbook_bundle.zip",
+  "bundle_bytes": 167072,
+  "files": [
+    "README.txt",
+    "appeal_review_form.docx",
+    "denial_with_reason_letter.docx",
+    "dtc_returns_abuse_playbook_guide.pdf",
+    "dtc_returns_abuse_playbook_workbook.xlsx",
+    "photo_requirement_notice.docx",
+    "tiered_returns_policy.docx"
+  ]
+}

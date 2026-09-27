@@ -1,0 +1,59 @@
+{
+  "name": "Subscription Renewal Compliance Kit",
+  "short_description": "Organize disclosure, consent, and cancellation reviews for subscription offers with checklists, test scripts, and a 30/60/90-day plan.",
+  "long_description": "A practical operations kit for US subscription and membership sellers reviewing auto-renewal disclosure, consent records, and cancellation paths under ROSCA and state automatic-renewal statutes. Includes an operating guide, a five-sheet Excel workbook with status formulas, and three editable Word templates. Structures evidence filing and counsel handoff without promising any legal outcome.",
+  "buyer_persona": "Founders and operations managers at US businesses with subscriptions, memberships, or auto-renewing service agreements who need an organized review method and evidence file.",
+  "problem_statement": "Auto-renewal disclosure, consent, and cancellation practices face federal baseline rules plus roughly 30 state statutes, multi-million-dollar settlements in 2024-2026, and a March 2026 FTC ANPRM signaling possible federal movement. Teams lack a structured way to review every surface and channel.",
+  "outcome_statement": "A dated baseline of current disclosure, consent, and cancellation practice, logged gaps with owners, state verification dates tracked, and a sequenced remediation plan with filed evidence.",
+  "whats_included": "Operating guide PDF (15 sections); Excel workbook with 5 sheets: Disclosure Audit Log, Consent-Flow Checklist, Cancellation-Path Test Log, State-Law Register, Remediation Tracker; 3 Word templates: cancellation-path test script, disclosure review sign-off, remediation plan memo; README with file map.",
+  "who_for": [
+    "US subscription and membership sellers",
+    "Founders approving customer-facing language",
+    "Operations and support leads running audits",
+    "Teams preparing a structured package for counsel"
+  ],
+  "who_not_for": [
+    "Buyers seeking legal advice or legal conclusions",
+    "Buyers wanting pre-filled state-law summaries",
+    "Businesses outside recurring-charge models",
+    "Buyers expecting automated monitoring software"
+  ],
+  "how_to_use": "Run the two-hour quick start, then work the five passes in order: map surfaces, audit disclosure, audit consent, test cancellation, consolidate into the tracker and remediation plan with counsel review.",
+  "limitations": "General operational information only. Ships with no pre-filled state requirements. Timed trials reflect test conditions on the test date. Workbook rollups describe evidence completeness, not legal standing. Verify state law locally with qualified counsel.",
+  "disclaimer": "Not legal advice, verify with qualified counsel. Verify state law locally for every state where you market or hold customers. This kit makes no promise about legal outcomes and never claims compliance guarantees or specific penalty immunity.",
+  "faq": [
+    {
+      "q": "Does this kit replace counsel?",
+      "a": "No. It organizes evidence and questions so counsel can advise efficiently."
+    },
+    {
+      "q": "Does it include state-law summaries?",
+      "a": "No. The tracker is an index of verification work; each entry requires local verification with counsel."
+    },
+    {
+      "q": "How long is the guide?",
+      "a": "The guide exceeds 5500 words across 15 sections plus checklists and illustrative examples."
+    },
+    {
+      "q": "What templates are included?",
+      "a": "Cancellation-path test script, disclosure review sign-off, and a 30/60/90-day remediation plan memo, all editable."
+    },
+    {
+      "q": "How do we handle the FTC ANPRM?",
+      "a": "Keep the audit loop current, log evidence by date, and ask counsel to assess any proposal text against your surfaces."
+    }
+  ],
+  "keywords": [
+    "subscription compliance",
+    "auto-renewal",
+    "ROSCA",
+    "cancellation testing",
+    "consent audit",
+    "state auto-renewal laws",
+    "remediation plan"
+  ],
+  "category": "Operations and risk",
+  "version": "1.0",
+  "changelog": "1.0 (September 2026): initial release with guide, five-sheet workbook, and three templates.",
+  "support": "File and usage support by email within 7 days of purchase. Legal interpretation is not provided; consult qualified counsel."
+}

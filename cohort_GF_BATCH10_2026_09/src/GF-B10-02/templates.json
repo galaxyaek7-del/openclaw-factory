@@ -1,0 +1,163 @@
+{
+  "templates": [
+    {
+      "filename_docx": "nexus_review_memo.docx",
+      "title": "Nexus Review Memo",
+      "sections": [
+        {
+          "heading": "Purpose",
+          "body": [
+            "This memo records the monthly rolling-total read and the CPA review items opened. It makes no registration or filing decision. Not tax advice, verify with a CPA; thresholds change, re-verify with each state. All example entries are illustrative."
+          ]
+        },
+        {
+          "heading": "Period and inputs",
+          "body": [
+            {
+              "fields": [
+                "Review period:",
+                "Log months covered:",
+                "Export dates filed:",
+                "Register version date:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "States reviewed",
+          "body": [
+            {
+              "fields": [
+                "State and rolling total:",
+                "Threshold verification date and source:",
+                "Channel mapping confirmed:",
+                "Review item opened (Y/N with ID):"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Questions for CPA",
+          "body": [
+            {
+              "fields": [
+                "Measurement-window questions:",
+                "Channel-inclusion questions:",
+                "Timing questions:",
+                "Next CPA session date:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Filing",
+          "body": [
+            "Attach the log excerpt and register export. File with the monthly evidence set."
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "registration_action_list.docx",
+      "title": "Registration Action List",
+      "sections": [
+        {
+          "heading": "Purpose",
+          "body": [
+            "This list moves one CPA-confirmed state from confirmation through calendar-row creation. One copy per state. Not tax advice, verify with a CPA."
+          ]
+        },
+        {
+          "heading": "Confirmation",
+          "body": [
+            {
+              "fields": [
+                "State:",
+                "CPA confirmation date:",
+                "Timing instruction from CPA:",
+                "Owner:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Steps",
+          "body": [
+            {
+              "fields": [
+                "Portal and form used:",
+                "Submission date and reference:",
+                "Account reference secure-storage date:",
+                "Frequency assigned and source:",
+                "Calendar rows created through period:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Close-out",
+          "body": [
+            {
+              "fields": [
+                "Confirmation filed (Y/N):",
+                "Overall status:",
+                "Evidence folder:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "cpa_handoff_summary.docx",
+      "title": "CPA Handoff Summary",
+      "sections": [
+        {
+          "heading": "Purpose",
+          "body": [
+            "This summary gives the CPA reconciled history, verification dates, and explicit questions. The CPA draws all conclusions. Not tax advice, verify with a CPA."
+          ]
+        },
+        {
+          "heading": "History attached",
+          "body": [
+            {
+              "fields": [
+                "Log range attached:",
+                "Reconciliation notes attached:",
+                "Register export date:",
+                "Prior CPA notes addressed:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Verification requests",
+          "body": [
+            {
+              "fields": [
+                "States needing threshold verification:",
+                "Measurement-window questions:",
+                "Taxability questions:",
+                "Timing questions:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Decisions requested",
+          "body": [
+            {
+              "fields": [
+                "Registration timing decisions:",
+                "Filing frequency confirmations:",
+                "Record retention schedule:",
+                "Next review date:"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

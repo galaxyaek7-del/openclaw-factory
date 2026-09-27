@@ -1,0 +1,21 @@
+{
+  "cohort": "GF_BATCH10_2026_09",
+  "id": "GF-B10-06",
+  "slug": "dsar_response_kit",
+  "name": "DSAR Response Kit ($59)",
+  "price_cents": 5900,
+  "guide_words": 5620,
+  "guide_pages": 11,
+  "bundle": "dsar_response_kit_bundle.zip",
+  "bundle_bytes": 198866,
+  "files": [
+    "README.txt",
+    "dsar_response_kit_guide.pdf",
+    "dsar_response_kit_workbook.xlsx",
+    "intake_form_fields.docx",
+    "letter_access_fulfilled.docx",
+    "letter_deletion_confirmed.docx",
+    "letter_extension_notice.docx",
+    "letter_rejection_with_basis.docx"
+  ]
+}

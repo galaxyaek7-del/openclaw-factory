@@ -1,0 +1,120 @@
+{
+  "templates": [
+    {
+      "filename_docx": "tiered_returns_policy.docx",
+      "title": "Tiered Returns Policy Text",
+      "sections": [
+        {
+          "heading": "Standard, review, and restricted paths",
+          "body": [
+            "State the window, condition standard, start steps, photo rules for damage claims, inspection timeline, refund method, and appeal rights in plain terms for each tier.",
+            {
+              "fields": [
+                "Return window:",
+                "Condition standard:",
+                "How to start a return:",
+                "Photo requirement for damage claims:",
+                "Inspection timeline:",
+                "Refund or exchange method:",
+                "Appeal path and deadline:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Limits and review",
+          "body": [
+            "Describe narrow time-bound limits, review dates, and release criteria without accusatory language.",
+            {
+              "fields": [
+                "Restricted actions and scope:",
+                "Duration and review date:",
+                "Release criteria:",
+                "Reviewer role:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "denial_with_reason_letter.docx",
+      "title": "Denial with Reason Letter",
+      "sections": [
+        {
+          "heading": "Facts and findings",
+          "body": [
+            "Record case timeline, inspection findings with photo references, and policy lines applied in factual neutral terms.",
+            {
+              "fields": [
+                "Case and account references:",
+                "Relevant case timeline with dates and reasons:",
+                "Inspection findings with photo refs:",
+                "Policy lines applied:",
+                "Decision and scope:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Appeal instructions",
+          "body": [
+            "State how and by when to appeal and who reviews.",
+            {
+              "fields": [
+                "Appeal channel:",
+                "Appeal deadline:",
+                "Appeal reviewer:",
+                "Duration and review date if restricted:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "appeal_review_form.docx",
+      "title": "Appeal Review Form",
+      "sections": [
+        {
+          "heading": "Second-look review",
+          "body": [
+            "Re-verify inspection, pattern count, policy application, and customer statement before deciding to uphold, modify, or reverse.",
+            {
+              "fields": [
+                "Appeal receipt date and channel:",
+                "File re-read confirmation:",
+                "Inspection re-verification:",
+                "Pattern re-count:",
+                "Customer statement weighed:",
+                "Outcome with reasons:",
+                "Customer notification date:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "photo_requirement_notice.docx",
+      "title": "Photo Requirement Notice",
+      "sections": [
+        {
+          "heading": "What to send",
+          "body": [
+            "Tell the customer what photos are needed for damage claims, where to send them, and the timeline.",
+            {
+              "fields": [
+                "Photos needed:",
+                "Send to:",
+                "Timeline:",
+                "What happens if photos arrive late:",
+                "Contact for help:"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "cohort": "GF_BATCH10_2026_09",
+  "id": "GF-B10-05",
+  "slug": "freelancer_scope_control",
+  "name": "Freelancer Scope Control Kit ($39)",
+  "price_cents": 3900,
+  "guide_words": 5651,
+  "guide_pages": 12,
+  "bundle": "freelancer_scope_control_bundle.zip",
+  "bundle_bytes": 167522,
+  "files": [
+    "README.txt",
+    "SOW_with_exclusions_clause.docx",
+    "change_order_form.docx",
+    "freelancer_scope_control_guide.pdf",
+    "freelancer_scope_control_workbook.xlsx",
+    "pushback_message_scripts.docx",
+    "revision_limit_clause_insert.docx"
+  ]
+}

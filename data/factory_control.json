@@ -1,1 +1,14 @@
-{"effective":"2026-09-27T22:40:00Z","new_product_rule":"BLOCKED during demand test — new product requires EVIDENCE-BASED OPPORTUNITY record; NO-SALE never justifies new products","production_hold":true,"scope":"all new products (#11+), price/offer changes on adyvd, new automation surfaces beyond approved portfolio","unlock_conditions":["verified external demand signal with evidence id","founder explicit override with reason"]}
+{
+  "effective": "2026-09-27T22:40:00Z",
+  "new_product_rule": "BLOCKED during demand test — new product requires EVIDENCE-BASED OPPORTUNITY record; NO-SALE never justifies new products",
+  "production_hold": false,
+  "scope": "local+computational+content+file generation+QA+Gumroad API ops with existing founder-provided token; security/financial/KYC/social gates untouched",
+  "unlock_conditions": [
+    "verified external demand signal with evidence id",
+    "founder explicit override with reason"
+  ],
+  "product_factory": "ACTIVE",
+  "unblocked_by": "founder explicit override 2026-09-27 (UNBLOCK PRODUCT FACTORY directive)",
+  "turo_test": "SEPARATE (unchanged)",
+  "reddit_pack1": "PENDING (unchanged)"
+}

@@ -1,0 +1,20 @@
+{
+  "cohort": "GF_BATCH10_2026_09",
+  "id": "GF-B10-10",
+  "slug": "foodtruck_permit_navigator",
+  "name": "Food Truck Permit Navigator",
+  "price_cents": 5900,
+  "guide_words": 5927,
+  "guide_pages": 12,
+  "bundle": "foodtruck_permit_navigator_bundle.zip",
+  "bundle_bytes": 167645,
+  "files": [
+    "README.txt",
+    "agency_contact_sheet.docx",
+    "commissary_comparison_sheet.docx",
+    "document_packet_checklist.docx",
+    "foodtruck_permit_navigator_guide.pdf",
+    "foodtruck_permit_navigator_workbook.xlsx",
+    "renewal_reminder_setup_guide.docx"
+  ]
+}

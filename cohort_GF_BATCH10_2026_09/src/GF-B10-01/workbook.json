@@ -1,0 +1,353 @@
+{
+  "workbook_filename": "subscription_renewal_compliance_workbook.xlsx",
+  "sheets": [
+    {
+      "name": "Disclosure Audit Log",
+      "columns": [
+        "Touchpoint (illustrative label)",
+        "Address or script name",
+        "Language version",
+        "Review date",
+        "Content (present/partial/missing)",
+        "Prominence (present/partial/missing)",
+        "Proximity (present/partial/missing)",
+        "Retainability (present/partial/missing)",
+        "Open issues count",
+        "Evidence filed (Y/N)",
+        "Owner",
+        "Finding note"
+      ],
+      "example_rows": [
+        [
+          "Plan page - monthly plan (illustrative)",
+          "example.com/plans",
+          "v2026-09-01",
+          "2026-09-10",
+          "partial",
+          "present",
+          "missing",
+          "present",
+          2,
+          "Y",
+          "Ops Manager",
+          "Illustrative: renewal timing sentence not adjacent to button."
+        ],
+        [
+          "Checkout page - annual plan (illustrative)",
+          "example.com/checkout",
+          "v2026-09-01",
+          "2026-09-10",
+          "present",
+          "present",
+          "present",
+          "present",
+          0,
+          "Y",
+          "Ops Manager",
+          "Illustrative: all four attributes observed present."
+        ],
+        [
+          "Confirmation email (illustrative)",
+          "order confirmation email",
+          "v2026-09-01",
+          "2026-09-10",
+          "partial",
+          "present",
+          "present",
+          "missing",
+          2,
+          "N",
+          "Support Lead",
+          "Illustrative: next billing date and cancellation method absent."
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "I5",
+          "formula": "=COUNTIF(E2:H4,\"missing\")+COUNTIF(E2:H4,\"partial\")"
+        },
+        {
+          "cell": "I6",
+          "formula": "=COUNTIF(I2:I4,\">0\")"
+        },
+        {
+          "cell": "J5",
+          "formula": "=COUNTIF(J2:J4,\"N\")"
+        },
+        {
+          "cell": "J6",
+          "formula": "=COUNTA(A2:A100)"
+        }
+      ],
+      "notes": "One row per enrollment surface and variant. Enter present, partial, or missing per attribute. Example rows are illustrative only. Verify state law locally and confirm language with qualified counsel. Column I open-issue counts are illustrative tallies, not legal conclusions."
+    },
+    {
+      "name": "Consent-Flow Checklist",
+      "columns": [
+        "Enrollment surface (illustrative)",
+        "Separate step (Y/N)",
+        "Adjacent language (Y/N)",
+        "No pre-checked box (Y/N)",
+        "Record has version+time (Y/N)",
+        "Retrievable by support (Y/N)",
+        "Confirmation restates renewal (Y/N)",
+        "Negative count",
+        "Owner",
+        "Re-test date",
+        "Note"
+      ],
+      "example_rows": [
+        [
+          "Online checkout (illustrative)",
+          "Y",
+          "Y",
+          "Y",
+          "N",
+          "partial",
+          "Y",
+          2,
+          "Ops Manager",
+          "2026-09-17",
+          "Illustrative: version storage gap."
+        ],
+        [
+          "Phone sales script (illustrative)",
+          "Y",
+          "Y",
+          "Y",
+          "Y",
+          "N",
+          "N",
+          2,
+          "Support Lead",
+          "2026-09-17",
+          "Illustrative: retrieval and confirmation gaps."
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "H5",
+          "formula": "=COUNTIF(B2:G4,\"N\")+COUNTIF(B2:G4,\"partial\")"
+        },
+        {
+          "cell": "H6",
+          "formula": "=SUM(H2:H4)"
+        },
+        {
+          "cell": "K5",
+          "formula": "=COUNTA(A2:A100)"
+        }
+      ],
+      "notes": "Answer each question per surface. Example rows illustrative. Negative answers become remediation items. Confirm record design with qualified counsel."
+    },
+    {
+      "name": "Cancellation-Path Test Log",
+      "columns": [
+        "Trial ID (illustrative)",
+        "Channel",
+        "Tester role",
+        "Trial date",
+        "Start point",
+        "Steps or clicks",
+        "Elapsed minutes",
+        "Confirmation received (Y/N)",
+        "Billing stop verified (Y/N)",
+        "Pass (Y/N)",
+        "Obstacle note"
+      ],
+      "example_rows": [
+        [
+          "T-001 (illustrative)",
+          "Online self-service",
+          "Support Lead",
+          "2026-09-10",
+          "Account home",
+          3,
+          4,
+          "Y",
+          "Y",
+          "Y",
+          "Illustrative: emailed confirmation filed."
+        ],
+        [
+          "T-002 (illustrative)",
+          "Phone",
+          "Ops Manager",
+          "2026-09-10",
+          "Help page number",
+          6,
+          22,
+          "N",
+          "N",
+          "N",
+          "Illustrative: verbal assurance only, charge still scheduled."
+        ],
+        [
+          "T-003 (illustrative)",
+          "Email request",
+          "Ops Manager",
+          "2026-09-11",
+          "Support address",
+          2,
+          1440,
+          "Y",
+          "Y",
+          "Y",
+          "Illustrative: slow response, confirmation eventually received."
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "G6",
+          "formula": "=AVERAGE(G2:G5)"
+        },
+        {
+          "cell": "G7",
+          "formula": "=COUNTIF(J2:J100,\"N\")"
+        },
+        {
+          "cell": "G8",
+          "formula": "=COUNTIF(J2:J100,\"Y\")"
+        },
+        {
+          "cell": "K6",
+          "formula": "=IF(G7>0,\"retest required\",\"all passing\")"
+        }
+      ],
+      "notes": "Time each trial end to end and verify billing stop. Example rows illustrative only. Rotate testers and include one locked-out scenario per quarter."
+    },
+    {
+      "name": "State-Law Register",
+      "columns": [
+        "State",
+        "Customers (illustrative count)",
+        "Last verified date",
+        "Verified with (counsel source)",
+        "Operational requirements (per counsel)",
+        "Linked disclosure rows",
+        "Next re-verify date",
+        "Days since verified",
+        "Status (verified/pending/stale)"
+      ],
+      "example_rows": [
+        [
+          "Example State A (illustrative)",
+          120,
+          "2026-09-01",
+          "Outside counsel memo Sep 2026 (illustrative)",
+          "Illustrative: reminder and cancellation entries per counsel; verify locally.",
+          "Disclosure rows 1-3",
+          "2026-12-01",
+          9,
+          "verified"
+        ],
+        [
+          "Example State B (illustrative)",
+          40,
+          "",
+          "",
+          "Pending verification - do not rely.",
+          "",
+          "2026-10-01",
+          "",
+          "pending"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "H4",
+          "formula": "=IF(C2=\"\",\"\",TODAY()-C2)"
+        },
+        {
+          "cell": "H5",
+          "formula": "=IF(C3=\"\",\"\",TODAY()-C3)"
+        },
+        {
+          "cell": "I4",
+          "formula": "=IF(C2=\"\",\"pending\",IF(H4>90,\"stale\",\"verified\"))"
+        },
+        {
+          "cell": "B6",
+          "formula": "=SUM(B2:B3)"
+        }
+      ],
+      "notes": "Index of verification work only. Ships with no pre-filled requirements. Verify state law locally with qualified counsel. Example rows illustrative."
+    },
+    {
+      "name": "Remediation Tracker",
+      "columns": [
+        "Item ID",
+        "Finding source",
+        "Description",
+        "Severity (urgent/near-term/horizon)",
+        "Window (30/60/90)",
+        "Owner",
+        "Due date",
+        "Days open",
+        "Counsel review (pending/done)",
+        "Evidence attached (Y/N)",
+        "Status (open/closed)"
+      ],
+      "example_rows": [
+        [
+          "R-01 (illustrative)",
+          "Disclosure pass",
+          "Illustrative: move renewal sentence adjacent to button.",
+          "urgent",
+          30,
+          "Ops Manager",
+          "2026-10-10",
+          0,
+          "pending",
+          "N",
+          "open"
+        ],
+        [
+          "R-02 (illustrative)",
+          "Cancellation pass",
+          "Illustrative: add written confirmation to phone path.",
+          "urgent",
+          30,
+          "Support Lead",
+          "2026-10-10",
+          0,
+          "pending",
+          "N",
+          "open"
+        ],
+        [
+          "R-03 (illustrative)",
+          "Consent pass",
+          "Illustrative: add terms-version storage and retrieval test.",
+          "near-term",
+          60,
+          "Ops Manager",
+          "2026-11-10",
+          0,
+          "pending",
+          "N",
+          "open"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "H5",
+          "formula": "=IF(G2=\"\",\"\",TODAY()-G2+30)"
+        },
+        {
+          "cell": "H6",
+          "formula": "=COUNTIF(K2:K100,\"open\")"
+        },
+        {
+          "cell": "H7",
+          "formula": "=COUNTIF(K2:K100,\"closed\")"
+        },
+        {
+          "cell": "H8",
+          "formula": "=COUNTIFS(K2:K100,\"open\",G2:G100,\"<\"&TODAY())"
+        }
+      ],
+      "notes": "Severity is operational priority, not a legal conclusion. Close items only with filed evidence and re-test. Example rows illustrative."
+    }
+  ]
+}

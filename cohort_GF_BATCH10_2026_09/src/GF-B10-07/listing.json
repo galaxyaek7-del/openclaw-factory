@@ -1,0 +1,20 @@
+{
+  "name": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+  "short_description": "A dated rent ledger system with running balances, partial-payment log, notice-content checklist, fee register, and year-end summary for independent landlords.",
+  "long_description": "This kit helps self-managing landlords keep one dated ledger per tenancy with running-balance formulas, oldest-balance-first payment application, proof per line, corrections as new dated lines, a notice-content preparation checklist and tracker, a lease-tied fee register, a partial-payment log, and a year-end summary sheet that organizes figures for CPA handoff. It focuses on daily discipline, weekly reconciliation, month-end close, and accurate notice-content preparation under verified local rules.",
+  "buyer_persona": "US independent landlords managing their own rentals who collect rent themselves and want clear dated records for disputes, notices, and tax handoff.",
+  "problem_statement": "Sloppy payment records create confusion about what was paid and when, defective pay-or-quit notice figures restart timelines, and commingled records make tax time disorderly.",
+  "outcome_statement": "A steady routine of dated entries, preserved history, per-tenancy ledgers, documented application order, filed proof, and lease-tied fees that supports clear review and orderly handoff.",
+  "whats_included": "Guide with method and checklists, five-sheet workbook with balance and totals formulas, payment receipt form, notice preparation checklist, year-end handoff summary for CPA.",
+  "who_for": "Self-managing owners of small US rental portfolios who enter their own lines and maintain their own proof files.",
+  "who_not_for": "Owners seeking automated collection software, state-specific legal forms, tax filing software, or non-US notice and tax guidance.",
+  "how_to_use": "Read the guide, create one ledger per tenancy, record daily with proof, reconcile weekly, close monthly, prepare notice facts with cutoff math, and assemble year-end summaries for the CPA.",
+  "limitations": "Not legal or tax advice. Does not provide legal notice forms and does not determine tax treatment. Notice periods, service methods, fee caps, and grace rules vary and must be verified locally. Formulas compute arithmetic only.",
+  "disclaimer": "Not legal or tax advice; verify notice rules and fee caps with your state/counsel/CPA. Records support clarity and preparation. No outcome is promised.",
+  "faq": "Q: Is this a legal notice form set? A: No, it is a fact-preparation checklist and tracker. Q: Does the summary file taxes? A: No, it organizes figures for a CPA. Q: Can I edit old lines to fix errors? A: No, add new dated correction lines. Q: How are partial payments handled? A: One payment line plus a log split oldest first with remainder shown.",
+  "keywords": "rent ledger, landlord records, payment log, notice checklist, partial payment, fee register, Schedule E summary, self management",
+  "category": "Real Estate Recordkeeping",
+  "version": "1.0",
+  "changelog": "Version 1.0: initial release with guide, five-sheet workbook, and three templates.",
+  "support": "Email support for file access and use questions. For legal questions contact counsel. For tax questions contact a CPA."
+}

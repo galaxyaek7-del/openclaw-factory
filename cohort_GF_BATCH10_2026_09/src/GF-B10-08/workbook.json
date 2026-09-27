@@ -1,0 +1,200 @@
+{
+  "workbook_filename": "dtc_returns_abuse_playbook_workbook.xlsx",
+  "sheets": [
+    {
+      "name": "Return Case Log",
+      "columns": [
+        "Case ID",
+        "Date Received",
+        "Account ID",
+        "Order Ref",
+        "Item and Value Tier",
+        "Reason Primary",
+        "Photo Status",
+        "Inspection Result",
+        "Case Points",
+        "Account Points",
+        "Total Score",
+        "Threshold Flag",
+        "Outcome",
+        "Reviewer",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "Illustrative case row 1",
+          "Illustrative date",
+          "Illustrative account",
+          "Illustrative order ref",
+          "Illustrative item tier",
+          "Illustrative reason size or fit",
+          "Not required",
+          "Pass",
+          2,
+          1,
+          3,
+          "Standard",
+          "Approve exchange",
+          "Illustrative reviewer",
+          "Illustrative note"
+        ],
+        [
+          "Illustrative case row 2",
+          "Illustrative date",
+          "Illustrative account",
+          "Illustrative order ref",
+          "Illustrative item tier",
+          "Illustrative reason damage claim",
+          "Requested and received",
+          "Flag",
+          6,
+          5,
+          11,
+          "Review",
+          "Warn with appeal",
+          "Illustrative reviewer",
+          "Illustrative note"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "K2",
+          "formula": "=I2+J2"
+        },
+        {
+          "cell": "L2",
+          "formula": "=IF(K2>=10,\"Review\",IF(K2>=6,\"Watch\",\"Standard\"))"
+        }
+      ],
+      "notes": "One row per return. Scores compute by formula from case and account factors. Scores prioritize review only."
+    },
+    {
+      "name": "Customer Pattern Summary",
+      "columns": [
+        "Account ID",
+        "Cases in Window",
+        "Repeat Top Reason Count",
+        "Photo Compliance Rate",
+        "Mismatch Rate",
+        "Prior Warnings",
+        "Pattern Score",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "Illustrative account",
+          3,
+          2,
+          0.67,
+          0.33,
+          1,
+          7,
+          "Illustrative pattern note"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "G2",
+          "formula": "=B2*1+D2*0+E2*5+F2*3"
+        }
+      ],
+      "notes": "Aggregates cases per account for graduated decisions. Review frequency, repeats, and prior warnings together."
+    },
+    {
+      "name": "Policy Checklist Tracker",
+      "columns": [
+        "Policy Line",
+        "Applies To Tier",
+        "Case ID",
+        "Met",
+        "Evidence Ref",
+        "Reviewer",
+        "Date",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "Illustrative policy line on photos",
+          "Review tier",
+          "Illustrative case",
+          "Yes",
+          "Illustrative photo ref",
+          "Illustrative reviewer",
+          "Illustrative date",
+          "Illustrative note"
+        ]
+      ],
+      "formulas": [],
+      "notes": "Confirms each consequential step cites the policy line applied with evidence reference."
+    },
+    {
+      "name": "Inspection Log",
+      "columns": [
+        "Case ID",
+        "Item",
+        "Seals and Tags",
+        "Wear or Use Signs",
+        "Parts and Match",
+        "Packaging State",
+        "Photos Attached",
+        "Result",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "Illustrative case",
+          "Illustrative item",
+          "Illustrative seals note",
+          "Illustrative wear note",
+          "Illustrative match note",
+          "Illustrative packaging note",
+          "Yes",
+          "Flag",
+          "Illustrative specifics with photo ref"
+        ]
+      ],
+      "formulas": [],
+      "notes": "Record observable facts with specifics. Vague notes are not sufficient for review or denial."
+    },
+    {
+      "name": "Monthly Tuning Dashboard",
+      "columns": [
+        "Month",
+        "Cases Logged",
+        "Reviews Triggered",
+        "Warnings Sent",
+        "Restrictions Applied",
+        "Appeals Filed",
+        "Appeals Reversed",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "Illustrative month",
+          40,
+          8,
+          3,
+          1,
+          1,
+          0,
+          "Illustrative tuning note"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "B14",
+          "formula": "=SUM(B2:B13)"
+        },
+        {
+          "cell": "C14",
+          "formula": "=SUM(C2:C13)"
+        },
+        {
+          "cell": "G14",
+          "formula": "=IF(C14>0,G14/C14,\"Not computed\")"
+        }
+      ],
+      "notes": "Summarizes reason mix, score bands, and outcome mix from logged rows with dated change notes."
+    }
+  ]
+}

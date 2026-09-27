@@ -1,0 +1,19 @@
+{
+  "cohort": "GF_BATCH10_2026_09",
+  "id": "GF-B10-01",
+  "slug": "subscription_renewal_compliance",
+  "name": "Subscription Renewal Compliance Kit",
+  "price_cents": 6900,
+  "guide_words": 7009,
+  "guide_pages": 13,
+  "bundle": "subscription_renewal_compliance_bundle.zip",
+  "bundle_bytes": 138784,
+  "files": [
+    "README.txt",
+    "cancellation_path_test_script.docx",
+    "disclosure_review_signoff.docx",
+    "remediation_plan_memo.docx",
+    "subscription_renewal_compliance_guide.pdf",
+    "subscription_renewal_compliance_workbook.xlsx"
+  ]
+}

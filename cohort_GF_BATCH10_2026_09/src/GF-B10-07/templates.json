@@ -1,0 +1,121 @@
+{
+  "templates": [
+    {
+      "filename_docx": "payment_receipt_form.docx",
+      "title": "Payment Receipt Form",
+      "sections": [
+        {
+          "heading": "Receipt record",
+          "body": [
+            "Use one receipt per payment received. Record the facts on the day of receipt and file a copy with the ledger proof folder the same day.",
+            {
+              "fields": [
+                "Date received:",
+                "Tenancy reference:",
+                "Property and unit:",
+                "Period or open items covered:",
+                "Amount received:",
+                "Payment method:",
+                "Reference number:",
+                "Received by:",
+                "Proof filed at:",
+                "Notes:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Application note",
+          "body": [
+            "State how the payment was applied across open items, oldest first, or per lease-specified order with clause citation.",
+            {
+              "fields": [
+                "Application detail:",
+                "Lease clause if nonstandard order:",
+                "Partial-payment log ID if applicable:",
+                "Remaining balance after this receipt:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "notice_preparation_checklist.docx",
+      "title": "Notice Preparation Checklist",
+      "sections": [
+        {
+          "heading": "Cutoff and math",
+          "body": [
+            "Freeze a cutoff date and time before computing any claimed total. List every ledger line included with dates and proof references. Show the arithmetic from opening balance through charges, payments, and verified fees to the claimed total.",
+            {
+              "fields": [
+                "Cutoff date and time:",
+                "Ledger lines included:",
+                "Opening balance:",
+                "Charges added:",
+                "Payments subtracted with dates:",
+                "Verified fees added with clause citations:",
+                "Claimed total:",
+                "Re-cut needed if later payment arrives:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Identity and review",
+          "body": [
+            "Confirm identities and address exactly as shown on the lease. Record delivery facts after service. Note review status. Verify notice rules and fee caps with state or counsel.",
+            {
+              "fields": [
+                "Lease parties as on lease:",
+                "Address and unit as on lease:",
+                "Lease term:",
+                "Delivery method and facts:",
+                "Review status:",
+                "Jurisdiction verification note:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "year_end_handoff_summary.docx",
+      "title": "Year-End Handoff Summary for CPA",
+      "sections": [
+        {
+          "heading": "Properties and tenancies",
+          "body": [
+            "List each property and each tenancy active during the year with active periods. Attach per-tenancy summary sheets.",
+            {
+              "fields": [
+                "Property identifier:",
+                "Unit:",
+                "Tenancy reference and active period:",
+                "Summary sheet attached:",
+                "Proof folder location:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Figures and questions",
+          "body": [
+            "Provide organized totals with adjustments and arrears explained. List questions separately. Tax treatment is determined by the CPA.",
+            {
+              "fields": [
+                "Rent due total:",
+                "Rent received total:",
+                "Fees collected total:",
+                "Adjustments with reasons:",
+                "Ending arrears with dates:",
+                "Questions for CPA:"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

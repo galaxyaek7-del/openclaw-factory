@@ -1,0 +1,19 @@
+{
+  "cohort": "GF_BATCH10_2026_09",
+  "id": "GF-B10-03",
+  "slug": "pci_saq_readiness",
+  "name": "PCI SAQ Readiness Kit for Small Merchants",
+  "price_cents": 5900,
+  "guide_words": 5879,
+  "guide_pages": 11,
+  "bundle": "pci_saq_readiness_bundle.zip",
+  "bundle_bytes": 133862,
+  "files": [
+    "README.txt",
+    "pci_acquirer_confirmation_letter_draft.docx",
+    "pci_incident_response_one_pager.docx",
+    "pci_saq_readiness_guide.pdf",
+    "pci_saq_readiness_workbook.xlsx",
+    "pci_service_provider_list.docx"
+  ]
+}

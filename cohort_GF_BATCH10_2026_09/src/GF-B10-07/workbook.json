@@ -1,0 +1,209 @@
+{
+  "workbook_filename": "landlord_rent_ledger_workbook.xlsx",
+  "sheets": [
+    {
+      "name": "Rent Ledger",
+      "columns": [
+        "Line",
+        "Entry Date",
+        "Transaction Date",
+        "Type",
+        "Description",
+        "Amount Charged",
+        "Amount Paid",
+        "Running Balance",
+        "Method and Reference",
+        "Proof Ref",
+        "Lease Clause",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "Illustrative line 1",
+          "Illustrative entry date",
+          "Illustrative transaction date",
+          "Charge",
+          "Illustrative monthly rent charge",
+          1500,
+          0,
+          1500,
+          "Not applicable",
+          "Illustrative proof ref",
+          "Not applicable",
+          "Illustrative opening charge"
+        ],
+        [
+          "Illustrative line 2",
+          "Illustrative entry date",
+          "Illustrative transaction date",
+          "Payment",
+          "Illustrative payment received",
+          0,
+          1500,
+          0,
+          "Illustrative bank transfer ref",
+          "Illustrative proof ref",
+          "Not applicable",
+          "Illustrative applied oldest first"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "H2",
+          "formula": "=F2-G2"
+        },
+        {
+          "cell": "H3",
+          "formula": "=H2+F3-G3"
+        }
+      ],
+      "notes": "One sheet per tenancy. Enter charges and payments in the correct columns. Never type over the running-balance column. Corrections are new dated lines."
+    },
+    {
+      "name": "Partial Payment Log",
+      "columns": [
+        "Log ID",
+        "Payment Date",
+        "Ledger Line",
+        "Total Received",
+        "Applied To Oldest Item",
+        "Applied To Next Item",
+        "Remainder Open",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "Illustrative log row",
+          "Illustrative date",
+          "Illustrative ledger line ref",
+          900,
+          600,
+          300,
+          600,
+          "Illustrative split oldest first with remainder shown"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "G2",
+          "formula": "=D2-E2-F2"
+        }
+      ],
+      "notes": "Complete for every short or split payment. Shows oldest-first application and remainder left open."
+    },
+    {
+      "name": "Notice Tracker",
+      "columns": [
+        "Notice Ref",
+        "Cutoff Date and Time",
+        "Ledger Lines Included",
+        "Total Claimed",
+        "Lease Parties and Address",
+        "Delivery Facts",
+        "Review Status",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "Illustrative notice ref",
+          "Illustrative cutoff",
+          "Illustrative line refs",
+          2100,
+          "Illustrative parties and address as on lease",
+          "Illustrative delivery facts recorded after service",
+          "Illustrative review status",
+          "Illustrative re-cut note if later payment arrives"
+        ]
+      ],
+      "formulas": [],
+      "notes": "Preparation facts only. Not a legal form. Verify notice rules with state or counsel."
+    },
+    {
+      "name": "Fee Register",
+      "columns": [
+        "Fee ID",
+        "Trigger Date",
+        "Lease Clause",
+        "Amount",
+        "Cap and Grace Check",
+        "Ledger Line",
+        "Proof Ref",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "Illustrative fee row",
+          "Illustrative date",
+          "Illustrative lease clause citation",
+          50,
+          "Illustrative cap check completed",
+          "Illustrative ledger line",
+          "Illustrative proof ref",
+          "Illustrative hold note if unverified"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "D10",
+          "formula": "=SUM(D2:D9)"
+        }
+      ],
+      "notes": "No clause citation and no cap check means no fee line on the ledger."
+    },
+    {
+      "name": "Schedule E Summary",
+      "columns": [
+        "Month",
+        "Rent Due",
+        "Rent Received",
+        "Fees Received",
+        "Adjustments",
+        "Ending Arrears",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "Illustrative month 1",
+          1500,
+          1500,
+          0,
+          0,
+          0,
+          "Illustrative totals row"
+        ],
+        [
+          "Illustrative month 2",
+          1500,
+          900,
+          50,
+          0,
+          650,
+          "Illustrative totals row with remainder"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "B14",
+          "formula": "=SUM(B2:B13)"
+        },
+        {
+          "cell": "C14",
+          "formula": "=SUM(C2:C13)"
+        },
+        {
+          "cell": "D14",
+          "formula": "=SUM(D2:D13)"
+        },
+        {
+          "cell": "E14",
+          "formula": "=SUM(E2:E13)"
+        },
+        {
+          "cell": "F14",
+          "formula": "=SUM(B2:B13)-SUM(C2:C13)+SUM(D2:D13)+SUM(E2:E13)"
+        }
+      ],
+      "notes": "Totals formulas organize figures for review and CPA handoff. They do not determine tax treatment."
+    }
+  ]
+}

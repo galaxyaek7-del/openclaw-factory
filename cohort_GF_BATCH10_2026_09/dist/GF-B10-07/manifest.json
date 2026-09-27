@@ -1,0 +1,19 @@
+{
+  "cohort": "GF_BATCH10_2026_09",
+  "id": "GF-B10-07",
+  "slug": "landlord_rent_ledger",
+  "name": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+  "price_cents": 4900,
+  "guide_words": 6145,
+  "guide_pages": 14,
+  "bundle": "landlord_rent_ledger_bundle.zip",
+  "bundle_bytes": 135392,
+  "files": [
+    "README.txt",
+    "landlord_rent_ledger_guide.pdf",
+    "landlord_rent_ledger_workbook.xlsx",
+    "notice_preparation_checklist.docx",
+    "payment_receipt_form.docx",
+    "year_end_handoff_summary.docx"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "cohort": "GF_BATCH10_2026_09",
+  "id": "GF-B10-09",
+  "slug": "handbook_ack_tracker",
+  "name": "Handbook Acknowledgment Tracker",
+  "price_cents": 4900,
+  "guide_words": 6522,
+  "guide_pages": 13,
+  "bundle": "handbook_ack_tracker_bundle.zip",
+  "bundle_bytes": 169145,
+  "files": [
+    "README.txt",
+    "acknowledgment_receipt_form.docx",
+    "annual_review_checklist.docx",
+    "handbook_ack_tracker_guide.pdf",
+    "handbook_ack_tracker_workbook.xlsx",
+    "refusal_documentation_form.docx",
+    "update_announcement_memo.docx"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "cohort": "GF_BATCH10_2026_09",
+  "id": "GF-B10-04",
+  "slug": "clinic_noshow_reduction",
+  "name": "Clinic No-Show Reduction Kit",
+  "price_cents": 5900,
+  "guide_words": 5579,
+  "guide_pages": 10,
+  "bundle": "clinic_noshow_reduction_bundle.zip",
+  "bundle_bytes": 199056,
+  "files": [
+    "README.txt",
+    "clinic_noshow_reduction_guide.pdf",
+    "clinic_noshow_reduction_workbook.xlsx",
+    "noshow_48hour_reminder_script.docx",
+    "noshow_7day_confirmation_script.docx",
+    "noshow_cancellation_reschedule_reply.docx",
+    "noshow_sameday_reminder_script.docx",
+    "noshow_staff_sop_one_pager.docx"
+  ]
+}

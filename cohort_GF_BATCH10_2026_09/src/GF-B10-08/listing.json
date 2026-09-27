@@ -1,0 +1,20 @@
+{
+  "name": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+  "short_description": "A tiered returns system with structured reasons, photo rules for damage claims, account-level scoring, inspection discipline, and warn-before-restrict workflow.",
+  "long_description": "This kit helps small DTC sellers handle returns consistently: a tiered policy template with plain language, a case log with scoring formulas for triage, a customer pattern summary at the account level, an inspection log with factual criteria, a denial-with-reason letter and appeal review form, a photo-requirement notice for damage claims, and a monthly tuning sheet that keeps thresholds aligned with logged outcomes. Graduated steps warn before restricting, with appeal preserved throughout.",
+  "buyer_persona": "Founders and operations or service leads at small DTC apparel, beauty, and similar shops who handle returns with a small team and want consistent fair handling.",
+  "problem_statement": "Abusive patterns such as wardrobing, empty-box returns, and serial returning drain margin, while blunt crackdowns punish sound customers who need ordinary exchanges.",
+  "outcome_statement": "A steady routine of structured reasons, evidence, account-level scoring for triage, graduated warn-before-restrict steps, documented appeals, and monthly tuning.",
+  "whats_included": "Guide with method and checklists, five-sheet workbook with scoring and tuning formulas, tiered policy text, denial letter, appeal form, photo notice.",
+  "who_for": "Small DTC sellers in fit-sensitive categories with manual or small-team returns handling who want fair consistent steps.",
+  "who_not_for": "Large retailers with dedicated fraud tooling, sellers seeking automated chargeback software, and sellers needing legal clearance across jurisdictions.",
+  "how_to_use": "Adopt the reason list, log every case with photos and inspection, score by formula for triage, follow graduated steps with written reasons and appeal, and tune monthly with dated changes.",
+  "limitations": "Scores prioritize review and do not find abuse alone. Consequential steps require human review of evidence and history. Policy must fit applicable consumer rules and processor terms. No outcome promised.",
+  "disclaimer": "Operational guidance only. Review policy language against applicable consumer protection rules and processor terms. No outcome promised. Appeal rights stay intact at every restrictive step.",
+  "faq": "Q: Can a score alone deny a return? A: No, human review with evidence and written reasons plus appeal is required. Q: Are photos needed for every return? A: No, mainly for damage claims and flagged inspections. Q: Do restrictions warn first? A: Yes, graduated steps warn before any narrow time-bound limit. Q: Does this promise loss reduction? A: No, it provides structure and tuning without outcome promises.",
+  "keywords": "returns policy, abuse prevention, wardrobing, inspection checklist, risk score, denial letter, appeal form, DTC operations",
+  "category": "Ecommerce Operations",
+  "version": "1.0",
+  "changelog": "Version 1.0: initial release with guide, five-sheet workbook, and four templates.",
+  "support": "Email support for file access and use questions. For legal questions contact counsel. For processor questions contact the provider."
+}

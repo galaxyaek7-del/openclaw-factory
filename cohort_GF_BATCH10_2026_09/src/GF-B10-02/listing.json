@@ -1,0 +1,58 @@
+{
+  "name": "Sales Tax Nexus Tracker",
+  "short_description": "Monitor rolling sales by state, track threshold verification dates, organize registrations, and calendar filings with CPA-ready handoffs.",
+  "long_description": "A practical operations kit for US remote sellers shipping into multiple states. Includes an operating guide, a four-sheet Excel workbook with rolling-total and aging formulas, and three editable Word templates. Keeps channel-separated sales history, state-source verification discipline, registration steps, and filing calendars organized for timely CPA review without stating any threshold as current fact.",
+  "buyer_persona": "Ecommerce founders and marketplace sellers shipping to multiple states who need a monthly monitoring routine and organized CPA handoffs.",
+  "problem_statement": "Economic nexus thresholds shifted in 2024-2026 with several states dropping transaction tests, so sellers relying on remembered rules can miss crossed thresholds and face retroactive tax, penalties, and back-filing work.",
+  "outcome_statement": "A reconciled monthly sales log with rolling 12-month totals, a dated verification register per state, registrations advanced with evidence, and filing periods calendared with confirmations.",
+  "whats_included": "Operating guide PDF (14 sections); Excel workbook with 4 sheets: State Threshold Register, Monthly Sales by State, Registration Checklist, Filing Calendar; 3 Word templates: nexus review memo, registration action list, CPA handoff summary; README with file map.",
+  "who_for": [
+    "US remote and marketplace sellers",
+    "Ecommerce founders and operations staff",
+    "Bookkeepers maintaining state sales history",
+    "Teams preparing CPA review packages"
+  ],
+  "who_not_for": [
+    "Buyers seeking tax advice or filing decisions",
+    "Buyers wanting pre-filled state thresholds",
+    "Sellers with single-state presence only",
+    "Buyers expecting automated filing software"
+  ],
+  "how_to_use": "Close each month from reconciled exports, read rolling totals as monitoring signals, re-verify stale state thresholds at the state source through your CPA, advance confirmed registrations, and maintain the filing calendar weekly.",
+  "limitations": "General operational information only. States no specific state threshold as current fact. Rolling totals are monitoring arithmetic, not tax determinations. Channel mapping, taxability, timing, and filing positions require a CPA. Verify current threshold with the state revenue department every cycle.",
+  "disclaimer": "Not tax advice, verify with a CPA; thresholds change, re-verify with each state before you register, file, or collect. Background context only: many states use $100,000 in sales as one part of their test while rules vary. Verify the current threshold with the state revenue department.",
+  "faq": [
+    {
+      "q": "Does this kit replace a CPA?",
+      "a": "No. It organizes history and questions so a CPA can advise efficiently."
+    },
+    {
+      "q": "Does it list current state thresholds?",
+      "a": "No. It instructs verification of the current threshold with the state revenue department each cycle."
+    },
+    {
+      "q": "How long is the guide?",
+      "a": "The guide exceeds 5500 words across 14 sections plus checklists and illustrative examples."
+    },
+    {
+      "q": "What templates are included?",
+      "a": "Nexus review memo, registration action list, and CPA handoff summary, all editable."
+    },
+    {
+      "q": "How do marketplace sales enter the log?",
+      "a": "In separate columns from owned-checkout sales, with the CPA confirming which columns count per state."
+    }
+  ],
+  "keywords": [
+    "sales tax nexus",
+    "economic nexus tracker",
+    "threshold monitoring",
+    "multistate registration",
+    "filing calendar",
+    "remote seller"
+  ],
+  "category": "Operations and tax",
+  "version": "1.0",
+  "changelog": "1.0 (September 2026): initial release with guide, four-sheet workbook, and three templates.",
+  "support": "File and usage support by email within 7 days of purchase. Tax interpretation is not provided; consult a CPA."
+}

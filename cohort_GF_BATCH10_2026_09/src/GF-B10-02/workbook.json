@@ -1,0 +1,250 @@
+{
+  "workbook_filename": "sales_tax_nexus_tracker_workbook.xlsx",
+  "sheets": [
+    {
+      "name": "State Threshold Register",
+      "columns": [
+        "State",
+        "Rolling-12mo sales (from log)",
+        "Threshold description (per state source)",
+        "Measurement period (per state source)",
+        "Last verified date",
+        "Verification source (state revenue dept + CPA)",
+        "Next re-verify date",
+        "Days since verified",
+        "Status (verified/pending/stale)"
+      ],
+      "example_rows": [
+        [
+          "Example State A (illustrative)",
+          84200,
+          "Verify current threshold with the state revenue department (illustrative placeholder, not a fact).",
+          "Verify window with state source (illustrative).",
+          "2026-09-01",
+          "State revenue dept guidance + CPA confirmation Sep 2026 (illustrative).",
+          "2026-12-01",
+          9,
+          "verified"
+        ],
+        [
+          "Example State B (illustrative)",
+          12100,
+          "Pending verification - do not rely.",
+          "",
+          "",
+          "",
+          "2026-10-01",
+          "",
+          "pending"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "H3",
+          "formula": "=IF(E2=\"\",\"\",TODAY()-E2)"
+        },
+        {
+          "cell": "H4",
+          "formula": "=IF(E3=\"\",\"\",TODAY()-E3)"
+        },
+        {
+          "cell": "I3",
+          "formula": "=IF(E2=\"\",\"pending\",IF(H3>90,\"stale\",\"verified\"))"
+        },
+        {
+          "cell": "B5",
+          "formula": "=SUM(B2:B3)"
+        }
+      ],
+      "notes": "Index of verification work only. States no threshold as current fact. Background only: many states use $100,000 sales as one part of their test, rules vary, several states dropped transaction tests 2024-2026. Verify current threshold with the state revenue department every cycle. Example rows illustrative."
+    },
+    {
+      "name": "Monthly Sales by State",
+      "columns": [
+        "Month",
+        "Export date filed",
+        "State A owned (illustrative)",
+        "State A marketplace (illustrative)",
+        "State B owned (illustrative)",
+        "State B marketplace (illustrative)",
+        "State A rolling 12mo",
+        "State B rolling 12mo",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "2026-07",
+          "2026-08-02",
+          7000,
+          2000,
+          900,
+          400,
+          84000,
+          11800,
+          "Illustrative figures only."
+        ],
+        [
+          "2026-08",
+          "2026-09-02",
+          7200,
+          2100,
+          950,
+          350,
+          84200,
+          12100,
+          "Illustrative figures only."
+        ],
+        [
+          "2026-09",
+          "2026-10-02",
+          6800,
+          1900,
+          1000,
+          300,
+          83900,
+          12300,
+          "Illustrative figures only."
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "G5",
+          "formula": "=SUM(C2:C4)+SUM(D2:D4)"
+        },
+        {
+          "cell": "H5",
+          "formula": "=SUM(E2:E4)+SUM(F2:F4)"
+        },
+        {
+          "cell": "G6",
+          "formula": "=SUM(C2:C100)+SUM(D2:D100)"
+        },
+        {
+          "cell": "H6",
+          "formula": "=SUM(E2:E100)+SUM(F2:F100)"
+        },
+        {
+          "cell": "C6",
+          "formula": "=COUNT(C2:C100)"
+        }
+      ],
+      "notes": "One row per closed month. Never overwrite closed months; post adjustments in the current month with a reference note. Rolling totals are monitoring signals, not tax determinations. Confirm channel mapping per state with CPA. Example rows illustrative."
+    },
+    {
+      "name": "Registration Checklist",
+      "columns": [
+        "State",
+        "CPA confirmed (Y/N + date)",
+        "Portal / form (per state source)",
+        "Application submitted date",
+        "Account ref stored securely (Y/N + date)",
+        "Frequency assigned (per state)",
+        "Calendar rows created (Y/N)",
+        "Overall status (open/complete)",
+        "Owner",
+        "Note"
+      ],
+      "example_rows": [
+        [
+          "Example State A (illustrative)",
+          "Y 2026-09-05",
+          "State portal per current instructions (illustrative).",
+          "2026-09-12",
+          "Y 2026-09-16",
+          "Quarterly per state notice (illustrative).",
+          "Y",
+          "complete",
+          "Ops Manager",
+          "Illustrative: confirmation filed."
+        ],
+        [
+          "Example State B (illustrative)",
+          "N",
+          "",
+          "",
+          "N",
+          "",
+          "N",
+          "open",
+          "Ops Manager",
+          "Illustrative: awaiting CPA confirmation."
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "H5",
+          "formula": "=COUNTIF(H2:H100,\"open\")"
+        },
+        {
+          "cell": "H6",
+          "formula": "=COUNTIF(H2:H100,\"complete\")"
+        },
+        {
+          "cell": "G5",
+          "formula": "=COUNTIFS(H2:H100,\"complete\",G2:G100,\"N\")"
+        }
+      ],
+      "notes": "Close a row only with CPA note, submission record, secure account reference, assigned frequency, and created calendar rows. Example rows illustrative."
+    },
+    {
+      "name": "Filing Calendar",
+      "columns": [
+        "State",
+        "Period label",
+        "Frequency",
+        "Due date (verified)",
+        "Preparer",
+        "Reviewer",
+        "Status (not yet due/prepared/filed/paid/confirmed)",
+        "Days until due",
+        "Confirmation ref",
+        "Note"
+      ],
+      "example_rows": [
+        [
+          "Example State A (illustrative)",
+          "2026-Q3",
+          "Quarterly (illustrative).",
+          "2026-10-20",
+          "Bookkeeper",
+          "Ops Manager",
+          "filed",
+          -5,
+          "CONF-ILLUS-001 (illustrative).",
+          "Illustrative: acceptance record filed."
+        ],
+        [
+          "Example State A (illustrative)",
+          "2026-Q4",
+          "Quarterly (illustrative).",
+          "2027-01-20",
+          "Bookkeeper",
+          "Ops Manager",
+          "not yet due",
+          85,
+          "",
+          "Illustrative: preparation scheduled."
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "H4",
+          "formula": "=IF(D2=\"\",\"\",D2-TODAY())"
+        },
+        {
+          "cell": "H5",
+          "formula": "=IF(D3=\"\",\"\",D3-TODAY())"
+        },
+        {
+          "cell": "H6",
+          "formula": "=COUNTIF(G2:G100,\"filed\")+COUNTIF(G2:G100,\"confirmed\")"
+        },
+        {
+          "cell": "H7",
+          "formula": "=COUNTIF(G2:G100,\"not yet due\")+COUNTIF(G2:G100,\"prepared\")"
+        }
+      ],
+      "notes": "One row per registration per period. Enter due dates as verified per period. File confirmations the week they arrive. Example rows illustrative."
+    }
+  ]
+}

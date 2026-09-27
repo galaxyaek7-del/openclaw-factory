@@ -1,0 +1,174 @@
+{
+  "templates": [
+    {
+      "filename_docx": "cancellation_path_test_script.docx",
+      "title": "Cancellation-Path Test Script",
+      "sections": [
+        {
+          "heading": "Purpose and scope",
+          "body": [
+            "This script standardizes timed cancellation trials across channels. Complete one script per trial. This template is general operational information, not legal advice, verify with qualified counsel. All example entries are illustrative."
+          ]
+        },
+        {
+          "heading": "Trial setup",
+          "body": [
+            {
+              "fields": [
+                "Trial ID:",
+                "Date:",
+                "Tester role:",
+                "Channel under test:",
+                "Starting point:",
+                "Test account reference:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Step log",
+          "body": [
+            "Record each action with the clock time. Record exact on-screen wording for any obstacle. Note retention offers and whether skipping was possible.",
+            {
+              "fields": [
+                "Step 1 action and time:",
+                "Step 2 action and time:",
+                "Step 3 action and time:",
+                "Obstacle wording observed:",
+                "Retention offer and skip result:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Results",
+          "body": [
+            {
+              "fields": [
+                "Total steps or clicks:",
+                "Elapsed minutes:",
+                "Confirmation received and form:",
+                "Billing stop verified and method:",
+                "Pass or fail with reason:",
+                "Evidence file location:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Filing",
+          "body": [
+            "File this script with the quarterly evidence set and enter the summary row in the Cancellation-Path Test Log. Never edit a filed script; record re-tests on a new copy."
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "disclosure_review_signoff.docx",
+      "title": "Disclosure Review Sign-Off",
+      "sections": [
+        {
+          "heading": "Purpose",
+          "body": [
+            "This sheet records that the listed surfaces were inspected on the stated date with evidence filed. Internal labels describe workbook completeness only, not legal standing. Not legal advice, verify with qualified counsel."
+          ]
+        },
+        {
+          "heading": "Surfaces inspected",
+          "body": [
+            {
+              "fields": [
+                "Surface 1 and language version:",
+                "Surface 2 and language version:",
+                "Surface 3 and language version:",
+                "Evidence folder and date:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Findings handoff",
+          "body": [
+            {
+              "fields": [
+                "Open disclosure findings count:",
+                "Remediation IDs opened:",
+                "Questions for counsel:",
+                "Counsel review date scheduled:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Sign-off",
+          "body": [
+            {
+              "fields": [
+                "Reviewer role and date:",
+                "Approver role and date:",
+                "Next review date:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "remediation_plan_memo.docx",
+      "title": "Remediation Plan Memo - 30/60/90 Days",
+      "sections": [
+        {
+          "heading": "Summary for leadership",
+          "body": [
+            "Describe in plain language what changes for the customer in each window. Do not promise legal outcomes. Verify state law locally and route language through qualified counsel."
+          ]
+        },
+        {
+          "heading": "30-day window",
+          "body": [
+            {
+              "fields": [
+                "Item IDs in window:",
+                "Owners:",
+                "Counsel review dates:",
+                "Evidence required per item:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "60-day window",
+          "body": [
+            {
+              "fields": [
+                "Item IDs in window:",
+                "Owners:",
+                "Training and record changes:",
+                "Re-test plan:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "90-day window",
+          "body": [
+            {
+              "fields": [
+                "Item IDs in window:",
+                "State re-verifications scheduled:",
+                "Cadence calendar entries:",
+                "Full-loop re-run date:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Weekly reporting",
+          "body": [
+            "Report items closed with evidence, items past due with cause, new findings, and questions awaiting counsel. Attach the Remediation Tracker export."
+          ]
+        }
+      ]
+    }
+  ]
+}

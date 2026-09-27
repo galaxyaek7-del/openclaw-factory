@@ -1,0 +1,19 @@
+{
+  "cohort": "GF_BATCH10_2026_09",
+  "id": "GF-B10-02",
+  "slug": "sales_tax_nexus_tracker",
+  "name": "Sales Tax Nexus Tracker",
+  "price_cents": 7900,
+  "guide_words": 6172,
+  "guide_pages": 12,
+  "bundle": "sales_tax_nexus_tracker_bundle.zip",
+  "bundle_bytes": 133775,
+  "files": [
+    "README.txt",
+    "cpa_handoff_summary.docx",
+    "nexus_review_memo.docx",
+    "registration_action_list.docx",
+    "sales_tax_nexus_tracker_guide.pdf",
+    "sales_tax_nexus_tracker_workbook.xlsx"
+  ]
+}
