@@ -1,0 +1,107 @@
+{
+  "generated": "2026-09-28T15:00:00Z",
+  "rule": "UNKNOWN stays UNKNOWN. No estimates in place of missing data.",
+  "stages": [
+    {
+      "stage": "Discovery",
+      "evidence": "sitemap 48/48 + IndexNow submitted + public pages",
+      "source": "repo + IndexNow receipts",
+      "confidence": "OBSERVED (technical)",
+      "status": "PASS (availability only)",
+      "missing": "proof anyone discovered via search"
+    },
+    {
+      "stage": "Impression",
+      "evidence": "NONE",
+      "source": "no analytics, no GSC",
+      "confidence": "UNKNOWN",
+      "status": "UNKNOWN",
+      "missing": "any impression counter"
+    },
+    {
+      "stage": "Visit",
+      "evidence": "NONE",
+      "source": "/api beacon dead on static; no third-party analytics",
+      "confidence": "UNKNOWN",
+      "status": "UNKNOWN",
+      "missing": "free no-account analytics OR founder-provisioned account"
+    },
+    {
+      "stage": "CTA",
+      "evidence": "ref= params on outbound links (unreadable externally)",
+      "source": "page HTML",
+      "confidence": "OBSERVED (technical)",
+      "status": "HOLD",
+      "missing": "click counts"
+    },
+    {
+      "stage": "Product View",
+      "evidence": "NONE",
+      "source": "Gumroad dashboard (human-gated)",
+      "confidence": "UNKNOWN",
+      "status": "UNKNOWN",
+      "missing": "dashboard access or event push"
+    },
+    {
+      "stage": "Checkout",
+      "evidence": "shell 200 + pay markers",
+      "source": "live HTTP",
+      "confidence": "OBSERVED (technical)",
+      "status": "PASS_WITH_WARNINGS (completion untested)",
+      "missing": "test purchase (spend, unauthorized)"
+    },
+    {
+      "stage": "Purchase",
+      "evidence": "0 records via API + poll",
+      "source": "Gumroad API + poll_sales",
+      "confidence": "OBSERVED",
+      "status": "VERIFIED (zero)",
+      "missing": "—"
+    },
+    {
+      "stage": "Revenue",
+      "evidence": "$0 across finance + sales ledgers",
+      "source": "finance_data + sales_ledger",
+      "confidence": "OBSERVED",
+      "status": "VERIFIED",
+      "missing": "—"
+    }
+  ],
+  "snapshot_funnel_alignment": {
+    "article_view": "UNKNOWN (no per-asset analytics without accounts)",
+    "checkout_progress": "UNKNOWN (JS shell; no test purchase authorized)",
+    "checkout_start": "UNKNOWN (listing reachable; initiation not instrumented)",
+    "exposure": "PARTIAL_OBSERVED (4 Telegraph + 32 Gumroad + Pages live; per-asset external views UNKNOWN)",
+    "product_view": "UNKNOWN (no analytics on static Pages/Gumroad)",
+    "purchase": "MEASURED_ZERO (poll_sales.py both arms, 2026-09-27)",
+    "visit": "UNKNOWN (/api/page-view dead on static; no third-party analytics)"
+  },
+  "telegraph_backoff": {
+    "attempts": "nexus 3 fail + 1 ok; foodtruck 1st ok; sub 1 fail",
+    "state": "UNSTABLE OPTIONAL (backoff, not looped)",
+    "alternative": "Pages guide pages (3 live)"
+  },
+  "channels": {
+    "AVAILABLE": [
+      "nostr (proven publish)",
+      "pages",
+      "gumroad",
+      "telegraph (flapping)"
+    ],
+    "PREPARED": [
+      "EXP-SUB-001 staged drafts",
+      "pack1",
+      "nexus pack"
+    ],
+    "HUMAN_REQUIRED": [
+      "reddit post",
+      "community posts",
+      "paddle onboarding",
+      "dashboard reads"
+    ],
+    "BLOCKED": [],
+    "UNSUPPORTED": [
+      "paid ads (treasury $0)"
+    ]
+  }
+}
