@@ -1,0 +1,252 @@
+{
+  "generated": "2026-09-28T12:00:00Z",
+  "phase": "PHASE-1 market intelligence",
+  "rule": "existence != demand. No opportunity graduates to BUILD without buyer evidence + problem card.",
+  "opportunities": [
+    {
+      "id": "OPP-SUB-RENEW",
+      "area": "batch10-portfolio",
+      "problem": "auto-renewal disclosure/consent/cancellation practices under ROSCA + ~30 state laws; $M-scale settlements 2024-2026",
+      "evidence": "FTC ROSCA enforcement ongoing; $2.5B Amazon + $60M settlements; ~30 state auto-renewal laws; March 2026 ANPRM to revive rule (Gibson Dunn, Jones Day 2026-05)",
+      "evidence_type": "MULTI_SOURCE_PUBLIC (law-firm analyses + FTC.gov)",
+      "demand": "DEMAND_UNKNOWN (pain validated, WTP unproven)",
+      "price": "$59-79 (B2B compliance, enforcement risk)",
+      "sources": [
+        "portfolio 2026-09-27"
+      ],
+      "confidence": "MEDIUM (multi-source public, WTP unproven)"
+    },
+    {
+      "id": "OPP-NEXUS",
+      "area": "batch10-portfolio",
+      "problem": "economic nexus tracking across states; missed thresholds trigger retroactive tax + penalties",
+      "evidence": "Wayfair economic nexus; thresholds shifting 2024-2026 (IL/IN/NC/UT/WY dropped transaction tests); retroactive back-tax + penalties (Stripe 2026-07, Avalara, SST)",
+      "evidence_type": "MULTI_SOURCE_PUBLIC",
+      "demand": "DEMAND_UNKNOWN",
+      "price": "$69-89 (penalty avoidance)",
+      "sources": [
+        "portfolio 2026-09-27"
+      ],
+      "confidence": "MEDIUM (multi-source public, WTP unproven)"
+    },
+    {
+      "id": "OPP-PCI-SAQ",
+      "area": "batch10-portfolio",
+      "problem": "which SAQ applies, scope creep to SAQ D, failed attestations, breach liability",
+      "evidence": "9 SAQs v4.0.1; Level-4 self-attestation confusion; SAQ A ($500/yr) vs SAQ D ($6-30K/yr) cost gap; MFA/incident-plan gaps (Paytia 2026-05, PCI SSC)",
+      "evidence_type": "MULTI_SOURCE_PUBLIC",
+      "demand": "DEMAND_UNKNOWN",
+      "price": "$49-69 (cost-avoidance)",
+      "sources": [
+        "portfolio 2026-09-27"
+      ],
+      "confidence": "MEDIUM (multi-source public, WTP unproven)"
+    },
+    {
+      "id": "OPP-NOSHOW",
+      "area": "batch10-portfolio",
+      "problem": "15-20% no-show rates = unrecoverable chair revenue; single-call reminders reach ~60%",
+      "evidence": "15-20% avg no-show; 3-touch sequences reach 3-7%; $14K/mo recovery case (Austin clinic 2026-04); RCT + Cochrane reviews (PMC)",
+      "evidence_type": "MULTI_SOURCE_PUBLIC (peer-reviewed + case)",
+      "demand": "DEMAND_UNKNOWN",
+      "price": "$49-69 (revenue recovery)",
+      "sources": [
+        "portfolio 2026-09-27"
+      ],
+      "confidence": "MEDIUM (multi-source public, WTP unproven)"
+    },
+    {
+      "id": "OPP-SCOPE",
+      "area": "batch10-portfolio",
+      "problem": "scope creep = 18-35% unpaid work; vague contracts, unfunded milestones",
+      "evidence": "67% delivered unpaid work from scope expansion; 18-35% revenue loss/project (2025 report); milestone-gating + change-order method (Upwork 2025-2026, AiProposer, ZenLance)",
+      "evidence_type": "MULTI_SOURCE_PUBLIC",
+      "demand": "DEMAND_UNKNOWN",
+      "price": "$29-49 (solo-buyer price sensitivity)",
+      "sources": [
+        "portfolio 2026-09-27"
+      ],
+      "confidence": "MEDIUM (multi-source public, WTP unproven)"
+    },
+    {
+      "id": "OPP-DSAR",
+      "area": "batch10-portfolio",
+      "problem": "ad-hoc DSAR handling misses 30-day deadlines; no registry, no audit trail",
+      "evidence": "30-day GDPR clock; ad-hoc handling breaks at 3-5 DSARs/quarter; state-machine + registry + templates method (mrhaseeb 2026-04, CertifyOps, ComplySafe)",
+      "evidence_type": "MULTI_SOURCE_PUBLIC",
+      "demand": "DEMAND_UNKNOWN",
+      "price": "$49-69 (deadline risk)",
+      "sources": [
+        "portfolio 2026-09-27"
+      ],
+      "confidence": "MEDIUM (multi-source public, WTP unproven)"
+    },
+    {
+      "id": "OPP-RENT",
+      "area": "batch10-portfolio",
+      "problem": "sloppy payment records lose evictions; defective notices restart cases; tax-time ledger mess",
+      "evidence": "ledger = top eviction exhibit; 7 ledger mistakes that lose cases; pay-or-quit notice defects; Schedule E mapping (DiscoveryMark, FL attorney 2025-04, AAOL 2026-02)",
+      "evidence_type": "MULTI_SOURCE_PUBLIC (attorney + practitioner)",
+      "demand": "DEMAND_UNKNOWN",
+      "price": "$39-59 (eviction-cost avoidance)",
+      "sources": [
+        "portfolio 2026-09-27"
+      ],
+      "confidence": "MEDIUM (multi-source public, WTP unproven)"
+    },
+    {
+      "id": "OPP-RETURNS",
+      "area": "batch10-portfolio",
+      "problem": "5-15% of returns abusive (wardrobing, empty-box, serial); one-size policy punishes good customers",
+      "evidence": "$850B returns cost 2025 (NRF); 11% abusive (Signifyd); 5-15% fraud share; wardrobing patterns; photo-requirement effect (Pixeltree, Signifyd 2026, Claimlane, YourSizer)",
+      "evidence_type": "MULTI_SOURCE_PUBLIC",
+      "demand": "DEMAND_UNKNOWN",
+      "price": "$49-69 (margin recovery)",
+      "sources": [
+        "portfolio 2026-09-27"
+      ],
+      "confidence": "MEDIUM (multi-source public, WTP unproven)"
+    },
+    {
+      "id": "OPP-HANDBOOK",
+      "area": "batch10-portfolio",
+      "problem": "unsigned/unversioned handbook acknowledgments collapse in disputes; re-signing after updates is chaos",
+      "evidence": "60% of employment lawsuits involve handbook gaps; version-stamping defeats 'nobody told me'; ESIGN-valid e-acks (hrdegree 2026, Xenia, ClearPolicy, HandbookHub)",
+      "evidence_type": "MULTI_SOURCE_PUBLIC",
+      "demand": "DEMAND_UNKNOWN",
+      "price": "$39-59",
+      "sources": [
+        "portfolio 2026-09-27"
+      ],
+      "confidence": "MEDIUM (multi-source public, WTP unproven)"
+    },
+    {
+      "id": "OPP-FOODTRUCK",
+      "area": "batch10-portfolio",
+      "problem": "fragmented 5-12 permit stack across agencies; missed items delay launch weeks; expirations shut trucks down",
+      "evidence": "5-12 permits, $650-$3.5K fees, 4-10 week timelines; shutdowns for missing permits; commissary/fire-plan-review queues (runpitstop 2026-09, menubly, streetlegal 2026-08, Bizzby)",
+      "evidence_type": "MULTI_SOURCE_PUBLIC",
+      "demand": "DEMAND_UNKNOWN",
+      "price": "$49-69 (shutdown avoidance)",
+      "sources": [
+        "portfolio 2026-09-27"
+      ],
+      "confidence": "MEDIUM (multi-source public, WTP unproven)"
+    },
+    {
+      "id": "AUD_TURO",
+      "area": "audience-validated-pain",
+      "problem": "false/post-trip damage disputes, off-platform pressure, collections threats",
+      "evidence": [
+        "r/turo 1u07nob (2026-06, post-review claim)",
+        "r/turo 1u4d7wr (2026-06, claims playbook thread)",
+        "r/turo 1t3nvju (2026-05, hostile $150 deadline)",
+        "r/turo 1q5z7xu (2026-01, false claim + collections)",
+        "r/turo 2023 threads (false smoking claim, windshield dispute)"
+      ],
+      "evidence_type": "VALIDATED_PAIN (not demand, not WTP)",
+      "demand": "DEMAND_UNKNOWN (pain validated)",
+      "price": "adyvd $29",
+      "sources": [
+        "audience_validation 2026-09-27"
+      ],
+      "confidence": "MEDIUM-HIGH (dated threads, severity noted)"
+    },
+    {
+      "id": "AUD_SAAS_WASTE",
+      "area": "audience-validated-pain",
+      "problem": "subscription sprawl, renewal surprises, no ownership",
+      "evidence": [
+        "r/SaaS 1s3ejcz (2026-03, $40K/yr waste)",
+        "r/smallbusiness 1rg36mi (2026-02, $1420/mo)",
+        "r/smallbusiness 1mjer44 (2025-08, $2K agency waste)",
+        "r/smallbusiness 1nzqxhk (2025-10, tracking question)",
+        "G2 + guideflow 2026 comparisons (funded tools)"
+      ],
+      "evidence_type": "VALIDATED_PAIN (not demand, not WTP)",
+      "demand": "DEMAND_UNKNOWN (pain validated)",
+      "price": "pahxdv $49",
+      "sources": [
+        "audience_validation 2026-09-27"
+      ],
+      "confidence": "MEDIUM-HIGH (dated threads, severity noted)"
+    },
+    {
+      "id": "AUD_ETSY_SELLERS",
+      "area": "audience-validated-pain",
+      "problem": "suspensions/bot flags/appeals with 6-month window, no human contact",
+      "evidence": [
+        "r/EtsySellers 1se1nph (2026-04, bot flag)",
+        "r/EtsySellers 1rk622h (2026-03, 4-5yr seller, 52 comments)",
+        "r/EtsyCommunity 1u3uzq9 (2026-06, fraud-ban confusion)",
+        "Etsy official appeals help (6-month rule, 2-week review)",
+        "r/Etsy checklist thread (strict posting rules)"
+      ],
+      "evidence_type": "VALIDATED_PAIN (not demand, not WTP)",
+      "demand": "DEMAND_UNKNOWN (pain validated)",
+      "price": "fgruzn $29",
+      "sources": [
+        "audience_validation 2026-09-27"
+      ],
+      "confidence": "MEDIUM-HIGH (dated threads, severity noted)"
+    },
+    {
+      "id": "OPP-EUDR-2026",
+      "area": "eu-compliance-deadline",
+      "problem": "EUDR due diligence statements due 30 Dec 2026 (large/medium), 30 Jun 2027 (micro/small); geolocation + risk assessment per consignment",
+      "evidence": [
+        "EC implementation page (operative dates)",
+        "magist.io scope analysis (Annex I, SME rules, postponement regs)",
+        "7 commodities: cattle/cocoa/coffee/palm/rubber/soy/wood + derived goods"
+      ],
+      "evidence_type": "MULTI_SOURCE_PUBLIC (EC official + legal analysis)",
+      "demand": "DEMAND_UNKNOWN (deadline + scope proven; buyer intent unproven)",
+      "price": "UNKNOWN (no pricing work; comparable compliance kits $59-89)",
+      "sources": [
+        "websearch 2026-09-28"
+      ],
+      "confidence": "MEDIUM (dates solid; leather-scope + benchmarking uncertainty noted)",
+      "action": "problem card candidate; NO BUILD without buyer evidence"
+    },
+    {
+      "id": "OPP-GPSR-LAYER2",
+      "area": "eu-compliance-escalation",
+      "problem": "GPSR enforcement escalated 2026 beyond RP appointment: labelling, listing safety info, retrievable test reports; DE/FR/NL authorities active; fines to 4% turnover",
+      "evidence": [
+        "FLEX 2026-08 (secondary-layer checks)",
+        "AuraDPP 2026-07 (timeline + fines)",
+        "euverify (marketplace removal powers)"
+      ],
+      "evidence_type": "MULTI_SOURCE_PUBLIC",
+      "demand": "DEMAND_UNKNOWN (enforcement proven; buyer intent unproven)",
+      "price": "existing GPSR kit $79 covers base; layer-2 angle unevaluated",
+      "sources": [
+        "websearch 2026-09-28"
+      ],
+      "confidence": "MEDIUM-HIGH",
+      "action": "supports GPSR kit exposure messaging; possible layer-2 extension only on evidence"
+    },
+    {
+      "id": "OPP-RAAS",
+      "area": "research-as-service",
+      "problem": "SMBs will pay $29-$3,500 for done-for-you competitive/market research (proven vendors: Photon $29+, Quicksilver $149, MarketForge $97+, CompeteAlert $500+)",
+      "evidence": [
+        "4 live vendors with public pricing + guarantees"
+      ],
+      "evidence_type": "MARKET_EXISTENCE (competitor pricing pages)",
+      "demand": "DEMAND_UNKNOWN for OUR offer (category proven, crowded)",
+      "price": "category $29-500; crowded at every tier",
+      "sources": [
+        "websearch 2026-09-28"
+      ],
+      "confidence": "MEDIUM (existence proven; differentiation unproven)",
+      "action": "service-direction intelligence only; NO BUILD (crowded, no edge identified)"
+    }
+  ],
+  "counts": {
+    "total": 16,
+    "from_portfolio": 10,
+    "from_audience": 3,
+    "fresh": 3
+  }
+}
