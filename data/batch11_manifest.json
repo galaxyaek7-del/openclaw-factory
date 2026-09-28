@@ -1,0 +1,193 @@
+[
+  {
+    "product_id": "GF-B11-01",
+    "title": "EUDR Due Diligence Starter",
+    "price_cents": 6900,
+    "src_files": 5,
+    "dist_files": [
+      "README.txt",
+      "eudr_due_diligence_starter_guide.pdf",
+      "eudr_due_diligence_starter_workbook.xlsx",
+      "eudr_gap_memo.docx",
+      "eudr_scope_decision_note.docx",
+      "eudr_supplier_data_request_letter.docx",
+      "manifest.json"
+    ],
+    "guide_words": 6502,
+    "bundle_ok": true,
+    "qa": "PASS (recorded)",
+    "gumroad": "QUEUED (cap-blocked)"
+  },
+  {
+    "product_id": "GF-B11-02",
+    "title": "EU Green Claims Review Kit",
+    "price_cents": 6900,
+    "src_files": 5,
+    "dist_files": [
+      "README.txt",
+      "empco_claim_review_worksheet.docx",
+      "empco_green_claims_kit_guide.pdf",
+      "empco_green_claims_kit_workbook.xlsx",
+      "empco_influencer_brief_addendum.docx",
+      "empco_remediation_action_note.docx",
+      "manifest.json"
+    ],
+    "guide_words": 5604,
+    "bundle_ok": true,
+    "qa": "PASS (recorded)",
+    "gumroad": "QUEUED (cap-blocked)"
+  },
+  {
+    "product_id": "GF-B11-03",
+    "title": "Restaurant Food Cost Control Kit",
+    "price_cents": 4900,
+    "src_files": 5,
+    "dist_files": [
+      "README.txt",
+      "manifest.json",
+      "restaurant_food_cost_control_guide.pdf",
+      "restaurant_food_cost_control_workbook.xlsx",
+      "restaurant_food_cost_recipe_cost_card.docx",
+      "restaurant_food_cost_waste_log_sheet.docx",
+      "restaurant_food_cost_weekly_review_agenda.docx"
+    ],
+    "guide_words": 7390,
+    "bundle_ok": true,
+    "qa": "PASS (recorded)",
+    "gumroad": "QUEUED (cap-blocked)"
+  },
+  {
+    "product_id": "GF-B11-04",
+    "title": "Salon Commission Pay Kit",
+    "price_cents": 3900,
+    "src_files": 5,
+    "dist_files": [
+      "README.txt",
+      "manifest.json",
+      "salon_commission_agreement_template.docx",
+      "salon_commission_pay_kit_guide.pdf",
+      "salon_commission_pay_kit_workbook.xlsx",
+      "salon_pay_dispute_log_form.docx",
+      "salon_stylist_payout_statement.docx"
+    ],
+    "guide_words": 6481,
+    "bundle_ok": true,
+    "qa": "PASS (recorded)",
+    "gumroad": "QUEUED (cap-blocked)"
+  },
+  {
+    "product_id": "GF-B11-05",
+    "title": "Fleet Maintenance and Damage Documentation Bundle",
+    "price_cents": 4900,
+    "src_files": 5,
+    "dist_files": [
+      "README.txt",
+      "damage_claim_letter.docx",
+      "fleet_maintenance_damage_bundle_guide.pdf",
+      "fleet_maintenance_damage_bundle_workbook.xlsx",
+      "manifest.json",
+      "pre_post_rental_inspection_form.docx",
+      "service_visit_record.docx"
+    ],
+    "guide_words": 8159,
+    "bundle_ok": true,
+    "qa": "PASS (recorded)",
+    "gumroad": "QUEUED (cap-blocked)"
+  },
+  {
+    "product_id": "GF-B11-06",
+    "title": "Real Estate Transaction Deadline Kit",
+    "price_cents": 5900,
+    "src_files": 5,
+    "dist_files": [
+      "README.txt",
+      "contingency_status_update.docx",
+      "deal_file_cover_sheet.docx",
+      "manifest.json",
+      "post_close_review_form.docx",
+      "realestate_tc_deadline_kit_guide.pdf",
+      "realestate_tc_deadline_kit_workbook.xlsx"
+    ],
+    "guide_words": 6110,
+    "bundle_ok": true,
+    "qa": "PASS (recorded)",
+    "gumroad": "QUEUED (cap-blocked)"
+  },
+  {
+    "product_id": "GF-B11-07",
+    "title": "Dental Insurance Verification Kit",
+    "price_cents": 5900,
+    "src_files": 5,
+    "dist_files": [
+      "README.txt",
+      "denial_review_form.docx",
+      "dental_insurance_verification_kit_guide.pdf",
+      "dental_insurance_verification_kit_workbook.xlsx",
+      "estimate_letter.docx",
+      "huddle_hold_list.docx",
+      "manifest.json",
+      "verification_call_script.docx"
+    ],
+    "guide_words": 5554,
+    "bundle_ok": true,
+    "qa": "PASS (recorded)",
+    "gumroad": "QUEUED (cap-blocked)"
+  },
+  {
+    "product_id": "GF-B11-08",
+    "title": "Homebuyer Inspection Action Kit",
+    "price_cents": 2900,
+    "src_files": 5,
+    "dist_files": [
+      "README.txt",
+      "contractor_scope_request.docx",
+      "decision_worksheet_form.docx",
+      "homebuyer_inspection_action_kit_guide.pdf",
+      "homebuyer_inspection_action_kit_workbook.xlsx",
+      "manifest.json",
+      "repair_request_letter.docx"
+    ],
+    "guide_words": 5514,
+    "bundle_ok": true,
+    "qa": "PASS (recorded)",
+    "gumroad": "QUEUED (cap-blocked)"
+  },
+  {
+    "product_id": "GF-B11-09",
+    "title": "Cottage Food Compliance Kit",
+    "price_cents": 4900,
+    "src_files": 5,
+    "dist_files": [
+      "README.txt",
+      "cottage_food_compliance_kit_guide.pdf",
+      "cottage_food_compliance_kit_workbook.xlsx",
+      "cottage_food_label_template.docx",
+      "home_kitchen_signage_and_notice.docx",
+      "manifest.json",
+      "registration_and_cap_cover_sheet.docx"
+    ],
+    "guide_words": 6312,
+    "bundle_ok": true,
+    "qa": "PASS (recorded)",
+    "gumroad": "QUEUED (cap-blocked)"
+  },
+  {
+    "product_id": "GF-B11-10",
+    "title": "Landlord Move-In Inspection Pack",
+    "price_cents": 4900,
+    "src_files": 5,
+    "dist_files": [
+      "README.txt",
+      "landlord_movein_inspection_pack_guide.pdf",
+      "landlord_movein_inspection_pack_workbook.xlsx",
+      "manifest.json",
+      "movein_condition_report_form.docx",
+      "photo_inventory_log.docx",
+      "tenant_acknowledgment_packet.docx"
+    ],
+    "guide_words": 5606,
+    "bundle_ok": true,
+    "qa": "PASS (recorded)",
+    "gumroad": "QUEUED (cap-blocked)"
+  }
+]

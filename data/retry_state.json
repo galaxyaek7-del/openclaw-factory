@@ -1,1 +1,19 @@
-{"network_mode": "ONLINE", "pending_ops": [], "retry_budget": {"telegraph": {"attempts_used": 5, "backoff": "exponential, manual trigger only", "state": "UNSTABLE OPTIONAL"}}, "updated": "2026-09-28T16:30:00Z"}
+{
+  "network_mode": "ONLINE",
+  "pending_ops": [],
+  "retry_budget": {
+    "telegraph": {
+      "attempts_used": 5,
+      "backoff": "exponential, manual trigger only",
+      "state": "UNSTABLE OPTIONAL"
+    }
+  },
+  "updated": "2026-09-28T16:30:00Z",
+  "gumroad_create_cap": {
+    "state": "BLOCKED",
+    "last_probe": "2026-09-28T20:30:00Z",
+    "error": "10 products per day",
+    "next_probe": "after daily reset",
+    "queue": "10 READY"
+  }
+}
