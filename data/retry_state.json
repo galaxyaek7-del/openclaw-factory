@@ -1,0 +1,1 @@
+{"network_mode": "ONLINE", "pending_ops": [], "retry_budget": {"telegraph": {"attempts_used": 5, "backoff": "exponential, manual trigger only", "state": "UNSTABLE OPTIONAL"}}, "updated": "2026-09-28T16:30:00Z"}

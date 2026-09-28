@@ -1,0 +1,15 @@
+{"ts": "2026-09-28T07:52:54Z", "level": "LEVEL_1", "op": "SUB-001 relay response query + sales poll", "errors": [], "nostr_responses": 0}
+{"ts": "2026-09-28T07:57:25Z", "level": "LEVEL_1", "op": "full autonomy end-to-end probe (offers+checkout+pages+ledgers+api-sales+telegram-config)", "result": "offers 11/11 price-match; checkout 200+markers; pages 4/4 200; ledgers parse OK (108/19/1); api sales 0 records; telegram creds SET", "errors": []}
+{"ts": "2026-09-28T08:43:02Z", "level": "LEVEL_1", "op": "SUB-001 relay response query + sales poll", "errors": ["relay.damus.io: unknown encoding: replace"], "nostr_responses": 0}
+{"ts": "2026-09-28T08:52:02Z", "level": "LEVEL_1", "op": "FG-001 pre-publication chain verification", "result": "article 200+disclosure+adyvd-link; product 200 price 29.0; checkout 200; thread login-walled (founder confirms); READY_FOR_FOUNDER_PUBLICATION", "errors": []}
+{"ts": "2026-09-28T10:09:30Z", "level": "LEVEL_1", "op": "SUB-001 relay response query + sales poll", "errors": [], "nostr_responses": 0}
+{"ts": "2026-09-28T10:49:01Z", "level": "LEVEL_1", "op": "SUB-001 relay response query + sales poll", "errors": ["relay.damus.io: unknown encoding: replace"], "nostr_responses": 0}
+{"ts": "2026-09-28T11:58:39Z", "level": "LEVEL_1", "op": "SUB-001 relay response query + sales poll", "errors": [], "nostr_responses": 0}
+{"ts": "2026-09-28T13:43:16Z", "level": "LEVEL_1", "op": "SUB-001 relay response query + sales poll", "errors": [], "nostr_responses": 0}
+{"ts": "2026-09-28T13:54:24Z", "level": "LEVEL_1", "op": "SUB-001 relay response query + sales poll", "errors": [], "nostr_responses": 0}
+{"ts": "2026-09-28T14:05:22Z", "level": "LEVEL_1", "op": "SUB-001 relay response query + sales poll", "errors": [], "nostr_responses": 0}
+{"ts": "2026-09-28T14:18:30Z", "level": "LEVEL_1", "op": "SUB-001 relay response query + sales poll", "errors": [], "nostr_responses": 0}
+{"ts": "2026-09-28T14:26:57Z", "level": "LEVEL_1", "op": "SUB-001 relay response query + sales poll", "errors": ["relay.damus.io: unknown encoding: replace"], "nostr_responses": 0}
+{"ts": "2026-09-28T14:38:53Z", "level": "LEVEL_1", "op": "SUB-001 relay response query + sales poll", "errors": [], "nostr_responses": 0}
+{"ts": "2026-09-28T14:44:31Z", "level": "LEVEL_1", "op": "SUB-001 relay response query + sales poll", "errors": [], "nostr_responses": 0}
+{"ts": "2026-09-28T15:02:03Z", "level": "LEVEL_1", "op_id": "mon-sub001-20260928T150203Z", "experiment_id": "EXP-SUB-001", "op": "SUB-001 relay response query + sales poll", "errors": [], "nostr_responses": 0}
