@@ -1,8 +1,9 @@
 {
-  "mission": "72h-deep-execution",
-  "phase_done": 7,
-  "next": "loop-monitoring",
-  "last_commit": "6246202",
-  "ledger": 115,
-  "revenue": 0
+ "mission": "72h-deep-execution",
+ "phase_done": "9-continue",
+ "next": "monitor-sub001-window",
+ "last_commit": "ff243a2",
+ "ledger": 122,
+ "revenue": 0,
+ "runner_note": "no phase9 code runner exists; phase9-continue is operational state only"
 }
