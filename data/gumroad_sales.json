@@ -1,0 +1,15 @@
+{
+  "_comment": "Record of real Gumroad transactions for GF-001. Each entry requires Founder-observed evidence.",
+  "_schema": {
+    "transaction_id": "Gumroad transaction ID",
+    "date": "ISO 8601 date of transaction",
+    "amount_usd": "Gross amount in USD",
+    "gumroad_fee": "Gumroad fee (10% of gross)",
+    "net_to_founder": "Amount after fees",
+    "customer_email": "Redacted or partial (privacy)",
+    "delivery_status": "delivered / pending / failed",
+    "refunded": "BOOLEAN per transaction",
+    "notes": "Any additional observations"
+  },
+  "transactions": []
+}

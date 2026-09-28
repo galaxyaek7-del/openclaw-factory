@@ -1,0 +1,67 @@
+{
+  "activation_triggers": {
+    "TRIGGER_A_sales_10_30d": {
+      "evidence": "0 verified sales (OBSERVED, ledger)",
+      "fired": false
+    },
+    "TRIGGER_B_bundle_demand_3": {
+      "evidence": "0 inquiries/purchases (OBSERVED absence)",
+      "fired": false
+    },
+    "TRIGGER_C_gumroad_limitation": {
+      "evidence": "none documented; caps/fees not yet binding at 0 sales",
+      "fired": false
+    },
+    "TRIGGER_D_shopify_advantage_proven": {
+      "evidence": "none (no traffic to compare)",
+      "fired": false
+    },
+    "TRIGGER_E_product_family_depth": {
+      "evidence": "families exist (EU/B2B/auto) but demand unvalidated",
+      "fired": false
+    },
+    "TRIGGER_F_organic_opportunity": {
+      "evidence": "none identified",
+      "fired": false
+    },
+    "TRIGGER_G_economics_favorable": {
+      "evidence": "break-even ~7-10/mo vs 0 actual (DERIVED)",
+      "fired": false
+    }
+  },
+  "bundle_evidence": {
+    "AUTO_DISPUTE_69": {
+      "status": "PROPOSED"
+    },
+    "B2B_OPS_119": {
+      "status": "PROPOSED"
+    },
+    "EU_COMPLIANCE_119": {
+      "status": "PROPOSED"
+    }
+  },
+  "current_recommendation": "DEFERRED -- EXISTING ASSET PRESERVED. Off critical path per founder directive 2026-09-20; revisit only on commercial evidence (sales/traffic/bundle demand/Gumroad limitation).",
+  "current_state": "SHOPIFY_DEFERRED",
+  "diagnostic": "INSUFFICIENT_MARKET_DATA (TRAFFIC≈0 + SALES=0 → not product failure, not no-demand; question is qualified exposure)",
+  "estimated_economics": "Basic $39/mo unjustified at 0 sales; fee break-even ~7-10/mo (DERIVED Sep 2026 rates)",
+  "evidence_level": "LEVEL 1 (market/problem signals; zero buyer intent observed)",
+  "founder_effort": "$0 / 0h this cycle; at activation ~1-2h + plan cost (reversible)",
+  "gumroad_limitations": [],
+  "last_evaluation_date": "2026-09-20",
+  "next_review_trigger": "any of A-G firing; else next scheduled validation sweep",
+  "shopify_advantages": [],
+  "traffic": "UNKNOWN (no source on any channel)",
+  "verified_sales": 0,
+  "external_store_reported": {
+    "status": "EXISTS_PASSWORD_GATED",
+    "store_url": "https://cpadc7-zh.myshopify.com",
+    "detail": "Existence VERIFIED 2026-09-20 (live Shopify response, no redirect). Password page (Opening soon, default title My Store 4); products.json 401. Products/delivery/checkout/payments/apps/Cloudflare/SEO UNKNOWN. Read-only GETs only; nothing created, changed, or deleted."
+  },
+  "password_recovery": {
+    "storefront_password_known": false,
+    "local_secrets_found": "NO (empty slots only; verified 2026-09-20)",
+    "recommended_path": "Admin recovery first (login page Forgot password / Store Recovery / Support identity check); storefront password is readable/changeable/disablable from admin Preferences -- no separate storefront recovery needed",
+    "billing_caution": "Check plan/frozen state in admin before reactivating anything; plan selection may charge -- founder decision, never automatic",
+    "sources": "help.shopify.com login/reset-password/recovery-codes/log-in (fetched 2026-09-20)"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-08-23T20:59:34.1551903Z",
+  "tests": {
+    "health": "PASS",
+    "finance": "FAIL",
+    "dashboard": "PASS",
+    "webhook": "FAIL"
+  },
+  "overall": "PARTIAL",
+  "notes": "health: 200 OK valid JSON status=warning (reality WARNING Published awaiting first sale, n8n degraded) checks ok. finance: 302 Redirect to /mission_control_login.html — يتطلب مصادقة Mission Control (requireMissionControlAuth server.js:272). dashboard: 200 OK HTML 59394 bytes RTL Arabic. webhook: 404 Cannot POST /webhook — المسار الصحيح هو /webhooks/paddle (200 مع REJECTED MISSING_SECRET عند اختباره). السيرفر يعمل عبر scripts/supervisor.js (port 3000 OPEN, supervisor.log spawn server.js 2026-08-23T20:58:17). لا تعديل كود، لا commit."
+}
