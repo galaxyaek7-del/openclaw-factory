@@ -1,1 +1,17 @@
-{"active": true, "name": "COMMERCIAL_WAR_ROOM (internal only)", "real_blockers": ["FG-001 pack1 human post (P0)", "traffic observability paywalled (P1)", "Paddle onboarding (P1, decoupled)"], "real_checkout": "shell live, completion untested (no spend authorized)", "real_purchase": "0", "real_reach": "Nostr SUB-001 active; Pack1 pending", "real_revenue": 0, "real_signal": "none yet", "real_traffic": "NO DATA", "since": "2026-09-28T08:45:00Z"}
+{
+  "active": true,
+  "name": "COMMERCIAL_WAR_ROOM (internal only)",
+  "real_blockers": [
+    "FG-001 pack1 human post (P0)",
+    "traffic observability paywalled (P1)",
+    "Paddle onboarding (P1, decoupled)"
+  ],
+  "real_checkout": "shell live, completion untested (no spend authorized)",
+  "real_purchase": "0",
+  "real_reach": "Nostr SUB-001 active; Pack1 pending",
+  "real_revenue": 0,
+  "real_signal": "none yet (SUB-001 0 replies)",
+  "real_traffic": "NO DATA",
+  "since": "2026-09-28T09:35:00Z",
+  "stale_note": "publish_queue.json holds 4 dormant sprint14 items; dry-run gated, left untouched"
+}
