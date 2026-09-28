@@ -1,0 +1,135 @@
+{
+  "templates": [
+    {
+      "filename_docx": "estimate_letter.docx",
+      "title": "Patient Cost Estimate Letter",
+      "sections": [
+        {
+          "heading": "Visit and planned services",
+          "body": [
+            "This letter summarizes the services planned for your visit in plain terms, as discussed with your provider.",
+            {
+              "fields": [
+                "Patient reference:",
+                "Visit date:",
+                "Planned services summary:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Payer-stated benefits",
+          "body": [
+            "The figures below reflect what the payer stated on the verification date noted. They are not a promise of payment.",
+            {
+              "fields": [
+                "Payer name:",
+                "Verification date and reference:",
+                "Benefit summary:",
+                "Estimated patient share:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Required estimate notice",
+          "body": [
+            "All figures in this letter are estimates only. Estimates are not guarantees of coverage, payment, or patient responsibility. The payer makes the final determination under the plan terms in effect on the date of service. Other claims, eligibility changes, or pre-determination outcomes can change the final amount.",
+            {
+              "fields": [
+                "Staff initials:",
+                "Date sent:",
+                "Questions contact:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "verification_call_script.docx",
+      "title": "Payer Verification Call Script",
+      "sections": [
+        {
+          "heading": "Opening and identifiers",
+          "body": [
+            "Introduce the practice and role, state the scheduled visit date as the date of service, and provide subscriber identifiers and group number.",
+            {
+              "fields": [
+                "Payer phone or portal:",
+                "Subscriber details provided:",
+                "Date of service stated:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Questions to ask verbatim",
+          "body": [
+            "Ask eligibility on the date of service, class benefits and maximum with used and remaining, waiting periods, frequency limits per planned group, missing-tooth and downgrade rules, coordination order for dual coverage, and preauthorization per planned code. Read back figures and request a reference number.",
+            {
+              "fields": [
+                "Answers recorded:",
+                "Reference number:",
+                "Follow-up needed:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "denial_review_form.docx",
+      "title": "Denial Review Form",
+      "sections": [
+        {
+          "heading": "Claim and denial details",
+          "body": [
+            "Record the claim reference, verification identifier, denial code and text, and the mapped verification point.",
+            {
+              "fields": [
+                "Claim reference:",
+                "Verification ID:",
+                "Denial code and text:",
+                "Mapped verification point:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Corrective action",
+          "body": [
+            "State the corrective action, owner, and status so the same gap does not repeat.",
+            {
+              "fields": [
+                "Corrective action:",
+                "Owner:",
+                "Status and date:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "huddle_hold_list.docx",
+      "title": "Pre-Visit Hold List for Huddle",
+      "sections": [
+        {
+          "heading": "Hold items",
+          "body": [
+            "List each incomplete verification with the missing point, impact, and disposition.",
+            {
+              "fields": [
+                "Verification ID:",
+                "Missing point and impact:",
+                "Disposition:",
+                "Patient notified:"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

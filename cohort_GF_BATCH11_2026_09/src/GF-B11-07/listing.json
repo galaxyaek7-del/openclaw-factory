@@ -1,0 +1,63 @@
+{
+  "name": "Dental Insurance Verification Kit",
+  "short_description": "8-point pre-visit verification system for dental teams: eligibility, benefits, limitations, coordination of benefits, and preauthorization review 48 to 72 hours before the visit.",
+  "long_description": "A practice-ready administrative kit priced at $59 that replaces shallow portal glances with a defined 8-point verification sequence, a verification log with service-level formulas, a benefits checklist, a denial tracker mapped to verification points, a KPI dashboard, payer and patient scripts, and a written estimate letter. Built for owners, office managers, and front desk leads. Estimates prepared with this kit are estimates only and are not guarantees of coverage or payment.",
+  "buyer_persona": "Dental practice owners, office managers, and front desk leads responsible for verification, estimates, and claim quality.",
+  "problem_statement": "Shallow verification misses waiting periods, frequency limits, missing-tooth provisions, downgrades, coordination order, and preauthorization needs, producing denied claims, surprise bills, and rework.",
+  "outcome_statement": "A documented verification record for each visit, a communicated provisional estimate with clear caveats, and a claim packet that matches the record, reviewed through weekly completeness, on-time, denial-by-point, variance, and rework measures.",
+  "whats_included": [
+    "Operational guide (this document)",
+    "Workbook with Verification_Log, Benefits_Checklist, Denial_Tracker, KPI_Dashboard, Estimate_Worksheet",
+    "4 document templates: estimate letter, payer call script, denial review form, huddle hold list",
+    "Payer and patient conversation scripts",
+    "KPI definitions and weekly audit routine"
+  ],
+  "who_for": [
+    "Dental practice owners setting a 48 to 72 hour verification standard",
+    "Office managers assigning batches and auditing completeness",
+    "Front desk leads executing verification and preparing estimate letters"
+  ],
+  "who_not_for": [
+    "Practices seeking clinical, coding, or treatment-planning guidance",
+    "Teams seeking collections, appeals representation, or legal advice",
+    "Buyers seeking automated payer integration software"
+  ],
+  "how_to_use": "Pull the schedule 72 hours out, create one log row per visit, work the 8 points with the call script, record payer references, compute estimates in the worksheet, send the estimate letter, disposition hold items in huddle, submit claims from the verified record, log denials by verification point, and review KPIs weekly.",
+  "limitations": "Payer statements change; each record reflects a point in time and does not bind the payer. Preauthorization cases need longer lead times than the standard window. Dual-coverage order depends on payer rules. All example figures are illustrative teaching aids, not benchmarks.",
+  "disclaimer": "Administrative process support only. No clinical claims, no diagnosis or treatment guidance, no legal or payer-policy advice. Estimates are not guarantees of coverage, payment, or patient responsibility. Final determinations are made by the payer under plan terms in effect on the date of service.",
+  "faq": [
+    {
+      "q": "Does this overlap schedule-fill products?",
+      "a": "No. Schedule-fill products address recall and reactivation. This kit addresses verification accuracy for time already scheduled."
+    },
+    {
+      "q": "What if the payer gives no reference number?",
+      "a": "Record name, date, time, portal path, and answers, and note the missing reference explicitly."
+    },
+    {
+      "q": "How do compressed same-day verifications work?",
+      "a": "Run eligibility, maximum, and frequency plus preauthorization flag, mark the row compressed, and use stronger caveat language."
+    },
+    {
+      "q": "Who owns estimate math?",
+      "a": "The verifier computes in the workbook from logged payer statements; the manager spot-checks samples weekly."
+    }
+  ],
+  "keywords": [
+    "dental insurance verification",
+    "benefits verification checklist",
+    "dental front desk",
+    "coordination of benefits",
+    "preauthorization tracking",
+    "denial tracker",
+    "patient estimate letter"
+  ],
+  "category": "Dental practice administration",
+  "version": "1.0",
+  "changelog": [
+    "1.0: Initial release with guide, 5-sheet workbook, 4 templates, and KPI routines."
+  ],
+  "support": "Buyer support covers file access and use questions through the seller contact channel listed at purchase. It does not cover payer disputes, coding decisions, or clinical questions.",
+  "price": 59,
+  "slug": "dental_insurance_verification_kit"
+}

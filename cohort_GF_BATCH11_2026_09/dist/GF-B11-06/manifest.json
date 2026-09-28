@@ -1,0 +1,19 @@
+{
+  "cohort": "GF_BATCH11_2026_09",
+  "id": "GF-B11-06",
+  "slug": "realestate_tc_deadline_kit",
+  "name": "Real Estate Transaction Deadline Kit",
+  "price_cents": 5900,
+  "guide_words": 6110,
+  "guide_pages": 12,
+  "bundle": "realestate_tc_deadline_kit_bundle.zip",
+  "bundle_bytes": 133785,
+  "files": [
+    "README.txt",
+    "contingency_status_update.docx",
+    "deal_file_cover_sheet.docx",
+    "post_close_review_form.docx",
+    "realestate_tc_deadline_kit_guide.pdf",
+    "realestate_tc_deadline_kit_workbook.xlsx"
+  ]
+}

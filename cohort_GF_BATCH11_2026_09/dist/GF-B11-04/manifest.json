@@ -1,0 +1,19 @@
+{
+  "cohort": "GF_BATCH11_2026_09",
+  "id": "GF-B11-04",
+  "slug": "salon_commission_pay_kit",
+  "name": "Salon Commission Pay Kit",
+  "price_cents": 3900,
+  "guide_words": 6481,
+  "guide_pages": 13,
+  "bundle": "salon_commission_pay_kit_bundle.zip",
+  "bundle_bytes": 133144,
+  "files": [
+    "README.txt",
+    "salon_commission_agreement_template.docx",
+    "salon_commission_pay_kit_guide.pdf",
+    "salon_commission_pay_kit_workbook.xlsx",
+    "salon_pay_dispute_log_form.docx",
+    "salon_stylist_payout_statement.docx"
+  ]
+}

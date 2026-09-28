@@ -1,0 +1,197 @@
+{
+  "workbook_filename": "homebuyer_inspection_action_kit_workbook.xlsx",
+  "sheets": [
+    {
+      "name": "Deficiency_Log",
+      "columns": [
+        "Row_ID",
+        "Report_Page",
+        "System",
+        "Inspector_Wording",
+        "Buyer_Class",
+        "Buyer_Priority",
+        "Quote_Low",
+        "Quote_High",
+        "Price_Source",
+        "Source_Date",
+        "Exclusions_Notes",
+        "Status"
+      ],
+      "example_rows": [
+        [
+          "R-01",
+          "pp. 12-14",
+          "Roof",
+          "Aged shingles with granular loss; roofer evaluation recommended",
+          "Water intrusion risk",
+          "High",
+          4800,
+          7200,
+          "Contractor written scope",
+          "2026-10-02",
+          "Includes underlayment; excludes gutter",
+          "Priced"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "M1",
+          "formula": "=IF(OR(G1=\"\",H1=\"\"),\"\",(G1+H1)/2)"
+        },
+        {
+          "cell": "N1",
+          "formula": "=IF(C1=\"\",\"\",C1&\" | \"&F1)"
+        }
+      ],
+      "notes": "M1 midpoint is a planning aid only, not a quote. N1 is a grouping helper. All figures illustrative."
+    },
+    {
+      "name": "Credit_vs_Repair",
+      "columns": [
+        "Row_or_System",
+        "Repair_Low",
+        "Repair_High",
+        "Credit_Figure",
+        "Quality_Control_Note",
+        "Timeline_Days",
+        "Permit_Receipt_Note",
+        "Lender_Allowability",
+        "Provisional_Flag",
+        "Leaning"
+      ],
+      "example_rows": [
+        [
+          "Electrical R-02",
+          350,
+          650,
+          "Provisional pending second scope",
+          "Seller repair gives permit receipt; credit gives contractor choice",
+          5,
+          "Permit plus receipt for seller path",
+          "Confirm with lender",
+          "Yes - awaiting scope 2",
+          "Undecided"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "K1",
+          "formula": "=IF(OR(B1=\"\",C1=\"\"),\"\",(B1+C1)/2)"
+        },
+        {
+          "cell": "L1",
+          "formula": "=IF(D1=\"\",\"No credit entered\",IF(K1=\"\",\"\",D1-K1))"
+        }
+      ],
+      "notes": "K1 repair midpoint; L1 difference between credit figure and repair midpoint for discussion only. Credit figures developed with buyer representatives, not computed by this kit."
+    },
+    {
+      "name": "Contingency_Calendar",
+      "columns": [
+        "Milestone",
+        "Contract_Date",
+        "Time_Rule",
+        "Delivery_Method",
+        "Recipient",
+        "Contract_Citation",
+        "Buffer_Date",
+        "Days_Remaining",
+        "Status"
+      ],
+      "example_rows": [
+        [
+          "Inspection notice",
+          "2026-10-10",
+          "By 5 PM",
+          "Named portal",
+          "Seller side via agent",
+          "Sec 7.2",
+          "2026-10-09",
+          "",
+          "Open"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "H2",
+          "formula": "=IF(B2=\"\",\"\",B2-TODAY())"
+        },
+        {
+          "cell": "G2",
+          "formula": "=IF(B2=\"\",\"\",B2-1)"
+        }
+      ],
+      "notes": "Verify all contract terms locally with your attorney. Formulas compute days remaining and a one-day buffer from your entered dates only."
+    },
+    {
+      "name": "Coordination_Tracker",
+      "columns": [
+        "Date",
+        "Channel",
+        "Counterpart_Role",
+        "Subject",
+        "Summary",
+        "Attachments",
+        "Response_Due",
+        "Response_Received",
+        "Next_Step"
+      ],
+      "example_rows": [
+        [
+          "2026-10-03",
+          "Email",
+          "Contractor",
+          "Roofer access",
+          "Confirmed access window for follow-up visit",
+          "None",
+          "2026-10-04",
+          "Confirmed",
+          "File scope on arrival"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "J1",
+          "formula": "=COUNTA(A1:A100)"
+        }
+      ],
+      "notes": "J1 counts logged messages. Log verbal points with a written confirmation follow-up."
+    },
+    {
+      "name": "Decision_Worksheet",
+      "columns": [
+        "Input",
+        "Value_or_Note",
+        "Source",
+        "Date"
+      ],
+      "example_rows": [
+        [
+          "Kit total exposure",
+          "Illustrative planning figure from log subtotals",
+          "Deficiency_Log",
+          "2026-10-04"
+        ],
+        [
+          "Lender credit rule",
+          "As stated by lender",
+          "Lender message",
+          "2026-10-03"
+        ],
+        [
+          "Chosen path",
+          "Recorded after review with representatives",
+          "Worksheet",
+          "2026-10-08"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "E1",
+          "formula": "=COUNTA(B1:B50)"
+        }
+      ],
+      "notes": "E1 counts completed inputs. The worksheet records reasoning in sentences; it recommends nothing by formula. Not legal advice."
+    }
+  ]
+}

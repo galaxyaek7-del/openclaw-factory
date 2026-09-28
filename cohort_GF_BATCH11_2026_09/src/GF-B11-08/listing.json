@@ -1,0 +1,63 @@
+{
+  "name": "Homebuyer Inspection Action Kit",
+  "short_description": "Buyer-side kit for US first-time home buyers under inspection contingency: turn a long inspection report into a fix, credit, or accept decision with dollar math before the deadline.",
+  "long_description": "A buyer-side action kit priced at $29. Extract every deficiency into a log with cost-range formulas, compare credit versus repair paths, track contingency dates with buffers, log coordination messages, draft a sourced repair request letter, and complete a decision worksheet. Built for first-time buyers, not agents. This kit is not legal advice and is not inspection advice; verify all contract terms locally with your own licensed attorney and inspector.",
+  "buyer_persona": "US first-time home buyers under an inspection contingency who hold a completed inspection report and face a fix, credit, or accept decision before a deadline.",
+  "problem_statement": "A 40-plus page jargon report must become a specific, sourced, on-time decision with dollar math before the contingency expires, without misreading severity, prices, or contract mechanics.",
+  "outcome_statement": "A priced deficiency log, a credit-versus-repair comparison, a buffered contingency calendar, a coordination record, a review-ready request draft, and a written decision worksheet filed as one packet.",
+  "whats_included": [
+    "Operational guide (this document)",
+    "Workbook with Deficiency_Log, Credit_vs_Repair, Contingency_Calendar, Coordination_Tracker, Decision_Worksheet",
+    "3 document templates: repair request letter draft, decision worksheet form, contractor scope request",
+    "Checklists for intake, logging, comparison, calendar, tracker, letter, and worksheet"
+  ],
+  "who_for": [
+    "US first-time buyers under an inspection contingency with a report in hand",
+    "Buyers gathering written contractor scopes and comparing credit versus repair",
+    "Buyers coordinating through their own attorney and agent with written records"
+  ],
+  "who_not_for": [
+    "Agents or representatives seeking professional tools",
+    "Buyers without an inspection contingency or without an inspection report",
+    "Anyone seeking legal advice, inspection advice, or negotiation representation",
+    "Buyers seeking automated valuations or contractor dispatch"
+  ],
+  "how_to_use": "Log each deficiency with report citations, collect written scopes into ranges, run the credit-versus-repair comparison, calendar deadlines with buffers as verified by counsel, track every message, draft the letter for attorney and agent review, and complete the worksheet before the buffer date.",
+  "limitations": "Contract language, notice rules, credit mechanics, and license scopes vary by state and contract form. Quotes expire and scopes change. Example figures are illustrative teaching aids, not market data. The kit computes planning math; it does not set credit figures or recommend a transaction choice.",
+  "disclaimer": "Not legal advice and not inspection advice. Does not interpret purchase contracts, does not advise on waiving or exercising contingencies, and does not assess property condition. Verify all contract terms, deadlines, notice methods, and credit mechanics locally with your own licensed attorney and licensed inspector. Buyer-side only; not written for agents.",
+  "faq": [
+    {
+      "q": "Is this for agents?",
+      "a": "No. Buyer-side only. It tracks coordination with your agent but does not instruct them."
+    },
+    {
+      "q": "Does it tell me to walk away?",
+      "a": "No. The worksheet structures the choice; you decide with your licensed representatives."
+    },
+    {
+      "q": "Credit or repair, which is better?",
+      "a": "Neither in the abstract. The comparator weighs control, timeline, lender rules, and documentation for your case."
+    },
+    {
+      "q": "What if my contract has no contingency?",
+      "a": "Ask your attorney immediately what rights your contract provides; contingency mechanics may not apply."
+    }
+  ],
+  "keywords": [
+    "first time home buyer",
+    "inspection contingency",
+    "inspection report",
+    "repair request",
+    "seller credit",
+    "closing checklist",
+    "buyer decision worksheet"
+  ],
+  "category": "Home buying",
+  "version": "1.0",
+  "changelog": [
+    "1.0: Initial release with guide, 5-sheet workbook, 3 templates, and decision packet routines."
+  ],
+  "support": "Buyer support covers file access and use questions through the seller contact channel listed at purchase. It does not cover legal interpretation, inspection questions, or negotiation advice.",
+  "price": 29,
+  "slug": "homebuyer_inspection_action_kit"
+}

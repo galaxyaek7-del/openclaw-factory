@@ -1,0 +1,3 @@
+{"product_id": "GF-B11-01", "stage": "PUBLISHING", "ts": "2026-09-28T17:07:50Z"}
+{"product_id": "GF-B11-01", "stage": "FAILED", "error": "Gumroad create_product failed: Sorry, you can only create 10 products per day."}
+{"product_id": "GF-B11-01", "stage": "BLOCKED", "reason": "Gumroad platform limit: 10 product creates per day (account-level, not founder gate)", "ts": "2026-09-28T17:22:50Z"}

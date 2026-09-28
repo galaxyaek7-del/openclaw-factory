@@ -1,0 +1,20 @@
+{
+  "name": "EU Green Claims Review Kit",
+  "short_description": "Inventory, evidence-linking, and review tools to clean up eco claims for EU consumers under Empowering Consumers rules from 27 Sep 2026.",
+  "long_description": "A review kit for D2C, e-commerce, fashion, and cosmetics brands marketing environmental claims to EU consumers. It provides a claim inventory, evidence-file log, five-factor risk scorer, remediation tracker, and review worksheet to identify generic claims, own eco-labels, part-for-whole scope errors, and offset-based neutrality statements, and to document retain, reword, or remove decisions with counsel verification.",
+  "buyer_persona": "D2C and e-commerce brand teams, fashion and cosmetics marketers, and sustainability staff responsible for consumer-facing eco claims in the EU.",
+  "problem_statement": "From 27 Sep 2026, generic claims, non-qualifying eco-labels, part-for-whole presentations, and offset-based climate-neutral product claims are prohibited per se, leaving teams with live copy across many channels that needs review.",
+  "outcome_statement": "A documented review file per claim with evidence links, risk scores, remediation across every instance, and signed review records ready for counsel verification.",
+  "whats_included": "guide.md operational manual, workbook.xlsx with 5 sheets (Claim Inventory, Evidence File Log, Risk Scorer, Remediation Tracker, Review Worksheet Log), 3 docx templates (claim review worksheet, influencer brief addendum, remediation action note).",
+  "who_for": "Brand, marketing, e-commerce, and sustainability staff managing environmental claims on websites, packaging, ads, social, influencer, and marketplace channels.",
+  "who_not_for": "Businesses seeking legal advice, life-cycle assessment services, laboratory testing, or certification issuance, which this kit does not provide.",
+  "how_to_use": "Inventory every claim verbatim across channels, link each to exhibits, score risk with the five-factor sheet, remediate high-risk items across every instance, and record decisions in review worksheets verified by counsel.",
+  "limitations": "General information only, not legal advice. Does not certify claims, validate test reports, or clear copy for publication. National transposition and guidance may evolve and must be re-verified with official sources and counsel.",
+  "disclaimer": "Not legal advice. Have counsel verify claim decisions before publishing or retaining claims. No enforcement outcome is promised. Requirements may change after publication.",
+  "faq": "Does the kit make claims lawful? No, it organizes review; wording, context, evidence, and national rules determine the position. Can I keep generic wording with a footnote? Standalone generic wording remains high risk; reword to specific language. Do influencer posts count? Yes, brief, approve, and archive them. Does the kit create evidence? No, it links and gaps existing exhibits.",
+  "keywords": "green claims, empowering consumers directive, substantiation, eco label review, misleading advertising prevention, claim inventory",
+  "category": "Marketing operations toolkit",
+  "version": "1.0",
+  "changelog": "1.0: Initial release with guide, 5-sheet workbook, and 3 templates covering inventory, evidence, scoring, remediation, and review.",
+  "support": "Email support for file-use questions. Claim-specific legal questions are referred to qualified counsel. Include kit version 1.0 and claim identifiers in support requests."
+}

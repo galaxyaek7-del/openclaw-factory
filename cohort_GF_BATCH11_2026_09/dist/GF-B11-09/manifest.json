@@ -1,0 +1,19 @@
+{
+  "cohort": "GF_BATCH11_2026_09",
+  "id": "GF-B11-09",
+  "slug": "cottage_food_compliance_kit",
+  "name": "Cottage Food Compliance Kit",
+  "price_cents": 4900,
+  "guide_words": 6312,
+  "guide_pages": 12,
+  "bundle": "cottage_food_compliance_kit_bundle.zip",
+  "bundle_bytes": 135984,
+  "files": [
+    "README.txt",
+    "cottage_food_compliance_kit_guide.pdf",
+    "cottage_food_compliance_kit_workbook.xlsx",
+    "cottage_food_label_template.docx",
+    "home_kitchen_signage_and_notice.docx",
+    "registration_and_cap_cover_sheet.docx"
+  ]
+}

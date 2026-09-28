@@ -1,0 +1,19 @@
+{
+  "cohort": "GF_BATCH11_2026_09",
+  "id": "GF-B11-02",
+  "slug": "empco_green_claims_kit",
+  "name": "EU Green Claims Review Kit",
+  "price_cents": 6900,
+  "guide_words": 5604,
+  "guide_pages": 10,
+  "bundle": "empco_green_claims_kit_bundle.zip",
+  "bundle_bytes": 130470,
+  "files": [
+    "README.txt",
+    "empco_claim_review_worksheet.docx",
+    "empco_green_claims_kit_guide.pdf",
+    "empco_green_claims_kit_workbook.xlsx",
+    "empco_influencer_brief_addendum.docx",
+    "empco_remediation_action_note.docx"
+  ]
+}

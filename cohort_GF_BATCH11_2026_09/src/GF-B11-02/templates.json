@@ -1,0 +1,115 @@
+{
+  "templates": [
+    {
+      "filename_docx": "empco_claim_review_worksheet.docx",
+      "title": "Claim Review Worksheet",
+      "sections": [
+        {
+          "heading": "Claim identification",
+          "body": [
+            "Record the exact wording, channel, and observation details for the claim under review.",
+            {
+              "fields": [
+                "Claim identifier:",
+                "Exact wording:",
+                "Channel and reference:",
+                "Date observed and language:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Evidence and score",
+          "body": [
+            "Link exhibits, assess coverage, and record the five-factor score and threshold applied.",
+            {
+              "fields": [
+                "Exhibit references:",
+                "Coverage assessment:",
+                "Risk score and threshold:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Decision and verification",
+          "body": [
+            "Record the retain, reword, or remove decision, new wording, and counsel verification.",
+            {
+              "fields": [
+                "Decision:",
+                "New wording or removal note:",
+                "Reviewer function and date:",
+                "Counsel verification date:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "empco_influencer_brief_addendum.docx",
+      "title": "Influencer and Affiliate Brief Addendum",
+      "sections": [
+        {
+          "heading": "Approved language only",
+          "body": [
+            "Partners must use only the approved specific sentences supplied and must not add generic environmental phrases or own badges.",
+            {
+              "fields": [
+                "Campaign name:",
+                "Approved sentences supplied:",
+                "Prohibited patterns explained:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Pre-publication approval and archive",
+          "body": [
+            "All posts require pre-publication review, and dated copies are retained with the review file.",
+            {
+              "fields": [
+                "Reviewer function:",
+                "Approval date:",
+                "Live post archive reference:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "empco_remediation_action_note.docx",
+      "title": "Remediation Action Note",
+      "sections": [
+        {
+          "heading": "Claim and action",
+          "body": [
+            "Record the claim, risk drivers, and the chosen remediation across every instance.",
+            {
+              "fields": [
+                "Claim identifier:",
+                "Risk drivers:",
+                "Decision and new wording:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Implementation control",
+          "body": [
+            "Track instances, owners, dates, and live re-checks before closure.",
+            {
+              "fields": [
+                "Instances and channels:",
+                "Owner and due date:",
+                "Verified date and evidence:"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

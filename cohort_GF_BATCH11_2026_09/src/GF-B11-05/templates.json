@@ -1,0 +1,194 @@
+{
+  "templates": [
+    {
+      "filename_docx": "pre_post_rental_inspection_form.docx",
+      "title": "Pre-Rental and Post-Rental Vehicle Inspection Form",
+      "sections": [
+        {
+          "heading": "Rental identification",
+          "body": [
+            "Complete one form per vehicle movement. Circle Pre or Post at the top before starting.",
+            {
+              "fields": [
+                "Inspection type (circle one): Pre / Post",
+                "Date and time:",
+                "Unit ID:",
+                "VIN last 6:",
+                "Plate:",
+                "Rental agreement number:",
+                "Renter last name as on agreement:",
+                "Odometer out:",
+                "Odometer in:",
+                "Fuel level out:",
+                "Fuel level in:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Exterior walkaround",
+          "body": [
+            "Walk clockwise from the front bumper. Mark each flaw with X scratch or chip, D dent, C crack, S stain, T tire or wheel damage, plus panel and approximate size.",
+            {
+              "fields": [
+                "Front fascia, grille, hood:",
+                "Windshield and front glass:",
+                "Driver side panels and trim:",
+                "Driver side wheels and tires:",
+                "Rear bumper, trunk or liftgate:",
+                "Passenger side panels and trim:",
+                "Passenger side wheels and tires:",
+                "Roof and remaining glass:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Interior, controls, and equipment",
+          "body": [
+            "Check with ignition on where indicated. Note warning lights by name.",
+            {
+              "fields": [
+                "Seats, carpets, mats, headliner:",
+                "Dashboard, controls, warning lights:",
+                "Climate system, lights, signals, wipers, horn:",
+                "Mirrors, spare, jack, tools where equipped:",
+                "Cargo area condition and photos taken:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Photos and sign-off",
+          "body": [
+            "Minimum photo set: front three-quarter, rear three-quarter, each side, odometer and fuel cluster, close-up of every marked flaw.",
+            {
+              "fields": [
+                "Total photos taken:",
+                "Photo filenames or phone roll reference:",
+                "Staff name (print) and initials:",
+                "Renter acknowledgment signature:",
+                "Renter refused walkaround (note time if so):"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "damage_claim_letter.docx",
+      "title": "Damage Claim Letter",
+      "sections": [
+        {
+          "heading": "Sender and claim identification",
+          "body": [
+            "Keep to one page where possible. Attach the timeline as a second page for complex cases.",
+            {
+              "fields": [
+                "Sender business name:",
+                "Sender address and phone:",
+                "Sender email:",
+                "Date of letter:",
+                "Recipient name and address:",
+                "Claim reference or agreement number:",
+                "Vehicle: Unit ID, year, make, model, VIN:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "What happened",
+          "body": [
+            "State dated facts only. No conclusions about fault or motive.",
+            {
+              "fields": [
+                "Rental period (checkout and return dates):",
+                "Inspection dates and findings summary:",
+                "Damage description with panel and measurements:",
+                "Discovery date and notification record:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Enclosed evidence",
+          "body": [
+            "List each enclosure by name so the reviewer can check them off.",
+            {
+              "fields": [
+                "Enclosure 1 (for example pre-rental form):",
+                "Enclosure 2 (for example post-rental form):",
+                "Enclosure 3 (for example photo set with count):",
+                "Enclosure 4 (for example shop estimate):",
+                "Enclosure 5 (for example agreement copy):"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Amount requested and response sought",
+          "body": [
+            "State the amount with its basis and a specific reply date.",
+            {
+              "fields": [
+                "Amount requested and basis:",
+                "Action requested (payment, authorization, review):",
+                "Reply requested by date:",
+                "Contact name and phone for questions:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "service_visit_record.docx",
+      "title": "Service Visit Record",
+      "sections": [
+        {
+          "heading": "Vehicle and visit details",
+          "body": [
+            "Complete at drop-off. Attach the shop invoice on pickup and reconcile with the workbook.",
+            {
+              "fields": [
+                "Unit ID and VIN last 6:",
+                "Drop-off date and mileage:",
+                "Shop name and phone:",
+                "Requested work:",
+                "Promised pickup date:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Work performed and parts",
+          "body": [
+            "Copy from the shop invoice. Keep the invoice stapled to this sheet in the vehicle folder.",
+            {
+              "fields": [
+                "Work performed as invoiced:",
+                "Parts replaced:",
+                "Invoice number and total:",
+                "Next service advised by shop:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Workbook update",
+          "body": [
+            "Update the Maintenance Log the day the vehicle returns to service.",
+            {
+              "fields": [
+                "Log row added on date:",
+                "Next due mileage entered:",
+                "Next due date entered:",
+                "Receipt filed in folder (initials):"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "cohort": "GF_BATCH11_2026_09",
+  "id": "GF-B11-05",
+  "slug": "fleet_maintenance_damage_bundle",
+  "name": "Fleet Maintenance and Damage Documentation Bundle",
+  "price_cents": 4900,
+  "guide_words": 8159,
+  "guide_pages": 15,
+  "bundle": "fleet_maintenance_damage_bundle_bundle.zip",
+  "bundle_bytes": 141990,
+  "files": [
+    "README.txt",
+    "damage_claim_letter.docx",
+    "fleet_maintenance_damage_bundle_guide.pdf",
+    "fleet_maintenance_damage_bundle_workbook.xlsx",
+    "pre_post_rental_inspection_form.docx",
+    "service_visit_record.docx"
+  ]
+}

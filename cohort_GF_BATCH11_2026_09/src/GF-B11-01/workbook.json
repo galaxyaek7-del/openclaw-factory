@@ -1,0 +1,297 @@
+{
+  "workbook_filename": "eudr_due_diligence_starter_workbook.xlsx",
+  "sheets": [
+    {
+      "name": "Scope_Checker",
+      "columns": [
+        "SKU",
+        "Product_Name",
+        "Customs_Code",
+        "Commodity_Family",
+        "Scope_Decision",
+        "Reason",
+        "Reviewer_Function",
+        "Review_Date"
+      ],
+      "example_rows": [
+        [
+          "SKU-001",
+          "Roasted Coffee 500g",
+          "090121",
+          "coffee",
+          "In scope",
+          "Maps to coffee family per annex entry",
+          "Regulatory lead",
+          "2026-10-15"
+        ],
+        [
+          "SKU-002",
+          "Cocoa Drink Mix",
+          "180610",
+          "cocoa",
+          "In scope",
+          "Cocoa preparation mapped to cocoa family",
+          "Regulatory lead",
+          "2026-10-15"
+        ],
+        [
+          "SKU-003",
+          "Wooden Gift Box",
+          "441900",
+          "wood",
+          "Uncertain",
+          "Code requires counsel review against current annex",
+          "External counsel",
+          "2026-10-20"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "I2",
+          "formula": "=COUNTA(A2:A500)"
+        },
+        {
+          "cell": "I3",
+          "formula": "=COUNTIF(E2:E500,\"In scope\")"
+        },
+        {
+          "cell": "I4",
+          "formula": "=COUNTIF(E2:E500,\"Uncertain\")"
+        }
+      ],
+      "notes": "Review quarterly and whenever assortment, codes, or official classifications change. Keep declaration extracts with out-of-scope rows."
+    },
+    {
+      "name": "Supplier_Register",
+      "columns": [
+        "Supplier_ID",
+        "Supplier_Legal_Name",
+        "Country",
+        "Site",
+        "Commodity",
+        "Volume_Band",
+        "Contact_Function",
+        "Letter_Sent_Date",
+        "Response_Status",
+        "Plots_Received",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "SUP-01",
+          "Illustrative Coffee Supplier A",
+          "Colombia",
+          "Huila station",
+          "coffee",
+          "10-50t",
+          "Sourcing manager",
+          "2026-09-01",
+          "Partial",
+          "24 points received",
+          "Polygons pending"
+        ],
+        [
+          "SUP-02",
+          "Illustrative Soy Supplier B",
+          "Brazil",
+          "Crush plant North",
+          "soy",
+          "50-200t",
+          "QA lead",
+          "2026-09-02",
+          "Complete",
+          "60 polygons received",
+          "Chain map filed"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "M2",
+          "formula": "=COUNTA(A2:A500)"
+        },
+        {
+          "cell": "M3",
+          "formula": "=COUNTIF(I2:I500,\"Complete\")"
+        },
+        {
+          "cell": "M4",
+          "formula": "=COUNTIF(I2:I500,\"Partial\")+COUNTIF(I2:I500,\"Non-responsive\")"
+        }
+      ],
+      "notes": "One row per supplier site. Track every send and receipt date. Escalate non-responsive sources in writing."
+    },
+    {
+      "name": "DDS_Preparation_Log",
+      "columns": [
+        "Lot_ID",
+        "Product",
+        "Quantity",
+        "Unit",
+        "Harvest_Period",
+        "Origin_Country",
+        "Plot_Count",
+        "Coord_File_Ref",
+        "Legality_Doc_Refs",
+        "Role",
+        "Risk_Conclusion",
+        "Reviewer_Function",
+        "Approval_Date",
+        "Statement_Ref"
+      ],
+      "example_rows": [
+        [
+          "LOT-2026-001",
+          "Roasted Coffee",
+          "500",
+          "bags",
+          "Mar-Apr 2026",
+          "Colombia",
+          "42",
+          "coord_LOT-2026-001.csv",
+          "permit_01; permit_02",
+          "Operator",
+          "Negligible",
+          "Independent reviewer",
+          "2026-11-02",
+          "Pending submission"
+        ],
+        [
+          "LOT-2026-002",
+          "Soy Meal",
+          "20",
+          "tonnes",
+          "Feb 2026",
+          "Brazil",
+          "60",
+          "poly_LOT-2026-002.gpkg",
+          "title_01; licence_02",
+          "Operator",
+          "Non-negligible - mitigation open",
+          "Independent reviewer",
+          "2026-11-10",
+          "Not submitted"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "P2",
+          "formula": "=COUNTA(A2:A500)"
+        },
+        {
+          "cell": "P3",
+          "formula": "=COUNTIF(K2:K500,\"Negligible\")"
+        },
+        {
+          "cell": "P4",
+          "formula": "=COUNTBLANK(N2:N500)"
+        }
+      ],
+      "notes": "Freeze submitted rows. Record amendments as new rows referencing the original lot."
+    },
+    {
+      "name": "Deadline_Calendar",
+      "columns": [
+        "Milestone",
+        "Owner_Function",
+        "Due_Date",
+        "Status",
+        "Dependency",
+        "Completion_Date",
+        "Comment"
+      ],
+      "example_rows": [
+        [
+          "Supplier letters sent",
+          "Sourcing",
+          "2026-09-05",
+          "Done",
+          "Scope locked",
+          "2026-09-05",
+          "All in-scope suppliers contacted"
+        ],
+        [
+          "Pilot coordinates received",
+          "QA",
+          "2026-10-01",
+          "In progress",
+          "Supplier response",
+          "",
+          "Chasing 2 suppliers"
+        ],
+        [
+          "First statement submitted",
+          "Regulatory lead",
+          "2026-11-15",
+          "Not started",
+          "Risk sign-off",
+          "",
+          "Depends on pilot file"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "I2",
+          "formula": "=COUNTIF(D2:D100,\"Done\")"
+        },
+        {
+          "cell": "I3",
+          "formula": "=COUNTIF(D2:D100,\"Blocked\")"
+        },
+        {
+          "cell": "I4",
+          "formula": "=COUNTA(A2:A100)"
+        }
+      ],
+      "notes": "Work backward from 30 Dec 2026 or 30 Jun 2027 depending on enterprise size. Review weekly."
+    },
+    {
+      "name": "Gap_Memo_Log",
+      "columns": [
+        "Lot_ID",
+        "Memo_Date",
+        "Complete_Items",
+        "Missing_Items",
+        "Compensating_Evidence",
+        "Risk_Conclusion",
+        "Approver_Function",
+        "Follow_Up_Owner",
+        "Follow_Up_Date"
+      ],
+      "example_rows": [
+        [
+          "LOT-2026-001",
+          "2026-11-03",
+          "Scope locked; 42 plots received",
+          "2 polygons pending",
+          "Site visit notes filed",
+          "Negligible per reviewer",
+          "Regulatory lead",
+          "Sourcing",
+          "2026-11-12"
+        ],
+        [
+          "LOT-2026-002",
+          "2026-11-11",
+          "Titles received",
+          "Silo segregation unconfirmed",
+          "Intake logs partial",
+          "Non-negligible",
+          "Regulatory lead",
+          "QA",
+          "2026-11-20"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "K2",
+          "formula": "=COUNTA(A2:A500)"
+        },
+        {
+          "cell": "K3",
+          "formula": "=COUNTIF(F2:F500,\"Negligible*\")"
+        }
+      ],
+      "notes": "One memo per lot. Copy open actions into the next lot for the same supplier."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "cohort": "GF_BATCH11_2026_09",
+  "id": "GF-B11-07",
+  "slug": "dental_insurance_verification_kit",
+  "name": "Dental Insurance Verification Kit",
+  "price_cents": 5900,
+  "guide_words": 5554,
+  "guide_pages": 11,
+  "bundle": "dental_insurance_verification_kit_bundle.zip",
+  "bundle_bytes": 166141,
+  "files": [
+    "README.txt",
+    "denial_review_form.docx",
+    "dental_insurance_verification_kit_guide.pdf",
+    "dental_insurance_verification_kit_workbook.xlsx",
+    "estimate_letter.docx",
+    "huddle_hold_list.docx",
+    "verification_call_script.docx"
+  ]
+}

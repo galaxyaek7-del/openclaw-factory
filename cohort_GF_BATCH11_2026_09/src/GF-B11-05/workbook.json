@@ -1,0 +1,297 @@
+{
+  "workbook_filename": "fleet_maintenance_damage_bundle_workbook.xlsx",
+  "sheets": [
+    {
+      "name": "VIN_Register",
+      "columns": [
+        "Unit ID",
+        "VIN",
+        "Year",
+        "Make",
+        "Model",
+        "Plate",
+        "Status",
+        "Current Mileage",
+        "Location",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "U-01",
+          "1HGCM82633A004352",
+          2021,
+          "Toyota",
+          "Camry",
+          "PLT-1042",
+          "Active",
+          48250,
+          "Main lot",
+          "Sample row. Replace with your data."
+        ],
+        [
+          "U-02",
+          "2FACP8CF0LX159021",
+          2020,
+          "Ford",
+          "Transit",
+          "PLT-2088",
+          "Active",
+          61900,
+          "Main lot",
+          "Sample row. Replace with your data."
+        ],
+        [
+          "U-03",
+          "3N1AB7AP4KY623118",
+          2019,
+          "Nissan",
+          "NV200",
+          "PLT-3175",
+          "In Shop",
+          74400,
+          "City garage",
+          "Sample row. Replace with your data."
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "B8",
+          "formula": "=COUNTA(A2:A20)"
+        },
+        {
+          "cell": "H8",
+          "formula": "=SUM(H2:H20)"
+        }
+      ],
+      "notes": "B8 counts units entered. H8 totals fleet mileage. Use controlled Status words only: Active, In Shop, Retired, Seasonal Hold. Sample rows are illustrative. Replace them with your fleet."
+    },
+    {
+      "name": "Maintenance_Log",
+      "columns": [
+        "Unit ID",
+        "Service Type",
+        "Date Performed",
+        "Mileage At Service",
+        "Interval Miles",
+        "Interval Months",
+        "Next Due Mileage",
+        "Next Due Date",
+        "Status",
+        "Vendor",
+        "Cost",
+        "Receipt Ref"
+      ],
+      "example_rows": [
+        [
+          "U-01",
+          "Oil and filter",
+          "2026-08-02",
+          45250,
+          5000,
+          6,
+          50250,
+          "2027-02-02",
+          "DUE SOON",
+          "Main St Auto",
+          89,
+          "INV-8811"
+        ],
+        [
+          "U-02",
+          "Oil and filter",
+          "2026-07-12",
+          58900,
+          5000,
+          6,
+          63900,
+          "2027-01-12",
+          "OK",
+          "Main St Auto",
+          95,
+          "INV-8702"
+        ],
+        [
+          "U-03",
+          "Brake pads front",
+          "2026-06-20",
+          71000,
+          30000,
+          24,
+          101000,
+          "2028-06-20",
+          "OK",
+          "City garage",
+          320,
+          "INV-8519"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "G2",
+          "formula": "=D2+E2"
+        },
+        {
+          "cell": "H2",
+          "formula": "=EDATE(C2,F2)"
+        },
+        {
+          "cell": "I2",
+          "formula": "=IF(OR(H2<TODAY(),G2<=48250),\"OVERDUE\",IF(OR(H2<TODAY()+30,G2-48250<=500),\"DUE SOON\",\"OK\"))"
+        },
+        {
+          "cell": "K7",
+          "formula": "=SUM(K2:K4)"
+        }
+      ],
+      "notes": "G2 adds interval miles to mileage at service. H2 advances the service date by interval months. I2 flags OVERDUE, DUE SOON, or OK for the first row using the register mileage 48250 as the comparison point. Copy G2, H2, and I2 down for each new row, updating the mileage reference to that row vehicle current mileage. K7 totals sample costs. Sample rows are illustrative."
+    },
+    {
+      "name": "Inspection_Log",
+      "columns": [
+        "Inspection ID",
+        "Unit ID",
+        "Type",
+        "Date",
+        "Mileage Out",
+        "Mileage In",
+        "Miles Driven",
+        "Fuel Out",
+        "Fuel In",
+        "Damage Noted",
+        "Photos Filed",
+        "Inspector"
+      ],
+      "example_rows": [
+        [
+          "IN-2026-101",
+          "U-01",
+          "Pre",
+          "2026-09-10",
+          48010,
+          "",
+          "",
+          "Full",
+          "",
+          "None",
+          12,
+          "R. desk"
+        ],
+        [
+          "IN-2026-102",
+          "U-01",
+          "Post",
+          "2026-09-12",
+          48010,
+          48250,
+          240,
+          "Full",
+          "3/4",
+          "Scuff RR bumper",
+          15,
+          "R. desk"
+        ],
+        [
+          "IN-2026-103",
+          "U-02",
+          "Pre",
+          "2026-09-12",
+          61900,
+          "",
+          "",
+          "Full",
+          "",
+          "Chip windshield lower edge",
+          13,
+          "J. lot"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "G3",
+          "formula": "=F3-E3"
+        },
+        {
+          "cell": "G7",
+          "formula": "=SUM(G2:G6)"
+        }
+      ],
+      "notes": "G3 computes miles driven as return mileage minus checkout mileage for the post-rental row. G7 totals driven miles. Inspector initials are role labels, not person names. Sample rows are illustrative."
+    },
+    {
+      "name": "Claim_Tracker",
+      "columns": [
+        "Claim ID",
+        "Unit ID",
+        "Date Discovered",
+        "Damage Summary",
+        "Estimate",
+        "Claim Type",
+        "Date Filed",
+        "Status",
+        "Amount Recovered",
+        "Days Open",
+        "Net Unrecovered"
+      ],
+      "example_rows": [
+        [
+          "CL-2026-014",
+          "U-01",
+          "2026-09-12",
+          "Scuff rear bumper cover",
+          480,
+          "Renter billed",
+          "2026-09-13",
+          "Awaiting Response",
+          0,
+          2,
+          480
+        ],
+        [
+          "CL-2026-013",
+          "U-03",
+          "2026-08-28",
+          "Cracked fog lamp lens",
+          210,
+          "Renter billed",
+          "2026-08-29",
+          "Resolved Paid",
+          210,
+          9,
+          0
+        ],
+        [
+          "CL-2026-012",
+          "U-02",
+          "2026-08-02",
+          "Dented sliding door",
+          1240,
+          "Insurance",
+          "2026-08-04",
+          "Awaiting Response",
+          0,
+          43,
+          1240
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "J2",
+          "formula": "=IF(G2=\"\",TODAY()-C2,G2-C2)"
+        },
+        {
+          "cell": "K2",
+          "formula": "=E2-I2"
+        },
+        {
+          "cell": "E7",
+          "formula": "=SUM(E2:E6)"
+        },
+        {
+          "cell": "I7",
+          "formula": "=SUM(I2:I6)"
+        }
+      ],
+      "notes": "J2 counts days from discovery to filing, or to today if not yet filed. K2 shows estimate minus recovered. E7 and I7 total estimates and recoveries. Move Status through Open, Estimate Obtained, Filed or Billed, Awaiting Response, Disputed, Resolved Paid, Resolved Partial, Closed Unrecovered. Sample rows are illustrative."
+    }
+  ]
+}

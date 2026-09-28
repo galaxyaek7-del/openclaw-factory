@@ -1,0 +1,237 @@
+{
+  "workbook_filename": "realestate_tc_deadline_kit_workbook.xlsx",
+  "sheets": [
+    {
+      "name": "Deal_Tracker",
+      "columns": [
+        "Deal ID",
+        "Property Address",
+        "Side",
+        "Contract Date",
+        "Close Date",
+        "Days To Close",
+        "Status",
+        "Next Deadline",
+        "Next Deadline Date",
+        "Priority"
+      ],
+      "example_rows": [
+        [
+          "D-01",
+          "1204 Maple Ave, Springfield",
+          "Buyer",
+          "2026-09-02",
+          "2026-10-17",
+          45,
+          "Active",
+          "Inspection objection",
+          "2026-09-12",
+          "High"
+        ],
+        [
+          "D-02",
+          "88 River Rd, Springfield",
+          "Seller",
+          "2026-08-28",
+          "2026-10-02",
+          35,
+          "Pending Docs",
+          "Appraisal review",
+          "2026-09-18",
+          "Normal"
+        ],
+        [
+          "D-03",
+          "15 Hillcrest Ln, Springfield",
+          "Buyer",
+          "2026-09-05",
+          "2026-11-04",
+          60,
+          "Active",
+          "Loan commitment",
+          "2026-10-10",
+          "Normal"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "F2",
+          "formula": "=E2-D2"
+        },
+        {
+          "cell": "F4",
+          "formula": "=E4-D4"
+        },
+        {
+          "cell": "A8",
+          "formula": "=COUNTA(A2:A20)"
+        }
+      ],
+      "notes": "F2 and F4 compute days to close as close date minus contract date. Copy the F-column formula down for each new row. A8 counts deals entered. Use controlled Status words only: Active, Pending Docs, Clear to Close, Closed, On Hold. Sample rows are illustrative. Replace them with your files."
+    },
+    {
+      "name": "Contingency_Log",
+      "columns": [
+        "Deal ID",
+        "Contingency Type",
+        "Deadline Date",
+        "Days Remaining",
+        "Status",
+        "Date Satisfied",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "D-01",
+          "Inspection",
+          "2026-09-12",
+          -16,
+          "OVERDUE",
+          "",
+          "Sample row. Illustrative dates."
+        ],
+        [
+          "D-01",
+          "Appraisal",
+          "2026-09-26",
+          -2,
+          "DUE SOON",
+          "",
+          "Sample row. Illustrative dates."
+        ],
+        [
+          "D-02",
+          "Loan",
+          "2026-09-30",
+          2,
+          "ON TRACK",
+          "",
+          "Sample row. Illustrative dates."
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "D2",
+          "formula": "=C2-TODAY()"
+        },
+        {
+          "cell": "E2",
+          "formula": "=IF(F2<>\"\",\"SATISFIED\",IF(C2<TODAY(),\"OVERDUE\",IF(C2<=TODAY()+7,\"DUE SOON\",\"ON TRACK\")))"
+        },
+        {
+          "cell": "D4",
+          "formula": "=C4-TODAY()"
+        }
+      ],
+      "notes": "D2 computes days remaining as deadline minus today and refreshes on open. E2 flags SATISFIED, OVERDUE, DUE SOON within 7 days, or ON TRACK. Copy D and E formulas down for each new row. Apply your state day-counting rules before entering each deadline. Sample rows are illustrative."
+    },
+    {
+      "name": "Document_Checklist",
+      "columns": [
+        "Deal ID",
+        "Document",
+        "Required",
+        "Received",
+        "Date Received",
+        "Status"
+      ],
+      "example_rows": [
+        [
+          "D-01",
+          "Signed contract with addenda",
+          "Yes",
+          "Yes",
+          "2026-09-02",
+          "OK"
+        ],
+        [
+          "D-01",
+          "Inspection report",
+          "Yes",
+          "No",
+          "",
+          "MISSING"
+        ],
+        [
+          "D-02",
+          "Pre-approval letter",
+          "Yes",
+          "Yes",
+          "2026-08-28",
+          "OK"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "F2",
+          "formula": "=IF(AND(C2=\"Yes\",D2=\"No\"),\"MISSING\",\"OK\")"
+        },
+        {
+          "cell": "F3",
+          "formula": "=IF(AND(C3=\"Yes\",D3=\"No\"),\"MISSING\",\"OK\")"
+        },
+        {
+          "cell": "A9",
+          "formula": "=COUNTIF(F2:F30,\"MISSING\")"
+        }
+      ],
+      "notes": "F2 and F3 flag required-but-unreceived documents as MISSING. Copy the F-column formula down for each new row. A9 counts open missing items. Sample rows are illustrative."
+    },
+    {
+      "name": "Post_Close_Review",
+      "columns": [
+        "Deal ID",
+        "Contract Date",
+        "Close Date",
+        "Days To Close",
+        "What Slipped",
+        "Lesson",
+        "Follow-up Action",
+        "Follow-up Done"
+      ],
+      "example_rows": [
+        [
+          "D-00",
+          "2026-06-01",
+          "2026-07-15",
+          44,
+          "Title ordered late",
+          "Order title within 24 hours of acceptance",
+          "Checklist rule added",
+          "Yes"
+        ],
+        [
+          "D-00",
+          "2026-05-10",
+          "2026-06-20",
+          41,
+          "Appraisal returned late",
+          "Confirm expected return date in writing at order",
+          "Lender note filed",
+          "Yes"
+        ],
+        [
+          "D-00",
+          "2026-04-03",
+          "2026-05-12",
+          39,
+          "HOA docs chased last week",
+          "Request HOA docs at acceptance",
+          "Template updated",
+          "No"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "D2",
+          "formula": "=C2-B2"
+        },
+        {
+          "cell": "A8",
+          "formula": "=AVERAGE(D2:D6)"
+        }
+      ],
+      "notes": "D2 computes actual days to close as close minus contract. Copy down per closed deal. A8 averages sample durations. Complete within three business days of closing. Sample rows are illustrative."
+    }
+  ]
+}

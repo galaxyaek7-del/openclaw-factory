@@ -1,0 +1,144 @@
+{
+  "templates": [
+    {
+      "filename_docx": "eudr_supplier_data_request_letter.docx",
+      "title": "Supplier Data Request Letter",
+      "sections": [
+        {
+          "heading": "Purpose and lot identification",
+          "body": [
+            "This letter requests deforestation-free and legality evidence for the lots listed below for use in internal due diligence.",
+            {
+              "fields": [
+                "Company legal name:",
+                "Supplier legal name:",
+                "Lot identifiers covered:",
+                "Commodity and product:",
+                "Response due date:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Geolocation data requested",
+          "body": [
+            "Provide plot coordinates as points or polygons with the reference system stated, plus a table linking plot identifiers to harvest dates and volumes.",
+            {
+              "fields": [
+                "Coordinate format provided:",
+                "Reference system:",
+                "Number of plots:",
+                "Harvest period covered:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Legality documents requested",
+          "body": [
+            "Provide the permits, titles, licences, and chain-of-custody records agreed for this origin, with issuer and date for each document.",
+            {
+              "fields": [
+                "Document list attached:",
+                "Issuer and date per document:",
+                "Translation preparer and date:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Accuracy declaration",
+          "body": [
+            "The supplier confirms the data relates to the stated lots and will notify us promptly of corrections.",
+            {
+              "fields": [
+                "Signatory function:",
+                "Signature date:",
+                "Contact for questions:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "eudr_gap_memo.docx",
+      "title": "Lot Gap Memo",
+      "sections": [
+        {
+          "heading": "Lot summary",
+          "body": [
+            "Record product, quantity, origin, and statement status for the lot being closed.",
+            {
+              "fields": [
+                "Lot identifier:",
+                "Product and quantity:",
+                "Origin country and area:",
+                "Statement reference or status:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Evidence status",
+          "body": [
+            "List complete items, missing items, and compensating evidence with file references.",
+            {
+              "fields": [
+                "Complete items:",
+                "Missing items:",
+                "Compensating evidence refs:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Risk conclusion and follow-up",
+          "body": [
+            "Record the risk conclusion, approver function, and assigned follow-up with dates.",
+            {
+              "fields": [
+                "Risk conclusion:",
+                "Approver function and date:",
+                "Follow-up owner and due date:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "eudr_scope_decision_note.docx",
+      "title": "Scope Decision Note",
+      "sections": [
+        {
+          "heading": "Product and code analysis",
+          "body": [
+            "Record the declaration code, commodity mapping, and scope decision with reasons.",
+            {
+              "fields": [
+                "Product name:",
+                "Declaration customs code:",
+                "Commodity family or no mapping:",
+                "Scope decision and reason:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Review and re-verification",
+          "body": [
+            "Record reviewer function, counsel input where sought, and the next re-verification date.",
+            {
+              "fields": [
+                "Reviewer function and date:",
+                "Counsel note reference:",
+                "Next re-verification date:"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

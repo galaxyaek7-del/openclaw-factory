@@ -1,0 +1,271 @@
+{
+  "workbook_filename": "empco_green_claims_kit_workbook.xlsx",
+  "sheets": [
+    {
+      "name": "Claim_Inventory",
+      "columns": [
+        "Claim_ID",
+        "Exact_Wording",
+        "Channel",
+        "URL_or_Artwork_Ref",
+        "Date_Observed",
+        "Owner_Function",
+        "Visual_Cue",
+        "Language"
+      ],
+      "example_rows": [
+        [
+          "CLM-001",
+          "Illustrative generic phrase on product page",
+          "Product page",
+          "PDP-042 ref",
+          "2026-10-01",
+          "Marketing",
+          "Leaf icon beside headline",
+          "EN"
+        ],
+        [
+          "CLM-002",
+          "Illustrative recycled-content sentence",
+          "Packaging",
+          "Hang tag v3",
+          "2026-10-02",
+          "Design",
+          "Green badge shape",
+          "EN"
+        ],
+        [
+          "CLM-003",
+          "Illustrative climate sentence in ad",
+          "Paid social",
+          "Ad set 7",
+          "2026-10-03",
+          "Performance",
+          "Globe image",
+          "DE"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "J2",
+          "formula": "=COUNTA(A2:A1000)"
+        },
+        {
+          "cell": "J3",
+          "formula": "=COUNTIF(B2:B1000,\"*eco*\")"
+        },
+        {
+          "cell": "J4",
+          "formula": "=COUNTA(H2:H1000)"
+        }
+      ],
+      "notes": "Capture exact wording plus imagery. Cover all languages and marketplace listings."
+    },
+    {
+      "name": "Evidence_File_Log",
+      "columns": [
+        "Claim_ID",
+        "Attribute",
+        "Scope",
+        "Substantiation_Type",
+        "Exhibit_Ref",
+        "Issuer",
+        "Coverage_Match",
+        "Exhibit_Date",
+        "Review_Date"
+      ],
+      "example_rows": [
+        [
+          "CLM-001",
+          "General environmental benefit",
+          "Whole product",
+          "None on file",
+          "Missing",
+          "Not applicable",
+          "Missing",
+          "",
+          "2026-10-05"
+        ],
+        [
+          "CLM-002",
+          "Recycled content",
+          "Cap only",
+          "Supplier certificate",
+          "cert_cap_2026.pdf",
+          "Supplier (non-independent)",
+          "Partial",
+          "2026-06-12",
+          "2026-10-06"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "K2",
+          "formula": "=COUNTA(A2:A1000)"
+        },
+        {
+          "cell": "K3",
+          "formula": "=COUNTIF(G2:G1000,\"Missing\")"
+        },
+        {
+          "cell": "K4",
+          "formula": "=COUNTIF(G2:G1000,\"Partial\")"
+        }
+      ],
+      "notes": "Mark every link as direct, partial, or missing. Narrow claims to proven scope."
+    },
+    {
+      "name": "Risk_Scorer",
+      "columns": [
+        "Claim_ID",
+        "F1_Generic_Wording_1to3",
+        "F2_Substantiation_1to3",
+        "F3_Label_Basis_1to3",
+        "F4_Scope_1to3",
+        "F5_Offset_1to3",
+        "Total_Score",
+        "Action_Required"
+      ],
+      "example_rows": [
+        [
+          "CLM-001",
+          "3",
+          "3",
+          "2",
+          "2",
+          "1",
+          "11",
+          "Review - near threshold"
+        ],
+        [
+          "CLM-002",
+          "2",
+          "2",
+          "2",
+          "3",
+          "1",
+          "10",
+          "Review - narrow scope"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "I2",
+          "formula": "=SUM(B2:F2)"
+        },
+        {
+          "cell": "H3",
+          "formula": "=IF(G3>=12,\"Action required\",\"Monitor\")"
+        },
+        {
+          "cell": "I4",
+          "formula": "=COUNTIF(H2:H1000,\"Action required*\")"
+        }
+      ],
+      "notes": "Totals of 12 or above require action before further publication. Calibrate thresholds with counsel."
+    },
+    {
+      "name": "Remediation_Tracker",
+      "columns": [
+        "Claim_ID",
+        "Decision",
+        "New_Wording",
+        "Evidence_Added",
+        "Owner_Function",
+        "Due_Date",
+        "Verified_Date",
+        "Instances_Updated"
+      ],
+      "example_rows": [
+        [
+          "CLM-001",
+          "Reword",
+          "Illustrative specific recycled-content sentence with percentage and scope",
+          "New test report TR-2026-18",
+          "Marketing",
+          "2026-10-20",
+          "2026-10-22",
+          "4 of 6 instances"
+        ],
+        [
+          "CLM-003",
+          "Remove",
+          "Claim removed from all instances",
+          "Not applicable",
+          "E-commerce",
+          "2026-10-18",
+          "2026-10-19",
+          "3 of 3 instances"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "J2",
+          "formula": "=COUNTA(A2:A1000)"
+        },
+        {
+          "cell": "J3",
+          "formula": "=COUNTIF(B2:B1000,\"Remove\")"
+        },
+        {
+          "cell": "J4",
+          "formula": "=COUNTBLANK(G2:G1000)"
+        }
+      ],
+      "notes": "Track every instance separately. Re-check live channels before closing."
+    },
+    {
+      "name": "Review_Worksheet_Log",
+      "columns": [
+        "Claim_ID",
+        "Channel",
+        "Score",
+        "Evidence_Refs",
+        "Decision",
+        "Reviewer_Function",
+        "Counsel_Verify_Date",
+        "Publish_Date",
+        "Next_Review_Date"
+      ],
+      "example_rows": [
+        [
+          "CLM-002",
+          "Packaging",
+          "10",
+          "cert_cap_2026.pdf",
+          "Reword",
+          "Sustainability lead",
+          "2026-10-25",
+          "2026-10-28",
+          "2027-01-28"
+        ],
+        [
+          "CLM-003",
+          "Paid social",
+          "14",
+          "Missing - removed",
+          "Remove",
+          "Legal reviewer",
+          "2026-10-24",
+          "2026-10-25",
+          "2027-01-25"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "K2",
+          "formula": "=COUNTA(A2:A1000)"
+        },
+        {
+          "cell": "K3",
+          "formula": "=COUNTIF(E2:E1000,\"Retain\")"
+        },
+        {
+          "cell": "K4",
+          "formula": "=COUNTBLANK(G2:G1000)"
+        }
+      ],
+      "notes": "File before-and-after captures with each row. No new claim goes live without a signed row."
+    }
+  ]
+}

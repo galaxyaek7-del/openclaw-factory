@@ -1,0 +1,73 @@
+{
+  "name": "Real Estate Transaction Deadline Kit",
+  "short_description": "An agent-side operations kit for solo agents and transaction coordinators juggling multiple deals: multi-deal tracker with deadline formulas, document checklist, inspection appraisal loan contingency log, and post-close review.",
+  "long_description": "A typical residential deal carries 50 to 70 tasks, and a few of them are contingency deadlines that can end the deal if missed: inspection objection windows, appraisal review periods, and loan commitment dates. This kit organizes agent-side operations across all your files at once: a multi-deal tracker with automatic days-to-close and days-remaining math, a contingency log for inspection, appraisal, loan, and other dated contingencies with overdue and due-soon flags, a document checklist that shows every missing item per file, and a post-close review that converts each closing into one concrete process improvement. Price: $59. Includes a 60-minute quick start, a Monday review routine, day-counting verification guidance, and a 14-day setup plan. Not legal advice. Contract rules vary by state and form: verify state contract rules locally and have your broker review your procedures.",
+  "buyer_persona": "Solo residential agent carrying 2 to 10 active transactions, or a transaction coordinator supporting one or several agents. Manages files across lenders, inspectors, appraisers, title officers, and co-op agents with different dates per file. Wants one cross-file urgency view and a repeatable weekly routine without new software.",
+  "problem_statement": "Fifty to seventy tasks per deal multiply across files until dates live in emails, texts, and memory. Inspection objection windows, appraisal review periods, and loan commitment dates pass without the required notice or action, costing leverage or the deal itself. Missing documents surface the day before closing because no checklist names the gaps early.",
+  "outcome_statement": "Every deal on one tracker with its next deadline visible, every contingency dated with days remaining and automatic flags, every file showing its missing documents each Monday, and every closing converted into one implemented lesson. The practice runs on a weekly routine that ends with sent communications rather than mental notes.",
+  "whats_included": [
+    "Implementation guide: setup, deadline method, contingency operations, routines, FAQ, 14-day plan",
+    "Excel workbook with 4 sheets: Deal Tracker, Contingency Log with deadline formulas, Document Checklist with missing-item flags, Post-Close Review",
+    "Word template: Deal File Cover Sheet",
+    "Word template: Contingency Status Update Message",
+    "Word template: Post-Close Review Form",
+    "README with file list and reading order"
+  ],
+  "who_for": [
+    "Solo real estate agents juggling multiple residential transactions",
+    "Transaction coordinators supporting agents or small teams",
+    "Small teams where one person owns file administration",
+    "Agents who want agent-side deadline and document operations without new software"
+  ],
+  "who_not_for": [
+    "Not for buyers managing their own purchase: the kit covers agent-side operations, not buyer-side negotiation decisions",
+    "Not a substitute for broker supervision or legal counsel on any live transaction",
+    "Not for commercial deals, auctions, short sales with lender-approval chains, or builder-controlled new construction",
+    "Not for anyone seeking contract interpretation or legal advice"
+  ],
+  "how_to_use": "Enter live files in the Deal Tracker, enter contingency dates from signed contracts and addenda into the Contingency Log, mark held documents on the Document Checklist, and run the Monday review every week: overdue items first, due-soon items scheduled with owners, missing documents requested with dated reasons. Complete a post-close review within three business days of each closing.",
+  "limitations": "General operational information only. Not legal advice. Contract forms, deadline-counting methods, notice and delivery rules, document requirements, and retention periods vary by state and change over time. Verify state contract rules locally, follow broker policy, and consult a qualified attorney or your broker on any live question before acting. Workbook flags depend on correctly entered dates and do not verify counting methods or confirm delivery. Complete records support diligence but do not determine outcomes.",
+  "disclaimer": "This kit provides recordkeeping tools and general information for agent-side file administration. It is not legal advice and does not interpret contract language or advise any party to exercise, waive, extend, or terminate any contingency. Verify state contract rules locally and have your broker review your procedures before relying on them. No result of any kind is promised. Illustrative examples in the guide are teaching sketches with illustrative numbers, not case studies or predictions.",
+  "faq": [
+    {
+      "q": "How many deals can this handle?",
+      "a": "Two to ten active files solo, more with a coordinator on a fixed schedule. Beyond about fifteen concurrent files, dedicated transaction software plus this kit's review cadence is the stronger combination."
+    },
+    {
+      "q": "Does this replace my transaction software or broker platform?",
+      "a": "No. It adds a cross-file urgency view with every deadline sorted by days remaining. Keep documents in your system of record per office policy."
+    },
+    {
+      "q": "What if my state counts days differently?",
+      "a": "Apply your state and contract counting rules before entering each deadline date and note the source. The workbook tracks the dates you enter. Re-verify counting language when forms update."
+    },
+    {
+      "q": "Does it work for listings as well as buyer files?",
+      "a": "Yes. Enter the contingencies your side must monitor, plus your side's dated obligations such as disclosures and repairs."
+    },
+    {
+      "q": "Is this legal advice?",
+      "a": "No. Operations paperwork and general information only. Contract questions on live files go to your broker or counsel the same day."
+    },
+    {
+      "q": "What support is included?",
+      "a": "File and usage questions by email within 7 days of purchase, as described in the support field. Support does not cover live transactions or legal interpretation."
+    }
+  ],
+  "keywords": [
+    "transaction coordinator checklist",
+    "real estate deadline tracker",
+    "contingency deadline log",
+    "inspection appraisal loan tracking",
+    "deal file checklist",
+    "agent transaction management",
+    "closing document checklist",
+    "post close review",
+    "multiple deals organizer",
+    "contract deadline calendar"
+  ],
+  "category": "Operations and recordkeeping",
+  "version": "1.0",
+  "changelog": "1.0 (September 2026): initial release with implementation guide, 4-sheet workbook, and 3 Word templates.",
+  "support": "Email support for file and usage questions within 7 days of purchase. Include your order reference and the file name you need help with. Support does not include legal interpretation, contract review, or advice on any live transaction."
+}

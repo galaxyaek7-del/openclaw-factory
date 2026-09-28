@@ -1,0 +1,233 @@
+{
+  "workbook_filename": "dental_insurance_verification_kit_workbook.xlsx",
+  "sheets": [
+    {
+      "name": "Verification_Log",
+      "columns": [
+        "Verification_ID",
+        "Patient_Ref",
+        "Visit_Date",
+        "Payer",
+        "Group_No",
+        "Subscriber_Relationship",
+        "Planned_Service_Group",
+        "Eligibility_Status",
+        "Effective_Date",
+        "Class_Benefit_Pct",
+        "Yearly_Max",
+        "Used_To_Date",
+        "Remaining_Max",
+        "Waiting_Period_Status",
+        "Frequency_Check",
+        "Missing_Tooth_Flag",
+        "Downgrade_Flag",
+        "COB_Order",
+        "Preauth_Status",
+        "Payer_Reference",
+        "Verified_By",
+        "Verified_On",
+        "Row_Status"
+      ],
+      "example_rows": [
+        [
+          "V-001",
+          "PT-REF-01",
+          "2026-10-06",
+          "Payer A",
+          "GRP-1001",
+          "Self",
+          "Major - crown",
+          "Active",
+          "2026-01-01",
+          50,
+          1500,
+          420,
+          1080,
+          "None stated",
+          "1 per 60 months - recorded",
+          "None stated",
+          "Molar downgrade stated",
+          "N/A single coverage",
+          "Pre-determination recommended",
+          "REF-88421",
+          "Front Desk Lead",
+          "2026-10-03",
+          "Ready"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "N1",
+          "formula": "=MAX(0,M1-M2)"
+        },
+        {
+          "cell": "AA1",
+          "formula": "=IF(OR(X1=\"Hold\",Y1=\"\"),\"Incomplete\",\"Ready check\")"
+        }
+      ],
+      "notes": "One row per visit. Remaining_Max is payer-stated remaining as of Verified_On; formula N1 recomputes where M is Yearly_Max and M2 is Used_To_Date for internal cross-check only. Row_Status drives the huddle hold list. All figures illustrative."
+    },
+    {
+      "name": "Benefits_Checklist",
+      "columns": [
+        "Verification_ID",
+        "Waiting_Period_Basic",
+        "Waiting_Period_Major",
+        "Frequency_Exam",
+        "Frequency_Cleaning",
+        "Frequency_Xray",
+        "Missing_Tooth_Clause",
+        "Downgrade_Posterior",
+        "Downgrade_Crown",
+        "COB_Rule",
+        "Preauth_Required",
+        "Notes"
+      ],
+      "example_rows": [
+        [
+          "V-001",
+          "None stated",
+          "None stated",
+          "2 per calendar year",
+          "2 per calendar year shared",
+          "Bitewing 1 per year stated",
+          "Exclusion stated - see notes",
+          "Downgrade to amalgam benefit stated",
+          "Downgrade to metal-ceramic benefit stated",
+          "N/A",
+          "Recommended",
+          "Payer wording preserved in Notes"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "L1",
+          "formula": "=COUNTA(B1:K1)"
+        }
+      ],
+      "notes": "Each cell records payer-stated language or Unable to confirm with date. L1 counts answered items for completeness review."
+    },
+    {
+      "name": "Denial_Tracker",
+      "columns": [
+        "Claim_Ref",
+        "Verification_ID",
+        "Date_Submitted",
+        "Date_Denied",
+        "Denial_Code",
+        "Denial_Text",
+        "Mapped_Verification_Point",
+        "Corrective_Action",
+        "Owner",
+        "Status"
+      ],
+      "example_rows": [
+        [
+          "C-101",
+          "V-001",
+          "2026-10-08",
+          "2026-10-15",
+          "FREQ",
+          "Frequency exceeded per payer",
+          "Point 4 frequency",
+          "Retrain frequency read-back",
+          "Office Manager",
+          "Reviewing"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "K1",
+          "formula": "=COUNTIF(H1:H100,\"Point 4 frequency\")"
+        }
+      ],
+      "notes": "Map every denial to one of the 8 verification points. K1 is an illustrative count cell; expand ranges in live use."
+    },
+    {
+      "name": "KPI_Dashboard",
+      "columns": [
+        "Week",
+        "Rows_Due",
+        "Rows_Complete",
+        "Rows_On_Time",
+        "Denials",
+        "Rework_Hours",
+        "Billing_Questions",
+        "Completeness_Pct",
+        "On_Time_Pct"
+      ],
+      "example_rows": [
+        [
+          "2026-W40",
+          40,
+          38,
+          36,
+          3,
+          6,
+          4,
+          "",
+          ""
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "H2",
+          "formula": "=IF(B2=0,\"\",C2/B2)"
+        },
+        {
+          "cell": "I2",
+          "formula": "=IF(B2=0,\"\",D2/B2)"
+        },
+        {
+          "cell": "J2",
+          "formula": "=IF(B2=0,\"\",E2/B2)"
+        }
+      ],
+      "notes": "Weekly aggregates. Formulas compute completeness, on-time share, and denial share from counted rows. Figures illustrative."
+    },
+    {
+      "name": "Estimate_Worksheet",
+      "columns": [
+        "Verification_ID",
+        "Office_Fee",
+        "Allowed_Amount",
+        "Benefit_Pct",
+        "Payer_Share_Est",
+        "Patient_Share_Est",
+        "Downgrade_Adjustment",
+        "COB_Adjustment",
+        "Final_Patient_Est",
+        "Caveat_Included"
+      ],
+      "example_rows": [
+        [
+          "V-001",
+          1200,
+          1000,
+          50,
+          "",
+          "",
+          "",
+          "",
+          "",
+          "Yes"
+        ]
+      ],
+      "formulas": [
+        {
+          "cell": "E2",
+          "formula": "=C2*D2/100"
+        },
+        {
+          "cell": "F2",
+          "formula": "=B2-E2+G2+H2"
+        },
+        {
+          "cell": "I2",
+          "formula": "=F2"
+        }
+      ],
+      "notes": "E2 estimates payer share from allowed amount and benefit pct. F2 derives patient share from office fee less payer share plus adjustments. I2 carries the final estimate. Caveat must be Yes before release. Estimates are not guarantees."
+    }
+  ]
+}

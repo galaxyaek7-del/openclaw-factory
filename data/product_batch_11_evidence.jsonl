@@ -1,0 +1,2 @@
+{"product_id": "GF-B11-01", "publish_status": "FAILED", "error": "Gumroad create_product failed: Sorry, you can only create 10 products per day.", "sales": 0, "revenue": 0}
+{"product_id": "GF-B11-01", "publish_status": "BLOCKED", "reason": "platform daily creation cap; retry after reset", "sales": 0, "revenue": 0, "ts": "2026-09-28T17:22:50Z"}

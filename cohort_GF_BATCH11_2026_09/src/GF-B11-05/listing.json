@@ -1,0 +1,73 @@
+{
+  "name": "Fleet Maintenance and Damage Documentation Bundle",
+  "short_description": "A paper-and-spreadsheet system for independent rental fleets of 2 to 20 vehicles: VIN register, maintenance log with due-date formulas, inspection forms, and a damage claim tracker with claim letter.",
+  "long_description": "Independent rental operators lose money three ways: missed service that shortens vehicle life, undocumented damage that cannot be billed or claimed, and denied warranty and insurance claims caused by incomplete records. This bundle gives you four linked tools that fix all three: a VIN register that identifies every vehicle, a maintenance schedule log that computes the next due mileage and due date from every service you enter, pre-rental and post-rental inspection forms that fix vehicle condition in time with photos, and a damage claim tracker with a formal claim letter template that turns documentation into filed, followed-up claims. Price: $49. Built for operators who rent through their own website, counter, phone, or local referrals. Includes a 60-minute quick start, weekly and monthly routines, a 14-day setup plan, and plain-language guidance on warranty and insurance claim files.",
+  "buyer_persona": "Owner or manager of an independent vehicle rental business with 2 to 20 vehicles, renting directly to local customers through an own-site counter, website, or phone line. Handles maintenance scheduling personally or with one or two staff. Has lost money to missed service, unbilled damage, or denied claims and wants a repeatable paperwork routine without buying fleet software.",
+  "problem_statement": "Missed service intervals shorten vehicle life and void warranty support. Damage found at return cannot be billed or claimed without signed pre-rental condition records and photos. Warranty administrators and insurance carriers deny claims backed by incomplete history. Small operators absorb these costs silently because no simple system ties vehicles, service, inspections, and claims together.",
+  "outcome_statement": "Every vehicle identified in one register, every service logged with its next due point computed automatically, every rental bracketed by signed inspections with photos, and every damage event managed as a tracked claim with a formal letter. The result is fewer missed services, calmer damage conversations, and claim files that answer reviewer questions on the first page.",
+  "whats_included": [
+    "Implementation guide (this file): setup, workflows, routines, claim guidance, FAQ, 14-day plan",
+    "Excel workbook with 4 sheets: VIN Register, Maintenance Log with due-date formulas, Inspection Log, Claim Tracker with aging and recovery formulas",
+    "Word template: Pre-Rental and Post-Rental Vehicle Inspection Form",
+    "Word template: Damage Claim Letter",
+    "Word template: Service Visit Record",
+    "README with file list and reading order"
+  ],
+  "who_for": [
+    "Independent rental operators with 2 to 20 vehicles",
+    "Neighborhood, airport-adjacent, small-town, contractor, and van rental outfits",
+    "Operators renting through their own site, counter, phone, or local referrals",
+    "Owners who schedule maintenance themselves or with a small team"
+  ],
+  "who_not_for": [
+    "Not for Turo hosts or guests: this kit does not cover marketplace hosting workflows, marketplace protection plans, or marketplace dispute procedures",
+    "Not for guest-side or dispute-defense use: the tools document owner-side operations, not renter claims against owners",
+    "Not for fleets of 50 or more vehicles needing dedicated fleet software",
+    "Not a substitute for legal, insurance, or accounting advice"
+  ],
+  "how_to_use": "Read the quick-start section, enter your vehicles in the VIN Register, enter the last known service per vehicle, set intervals from your owner's manuals, print the inspection forms, and inspect the next vehicle out and back. Then follow the weekly routine each Monday and the monthly routine on the first business day of each month. Open a claim tracker row the same day any damage is discovered.",
+  "limitations": "General operational information only, not legal, insurance, or accounting advice. Rental agreement terms, damage billing rules, and insurance notice deadlines vary by state and carrier and must be verified locally with qualified professionals. Workbook formulas remind and flag; they do not diagnose vehicles or decide claims. Intervals are starting points from manufacturer guidance; owner manuals and shop judgment control service decisions. Complete records improve claim positions but do not determine outcomes.",
+  "disclaimer": "This kit provides recordkeeping tools and general information. It is not legal advice, insurance advice, or accounting advice. Have your rental agreement and billing practices reviewed by a qualified local attorney. Read your insurance policy in full. No result of any kind is promised. Illustrative examples in the guide are teaching sketches with illustrative numbers, not case studies or predictions.",
+  "faq": [
+    {
+      "q": "How many vehicles does this work for?",
+      "a": "Two to twenty. Below that range the routine still works but takes minutes. Above it, purpose-built fleet software is the better answer."
+    },
+    {
+      "q": "Do I need special software?",
+      "a": "No. The workbook works in current Excel, LibreOffice Calc, or Google Sheets after import. The templates open in Word or any compatible editor."
+    },
+    {
+      "q": "What if my past service records are incomplete?",
+      "a": "Start clean from today with verified entries, mark unknowns as unknown, service anything safety-relevant with unknown history, and let the log build forward."
+    },
+    {
+      "q": "Does this cover marketplace rentals?",
+      "a": "No. It covers owner-side direct rental operations and is not built for marketplace hosting workflows or guest-side use."
+    },
+    {
+      "q": "Will this make my warranty claims succeed?",
+      "a": "Complete records answer the maintenance questions administrators ask, which removes the most common documentation reason for denial. Coverage decisions remain with the administrator on the full facts."
+    },
+    {
+      "q": "What support is included?",
+      "a": "File and usage questions by email within 7 days of purchase, as described in the support field."
+    }
+  ],
+  "keywords": [
+    "fleet maintenance log",
+    "rental car inspection form",
+    "vehicle condition report",
+    "VIN register",
+    "damage claim tracker",
+    "rental fleet paperwork",
+    "warranty claim records",
+    "small fleet management",
+    "pre rental inspection",
+    "post rental inspection"
+  ],
+  "category": "Operations and recordkeeping",
+  "version": "1.0",
+  "changelog": "1.0 (September 2026): initial release with implementation guide, 4-sheet workbook, and 3 Word templates.",
+  "support": "Email support for file and usage questions within 7 days of purchase. Include your order reference and the file name you need help with. Support does not include legal, insurance, or accounting advice."
+}

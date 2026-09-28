@@ -1,0 +1,20 @@
+{
+  "name": "EUDR Due Diligence Starter",
+  "short_description": "Practical registers, logs, and letters to organize EUDR due diligence files for coffee, cocoa, soy, palm, rubber, and wood lots.",
+  "long_description": "A starter kit for importers, first-placers, and SME traders placing in-scope goods on the EU market. It provides a commodity-scope checker, supplier register, DDS preparation log, deadline calendar, supplier data-request letter, and gap memo, with workflows for collecting plot geolocation, legality evidence, and statement-ready files tied to 30 Dec 2026 and 30 Jun 2027 timelines.",
+  "buyer_persona": "Importers, first-placers, and SME traders handling coffee, cocoa, soy, palm, rubber, or wood products for the EU market who need organized internal files.",
+  "problem_statement": "Teams must prove deforestation-free sourcing plus legality and file a Due Diligence Statement with plot geolocation before placing goods, under deadline pressure and evolving classifications.",
+  "outcome_statement": "A structured internal file per lot with scope decisions, supplier data, coordinate references, legality exhibits, risk notes, and statement tracking.",
+  "whats_included": "guide.md operational manual, workbook.xlsx with 5 sheets (Scope Checker, Supplier Register, DDS Preparation Log, Deadline Calendar, Gap Memo Log), 3 docx templates (supplier data request letter, gap memo, scope decision note).",
+  "who_for": "EU importers and first-placers of listed commodities, SME traders, sourcing and QA staff building their first complete lot files.",
+  "who_not_for": "Businesses seeking legal advice, automated satellite verification, customs filing services, or certification issuance, which this kit does not provide.",
+  "how_to_use": "Confirm scope per SKU, register suppliers, send data-request letters early, log each lot with evidence references, track deadlines weekly, and close each lot with a gap memo reviewed by a second function.",
+  "limitations": "General information only, not legal advice. Does not validate coordinates, interpret law for specific facts, submit statements, or compel supplier disclosure. Scope and classifications may evolve and must be re-verified with official sources and counsel.",
+  "disclaimer": "Not legal advice. Re-verify scope and classifications with official sources and qualified counsel before acting. No regulatory outcome is promised. Regulatory requirements may change after publication.",
+  "faq": "Do I still need counsel? Yes for uncertain scope, difficult legality questions, and mixed lots. Can I reuse farm files across lots? Only with documented matching period and chain. How early should I contact suppliers? At least six weeks before need, longer for new origins. Does the kit submit statements? No, your authorized person submits after internal approval.",
+  "keywords": "EUDR, due diligence statement, deforestation-free, geolocation, supply chain register, import compliance file, legality evidence",
+  "category": "Regulatory operations toolkit",
+  "version": "1.0",
+  "changelog": "1.0: Initial release with guide, 5-sheet workbook, and 3 templates covering scope, suppliers, DDS preparation, deadlines, and gap memos.",
+  "support": "Email support for file-use questions. Scope and legal questions are referred to qualified counsel. Include kit version 1.0 and sheet names in support requests."
+}

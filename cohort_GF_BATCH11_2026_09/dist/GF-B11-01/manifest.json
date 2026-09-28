@@ -1,0 +1,19 @@
+{
+  "cohort": "GF_BATCH11_2026_09",
+  "id": "GF-B11-01",
+  "slug": "eudr_due_diligence_starter",
+  "name": "EUDR Due Diligence Starter",
+  "price_cents": 6900,
+  "guide_words": 6502,
+  "guide_pages": 11,
+  "bundle": "eudr_due_diligence_starter_bundle.zip",
+  "bundle_bytes": 135611,
+  "files": [
+    "README.txt",
+    "eudr_due_diligence_starter_guide.pdf",
+    "eudr_due_diligence_starter_workbook.xlsx",
+    "eudr_gap_memo.docx",
+    "eudr_scope_decision_note.docx",
+    "eudr_supplier_data_request_letter.docx"
+  ]
+}

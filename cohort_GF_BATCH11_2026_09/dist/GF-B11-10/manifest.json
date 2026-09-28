@@ -1,0 +1,19 @@
+{
+  "cohort": "GF_BATCH11_2026_09",
+  "id": "GF-B11-10",
+  "slug": "landlord_movein_inspection_pack",
+  "name": "Landlord Move-In Inspection Pack",
+  "price_cents": 4900,
+  "guide_words": 5606,
+  "guide_pages": 11,
+  "bundle": "landlord_movein_inspection_pack_bundle.zip",
+  "bundle_bytes": 132834,
+  "files": [
+    "README.txt",
+    "landlord_movein_inspection_pack_guide.pdf",
+    "landlord_movein_inspection_pack_workbook.xlsx",
+    "movein_condition_report_form.docx",
+    "photo_inventory_log.docx",
+    "tenant_acknowledgment_packet.docx"
+  ]
+}

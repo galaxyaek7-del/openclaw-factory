@@ -1,0 +1,153 @@
+{
+  "templates": [
+    {
+      "filename_docx": "deal_file_cover_sheet.docx",
+      "title": "Deal File Cover Sheet",
+      "sections": [
+        {
+          "heading": "File identification",
+          "body": [
+            "Complete at contract acceptance. Keep on top of the file, physical or digital.",
+            {
+              "fields": [
+                "Deal ID:",
+                "Property address:",
+                "Side represented (circle one): Buyer / Seller:",
+                "Contract or effective date:",
+                "Scheduled close date:",
+                "Client name as on contract:",
+                "Co-op agent and brokerage:",
+                "Lender and loan officer where applicable:",
+                "Title company and officer:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Key dates at a glance",
+          "body": [
+            "Copy from the Contingency Log. Update the day any date moves.",
+            {
+              "fields": [
+                "Inspection deadline:",
+                "Appraisal deadline:",
+                "Loan commitment deadline:",
+                "Close date:",
+                "Other dated contingency and deadline:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Document status at opening",
+          "body": [
+            "Mark each expected document as attached, pending with need date, or not applicable.",
+            {
+              "fields": [
+                "Contract package complete (initials):",
+                "Pre-approval or proof of funds:",
+                "Earnest money receipt:",
+                "Disclosures:",
+                "Missing items and need dates:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "contingency_status_update.docx",
+      "title": "Contingency Status Update Message",
+      "sections": [
+        {
+          "heading": "Message header",
+          "body": [
+            "Send before it is requested. State dates in every update.",
+            {
+              "fields": [
+                "Date of message:",
+                "Deal ID and property address:",
+                "To (client, co-op agent, lender, title):",
+                "Subject line:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Status body",
+          "body": [
+            "Name the next three deadlines with dates and owners. Confirm receipt of anything load-bearing.",
+            {
+              "fields": [
+                "What changed since last update:",
+                "Next deadline 1 with date and owner:",
+                "Next deadline 2 with date and owner:",
+                "Next deadline 3 with date and owner:",
+                "Documents needed, from whom, by when:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Notice",
+          "body": [
+            "This template sends operational updates only. It does not give legal advice and does not interpret contract language. Verify state contract rules locally. Deadline questions on live files go to the broker or counsel the same day.",
+            {
+              "fields": [
+                "Sender name and phone:",
+                "Broker copied (yes or no):"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "post_close_review_form.docx",
+      "title": "Post-Close Review Form",
+      "sections": [
+        {
+          "heading": "File facts",
+          "body": [
+            "Complete within three business days of closing while details are fresh.",
+            {
+              "fields": [
+                "Deal ID and property address:",
+                "Contract date:",
+                "Close date:",
+                "Side represented:",
+                "Days to close:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "What slipped and what was learned",
+          "body": [
+            "Name the deadline or document that caused the most stress, even if nothing was missed. Near misses teach as much as misses.",
+            {
+              "fields": [
+                "What slipped or nearly slipped:",
+                "One-sentence lesson for next time:",
+                "Follow-up action and owner:",
+                "Process or template change made:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Follow-up done",
+          "body": [
+            "Mark done only when the change exists, not when it is planned.",
+            {
+              "fields": [
+                "Follow-up completed on date:",
+                "Verified by (initials):"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

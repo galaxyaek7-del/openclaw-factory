@@ -1,0 +1,116 @@
+{
+  "templates": [
+    {
+      "filename_docx": "repair_request_letter.docx",
+      "title": "Repair Request Letter Draft",
+      "sections": [
+        {
+          "heading": "Introduction and references",
+          "body": [
+            "This draft lists requested items with report citations and attached scopes for attorney and agent review before sending.",
+            {
+              "fields": [
+                "Property reference:",
+                "Report date:",
+                "Contingency deadline as advised by counsel:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Numbered requests",
+          "body": [
+            "One numbered item per row or grouped scope with location, report citation, requested action, standard, and verification access.",
+            {
+              "fields": [
+                "Item number:",
+                "Location and report citation:",
+                "Requested action and standard:",
+                "Attached scope:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Closing and logistics",
+          "body": [
+            "State response logistics and verification access. Keep language factual.",
+            {
+              "fields": [
+                "Response requested by:",
+                "Delivery method as directed by counsel:",
+                "Attachments list:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "decision_worksheet_form.docx",
+      "title": "Decision Worksheet Form",
+      "sections": [
+        {
+          "heading": "Exposure and options",
+          "body": [
+            "Record totals, leanings with reasons, lender constraints, timeline feasibility, and attorney flags.",
+            {
+              "fields": [
+                "Kit total exposure:",
+                "Per-system leanings with reasons:",
+                "Lender constraints:",
+                "Timeline feasibility vs buffer date:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Chosen path",
+          "body": [
+            "Record the chosen path in plain words with owners and next actions. This form is a thinking record, not a legal instrument.",
+            {
+              "fields": [
+                "Chosen path:",
+                "Reasons:",
+                "Owners and next actions:",
+                "Date recorded:"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename_docx": "contractor_scope_request.docx",
+      "title": "Contractor Scope Request",
+      "sections": [
+        {
+          "heading": "What to send the contractor",
+          "body": [
+            "Send report pages, photos, and access details, and ask for a written scope with inclusions, exclusions, price, and validity dates.",
+            {
+              "fields": [
+                "Report pages sent:",
+                "Access arrangements:",
+                "Scope requested by date:"
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "What to record on return",
+          "body": [
+            "Record low and high figures, source, date, inclusions, and exclusions into the deficiency log.",
+            {
+              "fields": [
+                "Quote figures and source:",
+                "Inclusions:",
+                "Exclusions and validity:"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

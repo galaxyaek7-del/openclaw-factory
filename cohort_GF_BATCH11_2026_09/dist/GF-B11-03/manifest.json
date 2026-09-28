@@ -1,0 +1,19 @@
+{
+  "cohort": "GF_BATCH11_2026_09",
+  "id": "GF-B11-03",
+  "slug": "restaurant_food_cost_control",
+  "name": "Restaurant Food Cost Control Kit",
+  "price_cents": 4900,
+  "guide_words": 7390,
+  "guide_pages": 14,
+  "bundle": "restaurant_food_cost_control_bundle.zip",
+  "bundle_bytes": 138350,
+  "files": [
+    "README.txt",
+    "restaurant_food_cost_control_guide.pdf",
+    "restaurant_food_cost_control_workbook.xlsx",
+    "restaurant_food_cost_recipe_cost_card.docx",
+    "restaurant_food_cost_waste_log_sheet.docx",
+    "restaurant_food_cost_weekly_review_agenda.docx"
+  ]
+}
