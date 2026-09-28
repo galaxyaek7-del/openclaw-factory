@@ -1,0 +1,198 @@
+{
+  "generated": "2026-09-28T14:20:00Z",
+  "phase": "9.1 diagnosis",
+  "rule": "HTTP 200 is not a visit. No traffic stage reported above NO DATA.",
+  "offers": [
+    {
+      "product_id": "GF-B10-01",
+      "customer": "US businesses with subscriptions",
+      "problem": "auto-renewal enforcement risk (ROSCA + state laws)",
+      "purchase_page": "https://aekraft.gumroad.com/l/xouyjy",
+      "price": 69,
+      "channels": [
+        "gumroad",
+        "pages-catalog",
+        "pages-guide",
+        "nostr",
+        "telegraph"
+      ],
+      "traffic": "NO DATA",
+      "inquiries": "NO DATA",
+      "sales": "ZERO (measured)",
+      "biggest_obstacle": "active test running, awaiting response",
+      "market_test_status": "EXPOSURE_EXECUTED"
+    },
+    {
+      "product_id": "GF-B10-02",
+      "customer": "US remote sellers",
+      "problem": "nexus threshold miss = retroactive tax+penalties",
+      "purchase_page": "https://aekraft.gumroad.com/l/uucxer",
+      "price": 79,
+      "channels": [
+        "gumroad",
+        "pages-catalog",
+        "pages-guide",
+        "nostr",
+        "telegraph"
+      ],
+      "traffic": "NO DATA",
+      "inquiries": "NO DATA",
+      "sales": "ZERO (measured)",
+      "biggest_obstacle": "no executed exposure; Pack1-pattern outreach queued behind single-gate rule",
+      "market_test_status": "EXPERIMENT_CLOSED_WITH_EVIDENCE"
+    },
+    {
+      "product_id": "GF-B10-03",
+      "customer": "US SMBs taking cards",
+      "problem": "wrong SAQ / failed attestation / breach liability",
+      "purchase_page": "https://aekraft.gumroad.com/l/qezxe",
+      "price": 59,
+      "channels": [
+        "gumroad",
+        "pages-catalog"
+      ],
+      "traffic": "NO DATA",
+      "inquiries": "NO DATA",
+      "sales": "ZERO (measured)",
+      "biggest_obstacle": "no executed exposure; Pack1-pattern outreach queued behind single-gate rule",
+      "market_test_status": "NOT_EXPOSED"
+    },
+    {
+      "product_id": "GF-B10-04",
+      "customer": "dental/medical practices",
+      "problem": "15-20% no-shows = lost chair revenue",
+      "purchase_page": "https://aekraft.gumroad.com/l/eiztlg",
+      "price": 59,
+      "channels": [
+        "gumroad",
+        "pages-catalog"
+      ],
+      "traffic": "NO DATA",
+      "inquiries": "NO DATA",
+      "sales": "ZERO (measured)",
+      "biggest_obstacle": "no executed exposure; Pack1-pattern outreach queued behind single-gate rule",
+      "market_test_status": "NOT_EXPOSED"
+    },
+    {
+      "product_id": "GF-B10-05",
+      "customer": "freelancers",
+      "problem": "scope creep = 18-35% unpaid work",
+      "purchase_page": "https://aekraft.gumroad.com/l/ziiur",
+      "price": 39,
+      "channels": [
+        "gumroad",
+        "pages-catalog"
+      ],
+      "traffic": "NO DATA",
+      "inquiries": "NO DATA",
+      "sales": "ZERO (measured)",
+      "biggest_obstacle": "no executed exposure; Pack1-pattern outreach queued behind single-gate rule",
+      "market_test_status": "NOT_EXPOSED"
+    },
+    {
+      "product_id": "GF-B10-06",
+      "customer": "small SaaS teams",
+      "problem": "missing 30-day statutory clocks, no audit trail",
+      "purchase_page": "https://aekraft.gumroad.com/l/uqmqnu",
+      "price": 59,
+      "channels": [
+        "gumroad",
+        "pages-catalog"
+      ],
+      "traffic": "NO DATA",
+      "inquiries": "NO DATA",
+      "sales": "ZERO (measured)",
+      "biggest_obstacle": "no executed exposure; Pack1-pattern outreach queued behind single-gate rule",
+      "market_test_status": "NOT_EXPOSED"
+    },
+    {
+      "product_id": "GF-B10-07",
+      "customer": "independent landlords",
+      "problem": "sloppy records lose evictions; defective notices",
+      "purchase_page": "https://aekraft.gumroad.com/l/odqlk",
+      "price": 49,
+      "channels": [
+        "gumroad",
+        "pages-catalog"
+      ],
+      "traffic": "NO DATA",
+      "inquiries": "NO DATA",
+      "sales": "ZERO (measured)",
+      "biggest_obstacle": "no executed exposure; Pack1-pattern outreach queued behind single-gate rule",
+      "market_test_status": "NOT_EXPOSED"
+    },
+    {
+      "product_id": "GF-B10-08",
+      "customer": "small DTC sellers",
+      "problem": "5-15% abusive returns; blunt policies hurt good buyers",
+      "purchase_page": "https://aekraft.gumroad.com/l/mrecoe",
+      "price": 59,
+      "channels": [
+        "gumroad",
+        "pages-catalog"
+      ],
+      "traffic": "NO DATA",
+      "inquiries": "NO DATA",
+      "sales": "ZERO (measured)",
+      "biggest_obstacle": "no executed exposure; Pack1-pattern outreach queued behind single-gate rule",
+      "market_test_status": "NOT_EXPOSED"
+    },
+    {
+      "product_id": "GF-B10-09",
+      "customer": "SMBs 5-200 staff, no HR",
+      "problem": "'nobody told me' defeats policy enforcement",
+      "purchase_page": "https://aekraft.gumroad.com/l/fydjid",
+      "price": 49,
+      "channels": [
+        "gumroad",
+        "pages-catalog"
+      ],
+      "traffic": "NO DATA",
+      "inquiries": "NO DATA",
+      "sales": "ZERO (measured)",
+      "biggest_obstacle": "no executed exposure; Pack1-pattern outreach queued behind single-gate rule",
+      "market_test_status": "NOT_EXPOSED"
+    },
+    {
+      "product_id": "GF-B10-10",
+      "customer": "first-time food-truck operators",
+      "problem": "5-12 permit stack; delays; shutdowns",
+      "purchase_page": "https://aekraft.gumroad.com/l/cdfdcy",
+      "price": 59,
+      "channels": [
+        "gumroad",
+        "pages-catalog"
+      ],
+      "traffic": "NO DATA",
+      "inquiries": "NO DATA",
+      "sales": "ZERO (measured)",
+      "biggest_obstacle": "no executed exposure; Pack1-pattern outreach queued behind single-gate rule",
+      "market_test_status": "NOT_EXPOSED"
+    },
+    {
+      "product_id": "ADYVD-TURO",
+      "customer": "US Turo guests with surprise claims",
+      "problem": "post-review damage claims, deadline pressure",
+      "purchase_page": "https://aekraft.gumroad.com/l/adyvd",
+      "price": 29,
+      "channels": [
+        "gumroad",
+        "pages-catalog",
+        "pages-guide",
+        "telegraph",
+        "reddit-pending"
+      ],
+      "traffic": "NO DATA",
+      "inquiries": "NO DATA",
+      "sales": "ZERO (measured)",
+      "biggest_obstacle": "Pack 1 human post pending (FG-001)",
+      "market_test_status": "READY_FOR_EXPOSURE (founder-gated)"
+    }
+  ],
+  "priority": [
+    "ADYVD-TURO (Pack1 ready, highest intent evidence)",
+    "GF-B10-02 (SUB-001 ACTIVE)",
+    "GF-B10-01 (SUB staged next)",
+    "rest: UNTESTED, Pack1-pattern outreach after gate clears"
+  ]
+}
