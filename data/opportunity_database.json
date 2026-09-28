@@ -224,7 +224,8 @@
         "websearch 2026-09-28"
       ],
       "confidence": "MEDIUM-HIGH",
-      "action": "supports GPSR kit exposure messaging; possible layer-2 extension only on evidence"
+      "action": "QUEUED improvement; executes on buyer signal or founder nod",
+      "phase2_finding": "GPSR kit PDF audited (6pp): labelling/RP/warnings/test-reports covered; \"retrievability-on-request drill\" absent (0 hits). No source pipeline exists for surgical edit; live asset untouched by design (no buyer evidence yet). Queued as evidence-backed improvement, not executed."
     },
     {
       "id": "OPP-RAAS",
@@ -248,5 +249,6 @@
     "from_portfolio": 10,
     "from_audience": 3,
     "fresh": 3
-  }
+  },
+  "phase2_note": "No live product modified: only evidence-backed candidate found was GPSR retrieval drill; editing live delivery without buyer evidence = churn. Batch integrity intact (QA PASS on record)."
 }
