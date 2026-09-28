@@ -1,3 +1,27 @@
 {"product_id": "GF-B11-01", "stage": "PUBLISHING", "ts": "2026-09-28T17:07:50Z"}
 {"product_id": "GF-B11-01", "stage": "FAILED", "error": "Gumroad create_product failed: Sorry, you can only create 10 products per day."}
 {"product_id": "GF-B11-01", "stage": "BLOCKED", "reason": "Gumroad platform limit: 10 product creates per day (account-level, not founder gate)", "ts": "2026-09-28T17:22:50Z"}
+{"product_id": "GF-B11-01", "stage": "PUBLISHING", "ts": "2026-09-28T17:31:26Z"}
+{"product_id": "GF-B11-01", "stage": "FAILED", "error": "Gumroad create_product failed: Sorry, you can only create 10 products per day."}
+{"product_id": "GF-B11-01", "stage": "PUBLISHING", "ts": "2026-09-28T17:48:15Z"}
+{"product_id": "GF-B11-01", "stage": "FAILED", "error": "Gumroad create_product failed: Sorry, you can only create 10 products per day."}
+{"product_id": "GF-B11-01", "stage": "PUBLISHING", "ts": "2026-09-28T19:42:57Z"}
+{"product_id": "GF-B11-01", "stage": "LIVE", "gumroad_id": "qxjGLQkyK0CQ3WVuLc-7Kg==", "url": "https://aekraft.gumroad.com/l/brwrta", "published": true, "verify": {"http": 200, "price_meta": "69.0", "price_match": true}}
+{"product_id": "GF-B11-02", "stage": "PUBLISHING", "ts": "2026-09-28T19:56:06Z"}
+{"product_id": "GF-B11-02", "stage": "LIVE", "gumroad_id": "C4xKqsgTA37Zd-rysSqmeQ==", "url": "https://aekraft.gumroad.com/l/uyzuu", "published": true, "verify": {"http": 200, "price_meta": "69.0", "price_match": true}}
+{"product_id": "GF-B11-03", "stage": "PUBLISHING", "ts": "2026-09-28T20:08:46Z"}
+{"product_id": "GF-B11-03", "stage": "LIVE", "gumroad_id": "M55I0tATHuFRNHia1tiiAg==", "url": "https://aekraft.gumroad.com/l/swkgd", "published": true, "verify": {"http": 200, "price_meta": "49.0", "price_match": true}}
+{"product_id": "GF-B11-04", "stage": "PUBLISHING", "ts": "2026-09-28T20:21:29Z"}
+{"product_id": "GF-B11-04", "stage": "LIVE", "gumroad_id": "2HC2OvtsS7gdfVF1lQQSTQ==", "url": "https://aekraft.gumroad.com/l/xwacbo", "published": true, "verify": {"http": 200, "price_meta": "39.0", "price_match": true}}
+{"product_id": "GF-B11-05", "stage": "PUBLISHING", "ts": "2026-09-28T20:34:07Z"}
+{"product_id": "GF-B11-05", "stage": "LIVE", "gumroad_id": "Opfzi3JcKHx-hiwJT3tHrA==", "url": "https://aekraft.gumroad.com/l/oerot", "published": true, "verify": {"http": 200, "price_meta": "49.0", "price_match": true}}
+{"product_id": "GF-B11-06", "stage": "PUBLISHING", "ts": "2026-09-28T20:46:47Z"}
+{"product_id": "GF-B11-06", "stage": "LIVE", "gumroad_id": "2NIVAf0Nu4SE2DgAL9buYw==", "url": "https://aekraft.gumroad.com/l/vwlmeo", "published": true, "verify": {"http": 200, "price_meta": "59.0", "price_match": true}}
+{"product_id": "GF-B11-07", "stage": "PUBLISHING", "ts": "2026-09-28T20:59:26Z"}
+{"product_id": "GF-B11-07", "stage": "LIVE", "gumroad_id": "iJOXxUlufzNyZFndUreFHA==", "url": "https://aekraft.gumroad.com/l/diboaf", "published": true, "verify": {"http": 200, "price_meta": "59.0", "price_match": true}}
+{"product_id": "GF-B11-08", "stage": "PUBLISHING", "ts": "2026-09-28T21:12:07Z"}
+{"product_id": "GF-B11-08", "stage": "LIVE", "gumroad_id": "uUo9QfyfAyqf8-nZb9G7Og==", "url": "https://aekraft.gumroad.com/l/volqjv", "published": true, "verify": {"http": 200, "price_meta": "29.0", "price_match": true}}
+{"product_id": "GF-B11-09", "stage": "PUBLISHING", "ts": "2026-09-28T21:24:45Z"}
+{"product_id": "GF-B11-09", "stage": "LIVE", "gumroad_id": "to7fbH3OvYu68ggvK9bGGg==", "url": "https://aekraft.gumroad.com/l/ursxh", "published": true, "verify": {"http": 200, "price_meta": "49.0", "price_match": true}}
+{"product_id": "GF-B11-10", "stage": "PUBLISHING", "ts": "2026-09-28T21:37:24Z"}
+{"product_id": "GF-B11-10", "stage": "LIVE", "gumroad_id": "Mk8k3QvpcL5Hf6ll_8CcAg==", "url": "https://aekraft.gumroad.com/l/gzbdaz", "published": true, "verify": {"http": 200, "price_meta": "49.0", "price_match": true}}
