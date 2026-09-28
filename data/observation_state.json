@@ -1,0 +1,16 @@
+{
+  "campaign": "SUB-001",
+  "updated": "2026-09-28T16:43:00Z",
+  "funnel": {
+    "EXPOSURE": "OBSERVED (founder-published reply)",
+    "HUMAN_INTERACTION": "UNKNOWN (login-walled; founder-observable only)",
+    "VISIT": "UNKNOWN",
+    "CTA_INTERACTION": "UNKNOWN",
+    "CHECKOUT": "UNKNOWN",
+    "PURCHASE": "ZERO (measured)",
+    "VERIFIED_REVENUE": "$0.00"
+  },
+  "attribution": "reddit -> telegraph -> gumroad (path intact, transitions unobservable externally)",
+  "responses": [],
+  "objections": []
+}
