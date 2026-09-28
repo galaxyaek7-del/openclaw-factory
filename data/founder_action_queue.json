@@ -1,1 +1,75 @@
-{"generated": "2026-09-28T07:00:00Z", "queue": [{"action": "Post Pack 1 value-first reply in r/turo thread 1u07nob", "cost": "$0", "exact_steps": ["open https://www.reddit.com/r/turo/comments/1u07nob/turo_damage_claim/", "confirm thread open for comments", "paste text from data/pack1_founder_package.json final_post", "confirm visible"], "expected_commercial_effect": "first active exposure to real buyers; reply standing + follow-up questions + possible $29 sale", "id": "FG-001", "priority": "P0", "risk": "low (no product pitch in cold reply; community rules reviewed)", "time_required": "~3 minutes", "what_factory_completed": "draft, rules review, destination chain verified, disclosure policy, tracking + observation procedure", "what_happens_after": "factory monitors replies/sales poll; no further founder step unless follow-up question needs human voice"}, {"action": "Finish Paddle onboarding at vendors.paddle.com", "cost": "$0", "exact_steps": ["log in vendors.paddle.com", "complete onboarding checklist"], "expected_commercial_effect": "unlocks Paddle checkout path (second payment rail)", "id": "FG-002", "priority": "P1", "risk": "none", "time_required": "UNKNOWN (account-dependent)", "what_factory_completed": "products/prices created; live status re-checked; watcher armed to notify on flip", "what_happens_after": "watcher notifies; factory verifies checkout live"}, {"action": "Verify Gumroad payout settings in dashboard", "cost": "$0", "exact_steps": ["log in Gumroad dashboard", "confirm payouts/bank details active"], "expected_commercial_effect": "removes last doubt on whether a buyer CAN complete purchase today", "id": "FG-003", "priority": "P2", "risk": "none", "time_required": "~5 minutes", "what_factory_completed": "listings verified live with correct prices; payout state UNKNOWABLE without session", "what_happens_after": "if active: checkout path fully trusted; if not: exact fix known"}, {"action": "Provide Shopify storefront credential (ONLY if Shopify path wanted)", "cost": "$0", "exact_steps": ["place SHOPIFY_STOREFRONTPASSWORD via session env only", "tell factory to re-run audit"], "expected_commercial_effect": "unlocks Shopify as second storefront (optional, not required for Gumroad sales)", "id": "FG-004", "priority": "P3", "risk": "none", "time_required": "~2 minutes", "what_factory_completed": "audit script ready; credential absence verified (not assumed)", "what_happens_after": "factory audits storefront and reports state"}], "rule": "ONE action at a time, starting FG-001. No new items added unless a genuinely new gate appears."}
+{
+  "generated": "2026-09-28T07:00:00Z",
+  "queue": [
+    {
+      "action": "Post Pack 1 value-first reply in r/turo thread 1u07nob",
+      "cost": "$0",
+      "exact_steps": [
+        "open https://www.reddit.com/r/turo/comments/1u07nob/turo_damage_claim/",
+        "confirm thread open for comments",
+        "paste text from data/pack1_founder_package.json final_post",
+        "confirm visible"
+      ],
+      "expected_commercial_effect": "first active exposure to real buyers; reply standing + follow-up questions + possible $29 sale",
+      "id": "FG-001",
+      "priority": "P0",
+      "risk": "low (no product pitch in cold reply; community rules reviewed)",
+      "time_required": "~3 minutes",
+      "what_factory_completed": "draft, rules review, destination chain verified, disclosure policy, tracking + observation procedure",
+      "what_happens_after": "factory monitors replies/sales poll; no further founder step unless follow-up question needs human voice"
+    },
+    {
+      "action": "Finish Paddle onboarding at vendors.paddle.com",
+      "cost": "$0",
+      "exact_steps": [
+        "log in vendors.paddle.com",
+        "complete onboarding checklist"
+      ],
+      "expected_commercial_effect": "unlocks Paddle checkout path (second payment rail)",
+      "id": "FG-002",
+      "priority": "P1",
+      "risk": "none",
+      "time_required": "UNKNOWN (account-dependent)",
+      "what_factory_completed": "products/prices created; live status re-checked; watcher armed to notify on flip",
+      "what_happens_after": "watcher notifies; factory verifies checkout live"
+    },
+    {
+      "action": "Verify Gumroad payout settings in dashboard",
+      "cost": "$0",
+      "exact_steps": [
+        "log in Gumroad dashboard",
+        "confirm payouts/bank details active"
+      ],
+      "expected_commercial_effect": "removes last doubt on whether a buyer CAN complete purchase today",
+      "id": "FG-003",
+      "priority": "P2",
+      "risk": "none",
+      "time_required": "~5 minutes",
+      "what_factory_completed": "listings verified live with correct prices; payout state UNKNOWABLE without session",
+      "what_happens_after": "if active: checkout path fully trusted; if not: exact fix known"
+    },
+    {
+      "action": "Provide Shopify storefront credential (ONLY if Shopify path wanted)",
+      "cost": "$0",
+      "exact_steps": [
+        "place SHOPIFY_STOREFRONTPASSWORD via session env only",
+        "tell factory to re-run audit"
+      ],
+      "expected_commercial_effect": "unlocks Shopify as second storefront (optional, not required for Gumroad sales)",
+      "id": "FG-004",
+      "priority": "P3",
+      "risk": "none",
+      "time_required": "~2 minutes",
+      "what_factory_completed": "audit script ready; credential absence verified (not assumed)",
+      "what_happens_after": "factory audits storefront and reports state"
+    }
+  ],
+  "rule": "ONE action at a time, starting FG-001. No new items added unless a genuinely new gate appears.",
+  "optimized": "2026-09-28T10:00:00Z",
+  "action_1": "FG-001 pack1 r/turo post (P0, direct buyer reach)",
+  "action_2": "FG-002 paddle onboarding (P1, independent second rail)",
+  "deferred_quietly": [
+    "FG-003 payouts check (folds into first-sale verification)",
+    "FG-004 shopify (optional path)"
+  ]
+}
