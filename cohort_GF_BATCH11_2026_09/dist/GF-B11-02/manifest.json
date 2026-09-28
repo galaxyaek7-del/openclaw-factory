@@ -4,10 +4,10 @@
   "slug": "empco_green_claims_kit",
   "name": "EU Green Claims Review Kit",
   "price_cents": 6900,
-  "guide_words": 5604,
-  "guide_pages": 10,
+  "guide_words": 5742,
+  "guide_pages": 11,
   "bundle": "empco_green_claims_kit_bundle.zip",
-  "bundle_bytes": 130470,
+  "bundle_bytes": 131594,
   "files": [
     "README.txt",
     "empco_claim_review_worksheet.docx",
