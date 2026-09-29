@@ -1,0 +1,46 @@
+[
+ {
+  "audience": "US food-truck founders",
+  "problem": "Permit-stack fragmentation: which permits, what cost, what order, per jurisdiction",
+  "current_solution": "Free guides (runpitstop, zionfoodtrucks, vendpermit) + builder content; Mobile Service Co classes (Texas)",
+  "pain": "Time + rework; blocked applications; surprise costs ($650-$3500 range, 4-10wk timelines)",
+  "frequency": "Evergreen reference demand + spikes on law-change events (Texas HB2844: 70% unaware)",
+  "cost": "Permit fees + commissary $300-1200/mo + wrong-jurisdiction rework",
+  "buying_signal": "INDIRECT only (guide/lead monetization; class attendance). No pay-for-help price observed.",
+  "possible_solution": "E3 service probe (written estimate summary via intake); jurisdiction-specific checklists LATER only on interest",
+  "evidence": "V57-S01, S02, S03 (two-source corroboration + dated regulatory event)"
+ },
+ {
+  "audience": "Remote workers (home office)",
+  "problem": "Picking a standing-desk converter without regret (wobble, space loss, neck strain, budget $150-200)",
+  "current_solution": "Brand threads (Vari/FlexiSpot/Ergotron), Amazon reviews, Reddit recommendation threads",
+  "pain": "Wasted money on wrong pick; daily discomfort; decision paralysis",
+  "frequency": "Repeated threads 2018-2026 (category-level)",
+  "cost": "$150-400 per unit; full-desk upsell pressure",
+  "buying_signal": "INTEREST (people asking for recommendations). No price offered/accepted to us.",
+  "possible_solution": "E2 ranked shortlist (answers the asked question); affiliate click measurement",
+  "evidence": "V57-S04. Headwind: regret threads push toward full desks (category churn vs converters)"
+ },
+ {
+  "audience": "EU SMEs/startups using AI",
+  "problem": "Classification confusion (provider vs deployer), over-engineering fear, deadline churn, documentation burden",
+  "current_solution": "5+ guides (confir.eu + classifier ENGINE = direct competitor), free Commission Service Desk, consultants",
+  "pain": "Fine exposure (SME-capped), blocked launches, wasted conformity work",
+  "frequency": "Sustained (5 guides/18mo) + enforcement events (Dec 2026 marking duties next)",
+  "cost": "Consultant fees; internal time; penalty risk",
+  "buying_signal": "INDIRECT only (attention/lead monetization). No pay-for-toolkit price observed.",
+  "possible_solution": "E1 toolkit (content-shaped, matches guide-shaped demand); service-shaped pains (register-as-service) PARKED until a real inquiry asks",
+  "evidence": "V57-S05, S06. DO NOT CLONE classifier-engine shape (confir.eu owns it)"
+ },
+ {
+  "audience": "Developer-centric channels (GitHub/HN/SO readers)",
+  "problem": "(Negative space) No demand evidence for EU-compliance or food-truck niches where testable",
+  "current_solution": "n/a",
+  "pain": "n/a",
+  "frequency": "2 niches queried, zero-result on 3 VERIFIED sources",
+  "cost": "n/a",
+  "buying_signal": "NONE OBSERVED",
+  "possible_solution": "None -- channel/audience mismatch, not proof of no demand. Query buyer-hangout sources next.",
+  "evidence": "V57-S07 (negative signal = information)"
+ }
+]

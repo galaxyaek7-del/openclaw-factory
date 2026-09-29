@@ -1,0 +1,69 @@
+{
+  "checked_at": "2026-09-29T17:12:57.950984+00:00",
+  "state": "PASS",
+  "passed_count": 10,
+  "failed_count": 0,
+  "failed_checks": [],
+  "findings": [
+    {
+      "check": "revenue_without_payment_evidence",
+      "passed": true,
+      "detail": "dashboard $0 matches 0 VERIFIED row(s), $0.0 verified revenue",
+      "evidence": ""
+    },
+    {
+      "check": "customer_without_transaction_evidence",
+      "passed": true,
+      "detail": "real_customers=0 consistent with zero sales",
+      "evidence": ""
+    },
+    {
+      "check": "traffic_without_source",
+      "passed": true,
+      "detail": "25 click(s) on file (25 unattributed); dashboard claims no human reach",
+      "evidence": ""
+    },
+    {
+      "check": "conversion_without_denominator",
+      "passed": true,
+      "detail": "no conversion rates presented, or all carry denominators",
+      "evidence": ""
+    },
+    {
+      "check": "sales_claim_without_transaction_id",
+      "passed": true,
+      "detail": "0 sale-typed row(s), all carry references (94 publish_attempt rows correctly excluded)",
+      "evidence": ""
+    },
+    {
+      "check": "duplicate_events",
+      "passed": true,
+      "detail": "no duplicate sale ids (0 sale-typed rows)",
+      "evidence": ""
+    },
+    {
+      "check": "dashboard_consistent_with_source",
+      "passed": true,
+      "detail": "dashboard matches finance ledger; truth=CONSISTENT",
+      "evidence": ""
+    },
+    {
+      "check": "test_event_not_counted_as_production",
+      "passed": true,
+      "detail": "$0/0 verified -- nothing to leak",
+      "evidence": ""
+    },
+    {
+      "check": "estimated_not_displayed_as_observed",
+      "passed": true,
+      "detail": "simulation ledger tagged; dashboard money figures trace to verified ledger",
+      "evidence": ""
+    },
+    {
+      "check": "unknown_not_displayed_as_zero",
+      "passed": true,
+      "detail": "measured zeros (revenue/sales/customers) carry ledgers; unknowns labeled (journey=INTEREST)",
+      "evidence": ""
+    }
+  ]
+}

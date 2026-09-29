@@ -538,3 +538,13 @@ test('mission_control_executive_v1.html requires Mission Control auth, and serve
   assert.equal(authed.status, 200);
   assert.match(authed.headers.get('content-type'), /text\/html/);
 });
+
+test('founder_command_center.html requires Mission Control auth, and serves when authenticated (V5.4 Sec 2/29)', async () => {
+  const unauth = await fetch(`${BASE_URL}/founder_command_center.html`, { redirect: 'manual' });
+  assert.equal(unauth.status, 302);
+  assert.equal(unauth.headers.get('location'), '/mission_control_login.html');
+
+  const authed = await fetch(`${BASE_URL}/founder_command_center.html`, { headers: { Cookie: cookie } });
+  assert.equal(authed.status, 200);
+  assert.match(authed.headers.get('content-type'), /text\/html/);
+});
