@@ -1,0 +1,14 @@
+{
+ "generated_at": "2026-09-29T22:30:00+00:00",
+ "note": "Single consolidated gate (V62 Sec Phase-3). Supersedes V60-A01 content mapping (mismatch corrected) but V60-A01 record itself untouched (history preserved). No tech labor included. No credentials requested.",
+ "gate": {
+  "action": "Post ONE draft to your own X timeline (@AekGrafat): RECOMMENDED the E2 standing-desk draft (trim to fit or thread it, your voice), FALLBACK the GPSR 269-char draft as-is, or decline",
+  "why_required": "Only the account holder can publish (credentials verified live, scope documented: post needs approval). Factory executed everything else: offer verified live, draft written + claims-checked (346 chars counted), attribution path verified, observation plan set.",
+  "evidence": "x_verify read-only VALID now; E2 page/products live; GPSR URL live + $79 matches; V60-R01 CONFIRMED (no audience without this step)",
+  "risk": "low (own timeline, $0, reversible delete; public voice is yours)",
+  "expected_outcome": "First platform-shown reach row OR silence (both recorded); referred visits watched 7 days; E2 click linkage only for real ASIN ids",
+  "cost": "$0",
+  "deadline_if_any": "none (E-windows to 2026-10-13; this accelerates, not blocks)",
+  "exact_founder_decision": "Post E2 draft (trimmed/threaded) / post GPSR fallback as-is / decline (decline recorded as chosen HOLD)"
+ }
+}
