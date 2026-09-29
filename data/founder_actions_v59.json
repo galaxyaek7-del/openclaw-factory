@@ -1,0 +1,50 @@
+{
+ "generated_at": "2026-09-29T20:30:00+00:00",
+ "note": "Read-model over data/founder_action_queue.jsonl (source of truth, unmodified schemas). 4 items, ordered by necessity. No tech labor included.",
+ "actions": [
+  {
+   "queue_id": "Q-X-POST",
+   "action": "Post the prepared 269-char draft verbatim to own X timeline",
+   "why_required": "Only the account holder can publish; factory never posts autonomously",
+   "evidence": "Draft staged (mission7); account read-OK (prior evidence); first measurable exposure attempt",
+   "risk": "low (reversible: delete)",
+   "expected_outcome": "First externally visible timestamp + platform-shown reach (or platform silence, also data)",
+   "cost": "$0, ~1 min",
+   "deadline_if_any": "none (windows run regardless)",
+   "exact_founder_decision": "Post as-is, edit first, or decline"
+  },
+  {
+   "queue_id": "Q-MEDIUM-PUBLISH",
+   "action": "Publish the GPSR guide draft to Medium as yourself",
+   "why_required": "Account-holder publish only",
+   "evidence": "Draft file present; guides rank for how-questions (audience fit MEDIUM)",
+   "risk": "low (reversible)",
+   "expected_outcome": "Evergreen discovery surface + (if linked) attributable visits",
+   "cost": "$0, ~10 min",
+   "deadline_if_any": "none",
+   "exact_founder_decision": "Publish as-is, edit first, or decline"
+  },
+  {
+   "queue_id": "Q-GH-AUTH",
+   "action": "Confirm gh auth exists or install it (new credential surface)",
+   "why_required": "Founder decision: new credential surface either way",
+   "evidence": "Unlocks owned-distribution publishing path",
+   "risk": "medium (credentials)",
+   "expected_outcome": "Owned distribution unlocked or explicit decline recorded",
+   "cost": "$0, ~10 min",
+   "deadline_if_any": "none",
+   "exact_founder_decision": "Approve credential setup or decline"
+  },
+  {
+   "queue_id": "Q-COMMUNITY-REPLY",
+   "action": "Reply as yourself in 1-2 standing-desk threads using the prepared draft (ONLY if E2 window shows interest)",
+   "why_required": "Human identity + community judgment; factory must not impersonate",
+   "evidence": "V57-S04 threads; draft at pending_review/queue/v59_standing_desk_reply_draft.md (unposted); Reddit direct re-verification ACCESS_BLOCKED (bot wall) so thread freshness unconfirmed",
+   "risk": "low-medium (public voice; no links unless disclosed/allowed)",
+   "expected_outcome": "Helpful answer (+learning); any response is INTEREST data, not revenue",
+   "cost": "$0, ~15 min",
+   "deadline_if_any": "after E2 window read (2026-10-13)",
+   "exact_founder_decision": "Reply, skip, or decline the track"
+  }
+ ]
+}
