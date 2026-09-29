@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy Forge — Founder Command Center</title>
+<style>
+:root{
+  --bg:#0f1419; --card:#1a2230; --card2:#222d40; --ink:#eef2f7; --muted:#9aa7bd;
+  --green:#3fb950; --amber:#d29922; --red:#f85149; --blue:#58a6ff; --line:#2d3a52;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.55;padding-bottom:96px}
+header{padding:20px 16px 12px;border-bottom:1px solid var(--line)}
+header h1{font-size:22px;margin:0 0 4px}
+header p{margin:0;color:var(--muted);font-size:14px}
+main{max-width:760px;margin:0 auto;padding:12px 12px 24px}
+nav.bottom{position:fixed;left:0;right:0;bottom:0;background:#131a26;border-top:1px solid var(--line);display:flex;overflow-x:auto;z-index:10}
+nav.bottom button{flex:1 0 auto;background:none;border:none;color:var(--muted);font-size:12px;padding:12px 10px;cursor:pointer;min-width:72px}
+nav.bottom button.active{color:var(--ink);border-top:3px solid var(--blue)}
+section.view{display:none}
+section.view.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
+.card h2{font-size:19px;margin:0 0 8px}
+.card h3{font-size:16px;margin:14px 0 6px}
+.big{font-size:30px;font-weight:800;margin:4px 0}
+.sub{color:var(--muted);font-size:14px}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700;margin:2px 4px 2px 0}
+.ok{background:rgba(63,185,80,.15);color:var(--green);border:1px solid var(--green)}
+.warn{background:rgba(210,153,34,.15);color:var(--amber);border:1px solid var(--amber)}
+.bad{background:rgba(248,81,73,.15);color:var(--red);border:1px solid var(--red)}
+.info{background:rgba(88,166,255,.12);color:var(--blue);border:1px solid var(--blue)}
+.dim{color:var(--muted)}
+button.toggle{background:var(--card2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:15px;margin:6px 6px 6px 0;cursor:pointer}
+button.toggle:active{transform:scale(.98)}
+.detail{display:none;background:var(--card2);border-radius:8px;padding:12px;margin-top:8px;font-size:15px}
+.detail.open{display:block}
+.journey{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.jstep{flex:1 1 90px;text-align:center;padding:10px 6px;border-radius:10px;border:1px solid var(--line);font-size:13px}
+.jstep small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.jstep.hit{border-color:var(--green)}
+.jstep.stop{border:2px solid var(--amber)}
+.jstep.miss{opacity:.65}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(min-width:640px){.grid2{grid-template-columns:1fr 1fr 1fr}}
+.tile{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px}
+.tile b{display:block;font-size:13px;color:var(--muted);font-weight:600}
+.tile span{font-size:16px;font-weight:700}
+ul.clean{margin:6px 0;padding-left:20px}
+a{color:var(--blue)}
+.err{background:rgba(248,81,73,.12);border:1px solid var(--red);border-radius:12px;padding:16px;margin:12px 0}
+.kv{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:15px}
+.kv:last-child{border-bottom:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>GALAXY FORGE — Founder Command Center</h1>
+  <p id="generated">Loading company state…</p>
+</header>
+<main>
+  <div id="loginNeeded" class="err" style="display:none">
+    Please <a href="/mission_control_login.html">log in to Mission Control</a> first — this view is Founder-only.
+  </div>
+  <div id="loadError" class="err" style="display:none"></div>
+
+  <section class="view active" id="v-company"></section>
+  <section class="view" id="v-money"></section>
+  <section class="view" id="v-customers"></section>
+  <section class="view" id="v-opps"></section>
+  <section class="view" id="v-ops"></section>
+  <section class="view" id="v-factory"></section>
+  <section class="view" id="v-actions"></section>
+  <section class="view" id="v-security"></section>
+</main>
+<nav class="bottom" id="tabs">
+  <button data-v="v-company" class="active">Company</button>
+  <button data-v="v-money">Money</button>
+  <button data-v="v-customers">Customers</button>
+  <button data-v="v-opps">Opportunities</button>
+  <button data-v="v-ops">Operations</button>
+  <button data-v="v-factory">Factory</button>
+  <button data-v="v-actions">My Actions</button>
+  <button data-v="v-security">Security</button>
+</nav>
+<script>
+"use strict";
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+  });
+}
+function pill(text, tone){ return '<span class="pill ' + tone + '">' + esc(text) + '</span>'; }
+function stateTone(s){
+  s = String(s || "");
+  if (/^(Completed|Live|Safe|Healthy|Verified|None|CONSISTENT|ACTIVE)$/i.test(s)) return "ok";
+  if (/^(Blocked|ATTENTION|Active|HIGH|Issue detected|REALITY MISMATCH)$/i.test(s)) return "bad";
+  return "warn";
+}
+function toggle(btn, html){
+  var d = document.createElement("div");
+  d.className = "detail"; d.innerHTML = html;
+  btn.parentNode.insertBefore(d, btn.nextSibling);
+  btn.onclick = function(){ d.classList.toggle("open"); };
+}
+document.getElementById("tabs").addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  document.querySelectorAll("#tabs button").forEach(function(x){ x.classList.remove("active"); });
+  b.classList.add("active");
+  document.querySelectorAll("section.view").forEach(function(x){ x.classList.remove("active"); });
+  document.getElementById(b.getAttribute("data-v")).classList.add("active");
+  window.scrollTo(0, 0);
+});
+
+function render(d){
+  document.getElementById("generated").textContent =
+    "Updated " + new Date(d.generated_at).toLocaleString() + " · reads authoritative company state only";
+
+  /* ---------- COMPANY (executive home) ---------- */
+  var cs = d.company_status, h = d.health, t = d.truth, pr = d.current_priority, dy = d.daily_summary;
+  var html = "";
+  if (t.state !== "CONSISTENT"){
+    html += '<div class="err"><b>REALITY MISMATCH</b><br>' + esc(t.meaning) + "<ul class='clean'>" +
+      t.details.map(function(x){ return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>";
+  }
+  html += '<div class="card"><h2>Company right now</h2>' +
+    '<div class="kv"><span>Operating</span><b>' + esc(cs.operating) + '</b></div>' +
+    '<div class="kv"><span>Commercial</span><b>' + esc(cs.commercial) + '</b></div>' +
+    '<div class="kv"><span>Security</span><b>' + esc(cs.security) + '</b></div>' +
+    '<div class="kv"><span>Automation</span><b>' + esc(cs.automation) + '</b></div>' +
+    '<div class="kv"><span>Waiting on you</span><b>' + esc(cs.founder_dependency) + '</b></div></div>';
+  html += '<div class="card"><h2>What the Factory is doing now</h2><p><b>' + esc(pr.current_priority) + '</b></p>' +
+    '<p class="sub">Why: ' + esc(pr.why) + '<br>Waiting to learn: ' + esc(pr.expected_signal) +
+    '<br>Reassesses: ' + esc(pr.reassess_when) + '</p></div>';
+  var nba = d.next_best_actions || { actions: [], note: "" };
+  html += '<div class="card"><h2>Next best actions</h2>' +
+    '<p class="sub">Ordered by evidence and blockers — never by predicted success. No revenue probabilities: no real signal exists for them.</p><ul class="clean">' +
+    nba.actions.map(function(a){
+      return "<li><b>" + esc(a.action).slice(0, 140) + "</b><br><span class='dim'>Why: " +
+        esc(a.why).slice(0, 140) + "<br>Evidence: " + esc(a.evidence).slice(0, 140) + "</span></li>";
+    }).join("") + '</ul></div>';
+  var cv = d.commercial_validation || { reality_integrity: { state: "UNKNOWN" }, active_experiments: 0, experiment_windows: [] };
+  var ri = cv.reality_integrity || { state: "UNKNOWN" };
+  html += '<div class="card"><h2>Business reality — self-deception screen</h2>' +
+    '<p><b>Reality integrity: ' + esc(ri.state) + '</b>' +
+    (ri.checked_at ? ' <span class="dim">(checked ' + esc(ri.checked_at).slice(0, 16).replace("T", " ") + ')</span>' : ' <span class="dim">(no verdict recorded yet)</span>') + '</p>' +
+    (ri.state === "BLOCKED"
+      ? '<p><b>Failed checks: ' + esc((ri.failed_checks || []).join(", ")) + '</b><br><span class="sub">Do not treat this dashboard as PASS until these clear.</span></p>'
+      : '<p class="sub">' + esc(ri.meaning || "") + '</p>') +
+    '<div class="kv"><span>Active experiments</span><b>' + cv.active_experiments + '</b></div>' +
+    cv.experiment_windows.map(function(w){
+      return '<div class="kv"><span>' + esc(w.id) + ' — ' + esc(w.offer).slice(0, 50) + '</span><b>' +
+        esc(w.status) + ' · ends ' + esc(String(w.ends || "").slice(0, 10)) + '</b></div>';
+    }).join("") + '</div>';
+  var md = d.market_discovery || { market_signals: 0, by_level: {}, gates: [] };
+  var lvl = md.by_level || {};
+  html += '<div class="card"><h2>Market discovery — what the market says</h2>' +
+    '<div class="kv"><span>Market signals</span><b>' + md.market_signals + '</b></div>' +
+    '<div class="kv"><span>By level</span><b>SIGNAL ' + (lvl.SIGNAL || 0) + ' · INTEREST ' + (lvl.INTEREST || 0) +
+    ' · INTENT ' + (lvl.INTENT || 0) + ' · DEMAND ' + (lvl.QUALIFIED_DEMAND || 0) + ' · SALES 0</b></div>' +
+    '<div class="kv"><span>Real customer interactions</span><b>' + (md.customer_interactions || 0) + '</b></div>' +
+    (md.gates || []).map(function(g){
+      return '<div class="kv"><span>' + esc(g.gate) + ' — ' + esc(String(g.area || "").slice(0, 60)) + '</span><b>' +
+        esc(g.action) + '</b></div>';
+    }).join("") +
+    '<p class="sub">Top blocker: ' + esc(md.top_blocker || "") + '<br>Next: ' + esc(md.next_discovery_action || "") + '</p></div>';
+  html += '<div class="card"><h2>Company health — six dimensions, no single score</h2><div class="grid2">' +
+    [["Security", h.security], ["Commercial", h.commercial], ["Operations", h.operations],
+     ["Automation", h.automation], ["Your load", h.founder_load], ["Market access", h.market_access]
+    ].map(function(p){
+      return '<div class="tile"><b>' + p[0] + '</b><span>' + esc(p[1].state) + '</span><br><small class="dim">' +
+        esc(p[1].meaning) + '</small></div>';
+    }).join("") + '</div><p class="sub">' + esc(h.score_note) + '</p></div>';
+  html += '<div class="card"><h2>Galaxy Forge — today</h2>' +
+    '<h3>What happened</h3><ul class="clean">' + dy.what_happened.map(function(x){ return "<li>" + esc(x) + "</li>"; }).join("") + '</ul>' +
+    '<div class="kv"><span>Commercial evidence</span><b>' + esc(dy.commercial_evidence).slice(0, 120) + '…</b></div>' +
+    '<div class="kv"><span>Money</span><b>' + esc(dy.money) + '</b></div>' +
+    '<div class="kv"><span>Opportunities</span><b>' + esc(dy.opportunities) + '</b></div>' +
+    '<div class="kv"><span>Problems</span><b>' + esc(dy.problems) + '</b></div>' +
+    '<div class="kv"><span>You</span><b>' + esc(dy.founder) + '</b></div>' +
+    '<button class="toggle" data-w="1">Weekly review</button><div class="detail" id="weekly">' +
+    '<div class="kv"><span>Revenue</span><b>' + esc(d.weekly_review.revenue) + '</b></div>' +
+    '<div class="kv"><span>Journey at</span><b>' + esc(d.weekly_review.intent) + '</b></div>' +
+    '<div class="kv"><span>Continue</span><b>' + esc(d.weekly_review.what_should_continue) + '</b></div>' +
+    '<div class="kv"><span>Change</span><b>' + esc(d.weekly_review.what_should_change) + '</b></div>' +
+    '<div class="kv"><span>Stop</span><b>' + esc(d.weekly_review.what_should_stop) + '</b></div>' +
+    '<div class="kv"><span>Next priority</span><b>' + esc(d.weekly_review.next_strategic_priority).slice(0, 140) + '…</b></div>' +
+    '</div></div>';
+  document.getElementById("v-company").innerHTML = html;
+  document.querySelector('[data-w="1"]').onclick = function(){ document.getElementById("weekly").classList.toggle("open"); };
+
+  /* ---------- MONEY ---------- */
+  var m = d.money;
+  document.getElementById("v-money").innerHTML =
+    '<div class="card"><h2>Real money</h2><div class="big">' + esc(m.headline) + '</div>' +
+    '<p class="sub">' + esc(m.headline_meaning) + '</p>' +
+    '<div class="kv"><span>Verified sales</span><b>' + m.verified_sales_count + '</b></div>' +
+    '<div class="kv"><span>Refunds</span><b>$' + m.refunds_usd + '</b></div>' +
+    '<div class="kv"><span>Net verified revenue</span><b>$' + m.net_verified_revenue_usd + ' ' + esc(m.currency) + '</b></div>' +
+    '<div class="kv"><span>Period</span><b>' + esc(m.reporting_period) + '</b></div></div>' +
+    '<div class="card"><h2>What never counts as revenue</h2><p>' +
+    m.not_counted_as_revenue.map(function(x){ return pill(x, "info"); }).join("") + '</p>' +
+    '<p class="sub">' + esc(m.not_counted_note) + '</p></div>';
+
+  /* ---------- CUSTOMERS ---------- */
+  var c = d.customers;
+  var j = '<div class="journey">' + c.journey.map(function(s){
+    var cls = s.state === "reached" ? "hit" : "miss";
+    if (s.stage === c.journey_stops_at) cls += " stop";
+    return '<div class="jstep ' + cls + '"><b>' + esc(s.stage) + '</b>' + esc(s.meaning) +
+      '<small>' + esc(s.evidence) + '</small></div>';
+  }).join("") + '</div>';
+  document.getElementById("v-customers").innerHTML =
+    '<div class="card"><h2>Customers</h2>' +
+    '<div class="kv"><span>Real customers</span><b>' + c.real_customers + '</b></div>' +
+    '<p class="sub">' + esc(c.real_customers_meaning) + '</p>' +
+    '<div class="kv"><span>Leads</span><b>' + c.leads + '</b></div>' +
+    '<div class="kv"><span>Qualified opportunities</span><b>' + c.qualified_opportunities + '</b></div>' +
+    '<div class="kv"><span>Offer pages live</span><b>' + c.interest_signals.offer_pages_live + '</b></div>' +
+    '<div class="kv"><span>Affiliate clicks</span><b>' + c.interest_signals.affiliate_clicks + '</b></div></div>' +
+    '<div class="card"><h2>Where the customer path stops</h2>' + j +
+    '<p><b>Stops at: ' + esc(c.journey_stops_at) + '</b><br><span class="sub">' + esc(c.journey_stop_meaning) + '</span></p></div>' +
+    '<div class="card"><h2>What customers are asking</h2><ul class="clean">' +
+    c.what_customers_are_asking.map(function(q){ return "<li>" + esc(q.what) + ' <span class="dim">(' + esc(q.evidence) + ')</span></li>'; }).join("") + '</ul></div>' +
+    '<div class="card"><h2>Retention center</h2><p>' + pill(c.retention.status, "warn") + '</p>' +
+    '<p class="sub">' + esc(c.retention.meaning) + '</p></div>';
+
+  /* ---------- OPPORTUNITIES ---------- */
+  var o = d.opportunities;
+  var radar = o.radar.map(function(r){
+    return '<div class="card"><h3>' + esc(r.name) + ' ' + pill(r.stage, "info") + '</h3>' +
+      '<div class="kv"><span>Problem</span><b>' + esc(r.problem).slice(0, 140) + '</b></div>' +
+      '<div class="kv"><span>Evidence</span><b>' + esc(r.evidence).slice(0, 160) + '…</b></div>' +
+      '<div class="kv"><span>Why it matters</span><b>' + esc(r.why_it_matters).slice(0, 160) + '</b></div>' +
+      '<div class="kv"><span>Next step</span><b>' + esc(r.recommended_next_step) + '</b></div>' +
+      '<button class="toggle">Why? / Show evidence</button><div class="detail">' +
+      '<div class="kv"><span>Audience</span><b>' + esc(r.audience) + '</b></div>' +
+      '<div class="kv"><span>Potential offer</span><b>' + esc(r.potential_offer) + '</b></div>' +
+      '<div class="kv"><span>Market access</span><b>' + esc(r.market_access) + '</b></div>' +
+      '<div class="kv"><span>Complexity</span><b>' + esc(r.complexity) + '</b></div>' +
+      '<div class="kv"><span>Automation potential</span><b>' + esc(r.automation_potential) + '</b></div>' +
+      '</div></div>';
+  }).join("");
+  document.getElementById("v-opps").innerHTML =
+    '<div class="card"><h2>Opportunity radar</h2>' +
+    '<div class="kv"><span>Ready for your review</span><b>' + o.ready_for_review + '</b></div>' +
+    '<div class="kv"><span>New in 14 days</span><b>' + o.new_discoveries_14d + '</b></div>' +
+    '<p class="sub">' + esc(o.raw_signals_scanned_14d + " raw market-scan records ingested. " + o.raw_signals_meaning) + '</p>' +
+    '<p class="sub">' + esc(o.radar_note) + '</p></div>' + radar;
+  document.querySelectorAll("#v-opps .toggle").forEach(function(b){
+    b.onclick = function(){ b.nextElementSibling.classList.toggle("open"); };
+  });
+
+  /* ---------- OPERATIONS ---------- */
+  var op = d.operations, s1 = d.sub001, pf = d.portfolio;
+  document.getElementById("v-ops").innerHTML =
+    '<div class="card"><h2>Operations</h2>' +
+    '<div class="kv"><span>Factory state</span><b>' + esc(op.factory_state) + '</b></div>' +
+    '<h3>Active experiments</h3><ul class="clean">' +
+    (op.active_experiments.map(function(e){ return "<li><b>" + esc(e.name) + "</b> — " + esc(e.status) + "<br><span class='dim'>" + esc(e.what).slice(0, 160) + '…</span></li>'; }).join("") || "<li>None</li>") + '</ul>' +
+    '<h3>Blocked — needs attention</h3><ul class="clean">' +
+    (op.blocked_operations.map(function(b){ return "<li><b>" + esc(b.what).slice(0, 120) + "</b> — " + esc(b.why).slice(0, 120) + "</li>"; }).join("") || "<li>Nothing blocked</li>") + '</ul></div>' +
+    '<div class="card"><h2>Current market test (SUB-001 path)</h2>' +
+    '<div class="kv"><span>Started</span><b>' + esc(s1.start_date) + '</b></div>' +
+    '<div class="kv"><span>Status</span><b>' + esc(s1.status) + '</b></div>' +
+    '<div class="kv"><span>Exposure</span><b>' + esc(String(s1.stages.exposure)) + ' pages</b></div>' +
+    '<div class="kv"><span>Purchase / revenue</span><b>' + s1.stages.purchase + ' / $' + s1.stages.revenue_usd + '</b></div>' +
+    '<p><b>' + esc(s1.where_it_stops) + '</b></p></div>' +
+    '<div class="card"><h2>Portfolio — ' + pf.total_offers + ' offers</h2>' +
+    '<p class="sub">' + esc(pf.total_offers_note) + '</p>' +
+    '<div class="kv"><span>Verified revenue, all offers</span><b>$' + pf.verified_revenue_across_portfolio_usd + '</b></div>' +
+    '<div class="kv"><span>Needing attention</span><b>' + pf.needs_attention_count + '</b></div>' +
+    (pf.needs_attention.map(function(n){ return pill(n, "warn"); }).join("") || '<p class="sub">Nothing flagged.</p>') +
+    '<button class="toggle" id="pfAll">All ' + pf.total_offers + ' offers</button><div class="detail" id="pfList">' +
+    pf.items.map(function(it){
+      return '<div class="kv"><span>' + esc(it.name).slice(0, 60) + '</span><b>' + esc(it.current_action).slice(0, 60) + ' · $' + it.revenue_usd + '</b></div>';
+    }).join("") + '</div></div>';
+  document.getElementById("pfAll").onclick = function(){ document.getElementById("pfList").classList.toggle("open"); };
+
+  /* ---------- FACTORY ---------- */
+  var feed = d.factory_feed.map(function(f){
+    return '<div class="card"><h3>' + esc(f.what) + ' ' + pill(f.result, stateTone(f.result)) + '</h3>' +
+      '<p>' + esc(f.why).slice(0, 220) + '</p>' +
+      '<p class="sub">Evidence: ' + esc(f.evidence) + '<br>When: ' + esc(f.when || "unknown") + '</p></div>';
+  }).join("");
+  document.getElementById("v-factory").innerHTML =
+    '<div class="card"><h2>What the Factory did</h2><p class="sub">Latest work first — what, why, result, evidence, date.</p></div>' +
+    feed +
+    '<div class="card"><h2>Technical details — hidden by default</h2>' +
+    '<button class="toggle" id="techBtn">View technical details</button><div class="detail" id="techBox">' +
+    '<div class="kv"><span>Money source</span><b>' + esc(d.technical_details.money_sources.join("; ")) + '</b></div>' +
+    '<div class="kv"><span>Funnel source</span><b>' + esc(d.technical_details.funnel_source) + '</b></div>' +
+    '<div class="kv"><span>Published (ground truth)</span><b>' + esc(String(d.technical_details.publication_ground_truth)) + '</b></div>' +
+    '<div class="kv"><span>Opportunity counts</span><b>' + esc(JSON.stringify(d.technical_details.opportunity_counts)) + '</b></div>' +
+    '</div></div>';
+  document.getElementById("techBtn").onclick = function(){ document.getElementById("techBox").classList.toggle("open"); };
+
+  /* ---------- ACTIONS ---------- */
+  var fa = d.founder_actions;
+  var cards = fa.actions.map(function(a){
+    var id = "a" + Math.random().toString(36).slice(2, 8);
+    return '<div class="card"><h3>' + esc(a.what) + ' ' + pill(a.risk + " RISK", a.risk === "HIGH" ? "bad" : (a.risk === "LOW" ? "ok" : "warn")) + '</h3>' +
+      '<p><b>Why:</b> ' + esc(a.why) + '</p>' +
+      '<p class="sub"><b>Factory already did:</b> ' + esc(a.what_factory_already_did) + '</p>' +
+      '<button class="toggle" data-x="' + id + '">Why? / Show evidence / Approve…</button><div class="detail" id="' + id + '">' +
+      '<div class="kv"><span>If you approve</span><b>' + esc(a.what_happens_if_approved) + '</b></div>' +
+      '<div class="kv"><span>Your step</span><b>' + esc(a.what_you_need_to_do) + '</b></div>' +
+      '<div class="kv"><span>Risk</span><b>' + esc(a.risk) + '</b></div>' +
+      '<p class="sub">To act, do the step above in your own account, then tell the Factory it is done. ' +
+      'No button here changes company state by itself — your explicit confirmation is the approval.</p>' +
+      '<p>' + a.choices.map(function(ch){ return pill(ch, "info"); }).join("") + '</p></div></div>';
+  }).join("");
+  document.getElementById("v-actions").innerHTML =
+    '<div class="card"><h2>Your actions</h2>' +
+    (fa.open_count
+      ? '<p><b>' + fa.open_count + ' action(s) need your authority.</b><br>Top priority: <b>' + esc(fa.one_next_action).slice(0, 160) + '</b></p>'
+      : '<p><b>NO FOUNDER ACTION REQUIRED</b> — a normal and valid state.</p>') + '</div>' + cards;
+  document.querySelectorAll("#v-actions .toggle").forEach(function(b){
+    b.onclick = function(){ document.getElementById(b.getAttribute("data-x")).classList.toggle("open"); };
+  });
+
+  /* ---------- SECURITY ---------- */
+  var sec = d.security;
+  function secRow(label, obj){
+    return '<div class="kv"><span>' + label + '</span><b>' + esc(obj.state) + '</b></div><p class="sub">' + esc(obj.meaning) + '</p>';
+  }
+  document.getElementById("v-security").innerHTML =
+    '<div class="card"><h2>Security — ' + esc(sec.state) + '</h2>' +
+    '<p class="sub">' + esc(sec.state_meaning) + ' Values, tokens, and credentials are never shown here.</p>' +
+    '<div class="kv"><span>Last factory activity</span><b>' + esc(sec.last_factory_activity || "unknown") + '</b></div>' +
+    secRow("Secrets", sec.secrets) + secRow("Public exposure", sec.public_exposure) +
+    secRow("Dependencies", sec.dependencies) + secRow("Backup", sec.backup) + secRow("Incidents", sec.incidents) + '</div>';
+}
+
+fetch("/api/v1/founder-command-center", { credentials: "same-origin" })
+  .then(function(r){
+    if (r.status === 401 || r.status === 403){
+      document.getElementById("loginNeeded").style.display = "block";
+      document.getElementById("generated").textContent = "Not logged in.";
+      throw new Error("auth");
+    }
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  })
+  .then(function(payload){ render(payload.data || payload); })
+  .catch(function(err){
+    if (String(err.message) === "auth") return;
+    var box = document.getElementById("loadError");
+    box.style.display = "block";
+    box.textContent = "Could not load company state: " + err.message;
+  });
+</script>
+</body>
+</html>
