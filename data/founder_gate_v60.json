@@ -1,0 +1,14 @@
+{
+ "generated_at": "2026-09-29T21:30:00+00:00",
+ "note": "Single consolidated gate (V6.0 Sec 8). Replaces no queue items; Q-X-POST is its queue counterpart. No tech labor included.",
+ "gate": {
+  "action": "Post the prepared 269-char draft verbatim to your own X timeline (or edit first, or decline)",
+  "why_required": "Only the account holder can publish; factory never posts autonomously (identity + platform rules). All other paths are either live-and-waiting (Gumroad/site) or externally blocked (Paddle) or proven-empty (Nostr targets) or conditional (Reddit draft needs E2 read). X post is the lowest-friction falsifiable exposure probe on an owned asset.",
+  "evidence": "V60-R01 CONFIRMED (no verified audience); Q-X-POST draft staged (mission7); account read-OK; 1 min; reversible (delete)",
+  "risk": "low (own timeline, reversible, $0)",
+  "expected_outcome": "First platform-shown reach row OR platform silence (both data); tick ledgers watch for referred visits for 7 days",
+  "cost": "$0",
+  "deadline_if_any": "none (E-windows observe to 2026-10-13 regardless)",
+  "exact_founder_decision": "Post as-is / edit-then-post / decline (decline is valid data: access stays founder-gated by choice)"
+ }
+}
