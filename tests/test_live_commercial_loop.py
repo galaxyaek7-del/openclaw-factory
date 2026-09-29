@@ -103,6 +103,15 @@ class TestControlLoop(unittest.TestCase):
         self.assertIsNotNone(item["frontier"])
         self.assertTrue(item["frontier_reason"])
 
+    def test_intent_levels_never_conflate_views_with_purchase(self):
+        lvl, label = loop.intent_level({"offer_name": "zzz-no-such-offer-zzz"})
+        self.assertLessEqual(lvl, 4)
+        self.assertNotEqual(lvl, 9)
+
+    def test_intent_labels_cover_l0_to_l9(self):
+        self.assertEqual(len(loop.INTENT_LABELS), 10)
+        self.assertEqual(loop.INTENT_LABELS[9], "Verified completed transaction")
+
 
 class TestRealityIntegrityCheck(unittest.TestCase):
     def test_all_10_checks_present(self):

@@ -335,5 +335,47 @@ def loop_status(items=None):
             "frontier": frontier,
             "frontier_reason": vec[frontier][1] if frontier else "all stages evidenced",
             "sales_state": {"state": sales_status(item)[0], "reason": sales_status(item)[1]},
+            "intent_level": {"level": intent_level(item)[0], "label": intent_level(item)[1]},
         })
     return {"generated_at": _now_utc().isoformat(), "items": out}
+
+
+# V5.8 Sec 9 -- intent ladder L1..L9. Structural anti-conflation: levels
+# 1-4 (view/click/CTA/checkout-init) can NEVER read as purchase; only L9
+# with a platform reference counts. Evaluated top-down; first match wins.
+INTENT_LABELS = {
+    9: "Verified completed transaction",
+    8: "Payment attempt",
+    7: "Qualified commercial conversation",
+    6: "Price/quote/sample request",
+    5: "Question / request for information",
+    4: "Product detail / checkout initiation",
+    3: "CTA",
+    2: "Click",
+    1: "View",
+    0: "No intent evidence",
+}
+
+
+def intent_level(item=None):
+    """Highest evidenced intent level for one item (or company-wide)."""
+    sales = _verified_sales()
+    if item:
+        offer = item.get("offer_name", "")
+        sales = [s for s in sales if offer and offer.lower() in json.dumps(s)[:2000].lower()]
+    if sales:
+        return 9, INTENT_LABELS[9]
+    inquiries = _real_inquiries()
+    if item and item.get("offer_name"):
+        inquiries = [t for t in inquiries
+                     if item["offer_name"].lower() in json.dumps(t)[:2000].lower()]
+    if inquiries:
+        return 5, INTENT_LABELS[5]
+    clicks = _real_clicks()
+    if item:
+        needle = (item.get("click_match") or "").lower()
+        clicks = [c for c in clicks
+                  if needle and needle in json.dumps(c)[:2000].lower()]
+    if clicks:
+        return 2, INTENT_LABELS[2]
+    return 0, INTENT_LABELS[0]
