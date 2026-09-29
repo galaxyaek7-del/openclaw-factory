@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Food Truck Startup Cost Estimator — Galaxy Forge</title>
+<meta name="description" content="Estimate first-year food truck costs: truck, permits, commissary, insurance. Free, private, runs in your browser.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://galaxyaek7-del.github.io/openclaw-factory/customer_site/tool-food-truck-cost-estimator.html">
+<style>
+:root{--bg:#0a0c11;--bg-card:#161a24;--border:#242938;--ink:#eef0f6;--ink-dim:#9198ad;--accent-ink:#f0a468;--sans:'IBM Plex Sans',-apple-system,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;--radius:12px;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65}
+a{color:var(--accent-ink)}
+.wrap{max-width:720px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.eyebrow{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;color:var(--accent-ink);margin-bottom:1rem}
+h1{font-size:1.6rem;margin:0 0 .4rem}
+.sub{color:var(--ink-dim);margin-bottom:1.6rem}
+.box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem 1.4rem;margin:1rem 0}
+label{display:block;font-size:.85rem;color:var(--ink-dim);margin:.8rem 0 .3rem}
+select,input{width:100%;padding:.6rem .7rem;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--ink);font-size:1rem}
+button{margin-top:1.2rem;padding:.7rem 1.4rem;border-radius:8px;border:0;background:#d97a3f;color:#1a0e05;font-weight:700;font-size:1rem;cursor:pointer}
+#result{display:none;margin-top:1.4rem;padding:1.2rem 1.4rem;border:1px solid var(--border);border-radius:var(--radius)}
+#result b{color:var(--accent-ink)}
+.small{font-size:.8rem;color:var(--ink-dim)}
+footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(--ink-dim);font-size:.8rem}
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:.6rem}
+td{padding:.3rem .2rem;border-bottom:1px solid var(--border)}
+td:last-child{text-align:right;font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="eyebrow">Free tool · private · no signup</div>
+<h1>Food Truck Startup Cost Estimator</h1>
+<div class="sub">First-year budget ranges for a US food truck. Illustrative ranges — verify fees with your agencies. Nothing leaves your browser.</div>
+<div class="box">
+<label for="truck">Truck (used $30k–$80k / new $80k–$175k)</label>
+<select id="truck"><option value="30000,80000">Used</option><option value="80000,175000">New / custom build</option></select>
+<label for="city">Permit environment</label>
+<select id="city"><option value="2000,5000">Typical city ($2k–$5k permits)</option><option value="5000,9000">Strict/expensive city ($5k–$9k)</option></select>
+<label for="comm">Commissary ($/month)</label>
+<input id="comm" type="number" min="0" value="500">
+<button id="go">Estimate budget</button>
+<div id="result"></div>
+</div>
+<p class="small">Ranges are illustrative planning figures, not quotes. Insurance (~$3k–$7k/yr) and 3 months working capital (~$5k–$15k) included in the band. Full permit method: <a href="guide-food-truck-permit-stack.html">permit-stack guide</a> · Navigator: <a href="https://aekraft.gumroad.com/l/cdfdcy?ref=galaxyforge_tool">Food Truck Permit Navigator ($59)</a> — disclosure: our product.</p>
+</div>
+<footer>Galaxy Forge · 2026 · Illustrative ranges; verify with agencies.</footer>
+<script>
+document.getElementById('go').addEventListener('click', function(){
+  var t = document.getElementById('truck').value.split(',').map(Number);
+  var c = document.getElementById('city').value.split(',').map(Number);
+  var m = Math.max(0, parseFloat(document.getElementById('comm').value) || 0);
+  function fmt(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
+  var lo = t[0]+c[0]+m*12+3100+5000, hi = t[1]+c[1]+m*12+7100+15000;
+  var rows = [['Truck', fmt(t[0])+' – '+fmt(t[1])],['Permits & licenses', fmt(c[0])+' – '+fmt(c[1])],['Commissary (12 mo)', fmt(m*12)],['Insurance', '$3,100 – $7,100'],['Working capital (3 mo)', '$5,000 – $15,000']];
+  var el = document.getElementById('result');
+  el.style.display = 'block';
+  el.innerHTML = 'First-year band: <b>'+fmt(lo)+' – '+fmt(hi)+'</b><table>' + rows.map(function(r){ return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td>'; }).join('') + '</table>';
+});
+try { fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'tool-food-truck-cost' }), keepalive: true }).catch(function(){}); } catch(e) {}
+</script>
+</body>
+</html>
