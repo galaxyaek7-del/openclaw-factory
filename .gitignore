@@ -107,3 +107,6 @@ data/nostr_key.json
 # Commercial telemetry snapshot (2026-09-27): disposable derived state,
 # rewritten on every watcher run -- same precedent as knowledge_graph_snapshot.
 data/telemetry_state.json
+# State backups (2026-09-29): timestamped copies of critical ledgers/state
+# for self-repair rollback. Rebuildable from live files; never committed.
+data/_backups/
