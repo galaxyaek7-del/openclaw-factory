@@ -1,0 +1,8 @@
+{
+ "A.BACKUP_FAIL": 5,
+ "B.RESTORE": 4,
+ "C.MIGRATION": 1,
+ "D.AUTH_ACCESS": 3,
+ "F.MAINT": 9,
+ "G.OTHER": 3
+}
