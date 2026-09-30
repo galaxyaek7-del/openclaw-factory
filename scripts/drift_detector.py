@@ -25,7 +25,10 @@ def snapshot():
     modified = [l[3:].strip().strip('"') for l in status if l[:2] != "??"]
     untracked = [l[3:].strip().strip('"') for l in status if l[:2] == "??"]
     numstat = []
-    for l in _run(["git", "diff", "--numstat"]).splitlines():
+    # V69: diff against HEAD (not index) so staged-new files are included.
+    # `git diff` alone misses staged additions entirely (proved: 600-line
+    # staged .py reported WITHIN_THRESHOLDS before this fix).
+    for l in _run(["git", "diff", "HEAD", "--numstat"]).splitlines():
         p = l.split("\t")
         if len(p) == 3 and p[0] != "-":
             numstat.append({"file": p[2], "added": int(p[0]), "removed": int(p[1])})
