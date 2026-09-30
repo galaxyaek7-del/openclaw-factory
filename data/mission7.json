@@ -1,0 +1,55 @@
+{
+ "mission": "MISSION_7",
+ "at": "2026-09-22T20:14:33.856971+00:00",
+ "baseline": {
+  "product": "GPSR kit $79",
+  "sales": [
+   0,
+   "OBSERVED"
+  ],
+  "revenue": [
+   0,
+   "OBSERVED"
+  ],
+  "url_health": [
+   "HEALTHY",
+   "OBSERVED"
+  ],
+  "traffic": [
+   "UNKNOWN",
+   "no API"
+  ],
+  "conversion": [
+   "UNKNOWN",
+   "no denominator"
+  ]
+ },
+ "sources": {
+  "gumroad_sales_api": "AVAILABLE (0 rows)",
+  "product_page": "AVAILABLE (200)",
+  "traffic_api": "NOT_AVAILABLE (payload-enumerated)",
+  "medium_stats": "founder-read only",
+  "referral": "NOT_AVAILABLE",
+  "checkout_probe": "BLOCKED by design"
+ },
+ "channels": {
+  "gumroad_passive": "READY (live)",
+  "medium": "FOUNDER_ACTION_REQUIRED",
+  "x": "FOUNDER_ACTION_REQUIRED (credentials VERIFIED 2026-09-22 as @AekGrafat; post needs approval)",
+  "pages": "NOT_AVAILABLE",
+  "telegram": "NOT_AVAILABLE (notify-only)",
+  "linkedin": "NOT_AVAILABLE",
+  "n8n": "NOT_AVAILABLE",
+  "affiliate": "READY but undistributed"
+ },
+ "experiment": {
+  "window": "30d from Medium publish OR X post, whichever first",
+  "event": "first attributed external visit/click/sale",
+  "success": ">=1 verified external sale",
+  "failure": "30d of measured exposure with 0 sales -> positioning diagnosis (only if exposure measured)",
+  "rule": "no denominator -> no verdict; UNKNOWN stays UNKNOWN"
+ },
+ "x_draft": "Selling physical products to EU buyers from outside the EU? Since Dec 2024 every listing needs an EU Responsible Person + technical file — no handmade exemption. I built a $79 DIY action kit from EC + Etsy sources (not legal advice): https://aekraft.gumroad.com/l/fetmu",
+ "x_draft_status": "UNPUBLISHED (gate: approve single post)",
+ "spend": 0
+}
