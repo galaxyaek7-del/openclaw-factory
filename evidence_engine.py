@@ -60,10 +60,19 @@ def make_evidence_id(evidence_type, module, timestamp, input_summary):
 
 
 def record_evidence(evidence_type, module, input_summary, output_summary,
-                     duration_ms, success, validation_result=None, ledger_path=None):
+                     duration_ms, success, validation_result=None, ledger_path=None,
+                     producer=None, provenance="DERIVED", confidence=None,
+                     supersedes=None, valid_until=None):
     """The ONE real write path. Immutable, append-only -- existing
     records are never rewritten, same convention as every other real
-    *.jsonl ledger in this factory."""
+    *.jsonl ledger in this factory.
+
+    V70 provenance extension (additive only; all new kwargs optional so
+    every pre-existing caller is unaffected): producer (WHO/WHAT),
+    provenance (OBSERVED / DERIVED / INFERRED -- DERIVED default; a
+    DERIVED record must never be re-labeled OBSERVED downstream),
+    confidence (free-text rationale, never a fabricated number),
+    supersedes (evidence_id this record replaces), valid_until (ISO)."""
     if evidence_type not in EVIDENCE_TYPES:
         raise ValueError(f"unknown evidence_type: {evidence_type!r} -- expected one of {EVIDENCE_TYPES}")
 
@@ -79,6 +88,11 @@ def record_evidence(evidence_type, module, input_summary, output_summary,
         "success": bool(success),
         "validation_result": validation_result,
         "timestamp": timestamp,
+        "producer": producer,
+        "provenance": provenance,
+        "confidence": confidence,
+        "supersedes": supersedes,
+        "valid_until": valid_until,
     }
 
     path = ledger_path or DEFAULT_LEDGER_PATH
