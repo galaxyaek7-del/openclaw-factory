@@ -19,6 +19,30 @@ COMPLETED = "COMPLETED"
 PARTIAL = "PARTIAL"
 UNKNOWN = "UNKNOWN"
 
+# Self-healing v2 bounds (disclosed constants; callers persist counts).
+MAX_RETRY_ATTEMPTS = 3
+CIRCUIT_OPEN_AFTER_CONSECUTIVE_FAILURES = 5
+
+
+def retry_budget_exceeded(attempts, limit=MAX_RETRY_ATTEMPTS):
+    """True when attempts reached the bound -- stops infinite retry."""
+    try:
+        return int(attempts) >= int(limit)
+    except (TypeError, ValueError):
+        return True
+
+
+def circuit_check(consecutive_failures, threshold=CIRCUIT_OPEN_AFTER_CONSECUTIVE_FAILURES):
+    """OPEN after `threshold` consecutive failures (caller resets on
+    success). OPEN means HOLD new attempts until a cooldown passes --
+    the caller owns the clock; this function only classifies."""
+    try:
+        opened = int(consecutive_failures) >= int(threshold)
+    except (TypeError, ValueError):
+        opened = True
+    return {"circuit": "OPEN" if opened else "CLOSED",
+            "action": "HOLD" if opened else "PROCEED"}
+
 
 def classify_outcome(record):
     """record: {started, completed_clean, response_bytes, incomplete,

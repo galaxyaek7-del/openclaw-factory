@@ -1,0 +1,123 @@
+{
+ "at": "2026-09-30T18:19:40.157434+00:00",
+ "health": {
+  "CODE_HEALTH": "HEALTHY",
+  "EVIDENCE_HEALTH": "HEALTHY",
+  "RUNTIME_HEALTH": "HEALTHY",
+  "SECURITY_HEALTH": "HEALTHY",
+  "RECOVERY_HEALTH": "HEALTHY",
+  "COMMERCIAL_HEALTH": "HEALTHY",
+  "FOUNDER_DEPENDENCY": "HEALTHY",
+  "EXPERIMENT_INTEGRITY": "HEALTHY"
+ },
+ "failing": [],
+ "blockers": [
+  {
+   "action_required": "dashboard revoke/regenerate + local .env update by owner",
+   "automatable": false,
+   "blocker_id": "BLK-GUMROAD-ROTATION",
+   "cause": "API token exposed in session output; treated compromised",
+   "channel": "gumroad",
+   "discovered_at": "2026-09-30T17:45:00+00:00",
+   "founder_required": true,
+   "founder_class": "C",
+   "last_check": "2026-09-30T18:12:00+00:00",
+   "next_recheck": "on credential change (watch polls, no blind repoll)",
+   "status": "AWAITING_EXTERNAL",
+   "type": "AUTH"
+  },
+  {
+   "action_required": "owner completes onboarding at vendors.paddle.com",
+   "automatable": false,
+   "blocker_id": "BLK-PADDLE-ONBOARDING",
+   "cause": "checkout not enabled for account (live API verified)",
+   "channel": "paddle",
+   "discovered_at": "2026-09-30 (re-confirmed)",
+   "founder_required": true,
+   "founder_class": "C",
+   "last_check": "2026-09-30T17:50:00+00:00",
+   "next_recheck": "weekly or on founder signal (no blind repoll)",
+   "status": "AWAITING_EXTERNAL",
+   "type": "AUTH"
+  },
+  {
+   "action_required": "message approval + first-publish go-ahead",
+   "automatable": false,
+   "blocker_id": "BLK-X-FIRST-PUBLISH",
+   "cause": "ADR-135 first-publish approval + strategic content choice",
+   "channel": "x",
+   "discovered_at": "2026-09-30",
+   "founder_required": true,
+   "founder_class": "D",
+   "last_check": "2026-09-30T18:04:00+00:00",
+   "next_recheck": "on founder content decision (dry-run stays green)",
+   "status": "AWAITING_EXTERNAL",
+   "type": "PERMISSION"
+  },
+  {
+   "action_required": "human publishing via KDP account",
+   "automatable": false,
+   "blocker_id": "BLK-KDP-ACCOUNT",
+   "cause": "no account integration; KDP publishing inherently human",
+   "channel": "kdp",
+   "discovered_at": "2026-09-30",
+   "founder_required": true,
+   "founder_class": "C",
+   "last_check": "2026-09-30T18:04:00+00:00",
+   "next_recheck": "on founder signal only",
+   "status": "AWAITING_EXTERNAL",
+   "type": "AUTH"
+  },
+  {
+   "action_required": "seller account + terms acceptance",
+   "automatable": false,
+   "blocker_id": "BLK-ETSY-ACCOUNT",
+   "cause": "no account integration on record",
+   "channel": "etsy",
+   "discovered_at": "2026-09-30",
+   "founder_required": true,
+   "founder_class": "C",
+   "last_check": "2026-09-30T18:04:00+00:00",
+   "next_recheck": "on founder signal only",
+   "status": "AWAITING_EXTERNAL",
+   "type": "AUTH"
+  },
+  {
+   "action_required": "account/integration access",
+   "automatable": false,
+   "blocker_id": "BLK-MEDIUM-ACCESS",
+   "cause": "publishing integration unavailable",
+   "channel": "medium",
+   "discovered_at": "2026-09-30",
+   "founder_required": true,
+   "founder_class": "C",
+   "last_check": "2026-09-30T18:04:00+00:00",
+   "next_recheck": "on founder signal only",
+   "status": "AWAITING_EXTERNAL",
+   "type": "AUTH"
+  },
+  {
+   "action_required": "none (factory does not own n8n; monitor only)",
+   "automatable": false,
+   "blocker_id": "BLK-N8N-LOCAL",
+   "cause": "localhost:5678 connection refused (verified); retry dead-letter expired EVOLVE-01",
+   "channel": "n8n-local",
+   "discovered_at": "2026-09-30T18:13:00+00:00",
+   "founder_required": false,
+   "founder_class": null,
+   "last_check": "2026-09-30T18:13:00+00:00",
+   "next_recheck": "none scheduled (service not factory-managed)",
+   "status": "ISOLATED",
+   "type": "EXTERNAL"
+  }
+ ],
+ "experiment": {
+  "EXP-SUB-001": {
+   "state": "PROTECTED",
+   "window_close": "2026-10-02T03:00:00+00:00",
+   "reason": "live nostr kind:1 exposure probe (GF-B10-01); response = replies/intent",
+   "source": "data/nostr_sub_observation.json[window_closes] (live)"
+  }
+ },
+ "revenue_usd": 0
+}

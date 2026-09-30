@@ -46,5 +46,20 @@ class TestGate(unittest.TestCase):
             eo.retry_policy("PARTIAL", False, True)["decision"], "HOLD")
 
 
+class TestBudgetAndCircuit(unittest.TestCase):
+    def test_budget(self):
+        self.assertFalse(eo.retry_budget_exceeded(0))
+        self.assertFalse(eo.retry_budget_exceeded(2))
+        self.assertTrue(eo.retry_budget_exceeded(3))
+        self.assertTrue(eo.retry_budget_exceeded(99))
+
+    def test_circuit(self):
+        self.assertEqual(eo.circuit_check(0)["circuit"], "CLOSED")
+        self.assertEqual(eo.circuit_check(4)["circuit"], "CLOSED")
+        opened = eo.circuit_check(5)
+        self.assertEqual(opened["circuit"], "OPEN")
+        self.assertEqual(opened["action"], "HOLD")
+
+
 if __name__ == "__main__":
     unittest.main()
