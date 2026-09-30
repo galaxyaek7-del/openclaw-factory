@@ -1,2 +1,3 @@
 {"cycle": "V77-DEL", "source": "stackexchange/serverfault", "buyer_segment": "logistics-coordinators", "query": "automate freight tracking spreadsheet", "outcome": "RETURNED_0", "evidence_level": "E0", "detail": []}
 {"cycle": "AUTO-01", "source": "stackexchange/serverfault", "buyer_segment": "smb-ops-admins", "query": "automate employee onboarding offboarding", "outcome": "RETURNED_0", "evidence_level": "E0", "detail": []}
+{"cycle": "GF-NEXT-01", "source": "stackexchange/superuser", "buyer_segment": "smb-general", "query": "automate backup small business", "outcome": "RETURNED_1_OFFTOPIC", "evidence_level": "E0", "detail": "SSH passphrase question; irrelevant to backup-automation pain"}

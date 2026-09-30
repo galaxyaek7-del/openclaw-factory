@@ -38,6 +38,13 @@ def build_snapshot():
         snap["revenue_usd"] = fin.get("totalSales", 0)
     except Exception:
         snap["revenue_usd"] = "UNKNOWN"
+    try:
+        import gumroad_auth_watch
+        st = gumroad_auth_watch.read_state()
+        snap["gumroad_auth"] = st.get("status", "UNKNOWN")
+        snap["gumroad_auth_at"] = st.get("at", "UNKNOWN")
+    except Exception:
+        snap["gumroad_auth"] = "UNKNOWN"
     return snap
 
 
