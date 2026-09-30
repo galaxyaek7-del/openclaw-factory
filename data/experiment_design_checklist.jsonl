@@ -1,0 +1,13 @@
+{"number":1,"question":"What specific uncertainty are we trying to reduce?","reject_if":"Names a metric without the decision it would change"}
+{"number":2,"question":"Who is the intended buyer?","reject_if":"A demographic without a hangout or a hangout without a permitted path"}
+{"number":3,"question":"What actual problem does the offer address?","reject_if":"A problem evidenced only by the factory's own prose"}
+{"number":4,"question":"What evidence makes this audience relevant?","reject_if":"Assumed overlap stated as observed overlap"}
+{"number":5,"question":"Why is the selected channel permitted and reachable?","reject_if":"Credentials cited as permission, or reach assumed from liveness"}
+{"number":6,"question":"What action will genuinely expose the offer?","reject_if":"Preparation described as exposure"}
+{"number":7,"question":"What evidence will prove that exposure occurred?","reject_if":"Platform-side inference with no collectible record named"}
+{"number":8,"question":"What qualifies as a meaningful response?","reject_if":"Any engagement counts (likes/views without buying language)"}
+{"number":9,"question":"What result would weaken the hypothesis?","reject_if":"No falsification stated, or silence claimed as validation"}
+{"number":10,"question":"What is the observation window?","reject_if":"Open-ended or extendable without a documented reason"}
+{"number":11,"question":"What is the maximum permitted cost?","reject_if":"Any nonzero spend without explicit founder approval"}
+{"number":12,"question":"What founder approval, if any, is required?","reject_if":"Human-gated action presented as autonomous"}
+{"number":13,"question":"What will happen after each plausible result?","reject_if":"Only the success path planned"}

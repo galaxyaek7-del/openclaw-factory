@@ -1013,9 +1013,46 @@ def build_founder_command_center(decisions_path=None):
         "next_best_actions": _next_best_actions(founder_actions, ops, priority, opportunities),
         "commercial_validation": _commercial_validation(),
         "market_discovery": _market_discovery(),
+        "live_market_experiment": _live_market_experiment(),
         "technical_details": technical_details,
         "note": ("Reads authoritative company state only. Product count is inventory, "
                  "not success. Unknown stays visible as unknown."),
+    }
+
+
+def _live_market_experiment():
+    """V65 -- live market experiment at a glance. Cheap local reads only
+    (market_test_state + nostr exposure/observation + monitoring-log tail,
+    never a live relay query from a view): active experiment id, window,
+    last meaningful evidence event, known limitations, next authorized
+    action. Additive: no existing section touched. Missing files degrade
+    to an honest unknown, never a fabricated green."""
+    state = _read_json(_p("data/market_test_state.json"), {}) or {}
+    obs = _read_json(_p("data/nostr_sub_observation.json"), {}) or {}
+    exp = _read_json(_p("data/nostr_sub_exposure.json"), {}) or {}
+    mon_tail = _read_jsonl(_p("data/monitoring_log.jsonl"), limit=1)
+    last_mon = mon_tail[-1] if mon_tail else {}
+    relays = exp.get("relays", {}) or {}
+    if not state and not obs and not exp:
+        return {"state": "UNKNOWN",
+                "meaning": "Live experiment records unreadable -- no claim made either way."}
+    return {
+        "state": state.get("operating_state", "UNKNOWN"),
+        "experiment_id": state.get("active_test") or obs.get("experiment_id", "UNKNOWN"),
+        "offer": "GF-B10-01 subscription auto-renewal compliance (OPP-SUB-001)",
+        "window": "Opened %s; closes %s" % (
+            obs.get("window_opened", "unknown"), obs.get("window_closes", "unknown")),
+        "exposure": "Relay-accepted %s (%s)" % (
+            exp.get("accepted", "?"), ", ".join(sorted(relays)) if relays else "no relay record"),
+        "last_evidence_event": "%s -- nostr_responses=%s, errors=%s" % (
+            last_mon.get("ts", "no monitoring record"),
+            last_mon.get("nostr_responses", "?"), last_mon.get("errors", "?")),
+        "responses_to_date": obs.get("responses", "unknown"),
+        "limitations": ("Relay acceptance proves protocol delivery, not a human eyeball; "
+                        "per-asset views unmeasured; WTP entirely unknown for this probe."),
+        "next_authorized_action": ("Window-close read at %s, then classify per the post-window "
+                                   "paths; no new probe until this one closes."
+                                   % obs.get("window_closes", "scheduled close")),
     }
 
 
