@@ -4,12 +4,16 @@ STATUS UPDATE (2026-08-15, CTO+COO audit closure): the earlier "ARCHIVED
 (ADR-065)" framing below is now stale. GUMROAD_ACCESS_TOKEN IS set in .env
 and a REAL live product was created on the account 2026-08-14 (EU AI Act
 Compliance Toolkit, product id pzTmMb4v8cih3nbWTj5TeA==, short URL
-https://aekraft.gumroad.com/l/iaiyt, $155). What remains: the product is a
-DRAFT (enable_product needs the account's payment method connected —
-founder action), and the publish-protection state still shows
-has_ever_published_successfully:false because that out-of-band creation was
-never written to sales_ledger. Deprioritized-vs-SaaS remains the *priority*
-stance, but "never activated / token missing" is no longer true.
+https://aekraft.gumroad.com/l/iaiyt, $155). CORRECTION (2026-09-17, observed):
+the product is publicly visible (page renders, seller API published:true) --
+it is NOT a hidden draft. What remains unverified is purchasability
+(enable_product needs the account's payment method connected — founder
+action), and there is NO delete/archive endpoint anywhere in this
+integration, so every created product persists. The publish-protection
+state still shows has_ever_published_successfully:false because that
+out-of-band creation was never written to sales_ledger. Deprioritized-vs-SaaS
+remains the *priority* stance, but "never activated / token missing" is no
+longer true.
 
 "Archived" here means deprioritized and frozen, NOT deleted or physically
 relocated: 7+ real, already-tested modules (distributor.py,
@@ -125,6 +129,39 @@ class GumroadArm(BaseArm):
         try:
             token = gumroad_publisher.load_token()
             result = gumroad_publisher.update_product(token, product_id, updates)
+        except Exception as e:
+            return {"status": "ERROR", "platform": self.name, "error": str(e)}
+        return {"status": "OK", "platform": self.name, "product": result}
+
+    def enable_product(self, product_id):
+        """Publish a draft product so it becomes purchasable (PUT
+        /v2/products/:id/enable). Separated from publish()/create because
+        Gumroad requires a connected payment method on the account —
+        a founder action this factory can never perform itself. Returns
+        the same OK/ERROR/NOT_READY shape as update_product()."""
+        current_status = self.status()
+        if current_status is not ArmStatus.READY:
+            return {"status": "NOT_READY", "platform": self.name, "reason": current_status.value}
+        if not product_id:
+            return {"status": "ERROR", "platform": self.name, "error": "enable_product requires a product_id"}
+        try:
+            token = gumroad_publisher.load_token()
+            result = gumroad_publisher.enable_product(token, product_id)
+        except Exception as e:
+            return {"status": "ERROR", "platform": self.name, "error": str(e)}
+        return {"status": "OK", "platform": self.name, "product": result}
+
+    def get_product(self, product_id):
+        """Retrieve one product's live state (GET /v2/products/:id) —
+        the honest post-create/post-enable verification step."""
+        current_status = self.status()
+        if current_status is not ArmStatus.READY:
+            return {"status": "NOT_READY", "platform": self.name, "reason": current_status.value}
+        if not product_id:
+            return {"status": "ERROR", "platform": self.name, "error": "get_product requires a product_id"}
+        try:
+            token = gumroad_publisher.load_token()
+            result = gumroad_publisher.get_product(token, product_id)
         except Exception as e:
             return {"status": "ERROR", "platform": self.name, "error": str(e)}
         return {"status": "OK", "platform": self.name, "product": result}

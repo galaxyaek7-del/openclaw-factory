@@ -44,6 +44,11 @@ class ConfigError(Exception):
     pass
 
 
+# Last token successfully loaded via load_token() (env or .env file).
+# Used ONLY for error-message redaction — never logged.
+_LAST_LOADED_TOKEN = ""
+
+
 def _request_with_retry(method, url, **kwargs):
     """requests.request() wrapper that retries a transient failure (network
     error or 5xx response) up to _RETRY_ATTEMPTS times with linear backoff.
@@ -65,18 +70,32 @@ def _request_with_retry(method, url, **kwargs):
 
 
 def load_token(env_path=None):
+    global _LAST_LOADED_TOKEN
     env_path = Path(env_path) if env_path else DEFAULT_ENV_PATH
     token = os.environ.get("GUMROAD_ACCESS_TOKEN")
     if token:
-        return token
+        token = token.strip().strip("'\"")
+        if token:
+            _LAST_LOADED_TOKEN = token
+            return token
     if env_path.exists():
         with open(env_path, "r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
-                if line.startswith("GUMROAD_ACCESS_TOKEN"):
-                    value = line.split("=", 1)[1].strip()
-                    if value:
-                        return value
+                if not line or line.startswith("#"):
+                    continue
+                if line.startswith("export "):
+                    line = line[len("export "):].strip()
+                if not line.startswith("GUMROAD_ACCESS_TOKEN"):
+                    continue
+                _, _, value = line.partition("=")
+                value = value.strip().strip("'\"")
+                # Strip trailing inline comment ("token # comment").
+                if " #" in value:
+                    value = value.split(" #", 1)[0].strip().strip("'\"")
+                if value:
+                    _LAST_LOADED_TOKEN = value
+                    return value
     raise ConfigError(
         "GUMROAD_ACCESS_TOKEN not set. Get it from https://gumroad.com/settings/advanced"
     )
@@ -140,7 +159,14 @@ def _abort_upload(token, upload_id):
 
 def _upload_file(token, file_path):
     file_path = Path(file_path)
-    file_size = os.path.getsize(file_path)
+    if not file_path.exists() or not file_path.is_file():
+        raise ConfigError(f"product file not found: {file_path}")
+    try:
+        file_size = os.path.getsize(file_path)
+    except OSError as e:
+        raise ConfigError(f"cannot read product file size: {file_path} ({e})")
+    if file_size <= 0:
+        raise ConfigError(f"product file is empty (0 bytes): {file_path}")
 
     # 1. Presign
     r = _request_with_retry("POST", f"{GUMROAD_API_BASE}/files/presign",
@@ -203,20 +229,31 @@ def _upload_file(token, file_path):
     return data.get("file_url") or key
 
 def create_product(token, product_spec):
+    if not token or not str(token).strip():
+        raise ConfigError("create_product requires a non-empty token")
     file_path = product_spec.get("file_path")
     if not file_path:
         raise ConfigError("product_spec missing 'file_path'")
 
-    # Presign -> Upload -> Complete -> Get URL, then attach files[][url].
-    file_url = _upload_file(token, file_path)
-
     price_cents = product_spec.get("price_cents")
     if price_cents is None:
         raise ConfigError("product_spec missing 'price_cents'")
+    try:
+        price_cents = int(price_cents)
+    except (TypeError, ValueError):
+        raise ConfigError(f"product_spec 'price_cents' must be an integer, got {price_cents!r}")
+    if price_cents <= 0:
+        raise ConfigError(f"product_spec 'price_cents' must be > 0, got {price_cents}")
 
-    title = product_spec.get("title")
+    title = (product_spec.get("title") or "").strip() if isinstance(product_spec.get("title"), str) else product_spec.get("title")
     if not title:
         raise ConfigError("product_spec missing 'title'")
+
+    # Presign -> Upload -> Complete -> Get URL, then attach files[][url].
+    # File existence is validated inside _upload_file(); price/title are
+    # validated BEFORE any network call so a bad spec never starts an S3
+    # multipart session on Gumroad's side.
+    file_url = _upload_file(token, file_path)
 
     data = {
         "access_token": token,
@@ -240,7 +277,16 @@ def create_product(token, product_spec):
 def update_product(token, product_id, updates):
     if not product_id:
         raise ConfigError("update_product requires a product_id")
-    data = dict(updates)
+    # Form-encoding cannot carry arrays natively: Gumroad's API expects
+    # list fields as repeated `key[]` params (verified live: plain lists
+    # are rejected with "tags must be an array of strings"). Translate here
+    # so callers pass natural Python lists.
+    data = {}
+    for key, value in dict(updates).items():
+        if isinstance(value, list):
+            data[key + "[]"] = value
+        else:
+            data[key] = value
     data["access_token"] = token
     try:
         r = _request_with_retry("PUT", f"{GUMROAD_API_BASE}/products/{product_id}", data=data, timeout=60)
@@ -257,6 +303,13 @@ def enable_product(token, product_id):
     """Publish a draft product so it becomes purchasable (PUT
     /v2/products/:id/enable -- the real publish endpoint; the 'publish'
     field on PUT /v2/products/:id does NOT publish, it stays a draft).
+
+    CORRECTION (2026-09-17, observed): do NOT assume creates arrive as
+    hidden drafts. A live POST /v2/products creation returned
+    published:true with a publicly rendering page, so treat every created
+    product as publicly visible until proven otherwise. There is NO
+    delete/archive endpoint wired anywhere in this integration -- a
+    created product persists (dashboard-manual removal only).
 
     Gumroad's publishing requirements (official docs, verified 2026-08-14):
     user's email confirmed, at least one payment method connected, and
@@ -313,9 +366,15 @@ def _safe_err(exc):
     """Stringify a requests exception WITHOUT ever letting the access_token
     (present in the request URL/params/body) leak into an error message."""
     text = str(exc)
-    token = os.environ.get("GUMROAD_ACCESS_TOKEN", "")
-    if token and token in text:
-        text = text.replace(token, "***REDACTED***")
+    candidates = set()
+    env_token = os.environ.get("GUMROAD_ACCESS_TOKEN", "")
+    if env_token:
+        candidates.add(env_token.strip().strip("'\""))
+    if _LAST_LOADED_TOKEN:
+        candidates.add(_LAST_LOADED_TOKEN)
+    for token in candidates:
+        if token and token in text:
+            text = text.replace(token, "***REDACTED***")
     return text
 
 

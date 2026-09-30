@@ -270,7 +270,11 @@ def verify_program_from_official_source(opportunity_id: str,
             o["verification_status"] = "VERIFIED"
             o["evidence_url"] = [official_evidence_url] + list(o.get("evidence_url") or [])
             o["source"] = source_summary
-            o["last_verified"] = VERIFIED_AT
+            # Stamp the actual verification date, never the frozen VERIFIED_AT
+            # constant (which records the 2026-08-14 discovery pass and must
+            # stay untouched for the static NEWLY_VERIFIED_PROGRAMS dataset).
+            # A backdated fresh stamp would keep the record AGING forever.
+            o["last_verified"] = datetime.now(timezone.utc).date().isoformat()
             save_opportunity_portfolio(portfolio, path)
             return {
                 "opportunity_id": opportunity_id,

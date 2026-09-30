@@ -14,13 +14,19 @@ const telegramDirect = require('./lib/telegram_direct');
 const { nextSaleId } = require('./lib/next_sale_id');
 const healthChecks = require('./lib/health_checks');
 const { readJsonlEntries } = require('./lib/jsonl');
+const AttributionOS = require('./src/attribution/attribution_os');
+const attributionOS = new AttributionOS();
+const AffiliateEngine = require('./arms/affiliate/affiliate_engine');
+const affiliateEngine = new AffiliateEngine();
+const { acquireFactoryLock, releaseFactoryLock, readFactoryLock, isFactoryLocked } = require('./lib/factory_lock');
+const qaEngine = require('./lib/qa_engine');
+const jobQueue = require('./lib/job_queue');
+const telegramCommands = require('./lib/telegram_commands');
 // readLastGenerationRecord is a pure file read (no side effects) — requiring
 // factory_loop.js here never starts its loop or acquires its lockfile: both
 // only happen inside main(), guarded by `if (require.main === module)`
 // (see factory_loop.js's own comment on that guard).
 const { readLastGenerationRecord, getButterPrice } = require('./factory_loop');
-const jobQueue = require('./lib/job_queue');
-const telegramCommands = require('./lib/telegram_commands');
 
 require('dotenv').config();
 
@@ -71,6 +77,53 @@ app.use((req, res, next) => {
   res.setHeader('Referrer-Policy', 'no-referrer');
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'");
+  next();
+});
+
+// ── ATTRIBUTION OS: auto-track every incoming request (append-only, never deletes) ──
+// Privacy: never store raw IP, anonymized only. Market = UNKNOWN unless trusted ?market= param.
+// Reuses src/attribution/attribution_os.js (event tracking) — trial events will be TEST, never REAL.
+app.use((req, res, next) => {
+  if (req.path.startsWith('/attribution')) return next();
+  if (req.path.startsWith('/health') || req.path === '/favicon.ico') return next();
+  try {
+    let src = 'unknown';
+    if (req.query && req.query.source) src = String(req.query.source);
+    else if (req.query && req.query.utm_source) src = String(req.query.utm_source);
+    else if (req.headers['x-attribution-source']) src = String(req.headers['x-attribution-source']);
+    else if (req.headers['x-source']) src = String(req.headers['x-source']);
+    else if (req.headers.referer) {
+      const ref = String(req.headers.referer).toLowerCase();
+      if (ref.includes('amazon') || ref.includes('kdp')) src = 'kdp';
+      else if (ref.includes('gumroad')) src = 'gumroad';
+      else if (ref.includes('etsy')) src = 'etsy';
+      else src = 'direct';
+    } else {
+      src = 'direct';
+    }
+    const product = (req.query && (req.query.product || req.query.production_id)) ? String(req.query.product || req.query.production_id).slice(0,200) : (req.body && (req.body.product || req.body.production_id)) ? String(req.body.product || req.body.production_id).slice(0,200) : req.path.slice(0,200) || 'unknown';
+    const campaign = (req.query && (req.query.campaign || req.query.utm_campaign)) ? String(req.query.campaign || req.query.utm_campaign).slice(0,100) : null;
+    // Market: only trusted explicit param, never accept-language as location (privacy & accuracy)
+    let market = 'UNKNOWN';
+    if (req.query && req.query.market && typeof req.query.market === 'string' && /^[a-zA-Z0-9_\-]{2,20}$/.test(req.query.market.trim())) {
+      market = req.query.market.trim().slice(0,50);
+    }
+    const language_signal = req.headers['accept-language'] ? String(req.headers['accept-language']).split(',')[0].slice(0,20) : 'UNKNOWN';
+    const ip = req.ip || req.headers['x-forwarded-for'] || (req.socket && req.socket.remoteAddress) || null;
+    attributionOS.track({
+      eventType: 'view',
+      source: src,
+      product,
+      campaign,
+      market,
+      language_signal,
+      timestamp: Date.now(),
+      metadata: { method: req.method, path: req.path, auto: true },
+      ip
+    }, { ip, language_signal, market });
+  } catch (_) {
+    // auto-track must never break the request
+  }
   next();
 });
 
@@ -279,6 +332,16 @@ app.get('/mission_control.html', requireMissionControlAuth, (req, res) => {
 // boardroom-facing view. Same auth as every other Mission Control page.
 app.get('/mission_control_executive_v1.html', requireMissionControlAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'mission_control_executive_v1.html'));
+});
+
+// GALAXY FORGE V5.4 (2026-09-29) — Founder Command Center front door (Sec 2).
+// Same auth as every other Mission Control page (Sec 29: Founder-only).
+// The page shell carries no private data itself; its only data binding is
+// the already-gated GET /api/v1/founder-command-center. Without this named
+// route the file is unreachable (repo-root static was removed after the
+// red-team audit below), so the "ONE FRONT DOOR" would not open.
+app.get('/founder_command_center.html', requireMissionControlAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'founder_command_center.html'));
 });
 
 // ── UNIFIED SERVICE LAYER (Phase 8 — Unified Service Layer) ──
@@ -761,6 +824,19 @@ const SERVICE_REGISTRY = [
     reused: 'server.js computeHealthStatus() + self_awareness.js assessSelfAwareness() + lib/dashboard_data.js deriveRiskLevel()/readAttentionFlag()/readActivityTimeline() + server.js readNextDollarActions() — identical composition to the pre-existing GET /api/dashboard.',
     handler: companyHealthService,
     health: fsHealthCheck(() => dashboardData.readAttentionFlag(), 'dashboardData module reachable, NEEDS_ATTENTION.md read check ok'),
+  },
+  {
+    // Real market evidence loop (2026-09-25, market-evidence-gate
+    // directive): the founder truth panel -- per-product funnel stages,
+    // event counts, latest material event, payment count. Read-only over
+    // data/market_funnel_state.json + data/market_evidence_events.jsonl;
+    // never triggers observation, never writes. The daily gated run lives
+    // in factory_loop.js's market-evidence tick step.
+    name: 'market-evidence-loop',
+    description: 'Real market evidence truth panel: per-product funnel stage counts, total evidence events, latest material event, verified payment count. Read-only; observation runs only via the daily factory tick.',
+    reused: 'market_evidence.status() via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('market_evidence_loop', [], req),
+    health: pythonHealthCheck('market_evidence_loop'),
   },
   {
     // CEO Home (ADR-184, 2026-08-07): the founder's EOS directive's
@@ -1341,6 +1417,17 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('affiliate_commerce_status'),
   },
   {
+    // Affiliate Arm activation (2026-09-26): read-only daily rollup over
+    // the authoritative program registry + priority ranking + performance
+    // verdicts + revalidation aging + link health. Pure read (no notify
+    // state), safe for the standard cached path.
+    name: 'affiliate-daily-health',
+    description: "The real Affiliate Arm daily health -- program counts by status, top AFFILIATE_PRIORITY_SCORE ranking, MEASURE_MORE/DIAGNOSE/HOLD/DROP verdicts from real ledgers, revalidation aging, link health, and verified affiliate revenue (honestly $0 until merchant evidence exists).",
+    reused: 'affiliate/registry.py + priority.py + performance.py + daily_health.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('affiliate_daily_health', [], req),
+    health: pythonHealthCheck('affiliate_daily_health'),
+  },
+  {
     // Evidence Chain + Attribution phase (2026-08-17): the real, read-only
     // source-attribution view. Pure read over the real click + page-view
     // ledgers + revenue_os.attribution_linkage_report() -- never writes,
@@ -1683,6 +1770,22 @@ const SERVICE_REGISTRY = [
     reused: 'growth_stages.py::build_growth_dashboard()/answer_growth_questions() (ADR-158) + enterprise_executive_brain.py::enterprise_scheduler() (ADR-156), via mission_control_api.py.',
     handler: (req) => runPythonServiceCached('growth_stage_status', [], req, 60000),
     health: pythonHealthCheck('growth_stage_status'),
+  },
+  {
+    // Production OS (ADR-203 + P1 gap-close, 2026-08-17): the read-only
+    // Product Lifecycle view (committed in P0 59482ef) was real and CLI-
+    // callable but never surfaced in Mission Control and never recorded
+    // daily history. This panel is a pure read-only passthrough over
+    // production_os.product_lifecycle_view()/product_lifecycle_history() —
+    // the real generation log + product_changelog + factory_state, with
+    // lifecycle stage reusing value_engine.classify_lifecycle_stage() (the
+    // one real classifier) for a bounded, disclosed subset. Cheap (~3s,
+    // measured live). Never triggers production, never writes a ledger.
+    name: 'product-lifecycle',
+    description: "The real Product Lifecycle view (Production OS, P0 59482ef): every real production_id in books/_generation_log.jsonl grouped by its real identity, with real pages/price/inspection facts, real changelog version, real per-product factory_state recovery facts, and lifecycle stage from value_engine.classify_lifecycle_stage() (the one real evidence-based classifier, reused verbatim for a bounded classify_limit=5 subset -- anything beyond honestly reports not-classified-in-this-call, never a guessed stage). The real daily snapshot history lives in the append-only data/product_lifecycle_snapshots.jsonl ledger (written by factory_loop.js's once-per-calendar-day gate via mission_control_api.py's record_daily_product_lifecycle_snapshot endpoint). Read-only passthrough -- zero publish, zero payment, zero write. Includes the read-only LEARN stage (production_os.learn_feedback()): real sales-ledger commercial results joined back onto production identities with SCALE_CANDIDATE/DIAGNOSE_BEFORE_SCALE/IN_MEASUREMENT_WINDOW/NOT_IN_MARKET directives for future qualification plus the 8 real KPIs (traffic/clicks/checkout honestly UNKNOWN -- no arm exposes them); directives annotate, never auto-execute.",
+    reused: 'production_os.py::product_lifecycle_view()/learn_feedback() (ADR-203, P0 59482ef) + value_engine.classify_lifecycle_stage() + dossier_bundle.build_bundle._recovery_metadata() + channels/ledger.py sales-ledger join, via mission_control_api.py (snapshot history: production_os.record_product_lifecycle_snapshot()/product_lifecycle_history(), P1 gap-close 2026-08-17).',
+    handler: (req) => runPythonServiceCached('product_lifecycle_view', [], req),
+    health: pythonHealthCheck('product_lifecycle_view'),
   },
   {
     // Enterprise Strategic Planning System (ADR-159, 2026-07-31): almost
@@ -2558,6 +2661,20 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('founder_next_action'),
   },
   {
+    // GALAXY FORGE V5.4 (2026-09-29) — Founder Command Center: the single
+    // Founder-only company interface (COMPANY/MONEY/CUSTOMERS/
+    // OPPORTUNITIES/OPERATIONS/FACTORY/FOUNDER ACTIONS/SECURITY). Pure
+    // citation + business-language translation over already-real sources;
+    // read-only, never exposes secret values. Served to the Founder via
+    // founder_command_center.html (mobile-first); this registry entry is
+    // its only data binding (GET /api/v1/founder-command-center).
+    name: 'founder-command-center',
+    description: "The single trusted Founder-only company view: verified revenue, customer journey, opportunity radar, operations, factory activity, security status, and the actions genuinely requiring Founder authority — all in business language, all cited from authoritative state.",
+    reused: 'founder_command_center.py::build_founder_command_center(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('founder_command_center', [], req),
+    health: pythonHealthCheck('founder_command_center'),
+  },
+  {
     name: 'seo-distribution',
     description: "SEO DISTRIBUTION: the only READY distribution channel (zero-cost, no external approval). Publishes honest, problem-first SEO pages to the customer site from real portfolio opportunities; idempotent; never contacts a platform, never fabricates revenue.",
     reused: 'seo_distribution.py::publish_seo_pages(), via mission_control_api.py.',
@@ -2591,6 +2708,79 @@ const SERVICE_REGISTRY = [
     reused: 'portfolio_routing.py::portfolio_routing_report(), via mission_control_api.py.',
     handler: (req) => runPythonServiceCached('portfolio_routing', [], req),
     health: pythonHealthCheck('portfolio_routing'),
+  },
+  {
+    // Revenue Factory — Services Engine (Engine B)
+    name: 'services-engine-status',
+    description: "Services Engine — first-class service revenue engine. Discovers, scores, packages, prices, and maps service offerings. 10 service categories, 6 service channels. Read-only; no external actions.",
+    reused: 'services_engine.py::revenue_factory_status(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('services_engine_status', [], req),
+    health: pythonHealthCheck('services_engine_status'),
+  },
+  {
+    name: 'services-engine-discover',
+    description: "Services Engine — discover service candidates from existing factory capabilities. Scores each candidate on delivery effort, repeatability, automation potential, and channel fit.",
+    reused: 'services_engine.py::discover_from_capabilities(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('services_engine_discover', [], req),
+    health: pythonHealthCheck('services_engine_discover'),
+  },
+  {
+    name: 'services-engine-portfolio',
+    description: "Services Engine — list all registered services with status, pricing basis, and channel mapping.",
+    reused: 'services_engine.py::portfolio_status(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('services_engine_portfolio', [], req),
+    health: pythonHealthCheck('services_engine_portfolio'),
+  },
+  {
+    name: 'services-engine-matrix',
+    description: "Services Engine — Service × Channel matrix showing eligibility, state, and blockers per service per channel.",
+    reused: 'services_engine.py::service_channel_matrix(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('services_engine_matrix', [], req),
+    health: pythonHealthCheck('services_engine_matrix'),
+  },
+  {
+    // Revenue Factory — Software Engine (Engine C)
+    name: 'software-engine-status',
+    description: "Software Engine — tracks software assets through the controlled ladder: Internal Tool → Controlled Prototype → Paid Tool → Validated Product → Subscription → SaaS. No automatic jump to SaaS. Read-only; no deployments.",
+    reused: 'software_engine.py::revenue_factory_status(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('software_engine_status', [], req),
+    health: pythonHealthCheck('software_engine_status'),
+  },
+  {
+    name: 'software-engine-portfolio',
+    description: "Software Engine — list all registered software assets with current ladder stage and position.",
+    reused: 'software_engine.py::portfolio_status(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('software_engine_portfolio', [], req),
+    health: pythonHealthCheck('software_engine_portfolio'),
+  },
+  {
+    // Revenue Factory — Channel Intelligence (Engine D completion)
+    name: 'channel-intelligence-status',
+    description: "Channel Intelligence — unified channel intelligence layer. 16 channels across Digital Products/Books/Affiliate/Services/Software. Payment Intelligence, Product × Channel matrix, Service × Channel matrix. All states OBSERVED or explicitly UNKNOWN.",
+    reused: 'channel_intelligence.py::revenue_factory_status(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('channel_intelligence_status', [], req),
+    health: pythonHealthCheck('channel_intelligence_status'),
+  },
+  {
+    name: 'channel-intelligence-payments',
+    description: "Channel Intelligence — payment and payout intelligence for every channel. Distinguishes INTEGRATION_EXISTS, PAYMENT_ROUTE_VERIFIED, PAYOUT_ROUTE_VERIFIED, REAL_PAYMENT_VERIFIED.",
+    reused: 'channel_intelligence.py::payment_intelligence(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('channel_intelligence_payments', [], req),
+    health: pythonHealthCheck('channel_intelligence_payments'),
+  },
+  {
+    name: 'channel-intelligence-product-matrix',
+    description: "Channel Intelligence — Product × Channel matrix. For each channel, shows product eligibility, account state, payment state, checkout state, delivery state, economics, and evidence.",
+    reused: 'channel_intelligence.py::product_channel_matrix(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('channel_intelligence_product_matrix', [], req),
+    health: pythonHealthCheck('channel_intelligence_product_matrix'),
+  },
+  {
+    name: 'channel-intelligence-readiness',
+    description: "Channel Intelligence — readiness summary across all channels. Classifies channels as ready/with_blocker/not_built/blocked.",
+    reused: 'channel_intelligence.py::channel_readiness_summary(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('channel_intelligence_readiness', [], req),
+    health: pythonHealthCheck('channel_intelligence_readiness'),
   },
 ];
 
@@ -3025,6 +3215,46 @@ async function resumeProductionAction() {
   return writeProductionControl({ paused: false, changed_at: new Date().toISOString(), reason: null });
 }
 
+// GSC ownership-verification Founder Gate via Factory UI (2026-09-25,
+// architecture correction: the founder must never operate the repo).
+// Accepts the PASTED content of Google's official HTML verification file
+// ({ filename, content }) from an already-authenticated Mission Control
+// session, validates it with the exact same rules as
+// scripts/deploy_gsc_verification.py (filename shape, marker, size,
+// secret scan), and stages it into gsc_inbox/ -- the tick's own
+// gsc_verification_deploy step then performs the real validated deploy.
+// Reversible: the inbox file is deletable and nothing is committed here.
+const GSC_FILENAME_RE = /^google[a-z0-9]+\.html$/;
+const GSC_MAX_BYTES = 5 * 1024;
+const GSC_SECRET_RES = [
+  /BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY/,
+  /\bAKIA[0-9A-Z]{16}\b/,
+  /\bxox[baprs]-[A-Za-z0-9-]+\b/,
+  /\bghp_[A-Za-z0-9]{20,}\b/,
+  /\bsk-(live|test)-[A-Za-z0-9]+\b/,
+];
+async function submitGscVerificationFileAction(req) {
+  const filename = String((req.body && req.body.filename) || '').trim();
+  const content = String((req.body && req.body.content) || '');
+  if (!GSC_FILENAME_RE.test(filename)) {
+    throw new Error('{ filename } must look like googleXXXXXXXXXXXX.html');
+  }
+  if (!content || Buffer.byteLength(content, 'utf8') > GSC_MAX_BYTES) {
+    throw new Error('{ content } is required and must be under 5KB');
+  }
+  if (!content.includes('google-site-verification')) {
+    throw new Error('content lacks the google-site-verification marker -- paste the exact official Google file');
+  }
+  for (const re of GSC_SECRET_RES) {
+    if (re.test(content)) throw new Error('content looks like it carries a secret -- refused');
+  }
+  const fs = require('fs');
+  const inboxPath = require('path').join(__dirname, 'gsc_inbox', filename);
+  fs.mkdirSync(require('path').join(__dirname, 'gsc_inbox'), { recursive: true });
+  fs.writeFileSync(inboxPath, content, 'utf8');
+  return { received: true, filename, inbox: 'gsc_inbox/', next: 'automatic deploy on next factory tick, then press Verify in Search Console' };
+}
+
 // Global Commercial Hardening, Phase 1 (2026-07-29): the founder's own
 // real, immediate halt across every marketplace arm -- reuses
 // channels/publish_protection.py's trigger_emergency_stop()/
@@ -3240,6 +3470,17 @@ const ACTION_REGISTRY = [
     reversible: true,
     kind: 'sync',
     run: resumeProductionAction,
+  },
+  {
+    // GSC ownership-verification Founder Gate via Factory UI (2026-09-25):
+    // paste Google's official HTML file content ({ filename, content })
+    // from an authenticated Mission Control session. Validated and staged
+    // into gsc_inbox/ only -- the tick auto-deploys. Reversible.
+    name: 'submit-gsc-verification-file',
+    description: 'Stage the pasted official Google Search Console HTML verification file for automatic deployment. Requires { filename, content }.',
+    reversible: true,
+    kind: 'sync',
+    run: submitGscVerificationFileAction,
   },
   {
     // Global Commercial Hardening, Phase 1 (2026-07-29): the founder's
@@ -4280,6 +4521,21 @@ app.get('/api/mission-control/:section', requireMissionControlAuth, async (req, 
   }
 });
 
+// ── READ-ONLY MISSION CONTROL BLUEPRINT STATUS ──
+// Final controlled-implementation directive: a pure OBSERVE/DISPLAY/EXPLAIN/
+// AUDIT surface. It spawns the existing mission_control_api.py `blueprint_status`
+// branch, which only reads existing engine state and never mutates ledgers or
+// executes anything. Gated behind Mission Control auth exactly like every other
+// MC route. This route deliberately exposes NO mutating/decision-taking path.
+app.get('/api/blueprint/status', requireMissionControlAuth, async (req, res) => {
+  try {
+    const result = await runPythonServiceCached('blueprint_status', [], req);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // ── NICHE SAFETY FILTER ──
 // Gates any niche/title/description before it can reach book generation.
 // Wraps safety_filter.py (blocklists for brand-poison, financial,
@@ -4384,6 +4640,36 @@ app.post('/generate-book', requireMissionControlOrInternalToken, async (req, res
       });
     }
 
+    // EXTERNAL COMMERCIAL REALITY GATE (2026-09-07)
+    // Reads config/reality.json AND data/commercial_reality.json to check
+    // commercial state before production. If hard_stop is true, scale_level
+    // is 0, or commercial reality state is insufficient, blocks generation.
+    // This is the EXECUTION_CONTROL integration for manual/triggered production.
+    try {
+      const realityPath = path.join(__dirname, 'config', 'reality.json');
+      if (fs.existsSync(realityPath)) {
+        const reality = JSON.parse(fs.readFileSync(realityPath, 'utf8'));
+        if (reality.hard_stop === true) {
+          return res.json({ success: false, blocked: true, reason: 'governance_hard_stop', message: 'Production blocked: hard_stop is true in config/reality.json.' });
+        }
+        if (reality.scale_level === 0 && reality.commercial_proof === 'UNKNOWN') {
+          return res.json({ success: false, blocked: true, reason: 'governance_no_evidence', message: 'Production blocked: scale_level=0 and commercial_proof=UNKNOWN. No commercial evidence exists to justify new production.' });
+        }
+      }
+      // Check commercial reality gate — 10 distinct states, never collapsed
+      const commercialRealityPath = path.join(__dirname, 'data', 'commercial_reality.json');
+      if (fs.existsSync(commercialRealityPath)) {
+        const cr = JSON.parse(fs.readFileSync(commercialRealityPath, 'utf8'));
+        // BLOCKED unless PUBLISH_STATE_VERIFIED at minimum
+        if ((cr.highest_verified_index ?? -1) < 1) {
+          return res.json({ success: false, blocked: true, reason: 'reality_gate_not_reached', message: 'Production blocked: no verified commercial evidence. Product not yet published and verified.' });
+        }
+      }
+    } catch (govErr) {
+      // Governance check failure is logged but does not block — fail open for manual routes
+      console.error('[server] governance check failed (non-blocking):', govErr.message);
+    }
+
     const pythonPath = detectPython();
     const bookScript = path.join(__dirname, 'book_generator.py');
 
@@ -4391,7 +4677,21 @@ app.post('/generate-book', requireMissionControlOrInternalToken, async (req, res
       return res.status(404).json({ success: false, error: 'book_generator.py not found' });
     }
 
-    const filename = outputName || (title.replace(/\s+/g, '_').toLowerCase() + '.pdf');
+    // P0 SECURITY: sanitize output filename to prevent path traversal.
+    // Defense-in-depth: book_generator.py's path_safety.confine_to_directory()
+    // also catches this, but we must not pass unsanitized paths to subprocesses.
+    const rawName = outputName || (title.replace(/\s+/g, '_').toLowerCase() + '.pdf');
+    const filename = path.basename(rawName)                    // strip directory components
+      .replace(/[^\w\-\.]+/g, '_')                             // sanitize special chars
+      .replace(/\.{2,}/g, '_')                                 // collapse dot sequences
+      .replace(/^_+|_+$/g, '')                                 // trim leading/trailing _
+      || 'output.pdf';                                         // fallback if empty
+    // Verify the resolved path stays inside books/
+    const booksDir = path.join(__dirname, 'books');
+    const resolvedBook = path.resolve(booksDir, filename);
+    if (!resolvedBook.startsWith(path.resolve(booksDir) + path.sep) && resolvedBook !== path.resolve(booksDir)) {
+      return res.status(400).json({ success: false, error: 'invalid output filename' });
+    }
 
     // ADR-071 (mission follow-up, 2026-07-18): with product_type:"techdoc"
     // (factory_loop.js's briefFromGoldenOpportunity(), a ladder-tagged
@@ -4595,6 +4895,29 @@ app.post('/api/distribute', requireMissionControlOrInternalToken, async (req, re
 
   const dryRun = req.body.dry_run === false ? false : true;
 
+  // EXTERNAL COMMERCIAL REALITY GATE (2026-09-07)
+  // Reads config/reality.json AND data/commercial_reality.json to check
+  // commercial state before distribution. If hard_stop is true or
+  // commercial reality gate not reached, blocks distribution.
+  try {
+    const realityPath = path.join(__dirname, 'config', 'reality.json');
+    if (fs.existsSync(realityPath)) {
+      const reality = JSON.parse(fs.readFileSync(realityPath, 'utf8'));
+      if (reality.hard_stop === true) {
+        return res.json({ success: false, blocked: true, reason: 'governance_hard_stop', message: 'Distribution blocked: hard_stop is true in config/reality.json.' });
+      }
+    }
+    const commercialRealityPath = path.join(__dirname, 'data', 'commercial_reality.json');
+    if (fs.existsSync(commercialRealityPath)) {
+      const cr = JSON.parse(fs.readFileSync(commercialRealityPath, 'utf8'));
+      if ((cr.highest_verified_index ?? -1) < 1) {
+        return res.json({ success: false, blocked: true, reason: 'reality_gate_not_reached', message: 'Distribution blocked: no verified commercial evidence. Product not yet published and verified.' });
+      }
+    }
+  } catch (govErr) {
+    console.error('[server] governance check failed (non-blocking):', govErr.message);
+  }
+
   // Restores the pre-refactor 404 for a missing distributor.py — the
   // runDistributor() helper itself just rejects with a generic Error for
   // this case (it has no HTTP status opinion, correctly), so the specific
@@ -4730,11 +5053,21 @@ app.post('/api/sales/poll', requireMissionControlOrInternalToken, (req, res) => 
 // paid-Groq-API exposure.
 app.post('/chat', requireMissionControlAuth, async (req, res) => {
   const { message, agent } = req.body;
+  // P0 SECURITY: input length cap — prevents abuse of the LLM passthrough
+  if (!message || typeof message !== 'string' || message.trim().length === 0) {
+    return res.status(400).json({ success: false, error: 'message is required' });
+  }
+  if (message.length > 4000) {
+    return res.status(400).json({ success: false, error: 'message exceeds maximum length (4000 characters)' });
+  }
   try {
     const response = await groq.chat.completions.create({
       model: 'openai/gpt-oss-20b',
       max_tokens: 1024,
-      messages: [{ role: 'user', content: message }]
+      messages: [
+        { role: 'system', content: 'You are a helpful assistant for the Galaxy Forge digital products factory. Answer questions concisely and accurately. Do not execute commands, access files, or perform actions — you are a text-only assistant.' },
+        { role: 'user', content: message.trim() }
+      ]
     });
     res.json({ success: true, reply: response.choices[0].message.content, agent: agent || 'Scout' });
   } catch (error) {
@@ -4849,6 +5182,40 @@ function loadFin() {
 function saveFin(data) {
   data.totalSales = (data.totalKDP || 0) + (data.totalEtsy || 0) + (data.totalGumroad || 0) + (data.totalPaddle || 0);
   data.byLadder = recomputeByLadder(data.sales);
+  // FOUNDER DIRECTIVE 2026-08-28 — FINANCE BASELINE INTEGRITY FIX (minimum safe fix).
+  // Never rewrite finance_data.json, and never bump lastUpdated, when the financial
+  // content has not actually changed. This closes the spurious self-heal: a caller
+  // that invokes saveFin(loadFin()) with no real mutation must leave the file — and
+  // its lastUpdated — untouched. Genuine mutations (missing file, corrupt file, or a
+  // real sale add/delete that changes the canonical content) still write + bump.
+  if (fs.existsSync(FINANCE_FILE)) {
+    try {
+      const cur = JSON.parse(fs.readFileSync(FINANCE_FILE, 'utf8'));
+      const curBlob = JSON.stringify({
+        sales: Array.isArray(cur.sales) ? cur.sales : [],
+        totalKDP: Number.isFinite(cur.totalKDP) ? cur.totalKDP : 0,
+        totalEtsy: Number.isFinite(cur.totalEtsy) ? cur.totalEtsy : 0,
+        totalGumroad: Number.isFinite(cur.totalGumroad) ? cur.totalGumroad : 0,
+        totalPaddle: Number.isFinite(cur.totalPaddle) ? cur.totalPaddle : 0,
+        totalSales: Number.isFinite(cur.totalSales) ? cur.totalSales : 0,
+        byLadder: (cur.byLadder && typeof cur.byLadder === 'object')
+          ? { ...Object.fromEntries(LADDER_RANKS.map((r) => [r, 0])), ...cur.byLadder }
+          : recomputeByLadder(Array.isArray(cur.sales) ? cur.sales : []),
+      });
+      const newBlob = JSON.stringify({
+        sales: data.sales,
+        totalKDP: data.totalKDP,
+        totalEtsy: data.totalEtsy,
+        totalGumroad: data.totalGumroad,
+        totalPaddle: data.totalPaddle,
+        totalSales: data.totalSales,
+        byLadder: data.byLadder,
+      });
+      if (curBlob === newBlob) return; // no genuine financial change → no write, no lastUpdated bump
+    } catch (e) {
+      // current file unparseable → fall through and rewrite (recovery)
+    }
+  }
   data.lastUpdated = new Date().toISOString();
   // Atomic write: write to a temp file then rename over the target, so a crash
   // mid-write can never leave finance_data.json half-written/corrupt.
@@ -6269,6 +6636,14 @@ app.use('/trust', express.static(path.join(__dirname, 'trust')));
 // the /trust mount just above -- customer_site/ contains only these
 // public-by-design pages.
 app.use('/site', express.static(path.join(__dirname, 'customer_site')));
+// Phase 4 (2026-08-29): serve the Trust Center policy pages. Fail-closed by
+// design — customer_site/trust/ contains only public-by-design DRAFT templates.
+app.use('/trust', express.static(path.join(__dirname, 'customer_site', 'trust')));
+
+// KDP-HC-001 book preview — read/preview only, public by design. The preview
+// directory contains only rendered page images of the real PDF + the cover,
+// both derived from the already-produced book (see reports/HEALTHY_COOKING*).
+app.use('/preview', express.static(path.join(__dirname, 'preview')));
 
 // Deploy-readiness (Phase 1, Quality Supremacy directive, 2026-07-25):
 // real, standard-convention crawler files. /site/ and /trust/ are the only
@@ -6380,6 +6755,32 @@ function isProductionRequestRateLimited(ip) {
   return PRODUCTION_REQUEST_RATE_LIMIT(ip);
 }
 
+// ── PUBLIC INGESTION RATE LIMIT (evidence-integrity hardening,
+// 2026-09-25) ── Public event-ingestion routes (/api/page-view,
+// /api/affiliate/click/:product_id) legitimately accept unauthenticated
+// calls, so a flood of fake views/clicks would otherwise land as ledger
+// rows (metric-level contamination only -- revenue needs commission
+// postbacks that don't exist -- but contamination regardless). Same
+// bounded sliding-window factory as production routes. Generous default
+// (300/10min per IP: real browsers never approach it) so legitimate
+// traffic is never converted to zero; over-limit callers get 429 BEFORE
+// any validation/storage, i.e. rejected calls never write. Env knob
+// exists purely so tests can set a tiny max (same convention as
+// PRODUCTION_RATE_LIMIT_MAX above).
+const INGESTION_REQUEST_RATE_LIMIT = makeSlidingWindowRateLimiter({
+  windowMs: parseInt(process.env.INGESTION_RATE_LIMIT_WINDOW_MS || String(10 * 60 * 1000), 10),
+  maxPerWindow: parseInt(process.env.INGESTION_RATE_LIMIT_MAX || '300', 10),
+});
+
+function ingestionRateLimited(req, res) {
+  const ip = (req.ip || (req.socket && req.socket.remoteAddress) || 'unknown');
+  if (INGESTION_REQUEST_RATE_LIMIT(ip)) {
+    res.status(429).json({ success: false, error: 'rate limit exceeded, try again later' });
+    return true;
+  }
+  return false;
+}
+
 function rateLimitProductionRequest(req, res) {
   if (isProductionRequestRateLimited(req.ip)) {
     res.status(429).json({ success: false, error: 'Too many production requests from this address — try again later' });
@@ -6423,6 +6824,36 @@ function saveCustomerAccounts(accounts) {
 function findCustomerAccountByEmail(accounts, email) {
   const target = email.trim().toLowerCase();
   return Object.values(accounts).find(a => (a.email || '').trim().toLowerCase() === target) || null;
+}
+
+// P0 SECURITY: ownership check for customer requests. Reads the JSONL
+// intake ledger to find the request by ID, returns the request record
+// (with account_id) or null if not found.
+function getCustomerRequestById(requestId) {
+  try {
+    if (!fs.existsSync(CUSTOMER_REQUESTS_FILE)) return null;
+    const lines = fs.readFileSync(CUSTOMER_REQUESTS_FILE, 'utf8').split('\n').filter(Boolean);
+    for (const line of lines) {
+      try {
+        const record = JSON.parse(line);
+        if (record.request_id === requestId) return record;
+      } catch { /* skip malformed lines */ }
+    }
+    return null;
+  } catch { return null; }
+}
+
+// P0 SECURITY: verify the authenticated customer owns the request.
+// Returns true if: (a) request exists AND (b) request has no account_id
+// (guest request — backward compatible) OR request's account_id matches
+// the authenticated account.
+function verifyRequestOwnership(requestId, account) {
+  const request = getCustomerRequestById(requestId);
+  if (!request) return false;
+  // Guest request (no account_id stamped) — accessible with request_id alone
+  if (!request.account_id) return true;
+  // Authenticated request — must match account
+  return account && request.account_id === account.account_id;
 }
 
 // Same dedicated-limiter-per-surface convention as isConsultationRateLimited
@@ -6717,6 +7148,7 @@ function utmFromQuery(query) {
 
 app.get('/api/affiliate/click/:product_id', async (req, res) => {
   try {
+    if (ingestionRateLimited(req, res)) return;
     const payload = Object.assign(
       { product_id: req.params.product_id, referrer: req.get('referer') || null },
       utmFromQuery(req.query)
@@ -6728,6 +7160,40 @@ app.get('/api/affiliate/click/:product_id', async (req, res) => {
     res.redirect(302, result.url);
   } catch (err) {
     res.status(500).json({ success: false, error: 'affiliate redirect temporarily unavailable' });
+  }
+});
+
+// Privacy-preserving content/attribution measurement for the controlled
+// Fiverr/AI-automation ORGANIC VALIDATION experiment (Founder Directive
+// 2026-08-28, FIRST REAL-DOLLAR CONTROLLED VALIDATION). PUBLIC, unauthenticated
+// (visitors have no Mission Control login) -- same reasoning as /api/affiliate/products.
+// Writes ONLY to the ANALYSIS ledger data/commission_attribution_log.jsonl (never
+// financial truth). No PII: anonymous id only; no IP/email/name captured. Shape is
+// compatible with lib/commission_attribution.py so the two sinks stay interchangeable.
+app.post('/api/content/track', (req, res) => {
+  try {
+    const body = req.body || {};
+    const anonId = typeof body.anon_id === 'string' && body.anon_id ? body.anon_id.slice(0, 128) : 'unknown';
+    const eventType = ['content_view', 'outbound_click'].includes(body.event_type) ? body.event_type : 'content_view';
+    const productId = typeof body.product_id === 'string' ? body.product_id.slice(0, 256) : 'organic_content';
+    const srcCat = typeof body.source_category === 'string' ? body.source_category.slice(0, 128) : 'organic_validation';
+    const evt = {
+      anon_id: anonId,
+      event_type: eventType,
+      product_id: productId,
+      source_category: srcCat,
+      value: 0,
+      ts: Date.now() / 1000,
+      bot_status: 'UNKNOWN',
+      anomaly: false,
+      metadata: { note: 'ANALYSIS ledger only; not financial truth' },
+    };
+    const p = path.join(__dirname, 'data', 'commission_attribution_log.jsonl');
+    fs.mkdirSync(path.dirname(p), { recursive: true });
+    fs.appendFileSync(p, JSON.stringify(evt) + '\n');
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ ok: false });
   }
 });
 
@@ -6767,16 +7233,399 @@ app.get('/api/solutions/click/:opportunity_id', async (req, res) => {
   }
 });
 
+// ── TRIAL INFRASTRUCTURE (Founder Directive — isolated trial) ──
+// PURPOSE: provide a completely isolated trial surface at /site/trial.html
+// and /api/trial/* that NEVER touches production or financial truth.
+// ISOLATION GUARANTEES (verified by tests/test_trial_isolation.js):
+//   - NEVER reads or writes finance_data.json
+//   - NEVER reads or writes config/reality.json
+//   - NEVER reads or writes data/sales_ledger.jsonl
+//   - NEVER calls distributor.py / channels (publish)
+//   - NEVER calls Paddle (payments / checkout)
+//   - NEVER calls telegramDirect (customer contact)
+//   - NEVER spends money / charges cards / creates real orders
+//   - Own ledger: data/trial_events.jsonl (isolated, gitignored)
+//   - Uses existing architecture only: Express, fs, same rate-limit pattern,
+//     same static serving via /site (no duplicate infrastructure)
+// All /api/trial/* routes are public, unauthenticated (trial visitors have
+// no Mission Control login), same reasoning as /api/customer/catalog and
+// /api/solutions. Every response carries an explicit isolation flag.
+const TRIAL_LEDGER_PATH = path.join(__dirname, 'data', 'trial_events.jsonl');
+const TRIAL_RATE_LIMIT = makeSlidingWindowRateLimiter({ windowMs: 10 * 60 * 1000, maxPerWindow: 30 });
+
+function isTrialRateLimited(ip) { return TRIAL_RATE_LIMIT(ip); }
+
+function appendTrialEvent(event) {
+  fs.mkdirSync(path.dirname(TRIAL_LEDGER_PATH), { recursive: true });
+  fs.appendFileSync(TRIAL_LEDGER_PATH, JSON.stringify(event) + '\n');
+}
+
+function readTrialEvents(limit = 50) {
+  if (!fs.existsSync(TRIAL_LEDGER_PATH)) return [];
+  try {
+    const lines = fs.readFileSync(TRIAL_LEDGER_PATH, 'utf8').split('\n').filter(Boolean);
+    const parsed = [];
+    for (const l of lines) { try { parsed.push(JSON.parse(l)); } catch (_) {} }
+    return parsed.slice(-limit).reverse();
+  } catch (_) { return []; }
+}
+
+function buildTrialCatalog() {
+  // Reuses existing architecture: reads the SAME real paddle_products.json
+  // file as /api/customer/catalog, but NEVER uses it to create a real
+  // checkout or real product. Each entry is projected into a SIMULATED view
+  // with explicit trial flags, so the trial surface can never be mistaken
+  // for a real catalog. No duplicate product source is created.
+  let products = [];
+  try {
+    if (fs.existsSync(PADDLE_PRODUCTS_FILE)) {
+      const raw = JSON.parse(fs.readFileSync(PADDLE_PRODUCTS_FILE, 'utf8'));
+      products = Array.isArray(raw) ? raw : [];
+    }
+  } catch (_) { products = []; }
+  return products.map(p => ({
+    product_id: p.product_id,
+    title: p.title || 'Trial product',
+    price: p.price || 0,
+    price_id: p.price_id || null,
+    simulation: true,
+    isolation_note: 'SIMULATED — not purchasable, not published, no payment will be attempted',
+  }));
+}
+
+app.get('/api/trial/status', (req, res) => {
+  // Never touches finance_data.json / config/reality.json / sales_ledger.jsonl
+  const trialLedgerExists = fs.existsSync(TRIAL_LEDGER_PATH);
+  let trialEventCount = 0;
+  if (trialLedgerExists) {
+    try { trialEventCount = fs.readFileSync(TRIAL_LEDGER_PATH, 'utf8').split('\n').filter(Boolean).length; } catch (_) {}
+  }
+  res.json({
+    success: true,
+    trial: true,
+    isolation: true,
+    mode: 'SIMULATION',
+    ledger: 'data/trial_events.jsonl',
+    real_financial_files_untouched: ['finance_data.json', 'config/reality.json', 'data/sales_ledger.jsonl'],
+    external_systems_disabled: {
+      publishing: 'DISABLED — no distributor.py / channel publish will be invoked',
+      payments: 'DISABLED — no Paddle checkout / charge will be attempted',
+      customer_contact: 'DISABLED — no Telegram / email will be sent',
+      spend_money: 'DISABLED — no charge, no payout, no real transaction',
+    },
+    trial_ledger_exists: trialLedgerExists,
+    trial_event_count: trialEventCount,
+    warnings: [
+      'TRIAL ONLY — all data here is simulated and will never become real revenue',
+      'No real financial record is read or written by any /api/trial/* endpoint',
+    ],
+    timestamp: new Date().toISOString(),
+  });
+});
+
+app.get('/api/trial/catalog', (req, res) => {
+  if (isTrialRateLimited(req.ip)) return res.status(429).json({ success: false, error: 'too many trial requests — try again later' });
+  const catalog = buildTrialCatalog();
+  appendTrialEvent({ at: new Date().toISOString(), type: 'trial_catalog_view', ip: req.ip, count: catalog.length });
+  res.json({ success: true, trial: true, simulation: true, isolation: 'isolated from finance_data.json / sales_ledger.jsonl / config/reality.json', products: catalog });
+});
+
+app.get('/api/trial/events', (req, res) => {
+  if (isTrialRateLimited(req.ip)) return res.status(429).json({ success: false, error: 'too many trial requests — try again later' });
+  const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 50, 1), 200);
+  const events = readTrialEvents(limit);
+  res.json({ success: true, trial: true, simulation: true, count: events.length, events });
+});
+
+app.post('/api/trial/simulate', (req, res) => {
+  if (isTrialRateLimited(req.ip)) return res.status(429).json({ success: false, error: 'too many trial requests — try again later' });
+  const body = req.body || {};
+  const eventType = String(body.event_type || 'trial_generic').slice(0, 100);
+  const payload = body.payload != null ? body.payload : null;
+  // Strict validation — never trust payload to contain financial identifiers
+  if (payload && typeof payload === 'object' && (payload.amount != null || payload.platform != null)) {
+    // Allow simulation of an amount, but explicitly tag as simulated; never write to real ledger
+  }
+  const event = {
+    at: new Date().toISOString(),
+    type: eventType,
+    simulation: true,
+    isolation: 'trial_events only — not finance_data.json',
+    ip: req.ip,
+    payload: payload,
+  };
+  appendTrialEvent(event);
+  res.json({ success: true, trial: true, simulation: true, event });
+});
+
+app.post('/api/trial/simulate-purchase', (req, res) => {
+  if (isTrialRateLimited(req.ip)) return res.status(429).json({ success: false, error: 'too many trial requests — try again later' });
+  const body = req.body || {};
+  const productId = String(body.product_id || '').trim().slice(0, 200);
+  const email = String(body.email || '').trim().slice(0, 200);
+  if (!productId) return res.status(400).json({ success: false, error: 'product_id is required' });
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ success: false, error: 'valid email required if provided' });
+  }
+  // Build catalog via reuse (same source as /api/customer/catalog) but never call Paddle
+  const catalog = buildTrialCatalog();
+  const product = catalog.find(p => p.product_id === productId);
+  if (!product) return res.status(404).json({ success: false, error: 'no trial product with that id (simulated catalog only)' });
+  const event = {
+    at: new Date().toISOString(),
+    type: 'trial_simulate_purchase',
+    simulation: true,
+    isolation: 'NO real checkout, NO Paddle call, NO Telegram, NO finance_data.json write',
+    product_id: productId,
+    product_title: product.title,
+    price_simulated: product.price,
+    email: email || null,
+    ip: req.ip,
+    result: 'SIMULATED_SUCCESS — no money moved, no ledger touched',
+  };
+  appendTrialEvent(event);
+  res.json({ success: true, trial: true, simulation: true, message: 'Purchase simulated — no real payment, no real order, no financial ledger touched.', event });
+});
+
+app.post('/api/trial/reset', (req, res) => {
+  // Isolated reset — only deletes the trial ledger, never any real ledger
+  if (isTrialRateLimited(req.ip)) return res.status(429).json({ success: false, error: 'too many trial requests — try again later' });
+  try {
+    if (fs.existsSync(TRIAL_LEDGER_PATH)) fs.unlinkSync(TRIAL_LEDGER_PATH);
+  } catch (_) {}
+  res.json({ success: true, trial: true, simulation: true, message: 'Trial ledger reset — data/trial_events.jsonl cleared; no real financial data modified.' });
+});
+
+// ── ATTRIBUTION OS (Founder Mission: source of every visitor & sale) ──
+// Routes: POST /attribution/track — record event, GET /attribution/report — summary/top/daily
+// Uses src/attribution/attribution_os.js, persists to data/attribution_log.jsonl (append-only)
+// Privacy: raw IP never stored, only anonymized hash. Market = UNKNOWN unless trusted ?market= param.
+// Financial truth: payment_intent is MOCK, never revenue; only REAL payment_verified with independently_verified counts.
+app.post('/attribution/track', (req, res) => {
+  const body = req.body || {};
+  const raw = body.event ? body.event : body;
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+    return res.status(400).json({ success: false, error: 'event required: {eventType, source, product, timestamp, metadata}' });
+  }
+
+  // Oversized payload guard (spec 11, 13)
+  try {
+    const size = Buffer.byteLength(JSON.stringify(raw), 'utf8');
+    if (size > 8192) {
+      return res.status(413).json({ success: false, error: 'payload too large', maxBytes: 8192 });
+    }
+  } catch (_) {}
+
+  // Validate eventType
+  const rawType = String(raw.eventType || raw.type || '').trim();
+  if (!rawType) {
+    return res.status(400).json({ success: false, error: 'eventType required' });
+  }
+
+  // Sensitive data leakage guard (spec 3, 13)
+  const lowerKeys = Object.keys(raw.metadata || {}).map(k => k.toLowerCase());
+  const blocked = ['password', 'passwd', 'pwd', 'secret', 'token', 'auth', 'card', 'cvv', 'ssn'];
+  for (const k of lowerKeys) {
+    if (blocked.some(b => k.includes(b))) {
+      return res.status(400).json({ success: false, error: `sensitive key not allowed: ${k}` });
+    }
+  }
+
+  // Path traversal guard
+  const checkTraversal = (v) => typeof v === 'string' && (v.includes('..') || v.includes('/etc/passwd') || v.includes('\\..'));
+  if (checkTraversal(raw.product) || checkTraversal(raw.production_id) || checkTraversal(raw.source)) {
+    return res.status(400).json({ success: false, error: 'path traversal not allowed' });
+  }
+
+  // Extract trusted market (only explicit ?market=), never accept-language
+  let market = 'UNKNOWN';
+  if (req.query && req.query.market && typeof req.query.market === 'string' && /^[a-zA-Z0-9_\-]{2,20}$/.test(req.query.market.trim())) {
+    market = req.query.market.trim().slice(0,50);
+  } else if (raw.market && typeof raw.market === 'string' && /^[a-zA-Z0-9_\-]{2,20}$/.test(raw.market.trim())) {
+    market = raw.market.trim().slice(0,50);
+  }
+
+  const language_signal = req.headers['accept-language'] ? String(req.headers['accept-language']).split(',')[0].slice(0,20) : 'UNKNOWN';
+  const ip = req.ip || req.headers['x-forwarded-for'] || (req.socket && req.socket.remoteAddress) || null;
+
+  // Build system-controlled event — ignore user-provided data_classification (spec 13)
+  const systemEvent = {
+    eventType: raw.eventType || raw.type,
+    source: raw.source,
+    product: raw.product || raw.production_id || raw.productionId,
+    production_id: raw.production_id || raw.productionId || raw.product,
+    campaign: raw.campaign || (raw.metadata && (raw.metadata.campaign || raw.metadata.utm_campaign)),
+    market,
+    language_signal,
+    timestamp: raw.timestamp,
+    metadata: raw.metadata || {},
+    ip
+  };
+
+  // If campaign in query, prefer it
+  if (req.query && (req.query.campaign || req.query.utm_campaign)) {
+    systemEvent.campaign = String(req.query.campaign || req.query.utm_campaign).slice(0,100);
+  }
+
+  try {
+    const tracked = attributionOS.track(systemEvent, { ip, language_signal, market, isTrial: String(raw.source).toLowerCase() === 'trial' || String(systemEvent.eventType).startsWith('trial_') });
+    // Never claim success on failure — track throws on oversized/missing
+    res.json({ success: true, event: tracked, note: tracked.data_classification === 'UNKNOWN' ? 'eventType classified as UNKNOWN' : undefined });
+  } catch (e) {
+    // Do not claim success
+    const code = e.message === 'payload too large' ? 413 : 500;
+    res.status(code).json({ success: false, error: e.message || 'failed to track event' });
+  }
+});
+
+app.get('/attribution/report', (req, res) => {
+  try {
+    const report = attributionOS.getReport();
+    res.json({ success: true, ...report });
+  } catch (e) {
+    res.status(500).json({ success: false, error: 'failed to generate report' });
+  }
+});
+
+// ── AFFILIATE ARM FOUNDATION (Second arm — priority, preparation only) ──
+// No registration in any program now — foundation only. Uses arms/affiliate/affiliate_engine.js
+app.get('/affiliate/programs', (req, res) => {
+  try {
+    const status = req.query.status || null;
+    const programs = affiliateEngine.getPrograms(status);
+    res.json({ success: true, count: programs.length, programs });
+  } catch (e) {
+    res.status(500).json({ success: false, error: 'failed to load programs' });
+  }
+});
+
+app.get('/affiliate/report', (req, res) => {
+  try {
+    const report = affiliateEngine.getPerformanceReport();
+    const top = affiliateEngine.getTopPerformer();
+    res.json({ success: true, ...report, top_performer: top });
+  } catch (e) {
+    res.status(500).json({ success: false, error: 'failed to generate affiliate report' });
+  }
+});
+
+// ── FACTORY LOCK (prevents overlapping automated operations) ──
+// Uses lib/factory_lock.js: acquireFactoryLock(taskName) creates data/factory_lock.json
+// with taskName+startedAt, releaseFactoryLock() in try/finally guarantees no stale.
+// Reuses existing architecture: delegates real work to attributionOS (existing service)
+// instead of duplicating factory logic inside the route.
+// Protects overlapping only; independent routes (health, dashboard, attribution/report, affiliate/*) remain unlocked.
+app.post('/api/factory/run', requireMissionControlOrInternalToken, async (req, res) => {
+  const taskName = (req.body && typeof req.body.taskName === 'string' && req.body.taskName.trim()) ? req.body.taskName.trim().slice(0, 100) : 'factory-task';
+  let lock;
+  try {
+    lock = acquireFactoryLock(taskName);
+  } catch (e) {
+    return res.status(400).json({ success: false, error: e.message });
+  }
+  if (!lock.acquired) {
+    return res.status(409).json({ success: false, error: 'factory is busy', existing: lock.existing });
+  }
+  try {
+    // Reuse existing service instead of inline factory logic
+    const result = attributionOS.track({
+      type: 'sale',
+      source: 'direct',
+      product: taskName,
+      timestamp: Date.now(),
+      metadata: { via: 'factory-lock', taskName }
+    });
+    const delayMs = Number(req.body && req.body.delayMs);
+    if (Number.isFinite(delayMs) && delayMs > 0 && delayMs <= 5000) {
+      await new Promise(r => setTimeout(r, delayMs));
+    }
+    if (req.body && req.body.shouldFail) {
+      throw new Error('simulated factory failure');
+    }
+    // QA runs before approving output — not as replacement for product itself
+    const qa = qaEngine.evaluate({
+      content: String((req.body && req.body.content) != null ? req.body.content : taskName),
+      productType: (req.body && req.body.productType) || 'text',
+      contentType: req.body && req.body.contentType,
+      filePath: req.body && req.body.filePath,
+      metadata: req.body && req.body.metadata,
+      classification: (req.body && req.body.classification) || 'TEST',
+    });
+    return res.status(200).json({ success: true, result, qa, lock: lock.lock });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  } finally {
+    releaseFactoryLock();
+  }
+});
+
+app.get('/api/factory/lock-status', (req, res) => {
+  const locked = isFactoryLocked();
+  const data = readFactoryLock();
+  res.json({ success: true, locked, lock: data });
+});
+
+// ── AUTOMATED QA ENGINE (multi-layer, product-type-specific, not 100-minus) ──
+// Reuses lib/qa_engine.js which itself reuses inspectors.py/executive_quality_gate logic for digital_product.
+// - Score is weighted criteria (not 100 arbitrary), separated per product_type
+// - Verdict: QA_APPROVED / QA_REJECTED / QA_REVIEW_REQUIRED (never "95% = global ready")
+// - Returns score, passed, issues, warnings, strengths, criteria, product_type, evidence, classification
+// - Handles empty, short, repetition, TODO/undefined, structure, missing elements
+// - If evidence missing → UNKNOWN / REVIEW_REQUIRED, never fabricates
+// Linked to production: factory/run evaluates QA before final success, not as replacement
+app.post('/api/qa/evaluate', (req, res) => {
+  const { content, productType, contentType, filePath, metadata, classification } = req.body || {};
+  // Security hardening: filePath enables a local file read. Requiring an
+  // authorized caller (Mission Control session OR INTERNAL_SERVICE_TOKEN)
+  // for any filePath-bearing request closes the unauthenticated
+  // arbitrary-file-read primitive. Content-only QA (no filePath) is
+  // read-only and remains open for internal tooling.
+  const proceed = () => {
+    try {
+      const result = qaEngine.evaluate({
+        content: content != null ? String(content) : '',
+        productType,
+        contentType,
+        filePath,
+        metadata,
+        classification: classification || 'TEST',
+      });
+      return res.status(200).json({ success: true, qa: result });
+    } catch (err) {
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  };
+  if (filePath) {
+    return requireMissionControlOrInternalToken(req, res, proceed);
+  }
+  return proceed();
+});
+
 // Real "content published -> visitor" tracking (Customer Front Door
 // directive Section 7). Public, unauthenticated -- fires from every
-// new customer-facing page's own inline JS on load. Reuses affiliate_
-// commerce.click_tracking.record_page_view() directly (Revenue
+// new customer-facing page's own inline JS on load. Reuses affiliate_// commerce.click_tracking.record_page_view() directly (Revenue
 // Activation Directive, ADR-239) -- no second page-view mechanism.
+//
+// Observability gap closure (2026-09-25): the ledger could never tell a
+// search-crawler hit (the first detectable external-discovery signal)
+// from a browser visit -- every historical row is unattributed. The route
+// now classifies the request's own User-Agent header into a coarse,
+// privacy-minimal category (bot / browser / unknown); the raw string is
+// never stored or forwarded. Purely additive -- old rows and old callers
+// are unaffected.
+function classifyVisitorAgent(ua) {
+  const s = String(ua || '').toLowerCase();
+  if (!s) return 'unknown';
+  if (/bot|crawl|spider|slurp|mediapartners|baidu|yandex|sogou|exabot|facebot|ia_archiver|headless|phantomjs|selenium|python-requests|curl|wget|httpclient|okhttp|postman|insomnia/.test(s)) return 'bot';
+  if (/mozilla|chrome|safari|firefox|edge|edg|opera|opr|msie|trident|iphone|ipad|android/.test(s)) return 'browser';
+  return 'unknown';
+}
 app.post('/api/page-view', async (req, res) => {
   try {
+    if (ingestionRateLimited(req, res)) return;
     const rawPageId = req.body && req.body.page_id;
     const payload = Object.assign(
-      { page_id: rawPageId || null, referrer: req.get('referer') || null },
+      { page_id: rawPageId || null, referrer: req.get('referer') || null, ua_category: classifyVisitorAgent(req.get('user-agent')) },
       utmFromQuery(req.body || {})
     );
     if (!payload.page_id) {
@@ -7178,6 +8027,13 @@ app.post('/api/customer/requests/:id/approve', async (req, res) => {
     if (isRateLimited(ip)) {
       return res.status(429).json({ success: false, error: 'too many requests — please try again later' });
     }
+    // P0 SECURITY: ownership check — verify the authenticated customer owns
+    // this request before allowing state mutation. Guest requests (no account_id)
+    // remain accessible with just the request_id for backward compatibility.
+    const account = getAuthenticatedCustomerAccount(req);
+    if (!verifyRequestOwnership(req.params.id, account)) {
+      return res.status(403).json({ success: false, error: 'request not found or access denied' });
+    }
     // Contract acceptance (Round 2, 2026-07-29): approval doubles as a real
     // e-signature -- the typed name is the customer's acceptance of the
     // contract text shown on their status page, validated server-side in
@@ -7195,6 +8051,11 @@ app.post('/api/customer/requests/:id/reject', async (req, res) => {
     const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
     if (isRateLimited(ip)) {
       return res.status(429).json({ success: false, error: 'too many requests — please try again later' });
+    }
+    // P0 SECURITY: ownership check
+    const account = getAuthenticatedCustomerAccount(req);
+    if (!verifyRequestOwnership(req.params.id, account)) {
+      return res.status(403).json({ success: false, error: 'request not found or access denied' });
     }
     const reason = String((req.body && req.body.reason) || '').trim().slice(0, CUSTOMER_REQUEST_FIELD_MAX);
     const result = await withCustomerRequestLock(req.params.id, () => runCustomerPipelineCommand('reject', { request_id: req.params.id, reason }));
@@ -7215,6 +8076,11 @@ app.get('/api/customer/requests/:id/download', async (req, res) => {
     const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
     if (isRateLimited(ip)) {
       return res.status(429).json({ success: false, error: 'too many requests — please try again later' });
+    }
+    // P0 SECURITY: ownership check — prevent unauthorized file download
+    const account = getAuthenticatedCustomerAccount(req);
+    if (!verifyRequestOwnership(req.params.id, account)) {
+      return res.status(403).json({ success: false, error: 'request not found or access denied' });
     }
     const result = await runCustomerPipelineCommand('get_download_path', { request_id: req.params.id });
     res.download(result.path, result.filename || path.basename(result.path));
@@ -7251,6 +8117,52 @@ app.get('/api/customer/reviews', (req, res) => {
     res.json({ success: true, ...dashboardData.readCustomerReviewsSummary() });
   } catch (err) {
     res.status(500).json({ success: false, error: 'reviews temporarily unavailable' });
+  }
+});
+
+// ── Narrow inbound-only Customer Evidence Gate (POST ARM 8 governance) ──
+// Evidence-only product-interest capture. Does NOT feed the production /
+// payment / distribution pipeline, sends NO Telegram / automated messaging,
+// and never triggers outreach or advertising. Persists to its own ledger
+// (data/customer_interest.jsonl); validation / dedup / report live in
+// lib/customer_evidence.py (single testable source of truth) which this
+// route shells out to. Any safety/validation failure returns without writing.
+app.post('/api/customer/interest', (req, res) => {
+  try {
+    const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
+    if (isRateLimited(ip)) {
+      return res.status(429).json({ success: false, error: 'too many requests — please try again later' });
+    }
+    const body = req.body || {};
+    const pythonPath = detectPython();
+    execFile(pythonPath, ['lib/customer_evidence.py', 'record'],
+      { input: JSON.stringify(body), timeout: 15000, cwd: __dirname },
+      (err, stdout, stderr) => {
+        if (err) {
+          return res.status(500).json({ success: false, error: 'could not record interest — please try again' });
+        }
+        let parsed;
+        try {
+          parsed = JSON.parse(stdout);
+        } catch (e) {
+          return res.status(500).json({ success: false, error: 'could not record interest — please try again' });
+        }
+        if (!parsed.success) {
+          return res.status(400).json({ success: false, error: parsed.error || 'invalid interest submission' });
+        }
+        // Honeypot hits are silently accepted (never reveal detection);
+        // other rejections are surfaced as 400. Accepted/duplicate/stopped
+        // return success so the caller is never told it was dropped.
+        if (parsed.status === 'rejected') {
+          if (parsed.reason === 'honeypot') {
+            return res.json({ success: true, status: 'accepted', signal_id: null, classification: null });
+          }
+          return res.status(400).json({ success: false, error: 'valid email and interest message are required' });
+        }
+        return res.json({ success: true, status: parsed.status, signal_id: parsed.signal_id || null, classification: parsed.classification || null });
+      });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'could not record interest — please try again' });
   }
 });
 

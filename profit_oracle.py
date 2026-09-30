@@ -1130,8 +1130,11 @@ def _score_payment_evidence(niche, evidence_path=None):
     almost beside the point next to the hard gate in
     ladder_opportunity_score() below, which rejects as UNPROVEN
     regardless of this score when the evidence list is empty."""
-    import market_evidence as me
-    evidence = me.get_payment_evidence(niche, evidence_path=evidence_path)
+    try:
+        import market_evidence as me
+        evidence = me.get_payment_evidence(niche, evidence_path=evidence_path)
+    except Exception:
+        return 0.0, []
     n = len(evidence)
     if n >= 3:
         score = 100.0
@@ -1716,15 +1719,19 @@ def run_oracle():
     results = []
     for entry in entries:
         niche = entry["niche"]
-        result = score_opportunity(niche)
-        ladder = entry["ladder"]
-        if ladder and ladder in LADDER_RANKS:
-            ladder_result = ladder_opportunity_score(niche, ladder=ladder)
-            result["ladder"] = ladder
-            result["ladder_score"] = ladder_result["ladder_score"]
-            result["ladder_accepted"] = ladder_result["accepted"]
-            result["ladder_price"] = ladder_result["price"]
-        results.append(result)
+        try:
+            result = score_opportunity(niche)
+            ladder = entry["ladder"]
+            if ladder and ladder in LADDER_RANKS:
+                ladder_result = ladder_opportunity_score(niche, ladder=ladder)
+                result["ladder"] = ladder
+                result["ladder_score"] = ladder_result["ladder_score"]
+                result["ladder_accepted"] = ladder_result["accepted"]
+                result["ladder_price"] = ladder_result["price"]
+            results.append(result)
+        except Exception as e:
+            results.append({"niche": niche, "error": str(e), "verdict": "SKIP",
+                            "profit_score": 0, "scores": {}, "reason": f"scoring failed: {e}"})
 
     results.sort(
         key=lambda r: (

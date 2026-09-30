@@ -245,19 +245,27 @@ def conversion_funnel_summary(page_views_path=None, clicks_path=None, commission
 def record_attributed_page_view(page_id, referrer=None, ledger_path=None,
                                 utm_source=None, utm_medium=None,
                                 utm_campaign=None, utm_content=None,
-                                source=None):
+                                source=None, ua_category=None):
     """Records one real page-view event carrying the full UTM/source
     attribution the visitor arrived with (Evidence Chain + Attribution
     phase, 2026-08-17). Privacy-minimal: fields are read strictly from the
     visitor's own URL query and omitted when absent -- never a cookie,
     never a fingerprint, never a guessed placeholder. A superset of
     record_page_view(); the original signature is unchanged and still
-    works."""
+    works.
+
+    Observability gap closure (2026-09-25): optional ua_category carries
+    the route's own coarse bot/browser/unknown classification so a future
+    search-crawler hit is distinguishable from a browser visit. The raw
+    User-Agent string is never accepted or stored here. Omitted when
+    absent -- all 19 pre-existing rows keep working unchanged."""
     record = {
         "page_id": page_id,
         "timestamp": _now_iso(),
         "referrer": referrer,
     }
+    if ua_category in ("bot", "browser", "unknown"):
+        record["ua_category"] = ua_category
     if utm_source:
         record["utm_source"] = utm_source
     if utm_medium:

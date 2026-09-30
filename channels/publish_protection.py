@@ -56,6 +56,7 @@ PLATFORM_PROFILES = {
     "gumroad": {"min_cooldown_minutes": 10, "max_per_day": 20, "max_per_hour": 5},
     "payhip": {"min_cooldown_minutes": 15, "max_per_day": 15, "max_per_hour": 4},
     "paddle": {"min_cooldown_minutes": 5, "max_per_day": 50, "max_per_hour": 15},
+    "x": {"min_cooldown_minutes": 1, "max_per_day": 500, "max_per_hour": 100},
     "shopify": {"min_cooldown_minutes": 15, "max_per_day": 20, "max_per_hour": 5},
     "aliexpress": {"min_cooldown_minutes": 30, "max_per_day": 10, "max_per_hour": 3},
     "_default": {"min_cooldown_minutes": 30, "max_per_day": 10, "max_per_hour": 3},

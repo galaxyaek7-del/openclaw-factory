@@ -54,8 +54,68 @@ import channels.etsy_arm  # noqa: F401,E402
 # rather than removed.
 import channels.paddle_arm  # noqa: F401,E402
 
+# X (Twitter) arm — self-registers "x" in channels.registry on import.
+# Requires X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET.
+import channels.x_arm  # noqa: F401,E402
 
-def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protection_state_path=None):
+
+# Operational product lock (Commercial Closure, 2026-09-17): the live EU
+# AI Act Compliance Toolkit must never be touched by automation except
+# through an explicit, per-call founder opt-in (allow_protected=True).
+# Anchored on the exact generation-record source_id plus the exact title
+# (same product under any record shape). Dry runs are exempt (no
+# real-world effect); every real-mode path without the flag skips with an
+# explicit reason and touches neither platform nor protection state.
+PROTECTED_PRODUCTS = frozenset({
+    "2026-08-06T23:06:44.375628",
+    "EU AI Act Compliance Toolkit",
+})
+
+
+def _is_protected_product(product):
+    source_id = getattr(product, "source_id", None) or ""
+    title = getattr(product, "title", None) or ""
+    return source_id in PROTECTED_PRODUCTS or title in PROTECTED_PRODUCTS
+
+
+def _already_published_live(product, arm_name, ledger_path=None):
+    """Read-only idempotency check: does the ledger already hold a
+    successful REAL (non-dry-run) publish_attempt for this product+arm?
+
+    Fail-closed in the safe direction: only a positively-recorded live
+    success (ok True AND dry_run False) blocks a new real attempt. A
+    missing/unreadable ledger, a malformed line, or a dry-run/failed event
+    never blocks — the pre-existing protection gate still fronts every
+    real attempt. Never writes, never touches the network.
+    """
+    path = Path(ledger_path) if ledger_path else ledger.DEFAULT_LEDGER_PATH
+    if not path.exists():
+        return False
+    source_id = getattr(product, "source_id", None)
+    try:
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    ev = json.loads(line)
+                except (json.JSONDecodeError, ValueError):
+                    continue
+                if (isinstance(ev, dict)
+                        and ev.get("event_type") == "publish_attempt"
+                        and ev.get("platform") == arm_name
+                        and ev.get("product_source_id") == source_id
+                        and ev.get("ok") is True
+                        and ev.get("dry_run") is False):
+                    return True
+    except OSError:
+        return False
+    return False
+
+
+def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protection_state_path=None,
+               allow_protected=False):
     """Fan `product` out to arms and record every attempt in the ledger.
 
     arm_names=None means every currently registered arm. ledger_path
@@ -96,6 +156,20 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
                 continue
 
             if not dry_run:
+                if not allow_protected and _is_protected_product(product):
+                    outcomes.append({
+                        "arm": name, "attempted": False, "ok": None,
+                        "skip_reason": "protected product: explicit founder gate required (allow_protected=True)",
+                        "result": None,
+                    })
+                    continue
+                if _already_published_live(product, name, ledger_path=ledger_path):
+                    outcomes.append({
+                        "arm": name, "attempted": False, "ok": None,
+                        "skip_reason": "duplicate: ledger already holds a successful live publish for this product",
+                        "result": None,
+                    })
+                    continue
                 gate = publish_protection.check_publish_allowed(name, state_path=protection_state_path)
                 if not gate["allowed"]:
                     blocked_result = PublishResult(
@@ -180,6 +254,8 @@ def main():
 
     parser = argparse.ArgumentParser(description="Distribution backbone (Galaxy Forge)")
     parser.add_argument("--json", action="store_true", help="Read a JSON job from stdin, print a JSON result to stdout")
+    parser.add_argument("--allow-protected", action="store_true",
+                        help="Explicit founder opt-in: allow real-mode publish of a protected product (default: skip it)")
     args = parser.parse_args()
 
     if not args.json:
@@ -195,8 +271,9 @@ def main():
         product = Product.from_jsonl_record(record)
         arm_names = job.get("arms")  # None = every registered arm
         dry_run = job.get("dry_run", True)  # explicit False required to go live
+        allow_protected = bool(job.get("allow_protected", False))  # explicit True required for protected products
 
-        outcomes = distribute(product, arm_names=arm_names, dry_run=dry_run)
+        outcomes = distribute(product, arm_names=arm_names, dry_run=dry_run, allow_protected=allow_protected)
         emit({"success": True, "dry_run": dry_run, "outcomes": [_outcome_to_json(o) for o in outcomes]})
     except Exception as e:
         emit({"success": False, "error": str(e)})

@@ -1964,8 +1964,31 @@ def _record_public_page_view():
         utm_campaign=utm.get("utm_campaign"),
         utm_content=utm.get("utm_content"),
         source=payload.get("source"),
+        # Observability gap closure (2026-09-25): coarse bot/browser/
+        # unknown category classified at the route -- raw User-Agent is
+        # never stored. Additive kwarg; old callers unaffected.
+        ua_category=payload.get("ua_category"),
     )
     return {"success": True, "recorded": True}
+
+
+def _mv_impl():
+    """Load root market_validation.py by path. The market_validation/
+    package (validation_gate only) shadows it on plain import, leaving
+    the three validation endpoints below on AttributeError — this loader
+    binds the real implementation. Cached after first load."""
+    global _MV_IMPL
+    try:
+        return _MV_IMPL
+    except NameError:
+        pass
+    import importlib.util as _ilu
+    import os as _os
+    _path = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "market_validation.py")
+    _spec = _ilu.spec_from_file_location("market_validation_impl", _path)
+    _MV_IMPL = _ilu.module_from_spec(_spec)
+    _spec.loader.exec_module(_MV_IMPL)
+    return _MV_IMPL
 
 
 def _validation_page_view():
@@ -1974,8 +1997,7 @@ def _validation_page_view():
     (which reuses the factory's single existing page-view ledger from
     affiliate_commerce.click_tracking -- no second tracking mechanism)."""
     payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
-    import market_validation
-    market_validation.record_visit(payload.get("source"))
+    _mv_impl().record_visit(payload.get("source"))
     return {"success": True, "recorded": True}
 
 
@@ -1986,9 +2008,8 @@ def _validation_submit():
     as market_evidence.py). Reads the full payload from sys.argv[2].
     Validation errors are honest 400-style errors, never silently dropped."""
     payload = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
-    import market_validation
     try:
-        row = market_validation.record_response(payload)
+        row = _mv_impl().record_response(payload)
         return {"success": True, "recorded": True, "timestamp": row.get("timestamp")}
     except ValueError as e:
         # The "validation: " prefix is a stable contract with server.js:
@@ -2003,8 +2024,7 @@ def _validation_dashboard():
     dashboard metrics — pure reading + counting of the real response
     ledger via market_validation.aggregate(). Never returns contact info
     or verbatim q3 text; every number is a real count of stored rows."""
-    import market_validation
-    return {"summary": market_validation.aggregate()}
+    return {"summary": _mv_impl().aggregate()}
 
 
 def _lead_discovery_status():
@@ -3976,6 +3996,26 @@ def _affiliate_chain_readiness():
     return affiliate_chain_readiness()
 
 
+def _affiliate_daily_tick():
+    """Affiliate daily tick (Affiliate Arm activation, 2026-09-26): the one
+    recurring read + deduped-notify-decision for the affiliate loop. Runs
+    daily_health (read-only rollup) and notify.check (updates only the
+    notify dedupe state, never a financial ledger). Sending is the tick
+    caller's job. Never applies, publishes, pays, or contacts a network."""
+    from affiliate import daily_health as _dh
+    from affiliate import notify as _nt
+    health = _dh.daily_health(probe=False)
+    decided = _nt.check()
+    return {"health": health, "notifications": decided["notifications"]}
+
+
+def _affiliate_daily_health():
+    """Affiliate daily health (panel read view): pure read-only rollup with
+    no notify-state side effects — safe for cached dashboard refresh."""
+    from affiliate import daily_health as _dh
+    return _dh.daily_health(probe=False)
+
+
 def _first_dollar_engine():
     """FIRST-DOLLAR ENGINE (FINAL OPERATING DIRECTIVE 2026-08-15): read-only
     scoring/ranking/router over the existing infrastructure. Computes
@@ -4041,6 +4081,16 @@ def _founder_next_action():
     return founder_next_action.build_founder_next_action()
 
 
+def _founder_command_center():
+    """GALAXY FORGE V5.4 -- Founder Command Center: the single Founder-only
+    company interface. Pure citation + business-language translation over
+    already-real sources (finance ledger, market funnel, publication ground
+    truth, founder gates, incidents). Read-only; never exposes secret
+    values; see founder_command_center.py."""
+    import founder_command_center
+    return founder_command_center.build_founder_command_center()
+
+
 def _seo_distribution():
     """SEO DISTRIBUTION (Autonomous Enterprise Master Plan Task 2, 2026-08-15):
     the only READY distribution channel. Publishes honest, problem-first SEO
@@ -4048,6 +4098,15 @@ def _seo_distribution():
     platform; never fabricates revenue."""
     import seo_distribution
     return seo_distribution.publish_seo_pages()
+
+
+def _market_evidence_loop():
+    """Real market evidence loop, read-only truth panel (2026-09-25):
+    per-product funnel stages, event counts, latest material event. Never
+    triggers observation -- use the market_evidence_cycle main() branch
+    (below) for the daily gated run. Safe for Mission Control polling."""
+    import market_evidence_loop
+    return market_evidence_loop.status()
 
 
 _ENDPOINTS = {
@@ -4175,6 +4234,8 @@ _ENDPOINTS = {
     "affiliate_products": _affiliate_products,
     "affiliate_click": _affiliate_click,
     "affiliate_commerce_status": _affiliate_commerce_status,
+    "affiliate_daily_tick": _affiliate_daily_tick,
+    "affiliate_daily_health": _affiliate_daily_health,
     "attribution_source_report": _attribution_source_report,
     "affiliate_simulation_report": _affiliate_simulation_report,
     "launch_readiness_score": _launch_readiness_score,
@@ -4325,10 +4386,12 @@ _ENDPOINTS = {
     "affiliate_chain_readiness": _affiliate_chain_readiness,
     "first_dollar_engine": _first_dollar_engine,
     "founder_next_action": _founder_next_action,
+    "founder_command_center": _founder_command_center,
     "seo_distribution": _seo_distribution,
     "validation_submit": _validation_submit,
     "validation_dashboard": _validation_dashboard,
     "validation_page_view": _validation_page_view,
+    "market_evidence_loop": _market_evidence_loop,
 }
 
 
@@ -4358,10 +4421,76 @@ def _run_daily_evidence_recording_audit():
 def main():
     endpoint = sys.argv[1] if len(sys.argv) > 1 else None
 
+    if endpoint == "market_evidence_cycle":
+        # Daily gated market-evidence run (factory_loop.js
+        # maybeRunDailyMarketEvidence). Reachability sweep lives HERE, not
+        # in market_evidence.py's pure core: plain server-side GETs of our
+        # own product URLs (never executes page-view beacon JS, so
+        # monitoring cannot inflate its own metrics). 10s per URL, daily
+        # cadence only.
+        try:
+            import urllib.request
+            import market_evidence_loop as market_evidence
+            products = market_evidence.live_products()
+            live = set()
+            checked = 0
+            for key, p in products.items():
+                url = p.get("url") or ""
+                if not url.startswith("http"):
+                    continue
+                checked += 1
+                try:
+                    req = urllib.request.Request(
+                        url, headers={"User-Agent": "GalaxyForge-evidence-monitor/1.0"},
+                        method="HEAD")
+                    with urllib.request.urlopen(req, timeout=10) as r:
+                        if r.status == 200:
+                            live.add(url)
+                            continue
+                except Exception:
+                    pass
+                try:
+                    req = urllib.request.Request(
+                        url, headers={"User-Agent": "GalaxyForge-evidence-monitor/1.0"})
+                    with urllib.request.urlopen(req, timeout=10) as r:
+                        if r.status == 200:
+                            live.add(url)
+                except Exception:
+                    pass
+            result = market_evidence.run_cycle(live_urls=live)
+            result["urls_checked"] = checked
+            result["urls_live"] = len(live)
+            print(json.dumps({"success": True, **result}, ensure_ascii=False, default=str))
+        except Exception as e:
+            print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))
+            sys.exit(1)
+        return
+
     if endpoint == "run_daily_evidence_recording_audit":
         try:
             result = _run_daily_evidence_recording_audit()
             print(json.dumps({"success": True, **result}, ensure_ascii=False, default=str))
+        except Exception as e:
+            print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))
+            sys.exit(1)
+        return
+
+    if endpoint == "run_daily_reality_integrity_check":
+        # V5.6 Sec 18 -- the one deliberate daily writer of
+        # data/reality_integrity_verdict.json. Special-cased here (NOT in
+        # _ENDPOINTS) for the exact reason _run_daily_evidence_recording_audit
+        # documents above: a reality_audit pass must never live-invoke this
+        # as a side effect of enumerating endpoints. Write path is one small
+        # verdict file; the check itself is read-only over real ledgers.
+        try:
+            import reality_integrity_check
+            verdict = reality_integrity_check.record_verdict()
+            print(json.dumps({"success": True, "state": verdict["state"],
+                              "passed": verdict["passed_count"],
+                              "failed": verdict["failed_count"],
+                              "failed_checks": verdict["failed_checks"],
+                              "checked_at": verdict["checked_at"]},
+                             ensure_ascii=False, default=str))
         except Exception as e:
             print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))
             sys.exit(1)

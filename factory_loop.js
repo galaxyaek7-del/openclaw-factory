@@ -96,6 +96,13 @@ const OPPORTUNITIES_FILE = path.join(FACTORY_DIR, 'OPPORTUNITIES.md');
 const FACTORY_STATUS_FILE = path.join(FACTORY_DIR, 'FACTORY_STATUS.md');
 const MARKET_HUNTER_LOG = path.join(FACTORY_DIR, 'market_hunter_runs.log');
 const REJECTED_NICHES_FILE = path.join(FACTORY_DIR, 'REJECTED_NICHES.md');
+// GSC ownership verification (2026-09-25): the founder drops Google's
+// official HTML verification file into gsc_inbox/ (see its README -- plain
+// language, no CLI needed). The tick below auto-deploys it via the tested
+// scripts/deploy_gsc_verification.py. Inbox HTML is never committed as-is;
+// only the validated Google file reaches the repo root.
+const GSC_INBOX_DIR = path.join(FACTORY_DIR, 'gsc_inbox');
+const GSC_FILENAME_RE = /^google[a-z0-9]+\.html$/;
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 const REJECTION_COOLDOWN_MS = WEEK_MS;
 
@@ -118,6 +125,38 @@ function isPidAlive(pid) {
   }
 }
 
+// V5.5 (2026-09-29) — PID-recycling guard. isPidAlive() via kill(pid, 0)
+// only proves a PID EXISTS, not that it is still factory_loop.js: after an
+// unclean death the OS recycles the PID (observed live this session: a
+// stale lock holding PID 1588 matched a browser process, and every restart
+// exited with "another factory_loop running" for 3 days). On win32, verify
+// the process image is really node.js via tasklist (argv array — no shell,
+// the PID is parseInt-validated before use). Any check failure keeps the
+// fail-closed "treat as alive" behavior: a wrongly-skipped start is always
+// safer than a double-run. An explicitly injected checker aside, tasklist is
+// Windows-only; other platforms keep the established kill(pid, 0) behavior.
+// execFn is injectable purely so tests can prove the reclaim/block paths
+// without touching real processes — same convention as lockFile/exitFn.
+function isPidAliveWithIdentity(pid, execFn = null) {
+  try {
+    process.kill(pid, 0);
+  } catch (err) {
+    return false; // PID genuinely gone — identical to isPidAlive
+  }
+  // An explicitly injected checker always runs (lets tests prove the
+  // parse/reclaim paths on any platform); otherwise tasklist is Windows-only.
+  const run = execFn || (process.platform !== 'win32' ? null : require('child_process').execFileSync);
+  if (!run) return true;
+  try {
+    const out = run('tasklist', ['/FI', `PID eq ${Number(pid)}`, '/FO', 'CSV', '/NH'], { encoding: 'utf8' });
+    const image = String(out).split(',')[0].replace(/"/g, '').trim().toLowerCase();
+    if (!image) return true; // unparseable — fail closed, as before
+    return image === 'node.exe';
+  } catch (err) {
+    return true; // tasklist unavailable — fail closed, as before
+  }
+}
+
 // lockFile/exitFn are parameterized (defaulting to the real values) purely
 // so tests can exercise this against an isolated temp file and a fake exit
 // function — never the real, currently-running factory's own lock file.
@@ -127,7 +166,7 @@ function isPidAlive(pid) {
 // instance die uncleanly" signal the new startup safety check needs.
 // false for a clean create or a blocked-exit path. Purely additive — no
 // existing caller reads this return value, so this changes no behavior.
-function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit) {
+function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit, execFn = null) {
   // Red-team audit (Phase 10 follow-up) — MEDIUM finding, fixed: the old
   // version did existsSync -> read -> isPidAlive -> writeFileSync as four
   // separate calls, not one atomic operation, so two instances starting in
@@ -148,7 +187,7 @@ function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit) {
   // A lock file already exists — check whether its owner is still alive.
   try {
     const existingPid = parseInt(fs.readFileSync(lockFile, 'utf8').trim(), 10);
-    if (Number.isFinite(existingPid) && isPidAlive(existingPid)) {
+    if (Number.isFinite(existingPid) && isPidAliveWithIdentity(existingPid, execFn)) {
       console.log(`[factory_loop] another factory_loop running (PID ${existingPid}), exiting`);
       exitFn(0);
       return false;
@@ -1475,10 +1514,18 @@ function runMarketHunter() {
     const pythonPath = detectPythonForHunter();
     const child = spawn(pythonPath, [path.join(FACTORY_DIR, 'market_hunter.py'), '--run'], { cwd: FACTORY_DIR });
     let output = '', errOut = '';
+    // Commercial-ops fix (2026-09-24): real measured cost is ~4.6s/candidate
+    // (live Groq scoring per candidate) — a default limit=10 hunt scans
+    // ~50 candidates across seed/sensing/pioneer/pioneer_all, i.e. 4-8 real
+    // minutes. The old 60s budget killed every real hunt mid-flight (wasting
+    // the Groq spend already made) and left golden_opportunities.json stale
+    // forever, which in turn starved golden_hunter_bridge. 600s covers the
+    // measured cost with margin; the once-per-day gate + tickRunning overlap
+    // guard above already bound total cost to one hunt per day, no duplication.
     const timer = setTimeout(() => {
       child.kill();
-      resolve({ ok: false, detail: 'انتهت مهلة market_hunter.py (60 ثانية)' });
-    }, 60000);
+      resolve({ ok: false, detail: 'انتهت مهلة market_hunter.py (10 دقائق)' });
+    }, 600000);
     child.stdout.on('data', d => { output += d.toString(); });
     child.stderr.on('data', d => { errOut += d.toString(); });
     child.on('close', () => {
@@ -1503,6 +1550,93 @@ async function maybeRunMarketHunter(now = new Date()) {
   }
   const result = await runMarketHunter();
   return { action: result.ok ? 'hunted' : 'failed', detail: result.detail };
+}
+
+// GSC ownership-verification auto-deploy (2026-09-25): the founder's only
+// job is dropping Google's official HTML file into gsc_inbox/ (see its
+// README). This step runs every tick (cheap readdir; spawns Python only
+// when a genuine candidate exists) and delegates all validation,
+// secret-scanning, git gating, push, and live-URL verification to the
+// tested scripts/deploy_gsc_verification.py -- never inventing or editing
+// a token. Ambiguity rule: 2+ distinct google*.html files deploy NEITHER
+// (founder picks the right one); an already-deployed identical file is a
+// no-op via the script's own already_deployed path. Never touches
+// products, prices, checkouts, or ledgers beyond the tick's own action
+// record (evidence states stay derived from real outcomes, never assumed).
+function listGscInboxCandidates() {
+  let files = [];
+  try {
+    files = fs.readdirSync(GSC_INBOX_DIR);
+  } catch (_) {
+    return [];
+  }
+  return files.filter((f) => GSC_FILENAME_RE.test(f)).sort();
+}
+
+function runGscDeployScript() {
+  return new Promise((resolve) => {
+    const pythonPath = detectPythonForHunter();
+    const child = spawn(pythonPath, [path.join(FACTORY_DIR, 'scripts', 'deploy_gsc_verification.py'), '--inbox', GSC_INBOX_DIR], { cwd: FACTORY_DIR });
+    let output = '', errOut = '';
+    const timer = setTimeout(() => {
+      child.kill();
+      resolve({ ok: false, detail: 'deploy_gsc_verification.py timeout (300s)' });
+    }, 300000);
+    child.stdout.on('data', d => { output += d.toString(); });
+    child.stderr.on('data', d => { errOut += d.toString(); });
+    child.on('close', () => {
+      clearTimeout(timer);
+      try {
+        resolve({ ok: true, result: JSON.parse(output.trim().split('\n').pop()) });
+      } catch (e) {
+        resolve({ ok: false, detail: `gsc deploy output unparseable: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeDeployGscVerification() {
+  const candidates = listGscInboxCandidates();
+  if (!candidates.length) {
+    return { action: 'none', detail: 'gsc_inbox فارغ — بانتظار ملف Google الرسمي' };
+  }
+  const distinct = [...new Set(candidates)];
+  if (distinct.length > 1) {
+    return { action: 'held', detail: `ملفان مختلفان في gsc_inbox (${distinct.join(', ')}) — لن يُنشر أي منهما حتى يحدد المؤسس الصحيح` };
+  }
+  const deployed = path.join(FACTORY_DIR, distinct[0]);
+  if (fs.existsSync(deployed)) {
+    try {
+      const a = fs.readFileSync(path.join(GSC_INBOX_DIR, distinct[0]));
+      const b = fs.readFileSync(deployed);
+      if (a.equals(b)) {
+        return { action: 'none', detail: `${distinct[0]} منشور بالفعل ومطابق — لا إجراء` };
+      }
+      return { action: 'held', detail: `${distinct[0]} موجود في الجذر بمحتوى مختلف — قرار المؤسس مطلوب، لن يُستبدل تلقائياً` };
+    } catch (e) {
+      return { action: 'failed', detail: `تعذر مقارنة ملف GSC: ${e.message}` };
+    }
+  }
+  const run = await runGscDeployScript();
+  if (!run.ok) {
+    return { action: 'failed', detail: run.detail };
+  }
+  const r = run.result || {};
+  if (r.success) {
+    // Architecture correction (2026-09-25): the founder lives on Telegram,
+    // never in the repo -- the one human action left (the Google Verify
+    // click) must arrive as ONE plain-language notification, never as
+    // technical instructions. Best-effort only, never blocks the tick.
+    if (!r.already_deployed && r.url) {
+      try {
+        await telegramDirect.sendTelegramMessage(
+          '✅ Google verification file deployed successfully.\nOpen Google Search Console and press Verify.'
+        ).catch(() => {});
+      } catch (_) { /* notification must never break the tick */ }
+    }
+    return { action: r.already_deployed ? 'none' : 'deployed', detail: `GSC: ${distinct[0]} -> ${r.url || 'repo root'} (http=${r.http || 'n/a'}) — الملكية عند Google ما زالت UNKNOWN حتى نقرة Verify` };
+  }
+  return { action: 'failed', detail: `GSC deploy rejected: ${r.error || 'unknown'}` };
 }
 
 // ── STRATEGIC PHASE (2026-07-19): the modern Product Definition
@@ -2112,6 +2246,85 @@ function runGenerateDailyExecutiveDirective({ timeoutMs = 120000, pythonPath } =
   });
 }
 
+const MARKET_EVIDENCE_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.market_evidence_daily_marker');
+
+// ── REAL MARKET EVIDENCE LOOP (2026-09-25, market-evidence-gate
+// directive): one idempotent daily observation cycle over the live
+// catalog -- reachability sweep + funnel-state reconcile + payment scan.
+// Telegram fires ONLY on material changes (stage advancement, checkout
+// failure, transaction, revenue); silence otherwise. Never products,
+// never prices, never traffic, never sales inference.
+function runMarketEvidenceCycle({ timeoutMs = 300000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'market_evidence_cycle'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ action: 'failed', detail: `تعذّر تشغيل market_evidence_cycle: ${err.message}` });
+      return;
+    }
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ action: 'failed', detail: `انتهت مهلة market_evidence_cycle (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ action: 'failed', detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ action: 'failed', detail: result.error || 'فشل غير محدَّد من market_evidence_cycle' });
+          return;
+        }
+        finish({ action: 'observed', detail: result, ok: true });
+      } catch (e) {
+        finish({ action: 'failed', detail: `فشل تحليل ناتج market_evidence_cycle: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeRunDailyMarketEvidence(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(MARKET_EVIDENCE_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم فحص أدلة السوق اليوم بالفعل (${today})` };
+  }
+  const result = await runMarketEvidenceCycle();
+  if (result.action === 'failed') {
+    return result;
+  }
+  try {
+    fs.mkdirSync(path.dirname(MARKET_EVIDENCE_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(MARKET_EVIDENCE_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ علامة أدلة السوق: ${err.message}` };
+  }
+  const changes = (result.detail && result.detail.material_changes) || [];
+  if (changes.length > 0) {
+    const lines = changes.slice(0, 5).map((c) => `• ${c.product || '؟'}: ${c.previous_state || '?'} → ${c.new_state || c.event_type}`);
+    try {
+      await telegramDirect.sendTelegramMessage(
+        `🔔 Market evidence change (${changes.length}):\n${lines.join('\n')}`
+      ).catch(() => {});
+    } catch (_) { /* notification must never break the tick */ }
+    return { action: 'material', detail: `تغيّرات مادية: ${changes.length} — ${lines.join('؛ ')}` };
+  }
+  const summary = result.detail && result.detail.summary;
+  return { action: 'observed', detail: `لا تغيّر مادي (${summary ? summary.products : '?'} منتجًا، ${summary ? summary.payments : '?'} مدفوعات)` };
+}
+
 async function maybeGenerateDailyExecutiveDirective(now = new Date()) {
   const today = isoDate(now);
   let lastRun = null;
@@ -2207,6 +2420,91 @@ async function maybeRunDailyCommissionOpportunityScan(now = new Date()) {
   return { action: 'generated', detail: `مسح فرص عمولة حقيقي (${result.total} فرصة) — الأفضل: ${result.best || 'لا يوجد مرشَّح مؤهَّل'}` };
 }
 
+// ── AFFILIATE ARM — DAILY HEALTH + MATERIAL-EVENT NOTIFY (activation, 2026-09-26) ──
+// Same once-per-calendar-day marker pattern as the commission scan above.
+// mission_control_api.py's affiliate_daily_tick is read-only plus notify-
+// dedupe-state; the ONLY write-adjacent effect here is one batched Telegram
+// message when genuinely new material events exist (batched = no spam).
+// Never applies/publishes/pays/contacts a network.
+const AFFILIATE_DAILY_TICK_MARKER = path.join(FACTORY_DIR, 'data', '.affiliate_daily_tick_marker');
+
+function runAffiliateDailyTick({ timeoutMs = 60000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'affiliate_daily_tick'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة affiliate_daily_tick (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من affiliate_daily_tick' });
+          return;
+        }
+        finish({ ok: true, health: result.health, notifications: result.notifications || [] });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج affiliate_daily_tick: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+function formatAffiliateNotificationBatch(notifications) {
+  const items = (notifications || []).filter(n => n && n.text);
+  if (!items.length) return null;
+  const lines = items.slice(0, 10).map(n => `• [${n.kind || 'EVENT'}] ${n.text}`);
+  if (items.length > 10) lines.push(`• …و${items.length - 10} تنبيهات أخرى`);
+  return `تنبيهات ذراع التسويق بالعمولة (${items.length}):\n${lines.join('\n')}`;
+}
+
+async function maybeRunDailyAffiliateTick(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(AFFILIATE_DAILY_TICK_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم فحص صحة التسويق بالعمولة اليومي بالفعل (${today})` };
+  }
+  const result = await runAffiliateDailyTick();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  const batch = formatAffiliateNotificationBatch(result.notifications);
+  if (batch) {
+    try {
+      await telegramDirect.sendTelegramMessage(batch);
+    } catch (_) { /* best effort — a Telegram failure never fails the tick */ }
+  }
+  try {
+    fs.mkdirSync(path.dirname(AFFILIATE_DAILY_TICK_MARKER), { recursive: true });
+    fs.writeFileSync(AFFILIATE_DAILY_TICK_MARKER, today, 'utf8');
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ علامة فحص التسويق بالعمولة: ${err.message}` };
+  }
+  const h = result.health || {};
+  return { action: batch ? 'notified' : 'generated', detail: `فحص صحة تسويق بالعمولة حقيقي (${(h.registry || {}).total || '?'} برنامج)${batch ? ' — تنبيه مجمّع واحد مرسَل' : ' — لا أحداث جوهرية'}` };
+}
+
 // ── ENTERPRISE GROWTH ENGINE — DAILY GROWTH STAGE SNAPSHOT (ADR-159, 2026-07-31) ──
 // The ONE real write path for Growth Stage history: appends the current
 // real Growth Stage to data/growth_stage_snapshots.jsonl. growth_stages.
@@ -2299,6 +2597,77 @@ async function maybeRunDailyEvidenceRecordingAudit(now = new Date()) {
   }
   const pct = result.reality_score && result.reality_score.percentages;
   return { action: 'generated', detail: `تم تسجيل ${result.recorded} دليل حقيقي — Reality Score: ${pct ? pct.REAL : '؟'}%` };
+}
+
+// V5.6 Sec 18 — daily REALITY_INTEGRITY_CHECK writer. Same marker-file
+// once-per-calendar-day gate and marker-advance-before-run discipline as
+// maybeRunDailyEvidenceRecordingAudit above (the check routinely takes
+// ~70s; a success-only marker would re-run it every tick on timeout and
+// stall the loop). Dispatches through mission_control_api.py's special-cased
+// run_daily_reality_integrity_check (deliberately NOT in _ENDPOINTS, same
+// anti-side-effect reasoning that endpoint's own comment documents).
+const REALITY_INTEGRITY_CHECK_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.reality_integrity_check_daily_marker');
+
+function runDailyRealityIntegrityCheck({ timeoutMs = 600000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'run_daily_reality_integrity_check'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة run_daily_reality_integrity_check (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من run_daily_reality_integrity_check' });
+          return;
+        }
+        finish({ ok: true, state: result.state, passed: result.passed, failed: result.failed, failed_checks: result.failed_checks });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج run_daily_reality_integrity_check: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeRunDailyRealityIntegrityCheck(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(REALITY_INTEGRITY_CHECK_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم فحص سلامة الواقع اليومي بالفعل (${today})` };
+  }
+  try {
+    fs.mkdirSync(path.dirname(REALITY_INTEGRITY_CHECK_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(REALITY_INTEGRITY_CHECK_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    // Best effort only — never let a marker write failure block the check.
+  }
+  const result = await runDailyRealityIntegrityCheck();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  return { action: 'generated', detail: `REALITY_INTEGRITY_CHECK: ${result.state} (${result.passed} passed, ${result.failed} failed${result.failed_checks && result.failed_checks.length ? ' — ' + result.failed_checks.join(', ') : ''})` };
 }
 
 // Pricing Review Trigger (ADR-182, 2026-08-07): founder directive after
@@ -3763,6 +4132,19 @@ function markStep(step) {
 // Unified Recovery System section) rather than something guessed at
 // here. They are still counted and reported via retry_queue_status —
 // never silently dropped from view, just not auto-replayed yet.
+// Renders a queued n8n event payload as compact plain text for the
+// direct-Bot-API fallback below. Generic over payload shape (event +
+// optional reason/task/timestamp) — no per-event builders, no invented
+// fields; only keys actually present are rendered.
+function formatRetryPayloadForDirectSend(payload) {
+  const p = payload || {};
+  const lines = ['🏭 حدث مصنع (إعادة محاولة تلقائية):', '', `الحدث: ${p.event || 'unknown'}`];
+  if (p.reason) lines.push(`السبب: ${p.reason}`);
+  if (p.current_task) lines.push(`المهمة الحالية: ${p.current_task}`);
+  if (p.generated_at) lines.push(`الوقت: ${p.generated_at}`);
+  return lines.join('\n');
+}
+
 async function processPendingRetries() {
   // Audit closure (2026-08-15): dedupe the live queue BEFORE processing. The
   // enqueueRetry() dedup prevents new duplicates, but entries enqueued before
@@ -3784,7 +4166,25 @@ async function processPendingRetries() {
         envVarName: retry.context.envVarName,
         attempt: (retry.attempt || 1) + 1,
       }).catch(() => null);
-      if (result && result.success) replayed++;
+      if (result && result.success) { replayed++; continue; }
+      // Direct-Bot-API fallback (existing telegramDirect module, no new
+      // infra): n8n is frequently down while the Bot API is reachable, and
+      // the entry above only ever replays via the n8n webhook. Fall back
+      // ONLY on transport failure (unreachable/DNS/timeout — n8n provably
+      // received nothing, so no duplicate is possible). An HTTP error
+      // status means n8n is alive and may have processed the event, so it
+      // is left queued exactly as before. A failed n8n attempt already
+      // re-enqueued a fresh entry inside notifyN8nProductionEvent, so a
+      // successful direct send clears again to leave the queue clean.
+      const transportFailed = !result || (result.success === false && result.error && !result.status);
+      if (transportFailed && retry.context.payload) {
+        const direct = await telegramDirect.sendTelegramMessage(
+          formatRetryPayloadForDirectSend(retry.context.payload)).catch(() => null);
+        if (direct && direct.sent) {
+          factoryState.clearRetry(retry.task);
+          replayed++;
+        }
+      }
     }
   }
 
@@ -3993,6 +4393,10 @@ async function runTick() {
   markStep('commission_opportunity_scan');
   actions.push({ step: 'commission_opportunity_scan', ...(await maybeRunDailyCommissionOpportunityScan()) });
 
+  // Affiliate Arm daily health + material-event notify (activation, 2026-09-26).
+  markStep('affiliate_daily_tick');
+  actions.push({ step: 'affiliate_daily_tick', ...(await maybeRunDailyAffiliateTick()) });
+
   // Autonomous Company Evolution Engine, Round 4 (2026-07-29): same
   // once-per-calendar-day pattern as the two report engines immediately
   // above — intake/simulate/decide only, never approve/reject/mark-
@@ -4122,10 +4526,35 @@ async function runTick() {
   markStep('payment_status_check');
   actions.push({ step: 'payment_status_check', ...(await runPaymentStatusCheckTick()) });
 
+  // Real market evidence loop (2026-09-25, market-evidence-gate
+  // directive): one idempotent daily observation cycle. Telegram fires
+  // ONLY inside maybeRunDailyMarketEvidence on material changes;
+  // silence otherwise. Never products/prices/traffic.
+  markStep('market_evidence');
+  actions.push({ step: 'market_evidence', ...(await maybeRunDailyMarketEvidence()) });
+
+  // GSC ownership-verification auto-deploy (2026-09-25): every tick,
+  // not daily-gated -- the step is a cheap inbox readdir that no-ops
+  // until the founder drops Google's file. Zero commercial surface:
+  // never products/prices/checkouts, only the validated verification
+  // artifact via scripts/deploy_gsc_verification.py's own git gating.
+  markStep('gsc_verification_deploy');
+  actions.push({ step: 'gsc_verification_deploy', ...(await maybeDeployGscVerification()) });
+
   // Golden Hunter also runs regardless of dashboard reachability — it's a
   // standalone local Python process, not an HTTP call to the dashboard.
   markStep('golden_hunter');
   actions.push({ step: 'golden_hunter', ...(await maybeRunMarketHunter()) });
+
+  // V5.6 Sec 18 — REALITY_INTEGRITY_CHECK, once per calendar day (same
+  // marker-file gate as every other daily report). The check itself is
+  // read-only over real ledgers; its one write is the small verdict file
+  // data/reality_integrity_verdict.json, which the Founder Command Center
+  // reads in milliseconds instead of re-running the ~70s check per view.
+  // A BLOCKED verdict surfaces on the dashboard instead of PASS — wired at
+  // the FCC layer, never auto-remediated here.
+  markStep('reality_integrity_check');
+  actions.push({ step: 'reality_integrity_check', ...(await maybeRunDailyRealityIntegrityCheck()) });
 
   // Self-Awareness also runs regardless of reachability — an unreachable
   // dashboard is itself an honest, reportable vital sign (see
@@ -4183,7 +4612,8 @@ async function runTick() {
 // Zero-assumption audit follow-up — Medium-High finding, fixed: setInterval
 // does not wait for an async callback to resolve before scheduling the
 // next call. Summing this tick's own real per-step timeouts (health 5s +
-// sales_poll ~45s + market_hunter.py 60s x2 (hunt + golden_hunter) +
+// sales_poll ~45s + market_hunter.py 600s (hunt/golden_hunter share one
+// once-per-day call; raised 2026-09-24 after measuring ~4.6s/candidate) +
 // generate-book 180s + distribute 140s) shows a single real tick can
 // plausibly approach or exceed the 10-minute INTERVAL_MS once real
 // (non-dry-run) generation/distribution calls start firing — this has
@@ -4347,9 +4777,11 @@ module.exports = {
   runEvolutionOutcomeMeasurementCycle, maybeMeasureEvolutionOutcomes,
   runGenerateDailyExecutiveDirective, maybeGenerateDailyExecutiveDirective,
   runCommissionOpportunityScan, maybeRunDailyCommissionOpportunityScan,
+  runAffiliateDailyTick, maybeRunDailyAffiliateTick, formatAffiliateNotificationBatch,
   runRecordDailyGrowthStageSnapshot, maybeRecordDailyGrowthStageSnapshot,
   runRecordDailyCommercialReadinessSnapshot, maybeRecordDailyCommercialReadinessSnapshot,
   runDailyEvidenceRecordingAudit, maybeRunDailyEvidenceRecordingAudit,
+  runDailyRealityIntegrityCheck, maybeRunDailyRealityIntegrityCheck,
   runSeoDistribution, maybeRunDailySeoDistribution,
   runGoldenHunterRefresh, maybeRunDailyGoldenRefresh,
   runExperimentCycle, maybeRunDailyExperimentCycle,
@@ -4361,6 +4793,8 @@ module.exports = {
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
   maybeRunMarketHunter, maybeRunSelfAwareness,
+  listGscInboxCandidates, maybeDeployGscVerification,
+  runMarketEvidenceCycle, maybeRunDailyMarketEvidence,
   readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction, pollSales,
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
   appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted,
@@ -4369,7 +4803,7 @@ module.exports = {
   checkNeedsAttention, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
   checkPendingAiCeoDecision,
   checkPendingReview, countPendingReviewDrafts, writeNeedsReview, clearNeedsReview,
-  acquireLock, releaseLock, isPidAlive, LOCK_FILE,
+  acquireLock, releaseLock, isPidAlive, isPidAliveWithIdentity, LOCK_FILE,
   safeTick,
   sendDesktopNotification,
   notifyGoldenHunterAccepted,
@@ -4377,4 +4811,5 @@ module.exports = {
   processPendingRetries,
   expireStaleRetries,
   dedupePendingRetries,
+  formatRetryPayloadForDirectSend,
 };
