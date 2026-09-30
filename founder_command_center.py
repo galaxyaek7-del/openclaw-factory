@@ -460,6 +460,21 @@ def _risk_of(packet):
     return "MEDIUM"
 
 
+def _normalize_queue_risk(raw):
+    """V67 -- queue risk values are free text (e.g. 'low-medium (public
+    voice)'); the old [:6] truncation produced non-enum values like
+    'LOW-ME' that break the dashboard contract. Normalize to the enum,
+    escalating toward caution on compounds (HIGH > MEDIUM > LOW)."""
+    text = str(raw or "MEDIUM").upper()
+    if "HIGH" in text:
+        return "HIGH"
+    if "MEDIUM" in text:
+        return "MEDIUM"
+    if "LOW" in text:
+        return "LOW"
+    return "MEDIUM"
+
+
 def _founder_actions_section():
     try:
         import founder_next_action
@@ -530,7 +545,7 @@ def _founder_actions_section():
             "what_factory_already_did": "Prepared and reversible (%s)." % f.get("reversible", "check details"),
             "what_happens_if_approved": "Opens real market measurement for this channel.",
             "what_you_need_to_do": str(f.get("exact_action", "Review the item."))[:300],
-            "risk": str(f.get("risk", "MEDIUM")).upper()[:6] or "MEDIUM",
+            "risk": _normalize_queue_risk(f.get("risk", "MEDIUM")),
             "choices": ["Approve", "Reject", "Defer"],
         })
     one = (nxt.get("one_next_action") or {}).get("action", "No founder gate is currently open.")
@@ -582,7 +597,9 @@ def _operations_section():
                       if not i.get("incident_id") or i.get("incident_id") not in resolved_ids]
     _ = open_ids  # documented: dedupe key, resolution checked above
     return {
-        "factory_state": ("Idle -- nothing in flight."
+        "factory_state": ("Idle -- no factory task in flight. (Factory task queue only; "
+                          "live market experiments are reported separately under "
+                          "live_market_experiment.)"
                           if not factory_state.get("current_task") else "Working on a task."),
         "active_experiments": experiments,
         "blocked_operations": blocked + [
