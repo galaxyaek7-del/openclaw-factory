@@ -1,1 +1,19 @@
-{"entries":[{"confidence":"direct reads","date":"2026-09-30","human_response":0,"interaction":"none available (accounts/walls)","problem":"SOC2 evidence ops (versioning, mapping, reactive tooling)","scene":"HN Ask thread (5 substantive comments)","segment":"startup founders/ops","source":"hn-algolia","urgency":"UNRESOLVED","wtp":"UNKNOWN"}],"updated_at":"2026-09-30"}
+{
+ "entries": [
+  {
+   "confidence": "direct reads",
+   "date": "2026-09-30",
+   "human_response": 0,
+   "interaction": "none available (accounts/walls)",
+   "problem": "SOC2 evidence ops (versioning, mapping, reactive tooling)",
+   "scene": "HN Ask thread (5 substantive comments)",
+   "segment": "startup founders/ops",
+   "source": "hn-algolia",
+   "urgency": "UNRESOLVED",
+   "wtp": "UNKNOWN",
+   "created": "2026-09-30",
+   "last_validated": "2026-09-30"
+  }
+ ],
+ "updated_at": "2026-09-30"
+}

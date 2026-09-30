@@ -1,1 +1,89 @@
-{"rules":[{"established":"2026-09-30","rule":"freelancer-thread mining prohibited (supply, not demand)"},{"established":"2026-09-30","rule":"PullPush retry only 24h+ after 429"},{"established":"2026-09-30","rule":"law/workplace empty queries deprioritized"},{"established":"2026-09-30","rule":"employment-only surfaces are not service-buyer channels"},{"established":"2026-09-30","rule":"old non-interactive threads are intelligence only, never response targets"},{"established":"2026-09-30","rule":"404 surfaces not retried without restoration evidence"},{"established":"2026-09-30","rule":"Q&A posting needs accounts; never bypass, record wall and rotate"}],"updated_at":"2026-09-30"}
+{
+ "rules": [
+  {
+   "established": "2026-09-30",
+   "rule": "freelancer-thread mining prohibited (supply, not demand)",
+   "created": "2026-09-30",
+   "last_validated": "2026-09-30",
+   "confidence": "HIGH",
+   "what_happened": "HN thread mined; 110 supply vs 1 irrelevant demand",
+   "why_mattered": "prevents systematic demand overestimation",
+   "what_learned": "supplier crowds never equal demand",
+   "what_changes": "freelancer threads excluded from buyer discovery",
+   "revisit_condition": "only if thread format changes to verified buyer-posting"
+  },
+  {
+   "established": "2026-09-30",
+   "rule": "PullPush retry only 24h+ after 429",
+   "created": "2026-09-30",
+   "last_validated": "2026-09-30",
+   "confidence": "HIGH",
+   "what_happened": "429 on first call",
+   "why_mattered": "hammering wastes quota + risks ban",
+   "what_learned": "transient throttle, not signal",
+   "what_changes": "24h minimum before retry",
+   "revisit_condition": "after 24h with a new query"
+  },
+  {
+   "established": "2026-09-30",
+   "rule": "law/workplace empty queries deprioritized",
+   "created": "2026-09-30",
+   "last_validated": "2026-09-30",
+   "confidence": "MEDIUM",
+   "what_happened": "0 results on both",
+   "why_mattered": "empty queries cost calls",
+   "what_learned": "these segments don't ask there",
+   "what_changes": "deprioritized, not deleted",
+   "revisit_condition": "new query angle with justification"
+  },
+  {
+   "established": "2026-09-30",
+   "rule": "employment-only surfaces are not service-buyer channels",
+   "created": "2026-09-30",
+   "last_validated": "2026-09-30",
+   "confidence": "HIGH",
+   "what_happened": "RemoteOK 99 postings, all employment",
+   "why_mattered": "hiring is not buying",
+   "what_learned": "labor surfaces excluded from service-buyer search",
+   "what_changes": "RemoteOK-class sources skipped for demand",
+   "revisit_condition": "if a contractor-request (not employment) section appears"
+  },
+  {
+   "established": "2026-09-30",
+   "rule": "old non-interactive threads are intelligence only, never response targets",
+   "created": "2026-09-30",
+   "last_validated": "2026-09-30",
+   "confidence": "HIGH",
+   "what_happened": "8-month-old SOC2 thread, no account to reply",
+   "why_mattered": "necro-replies + no surface = no value",
+   "what_learned": "aged threads are intelligence only",
+   "what_changes": "never set as response targets",
+   "revisit_condition": "if a fresh thread with postable surface appears"
+  },
+  {
+   "established": "2026-09-30",
+   "rule": "404 surfaces not retried without restoration evidence",
+   "created": "2026-09-30",
+   "last_validated": "2026-09-30",
+   "confidence": "HIGH",
+   "what_happened": "CF v2 + IH post 404",
+   "why_mattered": "dead-end probing wastes calls",
+   "what_learned": "verify liveness once, then drop",
+   "what_changes": "no retry without restoration evidence",
+   "revisit_condition": "restoration evidence"
+  },
+  {
+   "established": "2026-09-30",
+   "rule": "Q&A posting needs accounts; never bypass, record wall and rotate",
+   "created": "2026-09-30",
+   "last_validated": "2026-09-30",
+   "confidence": "HIGH",
+   "what_happened": "Reddit 403, SE login walls",
+   "why_mattered": "bypass attempts risk bans + violate policy",
+   "what_learned": "walls are data: record and rotate",
+   "what_changes": "walls recorded as blockers, never bypassed",
+   "revisit_condition": "founder-provided account (founder action)"
+  }
+ ],
+ "updated_at": "2026-09-30"
+}
