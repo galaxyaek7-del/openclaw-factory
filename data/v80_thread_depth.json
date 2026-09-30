@@ -1,0 +1,17 @@
+[
+ {
+  "title": "Repeated migration failures",
+  "url": "https://wordpress.org/support/topic/repeated-migration-failures/",
+  "snippet": "Press.org Get WordPress WordPress.org Forums Welcome to Support Guidelines Get involved Log in Welcome to Support Guidelines Get involved Log in Skip to content Forums / Plugin:&nbsp; UpdraftPlus: WP Backup &amp; Migration Plugin / Repeated migration failures Search for: Search forums Repeated migration failures wmconlon (@wmconlon) 1 week, 1 day ago This is a continuation of https://teamupdraft.com/forums/ticket/repeated-migration-failures/#post-7545677 which was closed out prematurely. Essentially, I was using the SendTo feature to migrate sites. The backup to the new sites reported success. Repeatedly, the restoration on the new site failed due to a defective archive. Updraft support says: Just to clarify, the backup archive is checked for completeness/integrity when the restoration process attempts to unpack and restore it. This is why the transfer itself may complete, but an issue with an archive may only become apparent when the restoration begins. An incomplete or corrupted arch"
+ },
+ {
+  "title": "Restore failure",
+  "url": "https://wordpress.org/support/topic/restore-failure-13/",
+  "snippet": "Press.org Get WordPress WordPress.org Forums Welcome to Support Guidelines Get involved Log in Welcome to Support Guidelines Get involved Log in Skip to content Forums / Plugin:&nbsp; UpdraftPlus: WP Backup &amp; Migration Plugin / Restore failure Search for: Search forums Restore failure Resolved stellr (@stellr) 1 month ago I upload a copy of my prod backup objects and restore periodically. I tried the process today and it failed to restore. The log msgs: 0000.044 () Entering maintenance mode 0000.044 () Enabling Maintenance mode\u2026 0000.045 () is_stored_routine_supported(): An error occurred while attempting to check the support of stored routines creation (You do not have the SUPER privilege and binary logging is enabled (you might want to use the less safe log_bin_trust_function_creators variable) &#8211; CREATE FUNCTION updraft_test_stored_routine() RETURNS tinyint(1) DETERMINISTIC READS SQL DATA RETURN true) 0000.045 () Backup of: https://hopetowalk.org 0000.046 () Content URL: ht"
+ },
+ {
+  "title": "Failed Back-Up Attempts",
+  "url": "https://wordpress.org/support/topic/failed-back-up-attempts/",
+  "snippet": "Press.org Get WordPress WordPress.org Forums Welcome to Support Guidelines Get involved Log in Welcome to Support Guidelines Get involved Log in Skip to content Forums / Plugin:&nbsp; UpdraftPlus: WP Backup &amp; Migration Plugin / Failed Back-Up Attempts Search for: Search forums Failed Back-Up Attempts Resolved kjhatzi (@kjhatzi) 1 month ago Hi there, I have tried multiple times over the last month to back-up my site, but I keep getting his error message: UpdraftPlus WordPress backup is complete. Backup contains: Files and database (Full backup) Latest status: The backup attempt has finished, apparently unsuccessfully I tried to use Pastebin to post the log.txt, but it&#8217;s not working for me. Maybe because it&#8217;s such a large file?? Any suggestions? Thank you for your help! The page I need help with: [ log in to see the link] Viewing 14 replies - 1 through 14 (of 14 total) Plugin Contributor bcrodua (@bcrodua) 4 weeks, 1 day ago Hi, Apologies for the delay. Kindly upload the "
+ }
+]
