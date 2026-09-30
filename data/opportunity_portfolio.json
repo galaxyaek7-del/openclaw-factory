@@ -9,7 +9,7 @@
    "next_test": "view/response check in 48h",
    "problem": "SOC2 evidence collection/versioning/mapping burden",
    "response_path": "NONE available",
-   "status": "VALIDATING",
+   "status": "SECONDARY",
    "wtp": "UNKNOWN",
    "evidence_level": "B (thread) + E2 page live",
    "last_test": "telegraph value page (views baseline 1)",
@@ -44,6 +44,20 @@
    "wtp": "UNKNOWN",
    "reason_for_priority": "0-for-N sources; reopen on buyer request/urgency event",
    "buyer_defined": "PARTIAL"
+  },
+  {
+   "problem": "B2B lead database build (explicit request, budget, deadline)",
+   "buyer": "business (vertical unknown)",
+   "evidence": "A:DIRECT_BUYING_SIGNAL(obs) C:DECLARED_WTP \\-250(obs) D-H: NONE",
+   "confidence": "MEDIUM (request verified; buyer identity unknown)",
+   "channel": "freelancer.com (read ok; bid needs account)",
+   "response_path": "bid button (founder-gated)",
+   "wtp": "DECLARED \\-250 (to market)",
+   "cost_to_test": "one bid (founder action)",
+   "next_test": "submit bid on approval",
+   "reopen_condition": "n/a (active)",
+   "status": "PROMISING",
+   "reason_for_priority": "only hypothesis with direct request+budget+deadline"
   }
  ],
  "updated_at": "2026-09-30"

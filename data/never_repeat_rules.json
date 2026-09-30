@@ -83,6 +83,17 @@
    "what_learned": "walls are data: record and rotate",
    "what_changes": "walls recorded as blockers, never bypassed",
    "revisit_condition": "founder-provided account (founder action)"
+  },
+  {
+   "rule": "treating employment-like listings ($/hr ongoing roles) as service fits",
+   "what_happened": "Lead Research Assistant \\-8/hr, 79 bids: ongoing role, not fixed scope",
+   "why_mattered": "bidding wastes founder action on unwinnable/unsuitable work",
+   "what_learned": "filter fixed-scope deliverables only",
+   "what_changes": "hourly ongoing roles auto-rejected",
+   "revisit_condition": "never (structural)",
+   "created": "2026-09-30",
+   "last_validated": "2026-09-30",
+   "confidence": "HIGH"
   }
  ],
  "updated_at": "2026-09-30"

@@ -13,6 +13,17 @@
    "wtp": "UNKNOWN",
    "created": "2026-09-30",
    "last_validated": "2026-09-30"
+  },
+  {
+   "created": "2026-09-30",
+   "last_validated": "2026-09-30",
+   "confidence": "HIGH (3 independent requests)",
+   "segment": "freelancer buyer-request board",
+   "problem": "explicit service requests with budget+deadline",
+   "scene": "public project listings (readable, no auth)",
+   "source": "freelancer.com",
+   "interaction": "none yet (account wall)",
+   "commercial_outcome": "pending founder bid decision"
   }
  ],
  "updated_at": "2026-09-30"
