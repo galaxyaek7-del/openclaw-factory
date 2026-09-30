@@ -154,6 +154,17 @@ Become the world's most intelligent, secure, trusted and continuously evolving d
 
 ---
 
+## FOUNDER-DEPENDENCY DOCTRINE
+
+Adopted 2026-09-30, per the founder's Factory CTO directive (V71 gate-preparation cycle):
+
+1. The factory is responsible for reducing dependence on the founder, not for increasing the number of requests addressed to them.
+2. Every Founder Gate must be justified by an authority the factory does not hold, a risk it is not permitted to bear, or a strategic decision that cannot be derived from evidence.
+3. Test success does not mean company success. Passing code proves only the tested code is sound. Commercial progress requires independent commercial evidence.
+4. When the factory can detect a problem and solve it safely, it does not wait for the founder.
+
+---
+
 ## FINAL DIRECTIVE
 
 Know more than yesterday. Build better than yesterday. Protect better than yesterday. Learn faster than yesterday. Create more value than yesterday.
@@ -167,3 +178,4 @@ Know more than yesterday. Build better than yesterday. Protect better than yeste
 | Date | Change |
 |---|---|
 | 2026-07-31 | Added "TRUTH FIRST" — the founder's "Truth First Constitution" directive, declared the company's highest law. See `OpenClaw_Brain/00_Governance/TRUTH_FIRST_CONSTITUTION.md` (ADR-160) for the full mechanism and real compliance audit. This document had no amendment-history table before now; added following `CONSTITUTION.md`'s own established convention. |
+| 2026-09-30 | Added "FOUNDER-DEPENDENCY DOCTRINE" (4 rules) — per the founder's Factory CTO gate-preparation directive (V71): reduce founder dependence; justify every gate; test success ≠ company success; solve safely without waiting. |
