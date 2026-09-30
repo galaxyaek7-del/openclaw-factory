@@ -1,0 +1,127 @@
+[
+ {
+  "title": "Corrupt tables",
+  "date": "Mon, 28 Sep 2026",
+  "class": "E"
+ },
+ {
+  "title": "Backup completed but 0 bytes copied",
+  "date": "Sat, 26 Sep 2026",
+  "class": "E"
+ },
+ {
+  "title": "Regarding \u201cClass not found in onboarding.php:89\u201d",
+  "date": "Sat, 26 Sep 2026",
+  "class": "E"
+ },
+ {
+  "title": "Backup causing critical error",
+  "date": "Wed, 23 Sep 2026",
+  "class": "C"
+ },
+ {
+  "title": "Backup finished (But not?)",
+  "date": "Wed, 23 Sep 2026",
+  "class": "E"
+ },
+ {
+  "title": "Repeated migration failures",
+  "date": "Tue, 22 Sep 2026",
+  "class": "C"
+ },
+ {
+  "title": "Implicitly marking parameter $client as nullable is deprecated",
+  "date": "Mon, 14 Sep 2026",
+  "class": "E"
+ },
+ {
+  "title": "why is malware scanning flagging updraft",
+  "date": "Sat, 12 Sep 2026",
+  "class": "E"
+ },
+ {
+  "title": "What will happen on \u201cRescan remote storage\u201d in 2026 (using Google Drive)",
+  "date": "Sat, 12 Sep 2026",
+  "class": "E"
+ },
+ {
+  "title": "Restoring a backup",
+  "date": "Fri, 11 Sep 2026",
+  "class": "E"
+ },
+ {
+  "title": "Expert Support acknowledgement",
+  "date": "Fri, 11 Sep 2026",
+  "class": "E"
+ },
+ {
+  "title": "Impossible to complete Google Drive authentication for Updraft",
+  "date": "Tue, 08 Sep 2026",
+  "class": "E"
+ },
+ {
+  "title": "Automatic backup and also manual backup not working in free version",
+  "date": "Mon, 07 Sep 2026",
+  "class": "C"
+ },
+ {
+  "title": "Backups not uploading to Googe Drive",
+  "date": "Tue, 01 Sep 2026",
+  "class": "E"
+ },
+ {
+  "title": "Backup Attempted Finished Unsuccessfully (Newbie)",
+  "date": "Tue, 01 Sep 2026",
+  "class": "E"
+ },
+ {
+  "title": "Restore failure",
+  "date": "Mon, 31 Aug 2026",
+  "class": "C"
+ },
+ {
+  "title": "Failed Back-Up Attempts",
+  "date": "Sat, 29 Aug 2026",
+  "class": "C"
+ },
+ {
+  "title": "No backups and process lags",
+  "date": "Tue, 25 Aug 2026",
+  "class": "E"
+ },
+ {
+  "title": "Your translation template is resetting and adding old strings",
+  "date": "Fri, 21 Aug 2026",
+  "class": "E"
+ },
+ {
+  "title": "Restore fails on Windows server, file permissions issue",
+  "date": "Thu, 20 Aug 2026",
+  "class": "C"
+ },
+ {
+  "title": "WP 7.1 Warning",
+  "date": "Thu, 20 Aug 2026",
+  "class": "E"
+ },
+ {
+  "title": "No backup since August 12th",
+  "date": "Tue, 18 Aug 2026",
+  "class": "E"
+ },
+ {
+  "title": "Downloading \u2013 Website blocked due to suspicious content",
+  "date": "Sun, 16 Aug 2026",
+  "class": "E"
+ },
+ {
+  "title": "Restore fails for no apparent reason",
+  "date": "Sat, 15 Aug 2026",
+  "class": "C"
+ },
+ {
+  "title": "Backup has failed since August 6, 2026",
+  "date": "Thu, 13 Aug 2026",
+  "class": "C"
+ }
+]
