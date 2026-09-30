@@ -1,0 +1,119 @@
+{
+ "at": "2026-09-30T10:09:14.131343+00:00",
+ "signals": {
+  "revenue_usd": {
+   "value": 0,
+   "source": "finance_data.json",
+   "timestamp": "2026-09-25T11:16:36.403Z",
+   "evidence_type": "OBSERVED",
+   "confidence": "HIGH (authoritative ledger)"
+  },
+  "sale_rows": {
+   "value": 0,
+   "source": "finance_data.json",
+   "timestamp": "2026-09-25T11:16:36.403Z",
+   "evidence_type": "OBSERVED",
+   "confidence": "HIGH"
+  },
+  "sales_ledger_rows": {
+   "value": 94,
+   "source": "data/sales_ledger.jsonl",
+   "timestamp": "2026-09-30T10:09:14.131343+00:00",
+   "evidence_type": "OBSERVED",
+   "confidence": "HIGH"
+  },
+  "sales_ledger_sale_like": {
+   "value": 0,
+   "source": "data/sales_ledger.jsonl",
+   "timestamp": "2026-09-30T10:09:14.131343+00:00",
+   "evidence_type": "DERIVED",
+   "confidence": "HIGH (keyword scan; 0 found)"
+  },
+  "sales_ledger_kinds": {
+   "value": {
+    "publish_attempt": 94
+   },
+   "source": "data/sales_ledger.jsonl",
+   "timestamp": "2026-09-30T10:09:14.131343+00:00",
+   "evidence_type": "OBSERVED",
+   "confidence": "HIGH"
+  },
+  "exp_responses": {
+   "value": [],
+   "source": "data/nostr_sub_observation.json",
+   "timestamp": "2026-09-28T07:24:16Z",
+   "evidence_type": "OBSERVED",
+   "confidence": "HIGH"
+  },
+  "exp_classification": {
+   "value": "EXPOSURE_EXECUTED / MARKET_RESPONSE_UNKNOWN",
+   "source": "data/nostr_sub_observation.json",
+   "timestamp": "2026-09-28T07:24:16Z",
+   "evidence_type": "OBSERVED",
+   "confidence": "HIGH"
+  },
+  "monitor_last_ts": {
+   "value": "2026-09-29T09:24:37Z",
+   "source": "data/monitoring_log.jsonl",
+   "timestamp": "2026-09-30T10:09:14.131343+00:00",
+   "evidence_type": "OBSERVED",
+   "confidence": "HIGH"
+  },
+  "monitor_last_responses": {
+   "value": 0,
+   "source": "data/monitoring_log.jsonl",
+   "timestamp": "2026-09-29T09:24:37Z",
+   "evidence_type": "OBSERVED",
+   "confidence": "HIGH"
+  },
+  "monitor_sub_rows": {
+   "value": 14,
+   "source": "data/monitoring_log.jsonl",
+   "timestamp": "2026-09-30T10:09:14.131343+00:00",
+   "evidence_type": "OBSERVED",
+   "confidence": "HIGH"
+  },
+  "attribution_rows": {
+   "value": 100000,
+   "source": "data/attribution_log.jsonl",
+   "timestamp": "2026-09-30T10:09:14.131343+00:00",
+   "evidence_type": "OBSERVED",
+   "confidence": "MEDIUM (unverified stream)"
+  },
+  "attribution_real_rows": {
+   "value": 99995,
+   "source": "data/attribution_log.jsonl",
+   "timestamp": "2026-09-30T10:09:14.131343+00:00",
+   "evidence_type": "DERIVED",
+   "confidence": "MEDIUM (self-declared classification)"
+  },
+  "affiliate_clicks": {
+   "value": 25,
+   "source": "data/affiliate_clicks.jsonl",
+   "timestamp": "2026-09-30T10:09:14.131343+00:00",
+   "evidence_type": "OBSERVED",
+   "confidence": "HIGH"
+  },
+  "interest_signals": {
+   "value": 0,
+   "source": "data/customer_interest.jsonl+data/interest_ledger.jsonl",
+   "timestamp": "2026-09-30T10:09:14.131343+00:00",
+   "evidence_type": "OBSERVED",
+   "confidence": "MEDIUM (intake ledgers, unverified)"
+  },
+  "published_books": {
+   "value": 0,
+   "source": "config/reality.json",
+   "timestamp": "2026-09-30T10:09:14.131343+00:00",
+   "evidence_type": "OBSERVED",
+   "confidence": "HIGH"
+  }
+ },
+ "last_proven_stage": "EXPOSURE",
+ "first_unproven_stage": "RESPONSE",
+ "commercial_bottleneck": {
+  "bottleneck": "NO_RESPONSE_YET",
+  "evidence": "responses=[] revenue=0 sale_like=0",
+  "safe_action": "WAIT_FOR_EVIDENCE (window open to 2026-10-02T03:00Z)"
+ }
+}
