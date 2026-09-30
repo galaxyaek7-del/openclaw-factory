@@ -1,0 +1,20 @@
+{
+ "opportunity_id": "OPP-FL-LEADGEN-001",
+ "source": "freelancer.com/projects (public read)",
+ "date": "2026-09-30",
+ "buyer_type": "business building quality lead database (unknown vertical)",
+ "problem": "needs high-quality lead database built",
+ "explicit_request": "YES: B2B Lead Generation Specialist, \\-250 USD, paid on delivery, 6-day window",
+ "buyer_signal_class": "DIRECT_BUYING_SIGNAL",
+ "urgency_signal": "HIGH (posted 4 min ago, 21 proposals already)",
+ "current_workaround": "outsourcing via marketplace (21 competing bids)",
+ "possible_service": "lead research + verified database delivery",
+ "estimated_delivery_scope": "SMALL (scoped list build)",
+ "price_hypothesis": "UNKNOWN (must undercut/justify vs \\ avg bid)",
+ "wtp_evidence": "STRONG-INFERRED (posted budget range = stated WTP, not yet offered to us)",
+ "contact_or_response_path": "Freelancer bid button (ACCOUNT REQUIRED)",
+ "policy_constraint": "no account; no bid without founder-owned identity",
+ "next_external_action": "founder packet: create/authorize bidding identity, then bid",
+ "evidence_class": "OBSERVED (page read live)",
+ "confidence": "HIGH (verbatim budget + deadline + bid count)"
+}
