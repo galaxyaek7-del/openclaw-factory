@@ -1,0 +1,41 @@
+{
+ "at": "2026-10-01T20:00:00+00:00",
+ "channels": [
+  {
+   "channel": "owned-pages-seo",
+   "verdict": "EXECUTABLE publish / NO_VERIFIED_DISTRIBUTION_PATH for reach",
+   "note": "live, no counter, inbox UNKNOWN"
+  },
+  {
+   "channel": "telegraph-guides",
+   "verdict": "EXECUTABLE publish / NO_VERIFIED_DISTRIBUTION_PATH for reach",
+   "note": "6 pages live, clickable CTAs, no counter"
+  },
+  {
+   "channel": "freelancer-bids",
+   "verdict": "BLOCKED_BY_EXTERNAL_AUTH",
+   "note": "grant outstanding; resume armed"
+  },
+  {
+   "channel": "associates-links",
+   "verdict": "BLOCKED_BY_EXTERNAL_AUTH",
+   "note": "tag outstanding; funnel tracked, alert armed"
+  },
+  {
+   "channel": "gumroad-paddle-checkout",
+   "verdict": "BLOCKED_BY_EXTERNAL_AUTH",
+   "note": "onboarding; poll clean-zero"
+  },
+  {
+   "channel": "direct-email-outreach",
+   "verdict": "BLOCKED_BY_EXTERNAL_AUTH",
+   "note": "no SMTP creds; mailto inbound UNKNOWN"
+  },
+  {
+   "channel": "community-replies-reddit-hn-quora-x",
+   "verdict": "BLOCKED_BY_EXTERNAL_AUTH",
+   "note": "accounts required; none available"
+  }
+ ],
+ "gap_diagnosis": "missing link is AUDIENCE REACH + INBOUND VISIBILITY: offers live and clickable, but every surface with real buyer concentration needs an account; no-account surfaces exhausted without repetition"
+}
