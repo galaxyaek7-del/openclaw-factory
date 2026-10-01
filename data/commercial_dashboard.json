@@ -38,24 +38,22 @@
  },
  "founder_actions": [
   {
-   "exact": "ONE consolidated action: (a) confirm KDP listing 40743207 still biddable; (b) via own Freelancer session submit prepared KDP bid (\\-90 + experience note + real sample) if biddable, else stand down; (c) relay any buyer reply on lead-gen 40742370 or KDP. No new account needed beyond the single bidding identity already requested.",
-   "why_automation_cannot": "authenticated human-owned identity + session auth are non-delegable; factory never touches credentials; award-state only confirmable in-session",
+   "exact": "ONE-TIME OAuth grant: register/authorize app at developers.freelancer.com, set FREELANCER_OAUTH_TOKEN in local .env (never in chat). Eliminates all future per-opportunity manual submits and unlocks inbox monitoring.",
+   "why_automation_cannot": "account ownership plus MFA/ToS acceptance are non-delegable; token issuance needs founder browser session",
    "platform": "freelancer.com",
-   "cost": "\\ (bidding free; buyer pays on delivery via escrow)",
-   "risk": "40 (KDP) + 10 (lead-gen) competing proposals; KDP may already be awarded (In Progress flag)",
-   "deadline": "lead-gen ~6-day window closing; KDP unknown \u2014 act only if biddable",
-   "after": "factory resumes public-page monitoring for status/bid-count/award changes; buyer reply triggers response-draft cycle",
+   "cost": "zero (bidding free)",
+   "risk": "least-privilege token in .env only; revocable anytime; every automated call audit-logged; bounded by bounded_commercial_policy.json",
+   "deadline": "none (lead-gen monitoring autonomous meanwhile)",
+   "after": "factory wires authenticated write path behind policy preconditions; per-opportunity submit actions end permanently",
    "status": "OPEN"
   }
  ],
  "freelancer_opportunity": {
-  "status": "OPEN (live-verified 2026-10-01; terms unchanged)",
-  "budget": "\\-250, paid on delivery",
-  "deadline": "~6 days (Ends in 6 days, live)",
-  "bid_count": "10 proposals shown on page 2026-10-01 (was 21, then 70; discrepancy noted \u2014 cache/pagination/repost possible; neutral)",
-  "avg_bid": "\\ (page-stated average)",
-  "buyer": "Buffalo US, 0.0/0 reviews, member since Sep 2026, payment verified",
-  "submission": "S2-founder-reported (unchanged; not independently verifiable from public page)"
+  "status": "OPEN (PLATFORM_VERIFIED 2026-10-01: active/open, fixed, budget 30-250)",
+  "deadline": "~6 days",
+  "bid_count": "71 total (API bid_stats; page shows first 10 \u2014 pagination resolved)",
+  "bid_avg": 124.89,
+  "submission": "S2-founder-reported (unchanged)"
  },
  "buyer_engagement": {
   "messages_received": 0,
@@ -75,15 +73,10 @@
   "secret_checks": "0 hits in new artifacts",
   "technical_issues": "none open"
  },
- "updated_at": "2026-10-01T09:00:00+00:00",
+ "updated_at": "2026-10-01T09:30:00+00:00",
  "kdp_typesetting": {
-  "status": "VERIFIED + PROPOSAL_READY, FOUNDER_ACTION_REQUIRED (confirm biddable first)",
-  "budget": "\\-100, paid on delivery (verified live 2026-10-01)",
-  "deadline": "UNKNOWN (no Ends-in shown)",
-  "posted": "~4h before read",
-  "proposals_seen": 40,
-  "buyer": "Rosenberg US, 5.0/16, member 2019, payment verified",
-  "award_flag": "page reads In Progress (not Open) \u2014 may be awarded; submit ONLY if confirmed biddable",
-  "proposal": "packet ready, \\-90 fixed, quality-checked 9/9"
+  "status": "CLOSED/LEARNED \u2014 awarded elsewhere (closed_awarded, final 40 bids); packet correctly never submitted",
+  "budget": "30-100 (verified, now moot)",
+  "action": "NONE"
  }
 }

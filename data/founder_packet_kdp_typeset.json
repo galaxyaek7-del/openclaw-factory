@@ -91,5 +91,6 @@
   "payment_authorization": "none (buyer pays on delivery via escrow)",
   "after_submit": "factory resumes public-page monitoring; buyer reply (if any) relayed by founder"
  },
- "opportunity_id": "OPP-KDP-TYPESET-001"
+ "opportunity_id": "OPP-KDP-TYPESET-001",
+ "status": "SUPERSEDED 2026-10-01 — awarded elsewhere (closed_awarded); prepared bid never submitted; retained as reusable template"
 }

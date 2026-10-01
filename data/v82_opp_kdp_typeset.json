@@ -8,7 +8,7 @@
  "opportunity_id": "OPP-KDP-TYPESET-001",
  "outcome_sought": "scoped bid within \\-100 only if biddable; else close truthfully",
  "source": "freelancer.com/projects/pdf/amazon-kdp-typesetting-specialist-needed (Project ID 40743207)",
- "status": "VERIFIED (requirements verified live 2026-10-01; award-risk: page shows In Progress)",
+ "status": "CLOSED/LEARNED (awarded elsewhere \u2014 PLATFORM_VERIFIED 2026-10-01: closed/closed_awarded/work_in_progress, final 40 bids)",
  "work_type": "KDP typesetting for 2 books",
  "requirements_verified": [
   "Word manuscripts, proof-read (buyer-provided)",
@@ -23,5 +23,7 @@
  "feasibility": "FEASIBLE pipeline-assisted; conditional on buyer Word files + trim/page-count answers",
  "expected_effort": "6-9h (intake 0.5, typeset 4.0, QA 1.5, handover 0.5)",
  "award_risk": "Page status reads In Progress (not Open) \u2014 may already be awarded; verify biddable before any submit; never assume open",
- "next_action": "founder verifies biddable + submits prepared bid via own session, or stands down if awarded"
+ "next_action": "NONE (closed); pattern reused for future KDP scans via freelancer_api.py",
+ "close_evidence": "public API get_project(40743207): closed/closed_awarded/work_in_progress; packet prepared but never submitted (correct \u2014 award flag raised S3-REVENUE-02)",
+ "learning": "published project != biddable: always check sub_status via freelancer_api before packet effort; page In-Progress text == closed_awarded"
 }
