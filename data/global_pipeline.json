@@ -125,9 +125,49 @@
   {
    "id": 40744281,
    "reason": "REJECTED: out-of-scope IT-admin"
+  },
+  {
+   "id": 40744320,
+   "reason": "REJECTED: out-of-scope screen S3-COMMAND-07"
+  },
+  {
+   "id": 40744303,
+   "reason": "REJECTED: out-of-scope screen S3-COMMAND-07"
+  },
+  {
+   "id": 40744268,
+   "reason": "REJECTED: out-of-scope screen S3-COMMAND-07"
+  },
+  {
+   "id": 40744146,
+   "reason": "REJECTED: out-of-scope screen S3-COMMAND-07"
+  },
+  {
+   "id": 40743041,
+   "reason": "REJECTED: out-of-scope screen S3-COMMAND-07"
+  },
+  {
+   "id": 40744356,
+   "reason": "REJECTED: out-of-scope screen S3-COMMAND-07"
+  },
+  {
+   "id": 40744349,
+   "reason": "REJECTED: out-of-scope screen S3-COMMAND-07"
+  },
+  {
+   "id": 40744334,
+   "reason": "REJECTED: out-of-scope screen S3-COMMAND-07"
+  },
+  {
+   "id": 40744297,
+   "reason": "REJECTED: out-of-scope screen S3-COMMAND-07"
+  },
+  {
+   "id": 40744284,
+   "reason": "REJECTED: out-of-scope screen S3-COMMAND-07"
   }
  ],
- "at": "2026-10-01T16:00:00+00:00",
+ "at": "2026-10-01T17:00:00+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
