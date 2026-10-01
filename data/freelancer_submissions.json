@@ -23,9 +23,9 @@
  },
  "40744185": {
   "price_usd": 250.0,
-  "status": "BLOCKED_NO_TOKEN",
+  "status": "CLOSED_UNSUBMITTED",
   "idempotency_key": "bid-40744185-once",
-  "evidence": "PREPARED"
+  "evidence": "API 404 twice 2026-10-01"
  },
  "40744193": {
   "price_usd": 47.5,

@@ -37,18 +37,6 @@
    "fit": "MEDIUM (layout fits; proofreading excluded explicitly)"
   },
   {
-   "id": 40744185,
-   "title": "Precise PDF to Word Conversion",
-   "budget": [
-    250.0,
-    750.0
-   ],
-   "bids": 28,
-   "price": 250.0,
-   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)",
-   "fit": "HIGH (doc pipeline: python-docx + QA)"
-  },
-  {
    "id": 40744193,
    "title": "Past Employment Verification",
    "budget": [
@@ -77,9 +65,21 @@
   {
    "id": 40744044,
    "reason": "REJECTED: price 425 above policy max 250 + PII phone-scraping legal risk"
+  },
+  {
+   "id": 40744185,
+   "reason": "CLOSED/REMOVED 2026-10-01: API 404 Object-does-not-exist twice; prepared bid never sent; idempotency key retired unused"
+  },
+  {
+   "id": 40744316,
+   "reason": "REJECTED: budget 10-15 below policy min 30"
+  },
+  {
+   "id": 40744160,
+   "reason": "REJECTED: budget 750+ above policy max 250"
   }
  ],
- "at": "2026-10-01T12:30:00+00:00",
+ "at": "2026-10-01T13:30:00+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
