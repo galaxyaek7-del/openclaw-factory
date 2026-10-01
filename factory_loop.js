@@ -3692,6 +3692,63 @@ async function maybeNotifyPaddleCheckoutReady() {
   return { action: 'none', detail: `لا يزال Paddle checkout غير مفعَّل (${result.totalProducts} منتج حقيقي مفحوص) — لا تنبيه جديد` };
 }
 
+// ── FREELANCER GRANT RESUME (Founder Order, 2026-10-01) ──
+// Runs every tick, not daily-gated: the single remaining Founder exception
+// (one-time Freelancer OAuth grant) should resume in one tick, not "whenever
+// someone next looks." Spawns freelancer_resume.py --once, which is a clean
+// no-op (exit 0, {"token_present": false}) until the grant exists, and only
+// then walks validate → verify → idempotency → submit → verify → record.
+// This step never sees the token (only TOKEN_PRESENT true/false in output),
+// never spends, never bypasses platform security.
+function runFreelancerGrantResume({ timeoutMs = 60000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'freelancer_resume.py'), '--once'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل freelancer_resume.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة freelancer_resume.py (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        finish({ ok: true, token_present: !!result.token_present, action: result.action || 'none' });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج freelancer_resume.py: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+
+    python.stdin.end();
+  });
+}
+
+async function maybeResumeFreelancerGrant() {
+  const result = await runFreelancerGrantResume();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  if (!result.token_present) {
+    return { action: 'none', detail: 'منحة Freelancer OAuth غير موجودة بعد — الاستثناء الوحيد المتبقي (فحص نظيف، بلا فشل)' };
+  }
+  return { action: result.action, detail: `تم رصد منحة Freelancer — إجراء الاستئناف: ${result.action}` };
+}
+
 // ── CONTINUOUS TRUST & RESILIENCE MONITORING ──
 // resilience_monitor.py's assess_resilience() + record_incidents_for_
 // findings() in one call (mission_control_api.py's resilience_monitor_
@@ -4507,6 +4564,12 @@ async function runTick() {
   markStep('paddle_checkout_notification');
   actions.push({ step: 'paddle_checkout_notification', ...(await maybeNotifyPaddleCheckoutReady()) });
 
+  // Freelancer Grant Resume (Founder Order, 2026-10-01): every tick — the
+  // single remaining Founder exception resumes automatically the tick after
+  // the one-time OAuth grant lands. Clean no-op until then.
+  markStep('freelancer_grant_resume');
+  actions.push({ step: 'freelancer_grant_resume', ...(await maybeResumeFreelancerGrant()) });
+
   // Continuous Trust & Resilience Monitoring (2026-07-29): runs every
   // tick, not daily-gated — this is meant to be the closest thing to
   // "real-time" a scheduler-less factory can honestly offer, same
@@ -4790,6 +4853,7 @@ module.exports = {
   runKnowledgeGraphDailySnapshot, maybeGenerateDailyKnowledgeGraph,
   runGeneratePendingBusinessBlueprints, maybeGenerateBusinessBlueprintsForNewAcceptedDecisions,
   runResilienceMonitorTick, newIncidentTelegramReasons, runPaymentStatusCheckTick,
+  runFreelancerGrantResume, maybeResumeFreelancerGrant,
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
   maybeRunMarketHunter, maybeRunSelfAwareness,
