@@ -1,0 +1,22 @@
+{
+ "gumroad": {
+  "ok": true,
+  "dry": true,
+  "err": "NONE"
+ },
+ "etsy": {
+  "ok": false,
+  "dry": true,
+  "err": "arm not ready: unavailable"
+ },
+ "payhip": {
+  "ok": false,
+  "dry": true,
+  "err": "arm not ready: unavailable"
+ },
+ "paddle": {
+  "ok": true,
+  "dry": true,
+  "err": "NONE"
+ }
+}

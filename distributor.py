@@ -58,6 +58,13 @@ import channels.paddle_arm  # noqa: F401,E402
 # Requires X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET.
 import channels.x_arm  # noqa: F401,E402
 
+# S3-ARMS-01 (2026-10-01): self-registers "kdp" — was importable via
+# channels.kdp_arm directly but never wired into the distributor path, so
+# distribute(..., arm_names=["kdp"]) always returned "not registered".
+# Same self-registration pattern as every arm above; dry-run behavior
+# unchanged (KDP has no API — validate-only by design).
+import channels.kdp_arm  # noqa: F401,E402
+
 
 # Operational product lock (Commercial Closure, 2026-09-17): the live EU
 # AI Act Compliance Toolkit must never be touched by automation except

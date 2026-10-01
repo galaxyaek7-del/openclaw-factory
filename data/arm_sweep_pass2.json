@@ -1,0 +1,15 @@
+{
+ "pass": 2,
+ "at": "2026-10-01T11:30:00+00:00",
+ "fix": "distributor.py now imports channels.kdp_arm (kdp was never registered in distribute path)",
+ "verdicts": {
+  "gumroad": "DRY-OK",
+  "paddle": "DRY-OK",
+  "etsy": "attempted/not-ready (no creds \u2014 external gate)",
+  "payhip": "attempted/not-ready (no creds \u2014 external gate)",
+  "kdp": "attempted/not-ready (no API exists \u2014 validate-only by design)",
+  "x": "attempted/not-ready (no X creds \u2014 external gate)",
+  "freelancer": "LIVE-OK (lead-gen active/open, 71 bids)"
+ },
+ "regressions": "8 passed (distributor_protected + distro_matrix)"
+}
