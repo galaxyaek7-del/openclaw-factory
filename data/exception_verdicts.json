@@ -1,0 +1,19 @@
+{
+ "at": "2026-10-01T15:00:00+00:00",
+ "exceptions": [
+  {
+   "id": "FREELANCER_OAUTH_AUTHORIZATION",
+   "capability_present": false,
+   "automation_possible": false,
+   "external_action_required": true,
+   "proof": "no token in env; issuance needs founder browser session on founder-owned MFA account + developer app registration; factory holds no account, no credentials, and must never request passwords/MFA"
+  },
+  {
+   "id": "AFFILIATE_ASSOCIATES_TAG_CONFIGURATION",
+   "capability_present": false,
+   "automation_possible": false,
+   "external_action_required": true,
+   "proof": "tag issuance needs real Associates account (identity + tax + approval); system cannot create accounts (standing rule); links build and earn zero until then"
+  }
+ ]
+}
