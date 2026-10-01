@@ -54,6 +54,24 @@ def get_project(project_id):
     return _get("/projects/0.1/projects/%d/" % int(project_id))
 
 
+def _get_with_params(path, params):
+    import urllib.parse
+
+    qs = urllib.parse.urlencode(params)
+    return _get("%s?%s" % (path, qs))
+
+
+def search_active(query, limit=10, offset=0):
+    """Public project search (no auth). Returns list of raw project dicts."""
+    res = _get_with_params(
+        "/projects/0.1/projects/active/",
+        {"query": query, "limit": int(limit), "offset": int(offset)},
+    )
+    if isinstance(res, dict):
+        return res.get("projects", [])
+    return res
+
+
 def summarize_project(project_id):
     """Minimal verified-facts projection. No inference, no ranking, no WTP claims."""
     p = get_project(project_id)

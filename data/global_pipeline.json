@@ -1,0 +1,56 @@
+{
+ "active": [
+  {
+   "id": 40742370,
+   "title": "B2B Lead Generation Specialist Needed",
+   "budget": [
+    30.0,
+    250.0
+   ],
+   "bids": 71,
+   "price": 124.89,
+   "state": "SUBMITTED-founder-reported + API-monitored",
+   "fit": "HIGH (research + verification pipeline)"
+  },
+  {
+   "id": 40742604,
+   "title": "Upload Book to KDP & IngramSpark",
+   "budget": [
+    30.0,
+    250.0
+   ],
+   "bids": 76,
+   "price": 113.11,
+   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)",
+   "fit": "HIGH (KDP specs + upload QA + inspectors)"
+  },
+  {
+   "id": 40741347,
+   "title": "Proofread & Format KDP Book (40k words)",
+   "budget": [
+    250.0,
+    750.0
+   ],
+   "bids": 157,
+   "price": 250.0,
+   "state": "QUALIFIED-CONDITIONAL format-only bid, editing excluded (submit BLOCKED_NO_TOKEN)",
+   "fit": "MEDIUM (layout fits; proofreading excluded explicitly)"
+  }
+ ],
+ "rejected": [
+  {
+   "id": 40743843,
+   "reason": "REJECTED: full-colour fixed-layout children book — illustration/layout outside reportlab-prose pipeline"
+  },
+  {
+   "id": 40743805,
+   "reason": "REJECTED: illustrator refinement — illustration outside capability"
+  },
+  {
+   "id": 40741254,
+   "reason": "REJECTED: marketing consultancy — outside capability"
+  }
+ ],
+ "at": "2026-10-01T11:00:00+00:00",
+ "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant"
+}

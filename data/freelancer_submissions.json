@@ -8,5 +8,17 @@
   "status": "BLOCKED_NO_TOKEN",
   "evidence": "PREPARED (not submitted \u2014 no fabricated submission claim)",
   "blocker": "one-time OAuth grant outstanding"
+ },
+ "40742604": {
+  "price_usd": 113.11,
+  "status": "BLOCKED_NO_TOKEN",
+  "idempotency_key": "bid-40742604-once",
+  "evidence": "PREPARED"
+ },
+ "40741347": {
+  "price_usd": 250.0,
+  "status": "BLOCKED_NO_TOKEN",
+  "idempotency_key": "bid-40741347-once",
+  "evidence": "PREPARED (format-only, editing excluded)"
  }
 }
