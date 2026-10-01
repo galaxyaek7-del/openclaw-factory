@@ -89,9 +89,33 @@
   {
    "id": 40744193,
    "reason": "CLOSED 2026-10-01: status closed/complete (was buyer-frozen) — conclusive; prepared bid never sent"
+  },
+  {
+   "id": 40744216,
+   "reason": "REJECTED: out-of-scope + over-bounds"
+  },
+  {
+   "id": 40744156,
+   "reason": "REJECTED: employment-risk + under-min"
+  },
+  {
+   "id": 40744155,
+   "reason": "REJECTED: out-of-scope"
+  },
+  {
+   "id": 40744254,
+   "reason": "REJECTED: over-bounds"
+  },
+  {
+   "id": 40744278,
+   "reason": "REJECTED: translation-excluded"
+  },
+  {
+   "id": 40744152,
+   "reason": "REJECTED: over-bounds"
   }
  ],
- "at": "2026-10-01T15:00:00+00:00",
+ "at": "2026-10-01T15:30:00+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
