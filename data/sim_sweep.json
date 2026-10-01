@@ -1,0 +1,38 @@
+{
+ "gumroad": {
+  "attempted": true,
+  "ok": true,
+  "skip": null,
+  "err": "PublishResult(ok=True, platform='gumroad', product_id=None, url=None, error=None, dry_run=True)"
+ },
+ "payhip": {
+  "attempted": true,
+  "ok": false,
+  "skip": null,
+  "err": "PublishResult(ok=False, platform='payhip', product_id=None, url=None, error='arm not ready: unavailable', dry_run=True)"
+ },
+ "etsy": {
+  "attempted": true,
+  "ok": false,
+  "skip": null,
+  "err": "PublishResult(ok=False, platform='etsy', product_id=None, url=None, error='arm not ready: unavailable', dry_run=True)"
+ },
+ "paddle": {
+  "attempted": true,
+  "ok": true,
+  "skip": null,
+  "err": "PublishResult(ok=True, platform='paddle', product_id=None, url=None, error=None, dry_run=True)"
+ },
+ "x": {
+  "attempted": true,
+  "ok": false,
+  "skip": null,
+  "err": "PublishResult(ok=False, platform='x', product_id=None, url=None, error='arm not ready: unavailable', dry_run=True)"
+ },
+ "kdp": {
+  "attempted": true,
+  "ok": false,
+  "skip": null,
+  "err": "PublishResult(ok=False, platform='kdp', product_id=None, url=None, error='arm not ready: unavailable', dry_run=True)"
+ }
+}
