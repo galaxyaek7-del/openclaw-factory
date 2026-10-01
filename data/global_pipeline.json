@@ -113,9 +113,21 @@
   {
    "id": 40744152,
    "reason": "REJECTED: over-bounds"
+  },
+  {
+   "id": 40744325,
+   "reason": "REJECTED: out-of-scope CAD"
+  },
+  {
+   "id": 40744324,
+   "reason": "REJECTED: out-of-scope dev"
+  },
+  {
+   "id": 40744281,
+   "reason": "REJECTED: out-of-scope IT-admin"
   }
  ],
- "at": "2026-10-01T15:30:00+00:00",
+ "at": "2026-10-01T16:00:00+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
