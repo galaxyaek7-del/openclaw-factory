@@ -81,6 +81,58 @@ def is_open(summary):
     ) in ("open", "active", None)
 
 
+# Reusable platform logic — lesson S3-DELEGATE-01: PUBLISHED != BIDDABLE.
+# A listing page can render while the project is already awarded/closed
+# (KDP 40743207 read "In Progress" while sub_status was closed_awarded).
+# Every proposal operation must pass is_biddable() first.
+CLOSED_SUB_STATUSES = {
+    "closed_awarded",
+    "closed_completed",
+    "closed_expired",
+    "closed_cancelled",
+    "closed",
+}
+
+
+def biddability(summary):
+    """Returns (biddable: bool, reason: str). Pure function of API fields."""
+    sub = summary.get("sub_status")
+    if sub in CLOSED_SUB_STATUSES:
+        return False, "sub_status=%s (awarded/closed/expired)" % sub
+    if summary.get("status") != "active":
+        return False, "status=%s (not active)" % summary.get("status")
+    if summary.get("frontend_status") not in ("open", "active", None):
+        return (
+            False,
+            "frontend_status=%s (not accepting bids)" % summary.get("frontend_status"),
+        )
+    return True, "active, no closed sub-status, frontend open"
+
+
+def is_biddable(summary):
+    ok, _ = biddability(summary)
+    return ok
+
+
+def select_price(summary, policy_min=30.0, policy_max=250.0):
+    """Autonomous price selection inside policy bounds. Returns (price, basis).
+
+    Logic: anchor at the observed market average when it lies inside both the
+    buyer budget and the policy range (competitive parity, no undercut race);
+    otherwise fall back to the buyer-budget midpoint clipped to policy bounds.
+    Deterministic, explainable, no founder input needed.
+    """
+    avg = summary.get("bid_avg")
+    bmin = summary.get("budget_min") or policy_min
+    bmax = summary.get("budget_max") or policy_max
+    lo = max(policy_min, bmin)
+    hi = min(policy_max, bmax)
+    if avg is not None and lo <= avg <= hi:
+        return round(avg, 2), "market-average parity (avg %.2f inside bounds)" % avg
+    mid = round((lo + hi) / 2.0, 2)
+    return mid, "buyer-budget midpoint clipped to policy bounds"
+
+
 def place_bid(project_id, amount, description, token=None):
     """FAIL-CLOSED: raises FounderAuthorizationRequired unless a token is
     explicitly passed by an authorized caller. No token storage here, ever."""

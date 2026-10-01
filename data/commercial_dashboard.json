@@ -53,7 +53,11 @@
   "deadline": "~6 days",
   "bid_count": "71 total (API bid_stats; page shows first 10 \u2014 pagination resolved)",
   "bid_avg": 124.89,
-  "submission": "S2-founder-reported (unchanged)"
+  "submission": "S2-founder-reported (unchanged)",
+  "proposed_price_usd": 124.89,
+  "price_basis": "market-average parity, inside 30-250 policy",
+  "submission_state": "PREPARED price-selected; SUBMIT BLOCKED_NO_TOKEN (idempotency key bid-40742370-once; no duplicate risk)",
+  "last_revalidated": "2026-10-01T10:00:00+00:00 (active/open, 71 bids)"
  },
  "buyer_engagement": {
   "messages_received": 0,
@@ -73,7 +77,7 @@
   "secret_checks": "0 hits in new artifacts",
   "technical_issues": "none open"
  },
- "updated_at": "2026-10-01T09:30:00+00:00",
+ "updated_at": "2026-10-01T10:00:00+00:00",
  "kdp_typesetting": {
   "status": "CLOSED/LEARNED \u2014 awarded elsewhere (closed_awarded, final 40 bids); packet correctly never submitted",
   "budget": "30-100 (verified, now moot)",

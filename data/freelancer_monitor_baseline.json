@@ -1,0 +1,12 @@
+{
+ "project_id": 40742370,
+ "baseline_at": "2026-10-01T10:00:00+00:00",
+ "baseline_bid_count": 71,
+ "baseline_bid_avg": 124.89,
+ "baseline_status": "active/open",
+ "watch": [
+  "sub_status changes (award/close)",
+  "bid_count deltas",
+  "buyer message via founder relay until inbox authorized"
+ ]
+}

@@ -1,0 +1,12 @@
+{
+ "40742370": {
+  "project_id": 40742370,
+  "price_usd": 124.89,
+  "price_basis": "market-average parity (avg 124.89 inside bounds)",
+  "attempt_at": "2026-10-01T10:00:00+00:00",
+  "idempotency_key": "bid-40742370-once",
+  "status": "BLOCKED_NO_TOKEN",
+  "evidence": "PREPARED (not submitted \u2014 no fabricated submission claim)",
+  "blocker": "one-time OAuth grant outstanding"
+ }
+}
