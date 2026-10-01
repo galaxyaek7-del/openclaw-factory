@@ -1,0 +1,97 @@
+{
+ "arms": {
+  "etsy": {
+   "class": "EtsyArm",
+   "status": true,
+   "supports": true,
+   "publish": true,
+   "status_value": "ArmStatus.UNAVAILABLE",
+   "supports_product": true,
+   "dry": {
+    "attempted": true,
+    "ok": false,
+    "skip": null,
+    "err": "arm not ready: unavailable"
+   }
+  },
+  "gumroad": {
+   "class": "GumroadArm",
+   "status": true,
+   "supports": true,
+   "publish": true,
+   "status_value": "ArmStatus.READY",
+   "supports_product": true,
+   "dry": {
+    "attempted": true,
+    "ok": true,
+    "skip": null,
+    "err": null
+   }
+  },
+  "kdp": {
+   "class": "KdpArm",
+   "status": true,
+   "supports": true,
+   "publish": true,
+   "status_value": "ArmStatus.UNAVAILABLE",
+   "supports_product": true,
+   "dry": {
+    "attempted": true,
+    "ok": false,
+    "skip": null,
+    "err": "arm not ready: unavailable"
+   }
+  },
+  "paddle": {
+   "class": "PaddleArm",
+   "status": true,
+   "supports": true,
+   "publish": true,
+   "status_value": "ArmStatus.READY",
+   "supports_product": true,
+   "dry": {
+    "attempted": true,
+    "ok": true,
+    "skip": null,
+    "err": null
+   }
+  },
+  "payhip": {
+   "class": "PayhipArm",
+   "status": true,
+   "supports": true,
+   "publish": true,
+   "status_value": "ArmStatus.UNAVAILABLE",
+   "supports_product": true,
+   "dry": {
+    "attempted": true,
+    "ok": false,
+    "skip": null,
+    "err": "arm not ready: unavailable"
+   }
+  },
+  "x": {
+   "class": "XArm",
+   "status": true,
+   "supports": true,
+   "publish": true,
+   "status_value": "ArmStatus.UNAVAILABLE",
+   "supports_product": true,
+   "dry": {
+    "attempted": true,
+    "ok": false,
+    "skip": null,
+    "err": "arm not ready: unavailable"
+   }
+  },
+  "freelancer": {
+   "live": true,
+   "project": "closed/work_in_progress",
+   "bids": 72,
+   "biddable": [
+    false,
+    "sub_status=closed_awarded (awarded/closed/expired)"
+   ]
+  }
+ }
+}

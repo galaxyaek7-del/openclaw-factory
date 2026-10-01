@@ -1,0 +1,10 @@
+{
+ "etsy": "ArmStatus.UNAVAILABLE",
+ "gumroad": "ArmStatus.READY",
+ "kdp": "ArmStatus.UNAVAILABLE",
+ "paddle": "ArmStatus.READY",
+ "payhip": "ArmStatus.UNAVAILABLE",
+ "x": "ArmStatus.READY",
+ "freelancer_grant": "ABSENT",
+ "associates_tag": "ABSENT"
+}

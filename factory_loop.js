@@ -3798,6 +3798,55 @@ async function maybeMonitorFreelancerStates() {
   return { action: 'changed', detail: `تغيّرات حالة: ${JSON.stringify(result.changes).slice(0, 300)}` };
 }
 
+function runArmStatusWatch({ timeoutMs = 60000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'arm_status_watch.py'), '--once'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل arm_status_watch.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة arm_status_watch.py (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        finish({ ok: true, checked: result.checked, changes: result.changes || {}, action: result.action || 'silent' });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج arm_status_watch.py: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+
+    python.stdin.end();
+  });
+}
+
+async function maybeWatchArmStatus() {
+  const result = await runArmStatusWatch();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  if (!result.changes || Object.keys(result.changes).length === 0) {
+    return { action: 'none', detail: `حالات الأذرع مستقرة (${result.checked} مفحوصة) — صمت` };
+  }
+  return { action: 'changed', detail: `تغيّر جاهزية الأذرع: ${JSON.stringify(result.changes).slice(0, 300)}` };
+}
+
 // ── CONTINUOUS TRUST & RESILIENCE MONITORING ──
 // resilience_monitor.py's assess_resilience() + record_incidents_for_
 // findings() in one call (mission_control_api.py's resilience_monitor_
@@ -4626,6 +4675,13 @@ async function runTick() {
   markStep('freelancer_state_monitor');
   actions.push({ step: 'freelancer_state_monitor', ...(await maybeMonitorFreelancerStates()) });
 
+  // Arm-Status Watch (S3 arm audit, 2026-10-01): every tick — a newly
+  // present credential flips an arm READY, and this surfaces it in one
+  // tick instead of waiting for a manual audit. Silent unless the READY
+  // set actually changes; never touches credentials (status only).
+  markStep('arm_status_watch');
+  actions.push({ step: 'arm_status_watch', ...(await maybeWatchArmStatus()) });
+
   // Continuous Trust & Resilience Monitoring (2026-07-29): runs every
   // tick, not daily-gated — this is meant to be the closest thing to
   // "real-time" a scheduler-less factory can honestly offer, same
@@ -4911,6 +4967,7 @@ module.exports = {
   runResilienceMonitorTick, newIncidentTelegramReasons, runPaymentStatusCheckTick,
   runFreelancerGrantResume, maybeResumeFreelancerGrant,
   runFreelancerStateMonitor, maybeMonitorFreelancerStates,
+  runArmStatusWatch, maybeWatchArmStatus,
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
   maybeRunMarketHunter, maybeRunSelfAwareness,

@@ -5,8 +5,8 @@
   "price_basis": "market-average parity (avg 124.89 inside bounds)",
   "attempt_at": "2026-10-01T10:00:00+00:00",
   "idempotency_key": "bid-40742370-once",
-  "status": "BLOCKED_NO_TOKEN",
-  "evidence": "PREPARED (not submitted \u2014 no fabricated submission claim)",
+  "status": "CLOSED_UNSUBMITTED",
+  "evidence": "API closed/closed_awarded x2 2026-10-01; winner elsewhere",
   "blocker": "one-time OAuth grant outstanding"
  },
  "40742604": {

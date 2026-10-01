@@ -1,30 +1,6 @@
 {
  "active": [
   {
-   "id": 40742370,
-   "title": "B2B Lead Generation Specialist Needed",
-   "budget": [
-    30.0,
-    250.0
-   ],
-   "bids": 71,
-   "price": 124.89,
-   "state": "SUBMITTED-founder-reported + API-monitored",
-   "fit": "HIGH (research + verification pipeline)"
-  },
-  {
-   "id": 40742604,
-   "title": "Upload Book to KDP & IngramSpark",
-   "budget": [
-    30.0,
-    250.0
-   ],
-   "bids": 76,
-   "price": 113.11,
-   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)",
-   "fit": "HIGH (KDP specs + upload QA + inspectors)"
-  },
-  {
    "id": 40741347,
    "title": "Proofread & Format KDP Book (40k words)",
    "budget": [
@@ -165,9 +141,13 @@
   {
    "id": 40744284,
    "reason": "REJECTED: out-of-scope screen S3-COMMAND-07"
+  },
+  {
+   "id": 40742370,
+   "reason": "CLOSED/LEARNED 2026-10-01: closed_awarded elsewhere (404? no — API closed/closed_awarded x2); our bid stayed PREPARED/BLOCKED, correctly never sent; 72-bid race, no regret"
   }
  ],
- "at": "2026-10-01T17:00:00+00:00",
+ "at": "2026-10-01T22:00:00+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
@@ -177,6 +157,10 @@
   {
    "id": 40744322,
    "reason": "HOLD: possible ongoing sales-role vs project; 0 bids no signal; re-evaluate with description on grant"
+  },
+  {
+   "id": 40742604,
+   "reason": "HOLD 2026-10-01: frozen/frozen_timeout (was active); re-check next cycle, remove if closed/awarded"
   }
  ]
 }
