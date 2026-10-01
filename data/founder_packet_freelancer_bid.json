@@ -56,12 +56,20 @@
   "implication": "competition tripled; win-rate declining; time pressure real"
  },
  "phase": {
-  "opportunity": "VERIFIED (live)",
-  "proposal": "READY",
-  "founder_approval": "REQUIRED (single: submit via own session)",
-  "submitted": "NOT_YET",
+  "opportunity": "VERIFIED OPEN (live read: 70 bids, ends 6d, active)",
+  "proposal": "SUBMITTED-FOUNDER-REPORTED (accepted; independently unverifiable from public page)",
+  "page_corroboration": "project OPEN, terms unchanged; public bid count 70 (lagged cache, neutral)",
   "buyer_response": "NONE",
   "contract": "NONE",
   "revenue": 0
+ },
+ "monitoring": {
+  "cadence": "daily: status open/awarded/closed + bid count + deadline",
+  "watch_for": [
+   "awarded flag",
+   "status closed",
+   "buyer message (via founder relay)"
+  ],
+  "dots": "no account access; public page only"
  }
 }
