@@ -1,0 +1,15 @@
+{
+ "cycle": "S3-MAXSTAGE-01",
+ "at": "2026-10-01T10:30:00+00:00",
+ "drill": [
+  "VERIFY: OPEN platform-verified",
+  "QUALIFY: biddable=True (active, no closed sub-status, frontend open)",
+  "PRICE: 124.89 (market-average parity (avg 124.89 inside bounds))",
+  "IDEMPOTENCY: second attempt refused locally \u2014 no duplicate call issued (state=BLOCKED_NO_TOKEN)",
+  "DELIVERY-DRILL: scope=One verified lead database per agreed criteria, delivered wi; QA=Inclusion-rule check per record + random verificat",
+  "MONITOR-DRILL: bids 71 -> 71 (delta +0); buyer reply: NONE observable"
+ ],
+ "max_realistic_stage": "PROPOSAL_READY + SUBMIT-DRILLED (simulation); hard stop at one-time OAuth grant; delivery + monitoring drilled",
+ "revenue": 0,
+ "cost_usd": 0
+}
