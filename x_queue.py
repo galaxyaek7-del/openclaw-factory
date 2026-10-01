@@ -9,6 +9,19 @@ import os
 
 QUEUE_PATH = "data/x_post_queue.json"
 
+# Placeholders resolved at fire time from env (memory only, never stored):
+#   {{SYSTEME_URL}} -> systeme_affiliate.get_affiliate_url()
+# The tracked URL is NEVER written to the queue file or any log.
+PLACEHOLDERS = ("{{SYSTEME_URL}}",)
+
+
+def _resolve_placeholders(text):
+    if "{{SYSTEME_URL}}" not in text:
+        return text
+    import systeme_affiliate as SA
+
+    return text.replace("{{SYSTEME_URL}}", SA.get_affiliate_url())
+
 
 def _load_dotenv():
     try:
@@ -48,7 +61,8 @@ def main():
                               "reason": str(gate.get("reason"))[:120]}))
             return
         job = S.Product(
-            title="", subtitle="", description=post["text"], price_usd=39.0,
+            title="", subtitle="", description=_resolve_placeholders(post["text"]),
+            price_usd=39.0,
             file_path="", cover_path="", tags=[], language="en",
             source_id=post.get("id", "X-QUEUED-01"), raw_price_hint=None,
             needs_pricing=False, price_source="queued-post",

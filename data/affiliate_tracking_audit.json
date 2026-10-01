@@ -1,0 +1,22 @@
+{
+ "at": "2026-10-01T23:00:00+00:00",
+ "amazon_tag": "MISSING (env+files searched, names-only)",
+ "links_audited_4_4": [
+  {
+   "asin": "B0864RSM5S"
+  },
+  {
+   "asin": "B07LCCT6VS"
+  },
+  {
+   "asin": "B07LCCJD6B"
+  },
+  {
+   "asin": "B0D1C9LBN5"
+  }
+ ],
+ "per_link": "valid product URLs, direct-200 no redirect strip, tracking identifier ABSENT all 4 \u2014 commission impossible",
+ "systeme_path": "ID present+valid+non-placeholder; URL shape ok; merchant landing 200 with attribution preserved; TRACKED path ACTIVE",
+ "secret_note": "affiliate ID (URL-public by design) appeared once in local tool output during verification; never committed, never logged to repo; not reproduced",
+ "decision": "Amazon=ONE_TIME_FOUNDER_AUTHORIZATION (account+tag); X-POST-DESK-AFF-01 stays queued (links valid, page discloses); systeme post queued as first TRACKED distribution"
+}
