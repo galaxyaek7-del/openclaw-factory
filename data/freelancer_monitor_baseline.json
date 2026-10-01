@@ -8,5 +8,37 @@
   "sub_status changes (award/close)",
   "bid_count deltas",
   "buyer message via founder relay until inbox authorized"
- ]
+ ],
+ "projects": {
+  "40742370": {
+   "status": "active",
+   "sub_status": null,
+   "frontend_status": "open",
+   "bid_count": 72
+  },
+  "40742604": {
+   "status": "active",
+   "sub_status": null,
+   "frontend_status": "open",
+   "bid_count": 77
+  },
+  "40741347": {
+   "status": "active",
+   "sub_status": null,
+   "frontend_status": "open",
+   "bid_count": 157
+  },
+  "40744232": {
+   "status": "active",
+   "sub_status": null,
+   "frontend_status": "open",
+   "bid_count": 15
+  },
+  "40744322": {
+   "status": "active",
+   "sub_status": null,
+   "frontend_status": "open",
+   "bid_count": 1
+  }
+ }
 }

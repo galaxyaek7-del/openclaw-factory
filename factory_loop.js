@@ -3749,6 +3749,55 @@ async function maybeResumeFreelancerGrant() {
   return { action: result.action, detail: `تم رصد منحة Freelancer — إجراء الاستئناف: ${result.action}` };
 }
 
+function runFreelancerStateMonitor({ timeoutMs = 60000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'freelancer_monitor.py'), '--once'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل freelancer_monitor.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة freelancer_monitor.py (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        finish({ ok: true, checked: result.checked, changes: result.changes || [], action: result.action || 'silent' });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج freelancer_monitor.py: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+
+    python.stdin.end();
+  });
+}
+
+async function maybeMonitorFreelancerStates() {
+  const result = await runFreelancerStateMonitor();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  if (!result.changes || result.changes.length === 0) {
+    return { action: 'none', detail: `حالات Freelancer مستقرة (${result.checked} مشاريع مفحوصة) — صمت` };
+  }
+  return { action: 'changed', detail: `تغيّرات حالة: ${JSON.stringify(result.changes).slice(0, 300)}` };
+}
+
 // ── CONTINUOUS TRUST & RESILIENCE MONITORING ──
 // resilience_monitor.py's assess_resilience() + record_incidents_for_
 // findings() in one call (mission_control_api.py's resilience_monitor_
@@ -4570,6 +4619,13 @@ async function runTick() {
   markStep('freelancer_grant_resume');
   actions.push({ step: 'freelancer_grant_resume', ...(await maybeResumeFreelancerGrant()) });
 
+  // Freelancer Submission-State Monitor (S3 factory need, 2026-10-01):
+  // every tick — award/close/freeze flips on pipeline projects surface in
+  // one tick instead of waiting for a manual cycle. Silent unless the
+  // monitor reports structured changes; never notifies routinely.
+  markStep('freelancer_state_monitor');
+  actions.push({ step: 'freelancer_state_monitor', ...(await maybeMonitorFreelancerStates()) });
+
   // Continuous Trust & Resilience Monitoring (2026-07-29): runs every
   // tick, not daily-gated — this is meant to be the closest thing to
   // "real-time" a scheduler-less factory can honestly offer, same
@@ -4854,6 +4910,7 @@ module.exports = {
   runGeneratePendingBusinessBlueprints, maybeGenerateBusinessBlueprintsForNewAcceptedDecisions,
   runResilienceMonitorTick, newIncidentTelegramReasons, runPaymentStatusCheckTick,
   runFreelancerGrantResume, maybeResumeFreelancerGrant,
+  runFreelancerStateMonitor, maybeMonitorFreelancerStates,
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
   maybeRunMarketHunter, maybeRunSelfAwareness,
