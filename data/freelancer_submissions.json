@@ -20,5 +20,17 @@
   "status": "BLOCKED_NO_TOKEN",
   "idempotency_key": "bid-40741347-once",
   "evidence": "PREPARED (format-only, editing excluded)"
+ },
+ "40744185": {
+  "price_usd": 250.0,
+  "status": "BLOCKED_NO_TOKEN",
+  "idempotency_key": "bid-40744185-once",
+  "evidence": "PREPARED"
+ },
+ "40744193": {
+  "price_usd": 47.5,
+  "status": "BLOCKED_NO_TOKEN",
+  "idempotency_key": "bid-40744193-once",
+  "evidence": "PREPARED"
  }
 }

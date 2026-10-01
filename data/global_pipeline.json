@@ -35,6 +35,30 @@
    "price": 250.0,
    "state": "QUALIFIED-CONDITIONAL format-only bid, editing excluded (submit BLOCKED_NO_TOKEN)",
    "fit": "MEDIUM (layout fits; proofreading excluded explicitly)"
+  },
+  {
+   "id": 40744185,
+   "title": "Precise PDF to Word Conversion",
+   "budget": [
+    250.0,
+    750.0
+   ],
+   "bids": 28,
+   "price": 250.0,
+   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)",
+   "fit": "HIGH (doc pipeline: python-docx + QA)"
+  },
+  {
+   "id": 40744193,
+   "title": "Past Employment Verification",
+   "budget": [
+    10.0,
+    65.0
+   ],
+   "bids": 6,
+   "price": 47.5,
+   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)",
+   "fit": "MEDIUM (verification research; small scope, low competition)"
   }
  ],
  "rejected": [
@@ -49,8 +73,18 @@
   {
    "id": 40741254,
    "reason": "REJECTED: marketing consultancy — outside capability"
+  },
+  {
+   "id": 40744044,
+   "reason": "REJECTED: price 425 above policy max 250 + PII phone-scraping legal risk"
   }
  ],
- "at": "2026-10-01T11:00:00+00:00",
- "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant"
+ "at": "2026-10-01T12:30:00+00:00",
+ "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
+ "held": [
+  {
+   "id": 40744232,
+   "reason": "HOLD: possible ongoing-VA employment vs project — full description needs auth; re-evaluate on grant"
+  }
+ ]
 }
