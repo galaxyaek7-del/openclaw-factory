@@ -17,5 +17,14 @@
    "live_clickable_cta": true
   }
  ],
- "supersedes": "v1 plain-text-URL versions (immutable, recorded as non-converting)"
+ "supersedes": "v1 plain-text-URL versions (immutable, recorded as non-converting)",
+ "fixes": [
+  {
+   "title": "desk v3",
+   "url": "https://telegra.ph/Desk-Pain-at-3pm-Standing-Desk-Converter-Guide--v3-fixed-link-10-01",
+   "live_clickable_cta": true,
+   "at": "2026-10-01T19:30:00+00:00",
+   "supersedes": "desk v2 (wrong /site/ path, 404 destination)"
+  }
+ ]
 }
