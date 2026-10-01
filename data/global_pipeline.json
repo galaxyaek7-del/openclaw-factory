@@ -35,18 +35,6 @@
    "price": 250.0,
    "state": "QUALIFIED-CONDITIONAL format-only bid, editing excluded (submit BLOCKED_NO_TOKEN)",
    "fit": "MEDIUM (layout fits; proofreading excluded explicitly)"
-  },
-  {
-   "id": 40744193,
-   "title": "Past Employment Verification",
-   "budget": [
-    10.0,
-    65.0
-   ],
-   "bids": 6,
-   "price": 47.5,
-   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)",
-   "fit": "MEDIUM (verification research; small scope, low competition)"
   }
  ],
  "rejected": [
@@ -77,14 +65,42 @@
   {
    "id": 40744160,
    "reason": "REJECTED: budget 750+ above policy max 250"
+  },
+  {
+   "id": 40744300,
+   "reason": "REJECTED: out-of-scope CAD"
+  },
+  {
+   "id": 40744299,
+   "reason": "REJECTED: out-of-scope UE5/VR"
+  },
+  {
+   "id": 40744267,
+   "reason": "REJECTED: licensed-seal liability + out-of-scope"
+  },
+  {
+   "id": 40744180,
+   "reason": "REJECTED: out-of-scope 3D rendering"
+  },
+  {
+   "id": 40744291,
+   "reason": "REJECTED: out-of-scope decor"
   }
  ],
- "at": "2026-10-01T13:30:00+00:00",
+ "at": "2026-10-01T14:30:00+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
    "id": 40744232,
    "reason": "HOLD: possible ongoing-VA employment vs project — full description needs auth; re-evaluate on grant"
+  },
+  {
+   "id": 40744193,
+   "reason": "HOLD 2026-10-01: buyer froze project (status=frozen, frontend still open); not biddable now; re-check next cycle, remove if closed/awarded"
+  },
+  {
+   "id": 40744322,
+   "reason": "HOLD: possible ongoing sales-role vs project; 0 bids no signal; re-evaluate with description on grant"
   }
  ]
 }
