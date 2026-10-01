@@ -3847,6 +3847,55 @@ async function maybeWatchArmStatus() {
   return { action: 'changed', detail: `تغيّر جاهزية الأذرع: ${JSON.stringify(result.changes).slice(0, 300)}` };
 }
 
+function runQueuedXPost({ timeoutMs = 90000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'x_queue.py'), '--once'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل x_queue.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة x_queue.py (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        finish({ ok: true, checked: result.checked, action: result.action || 'silent' });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج x_queue.py: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+
+    python.stdin.end();
+  });
+}
+
+async function maybeSendQueuedXPost() {
+  const result = await runQueuedXPost();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  if (result.action === 'sent') {
+    return { action: 'sent', detail: 'تم نشر منشور X المُعدّ عبر الموزع (حماية + دفتر enforced)' };
+  }
+  return { action: 'none', detail: `منشور X: ${result.action} — صمت/انتظار` };
+}
+
 // ── CONTINUOUS TRUST & RESILIENCE MONITORING ──
 // resilience_monitor.py's assess_resilience() + record_incidents_for_
 // findings() in one call (mission_control_api.py's resilience_monitor_
@@ -4682,6 +4731,13 @@ async function runTick() {
   markStep('arm_status_watch');
   actions.push({ step: 'arm_status_watch', ...(await maybeWatchArmStatus()) });
 
+  // Queued X-Post Executor (S3 fruitful cycle, 2026-10-01): every tick —
+  // a queued, truthful, zero-cost post fires through distributor (publish
+  // protection + ledger enforced, safe-mode respected). Silent unless a
+  // post is due and allowed; protection-holds are expected states.
+  markStep('x_queued_post');
+  actions.push({ step: 'x_queued_post', ...(await maybeSendQueuedXPost()) });
+
   // Continuous Trust & Resilience Monitoring (2026-07-29): runs every
   // tick, not daily-gated — this is meant to be the closest thing to
   // "real-time" a scheduler-less factory can honestly offer, same
@@ -4968,6 +5024,7 @@ module.exports = {
   runFreelancerGrantResume, maybeResumeFreelancerGrant,
   runFreelancerStateMonitor, maybeMonitorFreelancerStates,
   runArmStatusWatch, maybeWatchArmStatus,
+  runQueuedXPost, maybeSendQueuedXPost,
   booksProducedSince, revenueSince, healingActionsSince,
   recordRejectedNiche, readRejectedNiches, isNicheRejected, summarizeInspectionFailure,
   maybeRunMarketHunter, maybeRunSelfAwareness,
