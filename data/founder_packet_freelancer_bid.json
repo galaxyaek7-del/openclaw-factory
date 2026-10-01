@@ -1,1 +1,67 @@
-{"commercial_proposal":{"boundaries":["No guaranteed lead volume beyond delivered batch","No conversion/revenue promises","No exclusive data ownership claims beyond delivered file","No real-time/ongoing monitoring in this fixed scope"],"clarification_questions":["Target geography?","Target industry/vertical?","Target company size?","Required decision-maker role/title?","Required fields per lead?","How many leads?","Verification standard (spot-check vs full)?","Delivery format (CSV/Sheet)?","Duplicate policy vs your existing base?"],"delivery_schedule":"Day 1-2: criteria lock + source mapping. Day 3-4: collection + verification. Day 5: QA + delivery. Day 6: one revision round.","delivery_scope":"One verified lead database per agreed criteria, delivered within the 6-day window","execution":{"output":"CSV/Sheet: agreed fields, deduped, spot-verified sample","process":"Define criteria from answers → map public sources → collect → verify sample → QA → deliver","quality_method":"Inclusion-rule check per record + random verification sample + dedupe pass"},"input":"Buyer answers to clarification set (geography, vertical, size, role, fields, volume)","opening":"I build verified B2B lead lists to exact criteria — scoped, deduped, and delivered fast. Your 6-day window fits: criteria lock day 1-2, verified delivery by day 5, revision buffer day 6.","price_hypothesis":"Within buyer range $30-250; scoped quote after clarification answers (volume × verification depth)","understanding":"You need a high-quality lead database, not a raw scrape: exact titles, verified fields, no duplicates against your base."},"delivery_timeline":"6 days (matches buyer window)","founder_gate":{"account":"Freelancer bidding identity (create/authorize) + MFA if prompted","authentication":"login owned by founder; factory never touches credentials","delivery_support":"none needed (delivery = file handoff via platform)","expected_unlock":"bid submission on OPP-FL-LEADGEN-001 within window","legal":"platform terms accepted by account owner at signup","maximum_bid_boundary":"At or below buyer range midpoint unless volume justifies more; exact figure set after clarification answers","payment_authorization":"none (buyer pays on delivery via platform escrow)","what_account":"Single Freelancer.com freelancer identity owned by founder","why":"bidding requires authenticated human-owned identity; factory cannot create/operate accounts"},"max_risks":["21 competing bids (win-rate low)","Criteria answers may narrow/expand scope beyond 6 days","Budget floor $30 may not cover deep verification — quote accordingly"],"opportunity_id":"OPP-FL-LEADGEN-001"}
+{
+ "commercial_proposal": {
+  "boundaries": [
+   "No guaranteed lead volume beyond delivered batch",
+   "No conversion/revenue promises",
+   "No exclusive data ownership claims beyond delivered file",
+   "No real-time/ongoing monitoring in this fixed scope"
+  ],
+  "clarification_questions": [
+   "Target geography?",
+   "Target industry/vertical?",
+   "Target company size?",
+   "Required decision-maker role/title?",
+   "Required fields per lead?",
+   "How many leads?",
+   "Verification standard (spot-check vs full)?",
+   "Delivery format (CSV/Sheet)?",
+   "Duplicate policy vs your existing base?"
+  ],
+  "delivery_schedule": "Day 1-2: criteria lock + source mapping. Day 3-4: collection + verification. Day 5: QA + delivery. Day 6: one revision round.",
+  "delivery_scope": "One verified lead database per agreed criteria, delivered within the 6-day window",
+  "execution": {
+   "output": "CSV/Sheet: agreed fields, deduped, spot-verified sample",
+   "process": "Define criteria from answers \u2192 map public sources \u2192 collect \u2192 verify sample \u2192 QA \u2192 deliver",
+   "quality_method": "Inclusion-rule check per record + random verification sample + dedupe pass"
+  },
+  "input": "Buyer answers to clarification set (geography, vertical, size, role, fields, volume)",
+  "opening": "I build verified B2B lead lists to exact criteria \u2014 scoped, deduped, and delivered fast. Your 6-day window fits: criteria lock day 1-2, verified delivery by day 5, revision buffer day 6.",
+  "price_hypothesis": "Within buyer range $30-250; scoped quote after clarification answers (volume \u00d7 verification depth)",
+  "understanding": "You need a high-quality lead database, not a raw scrape: exact titles, verified fields, no duplicates against your base."
+ },
+ "delivery_timeline": "6 days (matches buyer window)",
+ "founder_gate": {
+  "account": "Freelancer bidding identity (create/authorize) + MFA if prompted",
+  "authentication": "login owned by founder; factory never touches credentials",
+  "delivery_support": "none needed (delivery = file handoff via platform)",
+  "expected_unlock": "bid submission on OPP-FL-LEADGEN-001 within window",
+  "legal": "platform terms accepted by account owner at signup",
+  "maximum_bid_boundary": "At or below buyer range midpoint unless volume justifies more; exact figure set after clarification answers",
+  "payment_authorization": "none (buyer pays on delivery via platform escrow)",
+  "what_account": "Single Freelancer.com freelancer identity owned by founder",
+  "why": "bidding requires authenticated human-owned identity; factory cannot create/operate accounts",
+  "how_to_submit": "Log in to your Freelancer account, open the project URL, paste the prepared proposal text, set bid within boundary, submit. Factory cannot operate your session (no credential handling)."
+ },
+ "max_risks": [
+  "21 competing bids (win-rate low)",
+  "Criteria answers may narrow/expand scope beyond 6 days",
+  "Budget floor $30 may not cover deep verification \u2014 quote accordingly"
+ ],
+ "opportunity_id": "OPP-FL-LEADGEN-001",
+ "live_recheck": {
+  "at": "2026-10-01T07:30:00+00:00",
+  "status": "OPEN, active 25 min ago",
+  "proposals": "70 (was 21)",
+  "avg_bid": 125,
+  "implication": "competition tripled; win-rate declining; time pressure real"
+ },
+ "phase": {
+  "opportunity": "VERIFIED (live)",
+  "proposal": "READY",
+  "founder_approval": "REQUIRED (single: submit via own session)",
+  "submitted": "NOT_YET",
+  "buyer_response": "NONE",
+  "contract": "NONE",
+  "revenue": 0
+ }
+}
