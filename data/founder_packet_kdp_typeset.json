@@ -1,1 +1,95 @@
-{"commercial_proposal":{"boundaries":["No cover design unless requested (interior only)","No ghostwriting/editing (manuscript is proof-read)","No guaranteed KDP approval (platform decision)","One revision round included; structural rewrites excluded"],"clarification_questions":["Trim size? (default 6x9in if unspecified)","Paperback interior, ebook, or both?","Page count per book? Images/tables/figures?","Any special fonts or chapter styles?"],"delivery_schedule":"Day 1: files + specs lock. Day 2-3: Book 1 interior + QA. Day 4: Book 2 interior + QA. Day 5: revision buffer + handover.","delivery_scope":"2 print-ready KDP interiors (PDF) from provided Word manuscripts","effort_estimate":{"handover":0.5,"hours_total":"6-9","qa":1.5,"typeset":4.0,"intake":0.5},"execution":{"output":"Print-ready PDFs + source files used","process":"Ingest Word via pipeline tooling -> apply KDP trim/margin/typography rules -> automated QA (inspectors) -> human read-through -> deliver","quality_method":"inspectors.py Dual Inspection (page count, dimensions, empty pages, placeholder scan) + read-through"},"input":"Buyer Word manuscripts + answers to 4 clarification questions","opening":"I typeset print-ready KDP interiors from finished manuscripts â€” clean typography, correct trim and margins, QA-checked page by page. Two books, one week, fixed scope.","price_hypothesis":"$60-90 fixed for both books (within buyer $30-100; reflects ~6-9h pipeline-assisted + QA work)","understanding":"Manuscript is finished and proof-read; need is professional interior transformation for 2 books."},"deadline":"~6 days","delivery_readiness":{"capabilities":["book_generator pipeline","reportlab layout","python-docx ingest (verified installed)","inspectors QA","covers (if later requested)"],"dependencies_on_buyer":["Word files + 4 spec answers"],"qa":"Dual Inspection + read-through","risks":["complex tables/images unknown until files seen (covered by clarification gate)"]},"founder_gate":{"account":"same Freelancer bidding identity as lead-gen packet","authentication":"founder-owned session only","maximum_bid_boundary":"$60-90 fixed (inside buyer range)","payment_authorization":"none (buyer pays on delivery via escrow)","what":"submit prepared KDP bid via own session"},"opportunity_id":"OPP-KDP-TYPESET-001"}
+{
+ "commercial_proposal": {
+  "boundaries": [
+   "No cover design unless requested (interior only)",
+   "No ghostwriting/editing (manuscript is proof-read)",
+   "No guaranteed KDP approval (platform decision)",
+   "One revision round included; structural rewrites excluded"
+  ],
+  "clarification_questions": [
+   "Trim size? (default 6x9in if unspecified)",
+   "Paperback interior, ebook, or both?",
+   "Page count per book? Images/tables/figures?",
+   "Any special fonts or chapter styles?"
+  ],
+  "delivery_schedule": "Day 1: files + specs lock. Day 2-3: Book 1 interior + QA. Day 4: Book 2 interior + QA. Day 5: revision buffer + handover.",
+  "delivery_scope": "2 print-ready KDP interiors (Kindle + paperback PDF, correct trim, embedded fonts, TOC links, bleed/margins) + hand-off guide (styles/settings)",
+  "effort_estimate": {
+   "handover": 0.5,
+   "hours_total": "6-9",
+   "qa": 1.5,
+   "typeset": 4.0,
+   "intake": 0.5
+  },
+  "execution": {
+   "output": "Print-ready PDFs + source files used",
+   "process": "Ingest Word via pipeline tooling -> apply KDP trim/margin/typography rules -> automated QA (inspectors) -> human read-through -> deliver",
+   "quality_method": "inspectors.py Dual Inspection (page count, dimensions, empty pages, placeholder scan) + read-through"
+  },
+  "input": "Buyer Word manuscripts + trim/page-count/image answers + KDP-experience note + real prior-format sample (books/eu_ai_act_compliance_toolkit.pdf)",
+  "opening": "I typeset print-ready KDP interiors from finished manuscripts â€” clean typography, correct trim and margins, QA-checked page by page. Two books, one week, fixed scope.",
+  "price_hypothesis": "\\-90 fixed for both books (inside buyer \\-100; reflects ~6-9h pipeline-assisted + QA work)",
+  "understanding": "Buyer (Rosenberg US, 5.0/16, verified payment) has 2 finished proof-read Word manuscripts; needs Kindle + paperback interiors meeting all KDP specs, plus hand-off guide. Bid must include KDP-experience note + prior-format sample.",
+  "assumptions": [
+   "Manuscripts final/proof-read (buyer-stated)",
+   "Standard prose interiors; no complex math/children-fixed-layout",
+   "Trim defaults 6x9in unless buyer specifies",
+   "English language unless stated"
+  ],
+  "exclusions": [
+   "Cover design (interior only)",
+   "Ghostwriting/editing",
+   "Guaranteed KDP approval (platform decision)",
+   "Structural rewrites; one revision round included"
+  ],
+  "dependencies": [
+   "Buyer Word files",
+   "Trim size + page-count/image answers",
+   "Biddable status confirmed (page currently reads In Progress)"
+  ],
+  "risks": [
+   "Award-risk: page shows In Progress — may already be awarded; confirm biddable first",
+   "Complex tables/images unknown until files seen (clarification gate)",
+   "40 competing proposals — win-rate low",
+   "Revision creep beyond one round (bounded explicitly)"
+  ],
+  "quality_checks": [
+   "Answers buyer stated problem directly",
+   "Deliverables measurable (upload-clean PDFs + guide)",
+   "Scope bounded (2 books, fixed)",
+   "Price inside buyer range, effort-backed",
+   "Timeline 5 days realistic pipeline-assisted",
+   "Assumptions/exclusions explicit",
+   "No fabricated credentials — sample is real existing PDF",
+   "Revisions bounded to one round",
+   "Deliverable with existing pipeline: YES"
+  ]
+ },
+ "deadline": "UNKNOWN (no Ends-in on page; never assume)",
+ "delivery_readiness": {
+  "capabilities": [
+   "book_generator pipeline",
+   "reportlab layout",
+   "python-docx ingest (verified installed)",
+   "inspectors QA",
+   "covers (if later requested)"
+  ],
+  "dependencies_on_buyer": [
+   "Word files + 4 spec answers"
+  ],
+  "qa": "Dual Inspection + read-through",
+  "risks": [
+   "complex tables/images unknown until files seen (covered by clarification gate)"
+  ],
+  "sample": "books/eu_ai_act_compliance_toolkit.pdf (real existing product, honestly presented as sample of formatted interior)"
+ },
+ "founder_gate": {
+  "account": "same Freelancer bidding identity as lead-gen packet (single consolidated identity decision)",
+  "precondition": "confirm listing still biddable (page reads In Progress — if awarded, stand down, no submit)",
+  "what": "submit prepared KDP bid (\\-90) + experience note + real sample via own session",
+  "authentication": "founder-owned session only; factory never touches credentials",
+  "payment_authorization": "none (buyer pays on delivery via escrow)",
+  "after_submit": "factory resumes public-page monitoring; buyer reply (if any) relayed by founder"
+ },
+ "opportunity_id": "OPP-KDP-TYPESET-001"
+}

@@ -1,1 +1,27 @@
-{"budget":"UNKNOWN (not captured at discovery; verify before any bid)","buyer":"UNKNOWN (page not depth-read yet)","competition":"UNKNOWN","deadline":"UNKNOWN (verify)","evidence_class":"OBSERVED (title/URL from public listing)","fit":"HIGH (book pipeline: generation + covers + QA exist)","opportunity_id":"OPP-KDP-TYPESET-001","outcome_sought":"verify budget/deadline, then prepare scoped bid","source":"freelancer.com public listing (saved scan)","status":"DISCOVERED (not yet verified live)","work_type":"KDP typesetting for 2 books"}
+{
+ "budget": "\\-100 USD, paid on delivery (verified live)",
+ "buyer": "Rosenberg, US | 5.0 (16 reviews) | member since May 2019 | payment verified",
+ "competition": "40 proposals (page count, live)",
+ "deadline": "UNKNOWN (no Ends-in shown on page; do NOT assume 6 days)",
+ "evidence_class": "OBSERVED (verbatim page read 2026-10-01)",
+ "fit": "HIGH (book_generator + reportlab + inspectors QA exist; python-docx ingest verified installed)",
+ "opportunity_id": "OPP-KDP-TYPESET-001",
+ "outcome_sought": "scoped bid within \\-100 only if biddable; else close truthfully",
+ "source": "freelancer.com/projects/pdf/amazon-kdp-typesetting-specialist-needed (Project ID 40743207)",
+ "status": "VERIFIED (requirements verified live 2026-10-01; award-risk: page shows In Progress)",
+ "work_type": "KDP typesetting for 2 books",
+ "requirements_verified": [
+  "Word manuscripts, proof-read (buyer-provided)",
+  "2 books: Kindle + paperback interiors",
+  "page layout, font styling, headings, TOC links",
+  "image placement where applicable",
+  "margins, bleed, trim size",
+  "embedded fonts, no upload warnings",
+  "print-ready PDF paperback + hand-off guide (styles/settings)",
+  "short KDP-experience note + sample of prior formatted book required with bid"
+ ],
+ "feasibility": "FEASIBLE pipeline-assisted; conditional on buyer Word files + trim/page-count answers",
+ "expected_effort": "6-9h (intake 0.5, typeset 4.0, QA 1.5, handover 0.5)",
+ "award_risk": "Page status reads In Progress (not Open) \u2014 may already be awarded; verify biddable before any submit; never assume open",
+ "next_action": "founder verifies biddable + submits prepared bid via own session, or stands down if awarded"
+}

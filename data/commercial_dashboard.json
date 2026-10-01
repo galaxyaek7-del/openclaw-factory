@@ -27,35 +27,41 @@
   "workload": "1 active bid pending response"
  },
  "financial_control": {
-  "actual_spending_usd": 0,
-  "authorized_spending_usd": 0,
-  "collected_revenue_usd": 0,
+  "quoted_value_usd": 0,
   "contracted_value_usd": 0,
-  "net_proceeds_usd": 0,
+  "invoiced_value_usd": 0,
+  "collected_revenue_usd": 0,
   "platform_fees_usd": 0,
-  "quoted_value_usd": 0
+  "net_proceeds_usd": 0,
+  "authorized_spending_usd": 0,
+  "actual_spending_usd": 0
  },
  "founder_actions": [
   {
-   "deadline": "within 6-day window (closing)",
-   "exact": "authorize Freelancer bidding identity + submit prepared bid via own session",
-   "impact": "S1->S2-verified; enables response monitoring",
-   "reason": "account ownership + session auth are non-delegable",
+   "exact": "ONE consolidated action: (a) confirm KDP listing 40743207 still biddable; (b) via own Freelancer session submit prepared KDP bid (\\-90 + experience note + real sample) if biddable, else stand down; (c) relay any buyer reply on lead-gen 40742370 or KDP. No new account needed beyond the single bidding identity already requested.",
+   "why_automation_cannot": "authenticated human-owned identity + session auth are non-delegable; factory never touches credentials; award-state only confirmable in-session",
+   "platform": "freelancer.com",
+   "cost": "\\ (bidding free; buyer pays on delivery via escrow)",
+   "risk": "40 (KDP) + 10 (lead-gen) competing proposals; KDP may already be awarded (In Progress flag)",
+   "deadline": "lead-gen ~6-day window closing; KDP unknown \u2014 act only if biddable",
+   "after": "factory resumes public-page monitoring for status/bid-count/award changes; buyer reply triggers response-draft cycle",
    "status": "OPEN"
   }
  ],
  "freelancer_opportunity": {
-  "bid_count": 70,
-  "budget": "$30-250, paid on delivery",
-  "deadline": "~6 days",
-  "status": "OPEN (live-verified)",
-  "submission": "S2-founder-reported"
+  "status": "OPEN (live-verified 2026-10-01; terms unchanged)",
+  "budget": "\\-250, paid on delivery",
+  "deadline": "~6 days (Ends in 6 days, live)",
+  "bid_count": "10 proposals shown on page 2026-10-01 (was 21, then 70; discrepancy noted \u2014 cache/pagination/repost possible; neutral)",
+  "avg_bid": "\\ (page-stated average)",
+  "buyer": "Buffalo US, 0.0/0 reviews, member since Sep 2026, payment verified",
+  "submission": "S2-founder-reported (unchanged; not independently verifiable from public page)"
  },
  "buyer_engagement": {
-  "contract_offers": 0,
+  "messages_received": 0,
   "conversations": 0,
   "interviews": 0,
-  "messages_received": 0,
+  "contract_offers": 0,
   "rejections": 0
  },
  "next_cycle": {
@@ -69,12 +75,15 @@
   "secret_checks": "0 hits in new artifacts",
   "technical_issues": "none open"
  },
- "updated_at": "2026-10-01T08:00:00+00:00",
+ "updated_at": "2026-10-01T09:00:00+00:00",
  "kdp_typesetting": {
-  "status": "PROPOSAL_READY (founder-gated submit)",
-  "budget": "\\-100",
-  "deadline": "~6 days",
-  "posted": "16 min before read",
-  "proposals_seen": 35
+  "status": "VERIFIED + PROPOSAL_READY, FOUNDER_ACTION_REQUIRED (confirm biddable first)",
+  "budget": "\\-100, paid on delivery (verified live 2026-10-01)",
+  "deadline": "UNKNOWN (no Ends-in shown)",
+  "posted": "~4h before read",
+  "proposals_seen": 40,
+  "buyer": "Rosenberg US, 5.0/16, member 2019, payment verified",
+  "award_flag": "page reads In Progress (not Open) \u2014 may be awarded; submit ONLY if confirmed biddable",
+  "proposal": "packet ready, \\-90 fixed, quality-checked 9/9"
  }
 }
