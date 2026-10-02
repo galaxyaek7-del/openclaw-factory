@@ -915,9 +915,57 @@
   {
    "id": 40746634,
    "reason": "D-grade multi01 (scope/role/budget/policy)"
+  },
+  {
+   "id": 40746675,
+   "reason": "D-grade cont01 (scope/budget/location/role)"
+  },
+  {
+   "id": 40746678,
+   "reason": "D-grade cont01 (scope/budget/location/role)"
+  },
+  {
+   "id": 40746674,
+   "reason": "D-grade cont01 (scope/budget/location/role)"
+  },
+  {
+   "id": 40746660,
+   "reason": "D-grade cont01 (scope/budget/location/role)"
+  },
+  {
+   "id": 40746650,
+   "reason": "policy-reject (CAPTCHA-solving abuses platform protections)"
+  },
+  {
+   "id": 40746651,
+   "reason": "D-grade cont01 (scope/budget/location/role)"
+  },
+  {
+   "id": 40746685,
+   "reason": "D-grade cont01 (scope/budget/location/role)"
+  },
+  {
+   "id": 40746688,
+   "reason": "D-grade cont01 (scope/budget/location/role)"
+  },
+  {
+   "id": 40746687,
+   "reason": "D-grade cont01 (scope/budget/location/role)"
+  },
+  {
+   "id": 40746669,
+   "reason": "D-grade cont01 (scope/budget/location/role)"
+  },
+  {
+   "id": 40746665,
+   "reason": "D-grade cont01 (scope/budget/location/role)"
+  },
+  {
+   "id": 40746655,
+   "reason": "D-grade cont01 (scope/budget/location/role)"
   }
  ],
- "at": "2026-10-02T16:50:29.145836+00:00",
+ "at": "2026-10-02T17:14:01.297974+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
