@@ -128,3 +128,4 @@
 {"cycle_id": "S3-ROTATE-01", "at": "2026-10-02T16:04:18.369207+00:00", "rotation": "engine live+tested; ARM1 AI_SERVICES executed (5D, LOW_SIGNAL); next MICRO_B2B", "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-ROTATE-02", "at": "2026-10-02T16:08:52.473501+00:00", "arms": "MICRO_B2B 4D LOW + RESEARCH 1D LOW; rotated to AI_OPS; company never idle", "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-AFFILIATE-COMM-01", "at": "2026-10-02T16:23:46.665199+00:00", "affiliate": "LOW_SIGNAL: systeme tracked but zero demand-fit (doc buyers need formatting, not funnels); X-post blocked; funnel static 25/20/0", "cross_route": "no honest fit found (not forced)", "revenue": 0, "cost_usd": 0}
+{"cycle_id": "S3-AFFILIATE-02B", "at": "2026-10-02T16:26:55.651071+00:00", "discovery": "Nitro affiliate: demand-fit STRONG, enrollment founder-gated; recorded not enrolled", "revenue": 0, "cost_usd": 0}
