@@ -1,0 +1,14 @@
+{
+ "at": "2026-10-02T08:54:07.270950+00:00",
+ "channels": {
+  "nostr": "ACTIVE_NO_RESPONSE",
+  "telegraph": "ACTIVE_UNMEASURED",
+  "pages": "ACTIVE_UNMEASURED",
+  "mailto": "READY_INBOX_UNKNOWN",
+  "freelancer": "BLOCKED_EXTERNAL_AUTH",
+  "x": "BLOCKED_EXTERNAL_PLATFORM",
+  "amazon": "BLOCKED_MISSING_TAG",
+  "gumroad": "ACTIVE_NO_SALES",
+  "paddle": "BLOCKED_ONBOARDING"
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "at": "2026-10-02T08:54:07.270950+00:00",
+ "stages": {
+  "40741347": {
+   "state": "PROPOSAL_READY",
+   "blocked_by": "freelancer-oauth",
+   "contact": "BLOCKED",
+   "buyer_response": "UNKNOWN"
+  },
+  "40745859": {
+   "state": "PROPOSAL_READY",
+   "blocked_by": "freelancer-oauth",
+   "contact": "BLOCKED",
+   "buyer_response": "UNKNOWN"
+  },
+  "40745949": {
+   "state": "PROPOSAL_READY",
+   "blocked_by": "freelancer-oauth",
+   "contact": "BLOCKED",
+   "buyer_response": "UNKNOWN"
+  }
+ }
+}
