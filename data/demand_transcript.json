@@ -1,0 +1,32 @@
+[
+ {
+  "id": 40746619,
+  "title": "Logo Recreation Specialist Needed",
+  "status": "active",
+  "sub": null,
+  "front": "open",
+  "bmin": 10.0,
+  "bmax": 30.0,
+  "bids": 90
+ },
+ {
+  "id": 40746615,
+  "title": "Technical Solutions for Cybersecurity Challenges -- 2",
+  "status": "active",
+  "sub": null,
+  "front": "open",
+  "bmin": 600.0,
+  "bmax": 1500.0,
+  "bids": 6
+ },
+ {
+  "id": 40746594,
+  "title": "WordPress setup SEO on aireagua.mx \u2014 fixed job.",
+  "status": "active",
+  "sub": null,
+  "front": "open",
+  "bmin": 250.0,
+  "bmax": 750.0,
+  "bids": 255
+ }
+]

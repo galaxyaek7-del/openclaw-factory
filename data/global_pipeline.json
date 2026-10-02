@@ -843,9 +843,21 @@
   {
    "id": 40746608,
    "reason": "D-grade datadocs (scope/budget/location)"
+  },
+  {
+   "id": 40746619,
+   "reason": "D-grade transcript-hunt (domain/budget)"
+  },
+  {
+   "id": 40746615,
+   "reason": "D-grade transcript-hunt (domain/budget)"
+  },
+  {
+   "id": 40746594,
+   "reason": "D-grade transcript-hunt (domain/budget)"
   }
  ],
- "at": "2026-10-02T16:32:35.118700+00:00",
+ "at": "2026-10-02T16:38:39.402939+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
