@@ -1,0 +1,41 @@
+{
+ "at": "2026-10-02T15:19:59.132178+00:00",
+ "actions": [
+  {
+   "action_id": "FA-OAUTH",
+   "platform": "freelancer",
+   "reason": "OAuth grant only account owner can give",
+   "exact_external_step": "browser login + developers.freelancer.com authorize + FREELANCER_OAUTH_TOKEN into working .env",
+   "blocking_scope": "4 proposals + inbox",
+   "can_automate_later": true,
+   "priority": "P0"
+  },
+  {
+   "action_id": "FA-TAG",
+   "platform": "amazon-associates",
+   "reason": "account+approval only human can complete",
+   "exact_external_step": "create Associates account, set AMAZON_ASSOCIATE_TAG in .env",
+   "blocking_scope": "4 links commission",
+   "can_automate_later": true,
+   "priority": "P1"
+  },
+  {
+   "action_id": "FA-XCREDITS",
+   "platform": "x-api",
+   "reason": "billing ownership",
+   "exact_external_step": "top up credits or confirm free-tier reset in developer portal",
+   "blocking_scope": "3 queued posts",
+   "can_automate_later": true,
+   "priority": "P2"
+  },
+  {
+   "action_id": "FA-PADDLE",
+   "platform": "paddle",
+   "reason": "KYC/onboarding + webhook dashboard config",
+   "exact_external_step": "finish onboarding at vendors.paddle.com; register webhook",
+   "blocking_scope": "checkout + realtime sale alerts",
+   "can_automate_later": true,
+   "priority": "P1"
+  }
+ ]
+}

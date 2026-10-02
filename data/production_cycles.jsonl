@@ -117,3 +117,4 @@
 {"cycle_id": "S3-LOOP-01", "at": "2026-10-02T14:47:56.747055+00:00", "demand": "16 fresh, 1 B-conditional admitted (excel-entry 250) + personalized, 15 D", "pipeline": "5 active", "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-PAYCONNECT-01", "at": "2026-10-02T15:14:22.506740+00:00", "payments": "gumroad+paddle APIs live-verified; webhooks need dashboard (founder); payouts unknown until first sale", "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-DRYRUN-01", "at": "2026-10-02T15:17:18.993641+00:00", "mode": "DRY_RUN", "external_submission": false, "analyzed": 5, "drafts": "data/dryrun_proposals.jsonl (5 records)", "network_calls": 0, "revenue": 0, "cost_usd": 0}
+{"cycle_id": "S3-ACCT-01", "at": "2026-10-02T15:19:59.132178+00:00", "connected": ["gumroad", "systeme", "telegram"], "partial": ["paddle", "freelancer"], "missing": 9, "founder_actions": 4, "revenue": 0, "cost_usd": 0}
