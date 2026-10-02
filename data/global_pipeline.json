@@ -13,19 +13,6 @@
    "fit": "MEDIUM (layout fits; proofreading excluded explicitly)"
   },
   {
-   "id": 40745934,
-   "title": "Medium Paper Document Data Entry",
-   "budget": [
-    100.0,
-    400.0
-   ],
-   "bids": 0,
-   "price": 175.0,
-   "basis": "buyer-budget midpoint clipped to policy bounds",
-   "grade": "B (relevant possibility; intent generic)",
-   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)"
-  },
-  {
    "id": 40745859,
    "title": "Pre-Employment Vetting Project, Wakayama, Japan.",
    "budget": [
@@ -235,6 +222,10 @@
   {
    "id": 40745852,
    "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745934,
+   "reason": "CLOSED/REMOVED: API 404 x2; prepared bid never sent"
   }
  ],
  "at": "2026-10-02T08:30:00+00:00",

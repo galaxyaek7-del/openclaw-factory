@@ -19,7 +19,9 @@
   "price_usd": 250.0,
   "status": "BLOCKED_NO_TOKEN",
   "idempotency_key": "bid-40741347-once",
-  "evidence": "PREPARED (format-only, editing excluded)"
+  "evidence": "PREPARED (format-only, editing excluded)",
+  "proposal_personalized": "40k-word manuscript: professional interior layout only (trim, typography, TOC, QA) \u2014 proofreading excluded explicitly per scope. Fixed 250 USD at policy ceiling, delivery 7 days, one revision round.",
+  "price_policy_bound": true
  },
  "40744185": {
   "price_usd": 250.0,
@@ -35,14 +37,16 @@
  },
  "40745934": {
   "price_usd": 175.0,
-  "status": "BLOCKED_NO_TOKEN",
+  "status": "CLOSED_UNSUBMITTED",
   "idempotency_key": "bid-40745934-once",
-  "evidence": "PREPARED (B-grade)"
+  "evidence": "API 404 x2"
  },
  "40745859": {
   "price_usd": 30.0,
   "status": "BLOCKED_NO_TOKEN",
   "idempotency_key": "bid-40745859-once",
-  "evidence": "PREPARED (B-grade)"
+  "evidence": "PREPARED (B-grade)",
+  "proposal_personalized": "Wakayama pre-employment vetting: I verify work history/credentials from public records and employer confirmations, flagging gaps honestly. Fixed 45 USD, delivery 3 days, one revision. No guaranteed outcomes beyond documented checks.",
+  "price_policy_bound": true
  }
 }
