@@ -24,20 +24,46 @@
    "basis": "market-average parity (avg 30.00 inside bounds)",
    "grade": "B (relevant possibility; intent generic)",
    "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)"
+  },
+  {
+   "id": 40745949,
+   "title": "AI Design to Editable PDF",
+   "budget": [
+    30.0,
+    250.0
+   ],
+   "bids": 91,
+   "price": 75.58,
+   "grade": "B (conversion fits doc pipeline; 91-bid competition noted)",
+   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)",
+   "proposal_personalized": {
+    "problem": "AI-generated designs need conversion into clean editable PDFs",
+    "solution": "Convert AI design outputs into structured editable PDF documents with selectable text where possible, QA-checked page by page",
+    "deliverables": "Editable PDF(s) + source notes on fonts/layout used",
+    "timeline": "3-4 days",
+    "price_usd": 75.58,
+    "price_basis": "market-average parity (avg 75.58 inside bounds)",
+    "price_policy_bound": true,
+    "assumptions": [
+     "Source design files provided by buyer",
+     "Standard print/digital use, not CAD-accurate redrafting"
+    ],
+    "next_action": "Confirm source file formats and page count for fixed quote"
+   }
   }
  ],
  "rejected": [
   {
    "id": 40743843,
-   "reason": "REJECTED: full-colour fixed-layout children book — illustration/layout outside reportlab-prose pipeline"
+   "reason": "REJECTED: full-colour fixed-layout children book â€” illustration/layout outside reportlab-prose pipeline"
   },
   {
    "id": 40743805,
-   "reason": "REJECTED: illustrator refinement — illustration outside capability"
+   "reason": "REJECTED: illustrator refinement â€” illustration outside capability"
   },
   {
    "id": 40741254,
-   "reason": "REJECTED: marketing consultancy — outside capability"
+   "reason": "REJECTED: marketing consultancy â€” outside capability"
   },
   {
    "id": 40744044,
@@ -77,7 +103,7 @@
   },
   {
    "id": 40744193,
-   "reason": "CLOSED 2026-10-01: status closed/complete (was buyer-frozen) — conclusive; prepared bid never sent"
+   "reason": "CLOSED 2026-10-01: status closed/complete (was buyer-frozen) â€” conclusive; prepared bid never sent"
   },
   {
    "id": 40744216,
@@ -157,7 +183,7 @@
   },
   {
    "id": 40742370,
-   "reason": "CLOSED/LEARNED 2026-10-01: closed_awarded elsewhere (404? no — API closed/closed_awarded x2); our bid stayed PREPARED/BLOCKED, correctly never sent; 72-bid race, no regret"
+   "reason": "CLOSED/LEARNED 2026-10-01: closed_awarded elsewhere (404? no â€” API closed/closed_awarded x2); our bid stayed PREPARED/BLOCKED, correctly never sent; 72-bid race, no regret"
   },
   {
    "id": 40745924,
@@ -282,14 +308,50 @@
   {
    "id": 40745763,
    "reason": "D-grade conv01 hunt (scope/budget)"
+  },
+  {
+   "id": 40745955,
+   "reason": "D-grade demand-trkA (scope/budget)"
+  },
+  {
+   "id": 40745951,
+   "reason": "D-grade demand-trkA (scope/budget)"
+  },
+  {
+   "id": 40745945,
+   "reason": "D-grade demand-trkA (scope/budget)"
+  },
+  {
+   "id": 40745942,
+   "reason": "D-grade demand-trkA (scope/budget)"
+  },
+  {
+   "id": 40745940,
+   "reason": "D-grade demand-trkA (scope/budget)"
+  },
+  {
+   "id": 40745936,
+   "reason": "D-grade demand-trkA (scope/budget)"
+  },
+  {
+   "id": 40745930,
+   "reason": "D-grade demand-trkA (scope/budget)"
+  },
+  {
+   "id": 40745929,
+   "reason": "D-grade demand-trkA (scope/budget)"
+  },
+  {
+   "id": 40745926,
+   "reason": "D-grade demand-trkA (scope/budget)"
   }
  ],
- "at": "2026-10-02T08:35:00+00:00",
+ "at": "2026-10-02T09:00:00+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
    "id": 40744232,
-   "reason": "HOLD: possible ongoing-VA employment vs project — full description needs auth; re-evaluate on grant"
+   "reason": "HOLD: possible ongoing-VA employment vs project â€” full description needs auth; re-evaluate on grant"
   },
   {
    "id": 40744322,

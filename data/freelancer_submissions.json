@@ -48,5 +48,11 @@
   "evidence": "PREPARED (B-grade)",
   "proposal_personalized": "Wakayama pre-employment vetting: I verify work history/credentials from public records and employer confirmations, flagging gaps honestly. Fixed 45 USD, delivery 3 days, one revision. No guaranteed outcomes beyond documented checks.",
   "price_policy_bound": true
+ },
+ "40745949": {
+  "price_usd": 75.58,
+  "status": "BLOCKED_NO_TOKEN",
+  "idempotency_key": "bid-40745949-once",
+  "evidence": "PREPARED (B-grade, personalized)"
  }
 }
