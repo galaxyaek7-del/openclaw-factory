@@ -145,3 +145,4 @@
 {"cycle_id": "S3-FREELANCER-CONV-01", "at": "2026-10-02T17:07:52.537676+00:00", "oauth": "MISSING (single check, no re-ask)", "affiliate_lane": "static 25/20/0, LOW, rotated", "next": "DIGITAL_PRODUCTS", "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-DIGITAL-01", "at": "2026-10-02T17:10:46.444723+00:00", "experiment": "EXP-DIGITAL-01 active: compliance-kit + feed submit 202; signals awaited, not claimed", "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-CONT-01", "at": "2026-10-02T17:14:01.297974+00:00", "demand": "12 screened all D incl 1 policy-reject (captcha solver); sales poll 0; EXP-DIGITAL-01 window open, no signal", "revenue": 0, "cost_usd": 0}
+{"cycle_id": "S3-EFFICIENCY-01", "at": "2026-10-02T17:15:42.753651+00:00", "efficiency": "seen_ids registry live (291 migrated, idempotent); first registry-powered scan works", "demand": "5D screened", "revenue": 0, "cost_usd": 0}

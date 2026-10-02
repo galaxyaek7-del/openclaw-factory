@@ -963,9 +963,29 @@
   {
    "id": 40746655,
    "reason": "D-grade cont01 (scope/budget/location/role)"
+  },
+  {
+   "id": 40746690,
+   "reason": "D-grade registry-first scan (tutoring-role)"
+  },
+  {
+   "id": 40746677,
+   "reason": "D-grade registry-first scan (dev-scope/budget)"
+  },
+  {
+   "id": 40746670,
+   "reason": "D-grade registry-first scan (SEO-scope/budget)"
+  },
+  {
+   "id": 40746654,
+   "reason": "D-grade registry-first scan (scope+ToS-gray scraping)"
+  },
+  {
+   "id": 40746622,
+   "reason": "D-grade registry-first scan (dev-scope)"
   }
  ],
- "at": "2026-10-02T17:14:01.297974+00:00",
+ "at": "2026-10-02T17:15:42.753651+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
