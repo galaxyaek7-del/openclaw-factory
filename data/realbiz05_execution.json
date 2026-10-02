@@ -1,0 +1,9 @@
+{
+ "capability_test": "PROVEN: only nostr replies/notes sendable; mailto/SMTP absent; X 402; inbox needs grant",
+ "founder_leverage": {
+  "oauth": "HIGH (5 proposals+inbox)",
+  "tag": "MEDIUM (commission on future traffic)",
+  "x-credits": "MEDIUM (3 posts)"
+ },
+ "at": "2026-10-02T09:48:33.714763+00:00"
+}
