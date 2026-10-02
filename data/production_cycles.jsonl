@@ -148,3 +148,4 @@
 {"cycle_id": "S3-EFFICIENCY-01", "at": "2026-10-02T17:15:42.753651+00:00", "efficiency": "seen_ids registry live (291 migrated, idempotent); first registry-powered scan works", "demand": "5D screened", "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-MEM-01", "at": "2026-10-02T17:21:09.928637+00:00", "memory": "commercial_memory live; dead-ends recorded with cooldowns; rotation consults it", "demand": "2D screened", "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-MEM-02", "at": "2026-10-02T17:25:24.605715+00:00", "memory": "D-items classified by cause (role/scope, not access); queue: 0 actionable (all actives C2-blocked)", "rotated_to": "DATA_DOCS", "new_evidence": false, "revenue": 0, "cost_usd": 0}
+{"cycle_id": "S3-DATADOCS-02", "at": "2026-10-02T17:28:14.923007+00:00", "fresh": "3D (medical-domain/115-bid/integrity)", "rotated_to": "AI_SERVICES", "revenue": 0, "cost_usd": 0}

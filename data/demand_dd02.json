@@ -1,0 +1,32 @@
+[
+ {
+  "id": 40746703,
+  "title": "Revise Nursing Journal Manuscript",
+  "status": "active",
+  "sub": null,
+  "front": "open",
+  "bmin": 600.0,
+  "bmax": 1500.0,
+  "bids": 4
+ },
+ {
+  "id": 40746332,
+  "title": "350-Slide Deck Consistency and quality Audit",
+  "status": "active",
+  "sub": null,
+  "front": "open",
+  "bmin": 15.0,
+  "bmax": 25.0,
+  "bids": 115
+ },
+ {
+  "id": 40746661,
+  "title": "Retype & edit Academic Notes",
+  "status": "active",
+  "sub": null,
+  "front": "open",
+  "bmin": 250.0,
+  "bmax": 750.0,
+  "bids": 64
+ }
+]
