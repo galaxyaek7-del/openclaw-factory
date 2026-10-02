@@ -92,7 +92,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
       <div id="formStatus"></div>
     </form>
 
-    <p class="direct-email">Prefer email directly? <a href="mailto:galaxyaek7@gmail.com">galaxyaek7@gmail.com</a></p>
+    <p class="direct-email">Prefer email directly? <a href="mailto:galaxyaek7@gmail.com">galaxyaek7@gmail.com</a><br><span style="font-size:.78rem;">Form messages are delivered securely; the first message ever sent also triggers a one-time activation email to us (standard for static-site forms).</span></p>
   </div>
 </main>
 <footer><div class="footer-wrap">© <span id="year"></span> Galaxy Forge.</div></footer>
@@ -112,22 +112,43 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
     btn.disabled = true; btn.textContent = 'Sending…';
 
     var data = Object.fromEntries(new FormData(form).entries());
+    if (data.website) { btn.disabled = false; btn.textContent = 'Send message'; return; } // honeypot
+    var payload = { name: data.name, email: data.email, message: data.message,
+                    _subject: 'Galaxy Forge contact: ' + data.name,
+                    _template: 'table', _captcha: 'false' };
+    function mailtoFallback(){
+      var lines = ['name: ' + data.name, 'email: ' + data.email, 'message: ' + data.message];
+      var mailto = 'mailto:galaxyaek7@gmail.com?subject=' + encodeURIComponent('Contact message (web fallback)') + '&body=' + encodeURIComponent(lines.join('\n'));
+      status.innerHTML = 'Direct send is offline right now — <a href="' + mailto + '">click here to send the same message by email</a>.';
+      status.className = 'error';
+    }
+    // Tier 1: local backend (localhost dev). Tier 2: formsubmit (static Pages).
+    // First-ever Tier-2 submission triggers a one-time activation email to us.
     fetch('/api/customer/support-ticket', {
       method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     })
       .then(function(r){ return r.json().then(function(body){ return { ok: r.ok, body: body }; }); })
       .then(function(res){
-        if (!res.ok || res.body.success === false) throw new Error((res.body && res.body.error) || 'Something went wrong — please try again.');
+        if (!res.ok || res.body.success === false) throw new Error('local-offline');
         status.textContent = 'Message received. A real person will reply by email.';
         status.className = 'success';
         form.reset();
       })
-      .catch(function(err){
-        var lines = Object.keys(data).filter(function(k){ return k !== 'website'; }).map(function(k){ return k + ': ' + data[k]; });
-        var mailto = 'mailto:galaxyaek7@gmail.com?subject=' + encodeURIComponent('Contact message (web fallback)') + '&body=' + encodeURIComponent(lines.join('\n'));
-        status.innerHTML = 'Direct send is offline right now — <a href="' + mailto + '">click here to send the same message by email</a>.';
-        status.className = 'error';
+      .catch(function(){
+        fetch('https://formsubmit.co/ajax/galaxyaek7@gmail.com', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+          .then(function(r){ return r.json(); })
+          .then(function(body){
+            if (body && body.success !== false && body.success !== 'false') {
+              status.textContent = 'Message received. A real person will reply by email.';
+              status.className = 'success';
+              form.reset();
+            } else { mailtoFallback(); }
+          })
+          .catch(function(){ mailtoFallback(); });
       })
       .finally(function(){
         btn.disabled = false; btn.textContent = 'Send message';
