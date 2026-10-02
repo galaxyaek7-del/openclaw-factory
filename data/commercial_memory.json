@@ -372,6 +372,25 @@
    "next_action": "none",
    "retry_condition": "never (vendor-only vertical)",
    "commercial_score": 0
+  },
+  "white-label-providers": {
+   "first_seen": "2026-10-02T17:55:24.158573+00:00",
+   "times_seen": 1,
+   "source": "web",
+   "signal_type": "market",
+   "result": "VENDOR_ONLY",
+   "last_seen": "2026-10-02T17:55:24.158573+00:00",
+   "business": "n/a (all overflow sellers)",
+   "problem": "none observable (they sell capacity)",
+   "offer": "none-contactable",
+   "accessibility": "BLOCKED",
+   "contactability": "C0",
+   "eligibility": "FAIL",
+   "action_taken": "partner-angle search",
+   "evidence_level": "OBSERVED",
+   "next_action": "none; reverse-evidence absent",
+   "retry_condition": "never (provider-only vertical)",
+   "commercial_score": 0
   }
  },
  "arms": {

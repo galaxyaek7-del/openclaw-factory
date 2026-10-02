@@ -31,8 +31,8 @@
  "verified_revenue": 0,
  "contactability": "all actives C2 (founder-session route)",
  "company_mode": "LOW_ACTIVITY_WAIT",
- "current_arm": "DIGITAL_PRODUCTS",
- "next_arm": "DIGITAL_PRODUCTS",
+ "current_arm": "DATA_DOCS",
+ "next_arm": "DATA_DOCS",
  "active_arms": 7,
  "low_signal_arms": [
   "AI_SERVICES",
