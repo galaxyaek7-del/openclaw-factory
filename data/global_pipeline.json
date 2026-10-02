@@ -819,9 +819,33 @@
   {
    "id": 40746596,
    "reason": "D-grade arm-digital (fit; signal-score without fit is not qualification)"
+  },
+  {
+   "id": 40746593,
+   "reason": "B-CONSTRAINED: capability FIT (transcription) but budget 750+ exceeds policy ceiling 250 — commercial constraint, not capability failure"
+  },
+  {
+   "id": 40746611,
+   "reason": "D-grade datadocs (scope/budget/location)"
+  },
+  {
+   "id": 40746610,
+   "reason": "D-grade datadocs (scope/budget/location)"
+  },
+  {
+   "id": 40746577,
+   "reason": "D-grade datadocs (scope/budget/location)"
+  },
+  {
+   "id": 40746574,
+   "reason": "D-grade datadocs (scope/budget/location)"
+  },
+  {
+   "id": 40746608,
+   "reason": "D-grade datadocs (scope/budget/location)"
   }
  ],
- "at": "2026-10-02T16:29:56.178011+00:00",
+ "at": "2026-10-02T16:32:35.118700+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
