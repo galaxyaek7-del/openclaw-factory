@@ -1,0 +1,107 @@
+[
+ {
+  "opportunity_id": 40741347,
+  "title": "Proofread & Format KDP Book (40k words)",
+  "fit": "MARGINAL",
+  "gate": "MARGINAL_REVIEW",
+  "problem": "see packet",
+  "price": 250.0,
+  "price_policy_bound": true,
+  "missing": [
+   "buyer clarification answers (geo/volume/specs) \u2014 obtainable only post-contact"
+  ],
+  "states": [
+   "DISCOVERED",
+   "ANALYZED",
+   "DRAFTED",
+   "QUALITY_CHECKED",
+   "MARGINAL_REVIEW",
+   "EXTERNAL_SUBMISSION_BLOCKED"
+  ],
+  "at": "2026-10-02T15:21:25.268769+00:00"
+ },
+ {
+  "opportunity_id": 40745859,
+  "title": "Pre-Employment Vetting Project, Wakayama, Japan.",
+  "fit": "FIT",
+  "gate": "READY_FOR_REVIEW",
+  "problem": "see packet",
+  "price": 30.0,
+  "price_policy_bound": true,
+  "missing": [
+   "buyer clarification answers (geo/volume/specs) \u2014 obtainable only post-contact"
+  ],
+  "states": [
+   "DISCOVERED",
+   "ANALYZED",
+   "DRAFTED",
+   "QUALITY_CHECKED",
+   "READY_FOR_REVIEW",
+   "EXTERNAL_SUBMISSION_BLOCKED"
+  ],
+  "at": "2026-10-02T15:21:25.268769+00:00"
+ },
+ {
+  "opportunity_id": 40744952,
+  "title": "Polish Gardening eBook Layout",
+  "fit": "FIT",
+  "gate": "READY_FOR_REVIEW",
+  "problem": "see packet",
+  "price": 116.68,
+  "price_policy_bound": false,
+  "missing": [
+   "buyer clarification answers (geo/volume/specs) \u2014 obtainable only post-contact"
+  ],
+  "states": [
+   "DISCOVERED",
+   "ANALYZED",
+   "DRAFTED",
+   "QUALITY_CHECKED",
+   "READY_FOR_REVIEW",
+   "EXTERNAL_SUBMISSION_BLOCKED"
+  ],
+  "at": "2026-10-02T15:21:25.268769+00:00"
+ },
+ {
+  "opportunity_id": 40746029,
+  "title": "Marketing Comms Template Pack",
+  "fit": "FIT",
+  "gate": "READY_FOR_REVIEW",
+  "problem": "see packet",
+  "price": 113.46,
+  "price_policy_bound": false,
+  "missing": [
+   "buyer clarification answers (geo/volume/specs) \u2014 obtainable only post-contact"
+  ],
+  "states": [
+   "DISCOVERED",
+   "ANALYZED",
+   "DRAFTED",
+   "QUALITY_CHECKED",
+   "READY_FOR_REVIEW",
+   "EXTERNAL_SUBMISSION_BLOCKED"
+  ],
+  "at": "2026-10-02T15:21:25.268769+00:00"
+ },
+ {
+  "opportunity_id": 40746348,
+  "title": "Precise Excel Data Entry",
+  "fit": "FIT",
+  "gate": "READY_FOR_REVIEW",
+  "problem": "see packet",
+  "price": 250.0,
+  "price_policy_bound": false,
+  "missing": [
+   "buyer clarification answers (geo/volume/specs) \u2014 obtainable only post-contact"
+  ],
+  "states": [
+   "DISCOVERED",
+   "ANALYZED",
+   "DRAFTED",
+   "QUALITY_CHECKED",
+   "READY_FOR_REVIEW",
+   "EXTERNAL_SUBMISSION_BLOCKED"
+  ],
+  "at": "2026-10-02T15:21:25.268769+00:00"
+ }
+]
