@@ -75,6 +75,31 @@
     ],
     "next_action": "Confirm formats (Docs/Slides/Canva) and brand assets for fixed quote"
    }
+  },
+  {
+   "id": 40746348,
+   "title": "Precise Excel Data Entry",
+   "budget": [
+    250.0,
+    750.0
+   ],
+   "bids": 54,
+   "price": 250.0,
+   "grade": "B-CONDITIONAL (ceiling price, 54 bids)",
+   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)",
+   "proposal_personalized": {
+    "problem": "move information into clean structured Excel workbook, accuracy-first",
+    "solution": "Manual verified entry with double-check pass, structured sheets, validation rules",
+    "deliverables": "Clean .xlsx workbook + entry log",
+    "timeline": "4 days",
+    "price_usd": 250.0,
+    "price_basis": "policy ceiling (buyer min 250)",
+    "price_policy_bound": true,
+    "assumptions": [
+     "Source material provided digitally"
+    ],
+    "next_action": "Confirm volume and sheet structure for fixed quote"
+   }
   }
  ],
  "rejected": [
@@ -561,9 +586,69 @@
   {
    "id": 40746083,
    "reason": "D-grade rb04 (scope/budget)"
+  },
+  {
+   "id": 40746461,
+   "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40746459,
+   "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40746408,
+   "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40746392,
+   "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40745635,
+   "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40746380,
+   "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40746327,
+   "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40746453,
+   "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40746427,
+   "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40746399,
+   "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40746379,
+   "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40746365,
+   "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40746363,
+   "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40746362,
+   "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40746354,
+   "reason": "D-grade loop01 (scope/budget/location)"
   }
  ],
- "at": "2026-10-02T10:00:00+00:00",
+ "at": "2026-10-02T14:47:56.747055+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
