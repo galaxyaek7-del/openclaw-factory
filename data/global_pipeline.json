@@ -390,9 +390,53 @@
   {
    "id": 40745045,
    "reason": "C-grade: broad publish-coordination, ceiling price, uncertain scope"
+  },
+  {
+   "id": 40745990,
+   "reason": "C-grade: primary-interview research, floor price 30, weak fit — no action"
+  },
+  {
+   "id": 40744265,
+   "reason": "D-grade realbiz (scope/budget)"
+  },
+  {
+   "id": 40746020,
+   "reason": "D-grade realbiz (scope/budget)"
+  },
+  {
+   "id": 40746017,
+   "reason": "D-grade realbiz (scope/budget)"
+  },
+  {
+   "id": 40742104,
+   "reason": "D-grade realbiz (scope/budget)"
+  },
+  {
+   "id": 40746016,
+   "reason": "D-grade realbiz (scope/budget)"
+  },
+  {
+   "id": 40746010,
+   "reason": "D-grade realbiz (scope/budget)"
+  },
+  {
+   "id": 40745995,
+   "reason": "D-grade realbiz (scope/budget)"
+  },
+  {
+   "id": 40745983,
+   "reason": "D-grade realbiz (scope/budget)"
+  },
+  {
+   "id": 40745982,
+   "reason": "D-grade realbiz (scope/budget)"
+  },
+  {
+   "id": 40745971,
+   "reason": "D-grade realbiz (scope/budget)"
   }
  ],
- "at": "2026-10-02T09:00:00+00:00",
+ "at": "2026-10-02T09:28:47.007206+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
