@@ -26,14 +26,14 @@
  "AFFILIATE": {
   "signal": "LOW",
   "blocked": false,
-  "last_run": null,
-  "runs": 0
+  "last_run": "2026-10-02T17:07:26.481809+00:00",
+  "runs": 1
  },
  "DIGITAL_PRODUCTS": {
   "signal": "LOW",
   "blocked": false,
-  "last_run": null,
-  "runs": 0
+  "last_run": "2026-10-02T17:07:40.515754+00:00",
+  "runs": 1
  },
  "DATA_DOCS": {
   "signal": "LOW",
