@@ -791,9 +791,37 @@
   {
    "id": 40746527,
    "reason": "D-grade arm-rotation (scope/budget/location/employment)"
+  },
+  {
+   "id": 40746605,
+   "reason": "D-grade arm-digital (fit; signal-score without fit is not qualification)"
+  },
+  {
+   "id": 40746598,
+   "reason": "D-grade arm-digital (fit; signal-score without fit is not qualification)"
+  },
+  {
+   "id": 40746580,
+   "reason": "D-grade arm-digital (fit; signal-score without fit is not qualification)"
+  },
+  {
+   "id": 40746586,
+   "reason": "D-grade arm-digital (fit; signal-score without fit is not qualification)"
+  },
+  {
+   "id": 40746569,
+   "reason": "D-grade arm-digital (fit; signal-score without fit is not qualification)"
+  },
+  {
+   "id": 40746589,
+   "reason": "D-grade arm-digital (fit; signal-score without fit is not qualification)"
+  },
+  {
+   "id": 40746596,
+   "reason": "D-grade arm-digital (fit; signal-score without fit is not qualification)"
   }
  ],
- "at": "2026-10-02T16:08:52.473501+00:00",
+ "at": "2026-10-02T16:29:56.178011+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {

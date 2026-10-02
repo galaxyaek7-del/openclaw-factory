@@ -30,7 +30,7 @@
   "runs": 0
  },
  "DIGITAL_PRODUCTS": {
-  "signal": "NONE",
+  "signal": "LOW",
   "blocked": false,
   "last_run": null,
   "runs": 0

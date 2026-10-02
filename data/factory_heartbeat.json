@@ -31,8 +31,8 @@
  "verified_revenue": 0,
  "contactability": "all actives C2 (founder-session route)",
  "company_mode": "ACTIVE_ROTATION",
- "current_arm": "DIGITAL_PRODUCTS",
- "next_arm": "DIGITAL_PRODUCTS",
+ "current_arm": "DATA_DOCS",
+ "next_arm": "DATA_DOCS",
  "active_arms": 7,
  "low_signal_arms": [
   "AI_SERVICES",
@@ -41,9 +41,16 @@
  ],
  "blocked_arms": [],
  "priority_arm": "NONE",
- "last_rotation": "2026-10-02T16:04:18.369207+00:00",
+ "last_rotation": "2026-10-02T16:29:56.178011+00:00",
  "next_rotation": "next cycle",
  "affiliate_status": "LOW_SIGNAL (tracked-active, no demand fit, X-post blocked)",
  "verified_affiliate_sales": 0,
- "verified_affiliate_revenue": 0
+ "verified_affiliate_revenue": 0,
+ "founder_gated_items": [
+  "nitro-application",
+  "oauth-grant",
+  "associates-tag",
+  "x-credits"
+ ],
+ "commercial_signals": "none"
 }

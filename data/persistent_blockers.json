@@ -1,0 +1,14 @@
+{
+ "nitro-pdf-affiliate": {
+  "state": "BLOCKED_EXTERNAL",
+  "reason": "partner application needs business identity",
+  "required_action": "founder applies at gonitro.com/partners",
+  "candidate": "preserved with STRONG demand fit",
+  "last_checked": "2026-10-02T16:29:36.137103+00:00",
+  "next_recheck": "on founder action or weekly",
+  "alternative_routes": [
+   "systeme tracked link (active)",
+   "direct service offers"
+  ]
+ }
+}
