@@ -315,6 +315,25 @@
    "retry_condition": "never",
    "commercial_score": 0,
    "cooldown_until": "2026-10-09T17:36:20.572791+00:00"
+  },
+  "aiops-invoice-pain": {
+   "first_seen": "2026-10-02T17:39:17.124655+00:00",
+   "times_seen": 1,
+   "source": "web",
+   "signal_type": "market-intel",
+   "result": "VENDOR_ONLY",
+   "last_seen": "2026-10-02T17:39:17.124655+00:00",
+   "business": "n/a (all vendors)",
+   "problem": "SMB invoicing time-tax (quantified: 5h/mo, 12-25USD/invoice)",
+   "offer": "none-contactable",
+   "accessibility": "BLOCKED",
+   "contactability": "C0",
+   "eligibility": "FAIL",
+   "action_taken": "pain search",
+   "evidence_level": "OBSERVED",
+   "next_action": "none",
+   "retry_condition": "never (vendor-only surface)",
+   "commercial_score": 0
   }
  },
  "arms": {
