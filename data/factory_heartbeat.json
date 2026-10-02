@@ -1,7 +1,7 @@
 {
  "factory_mode": "CONTINUOUS_ACTIVE",
  "last_cycle": "S3-LOOP-02",
- "current_lane": "learn",
+ "current_lane": "observation",
  "next_lane": "discovery",
  "cycle_count": "continuous",
  "blocked_lanes": [
@@ -28,5 +28,6 @@
  "top_rejection_reason": "SCOPE",
  "top_positive_pattern": "document/PDF/data tasks",
  "verified_sales": 0,
- "verified_revenue": 0
+ "verified_revenue": 0,
+ "contactability": "all actives C2 (founder-session route)"
 }

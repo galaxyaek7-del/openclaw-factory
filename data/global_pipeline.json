@@ -10,7 +10,12 @@
    "bids": 157,
    "price": 250.0,
    "state": "QUALIFIED-CONDITIONAL format-only bid, editing excluded (submit BLOCKED_NO_TOKEN)",
-   "fit": "MEDIUM (layout fits; proofreading excluded explicitly)"
+   "fit": "MEDIUM (layout fits; proofreading excluded explicitly)",
+   "contactability": "C2",
+   "priority_rank": [
+    1,
+    -2
+   ]
   },
   {
    "id": 40745859,
@@ -23,7 +28,12 @@
    "price": 30.0,
    "basis": "market-average parity (avg 30.00 inside bounds)",
    "grade": "B (relevant possibility; intent generic)",
-   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)"
+   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)",
+   "contactability": "C2",
+   "priority_rank": [
+    0,
+    -2
+   ]
   },
   {
    "id": 40744952,
@@ -49,7 +59,12 @@
      "Textdocx source available or convertible"
     ],
     "next_action": "Confirm photo count and current draft format for fixed quote"
-   }
+   },
+   "contactability": "C2",
+   "priority_rank": [
+    0,
+    -2
+   ]
   },
   {
    "id": 40746029,
@@ -74,7 +89,12 @@
      "Content provided by buyer team; design system preferences stated"
     ],
     "next_action": "Confirm formats (Docs/Slides/Canva) and brand assets for fixed quote"
-   }
+   },
+   "contactability": "C2",
+   "priority_rank": [
+    0,
+    -2
+   ]
   },
   {
    "id": 40746348,
@@ -99,7 +119,12 @@
      "Source material provided digitally"
     ],
     "next_action": "Confirm volume and sheet structure for fixed quote"
-   }
+   },
+   "contactability": "C2",
+   "priority_rank": [
+    0,
+    -2
+   ]
   }
  ],
  "rejected": [
@@ -722,9 +747,13 @@
   {
    "id": 40746535,
    "reason": "D-grade loop04 (scope/budget/language)"
+  },
+  {
+   "id": 40746559,
+   "reason": "D-grade loop05 (scope/budget)"
   }
  ],
- "at": "2026-10-02T15:51:10.407614+00:00",
+ "at": "2026-10-02T15:55:24.485471+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
