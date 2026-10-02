@@ -1,0 +1,11 @@
+{
+  "action_id": "FA-JEV-KEY",
+  "priority": "P1",
+  "platform": "typesafe-ai",
+  "reason": "JEV API key required for live shadow test and historical backtest",
+  "exact_external_step": "Create account at https://thejevai.com and add TYPESAFE_API_KEY to .env",
+  "blocking_scope": "JEV live evaluation",
+  "can_automate_later": true,
+  "cost": "Free tier available (100,000 tokens)",
+  "security_note": "Never paste the key into chat or Telegram. Only place it in .env."
+}

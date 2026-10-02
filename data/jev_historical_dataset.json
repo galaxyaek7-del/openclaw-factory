@@ -1,0 +1,2861 @@
+{
+  "cases": [
+    {
+      "source": "production_cycles",
+      "cycle_id": "V74-C001",
+      "timestamp": "2026-09-30T10:55:00+00:00",
+      "decision": "WAIT_FOR_EVIDENCE (EXP-SUB-001 close 2026-10-02T03:00Z)",
+      "context": "payment_evidence EMPTY on all ACCEPTED; build-score 8.5 LOW_VALUE_ACTIVITY",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "V75-C001",
+      "timestamp": "2026-09-30T11:05:00+00:00",
+      "decision": "WAIT_FOR_EVIDENCE (EXP close 2026-10-02T03:00Z)",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "V76-C001",
+      "timestamp": "2026-09-30T11:20:00+00:00",
+      "decision": "NONE until window close",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "GF-IGNITION-01",
+      "timestamp": "2026-09-30T18:55:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "GF-12H-01",
+      "timestamp": "2026-09-30T18:56:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "UNLOCK-01",
+      "timestamp": "2026-09-30T19:10:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "GF-FULL-THRUST-02",
+      "timestamp": "2026-09-30T19:15:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "GF-COMMERCIAL-IGNITION-01",
+      "timestamp": "2026-09-30T19:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "GF-E3-01",
+      "timestamp": "2026-09-30T19:40:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "DELEGATION-01",
+      "timestamp": "2026-09-30T19:50:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "VAL-02",
+      "timestamp": "2026-09-30T19:55:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "BUYER-IGNITION-01",
+      "timestamp": "2026-09-30T20:05:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "BUYER-EXEC-01",
+      "timestamp": "2026-09-30T20:15:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "ADAPTIVE-01",
+      "timestamp": "2026-09-30T20:20:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "FORWARD-01",
+      "timestamp": "2026-09-30T20:25:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "EVOLVE-CONST-01",
+      "timestamp": "2026-09-30T20:35:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "DECISION-ENGINE-01",
+      "timestamp": "2026-09-30T20:45:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "GLOBAL-COMPANY-01",
+      "timestamp": "2026-09-30T20:45:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "DOUBLE-THRUST-01",
+      "timestamp": "2026-09-30T21:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "TODO-EXEC-01",
+      "timestamp": "2026-09-30T21:10:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "TODO-EXEC-02",
+      "timestamp": "2026-09-30T21:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "WP-CONVERT-01",
+      "timestamp": "2026-09-30T21:10:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "BOTTLENECK-BREAK-01",
+      "timestamp": "2026-09-30T21:20:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "FIRST-SIGNAL-01",
+      "timestamp": "2026-09-30T21:25:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "BREAKOUT-01",
+      "timestamp": "2026-09-30T21:10:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "SCENE-CHANGE-01",
+      "timestamp": "2026-09-30T21:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "FREELANCER-CONVERT-01",
+      "timestamp": "2026-09-30T21:20:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "FINAL-GATE-01",
+      "timestamp": "2026-09-30T21:35:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "TODO-CLOSE-01",
+      "timestamp": "2026-10-01T06:44:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "DEFICIENCY-AUDIT-01",
+      "timestamp": "2026-10-01T06:55:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "SIM-ALL-01",
+      "timestamp": "2026-10-01T07:10:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "FINAL-GATE-02",
+      "timestamp": "2026-10-01T07:20:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "FREELANCER-CONVERT-02",
+      "timestamp": "2026-10-01T07:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "POST-SUBMIT-01",
+      "timestamp": "2026-10-01T07:45:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S2S3-DEEP-01",
+      "timestamp": "2026-10-01T07:50:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-REVENUE-01",
+      "timestamp": "2026-10-01T08:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-REVENUE-02",
+      "timestamp": "2026-10-01T09:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-DELEGATE-01",
+      "timestamp": "2026-10-01T09:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-AUTONOMY-01",
+      "timestamp": "2026-10-01T10:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-MAXSTAGE-01",
+      "timestamp": "2026-10-01T10:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-GLOBAL-01",
+      "timestamp": "2026-10-01T11:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ARMS-01",
+      "timestamp": "2026-10-01T11:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-EXTERNAL-01",
+      "timestamp": "2026-10-01T12:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-COMMAND-01",
+      "timestamp": "2026-10-01T12:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-COMMAND-02",
+      "timestamp": "2026-10-01T13:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-AFFILIATE-01",
+      "timestamp": "2026-10-01T13:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-COMMAND-03",
+      "timestamp": "2026-10-01T13:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-AFFILIATE-02",
+      "timestamp": "2026-10-01T14:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-COMMAND-04",
+      "timestamp": "2026-10-01T14:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-COMMAND-05",
+      "timestamp": "2026-10-01T15:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-AUTO-SUPPORT-01",
+      "timestamp": "2026-10-01T15:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-COMMAND-06",
+      "timestamp": "2026-10-01T16:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-FACTORY-NEED-01",
+      "timestamp": "2026-10-01T16:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-COMMAND-07",
+      "timestamp": "2026-10-01T17:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-COMMAND-08",
+      "timestamp": "2026-10-01T17:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-PATHS-01",
+      "timestamp": "2026-10-01T18:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-PATHS-02",
+      "timestamp": "2026-10-01T18:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-PATHS-03",
+      "timestamp": "2026-10-01T19:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-PATHS-04",
+      "timestamp": "2026-10-01T19:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-PATHS-05",
+      "timestamp": "2026-10-01T20:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-PATHS-06",
+      "timestamp": "2026-10-01T20:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-PATHS-07",
+      "timestamp": "2026-10-01T21:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-PATHS-08",
+      "timestamp": "2026-10-01T21:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ARMS-02",
+      "timestamp": "2026-10-01T22:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-FRUITFUL-01",
+      "timestamp": "2026-10-01T22:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-FRUITFUL-02",
+      "timestamp": "2026-10-01T17:40:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-FRUITFUL-03",
+      "timestamp": "2026-10-01T17:42:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-AFFILIATE-02",
+      "timestamp": "2026-10-01T22:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-AFFILIATE-03",
+      "timestamp": "2026-10-01T23:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-IGNITION-01",
+      "timestamp": "2026-10-01T18:01:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-IGNITION-02",
+      "timestamp": "2026-10-02T07:59:31.266864+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-IGNITION-03",
+      "timestamp": "2026-10-02T08:04:28.560925+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-IGNITION-04",
+      "timestamp": "2026-10-02T08:07:59.792339+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-IGNITION-05",
+      "timestamp": "2026-10-02T08:19:39.119113+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-IGNITION-06",
+      "timestamp": "2026-10-02T08:30:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ACCEL-01",
+      "timestamp": "2026-10-02T08:29:49.934602+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-CONV-01",
+      "timestamp": "2026-10-02T08:34:27.887119+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-CONV-02",
+      "timestamp": "2026-10-02T08:38:39.611633+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-DEMAND-01",
+      "timestamp": "2026-10-02T08:43:52.679475+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-DEMAND-CONV-02",
+      "timestamp": "2026-10-02T08:50:07.878793+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ESCAPE-01",
+      "timestamp": "2026-10-02T08:54:58.953693+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ESCAPE-02",
+      "timestamp": "2026-10-02T08:59:27.691529+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-EXTERNAL-DONE-01",
+      "timestamp": "2026-10-02T09:04:06.703829+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-BUYER-ACCESS-01",
+      "timestamp": "2026-10-02T09:08:09.191013+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-MASTER-01",
+      "timestamp": "2026-10-02T09:13:09.605171+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-COMPANY-01",
+      "timestamp": "2026-10-02T09:18:07.957532+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-MARKET-01",
+      "timestamp": "2026-10-02T09:24:31.548426+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-REALBIZ-01",
+      "timestamp": "2026-10-02T09:28:47.007206+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-REALBIZ-02",
+      "timestamp": "2026-10-02T09:34:08.028462+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-REALBIZ-03",
+      "timestamp": "2026-10-02T09:37:43.742286+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-REALBIZ-04",
+      "timestamp": "2026-10-02T09:41:51.937143+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-REALBIZ-05",
+      "timestamp": "2026-10-02T09:48:33.714763+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-REALBIZ-06",
+      "timestamp": "2026-10-02T09:54:26.104855+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-REALBIZ-07",
+      "timestamp": "2026-10-02T10:02:14.828221+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-TOOLS-UPDATE-01",
+      "timestamp": "2026-10-02T10:14:04.030682+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-TOOLS-WIRE-01",
+      "timestamp": "2026-10-02T10:20:34.189694+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ACTIVATE-01",
+      "timestamp": "2026-10-02T10:27:52.248435+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-PUSH-01",
+      "timestamp": "2026-10-02T10:30:32.164407+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-MASTER-SWEEP-01",
+      "timestamp": "2026-10-02T10:37:46.892116+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-RIGHT-PEOPLE-01",
+      "timestamp": "2026-10-02T10:39:57.461630+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-BUYERS-TODAY-01",
+      "timestamp": "2026-10-02T10:44:48.129652+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-APPROACH-01",
+      "timestamp": "2026-10-02T10:49:48.347648+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-APPROACH-FORCE-01",
+      "timestamp": "2026-10-02T11:02:16.256740+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-RECOVERY-01",
+      "timestamp": "2026-10-02T11:06:02.915089+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-REALBIZ-04",
+      "timestamp": "2026-10-02T10:00:00+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-CONTINUE-01",
+      "timestamp": "2026-10-02T11:14:14.800395+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-RB05-01",
+      "timestamp": "2026-10-02T11:16:24.998780+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-FORCE-02",
+      "timestamp": "2026-10-02T11:19:05.915335+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-FORCE-03",
+      "timestamp": "2026-10-02T11:23:20.114484+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-FORCE-04",
+      "timestamp": "2026-10-02T11:26:48.980756+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-OAUTH-CASCADE-01",
+      "timestamp": "2026-10-02T11:31:45.570257+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-OAUTH-CASCADE-02",
+      "timestamp": "2026-10-02T11:34:25.653259+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-OAUTH-CASCADE-03",
+      "timestamp": "2026-10-02T11:39:12.280358+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ENV-RECOVERY-01",
+      "timestamp": "2026-10-02T13:10:17.281721+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-OAUTH-RECOVERY-02",
+      "timestamp": "2026-10-02T13:12:42.659199+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-OAUTH-VALIDATION-03",
+      "timestamp": "2026-10-02T13:15:12.004246+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-LOOP-01",
+      "timestamp": "2026-10-02T14:47:56.747055+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-PAYCONNECT-01",
+      "timestamp": "2026-10-02T15:14:22.506740+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-DRYRUN-01",
+      "timestamp": "2026-10-02T15:17:18.993641+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ACCT-01",
+      "timestamp": "2026-10-02T15:19:59.132178+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-PROPOSAL-PIPELINE-02",
+      "timestamp": "2026-10-02T15:22:09.201604+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-COMM-EXEC-01",
+      "timestamp": "2026-10-02T15:23:12.951422+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-FALLBACK-01",
+      "timestamp": "2026-10-02T15:34:06.353535+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ROUTER-01",
+      "timestamp": "2026-10-02T15:34:43.348982+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-LOOP-02",
+      "timestamp": "2026-10-02T15:48:08.559585+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-LOOP-03",
+      "timestamp": "2026-10-02T15:51:10.407614+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-LOOP-04",
+      "timestamp": "2026-10-02T15:55:24.485471+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ROTATE-01",
+      "timestamp": "2026-10-02T16:04:18.369207+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ROTATE-02",
+      "timestamp": "2026-10-02T16:08:52.473501+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-AFFILIATE-COMM-01",
+      "timestamp": "2026-10-02T16:23:46.665199+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-AFFILIATE-02B",
+      "timestamp": "2026-10-02T16:26:55.651071+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-AUTO-ARM-01",
+      "timestamp": "2026-10-02T16:29:56.178011+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-DATADOCS-01",
+      "timestamp": "2026-10-02T16:32:35.118700+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-SIM-01",
+      "timestamp": "2026-10-02T16:36:08.245509+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-REAL-VAL-01",
+      "timestamp": "2026-10-02T16:38:39.402939+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-AISVC-01",
+      "timestamp": "2026-10-02T16:41:26.705610+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-GAPFIX-01",
+      "timestamp": "2026-10-02T16:45:08.285416+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-CONTACT-01",
+      "timestamp": "2026-10-02T16:48:13.929114+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-MULTI-01",
+      "timestamp": "2026-10-02T16:50:29.145836+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-B2B-DIRECT-01",
+      "timestamp": "2026-10-02T16:53:12.971443+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-SIGNAL-01",
+      "timestamp": "2026-10-02T16:56:12.207829+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-BREAKOUT-01",
+      "timestamp": "2026-10-02T16:59:56.179965+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-OPEN-CH-01",
+      "timestamp": "2026-10-02T17:01:43.369273+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ARBITRAGE-01",
+      "timestamp": "2026-10-02T17:05:16.807411+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-FREELANCER-CONV-01",
+      "timestamp": "2026-10-02T17:07:52.537676+00:00",
+      "decision": "DIGITAL_PRODUCTS",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-DIGITAL-01",
+      "timestamp": "2026-10-02T17:10:46.444723+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-CONT-01",
+      "timestamp": "2026-10-02T17:14:01.297974+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-EFFICIENCY-01",
+      "timestamp": "2026-10-02T17:15:42.753651+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-MEM-01",
+      "timestamp": "2026-10-02T17:21:09.928637+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-MEM-02",
+      "timestamp": "2026-10-02T17:25:24.605715+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-DATADOCS-02",
+      "timestamp": "2026-10-02T17:28:14.923007+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-AISERVICES-03",
+      "timestamp": "2026-10-02T17:30:45.228217+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ACM-01",
+      "timestamp": "2026-10-02T17:33:14.169513+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ACM-02",
+      "timestamp": "2026-10-02T17:36:20.569213+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ACM-03",
+      "timestamp": "2026-10-02T17:39:17.124330+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ACM-04",
+      "timestamp": "2026-10-02T17:41:17.210547+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-ACM-05",
+      "timestamp": "2026-10-02T17:44:57.899132+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-SEG-01",
+      "timestamp": "2026-10-02T17:50:45.269008+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-PARTNER-01",
+      "timestamp": "2026-10-02T17:55:24.158254+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-RECOVERY-01",
+      "timestamp": "2026-10-02T17:58:25.338432+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-TRANS-01",
+      "timestamp": "2026-10-02T18:07:20.860972+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-TRANS-ENG-02",
+      "timestamp": "2026-10-02T18:09:19.989072+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-EXEC-01",
+      "timestamp": "2026-10-02T18:11:45.322576+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-EXEC-02",
+      "timestamp": "2026-10-02T19:33:53.732390+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-EXEC-03",
+      "timestamp": "2026-10-02T19:36:11.531768+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-EXEC-04",
+      "timestamp": "2026-10-02T19:38:46.878960+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "production_cycles",
+      "cycle_id": "S3-EXEC-05",
+      "timestamp": "2026-10-02T19:56:26.458071+00:00",
+      "decision": "Monitor observation window until 2026-10-05",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T00:00:00Z",
+      "timestamp": "2026-09-26T00:00:00Z",
+      "decision": "E1",
+      "context": "aekraft.gumroad.com/l/* (30 products)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T00:00:00Z",
+      "timestamp": "2026-09-26T00:00:00Z",
+      "decision": "E1",
+      "context": "galaxyaek7-del.github.io/openclaw-factory/ (37 pages)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T00:00:00Z",
+      "timestamp": "2026-09-26T00:00:00Z",
+      "decision": "E2",
+      "context": "github_pages_site",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T00:00:00Z",
+      "timestamp": "2026-09-26T00:00:00Z",
+      "decision": "E2",
+      "context": "gumroad_store",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T00:00:00Z",
+      "timestamp": "2026-09-26T00:00:00Z",
+      "decision": "below_E3",
+      "context": "customer_site pages",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T00:00:00Z",
+      "timestamp": "2026-09-26T00:00:00Z",
+      "decision": "below_E3",
+      "context": "affiliate-standing-desks + guides",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T00:00:00Z",
+      "timestamp": "2026-09-26T00:00:00Z",
+      "decision": "E0",
+      "context": "GF_SHOPIFY_PREMIUM_10_2026_09",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T00:00:00Z",
+      "timestamp": "2026-09-26T00:00:00Z",
+      "decision": "below_E5",
+      "context": "paddle_6_products",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T00:00:00Z",
+      "timestamp": "2026-09-26T00:00:00Z",
+      "decision": "E6_E7",
+      "context": "finance_truth",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T12:20:00Z",
+      "timestamp": "2026-09-26T12:20:00Z",
+      "decision": "below_E2",
+      "context": "gumroad pahxdv post (brand-checked, 145 chars)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T12:20:00Z",
+      "timestamp": "2026-09-26T12:20:00Z",
+      "decision": "below_E2",
+      "context": "n/a",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T12:20:00Z",
+      "timestamp": "2026-09-26T12:20:00Z",
+      "decision": "n/a",
+      "context": "GF catalogs",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T12:20:00Z",
+      "timestamp": "2026-09-26T12:20:00Z",
+      "decision": "E1",
+      "context": "34 public pages",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T12:40:00Z",
+      "timestamp": "2026-09-26T12:40:00Z",
+      "decision": "E1",
+      "context": "products.html +10 cards",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T12:40:00Z",
+      "timestamp": "2026-09-26T12:40:00Z",
+      "decision": "n/a",
+      "context": "E2 breakout artifacts",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T12:40:00Z",
+      "timestamp": "2026-09-26T12:40:00Z",
+      "decision": "E2",
+      "context": "all_surfaces",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T13:00:00Z",
+      "timestamp": "2026-09-26T13:00:00Z",
+      "decision": "E1",
+      "context": "34 files (canonicals, JSON-LD, sitemap 35, catalog 32)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T13:00:00Z",
+      "timestamp": "2026-09-26T13:00:00Z",
+      "decision": "E2",
+      "context": "backlinks/mentions",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T13:00:00Z",
+      "timestamp": "2026-09-26T13:00:00Z",
+      "decision": "n/a",
+      "context": "founder queue",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T13:30:00Z",
+      "timestamp": "2026-09-26T13:30:00Z",
+      "decision": "unknown",
+      "context": "34 public pages (published copy)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T13:35:00Z",
+      "timestamp": "2026-09-26T13:35:00Z",
+      "decision": "unknown",
+      "context": "19 pages nav + commit b1a79bb",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T13:35:00Z",
+      "timestamp": "2026-09-26T13:35:00Z",
+      "decision": "unknown",
+      "context": "distribution wall",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T13:35:00Z",
+      "timestamp": "2026-09-26T13:35:00Z",
+      "decision": "unknown",
+      "context": "gsc_prep + queue",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T13:35:00Z",
+      "timestamp": "2026-09-26T13:35:00Z",
+      "decision": "unknown",
+      "context": "all_surfaces",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T13:50:00Z",
+      "timestamp": "2026-09-26T13:50:00Z",
+      "decision": "unknown",
+      "context": "measurement_gate_posture",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T14:05:00Z",
+      "timestamp": "2026-09-26T14:05:00Z",
+      "decision": "unknown",
+      "context": "entry pages + catalog",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T14:10:00Z",
+      "timestamp": "2026-09-26T14:10:00Z",
+      "decision": "unknown",
+      "context": "nav + trust center, commit a90f090",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T14:05:00Z",
+      "timestamp": "2026-09-26T14:05:00Z",
+      "decision": "unknown",
+      "context": "baremetrics/hostaway/lemsubs",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T14:10:00Z",
+      "timestamp": "2026-09-26T14:10:00Z",
+      "decision": "unknown",
+      "context": "EXPOSURE->CLICK chain",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T14:20:00Z",
+      "timestamp": "2026-09-26T14:20:00Z",
+      "decision": "unknown",
+      "context": "hold_build_open_market",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T14:30:00Z",
+      "timestamp": "2026-09-26T14:30:00Z",
+      "decision": "unknown",
+      "context": "30 live listings",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T14:35:00Z",
+      "timestamp": "2026-09-26T14:35:00Z",
+      "decision": "unknown",
+      "context": "30 live listings",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T14:35:00Z",
+      "timestamp": "2026-09-26T14:35:00Z",
+      "decision": "unknown",
+      "context": "gumroad store pages",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T14:35:00Z",
+      "timestamp": "2026-09-26T14:35:00Z",
+      "decision": "unknown",
+      "context": "n/a",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T14:45:00Z",
+      "timestamp": "2026-09-26T14:45:00Z",
+      "decision": "unknown",
+      "context": "30 ledger products",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T14:45:00Z",
+      "timestamp": "2026-09-26T14:45:00Z",
+      "decision": "unknown",
+      "context": "pahxdv (SaaS Spend Audit)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T14:45:00Z",
+      "timestamp": "2026-09-26T14:45:00Z",
+      "decision": "unknown",
+      "context": "saas-renewal niche",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T14:45:00Z",
+      "timestamp": "2026-09-26T14:45:00Z",
+      "decision": "unknown",
+      "context": "signal matrix",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T15:00:00Z",
+      "timestamp": "2026-09-26T15:00:00Z",
+      "decision": "unknown",
+      "context": "5 products x exact-niche queries",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T15:15:00Z",
+      "timestamp": "2026-09-26T15:15:00Z",
+      "decision": "unknown",
+      "context": "commits e341d28/b1a79bb/a90f090 + .env hygiene",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T15:15:00Z",
+      "timestamp": "2026-09-26T15:15:00Z",
+      "decision": "unknown",
+      "context": "cpadc7-zh store",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T15:15:00Z",
+      "timestamp": "2026-09-26T15:15:00Z",
+      "decision": "unknown",
+      "context": "pahxdv/wsbqr/behmhy",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T15:30:00Z",
+      "timestamp": "2026-09-26T15:30:00Z",
+      "decision": "unknown",
+      "context": "30 live listings",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T15:30:00Z",
+      "timestamp": "2026-09-26T15:30:00Z",
+      "decision": "unknown",
+      "context": "repo landing",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T16:00:00Z",
+      "timestamp": "2026-09-26T16:00:00Z",
+      "decision": "unknown",
+      "context": "30 live listings",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T16:15:00Z",
+      "timestamp": "2026-09-26T16:15:00Z",
+      "decision": "unknown",
+      "context": "5 products x exact-niche queries (repeat matrix)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T16:30:00Z",
+      "timestamp": "2026-09-26T16:30:00Z",
+      "decision": "unknown",
+      "context": "offer-codes + systeme-link + content-page options",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T16:45:00Z",
+      "timestamp": "2026-09-26T16:45:00Z",
+      "decision": "unknown",
+      "context": "verification deploy paths",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-26T17:00:00Z",
+      "timestamp": "2026-09-26T17:00:00Z",
+      "decision": "unknown",
+      "context": "property https://galaxyaek7-del.github.io/openclaw-factory/",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T08:10:00Z",
+      "timestamp": "2026-09-27T08:10:00Z",
+      "decision": "unknown",
+      "context": "property https://galaxyaek7-del.github.io/openclaw-factory/",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T08:20:00Z",
+      "timestamp": "2026-09-27T08:20:00Z",
+      "decision": "unknown",
+      "context": "property + sitemap + catalog",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T08:30:00Z",
+      "timestamp": "2026-09-27T08:30:00Z",
+      "decision": "unknown",
+      "context": "pahxdv (SaaS spend) + xwbbb (STR damage)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T08:50:00Z",
+      "timestamp": "2026-09-27T08:50:00Z",
+      "decision": "unknown",
+      "context": "blockers/tests/portfolio/scoreboard",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T09:15:00Z",
+      "timestamp": "2026-09-27T09:15:00Z",
+      "decision": "unknown",
+      "context": "32 products",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T09:15:00Z",
+      "timestamp": "2026-09-27T09:15:00Z",
+      "decision": "unknown",
+      "context": "pahxdv + xwbbb",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T09:15:00Z",
+      "timestamp": "2026-09-27T09:15:00Z",
+      "decision": "unknown",
+      "context": "adyvd + iaiyt content paths",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T09:15:00Z",
+      "timestamp": "2026-09-27T09:15:00Z",
+      "decision": "unknown",
+      "context": "10 frozen items",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T09:40:00Z",
+      "timestamp": "2026-09-27T09:40:00Z",
+      "decision": "unknown",
+      "context": "automation boundary",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T10:00:00Z",
+      "timestamp": "2026-09-27T10:00:00Z",
+      "decision": "unknown",
+      "context": "founder gates + activation",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T10:20:00Z",
+      "timestamp": "2026-09-27T10:20:00Z",
+      "decision": "unknown",
+      "context": "operating architecture",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T10:40:00Z",
+      "timestamp": "2026-09-27T10:40:00Z",
+      "decision": "unknown",
+      "context": "all 5 gates x 9 automation paths",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T11:05:00Z",
+      "timestamp": "2026-09-27T11:05:00Z",
+      "decision": "unknown",
+      "context": "10 candidate channels x 7 criteria",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T11:30:00Z",
+      "timestamp": "2026-09-27T11:30:00Z",
+      "decision": "unknown",
+      "context": "3 kind:1 notes (catalog + pahxdv + xwbbb)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T11:30:00Z",
+      "timestamp": "2026-09-27T11:30:00Z",
+      "decision": "unknown",
+      "context": "scripts/nostr_direct.py",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T11:50:00Z",
+      "timestamp": "2026-09-27T11:50:00Z",
+      "decision": "unknown",
+      "context": "scripts/nostr_direct.py + repo secrets",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T11:50:00Z",
+      "timestamp": "2026-09-27T11:50:00Z",
+      "decision": "unknown",
+      "context": "brand 'Galaxy Forge'",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T11:50:00Z",
+      "timestamp": "2026-09-27T11:50:00Z",
+      "decision": "unknown",
+      "context": "blocked channels",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T12:05:00Z",
+      "timestamp": "2026-09-27T12:05:00Z",
+      "decision": "unknown",
+      "context": "brand discoverability",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T12:05:00Z",
+      "timestamp": "2026-09-27T12:05:00Z",
+      "decision": "unknown",
+      "context": "47 pages",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T12:05:00Z",
+      "timestamp": "2026-09-27T12:05:00Z",
+      "decision": "unknown",
+      "context": "3 notes",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T14:10:00Z",
+      "timestamp": "2026-09-27T14:10:00Z",
+      "decision": "unknown",
+      "context": "47 pages meta layer",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T14:30:00Z",
+      "timestamp": "2026-09-27T14:30:00Z",
+      "decision": "unknown",
+      "context": "homepage descriptor + 5 notes",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T15:00:00Z",
+      "timestamp": "2026-09-27T15:00:00Z",
+      "decision": "unknown",
+      "context": "profile kind:0 + adyvd note",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T15:30:00Z",
+      "timestamp": "2026-09-27T15:30:00Z",
+      "decision": "unknown",
+      "context": "Airbnb 2026 evidence guide article",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T16:00:00Z",
+      "timestamp": "2026-09-27T16:00:00Z",
+      "decision": "unknown",
+      "context": "Airbnb article view counter",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T16:00:00Z",
+      "timestamp": "2026-09-27T16:00:00Z",
+      "decision": "unknown",
+      "context": "Airbnb article",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T16:00:00Z",
+      "timestamp": "2026-09-27T16:00:00Z",
+      "decision": "unknown",
+      "context": "SaaS Renewal Audit article (2nd)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T16:20:00Z",
+      "timestamp": "2026-09-27T16:20:00Z",
+      "decision": "unknown",
+      "context": "P1-P10 implementations",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T16:40:00Z",
+      "timestamp": "2026-09-27T16:40:00Z",
+      "decision": "unknown",
+      "context": "Airbnb article view counter",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T16:40:00Z",
+      "timestamp": "2026-09-27T16:40:00Z",
+      "decision": "unknown",
+      "context": "Turo 48-hour guide (3rd)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T16:40:00Z",
+      "timestamp": "2026-09-27T16:40:00Z",
+      "decision": "unknown",
+      "context": "surfaces + sales",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T17:00:00Z",
+      "timestamp": "2026-09-27T17:00:00Z",
+      "decision": "unknown",
+      "context": "long-form + 2 article notes",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T17:00:00Z",
+      "timestamp": "2026-09-27T17:00:00Z",
+      "decision": "unknown",
+      "context": "3 articles cross-linked",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T17:30:00Z",
+      "timestamp": "2026-09-27T17:30:00Z",
+      "decision": "unknown",
+      "context": "r/airbnb_hosts demand threads",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T17:30:00Z",
+      "timestamp": "2026-09-27T17:30:00Z",
+      "decision": "unknown",
+      "context": "products catalog",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T18:15:00Z",
+      "timestamp": "2026-09-27T18:15:00Z",
+      "decision": "unknown",
+      "context": "AIRBNB_DISPUTE_EVIDENCE_V1 + 4 audiences",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T18:45:00Z",
+      "timestamp": "2026-09-27T18:45:00Z",
+      "decision": "unknown",
+      "context": "Turo/SaaS/Etsy audiences + 3 action packs",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T19:20:00Z",
+      "timestamp": "2026-09-27T19:20:00Z",
+      "decision": "unknown",
+      "context": "45 sitemap URLs + ownership key",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T19:35:00Z",
+      "timestamp": "2026-09-27T19:35:00Z",
+      "decision": "unknown",
+      "context": "clicks + paddle + gumroad + bing-probe",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T20:45:00Z",
+      "timestamp": "2026-09-27T20:45:00Z",
+      "decision": "unknown",
+      "context": "funnel repair + price audit + SaaS article + packs",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T21:00:00Z",
+      "timestamp": "2026-09-27T21:00:00Z",
+      "decision": "unknown",
+      "context": "pack 1 chain re-verified + sales poll",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T21:20:00Z",
+      "timestamp": "2026-09-27T21:20:00Z",
+      "decision": "unknown",
+      "context": "pack 1 rule-hardened + chain verified",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T21:50:00Z",
+      "timestamp": "2026-09-27T21:50:00Z",
+      "decision": "unknown",
+      "context": "2nd Turo article + state machine",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T22:05:00Z",
+      "timestamp": "2026-09-27T22:05:00Z",
+      "decision": "unknown",
+      "context": "$29 checkout reachability (one-time ordered check)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T22:30:00Z",
+      "timestamp": "2026-09-27T22:30:00Z",
+      "decision": "unknown",
+      "context": "$29 demand test baseline + integrity + portfolio",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T22:45:00Z",
+      "timestamp": "2026-09-27T22:45:00Z",
+      "decision": "unknown",
+      "context": "all 17 phases processed to terminal state",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T00:10:00Z",
+      "timestamp": "2026-09-28T00:10:00Z",
+      "decision": "unknown",
+      "context": "batch10 closeout + exposure fix attempt",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T00:35:00Z",
+      "timestamp": "2026-09-28T00:35:00Z",
+      "decision": "unknown",
+      "context": "10 batch products onto Pages catalog",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T01:10:00Z",
+      "timestamp": "2026-09-28T01:10:00Z",
+      "decision": "unknown",
+      "context": "market states + nexus guide + pack1 fix",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T01:40:00Z",
+      "timestamp": "2026-09-28T01:40:00Z",
+      "decision": "unknown",
+      "context": "3 test packs + 3 guide surfaces + states",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T02:00:00Z",
+      "timestamp": "2026-09-28T02:00:00Z",
+      "decision": "unknown",
+      "context": "EXP-NEXUS-001 value-first note (nexus method + guide link + disclosure)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T02:15:00Z",
+      "timestamp": "2026-09-28T02:15:00Z",
+      "decision": "unknown",
+      "context": "EXP-NEXUS-001 observation window open",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T02:35:00Z",
+      "timestamp": "2026-09-28T02:35:00Z",
+      "decision": "unknown",
+      "context": "EXP-FOODTRUCK-001 + EXP-SUB-001 candidate dossiers",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T02:50:00Z",
+      "timestamp": "2026-09-28T02:50:00Z",
+      "decision": "unknown",
+      "context": "full test drafts + pack1 package",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T03:05:00Z",
+      "timestamp": "2026-09-28T03:05:00Z",
+      "decision": "unknown",
+      "context": "DECISION-001 + interim observation",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T03:15:00Z",
+      "timestamp": "2026-09-28T03:15:00Z",
+      "decision": "unknown",
+      "context": "interim observation + X assessment + next-test staging",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T21:17:25Z",
+      "timestamp": "2026-09-27T21:17:25Z",
+      "decision": "unknown",
+      "context": "EXP-NEXUS-001",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-27T21:17:25Z",
+      "timestamp": "2026-09-27T21:17:25Z",
+      "decision": "unknown",
+      "context": "EXP-SUB-001 value-first note",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T08:30:00Z",
+      "timestamp": "2026-09-28T08:30:00Z",
+      "decision": "unknown",
+      "context": "readiness system + queue + Shopify verdict",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T09:00:00Z",
+      "timestamp": "2026-09-28T09:00:00Z",
+      "decision": "unknown",
+      "context": "safeguard + disclosure fix + clean recheck",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T09:20:00Z",
+      "timestamp": "2026-09-28T09:20:00Z",
+      "decision": "unknown",
+      "context": "FG-001 approved; automatable parts executed",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T09:40:00Z",
+      "timestamp": "2026-09-28T09:40:00Z",
+      "decision": "unknown",
+      "context": "channel map + war room + stale queue finding",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T10:15:00Z",
+      "timestamp": "2026-09-28T10:15:00Z",
+      "decision": "unknown",
+      "context": "queue audit + 42-link sweep + damus quirk verdict",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T11:00:00Z",
+      "timestamp": "2026-09-28T11:00:00Z",
+      "decision": "unknown",
+      "context": "chapter-by-chapter audit + repairs",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T11:20:00Z",
+      "timestamp": "2026-09-28T11:20:00Z",
+      "decision": "unknown",
+      "context": "listing verification + affiliate + monitoring",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T12:05:00Z",
+      "timestamp": "2026-09-28T12:05:00Z",
+      "decision": "unknown",
+      "context": "opportunity database (16 opps)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T12:20:00Z",
+      "timestamp": "2026-09-28T12:20:00Z",
+      "decision": "unknown",
+      "context": "GPSR kit audit vs layer-2 escalation",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T12:40:00Z",
+      "timestamp": "2026-09-28T12:40:00Z",
+      "decision": "unknown",
+      "context": "sitemap 48/48 + island fix",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T13:10:00Z",
+      "timestamp": "2026-09-28T13:10:00Z",
+      "decision": "unknown",
+      "context": "segments + nexus outreach pack",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T13:30:00Z",
+      "timestamp": "2026-09-28T13:30:00Z",
+      "decision": "unknown",
+      "context": "affiliate + conversion + loop close",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T14:00:00Z",
+      "timestamp": "2026-09-28T14:00:00Z",
+      "decision": "unknown",
+      "context": "ledger 120 + 11 offers + monitoring",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T14:40:00Z",
+      "timestamp": "2026-09-28T14:40:00Z",
+      "decision": "unknown",
+      "context": "11-offer diagnosis + foodtruck Telegraph",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T14:50:00Z",
+      "timestamp": "2026-09-28T14:50:00Z",
+      "decision": "unknown",
+      "context": "runner search + sub-telegraph attempt + monitoring",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T15:05:00Z",
+      "timestamp": "2026-09-28T15:05:00Z",
+      "decision": "unknown",
+      "context": "evidence map + experiment matrix",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T15:30:00Z",
+      "timestamp": "2026-09-28T15:30:00Z",
+      "decision": "unknown",
+      "context": "pages audit + sub-telegraph + monitoring",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T16:00:00Z",
+      "timestamp": "2026-09-28T16:00:00Z",
+      "decision": "unknown",
+      "context": "NIP-50 discoverability probe + pack1 verify",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T16:10:00Z",
+      "timestamp": "2026-09-28T16:10:00Z",
+      "decision": "unknown",
+      "context": "net health check + monitoring",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T16:35:00Z",
+      "timestamp": "2026-09-28T16:35:00Z",
+      "decision": "unknown",
+      "context": "idempotency + attribution + retry state",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T16:50:00Z",
+      "timestamp": "2026-09-28T16:50:00Z",
+      "decision": "unknown",
+      "context": "attribution chain + self-healing test + event verify",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T17:00:00Z",
+      "timestamp": "2026-09-28T17:00:00Z",
+      "decision": "unknown",
+      "context": "robots + delivery files + CTA + nostr + sales",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T17:20:00Z",
+      "timestamp": "2026-09-28T17:20:00Z",
+      "decision": "unknown",
+      "context": "profile sync + RSS + stranger test",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T18:10:00Z",
+      "timestamp": "2026-09-28T18:10:00Z",
+      "decision": "unknown",
+      "context": "RSS valid + buyer friction + analytics boundary",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T18:30:00Z",
+      "timestamp": "2026-09-28T18:30:00Z",
+      "decision": "unknown",
+      "context": "route-by-route exhaustion analysis",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T19:00:00Z",
+      "timestamp": "2026-09-28T19:00:00Z",
+      "decision": "unknown",
+      "context": "subscription article live + duplicate finding",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T19:30:00Z",
+      "timestamp": "2026-09-28T19:30:00Z",
+      "decision": "unknown",
+      "context": "Pack 1 reply published in r/turo 1u07nob",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T20:00:00Z",
+      "timestamp": "2026-09-28T20:00:00Z",
+      "decision": "unknown",
+      "context": "10 products built, QA pass, publish rate-limited",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T20:35:00Z",
+      "timestamp": "2026-09-28T20:35:00Z",
+      "decision": "unknown",
+      "context": "manifest + deep QA + cap probe",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T21:00:00Z",
+      "timestamp": "2026-09-28T21:00:00Z",
+      "decision": "unknown",
+      "context": "GF-B11-01 EUDR scope-amendment note",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T21:30:00Z",
+      "timestamp": "2026-09-28T21:30:00Z",
+      "decision": "unknown",
+      "context": "GF-B11-02 EmpCo enforcement note",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-28T23:30:00Z",
+      "timestamp": "2026-09-28T23:30:00Z",
+      "decision": "unknown",
+      "context": "10 products published, price-match verified",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T00:10:00Z",
+      "timestamp": "2026-09-29T00:10:00Z",
+      "decision": "unknown",
+      "context": "batch11 post-publish + guard mechanism test",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T00:30:00Z",
+      "timestamp": "2026-09-29T00:30:00Z",
+      "decision": "unknown",
+      "context": "batch-11 catalog exposure + token assessment",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T07:15:00Z",
+      "timestamp": "2026-09-29T07:15:00Z",
+      "decision": "unknown",
+      "context": "master audit + backup foundation",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T07:30:00Z",
+      "timestamp": "2026-09-29T07:30:00Z",
+      "decision": "unknown",
+      "context": "EU deadline briefing offer (RaaS-001)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T08:00:00Z",
+      "timestamp": "2026-09-29T08:00:00Z",
+      "decision": "unknown",
+      "context": "SaaS waste estimator tool",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T08:20:00Z",
+      "timestamp": "2026-09-29T08:20:00Z",
+      "decision": "unknown",
+      "context": "food-truck cost estimator + cap still blocked",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T08:45:00Z",
+      "timestamp": "2026-09-29T08:45:00Z",
+      "decision": "unknown",
+      "context": "registry + estimator audit",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T09:10:00Z",
+      "timestamp": "2026-09-29T09:10:00Z",
+      "decision": "unknown",
+      "context": "gap + dependency registers",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T09:35:00Z",
+      "timestamp": "2026-09-29T09:35:00Z",
+      "decision": "unknown",
+      "context": "company/infra/load maps",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T15:52:40.570632+00:00",
+      "timestamp": "2026-09-29T15:52:40.570632+00:00",
+      "decision": "unknown",
+      "context": "company/state",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T15:52:40.570632+00:00",
+      "timestamp": "2026-09-29T15:52:40.570632+00:00",
+      "decision": "unknown",
+      "context": "factory/loop",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T15:52:40.570632+00:00",
+      "timestamp": "2026-09-29T15:52:40.570632+00:00",
+      "decision": "unknown",
+      "context": "factory/loop-lock",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T15:52:40.570632+00:00",
+      "timestamp": "2026-09-29T15:52:40.570632+00:00",
+      "decision": "unknown",
+      "context": "founder/command-center",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T17:45:00+00:00",
+      "timestamp": "2026-09-29T17:45:00+00:00",
+      "decision": "unknown",
+      "context": "loop/control",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T17:45:00+00:00",
+      "timestamp": "2026-09-29T17:45:00+00:00",
+      "decision": "unknown",
+      "context": "offers/3-cards",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T17:45:00+00:00",
+      "timestamp": "2026-09-29T17:45:00+00:00",
+      "decision": "unknown",
+      "context": "paddle/chain",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T17:45:00+00:00",
+      "timestamp": "2026-09-29T17:45:00+00:00",
+      "decision": "unknown",
+      "context": "gumroad/reach",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T17:45:00+00:00",
+      "timestamp": "2026-09-29T17:45:00+00:00",
+      "decision": "unknown",
+      "context": "dashboard/truth",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T17:45:00+00:00",
+      "timestamp": "2026-09-29T17:45:00+00:00",
+      "decision": "unknown",
+      "context": "server/ingestion",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T18:45:00+00:00",
+      "timestamp": "2026-09-29T18:45:00+00:00",
+      "decision": "unknown",
+      "context": "market/signals",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T18:45:00+00:00",
+      "timestamp": "2026-09-29T18:45:00+00:00",
+      "decision": "unknown",
+      "context": "market/engine",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T18:45:00+00:00",
+      "timestamp": "2026-09-29T18:45:00+00:00",
+      "decision": "unknown",
+      "context": "cycle/premises",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T19:00:00+00:00",
+      "timestamp": "2026-09-29T19:00:00+00:00",
+      "decision": "unknown",
+      "context": "git/history",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T19:45:00+00:00",
+      "timestamp": "2026-09-29T19:45:00+00:00",
+      "decision": "unknown",
+      "context": "offers/candidates",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T19:45:00+00:00",
+      "timestamp": "2026-09-29T19:45:00+00:00",
+      "decision": "unknown",
+      "context": "founder/queue",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T21:00:00+00:00",
+      "timestamp": "2026-09-29T21:00:00+00:00",
+      "decision": "unknown",
+      "context": "channels/inventory",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T21:00:00+00:00",
+      "timestamp": "2026-09-29T21:00:00+00:00",
+      "decision": "unknown",
+      "context": "experiments/blockers",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T21:00:00+00:00",
+      "timestamp": "2026-09-29T21:00:00+00:00",
+      "decision": "unknown",
+      "context": "E1-E3/paths",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T22:00:00+00:00",
+      "timestamp": "2026-09-29T22:00:00+00:00",
+      "decision": "unknown",
+      "context": "market/path",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T22:30:00+00:00",
+      "timestamp": "2026-09-29T22:30:00+00:00",
+      "decision": "unknown",
+      "context": "E2/selection",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T23:00:00+00:00",
+      "timestamp": "2026-09-29T23:00:00+00:00",
+      "decision": "unknown",
+      "context": "gate/single",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-29T23:30:00+00:00",
+      "timestamp": "2026-09-29T23:30:00+00:00",
+      "decision": "unknown",
+      "context": "gate/trace",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-30T00:00:00+00:00",
+      "timestamp": "2026-09-30T00:00:00+00:00",
+      "decision": "unknown",
+      "context": "gate/trace",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-30T00:00:00+00:00",
+      "timestamp": "2026-09-30T00:00:00+00:00",
+      "decision": "unknown",
+      "context": "portfolio/selection",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-30T00:00:00+00:00",
+      "timestamp": "2026-09-30T00:00:00+00:00",
+      "decision": "unknown",
+      "context": "intelligence-layer",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-30T06:44:00+00:00",
+      "timestamp": "2026-09-30T06:44:00+00:00",
+      "decision": "unknown",
+      "context": "EXP-SUB-001/window",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-30T07:00:00+00:00",
+      "timestamp": "2026-09-30T07:00:00+00:00",
+      "decision": "unknown",
+      "context": "factory-architecture",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-09-30T07:45:00+00:00",
+      "timestamp": "2026-09-30T07:45:00+00:00",
+      "decision": "unknown",
+      "context": "drift-forensics",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-10-02T07:59:31.266864+00:00",
+      "timestamp": "2026-10-02T07:59:31.266864+00:00",
+      "decision": "unknown",
+      "context": "service-note lead-lists (kind:1)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-10-02T08:04:28.560925+00:00",
+      "timestamp": "2026-10-02T08:04:28.560925+00:00",
+      "decision": "unknown",
+      "context": "X-POST-LEAD-SERVICE-01",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-10-02T09:18:07.957532+00:00",
+      "timestamp": "2026-10-02T09:18:07.957532+00:00",
+      "decision": "unknown",
+      "context": "service-note KDP formatting (kind:1, 2nd distinct offer)",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-10-02T09:34:08.028462+00:00",
+      "timestamp": "2026-10-02T09:34:08.028462+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-10-02T10:02:14.828221+00:00",
+      "timestamp": "2026-10-02T10:02:14.828221+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-10-02T10:30:32.164407+00:00",
+      "timestamp": "2026-10-02T10:30:32.164407+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-10-02T15:22:09.201604+00:00",
+      "timestamp": "2026-10-02T15:22:09.201604+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-10-02T15:34:43.348982+00:00",
+      "timestamp": "2026-10-02T15:34:43.348982+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-10-02T17:28:14.923007+00:00",
+      "timestamp": "2026-10-02T17:28:14.923007+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-10-02T17:30:45.228217+00:00",
+      "timestamp": "2026-10-02T17:30:45.228217+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle_id": "2026-10-02T18:11:45.322576+00:00",
+      "timestamp": "2026-10-02T18:11:45.322576+00:00",
+      "decision": "unknown",
+      "context": "",
+      "outcome": 0
+    },
+    {
+      "source": "measurement_audit",
+      "cycle_id": "measurement_audit",
+      "timestamp": "2026-10-02T19:36:11.531768+00:00",
+      "decision": "MEASUREMENT_CHECK",
+      "context": "{\"at\": \"2026-10-02T19:36:11.531768+00:00\", \"reactions_reposts_replies\": \"OBSERVED-zero (relay query, empty result set)\", \"views_impressions\": \"UNKNOWN (no free mechanism: Gumroad views need dashboard login; Pages has no analytics; Nostr has no view counts)\", \"clicks\": \"UNKNOWN (no redirect-tracker; building one needs backend on Pages \\u2014 static only)\", \"sales\": \"OBSERVED-zero (poll)\", \"conclusion\": \"engagement measurable; reach/clicks structurally unmeasurable at zero cost\"}",
+      "outcome": 0
+    }
+  ],
+  "count": 357
+}

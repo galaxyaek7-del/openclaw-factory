@@ -1,0 +1,59 @@
+{
+  "state": {
+    "experiment": "EXP-S3-05-01",
+    "product": "GPSR EU Seller Action Kit",
+    "price_usd": 79,
+    "revenue": 0,
+    "sales": 0,
+    "page_views": 20,
+    "external_reach": "UNKNOWN",
+    "external_clicks": "UNKNOWN",
+    "inquiries": 0,
+    "engagement": 0,
+    "checkout_activity": 0,
+    "nostr_publication": "confirmed (2/2 relays)",
+    "telegraph_publication": "confirmed",
+    "utm_tracking": "applied",
+    "distribution_gap": "CONFIRMED",
+    "measurement_gap": "CONFIRMED",
+    "audience_gap": "SUSPECTED",
+    "observation_window": "through 2026-10-05",
+    "product_state": "IN_MEASUREMENT_WINDOW",
+    "hard_safety_rules": "active"
+  },
+  "questions": {
+    "next_action": {
+      "type": "choice",
+      "instructions": "Given the current commercial experiment state, what is the recommended next action?",
+      "criteria": {
+        "CONTINUE_OBSERVATION": "Continue monitoring the observation window without changes",
+        "HOLD": "Pause and wait for more evidence",
+        "MODIFY_DISTRIBUTION": "Change the distribution channel or approach",
+        "ESCALATE": "Escalate to founder for decision",
+        "STOP": "Stop the experiment"
+      }
+    },
+    "confidence_level": {
+      "type": "score",
+      "instructions": "How confident are you in this assessment?",
+      "criteria": [
+        "Very low",
+        "Low",
+        "Medium",
+        "High",
+        "Very high"
+      ]
+    },
+    "risk_level": {
+      "type": "score",
+      "instructions": "What is the risk level of continuing the current approach?",
+      "criteria": [
+        "Minimal",
+        "Low",
+        "Moderate",
+        "High",
+        "Critical"
+      ]
+    }
+  }
+}
