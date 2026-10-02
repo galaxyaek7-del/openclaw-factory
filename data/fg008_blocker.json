@@ -1,0 +1,7 @@
+{
+ "FG-008_EXECUTION_BLOCKER": "KDP community login wall; factory has no browser/session mechanism and no credentials",
+ "BLOCKER_TYPE": "AUTH",
+ "EVIDENCE": "kdpcommunity.com requires Log In to Answer (observed in thread HTML); env has no session",
+ "ALTERNATIVE_ROUTE_ATTEMPTED": "500-note author-buyer scan both relays, 0 hits",
+ "NEXT_AUTONOMOUS_ACTION": "reply-watch on own notes + grant watch; FG-008 pack stays queued for 5-min founder execution"
+}
