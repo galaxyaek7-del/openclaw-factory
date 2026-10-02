@@ -1,0 +1,9 @@
+[
+ {
+  "source": "nostr-damus",
+  "probe": "300 notes help-seeking scan",
+  "actionable": 0,
+  "verdict": "LOW_SIGNAL (4th scan, 0 buyers total ~1050 notes)",
+  "response_path": "replies (working, nothing to reply to)"
+ }
+]

@@ -1,0 +1,7 @@
+[
+ {
+  "id": "buyer-access",
+  "status": "STRUCTURAL (not transient)",
+  "detail": "demand observed only where contact needs auth; open channels lack buyers"
+ }
+]
