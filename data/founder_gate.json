@@ -1,0 +1,17 @@
+{
+ "at": "2026-10-02T11:26:48.980756+00:00",
+ "required": true,
+ "primary": {
+  "platform": "Freelancer (developers.freelancer.com)",
+  "exact_action": "Register app + authorize OAuth + set FREELANCER_OAUTH_TOKEN in local .env (one-time, ~10 min)",
+  "permission": "OAuth grant on founder-owned account (MFA non-delegable)",
+  "unlocks": "4 guarded proposals submit + buyer inbox monitoring + reply loop",
+  "one_time": true,
+  "after": "factory auto-submits, verifies, monitors, follows up with zero further asks"
+ },
+ "secondary": [
+  "Associates account+tag (4 links commissionable)",
+  "X credits top-up (3 queued posts)"
+ ],
+ "why_factory_cannot": "account ownership, MFA, billing, identity checks are platform-enforced human actions; no legitimate technical substitute exists (proven across 30+ cycles)"
+}
