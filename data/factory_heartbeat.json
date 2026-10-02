@@ -30,9 +30,9 @@
  "verified_sales": 0,
  "verified_revenue": 0,
  "contactability": "all actives C2 (founder-session route)",
- "company_mode": "ACTIVE_ROTATION",
- "current_arm": "AFFILIATE",
- "next_arm": "AFFILIATE",
+ "company_mode": "LOW_ACTIVITY_WAIT",
+ "current_arm": "NONE-WAITING",
+ "next_arm": "ON-SIGNAL",
  "active_arms": 7,
  "low_signal_arms": [
   "AI_SERVICES",

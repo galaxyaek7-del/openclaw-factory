@@ -334,6 +334,25 @@
    "next_action": "none",
    "retry_condition": "never (vendor-only surface)",
    "commercial_score": 0
+  },
+  "signal-exhaustion": {
+   "first_seen": "2026-10-02T17:41:17.210867+00:00",
+   "times_seen": 1,
+   "source": "all-arms",
+   "signal_type": "meta",
+   "result": "EXHAUSTED",
+   "last_seen": "2026-10-02T17:41:17.210867+00:00",
+   "business": "n/a",
+   "problem": "no contactable buyer across all tested surfaces",
+   "offer": "n/a",
+   "accessibility": "BLOCKED",
+   "contactability": "C0",
+   "eligibility": "FAIL",
+   "action_taken": "multi-arm sweep",
+   "evidence_level": "DERIVED",
+   "next_action": "LOW_ACTIVITY_WAIT; wake on new-external-signal",
+   "retry_condition": "new grant/account/buyer-signal only",
+   "commercial_score": 0
   }
  },
  "arms": {
