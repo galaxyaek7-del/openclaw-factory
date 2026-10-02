@@ -77,8 +77,18 @@ def main():
             json.dump(queue, open(QUEUE_PATH, "w"), indent=1)
             print(json.dumps({"checked": 1, "action": "sent", "url": r.url}))
         else:
-            print(json.dumps({"checked": 1, "action": "failed-held",
-                              "err": str((r.error if r else res.get("skip_reason")))[:150]}))
+            err = str((r.error if r else res.get("skip_reason")))[:150]
+            # Non-retryable: payment/quota errors must not loop forever.
+            if any(k in err for k in ("402", "credits depleted", "Payment Required",
+                                      "403", "401", "Forbidden", "Unauthorized")):
+                post["status"] = "blocked-payment"
+                post["block_reason"] = err
+                json.dump(queue, open(QUEUE_PATH, "w"), indent=1)
+                print(json.dumps({"checked": 1, "action": "blocked-payment",
+                                  "err": err}))
+            else:
+                print(json.dumps({"checked": 1, "action": "failed-held",
+                                  "err": err}))
         return
     print(json.dumps({"checked": len(queue), "action": "silent"}))
 
