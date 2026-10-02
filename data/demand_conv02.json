@@ -1,0 +1,52 @@
+[
+ {
+  "id": 40745962,
+  "title": "Postgrad AI Paper Research Support",
+  "status": "active",
+  "sub": null,
+  "front": "open",
+  "bmin": 30.0,
+  "bmax": 250.0,
+  "bids": 18
+ },
+ {
+  "id": 40745696,
+  "title": "Formal English-Hindi Web Translations",
+  "status": "active",
+  "sub": null,
+  "front": "open",
+  "bmin": 12500.0,
+  "bmax": 37500.0,
+  "bids": 13
+ },
+ {
+  "id": 40745705,
+  "title": "Typed Product Descriptions Needed",
+  "status": "active",
+  "sub": null,
+  "front": "open",
+  "bmin": 15.0,
+  "bmax": 25.0,
+  "bids": 21
+ },
+ {
+  "id": 40745663,
+  "title": "PDF Text Copy-Paste",
+  "status": "active",
+  "sub": null,
+  "front": "open",
+  "bmin": 750.0,
+  "bmax": 1250.0,
+  "bids": 8
+ },
+ {
+  "id": 40721250,
+  "title": "Rural Flood Management SuDS Design",
+  "status": "active",
+  "sub": null,
+  "front": "open",
+  "bmin": 250.0,
+  "bmax": 750.0,
+  "bids": 23
+ }
+]
