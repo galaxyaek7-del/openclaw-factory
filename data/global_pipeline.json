@@ -11,6 +11,32 @@
    "price": 250.0,
    "state": "QUALIFIED-CONDITIONAL format-only bid, editing excluded (submit BLOCKED_NO_TOKEN)",
    "fit": "MEDIUM (layout fits; proofreading excluded explicitly)"
+  },
+  {
+   "id": 40745934,
+   "title": "Medium Paper Document Data Entry",
+   "budget": [
+    100.0,
+    400.0
+   ],
+   "bids": 0,
+   "price": 175.0,
+   "basis": "buyer-budget midpoint clipped to policy bounds",
+   "grade": "B (relevant possibility; intent generic)",
+   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)"
+  },
+  {
+   "id": 40745859,
+   "title": "Pre-Employment Vetting Project, Wakayama, Japan.",
+   "budget": [
+    10.0,
+    60.0
+   ],
+   "bids": 2,
+   "price": 30.0,
+   "basis": "market-average parity (avg 30.00 inside bounds)",
+   "grade": "B (relevant possibility; intent generic)",
+   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)"
   }
  ],
  "rejected": [
@@ -145,9 +171,73 @@
   {
    "id": 40742370,
    "reason": "CLOSED/LEARNED 2026-10-01: closed_awarded elsewhere (404? no — API closed/closed_awarded x2); our bid stayed PREPARED/BLOCKED, correctly never sent; 72-bid race, no regret"
+  },
+  {
+   "id": 40745924,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745923,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745911,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745902,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745893,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745885,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745884,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745873,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745863,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40744403,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745801,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745922,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745886,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745897,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745855,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
+  },
+  {
+   "id": 40745852,
+   "reason": "D-grade hunt06 (scope/budget mismatch)"
   }
  ],
- "at": "2026-10-01T22:00:00+00:00",
+ "at": "2026-10-02T08:30:00+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
