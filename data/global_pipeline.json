@@ -855,9 +855,29 @@
   {
    "id": 40746594,
    "reason": "D-grade transcript-hunt (domain/budget)"
+  },
+  {
+   "id": 40746621,
+   "reason": "D-grade aisvc (scope/role/budget)"
+  },
+  {
+   "id": 40746585,
+   "reason": "D-grade aisvc (scope/role/budget)"
+  },
+  {
+   "id": 40746627,
+   "reason": "D-grade aisvc (scope/role/budget)"
+  },
+  {
+   "id": 40746625,
+   "reason": "D-grade aisvc (scope/role/budget)"
+  },
+  {
+   "id": 40746623,
+   "reason": "D-grade aisvc (scope/role/budget)"
   }
  ],
- "at": "2026-10-02T16:38:39.402939+00:00",
+ "at": "2026-10-02T16:41:26.705610+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
