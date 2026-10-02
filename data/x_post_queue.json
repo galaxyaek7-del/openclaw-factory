@@ -7,8 +7,9 @@
  },
  {
   "id": "X-POST-DESK-AFF-01",
-  "status": "queued",
-  "text": "Back pain by 3pm at your desk? A standing converter (sits on your desk, sit-stand in seconds) is the cheapest fix. Compared 4 real models by rating x reviews, no ad placements: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/affiliate-standing-desks.html"
+  "status": "blocked-payment",
+  "text": "Back pain by 3pm at your desk? A standing converter (sits on your desk, sit-stand in seconds) is the cheapest fix. Compared 4 real models by rating x reviews, no ad placements: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/affiliate-standing-desks.html",
+  "block_reason": "HTTP 402: {\"detail\":\"credits depleted\",\"status\":402,\"title\":\"Payment Required\",\"type\":\"https://api.x.com/2/problems/credits-depleted\"}"
  },
  {
   "id": "X-POST-SYSTEME-AFF-01",
