@@ -50,6 +50,32 @@
     ],
     "next_action": "Confirm source file formats and page count for fixed quote"
    }
+  },
+  {
+   "id": 40744952,
+   "title": "Polish Gardening eBook Layout",
+   "budget": [
+    30.0,
+    250.0
+   ],
+   "bids": 103,
+   "price": 116.68,
+   "grade": "B (photo-layout fits with image caveat; 103-bid race)",
+   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)",
+   "proposal_personalized": {
+    "problem": "7,000-word photo gardening guide looks unpolished in Kindle draft",
+    "solution": "Kindle layout polish: image placement/scaling, chapter styling, TOC, readable flow on devices",
+    "deliverables": "Polished Kindle-ready ebook file + source notes",
+    "timeline": "3-4 days",
+    "price_usd": 116.68,
+    "price_basis": "market-average parity (avg 116.68 inside bounds)",
+    "price_policy_bound": true,
+    "assumptions": [
+     "Buyer provides manuscript + photos",
+     "Textdocx source available or convertible"
+    ],
+    "next_action": "Confirm photo count and current draft format for fixed quote"
+   }
   }
  ],
  "rejected": [
@@ -360,9 +386,13 @@
   {
    "id": 40721250,
    "reason": "D-grade conv02 (scope/budget)"
+  },
+  {
+   "id": 40745045,
+   "reason": "C-grade: broad publish-coordination, ceiling price, uncertain scope"
   }
  ],
- "at": "2026-10-02T08:50:07.878793+00:00",
+ "at": "2026-10-02T09:00:00+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
