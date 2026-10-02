@@ -1,0 +1,13 @@
+{
+ "id": "EXP-DIGITAL-01",
+ "hypothesis": "compliance-doc product + feed distribution produces buyer signal",
+ "target": "cottage food sellers needing compliance docs",
+ "offer": "Cottage Food Compliance Kit 49USD",
+ "price": "49",
+ "landing": "ursxh (200+buyform verified)",
+ "channel": "RSS feed submit (202 accepted)",
+ "window": "7d",
+ "success": "inquiry/sale poll signal",
+ "failure": "silence",
+ "status": "ACTIVE"
+}

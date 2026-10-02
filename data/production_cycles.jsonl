@@ -143,3 +143,4 @@
 {"cycle_id": "S3-OPEN-CH-01", "at": "2026-10-02T17:01:43.369273+00:00", "gates": "X 402 persists; grant/tag/paddle unchanged (all re-verified)", "new_channel": "feed.xml RSS (4 offers) for aggregator syndication, no account needed", "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-ARBITRAGE-01", "at": "2026-10-02T17:05:16.807411+00:00", "arbitrage": "CL technically inaccessible (JS-gated, no API, bot risk \u2014 scraper refused); gov-RFP ineligible; freelancer remains the only eligible-if-granted path", "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-FREELANCER-CONV-01", "at": "2026-10-02T17:07:52.537676+00:00", "oauth": "MISSING (single check, no re-ask)", "affiliate_lane": "static 25/20/0, LOW, rotated", "next": "DIGITAL_PRODUCTS", "revenue": 0, "cost_usd": 0}
+{"cycle_id": "S3-DIGITAL-01", "at": "2026-10-02T17:10:46.444723+00:00", "experiment": "EXP-DIGITAL-01 active: compliance-kit + feed submit 202; signals awaited, not claimed", "revenue": 0, "cost_usd": 0}
