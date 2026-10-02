@@ -1,0 +1,70 @@
+{
+ "at": "2026-10-02T09:13:09.605171+00:00",
+ "map": [
+  {
+   "task": "FG-001 reddit reply",
+   "blocker": "human account",
+   "unlock": "direct buyer reach",
+   "automate": false,
+   "duplicate": false,
+   "required": true
+  },
+  {
+   "task": "FG-002 paddle onboarding",
+   "blocker": "KYC/account",
+   "unlock": "2nd payment rail",
+   "automate": false,
+   "duplicate": false,
+   "required": true
+  },
+  {
+   "task": "FG-003 gumroad payouts check",
+   "blocker": "dashboard session",
+   "unlock": "none independent (folds into first-sale verification)",
+   "automate": false,
+   "duplicate": false,
+   "required": false,
+   "decision": "REMOVED"
+  },
+  {
+   "task": "FG-004 shopify credential",
+   "blocker": "credential",
+   "unlock": "optional storefront",
+   "automate": false,
+   "duplicate": false,
+   "required": false,
+   "decision": "DEFERRED"
+  },
+  {
+   "task": "FG-005 freelancer OAuth",
+   "blocker": "OAuth grant",
+   "unlock": "5 proposals + inbox (one grant unlocks all)",
+   "automate": false,
+   "duplicate": false,
+   "required": true
+  },
+  {
+   "task": "FG-006 associates tag",
+   "blocker": "account+approval",
+   "unlock": "4 links commissionable",
+   "automate": false,
+   "duplicate": false,
+   "required": true
+  },
+  {
+   "task": "FG-007 X credits",
+   "blocker": "billing",
+   "unlock": "3 queued posts",
+   "automate": false,
+   "duplicate": false,
+   "required": true
+  }
+ ],
+ "compressed_queue": [
+  "FG-005",
+  "FG-001",
+  "FG-006",
+  "FG-002",
+  "FG-007"
+ ]
+}

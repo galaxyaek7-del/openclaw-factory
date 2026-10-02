@@ -2,6 +2,15 @@
  "generated": "2026-09-28T07:00:00Z",
  "queue": [
   {
+   "id": "FG-005",
+   "priority": "P0",
+   "action": "Authorize Freelancer OAuth one-time: register app at developers.freelancer.com, set token in local .env",
+   "cost": "zero",
+   "why_automation_cannot": "account ownership plus MFA non-delegable",
+   "expected_commercial_effect": "guarded proposals submit; inbox unlocks",
+   "time_required": "about 10 minutes"
+  },
+  {
    "action": "Post Pack 1 value-first reply in r/turo thread 1u07nob",
    "cost": "$0",
    "exact_steps": [
@@ -19,6 +28,15 @@
    "what_happens_after": "factory monitors replies/sales poll; no further founder step unless follow-up question needs human voice"
   },
   {
+   "id": "FG-006",
+   "priority": "P1",
+   "action": "Create Amazon Associates account; set tag in local .env",
+   "cost": "zero",
+   "why_automation_cannot": "identity/tax/approval non-delegable",
+   "expected_commercial_effect": "4 Amazon links commissionable",
+   "time_required": "about 15 minutes plus approval wait"
+  },
+  {
    "action": "Finish Paddle onboarding at vendors.paddle.com",
    "cost": "$0",
    "exact_steps": [
@@ -32,54 +50,6 @@
    "time_required": "UNKNOWN (account-dependent)",
    "what_factory_completed": "products/prices created; live status re-checked; watcher armed to notify on flip",
    "what_happens_after": "watcher notifies; factory verifies checkout live"
-  },
-  {
-   "action": "Verify Gumroad payout settings in dashboard",
-   "cost": "$0",
-   "exact_steps": [
-    "log in Gumroad dashboard",
-    "confirm payouts/bank details active"
-   ],
-   "expected_commercial_effect": "removes last doubt on whether a buyer CAN complete purchase today",
-   "id": "FG-003",
-   "priority": "P2",
-   "risk": "none",
-   "time_required": "~5 minutes",
-   "what_factory_completed": "listings verified live with correct prices; payout state UNKNOWABLE without session",
-   "what_happens_after": "if active: checkout path fully trusted; if not: exact fix known"
-  },
-  {
-   "action": "Provide Shopify storefront credential (ONLY if Shopify path wanted)",
-   "cost": "$0",
-   "exact_steps": [
-    "place SHOPIFY_STOREFRONTPASSWORD via session env only",
-    "tell factory to re-run audit"
-   ],
-   "expected_commercial_effect": "unlocks Shopify as second storefront (optional, not required for Gumroad sales)",
-   "id": "FG-004",
-   "priority": "P3",
-   "risk": "none",
-   "time_required": "~2 minutes",
-   "what_factory_completed": "audit script ready; credential absence verified (not assumed)",
-   "what_happens_after": "factory audits storefront and reports state"
-  },
-  {
-   "id": "FG-005",
-   "priority": "P0",
-   "action": "Authorize Freelancer OAuth one-time: register app at developers.freelancer.com, set token in local .env",
-   "cost": "zero",
-   "why_automation_cannot": "account ownership plus MFA non-delegable",
-   "expected_commercial_effect": "guarded proposals submit; inbox unlocks",
-   "time_required": "about 10 minutes"
-  },
-  {
-   "id": "FG-006",
-   "priority": "P1",
-   "action": "Create Amazon Associates account; set tag in local .env",
-   "cost": "zero",
-   "why_automation_cannot": "identity/tax/approval non-delegable",
-   "expected_commercial_effect": "4 Amazon links commissionable",
-   "time_required": "about 15 minutes plus approval wait"
   },
   {
    "id": "FG-007",

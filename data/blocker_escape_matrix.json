@@ -1,0 +1,29 @@
+{
+ "at": "2026-10-02T09:13:09.605171+00:00",
+ "matrix": [
+  {
+   "blocker": "freelancer-oauth",
+   "scope": "4 proposals + inbox",
+   "route_around": false,
+   "alternative": "web-demand intel only (no contact)",
+   "founder_action": "FG-005",
+   "retry": "on grant detection (tick armed)"
+  },
+  {
+   "blocker": "associates-tag",
+   "scope": "4 amazon links",
+   "route_around": true,
+   "alternative": "systeme tracked path ACTIVE",
+   "founder_action": "FG-006",
+   "retry": "on tag detection"
+  },
+  {
+   "blocker": "x-402",
+   "scope": "3 queued posts",
+   "route_around": true,
+   "alternative": "nostr/telegraph/pages live",
+   "founder_action": "FG-007",
+   "retry": "on credits (classifier armed)"
+  }
+ ]
+}
