@@ -29,15 +29,15 @@
  "rejected": [
   {
    "id": 40743843,
-   "reason": "REJECTED: full-colour fixed-layout children book — illustration/layout outside reportlab-prose pipeline"
+   "reason": "REJECTED: full-colour fixed-layout children book â€” illustration/layout outside reportlab-prose pipeline"
   },
   {
    "id": 40743805,
-   "reason": "REJECTED: illustrator refinement — illustration outside capability"
+   "reason": "REJECTED: illustrator refinement â€” illustration outside capability"
   },
   {
    "id": 40741254,
-   "reason": "REJECTED: marketing consultancy — outside capability"
+   "reason": "REJECTED: marketing consultancy â€” outside capability"
   },
   {
    "id": 40744044,
@@ -77,7 +77,7 @@
   },
   {
    "id": 40744193,
-   "reason": "CLOSED 2026-10-01: status closed/complete (was buyer-frozen) — conclusive; prepared bid never sent"
+   "reason": "CLOSED 2026-10-01: status closed/complete (was buyer-frozen) â€” conclusive; prepared bid never sent"
   },
   {
    "id": 40744216,
@@ -157,7 +157,7 @@
   },
   {
    "id": 40742370,
-   "reason": "CLOSED/LEARNED 2026-10-01: closed_awarded elsewhere (404? no — API closed/closed_awarded x2); our bid stayed PREPARED/BLOCKED, correctly never sent; 72-bid race, no regret"
+   "reason": "CLOSED/LEARNED 2026-10-01: closed_awarded elsewhere (404? no â€” API closed/closed_awarded x2); our bid stayed PREPARED/BLOCKED, correctly never sent; 72-bid race, no regret"
   },
   {
    "id": 40745924,
@@ -289,7 +289,7 @@
  "held": [
   {
    "id": 40744232,
-   "reason": "HOLD: possible ongoing-VA employment vs project — full description needs auth; re-evaluate on grant"
+   "reason": "HOLD: possible ongoing-VA employment vs project â€” full description needs auth; re-evaluate on grant"
   },
   {
    "id": 40744322,
