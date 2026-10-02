@@ -344,9 +344,25 @@
   {
    "id": 40745926,
    "reason": "D-grade demand-trkA (scope/budget)"
+  },
+  {
+   "id": 40745696,
+   "reason": "D-grade conv02 (scope/budget)"
+  },
+  {
+   "id": 40745705,
+   "reason": "D-grade conv02 (scope/budget)"
+  },
+  {
+   "id": 40745663,
+   "reason": "D-grade conv02 (scope/budget)"
+  },
+  {
+   "id": 40721250,
+   "reason": "D-grade conv02 (scope/budget)"
   }
  ],
- "at": "2026-10-02T09:00:00+00:00",
+ "at": "2026-10-02T08:50:07.878793+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
@@ -360,6 +376,10 @@
   {
    "id": 40742604,
    "reason": "HOLD 2026-10-01: frozen/frozen_timeout (was active); re-check next cycle, remove if closed/awarded"
+  },
+  {
+   "id": 40745962,
+   "reason": "HOLD: postgrad-paper scope ambiguous (legit help vs ghostwriting); full description needs auth; integrity-first hold"
   }
  ]
 }
