@@ -1,0 +1,20 @@
+{
+ "cycle_id": "S3-OAUTH-RECOVERY-02",
+ "at": "2026-10-02T13:12:42.659199+00:00",
+ "provider": "Freelancer.com OAuth2 (developers.freelancer.com; SDK Session requires user-consented token)",
+ "refresh_possible": false,
+ "refresh_reason": "no client credentials, no refresh token, no prior grant stored anywhere authorized",
+ "auto_flow_possible": false,
+ "auto_reason": "consent requires human browser login + MFA on founder-owned account; no mechanism exists to initiate it headlessly",
+ "founder_action": {
+  "steps": [
+   "log in to Freelancer.com in your browser",
+   "open developers.freelancer.com and register/authorize the app",
+   "copy the OAuth2 access token",
+   "add line FREELANCER_OAUTH_TOKEN=<token> to C:\\openclaw-dasgboard\\.env (terminal or editor on that machine; never chat/email)"
+  ],
+  "why": "platform requires the account owner to consent; factory holds no account and must never handle your password/MFA",
+  "unlocks": "4 guarded proposals auto-submit + buyer inbox monitoring + reply loop, all automatically",
+  "after": "no further action needed from you for these 4 opportunities"
+ }
+}
