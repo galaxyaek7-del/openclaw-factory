@@ -517,9 +517,53 @@
   {
    "id": 40746031,
    "reason": "D-grade master01 (scope/budget/location)"
+  },
+  {
+   "id": 40746166,
+   "reason": "D-grade rb04 (scope/budget)"
+  },
+  {
+   "id": 40746152,
+   "reason": "D-grade rb04 (scope/budget)"
+  },
+  {
+   "id": 40746150,
+   "reason": "D-grade rb04 (scope/budget)"
+  },
+  {
+   "id": 40746136,
+   "reason": "D-grade rb04 (scope/budget)"
+  },
+  {
+   "id": 40746139,
+   "reason": "D-grade rb04 (scope/budget)"
+  },
+  {
+   "id": 40746142,
+   "reason": "D-grade rb04 (scope/budget)"
+  },
+  {
+   "id": 40746141,
+   "reason": "D-grade rb04 (scope/budget)"
+  },
+  {
+   "id": 40746135,
+   "reason": "D-grade rb04 (scope/budget)"
+  },
+  {
+   "id": 40746123,
+   "reason": "D-grade rb04 (scope/budget)"
+  },
+  {
+   "id": 40746125,
+   "reason": "D-grade rb04 (scope/budget)"
+  },
+  {
+   "id": 40746083,
+   "reason": "D-grade rb04 (scope/budget)"
   }
  ],
- "at": "2026-10-02T09:54:26.104855+00:00",
+ "at": "2026-10-02T10:00:00+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {

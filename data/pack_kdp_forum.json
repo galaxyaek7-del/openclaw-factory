@@ -7,5 +7,10 @@
  "draft_answer": "Word-prep first: Times New Roman 12pt, justified, first-line flush + 0.4cm indents via Styles (never spaces/tabs for spacing). Headings via Styles so TOC generates. Then Kindle Create import is clean. If the file still fights you after proper prep, manual formatting (fixed-scope service) beats wrestling: we do print-ready KDP interiors from finished Word manuscripts, fixed price, QA-checked. Details: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/service-kdp-typesetting.html",
  "rules": "value-first, disclose service plainly, no fake testimonials, one reply only",
  "time_required": "about 5 minutes",
- "after": "factory monitors thread for author reply (publicly readable); any response triggers proposal cycle"
+ "after": "factory monitors thread for author reply (publicly readable); any response triggers proposal cycle",
+ "variant_B_reddit": {
+  "thread": "https://www.reddit.com/r/KDP/comments/1ruwodi/first_time_publishing_on_kdp_the_formatting (Mar 2026, first-timer formatting pain)",
+  "note": "Use if KDP thread closed; same rules: value-first, disclose service, one reply",
+  "draft": "Formatting pain is normal on book one \u2014 the fix that helps most people: set trim FIRST in Word (page size = trim exactly), mirrored margins, Styles-only headings, then import. If the file still fights after clean prep, fixed-scope manual formatting is the shortcut: print-ready KDP interiors from finished manuscripts, fixed price, QA-checked page by page. Details: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/service-kdp-typesetting.html"
+ }
 }
