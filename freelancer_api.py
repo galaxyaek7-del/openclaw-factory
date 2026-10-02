@@ -34,15 +34,14 @@ class FreelancerAPIError(RuntimeError):
 
 
 def _get(path):
-    req = urllib.request.Request(
-        API_BASE + path, headers={"User-Agent": USER_AGENT}
-    )
+    from lib.http import get_json, HttpError
+
     try:
-        with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
-            body = json.loads(r.read().decode())
-    except urllib.error.HTTPError as e:
+        body = get_json(API_BASE + path,
+                        headers={"User-Agent": USER_AGENT})
+    except HttpError as e:
         raise FreelancerAPIError(
-            "GET %s -> HTTP %s: %s" % (path, e.code, e.read().decode()[:200])
+            "GET %s -> HTTP %s: %s" % (path, e.code, str(e)[:200])
         )
     if body.get("status") != "success":
         raise FreelancerAPIError("GET %s -> error: %s" % (path, str(body)[:200]))
