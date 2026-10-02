@@ -150,3 +150,4 @@
 {"cycle_id": "S3-MEM-02", "at": "2026-10-02T17:25:24.605715+00:00", "memory": "D-items classified by cause (role/scope, not access); queue: 0 actionable (all actives C2-blocked)", "rotated_to": "DATA_DOCS", "new_evidence": false, "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-DATADOCS-02", "at": "2026-10-02T17:28:14.923007+00:00", "fresh": "3D (medical-domain/115-bid/integrity)", "rotated_to": "AI_SERVICES", "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-AISERVICES-03", "at": "2026-10-02T17:30:45.228217+00:00", "ai_services": "2D (sales-role, under-min); no buyer", "rotated_to": "MICRO_B2B", "revenue": 0, "cost_usd": 0}
+{"cycle_id": "S3-ACM-01", "at": "2026-10-02T17:33:14.169513+00:00", "micro_b2b": "2D (role-hire, dev-scope)", "rotated_to": "RESEARCH", "revenue": 0, "cost_usd": 0}

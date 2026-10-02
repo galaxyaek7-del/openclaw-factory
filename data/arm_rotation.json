@@ -14,8 +14,8 @@
  "RESEARCH": {
   "signal": "LOW",
   "blocked": false,
-  "last_run": "2026-10-02T16:08:34.063392+00:00",
-  "runs": 1
+  "last_run": "2026-10-02T17:33:14.171932+00:00",
+  "runs": 2
  },
  "AI_OPS": {
   "signal": "NONE",
