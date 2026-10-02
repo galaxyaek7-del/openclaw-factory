@@ -1,0 +1,35 @@
+{
+ "at": "2026-10-02T09:37:43.742286+00:00",
+ "offers": [
+  {
+   "id": "OFFER-COMP-GAP",
+   "problem": "known compliance/documentation gap",
+   "deliverable": "requirements checklist + evidence matrix + missing-doc map + action plan + mgmt summary",
+   "time": "5 days",
+   "price": "99+ USD (ESTIMATED)",
+   "buyer": "SMB with known gap",
+   "cta": "request gap pack",
+   "contact": "mailto service page"
+  },
+  {
+   "id": "OFFER-REG-CHANGE",
+   "problem": "affected by a regulatory change",
+   "deliverable": "what changed + impact + actions + checklist + source register",
+   "time": "3 days",
+   "price": "79+ USD (ESTIMATED)",
+   "buyer": "affected business",
+   "cta": "request change pack",
+   "contact": "mailto service page"
+  },
+  {
+   "id": "OFFER-RESEARCH",
+   "problem": "decision needs evidence",
+   "deliverable": "research question + verified sources + analysis + exec summary + register",
+   "time": "5 days",
+   "price": "149+ USD (ESTIMATED)",
+   "buyer": "decision-maker",
+   "cta": "request research sprint",
+   "contact": "mailto service page"
+  }
+ ]
+}

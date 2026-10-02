@@ -132,7 +132,7 @@ class WS:
                 raise RuntimeError('handshake failed')
             resp += chunk
         if b'101' not in resp.split(b'\r\n')[0]:
-            raise RuntimeError('no 101: ' + resp[:80].decode('replace'))
+            raise RuntimeError('no 101: ' + resp[:80].decode(errors='replace'))
 
     def send_text(self, msg):
         data = msg.encode('utf-8')
