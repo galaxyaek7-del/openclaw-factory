@@ -1,0 +1,10 @@
+{
+ "status": "sent",
+ "event_id": "555a5e29064b2670f143796e88a13449c10b59a1205ca45d69ee240aa3c98cc5",
+ "content_hash": "70920244f43c559f",
+ "acks": {
+  "relay.damus.io": "[\"OK\",\"555a5e29064b2670f143796e88a13449c10b59a1205ca45d69ee240aa3c98cc5\",true,\"\"]",
+  "relay.primal.net": "[\"OK\",\"555a5e29064b2670f143796e88a13449c10b59a1205ca45d69ee240aa3c98cc5\",true,\"\"]"
+ },
+ "at": "2026-10-02T07:59:08Z"
+}
