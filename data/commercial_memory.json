@@ -1,0 +1,70 @@
+{
+ "signals": {
+  "freelancer-oauth": {
+   "first_seen": "2026-10-02T17:20:46.511265+00:00",
+   "times_seen": 1,
+   "source": "env",
+   "signal_type": "credential",
+   "result": "BLOCKED",
+   "last_seen": "2026-10-02T17:20:46.511265+00:00",
+   "business": "n/a",
+   "problem": "no grant",
+   "offer": "n/a",
+   "accessibility": "BLOCKED",
+   "contactability": "C0",
+   "eligibility": "FAIL",
+   "action_taken": "3 presence checks",
+   "evidence_level": "OBSERVED",
+   "next_action": "tick auto-detect",
+   "cooldown_until": "2026-10-09T17:20:46.511289+00:00"
+  },
+  "fl-40745603": {
+   "first_seen": "2026-10-02T17:21:09.929286+00:00",
+   "times_seen": 1,
+   "source": "freelancer",
+   "signal_type": "opportunity",
+   "result": "D",
+   "last_seen": "2026-10-02T17:21:09.929286+00:00",
+   "business": "unknown",
+   "problem": "Complete Zoho CRM Setup",
+   "offer": "n/a",
+   "accessibility": "BLOCKED",
+   "contactability": "C1",
+   "eligibility": "FAIL-scope",
+   "action_taken": "screened",
+   "evidence_level": "OBSERVED",
+   "next_action": "none",
+   "cooldown_until": "2026-10-09T17:21:09.929304+00:00"
+  },
+  "fl-40746699": {
+   "first_seen": "2026-10-02T17:21:09.930352+00:00",
+   "times_seen": 1,
+   "source": "freelancer",
+   "signal_type": "opportunity",
+   "result": "D",
+   "last_seen": "2026-10-02T17:21:09.930352+00:00",
+   "business": "unknown",
+   "problem": "Beginner Level YouTube Editor Needed",
+   "offer": "n/a",
+   "accessibility": "BLOCKED",
+   "contactability": "C1",
+   "eligibility": "FAIL-scope",
+   "action_taken": "screened",
+   "evidence_level": "OBSERVED",
+   "next_action": "none",
+   "cooldown_until": "2026-10-09T17:21:09.930368+00:00"
+  }
+ },
+ "arms": {
+  "FREELANCER": {
+   "state": "BLOCKED",
+   "reason": "OAuth grant absent",
+   "at": "2026-10-02T17:20:46.513753+00:00"
+  },
+  "NOSTR": {
+   "state": "LOW_SIGNAL",
+   "reason": "~1650 notes, 0 buyers",
+   "at": "2026-10-02T17:20:46.514516+00:00"
+  }
+ }
+}

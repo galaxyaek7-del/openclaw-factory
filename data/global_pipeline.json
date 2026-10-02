@@ -983,6 +983,14 @@
   {
    "id": 40746622,
    "reason": "D-grade registry-first scan (dev-scope)"
+  },
+  {
+   "id": 40745603,
+   "reason": "D-grade mem01 (scope/budget)"
+  },
+  {
+   "id": 40746699,
+   "reason": "D-grade mem01 (scope/budget)"
   }
  ],
  "at": "2026-10-02T17:15:42.753651+00:00",
