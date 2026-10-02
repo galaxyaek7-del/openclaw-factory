@@ -120,3 +120,4 @@
 {"cycle_id": "S3-ACCT-01", "at": "2026-10-02T15:19:59.132178+00:00", "connected": ["gumroad", "systeme", "telegram"], "partial": ["paddle", "freelancer"], "missing": 9, "founder_actions": 4, "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-PROPOSAL-PIPELINE-02", "at": "2026-10-02T15:22:09.201604+00:00", "pipeline": "4 READY + 1 MARGINAL(HOLD); drafts need no founder review", "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-COMM-EXEC-01", "at": "2026-10-02T15:23:12.951422+00:00", "gumroad": "10 products, poll 0 sales", "systeme": "links live, funnel static", "freelancer": "dry-run cycle ran (idempotent, 0 new expected)", "revenue": 0, "cost_usd": 0}
+{"cycle_id": "S3-FALLBACK-01", "at": "2026-10-02T15:34:06.353535+00:00", "fallback": "Homebuyer kit \\ verified (200+buyform); failover rule recorded", "revenue": 0, "cost_usd": 0}

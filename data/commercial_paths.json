@@ -1,0 +1,24 @@
+{
+ "primary_path": {
+  "product": "Verified B2B Lead Lists",
+  "url": "https://aekraft.gumroad.com/l/drtaj",
+  "price_usd": 99,
+  "checkout_verified": true,
+  "status": "VERIFIED_READY",
+  "last_checked": "2026-10-02T15:34:06.353535+00:00"
+ },
+ "fallback_paths": [
+  {
+   "product": "Homebuyer Inspection Action Kit",
+   "url": "https://aekraft.gumroad.com/l/volqjv",
+   "price_usd": 29,
+   "checkout_verified": true,
+   "status": "VERIFIED_READY",
+   "last_checked": "2026-10-02T15:34:06.353535+00:00"
+  }
+ ],
+ "failover_condition": "primary HTTP fail OR checkout missing OR product unavailable AND fallback VERIFIED_READY",
+ "sales": 0,
+ "revenue": 0,
+ "at": "2026-10-02T15:34:06.353535+00:00"
+}
