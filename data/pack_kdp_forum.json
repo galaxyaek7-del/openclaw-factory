@@ -1,0 +1,11 @@
+{
+ "id": "FG-008",
+ "priority": "P0",
+ "action": "Post helpful reply in KDP Community thread Kindle-Create Formatting Issues (March 2026)",
+ "thread": "https://www.kdpcommunity.com/s/question/0D5f400001GXnK7CAL \u2014 verify still open in browser",
+ "why": "real authors begging for formatting help; direct buyer proximity; our KDP service is the exact fit",
+ "draft_answer": "Word-prep first: Times New Roman 12pt, justified, first-line flush + 0.4cm indents via Styles (never spaces/tabs for spacing). Headings via Styles so TOC generates. Then Kindle Create import is clean. If the file still fights you after proper prep, manual formatting (fixed-scope service) beats wrestling: we do print-ready KDP interiors from finished Word manuscripts, fixed price, QA-checked. Details: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/service-kdp-typesetting.html",
+ "rules": "value-first, disclose service plainly, no fake testimonials, one reply only",
+ "time_required": "about 5 minutes",
+ "after": "factory monitors thread for author reply (publicly readable); any response triggers proposal cycle"
+}
