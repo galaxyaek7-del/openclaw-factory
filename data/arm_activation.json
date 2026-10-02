@@ -1,0 +1,31 @@
+{
+ "gumroad": {
+  "ok": true,
+  "err": "NONE"
+ },
+ "etsy": {
+  "ok": false,
+  "err": "arm not ready: unavailable"
+ },
+ "payhip": {
+  "ok": false,
+  "err": "arm not ready: unavailable"
+ },
+ "paddle": {
+  "ok": true,
+  "err": "NONE"
+ },
+ "kdp": {
+  "ok": false,
+  "err": "arm not ready: unavailable"
+ },
+ "x": {
+  "attempted": true,
+  "ok": false,
+  "skip": null
+ },
+ "freelancer": {
+  "live": "active",
+  "bids": 158
+ }
+}
