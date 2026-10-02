@@ -1,0 +1,14 @@
+[
+ {
+  "opportunity_id": "nostr-compliance-note",
+  "source": "nostr",
+  "buyer_need": "compliance documentation (hypothesized)",
+  "value": "99+",
+  "state": "EXPOSURE_WITHOUT_INTEREST",
+  "contact_route": "nostr replies",
+  "authorization": "owned (no gate)",
+  "evidence_type": "OBSERVED",
+  "confidence": "exposure proven; demand unproven",
+  "next_action": "reply-watch + rotate angle if silent"
+ }
+]

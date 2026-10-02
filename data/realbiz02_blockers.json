@@ -1,0 +1,17 @@
+[
+ {
+  "id": "freelancer-oauth",
+  "status": "BLOCKED_AUTH",
+  "retry": "on grant"
+ },
+ {
+  "id": "associates-tag",
+  "status": "BLOCKED_MISSING",
+  "retry": "on tag"
+ },
+ {
+  "id": "x-402",
+  "status": "BLOCKED_BY_COST",
+  "retry": "on credits"
+ }
+]

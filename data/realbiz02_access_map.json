@@ -1,0 +1,16 @@
+[
+ {
+  "opportunity_id": "nostr-compliance-note",
+  "source": "nostr (owned key)",
+  "problem": "SMB compliance burden",
+  "buyer_type": "UNKNOWN (broadcast)",
+  "public_contact_method": "replies (observable)",
+  "access_class": "A (post-capable; replies readable)",
+  "offer_fit": "compliance-doc pack",
+  "evidence_level": "OBSERVED (ack+readback)",
+  "action_taken": "published 2026-10-02",
+  "response_status": "UNKNOWN",
+  "commercial_status": "EXPOSURE_WITHOUT_INTEREST",
+  "timestamp": "2026-10-02T09:34:08.028462+00:00"
+ }
+]

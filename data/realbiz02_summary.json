@@ -1,0 +1,12 @@
+{
+ "at": "2026-10-02T09:34:08.028462+00:00",
+ "market_signals": 1,
+ "contactable": 1,
+ "contacts": 0,
+ "responses": 0,
+ "revenue": 0,
+ "defects": [
+  "backslash typo in note (shell escaping; process fix: write USD)",
+  "damus ack LookupError (transient?; retry next cycle)"
+ ]
+}
