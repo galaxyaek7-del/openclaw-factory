@@ -1,0 +1,8 @@
+{
+ "at": "2026-10-02T19:36:11.531768+00:00",
+ "reactions_reposts_replies": "OBSERVED-zero (relay query, empty result set)",
+ "views_impressions": "UNKNOWN (no free mechanism: Gumroad views need dashboard login; Pages has no analytics; Nostr has no view counts)",
+ "clicks": "UNKNOWN (no redirect-tracker; building one needs backend on Pages \u2014 static only)",
+ "sales": "OBSERVED-zero (poll)",
+ "conclusion": "engagement measurable; reach/clicks structurally unmeasurable at zero cost"
+}
