@@ -1,0 +1,29 @@
+{
+ "at": "2026-10-02T17:05:16.807411+00:00",
+ "matrix": [
+  {
+   "channel": "craigslist-gigs",
+   "demand": "UNKNOWN (results JS-gated)",
+   "barrier": "TECHNICAL (no public API, bot-protected)",
+   "eligibility": "UNKNOWN",
+   "contact": "UNKNOWN",
+   "access": "INACCESSIBLE-TECHNICAL"
+  },
+  {
+   "channel": "gov-rfp",
+   "demand": "OBSERVED",
+   "barrier": "REGISTRATION/BOND/HISTORY",
+   "eligibility": "FAIL",
+   "contact": "login-walled",
+   "access": "INELIGIBLE"
+  },
+  {
+   "channel": "freelancer-bids",
+   "demand": "OBSERVED",
+   "barrier": "OAUTH grant",
+   "eligibility": "PASS (no registration needed to bid)",
+   "contact": "platform inbox post-grant",
+   "access": "BLOCKED_AUTH"
+  }
+ ]
+}
