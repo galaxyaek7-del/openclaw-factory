@@ -226,9 +226,65 @@
   {
    "id": 40745934,
    "reason": "CLOSED/REMOVED: API 404 x2; prepared bid never sent"
+  },
+  {
+   "id": 40745943,
+   "reason": "D-grade conv01 hunt (scope/budget)"
+  },
+  {
+   "id": 40745941,
+   "reason": "D-grade conv01 hunt (scope/budget)"
+  },
+  {
+   "id": 40742339,
+   "reason": "D-grade conv01 hunt (scope/budget)"
+  },
+  {
+   "id": 40745674,
+   "reason": "D-grade conv01 hunt (scope/budget)"
+  },
+  {
+   "id": 40745728,
+   "reason": "D-grade conv01 hunt (scope/budget)"
+  },
+  {
+   "id": 40745673,
+   "reason": "D-grade conv01 hunt (scope/budget)"
+  },
+  {
+   "id": 40745703,
+   "reason": "D-grade conv01 hunt (scope/budget)"
+  },
+  {
+   "id": 40745889,
+   "reason": "D-grade conv01 hunt (scope/budget)"
+  },
+  {
+   "id": 40745870,
+   "reason": "D-grade conv01 hunt (scope/budget)"
+  },
+  {
+   "id": 40745821,
+   "reason": "D-grade conv01 hunt (scope/budget)"
+  },
+  {
+   "id": 40745792,
+   "reason": "D-grade conv01 hunt (scope/budget)"
+  },
+  {
+   "id": 40745790,
+   "reason": "D-grade conv01 hunt (scope/budget)"
+  },
+  {
+   "id": 40745782,
+   "reason": "D-grade conv01 hunt (scope/budget)"
+  },
+  {
+   "id": 40745763,
+   "reason": "D-grade conv01 hunt (scope/budget)"
   }
  ],
- "at": "2026-10-02T08:30:00+00:00",
+ "at": "2026-10-02T08:35:00+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
