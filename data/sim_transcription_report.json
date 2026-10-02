@@ -1,0 +1,19 @@
+{
+ "at": "2026-10-02T16:35:50.475662+00:00",
+ "label": "SIMULATED_INTERNAL \u2014 NOT_EXTERNAL_EVIDENCE",
+ "scenarios": 6,
+ "simulated_conversions": 2,
+ "simulated_conversion_rate": 0.33,
+ "outcomes": {
+  "clinic-admin": "SIMULATED_CONVERSION",
+  "podcaster": "NO_CONTACT",
+  "law-office": "DEADLINE_TOO_SHORT",
+  "student": "NO_CONTACT",
+  "agency": "SIMULATED_CONVERSION",
+  "author": "NO_RESPONSE"
+ },
+ "best_offer": "TRANSCRIPTION+FORMATTING",
+ "real_validation_required": true,
+ "verified_sales": 0,
+ "verified_revenue": 0
+}
