@@ -31,11 +31,13 @@
  "verified_revenue": 0,
  "contactability": "all actives C2 (founder-session route)",
  "company_mode": "ACTIVE_ROTATION",
- "current_arm": "MICRO_B2B",
- "next_arm": "MICRO_B2B",
+ "current_arm": "AI_OPS",
+ "next_arm": "AI_OPS",
  "active_arms": 7,
  "low_signal_arms": [
-  "AI_SERVICES"
+  "AI_SERVICES",
+  "MICRO_B2B",
+  "RESEARCH"
  ],
  "blocked_arms": [],
  "priority_arm": "NONE",

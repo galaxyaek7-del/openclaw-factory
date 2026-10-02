@@ -6,16 +6,16 @@
   "runs": 1
  },
  "MICRO_B2B": {
-  "signal": "NONE",
+  "signal": "LOW",
   "blocked": false,
-  "last_run": null,
-  "runs": 0
+  "last_run": "2026-10-02T16:08:16.858687+00:00",
+  "runs": 1
  },
  "RESEARCH": {
-  "signal": "NONE",
+  "signal": "LOW",
   "blocked": false,
-  "last_run": null,
-  "runs": 0
+  "last_run": "2026-10-02T16:08:34.063392+00:00",
+  "runs": 1
  },
  "AI_OPS": {
   "signal": "NONE",

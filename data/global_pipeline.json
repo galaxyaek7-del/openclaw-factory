@@ -771,9 +771,29 @@
   {
    "id": 40743237,
    "reason": "D-grade arm-AI (scope/budget)"
+  },
+  {
+   "id": 40746571,
+   "reason": "D-grade arm-rotation (scope/budget/location/employment)"
+  },
+  {
+   "id": 40742485,
+   "reason": "D-grade arm-rotation (scope/budget/location/employment)"
+  },
+  {
+   "id": 40746573,
+   "reason": "D-grade arm-rotation (scope/budget/location/employment)"
+  },
+  {
+   "id": 40746546,
+   "reason": "D-grade arm-rotation (scope/budget/location/employment)"
+  },
+  {
+   "id": 40746527,
+   "reason": "D-grade arm-rotation (scope/budget/location/employment)"
   }
  ],
- "at": "2026-10-02T16:04:18.369207+00:00",
+ "at": "2026-10-02T16:08:52.473501+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
