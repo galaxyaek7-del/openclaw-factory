@@ -60,5 +60,11 @@
   "status": "BLOCKED_NO_TOKEN",
   "idempotency_key": "bid-40744952-once",
   "evidence": "PREPARED (B-grade, personalized)"
+ },
+ "40746029": {
+  "price_usd": 113.46,
+  "status": "BLOCKED_NO_TOKEN",
+  "idempotency_key": "bid-40746029-once",
+  "evidence": "PREPARED (B-grade, personalized)"
  }
 }

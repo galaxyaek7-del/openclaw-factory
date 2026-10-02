@@ -76,6 +76,31 @@
     ],
     "next_action": "Confirm photo count and current draft format for fixed quote"
    }
+  },
+  {
+   "id": 40746029,
+   "title": "Marketing Comms Template Pack",
+   "budget": [
+    30.0,
+    250.0
+   ],
+   "bids": 26,
+   "price": 113.46,
+   "grade": "B (template pack fits content capability; 26 bids)",
+   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)",
+   "proposal_personalized": {
+    "problem": "three clean reusable marketing-comms templates for internal team population",
+    "solution": "Three structured template files (layouts + styles + placeholder guidance), editable sources included",
+    "deliverables": "3 template files + population guide",
+    "timeline": "3 days",
+    "price_usd": 113.46,
+    "price_basis": "market-average parity (avg 113.46 inside bounds)",
+    "price_policy_bound": true,
+    "assumptions": [
+     "Content provided by buyer team; design system preferences stated"
+    ],
+    "next_action": "Confirm formats (Docs/Slides/Canva) and brand assets for fixed quote"
+   }
   }
  ],
  "rejected": [
@@ -434,9 +459,37 @@
   {
    "id": 40745971,
    "reason": "D-grade realbiz (scope/budget)"
+  },
+  {
+   "id": 40746053,
+   "reason": "D-grade rb06 (scope/budget/location)"
+  },
+  {
+   "id": 40746042,
+   "reason": "D-grade rb06 (scope/budget/location)"
+  },
+  {
+   "id": 40746002,
+   "reason": "D-grade rb06 (scope/budget/location)"
+  },
+  {
+   "id": 40745973,
+   "reason": "D-grade rb06 (scope/budget/location)"
+  },
+  {
+   "id": 40746057,
+   "reason": "D-grade rb06 (scope/budget/location)"
+  },
+  {
+   "id": 40746047,
+   "reason": "D-grade rb06 (scope/budget/location)"
+  },
+  {
+   "id": 40746027,
+   "reason": "D-grade rb06 (scope/budget/location)"
   }
  ],
- "at": "2026-10-02T09:28:47.007206+00:00",
+ "at": "2026-10-02T09:54:26.104855+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
