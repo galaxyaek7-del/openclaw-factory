@@ -1,0 +1,98 @@
+{
+  "test_id": "S3-EXEC-05-SHADOW-01",
+  "timestamp": "2026-10-02T20:06:05.810246+00:00",
+  "jev_mode": "SHADOW",
+  "jev_authority": "NONE (shadow only)",
+  "state": {
+    "experiment": "EXP-S3-05-01",
+    "product": "GPSR EU Seller Action Kit",
+    "price_usd": 79,
+    "revenue": 0,
+    "sales": 0,
+    "page_views": 20,
+    "external_reach": "UNKNOWN",
+    "external_clicks": "UNKNOWN",
+    "inquiries": 0,
+    "engagement": 0,
+    "checkout_activity": 0,
+    "nostr_publication": "confirmed (2/2 relays)",
+    "telegraph_publication": "confirmed",
+    "utm_tracking": "applied",
+    "distribution_gap": "CONFIRMED",
+    "measurement_gap": "CONFIRMED",
+    "audience_gap": "SUSPECTED",
+    "observation_window": "through 2026-10-05",
+    "product_state": "IN_MEASUREMENT_WINDOW",
+    "hard_safety_rules": "active"
+  },
+  "questions": {
+    "next_action": {
+      "type": "choice",
+      "instructions": "Given the current commercial experiment state, what is the recommended next action?",
+      "criteria": {
+        "CONTINUE_OBSERVATION": "Continue monitoring the observation window without changes",
+        "HOLD": "Pause and wait for more evidence",
+        "MODIFY_DISTRIBUTION": "Change the distribution channel or approach",
+        "ESCALATE": "Escalate to founder for decision",
+        "STOP": "Stop the experiment"
+      }
+    },
+    "confidence_level": {
+      "type": "score",
+      "instructions": "How confident are you in this assessment?",
+      "criteria": [
+        "Very low",
+        "Low",
+        "Medium",
+        "High",
+        "Very high"
+      ]
+    },
+    "risk_level": {
+      "type": "score",
+      "instructions": "What is the risk level of continuing the current approach?",
+      "criteria": [
+        "Minimal",
+        "Low",
+        "Moderate",
+        "High",
+        "Critical"
+      ]
+    }
+  },
+  "jev_result": {
+    "decision": null,
+    "confidence": 0.0,
+    "probabilities": {},
+    "model": null,
+    "usage": {},
+    "latency_ms": 0,
+    "timestamp": "2026-10-02T20:06:05.810224+00:00",
+    "jev_mode": "SHADOW",
+    "authority_level": 1,
+    "fallback": true,
+    "reason_code": "MISSING_CREDENTIAL",
+    "detail": "No API key configured"
+  },
+  "existing_factory_decision": {
+    "route": "HOLD",
+    "reason": "Measurement gap \u2014 cannot assess"
+  },
+  "shadow_record": {
+    "timestamp": "2026-10-02T20:06:05.810241+00:00",
+    "decision_type": "EXPERIMENT_ROUTING",
+    "input_reference": "data/experiment_s3_05_01.json",
+    "jev_model": null,
+    "jev_decision": null,
+    "jev_confidence": 0.0,
+    "jev_probabilities": {},
+    "existing_decision": "HOLD",
+    "final_decision": "HOLD",
+    "agreement": null,
+    "reason_code": "MISSING_CREDENTIAL",
+    "latency_ms": 0,
+    "fallback_status": true
+  },
+  "agreement": null,
+  "note": "JEV has NO authority to alter S3-EXEC-05. Factory decision remains authoritative."
+}

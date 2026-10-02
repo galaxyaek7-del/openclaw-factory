@@ -1,0 +1,70 @@
+{
+  "test_id": "JEV-HISTORICAL-BACKTEST-01",
+  "timestamp": "2026-10-02T20:06:05.815125+00:00",
+  "jev_mode": "SHADOW",
+  "historical_decisions_found": 24,
+  "decisions": [
+    {
+      "source": "production_cycles",
+      "cycle": "V74-C001",
+      "decision": "WAIT_FOR_EVIDENCE (EXP-SUB-001 close 2026-10-02T03:00Z)",
+      "context": "payment_evidence EMPTY on all ACCEPTED; build-score 8.5 LOW_VALUE_ACTIVITY"
+    },
+    {
+      "source": "production_cycles",
+      "cycle": "V75-C001",
+      "decision": "WAIT_FOR_EVIDENCE (EXP close 2026-10-02T03:00Z)",
+      "context": ""
+    },
+    {
+      "source": "production_cycles",
+      "cycle": "V76-C001",
+      "decision": "NONE until window close",
+      "context": ""
+    },
+    {
+      "source": "production_cycles",
+      "cycle": "S3-FREELANCER-CONV-01",
+      "decision": "DIGITAL_PRODUCTS",
+      "context": ""
+    },
+    {
+      "source": "production_cycles",
+      "cycle": "S3-EXEC-05",
+      "decision": "Monitor observation window until 2026-10-05",
+      "context": ""
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle": "2026-09-26T00:00:00Z",
+      "decision": "E1",
+      "context": "aekraft.gumroad.com/l/* (30 products)"
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle": "2026-09-26T00:00:00Z",
+      "decision": "E1",
+      "context": "galaxyaek7-del.github.io/openclaw-factory/ (37 pages)"
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle": "2026-09-26T00:00:00Z",
+      "decision": "E2",
+      "context": "github_pages_site"
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle": "2026-09-26T00:00:00Z",
+      "decision": "E2",
+      "context": "gumroad_store"
+    },
+    {
+      "source": "commercial_evidence",
+      "cycle": "2026-09-26T00:00:00Z",
+      "decision": "below_E3",
+      "context": "customer_site pages"
+    }
+  ],
+  "note": "JEV not yet run against historical decisions. Requires API key for live evaluation.",
+  "status": "PENDING_CREDENTIALS"
+}
