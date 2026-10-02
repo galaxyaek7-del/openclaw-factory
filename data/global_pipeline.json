@@ -751,9 +751,29 @@
   {
    "id": 40746559,
    "reason": "D-grade loop05 (scope/budget)"
+  },
+  {
+   "id": 40746549,
+   "reason": "D-grade arm-AI (scope/budget)"
+  },
+  {
+   "id": 40746531,
+   "reason": "D-grade arm-AI (scope/budget)"
+  },
+  {
+   "id": 40746389,
+   "reason": "D-grade arm-AI (scope/budget)"
+  },
+  {
+   "id": 40746551,
+   "reason": "D-grade arm-AI (scope/budget)"
+  },
+  {
+   "id": 40743237,
+   "reason": "D-grade arm-AI (scope/budget)"
   }
  ],
- "at": "2026-10-02T15:55:24.485471+00:00",
+ "at": "2026-10-02T16:04:18.369207+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {

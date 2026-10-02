@@ -29,5 +29,16 @@
  "top_positive_pattern": "document/PDF/data tasks",
  "verified_sales": 0,
  "verified_revenue": 0,
- "contactability": "all actives C2 (founder-session route)"
+ "contactability": "all actives C2 (founder-session route)",
+ "company_mode": "ACTIVE_ROTATION",
+ "current_arm": "MICRO_B2B",
+ "next_arm": "MICRO_B2B",
+ "active_arms": 7,
+ "low_signal_arms": [
+  "AI_SERVICES"
+ ],
+ "blocked_arms": [],
+ "priority_arm": "NONE",
+ "last_rotation": "2026-10-02T16:04:18.369207+00:00",
+ "next_rotation": "next cycle"
 }
