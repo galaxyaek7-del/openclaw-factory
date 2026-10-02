@@ -1,0 +1,89 @@
+{
+ "at": "2026-10-02T15:34:43.348982+00:00",
+ "routes": [
+  {
+   "route": "gumroad-leadlists",
+   "platform": "gumroad",
+   "purpose": "direct service sale",
+   "status": "PRIMARY",
+   "product": "Verified B2B Lead Lists 99USD",
+   "checkout_verified": true,
+   "distribution_verified": true,
+   "monitoring_enabled": true,
+   "fallback": "gumroad-homebuyer",
+   "last_verified": "2026-10-02T15:34:43.348982+00:00"
+  },
+  {
+   "route": "gumroad-homebuyer",
+   "platform": "gumroad",
+   "purpose": "fallback sale",
+   "status": "FALLBACK",
+   "product": "Homebuyer Kit 29USD",
+   "checkout_verified": true,
+   "distribution_verified": true,
+   "monitoring_enabled": true,
+   "fallback": "NOT_READY",
+   "last_verified": "2026-10-02T15:34:43.348982+00:00"
+  },
+  {
+   "route": "paddle-products",
+   "platform": "paddle",
+   "purpose": "direct sale",
+   "status": "SECONDARY",
+   "product": "6 products",
+   "checkout_verified": false,
+   "distribution_verified": true,
+   "monitoring_enabled": true,
+   "fallback": "NOT_READY",
+   "last_verified": "2026-10-02T15:34:43.348982+00:00"
+  },
+  {
+   "route": "systeme-tracked",
+   "platform": "systeme",
+   "purpose": "affiliate commission",
+   "status": "SECONDARY",
+   "product": "tracked link (ID present)",
+   "checkout_verified": false,
+   "distribution_verified": true,
+   "monitoring_enabled": true,
+   "fallback": "NOT_READY",
+   "last_verified": "2026-10-02T15:34:43.348982+00:00"
+  },
+  {
+   "route": "freelancer-pipeline",
+   "platform": "freelancer",
+   "purpose": "service contracts",
+   "status": "SECONDARY",
+   "product": "5 guarded proposals",
+   "checkout_verified": false,
+   "distribution_verified": true,
+   "monitoring_enabled": true,
+   "fallback": "NOT_READY",
+   "last_verified": "2026-10-02T15:34:43.348982+00:00"
+  },
+  {
+   "route": "nostr-dist",
+   "platform": "nostr",
+   "purpose": "DISTRIBUTION only",
+   "status": "SECONDARY",
+   "product": "service notes",
+   "checkout_verified": false,
+   "distribution_verified": true,
+   "monitoring_enabled": true,
+   "fallback": "NOT_READY",
+   "last_verified": "2026-10-02T15:34:43.348982+00:00"
+  },
+  {
+   "route": "telegraph-pages",
+   "platform": "telegraph/pages",
+   "purpose": "DISTRIBUTION only",
+   "status": "SECONDARY",
+   "product": "guides+service pages",
+   "checkout_verified": false,
+   "distribution_verified": true,
+   "monitoring_enabled": false,
+   "fallback": "NOT_READY",
+   "last_verified": "2026-10-02T15:34:43.348982+00:00"
+  }
+ ]
+}
