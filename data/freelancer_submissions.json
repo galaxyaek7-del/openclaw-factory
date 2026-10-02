@@ -51,7 +51,7 @@
  },
  "40745949": {
   "price_usd": 75.58,
-  "status": "BLOCKED_NO_TOKEN",
+  "status": "CLOSED_UNSUBMITTED",
   "idempotency_key": "bid-40745949-once",
   "evidence": "PREPARED (B-grade, personalized)"
  },

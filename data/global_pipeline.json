@@ -26,32 +26,6 @@
    "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)"
   },
   {
-   "id": 40745949,
-   "title": "AI Design to Editable PDF",
-   "budget": [
-    30.0,
-    250.0
-   ],
-   "bids": 91,
-   "price": 75.58,
-   "grade": "B (conversion fits doc pipeline; 91-bid competition noted)",
-   "state": "QUALIFIED-PROPOSAL_READY (submit BLOCKED_NO_TOKEN)",
-   "proposal_personalized": {
-    "problem": "AI-generated designs need conversion into clean editable PDFs",
-    "solution": "Convert AI design outputs into structured editable PDF documents with selectable text where possible, QA-checked page by page",
-    "deliverables": "Editable PDF(s) + source notes on fonts/layout used",
-    "timeline": "3-4 days",
-    "price_usd": 75.58,
-    "price_basis": "market-average parity (avg 75.58 inside bounds)",
-    "price_policy_bound": true,
-    "assumptions": [
-     "Source design files provided by buyer",
-     "Standard print/digital use, not CAD-accurate redrafting"
-    ],
-    "next_action": "Confirm source file formats and page count for fixed quote"
-   }
-  },
-  {
    "id": 40744952,
    "title": "Polish Gardening eBook Layout",
    "budget": [
@@ -487,6 +461,62 @@
   {
    "id": 40746027,
    "reason": "D-grade rb06 (scope/budget/location)"
+  },
+  {
+   "id": 40745949,
+   "reason": "CLOSED/LEARNED: closed_awarded x2; bid stayed PREPARED/BLOCKED, correctly unsent; 136-bid race"
+  },
+  {
+   "id": 40746119,
+   "reason": "D-grade master01 (scope/budget/location)"
+  },
+  {
+   "id": 40746111,
+   "reason": "D-grade master01 (scope/budget/location)"
+  },
+  {
+   "id": 40746084,
+   "reason": "D-grade master01 (scope/budget/location)"
+  },
+  {
+   "id": 40746092,
+   "reason": "D-grade master01 (scope/budget/location)"
+  },
+  {
+   "id": 40746078,
+   "reason": "D-grade master01 (scope/budget/location)"
+  },
+  {
+   "id": 40744455,
+   "reason": "D-grade master01 (scope/budget/location)"
+  },
+  {
+   "id": 40746049,
+   "reason": "D-grade master01 (scope/budget/location)"
+  },
+  {
+   "id": 40746085,
+   "reason": "D-grade master01 (scope/budget/location)"
+  },
+  {
+   "id": 40746086,
+   "reason": "D-grade master01 (scope/budget/location)"
+  },
+  {
+   "id": 40746065,
+   "reason": "D-grade master01 (scope/budget/location)"
+  },
+  {
+   "id": 40746062,
+   "reason": "D-grade master01 (scope/budget/location)"
+  },
+  {
+   "id": 40746048,
+   "reason": "D-grade master01 (scope/budget/location)"
+  },
+  {
+   "id": 40746031,
+   "reason": "D-grade master01 (scope/budget/location)"
   }
  ],
  "at": "2026-10-02T09:54:26.104855+00:00",
