@@ -20,11 +20,11 @@
  "AI_OPS": {
   "signal": "NONE",
   "blocked": false,
-  "last_run": null,
-  "runs": 0
+  "last_run": "2026-10-02T16:23:29.094450+00:00",
+  "runs": 1
  },
  "AFFILIATE": {
-  "signal": "NONE",
+  "signal": "LOW",
   "blocked": false,
   "last_run": null,
   "runs": 0

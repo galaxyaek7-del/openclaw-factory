@@ -42,5 +42,8 @@
  "blocked_arms": [],
  "priority_arm": "NONE",
  "last_rotation": "2026-10-02T16:04:18.369207+00:00",
- "next_rotation": "next cycle"
+ "next_rotation": "next cycle",
+ "affiliate_status": "LOW_SIGNAL (tracked-active, no demand fit, X-post blocked)",
+ "verified_affiliate_sales": 0,
+ "verified_affiliate_revenue": 0
 }
