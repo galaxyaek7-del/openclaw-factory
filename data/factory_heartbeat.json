@@ -1,7 +1,7 @@
 {
  "factory_mode": "CONTINUOUS_ACTIVE",
  "last_cycle": "S3-LOOP-02",
- "current_lane": "observation",
+ "current_lane": "learn",
  "next_lane": "discovery",
  "cycle_count": "continuous",
  "blocked_lanes": [
@@ -16,6 +16,17 @@
   "reply-match",
   "distribution"
  ],
- "last_commercial_signal": "none observed",
- "last_verified_sale": "none"
+ "last_commercial_signal": "none",
+ "last_verified_sale": "none",
+ "demand_patterns": {
+  "SCOPE": 126,
+  "OTHER": 7,
+  "BUDGET": 6,
+  "SKILL_MISMATCH": 3,
+  "DOMAIN_MISMATCH": 1
+ },
+ "top_rejection_reason": "SCOPE",
+ "top_positive_pattern": "document/PDF/data tasks",
+ "verified_sales": 0,
+ "verified_revenue": 0
 }

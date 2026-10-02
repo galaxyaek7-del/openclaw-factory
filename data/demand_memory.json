@@ -1,0 +1,14 @@
+{
+ "at": "2026-10-02T15:51:10.407614+00:00",
+ "rejections_total": 155,
+ "pattern": {
+  "SCOPE": 126,
+  "OTHER": 7,
+  "BUDGET": 6,
+  "SKILL_MISMATCH": 3,
+  "DOMAIN_MISMATCH": 1
+ },
+ "positive": "document/PDF/data/research tasks convert ~4pct to B",
+ "learning": "narrow queries did not beat broad ones this round; source yield stable ~4pct B regardless of phrasing \u2014 rotation has diminishing returns; next lever is contactability, not discovery phrasing",
+ "priority": "HIGH-FIT document tasks first; deprioritize dev/video/translation/employment"
+}

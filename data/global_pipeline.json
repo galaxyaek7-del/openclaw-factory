@@ -674,9 +674,57 @@
   {
    "id": 40746424,
    "reason": "D-grade loop03 (scope/budget)"
+  },
+  {
+   "id": 40746556,
+   "reason": "D-grade loop04 (scope/budget/language)"
+  },
+  {
+   "id": 40746544,
+   "reason": "D-grade loop04 (scope/budget/language)"
+  },
+  {
+   "id": 40746543,
+   "reason": "D-grade loop04 (scope/budget/language)"
+  },
+  {
+   "id": 40746534,
+   "reason": "D-grade loop04 (scope/budget/language)"
+  },
+  {
+   "id": 40746532,
+   "reason": "D-grade loop04 (scope/budget/language)"
+  },
+  {
+   "id": 40746525,
+   "reason": "D-grade loop04 (scope/budget/language)"
+  },
+  {
+   "id": 40746524,
+   "reason": "D-grade loop04 (scope/budget/language)"
+  },
+  {
+   "id": 40746558,
+   "reason": "D-grade loop04 (scope/budget/language)"
+  },
+  {
+   "id": 40746555,
+   "reason": "D-grade loop04 (scope/budget/language)"
+  },
+  {
+   "id": 40746547,
+   "reason": "D-grade loop04 (scope/budget/language)"
+  },
+  {
+   "id": 40746536,
+   "reason": "D-grade loop04 (scope/budget/language)"
+  },
+  {
+   "id": 40746535,
+   "reason": "D-grade loop04 (scope/budget/language)"
   }
  ],
- "at": "2026-10-02T15:48:08.559585+00:00",
+ "at": "2026-10-02T15:51:10.407614+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
