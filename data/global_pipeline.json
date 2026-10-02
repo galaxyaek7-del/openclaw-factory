@@ -887,9 +887,37 @@
   {
    "id": 40746628,
    "reason": "D-grade contact01 (integrity/employment/language-scope)"
+  },
+  {
+   "id": 40746642,
+   "reason": "D-grade multi01 (scope/role/budget/policy)"
+  },
+  {
+   "id": 40746641,
+   "reason": "D-grade multi01 (scope/role/budget/policy)"
+  },
+  {
+   "id": 40746639,
+   "reason": "D-grade multi01 (scope/role/budget/policy)"
+  },
+  {
+   "id": 40746632,
+   "reason": "D-grade multi01 (scope/role/budget/policy)"
+  },
+  {
+   "id": 40746629,
+   "reason": "D-grade multi01 (scope/role/budget/policy)"
+  },
+  {
+   "id": 40746630,
+   "reason": "D-grade multi01 (scope/role/budget/policy)"
+  },
+  {
+   "id": 40746634,
+   "reason": "D-grade multi01 (scope/role/budget/policy)"
   }
  ],
- "at": "2026-10-02T16:48:13.929114+00:00",
+ "at": "2026-10-02T16:50:29.145836+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
