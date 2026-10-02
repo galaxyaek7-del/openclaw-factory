@@ -1,0 +1,20 @@
+{
+ "at": "2026-10-02T15:14:22.506740+00:00",
+ "connections": {
+  "gumroad": {
+   "api": "CONNECTED (token valid; products/sales reads OK; 0 sales)",
+   "writes": "CONNECTED (create/update verified live)",
+   "payouts": "UNKNOWN (dashboard-only; folds into first sale)",
+   "checkout": "LIVE (buy form on product)"
+  },
+  "paddle": {
+   "api": "CONNECTED (key valid; 7 products listed)",
+   "checkout": "BLOCKED (onboarding incomplete; watcher armed)",
+   "webhook": "NOT_CONFIGURED (needs dashboard URL + secret; founder-gated)",
+   "payouts": "UNKNOWN (onboarding)"
+  }
+ },
+ "missing": [
+  "stripe/paypal/payhip/etsy credentials: none exist (no action; documented)"
+ ]
+}
