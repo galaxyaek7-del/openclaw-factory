@@ -1,0 +1,24 @@
+{
+ "at": "now",
+ "integration_requires": {
+  "FREELANCER_OAUTH_TOKEN": "yes (sole credential; sent as freelancer-oauth-v1 header)",
+  "client_id": "no (not referenced anywhere in integration code)",
+  "client_secret": "no",
+  "redirect_uri": "no",
+  "refresh_token": "no (no refresh logic; token treated as long-lived until platform rejects)",
+  "scopes": "none declared in code (platform grants at consent time)",
+  "bidder_id": "derived at runtime via GET users/0.1/self (no config needed)"
+ },
+ "env_path": "C:\\openclaw-dasgboard\\.env",
+ "post_grant_validation": [
+  "GET users/0.1/self (auth+identity)",
+  "GET projects/<id> x4 (scope: project read)",
+  "POST bids x4 (scope: bid write)",
+  "GET bids (inbox/read verification)"
+ ],
+ "cascade_trigger": "oauth_cascade.py (built, no-token behavior verified); tick resume also armed",
+ "unknown_until_live": [
+  "token expiry behavior",
+  "exact granted scopes"
+ ]
+}
