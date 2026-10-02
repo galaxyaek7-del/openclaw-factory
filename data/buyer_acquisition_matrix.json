@@ -1,0 +1,53 @@
+{
+ "at": "2026-10-02T18:09:19.989072+00:00",
+ "channels": [
+  {
+   "channel": "nostr-replies",
+   "buyer_type": "note readers",
+   "signal": "0 replies/4 notes",
+   "access": "send-capable, none to answer",
+   "contact": "NONE",
+   "status": "NO_SIGNAL"
+  },
+  {
+   "channel": "freelancer-bids",
+   "buyer_type": "project posters",
+   "signal": "budgets observed",
+   "access": "OAuth-walled",
+   "contact": "NONE",
+   "status": "BLOCKED_AUTH"
+  },
+  {
+   "channel": "gumroad-discover",
+   "buyer_type": "marketplace browsers",
+   "signal": "UNKNOWN (no analytics)",
+   "access": "passive listing",
+   "contact": "NONE",
+   "status": "PASSIVE"
+  },
+  {
+   "channel": "telegraph/pages/seo",
+   "buyer_type": "searchers",
+   "signal": "UNKNOWN (unindexed?)",
+   "access": "passive",
+   "contact": "NONE",
+   "status": "PASSIVE"
+  },
+  {
+   "channel": "direct-contact-forms",
+   "buyer_type": "SMBs",
+   "signal": "none attempted (no verified target)",
+   "access": "theoretically open, no target",
+   "contact": "NONE",
+   "status": "NO_TARGET"
+  },
+  {
+   "channel": "RFP-portals",
+   "buyer_type": "agencies",
+   "signal": "real demand, ineligible",
+   "access": "registration-walled",
+   "contact": "NONE",
+   "status": "BLOCKED_ELIGIBILITY"
+  }
+ ]
+}
