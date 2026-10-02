@@ -1,0 +1,38 @@
+{
+  "cycle": "S3-EXEC-05",
+  "at": "2026-10-02T19:45:43.826595+00:00",
+  "system_state": "OPERATIONAL",
+  "products": {
+    "total": 11,
+    "gumroad_live": 10,
+    "kdp_unpublished": 1,
+    "price_range": [
+      29,
+      155
+    ],
+    "all_time_sales": 0,
+    "all_time_revenue": 0
+  },
+  "channels": {
+    "gumroad": "CONNECTED (checkout live)",
+    "paddle": "PARTIAL (checkout NOT available)",
+    "nostr": "CONNECTED (owned key, posts live)",
+    "systeme": "CONNECTED",
+    "freelancer": "BLOCKED (OAuth missing)",
+    "x_api": "BLOCKED (402 credits)",
+    "amazon_associates": "BLOCKED (tag missing)"
+  },
+  "measurement": {
+    "engagement": "measurable (zero observed)",
+    "reach": "UNKNOWN (no mechanism)",
+    "clicks": "UNKNOWN (no redirect tracker)",
+    "sales": "OBSERVED-zero (poll)",
+    "first_party_analytics": "NOT IMPLEMENTED"
+  },
+  "active_opportunities": 5,
+  "all_blocked_on": "freelancer_oauth",
+  "founder_actions": 4,
+  "parallel_session_files": 71,
+  "utm_convention": "src=<channel>-<date> (introduced S3-EXEC-04)",
+  "key_bottleneck": "MEASUREMENT_GAP - no way to observe traffic/clicks on owned or external channels"
+}

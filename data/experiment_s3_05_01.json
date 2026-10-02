@@ -1,0 +1,50 @@
+{
+  "experiment_id": "EXP-S3-05-01",
+  "created_at": "2026-10-02T19:50:35.886290+00:00",
+  "product": "GPSR EU Seller Action Kit",
+  "gumroad_slug": "fetmu",
+  "gumroad_url": "https://aekraft.gumroad.com/l/fetmu",
+  "price_usd": 79,
+  "customer_problem": "GPSR enforcement live - listing removal/fines for non-EU sellers to EU",
+  "target_audience": "Non-EU e-commerce sellers shipping to EU",
+  "hypothesis": "Non-EU sellers facing GPSR enforcement will click through to Gumroad checkout when presented with a clear, problem-oriented offer on Nostr/Telegraph",
+  "channel": "Nostr + Telegraph",
+  "campaign_id": "s3_exec_05",
+  "utm_source": "nostr",
+  "utm_medium": "organic",
+  "utm_campaign": "s3_exec_05",
+  "utm_content": "gpsr_kit_a",
+  "tracking_url": "https://aekraft.gumroad.com/l/fetmu?utm_source=nostr&utm_medium=organic&utm_campaign=s3_exec_05&utm_content=gpsr_kit_a",
+  "measurement_method": "page-view beacon on owned site + Gumroad sales poll + Nostr reply monitoring",
+  "observation_window": {
+    "start": "2026-10-02T19:50:35.886290+00:00",
+    "end": "2026-10-05T00:00:00Z",
+    "duration_days": 3,
+    "actual_start": "2026-10-02T19:52:41.761686+00:00"
+  },
+  "evidence_required": [
+    "Nostr post confirmed with event ID",
+    "Telegraph article published with URL",
+    "Page-view beacon firing on owned site",
+    "Gumroad sales poll showing transaction",
+    "Nostr replies/reactions observed"
+  ],
+  "status": "LIVE",
+  "next_action": "Execute Nostr post with UTM-tagged link",
+  "publications": [
+    {
+      "channel": "Nostr",
+      "event_id": "5c084e789dec54c2",
+      "timestamp": "2026-10-02T19:52:41.761686+00:00",
+      "url": "https://aekraft.gumroad.com/l/fetmu?utm_source=nostr&utm_medium=organic&utm_campaign=s3_exec_05&utm_content=gpsr_kit_a",
+      "status": "confirmed",
+      "relays_ok": 2
+    },
+    {
+      "channel": "Telegraph",
+      "url": "https://telegra.ph/GPSR-EU-Seller-Action-Kit-Non-EU-Seller-Compliance-Guide-2026-10-02",
+      "timestamp": "2026-10-02T19:52:41.761686+00:00",
+      "status": "confirmed"
+    }
+  ]
+}
