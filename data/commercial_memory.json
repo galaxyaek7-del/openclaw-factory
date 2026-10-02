@@ -353,6 +353,25 @@
    "next_action": "LOW_ACTIVITY_WAIT; wake on new-external-signal",
    "retry_condition": "new grant/account/buyer-signal only",
    "commercial_score": 0
+  },
+  "proptech-vendors": {
+   "first_seen": "2026-10-02T17:50:45.269384+00:00",
+   "times_seen": 1,
+   "source": "web",
+   "signal_type": "market",
+   "result": "VENDOR_ONLY",
+   "last_seen": "2026-10-02T17:50:45.269384+00:00",
+   "business": "n/a (all proptech sellers)",
+   "problem": "SMB paperwork pain (vendor-voiced)",
+   "offer": "none-contactable",
+   "accessibility": "BLOCKED",
+   "contactability": "C0",
+   "eligibility": "FAIL",
+   "action_taken": "segment search property-mgmt",
+   "evidence_level": "OBSERVED",
+   "next_action": "none",
+   "retry_condition": "never (vendor-only vertical)",
+   "commercial_score": 0
   }
  },
  "arms": {

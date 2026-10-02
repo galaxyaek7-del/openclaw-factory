@@ -155,3 +155,4 @@
 {"cycle_id": "S3-ACM-03", "at": "2026-10-02T17:39:17.124330+00:00", "aiops": "pain quantified from vendor reports (no buyers); all voices sellers", "rotated_to": "AFFILIATE", "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-ACM-04", "at": "2026-10-02T17:41:17.210547+00:00", "verdict": "COMMERCIAL_SIGNAL_EXHAUSTED; LOW_ACTIVITY_WAIT (tick automation continues; manual cycles stop consuming tokens)", "revenue": 0, "cost_usd": 0}
 {"cycle_id": "S3-ACM-05", "at": "2026-10-02T17:44:57.899132+00:00", "surface": "outsourcing-bookkeeping web: 10/10 established providers, 0 buyers", "verdict": "surface exhausted; LOW_ACTIVITY_WAIT (tick automation armed; manual cycles stop here per token economy)", "revenue": 0, "cost_usd": 0}
+{"cycle_id": "S3-SEG-01", "at": "2026-10-02T17:50:45.269008+00:00", "segment": "property-mgmt: 10 results all vendors/competitors, 0 buyers", "rotated_to": "DIGITAL_PRODUCTS", "revenue": 0, "cost_usd": 0}
