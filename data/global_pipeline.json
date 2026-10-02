@@ -646,9 +646,37 @@
   {
    "id": 40746354,
    "reason": "D-grade loop01 (scope/budget/location)"
+  },
+  {
+   "id": 40746538,
+   "reason": "C-grade: wrong regulatory domain (FDA/HACCP outside EU-compliance expertise); floor price"
+  },
+  {
+   "id": 40746539,
+   "reason": "D-grade loop03 (scope/budget)"
+  },
+  {
+   "id": 40746528,
+   "reason": "D-grade loop03 (scope/budget)"
+  },
+  {
+   "id": 40746521,
+   "reason": "D-grade loop03 (scope/budget)"
+  },
+  {
+   "id": 40746482,
+   "reason": "D-grade loop03 (scope/budget)"
+  },
+  {
+   "id": 40746515,
+   "reason": "D-grade loop03 (scope/budget)"
+  },
+  {
+   "id": 40746424,
+   "reason": "D-grade loop03 (scope/budget)"
   }
  ],
- "at": "2026-10-02T14:47:56.747055+00:00",
+ "at": "2026-10-02T15:48:08.559585+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
