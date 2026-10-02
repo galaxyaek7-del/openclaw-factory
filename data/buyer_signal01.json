@@ -1,0 +1,26 @@
+{
+ "at": "2026-10-02T16:56:12.207829+00:00",
+ "signals": [
+  {
+   "url": "reddit r/smallbusiness organizing-scanning",
+   "class": "POSSIBLE_BUYER_SIGNAL",
+   "contact": "C0 (login wall)"
+  },
+  {
+   "url": "reddit r/datacurator help-organize",
+   "class": "POSSIBLE_BUYER_SIGNAL",
+   "contact": "C0 (login wall)"
+  },
+  {
+   "url": "reddit r/legaltech pdf-organization",
+   "class": "POSSIBLE_BUYER_SIGNAL",
+   "contact": "C0 (login wall)"
+  },
+  {
+   "url": "leman/filesdesk/smallpdf/pdffiller/lovelytics/bizcheckup",
+   "class": "COMPETITOR/VENDOR",
+   "contact": "N/A - do not contact"
+  }
+ ],
+ "contactable": 0
+}
