@@ -122,12 +122,17 @@ def record_observations_from_real_ledgers(experiments_path=None, page_views_path
     already_recorded = set()
     for r in records:
         if r.get("record_type") == "observation":
-            # Dedup key must use fields that are actually persisted in the
-            # file by record_observation() (experiment_id/arm/observed_at),
-            # not an in-memory-only field set after append.
+            # Real defect fixed 2026-10-03: this key used the RECORDING day
+            # (observed_at), while the loop below buckets by the VIEW's day.
+            # Any view from a previous day therefore never matched, so every
+            # run re-recorded every historical day -- unbounded duplicate
+            # observations inflating the sample counts that
+            # evaluate_experiment() uses to make real ADOPT/SCALE/KILL calls.
+            # observed_day is now persisted for these batch observations;
+            # observed_at stays the fallback for every legacy record.
             exp_id = r.get("experiment_id") or ""
             arm = r.get("arm") or ""
-            day = (r.get("observed_at") or "")[:10]
+            day = r.get("observed_day") or (r.get("observed_at") or "")[:10]
             if exp_id and day:
                 already_recorded.add((exp_id, arm, day))
 
@@ -147,6 +152,7 @@ def record_observations_from_real_ledgers(experiments_path=None, page_views_path
             rec = ce.record_observation(
                 exp_id, "variant", count,
                 experiments_path=experiments_path or DEFAULT_EXPERIMENTS_PATH,
+                observed_day=day,
             )
             recorded.append(rec)
             already_recorded.add((exp_id, "variant", day))

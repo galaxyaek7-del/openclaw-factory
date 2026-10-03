@@ -76,6 +76,44 @@ class ExperimentAutomationTest(unittest.TestCase):
         r = cea.record_observations_from_real_ledgers(experiments_path=self._exp, page_views_path=self._views)
         self.assertEqual(r["recorded_observations"], 0)
 
+    def test_historical_days_are_never_re_recorded_on_later_runs(self):
+        """The production form of the bug fixed 2026-10-03.
+
+        The shipped test above re-ran against the SAME day, which is the one
+        case the old key got right by accident (recording day == view day). The
+        real corruption needs the view to be from an earlier day than the run:
+        the dedupe key compared the recording day against the view day, never
+        matched, and every historical day was appended again on every single
+        run -- inflating the sample counts that evaluate_experiment() uses to
+        make real ADOPT/SCALE/KILL calls.
+        """
+        _write(self._exp, [_defn()])
+        _write(self._views, _view(day="2026-08-15", count=2) + _view(day="2026-08-16", count=5))
+        first = cea.record_observations_from_real_ledgers(
+            experiments_path=self._exp, page_views_path=self._views)
+        self.assertEqual(first["recorded_observations"], 2, "one observation per distinct view day")
+
+        for _ in range(3):
+            again = cea.record_observations_from_real_ledgers(
+                experiments_path=self._exp, page_views_path=self._views)
+            self.assertEqual(again["recorded_observations"], 0)
+
+        lines = [json.loads(l) for l in self._exp.read_text(encoding="utf-8").strip().splitlines() if l.strip()]
+        obs = [l for l in lines if l.get("record_type") == "observation"]
+        self.assertEqual(len(obs), 2, "historical days must never accumulate duplicates")
+        self.assertEqual(sorted(o["observed_day"] for o in obs), ["2026-08-15", "2026-08-16"])
+        self.assertEqual(sorted(o["value"] for o in obs), [2, 5], "the real per-day count is preserved")
+
+    def test_new_view_day_is_still_recorded_after_earlier_days(self):
+        """The fix must not over-dedupe: a genuinely new day still records."""
+        _write(self._exp, [_defn()])
+        _write(self._views, _view(day="2026-08-15", count=1))
+        cea.record_observations_from_real_ledgers(experiments_path=self._exp, page_views_path=self._views)
+        _write(self._views, _view(day="2026-08-15", count=1) + _view(day="2026-08-16", count=3))
+        r = cea.record_observations_from_real_ledgers(
+            experiments_path=self._exp, page_views_path=self._views)
+        self.assertEqual(r["recorded_observations"], 1, "only the new day may be added")
+
     def test_evaluate_due_experiment_returns_iterate_when_insufficient_data(self):
         created = (datetime.now(timezone.utc) - timedelta(days=40)).isoformat()
         _write(self._exp, [_defn(created=created, duration_days=30)])

@@ -58,8 +58,57 @@ class TestUnitEconomics(unittest.TestCase):
 
 class TestB2BCommercialEngine(unittest.TestCase):
     def test_zero_real_b2b_ladder_candidates_is_honestly_reported(self):
-        result = gcs.b2b_commercial_engine_report()
-        self.assertEqual(result["real_b2b_ladder_candidates"], 0)
+        """Real correction 2026-10-03: this asserted a hardcoded 0.
+
+        The count moved to 2 legitimately -- two real ACCEPTED b2b_systems
+        decisions now exist in the ledger ("workflow automation system for
+        logistics companies" and "inventory management system for wholesale
+        distributors"). b2b_commercial_engine_report() was reporting the truth
+        all along; the expectation was a stale snapshot of an earlier moment.
+
+        The zero case is still asserted, deterministically, by injecting a
+        decisions file that genuinely contains no B2B-ladder niche -- which is
+        what this test was actually written to protect.
+        """
+        import json as _json
+        import tempfile as _tempfile
+        from pathlib import Path as _Path
+
+        from decision_engine import store as _store
+
+        with _tempfile.TemporaryDirectory() as tmp:
+            empty = _Path(tmp) / "decisions.jsonl"
+            empty.write_text(
+                _json.dumps({"niche": "a kdp niche", "ladder": "kdp_books",
+                             "decided_at": "2026-01-01"}) + "\n",
+                encoding="utf-8",
+            )
+            _store._invalidate_read_cache(empty)
+            zero = gcs.b2b_commercial_engine_report(decisions_path=empty)
+            self.assertEqual(zero["real_b2b_ladder_candidates"], 0,
+                             "a portfolio with no B2B ladder niche must honestly report 0")
+
+            mixed = _Path(tmp) / "mixed.jsonl"
+            mixed.write_text(
+                _json.dumps({"niche": "a kdp niche", "ladder": "kdp_books",
+                             "decided_at": "2026-01-01"}) + "\n"
+                + _json.dumps({"niche": "a b2b niche", "ladder": "b2b_systems",
+                               "decided_at": "2026-01-02"}) + "\n",
+                encoding="utf-8",
+            )
+            _store._invalidate_read_cache(mixed)
+            one = gcs.b2b_commercial_engine_report(decisions_path=mixed)
+            self.assertEqual(one["real_b2b_ladder_candidates"], 1)
+
+        # And the real, unpinned report must agree with the real ledger rather
+        # than with any hardcoded number.
+        real = gcs.b2b_commercial_engine_report()
+        expected = len([
+            v for v in _store.latest_decision_per_niche().values()
+            if v.get("ladder") in ("ai_saas", "b2b_systems")
+        ])
+        self.assertEqual(real["real_b2b_ladder_candidates"], expected)
+        self.assertEqual(real["total_niches_evaluated"], len(_store.latest_decision_per_niche()))
 
     def test_case_study_is_the_one_real_product_not_a_fabricated_lead(self):
         result = gcs.b2b_commercial_engine_report()

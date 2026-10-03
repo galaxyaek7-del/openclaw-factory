@@ -212,7 +212,8 @@ class TestRetryPaymentVerification(BasePipelineTest):
                             evaluate_fn=lambda *a, **k: _accepted_decision(), price_fn=lambda *a, **k: 126.0)
         self._write_paddle_products([{"title": "match", "price_id": "pri_match", "price": 126.0}])
         cp.approve_request("req_abc123", accepted_name="Test Customer", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
-                            checkout_fn=lambda k, p: (_ for _ in ()).throw(RuntimeError("checkout not enabled for this account")))
+                            checkout_fn=lambda k, p: (_ for _ in ()).throw(RuntimeError("checkout not enabled for this account")),
+                            api_key_loader=lambda: "fake-key")
         blocked_state = cp._load_state(self.state_path)
         self.assertEqual(blocked_state["req_abc123"]["stage"], "PAYMENT_BLOCKED_PADDLE_ONBOARDING")
 
@@ -259,7 +260,8 @@ class TestStatusAndOverview(BasePipelineTest):
                             evaluate_fn=lambda *a, **k: _accepted_decision(), price_fn=lambda *a, **k: 126.0)
         self._write_paddle_products([{"title": "match", "price_id": "pri_match", "price": 126.0}])
         cp.approve_request("req_abc123", accepted_name="Test Customer", state_path=self.state_path, paddle_products_path=self.paddle_products_path,
-                            checkout_fn=lambda k, p: (_ for _ in ()).throw(RuntimeError("checkout not enabled for this account")))
+                            checkout_fn=lambda k, p: (_ for _ in ()).throw(RuntimeError("checkout not enabled for this account")),
+                            api_key_loader=lambda: "fake-key")
         overview = cp.list_pipeline_overview(requests_path=self.requests_path, state_path=self.state_path)
         self.assertEqual(len(overview["needs_attention"]), 1)
         self.assertEqual(overview["needs_attention"][0]["stage"], "PAYMENT_BLOCKED_PADDLE_ONBOARDING")

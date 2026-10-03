@@ -97,10 +97,20 @@ def create_experiment(experiment_id, experiment_type, hypothesis, baseline, chan
     return _append(record, experiments_path or DEFAULT_EXPERIMENTS_PATH)
 
 
-def record_observation(experiment_id, arm, value, experiments_path=None):
+def record_observation(experiment_id, arm, value, experiments_path=None, observed_day=None):
     """arm is 'baseline' or 'variant' -- one real observed metric value.
     Never aggregated/estimated here; evaluate_experiment() does the real
-    aggregation over every real observation on read."""
+    aggregation over every real observation on read.
+
+    observed_day (optional, added 2026-10-03): the calendar day the
+    measurement actually describes, when that differs from the day it was
+    recorded. Batch recorders that fold a whole day of events into one
+    observation must pass it -- see
+    commercial_experiment_automation.record_observations_from_real_ledgers(),
+    where the real defect was that the dedupe key mixed the VIEW's day with
+    the RECORDING day, so every past day was re-recorded on every run. Left
+    unset, the record shape is exactly as before.
+    """
     if arm not in ("baseline", "variant"):
         raise ValueError("arm must be 'baseline' or 'variant'")
     record = {
@@ -110,6 +120,8 @@ def record_observation(experiment_id, arm, value, experiments_path=None):
         "value": value,
         "observed_at": _now_iso(),
     }
+    if observed_day:
+        record["observed_day"] = str(observed_day)
     return _append(record, experiments_path or DEFAULT_EXPERIMENTS_PATH)
 
 

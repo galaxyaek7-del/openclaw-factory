@@ -9,6 +9,7 @@ tests/test_distributor.py already established.
     python -m unittest tests.test_commercial_execution -v
 """
 
+import json
 import os
 import sys
 import tempfile
@@ -262,12 +263,22 @@ class TestRunPublishPipelineRealMode(_FakeArmMixin, unittest.TestCase):
 
     def test_duplicate_publish_request_is_safely_recorded_not_corrupted(self):
         """Requirement #5: a duplicate publish request (e.g. a retried
-        orchestrator cycle) must never corrupt the ledger or crash — each
-        real attempt is its own honest, append-only audit_trail entry.
-        Per-platform de-duplication (never creating a SECOND real Paddle
-        product for the same production_id) is PaddleArm's own real
-        concern, already proven in tests/test_paddle_arm.py — this proves
-        the pipeline layer stays safe and auditable either way."""
+        orchestrator cycle) must never corrupt the ledger or crash.
+
+        Real correction, 2026-10-03. This test asserted
+        `len(audit_trail) == 2`, written in 134a491 -- before distributor.py
+        gained `_already_published_live` (6427a49), the deliberate read-only
+        idempotency guard that stops a SECOND real publish for the same
+        product+arm. With that guard in place the second call performs no real
+        attempt, so there is correctly only one publish_attempt to audit. The
+        old expectation was not a production regression; it encoded a premise
+        that had since been deliberately superseded.
+
+        What is asserted now is the real contract, and it is strictly
+        stronger than "two rows exist": exactly one REAL attempt happened, the
+        duplicate is surfaced honestly rather than silently swallowed, and the
+        ledger stays uncorrupted.
+        """
         self._register_fake_arm("paddle", status=ArmStatus.READY, publish_result=PublishResult(
             ok=True, platform="paddle", product_id="pdl_dup_1", url=None, error=None, dry_run=False,
         ))
@@ -280,7 +291,27 @@ class TestRunPublishPipelineRealMode(_FakeArmMixin, unittest.TestCase):
             product, dry_run=False, ledger_path=self.ledger_path, state_path=self.state_path,
             protection_state_path=self.protection_state_path,
         )
-        self.assertEqual(len(second["audit_trail"]), 2)  # both real attempts honestly recorded
+
+        # 1. Exactly one real publish attempt -- the duplicate never reached the
+        #    real platform. This is the property that actually protects the
+        #    founder's channels.
+        self.assertEqual(len(second["audit_trail"]), 1)
+        entry = second["audit_trail"][0]
+        self.assertTrue(entry.get("ok"))
+        self.assertFalse(entry.get("dry_run"))
+
+        # 2. The duplicate is NOT silently swallowed: the returned record
+        #    reports it as an unattempted skip with a real reason.
+        paddle_entries = [m for m in second["marketplaces"] if m["marketplace"] == "paddle"]
+        self.assertEqual(len(paddle_entries), 1)
+        self.assertFalse(paddle_entries[0]["attempted"])
+        self.assertIn("duplicate", str(paddle_entries[0]["skip_reason"]).lower())
+
+        # 3. The ledger is uncorrupted: one well-formed line, same product.
+        with open(self.ledger_path, encoding="utf-8") as f:
+            lines = [l for l in f.read().splitlines() if l.strip()]
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(json.loads(lines[0])["product_source_id"], product.source_id)
 
 
 class TestApiTimeoutRetry(_FakeArmMixin, unittest.TestCase):
