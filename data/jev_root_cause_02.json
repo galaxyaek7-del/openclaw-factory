@@ -1,0 +1,24 @@
+{
+ "report": "JEV ROOT CAUSE REPORT",
+ "at": "2026-10-03T07:45:01.386470+00:00",
+ "protection": "ACTIVE",
+ "risk": 90,
+ "failures": 7,
+ "publication": "BLOCKED",
+ "blocking_platform": "x (X API v2)",
+ "root_cause": "X API HTTP 402 credits-depleted on every publish attempt; factory_loop x-queue tick replayed the 3 queued posts against unfunded API until protection tripped at 07:38:14Z; all queue posts now blocked-payment so attempts self-terminated",
+ "correlation": "A \u2014 same platform/action/error on all attempts (record-level: sales_ledger publish_attempt ok=False dry_run=False x402 on LEAD-SERVICE/DESK-AFF/SYSTEME-AFF + cooldown blocks)",
+ "payment_verification_issue": "API-billing only (founder pays X for credits). NO customer payment failure anywhere: sales_ledger has zero failed checkouts, revenue \\, no checkout attempts observed on any channel",
+ "lead_08_35": "TEST_ARTIFACT (own accept-cycle proof, removed); real leads 0",
+ "sale": "NOT_VERIFIED",
+ "recovery": "FOUNDER_ACTION_REQUIRED",
+ "founder_action": "top up X API credits or confirm free-tier reset in developer portal (FA-XCREDITS, standing)",
+ "next": "no x attempts possible (queue all blocked-payment); monitor cooldown expiry; continue non-X distribution",
+ "evidence": [
+  "data/publish_protection_state.json x.* fields",
+  "data/x_post_queue.json 3x block_reason 402",
+  "data/incidents.jsonl publish_protection:x opened 07:38:14Z",
+  "data/sales_ledger.jsonl 12 x publish_attempt records",
+  "factory_loop.js maybeSendQueuedXPost every-tick"
+ ]
+}
