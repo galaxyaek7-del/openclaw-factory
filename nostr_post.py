@@ -14,7 +14,9 @@ import time
 sys.path.insert(0, "scripts")
 import nostr_direct as nd
 
-RELAYS = [("relay.damus.io", 443, "/"), ("relay.primal.net", 443, "/")]
+RELAYS = [("relay.damus.io", 443, "/"), ("relay.primal.net", 443, "/"),
+           ("nos.lol", 443, "/"), ("relay.nostr.band", 443, "/"),
+           ("nostr-pub.wellorder.net", 443, "/")]
 NOTE_PATH = "data/service_note.json"
 RECORD_PATH = "data/nostr_service_post.json"
 

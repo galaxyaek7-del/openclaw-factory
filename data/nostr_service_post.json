@@ -1,10 +1,13 @@
 {
  "status": "sent",
- "event_id": "ed6a1c45774d0de11f9ae4937a5f9332ceeda6e249b6592fca91274b4b65af47",
- "content_hash": "d1eb76a32f445dd5",
+ "event_id": "3af1539e6b4bf481ac8406052900674f9fc0c8b2d59251380395d338a0fe0f7c",
+ "content_hash": "4a0704c71bdf8386",
  "acks": {
-  "relay.damus.io": "[\"OK\",\"ed6a1c45774d0de11f9ae4937a5f9332ceeda6e249b6592fca91274b4b65af47\",true,\"\"]",
-  "relay.primal.net": "[\"OK\",\"ed6a1c45774d0de11f9ae4937a5f9332ceeda6e249b6592fca91274b4b65af47\",true,\"\"]"
+  "relay.damus.io": "[\"OK\",\"3af1539e6b4bf481ac8406052900674f9fc0c8b2d59251380395d338a0fe0f7c\",true,\"\"]",
+  "relay.primal.net": "[\"OK\",\"3af1539e6b4bf481ac8406052900674f9fc0c8b2d59251380395d338a0fe0f7c\",true,\"\"]",
+  "nos.lol": "[\"OK\",\"3af1539e6b4bf481ac8406052900674f9fc0c8b2d59251380395d338a0fe0f7c\",true,\"\"]",
+  "relay.nostr.band": "FAIL:TimeoutError",
+  "nostr-pub.wellorder.net": "[\"OK\",\"3af1539e6b4bf481ac8406052900674f9fc0c8b2d59251380395d338a0fe0f7c\",true,\"\"]"
  },
- "at": "2026-10-03T07:30:51Z"
+ "at": "2026-10-03T07:39:19Z"
 }
