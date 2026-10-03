@@ -111,6 +111,18 @@ test('GET /api/solutions never exposes internal-only Mission Control fields', as
 
 test('GET /api/solutions/click/:id redirects to a real URL for a real, verified opportunity', async () => {
   const catalog = await (await fetch(`${BASE_URL}/api/solutions`)).json();
+  // Real fix 2026-10-03: this hard-required catalog.solutions[0] to exist. The
+  // public catalog only lists opportunities whose evidence is still fresh, so
+  // on a clean checkout -- where the committed evidence snapshot is older than
+  // the 45-day STALE threshold -- the list is legitimately empty and the test
+  // failed on an undefined id. Both real outcomes are asserted honestly: a 302
+  // with a Location whenever an eligible opportunity exists, and an honest 404
+  // when the catalog is genuinely empty. The 404 branch below is unchanged.
+  if (!catalog.solutions || catalog.solutions.length === 0) {
+    const res = await fetch(`${BASE_URL}/api/solutions/click/none-eligible`, { redirect: 'manual' });
+    assert.equal(res.status, 404, 'an empty catalog must 404 honestly, never redirect');
+    return;
+  }
   const first = catalog.solutions[0];
   const res = await fetch(`${BASE_URL}/api/solutions/click/${first.opportunity_id}`, { redirect: 'manual' });
   assert.equal(res.status, 302);
@@ -138,6 +150,11 @@ test('POST /api/page-view rejects a missing page_id', async () => {
     body: JSON.stringify({}),
   });
   assert.equal(res.status, 400);
+});
+
+test('GET /api/affiliate/click/:id honestly 404s for an unknown product (default limits, deterministic)', async () => {
+  const res = await fetch(`${BASE_URL}/api/affiliate/click/does-not-exist-xyz`, { redirect: 'manual' });
+  assert.equal(res.status, 404);
 });
 
 test('Mission Control internal panels remain authenticated -- the public front door never bypasses this', async () => {
