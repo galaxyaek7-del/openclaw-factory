@@ -3,8 +3,26 @@ import os
 import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
+from unittest import mock
 
 import commercial_activation as ca
+from channels.base_arm import ArmStatus
+
+
+def _paddle_credentialed():
+    """Pin ONLY the credential dimension of the go-live check.
+
+    `commercial_go_live_check()` gates on `credential_valid`, which reads the
+    founder's real PADDLE_API_KEY. Left unpatched, these assertions silently
+    depend on whether the machine running the suite happens to have a local
+    `.env` -- they passed on a credentialed developer box and failed in a clean
+    CI checkout, for a reason that has nothing to do with the behaviour under
+    test. Pinning the credential makes the checkout/verdict logic the only
+    variable, so the suite is identical everywhere.
+    """
+    return mock.patch(
+        "channels.paddle_arm.PaddleArm.status", return_value=ArmStatus.READY
+    )
 
 
 class TestCommercialLifecycleState(unittest.TestCase):
@@ -141,7 +159,8 @@ class TestCommercialGoLiveCheck(unittest.TestCase):
 
     def test_paddle_checkout_blocked_is_go_with_founder_action(self):
         checkout_status = {"results": [{"checkout_ready": False}]}
-        result = ca.commercial_go_live_check("paddle", checkout_status=checkout_status)
+        with _paddle_credentialed():
+            result = ca.commercial_go_live_check("paddle", checkout_status=checkout_status)
         self.assertEqual(result["verdict"], "GO_WITH_FOUNDER_ACTION")
 
     def test_never_returns_go_from_unverified_checkout(self):
@@ -159,9 +178,21 @@ class TestCommercialGoLiveCheck(unittest.TestCase):
 
     def test_go_verdict_requires_real_checkout_ready_true(self):
         checkout_status = {"results": [{"checkout_ready": True}]}
-        result = ca.commercial_go_live_check("paddle", checkout_status=checkout_status)
+        with _paddle_credentialed():
+            result = ca.commercial_go_live_check("paddle", checkout_status=checkout_status)
         self.assertEqual(result["verdict"], "GO")
         self.assertEqual(result["checks"]["checkout"], "VERIFIED")
+
+    def test_uncredentialed_paddle_is_no_go_even_when_checkout_is_ready(self):
+        # The honest complement of the test above: checkout_ready=True alone
+        # must never buy a GO verdict without a real credential.
+        with mock.patch(
+            "channels.paddle_arm.PaddleArm.status", return_value=ArmStatus.UNAVAILABLE
+        ):
+            result = ca.commercial_go_live_check(
+                "paddle", checkout_status={"results": [{"checkout_ready": True}]}
+            )
+        self.assertEqual(result["verdict"], "NO_GO")
 
 
 if __name__ == "__main__":

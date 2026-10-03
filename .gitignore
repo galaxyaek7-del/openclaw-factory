@@ -60,6 +60,10 @@ data/validation_responses.jsonl
 # Trial surface (test_trial_isolation.js): simulated-only runtime ledger,
 # never real data -- must never land in git.
 data/trial_events.jsonl
+# Attribution event stream: append-only per-request log (~10K lines/day,
+# unbounded). Operational telemetry, never source -- must never land in git
+# (391MB observed 2026-10-03; rotation deferred, see defect register).
+data/attribution_log.jsonl
 
 # Final Executive Directive (2026-07-29): pure ephemeral tick run-state,
 # same .factory_loop.lock precedent above -- data/generated_business_
