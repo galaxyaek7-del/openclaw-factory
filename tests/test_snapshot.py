@@ -90,9 +90,52 @@ class TestDefaultSnapshotTargets(unittest.TestCase):
         names = {p.name for p in snapshot.DEFAULT_SNAPSHOT_TARGETS}
         self.assertIn(".env", names)
 
+    # Targets that are deliberately absent on a fresh checkout. `.env` holds the
+    # real API keys, is gitignored, and CI step 11 ("Verify .env is never tracked
+    # in git") fails the build if it ever is. It is a snapshot target precisely
+    # BECAUSE it is local-only, so requiring it to exist in a clean checkout
+    # contradicts the repo's own security rule -- the test directly above asserts
+    # it must be covered.
+    INTENTIONALLY_ABSENT_ON_FRESH_CHECKOUT = {".env"}
+
     def test_no_target_is_a_non_existent_file(self):
+        """Real correction 2026-10-03: this failed in CI on two counts.
+
+        Five targets (factory_state.json, board_meetings.jsonl,
+        commission_ledger.jsonl, affiliate_clicks.jsonl, safe_mode_state.json,
+        publish_protection_state.json) were simply untracked, so they silently
+        did not exist on a fresh checkout -- the exact GAP-BACK-007 failure this
+        guard exists to catch. Those are now tracked.
+
+        The remaining target is `.env`, which can never exist on a fresh
+        checkout by design. The guard still holds for everything real: any
+        target that is neither present nor explicitly declared local-only is
+        still a stale entry.
+        """
         for p in snapshot.DEFAULT_SNAPSHOT_TARGETS:
+            if p.name in self.INTENTIONALLY_ABSENT_ON_FRESH_CHECKOUT:
+                continue
             self.assertTrue(p.exists(), f"stale snapshot target: {p}")
+
+    def test_every_absent_target_is_explicitly_justified(self):
+        """Keeps the exemption list honest: nothing may silently vanish."""
+        for p in snapshot.DEFAULT_SNAPSHOT_TARGETS:
+            if p.exists():
+                continue
+            self.assertIn(
+                p.name, self.INTENTIONALLY_ABSENT_ON_FRESH_CHECKOUT,
+                f"{p} does not exist and has no recorded justification",
+            )
+
+    def test_env_is_actually_gitignored(self):
+        """The exemption above is only safe while .env really is untracked."""
+        import subprocess
+        root = str(snapshot._FACTORY_ROOT)
+        result = subprocess.run(
+            ["git", "check-ignore", "-q", ".env"],
+            cwd=root, capture_output=True,
+        )
+        self.assertEqual(result.returncode, 0, ".env must stay gitignored")
 
 
 if __name__ == "__main__":
