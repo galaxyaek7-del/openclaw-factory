@@ -31,6 +31,7 @@ import os
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
 
@@ -62,6 +63,10 @@ def _cost_row(model, **over):
     return row
 
 
+def _recent_iso(days_ago):
+    return (datetime.now(timezone.utc) - timedelta(days=days_ago)).strftime("%Y-%m-%dT10:00:00")
+
+
 def _make_fixtures():
     tmp = tempfile.mkdtemp(prefix="obs_test_")
     cost_log = os.path.join(tmp, "ai_cost_log.jsonl")
@@ -73,9 +78,12 @@ def _make_fixtures():
                   latency_ms=1900, cost_usd=0.00008),
         _cost_row("llama-3.1-8b-instant", timestamp="2026-07-21T10:00:00",
                   latency_ms=2000, cost_usd=0.00009),
-        _cost_row("openai/gpt-oss-20b", timestamp="2026-08-14T10:00:00",
+        # Time-proof fixtures: the "currently used" model must have calls
+        # within STALE_DAYS (21) on ANY calendar date, or the CURRENT
+        # assertion rots (it did: fixed Aug-2026 dates flipped to WATCH).
+        _cost_row("openai/gpt-oss-20b", timestamp=_recent_iso(5),
                   latency_ms=700, cost_usd=0.0001),
-        _cost_row("openai/gpt-oss-20b", timestamp="2026-08-15T10:00:00",
+        _cost_row("openai/gpt-oss-20b", timestamp=_recent_iso(4),
                   latency_ms=800, cost_usd=0.00012),
     ]
     _write_jsonl(cost_log, rows)

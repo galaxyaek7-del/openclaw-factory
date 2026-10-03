@@ -90,6 +90,10 @@ ACTION_CATEGORY_AUTONOMY = {
         "level": 2,
         "citation": "executive_brain.py::build_executive_directive() / adaptive_priority_queue.py -- requires_founder_approval is always True.",
     },
+    "ai_technology_recommendation": {
+        "level": 2,
+        "citation": "Same RECOMMEND-only class as recommendation_generation: an AI technology recommendation advises (model choice, routing, tooling) and never executes -- execution stays behind the cited function's own real gate.",
+    },
     "evolution_simulate_decide": {
         "level": 2,
         "citation": "evolution_queue.py::simulate_proposal()/decide_proposal() -- routes only as far as AWAITING_FOUNDER_APPROVAL, never further.",
