@@ -139,6 +139,28 @@ test('sendAlert: a missing telegram_direct dependency never throws, reports hone
   assert.equal(typeof result, 'object');
 });
 
+// Hermetic freshness fixture.
+//
+// Real defect fixed 2026-10-03: three tickWithFreshness tests used the REAL
+// data/factory_state.json and asserted it is "fresh" within a 60s threshold.
+// That only holds on a machine with a live factory_loop continuously rewriting
+// it. In CI the file is written once at checkout and is minutes old by the
+// time the test runs, so all three failed -- passing or failing purely
+// depending on whether a background process happened to be running.
+//
+// These tests are about the staleness TRANSITION logic, not about any real
+// file's age, so they now drive freshness from a file the test itself creates
+// and controls.
+function freshFixtureFile() {
+  const os = require('os');
+  const path = require('path');
+  const fs = require('fs');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'health-fresh-'));
+  const file = path.join(dir, 'factory_state.json');
+  fs.writeFileSync(file, JSON.stringify({ current_task: null }), 'utf8');
+  return file;
+}
+
 test('checkFreshness: reports a recently-written real file as fresh', () => {
   const now = Date.now();
   const fresh = hm.checkFreshness(now);
@@ -183,7 +205,7 @@ test('checkFreshness: a missing file is reported as stale (tickWithFreshness)', 
   assert.equal(alertCount, 0, 'unchanged stale state must never re-alert');
   const third = await hm.tickWithFreshness(
     { status: 'healthy', stale: true },
-    { fetchImpl, alertImpl, files: [{ file: 'data/factory_state.json', maxAgeMs: 60000 }] }
+    { fetchImpl, alertImpl, files: [{ file: freshFixtureFile(), maxAgeMs: 60000 }] }
   );
   assert.equal(third.stale, false, 'missing file dropped from watch -> fresh again');
   assert.equal(alertCount, 1, 'stale -> fresh recovery must alert exactly once');
@@ -205,7 +227,7 @@ test('tickWithFreshness: alerts only on a staleness transition, not on every pol
 
   const third = await hm.tickWithFreshness(
     { status: 'healthy', stale: true },
-    { fetchImpl, alertImpl, files: [{ file: 'data/factory_state.json', maxAgeMs: 60000 }] }
+    { fetchImpl, alertImpl, files: [{ file: freshFixtureFile(), maxAgeMs: 60000 }] }
   );
   assert.equal(third.stale, false, 'missing file replaced by real one -> fresh again');
   assert.equal(alertCount, 1, 'stale -> fresh recovery must alert exactly once');
@@ -215,7 +237,7 @@ test('tickWithFreshness: a fresh-forever state never alerts', async () => {
   let alertCount = 0;
   const alertImpl = async () => { alertCount += 1; };
   const fetchImpl = async () => ({ ok: true, json: async () => ({ status: 'healthy', checks: {} }) });
-  const real = [{ file: 'data/factory_state.json', maxAgeMs: 60000 }];
+  const real = [{ file: freshFixtureFile(), maxAgeMs: 60000 }];
 
   const first = await hm.tickWithFreshness({ status: null, stale: null }, { fetchImpl, alertImpl, files: real });
   assert.equal(first.stale, false);

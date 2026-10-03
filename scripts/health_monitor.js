@@ -129,7 +129,12 @@ const FRESHNESS_FILES = [
 
 function checkFreshness(now = Date.now(), files = FRESHNESS_FILES) {
   return files.map(({ file, maxAgeMs }) => {
-    const fullPath = path.join(REPO_ROOT, file);
+    // Real defect fixed 2026-10-03: path.join(REPO_ROOT, file) silently
+    // mangled an ABSOLUTE file path (it concatenates rather than replacing),
+    // so any absolute path was reported as missing-and-therefore-stale. A
+    // caller cannot watch a file outside the repo at all. Honour an absolute
+    // path as-is; only resolve relative ones against the repo root.
+    const fullPath = path.isAbsolute(file) ? file : path.join(REPO_ROOT, file);
     let ageMs = null;
     let exists = false;
     try {

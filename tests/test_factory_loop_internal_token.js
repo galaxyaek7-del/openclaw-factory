@@ -29,9 +29,17 @@ async function main() {
   const factory_loop_src = require('fs').readFileSync(path.join(__dirname, '..', 'factory_loop.js'), 'utf8');
 
   await test('factory_loop.js loads dotenv like server.js (the sales_poll auth fix)', async () => {
+    // Accepts optional config options. factory_loop.js now calls
+    // config({ quiet: true }) so dotenv's banner does not pollute stdout for
+    // any process that requires the module -- the env loading this test
+    // protects is unchanged, and "loads dotenv" is the real property.
     assert.ok(
-      /require\('dotenv'\)\.config\(\)/.test(factory_loop_src),
-      'factory_loop.js must call require(\'dotenv\').config() so INTERNAL_SERVICE_TOKEN reaches internalAuthHeaders()'
+      /require\('dotenv'\)\.config\(\s*\{/.test(factory_loop_src),
+      'factory_loop.js must call require(\'dotenv\').config(...) so INTERNAL_SERVICE_TOKEN reaches internalAuthHeaders()'
+    );
+    assert.ok(
+      /require\('dotenv'\)/.test(factory_loop_src),
+      'factory_loop.js must require dotenv at all'
     );
   });
 
