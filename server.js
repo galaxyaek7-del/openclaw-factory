@@ -8186,6 +8186,16 @@ app.post('/api/customer/interest', (req, res) => {
           }
           return res.status(400).json({ success: false, error: 'valid email and interest message are required' });
         }
+        // New-buyer alert (2026-10-03): an accepted interest signal means a
+        // real human reached out — notify the founder immediately via the
+        // existing Telegram channel (same best-effort, non-blocking pattern
+        // as /api/customer/support-ticket). Duplicates/stopped/rejected are
+        // not alerts (dedup is the ledger's own dedup_hash discipline).
+        if (parsed.status === 'accepted') {
+          telegramDirect.sendTelegramMessage(
+            `📩 اهتمام عميل جديد\nالمنتج: ${parsed.product_interest || 'عام'}\nالبريد مسجل في السجل.`
+          ).catch(() => {});
+        }
         return res.json({ success: true, status: parsed.status, signal_id: parsed.signal_id || null, classification: parsed.classification || null });
       });
   } catch (err) {
