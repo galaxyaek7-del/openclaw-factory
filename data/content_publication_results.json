@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-10-02T20:22:15.068240+00:00",
+  "reddit": [
+    {
+      "post": "GPSR Compliance Checklist for Non-EU Sellers (Free)",
+      "subreddit": "Etsy",
+      "status": "PREPARED",
+      "url": null,
+      "timestamp": "2026-10-02T20:22:15.068189+00:00",
+      "note": "Reddit API requires OAuth. Content prepared for manual posting or OAuth integration."
+    },
+    {
+      "post": "How are you handling EU GPSR compliance in 2026?",
+      "subreddit": "ecommerce",
+      "status": "PREPARED",
+      "url": null,
+      "timestamp": "2026-10-02T20:22:15.068211+00:00",
+      "note": "Reddit API requires OAuth. Content prepared for manual posting or OAuth integration."
+    }
+  ],
+  "linkedin": [
+    {
+      "post": "GPSR Enforcement Is Escalating in 2026 \u2014 Here's What Non-EU Sellers Need to Know",
+      "platform": "LinkedIn",
+      "status": "PREPARED",
+      "url": null,
+      "timestamp": "2026-10-02T20:22:15.068220+00:00",
+      "note": "LinkedIn API requires OAuth. Content prepared for manual posting or OAuth integration."
+    }
+  ],
+  "quora": [
+    {
+      "question": "What are the GPSR requirements for non-EU sellers in 2026?",
+      "platform": "Quora",
+      "status": "PREPARED",
+      "url": null,
+      "timestamp": "2026-10-02T20:22:15.068229+00:00",
+      "note": "Quora API requires OAuth. Content prepared for manual posting or OAuth integration."
+    },
+    {
+      "question": "How much does GPSR compliance cost for small sellers?",
+      "platform": "Quora",
+      "status": "PREPARED",
+      "url": null,
+      "timestamp": "2026-10-02T20:22:15.068235+00:00",
+      "note": "Quora API requires OAuth. Content prepared for manual posting or OAuth integration."
+    }
+  ],
+  "total_prepared": 5,
+  "note": "All content prepared. Manual posting or OAuth integration required for live publication."
+}

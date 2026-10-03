@@ -1,0 +1,43 @@
+{
+  "partnership_outreach": [
+    {
+      "company": "EaseCert",
+      "website": "https://easecert.com",
+      "contact_email": "info@easecert.com",
+      "partnership_type": "affiliate",
+      "proposal": "Promote EaseCert GPSR compliance service to our audience of non-EU sellers. Earn 20-30% commission on referrals.",
+      "value_proposition": "Your customers get a trusted compliance partner. We earn commission on referrals. Win-win.",
+      "status": "PREPARED"
+    },
+    {
+      "company": "Euverify",
+      "website": "https://euverify.com",
+      "contact_email": "support@euverify.com",
+      "partnership_type": "affiliate",
+      "proposal": "Promote Euverify GPSR compliance service to our audience. Earn commission on referrals.",
+      "value_proposition": "Your customers get a trusted compliance platform. We earn commission on referrals.",
+      "status": "PREPARED"
+    },
+    {
+      "company": "Cert-Rep",
+      "website": "https://cert-rep.com",
+      "contact_email": "info@cert-rep.com",
+      "partnership_type": "affiliate",
+      "proposal": "Promote Cert-Rep GPSR compliance service to our audience. Earn commission on referrals.",
+      "value_proposition": "Your customers get a trusted compliance partner. We earn commission on referrals.",
+      "status": "PREPARED"
+    }
+  ],
+  "direct_customer_contact": {
+    "channel": "email",
+    "template": "Subject: GPSR Compliance Help for Etsy Sellers\n\nHi [Name],\n\nI noticed you're an Etsy seller shipping to the EU. GPSR compliance can be overwhelming, but it doesn't have to be.\n\nI've created a free GPSR Compliance Checklist that covers:\n- EU Responsible Person requirements\n- Technical documentation\n- Labeling requirements\n- Marketplace compliance\n- Risk assessment\n- Response templates\n\nGet it here: https://aekraft.gumroad.com/l/fetmu\n\nIf you need help with compliance, I'm happy to answer questions.\n\nBest regards,\nGalaxy Forge",
+    "status": "PREPARED"
+  },
+  "next_actions": [
+    "Send partnership outreach emails to EaseCert, Euverify, Cert-Rep",
+    "Create Systeme landing page for lead capture",
+    "Set up email follow-up sequence",
+    "Monitor all channels for responses",
+    "Follow up on any engagement within 24 hours"
+  ]
+}
