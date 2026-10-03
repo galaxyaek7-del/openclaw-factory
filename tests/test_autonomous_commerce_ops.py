@@ -16,6 +16,15 @@ from pathlib import Path
 import autonomous_commerce_ops as aco
 
 
+# Originals saved before _stub_live_checks() overwrites them, restored by
+# tearDownModule below. Without this, the module-attribute stubs leak into
+# every test file unittest discovers AFTER this one alphabetically
+# (test_check_paddle_checkout_status.py calls the real
+# check_and_notify_all(registry_path=..., state_path=...) and crashed on
+# the argless stub) -- classic cross-file test pollution.
+_SAVED_STUB_TARGETS = {}
+
+
 def _stub_live_checks():
     """Make every live network check a deterministic stub (mock-only)."""
     import scripts.check_paddle_checkout_status as paddle_check
@@ -23,15 +32,39 @@ def _stub_live_checks():
     def _fake_paddle():
         return {"results": [{"checkout_ready": False} for _ in range(6)]}
 
+    if "paddle_check_and_notify_all" not in _SAVED_STUB_TARGETS:
+        _SAVED_STUB_TARGETS["paddle_check_and_notify_all"] = paddle_check.check_and_notify_all
     paddle_check.check_and_notify_all = _fake_paddle
 
     import channels.gumroad_publisher as gp
 
+    if "gp_list_products" not in _SAVED_STUB_TARGETS:
+        _SAVED_STUB_TARGETS["gp_list_products"] = gp.list_products
+    if "gp_load_token" not in _SAVED_STUB_TARGETS:
+        _SAVED_STUB_TARGETS["gp_load_token"] = gp.load_token
     gp.list_products = lambda token: [{
         "id": "p1", "published": False, "price_cents": None,
     }]
     gp.load_token = lambda: "mock-token"
     return paddle_check, gp
+
+
+def tearDownModule():
+    """Restore everything _stub_live_checks() overwrote so later test
+    modules get the real functions back."""
+    if not _SAVED_STUB_TARGETS:
+        return
+    try:
+        import scripts.check_paddle_checkout_status as paddle_check
+        paddle_check.check_and_notify_all = _SAVED_STUB_TARGETS["paddle_check_and_notify_all"]
+    except Exception:
+        pass
+    try:
+        import channels.gumroad_publisher as gp
+        gp.list_products = _SAVED_STUB_TARGETS["gp_list_products"]
+        gp.load_token = _SAVED_STUB_TARGETS["gp_load_token"]
+    except Exception:
+        pass
 
 
 class HumanGateOrchestratorTests(unittest.TestCase):
