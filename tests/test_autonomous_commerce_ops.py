@@ -505,7 +505,13 @@ class CeoCommandCenterRevenueTests(unittest.TestCase):
     def test_ledger_rows_reported_not_hidden(self):
         result = aco.ceo_command_center()
         self.assertIn("LEDGER_ROWS", result)
-        self.assertEqual(result["LEDGER_ROWS"], 44)  # real historical rows preserved
+        # Intent: the command center must report the true row count, never
+        # hide rows. A hardcoded count rots on every legitimate ledger
+        # append (it did: 44 never matched any committed ledger) -- compare
+        # against the same ledger the code itself reads.
+        from channels import ledger as sales_ledger
+        expected = len(list(sales_ledger.read_events()))
+        self.assertEqual(result["LEDGER_ROWS"], expected)
 
 
 class RevenueArmAuditTests(unittest.TestCase):
