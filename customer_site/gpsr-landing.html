@@ -76,5 +76,8 @@
             }).catch(function() {});
         });
     </script>
+<script>
+fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'gpsr-landing' }) }).catch(()=>{});
+</script>
 </body>
 </html>

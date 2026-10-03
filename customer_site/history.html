@@ -141,5 +141,8 @@ main{padding:3.5rem 0 5rem;}
 })();
 </script>
 
+<script>
+fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'history' }) }).catch(()=>{});
+</script>
 </body>
 </html>

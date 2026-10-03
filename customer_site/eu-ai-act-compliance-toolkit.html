@@ -144,5 +144,8 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
     <p style="margin-top:.5rem;">0 real sales recorded to date — this page states facts, not fabricated social proof.</p>
   </div>
 </footer>
+<script>
+fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'eu-ai-act-compliance-toolkit' }) }).catch(()=>{});
+</script>
 </body>
 </html>

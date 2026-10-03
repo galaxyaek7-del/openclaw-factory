@@ -708,5 +708,8 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
   });
 })();
 </script>
+<script>
+fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'index' }) }).catch(()=>{});
+</script>
 </body>
 </html>

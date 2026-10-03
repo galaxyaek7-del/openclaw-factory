@@ -166,5 +166,8 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
     <p>Galaxy Forge · EU AI Act Compliance Guide · <a href="https://aekraft.gumroad.com/l/iaiyt">Get the Toolkit</a></p>
   </div>
 </footer>
+<script>
+fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'blog-eu-ai-act-compliance-sme-guide' }) }).catch(()=>{});
+</script>
 </body>
 </html>

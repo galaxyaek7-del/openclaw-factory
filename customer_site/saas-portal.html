@@ -276,5 +276,8 @@ footer{border-top:1px solid var(--border-soft); padding:2.5rem 0; font-size:.8re
   renderScripts(); renderSubs();
 })();
 </script>
+<script>
+fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'saas-portal' }) }).catch(()=>{});
+</script>
 </body>
 </html>

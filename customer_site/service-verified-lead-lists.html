@@ -52,5 +52,8 @@ footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(-
 </div>
 <footer>Galaxy Forge · 2026 · Manual service.</footer>
 </div>
+<script>
+fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'service-verified-lead-lists' }) }).catch(()=>{});
+</script>
 </body>
 </html>

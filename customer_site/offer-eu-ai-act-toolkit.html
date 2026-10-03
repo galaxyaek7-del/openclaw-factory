@@ -45,5 +45,8 @@ footer{border-top:1px solid var(--border-soft);padding:2rem 0;margin-top:3rem;fo
 </div></main>
 <footer><div class="wrap">© <span id="year"></span> Galaxy Forge. Questions: <a href="mailto:galaxyaek7@gmail.com">galaxyaek7@gmail.com</a></div></footer>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script>
+fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'offer-eu-ai-act-toolkit' }) }).catch(()=>{});
+</script>
 </body>
 </html>
