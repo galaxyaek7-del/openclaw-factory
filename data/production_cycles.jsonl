@@ -179,3 +179,4 @@
 {"cycle_id": "S3-FREEDIST-01", "at": "2026-10-03T07:48:28.175987+00:00", "x": "isolated, no attempts, counters unchanged", "publications": ["eu-bundle 4/5", "telegraph turo"], "sales": 0, "revenue": 0, "cost_usd": 0, "founder_interventions": 0}
 {"cycle_id": "S3-FREEDIST-02", "at": "2026-10-03T07:51:12.652201+00:00", "x": "untouched", "publications": ["telegraph epr"], "maintenance": ["3 guides live"], "sales": 0, "revenue": 0, "cost_usd": 0, "founder_interventions": 0}
 {"cycle_id": "S3-FREEDIST-03", "at": "2026-10-03T08:43:10.676133+00:00", "x": "untouched", "signals": 0, "first_broken_stage": "TRAFFIC_UNKNOWN", "publications": ["telegraph ada"], "sales": 0, "revenue": 0, "cost_usd": 0, "founder_interventions": 0}
+{"cycle_id": "S3-MASTER-01", "at": "2026-10-03T11:06:43.787129+00:00", "doctrine": "GF-100K-S3-MASTER-JEV-v1 persisted", "publications": ["telegraph trademark"], "sales": 0, "revenue": 0, "cost_usd": 0, "distance_to_100k": 100000}
