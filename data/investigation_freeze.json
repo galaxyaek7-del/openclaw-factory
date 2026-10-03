@@ -1,0 +1,7 @@
+{
+ "at": "2026-10-03T07:41:31.715018+00:00",
+ "directive": "JEV-PUBLISH-PROTECTION-INVESTIGATION-01 PHASE 1",
+ "PUBLISH_ACTION": "BLOCKED",
+ "reason": "publish_protection x currently_allowed=False, risk 90, 7 failures",
+ "scope": "all publication attempts suspended during investigation"
+}
