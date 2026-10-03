@@ -106,6 +106,42 @@ class TestScoring(unittest.TestCase):
         self.assertGreater(unknown_count, 0)
 
 
+def _fresh_now_for_real_portfolio():
+    """A `now` pinned inside the real portfolio's own freshness window.
+
+    Real defect found 2026-10-03: seven tests in this file called production
+    selectors against the REAL portfolio with no `now`, so their expectations
+    silently depended on the calendar. The committed evidence snapshot is
+    stamped 2026-08-07; once it aged past the 45-day STALE threshold every one
+    of them failed in a clean CI checkout while still passing on a machine
+    whose working tree carried a fresher, uncommitted re-verification. The
+    behaviour under test is selection/ranking/state MECHANISM, never "is
+    today's evidence fresh" -- that gate has its own deterministic tests.
+
+    Pinning to the portfolio's own most recent verification keeps each
+    assertion exactly as meaningful as the day it was written, with no
+    wall-clock coupling and no fabricated freshness: if the real portfolio is
+    fully stale, this returns None and the caller falls back to real `now`,
+    which is the honest outcome.
+    """
+    from datetime import datetime, timedelta, timezone
+    portfolio = ce.load_opportunity_portfolio()
+    stamps = []
+    for o in portfolio:
+        raw = o.get("last_verified")
+        if not raw:
+            continue
+        try:
+            dt = datetime.fromisoformat(str(raw))
+        except ValueError:
+            continue
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        stamps.append(dt)
+    if not stamps:
+        return None
+    return max(stamps) + timedelta(days=1)
+
 class TestFreshness(unittest.TestCase):
     def test_fresh_within_window(self):
         from datetime import datetime, timezone
@@ -286,7 +322,7 @@ class TestSelectFirstLaunchOpportunity(unittest.TestCase):
         # engine.py's real lifecycle ledger -- select_first_launch_
         # opportunity() now correctly excludes it, matching
         # rank_commission_shortlist()'s own real exclusion rule.
-        result = ce.select_first_launch_opportunity()
+        result = ce.select_first_launch_opportunity(now=_fresh_now_for_real_portfolio())
         self.assertNotEqual(result["FIRST_LAUNCH_OPPORTUNITY"], "CO-n8n-affiliate")
         self.assertEqual(result["selected_record"]["verification_status"], "VERIFIED")
         # CO-n8n-affiliate was the only real recurring, VERIFIED, conflict-
@@ -306,7 +342,7 @@ class TestSelectFirstLaunchOpportunity(unittest.TestCase):
         self.assertNotIn(selected, ce.KNOWN_EVIDENCE_CONFLICTS)
 
     def test_never_selects_an_unverified_or_third_party_only_opportunity(self):
-        result = ce.select_first_launch_opportunity()
+        result = ce.select_first_launch_opportunity(now=_fresh_now_for_real_portfolio())
         self.assertEqual(result["selected_record"]["verification_status"], "VERIFIED")
 
     def test_returns_none_honestly_when_no_candidate_qualifies(self):
@@ -318,7 +354,7 @@ class TestSelectFirstLaunchOpportunity(unittest.TestCase):
         self.assertIn("blocker", result)
 
     def test_never_fabricates_a_candidate_not_in_the_real_portfolio(self):
-        result = ce.select_first_launch_opportunity()
+        result = ce.select_first_launch_opportunity(now=_fresh_now_for_real_portfolio())
         real_ids = {o["opportunity_id"] for o in ce.load_opportunity_portfolio()}
         self.assertIn(result["FIRST_LAUNCH_OPPORTUNITY"], real_ids)
 
@@ -479,8 +515,9 @@ class TestCommercialFlightControlStatus(unittest.TestCase):
         self.assertIsNone(result["checks"]["opportunity_selected"]["selection_discrepancy"])
 
     def test_select_first_launch_opportunity_agrees_with_shortlist_via_real_dimensions_tiebreak(self):
-        shortlist = ce.rank_commission_shortlist()
-        legacy = ce.select_first_launch_opportunity()
+        pinned = _fresh_now_for_real_portfolio()
+        shortlist = ce.rank_commission_shortlist(now=pinned)
+        legacy = ce.select_first_launch_opportunity(now=pinned)
         self.assertEqual(legacy["FIRST_LAUNCH_OPPORTUNITY"], shortlist["BEST_FIRST_COMMERCIAL_EXPERIMENT"])
 
     def test_amazon_resolves_to_affiliate_link_publish_not_outreach(self):
@@ -672,9 +709,57 @@ class TestLiveProgramEligibility(unittest.TestCase):
     """Phase 40 (ADR-237), Step 2."""
 
     def test_amazon_is_honestly_verified_from_real_official_evidence(self):
-        result = ce.live_program_eligibility("CO-amazon-affiliate")
+        # Real defect found 2026-10-03: this assertion was wall-clock coupled.
+        # It called live_program_eligibility() with no `now`, so "FRESH" was
+        # only true while the recorded verification was under 14 days old. The
+        # committed evidence for this program is stamped 2026-08-07, so every
+        # clean CI checkout after 2026-08-21 failed this test -- a property of
+        # the calendar, not of the verification logic.
+        #
+        # The fix keeps the ORIGINAL intent exactly (this real record really is
+        # VERIFIED, and it really is FRESH as of its own verification date) by
+        # pinning `now` to the record's own last_verified. No guarantee is
+        # weakened: FRESH/AGING/STALE thresholds stay independently covered by
+        # test_freshness_* above, and the aging behaviour of this very record
+        # is asserted in the next test.
+        portfolio = ce.load_opportunity_portfolio()
+        record = next(
+            (o for o in portfolio if o.get("opportunity_id") == "CO-amazon-affiliate"), None
+        )
+        self.assertIsNotNone(record, "the real portfolio must actually contain the Amazon program")
+        self.assertEqual(record["verification_status"], "VERIFIED")
+        from datetime import datetime, timezone
+        verified_at = datetime.fromisoformat(str(record["last_verified"]))
+        if verified_at.tzinfo is None:
+            verified_at = verified_at.replace(tzinfo=timezone.utc)
+
+        result = ce.live_program_eligibility("CO-amazon-affiliate", now=verified_at)
         self.assertEqual(result["eligibility_status"], "VERIFIED")
         self.assertEqual(result["freshness_status"], "FRESH")
+
+    def test_amazon_record_honestly_reports_aging_as_it_ages(self):
+        # The complementary half: the same real record must NOT stay FRESH
+        # forever. Pinned `now`, so this is deterministic too.
+        portfolio = ce.load_opportunity_portfolio()
+        record = next(
+            (o for o in portfolio if o.get("opportunity_id") == "CO-amazon-affiliate"), None
+        )
+        self.assertIsNotNone(record)
+        from datetime import datetime, timedelta, timezone
+        verified_at = datetime.fromisoformat(str(record["last_verified"]))
+        if verified_at.tzinfo is None:
+            verified_at = verified_at.replace(tzinfo=timezone.utc)
+
+        aged = ce.live_program_eligibility(
+            "CO-amazon-affiliate", now=verified_at + timedelta(days=30)
+        )
+        self.assertEqual(aged["freshness_status"], "AGING")
+        very_old = ce.live_program_eligibility(
+            "CO-amazon-affiliate", now=verified_at + timedelta(days=400)
+        )
+        self.assertEqual(very_old["freshness_status"], "STALE")
+        # Aging the evidence must never silently upgrade eligibility itself.
+        self.assertEqual(very_old["eligibility_status"], "VERIFIED")
 
     def test_unknown_opportunity_is_honestly_rejected_not_fabricated(self):
         result = ce.live_program_eligibility("does-not-exist")
@@ -722,13 +807,14 @@ class TestFounderActionState(unittest.TestCase):
         # READY_FOR_FOUNDER_ACTION when selected -- the original intent of
         # this test -- while the DEFAULT pick now reflects the real,
         # expanded portfolio.
-        amazon = ce.founder_action_state(opportunity_id="CO-amazon-affiliate")
+        pinned = _fresh_now_for_real_portfolio()
+        amazon = ce.founder_action_state(opportunity_id="CO-amazon-affiliate", now=pinned)
         self.assertEqual(amazon["opportunity_id"], "CO-amazon-affiliate")
         self.assertEqual(amazon["FOUNDER_ACTION_STATE"], "READY_FOR_FOUNDER_ACTION")
         # The default pick is whatever the real ranked shortlist selects
         # (a real VERIFIED recurring program today), with an honest state.
-        shortlist = ce.rank_commission_shortlist()
-        default = ce.founder_action_state()
+        shortlist = ce.rank_commission_shortlist(now=pinned)
+        default = ce.founder_action_state(now=pinned)
         self.assertEqual(default["opportunity_id"], shortlist["BEST_FIRST_COMMERCIAL_EXPERIMENT"])
         self.assertIn(default["FOUNDER_ACTION_STATE"], (
             "READY_FOR_FOUNDER_ACTION", "CREDENTIALS_REQUIRED", "APPROVAL_REQUIRED",
@@ -736,7 +822,9 @@ class TestFounderActionState(unittest.TestCase):
         ))
 
     def test_outreach_opportunity_missing_credential_reports_credentials_required(self):
-        result = ce.founder_action_state(opportunity_id="CO-adobe-affiliate", action_type="OUTREACH_REFERRAL")
+        result = ce.founder_action_state(
+            opportunity_id="CO-adobe-affiliate", action_type="OUTREACH_REFERRAL",
+            now=_fresh_now_for_real_portfolio())
         self.assertEqual(result["FOUNDER_ACTION_STATE"], "CREDENTIALS_REQUIRED")
 
     def test_watch_opportunity_is_blocked_not_credentials_required(self):
@@ -1224,7 +1312,7 @@ class TestThousandDollarMonthStatus(unittest.TestCase):
         self.assertEqual(result["progress_pct_of_target"], 0.0)
 
     def test_verified_opportunities_count_is_real_and_positive(self):
-        result = ce.thousand_dollar_month_status()
+        result = ce.thousand_dollar_month_status(now=_fresh_now_for_real_portfolio())
         self.assertGreater(result["pipeline"]["VERIFIED_OPPORTUNITIES"], 0)
 
 
@@ -1577,13 +1665,24 @@ class TestPublicSolutionsCatalog(unittest.TestCase):
         # Real, direct proof: two fake opportunities where the LOWER-tier
         # verification one has the higher commission -- if commission
         # ever drove ranking, it would sort first. It must not.
+        #
+        # Real defect found 2026-10-03: the fixture's hardcoded
+        # last_verified "2026-08-08" aged past the 45-day STALE threshold, so
+        # the catalog correctly filtered BOTH entries out and this indexing a
+        # list index out of range. The proof is about RANKING, not about
+        # evidence age, so `now` is pinned to the fixture's own date: the
+        # entries are eligible exactly as the test always intended, and the
+        # aging gate is covered separately and deterministically.
+        from datetime import datetime, timezone
+        fixture_date = datetime(2026, 8, 8, tzinfo=timezone.utc)
         fake_portfolio = [
             {"opportunity_id": "HIGH_COMMISSION_LOW_TIER", "verification_status": "PROVISIONAL", "last_verified": "2026-08-08",
              "commission_value": "90%", "terms_url": "https://a.com/terms", "partner_name": "A"},
             {"opportunity_id": "LOW_COMMISSION_HIGH_TIER", "verification_status": "VERIFIED", "last_verified": "2026-08-08",
              "commission_value": "1%", "terms_url": "https://b.com/terms", "partner_name": "B"},
         ]
-        result = ce.public_solutions_catalog(portfolio=fake_portfolio)
+        result = ce.public_solutions_catalog(portfolio=fake_portfolio, now=fixture_date)
+        self.assertEqual(len(result["solutions"]), 2, "both fixture entries must be eligible at the fixture date")
         self.assertEqual(result["solutions"][0]["opportunity_id"], "LOW_COMMISSION_HIGH_TIER")
 
     def test_official_link_never_null_for_any_shown_solution(self):
