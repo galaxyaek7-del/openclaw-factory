@@ -8135,18 +8135,45 @@ app.post('/api/customer/interest', (req, res) => {
     }
     const body = req.body || {};
     const pythonPath = detectPython();
-    execFile(pythonPath, ['lib/customer_evidence.py', 'record'],
-      { input: JSON.stringify(body), timeout: 15000, cwd: __dirname },
-      (err, stdout, stderr) => {
-        if (err) {
-          return res.status(500).json({ success: false, error: 'could not record interest — please try again' });
-        }
-        let parsed;
-        try {
-          parsed = JSON.parse(stdout);
-        } catch (e) {
-          return res.status(500).json({ success: false, error: 'could not record interest — please try again' });
-        }
+    // FIX (2026-10-03): execFile's `input` option does not reliably deliver
+    // stdin to Python's sys.stdin.read() on this Windows/Node runtime
+    // (probed live: empty stdout + hang). Use the factory-standard
+    // spawn + stdin.write + stdin.end pattern instead (same as
+    // /generate-book, runPythonService, and every other Python call site).
+    const child = spawn(pythonPath, ['lib/customer_evidence.py', 'record'], { cwd: __dirname });
+    try {
+      child.stdin.write(JSON.stringify(body));
+      child.stdin.end();
+    } catch (_) {
+      return res.status(500).json({ success: false, error: 'could not record interest — please try again' });
+    }
+    let stdout = '';
+    let responded = false;
+    const timer = setTimeout(() => {
+      if (!responded) {
+        responded = true;
+        try { child.kill(); } catch (_) {}
+        return res.status(500).json({ success: false, error: 'could not record interest — please try again' });
+      }
+    }, 15000);
+    child.stdout.on('data', (d) => { stdout += String(d); });
+    child.on('error', () => {
+      if (!responded) {
+        responded = true;
+        clearTimeout(timer);
+        return res.status(500).json({ success: false, error: 'could not record interest — please try again' });
+      }
+    });
+    child.on('close', () => {
+      if (responded) return;
+      responded = true;
+      clearTimeout(timer);
+      let parsed;
+      try {
+        parsed = JSON.parse(stdout);
+      } catch (e) {
+        return res.status(500).json({ success: false, error: 'could not record interest — please try again' });
+      }
         if (!parsed.success) {
           return res.status(400).json({ success: false, error: parsed.error || 'invalid interest submission' });
         }
