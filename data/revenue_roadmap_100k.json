@@ -1,0 +1,40 @@
+{
+  "goal": "100K-500K USD/year verified revenue",
+  "at": "2026-10-03",
+  "math": {
+    "100k_per_day": 274,
+    "500k_per_day": 1370,
+    "units_per_day_at_79usd_for_100k": 3.5,
+    "units_per_day_at_79usd_for_500k": 17.3,
+    "current_sales_per_day": 0,
+    "gap": "everything"
+  },
+  "paths_ranked": [
+    {
+      "path": "freelancer_bidding",
+      "status": "BLOCKED (FA-OAUTH)",
+      "evidence": "5 qualified proposals, buyer budgets $30-750 observed live",
+      "why_first": "buyers with stated budgets + intent; services revenue funds product engine",
+      "unblock": "founder OAuth grant (one browser action)"
+    },
+    {
+      "path": "gumroad_organic",
+      "status": "ACTIVE (14 products published=True)",
+      "evidence": "0 sales, 0 measurable traffic; needs reviews + discoverability compounding",
+      "unblock": "time + first sale (reviews) + Gumroad dashboard SEO (founder)"
+    },
+    {
+      "path": "lead_lists_direct",
+      "status": "READY ($99, checkout live) but no outreach channel",
+      "evidence": "product verified, zero distribution to buyers",
+      "unblock": "outreach channel (email infra or founder network)"
+    },
+    {
+      "path": "affiliate_partnerships",
+      "status": "BLOCKED (accounts)",
+      "evidence": "EaseCert outreach sent, no reply; Amazon tag missing",
+      "unblock": "accounts + approvals (founder)"
+    }
+  ],
+  "truth": "No path reaches $274/day without (a) founder unblocks, (b) real buyer traffic, (c) first review. Factory keeps all free paths hot; revenue requires external events."
+}

@@ -1,0 +1,5 @@
+src = open('tests/test_ai_observatory.py', encoding='utf-8').read()
+i = src.find('def _cost_row')
+print(src[i:i+700].encode('ascii', 'replace').decode())
+print('=== imports ===')
+print(src[:1200].encode('ascii', 'replace').decode())

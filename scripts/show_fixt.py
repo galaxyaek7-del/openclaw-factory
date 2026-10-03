@@ -1,0 +1,6 @@
+src = open('tests/test_ai_observatory.py', encoding='utf-8').read()
+i = src.find('def test_currently_used_model_is_current')
+print(src[max(0, i-200):i+1200].encode('ascii', 'replace').decode())
+print('======= _make_fixtures =======')
+j = src.find('def _make_fixtures')
+print(src[j:j+1500].encode('ascii', 'replace').decode())
