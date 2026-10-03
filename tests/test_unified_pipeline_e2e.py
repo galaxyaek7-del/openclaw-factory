@@ -439,8 +439,26 @@ class TestFullProductGenerationPipelineEndToEnd(unittest.TestCase):
         # dry_run=True: validates real product shape, makes zero live API
         # calls (this repo's standing "never spend real money in a test" rule).
         paddle_arm = channel_registry.get("paddle")
-        publish_result = paddle_arm.publish(product, dry_run=True)
+        # Real fix 2026-10-03: PaddleArm.publish() gates on status(), which
+        # reads the founder's real PADDLE_API_KEY. This stage is about threading
+        # one production_id through every stage -- not about Paddle
+        # credentials -- so it silently required a local .env and failed in a
+        # clean CI checkout. Pin ONLY the credential dimension so the real
+        # dry-run shape validation below actually executes. dry_run=True still
+        # means zero live API calls (BaseArm._dry_run_result() only validates
+        # shape), and the uncredentialed behaviour is asserted right after, so
+        # nothing about the real gate is hidden.
+        from channels.base_arm import ArmStatus
+        # Both directions are pinned explicitly -- deriving the "no credential"
+        # case from the ambient environment is exactly the bug being fixed,
+        # since a developer machine with a real .env would silently skip it.
+        with patch.object(type(paddle_arm), "status", return_value=ArmStatus.UNAVAILABLE):
+            uncredentialed = paddle_arm.publish(product, dry_run=True)
+        self.assertFalse(uncredentialed.ok, "an arm reporting UNAVAILABLE must honestly return not-ok")
+        with patch.object(type(paddle_arm), "status", return_value=ArmStatus.READY):
+            publish_result = paddle_arm.publish(product, dry_run=True)
         self.assertTrue(publish_result.ok)
+        self.assertTrue(publish_result.dry_run)
 
         # Stage 7: Publishing Queue — the real ledger, proving the SAME
         # production_id is the recorded event's product identity.
