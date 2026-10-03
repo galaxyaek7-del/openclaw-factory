@@ -74,6 +74,27 @@ def _classify_safe_mode(state_path=None):
     return findings
 
 
+def _as_number(value):
+    """Coerce a persisted state field to a number, or None when it is not one.
+
+    Real defect fixed 2026-10-03: the persisted publish-protection state stores
+    `risk_score: null` for arms written only by note_publish_outcome() (which
+    records the outcome, not a risk score). This classifier compared it
+    numerically and raised `TypeError: '>=' not supported between NoneType and
+    int`, taking down assess_resilience() and everything upstream of it --
+    including the Digital Twin dashboard. A monitoring path must degrade to
+    UNKNOWN, never crash and never invent a number.
+    """
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return value
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def _classify_publish_protection(state_path=None):
     """Repeated errors / publish risk / marketplace risk --
     channels/publish_protection.py::list_publish_protection_status()
@@ -98,17 +119,25 @@ def _classify_publish_protection(state_path=None):
             "No real publish attempt recorded yet for any arm", {}, data_available=False,
         ))
     for arm_name, arm in status["arms"].items():
-        risk_score = arm["risk_score"]
-        consecutive_failures = arm["consecutive_failures"]
-        if consecutive_failures >= 3 or risk_score >= 70:
+        risk_score = _as_number(arm.get("risk_score"))
+        consecutive_failures = _as_number(arm.get("consecutive_failures"))
+        # An unknown dimension must not manufacture severity, and must not
+        # suppress a real one either -- each is judged only on its own evidence.
+        high_failure = consecutive_failures is not None and consecutive_failures >= 3
+        any_failure = consecutive_failures is not None and consecutive_failures >= 1
+        high_risk = risk_score is not None and risk_score >= 70
+        medium_risk = risk_score is not None and risk_score >= 40
+        if high_failure or high_risk:
             severity = "critical"
-        elif consecutive_failures >= 1 or risk_score >= 40:
+        elif any_failure or medium_risk:
             severity = "warning"
         else:
             severity = "informational"
         findings.append(_finding(
             f"publish_protection:{arm_name}", severity,
-            f"{arm_name}: risk_score={risk_score}, consecutive_failures={consecutive_failures}, currently_allowed={arm['currently_allowed']}",
+            f"{arm_name}: risk_score={risk_score if risk_score is not None else 'UNKNOWN'}, "
+            f"consecutive_failures={consecutive_failures if consecutive_failures is not None else 'UNKNOWN'}, "
+            f"currently_allowed={arm['currently_allowed']}",
             arm,
         ))
     return findings

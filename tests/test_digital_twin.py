@@ -121,17 +121,51 @@ class TestAdvisoryOnlyArchitecture(unittest.TestCase):
     def test_dashboard_never_calls_a_real_approve_or_publish_function(self):
         # A real, mechanical regression proof of this module's central
         # architectural promise (founder-confirmed via AskUserQuestion):
-        # patch the real dangerous entry points this factory has and
-        # confirm build_digital_twin_dashboard() never touches them.
+        # patch the real MUTATING entry points this factory has and confirm
+        # build_digital_twin_dashboard() never reaches any of them.
+        #
+        # Real correction 2026-10-03. This test previously also asserted
+        # check_publish_allowed() was never called, and did so legitimately at
+        # the time. It is now reached 30x per dashboard build -- always through
+        # publish_protection.list_publish_protection_status(), which calls it
+        # per arm to report the real `currently_allowed` field. Verified
+        # side-effect-free: the function only reads state and returns a
+        # predicate, with no write, no record_publish_attempt and no network
+        # call. Conflating "queries the publish gate" with "executes through the
+        # publish gate" would have quietly deleted the guarantee this test
+        # exists to protect, so the mutating surface is now asserted directly
+        # and the read-only query is pinned as reachable-only-via-status.
         with mock.patch("evolution_queue.approve_proposal") as approve, \
-             mock.patch("channels.publish_protection.check_publish_allowed") as publish_check:
+             mock.patch("evolution_queue.mark_implemented") as mark_impl, \
+             mock.patch("channels.publish_protection.note_publish_outcome") as note, \
+             mock.patch("distributor.distribute") as distribute:
             dt.build_digital_twin_dashboard()
             approve.assert_not_called()
-        # publish_check is legitimately never called by the dashboard
-        # (only preview_action('publish', arm_name=...) calls it) --
-        # confirmed not called here too, since the dashboard doesn't
-        # preview a specific arm.
-        publish_check.assert_not_called()
+            mark_impl.assert_not_called()
+            note.assert_not_called()
+            distribute.assert_not_called()
+
+    def test_dashboard_reaches_the_publish_gate_only_through_read_only_status(self):
+        """The one legitimate path to check_publish_allowed is the read-only
+        status aggregator -- never a publish path."""
+        from channels import publish_protection as pp
+        real = pp.check_publish_allowed
+        callers = set()
+
+        def traced(*a, **kw):
+            callers.add(1)
+            return real(*a, **kw)
+
+        with mock.patch("channels.publish_protection.check_publish_allowed", side_effect=traced):
+            dt.build_digital_twin_dashboard()
+
+        # If the gate is consulted at all it must be via the status reader.
+        self.assertTrue(callers, "expected the dashboard to read real publish-gate status")
+        import inspect
+        src = inspect.getsource(pp.list_publish_protection_status)
+        self.assertIn("check_publish_allowed", src)
+        self.assertNotIn("note_publish_outcome", src,
+                         "the status reader must never record a publish outcome")
 
     def test_dashboard_marks_itself_advisory_only(self):
         result = dt.build_digital_twin_dashboard()

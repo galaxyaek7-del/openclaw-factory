@@ -95,9 +95,18 @@ class TestManifestRegistry(unittest.TestCase):
 
 class TestCompatibleArms(unittest.TestCase):
     def setUp(self):
+        # channels.registry is global and its arm modules stay cached in
+        # sys.modules, so a clear without a restore poisons every later
+        # registry-reading test in a full-suite run.
+        self._saved_arms = channel_registry.all_arms()
         channel_registry.clear()
         channel_registry.register(PaddleArm())
         channel_registry.register(GumroadArm())
+
+    def tearDown(self):
+        channel_registry.clear()
+        for arm in self._saved_arms:
+            channel_registry.register(arm)
 
     def test_intersects_declared_marketplaces_with_actually_registered_arms(self):
         m = ProductManifest(

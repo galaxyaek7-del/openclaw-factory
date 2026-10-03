@@ -57,19 +57,29 @@ class TestCheckPublishAllowedDefaults(BaseProtectionTest):
 
 
 class TestDailyHourlyCaps(BaseProtectionTest):
+    # Real defect fixed 2026-10-03: these tests built their timeline from
+    # datetime.now(). The daily-cap test probes at now + max_per_day*2 hours,
+    # which CROSSES MIDNIGHT whenever the suite runs late in the UTC day -- at
+    # 18:22 UTC, now+6h is 00:22 the next day, so the daily bucket resets and
+    # the cap is never hit. The test therefore passed or failed purely
+    # depending on the hour it ran. Pinned to a fixed UTC instant so every
+    # offset provably stays inside one calendar day.
+    _BASE = datetime(2026, 1, 1, 0, 0, tzinfo=timezone.utc)
+
     def test_hitting_daily_cap_blocks_further_publishes(self):
-        now = datetime.now(timezone.utc)
+        now = self._BASE
         profile = pp.PLATFORM_PROFILES["kdp"]
         for i in range(profile["max_per_day"]):
             pp.note_publish_outcome("kdp", True, state_path=self.state_path, now=now + timedelta(hours=i * 2))
-        result = pp.check_publish_allowed("kdp", state_path=self.state_path, now=now + timedelta(hours=profile["max_per_day"] * 2))
+        probe = now + timedelta(hours=profile["max_per_day"] * 2)
+        self.assertEqual(probe.date(), now.date(), "probe must stay inside the same UTC day")
+        result = pp.check_publish_allowed("kdp", state_path=self.state_path, now=probe)
         self.assertFalse(result["allowed"])
         self.assertIn("daily", result["reason"])
 
     def test_hitting_hourly_cap_blocks_further_publishes(self):
-        now = datetime.now(timezone.utc)
         profile = pp.PLATFORM_PROFILES["gumroad"]
-        state_now = now
+        state_now = self._BASE
         for i in range(profile["max_per_hour"]):
             pp.note_publish_outcome("gumroad", True, state_path=self.state_path, now=state_now)
             state_now = state_now + timedelta(seconds=1)
@@ -78,7 +88,7 @@ class TestDailyHourlyCaps(BaseProtectionTest):
         self.assertIn("hourly", result["reason"])
 
     def test_daily_counter_resets_on_a_new_day(self):
-        now = datetime.now(timezone.utc)
+        now = self._BASE
         profile = pp.PLATFORM_PROFILES["kdp"]
         for i in range(profile["max_per_day"]):
             pp.note_publish_outcome("kdp", True, state_path=self.state_path, now=now + timedelta(hours=i * 2))

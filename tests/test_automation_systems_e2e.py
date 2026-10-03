@@ -109,6 +109,10 @@ class TestAutomationSystemsEndToEnd(unittest.TestCase):
         # across the whole test process (see test_production_factory.py's
         # TestPublishingChecklist) — clear + re-register just what this
         # test needs so it's authoritative regardless of run order.
+        # It must then be RESTORED: the arm modules stay cached in sys.modules,
+        # so clearing without restoring leaves every later registry-reading
+        # test in the run looking at an empty registry.
+        self._saved_arms = channel_registry.all_arms()
         channel_registry.clear()
         channel_registry.register(PaddleArm())
         channel_registry.register(GumroadArm())
@@ -146,6 +150,9 @@ class TestAutomationSystemsEndToEnd(unittest.TestCase):
         for p in (self.tmp_changelog, self.tmp_state, self.tmp_decisions, self.tmp_evidence, *self._created_files):
             if p and os.path.exists(p):
                 os.remove(p)
+        channel_registry.clear()
+        for arm in getattr(self, "_saved_arms", []):
+            channel_registry.register(arm)
 
     def _run_full_pipeline(self):
         # Strategic Doctrine v2 (ADR-122, 2026-07-24): real customer-pain

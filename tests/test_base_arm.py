@@ -70,8 +70,19 @@ class TestBaseArmContract(unittest.TestCase):
 
 
 class TestRegistry(unittest.TestCase):
+    def setUp(self):
+        # channels.registry is GLOBAL shared state and the arm modules stay
+        # cached in sys.modules, so clearing it does NOT come back on re-import.
+        # Clearing without restoring here left every later registry-reading
+        # test in a full-suite run looking at an empty registry -- the cause of
+        # several order-dependent failures elsewhere. Restore what we clear.
+        self._saved_arms = registry.all_arms()
+        registry.clear()
+
     def tearDown(self):
         registry.clear()
+        for arm in self._saved_arms:
+            registry.register(arm)
 
     def test_register_and_get(self):
         class DummyArm(BaseArm):

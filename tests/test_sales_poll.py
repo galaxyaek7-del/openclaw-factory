@@ -52,6 +52,10 @@ class TestGumroadArmGetSales(unittest.TestCase):
 
 class TestPollSales(unittest.TestCase):
     def setUp(self):
+        # See test_base_arm.TestRegistry: channels.registry is global and its
+        # arm modules stay cached in sys.modules, so clearing without restoring
+        # poisons every later registry-reading test in a full-suite run.
+        self._saved_arms = registry.all_arms()
         registry.clear()
         self.arm = GumroadArm()
         registry.register(self.arm)
@@ -61,6 +65,8 @@ class TestPollSales(unittest.TestCase):
 
     def tearDown(self):
         registry.clear()
+        for arm in self._saved_arms:
+            registry.register(arm)
         Path(self.ledger_path).unlink(missing_ok=True)
 
     def test_new_sale_is_recorded_to_ledger(self):
