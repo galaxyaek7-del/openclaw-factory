@@ -197,12 +197,19 @@ class TestBuildPublicSiteStructure(unittest.TestCase):
     def test_real_product_catalog_is_reused_verbatim(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             result = bip.build_public_site_structure(output_dir=tmpdir)
-            self.assertEqual(result["real_product_count"], 5)
+            # Intent: the public site reuses the REAL catalog verbatim (never
+            # invented products). A hardcoded count rots on every legitimate
+            # catalog addition (it did: 5 never matched 6 real products) --
+            # compare against the same catalog the code itself reads.
+            with open(_FACTORY_ROOT / "data" / "paddle_products.json", "r", encoding="utf-8") as f:
+                real_catalog = json.load(f)
+            real_products = real_catalog if isinstance(real_catalog, list) else real_catalog.get("products", [])
+            self.assertEqual(result["real_product_count"], len(real_products))
             self.assertTrue(os.path.exists(os.path.join(tmpdir, "index.html")))
             self.assertTrue(os.path.exists(os.path.join(tmpdir, "README.md")))
             with open(os.path.join(tmpdir, "products.json"), "r", encoding="utf-8") as f:
                 products = json.load(f)
-            self.assertEqual(len(products), 5)
+            self.assertEqual(len(products), len(real_products))
             self.assertIn("AI-Powered Compliance Automation System for Accounting Firms", [p["title"] for p in products])
 
     def test_never_creates_or_pushes_a_real_github_repo(self):
