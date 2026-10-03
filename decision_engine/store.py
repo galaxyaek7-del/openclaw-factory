@@ -9,6 +9,7 @@ underlying file is never mutated to produce them.
 """
 
 import json
+import os
 import re
 from pathlib import Path
 
@@ -21,26 +22,79 @@ def _normalize_key(niche):
     return re.sub(r"\s+", " ", str(niche or "").strip().lower())
 
 
-def _append(record, path):
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "a", encoding="utf-8") as f:
-        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+# Parsed-decision cache, invalidated by (mtime_ns, size).
+#
+# Perf defect fix (2026-10-03): _read_all() re-opened and re-parsed the whole
+# ledger on EVERY call. Measured live while profiling
+# gfos.if_i_were_the_ceo_report(): the 13.19MB / 2,309-line decisions ledger
+# was read and parsed 499 times inside a single report -- 784,489 json.loads()
+# calls and 90.2s of the report's 126.7s total, all re-deriving byte-identical
+# results. Callers like latest_decision_per_niche() and ranking.rank_all() are
+# called once per niche, so the cost grew with (niches x decisions).
+#
+# The cache is keyed on the file's identity stamp, not a timer, so a newly
+# appended decision is still visible to the very next read -- this preserves
+# the append-only contract exactly. Any change to mtime_ns or size re-reads.
+_READ_CACHE = {}
+_READ_CACHE_MAX_ENTRIES = 8
 
 
-def _read_all(path):
-    path = Path(path)
-    if not path.exists():
-        return
+def _invalidate_read_cache(path=None):
+    """Drop cached parses. Exposed so a caller that mutates the ledger
+    in place (not via append_decision) can force a clean re-read."""
+    if path is None:
+        _READ_CACHE.clear()
+    else:
+        _READ_CACHE.pop(str(Path(path)), None)
+
+
+def _parse_all(path):
+    records = []
     with open(path, "r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if not line:
                 continue
             try:
-                yield json.loads(line)
+                records.append(json.loads(line))
             except json.JSONDecodeError:
                 continue
+    return records
+
+
+def _read_cached(path):
+    """Parsed records for `path`, re-read only when the file actually changed."""
+    key = str(path)
+    try:
+        stat = os.stat(key)
+        stamp = (stat.st_mtime_ns, stat.st_size)
+    except OSError:
+        _READ_CACHE.pop(key, None)
+        return []
+
+    hit = _READ_CACHE.get(key)
+    if hit is not None and hit[0] == stamp:
+        return hit[1]
+
+    records = _parse_all(path)
+    if len(_READ_CACHE) >= _READ_CACHE_MAX_ENTRIES:
+        _READ_CACHE.clear()
+    _READ_CACHE[key] = (stamp, records)
+    return records
+
+
+def _read_all(path):
+    yield from _read_cached(path)
+
+
+def _append(record, path):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    # A new append changes the file stamp, but drop the entry outright so a
+    # failed/partial write can never be served from cache.
+    _READ_CACHE.pop(str(path), None)
 
 
 def append_decision(decision, path=None):

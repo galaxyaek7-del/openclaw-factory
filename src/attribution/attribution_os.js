@@ -4,6 +4,20 @@ const crypto = require('crypto');
 
 const LOG_PATH = path.join(__dirname, '..', '..', 'data', 'attribution_log.jsonl');
 
+// Bounded-log defect fix (2026-10-03): the log was append-only with no ceiling
+// and every reload did readFileSync() on the WHOLE file. Measured live: 391MB /
+// 1,065,670 lines, re-read and re-parsed in full on every tracked request -- an
+// unbounded disk AND memory/parse cost that grows forever. Two changes:
+//   1. reads are TAIL-ONLY, bounded by MAX_READ_BYTES/RETAIN_LINES;
+//   2. the file ROTATES to the most recent RETAIN_LINES once it passes
+//      MAX_LOG_BYTES, and the rotation is recorded as an explicit in-file
+//      marker so truncation is never silent. Attribution is a live telemetry
+//      stream, not a financial ledger, and revenue truth lives in the
+//      commercial/sales ledgers -- never in this file.
+const MAX_LOG_BYTES = 32 * 1024 * 1024;
+const MAX_READ_BYTES = 8 * 1024 * 1024;
+const RETAIN_LINES = 50000;
+
 // 12-event taxonomy per spec + legacy aliases for backward compatibility
 const VALID_EVENT_TYPES = new Set([
   'view', 'click', 'trial_start', 'trial_request', 'output_generated', 'output_rejected',
@@ -87,12 +101,27 @@ class AttributionOS {
     this._loadFromDisk();
   }
 
+  _readTailText(filePath, maxBytes = MAX_READ_BYTES) {
+    const size = fs.statSync(filePath).size;
+    if (size <= maxBytes) return fs.readFileSync(filePath, 'utf8');
+    const fd = fs.openSync(filePath, 'r');
+    try {
+      const buf = Buffer.alloc(maxBytes);
+      fs.readSync(fd, buf, 0, maxBytes, size - maxBytes);
+      let text = buf.toString('utf8');
+      const nl = text.indexOf('\n');
+      return nl === -1 ? text : text.slice(nl + 1);
+    } finally {
+      fs.closeSync(fd);
+    }
+  }
+
   _loadFromDisk() {
     try {
       if (!fs.existsSync(this.logPath)) return;
       const stat = fs.statSync(this.logPath);
       this._lastMtime = stat.mtimeMs;
-      const raw = fs.readFileSync(this.logPath, 'utf8');
+      const raw = this._readTailText(this.logPath);
       this.events = [];
       for (const line of raw.split('\n')) {
         const trimmed = line.trim();
@@ -128,6 +157,36 @@ class AttributionOS {
     } catch (_) {}
   }
 
+  _maybeRotate() {
+    // Rotate to the most recent RETAIN_LINES once the file passes
+    // MAX_LOG_BYTES. The dropped-line count is recorded as an explicit marker
+    // line so a truncation is always visible to anyone auditing the file --
+    // never a silent discard. Written atomically (tmp + rename) so a crash
+    // mid-rotation can never leave a half-written log.
+    const size = fs.statSync(this.logPath).size;
+    if (size <= MAX_LOG_BYTES) return false;
+
+    const all = this._readTailText(this.logPath, MAX_LOG_BYTES).split('\n');
+    const kept = all.filter((l) => l.trim()).slice(-RETAIN_LINES);
+    const droppedEstimate = Math.max(0, all.filter((l) => l.trim()).length - kept.length);
+
+    const marker = JSON.stringify({
+      eventType: 'log_rotation',
+      timestamp: Date.now(),
+      data_classification: 'SYSTEM',
+      source: 'system',
+      reason: `log exceeded ${MAX_LOG_BYTES} bytes; retained most recent ${RETAIN_LINES} lines`,
+      retained_lines: kept.length,
+      dropped_lines_at_least: droppedEstimate,
+      note: 'attribution telemetry rotation -- revenue truth lives in the commercial/sales ledgers, not here'
+    });
+
+    const tmpPath = `${this.logPath}.tmp`;
+    fs.writeFileSync(tmpPath, kept.join('\n') + '\n' + marker + '\n', 'utf8');
+    fs.renameSync(tmpPath, this.logPath);
+    return true;
+  }
+
   _persist(event) {
     try {
       fs.mkdirSync(path.dirname(this.logPath), { recursive: true });
@@ -135,6 +194,11 @@ class AttributionOS {
       // update cache invalidation
       try { this._lastMtime = fs.statSync(this.logPath).mtimeMs; } catch (_) {}
       this._cachedReport = null;
+      try {
+        if (this._maybeRotate()) this._loadFromDisk();
+      } catch (_) {
+        // rotation failure must never block tracking
+      }
     } catch (_) {
       // persist failure must never block tracking
     }

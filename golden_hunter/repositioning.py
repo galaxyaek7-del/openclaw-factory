@@ -38,6 +38,7 @@ only — never a guessed link).
 
 import hashlib
 import json
+import os
 import re
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -59,19 +60,56 @@ def _normalize(text):
     return re.sub(r"\s+", " ", str(text or "").strip().lower())
 
 
-def _read_all(path):
-    path = Path(path)
-    if not path.exists():
-        return
+_READ_CACHE = {}
+_READ_CACHE_MAX_ENTRIES = 8
+
+
+def _invalidate_read_cache(path=None):
+    """Drop cached parses (see decision_engine/store.py for the same fix)."""
+    if path is None:
+        _READ_CACHE.clear()
+    else:
+        _READ_CACHE.pop(str(Path(path)), None)
+
+
+def _read_cached(path):
+    """Parsed records for `path`, re-read only when the file actually changed.
+
+    Same defect class as decision_engine/store.py, found live 2026-10-03 while
+    profiling gfos.if_i_were_the_ceo_report(): this reader re-opened and
+    re-parsed the whole ledger on every call. Keyed on (mtime_ns, size), so a
+    newly appended record is still visible to the very next read.
+    """
+    key = str(path)
+    try:
+        stat = os.stat(key)
+        stamp = (stat.st_mtime_ns, stat.st_size)
+    except OSError:
+        _READ_CACHE.pop(key, None)
+        return []
+
+    hit = _READ_CACHE.get(key)
+    if hit is not None and hit[0] == stamp:
+        return hit[1]
+
+    records = []
     with open(path, "r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if not line:
                 continue
             try:
-                yield json.loads(line)
+                records.append(json.loads(line))
             except json.JSONDecodeError:
                 continue
+    if len(_READ_CACHE) >= _READ_CACHE_MAX_ENTRIES:
+        _READ_CACHE.clear()
+    _READ_CACHE[key] = (stamp, records)
+    return records
+
+
+def _read_all(path):
+    yield from _read_cached(path)
 
 
 def _append(record, path):
