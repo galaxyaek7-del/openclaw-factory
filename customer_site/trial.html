@@ -313,8 +313,5 @@ document.getElementById('resetEvents').addEventListener('click', function(){
 loadStatus(); loadCatalog(); loadEvents();
 })();
 </script>
-<script>
-fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'trial' }) }).catch(()=>{});
-</script>
 </body>
 </html>

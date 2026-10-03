@@ -6832,12 +6832,8 @@ function findCustomerAccountByEmail(accounts, email) {
 function getCustomerRequestById(requestId) {
   try {
     if (!fs.existsSync(CUSTOMER_REQUESTS_FILE)) return null;
-    const lines = fs.readFileSync(CUSTOMER_REQUESTS_FILE, 'utf8').split('\n').filter(Boolean);
-    for (const line of lines) {
-      try {
-        const record = JSON.parse(line);
-        if (record.request_id === requestId) return record;
-      } catch { /* skip malformed lines */ }
+    for (const record of readJsonlEntries(CUSTOMER_REQUESTS_FILE)) {
+      if (record.request_id === requestId) return record;
     }
     return null;
   } catch { return null; }
@@ -7263,10 +7259,7 @@ function appendTrialEvent(event) {
 function readTrialEvents(limit = 50) {
   if (!fs.existsSync(TRIAL_LEDGER_PATH)) return [];
   try {
-    const lines = fs.readFileSync(TRIAL_LEDGER_PATH, 'utf8').split('\n').filter(Boolean);
-    const parsed = [];
-    for (const l of lines) { try { parsed.push(JSON.parse(l)); } catch (_) {} }
-    return parsed.slice(-limit).reverse();
+    return readJsonlEntries(TRIAL_LEDGER_PATH, limit).reverse();
   } catch (_) { return []; }
 }
 
@@ -7298,7 +7291,8 @@ app.get('/api/trial/status', (req, res) => {
   const trialLedgerExists = fs.existsSync(TRIAL_LEDGER_PATH);
   let trialEventCount = 0;
   if (trialLedgerExists) {
-    try { trialEventCount = fs.readFileSync(TRIAL_LEDGER_PATH, 'utf8').split('\n').filter(Boolean).length; } catch (_) {}
+    // Count of parseable events (a corrupt line is not an event).
+    try { trialEventCount = readJsonlEntries(TRIAL_LEDGER_PATH).length; } catch (_) {}
   }
   res.json({
     success: true,
