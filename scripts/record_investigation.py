@@ -32,5 +32,5 @@ inv = {
     "founder_action": "none new (FA-XCREDITS already standing for X billing)",
     "next": "monitor: confirm no further x attempts post-blocked-payment; interest Telegram path proven live"
 }
-open("data/jev_protection_investigation.json", "w").write(json.dumps(inv, indent=1, ensure_ascii=False))
+open("data/jev_protection_investigation.json", "w", encoding="utf-8").write(json.dumps(inv, indent=1, ensure_ascii=False))
 print("investigation recorded")
