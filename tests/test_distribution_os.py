@@ -99,6 +99,24 @@ _SALES_LEDGER = [
 
 class TestDistributionOsView(unittest.TestCase):
     def setUp(self):
+        # Real-arms-in-the-registry safety, matching the documented precedent
+        # in tests/test_integration_registry.py. channels.registry is GLOBAL
+        # shared state and several test files call registry.clear(); once any
+        # of them has run, all_arms() is no longer populated by distributor's
+        # import-time side effect (the arm modules are cached in sys.modules,
+        # so re-importing does not re-register). This test asserts on real arm
+        # statuses, so it must not depend on what ran before it -- it failed
+        # only under full-suite discovery for exactly that reason.
+        from channels import registry as channel_registry
+        self._saved_arms = channel_registry.all_arms()
+        if not self._saved_arms:
+            from channels.gumroad_arm import GumroadArm
+            from channels.paddle_arm import PaddleArm
+            from channels.etsy_arm import EtsyArm
+            from channels.payhip_arm import PayhipArm
+            for arm_cls in (GumroadArm, PaddleArm, EtsyArm, PayhipArm):
+                channel_registry.register(arm_cls())
+
         self.tmp = tempfile.mkdtemp()
         self.genlog = _write_jsonl(self.tmp, "genlog.jsonl", [_REAL_RECORD, _TEST_RECORD])
         self.ledger = _write_jsonl(self.tmp, "sales.jsonl", _SALES_LEDGER)
@@ -106,6 +124,12 @@ class TestDistributionOsView(unittest.TestCase):
         self.seo = _write_json(self.tmp, "seo.json", [])
         self.kits = _write_jsonl(self.tmp, "kits.jsonl", [])
         self.reality = _write_json(self.tmp, "reality.json", {"published_books": []})
+
+    def tearDown(self):
+        from channels import registry as channel_registry
+        channel_registry.clear()
+        for arm in self._saved_arms:
+            channel_registry.register(arm)
 
     def _view(self, production_id, **kw):
         return dos.distribution_os_view(
