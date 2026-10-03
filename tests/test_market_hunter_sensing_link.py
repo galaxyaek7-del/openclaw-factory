@@ -89,22 +89,41 @@ class TestHuntMarketLinksSensingEngine(unittest.TestCase):
         if os.path.exists(self.decisions_path):
             os.remove(self.decisions_path)
 
+    # Both Pioneer entry points must be mocked: hunt_market() CALLS
+    # PIONEER_DISCOVER(limit=..) and PIONEER_DISCOVER_ALL(limit_per_source=..),
+    # so the replacements must be callables (MagicMock), not bare lists.
+    # Patching only the first leaves the second on live network (many
+    # sequential calls, unbounded total time in a slow sandbox) — the
+    # 2026-09-21 hang root cause.
+    def _no_pioneer(self, **kw):
+        from unittest.mock import MagicMock
+        return patch.multiple(
+            mh, PIONEER_DISCOVER=MagicMock(return_value=kw.get("one", [])),
+            PIONEER_DISCOVER_ALL=MagicMock(return_value=kw.get("all", [])))
+
     def test_hunt_market_result_reports_sensing_engine_linked_count(self):
-        with patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
+        with self._no_pioneer():
             result = mh.hunt_market(limit=1, write_opportunities=False, decisions_path=self.decisions_path)
         self.assertIn("sensing_engine_linked_count", result)
         self.assertIsInstance(result["sensing_engine_linked_count"], int)
 
     def test_scanned_entries_are_labeled_with_their_real_source(self):
-        with patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
+        with self._no_pioneer():
             result = mh.hunt_market(limit=1, write_opportunities=False, decisions_path=self.decisions_path)
+        # "pioneer_all" was added to market_hunter.py by Golden Hunter v2
+        # (2026-08-14), which consumes Pioneer's multi-source discover_all()
+        # feed alongside discover(). This allowlist still listed only the three
+        # pre-v2 labels, so it failed whenever that real source produced an
+        # entry -- which is exactly what happened in CI once the committed
+        # version stopped mocking PIONEER_DISCOVER_ALL.
         for entry in result["scanned"]:
-            self.assertIn(entry["source"], ("seed", "sensing_engine", "pioneer"))
+            self.assertIn(entry["source"], ("seed", "sensing_engine", "pioneer", "pioneer_all"))
 
     def test_hunt_market_result_reports_pioneer_linked_count(self):
-        with patch.object(mh, "PIONEER_DISCOVER", return_value=[
+        from unittest.mock import MagicMock
+        with patch.multiple(mh, PIONEER_DISCOVER=MagicMock(return_value=[
             {"niche": "a real pioneer test candidate niche xyz", "source": "hacker_news_top_stories"},
-        ]):
+        ]), PIONEER_DISCOVER_ALL=MagicMock(return_value=[])):
             result = mh.hunt_market(limit=1, write_opportunities=False, decisions_path=self.decisions_path)
         self.assertEqual(result["pioneer_linked_count"], 1)
         pioneer_entries = [e for e in result["scanned"] if e["source"] == "pioneer"]
@@ -113,13 +132,14 @@ class TestHuntMarketLinksSensingEngine(unittest.TestCase):
         self.assertEqual(pioneer_entries[0]["ladder"], "kdp_books")
 
     def test_a_pioneer_failure_never_blocks_the_real_hunt(self):
-        with patch.object(mh, "PIONEER_DISCOVER", side_effect=RuntimeError("HN unreachable")):
+        with patch.object(mh, "PIONEER_DISCOVER", side_effect=RuntimeError("HN unreachable")), \
+             patch.object(mh, "PIONEER_DISCOVER_ALL", side_effect=RuntimeError("HN unreachable")):
             result = mh.hunt_market(limit=1, write_opportunities=False, decisions_path=self.decisions_path)
         self.assertIn("scanned_count", result)
         self.assertEqual(result["pioneer_linked_count"], 0)
 
     def test_real_decisions_are_written_to_the_given_path_not_the_live_ledger(self):
-        with patch.object(mh, "PIONEER_DISCOVER", return_value=[]):
+        with self._no_pioneer():
             mh.hunt_market(limit=1, write_opportunities=False, decisions_path=self.decisions_path)
         self.assertTrue(os.path.exists(self.decisions_path))
 
