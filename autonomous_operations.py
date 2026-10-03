@@ -114,6 +114,10 @@ ACTION_CATEGORY_AUTONOMY = {
         "level": 5,
         "citation": "evolution_queue.py::approve_proposal()/reject_proposal()/mark_implemented() -- 'Never called automatically' per the function's own docstring, reconfirmed by this factory's founder 6+ times (ADR-133/134/139/142/144/147/157).",
     },
+    "founder_human_gate": {
+        "level": 5,
+        "citation": "founder_next_action.py consolidated human-gate queue -- items (paddle onboarding, payment method, credentials) have no autonomous execution path; surfaced for founder review only, never auto-cleared by elapsed time.",
+    },
     "capital_reallocation": {
         "level": 5,
         "citation": "capital_allocation_engine.py has no real reallocation-execution function at all -- 'the engine recommends, the Founder decides' (CLAUDE.md, Capital Allocation Engine section).",
