@@ -24,7 +24,7 @@
 // (INTERNAL_SERVICE_TOKEN, PADDLE_API_KEY, GROQ_KEY, etc.) so the internal
 // /api/sales/poll call authenticates instead of failing `unauthenticated`
 // every tick (FINAL AUTONOMOUS REVENUE SWEEP 2026-08-15 finding).
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 
 const fs = require('fs');
 const path = require('path');
