@@ -1682,7 +1682,11 @@ def get_groq_key():
 # 8B-instant model, which shut down 2026-08-16). Update this constant
 # if the model or its published price ever changes — it is not a guess,
 # but it is a snapshot, and needs re-verifying periodically.
-GROQ_PRICING_USD_PER_MILLION_TOKENS = {"openai/gpt-oss-20b": {"input": 0.075, "output": 0.30}}
+GROQ_PRICING_USD_PER_MILLION_TOKENS = {"openai/gpt-oss-20b": {"input": 0.075, "output": 0.30},
+    # llama-3.1-8b-instant is this factory's live model (server.js agents,
+    # Scout pipeline) — rates are Groq's published $0.05/M in, $0.08/M out
+    # (verified 2026-10-03 against Groq pricing + 3 independent trackers).
+    "llama-3.1-8b-instant": {"input": 0.05, "output": 0.08}}
 AI_COST_LOG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'ai_cost_log.jsonl')
 
 
