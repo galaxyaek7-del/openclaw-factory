@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-03T07:09:29.559656+00:00",
+  "freelancer_public": {
+    "status": 200,
+    "projects_returned": 3
+  },
+  "telegram": {
+    "credential_present": true,
+    "send_test": "avoided_by_policy"
+  },
+  "x_api": {
+    "last_known": "402 credits depleted",
+    "queue_file": false
+  },
+  "amazon": {
+    "tag_present": false
+  }
+}

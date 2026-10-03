@@ -1,0 +1,69 @@
+{
+  "at": "2026-10-03T07:08:22.170775+00:00",
+  "internal": {
+    "node_processes": "[\n    {\n        \"ProcessId\":  14848,\n        \"CreationDate\":  \"\\/Date(1790793451166)\\/\",\n        \"CommandLine\":  \"\\\"C:\\\\Program Files\\\\nodejs\\\\node.exe\\\" scripts/supervisor.js \"\n    },\n    {\n        \"ProcessId\":  18452,\n        \"CreationDate\":  \"\\/Date(1791011122665)\\/\",\n        \"CommandLine\":  \"\\\"C:\\\\Program Files\\\\nodejs\\\\node.exe\\\" C:\\\\openclaw-dasgboard\\\\server.js\"\n    }\n]\n",
+    "health": {
+      "error": "HTTP Error 401: Unauthorized"
+    },
+    "metrics": {
+      "error": "HTTP Error 401: Unauthorized"
+    },
+    "site_root": {
+      "status": 200,
+      "body_len": 42954
+    },
+    "tick_markers": {
+      ".affiliate_daily_tick_marker": "2026-09-29",
+      ".business_blueprint_daily_marker": "2026-09-29",
+      ".ceo_loop_daily_marker": "2026-09-29",
+      ".commercial_kit_daily_marker": "2026-09-29",
+      ".commercial_readiness_snapshot_daily_marker": "2026-09-29",
+      ".commission_opportunity_scan_daily_marker": "2026-09-29",
+      ".eu_ai_act_pricing_review_daily_marker": "2026-09-29",
+      ".evidence_recording_audit_daily_marker": "2026-09-29",
+      ".evolution_outcome_daily_marker": "2026-09-29",
+      ".evolution_queue_daily_marker": "2026-09-29",
+      ".executive_directive_daily_marker": "2026-09-29",
+      ".executive_orchestrator_daily_marker": "2026-09-29",
+      ".experiment_cycle_daily_marker": "2026-09-29",
+      ".golden_hunter_refresh_daily_marker": "2026-09-29",
+      ".growth_stage_snapshot_daily_marker": "2026-09-29",
+      ".knowledge_graph_daily_marker": "2026-09-29",
+      ".market_evidence_daily_marker": "2026-09-29",
+      ".p1_loop_daily_marker": "2026-09-11",
+      ".product_lifecycle_snapshot_daily_marker": "2026-08-31",
+      ".seo_distribution_daily_marker": "2026-09-29"
+    }
+  },
+  "external": {
+    "gumroad_product": {
+      "status": 200
+    },
+    "telegraph_gpsr": {
+      "status": 200
+    },
+    "telegraph_ftc": {
+      "status": 200
+    },
+    "systeme": {
+      "status": 200
+    },
+    "github_repo": {
+      "error": "HTTP Error 404: Not Found"
+    }
+  },
+  "inbound": {
+    "page_view": {
+      "status": 200,
+      "body": "{\"success\":true,\"recorded\":true}"
+    },
+    "interest_reject": {
+      "status": 400,
+      "body": "{\"success\":false,\"error\":\"valid email and interest message are required\"}"
+    },
+    "support_validation": {
+      "status": 400,
+      "body": "{\"success\":false,\"error\":\"name, email, and message are required\"}"
+    }
+  }
+}
