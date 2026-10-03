@@ -1,0 +1,97 @@
+{
+ "at": "2026-10-03T07:24:31.851774+00:00",
+ "results": {
+  "gumroad_product": {
+   "transport": "HEAD",
+   "status": 200,
+   "verdict": "PASS"
+  },
+  "gumroad_leadlists": {
+   "transport": "HEAD",
+   "status": 200,
+   "verdict": "PASS"
+  },
+  "telegraph_gpsr": {
+   "transport": "HEAD",
+   "status": 200,
+   "verdict": "PASS"
+  },
+  "telegraph_ftc": {
+   "transport": "HEAD",
+   "status": 200,
+   "verdict": "PASS"
+  },
+  "systeme": {
+   "transport": "HEAD",
+   "status": 200,
+   "verdict": "PASS"
+  },
+  "site_local": {
+   "transport": "HEAD",
+   "status": 200,
+   "verdict": "PASS"
+  },
+  "freelancer_api": {
+   "status": 200,
+   "projects": 1,
+   "verdict": "PASS"
+  },
+  "arm_gumroad": {
+   "status": "ArmStatus.READY",
+   "verdict": "PASS"
+  },
+  "arm_paddle": {
+   "status": "ArmStatus.READY",
+   "verdict": "PASS"
+  },
+  "arm_etsy": {
+   "status": "ArmStatus.UNAVAILABLE",
+   "verdict": "PASS"
+  },
+  "arm_payhip": {
+   "status": "ArmStatus.UNAVAILABLE",
+   "verdict": "PASS"
+  },
+  "arm_kdp": {
+   "status": "ArmStatus.UNAVAILABLE",
+   "verdict": "PASS"
+  },
+  "arm_x": {
+   "status": "ArmStatus.UNAVAILABLE",
+   "verdict": "PASS"
+  },
+  "gumroad_list": {
+   "count": 10,
+   "verdict": "PASS"
+  },
+  "paddle_list": {
+   "status": "OK",
+   "verdict": "PASS"
+  },
+  "inbound_pageview": {
+   "transport": "POST",
+   "status": 400,
+   "verdict": "PASS"
+  },
+  "inbound_interest_reject": {
+   "transport": "POST",
+   "status": 400,
+   "verdict": "PASS"
+  },
+  "inbound_support_validate": {
+   "transport": "POST",
+   "status": 400,
+   "verdict": "PASS"
+  },
+  "sales_poll": {
+   "new_sales": 0,
+   "verdict": "PASS"
+  }
+ },
+ "summary": {
+  "total": 19,
+  "pass": 19,
+  "fail": 0,
+  "pending": 0
+ }
+}
