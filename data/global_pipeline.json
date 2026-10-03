@@ -130,15 +130,15 @@
  "rejected": [
   {
    "id": 40743843,
-   "reason": "REJECTED: full-colour fixed-layout children book â€” illustration/layout outside reportlab-prose pipeline"
+   "reason": "REJECTED: full-colour fixed-layout children book \u00e2\u20ac\u201d illustration/layout outside reportlab-prose pipeline"
   },
   {
    "id": 40743805,
-   "reason": "REJECTED: illustrator refinement â€” illustration outside capability"
+   "reason": "REJECTED: illustrator refinement \u00e2\u20ac\u201d illustration outside capability"
   },
   {
    "id": 40741254,
-   "reason": "REJECTED: marketing consultancy â€” outside capability"
+   "reason": "REJECTED: marketing consultancy \u00e2\u20ac\u201d outside capability"
   },
   {
    "id": 40744044,
@@ -178,7 +178,7 @@
   },
   {
    "id": 40744193,
-   "reason": "CLOSED 2026-10-01: status closed/complete (was buyer-frozen) â€” conclusive; prepared bid never sent"
+   "reason": "CLOSED 2026-10-01: status closed/complete (was buyer-frozen) \u00e2\u20ac\u201d conclusive; prepared bid never sent"
   },
   {
    "id": 40744216,
@@ -258,7 +258,7 @@
   },
   {
    "id": 40742370,
-   "reason": "CLOSED/LEARNED 2026-10-01: closed_awarded elsewhere (404? no â€” API closed/closed_awarded x2); our bid stayed PREPARED/BLOCKED, correctly never sent; 72-bid race, no regret"
+   "reason": "CLOSED/LEARNED 2026-10-01: closed_awarded elsewhere (404? no \u00e2\u20ac\u201d API closed/closed_awarded x2); our bid stayed PREPARED/BLOCKED, correctly never sent; 72-bid race, no regret"
   },
   {
    "id": 40745924,
@@ -442,7 +442,7 @@
   },
   {
    "id": 40745990,
-   "reason": "C-grade: primary-interview research, floor price 30, weak fit — no action"
+   "reason": "C-grade: primary-interview research, floor price 30, weak fit \u2014 no action"
   },
   {
    "id": 40744265,
@@ -822,7 +822,7 @@
   },
   {
    "id": 40746593,
-   "reason": "B-CONSTRAINED: capability FIT (transcription) but budget 750+ exceeds policy ceiling 250 — commercial constraint, not capability failure"
+   "reason": "B-CONSTRAINED: capability FIT (transcription) but budget 750+ exceeds policy ceiling 250 \u2014 commercial constraint, not capability failure"
   },
   {
    "id": 40746611,
@@ -991,14 +991,18 @@
   {
    "id": 40746699,
    "reason": "D-grade mem01 (scope/budget)"
+  },
+  {
+   "id": 40747473,
+   "reason": "D-grade loop06: budget 750-1250 above policy max 250 (Excel-to-PDF formatting fits capability but over-bounds)"
   }
  ],
- "at": "2026-10-02T17:15:42.753651+00:00",
+ "at": "2026-10-03T07:14:50.101892+00:00",
  "note": "fit from title+preview+budget only (full description needs auth); re-verify on grant",
  "held": [
   {
    "id": 40744232,
-   "reason": "HOLD: possible ongoing-VA employment vs project â€” full description needs auth; re-evaluate on grant"
+   "reason": "HOLD: possible ongoing-VA employment vs project \u00e2\u20ac\u201d full description needs auth; re-evaluate on grant"
   },
   {
    "id": 40744322,
