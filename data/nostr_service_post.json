@@ -1,10 +1,10 @@
 {
  "status": "sent",
- "event_id": "5bc427e14c99137a008cec9966f1690fefa3ed58cff5e78facfb0f7a35792068",
- "content_hash": "5d3d4e0b186790eb",
+ "event_id": "46e6a952193bb7e234ec91ed4040f930b21ca5d7c8c7b0d2e40d7c69cff6ab2e",
+ "content_hash": "fc50674fa34f6a2b",
  "acks": {
-  "relay.damus.io": "[\"OK\",\"5bc427e14c99137a008cec9966f1690fefa3ed58cff5e78facfb0f7a35792068\",true,\"\"]",
-  "relay.primal.net": "[\"OK\",\"5bc427e14c99137a008cec9966f1690fefa3ed58cff5e78facfb0f7a35792068\",true,\"\"]"
+  "relay.damus.io": "FAIL:RuntimeError",
+  "relay.primal.net": "[\"OK\",\"46e6a952193bb7e234ec91ed4040f930b21ca5d7c8c7b0d2e40d7c69cff6ab2e\",true,\"\"]"
  },
- "at": "2026-10-03T06:48:15Z"
+ "at": "2026-10-03T06:50:06Z"
 }
