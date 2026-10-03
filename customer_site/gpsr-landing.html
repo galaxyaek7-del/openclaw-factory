@@ -66,14 +66,16 @@
         document.getElementById('emailForm').addEventListener('submit', function(e) {
             e.preventDefault();
             var email = document.getElementById('email').value;
-            // In production, this would send to a backend endpoint
-            alert('Thank you! Check your email for the GPSR Compliance Checklist.');
-            // Track the lead
-            fetch('/api/customer/lead', {
+            // Real lead capture: existing /api/customer/interest endpoint (rate-limited, honeypot-aware).
+            fetch('/api/customer/interest', {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({email: email, source: 'gpsr_landing_page', campaign: 's3_exec_05'})
-            }).catch(function() {});
+                body: JSON.stringify({email: email, message: 'GPSR Compliance Checklist request', source: 'gpsr_landing_page', campaign: 's3_exec_05'})
+            }).then(function(r){ return r.json(); }).then(function(body){
+                if (body && body.success) { alert('Thank you! Check your email for the GPSR Compliance Checklist.'); }
+                else { alert('Thanks — your request was noted. If the checklist does not arrive, email galaxyaek7@gmail.com.'); }
+            }).catch(function() { alert('Thanks — your request was noted. If the checklist does not arrive, email galaxyaek7@gmail.com.'); });
         });
     </script>
 <script>
