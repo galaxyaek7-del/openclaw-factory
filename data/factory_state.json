@@ -1,0 +1,70 @@
+{
+  "current_task": null,
+  "active_workflow": null,
+  "queue": null,
+  "last_successful_checkpoint": {
+    "stage": "learning",
+    "idempotency_key": "b8a375ffb45d0cc7",
+    "at": "2026-09-03T13:29:02.627185+00:00"
+  },
+  "recovery_info": {
+    "interrupted": true,
+    "detected_at": "2026-10-03T07:09:05.122217+00:00",
+    "evidence": "stale lock reclaimed; current_task=None",
+    "reason": "previous instance died uncleanly, but nothing was in flight"
+  },
+  "pending_retries": [
+    {
+      "task": "arm_publish:x:X-POST-LEAD-SERVICE-01",
+      "last_error": "HTTP 402: {\"detail\":\"credits depleted\",\"status\":402,\"title\":\"Payment Required\",\"type\":\"https://api.x.com/2/problems/credits-depleted\"}",
+      "attempt": 1,
+      "context": null,
+      "queued_at": "2026-10-02T10:29:39.488473+00:00",
+      "next_retry_at": "2026-10-02T10:29:39.488473+00:00"
+    },
+    {
+      "task": "arm_publish:x:X-POST-DESK-AFF-01",
+      "last_error": "HTTP 402: {\"detail\":\"credits depleted\",\"status\":402,\"title\":\"Payment Required\",\"type\":\"https://api.x.com/2/problems/credits-depleted\"}",
+      "attempt": 1,
+      "context": null,
+      "queued_at": "2026-10-02T17:01:11.344255+00:00",
+      "next_retry_at": "2026-10-02T17:01:11.344255+00:00"
+    },
+    {
+      "task": "arm_publish:x:X-POST-SYSTEME-AFF-01",
+      "last_error": "HTTP 402: {\"detail\":\"credits depleted\",\"status\":402,\"title\":\"Payment Required\",\"type\":\"https://api.x.com/2/problems/credits-depleted\"}",
+      "attempt": 1,
+      "context": null,
+      "queued_at": "2026-10-03T07:38:13.500726+00:00",
+      "next_retry_at": "2026-10-03T07:38:13.500726+00:00"
+    },
+    {
+      "task": "arm_publish:gumroad:SRC_DUP",
+      "last_error": "product file not found: \\fake\\path.pdf",
+      "attempt": 1,
+      "context": null,
+      "queued_at": "2026-10-03T16:30:58.951837+00:00",
+      "next_retry_at": "2026-10-03T16:30:58.951837+00:00"
+    },
+    {
+      "task": "telegram_notify:retry_queue_status",
+      "last_error": "fetch failed",
+      "attempt": 1,
+      "context": {
+        "payload": {
+          "event": "retry_queue_status",
+          "pending_count": 4,
+          "by_task": {
+            "arm_publish": 4
+          },
+          "generated_at": "2026-10-03T16:47:29.731Z"
+        },
+        "webhookUrl": "http://localhost:5678/webhook/golden-hunter-notify",
+        "envVarName": "N8N_TELEGRAM_WEBHOOK_URL"
+      },
+      "queued_at": "2026-10-03T16:47:29.737Z",
+      "next_retry_at": "2026-10-03T16:47:29.737Z"
+    }
+  ],
+  "updated_at": "2026-10-03T16:47:41.912Z"
+}

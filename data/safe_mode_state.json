@@ -1,0 +1,14 @@
+{
+  "ai_generation": {
+    "unstable": false,
+    "reason": null,
+    "since": null,
+    "triggered_by": null
+  },
+  "market_intelligence": {
+    "unstable": false,
+    "reason": null,
+    "since": null,
+    "triggered_by": null
+  }
+}

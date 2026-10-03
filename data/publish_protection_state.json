@@ -1,0 +1,71 @@
+{
+  "arms": {
+    "gumroad": {
+      "publishes_today": 2,
+      "day_bucket": "2026-09-29",
+      "publishes_this_hour": 1,
+      "hour_bucket": "2026-09-29T08",
+      "cooldown_until": null,
+      "consecutive_failures": 2,
+      "last_publish_at": "2026-09-29T08:10:53.260476+00:00",
+      "has_ever_published_successfully": true,
+      "first_publish_approved": false,
+      "elevated_risk_approved_at": null,
+      "status": "READY"
+    },
+    "paddle": {
+      "publishes_today": 1,
+      "day_bucket": "2026-09-09",
+      "publishes_this_hour": 1,
+      "hour_bucket": "2026-09-09T16",
+      "cooldown_until": null,
+      "consecutive_failures": 0,
+      "last_publish_at": "2026-09-09T16:45:48.339847+00:00",
+      "has_ever_published_successfully": true,
+      "first_publish_approved": false,
+      "elevated_risk_approved_at": null
+    },
+    "etsy": {
+      "publishes_today": 1,
+      "day_bucket": "2026-09-09",
+      "publishes_this_hour": 1,
+      "hour_bucket": "2026-09-09T16",
+      "cooldown_until": null,
+      "consecutive_failures": 1,
+      "last_publish_at": "2026-09-09T16:46:44.057018+00:00",
+      "has_ever_published_successfully": false,
+      "first_publish_approved": false,
+      "elevated_risk_approved_at": null
+    },
+    "payhip": {
+      "publishes_today": 1,
+      "day_bucket": "2026-09-09",
+      "publishes_this_hour": 1,
+      "hour_bucket": "2026-09-09T16",
+      "cooldown_until": null,
+      "consecutive_failures": 1,
+      "last_publish_at": "2026-09-09T16:46:44.067368+00:00",
+      "has_ever_published_successfully": false,
+      "first_publish_approved": false,
+      "elevated_risk_approved_at": null
+    },
+    "x": {
+      "publishes_today": 1,
+      "day_bucket": "2026-10-03",
+      "publishes_this_hour": 1,
+      "hour_bucket": "2026-10-03T07",
+      "cooldown_until": "2026-10-03T08:38:13.498940+00:00",
+      "consecutive_failures": 7,
+      "last_publish_at": "2026-10-03T07:38:13.498940+00:00",
+      "has_ever_published_successfully": false,
+      "first_publish_approved": true,
+      "elevated_risk_approved_at": null
+    }
+  },
+  "global": {
+    "emergency_stopped": false,
+    "emergency_reason": null,
+    "emergency_stopped_at": null,
+    "emergency_triggered_by": null
+  }
+}
