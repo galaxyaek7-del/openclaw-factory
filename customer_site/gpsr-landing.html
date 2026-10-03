@@ -73,9 +73,9 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({email: email, message: 'GPSR Compliance Checklist request', source: 'gpsr_landing_page', campaign: 's3_exec_05'})
             }).then(function(r){ return r.json(); }).then(function(body){
-                if (body && body.success) { alert('Thank you! Check your email for the GPSR Compliance Checklist.'); }
-                else { alert('Thanks — your request was noted. If the checklist does not arrive, email galaxyaek7@gmail.com.'); }
-            }).catch(function() { alert('Thanks — your request was noted. If the checklist does not arrive, email galaxyaek7@gmail.com.'); });
+                if (body && body.success) { alert('Thank you! Your request was recorded. A real person will follow up by email.'); }
+                else { alert('Thanks — your request was noted. If we do not follow up, email galaxyaek7@gmail.com.'); }
+            }).catch(function() { alert('Thanks — your request was noted. If we do not follow up, email galaxyaek7@gmail.com.'); });
         });
     </script>
 <script>
