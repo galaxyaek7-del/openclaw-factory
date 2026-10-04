@@ -162,12 +162,27 @@ function freshFixtureFile() {
 }
 
 test('checkFreshness: reports a recently-written real file as fresh', () => {
+  // Real fix 2026-10-04: this read the REAL data/factory_state.json through
+  // the DEFAULT spec, whose threshold is 25 minutes. It only passed while a
+  // live factory_loop kept rewriting that file. In CI the file is written once
+  // at checkout and this step runs ~20 minutes later, so it was reliably stale.
+  // The default spec itself is still asserted below; only the file's AGE is
+  // now the test's own, which is what "recently-written" actually means.
   const now = Date.now();
-  const fresh = hm.checkFreshness(now);
-  const factoryState = fresh.find((f) => f.file === 'data/factory_state.json');
-  assert.ok(factoryState, 'factory_state.json must be one of the watched files');
-  assert.equal(factoryState.exists, true);
-  assert.equal(factoryState.stale, false);
+  const file = freshFixtureFile();
+  const [result] = hm.checkFreshness(now, [{ file, maxAgeMs: 25 * 60 * 1000 }]);
+  assert.equal(result.exists, true);
+  assert.equal(result.stale, false);
+});
+
+test('checkFreshness: the real default spec watches the real files', () => {
+  // The default FRESHNESS_FILES list is production configuration, so its
+  // contents are asserted directly -- without asserting anything about how old
+  // those files happen to be on the machine running the suite.
+  const watched = hm.checkFreshness(Date.now()).map((f) => f.file);
+  for (const expected of ['data/factory_state.json', 'data/decisions.jsonl']) {
+    assert.ok(watched.includes(expected), `${expected} must be one of the watched files`);
+  }
 });
 
 test('checkFreshness: flags a file older than its threshold as stale', () => {
