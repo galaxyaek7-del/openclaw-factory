@@ -5,7 +5,6 @@ records (no real registry, no network)."""
 import json
 import os
 
-import pytest
 
 from affiliate import healthcheck as H
 from affiliate import intelligence as I
