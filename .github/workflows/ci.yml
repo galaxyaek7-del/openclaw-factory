@@ -76,33 +76,8 @@ jobs:
       - name: Python tests (a)
         run: python -m unittest discover -s tests -p "test_a*.py"
 
-      - name: Python tests (b: base_arm)
-        run: python -m unittest discover -s tests -p "test_base_arm.py"
-
-      - name: Python tests (b: book_generator_dispatch)
-        run: python -m unittest discover -s tests -p "test_book_generator_dispatch.py"
-
-      - name: Python tests (b: book_generator_legacy_dual_inspection)
-        run: python -m unittest discover -s tests -p "test_book_generator_legacy_dual_inspection.py"
-
-      - name: Python tests (b: book_generator_output_path_safety)
-        run: python -m unittest discover -s tests -p "test_book_generator_output_path_safety.py"
-
-      - name: Python tests (b: brand_dna)
-        run: python -m unittest discover -s tests -p "test_brand_dna.py"
-
-      - name: Python tests (b: build_in_public)
-        run: python -m unittest discover -s tests -p "test_build_in_public.py"
-
-      - name: Python tests (b: business_development)
-        run: python -m unittest discover -s tests -p "test_business_development.py"
-
-      - name: Python tests (b: business_dossier)
-        run: python -m unittest discover -s tests -p "test_business_dossier.py"
-
-      - name: Python tests (b: butter_price_tiers)
-        run: python -m unittest discover -s tests -p "test_butter_price_tiers.py"
-
+      - name: Python tests (b)
+        run: python -m unittest discover -s tests -p "test_b*.py"
 
       - name: Python tests (c-d)
         run: python -m unittest discover -s tests -p "test_[c-d]*.py"
@@ -120,8 +95,8 @@ jobs:
         run: |
           python - <<'PY'
           import glob, os, sys
-          groups = ["test_a*.py", "test_[c-d]*.py", "test_e*.py",
-                    "test_f*.py", "test_[g-h]*.py"] + ['test_base_arm.py', 'test_book_generator_dispatch.py', 'test_book_generator_legacy_dual_inspection.py', 'test_book_generator_output_path_safety.py', 'test_brand_dna.py', 'test_build_in_public.py', 'test_business_development.py', 'test_business_dossier.py', 'test_butter_price_tiers.py']
+          groups = ["test_a*.py", "test_b*.py", "test_[c-d]*.py", "test_e*.py",
+                    "test_f*.py", "test_[g-h]*.py"]
           allf = {os.path.basename(p) for p in glob.glob("tests/test_*.py")}
           seen = {}
           for g in groups:
