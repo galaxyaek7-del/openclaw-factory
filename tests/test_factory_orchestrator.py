@@ -24,6 +24,15 @@ from decision_engine.types import Decision, make_decision_id
 
 import factory_orchestrator as orch
 
+# Real fix 2026-10-04: these tests patch "revenue_pipeline.pipeline.*", and
+# mock.patch resolves that dotted path by walking module attributes -- so the
+# `pipeline` SUBMODULE must already be imported. It used to be imported as a
+# side effect of some other test file, which made this file order-dependent: it
+# passed in a full-suite run and failed when run on its own or in isolation
+# ("module 'revenue_pipeline' has no attribute 'pipeline'"). Importing it here
+# makes the dependency explicit instead of accidental.
+import revenue_pipeline.pipeline  # noqa: F401  (imported for patch target resolution)
+
 
 def _temp_path(suffix=".jsonl"):
     fd, path = tempfile.mkstemp(suffix=suffix)
