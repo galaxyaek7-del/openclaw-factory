@@ -26,10 +26,22 @@ from pathlib import Path
 
 try:
     from bs4 import BeautifulSoup
-except ImportError:
-    print("ERROR: Please install BeautifulSoup4:")
-    print("  pip install beautifulsoup4")
-    sys.exit(1)
+except ImportError as _bs4_missing:
+    # Real defect fixed 2026-10-04: this used to print to STDOUT and call
+    # sys.exit(1) at import time. book_generator.py imports this module inside
+    # a `except (Exception, SystemExit)` guard, so the SystemExit was correctly
+    # caught -- but the stdout pollution was already permanent, so every
+    # `book_generator.py --json` call emitted "ERROR: Please install
+    # BeautifulSoup4:" ahead of its JSON and the CLI contract broke with
+    # "Expecting value: line 1 column 1". It only ever showed up on CI, where
+    # beautifulsoup4 is not installed.
+    #
+    # A module must not print to stdout or exit during import. Guidance now
+    # goes to stderr and the failure surfaces as an ordinary ImportError, which
+    # is exactly what the caller's guard is written to handle.
+    print("ERROR: niche_validator_v2 requires BeautifulSoup4 (pip install beautifulsoup4)",
+          file=sys.stderr)
+    raise ImportError("BeautifulSoup4 is required by niche_validator_v2") from _bs4_missing
 
 
 # ============================================================

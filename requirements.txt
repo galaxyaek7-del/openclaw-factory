@@ -17,3 +17,21 @@ pypdf==6.14.2
 # infrastructure yet (a separate, already-known gap), so a clean `pip
 # install -r requirements.txt` environment was never actually exercised.
 requests==2.34.2
+
+# Real dependency of niche_validator_v2.py (`from bs4 import BeautifulSoup`),
+# which book_generator.py imports for its Quality Gate. Found 2026-10-04: seven
+# book_generator CLI tests failed on CI with "Expecting value: line 1 column 1"
+# because bs4 was absent there, so the module's import-time error message landed
+# on stdout ahead of the CLI's JSON. Locally invisible -- bs4 is installed here.
+# Same class as the `requests` entry above: a dependency of shipped code that
+# this file never declared.
+beautifulsoup4==4.15.0
+
+# Optional, but genuinely load-bearing for output QUALITY, so they are declared
+# rather than left to chance. cover_designer_v2.py and inspectors.py reshape and
+# bidi-reorder Arabic before drawing it, because Pillow draws raw codepoints and
+# unshaped Arabic renders garbled or as missing-glyph boxes. Arabic is this
+# factory's dominant script (see CLAUDE.md). Both imports are guarded, so
+# nothing breaks without them -- every cover just quietly renders worse.
+arabic-reshaper==3.0.1
+python-bidi==0.6.11
