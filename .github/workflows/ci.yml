@@ -74,41 +74,22 @@ jobs:
 
       # ── Python tests ──
       - name: Python tests (a)
-        run: python -m unittest discover -s tests -p "test_a*.py"
+        run: python scripts/run_python_group.py --pattern "test_a*.py"
 
-      - name: Python tests (b - base_arm)
-        run: python -m unittest discover -s tests -p "test_base_arm.py"
-      - name: Python tests (b - bookgen dispatch, empty chapters)
-        run: python -m unittest tests.test_book_generator_dispatch.TestChaptersDispatch.test_empty_chapters_list_fails_clearly_not_via_legacy_path
-
-      - name: Python tests (b - bookgen dispatch, non-empty chapters)
-        run: python -m unittest tests.test_book_generator_dispatch.TestChaptersDispatch.test_non_empty_chapters_routes_to_generate_book_from_content
-      - name: Python tests (b - book_generator_legacy_dual_inspection)
-        run: python -m unittest discover -s tests -p "test_book_generator_legacy_dual_inspection.py"
-      - name: Python tests (b - book_generator_output_path_safety)
-        run: python -m unittest discover -s tests -p "test_book_generator_output_path_safety.py"
-      - name: Python tests (b - brand_dna)
-        run: python -m unittest discover -s tests -p "test_brand_dna.py"
-      - name: Python tests (b - build_in_public)
-        run: python -m unittest discover -s tests -p "test_build_in_public.py"
-      - name: Python tests (b - business_development)
-        run: python -m unittest discover -s tests -p "test_business_development.py"
-      - name: Python tests (b - business_dossier)
-        run: python -m unittest discover -s tests -p "test_business_dossier.py"
-      - name: Python tests (b - butter_price_tiers)
-        run: python -m unittest discover -s tests -p "test_butter_price_tiers.py"
+      - name: Python tests (b)
+        run: python scripts/run_python_group.py --pattern "test_b*.py"
 
       - name: Python tests (c-d)
-        run: python -m unittest discover -s tests -p "test_[c-d]*.py"
+        run: python scripts/run_python_group.py --pattern "test_[c-d]*.py"
 
       - name: Python tests (e)
-        run: python -m unittest discover -s tests -p "test_e*.py"
+        run: python scripts/run_python_group.py --pattern "test_e*.py"
 
       - name: Python tests (f)
-        run: python -m unittest discover -s tests -p "test_f*.py"
+        run: python scripts/run_python_group.py --pattern "test_f*.py"
 
       - name: Python tests (g-h)
-        run: python -m unittest discover -s tests -p "test_[g-h]*.py"
+        run: python scripts/run_python_group.py --pattern "test_[g-h]*.py"
 
       - name: Python test files are all covered by exactly one group
         run: |
