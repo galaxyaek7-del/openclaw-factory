@@ -180,7 +180,15 @@ def _technical_debt_proposal(decisions_path=None, timeline_path=None, sales_ledg
         "expected_business_value": "تأكيد أن كل مكوّن مسجَّل يعمل فعلاً أو إزالته إن كان زائداً -- يقلّل سطح الصيانة الحقيقي.",
         "implementation_effort": "منخفض -- مراجعة يدوية قصيرة لكل مكوّن مُدرَج.",
         "estimated_roi": "غير مقاس بعد.",
-        "dependencies": [],
+                # Real defect fixed 2026-10-04: this was a hardcoded empty list,
+        # violating the proposal contract this module's own tests assert
+        # (every proposal carries non-empty dependencies and risks). It went
+        # unnoticed because this generator returns None whenever the
+        # underlying signal is "Unknown", so the malformed proposal only ever
+        # appeared in runs where an earlier test had already populated the
+        # orchestrator timeline / sales ledger. The real dependencies are the
+        # components the proposal asks a human to review.
+        "dependencies": list(components),
         "risks": ["مكوّن حقيقي ولكنه نادر الاستخدام قد يُزال بالخطأ إن لم تُراجَع الأسباب أولاً"],
         "evidence": result["source"],
         "generated_at": _now(),
