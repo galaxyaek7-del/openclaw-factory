@@ -78,8 +78,11 @@ jobs:
 
       - name: Python tests (b - base_arm)
         run: python -m unittest discover -s tests -p "test_base_arm.py"
-      - name: Python tests (b - book_generator_dispatch)
-        run: python -m unittest discover -s tests -p "test_book_generator_dispatch.py"
+      - name: Python tests (b - bookgen dispatch, empty chapters)
+        run: python -m unittest tests.test_book_generator_dispatch.TestChaptersDispatch.test_empty_chapters_list_fails_clearly_not_via_legacy_path
+
+      - name: Python tests (b - bookgen dispatch, non-empty chapters)
+        run: python -m unittest tests.test_book_generator_dispatch.TestChaptersDispatch.test_non_empty_chapters_routes_to_generate_book_from_content
       - name: Python tests (b - book_generator_legacy_dual_inspection)
         run: python -m unittest discover -s tests -p "test_book_generator_legacy_dual_inspection.py"
       - name: Python tests (b - book_generator_output_path_safety)
