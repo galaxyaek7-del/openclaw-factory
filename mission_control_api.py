@@ -1468,9 +1468,22 @@ def _services_engine_matrix():
 def _services_engine_discover():
     """server.js `services-engine-discover` documents
     'services_engine.py::discover_from_capabilities()'. Read-only: discovery
-    here only reads the real capability registry and does not write."""
+    here only reads the real capability registry and does not write.
+
+    Wrapped because discover_from_capabilities() returns a LIST, while every
+    _ENDPOINTS entry must return a mapping -- the CLI dispatcher raises
+    "'list' object is not a mapping" otherwise, which surfaced as a 500. Every
+    real record is preserved verbatim; only an honest count and a timestamp are
+    added around them.
+    """
     from services_engine import discover_from_capabilities
-    return discover_from_capabilities()
+    from datetime import datetime, timezone
+    discovered = discover_from_capabilities()
+    return {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "total_discovered": len(discovered),
+        "services": discovered,
+    }
 
 
 def _software_engine_status():
