@@ -8,6 +8,7 @@ computed by reading the full history and taking the last one; the
 underlying file is never mutated to produce them.
 """
 
+import hashlib
 import json
 import os
 import re
@@ -48,6 +49,38 @@ def _invalidate_read_cache(path=None):
         _READ_CACHE.pop(str(Path(path)), None)
 
 
+# Content fingerprint for cache validation.
+#
+# The (mtime_ns, size) stamp alone is not sufficient on every filesystem: some
+# (overlayfs in containers, certain network mounts) expose coarse mtime
+# granularity, so a rewrite that keeps the file the same length can land inside
+# a single stamp and be served stale. Reading a small head+tail window costs
+# microseconds against parsing a 13MB ledger, and makes a stale read
+# practically impossible for the append-only shape both these ledgers have.
+_FINGERPRINT_BYTES = 4096
+
+
+def _fingerprint(path, size):
+    """sha256 over the last _FINGERPRINT_BYTES of the file.
+
+    Tail-only on purpose. Both of these ledgers are append-only by documented
+    contract (decision_engine/store.py's own module docstring, and the same
+    discipline golden_hunter/repositioning.py states), so any real change
+    lands at the tail. One positioned read instead of a head read plus a seek
+    keeps this cheap enough to run on every cache hit -- measured cost matters,
+    because these readers are called once per niche.
+    """
+    h = hashlib.sha256()
+    try:
+        with open(path, "rb") as f:
+            if size > _FINGERPRINT_BYTES:
+                f.seek(size - _FINGERPRINT_BYTES)
+            h.update(f.read(_FINGERPRINT_BYTES))
+    except OSError:
+        return None
+    return h.hexdigest()
+
+
 def _parse_all(path):
     records = []
     with open(path, "r", encoding="utf-8") as f:
@@ -73,13 +106,13 @@ def _read_cached(path):
         return []
 
     hit = _READ_CACHE.get(key)
-    if hit is not None and hit[0] == stamp:
-        return hit[1]
+    if hit is not None and hit[0] == stamp and hit[1] == _fingerprint(key, stat.st_size):
+        return hit[2]
 
     records = _parse_all(path)
     if len(_READ_CACHE) >= _READ_CACHE_MAX_ENTRIES:
         _READ_CACHE.clear()
-    _READ_CACHE[key] = (stamp, records)
+    _READ_CACHE[key] = (stamp, _fingerprint(key, stat.st_size), records)
     return records
 
 

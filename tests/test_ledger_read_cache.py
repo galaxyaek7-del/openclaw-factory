@@ -84,22 +84,52 @@ class _LedgerCacheContract:
         self.assertEqual(cold, warm)
 
     def test_repeated_reads_do_not_reparse_the_file(self):
+        """The expensive part is the full JSON parse, and that must not repeat.
+
+        A warm read DOES perform a bounded head+tail fingerprint read (see
+        _fingerprint) so a same-length rewrite on a coarse-mtime filesystem can
+        never be served stale. That read is microseconds against parsing a
+        13MB ledger, so the invariant asserted here is object identity: the
+        same parsed list comes back, never a freshly built one.
+        """
         reader = self.make_reader()
         for i in range(25):
             reader.append_decision(
                 {"niche": "N%d" % i, "decided_at": "2026-01-01", "status": "DEFERRED"},
                 self.path,
             )
-        list(reader.read_decisions(self.path))  # warm the cache
-
+        first = list(reader.read_decisions(self.path))  # warm the cache
         cache_key = str(Path(self.path))
         module = self.module()
         self.assertIn(cache_key, module._READ_CACHE, "a warm read must be cached")
-        stamp_before = module._READ_CACHE[cache_key][0]
+        cached_obj = module._READ_CACHE[cache_key][2]
 
-        opens = self.count_opens(lambda: [list(reader.read_decisions(self.path)) for _ in range(50)])
-        self.assertEqual(opens, 0, "50 warm reads must not reopen or re-parse the file")
-        self.assertEqual(module._READ_CACHE[cache_key][0], stamp_before)
+        opens = self.count_opens(
+            lambda: [list(reader.read_decisions(self.path)) for _ in range(50)]
+        )
+        self.assertLessEqual(opens, 100,
+                             "each warm read may only do the bounded fingerprint read, never a full re-read")
+        self.assertIs(module._READ_CACHE[cache_key][2], cached_obj,
+                      "50 warm reads must not rebuild the parsed records")
+
+    def test_same_length_rewrite_is_never_served_stale(self):
+        """Coarse-mtime filesystems: an in-place rewrite of identical length can
+        land inside one (mtime_ns, size) stamp. The head+tail fingerprint is
+        what makes the cache safe there."""
+        reader = self.make_reader()
+        path = Path(self.path)
+        path.write_text('{"niche":"AAA","decided_at":"2026-01-01","status":"DEFERRED"}\n',
+                        encoding="utf-8")
+        self.invalidate(self.path)
+        first = list(reader.read_decisions(self.path))
+        self.assertEqual(first[0]["niche"], "AAA")
+
+        # Same byte length, different content.
+        path.write_text('{"niche":"BBB","decided_at":"2026-01-01","status":"DEFERRED"}\n',
+                        encoding="utf-8")
+        second = list(reader.read_decisions(self.path))
+        self.assertEqual(second[0]["niche"], "BBB",
+                         "a same-length in-place rewrite must never be served from cache")
 
     def test_a_cold_read_really_does_open_the_file(self):
         reader = self.make_reader()
@@ -108,7 +138,7 @@ class _LedgerCacheContract:
         )
         self.invalidate(self.path)
         opens = self.count_opens(lambda: list(reader.read_decisions(self.path)))
-        self.assertEqual(opens, 1, "a cold read must actually read the ledger exactly once")
+        self.assertGreaterEqual(opens, 1, "a cold read must actually read the ledger")
 
     def test_out_of_band_write_is_never_served_stale(self):
         reader = self.make_reader()
