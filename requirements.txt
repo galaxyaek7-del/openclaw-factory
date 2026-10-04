@@ -1,6 +1,17 @@
 # Python dependencies for OpenClaw Factory (Phase 10C — CI reproducibility).
-# Versions pinned to what this session's real environment has installed
-# and verified working (`pip freeze`), not guessed.
+#
+# Pinned, not floating, so a clean `pip install -r requirements.txt` reproduces
+# a known-good environment on CI. Corrected 2026-10-04: this header used to
+# claim every pin was taken from "what this session's real environment has
+# installed and verified working". That had drifted -- the developer machine has
+# reportlab 5.0.1 and pypdf 6.19.0 while CI installs 5.0.0 and 6.14.2. Both
+# sets are known-good, so the pins were left alone and the claim corrected
+# rather than the reverse.
+#
+# Every entry below was added because tracked code genuinely imports it and a
+# clean CI environment genuinely lacked it. Locally invisible each time, because
+# this machine happens to have the package installed. Keep that in mind before
+# adding anything here: `pip install` something locally and CI will not have it.
 reportlab==5.0.0
 # Bumped from 12.2.0 (Enterprise Security & Cyber Defense Mission, Phase 1
 # Security Audit, 2026-07-23, finding 2.6): pip-audit found 10 real,
@@ -35,3 +46,21 @@ beautifulsoup4==4.15.0
 # nothing breaks without them -- every cover just quietly renders worse.
 arabic-reshaper==3.0.1
 python-bidi==0.6.11
+
+# Real dependency of channels/x_arm.py's OAuth1 request signing
+# (`import oauthlib.oauth1`), and patched directly by tests/test_x_arm.py.
+# Its absence in CI surfaced as
+# "ModuleNotFoundError: No module named 'oauthlib'" -- the arm itself degrades
+# honestly when it is missing, but the test could not even patch the target.
+# Third undeclared dependency of shipped code, same class as requests and
+# beautifulsoup4 above.
+oauthlib==4.0.0
+
+# Found by scripts/audit_requirements.py, which walks every third-party import
+# in tracked code against this file. Both are installed and used in shipped
+# paths; neither was declared, and both are invisible locally for the same
+# reason requests/bs4/oauthlib were.
+#   python-dateutil -> portfolio_routing.py
+#   tenacity        -> lib/http.py (bounded retries on the shared JSON client)
+python-dateutil==2.9.0.post0
+tenacity==9.1.4
