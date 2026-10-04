@@ -73,8 +73,36 @@ jobs:
           echo "confirmed: .env is not tracked"
 
       # ── Python tests ──
-      - name: Python tests
-        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Python tests (a-h)
+        run: python -m unittest discover -s tests -p "test_[a-h]*.py"
+
+      - name: Python tests (i-p)
+        run: python -m unittest discover -s tests -p "test_[i-p]*.py"
+
+      - name: Python tests (q-z)
+        run: python -m unittest discover -s tests -p "test_[q-z]*.py"
+
+      - name: Python test files are all covered by exactly one group
+        run: |
+          python - <<'PY'
+          import glob, os, sys
+          groups = ["test_[a-h]*.py", "test_[i-p]*.py", "test_[q-z]*.py"]
+          allf = {os.path.basename(p) for p in glob.glob("tests/test_*.py")}
+          seen = {}
+          for g in groups:
+              for f in glob.glob(os.path.join("tests", g)):
+                  seen.setdefault(os.path.basename(f), []).append(g)
+          missing = sorted(allf - set(seen))
+          dupes = sorted(f for f, gs in seen.items() if len(gs) > 1)
+          print("test files: %d" % len(allf))
+          if missing:
+              print("::error::not run by any group: %s" % ", ".join(missing))
+          if dupes:
+              print("::error::run by more than one group: %s" % ", ".join(dupes))
+          if missing or dupes:
+              sys.exit(1)
+          print("every test file is covered by exactly one group")
+          PY
 
       # ── JavaScript tests (includes Dashboard tests) ──
       - name: JavaScript unit tests (metrics, dashboard data, n8n notify)
