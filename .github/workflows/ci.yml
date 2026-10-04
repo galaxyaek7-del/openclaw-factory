@@ -73,8 +73,11 @@ jobs:
           echo "confirmed: .env is not tracked"
 
       # ── Python tests ──
-      - name: Python tests (a-b)
-        run: python -m unittest discover -s tests -p "test_[a-b]*.py"
+      - name: Python tests (a)
+        run: python -m unittest discover -s tests -p "test_a*.py"
+
+      - name: Python tests (b)
+        run: python -m unittest discover -s tests -p "test_b*.py"
 
       - name: Python tests (c-d)
         run: python -m unittest discover -s tests -p "test_[c-d]*.py"
@@ -92,7 +95,7 @@ jobs:
         run: |
           python - <<'PY'
           import glob, os, sys
-          groups = ["test_[a-b]*.py", "test_[c-d]*.py", "test_e*.py",
+          groups = ["test_a*.py", "test_b*.py", "test_[c-d]*.py", "test_e*.py",
                     "test_f*.py", "test_[g-h]*.py"]
           allf = {os.path.basename(p) for p in glob.glob("tests/test_*.py")}
           seen = {}
