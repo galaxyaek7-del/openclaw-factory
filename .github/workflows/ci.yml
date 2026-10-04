@@ -73,20 +73,27 @@ jobs:
           echo "confirmed: .env is not tracked"
 
       # ── Python tests ──
-      - name: Python tests (a-h)
-        run: python -m unittest discover -s tests -p "test_[a-h]*.py"
+      - name: Python tests (a-b)
+        run: python -m unittest discover -s tests -p "test_[a-b]*.py"
 
-      - name: Python tests (i-p)
-        run: python -m unittest discover -s tests -p "test_[i-p]*.py"
+      - name: Python tests (c-d)
+        run: python -m unittest discover -s tests -p "test_[c-d]*.py"
 
-      - name: Python tests (q-z)
-        run: python -m unittest discover -s tests -p "test_[q-z]*.py"
+      - name: Python tests (e)
+        run: python -m unittest discover -s tests -p "test_e*.py"
+
+      - name: Python tests (f)
+        run: python -m unittest discover -s tests -p "test_f*.py"
+
+      - name: Python tests (g-h)
+        run: python -m unittest discover -s tests -p "test_[g-h]*.py"
 
       - name: Python test files are all covered by exactly one group
         run: |
           python - <<'PY'
           import glob, os, sys
-          groups = ["test_[a-h]*.py", "test_[i-p]*.py", "test_[q-z]*.py"]
+          groups = ["test_[a-b]*.py", "test_[c-d]*.py", "test_e*.py",
+                    "test_f*.py", "test_[g-h]*.py"]
           allf = {os.path.basename(p) for p in glob.glob("tests/test_*.py")}
           seen = {}
           for g in groups:
@@ -104,7 +111,6 @@ jobs:
           print("every test file is covered by exactly one group")
           PY
 
-      # ── JavaScript tests (includes Dashboard tests) ──
       - name: JavaScript unit tests (metrics, dashboard data, n8n notify)
         run: node --test tests/test_metrics.js tests/test_dashboard_data.js tests/test_n8n_notify.js
 
