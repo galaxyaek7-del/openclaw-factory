@@ -1391,6 +1391,102 @@ def _automation_candidates():
     return automation_candidate_report()
 
 
+# ---------------------------------------------------------------------------
+# Mission Control wiring repair (2026-10-04)
+#
+# Real defect: 11 Mission Control panels in server.js's SERVICE_REGISTRY called
+# runPythonServiceCached('<name>') for names that were never registered here,
+# so every one of them has always returned HTTP 500 -- on every machine, since
+# the day it was written. Nothing noticed because the API contract smoke test
+# had never gotten past the Python step.
+#
+# Each mapping below is NOT a guess: it is the function each panel's own
+# `reused:` field already documented, e.g.
+#   reused: 'channel_intelligence.py::payment_intelligence(), via mission_control_api.py.'
+# Every target was verified to exist and be callable before being wired.
+# These are thin, read-only passthroughs -- no new computation, no new logic.
+# ---------------------------------------------------------------------------
+
+
+def _product_lifecycle_view():
+    """Production OS (ADR-203, P0 59482ef): the read-only Product Lifecycle
+    view server.js's `product-lifecycle` panel documents as
+    'production_os.py::product_lifecycle_view()/learn_feedback()'."""
+    from production_os import product_lifecycle_view
+    return product_lifecycle_view()
+
+
+def _channel_intelligence_status():
+    """server.js `channel-intelligence-status` documents
+    'channel_intelligence.py::revenue_factory_status()'."""
+    from channel_intelligence import revenue_factory_status
+    return revenue_factory_status()
+
+
+def _channel_intelligence_payments():
+    """server.js `channel-intelligence-payments` documents
+    'channel_intelligence.py::payment_intelligence()'."""
+    from channel_intelligence import payment_intelligence
+    return payment_intelligence()
+
+
+def _channel_intelligence_product_matrix():
+    """server.js `channel-intelligence-product-matrix` documents
+    'channel_intelligence.py::product_channel_matrix()'."""
+    from channel_intelligence import product_channel_matrix
+    return product_channel_matrix()
+
+
+def _channel_intelligence_readiness():
+    """server.js `channel-intelligence-readiness` documents
+    'channel_intelligence.py::channel_readiness_summary()'."""
+    from channel_intelligence import channel_readiness_summary
+    return channel_readiness_summary()
+
+
+def _services_engine_status():
+    """server.js `services-engine-status` documents
+    'services_engine.py::revenue_factory_status()'."""
+    from services_engine import revenue_factory_status
+    return revenue_factory_status()
+
+
+def _services_engine_portfolio():
+    """server.js `services-engine-portfolio` documents
+    'services_engine.py::portfolio_status()'."""
+    from services_engine import portfolio_status
+    return portfolio_status()
+
+
+def _services_engine_matrix():
+    """server.js `services-engine-matrix` documents
+    'services_engine.py::service_channel_matrix()'."""
+    from services_engine import service_channel_matrix
+    return service_channel_matrix()
+
+
+def _services_engine_discover():
+    """server.js `services-engine-discover` documents
+    'services_engine.py::discover_from_capabilities()'. Read-only: discovery
+    here only reads the real capability registry and does not write."""
+    from services_engine import discover_from_capabilities
+    return discover_from_capabilities()
+
+
+def _software_engine_status():
+    """server.js `software-engine-status` documents
+    'software_engine.py::revenue_factory_status()'."""
+    from software_engine import revenue_factory_status
+    return revenue_factory_status()
+
+
+def _software_engine_portfolio():
+    """server.js `software-engine-portfolio` documents
+    'software_engine.py::portfolio_status()'."""
+    from software_engine import portfolio_status
+    return portfolio_status()
+
+
 def _incident_lifecycle():
     """Section 24 (ADR-209): honest 8-stage lifecycle view over
     resilience_monitor.py's real incident record -- only 2 of 8 stages
@@ -4313,6 +4409,17 @@ _ENDPOINTS = {
     "unified_operations_queue": _unified_operations_queue,
     "autonomy_levels": _autonomy_levels,
     "automation_candidates": _automation_candidates,
+    "product_lifecycle_view": _product_lifecycle_view,
+    "channel_intelligence_status": _channel_intelligence_status,
+    "channel_intelligence_payments": _channel_intelligence_payments,
+    "channel_intelligence_product_matrix": _channel_intelligence_product_matrix,
+    "channel_intelligence_readiness": _channel_intelligence_readiness,
+    "services_engine_status": _services_engine_status,
+    "services_engine_portfolio": _services_engine_portfolio,
+    "services_engine_matrix": _services_engine_matrix,
+    "services_engine_discover": _services_engine_discover,
+    "software_engine_status": _software_engine_status,
+    "software_engine_portfolio": _software_engine_portfolio,
     "incident_lifecycle": _incident_lifecycle,
     "daily_autonomous_review": _daily_autonomous_review,
     "autonomous_daily_score": _autonomous_daily_score,
