@@ -60,6 +60,22 @@ let cookie;
 const REQUEST_TIMEOUT_MS = 180000;  // observed max is 31.6s; 180s never fires on a healthy run
 const LOOP_BUDGET_MS = 3600000;     // 60 min: fires long before the 6h job kill, naming the endpoint in flight
 
+// SUITE budget. Added after observing the real consequence of the two bounds
+// above being insufficient on their own: bounding every request (180s) and
+// every loop (60 min) still left this step running for 142 minutes on the CI
+// runner, because the guard was per-loop and nothing bounded the ~50 remaining
+// tests that follow both loops -- finance CRUD, the live agent/chat routes, and
+// the two ?fresh=1 endpoints that deliberately bypass the cache.
+//
+// Deliberately set ABOVE the slowest legitimate CI run observed (~142 min) and
+// well BELOW GitHub's 6-hour job limit. Its only job is to convert "killed at
+// 6h with no diagnosis" into a loud failure that names what was still running.
+// It is a backstop, not a performance target: if this ever fires, the honest
+// conclusion is that the suite's scope no longer fits a CI runner, and the fix
+// belongs in the suite's structure -- not in a larger number here.
+const SUITE_BUDGET_MS = 10800000;   // 3h
+const SUITE_START = Date.now();
+
 const slowest = [];
 
 async function fetchWithTimeout(url, options = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
@@ -68,11 +84,22 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = REQUEST_TIMEOUT_M
     return await fetch(url, { ...options, signal: AbortSignal.timeout(timeoutMs) });
   } catch (err) {
     const elapsed = Date.now() - startedAt;
+    const suiteElapsed = Date.now() - SUITE_START;
+    if (suiteElapsed > SUITE_BUDGET_MS) {
+      const worst = slowest.slice(-5).map(r => `${r.url} (${r.seconds.toFixed(1)}s)`).join(', ');
+      throw new Error(
+        `TIMEOUT / ENVIRONMENTAL_FAILURE (not a pass): the whole API-contract suite `
+        + `exceeded its ${SUITE_BUDGET_MS}ms budget (elapsed ${(suiteElapsed / 60000).toFixed(0)}min) `
+        + `while requesting ${url}. Last requests: ${worst}. This suite probes every `
+        + `service in SERVICE_REGISTRY sequentially and each one spawns a real Python `
+        + `subprocess; its scope no longer fits a CI runner.`);
+    }
     if (err && (err.name === 'TimeoutError' || err.name === 'AbortError')) {
       throw new Error(
         `TIMEOUT / ENVIRONMENTAL_FAILURE (not a pass): ${url} did not respond within `
         + `${timeoutMs}ms (waited ${elapsed}ms). This is a bounded diagnostic timeout, `
-        + `not a verdict on the endpoint's contract.`);
+        + `not a verdict on the endpoint's contract. Suite elapsed at that point: `
+        + `${(suiteElapsed / 60000).toFixed(0)}min.`);
     }
     throw err;
   }
