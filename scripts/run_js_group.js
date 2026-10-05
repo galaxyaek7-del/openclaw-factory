@@ -73,21 +73,57 @@ if (res.status === 0) {
 // spawn failure, an unhandled rejection) there are no `not ok` lines at all,
 // and the step would otherwise fail with no explanation whatsoever.
 const lines = out.split('\n');
-const failures = lines.filter((l) => /^not ok \d+ - /.test(l));
-console.log(`::group::failure details (${failures.length} parsed, exit ${res.status})`);
-for (const line of failures.slice(0, 40)) {
-  const name = line.replace(/^not ok \d+ - /, '').trim();
-  console.log(`::error::${name.replace(/\s+/g, ' ').slice(0, 600)}`);
+
+/**
+ * The assertion detail for a failing subtest lives in the YAML-ish block that
+ * FOLLOWS its `not ok` line, not in the line itself:
+ *
+ *   not ok 5 - some test name
+ *     ---
+ *     error: |-
+ *       Expected values to be strictly equal:
+ *       + actual - expected
+ *     code: 'ERR_ASSERTION'
+ *
+ * Reporting only the name (as this wrapper originally did) turns a precise
+ * diagnosis into guesswork. Capture the block.
+ */
+function detailAfter(index) {
+  const collected = [];
+  for (let i = index + 1; i < lines.length && i < index + 60; i += 1) {
+    const l = lines[i];
+    if (/^(not )?ok \d+ - /.test(l)) break;      // next subtest
+    if (/^# (tests|pass|fail)/.test(l)) break;    // end of TAP stream
+    if (/^\s+(error|code|expected|actual|operator|name):/.test(l)
+        || /^\s{4,}\S/.test(l)) {
+      collected.push(l.trim());
+    }
+    if (collected.join(' ').length > 500) break;
+  }
+  return collected.join(' | ').replace(/\s+/g, ' ').trim();
 }
-if (failures.length === 0) {
+
+const failureIdx = [];
+lines.forEach((l, i) => {
+  if (/^not ok \d+ - /.test(l)) failureIdx.push(i);
+});
+
+console.log(`::group::failure details (${failureIdx.length} parsed, exit ${res.status})`);
+for (const i of failureIdx.slice(0, 40)) {
+  const name = lines[i].replace(/^not ok \d+ - /, '').trim();
+  const detail = detailAfter(i);
+  console.log(`::error::${name.replace(/\s+/g, ' ').slice(0, 400)}`);
+  if (detail) console.log(`::error::    detail: ${detail.slice(0, 900)}`);
+}
+if (failureIdx.length === 0) {
   console.log(`::error::run exited ${res.status} with no parsable test failure`);
   console.log(`::error::signal=${res.signal || 'none'}`);
   const tail = lines.map((l) => l.trim()).filter((l) => l && !l.startsWith('#')).slice(-12);
   for (const line of tail) {
     console.log(`::error::output: ${line.replace(/\s+/g, ' ').slice(0, 500)}`);
   }
-} else if (failures.length > 40) {
-  console.log(`::error::...and ${failures.length - 40} more`);
+} else if (failureIdx.length > 40) {
+  console.log(`::error::...and ${failureIdx.length - 40} more`);
 }
 console.log('::endgroup::');
 

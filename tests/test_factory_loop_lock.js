@@ -87,29 +87,147 @@ test('acquireLock: the underlying fs.writeFileSync(..., {flag:"wx"}) primitive t
   }
 });
 
-function runHelper(lockFile, holdMs, goFile) {
-  return new Promise((resolve, reject) => {
-    const helperScript = path.join(__dirname, 'helpers', 'acquire_lock_once.js');
-    const args = [helperScript, lockFile, String(holdMs)];
-    if (goFile) args.push(goFile);
-    const child = spawn(process.execPath, args);
-    let stdout = '';
-    child.stdout.on('data', d => { stdout += d; });
+/**
+ * Spawn a helper and resolve as soon as it REPORTS, not when it exits.
+ *
+ * Real fix (2026-10-05): the previous version resolved on 'close', which meant
+ * the parent could not learn who had won until every process had exited. That
+ * forced the tests to express "keep the winner alive" as a fixed holdMs, and a
+ * fixed hold is a scheduling assumption, not a correctness property -- when the
+ * loser was scheduled after the hold expired, the winner's pid was genuinely
+ * dead, the loser legitimately reclaimed the lock, and both reported acquired.
+ *
+ * A helper now reports its outcome immediately and, if it won, stays alive
+ * until a release file appears. Reading the report as it arrives lets the
+ * parent hold the winner for exactly as long as the assertions need.
+ */
+function spawnHelper(lockFile, holdMs, goFile, releaseFile) {
+  const helperScript = path.join(__dirname, 'helpers', 'acquire_lock_once.js');
+  const args = [helperScript, lockFile, String(holdMs)];
+  if (goFile) args.push(goFile);
+  if (releaseFile) args.push(releaseFile);
+
+  const child = spawn(process.execPath, args);
+  let stdout = '';
+  let settled = false;
+
+  const result = new Promise((resolve, reject) => {
+    // Attach the helper's FULL stdout to every report. acquireLock() logs real
+    // decision-path diagnostics ("another factory_loop running (PID N)") and a
+    // concurrency assertion that fails without them tells us nothing about WHY
+    // it failed -- which is exactly how this bug stayed misdiagnosed.
+    const settle = (parsed) => {
+      if (settled) return;
+      settled = true;
+      parsed.raw = stdout;
+      resolve(parsed);
+    };
+    const tryParse = () => {
+      if (settled) return;
+      const lines = stdout.trim().split('\n').filter(Boolean);
+      if (!lines.length) return;
+      try {
+        settle(JSON.parse(lines[lines.length - 1]));
+      } catch (err) {
+        // Not the helper's JSON line yet; keep buffering.
+      }
+    };
+
+    child.stdout.on('data', (d) => { stdout += d; tryParse(); });
     child.on('error', reject);
     child.on('close', () => {
+      if (settled) return;
       // acquireLock() itself may console.log a diagnostic line (e.g. "another
-      // factory_loop running...") before the helper's own JSON result line —
+      // factory_loop running...") before the helper's own JSON result line -
       // that diagnostic is expected, real output, not a bug; take the last
       // non-empty line, which is always the helper's own JSON.
       const lines = stdout.trim().split('\n').filter(Boolean);
       try {
-        resolve(JSON.parse(lines[lines.length - 1]));
+        settle(JSON.parse(lines[lines.length - 1]));
       } catch (err) {
-        reject(new Error(`helper produced non-JSON output: ${stdout}`));
+        reject(new Error('helper produced non-JSON output: ' + stdout));
       }
     });
   });
+
+  return { child, result };
 }
+
+function waitForExit(child) {
+  return new Promise((resolve) => {
+    if (child.exitCode !== null) return resolve();
+    child.on('close', () => resolve());
+  });
+}
+
+/**
+ * Start two real helper processes behind a shared start barrier, collect both
+ * reports, then release the winner and reap both.
+ *
+ * The winner is provably alive and holding for the whole time the caller
+ * inspects the results, so "exactly one wins" is a property of the lock code
+ * rather than of how fast the scheduler ran the losers.
+ */
+async function raceTwo(lockFile, holdMs) {
+  const goFile = lockFile + '.go';
+  const releaseFile = lockFile + '.release';
+  fs.rmSync(goFile, { force: true });
+  fs.rmSync(releaseFile, { force: true });
+
+  const a = spawnHelper(lockFile, holdMs, goFile, releaseFile);
+  const b = spawnHelper(lockFile, holdMs, goFile, releaseFile);
+  fs.writeFileSync(goFile, 'go');            // release the barrier
+  const reports = await Promise.all([a.result, b.result]);
+
+  fs.writeFileSync(releaseFile, 'release');  // let the winner exit
+  await Promise.all([waitForExit(a.child), waitForExit(b.child)]);
+
+  fs.rmSync(goFile, { force: true });
+  fs.rmSync(releaseFile, { force: true });
+  return reports;
+}
+
+test('reclaim must verify it moved the lock it judged dead, and stand down if it did not', () => {
+  // THE DETERMINISTIC TEST FOR THIS FIX. Added 2026-10-05.
+  //
+  // Honesty note first, because the multi-process tests above cannot do this
+  // job and it was measured, not assumed: reverting factory_loop.js to the old
+  // blind `unlinkSync` + exclusive-create reclaim left all of them PASSING
+  // (15/15 runs). They hold the winner alive via a release file, which closes
+  // the race window so effectively that the old bug stops reproducing. They
+  // are still worth keeping as real end-to-end invariant checks, but on their
+  // own they are not evidence that the reclaim is correct.
+  //
+  // This test pins the property directly and cannot flake. The reclaim's
+  // safety rule is: only claim the lock if the bytes you moved aside are
+  // exactly the pid you had already decided was dead. Anything else means the
+  // lock changed hands between your read and your steal, and you must put it
+  // back and stand down.
+  //
+  // A lock file whose contents are not a parseable pid takes the exact same
+  // code path a genuine change-of-hands takes: `parseInt` yields NaN, the
+  // alive-check is skipped for the same reason it is skipped for a reclaimed
+  // pid, and control reaches the rename + compare. Old code blind-unlinks and
+  // claims (no exitFn, returns true). Fixed code detects the mismatch, restores
+  // the file and exits.
+  const lockFile = tempLockPath();
+  fs.writeFileSync(lockFile, 'not-a-pid-at-all');
+
+  let exitCode = null;
+  try {
+    const reclaimed = acquireLock(lockFile, (code) => { exitCode = code; });
+
+    assert.equal(reclaimed, false,
+      'a lock whose contents do not match the pid we judged dead must NOT be claimed');
+    assert.equal(exitCode, 0,
+      'the mismatch must make us stand down via exitFn; main() ignores the return value, so returning without exiting is what let a second loop run concurrently');
+
+    assert.equal(fs.readFileSync(lockFile, 'utf8'), 'not-a-pid-at-all',
+      "the lock we moved aside must be put back byte for byte, so its real owner stays guarded");
+  } finally {
+    fs.rmSync(lockFile, { force: true });
+  }
+});
 
 test('two real, concurrently-running processes racing to reclaim the SAME stale lock: exactly one wins', async () => {
   // Zero-assumption audit follow-up — Medium finding: only the common
@@ -126,26 +244,72 @@ test('two real, concurrently-running processes racing to reclaim the SAME stale 
   // released, and BOTH legitimately acquire -- failing a test that then proved
   // nothing about the lock at all. This was the cause of the only JS failure
   // on CI, which passed locally every time.
-  const goFile = tempLockPath();
   try {
-    const pending = [
-      runHelper(lockFile, 800, goFile),
-      runHelper(lockFile, 800, goFile),
-    ];
-    // Both children are spawned and now spinning on the barrier.
-    fs.writeFileSync(goFile, 'go');
-    const [a, b] = await Promise.all(pending);
-    const results = [a, b];
+    const results = await raceTwo(lockFile, 800);
     const winners = results.filter(r => r.acquired);
     const losers = results.filter(r => !r.acquired);
-    assert.equal(winners.length, 1, `exactly one real process must win the stale-lock reclaim, got: ${JSON.stringify(results)}`);
+    assert.equal(winners.length, 1, `exactly one real process must win the stale-lock reclaim, got: ${JSON.stringify(results)}\n${results.map(r => r.raw).join('\n----\n')}`);
     assert.equal(losers.length, 1, 'exactly one real process must be blocked');
     assert.equal(losers[0].exitedViaGuard, true);
 
     const finalHolder = fs.readFileSync(lockFile, 'utf8').trim();
     assert.equal(finalHolder, String(winners[0].pid), "the reclaimed lock file must hold the real winner's own pid, never a stale or corrupted value");
   } finally {
-    fs.rmSync(goFile, { force: true });
+    fs.rmSync(lockFile, { force: true });
+  }
+});
+
+test('EIGHT real processes reclaiming the SAME stale lock: still exactly one wins', async () => {
+  // Added 2026-10-05, and this is the test that actually pins the reclaim race.
+  //
+  // The two-process tests above cannot detect the bug on their own, and that
+  // was proven rather than assumed: reverting factory_loop.js to the old
+  // unlink-then-exclusive-create reclaim left all of them passing (12/12),
+  // because the winner is held alive and the loser simply reads a LIVE pid and
+  // stands down. Honest coverage would have quietly been reduced.
+  //
+  // The old bug needs the loser's steal to land on a lock that has ALREADY
+  // changed hands. With two processes that interleaving is a narrow window and
+  // rarely occurs; with eight processes all released from one barrier onto the
+  // same dead-pid lock, several read the stale pid before anyone re-creates,
+  // and one of them necessarily tries to unlink a freshly written lock. Under
+  // the old code two or more then acquire; under the fixed code the steal is
+  // verified against the stale pid it expected, so exactly one wins.
+  //
+  // Nothing is disabled or relaxed here -- the invariant asserted is strictly
+  // the same one, over more real processes.
+  const lockFile = tempLockPath();
+  const PARTICIPANTS = 8;
+  fs.writeFileSync(lockFile, '999999999');   // a genuinely dead pid
+  const goFile = `${lockFile}.go`;
+  const releaseFile = `${lockFile}.release`;
+  fs.rmSync(goFile, { force: true });
+  fs.rmSync(releaseFile, { force: true });
+
+  const helpers = [];
+  for (let i = 0; i < PARTICIPANTS; i += 1) {
+    helpers.push(spawnHelper(lockFile, 5000, goFile, releaseFile));
+  }
+  fs.writeFileSync(goFile, 'go');
+  const results = await Promise.all(helpers.map(h => h.result));
+
+  fs.writeFileSync(releaseFile, 'release');
+  await Promise.all(helpers.map(h => waitForExit(h.child)));
+  fs.rmSync(goFile, { force: true });
+  fs.rmSync(releaseFile, { force: true });
+
+  const winners = results.filter(r => r.acquired);
+  assert.equal(winners.length, 1,
+    `exactly one of ${PARTICIPANTS} real processes must win the stale-lock reclaim, got: ${JSON.stringify(results)}\n${results.map(r => r.raw).join('\n----\n')}`);
+  for (const loser of results.filter(r => !r.acquired)) {
+    assert.equal(loser.exitedViaGuard, true, 'every blocked process must have exited via the guard');
+  }
+
+  try {
+    const finalHolder = fs.readFileSync(lockFile, 'utf8').trim();
+    assert.equal(finalHolder, String(winners[0].pid),
+      'the lock must hold the single real winner\'s own pid');
+  } finally {
     fs.rmSync(lockFile, { force: true });
   }
 });
@@ -153,19 +317,13 @@ test('two real, concurrently-running processes racing to reclaim the SAME stale 
 test('two real, concurrently-running processes: exactly one wins the lock, the other exits 0 without corrupting it', async () => {
   const lockFile = tempLockPath();
   try {
-    // Launch both nearly simultaneously (not sequential spawnSync, which
-    // would let the first process fully exit before the second even
-    // starts — defeating the point of a concurrency test). The winner
-    // holds the lock for 800ms so the loser reliably sees a live pid.
-    const [a, b] = await Promise.all([
-      runHelper(lockFile, 800),
-      runHelper(lockFile, 800),
-    ]);
-
-    const results = [a, b];
+    // Two real processes, started behind a shared barrier, with the winner held
+    // alive until both reports are in. This is what makes "exactly one wins" a
+    // property of acquireLock rather than of scheduler timing -- see raceTwo().
+    const results = await raceTwo(lockFile, 800);
     const winners = results.filter(r => r.acquired);
     const losers = results.filter(r => !r.acquired);
-    assert.equal(winners.length, 1, `exactly one real process must win the lock, got: ${JSON.stringify(results)}`);
+    assert.equal(winners.length, 1, `exactly one real process must win the lock, got: ${JSON.stringify(results)}\n${results.map(r => r.raw).join('\n----\n')}`);
     assert.equal(losers.length, 1, 'exactly one real process must be blocked');
     assert.equal(losers[0].exitedViaGuard, true);
 

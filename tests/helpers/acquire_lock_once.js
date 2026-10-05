@@ -1,18 +1,23 @@
 // Helper process for tests/test_factory_loop_lock.js's real two-process
-// race test. Not a test itself — invoked as:
-//   node tests/helpers/acquire_lock_once.js <lockFilePath> <holdMs> [goFilePath]
+// tests. Not a test itself — invoked as:
+//   node tests/helpers/acquire_lock_once.js <lockFile> <holdMs> [goFile] [releaseFile]
 //
-// Prints one JSON line describing what happened, then (if it won the
-// lock) stays alive for <holdMs> ms so a concurrently-spawned second
-// process sees a genuinely live pid, not an already-exited one.
+// Prints one JSON line describing what happened the moment the outcome is
+// known, and — if it won the lock — then stays alive until <releaseFile>
+// appears (or <holdMs> elapses as a backstop).
 //
-// goFilePath (optional, added 2026-10-05): a start barrier. The helper waits
-// for this file to appear before attempting the lock. Without it the "race"
-// was not guaranteed to be one -- if the runner was slow enough that process
-// B spawned only after process A had finished its hold and released the lock,
-// B legitimately acquired it too and the test failed having proved nothing.
-// Both helpers now wait for the same go file, so neither can start before the
-// other is ready.
+// Why releaseFile (2026-10-05): both real-process tests previously relied on a
+// fixed holdMs to keep the winner alive "long enough" for the loser to attempt.
+// That is a scheduling assumption, not a correctness property. When the loser
+// was scheduled after the winner's hold expired, the winner had already
+// exited, so `isPidAliveWithIdentity` correctly reported a DEAD pid and the
+// loser legitimately reclaimed the lock — both reported acquired, and the test
+// failed having proved nothing. Reproduced locally ~1 run in 12.
+//
+// With a release file the winner provably stays alive for the whole test, so
+// the loser's attempt ALWAYS lands on a live owner. The invariant under test —
+// while a live process holds the lock, no second process can acquire it —
+// becomes deterministic instead of a race against the scheduler.
 
 const fs = require('fs');
 
@@ -21,37 +26,51 @@ const { acquireLock } = require('../../factory_loop.js');
 const lockFile = process.argv[2];
 const holdMs = parseInt(process.argv[3], 10) || 0;
 const goFile = process.argv[4] || null;
+const releaseFile = process.argv[5] || null;
+
 let exitedViaGuard = false;
 
-function waitForGo() {
-  if (!goFile) return;
-  const deadline = Date.now() + 10000;
-  while (!fs.existsSync(goFile)) {
-    if (Date.now() > deadline) {
-      console.error('helper: timed out waiting for the start barrier ' + goFile);
-      process.exit(3);
-    }
-    // Atomics.wait is not available on the main thread, so this is a short
-    // sleep loop. It is bounded and only ever runs before the real work.
-    const end = Date.now() + 5;
-    while (Date.now() < end) { /* spin briefly */ }
-  }
+function spin(ms) {
+  const end = Date.now() + ms;
+  while (Date.now() < end) { /* bounded wait */ }
 }
 
-waitForGo();
+function waitFor(what, timeoutMs) {
+  const deadline = Date.now() + timeoutMs;
+  while (!fs.existsSync(what)) {
+    if (Date.now() > deadline) return false;
+    spin(5);
+  }
+  return true;
+}
+
+// Start barrier: neither process may begin before the other is ready.
+if (goFile) {
+  if (!waitFor(goFile, 10000)) {
+    console.error('helper: timed out waiting for the start barrier ' + goFile);
+    process.exit(3);
+  }
+}
 
 acquireLock(lockFile, () => {
   exitedViaGuard = true;
 });
 
+// Report the outcome immediately: the parent must not have to wait for exit to
+// learn who won, because the winner deliberately stays alive.
 console.log(JSON.stringify({
   pid: process.pid,
   acquired: !exitedViaGuard,
   exitedViaGuard,
 }));
 
-if (!exitedViaGuard && holdMs > 0) {
-  setTimeout(() => process.exit(0), holdMs);
-} else {
+if (exitedViaGuard) {
   process.exit(0);
 }
+
+if (releaseFile) {
+  waitFor(releaseFile, Math.max(holdMs, 30000));
+} else if (holdMs > 0) {
+  spin(holdMs);
+}
+process.exit(0);

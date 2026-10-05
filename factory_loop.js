@@ -184,6 +184,11 @@ function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit, execFn = null)
       return false;
     }
   }
+  // Tracks whether we have begun the stale-lock STEAL. Set immediately before
+  // the rename and cleared never: once we start stealing, any unexpected
+  // filesystem error means another process owns the transition, and the only
+  // safe side is to stand down. See the outer catch for why this matters.
+  let reclaiming = false;
   // A lock file already exists — check whether its owner is still alive.
   let existingPid;
   try {
@@ -220,25 +225,105 @@ function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit, execFn = null)
     // closed the "no lock file yet" race, not this one. Two processes
     // starting right after a crash (stale lock still present) could both
     // pass the dead-PID check above and both believe they'd reclaimed it.
-    // Fixed with unlink-then-exclusive-create: the OS guarantees only one
-    // caller can ever successfully unlink the SAME directory entry — a
-    // second caller's unlink throws ENOENT, which is treated as "someone
-    // else already reclaimed it," not a collision to paper over.
+    //
+    // Real race fixed 2026-10-05. The previous fix here was unlink-then-
+    // exclusive-create, justified in a comment as: "the OS guarantees only one
+    // caller can ever successfully unlink the SAME directory entry — a second
+    // caller's unlink throws ENOENT". That reasoning is WRONG. A directory entry
+    // is a path, not a fixed inode: if A unlinks and re-creates before B's
+    // unlink runs, B's unlink succeeds against A's BRAND NEW file and B's
+    // exclusive-create then succeeds too. Both acquire. Measured locally with
+    // two real racing processes:
+    //   [{"pid":18952,"acquired":true},{"pid":16500,"acquired":true}]
+    //
+    // The fix is to make the steal verifiable rather than assumed:
+    //   1. renameSync moves the lock aside atomically (ENOENT = someone else
+    //      already took it, so we stand down);
+    //   2. read back what we actually moved and compare it to the stale pid we
+    //      decided to reclaim. If it differs, we stole a LIVE lock that changed
+    //      hands between our read and our rename — so put it back byte for byte
+    //      and stand down. Losing is the safe side.
+    //   3. only then claim it with the exclusive create, which is the one
+    //      primitive that actually grants mutual exclusion.
+    reclaiming = true;
+    const stolenAs = `${lockFile}.reclaim.${process.pid}.${Date.now()}`;
     try {
-      fs.unlinkSync(lockFile);
-    } catch (unlinkErr) {
-      if (unlinkErr.code === 'ENOENT') {
+      fs.renameSync(lockFile, stolenAs);
+    } catch (stealErr) {
+      if (stealErr.code === 'ENOENT') {
         console.log('[factory_loop] another factory_loop already reclaimed the stale lock, exiting');
         exitFn(0);
         return false;
       }
-      throw unlinkErr;
+      throw stealErr;
     }
-    fs.writeFileSync(lockFile, String(process.pid), { flag: 'wx' });
-    return true;
+
+    let stolenContent = null;
+    try {
+      stolenContent = fs.readFileSync(stolenAs, 'utf8').trim();
+    } finally {
+      try { fs.unlinkSync(stolenAs); } catch (_) { /* best effort */ }
+    }
+
+    if (stolenContent !== String(existingPid)) {
+      // We removed a lock that had already changed hands. Put it back exactly
+      // as found so its real owner is still guarded, then stand down.
+      try {
+        fs.writeFileSync(lockFile, stolenContent, { flag: 'wx' });
+      } catch (_) {
+        // Another process re-created it first; that is the correct outcome.
+      }
+      console.log('[factory_loop] stale lock changed hands during reclaim, restoring it and exiting');
+      exitFn(0);
+      return false;
+    }
+
+    try {
+      fs.writeFileSync(lockFile, String(process.pid), { flag: 'wx' });
+      return true;
+    } catch (claimErr) {
+      if (claimErr.code === 'EEXIST') {
+        console.log('[factory_loop] lost the reclaim race at the final claim, exiting');
+        exitFn(0);
+        return false;
+      }
+      throw claimErr;
+    }
   } catch (err) {
     // Disk full, permissions, etc. — never let the lockfile itself block
     // startup; worst case this run just isn't guarded against a duplicate.
+    // REAL BUG, found 2026-10-05 by a two-process race test that failed only
+    // ~1 run in 15, never deterministically. Original failure, verbatim:
+    //
+    //   [factory_loop] lockfile check failed, continuing without guard: ENOENT:
+    //   no such file or directory, open '.../x.lock.reclaim.3292.1791193485282'
+    //   {"pid":3292,"acquired":true,"exitedViaGuard":false}
+    //
+    // Both racing processes reported success while only one of them held the
+    // lock. Why: the entry we had just renamed aside could not be read back
+    // (it had been removed underneath us), the error escaped to here, and this
+    // catch did two fatal things:
+    //
+    //   1. it returned WITHOUT calling exitFn. main() calls
+    //      `const wasStaleLock = acquireLock()` and ignores the return value
+    //      entirely, so "I was not told to exit" was silently interpreted as
+    //      "I hold the lock". The losing process therefore ran a full
+    //      concurrent factory loop against the real holder -- exactly what this
+    //      guard exists to prevent, and it was completely silent.
+    //   2. it told the caller it was "continuing without guard", which is only
+    //      ever true for a genuine pre-claim infrastructure failure (the first
+    //      exclusive-create above). Once the steal is under way, somebody else
+    //      owns the lock transition; continuing is the unsafe side.
+    //
+    // Fix: if we were stealing, stand down. Losing is safe -- the winner is
+    // already running -- whereas continuing unlocked was not.
+    if (reclaiming) {
+      console.log('[factory_loop] stale-lock reclaim failed mid-flight, exiting:', err.message);
+      exitFn(0);
+      return false;
+    }
+    // No steal was under way: this is the original, deliberate pre-claim
+    // fallback for a genuine filesystem failure (disk full, permissions).
     console.error('[factory_loop] lockfile check failed, continuing without guard:', err.message);
     return false;
   }
