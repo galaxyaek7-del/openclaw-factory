@@ -31,11 +31,93 @@ const REPO_ROOT = path.join(__dirname, '..');
 let serverProcess;
 let cookie;
 
+// ── Bounded waits (added 2026-10-05, test-only) ──────────────────────────────
+//
+// DIAGNOSIS, because "it was quiet for 41 minutes" needed evidence rather than
+// a guess. Measured directly, not inferred: booting server.js exactly as
+// test.before() does and timing every service data endpoint sequentially gives
+//
+//     213 services probed, cumulative 874s (~14.6 min), 0 errors, 0 hangs,
+//     slowest: executive-brain 21.5s, strategic-planning-dashboard 31.6s
+//
+// So this suite was never deadlocked and never retrying: it is CUMULATIVE
+// SEQUENTIAL COST. Every service handler spawns a real Python subprocess, this
+// loop awaits 213 of them one at a time, and a 2-core GitHub runner is roughly
+// 2.5-3x slower than the machine measured on -- which extrapolates to ~37-44 min
+// and is exactly what CI was observed doing. Meanwhile node --test buffers TAP
+// per test, so silence just meant "still inside the loop".
+//
+// Two real defects this exposed, both in the TEST, not the production code:
+//   1. Every fetch() in this file had NO timeout (zero AbortController / signal
+//      in 551 lines). One genuinely wedged endpoint therefore blocks forever and
+//      the job is killed by GitHub's 6h limit, which reports infrastructure
+//      noise instead of a diagnosis.
+//   2. There was no overall budget, so "slow" and "hung" were indistinguishable.
+//
+// The repair bounds both WITHOUT weakening coverage: all 213 services are still
+// probed, nothing is skipped or mocked, and no assertion is relaxed. A timeout
+// is reported as a loud, self-describing failure -- never as a pass.
+const REQUEST_TIMEOUT_MS = 180000;  // observed max is 31.6s; 180s never fires on a healthy run
+const LOOP_BUDGET_MS = 3600000;     // 60 min: fires long before the 6h job kill, naming the endpoint in flight
+
+const slowest = [];
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
+  const startedAt = Date.now();
+  try {
+    return await fetch(url, { ...options, signal: AbortSignal.timeout(timeoutMs) });
+  } catch (err) {
+    const elapsed = Date.now() - startedAt;
+    if (err && (err.name === 'TimeoutError' || err.name === 'AbortError')) {
+      throw new Error(
+        `TIMEOUT / ENVIRONMENTAL_FAILURE (not a pass): ${url} did not respond within `
+        + `${timeoutMs}ms (waited ${elapsed}ms). This is a bounded diagnostic timeout, `
+        + `not a verdict on the endpoint's contract.`);
+    }
+    throw err;
+  }
+}
+
+function timedRequest(url, options = {}) {
+  const startedAt = Date.now();
+  return fetchWithTimeout(url, options).then(
+    (res) => {
+      const dt = (Date.now() - startedAt) / 1000;
+      slowest.push({ url: String(url), seconds: dt });
+      return res;
+    },
+    (err) => {
+      const dt = (Date.now() - startedAt) / 1000;
+      slowest.push({ url: String(url), seconds: dt, failed: true });
+      throw err;
+    });
+}
+
+function assertWithinLoopBudget(label, startedAt) {
+  const elapsed = Date.now() - startedAt;
+  if (elapsed > LOOP_BUDGET_MS) {
+    const worst = slowest.slice(-5).map(r => `${r.url} (${r.seconds.toFixed(1)}s)`).join(', ');
+    throw new Error(
+      `TIMEOUT / ENVIRONMENTAL_FAILURE (not a pass): ${label} exceeded its `
+      + `${LOOP_BUDGET_MS}ms budget (elapsed ${(elapsed / 1000).toFixed(0)}s). `
+      + `Last requests: ${worst}`);
+  }
+  return elapsed;
+}
+
+
 async function waitForServer(timeoutMs = 15000) {
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
     try {
-      const res = await fetch(`${BASE_URL}/api/dashboard`);
+      // Bounded, but NOT tighter than a real cold /api/dashboard: that endpoint
+      // runs computeHealthStatus(), which performs live network reachability
+      // probes and legitimately takes 3-5s. A 3s poll here made every attempt
+      // time out and the server was reported as never ready -- a regression I
+      // introduced while adding these bounds, caught by running the suite
+      // rather than by reading the diff. The outer 15s deadline in
+      // waitForServer still bounds the whole wait, exactly as before.
+      const res = await fetchWithTimeout(`${BASE_URL}/api/dashboard`, {}, 10000);
       if (res.status) return;
     } catch {
       // not up yet
@@ -52,7 +134,7 @@ test.before(async () => {
   });
   await waitForServer();
 
-  const loginRes = await fetch(`${BASE_URL}/api/mission-control/login`, {
+  const loginRes = await fetchWithTimeout(`${BASE_URL}/api/mission-control/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ password: TEST_PASSWORD }),
@@ -67,7 +149,7 @@ test.after(() => {
 });
 
 test('GET /api/v1/docs lists every registered service with both a data and health endpoint', async () => {
-  const res = await fetch(`${BASE_URL}/api/v1/docs`, { headers: { Cookie: cookie } });
+  const res = await fetchWithTimeout(`${BASE_URL}/api/v1/docs`, { headers: { Cookie: cookie } });
   assert.equal(res.status, 200);
   const body = await res.json();
   assert.equal(body.success, true);
@@ -92,11 +174,13 @@ test('GET /api/v1/docs lists every registered service with both a data and healt
 const SMOKE_TEST_EXCLUDED_SERVICES = new Set(['truth-registry-report']);
 
 test('every documented service responds 200 with the standard success envelope', async () => {
-  const docsRes = await fetch(`${BASE_URL}/api/v1/docs`, { headers: { Cookie: cookie } });
+  const startedAt = Date.now();
+  const docsRes = await fetchWithTimeout(`${BASE_URL}/api/v1/docs`, { headers: { Cookie: cookie } });
   const { services } = await docsRes.json();
   for (const svc of services) {
+    assertWithinLoopBudget('every-service data loop', startedAt);
     if (SMOKE_TEST_EXCLUDED_SERVICES.has(svc.name)) continue;
-    const res = await fetch(`${BASE_URL}${svc.data_endpoint}`, { headers: { Cookie: cookie } });
+    const res = await timedRequest(`${BASE_URL}${svc.data_endpoint}`, { headers: { Cookie: cookie } });
     assert.equal(res.status, 200, `${svc.name} data endpoint should return 200`);
     const body = await res.json();
     assert.equal(body.success, true, `${svc.name} should report success:true`);
@@ -107,10 +191,12 @@ test('every documented service responds 200 with the standard success envelope',
 });
 
 test('every documented service health endpoint responds with a real status', async () => {
-  const docsRes = await fetch(`${BASE_URL}/api/v1/docs`, { headers: { Cookie: cookie } });
+  const startedAt = Date.now();
+  const docsRes = await fetchWithTimeout(`${BASE_URL}/api/v1/docs`, { headers: { Cookie: cookie } });
   const { services } = await docsRes.json();
   for (const svc of services) {
-    const res = await fetch(`${BASE_URL}${svc.health_endpoint}`, { headers: { Cookie: cookie } });
+    assertWithinLoopBudget('every-service health loop', startedAt);
+    const res = await timedRequest(`${BASE_URL}${svc.health_endpoint}`, { headers: { Cookie: cookie } });
     assert.equal(res.status, 200, `${svc.name} health endpoint should return 200`);
     const body = await res.json();
     assert.equal(body.success, true);
@@ -119,9 +205,9 @@ test('every documented service health endpoint responds with a real status', asy
 });
 
 test('GET /api/v1/health aggregates all documented services', async () => {
-  const docsRes = await fetch(`${BASE_URL}/api/v1/docs`, { headers: { Cookie: cookie } });
+  const docsRes = await fetchWithTimeout(`${BASE_URL}/api/v1/docs`, { headers: { Cookie: cookie } });
   const { services } = await docsRes.json();
-  const res = await fetch(`${BASE_URL}/api/v1/health`, { headers: { Cookie: cookie } });
+  const res = await fetchWithTimeout(`${BASE_URL}/api/v1/health`, { headers: { Cookie: cookie } });
   assert.equal(res.status, 200);
   const body = await res.json();
   assert.equal(body.total_count, services.length);
@@ -129,7 +215,7 @@ test('GET /api/v1/health aggregates all documented services', async () => {
 });
 
 test('GET /api/v1/metrics returns valid Prometheus exposition format', async () => {
-  const res = await fetch(`${BASE_URL}/api/v1/metrics`, { headers: { Cookie: cookie } });
+  const res = await fetchWithTimeout(`${BASE_URL}/api/v1/metrics`, { headers: { Cookie: cookie } });
   assert.equal(res.status, 200);
   assert.match(res.headers.get('content-type'), /text\/plain/);
   const text = await res.text();
@@ -145,7 +231,7 @@ test('GET /api/v1/metrics returns valid Prometheus exposition format', async () 
 // factory state.
 
 test('evidence-engine-status reports the real Market Evidence Ledger honestly', async () => {
-  const res = await fetch(`${BASE_URL}/api/v1/evidence-engine-status`, { headers: { Cookie: cookie } });
+  const res = await fetchWithTimeout(`${BASE_URL}/api/v1/evidence-engine-status`, { headers: { Cookie: cookie } });
   assert.equal(res.status, 200);
   const { data } = await res.json();
   assert.ok(typeof data.total_events === 'number');
@@ -155,7 +241,7 @@ test('evidence-engine-status reports the real Market Evidence Ledger honestly', 
 });
 
 test('scheduler-status reports a real shape regardless of platform (never fabricates availability)', async () => {
-  const res = await fetch(`${BASE_URL}/api/v1/scheduler-status`, { headers: { Cookie: cookie } });
+  const res = await fetchWithTimeout(`${BASE_URL}/api/v1/scheduler-status`, { headers: { Cookie: cookie } });
   assert.equal(res.status, 200);
   const { data } = await res.json();
   assert.ok(typeof data.available === 'boolean');
@@ -168,7 +254,7 @@ test('scheduler-status reports a real shape regardless of platform (never fabric
 });
 
 test('recent-adr-decisions lists real ADRs, sorted newest-number-first', async () => {
-  const res = await fetch(`${BASE_URL}/api/v1/recent-adr-decisions`, { headers: { Cookie: cookie } });
+  const res = await fetchWithTimeout(`${BASE_URL}/api/v1/recent-adr-decisions`, { headers: { Cookie: cookie } });
   assert.equal(res.status, 200);
   const { data } = await res.json();
   assert.ok(data.total > 100, `expected 100+ real ADRs on record, got ${data.total}`);
@@ -180,7 +266,7 @@ test('recent-adr-decisions lists real ADRs, sorted newest-number-first', async (
 });
 
 test('system-logs reads the real log files this factory actually writes', async () => {
-  const res = await fetch(`${BASE_URL}/api/v1/system-logs`, { headers: { Cookie: cookie } });
+  const res = await fetchWithTimeout(`${BASE_URL}/api/v1/system-logs`, { headers: { Cookie: cookie } });
   assert.equal(res.status, 200);
   const { data } = await res.json();
   assert.ok('factory_loop.log' in data);
@@ -192,7 +278,7 @@ test('system-logs reads the real log files this factory actually writes', async 
 });
 
 test('GET /api/v1/actions lists every registered action with a name, description, and kind', async () => {
-  const res = await fetch(`${BASE_URL}/api/v1/actions`, { headers: { Cookie: cookie } });
+  const res = await fetchWithTimeout(`${BASE_URL}/api/v1/actions`, { headers: { Cookie: cookie } });
   assert.equal(res.status, 200);
   const body = await res.json();
   assert.ok(Array.isArray(body.actions));
@@ -205,7 +291,7 @@ test('GET /api/v1/actions lists every registered action with a name, description
 });
 
 test('POST /api/v1/actions/:name requires confirmed:true (contract, not just one action)', async () => {
-  const res = await fetch(`${BASE_URL}/api/v1/actions/refresh-data`, {
+  const res = await fetchWithTimeout(`${BASE_URL}/api/v1/actions/refresh-data`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Cookie: cookie },
     body: JSON.stringify({}),
@@ -217,21 +303,21 @@ test('POST /api/v1/actions/:name requires confirmed:true (contract, not just one
 });
 
 test('unauthenticated requests to /api/v1/* are rejected as JSON, not redirected', async () => {
-  const res = await fetch(`${BASE_URL}/api/v1/company-health`, { redirect: 'manual' });
+  const res = await fetchWithTimeout(`${BASE_URL}/api/v1/company-health`, { redirect: 'manual' });
   assert.equal(res.status, 401);
   const body = await res.json();
   assert.equal(body.success, false);
 });
 
 test('unknown /api/v1/* path returns a 404 JSON envelope, not the SPA fallback', async () => {
-  const res = await fetch(`${BASE_URL}/api/v1/not-a-real-service`, { headers: { Cookie: cookie } });
+  const res = await fetchWithTimeout(`${BASE_URL}/api/v1/not-a-real-service`, { headers: { Cookie: cookie } });
   assert.equal(res.status, 404);
   const contentType = res.headers.get('content-type');
   assert.match(contentType, /application\/json/);
 });
 
 test('GET /api/dashboard (pre-existing, unauthenticated) still responds 200', async () => {
-  const res = await fetch(`${BASE_URL}/api/dashboard`);
+  const res = await fetchWithTimeout(`${BASE_URL}/api/dashboard`);
   assert.equal(res.status, 200);
   const body = await res.json();
   assert.equal(body.success, true);
@@ -243,7 +329,7 @@ test('GET /api/dashboard (pre-existing, unauthenticated) still responds 200', as
 // product PDF under books/ to anyone who could reach the port.
 test('sensitive repo files are no longer served as static content', async () => {
   for (const p of ['/finance_data.json', '/data/decisions.jsonl', '/config/economics.json']) {
-    const res = await fetch(`${BASE_URL}${p}`, { redirect: 'manual' });
+    const res = await fetchWithTimeout(`${BASE_URL}${p}`, { redirect: 'manual' });
     // Must fall through to the SPA catch-all (text/html), never the real
     // file's own content-type — proves the raw file isn't being served.
     const contentType = res.headers.get('content-type') || '';
@@ -260,7 +346,7 @@ test('real product PDFs under books/ are no longer served as static content', as
   const booksDir = path.join(REPO_ROOT, 'books');
   const pdfs = fs.existsSync(booksDir) ? fs.readdirSync(booksDir).filter(f => f.endsWith('.pdf')) : [];
   if (pdfs.length === 0) return; // nothing to check in this environment
-  const res = await fetch(`${BASE_URL}/books/${encodeURIComponent(pdfs[0])}`, { redirect: 'manual' });
+  const res = await fetchWithTimeout(`${BASE_URL}/books/${encodeURIComponent(pdfs[0])}`, { redirect: 'manual' });
   const contentType = res.headers.get('content-type') || '';
   assert.ok(!contentType.includes('application/pdf'), `a real product PDF must not be downloadable unauthenticated, got: ${contentType}`);
 });
@@ -276,7 +362,7 @@ test('real product PDFs under books/ are no longer served as static content', as
 // auth layer and had zero authentication (confirmed zero callers anywhere
 // in the UI, so gating them has no regression risk).
 test('POST /chat now requires Mission Control auth', async () => {
-  const unauth = await fetch(`${BASE_URL}/chat`, {
+  const unauth = await fetchWithTimeout(`${BASE_URL}/chat`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: 'hi' }),
   });
@@ -286,7 +372,7 @@ test('POST /chat now requires Mission Control auth', async () => {
 });
 
 test('POST /finance/add now requires Mission Control auth, and works when authenticated', async () => {
-  const unauth = await fetch(`${BASE_URL}/finance/add`, {
+  const unauth = await fetchWithTimeout(`${BASE_URL}/finance/add`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ platform: 'Gumroad', amount: 1, product: 'test' }),
   });
@@ -295,7 +381,7 @@ test('POST /finance/add now requires Mission Control auth, and works when authen
   // This suite runs against the real finance_data.json (same cwd as the
   // real factory) — the test sale is immediately deleted afterward so no
   // trace is left in real financial data.
-  const authed = await fetch(`${BASE_URL}/finance/add`, {
+  const authed = await fetchWithTimeout(`${BASE_URL}/finance/add`, {
     method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: cookie },
     body: JSON.stringify({ platform: 'Gumroad', amount: 1, product: 'contract-test-sale-DELETE-ME' }),
   });
@@ -304,7 +390,7 @@ test('POST /finance/add now requires Mission Control auth, and works when authen
   assert.equal(body.success, true);
   assert.ok(body.sale && body.sale.id);
 
-  const cleanup = await fetch(`${BASE_URL}/finance/delete/${body.sale.id}`, {
+  const cleanup = await fetchWithTimeout(`${BASE_URL}/finance/delete/${body.sale.id}`, {
     method: 'DELETE', headers: { Cookie: cookie },
   });
   assert.equal(cleanup.status, 200, 'cleanup delete of the test sale must succeed — no trace should remain in real finance_data.json');
@@ -316,7 +402,7 @@ test('POST /finance/add now requires Mission Control auth, and works when authen
 // 'kdp_books' when omitted so pre-existing sales self-heal honestly
 // instead of guessing a different rank.
 test('POST /finance/add accepts Paddle + a ladder rank, and GET /finance rolls both up', async () => {
-  const authed = await fetch(`${BASE_URL}/finance/add`, {
+  const authed = await fetchWithTimeout(`${BASE_URL}/finance/add`, {
     method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: cookie },
     body: JSON.stringify({ platform: 'Paddle', amount: 150, product: 'contract-test-ladder-DELETE-ME', ladder: 'ai_saas' }),
   });
@@ -325,29 +411,29 @@ test('POST /finance/add accepts Paddle + a ladder rank, and GET /finance rolls b
   assert.equal(body.success, true);
   assert.equal(body.sale.ladder, 'ai_saas');
 
-  const fin = await (await fetch(`${BASE_URL}/finance`, { headers: { Cookie: cookie } })).json();
+  const fin = await (await fetchWithTimeout(`${BASE_URL}/finance`, { headers: { Cookie: cookie } })).json();
   assert.ok(fin.totalPaddle >= 150);
   assert.ok(fin.byLadder && fin.byLadder.ai_saas >= 150);
 
-  await fetch(`${BASE_URL}/finance/delete/${body.sale.id}`, { method: 'DELETE', headers: { Cookie: cookie } });
+  await fetchWithTimeout(`${BASE_URL}/finance/delete/${body.sale.id}`, { method: 'DELETE', headers: { Cookie: cookie } });
 });
 
 test('POST /finance/add with an unknown ladder value defaults to kdp_books, never rejects', async () => {
-  const authed = await fetch(`${BASE_URL}/finance/add`, {
+  const authed = await fetchWithTimeout(`${BASE_URL}/finance/add`, {
     method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: cookie },
     body: JSON.stringify({ platform: 'KDP', amount: 5, product: 'contract-test-unknown-ladder-DELETE-ME', ladder: 'not-a-real-rank' }),
   });
   assert.equal(authed.status, 200);
   const body = await authed.json();
   assert.equal(body.sale.ladder, 'kdp_books');
-  await fetch(`${BASE_URL}/finance/delete/${body.sale.id}`, { method: 'DELETE', headers: { Cookie: cookie } });
+  await fetchWithTimeout(`${BASE_URL}/finance/delete/${body.sale.id}`, { method: 'DELETE', headers: { Cookie: cookie } });
 });
 
 test('DELETE /finance/delete/:id now requires Mission Control auth', async () => {
-  const unauth = await fetch(`${BASE_URL}/finance/delete/123`, { method: 'DELETE' });
+  const unauth = await fetchWithTimeout(`${BASE_URL}/finance/delete/123`, { method: 'DELETE' });
   assert.equal(unauth.status, 401);
 
-  const authed = await fetch(`${BASE_URL}/finance/delete/999999999`, { method: 'DELETE', headers: { Cookie: cookie } });
+  const authed = await fetchWithTimeout(`${BASE_URL}/finance/delete/999999999`, { method: 'DELETE', headers: { Cookie: cookie } });
   assert.equal(authed.status, 200, 'an authenticated call for a non-existent id must still succeed cleanly (idempotent delete)');
 });
 
@@ -370,16 +456,16 @@ test('GET /oracle now requires Mission Control auth, and works when authenticate
   // silently follow it to the (intentionally public) login page's own
   // 200, which would otherwise make this assertion pass for the wrong
   // reason.
-  const unauth = await fetch(`${BASE_URL}/oracle`, { redirect: 'manual' });
+  const unauth = await fetchWithTimeout(`${BASE_URL}/oracle`, { redirect: 'manual' });
   assert.equal(unauth.status, 302);
   assert.equal(unauth.headers.get('location'), '/mission_control_login.html');
 
-  const authed = await fetch(`${BASE_URL}/oracle`, { headers: { Cookie: cookie } });
+  const authed = await fetchWithTimeout(`${BASE_URL}/oracle`, { headers: { Cookie: cookie } });
   assert.equal(authed.status, 200);
 });
 
 test('POST /api/agent/:name now requires Mission Control auth (never reaches the real Groq call unauthenticated)', async () => {
-  const unauth = await fetch(`${BASE_URL}/api/agent/scout`, {
+  const unauth = await fetchWithTimeout(`${BASE_URL}/api/agent/scout`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: 'this must never reach Groq unauthenticated' }),
   });
@@ -397,22 +483,22 @@ test('POST /api/agent/:name now requires Mission Control auth (never reaches the
 // or a real external call — same real, already-tested behavior
 // poll_sales.py's own test suite covers).
 test('POST /api/sales/poll requires a session OR the internal service token, never neither', async () => {
-  const noAuth = await fetch(`${BASE_URL}/api/sales/poll`, {
+  const noAuth = await fetchWithTimeout(`${BASE_URL}/api/sales/poll`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}',
   });
   assert.equal(noAuth.status, 401);
 
-  const wrongToken = await fetch(`${BASE_URL}/api/sales/poll`, {
+  const wrongToken = await fetchWithTimeout(`${BASE_URL}/api/sales/poll`, {
     method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Internal-Token': 'not-the-real-token' }, body: '{}',
   });
   assert.equal(wrongToken.status, 401, 'a wrong token must be rejected exactly like no token at all');
 
-  const withToken = await fetch(`${BASE_URL}/api/sales/poll`, {
+  const withToken = await fetchWithTimeout(`${BASE_URL}/api/sales/poll`, {
     method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Internal-Token': TEST_INTERNAL_TOKEN }, body: '{}',
   });
   assert.equal(withToken.status, 200, 'the real internal service token (what factory_loop.js and the Scout n8n workflow actually send) must be accepted');
 
-  const withCookie = await fetch(`${BASE_URL}/api/sales/poll`, {
+  const withCookie = await fetchWithTimeout(`${BASE_URL}/api/sales/poll`, {
     method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: cookie }, body: '{}',
   });
   assert.equal(withCookie.status, 200, 'a real Mission Control session must also be accepted — this is (session OR token), not token-only');
@@ -427,11 +513,11 @@ test('POST /api/sales/poll requires a session OR the internal service token, nev
 // back to "every call re-spawns Python" (which would consistently cost
 // multiple real seconds per call, not sub-second).
 test('GET /api/reality is cached — repeat calls within the TTL are consistently fast, not re-spawning Python each time', async () => {
-  await fetch(`${BASE_URL}/api/reality`, { headers: { Cookie: cookie } }); // warm the cache
+  await fetchWithTimeout(`${BASE_URL}/api/reality`, { headers: { Cookie: cookie } }); // warm the cache
   const timings = [];
   for (let i = 0; i < 3; i++) {
     const start = Date.now();
-    const res = await fetch(`${BASE_URL}/api/reality`, { headers: { Cookie: cookie } });
+    const res = await fetchWithTimeout(`${BASE_URL}/api/reality`, { headers: { Cookie: cookie } });
     await res.json();
     timings.push(Date.now() - start);
   }
@@ -441,14 +527,14 @@ test('GET /api/reality is cached — repeat calls within the TTL are consistentl
 });
 
 test('runPythonServiceCached: repeat GET /api/v1/knowledge-graph calls are cached, and ?fresh=1 always forces a real re-fetch (Galaxy Forge v1.0 Performance directive, 2026-07-25)', async () => {
-  const first = await fetch(`${BASE_URL}/api/v1/knowledge-graph`, { headers: { Cookie: cookie } });
+  const first = await fetchWithTimeout(`${BASE_URL}/api/v1/knowledge-graph`, { headers: { Cookie: cookie } });
   const firstBody = await first.json();
   assert.equal(first.status, 200);
 
   const timings = [];
   for (let i = 0; i < 3; i++) {
     const start = Date.now();
-    const res = await fetch(`${BASE_URL}/api/v1/knowledge-graph`, { headers: { Cookie: cookie } });
+    const res = await fetchWithTimeout(`${BASE_URL}/api/v1/knowledge-graph`, { headers: { Cookie: cookie } });
     const body = await res.json();
     timings.push(Date.now() - start);
     // The real payload (node_count/edge_count/nodes/edges) must be
@@ -463,7 +549,7 @@ test('runPythonServiceCached: repeat GET /api/v1/knowledge-graph calls are cache
 
   // A real, explicit ?fresh=1 must still return valid real data — it is
   // a cache-bypass, not a different endpoint or a degraded one.
-  const fresh = await fetch(`${BASE_URL}/api/v1/knowledge-graph?fresh=1`, { headers: { Cookie: cookie } });
+  const fresh = await fetchWithTimeout(`${BASE_URL}/api/v1/knowledge-graph?fresh=1`, { headers: { Cookie: cookie } });
   const freshBody = await fresh.json();
   assert.equal(fresh.status, 200);
   assert.equal(freshBody.data.node_count, firstBody.data.node_count);
@@ -484,8 +570,8 @@ test('runPythonServiceCached: repeat GET /api/v1/knowledge-graph calls are cache
 // share one real execution underneath.
 test('runPythonServiceCached: two concurrent requests for the same section are coalesced into one real execution', async () => {
   const [a, b] = await Promise.all([
-    fetch(`${BASE_URL}/api/v1/engine-registry`, { headers: { Cookie: cookie } }),
-    fetch(`${BASE_URL}/api/v1/engine-registry`, { headers: { Cookie: cookie } }),
+    fetchWithTimeout(`${BASE_URL}/api/v1/engine-registry`, { headers: { Cookie: cookie } }),
+    fetchWithTimeout(`${BASE_URL}/api/v1/engine-registry`, { headers: { Cookie: cookie } }),
   ]);
   const [bodyA, bodyB] = await Promise.all([a.json(), b.json()]);
   assert.equal(a.status, 200);
@@ -495,8 +581,8 @@ test('runPythonServiceCached: two concurrent requests for the same section are c
 
 test('runPythonServiceCached: ?fresh=1 is never coalesced with a concurrent plain request', async () => {
   const [plain, fresh] = await Promise.all([
-    fetch(`${BASE_URL}/api/v1/engine-registry`, { headers: { Cookie: cookie } }),
-    fetch(`${BASE_URL}/api/v1/engine-registry?fresh=1`, { headers: { Cookie: cookie } }),
+    fetchWithTimeout(`${BASE_URL}/api/v1/engine-registry`, { headers: { Cookie: cookie } }),
+    fetchWithTimeout(`${BASE_URL}/api/v1/engine-registry?fresh=1`, { headers: { Cookie: cookie } }),
   ]);
   assert.equal(plain.status, 200);
   assert.equal(fresh.status, 200);
@@ -520,31 +606,31 @@ test('server binds to loopback only, not all interfaces', async () => {
 });
 
 test('dashboard.html and mission_control_login.html still serve correctly (no regression)', async () => {
-  const dashRes = await fetch(`${BASE_URL}/dashboard.html`);
+  const dashRes = await fetchWithTimeout(`${BASE_URL}/dashboard.html`);
   assert.equal(dashRes.status, 200);
   assert.match(dashRes.headers.get('content-type'), /text\/html/);
 
-  const loginRes = await fetch(`${BASE_URL}/mission_control_login.html`);
+  const loginRes = await fetchWithTimeout(`${BASE_URL}/mission_control_login.html`);
   assert.equal(loginRes.status, 200);
   assert.match(loginRes.headers.get('content-type'), /text\/html/);
 });
 
 test('mission_control_executive_v1.html requires Mission Control auth, and serves when authenticated (CEO review, 2026-07-25 polish pass)', async () => {
-  const unauth = await fetch(`${BASE_URL}/mission_control_executive_v1.html`, { redirect: 'manual' });
+  const unauth = await fetchWithTimeout(`${BASE_URL}/mission_control_executive_v1.html`, { redirect: 'manual' });
   assert.equal(unauth.status, 302);
   assert.equal(unauth.headers.get('location'), '/mission_control_login.html');
 
-  const authed = await fetch(`${BASE_URL}/mission_control_executive_v1.html`, { headers: { Cookie: cookie } });
+  const authed = await fetchWithTimeout(`${BASE_URL}/mission_control_executive_v1.html`, { headers: { Cookie: cookie } });
   assert.equal(authed.status, 200);
   assert.match(authed.headers.get('content-type'), /text\/html/);
 });
 
 test('founder_command_center.html requires Mission Control auth, and serves when authenticated (V5.4 Sec 2/29)', async () => {
-  const unauth = await fetch(`${BASE_URL}/founder_command_center.html`, { redirect: 'manual' });
+  const unauth = await fetchWithTimeout(`${BASE_URL}/founder_command_center.html`, { redirect: 'manual' });
   assert.equal(unauth.status, 302);
   assert.equal(unauth.headers.get('location'), '/mission_control_login.html');
 
-  const authed = await fetch(`${BASE_URL}/founder_command_center.html`, { headers: { Cookie: cookie } });
+  const authed = await fetchWithTimeout(`${BASE_URL}/founder_command_center.html`, { headers: { Cookie: cookie } });
   assert.equal(authed.status, 200);
   assert.match(authed.headers.get('content-type'), /text\/html/);
 });
