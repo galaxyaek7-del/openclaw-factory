@@ -213,8 +213,35 @@ function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit, execFn = null)
     }
     throw readErr;
   }
+  // REAL BUG, found 2026-10-05 on the Linux CI, not locally. The assertion was
+  //   "the lock file must hold the real winner's own pid"  ->  '' !== '3890'
+  //
+  // Cause: the lock is created with an exclusive create that WRITES THE PID
+  // AFTERWARDS:
+  //
+  //   fs.writeFileSync(lockFile, String(process.pid), { flag: 'wx' });
+  //
+  // Between the file being created and the pid being written, the file EXISTS
+  // but is EMPTY. A racing reader in that window does
+  // `parseInt('')` -> NaN, and the old code then evaluated
+  // `Number.isFinite(NaN) && ...` -> false, which it read as "no live owner",
+  // i.e. DEAD. So it renamed the brand-new lock aside and restored it as an
+  // EMPTY file -- overwriting the real winner's pid. The winner still believed
+  // it held the lock, which is precisely the mutual-exclusion failure this
+  // whole guard exists to prevent.
+  //
+  // "I could not read a pid" is not the same claim as "the owner is dead", and
+  // only the second one justifies stealing. An unreadable lock is therefore
+  // treated as "someone is mid-write, or the file is corrupt": stand down and
+  // leave the file exactly as found. Losing is safe; corrupting a live owner's
+  // lock is not.
+  if (!Number.isFinite(existingPid)) {
+    console.log('[factory_loop] lock file holds no readable pid (mid-write or corrupt), exiting without touching it');
+    exitFn(0);
+    return false;
+  }
   try {
-    if (Number.isFinite(existingPid) && isPidAliveWithIdentity(existingPid, execFn)) {
+    if (isPidAliveWithIdentity(existingPid, execFn)) {
       console.log(`[factory_loop] another factory_loop running (PID ${existingPid}), exiting`);
       exitFn(0);
       return false;

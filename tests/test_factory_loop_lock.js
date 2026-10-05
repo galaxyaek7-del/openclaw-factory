@@ -187,43 +187,43 @@ async function raceTwo(lockFile, holdMs) {
   return reports;
 }
 
-test('reclaim must verify it moved the lock it judged dead, and stand down if it did not', () => {
-  // THE DETERMINISTIC TEST FOR THIS FIX. Added 2026-10-05.
+test('a lock file with NO readable pid is never stolen -- unreadable is not dead', () => {
+  // THE DETERMINISTIC TEST FOR THIS FIX. Rewritten 2026-10-05.
   //
-  // Honesty note first, because the multi-process tests above cannot do this
-  // job and it was measured, not assumed: reverting factory_loop.js to the old
-  // blind `unlinkSync` + exclusive-create reclaim left all of them PASSING
-  // (15/15 runs). They hold the winner alive via a release file, which closes
-  // the race window so effectively that the old bug stops reproducing. They
-  // are still worth keeping as real end-to-end invariant checks, but on their
-  // own they are not evidence that the reclaim is correct.
+  // This started as a test of the reclaim's content-verification, which was the
+  // previous fix. It then became VACUOUS once the empty-lock guard below was
+  // added in front of the reclaim, because a non-numeric pid is now rejected
+  // before the reclaim is ever reached -- so it passed just as well against the
+  // old broken code. Caught by re-running scripts/mutation_check.py rather than
+  // by inspection, which is the only reason it was noticed.
   //
-  // This test pins the property directly and cannot flake. The reclaim's
-  // safety rule is: only claim the lock if the bytes you moved aside are
-  // exactly the pid you had already decided was dead. Anything else means the
-  // lock changed hands between your read and your steal, and you must put it
-  // back and stand down.
+  // The property being pinned is the one the Linux CI actually failed on:
   //
-  // A lock file whose contents are not a parseable pid takes the exact same
-  // code path a genuine change-of-hands takes: `parseInt` yields NaN, the
-  // alive-check is skipped for the same reason it is skipped for a reclaimed
-  // pid, and control reaches the rename + compare. Old code blind-unlinks and
-  // claims (no exitFn, returns true). Fixed code detects the mismatch, restores
-  // the file and exits.
+  //   the lock file must hold the real winner's own pid   ->   '' !== '3890'
+  //
+  // The lock is created by an exclusive create that writes the pid afterwards,
+  // so between creation and write the file EXISTS but is EMPTY. A racing
+  // reader did parseInt('') -> NaN, and `Number.isFinite(NaN) && ...` evaluated
+  // false, which the old code read as "no live owner" -- i.e. dead. It renamed
+  // the brand-new lock aside and restored it EMPTY, overwriting the real
+  // winner's pid while the winner still believed it held the lock.
+  //
+  // "I could not read a pid" is not the claim "the owner is dead". Only the
+  // second justifies stealing.
   const lockFile = tempLockPath();
-  fs.writeFileSync(lockFile, 'not-a-pid-at-all');
+  fs.writeFileSync(lockFile, '');
 
   let exitCode = null;
   try {
     const reclaimed = acquireLock(lockFile, (code) => { exitCode = code; });
 
     assert.equal(reclaimed, false,
-      'a lock whose contents do not match the pid we judged dead must NOT be claimed');
+      'a lock with no readable pid must never be treated as abandoned and claimed');
     assert.equal(exitCode, 0,
-      'the mismatch must make us stand down via exitFn; main() ignores the return value, so returning without exiting is what let a second loop run concurrently');
+      "main() ignores acquireLock's return value, so standing down requires exitFn");
 
-    assert.equal(fs.readFileSync(lockFile, 'utf8'), 'not-a-pid-at-all',
-      "the lock we moved aside must be put back byte for byte, so its real owner stays guarded");
+    assert.equal(fs.readFileSync(lockFile, 'utf8'), '',
+      "an unreadable lock must be left exactly as found, not renamed away or rewritten");
   } finally {
     fs.rmSync(lockFile, { force: true });
   }
