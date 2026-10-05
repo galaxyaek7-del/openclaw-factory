@@ -185,8 +185,30 @@ function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit, execFn = null)
     }
   }
   // A lock file already exists — check whether its owner is still alive.
+  let existingPid;
   try {
-    const existingPid = parseInt(fs.readFileSync(lockFile, 'utf8').trim(), 10);
+    existingPid = parseInt(fs.readFileSync(lockFile, 'utf8').trim(), 10);
+  } catch (readErr) {
+    // Real race fixed 2026-10-05: the lock file can vanish between our failed
+    // exclusive-create above and this read, because the previous owner released
+    // it or another process is mid-reclaim (unlink -> create). The old code let
+    // this fall through to the outer catch, which logs "continuing without
+    // guard" and returns WITHOUT calling exitFn -- so the caller concluded it
+    // had acquired a lock it does not hold. Two processes reclaiming the same
+    // stale lock then both reported success, which is precisely what
+    // tests/test_factory_loop_lock.js asserts against.
+    //
+    // Vanishing mid-flight means someone else owns the transition. Backing off
+    // is the safe side, and it matches the identical ENOENT case in the
+    // unlink path below.
+    if (readErr.code === 'ENOENT') {
+      console.log('[factory_loop] lock file changed hands during acquisition, exiting');
+      exitFn(0);
+      return false;
+    }
+    throw readErr;
+  }
+  try {
     if (Number.isFinite(existingPid) && isPidAliveWithIdentity(existingPid, execFn)) {
       console.log(`[factory_loop] another factory_loop running (PID ${existingPid}), exiting`);
       exitFn(0);

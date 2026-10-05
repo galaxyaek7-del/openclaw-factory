@@ -87,10 +87,12 @@ test('acquireLock: the underlying fs.writeFileSync(..., {flag:"wx"}) primitive t
   }
 });
 
-function runHelper(lockFile, holdMs) {
+function runHelper(lockFile, holdMs, goFile) {
   return new Promise((resolve, reject) => {
     const helperScript = path.join(__dirname, 'helpers', 'acquire_lock_once.js');
-    const child = spawn(process.execPath, [helperScript, lockFile, String(holdMs)]);
+    const args = [helperScript, lockFile, String(holdMs)];
+    if (goFile) args.push(goFile);
+    const child = spawn(process.execPath, args);
     let stdout = '';
     child.stdout.on('data', d => { stdout += d; });
     child.on('error', reject);
@@ -117,11 +119,22 @@ test('two real, concurrently-running processes racing to reclaim the SAME stale 
   // be a real running process), then race two real processes against it.
   const lockFile = tempLockPath();
   fs.writeFileSync(lockFile, '999999999');
+  // Start barrier (2026-10-05): both helpers wait for this file before
+  // attempting, so neither can begin before the other exists. Previously the
+  // "race" relied on both spawns landing inside a 800ms window; on a loaded CI
+  // runner the second spawn can land later than that, the first has already
+  // released, and BOTH legitimately acquire -- failing a test that then proved
+  // nothing about the lock at all. This was the cause of the only JS failure
+  // on CI, which passed locally every time.
+  const goFile = tempLockPath();
   try {
-    const [a, b] = await Promise.all([
-      runHelper(lockFile, 800),
-      runHelper(lockFile, 800),
-    ]);
+    const pending = [
+      runHelper(lockFile, 800, goFile),
+      runHelper(lockFile, 800, goFile),
+    ];
+    // Both children are spawned and now spinning on the barrier.
+    fs.writeFileSync(goFile, 'go');
+    const [a, b] = await Promise.all(pending);
     const results = [a, b];
     const winners = results.filter(r => r.acquired);
     const losers = results.filter(r => !r.acquired);
@@ -132,6 +145,7 @@ test('two real, concurrently-running processes racing to reclaim the SAME stale 
     const finalHolder = fs.readFileSync(lockFile, 'utf8').trim();
     assert.equal(finalHolder, String(winners[0].pid), "the reclaimed lock file must hold the real winner's own pid, never a stale or corrupted value");
   } finally {
+    fs.rmSync(goFile, { force: true });
     fs.rmSync(lockFile, { force: true });
   }
 });
