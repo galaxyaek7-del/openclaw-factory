@@ -24,11 +24,27 @@ if (files.length === 0) {
 }
 
 // TAP keeps the output stable and parseable across Node versions.
-const res = spawnSync(
-  process.execPath,
-  ['--test', '--test-reporter=tap', ...files],
-  { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }
-);
+// Everything is guarded: if the spawn itself fails (bad flag, E2BIG, missing
+// binary) the wrapper must still emit an annotation, otherwise the step dies
+// in silence with nothing but "Process completed with exit code 1".
+let res;
+try {
+  res = spawnSync(
+    process.execPath,
+    ['--test', '--test-reporter=tap', ...files],
+    { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }
+  );
+} catch (err) {
+  console.log(`::error::could not start node --test: ${err && err.message}`);
+  if (err && err.code) console.log(`::error::code=${err.code}`);
+  process.exit(1);
+}
+
+if (res.error) {
+  console.log(`::error::node --test failed to run: ${res.error.message}`);
+  if (res.error.code) console.log(`::error::code=${res.error.code}`);
+  process.exit(1);
+}
 
 const out = (res.stdout || '') + (res.stderr || '');
 process.stdout.write(out);
