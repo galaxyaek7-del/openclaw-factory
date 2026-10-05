@@ -27,13 +27,21 @@ if (files.length === 0) {
 // Everything is guarded: if the spawn itself fails (bad flag, E2BIG, missing
 // binary) the wrapper must still emit an annotation, otherwise the step dies
 // in silence with nothing but "Process completed with exit code 1".
+//
+// --test-concurrency=1 is load-bearing, not cosmetic. The runner otherwise
+// fans every file out in parallel, and the 61-file step was killed by the
+// CI runner after 9 seconds with no output at all -- a SIGKILL, not a test
+// failure (a crashing wrapper annotates, and it did not). Suites here boot
+// real servers and real Python subprocesses, so peak memory scales with
+// fan-out. One file at a time is slower and actually completes.
+const args = ['--test', '--test-concurrency=1', '--test-reporter=tap', ...files];
+
 let res;
 try {
-  res = spawnSync(
-    process.execPath,
-    ['--test', '--test-reporter=tap', ...files],
-    { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }
-  );
+  res = spawnSync(process.execPath, args, {
+    encoding: 'utf8',
+    maxBuffer: 64 * 1024 * 1024,
+  });
 } catch (err) {
   console.log(`::error::could not start node --test: ${err && err.message}`);
   if (err && err.code) console.log(`::error::code=${err.code}`);
