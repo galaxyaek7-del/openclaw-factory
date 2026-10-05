@@ -131,10 +131,98 @@ jobs:
       # slow server-spawning suites (factory_loop_golden, api_contract) stay
       # as their own steps below to keep the fast pure-unit set from blocking
       # on a full server boot.
-      - name: JavaScript tests (all remaining test_*.js, incl. security suites)
-        run: node scripts/run_js_group.js tests/test_brand_dna_preamble_consistency.js tests/test_check_jsonl_duplication.js tests/test_customer_auth.js tests/test_customer_front_door.js tests/test_department_events.js tests/test_deploy_production.js tests/test_factory_loop_business_blueprint_generation.js tests/test_factory_loop_commission_opportunity_scan.js tests/test_factory_loop_daily_ai_doctor_report.js tests/test_factory_loop_daily_commercial_readiness_snapshot.js tests/test_factory_loop_daily_department_health_report.js tests/test_factory_loop_daily_evolution_queue_intake.js tests/test_factory_loop_daily_evolution_report.js tests/test_factory_loop_daily_executive_brief.js tests/test_factory_loop_daily_growth_stage_snapshot.js tests/test_factory_loop_daily_knowledge_graph.js tests/test_factory_loop_evidence_recording_audit.js tests/test_factory_loop_lock.js tests/test_factory_loop_monthly_galaxy_evolution_report.js tests/test_factory_loop_notification.js tests/test_factory_loop_payment_status_check_tick.js tests/test_factory_loop_pricing_review.js tests/test_factory_loop_quarterly_annual_reviews.js tests/test_factory_loop_resilience_monitor_tick.js tests/test_factory_loop_tick_overlap.js tests/test_factory_loop_weekly_executive_report.js tests/test_factory_state.js tests/test_harden_file_acls.js tests/test_health_checks.js tests/test_health_monitor.js tests/test_health_trend.js tests/test_index_html_xss_fix.js tests/test_infrastructure_intelligence.js tests/test_jsonl.js tests/test_login_security.js tests/test_market_validation.js tests/test_next_sale_id.js tests/test_ops_maintenance.js tests/test_pending_review.js tests/test_process_pending_retries.js tests/test_publisher_seo.js tests/test_recovery_log.js tests/test_restore_file_from_git.js tests/test_self_awareness_precomputed_health.js tests/test_server_crash_handlers.js tests/test_supervisor.js tests/test_telegram_direct.js tests/test_trust_center.js tests/test_factory_loop_arm_status_watch.js tests/test_factory_loop_autonomous_loop_closures.js tests/test_factory_loop_freelancer_grant_resume.js tests/test_factory_loop_freelancer_state_monitor.js tests/test_factory_loop_internal_token.js tests/test_factory_loop_lock_identity.js tests/test_factory_loop_reality_integrity_check.js tests/test_factory_loop_seo_distribution.js tests/test_factory_loop_x_queued_post.js tests/test_job_queue.js tests/test_security_p1.js tests/test_telegram_commands.js tests/test_attribution_log_bounds.js
+      - name: JS batch 1 of 19
+        run: node scripts/run_js_group.js tests/test_attribution_log_bounds.js
 
-      # ── Factory Loop tests ──
+      - name: JS batch 2 of 19
+        run: node scripts/run_js_group.js tests/test_brand_dna_preamble_consistency.js
+
+      - name: JS batch 3 of 19
+        run: node scripts/run_js_group.js tests/test_check_jsonl_duplication.js tests/test_customer_auth.js tests/test_customer_front_door.js
+
+      - name: JS batch 4 of 19
+        run: node scripts/run_js_group.js tests/test_department_events.js tests/test_deploy_production.js
+
+      - name: JS batch 5 of 19
+        run: node scripts/run_js_group.js tests/test_factory_loop_arm_status_watch.js tests/test_factory_loop_autonomous_loop_closures.js tests/test_factory_loop_business_blueprint_generation.js tests/test_factory_loop_commission_opportunity_scan.js tests/test_factory_loop_daily_ai_doctor_report.js tests/test_factory_loop_daily_commercial_readiness_snapshot.js tests/test_factory_loop_daily_department_health_report.js tests/test_factory_loop_daily_evolution_queue_intake.js tests/test_factory_loop_daily_evolution_report.js tests/test_factory_loop_daily_executive_brief.js
+
+      - name: JS batch 6 of 19
+        run: node scripts/run_js_group.js tests/test_factory_loop_daily_growth_stage_snapshot.js tests/test_factory_loop_daily_knowledge_graph.js tests/test_factory_loop_evidence_recording_audit.js tests/test_factory_loop_freelancer_grant_resume.js tests/test_factory_loop_freelancer_state_monitor.js tests/test_factory_loop_golden.js tests/test_factory_loop_internal_token.js tests/test_factory_loop_lock.js tests/test_factory_loop_lock_identity.js tests/test_factory_loop_monthly_galaxy_evolution_report.js
+
+      - name: JS batch 7 of 19
+        run: node scripts/run_js_group.js tests/test_factory_loop_notification.js tests/test_factory_loop_payment_status_check_tick.js tests/test_factory_loop_pricing_review.js tests/test_factory_loop_quarterly_annual_reviews.js tests/test_factory_loop_reality_integrity_check.js tests/test_factory_loop_resilience_monitor_tick.js tests/test_factory_loop_seo_distribution.js tests/test_factory_loop_tick_overlap.js tests/test_factory_loop_weekly_executive_report.js tests/test_factory_loop_x_queued_post.js
+
+      - name: JS batch 8 of 19
+        run: node scripts/run_js_group.js tests/test_factory_state.js
+
+      - name: JS batch 9 of 19
+        run: node scripts/run_js_group.js tests/test_harden_file_acls.js tests/test_health_checks.js tests/test_health_monitor.js tests/test_health_trend.js
+
+      - name: JS batch 10 of 19
+        run: node scripts/run_js_group.js tests/test_index_html_xss_fix.js tests/test_infrastructure_intelligence.js
+
+      - name: JS batch 11 of 19
+        run: node scripts/run_js_group.js tests/test_job_queue.js tests/test_jsonl.js
+
+      - name: JS batch 12 of 19
+        run: node scripts/run_js_group.js tests/test_login_security.js
+
+      - name: JS batch 13 of 19
+        run: node scripts/run_js_group.js tests/test_market_validation.js
+
+      - name: JS batch 14 of 19
+        run: node scripts/run_js_group.js tests/test_next_sale_id.js
+
+      - name: JS batch 15 of 19
+        run: node scripts/run_js_group.js tests/test_ops_maintenance.js
+
+      - name: JS batch 16 of 19
+        run: node scripts/run_js_group.js tests/test_pending_review.js tests/test_process_pending_retries.js tests/test_publisher_seo.js
+
+      - name: JS batch 17 of 19
+        run: node scripts/run_js_group.js tests/test_recovery_log.js tests/test_restore_file_from_git.js
+
+      - name: JS batch 18 of 19
+        run: node scripts/run_js_group.js tests/test_security_p1.js tests/test_self_awareness_precomputed_health.js tests/test_server_crash_handlers.js tests/test_supervisor.js
+
+      - name: JS batch 19 of 19
+        run: node scripts/run_js_group.js tests/test_telegram_commands.js tests/test_telegram_direct.js tests/test_trust_center.js
+
+      - name: Every JS test file runs in exactly one place
+        run: |
+          python - <<'PY'
+          import os, re, subprocess, sys
+          listed = subprocess.run(["git", "ls-files", "tests"],
+                                  capture_output=True, text=True).stdout.split()
+          tests = set(f.split("/")[-1] for f in listed
+                      if f.startswith("tests/test_") and f.endswith(".js"))
+          helpers = set(f.split("/")[-1] for f in listed
+                        if f.startswith("tests/") and f.endswith(".js")
+                        and not f.split("/")[-1].startswith("test_"))
+          dedicated = set(["test_api_contract.js", "test_dashboard_data.js", "test_metrics.js", "test_n8n_notify.js"])
+          step = open(".github/workflows/ci.yml", encoding="utf-8").read()
+          scheduled = []
+          for b in re.findall(r"node scripts/run_js_group\.js ([^\n]+)", step):
+              scheduled.extend(os.path.basename(f) for f in b.split())
+          counts = {}
+          for name in scheduled:
+              counts[name] = counts.get(name, 0) + 1
+          bad_helpers = sorted(set(scheduled) & helpers)
+          missing = sorted(tests - set(counts) - dedicated)
+          dupes = sorted(f for f, c in counts.items() if c > 1)
+          print("test files: %d (dedicated steps: %d)" % (len(tests), len(dedicated)))
+          print("helper fixtures (must never be collected): %s" % ", ".join(sorted(helpers)))
+          if bad_helpers:
+              print("::error::helper fixture scheduled as a test: %s" % ", ".join(bad_helpers))
+          if missing:
+              print("::error::never scheduled: %s" % ", ".join(missing))
+          if dupes:
+              print("::error::scheduled more than once: %s" % ", ".join(dupes))
+          if bad_helpers or missing or dupes:
+              sys.exit(1)
+          print("every JS test file runs in exactly one place")
+          PY
+
       - name: Factory Loop tests
         run: node tests/test_factory_loop_golden.js
 
