@@ -204,17 +204,51 @@ test('every documented service responds 200 with the standard success envelope',
   const startedAt = Date.now();
   const docsRes = await fetchWithTimeout(`${BASE_URL}/api/v1/docs`, { headers: { Cookie: cookie } });
   const { services } = await docsRes.json();
-  for (const svc of services) {
-    assertWithinLoopBudget('every-service data loop', startedAt);
-    if (SMOKE_TEST_EXCLUDED_SERVICES.has(svc.name)) continue;
-    const res = await timedRequest(`${BASE_URL}${svc.data_endpoint}`, { headers: { Cookie: cookie } });
-    assert.equal(res.status, 200, `${svc.name} data endpoint should return 200`);
-    const body = await res.json();
-    assert.equal(body.success, true, `${svc.name} should report success:true`);
-    assert.equal(body.service, svc.name);
-    assert.equal(body.version, 'v1');
-    assert.ok('data' in body, `${svc.name} response must have a data field`);
-  }
+  // Bounded concurrency, and ONLY in this loop. Measured, not assumed: this
+  // single test is 463.7s of a 595.3s local run (78% of the whole suite), and
+  // 192 of the 214 registered handlers are runPythonServiceCached() -- each one
+  // spawns a real `python mission_control_api.py <section>`. Awaiting them one
+  // at a time makes the wall clock the SUM of 192 interpreter startups and
+  // module imports, which is what pushed this CI step past 168 minutes.
+  //
+  // This changes WHEN requests are issued, nothing else. Deliberately
+  // preserved exactly:
+  //   - the same services probed, via the same `services` list from /api/v1/docs
+  //   - the same SMOKE_TEST_EXCLUDED_SERVICES skip (truth-registry-report)
+  //   - the same endpoints, headers and cookie
+  //   - the same FIVE assertions per service, text unchanged
+  //   - the same loop budget guard, still evaluated before every request
+  // No test is skipped, no assertion removed, no expected value relaxed.
+  //
+  // The limit is deliberately modest. These spawns are interpreter-startup and
+  // import bound, so on a 2-core runner this is not an 8x win -- it is meant to
+  // overlap process startup latency, and a low bound keeps the runner from
+  // thrashing. A worker pool (not unbounded Promise.all over 213 requests) is
+  // what keeps concurrent Python processes capped.
+  const DATA_LOOP_CONCURRENCY = 4;
+  const queue = services.filter(svc => !SMOKE_TEST_EXCLUDED_SERVICES.has(svc.name));
+  let firstError = null;
+  const recordError = (err) => { if (!firstError) firstError = err; };
+
+  const worker = async () => {
+    while (queue.length) {
+      assertWithinLoopBudget('every-service data loop', startedAt);
+      const svc = queue.shift();
+      const res = await timedRequest(`${BASE_URL}${svc.data_endpoint}`, { headers: { Cookie: cookie } });
+      assert.equal(res.status, 200, `${svc.name} data endpoint should return 200`);
+      const body = await res.json();
+      assert.equal(body.success, true, `${svc.name} should report success:true`);
+      assert.equal(body.service, svc.name);
+      assert.equal(body.version, 'v1');
+      assert.ok('data' in body, `${svc.name} response must have a data field`);
+    }
+  };
+
+  await Promise.allSettled(
+    Array.from({ length: Math.min(DATA_LOOP_CONCURRENCY, queue.length) },
+      () => worker().catch(recordError)),
+  );
+  if (firstError) throw firstError;
 });
 
 test('every documented service health endpoint responds with a real status', async () => {
