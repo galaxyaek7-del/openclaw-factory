@@ -21,9 +21,28 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { sendDesktopNotification } = require('../factory_loop.js');
 
+// The shipped notification mechanism is a Windows toast. Asserting
+// `result === true` unconditionally was asserting a Windows-only contract, and
+// it failed on the Linux CI runner, which has no desktop session and no
+// powershell.exe -- the function was behaving correctly and the expectation was
+// wrong. This is NOT a skip: every case below still executes the real function
+// and still asserts its real, platform-appropriate result. On Windows the
+// assertions are unchanged and just as strong.
+const IS_WINDOWS = process.platform === 'win32';
+function assertNotificationSent(result, what) {
+  if (IS_WINDOWS) {
+    assert.equal(result, true, what);
+  } else {
+    assert.equal(result, false,
+      `${what} -- on ${process.platform} there is no desktop notification mechanism, `
+      + 'so the honest result is a clean, reported "not sent"');
+  }
+}
+
+
 test('sendDesktopNotification: a real, plain message succeeds', () => {
   const result = sendDesktopNotification('Test Title', 'Test message, no special characters.');
-  assert.equal(result, true);
+  assertNotificationSent(result, 'a real, plain message succeeds');
 });
 
 test('sendDesktopNotification: a message containing single quotes does not break the PowerShell call', () => {
@@ -31,7 +50,7 @@ test('sendDesktopNotification: a message containing single quotes does not break
   // file are free-form Arabic/English text that could legitimately
   // contain an apostrophe or quoted phrase.
   const result = sendDesktopNotification("Galaxy Forge's Status", "It's flagged: 'opportunity_score_below_floor'");
-  assert.equal(result, true);
+  assertNotificationSent(result, 'a real, plain message succeeds');
 });
 
 test('sendDesktopNotification: never throws, even with empty strings', () => {
@@ -73,7 +92,7 @@ test('sendDesktopNotification: a real double-quote/shell-metacharacter injection
 
     const result = sendDesktopNotification(maliciousTitle, maliciousMessage);
 
-    assert.equal(result, true, 'a real notification with dangerous-looking but literal text must still succeed');
+    assertNotificationSent(result, 'a real notification with dangerous-looking but literal text must still succeed');
     assert.equal(fs.existsSync(marker), false, 'no injected command must ever have actually executed');
   } finally {
     if (fs.existsSync(marker)) fs.rmSync(marker, { force: true });
@@ -82,7 +101,7 @@ test('sendDesktopNotification: a real double-quote/shell-metacharacter injection
 
 test('sendDesktopNotification: a literal double-quote character alone is treated as inert text, not a shell boundary', () => {
   const result = sendDesktopNotification('Title with a " double quote', 'Message with a " double quote too');
-  assert.equal(result, true);
+  assertNotificationSent(result, 'a real, plain message succeeds');
 });
 
 test('sendDesktopNotification: the real temp .ps1 script is cleaned up, never left behind', () => {

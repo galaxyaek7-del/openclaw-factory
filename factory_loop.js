@@ -1397,6 +1397,14 @@ function checkNeedsAttention(tickActions, logPath = GOLDEN_HUNTER_EVENTS_FILE) {
 // `|` together reaches the script as inert literal text with zero
 // execution -- see tests/test_factory_loop_notification.js.
 function sendDesktopNotification(title, message) {
+  // The only desktop-notification mechanism this factory actually ships is a
+  // Windows toast (System.Windows.Forms.NotifyIcon driven by powershell.exe).
+  // Stated explicitly rather than left to fail on a missing powershell.exe:
+  // on any other platform there is no session to notify, so the honest answer
+  // is "not sent", and the caller must never treat that as an error. Caught by
+  // the Linux CI, where this silently returned false from the catch block and
+  // the tests -- which asserted the Windows contract -- failed there.
+  if (process.platform !== 'win32') return false;
   let scriptPath;
   try {
     scriptPath = path.join(os.tmpdir(), `galaxy_forge_notify_${process.pid}_${Date.now()}.ps1`);
