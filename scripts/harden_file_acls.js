@@ -49,7 +49,14 @@ function getCurrentUser() {
   return domain ? `${domain}\\${username}` : username;
 }
 
+// Windows-only, stated up front rather than surfacing as an opaque
+// `spawnSync icacls ENOENT` from three frames away -- which is how it reached
+// the Linux CI as a test failure when it is really an unsupported platform.
+const IS_WINDOWS = process.platform === 'win32';
+const UNSUPPORTED = `ACL hardening requires Windows (icacls); this platform is ${process.platform}`;
+
 function getAcl(filePath) {
+  if (!IS_WINDOWS) throw new Error(UNSUPPORTED);
   return execFileSync('icacls', [filePath]).toString();
 }
 
@@ -78,6 +85,13 @@ const ADMINISTRATORS_SID = '*S-1-5-32-544';
 function hardenFile(filePath, { dryRun = false, user = null } = {}) {
   if (!fs.existsSync(filePath)) {
     return { file: filePath, skipped: true, reason: 'file does not exist' };
+  }
+  // Honest "not done" instead of a fabricated success or a thrown ENOENT. This
+  // script changes real filesystem permissions on files the live server depends
+  // on, so silently doing nothing and reporting success would be the one
+  // genuinely dangerous outcome here.
+  if (!IS_WINDOWS) {
+    return { file: filePath, skipped: true, reason: UNSUPPORTED };
   }
   const before = getAcl(filePath);
   if (dryRun) {
@@ -112,4 +126,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { hardenFile, getCurrentUser, getAcl, hasBroadGrant, DEFAULT_TARGETS };
+module.exports = { hardenFile, getCurrentUser, getAcl, hasBroadGrant, isSupported: () => IS_WINDOWS, DEFAULT_TARGETS };
