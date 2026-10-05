@@ -57,6 +57,13 @@ if (res.error) {
 const out = (res.stdout || '') + (res.stderr || '');
 process.stdout.write(out);
 
+// Workflow commands are only parsed at the START of a line. TAP output does not
+// guarantee a trailing newline, so without this the ::group:: below gets
+// concatenated onto the last TAP line and GitHub silently drops every
+// annotation -- which is exactly what happened: a real failure producing no
+// annotations at all.
+if (out.length && !out.endsWith('\n')) process.stdout.write('\n');
+
 if (res.status === 0) {
   process.exit(0);
 }
