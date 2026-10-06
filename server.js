@@ -8201,14 +8201,39 @@ app.get('/{*path}', (req, res) => {
   sendIndexHtml(res);
 });
 
+// Real cost defect found by measurement, 2026-10-06. This used to run a
+// SYNCHRONOUS, UNCACHED `execSync` on every single call.
+//
+// Who calls it, and how often: pythonHealthCheck() calls detectPython() on
+// every invocation, pythonHealthCheck is the `health` of 200 of the 214
+// SERVICE_REGISTRY entries, and computeServiceLayerHealth() invokes
+// svc.health() for ALL of them. The API-contract suite alone performs THREE
+// full sweeps -- the every-service health loop, GET /api/v1/health and
+// GET /api/v1/metrics -- so that one suite was paying roughly 600 blocking
+// execSync spawns (measured at 433ms each on this machine) for a value that
+// cannot change while the process is alive. Because execSync blocks Node's
+// single event loop, none of it can overlap with anything else, including a
+// concurrent request loop.
+//
+// Measured effect: those three sweeps were 41.5s + 40.3s + 39.2s = 121s of a
+// 355.8s local run of that suite, i.e. ~34% of it, spent re-deriving a
+// constant.
+//
+// Fix is memoization ONLY. Same candidates, same order, same fallback, same
+// return value for every call in the process -- it just stops recomputing.
+// No behaviour, output, or error path changes.
+let detectedPythonCommand = null;
 function detectPython() {
+  if (detectedPythonCommand) return detectedPythonCommand;
   const candidates = ['python3', 'python', 'py'];
   for (const cmd of candidates) {
     try {
       require('child_process').execSync(`${cmd} --version`, { stdio: 'ignore' });
+      detectedPythonCommand = cmd;
       return cmd;
     } catch { }
   }
+  detectedPythonCommand = 'python';
   return 'python';
 }
 

@@ -18,6 +18,18 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    # Explicit, and deliberately just under GitHub's 360-minute default.
+    #
+    # Without this, the job inherits the 360 default and, when it overruns, is
+    # killed and reported as `cancelled` -- which is indistinguishable from a
+    # human cancelling the run and carries no duration at all. That happened
+    # four times in a row (360.8 / 360.7 / 360.2 / 360.3 min) while the API
+    # contract stage was still working and had emitted zero failures, so each
+    # run had to be characterised from scratch.
+    #
+    # Stating the budget means an overrun now fails as a labelled timeout with
+    # a number attached instead of vanishing.
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
 
