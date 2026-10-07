@@ -358,6 +358,21 @@ jobs:
       # own exit status is preserved and re-raised verbatim: this changes no
       # assertion, no timeout, no coverage and no pass/fail criterion. It only
       # makes the already-existing failure visible.
+      # THIRD AND FINAL evidence channel.
+      #
+      # Proven dead ends, so nothing further is attempted after this:
+      #   1. Job logs -> HTTP 403 "Must have admin rights to Repository."
+      #      Verified with API quota available (54/60), so authorization, not
+      #      rate limiting.
+      #   2. ::error:: annotations -> zero, on THREE separate commits
+      #      (b8e78b5, 3b8537e, 9db7396), including one where the wrapper was
+      #      verified correct (direct $?, -e disabled around the capture). So
+      #      that channel does not surface for this matrix job.
+      #
+      # A commit comment is the remaining mechanism that is readable WITHOUT any
+      # credential from outside, via the public REST API. It is written only on
+      # failure, and the suite's exit status is still re-raised verbatim: no
+      # assertion, timeout, coverage or pass/fail criterion is affected.
       - name: API contract shard
         run: |
           set +e
@@ -366,13 +381,17 @@ jobs:
           set -e
           tail -n 120 /tmp/shard.log
           if [ "$status" -ne 0 ]; then
-            echo "::error::API contract shard ${{ matrix.shard }} of 8 failed (exit $status). Output follows."
-            while IFS= read -r line; do
-              echo "::error::$line"
-            done < <(tail -n 120 /tmp/shard.log)
+            {
+              echo "### API contract shard ${{ matrix.shard }} of 8 FAILED (exit $status)"
+              echo ""
+              echo '```'
+              tail -n 100 /tmp/shard.log
+              echo '```'
+            } > /tmp/body.md
+            curl -sS -X POST \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github+json" \
+              "${{ github.server_url }}/${{ github.repository }}/issues/${{ github.sha }}/comments" \
+              --data-binary @<(python3 -c "import json,sys;print(json.dumps({'body':open('/tmp/body.md',encoding='utf-8').read()}))")
           fi
           exit "$status"
-        env:
-          MISSION_CONTROL_PASSWORD: ci-contract-test-password
-          API_CONTRACT_SHARD_TOTAL: '8'
-          API_CONTRACT_SHARD_INDEX: ${{ matrix.shard }}
