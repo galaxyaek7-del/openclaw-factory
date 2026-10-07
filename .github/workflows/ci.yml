@@ -274,32 +274,6 @@ jobs:
             exit 1
           fi
 
-      # DIAGNOSTIC SHARD -- deliberate, temporary, and evidence-bearing.
-      #
-      # 32/32 api-contract shards fail in 3-19 seconds, nowhere near the
-      # 180-minute ceiling, so this is a startup failure and not a performance
-      # problem. Its cause has stayed invisible for five commits because:
-      #   - job logs return HTTP 403 "Must have admin rights to Repository."
-      #     (authorization, proven with API quota at 54/60, not rate limiting);
-      #   - ::error:: annotations are ZERO on every `api-contract` matrix job,
-      #     even with a verified-correct emitter;
-      #   - commit comments are zero, even with issues: write granted.
-      #
-      # But annotations DO work in THIS job -- they were readable for the
-      # Python-group and lock-test failures earlier in the same investigation.
-      # Same workflow file, same ::error:: syntax, opposite results, which
-      # isolates the difference to the matrix job rather than to the emitter.
-      #
-      # So run one shard here, where the failure can finally be read. Shard 0 of
-      # 32 covers ~7 services, which is exactly the work that fails in seconds.
-      # This adds no capability and removes no verification; the 32-shard matrix
-      # remains the authoritative check and is untouched.
-      - name: API contract shard 0 (diagnostic, in-job)
-        run: node scripts/run_js_group.js tests/test_api_contract.js
-        env:
-          MISSION_CONTROL_PASSWORD: ci-contract-test-password
-          API_CONTRACT_SHARD_TOTAL: '32'
-          API_CONTRACT_SHARD_INDEX: '0'
 
   # ── API contract, as 32 independent bounded shards ──
   #

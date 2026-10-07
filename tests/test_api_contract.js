@@ -733,14 +733,55 @@ test('runPythonServiceCached: ?fresh=1 is never coalesced with a concurrent plai
 });
 
 test('server binds to loopback only, not all interfaces', async () => {
-  const probe = net.createServer();
-  const bindResult = await new Promise((resolve) => {
-    probe.once('error', (err) => resolve({ bound: false, code: err.code }));
-    probe.once('listening', () => resolve({ bound: true }));
-    probe.listen(PORT, '0.0.0.0');
-  });
-  probe.close();
-  assert.equal(bindResult.bound, true, `expected to be able to also bind 0.0.0.0:${PORT} (proving the real server isn't on all interfaces), got: ${JSON.stringify(bindResult)}`);
+  // The SECURITY INTENT is unchanged and is still asserted strictly: the real
+  // server must be reachable on loopback and must NOT be reachable on any
+  // non-loopback address of this host.
+  //
+  // What changed is HOW that is proven. The previous technique tried to bind a
+  // second listener on 0.0.0.0:<port> and expected success. That only works on
+  // Windows. On Linux a 0.0.0.0 bind OVERLAPS an existing 127.0.0.1 listener, so
+  // it returns EADDRINUSE whether or not the server is exposed -- the technique
+  // cannot distinguish the two cases there at all. That is what actually failed,
+  // on every shard, identically, and it was invisible for five commits because
+  // the failure text was never readable:
+  //
+  //   server binds to loopback only, not all interfaces
+  //   expected to be able to also bind 0.0.0.0:3199 ..., got:
+  //   {"bound":false,"code":"EADDRINUSE"}
+  //
+  // Replaced with a direct behavioural probe that is correct on both platforms:
+  // reach the server through the host's own non-loopback IPv4. If the server had
+  // bound all interfaces this connection would succeed; because it binds
+  // loopback only, it must be refused.
+  const loopbackRes = await fetchWithTimeout(`${BASE_URL}/api/dashboard`);
+  assert.equal(loopbackRes.status, 200,
+    'the server must still be reachable on loopback -- this is the control that proves the probe below is meaningful');
+
+  const nets = require('os').networkInterfaces();
+  const external = Object.values(nets).flat()
+    .filter((i) => i && i.family === 'IPv4' && !i.internal)
+    .map((i) => i.address);
+
+  if (!external.length) {
+    // No non-loopback IPv4 on this host (common in some CI/container setups).
+    // Say so honestly rather than silently passing a check that never ran.
+    assert.fail('no non-loopback IPv4 address is available on this host, so '
+      + 'loopback-only binding cannot be behaviourally verified here; refusing '
+      + 'to report PASS for a check that did not run');
+  }
+
+  for (const address of external) {
+    const reachable = await new Promise((resolve) => {
+      const socket = net.connect({ host: address, port: PORT });
+      const done = (value) => { socket.destroy(); resolve(value); };
+      socket.setTimeout(5000, () => done(false));
+      socket.once('connect', () => done(true));
+      socket.once('error', () => done(false));
+    });
+    assert.equal(reachable, false,
+      `the server must NOT be reachable on non-loopback ${address}:${PORT} -- `
+      + 'it is exposed beyond this machine');
+  }
 });
 
 test('dashboard.html and mission_control_login.html still serve correctly (no regression)', async () => {
