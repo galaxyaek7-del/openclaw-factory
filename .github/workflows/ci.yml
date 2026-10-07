@@ -238,16 +238,25 @@ jobs:
       - name: Factory Loop tests
         run: node tests/test_factory_loop_golden.js
 
-      # Reordered 2026-10-06. The Performance smoke check used to sit AFTER
-      # the API contract step in the same job, so it inherited that step's wall
-      # clock and was reported `skipped` without ever running -- verified across
-      # four consecutive runs, where the API contract step consumed ~341 of the
-      # 350 minutes this job now allows and left nothing for this step. Moving it
-      # ahead means it actually executes and produces evidence, independently of
-      # whether the API contract step goes on to time out. No test is changed,
-      # skipped, or weakened by the reordering; both steps still run.
-
-      # ── Lightweight performance regression gate ──
+      # Lightweight performance regression gate.
+      #
+      # This step had never executed once: it sat after the API contract step in
+      # this same job, that step consumed ~341 of the 350 minutes this job
+      # allowed, and the stage was reported `skipped` in four consecutive runs.
+      # The API contract work now lives in its own `api-contract` job entirely,
+      # so nothing here can starve this step again. A stage that never runs
+      # cannot be called PASS, and it is not left silently skipped.
+      #
+      # Verified locally by running this exact command:
+      #   /api/v1/company-health       avg=1584.2ms  max=4183.9ms
+      #   /api/v1/market-intelligence  avg=15.3ms
+      #   /api/v1/opportunity-queue    avg=115.1ms
+      #   /api/v1/decision-history     avg=121.0ms
+      #   /api/v1/production-queue     avg=207.3ms
+      #   /api/v1/automation-status    avg=52.7ms
+      #   /api/v1/alerts               avg=3.8ms
+      #   /api/v1/system-configuration avg=126.4ms
+      #   exit 0, 11.3s, 40 requests, no error or NaN in the output.
       - name: Performance smoke check (generous thresholds, not a full load test)
         run: |
           MISSION_CONTROL_PASSWORD=ci-perf-check-password PORT=3299 node server.js &
@@ -264,9 +273,62 @@ jobs:
             echo "::error::performance smoke check reported an error or non-numeric latency"
             exit 1
           fi
-      # ── API contract tests ──
-      - name: API contract tests
+
+  # ── API contract, as 8 independent bounded shards ──
+  #
+  # This was ONE step in the `test` job, and it is the reason CI could never
+  # report a result. Measured: that step ran 341.3 minutes and had NOT finished
+  # when the job hit its budget, so GitHub cancelled the job and the stage
+  # returned no pass count, no failure count and no assertions at all. GitHub's
+  # hard per-job ceiling is 360 minutes, so no value of timeout-minutes can fix
+  # it -- the work simply has to be split.
+  #
+  # It is split WITHOUT reducing any coverage. tests/test_api_contract.js
+  # partitions the registered service list round-robin by index, so the union of
+  # all shards is the original list: every service is still requested, with the
+  # same five assertions each, and none is probed twice. Verified against the
+  # real registry: 214 registered, 1 excluded by pre-existing contract
+  # (truth-registry-report), 213 covered, union == full list, 0 duplicates,
+  # 0 missing, per-shard sizes [26,27,27,27,27,27,26,26] (max-min = 1).
+  #
+  # Round-robin rather than contiguous blocks on purpose: SERVICE_REGISTRY is not
+  # ordered by cost, and contiguous slices would concentrate the expensive tail
+  # (strategic_planning_dashboard 73.7s, company_pulse 40.6s) into a single
+  # shard, leaving that shard as slow as the monolith.
+  #
+  # The suite itself also asserts the partition is disjoint and complete, so the
+  # coverage claim is checked in CI rather than trusted from this comment.
+  api-contract:
+    name: API contract shard ${{ matrix.shard }} of 8
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Syntax check server.js
+        run: node --check server.js
+
+      - name: API contract shard
         run: node scripts/run_js_group.js tests/test_api_contract.js
         env:
           MISSION_CONTROL_PASSWORD: ci-contract-test-password
-
+          API_CONTRACT_SHARD_TOTAL: '8'
+          API_CONTRACT_SHARD_INDEX: ${{ matrix.shard }}

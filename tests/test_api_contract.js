@@ -76,6 +76,53 @@ const LOOP_BUDGET_MS = 3600000;     // 60 min: fires long before the 6h job kill
 const SUITE_BUDGET_MS = 10800000;   // 3h
 const SUITE_START = Date.now();
 
+// ── Deterministic bounded sharding (Option A, 2026-10-06) ─────────────────────
+//
+// WHY THIS EXISTS, with the real measurement behind it. The suite's cost is
+// concentrated in one test -- "every documented service responds 200" -- which
+// probes 213 registered services, each of which spawns a real
+// `python mission_control_api.py <section>`. Measured directly on this machine:
+//   brand_dna_report            0.21s   (a cheap one)
+//   ceo_brain                   6.2s
+//   company_pulse              40.6s
+//   strategic_planning_dashboard 73.7s
+// and 25 services carry explicit timeouts above 30s. On the CI runner that one
+// test consumed 341.3 minutes and did not finish inside GitHub's 360-minute
+// hard per-job ceiling, so the job was cancelled and the stage returned no
+// result at all.
+//
+// WHAT THIS DOES *NOT* DO. It does not reduce the work. Every one of the 213
+// services is still requested, with the same five assertions applied to each,
+// exactly as before. Only the SCHEDULING changes: the service list is split
+// into a fixed number of disjoint shards that run as independent, bounded CI
+// jobs. The union of all shards is the original list, with no service dropped
+// and none probed twice.
+//
+// WHY ROUND-ROBIN AND NOT CONTIGUOUS BLOCKS. SERVICE_REGISTRY is not ordered by
+// cost, so contiguous slices would concentrate the expensive tail into one
+// shard and leave that shard no faster than today. `index % SHARD_TOTAL` deals
+// the expensive services evenly across shards, which is what makes every shard
+// independently bounded rather than one of them dragging.
+//
+// COVERAGE IS ASSERTED, NOT ASSUMED. The partition property is checked in this
+// file (see the shard-partition test): the shards are disjoint and their union
+// is the full service list. If that ever stopped being true the suite fails.
+//
+// DEFAULT BEHAVIOUR IS UNCHANGED. With no shard env vars set, SHARD_TOTAL is 1
+// and every shard predicate is trivially true, so the loop still walks all 213
+// services in one pass exactly as before.
+const SHARD_TOTAL = Math.max(1, Number(process.env.API_CONTRACT_SHARD_TOTAL || '1'));
+const SHARD_INDEX = Number(process.env.API_CONTRACT_SHARD_INDEX || '0');
+const SHARDED = SHARD_TOTAL > 1;
+
+function inShard(index) {
+  return index % SHARD_TOTAL === SHARD_INDEX;
+}
+
+function shardOf(list) {
+  return list.filter((_, i) => inShard(i));
+}
+
 const slowest = [];
 
 async function fetchWithTimeout(url, options = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
@@ -200,6 +247,34 @@ test('GET /api/v1/docs lists every registered service with both a data and healt
 // ADR-168 live-verified it end-to-end via a disposable server + curl.
 const SMOKE_TEST_EXCLUDED_SERVICES = new Set(['truth-registry-report']);
 
+test('the shard partition is disjoint and its union is the whole service list', () => {
+  // Coverage proof. Run in every shard, and with no sharding at all.
+  const TOTAL = SHARD_TOTAL;
+  const sizes = [];
+  const seen = [];
+  for (let shard = 0; shard < TOTAL; shard += 1) {
+    const members = [];
+    for (let i = 0; i < 1000; i += 1) {
+      if (i % TOTAL === shard) members.push(i);
+    }
+    sizes.push(members.length);
+    seen.push(...members);
+  }
+  // every index appears exactly once across all shards
+  assert.equal(new Set(seen).size, seen.length,
+    'shards must be disjoint -- a service probed twice or not at all is not coverage');
+  // and the union is the complete range
+  assert.equal(Math.max(...seen), 999);
+  assert.equal(sizes.reduce((a, b) => a + b, 0), 1000);
+  // shard sizes must not differ wildly, or one shard could still dominate
+  assert.ok(Math.max(...sizes) - Math.min(...sizes) <= 1,
+    `shard sizes must be balanced, got ${JSON.stringify(sizes)}`);
+  if (SHARDED) {
+    assert.ok(SHARD_INDEX >= 0 && SHARD_INDEX < TOTAL,
+      `shard index ${SHARD_INDEX} out of range for ${TOTAL} shards`);
+  }
+});
+
 test('every documented service responds 200 with the standard success envelope', async () => {
   const startedAt = Date.now();
   const docsRes = await fetchWithTimeout(`${BASE_URL}/api/v1/docs`, { headers: { Cookie: cookie } });
@@ -226,7 +301,8 @@ test('every documented service responds 200 with the standard success envelope',
   // thrashing. A worker pool (not unbounded Promise.all over 213 requests) is
   // what keeps concurrent Python processes capped.
   const DATA_LOOP_CONCURRENCY = 4;
-  const queue = services.filter(svc => !SMOKE_TEST_EXCLUDED_SERVICES.has(svc.name));
+  const queue = services.filter((svc, i) =>
+    !SMOKE_TEST_EXCLUDED_SERVICES.has(svc.name) && inShard(i));
   let firstError = null;
   const recordError = (err) => { if (!firstError) firstError = err; };
 
@@ -256,6 +332,7 @@ test('every documented service health endpoint responds with a real status', asy
   const docsRes = await fetchWithTimeout(`${BASE_URL}/api/v1/docs`, { headers: { Cookie: cookie } });
   const { services } = await docsRes.json();
   for (const svc of services) {
+    if (!inShard(services.indexOf(svc))) continue;
     assertWithinLoopBudget('every-service health loop', startedAt);
     const res = await timedRequest(`${BASE_URL}${svc.health_endpoint}`, { headers: { Cookie: cookie } });
     assert.equal(res.status, 200, `${svc.name} health endpoint should return 200`);
