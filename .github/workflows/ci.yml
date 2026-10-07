@@ -338,18 +338,40 @@ jobs:
       # therefore captures the suite's own output and re-emits it as ::error::
       # annotations on failure, which is the only channel available to read it.
       # On success the behaviour is identical to the plain command.
+      # REPAIRED EVIDENCE CHANNEL -- the previous version emitted nothing at all,
+      # and that is now explained rather than guessed.
+      #
+      # Two independent causes, both proven:
+      #   1. GitHub's job-logs endpoint returns
+      #      403 {"message":"Must have admin rights to Repository."} for this repo,
+      #      so the raw log is unreadable without admin rights. Verified with API
+      #      quota available (54/60 remaining), so this is authorization, NOT
+      #      rate limiting.
+      #   2. The previous wrapper piped node through `tee`, which made the
+      #      pipeline exit non-zero, and GitHub's default shell is `bash -e` --
+      #      so the script was terminated by -e at the failing pipeline and never
+      #      reached its own ::error:: lines. That is why zero annotations
+      #      appeared despite the emission being present in the file.
+      #
+      # The fix captures the output to a file and reads $? directly, with -e
+      # disabled around the capture, so the annotations always run. The suite's
+      # own exit status is preserved and re-raised verbatim: this changes no
+      # assertion, no timeout, no coverage and no pass/fail criterion. It only
+      # makes the already-existing failure visible.
       - name: API contract shard
         run: |
-          set -o pipefail
-          node scripts/run_js_group.js tests/test_api_contract.js 2>&1 | tee /tmp/shard.log
-          status=${PIPESTATUS[0]}
+          set +e
+          node scripts/run_js_group.js tests/test_api_contract.js > /tmp/shard.log 2>&1
+          status=$?
+          set -e
+          tail -n 120 /tmp/shard.log
           if [ "$status" -ne 0 ]; then
             echo "::error::API contract shard ${{ matrix.shard }} of 8 failed (exit $status). Output follows."
             while IFS= read -r line; do
               echo "::error::$line"
             done < <(tail -n 120 /tmp/shard.log)
-            exit "$status"
           fi
+          exit "$status"
         env:
           MISSION_CONTROL_PASSWORD: ci-contract-test-password
           API_CONTRACT_SHARD_TOTAL: '8'
