@@ -403,6 +403,25 @@ jobs:
       # own exit status is preserved and re-raised verbatim: this changes no
       # assertion, no timeout, no coverage and no pass/fail criterion. It only
       # makes the already-existing failure visible.
+      # EVIDENCE CHANNEL — endpoint corrected (HTTP 422 -> fixed).
+      #
+      # Observed failure, verbatim from the CI annotation:
+      #   comment POST returned HTTP 422
+      #
+      # Root cause: this posted to /repos/{owner}/{repo}/issues/{sha}/comments.
+      # A COMMIT SHA IS NOT AN ISSUE NUMBER. That path is the ISSUE-comment
+      # collection, whose issue_number is an integer; GitHub cannot resolve a
+      # commit hash there and rejects the request as unprocessable. The correct
+      # collection for a commit is:
+      #     POST /repos/{owner}/{repo}/commits/{ref}/comments   body: {body}
+      #
+      # So this was never a permissions problem, a size limit, an escaping
+      # problem or an authentication problem: it was the wrong resource. Only
+      # the URL segment changed. The payload schema ({"body": ...}), the auth
+      # header, the size and the evidence content are all unchanged, and the
+      # HTTP status is still echoed so any future rejection stays visible rather
+      # than silent.
+      #
       # THIRD AND FINAL evidence channel.
       #
       # Proven dead ends, so nothing further is attempted after this:
@@ -436,7 +455,7 @@ jobs:
             code=$(curl -sS -o /tmp/resp.json -w '%{http_code}' -X POST \
               -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
               -H "Accept: application/vnd.github+json" \
-              "${{ github.server_url }}/${{ github.repository }}/issues/${{ github.sha }}/comments" \
+              "${{ github.server_url }}/${{ github.repository }}/commits/${{ github.sha }}/comments" \
               --data-binary @<(python3 -c "import json;print(json.dumps({'body':open('/tmp/body.md',encoding='utf-8').read()}))") || echo 000)
             echo "::error::comment POST returned HTTP $code"
             head -c 400 /tmp/resp.json 2>/dev/null || true
