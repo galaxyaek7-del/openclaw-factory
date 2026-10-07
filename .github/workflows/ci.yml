@@ -323,7 +323,19 @@ jobs:
   api-contract:
     name: API contract shard ${{ matrix.shard }} of 32
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # 180 minutes is a DIAGNOSTIC CEILING for this job only, approved as an
+    # explicit one-off exception. It is not a workaround and must not be raised
+    # again without a new decision.
+    #
+    # The 90-minute budget produced NO valid conclusion at all: 8/8 shards were
+    # cancelled having run 5412-5467s, and a `conclusion: None` is not a pass.
+    # The structural cause of that overrun is being fixed separately (the env
+    # mapping that made every shard probe the whole registry). This ceiling
+    # exists so a shard that still needs longer can finish and report a real
+    # duration and a real conclusion instead of being killed into ambiguity.
+    #
+    # GitHub's hard per-job ceiling is 360 minutes; 180 stays well inside it.
+    timeout-minutes: 180
     strategy:
       fail-fast: false
       matrix:
