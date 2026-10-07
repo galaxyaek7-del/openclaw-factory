@@ -326,8 +326,30 @@ jobs:
       - name: Syntax check server.js
         run: node --check server.js
 
+      # EVIDENCE COLLECTION ONLY -- this changes no assertion, no timeout and no
+      # exit criterion. All 8 shards fail deterministically in ~7s on Linux while
+      # the identical invocation passes locally (33/33 in 45.6s), and the cause is
+      # currently unobservable: GitHub's job-logs endpoint returns HTTP 403 for
+      # every job in this repo, and the shard check-runs carry no annotations and
+      # no output text. So the failure is real but its message is invisible.
+      #
+      # GitHub workflow commands ARE parsed out of the log stream and DO reach the
+      # public REST API even when the raw log download is forbidden. This step
+      # therefore captures the suite's own output and re-emits it as ::error::
+      # annotations on failure, which is the only channel available to read it.
+      # On success the behaviour is identical to the plain command.
       - name: API contract shard
-        run: node scripts/run_js_group.js tests/test_api_contract.js
+        run: |
+          set -o pipefail
+          node scripts/run_js_group.js tests/test_api_contract.js 2>&1 | tee /tmp/shard.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            echo "::error::API contract shard ${{ matrix.shard }} of 8 failed (exit $status). Output follows."
+            while IFS= read -r line; do
+              echo "::error::$line"
+            done < <(tail -n 120 /tmp/shard.log)
+            exit "$status"
+          fi
         env:
           MISSION_CONTROL_PASSWORD: ci-contract-test-password
           API_CONTRACT_SHARD_TOTAL: '8'
