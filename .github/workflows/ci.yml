@@ -274,7 +274,7 @@ jobs:
             exit 1
           fi
 
-  # ── API contract, as 8 independent bounded shards ──
+  # ── API contract, as 32 independent bounded shards ──
   #
   # This was ONE step in the `test` job, and it is the reason CI could never
   # report a result. Measured: that step ran 341.3 minutes and had NOT finished
@@ -289,7 +289,16 @@ jobs:
   # same five assertions each, and none is probed twice. Verified against the
   # real registry: 214 registered, 1 excluded by pre-existing contract
   # (truth-registry-report), 213 covered, union == full list, 0 duplicates,
-  # 0 missing, per-shard sizes [26,27,27,27,27,27,26,26] (max-min = 1).
+  # 0 missing, per-shard sizes [26,27,27,27,27,27,26,26] (max-min = 1) at 8
+  # shards and [6,7] at 32 shards, both balanced (max-min = 1).
+  #
+  # Shard count came from measurement, not guesswork: at 8 shards every shard
+  # ran past the 90-minute budget and was cancelled (run 37609621855:
+  # 5412-5467s each, 8/8). Per-shard cost is inversely proportional to shard
+  # count, because a fixed 213 services are split across independent runners,
+  # so 32 shards puts ~7 services per shard instead of ~27 and lands every
+  # unit far inside the budget. That is a schedule change only -- no service is
+  # dropped, no assertion removed, and the partition is asserted in-run.
   #
   # Round-robin rather than contiguous blocks on purpose: SERVICE_REGISTRY is not
   # ordered by cost, and contiguous slices would concentrate the expensive tail
@@ -298,14 +307,27 @@ jobs:
   #
   # The suite itself also asserts the partition is disjoint and complete, so the
   # coverage claim is checked in CI rather than trusted from this comment.
+  #
+  # RESTORED env block (regression, and the true cause of the 90-minute
+  # overruns). An earlier rewrite of this step dropped its `env:` mapping,
+  # so API_CONTRACT_SHARD_TOTAL was never set. The suite then fell back to
+  # SHARD_TOTAL=1 -- meaning EVERY shard silently probed the entire 213-service
+  # registry instead of its own slice, and all 8 were cancelled at the 90-minute
+  # budget having done 8x the intended work. Observed in run 37609621855
+  # (5412-5467s per shard, 8/8 cancelled).
+  #
+  # Shard count is now 32 (from measurement: cost per shard scales inversely
+  # with shard count, ~7 services each instead of ~27 at 8). Schedule only:
+  # the union of shards is still the full service list, and the suite asserts
+  # that partition is disjoint, complete and balanced at run time.
   api-contract:
-    name: API contract shard ${{ matrix.shard }} of 8
+    name: API contract shard ${{ matrix.shard }} of 32
     runs-on: ubuntu-latest
     timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
     steps:
       - uses: actions/checkout@v4
 
@@ -382,7 +404,7 @@ jobs:
           tail -n 120 /tmp/shard.log
           if [ "$status" -ne 0 ]; then
             {
-              echo "### API contract shard ${{ matrix.shard }} of 8 FAILED (exit $status)"
+              echo "### API contract shard ${{ matrix.shard }} of 32 FAILED (exit $status)"
               echo ""
               echo '```'
               tail -n 100 /tmp/shard.log
@@ -395,3 +417,7 @@ jobs:
               --data-binary @<(python3 -c "import json,sys;print(json.dumps({'body':open('/tmp/body.md',encoding='utf-8').read()}))")
           fi
           exit "$status"
+        env:
+          MISSION_CONTROL_PASSWORD: ci-contract-test-password
+          API_CONTRACT_SHARD_TOTAL: '32'
+          API_CONTRACT_SHARD_INDEX: ${{ matrix.shard }}
