@@ -238,11 +238,14 @@ jobs:
       - name: Factory Loop tests
         run: node tests/test_factory_loop_golden.js
 
-      # ── API contract tests ──
-      - name: API contract tests
-        run: node scripts/run_js_group.js tests/test_api_contract.js
-        env:
-          MISSION_CONTROL_PASSWORD: ci-contract-test-password
+      # Reordered 2026-10-06. The Performance smoke check used to sit AFTER
+      # the API contract step in the same job, so it inherited that step's wall
+      # clock and was reported `skipped` without ever running -- verified across
+      # four consecutive runs, where the API contract step consumed ~341 of the
+      # 350 minutes this job now allows and left nothing for this step. Moving it
+      # ahead means it actually executes and produces evidence, independently of
+      # whether the API contract step goes on to time out. No test is changed,
+      # skipped, or weakened by the reordering; both steps still run.
 
       # ── Lightweight performance regression gate ──
       - name: Performance smoke check (generous thresholds, not a full load test)
@@ -261,3 +264,9 @@ jobs:
             echo "::error::performance smoke check reported an error or non-numeric latency"
             exit 1
           fi
+      # ── API contract tests ──
+      - name: API contract tests
+        run: node scripts/run_js_group.js tests/test_api_contract.js
+        env:
+          MISSION_CONTROL_PASSWORD: ci-contract-test-password
+
