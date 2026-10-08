@@ -150,7 +150,8 @@ class TestIdempotency(unittest.TestCase):
 class TestSecretHygiene(unittest.TestCase):
     def test_12_no_secret_values_appear_in_output(self):
         """12. Secret values never appear in output."""
-        src = io.open(det.__file__, encoding="utf-8").read()
+        with io.open(det.__file__, encoding="utf-8") as _source_fh:
+            src = _source_fh.read()
         for banned in ("GITHUB_TOKEN", "Authorization: Bearer", "ghp_", "github_pat_"):
             self.assertNotIn(banned, src,
                              "detector must contain no credential handling: %s" % banned)
@@ -160,7 +161,8 @@ class TestSecretHygiene(unittest.TestCase):
             ev = {"commit_sha": "abc1234", "runs": [run(1)], "jobs": list(ALL_OK),
                   "expected_shards": 2}
             det.record_state(det.PASS, "ok", {"evidence": ev}, path)
-            blob = io.open(path, encoding="utf-8").read()
+            with io.open(path, encoding="utf-8") as _ledger_fh:
+                blob = _ledger_fh.read()
             for banned in ("ghp_", "github_pat_", "Bearer", "token"):
                 self.assertNotIn(banned, blob, "ledger leaked %s" % banned)
 
