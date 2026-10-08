@@ -74,8 +74,23 @@
                 body: JSON.stringify({email: email, message: 'GPSR Compliance Checklist request', source: 'gpsr_landing_page', campaign: 's3_exec_05'})
             }).then(function(r){ return r.json(); }).then(function(body){
                 if (body && body.success) { alert('Thank you! Your request was recorded. A real person will follow up by email.'); }
-                else { alert('Thanks — your request was noted. If we do not follow up, email galaxyaek7@gmail.com.'); }
-            }).catch(function() { alert('Thanks — your request was noted. If we do not follow up, email galaxyaek7@gmail.com.'); });
+                else { tier2Fallback(); }
+            }).catch(function() { tier2Fallback(); });
+            // The deployed site is static: /api/customer/interest only answers
+            // when a backend runs. Without this fallback a submission there
+            // shows "noted" while recording nothing anywhere -- a false
+            // confirmation that silently loses the lead. Tier 2 reuses the
+            // same formsubmit route contact.html already uses, then a mailto
+            // fallback that never claims recording it did not do.
+            function tier2Fallback(){
+              fetch('https://formsubmit.co/ajax/galaxyaek7@gmail.com', {
+                method: 'POST', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+                body: JSON.stringify({email: email, message: 'GPSR Compliance Checklist request', source: 'gpsr_landing_page', campaign: 's3_exec_05'})
+              }).then(function(r){ return r.json(); }).then(function(body){
+                if (body && body.success !== false && body.success !== 'false') { alert('Thank you! Your request was recorded. A real person will follow up by email.'); }
+                else { alert('Sending is offline right now — please email galaxyaek7@gmail.com directly and we will send the checklist.'); }
+              }).catch(function(){ alert('Sending is offline right now — please email galaxyaek7@gmail.com directly and we will send the checklist.'); });
+            }
         });
     </script>
 <script>
