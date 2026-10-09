@@ -197,6 +197,7 @@ def run(snapshot_path, out_dir, dry_run=False, force=False, force_reason=""):
     if not due and dry_run:
         return {"exit": 3, "error": why, "dry_run": True}
     out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
     prod_name = "review_result_%s.json" % deadline.date().isoformat()
     if not dry_run and (out_dir / prod_name).exists() and not force:
         return {"exit": 4, "error": "already-decided: %s exists (use --force + --force-reason)" % prod_name}
