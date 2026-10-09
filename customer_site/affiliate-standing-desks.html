@@ -71,6 +71,7 @@ main{padding:2.5rem 0 5rem;}
   cursor:pointer; border:1px solid transparent; background:var(--accent); color:#1a0e05; align-self:flex-start;
 }
 .btn:hover{background:var(--accent-ink);}
+.btn-disabled{background:var(--bg-hover); color:var(--ink-faint); cursor:default; border-color:var(--border);}
 .rank-badge{font-family:var(--mono); font-size:.68rem; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:var(--cool); background:var(--cool-soft); padding:.25rem .6rem; border-radius:99px; white-space:nowrap;}
 
 footer{border-top:1px solid var(--border-soft); padding:2.5rem 0; text-align:center; color:var(--ink-faint); font-size:.8rem;}
@@ -161,10 +162,20 @@ footer{border-top:1px solid var(--border-soft); padding:2.5rem 0; text-align:cen
     return '★'.repeat(full) + '☆'.repeat(5 - full);
   }
 
+  // GF-19: static-first data — the factory-server /api/affiliate/products
+  // route does not exist on the static Pages host, so product data ships
+  // as affiliate-products.json (generated from the same real dataset).
+  // Clicks here are NOT counted (no attribution without the server
+  // redirect path); links are plain product URLs until a real tag exists.
   async function load(){
-    const res = await fetch('/api/affiliate/products?category=standing_desk_converters', { credentials: 'same-origin' });
-    const data = await res.json();
-    if (!res.ok || data.success === false){
+    let res, data;
+    try {
+      res = await fetch('affiliate-products.json', { credentials: 'same-origin' });
+      data = await res.json();
+    } catch (e) {
+      data = null;
+    }
+    if (!res || !res.ok || !data || !Array.isArray(data.products) || data.products.length === 0){
       document.getElementById('methodology').textContent = 'Real product data is temporarily unavailable — please try again shortly.';
       return;
     }
@@ -191,7 +202,10 @@ footer{border-top:1px solid var(--border-soft); padding:2.5rem 0; text-align:cen
           el('span', { class: 'stars' }, [stars(p.rating)]),
           el('span', null, [p.rating.toFixed(1) + ' (' + p.rating_count.toLocaleString() + ' real ratings)']),
         ]),
-        el('a', { class: 'btn', href: '/api/affiliate/click/' + p.id + (function(){ var s=''; for (var k in __att) s += (s ? '&' : '?') + k + '=' + encodeURIComponent(__att[k]); return s; })(), target: '_blank', rel: 'noopener sponsored' }, ['View on Amazon →']),
+        // GF-19: direct product URL from static data (untagged until a real
+        // tag exists — hence nofollow, not sponsored, until attributed).
+        p.url ? el('a', { class: 'btn', href: p.url, target: '_blank', rel: p.affiliate_attributed ? 'noopener sponsored' : 'noopener nofollow' }, ['View on Amazon →'])
+              : el('span', { class: 'btn btn-disabled' }, ['Unavailable on Amazon']),
       ]);
       grid.appendChild(card);
     });

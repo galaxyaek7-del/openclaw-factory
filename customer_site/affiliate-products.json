@@ -1,0 +1,54 @@
+{
+ "category": "standing_desk_converters",
+ "products": [
+  {
+   "id": "B07LCCT6VS",
+   "name": "FITUEYES Height Adjustable Standing Desk Converter, 36\" Wide",
+   "description": "Manual gas-spring height adjustment, 36-inch wide surface, dual monitor riser with keyboard tray.",
+   "price_usd": 179.99,
+   "list_price_usd": null,
+   "rating": 4.6,
+   "rating_count": 2547,
+   "url": "https://www.amazon.com/dp/B07LCCT6VS",
+   "affiliate_attributed": false
+  },
+  {
+   "id": "B07LCCJD6B",
+   "name": "FITUEYES Height Adjustable Standing Desk Converter, 32\" Wide",
+   "description": "Manual gas-spring height adjustment, 32-inch wide surface, dual monitor riser with keyboard tray. Amazon's own \"Overall Pick\" badge at research time.",
+   "price_usd": 111.98,
+   "list_price_usd": 139.99,
+   "rating": 4.6,
+   "rating_count": 2408,
+   "url": "https://www.amazon.com/dp/B07LCCJD6B",
+   "affiliate_attributed": false
+  },
+  {
+   "id": "B0864RSM5S",
+   "name": "PowerPro 36 Inch Electric Standing Desk Converter",
+   "description": "Push-button electric height adjustment, wide keyboard tray, supports dual monitors and a laptop.",
+   "price_usd": 349.0,
+   "list_price_usd": null,
+   "rating": 4.5,
+   "rating_count": 496,
+   "url": "https://www.amazon.com/dp/B0864RSM5S",
+   "affiliate_attributed": false
+  },
+  {
+   "id": "B0D1C9LBN5",
+   "name": "Aconcept Extra-Slim 24 x 14 inch Standing Desk Converter",
+   "description": "Compact manual lift, slim profile, sized for a single monitor or laptop -- the budget/space-constrained option.",
+   "price_usd": 49.99,
+   "list_price_usd": null,
+   "rating": 4.1,
+   "rating_count": 62,
+   "url": "https://www.amazon.com/dp/B0D1C9LBN5",
+   "affiliate_attributed": false
+  }
+ ],
+ "count": 4,
+ "verified_at": "2026-07-30",
+ "source": "Manual research via public Amazon search results (amazon.com/s?k=standing+desk+converter), verified 2026-07-30 -- not a live API, not scraped programmatically.",
+ "ranking_method": "rating weighted by log10(rating_count) -- a standard real weighted-rating formula, never Amazon's own paid ad placement.",
+ "tag_configured": false
+}
