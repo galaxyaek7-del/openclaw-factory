@@ -1,0 +1,58 @@
+name: Scheduled Campaign Review
+
+# GF-22: executes data/review_snapshot_10-11.json at its locked UTC deadline
+# (2026-10-11T23:59Z) without depending on an operator remembering a session.
+# The runner itself enforces the deadline gate and idempotency, so early,
+# late, or duplicate scheduled runs are all safe by construction.
+#
+# Scheduling honesty: GitHub does not guarantee exact-minute cron execution
+# (queued runs may delay). The runner's idempotency makes delay harmless, and
+# every run uploads its evidence either way.
+#
+# Credential honesty: repo secrets are NOT configured (Telegraph/Gumroad
+# tokens live only in local gitignored files). Until a founder adds
+# TELEGRAPH_TOKEN / GUMROAD_ACCESS_TOKEN repo secrets, scheduled runs gather
+# public evidence (Nostr relays, API liveness) and report token-gated signals
+# as UNKNOWN with reasons — never failed, never fabricated.
+# Deliberately separate from ci.yml (push/PR test validation, no live calls).
+
+on:
+  schedule:
+    - cron: '35 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run deadline-gated campaign review (stdlib only)
+        run: |
+          set +e
+          python scripts/run_campaign_review.py \
+            --snapshot data/review_snapshot_10-11.json \
+            --out-dir data > review_out.json
+          code=$?
+          cat review_out.json
+          if [ $code -eq 3 ]; then echo "review not due yet (deadline gate)"; exit 0; fi
+          if [ $code -eq 4 ]; then echo "review already decided (idempotent)"; exit 0; fi
+          exit $code
+
+      - name: Upload review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: campaign-review
+          retention-days: 90
+          path: |
+            data/review_result_*.json
+            review_out.json
