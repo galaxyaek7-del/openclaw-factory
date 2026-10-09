@@ -24,6 +24,13 @@ on:
 permissions:
   contents: read
 
+# GF-23: serialize runs (schedule vs manual dispatch) so two runners can
+# never interleave evidence gathering. Idempotency (exit 4) is the second
+# layer; this is the first. Queued runs wait rather than cancel.
+concurrency:
+  group: campaign-review
+  cancel-in-progress: false
+
 jobs:
   review:
     runs-on: ubuntu-latest
