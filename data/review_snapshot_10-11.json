@@ -1,0 +1,135 @@
+{
+ "prepared_at": "2026-10-09T20:04:17.910279+00:00",
+ "review_deadline": "2026-10-11T23:59:00+00:00",
+ "locked_criteria": "CONTINUE-if-live / IMPROVE-by-companion-link / RETIRE-only-with-cause / INCONCLUSIVE-if-exposure-insufficient; never FAILED for absent sales, never SUCCESS for mere publishing",
+ "campaigns": [
+  {
+   "experiment": "EXP-TELEGRAPH-002",
+   "offer": "GPSR free-checklist funnel",
+   "url": "https://telegra.ph/Amazon-Removed-Your-Listing-Under-GPSR-A-48-Hour-Recovery-Plan-for-Non-EU-Sellers-10-09",
+   "published_at": "2026-10-09T11:48:52+00:00",
+   "stage": "DISTRIBUTING",
+   "queue_state": "DISTRIBUTION_IN_PROGRESS",
+   "last_action": "nostr note 31dbee0ee5c43277, relays_ok 4",
+   "measurement": "measurable via author getViews",
+   "reach": "gross 5, own 0, net-est 5 (DERIVED, estimated priors)",
+   "next_review": "2026-10-11"
+  },
+  {
+   "experiment": "EXP-TELEGRAPH-003",
+   "offer": "Homebuyer Inspection Action Kit $29",
+   "url": "https://telegra.ph/Your-Inspection-Report-Is-Long-Your-Contingency-Deadline-Is-Short-Here-Is-the-Math-First-Way-Through-It-10-09",
+   "published_at": "2026-10-09T14:13:36+00:00",
+   "stage": "DISTRIBUTING",
+   "queue_state": "DISTRIBUTION_IN_PROGRESS",
+   "last_action": "GF-15 nostr note c9639883244e89c0, relays_ok 4",
+   "measurement": "measurable via author getViews",
+   "reach": "gross 2, own 1, net-est 1",
+   "next_review": "2026-10-11"
+  },
+  {
+   "experiment": "EXP-TELEGRAPH-004",
+   "offer": "Homebuyer Inspection Action Kit $29",
+   "url": "https://telegra.ph/Credit-or-Repair-Walking-One-Inspection-Finding-Through-the-Dollar-Math-10-09",
+   "published_at": "2026-10-09T14:21:49+00:00",
+   "stage": "DISTRIBUTING",
+   "queue_state": "DISTRIBUTION_IN_PROGRESS",
+   "last_action": "GF-18 nostr note 98408e122d4f96cd, relays_ok 4",
+   "measurement": "measurable via author getViews",
+   "reach": "gross 2, own 1, net-est 1",
+   "next_review": "2026-10-11"
+  },
+  {
+   "experiment": "EXP-TELEGRAPH-005",
+   "offer": "Landlord Move-In Inspection Pack $49",
+   "url": "https://telegra.ph/The-Move-Out-Deposit-Fight-Is-Won-at-Move-In-A-Photo-and-Signature-Baseline-10-09",
+   "published_at": "2026-10-09T14:28:02+00:00",
+   "stage": "DISTRIBUTING",
+   "queue_state": "DISTRIBUTION_IN_PROGRESS",
+   "last_action": "GF-17 nostr note 3e6638faa4e08dcc, relays_ok 4",
+   "measurement": "measurable via author getViews",
+   "reach": "gross 1, own 1, net-est 0",
+   "next_review": "2026-10-11"
+  },
+  {
+   "experiment": "EXP-TELEGRAPH-006",
+   "offer": "Cottage Food Compliance Kit $49",
+   "url": "https://telegra.ph/Selling-Food-From-Your-Home-Kitchen-Your-State-Has-a-Cap-a-Label-Rule-and-a-Registration-10-09",
+   "published_at": "2026-10-09T14:33:57+00:00",
+   "stage": "DISTRIBUTING",
+   "queue_state": "DISTRIBUTION_IN_PROGRESS",
+   "last_action": "GF-18 nostr note 8af00226023c5878, relays_ok 4",
+   "measurement": "measurable via author getViews",
+   "reach": "gross 1, own 1, net-est 0",
+   "next_review": "2026-10-11"
+  },
+  {
+   "experiment": "EXP-TELEGRAPH-007",
+   "offer": "Verified B2B Lead Lists $99",
+   "url": "https://telegra.ph/What-a-Done-For-You-200-Lead-Batch-Should-Contain-and-How-Ordering-Works-10-09",
+   "published_at": "2026-10-09T14:39:56+00:00",
+   "stage": "DISTRIBUTING",
+   "queue_state": "DISTRIBUTION_IN_PROGRESS",
+   "last_action": "GF-15 nostr note b823c0c5468b5824, relays_ok 4",
+   "measurement": "measurable via author getViews",
+   "reach": "gross 1, own 1, net-est 0",
+   "next_review": "2026-10-11"
+  },
+  {
+   "experiment": "EXP-TELEGRAPH-008",
+   "offer": "Restaurant Food Cost Control Kit $49",
+   "url": "https://telegra.ph/Your-Food-Cost-Is-4-Points-Too-High-The-Variance-Worksheet-Finds-Where-10-09",
+   "published_at": "2026-10-09T14:46:07+00:00",
+   "stage": "DISTRIBUTING",
+   "queue_state": "DISTRIBUTION_IN_PROGRESS",
+   "last_action": "GF-16 nostr note 6e60214b2f539ab8, relays_ok 4",
+   "measurement": "measurable via author getViews",
+   "reach": "gross 2, own 1, net-est ~1 (possible platform prefetch, not claimed)",
+   "next_review": "2026-10-11"
+  },
+  {
+   "experiment": "EXP-TELEGRAPH-009",
+   "offer": "Dental Insurance Verification Kit $59 (https://aekraft.gumroad.com/l/diboaf)",
+   "url": "https://telegra.ph/Stop-Verifying-Dental-Benefits-at-the-Front-Desk-on-the-Day-of-the-Visit-10-09",
+   "published_at": "2026-10-09T14:57:39+00:00",
+   "stage": "DISTRIBUTING",
+   "queue_state": "DISTRIBUTION_IN_PROGRESS",
+   "last_action": "prior cycle nostr cd6a631a04b4e59c; observation open",
+   "measurement": "measurable via author getViews",
+   "reach": "gross 3, own 3, net-est 0 (OBSERVED getViews + own-load subtraction)",
+   "next_review": "2026-10-11"
+  }
+ ],
+ "nostr_reply_state": {
+  "coverage": "nos.lol kinds-REQ (proven path)",
+  "results": {
+   "b2b_GF15": {
+    "eose": true,
+    "replies": 0
+   },
+   "homebuyer_GF15": {
+    "eose": true,
+    "replies": 0
+   },
+   "restaurant_GF16": {
+    "eose": true,
+    "replies": 0
+   }
+  },
+  "note": "dental unqueryable (no full event id); other relays UNKNOWN"
+ },
+ "interest_state": {
+  "accepted": 0,
+  "rejected_raw": 8,
+  "corrections": "data/interest_corrections.jsonl (all excluded on content grounds, origin UNKNOWN)"
+ },
+ "sales_scope": {
+  "transactions": 0,
+  "revenue_usd": 0,
+  "source": "official Gumroad --sales (GF-15; no intervening path)"
+ },
+ "execution_plan": {
+  "at": "2026-10-11T23:59Z",
+  "limitation": "no scheduler exists in this factory (no cron, no package.json scripts, no CI); review runs only when an operator session executes it — this file + locked criteria are the ready-to-run task"
+ }
+}
