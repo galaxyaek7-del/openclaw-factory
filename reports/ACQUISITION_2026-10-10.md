@@ -97,3 +97,15 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 **Funnel:** prospects 0 | delivered 5 Nostr + 2 SEO + 1 Gumroad-SEO | replies 0 | inquiries 0 | buying signals 0 | visits UNKNOWN(Pages)/0 local | checkouts 0 | sales 0 | **revenue $0** | spend **$0**.
 
 **Next:** observe (guide visits via local tracking where possible, Nostr replies, founder inbox for B2B inquiries, sales poll). No further publishing without a new hypothesis.
+
+## Cycle 6 (GF-38 verify-first B2B, same day)
+
+**GF-37 audit (§1):** queue 24/24 parseable; 4 lines had consumed-dollar escapes (L15,22-24, from inline-shell writes) — repaired via exact edits, re-verified clean. Workers confirmed real: node 6004 (server) + 13104 (loop, tick 09:17) — background continuity is worker-evidenced, not claimed. All GF-37 records + 5 report sections present. Process fix: queue writes now go through script files only (inline writes caused the escapes twice).
+
+**B2B rank (§2):** 1) Lead Lists 99 USD pay-on-delivery (posted, 14d window open); 2) KDP Typesetting 30-100 USD pay-on-delivery; 3) EU Briefing 149 USD pay-after-scope. All inquiry paths `mailto:`-live, same verified pattern. solutions.html hub intact. No new product created.
+
+**Observation (no manufactured distribution):** B2B Nostr post replies = 0 (damus check); Gumroad sales = 0 (live API). All offers inside fresh observation windows — no new post per anti-repetition rule. This cycle's external-action count is honestly 0 new distributions; its output is verification + ranking + gap precision.
+
+**Precise missing capability (§7):** no permitted 1:1 outbound channel exists anywhere in this factory (no SMTP, no LinkedIn, Reddit/X/Medium need human identity, formsubmit inbound-only). Personalized cold outreach is THE documented gap. Smallest founder actions, ranked: (a) 1 Reddit reply w/ disclosure + free-guide link (15 min, reversible); (b) LinkedIn-vs-Apollo-paid decision if inbound stays dry.
+
+**Funnel:** prospects 0 | delivered 0 new (5 Nostr + 2 SEO + 1 Gumroad-SEO cumulative) | replies 0 | inquiries 0 (founder-inbox side UNKNOWN to automation) | visits UNKNOWN(Pages)/0 local | checkouts 0 | sales 0 | **revenue $0** | spend **$0**.
