@@ -663,3 +663,7 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **One action:** Reddit r/EtsySellers 1vsw4v0 reply (manual, draft ready). Metrics: reports/C59_EVIDENCE_METRICS.md.
 
 **Revenue $0, spend $0.** Waiting for founder confirmation (no cycle 60).
+
+## Cycle 59 addendum (push hygiene, same day)
+
+**Push forensics:** session "HEAD -> main" lines were unreliable (stream interleave) — remote sat at bbbb4cf while outputs implied progress. Repaired by direct check: fetch + `git log origin/main` == HEAD 7183f00, full 15-commit chain intact (reflog), all mission files tracked, Pages deploys confirm content. No data lost. **Rule: a push counts only when origin/main shows it.**
