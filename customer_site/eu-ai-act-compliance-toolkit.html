@@ -135,6 +135,19 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
       <div class="callout warn">
         <p><strong>Important:</strong> this toolkit is a practical implementation guide, not legal advice. It's built to get you most of the way to audit-ready and to make your eventual legal/consulting spend far more targeted — the same positioning every real competitor in this category uses.</p>
       </div>
+
+      <div class="callout good">
+        <p><strong>Not ready to buy? Get the 10-point self-check by email.</strong> Ten yes/no questions that tell you in five minutes whether you have an exposure worth acting on (inventory, disclosure, role, deadlines, owners). Free, no spam, no list-selling — we reply ourselves.</p>
+        <form id="leadFormEu" style="margin-top:1rem">
+          <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+            <input name="name" required maxlength="200" placeholder="Name" style="flex:1;min-width:140px;font:inherit;background:#0a0c11;border:1px solid #242938;color:#eef0f6;border-radius:8px;padding:.7rem .85rem">
+            <input name="email" type="email" required maxlength="200" placeholder="Email" style="flex:1;min-width:180px;font:inherit;background:#0a0c11;border:1px solid #242938;color:#eef0f6;border-radius:8px;padding:.7rem .85rem">
+            <button type="submit" id="leadBtnEu" style="font:inherit;background:#d97a3f;color:#1a0e05;font-weight:700;border:none;border-radius:8px;padding:.7rem 1.2rem;cursor:pointer">Send it</button>
+          </div>
+          <div id="leadStatusEu" style="font-size:.85rem;margin-top:.6rem;display:none"></div>
+        </form>
+      </div>
     </article>
   </div>
 </main>
@@ -146,6 +159,46 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
 </footer>
 <script>
 fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'eu-ai-act-compliance-toolkit' }) }).catch(()=>{});
+(function(){
+  "use strict";
+  var form = document.getElementById('leadFormEu');
+  if (!form) return;
+  var status = document.getElementById('leadStatusEu');
+  var btn = document.getElementById('leadBtnEu');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var data = Object.fromEntries(new FormData(form).entries());
+    if (data.website) return; // honeypot
+    btn.disabled = true; btn.textContent = 'Sending…';
+    status.style.display = 'none';
+    var payload = { name: data.name, email: data.email,
+      message: 'LEAD: EU AI Act 10-point self-check request from eu-ai-act-compliance-toolkit. Send the self-check list.',
+      _subject: 'Lead: EU self-check request', _template: 'table', _captcha: 'false' };
+    function ok(){ status.textContent = 'Self-check requested. It arrives by email — a real person sends it.'; status.style.display = 'block'; form.reset(); btn.disabled = false; btn.textContent = 'Send it'; }
+    function fail(){
+      var mailto = 'mailto:galaxyaek7@gmail.com?subject=' + encodeURIComponent('EU self-check request') + '&body=' + encodeURIComponent('Please send the 10-point self-check. Name: ' + data.name);
+      status.innerHTML = 'Direct send is offline — <a href="' + mailto + '">click here to request by email</a>.';
+      status.style.display = 'block'; btn.disabled = false; btn.textContent = 'Send it';
+    }
+    fetch('/api/customer/support-ticket', { method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+      .then(function(r){ return r.json().then(function(b){ return { ok: r.ok, body: b }; }); })
+      .then(function(res){
+        if (!res.ok || res.body.success === false) throw new Error('local-offline');
+        ok();
+      })
+      .catch(function(){
+        fetch('https://formsubmit.co/ajax/galaxyaek7@gmail.com', { method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload) })
+          .then(function(r){ return r.json(); })
+          .then(function(body){
+            if (body && body.success !== false && body.success !== 'false') ok();
+            else fail();
+          }).catch(fail);
+      });
+  });
+})();
 </script>
 </body>
 </html>

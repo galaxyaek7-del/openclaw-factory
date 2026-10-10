@@ -496,3 +496,13 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Distribution:** none new (gates hold). Views 4/2, sales 0, replies 0.
 
 **Revenue $0, spend $0.** Next: observe; founder prerequisites (attach/SMTP/Reddit/GSC/Paddle-onboarding).
+
+## Cycle 41 ($155 activation, same day)
+
+1. **Gumroad iaiyt verified** (og meta: current, honest). No defect. Trust audit complete on all campaign listings.
+2. **Channel + reason:** EU page lead form — highest-ticket capture ($155), proven pattern, fulfillment file ready.
+3. **Distribution:** form itself is conversion asset (no broadcast; gates hold). Views 4/2, sales 0.
+4. **Measurement:** forms untested-by-design (no fake submits); counters/sales live-checked.
+5. **Prospects/sales:** 0/0. **Revenue $0, spend $0.**
+6. **Next:** first EU submission (manual self-check reply ready); founder prerequisites.
+7. **Code:** form + fulfillment file (validated, syntax-checked).
