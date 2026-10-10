@@ -1,1 +1,109 @@
-{"acceptance_criteria": {"dashboard": "no new dashboard without evidence it converts", "first_sale": "first verified external transaction (any offer, any channel)", "funnel": "lead-to-sale measurable at transaction level minimum", "north_star": "$100K+ verified revenue", "process": "stable documented execution with durable queue", "reconciliation": "sale records carry referrer/UTM; revenue net of refunds/fees"}, "founder_prerequisites": [{"action": "Gumroad dashboard -> fgruzn -> Content -> upload books/etsy_suspension_appeal_kit_v2_bundle.zip -> Save; then notify factory for API description update", "id": "FP-ATTACH", "time": "~3 min"}, {"action": "Paste ONE reply as yourself in r/EtsySellers 1vsw4v0 with disclosure + free-guide link (draft: pending_review/queue/gf41_reddit_reply_draft.md)", "id": "FP-REDDIT", "time": "~2 min"}, {"action": "Provide OUTREACH_SMTP_* credential OR approve no-cold-email policy permanently", "id": "FP-SMTP", "time": "decision"}, {"action": "Search Console -> add property galaxyaek7-del.github.io/openclaw-factory/ -> HTML file -> drop in gsc_inbox/ -> click Verify", "id": "FP-GSC", "time": "~2 min"}], "funnel": {"attributed_visits": "UNKNOWN (Pages structural; Telegraph counters work per-page)", "checkouts": 0, "inquiries": 0, "prospects_identified": 0, "replies": 0, "transactions": 0, "verified_net_revenue_usd": 0}, "last_successful_execution": "2026-10-10T13:10Z (Telegraph Stripe page verified live)", "mission_id": "GF-54", "next_actions": [{"acceptance": "any increment above own fetches", "action": "Observe Telegraph counters (Etsy:1 own, Stripe:2 incl. 1 unknown-origin)", "owner": "factory"}, {"acceptance": "substantive reply sent within 24h", "action": "Reply-watch all Nostr posts", "owner": "factory"}, {"acceptance": "listing advertises bundle", "action": "On FP-ATTACH: API description update for fgruzn", "owner": "factory", "blocked_by": "FP-ATTACH"}, {"acceptance": "3rd page only on views signal", "action": "Replicate Telegraph playbook on signal, not schedule", "owner": "factory"}], "objectives": ["First verified external sale", "Repeatable zero-spend buyer path", "$100K+ verified revenue (north star)"], "owners": {"autonomous": "factory (this runtime + factory_loop.js workers)", "human_gated": "founder (identity, credentials, accounts, money)"}, "recovery": {"queue": "data/gf33_acquisition_queue.jsonl (append-only, 76+ entries, validated JSON)", "report": "reports/ACQUISITION_2026-10-10.md (per-cycle appendices)", "resume": "read mission record + queue tail + run next_actions in order", "scripts": "C:/Users/Dell/AppData/Local/Temp/opencode/*.py (temp; recreate from queue evidence if lost)", "secrets": "never in repo; tokens live in .env + Temp only"}, "spend_usd": 0, "status": "ACTIVE", "updated_at": "2026-10-10T13:20:00+00:00", "verified_baseline": {"checkout_paths": "Gumroad live (50+ products, API-verified prices/URLs); Paddle gate closed (worker-evidenced); Stripe-accepting: NONE (no keys, Gumroad/Paddle are processors)", "ci": "healthy (API-observed success + in-progress builds; Pages success)", "primary_offer": "Etsy Appeal Kit $29 (rank 37/45); fallback Stripe $29", "secret_leak_scan": "queue/report/token files clean (tokens only in .env + Temp, never committed)", "telegraph_views": {"etsy": "1 (own fetch)", "stripe": "2 (1 own + 1 unknown-origin)"}, "workers": "node 6004 (server) + 13104 (factory_loop) alive"}, "workstreams": {"A_payment": "Gumroad OPERATIONAL; Paddle BLOCKED (onboarding); Stripe-accepting ABSENT by design (no keys)", "B_offers": "Etsy primary / Stripe fallback; v2 bundle READY-TO-ATTACH (blocked FP-ATTACH); price $29 held vs $39 competitor", "C_distribution": "Telegraph 2 pages live+metered; Nostr halted on evidence (0/200+ topical notes); SEO unindexed (GSC pending FP-GSC)", "D_pipeline": "mailto paths live; Pages visits UNKNOWN structural; transaction attribution DESIGNED (ref/UTM + sales poll)", "E_services": "B2B leads $99 posted+window; KDP posted; EU briefing guide+Nostr done; pick retained, no new push without signal", "F_affiliate": "DEPRIORITIZED (no Amazon tag, 0 Systeme clicks, Fiverr founder-gated)"}}
+{
+ "acceptance_criteria": {
+  "dashboard": "no new dashboard without evidence it converts",
+  "first_sale": "first verified external transaction (any offer, any channel)",
+  "funnel": "lead-to-sale measurable at transaction level minimum",
+  "north_star": "$100K+ verified revenue",
+  "process": "stable documented execution with durable queue",
+  "reconciliation": "sale records carry referrer/UTM; revenue net of refunds/fees"
+ },
+ "founder_prerequisites": [
+  {
+   "action": "Gumroad dashboard -> fgruzn -> Content -> upload books/etsy_suspension_appeal_kit_v2_bundle.zip -> Save; then notify factory for API description update",
+   "id": "FP-ATTACH",
+   "time": "~3 min"
+  },
+  {
+   "action": "Paste ONE reply as yourself in r/EtsySellers 1vsw4v0 with disclosure + free-guide link (draft: pending_review/queue/gf41_reddit_reply_draft.md)",
+   "id": "FP-REDDIT",
+   "time": "~2 min"
+  },
+  {
+   "action": "Provide OUTREACH_SMTP_* credential OR approve no-cold-email policy permanently",
+   "id": "FP-SMTP",
+   "time": "decision"
+  },
+  {
+   "action": "Search Console -> add property galaxyaek7-del.github.io/openclaw-factory/ -> HTML file -> drop in gsc_inbox/ -> click Verify",
+   "id": "FP-GSC",
+   "time": "~2 min"
+  }
+ ],
+ "funnel": {
+  "attributed_visits": "UNKNOWN (Pages structural; Telegraph counters work per-page)",
+  "checkouts": 0,
+  "inquiries": 0,
+  "prospects_identified": 0,
+  "replies": 0,
+  "transactions": 0,
+  "verified_net_revenue_usd": 0,
+  "telegraph_views": {
+   "etsy": 1,
+   "stripe": 2
+  }
+ },
+ "last_successful_execution": "2026-10-10T13:10Z (Telegraph Stripe page verified live)",
+ "mission_id": "GF-54",
+ "next_actions": [
+  {
+   "acceptance": "any increment above own fetches",
+   "action": "Observe Telegraph counters (Etsy:1 own, Stripe:2 incl. 1 unknown-origin)",
+   "owner": "factory"
+  },
+  {
+   "acceptance": "substantive reply sent within 24h",
+   "action": "Reply-watch all Nostr posts",
+   "owner": "factory"
+  },
+  {
+   "acceptance": "listing advertises bundle",
+   "action": "On FP-ATTACH: API description update for fgruzn",
+   "owner": "factory",
+   "blocked_by": "FP-ATTACH"
+  },
+  {
+   "acceptance": "3rd page only on views signal",
+   "action": "Replicate Telegraph playbook on signal, not schedule",
+   "owner": "factory"
+  }
+ ],
+ "objectives": [
+  "First verified external sale",
+  "Repeatable zero-spend buyer path",
+  "$100K+ verified revenue (north star)"
+ ],
+ "owners": {
+  "autonomous": "factory (this runtime + factory_loop.js workers)",
+  "human_gated": "founder (identity, credentials, accounts, money)"
+ },
+ "recovery": {
+  "queue": "data/gf33_acquisition_queue.jsonl (append-only, 76+ entries, validated JSON)",
+  "report": "reports/ACQUISITION_2026-10-10.md (per-cycle appendices)",
+  "resume": "read mission record + queue tail + run next_actions in order",
+  "scripts": "C:/Users/Dell/AppData/Local/Temp/opencode/*.py (temp; recreate from queue evidence if lost)",
+  "secrets": "never in repo; tokens live in .env + Temp only"
+ },
+ "spend_usd": 0,
+ "status": "ACTIVE",
+ "updated_at": "2026-10-10T13:50:00+00:00",
+ "verified_baseline": {
+  "checkout_paths": "Gumroad live (50+ products, API-verified prices/URLs); Paddle gate closed (worker-evidenced); Stripe-accepting: NONE (no keys, Gumroad/Paddle are processors)",
+  "ci": "healthy (API-observed success + in-progress builds; Pages success)",
+  "primary_offer": "Etsy Appeal Kit $29 (rank 37/45); fallback Stripe $29",
+  "secret_leak_scan": "queue/report/token files clean (tokens only in .env + Temp, never committed)",
+  "telegraph_views": {
+   "etsy": "1 (own fetch)",
+   "stripe": "2 (1 own + 1 unknown-origin)"
+  },
+  "workers": "node 6004 (server) + 13104 (factory_loop) alive",
+  "freelancer_kit": "honest $19 micro-kit (was misdescribed $39 bundle); fixed all surfaces"
+ },
+ "workstreams": {
+  "A_payment": "Gumroad OPERATIONAL; Paddle BLOCKED (onboarding); Stripe-accepting ABSENT by design (no keys)",
+  "B_offers": "Etsy primary / Stripe fallback; v2 bundle READY-TO-ATTACH (blocked FP-ATTACH); price $29 held vs $39 competitor",
+  "C_distribution": "Telegraph 2 pages live+metered; Nostr halted on evidence (0/200+ topical notes); SEO unindexed (GSC pending FP-GSC)",
+  "D_pipeline": "mailto paths live; Pages visits UNKNOWN structural; transaction attribution DESIGNED (ref/UTM + sales poll)",
+  "E_services": "B2B leads $99 posted+window; KDP posted; EU briefing guide+Nostr done; pick retained, no new push without signal",
+  "F_affiliate": "DEPRIORITIZED (no Amazon tag, 0 Systeme clicks, Fiverr founder-gated)"
+ }
+}
