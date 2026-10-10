@@ -236,3 +236,17 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 9. **Blocker:** no observable autonomous route left; human identity for all contact channels.
 10. **Next:** reply-watch + sales poll + founder Reddit draft. No new broadcast until windows close or a reply lands.
 11. **Gate outcome:** exposure-without-engagement → STOP repeating distribution; shift to observation. First cycle to halt publishing on evidence rather than schedule.
+
+## Cycle 16 (GF-48 reset, same day)
+
+1. **GF-45/46/47 review:** commits match claimed files; prior outcomes verified, no contradictions. All prior "VERIFIED" labels stand; "0 replies/sales" re-confirmed live this cycle.
+2. **Claims audit:** no UNVERIFIED leftovers — every technical claim traces to a file/API record. Buyer-side claims were already UNKNOWN/0, honestly labeled.
+3. **Offer/buyer:** Etsy ($29) x suspended sellers retained (no new evidence to re-rank).
+4. **Readiness:** cited verified; no changes needed.
+5. **External actions (Outcome A):** (a) full reply sweep — 17/17 posts, 0 replies (new coverage, never swept all at once); (b) Nostr kind:0 replication to primal — OK-accepted + readback-verified, fixing an evidenced trust gap (profile was damus-only). Labeled infra-trust, NOT buyer contact.
+6. **Buyer response:** NONE OBSERVED (replies 0, inquiries 0, inbox UNKNOWN).
+7. **Nostr proof split:** acceptance 4-5/5 per post | retrievability verified (incl. profile) | exposure UNKNOWN | engagement 0 | conversion 0.
+8. **Revenue:** 0 transactions, **$0 verified**. Spend $0.
+9. **Blocker:** human identity for every contact channel (Reddit draft ready); email/gh/absent infra. Pivot attempted and completed: full-sweep + trust-gap fix are the feasible routes that existed.
+10. **Next:** reply-watch; founder Reddit draft; re-score only on new evidence.
+11. **Spend:** $0 confirmed.

@@ -1,0 +1,14 @@
+{
+ "at": "2026-10-10T10:15:08Z",
+ "event_id": "e00d1282ec38ccdf65187e25fab9458f5ba8de6dc8ac0141c5fa9a2d4fc45885",
+ "content": {
+  "name": "Galaxy Forge - Practical Toolkits for Small Business",
+  "about": "Practical toolkits for small teams: SaaS audits, compliance kits, operations systems. Fixed prices, instant download.",
+  "website": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html"
+ },
+ "acks": {
+  "relay.primal.net": "[\"OK\",\"e00d1282ec38ccdf65187e25fab9458f5ba8de6dc8ac0141c5fa9a2d4fc45885\",true,\"\"]",
+  "nos.lol": "[\"OK\",\"e00d1282ec38ccdf65187e25fab9458f5ba8de6dc8ac0141c5fa9a2d4fc45885\",true,\"duplicate: have this event\"]",
+  "nostr-pub.wellorder.net": "[\"OK\",\"e00d1282ec38ccdf65187e25fab9458f5ba8de6dc8ac0141c5fa9a2d4fc45885\",true,\"\"]"
+ }
+}
