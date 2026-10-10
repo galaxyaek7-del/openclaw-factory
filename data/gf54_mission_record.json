@@ -90,7 +90,7 @@
  },
  "spend_usd": 0,
  "status": "ACTIVE",
- "updated_at": "2026-10-10T19:55:00+00:00",
+ "updated_at": "2026-10-10T20:00:00+00:00",
  "verified_baseline": {
   "checkout_paths": "Gumroad live (50+ products, API-verified prices/URLs); Paddle gate closed (worker-evidenced); Stripe-accepting: NONE (no keys, Gumroad/Paddle are processors)",
   "ci": "healthy (API-observed success + in-progress builds; Pages success)",
@@ -123,5 +123,14 @@
    "FP-SMTP"
   ],
   "pledge": "no further requests until state changes"
- }
+ },
+ "action_verdicts": {
+  "FP-ATTACH": "REQUIRES_FOUNDER_ACTION / NOT_REQUIRED_FOR_SALE",
+  "FP-REDDIT": "REQUIRES_FOUNDER_ACTION / buyer-contact path",
+  "FP-ACTIVATE-FORM": "REQUIRES_FOUNDER_ACTION / NOT_REQUIRED_FOR_SALE",
+  "FP-GSC": "REQUIRES_FOUNDER_ACTION / NOT_REQUIRED_FOR_SALE",
+  "FP-SMTP": "REQUIRES_FOUNDER_ACTION / NOT_REQUIRED_FOR_SALE",
+  "Paddle": "REQUIRES_FOUNDER_ACTION / NOT_REQUIRED_FOR_SALE"
+ },
+ "shortest_path": "Gumroad fgruzn $29 live 200/22KB (verified this cycle)"
 }
