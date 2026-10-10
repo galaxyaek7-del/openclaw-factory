@@ -385,3 +385,11 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **B2B terms conflict FOUND + FIXED:** drtaj ($99 Gumroad, pay-upfront, honest desc) vs service page (custom $30-250, pay-on-delivery) contradicted each other — and my own Nostr post conflated both. Service page now states exactly which terms apply where + cross-links the fixed batch. Verified serving. CloudOps $29 listing audited honest (no action). Counters static (1/2), sales 0.
 
 **Next trust target:** EU AI Act listing ($155, highest price). **Revenue $0, spend $0.**
+
+## Cycle 30 (B2B execution, same day)
+
+**Primary:** B2B Lead Lists ($99 fixed / $30-250 custom, terms reconciled, paths live); backup KDP. Deliverability caveat on file (manual + honest-decline).
+
+**Distribution:** Telegraph page #4 (B2B buyer-education angle, UTM links) — clean publish, independently verified, views 0. Services now covered alongside kits (4 pages: compliance, finance, gig-work, B2B-buying).
+
+**State:** sales 0, views static (1/2/0/0), replies 0, tickets test-only. **Revenue $0, spend $0.** Next: observe 4 counters; founder prerequisites (attach/SMTP/Reddit/GSC) stand.
