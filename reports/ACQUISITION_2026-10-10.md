@@ -712,3 +712,13 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Supervision:** tool proven 4/4 but NOT engaged — killing the healthy loop risked corruption for hypothetical gain. Documented procedure for next natural restart. No other internal autonomy tool missing.
 
 **Revenue $0, spend $0.** Judgment over automation: a running factory beats a restarted one.
+
+## Cycle 65 (catalog flaw-hunt, same day)
+
+**Flaw found in OUR OWN method:** list pagination duplicates (2000 rows = 10 products). Corrected to ledger-ID audit.
+
+**Catalog verdict:** 50/50 live, published, priced, described. Zero test/junk/unpublished/priceless. Only gap was 19 untagged.
+
+**Fix:** 19 honest tag-sets applied + re-verified 19/19 (first verify misread shape — caught and corrected). **All 50 listings now fully tagged.**
+
+**Revenue $0, spend $0.** Gumroad-search surface complete; sales carry referrer on purchase.
