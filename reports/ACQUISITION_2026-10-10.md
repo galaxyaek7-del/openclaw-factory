@@ -529,3 +529,13 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Day verdict:** maximum autonomous execution complete — healthy factory, 7 metered pages, 3 guides, 2 proven lead forms, v2 bundle, trust fixed everywhere audited, 2 nudges delivered. **0 replies, 0 inquiries, 0 sales. Revenue $0, spend $0.**
 
 **A buyer comes only via:** your identity routes (Reddit draft ready), index crawl (days), bundle attach (3 min), or your direct referral. The machine is loaded, aimed, and waiting — it cannot pull its own trigger.
+
+## Cycle 44 (C43 free-rule execution, same day)
+
+**Rule ACTIVE:** first claimant per product gets it FREE via founder email (review welcome, never paid/required). Policy file committed.
+
+**Distribution (real, new variable):** FREE Etsy post — event `4503a89e`, 4/5 relays. Claim-by-reply, founder delivers. Claims after ~5 min: 0 (needs eyeball-time; watch continues).
+
+**EU path:** cited verified C40 ($155 consistent, Paddle blocked) — no repeat checks per mandate.
+
+**State:** views 4/2, sales 0, replies 0. **Revenue $0, spend $0.** Next: claim-watch (first claim = first customer + delivery cycle); founder prerequisites stand.
