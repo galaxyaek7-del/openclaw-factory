@@ -51,3 +51,21 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 **Queue:** `data/gf33_acquisition_queue.jsonl` — 9 executed + 2 queued (MetriCool done→isolated; next: Nostr re-observe 7d, guide-visit observation) + 3 blocked-isolated (X/Medium/Reddit unchanged, founder-only).
 
 **Funnel totals today:** prospects 0, outreach delivered 3 (Nostr) + 1 SEO asset, replies 0, inquiries 0, purchases 0, refunds 0, **net verified revenue $0**, spend **$0**.
+
+## Cycle 3 (GF-35 breakthrough mandate, same day)
+
+**Product audit (pypdf, OBSERVED):** Etsy kit 19pp/~3,450 real words; Stripe kit 15pp/~3,300 real words; Freelancer kit 3pp/6.7KB — thin for $39, honestly DOWNGRADED as lead offer (yesterday's guide may rival the product; flagged, not hidden).
+
+**Winner: Etsy Suspension Appeal Kit ($29).** Justification: acute pain (shop offline + funds held 180d) + real deadline (6-month appeal window, Etsy-official) + verified 2026 demand (official Appeals Center docs + competitor guides 04/09-2026 + paid appeal services) + $29 vs attorney fees + real 19-page product + launch kit on file. Stripe = diffuse buyer, no trigger. Freelancer = weak value.
+
+**Need signals (public web, legitimate):** Etsy Help appeal docs, seller-handbook policy-violations expansion (08-2026), ShieldMyShop/SellerSafe/printmeet 2026 guides, attorney FAQ pages. Segment CONFIRMED: suspended sellers, urgent, Google-searchable.
+
+**Executed:**
+1. `guide-etsy-suspension-appeal.html` — free fix-first method + honest disclosure (appeal never guarantees reinstatement; kit sales: 0). Serves 200 locally AND live on Pages (200 verified). Sitemap 51 URLs, valid, no dupes.
+2. IndexNow 202×2 (`IDX-2026-10-10-003`). Acceptance only.
+3. Nostr value-first post (event `96e0378d`, 4/5 relays) linking the GUIDE, not the product — new positioning vs yesterday's product post.
+4. Committed `a42e0ea`, pushed. Sales re-check: **0**.
+
+**Funnel totals today (3 cycles):** prospects 0 (none invented), outreach delivered 4 Nostr + 2 SEO assets, replies 0, inquiries 0, purchases 0, **net verified revenue $0**, spend **$0**.
+
+**Failing stage:** top-of-funnel reach-to-right-people (0 real site visitors since 10-08). Next: observe guide visits via page-view tracking; if intent appears, follow up toward checkout; if still zero, test Stripe-offer angle or B2B service arm next cycle.
