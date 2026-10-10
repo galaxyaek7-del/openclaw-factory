@@ -539,3 +539,11 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **EU path:** cited verified C40 ($155 consistent, Paddle blocked) — no repeat checks per mandate.
 
 **State:** views 4/2, sales 0, replies 0. **Revenue $0, spend $0.** Next: claim-watch (first claim = first customer + delivery cycle); founder prerequisites stand.
+
+## Cycle 45 (C44 free-proof + EU-free, same day)
+
+1. **FREE post proven externally:** retrievable by ID on primal (damus transient fail). Publication beyond commit established. iaiyt live 200/28KB (EU path stands, single check).
+2. **EU path:** $155 consistent, Paddle blocked (cited). No repeat audit.
+3. **Distribution:** FREE EU post ($155→$0, event `d94efc1b`, 4/5) — second free offer, compliance audience. Claims 0/0 after ~3 min.
+4. **Metrics:** views 4/2, claims 0/0, tickets test-only, sales 0. UNKNOWN where unobservable, zero where verified-empty.
+5. **Revenue $0, spend $0. Next:** claim-watch both free posts (first claim = first customer + delivery); founder prerequisites.
