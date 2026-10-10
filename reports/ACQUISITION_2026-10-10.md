@@ -565,3 +565,11 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Verify/commit:** queue 133 clean; report appended; push + live-verify next.
 
 **Revenue $0, spend $0.** Next: first FIRST-BUYER-FREE email triggers delivery cycle; observe counters.
+
+## Cycle 48 (external-shortcomings census, same day)
+
+**Enumerated + tested:** 53/53 buy links live; 5/5 prices match API; mailtos correct; 7 Telegraph live; sitemap valid; campaign descriptions audited; disclaimers present.
+**Treated:** freelancer mismatch + B2B terms + titles (prior cycles); nothing new broken found.
+**Tested:** fixes verified live (Pages confirms); formsubmit state documented UNKNOWN-by-design (untestable without noise).
+**Remaining external gaps (all founder-side):** bundle attach, SMTP, Reddit identity, GSC click, Paddle onboarding.
+**Revenue $0, spend $0.** Storefront externally sound; traffic is the only missing ingredient.
