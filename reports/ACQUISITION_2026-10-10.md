@@ -260,3 +260,15 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 5. **Ladder:** PUBLISHED (10 Nostr, 3 guides, 2 Gumroad-SEO, card) | EXPOSURE_VERIFIED: none (Nostr no view counts; Pages UNKNOWN) | ENGAGEMENT 0 | QUALIFIED 0 | PURCHASE 0 | NET $0.
 6. **Gate:** no autonomous buyer route remains; escalation delivered; observation continues.
 7. **Revenue $0, spend $0.** Secrets protected (keys never logged).
+
+## Cycle 18 (GF-50 72h sprint, same day)
+
+1. **Offer/buyer/price/rationale:** Etsy Appeal Kit ($29) x suspended sellers — audited 19pp, strongest 2026 demand, live buy path. Hypothesis: vague emails leave sellers unsure what to write; a verbatim free excerpt proves contents; test via guide + existing path, observe 72h.
+2. **Readiness:** excerpt box (verbatim Ch.5 + contents list, labeled sample) shipped to guide; verified locally. Buy path cited verified.
+3. **External action:** content resubmit via IndexNow 202x2 (justified by real change) + push. No new broadcast (halt gate holds).
+4. **Buyer responses:** NONE OBSERVED (replies 0, inquiries 0).
+5. **Established:** excerpt may raise guide→kit trust (untested). UNKNOWN: visits, excerpt influence, sales lift.
+6. **Revenue:** 0 transactions, **$0**. Spend $0.
+7. **Blocker:** buyer contact still founder-gated (Reddit draft + Telegram nudge delivered).
+8. **Next:** 72h observation (sales poll worker, reply watch, founder inbox); if excerpt moves nothing and founder route stays dry, test Stripe-guide OR discount-code variable next.
+9. **Spend $0 confirmed.**
