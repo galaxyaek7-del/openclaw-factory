@@ -69,3 +69,17 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 **Funnel totals today (3 cycles):** prospects 0 (none invented), outreach delivered 4 Nostr + 2 SEO assets, replies 0, inquiries 0, purchases 0, **net verified revenue $0**, spend **$0**.
 
 **Failing stage:** top-of-funnel reach-to-right-people (0 real site visitors since 10-08). Next: observe guide visits via page-view tracking; if intent appears, follow up toward checkout; if still zero, test Stripe-offer angle or B2B service arm next cycle.
+
+## Cycle 4 (GF-36 distribution breakthrough, same day)
+
+**Funnel diagnosis (the zero-activity question):** POST `https://galaxyaek7-del.github.io/api/page-view` returns **405** (OBSERVED) — the guide pages' `fetch('/api/page-view')` can only ever work on localhost, never on the live Pages site. Conclusion: "0 visits" = 0 local-observed + **Pages-side UNKNOWN** (not proven zero). Only reliable conversion signals today: Gumroad sales API (=0, verified) and Gumroad-dashboard referrer (founder-only). No more Nostr reposts without a new hypothesis (per mandate §1).
+
+**Offer re-confirmed: Etsy Appeal Kit.** No assumption of demand: 2026 demand re-verified via 7 live Reddit threads (below) + official docs (cycle 3).
+
+**Different actions executed (not repeats):**
+1. **Gumroad-search surface upgraded live** — PUT `fgruzn` description (specific contents: triage/Appeals Center/6-mo window/IP two-track/4-part letter; honest "never guarantees reinstatement") + tags `[etsy, suspension appeal, reinstatement, seller help]`. UPDATE OK + GET-verified. Reversible (prior description: "A practical appeal system for suspended Etsy sellers: temporary vs permanent triage, Appeals Center walkthrough, 6-month appeal window, policy fixes, and reinstatement letters. 19-page PDF. No outcome guaranteed. ..."). First time this channel touched.
+2. **Community map (read-only, no posting):** r/EtsySellers `1u7o1uy` (case-rate, 06-16), `1vsw4v0` (threatened suspension, 43 comments, 08-19), `1t1nclu` (selfie verification, 05-02), `1vju0fe` (10yr seller banned, 48pts/46 comments, 08-09); r/EtsyCommunity `1tv3fo6` (vague ban, 06-02), `1vqmz2s` (appeals disappearing 4x, 08-17), `1sy125z` (bank-update ban, 04-28). Buyer language: "vague email", "appeals disappear", "no response", "case rate". Posting = founder-only (identity rule); map ready for 1 disclosure-carrying helpful reply.
+
+**Funnel (per-stage):** DISCOVERY: segment confirmed (no invented contacts) | QUALIFIED PROSPECT: 0 | CONTACT/ENGAGEMENT: 0 (11 Nostr broadcasts, 0 replies) | RESPONSE: 0 | BUYING INTENT: 0 | PRODUCT VISIT: UNKNOWN (Pages) / 0 local | CHECKOUT: 0 | SALE: 0 | **net verified revenue $0** | spend **$0**.
+
+**Bottleneck:** qualified 1:1 contact path — every reachable community needs a human identity. Smallest founder action: one helpful reply in `1vsw4v0` or `1vqmz2s` disclosing affiliation + linking the free guide (15 min, reversible via delete). All autonomous paths continue meanwhile (guide-visit observation, sales poll).
