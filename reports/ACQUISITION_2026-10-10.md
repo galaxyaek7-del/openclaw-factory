@@ -474,3 +474,13 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 4. **Fixes:** none needed (no defect found).
 5. **Distribution:** none new (gates hold). Submissions: 3 tickets ALL test/synthetic, 0 real. Views 4/2, sales 0.
 6. **Counts sourced.** 7. **Next:** traffic via founder routes; observe. **Revenue $0, spend $0.**
+
+## Cycle 39 (max pressure, same day)
+
+**EU path:** iaiyt live 200/28KB but API-invisible (400 rows); site+Paddle agree $155; rendered-price hop UNKNOWN (stated). CTA = verified landing page.
+
+**Telegraph #6 (premium):** EU AI Act enforced-now page — Art-50/dates match verified positions with official-text hedge; $155 honest disclosure; clean publish, verified, views 0.
+
+**Nudge #2 DELIVERED (1957)** with new substance only (bundle attach steps, trust fixes, positioning, meters). No nagging cadence.
+
+**State:** counters 4/2/1/1/1/0, sales 0, replies 0. **Revenue $0, spend $0.** 110 queue lines, all clean.
