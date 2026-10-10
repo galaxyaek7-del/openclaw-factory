@@ -573,3 +573,11 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Tested:** fixes verified live (Pages confirms); formsubmit state documented UNKNOWN-by-design (untestable without noise).
 **Remaining external gaps (all founder-side):** bundle attach, SMTP, Reddit identity, GSC click, Paddle onboarding.
 **Revenue $0, spend $0.** Storefront externally sound; traffic is the only missing ingredient.
+
+## Cycle 49 (FormSubmit resolution, same day)
+
+**Test (mandated, labeled):** without browser headers → anti-abuse reject; with real Pages Origin/Referer → **"form needs Activation, email sent"**. Tier2 INACTIVE until you click the activation link (email triggered by this test — check inbox). Zero pollution, nothing stored/delivered.
+
+**Impact:** lead forms run Tier1-local + mailto fallback until then. Mission record + prerequisites updated (now FIVE: attach/SMTP/Reddit/GSC/**activate-form ~30s**).
+
+**Fresh:** views 4/2, sales 0. No new broadcast. **Revenue $0, spend $0.** Next: re-test Tier2 after your click; observe.
