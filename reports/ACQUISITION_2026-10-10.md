@@ -696,3 +696,11 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 3. **Real defect:** Sensing + Sales Poll lack auth header → 401 on activation (predate Jun-23 gate); BLOCKERS.md corrected (was wrongly "fully correct"); exact ADR-045 repair documented. Live DB untouched (gated precedent).
 
 **Still founder-side:** activation UI, API key, Gmail OAuth. **Revenue $0, spend $0.**
+
+## Cycle 63 (arms + affiliate audit, same day)
+
+**Arms (live):** Gumroad READY, Paddle READY-token, Etsy/Payhip/KDP UNAVAILABLE (credentials, pre-existing). Nothing autonomously repairable.
+
+**Affiliate chain PROVEN:** page→API (4 ASINs)→click 302 Amazon; bad-ID honest error. 26 clicks real. Earning needs Amazon tag (founder).
+
+**Revenue $0, spend $0.** No broken links/tools beyond founder-gated credentials.
