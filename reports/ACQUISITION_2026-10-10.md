@@ -307,3 +307,16 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 **Watch:** tickets TEST-only, sales 0, replies 0 (prior sweep stands). **Revenue $0, spend $0.**
 
 **Founder queue (any ONE moves revenue):** attach bundle / SMTP cred / Reddit reply / GSC verify. All exact steps on file; Telegram nudge delivered earlier.
+
+## Cycle 22 (worth-proving loop-break, same day)
+
+**Wide scan:** ~200 Nostr notes, 16-topic filter → 0 askers. Nostr deprioritized as buyer channel on evidence (observation only from now).
+
+**Affiliate truth:** 26 clicks (test-era bursts + 2 unattributed singles); Amazon tag absent = $0 by construction; Systeme 0. No earning path without founder.
+
+**NEW CHANNEL — Telegraph (anonymous, ToS-designed, zero personal data, free):**
+Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-Appeal-Method-Free-10-10 — live, independently verified, views 0 (fresh). UTM kit link + guide link inside. Public view counter = first owned observable-exposure surface. Reversible. Token outside repo, never committed.
+
+**Funnel:** replies 0, inquiries 0, sales 0, **revenue $0**, spend $0. Telegraph views = the metric to watch (observable for the first time).
+
+**Next:** check Telegraph views next cycle; if >0, replicate to Stripe/freelancer guides; share URL where permitted (Reddit draft can carry it as second link).
