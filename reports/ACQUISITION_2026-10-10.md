@@ -285,3 +285,15 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 8. **Blocker:** human identity for contact (Reddit draft ready, nudge delivered-1940); Telegram reply-read blocked by worker lock (by design, not retried).
 9. **Next:** 72h sprint observation of excerpt test; discount-code variable if excerpt moves nothing; reply-watch; founder route.
 10. **Spend $0.**
+
+## Cycle 20 (unsatisfactory-result follow-through, same day)
+
+**Indexing truth:** `site:` search = 0 results — guides NOT indexed. IndexNow acceptance never meant indexing. SEO funnel fails at indexing, not content. GSC unverified (founder 2-min). Competitors mapped: businessfixkits (bundled kit), zenstorefront (guide+tool), Tracefolio (sells ON Etsy — highest-intent channel precedent).
+
+**Built (real, verified):** `books/etsy_appeal_kit_v2/` — 2 DOCX letter templates (4-part structure, placeholders, disclaimers) + XLSX tracker (3 sheets), reopen-verified. Matches competitor packaging; our kit was PDF-only. Status: READY-TO-ATTACH, deliberately NOT advertised (buyers still get PDF-only until files attached — advertising otherwise would lie).
+
+**Dead ends (precise):** SMTP credentials missing (code real, creds absent) | Gumroad discounts dashboard-only | replies 0 | sales 0 | Nostr gate holds.
+
+**Founder prerequisites (any ONE moves revenue):** (a) attach 3 files to fgruzn (~3 min) → then I update listing via API; (b) SMTP credential → cold outreach opens; (c) Reddit reply (~2 min, draft ready). All documented with exact steps in queue.
+
+**Funnel/revenue:** unchanged zeros + UNKNOWNs. **Revenue $0, spend $0.**
