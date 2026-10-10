@@ -161,3 +161,15 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 **5. Funnel + limits:** prospects 0 | delivered 9 Nostr + 3 SEO + 2 Gumroad-SEO | replies 0 | inquiries 0 | visits UNKNOWN(Pages) | checkouts 0 | sales 0 (worker log) | **revenue $0** | spend **$0**.
 
 **6-8. Next executable:** observe EUDR windows; compare guide-post reply rates; founder Reddit draft still pending. No new publishing justified until observation yields signal or fail-fast triggers fire.
+
+## Cycle 11 (GF-43 forensic + hard decision, same day)
+
+**A. OFFER DECISION:** Primary SWITCHED to **Etsy Suspension Appeal Kit ($29)** x suspended Etsy sellers. Scorecard (/30): Etsy 24 (urgency 5, demand 5, deliverable 4, reach 2, path 4, price 4) | EUDR 18 | Stripe 18 | B2B leads 16 | KDP 15 | Freelancer 15 (thin product). Switch made against recency, on explicit criteria. EUDR assets preserved.
+
+**B. ACTUAL EXECUTION:** (1) Forensic audit — all 5 GF-42 claim classes OBSERVED from source files, zero corruption; (2) Purchase journey — buy link/product/guide all live (payment+delivery untestable without spend, stated not tested); (3) Measurement audit — clicks last 10-03, real views last 10-08 unattributed, sales 0/0. **Zero new external distributions** — every autonomous channel already used for Etsy; human-identity channels untouched (documented, not bypassed). Failed/blocked: gh CLI absent; Reddit/X/Medium/LinkedIn/HN/email all need human identity or absent infra.
+
+**C. BUYER SIGNALS:** prospects identified 0 (none invented) | contacts completed 0 | deliveries 0 new | replies 0 | inquiries 0 | inbox side UNKNOWN | Pages visits UNKNOWN (structural) | last real local view 10-08 UNKNOWN attribution.
+
+**D. FUNNEL AND REVENUE:** visits UNKNOWN/0-local | checkouts 0 | transactions 0 | refunds 0 | **net verified revenue $0** | spend **$0**.
+
+**E. NEXT ACTION:** founder Reddit reply (draft ready, ~2 min, identity-gated, executable now by founder only) — unblocks the single highest-evidence channel. Autonomous next: observe open windows; re-score only on new evidence. No autonomous distribution remains that is both new and permitted.
