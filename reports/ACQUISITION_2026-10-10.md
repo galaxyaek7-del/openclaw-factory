@@ -109,3 +109,15 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 **Precise missing capability (§7):** no permitted 1:1 outbound channel exists anywhere in this factory (no SMTP, no LinkedIn, Reddit/X/Medium need human identity, formsubmit inbound-only). Personalized cold outreach is THE documented gap. Smallest founder actions, ranked: (a) 1 Reddit reply w/ disclosure + free-guide link (15 min, reversible); (b) LinkedIn-vs-Apollo-paid decision if inbound stays dry.
 
 **Funnel:** prospects 0 | delivered 0 new (5 Nostr + 2 SEO + 1 Gumroad-SEO cumulative) | replies 0 | inquiries 0 (founder-inbox side UNKNOWN to automation) | visits UNKNOWN(Pages)/0 local | checkouts 0 | sales 0 | **revenue $0** | spend **$0**.
+
+## Cycle 7 (GF-39 execution-first, same day)
+
+**Offer + segment:** KDP Typesetting (30-100 USD fixed, pay-on-delivery, mailto path live) x Nostr writers/indie-author community. Etsy winner untouched (in-window); B2B leads untouched (in-window).
+
+**Executed (both new, neither a repeat check):**
+1. **Nostr KDP post** — event `88ef7c8c`, 4/5 relays, record `nostr_post_KDP_20261010.json`. Hypothesis + 14d success/fail criteria in queue (fail = drop KDP-on-Nostr).
+2. **Stripe Gumroad listing upgrade** — description (15-page contents, digital-goods evidence angles, honest no-guarantee) + tags `[stripe, chargeback, representment, digital sellers]`. UPDATE OK + GET-verified. Same proven technique as Etsy, applied to a new offer once.
+
+**Funnel:** prospects 0 | delivered 7 Nostr + 2 SEO + 2 Gumroad-SEO cumulative | replies 0 | inquiries 0 (inbox side UNKNOWN) | visits UNKNOWN(Pages) | checkouts 0 | sales 0 (live API) | **revenue $0** | spend **$0**.
+
+**Next:** observe all open windows (Etsy SEO+Nostr, B2B, KDP, Stripe-Gumroad). No further distribution without a new offer/hypothesis — remaining undistributed: EU Briefing 149 USD (weak Nostr fit; needs founder-channel or SEO guide to justify).
