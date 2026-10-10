@@ -444,3 +444,14 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Lead capture LIVE-LOCAL:** checklist-by-email form on Etsy guide (proven 2-tier pattern, honeypot, consent text). Syntax+render verified. Deliberately unsubmitted (no fake leads, no founder noise). First submission = first real prospect signal.
 
 **Fresh:** views 4/2 static, sales 0, tickets TEST-only. **Revenue $0, spend $0.** Next: lead-form observation; founder prerequisites (attach/SMTP/Reddit/GSC).
+
+## Cycle 36 (lead-form E2E + fate map, same day)
+
+1. **Form test (synthetic, labeled):** 5/5 PASS — valid→200+ticket persisted; bad-email→400; empty→400; honeypot→silent zero-record. Privacy: ledger gitignored. Tier2 untested by design (founder noise).
+2. **Files changed:** none (verification only) — no change was needed.
+3. **Post-fix tests:** n/a (nothing fixed; path already worked).
+4. **Distribution:** none new (gates hold; documented). Fate map LIVE: visit→submit→200→persist→Telegram alert→founder email reply.
+5. **Counts:** visits UNKNOWN(Pages)/local-tests; form submissions 1 SYNTHETIC (excluded); qualified 0; purchases 0. Sources: e2e36, ledgers, APIs.
+6. **Sales/payments:** 0 confirmed. **Revenue $0.**
+7. **Blockers/next:** founder identity (Reddit), GSC, attach, SMTP; observe counters + first real submission.
+8. **Commit only queue+report (no code needed change). Spend $0.**
