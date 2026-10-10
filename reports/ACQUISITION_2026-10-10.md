@@ -222,3 +222,17 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 8. **Next:** reply-watch on `527aeddc` (respond substantively if anyone answers — the closest thing to a buyer conversation available); founder Reddit draft.
 9. **Spend/safety:** $0; no secrets touched; no rules bypassed.
 10. **Outcome class:** A (verified external action with evidence) — conversation attempt delivered; buyer response pending observation, NOT claimed.
+
+## Cycle 15 (GF-47 conversion mission, same day)
+
+1. **Offer/buyer:** Etsy Appeal Kit ($29) x suspended sellers (rank stands).
+2. **Offer evidence:** 19pp audited contents; honest listing+guide; demand 2026-verified.
+3. **Path grades:** page PASS / checkout-availability PASS / payment BLOCKED (spend) / delivery UNKNOWN / measurement UNKNOWN-or-BLOCKED.
+4. **External actions:** Nostr readback verification (damus+primal, both retrievable — NEW proof class beyond acceptance) + reply checks (0). No new distribution (gate decision, below).
+5. **Buyer signals:** 0 replies (15 posts) / 0 inquiries (NOISE-only ledgers) / inbox UNKNOWN.
+6. **Channel split:** acceptance OBSERVED 4/5 | retrievability OBSERVED | exposure UNKNOWN | engagement 0 | conversion 0.
+7. **UNKNOWNs:** exposure, visits, inbox, delivery-confirmation, relay-search coverage.
+8. **Transactions/revenue:** 0 / **$0**. Spend $0.
+9. **Blocker:** no observable autonomous route left; human identity for all contact channels.
+10. **Next:** reply-watch + sales poll + founder Reddit draft. No new broadcast until windows close or a reply lands.
+11. **Gate outcome:** exposure-without-engagement → STOP repeating distribution; shift to observation. First cycle to halt publishing on evidence rather than schedule.
