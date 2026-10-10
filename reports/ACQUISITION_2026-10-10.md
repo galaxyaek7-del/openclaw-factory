@@ -133,3 +133,17 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 **Funnel:** prospects 0 | delivered 8 Nostr + 2 SEO + 2 Gumroad-SEO cumulative | replies 0 | inquiries 0 | visits UNKNOWN(Pages) | checkouts 0 | sales 0 | **revenue $0** | spend **$0**.
 
 **Next:** compare guide-post vs product-post reply counts over 7d; all other windows still open. EU Briefing remains the only undistributed offer (no honest free channel identified yet — recorded, not forced).
+
+## Cycle 9 (GF-41 evidence-driven sales execution, same day)
+
+**Selected offer:** EU Deadline Briefing (149 USD) — previously the ONLY offer with zero distribution. Evidence for the choice: verified 2026 EUDR demand (RSM advisory, Weil briefing 02-2026, IntegrityNext SME guide 09-2026, CarbonComplete 08-2026, EC Green Forum) + SME role/deadline confusion the briefing directly answers. No product created.
+
+**External actions completed:**
+1. `guide-eudr-sme-deadlines.html` — free role/deadline/scope method + honest disclosure (dates may change; briefing sales: 0). Serves 200 locally; sitemap 52 URLs valid; IndexNow 202x2 (`IDX-2026-10-10-004`); pushed. Playbook 3rd use — disclosed as such, justified by undistributed offer + fresh demand evidence (not a correction, not repetition of the same asset).
+2. Founder Reddit reply draft (`pending_review/queue/gf41_reddit_reply_draft.md`) — copy-paste ready for r/EtsySellers `1vsw4v0`, substantive advice + disclosure + guide link + conduct rules. DRAFT UNPOSTED (human identity required) — counted as prep asset, NOT acquisition.
+
+**Verification:** Nostr replies 0/4 newest (12 posts cumulative, 0 replies); sales 0 (worker log); Pages visits UNKNOWN (structural).
+
+**Funnel:** prospects 0 | delivered 8 Nostr + 3 SEO + 2 Gumroad-SEO | replies 0 | inquiries 0 | visits UNKNOWN | checkouts 0 | sales 0 | **revenue $0** | spend **$0**.
+
+**Next:** observe EUDR guide visits; Nostr post for EUDR angle only with a separate hypothesis (SME-fit on Nostr is weak — honesty check before posting); founder decides on Reddit draft. All autonomous free external channels now have at least one live asset each — subsequent cycles shift to observation + follow-up unless new evidence justifies more publishing.
