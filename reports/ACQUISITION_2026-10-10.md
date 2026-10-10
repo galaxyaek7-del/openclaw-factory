@@ -426,3 +426,13 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 8. **Metrics:** Telegraph Etsy 1→4 (+3 UNKNOWN origin — crawlers/preview/humans; NOT buyers), Stripe 2 static; replies 0; tickets TEST; sales 0. Sources: getPage API, relay REQ, ledgers, sales API.
 9. **Blockers/next:** founder identity (Reddit), GSC click, bundle attach, SMTP. Next: watch counters (sustained growth → replicate; flat → hold).
 10. **Spend $0. Revenue $0 (verified, not hidden).**
+
+## Cycle 34 (C34 zero-customer loop-break, same day)
+
+1. **Code/tests:** C33 verified (commit + csvtest PASS re-run). No rework needed.
+2. **Root cause (ranked):** (1) no reachable-buyer input source; (2) SEO unindexed; (3) Telegraph undiscovered/one-directional; (4) measurement gaps secondary.
+3. **Fix executed:** bidirectional guide↔Telegraph links on all 3 twin pairs (first fixable defect) — verified locally.
+4. **Real source:** all inbound ledgers test/empty; no genuine source exists autonomously.
+5. **External action:** linkage fix (observable on deploy); no new broadcast (gates hold, documented).
+6. **Counts:** prospects 0, orders 0, sales 0 (APIs/ledgers); views 4/2 static; replies 0.
+7. **Next:** deploy-verify links live; observe counters; founder prerequisites (attach/SMTP/Reddit/GSC). **Revenue $0, spend $0.**
