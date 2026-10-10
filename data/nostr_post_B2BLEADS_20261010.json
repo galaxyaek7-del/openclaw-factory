@@ -1,0 +1,13 @@
+{
+ "status": "sent",
+ "event_id": "caf0d3104b56b1e5272e3a878fb0216aa412d9c3c17ed0200b4fa2e1501e67e2",
+ "content_hash": "931bf4b74e13bb7f",
+ "acks": {
+  "relay.damus.io": "[\"OK\",\"caf0d3104b56b1e5272e3a878fb0216aa412d9c3c17ed0200b4fa2e1501e67e2\",true,\"\"]",
+  "relay.primal.net": "[\"OK\",\"caf0d3104b56b1e5272e3a878fb0216aa412d9c3c17ed0200b4fa2e1501e67e2\",true,\"\"]",
+  "nos.lol": "[\"OK\",\"caf0d3104b56b1e5272e3a878fb0216aa412d9c3c17ed0200b4fa2e1501e67e2\",true,\"\"]",
+  "relay.nostr.band": "FAIL:TimeoutError",
+  "nostr-pub.wellorder.net": "[\"OK\",\"caf0d3104b56b1e5272e3a878fb0216aa412d9c3c17ed0200b4fa2e1501e67e2\",true,\"\"]"
+ },
+ "at": "2026-10-10T08:59:50Z"
+}

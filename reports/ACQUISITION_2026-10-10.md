@@ -83,3 +83,17 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 **Funnel (per-stage):** DISCOVERY: segment confirmed (no invented contacts) | QUALIFIED PROSPECT: 0 | CONTACT/ENGAGEMENT: 0 (11 Nostr broadcasts, 0 replies) | RESPONSE: 0 | BUYING INTENT: 0 | PRODUCT VISIT: UNKNOWN (Pages) / 0 local | CHECKOUT: 0 | SALE: 0 | **net verified revenue $0** | spend **$0**.
 
 **Bottleneck:** qualified 1:1 contact path — every reachable community needs a human identity. Smallest founder action: one helpful reply in `1vsw4v0` or `1vqmz2s` disclosing affiliation + linking the free guide (15 min, reversible via delete). All autonomous paths continue meanwhile (guide-visit observation, sales poll).
+
+## Cycle 5 (GF-37 fix-measurement + acquire, same day)
+
+**A. 405 resolved by design (no code churn):** root cause confirmed — Pages is static-only (405 on POST = expected platform behavior, not our bug) AND backend binds 127.0.0.1 with no tunnel/public URL, so no autonomous fix exists within $0. Compatible measurement design using existing infra: `ref=`/UTM on every buy link (already live) + `/v2/sales` poll every tick (already live) = transaction-level attribution where it matters (DESIGNED, unverified until first sale — `get_sales` returns raw records, referrer-capable per API contract). Page-view granularity on Pages = structurally UNKNOWN, documented, no longer misread as zero. Missing capability (founder, optional, non-blocking): public API endpoint for real-time visit analytics.
+
+**B. Purchase path (Etsy fgruzn):** published=true, $29, URL live 200 (API + curl). Checkout completion deliberately NOT tested (costs $29 = spend). Status: AVAILABLE-NOT-TESTED. No repeat checks without real change (per §2).
+
+**C. New acquisition action — B2B arm (first touch):** Nostr post for Verified B2B Lead Lists ($99/200, pay-on-delivery), event `caf0d3104`, 4/5 relays. Hypothesis recorded in queue: Nostr founders buy lists; pay-on-delivery beats trust barrier; success = inquiry email ≤14d (founder inbox confirms — automation has no Gmail access, marked FOUNDER-OBSERVED); fail (0) → drop B2B-on-Nostr. Inquiry path verified: `mailto:` CTA live on service page, 2-business-day reply promise.
+
+**D/E. Evidence:** all records on disk (`nostr_post_B2BLEADS_20261010.json`, queue). Sales re-check: **0**.
+
+**Funnel:** prospects 0 | delivered 5 Nostr + 2 SEO + 1 Gumroad-SEO | replies 0 | inquiries 0 | buying signals 0 | visits UNKNOWN(Pages)/0 local | checkouts 0 | sales 0 | **revenue $0** | spend **$0**.
+
+**Next:** observe (guide visits via local tracking where possible, Nostr replies, founder inbox for B2B inquiries, sales poll). No further publishing without a new hypothesis.
