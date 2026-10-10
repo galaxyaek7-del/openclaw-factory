@@ -436,3 +436,11 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 5. **External action:** linkage fix (observable on deploy); no new broadcast (gates hold, documented).
 6. **Counts:** prospects 0, orders 0, sales 0 (APIs/ledgers); views 4/2 static; replies 0.
 7. **Next:** deploy-verify links live; observe counters; founder prerequisites (attach/SMTP/Reddit/GSC). **Revenue $0, spend $0.**
+
+## Cycle 35 (push harder: participation probe + lead capture, same day)
+
+**NIP-28 dead end:** 19 public channels = spam/test/adult only. Participation route closed on evidence (brand risk). Nostr FULLY exhausted on all four approaches (broadcast/search/wide-net/communities).
+
+**Lead capture LIVE-LOCAL:** checklist-by-email form on Etsy guide (proven 2-tier pattern, honeypot, consent text). Syntax+render verified. Deliberately unsubmitted (no fake leads, no founder noise). First submission = first real prospect signal.
+
+**Fresh:** views 4/2 static, sales 0, tickets TEST-only. **Revenue $0, spend $0.** Next: lead-form observation; founder prerequisites (attach/SMTP/Reddit/GSC).

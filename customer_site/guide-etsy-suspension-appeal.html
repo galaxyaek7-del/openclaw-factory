@@ -73,6 +73,16 @@ footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(-
 <p>The full 19-page kit covers: suspension-type triage, the Appeals Center walkthrough with the 6-month window, evidence gathering, the complete letter framework, policy-violation fixes, open-case management, prevention checklists, and a final filing checklist.</p>
 </section>
 <p>Based on Etsy's official seller documentation (Appeals Center, reinstatement guides). Verify deadlines against Etsy's current Help pages before filing — policies change. Prefer a 2-minute read? <a href="https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-Appeal-Method-Free-10-10">Same method on Telegraph</a>.</p>
+<div class="cta"><b>Want the 1-page appeal checklist by email?</b> Leave your name and email — we send the condensed filing checklist (triage + evidence + letter structure on one page). No spam, no list-selling, unsubscribe anytime. We reply ourselves, not a bot.
+<form id="leadForm" style="margin-top:1rem">
+<input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+<div style="display:flex;gap:.6rem;flex-wrap:wrap">
+<input id="leadName" name="name" required maxlength="200" placeholder="Name" style="flex:1;min-width:140px;font:inherit;background:#0a0c11;border:1px solid #242938;color:#eef0f6;border-radius:8px;padding:.7rem .85rem">
+<input id="leadEmail" name="email" type="email" required maxlength="200" placeholder="Email" style="flex:1;min-width:180px;font:inherit;background:#0a0c11;border:1px solid #242938;color:#eef0f6;border-radius:8px;padding:.7rem .85rem">
+<button type="submit" id="leadBtn" style="font:inherit;background:#d97a3f;color:#1a0e05;font-weight:700;border:none;border-radius:8px;padding:.7rem 1.2rem;cursor:pointer">Send it</button>
+</div>
+<div id="leadStatus" style="font-size:.85rem;margin-top:.6rem;display:none"></div>
+</form></div>
 </div></main>
 <footer>Galaxy Forge · honest guides · no fake reviews, no scarcity claims.</footer>
 </div>
@@ -80,6 +90,46 @@ footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(-
 try {
   fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'guide-etsy-suspension-appeal' }) }).catch(()=>{});
 } catch(e) {}
+(function(){
+  "use strict";
+  var form = document.getElementById('leadForm');
+  if (!form) return;
+  var status = document.getElementById('leadStatus');
+  var btn = document.getElementById('leadBtn');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var data = Object.fromEntries(new FormData(form).entries());
+    if (data.website) return; // honeypot
+    btn.disabled = true; btn.textContent = 'Sending…';
+    status.style.display = 'none';
+    var payload = { name: data.name, email: data.email,
+      message: 'LEAD: Etsy appeal checklist request from guide-etsy-suspension-appeal. Send the 1-page filing checklist.',
+      _subject: 'Lead: Etsy checklist request', _template: 'table', _captcha: 'false' };
+    function ok(msg){ status.textContent = msg; status.style.display = 'block'; form.reset(); btn.disabled = false; btn.textContent = 'Send it'; }
+    function fail(){
+      var mailto = 'mailto:galaxyaek7@gmail.com?subject=' + encodeURIComponent('Etsy checklist request') + '&body=' + encodeURIComponent('Please send the 1-page appeal checklist. Name: ' + data.name);
+      status.innerHTML = 'Direct send is offline — <a href="' + mailto + '">click here to request by email</a>.';
+      status.style.display = 'block'; btn.disabled = false; btn.textContent = 'Send it';
+    }
+    fetch('/api/customer/support-ticket', { method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+      .then(function(r){ return r.json().then(function(b){ return { ok: r.ok, body: b }; }); })
+      .then(function(res){
+        if (!res.ok || res.body.success === false) throw new Error('local-offline');
+        ok('Checklist requested. It arrives by email — a real person sends it.');
+      })
+      .catch(function(){
+        fetch('https://formsubmit.co/ajax/galaxyaek7@gmail.com', { method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload) })
+          .then(function(r){ return r.json(); })
+          .then(function(body){
+            if (body && body.success !== false && body.success !== 'false') ok('Checklist requested. It arrives by email — a real person sends it.');
+            else fail();
+          }).catch(fail);
+      });
+  });
+})();
 </script>
 </body>
 </html>
