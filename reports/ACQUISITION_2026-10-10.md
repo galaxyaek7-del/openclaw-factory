@@ -393,3 +393,13 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Distribution:** Telegraph page #4 (B2B buyer-education angle, UTM links) — clean publish, independently verified, views 0. Services now covered alongside kits (4 pages: compliance, finance, gig-work, B2B-buying).
 
 **State:** sales 0, views static (1/2/0/0), replies 0, tickets test-only. **Revenue $0, spend $0.** Next: observe 4 counters; founder prerequisites (attach/SMTP/Reddit/GSC) stand.
+
+## Cycle 31 (B2B activation, same day)
+
+**Sample asset (real, honest):** `lead-list-sample-format.csv` — headers + 1 reserved-domain SAMPLE row, linked from service deliverables, served 200. Proves CSV format with zero fabricated contacts.
+
+**Pipeline:** `prospect_pipeline.jsonl` initialized EMPTY (7 stages, fill-only-with-real-observations rule). 0/0/0/0/0/0/0.
+
+**Fresh:** views static (1/2), sales 0, tickets TEST-only. No new broadcast (gates hold); no permitted unused route this cycle.
+
+**Revenue $0, spend $0.** Next: first genuine prospect seeds the pipeline; observe counters.

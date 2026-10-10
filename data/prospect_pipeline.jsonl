@@ -1,0 +1,1 @@
+{"schema_version": 1, "created_at": "2026-10-10T14:50:00+00:00", "stages": ["identified", "qualified", "contacted", "responded", "intent", "checkout", "transaction"], "prospects": [], "note": "Empty by design. Fill ONLY with real observations (source + date + evidence). Never seed manually."}
