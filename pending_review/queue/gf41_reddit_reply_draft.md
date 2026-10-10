@@ -12,7 +12,7 @@ Case-rate enforcement is one of the few suspension paths you can still influence
 1. The rate is a trailing window, so your clean April/June already helps; what moves it fastest is closing the open cases with tracking + delivery confirmation, not arguing the old ones.
 2. Document everything now (order timelines, dispatch dates, messages). If it escalates to an appeal, "here is what I fixed with dates" beats "my rate is unfair" — reviewers respond to corrective action, not disagreement.
 
-Disclosure: I run a small shop that sells a $29 appeal-prep kit, so take that bias as read. But the method itself I put free here (no email, no pitch): [Etsy shop suspended? The fix-first appeal method](https://galaxyaek7-del.github.io/openclaw-factory/customer_site/guide-etsy-suspension-appeal.html) — triage temp vs permanent, fix-first checklist, the 4-part letter structure, and the 6-month deadline. Hope the shop pulls through.
+Disclosure: I run a small shop that sells a $29 appeal-prep kit, so take that bias as read. But the method itself I put free here (no email, no pitch): [Etsy shop suspended? The fix-first appeal method](https://galaxyaek7-del.github.io/openclaw-factory/customer_site/guide-etsy-suspension-appeal.html) — triage temp vs permanent, fix-first checklist, the 4-part letter structure, and the 6-month deadline. Same method as a quick read here too: [Telegraph version](https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-Appeal-Method-Free-10-10). Hope the shop pulls through.
 
 ---
 
