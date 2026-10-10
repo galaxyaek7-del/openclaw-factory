@@ -677,3 +677,11 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Outage:** Telegraph unreachable ~4 min (own-side ruled out via Gumroad-API-ok same window); recovered. Etsy views 4→5 (+1 = own verification fetches, unclaimed). Stripe 2. Sales 0.
 
 **Revenue $0, spend $0.** Next: deploy-verify links live; observe; founder prerequisites.
+
+## Cycle 61 (link census + trust fix, same day)
+
+**Census:** 62 pages / 230 refs → 35 real broken (`/trust/*` 404 on live Pages: refund/privacy/terms unreachable!) + 5 JS false positives. External sound (53/53, prices, Telegraph).
+
+**Fix:** relative `trust/` across 10 files (35 refs). Re-audit: 0 real missing. Refund/privacy/terms reachable again.
+
+**Revenue $0, spend $0.** Next: deploy-verify live link; observe.
