@@ -685,3 +685,14 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Fix:** relative `trust/` across 10 files (35 refs). Re-audit: 0 real missing. Refund/privacy/terms reachable again.
 
 **Revenue $0, spend $0.** Next: deploy-verify live link; observe.
+
+## Cycle 62 (n8n full audit, same day)
+
+**State found:** binary present, process dead, 7 workflows in DB (3 active), secrets clean, 01 wiring correct, Trends RSS alive, 2 workflows never exported.
+
+**Fixed (non-destructive):**
+1. n8n restarted (healthz 200; factory sensing green again).
+2. Missing 2 workflow exports saved to repo.
+3. **Real defect:** Sensing + Sales Poll lack auth header → 401 on activation (predate Jun-23 gate); BLOCKERS.md corrected (was wrongly "fully correct"); exact ADR-045 repair documented. Live DB untouched (gated precedent).
+
+**Still founder-side:** activation UI, API key, Gmail OAuth. **Revenue $0, spend $0.**

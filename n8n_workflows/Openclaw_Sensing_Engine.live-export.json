@@ -1,0 +1,243 @@
+{
+ "updatedAt": "2026-07-14T07:41:03.739Z",
+ "createdAt": "2026-07-03T21:28:24.131Z",
+ "id": "XppNRmJd1baK0TTY",
+ "name": "Openclaw_Sensing_Engine",
+ "description": null,
+ "active": false,
+ "isArchived": false,
+ "nodes": [
+  {
+   "parameters": {
+    "rule": {
+     "interval": [
+      {
+       "triggerAtHour": 8
+      }
+     ]
+    }
+   },
+   "type": "n8n-nodes-base.scheduleTrigger",
+   "typeVersion": 1.3,
+   "position": [
+    -144,
+    0
+   ],
+   "id": "f1bc8663-3c08-4cb8-ac67-fd25c41e0dd3",
+   "name": "Schedule Trigger"
+  },
+  {
+   "parameters": {
+    "url": "https://trends.google.com/trending/rss?geo=US\n",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.4,
+   "position": [
+    48,
+    0
+   ],
+   "id": "6376a926-7bcd-4ba1-8d32-005e6b27dad5",
+   "name": "HTTP Request"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "n8n-nodes-base.xml",
+   "typeVersion": 1,
+   "position": [
+    240,
+    0
+   ],
+   "id": "359ae72e-2562-4366-ad49-7dde535adb37",
+   "name": "XML"
+  },
+  {
+   "parameters": {
+    "fieldToSplitOut": "rss.channel.item",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.splitOut",
+   "typeVersion": 1,
+   "position": [
+    448,
+    0
+   ],
+   "id": "a4d42199-c687-4cd2-bb5f-5de3e6153628",
+   "name": "Split Out"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "acf6bb9d-1200-4822-819e-1e66e309f0ba",
+       "name": " trend_title",
+       "value": "={{ $json.title }}",
+       "type": "string"
+      },
+      {
+       "id": "44d9b168-fba1-4868-82ed-51f05dc9b5e4",
+       "name": "traffic",
+       "value": "={{ $json[\"ht:approx_traffic\"] }}",
+       "type": "string"
+      },
+      {
+       "id": "b460d5c6-2d49-439c-a4f7-61003a9600e2",
+       "name": "link",
+       "value": "={{ $json.link }}",
+       "type": "string"
+      }
+     ]
+    },
+    "includeOtherFields": "=",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    832,
+    0
+   ],
+   "id": "10184e2d-fa57-4b23-8493-db2428562620",
+   "name": "Edit Fields"
+  },
+  {
+   "parameters": {
+    "path": "scout-trigger",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.webhook",
+   "typeVersion": 2.1,
+   "position": [
+    -160,
+    176
+   ],
+   "id": "b9ad9c79-adb2-4b28-a381-4ae893a7401f",
+   "name": "Webhook",
+   "webhookId": "b4502042-604b-4d94-b87c-f22714a44a2f"
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "http://localhost:3000/api/trends",
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={{ JSON.stringify($json) }}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.4,
+   "position": [
+    640,
+    0
+   ],
+   "id": "df57353e-64ec-4ca5-9854-003225f324a7",
+   "name": "HTTP Request1"
+  }
+ ],
+ "connections": {
+  "Schedule Trigger": {
+   "main": [
+    [
+     {
+      "node": "HTTP Request",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "HTTP Request": {
+   "main": [
+    [
+     {
+      "node": "XML",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "XML": {
+   "main": [
+    [
+     {
+      "node": "Split Out",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Split Out": {
+   "main": [
+    [
+     {
+      "node": "HTTP Request1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "HTTP Request1": {
+   "main": [
+    [
+     {
+      "node": "Edit Fields",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1",
+  "binaryMode": "separate",
+  "availableInMCP": false,
+  "timeSavedMode": "fixed",
+  "timezone": "Africa/Algiers",
+  "callerPolicy": "workflowsFromSameOwner"
+ },
+ "staticData": {
+  "node:Schedule Trigger": {
+   "recurrenceRules": []
+  }
+ },
+ "meta": null,
+ "nodeGroups": [],
+ "pinData": {},
+ "versionId": "1abb5bd7-5217-4c30-8b73-815d2bdbb1fc",
+ "activeVersionId": null,
+ "versionCounter": 150,
+ "triggerCount": 2,
+ "sourceWorkflowId": null,
+ "tags": [],
+ "shared": [
+  {
+   "updatedAt": "2026-07-03T21:28:24.154Z",
+   "createdAt": "2026-07-03T21:28:24.154Z",
+   "role": "workflow:owner",
+   "workflowId": "XppNRmJd1baK0TTY",
+   "projectId": "TNshas0d0JrRkxgB",
+   "project": {
+    "updatedAt": "2026-06-11T18:41:05.962Z",
+    "createdAt": "2026-06-11T18:32:25.182Z",
+    "id": "TNshas0d0JrRkxgB",
+    "name": "Abdelkader Galaxy <galaxyaek7@gmail.com>",
+    "type": "personal",
+    "icon": null,
+    "description": null,
+    "customTelemetryTags": [],
+    "creatorId": "0138d4da-3d85-4c07-a431-cdae11c16eb6"
+   }
+  }
+ ],
+ "versionMetadata": {
+  "name": "Version 8a76d2d2",
+  "description": ""
+ }
+}
