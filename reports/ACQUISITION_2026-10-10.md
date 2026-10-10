@@ -403,3 +403,13 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Fresh:** views static (1/2), sales 0, tickets TEST-only. No new broadcast (gates hold); no permitted unused route this cycle.
 
 **Revenue $0, spend $0.** Next: first genuine prospect seeds the pipeline; observe counters.
+
+## Cycle 32 (empty-pipeline recovery, same day)
+
+**Root cause (not a bug):** pipeline code works at every stage; emptiness comes from zero external input — distribution without reachable audience. Fix = feed buyers, not code.
+
+**Contract fix:** CSV now 9 columns incl. website+location as promised. Verified serving.
+
+**Distribution:** Telegraph page #5 (EUDR regulatory audience) — clean, verified, views 0. Five metered surfaces.
+
+**State:** sales 0, replies 0, tickets test-only. **Revenue $0, spend $0.** Next: observe 5 counters; founder prerequisites stand.

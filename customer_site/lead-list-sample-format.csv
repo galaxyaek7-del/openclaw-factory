@@ -1,2 +1,2 @@
-company,title,full_name,business_email,verified_date,source,notes
-"SAMPLE ROW - replaced by your real leads, never delivered as data","Founder","John Sample","john@example.com","2026-10-10","SAMPLE - do not contact","EXAMPLE ONLY: example.com addresses are reserved and unreachable"
+company,title,full_name,business_email,website,location,verified_date,source,notes
+"SAMPLE ROW - replaced by your real leads, never delivered as data","Founder","John Sample","john@example.com","https://example.com","Sample City, ST","2026-10-10","SAMPLE - do not contact","EXAMPLE ONLY: example.com addresses are reserved and unreachable"
