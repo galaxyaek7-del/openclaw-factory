@@ -484,3 +484,15 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Nudge #2 DELIVERED (1957)** with new substance only (bundle attach steps, trust fixes, positioning, meters). No nagging cadence.
 
 **State:** counters 4/2/1/1/1/0, sales 0, replies 0. **Revenue $0, spend $0.** 110 queue lines, all clean.
+
+## Cycle 40 ($155 validation, same day)
+
+**Offer:** EU toolkit VALIDATED — $155 one-time, 16 deliverables, SME audience, current Dec-2027 timeline, dual disclaimers. No legal-advice claim. No invented testimonial.
+
+**Purchase path:** Gumroad iaiyt embeds product:price **155.0 USD** — UNKNOWN hop RESOLVED, $155 consistent site+Paddle+Gumroad. CTA live. Paddle: precisely blocked (webhook secret + onboarding, both founder-external). Gumroad = working path.
+
+**Telegraph EU:** live 200, content matches ($155, disclosure, no guarantee).
+
+**Distribution:** none new (gates hold). Views 4/2, sales 0, replies 0.
+
+**Revenue $0, spend $0.** Next: observe; founder prerequisites (attach/SMTP/Reddit/GSC/Paddle-onboarding).
