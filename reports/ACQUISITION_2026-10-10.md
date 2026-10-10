@@ -297,3 +297,13 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 **Founder prerequisites (any ONE moves revenue):** (a) attach 3 files to fgruzn (~3 min) → then I update listing via API; (b) SMTP credential → cold outreach opens; (c) Reddit reply (~2 min, draft ready). All documented with exact steps in queue.
 
 **Funnel/revenue:** unchanged zeros + UNKNOWNs. **Revenue $0, spend $0.**
+
+## Cycle 21 (continuous mission, same day)
+
+**Competitor price intel (live):** businessfixkits Etsy kit $39 (PDF+DOCX+tracker, Stripe, 7-day refund, support). Decision: HOLD our $29 — undercuts with bundle parity post-attach. No price change, rationale recorded. Their refund/support/previews noted as founder decisions, not built unilaterally.
+
+**Bundle shipped:** `books/etsy_suspension_appeal_kit_v2_bundle.zip` (166KB, integrity OK): 19pp PDF + 2 letter templates + tracker + README (usage + disclaimer + receipt-email support). Founder step (~3 min): Gumroad → fgruzn → Content → upload ZIP → Save → tell me → I update the listing description via API. Deliberately unadvertised until attached.
+
+**Watch:** tickets TEST-only, sales 0, replies 0 (prior sweep stands). **Revenue $0, spend $0.**
+
+**Founder queue (any ONE moves revenue):** attach bundle / SMTP cred / Reddit reply / GSC verify. All exact steps on file; Telegram nudge delivered earlier.
