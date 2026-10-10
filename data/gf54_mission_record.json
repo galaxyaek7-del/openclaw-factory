@@ -85,7 +85,7 @@
  },
  "spend_usd": 0,
  "status": "ACTIVE",
- "updated_at": "2026-10-10T13:50:00+00:00",
+ "updated_at": "2026-10-10T14:20:00+00:00",
  "verified_baseline": {
   "checkout_paths": "Gumroad live (50+ products, API-verified prices/URLs); Paddle gate closed (worker-evidenced); Stripe-accepting: NONE (no keys, Gumroad/Paddle are processors)",
   "ci": "healthy (API-observed success + in-progress builds; Pages success)",
@@ -96,7 +96,8 @@
    "stripe": "2 (1 own + 1 unknown-origin)"
   },
   "workers": "node 6004 (server) + 13104 (factory_loop) alive",
-  "freelancer_kit": "honest $19 micro-kit (was misdescribed $39 bundle); fixed all surfaces"
+  "freelancer_kit": "honest $19 micro-kit (was misdescribed $39 bundle); fixed all surfaces",
+  "b2b_terms": "reconciled: custom pay-on-delivery (email) vs fixed $99 upfront (Gumroad), cross-linked"
  },
  "workstreams": {
   "A_payment": "Gumroad OPERATIONAL; Paddle BLOCKED (onboarding); Stripe-accepting ABSENT by design (no keys)",

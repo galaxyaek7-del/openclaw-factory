@@ -379,3 +379,9 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Distribution:** Telegraph page #3 (freelancer audience variable; compliance/finance/gig-work now covered). Clean publish, independently verified, views 0 fresh.
 
 **Funnel/revenue:** replies 0, inquiries 0, sales 0, **$0**; spend $0. Next: observe 3 counters; replicate only on views signal; founder prerequisites stand.
+
+## Cycle 29 (mastery: trust sweep high-ticket, same day)
+
+**B2B terms conflict FOUND + FIXED:** drtaj ($99 Gumroad, pay-upfront, honest desc) vs service page (custom $30-250, pay-on-delivery) contradicted each other — and my own Nostr post conflated both. Service page now states exactly which terms apply where + cross-links the fixed batch. Verified serving. CloudOps $29 listing audited honest (no action). Counters static (1/2), sales 0.
+
+**Next trust target:** EU AI Act listing ($155, highest price). **Revenue $0, spend $0.**
