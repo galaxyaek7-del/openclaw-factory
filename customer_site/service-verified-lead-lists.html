@@ -48,6 +48,17 @@ footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(-
 </ul></div>
 <h2>How to request</h2>
 <p>Email <a href="mailto:galaxyaek7@gmail.com?subject=Verified%20lead%20list%20request">galaxyaek7@gmail.com</a> with subject "Verified lead list request" and the three items above. We reply within 2 business days confirming scope and fixed price — or declining honestly if it is outside our coverage.</p>
+<div class="box"><b>Or send your criteria here</b> — same inbox, structured format (name, email, target titles, industries, geography, size, volume). No spam, no list-selling, unsubscribe anytime. We reply ourselves within 2 business days.
+<form id="leadFormB2b" style="margin-top:1rem">
+<input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+<div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.6rem">
+<input name="name" required maxlength="200" placeholder="Name" style="flex:1;min-width:140px;font:inherit;background:#0a0c11;border:1px solid #242938;color:#eef0f6;border-radius:8px;padding:.7rem .85rem">
+<input name="email" type="email" required maxlength="200" placeholder="Business email" style="flex:1;min-width:180px;font:inherit;background:#0a0c11;border:1px solid #242938;color:#eef0f6;border-radius:8px;padding:.7rem .85rem">
+</div>
+<textarea name="criteria" required maxlength="2000" rows="3" placeholder="Target titles, industries, geography, company size, volume (e.g. 200 SaaS CTOs, US, 11-200 staff)" style="width:100%;font:inherit;background:#0a0c11;border:1px solid #242938;color:#eef0f6;border-radius:8px;padding:.7rem .85rem"></textarea>
+<div style="margin-top:.6rem"><button type="submit" id="leadBtnB2b" style="font:inherit;background:#d97a3f;color:#1a0e05;font-weight:700;border:none;border-radius:8px;padding:.7rem 1.2rem;cursor:pointer">Request quote</button></div>
+<div id="leadStatusB2b" style="font-size:.85rem;margin-top:.6rem;display:none"></div>
+</form></div>
 <h2>Price and terms</h2>
 <p>$30–$250 fixed by volume and verification depth, quoted after criteria are confirmed, payable on delivery. No subscription, no retainer. This page is the offer; no account needed to inquire.</p>
 <p>Prefer a fixed package with instant checkout? The standard 200-lead batch ($99) is also sold <a href="https://aekraft.gumroad.com/l/drtaj?ref=galaxyforge_service">directly via Gumroad</a> — same deliverable and one revision round, with secure checkout before the 6-day build (Gumroad charges at purchase, so pay-on-delivery applies only to custom-quoted volumes above).</p>
@@ -56,6 +67,46 @@ footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(-
 </div>
 <script>
 fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'service-verified-lead-lists' }) }).catch(()=>{});
+(function(){
+  "use strict";
+  var form = document.getElementById('leadFormB2b');
+  if (!form) return;
+  var status = document.getElementById('leadStatusB2b');
+  var btn = document.getElementById('leadBtnB2b');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var data = Object.fromEntries(new FormData(form).entries());
+    if (data.website) return; // honeypot
+    btn.disabled = true; btn.textContent = 'Sending…';
+    status.style.display = 'none';
+    var payload = { name: data.name, email: data.email,
+      message: 'LEAD B2B: criteria request from service-verified-lead-lists. Criteria: ' + (data.criteria || ''),
+      _subject: 'Lead B2B: criteria request', _template: 'table', _captcha: 'false' };
+    function ok(){ status.textContent = 'Criteria received. A real person replies within 2 business days with scope and fixed price.'; status.style.display = 'block'; form.reset(); btn.disabled = false; btn.textContent = 'Request quote'; }
+    function fail(){
+      var mailto = 'mailto:galaxyaek7@gmail.com?subject=' + encodeURIComponent('Verified lead list request') + '&body=' + encodeURIComponent('Criteria: ' + (data.criteria || '') + '\nName: ' + data.name);
+      status.innerHTML = 'Direct send is offline — <a href="' + mailto + '">click here to send by email</a>.';
+      status.style.display = 'block'; btn.disabled = false; btn.textContent = 'Request quote';
+    }
+    fetch('/api/customer/support-ticket', { method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: data.name, email: data.email, message: 'B2B criteria: ' + (data.criteria || '') }) })
+      .then(function(r){ return r.json().then(function(b){ return { ok: r.ok, body: b }; }); })
+      .then(function(res){
+        if (!res.ok || res.body.success === false) throw new Error('local-offline');
+        ok();
+      })
+      .catch(function(){
+        fetch('https://formsubmit.co/ajax/galaxyaek7@gmail.com', { method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload) })
+          .then(function(r){ return r.json(); })
+          .then(function(body){
+            if (body && body.success !== false && body.success !== 'false') ok();
+            else fail();
+          }).catch(fail);
+      });
+  });
+})();
 </script>
 </body>
 </html>
