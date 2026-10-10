@@ -147,3 +147,17 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 **Funnel:** prospects 0 | delivered 8 Nostr + 3 SEO + 2 Gumroad-SEO | replies 0 | inquiries 0 | visits UNKNOWN | checkouts 0 | sales 0 | **revenue $0** | spend **$0**.
 
 **Next:** observe EUDR guide visits; Nostr post for EUDR angle only with a separate hypothesis (SME-fit on Nostr is weak — honesty check before posting); founder decides on Reddit draft. All autonomous free external channels now have at least one live asset each — subsequent cycles shift to observation + follow-up unless new evidence justifies more publishing.
+
+## Cycle 10 (GF-42 breakthrough, same day)
+
+**1. Primary offer + buyer segment:** EU Deadline Briefing (149 USD) x EU SMEs in EUDR-scope commodity flows facing Dec-2026/Jun-2027 deadlines. Chosen on evidence, not recency: page validated sound (no invented dates, clear deliverables/limits/terms), demand verified 2026, and it holds the last untested autonomous slot — Etsy demand is stronger but its free reach is exhausted without founder identity.
+
+**2. Purchase path:** verified (mailto CTA live, 2-day reply promise, pay-after-scope). Checkout = email inquiry (FOUNDER-OBSERVED side).
+
+**3. External actions completed:** (a) Nostr EUDR-guide post, event `8d7e1e9b`, 4/5 relays — value-first, with fail-fast hypothesis (0 replies = Nostr unfit for compliance, stop); (b) offer improvement shipped: Sources section on briefing page; (c) attribution parity: `?ref=guide-eudr-sme` on both guide CTAs (unobservable until backend exists — labeled, not claimed).
+
+**4. Evidence + replies:** Nostr record saved; replies pending observation (all prior: 0). No buyer responses today.
+
+**5. Funnel + limits:** prospects 0 | delivered 9 Nostr + 3 SEO + 2 Gumroad-SEO | replies 0 | inquiries 0 | visits UNKNOWN(Pages) | checkouts 0 | sales 0 (worker log) | **revenue $0** | spend **$0**.
+
+**6-8. Next executable:** observe EUDR windows; compare guide-post reply rates; founder Reddit draft still pending. No new publishing justified until observation yields signal or fail-fast triggers fire.
