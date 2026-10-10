@@ -250,3 +250,13 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 9. **Blocker:** human identity for every contact channel (Reddit draft ready); email/gh/absent infra. Pivot attempted and completed: full-sweep + trust-gap fix are the feasible routes that existed.
 10. **Next:** reply-watch; founder Reddit draft; re-score only on new evidence.
 11. **Spend:** $0 confirmed.
+
+## Cycle 17 (GF-49 follow-through, same day)
+
+1. **17/17 resolved (OBSERVED):** 17 `nostr_post_*.json` files, all `status=sent` (8x 10-09 + 9x 10-10) = factory broadcasts swept for replies. Proves nothing about buyers: 0 replies, 0 inquiries. No buyer communication exists in these records. e256bf9 verified matching.
+2. **No buyer to follow through on:** inbound ledgers hold test events only (re-verified cycle 16). Nothing to reply to; nothing sent on anyone's behalf.
+3. **Different experiment executed:** first-ever founder escalation via authorized `lib/telegram_direct` — one concise nudge (16-cycle status + 2-min Reddit ask + file path). **DELIVERED, message_id 1940 (OBSERVED).** Single send, no repeats planned. Blocker-escalation, not buyer contact.
+4. **Path:** edited Etsy card intact live-locally with correct buy link; sales 0 (live API).
+5. **Ladder:** PUBLISHED (10 Nostr, 3 guides, 2 Gumroad-SEO, card) | EXPOSURE_VERIFIED: none (Nostr no view counts; Pages UNKNOWN) | ENGAGEMENT 0 | QUALIFIED 0 | PURCHASE 0 | NET $0.
+6. **Gate:** no autonomous buyer route remains; escalation delivered; observation continues.
+7. **Revenue $0, spend $0.** Secrets protected (keys never logged).
