@@ -339,3 +339,15 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **E. Prospects/responses:** NONE OBSERVED. **Outcome B** (ready, distribution unproven — now 2 observable pages).
 **F. Revenue:** 0 / **$0**. **G. Spend $0.**
 **H. Next:** observe both Telegraph counters; any increment above own fetches = real exposure → replicate/double-down; sustained 0 → channel disproved, pivot to founder-only routes.
+
+## Cycle 25 (GF-54 long-horizon program, same day)
+
+**Baseline (all OBSERVED):** git intact; workers alive; CI building + Pages green; no Stripe-accepting (by design); Telegraph Etsy=1 (own), Stripe=2 (1 unknown-origin, unclaimed); secrets clean.
+
+**Mission record LIVE:** `data/gf54_mission_record.json` — objectives, baseline, 6 workstreams (A: Gumroad OK/Paddle closed; B: Etsy/Stripe, v2 pending attach; C: Telegraph metered, Nostr halted, SEO unindexed; D: mailto live, visits UNKNOWN; E: services posted/observing; F: affiliate deprioritized), funnel, 4 founder prerequisites with exact actions, recovery path.
+
+**Strongest actions:** record created (durability) + both counters read (Stripe +1 unknown-origin noted, not claimed). No new broadcast (gates hold). No re-tests beyond mandated freshness.
+
+**Funnel/revenue:** zeros + UNKNOWNs as recorded. **Revenue $0, spend $0.**
+
+**Next:** observe counters; reply-watch; FP-ATTACH→API update; replicate only on views signal. Program persists across cycles via record + queue.
