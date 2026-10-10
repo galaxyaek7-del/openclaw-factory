@@ -555,3 +555,13 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 3. **Offer:** cited verified C40. 4. **Demand:** claims 0/0, tickets non-real, views 4/2, sales 0 (APIs/relays/ledgers).
 4. **No loops:** no new files except queue+report; no re-tests; no re-plans.
 5. **Revenue $0, spend $0.** Next: claim-watch (first claim = delivery cycle); founder prerequisites.
+
+## Cycle 47 (full clean cycle, same day)
+
+**Measure (all 7+):** 35 Telegraph pages exist (prior run); views 1-8 each — channel exposure PROVEN beyond own fetches. Workers alive. Sales 0, replies 0, tickets test-only.
+
+**Execute:** First-Buyer-Free banner live-locally atop products.html — rule now visible at purchase point (was Nostr-only). Claim via founder email; reversible.
+
+**Verify/commit:** queue 133 clean; report appended; push + live-verify next.
+
+**Revenue $0, spend $0.** Next: first FIRST-BUYER-FREE email triggers delivery cycle; observe counters.
