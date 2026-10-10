@@ -121,3 +121,15 @@ Nostr delivery is reliable (11/11 sent, 4/5 relays) but intent yield is 0/11. Co
 **Funnel:** prospects 0 | delivered 7 Nostr + 2 SEO + 2 Gumroad-SEO cumulative | replies 0 | inquiries 0 (inbox side UNKNOWN) | visits UNKNOWN(Pages) | checkouts 0 | sales 0 (live API) | **revenue $0** | spend **$0**.
 
 **Next:** observe all open windows (Etsy SEO+Nostr, B2B, KDP, Stripe-Gumroad). No further distribution without a new offer/hypothesis — remaining undistributed: EU Briefing 149 USD (weak Nostr fit; needs founder-channel or SEO guide to justify).
+
+## Cycle 8 (GF-40 publication-to-buyers, same day)
+
+**GF-39 evidence reused (no re-audit):** commit `6cf192c` present; queue 30 lines clean. Worker evidence from real ticks (no new API calls): `sales_poll=none`, `paddle_checkout_notification=none` (gate still closed), `payment_status_check=checked` (0).
+
+**Offer selected:** Freelancer Scope Control Kit — via its free guide (value-first), NOT the thin 3-page product. Rationale: product-first Nostr already tested (0 replies); guide-first is the untested half of the positioning matrix, now testable A/B against the Etsy-guide post.
+
+**Executed (one new external action):** Nostr freelancer-GUIDE post, event `ee0b48c8`, 4/5 relays, record saved. Nothing else published, no link re-checks, no queue grooming counted as outcome.
+
+**Funnel:** prospects 0 | delivered 8 Nostr + 2 SEO + 2 Gumroad-SEO cumulative | replies 0 | inquiries 0 | visits UNKNOWN(Pages) | checkouts 0 | sales 0 | **revenue $0** | spend **$0**.
+
+**Next:** compare guide-post vs product-post reply counts over 7d; all other windows still open. EU Briefing remains the only undistributed offer (no honest free channel identified yet — recorded, not forced).
