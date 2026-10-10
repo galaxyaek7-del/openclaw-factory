@@ -413,3 +413,16 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Distribution:** Telegraph page #5 (EUDR regulatory audience) — clean, verified, views 0. Five metered surfaces.
 
 **State:** sales 0, replies 0, tickets test-only. **Revenue $0, spend $0.** Next: observe 5 counters; founder prerequisites stand.
+
+## Cycle 33 (C33 pipeline+EUDR verification, same day)
+
+1. **Commit/changes:** from `32192ee` (CSV 9-col + EUDR Telegraph + root-cause), verified in tree.
+2. **CSV test:** PASS local+live (text/csv, 9 cols, 1 reserved-email row, SAMPLE-labeled). Static demo declared — no code consumer, not customer data. Empty-file rule enforced by test assert.
+3. **7 stages (real names):** identified 0/0 (earliest break: no connected input source) → rest starved 0/0. Single root cause, not 7 bugs.
+4. **Root cause:** no reachable-buyer input; measurement UNKNOWN at visits. Unchanged by code.
+5. **Post-fix tests:** csvtest PASS/PASS; live CSV 200.
+6. **EUDR page:** live + verified (cycle 32); views included below.
+7. **Distribution:** none new this cycle (gates hold; bundle link deliberately skipped — would advertise unattached files).
+8. **Metrics:** Telegraph Etsy 1→4 (+3 UNKNOWN origin — crawlers/preview/humans; NOT buyers), Stripe 2 static; replies 0; tickets TEST; sales 0. Sources: getPage API, relay REQ, ledgers, sales API.
+9. **Blockers/next:** founder identity (Reddit), GSC click, bundle attach, SMTP. Next: watch counters (sustained growth → replicate; flat → hold).
+10. **Spend $0. Revenue $0 (verified, not hidden).**
