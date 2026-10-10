@@ -1,0 +1,15 @@
+{
+ "zip": "books/etsy_suspension_appeal_kit_v2_bundle.zip",
+ "sha256": "b05f3f4ccb8cf66b1ad1985afab60d783d4d896f35b908495012f2987dbfda54",
+ "bytes": 166634,
+ "files": {
+  "etsy_suspension_appeal_kit.pdf": "19-page method PDF (audited 19pp)",
+  "etsy_appeal_letter_template_A_IP.docx": "IP/trademark letter template (placeholders)",
+  "etsy_appeal_letter_template_B_policy.docx": "Policy-violation letter template (placeholders)",
+  "etsy_appeal_evidence_tracker.xlsx": "Evidence/deadline/case tracker (3 sheets)",
+  "README.txt": "File list + usage + disclaimer + support route"
+ },
+ "integrity": "OK",
+ "secrets": "none found",
+ "verdict": "READY-TO-UPLOAD"
+}
