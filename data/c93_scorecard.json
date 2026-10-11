@@ -1,0 +1,51 @@
+{
+ "measured_at": "2026-10-11T13:22:13.323084+00:00",
+ "scope": "ALL 75 offers, not just diminished value",
+ "CONFIRMED_ZERO": {
+  "orders_all_offers": 0,
+  "offers_with_any_sale": 0,
+  "revenue_usd": 0.0,
+  "refunds": 0,
+  "nostr_replies_to_60_posts": 0,
+  "source": "Gumroad /v2/sales + per-product sales_count (authoritative)"
+ },
+ "CONFIRMED_ZERO_vs_UNAVAILABLE": {
+  "CONFIRMED ZERO (measured, authoritative)": [
+   "orders",
+   "refunds",
+   "revenue",
+   "per-offer sales_count",
+   "nostr replies to our 60 posts"
+  ],
+  "UNKNOWN (no observation point - NOT zero)": [
+   "outbound clicks - UTM set but no click analytics without paid backend",
+   "checkout starts - Gumroad founder dashboard only",
+   "unique storefront visitors beyond 14d - Pages traffic returns 14d max",
+   "impressions on any channel - no impression API",
+   "intent/consideration - never directly observable"
+  ]
+ },
+ "storefront_traffic_14d": {
+  "views": 5,
+  "uniques": 2,
+  "referrers": [
+   "github.com"
+  ],
+  "customer_pages_in_top_paths": [],
+  "interpretation": "All recorded views are repo browsing from github.com. ZERO customer pages appear in top paths."
+ },
+ "catalog_shape": {
+  "total_offers": 75,
+  "by_price_band": {
+   "$0-29": 23,
+   "$39-79": 45,
+   "$99+": 7
+  }
+ },
+ "cac": {
+  "cash_spend_usd": 0,
+  "hours_observed": "many sessions over 2026-09 to 2026-11",
+  "CAC": "UNDEFINED - zero revenue over nonzero effort. Infinite/unknown."
+ },
+ "honest_read": "No offer has ever produced a sale. 75 offers, ~0 qualified traffic, 0 orders. The binding problem is not which product - it is that nothing reaches a buyer and nothing converts."
+}

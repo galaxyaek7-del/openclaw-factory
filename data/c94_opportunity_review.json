@@ -1,0 +1,120 @@
+{
+ "generated_at": "2026-10-11T13:30:51.367058+00:00",
+ "decision_rule": "Continue an idea only if evidence justifies it. Otherwise change without hesitation. Do not choose a path merely because its files are ready.",
+ "channel_capability_facts_established_this_session": {
+  "OBSERVED": [
+   "community.n8n.io is fully readable anonymously, including a public JSON API (/latest.json, /c/jobs/13.json, /t/<slug>/<id>.json). No anti-bot.",
+   "Category 13 (Jobs) had 90 topics fetched; 64 buyer-side after excluding [For Hire] seller posts; 60 created since 2026-09-01.",
+   "Anonymous reply POST to /posts.json returns HTTP 403 BAD CSRF -> posting requires a session. We did NOT attempt to forge a CSRF token.",
+   "Gumroad checkout: live and functional (0 sales, but purchases would work).",
+   "GitHub Pages traffic API: functional via existing git credential."
+  ],
+  "UNKNOWN": [
+   "Outbound clicks and checkout starts - no free observation point exists."
+  ]
+ },
+ "opportunities": [
+  {
+   "id": "OPP-1",
+   "name": "n8n / AI-automation QA & stress-testing service (paid trial per agent)",
+   "what_is_sold": "A fixed-scope, paid-trial review of an existing n8n workflow: failure points, edge cases, error handling, integration and AI behaviour checks, plus a written fix list. Review only - no rebuild.",
+   "why_it_may_fit": [
+    "The buyer states the exact scope in the post: review existing workflows, identify bugs, test edge cases, recommend/fix what is not client-ready.",
+    "It is explicitly framed as a PAID TRIAL - the buyer is asking to pay, not to receive free help.",
+    "Trust barrier matches the research finding: the #1 objection to automation is 'it broke silently last time'. This offer IS the trust product."
+   ],
+   "evidence": {
+    "OBSERVED": [
+     "Thread live and fetched: community.n8n.io/t/.../319256.json -> HTTP 200",
+     "created 2026-10-06, posts_count 151, views 1937, last activity 2026-10-11",
+     "OP text contains 'as a paid trial' and 'ongoing work available'",
+     "OP asks applicants to DM: location/timezone, rate, n8n/AI experience",
+     "Stack named: n8n, Vapi, Twilio, ElevenLabs, OpenAI/Claude, APIs/webhooks"
+    ],
+    "CITED": [
+     "Upwork 8,228-posting dataset (marathon.limited): median AI fixed price $400-500; 50.7% under $500; 7.9% above $5,000. Discriminator on the expensive side: volume, systems, security constraints, human-approval, documentation, warranty.",
+     "Independent SnipeWork live API scan: Admin Support median fixed $50; Data Science median $100 -> the median AI gig is NOT worth competing in."
+    ],
+    "INFERRED": [
+     "A QA/stress-test is a bounded, deliverable scope, which is the shape that survives the 50%-under-$500 filter.",
+     "The buyer has already built the agents, so there is no discovery cost on our side and no rebuild risk."
+    ],
+    "UNKNOWN": [
+     "The buyer's actual rate - they ask YOU to state it. No budget is stated.",
+     "Whether this buyer will pay for a first-time provider with no public track record."
+    ]
+   },
+   "criteria": {
+    "demand_strength": "STRONG - 151 replies, 1937 views, still active on 2026-10-11",
+    "buyer_clarity": "HIGH - stack, scope and deliverables named explicitly",
+    "speed_to_test_wtp": "FAST - buyer asked for a paid trial; one DM = one test",
+    "feasibility_with_existing_assets": "HIGH - this factory already does evidence-based verification and honesty checks daily",
+    "free_distribution": "YES - the board is publicly readable; only the DM is gated",
+    "compliance_risk": "LOW - legitimate services discussion, buyer-initiated",
+    "CAC": "$0 cash. Time cost of a trial engagement."
+   },
+   "verdict": "SELECTED"
+  },
+  {
+   "id": "OPP-2",
+   "name": "Diminished-value claim kits (the existing 75-offer catalog, this niche)",
+   "what_is_sold": "Downloadable PDF/XLSX guides at $19-$99.",
+   "why_it_may_fit": [
+    "Deliverables exist and are verified.",
+    "Live buyer questions exist on public vehicle forums."
+   ],
+   "evidence": {
+    "OBSERVED": [
+     "0 orders across ALL 75 offers, verified via /v2/sales (2026-10-11).",
+     "Storefront 14d: 5 views, 2 uniques, ALL referrer=github.com (repo browsing).",
+     "customer_site pages appear in ZERO top paths.",
+     "All three vehicle forums require an account to reply; buyers' contact is DM-gated inside threads.",
+     "Founder has now explicitly declined to carry this path."
+    ],
+    "CITED": [],
+    "INFERRED": [
+     "Every acquisition channel for this niche is identity-gated, so distribution cannot be executed by the factory at all."
+    ],
+    "UNKNOWN": []
+   },
+   "criteria": {
+    "demand_strength": "WEAK for US - research notes 'you will get a few hundred at most' in most states; cosmetic-only repairs often support nothing",
+    "buyer_clarity": "MEDIUM",
+    "speed_to_test_wtp": "SLOW - gated behind identity we do not have",
+    "feasibility": "HIGH - files already built",
+    "free_distribution": "NO - every channel identity-gated",
+    "compliance_risk": "MEDIUM - legal-adjacent content needs care"
+   },
+   "verdict": "NOT SELECTED - paused per founder direction; not deleted"
+  },
+  {
+   "id": "OPP-3",
+   "name": "Invoice-to-bank reconciliation service",
+   "what_is_sold": "Reconcile unmatched inbound payments against issued invoices, return a matched ledger + exception list.",
+   "evidence": {
+    "OBSERVED": [],
+    "CITED": [
+     "FreshBooks survey, n=260 US service professionals: 28% of those spending 5+ hrs/mo on manual invoicing report cash-flow problems vs 10%; 54% report at least one invoicing challenge. (Vendor-commissioned survey - treat as interested.)",
+     "r/smallbusiness post: 'Doing 40-50 invoices monthly. This weekend literally took 4 hours' because clients pay lump sums with no reference.",
+     "Indie Hackers: a founder who built this exact tool chose $12/mo SaaS with ~4 users - a strong NEGATIVE signal on willingness to pay for the tool form."
+    ],
+    "INFERRED": [
+     "The pain is real and quantified, but the one person who productised it monetised it as $12/mo software with almost no adoption - suggesting the service form may be bought as bookkeeping labour, not as automation."
+    ],
+    "UNKNOWN": [
+     "No verified buyer posting a budget for this specific service."
+    ]
+   },
+   "criteria": {
+    "demand_strength": "STRONG pain, UNPROVEN service budget",
+    "buyer_clarity": "MEDIUM",
+    "speed_to_test_wtp": "SLOW - no public buyer venue found",
+    "feasibility": "MEDIUM - would be manual, low leverage",
+    "free_distribution": "NOT FOUND - research found essentially zero free public venues where an SMB posts an unbudgeted need",
+    "compliance_risk": "LOW"
+   },
+   "verdict": "NOT SELECTED - real pain, no evidence of budget for this form"
+  }
+ ],
+ "selected": "OPP-1"
+}

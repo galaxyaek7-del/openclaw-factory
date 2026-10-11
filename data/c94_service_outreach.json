@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-10-11",
+  "strategy_note": "This is NOT the MaverickTruckClub ask. Different platform, different buyer, different business model, and the reason is proven by data rather than chosen because files existed.",
+  "why_this_platform_is_proven_not_arbitrary": {
+    "OBSERVED_this_session": [
+      "community.n8n.io is fully readable anonymously via a public JSON API - no anti-bot, no login wall for reading.",
+      "Jobs category (id 13): 90 topics fetched, 64 buyer-side after excluding [For Hire] sellers, 60 created since 2026-09-01. The market is active RIGHT NOW.",
+      "The target thread: 151 replies, 1,937 views, created 2026-10-06, last activity 2026-10-11.",
+      "The buyer states the scope explicitly and says 'as a paid trial, with ongoing work available if we're a good fit'.",
+      "The buyer lists exactly what they want applicants to send: location/time zone, rate, relevant n8n/AI experience."
+    ],
+    "NOT_claimed": [
+      "We have not contacted this buyer and do not know their rate.",
+      "We cannot post on the board anonymously - verified: POST /posts.json returns HTTP 403 BAD CSRF. We did not attempt to forge a token.",
+      "We have no track record with this buyer."
+    ]
+  },
+  "minimum_human_action": {
+    "what": "Create a free n8n community account, then send ONE direct message.",
+    "why_account_is_unavoidable": "The buyer's stated intake is 'please DM me'. There is no email, no contact form, and anonymous board posting is blocked. The DM is the channel the buyer themselves specified.",
+    "cost": "$0 - free signup, no paid posting, no advertising purchase.",
+    "time": "about 5 minutes",
+    "exact_link_to_thread": "https://community.n8n.io/t/looking-for-n8n-ai-automation-specialist-paid-qa-stress-testing/319256",
+    "signup_link": "https://community.n8n.io/signup",
+    "already_live_checkout_for_the_buyer_to_pay": "https://aekraft.gumroad.com/l/owtmpe"
+  },
+  "ready_to_send_dm": {
+    "NOTE": "Deliberately short. The board is technical and the buyer has 151 replies - a long pitch will be ignored. State the zero track record up front; on this buyer, overclaiming is the fastest way to be dismissed.",
+    "text": "Hi - saw your post about reviewing and stress-testing the Vapi/Twilio/ElevenLabs/OpenAI agents before you demo them to clients.\n\nRate: $150 for one workflow, review only. That is a fixed scope, not an hourly meter: I read the workflow, attack it (empty/wrong-type/very-long input, duplicate and out-of-order events, partial failure mid-run, API rate limits and timeouts, malformed third-party responses, and whether an AI step silently swallows an error and answers from its own weights), and hand back a prioritised findings document with the specific fix for each item plus the tests worth adding so the same failure cannot come back silently.\n\nI do not rebuild it. You keep your agent either way.\n\nBeing straight with you: I have delivered zero of these, so there is no portfolio and no reference I can offer. What I can offer is a bounded trial - if the review finds nothing material, tell me and I will put that in writing.\n\nCheckout if useful: https://aekraft.gumroad.com/l/owtmpe\n\nIf a $150 review is not the right shape for a first trial, say so and I will tell you honestly whether I think it is worth doing at all.",
+    "what_makes_this_not_spam": [
+      "One buyer, one message, in the channel they asked for.",
+      "Discloses zero track record rather than implying experience.",
+      "Names a fixed deliverable and an explicit no-rebuild boundary.",
+      "Offers to talk them OUT of it if the shape is wrong."
+    ]
+  },
+  "what_was_actually_executed_without_any_human_action": [
+    "Created a live, purchasable $150 service listing matching the buyer's exact stated scope: https://aekraft.gumroad.com/l/owtmpe (verified buyer-facing: published=true, price_cents=15000, is_compliance_blocked=false, schema.org InStock).",
+    "Listed it at the TOP of the existing storefront with UTM campaign wf-qa-service - no new page, no new storefront.",
+    "Wrote the offer copy so that every claim maps to a deliverable the factory can actually produce, with zero testimonials and an explicit '0 delivered' statement."
+  ],
+  "if_it_does_not_work": {
+    "diagnosis_rule": "If no reply in 14 days, this is a REACH result, not an OFFER result - the offer itself was never tested by a buyer. The listing stays live and buyable at zero cost either way, so the experiment has no downside beyond time."
+  }
+}
