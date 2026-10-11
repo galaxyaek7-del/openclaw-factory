@@ -1,3 +1,64 @@
+# HANDOFF — Galaxy Forge commercial ops (2026-10-11, post-C91)
+
+## C91 — THE ONE THING THAT UNBLOCKS REVENUE
+Everything upstream is built and verified: 75 live offers, real files, checkout,
+cover art ready, OG metadata, a guide page, tracking. **The single blocker is
+that nobody sees any of it.** The only step left requires a human identity.
+
+### THE FOUNDER ACTION (≈10 minutes, $0)
+1. Create a free Reddit account — `https://www.reddit.com/register/`
+2. Open `data/c91_founder_outreach.json` — it contains **3 ranked threads with
+   verified URLs, verbatim buyer quotes, and a complete ready-to-paste reply**
+   written to be genuinely useful first and promotional only at the end.
+3. Post it in **ONE** thread. Not three. Read the subreddit rules first.
+
+All four target communities were verified this cycle: **anonymous READ works,
+anonymous WRITE does not** (`/forum/login/` gate). We did not create accounts and
+did not ask for credentials. Please do not paste a password or cookie into chat.
+
+Top target: `https://www.mavericktruckclub.com/forum/threads/diminished-value-insurance-claim.83278/`
+(2026-06-05, owner asking how to establish before/after values — high intent).
+
+## WHY THIS OFFER, EVIDENCE-BASED
+Every buyer thread found repeats the same verbatim question: *"how do I PROVE
+the number / what do I upload."* That is precisely the $59 kit's scope
+(eligibility matrix → evidence pack → comparables → demand letter → negotiation
+log). Fit was confirmed against real posts, not assumed.
+
+## SHIPPED THIS CYCLE (no infrastructure, no new products)
+- Storefront hero retitled **"Diminished Value Claim Kit — how do I *prove* it?"**
+  — the exact wording buyers use. Live-verified after deploy; div balance 78/78,
+  75 cards, 74 buy links, guide link + og:image intact.
+- `data/c91_founder_outreach.json` — the handoff above.
+- `data/c91_metrics.json` — the measurement snapshot.
+
+## MEASURED STATE (read at 2026-10-11, Pages traffic 14d)
+| Metric | Value | Source |
+|---|---|---|
+| Storefront views / uniques (14d) | **5 / 2** | Pages traffic API |
+| `products.html` in top paths | **NO** | Pages traffic API |
+| `guide-diminished-value-claim.html` in top paths | **NO** | Pages traffic API |
+| All recorded views | repo `blob/`+`tree/` browsing | referrers: github.com only |
+| Orders / refunds / revenue | **0 / 0 / $0** | `/v2/sales` |
+| Outbound clicks, checkout starts | **UNKNOWN** | no observation point |
+
+**The loss is at REACH** — upstream of click, checkout and purchase. Not price,
+not offer, not checkout. Do not change the product until reach moves.
+
+## DO NOT
+- Do **not** publish another Telegraph article. That channel sits at 0 views and
+  has produced no evidence of reaching this audience.
+- Do **not** build more tracking, covers, or reports. Nothing is blocked on them.
+- Do **not** conclude a platform is permanently saturated from this sample —
+  we were blocked, not ignored.
+
+## STILL OPEN
+- 3 cover uploads (`covers=0` on all three) — see `data/c89_cover_handoff.json`
+- Attach the $155 EU AI Act PDF; unpublish `/l/dxfwlu` ($1 DO-NOT-BUY)
+- Next scheduled review: **2026-10-18**. Nothing runs on a timer.
+
+---
+
 # HANDOFF — Galaxy Forge commercial ops (2026-10-11, post-C90)
 
 ## C90 — THE MEASUREMENT UNLOCK (biggest change since C85)
