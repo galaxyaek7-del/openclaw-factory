@@ -1,0 +1,67 @@
+{
+  "generated_at": "2026-10-11",
+  "status": "PREPARED, NOT PUBLISHED - founder action required",
+  "why_not_published": "Every candidate community permits anonymous READING but requires an authenticated account to reply. Verified this cycle: MaverickTruckClub returns the literal page text 'You must log in or register to reply here.' TacomaWorld displays 'You are currently viewing as a guest! To get full-access, you need to register for a FREE account.' Reddit returns HTTP 403 on www and a login wall on old.reddit.com. No authorized founder session exists in this factory, account creation is forbidden by standing rules, and no password, cookie or token was requested or used.",
+
+  "selected_discussion": {
+    "rank": 1,
+    "platform": "MaverickTruckClub (owner: 3W, owner-operated forum)",
+    "url": "https://www.mavericktruckclub.com/forum/threads/diminished-value-insurance-claim.83278/",
+    "verified": "HTTP 200, 167776 bytes, fetched anonymously 2026-10-11",
+    "recency": "Thread dated 2026-06-05 - the most recent of the three candidates",
+    "buyer_question_verbatim": "My '24 Lariat was t-boned by a car failing to heed a stop sign. His insurance took responsibility and paid the 14k repair bill including my deductible. It's my understanding I can file a claim with the other parties insurance for diminished value as my vehicle now shows having been in an accident. I guess I would need to establish before and after accident values and present the difference as a claim. Anyone been down this road and how did it work out?",
+    "why_selected": [
+      "Newest of the three - the question is still fresh in the thread.",
+      "High commercial intent: $14k repair already paid by the other carrier, owner is actively deciding whether to file.",
+      "The open question is literally our product's scope: how to establish before/after values.",
+      "Owner-operated forum with a clearly visible 'advertise your business' paid section, so a disclosed commercial reply is expected rather than abusive."
+    ],
+    "rules_verified": [
+      "Reply requires a free registered account (confirmed from the page itself).",
+      "The forum operates an explicit 'Become a Sponsor and Advertise Your Business' section - commercial mentions are tolerated, but a bare drop-link post would be poor practice and is NOT what this reply does.",
+      "No public written rule was found prohibiting a helpful, disclosed, non-spam reply. Rules could not be fully enumerated without an account; read the forum's pinned rules before posting."
+    ]
+  },
+
+  "runner_up": {
+    "platform": "f150gen14",
+    "url": "https://www.f150gen14.com/forum/threads/how-to-calculate-diminished-value-after-accident.24469/",
+    "buyer_question_verbatim": "My questions are how can I get appraisals to show the diminished value of my vehicle as well as does anybody have guidance on how to work with this insurance company that doesn't appear to be respected in Central Texas?",
+    "same_account_requirement": True
+  },
+
+  "minimum_founder_action": {
+    "step_1": "Register a FREE account - no purchase, no paid access: https://www.mavericktruckclub.com/forum/register/",
+    "step_2": "Open the selected discussion URL above.",
+    "step_3": "Paste the response below as a single reply, then submit.",
+    "step_4": "Tell us the resulting post URL (or we re-read the thread and find it).",
+    "time_required": "under 5 minutes",
+    "cost": "$0"
+  },
+
+  "recommended_response": {
+    "structure_note": "Guidance first, product only at the very end, full commercial disclosure, no claimed results. If you judge the thread should stay product-free, delete the last two sentences - the answer is still complete without them.",
+    "body": "Two things cost you the most in a diminished value claim, and both are avoidable.\n\nFirst, evidence structure. The itemised repair invoice matters more than the total. Carriers discount cosmetic work and pay more where structural, safety or ADAS/calibration lines appear, so a single total line reads as cosmetic even when the work wasn't. Pull the itemised invoice and point at the parts/labour split.\n\nSecond, comparables beat formulas. Most carriers quote roughly 10% of the physical damage cost, adjusted for age and mileage. The NAIC notes that approach grew out of a single Georgia Supreme Court case and has no legal basis in other states, and that it can double-count mileage because mileage is already priced into standard vehicle values. Use that number to sanity-check a lowball - you cannot use it as your evidence, because an adjuster can discount a formula. What they cannot easily discount is a valuation of your exact year, trim and mileage in clean condition versus with the accident reported, ideally backed by a dealer or trade-in letter in dollars.\n\nOne practical point that often decides the outcome: be clear about when you plan to sell or trade. An insurer's strongest argument is that the loss is unrealised if you keep the car. Telling them you are trading within a specific timeframe - and backing it with real trade offers - removes most of that argument.\n\nAlso worth knowing before you sign anything: a release signed after repairs and after the DV payment can surrender claims you didn't know you had. That signature is routinely the most expensive one in the file.\n\nAnd ask them, in writing, to show the calculation behind their figure. They often are not required to, but the request frequently moves the offer.\n\nFull disclosure: I build and sell a $59 Diminished Value Claim Kit covering the eligibility check, document order, comparables method and negotiation log. Galaxy Forge has 0 sales and no reviews. Nothing here is legal advice or an appraisal service, and no outcome is promised - judge whether it's worth $59 for your situation rather than taking my word for it. A free version of the method is here if you want it before spending anything: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/guide-diminished-value-claim.html",
+    "checks": {
+      "no_fabricated_experience": true,
+      "no_claimed_client_results": true,
+      "no_scarcity_or_guarantee": true,
+      "commercial_interest_disclosed": true,
+      "useful_without_the_product": true,
+      "links": "one free guide link, already verified live"
+    }
+  },
+
+  "after_publication": {
+    "verify": "Confirm the reply is publicly visible on the thread (we will re-read the thread and check).",
+    "measure": "Referral visits are observable via GitHub Pages traffic /traffic/popular/referrers. Outbound clicks and checkout starts remain UNKNOWN - there is no free click-observation point.",
+    "record": "data/c92_metrics.json will capture platform, URL, timestamp, published true/false, and before/after readings."
+  },
+
+  "do_not": [
+    "Do NOT paste a password, cookie or token into chat.",
+    "Do NOT post the same text into more than one thread.",
+    "Do NOT claim a payout, success rate or any customer outcome - there are 0 sales and 0 reviews.",
+    "Do NOT buy promoted posts, links or advertising (spend must stay $0)."
+  ]
+}

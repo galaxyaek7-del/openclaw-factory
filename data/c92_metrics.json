@@ -1,0 +1,34 @@
+{
+ "measured_at": "2026-10-11T13:03:25.237673+00:00",
+ "reporting_window": "GitHub Pages traffic, trailing 14 days",
+ "before": {
+  "storefront_views_14d": 5,
+  "storefront_uniques_14d": 2,
+  "referrers": [
+   {
+    "referrer": "github.com",
+    "count": 1,
+    "uniques": 1
+   }
+  ],
+  "orders": 0,
+  "refunds": 0,
+  "verified_revenue_usd": 0.0,
+  "qualified_replies": 0
+ },
+ "outreach_test": {
+  "platform": "MaverickTruckClub",
+  "thread": "https://www.mavericktruckclub.com/forum/threads/diminished-value-insurance-claim.83278/",
+  "published": false,
+  "published_url": null,
+  "blocker": "anonymous READ allowed; reply requires a registered account. Page states verbatim: \"You must log in or register to reply here.\"",
+  "status": "PREPARED_NOT_PUBLISHED"
+ },
+ "after": "UNCHANGED - nothing was published, so no movement is expected or claimed.",
+ "unknown": {
+  "outbound_clicks": "UNKNOWN - no click-observation point without a paid backend",
+  "checkout_starts": "UNKNOWN - Gumroad founder dashboard only",
+  "referral_visits_to_guide": "UNKNOWN until a reply is published; observable afterwards via /traffic/popular/referrers"
+ },
+ "no_background_monitoring": "NOTHING RUNS ON A TIMER. Point-in-time reads only. Next scheduled review 2026-10-18."
+}
