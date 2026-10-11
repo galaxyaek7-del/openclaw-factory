@@ -1,0 +1,606 @@
+{
+ "at": "2026-10-11T16:25:29.692862+00:00",
+ "targets": 36,
+ "results": [
+  {
+   "short": "gzbdaz",
+   "name": "Landlord Move-In Inspection Pack",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "ursxh",
+   "name": "Cottage Food Compliance Kit",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "volqjv",
+   "name": "Homebuyer Inspection Action Kit",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "diboaf",
+   "name": "Dental Insurance Verification Kit",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "vwlmeo",
+   "name": "Real Estate Transaction Deadline Kit",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "oerot",
+   "name": "Fleet Maintenance and Damage Documentation Bundle",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "xwacbo",
+   "name": "Salon Commission Pay Kit",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "swkgd",
+   "name": "Restaurant Food Cost Control Kit",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "uyzuu",
+   "name": "EU Green Claims Review Kit",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "brwrta",
+   "name": "EUDR Due Diligence Starter",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "cdfdcy",
+   "name": "Food Truck Permit Navigator",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "fydjid",
+   "name": "Handbook Acknowledgment Tracker",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "mrecoe",
+   "name": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "odqlk",
+   "name": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "uqmqnu",
+   "name": "DSAR Response Kit ($59)",
+   "status": "CORRECTED",
+   "price": "$59",
+   "published": true
+  },
+  {
+   "short": "eiztlg",
+   "name": "Clinic No-Show Reduction Kit",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "qezxe",
+   "name": "PCI SAQ Readiness Kit for Small Merchants",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "uucxer",
+   "name": "Sales Tax Nexus Tracker",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "xouyjy",
+   "name": "Subscription Renewal Compliance Kit",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "iwbcmi",
+   "name": "Newsletter Deliverability & Inbox Placement System",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "tjbly",
+   "name": "Employee Offboarding & Access-Revocation System",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "ykwdfc",
+   "name": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "wsbqr",
+   "name": "B2B Late-Payment Collections Operating System",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "pahxdv",
+   "name": "SaaS Spend & Renewal Audit System for Small Teams",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "behmhy",
+   "name": "Home-Service Quoting & Deposit Protection System",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "xwbbb",
+   "name": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "palmdr",
+   "name": "ADA Demand-Letter Response & Triage Kit",
+   "status": "CORRECTED",
+   "price": "$69",
+   "published": true
+  },
+  {
+   "short": "gfsvu",
+   "name": "EU Packaging EPR Action Kit",
+   "status": "CORRECTED",
+   "price": "$69",
+   "published": true
+  },
+  {
+   "short": "pyzqa",
+   "name": "Vendor Questionnaire Response Kit",
+   "status": "CORRECTED",
+   "price": "$89",
+   "published": true
+  },
+  {
+   "short": "ppsluq",
+   "name": "STR Direct Booking Revenue Kit",
+   "status": "CORRECTED",
+   "price": "$59",
+   "published": true
+  },
+  {
+   "short": "vkqogv",
+   "name": "Trademark DIY Filing Action Kit",
+   "status": "CORRECTED",
+   "price": "$69",
+   "published": true
+  },
+  {
+   "short": "ekhza",
+   "name": "FTC Consumer Review Rule Compliance Kit",
+   "status": "CORRECTED",
+   "price": "$69",
+   "published": true
+  },
+  {
+   "short": "dvfvm",
+   "name": "Restaurant Health Inspection Readiness Kit",
+   "status": "CORRECTED",
+   "price": "$49",
+   "published": true
+  },
+  {
+   "short": "adyvd",
+   "name": "Turo Guest Dispute Toolkit",
+   "status": "CORRECTED",
+   "price": "$29",
+   "published": true
+  },
+  {
+   "short": "fetmu",
+   "name": "GPSR EU Seller Action Kit",
+   "status": "CORRECTED",
+   "price": "$79",
+   "published": true
+  },
+  {
+   "short": "jlxmez",
+   "name": "GCC Contractor Payment Command System (V2 Bundle)",
+   "status": "NO_CHANGE_NEEDED"
+  },
+  {
+   "short": "gzbdaz",
+   "name": "Landlord Move-In Inspection Pack",
+   "status": "CORRECTED",
+   "price": "$49",
+   "published": true,
+   "residual": []
+  },
+  {
+   "short": "ursxh",
+   "name": "Cottage Food Compliance Kit",
+   "status": "CORRECTED",
+   "price": "$49",
+   "published": true,
+   "residual": []
+  },
+  {
+   "short": "volqjv",
+   "name": "Homebuyer Inspection Action Kit",
+   "status": "CORRECTED",
+   "price": "$29",
+   "published": true,
+   "residual": []
+  },
+  {
+   "short": "diboaf",
+   "name": "Dental Insurance Verification Kit",
+   "status": "CORRECTED",
+   "price": "$59",
+   "published": true,
+   "residual": []
+  },
+  {
+   "short": "vwlmeo",
+   "name": "Real Estate Transaction Deadline Kit",
+   "status": "CORRECTED",
+   "price": "$59",
+   "published": true,
+   "residual": []
+  },
+  {
+   "short": "oerot",
+   "name": "Fleet Maintenance and Damage Documentation Bundle",
+   "status": "RESIDUAL",
+   "price": "$49",
+   "published": true,
+   "residual": [
+    "A paper-and-spreadsheet system for independent rental fleets of 2 to 20 v"
+   ]
+  },
+  {
+   "short": "xwacbo",
+   "name": "Salon Commission Pay Kit",
+   "status": "RESIDUAL",
+   "price": "$39",
+   "published": true,
+   "residual": [
+    "ting. Tier logic covers one threshold per period. Spreadsheet has no payroll software export. Educational mater"
+   ]
+  },
+  {
+   "short": "swkgd",
+   "name": "Restaurant Food Cost Control Kit",
+   "status": "RESIDUAL",
+   "price": "$49",
+   "published": true,
+   "residual": [
+    ", catering banquets, or bar and liquor inventory. Spreadsheet has no live supplier price feed. Waste log relies"
+   ]
+  },
+  {
+   "short": "uyzuu",
+   "name": "EU Green Claims Review Kit",
+   "status": "RESIDUAL",
+   "price": "$69",
+   "published": true,
+   "residual": [
+    "guide.md operational manual, workbook.xlsx with 5 sheets (Claim Inventory, Evidence File Log"
+   ]
+  },
+  {
+   "short": "brwrta",
+   "name": "EUDR Due Diligence Starter",
+   "status": "RESIDUAL",
+   "price": "$69",
+   "published": true,
+   "residual": [
+    "guide.md operational manual, workbook.xlsx with 5 sheets (Scope Checker, Supplier Register, "
+   ]
+  },
+  {
+   "short": "cdfdcy",
+   "name": "Food Truck Permit Navigator",
+   "status": "CORRECTED",
+   "price": "$59",
+   "published": true,
+   "residual": []
+  },
+  {
+   "short": "fydjid",
+   "name": "Handbook Acknowledgment Tracker",
+   "status": "RESIDUAL",
+   "price": "$49",
+   "published": true,
+   "residual": [
+    "calendar for small businesses without HR staff. A spreadsheet plus forms system that dates every handbook editi"
+   ]
+  },
+  {
+   "short": "mrecoe",
+   "name": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+   "status": "RESIDUAL",
+   "price": "$59",
+   "published": true,
+   "residual": [
+    "Guide with method and checklists, five-sheet workbook with scoring and tuning formulas, tiered policy t"
+   ]
+  },
+  {
+   "short": "odqlk",
+   "name": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+   "status": "RESIDUAL",
+   "price": "$49",
+   "published": true,
+   "residual": [
+    "Guide with method and checklists, five-sheet workbook with balance and totals formulas, payment receipt"
+   ]
+  },
+  {
+   "short": "eiztlg",
+   "name": "Clinic No-Show Reduction Kit",
+   "status": "RESIDUAL",
+   "price": "$59",
+   "published": true,
+   "residual": [
+    "ker with formulas, and a 90-day rollout plan. The workbook tracks appointments, message performance, waitlis"
+   ]
+  },
+  {
+   "short": "qezxe",
+   "name": "PCI SAQ Readiness Kit for Small Merchants",
+   "status": "RESIDUAL",
+   "price": "$59",
+   "published": true,
+   "residual": [
+    "t', 'Scope-reduction planner inside the guide and workbook', 'Renewal calendar with frequencies and overdue "
+   ]
+  },
+  {
+   "short": "uucxer",
+   "name": "Sales Tax Nexus Tracker",
+   "status": "RESIDUAL",
+   "price": "$79",
+   "published": true,
+   "residual": [
+    ". Includes an operating guide, a four-sheet Excel workbook with rolling-total and aging formulas, and three ",
+    "Operating guide PDF (14 sections); Excel workbook with 4 sheets: State Threshold Register, Monthly "
+   ]
+  },
+  {
+   "short": "xouyjy",
+   "name": "Subscription Renewal Compliance Kit",
+   "status": "RESIDUAL",
+   "price": "$69",
+   "published": true,
+   "residual": [
+    ". Includes an operating guide, a five-sheet Excel workbook with status formulas, and three editable Word tem",
+    "Operating guide PDF (15 sections); Excel workbook with 5 sheets: Disclosure Audit Log, Consent-Flow"
+   ]
+  },
+  {
+   "short": "iwbcmi",
+   "name": "Newsletter Deliverability & Inbox Placement System",
+   "status": "RESIDUAL",
+   "price": "$49",
+   "published": true,
+   "residual": [
+    "run yourself. You get a full guide plus a 4-sheet workbook (authentication tracker with at-risk flags, list-"
+   ]
+  },
+  {
+   "short": "tjbly",
+   "name": "Employee Offboarding & Access-Revocation System",
+   "status": "RESIDUAL",
+   "price": "$49",
+   "published": true,
+   "residual": [
+    "ses that gap. You get a full guide plus a 4-sheet workbook (leaver register, SaaS deprovisioning matrix with"
+   ]
+  },
+  {
+   "short": "ykwdfc",
+   "name": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
+   "status": "RESIDUAL",
+   "price": "$49",
+   "published": true,
+   "residual": [
+    "You get a 28+ page operating guide plus a 4-sheet workbook (vendor master with $600-threshold flags, W-9 sta"
+   ]
+  },
+  {
+   "short": "wsbqr",
+   "name": "B2B Late-Payment Collections Operating System",
+   "status": "RESIDUAL",
+   "price": "$59",
+   "published": true,
+   "residual": [
+    "You get a 28+ page operating guide plus a 4-sheet workbook (AR aging tracker with bucket formulas, dunning s"
+   ]
+  },
+  {
+   "short": "pahxdv",
+   "name": "SaaS Spend & Renewal Audit System for Small Teams",
+   "status": "RESIDUAL",
+   "price": "$49",
+   "published": true,
+   "residual": [
+    "You get a 28+ page operating guide plus a 4-sheet workbook (subscription inventory with utilization and wast"
+   ]
+  },
+  {
+   "short": "behmhy",
+   "name": "Home-Service Quoting & Deposit Protection System",
+   "status": "RESIDUAL",
+   "price": "$49",
+   "published": true,
+   "residual": [
+    " your offer instead of against a cheaper bid. The workbook tracks every quote from visit to decision in a qu"
+   ]
+  },
+  {
+   "short": "xwbbb",
+   "name": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
+   "status": "RESIDUAL",
+   "price": "$49",
+   "published": true,
+   "residual": [
+    "those clocks. You get a full guide plus a 4-sheet workbook (per-stay evidence log, itemized claim builder wi"
+   ]
+  },
+  {
+   "short": "jlxmez",
+   "name": "GCC Contractor Payment Command System (V2 Bundle)",
+   "status": "UNMATCHED"
+  },
+  {
+   "short": "oerot",
+   "name": "Fleet Maintenance and Damage Documentation Bundle",
+   "status": "STILL_PROMISES",
+   "snippet": [
+    "A paper-and-spreadsheet system for independent rental fleets of 2 to 20 vehicles: VIN registe"
+   ]
+  },
+  {
+   "short": "xwacbo",
+   "name": "Salon Commission Pay Kit",
+   "status": "CORRECTED",
+   "price": "$39",
+   "residual": []
+  },
+  {
+   "short": "swkgd",
+   "name": "Restaurant Food Cost Control Kit",
+   "status": "CORRECTED",
+   "price": "$49",
+   "residual": []
+  },
+  {
+   "short": "uyzuu",
+   "name": "EU Green Claims Review Kit",
+   "status": "CORRECTED",
+   "price": "$69",
+   "residual": []
+  },
+  {
+   "short": "brwrta",
+   "name": "EUDR Due Diligence Starter",
+   "status": "CORRECTED",
+   "price": "$69",
+   "residual": []
+  },
+  {
+   "short": "fydjid",
+   "name": "Handbook Acknowledgment Tracker",
+   "status": "CORRECTED",
+   "price": "$49",
+   "residual": []
+  },
+  {
+   "short": "mrecoe",
+   "name": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+   "status": "CORRECTED",
+   "price": "$59",
+   "residual": []
+  },
+  {
+   "short": "odqlk",
+   "name": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+   "status": "CORRECTED",
+   "price": "$49",
+   "residual": []
+  },
+  {
+   "short": "eiztlg",
+   "name": "Clinic No-Show Reduction Kit",
+   "status": "CORRECTED",
+   "price": "$59",
+   "residual": []
+  },
+  {
+   "short": "qezxe",
+   "name": "PCI SAQ Readiness Kit for Small Merchants",
+   "status": "CORRECTED",
+   "price": "$59",
+   "residual": []
+  },
+  {
+   "short": "uucxer",
+   "name": "Sales Tax Nexus Tracker",
+   "status": "CORRECTED",
+   "price": "$79",
+   "residual": []
+  },
+  {
+   "short": "xouyjy",
+   "name": "Subscription Renewal Compliance Kit",
+   "status": "CORRECTED",
+   "price": "$69",
+   "residual": []
+  },
+  {
+   "short": "iwbcmi",
+   "name": "Newsletter Deliverability & Inbox Placement System",
+   "status": "CORRECTED",
+   "price": "$49",
+   "residual": []
+  },
+  {
+   "short": "tjbly",
+   "name": "Employee Offboarding & Access-Revocation System",
+   "status": "CORRECTED",
+   "price": "$49",
+   "residual": []
+  },
+  {
+   "short": "ykwdfc",
+   "name": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
+   "status": "CORRECTED",
+   "price": "$49",
+   "residual": []
+  },
+  {
+   "short": "wsbqr",
+   "name": "B2B Late-Payment Collections Operating System",
+   "status": "CORRECTED",
+   "price": "$59",
+   "residual": []
+  },
+  {
+   "short": "pahxdv",
+   "name": "SaaS Spend & Renewal Audit System for Small Teams",
+   "status": "CORRECTED",
+   "price": "$49",
+   "residual": []
+  },
+  {
+   "short": "behmhy",
+   "name": "Home-Service Quoting & Deposit Protection System",
+   "status": "CORRECTED",
+   "price": "$49",
+   "residual": []
+  },
+  {
+   "short": "xwbbb",
+   "name": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
+   "status": "CORRECTED",
+   "price": "$49",
+   "residual": []
+  },
+  {
+   "short": "jlxmez",
+   "name": "GCC Contractor Payment Command System (V2 Bundle)",
+   "status": "CORRECTED",
+   "price": "$399",
+   "residual": []
+  },
+  {
+   "short": "adyvd",
+   "name": "Turo Guest Dispute Toolkit",
+   "status": "CORRECTED",
+   "price": "$29"
+  },
+  {
+   "short": "fetmu",
+   "name": "GPSR EU Seller Action Kit",
+   "status": "CORRECTED",
+   "price": "$79"
+  }
+ ],
+ "batch2_at": "2026-10-11T16:29:02.552229+00:00",
+ "completed_at": "2026-10-11T16:34:24.503136+00:00"
+}

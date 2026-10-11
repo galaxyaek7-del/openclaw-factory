@@ -1,0 +1,26 @@
+{
+ "read_at_utc": "2026-10-11T16:38:42.477640+00:00",
+ "cycle": "C101",
+ "orders": 0,
+ "refunds": 0,
+ "verified_revenue_usd": 0,
+ "incremental_spend_usd": 0.0,
+ "product_page_visits_14d": 5,
+ "unique_visitors_14d": 2,
+ "customer_site_paths_in_top_paths": 0,
+ "referrers": [
+  [
+   "github.com",
+   1
+  ]
+ ],
+ "outbound_clicks": "UNKNOWN",
+ "checkout_starts": "UNKNOWN",
+ "inquiries": "UNKNOWN",
+ "organic_impressions": "UNKNOWN",
+ "indexed_urls": "UNKNOWN",
+ "gsc_verified": false,
+ "gsc_sitemap_submitted": false,
+ "indexnow_accepted": true,
+ "note": "Pages traffic covers the whole site. All recorded views are github.com repo browsing. Zero customer_site product-page views. No click instrumentation on the storefront, so outbound clicks / checkout starts are UNKNOWN, not zero."
+}
