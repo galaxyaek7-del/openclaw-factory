@@ -487,6 +487,15 @@ def discover_lead_for_opportunity(opportunity, problem_keywords=None, sources=("
         # Never fabricates a query from nothing -- degrades to the
         # opportunity's own real product name, honestly a weaker signal.
         query = (opportunity or {}).get("product_or_service") or (opportunity or {}).get("program_name")
+        if query:
+            # Real-world product_or_service values often carry a
+            # parenthetical detail clause (e.g. "DigitalOcean cloud
+            # infrastructure (droplets, managed DBs, app platform)").
+            # HN/GitHub's search backends return a genuine 0 hits on the
+            # full punctuated string (confirmed live: the bare name alone
+            # returns real hits) -- trimmed here to the lead clause only,
+            # never adding a single word that wasn't already there.
+            query = query.split("(")[0].strip() or query
     if not query:
         return {"ok": False, "reason": "no real query derivable -- opportunity has no usable product_or_service/program_name/_lead_discovery_query"}
 

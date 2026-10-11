@@ -147,18 +147,30 @@ def check_traffic_without_source(attribution_path=None, clicks_path=None):
 
 
 def check_conversion_without_denominator():
-    """Fails if any conversion rate is shown without an evidenced denominator."""
+    """Fails if any conversion rate is shown without an evidenced denominator.
+
+    Walks each % match by its own position (re.finditer), not blob.find(r)
+    -- the previous version re-found only the FIRST occurrence of a given
+    rate string for every match, so a repeated rate (e.g. "70%" appearing
+    twice at different places) always checked the first spot's context even
+    when scoring the second. It also only looked *before* the match for
+    "of " -- a denominator stated as "70% of 186-truck fleet" (the
+    denominator right after "of", not before) false-positived as bare.
+    Both are fixed here: real per-match position, window checked on both
+    sides.
+    """
     try:
         import founder_command_center as fcc
         blob = json.dumps(fcc.build_founder_command_center())
     except Exception as e:
         return _finding("conversion_without_denominator", False, "dashboard unreadable: %s" % e)
     import re
-    rates = re.findall(r"\d+(?:\.\d+)?\s*%", blob)
-    # The only honest % on the dashboard would cite its denominator nearby;
-    # any bare rate without one fails.
-    bare = [r for r in rates if "denominator" not in blob[max(0, blob.find(r) - 200):blob.find(r) + 200].lower()
-            and "of " not in blob[max(0, blob.find(r) - 200):blob.find(r)].lower()]
+    bare = []
+    for m in re.finditer(r"\d+(?:\.\d+)?\s*%", blob):
+        start, end = m.start(), m.end()
+        window = blob[max(0, start - 200):end + 200].lower()
+        if "denominator" not in window and "of " not in window:
+            bare.append(m.group(0))
     if bare:
         return _finding("conversion_without_denominator", False,
                         "bare rate(s) without evidenced denominator: %s" % bare[:3])
