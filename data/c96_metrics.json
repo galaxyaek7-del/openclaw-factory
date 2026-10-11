@@ -1,0 +1,66 @@
+{
+ "measured_at": "2026-10-11T14:41:53.280771+00:00",
+ "funnel": {
+  "1_qualified_external_visits": {
+   "value": 2,
+   "window": "14d",
+   "source": "GitHub Pages traffic API",
+   "caveat": "ALL recorded traffic is repo blob/tree browsing from github.com; customer pages appear in ZERO top paths. No qualified visits yet."
+  },
+  "2_product_page_views": "UNKNOWN - Gumroad exposes no public per-product view API",
+  "3_unique_buyers": "UNKNOWN - no visitor identity exposed anywhere",
+  "4_outbound_clicks": "UNKNOWN - UTM set and destinations resolve, but no click observation point exists without a paid backend",
+  "5_checkout_starts": "UNKNOWN - Gumroad founder dashboard only",
+  "6_qualified_questions": 0,
+  "7_completed_orders": 0,
+  "8_refunds": 0,
+  "9_verified_revenue_usd": 0.0
+ },
+ "lead_product_state": {
+  "name": "Freelancer Payment Protection & Scope-Control Toolkit",
+  "price": "$49",
+  "published": true,
+  "sales_count": 0,
+  "sales_usd_cents": 0.0,
+  "file_bytes": "6.47 KB"
+ },
+ "top_paths": [
+  {
+   "path": "/galaxyaek7-del/openclaw-factory",
+   "title": "Overview",
+   "count": 2,
+   "uniques": 2
+  },
+  {
+   "path": "/galaxyaek7-del/openclaw-factory/blob/main/.claude/settings.local.json",
+   "title": "/blob/main/.claude/settings.local.json",
+   "count": 1,
+   "uniques": 1
+  },
+  {
+   "path": "/galaxyaek7-del/openclaw-factory/blob/main/BACKUP_AND_RESTORE.md",
+   "title": "/blob/main/BACKUP_AND_RESTORE.md",
+   "count": 1,
+   "uniques": 1
+  },
+  {
+   "path": "/galaxyaek7-del/openclaw-factory/tree/main/.claude",
+   "title": "/tree/main/.claude",
+   "count": 1,
+   "uniques": 1
+  }
+ ],
+ "distribution_executed_this_cycle": {
+  "surface": "own server-rendered storefront (reproducible, crawlable, in sitemap)",
+  "page": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/guide-freelancer-scope-creep.html",
+  "utm": "freelancer-scope-1011",
+  "verified_live": true,
+  "why_not_telegraph": "57 Telegraph articles produced 142 total views; channel is saturated for our purposes. The storefront is the only surface we control that is also crawlable and verifiable."
+ },
+ "discoverability_correction": {
+  "c95_claim": "category/tag fix made the product discoverable",
+  "c96_verdict": "UNPROVEN and likely false for this product. Store root is client-side rendered; our lead sits at API position 68 of 76 and is not among the 9 rendered. Claim retracted.",
+  "what_is_verifiable": "our own storefront pages are server-rendered, present in sitemap.xml (63 URLs), and directly checkable."
+ },
+ "no_background_monitoring": "NOTHING RUNS ON A TIMER. Point-in-time reads only."
+}
