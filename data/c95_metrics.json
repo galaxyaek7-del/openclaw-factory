@@ -1,0 +1,34 @@
+{
+ "measured_at": "2026-10-11T13:53:42.675221+00:00",
+ "selected_product": "Freelancer Payment Protection & Scope-Control Toolkit",
+ "price": "$49",
+ "url": "https://aekraft.gumroad.com/l/fwrjot",
+ "buyer_facing_verified": {
+  "status": 200,
+  "is_published": true,
+  "price_cents": 4900,
+  "checkout_open": true
+ },
+ "deliverable_integrity": {
+  "file": "books/freelancer_payment_protection_scope_control_toolkit.pdf",
+  "bytes": 6738,
+  "pages": 3,
+  "tools": 10,
+  "claims_verified_present": "10/10 claim-by-claim check passed"
+ },
+ "baseline": {
+  "orders": 0,
+  "refunds": 0,
+  "revenue_usd": 0.0,
+  "storefront_views_14d": 5,
+  "storefront_uniques_14d": 2,
+  "qualified_inquiries": 0
+ },
+ "unknown_metrics": {
+  "outbound_clicks": "UNKNOWN - no click observation point without paid backend",
+  "checkout_starts": "UNKNOWN - Gumroad founder dashboard only",
+  "discover_impressions": "UNKNOWN - Discover feed is JS-rendered and exposes no public counter",
+  "unique_buyers": "UNKNOWN - no visitor identity exposed anywhere"
+ },
+ "no_background_monitoring": "NOTHING RUNS ON A TIMER. Point-in-time reads only."
+}
