@@ -1,0 +1,25 @@
+{
+ "defined_at": "2026-10-11T12:00:12.691006+00:00",
+ "metric_definitions": {
+  "article_views": "Cumulative counter from api.telegra.ph getViews/getPage under our author token. VERIFIED C89: getPage does NOT increment it; a public page fetch DOES (+1). So the counter is clean human traffic and our own verification never pollutes it.",
+  "unique_visitors": "UNKNOWN. Telegraph exposes no visitor identifier. Never infer from views.",
+  "outbound_clicks": "UNKNOWN. UTM parameters are set and the destination resolves, but with no click-analytics backend there is no observation point. Only attribution would surface at purchase, in Gumroad.",
+  "checkout_starts": "UNKNOWN. No instrumentation exists; Gumroad exposes this in the founder dashboard only, not via API.",
+  "completed_orders": "OBSERVED via Gumroad /v2/sales (authoritative).",
+  "refunds": "OBSERVED via /v2/sales refunded flag."
+ },
+ "corrections_this_cycle": [
+  "The \"own-load pollution ~10 (ESTIMATED)\" figure carried in earlier handoffs is NOT SUPPORTED. C89 instrumentation test proves getPage does not inflate the counter. Reported view totals were already clean."
+ ],
+ "measurement_window": {
+  "dv_offer_experiment_opened": "2026-10-11 (C88)",
+  "dv_evidence_experiment_opened": "2026-10-11T12:00:12.691006+00:00",
+  "scheduled_review": "2026-10-18",
+  "NOTE": "No continuous monitoring exists. Nothing runs on a timer unless started. Metrics are read at explicit cycle boundaries only."
+ },
+ "data_sources": {
+  "telegraph": "https://api.telegra.ph/{getViews,getPage} with author token from gitignored data/telegraph.json",
+  "gumroad_orders": "https://api.gumroad.com/v2/sales with GUMROAD_ACCESS_TOKEN",
+  "storefront": "GitHub Pages (static); no backend, no page-view tracking possible"
+ }
+}

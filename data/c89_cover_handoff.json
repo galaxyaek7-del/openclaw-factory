@@ -1,0 +1,65 @@
+{
+ "generated_at": "2026-10-11T12:00:12.691006+00:00",
+ "instruction": "Gumroad dashboard only. Open product -> Cover -> upload PNG -> Save. The v2 API has NO binary upload endpoint (probed: /upload, /files, /covers all HTTP 404), so this cannot be automated.",
+ "mappings": [
+  {
+   "file": "books/covers/diminished_value_claim_kit_cover_v2.png",
+   "product_name": "Diminished Value Claim Kit",
+   "price": "$59",
+   "url": "https://aekraft.gumroad.com/l/dyjavs",
+   "id": "f542PZ92SUPOjV9F5GJh-Q==",
+   "file_info": {
+    "Size": "9.4 KB",
+    "Length": "3 pages"
+   },
+   "published": true,
+   "covers_now": 0,
+   "checkout_open": true,
+   "image": {
+    "bytes": 188236,
+    "size": "1600x2560",
+    "format": "PNG"
+   }
+  },
+  {
+   "file": "books/covers/gcc_contractor_payment_cover_v2.png",
+   "product_name": "GCC Contractor Payment Command System",
+   "price": "$399",
+   "url": "https://aekraft.gumroad.com/l/uwyfje",
+   "id": "_wJUrEKIuR0Y6cOj9Zqyqg==",
+   "file_info": {
+    "Size": "7 KB",
+    "Length": "3 pages"
+   },
+   "published": true,
+   "covers_now": 0,
+   "checkout_open": true,
+   "image": {
+    "bytes": 176317,
+    "size": "1600x2560",
+    "format": "PNG"
+   },
+   "note": "Cover bullet list CORRECTED in C89: the first draft claimed \"notice-to-pay and cure scripts\" which the listing does not describe. Now matches the verified listing contents exactly."
+  },
+  {
+   "file": "books/covers/verified_b2b_leads_cover_v2.png",
+   "product_name": "Verified B2B Lead Lists (200-lead batch)",
+   "price": "$99",
+   "url": "https://aekraft.gumroad.com/l/drtaj",
+   "id": "AB1xLDjN-l7q7yjcmiRmIw==",
+   "file_info": {
+    "Size": "1.96 KB",
+    "Length": "1 page"
+   },
+   "published": true,
+   "covers_now": 0,
+   "checkout_open": true,
+   "image": {
+    "bytes": 165787,
+    "size": "1600x2560",
+    "format": "PNG"
+   }
+  }
+ ],
+ "status": "READY - files verified locally, products verified live, NOT yet uploaded"
+}
