@@ -1,3 +1,54 @@
+# HANDOFF — Galaxy Forge commercial ops (2026-10-11, post-C87)
+
+## C87 IN ONE LINE
+Focused on ONE wedge (**$59 DTC Returns Abuse Playbook** -> small DTC/ecommerce
+operators), published 3 distinct Nostr actions to that single buyer, and stopped
+adding catalog breadth. Orders 0, revenue $0, spend $0. CI 30/30, `2494f02` pushed.
+
+## CHANNEL REALITY MAP (measured, don't re-derive)
+| Channel | Write | Read | Note |
+|---|---|---|---|
+| **Nostr** | **ACCEPTED** (`["OK",id,true]`) | **BLOCKED** | every REQ shape returns 0 events incl. an unfiltered control |
+| Gumroad listing copy | accepted (verified by re-read) | yes | `published` field is filtered; covers upload not scriptable |
+| Telegraph | accepted | yes (paced!) | unpaced loops = false `PAGE_NOT_FOUND`; ~2 views/page |
+| Storefront (GH Pages) | accepted | yes | CI + Pages deploy ~2-4 min |
+| Reddit | n/a | **403** | blocked; do not attempt to bypass |
+| Stack Exchange | n/a | **400** | no account, no posting surface |
+
+**Only owned channels can publish.** Impressions/replies on Nostr are **UNKNOWN**,
+never "zero" - the read path is blocked to us, so absence of data is not absence
+of audience.
+
+## NEW DEFECT (C87) — FOUNDER ACTION
+**74 of 75 listings have NO cover image.** Buyer-facing `/l/mrecoe` serves
+`og:image=assets.gumroad.com/images/opengraph_image.png` (generic placeholder).
+Only the $155 EU AI Act toolkit has 3 covers. This is a trust/conversion drag on
+the entire catalog and needs a dashboard upload - the same class of blocker as the
+$155 missing PDF.
+
+## STILL BLOCKED ON FOUNDER (dashboard, ~5 min total)
+1. `$155 EU AI Act Toolkit` (`/l/iaiyt`) - attach `books/eu_ai_act_compliance_toolkit.pdf`.
+2. `$1 "API TEST - DO NOT BUY - DELETE ME"` (`/l/dxfwlu`) - unpublish/delete.
+3. **NEW: cover images for the 74 coverless listings** (start with the $59 wedge).
+API cannot set `published`; `covers` accepts writes but no upload path exists.
+
+## C87 EXPERIMENT (window closes 2026-10-18)
+`data/c87_experiment_baseline.json`. 4 channels live: 3 Nostr actions + 1 Telegraph.
+UTMs: `nostr-returns-1011`, `nostr-returns-cost-1011`, `returns-abuse-1011`.
+Success criterion: **>=1 completed order OR >=1 qualified buyer reply**.
+Baseline: orders 0, revenue $0, replies 0.
+Note IDs: `nostr:n1ux8fzz...`, `nostr:n19gl03h...`, `nostr:n17pwx2g...`
+
+## WHAT TO DO NEXT (evidence-led, not a checklist)
+1. Re-poll `/v2/sales` + the 3 note IDs at the next cycle. First non-zero wins.
+2. Do NOT publish more articles - Telegraph is saturated at ~2 views/page
+   (57 articles -> 142 views -> 0 sales). Volume is not the constraint.
+3. The real constraint is audience reach on a channel that allows anonymous
+   posting. Reddit is the obvious candidate and is 403 to us. **Founder action:
+   a Reddit account** is the single highest-leverage unblock.
+
+---
+
 # HANDOFF — Galaxy Forge commercial ops (2026-10-11, post-C86)
 
 ## C86 OUTCOME
