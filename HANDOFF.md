@@ -1,3 +1,79 @@
+# HANDOFF — Galaxy Forge commercial ops (2026-10-11, post-C90)
+
+## C90 — THE MEASUREMENT UNLOCK (biggest change since C85)
+**GitHub Pages traffic analytics now works** using the **existing git
+credential** (`git credential fill`). Free, authorized, no new service, no paid
+dependency. It was simply never used.
+
+```
+GET /repos/galaxyaek7-del/openclaw-factory/traffic/views
+GET .../traffic/popular/referrers
+GET .../traffic/popular/paths
+```
+This converts storefront visits from UNKNOWN to OBSERVABLE. Reusable: read the
+credential, call the endpoint, never print it.
+
+**What it says (14 days): 5 views, 2 uniques. Referrers: github.com only.**
+Top paths are repo `blob/` and `tree/` — i.e. repo browsing, **not** the site.
+**Zero hits on `/customer_site/products.html`.**
+
+### ⇒ THE REAL BOTTLENECK, NOW EVIDENCED
+Catalog, checkout, deliverable files, cover art, OG metadata — all ready.
+**Nothing is arriving.** 0 storefront customer visits in 14 days; DV Telegraph
+articles at 0 views. This is not an offer-quality problem. It is a reach problem,
+and it is finally measured rather than assumed.
+
+## FOUNDER ACTION — 3 COVER UPLOADS (unchanged, still `covers=0` on all 3)
+Open product → **Cover** → upload → **Save**:
+| File | Product | Price | URL |
+|---|---|---|---|
+| `diminished_value_claim_kit_cover_v2.png` | Diminished Value Claim Kit | $59 | `/l/dyjavs` |
+| `gcc_contractor_payment_cover_v2.png` | GCC Contractor Payment Command System | $399 | `/l/uwyfje` |
+| `verified_b2b_leads_cover_v2.png` | Verified B2B Lead Lists | $99 | `/l/drtaj` |
+Also: attach the $155 EU AI Act PDF; unpublish `/l/dxfwlu` ($1 DO-NOT-BUY).
+No API upload path exists (404 on `/upload`, `/files`, `/covers`).
+
+## SHIPPED THIS CYCLE
+- **`customer_site/guide-diminished-value-claim.html`** — the search-side answer
+  to the buyer's actual question. Live, NAIC-sourced, full OG/Twitter, inline
+  `<style>` (no `style.css` exists), linked from the hero card, in the sitemap.
+  `utm_campaign=dv-guide-c90`.
+- **Telegraph**: "The One Document That Decides Most Diminished-Value Claims" —
+  https://telegra.ph/The-One-Document-That-Decides-Most-Diminished-Value-Claims-and-Why-a-Formula-Cannot-10-11
+  `dv-comparables-1011`. **Deliberately funnels to our own measurable domain,
+  not straight to checkout** — so a click is at least observable.
+- Storefront OG preview **verified live**: all 11 tags present, image resolves
+  200 `image/png`, 50006 bytes. No third-party preview service used.
+
+## METRIC STATUS (do not re-derive)
+| Metric | Status | Source |
+|---|---|---|
+| Telegraph article views | **OBSERVED** | `getViews` — C89 proved `getPage` does NOT inflate |
+| Storefront visits + uniques | **OBSERVED (now)** | Pages traffic API — currently 5 / 2, all repo |
+| Outbound clicks | **UNKNOWN** | no click-observation point without paid backend |
+| Unique visitors (Telegraph) | **UNKNOWN** | no identifier exposed |
+| Checkout starts | **UNKNOWN** | Gumroad dashboard only |
+| Orders / refunds | **OBSERVED** | `/v2/sales` — 0 / 0 |
+
+**Measurement cadence:** `scripts/poll_distribution_metrics.py` + the Pages
+traffic endpoints. **NOTHING RUNS ON A TIMER.** These are point-in-time reads.
+Next scheduled review 2026-10-18.
+
+## IF OCTOBER 18 IS STILL ZERO — stage diagnosis, no assumptions
+1. **Reach** — storefront visits (Pages) + Telegraph views. Both ~0 ⇒ the offer
+   is fine and nobody arrives. Change channel, not product.
+2. **Qualified visits** — the guide page path in `traffic/popular/paths`. If
+   `guide-diminished-value-claim.html` shows views, organic/search is working.
+3. **Clicks** — still UNKNOWN; only surfaces at purchase via UTM attribution.
+4. **Checkout starts** — needs founder dashboard.
+5. **Orders** — `/v2/sales`.
+
+The one intervention that changes stage 1 is a founder identity on the platform
+where this buyer demonstrably asks (Reddit: 403/login-wall to us). Everything
+else is now built and verified.
+
+---
+
 # HANDOFF — Galaxy Forge commercial ops (2026-10-11, post-C89)
 
 ## C89 IN ONE LINE
