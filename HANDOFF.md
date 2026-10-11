@@ -1,3 +1,83 @@
+# HANDOFF — Galaxy Forge commercial ops (2026-10-11, post-C89)
+
+## C89 IN ONE LINE
+Cover handoff prepared and verified (NOT uploaded), tracking validated with a
+correction to earlier reports, storefront `og:image` defect found and fixed, and
+one new experiment published against the buyer's real trigger moment.
+Orders 0 | revenue $0 | spend $0 | CI 30/30 | `89f5367` pushed.
+
+## 1. FOUNDER ACTION — THE COVER UPLOAD (3 products, ~5 min)
+Machine-checked mapping in `data/c89_cover_handoff.json`. For each: open the
+product in Gumroad -> **Cover** -> upload the PNG -> **Save**.
+| File | Exact product name | Price | URL |
+|---|---|---|---|
+| `books/covers/diminished_value_claim_kit_cover_v2.png` | Diminished Value Claim Kit | $59 | `/l/dyjavs` |
+| `books/covers/gcc_contractor_payment_cover_v2.png` | GCC Contractor Payment Command System | $399 | `/l/uwyfje` |
+| `books/covers/verified_b2b_leads_cover_v2.png` | Verified B2B Lead Lists (200-lead batch) | $99 | `/l/drtaj` |
+All three verified live: real deliverable, open checkout, `covers=0` **right now**.
+Not API-possible — `/upload`, `/files`, `/covers` all return 404.
+
+Also founder-only: attach the $155 EU AI Act PDF; unpublish `/l/dxfwlu`
+(the $1 "DO NOT BUY - DELETE ME").
+
+## 2. MEASUREMENT — NOW VALIDATED, WITH A CORRECTION
+**The Telegraph view counter is clean human traffic.** Controlled test:
+- 4x `getPage` on a known page -> views stayed **8**
+- 1x **public** fetch of the same URL -> views **8 → 9**
+
+So our own verification never inflates the count. **This corrects the earlier
+"own-load pollution ~10 (ESTIMATED)" note carried in prior handoffs — it was
+wrong.** Prior view totals were already clean.
+
+The C88 zero is therefore a **TRUE ZERO**, not broken instrumentation: page live,
+counter proven functional, no visitors yet.
+
+Definitions + data sources: `data/c89_measurement_definitions.json`.
+- unique visitors = **UNKNOWN** (no identifier exposed)
+- outbound clicks = **UNKNOWN** (UTM set, destination resolves, no observation point)
+- checkout starts = **UNKNOWN** (no instrumentation)
+- completed orders = **OBSERVED** via `/v2/sales`
+
+**No continuous monitoring exists.** Nothing runs on a timer unless started.
+Metrics are read only at explicit cycle boundaries. Review date 2026-10-18.
+
+## 3. FIXED THIS CYCLE
+Storefront had `og:title`/`og:description` but **no `og:image`** — every social
+or forum share rendered as a blank card. Added a 1200x630 share card
+(`customer_site/assets/storefront-share.png`, verified 200 + valid PNG live) plus
+full OG/Twitter meta. Sitemap already lists products.html (61 URLs); robots.txt
+allows all.
+
+Also corrected a cover **overclaim**: the GCC cover's first draft promised
+"notice-to-pay and cure scripts", which the listing does not describe. Fixed to
+match verified contents before handoff.
+
+## 4. C89 EXPERIMENT
+https://telegra.ph/Your-Insurer-Asked-for-Supporting-Documents-on-a-Diminished-Value-Claim-Here-Is-What-to-Upload-Free-10-11
+`utm_campaign=dv-evidence-1011` -> `/l/dyjavs`
+**Hypothesis:** the purchase trigger is not "should I file" — people file anyway.
+It is the moment the carrier says *"upload supporting documents"* and the buyer
+does not know what those are. That exact question was observed live
+(`r/Insurance/1uix89e`, 2026-06-29). Answered it with the document order carriers
+respond to, grounded in the NAIC's own Journal of Insurance Regulation.
+
+## 5. IF OCTOBER 18 IS STILL ZERO — diagnose by stage, do not assume Reddit
+Funnel stages to check, in order:
+1. **Reach** — Telegraph views. If ~0, the channel is not the bottleneck for
+   this buyer; the buyer does not read Telegraph.
+2. **Qualified visits** — storefront has **no** backend and cannot report visits.
+   UNKNOWN unless something is added. This is the real blind spot.
+3. **Outbound clicks** — UNKNOWN without a click backend.
+4. **Checkout starts** — UNKNOWN without instrumentation.
+5. **Orders** — `/v2/sales`.
+
+**The honest read:** with 0 views and no visit instrumentation, the binding
+constraint is *observable reach to a consumer audience*. Reddit is where this
+buyer demonstrably asks (403/login wall to us). The other unblock is cover
+images, which affects anyone who *does* arrive.
+
+---
+
 # HANDOFF — Galaxy Forge commercial ops (2026-10-11, post-C88)
 
 ## C88 OUTCOME
