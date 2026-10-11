@@ -1,3 +1,47 @@
+# HANDOFF — Galaxy Forge commercial ops (2026-10-11, post-C86)
+
+## C86 OUTCOME
+- **Buyer protection done for both hazards** (neither fully resolvable via API — see below).
+- **Storefront repaired**: 53/75 -> **74/74 offers linked**, each new card with
+  `utm_source=storefront&utm_medium=catalog&utm_campaign=<shortlink>`. All 71 gumroad
+  links return 200. Live-verified: footer reads "74 products", 21 UTM links.
+- **CI 30/30 green**, Pages deploy success, commit `363125a` pushed, 0/0 sync.
+- Sales 0 | revenue $0 | spend $0.
+
+## C86 CRITICAL CORRECTION TO C85
+**C85's claim "the Gumroad token is read-only" was WRONG.** The token DOES write —
+`PUT description` verifiably persists (verified by re-read: 2933 -> 3254 chars).
+Only the `published` field is filtered and silently ignores writes.
+
+Root cause of my own error: a verification used `desc.endswith(MARK)` against a
+trailing-newline string, so a **successful** write was misread as a failed one.
+That bug then left a `[GF-SELF-TEST-PROBE-1011]` marker live on a buyer-facing
+Gumroad page. **It has been removed and verified gone.**
+Lesson: verify writes by re-reading, and never trust a single fragile string check.
+
+## STILL BLOCKED ON FOUNDER (2 dashboard actions, ~3 min each)
+1. **$155 EU AI Act Toolkit** (`/l/iaiyt`, id `pzTmMb4v8cih3nbWTj5TeA==`) —
+   attach `books/eu_ai_act_compliance_toolkit.pdf` (139,121 bytes, 31pp, SHA256
+   `c22671a6...`). Verified good: valid PDF, matches every listing claim.
+   Until then it is **still purchasable with no auto-download** — mitigated by a
+   description banner (email for delivery + full refund) and a storefront warning,
+   but the actual file needs a dashboard upload.
+2. **$1 "GALAXY FORGE API TEST — DO NOT BUY — DELETE ME"** (`/l/dxfwlu`, id
+   `20tVUV_UF9NOUf6aJ-GDRA==`) — still **live and publicly purchasable**. Cannot
+   unpublish via API. Description now says it is not a real product + refund
+   instruction. Founder should unpublish/delete it.
+
+## MEASUREMENT (reconciled C86)
+- **142 gross views / 56 pages** (paced `getPage`, jittered ~1.4s).
+- C85's "137/53" and "127/57" were **not comparable** — 53 = local JSON records,
+  57 = claimed articles, and gross was mixed with net. True gross over the 56
+  known-live pages is 142. Own-fetch pollution ~10 (ESTIMATED).
+- Unique visitors / outbound clicks / checkout starts = **UNKNOWN** (no backend).
+- **Telegraph throttles**: unpaced loops return `PAGE_NOT_FOUND` for every page
+  including verified-live ones. Always pace requests. Pages are never deleted.
+
+---
+
 # HANDOFF — Galaxy Forge commercial ops (2026-10-11, post-C85)
 
 ## RESOLVED THIS CYCLE (C85)

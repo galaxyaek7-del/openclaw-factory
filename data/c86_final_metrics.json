@@ -1,0 +1,18 @@
+{
+ "measured_at": "2026-10-11T10:58:30.768798+00:00",
+ "orders": 0,
+ "refunds": 0,
+ "verified_revenue_usd": 0.0,
+ "spend_usd": 0,
+ "telegraph_gross_views_56_pages": 142,
+ "telegraph_unique_visitors": "UNKNOWN - Telegraph exposes only a cumulative counter",
+ "outbound_clicks": "UNKNOWN - UTM set but no click-level analytics without a paid backend",
+ "checkout_starts": "UNKNOWN - no instrumentation; Gumroad dashboard is founder-only",
+ "qualified_inquiries": 0,
+ "experiment": {
+  "slug": "Serial-Returners-Cost-Real-Margin-A-Tiered-Policy-With-Graduated-Steps-Ends-the-Argument-Free-10-11",
+  "gross_views": 1,
+  "criterion": ">=1 external view above own-fetch baseline",
+  "status": "pending - too early to call"
+ }
+}
