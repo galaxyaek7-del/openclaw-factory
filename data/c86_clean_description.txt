@@ -1,0 +1,30 @@
+**The EU AI Act's transparency rules are already enforced. The high-risk deadline just moved to December 2027 — which means you have real runway, if you start now.**
+
+As of August 2, 2026, EU AI Act transparency obligations (chatbot disclosure, deepfake labeling) are actively enforced. The bigger obligations — risk classification, technical documentation, conformity assessment for high-risk systems — were deferred by the 2026 Digital Omnibus on AI to December 2, 2027. That's real, genuine runway. It's also the exact reason to start now instead of month fourteen of sixteen: penalties for getting classification wrong once the deadline hits reach €35 million or 7% of global annual turnover, and most compliance consultancies charge five figures for a scoping engagement most SMEs can't afford or don't have time for.
+
+This 31-page toolkit gives you the practical, plain-English path through it — built for compliance officers, DPOs, and founders who need to move now, not after a two-week consulting sprint.
+
+**What's inside:**
+• Risk classification decision-tree (prohibited / high-risk / limited-risk / minimal-risk)
+• Technical documentation requirements mapped to Annex IV
+• Step-by-step conformity assessment procedure
+• Human oversight design requirements
+• Data governance and quality management obligations
+• Transparency and disclosure requirements for limited-risk systems
+• Post-market monitoring and serious-incident reporting procedure
+• General-purpose AI model obligations
+• Full audit-readiness checklist mapped to Annex III high-risk categories
+• Governance/policy, technical-documentation, and risk-assessment template outlines
+• Roles &amp; responsibilities guide (AI officer, DPO coordination)
+• Vendor/third-party AI due-diligence checklist
+• A 90-day implementation roadmap built specifically for SME resourcing
+• Common compliance mistakes — and how classification errors expose you to the largest penalties
+• How to prepare for a notified body engagement
+
+**Who this is for:** compliance officers, DPOs, and founders at SMEs that have deployed or are deploying an AI system in the EU and need a real starting point — not a $15,000 consulting retainer.
+
+**Why this toolkit and not another PDF:** the December 2, 2027 deadline above is real and current — most guides you'll find (including some paid ones) still cite the original August 2026 date, which was pushed back by the 2026 Digital Omnibus on AI. This one is built on the current timeline, with the actual source cited in the toolkit itself, not just asserted.
+
+**Important note:** this toolkit is a practical implementation guide, not legal advice. It's built to get you 80% of the way to audit-ready and to make your eventual legal/consulting spend far more targeted and efficient — the same positioning every real competitor in this category uses, because a template kit legitimately isn't a law firm.
+
+Instant digital download. 31 pages, PDF.

@@ -1,0 +1,50 @@
+{
+ "measured_at": "2026-10-11T10:43:47.244225+00:00",
+ "source": "api.telegra.ph getPage (author token), paced requests",
+ "pages_counted": 56,
+ "gross_views": 142,
+ "zero_view_pages": 0,
+ "note": "Net/unique visitors NOT measurable - Telegraph exposes only a cumulative view count.",
+ "top10": [
+  {
+   "views": 8,
+   "slug": "Your-Inspection-Report-Is-Long-Your-Contingency-Deadline-Is-Short-Here-Is-the-Math-First-Way-Through-It-10-09"
+  },
+  {
+   "views": 7,
+   "slug": "Credit-or-Repair-Walking-One-Inspection-Finding-Through-the-Dollar-Math-10-09"
+  },
+  {
+   "views": 6,
+   "slug": "How-to-Judge-a-B2B-Lead-List-Before-You-Pay-5-Checks-10-01"
+  },
+  {
+   "views": 6,
+   "slug": "GPSR-EU-Seller-Action-Kit-Non-EU-Seller-Compliance-Guide-2026-10-02"
+  },
+  {
+   "views": 6,
+   "slug": "FTC-Consumer-Review-Rule-Compliance-Guide-for-Small-Businesses-2026-10-02"
+  },
+  {
+   "views": 5,
+   "slug": "What-a-Done-For-You-200-Lead-Batch-Should-Contain-and-How-Ordering-Works-10-09"
+  },
+  {
+   "views": 5,
+   "slug": "Finished-Manuscript-5-Interior-Checks-Before-You-Upload-to-KDP-10-01"
+  },
+  {
+   "views": 5,
+   "slug": "Etsy-Shop-Suspended-The-Fix-First-Appeal-Method-Free-10-10"
+  },
+  {
+   "views": 5,
+   "slug": "Desk-Pain-at-3pm-What-to-Check-Before-Buying-a-Standing-Desk-Converter-10-01"
+  },
+  {
+   "views": 5,
+   "slug": "Amazon-Removed-Your-Listing-Under-GPSR-A-48-Hour-Recovery-Plan-for-Non-EU-Sellers-10-09"
+  }
+ ]
+}
