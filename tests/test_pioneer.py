@@ -24,7 +24,7 @@ from golden_hunter import pioneer
 
 class TestDiscoverCandidates(unittest.TestCase):
     def test_real_titles_become_candidates_ranked_by_signal_then_points(self):
-        with patch.object(pioneer, "_fetch_top_story_ids", return_value=[1, 2, 3]), \
+        with patch.object(pioneer, "_fetch_story_ids_with_status", return_value=([1, 2, 3], "OK")), \
              patch.object(pioneer, "_fetch_item", side_effect=[
                  {"title": "Some AI news article", "score": 900, "url": "http://a"},
                  {"title": "Show HN: I built a real tool", "score": 50, "url": "http://b"},
@@ -38,7 +38,7 @@ class TestDiscoverCandidates(unittest.TestCase):
         self.assertEqual(candidates[0]["source"], "hacker_news_top_stories")
 
     def test_limit_is_respected(self):
-        with patch.object(pioneer, "_fetch_top_story_ids", return_value=[1, 2, 3, 4, 5]), \
+        with patch.object(pioneer, "_fetch_story_ids_with_status", return_value=([1, 2, 3, 4, 5], "OK")), \
              patch.object(pioneer, "_fetch_item", side_effect=[
                  {"title": f"story {i}", "score": i, "url": f"http://{i}"} for i in range(5)
              ]):
@@ -46,7 +46,7 @@ class TestDiscoverCandidates(unittest.TestCase):
         self.assertEqual(len(candidates), 2)
 
     def test_items_with_no_title_are_skipped_never_fabricated(self):
-        with patch.object(pioneer, "_fetch_top_story_ids", return_value=[1, 2]), \
+        with patch.object(pioneer, "_fetch_story_ids_with_status", return_value=([1, 2], "OK")), \
              patch.object(pioneer, "_fetch_item", side_effect=[
                  {"score": 10},  # no title -- e.g. a real HN poll/job item shape
                  {"title": "a real story", "score": 5},
@@ -56,7 +56,7 @@ class TestDiscoverCandidates(unittest.TestCase):
         self.assertEqual(candidates[0]["niche"], "a real story")
 
     def test_a_missing_item_never_crashes(self):
-        with patch.object(pioneer, "_fetch_top_story_ids", return_value=[1, 2]), \
+        with patch.object(pioneer, "_fetch_story_ids_with_status", return_value=([1, 2], "OK")), \
              patch.object(pioneer, "_fetch_item", side_effect=[None, {"title": "ok", "score": 1}]):
             candidates = pioneer.discover_candidates(limit=10, scan_pool=2)
         self.assertEqual(len(candidates), 1)
@@ -96,7 +96,7 @@ class TestDiscoverHnFeed(unittest.TestCase):
     signal matches ranked first, empty on failure — never fabricated."""
 
     def test_ask_hn_feed_ranks_signal_matches_first(self):
-        with patch.object(pioneer, "_fetch_story_ids", return_value=[1, 2]), \
+        with patch.object(pioneer, "_fetch_story_ids_with_status", return_value=([1, 2], "OK")), \
              patch.object(pioneer, "_fetch_item", side_effect=[
                  {"title": "Ask HN: How do you handle contract renewal tracking?", "score": 40, "url": "http://a"},
                  {"title": "Some general tech discussion", "score": 900, "url": "http://b"},
@@ -197,10 +197,17 @@ class TestRealHackerNewsIntegration(unittest.TestCase):
     """Deliberately real: one live, free, keyless call to HN's Firebase
     API, proving Pioneer is genuinely connected to a real, current data
     source — not just a mocked shape. Read-only, zero cost, zero side
-    effects on anything this factory owns."""
+    effects on anything this factory owns.
+
+    Cycle 77 section 2: the test suite blocks real network access by
+    default (tests/network_guard.py) -- this is the one documented
+    exception, opted into explicitly at the call site via
+    allow_network(), not via a global flag."""
 
     def test_a_real_call_returns_real_current_candidates(self):
-        candidates = pioneer.discover_candidates(limit=3, scan_pool=10)
+        from network_guard import allow_network
+        with allow_network():
+            candidates = pioneer.discover_candidates(limit=3, scan_pool=10)
         self.assertGreater(len(candidates), 0, "HN's real API should return at least one real current story")
         for c in candidates:
             self.assertTrue(c["niche"])
@@ -223,12 +230,12 @@ class TestEveryCandidateCarriesSourceUrlAndFetchedAt(unittest.TestCase):
             self.assertIn("raw", c, "raw fetched data must be preserved for audit")
 
     def test_discover_candidates_shape(self):
-        with patch.object(pioneer, "_fetch_top_story_ids", return_value=[1]), \
+        with patch.object(pioneer, "_fetch_story_ids_with_status", return_value=([1], "OK")), \
              patch.object(pioneer, "_fetch_item", return_value={"title": "t", "score": 1, "url": "http://x"}):
             self._assert_candidate_shape(pioneer.discover_candidates(limit=1, scan_pool=1))
 
     def test_discover_hn_feed_shape(self):
-        with patch.object(pioneer, "_fetch_story_ids", return_value=[1]), \
+        with patch.object(pioneer, "_fetch_story_ids_with_status", return_value=([1], "OK")), \
              patch.object(pioneer, "_fetch_item", return_value={"title": "t", "score": 1, "url": "http://x"}):
             self._assert_candidate_shape(pioneer._discover_hn_feed(
                 pioneer.HN_ASK_STORIES_URL, "hacker_news_ask_hn", limit=1, scan_pool=1))

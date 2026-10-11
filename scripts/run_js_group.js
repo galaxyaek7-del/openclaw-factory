@@ -34,7 +34,12 @@ if (files.length === 0) {
 // failure (a crashing wrapper annotates, and it did not). Suites here boot
 // real servers and real Python subprocesses, so peak memory scales with
 // fan-out. One file at a time is slower and actually completes.
-const args = ['--test', '--test-concurrency=1', '--test-reporter=tap', ...files];
+// Cycle 77 section 2: block real network access for every JS test group
+// by default. --require preloads scripts/network_guard.js before any
+// test file runs; it only touches net.Socket#connect (the real
+// chokepoint under fetch/http/https) and only for non-loopback hosts.
+const args = ['--require', './scripts/network_guard.js',
+              '--test', '--test-concurrency=1', '--test-reporter=tap', ...files];
 
 let res;
 try {

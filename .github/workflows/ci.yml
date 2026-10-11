@@ -84,6 +84,14 @@ jobs:
           fi
           echo "confirmed: .env is not tracked"
 
+      # Cycle 77 section 3: a committed .env is not the only way a secret
+      # reaches git history -- a token pasted into a script is a separate
+      # real risk the check above doesn't cover. Free, zero-dependency,
+      # stdlib-only (scripts/scan_for_secrets.py) -- no third-party
+      # scanner action, no paid service, per this factory's standing $0 rule.
+      - name: Scan tracked files for secret-shaped strings
+        run: python scripts/scan_for_secrets.py
+
       # ── Python tests ──
       - name: Python tests (a)
         run: python scripts/run_python_group.py --pattern "test_a*.py"
@@ -130,6 +138,32 @@ jobs:
           if missing or dupes:
               sys.exit(1)
           print("every test file is covered by exactly one group")
+          PY
+
+      # Cycle 77 section 3: the file-coverage check above only proves every
+      # test FILE still runs somewhere -- it would not catch someone
+      # quietly deleting half the test METHODS inside a file that still
+      # exists and is still scheduled. This counts real, individually
+      # collected test cases (unittest discovery over the real checked-out
+      # tree -- CI's checkout has none of this factory's real local
+      # uncommitted-draft files, so this number is exact, not inflated) and
+      # fails the build if it ever drops below the real baseline measured
+      # the day this check was added (2026-10-11, commit 866f9e8: 4369).
+      - name: Python test count has not silently shrunk
+        run: |
+          python - <<'PY'
+          import sys, unittest
+          FLOOR = 4369
+          def count(suite):
+              n = 0
+              for t in suite:
+                  n += count(t) if isinstance(t, unittest.TestSuite) else 1
+              return n
+          total = count(unittest.TestLoader().discover(start_dir="tests", pattern="test_*.py"))
+          print("real collected Python test count: %d (floor: %d)" % (total, FLOOR))
+          if total < FLOOR:
+              print("::error::Python test count dropped from %d to %d -- a test was deleted/skipped, not just moved" % (FLOOR, total))
+              sys.exit(1)
           PY
 
       - name: JavaScript unit tests (metrics, dashboard data, n8n notify)
@@ -233,6 +267,32 @@ jobs:
           if bad_helpers or missing or dupes:
               sys.exit(1)
           print("every JS test file runs in exactly one place")
+          PY
+
+      # Cycle 77 section 3: JS companion to the Python test-count floor
+      # above. A real `node --test` re-run just to count would duplicate
+      # the cost the batch/shard steps already paid, so this uses a cheap,
+      # static `test(` call count instead -- less precise than a runtime
+      # count (loop-generated test names, etc. can shift it), but it is
+      # computed the same way every time, which is what a regression
+      # floor actually needs: a consistent methodology, not an exact
+      # absolute number. Floor measured 2026-10-11 (commit 866f9e8): 521.
+      - name: JS test call count has not silently shrunk
+        run: |
+          python - <<'PY'
+          import subprocess, re, sys
+          FLOOR = 521
+          files = subprocess.run(["git", "ls-files", "tests/test_*.js"],
+                                  capture_output=True, text=True).stdout.split()
+          total = 0
+          pat = re.compile(r"^\s*(await )?test\(")
+          for f in files:
+              with open(f, encoding="utf-8") as fh:
+                  total += sum(1 for line in fh if pat.match(line))
+          print("static JS test( call count: %d (floor: %d)" % (total, FLOOR))
+          if total < FLOOR:
+              print("::error::JS test( call count dropped from %d to %d -- a test was deleted/skipped, not just moved" % (FLOOR, total))
+              sys.exit(1)
           PY
 
       - name: Factory Loop tests

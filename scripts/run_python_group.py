@@ -41,6 +41,14 @@ def main():
     if REPO_ROOT not in sys.path:
         sys.path.insert(0, REPO_ROOT)
 
+    # Cycle 77 section 2: block real network access for every Python test
+    # group by default -- this is the real CI entrypoint (unittest-based,
+    # not pytest), so this is the one place that actually enforces it for
+    # CI; tests/conftest.py mirrors this for ad-hoc `pytest` runs.
+    sys.path.insert(0, os.path.join(REPO_ROOT, "tests"))
+    import network_guard
+    network_guard.block()
+
     if args.targets:
         loader = unittest.TestLoader()
         suite = loader.loadTestsFromNames(args.targets)
