@@ -6575,15 +6575,20 @@ app.get('/api/dashboard', async (req, res) => {
 });
 
 // ── STATIC ──
-// index.html is saved as UTF-16 LE with BOM (see CLAUDE.md's "index.html
-// encoding" note) — deliberate, not something to convert. express.static's
-// default index-file serving and a plain res.sendFile() both label it
-// Content-Type: text/html; charset=utf-8 regardless of the file's real
-// bytes, so every browser misrenders the whole page (every ASCII byte gets
-// a null byte between it from the UTF-16 encoding, read as UTF-8 garbage/
-// blank). sendIndexHtml() sets the correct charset explicitly instead.
+// index.html was historically stored as UTF-16 LE with BOM (see CLAUDE.md's
+// "index.html encoding" note) while express.static and res.sendFile() label
+// it Content-Type: text/html; charset=utf-8 — so the declared charset
+// contradicted the real bytes and every browser misrendered the page.
+// sendIndexHtml() set charset=utf-16le explicitly to compensate.
+//
+// C100 repaired the file itself: it is now genuine UTF-8 without a BOM, and
+// declares <meta charset="utf-8"> as the first element in <head> (byte 55,
+// inside the HTML limit of 1024). The compensating override is removed so
+// the header matches the bytes again. GitHub Pages serves this same file as
+// text/html; charset=utf-8, so header and body are now consistent on both
+// the local server and the public site.
 function sendIndexHtml(res) {
-  res.set('Content-Type', 'text/html; charset=utf-16le');
+  res.set('Content-Type', 'text/html; charset=utf-8');
   res.sendFile(path.join(__dirname, 'index.html'));
 }
 

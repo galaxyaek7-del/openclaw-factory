@@ -64,10 +64,20 @@ def main():
 
     with open(TARGET, "rb") as fh:
         raw = fh.read()
-    try:
+    # C100: index.html was repaired from UTF-16 LE to genuine UTF-8 (no BOM),
+    # so the file now decodes as utf-8 and GitHub Pages serves it as
+    # charset=utf-8. The old UTF-16 path is kept only as a legacy fallback
+    # and is preserved on write, so this script can never silently convert
+    # the file back to an encoding that contradicts its charset declaration.
+    if raw[:2] in (b"\xff\xfe", b"\xfe\xff"):
         text = raw.decode("utf-16")
-    except UnicodeDecodeError:
-        return fail("index.html is not UTF-16 -- manual review required")
+        encode_as = "utf-16"
+    else:
+        try:
+            text = raw.decode("utf-8")
+        except UnicodeDecodeError:
+            return fail("index.html is neither UTF-16 nor UTF-8 -- manual review required")
+        encode_as = "utf-8"
     if "google-site-verification" in text:
         return fail("a verification tag already exists -- manual review required")
     m = re.search(r"<head[^>]*>", text, re.I)
@@ -76,7 +86,7 @@ def main():
     tag = '<meta name="google-site-verification" content="%s" />' % token
     out = text.replace(m.group(0), m.group(0) + "\n    " + tag, 1)
     with open(TARGET, "wb") as fh:
-        fh.write(out.encode("utf-16"))
+        fh.write(out.encode(encode_as))
 
     try:
         run_git(["add", "index.html"])
