@@ -1,0 +1,36 @@
+{
+ "experiment_id": "C88-DV-001",
+ "hypothesis": "A DV claimant cannot tell whether the carrier's offer is fair because they have no independent figure. An article that hands them the NAIC 10-20% band, the Georgia-only-17c fact, and the \"show me your calculation\" sentence resolves that, and converts only the people who then want the full toolkit.",
+ "offer": "Diminished Value Claim Kit ($59) /l/dyjavs",
+ "target_buyer": "US consumer whose car was repaired after a not-at-fault accident",
+ "window_opened": "2026-10-11T11:37:51.372313+00:00",
+ "window_closes": "2026-10-18T00:00:00Z",
+ "actions": [
+  {
+   "id": "C88-TG",
+   "channel": "telegraph",
+   "campaign": "dv-offer-1011",
+   "url": "https://telegra.ph/Repaired-Your-Car-Before-You-Accept-the-Carriers-Diminished-Value-Offer-Work-Out-What-to-Ask-For-Free-10-11",
+   "grounding": "NAIC Journal of Insurance Regulation 2023 (content.naic.org) - 10-20% band, 17c Georgia-only, mileage double-counting"
+  },
+  {
+   "id": "C88-SF",
+   "channel": "storefront",
+   "campaign": "dv-hero-1011",
+   "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html"
+  }
+ ],
+ "baseline": {
+  "orders": 0,
+  "verified_revenue_usd": 0.0,
+  "refunds": 0,
+  "telecraft_article_views_gross": 0,
+  "note": "gross views include our own verification fetch",
+  "unique_visitors": "UNKNOWN - Telegraph exposes only a cumulative counter",
+  "outbound_clicks": "UNKNOWN - UTM set, no click backend",
+  "checkout_starts": "UNKNOWN - no instrumentation",
+  "qualified_replies": 0
+ },
+ "success_criterion": ">=1 completed order OR >=1 qualified buyer inquiry within window",
+ "spend_usd": 0
+}
