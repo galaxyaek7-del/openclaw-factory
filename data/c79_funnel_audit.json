@@ -1,0 +1,90 @@
+{
+  "generated_at": "2026-10-11T21:18:33.877115+00:00",
+  "cycle": "79",
+  "source": "existing logs only - no new data created, nothing re-run",
+  "baseline_verification": {
+    "commit_claimed_in_brief": "b86fb32",
+    "commit_claimed_status": "DOES NOT EXIST in this repository",
+    "actual_commits": [
+      "b06fb32 test(ci): global network block, test-count floor, free secret scan",
+      "4393454 fix(ci): JS test-count floor was measured off a dirty working tree"
+    ],
+    "ci_run_cited": 38172417982,
+    "ci_run_verified": true,
+    "ci_run_head_sha": "43934543ddbd4061ea5ac54612fd3adea4275bd7",
+    "ci_run_url": "https://github.com/galaxyaek7-del/openclaw-factory/actions/runs/38172417982",
+    "ci_run_conclusion": "success",
+    "ci_jobs": 33,
+    "ci_jobs_all_success": true,
+    "ci_steps_total": 434,
+    "ci_steps_all_success": true
+  },
+  "test_count_difference_explained": {
+    "method": "measured on a clean `git archive HEAD` extraction, never the working tree",
+    "python_clean_head": 4390,
+    "python_floor": 4369,
+    "python_margin": 21,
+    "js_clean_head": 553,
+    "js_floor": 517,
+    "js_margin": 36,
+    "python_working_tree": 5921,
+    "js_working_tree": 703,
+    "inflation_python": 1531,
+    "inflation_js": 150,
+    "why": "The working tree contains ~168 untracked draft test files from an abandoned 2026-09-21 branch plus 6 uncommitted edits to tracked test files. CI performs a clean checkout and never sees any of them. Cycle 78 set the JS floor to 517 from a clean archive, which is correct; measuring the dirty tree would have produced 703 and a floor that silently tolerates deleting 186 real tests. No test was lowered and no assertion was weakened."
+  },
+  "pioneer_audit": {
+    "tests_run_via_real_ci_entrypoint": "scripts/run_python_group.py test_pioneer -> 24/24 OK under the network guard",
+    "hardcoded_candidate_lists_in_pioneer": 0,
+    "seed_data_in_output": false,
+    "runtime_proof": "With the network blocked and a stubbed HTTP layer, discover_candidates_with_status returned real-shaped candidates each carrying source_url, a real ISO fetched_at, and the unmodified raw payload. discover_github_recent_repos_with_status returned OK only when given GitHub's real {items:[...]} dict shape, and returned 'UNKNOWN: non-dict response shape' otherwise - it never fabricated.",
+    "every_candidate_has_source_url_and_fetched_at": true
+  },
+  "commercial_funnel_from_existing_logs": {
+    "S1_niches_evaluated": 335,
+    "S2_blocked_by_proof_of_payment_ADR121": 282,
+    "S2_remaining": 53,
+    "S3_blocked_opportunity_score_below_tier_floor": 50,
+    "S3_blocked_price_below_ladder_profit_floor": 12,
+    "S4_accepted": 3,
+    "accepted_share_pct": 0.9,
+    "exact_blocking_conditions_verbatim": [
+      "rejected: UNPROVEN - no real payment evidence recorded (Proof of Payment doctrine, ADR-121)",
+      "Opportunity Score: < 65 required (tier-adjusted)",
+      "rejected: price $X below $X profit floor (ladder=kdp_books)"
+    ],
+    "gates_unchanged": "ADR-121, Gate-2 and profit_oracle floors were NOT modified or relaxed.",
+    "anomaly_disclosed": "8 DEFERRED niches carry opportunity_score >= 65 (max 90.5). They were deferred with 'insufficient real evidence' + a customer-pain gap, not by score. Reported rather than hidden."
+  },
+  "output_reality": {
+    "generation_records": 5221,
+    "test_or_draft_shaped": 5192,
+    "test_shaped_pct": 99.4,
+    "non_test_shaped": 29,
+    "distinct_non_test_topics": 13,
+    "flagged_published_true": 56,
+    "reality_json_published_books": [],
+    "sales_ledger_records": 133,
+    "sales_ledger_event_types": {
+      "publish_attempt": 133
+    },
+    "sales_ledger_records_with_any_amount": 0,
+    "sales_ledger_records_with_any_transaction_id": 0,
+    "gumroad_sale_records": 0,
+    "interpretation": "All 5,221 generation records are PDF builds on disk; only 29 (0.6%) are not test/draft-shaped, across 13 topics. All 133 sales-ledger records are publish_attempt events, not sales: zero amounts, zero transaction ids. config/reality.json published_books is empty. Nothing is published anywhere."
+  },
+  "verified_money": {
+    "orders": 0,
+    "refunds": 0,
+    "verified_revenue_usd": 0.0,
+    "incremental_spend_usd": 0.0,
+    "source": "Gumroad /v2/sales via channels/gumroad_publisher.py get_sales()",
+    "read_at_utc": "2026-10-11T21:18:33.877115+00:00"
+  },
+  "still_unknown": [
+    "Google Search Console impressions/clicks - no authorized access exists",
+    "Whether any page is indexed by any search engine",
+    "Outbound clicks and checkout starts - no observation point on the storefront",
+    "Whether the 3 ACCEPTED niches were ever intended as sellable digital products (no artifact exists on the selling channel)"
+  ]
+}
