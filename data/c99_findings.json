@@ -1,0 +1,95 @@
+{
+  "cycle": "C99",
+  "generated_at": "2026-10-11T15:31:32.592259+00:00",
+  "discovery": {
+    "sitemap_url": "https://galaxyaek7-del.github.io/openclaw-factory/sitemap.xml",
+    "sitemap_http_status": 200,
+    "sitemap_url_count": 59,
+    "sitemap_urls_all_http_200": "59/59 verified by direct HTTP HEAD, 2026-10-11",
+    "robots_txt_http_status": 200,
+    "robots_txt_points_to_sitemap": true,
+    "indexnow_submission": {
+      "key_file_live": true,
+      "endpoints": [
+        "https://api.indexnow.org/indexnow -> HTTP 202",
+        "https://www.bing.com/indexnow -> HTTP 202"
+      ],
+      "urls_submitted": 59,
+      "at": "2026-10-11T15:26:52Z",
+      "receipt_file": "data/indexnow_submit.json",
+      "meaning": "ACCEPTED as a crawl request to participating search engines. NOT proof of crawl, NOT proof of indexing, NOT proof of impressions, NOT proof of any visit."
+    },
+    "google_search_console": {
+      "property": "https://galaxyaek7-del.github.io/openclaw-factory/",
+      "property_type": "URL prefix",
+      "sitemap_submitted_in_gsc": "UNKNOWN - no GSC API credential exists in this environment",
+      "gsc_credentials_present": false,
+      "search_impressions": "UNKNOWN - requires GSC access",
+      "human_step_required": true
+    }
+  },
+  "crawl_indexing_status": {
+    "url_discovery": "NOT OBSERVED - no search engine has surfaced any galaxyaek7-del.github.io page",
+    "crawl_observed": "NOT OBSERVED - no log or tool available proves a crawler fetched a page",
+    "indexed": "NOT OBSERVED / treated as UNKNOWN",
+    "independent_check_2026-10-11": "WebSearch for the flagship product name and for the domain returned ZERO Galaxy Forge results; results were unrelated third-party pages. DuckDuckGo HTML endpoint returned HTTP 202 anomaly/blocked and was discarded as unusable rather than counted as evidence.",
+    "important": "IndexNow 202 and sitemap 200 do NOT imply indexing."
+  },
+  "product_checkout_verification": {
+    "flagship": "Diminished Value Claim Kit, $59, https://aekraft.gumroad.com/l/dyjavs",
+    "checkout_http_status": 200,
+    "published": true,
+    "deliverable_attached": "books/diminished_value_claim_kit.pdf - 9,742 bytes, 3 pages, text extracted and read",
+    "guide_page": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/guide-diminished-value-claim.html -> 200, links to the same checkout",
+    "catalog_audit": "76 products total. 75 have a real deliverable attached. The single product without one (owtmpe, $150) is NOT linked on the storefront. All 74 checkout links published on products.html resolve HTTP 200 and all 74 have a deliverable. No broken purchase links.",
+    "limitation": "Technical availability only. HTTP 200 and an open checkout prove nothing about buyer demand. Also NOT fixed: the companion .xlsx workbook (books/diminished_value_claim_pack.xlsx) exists locally but is not attached to the Gumroad listing."
+  },
+  "defects_found_this_cycle": [
+    {
+      "id": "DEFECT-1",
+      "severity": "high",
+      "file": "index.html (repo root)",
+      "issue": "File is stored UTF-16 LE with BOM but declares <meta charset=\"UTF-8\"> and GitHub Pages serves it as text/html; charset=utf-8. A parser trusting the declared charset sees NUL-interleaved garbage. Verified: a UTF-8 decode of the live bytes does NOT match the meta tag, while a UTF-16 decode does.",
+      "impact": "This is the ONLY page carrying the google-site-verification meta tag, so Search Console ownership verification is unreliable on this page.",
+      "secondary": "The <meta charset> declaration sits at byte offset 1546, past the 1024-byte limit the HTML spec sets.",
+      "status": "NOT FIXED - requires an encoding decision on the founder dashboard; not changed autonomously."
+    },
+    {
+      "id": "DEFECT-2",
+      "severity": "informational",
+      "file": "index.html",
+      "issue": "google-site-verification meta tag is present on the root index.html only; it is absent from all 59 customer-facing pages. Harmless for a URL-prefix property (the tag must appear on the property root), but recorded so it is not mistaken for a distributed tag.",
+      "status": "No action required."
+    }
+  ],
+  "security_disclosure": {
+    "issue": "During Gumroad API pagination debugging, a requests InvalidURL exception printed a URL that contained the access_token, to the operator terminal only. It was not written to any repo file, log, or committed artifact. Recorded here rather than silently dropped. Recommended action: rotate GUMROAD_ACCESS_TOKEN if the operator considers terminal history sensitive."
+  },
+  "funnel": {
+    "read_at_utc": "2026-10-11T15:31:07.292694+00:00",
+    "source": "C99 live measurement",
+    "orders": 0,
+    "refunds": 0,
+    "verified_revenue_usd": 0,
+    "spend_this_cycle_usd": 0,
+    "product_page_visits_14d": 5,
+    "unique_visitors_14d": 2,
+    "customer_site_paths_in_top_paths": 0,
+    "referrers": [
+      [
+        "github.com",
+        1
+      ]
+    ],
+    "outbound_clicks": "UNKNOWN",
+    "checkout_starts": "UNKNOWN",
+    "inquiries": "UNKNOWN",
+    "search_impressions": "UNKNOWN",
+    "indexed_urls": "UNKNOWN",
+    "note": "GitHub Pages traffic measures the whole Pages site. Every recorded view is github.com repo browsing (blob/tree); zero customer_site product-page views. Checkout starts and outbound clicks have no observation point."
+  },
+  "orders": 0,
+  "refunds": 0,
+  "verified_revenue_usd": 0.0,
+  "incremental_spend_usd": 0.0
+}

@@ -151,5 +151,69 @@ class TestGetProduct(unittest.TestCase):
         self.assertEqual(product["short_url"], "https://aekraft.gumroad.com/l/iaiyt")
 
 
+class TestNonInteractiveAuth(unittest.TestCase):
+    """Regression guard (C99).
+
+    A Git Credential Manager dialog appeared during a commercial-status check
+    on 2026-10-11. Root cause: an ad-hoc shell command ran
+    `git credential fill` against host=api.gumroad.com. Git Credential Manager
+    does not know that host, so it fell back to an INTERACTIVE prompt and
+    blocked a non-interactive session until timeout.
+
+    Gumroad has no git remote. Asking git for its credentials is always wrong
+    and can only ever escalate to a human dialog. These tests fail if any code
+    path in this module regresses into shelling out to git (or any other
+    subprocess) for authentication, and pin the two properties that keep the
+    verification path non-interactive and secret-safe."""
+
+    def test_module_never_imports_or_shells_out_to_subprocess(self):
+        # A `git credential fill` regression would necessarily appear here.
+        self.assertNotIn("subprocess", dir(gp))
+        source = (_FACTORY_ROOT / "channels" / "gumroad_publisher.py").read_text(
+            encoding="utf-8", errors="ignore"
+        )
+        for forbidden in ("git credential", "git-credential", "credential fill",
+                          "git credential-manager", "GCM", "getpass", "input("):
+            self.assertNotIn(
+                forbidden, source,
+                f"channels/gumroad_publisher.py must never reference {forbidden!r} — "
+                "it opens an interactive credential dialog (C99)",
+            )
+
+    def test_api_base_is_official_gumroad_host(self):
+        self.assertTrue(
+            gp.GUMROAD_API_BASE.startswith("https://api.gumroad.com/"),
+            f"GUMROAD_API_BASE must be the official Gumroad API host, got "
+            f"{gp.GUMROAD_API_BASE!r}",
+        )
+
+    def test_get_sales_authenticates_directly_not_via_credential_helper(self):
+        """Auth travels as an explicit credential on the request itself.
+        Gumroad v2's documented scheme is the `access_token` parameter (which
+        this module uses consistently); an Authorization header is equally
+        valid. Either way the token is PRESENT on the call, so it can never be
+        silently delegated to an OS credential helper that could prompt."""
+        ok = _fake_response(status_code=200, json_data={"success": True, "sales": []})
+        with patch.object(gp.requests, "request", return_value=ok) as mock_req:
+            gp.get_sales("fake-token")
+        _, kwargs = mock_req.call_args
+        carried = kwargs.get("params", {}).get("access_token") or \
+            kwargs.get("data", {}).get("access_token") or \
+            kwargs.get("headers", {}).get("Authorization")
+        self.assertEqual(carried, "fake-token")
+
+    def test_token_never_appears_in_error_output(self):
+        """A failed call must never echo the access token back to stdout/logs,
+        including the requests exception text (which can embed the URL)."""
+        secret = "super-secret-token-value"
+        gp._LAST_LOADED_TOKEN = secret
+        try:
+            err = gp._safe_err(Exception(f"GET https://api.gumroad.com/v2/sales?access_token={secret} failed"))
+            self.assertNotIn(secret, err)
+            self.assertIn("REDACTED", err)
+        finally:
+            gp._LAST_LOADED_TOKEN = ""
+
+
 if __name__ == "__main__":
     unittest.main()

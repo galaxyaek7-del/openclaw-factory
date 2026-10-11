@@ -1,0 +1,23 @@
+{
+ "read_at_utc": "2026-10-11T15:31:07.292694+00:00",
+ "source": "C99 live measurement",
+ "orders": 0,
+ "refunds": 0,
+ "verified_revenue_usd": 0,
+ "spend_this_cycle_usd": 0,
+ "product_page_visits_14d": 5,
+ "unique_visitors_14d": 2,
+ "customer_site_paths_in_top_paths": 0,
+ "referrers": [
+  [
+   "github.com",
+   1
+  ]
+ ],
+ "outbound_clicks": "UNKNOWN",
+ "checkout_starts": "UNKNOWN",
+ "inquiries": "UNKNOWN",
+ "search_impressions": "UNKNOWN",
+ "indexed_urls": "UNKNOWN",
+ "note": "GitHub Pages traffic measures the whole Pages site. Every recorded view is github.com repo browsing (blob/tree); zero customer_site product-page views. Checkout starts and outbound clicks have no observation point."
+}
