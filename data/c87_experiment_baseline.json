@@ -1,0 +1,54 @@
+{
+ "experiment_id": "C87-RETURNS-001",
+ "window_opened": "2026-10-11T11:19:19.778254+00:00",
+ "window_closes": "2026-10-18T00:00:00Z",
+ "offer": "DTC Returns Abuse Playbook ($59)",
+ "offer_url": "https://aekraft.gumroad.com/l/mrecoe",
+ "target_buyer": "Small DTC / ecommerce operators with manual returns handling",
+ "channels": [
+  {
+   "id": "C87-A1",
+   "channel": "nostr",
+   "type": "useful_no_link",
+   "campaign": null,
+   "relays_ok": "1/4 (dup accepted on 2)",
+   "note_id": "nostr:n1ux8fzzqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqfw96zexjyxds2e7thnzynr6yuvjl0lyfuc9lyknnsd7cu499xmpq"
+  },
+  {
+   "id": "C87-A2",
+   "channel": "nostr",
+   "type": "offer_link",
+   "campaign": "nostr-returns-1011",
+   "relays_ok": "4/4",
+   "note_id": "nostr:n19gl03hqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqxpf7sgm04dwwxxzfe2ttp7lcs6l0spw29vly2czxqzcapgydh4qq"
+  },
+  {
+   "id": "C87-A3",
+   "channel": "nostr",
+   "type": "calculator",
+   "campaign": "nostr-returns-cost-1011",
+   "relays_ok": "3/4",
+   "note_id": "nostr:n17pwx2gqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqz6w3vu5ekk2eul0f993j437euu9rrt8x6h5my4l92mlznz30we8q"
+  },
+  {
+   "id": "C86-TG",
+   "channel": "telegraph",
+   "type": "longform_article",
+   "campaign": "returns-abuse-1011",
+   "url": "https://telegra.ph/Serial-Returners-Cost-Real-Margin-A-Tiered-Policy-With-Graduated-Steps-Ends-the-Argument-Free-10-11"
+  }
+ ],
+ "baseline_at_open": {
+  "orders": 0,
+  "verified_revenue_usd": 0.0,
+  "refunds": 0,
+  "telegraph_views_article": 1,
+  "telegraph_views_note": "UNKNOWN - relay read access returns 0 events for us, incl. control",
+  "nostr_impressions": "UNKNOWN - relays expose no public impression counts",
+  "outbound_clicks": "UNKNOWN - UTM set, no click analytics without paid backend",
+  "checkout_starts": "UNKNOWN - no instrumentation",
+  "qualified_replies": 0
+ },
+ "success_criterion": ">=1 completed order OR >=1 qualified buyer reply within the window.",
+ "spend_usd": 0
+}

@@ -1,0 +1,47 @@
+[
+ {
+  "name": "C87-A1",
+  "campaign": null,
+  "event_id": "4b8ba164d2219b0567cbbcc4498f44e325f7fc89e60bf25a73837d8e54a536c2",
+  "pubkey": "52516c0300bc4127c0be79d2ff84883a503fc3b367ad644eed32b1c2a35b1a05",
+  "accepted_by": 1,
+  "acks": {
+   "relay.damus.io": "FAIL:RuntimeError",
+   "relay.primal.net": "[\"OK\",\"4b8ba164d2219b0567cbbcc4498f44e325f7fc89e60bf25a73837d8e54a536c2\",true,\"\"]",
+   "nos.lol": "FAIL:TimeoutError",
+   "nostr-pub.wellorder.net": "[\"OK\",\"4b8ba164d2219b0567cbbcc4498f44e325f7fc89e60bf25a73837d8e54a536c2\",false,\"blocked: spam not pe"
+  },
+  "content": "If your returns are eating margin, the fix is almost never a harsher policy sentence. It's the absence of a documented decision path.\n\nA workable sequence, roughly in order:\n1. Count returns per account over a rolling 90-180 day window, with order value.\n2. One-off returns get handled normally. Tiers keyed to behaviour, not to who the customer is - identity-based tiers turn every decision into an argument.\n3. Damage claims get a photo requirement stated at the point of return. That single step converts the most common disputed judgement call into a documented fact.\n4. Escalate in visible steps: warn, document, then restrict. Restricting a first-time buyer over one honest return is the most expensive mistake available - it converts a one-off cost into a public review.\n5. Log every decision, then move the thresholds monthly off your own data.\n\nThe part most stores skip is step 4's warning. Policy that jumps straight to refusal generates exactly the chargebacks it was meant to prevent.",
+  "at": "2026-10-11T11:11:35.111261+00:00"
+ },
+ {
+  "name": "C87-A2",
+  "campaign": "nostr-returns-1011",
+  "event_id": "3053e8236fab5ce31849ca96b0fbf886bef805ca2b3e45604600b1d0a08dbd40",
+  "pubkey": "52516c0300bc4127c0be79d2ff84883a503fc3b367ad644eed32b1c2a35b1a05",
+  "accepted_by": 4,
+  "acks": {
+   "relay.damus.io": "[\"OK\",\"3053e8236fab5ce31849ca96b0fbf886bef805ca2b3e45604600b1d0a08dbd40\",true,\"\"]",
+   "relay.primal.net": "[\"OK\",\"3053e8236fab5ce31849ca96b0fbf886bef805ca2b3e45604600b1d0a08dbd40\",true,\"\"]",
+   "nos.lol": "[\"OK\",\"3053e8236fab5ce31849ca96b0fbf886bef805ca2b3e45604600b1d0a08dbd40\",true,\"\"]",
+   "nostr-pub.wellorder.net": "[\"OK\",\"3053e8236fab5ce31849ca96b0fbf886bef805ca2b3e45604600b1d0a08dbd40\",true,\"\"]"
+  },
+  "content": "Put the tiered returns system in writing once, so the decision stops being a judgment call in the moment.\n\nWe built a $59 playbook that lays out the whole path: the tiered policy template, a case log with scoring formulas, the photo-requirement notice for damage claims, a denial letter with an appeal form, and a monthly tuning sheet that moves thresholds against your own logged outcomes.\n\n0 sales so far, no reviews, no guaranteed outcomes - stating that plainly since it's the only shop here with nothing to hide.\n\nhttps://aekraft.gumroad.com/l/mrecoe?utm_source=nostr&utm_medium=post&utm_campaign=nostr-returns-1011",
+  "at": "2026-10-11T11:11:49.653043+00:00"
+ },
+ {
+  "name": "C87-A3",
+  "campaign": "nostr-returns-cost-1011",
+  "event_id": "169d167299b5959e7de929632ac7d9e70a31ace6d5e9b257e556fe298a2f764e",
+  "pubkey": "52516c0300bc4127c0be79d2ff84883a503fc3b367ad644eed32b1c2a35b1a05",
+  "accepted_by": 3,
+  "acks": {
+   "relay.damus.io": "[\"OK\",\"169d167299b5959e7de929632ac7d9e70a31ace6d5e9b257e556fe298a2f764e\",true,\"\"]",
+   "relay.primal.net": "[\"OK\",\"169d167299b5959e7de929632ac7d9e70a31ace6d5e9b257e556fe298a2f764e\",true,\"\"]",
+   "nos.lol": "[\"OK\",\"169d167299b5959e7de929632ac7d9e70a31ace6d5e9b257e556fe298a2f764e\",true,\"\"]",
+   "nostr-pub.wellorder.net": "[\"OK\",\"169d167299b5959e7de929632ac7d9e70a31ace6d5e9b257e556fe298a2f764e\",false,\"blocked: spam not pe"
+  },
+  "content": "Quick returns-margin arithmetic you can run against your own numbers.\n\nMonthly return cost = (orders x return rate x avg order value x loss per return) + return shipping paid by you + handling time cost + chargeback write-offs.\n\nExample, 2,000 orders/mo at 8% return rate, $60 AOV, $18 net loss per return:\n  160 returns x 60 x 18 = $2,880 product loss\n  + return shipping say $7 each = $1,120\n  + handling at 8 min each at loaded $22/hr = ~$390\n  = roughly $4,400/month, ~$53k/year, before a single chargeback.\n\nNow run the same numbers assuming your 20 highest-frequency returners are handled with a documented photo rule and a warning step. If that removes a third of the losses, the policy pays for itself several times over.\n\nThe arithmetic is in the free playbook if you want the actual forms:\nhttps://aekraft.gumroad.com/l/mrecoe?utm_source=nostr&utm_medium=post&utm_campaign=nostr-returns-cost-1011",
+  "at": "2026-10-11T11:11:55.591804+00:00"
+ }
+]
