@@ -1,32 +1,70 @@
-# HANDOFF — Galaxy Forge commercial ops (2026-10-11, context compaction point)
+# HANDOFF — Galaxy Forge commercial ops (2026-10-11, post-C85)
 
-## Done (verified, on origin/main)
-- 50 Gumroad listings live/honest/priced/tagged; storefront + guides + lead forms (3, E2E-proven) live on Pages.
-- Trust fixes: freelancer $39-bundle-mismatch -> $19; B2B terms reconciled; titles cleaned.
-- Kit v2 bundles built (Etsy + Freelancer, READY-TO-ATTACH, founder dashboard).
-- Distribution live: 10 Nostr posts (0 replies, HALTED on evidence), 9 Telegraph pages metered (~120 views unattributed),
-  SEO guides indexed-NO (GSC gated), 4 pending-review drafts (human identity).
-- Infra: server (express 5.3.0) + loop + n8n (2.25.7, rescued after failed upgrade) all alive; deps renewed
-  (reportlab 5.0.1, pypdf 6.20.0); dotenv major + pdfkit held with reasons.
-- First-Buyer-Free rule ACTIVE (policy file + storefront banner + 2 Nostr free posts, 0 claims).
-- Revenue $0 (live APIs), spend $0. Queue: data/gf33_acquisition_queue.jsonl (180+ lines, valid JSON).
-- Mission record: data/gf54_mission_record.json. Founder asks: reports/FOUNDER_BATCH.md (6 steps).
+## RESOLVED THIS CYCLE (C85)
+- **Telegraph auth: RECOVERED.** Token was never missing. It is NOT `TELEGRAPH_TOKEN`
+  and NOT in `.env`/env scope. It lives in **gitignored `data/telegraph.json`**
+  (`access_token`, 60 chars). `getAccountInfo` returns ok=true.
+  The earlier "BLOCKED_AUTH" belief was a wrong-variable-name lookup.
+  Correct call shape = **JSON body** (`Content-Type: application/json`).
+  Form-encoded POSTs fail with `CONTENT_FORMAT_INVALID` — that was my own probe bug,
+  not a service fault.
+- **Network: healthy.** DNS/TLS/HTTP verified to api.telegra.ph, api.gumroad.com,
+  api.github.com. The reported "Unable to connect" did NOT reproduce here; every
+  endpoint answered (gumroad returned a clean 401 when unauthenticated = reachable).
 
-## Blocked (all founder-side)
-- Bundle attach, Reddit identity, GSC click, SMTP credential/decision, formsubmit activation click, Paddle onboarding.
+## NEW DEFECT — FOUNDER ACTION REQUIRED (not fixable via API)
+- `EU AI Act Compliance Toolkit` **$155** is PUBLISHED with `file_info: {}` —
+  a buyer can pay $155 and download nothing. Deliverable exists locally:
+  `books/eu_ai_act_compliance_toolkit.pdf` (139,121 bytes).
+- Attempted `PUT published=false` (form **and** JSON). Both returned
+  `success: true` but a re-read shows `published=True` — **Gumroad silently
+  ignores the field via API.** It is the only no-file product of 75.
+- Fix: founder attaches the PDF in the Gumroad dashboard (product id
+  `pzTmMb4v8cih3nbWTj5TeA==`, url `https://aekraft.gumroad.com/l/iaiyt`).
+  Until then it stays a live liability.
 
-## Useful commands (no secrets)
-- Health: curl localhost:3000/health | python -c json parse
-- Sales: python Temp/opencode/gumcheck.py (Gumroad /v2/sales)
-- Telegraph views: per-file scripts Temp/opencode/tgviews*.py (token OUTSIDE repo, Temp only)
-- Gumroad admin: Temp/opencode scripts use channels.gumroad_arm (update/get; never delete)
-- Verify push ONLY via: git log origin/main --oneline -1 (never output text)
-- Workers: server PID~6004-era, loop PID 13104-era, n8n main+runner (Get-Process node)
+## PUBLISHED THIS CYCLE (all 3 fetched + content/CTA verified)
+| campaign | offer | URL |
+|---|---|---|
+| eudr-1011 | $69 EUDR Due Diligence Starter | https://telegra.ph/EUDR-Deadline-Passed-Coffee-Cocoa-and-Wood-Shipments-Need-Different-Paperwork-Free-10-11 |
+| section8-1011 | $59 Section 8 Notice Validity System (England) | https://telegra.ph/Section-8-Notice-Served-by-Email-Validity-Turns-on-Three-Things-Free-10-11 |
+| leasacam-1011 | $59 Commercial Lease CAM & Operating-Expense Audit Kit | https://telegra.ph/Commercial-Lease-CAM-Charges-Look-Wrong-Audit-Them-Before-You-Pay-or-Dispute-Free-10-11 |
 
-## Standing rules (from mandates)
-- No fake buyers/reviews/sales; no spam/impersonation/scraping; $0 spend.
-- No new broadcast without new variable + observable counter (halt gates hold until signal).
-- No test-submit to lead forms (founder noise + fake leads); synthetic tests to LOCAL endpoint only, labeled.
-- No touching live n8n workflows (ADR-045 precedent: founder-authorized procedure only).
-- Never kill healthy workers for supervision; engage supervisor only on natural restart.
-- Never create accounts; never bypass auth; tokens never committed.
+Each CTA carries `utm_source=telegraph&utm_medium=article&utm_campaign=<campaign>`.
+Records: `data/telegraph_<campaign>.json`, `data/distro_1011_published.json`.
+
+## LEFTOVER / HONEST CAVEATS
+- Capability probe page **could not be deleted** (Telegraph `deletePage` ->
+  `UNKNOWN_METHOD`). Still live, no offer inside:
+  `https://telegra.ph/GF-Publishing-Capability-Probe-Temporary-10-11`.
+  Founder can remove it manually. Do not claim it was cleaned up.
+- Storefront `products.html` says "53 products"; Gumroad API has **75**.
+  Count is stale (cosmetic, real).
+- API pagination uses **`next_page_url` (relative)** — `?page=N` silently returns
+  page 1 only. Always prefix `https://api.gumroad.com`.
+
+## REAL STATE (live API, 2026-10-11)
+- Products 75 | published 74 | no-file 1 (above)
+- **Sales 0 | revenue $0 | spend $0** (`/v2/sales` empty, all `sales_count`=0)
+- Telegraph: 53 pre-existing pages, **137 gross views**, ~10 own-loads
+  (ESTIMATED) -> **~127 net external, ~2.4/page**. No page exceeds 8 views.
+- Storefront live and public. Site visits: last recorded real view 2026-10-08.
+
+## BIGGEST BLOCKER (measured, not assumed)
+Distribution volume is NOT the bottleneck. 57 articles x ~127 net views with
+**zero** sales means the funnel has never produced a buyer. Each new article
+adds ~2 views. The gap is a reachable audience, not more articles.
+Best free lever remains founder-side: attach the $155 file, and post the
+First-Buyer-Free offer where real people already are (Nostr relay replies have
+been checked repeatedly = 0; Reddit/GSC still founder-gated).
+
+## Useful commands (no secrets printed)
+- Sales: `python %TEMP%/opencode/gumcheck.py`
+- Full product walk (paginates correctly): `sales_all_1011.py`
+- Telegraph read: token from `data/telegraph.json`, JSON body, `getPage`/`getViews`
+
+## Standing rules (unchanged)
+- No fake buyers/reviews/sales; no spam; no scraping; $0 spend.
+- Never print/export the Telegraph token; it stays in gitignored `data/telegraph.json`.
+- No test-submits to lead forms. Never kill healthy workers.
+- No new broadcast without a new variable + an observable counter.
