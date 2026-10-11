@@ -1,3 +1,60 @@
+# HANDOFF — Galaxy Forge commercial ops (2026-10-11, post-C88)
+
+## C88 OUTCOME
+- **Content loop stopped.** No new Telegraph/Nostr volume beyond ONE
+  hypothesis-driven article. No new products.
+- **Hero offer verified end-to-end:** $59 Diminished Value Claim Kit.
+- **New professional covers built and ready** (upload is the only blocker).
+- **Reddit = hard boundary.** Not bypassed. Buyer questions found anyway via
+  public web search.
+- Orders 0 | revenue $0 | spend $0. CI 30/30. `cf2da83` + `1346b9e` pushed.
+
+## THE ONE FOUNDER ACTION THAT MATTERS MOST
+**Upload 3 cover images in the Gumroad dashboard.** Everything else is ready:
+| File | Product | URL |
+|---|---|---|
+| `books/covers/diminished_value_claim_kit_cover_v2.png` | Diminished Value $59 | `/l/dyjavs` |
+| `books/covers/gcc_contractor_payment_cover_v2.png` | GCC Contractor $399 | `/l/uwyfje` |
+| `books/covers/verified_b2b_leads_cover_v2.png` | B2B Lead Lists $99 | `/l/drtaj` |
+
+Steps: open the product -> Cover -> upload the PNG -> Save. That is all.
+**Why:** 74 of 75 listings currently serve Gumroad's generic placeholder
+(`assets.gumroad.com/images/opengraph_image.png`). This is the single largest
+remaining conversion drag and it is NOT API-fixable — probed, all 404.
+
+## ALSO STILL FOUNDER-ONLY
+- `$155 EU AI Act Toolkit` (`/l/iaiyt`) — attach the PDF (mitigated, still live).
+- `$1 "API TEST - DO NOT BUY - DELETE ME"` (`/l/dxfwlu`) — unpublish/delete.
+- A Reddit account. Reddit returns 403 on `www` and serves a **login wall** on
+  `old.reddit.com` (HTTP 200 but no data). This is where the target buyer for
+  the hero offer demonstrably asks their question.
+
+## C88 EXPERIMENT (window closes 2026-10-18)
+`data/c88_experiment_baseline.json`, id `C88-DV-001`.
+- Hypothesis: a DV claimant cannot judge the carrier's offer without their own figure.
+- Telegraph article (grounded in NAIC's own 2023 Journal of Insurance Regulation):
+  https://telegra.ph/Repaired-Your-Car-Before-You-Accept-the-Carriers-Diminished-Value-Offer-Work-Out-What-to-Ask-For-Free-10-11
+- Storefront hero card, `utm_campaign=dv-hero-1011` (live, verified).
+- Baseline at open: orders 0, revenue $0, article views **0**.
+- Success = >=1 completed order or >=1 qualified inquiry.
+
+## LIVE BUYER QUESTIONS FOUND (for the founder's Reddit account)
+All asking "what number is fair / how do I push back":
+- r/Insurance `1vyb4s0` — "How does this process work and what can I expect?"
+- r/InsuranceClaims `1ukopa3` — "Progressive offered $350 — is that fair?"
+- r/InsuranceClaims `1v3sw30` — 17c gave $732, counter at $1465, "any advice?"
+- r/Insurance `1vonv4c` — "Is it worth proceeding?" (minor damage, <$3,000)
+
+## HARD FACTS TO CARRY FORWARD
+- Gumroad API: `description`/`name`/`price` persist (verify by re-read).
+  `published` is silently filtered. **No binary upload endpoint exists.**
+- Telegraph: pace requests (~1.4s) or you get false `PAGE_NOT_FOUND`.
+- Nostr: writes accepted (`["OK",id,true]`), reads return 0 for us even on an
+  unfiltered control — impressions/replies are UNKNOWN, never zero.
+- Reddit: 403 / login wall. Do not attempt to circumvent.
+
+---
+
 # HANDOFF — Galaxy Forge commercial ops (2026-10-11, post-C87)
 
 ## C87 IN ONE LINE
