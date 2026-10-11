@@ -1,0 +1,15 @@
+{
+ "status": "sent",
+ "event_id": "e60dd5684c0ff8348686bcbf9ff2a17d2a73e6b9aa90643cd28b09a74cc81039",
+ "content_hash": "414ad5425c0d3eb5",
+ "pubkey": "52516c0300bc4127c0be79d2ff84883a503fc3b367ad644eed32b1c2a35b1a05",
+ "acks": {
+  "relay.damus.io": "[\"OK\",\"e60dd5684c0ff8348686bcbf9ff2a17d2a73e6b9aa90643cd28b09a74cc81039\",true,\"\"]",
+  "relay.primal.net": "[\"OK\",\"e60dd5684c0ff8348686bcbf9ff2a17d2a73e6b9aa90643cd28b09a74cc81039\",true,\"\"]",
+  "nos.lol": "[\"OK\",\"e60dd5684c0ff8348686bcbf9ff2a17d2a73e6b9aa90643cd28b09a74cc81039\",true,\"\"]",
+  "relay.nostr.band": "FAIL:TimeoutError",
+  "nostr-pub.wellorder.net": "[\"OK\",\"e60dd5684c0ff8348686bcbf9ff2a17d2a73e6b9aa90643cd28b09a74cc81039\",false,\"blocked: spam not permitted\"]"
+ },
+ "content": "Client asks for \"one more small thing\" mid-project. Here's the sequence that keeps your rate intact.\n\n1. Don't start. The moment you begin, you've donated the work. This is the whole battle and almost everyone loses it in the first minute.\n\n2. One line back, in writing: what they're asking for, what it adds to the invoice, and \"confirm and I'll start.\" Email, not DM - it needs to exist later.\n\n3. Name the number before you name the work. \"That's a $150 change\" gets a yes or no. \"Let me look into it\" gets three more free requests.\n\n4. Build revision rounds into the contract up front (two included is normal), then anything past that is a change order. Revisions are where fixed-price projects quietly die.\n\n5. Keep a written log from day one. Every \"can we also...\" gets answered and filed. When payment is late you invoice against your own record, not against memory - and in most places texts and emails count as supporting evidence if you end up in small claims.\n\n6. If they push back, offer two options: pay for the addition now, or it goes in the next phase at the original rate. People handle options better than a flat demand.\n\n7. If a client disputes the invoice anyway, they were never going to pay it. You've only lost time you should have invoiced.\n\nMost of this is free and takes an afternoon to set up. I put the templates I use (contract, statement of work, change-order form, late-fee worksheet, payment reminders) in one place if useful:\n\nhttps://galaxyaek7-del.github.io/openclaw-factory/customer_site/guide-freelancer-scope-creep.html\n\nFull shop: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html",
+ "at": "2026-10-11T15:04:02Z"
+}

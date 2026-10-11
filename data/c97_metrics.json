@@ -1,0 +1,90 @@
+{
+ "measured_at": "2026-10-11T15:10:02.597861+00:00",
+ "cycle": "C97",
+ "funnel": {
+  "1_repository_visits": {
+   "value": 5,
+   "uniques": 2,
+   "window": "14d",
+   "note": "Unchanged. Still repo-browsing from github.com. Not buyer traffic."
+  },
+  "2_product_page_visits": "UNKNOWN - no per-product view API exists on Gumroad; Pages top-paths shows customer_site absent entirely",
+  "3_qualified_external_visitors": {
+   "value": 0,
+   "evidence": "site:galaxyaek7-del.github.io returns zero results; 0 customer_site paths in Pages top-paths; only referrer is github.com"
+  },
+  "4_outbound_clicks": "UNKNOWN - no click observation point without a paid backend",
+  "5_checkout_starts": "UNKNOWN - Gumroad founder dashboard only",
+  "6_qualified_inquiries": 0,
+  "7_completed_orders": 0,
+  "8_refunds": 0,
+  "9_verified_revenue_usd": 0.0
+ },
+ "discovery_defects_fixed": {
+  "sitemap_noindex_contradiction": "history/login/status removed from sitemap (each carried its own noindex). Verified 0 now.",
+  "sitemap_advertised_internal_dashboard": "root Arabic Mission Control index.html removed from sitemap.",
+  "og_image_missing_57_pages": "added + new customer_site/assets/og-default.png (1200x630)",
+  "twitter_card_missing_56_pages": "added",
+  "canonical_missing": "gpsr-landing.html, market-validation.html, and all other indexable pages now self-canonical",
+  "README_pointed_at_dead_url": "README 'Live site' linked the Arabic internal dashboard, not the storefront. Now links products.html and the $49 product.",
+  "repo_metadata_was_useless": "GitHub description was literally 'openclaw', homepage unset, 0 topics. Now a real description, homepage -> products.html, 10 topics."
+ },
+ "distribution_executed": {
+  "channel": "nostr (factory-owned key, authorized, no account needed)",
+  "event_id": "e60dd5684c0ff8348686bcbf9ff2a17d2a73e6b9aa90643cd28b09a74cc81039",
+  "relays_accepted": "4/5 (relay.nostr.band timed out)",
+  "independently_read_back_from": [
+   "relay.damus.io",
+   "relay.primal.net",
+   "nos.lol"
+  ],
+  "engagement_events": 0,
+  "honest_reading": "Published and verified propagated. Nostr has now produced 0 replies across 23 posts total. It is a proven dead channel for buyer acquisition and should not be used again."
+ },
+ "channel_tests_this_cycle": {
+  "reddit": "BLOCKED from this IP - www.reddit.com and old.reddit.com both return a 'Welcome to Reddit' interstitial; .json endpoints return HTML, not JSON. No account credentials exist. Needs founder identity.",
+  "nostr": "works, accepted, but 0/23 engagement",
+  "telegraph": "57 prior articles, 142 total views - saturated",
+  "github_repo": "the only surface Google actually indexes for us, and the only one that has ever produced real visitors. Fixed this cycle."
+ },
+ "top_paths": [
+  {
+   "path": "/galaxyaek7-del/openclaw-factory",
+   "title": "Overview",
+   "count": 2,
+   "uniques": 2
+  },
+  {
+   "path": "/galaxyaek7-del/openclaw-factory/blob/main/.claude/settings.local.json",
+   "title": "/blob/main/.claude/settings.local.json",
+   "count": 1,
+   "uniques": 1
+  },
+  {
+   "path": "/galaxyaek7-del/openclaw-factory/blob/main/BACKUP_AND_RESTORE.md",
+   "title": "/blob/main/BACKUP_AND_RESTORE.md",
+   "count": 1,
+   "uniques": 1
+  },
+  {
+   "path": "/galaxyaek7-del/openclaw-factory/tree/main/.claude",
+   "title": "/tree/main/.claude",
+   "count": 1,
+   "uniques": 1
+  }
+ ],
+ "top_referrers": [
+  {
+   "referrer": "github.com",
+   "count": 1,
+   "uniques": 1
+  }
+ ],
+ "lead_product": {
+  "name": "Freelancer Payment Protection & Scope-Control Toolkit",
+  "price": "$49",
+  "published": true,
+  "sales_count": 0
+ },
+ "spend_this_cycle_usd": 0
+}
