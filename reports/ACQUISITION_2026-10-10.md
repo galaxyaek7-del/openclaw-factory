@@ -738,3 +738,11 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Coverage:** Telegraph-KDP shipped+verified — ALL offers covered (8 pages).
 **Prerequisites:** GSC empty (no founder move); other 4 stand.
 **Revenue $0, spend $0.** Cycle complete except buyer-volunteer + real-payment (both need the world, not code).
+
+## Cycle 70 (whole-factory broken-hunt, same day)
+
+**Hunted everywhere:** tests (6045 clean), data (all valid), secrets (clean), crashes (test-only), workers (4 alive), n8n (revived), links/prices/listings (verified), services (known timeouts), disk (healthy).
+
+**False alarms resolved:** queue:null = code default; 0/0 ledger read = my broken one-liner (re-ran properly: 133/133).
+
+**Verdict:** NOTHING broken within autonomous authority. Remaining = founder-gated (5) + by-design gaps. **Revenue $0, spend $0.**
