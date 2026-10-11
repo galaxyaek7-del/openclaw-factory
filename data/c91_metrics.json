@@ -1,0 +1,71 @@
+{
+ "measured_at": "2026-10-11T12:53:06.280198+00:00",
+ "baseline_window": "GitHub Pages traffic, trailing 14 days",
+ "storefront": {
+  "views_14d": 5,
+  "uniques_14d": 2,
+  "daily": [
+   {
+    "timestamp": "2026-10-07T00:00:00Z",
+    "count": 0,
+    "uniques": 0
+   },
+   {
+    "timestamp": "2026-10-08T00:00:00Z",
+    "count": 0,
+    "uniques": 0
+   },
+   {
+    "timestamp": "2026-10-09T00:00:00Z",
+    "count": 0,
+    "uniques": 0
+   },
+   {
+    "timestamp": "2026-10-10T00:00:00Z",
+    "count": 1,
+    "uniques": 1
+   }
+  ]
+ },
+ "top_paths": [
+  {
+   "path": "/galaxyaek7-del/openclaw-factory",
+   "title": "Overview",
+   "count": 2,
+   "uniques": 2
+  },
+  {
+   "path": "/galaxyaek7-del/openclaw-factory/blob/main/.claude/settings.local.json",
+   "title": "/blob/main/.claude/settings.local.json",
+   "count": 1,
+   "uniques": 1
+  },
+  {
+   "path": "/galaxyaek7-del/openclaw-factory/blob/main/BACKUP_AND_RESTORE.md",
+   "title": "/blob/main/BACKUP_AND_RESTORE.md",
+   "count": 1,
+   "uniques": 1
+  },
+  {
+   "path": "/galaxyaek7-del/openclaw-factory/tree/main/.claude",
+   "title": "/tree/main/.claude",
+   "count": 1,
+   "uniques": 1
+  }
+ ],
+ "customer_page_hits": {
+  "products.html": false,
+  "guide-diminished-value-claim.html": false
+ },
+ "gumroad": {
+  "orders": 0,
+  "verified_revenue_usd": 0.0,
+  "refunds": 0
+ },
+ "unknown": {
+  "outbound_clicks": "UNKNOWN - no click-observation point without a paid backend",
+  "checkout_starts": "UNKNOWN - Gumroad founder dashboard only",
+  "qualified_replies": "UNKNOWN - depends on founder posting where we cannot reach"
+ },
+ "no_background_monitoring": "NOTHING RUNS ON A TIMER. These are point-in-time reads. The next scheduled review is 2026-10-18."
+}

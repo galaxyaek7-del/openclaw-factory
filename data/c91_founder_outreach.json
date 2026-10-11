@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-10-11",
+  "purpose": "Founder-authenticated posting. Automation CANNOT do this: www.reddit.com returns HTTP 403, old.reddit.com serves a login wall, and the vehicle forums (MaverickTruckClub, f150gen14, TacomaWorld) all require an account to reply. Anonymous READ is confirmed working on all of them. We will not create accounts (forbidden) and will not request passwords or cookies.",
+  "do_not": [
+    "Do NOT paste a password, cookie, or token into this chat.",
+    "Do NOT post the same reply to more than one thread (spam).",
+    "Do NOT claim a payout, a success rate, or any client result - we have 0 sales and 0 reviews.",
+    "Do NOT post on Reddit without reading that subreddit's rules first."
+  ],
+  "account_needed": {
+    "platform": "Reddit is the highest-density source. The three vehicle forums below are alternatives that already work for anonymous reading.",
+    "signup": "https://www.reddit.com/register/ (free, no purchase required)"
+  },
+  "target_threads_ranked": [
+    {
+      "rank": 1,
+      "url": "https://www.mavericktruckclub.com/forum/threads/diminished-value-insurance-claim.83278/",
+      "why": "NEWEST (2026-06-05), owner asking how to establish before/after values and file. High intent, low competition for a careful answer.",
+      "verified_reachable": true,
+      "anonymously_readable": true,
+      "needs_account_to_reply": true,
+      "quoted_buyer_text": "My '24 Lariat was t-boned by a car failing to heed a stop sign... It's my understanding I can file a claim with the other parties insurance for diminished value... I guess I would need to establish before and after accident values and present the difference as a claim. Anyone been down this road and how did it work out?"
+    },
+    {
+      "rank": 2,
+      "url": "https://www.f150gen14.com/forum/threads/how-to-calculate-diminished-value-after-accident.24469/",
+      "why": "Owner explicitly asks HOW to get appraisals to show DV. This is literally our kit's question.",
+      "verified_reachable": true,
+      "anonymously_readable": true,
+      "needs_account_to_reply": true,
+      "quoted_buyer_text": "My questions are how can I get appraisals to show the diminished value of my vehicle as well as does anybody have guidance on how to work with this insurance company..."
+    },
+    {
+      "rank": 3,
+      "url": "https://old.reddit.com/r/Insurance/comments/1vyb4s0/explanation_of_diminished_value_check/",
+      "why": "Reddit thread where the asker says the adjuster would not tell them what to upload - the exact failure our free guide answers.",
+      "verified_reachable": "login wall to us; founder can read in a browser",
+      "quoted_buyer_text": "It's been suggested to me that I file a DV claim as well. How does this process work and what can I expect?"
+    }
+  ],
+  "ready_to_post_reply": {
+    "NOTE": "Written to be genuinely useful FIRST and promotional only at the very end. No link in the first two paragraphs. If a forum forbids promotion, post everything except the last line.",
+    "body": "Two things cost you the most in a diminished value claim, and both are avoidable.\n\nFirst, evidence structure. The itemised repair invoice matters more than the total. Carriers discount cosmetic work and pay more where structural, safety or ADAS/calibration lines appear, so a single total line reads as cosmetic even when it wasn't. Pull the itemised invoice and point at the parts/labour split.\n\nSecond, comparables beat formulas. Most carriers quote the same 10%-of-damage approach adjusted for age and mileage. The NAIC notes it grew out of one Georgia Supreme Court case and has no legal basis elsewhere, and that it can double-count mileage because mileage is already priced into standard values. You can use that number to sanity-check a lowball. You cannot use it as your evidence - an adjuster can discount a formula. What they cannot easily discount is a valuation of your exact year, trim and mileage in clean condition versus with the accident reported, ideally backed by a dealer or trade-in letter in dollars.\n\nOne practical note: decide when you plan to sell. An insurer's strongest argument is that the loss is unrealised if you keep the car. Saying you are trading it within a stated timeframe, and backing that with actual trade offers, removes most of that argument.\n\nAlso ask them, in writing, to show the calculation behind their figure. They often are not required to, but the request often moves the offer anyway.\n\nI put the whole method - eligibility check first, document order, the comparables approach, and the release trap worth knowing about - on a free page here: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/guide-diminished-value-claim.html\n\nI also sell a $59 kit that packages the forms (eligibility matrix, demand letter skeleton, evidence and negotiation log). Galaxy Forge has 0 sales and no reviews, and nothing here is legal advice or an appraisal service - check whether it is worth $59 for your situation rather than taking my word for it."
+  },
+  "what_we_did_ourselves": "The free guide and the storefront hero card now answer this exact question in our own words, so the founder reply points at a real page rather than a bare link.",
+  "spend": "$0 - free signup, no paid API, no purchased leads."
+}
