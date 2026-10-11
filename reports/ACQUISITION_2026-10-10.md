@@ -772,3 +772,11 @@ Thread observability is yours only (bots walled out). **Revenue $0, spend $0.** 
 **Sweep:** 35 pages / 113 views (static) | claims 0/0 | sales 0 | tickets non-real | workers alive | CI building | Reddit draft awaiting your post.
 
 **All tracks nominal, zero buyers. Revenue $0, spend $0.** Continuing observation on every track.
+
+## Cycle 74 (dependency renewal, 2026-10-11)
+
+**Applied + verified:** express 5.3.0 (server restarted cleanly on it), reportlab 5.0.1, pypdf 6.20.0 (PDF read+build proven). **Held with reasons:** dotenv major (compat unverified), pdfkit (unused), n8n 2.42.6 (native build needs absent VS tools).
+
+**n8n saga:** upgrade broke the install (overlapping runs → franken-tree); I deleted the working tree without binary backup (my mistake, recorded). Rescued via full --ignore-scripts reinstall + manual sqlite3 5.1.7 N-API prebuilt (dual-path quirk fixed) → healthz 200, 7 workflows intact, sensing green. DB untouched throughout.
+
+**Server restarted** on new express (health OK). All workers alive. **Revenue $0, spend $0.**
