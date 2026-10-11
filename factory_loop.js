@@ -1274,10 +1274,23 @@ function checkGoldenStagnation(logPath = GOLDEN_HUNTER_EVENTS_FILE, nowMs = Date
   if (spanMs < GOLDEN_STAGNATION_MS) return null;
 
   const spanHours = Math.round(spanMs / (60 * 60 * 1000));
+  // Cycle 76 correction: this message used to blame "SEED_CATEGORIES
+  // الثابتة... ADR-028 لم يُبنَ بعد" — false as of this fix. A real,
+  // free, keyless discovery source (golden_hunter/pioneer.py, wired into
+  // market_hunter.py's hunt_market() since 2026-07-19/2026-08-14) runs
+  // automatically every real day via factory_loop.js's own
+  // maybeRunMarketHunter() and genuinely contributes dozens of fresh
+  // real HN/GitHub candidates daily (confirmed live against
+  // market_hunter_runs.log: pioneer+pioneer_all linked counts of ~30-40
+  // on every real daily run in the weeks before this fix) — none of
+  // them have yet cleared profit_oracle.py's real Proof-of-Payment
+  // evidence gate (ADR-121), which is the real, honest reason the top
+  // pick hasn't changed, not an absent discovery source.
   return (
     `النيتش "${last.niche}" (profit_score ${last.profit_score}) هو نفسه أعلى فرصة في golden_opportunities.json ` +
-    `منذ ${spanHours} ساعة بلا تغيير — الجسر يعمل ويسجّل بصدق كل تِكّة، لكن لا مرشّح جديد يُكتشَف؛ ` +
-    'المصدر الحالي (market_hunter.py SEED_CATEGORIES الثابتة) لا يولِّد جديداً — راجع ADR-028 (مصدر مرشّحين حقيقي لم يُبنَ بعد).'
+    `منذ ${spanHours} ساعة بلا تغيير — الجسر يعمل ويسجّل بصدق كل تِكّة، ومصدر اكتشاف حقيقي (golden_hunter/pioneer.py) ` +
+    'يولِّد عشرات المرشّحين الحقيقيين الجدد يومياً فعلاً (راجع market_hunter_runs.log)، لكن لا أحد منهم اجتاز بعد ' +
+    'بوابة إثبات الدفع الحقيقي (profit_oracle.py، ADR-121) — هذا هو السبب الحقيقي، لا غياب مصدر اكتشاف.'
   );
 }
 

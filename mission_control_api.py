@@ -79,10 +79,13 @@ def _revenue():
 
 # The 4 real factory workflows (a 5th, "My workflow", is an unrelated
 # Google-Drive scratch workflow confirmed in the same n8n instance — not
-# part of the factory, deliberately excluded here). Only two ever needed
-# a code fix (ADR-045); the other two were already correct — confirmed by
-# BLOCKERS.md #1's own note that they were "untouched, remain exactly as
-# they were" when the fix was applied.
+# part of the factory, deliberately excluded here). All 4 now have a
+# current *.fixed.json re-export: 00_CEO/01_Market_Scout since ADR-045,
+# and Openclaw_Sensing_Engine/02_Sales_Poll since the 2026-10-11 missing
+# X-Internal-Token header fix (they needed no fix at ADR-045 time, so
+# weren't re-exported then; they are now). _N8N_BACKUP_ONLY_WORKFLOWS
+# stays as the real fallback path for any future workflow that again has
+# no current .fixed.json -- not dead code, just correctly idle today.
 _N8N_FIXED_EXPORTS = {"00_CEO", "01_Market_Scout"}
 _N8N_BACKUP_ONLY_WORKFLOWS = {"Openclaw_Sensing_Engine", "02_Sales_Poll"}
 _N8N_BACKUP_PATH = _FACTORY_ROOT / "n8n_workflows" / "backups" / "pre_build_20260715_232343.json"
@@ -112,21 +115,25 @@ def _find_trends_pipeline_evidence():
     return {"count": len(hits), "most_recent": hits[-1]}
 
 
-def _automation():
+def _automation(workflows_dir=None, backup_path=None):
     """Real, but honestly bounded: n8n's REST API needs a login this
     factory does not have credentials for (BLOCKERS.md #1) — this reads
     the last real, exported workflow definitions instead and labels them
     explicitly as a static export, never live state.
 
     Two sources, both real, neither fabricated:
-      - n8n_workflows/*.fixed.json: current, re-exported after ADR-045's
-        fixes (00_CEO, 01_Market_Scout).
-      - n8n_workflows/backups/pre_build_*.json: the only export that
-        includes Openclaw_Sensing_Engine and 02_Sales_Poll (they needed no
-        fix, so were never re-exported to *.fixed.json) — labelled
+      - n8n_workflows/*.fixed.json: current, re-exported after a real fix
+        (ADR-045 for 00_CEO/01_Market_Scout; the 2026-10-11 missing-header
+        fix for Openclaw_Sensing_Engine/02_Sales_Poll).
+      - n8n_workflows/backups/pre_build_*.json: the real fallback for any
+        workflow with no current .fixed.json re-export — labelled
         source_kind='backup_2026-07-15' so a caller never mistakes this
-        for a live re-check."""
-    workflows_dir = _FACTORY_ROOT / "n8n_workflows"
+        for a live re-check. All 4 real workflows happen to have a
+        current export today, so this path is correctly idle, not dead;
+        workflows_dir/backup_path are test-isolation overrides only (real
+        callers always use the live n8n_workflows/ directory)."""
+    workflows_dir = workflows_dir or (_FACTORY_ROOT / "n8n_workflows")
+    backup_path = backup_path or _N8N_BACKUP_PATH
     workflows = []
     seen_names = set()
     if workflows_dir.is_dir():
@@ -145,9 +152,9 @@ def _automation():
             })
             seen_names.add(name)
 
-    if _N8N_BACKUP_PATH.exists():
+    if backup_path.exists():
         try:
-            with open(_N8N_BACKUP_PATH, "r", encoding="utf-8") as f:
+            with open(backup_path, "r", encoding="utf-8") as f:
                 backup_workflows = json.load(f)
             for data in backup_workflows:
                 name = data.get("name")
@@ -156,7 +163,7 @@ def _automation():
                 workflows.append({
                     "name": name,
                     "active_in_export": data.get("active", False),
-                    "source_file": _N8N_BACKUP_PATH.name,
+                    "source_file": backup_path.name,
                     "source_kind": "backup_2026-07-15",
                 })
                 seen_names.add(name)

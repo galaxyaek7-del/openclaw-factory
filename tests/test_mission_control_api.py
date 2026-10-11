@@ -162,13 +162,32 @@ class TestEndpointDispatch(unittest.TestCase):
         self.assertEqual(names, {"00_CEO", "01_Market_Scout", "Openclaw_Sensing_Engine", "02_Sales_Poll"})
 
     def test_automation_labels_current_vs_backup_sourced_workflows_honestly(self):
-        """The two fixed workflows come from a current re-export; the other
-        two only exist in a dated backup — the response must never blur
-        that distinction into looking like one uniform 'live' source."""
-        result = mission_control_api._automation()
+        """A workflow with a current *.fixed.json re-export must be labeled
+        'current_export'; a workflow that only exists in the dated backup
+        (no current re-export) must be labeled 'backup_2026-07-15' — never
+        blurred into looking like one uniform 'live' source.
+
+        Uses isolated temp fixtures rather than the real n8n_workflows/
+        directory: as of 2026-10-11 all 4 real workflows have a current
+        .fixed.json (the backup-only path is correctly idle for them
+        today), so asserting against live directory contents would wrongly
+        couple this test to how many real re-exports happen to exist on
+        any given day instead of to the labeling logic itself."""
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            current_dir = tmp_path / "current"
+            current_dir.mkdir()
+            (current_dir / "00_CEO.fixed.json").write_text(
+                json.dumps({"name": "00_CEO", "active": True}), encoding="utf-8")
+            backup_file = tmp_path / "backup.json"
+            backup_file.write_text(json.dumps([
+                {"name": "Openclaw_Sensing_Engine", "active": True},
+                {"name": "02_Sales_Poll", "active": True},
+            ]), encoding="utf-8")
+            result = mission_control_api._automation(workflows_dir=current_dir, backup_path=backup_file)
         by_name = {w["name"]: w for w in result["workflows"]}
         self.assertEqual(by_name["00_CEO"]["source_kind"], "current_export")
-        self.assertEqual(by_name["01_Market_Scout"]["source_kind"], "current_export")
         self.assertEqual(by_name["Openclaw_Sensing_Engine"]["source_kind"], "backup_2026-07-15")
         self.assertEqual(by_name["02_Sales_Poll"]["source_kind"], "backup_2026-07-15")
 

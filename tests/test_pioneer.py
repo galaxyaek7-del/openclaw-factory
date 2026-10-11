@@ -62,9 +62,18 @@ class TestDiscoverCandidates(unittest.TestCase):
         self.assertEqual(len(candidates), 1)
 
     def test_network_failure_returns_honestly_empty_never_fabricates(self):
-        with patch.object(pioneer, "_fetch_top_story_ids", return_value=[]):
+        with patch.object(pioneer.MIC_HTTP_CLIENT, "http_get_json", side_effect=RuntimeError("down")):
             candidates = pioneer.discover_candidates(limit=10)
         self.assertEqual(candidates, [])
+
+    def test_network_failure_is_tagged_unknown_not_a_guessed_empty(self):
+        """Cycle 76 section 1: a genuine fetch failure must be
+        distinguishable from a real, honest zero-result day -- never
+        silently collapsed into the same bare empty list with no signal."""
+        with patch.object(pioneer.MIC_HTTP_CLIENT, "http_get_json", side_effect=RuntimeError("down")):
+            candidates, status = pioneer.discover_candidates_with_status(limit=10)
+        self.assertEqual(candidates, [])
+        self.assertTrue(status.startswith("UNKNOWN"))
 
 
 class TestFetchHelpers(unittest.TestCase):
@@ -99,10 +108,17 @@ class TestDiscoverHnFeed(unittest.TestCase):
         self.assertTrue(candidates[0]["signal_matched"])
 
     def test_ask_hn_network_failure_returns_empty(self):
-        with patch.object(pioneer, "_fetch_story_ids", return_value=[]):
+        with patch.object(pioneer.MIC_HTTP_CLIENT, "http_get_json", side_effect=RuntimeError("down")):
             candidates = pioneer._discover_hn_feed(
                 pioneer.HN_ASK_STORIES_URL, "hacker_news_ask_hn", limit=10, scan_pool=2)
         self.assertEqual(candidates, [])
+
+    def test_ask_hn_network_failure_is_tagged_unknown(self):
+        with patch.object(pioneer.MIC_HTTP_CLIENT, "http_get_json", side_effect=RuntimeError("down")):
+            candidates, status = pioneer._discover_hn_feed_with_status(
+                pioneer.HN_ASK_STORIES_URL, "hacker_news_ask_hn", limit=10, scan_pool=2)
+        self.assertEqual(candidates, [])
+        self.assertTrue(status.startswith("UNKNOWN"))
 
 
 class TestDiscoverGithubRecentRepos(unittest.TestCase):
@@ -190,6 +206,47 @@ class TestRealHackerNewsIntegration(unittest.TestCase):
             self.assertTrue(c["niche"])
             self.assertEqual(c["source"], "hacker_news_top_stories")
             self.assertIn("signal_matched", c)
+
+
+class TestEveryCandidateCarriesSourceUrlAndFetchedAt(unittest.TestCase):
+    """Cycle 76 section 1, hard requirement: 'كل مرشح يحمل: source_url
+    وfetched_at والبيانات الخام' -- every real candidate from every real
+    source must fail this test if either field is missing or empty."""
+
+    def _assert_candidate_shape(self, candidates):
+        self.assertTrue(candidates, "fixture produced no candidates to check")
+        for c in candidates:
+            self.assertIn("source_url", c)
+            self.assertTrue(c["source_url"], "source_url must not be empty")
+            self.assertIn("fetched_at", c)
+            self.assertTrue(c["fetched_at"], "fetched_at must not be empty")
+            self.assertIn("raw", c, "raw fetched data must be preserved for audit")
+
+    def test_discover_candidates_shape(self):
+        with patch.object(pioneer, "_fetch_top_story_ids", return_value=[1]), \
+             patch.object(pioneer, "_fetch_item", return_value={"title": "t", "score": 1, "url": "http://x"}):
+            self._assert_candidate_shape(pioneer.discover_candidates(limit=1, scan_pool=1))
+
+    def test_discover_hn_feed_shape(self):
+        with patch.object(pioneer, "_fetch_story_ids", return_value=[1]), \
+             patch.object(pioneer, "_fetch_item", return_value={"title": "t", "score": 1, "url": "http://x"}):
+            self._assert_candidate_shape(pioneer._discover_hn_feed(
+                pioneer.HN_ASK_STORIES_URL, "hacker_news_ask_hn", limit=1, scan_pool=1))
+
+    def test_discover_github_recent_repos_shape(self):
+        fake = {"items": [{"full_name": "a/b", "html_url": "http://gh/a/b", "stargazers_count": 1}]}
+        with patch.object(pioneer.MIC_HTTP_CLIENT, "http_get_json", return_value=fake):
+            self._assert_candidate_shape(pioneer.discover_github_recent_repos(limit=1))
+
+    def test_a_candidate_missing_source_url_fails_this_check(self):
+        """Proves the check itself is real -- a candidate stripped of
+        source_url must fail, not silently pass."""
+        with self.assertRaises(AssertionError):
+            self._assert_candidate_shape([{"niche": "x", "fetched_at": "2026-01-01", "raw": {}}])
+
+    def test_a_candidate_missing_fetched_at_fails_this_check(self):
+        with self.assertRaises(AssertionError):
+            self._assert_candidate_shape([{"niche": "x", "source_url": "http://x", "raw": {}}])
 
 
 if __name__ == "__main__":

@@ -36,7 +36,14 @@ discovery-mode endpoint in this codebase. Those stay named next steps,
 not silently skipped.
 """
 
+from datetime import datetime, timezone
+
 from market_intelligence_core import http_client as MIC_HTTP_CLIENT
+
+
+def _now_iso():
+    return datetime.now(timezone.utc).isoformat()
+
 
 HN_TOP_STORIES_URL = "https://hacker-news.firebaseio.com/v0/topstories.json"
 HN_ASK_STORIES_URL = "https://hacker-news.firebaseio.com/v0/askstories.json"
@@ -61,16 +68,29 @@ OPPORTUNITY_SIGNAL_KEYWORDS = (
 )
 
 
-def _fetch_story_ids(url, limit):
+def _fetch_story_ids_with_status(url, limit):
     """Real HN Firebase call for any of the story-id feeds (top/ask/show).
-    Returns [] on any network failure, never raises — a discovery run must
-    survive this one source being down, same discipline competitor_
-    discovery.py's own query functions use."""
+    Returns (ids, status) -- status is 'OK' on a real response (even a
+    real empty list) or 'UNKNOWN: <reason>' on a genuine fetch failure,
+    so a caller can tell 'this feed is really empty today' apart from
+    'this feed could not be reached' (Cycle 76, directive section 1:
+    'إن تعذّر الجلب فسجّل UNKNOWN ولا تملأ بقيم افتراضية'). Never raises --
+    a discovery run must survive this one source being down, same
+    discipline competitor_discovery.py's own query functions use."""
     try:
         ids = MIC_HTTP_CLIENT.http_get_json(url, timeout=10, user_agent=_USER_AGENT)
-        return ids[:limit] if isinstance(ids, list) else []
-    except Exception:
-        return []
+        if not isinstance(ids, list):
+            return [], "UNKNOWN: non-list response shape"
+        return ids[:limit], "OK"
+    except Exception as e:
+        return [], f"UNKNOWN: {e}"
+
+
+def _fetch_story_ids(url, limit):
+    """Backward-compatible wrapper -- real callers that only need the ids
+    (not fetch status) keep working unchanged."""
+    ids, _status = _fetch_story_ids_with_status(url, limit)
+    return ids
 
 
 def _fetch_top_story_ids(limit):
@@ -84,14 +104,16 @@ def _fetch_item(item_id):
         return None
 
 
-def _discover_hn_feed(feed_url, source_label, limit, scan_pool):
-    """Shared candidate builder for any HN story-id feed. Real discovery
-    with no niche input — the property that makes Pioneer genuinely
-    upstream of Golden Hunter. Opportunity-signal matches ranked first.
-    A network failure returns an honestly empty list, never fabricated
-    candidates."""
+def _discover_hn_feed_with_status(feed_url, source_label, limit, scan_pool):
+    """Real candidate builder for any HN story-id feed, plus real fetch
+    status ('OK' or 'UNKNOWN: <reason>' -- never a guessed/default value
+    on failure, Cycle 76 section 1). Every candidate carries fetched_at
+    (real UTC timestamp of this call) and raw (the real HN item dict,
+    unmodified) -- the directive's explicit per-candidate shape
+    requirement."""
     candidates = []
-    for story_id in _fetch_story_ids(feed_url, scan_pool):
+    story_ids, status = _fetch_story_ids_with_status(feed_url, scan_pool)
+    for story_id in story_ids:
         item = _fetch_item(story_id)
         if not item or not item.get("title"):
             continue
@@ -103,9 +125,18 @@ def _discover_hn_feed(feed_url, source_label, limit, scan_pool):
             "source_url": item.get("url") or f"https://news.ycombinator.com/item?id={story_id}",
             "points": item.get("score", 0),
             "signal_matched": matched,
+            "fetched_at": _now_iso(),
+            "raw": item,
         })
     candidates.sort(key=lambda c: (not c["signal_matched"], -c["points"]))
-    return candidates[:limit]
+    return candidates[:limit], status
+
+
+def _discover_hn_feed(feed_url, source_label, limit, scan_pool):
+    """Backward-compatible wrapper -- real callers that only need the
+    candidate list (not fetch status) keep working unchanged."""
+    candidates, _status = _discover_hn_feed_with_status(feed_url, source_label, limit, scan_pool)
+    return candidates
 
 
 def _days_ago(days):
@@ -113,22 +144,27 @@ def _days_ago(days):
     return (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%d")
 
 
-def discover_github_recent_repos(limit=10, days=30):
-    """Real discovery: GitHub's free, keyless search API for repositories
-    CREATED in the last `days` days, sorted by stars — a real "what is
-    actually being built right now" signal, different in kind from HN's
-    discussion/launch feeds. Any failure (rate limit, network) returns an
-    honestly empty list, never fabricated repos. Stars are real engagement
-    evidence (same ADR-036 discipline as tier1_intake)."""
+def discover_github_recent_repos_with_status(limit=10, days=30):
+    """Real discovery + real fetch status, same 'OK'/'UNKNOWN: <reason>'
+    discipline as _fetch_story_ids_with_status (Cycle 76 section 1) --
+    GitHub's free, keyless search API for repositories CREATED in the
+    last `days` days, sorted by stars. Any failure (rate limit, network)
+    returns an honestly empty list tagged UNKNOWN, never fabricated
+    repos and never a silently-guessed default. Each candidate carries
+    fetched_at (real UTC call time) and raw (the real repo dict,
+    unmodified)."""
     try:
         data = MIC_HTTP_CLIENT.http_get_json(
             GITHUB_SEARCH_URL.format(_days_ago(days), limit),
             timeout=15, user_agent=_USER_AGENT,
         )
-    except Exception:
-        return []
-    items = data.get("items", []) if isinstance(data, dict) else []
+    except Exception as e:
+        return [], f"UNKNOWN: {e}"
+    if not isinstance(data, dict):
+        return [], "UNKNOWN: non-dict response shape"
+    items = data.get("items", [])
     candidates = []
+    fetched_at = _now_iso()
     for repo in items:
         name = repo.get("full_name") or repo.get("name")
         if not name:
@@ -144,22 +180,34 @@ def discover_github_recent_repos(limit=10, days=30):
             "stars": repo.get("stargazers_count", 0),
             "language": repo.get("language"),
             "created_at": repo.get("created_at"),
+            "fetched_at": fetched_at,
+            "raw": repo,
         })
     candidates.sort(key=lambda c: (not c["signal_matched"], -c["points"]))
-    return candidates[:limit]
+    return candidates[:limit], "OK"
 
 
-def discover_candidates(limit=10, scan_pool=30):
-    """Real discovery: fetches today's real HN top stories (no niche
-    input — this is what makes Pioneer genuinely upstream of Golden
-    Hunter, not a duplicate of competitor_discovery.py's per-niche
-    search) and returns up to `limit` candidate dicts, opportunity-
-    signal matches ranked first. Never scores or accepts anything —
-    that stays market_hunter.hunt_market()'s unchanged job. A network
-    failure returns an honestly empty list, never fabricated candidates.
-    """
+def discover_github_recent_repos(limit=10, days=30):
+    """Backward-compatible wrapper -- real callers that only need the
+    candidate list (not fetch status) keep working unchanged."""
+    candidates, _status = discover_github_recent_repos_with_status(limit=limit, days=days)
+    return candidates
+
+
+def discover_candidates_with_status(limit=10, scan_pool=30):
+    """Real discovery + real fetch status (see _fetch_story_ids_with_status).
+    Fetches today's real HN top stories (no niche input — this is what
+    makes Pioneer genuinely upstream of Golden Hunter, not a duplicate of
+    competitor_discovery.py's per-niche search) and returns up to `limit`
+    candidate dicts, opportunity-signal matches ranked first, each
+    carrying fetched_at (real UTC call time) and raw (the real HN item,
+    unmodified). Never scores or accepts anything — that stays
+    market_hunter.hunt_market()'s unchanged job. A network failure
+    returns an honestly empty list tagged UNKNOWN, never a fabricated or
+    defaulted candidate."""
     candidates = []
-    for story_id in _fetch_top_story_ids(scan_pool):
+    story_ids, status = _fetch_story_ids_with_status(HN_TOP_STORIES_URL, scan_pool)
+    for story_id in story_ids:
         item = _fetch_item(story_id)
         if not item or not item.get("title"):
             continue
@@ -171,10 +219,19 @@ def discover_candidates(limit=10, scan_pool=30):
             "source_url": item.get("url") or f"https://news.ycombinator.com/item?id={story_id}",
             "points": item.get("score", 0),
             "signal_matched": matched,
+            "fetched_at": _now_iso(),
+            "raw": item,
         })
 
     candidates.sort(key=lambda c: (not c["signal_matched"], -c["points"]))
-    return candidates[:limit]
+    return candidates[:limit], status
+
+
+def discover_candidates(limit=10, scan_pool=30):
+    """Backward-compatible wrapper -- real callers that only need the
+    candidate list (not fetch status) keep working unchanged."""
+    candidates, _status = discover_candidates_with_status(limit=limit, scan_pool=scan_pool)
+    return candidates
 
 
 def discover_all(limit_per_source=10, scan_pool=30, github_days=30):
@@ -200,3 +257,37 @@ def discover_all(limit_per_source=10, scan_pool=30, github_days=30):
             continue
         seen[key] = c
     return list(seen.values())[:limit_per_source * 4]
+
+
+def discover_all_with_status(limit_per_source=10, scan_pool=30, github_days=30):
+    """Same merge as discover_all(), plus a real per-source fetch status
+    map ('OK' or 'UNKNOWN: <reason>', never a guessed default -- Cycle 76
+    section 1). A separate function, not a parameter on discover_all(),
+    so every existing real caller of discover_all() (market_hunter.py's
+    hunt_market()) is untouched byte-for-byte; this is the one new,
+    additive entrypoint for callers that need source-level observability
+    (e.g. a future NEEDS_ATTENTION-style honest stagnation check)."""
+    merged = []
+    status = {}
+    hn_ask, status["hacker_news_ask_hn"] = _discover_hn_feed_with_status(
+        HN_ASK_STORIES_URL, "hacker_news_ask_hn", limit_per_source, scan_pool)
+    merged += hn_ask
+    hn_show, status["hacker_news_show_hn"] = _discover_hn_feed_with_status(
+        HN_SHOW_STORIES_URL, "hacker_news_show_hn", limit_per_source, scan_pool)
+    merged += hn_show
+    gh, status["github_recent_repos"] = discover_github_recent_repos_with_status(
+        limit=limit_per_source, days=github_days)
+    merged += gh
+    hn_top, status["hacker_news_top_stories"] = discover_candidates_with_status(
+        limit=limit_per_source, scan_pool=scan_pool)
+    merged += hn_top
+
+    seen = {}
+    for c in merged:
+        key = (c.get("niche") or "").strip().lower()
+        if not key:
+            continue
+        if key in seen and (seen[key].get("points") or 0) >= (c.get("points") or 0):
+            continue
+        seen[key] = c
+    return list(seen.values())[:limit_per_source * 4], status
