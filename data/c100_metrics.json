@@ -1,0 +1,23 @@
+{
+ "read_at_utc": "2026-10-11T15:56:08.226891+00:00",
+ "cycle": "C100",
+ "orders": 0,
+ "refunds": 0,
+ "verified_revenue_usd": 0,
+ "incremental_spend_usd": 0.0,
+ "product_page_visits_14d": 5,
+ "unique_visitors_14d": 2,
+ "customer_site_paths_in_top_paths": 0,
+ "referrers": [
+  [
+   "github.com",
+   1
+  ]
+ ],
+ "outbound_clicks": "UNKNOWN",
+ "checkout_starts": "UNKNOWN",
+ "inquiries": "UNKNOWN",
+ "organic_impressions": "UNKNOWN",
+ "indexed_urls": "UNKNOWN",
+ "note": "GitHub Pages traffic covers the whole Pages site. All recorded views are github.com repo browsing (blob/tree). Zero customer_site product-page views. The storefront has no click instrumentation, so outbound clicks and checkout starts have no observation point and are UNKNOWN, not zero."
+}

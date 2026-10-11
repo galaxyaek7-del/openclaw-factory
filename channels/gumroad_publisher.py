@@ -13,6 +13,7 @@ failure into a fake success.
 import argparse
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -364,7 +365,14 @@ def get_sales(token, product_id=None):
 
 def _safe_err(exc):
     """Stringify a requests exception WITHOUT ever letting the access_token
-    (present in the request URL/params/body) leak into an error message."""
+    (present in the request URL/params/body) leak into an error message.
+
+    Two layers, deliberately:
+      1. known-value redaction - replace the actual token(s) we loaded.
+      2. pattern redaction - blank any `access_token=<value>` in a URL,
+         even when that value was never loaded into this process. Layer 2
+         is what makes the guarantee hold for an exception raised before
+         load_token() ran, or with a token from another source."""
     text = str(exc)
     candidates = set()
     env_token = os.environ.get("GUMROAD_ACCESS_TOKEN", "")
@@ -375,6 +383,7 @@ def _safe_err(exc):
     for token in candidates:
         if token and token in text:
             text = text.replace(token, "***REDACTED***")
+    text = re.sub(r"(access_token=)[^&\s'\"\\]+", r"\1***REDACTED***", text)
     return text
 
 
@@ -435,7 +444,13 @@ def main():
         emit({"success": False, "error": str(e)})
         sys.exit(0)
     except Exception as e:
-        emit({"success": False, "error": str(e)})
+        # C100: this handler used str(e) directly. An unexpected exception
+        # raised inside requests (rather than one wrapped by a RuntimeError
+        # via _safe_err) carries the full request URL, and the access_token
+        # travels in the query string - so the raw text printed the live
+        # secret to stdout/logs. Route every catch-all through _safe_err so
+        # there is exactly one redaction choke point.
+        emit({"success": False, "error": _safe_err(e)})
         sys.exit(0)
 
 

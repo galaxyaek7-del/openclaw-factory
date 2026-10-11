@@ -214,6 +214,27 @@ class TestNonInteractiveAuth(unittest.TestCase):
         finally:
             gp._LAST_LOADED_TOKEN = ""
 
+    def test_pattern_redaction_covers_an_unknown_token(self):
+        """C100: the token reached a terminal on 2026-10-11 because a
+        requests exception carrying the full URL was printed unredacted.
+        Known-value redaction alone is not enough - it only fires for a token
+        this process loaded. This asserts the pattern layer, which blanks any
+        access_token= value even when it was never loaded."""
+        unknown = "zzz-never-loaded-zzz"
+        err = gp._safe_err(Exception(
+            f"Invalid URL 'https://api.gumroad.com/v2/sales?access_token={unknown}': No scheme"))
+        self.assertNotIn(unknown, err)
+        self.assertIn("access_token=***REDACTED***", err)
+
+    def test_cli_catch_all_redacts_before_printing(self):
+        """The main() catch-all used str(e) directly, bypassing redaction.
+        Assert that path now routes through _safe_err."""
+        source = (_FACTORY_ROOT / "channels" / "gumroad_publisher.py").read_text(
+            encoding="utf-8", errors="ignore")
+        catch_all = source.split("except Exception as e:", 1)[1]
+        self.assertIn('"error": _safe_err(e)', catch_all,
+                      "the CLI catch-all must redact via _safe_err(e), not str(e)")
+
 
 if __name__ == "__main__":
     unittest.main()

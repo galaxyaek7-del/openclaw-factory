@@ -1,6 +1,8 @@
 {
- "at": "2026-10-11T15:26:52.026130+00:00",
- "key": "c8742f1da91ebe577587681839ae0004",
+ "at": "2026-10-11T15:55:14.291727+00:00",
+ "cycle": "C100",
+ "key_file_url": "https://galaxyaek7-del.github.io/openclaw-factory/c8742f1da91ebe577587681839ae0004.txt",
+ "key_file_http": 200,
  "url_count": 59,
  "urls": [
   "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/about.html",
@@ -63,17 +65,37 @@
   "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/guide-diminished-value-claim.html",
   "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/guide-freelancer-scope-creep.html"
  ],
- "receipts": [
-  {
-   "endpoint": "https://api.indexnow.org/indexnow",
-   "status": 202,
-   "body": ""
-  },
-  {
-   "endpoint": "https://www.bing.com/indexnow",
-   "status": 202,
-   "body": ""
-  }
- ],
- "interpretation": "IndexNow ACCEPTED means the URLs were handed to participating search engines as \"changed, please crawl\". It is a crawl REQUEST. It does NOT mean indexed, does NOT mean impressions, and does NOT mean any visit. Indexing remains UNKNOWN until independently observed."
+ "submission": {
+  "accepted": false,
+  "http_status": 403,
+  "response": "{\"errorCode\":\"UserForbiddedToAccessSite\",\"message\":\"User is unauthorized to access the site. Please verify the site using the key and try again\",\"details\":null}",
+  "attempts": [
+   {
+    "attempt": 1,
+    "http_status": 403,
+    "response": "{\"errorCode\":\"UserForbiddedToAccessSite\",\"message\":\"User is unauthorized to access the site. Please verify the site using the key and try again\",\"details\":null}"
+   },
+   {
+    "attempt": 2,
+    "http_status": 403,
+    "response": "{\"errorCode\":\"UserForbiddedToAccessSite\",\"message\":\"User is unauthorized to access the site. Please verify the site using the key and try again\",\"details\":null}"
+   },
+   {
+    "attempt": 3,
+    "http_status": 403,
+    "response": "{\"errorCode\":\"UserForbiddedToAccessSite\",\"message\":\"User is unauthorized to access the site. Please verify the site using the key and try again\",\"details\":null}"
+   },
+   {
+    "attempt": 4,
+    "http_status": 403,
+    "response": "{\"errorCode\":\"UserForbiddedToAccessSite\",\"message\":\"User is unauthorized to access the site. Please verify the site using the key and try again\",\"details\":null}"
+   }
+  ]
+ },
+ "context": {
+  "prior_cycle": "C99 accepted the same key and the same 59 URLs with HTTP 202 from both api.indexnow.org and bing.com/indexnow at 2026-10-11T15:26:52Z.",
+  "c100_change": "index.html encoding repaired and deployed between the two submissions.",
+  "diagnosis": "IndexNow answered errorCode=UserForbiddedToAccessSite, which means the key could not be validated at submission time. The key file itself is live and returns HTTP 200 at the expected URL and is tracked in git and unmodified by the C100 push. The C100 push triggered a GitHub Pages rebuild, and the first C100 attempt was made while Pages reported status=building. A transient unreachable-key-file during the rebuild is the most consistent explanation, but it is NOT confirmed - it is stated as the likely cause."
+ },
+ "interpretation": "ACCEPTED (202) would mean the URLs were handed to participating search engines as changed. That is a CRAWL REQUEST only. It does NOT mean crawled, indexed, ranked, or visited. Indexing remains UNKNOWN until independently observed. If submission was refused, the URLs were simply not resubmitted this cycle - which is NOT a loss, because the C99 submission already stands and the pages have not changed in a way that requires a fresh crawl request."
 }
