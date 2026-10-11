@@ -754,3 +754,15 @@ Published the Etsy method: https://telegra.ph/Etsy-Shop-Suspended-The-Fix-First-
 **Visibility verdict:** competitors rank page 1 (demand + rankability proven); WE are absent from Google everywhere. Indexing gap = THE bottleneck (GSC click or crawl-wait).
 
 **Revenue $0, spend $0.**
+
+## Cycle 72 (founder chose Reddit LIVE, same day)
+
+**Decision (in-chat):** founder posts the Reddit reply themselves. Draft re-verified accurate and ready.
+
+**Your 4 steps:**
+1. Open `pending_review/queue/gf41_reddit_reply_draft.md`, copy the text between the `---` lines.
+2. Open the thread (link at top of draft), log in, click Reply.
+3. Paste, confirm disclosure + 2 links visible, Post.
+4. Reply here "posted" (or "removed/skipped") — I measure from there.
+
+Thread observability is yours only (bots walled out). **Revenue $0, spend $0.** Standing by for your confirmation.
