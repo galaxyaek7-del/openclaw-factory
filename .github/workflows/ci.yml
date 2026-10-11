@@ -276,12 +276,19 @@ jobs:
       # count (loop-generated test names, etc. can shift it), but it is
       # computed the same way every time, which is what a regression
       # floor actually needs: a consistent methodology, not an exact
-      # absolute number. Floor measured 2026-10-11 (commit 866f9e8): 521.
+      # absolute number. Floor measured 2026-10-11 against a clean
+      # `git archive HEAD` extraction (commit 866f9e8): 517. (A first
+      # attempt measured 521 directly off the live working tree and was
+      # wrong -- tests/test_process_pending_retries.js had 4 real,
+      # uncommitted local edits at measurement time that were never part
+      # of any commit; CI's own clean checkout correctly reported 517
+      # and caught the mistake. Lesson applied: this floor must always
+      # be (re-)measured from a clean checkout, never the live tree.)
       - name: JS test call count has not silently shrunk
         run: |
           python - <<'PY'
           import subprocess, re, sys
-          FLOOR = 521
+          FLOOR = 517
           files = subprocess.run(["git", "ls-files", "tests/test_*.js"],
                                   capture_output=True, text=True).stdout.split()
           total = 0
