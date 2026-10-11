@@ -1,0 +1,185 @@
+{
+  "schema_note": "Product Class Registry (Cycle 78, 2026-10-11) — prioritization/triage tool only, same REAL/ESTIMATED/DISCOVERY/UNKNOWN discipline as config/capability_registry.json (ADR-040). Does NOT exempt any class from Gate-2, ADR-121, profit_score/ladder_opportunity_score(), or Dual Inspection. See docs/PRODUCT_CLASSES.md for full narrative + citations.",
+  "last_updated": "2026-10-11",
+  "ground_truth_at_creation": {
+    "published_books": 0,
+    "total_verified_sales": 0,
+    "source": "config/reality.json, finance_data.json"
+  },
+  "classes": [
+    {
+      "id": "templates_xlsx_docx_sop",
+      "category": "A_high_readiness",
+      "maturity": "REAL_SHIPPED",
+      "real_code": ["product_families/families/professional_templates.py", "product_families/families/digital_toolkits.py", "cohort_GF_BATCH11_2026_09/dist/"],
+      "automated_qa": "inspectors.py Dual Inspection",
+      "estimated_price_range_usd": [25, 97],
+      "price_basis": "config/economics.json gumroad_premium/gumroad_elite floors — a cost floor, not a market-tested price",
+      "build_run_cost_usd": "Groq generation cost only (data/ai_cost_log.jsonl); $0 hosting",
+      "platforms": ["gumroad", "etsy"],
+      "human_review_required": "spot-check content accuracy per new topic",
+      "time_to_first_revenue": "UNKNOWN",
+      "risks": ["commercially unproven — 0 real sales ever"],
+      "demand_evidence": "NONE direct to this class",
+      "accept_reject_criteria": "only niches that already cleared ladder_opportunity_score()'s ADR-121 gate",
+      "confidence": "MEDIUM_buildability_LOW_sellability"
+    },
+    {
+      "id": "market_competitor_reports",
+      "category": "A_high_readiness",
+      "maturity": "REAL_INTERNAL_ONLY",
+      "real_code": ["competitor_discovery.py", "market_intelligence_core/"],
+      "automated_qa": "inspectors.py market_realism",
+      "estimated_price_range_usd": [47, 150],
+      "price_basis": "ESTIMATED — no prior sale of this shape",
+      "build_run_cost_usd": "Groq + live HN/GitHub query cost; $0 hosting",
+      "platforms": ["gumroad"],
+      "human_review_required": "verify every source_url resolves before sale — no automated link-liveness check exists",
+      "time_to_first_revenue": "UNKNOWN",
+      "risks": ["stale source_url at time of sale misrepresents evidence currency"],
+      "demand_evidence": "NONE direct",
+      "accept_reject_criteria": "same ADR-121 bar as any other product; packaging-only effort",
+      "confidence": "MEDIUM_buildability_UNKNOWN_demand"
+    },
+    {
+      "id": "small_scripts_cli_tools",
+      "category": "A_high_readiness",
+      "maturity": "SCAFFOLD_ONLY_as_product",
+      "real_code": [],
+      "automated_qa": "would reuse scripts/scan_for_secrets.py + pytest/node --test, not wired to any sale path",
+      "estimated_price_range_usd": [9, 47],
+      "price_basis": "ESTIMATED, unproven",
+      "build_run_cost_usd": "near-$0 to build; packaging/docs/support unbuilt",
+      "platforms": ["gumroad", "github"],
+      "human_review_required": "buyer-facing docs + support channel, none exist",
+      "time_to_first_revenue": "UNKNOWN, never attempted",
+      "risks": ["support burden with no support infra"],
+      "demand_evidence": "NONE found",
+      "accept_reject_criteria": "needs a real recurring demand signal before packaging effort",
+      "confidence": "LOW"
+    },
+    {
+      "id": "arabic_prompt_packs",
+      "category": "A_high_readiness",
+      "maturity": "UNCOMMITTED_NEAR_COMPLETE_SCAFFOLD",
+      "real_code": ["product_families/families/prompt_libraries.py (UNTRACKED — git status ??)"],
+      "automated_qa": "would inherit Dual Inspection once wired in — not active today",
+      "estimated_price_range_usd": [29, 29],
+      "price_basis": "manifest's own price_hint, not market-tested",
+      "build_run_cost_usd": "$0 additional — reuses existing groq_techdoc/techdoc_package pipeline",
+      "platforms": ["gumroad", "etsy"],
+      "human_review_required": "Arabic-specific cultural/professional accuracy — no review pipeline exists",
+      "time_to_first_revenue": "UNKNOWN",
+      "risks": ["none new beyond existing pipeline risk"],
+      "demand_evidence": "NONE found for Arabic prompt packs specifically",
+      "accept_reject_criteria": "founder decision on whether to commit the uncommitted branch at all — see FACTORY_AUTOMATION_AUDIT.md section I",
+      "confidence": "HIGH_if_committed_ZERO_on_demand"
+    },
+    {
+      "id": "n8n_importable_packages",
+      "category": "A_high_readiness",
+      "maturity": "DOES_NOT_EXIST",
+      "real_code": [],
+      "note": "automation_systems family produces a PDF describing automation, not an importable .json workflow. Real n8n_workflows/*.fixed.json files are internal Galaxy Forge operations, never packaged for sale. Effectively a Category D item despite being listed under 'high readiness.'",
+      "confidence": "N/A_not_built"
+    },
+    {
+      "id": "pdf_guides_marketing_copy",
+      "category": "B_human_review_required",
+      "maturity": "REAL_ONE_SHIPPED_EXAMPLE",
+      "real_code": ["books/eu_ai_act_compliance_toolkit.pdf", "books/eu_ai_act_compliance_toolkit_launch_kit.md"],
+      "automated_qa": "inspectors.py Dual Inspection, proven on this exact artifact",
+      "estimated_price_range_usd": [310, 310],
+      "price_basis": "real, already-set price for the one shipped example; not a confirmed SOLD price",
+      "human_review_required": "MANDATORY — a real prior defect (a disclaimer that never rendered into the shipped PDF) proves automated generation alone is insufficient",
+      "time_to_first_revenue": "UNKNOWN",
+      "risks": ["legal/financial exposure from an unreviewed claim — already occurred once, caught post-hoc"],
+      "demand_evidence": "none beyond the one shipped example; 0 sales",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "legal_compliance_kits",
+      "category": "B_human_review_required",
+      "maturity": "PARTIAL",
+      "real_code": ["customer_site/gpsr-landing.html", "books/eu_ai_act_*"],
+      "subclass_pdpl_saudi": "NOT_STARTED — zero files found in tracked repo",
+      "automated_qa": "inspectors.py Dual Inspection",
+      "estimated_price_range_usd": [150, 350],
+      "price_basis": "ESTIMATED from EU AI Act precedent",
+      "human_review_required": "MANDATORY, licensed/qualified reviewer or proven-rendering disclaimer, per jurisdiction",
+      "risks": ["highest in registry — a real regulatory-currency error was already found and corrected once in the EU AI Act kit"],
+      "demand_evidence": "none specific to PDPL",
+      "accept_reject_criteria": "do not build PDPL without real demand evidence AND a named human reviewer path",
+      "confidence": "LOW"
+    },
+    {
+      "id": "visual_creative_classes",
+      "category": "C_lower_readiness",
+      "maturity": "NO_SHIPPED_PRODUCT",
+      "real_code": ["cover_designer_v2.py (internal tooling for class A/B covers only, not a standalone product)"],
+      "note": "no video/novel/game pipeline exists anywhere in the tracked repo",
+      "confidence": "LOW"
+    },
+    {
+      "id": "saas_micro_tools",
+      "category": "D_feasibility_only",
+      "maturity": "NONE",
+      "real_code": [],
+      "feasibility_note": "Hosting/ToS/DB/payment research not completed within this cycle's 15-min-per-item budget. No database layer exists anywhere in this factory by design (flat JSON/JSONL only). No Stripe/Shopify payment integration exists in channels/registry.py.",
+      "confidence": "UNKNOWN"
+    },
+    {
+      "id": "telegram_whatsapp_bots_as_product",
+      "category": "D_feasibility_only",
+      "maturity": "PARTIAL_INFRA_ONLY",
+      "real_code": ["TELEGRAM_BOT_TOKEN present, internal notifications only"],
+      "feasibility_note": "Selling a bot AS A PRODUCT (hosting a third party's bot instance/token/support) is unbuilt. WhatsApp: zero integration found.",
+      "confidence": "LOW"
+    },
+    {
+      "id": "google_sheets_excel_addons",
+      "category": "D_feasibility_only",
+      "maturity": "NONE",
+      "real_code": [],
+      "confidence": "UNKNOWN"
+    },
+    {
+      "id": "cli_python_node_tools",
+      "category": "D_feasibility_only",
+      "maturity": "SAME_AS_small_scripts_cli_tools",
+      "confidence": "LOW"
+    },
+    {
+      "id": "structured_datasets",
+      "category": "D_feasibility_only",
+      "maturity": "RAW_DATA_EXISTS_UNCLEANED",
+      "real_code": ["data/*.jsonl internal ledgers"],
+      "feasibility_note": "would need a real data-cleaning + licensing-terms pass before any external resale; not started",
+      "confidence": "UNKNOWN"
+    },
+    {
+      "id": "subscription_newsletters_reports",
+      "category": "D_feasibility_only",
+      "maturity": "NONE",
+      "real_code": [],
+      "feasibility_note": "no recurring-billing code path exists anywhere — only one-time Gumroad/Paddle purchases are wired",
+      "confidence": "UNKNOWN"
+    },
+    {
+      "id": "ai_agent_deployment_as_service",
+      "category": "D_feasibility_only",
+      "maturity": "NONE",
+      "real_code": [],
+      "feasibility_note": "zero real code mapping found (see FACTORY_AUTOMATION_AUDIT.md arm 4); needs a human-labor delivery process this factory has none of",
+      "confidence": "UNKNOWN"
+    },
+    {
+      "id": "browser_extensions",
+      "category": "D_feasibility_only",
+      "maturity": "NONE",
+      "real_code": [],
+      "feasibility_note": "store fees/review process/permissions audit not researched this cycle",
+      "confidence": "UNKNOWN"
+    }
+  ]
+}
