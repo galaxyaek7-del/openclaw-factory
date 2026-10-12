@@ -149,6 +149,25 @@ def validate_event_against_catalog(transaction_data, catalog=None, catalog_path=
 
 
 def _load_processed_event_ids(path):
+    """Event ids that were genuinely ACCEPTED, and therefore must never be
+    processed a second time.
+
+    Only status == "ACCEPTED" records occupy this set. Rejected events are
+    still appended to the same evidence ledger (Section 6's "log rejected
+    events, log accepted events" requirement is unchanged) but they must NOT
+    poison the idempotency set: Paddle retries a failed delivery several
+    times, and several rejection reasons here are transient/environmental
+    rather than permanent -- an unreadable or not-yet-synced catalog, a
+    half-written payload. Counting those as "already processed" meant a
+    single transient failure permanently burned the event_id, so every
+    subsequent retry returned DUPLICATE_EVENT and a genuinely paid
+    transaction.completed event could never be recorded at all. That
+    silently lost real revenue while still satisfying "never double-count".
+
+    The anti-duplicate guarantee this set exists for is unaffected: a real
+    duplicate of a genuinely accepted event still has an ACCEPTED record and
+    is still rejected as DUPLICATE_EVENT.
+    """
     if not path.exists():
         return set()
     ids = set()
@@ -160,6 +179,8 @@ def _load_processed_event_ids(path):
             try:
                 record = json.loads(line)
             except json.JSONDecodeError:
+                continue
+            if record.get("status") != "ACCEPTED":
                 continue
             eid = record.get("event_id")
             if eid:

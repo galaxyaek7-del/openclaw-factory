@@ -1,0 +1,123 @@
+{
+  "cycle": 81,
+  "generated_at_utc": "2026-10-12",
+  "mission": "Paddle key rotation, blocker resolution, commercial execution",
+  "north_star": "$100K+ verified revenue",
+  "verified_revenue_usd": 0.0,
+  "spend_usd": 0.0,
+
+  "paddle_rotation": {
+    "status": "BLOCKED",
+    "credential_identified_as": "PADDLE_API_KEY (a live merchant API key), NOT a webhook secret",
+    "webhook_secret_distinct": "PADDLE_WEBHOOK_SECRET is referenced by channels/paddle_webhook.py but is absent from .env entirely",
+    "expires_at": "2026-10-16T10:32:35Z",
+    "evidence": {
+      "get_api_keys": "HTTP 200",
+      "post_api_keys_empty_body": "HTTP 400 invalid_field (name required)",
+      "post_api_keys_with_name": "HTTP 403 forbidden - 'You are not permitted to perform this request'",
+      "conclusion": "the key cannot mint or revoke its own replacement; key lifecycle is dashboard-only"
+    },
+    "new_credential_created": false,
+    "secret_values_printed_or_committed": false,
+    "old_credential_revoked": "UNKNOWN - cannot be revoked via API and must not be revoked before a replacement exists"
+  },
+
+  "paddle_integration_audit": {
+    "auth": "live key authenticates successfully against api.paddle.com",
+    "price_mapping": {
+      "local_catalog_entries": 7,
+      "live_paddle_prices": 7,
+      "amount_mismatches": 0,
+      "missing_from_catalog_before_repair": 1,
+      "defect": "The 5-Minute Context Reset Playbook (pri_01m23gzc9bb5z3kr0yfqrx7yba, $15) was live+active in Paddle but absent from data/paddle_products.json. A real transaction.completed for it would have been rejected as PRODUCT_MISMATCH, so a genuine paid sale could never be recorded, and the product was not offered on the public catalog.",
+      "repair": "added the real live product_id/price_id/price to data/paddle_products.json"
+    },
+    "webhook_signature": "real HMAC-SHA256 over ts:raw_body, constant-time compare; verified INVALID_SIGNATURE rejection works",
+    "webhook_route_wired": "server.js:5318 POST /webhooks/paddle",
+    "idempotency_defect": {
+      "confirmed": true,
+      "root_cause": "_reject() appended event_id to the same ledger _load_processed_event_ids() read without filtering on status, so any transient rejection permanently burned the event_id",
+      "consequence": "a genuinely paid transaction.completed could be rejected once (e.g. catalog not yet synced) and then every Paddle retry would return DUPLICATE_EVENT, losing the real sale permanently while still satisfying 'never double-count'",
+      "repair": "_load_processed_event_ids() now counts only status==ACCEPTED records; rejected events remain fully logged as before",
+      "anti_duplicate_guarantee": "PRESERVED - a true duplicate of an accepted event still returns DUPLICATE_EVENT"
+    },
+    "sandbox_can_be_counted_as_revenue": false,
+    "sandbox_evidence": "PADDLE_API_BASE is hardcoded to https://api.paddle.com; sandbox is a commented-out constant. A sandbox event cannot carry a live account's webhook signature, so it fails INVALID_SIGNATURE.",
+    "webhook_operational": false,
+    "webhook_blocking_gap": "PADDLE_WEBHOOK_SECRET unset -> every delivery returns MISSING_SECRET; notification-settings has 0 subscriptions",
+    "tests_added": ["tests/test_paddle_webhook_idempotency.py (9)", "tests/test_paddle_catalog_coverage.py (6)"]
+  },
+
+  "search_console": {
+    "status": "UNVERIFIED - founder action required",
+    "deployed_site": "https://galaxyaek7-del.github.io/openclaw-factory/",
+    "verification_method_preserved": true,
+    "meta_tag_present": true,
+    "meta_tag_length": 43,
+    "index_html_encoding": "valid UTF-8, no BOM",
+    "robots_txt": "200, points at the live sitemap",
+    "sitemap_urls": 59,
+    "sitemap_urls_returning_http_200": 59,
+    "sitemap_dead_urls": 0,
+    "sitemap_duplicates": 0,
+    "local_matches_live": true,
+    "google_credentials_present": false,
+    "ownership_indexing_traffic": "UNKNOWN - not claimed"
+  },
+
+  "commercial_execution": {
+    "stale_claim_repaired": {
+      "where": "customer_site/products.html (the factory's own public catalog page, in the sitemap)",
+      "was": "'PDF upload pending - buy now and the founder emails it to you directly, or requests a full refund.'",
+      "truth": "the PDF has been attached to the Gumroad listing since at least Cycle 100 and downloads correctly (139,121 bytes, verified)",
+      "now": "states the PDF is attached and downloads instantly, verified by downloading the real file"
+    },
+    "new_product_published": {
+      "title": "The 5-Minute Context Reset Playbook",
+      "price_usd": 15.0,
+      "channel": "Gumroad (the only channel with a working checkout)",
+      "url": "https://aekraft.gumroad.com/l/akxaae",
+      "gumroad_product_id": "rMOopS7Q7LHxwaPTY462uw==",
+      "deliverable": "books/five_minute_context_reset_playbook.pdf",
+      "pdf_pages": 9,
+      "pdf_words": 1612,
+      "pdf_bytes": 119824,
+      "content_source": "human_claude_review (ADR-022 path)",
+      "chapters": 6,
+      "attachment_verified": "remote file sha256 identical to the local validated PDF; %PDF- magic confirmed",
+      "live_verification": "HTTP 200, schema.org InStock, $15.00, published=true, 1 file, no false-promise markers",
+      "trust_framework": "brand_dna.validate_customer_facing_text passed",
+      "listing_page": "added to customer_site/products.html as the first card with campaign attribution referrer=c81_context_reset",
+      "why_this_product": "it already existed live and active in Paddle with a 68-character description and no deliverable; Paddle checkout is gated by account onboarding, so it was unsellable and undeliverable"
+    },
+    "existing_products_audited": "all 7 Paddle products checked for a real deliverable; 6 had matching PDFs in books/, 1 (the $15) had none and now does",
+    "spend": "$0.00 - Gumroad listing is free, content authored in-repo, no paid distribution used",
+    "external_publication": "none - Reddit/Quora/StackOverflow return 403, no account exists on HN/IndieHackers/ProductHunt/LinkedIn. Nothing posted, nothing claimed."
+  },
+
+  "traffic_and_revenue": {
+    "qualified_visits": "UNKNOWN",
+    "leads": "UNKNOWN",
+    "orders": 0,
+    "refunds": 0,
+    "gross_usd": 0.0,
+    "fees": "UNKNOWN",
+    "net_usd": 0.0,
+    "date_range": "2026-10-12 (this cycle)",
+    "measurement_note": "no click-start observation point exists, so outbound clicks and checkout starts are reported UNKNOWN rather than zero"
+  },
+
+  "tests": {
+    "paddle_and_gumroad_groups": "107 passed",
+    "brand_dna_preamble_node": "3 passed",
+    "test_production_os": "passed",
+    "secret_scan": "clean",
+    "pre_existing_failure_not_caused_by_this_cycle": "tests/test_api_contract.js -> enterprise-dependency-graph returns 500 instead of 200. Reproduced identically with this cycle's changes reverted via git stash, so it is pre-existing and unrelated."
+  },
+
+  "repository_note": {
+    "reported_path": "C:\\openclaw-dashboard",
+    "actual_working_path": "C:\\openclaw-dasgboard",
+    "note": "C:\\openclaw-dashboard is a separate, unrelated git repo (commit 'OpenClaw v1 working', 7 entries, different server.js). All work in this cycle was performed in C:\\openclaw-dasgboard, the real Galaxy Forge factory (1131 entries)."
+  }
+}
