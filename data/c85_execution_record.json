@@ -1,0 +1,66 @@
+{
+  "cycle": 85,
+  "date": "2026-10-12",
+  "goal": "get visitors, then real buyers",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "headline_finding": {
+    "what": "our own Gumroad storefront shows only 9 of 76 products, and the set was actively harmful",
+    "the $155 flagship (iaiyt) was NOT surfaced": true,
+    "the withdrawn, zero-file $150 product (owtmpe) WAS surfaced": true,
+    "consequence": "a cold visitor arriving on the marketplace surface was shown our worst $150 listing and never shown our best one",
+    "fix_applied": "renamed owtmpe to '[Unavailable] AI Workflow QA & Stress Test - ...' so the storefront card itself carries the warning. Its description already said withdrawn, but the card did not show that.",
+    "note": "Gumroad first rejected 'WITHDRAWN — DO NOT BUY —' as promotional spam; a neutral '[Unavailable] ' prefix was accepted.",
+    "verified": "name changed; price unchanged ($150); file count unchanged (0); description unchanged; storefront HTML now shows the [Unavailable] prefix",
+    "still_needs_dashboard": "storefront curation (which 9 products appear) has NO API - GET /storefront, /user/products and /profile all return 404"
+  },
+
+  "channel_reality_check": {
+    "nostr": {"posts": 20, "relays_accepted": true, "responses": 0, "evidence": "nostr_replies_gf17.json shows eose=true replies=0 for every post; zero posts record a non-zero response. Posting more here is volume with no evidence of reach."},
+    "telegraph": {"live_articles": 66, "attributed_sales": 0, "value": "still the best free channel because it needs no identity and links out to products, but it has not produced a buyer"},
+    "bing_indexnow": {"submitted": 59, "accepted": true, "value": "real and accepted; Bing is the only engine that has our URLs"},
+    "google": "NOT submitted - requires a Google identity via Search Console. IndexNow does not include Google.",
+    "social_forums": "none usable - Reddit, Quora and StackOverflow return 403 or require an account; no account exists on HN, IndieHackers, ProductHunt or LinkedIn",
+    "gumroad_marketplace_search": "could not be verified programmatically - Gumroad pages are client-rendered and /discover returns 404 to an unauthenticated fetch"
+  },
+
+  "seo_infrastructure_verified_sound": {
+    "noindex_pages": 3,
+    "noindex_which": "history.html, login.html, status.html - correct, these are account pages",
+    "pages_missing_title": 0,
+    "robots_txt": "Allow: / for all agents, points at the live sitemap",
+    "x_robots_tag_header": "none on live responses",
+    "catalog_reachable_hops": 1,
+    "pages_linking_to_catalog": "18 of 61",
+    "external_inbound_links": "present - Telegraph articles link to customer_site pages, giving crawlers a real path",
+    "conclusion": "nothing technical is suppressing organic reach. The constraint is that Google has never been told about the site."
+  },
+
+  "storefront_defects_needing_dashboard": [
+    "Storefront shows 9 arbitrary products; the $155 flagship is not among them. Fix: in Gumroad dashboard, curate the storefront to lead with /l/iaiyt, /l/fgruzn and /l/uldlwa.",
+    "Storefront meta description reads 'Get the latest products and updates from aek grafat on Gumroad.' - the display name appears garbled. Fix: correct the account display name in Gumroad settings.",
+    "Archive /l/owtmpe entirely - no API can unpublish or delete.",
+    "Delete /l/dxfwlu, the $1 API test object - no API can delete it."
+  ],
+
+  "what_was_not_done_and_why": [
+    "No new Nostr posts: 20 posts produced 0 responses, so more posting is unjustified volume.",
+    "No self-affiliate linking or any attempt to manufacture a sale.",
+    "No scraping of Google to check indexing - that violates their terms and would not be reliable evidence.",
+    "No fake traffic, no paid ads, no paid API credits."
+  ],
+
+  "measurement": {
+    "qualified_visits": "UNKNOWN - the page-view beacon still 404s on the GitHub Pages host",
+    "leads": "UNKNOWN",
+    "checkout_starts": "UNKNOWN",
+    "orders": 0,
+    "refunds": 0,
+    "gross_usd": 0.0,
+    "net_usd": 0.0,
+    "basis": "authoritative Gumroad API across all 77 products, all time"
+  },
+
+  "honest_conclusion": "Every identity-free lever has now been tested with real evidence. Distribution exists and is verified, but none of the available channels has produced a visitor or a buyer. The remaining levers all require the founder's identity: Search Console for Google, a storefront curation in the Gumroad dashboard, and one community account. That is the actual bottleneck, not code."
+}
