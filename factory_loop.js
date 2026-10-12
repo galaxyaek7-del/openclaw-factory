@@ -161,6 +161,46 @@ function isPidAliveWithIdentity(pid, execFn = null) {
 // so tests can exercise this against an isolated temp file and a fake exit
 // function — never the real, currently-running factory's own lock file.
 //
+// Atomic "write then publish" claim, replacing every former direct
+// fs.writeFileSync(lockFile, pid, { flag: 'wx' }) call (2026-10-12).
+//
+// REAL BUG this closes: { flag: 'wx' } is a single JS call but NOT a single
+// filesystem operation — it is open(O_CREAT|O_EXCL) followed by a separate
+// write(). Between those two syscalls the path exists but is EMPTY. The CI
+// failure this fix responds to (tests/test_factory_loop_lock.js's 8-process
+// test, Linux-only — 5/5 local Windows runs could not reproduce it, matching
+// this exact file's own prior 2026-10-05 comments about this bug class being
+// Linux-CI-only) showed the WINNER's own final lock content read back as ''.
+// The only path that can produce that: a second, unrelated process's blind
+// first-line claim attempt (meant for the "no lock exists yet" case) landing
+// in the brief window where a reclaiming winner had renamed the old lock
+// aside but not yet recreated it — i.e. two independent { flag: 'wx' }
+// call sites racing to fill the SAME brief "path absent" gap, each unaware
+// of the other's in-flight write.
+//
+// Fix: never create the public lockFile path with empty-then-filled
+// content. Write the pid to a throwaway, per-attempt-unique temp path first
+// (no contention possible — the name embeds our own pid + a counter), then
+// fs.linkSync() it into the real lockFile path. link() is a single atomic
+// filesystem operation: the destination name either springs into existence
+// already pointing at a fully-written inode, or the call fails EEXIST
+// without creating anything — there is no intermediate "exists but empty"
+// state for any other process to observe. Verified on this platform
+// (Windows/NTFS) and relied on as standard POSIX behavior on Linux CI.
+let _lockClaimCounter = 0;
+function _claimLockAtomically(lockFile, pid) {
+  const tmpPath = `${lockFile}.claim.${pid}.${process.hrtime.bigint()}.${_lockClaimCounter++}`;
+  fs.writeFileSync(tmpPath, String(pid));
+  try {
+    fs.linkSync(tmpPath, lockFile);
+  } finally {
+    // The hard link we just created at lockFile is an independent directory
+    // entry pointing at the same inode — removing this throwaway name never
+    // affects lockFile's own content, win or lose.
+    try { fs.unlinkSync(tmpPath); } catch (_) { /* best effort */ }
+  }
+}
+
 // Return value (Unified Recovery System §2, 2026-07-18): true iff a stale
 // lock (dead PID) was reclaimed — the real, concrete "did the previous
 // instance die uncleanly" signal the new startup safety check needs.
@@ -172,11 +212,12 @@ function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit, execFn = null)
   // separate calls, not one atomic operation, so two instances starting in
   // the same narrow window could both see "no live lock" and both write —
   // exactly the failure this guard exists to prevent (see comment above).
-  // { flag: 'wx' } makes the common case (no lock file yet) a single
-  // atomic exclusive-create: the OS itself guarantees only one process can
-  // win it, no check-then-act gap.
+  // _claimLockAtomically() makes the common case (no lock file yet) a
+  // single atomic publish: the OS itself guarantees only one process can
+  // win it, no check-then-act gap, and no empty-file window (see its own
+  // docstring above for the real bug this closes).
   try {
-    fs.writeFileSync(lockFile, String(process.pid), { flag: 'wx' });
+    _claimLockAtomically(lockFile, process.pid);
     return false;
   } catch (err) {
     if (err.code !== 'EEXIST') {
@@ -296,7 +337,7 @@ function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit, execFn = null)
       // We removed a lock that had already changed hands. Put it back exactly
       // as found so its real owner is still guarded, then stand down.
       try {
-        fs.writeFileSync(lockFile, stolenContent, { flag: 'wx' });
+        _claimLockAtomically(lockFile, stolenContent);
       } catch (_) {
         // Another process re-created it first; that is the correct outcome.
       }
@@ -306,7 +347,7 @@ function acquireLock(lockFile = LOCK_FILE, exitFn = process.exit, execFn = null)
     }
 
     try {
-      fs.writeFileSync(lockFile, String(process.pid), { flag: 'wx' });
+      _claimLockAtomically(lockFile, process.pid);
       return true;
     } catch (claimErr) {
       if (claimErr.code === 'EEXIST') {
