@@ -1,0 +1,90 @@
+{
+  "cycle": 84,
+  "date": "2026-10-12",
+  "strategic_constraint_applied": "Digital products only. No investment made in cars or Diminished Value; the $59 Diminished Value Claim Kit was deliberately left untouched and is not counted as a candidate.",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "paddle": {
+    "authenticating": true,
+    "verified_live": "GET /products -> HTTP 200, re-checked this cycle, not assumed",
+    "expiry": "2026-10-16T10:32:35Z",
+    "days_remaining": 3,
+    "days_remaining_source": "real clock at audit time - an earlier cycle's '4 days' was off by one and is corrected here",
+    "rotation": "BLOCKED - POST /api-keys returns HTTP 403; no /rotate endpoint (404). Key lifecycle is dashboard-only.",
+    "new_key_exists": false,
+    "secrets_printed_or_committed": false,
+    "old_key_revoked": "UNKNOWN - untouched, and must not be revoked before a replacement exists"
+  },
+
+  "delivery_integrity": {
+    "products_checked": 76,
+    "method": "opened every delivered file and compared ACTUAL bytes against the size the listing advertises",
+    "delivering_at_least_90pct_of_claimed_size": 76,
+    "under_delivering": 0,
+    "conclusion": "no listing under-delivers against its own claim. Earlier concerns about a '6,626 byte' download were my own confusion between two different products' metadata, not a defect."
+  },
+
+  "new_finding_value_density": {
+    "what_it_is": "price-to-content ratio, computed by opening every PDF and counting real pages and real words",
+    "finding": "several listings were priced far above what they deliver. The catalog's own economics put a 15-19 page, ~2,700 word toolkit at $29, yet some listings charged $69 to $399 for a 1-3 page file.",
+    "examples_before": [
+      {"name": "GCC Contractor Payment Command System", "price": 399, "pages": 3, "words": 846, "words_per_dollar": 2.1},
+      {"name": "Suspended Seller First-Appeal POA System", "price": 129, "pages": 2, "words": 618, "words_per_dollar": 4.8},
+      {"name": "Toy Safety File Starter (EN 71 Lens)", "price": 69, "pages": 1, "words": 358, "words_per_dollar": 5.2}
+    ],
+    "why_it_mattered": "this is an over-promise that generates refunds and chargebacks; chargebacks are how a Gumroad account gets restricted. It is a liability, not just weak positioning.",
+    "repair": "repriced the three most indefensible listings and appended an honest 'What you actually receive' scope note to each, stating the real page and word count and that 0 sales are recorded with no reviews",
+    "after": [
+      {"name": "GCC Contractor Payment Command System", "price": 49, "words_per_dollar": 17.3},
+      {"name": "Suspended Seller First-Appeal POA System", "price": 39, "words_per_dollar": 15.8},
+      {"name": "Toy Safety File Starter (EN 71 Lens)", "price": 29, "words_per_dollar": 12.3}
+    ],
+    "verification": "each change re-read from the API; file count and file SIZE proven intact, name and published state proven unchanged",
+    "reversible": true,
+    "note": "zero sales exist, so repricing cannot lose existing revenue. The founder can reverse any of the three with one call.",
+    "not_done": "The $155 EU AI Act flagship was deliberately NOT repriced. Its 31 pages, 19 tags and external market evidence make it a different case, and it is the strongest product; repricing it is a business decision, not a defect fix."
+  },
+
+  "self_inflicted_defect_caught": {
+    "what": "repricing three products left our own customer_site/products.html advertising the old prices, so the site contradicted the live listings",
+    "how_caught": "ran a site-vs-live price comparison immediately after the change rather than assuming",
+    "fix": "corrected all three cards; full re-check of all 75 catalog cards now shows 0 mismatches"
+  },
+
+  "two_more_false_alarms_from_my_own_checks": [
+    "The first repricing attempt auto-rolled back because 'files intact=False'. That compared Gumroad's S3 signed file URLs, which rotate on every read. Corrected to compare file name and size, then re-applied successfully. The rollback itself was correct behaviour and left all three products at their original prices, which was verified before re-applying.",
+    "An earlier catalog pass reported 34 'unexpected file type' products; all 34 were valid ZIP bundles caused by comparing 5 magic bytes against a 2-byte string."
+  ],
+
+  "top_three_digital_products": [
+    {"rank": 1, "name": "EU AI Act Compliance Toolkit", "url": "https://aekraft.gumroad.com/l/iaiyt", "price_usd": 155,
+     "delivery": "31 pages, 3 files verified downloadable, 3,057 words",
+     "why": "highest marketplace discovery on the account at 19 tags, the only product with external market evidence behind it (real competitor pricing and real customer reviews), the most complete description, and a verified intact Telegraph-to-site-to-checkout path"},
+    {"rank": 2, "name": "Etsy Suspension Appeal Kit", "url": "https://aekraft.gumroad.com/l/fgruzn", "price_usd": 29,
+     "delivery": "19 pages, 122,465 bytes, valid PDF",
+     "why": "strongest price-to-content ratio of any mid-priced kit at ~91 words per dollar, and a proven topic match: the Telegraph article and three guide pages on Etsy appeals now route to it"},
+    {"rank": 3, "name": "Legal Case Research Automation for Solo Attorneys", "url": "https://aekraft.gumroad.com/l/uldlwa", "price_usd": 29,
+     "delivery": "16 pages, 105,317 bytes, valid PDF",
+     "why": "~92 words per dollar, 6 tags, custom_summary present, listed on our catalog page"}
+  ],
+
+  "measurement": {
+    "qualified_visits": "UNKNOWN - the deployed page-view beacon still 404s on the GitHub Pages host",
+    "leads": "UNKNOWN",
+    "checkout_starts": "UNKNOWN",
+    "orders": 0,
+    "refunds": 0,
+    "gross_usd": 0.0,
+    "net_usd": 0.0,
+    "basis": "authoritative Gumroad API across all 77 products, all time",
+    "note": "traffic is not reported as zero and HTTP 200 is not treated as evidence of sales"
+  },
+
+  "still_blocked_needing_external_authority": [
+    "Archive /l/owtmpe ($155, says withdrawn, zero files, still sellable) and /l/dxfwlu ($1 API test object, still sellable) - Gumroad exposes no unpublish or delete",
+    "Rotate the Paddle key - https://vendors.paddle.com/account/api-keys - 3 days remaining",
+    "Verify Google Search Console - Bing has all 59 URLs via IndexNow, Google does not",
+    "Publicly host the Express server, without which traffic can never be measured"
+  ]
+}
