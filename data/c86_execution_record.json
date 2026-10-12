@@ -1,0 +1,120 @@
+{
+  "cycle": 86,
+  "date": "2026-10-12",
+  "mission": "PRODUCT INTEGRITY + PADDLE RECOVERY + COMMERCIAL EXECUTION",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+  "start_commit": "95934ad",
+
+  "repository_state_verified": {
+    "head": "95934ad (verified, not assumed)",
+    "branch": "main, in sync with origin/main",
+    "continuity": "no work was lost. Cycle 83/84/85 records all present. No session was actually interrupted - context persisted across the whole run.",
+    "pre_existing_modified_tracked_files": 83,
+    "handling": "preserved untouched; targeted git staging only, never git add ."
+  },
+
+  "paddle_403_root_cause": {
+    "answer": "NOT a defect. The integration is correct and the credential is valid. It is a scoped permission boundary.",
+    "evidence": {
+      "credential_present": "PADDLE_API_KEY exists in .env, length 69, prefix pdl_live_ (production), not a placeholder",
+      "auth_header_format": "Authorization: Bearer <key> - exactly Paddle's documented format, built by channels/paddle_publisher.py::_headers()",
+      "base_url_correct": "https://api.paddle.com - and the sandbox host correctly rejects this live key with 403, confirming we are on the right environment",
+      "read_works": "GET /products -> HTTP 200",
+      "WRITE_WORKS": "PATCH /products/{id} with the same value -> HTTP 200. This is the decisive proof: the key can write.",
+      "read_key_list": "GET /api-keys -> HTTP 200",
+      "only_failure": "POST /api-keys -> HTTP 403, code=forbidden, detail='You are not permitted to perform this request'"
+    },
+    "hypotheses_ruled_out": {
+      "invalid_or_missing_credential": "ruled out - reads and writes both succeed",
+      "wrong_account_environment": "ruled out - sandbox correctly rejects the live key",
+      "account_restriction": "ruled out - ordinary product writes succeed",
+      "endpoint_misuse": "ruled out - the endpoint exists and validates the request body (it rejected an empty body with 'name is required' before denying on permission)"
+    },
+    "true_cause": "An API key cannot mint or revoke another API key. Paddle allows that only from an authenticated human session in vendors.paddle.com. Correct provider behaviour.",
+    "status": "BLOCKED - needs a human dashboard session, not a code change",
+    "manual_action_required": true,
+    "old_key_revoked": "NO - deliberately not revoked; it must remain valid until a replacement is created and verified",
+    "secrets_printed_or_committed": false
+  },
+
+  "eu_ai_act_toolkit_audit": {
+    "url": "https://aekraft.gumroad.com/l/iaiyt",
+    "title": "EU AI Act Compliance Toolkit - Practical Templates & Implementation Guide for SMEs",
+    "price_usd": 155,
+    "published": true,
+    "archived": null,
+    "tags": 19,
+    "sales": 0,
+    "checkout": "InStock, price 155.0 rendered on the live page",
+    "files": {
+      "count": 3,
+      "all_downloadable": "yes - each fetched HTTP 200",
+      "main_deliverable": "31 pages, 3,057 words, sha256 c22671a674141e73, identical to the repo copy",
+      "preview": "3 pages, 209 words",
+      "DEFECT_duplicate": "files #1 and #3 are byte-identical (same sha256). A buyer downloads the same 31-page PDF twice. Cannot be removed via API."
+    },
+    "advertised_versus_delivered": {
+      "advertised_components": 15,
+      "present_in_deliverable": 15,
+      "missing": 0,
+      "method": "each advertised component searched in the extracted PDF text by keyword"
+    },
+    "accuracy": {
+      "december_2_2027_deadline": "present and stated consistently",
+      "digital_omnibus": "present",
+      "august_2_2026_transparency": "present",
+      "penalties": "EUR 35 million and 7% present",
+      "legislation_numbered": "Regulation (EU) 2024/1689 present"
+    },
+    "defects_found_and_repaired": [
+      {
+        "defect": "the live description claimed the toolkit has 'the actual source cited in the toolkit itself, not just asserted', but the PDF contains zero URLs and zero uses of 'cited' or 'citation'",
+        "repair": "replaced that sentence with an accurate statement: the toolkit names its sources in the text (Regulation (EU) 2024/1689 and the Digital Omnibus deferral) rather than asserting the date without reference",
+        "status": "APPLIED AND VERIFIED LIVE - price, title and file count proven unchanged"
+      }
+    ],
+    "defect_found_not_repairable_via_api": {
+      "defect": "Chapter 24 concluded: 'By utilizing this comprehensive toolkit, SMEs deploying AI systems can ensure compliance with the EU AI Act.' That is an unsupported legal-compliance guarantee inside a product sold on compliance grounds.",
+      "also_present_at": "a second, softer occurrence in the introduction (page 5)",
+      "repair_built": "scripts/patch_eu_ai_act_toolkit.py replaces both occurrences with 'pursue compliance' using a same-byte-length substitution, so no glyph offsets or layout change",
+      "output": "books/eu_ai_act_compliance_toolkit_v2.pdf",
+      "verification": "31 pages preserved, 3,057 words preserved, extracted text byte-identical once the replacement is reversed, 'not legal advice' chapter intact, all Annex references intact",
+      "why_not_uploaded": "Gumroad refuses the file swap: 'Cannot remove files still referenced in rich content'. The offending file id does not appear in the description text, so the embed cannot be stripped first.",
+      "status": "AWAITING MANUAL UPLOAD"
+    }
+  },
+
+  "three_selected_digital_products": [
+    {"rank": 1, "name": "EU AI Act Compliance Toolkit", "url": "https://aekraft.gumroad.com/l/iaiyt",
+     "evidence": "15/15 advertised components actually present in the file; regulatory dates verified correct; 19 tags; verified checkout; 31 pages of real content"},
+    {"rank": 2, "name": "Etsy Suspension Appeal Kit", "url": "https://aekraft.gumroad.com/l/fgruzn",
+     "evidence": "19 pages / 122,465 bytes valid PDF; ~91 words per dollar, the strongest ratio among mid-priced kits; proven topic match to the Telegraph article and three guide pages that now route to it"},
+    {"rank": 3, "name": "Legal Case Research Automation for Solo Attorneys", "url": "https://aekraft.gumroad.com/l/uldlwa",
+     "evidence": "16 pages / 105,317 bytes valid PDF; ~92 words per dollar; 6 tags; custom_summary present; listed on the catalog page"}
+  ],
+
+  "distribution_and_conversion": {
+    "nostr": "20 posts, 0 responses. Posting more is unjustified volume.",
+    "telegraph": "66 live articles, 0 attributed sales. Still the best identity-free channel.",
+    "bing_indexnow": "59 URLs accepted",
+    "google": "not submitted - requires Search Console, i.e. a Google identity",
+    "qualified_visits": "UNKNOWN - the page-view beacon still 404s on the Pages host",
+    "leads": "UNKNOWN",
+    "checkout_starts": "UNKNOWN",
+    "orders": 0,
+    "refunds": 0,
+    "gross_usd": 0.0,
+    "net_usd": 0.0
+  },
+
+  "new_spending": 0.0,
+  "founder_actions_required": [
+    "Upload books/eu_ai_act_compliance_toolkit_v2.pdf over the existing file at https://gumroad.com/products (removes the compliance guarantee)",
+    "Delete the duplicate attachment on that same product (files #1 and #3 are identical)",
+    "Create a replacement Paddle key at https://vendors.paddle.com/account/api-keys",
+    "Curate the Gumroad storefront: it shows only 9 products and the $155 flagship is not among them",
+    "Verify Google Search Console"
+  ],
+  "next_highest_value_task": "Upload the corrected v2 PDF and remove the duplicate attachment on the flagship. Until the compliance guarantee is out of a product sold on compliance grounds, every second of promotion is promoting a liability."
+}
