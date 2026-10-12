@@ -1,147 +1,103 @@
 {
-  "cycle": "100",
-  "generated_at": "2026-10-12T10:01:02.937588+00:00",
-  "baseline": {
-    "head_at_start": "73196b6",
-    "verified": true,
-    "ci": {
-      "run_id": 38231689551,
-      "url": "https://github.com/galaxyaek7-del/openclaw-factory/actions/runs/38231689551",
-      "conclusion": "success"
-    }
+  "cycle": 100,
+  "date": "2026-10-12",
+  "mission": "fix access blockers, verify product delivery, execute free commercial actions",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "git_state": {
+    "branch": "main",
+    "head_at_start": "1280fa3",
+    "head_at_end": "1280fa3 (no code change required this cycle)",
+    "recent_commits": ["1280fa3 Cycle 99: publish a targeted article...", "59aa788 Cycle 99: real traffic exists...", "70db9da Start-here section", "579f9c4 make the page-view 404 diagnosable", "d72f3de fix a vanity metric"],
+    "in_sync_with_origin": true,
+    "dirty_tracked_files": 67,
+    "dirty_handling": "all 67 are pre-existing changes from other sessions; none were touched, staged, reverted or overwritten"
   },
-  "sitemap_recheck": {
-    "brief_said": 58,
-    "actual_live_urls": 59,
-    "explanation": "58 is the customer_site count; the 59th is public_site/market-validation.html.",
-    "local_HEAD_identical": true,
-    "duplicates": 0,
-    "all_https": true
-  },
-  "search_console_status": {
-    "state": "PENDING FOUNDER ACTION / status UNKNOWN",
-    "property": "https://galaxyaek7-del.github.io/openclaw-factory/",
-    "property_type": "URL prefix (Domain impossible - no DNS control)",
-    "tag_deployed_and_readable": true,
-    "tag_token_length": 43,
-    "tag_byte_offset_in_head": 717,
-    "deployed_index_is_valid_utf8": true,
-    "why_not_verified": "No Google credential exists in this environment, and verification publishes no public side-effect that could be observed without one. I did not claim ownership.",
-    "indexing": "UNKNOWN - no search engine has indexed any page"
-  },
-  "biggest_purchase_obstacle_found_and_removed": {
-    "product": "EU AI Act Compliance Toolkit ($155)",
-    "defect": "The listing opened with: 'Status: the downloadable PDF is not yet attached to this listing... If you purchase now you will not receive the file automatically - please email ... instead'. This was a STALE notice from an earlier cycle. The three files ARE attached and were verified by downloading each one: 139,121B, 106,314B, 139,121B, all valid %PDF- magic, sizes matching. The notice was false and actively told buyers they would receive nothing.",
-    "catalog_sweep": "1 of 75 published products carried this notice. No others.",
-    "fix": "Removed only that paragraph. Every other content line verified byte-identical before writing.",
-    "verified_live": "Public page og:description no longer contains any stale marker; availability InStock, price 155.0, checkout HTTP 200."
-  },
-  "secondary_fix_from_my_own_edit": {
-    "defect": "Removing the paragraph exposed a leftover '---' horizontal rule as the first line of the description, which would have been used as the search blurb.",
-    "fix": "Stripped the leading rule, content-line comparison proved no other change, and set custom_summary.",
-    "custom_summary_now": "Practical EU AI Act templates and an implementation guide for SMEs: risk classification, technical documentation, AI literacy, human oversight and the transparency rules already in force. 31-page PDF, plus a preview.",
-    "why_it_matters": "custom_summary was EMPTY. In Gumroad an empty summary falls back to the first line of the description in marketplace grid and search results, so the product was showing '---' as its search blurb."
-  },
-  "purchase_path_verified": {
-    "product_page": "HTTP 200",
-    "schema_availability": "https://schema.org/InStock",
-    "schema_price": 155.0,
-    "checkout_route": "HTTP 200",
-    "delivery_files_verified": "3 attachments downloaded intact",
-    "note": "A 200 checkout proves technical availability only, not demand."
-  },
-  "paddle_activation_status": {
-    "state": "CATALOG READY, PAYMENT READINESS UNKNOWN",
-    "authoritative_evidence": "18 API events, ALL of type product.created / price.created / product.updated / api_key.*. ZERO transaction, subscription, payment or adjustment events. transactions=0, subscriptions=0, adjustments=0, reports=0.",
-    "live_key_confirmed": "Sandbox API returns HTTP 403 for this key, confirming it is a live merchant key.",
-    "catalogue": "7 products, 7 prices, all active, real amounts $15-$388",
-    "TIME_CRITICAL": {
-      "event": "api_key.expiring",
-      "key_name": "openclaw factory",
-      "masked_key": "pdl_live_apikey_01kxtcrdq7****",
-      "expires_at": "2026-10-16T10:32:35.698Z",
-      "days_remaining_at_cycle_time": 4.0,
-      "consequence": "After that date every Paddle API call in this factory fails with an auth error. Gumroad is unaffected and remains the live channel.",
-      "action": "Founder must create/rotate the API key in vendors.paddle.com before 2026-10-16."
+
+  "PAGE_ACCESS_DENIED_ROOT_CAUSE": {
+    "status": "BLOCKED - cause fully established, not fixable with available credentials",
+    "platform": "Telegraph API (api.telegra.ph)",
+    "endpoint": "editPage",
+    "failing_resource": "path 'Multi-State-Sales-Tax-Nexus-The-Rolling-12-Month-Method-2026-09-27' (and 26 other 2026-09-27/09-28 pages)",
+    "cause": "TOKEN OWNERSHIP BOUNDARY. The access_token currently stored in data/telegraph.json can only edit pages created after it was issued. Older pages belong to a previous token.",
+    "how_it_was_established": "a differential, rate-limited probe across the article timeline using a NO-OP edit (identical title and content, which cannot alter anything) - it only asks whether the token may edit that page.",
+    "evidence": {
+      "2026-09-27 article": "PAGE_ACCESS_DENIED",
+      "2026-09-28 nexus article": "PAGE_ACCESS_DENIED",
+      "2026-10-09 article": "EDITABLE",
+      "2026-10-12 article (published this session pair)": "EDITABLE",
+      "bulk_pass_first_attempt": "13 editable / 27 PAGE_ACCESS_DENIED / 24 FLOOD_WAIT (rate-limited, so re-run cleanly)"
     },
-    "delivery_safeguard_gap": {
-      "finding": "notification-settings returns 0 subscriptions.",
-      "impact": "If a Paddle sale ever completed, nothing would notify this factory automatically.",
-      "fixable_by_api": false,
-      "reason": "Registering a notification destination requires the founder dashboard; no API path exists."
-    }
+    "hypotheses_ruled_out": {
+      "incorrect_endpoint": "no - editPage succeeds on other pages with the same call",
+      "missing_resource": "no - getPage returns full title and content for every denied page, so the pages exist and are readable",
+      "unsupported_operation": "no - the same editPage call succeeds on 13+ pages",
+      "wrong_page_identifier": "no - the path was copied from the stored record and getPage resolves it"
+    },
+    "credential_availability": "data/telegraph.json is gitignored (.gitignore line 106), so it is correctly treated as a secret, and it has no git history. The previous access_token that owns the older pages is not present anywhere in this repository.",
+    "resolution": "NOT FIXED. Reported honestly rather than claimed. The only routes are the original token, or republishing the article under the current token.",
+    "side_effect_disclosed": "the differential probe issued 64 no-op edit calls. A no-op edit cannot change page content, but it is still a write request and did trigger Telegraph flood control on the first pass; the clean re-run used 6s spacing."
   },
-  "distribution_actions": {
-    "executed_this_cycle": [
-      "Removed the false 'file not attached' notice from the $155 listing (owned channel, verified by read-back and on the live page).",
-      "Set custom_summary on the $155 listing so Gumroad search/marketplace shows a real blurb instead of '---'."
+
+  "product_verification": {
+    "url": "https://aekraft.gumroad.com/l/iaiyt",
+    "name": "EU AI Act Compliance Toolkit - Practical Templates & Implementation Guide for SMEs",
+    "price_usd": 155,
+    "published": true,
+    "files": [
+      {"name": "eu_ai_act_compliance_toolkit_preview", "bytes": 106314, "pages": 3, "words": 209, "sha256": "cd74c2866214"},
+      {"name": "(main deliverable)", "bytes": 139401, "pages": 31, "words": 3057, "sha256": "18c4158342c7"}
     ],
-    "campaign_identifier": "c99_catalog / c99_guide referrer tags already live on all 74 storefront buy links from cycle 99.",
-    "external_publications": 0,
-    "why_no_external_post": "Every external channel still needs an identity this environment does not have. Reddit HTML returns a logged-out JS shell and every .json endpoint returns 403; Quora and StackOverflow return 403. No account exists on HN, IndieHackers, ProductHunt or LinkedIn. Posting as a non-existent identity is forbidden, so nothing was published externally and nothing is claimed as published."
+    "delivery_verified": "both files were downloaded from the live listing and opened; both are valid PDFs",
+    "rich_content": "1 fileEmbed, resolves to a real file, zero dangling references",
+    "advertised_vs_delivered": "15 of 15 advertised components present in the extracted text; none missing",
+    "compliance_guarantee": "ABSENT from the served file - the 'ensure compliance' wording is not present",
+    "legal_scope": "'not legal advice' chapter present",
+    "purchase_flow": "https://aekraft.gumroad.com/l/iaiyt/checkout returns HTTP 200 with payment/card markers and the price 155 rendered, and no blocked indicators. THIS PROVES THE PAGE RENDERS. It does NOT prove a payment completes - no charge was created.",
+    "price_changed_this_cycle": false,
+    "unsupported_claims": "none added"
   },
-  "measured_outcome": {
-    "orders": 0,
-    "refunds": 0,
-    "gross_sales_usd": 0,
-    "fees_usd": "UNKNOWN - no fee data from any reachable endpoint",
-    "net_proceeds_usd": 0.0,
-    "spend_usd": 0.0,
-    "reachable_buyers": 0,
-    "qualified_inquiries": 0,
-    "outbound_clicks": "UNKNOWN - no observation point",
-    "checkout_starts": "UNKNOWN - no observation point",
-    "organic_impressions": "UNKNOWN - requires Search Console",
-    "indexed_pages": "UNKNOWN"
+
+  "article_verification": {
+    "url_as_given_in_the_order": "https://telegra.ph/Is-Your-AI-System-High-Risk-Under-the-EU-AI-Act",
+    "url_as_given_result": "HTTP 404 - CORRECTION: this URL is truncated. Telegraph requires the full slug including the date suffix and does not redirect the short form.",
+    "canonical_url": "https://telegra.ph/Is-Your-AI-System-High-Risk-Under-the-EU-AI-Act-The-Four-Questions-That-Decide-It-10-12",
+    "canonical_result": "HTTP 200",
+    "product_link_present": true,
+    "attribution_present": "utm_source=telegraph&utm_medium=article&utm_campaign=eu_ai_act_risk_classification",
+    "honest_disclosure": "'0 sales recorded for the kit to date; no reviews' present",
+    "legal_note": "not legal advice, present",
+    "fake_urgency": false,
+    "duplicate_articles_created": 0
   },
-  "blockers_remaining": [
-    {
-      "blocker": "Search Console verification",
-      "class": "FOUNDER ACTION",
-      "impact": "No inbound organic discovery possible",
-      "needed": "Verify the URL-prefix property, then submit the existing 59-URL sitemap"
-    },
-    {
-      "blocker": "Paddle API key expiry 2026-10-16",
-      "class": "FOUNDER ACTION, TIME-BOUNDED",
-      "impact": "Paddle arm dies in 4 days; no revenue impact today since it has 0 transactions",
-      "needed": "Create/rotate the API key before 2026-10-16"
-    },
-    {
-      "blocker": "Paddle merchant onboarding",
-      "class": "EXTERNAL DEPENDENCY",
-      "impact": "Second revenue channel stays closed",
-      "needed": "Identity, banking and approval in vendors.paddle.com"
-    },
-    {
-      "blocker": "Paddle notification subscriptions = 0",
-      "class": "EXTERNAL DEPENDENCY",
-      "impact": "A future Paddle sale would not notify the factory",
-      "needed": "Register a notification destination in the dashboard"
-    },
-    {
-      "blocker": "Zero qualified visits",
-      "class": "REQUIRES FOUNDER IDENTITY",
-      "impact": "No sale possible at any price",
-      "needed": "One account on one buyer forum, one honest reply"
-    },
-    {
-      "blocker": "Gumroad cover art + duplicate PDF",
-      "class": "EXTERNAL DEPENDENCY",
-      "impact": "Generic share image on 74/75 products; duplicate file on the $155 kit",
-      "needed": "Gumroad dashboard; the API accepts the calls and persists nothing"
-    }
+
+  "financial_reconciliation": {
+    "gumroad_api": {"orders": 0, "refunds": 0, "gross_usd": 0.0, "refunded_usd": 0.0, "payout_records": 0},
+    "finance_data_json": {"sales_entries": 0, "total_sales": 0, "total_gumroad": 0},
+    "reconciled": "YES - two independent sources agree",
+    "verified_revenue_usd": 0.0,
+    "new_spend_usd": 0.0
+  },
+
+  "statuses": {
+    "PAGE_ACCESS_DENIED": "BLOCKED",
+    "product_delivery": "PASS",
+    "article_accessibility": "PASS (canonical URL; the URL in the order is wrong and 404s)",
+    "purchase_flow": "PASS for rendering, UNKNOWN for a completing payment",
+    "payout_capability": "UNKNOWN - no API exposes it; only the dashboard can confirm",
+    "storefront_curation": "BLOCKED - no API",
+    "new_spend": "PASS - $0.00",
+    "verified_revenue": "$0.00"
+  },
+
+  "remaining_blockers": [
+    "Whether a buyer can complete a payment and whether proceeds can be received is UNKNOWN and only the Gumroad dashboard can confirm it. This is the single most important open question: 238 observed readers reached product-linked articles and produced zero orders.",
+    "Gumroad storefront surfaces 9 of 76 products and does not include the flagship - no API exists",
+    "Gumroad display_name reads 'aek grafat' - immutable via API",
+    "Telegraph pages created before the current token cannot be edited, leaving one dead product link (/l/WSHDUE -> 404; the real product is /l/uucxer at the same $79)",
+    "Google Search Console verification - needs a Google identity",
+    "Paddle key rotation - key authenticates, expires 2026-10-16T10:32:35Z"
   ],
-  "highest_value_next_action": {
-    "action": "Founder verifies the Search Console URL-prefix property and submits the sitemap",
-    "why": "Only $0 route to automated inbound buyers; needs no account, product or code; every prerequisite verified live (robots 200, sitemap 200 with 59 URLs, tag readable, IndexNow 200).",
-    "secondary": "Rotate the Paddle API key before 2026-10-16 to avoid losing that channel's access."
-  },
-  "integrity": {
-    "additional_spend_usd": 0.0,
-    "tests": "22/22 focused Gumroad tests pass; no test or assertion modified",
-    "secrets": "No secret written to any file or output; Paddle key referenced only in masked form",
-    "irreversible_actions": "none - all writes were description/custom_summary/tag field updates, each verified by authoritative read-back",
-    "revenue_invariant": "VERIFIED_REVENUE = $0.00"
-  }
+  "next_executable_action": "Confirm payout capability and payment acceptance in the Gumroad dashboard. Nothing else in this repository can move the commercial needle: product delivery, checkout rendering, pricing, descriptions, tags, catalog prioritisation and free distribution are all verified and working, and 238 real readers still produced zero orders, which points at the payment path rather than at the funnel."
 }
