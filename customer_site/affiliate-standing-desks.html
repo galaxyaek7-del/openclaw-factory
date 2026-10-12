@@ -152,12 +152,7 @@ footer{border-top:1px solid var(--border-soft); padding:2.5rem 0; text-align:cen
     } catch (e2) {}
     var __body = { page_id: 'affiliate-standing-desks' };
     Object.keys(__att).forEach(function (k) { __body[k] = __att[k]; });
-    fetch('/api/page-view', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(__body),
-      keepalive: true,
-    }).catch(function () {});
+    
   } catch (e) {}
   function el(tag, attrs, children){
     const e = document.createElement(tag);
@@ -225,5 +220,6 @@ footer{border-top:1px solid var(--border-soft); padding:2.5rem 0; text-align:cen
   load();
 })();
 </script>
+<script src="assets/gf-pageview.js" defer></script>
 </body>
 </html>

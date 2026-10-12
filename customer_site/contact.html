@@ -112,7 +112,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
 (function(){
   "use strict";
   document.getElementById('year').textContent = new Date().getFullYear();
-  fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'contact' }) }).catch(()=>{});
+  
 
   var form = document.getElementById('contactForm');
   var status = document.getElementById('formStatus');
@@ -168,5 +168,6 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
   });
 })();
 </script>
+<script src="assets/gf-pageview.js" defer></script>
 </body>
 </html>

@@ -66,7 +66,8 @@ document.getElementById('go').addEventListener('click', function(){
   el.style.display = 'block';
   el.innerHTML = 'Estimated waste: <b>$' + monthly.toFixed(0) + '/month</b> (<b>$' + annual.toFixed(0) + '/year</b>) across ' + t + ' subscriptions. Next step: run a real audit with named owners — see the <a href="https://aekraft.gumroad.com/l/pahxdv?ref=galaxyforge_tool">audit system</a>.';
 });
-try { fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'tool-saas-waste' }), keepalive: true }).catch(function(){}); } catch(e) {}
+try {  } catch(e) {}
 </script>
+<script src="assets/gf-pageview.js" defer></script>
 </body>
 </html>

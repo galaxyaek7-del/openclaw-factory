@@ -110,7 +110,8 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
 <footer><div class="footer-wrap">© <span id="year"></span> Galaxy Forge. Questions: <a href="mailto:galaxyaek7@gmail.com" style="color:var(--cool);">galaxyaek7@gmail.com</a></div></footer>
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
-fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'about' }) }).catch(()=>{});
+
 </script>
+<script src="assets/gf-pageview.js" defer></script>
 </body>
 </html>

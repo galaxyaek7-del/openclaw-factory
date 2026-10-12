@@ -148,13 +148,9 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
 // existing public /api/page-view endpoint. Sends only the page id --
 // no cookies, no fingerprinting, no third party.
 try {
-  fetch('/api/page-view', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ page_id: 'turo-guest-dispute-toolkit' }),
-    keepalive: true,
-  }).catch(function () {});
+  
 } catch (e) {}
 </script>
+<script src="assets/gf-pageview.js" defer></script>
 </body>
 </html>

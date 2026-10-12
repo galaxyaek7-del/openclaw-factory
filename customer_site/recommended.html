@@ -101,7 +101,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
 (function(){
   "use strict";
   document.getElementById('year').textContent = new Date().getFullYear();
-  fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'recommended' }) }).catch(()=>{});
+  
 
   function el(tag, attrs, children){
     const e = document.createElement(tag);
@@ -130,5 +130,6 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
   }).catch(() => { document.getElementById('status').textContent = 'Temporarily unavailable — please try again shortly.'; });
 })();
 </script>
+<script src="assets/gf-pageview.js" defer></script>
 </body>
 </html>

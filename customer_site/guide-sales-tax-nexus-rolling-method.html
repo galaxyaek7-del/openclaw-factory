@@ -83,13 +83,9 @@ footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(-
 <footer>Galaxy Forge · 2026 · Method is free to use; product link disclosed above. Not tax advice.</footer>
 <script>
 try {
-  fetch('/api/page-view', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ page_id: 'guide-sales-tax-nexus' }),
-    keepalive: true,
-  }).catch(function () {});
+  
 } catch (e) {}
 </script>
+<script src="assets/gf-pageview.js" defer></script>
 </body>
 </html>

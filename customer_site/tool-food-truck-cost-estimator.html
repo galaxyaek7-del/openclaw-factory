@@ -71,7 +71,8 @@ document.getElementById('go').addEventListener('click', function(){
   el.style.display = 'block';
   el.innerHTML = 'First-year band: <b>'+fmt(lo)+' – '+fmt(hi)+'</b><table>' + rows.map(function(r){ return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td>'; }).join('') + '</table>';
 });
-try { fetch('/api/page-view', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ page_id: 'tool-food-truck-cost' }), keepalive: true }).catch(function(){}); } catch(e) {}
+try {  } catch(e) {}
 </script>
+<script src="assets/gf-pageview.js" defer></script>
 </body>
 </html>

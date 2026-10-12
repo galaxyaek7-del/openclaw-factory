@@ -115,13 +115,9 @@ href="https://aekraft.gumroad.com/l/ziiur?ref=galaxyforge_products&referrer=c99_
 <footer>Galaxy Forge · 74 products · instant download via Gumroad.</footer>
 <script>
 try {
-  fetch('/api/page-view', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ page_id: 'products-catalog' }),
-    keepalive: true,
-  }).catch(function () {});
+  
 } catch (e) {}
 </script>
+<script src="assets/gf-pageview.js" defer></script>
 </body>
 </html>

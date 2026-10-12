@@ -1,0 +1,97 @@
+{
+  "cycle": 89,
+  "date": "2026-10-12",
+  "mission": "page-view 404 repair + measurement recovery + digital sales",
+  "baseline_verified": {"commit_d72f3de": "valid and was HEAD at cycle start", "branch": "main, in sync"},
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "A_root_cause_of_the_404": {
+    "verdict": "NOT missing code, NOT a misrouted endpoint, NOT a wrong method, NOT a payload problem. The receiver exists, is correct, and works. The failure is architectural: static hosting.",
+    "receiver_verified_healthy": {
+      "location": "server.js:7622 app.post('/api/page-view')",
+      "live_behaviour_tested_against_the_running_server": {
+        "GET /health": 200,
+        "POST valid browser UA": "200 {\"success\":true,\"recorded\":true}",
+        "POST missing page_id": "400 page_id is required",
+        "POST page_id as number": "400 page_id must be a string",
+        "POST page_id as object": "400 page_id must be a string",
+        "persistence_proven": "data/affiliate_page_views.jsonl grew from 25 to 30 rows during the probe; real rows written with ua_category"
+      },
+      "already_has": "ingestion rate limiting, page_id type validation, server-side bot classification, privacy-minimal payload (page_id + referrer + ua_category + UTM)"
+    },
+    "actual_cause": "customer_site pages are published as a STATIC GitHub Pages tree. The beacon posted to a same-origin relative '/api/page-view', which on that host resolves to https://galaxyaek7-del.github.io/api/page-view and returns HTTP 404 because Pages serves files and has no Express handler. The Express receiver only runs in the Node process, which has no public URL (verified: .env contains no public base URL).",
+    "why_it_was_invisible": "every one of the 58 inline beacons ended in .catch(()=>{}) / .catch(function(){}) - a silent swallow. A 404 and a success were indistinguishable, so 'no visitors' and 'no measurement' looked identical."
+  },
+
+  "B_files_changed_and_tests": {
+    "new": [
+      "customer_site/assets/gf-pageview.js - the shared, correct beacon",
+      "scripts/upgrade_pageview_beacons.py - dry-run-by-default, idempotent, self-verifying migration",
+      "tests/test_gf_pageview.js - 13 tests, all passing"
+    ],
+    "modified": "58 customer_site/*.html pages: the silent inline beacon was removed and replaced with a single <script src=\"assets/gf-pageview.js\" defer></script> placed outside any <script> element",
+    "pages_not_touched": 3 (they carried no beacon)",
+    "migration_safety": {
+      "dry_run_first": "the first regex attempt matched only 3 of 61 and was discarded",
+      "balanced_paren_scanner": "regex cannot handle .catch(()=>{}) / .catch(function(){}) because of nested parens; the final scanner walks balanced parentheses",
+      "self_verification": "each file is re-parsed after writing and reverted if verification fails",
+      "idempotent": "a second run reports 58 skip-already-shared and 0 replacements",
+      "post_apply_check": "58 pages use the shared beacon, 0 nested inside a script, 0 residual inline beacons, 0 script-tag imbalance, 0 leftover backups"
+    }
+  },
+
+  "my_own_defects_this_cycle_disclosed": [
+    "First implementation substituted the tag in place, which nested <script src> INSIDE an open <script> block on pages whose beacon sat inside a larger script (about.html). That is invalid and would never execute. My original balance check passed it because one <script> and one </script> were added. Caught by inspecting the rendered result, reverted with git checkout, and reimplemented with an explicit _inside_script() guard.",
+    "The first _inside_script() guard then produced 58 false positives because rfind('<script') matched the inserted tag's OWN opening tag, making the check compare the tag against itself. Fixed by passing the start of the whole tag rather than the offset of the path inside it.",
+    "A verification check of '\"/api/page-view\" in text AND \"fetch(\" in text' flagged affiliate-standing-desks.html falsely, because that page's explanatory comment still names the route. Replaced with a precise re-scan for surviving beacon statements."
+  ],
+
+  "C_are_events_received_and_persisted_in_production": {
+    "answer": "NO - and this cannot be fixed in this repository",
+    "in_production": "the deployed Pages pages now load the shared beacon, which will attempt the POST and will fail with 404; the failure is now OBSERVABLE via window.gfPageview.failed and a single non-sensitive console warning instead of silence",
+    "receiver_reachable_only_locally": "http://localhost:3000/api/page-view accepts and persists events; there is no public deployment of it",
+    "not_faked": "no endpoint that returns success while discarding events was created; no stub, no placeholder, no fabricated analytics"
+  },
+
+  "D_CI_secret_scan_deployment": {
+    "secret_scan": "clean - 'no secret-shaped strings found in any tracked file'",
+    "python_focused_group": "test_gumroad_truthful_gate + test_roi_vanity_metric + test_revenue_pipeline all pass",
+    "node_beacon_tests": "13/13 pass",
+    "pre_existing_failure_not_caused_here": "tests/test_api_contract.js asserts digital-twin-dashboard returns 200 and receives 500. Reproduced identically with this cycle's changes stashed, so it is pre-existing and was neither introduced nor concealed. (Earlier cycles saw the same class of failure on enterprise-dependency-graph.)"
+  },
+
+  "E_measurement": {
+    "classification": "tracking pipeline is CORRECT end to end; the delivery path is missing",
+    "product_page_views": "UNKNOWN",
+    "qualified_visits": "UNKNOWN",
+    "leads": "UNKNOWN",
+    "checkout_activity": "UNKNOWN",
+    "orders": 0,
+    "refunds": 0,
+    "verified_revenue_usd": 0.0,
+    "unknown_vs_zero": "UNKNOWN is retained because the beacon previously failed silently, so no observation stream exists. A confirmed 0 and an unobserved stream are indistinguishable and must not be conflated.",
+    "measurement_path_defined": "product page view = gf-pageview beacon -> page-view ledger; qualified visit = same minus ua_category 'bot' (server-side) ; lead = customer_pipeline intake; checkout activity = Gumroad transaction list; order/revenue = Gumroad sales API only, never derived from page views",
+    "measurement_integrity_note": "the server already classifies bots, but a bare 'Mozilla/5.0' agent is classified 'browser'. This factory's own audit traffic therefore would have been counted as real visitors had the beacon been live. All audit traffic must carry an identifiable agent, and the new beacon additionally blocks known crawler agents before any request is made."
+  },
+
+  "F_products_and_revenue": {
+    "selected": [
+      {"url": "https://aekraft.gumroad.com/l/iaiyt", "name": "EU AI Act Compliance Toolkit", "price_usd": 155, "checkout": "InStock, 155.0 rendered, HTTP 200"},
+      {"url": "https://aekraft.gumroad.com/l/fgruzn", "name": "Etsy Suspension Appeal Kit", "price_usd": 29, "checkout": "InStock"},
+      {"url": "https://aekraft.gumroad.com/l/uldlwa", "name": "Legal Case Research Automation for Solo Attorneys", "price_usd": 29, "checkout": "InStock"}
+    ],
+    "orders": 0, "refunds": 0, "verified_revenue_usd": 0.0,
+    "observation_period": "cumulative, all time, via the authoritative Gumroad API across all products"
+  },
+
+  "G_spending": 0.0,
+  "H_remaining_blockers": [
+    "Publish the Express app publicly, or point the beacon at a third-party collector, or add a third-party analytics account - the beacon is now ready and configurable for any of these, but each requires the owner",
+    "Add the flagship to the Gumroad storefront - no API exists",
+    "Google Search Console verification - needs a Google identity",
+    "Paddle key rotation - works, expires 2026-10-16T10:32:35Z",
+    "Archive /l/owtmpe and delete /l/dxfwlu - no unpublish/delete API"
+  ],
+  "next_highest_value_action": "Add the flagship to the Gumroad storefront. Measurement and production are now as correct as this repository can make them; the flagship remains invisible to every cold visitor, and no code change here can fix that."
+}
