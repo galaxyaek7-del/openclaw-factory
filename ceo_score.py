@@ -649,11 +649,22 @@ def build_ceo_score(
     except Exception:
         pass
 
+    # Growth Funnel (Cycle 82, additive -- not one of the 8 fixed indicators,
+    # same pattern as today_3_decisions/what_founder_can_ignore_today above).
+    growth_funnel = None
+    try:
+        import growth_funnel as _growth_funnel
+
+        growth_funnel = _growth_funnel.build_growth_funnel_dashboard(now=now)
+    except Exception:
+        growth_funnel = None
+
     return {
         "generated_at": _now_iso(now),
         "indicators": [{"name": name, **indicators[name]} for name in CEO_SCORE_INDICATORS],
         "today_3_decisions": today_decisions,
         "what_founder_can_ignore_today": ignore_list,
+        "growth_funnel": growth_funnel,
         "note": (
             "CEO Score (Priority #1, 2026-08-17). Read-only composition over already-real "
             "engines/ledgers. Every value traces to a real repo data source; missing data "

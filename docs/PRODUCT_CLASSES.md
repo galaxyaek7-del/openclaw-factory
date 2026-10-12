@@ -8,7 +8,22 @@ Machine-readable sibling: `docs/product_classes.json` (same schema style as `con
 
 ---
 
-## A. Potentially High-Readiness Classes
+## Active single-focus narrowing (Cycle 82, "From Builder to Seller") — supersedes the registry below until 10 verified sales
+
+**ADR-247** (`OpenClaw_Brain/00_Governance/ADR-247-arabic-hvac-refrigeration-focus.md`) froze all new business-arm/infrastructure work and converged the factory on exactly one audience and one product line until the first 10 real, independently-verified sales exist: **Arabic-speaking HVAC/refrigeration technicians (Algeria, Maghreb, Gulf)**, buying **Arabic-language digital technical reference guides** (refrigerant P-T charts, fault-diagnosis guides, AC wiring/electrical diagrams, maintenance checklists).
+
+### E1. `arabic_hvac_pt_chart_guide` — Arabic refrigerant pressure-temperature chart + diagnostic primer
+1. **Maturity:** DRAFT, unpublished. First concrete artifact: `docs/PRODUCT_REVIEW_HVAC_PT_CHART_AR.md` (Cycle 82) — a full Arabic review file with a complete R-22/R-410A pressure-temperature table transcribed verbatim (zero recomputation) from a single dated, cited manufacturer-adjacent reference (ADVANTAGE Engineering FYI #289, 2009/updated 2012), plus an ASHRAE 34 A1 safety-classification citation and mandatory electrical/refrigerant-handling warnings.
+2. **Automated QA:** not yet routed through `inspectors.py` Dual Inspection — this is a hand-authored review draft, not a `book_generator.py` pipeline run, specifically because every number needed a disclosed, checkable source rather than LLM generation (see the review file's own §0 for why this deviates from the research fork's #1-ranked pick, an AC wiring guide, which was judged too source-risky for a first attempt).
+3. **Price range:** $9–$19 (directive-set, not yet market-tested).
+4. **Human review required (mandatory, blocking):** the founder (a refrigeration engineer) must personally verify every number in the review file before any publish — explicitly **not published this cycle**, per the directive's own rule.
+5. **Demand evidence:** no `ladder_opportunity_score()`/ADR-121 payment-evidence entry exists for this niche yet — this class was founder-selected for this cycle, not surfaced by the existing 500-candidate discovery dataset. See `docs/CYCLE_82_FINAL_REPORT.md` §2 for the real competing-product evidence found (Amazon/Etsy/Udemy listings, no confirmable sales/rating counts) and §2's ADR-121 decision-proposal on whether that kind of secondhand evidence can ever qualify.
+6. **Platforms:** Gumroad (existing channel) — **current credential is `UNVERIFIED_COMPROMISED` (see `gumroad_auth_watch.py`), no write/publish may use it this cycle regardless of this product's own readiness.**
+7. **Confidence:** MEDIUM on sourcing discipline (every number cited); LOW/UNKNOWN on demand (no ADR-121 evidence recorded for this specific niche yet).
+
+---
+
+## A. Potentially High-Readiness Classes (standing registry — paused per the freeze above, not deleted)
 
 ### A1. `templates_xlsx_docx_sop` — Professional templates/checklists/SOPs (XLSX/DOCX/PDF bundles)
 1. **Maturity:** REAL, shipped. `cohort_GF_BATCH11_2026_09/dist/GF-B11-01/` and `GF-B11-02/` (tracked in git) contain real, built `.xlsx`/`.docx`/`.pdf` bundles (EUDR due-diligence kit, EMPCO green-claims kit) with real `manifest.json` per bundle.
