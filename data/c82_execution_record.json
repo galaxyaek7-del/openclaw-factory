@@ -1,0 +1,130 @@
+{
+  "cycle": "82 (urgent security + digital products + verified sales)",
+  "generated_at_utc": "2026-10-12",
+  "mission": "Paddle key status/rotation, return to broad digital-products focus (not cars/diminished-value), top-3 product pick, safe fixes, safe integration tests, free distribution, technical blockers, measurement, $0 spend",
+  "north_star": "$100K+ verified revenue",
+  "verified_revenue_usd": 0.0,
+  "spend_usd": 0.0,
+  "pre_existing_local_drift_preserved": "83 tracked-file changes already present before this cycle (data/*.jsonl ledgers etc, from running factory processes) -- not touched, not committed, per standing discipline.",
+
+  "priority_1_paddle_key": {
+    "status": "VALID NOW, EXPIRES 2026-10-16T10:32:35Z, ROTATION BLOCKED BY PADDLE ITSELF -- founder action required",
+    "key_type": "PADDLE_API_KEY, a live-mode Paddle Billing API key (prefix pdl_liv..., length 69 -- format only, never the full value)",
+    "live_validity_check_this_cycle": "GET /products via channels/paddle_publisher.list_products() -> HTTP success, 7 real products returned",
+    "expiry_source": "not independently re-derivable today (GET /api-keys returns data:[] for this key -- it cannot list itself); figure is carried forward from this factory's own prior real finding (data/c81_execution_record.json / data/c100_execution_record.json), not re-verified by me this cycle",
+    "rotation_attempt_this_cycle": {
+      "method": "POST https://api.paddle.com/api-keys with a valid {\"name\": ...} body",
+      "result": "HTTP 403 forbidden -- 'You are not permitted to perform this request'",
+      "corroboration": "identical to the prior cycle's own independent finding (data/c81_execution_record.json) -- re-tested fresh this cycle with a corrected request body, not merely trusted",
+      "conclusion": "this key cannot mint or revoke its own replacement; Paddle API-key lifecycle (create/rotate/revoke/view-expiry) is dashboard-only, confirmed by direct API test, not by documentation alone"
+    },
+    "webhook_alerting": "PADDLE_WEBHOOK_SECRET is still absent from .env -- even if Paddle's real api_key.expiring/api_key.expired webhook events exist and were configured, this factory's receiver (channels/paddle_webhook.py) would reject every delivery as MISSING_SECRET today. Not wired this cycle (would be infrastructure work with no way to verify it without the same founder-only dashboard action) -- disclosed, not built.",
+    "required_founder_action_ar": "الإجراء المطلوب منك: سجّل دخولك إلى vendors.paddle.com > My account > Settings > Authentication قبل 2026-10-16، أنشئ مفتاح API جديدًا بنفس الصلاحيات، ضعه في PADDLE_API_KEY في .env، تحقق أنه يعمل، ثم ألغِ المفتاح القديم من نفس الصفحة. لا يمكن لأي كود تنفيذ هذه الخطوة."
+  },
+
+  "priority_2_portfolio_review": {
+    "catalog_scope": "75 real, live, linked products on customer_site/products.html (76 total generated, 1 unlinked/undelivered per Cycle 99's own audit)",
+    "founder_correction_applied": "Diminished Value Claim Kit (car-related) had special 'hero' visual styling (border-color) and a hero-named UTM campaign (dv-hero-1011) on products.html, plus the page's own twitter:description meta tag led with 'Diminished value' before 'compliance and operations'. Both repaired this cycle: hero styling removed (now a plain card like the other 74), campaign tag reverted to the standard catalog referrer, meta tag reworded to match the real og:description/meta description (compliance/operations-first, no car framing). The product itself was NOT deleted or hidden -- only its outsized promotion was removed, honoring the directive's literal instruction not to make it the center of the business.",
+    "selection_method": "cross-referenced all 75 live products against data/market_evidence.jsonl (ADR-121 real, cited payment-evidence records -- the only 6 niches in the entire catalog with a real quote+source_url, as opposed to desk-researched/keyword-inferred demand), then verified real file existence, real page counts, and real live+InStock+correct-price status on each candidate's actual Gumroad page.",
+    "top_3": [
+      {
+        "rank": 1,
+        "title": "EU AI Act Compliance Toolkit",
+        "price_usd": 155,
+        "evidence_count": 2,
+        "pages_verified": 31,
+        "link": "https://aekraft.gumroad.com/l/iaiyt",
+        "paddle_also_live": true,
+        "why": "Most mature product in the whole factory: most real engineering/content-correction history (a real regulatory-date error already found and fixed in an earlier cycle), real technical+commercial inspection passes, live on both Gumroad and Paddle, confirmed InStock + price:155 on a fresh live fetch this cycle."
+      },
+      {
+        "rank": 2,
+        "title": "SOC 2 Automation Guide",
+        "price_usd": 29,
+        "evidence_count": 2,
+        "pages_verified": 18,
+        "link": "https://aekraft.gumroad.com/l/sjmbrp",
+        "why": "Real, cited enterprise-tool pricing evidence; most substantial page count among the $29-tier evidence-backed candidates; confirmed InStock + price:29 on a fresh live fetch; already has a real free Telegraph distribution post (data/telegraph_soc2_1011.json, live-verified 200 this cycle)."
+      },
+      {
+        "rank": 3,
+        "title": "Legal Case Research Automation for Solo Attorneys",
+        "price_usd": 29,
+        "evidence_count": 4,
+        "pages_verified": 16,
+        "link": "https://aekraft.gumroad.com/l/uldlwa",
+        "why": "Most payment-evidence citations of any niche in the catalog (4, including a direct Hacker News complaint quote and 3 real competitor-pricing citations up to $639/user/month). Confirmed InStock + price:29 on a fresh live fetch. Was the one gap among the top evidence-backed picks with no free distribution post -- closed this cycle."
+      }
+    ],
+    "close_runner_up_disclosed": "CloudOps AI Agent Blueprint ($29) is tied for the most evidence citations (3) but is the thinnest deliverable (9 real pages) among the evidence-backed candidates -- a defensible 4th pick, not silently dropped."
+  },
+
+  "priority_3_fixes_made": [
+    {
+      "file": "customer_site/products.html",
+      "change": "removed Diminished Value Claim Kit's hero border-color styling and dv-hero-1011 campaign tag (now the standard galaxyforge_products/c99_catalog referrer); fixed the twitter:description meta tag to match the real meta/og description (no 'diminished value' lead-in)",
+      "permission_basis": "static file in this repo, editable directly, no external account needed"
+    }
+  ],
+
+  "priority_4_integration_tests": {
+    "method": "existing, already-mocked automated test suites only -- zero real transactions created, zero test purchases counted as sales",
+    "results": "tests/test_paddle_arm.py (43), tests/test_check_paddle_checkout_status.py (9), tests/test_paddle_webhook.py (19) -- all 71 pass",
+    "real_but_safe_live_calls_made_this_cycle": [
+      "Paddle GET /products (read-only, no mutation) -> success, 7 products",
+      "Paddle GET /api-keys (read-only) -> success, empty list",
+      "Paddle POST /api-keys (write attempt, deliberately testing permission only) -> 403, nothing created",
+      "Gumroad get_sales() (read-only) -> 0 real sales",
+      "Paddle get_transactions() (read-only) -> 0 real transactions"
+    ]
+  },
+
+  "priority_5_free_distribution": {
+    "existing_assets_found": "EU AI Act and SOC 2 both already had a real, live Telegraph post (verified HTTP 200 this cycle: data/telegraph_euact_guide.json published 2026-10-10, data/telegraph_soc2_1011.json published 2026-10-11). 'First buyer gets any kit FREE' promo already live on products.html.",
+    "new_this_cycle": {
+      "product": "Legal Case Research Automation Kit",
+      "method": "Telegraph's public, free, no-login createAccount/createPage API -- the same zero-cost, single-post, disclosed-commercial-link pattern already established in this factory (scripts/publish_telegraph_dv.py and 20+ siblings)",
+      "url": "https://telegra.ph/Solo-Attorney-AI-Research-Tools-Cost-104-639Month-Heres-a-Cheaper-Path-10-12",
+      "live_verified": "HTTP 200",
+      "content_basis": "every pricing figure quoted is copied verbatim from a real, already-recorded citation in data/market_evidence.jsonl -- not invented for this post",
+      "no_spam_no_fake_visits": "single public post, proper commercial-link disclosure, no mass messaging, no account creation on any closed platform"
+    }
+  },
+
+  "priority_6_blockers_checked": {
+    "search_console": "unchanged from the factory's own most recent finding -- sitemap 59/59 HTTP 200, robots.txt correct, meta tag present; GSC ownership/indexing verification remains UNKNOWN (no Google credential exists in this environment) -- not re-litigated this cycle, no new evidence to add",
+    "paddle": "see priority_1 above",
+    "webhooks": "PADDLE_WEBHOOK_SECRET still absent -- every inbound delivery still returns MISSING_SECRET; this is an account-dashboard configuration gap, not a code gap",
+    "n8n": "confirmed live this session (http://localhost:5678 -> HTTP 200) -- a separate n8n/ngrok OAuth-discovery task was completed earlier in this same session; not Galaxy-Forge-commerce-critical infrastructure, no further action taken here",
+    "github_pages": "confirmed live this cycle: root 200, customer_site/products.html 200, customer_site/guide-diminished-value-claim.html 200"
+  },
+
+  "priority_7_measurement": {
+    "qualified_visits": "UNKNOWN -- no page-level analytics/GSC credential exists in this environment; not estimated, not reported as zero",
+    "inquiries_requests": 0,
+    "inquiries_requests_source": "data/customer_interest.jsonl -- 0 real records (consistent with $0 revenue, not a measurement gap)",
+    "orders": {
+      "gumroad_live_api": 0,
+      "paddle_live_api": 0,
+      "source": "fresh live read-only calls this cycle: channels/gumroad_publisher.get_sales(), channels/paddle_publisher.get_transactions()"
+    },
+    "revenue_usd": 0.0,
+    "revenue_source": "finance_data.json + config/reality.json (ground truth) cross-checked against the two live API calls above -- all four sources agree",
+    "affiliate_clicks_note": "28 real, unattributed clicks on file (data/affiliate_clicks.jsonl) -- a separate, pre-existing affiliate program, not these digital products; disclosed for completeness, not folded into the digital-products numbers above"
+  },
+
+  "ci_and_deployment": {
+    "head_before_this_cycle": "e2cb8e5, matched origin/main exactly (git fetch confirmed, no drift)",
+    "pre_existing_ci_failure_found_before_any_change": {
+      "job": "test",
+      "run": "https://github.com/galaxyaek7-del/openclaw-factory/actions/runs/38241324758/job/114784375523",
+      "failing_test": "tests/test_factory_loop_lock.js -- 'EIGHT real processes reclaiming the SAME stale lock: still exactly one wins' -- AssertionError, expected the winner's pid, got ''",
+      "disposition": "pre-existing on origin/main before this cycle touched anything; a concurrency/timing-sensitive test, not a sales blocker -- disclosed, not chased this cycle per the directive's own 'do not make fixing technical infrastructure an end in itself separate from sales' instruction"
+    }
+  },
+
+  "repository_note": {
+    "working_path": "C:\\openclaw-dasgboard",
+    "same_repo_as_prior_cycles": true
+  }
+}
