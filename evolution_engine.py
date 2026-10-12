@@ -43,9 +43,24 @@ def _high_roi_opportunities(decisions_path=None, outcomes_path=None, timeline_pa
     if not measured:
         return {"answer": "Unknown", "reason": "لا فرصة واحدة لديها سعر وتكلفة إنتاج حقيقيان معاً لحساب عائد حقيقي بعد"}
 
-    ranked = sorted(measured, key=lambda r: r["expected_roi"]["roi_pct"], reverse=True)
+    # Cycle 88: estimate_roi() now withholds roi_pct (sets it to None) when the
+    # production cost is trivially small, because a percentage over a ~$0.0004
+    # AI-call denominator is a vanity metric, not a business figure -- and this
+    # sort is what decides which niche ranks first. Sorting on None would raise
+    # TypeError; sorting as if None were 0 would silently reward an empty value.
+    # Rank on the real, always-present expected_net_after_cost instead, and
+    # carry the withheld percentage through honestly as None.
+    def _rank_key(r):
+        roi = r["expected_roi"]
+        pct = roi.get("roi_pct")
+        return (pct is not None, pct if pct is not None else 0.0,
+                roi.get("expected_net_after_cost") or 0.0)
+
+    ranked = sorted(measured, key=_rank_key, reverse=True)
     return {
-        "top": [{"niche": r["niche"], "roi_pct": r["expected_roi"]["roi_pct"], "net_after_cost": r["expected_roi"]["expected_net_after_cost"]} for r in ranked[:top_n]],
+        "top": [{"niche": r["niche"], "roi_pct": r["expected_roi"].get("roi_pct"),
+                 "roi_basis": r["expected_roi"].get("roi_basis"),
+                 "net_after_cost": r["expected_roi"]["expected_net_after_cost"]} for r in ranked[:top_n]],
         "measured_count": len(measured),
         "total_accepted": result["processed"],
         "source": "revenue_pipeline.pipeline.run_revenue_pipeline()",

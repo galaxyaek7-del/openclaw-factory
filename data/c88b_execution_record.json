@@ -1,0 +1,81 @@
+{
+  "cycle": "88b",
+  "date": "2026-10-12",
+  "mission": "digital product revenue execution + opportunity validation",
+  "baseline_verified": {
+    "commit_d43c476": "valid and is HEAD",
+    "branch": "main, in sync with origin/main",
+    "unfunded_acquisition_paths": "none taken; no purchase, subscription, lead, ad or paid API credit. governencedocs.com and riskprofs.com were treated strictly as research subjects."
+  },
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "REAL_DEFECT_FIXED": {
+    "what": "opportunity ranking was decided by a vanity metric",
+    "evidence_from_cycle_88": "process_opportunity returned expected_roi.roi_pct = 43,649,900.0 for a real ACCEPTED niche",
+    "root_cause": "estimate_roi() only guarded against a falsy denominator. The only production cost this factory can genuinely log for a generated digital product is the AI call cost (real observed average $0.0004). Dividing a ~$174 net by $0.0004 yields a huge ratio.",
+    "why_it_mattered": "evolution_engine.build_evolution_report() SORTS opportunities by exactly roi_pct descending, so this arithmetic decided which niche ranked first. estimate_pre_acceptance_roi() runs at scoring time, so it also fed opportunity selection. The system was rewarding a near-zero denominator over sales feasibility - precisely the failure mode the directive named.",
+    "fix": {
+      "plan.py": "added MIN_MEANINGFUL_COST_USD = 1.00. Below the floor, roi_pct is set to None with roi_basis='NOT_MEANINGFUL' and a stated reason. The genuinely measured figures (net_profit_after_fees, production_cost_usd, expected_net_after_cost) are still returned unchanged and still marked REAL - nothing measured was discarded, only the meaningless ratio withheld.",
+      "evolution_engine.py": "the sort no longer assumes roi_pct is a number: real percentages rank above withheld ones, with expected_net_after_cost as the tiebreak, and roi_pct is carried through honestly as None.",
+      "pipeline.py": "report rendering no longer prints None%; it states plainly that the ratio is not meaningful."
+    },
+    "verified": {
+      "cost_0.0004": "roi_pct=None, roi_basis=NOT_MEANINGFUL, expected_net_after_cost=$139.5 (real figure preserved) - previously reported as 43,649,900%",
+      "cost_25.00": "roi_pct=458.0, roi_basis=REAL - meaningful ROI still computed normally",
+      "evolution_report": "builds cleanly, no crash, no None%"
+    }
+  },
+
+  "test_change_disclosed": {
+    "file": "tests/test_revenue_pipeline.py::TestEstimateRoi::test_real_price_and_cost_produce_a_real_roi",
+    "was": "asserted roi_pct > 0 for a $19 product against a $0.02 AI cost, with the comment that net should 'vastly exceed' it - i.e. it demanded the meaningless ratio itself",
+    "now": "asserts the corrected contract: the percentage is withheld below the floor, roi_basis is NOT_MEANINGFUL, and the real expected_net_after_cost is still greater than zero",
+    "strengthening_not_weakening": "a new test was added covering the meaningful-cost path (roi_pct computed as a real float above the floor), so both branches are now covered where only the trivial branch was before",
+    "new_test_file": "tests/test_roi_vanity_metric.py, 6 tests, all passing"
+  },
+
+  "three_selected_products": [
+    {"rank": 1, "name": "EU AI Act Compliance Toolkit", "url": "https://aekraft.gumroad.com/l/iaiyt", "price_usd": 155,
+     "evidence_this_cycle": "re-verified live: 2 files, main deliverable 139,401 bytes / 31 pages / 3,057 words, byte-identical to the validated local v2, compliance guarantee absent, not-legal-advice present, 1 rich-content embed resolving to a real file with zero dangling references, HTTP 200, InStock, 155.0 rendered"},
+    {"rank": 2, "name": "Etsy Suspension Appeal Kit", "url": "https://aekraft.gumroad.com/l/fgruzn", "price_usd": 29,
+     "evidence": "19 pages / 122,465 bytes valid PDF; ~91 words per dollar, strongest ratio among mid-priced kits; proven topic match from the Telegraph article and three guide pages"},
+    {"rank": 3, "name": "Legal Case Research Automation for Solo Attorneys", "url": "https://aekraft.gumroad.com/l/uldlwa", "price_usd": 29,
+     "evidence": "16 pages / 105,317 bytes valid PDF; ~92 words per dollar; 6 tags; custom_summary present"}
+  ],
+
+  "measurement_root_cause": {
+    "classification": "ARCHITECTURALLY UNREACHABLE - not absent, not unobserved, not broken code",
+    "evidence": "the page-view beacon is present and correctly coded on the deployed pages, but it posts to a relative /api/page-view which on the GitHub Pages host returns HTTP 404. Pages serves a static tree and has no Express handler.",
+    "why_unknown_not_zero": "the beacon's .catch(()=>{}) swallows the failure, so nothing is recorded either way. A confirmed 0 and an unobserved stream are indistinguishable, so visits and leads stay UNKNOWN rather than being converted to zero.",
+    "what_would_repair_it": "publicly hosting the Express server, or a third-party analytics account. Neither can be created without the owner, so it was not faked, stubbed or papered over."
+  },
+
+  "distribution_activity_this_cycle": {
+    "nostr": "none posted - 20 prior posts produced 0 responses, so more posting is unjustified volume",
+    "telegraph": "no new article - 66 live articles have produced 0 attributed sales",
+    "gumroad_marketplace": "no new listing - the cycle 88 pipeline output was deliberately withheld because it invents a non-existent product (AIPT) and tells buyers to sign up for it",
+    "paid_channels": "none - spending held at $0"
+  },
+
+  "metrics": {
+    "qualified_visits": "UNKNOWN",
+    "leads": "UNKNOWN",
+    "checkout_starts": "UNKNOWN",
+    "orders": 0,
+    "refunds": 0,
+    "gross_usd": 0.0,
+    "net_usd": 0.0,
+    "observation_period": "cumulative, all time, via the authoritative Gumroad API across all 77 products",
+    "spending": 0.0
+  },
+
+  "remaining_blockers": [
+    "Add the flagship to the Gumroad storefront - no API exists (GET /storefront returns 404) and it is absent from the 9 products a cold visitor sees",
+    "Publicly host the Express server, or add a third-party analytics account, to make traffic measurable at all",
+    "Google Search Console verification - needs a Google identity; IndexNow does not include Google",
+    "Rotate the Paddle key - works but expires 2026-10-16T10:32:35Z; POST /api-keys returns 403",
+    "Archive /l/owtmpe and delete /l/dxfwlu - no unpublish or delete API"
+  ],
+  "next_executable_action": "Add the flagship to the Gumroad storefront. It is the strongest and most fully verified product in the catalog and it is invisible to cold visitors, which no code change in this repository can fix."
+}

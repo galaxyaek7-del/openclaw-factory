@@ -109,11 +109,26 @@ class TestEstimateRoi(unittest.TestCase):
         self.assertEqual(result["maturity"], "DISCOVERY")
 
     def test_real_price_and_cost_produce_a_real_roi(self):
+        # Cycle 88: with a trivial $0.02 denominator a percentage is a vanity
+        # metric, so estimate_roi() now withholds it while still returning the
+        # genuinely measured figures. The old assertion here demanded a
+        # meaningless number; the corrected contract is stricter, not weaker.
         result = plan.estimate_roi(19.0, 0.02)
         self.assertEqual(result["maturity"], "REAL")
         self.assertIn("roi_pct", result)
         self.assertIn("net_profit_after_fees", result)
-        # sanity: a $19 digital product's net profit should vastly exceed a $0.02 AI cost
+        self.assertIsNone(result["roi_pct"])
+        self.assertEqual(result["roi_basis"], "NOT_MEANINGFUL")
+        # a $19 digital product's net profit should exceed its $0.02 AI cost,
+        # and that REAL figure is still reported rather than discarded
+        self.assertGreater(result["expected_net_after_cost"], 0)
+
+    def test_meaningful_cost_still_yields_a_real_percentage(self):
+        # new coverage: above the floor the percentage is computed normally
+        result = plan.estimate_roi(19.0, 5.00)
+        self.assertEqual(result["maturity"], "REAL")
+        self.assertEqual(result["roi_basis"], "REAL")
+        self.assertIsInstance(result["roi_pct"], float)
         self.assertGreater(result["roi_pct"], 0)
 
 

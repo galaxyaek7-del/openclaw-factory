@@ -193,6 +193,16 @@ def run_revenue_pipeline(execute=False, timeline_path=None, decisions_path=None,
     return {"generated_at": datetime.now(timezone.utc).isoformat(), "processed": len(results), "results": results}
 
 
+def _roi_display(roi):
+    """Cycle 88: never print a percentage that estimate_roi() deliberately
+    withheld. When the production cost is trivially small, roi_pct is None and
+    the ratio would be a vanity metric -- say that plainly instead of
+    printing None%."""
+    if roi.get("roi_pct") is not None:
+        return f"{roi['roi_pct']}%"
+    return "نسبة غير ذات معنى — تكلفة الإنتاج أقل من الحد الأدنى"
+
+
 def render_ceo_revenue_report(pipeline_result):
     lines = []
     lines.append("# تقرير الإيراد التنفيذي — Galaxy Forge")
@@ -219,7 +229,7 @@ def render_ceo_revenue_report(pipeline_result):
 
         roi = r["expected_roi"]
         if roi["maturity"] == "REAL":
-            lines.append(f"- **العائد المتوقَّع:** {roi['roi_pct']}% (صافٍ ${roi['expected_net_after_cost']} بعد التكلفة)")
+            lines.append(f"- **العائد المتوقَّع:** {_roi_display(roi)} (صافٍ ${roi['expected_net_after_cost']} بعد التكلفة)")
         else:
             lines.append(f"- **العائد المتوقَّع:** غير معروف — {roi['reason']}")
 

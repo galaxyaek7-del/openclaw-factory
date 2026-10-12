@@ -13,6 +13,11 @@ import profit_oracle
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 _ECONOMICS_CONFIG = _FACTORY_ROOT / "config" / "economics.json"
 
+# Cycle 88: below this production cost, a percentage ROI is a vanity metric.
+# The only production cost this factory can genuinely log for a generated
+# digital product is the AI call cost (real observed average: $0.0004).
+MIN_MEANINGFUL_COST_USD = 1.00
+
 
 def build_production_plan(decision):
     """decision: a Decision.to_dict()-shaped record. Every field here is
@@ -83,7 +88,23 @@ def estimate_production_cost(log_file=None):
 def estimate_roi(price, production_cost_usd, platform="gumroad_digital"):
     """Real fee math (economics.net_profit(), reused directly, ADR-041) —
     never a new profit formula. Honestly Unknown whenever either input
-    (real recommended price, real logged production cost) is missing."""
+    (real recommended price, real logged production cost) is missing.
+
+    Cycle 88 fix — a percentage ROI over a trivially small cost is a vanity
+    metric, not a business figure. The only production cost this factory can
+    log for a generated digital product is the AI call cost (observed real
+    average: $0.0004). Dividing a ~$174 net by $0.0004 produced a reported
+    "43,649,900% ROI", and evolution_engine.build_evolution_report() SORTS
+    opportunities by exactly this number descending -- so the arithmetic was
+    deciding which niche ranked first. That rewards a near-zero denominator
+    over actual sales feasibility.
+
+    Below MIN_MEANINGFUL_COST_USD a percentage is therefore not reported at
+    all. The genuinely meaningful figures (real net profit after real fees,
+    real production cost) are still returned unchanged and marked REAL, so
+    nothing that was actually measured is discarded -- only the meaningless
+    ratio is withheld, with the reason stated rather than faked.
+    """
     if price is None:
         return {"maturity": "DISCOVERY", "reason": "لا سعر مُوصى به حقيقي لحساب العائد عليه"}
     if not production_cost_usd:
@@ -92,15 +113,28 @@ def estimate_roi(price, production_cost_usd, platform="gumroad_digital"):
     config = economics.load_config(str(_ECONOMICS_CONFIG))
     net_profit = economics.net_profit(price, platform, config)
     net_after_cost = net_profit - production_cost_usd
-    roi_pct = round(100 * net_after_cost / production_cost_usd, 1)
 
-    return {
+    result = {
         "maturity": "REAL",
         "net_profit_after_fees": round(net_profit, 2),
         "production_cost_usd": round(production_cost_usd, 4),
         "expected_net_after_cost": round(net_after_cost, 2),
-        "roi_pct": roi_pct,
     }
+
+    if production_cost_usd < MIN_MEANINGFUL_COST_USD:
+        result["roi_pct"] = None
+        result["roi_basis"] = "NOT_MEANINGFUL"
+        result["roi_reason"] = (
+            f"production cost ${round(production_cost_usd, 4)} is below the "
+            f"${MIN_MEANINGFUL_COST_USD:.2f} floor, so a percentage ROI would be a "
+            "vanity metric rather than a business figure. Use expected_net_after_cost "
+            "(real net profit after real fees) instead."
+        )
+    else:
+        result["roi_pct"] = round(100 * net_after_cost / production_cost_usd, 1)
+        result["roi_basis"] = "REAL"
+
+    return result
 
 
 def estimate_pre_acceptance_roi(price, platform="gumroad_digital", log_file=None):
