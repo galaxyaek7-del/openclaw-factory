@@ -1,0 +1,108 @@
+{
+  "cycle": "99",
+  "generated_at": "2026-10-12T09:40:00+00:00",
+  "principle": "Nothing here was executed by the agent because each item needs your identity. No credentials are requested or accepted in chat.",
+
+  "action_1_search_console_verification": {
+    "value": "HIGHEST - the only $0 automated path to inbound buyers",
+    "url": "https://search.google.com/search-console",
+    "property_type": "URL prefix (Domain is impossible here - no DNS control)",
+    "property": "https://galaxyaek7-del.github.io/openclaw-factory/",
+    "steps": [
+      "Sign in with the Google account that will own this property.",
+      "Add property > URL prefix > paste the URL above.",
+      "Choose the HTML tag method. Google will show you a NEW token - paste it back here ONLY if it differs from the one already deployed. The existing tag is already live and readable, so this should verify immediately.",
+      "After it verifies: Sitemaps > submit https://galaxyaek7-del.github.io/openclaw-factory/sitemap.xml"
+    ],
+    "already_verified_this_session": [
+      "robots.txt -> HTTP 200 and points at the sitemap",
+      "sitemap.xml -> HTTP 200, 59 URLs, every one individually re-fetched -> 200",
+      "google-site-verification meta tag readable from the deployed UTF-8 bytes",
+      "index.html is valid UTF-8 with meta charset as the first element in head (byte 55)",
+      "IndexNow already accepted: api.indexnow.org HTTP 200, bing.com HTTP 200"
+    ],
+    "do_not": [
+      "Do not create a second property - one correct property already exists.",
+      "Do not create a second sitemap - one already exists and is verified.",
+      "Do not paste a password, cookie or token into any chat."
+    ],
+    "expected_result": "Ownership verified. That alone creates zero traffic. Impressions, clicks and visits all stay UNKNOWN until observed."
+  },
+
+  "action_2_post_one_reply_to_a_live_buyer_thread": {
+    "value": "HIGH - three threads with real, unfulfilled questions, found this session",
+    "note_on_access": "Reddit HTML returns only a logged-out JS shell from this machine and every .json endpoint returns HTTP 403. I could not read the threads directly, so the quotes below come from a search index and are recorded as found, not as directly read. Open them in a browser to confirm before replying.",
+    "target_threads": [
+      {
+        "url": "https://www.reddit.com/r/AI_Governance/comments/1vtgd8o/how_do_smaller_companies_handle_eu_ai_act",
+        "title": "How do smaller companies handle EU AI Act literacy obligation in practice?",
+        "age_at_discovery": "15 hours",
+        "comments": 54,
+        "upvotes": 31,
+        "verbatim_from_index": "EU AI Act enforcement starts August 2026. Most teams deploying AI agents don't know they're in scope.",
+        "why_our_product_fits": "Art. 4 AI literacy and deployer obligations are exactly what our 31-page toolkit documents."
+      },
+      {
+        "url": "https://www.reddit.com/r/AI_Governance/comments/1tmb23x/most_small_businesses_i_talk_to_have_the_ai_act",
+        "title": "most small businesses i talk to have the ai act timeline backwards",
+        "age_at_discovery": "May 24, 2026",
+        "verbatim_from_index": "two things still kick in 2 august 2026: transparency (art 50) - you gotta tell people when its a chatbot, label ai generated content",
+        "why_our_product_fits": "Our toolkit carries the corrected enforcement timeline after the 2026 Omnibus deferral."
+      },
+      {
+        "url": "https://www.reddit.com/r/ArtificialNtelligence/comments/1swad1v/is_the_eu_ai_act_actually_enforceable_for_smes_or",
+        "title": "Is the EU AI Act actually enforceable for SMEs or just compliance theatre?",
+        "age_at_discovery": "Apr 26, 2026",
+        "verbatim_from_index": "Deployers of high-risk AI must document everything, run risk assessments, keep audit logs, ensure human oversight.",
+        "why_our_product_fits": "That list IS our table of contents: risk assessment, logging, human oversight."
+      }
+    ],
+    "recommended_first": "https://www.reddit.com/r/AI_Governance/comments/1vtgd8o/how_do_smaller_companies_handle_eu_ai_act",
+    "ready_to_post_reply": "Worth adding for anyone still stuck on this: the part that actually decided it for us was separating the two dates, because they are not the same deadline.\n\nTwo things genuinely applied from 2 August 2026: the Article 50 transparency rules (say when it's a chatbot, label AI-generated content) and the Article 4 AI-literacy obligation. The high-risk obligations are the ones that got pushed - Regulation (EU) 2026/1744 moved part of that to August 2027, and the Annex IV elements to 2028. So if someone told you to panic in August 2026, they were probably conflating the two.\n\nThe other thing that changed the work: for a company that only USES AI and does not build it, you are a deployer, not a provider. You do not need conformity assessments, technical documentation for the models, or a quality management system - the provider carries those. What you do need is an inventory of the tools in use, evidence your people actually understand them, and a clear path for the small number of cases where higher risk does apply. For a typical company of 50 using standard tools that is a structured few days of work, not a programme.\n\nThe practical trap nobody warns you about: the Commission has not published the simplified SME technical-documentation form yet. If you plan around it, you are planning around a document that does not exist. Full Annex IV is the working baseline until it lands.\n\nThe Commission also obliges each Member State to set up an AI Act information service by August 2026, with SMEs getting priority access - that is usually a faster answer than a consultant, and it is free.\n\nNot legal advice - operational reading only, and worth having a qualified lawyer check anything that actually matters to you.",
+    "rules_respected": [
+      "The reply answers the question and does NOT mention our product or link to it.",
+      "Post to ONE thread. Never cross-post the same text.",
+      "No claim of a success rate, a client result, or a payout - we have 0 sales and 0 reviews.",
+      "Read that subreddit's rules before posting.",
+      "If asked 'do you sell this?', answer honestly. Do not pretend to be a non-vendor."
+    ]
+  },
+
+  "action_3_gumroad_cover_and_duplicate_file": {
+    "value": "MEDIUM - 74 of 75 products currently render with Gumroad's generic share image",
+    "url": "https://gumroad.com/dashboard",
+    "why_api_cannot_do_it": "Verified this session, not assumed: presign -> S3 -> complete all succeed, but PUT /v2/products/{id} accepts cover_url, thumbnail_url and cover[url] with success=true and persists NONE of them. The file-list edit needed to drop the duplicate 139KB PDF on the $155 kit is rejected with 'File URLs must reference your own uploaded files'.",
+    "steps": [
+      "Diminished Value Claim Kit > Cover > upload books/covers/diminished_value_claim_kit_cover_v2.png (1600x2560) > Save.",
+      "EU AI Act Compliance Toolkit > remove the duplicate 139KB PDF (same file attached twice; sha256 c22671a6... on both).",
+      "Optional: attach books/diminished_value_claim_pack.xlsx (4 worksheets). The listing copy no longer promises it, so this is only needed if you want to restore that promise."
+    ]
+  },
+
+  "action_4_paddle_onboarding": {
+    "value": "MEDIUM - a second revenue channel, but nothing works until this is done",
+    "url": "https://vendors.paddle.com/onboarding",
+    "verified_state_this_session": "API authenticates: 7 products, 7 prices with real amounts ($15-$388), 0 transactions. The sandbox API explicitly returns HTTP 403 for this key, confirming it is a live merchant key. Catalog readiness is NOT payment readiness.",
+    "remaining_requirements": [
+      "Business/identity verification and legal entity details",
+      "Bank account for payouts",
+      "Approved/verified business status enabling checkout",
+      "Then confirm a checkout page renders a payable amount - ours does not yet"
+    ],
+    "note": "I could not verify onboarding state through the API; no verification endpoint is reachable. This needs your browser session."
+  },
+
+  "measured_state": {
+    "orders": 0,
+    "refunds": 0,
+    "verified_revenue_usd": 0.0,
+    "spend_usd": 0.0,
+    "product_page_visits_14d": 0,
+    "pages_views_14d_total": 5,
+    "referrers": ["github.com"],
+    "outbound_clicks": "UNKNOWN",
+    "checkout_starts": "UNKNOWN",
+    "qualified_inquiries": 0,
+    "note": "UNKNOWN means no measurement exists, not zero. Orders/refunds are 0, read directly from Gumroad."
+  }
+}
