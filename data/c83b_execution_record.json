@@ -1,0 +1,84 @@
+{
+  "cycle": "83b",
+  "date": "2026-10-12",
+  "continues": "Cycle 83 catalog audit - full sweep + organic conversion work",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "full_catalog_sweep": {
+    "products_swept": 76,
+    "method": "per-product endpoint, and every attached file actually downloaded (6.2 MB fetched), not inferred from metadata",
+    "file_types_found": {"PDF": 41, "ZIP bundle": 33, "other": 1, "none": 1},
+    "products_that_genuinely_deliver": 75,
+    "real_delivery_defects": 1,
+    "files_attached_but_not_downloadable": 0,
+    "note": "an earlier pass in this same cycle reported 34 'unexpected file type' defects; that was my own bug - the magic-byte check compared 5 bytes against a 2-byte string. All 34 were valid ZIP bundles (PK\\x03\\x04, application/zip)."
+  },
+
+  "new_defect_found": {
+    "name": "Traffic measurement is disconnected in production",
+    "evidence": "78 deployed site pages POST their view beacon to a relative '/api/page-view', which on the GitHub Pages host resolves to https://galaxyaek7-del.github.io/api/page-view and returns HTTP 404. The handler's .catch(()=>{}) swallows the failure. Only 25 view rows exist in data/affiliate_page_views.jsonl, all dated 2026-08-09 (local testing), none since.",
+    "consequence": "This is the mechanical reason 'qualified visits' has read UNKNOWN for many cycles. The factory cannot currently observe its own traffic, so no conversion work can be measured.",
+    "not_fixed_and_why": "A working receiver requires publicly hosting the Express server. GitHub Pages is static-only. That is an infrastructure/hosting/cost decision, not a code fix, and was not undertaken autonomously.",
+    "status": "FOUNDER DECISION REQUIRED"
+  },
+
+  "organic_conversion_repairs": {
+    "problem": "19 of 28 guide/blog pages - the main inbound surface submitted to Bing via IndexNow - contained no product link at all. Organic readers reached a dead end.",
+    "automated_matching_rejected": "A keyword matcher proposed 9 cross-links. Reading the actual page text showed most were wrong - it proposed linking 'Etsy affiliate: what to know before choosing' to an Etsy Suspension Appeal Kit. Those were deliberately NOT applied.",
+    "applied_after_verifying_relevance": [
+      {
+        "page": "customer_site/guide-eudr-sme-deadlines.html",
+        "product": "EUDR Due Diligence Starter, $69, /l/brwrta",
+        "relevance": "page is about EUDR deadlines and due diligence for SME traders; the product supplies the registers, logs and letters for exactly that process",
+        "attribution": "ref=galaxyforge_guide"
+      },
+      {
+        "page": "customer_site/blog-etsy-appeal-evidence.html",
+        "product": "Etsy Suspension Appeal Kit, $29, /l/fgruzn",
+        "relevance": "page is 'What Evidence Etsy Wants to See in an Appeal'; the kit includes a dated evidence tracker",
+        "attribution": "ref=galaxyforge_guide"
+      },
+      {
+        "page": "customer_site/blog-etsy-first-24-hours.html",
+        "product": "Etsy Suspension Appeal Kit, $29, /l/fgruzn",
+        "relevance": "page is 'First 24 Hours After an Etsy Suspension'; the kit walks the Appeals Center step by step",
+        "attribution": "ref=galaxyforge_guide"
+      }
+    ],
+    "house_style_followed": "each insertion is a <div class=\"disclosure\"> matching the pattern already used on guide-etsy-suspension-appeal.html: states the commercial relationship plainly, links with campaign attribution, states '0 sales recorded for the kit to date; no reviews', and carries the not-legal-advice note",
+    "verified": "div/a tag balance checked, attribution present, real sales count stated, no fake-urgency wording; HTML structure otherwise unchanged"
+  },
+
+  "pre_existing_issue_left_alone": {
+    "page": "customer_site/guide-eudr-sme-deadlines.html",
+    "issue": "one stray </div> after <footer> (5 open / 6 close in HEAD)",
+    "why_not_touched": "pre-existing before this cycle, browsers ignore unmatched closing tags so rendering is unaffected, and fixing unrelated markup is outside this cycle's commercial scope"
+  },
+
+  "leftover_test_object": {
+    "name": "GALAXY FORGE API TEST - DO NOT BUY - DELETE ME",
+    "url": "https://aekraft.gumroad.com/l/dxfwlu",
+    "price_usd": 1,
+    "state": "published, InStock, 1 attached file, 0 sales",
+    "why_it_matters": "a test artifact is publicly purchasable on the storefront",
+    "fix_possible_via_api": false,
+    "reason": "same missing delete/unpublish capability as the $150 withdrawn listing"
+  },
+
+  "measurement": {
+    "qualified_visits": "UNKNOWN - and now we know exactly why: the deployed view beacon 404s on the Pages host",
+    "leads": "UNKNOWN",
+    "checkout_starts": "UNKNOWN",
+    "orders": 0,
+    "refunds": 0,
+    "gross_usd": 0.0,
+    "net_usd": 0.0
+  },
+
+  "founder_actions_now": [
+    "Archive TWO Gumroad listings in the dashboard (no API exists for either): /l/owtmpe - $150, says withdrawn, still sellable, zero files; /l/dxfwlu - $1 API test object, still sellable",
+    "Rotate the Paddle key - https://vendors.paddle.com/account/api-keys - expires 2026-10-16T10:32:35Z",
+    "Verify Google Search Console - Bing got all 59 URLs via IndexNow; Google needs this manual step"
+  ]
+}
