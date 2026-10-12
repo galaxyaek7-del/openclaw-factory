@@ -1,0 +1,128 @@
+{
+  "cycle": 83,
+  "date": "2026-10-12",
+  "objective": "LIVE STATE AUDIT -> DIGITAL PRODUCT SALES EXECUTION",
+  "north_star": "$100K+ verified revenue",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "repo_state": {
+    "head_at_start": "3e83694",
+    "main_synced_with_origin": true,
+    "latest_ci_conclusion": "success",
+    "pre_existing_modified_tracked_files": 83,
+    "note": "Cycle 82 (be6db64, 91c4878, 636daea) and 3e83694 were committed by another session; those changes and all 83 dirty files were preserved. Only this cycle's own files were staged - no `git add .`."
+  },
+
+  "paddle_key": {
+    "credential_identified_as": "PADDLE_API_KEY (live merchant API key), not a webhook secret",
+    "auth_verified_live_this_cycle": "GET /products -> HTTP 200, key still authenticating",
+    "expiry_source": "read from the live /events feed, not assumed",
+    "api_key_expiring_event_occurred_at": "2026-10-09T10:32:35.864162Z",
+    "effective_expiry": "2026-10-16T10:32:35Z",
+    "days_remaining_at_audit": 4,
+    "rotation_status": "BLOCKED",
+    "rotation_evidence_this_cycle": "POST /api-keys with a valid name returns HTTP 403 'You are not permitted to perform this request'. No /rotate endpoint exists (404). Key lifecycle is dashboard-only.",
+    "new_key_created": false,
+    "old_key_revoked": "UNKNOWN - not revoked, and must not be before a replacement exists",
+    "secrets_printed_or_committed": false
+  },
+
+  "methodology_corrections": [
+    "First catalog audit pass wrongly reported 76 of 76 published products as having no downloadable file. Cause: the Gumroad LIST endpoint is a summary and carries no `files` key. Discarded.",
+    "Second pass used `file_info.file_count`, which does not exist - file_info is only {'Size','Length'}. Discarded.",
+    "Third pass still flagged the $155 flagship iaiyt as having no file, which contradicted direct Cycle 81 evidence of 3 downloaded files. Resolved authoritatively against the per-product endpoint: iaiyt genuinely has 3 files; `file_info` is simply empty for multi-file products. Only products read through the per-product endpoint are reported here."
+  ],
+
+  "catalog_audit": {
+    "products_fetched": 77,
+    "live_published": 76,
+    "real_sales_all_time": 0,
+    "real_revenue_all_time_usd": 0.0,
+    "products_missing_custom_summary": 45,
+    "products_with_zero_tags": 2,
+    "false_promise_text_found": 0
+  },
+
+  "repairs_applied": [
+    {
+      "target": "AI Workflow QA & Stress Test (/l/owtmpe)",
+      "defect": "description said 'WITHDRAWN - NOT AVAILABLE FOR PURCHASE' while the listing was still published:true, InStock, and buyable at $150 with zero attached files",
+      "risk": "a real charge for something with nothing to deliver - refund and account-rating damage",
+      "attempted_fix": "unpublish",
+      "result": "BLOCKED - Gumroad exposes no unpublish capability. PUT /unpublish and POST /unpublish return 404; published=false, published=0 and published='' all return HTTP 200 while silently leaving published=true. Matches the integration's own existing note that no delete/archive endpoint is wired.",
+      "resolution": "requires the founder's Gumroad dashboard; NOT claimed as fixed",
+      "still_live": true
+    },
+    {
+      "target": "The 5-Minute Context Reset Playbook (/l/akxaae, $15)",
+      "defect": "published in Cycle 81 with 0 tags and no custom_summary, making it effectively invisible in Gumroad marketplace search",
+      "fix": "added 5 accurate tags (productivity, developer, focus, remote work, freelancer) and a custom_summary",
+      "verified": "re-read from the API: tags 0->5, summary False->True; price/name/description/published proven unchanged",
+      "result": "APPLIED"
+    },
+    {
+      "target": "Freelancer Payment Protection & Scope-Control Toolkit (/l/fwrjot, $49)",
+      "defect": "10 tags (high marketplace discovery) but no custom_summary, so its search blurb was an arbitrary description line",
+      "fix": "added an accurate custom_summary",
+      "verified": "re-read from the API: summary False->True; tags still 10; price/name/description/published proven unchanged",
+      "result": "APPLIED"
+    }
+  ],
+
+  "top_three_by_concrete_evidence": [
+    {
+      "rank": 1,
+      "name": "EU AI Act Compliance Toolkit",
+      "url": "https://aekraft.gumroad.com/l/iaiyt",
+      "price_usd": 155,
+      "evidence": "19 tags (highest discovery on the account), 3 real attached files verified downloadable (139,121 bytes, valid %PDF-), custom_summary present, price matches the rendered page, InStock",
+      "purchase_path": "VERIFIED end to end"
+    },
+    {
+      "rank": 2,
+      "name": "Freelancer Payment Protection & Scope-Control Toolkit",
+      "url": "https://aekraft.gumroad.com/l/fwrjot",
+      "price_usd": 49,
+      "evidence": "10 tags, real attached file verified downloadable, custom_summary added this cycle, price matches rendered page, InStock",
+      "purchase_path": "VERIFIED end to end"
+    },
+    {
+      "rank": 3,
+      "name": "AI Agent Blueprint for Small SaaS CloudOps Automation",
+      "url": "https://aekraft.gumroad.com/l/esnpki",
+      "price_usd": 29,
+      "evidence": "6 tags, real attached file verified downloadable (93,996 bytes), custom_summary present, price matches rendered page, InStock",
+      "purchase_path": "VERIFIED end to end"
+    }
+  ],
+
+  "integrations": {
+    "paddle_api": "authenticating (HTTP 200); checkout still gated by Paddle account onboarding",
+    "paddle_webhooks": "not operational - PADDLE_WEBHOOK_SECRET unset, so every delivery returns MISSING_SECRET; 0 notification subscriptions",
+    "google_search_console": "not connected - no Google credential in this environment; verification and indexing remain UNKNOWN",
+    "indexnow": "real external submission executed this cycle, 59/59 URLs accepted by api.indexnow.org and bing.com/indexnow (HTTP 200)",
+    "n8n": "N8N_PRODUCTION_WEBHOOK_URL is set, so production-completion notifications are live",
+    "github_actions": "success on 3e83694",
+    "github_pages": "products.html HTTP 200"
+  },
+
+  "measurement": {
+    "qualified_visits": "UNKNOWN",
+    "leads": "UNKNOWN",
+    "checkout_starts": "UNKNOWN",
+    "orders": 0,
+    "refunds": 0,
+    "gross_usd": 0.0,
+    "fees": "UNKNOWN",
+    "net_usd": 0.0,
+    "basis": "authoritative Gumroad API sales and per-product sales_count/sales_usd_cents across all 77 products",
+    "note": "visits, leads and checkout starts are reported UNKNOWN because no observation point for them exists; they are not reported as zero"
+  },
+
+  "tests": {
+    "secret_scan": "clean",
+    "focused_groups": "55 passed (gumroad truthful gate, gumroad monitor, paddle webhook x3 suites)",
+    "source_changes_this_cycle": "none - all repairs were external Gumroad state, verified by re-reading authoritative state"
+  }
+}
