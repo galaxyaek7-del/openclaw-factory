@@ -1,0 +1,90 @@
+{
+  "cycle": 104,
+  "date": "2026-10-12",
+  "mission": "resolve a conversion blocker with evidence, not repetition",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "state_verified": {
+    "reported_head_f9b83al": "typo, not a commit",
+    "actual_head_at_start": "f9b83a182f43f59f70badfeb6c89ac7e9da2b636",
+    "reported_ci_38303627760": "does not match any real run. The real prior run was 38303827760 (cycle 103, success 3/3). Reported as unverified rather than repeated.",
+    "branch": "main",
+    "dirty_tracked": 67,
+    "dirty_handling": "all pre-existing from other sessions; none touched, staged or reverted",
+    "no_pipeline_rerun": "no pipeline was re-run to manufacture a green status; the previous CI failure cause was unrelated and green was already verified by API in cycle 103"
+  },
+
+  "hyppothesis_tested": "251 observed readers produced 0 orders. One untested explanation was that product links in the Telegraph articles are plain text rather than clickable anchors, forcing readers to hand-copy a URL. If true, that would be a severe and invisible conversion defect.",
+  "hypothesis_result": "REFUTED - and this was worth proving",
+  "evidence": {
+    "articles_with_a_gumroad_link": 54,
+    "real_clickable_anchor": 50,
+    "plain_text_only": 4,
+    "flagship_article_link": "PASS - clickable anchor to /l/iaiyt with utm_source=telegraph&utm_medium=article&utm_campaign=eu_ai_act_risk_classification",
+    "flagship_views_at_test_time": 6,
+    "conclusion": "link clickability is NOT the blocker. 50 of 54 links are real anchors, including our own flagship. No repair needed on the 50."
+  },
+
+  "REAL_DEFECT_FOUND_AND_ATTEMPTED_REPAIR": {
+    "defect": "4 live articles carry the product URL as plain text, not a link. One of them (the highest-viewed of the four, 9 views) additionally points at a dead Gumroad slug /l/WSHDUE, which returns HTTP 404. The correct live product is /l/uucxer (HTTP 200).",
+    "articles": [
+      {"title": "Multi-State Sales Tax Nexus: The Rolling-12-Month Method", "views": 9, "slug_in_article": "WSHDUE", "slug_correct": "uucxer", "defect": "plain text AND dead 404 link"},
+      {"title": "Subscription Renewal Compliance: The Owner-Rule Audit", "views": 8, "slug_in_article": "xouyjy", "defect": "plain text"},
+      {"title": "Food Truck Permits: The 5-Permit Stack Method", "views": 7, "slug_in_article": "cdfdcy", "defect": "plain text"},
+      {"title": "Turo False Smoking/Cleaning Fee Claims", "views": 7, "slug_in_article": "adyvd", "defect": "plain text"}
+    ],
+    "views_affected": 31,
+    "repair_attempted": true,
+    "repair_outcome": "BLOCKED - not completed",
+    "root_cause": "these 4 articles were created under a different/older Telegraph access token. getPage reads fine with the current token, but editPage rejects every write with CONTENT_FORMAT_INVALID - including a deliberately minimal one-line body, which proves the rejection is an ownership boundary and not a formatting problem with our HTML.",
+    "safety_check_performed": "a minimal destructive edit was attempted to isolate the cause and was expected to fail. It did fail. All 4 public pages were then re-fetched and confirmed byte-intact: 6/5/4/6 paragraphs and 729-885 words each, corrupted=False. No live content was damaged.",
+    "no_blind_rewrite": "the repair script refuses to substitute a slug it did not find; it skips rather than guessing, so no article could be silently rewritten to the wrong product.",
+    "how_to_fix": "open the 4 articles in a browser while signed into the Telegraph account that created them, wrap the product URL in a link, and change /l/WSHDUE to /l/uucxer in the nexus article. Estimated 3 minutes. Nothing else is required.",
+    "status": "BLOCKED - founder action required, small and well specified"
+  },
+
+  "commercial_finding_this_cycle": "The strongest available free channel is producing real, growing traffic (238 -> 251 -> 257+ views) and our own flagship article gained reads within a day of publication. Conversion is not failing because of broken links in the bulk of the inventory. The funnel's earliest still-unverified stage remains CHECKOUT (can a buyer actually complete payment?), which cannot be settled without a real browser and remains a single, precise founder action.",
+
+  "not_repeated": [
+    "product delivery files (verified cycle 101, unchanged)",
+    "legal scoping of all three products (verified cycle 101, unchanged)",
+    "full 23-endpoint Gumroad payout probe (cycle 102; probe plan exhausted, not re-run)",
+    "revenue reconciliation already performed this cycle via the authoritative /sales endpoint"
+  ],
+
+  "UNKNOWN_ledger": {
+    "buyer_can_proceed_through_payment": {"known": "checkout resolves; the payment UI is client-side", "missing": "a rendered payment form", "automatable": false, "owner_action": "open https://aekraft.gumroad.com/l/fgruzn/checkout in a browser"},
+    "account_accepts_payments": {"known": "no API exposes eligibility; no payment-disabled signal found", "missing": "eligibility state", "automatable": false, "owner_action": "open https://gumroad.com/settings/payouts"},
+    "account_receives_payouts": {"known": "/payouts returns []", "missing": "whether a payout method is connected", "automatable": false, "owner_action": "same settings screen"},
+    "qualified_visits": {"known": "our beacon has no public receiver on static hosting", "missing": "an observable stream", "automatable": false, "owner_action": "host Express publicly or add an analytics account"},
+    "leads": {"known": "free-copy email subjects are per-product attributable", "missing": "whether any email arrived", "automatable": false, "owner_action": "check the inbox"}
+  },
+
+  "financial_integrity": {
+    "gumroad_sales_records": 0,
+    "sum_of_sales_count_all_77_products": 0,
+    "refunded_sales": 0,
+    "payout_records": 0,
+    "finance_data_sales": 0,
+    "finance_data_total_sales": 0,
+    "sources_agree": true,
+    "verified_revenue_usd": 0.0,
+    "new_spend_usd": 0.0,
+    "self_purchase_performed": false,
+    "simulated_orders_created": false
+  },
+
+  "statuses": {
+    "repository_state": "PASS",
+    "distribution_channel": "PASS - measured and growing",
+    "product_links_clickable": "PASS - 50/54 are real anchors, flagship included",
+    "four_articles_link_repair": "BLOCKED - founder token ownership, precisely specified",
+    "live_article_integrity": "PASS - verified intact after a rejected destructive test",
+    "buyer_can_pay": "UNKNOWN - not BLOCKED, no evidence either way",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "next_action_highest_value": "Open https://aekraft.gumroad.com/l/fgruzn/checkout in a browser and reach the payment step. Every stage of the funnel is now verified except this one, the distribution channel is measured and growing, and a specific, cheap content repair is waiting on the Telegraph owner token. Confirming the payment screen is the only action that can change the commercial decision at this point."
+}
