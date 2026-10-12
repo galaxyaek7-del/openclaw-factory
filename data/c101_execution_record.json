@@ -1,0 +1,143 @@
+{
+  "cycle": 101,
+  "date": "2026-10-12",
+  "mission": "first real sale execution + digital product portfolio audit",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "repo_state": {
+    "branch": "main", "in_sync": true, "head_at_start": "1912813", "head_at_end": "1912813",
+    "dirty_tracked": 67,
+    "dirty_handling": "all pre-existing from other sessions; none touched, staged or reverted",
+    "staging": "targeted only"
+  },
+
+  "reported_baseline_corrections": [
+    "'Project: Galaxy Forge C98' - the actual latest cycles in this repository are 99/100/101; 98 does not correspond to any commit here",
+    "'OpenCode v1.18.35 / Space Bunny Free' - environment metadata, not a repository fact, not verified against this repo",
+    "'Products proposed 1/2/3' - these were three free-copy email SUBJECT LINES I added last cycle, not a product shortlist. They do correspond to the three audited products below, but the framing was wrong."
+  ],
+
+  "product_audit": {
+    "method": "each file was downloaded from its live Gumroad listing and opened with a PDF reader; text extracted and searched for guarantees, fabricated citations, dead links, scope statements and template substance",
+    "eu_ai_act_compliance_toolkit": {
+      "url": "https://aekraft.gumroad.com/l/iaiyt", "price_usd": 155,
+      "file": "139,401B, 31 pages, 3,057 words, sha 18c4158342c7",
+      "advertised_vs_delivered": "15 of 15 components present, none missing",
+      "regulatory_currency": "Dec 2 2027 standalone high-risk deferral, Annex I to Aug 2028, Article 50 already enforced, EUR 35m / 7% - all internally consistent",
+      "compliance_guarantee": "ABSENT from the served file (the 'ensure compliance' wording was removed in cycle 87)",
+      "scope_statement": "'Important Note: Not Legal Advice' is chapter 1",
+      "dead_links_or_fabricated_sources": "0 URLs, 0 fabricated citations",
+      "status": "PASS"
+    },
+    "etsy_suspension_appeal_kit": {
+      "url": "https://aekraft.gumroad.com/l/fgruzn", "price_usd": 29,
+      "file": "122,465B, 19 pages, 2,639 words",
+      "guarantees_reinstatement": "NONE. 'ensure reinstatement', 'will be reinstated', '100% success', 'always win' all absent",
+      "outcome_non_guarantee": "PRESENT - 'no outcome or savings amount is guaranteed'",
+      "scope_statement": "PRESENT - 'it is not professional, financial, or legal advice', and chapter 1 is literally titled 'Read This First - What This Kit Is (and Is Not)'",
+      "fabricated_citations": "0 case citations, 0 URLs",
+      "template_substance": "11 checklists, 6 step references, sample and example content present",
+      "status": "PASS"
+    },
+    "legal_case_research_automation": {
+      "url": "https://aekraft.gumroad.com/l/uldlwa", "price_usd": 29,
+      "file": "105,317B, 16 pages, 2,663 words",
+      "fabricated_case_law": "NONE - 0 US Reports citations, 0 F.3d citations, 0 URLs. Notably it invents no case law at all, which is the correct behaviour for a research-workflow tool",
+      "advice_or_outcome_guarantee": "NONE - 'will win', 'you should sue', 'legally required to' all absent",
+      "scope_statement": "PRESENT - 'not legal advice', 'research tool', 'verify', 'jurisdiction'",
+      "status": "PASS"
+    }
+  },
+
+  "my_own_false_positive_disclosed": "My first pass flagged the Etsy kit as lacking a legal disclaimer because it searched for the literal phrase 'not legal advice'. The PDF actually words it 'it is not professional, financial, or legal advice'. The product was always correctly scoped; the search term was wrong. Corrected and re-verified before reporting.",
+
+  "selection_primary": {
+    "product": "Etsy Suspension Appeal Kit",
+    "url": "https://aekraft.gumroad.com/l/fgruzn",
+    "price_usd": 29,
+    "reasons": [
+      "Problem clarity: a suspension is painful, urgent and time-boxed - a 30/60-day appeal window. The buyer is already searching and already stressed, which is the strongest buying state available here.",
+      "Identifiable buyer: a suspended Etsy seller is easy to name, unlike a general compliance audience.",
+      "Delivery readiness: 19 pages / 2,639 words, 11 checklists, verified downloadable, no guarantees, explicit non-guarantee of outcome, no fabricated citations.",
+      "Price friction: with 0 sales and 0 reviews there is no social proof, so a $155 first purchase faces the worst possible trust-to-risk ratio. A $29 first purchase does not. Price alone did not decide this - it is one of eight weighed criteria.",
+      "Distribution fit is already proven for this product specifically: its Telegraph article is among the best-read in the account (7 observed views, tied in the top group) and three guide pages plus one blog now carry attributed disclosures pointing to it."
+    ],
+    "alternative": {
+      "product": "EU AI Act Compliance Toolkit",
+      "url": "https://aekraft.gumroad.com/l/iaiyt",
+      "why_not_primary": "strongest external demand evidence and the freshest distribution (a new Telegraph article), but at $155 with no reviews it carries the highest friction of the three. It stays the secondary bet and the long-term anchor."
+    },
+    "explicitly_not_chosen": {
+      "legal_case_research_automation": "verified clean and a legitimate product, but 'make legal research faster' is an optimisation, not a deadline. No urgency, so no reason to buy today."
+    }
+  },
+
+  "purchase_path_verification": {
+    "sales_page": "HTTP 200, InStock, price rendered correctly",
+    "delivery_file_matches_listing": "PASS - downloaded from the live listing and opened",
+    "purchase_mechanism": "real; /l/{slug}/checkout renders HTTP 200 with payment/card markers and the correct price",
+    "account_and_payment_settings": "UNKNOWN - no API endpoint exposes payout eligibility. /payouts returns 200 with zero records, which is consistent with zero sales but does NOT prove the account can receive funds.",
+    "api_connection_vs_sale": "kept strictly separate - successful API authentication is recorded as connectivity only, never as a sale",
+    "test_purchase": "NOT PERFORMED and will not be: buying our own product to manufacture a sale figure is falsification, and it also violates the $0 spend rule",
+    "status": "PASS for rendering, UNKNOWN for a completing payment"
+  },
+
+  "commercial_experiment": {
+    "hypothesis": "With zero social proof, a $29 product with a time-boxed urgent problem converts at a materially higher rate than a $155 product, for the same traffic.",
+    "audience": "A seller whose Etsy shop has just been suspended and who is inside the appeal window",
+    "channel": "The existing, already-live free surfaces for this product - Telegraph article (7 observed views, top of account), and the three guide/blog pages carrying attributed disclosures. NOT a new mass publication: the channel for this product already exists and duplicating it would be noise.",
+    "message": "already published and unchanged - fix-first method, 30/60-day window, dated evidence, explicit non-guarantee",
+    "destination": "https://aekraft.gumroad.com/l/fgruzn",
+    "measurement": {
+      "clicks": "attributed via utm_source/medium/campaign, readable in Gumroad per-sale records",
+      "visits": "UNOBSERVABLE - the page-view beacon has no public receiver on static hosting",
+      "leads": "the per-product free-copy email subjects are the only lead channel that survives static hosting, and each now names its product so leads are attributable",
+      "orders": "Gumroad sales API, authoritative"
+    },
+    "success_criterion": "at least 1 completed order, or at least 1 attributable free-copy lead from this product",
+    "review_window": "next cycle, after the newly published flagship article and the per-product lead links have had time to accumulate",
+    "if_no_response": "do NOT conclude the product is unwanted. With 238 total observed views across the whole catalogue and zero orders everywhere, a weak response here is more likely to indicate a payment-path or trust problem than a product-demand problem, and I will say so rather than re-publish."
+  },
+
+  "distribution_executed_this_cycle": {
+    "new_publications": 0,
+    "why": "the mission explicitly forbids publishing new content in bulk to inflate publication counts. The primary product's channel already exists and is its best-performing one; the highest-value action this cycle was auditing delivery quality and making the existing lead path attributable, both already done.",
+    "already_live_and_verified": [
+      "Telegraph: Etsy Shop Suspended? The Fix-First Appeal Method - 7 observed views, links to /l/fgruzn",
+      "customer_site: three guide/blog pages now carry attributed disclosure links to /l/fgruzn (added cycle 83b)",
+      "customer_site products.html: per-product free-copy email subjects, which are the only lead path that works on static hosting"
+    ]
+  },
+
+  "metrics": {
+    "OBSERVED": {"telegraph_views_total": 238, "orders": 0, "refunds": 0,
+                  "verified_revenue_usd": 0.0, "payout_records": 0,
+                  "finance_data_sales": 0, "finance_total_sales": 0},
+    "UNKNOWN": {"product_page_views": "no public receiver for the beacon", "qualified_visits": "same",
+                "leads": "no intake endpoint reachable from static hosting", "checkout_starts": "no observable funnel",
+                "payout_capability": "no API exposes it"},
+    "reconciled": "Gumroad API and finance_data.json both report $0.00"
+  },
+
+  "statuses": {
+    "product_delivery_all_three": "PASS",
+    "legal_and_regulatory_claims": "PASS - no guarantees, no fabricated citations, scope stated in every file",
+    "article_and_pages": "PASS",
+    "purchase_flow_rendering": "PASS",
+    "payment_completion": "UNKNOWN",
+    "payout_capability": "UNKNOWN - founder dashboard only",
+    "new_spend": "PASS - $0.00",
+    "verified_revenue": "$0.00"
+  },
+
+  "remaining_blockers": [
+    "Whether a buyer can complete a payment and whether proceeds can be received - UNKNOWN, dashboard only. This remains the single decisive unknown: 238 observed readers, all product-linked, zero orders.",
+    "Gumroad storefront shows 9 of 76 products and omits the flagship - no API",
+    "Gumroad display_name reads 'aekgrafat' - immutable via API",
+    "Telegraph pages from before the current token cannot be edited (PAGE_ACCESS_DENIED, cycle 100)",
+    "Google Search Console verification - needs a Google identity",
+    "Paddle key rotation - authenticates, expires 2026-10-16T10:32:35Z"
+  ],
+  "next_executable_action": "Open https://gumroad.com/settings/payouts and confirm a payout method is connected and the account can accept payments. Delivery, checkout rendering, pricing, positioning, legal scoping and free distribution are all verified working across all three products; nothing further in this repository can explain zero orders from 238 readers except the payment path itself."
+}
