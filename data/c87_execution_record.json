@@ -1,0 +1,81 @@
+{
+  "cycle": 87,
+  "date": "2026-10-12",
+  "mission": "EU AI Act Toolkit delivery repair + first-sale execution",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "reported_state_was_wrong": {
+    "c0ae2ba": "DOES NOT EXIST - git cat-file returns 'Not a valid object name'. The real HEAD at cycle start was e5aedbc.",
+    "scripts/pack_eu_ai_act_toolkit.py": "DOES NOT EXIST. The actual script is scripts/patch_eu_ai_act_toolkit.py, created in cycle 86.",
+    "books/eu_ai_act_compliance_toolkit_v2.pdf": "does exist, 139,401 bytes, produced by the cycle 86 patch script",
+    "qualified_visits": "reported as 0. This factory cannot observe that: the deployed page-view beacon resolves to the GitHub Pages host and 404s, so visits are UNKNOWN, not 0. Reporting 0 would assert a confirmed zero that cannot be confirmed.",
+    "secret_scan 3/3": "3/3 is the CI job count, not the secret scan result. The secret scan is a separate command and reports 'no secret-shaped strings found'."
+  },
+
+  "gumroad_rich_content_root_cause": {
+    "exact_cause": "the product's rich_content contains a fileEmbed node whose attrs.id is 3gOnjSXQ_kgRtjfzg0oh-A==, which is the file named eu_ai_act_compliance_toolkit - the 31-page PDF containing the compliance guarantee. Gumroad refuses to detach any file still referenced by an embed.",
+    "structure_found": "product.rich_content[0].description.content[0] = {'type': 'fileEmbed', 'attrs': {'id': '3gOnjSXQ_kgRtjfzg0oh-A==', 'uid': '614d9653-937f-90bb-2882-6464dd5feb02', 'collapsed': false}}",
+    "why_cycle_86_concluded_it_was_unfixable": "cycle 86 searched only the `description` field for the file id, found none, and wrongly concluded the embed was unreachable. The embed lives in a separate top-level `rich_content` field that was never inspected.",
+    "the_instruction_we_missed": "the full API error reads: 'Cannot remove files still referenced in rich content: ... Remove the file embeds from rich content first, OR SEND BOTH CHANGES TOGETHER.' The API explicitly permits a combined request.",
+    "the_real_blocker": "rich_content is writable ONLY through a JSON request body. Sending it as form-encoded data always fails with 'rich_content must be an array of content page objects', regardless of payload shape - which is what made it look read-only.",
+    "payload_shape_required": "{'rich_content': [ {page object} ], 'files': [ {'id': existing_id}, {'url': newly_uploaded_url} ] } sent as a JSON body"
+  },
+
+  "repair_performed": {
+    "single_combined_request": "rich_content with the fileEmbed removed AND files set to [preview_id, corrected_v2_url], which detached the guarantee file and the byte-identical duplicate and attached the corrected PDF in one atomic request",
+    "second_request": "rich_content restored with a fileEmbed pointing at the new file id, so the buyer's download button works again",
+    "verified_live": {
+      "files_attached": 2,
+      "duplicate_removed": true,
+      "guarantee_file_removed": true,
+      "served_file_sha256": "18c4158342c7",
+      "served_file_identical_to_local_v2": true,
+      "ensure_compliance_occurrences_in_served_file": 0,
+      "pursue_compliance_occurrences": 2,
+      "pages": 31,
+      "words": 3057,
+      "not_legal_advice_present": true,
+      "fileembed_valid_and_not_dangling": true
+    },
+    "listing_unchanged": "price $155, title, description and published state all preserved, as instructed"
+  },
+
+  "product_url_and_checkout": {
+    "url": "https://aekraft.gumroad.com/l/iaiyt",
+    "note": "specific product link, not the generic catalog",
+    "http": 200,
+    "instock": true,
+    "price_rendered": 155.0,
+    "checkout": "live and reachable; no charge was created to test it"
+  },
+
+  "three_strongest_digital_products": [
+    {"rank": 1, "name": "EU AI Act Compliance Toolkit", "url": "https://aekraft.gumroad.com/l/iaiyt", "price_usd": 155, "evidence": "delivery now verified end to end after repair; 31 pages / 3,057 words served; 15/15 advertised components present; regulatory dates correct; no compliance guarantee remains"},
+    {"rank": 2, "name": "Etsy Suspension Appeal Kit", "url": "https://aekraft.gumroad.com/l/fgruzn", "price_usd": 29, "evidence": "19 pages / 122,465 bytes valid PDF; ~91 words per dollar; proven topic match from the Telegraph article and three guide pages"},
+    {"rank": 3, "name": "Legal Case Research Automation for Solo Attorneys", "url": "https://aekraft.gumroad.com/l/uldlwa", "price_usd": 29, "evidence": "16 pages / 105,317 bytes valid PDF; ~92 words per dollar; 6 tags; custom_summary present"}
+  ],
+
+  "distribution_and_metrics": {
+    "nostr": "20 posts, 0 responses - no further posting justified",
+    "telegraph": "66 live articles, 0 attributed sales",
+    "bing_indexnow": "59 URLs accepted",
+    "google": "not submitted - requires a Google identity",
+    "qualified_visits": "UNKNOWN - the view beacon 404s on the Pages host",
+    "leads": "UNKNOWN",
+    "checkout_starts": "UNKNOWN",
+    "orders": 0,
+    "refunds": 0,
+    "gross_usd": 0.0,
+    "net_usd": 0.0,
+    "spending": 0.0
+  },
+
+  "remaining_blockers": [
+    "Google Search Console verification - needs a Google identity",
+    "Gumroad storefront curation - no API exists (GET /storefront 404) and the $155 flagship is not among the 9 products surfaced",
+    "Paddle key rotation - needs vendors.paddle.com; the key works but expires 2026-10-16",
+    "Archive /l/owtmpe and delete /l/dxfwlu - no unpublish/delete API"
+  ],
+  "next_executable_commercial_action": "Curation of the Gumroad storefront so the repaired flagship is actually surfaced. It is now the strongest, most honest product in the catalog and it is invisible on the storefront, which is the one surface a cold buyer lands on."
+}
