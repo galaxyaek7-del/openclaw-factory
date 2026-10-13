@@ -58,6 +58,44 @@ def read_page(token, path):
             'author_name': res.get('author_name'), 'url': res.get('url')}
 
 
+def api_view_count(token, path):
+    """Read a page's view count WITHOUT incrementing it.
+
+    MEASUREMENT INTEGRITY, added cycle 142.
+
+    PROVEN empirically on 2026-10-13 against a real published page:
+        getPage via the API, read twice 4s apart  -> 14, 14   (no movement)
+        then exactly ONE HTML fetch of the page   -> count became 15
+    So an HTML GET of a Telegraph article increments its own view counter by
+    exactly 1, while an API read does not move it at all.
+
+    That means every time this project has verified a live article by fetching
+    its HTML, it has been counting its own verification as a reader. Use this
+    function for routine checks and only fetch the HTML when a write safety
+    check genuinely requires the rendered page.
+    """
+    r = requests.get(API + 'getPage',
+                     params={'access_token': token, 'path': path}, timeout=90).json()
+    return (r.get('result') or {}).get('views')
+
+
+def api_page_text(token, path):
+    """Return a page's rendered text using the API only - zero view inflation."""
+    page = read_page(token, path)
+
+    def txt(node):
+        if isinstance(node, str):
+            return node
+        if not isinstance(node, dict):
+            return ''
+        kids = node.get('children') or []
+        if isinstance(kids, str):
+            return kids
+        return ''.join(txt(k) for k in kids)
+
+    return ' '.join(txt(n) for n in page['nodes'])
+
+
 def append_paragraph(token, path, text, allow_empty_page=False):
     """Append one paragraph. Refuses every unsafe precondition first."""
     page = read_page(token, path)
