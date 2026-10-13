@@ -1,0 +1,99 @@
+{
+  "cycle": 107,
+  "label_in_request": "CYCLE 100",
+  "label_note": "request labelled Cycle 100; repository is at C106. Work performed against verified state 2d360cf.",
+  "date": "2026-10-12",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "MAJOR_CORRECTION_THE_251_WAS_STALE": {
+    "finding": "The figure I reported as '251 visitors' in cycles 103-106 is no longer current. A fresh read of the same source returns 449.",
+    "root_cause_of_the_error": "cycles 105 and 106 reused the cycle-103 measurement instead of re-reading it, and cycle 104 described the channel as 'growing' while still quoting 251. A stale number was carried forward as if current - the exact anti-pattern this project is supposed to prevent.",
+    "current_value": 449,
+    "previous_values_reported": {"cycle_103": 238, "cycle_104": 251, "cycles_105_106": "quoted 251 without re-measuring", "cycle_107": 449}
+  },
+
+  "WHAT_THE_NUMBER_ACTUALLY_IS": {
+    "source": "the Telegraph API getPage `views` field, summed across the account's articles",
+    "what_it_measures": "a per-article CUMULATIVE page-view counter maintained by Telegraph",
+    "what_it_is_NOT": [
+      "NOT unique visitors - Telegraph exposes no unique-visitor figure at all",
+      "NOT outbound clicks - Telegraph provides no click tracking",
+      "NOT Gumroad product-page visits - Gumroad exposes none to us",
+      "NOT leads, and emphatically NOT orders"
+    ],
+    "period_covered": "cumulative since each article was published, spanning the whole account history from 2026-09-27 to 2026-10-12 (16 days). It is NOT a 30-day window and NOT a single-cycle window.",
+    "distribution_shape": {"articles": 64, "total_views": 449, "median_per_article": 6, "max_single_article": 14, "articles_with_zero_views": 0},
+    "corrected_statement": "the honest sentence is '449 cumulative article page views since 2026-09-27', never '449 people' and never '251 visitors'",
+    "strength_of_signal": "the weakest possible demand signal. A reload inflates it and it cannot separate a buyer from a passer-by."
+  },
+
+  "FUNNEL_DECOMPOSITION": {
+    "measured": {"article_page_views": 449},
+    "unknown": {"unique_visitors": "UNKNOWN", "outbound_clicks": "UNKNOWN", "product_page_visits": "UNKNOWN", "leads": "0 recorded"},
+    "zero": {"paid_orders": 0},
+    "chain": "449 page views -> [unknown clicks] -> [unknown visits] -> 0 orders",
+    "reading": "the funnel has exactly one measured link and four unknowns. Traffic is accumulating but has never been shown to arrive at a product page, let alone a checkout."
+  },
+
+  "PRODUCT_SELECTED": {
+    "name": "Etsy Suspension Appeal Kit",
+    "url": "https://aekraft.gumroad.com/l/fgruzn",
+    "why_this_one": "of the three flagships it is the only one whose own distribution article ranks near the top of the account (13 views, 2nd highest of 64), it is the cheapest at $29 so the least trust is required to try it, its buyer problem is time-boxed and urgent rather than discretionary, and it carries the lowest legal risk because it explicitly disclaims any outcome.",
+    "runner_up": "EU AI Act Compliance Toolkit (/l/iaiyt, $155) - strongest asset and best copy, but a $155 discretionary purchase against an unknown brand is the hardest possible first sale.",
+    "no_new_product_created": true,
+    "reason": "the three existing products are honest, complete and genuinely deliverable. Adding a fourth would add inventory, not revenue."
+  },
+
+  "BUYER_JOURNEY_FOR_fgruzn": {
+    "product_page": "HTTP 200",
+    "title_matches_offer": "yes - 'Etsy Suspension Appeal Kit'",
+    "price": "$29.00 (price_cents 2900 in the checkout island)",
+    "published": true,
+    "sales_count": 0,
+    "delivery_file": {"count": 1, "bytes": 122465, "file_info_shown_to_buyer": "120 KB / 19 pages"},
+    "description_claims_19_pages": "yes",
+    "description_vs_file_consistency": "CONSISTENT - description says 19-page, file_info says 19 pages / 120 KB, the actual opened file is 19 pages / 2,639 words / 11 checklists / 122,465 bytes. All four agree.",
+    "variants": "none - the buyer receives one unambiguous file, no size choice to get wrong",
+    "checkout_url": "HTTP 200",
+    "payment_processor": "pk_live_ (LIVE mode) present in the checkout page meta",
+    "product_id": "mvuoJTNLfsWsm0NF-CrZHw==",
+    "purchase_disabled": false,
+    "static_form_elements": {"forms": 0, "inputs": 0, "buttons": 0},
+    "conclusion": "everything server-side is verified and correct. The only unverified link is whether a human sees a rendered payment form, because the UI is JavaScript-injected and cannot be confirmed without a browser."
+  },
+
+  "PLATFORM_STATES_SEPARATELY": {
+    "Gumroad read API": {"state": "WORKS", "evidence": "auth OK, /sales returns 0 records, product records readable"},
+    "Gumroad checkout": {"state": "WORKS - live payment path", "evidence": "pk_live_ key, price_cents 2900, purchase not disabled"},
+    "Gumroad payouts": {"state": "UNKNOWN", "evidence": "/payouts returns an empty list and no endpoint exposes eligibility. An empty list is not proof of ineligibility - it is absence of evidence."},
+    "Gumroad product copy editing": {"state": "BLOCKED", "evidence": "the API returns 200 and success:true and discards the write (proven with probe strings in cycle 106). Dashboard-only."},
+    "Paddle read API": {"state": "WORKS", "evidence": "auth OK, 7 products"},
+    "Paddle webhooks": {"state": "NOT INTEGRATED", "evidence": "PADDLE_WEBHOOK_SECRET absent, 0 notification subscriptions, 0 delivered events. A visible webhook SETTING would not be proof either - only a real delivered event is."},
+    "Telegraph": {"state": "WORKS for new content; OLD ARTICLES BLOCKED on an older token"},
+    "Search Console": {"state": "NOT CONNECTED", "evidence": "no Google credentials"}
+  },
+
+  "PROOF_RULES_APPLIED": {
+    "page_available_is_not_a_sale": true,
+    "clicking_checkout_is_not_a_sale": true,
+    "a_completed_order_is_not_money_received": true,
+    "no_revenue_recorded_without_external_evidence": true,
+    "verified_revenue_usd": 0.0,
+    "total_new_spend_usd": 0.0
+  },
+
+  "STATUSES": {
+    "repository_state": "PASS (2d360cf valid, 67 concurrent files untouched)",
+    "product_matches_its_file": "PASS",
+    "checkout_reachable": "PASS",
+    "checkout_payment_capability": "PASS - live processor, purchase enabled",
+    "buyer_can_complete_payment": "UNKNOWN - needs one browser session",
+    "seller_payout_eligibility": "UNKNOWN - not exposed by any API",
+    "traffic_measurement": "PASS but now correctly characterised",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "Open https://aekraft.gumroad.com/l/fgruzn/checkout in a browser and complete a real payment attempt (or reach the card form and stop). This is the single unverified link in an otherwise fully verified chain. Everything downstream of it - whether the price is right, whether the copy converts, whether anyone will buy - is untestable until a payment is at least attempted by a human. Second, and independent: the Gumroad dashboard edit of the two thin descriptions, which the API provably cannot do."
+}
