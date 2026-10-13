@@ -1,0 +1,97 @@
+{
+  "cycle": 108,
+  "date": "2026-10-12",
+  "mission": "customer research, best niche, produce, upload",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "CORRECTION_TO_CYCLE_106_ROOT_CAUSE": {
+    "c106_claimed": "the Gumroad API silently discards product writes - dashboard-only, BLOCKED",
+    "truth": "that conclusion was WRONG, and the cause was mine. Gumroad expects FLAT keys ('description=...'), not the nested 'product[description]' shape I sent. With the flat shape the write persists immediately.",
+    "how_proven": "PUT /v2/products/<product_id> with a flat description key, re-read after 25s: probe persisted. The original live description was then restored byte-for-byte.",
+    "consequence": "product copy can be fixed autonomously. No founder dashboard action was ever needed for it. C106 handed the founder a task that does not exist, and C107 repeated it.",
+    "api_shape_note": "update_product() in channels/gumroad_publisher.py already builds flat keys correctly - my probe bypassed the repo's own helper and used the wrong shape. The repo code was right; the ad-hoc probe was wrong."
+  },
+
+  "CUSTOMER_RESEARCH_REAL_EVIDENCE": {
+    "method": "live web search for actual buyer pain, actual buying behaviour, and actual competitors in the Etsy-suspension niche",
+    "demand_confirmed": [
+      "r/EtsyCommunity and r/EtsySellers carry active suspension threads, including 2026-dated posts",
+      "the pain is concrete and repeated: suspended with no reason given, appeal rejected or ignored, fee lost, income stopped",
+      "quotes captured verbatim: 'They just took my money and now I can't even contact anyone', 'my whole career is currently hanging in the balance', 'The whole thing just seems very unfair to me'"
+    ],
+    "PAYMENT_PROOF_FOUND": {
+      "competitor": "Shopkeep Sentry (shopkeepsentry.com)",
+      "what_they_sell": "'Shopkeep Sentry turns your suspension notice into a complete, ready-to-submit appeal built on this exact structure - in about five minutes'",
+      "why_this_matters": "a live, operating business is charging money to solve exactly this problem. That is real proof of willingness to pay in this niche, not an assumption. It is the strongest demand signal found in any cycle so far.",
+      "their_gap_we_can_own": "they run an AI generator plus a free policy library as a lead magnet. Our offer is a one-time owned file with 11 checklists and no subscription, no tool, no account. That is a genuine positioning difference, not a cosmetic one."
+    },
+    "official_policy_facts_that_strengthen_the_offer": {
+      "source": "help.etsy.com - How to File an Appeal for a Permanently Suspended Account",
+      "six_month_window": "'You have 6 months from the day your account was suspended to file an appeal. If you miss this window, your account will remain permanently suspended.'",
+      "temporary_vs_permanent": "a temporary suspension is resolved by other means (clearing a balance or an open case) and should NOT be appealed",
+      "file_after_fixing": "Etsy's own guidance is to file only after resolving the issues that caused the suspension - which is exactly why a preparation kit is the thing a buyer needs",
+      "consistent_with_our_asset": "our file already carried the 6-month window; it is now stated up front on the product page as the hook, sourced from Etsy's own policy rather than asserted"
+    },
+    "competing_niche_rejected": {
+      "niche": "generic small-business compliance checklists",
+      "why_rejected": "every result is a free lead magnet from an HR/insurance/accounting SaaS trying to sell software (OneDigital, BBSI, CorpNet, benely, easyb, wintive). The checklist itself is never the product. Hard to monetise a PDF when the checklist is the advertisement."
+    },
+    "best_niche_conclusion": "Etsy suspension appeal. It is the only niche researched this cycle with hard evidence of someone actually paying to solve it, an active and reachable buyer community, a real and verifiable deadline that creates genuine urgency, and a product we already own, have already distributed, and can therefore improve and re-sell immediately."
+  },
+
+  "PRODUCTION_AND_UPLOAD_COMPLETED": {
+    "what_was_produced": "two complete product-page rewrites, researched against the real competitor and Etsy's official policy, then written and uploaded live",
+    "fgruzn_etsy_suspension_appeal_kit": {
+      "words": "89 -> 263",
+      "hook": "the 6-month appeal window, sourced from Etsy's own help page",
+      "adds": "temporary vs permanent triage, the Appeals Center walkthrough in Etsy's own question order, explicit differentiation from paid AI appeal generators ('a file you own and use once'), and a plain What is NOT included block",
+      "retained": "the no-outcome-guarantee and not-professional/financial/legal-advice disclosures",
+      "persisted": true,
+      "verified_on_public_page": true
+    },
+    "uldlwa_legal_case_research_automation": {
+      "words": "35 -> 182",
+      "fixes": "the old copy never mentioned legal case research at all despite the product title; it read 'A practical AI research system for solos'",
+      "adds": "what is inside (workflow, tool pricing, hallucination-verification discipline, citation checking, memo templates) and an explicit What this is NOT block covering invented authorities and jurisdiction variance",
+      "persisted": true,
+      "verified_on_public_page": true
+    },
+    "guards_verified_after_write": {
+      "fgruzn_no_outcome_guarantee_disclosed": true,
+      "fgruzn_not_legal_advice_disclosed": true,
+      "uldlwa_not_legal_advice_disclosed": true,
+      "uldlwa_no_invented_authorities_disclosed": true
+    }
+  },
+
+  "NO_NEW_PRODUCT_CREATED": {
+    "decision": "not created",
+    "reasoning": "the research did not point to a better niche - it confirmed the one we already serve. Building a fourth product would add inventory while the measured bottleneck remains reach and checkout confirmation. The highest-value production available was making the two existing offers actually sellable, which is now done."
+  },
+
+  "FINANCIAL_TRUTH": {
+    "gumroad_sales_records": 0,
+    "fgruzn_sales_count": 0,
+    "uldlwa_sales_count": 0,
+    "refunded_sales": 0,
+    "finance_data_sales": 0,
+    "verified_revenue_usd": 0.0,
+    "new_spend_usd": 0.0,
+    "self_purchase_performed": false,
+    "simulated_orders_created": false,
+    "note": "improved copy is a capability, not a sale. No order exists and none is implied."
+  },
+
+  "STATUSES": {
+    "c106_write_path_conclusion": "CORRECTED - the API works; my probe used the wrong param shape",
+    "best_niche": "DETERMINED with payment evidence - Etsy suspension appeals",
+    "product_copy": "SHIPPED live on both products",
+    "new_product": "deliberately not created",
+    "buyer_can_complete_payment": "still UNKNOWN - needs one browser session",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "The single unverified commercial link is still payment. Open https://aekraft.gumroad.com/l/fgruzn/checkout in a browser and complete a real payment attempt. With the page now carrying a 263-word offer built on a documented deadline and a proven competitor's price umbrella, a completed purchase is the only remaining step that produces revenue."
+}
