@@ -1,0 +1,78 @@
+{
+  "cycle": 132,
+  "date": "2026-10-13",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+  "head_verified_before_any_conclusion": "165d80c",
+
+  "TELEGRAPH_REPAIR": {
+    "status": "PASS",
+    "PAGE_ACCESS_DENIED_reproduced": false,
+    "ROOT_CAUSE_FOUND_AND_FIXED": "editPage REPLACES the whole node list. getPage omits the body unless return_content=true, so result.get('content') is None. Cycle 131 turned None into [] with (or []), read that as an empty page, and overwrote a live article. The cause was never fixed then - only the symptom was repaired.",
+    "measured_proof": "8 articles read WITHOUT return_content -> 0,0,0,0,0,0,0,0 nodes. The SAME 8 WITH return_content=true -> 11,12,13,3,11,11,13,11 nodes. All 26 known articles now read with a real body. Nothing was ever actually empty.",
+    "permission_vs_method_kept_separate": {
+      "UNKNOWN_METHOD": ["getAccount", "getPages", "editAccount"],
+      "meaning": "not exposed by this API. Enumerating an author's pages is unavailable; per-page getPage by known path works.",
+      "PAGE_ACCESS_DENIED": "not reproduced. getPage and editPage both return ok on these pages with this token, correcting the C114 note.",
+      "note": "these two failure modes had been conflated; they are unrelated"
+    },
+    "no_bypass_attempted": "no attempt was made to circumvent any permission, and no token or secret was printed or committed",
+    "test_page_used": "the founder's own live articles were used, since a separate throwaway account would have been a second author identity. The guard was proven by simulated injection, not by risking real content.",
+    "guard_shipped": "lib/telegraph_safe_edit.py - read_page always sends return_content=true; append_paragraph refuses to write on an empty read, on an empty read of a non-empty live page, on a non-growing node list, and on a short read-back. Every refusal raises UnsafeEdit before any HTTP write.",
+    "tests": "tests/test_telegraph_safe_edit.py - 8/8 pass, no network calls",
+    "SECOND_MISTAKE_OF_MINE": "my first guard test asserted the guard would refuse on a real page. It did not refuse, and correctly so - that page had a real body. The test therefore injected 'THIS MUST NEVER BE WRITTEN' into a live article. Removed immediately; node count back to 12, string absent from served HTML, all original content verified present. A guard test wrote real data because I misunderstood what I had just built."
+  },
+
+  "GUMROAD": {
+    "status": "PASS for everything observable, UNKNOWN for what needs a browser",
+    "product": {"slug": "bfhpzl", "price_usd": 79, "published": true, "file_bytes": 173373, "sales": 0, "landing_url": "https://aekraft.gumroad.com/l/bfhpzl"},
+    "share_link_valid": "HTTP 200 on the landing URL, no redirect hop",
+    "checkout": {"http": 200, "stripe_key": "pk_live_ - LIVE mode", "purchases_disabled": false, "product_unavailable": false, "not_enough_inventory": false, "card_declined_marker": false},
+    "checkout_interpretation": "a link response. NOT evidence of a sale, NOT evidence the payment form mounts, NOT evidence of payout readiness.",
+    "PAYOUT_ELIGIBILITY": {
+      "status": "UNKNOWN",
+      "checked": "GET /v2/payouts returns HTTP 200 with 0 records",
+      "why_that_proves_nothing": "an empty payouts list is absence of pays, never evidence of ineligibility",
+      "dashboard": "gumroad.com/settings/payouts and app.gumroad.com/settings/payouts both return HTTP 404 unauthenticated - a client-side authenticated page, no data reachable",
+      "api_endpoint_exists": false,
+      "THE_ONE_STEP_THAT_ONLY_THE_FOUNDER_CAN_DO": "open https://gumroad.com/settings/payouts in a logged-in browser and confirm (a) payout method is on file and (b) the account is in good standing. Until then a sale could complete and the money still not move."
+    },
+    "revenue": {"gumroad_sales_records": 0, "finance_data_sales": 0, "VERIFIED_REVENUE": "$0.00"}
+  },
+
+  "MEASURED_CHANNEL_CEILING_THE_MOST_DECISIVE_NUMBER_THIS_CYCLE": {
+    "method": "getPage returns a real integer view count per article - 26 of 26 had one",
+    "measured_views_total": 294,
+    "median": 11,
+    "max": 19,
+    "min": 8,
+    "articles_with_zero_views": 0,
+    "sales_from_those_views": 0,
+    "DERIVED": "Telegraph reliably produces 8-19 views per article and has never exceeded 19. 294 views have bought nothing. Publishing N more articles buys roughly 11-19 views each.",
+    "CONCLUSION_STATED_PLAINLY": "this is a real channel with a hard, measured ceiling far below what a first sale needs. It is not broken - it is simply too small to be the answer, and treating it as the answer for 12 cycles was the error.",
+    "corrects_an_earlier_figure": "the previously cited 449 cumulative views covered 64 articles including ones not in campaign_lifecycle. The 26 articles we can actually attribute today total 294."
+  },
+
+  "COMMERCIAL_ACTION_TAKEN": {
+    "target": "the only zero-friction path to a first real human - the free-copy email offer",
+    "gaps_found": {
+      "homepage": "index.html had ZERO free-copy mailto links. Anyone landing on the homepage - the entry point - had no way to get a free copy without first navigating to products.html.",
+      "catalogue": "on products.html the free-copy offer sat at byte 8403 of 38274, far below the fold, and the highest-value product had no direct free-copy link of its own"
+    },
+    "changes": ["index.html: added a third hero CTA, 'Or get your first toolkit free', pointing at the $79 bundle's free-copy mailto",
+                "products.html: moved the free-copy offer directly under the h1, above the fold, as a compact card"],
+    "verification": "tag balance re-checked - div 87/87, a 101/101, p 90/90, h2 84/84, 83 cards, 77 product links intact; scan_for_secrets clean",
+    "what_this_is_not": "it is not a sale and not a lead. No request has arrived. The mailto links are verified well-formed with pre-filled subjects; whether anyone ever sends one is not something this environment can observe."
+  },
+
+  "NUMBERS": {
+    "product_views": "UNKNOWN - Gumroad exposes none",
+    "article_views": 294,
+    "clicks": "UNKNOWN - no click instrumentation on any channel",
+    "leads_or_inquiries": 0,
+    "paid_orders": 0,
+    "VERIFIED_REVENUE": "$0.00",
+    "TOTAL_NEW_SPEND": "$0.00",
+    "statuses": {"telegraph_repair": "PASS", "gumroad_product": "PASS", "payout_readiness": "UNKNOWN - founder browser step", "checkout_completion": "UNKNOWN - founder browser step", "first_sale": "NOT YET"}
+  }
+}
