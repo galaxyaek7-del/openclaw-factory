@@ -1,0 +1,19 @@
+{
+ "status": "sent",
+ "event_id": "dc37c4c3396f14de11e904e72c4e4df93bd4be551bf7cbeb2245bfa00baa8ae8",
+ "content_hash": "bc8a4ca0392bb088",
+ "acks": {
+  "relay.damus.io": "FAIL:RuntimeError",
+  "relay.primal.net": "[\"OK\",\"dc37c4c3396f14de11e904e72c4e4df93bd4be551bf7cbeb2245bfa00baa8ae8\",true,\"\"]",
+  "nos.lol": "[\"OK\",\"dc37c4c3396f14de11e904e72c4e4df93bd4be551bf7cbeb2245bfa00baa8ae8\",true,\"\"]",
+  "relay.nostr.band": "FAIL:TimeoutError",
+  "nostr-pub.wellorder.net": "[\"OK\",\"dc37c4c3396f14de11e904e72c4e4df93bd4be551bf7cbeb2245bfa00baa8ae8\",false,\"blocked: spam not permitted\"]"
+ },
+ "relays_ok": 3,
+ "product": "EU AI Act Compliance Toolkit",
+ "product_slug": "iaiyt",
+ "product_url": "https://aekraft.gumroad.com/l/iaiyt?utm_source=nostr&utm_medium=post&utm_campaign=eu_ai_act_toolkit",
+ "link_is_clickable_plain_text_url": true,
+ "at": "2026-10-13T12:33:13Z",
+ "sales_at_posting": 0
+}

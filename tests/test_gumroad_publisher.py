@@ -197,15 +197,194 @@ class TestListProductsPagination(unittest.TestCase):
         self.assertNotIn("page_key", kwargs_call1["params"])
 
     def test_safety_cap_raises_rather_than_looping_forever(self):
-        never_ending = _fake_response(status_code=200, json_data={
-            "success": True, "products": [{"id": "x"}],
-            "next_page_key": "ALWAYS-ANOTHER-PAGE",
-        })
+        # Each page returns a genuinely DIFFERENT cursor (a real API that
+        # keeps progressing but somehow never terminates) -- isolates the
+        # page-cap guard from the separate repeated-cursor guard below.
+        responses = [
+            _fake_response(status_code=200, json_data={
+                "success": True, "products": [{"id": f"x{i}"}],
+                "next_page_key": f"CURSOR-{i}",
+            }) for i in range(10)
+        ]
         with patch.object(gp, "_MAX_PAGES", 3), \
-             patch.object(gp.requests, "request", return_value=never_ending) as mock_req:
+             patch.object(gp.requests, "request", side_effect=responses) as mock_req:
             with self.assertRaisesRegex(RuntimeError, "stopped after 3 pages"):
                 gp.list_products("fake-token")
         self.assertEqual(mock_req.call_count, 3)
+
+    def test_repeated_cursor_raises_immediately_as_a_cycle_not_a_slow_cap(self):
+        """A real pagination cycle (the same page_key handed back again) is
+        a distinct, more specific bug than merely 'many pages' -- it must
+        be caught the moment it repeats, not only after _MAX_PAGES."""
+        page1 = _fake_response(status_code=200, json_data={
+            "success": True, "products": [{"id": "p1"}], "next_page_key": "CURSOR-A",
+        })
+        page2 = _fake_response(status_code=200, json_data={
+            "success": True, "products": [{"id": "p2"}], "next_page_key": "CURSOR-A",  # repeats!
+        })
+        with patch.object(gp.requests, "request", side_effect=[page1, page2]) as mock_req:
+            with self.assertRaisesRegex(RuntimeError, "cycling"):
+                gp.list_products("fake-token")
+        self.assertEqual(mock_req.call_count, 2)
+
+    def test_duplicate_product_id_across_pages_is_never_double_counted(self):
+        """Real-world case: the catalog shifts mid-walk (e.g. a product
+        created between two fetches) and the same id reappears on a later
+        page. It must be skipped, not duplicated in the final result."""
+        page1 = _fake_response(status_code=200, json_data={
+            "success": True, "products": [{"id": "p1"}, {"id": "p2"}], "next_page_key": "CURSOR-A",
+        })
+        page2 = _fake_response(status_code=200, json_data={
+            "success": True, "products": [{"id": "p2"}, {"id": "p3"}],  # p2 repeats
+        })
+        with patch.object(gp.requests, "request", side_effect=[page1, page2]):
+            products = gp.list_products("fake-token")
+        self.assertEqual(products, [{"id": "p1"}, {"id": "p2"}, {"id": "p3"}])
+
+    def test_empty_page_with_no_next_key_returns_empty_list_not_an_error(self):
+        empty = _fake_response(status_code=200, json_data={"success": True, "products": []})
+        with patch.object(gp.requests, "request", return_value=empty):
+            products = gp.list_products("fake-token")
+        self.assertEqual(products, [])
+
+    def test_mid_walk_http_failure_reports_real_partial_progress_never_silent_truncation(self):
+        page1 = _fake_response(status_code=200, json_data={
+            "success": True, "products": [{"id": "p1"}, {"id": "p2"}], "next_page_key": "CURSOR-A",
+        })
+        # A real transient failure is retried _RETRY_ATTEMPTS times before
+        # surfacing -- supply one exception per attempt, same convention as
+        # TestRetryOnTransientFailure's own test_get_sales_gives_up_after_max_attempts.
+        failures = [gp.requests.RequestException("boom")] * gp._RETRY_ATTEMPTS
+        with patch.object(gp.requests, "request", side_effect=[page1, *failures]), \
+             patch.object(gp.time, "sleep"):
+            with self.assertRaisesRegex(RuntimeError, r"after 1 page\(s\) \(2 product\(s\) fetched so far -- inventory INCOMPLETE"):
+                gp.list_products("fake-token")
+
+    def test_mid_walk_success_false_reports_real_partial_progress(self):
+        page1 = _fake_response(status_code=200, json_data={
+            "success": True, "products": [{"id": "p1"}], "next_page_key": "CURSOR-A",
+        })
+        page2 = _fake_response(status_code=200, json_data={"success": False, "error": "rate limited"})
+        with patch.object(gp.requests, "request", side_effect=[page1, page2]):
+            with self.assertRaisesRegex(RuntimeError, r"after 1 page\(s\) \(1 product\(s\) fetched so far -- inventory INCOMPLETE"):
+                gp.list_products("fake-token")
+
+
+class TestUpdateProductVerification(unittest.TestCase):
+    """Regression guard for the real bug found 2026-10-11 (Cycle 106):
+    Gumroad's PUT /v2/products/:id can return success:true without the
+    write actually persisting. update_product() must never again trust
+    that response alone -- every test here drives the real post-write
+    re-read path via an injected get_product_fn (never the real network),
+    and no real product is ever touched. verify_delay_seconds=0 everywhere
+    so tests run instantly."""
+
+    def _put_ok(self, returned_product=None):
+        return _fake_response(status_code=200, json_data={
+            "success": True, "product": returned_product or {},
+        })
+
+    def test_success_and_proven_persistence_returns_the_fresh_reread(self):
+        put_ok = self._put_ok()
+        reread = {"id": "p1", "description": "new text", "tags": ["a", "b"]}
+        with patch.object(gp.requests, "request", return_value=put_ok):
+            result = gp.update_product(
+                "fake-token", "p1", {"description": "new text", "tags": ["a", "b"]},
+                verify_delay_seconds=0, get_product_fn=lambda token, pid: reread,
+            )
+        self.assertEqual(result, reread)
+
+    def test_false_success_response_without_persistence_raises_verification_failed(self):
+        """The exact Cycle 106 shape: PUT says success, re-read proves the
+        field never changed."""
+        put_ok = self._put_ok()
+        reread_unchanged = {"id": "p1", "description": "OLD UNCHANGED TEXT"}
+        with patch.object(gp.requests, "request", return_value=put_ok):
+            with self.assertRaisesRegex(RuntimeError, "VERIFICATION_FAILED"):
+                gp.update_product(
+                    "fake-token", "p1", {"description": "new text"},
+                    verify_delay_seconds=0, get_product_fn=lambda token, pid: reread_unchanged,
+                )
+
+    def test_partial_mismatch_among_several_fields_still_fails_not_partial_pass(self):
+        put_ok = self._put_ok()
+        reread_partial = {"id": "p1", "name": "New Name", "description": "OLD DESCRIPTION"}
+        with patch.object(gp.requests, "request", return_value=put_ok):
+            with self.assertRaisesRegex(RuntimeError, "VERIFICATION_FAILED"):
+                gp.update_product(
+                    "fake-token", "p1", {"name": "New Name", "description": "new description"},
+                    verify_delay_seconds=0, get_product_fn=lambda token, pid: reread_partial,
+                )
+
+    def test_reread_failure_raises_verification_unknown_not_a_false_pass(self):
+        put_ok = self._put_ok()
+
+        def _broken_reread(token, pid):
+            raise RuntimeError("Gumroad get_product request failed: timeout")
+
+        with patch.object(gp.requests, "request", return_value=put_ok):
+            with self.assertRaisesRegex(RuntimeError, "VERIFICATION_UNKNOWN"):
+                gp.update_product(
+                    "fake-token", "p1", {"description": "new text"},
+                    verify_delay_seconds=0, get_product_fn=_broken_reread,
+                )
+
+    def test_reread_returning_non_dict_raises_verification_unknown(self):
+        put_ok = self._put_ok()
+        with patch.object(gp.requests, "request", return_value=put_ok):
+            with self.assertRaisesRegex(RuntimeError, "VERIFICATION_UNKNOWN"):
+                gp.update_product(
+                    "fake-token", "p1", {"description": "new text"},
+                    verify_delay_seconds=0, get_product_fn=lambda token, pid: None,
+                )
+
+    def test_invalid_api_response_body_raises_before_any_reread_attempt(self):
+        """success:false (or a malformed body) is a real, immediate
+        platform-side rejection -- BLOCKED, same as before this fix. No
+        re-read should even be attempted."""
+        put_blocked = _fake_response(status_code=200, json_data={
+            "success": False, "message": "Name A tag is too long. Please try again with a shorter one, under 20 characters.",
+        })
+        reread_spy = MagicMock(side_effect=AssertionError("re-read must never be attempted on a blocked write"))
+        with patch.object(gp.requests, "request", return_value=put_blocked):
+            with self.assertRaisesRegex(RuntimeError, "Gumroad update_product failed"):
+                gp.update_product(
+                    "fake-token", "p1", {"tags": ["toolong-probe-tag-value"]},
+                    verify_delay_seconds=0, get_product_fn=reread_spy,
+                )
+        reread_spy.assert_not_called()
+
+    def test_no_update_requested_refuses_before_any_network_call(self):
+        with patch.object(gp.requests, "request") as mock_req:
+            with self.assertRaises(gp.ConfigError):
+                gp.update_product("fake-token", "p1", {})
+        mock_req.assert_not_called()
+
+    def test_list_field_comparison_is_order_sensitive_matching_live_observed_behavior(self):
+        """Live-verified 2026-10-13: a written tag list round-trips in the
+        exact order sent. A re-read returning the same tags in a DIFFERENT
+        order is therefore an honest mismatch, not a false pass."""
+        put_ok = self._put_ok()
+        reread_reordered = {"id": "p1", "tags": ["b", "a"]}
+        with patch.object(gp.requests, "request", return_value=put_ok):
+            with self.assertRaisesRegex(RuntimeError, "VERIFICATION_FAILED"):
+                gp.update_product(
+                    "fake-token", "p1", {"tags": ["a", "b"]},
+                    verify_delay_seconds=0, get_product_fn=lambda token, pid: reread_reordered,
+                )
+
+    def test_only_requested_fields_are_compared_an_unrelated_platform_change_never_fails_the_write(self):
+        """A legitimate platform-side change to a field this call never
+        asked to update (e.g. Gumroad bumping its own updated_at) must
+        never cause a false FAIL."""
+        put_ok = self._put_ok()
+        reread = {"id": "p1", "description": "new text", "updated_at": "2026-10-13T00:00:00Z"}
+        with patch.object(gp.requests, "request", return_value=put_ok):
+            result = gp.update_product(
+                "fake-token", "p1", {"description": "new text"},
+                verify_delay_seconds=0, get_product_fn=lambda token, pid: reread,
+            )
+        self.assertEqual(result, reread)
 
 
 class TestNonInteractiveAuth(unittest.TestCase):

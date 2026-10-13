@@ -122,13 +122,27 @@ def list_products(token):
     one presented as complete.
 
     Fix: follow next_page_key until the API stops supplying one, exactly
-    the mechanism Gumroad's own response already exposes. A hard page cap
-    (50 pages = 500 products) guards against an infinite loop if the API
-    ever returns a key that never terminates; this account's real 77
-    products fit in 8 pages today, so the cap is a safety backstop, not an
-    expected limit.
+    the mechanism Gumroad's own response already exposes. Three real
+    safety guards, not just one, so a partial/broken inventory is never
+    silently reported as complete:
+      - a repeated page_key is refused immediately (a real pagination
+        cycle, not an expected page count);
+      - products are de-duplicated by id across pages (a legitimate
+        real-world case if the catalog mutates mid-walk, e.g. a product
+        created between two page fetches shifting the cursor window --
+        never silently double-counted);
+      - a hard page cap (50 pages = 500 products) is the final backstop
+        against a key that never terminates at all; this account's real
+        77 products fit in 8 pages today, so the cap is a backstop, not
+        an expected limit.
+    A mid-walk failure (HTTP error, success:false, or the cap) raises
+    with the real partial progress (pages fetched so far, product count
+    so far) in the message -- a caller must never be able to mistake a
+    stopped-partway inventory for a complete one.
     """
     all_products = []
+    seen_ids = set()
+    seen_page_keys = set()
     page_key = None
     pages_fetched = 0
     while True:
@@ -139,15 +153,36 @@ def list_products(token):
             r = _request_with_retry("GET", f"{GUMROAD_API_BASE}/products", params=params, timeout=30)
             r.raise_for_status()
         except requests.RequestException as e:
-            raise RuntimeError(f"Gumroad list_products request failed: {_safe_err(e)}")
+            raise RuntimeError(
+                f"Gumroad list_products request failed after {pages_fetched} page(s) "
+                f"({len(all_products)} product(s) fetched so far -- inventory INCOMPLETE, "
+                f"never report this as a full catalog): {_safe_err(e)}"
+            )
         data = r.json()
         if not data.get("success", False):
-            raise RuntimeError(f"Gumroad API returned success=false: {_gumroad_error(data)}")
-        all_products.extend(data.get("products", []))
+            raise RuntimeError(
+                f"Gumroad API returned success=false after {pages_fetched} page(s) "
+                f"({len(all_products)} product(s) fetched so far -- inventory INCOMPLETE): "
+                f"{_gumroad_error(data)}"
+            )
+        for product in data.get("products", []):
+            pid = product.get("id") if isinstance(product, dict) else None
+            if pid is not None:
+                if pid in seen_ids:
+                    continue  # real-world overlap between pages -- skip, never double-count
+                seen_ids.add(pid)
+            all_products.append(product)
         pages_fetched += 1
         page_key = data.get("next_page_key")
         if not page_key:
             break
+        if page_key in seen_page_keys:
+            raise RuntimeError(
+                f"Gumroad list_products: next_page_key repeated after {pages_fetched} page(s) "
+                f"({len(all_products)} product(s) fetched so far -- inventory INCOMPLETE) -- "
+                "pagination is cycling, not progressing; refusing to loop forever."
+            )
+        seen_page_keys.add(page_key)
         if pages_fetched >= _MAX_PAGES:
             raise RuntimeError(
                 f"Gumroad list_products: stopped after {_MAX_PAGES} pages "
@@ -318,15 +353,87 @@ def create_product(token, product_spec):
     return result.get("product", result)
 
 
-def update_product(token, product_id, updates):
+def _fields_match(sent, got):
+    """True iff a field we WROTE matches what a fresh re-read returned.
+    List-typed fields (e.g. tags) compare as lists — order is part of the
+    real, observed contract (live-verified 2026-10-13: a written tag list
+    round-trips in the exact order sent). Every other type compares by
+    plain equality. No fuzzy/normalized comparison is attempted for any
+    field this function has not been live-verified against -- an
+    unverified transformation reads as a mismatch (FAIL), never a silent
+    pass, per this module's own 'loud errors only' rule."""
+    if isinstance(sent, list) or isinstance(got, list):
+        return list(sent or []) == list(got or [])
+    return sent == got
+
+
+def update_product(token, product_id, updates, verify_delay_seconds=1.0, get_product_fn=None):
+    """Write real product fields, then PROVE the write persisted before
+    ever returning as if it succeeded.
+
+    REAL BUG this closes (found 2026-10-11, Cycle 106): Gumroad's PUT
+    /v2/products/:id can return HTTP 200 and success:true while NOT
+    persisting the written fields -- live-reproduced then: a probe string
+    written to description/name was absent on re-read and on the public
+    page. This function never again trusts that response alone: every
+    write is followed by a real GET /v2/products/:id (the same official
+    read endpoint get_product() uses) and the EXACT fields this call asked
+    to change are compared against what actually comes back. Untouched
+    fields are never compared -- a legitimate platform-side change to some
+    other field is not this function's concern and must never fail a
+    write it didn't ask for.
+
+    Return/raise contract (PASS/BLOCKED/FAIL/UNKNOWN, honestly distinct,
+    matching this factory's own real/estimated/unknown discipline):
+      - PASS:    the write API call succeeded AND the re-read matches
+                 every requested field -- returns the fresh, re-read
+                 product dict (never the unverified PUT response).
+      - BLOCKED: Gumroad's own PUT response reported success:false (an
+                 explicit platform-side rejection, e.g. the real,
+                 live-discovered 'tag too long' constraint) -- raises
+                 RuntimeError prefixed "Gumroad update_product failed:",
+                 unchanged from before this fix.
+      - FAIL:    the PUT reported success, but the re-read PROVES at
+                 least one requested field never actually changed --
+                 raises RuntimeError prefixed "VERIFICATION_FAILED:",
+                 naming exactly which field(s) and the sent-vs-got values.
+                 This is the Cycle 106 defect made loud instead of silent.
+      - UNKNOWN: the PUT reported success, but the post-write re-read
+                 itself could not be completed (network/timeout/malformed
+                 response) -- raises RuntimeError prefixed
+                 "VERIFICATION_UNKNOWN:". The write MAY have persisted;
+                 this function refuses to claim either PASS or FAIL
+                 without having actually looked.
+
+    No update requested (`updates` empty/falsy) is refused before any
+    network call -- there is nothing to verify, and sending a vacuous PUT
+    just to get a success:true would be exactly the kind of unproven claim
+    this function exists to prevent.
+
+    verify_delay_seconds (default 1.0, tests pass 0): a small, fixed,
+    disclosed wait before the verification re-read -- not evidence of a
+    real measured propagation lag (live testing found none; re-reads
+    matched immediately), kept only as a cheap safety margin. HTTP-level
+    transient failures (5xx/timeouts) are retried independently and
+    already, inside _request_with_retry()/get_product() -- this parameter
+    is not a substitute for that and does not retry the write.
+
+    get_product_fn is injectable purely so tests can simulate a re-read
+    failure/mismatch without a real network call; real callers never
+    pass it (defaults to the real get_product())."""
     if not product_id:
         raise ConfigError("update_product requires a product_id")
+    if not updates:
+        raise ConfigError("update_product requires at least one field to update")
+    read_product = get_product_fn or get_product
+
     # Form-encoding cannot carry arrays natively: Gumroad's API expects
     # list fields as repeated `key[]` params (verified live: plain lists
     # are rejected with "tags must be an array of strings"). Translate here
     # so callers pass natural Python lists.
+    updates = dict(updates)
     data = {}
-    for key, value in dict(updates).items():
+    for key, value in updates.items():
         if isinstance(value, list):
             data[key + "[]"] = value
         else:
@@ -337,10 +444,39 @@ def update_product(token, product_id, updates):
         r.raise_for_status()
     except requests.RequestException as e:
         raise RuntimeError(f"Gumroad update_product request failed: {_safe_err(e)}")
-    result = r.json()
-    if not result.get("success", False):
-        raise RuntimeError(f"Gumroad update_product failed: {_gumroad_error(result)}")
-    return result.get("product", result)
+    try:
+        result = r.json()
+    except ValueError as e:
+        raise RuntimeError(f"Gumroad update_product returned invalid JSON: {_safe_err(e)}")
+    if not isinstance(result, dict) or not result.get("success", False):
+        raise RuntimeError(f"Gumroad update_product failed: {_gumroad_error(result if isinstance(result, dict) else {})}")
+
+    if verify_delay_seconds:
+        time.sleep(verify_delay_seconds)
+    try:
+        reread = read_product(token, product_id)
+    except Exception as e:
+        raise RuntimeError(
+            f"VERIFICATION_UNKNOWN: update_product's write call for {product_id} reported "
+            f"success, but the post-write re-read failed, so persistence could not be proven: {_safe_err(e)}"
+        )
+    if not isinstance(reread, dict):
+        raise RuntimeError(
+            f"VERIFICATION_UNKNOWN: update_product's post-write re-read for {product_id} "
+            f"returned a non-product response ({type(reread).__name__}); persistence could not be proven."
+        )
+
+    mismatches = {}
+    for key, sent_value in updates.items():
+        got_value = reread.get(key)
+        if not _fields_match(sent_value, got_value):
+            mismatches[key] = {"sent": sent_value, "got": got_value}
+    if mismatches:
+        raise RuntimeError(
+            f"VERIFICATION_FAILED: update_product's write for {product_id} reported success, "
+            f"but a fresh re-read proves {len(mismatches)} field(s) did not persist: {mismatches}"
+        )
+    return reread
 
 
 def enable_product(token, product_id):

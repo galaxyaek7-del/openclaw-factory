@@ -1,0 +1,19 @@
+{
+ "status": "sent",
+ "event_id": "8de86ab4d1546bce1c0395e44eb3c633ba28c5804a834831b2616b94b08f03c0",
+ "content_hash": "5e8e8ed8d3914868",
+ "acks": {
+  "relay.damus.io": "[\"OK\",\"8de86ab4d1546bce1c0395e44eb3c633ba28c5804a834831b2616b94b08f03c0\",true,\"\"]",
+  "relay.primal.net": "[\"OK\",\"8de86ab4d1546bce1c0395e44eb3c633ba28c5804a834831b2616b94b08f03c0\",true,\"\"]",
+  "nos.lol": "[\"OK\",\"8de86ab4d1546bce1c0395e44eb3c633ba28c5804a834831b2616b94b08f03c0\",true,\"\"]",
+  "relay.nostr.band": "FAIL:TimeoutError",
+  "nostr-pub.wellorder.net": "[\"OK\",\"8de86ab4d1546bce1c0395e44eb3c633ba28c5804a834831b2616b94b08f03c0\",false,\"blocked: spam not permitted\"]"
+ },
+ "relays_ok": 4,
+ "product": "Legal Case Research Automation Kit",
+ "product_slug": "uldlwa",
+ "product_url": "https://aekraft.gumroad.com/l/uldlwa?utm_source=nostr&utm_medium=post&utm_campaign=legal_research_automation",
+ "link_is_clickable_plain_text_url": true,
+ "at": "2026-10-13T12:35:30Z",
+ "sales_at_posting": 0
+}
