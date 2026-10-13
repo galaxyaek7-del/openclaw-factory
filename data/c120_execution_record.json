@@ -1,0 +1,92 @@
+{
+  "cycle": 120,
+  "date": "2026-10-13",
+  "mission": "fix the fault - specifically the live $150 zero-file listing",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "WHAT_I_ATTEMPTED_AND_WHAT_ACTUALLY_HAPPENED": {
+    "target": "https://aekraft.gumroad.com/l/owtmpe - $150, 0 delivery files, published, listed on the storefront",
+
+    "step_1_retry_unpublish": {
+      "route": "PUT /v2/products/<id> with published=false (the documented route; POST /disable was proven non-existent in cycle 117)",
+      "result": "HTTP 200, published stayed True",
+      "verdict": "unpublish is genuinely unavailable through the public API - confirmed for the second time"
+    },
+
+    "step_2_retry_the_protective_description": {
+      "motivation": "cycle 119 proved the same flat-key PUT path persisted on 16 OTHER products, so the cycle-116 failure was product-specific, not a broken credential or a broken route",
+      "DIAGNOSTIC_WRITES_THAT_DID_LAND": {
+        "tags": "added 'withdrawn','unavailable' -> LANDED, verified by re-read",
+        "short description 'WITHDRAWN'": "LANDED, verified by re-read",
+        "short description 'WITHDRAWN-C120'": "LANDED, verified by re-read"
+      },
+      "diagnostic_writes_that_DID_NOT_land": {
+        "57-char notice": "no change",
+        "125-char notice": "no change",
+        "367-char notice": "no change",
+        "169-char notice": "no change"
+      },
+      "length_hypothesis_TESTED_AND_REJECTED": "it is not a length limit - a 9-character string persisted while 57 characters did not, in the same session.",
+      "conclusion": "writes to this specific record are INTERMITTENT: some values land and others return HTTP 200 with no effect, with no pattern I could identify.",
+      "CORRECTION_TO_CYCLE_116": "cycle 116 concluded this product 'rejects writes'. That was wrong. It accepts some writes. The correct statement is that writes to it are unreliable."
+    },
+
+    "step_3_tags_cleanup": {
+      "done": "the two diagnostic tags were removed and the original four restored",
+      "verified": "tags are back to ['ai workflow','qa','agent review','software']"
+    },
+
+    "step_4_bounded_final_retry": {
+      "target_text": "WITHDRAWN - DO NOT BUY. No deliverable exists; already paid? Full refund on request.",
+      "attempts": 3,
+      "spaced": "6 seconds apart, after a 75-second cooldown following a connection reset",
+      "result": "HTTP 200 on all three, description unchanged, verified by exact-match re-read each time",
+      "stopped": "deliberately. A bounded retry with a recorded reason, not an open loop."
+    }
+  },
+
+  "MY_OWN_PROCESS_ERROR_THIS_CYCLE": {
+    "what_happened": "my first check this cycle printed 'the write landed' because it searched the description for the phrase 'NOT AVAILABLE FOR PURCHASE' - and the ORIGINAL text already contained that phrase.",
+    "why_it_matters": "this is the second time this exact false positive has occurred (first flagged in cycle 116). A substring check on text that already contains the phrase is not evidence of a write.",
+    "correction_applied": "every write in this cycle was re-verified by sha256 and by exact-match equality, not by substring search. The substring result is discarded and the exact-match result is what is reported.",
+    "rule_now_recorded": "verification must compare the whole value, never search for a phrase that the previous value already contained."
+  },
+
+  "CURRENT_VERIFIED_STATE_OF_THE_DEFECT": {
+    "url": "https://aekraft.gumroad.com/l/owtmpe",
+    "price_usd": 150,
+    "files": 0,
+    "published": true,
+    "on_storefront": true,
+    "description": "WITHDRAWN",
+    "net_change_made_by_me": "the description is now the single unambiguous word WITHDRAWN. It previously read 'WITHDRAWN - NOT AVAILABLE FOR PURCHASE. Galaxy Forge is a digital-products company.' - equally clear, so the practical protective improvement is marginal.",
+    "what_is_STILL_TRUE": "the defect is NOT fixed. A buyer can still reach this listing, still see it on the storefront, and still pay $150 for a product with no file.",
+    "honest_assessment": "I did not fix it. I confirmed precisely why I cannot, and I removed the diagnostic residue I created while investigating."
+  },
+
+  "RATE_LIMITING_I_CAUSED": {
+    "what": "while probing this one product I issued roughly 20 PUTs in a few minutes and began receiving connection resets from Gumroad.",
+    "response": "stopped immediately, waited 75 seconds, then used a strictly bounded 3-attempt retry",
+    "assessment": "self-inflicted, and avoidable. The correct discipline was to prove the mechanism once and stop, which is now what the bounded-retry record reflects.",
+    "no_damage": "no product was left in a broken state; the final verified state is recorded above"
+  },
+
+  "WHAT_REMAINS_AND_WHY": {
+    "unpublish": "BLOCKED - no public API route exists; dashboard only",
+    "storefront removal": "BLOCKED - no visibility/featured/listed field exists on the product record",
+    "informative warning text": "UNRELIABLE - writes to this record are intermittent; short values land, longer ones mostly do not, with no identifiable pattern",
+    "therefore": "the only reliable fix is founder action in the Gumroad dashboard"
+  },
+
+  "STATUSES": {
+    "the_150_zero_file_defect": "NOT FIXED - still live, still purchasable, still on the storefront",
+    "my_own_false_positive_correction": "caught and corrected; exact-match verification now used throughout",
+    "diagnostic_residue": "cleaned - tags restored to their original four",
+    "unpublish_via_api": "BLOCKED - confirmed unavailable",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "Founder, one action: delete /l/owtmpe from the Gumroad dashboard. It is the only route that removes the defect, and no amount of API probing changed that. Autonomous work continues elsewhere rather than retrying this record further: strengthening the remaining thin descriptions and keeping the flagship's discoverability issue in front of the founder, since a $29 product nobody can find is a larger revenue problem than this one $150 listing nobody should buy."
+}
