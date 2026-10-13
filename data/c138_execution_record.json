@@ -1,0 +1,144 @@
+{
+  "cycle": 138,
+  "date": "2026-10-13",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+  "head_verified_before_any_action": "3fd01f8",
+  "branch": "main",
+
+  "1_PRODUCT_bfhpzl_VERIFIED_LIVE_NOT_FROM_A_REPORT": {
+    "product_id": "LzOV85deBGdLgNZmvpvYGw==",
+    "name": "Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)",
+    "ACTUAL_CURRENT_PRICE": "$79.00 - read from the API this cycle, not carried from a prior report. price_cents == 7900, currency usd, formatted_price $79",
+    "published": true,
+    "digital_file_bytes": 173373,
+    "refund_policy": "30-day money back guarantee, inherited=false",
+    "auth_used": "channels.gumroad_publisher.load_token - the existing in-repo secure path, not a new ad-hoc credential loader"
+  },
+
+  "2_THE_FOUR_DISTINCT_THINGS_SEPARATED": {
+    "1_product_page_accessible": {"status": "PASS", "evidence": "HTTP 200"},
+    "2_checkout_page_accessible": {"status": "PASS", "evidence": "HTTP 200"},
+    "3_purchase_flow_usable": {"status": "PASS on static evidence / UNKNOWN for the live charge", "evidence": "Inertia payload props.product: price_cents 7900, currency_code usd, is_published true, purchases_disabled absent, schema.org availability InStock"},
+    "4_completed_external_transaction": {"status": "NONE EXISTS", "evidence": "/sales returns 0 records; sales_count 0; sales_usd_cents 0.0"},
+    "refunds": {"status": "UNKNOWN", "evidence": "no refunds field and no refunds endpoint exists in the API"},
+    "net_revenue": {"status": "UNKNOWN", "evidence": "cannot be netted without a refunds source"},
+    "payouts": {"status": "UNKNOWN", "evidence": "/payouts HTTP 200 with 0 records; absence of pays is not evidence of ineligibility; still NOT blamed, because zero orders mean it has never been exercised either way"}
+  },
+
+  "3_NEW_QUESTION_ANSWERED_THIS_CYCLE_TARGET_MARKETS": {
+    "question": "can a legitimate buyer in the intended markets actually purchase?",
+    "OBSERVED": {"is_compliance_blocked": false, "not_available_in": "absent", "country_restrictions": "absent", "sales_restricted": "absent", "blocked_countries": "absent", "purchases_disabled": "absent", "schema_availability": "InStock"},
+    "verdict": "PASS - no country, compliance or purchase restriction blocks a buyer. This had not been checked before."
+  },
+
+  "4_CATALOGUE_AUDIT_79_PRODUCTS_SCORED_ON_VERIFIABLE_FACTS_ONLY": {
+    "method": "paged /products with the existing token, re-read every product individually, scored only on observable fields. No taste, no guessing.",
+    "findings": {
+      "products_total": 79,
+      "in_category_other": 46,
+      "real_products_trapped_in_other": 45,
+      "trapped_with_a_usable_description": 27,
+      "descriptions_with_no_link_at_all": 33,
+      "real_products_with_no_link": 32,
+      "descriptions_with_no_disclaimer": 22,
+      "products_with_no_file": "1 - owtmpe, the $0 [Unavailable] listing from cycle 122",
+      "total_sales_across_entire_catalogue": 0
+    },
+    "OBSERVED": "almost two thirds of the catalogue sat in Gumroad's catch-all 'other' bucket, which is outside every category browse surface. sjrjxq - our own storefront position 2 product - was among them."
+  },
+
+  "5_COMMERCIAL_FIXES_EXECUTED_AND_VERIFIED_22_OF_22": {
+    "A_CATEGORY_12_products_moved_out_of_other": {
+      "target_value": "business-and-money/entrepreneurship/resources",
+      "why_this_value_is_safe": "last cycle proved by direct test that Gumroad accepts exactly three values here - other, .../entrepreneurship, .../entrepreneurship/resources - and silently no-ops the rest. ecommerce, sales and business-management were all rejected with HTTP 200 success:true and the value unchanged.",
+      "selection_rule": "real attached file AND description over 800 chars. No blind mass rewrite of the other 33.",
+      "slugs": ["jlxmez", "sjrjxq", "ciowwm", "wteork", "bfdgx", "hasjmp", "eiebdt", "vhofn", "yhnyn", "ldrdm", "roxdbe", "zjwpx"],
+      "verified": "12 of 12 re-read and confirmed out of 'other'"
+    },
+    "B_REACHABILITY_10_products_given_an_exit": {
+      "problem": "a buyer who lands on a product page and decides it is not for them had literally nowhere to go - 32 real products had no link anywhere in the description",
+      "fix": "appended a 'More from Galaxy Forge' block linking the catalogue, restating sold 0 / no reviews / no outcome guaranteed",
+      "slugs": ["eiztlg", "uqmqnu", "fydjid", "cdfdcy", "mrecoe", "oerot", "xouyjy", "brwrta", "ursxh", "odqlk"],
+      "verified": "10 of 10 re-read and confirmed to contain the catalogue link"
+    },
+    "unchanged_and_confirmed_after": "bfhpzl $79 published cat=resources desc=2458; iaiyt $155 cat=resources desc=4085; fgruzn $29 cat=resources; sjrjxq $49 cat=resources. All sales 0. Nothing disturbed.",
+    "price_changed": false,
+    "new_products_created": 0,
+    "claims_invented": 0,
+    "INFERRED_NOT_OBSERVED": "that category placement improves discovery is INFERRED. Gumroad's own search and discover pages render client-side and could not be scraped, so no impression or click evidence exists either way. The misconfiguration itself is OBSERVED; its revenue effect is not."
+  },
+
+  "6_STRONGEST_PRODUCT_CANDIDATES_WITH_EVIDENCE": [
+    {"rank": 1, "slug": "iaiyt", "price": "$155", "evidence": "highest score on verifiable facts: 106,314-byte deliverable, 4,085-char description, disclaimer present, link present, category out of 'other', 3 cover images, 19 tags, is_compliance_blocked false, InStock", "caveat": "it is also our most complete sales surface AND it has sold 0, which is direct evidence that presentation alone has not converted anything"},
+    {"rank": 2, "slug": "bfhpzl", "price": "$79", "evidence": "largest real deliverable in the catalogue at 173,373 bytes, 2,458-char description with disclaimer, reachable cheaper alternative at $49, category out of 'other', and it holds storefront position 1 - the only channel measured to place us in front of buyers"},
+    {"rank": 3, "slug": "sjrjxq", "price": "$49", "evidence": "10,065-byte deliverable, storefront position 2, now out of 'other' - the cheapest step into the same problem, which matters for a buyer with a real but uncertain problem"}
+  ],
+  "selection_basis": "fixing and distributing existing products, per instruction. No new product was created and no duplicate landing page was made."
+  },
+
+  "7_FREE_DISTRIBUTION_COMPLETED_NOT_MERELY_PREPARED": {
+    "channel_1_TELEGRAPH": {
+      "status": "AUTHORIZED AND PUBLISHED",
+      "url": "https://telegra.ph/Etsy-Suspended-Your-Shop-Fix-the-Cited-Problem-First-Not-the-Appeal-10-13",
+      "evidence": "createPage ok=true; served HTML re-fetched and confirmed to contain both CTA links, the 6-month window, the no-reason-email case and the full honesty block",
+      "carried_from_last_cycle": true
+    },
+    "channel_2_NOSTR": {
+      "status": "AUTHORIZED AND PUBLISHED THIS CYCLE",
+      "event_id": "fa830c284b286726f4f3220be4a9995c708b801000374ecf32fe0a41584cca22",
+      "relays_ok": "4 of 5",
+      "relay_detail": {"relay.damus.io": true, "relay.primal.net": true, "nos.lol": true, "relay.nostr.band": "connection timeout", "nostr-pub.wellorder.net": "accepted False"},
+      "integration_used": "the existing nostr_post.py / nostr_direct.py pair and data/nostr_key.json, signed with the factory-owned key",
+      "content": "problem-first, leads with Etsy's own fix-before-appeal guidance, carries both the $79 bundle link and the $49 step-1 link, states no-outcome-guaranteed and not-legal-advice, and states sold 0 / no reviews",
+      "attribution_evidence": "distinct utm_source=nostr, utm_campaign=c137_bundle, utm_content=etsy_suspension_bundle on the product link, so any future sale from this post is distinguishable from the Telegraph one"
+    },
+    "no_spam_controls": "no mass messaging, no unsolicited DM, no fake testimonials, no fabricated scarcity, no paid promotion, no unsupported claims",
+    "prepared_but_NOT_published": "none - both channels were authorized and both were executed",
+    "channel_effectiveness_stated_honestly": "Nostr has never produced a measurable response in this project. Telegraph has a measured ceiling of 19 views per article. Neither is a growth strategy; both are attributable, free, and legal."
+  },
+
+  "8_SECURITY_MISTAKE_I_MADE_AND_WHY_IT_IS_STILL_A_MISTAKE": {
+    "what_happened": "while debugging the Nostr signer I ran a diagnostic that printed repr() of data/nostr_key.json['seckey'] to the terminal.",
+    "exposure_scope": "terminal output in this session only. The value was NOT written to any file, NOT committed, and NOT sent anywhere.",
+    "why_it_matters_anyway": "a Nostr secret key is full authorship control of every event this factory has ever published. It should never have been rendered, even locally. The correct move - which I used for the actual publish - is bytes.fromhex(...) with no printing at all.",
+    "action": "not rotated, because rotation would require generating a new key, which would break continuity of the published event history, and that is a founder decision. Flagged rather than silently ignored."
+  },
+
+  "9_ANALYTICS_STATUS": {
+    "gumroad_side_traffic": "UNKNOWN and unavailable - the product object exposes no view, impression, click, visit or session field. The only substring match is preview_url, which is a preview link.",
+    "repository_traffic": "NOT a proxy for buyer traffic and not used as one",
+    "telegraph": "294 lifetime article views across 26 articles, re-read live - this is the only real traffic figure this project holds, and it is not Gumroad visits",
+    "clicks_to_gumroad": "UNKNOWN - UTMs are not readable through any Gumroad endpoint we hold"
+  },
+
+  "10_STATUS_SUMMARY": {
+    "repository_and_CI": {"status": "PASS", "evidence": "HEAD 3fd01f8 at start; previous CI run 38453460615 completed success; Pages run 38453461945 completed success; public unauthenticated GitHub API, no credential used"},
+    "product_price_file": {"status": "PASS", "evidence": "bfhpzl, $79.00 read live, published, 173,373 bytes"},
+    "checkout_access": {"status": "PASS", "evidence": "HTTP 200 on product page and checkout, opened without purchase"},
+    "target_market_purchasability": {"status": "PASS", "evidence": "is_compliance_blocked false, no country or sales restrictions, InStock"},
+    "payout_settings": {"status": "UNKNOWN", "evidence": "no endpoint; /payouts 0 records; not blamed"},
+    "traffic_analytics": {"status": "UNKNOWN", "evidence": "no Gumroad traffic field exists"},
+    "orders_revenue_refunds": {"status": "PASS verified zero", "evidence": "/sales 0, sales_count 0, sales_usd_cents 0.0, refunds UNKNOWN, 0 sales across all 79 products"},
+    "commercial_fixes": {"status": "EXECUTED", "evidence": "22 of 22 verified by re-read: 12 categories out of 'other', 10 descriptions given a reachable exit"},
+    "distribution": {"status": "EXECUTED", "evidence": "Telegraph article live; Nostr event fa830c28 accepted by 4 of 5 relays"},
+    "VERIFIED_REVENUE": "$0.00",
+    "TOTAL_NEW_SPEND": "$0.00",
+    "first_sale": "NOT YET"
+  },
+
+  "11_NEXT_CONCRETE_COMMERCIAL_ACTION": {
+    "the_one_founder_action": {
+      "arabic_instruction": "افتح https://gumroad.com/settings/payouts وسجّل الدخول، وتأكد من وجود طريقة سحب (بطاقة أو حساب بنكي) ومن أن حالة الحساب سليمة.",
+      "why": "لأن أي بيع يكتمل الآن لن ينتقل ماله إن لم تكن وسيلة السحب مسجّلة. لا توجد واجهة برمجية نقرأ منها هذا، ولا يمكنني تجاوز تسجيل الدخول.",
+      "severity": "HIGH - this is the difference between a sale that pays out and a sale that does not"
+    },
+    "the_second_founder_action": {
+      "arabic_instruction": "افتح https://gumroad.com/products/LzOV85deBGdLgNZmvpvYGw== ثم Product 页، وأرفق صورة غلاف للمنتج.",
+      "why": "المنتج بلا صورة غلاف، وقد ثبت experimentally أن الغلاف حقل لا يقبله الـAPI (9 محاولات + صورة حقيقية، كلها مرفوضة أو صامتة). هو في مركز 1 بالمتجر.",
+      "severity": "MEDIUM - a real click blocker on the one product that is actually being surfaced"
+    },
+    "third_and_most_impactful": "one real checkout at https://aekraft.gumroad.com/l/bfhpzl/checkout. Nothing else in this entire project can substitute for it.",
+    "what_I_will_not_do": "I will not keep reporting PASS while sales are zero. The honest position is that the technical and merchandising work is now measurably done, the remaining gap is measured qualified traffic of zero, and the only two levers left are the founder actions above and organic distribution whose ceiling I have measured and stated."
+  }
+}
