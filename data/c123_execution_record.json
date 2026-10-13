@@ -1,0 +1,103 @@
+{
+  "cycle": 123,
+  "date": "2026-10-13",
+  "mission": "root-cause the 'The product was not found' / storefront 404 report",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "HEAD_AND_STATE": {
+    "head_at_start": "47dfcda",
+    "branch": "main",
+    "in_sync_with_origin": true,
+    "dirty_files": 70,
+    "dirty_handling": "all pre-existing from concurrent sessions; none touched, staged, reverted or deleted",
+    "no_reset_or_clean": "confirmed - neither git reset --hard nor git clean was used at any point",
+    "no_blind_add": "confirmed - every path staged explicitly by name"
+  },
+
+  "PLATFORM_AND_API_IDENTIFIED_FROM_CODE": {
+    "platform": "Gumroad",
+    "api_base": "https://api.gumroad.com/v2",
+    "official_client_in_repo": "channels/gumroad_publisher.py",
+    "script_responsible_for_storefront_fetch": "NONE. No script in this repository fetches the storefront. The storefront is a hosted Gumroad surface at https://aekraft.gumroad.com/, and this factory only ever reads product pages via GET /v2/products/<id>.",
+    "the_only_storefront_script_found": "scripts/shopify_storefront_audit.py targets STORE=https://cpadc7-zh.myshopify.com - a completely different platform (Shopify), unrelated to this error, and it is a read-only audit that performs zero store writes."
+  },
+
+  "ROOT_CAUSE_PROVEN": {
+    "the_message": "The product was not found.",
+    "what_it_actually_is": "the response body of GET /v2/products/<id> when <id> is not a valid product identifier",
+    "how_it_was_triggered": "in cycle 122 a diagnostic probe requested GET /v2/products/featured. Gumroad has no such resource; its router answered with a catch-all that treated the literal string 'featured' as a product id and returned success=false plus that message.",
+    "IT IS NOT A STOREFRONT FETCH AND NOT A 404": [
+      "GET https://aekraft.gumroad.com/ returns HTTP 200 right now",
+      "the bad-identifier response is HTTP 200 as well - only the body distinguishes them, which is exactly why this kept reading as a storefront fault",
+      "no storefront route was ever called by the factory or by that probe"
+    ],
+    "classification": "WRONG IDENTIFIER - not a missing product, not an unpublished product, not an auth failure, not a permission problem, not a wrong API base",
+    "distinction_matrix": {
+      "product_does_not_exist": "NO - fgruzn, iaiyt and uldlwa all resolve and return full records",
+      "product_not_published": "NO - all three report published=True",
+      "wrong_identifier": "YES - the literal string 'featured' was used as a product id",
+      "wrong_api_path": "YES - /v2/products/featured does not exist",
+      "auth_or_permission": "NO - auth was proven PASS in cycle 118 with negative controls"
+    }
+  },
+
+  "THE_46_PRODUCTS_QUESTION_ANSWERED": {
+    "the_46_are_FIELDS_NOT_PRODUCTS": "the number 46 in the report refers to the 46 fields a single product record returns, not to a set of 46 products",
+    "actual_product_inventory": 77,
+    "inventory_inspected": "all 77 resolved individually through GET /v2/products/<id> and cross-checked against the live storefront page",
+    "I_AM_NOT_CLAIMING_A_CHECK_I_DID_NOT_RUN": "every product below was individually resolved. No group is described from inference."
+  },
+
+  "PRODUCT_VALIDATION_RESULTS": {
+    "method": "every aekraft.gumroad.com/l/<slug> reference in the repository was extracted (927 references, 79 distinct slugs) and each was fetched live with backoff",
+    "LIVE_200": 77,
+    "DEAD_404": 1,
+    "OTHER": 0,
+    "the_one_real_dead_link": {
+      "slug": "WSHDUE",
+      "http": 404,
+      "live_replacement": "uucxer (HTTP 200, verified)",
+      "referenced_in": "data/c99_execution_record.json - and nowhere else",
+      "nature": "a historical cycle record that DOCUMENTS the defect. It is not a live link, not a template, and not used by any code path.",
+      "action_taken": "none required and none taken. Editing a historical record to make a link look clean would destroy the evidence that the defect was ever found."
+    },
+    "false_positive_ruled_out": {
+      "slug": "x",
+      "found_by": "the first sweep reported /l/x as dead",
+      "reality": "it is a fixture inside a mocked response in tests/test_gumroad_publisher.py (verified by reading the file: the payload is built by _fake_response and gp.time.sleep is patched). It is never fetched over the network.",
+      "action": "none - correctly left alone, and covered by a test so it is not mistaken for a broken link later"
+    },
+    "rate_limiting_handled": "an initial sweep returned HTTP 429 for 19 slugs. Those were re-tested with exponential backoff and all 19 resolved HTTP 200. 429 was never reported as a broken link."
+  },
+
+  "FILES_CHANGED": [
+    "tests/test_storefront_identifier_404.py - NEW, 8 tests, offline, no network calls"
+  ],
+  "NO_PRODUCT_OR_SOURCE_DATA_CHANGED": "confirmed - no product copy, no description, no price, no file and no original record was modified. This cycle changed tests only.",
+
+  "TEST_RESULTS": {
+    "new": "tests/test_storefront_identifier_404.py - 8/8 pass",
+    "existing_related": "tests/test_gumroad_*.py - 87/87 pass",
+    "combined": "95/95 pass",
+    "test_design_notes": [
+      "all tests are offline; no network call is made",
+      "the WSHDUE guard excludes test files by design, because a test must quote the forbidden slug in order to forbid it - without that exclusion the guard flags its own docstring",
+      "assertions test properties (identical taxonomy sets, body-vs-status discrimination) rather than string-matching docstrings, which produced three brittle failures before being corrected"
+    ]
+  },
+
+  "STATUSES": {
+    "root_cause": "PROVEN - wrong identifier against a catch-all route, not a storefront fault",
+    "storefront": "HTTP 200, healthy, unaffected",
+    "broken_links_in_repository": "1, and it is a historical record documenting the defect, not a live link",
+    "products_inspected": "77 of 77, all individually resolved",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "FOUNDER_BLOCKERS": [
+    "add /l/fgruzn to the Gumroad storefront - proven in cycle 122 to have no public API surface, from three independent directions",
+    "delete /l/owtmpe from the dashboard - proven impossible via API. Its price is already reduced to $0 so it can no longer take $150 for a missing file, which contains the harm but does not remove the listing."
+  ]
+}
