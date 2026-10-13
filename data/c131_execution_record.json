@@ -1,0 +1,62 @@
+{
+  "cycle": 131,
+  "date": "2026-10-13",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "TOKEN_OBTAINED": {
+    "asked_for_by_founder": "get a Telegraph token however possible",
+    "WHAT_IT_TAKES": "nothing was created, purchased or logged into",
+    "location": "data/telegraph.json - gitignored, already present in this repo",
+    "access_token_length": 60,
+    "author_name": "Galaxy Forge — Practical Toolkits for Small Business",
+    "getAccountInfo": "ok=true, verified live",
+    "NOTE": "HANDOFF.md already documented this at C85: 'Telegraph auth: RECOVERED. Token was never missing. It is NOT TELEGRAPH_TOKEN and NOT in .env.' My cycle 130 lookup searched .env, found nothing, and concluded BLOCKED. That was my own repeat of a mistake the repo had already written down."
+
+  },
+
+  "MY_OWN_ERRORS_THIS_CYCLE_HONESTLY": [
+    {"error": "concluded 'getAccount returns 0 pages, so the 64 articles are unreachable'",
+     "truth": "getAccount is not a Telegraph method at all - it returns UNKNOWN_METHOD. I read an error response as an empty result set and reported it as a platform BLOCKED state.",
+     "cost": "one cycle of chasing a non-existent limitation"},
+    {"error": "repeated the .env lookup that HANDOFF.md already documented as wrong",
+     "truth": "the token lives in data/telegraph.json", "cost": "same"},
+    {"error": "attempted ast.literal_eval on the article BODY, which references CTA, then exec'd the publisher script which tried to PUBLISH at import time",
+     "truth": "fixed by cutting the source at the createPage call and asserting the publish call is absent before exec",
+     "verified": "no duplicate page was created - -1/-2/-3 all 404"}
+  ],
+
+  "DESTRUCTIVE_MISTAKE_AND_FULL_RECOVERY": {
+    "what_happened": "editPage on a live Telegraph article requires the full node list as the new content. I read the page with getPage, which returned ok=true but content: [] - an EMPTY array. I did not treat that empty array as the danger it was, and sent editPage with only one new paragraph. That replaced the entire article body.",
+    "article": "https://telegra.ph/Amazon-Removed-Your-Listing-Under-GPSR-A-48-Hour-Recovery-Plan-for-Non-EU-Sellers-10-09",
+    "damage_confirmed": "served HTML contained only my single added paragraph - 0 characters of original body",
+    "recovery": "the full original 11-node body was still in scripts/publish_telegraph_gpsr_takedown.py as the BODY constant. Extracted it by exec'ing the module source with the publish call cut out and an assertion that createPage is absent, then rewrote the page via editPage.",
+    "restoration_verified_in_served_html": {"substantial_text_lines": 16, "January 2025": true, "Responsible Person": true, "Hour 0-8": true, "Hour 8-24": true, "Hour 24-48": true, "traceability": true, "compliance portal": true, "our new bundle link": true},
+    "residual_harm": "none. No permanent loss. Recovered from our own repo, not from a third party.",
+    "THE_RULE_THIS_SHOULD_HAVE_PRODUCED": "getPage returning content: [] means 'this page's body was NOT read', not 'this page has no body'. Never call editPage on a page whose content came back empty - that is indistinguishable from overwriting it. Assert the node list is non-empty first, every time."
+  },
+
+  "WHAT_THE_TOKEN_ACTUALLY_UNLOCKED": {
+    "getPage": "ok - this token reads the old articles, correcting C114's PAGE_ACCESS_DENIED note for at least this page",
+    "editPage": "ok - this token can edit old articles, also correcting C114",
+    "getAccount / getPages / editAccount": "UNKNOWN_METHOD - listing an author's pages is not something this API exposes, so 'enumerate our 64 articles and update the top ones' is not available through the API. Per-article getPage by known path works.",
+    "still_true_from_C114": "Telegraph strips anchors, so links must be plain-text paragraphs - which is what the restored CTA uses"
+  },
+
+  "COLLATERAL_AUDIT": {
+    "known_articles_checked": 26,
+    "articles_with_real_content": 21,
+    "duplicates_created": 0,
+    "thin_articles": 5,
+    "thin_note": "all 5 are short by design and predate this cycle - standing-desk, KDP manuscript, food-truck permits, B2B lead list, subscription renewal. Not damage from this cycle."
+  },
+
+  "COMMERCIAL_NET_EFFECT_THIS_CYCLE": {
+    "added": "the $79 bundle link now appears on one live Telegraph article that previously had no link to it",
+    "sales": 0,
+    "leads": 0,
+    "VERIFIED_REVENUE": "$0.00",
+    "TOTAL_NEW_SPEND": "$0.00",
+    "honest_caveat": "one article restored plus one link added is not distribution. It is a single link on a channel whose measured output across 64 articles is 449 cumulative views and 0 orders."
+  }
+}
