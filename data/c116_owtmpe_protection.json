@@ -1,0 +1,26 @@
+{
+  "product_id": "IW58tjt2zS14fPYrWZOuxg==",
+  "landing_url": "https://aekraft.gumroad.com/l/owtmpe",
+  "price_usd": 150,
+  "files": 0,
+  "published": true,
+  "defect": "published and publicly reachable at $150 with ZERO delivery files. A buyer could pay $150 and receive nothing.",
+  "reachability_evidence": {
+    "product_page": "HTTP 200 with a live pk_live_ payment key and purchases_disabled absent",
+    "checkout_page": "HTTP 200, purchases_disabled absent",
+    "storefront": "listed in our own storefront, so it is discoverable",
+    "note": "an earlier draft conclusion that it was UNREACHABLE because custom_permalink was empty was WRONG - landing_url is /l/owtmpe. It is reachable. The conclusion was corrected before anything was reported."
+  },
+  "pre_existing_protection": "the description ALREADY read 'WITHDRAWN - NOT AVAILABLE FOR PURCHASE. Galaxy Forge is a digital-products company.' before this cycle touched it. This was not authored here.",
+  "action_attempted": {
+    "what": "prepended a stronger notice: explicit do-not-buy, a statement that nothing is downloadable after payment, and a full-refund commitment for anyone who already paid",
+    "method": "PUT /v2/products/<id> with a flat description key, the same write path proven in cycle 108",
+    "result": "FAILED - did not persist",
+    "verification": "API re-read returned the original 83-character description unchanged. A first-pass check that reported 'notice present: True' was a FALSE POSITIVE caused by the original text already containing the phrase 'NOT AVAILABLE FOR PURCHASE'. The exact-match re-read is what caught it, and the failure is reported rather than smoothed over.",
+    "why_unknown": "not determined. The write returned HTTP 200 but changed nothing. Possibly this product is in a state where the description field does not accept updates; not proven."
+  },
+  "residual_risk": "REAL AND UNMITIGATED. The only protection is a sentence in the description. Gumroad's checkout does not enforce it, so a buyer who reaches /l/owtmpe can still complete a $150 purchase and receive nothing. Nothing available through the public API closes this.",
+  "founder_action_required": "احذف المنتج من لوحة Gumroad أو عطّل نشره. The API exposes no working unpublish: POST /v2/products/<id>/disable returns 404, and the description field does not accept writes for this product. This is an account-level action only the founder can take.",
+  "not_done_deliberately": "the price was NOT changed to zero and the title was NOT altered. Editing a commercial surface without a working, verified mechanism would produce a false sense of having fixed something. The defect is documented precisely instead.",
+  "date": "2026-10-12"
+}

@@ -1,0 +1,145 @@
+{
+ "swept": 77,
+ "no_file": [
+  {
+   "id": "IW58tjt2zS14fPYrWZOuxg==",
+   "slug": "",
+   "name": "[Unavailable] AI Workflow QA & Stress Test - one agent, reviewed before you demo it to a client",
+   "price": 150.0,
+   "published": true,
+   "desc_words": 12
+  }
+ ],
+ "thin_description": [
+  {
+   "id": "WP6Vb-qltKfYXQ1KAb0Tog==",
+   "slug": "",
+   "name": "EU AI Act Audit Logging Kit",
+   "price": 29.0,
+   "words": 36,
+   "published": true
+  },
+  {
+   "id": "D4JC45lly7EjsY-CO5FKyQ==",
+   "slug": "",
+   "name": "Severance Agreement Review Checklist",
+   "price": 29.0,
+   "words": 36,
+   "published": true
+  },
+  {
+   "id": "0uieIt-Pn09q9Xz-Hp1DEQ==",
+   "slug": "",
+   "name": "Security Deposit Demand Kit for Tenants",
+   "price": 29.0,
+   "words": 38,
+   "published": true
+  },
+  {
+   "id": "mx6XSGrElB5b-NLSHfEryg==",
+   "slug": "",
+   "name": "Mechanics Lien Filing Kit for Contractors",
+   "price": 29.0,
+   "words": 37,
+   "published": true
+  },
+  {
+   "id": "f3MRQnVlf3F2w_7n5LfBhw==",
+   "slug": "",
+   "name": "Digital-Product Refund Policy Pack",
+   "price": 29.0,
+   "words": 18,
+   "published": true
+  },
+  {
+   "id": "lac1TzWQPrNs1vdysJA0dA==",
+   "slug": "",
+   "name": "SaaS Churn Email Pack",
+   "price": 39.0,
+   "words": 17,
+   "published": true
+  },
+  {
+   "id": "T8OiOrVH1ficDv1bN3ksfg==",
+   "slug": "",
+   "name": "Freelancer Scope-Creep Contract Kit",
+   "price": 29.0,
+   "words": 13,
+   "published": true
+  },
+  {
+   "id": "LInf08ypx6myskvOgd8ryQ==",
+   "slug": "",
+   "name": "Battery & WEEE Mini-Guide for Sellers",
+   "price": 29.0,
+   "words": 13,
+   "published": true
+  },
+  {
+   "id": "tHvtBhoJC0KJMPhQippBBA==",
+   "slug": "",
+   "name": "Food-Contact Materials Starter",
+   "price": 39.0,
+   "words": 14,
+   "published": true
+  },
+  {
+   "id": "GVqbXZ0k0Vfn7fhm2AEQXA==",
+   "slug": "",
+   "name": "EU Cosmetics Responsible Person Guide",
+   "price": 69.0,
+   "words": 17,
+   "published": true
+  },
+  {
+   "id": "ZFXJttaaGoJvEE10JOXbWg==",
+   "slug": "",
+   "name": "Etsy Ads ROI Playbook + Calculator",
+   "price": 39.0,
+   "words": 17,
+   "published": true
+  },
+  {
+   "id": "ylqF8rzW698iKeOuKFWQkw==",
+   "slug": "",
+   "name": "Amazon FBA Reconciliation Workbook",
+   "price": 49.0,
+   "words": 17,
+   "published": true
+  },
+  {
+   "id": "8Vlc3zY6AkxU4DCe7IRVDA==",
+   "slug": "",
+   "name": "EU Late Payment Recovery Kit",
+   "price": 59.0,
+   "words": 20,
+   "published": true
+  },
+  {
+   "id": "yrSExa-YQe4fjWuIKV4vmQ==",
+   "slug": "",
+   "name": "GCC Contractor Payment Command System (V2 Bundle)",
+   "price": 399.0,
+   "words": 39,
+   "published": true
+  },
+  {
+   "id": "9Zq9SGkALI0tjd7A97Pc_A==",
+   "slug": "",
+   "name": "The 5-Minute Context Reset Playbook",
+   "price": 15.0,
+   "words": 8,
+   "published": true
+  },
+  {
+   "id": "VIKayqYEWqBV23ZMvKsdIg==",
+   "slug": "",
+   "name": "Automated Contract Review System for Legal Departments",
+   "price": 327.0,
+   "words": 16,
+   "published": false
+  }
+ ],
+ "checked": "2026-10-12",
+ "method": "GET /v2/products/<id> per product; the LIST endpoint omits files and was NOT used for this judgement"
+}
