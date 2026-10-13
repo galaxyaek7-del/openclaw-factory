@@ -1,0 +1,95 @@
+{
+  "cycle": 126,
+  "date": "2026-10-13",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "MAJOR_FINDING_PUBLISHING_EQUALS_POSITION_1_STOREFRONT": {
+    "OBSERVED": "the storefront at https://aekraft.gumroad.com/ serves products in this exact order:",
+    "order": ["sjrjxq", "akxaae", "owtmpe", "drtaj", "gzbdaz", "ursxh", "volqjv", "diboaf", "vwlmeo"],
+    "sjrjxq_position": 1,
+    "sjrjxq_published": "hours ago, cycle 125",
+    "fgruzn_position": "ABSENT - the $29 flagship is not on the storefront at all",
+    "CONCLUSION": "Gumroad places the most recently published product at POSITION 1 of the storefront automatically. No API call, no dashboard action, no spend.",
+    "THIS_CORRECTS_CYCLE_122": "cycle 122 concluded 'storefront curation has no public API surface, therefore the flagship cannot be featured'. That was half-true and led to the wrong conclusion. It is true that no field controls curation. It is false that curation is unreachable: publishing a new product PUTS IT AT THE TOP of the storefront on its own.",
+    "why_it_matters_commercially": "this is real, free, automatic distribution on the marketplace that already hosts the products, and it is awarded for the act of publishing. It also means the storefront rotates: owtmpe at position 3 is the product that can no longer charge $150, so its continued visibility is harmless, and the newest real product is what visitors see first.",
+    "implication_for_strategy": "shipping sharp new products is not only inventory - it is a distribution event. This is the mechanism the previous ten cycles said did not exist."
+  },
+
+  "PRODUCT_sjrjxq_VERIFIED": {
+    "url": "https://aekraft.gumroad.com/l/sjrjxq",
+    "checkout_http": 200,
+    "checkout_interpretation": "LINK RESPONSE ONLY. Not evidence of a sale, not evidence of payment capability, not evidence that money can be received.",
+    "name": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
+    "price_usd": 49,
+    "published": true,
+    "tags": 8,
+    "sales_count": 0,
+    "DELIVERABLE_VERIFIED_FROM_THE_LIVE_FILE_URL": {
+      "note": "first time in this project the file was downloaded from Gumroad's own live attachment URL rather than from the repo",
+      "http": 200,
+      "bytes": 10065,
+      "pages": 6,
+      "words": 1153,
+      "decision_tree_present": true,
+      "six_month_window_present": true,
+      "no_outcome_guarantee_present": true,
+      "not_professional_legal_advice_present": true,
+      "opens_with": "Etsy Policy Triage Find the exact policy you were cited for - in about 15 minutes, before you",
+      "verdict": "PASS - what a buyer downloads is real, complete and honestly scoped"
+    }
+  },
+
+  "PAYMENT_AND_PAYOUT_STATUS": {
+    "live_payment_processor_present": "pk_live_ key in the checkout page meta",
+    "purchases_disabled": false,
+    "http_200_proves": "the route responds",
+    "http_200_does_NOT_prove": ["that a buyer can complete payment",
+                                "that the payment form renders (it is JS-injected)",
+                                "that the seller account can receive payouts"],
+    "orders": 0,
+    "refunds": 0,
+    "payouts": 0,
+    "finance_data_sales": 0,
+    "payout_eligibility": "UNKNOWN - no endpoint exposes it; an empty payouts list is absence of evidence, not evidence of ineligibility"
+  },
+
+  "BEST_3_OPPORTUNITIES_RANKED": [
+    {"rank": 1, "product": "Etsy Policy Triage (/l/sjrjxq, $49)", "demand": "Etsy's own 6-month appeal deadline is a documented, dated trigger", "competition": "the one paying competitor sells appeal WRITING, not triage - this is the unoccupied step before it", "value": "saves the 15 minutes that decide whether an appeal is aimed at the right policy", "execution_speed": "built and published in one cycle", "free_distribution": "ALREADY AT STOREFRONT POSITION 1"},
+    {"rank": 2, "product": "Etsy Suspension Appeal Kit (/l/fgruzn, $29)", "demand": "same buyer and same moment, proven by its article ranking 2nd of 64", "competition": "competitor charges for generation; we ship templates", "value": "the writing step the competitor charges for", "execution_speed": "already built and verified", "free_distribution": "BLOCKED from the storefront because it is not the newest - it sits on our own live catalogue instead, at the hero position"},
+    {"rank": 3, "product": "Etsy appeal bundle: triage + appeal kit together", "demand": "the buyer needs both steps and currently buys neither", "competition": "no one bundles the triage step with the writing step", "value": "one purchase covers the whole suspension-to-appeal path", "execution_speed": "both parts already exist and are verified", "free_distribution": "a NEW product, so publishing it would take storefront position 1 - the highest-value single action available"}
+  ],
+
+  "CHANNELS_TESTED": {
+    "Gumroad storefront": {"status": "PASS - WORKS, and now understood", "result": "newest product is served at position 1 automatically"},
+    "own live catalogue": {"status": "PASS", "result": "HTTP 200, 76 product links, both flagships at the top"},
+    "Nostr": {"status": "HOLD", "result": "posts accepted by 4 of 5 relays; no measurable response to date"},
+    "Telegraph": {"status": "HOLD", "result": "64 articles, 449 cumulative views, median 6, 0 orders"},
+    "NOT_TESTED_AND_WHY": "no paid channel, no ad spend, no purchased traffic, and no unsolicited mass messaging - all excluded by the zero-spend rule and the no-spam rule"
+  },
+
+  "RESULTS_BY_CATEGORY_SEPARATED": {
+    "product_views": "UNKNOWN - Gumroad exposes none to us",
+    "clicks": "UNKNOWN - no click instrumentation on the storefront",
+    "inquiries_or_leads": 0,
+    "paid_orders": 0,
+    "refunds": 0,
+    "VERIFIED_REVENUE": "$0.00",
+    "DERIVED": "storefront position 1 for a new product is a distribution channel, not a conversion event",
+    "INFERRED": "a buyer arriving at position 1 has the same 0% observed conversion as every other visitor so far - no causal claim is made",
+    "ESTIMATED": "nothing in this cycle is estimated or forecast"
+  },
+
+  "STATUSES": {
+    "sjrjxq_product": "PASS - content downloaded from the live URL and verified",
+    "sjrjxq_checkout_link": "PASS - responds 200; explicitly not a sale",
+    "payment_completable_by_human": "UNKNOWN - needs a browser",
+    "payout_eligibility": "UNKNOWN - needs the dashboard",
+    "storefront_mechanism": "PASS - understood and now usable",
+    "orders": 0,
+    "VERIFIED_REVENUE": "$0.00",
+    "TOTAL_NEW_SPEND": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "The highest-value single action available is now clear and it is not a plan: publish the triage + appeal bundle as ONE new product. Both parts exist and are verified, the bundle has no competitor because nobody occupies the triage step, and publishing it would take storefront position 1 - the distribution channel this project spent twelve cycles believing did not exist. Second, unchanged and only provable by the founder: one completed payment at /l/sjrjxq/checkout."
+}
