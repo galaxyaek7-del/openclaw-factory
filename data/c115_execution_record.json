@@ -1,0 +1,114 @@
+{
+  "cycle": 115,
+  "label_in_request": "CYCLE 106",
+  "label_note": "request labelled Cycle 106; repository was at C114 (db6de66), confirmed as HEAD before any change.",
+  "date": "2026-10-12",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "PAGE_ACCESS_DENIED_ROOT_CAUSE_PROVEN": {
+    "controlled_experiment": [
+      "1. createPage with the current token -> ok=true (page created)",
+      "2. editPage on THAT SAME newly created page -> ok=true, and the live text changed, verified by re-fetch",
+      "3. editPage on a pre-existing page -> PAGE_ACCESS_DENIED"
+    ],
+    "eliminated_one_by_one": {
+      "invalid_token": "ELIMINATED - the same token creates and edits pages",
+      "insufficient_permissions": "ELIMINATED - it successfully edited a page it owns",
+      "request_format_error": "ELIMINATED - the identical payload that failed on the old page succeeded on the new one"
+    },
+    "ROOT_CAUSE": "PAGE OWNERSHIP. The token in data/telegraph.json belongs to a LATER Telegraph account than the one that created the 64 pre-existing articles. Telegraph ties edit rights to the creating token.",
+    "implication": "no formatting change, no new token and no credential rotation can ever fix those pages. The only route is the original creating token, which exists only in the founder's browser session.",
+    "no_new_token_created": "confirmed - the spare probe token from cycle 114 was deleted the same cycle. Creating another token would have changed nothing, since the current token already has full write access to everything it is entitled to.",
+    "token_handling": "no token value was printed, logged, committed or transmitted at any point. Verification used the local data/telegraph.json only.",
+    "not_a_blocker_for_launching": "confirmed below"
+  },
+
+  "COMMERCIAL_WORK_CONTINUED_WITHOUT_TELEGRAPH": {
+    "principle_applied": "Telegraph was treated as one channel among several, not as a gate on selling.",
+    "found_a_better_channel": {
+      "channel": "Nostr",
+      "why_it_is_better_right_now": "Telegraph strips anchor nodes, so a product link there is plain text that must be hand-copied. Nostr carries the URL as a bare string that clients render and auto-link, so the Gumroad link survives as text a reader can tap or copy without editing Telegraph.",
+      "precedent": "existing nostr_post.py in this repo already had real relay acknowledgements (relay.damus.io, relay.primal.net, nos.lol), so this is a proven path, not a new integration."
+    },
+    "published": {
+      "product": "Etsy Suspension Appeal Kit",
+      "product_url": "https://aekraft.gumroad.com/l/fgruzn?utm_source=nostr&utm_medium=post&utm_campaign=etsy_triage_appeal_deadline",
+      "event_id_prefix": "65697b45f222905a",
+      "relays_ok": 4,
+      "relays_total": 5,
+      "relay_detail": {
+        "relay.damus.io": "OK",
+        "relay.primal.net": "OK",
+        "nos.lol": "OK",
+        "nostr-pub.wellorder.net": "OK",
+        "relay.nostr.band": "FAIL:TimeoutError"
+      },
+      "content": "the temporary-vs-permanent triage angle plus the 6-month appeal window from Etsy's own published policy, with the no-outcome-guarantee and not-affiliated disclosures retained",
+      "no_spam": "one post, useful standalone content, no mass messaging, no fake reviews, no fabricated results",
+      "disclosure_retained": "no outcome or savings amount is guaranteed; not professional/financial/legal advice; not affiliated with Etsy, Inc."
+    },
+    "publisher_added": "nostr_post_etsy_appeal.py - idempotent on content hash, reuses the repo's own nostr_direct signing path, key never printed. Re-running with unchanged content refuses to duplicate."
+  },
+
+  "TELEGRAPH_SEPARATED_FROM_GUMROAD": {
+    "telegraph_new_pages": "WORKS - format is correct, documented in docs/telegraph_api_format.md",
+    "telegraph_pre_existing_pages": "UNREPAIRABLE - owned by an earlier token, founder-browser action if ever worth doing",
+    "telegraph_link_rendering": "anchors stripped, product URLs must be plain text",
+    "gumroad_product_and_checkout": "UNAFFECTED - verified HTTP 200, live Stripe key, purchase enabled",
+    "conclusion": "Telegraph is a distribution convenience, not a sales dependency. The Gumroad sale path never depended on it and still does not."
+  },
+
+  "PRODUCT_VERIFIED": {
+    "product": "Etsy Suspension Appeal Kit (/l/fgruzn)",
+    "price_usd": 29,
+    "published": true,
+    "files": 1,
+    "file_bytes": 122465,
+    "buyer_sees": "120 KB / 19 pages",
+    "description_words": 263,
+    "description_matches_file": "19 pages claimed and 19 pages delivered; 2,639 words and 11 checklists verified by opening the real deliverable",
+    "tags": 9,
+    "no_reinstatement_promise": "confirmed present in live copy",
+    "sales_count": 0,
+    "status": "READY and distributed"
+  },
+
+  "RESULTS_BY_CATEGORY_SEPARATED": {
+    "distribution_posts_this_cycle": 1,
+    "channel": "Nostr, 4 of 5 relays accepted",
+    "views": "UNKNOWN - Nostr reach is not measurable from here",
+    "clicks": "UNKNOWN - no click tracking exists for this channel",
+    "qualified_leads": 0,
+    "orders": 0,
+    "sales": 0,
+    "revenue_usd": 0.0,
+    "honest_reading": "a working free channel with a clickable product link is now live. That is distribution activity, not demand. No lead and no order has been recorded."
+  },
+
+  "FINANCIAL_TRUTH": {
+    "gumroad_sales_records": 0,
+    "refunded_sales": 0,
+    "payout_records": 0,
+    "finance_data_sales": 0,
+    "verified_revenue_usd": 0.0,
+    "new_spend_usd": 0.0,
+    "self_purchase_performed": false,
+    "simulated_orders_created": false
+  },
+
+  "STATUSES": {
+    "page_access_denied": "ROOT CAUSE PROVEN - page ownership, not token, permissions or format",
+    "telegraph_new_publication": "WORKS",
+    "telegraph_old_article_repair": "BLOCKED - different owner token, unrepairable from here",
+    "free_distribution": "WORKING via Nostr with a clickable product link",
+    "gumroad_product": "READY",
+    "gumroad_checkout": "PASS",
+    "payment_completable_by_a_human": "UNKNOWN - browser required",
+    "payout_eligibility": "UNKNOWN - no endpoint exists",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "Distribution is now unblocked on a channel whose links work, so publishing is no longer the constraint. The single highest-value action is still a founder browser session: افتح https://aekraft.gumroad.com/l/fgruzn/checkout وأتمّ شراءً حقيقياً. A Nostr post with a live link cannot be expected to produce an order on its own; only a completed purchase produces revenue."
+}

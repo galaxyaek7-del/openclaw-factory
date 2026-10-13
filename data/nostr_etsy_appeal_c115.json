@@ -1,0 +1,19 @@
+{
+ "status": "sent",
+ "event_id": "65697b45f222905a12bb30e997063935f4904227dfb0c8810cf4e8078e3a6178",
+ "content_hash": "2bc486dd67470ee6",
+ "acks": {
+  "relay.damus.io": "[\"OK\",\"65697b45f222905a12bb30e997063935f4904227dfb0c8810cf4e8078e3a6178\",true,\"\"]",
+  "relay.primal.net": "[\"OK\",\"65697b45f222905a12bb30e997063935f4904227dfb0c8810cf4e8078e3a6178\",true,\"\"]",
+  "nos.lol": "[\"OK\",\"65697b45f222905a12bb30e997063935f4904227dfb0c8810cf4e8078e3a6178\",true,\"\"]",
+  "relay.nostr.band": "FAIL:TimeoutError",
+  "nostr-pub.wellorder.net": "[\"OK\",\"65697b45f222905a12bb30e997063935f4904227dfb0c8810cf4e8078e3a6178\",false,\"blocked: spam not permitted\"]"
+ },
+ "relays_ok": 4,
+ "product": "Etsy Suspension Appeal Kit",
+ "product_slug": "fgruzn",
+ "product_url": "https://aekraft.gumroad.com/l/fgruzn?utm_source=nostr&utm_medium=post&utm_campaign=etsy_triage_appeal_deadline",
+ "link_is_clickable_plain_text_url": true,
+ "at": "2026-10-13T08:56:20Z",
+ "sales_at_posting": 0
+}
