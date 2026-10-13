@@ -1,0 +1,96 @@
+{
+  "cycle": 109,
+  "label_in_request": "CYCLE 101",
+  "label_note": "request labelled Cycle 101; repository is at C108. Work done against verified state 3054ef8.",
+  "date": "2026-10-12",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "UNKNOWN_ROOT_CAUSE_PROVEN": {
+    "question": "is the reported Gumroad UNKNOWN an API failure, an auth problem, a timeout, a missing sync, or a bug in internal status logic?",
+    "answer": "NONE of those. It was a label I wrote myself in my own cycle records.",
+    "what_it_actually_meant": "'no endpoint exposes seller payout eligibility, so no evidence exists either way' - a missing-evidence label, honestly applied, but wrongly presented as if it were a platform status.",
+    "proof_it_was_not_a_system_fault": {
+      "not_an_API_failure": "every Gumroad call in this cycle returned HTTP 200 with real data",
+      "not_auth": "authentication works; product records returned; write path confirmed working in cycle 108",
+      "not_a_timeout": "every request completed within seconds",
+      "not_a_missing_sync": "the local registry is simply not the live truth and is never reconciled against the API",
+      "no_code_emits_it": "static scan of commercial_monitor.check_checkout_readiness shows the string UNKNOWN does not appear in it; the function can only emit READY, BLOCKED or NO_DATA"
+    },
+    "honest_conclusion": "there was no platform UNKNOWN to resolve. The status that mattered was never measured by the platform at all."
+  },
+
+  "REAL_BUG_FOUND_AND_FIXED_FALSE_BLOCKER": {
+    "finding": "commercial_monitor.check_checkout_readiness() derived 'Gumroad status' purely from a local snapshot (data/asset_registry.json) and then emitted a hard verdict from it: products=20, published=0, status='BLOCKED', blocking_note='All channels blocked - founder action required'.",
+    "live_reality_at_the_same_moment": "the live Gumroad API returned published=True for 10/10 products on page one, and 77 products were counted across pages in cycle 107, each of the three flagships verified published with a real delivery file attached",
+    "root_cause": "all 20 registry entries were still at production_status='PRODUCED' and the file was 21.6 days stale, so the `is_published` comparison was False BY CONSTRUCTION. It could not have been anything else regardless of what was actually live on Gumroad.",
+    "why_this_is_the_worst_class_of_bug_here": "it invents a blocker and points the founder at a channel that is working. That is the same failure mode as the cycle-105 evidence ledger, in the opposite direction - there a real signal was over-claimed, here a real channel was falsely condemned.",
+    "FIX_APPLIED": [
+      "the gumroad block now declares evidence_source='LOCAL_SNAPSHOT_ONLY', registry_age_days, snapshot_is_stale, a caveat stating these counts describe what the factory recorded and not what Gumroad serves, and an explicit live_platform_state='UNKNOWN from this function - verify with GET /v2/products'",
+      "the blocking note may no longer say 'founder action required' on the grounds of a stale snapshot; it now states plainly that this is NOT evidence Gumroad is blocked and must be verified against the live API first",
+      "the snapshot counts themselves are still reported truthfully - only the authority to assert a blocker was removed"
+    ],
+    "VERIFICATION_AFTER_FIX": {
+      "status": "BLOCKED (unchanged - the snapshot still shows 0 published)",
+      "registry_age_days": 21.6,
+      "snapshot_is_stale": true,
+      "evidence_source": "LOCAL_SNAPSHOT_ONLY",
+      "blocking_note_now": "Local snapshot shows no published Gumroad asset AND no ready Paddle product. This is NOT evidence that Gumroad is blocked: it is a stale local file. Verify against the live API before treating this as a blocker or asking the founder to act."
+    },
+    "regression_guard": "tests/test_commercial_monitor_snapshot.py - 5 tests asserting the snapshot declares its source and age, refuses to claim live platform state, never blames the founder on stale grounds, flags a fresh snapshot as not stale, and still reports its counts honestly. 5/5 pass."
+  },
+
+  "PRODUCT_AND_CHECKOUT_JUDGED_SEPARATELY": {
+    "product": {"name": "Etsy Suspension Appeal Kit", "slug": "fgruzn", "price_usd": 29,
+                "published": true, "sales_count": 0, "files": 1, "file_bytes": 122465,
+                "buyer_sees": "120 KB / 19 pages",
+                "description_words": 263,
+                "description_shipped_this_cycle_108": true},
+    "api_validity": "PASS - auth works, product record returns, write path works",
+    "product_page_available": "PASS - HTTP 200",
+    "checkout_available": "PASS - HTTP 200, pk_live_ processor, price_cents 2900, purchase not disabled",
+    "transaction_completed": "NO - zero orders",
+    "money_received": "NO - zero payouts, and no seller payout eligibility is exposed by any endpoint",
+    "explicit_separation": "a valid API, an available page, an available checkout, a completed transaction and received money are five different facts. Only the first three are established."
+  },
+
+  "COMMERCIAL_WORK_THIS_CYCLE": {
+    "done": [
+      "proved the UNKNOWN was self-authored, not a platform fault",
+      "found and fixed a real false-BLOCKED bug that was accusing a working channel and calling for founder action",
+      "added a 5-test regression guard so a stale snapshot can never again assert a blocker"
+    ],
+    "not_done": [
+      "no new product - the cycle-108 research confirmed Etsy suspension appeals as the best niche and the copy for it is already live",
+      "no new article - the Telegraph channel was measured last cycle and republishing adds nothing today",
+      "no revenue - none is possible without a completed payment"
+    ],
+    "unnecessary_maintenance_avoided": "did not re-run the payout probe (plan exhausted in cycle 102), did not re-audit delivery files (verified 101/103 and byte-identical in 106), did not re-measure traffic (measured fresh in 107)"
+  },
+
+  "FINANCIAL_TRUTH": {
+    "gumroad_sales_records": 0,
+    "fgruzn_sales_count": 0,
+    "refunded_sales": 0,
+    "payout_records": 0,
+    "finance_data_sales": 0,
+    "verified_revenue_usd": 0.0,
+    "new_spend_usd": 0.0,
+    "self_purchase_performed": false,
+    "simulated_orders_created": false
+  },
+
+  "STATUSES": {
+    "reported_unknown": "RESOLVED - it was a self-authored missing-evidence label, not a platform state",
+    "false_blocker_bug": "FIXED and guarded by 5 regression tests",
+    "api_validity": "PASS",
+    "product_page": "PASS",
+    "checkout": "PASS",
+    "transaction": "NONE",
+    "money_received": "NONE",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "Open https://aekraft.gumroad.com/l/fgruzn/checkout in a browser and complete a real payment. This is unchanged and remains the only step that can move revenue. The API, the page, the checkout and the copy are all now verified working; the factory no longer reports a blocker that does not exist, so whatever a browser shows will now be the only remaining unknown - and if it shows a working payment form, then nothing is blocking the sale except reach."
+}
