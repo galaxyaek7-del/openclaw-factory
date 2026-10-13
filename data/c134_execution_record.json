@@ -1,0 +1,91 @@
+{
+  "cycle": 134,
+  "date": "2026-10-13",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+  "head_verified_before_building": "be8addf",
+
+  "1_TRAFFIC_SOURCE_RECONFIRMED_NOT_ASSUMED": {
+    "294": "Telegraph getPage.views summed over 26 articles, re-read live this cycle, not copied from a prior report",
+    "is_it_gumroad_traffic": false,
+    "gumroad_side": "UNKNOWN BY API - the product object exposes no view, impression, click, visit or session field; the only substring match is preview_url, which is a preview link, not traffic",
+    "unique_visitors": "UNKNOWN",
+    "clicks": "UNKNOWN - Telegraph exposes no outbound click data and Gumroad cannot read our UTMs",
+    "purchasability_versus_traffic_kept_separate": "these are two different questions. Purchasability is now measured directly and is fine. Traffic is unknown. A product that cannot be bought and a product nobody visits fail identically from the outside - and this cycle proves which one we have."
+  },
+
+  "2_CHECKOUT_DIAGNOSIS_THE_METHOD_THAT_WORKED": {
+    "why": "static HTML flags and the v2 API could not answer this. The checkout page is an Inertia.js single-page app whose entire product state is embedded HTML-escaped in a single data-page attribute.",
+    "method": "extracted data-page, html-unescaped it, json.loads it, and read the nested props/product object directly",
+    "measured_state": {
+      "props.product.is_published": true,
+      "props.product.price_cents": 7900,
+      "props.product.currency_code": "usd",
+      "props.product.eligible_for_installment_plans": true,
+      "props.product.pwyw": null,
+      "purchases_disabled": "absent from the payload entirely, i.e. not disabled",
+      "schema.org offers.availability": "https://schema.org/InStock",
+      "schema.org offers.price": "79.0 USD",
+      "stripe key": "pk_live_ - LIVE mode"
+    },
+    "VERDICT": "PASS - there is NO product-side technical blocker preventing a purchase. Price, currency, publication state, availability, file attachment and payment mode are all correct and independently confirmed from the payload the buyer's browser actually consumes.",
+    "an_earlier_probe_missed_this": "my first extraction regex looked for a data-product attribute that does not exist and returned an empty parse, which would have read as 'no embedded product data'. Fixed by locating the real Inertia data-page attribute. Recorded because a failed parse is not evidence of absence.",
+    "payout_settings_explicitly_NOT_blamed": "no direct evidence links payout configuration to the absence of sales. There are zero orders, so payout configuration has never been exercised in either direction. Its status is UNKNOWN because no endpoint exists, not because it has been shown to block anything."
+  },
+
+  "3_IMPROVEMENT_EXECUTED_THE_WEAKEST_LINK_INSIDE_OUR_CONTROL": {
+    "evidence": "covers=0, rich_content=0 chars, sections=0 were all proven non-writable through the API last cycle. Two fields WERE proven writable by re-reading after the write: description, and - tested this cycle - category.",
+    "CATEGORY_changed_from": "other / Other",
+    "CATEGORY_changed_to": "business-and-money/entrepreneurship/resources / Resources",
+    "why_this_value": "not guessed - fgruzn, our other Etsy product in the same problem space, already uses exactly this category and it is a value Gumroad accepts",
+    "impact_rationale": "category=other is a discovery dead end: it places the product outside every browse surface Gumroad offers. This is the single highest-leverage field still inside our control.",
+    "DESCRIPTION_rewritten_from": "1734 chars",
+    "DESCRIPTION_rewritten_to": "2082 chars",
+    "what_changed_and_why_it_is_conversion_work_not_padding": [
+      "leads with the two-step problem instead of the product title",
+      "prices step 1 separately ($49 on its own) so a buyer can see they could buy less",
+      "states why the order matters, using Etsy's own published guidance rather than an assertion",
+      "states the 6-month clock explicitly - a real, checkable deadline, not manufactured scarcity",
+      "carries the full not-this list: no guarantee, not legal advice, policy changes, no AI generator, never submit false statements",
+      "adds a straight-with-you paragraph: sold 0, no reviews, buy on the contents, 30-day guarantee, and the free-copy email",
+      "no claim was invented. Every factual statement is either in the verified file listing, is Etsy's own published rule, or is a stated limitation"
+    ],
+    "verified_by_re_read": {"category": "business-and-money/entrepreneurship/resources", "price": "$79", "published": true, "description_chars": 2082, "refund_policy": "30-day money back guarantee", "sales": 0},
+    "verified_on_the_public_page": ["wrong order", "WHY THE ORDER MATTERS", "THE CLOCK", "STRAIGHT WITH YOU", "30-day money back"],
+    "no_regression": "storefront position re-checked after the change - bfhpzl still position 1, sjrjxq still 2",
+    "not_done_and_why": ["cover image, page body and FAQ", "all proven API-unwritable last cycle - they need a dashboard login and no bypass was attempted",
+                        "price", "unchanged at $79 - the founder asked for a documented reason before any change and I have none",
+                        "no new product created", "no duplicate inventory added"]
+  },
+
+  "4_GITHUB": {"status": "UNKNOWN", "detail": "no GITHUB_TOKEN in env, no gh CLI, credential helper returns nothing non-interactively. No credential printed or stored. CI for these commits is UNKNOWN, not assumed green. Nothing links GitHub auth to sales and none is claimed."},
+
+  "5_STATUS_TABLE": {
+    "product_bfhpzl": "PASS - $79, published, 173,373 bytes, verified InStock in the checkout payload",
+    "share_link": "PASS - HTTP 200, no redirect hop",
+    "checkout_page": "PASS - HTTP 200, pk_live_, nothing disabled",
+    "checkout_completion_by_a_human": "UNKNOWN - needs a browser",
+    "payout_settings": "UNKNOWN - no endpoint; needs a browser; NOT shown to block anything",
+    "orders": 0,
+    "refunds": 0,
+    "VERIFIED_REVENUE": "$0.00",
+    "TOTAL_NEW_SPEND": "$0.00",
+    "article_views": 294,
+    "unique_visitors": "UNKNOWN",
+    "clicks": "UNKNOWN",
+    "first_sale": "NOT YET"
+  },
+
+  "6_THE_PROVEN_BLOCKER_STATED_FLAT": {
+    "what_is_PROVEN": "the product is not blocked in any way. Every purchasability signal reads healthy.",
+    "what_is_PROVEN_ABOUT_THE_BIGGER_PROBLEM": "the two surfaces a buyer needs in order to decide - a cover image and a page body - are empty, and cannot be filled without a login. On a $79 cold ask from a seller with zero reviews, that is the difference between a click and no click.",
+    "what_is_UNKNOWN": "whether any qualified visitor has ever reached this page at all. Gumroad exposes no traffic data, so zero sales is equally consistent with 'nobody came' and 'people came and declined'.",
+    "what_is_NOT_proven": "that price is wrong, that the file is inadequate, or that payouts are misconfigured. The deliverable was downloaded from the live URL and verified 6 of 6 files. Payout configuration has never been exercised."
+  },
+
+  "7_NEXT_COMMERCIAL_STEP": {
+    "the_one_that_can_produce_a_sale": "a single logged-in browser session on Gumroad: attach a cover image to bfhpzl, then complete one real $79 checkout.",
+    "second": "confirm payout eligibility in the same session, so a completed sale can actually move money",
+    "why_no_further_autonomous_work_is_proposed": "the product side is measured clean, the two remaining sales-surface fields need a login, and building more products or articles would be motion that 294 views and 0 sales have already disproven."
+  }
+}
