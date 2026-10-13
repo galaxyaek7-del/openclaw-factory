@@ -1,0 +1,121 @@
+{
+  "cycle": 105,
+  "date": "2026-10-12",
+  "mission": "loop-breaker: fix proven root causes, then do real commercial work",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "BASELINE_CORRECTIONS": {
+    "commit_d310723": "DOES NOT EXIST. The real commit is d318723 (cycle 104). Third time this baseline has carried a mistyped hash.",
+    "ci_run_38308246431": "DOES NOT EXIST. The real cycle-104 run was 38305246431, success 3/3. No HOLD was found; nothing was re-run to produce one.",
+    "dirty_tracked": 67,
+    "dirty_handling": "all pre-existing from other sessions; none touched, staged or reverted",
+    "untracked_files_not_mine": [
+      "ceo_directive_work.py",
+      "tools/test_assets/sample_tool_enhanced.py"
+    ],
+    "untracked_note": "both are untracked (??) files from a concurrent session and both fail compileall. They are NOT in git, so CI is unaffected. Deliberately left untouched per the safety rule."
+  },
+
+  "ROOT_CAUSE_1_WSHDUE_404_RESOLVED": {
+    "question": "where does /l/WSHDUE come from, and is it a real product defect?",
+    "method": "repository-wide content search for the slug",
+    "ROOT_CAUSE": "the slug exists ONLY inside my own cycle reports (data/c99, c100, c104). It appears in NO live asset, NO code path, NO configuration, and NO product record.",
+    "what_it_really_is": "an old, superseded slug for the Sales Tax Nexus Tracker. The correct slug /l/uucxer is already used correctly in every live surface: customer_site/products.html, guide-sales-tax-nexus-rolling-method.html, data/attribution_map.json, data/sales_ledger.jsonl, data/product_batch_10_*.json, data/v73_catalog_reachability.json, scripts/commercial_readiness_check.py.",
+    "current_response": {"WSHDUE": "HTTP 404 (dead)", "uucxer": "HTTP 200 (live, published, $79)"},
+    "status": "RESOLVED - this was never a product defect and never a broken sale path",
+    "correction_to_my_own_prior_cycles": "cycles 99, 100 and 104 each described this as a live dead sales link needing repair. That was wrong at the level of cause: our own surfaces have always pointed at the correct live slug. The only place the dead slug survives is inside a Telegraph article body created under an older token, which is a third-party page, not our product registry.",
+    "action_taken": "none required, and none taken. No source or asset was modified, and no slug was substituted anywhere.",
+    "residual": "the dead slug still sits inside one Telegraph article. Cosmetic, unowned, and not on any path we control."
+  },
+
+  "ROOT_CAUSE_2_BLOCKED_TOKEN_CLASSIFIED": {
+    "question": "is BLOCKED token a missing credential, an expiry, a config error, or just a diagnostic marker?",
+    "classification": "GENUINE MISSING CREDENTIAL (an older Telegraph access token), not an expiry, not a misconfiguration, and not an authentication failure.",
+    "evidence": [
+      "data/telegraph.json holds exactly one token, 60 chars, valid for reading and creating pages",
+      "getPage succeeds for all 4 affected articles, so the token is not expired and the pages exist",
+      "editPage rejects every write with CONTENT_FORMAT_INVALID, including a deliberately minimal one-line body, which proves the rejection is an ownership boundary and not a formatting problem",
+      "the token value was never printed, logged, or sent anywhere; only its length and charset class were inspected"
+    ],
+    "can_it_be_fixed_here": "NO. Recovering a credential from a different account requires the account owner. Not attempted, not guessed, not fabricated.",
+    "human_action_precise": "In a browser, sign in to the Telegraph account that owns those 4 articles, open the nexus article, and replace the dead /l/WSHDUE with /l/uucxer. About one minute. Nothing else depends on it.",
+    "status": "BLOCKED - founder credential, precisely specified, low value (31 views, and our own surfaces are already correct)"
+  },
+
+  "ROOT_CAUSE_3_FIXED_EVIDENCE_LEDGER_MISREPRESENTATION": {
+    "finding": "data/market_evidence_events.jsonl contains 125 events, all carrying evidence_class='OBSERVED', verification_status='VERIFIED', confidence='high': 50 x checkout_observed/CHECKOUT_STARTED and 75 x checkout_failure/CHECKOUT_BLOCKED.",
+    "why_that_is_misleading": "both events are emitted from THIS FACTORY's own server-side HTTP GET of a public product URL. No human is involved in either. The batch timestamps prove it beyond doubt: every batch spans 6-56 MILLISECONDS (2026-10-04 alone wrote 50 events in 0.056s). A person cannot start 50 checkouts in 56 milliseconds.",
+    "the_harm_it_caused": "a ledger reader sees '50 buyers started checkout' and '75 buyers were BLOCKED at checkout, VERIFIED'. The 75 CHECKOUT_BLOCKED rows in particular manufacture a commercial blocker that was never proven, and that has plausibly drawn attention away from the real question for weeks.",
+    "FIX_APPLIED": [
+      "added FACTORY_FETCH_SIGNAL: every emitted event now carries actor='FACTORY_MONITOR', human_initiated=False, signal_kind='SERVER_SIDE_HTTP_REACHABILITY', an explicit 'proves' and an explicit 'does_not_prove' ending in 'Demand is UNPROVEN.'",
+      "the failure status CHECKOUT_BLOCKED is retired. New rows use CHECKOUT_PAGE_UNREACHABLE_ON_FETCH, which describes the observation instead of blaming the funnel.",
+      "no literal 'CHECKOUT_BLOCKED' string remains anywhere in market_evidence_loop.py"
+    ],
+    "verification": "live call to promote_on_checkout_observed returns a checkout_observed event carrying actor=FACTORY_MONITOR, human_initiated=False and the full disclaimer; AST scan confirms both checkout event literals (promote_on_checkout_observed and run_cycle) spread FACTORY_FETCH_SIGNAL and neither emits the old status",
+    "regression_guard": "tests/test_market_evidence_signal_disambiguation.py - 4 tests, including an AST test that fails if any future checkout event literal stops spreading the disambiguation",
+    "tests": "21/21 pass in tests/test_market_evidence*.py (17 pre-existing + 4 new)",
+    "historical_rows": "deliberately NOT rewritten, per the module's own documented doctrine that historical rows are never rewritten. 125 legacy rows remain and are now unreachable from the code path that produced them, so no new misleading row can be created. Disclosed residual: a reader of the old rows today must read them through this record."
+  },
+
+  "COMMERCIAL_WORK_DONE_THIS_CYCLE": {
+    "checkout_evidence_obtained_without_a_browser": {
+      "how": "the checkout pages embed a JSON island; reading it directly instead of inferring from HTTP status",
+      "OBSERVED": {
+        "all_three_checkouts": "HTTP 200",
+        "payment_processor": "stripe publishable key pk_live_... embedded in the page meta => a LIVE-mode processor is configured",
+        "price_in_island": "price_cents=2900, currency_code=usd, product_id present",
+        "product_type": "native_type='digital', is_physical=false, is_recurring_billing=false",
+        "installments": "eligible_for_installment_plans=true",
+        "purchase_disabled": "FALSE - the only 'sold_out' occurrence is the JS key hide_sold_out_variants=false, which is a display setting, not a sold-out state"
+      },
+      "two_false_alarms_caught_before_reporting": [
+        "file_info={} on /l/iaiyt looked like a missing delivery file. It is the wrong field. The real list is `files`, and iaiyt has 2 files (106,314 + 139,401 bytes) byte-identical to cycle 103. NO REGRESSION.",
+        "sold_out appearing on all three checkouts looked like every product was sold out. It is the JS key hide_sold_out_variants=false. Purchases are ENABLED."
+      ],
+      "status_change": "checkout stage advances from a bare 'UNKNOWN, client-side UI' to: PAYMENT PROCESSOR CONFIRMED LIVE AND PURCHASE PATH ENABLED, with one human confirmation still outstanding",
+      "what_it_still_does_not_prove": "that a human can complete a purchase, and that this seller account can receive payouts"
+    },
+    "three_flagships_verified_live": {
+      "Etsy Suspension Appeal Kit": {"url": "/l/fgruzn", "price_usd": 29, "published": true, "files": 1, "file_bytes": 122465, "sales_count": 0},
+      "EU AI Act Compliance Toolkit": {"url": "/l/iaiyt", "price_usd": 155, "published": true, "files": 2, "file_bytes": [106314, 139401], "sales_count": 0},
+      "Legal Case Research Automation": {"url": "/l/uldlwa", "price_usd": 29, "published": true, "files": 1, "file_bytes": 105317, "sales_count": 0},
+      "conclusion": "all three are live, purchasable, correctly priced, and genuinely deliverable. No product defect found. No new product warranted."
+    },
+    "not_published_this_cycle": "no new article. The Telegraph channel is unchanged and was already measured as growing in cycle 103; publishing again today would be duplication with no commercial reason."
+  },
+
+  "REPETITIVE_CHECKS_SUPPRESSED": [
+    "product delivery files and legal scoping (verified cycles 101 and 103, and re-confirmed live this cycle only because a false regression signal appeared)",
+    "the 23-endpoint Gumroad payout probe (cycle 102, plan exhausted)",
+    "revenue reconciliation (run once this cycle, not per cycle in prior reports)"
+  ],
+
+  "FINANCIAL_TRUTH": {
+    "gumroad_sales_records": 0,
+    "all_three_flagships_sales_count": 0,
+    "refunded_sales": 0,
+    "payout_records": 0,
+    "finance_data_sales": 0,
+    "sources_agree": true,
+    "verified_revenue_usd": 0.0,
+    "new_spend_usd": 0.0,
+    "self_purchase_performed": false,
+    "simulated_orders_created": false,
+    "note": "VERIFIED_REVENUE stays 0. A live Stripe key and an enabled purchase path are evidence of CAPABILITY, never of revenue."
+  },
+
+  "STATUSES": {
+    "WSHDUE_404": "RESOLVED - superseded slug, never referenced by any live asset of ours",
+    "blocked_token": "BLOCKED - older Telegraph credential, owner action, low commercial value",
+    "evidence_ledger_misrepresentation": "FIXED and guarded by a regression test",
+    "products": "PASS - all three live, priced, and deliverable",
+    "checkout_payment_processor": "PASS - live processor, purchase path enabled",
+    "buyer_can_complete_a_purchase": "UNKNOWN - needs one human browser confirmation",
+    "seller_payout_eligibility": "UNKNOWN - not exposed by any API",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "One browser visit to https://aekraft.gumroad.com/l/fgruzn/checkout and try to reach the payment step. This is now a narrow question, not a wide one: the processor is confirmed live and purchases are confirmed enabled, so the only remaining unknown is whether a human can complete it. Optional and much less important: fix the one Telegraph article's dead slug."
+}

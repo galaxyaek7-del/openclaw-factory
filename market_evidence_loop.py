@@ -61,6 +61,44 @@ CHECKOUT_STAGE = "CHECKOUT_STARTED"
 
 PAYMENT_EVENT_TYPES = {"sale", "payment", "payout", "commission_paid", "transaction"}
 
+# ---------------------------------------------------------------------------
+# Evidence-integrity fix (2026-10-12, cycle 105).
+#
+# Root cause: `checkout_observed` and `checkout_failure` were emitted from
+# OUR OWN server-side HTTP GET of each product page, yet carried
+# evidence_class="OBSERVED", verification_status="VERIFIED", confidence="high"
+# and the statuses CHECKOUT_STARTED / CHECKOUT_BLOCKED. A reader (dashboard,
+# report, or agent) scanning the ledger therefore saw
+#     50 x "checkout_observed / CHECKOUT_STARTED / VERIFIED"
+#     75 x "checkout_failure  / CHECKOUT_BLOCKED  / VERIFIED"
+# and could conclude 50 buyers started a checkout and 75 were blocked at it.
+#
+# Neither is true. No human is involved in either event. The batch timestamps
+# prove it: every batch spans 6-56 MILLISECONDS (e.g. 2026-10-04, 50 events,
+# 0.056s total), which is a polling job, not a human session.
+#
+# What they actually measure is OUR fetch of a public URL. That is a real
+# technical signal and stays recorded -- but it must never be readable as
+# demand, and must never be readable as a proven commercial blocker.
+# Every emitted event therefore now carries this disambiguation verbatim, so
+# the label and the actor cannot diverge again.
+# ---------------------------------------------------------------------------
+FACTORY_FETCH_SIGNAL = {
+    "actor": "FACTORY_MONITOR",
+    "human_initiated": False,
+    "signal_kind": "SERVER_SIDE_HTTP_REACHABILITY",
+    "proves": "our own HTTP GET of this public URL returned (or failed to return) a response",
+    "does_not_prove": (
+        "no buyer visited, no buyer started checkout, no buyer was blocked, "
+        "and no money moved. Demand is UNPROVEN."
+    ),
+}
+
+# The old CHECKOUT_BLOCKED status name asserted a proven commercial blocker.
+# It is retained only for reading historical rows; new rows use this honest
+# name, which describes the observation rather than blaming the funnel.
+CHECKOUT_UNREACHABLE_STATUS = "CHECKOUT_PAGE_UNREACHABLE_ON_FETCH"
+
 # External-evidence levels (2026-09-25, external-confirmation mission).
 # E0 No external evidence. E1 External technical existence (a page that
 # renders outside localhost -- proves existence, never demand). E2
@@ -344,6 +382,7 @@ def promote_on_checkout_observed(state, live_urls, day=None):
                 "raw_reference": url, "derived_value": None,
                 "confidence": "high", "previous_state": prev,
                 "new_state": CHECKOUT_STAGE,
+                **FACTORY_FETCH_SIGNAL,
                 "verification_status": "VERIFIED",
             })
     return state, events
@@ -445,10 +484,12 @@ def run_cycle(state_path=None, events_path=None, ledger_path=None,
                 if eid not in known:
                     ev = {"event_id": eid, "timestamp": _now(), "product": key,
                           "event_type": "checkout_failure", "evidence_class": "OBSERVED",
-                          "status": "CHECKOUT_BLOCKED", "raw_reference": url,
+                          "status": CHECKOUT_UNREACHABLE_STATUS, "raw_reference": url,
                           "derived_value": None, "confidence": "high",
-                          "previous_state": CHECKOUT_STAGE, "new_state": "CHECKOUT_BLOCKED",
-                          "verification_status": "VERIFIED"}
+                          "previous_state": CHECKOUT_STAGE,
+                          "new_state": CHECKOUT_UNREACHABLE_STATUS,
+                          "verification_status": "VERIFIED",
+                          **FACTORY_FETCH_SIGNAL}
                     _append_event(ev, events_path)
                     known.add(eid)
                     material.append(ev)
