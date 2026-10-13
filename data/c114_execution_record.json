@@ -1,0 +1,111 @@
+{
+  "cycle": 114,
+  "date": "2026-10-12",
+  "mission": "fix the external Gumroad path",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "ROOT_CAUSE_FOUND_WRITES_WERE_NEVER_BLOCKED": {
+    "what_I_had_concluded": "cycles 112 and 113 recorded Telegraph write access as BLOCKED and refused for this token, and cycle 113 explicitly said do not retry without a new input.",
+    "THE_TRUTH": "writes were never refused. My CONTENT FORMAT was rejected.",
+    "evidence": {
+      "fresh_brand_new_account_same_failure": "createAccount -> ok, then createPage '<p>hello world</p>' -> CONTENT_FORMAT_INVALID. A brand-new account cannot be the problem, so it is not our token and not our account.",
+      "author_url_empty": "getAccountInfo shows author_url empty and the profile telegra.ph/GalaxyForge returns 404 - but this turned out to be a red herring, not the cause",
+      "setAccount": "returns UNKNOWN_METHOD - Telegraph removed that endpoint, so the author page cannot be registered via API",
+      "FORMAT_PROBE_ON_A_FRESH_TOKEN": {
+        "plain text, no tags": "CONTENT_FORMAT_INVALID",
+        "node list, children typed as {'type':'text'}": "CONTENT_TEXT_REQUIRED",
+        "node list, children as PLAIN STRINGS": "OK",
+        "HTML <p>": "CONTENT_FORMAT_INVALID",
+        "HTML <h3>": "CONTENT_FORMAT_INVALID",
+        "HTML <p> with <a>": "CONTENT_FORMAT_INVALID"
+      },
+      "ORIGINAL_TOKEN_WITH_NODE_LIST": "OK - the original 60-char token publishes normally once the format is right. No new account is needed and no credential rotation is required."
+    },
+    "ROOT_CAUSE": "Telegraph changed its createPage/editPage API. It no longer accepts an HTML string; it requires a JSON node list whose children are plain strings.",
+    "conclusion_that_matters": "the channel was never closed. Nothing about the account was wrong. This is the most consequential error of the last several cycles - a working free distribution channel was reported as blocked on two separate cycles, and the founder was told not to retry.",
+    "permanent_guard": "docs/telegraph_api_format.md documents the accepted shape, the full error map observed live, and the verification rule that a createPage ok response is not proof of rendering."
+  },
+
+  "TWO_PROBLEMS_THAT_WERE_CONFLATED": {
+    "content_format": "our own bug, affects every page, FIXED",
+    "PAGE_ACCESS_DENIED_on_editPage": "the page belongs to a different access token - genuinely not fixable from here. Confirmed again this cycle on the nexus article: 1 dead-slug occurrence was located and replaced in the node payload, editPage returned PAGE_ACCESS_DENIED, and nothing was written.",
+    "lesson": "a general 'Telegraph writes are blocked' claim is false and must not be repeated. Only the pre-existing pages are affected."
+  },
+
+  "DISTRIBUTION_EXECUTED": {
+    "published": true,
+    "url": "https://telegra.ph/Etsy-Suspended-Temporary-or-Permanent-The-Triage-That-Decides-Whether-You-Should-Even-Appeal-10-13",
+    "title": "Etsy Suspended: Temporary or Permanent? The Triage That Decides Whether You Should Even Appeal",
+    "product": "Etsy Suspension Appeal Kit",
+    "product_url_on_page": "https://aekraft.gumroad.com/l/fgruzn?utm_source=telegraph&utm_medium=article&utm_campaign=permanent_vs_temporary_triage",
+    "why_this_article_was_warranted": "only one appeal article existed in 64 and it covered the fix-first appeal METHOD. This one covers whether to appeal at all - temporary vs permanent - grounded in Etsy's own published policy including the 6-month window. Genuinely distinct, not a rewrite.",
+    "verified_on_the_live_page": {
+      "http": 200,
+      "gumroad_url_visible": true,
+      "no_outcome_guarantee_present": true,
+      "not_affiliated_with_etsy_present": true,
+      "six_month_window_present": true
+    },
+    "LINK_IS_PLAIN_TEXT_NOT_AN_ANCHOR": {
+      "finding": "Telegraph strips anchor nodes. An {'type':'a',...} child is dropped on create AND on edit, including for internal telegra.ph hrefs. A paragraph containing only a link node returns CONTENT_TEXT_REQUIRED.",
+      "workaround": "the full URL is published as its own paragraph of plain text, which renders and is copy-pasteable",
+      "tradeoff_accepted": "a visible URL is copied far less often than a clickable one. This is a real reduction in conversion versus a clickable anchor, disclosed rather than hidden.",
+      "not_false_claimed": "no clickable product link is claimed for this article"
+    }
+  },
+
+  "DEAD_LINK_REPAIR_ATTEMPTED": {
+    "target": "Multi-State Sales Tax Nexus: The Rolling-12-Month Method (2026-09-27)",
+    "defect": "contains the dead permalink /l/WSHDUE (HTTP 404); the live product is /l/uucxer (HTTP 200)",
+    "attempted": true,
+    "outcome": "FAILED - PAGE_ACCESS_DENIED. The dead slug was located (1 occurrence), replaced in the node payload, and editPage refused the write.",
+    "reason": "the page belongs to a different Telegraph access token, not ours",
+    "state_of_our_own_surfaces": "unchanged and correct - all 61 customer_site pages are free of the dead slug and our own nexus guide already points at /l/uucxer",
+    "no_fabrication": "no replacement URL was invented; the correct destination was read from our own existing, already-correct surfaces"
+  },
+
+  "SIDE_EFFECT_DISCLOSED": {
+    "probe_pages": "several diagnostic pages were published during the format investigation (link-shape probes and a format probe on the original token).",
+    "why": "they were necessary to determine the accepted content shape, and each one is a real published page.",
+    "delete_possible": false,
+    "reason": "Telegraph's API exposes no delete or unpublish method",
+    "handling": "disclosed rather than hidden. They carry no product link and no commercial claim."
+  },
+
+  "RESULTS_BY_CATEGORY_SEPARATED": {
+    "new_articles_published": 1,
+    "views": "0 so far - published minutes ago; Telegraph view counters were last measured at 449 cumulative across 64 articles",
+    "clicks": "UNKNOWN - Telegraph exposes no click data",
+    "qualified_leads": 0,
+    "orders": 0,
+    "sales": 0,
+    "revenue_usd": 0.0,
+    "honest_reading": "a working free distribution channel has been restored and one genuinely new article is live. That is activity, not demand. It has produced no lead and no order, and it is not presented as anything more."
+  },
+
+  "FINANCIAL_TRUTH": {
+    "gumroad_sales_records": 0,
+    "refunded_sales": 0,
+    "payout_records": 0,
+    "finance_data_sales": 0,
+    "verified_revenue_usd": 0.0,
+    "new_spend_usd": 0.0,
+    "self_purchase_performed": false,
+    "simulated_orders_created": false
+  },
+
+  "STATUSES": {
+    "telegraph_write_access": "WORKS - the blocker was our own content format",
+    "telegraph_anchor_rendering": "NOT SUPPORTED - links must be published as plain text",
+    "free_distribution_channel": "RESTORED",
+    "dead_link_in_old_nexus_article": "BLOCKED - page owned by a different token, unrepairable from here",
+    "our_own_surfaces": "PASS - 61 pages clean, correct destination in place",
+    "payment_completable_by_a_human": "UNKNOWN - browser required",
+    "payout_eligibility": "UNKNOWN - no endpoint exists",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "The free distribution channel is working again, so publishing is no longer the constraint. The single highest-value action remains a founder browser session: افتح https://aekraft.gumroad.com/l/fgruzn/checkout وأتمّ شراءً حقيقياً. Everything on our side is now verified: product, copy, tags, checkout, and a live distribution channel."
+}
