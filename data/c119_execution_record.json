@@ -1,0 +1,95 @@
+{
+  "cycle": 119,
+  "label_in_request": "C99 - CYCLE 103",
+  "label_note": "repository at C118 (340b07f), confirmed as HEAD at cycle start.",
+  "date": "2026-10-13",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "PATH_CONFUSION_RESOLVED": {
+    "finding": "TWO SEPARATE REPOSITORIES EXIST ON THIS MACHINE. They are not the same project and must never be treated as one.",
+    "openclaw_dasgboard": {"spelling": "typo", "branch": "main", "head": "340b07f", "head_date": "2026-10-13", "python_files": "246+", "has_dotenv": true, "role": "THE LIVE REPOSITORY - all work happens here"},
+    "openclaw_dashboard": {"spelling": "correct", "branch": "main", "head": "4964e1c", "head_date": "2026-06-20", "head_message": "OpenClaw v1 working", "python_files": 0, "has_dotenv": false, "role": "STALE FOUR-MONTH-OLD SNAPSHOT, not the active project"},
+    "trap": "the correctly spelled path holds an obsolete v1 snapshot with zero Python files and no .env, while the misspelled path holds the live factory. Any instruction naming C:\\openclaw-dashboard refers to dead code.",
+    "action": "nothing changed in either repo. No init, no copy, no deletion - the second repo is the founder's and is left untouched.",
+    "recorded_because": "a prior report quoted C:\\openclaw-dashboard as the workspace, which would point every future cycle at the stale tree."
+  },
+
+  "UNAUTHORIZED_ROOT_CAUSE_PROVEN": {
+    "question": "is UNAUTHORIZED from GitHub, Gumroad, another API, the internal control-panel auth, or just an unbound UI state?",
+    "ANSWER": "It is NOT an HTTP status, NOT from any external service, and NOT a credential problem. It is a STATIC POLICY STRING emitted unconditionally by internal code.",
+    "exact_source": "nin/nin03_commercial_guardian.py line 96",
+    "the_code": "findings.append(\"commercial authorization: UNAUTHORIZED (Founder required)\")",
+    "proof_it_is_unconditional": {
+      "gate called with full evidence supplied": "customer_evidence=True, transaction_evidence=True -> verdict HOLD, findings still include 'commercial authorization: UNAUTHORIZED (Founder required)'",
+      "gate called with activate_commercial=True": "verdict KILL, same UNAUTHORIZED line present",
+      "conclusion": "the line is appended on every invocation regardless of any input, credential, permission or configuration. No API key change can remove it, because it never reads one."
+    },
+    "other_references_are_static_strings_too": [
+      "nin/nin01_growth_hunter.py: READ_ONLY_UNAUTHORIZED_COMMERCIAL",
+      "nin/nin02_product_builder.py: READ_ONLY_UNAUTHORIZED_COMMERCIAL",
+      "lib/performance_commission_validator.py: HOLD - ARM 9 UNAUTHORIZED (Founder Directive 2026-08-28)",
+      "scripts/security_resilience_audit.js: ARM 9: UNAUTHORIZED / not implemented"
+    ],
+    "what_it_actually_means": "ARM 9 is a commercial-execution capability that a founder directive of 2026-08-28 deliberately left unauthorized. The string marks that policy, not a fault.",
+    "why_no_key_was_changed": "the brief explicitly warned against swapping API keys needlessly. Changing Gumroad credentials could not affect this string, and would have been a destructive action against a working, verified credential.",
+    "status": "NOT A DEFECT - a founder policy gate behaving correctly"
+  },
+
+  "THE_401_THAT_IS_REAL_BELONGS_TO_A_DIFFERENT_SERVICE": {
+    "location": "channels/capability_matrix.py line 394",
+    "note_text": "OPTIONAL DISTRIBUTION PROVIDER. Token returns 401 on all endpoints. Not core infrastructure. Do NOT upgrade.",
+    "service_identified": "TikTok / Metricool (optional distribution providers), NOT Gumroad",
+    "env_vars_named_in_that_entry": {"TIKTOK_ACCESS_TOKEN": "not configured", "METRICOOL_USER_TOKEN": "configured", "LINKEDIN_PERSON_URN": "not configured"},
+    "separation_kept": "Gumroad auth was proven PASS in cycle 118 using negative controls (real token 200 / no token 401 / bad token 401). The 401 in capability_matrix belongs to an unrelated optional provider and does not weaken the Gumroad result.",
+    "founder_directive_on_record": "do NOT upgrade, do NOT spend",
+    "action": "none. Correctly left blocked per the standing directive.",
+    "not_confused_with_the_UNAUTHORIZED_string": "these are two different things: an optional third-party provider token returning 401, and an internal founder-authorization policy marker."
+  },
+
+  "CI_VERIFIED_FOR_THE_CORRECT_COMMIT": {
+    "head": "340b07f",
+    "pages_build_and_deployment": "success, 3/3 jobs",
+    "CI": "success, 33/33 jobs",
+    "method": "GitHub API, both workflows read explicitly - the mistake corrected in cycle 106, where only the Pages workflow was reported while CI was red",
+    "no_build_or_error_count_used_as_evidence": "BUILDS: 0 / ERRORS: 0 / WARNINGS: 0 were not treated as proof of anything. Every claim above comes from an observed API response or a directly executed function."
+  },
+
+  "PROJECT_COMPLETENESS_NOT_ASSERTED": {
+    "method": "no new framework added, nothing rebuilt from scratch, no 10-item checklist treated as a prior of completion",
+    "stack_actually_present": {"backend": "Express server.js", "python_modules": 246, "test_runner": "unittest discover + node --test batches", "ci": "GitHub Actions, 33 jobs"},
+    "tests_run_this_cycle": "tests/test_gumroad_*.py - 87/87 pass, no network",
+    "LSP": "not touched. 'LSPs are disabled' is an editor/integration status, not a fault, and no evidence showed it blocking this Python/Node project was changed or improved."
+  },
+
+  "GUMROAD_AND_PRODUCT_STATE": {
+    "authentication": "PASS - proven with negative controls in cycle 118, unchanged",
+    "primary_product": {"url": "/l/fgruzn", "price_usd": 29, "published": true, "files": 1, "file_bytes": 166634, "file_info": "163 KB", "description_words": 269},
+    "delivery_file_content": "UNKNOWN - the file changed platform-side after the cycle-101 verification, and Gumroad exposes no seller-side download endpoint to re-open it",
+    "storefront_visibility": "BLOCKED - the flagship is not among the 9 listed products; the API exposes no visibility field",
+    "owtmpe_150_zero_files": "BLOCKED - cannot be unpublished via API, dashboard only",
+    "technical_link_vs_complete_purchase": "kept distinct. HTTP 200 on the checkout is not proof of payment capability."
+  },
+
+  "ORDERS_AND_REVENUE": {
+    "source": "Gumroad API GET /v2/sales",
+    "orders": 0, "refunds": 0, "gross": "$0.00", "payouts": 0,
+    "VERIFIED_REVENUE": "$0.00", "TOTAL_NEW_SPEND": "$0.00",
+    "no_purchase_attempted": true, "no_simulated_order": true
+  },
+
+  "STATUSES": {
+    "path_confusion": "RESOLVED - two repos identified, live one confirmed",
+    "UNAUTHORIZED": "NOT A DEFECT - static founder policy string, proven unconditional",
+    "the_real_401": "TikTok/Metricool optional provider, correctly left blocked per founder directive",
+    "gumroad_authentication": "PASS",
+    "ci": "PASS - both workflows green",
+    "tests": "PASS - 87/87",
+    "storefront_discoverability": "BLOCKED - dashboard only",
+    "payment_completable_by_a_human": "UNKNOWN - browser required",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "Nothing was changed this cycle and that is correct: the UNAUTHORIZED string is a founder policy gate, not a fault, and Gumroad auth is already PASS. The next safe autonomous work is strengthening the 16 thin product descriptions through the flat-key PUT path proven in cycle 108, re-reading each write to verify persistence. The highest-value founder action is unchanged and now two-part: add /l/fgruzn to the Gumroad storefront and delete /l/owtmpe, then attempt one real payment."
+}

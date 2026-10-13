@@ -1,0 +1,134 @@
+{
+ "updated": [
+  {
+   "name": "EU AI Act Audit Logging Kit",
+   "price": 29.0,
+   "before_words": 36,
+   "after_words": 157,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "Severance Agreement Review Checklist",
+   "price": 29.0,
+   "before_words": 36,
+   "after_words": 155,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "Security Deposit Demand Kit for Tenants",
+   "price": 29.0,
+   "before_words": 38,
+   "after_words": 159,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "Mechanics Lien Filing Kit for Contractors",
+   "price": 29.0,
+   "before_words": 37,
+   "after_words": 158,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "Digital-Product Refund Policy Pack",
+   "price": 29.0,
+   "before_words": 18,
+   "after_words": 137,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "SaaS Churn Email Pack",
+   "price": 39.0,
+   "before_words": 17,
+   "after_words": 136,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "Freelancer Scope-Creep Contract Kit",
+   "price": 29.0,
+   "before_words": 13,
+   "after_words": 132,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "Battery & WEEE Mini-Guide for Sellers",
+   "price": 29.0,
+   "before_words": 13,
+   "after_words": 134,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "Food-Contact Materials Starter",
+   "price": 39.0,
+   "before_words": 14,
+   "after_words": 132,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "EU Cosmetics Responsible Person Guide",
+   "price": 69.0,
+   "before_words": 17,
+   "after_words": 137,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "Etsy Ads ROI Playbook + Calculator",
+   "price": 39.0,
+   "before_words": 17,
+   "after_words": 138,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "Amazon FBA Reconciliation Workbook",
+   "price": 49.0,
+   "before_words": 17,
+   "after_words": 136,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "EU Late Payment Recovery Kit",
+   "price": 59.0,
+   "before_words": 20,
+   "after_words": 140,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "GCC Contractor Payment Command System (V2 Bundle)",
+   "price": 399.0,
+   "before_words": 39,
+   "after_words": 161,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "The 5-Minute Context Reset Playbook",
+   "price": 15.0,
+   "before_words": 8,
+   "after_words": 128,
+   "http": 200,
+   "persisted": true
+  },
+  {
+   "name": "Automated Contract Review System for Legal Departments",
+   "price": 327.0,
+   "before_words": 16,
+   "after_words": 138,
+   "http": 200,
+   "persisted": true
+  }
+ ],
+ "skipped": [],
+ "failed": []
+}
