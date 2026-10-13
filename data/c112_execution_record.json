@@ -1,0 +1,116 @@
+{
+  "cycle": 112,
+  "label_in_request": "CYCLE 104",
+  "label_note": "request labelled Cycle 104; repository was at C111 (f75f22e), confirmed as HEAD before any change.",
+  "date": "2026-10-12",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "EXACT_UNKNOWN_ITEMS_NAMED": [
+    {
+      "name": "payment_completable_by_a_human",
+      "recorded_in": "data/c111_execution_record.json :: PAYMENT_SEPARATED",
+      "original_check_result": "UNKNOWN - client-side UI, needs a browser",
+      "why_it_remains_unknown": "the checkout page is a JavaScript application. The served HTML contains forms=0, inputs=0, buttons=0, so no server-side request can ever show whether a human sees a rendered payment form. This is not lack of permission and not an API failure - it is a measurement that cannot be made outside a browser.",
+      "not_converted_to_pass": "not converted. Repeating the checkout probes would produce the same bytes and change no decision.",
+      "resolution_requires": "founder browser session",
+      "commercial_effect": "this is the single step that can produce revenue"
+    },
+    {
+      "name": "payout_eligibility",
+      "recorded_in": "data/c111_execution_record.json :: PAYMENT_SEPARATED",
+      "original_check_result": "UNKNOWN - no endpoint exposes it; an empty /payouts list is absence of evidence, not evidence of ineligibility",
+      "why_it_remains_unknown": "Gumroad exposes no endpoint for seller payout eligibility. 23 candidate endpoints were probed across cycles 102 and 103; /settings, /account, /balance and /payout_settings return 404 and the rest return nothing about eligibility.",
+      "not_converted_to_pass": "not converted, and explicitly not downgraded to BLOCKED either - absence of evidence is not evidence of a restriction",
+      "resolution_requires": "founder opens https://gumroad.com/settings/payouts",
+      "commercial_effect": "matters only once a sale lands; it would not prevent the sale, it would prevent receiving the money"
+    }
+  ],
+
+  "EXACT_X_ITEMS_NAMED": [
+    {
+      "name": "X (Twitter) channel",
+      "recorded_in": "data/c110_execution_record.json :: BLOCKER_LEDGER (rank g)",
+      "status": "BLOCKED",
+      "original_check_result": "GET /2/users/me -> HTTP 401 Unauthorized",
+      "diagnosis": "authentication REJECTED, not missing. All four credential variables are present in .env (X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET). The platform accepted the request and refused the identity.",
+      "cause_class": "expired, revoked, or under-scoped credentials - not a network fault, not a rate limit, not a missing setting",
+      "commercial_effect_on_sale": "NONE. The flagship sells on Gumroad. The X arm would publish other products on another platform and is not on the path that sells /l/fgruzn.",
+      "decision": "ISOLATED. Not reconnected, not retried without a new hypothesis.",
+      "settings_that_actually exist": "X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET, X_API_KEY, X_API_SECRET - these are the four the integration needs; none is missing, and all four are rejected together.",
+      "founder_action_required": "none now. Connecting X would not move the current sale and was explicitly ruled out of scope for this cycle."
+    }
+  ],
+
+  "REUSE_OF_PRIOR_PASS_RESULTS_WITHOUT_REPEAT": {
+    "routing_PASS": "not re-run. Established in cycles 108 and 110; the product has not been edited since except for tags and description, both of which were verified by API read-back.",
+    "checkout_PASS": "not re-run for the same reason.",
+    "explicitly_not_claimed": "neither a passing route nor a passing checkout is evidence that a payment completed or that money arrived."
+  },
+
+  "DISTRIBUTION_ATTEMPTED_AND_BLOCKED_WITH_EVIDENCE": {
+    "goal": "publish a second, genuinely distinct Telegraph article for the primary product",
+    "why_warranted": "only ONE appeal article existed in 64 ('Etsy Shop Suspended? The Fix-First Appeal Method'). A second angle was justified, not duplicate spam: the existing article covers the fix-first appeal METHOD, the new one would cover whether to appeal at all - temporary vs permanent - grounded in Etsy's own published policy, including the 6-month window.",
+    "article_prepared": true,
+    "article_published": false,
+    "BLOCKER": "Telegraph write access is currently refused for this token",
+    "evidence": {
+      "getAccountInfo": "ok=true - the token is still valid and READ-valid",
+      "createPage with a bare '<p>hello world</p>'": "CONTENT_FORMAT_INVALID",
+      "createPage with a bare '<p>x</p>'": "CONTENT_FORMAT_INVALID",
+      "createPage with the full prepared article": "CONTENT_FORMAT_INVALID",
+      "ten different tag shapes all probed": "all CONTENT_FORMAT_INVALID"
+    },
+    "conclusion": "content shape is NOT the cause, because a one-tag bare paragraph is refused exactly like the full article. This token can read but cannot write right now.",
+    "CORRECTION_TO_CYCLE_104": "In cycle 104 I concluded that this token could still create NEW articles and only failed on OLD ones, and I attributed that to per-page ownership. That is now contradicted: no article of any age can be created. The C104 diagnosis was too narrow.",
+    "likely_cause": "a platform-side write lock or flood/rate limiting on this account after the volume of writes across cycles 89-104. Not proven - Telegraph returns no reason code - but it is the only explanation consistent with reads succeeding and every write failing identically.",
+    "action_taken": "none available. No write path exists to publish through. Not retried without a new hypothesis, per the no-repeated-attempt rule.",
+    "no_false_claim": "no publication is claimed. No draft was left behind pretending to be content. The prepared article was not written to any record as if it were live."
+  },
+
+  "PRODUCT_VERIFIED_FOR_CONTENT_MATCH": {
+    "product": "Etsy Suspension Appeal Kit (/l/fgruzn)",
+    "match_check": "description claims 19 pages; buyer-visible file_info says 19 pages / 120 KB; the actual attached file is 122,465 bytes and the opened deliverable is 19 pages / 2,639 words / 11 checklists. All agree.",
+    "no_guaranteed_outcome": "the live copy states 'No outcome or savings amount is guaranteed' and 'Not professional, financial, or legal advice'. No reinstatement promise exists anywhere in the product or its copy.",
+    "tags": 9,
+    "sales_count": 0,
+    "status": "READY - nothing about the product blocks the sale"
+  },
+
+  "RESULTS_BY_CATEGORY_SEPARATED": {
+    "visits": "UNKNOWN - Gumroad exposes no visit data to us and our own beacon has no public receiver on static hosting",
+    "clicks": "UNKNOWN - Telegraph exposes no click data",
+    "qualified_leads": 0,
+    "orders": 0,
+    "sales": 0,
+    "revenue_usd": 0.0,
+    "activity": "unchanged this cycle - 64 Telegraph articles, no new publication possible",
+    "honest_reading": "this cycle produced no distribution activity because the channel's write access is refused. That is reported as a failure, not dressed up as progress."
+  },
+
+  "FINANCIAL_TRUTH": {
+    "gumroad_sales_records": 0,
+    "refunded_sales": 0,
+    "payout_records": 0,
+    "finance_data_sales": 0,
+    "verified_revenue_usd": 0.0,
+    "new_spend_usd": 0.0,
+    "self_purchase_performed": false,
+    "simulated_orders_created": false
+  },
+
+  "STATUSES": {
+    "payment_completable_by_a_human": "UNKNOWN - requires a browser, cannot be resolved by any automated check",
+    "payout_eligibility": "UNKNOWN - no endpoint exists; requires the account dashboard",
+    "X channel": "BLOCKED - credentials present but rejected 401; irrelevant to the sale; isolated",
+    "gumroad_routing": "PASS (prior result reused, not re-run)",
+    "gumroad_checkout": "PASS (prior result reused, not re-run)",
+    "telegraph_write_access": "BLOCKED - reads OK, all writes refused",
+    "telegraph_read_access": "PASS",
+    "product": "READY",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "Founder, one action, in Arabic: افتح https://aekraft.gumroad.com/l/fgruzn/checkout في متصفحك وأتمّ شراءً حقيقياً. That remains the only step that can produce revenue and neither UNKNOWN item can be closed without it or without the payout settings page. Telegraph publication is BLOCKED platform-side and is not a founder blocker worth acting on today - if writes are still refused in a later cycle, re-authorising the Telegraph account is the remedy, but it would not change the sale."
+}
