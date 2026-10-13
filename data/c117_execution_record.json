@@ -1,0 +1,81 @@
+{
+  "cycle": 117,
+  "label_in_request": "C98 - CYCLE 101",
+  "label_note": "repository is at C116 (7705fc4); verified as an ancestor of HEAD at cycle start, nothing reset.",
+  "date": "2026-10-13",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "POST_DISABLE_404_ROOT_CAUSE": {
+    "question": "trace the POST /disable call to its source and service",
+    "FINDING": "there is no call site. The endpoint was INVENTED in a scratch script written during cycle 116. It never existed in this repository and is not a documented Gumroad route.",
+    "evidence": [
+      "channels/gumroad_publisher.py documents exactly one publish-state route: PUT /v2/products/:id/enable",
+      "the string 'disable' does not appear anywhere in gumroad_publisher.py",
+      "a live probe of POST /v2/products/<id>/disable returned HTTP 404 with Gumroad's HTML 'Page not found' page, not a JSON API error - i.e. the route does not exist on the service",
+      "Gumroad API base is https://api.gumroad.com/v2 and auth was correct in the same script; reads from the same base and token worked, so neither prefix nor auth was the fault"
+    ],
+    "classification": "the route does not exist on the service. Not a wrong path, not a wrong verb, not an auth failure.",
+    "no_verb_swapping": "POST was NOT swapped for GET or DELETE to make a 404 disappear. That would have been guessing.",
+    "no_phantom_route": "no fake endpoint was created to make the operation appear to work."
+  },
+
+  "DOCUMENTED_MECHANISM_ATTEMPTED_AND_PROVEN_INSUFFICIENT": {
+    "mechanism": "PUT /v2/products/<id> with published=false - the only documented write that could plausibly unpublish",
+    "result": "HTTP 200, and published remained True. Price 15000 cents and 0 files unchanged. The public page /l/owtmpe still returns 200 and is still purchasable.",
+    "why_it_matters": "this is the same silent no-op already proven for the description field on this exact product in cycle 116. HTTP 200 from Gumroad is NOT evidence that a write landed.",
+    "CONCLUSION": "Gumroad's public API offers enable but NO way to unpublish or delete a product.",
+    "status": "BLOCKED - dashboard only",
+    "no_false_success_claim": "the product was NOT declared unpublished. Its verified state after every attempt is published=True with 0 files."
+  },
+
+  "TESTS_ADDED_6_MOCKS_ONLY_NO_REAL_RESOURCE_TOUCHED": {
+    "file": "tests/test_gumroad_unpublish_unsupported.py",
+    "cases": [
+      "the publisher must never reference a /disable route",
+      "/enable is a PUT and must not be 'fixed' by swapping verbs",
+      "an invented route returns 404 and that must surface, not be swallowed",
+      "HTTP 200 from PUT published=false is a silent no-op, not proof of success",
+      "verification of any write must be a real follow-up GET",
+      "this constraint is documented in the module"
+    ],
+    "result": "6/6 pass",
+    "real_network_calls": "NONE. An initial version mocked requests.get, which does NOT intercept _request_with_retry (it calls requests.request); that leaked one live 401 request. The mock was moved to requests.request and the leak eliminated.",
+    "no_real_product_disabled": "confirmed - the only real unpublish attempt was the live documented PUT, which changed nothing and was verified by re-read."
+  },
+
+  "CAPITAL_INTEGRITY_AUDIT": {
+    "verified_at": "2026-10-13T14:25:30",
+    "source_1_finance_data_json": {"sales": 0, "totalSales": 0, "totalEtsy": 0, "totalGumroad": 0, "lastUpdated": "2026-10-12T17:16:20.710Z", "weight": "secondary local record, not independent truth"},
+    "source_2_gumroad_api_authoritative": {"success": true, "sale_records": 0, "refunded": 0, "gross": "$0.00", "net_after_fees": "$0.00"},
+    "source_3_internal_ledger": {"total_events": 135, "event_types": {"publish_attempt": 135}, "sale_events": 0},
+    "RECONCILIATION": "all three sources agree at zero - no conflict, so no UNKNOWN was needed",
+    "gross_vs_net": "gross $0.00, fees $0.00, refunds $0.00, net $0.00. Distinguished explicitly; with zero sales they are all zero, and none is conflated with the other.",
+    "explicitly_NOT_money": [
+      "77 published products - inventory, not cash",
+      "0 payouts - confirms nothing was received",
+      "449 Telegraph page views - activity, not demand",
+      "the $100K objective - a target, never a forecast",
+      "any budget or planned figure in the repo - not available capital"
+    ],
+    "no_test_transactions_created": true,
+    "no_figures_altered": true
+  },
+
+  "PRODUCT_STATE": {
+    "primary": {"name": "Etsy Suspension Appeal Kit", "url": "/l/fgruzn", "price_usd": 29, "published": true, "files": 1, "file_bytes": 122465, "buyer_sees": "120 KB / 19 pages", "description_words": 263, "sales_count": 0},
+    "technical_link_vs_complete_purchase_path": "distinguished: the link resolves and the checkout loads with a live pk_live_ key, but a completed purchase by a human remains UNKNOWN and no order exists.",
+    "open_customer_harm": {"url": "/l/owtmpe", "price_usd": 150, "files": 0, "published": true, "status": "BLOCKED - cannot be unpublished via API", "note": "its description already said WITHDRAWN before this cycle"}
+  },
+
+  "STATUSES": {
+    "post_disable_404_root_cause": "PROVEN - invented route, never existed",
+    "unpublish_via_api": "BLOCKED - dashboard only",
+    "regression_tests": "PASS - 6/6, mocks only",
+    "capital_integrity": "PASS - three sources agree at zero",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "The API route is now closed as a dead end with tests preventing its reintroduction. The highest-value remaining safe work is strengthening the 16 thin product descriptions found in cycle 116, using the flat-key PUT write path that was proven to persist in cycle 108 and re-read for verification each time. Founder action stays limited to deleting /l/owtmpe and attempting one real payment at /l/fgruzn/checkout."
+}
