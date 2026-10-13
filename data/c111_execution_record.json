@@ -1,0 +1,112 @@
+{
+  "cycle": 111,
+  "label_in_request": "CYCLE 103",
+  "label_note": "request labelled Cycle 103; repository was at C110 (81bf98f), confirmed as HEAD before any change.",
+  "date": "2026-10-12",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "ULDLWA_ERROR_DIAGNOSED_WITH_EVIDENCE": {
+    "reported_symptom": "/l/uldlwa 'status incomplete or needs review'",
+    "only_real_error_signal_that_existed": "in cycle 110 a tags write to /l/uldlwa was silently discarded (read back 6 originals) while the same payload shape applied cleanly to /l/fgruzn",
+    "hypotheses_tested_and_refuted": [
+      "a tag-count cap - REFUTED. 10, 9 and 8 tags were all rejected, yet /l/fgruzn accepted 9.",
+      "product-specific lock - REFUTED. A single-tag write to /l/uldlwa persisted immediately, and a description write persisted in cycle 108 (35 -> 182 words). Writes to this product work.",
+      "wrong parameter shape - REFUTED. The tags[] repeated-key shape is exactly what succeeded on /l/fgruzn."
+    ],
+    "ROOT_CAUSE": "Gumroad rejects writes containing SPECIFIC TAG STRINGS, and rejects the entire array rather than dropping the offending item.",
+    "evidence": {
+      "write 3 tags ['legal research','solo attorney','law firm']": "read back 3 - ACCEPTED",
+      "write 4 tags (same three + 'legal research automation')": "read back 3 - ENTIRE ARRAY REJECTED",
+      "write 7 tags (the 6 pre-existing originals + 'ai for lawyers')": "read back 7 - ACCEPTED",
+      "conclusion": "count is irrelevant. One bad string rejects the whole write. The offending string in the failed set was 'legal research automation'."
+    },
+    "exact_rule": "NOT FULLY PROVEN. Narrowed to per-string content rejection, most likely a length or multi-word limit - 'ai for lawyers' (3 words) is accepted while 'legal research automation' (4 words) is not. Not asserted as proven, and not retried further without a new hypothesis.",
+    "FIX_APPLIED": "/l/uldlwa tags are now 7 and VERIFIED APPLIED: ['legal', 'case', 'research', 'automation', 'solo', 'attorneys', 'ai for lawyers'] - the 6 originals preserved and one high-intent buyer-language tag added. Improved from 6 to 7, and the previous silent failure is resolved rather than left unexplained.",
+    "cleanup": "the zzprobe diagnostic tag was removed as part of restoring a deliberate final state; no probe string remains on either product."
+  },
+
+  "PRODUCTS_FINAL_LIVE_STATE": {
+    "fgruzn_Etsy_Suspension_Appeal_Kit": {
+      "status": "READY",
+      "price_usd": 29,
+      "published": true,
+      "files": 1,
+      "file_bytes": 122465,
+      "buyer_sees": "120 KB / 19 pages",
+      "description_words": 263,
+      "description_matches_file": "yes - 19 pages claimed, 19 pages delivered, 2,639 words, 11 checklists (verified by opening the real deliverable)",
+      "no_reinstatement_promise": "yes - 'No outcome or savings amount is guaranteed' and 'Not professional, financial, or legal advice' are both present in the live copy",
+      "tags": 9,
+      "sales_count": 0
+    },
+    "uldlwa_Legal_Case_Research_Automation": {
+      "status": "READY - the 'needs review' flag is now resolved",
+      "price_usd": 29,
+      "published": true,
+      "files": 1,
+      "file_bytes": 105317,
+      "description_words": 182,
+      "description_matches_file": "yes - 16 pages claimed and 16 pages delivered, verified against the opened file",
+      "no_invented_authorities": "yes - the copy explicitly states the file contains no invented case citations",
+      "tags": 7,
+      "sales_count": 0,
+      "not_a_duplicate": "distinct from fgruzn in problem, buyer and content; the earlier defect was that its description never mentioned legal case research at all, which was fixed in cycle 108"
+    }
+  },
+
+  "PRODUCT_SELECTED_AND_WHY": {
+    "product": "Etsy Suspension Appeal Kit (/l/fgruzn)",
+    "reasons": [
+      "its own distribution article ranks 2nd of 64 - the only flagship with proven distribution resonance",
+      "$29 is the lowest trust threshold in the catalogue, so it is the cheapest possible first sale",
+      "the buyer problem is time-boxed: Etsy's own policy gives a 6-month appeal window, which is real, verifiable urgency",
+      "cycle 108 research found a live competitor (Shopkeep Sentry) charging money for this exact problem - proof of willingness to pay",
+      "lowest legal risk of the three, because it explicitly disclaims any outcome"
+    ],
+    "second_product_positioned": "uldlwa was fixed this cycle but is NOT being pushed. Adding a second product to the same effort would split focus while the single measured blocker is payment completion."
+  },
+
+  "DISTRIBUTION_RESULTS_BY_CATEGORY": {
+    "activity": "64 Telegraph articles live since 2026-09-27; flagship article published 2026-10-12 and gaining reads",
+    "views": "449 cumulative article page views, measured 2026-10-12; median 6 per article",
+    "clicks": "UNKNOWN - Telegraph exposes no click data and we have no click tracking on it",
+    "product_page_visits": "UNKNOWN - Gumroad exposes none to us",
+    "leads_or_inquiries": 0,
+    "orders": 0,
+    "revenue": 0,
+    "honest_reading": "activity is real and measured; everything downstream of raw views is unmeasured or zero. 449 views is the weakest possible demand signal and must not be presented as people or buyers."
+  },
+
+  "PAYMENT_SEPARATED": {
+    "product_exists": "PASS",
+    "checkout_available": "PASS - HTTP 200, pk_live_, purchase not disabled",
+    "payment_completable_by_a_human": "UNKNOWN - client-side UI, needs a browser",
+    "money_received": "NONE - zero payouts",
+    "payout_eligibility": "UNKNOWN - no endpoint exposes it; an empty /payouts list is absence of evidence, not evidence of ineligibility"
+  },
+
+  "FINANCIAL_TRUTH": {
+    "gumroad_sales_records": 0,
+    "refunded_sales": 0,
+    "payout_records": 0,
+    "finance_data_sales": 0,
+    "verified_revenue_usd": 0.0,
+    "new_spend_usd": 0.0,
+    "self_purchase_performed": false,
+    "simulated_orders_created": false
+  },
+
+  "STATUSES": {
+    "uldlwa_review_flag": "RESOLVED - real error diagnosed, fix applied and verified",
+    "fgruzn": "READY",
+    "uldlwa": "READY",
+    "checkout": "PASS",
+    "payment_completion": "UNKNOWN - founder browser",
+    "payout_eligibility": "UNKNOWN - founder dashboard",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "One founder action: open https://aekraft.gumroad.com/l/fgruzn/checkout and complete a real payment. Both flagship products are now fully ready - correct description, real deliverable, expanded marketplace tags, verified links. Nothing on our side of the funnel is blocking the sale; the factory no longer reports a blocker that does not exist, so a browser session is the only remaining unknown and the only route to revenue."
+}
