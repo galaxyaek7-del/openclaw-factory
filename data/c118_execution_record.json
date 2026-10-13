@@ -1,0 +1,111 @@
+{
+  "cycle": 118,
+  "label_in_request": "C98 - CYCLE 102",
+  "label_note": "repository at C117 (49890e2), verified as HEAD at cycle start and still an ancestor at end.",
+  "date": "2026-10-13",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "AUTH_DIAGNOSIS_RESULT": {
+    "status": "PASS",
+    "token_present_in_env": true,
+    "token_length": 43,
+    "token_value": "never printed, logged, committed or transmitted",
+    "auth_convention": "?access_token= query parameter, matching the repo's own publisher",
+    "read_only_probes": {
+      "GET /v2/products with real token": "HTTP 200 success=true",
+      "GET /v2/sales with real token": "HTTP 200 success=true, sales=[]",
+      "GET /v2/payouts with Bearer token": "HTTP 200 success=true, payouts=[]",
+      "GET /v2/products with NO token": "HTTP 401",
+      "GET /v2/products with a BAD token": "HTTP 401"
+    },
+    "conclusion": "200 only with the real token and 401 without proves the credential is present and valid. Authentication is NOT the cause of any checkout doubt, and was never in doubt this cycle.",
+    "not_assumed_from_200_alone": "each probe above was paired with a negative control - the same endpoint without a token and with a bad token - so a 200 is meaningful rather than merely returned.",
+    "no_account_settings_changed": true,
+    "no_replacement_token_created": true
+  },
+
+  "LINK_IDENTITY_VERIFIED_NOT_ASSUMED": {
+    "brief_warning_honoured": "the brief warned against assuming fgruzn and owtmpe refer to the same product. Verified instead of assumed.",
+    "fgruzn": {"id": "mvuoJTNLfsWsm0NF-CrZHw==", "price_usd": 29, "files": 1, "published": true, "name": "Etsy Suspension Appeal Kit"},
+    "owtmpe": {"id": "IW58tjt2zS14fPYrWZOuxg==", "price_usd": 150, "files": 0, "published": true, "name": "[Unavailable] AI Workflow QA & Stress Test"},
+    "conclusion": "different ids, different prices, different file counts => DIFFERENT PRODUCTS. Neither is a redirect, alias or stale copy of the other. They were NOT swapped, and no substitution was made.",
+    "checkout_path": "/l/<slug>/checkout resolved HTTP 200 for both, with no redirect hops observed. Whether /checkout is the canonical path or merely a working route was not separately proven, and no link was changed on the strength of it."
+  },
+
+  "MAJOR_FINDING_STOREFRONT_IS_INVERSELY_CURED": {
+    "storefront_lists": 9,
+    "catalogue_size": 77,
+    "listed": ["akxaae", "diboaf", "drtaj", "gzbdaz", "oerot", "owtmpe", "ursxh", "volqjv", "vwlmeo"],
+    "FLAGSHIP_LISTED": false,
+    "owtmpe_THE_ZERO_FILE_150_PRODUCT_LISTED": true,
+    "finding": "the flagship that earns money is INVISIBLE to anyone browsing Gumroad, while the $150 product with zero delivery files is one of the nine that IS visible. That is the inverse of correct curation.",
+    "why_it_matters_commercially": "this is a concrete, evidence-backed candidate explanation for traffic with zero orders: readers arriving cannot find the product on the marketplace that hosts it. It is a stronger explanation than 'the offer is bad' and it is NOT fixable from the API.",
+    "can_it_be_fixed_from_here": "NO. GET /v2/products/<id> exposes no visibility, featured, listed or storefront field. Only `published` is present, and that answers 'can it be bought', never 'can it be found'.",
+    "published_is_not_discoverable": "recorded explicitly, because conflating the two is what allowed this to go unnoticed",
+    "status": "BLOCKED - dashboard only"
+  },
+
+  "DELIVERABLE_CHANGED_ON_THE_PLATFORM": {
+    "recorded_in_cycles_116_117": 122465,
+    "observed_now": 166634,
+    "stable_across_three_reads": true,
+    "file_id_now": "yFgAJjKq8AuVJ1ezbhlzYQ==",
+    "file_info_shown_to_buyer": "163 KB",
+    "description_words_now": 269,
+    "origin": "no commit in this repository touches the etsy kit file, so this happened on the platform side, not in tracked code.",
+    "CONSEQUENCE": "the cycle-101 content verification (19 pages / 2,639 words / 11 checklists) was performed on the file attached then. It is now STALE and is NOT restated as current.",
+    "cannot_be_reverified_from_here": "Gumroad exposes no seller-side download endpoint; both /products/fgruzn/file/<id> and /files/<id> returned 404. The new bytes cannot be re-opened for content verification.",
+    "honest_status": "deliverable validity = UNKNOWN for the currently attached file. Price and publish state are verified; file CONTENT is not."
+  },
+
+  "PAYOUT_READINESS_AMBIGUITY": {
+    "payout_records": 0,
+    "endpoints_probed": {"payout_settings": 404, "account": 404, "balance": 404, "settings": 404, "user": 200},
+    "explicit_distinction": "payouts = 0 is AMBIGUOUS. It is equally consistent with (a) a payout method configured and nothing earned yet, and (b) no payout method configured. No endpoint distinguishes the two.",
+    "verdict": "UNKNOWN - explicitly NOT BLOCKED and NOT FAIL",
+    "no_account_financial_data_touched": true,
+    "page_vs_payment_vs_order_vs_payout_kept_separate": true
+  },
+
+  "TESTS": {
+    "file": "tests/test_gumroad_storefront_and_payouts.py",
+    "coverage": [
+      "Gumroad exposes no visibility/featured/listed field",
+      "published=True is not the same as listed on the storefront",
+      "the flagship/owtmpe storefront finding is recorded",
+      "no probed endpoint distinguishes configured payout from absent payout",
+      "an empty payouts list is not evidence of failure",
+      "the UNKNOWN verdict is stated, never BLOCKED or FAIL",
+      "fgruzn and owtmpe identities are distinct and must not be swapped"
+    ],
+    "result": "87/87 pass across tests/test_gumroad_*.py",
+    "network_calls": "none - all pure logic"
+  },
+
+  "ORDERS_AND_REVENUE": {
+    "verified_at": "2026-10-13",
+    "source": "Gumroad API GET /v2/sales (authoritative)",
+    "orders": 0,
+    "refunds": 0,
+    "gross": "$0.00",
+    "payouts": 0,
+    "VERIFIED_REVENUE": "$0.00",
+    "TOTAL_NEW_SPEND": "$0.00",
+    "note": "no purchase was attempted and no order was created"
+  },
+
+  "STATUSES": {
+    "gumroad_authentication": "PASS",
+    "link_identity": "PASS - proven distinct, not assumed",
+    "storefront_discoverability": "BLOCKED - dashboard only, and inversely curated",
+    "delivery_file_content": "UNKNOWN - file changed on the platform, not re-verifiable from here",
+    "price_and_publish_state": "PASS - $29 and published verified",
+    "payment_completable_by_a_human": "UNKNOWN - browser required",
+    "payout_eligibility": "UNKNOWN - ambiguous, not a failure",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "The highest-value founder action has changed. It is no longer only 'try to pay' - a buyer cannot find the flagship at all, because Gumroad's own storefront does not list it while it does list the $150 zero-file product. Founder dashboard action: delete /l/owtmpe, add /l/fgruzn to the storefront, then attempt one real payment at /l/fgruzn/checkout. Autonomous work that remains safe without founder input: strengthen the 16 thin product descriptions via the flat-key PUT path, re-reading each to verify persistence."
+}
