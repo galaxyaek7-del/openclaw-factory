@@ -1,0 +1,78 @@
+{
+  "cycle": 135,
+  "date": "2026-10-13",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+  "head_verified_before_any_build": "45322c6",
+
+  "0_PREMISE_CORRECTION_THE_DIRECTIVE_MIXED_TWO_PRODUCTS": {
+    "directive_said": "the EU AI Act Compliance Toolkit at $79, link https://aekraft.gumroad.com/l/bfhpzl",
+    "what_bfhpzl_actually_is": {"name": "Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)", "product_id": "LzOV85deBGdLgNZmvpvYGw==", "price": "$79"},
+    "what_the_eu_ai_act_toolkit_actually_is": {"name": "EU AI Act Compliance Toolkit - Practical Templates & Implementation Guide for SMEs", "product_id": "pzTmMb4v8cih3nbWTj5TeA==", "price": "$155", "slug": "iaiyt"},
+    "finding": "they are two different products at two different prices. /l/bfhpzl is the Etsy bundle at $79. No product is an EU AI Act toolkit priced at $79.",
+    "both_were_verified_this_cycle": "rather than pick one silently, both were checked end to end. Both are published, InStock and purchasable.",
+    "identity_discipline": "both ids above are PRODUCT ids read from /products/{id}, not a seller account id and not a sub-account id. The account/sub-account confusion the directive warned about did not occur.",
+    "action_taken_on_both": "bfhpzl was improved last cycle; iaiyt was improved this cycle. Both are reported separately below."
+  },
+
+  "1_PRODUCT_AND_PAYMENT_VERIFIED_NOT_REBUILT": {
+    "bfhpzl_etsy_79": {"name": "Etsy Suspension: Triage + Appeal Bundle", "price_cents": 7900, "published": true, "file_bytes": 173373, "is_published_in_checkout_payload": true, "purchases_disabled": false, "availability": "https://schema.org/InStock", "installments": true, "refund_policy": "30-day money back guarantee", "sales": 0},
+    "iaiyt_eu_155": {"name": "EU AI Act Compliance Toolkit", "price_cents": 15500, "published": true, "file_bytes": 106314, "is_published_in_checkout_payload": true, "purchases_disabled": false, "installments": true, "sales": 0},
+    "checkout_opened_without_purchasing": "both /checkout routes returned HTTP 200. No order was created, no payment was attempted, no fake order exists.",
+    "STATUS": "PASS - no product-side technical blocker exists on either product.",
+    "payout_settings_checked_separately": {"status": "UNKNOWN", "reason": "no endpoint exists; the dashboard needs a login", "explicitly_not_blamed": "there are zero orders, so payout configuration has never been exercised in either direction. No direct evidence links it to the absence of sales. Per instruction it is not treated as the cause."},
+    "manual_step_named": "one logged-in visit to https://gumroad.com/settings/payouts to confirm a payout method is on file and the account is in good standing"
+  },
+
+  "2_THE_C133_CONCLUSION_RE_TESTED_AND_STRENGTHENED": {
+    "previous_claim": "covers, rich_content and sections are not writable through the Gumroad API",
+    "why_re_tested": "iaiyt turns out to have 3 covers, a rich_content body and a preview_url on the same account, which contradicted the idea that the platform will not let us have them.",
+    "new_evidence": {
+      "iaiyt_covers_live_at": "https://public-files.gumroad.com/... - i.e. uploaded through Gumroad's own file host, not referenced by URL",
+      "iaiyt_rich_content_shape": "a ProseMirror doc: {type: doc, content: [{type: fileEmbed}, {type: paragraph}]}, wrapped in an object carrying server-issued base64 id and page_id",
+      "rich_content_shapes_attempted_total": 9,
+      "rich_content_result": "every shape rejected with the same blanket message 'rich_content must be an array of content page objects.' The message does not vary with shape, so it is a gate rather than a validation error.",
+      "cover_retest_with_a_REAL_image": "cycle 133 tested covers with customer_site/assets/probe.png, which does not exist. Retested with storefront-share.png, verified HTTP 200 image/png 50,006 bytes. Three shapes: covers=[{url}], cover_url, covers=[{url,alt_text}]. All returned success:true and stored 0.",
+      "preview_retest": "preview_url write with the same real image left it ABSENT",
+      "hypothesis_i_raised_and_WAS_WRONG": "I proposed that a fake image URL explained the cycle-133 silent no-op. It does not. A real fetchable image behaves identically. The no-op is a platform gate, not a bad URL."
+    },
+    "conclusion_now_far_stronger": "covers, preview_url and rich_content are dashboard-only on this account. iaiyt has them because a human set them in a browser. No bypass was attempted and none will be."
+  },
+
+  "3_COMMERCIAL_WORK_DONE_THIS_CYCLE_THE_NAMED_PRODUCT": {
+    "stopped_fixing_checkout_first": "the directive said to stop repairing the purchase page once it is sound. It is sound. No further checkout work was done.",
+    "weakest_link_found_by_measurement": "iaiyt sat in category 'other' - the same discovery dead end bfhpzl was in yesterday - and its 3,007-char description had no call to action and no no-guarantee statement.",
+    "IAIYT_CATEGORY": {"before": "other / Other", "after": "business-and-money/entrepreneurship/resources / Resources", "verified_by_reread": true},
+    "IAIYT_DESCRIPTION": {"before_chars": 3007, "after_chars": 4085, "added": ["a WHAT THIS IS NOT block: not legal advice, not a compliance certificate, not a substitute for the official AI Act text, templates must be adapted", "a STRAIGHT WITH YOU block: sold 0, no reviews, buy on the contents, tell us if it is not useful", "a CTA to the Galaxy Forge catalogue", "a free-copy email address"], "verified_on_public_page": ["WHAT THIS IS NOT", "STRAIGHT WITH YOU", "products.html", "galaxyaek7@gmail.com"], "claims_invented": 0, "note": "every added statement is a limitation or a disclosure. No new capability, outcome or saving was claimed."},
+    "price_changed": false,
+    "price_reasoning": "unchanged at $155. The founder asked for a documented reason before any change. I have none, and the one piece of evidence that exists cuts against a change: see section 4.",
+    "no_duplicate_product_created": true,
+    "links_not_reposted_at_random": "no articles were published this cycle. The 294 Telegraph views were explicitly not counted as confirmed Gumroad visits."
+  },
+
+  "4_THE_DATA_POINT_THAT_CUTS_AGAINST_THE_EASY_STORY": {
+    "observation": "iaiyt is our most complete sales surface in the entire catalogue - 3 covers, a rich_content body, a preview, a 3,007-char description, 19 tags - and it has sold 0.",
+    "DERIVED": "presentation completeness has not produced a single sale for this catalogue. The bundle that has nothing but a description, bfhpzl, also has 0.",
+    "implication": "this weakens the hypothesis that a missing cover is THE blocker. A cover may still help, but it is no longer defensible as the primary fix, and I am not going to keep asserting it as one.",
+    "what_the_evidence_actually_supports": {"strongest_supported": "no qualified visitor has ever demonstrably reached a buy page. 294 measured article views have produced 0 sales and Gumroad exposes no traffic data at all, so we cannot distinguish nobody-came from came-and-declined.", "still_true": "a blank thumbnail is a real click blocker and worth fixing - it is cheap and it is in the way", "NOT_supported": "that adding a cover will produce the first sale"}
+  },
+
+  "5_FINAL_STATUS_TABLE": {
+    "product_and_publication": {"status": "PASS", "evidence": "bfhpzl $79 published 173,373 B; iaiyt $155 published 106,314 B; both is_published true and InStock in the payload the buyer loads"},
+    "checkout_page": {"status": "PASS", "evidence": "both /checkout HTTP 200, pk_live_ key, purchases_disabled absent on both"},
+    "payout_settings": {"status": "UNKNOWN", "evidence": "no endpoint; dashboard 404 unauthenticated; one manual founder step named"},
+    "visits_and_source": {"status": "UNKNOWN for Gumroad, PASS for provenance", "evidence": "294 = Telegraph getPage.views over 26 articles, re-read live. Unique visitors UNKNOWN, clicks UNKNOWN. Gumroad exposes no traffic field."},
+    "orders_and_revenue": {"status": "PASS (verified zero)", "evidence": "/sales 0 records; bfhpzl sales_count 0 sales_usd_cents 0.0; iaiyt sales_count 0; finance_data 0; refunds 0"},
+    "real_blocker": {"status": "PROVEN, and it is not technical", "statement": "no technical blocker exists on either product. The blocker is that no qualified visitor has been shown to reach a buy page, and the dashboard-only fields that would make a cold buy more likely cannot be set from here."},
+    "fix_executed": {"status": "DONE", "detail": "iaiyt moved out of category=other and gained the missing CTA and honesty block; bfhpzl gained its category and rewrite last cycle. Both verified by re-read and on the public page."},
+    "VERIFIED_REVENUE": "$0.00",
+    "TOTAL_NEW_SPEND": "$0.00",
+    "first_sale": "NOT YET"
+  },
+
+  "6_NEXT_STEP": {
+    "single_manual_step_that_unblocks_the_most": "one logged-in Gumroad session: (1) confirm a payout method on /settings/payouts, (2) attach a cover image to bfhpzl and a body to it, since those fields are proven dashboard-only.",
+    "the_only_thing_that_can_produce_a_sale": "one person completing one real checkout. Everything else is preparation for it.",
+    "why_nothing_further_autonomous_is_proposed": "both products are measurably buyable, the remaining sales-surface fields require a login, and section 4 shows that building more presentation has already failed to convert 0 to 1 across this catalogue."
+  }
+}
