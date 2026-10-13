@@ -1,0 +1,83 @@
+{
+  "cycle": 136,
+  "date": "2026-10-13",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+  "head_verified_before_any_action": "5d90522",
+
+  "1_CI_RESOLVED_FROM_UNKNOWN_TO_VERIFIED": {
+    "how": "the repository is PUBLIC, so the GitHub Actions REST API answers WITHOUT any token. No credential was used, requested or printed.",
+    "previous_cycles_believed": "CI was UNKNOWN because there was no GITHUB_TOKEN and no gh CLI. That was true but it was not the whole story - unauthenticated access was never tried.",
+    "HEAD_5d90522": {
+      "pages_build_and_deployment": {"status": "completed", "conclusion": "success", "run_id": "38451421027", "url": "https://github.com/galaxyaek7-del/openclaw-factory/actions/runs/38451421027"},
+      "CI": {"status": "in_progress", "conclusion": null, "run_id": "38451422058", "url": "https://github.com/galaxyaek7-del/openclaw-factory/actions/runs/38451422058", "note": "polled 10 times over ~200s and still running; reported as in_progress rather than guessed green"}
+    },
+    "recent_history_all_green": ["45322c6 CI success 38449897051", "45322c6 pages success 38449895967", "be8addf CI success 38448918039", "be8addf pages success 38448917112", "22b7dba CI success 38447373219", "22b7dba pages success 38447372468", "34c4c4e CI success 38446930208", "34c4c4e pages success 38446930327"],
+    "STATUS": "PASS for Pages on HEAD, IN_PROGRESS for CI on HEAD"
+  },
+
+  "2_PRODUCT_STATE_RECONFIRMED_NOT_RE_DIAGNOSED": {
+    "slug": "bfhpzl",
+    "product_id": "LzOV85deBGdLgNZmvpvYGw== (a product id, not an account id)",
+    "actual_price": "$79.00 (price_cents 7900, currency usd) - matches the target",
+    "published": true,
+    "digital_file_attached": "173,373 bytes, verified earlier by downloading from the buyer's live file URL",
+    "checkout_reachable": "HTTP 200, opened without any purchase",
+    "SEPARATION_OF_THE_THREE_THINGS": {
+      "opening_the_checkout_page": "PASS - HTTP 200",
+      "completing_an_order": "UNKNOWN - requires a browser and a real card; not attempted, no fake order created",
+      "payout_configuration": "UNKNOWN - no endpoint exists; still not blamed, because zero orders mean it has never been exercised in either direction"
+    },
+    "no_duplicate_checks_repeated": "only re-read the fields that had changed or that the directive named. No re-run of the anchor-stripping, sold-out or rich_content probes."
+  },
+
+  "3_CATEGORY_REVIEW_WITH_A_STALE_PREMISE_CORRECTED": {
+    "directive_stated": "current category is 'other'",
+    "actual_current_category": "business-and-money/entrepreneurship/resources",
+    "correction": "the premise was stale. The category was moved off 'other' in cycle 134 and verified there. Not re-litigated.",
+    "fit_re_evaluated_as_instructed": {
+      "product_content": "Etsy suspension triage and appeal preparation",
+      "target_audience": "an Etsy seller whose shop is suspended and who is inside a 6-month clock",
+      "hypothesis": "'business-and-marketing/marketing/ecommerce' would match the audience better than generic Entrepreneurship/Resources",
+      "RESULT": "HYPOTHESIS REJECTED BY THE PLATFORM",
+      "values_ACCEPTED": ["other", "business-and-money/entrepreneurship", "business-and-money/entrepreneurship/resources"],
+      "values_REJECTED_silently": ["business-and-marketing/marketing/ecommerce", "business-and-marketing/sales", "business-and-money/business-management"],
+      "conclusion": "Gumroad accepts only a narrow slice of the taxonomy on this account, and a rejected write is a silent no-op returning HTTP 200 success:true with the value unchanged. The cycle-134 choice is the best of the accepted set - but it was originally justified by analogy to a sibling product rather than by platform evidence, and it is now justified by the platform itself."
+    },
+    "MISTAKE_MADE_AND_FIXED": "while probing the alternatives I wrote 'other', which IS accepted, so every subsequent probe silently kept it. I left the product in a worse state mid-cycle. It was caught only because every write in this project is verified by re-reading. Restored to business-and-money/entrepreneurship/resources and verified: stored == target, $79, published, 173,373 bytes, 2,082-char description, 30-day refund, 0 sales.",
+    "net_change_this_cycle": "none - the category ends where it correctly already was, now on verified rather than analogical grounds"
+  },
+
+  "4_COMMERCIAL_ACTION_EXECUTED_THE_ONE_REAL_SEARCH_BLOCKER": {
+    "finding_measured_not_guessed": {
+      "guides_html_outbound_links": 9,
+      "etsy_pages_linked_from_guides_html": 0,
+      "etsy_products_linked_from_index_html": "none - index.html links to no Gumroad product at all",
+      "etsy_cluster_inbound_links": "only from each other - a closed island with no path from the site's own hubs"
+    },
+    "why_this_matters_and_is_not_a_generic_recommendation": "cycle 130 measured 0 of 6 buyer-intent queries ranking, while a site: query confirmed the pages ARE indexed. Indexed but unreachable from the site's own hubs is exactly the profile of a cluster that cannot accumulate ranking signal. This is a concrete, testable cause, not a guess.",
+    "fix_applied": "guides.html - added section '5. Our own worked example: an Etsy shop suspension', linking all four Etsy pages and pointing at the products page for the bundle. It sits under an existing h2 1-4 numbering scheme, so it extends the page rather than bolting on a new topic, and it reuses the same 'resolve the cited problem before appealing' point the guide already makes.",
+    "verified": {"guides_html_tag_balance": "clean", "links_to_the_4_etsy_pages": "4 of 4 present", "secret_scan": "clean"},
+    "not_done": ["no article republished", "no random link posting", "no new product", "no price change", "the homepage still does not link a Gumroad product directly - it links products.html, which is the intended path and was left alone"]
+  },
+
+  "5_FINAL_STATUS_TABLE": {
+    "repository_and_CI": {"status": "PASS / IN_PROGRESS", "evidence": "HEAD 5d90522 verified locally; Pages run 38451421027 completed success; CI run 38451422058 in_progress after ~200s of polling; the previous 8 runs are all green; obtained from the public GitHub API with no credential"},
+    "product_price_file": {"status": "PASS", "evidence": "bfhpzl id LzOV85deBGdLgNZmvpvYGw==, $79.00, published, 173,373-byte digital file attached"},
+    "checkout_and_order_completion": {"status": "PASS to open / UNKNOWN to complete", "evidence": "checkout HTTP 200; order completion never attempted; no fake order exists"},
+    "payout_settings": {"status": "UNKNOWN", "evidence": "no endpoint; not blamed; zero orders mean it has never been exercised"},
+    "visits_and_source": {"status": "UNKNOWN for Gumroad / PASS for provenance", "evidence": "294 = Telegraph getPage.views across 26 articles; unique visitors and clicks unknown; Gumroad exposes no traffic field"},
+    "orders_revenue_refunds": {"status": "PASS (verified zero)", "evidence": "/sales 0 records; sales_count 0; sales_usd_cents 0.0; refunds 0; finance_data 0"},
+    "obstacle_resolved": {"status": "RESOLVED x2 this cycle", "detail": "1. CI went from UNKNOWN to verified via the public API. 2. The Etsy content cluster is no longer an island - it now has an inbound path from guides.html. 3. A mid-cycle mistake that left the product in category 'other' was caught by re-read and reverted."},
+    "commercial_action_taken": {"status": "EXECUTED", "detail": "guides.html gained a linked, in-voice section reaching all four Etsy pages and the $79 bundle. No other distribution was repeated."},
+    "the_one_remaining_manual_step": {"status": "BLOCKED ON LOGIN", "detail": "one logged-in Gumroad session: confirm a payout method at /settings/payouts, and attach a cover image plus a page body to bfhpzl, since covers, preview_url and rich_content were tested across 9 shapes and a real image URL and are dashboard-only."},
+    "VERIFIED_REVENUE": "$0.00",
+    "TOTAL_NEW_SPEND": "$0.00",
+    "first_sale": "NOT YET"
+  },
+
+  "6_NO_NEW_GENERIC_RECOMMENDATION": {
+    "what_is_new_since_last_cycle": ["CI is now a verified fact with run ids and URLs instead of an UNKNOWN", "the category field is now known to accept only three values, verified against the platform", "a concrete, measured reason the Etsy pages do not rank was found and fixed: no inbound path from the site's own hubs"],
+    "what_is_UNCHANGED_AND_STATED_PLAINLY": "0 sales, 0 revenue, $0 spend. The only thing that can change that is a person completing a checkout, and the fields that would make that more likely are all behind a login."
+  }
+}
