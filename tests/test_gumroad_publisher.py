@@ -151,6 +151,63 @@ class TestGetProduct(unittest.TestCase):
         self.assertEqual(product["short_url"], "https://aekraft.gumroad.com/l/iaiyt")
 
 
+class TestListProductsPagination(unittest.TestCase):
+    """Regression guard for the real bug found 2026-10-13: GET /v2/products
+    is paginated by Gumroad at 10 items/page via next_page_key, and
+    list_products() used to return only that first page, silently (live-
+    verified against the real account: 10 reported vs 77 real, across 8
+    pages). No real HTTP call is ever made here -- requests.request is
+    patched in every test, same convention as every other test in this
+    file."""
+
+    def test_single_page_with_no_next_key_returns_just_that_page(self):
+        only_page = _fake_response(status_code=200, json_data={
+            "success": True, "products": [{"id": "p1"}, {"id": "p2"}],
+        })
+        with patch.object(gp.requests, "request", return_value=only_page) as mock_req:
+            products = gp.list_products("fake-token")
+        self.assertEqual(products, [{"id": "p1"}, {"id": "p2"}])
+        self.assertEqual(mock_req.call_count, 1)
+
+    def test_follows_pagination_across_multiple_pages_and_accumulates_all(self):
+        page1 = _fake_response(status_code=200, json_data={
+            "success": True, "products": [{"id": "p1"}, {"id": "p2"}],
+            "next_page_key": "CURSOR-A",
+        })
+        page2 = _fake_response(status_code=200, json_data={
+            "success": True, "products": [{"id": "p3"}],
+            "next_page_key": "CURSOR-B",
+        })
+        page3 = _fake_response(status_code=200, json_data={
+            "success": True, "products": [{"id": "p4"}],
+            # no next_page_key -- this is the last page
+        })
+        with patch.object(gp.requests, "request", side_effect=[page1, page2, page3]) as mock_req:
+            products = gp.list_products("fake-token")
+        self.assertEqual(products, [{"id": "p1"}, {"id": "p2"}, {"id": "p3"}, {"id": "p4"}])
+        self.assertEqual(mock_req.call_count, 3)
+        # The cursor from each page must be threaded into the NEXT request's
+        # own params, exactly as Gumroad's own next_page_url implies.
+        _, kwargs_call2 = mock_req.call_args_list[1]
+        self.assertEqual(kwargs_call2["params"].get("page_key"), "CURSOR-A")
+        _, kwargs_call3 = mock_req.call_args_list[2]
+        self.assertEqual(kwargs_call3["params"].get("page_key"), "CURSOR-B")
+        # The very first request must NOT carry a page_key at all.
+        _, kwargs_call1 = mock_req.call_args_list[0]
+        self.assertNotIn("page_key", kwargs_call1["params"])
+
+    def test_safety_cap_raises_rather_than_looping_forever(self):
+        never_ending = _fake_response(status_code=200, json_data={
+            "success": True, "products": [{"id": "x"}],
+            "next_page_key": "ALWAYS-ANOTHER-PAGE",
+        })
+        with patch.object(gp, "_MAX_PAGES", 3), \
+             patch.object(gp.requests, "request", return_value=never_ending) as mock_req:
+            with self.assertRaisesRegex(RuntimeError, "stopped after 3 pages"):
+                gp.list_products("fake-token")
+        self.assertEqual(mock_req.call_count, 3)
+
+
 class TestNonInteractiveAuth(unittest.TestCase):
     """Regression guard (C99).
 

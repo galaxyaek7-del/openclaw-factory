@@ -23,6 +23,9 @@ import requests
 FACTORY_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_ENV_PATH = FACTORY_DIR / ".env"
 GUMROAD_API_BASE = "https://api.gumroad.com/v2"
+# list_products()'s pagination safety backstop -- module level (not a local)
+# so a test can patch it to a small number instead of looping 50 real times.
+_MAX_PAGES = 50
 
 # Retry only idempotent calls (GET/PUT) on transient failures — a dropped
 # connection or a 5xx is safe to retry because repeating the same read or
@@ -103,15 +106,55 @@ def load_token(env_path=None):
 
 
 def list_products(token):
-    try:
-        r = _request_with_retry("GET", f"{GUMROAD_API_BASE}/products", params={"access_token": token}, timeout=30)
-        r.raise_for_status()
-    except requests.RequestException as e:
-        raise RuntimeError(f"Gumroad list_products request failed: {_safe_err(e)}")
-    data = r.json()
-    if not data.get("success", False):
-        raise RuntimeError(f"Gumroad API returned success=false: {_gumroad_error(data)}")
-    return data.get("products", [])
+    """Returns the REAL, COMPLETE product catalog.
+
+    REAL BUG, found and fixed 2026-10-13: GET /v2/products is paginated by
+    Gumroad at 10 items per page (next_page_key/next_page_url in the raw
+    response) and this function returned only that first page, silently.
+    Live-verified against the real account: list_products() reported 10
+    products while the account genuinely holds 77 across 8 pages. Every
+    caller of this function across this factory (channels/gumroad_arm.py's
+    verify_product(), autonomous_commerce_ops.py, commercial_activation.py,
+    commercial_operations.py, scripts/p1_autonomous_loop.py and others) has
+    therefore been auditing/verifying against at most the 10 most-recently-
+    created products and silently missing the rest for as long as this
+    function has existed -- never a fabricated result, but an incomplete
+    one presented as complete.
+
+    Fix: follow next_page_key until the API stops supplying one, exactly
+    the mechanism Gumroad's own response already exposes. A hard page cap
+    (50 pages = 500 products) guards against an infinite loop if the API
+    ever returns a key that never terminates; this account's real 77
+    products fit in 8 pages today, so the cap is a safety backstop, not an
+    expected limit.
+    """
+    all_products = []
+    page_key = None
+    pages_fetched = 0
+    while True:
+        params = {"access_token": token}
+        if page_key:
+            params["page_key"] = page_key
+        try:
+            r = _request_with_retry("GET", f"{GUMROAD_API_BASE}/products", params=params, timeout=30)
+            r.raise_for_status()
+        except requests.RequestException as e:
+            raise RuntimeError(f"Gumroad list_products request failed: {_safe_err(e)}")
+        data = r.json()
+        if not data.get("success", False):
+            raise RuntimeError(f"Gumroad API returned success=false: {_gumroad_error(data)}")
+        all_products.extend(data.get("products", []))
+        pages_fetched += 1
+        page_key = data.get("next_page_key")
+        if not page_key:
+            break
+        if pages_fetched >= _MAX_PAGES:
+            raise RuntimeError(
+                f"Gumroad list_products: stopped after {_MAX_PAGES} pages "
+                f"({len(all_products)} products) with next_page_key still present -- "
+                "refusing to loop forever rather than silently truncating again."
+            )
+    return all_products
 
 
 def _gumroad_error(data):
