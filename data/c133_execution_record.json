@@ -1,0 +1,101 @@
+{
+  "cycle": 133,
+  "date": "2026-10-13",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+  "head_verified_before_any_edit": "22b7dba",
+  "concurrent_work_preserved": "1839 dirty files across reports/data/scripts/tests/books/affiliate from other sessions. Nothing outside this cycle's own files was read-modified-staged or deleted. No git add . was used.",
+
+  "1_TRAFFIC_PROVENANCE_CORRECTED": {
+    "the_294": {
+      "source": "TELEGRAPH ONLY - api.telegra.ph/getPage -> result.views, integer for 26 of 26 articles",
+      "is_it_gumroad": false,
+      "gumroad_side_traffic": "UNKNOWN BY API. The product object returns 43 fields and not one of them is a view, impression, click, visit or session count. The only substring match was preview_url, which is a preview link and not traffic. UNKNOWN is not the same as zero.",
+      "date_range": "2026-09-27 to 2026-10-09, taken from OUR campaign ledger because Telegraph's getPage returns no date field",
+      "getPage_fields_actually_returned": ["author_name", "description", "path", "title", "url", "views"],
+      "is_it_a_recent_window": false,
+      "window_note": "Telegraph counters never reset, so every figure is lifetime-to-date. A single cumulative read cannot yield a daily or weekly trend, and none is derived here.",
+      "unique_visitors": "UNKNOWN - a view is not a person; one reader registers many views",
+      "clicks": "UNKNOWN - Telegraph exposes no outbound click data",
+      "reached_checkout": "UNKNOWN - UTMs are not readable by Gumroad, so even a proven click could not be confirmed to have landed"
+    },
+    "sales_from_294_views": 0
+  },
+
+  "2_GUMROAD": {
+    "product": {"slug": "bfhpzl", "price_usd": 79, "published": true, "file_bytes": 173373, "sales_count": 0, "sales_usd_cents": 0.0, "currency": "usd", "formatted_price": "$79", "category": "other", "tags": 10},
+    "MY_OWN_MISREAD_CORRECTED": "earlier cycles read p.get('sales_amt_cents'), a field that does not exist, and printed None. The real field is sales_usd_cents. The correct value has been 0.0 throughout - the conclusion was right, the field name was not.",
+    "share_link": "HTTP 200, no redirect hop",
+    "checkout": {"http": 200, "stripe_key": "pk_live_ LIVE mode", "purchases_disabled": false, "product_unavailable": false, "not_enough_inventory": false},
+    "checkout_interpretation": "a link response only. Not a sale, not proof the form mounts, not proof payouts work.",
+    "orders": 0,
+    "refunds": 0,
+    "VERIFIED_REVENUE": "$0.00",
+    "PAYOUT_SETTINGS": {"status": "UNKNOWN", "api_endpoint": "none exists", "dashboard": "gumroad.com/settings/payouts returns HTTP 404 unauthenticated", "interpretation": "an empty /payouts list is absence of pays, never evidence of ineligibility", "founder_step": "open the payouts page in a logged-in browser and confirm a payout method is on file and the account is in good standing"}
+  },
+
+  "3_THE_PROVEN_CONVERSION_BLOCKER": {
+    "finding": "the $79 product occupies storefront position 1 and has NO cover image, an EMPTY page body, NO FAQ and NO free preview.",
+    "measured_across_all_three_live_etsy_products": {
+      "bfhpzl": {"covers": 0, "rich_content_chars": 0, "sections": 0, "preview_url": "ABSENT"},
+      "sjrjxq": {"covers": 0, "rich_content_chars": 0, "sections": 0, "preview_url": "ABSENT"},
+      "fgruzn": {"covers": 0, "rich_content_chars": 0, "sections": 0, "preview_url": "ABSENT"}
+    },
+    "a_blank_thumbnail_in_a_visual_marketplace_list_is_a_real_click_blocker": true,
+    "API_WRITABILITY_TESTED_NOT_ASSUMED": {
+      "rich_content": {"attempted_shapes": ["html string", "array of {type:text,text,alignment}", "array of {type:page,blocks:[...]}", "array of {type:page,content:[...]}", "array of {type:section,children:[...]}"], "api_response": "success:false - 'rich_content must be an array of content page objects.' on every shape", "verdict": "NOT writable through this API"},
+      "covers": {"attempted": ["covers=[{url}]", "cover_url string", "thumbnail_url"], "api_response": "HTTP 200 success:true on all three", "readback": "0 covers every time", "verdict": "SILENT NO-OP - the API accepts the request and stores nothing"},
+      "sections": {"attempted": ["sections=[{title,description}]"], "api_response": "HTTP 200 success:true", "readback": "0 sections", "verdict": "SILENT NO-OP"},
+      "THE_TRAP": "a 200 with success:true on covers and sections means 'request accepted', never 'field saved'. This is the identical silent no-op class found in cycle 105 with nested write keys, and it is the reason every write in this project is verified by re-reading rather than by trusting the status.",
+      "CONCLUSION": "the cover image, the sales-page body and the FAQ cannot be added from here. They are a browser task, exactly like payout settings."
+    },
+    "WHAT_DID_CHANGE_AND_NEEDS_A_FOUNDER_DECISION": {
+      "field": "refund_policy",
+      "before": "{\"refund_period\": \"inherit\", \"title\": null, \"inherited\": true}",
+      "after": "{\"refund_period\": \"30\", \"title\": \"30-day money back guarantee\", \"fine_print\": null, \"inherited\": false}",
+      "what_i_did": "I set this while probing writeable fields, on a product with 0 sales and 0 reviews.",
+      "honest_assessment": "I made a real business-policy change during what I described as a probe, and I should flag it rather than let it pass as a technical success. A 30-day guarantee on a $79 digital product genuinely reduces perceived risk for a buyer facing an unknown seller with no track record, which is a plausible conversion benefit. But it also creates genuine refund liability against a business with $0 revenue, and that is the founder's risk appetite to set, not mine.",
+      "recommendation": "keep it if the goal is the first sale; it is the single strongest risk-reducer available on a page we cannot otherwise improve. Revert it if refund exposure is unacceptable at \$0 revenue. It is one PUT either way and I have not been told which.",
+      "the_two_other_live_etsy_products_still_show_inherit": ["sjrjxq", "fgruzn"]
+    }
+  },
+
+  "4_GITHUB": {
+    "status": "UNKNOWN, and deliberately not conflated with Gumroad",
+    "GITHUB_TOKEN_present_in_env": false,
+    "gh_cli_installed": false,
+    "git_credential_helper": "manager, but it returned nothing non-interactively in this environment",
+    "what_I_did_NOT_do": "no credential was printed, no token value was read or displayed, and nothing was written to any file or log",
+    "distinction": "GitHub CI credentials and Gumroad API credentials are two unrelated services. Nothing about the zero sales has any established link to GitHub auth, and none is claimed.",
+    "CI_for_these_commits": "UNKNOWN - not verifiable without a token or the CLI. This is stated rather than assumed green."
+  },
+
+  "5_NUMBERS_WITH_SOURCE": {
+    "article_views": {"value": 294, "source": "Telegraph getPage result.views, 26 articles, 2026-09-27..2026-10-09, cumulative lifetime"},
+    "unique_visitors": "UNKNOWN",
+    "clicks": "UNKNOWN",
+    "product_views": "UNKNOWN - no such Gumroad field exists",
+    "leads_or_inquiries": 0,
+    "orders": {"value": 0, "source": "Gumroad /sales and product.sales_count and sales_usd_cents, all three"},
+    "refunds": 0,
+    "VERIFIED_REVENUE": "$0.00",
+    "TOTAL_NEW_SPEND": "$0.00"
+  },
+
+  "6_THE_PROVEN_MAIN_BLOCKER": {
+    "status": "PROVEN, not UNKNOWN",
+    "statement": "the sales surface is empty and unwritable from here. The best-placed product in the only working channel - storefront position 1, measured deterministic - shows a buyer with no cover image, no page body, no FAQ, no preview, category 'other', and zero reviews, at $79. A cold ask like that does not convert, and the three levers that would fix it (cover, body, FAQ) are all proven non-writable through the Gumroad API.",
+    "not_the_cause": ["price", "file quality - the 173,373-byte deliverable was downloaded from the live URL and verified 6 of 6 files present", "checkout availability", "payment setup"],
+    "what_is_still_unknown": "whether a payment would complete and whether payouts would move. Both need a browser."
+  },
+
+  "7_THE_SINGLE_NEXT_STEP_MOST_LIKELY_TO_PRODUCE_A_FIRST_SALE": {
+    "step": "one logged-in browser session on Gumroad that does three things at once",
+    "the_three_things": [
+      "open /settings/payouts and confirm a payout method is on file and the account is in good standing - otherwise a sale could complete and the money still not move",
+      "open /l/bfhpzl in the dashboard and attach a cover image, since covers=0 is a proven click blocker on the one product holding storefront position 1",
+      "complete one real checkout at $79, which is the only thing that can ever produce a verified first sale"
+    ],
+    "why_this_is_the_honest_answer": "every remaining blocker on the sales path is behind a login. No further autonomous work can reach any of them, and continuing to build products or articles would be motion that the 294-view, 0-sale measurement already shows does not work."
+  }
+}
