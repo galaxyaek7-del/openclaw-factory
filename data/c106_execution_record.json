@@ -1,0 +1,105 @@
+{
+  "cycle": 106,
+  "label_in_request": "CYCLE 99",
+  "label_note": "the request is labelled Cycle 99 but the repository is at C105. Work was performed against verified state (806ea13 -> 2cb9be7), not against the label.",
+  "date": "2026-10-12",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "BUILD_DURATION_3H23M_INVESTIGATED": {
+    "claim": "3 hours 23 minutes",
+    "finding": "NOT CI. Every CI run takes ~11 minutes (longest observed 11.3 min across the last 25 runs). 203 minutes is roughly 18 CI runs, and the cycle only produced 1-2.",
+    "verdict": "the duration is agent/session wall-clock, not machine time. CI is not the waste.",
+    "action_taken": "none needed - but the investigation immediately surfaced a real defect (see below), which is the actual cost of those hours."
+  },
+
+  "MAJOR_DEFECT_FOUND_AND_FIXED_CI_RED_FOR_11_COMMITS": {
+    "what": "The 'CI' workflow has been FAILING on every one of the last 11 pushes (579f9c4 through 806ea13) on exactly one step: 'Every JS test file runs in exactly one place'.",
+    "root_cause": "mine. In cycle 89 (commit 579f9c4) I added tests/test_gf_pageview.js. It passes locally but I never registered it in .github/workflows/ci.yml, so CI never ran it. The guard correctly refuses to let a tracked test sit outside every batch.",
+    "guard_output_before": "::error::never scheduled: test_gf_pageview.js  -> exit 1",
+    "fix": "scheduled tests/test_gf_pageview.js in the batch that already runs the other customer-site tests (test_check_jsonl_duplication, test_customer_auth, test_customer_front_door)",
+    "verification": "replayed the guard locally exactly as CI executes it: now prints 'every JS test file runs in exactly one place' and exits 0; the newly scheduled file runs green via scripts/run_js_group.js",
+    "is_this_the_only_cause": "YES - across all 11 red runs the ONLY failing step is this one. No other cause.",
+    "after_fix": {"CI": "38352601947 success, 33/33 jobs", "pages": "38352602052 success, 3/3 jobs"}
+  },
+
+  "MY_OWN_REPORTING_ERROR_DISCLOSED": {
+    "what": "Each push produces TWO workflows: 'pages build and deployment' and 'CI'. I had been verifying and reporting the PAGES workflow as if it were CI.",
+    "consequence": "Pages has been 20/20 green all along, so I reported '3/3 success' for 11 consecutive commits while the real CI workflow was red every time. The red was caused by my own cycle-89 omission.",
+    "correction": "CI status must be read from the workflow named 'CI'. Reported from now on as both workflows explicitly.",
+    "history": {"pages_workflow": "20 success / 0 failure", "ci_workflow_before_fix": "9 success / 11 failure", "ci_workflow_after_fix": "success on 2cb9be7"}
+  },
+
+  "PRODUCT_AUDIT_THREE_FLAGSHIPS": {
+    "method": "fetched each live product record and compared description, price and disclosure language against the real opened deliverable",
+    "fgruzn_Etsy_Suspension_Appeal_Kit": {
+      "price_usd": 29, "published": true, "files": 1, "file_bytes": 122465,
+      "description": "89 words / 731 chars",
+      "overpromise_flags": "NONE",
+      "discloses_not_legal_advice": true,
+      "price_claims_in_description": "none - consistent",
+      "defect_found": "too thin to sell a 19-page / 11-checklist product, and does not state exclusions"
+    },
+    "iaiyt_EU_AI_Act_Toolkit": {
+      "price_usd": 155, "published": true, "files": 2,
+      "file_bytes": [106314, 139401],
+      "description": "451 words / 3007 chars",
+      "overpromise_flags": "NONE (the $15 in the copy is 'not a $15,000 consulting retainer', a legitimate comparison, NOT a price mismatch)",
+      "claims_31_pages": "matches the real file exactly",
+      "verdict": "strongest of the three; no change needed"
+    },
+    "uldlwa_Legal_Case_Research_Automation": {
+      "price_usd": 29, "published": true, "files": 1, "file_bytes": 105317,
+      "description": "35 words / 329 chars",
+      "overpromise_flags": "NONE",
+      "defect_found": "the description never mentions legal case research at all - it reads 'A practical AI research system for solos', which does not match the product title, and it is far too thin to sell"
+    },
+    "conclusion": "all three are genuinely good products with honest copy and no overpromising. The gap is depth of the offer page, not product quality. No new product warranted."
+  },
+
+  "SECOND_DEFECT_FOUND_WRITE_PATH_IS_A_SILENT_NO_OP": {
+    "what": "Gumroad's API accepted updates to product description and name with HTTP 200 and success:true, and persisted NEITHER.",
+    "how_proven": "wrote a unique probe string to uldlwa's description, then to its name, re-read after 25s: probe absent from the API record, absent from the public page, name unchanged. Verified with both JSON-body and form-encoded requests.",
+    "why_it_matters": "a write path that reports success while doing nothing would silently defeat any 'we improved the product page' claim. It is the mirror image of the cycle-105 evidence-ledger defect: there a real signal was labelled as more than it was; here a real write is reported as succeeding when it did nothing.",
+    "damage_done": "NONE. The probe strings never persisted, so the live description and name of /l/uldlwa are unchanged and intact.",
+    "collateral_issue": "any earlier claim in this project that a product description was updated via the API should be treated as UNVERIFIED until checked on the live page. The cycle-87/101 note that the iaiyt source-wording claim was corrected may never have persisted either; the live iaiyt copy should be eyeballed by the founder.",
+    "status": "BLOCKED - product copy editing requires the Gumroad dashboard"
+  },
+
+  "COMMERCIAL_WORK_ATTEMPTED": {
+    "goal": "rewrite the two thin descriptions with verified-only claims (what is inside, what it is NOT, who it is for), no new assertions",
+    "drafted": "yes - grounded only in the opened deliverable and the live product record",
+    "outcome": "NOT APPLIED - the platform silently discards API writes",
+    "honest_status": "no product page was improved this cycle. The copy improvement is blocked on a dashboard action."
+  },
+
+  "PLATFORM_STATUS": {
+    "Gumroad storefront": "LIVE and purchasable. Storefront curation and product copy editing are dashboard-only; the API silently no-ops on writes. BLOCKED for founder.",
+    "Gumroad checkout": "LIVE. pk_live_ Stripe key present, purchase path enabled, no sold-out state.",
+    "Paddle": "key authenticates and expires 2026-10-16; no webhook secret; 0 subscriptions. Not a current sale path.",
+    "Telegraph": "LIVE, 64 articles, channel measured as growing. Editing older articles is blocked on an older token.",
+    "GitHub Pages": "LIVE, 20/20 deploys green.",
+    "Search Console": "still NOT connected - no Google credentials."
+  },
+
+  "FINANCIAL_TRUTH": {
+    "gumroad_sales_records": 0,
+    "refunded_sales": 0,
+    "payout_records": 0,
+    "finance_data_sales": 0,
+    "sources_agree": true,
+    "verified_revenue_usd": 0.0,
+    "new_spend_usd": 0.0,
+    "self_purchase_performed": false,
+    "simulated_orders_created": false
+  },
+
+  "NOT_DONE_AND_WHY": [
+    "product descriptions were NOT improved - the platform discards API writes (proven, not assumed)",
+    "no new article published - the Telegraph channel was already measured as growing in cycle 103 and republishing adds nothing today",
+    "no new product created - the three existing flagships are honest, complete and deliverable",
+    "no tests, files or reports added for their own sake; the only new artifact is this record plus the CI fix"
+  ],
+
+  "NEXT_ACTION": "Two founder dashboard actions, both small. (1) Paste the drafted descriptions into Gumroad for /l/fgruzn and /l/uldlwa - the API cannot do it. (2) Open /l/fgruzn/checkout in a browser and reach the payment step. Item 2 stays the highest commercial value: the payment path is live and enabled, so the only remaining unknown is whether a human can complete a purchase."
+}
