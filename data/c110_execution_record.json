@@ -1,0 +1,131 @@
+{
+  "cycle": 110,
+  "label_in_request": "CYCLE 102",
+  "label_note": "request labelled Cycle 102; repository was at C109 (39e10b2), confirmed as HEAD before any change.",
+  "date": "2026-10-12",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "BLOCKER_LEDGER_ranked_by_direct_effect_on_selling": [
+    {
+      "rank": "a",
+      "blocker": "product correctness and its attached file",
+      "platform": "Gumroad",
+      "status": "PASS",
+      "evidence": "fgruzn: published, $29, 1 file 122,465 bytes, buyer sees '120 KB / 19 pages', description 263 words, shipped live in cycle 108. iaiyt: $155, 2 files (106,314 + 139,401), byte-identical to cycle 103.",
+      "proven_cause": "none - no defect",
+      "commercial_impact": "none",
+      "safe_action_taken": "none required"
+    },
+    {
+      "rank": "b",
+      "blocker": "product page and Checkout availability",
+      "platform": "Gumroad",
+      "status": "PASS",
+      "evidence": "/l/fgruzn HTTP 200; /l/fgruzn/checkout HTTP 200; pk_live_ Stripe key present; price_cents=2900; purchase NOT disabled; no sold-out state (hide_sold_out_variants=false is a JS key, not a state)",
+      "proven_cause": "none",
+      "commercial_impact": "none",
+      "safe_action_taken": "none required"
+    },
+    {
+      "rank": "c",
+      "blocker": "the account can accept payment and receive money",
+      "platform": "Gumroad",
+      "status": "UNKNOWN",
+      "what_is_known": "the live processor is configured and purchases are enabled on the page; auth works for reads AND writes (cycle 108 proved writes persist)",
+      "what_is_missing": "no endpoint exposes seller payout eligibility; /payouts returns an empty list",
+      "NOT_treated_as": "not a failure, not BLOCKED - an empty list is absence of evidence, not evidence of ineligibility",
+      "automatable": false,
+      "founder_action": "open https://gumroad.com/settings/payouts and confirm a payout method is connected",
+      "commercial_impact": "HIGH - this is the only unknown on the purchase path"
+    },
+    {
+      "rank": "d",
+      "blocker": "a human can actually complete a payment",
+      "platform": "Gumroad",
+      "status": "UNKNOWN",
+      "what_is_known": "checkout HTML is a client-side app (forms=0 inputs=0 buttons=0), so a rendered payment form can only be seen in a browser",
+      "automatable": false,
+      "founder_action": "open https://aekraft.gumroad.com/l/fgruzn/checkout and complete a real payment attempt",
+      "commercial_impact": "HIGHEST - this is the only step that can produce revenue"
+    },
+    {
+      "rank": "e",
+      "blocker": "free distribution and reach",
+      "platform": "Telegraph",
+      "status": "PASS but weak",
+      "evidence": "64 articles, 449 cumulative page views since 2026-09-27, median 6 per article, 0 orders. The flagship's own article ranks 2nd of 64.",
+      "proven_cause": "not a fault - a scale limitation. Median 6 views/article cannot produce buyers at volume.",
+      "commercial_impact": "HIGH - traffic has never been shown to arrive at a product page",
+      "safe_action_taken": "see Gumroad discoverability work below"
+    },
+    {
+      "rank": "f",
+      "blocker": "Etsy channel",
+      "platform": "Etsy",
+      "status": "BLOCKED but IRRELEVANT to the current sale",
+      "evidence": "no ETSY_* credential exists in .env at all; the etsy arm is registered but cannot authenticate",
+      "proven_cause": "missing credentials - not a product fault, not a platform restriction",
+      "commercial_impact": "NONE for the flagship. The flagship sells on Gumroad; Etsy would publish other products on another platform.",
+      "decision": "ISOLATED - not on the path that sells /l/fgruzn. Do not reconnect.",
+      "founder_action_required": "none now"
+    },
+    {
+      "rank": "g",
+      "blocker": "X (Twitter) channel",
+      "platform": "X",
+      "status": "BLOCKED but IRRELEVANT to the current sale",
+      "evidence": "all four credential variables ARE present (X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET) but GET /2/users/me returns HTTP 401 Unauthorized",
+      "proven_cause": "authentication REJECTED - the credentials are present but no longer valid (revoked, expired, or the app lacks the right scopes). NOT missing credentials, NOT a network problem, NOT a rate limit.",
+      "corrected": "the earlier 'X: disconnected' framing was imprecise; the accurate statement is 'credentials present, authentication rejected'",
+      "commercial_impact": "NONE for the flagship - Gumroad is the only required channel",
+      "decision": "ISOLATED - do not reconnect at random",
+      "founder_action_required": "none now"
+    }
+  ],
+
+  "COMMERCIAL_WORK_EXECUTED_THIS_CYCLE": {
+    "action": "Gumroad marketplace discoverability",
+    "rationale": "Gumroad hosts its own search and browse. Every discovery surface that costs nothing and is fully under our control was exhausted; the marketplace the product already lives in was the one surface never optimised. This was a free, autonomous, reversible conversion lever.",
+    "premise_correction": "the premise that the products were untagged was wrong - both already carried tags and a category (business-and-money/entrepreneurship/resources). The real gap was tag BREADTH and intent-matching, not tag absence.",
+    "fgruzn": {"tags_before": 4, "tags_after": 9, "verified": true,
+               "added": ["etsy suspension", "etsy appeal", "etsy seller", "shop suspension", "small business", "appeal letter", "ecommerce"],
+               "note": "the four pre-existing tags were preserved and high-intent buyer-language terms were added"},
+    "uldlwa": {"tags_attempted": 10, "tags_read_back": 6, "verified": false,
+               "outcome": "NOT APPLIED - Gumroad silently kept the original 6 tags. Reported as a failure, not as a success.",
+               "possible_reason": "a per-product tag cap, or the array write being rejected for this product. Not proven; not retried without a new hypothesis."},
+    "verification_method": "re-read from the API after the write, which is authoritative. The public-page regex check returned NOT FOUND for both; that is a limitation of my regex, not evidence about the tags, and was not reported as a defect."
+  },
+
+  "WHAT_WAS_NOT_DONE_AND_WHY": [
+    "did not reconnect Etsy or X - neither is on the path that sells the flagship, and the brief explicitly says to isolate secondary platforms rather than reconnect everything at random",
+    "did not create a new product - cycle 108 research settled the niche; adding inventory does not produce revenue",
+    "did not publish a new article - the channel was measured in cycle 107 and republishing the same day adds nothing",
+    "did not retry the uldlwa tag write without a new hypothesis, per the no-repeated-attempt rule"
+  ],
+
+  "FINANCIAL_TRUTH": {
+    "gumroad_sales_records": 0,
+    "refunded_sales": 0,
+    "payout_records": 0,
+    "finance_data_sales": 0,
+    "verified_revenue_usd": 0.0,
+    "new_spend_usd": 0.0,
+    "self_purchase_performed": false,
+    "simulated_orders_created": false
+  },
+
+  "STATUSES": {
+    "product_and_file": "PASS",
+    "product_page_and_checkout": "PASS",
+    "account_payment_and_payouts": "UNKNOWN - founder dashboard",
+    "human_can_complete_payment": "UNKNOWN - founder browser",
+    "free_distribution": "PASS but too small to convert at volume",
+    "etsy": "BLOCKED - irrelevant to the flagship, isolated",
+    "x": "BLOCKED - credentials rejected, irrelevant to the flagship, isolated",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "Two founder actions, both specific. (1) Open https://aekraft.gumroad.com/l/fgruzn/checkout and complete a real payment - the single step that can produce revenue. (2) Open https://gumroad.com/settings/payouts and confirm a payout method is connected - the one unknown that would matter the moment a sale lands. Etsy and X require nothing right now and should stay isolated."
+}
