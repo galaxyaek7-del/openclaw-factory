@@ -1,0 +1,101 @@
+{
+  "cycle": 113,
+  "label_in_request": "CYCLE 105",
+  "label_note": "request labelled Cycle 105; repository was at C112 (6760db1), confirmed as HEAD before any change.",
+  "date": "2026-10-12",
+  "new_spend_usd": 0.0,
+  "verified_revenue_usd": 0.0,
+
+  "BROKEN_MARKETING_LINK_DIAGNOSED": {
+    "reported": "/L/WSHDUE reported 404",
+    "CONFIRMED_404": true,
+    "tested_with_redirects": "requests.get(..., allow_redirects=True): /l/WSHDUE -> 404 with ZERO redirect hops; /l/WSHDUE/checkout -> 404 with zero hops. No redirect, no retry-later behaviour: a genuinely dead permalink, not a transient error.",
+    "not_invented_a_replacement": "no alternative link was guessed. The replacement below was read from our own existing, already-correct surfaces.",
+    "WHERE_IT_EXISTS": {
+      "in_our_own_surfaces": "NONE. All 61 customer_site/*.html pages were scanned: zero contain WSHDUE. Our own nexus guide (guide-sales-tax-nexus-rolling-method.html) already points correctly at /l/uucxer.",
+      "in_the_repository": "only inside our own historical cycle reports (c99, c100, c104) as documentation of the defect, never as a live reference",
+      "in_the_wild": "exactly ONE place - the body of the third-party Telegraph article 'Multi-State Sales Tax Nexus: The Rolling-12-Month Method (2026-09-27)'"
+    },
+    "ADDITIONAL_FINDING_THAT_MAKES_IT_NON_ISSUE": "inside that article the URL is PLAIN TEXT, not an anchor. The live page has zero clickable gumroad anchors. A reader cannot click it even if it worked; they would have to hand-copy a string that 404s.",
+    "ROOT_CAUSE": "WSHDUE is a superseded Gumroad permalink that was never present in any asset we control. It survives only in the body of a page hosted by a third party, on an account whose write access we no longer hold.",
+    "revenue_risk": "NIL. Zero clicks are possible on a non-clickable dead link, and zero clicks are being lost to a working alternative, because there is no clickable alternative there to begin with.",
+    "repair_possible": false,
+    "why": "the only page carrying the defect is on Telegraph, and this account's write access is refused (see below). The correct destination /l/uucxer cannot be substituted into it from here, and no link was invented.",
+    "isolated": true,
+    "isolation_means": "the marketing-link defect is confined to one third-party article and has been separated from webhooks and from payment readiness, which are independent and both unaffected by it."
+  },
+
+  "CUSTOMER_JOURNEY_TESTED_STAGE_BY_STAGE": {
+    "stage_1_our_surfaces": "61 pages scanned, 0 carry the dead slug, our guide points at /l/uucxer - PASS",
+    "stage_2_marketing_article": "HTTP 200, but contains one dead slug as plain text and zero clickable anchors - FAIL on link, and it is not our page",
+    "stage_3_product_page": "/l/uucxer HTTP 200, live Stripe publishable key present - PASS",
+    "stage_4_checkout": "/l/uucxer/checkout HTTP 200, purchase NOT disabled, forms=0 inputs=0 - page reachable, form not server-rendered",
+    "stage_5_flagship_asked_about": "/l/fgruzn/checkout HTTP 200 - PASS",
+    "HARD_LIMIT_RECORDED": "the payment form is injected by JavaScript. No automated request can prove a human can complete it. Reaching checkout is NOT proof of payment capability and NOT proof that money can be received. Both remain separately unproven."
+  },
+
+  "WEBHOOKS_SEPARATED_FROM_PAYMENT": {
+    "gumroad": "no webhook or delivery endpoint exists on Gumroad at all. Sales are reported through GET /sales, which works and returns 0 records. There is no webhook to break.",
+    "paddle_subscriptions": 0,
+    "paddle_webhook_secret_set": false,
+    "conclusion": "no webhook is registered, so no event can ever be delivered. This is a genuine gap, but it is NOT what is stopping a sale: Gumroad does not need a webhook for the flagship, and the sale path in use is Gumroad.",
+    "must_not_be_conflated_with": [
+      "the marketing link defect (third-party article, isolated)",
+      "payment readiness (live processor, purchase enabled)"
+    ]
+  },
+
+  "HOLD_TRIAGE": {
+    "conditions_that_actually_force_a_hold": [
+      "payment completion cannot be proven without a browser - a measurement limit, not a system fault",
+      "seller payout eligibility is exposed by no endpoint - absence of evidence, not evidence of a restriction"
+    ],
+    "HOLD_IS_NOT_PERMANENT": "neither hold is a defect to be repaired. They are the same two unknowns from cycles 111-112, still open, both resolvable by one founder browser session. The hold is lifted the moment a payment is attempted, not by any build.",
+    "not_raised_for_a_green_build": "this cycle's CI result did not change any status. Nothing was marked ready because a build passed.",
+    "safety_checks_untouched": "no protection rule, test, or security check was modified or bypassed. The only file changed this cycle is a data record."
+  },
+
+  "DISTRIBUTION_EXECUTED": {
+    "attempted": "one bounded retry of Telegraph write access, justified because time has passed since the previous refusal",
+    "result": "STILL REFUSED - createPage returns CONTENT_FORMAT_INVALID even for '<p>probe</p>'; reads remain valid (getAccountInfo ok)",
+    "verdict": "Telegraph distribution remains BLOCKED for the second consecutive cycle with no new input. Recorded as BLOCKED and explicitly NOT to be retried again next cycle unless something changes, per the no-repeated-attempt rule.",
+    "other_channels_considered": "customer_site is ours and deploys via git, and our nexus guide already carries the correct /l/uucxer links, so there was nothing to repair or republish there. Creating a duplicate guide page would be new content with no commercial reason, so it was not done.",
+    "no_draft_left_pretending_to_be_live": "nothing was written to any record as though it were published."
+  },
+
+  "RESULTS_BY_CATEGORY_SEPARATED": {
+    "visits": "UNKNOWN - Gumroad exposes none and our beacon has no public receiver on static hosting",
+    "clicks": "0 possible on the defective article, because its link is plain text and therefore not clickable",
+    "qualified_leads": 0,
+    "orders": 0,
+    "sales": 0,
+    "revenue_usd": 0.0,
+    "distribution_activity_this_cycle": "NONE - the only free channel available is write-blocked"
+  },
+
+  "FINANCIAL_TRUTH": {
+    "gumroad_sales_records": 0,
+    "refunded_sales": 0,
+    "payout_records": 0,
+    "finance_data_sales": 0,
+    "verified_revenue_usd": 0.0,
+    "new_spend_usd": 0.0,
+    "self_purchase_performed": false,
+    "simulated_orders_created": false
+  },
+
+  "STATUSES": {
+    "marketing_link_defect": "CONFIRMED 404, isolated to one third-party article, unrepairable from here, zero revenue risk",
+    "our_own_surfaces": "PASS - 61 pages clean, correct destination already in place",
+    "product_page": "PASS",
+    "checkout_reachable": "PASS",
+    "payment_completable_by_a_human": "UNKNOWN - browser required",
+    "payout_eligibility": "UNKNOWN - no endpoint exists",
+    "webhooks": "ABSENT - nothing registered; not the blocker for the Gumroad path",
+    "telegraph_writes": "BLOCKED - second consecutive refusal, do not retry next cycle without a change",
+    "verified_revenue": "$0.00",
+    "new_spend": "PASS - $0.00"
+  },
+
+  "NEXT_ACTION": "One founder action, unchanged and still the only route to revenue: افتح https://aekraft.gumroad.com/l/fgruzn/checkout في متصفحك وأتمّ شراءً حقيقياً. Nothing else in this factory is blocking a sale. The dead marketing link costs nothing (it is not clickable), the missing webhooks do not affect the Gumroad path, and Telegraph publication being blocked removes our only free distribution channel but would not prevent a sale that arrives by any other route."
+}
