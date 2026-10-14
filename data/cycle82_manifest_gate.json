@@ -1,0 +1,79 @@
+{
+  "probe": "cycle82_manifest_gate",
+  "read_only": true,
+  "cost_usd": 0,
+  "purchases": 0,
+  "writes": 0,
+  "archive": "books/_releases/etsy_suspension_complete_bundle_v3.zip",
+  "page": "/l/bfhpzl",
+  "verdict": "FAIL",
+  "archive_problems": [],
+  "claims_checked": 6,
+  "mismatched": 2,
+  "blocked": 0,
+  "results": [
+    {
+      "filename": "etsy_policy_triage.pdf",
+      "page_says": "10 KB",
+      "status": "PASS",
+      "actual_bytes": 10065,
+      "corrected_text": null,
+      "evidence": "actual 10,065 B matches 10 KB (6 pages, 1153 words)"
+    },
+    {
+      "filename": "etsy_suspension_appeal_kit.pdf",
+      "page_says": "122 KB",
+      "status": "FAIL",
+      "actual_bytes": 138923,
+      "corrected_text": "139 KB",
+      "evidence": "page says 122 KB (122,000 B) but the delivered member is 138,923 B = 135.7 KiB = 138.9 KB. 19 pages, 2639 words"
+    },
+    {
+      "filename": "etsy_appeal_letter_template_A_IP.docx",
+      "page_says": "36 KB",
+      "status": "PASS",
+      "actual_bytes": 36302,
+      "corrected_text": null,
+      "evidence": "actual 36,302 B matches 36 KB (17 non-empty paragraphs)"
+    },
+    {
+      "filename": "etsy_appeal_letter_template_B_policy.docx",
+      "page_says": "36 KB",
+      "status": "PASS",
+      "actual_bytes": 36108,
+      "corrected_text": null,
+      "evidence": "actual 36,108 B matches 36 KB (16 non-empty paragraphs)"
+    },
+    {
+      "filename": "etsy_appeal_evidence_tracker.xlsx",
+      "page_says": "6 KB",
+      "status": "FAIL",
+      "actual_bytes": 15011,
+      "corrected_text": "15 KB",
+      "evidence": "page says 6 KB (6,000 B) but the delivered member is 15,011 B = 14.7 KiB = 15.0 KB. 5 sheets, 215 formulas"
+    },
+    {
+      "filename": "README.txt",
+      "page_says": "1 KB",
+      "status": "PASS",
+      "actual_bytes": 1003,
+      "corrected_text": null,
+      "evidence": "actual 1,003 B matches 1 KB (143 words)"
+    }
+  ],
+  "correction_prepared": [
+    {
+      "file": "etsy_suspension_appeal_kit.pdf",
+      "current": "122 KB",
+      "corrected": "139 KB",
+      "actual_bytes": 138923
+    },
+    {
+      "file": "etsy_appeal_evidence_tracker.xlsx",
+      "current": "6 KB",
+      "corrected": "15 KB",
+      "actual_bytes": 15011
+    }
+  ],
+  "published": false
+}
