@@ -1,0 +1,28 @@
+{
+  "probe": "cycle84_sales_read",
+  "path_used": "channels/gumroad_publisher.get_sales (the production reader)",
+  "read_only": true,
+  "cost_usd": 0,
+  "queried_at": "2026-10-14T14:45:52.221681+00:00",
+  "auth": {
+    "status": "LOADED",
+    "source": "os.environ first, then .env (per load_token)",
+    "token_length_chars": 43,
+    "token_printed": false,
+    "note": "length only; the value is never emitted or logged"
+  },
+  "sales": {
+    "status": "QUERY_COMPLETED",
+    "endpoint": "GET /v2/sales",
+    "documented_scope": "view_sales (per gumroad.com/api)",
+    "http_status": "raised_for_status() passed inside get_sales",
+    "scope": "all sales, no date filter",
+    "count": 0,
+    "is_empty": true,
+    "pagination": {
+      "note": "get_sales returns the sales array only. An EMPTY array is complete: there is no second page to fetch, because a cursor would only exist if rows existed.",
+      "cursor_possible_when_empty": false
+    },
+    "verdict": "ZERO_CONFIRMED"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "probe": "cycle84_revenue_contamination_audit",
+  "read_only": true,
+  "finance_data_json": {
+    "parses": true,
+    "sales_is_list": true,
+    "sales_rows": 0,
+    "totals": {
+      "totalSales": 0,
+      "totalGumroad": 0,
+      "totalKDP": 0,
+      "totalEtsy": 0,
+      "totalPaddle": 0
+    },
+    "lastUpdated": "2026-10-12T17:16:20.710Z",
+    "rows_containing_synthetic_marker": 0,
+    "any_test_marker_in_file": false
+  },
+  "sales_ledger_jsonl": {
+    "total_rows": 135,
+    "sale_events": 0,
+    "rows_containing_synthetic_marker": 0,
+    "note": "poll_sales.py writes here only on a success branch"
+  },
+  "p1_sales_snapshot": {
+    "keys": [
+      "known_sale_ids",
+      "new_sales_count",
+      "product_id",
+      "timestamp",
+      "total_revenue_cents",
+      "total_sales_count"
+    ],
+    "total_sales_count": 0,
+    "total_revenue_cents": 0,
+    "contains_synthetic_marker": false
+  },
+  "filter_applied_on_real_path": {
+    "capital_efficiency._real_total_revenue": "uses exclude_products_with=DELETE-ME",
+    "verified_by_test": "tests/test_capital_efficiency.py::test_test_smoke_record_filtered_from_revenue"
+  },
+  "other_files_asserting_positive_revenue": "none found -- no local file asserts a positive revenue figure",
+  "VERDICT": {
+    "real_transactions_in_ledger": 0,
+    "local_finance_total": 0,
+    "synthetic_records_present_anywhere": false,
+    "conclusion": "Every revenue surface is zero AND contains no synthetic record, so the zero is not being produced by a filter hiding test data. It is a real zero from a real, completed platform query."
+  }
+}
