@@ -367,6 +367,26 @@ def _fields_match(sent, got):
     return sent == got
 
 
+def _html_text(value):
+    """Visible text of an HTML fragment: tags removed, entities decoded,
+    whitespace collapsed. Exact on the text -- not fuzzy."""
+    import html as _html
+    import re as _re
+    text = _re.sub(r"<[^>]+>", " ", _html.unescape(value or ""))
+    return _re.sub(r"\s+", " ", text).strip()
+
+
+def _description_matches(sent, got):
+    """`description` is the one field live-verified (2026-10-14) to be
+    REFORMATTED on persist: Gumroad rewrites the HTML markup, so the raw
+    string never equals what was sent even when the write fully succeeded.
+    Two listings rewritten that day read back with byte-identical visible
+    text and different markup. Comparing the visible text exactly keeps the
+    Cycle 106 guarantee: a silently dropped write leaves the OLD text in
+    place, which still fails this check."""
+    return sent == got or _html_text(sent) == _html_text(got)
+
+
 def update_product(token, product_id, updates, verify_delay_seconds=1.0, get_product_fn=None):
     """Write real product fields, then PROVE the write persisted before
     ever returning as if it succeeded.
@@ -469,7 +489,9 @@ def update_product(token, product_id, updates, verify_delay_seconds=1.0, get_pro
     mismatches = {}
     for key, sent_value in updates.items():
         got_value = reread.get(key)
-        if not _fields_match(sent_value, got_value):
+        same = (_description_matches(sent_value, got_value) if key == "description"
+                else _fields_match(sent_value, got_value))
+        if not same:
             mismatches[key] = {"sent": sent_value, "got": got_value}
     if mismatches:
         raise RuntimeError(

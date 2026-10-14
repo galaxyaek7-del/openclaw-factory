@@ -306,6 +306,36 @@ class TestUpdateProductVerification(unittest.TestCase):
                     verify_delay_seconds=0, get_product_fn=lambda token, pid: reread_unchanged,
                 )
 
+    def test_reformatted_html_description_with_identical_text_passes(self):
+        """Live-observed 2026-10-14: Gumroad rewrites description markup on
+        persist. A successful write must not be reported as failed."""
+        put_ok = self._put_ok()
+        sent = "<p>Kit &amp; guide</p><h3>What's included</h3><ul><li>Workbook (Excel)</li></ul>"
+        reread = {"id": "p1", "description":
+                  '<p>Kit &amp; guide</p>\n<h3>What&#39;s included</h3>\n<ul>\n<li><p>Workbook (Excel)</p></li>\n</ul>'}
+        with patch.object(gp.requests, "request", return_value=put_ok):
+            result = gp.update_product("fake-token", "p1", {"description": sent},
+                                       verify_delay_seconds=0, get_product_fn=lambda t, p: reread)
+        self.assertEqual(result, reread)
+
+    def test_reformatting_never_masks_a_dropped_description_write(self):
+        """The Cycle 106 shape again, but in HTML: old text left in place."""
+        put_ok = self._put_ok()
+        reread_old = {"id": "p1", "description": "<p>A focused 3-page micro-kit</p>"}
+        with patch.object(gp.requests, "request", return_value=put_ok):
+            with self.assertRaisesRegex(RuntimeError, "VERIFICATION_FAILED"):
+                gp.update_product("fake-token", "p1", {"description": "<p>Full kit: workbook</p>"},
+                                  verify_delay_seconds=0, get_product_fn=lambda t, p: reread_old)
+
+    def test_text_normalisation_applies_to_description_only(self):
+        """name must still compare exactly: no field gains fuzziness by accident."""
+        put_ok = self._put_ok()
+        reread = {"id": "p1", "name": "<b>Kit</b>"}
+        with patch.object(gp.requests, "request", return_value=put_ok):
+            with self.assertRaisesRegex(RuntimeError, "VERIFICATION_FAILED"):
+                gp.update_product("fake-token", "p1", {"name": "Kit"},
+                                  verify_delay_seconds=0, get_product_fn=lambda t, p: reread)
+
     def test_partial_mismatch_among_several_fields_still_fails_not_partial_pass(self):
         put_ok = self._put_ok()
         reread_partial = {"id": "p1", "name": "New Name", "description": "OLD DESCRIPTION"}

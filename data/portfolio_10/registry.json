@@ -17,7 +17,7 @@
    ],
    "rank": 1,
    "stage": "QA_IN_PROGRESS",
-   "publication": "PENDING_FOUNDER_APPROVAL",
+   "publication": "LIVE_ON_GUMROAD",
    "checkout": "UNVERIFIED",
    "affiliate": "UNVERIFIED",
    "distribution": "NOT_STARTED",
@@ -31,6 +31,12 @@
      "no explicit not-legal-advice statement inside the PDF",
      "legal/regulatory accuracy not yet checked against primary sources"
     ]
+   },
+   "live_listing": {
+    "url": "https://aekraft.gumroad.com/l/qezxe",
+    "price_usd": 59.0,
+    "sales": 0,
+    "gumroad_id": "F0aW62vvcQcU8CzRDhiFIQ=="
    }
   },
   {
@@ -47,7 +53,7 @@
    ],
    "rank": 2,
    "stage": "QA_IN_PROGRESS",
-   "publication": "PENDING_FOUNDER_APPROVAL",
+   "publication": "NOT_PUBLISHED",
    "checkout": "UNVERIFIED",
    "affiliate": "UNVERIFIED",
    "distribution": "NOT_STARTED",
@@ -61,7 +67,8 @@
      "no explicit not-legal-advice statement inside the PDF",
      "legal/regulatory accuracy not yet checked against primary sources"
     ]
-   }
+   },
+   "live_listing": null
   },
   {
    "pid": "GF-SHOP-10",
@@ -77,7 +84,7 @@
    ],
    "rank": 3,
    "stage": "QA_IN_PROGRESS",
-   "publication": "PENDING_FOUNDER_APPROVAL",
+   "publication": "NOT_PUBLISHED",
    "checkout": "UNVERIFIED",
    "affiliate": "UNVERIFIED",
    "distribution": "NOT_STARTED",
@@ -90,7 +97,8 @@
     "blockers": [
      "legal/regulatory accuracy not yet checked against primary sources"
     ]
-   }
+   },
+   "live_listing": null
   },
   {
    "pid": "GF-SHOP-02",
@@ -105,7 +113,7 @@
    ],
    "rank": 4,
    "stage": "QA_IN_PROGRESS",
-   "publication": "PENDING_FOUNDER_APPROVAL",
+   "publication": "NOT_PUBLISHED",
    "checkout": "UNVERIFIED",
    "affiliate": "UNVERIFIED",
    "distribution": "NOT_STARTED",
@@ -119,7 +127,8 @@
      "no explicit not-legal-advice statement inside the PDF",
      "legal/regulatory accuracy not yet checked against primary sources"
     ]
-   }
+   },
+   "live_listing": null
   },
   {
    "pid": "GF-P10-08",
@@ -135,7 +144,7 @@
    ],
    "rank": 5,
    "stage": "QA_IN_PROGRESS",
-   "publication": "PENDING_FOUNDER_APPROVAL",
+   "publication": "LIVE_ON_GUMROAD",
    "checkout": "UNVERIFIED",
    "affiliate": "UNVERIFIED",
    "distribution": "NOT_STARTED",
@@ -148,6 +157,12 @@
     "blockers": [
      "legal/regulatory accuracy not yet checked against primary sources"
     ]
+   },
+   "live_listing": {
+    "url": "https://aekraft.gumroad.com/l/xmbxpz",
+    "price_usd": 59.0,
+    "sales": 0,
+    "gumroad_id": "iTLlmVaVTM5rbXDn7vPyjg=="
    }
   },
   {
@@ -165,7 +180,7 @@
    "tie_band": true,
    "rank": 6,
    "stage": "QA_IN_PROGRESS",
-   "publication": "LIVE_ON_GUMROAD_PREEXISTING",
+   "publication": "LIVE_ON_GUMROAD",
    "checkout": "UNVERIFIED",
    "affiliate": "UNVERIFIED",
    "distribution": "NOT_STARTED",
@@ -179,65 +194,12 @@
      "live file on Gumroad predates the 2026-10-14 glyph repair; local repaired copy needs re-upload (approval)",
      "legal/regulatory accuracy not yet checked against primary sources"
     ]
-   }
-  },
-  {
-   "pid": "GF-B11-06",
-   "name": "Real Estate Transaction Deadline Kit",
-   "grade": "MODERATE",
-   "top_comparable_usd": 20.0,
-   "score": 3.05,
-   "duplicate_of": null,
-   "sources": [
-    "https://www.etsy.com/listing/1503119514",
-    "https://www.etsy.com/listing/1701929614",
-    "https://www.paperlesspipeline.com/blog/real-estate-transaction-coordinator-checklist"
-   ],
-   "tie_band": true,
-   "rank": 7,
-   "stage": "QA_IN_PROGRESS",
-   "publication": "LIVE_ON_GUMROAD_PREEXISTING",
-   "checkout": "UNVERIFIED",
-   "affiliate": "UNVERIFIED",
-   "distribution": "NOT_STARTED",
-   "orders": 0,
-   "revenue_usd": 0,
-   "qa": {
-    "files": "PASS",
-    "claim_integrity": "PASS",
-    "price_usd": 59.0,
-    "blockers": [
-     "price $59 is >2x highest comparable seen ($20)"
-    ]
-   }
-  },
-  {
-   "pid": "GF-B11-10",
-   "name": "Landlord Move-In Inspection Pack",
-   "grade": "MODERATE",
-   "top_comparable_usd": 19.0,
-   "score": 3.05,
-   "duplicate_of": null,
-   "sources": [
-    "https://www.etsy.com/listing/4557417294",
-    "https://www.landlordstudio.com/resource/rental-move-in-and-move-out-checklist"
-   ],
-   "tie_band": true,
-   "rank": 8,
-   "stage": "QA_IN_PROGRESS",
-   "publication": "LIVE_ON_GUMROAD_PREEXISTING",
-   "checkout": "UNVERIFIED",
-   "affiliate": "UNVERIFIED",
-   "distribution": "NOT_STARTED",
-   "orders": 0,
-   "revenue_usd": 0,
-   "qa": {
-    "files": "PASS",
-    "claim_integrity": "PASS",
-    "price_usd": 49.0,
-    "blockers": [
-     "price $49 is >2x highest comparable seen ($19)"
-    ]
+   },
+   "live_listing": {
+    "url": "https://aekraft.gumroad.com/l/bfhpzl",
+    "price_usd": 79.0,
+    "sales": 0,
+    "gumroad_id": "LzOV85deBGdLgNZmvpvYGw=="
    }
   },
   {
@@ -254,9 +216,9 @@
     "https://www.etsy.com/de/shop/FBCostingStudio"
    ],
    "tie_band": true,
-   "rank": 9,
-   "stage": "QA_PASSED_PENDING_APPROVAL",
-   "publication": "PENDING_FOUNDER_APPROVAL",
+   "rank": 7,
+   "stage": "LIVE_VERIFIED_PARTIAL",
+   "publication": "LIVE_ON_GUMROAD",
    "checkout": "UNVERIFIED",
    "affiliate": "UNVERIFIED",
    "distribution": "NOT_STARTED",
@@ -267,6 +229,20 @@
     "claim_integrity": "PASS",
     "price_usd": 49.0,
     "blockers": []
+   },
+   "live_listing": {
+    "url": "https://aekraft.gumroad.com/l/swkgd",
+    "price_usd": 49.0,
+    "sales": 0,
+    "gumroad_id": "M55I0tATHuFRNHia1tiiAg=="
+   },
+   "p1_launch": {
+    "deliverable": "bundle on Gumroad matches local bundle byte size exactly (B11-03 138,350 B; B10-05 167,522 B)",
+    "sales_page": "description corrected 2026-10-14 (was: raw list syntax + missing workbook / claimed \"3-page PDF\"); live text verified identical to sent; rollback in data/portfolio_10/rollback/",
+    "page_state": "public page HTTP 200; embedded data is_published=true, correct price, is_compliance_blocked=false",
+    "checkout": "PARTIAL: product purchasable state verified; payment form/processing UNVERIFIED (no browser connected, no real purchase made)",
+    "cover": "MISSING on live listing; cover_1280x720.png + thumbnail prepared, upload needs dashboard (no API endpoint)",
+    "distribution_kit": "data/portfolio_10/distribution/GF-B11-03.md"
    }
   },
   {
@@ -282,9 +258,9 @@
    ],
    "note": "older books/freelancer_scope_control_v2 becomes historical",
    "tie_band": true,
-   "rank": 10,
-   "stage": "QA_PASSED_PENDING_APPROVAL",
-   "publication": "PENDING_FOUNDER_APPROVAL",
+   "rank": 8,
+   "stage": "LIVE_VERIFIED_PARTIAL",
+   "publication": "LIVE_ON_GUMROAD",
    "checkout": "UNVERIFIED",
    "affiliate": "UNVERIFIED",
    "distribution": "NOT_STARTED",
@@ -295,16 +271,93 @@
     "claim_integrity": "PASS",
     "price_usd": 39.0,
     "blockers": []
+   },
+   "live_listing": {
+    "url": "https://aekraft.gumroad.com/l/ziiur",
+    "price_usd": 19.0,
+    "sales": 0,
+    "gumroad_id": "NHlV8fguLAZLwpkRi5KyIA=="
+   },
+   "p1_launch": {
+    "deliverable": "bundle on Gumroad matches local bundle byte size exactly (B11-03 138,350 B; B10-05 167,522 B)",
+    "sales_page": "description corrected 2026-10-14 (was: raw list syntax + missing workbook / claimed \"3-page PDF\"); live text verified identical to sent; rollback in data/portfolio_10/rollback/",
+    "page_state": "public page HTTP 200; embedded data is_published=true, correct price, is_compliance_blocked=false",
+    "checkout": "PARTIAL: product purchasable state verified; payment form/processing UNVERIFIED (no browser connected, no real purchase made)",
+    "cover": "MISSING on live listing; cover_1280x720.png + thumbnail prepared, upload needs dashboard (no API endpoint)",
+    "distribution_kit": "data/portfolio_10/distribution/GF-B10-05.md",
+    "price": "HOLD: live $19 vs manifest $39 vs comparables $20-$49; consequential live price change awaits founder decision"
+   }
+  },
+  {
+   "pid": "GF-P10-10",
+   "name": "Creator Brand-Deal Management System",
+   "grade": "MODERATE",
+   "top_comparable_usd": 42.9,
+   "score": 3.11,
+   "duplicate_of": null,
+   "sources": [
+    "https://365daysgrowth.gumroad.com/l/branddealmanager",
+    "https://payhip.com/b/20W9O",
+    "https://keijiito.com/templates/brand-deal-tracker-for-creators"
+   ],
+   "stage": "SELECTED",
+   "checkout": "UNVERIFIED",
+   "affiliate": "UNVERIFIED",
+   "distribution": "NOT_STARTED",
+   "orders": 0,
+   "revenue_usd": 0,
+   "qa": {
+    "blockers": [
+     "QA round 1 not yet run"
+    ]
+   },
+   "rank": 9,
+   "live_listing": {
+    "url": "https://aekraft.gumroad.com/l/vzmswo",
+    "price_usd": 49.0,
+    "sales": 0,
+    "gumroad_id": "x5Cf-OfCwDvtC-nNlFe6BQ=="
+   },
+   "publication": "LIVE_ON_GUMROAD"
+  },
+  {
+   "pid": "GF-B11-06",
+   "name": "Real Estate Transaction Deadline Kit",
+   "grade": "MODERATE",
+   "top_comparable_usd": 20.0,
+   "score": 3.05,
+   "duplicate_of": null,
+   "sources": [
+    "https://www.etsy.com/listing/1503119514",
+    "https://www.etsy.com/listing/1701929614",
+    "https://www.paperlesspipeline.com/blog/real-estate-transaction-coordinator-checklist"
+   ],
+   "tie_band": true,
+   "rank": 10,
+   "stage": "QA_IN_PROGRESS",
+   "publication": "LIVE_ON_GUMROAD",
+   "checkout": "UNVERIFIED",
+   "affiliate": "UNVERIFIED",
+   "distribution": "NOT_STARTED",
+   "orders": 0,
+   "revenue_usd": 0,
+   "qa": {
+    "files": "PASS",
+    "claim_integrity": "PASS",
+    "price_usd": 59.0,
+    "blockers": [
+     "price $59 is >2x highest comparable seen ($20)"
+    ]
+   },
+   "live_listing": {
+    "url": "https://aekraft.gumroad.com/l/vwlmeo",
+    "price_usd": 59.0,
+    "sales": 0,
+    "gumroad_id": "2NIVAf0Nu4SE2DgAL9buYw=="
    }
   }
  ],
  "historical_not_counted": [
-  {
-   "pid": "GF-P10-10",
-   "name": "Creator Brand-Deal Management System",
-   "score": 3.11,
-   "reason": "not selected: tie band alternate"
-  },
   {
    "pid": "GF-SHOP-03",
    "name": "Independent-Contractor Classification Audit (US)",
@@ -482,6 +535,10 @@
   {
    "pid": "GF-B10-06",
    "reason": "duplicate niche of GF-SHOP-02 (kept SHOP-02: 12 pages/6,178 words vs 11/5,747)"
+  },
+  {
+   "pid": "GF-B11-10",
+   "reason": "removed 2026-10-14: tie-break recomputed on the full 79-product inventory (first pass saw only the first API page of 10)"
   }
  ],
  "store_listings_outside_portfolio": [
@@ -490,5 +547,6 @@
   "[Unavailable] AI Workflow QA $0",
   "Verified B2B Lead Lists $99 (UNPUBLISHED 2026-10-14, false claim)",
   "Cottage Food / Homebuyer Inspection / Dental Insurance / Landlord Move-In kits (live, not selected)"
- ]
+ ],
+ "correction": "2026-10-14: GET /v2/products is paginated (8 pages, 79 products). The first selection's 'already live' tie-break used only page 1, so it is recomputed here on the full inventory (data/portfolio_10/gumroad_inventory_2026-10-14.json)."
 }
