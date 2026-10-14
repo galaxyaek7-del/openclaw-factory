@@ -1,0 +1,20 @@
+{
+  "probe": "cycle85_verify_affiliate",
+  "read_only": true,
+  "cost_usd": 0,
+  "verifiable_checks": {
+    "token_rotated": false,
+    "credential_live": true,
+    "write_gate": false,
+    "product_ok": true
+  },
+  "all_verifiable_passed": false,
+  "founder_must_confirm": [
+    "An affiliate was added",
+    "Commission is exactly 30%",
+    "ONLY EU AI Act Toolkit is affiliate-eligible",
+    "The affiliate_id link was Copy Link'd from Gumroad",
+    "A real purchase has credited"
+  ],
+  "note": "Affiliate configuration has no API. A real credited purchase is the only proof of commission."
+}

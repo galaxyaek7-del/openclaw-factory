@@ -8,6 +8,18 @@
 
 ### **EU AI Act Compliance Toolkit — $155**
 **https://aekraft.gumroad.com/l/iaiyt**
+**Product ID: `pzTmMb4v8cih3nbWTj5TeA==`** — live-verified 2026-10-14, `published=true`, `price=$155`, `sales_count=0`.
+
+> ### ⚠️ Select by ID. There are FOUR "EU AI Act" listings on this account.
+>
+> | Product | Price | Can it carry 30%? |
+> |---|---|---|
+> | **EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs** | **$155** | **Yes — this is the target** |
+> | EU AI Act Audit Logging Kit | $29 | No — leaves $15.76 |
+> | EU AI Act Compliance Quickstart Checklist | $19 | No — worse still |
+> | EU AI Act Transparency & AI Literacy Quickstart Checklist | $9 | No — a 30% fee exceeds the price |
+
+> Choosing **"All products"** in the affiliate UI would attach a 30% commission to all four. Three of them cannot absorb it. Match on the ID above, not on the name.
 
 Chosen on the three criteria, not on price alone:
 
@@ -101,7 +113,7 @@ So the existing `ref=` parameters produce **zero commission**. They are analytic
 
 1. Open **https://gumroad.com/settings/affiliates** (Affiliates Dashboard, in the sidebar under **Analytics**).
 2. **Add affiliate** → enter the affiliate's **Gumroad account email**.
-3. Select **only** the EU AI Act Compliance Toolkit as an affiliate product. Do not select "All products" — 78 other listings are not affiliate-ready and several carry unresolved issues.
+3. Select **only** the product named *"EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs"* (ID `pzTmMb4v8cih3nbWTj5TeA==`, $155). Do **not** select "All products" — three other "EU AI Act" listings exist at $29, $19 and $9, and none can absorb a 30% commission.
 4. Set the commission to **30%**.
 5. Click **Copy Link** and send it to the affiliate.
 
@@ -155,3 +167,26 @@ Gumroad then emails the affiliate their link. Do not hand-craft an `affiliate_id
 - No price, payout setting, account field or product was modified.
 - No commission is claimed, because none has been earned. `VERIFIED_REVENUE` remains `$0.00`.
 - A prepared invitation is **not** a distributed one. A HTTP 200 IndexNow receipt is **not** a visit.
+
+---
+
+## 10. VERIFICATION — WHAT IS AND IS NOT CHECKABLE
+
+`scripts/cycle85_verify_affiliate.py` (read-only, $0) checks four things automatically:
+
+1. **Has the token been rotated?** Compares the live fingerprint against the recorded one.
+2. **Is the credential still live?** Real read against the Gumroad API.
+3. **Has the write gate opened?** Off `UNVERIFIED_COMPROMISED`.
+4. **Is the target product live and still $155?** Matched by product ID, not by name.
+
+Current result: **2 PASS, 2 FAIL.** Checks 2 and 4 pass (credential live; product `pzTmMb4v8cih3nbWTj5TeA==` published at $155, 0 sales). Checks 1 and 3 fail because **the token has not been rotated yet** — still fingerprint `6c2e73f2…`.
+
+Because there is no affiliate API, five things **cannot** be verified from here and must be read off the Gumroad UI — including the crucial one: **only a real completed purchase proves commission will be paid.** A resolving link, a set 30% rate, and a 200 response all prove only that setup happened.
+
+Run it after rotating:
+
+```
+python scripts/cycle85_verify_affiliate.py
+```
+
+It exits non-zero until every verifiable check passes.
