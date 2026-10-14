@@ -67,11 +67,21 @@ class TestUploadBinding(unittest.TestCase):
         # _upload_file issues its presign through _request_with_retry, not
         # requests.post directly. An earlier version of this test patched
         # requests.post and so asserted a call count that could never move.
-        s = _up_scope()
+        #
+        # It also pointed at a real book in books/, which is gitignored. That
+        # passed locally and FAILED in CI, where the file does not exist: the
+        # gate is consumed first, then file validation raises, and the presign
+        # is never reached. Use a real temporary file so the test depends on
+        # nothing outside the test itself.
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as fh:
+            fh.write(b"%PDF-1.4 test")
+            real = fh.name
+        self.addCleanup(lambda: os.path.exists(real) and os.unlink(real))
+        s = _up_scope(path=real)
         with patch("channels.gumroad_publisher._request_with_retry") as rr:
             rr.return_value = _Resp({"success": True, "url": "https://x/y"})
             try:
-                gp._upload_file("tok", REAL_FILE, scope_id=s.scope_id,
+                gp._upload_file("tok", real, scope_id=s.scope_id,
                                 product_id=PID)
             except Exception:  # noqa: BLE001 - later failure is not the gate's job
                 pass
