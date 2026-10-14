@@ -1,0 +1,25 @@
+{
+  "probe": "cycle83_prewrite_verification",
+  "archive": "books\\_releases\\etsy_suspension_complete_bundle_v3.zip",
+  "archive_bytes": 176766,
+  "archive_sha256": "65730ed0f563dce9294f56e55ff01d5912834df652a95c9c18b3c2fde6e518f4",
+  "read_only": true,
+  "cost_usd": 0,
+  "page_unit": "decimal KB",
+  "members": {
+    "etsy_suspension_appeal_kit.pdf": {
+      "bytes": 138923,
+      "kib": 135.67,
+      "kb_decimal": 138.92,
+      "crc32": "0xfc07b856",
+      "page_style": 136
+    },
+    "etsy_appeal_evidence_tracker.xlsx": {
+      "bytes": 15011,
+      "kib": 14.66,
+      "kb_decimal": 15.01,
+      "crc32": "0xf4ddd89b",
+      "page_style": 15
+    }
+  }
+}
