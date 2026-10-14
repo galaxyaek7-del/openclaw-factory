@@ -1,0 +1,538 @@
+{
+ "date": "2026-10-14",
+ "backups": "backups\\product_repair_2026-10-14",
+ "note": "Local files only; uploaded marketplace copies are unchanged.",
+ "summary": {
+  "pdfs": 26,
+  "boxes_before": 1066,
+  "boxes_after": 0,
+  "workbooks": 19,
+  "workbooks_pass_before": 0,
+  "workbooks_pass_after": 19,
+  "formulas_before": 0,
+  "formulas_after": 3685
+ },
+ "files": [
+  {
+   "file": "books\\ada_triage_workbook.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 219
+  },
+  {
+   "file": "books\\ai_agent_blueprint_cloudops.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "38 black-box glyph(s) printed inside words (e.g. 'I■D') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 38,
+   "boxes_after": 0,
+   "pages": 9
+  },
+  {
+   "file": "books\\ai_agent_blueprint_for_saas_cloudops_automation.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "61 black-box glyph(s) printed inside words (e.g. 'I■D') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 61,
+   "boxes_after": 0,
+   "pages": 12
+  },
+  {
+   "file": "books\\aiact_logging_tracker.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 215
+  },
+  {
+   "file": "books\\auto_repair_estimate_transparency_pack.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 3
+  },
+  {
+   "file": "books\\automated_invoice_processing_toolkit_for_small_businesses.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "36 black-box glyph(s) printed inside words (e.g. 'd■n') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 36,
+   "boxes_after": 0,
+   "pages": 8
+  },
+  {
+   "file": "books\\budget_tracker_for_college_students.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "16 black-box glyph(s) printed inside words (e.g. 'y■t') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 16,
+   "boxes_after": 0,
+   "pages": 10
+  },
+  {
+   "file": "books\\ccpa_compliance_action_kit.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "54 black-box glyph(s) printed inside words (e.g. 't■O') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 54,
+   "boxes_after": 0,
+   "pages": 13
+  },
+  {
+   "file": "books\\ccpa_compliance_tracker.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 213
+  },
+  {
+   "file": "books\\cloudops_action_tracker.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 10
+  },
+  {
+   "file": "books\\daily_habit_tracker_for_remote_workers.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "38 black-box glyph(s) printed inside words (e.g. 'g■T') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 38,
+   "boxes_after": 0,
+   "pages": 10
+  },
+  {
+   "file": "books\\deposit_demand_tracker.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 213
+  },
+  {
+   "file": "books\\diminished_value_claim_pack.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 211
+  },
+  {
+   "file": "books\\epr_packaging_register.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 628
+  },
+  {
+   "file": "books\\etsy_appeal_kit_v2\\etsy_appeal_evidence_tracker.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 215
+  },
+  {
+   "file": "books\\etsy_appeal_tracker.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 212
+  },
+  {
+   "file": "books\\etsy_suspension_appeal_kit.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "22 black-box glyph(s) printed inside words (e.g. 't■R') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 22,
+   "boxes_after": 0,
+   "pages": 19
+  },
+  {
+   "file": "books\\eu_ai_act_audit_logging_kit.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "60 black-box glyph(s) printed inside words (e.g. 't■M') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 60,
+   "boxes_after": 0,
+   "pages": 14
+  },
+  {
+   "file": "books\\freelancer_invoice_expense_log.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "29 black-box glyph(s) printed inside words (e.g. 'p■b') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 29,
+   "boxes_after": 0,
+   "pages": 9
+  },
+  {
+   "file": "books\\freelancer_scope_control_v2\\freelancer_scope_workbook.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 219
+  },
+  {
+   "file": "books\\ftc_review_rule_audit_tracker.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 223
+  },
+  {
+   "file": "books\\healthy_air_fryer_weeknight_meals.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "70 black-box glyph(s) printed inside words (e.g. 'r■F') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 70,
+   "boxes_after": 0,
+   "pages": 12
+  },
+  {
+   "file": "books\\home_service_review_response_system.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 10
+  },
+  {
+   "file": "books\\legal_case_research_solo_kit.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "58 black-box glyph(s) printed inside words (e.g. 't■C') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 58,
+   "boxes_after": 0,
+   "pages": 16
+  },
+  {
+   "file": "books\\legal_research_tracker.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 212
+  },
+  {
+   "file": "books\\lien_deadline_tracker.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 215
+  },
+  {
+   "file": "books\\mechanics_lien_filing_kit.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "18 black-box glyph(s) printed inside words (e.g. '0■D') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 18,
+   "boxes_after": 0,
+   "pages": 17
+  },
+  {
+   "file": "books\\mechanics_lien_filing_kit_v2.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "36 black-box glyph(s) printed inside words (e.g. 'y■b') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 36,
+   "boxes_after": 0,
+   "pages": 15
+  },
+  {
+   "file": "books\\mindfulness_journal_for_stress_relief.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "42 black-box glyph(s) printed inside words (e.g. 'g■T') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 43,
+   "boxes_after": 0,
+   "pages": 18
+  },
+  {
+   "file": "books\\repeatability_test_1.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "25 black-box glyph(s) printed inside words (e.g. 'v■o') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 25,
+   "boxes_after": 0,
+   "pages": 12
+  },
+  {
+   "file": "books\\repeatability_test_2.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "29 black-box glyph(s) printed inside words (e.g. 't■m') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 29,
+   "boxes_after": 0,
+   "pages": 12
+  },
+  {
+   "file": "books\\repeatability_test_3.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "23 black-box glyph(s) printed inside words (e.g. 'd■h') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 23,
+   "boxes_after": 0,
+   "pages": 12
+  },
+  {
+   "file": "books\\security_deposit_demand_kit.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "21 black-box glyph(s) printed inside words (e.g. 'x■E') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 21,
+   "boxes_after": 0,
+   "pages": 11
+  },
+  {
+   "file": "books\\security_deposit_demand_kit_v2.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "49 black-box glyph(s) printed inside words (e.g. 'e■b') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 49,
+   "boxes_after": 0,
+   "pages": 12
+  },
+  {
+   "file": "books\\severance_agreement_review_kit.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "50 black-box glyph(s) printed inside words (e.g. '1■D') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 50,
+   "boxes_after": 0,
+   "pages": 15
+  },
+  {
+   "file": "books\\severance_review_tracker.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 11
+  },
+  {
+   "file": "books\\soc2_compliance_automation_kit.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "50 black-box glyph(s) printed inside words (e.g. 'r■d') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 50,
+   "boxes_after": 0,
+   "pages": 18
+  },
+  {
+   "file": "books\\soc2_evidence_tracker.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 214
+  },
+  {
+   "file": "books\\startup_founder_weekly_planner.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "67 black-box glyph(s) printed inside words (e.g. 'y■S') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 67,
+   "boxes_after": 0,
+   "pages": 16
+  },
+  {
+   "file": "books\\stripe_chargeback_defense_kit.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "22 black-box glyph(s) printed inside words (e.g. 'n■n') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 22,
+   "boxes_after": 0,
+   "pages": 15
+  },
+  {
+   "file": "books\\stripe_dispute_tracker.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 225
+  },
+  {
+   "file": "books\\test.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "49 black-box glyph(s) printed inside words (e.g. '5■S') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 51,
+   "boxes_after": 0,
+   "pages": 16
+  },
+  {
+   "file": "books\\test_automation_book.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "29 black-box glyph(s) printed inside words (e.g. 'd■B') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 30,
+   "boxes_after": 0,
+   "pages": 8
+  },
+  {
+   "file": "books\\vendor_questionnaire_tracker.xlsx",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+   ],
+   "problems_after": [],
+   "formulas_before": 0,
+   "formulas_after": 217
+  },
+  {
+   "file": "preview\\KDP-HC-001\\interior.pdf",
+   "before": "FAIL",
+   "after": "PASS",
+   "problems_before": [
+    "70 black-box glyph(s) printed inside words (e.g. 'r■F') -- customer sees a box instead of a hyphen"
+   ],
+   "problems_after": [],
+   "boxes_before": 70,
+   "boxes_after": 0,
+   "pages": 12
+  }
+ ]
+}

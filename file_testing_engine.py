@@ -92,6 +92,50 @@ def test_file(path) -> CheckResult:
 
 
 # --- PDF --------------------------------------------------------------------
+_IN_WORD_BOX = re.compile(r"[A-Za-z0-9]■[A-Za-z0-9]")
+
+
+def _text_overlaps(p: Path, min_share: float = 0.25) -> list[tuple]:
+    """Lines from DIFFERENT text blocks whose boxes overlap by more than
+    `min_share` of the smaller line. Same-block lines are excluded so normal
+    tight leading inside a paragraph is never reported."""
+    import pymupdf as fitz
+    found = []
+    with fitz.open(str(p)) as doc:
+        for pno, page in enumerate(doc, 1):
+            lines = []
+            for blk in page.get_text("dict")["blocks"]:
+                for ln in blk.get("lines", []):
+                    t = "".join(s["text"] for s in ln["spans"]).strip()
+                    if t:
+                        lines.append((fitz.Rect(ln["bbox"]), t, blk["number"]))
+            for i in range(len(lines)):
+                ra, ta, ba = lines[i]
+                for rb, tb, bb in lines[i + 1:]:
+                    if ba == bb:
+                        continue
+                    x = ra & rb
+                    if x.is_empty or x.height <= 3:
+                        continue
+                    small = min(ra.get_area(), rb.get_area()) or 1.0
+                    if x.get_area() / small > min_share:
+                        found.append((pno, ta[:40], tb[:40]))
+    return found
+
+
+# Problems that are certain defects a customer would see. Layout findings
+# from pdf_layout_inspector are heuristic -- on 2026-10-14 a MARGIN_BREACH on
+# the ADA kit pointed at nothing visible -- so they are reported, not blocking.
+_ADVISORY_PREFIXES = ("layout ",)
+
+
+def blocking_problems(result: CheckResult) -> list[str]:
+    """The subset of a FAIL that is certain enough to stop a publish."""
+    if result.status != FAIL:
+        return []
+    return [x for x in result.problems if not x.startswith(_ADVISORY_PREFIXES)]
+
+
 def test_pdf(p: Path) -> CheckResult:
     problems: list[str] = []
     detail: dict = {"bytes": p.stat().st_size}
@@ -115,6 +159,33 @@ def test_pdf(p: Path) -> CheckResult:
         problems.append("zero pages")
     if r.is_encrypted:
         problems.append("encrypted -- a customer cannot read it without a key")
+    # Unrenderable glyphs. reportlab's base-14 fonts silently draw a filled box
+    # for characters outside WinAnsi (text_sanitizer.py, 2026-10-14), and the
+    # box extracts as U+25A0. A legitimate bullet "■ " sits before a space; a
+    # defect sits INSIDE a word ("Post■Removal", "30■day"), so only the
+    # in-word form is counted -- a real bullet can never fail this check.
+    try:
+        text = "".join((pg.extract_text() or "") for pg in r.pages)
+        boxes = _IN_WORD_BOX.findall(text)
+        detail["in_word_box_glyphs"] = len(boxes)
+        if boxes:
+            problems.append(
+                f"{len(boxes)} black-box glyph(s) printed inside words "
+                f"(e.g. {boxes[0]!r}) -- customer sees a box instead of a hyphen")
+    except Exception:  # noqa: BLE001
+        detail["in_word_box_glyphs"] = "text extraction unavailable"
+    # Overlapping text: lines from different blocks printed on top of each
+    # other (2026-10-14: a wrapped title colliding with its subtitle on page 1
+    # of three live kits). pdf_layout_inspector checks margins, not collisions.
+    try:
+        overlaps = _text_overlaps(p)
+        detail["text_overlaps"] = len(overlaps)
+        for pg, a, b in overlaps[:2]:
+            problems.append(f"text overlap p{pg}: {a!r} printed over {b!r}")
+    except ImportError:
+        detail["text_overlaps"] = "PyMuPDF unavailable"
+    except Exception:  # noqa: BLE001
+        detail["text_overlaps"] = "overlap check failed"
     try:
         import pdf_layout_inspector as pli
         lay = pli.inspect_pdf_layout(str(p))

@@ -205,13 +205,20 @@ class TestRealCatalogRegression(unittest.TestCase):
     """Guards the defects this round found, so they cannot silently return."""
 
     def test_shipped_tracker_has_no_formulas_and_is_flagged(self):
+        # Finding updated 2026-10-14: the tracker was repaired by
+        # workbook_upgrader.py. The original is kept in backups/ and must
+        # still be flagged; the repaired file must pass with live formulas.
+        orig = Path("backups/product_repair_2026-10-14/books/ccpa_compliance_tracker.xlsx")
+        if orig.exists():
+            r = fte.test_file(orig)
+            self.assertEqual(r.detail.get("formula_count"), 0)
+            self.assertEqual(r.status, fte.FAIL)
         p = Path("books/ccpa_compliance_tracker.xlsx")
         if not p.exists():
             self.skipTest("fixture absent")
         r = fte.test_file(p)
-        self.assertEqual(r.detail.get("formula_count"), 0,
-                         "if this now has formulas, update the finding, not the test")
-        self.assertEqual(r.status, fte.FAIL)
+        self.assertGreater(r.detail.get("formula_count"), 0)
+        self.assertEqual(r.status, fte.PASS, r.problems)
 
     def test_toolkit_pdf_still_parses(self):
         p = Path("books/eu_ai_act_compliance_toolkit_v2.pdf")

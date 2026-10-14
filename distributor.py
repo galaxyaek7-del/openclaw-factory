@@ -139,8 +139,26 @@ def _claim_payloads(product):
         return None
 
 
+def _file_defects(product):
+    """Open the product's real file and return the defects certain enough to
+    block a publish (file_testing_engine.blocking_problems). Missing,
+    unreadable or untestable files return [] -- UNKNOWN never blocks, the same
+    rule the claim-integrity gate follows."""
+    path = getattr(product, "file_path", None)
+    if not path:
+        return []
+    try:
+        import file_testing_engine as fte
+        p = Path(path)
+        if not p.is_file():
+            return []
+        return fte.blocking_problems(fte.test_file(p))
+    except Exception:  # noqa: BLE001 -- a tester bug must never block a publish
+        return []
+
+
 def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protection_state_path=None,
-               allow_protected=False, allow_claim_risk=False):
+               allow_protected=False, allow_claim_risk=False, allow_file_defects=False):
     """Fan `product` out to arms and record every attempt in the ledger.
 
     arm_names=None means every currently registered arm. ledger_path
@@ -169,7 +187,18 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
     UNKNOWN and passes, because a gate that fires on absent evidence is a
     gate that gets switched off. allow_claim_risk=True is the explicit
     founder override, mirroring allow_protected.
+
+    File-usability gate (2026-10-14): a real publish also opens the attached
+    file with file_testing_engine and blocks on certain defects only -- a
+    workbook with zero formulas, black boxes printed inside words, text
+    printed over text, a corrupt ZIP, an encrypted or empty PDF. All of these
+    were found in live products the same day. Heuristic layout findings are
+    advisory and never block. allow_file_defects=True is the founder override.
     """
+    file_defects = []
+    if not dry_run and not allow_file_defects:
+        file_defects = _file_defects(product)
+
     claim_verdict = None
     if not dry_run and not allow_claim_risk:
         claim_verdict = product_claim_integrity.check_claim_integrity(
@@ -205,6 +234,13 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
                     outcomes.append({
                         "arm": name, "attempted": False, "ok": None,
                         "skip_reason": "protected product: explicit founder gate required (allow_protected=True)",
+                        "result": None,
+                    })
+                    continue
+                if file_defects:
+                    outcomes.append({
+                        "arm": name, "attempted": False, "ok": None,
+                        "skip_reason": "blocked by file-usability gate: " + "; ".join(file_defects[:3]),
                         "result": None,
                     })
                     continue
