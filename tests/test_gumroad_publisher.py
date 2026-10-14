@@ -1,3 +1,4 @@
+import pytest
 """Tests for channels/gumroad_publisher.py (ADR-030, Gumroad-first arm
 completion). No live Gumroad API call is ever made — requests.request is
 patched in every test.
@@ -15,6 +16,13 @@ if str(_FACTORY_ROOT) not in sys.path:
     sys.path.insert(0, str(_FACTORY_ROOT))
 
 from channels import gumroad_publisher as gp
+
+# Cycle 84: this module exercises Gumroad write logic against a mocked
+# HTTP layer, so it explicitly opts in to write authorization. It was
+# previously getting this from an AUTOUSE fixture that set
+# FACTORY_LIVE_PUBLISH=true for the whole suite -- a hidden broad
+# permission. The opt-in is now visible here, in the file that needs it.
+pytestmark = pytest.mark.usefixtures("authorize_live_writes")
 
 
 def _fake_response(status_code=200, json_data=None):
@@ -415,6 +423,140 @@ class TestUpdateProductVerification(unittest.TestCase):
                 verify_delay_seconds=0, get_product_fn=lambda token, pid: reread,
             )
         self.assertEqual(result, reread)
+
+
+class TestUpdateProductFile(unittest.TestCase):
+    """Cycle 100: a real, discovered gap (several live flagship products
+    carry only their core PDF while a more complete local bundle -- extra
+    templates/trackers -- sits unused) needs a SAFE way to replace a
+    product's attached file and prove the replacement actually took,
+    before any such write is attempted for real. No real upload, no real
+    product touched -- upload_fn/get_product_fn are injected throughout."""
+
+    def setUp(self):
+        import tempfile
+        self._tmp = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
+        self._tmp.write(b"x" * 500)  # a real, non-empty local file of a known size
+        self._tmp.close()
+        self.file_path = self._tmp.name
+        self.expected_size = 500
+
+    def tearDown(self):
+        import os as _os
+        try:
+            _os.unlink(self.file_path)
+        except OSError:
+            pass
+
+    def _put_ok(self):
+        return _fake_response(status_code=200, json_data={"success": True})
+
+    def test_success_and_proven_attachment_returns_the_fresh_reread(self):
+        reread = {"id": "p1", "files": [{"size": self.expected_size, "filetype": "zip"}]}
+        with patch.object(gp.requests, "request", return_value=self._put_ok()):
+            result = gp.update_product_file(
+                "fake-token", "p1", self.file_path, verify_delay_seconds=0,
+                upload_fn=lambda token, path: "https://signed.example/upload-url",
+                get_product_fn=lambda token, pid: reread,
+            )
+        self.assertEqual(result, reread)
+
+    def test_reread_missing_the_new_file_size_raises_verification_failed(self):
+        """The exact real-world shape this function exists to catch: the
+        attach call reports success, but the file never actually shows up."""
+        reread_unchanged = {"id": "p1", "files": [{"size": 999999, "filetype": "pdf"}]}
+        with patch.object(gp.requests, "request", return_value=self._put_ok()):
+            with self.assertRaisesRegex(RuntimeError, "VERIFICATION_FAILED"):
+                gp.update_product_file(
+                    "fake-token", "p1", self.file_path, verify_delay_seconds=0,
+                    upload_fn=lambda token, path: "https://signed.example/upload-url",
+                    get_product_fn=lambda token, pid: reread_unchanged,
+                )
+
+    def test_retries_verification_before_failing_a_still_processing_attach(self):
+        """Live-verified 2026-10-13: a real zip attach's first re-read
+        (after a 3s delay) showed the file present but size still None
+        (server-side processing not finished); a later re-read showed the
+        correct size. This proves that real behaviour: attempt 1 returns a
+        present-but-wrong-size entry, attempt 2 shows the real match."""
+        still_processing = {"id": "p1", "files": [{"size": None, "filetype": "zip"}]}
+        now_correct = {"id": "p1", "files": [{"size": self.expected_size, "filetype": "zip"}]}
+        reread_calls = iter([still_processing, now_correct])
+        with patch.object(gp.requests, "request", return_value=self._put_ok()), \
+             patch.object(gp.time, "sleep"):
+            result = gp.update_product_file(
+                "fake-token", "p1", self.file_path, verify_delay_seconds=0.01, verify_attempts=3,
+                upload_fn=lambda token, path: "https://signed.example/upload-url",
+                get_product_fn=lambda token, pid: next(reread_calls),
+            )
+        self.assertEqual(result, now_correct)
+
+    def test_sent_url_is_never_compared_against_the_reread_resigned_url(self):
+        """The re-read URL is always re-signed by Gumroad (different query
+        string every time) -- this must never be treated as a mismatch as
+        long as the real, stable size matches."""
+        reread = {"id": "p1", "files": [{
+            "size": self.expected_size, "filetype": "zip",
+            "url": "https://files.gumroad.com/completely-different-signed-url?verify=xyz",
+        }]}
+        with patch.object(gp.requests, "request", return_value=self._put_ok()):
+            result = gp.update_product_file(
+                "fake-token", "p1", self.file_path, verify_delay_seconds=0,
+                upload_fn=lambda token, path: "https://signed.example/upload-url-ONE-SHAPE",
+                get_product_fn=lambda token, pid: reread,
+            )
+        self.assertEqual(result, reread)
+
+    def test_reread_failure_raises_verification_unknown(self):
+        def _broken_reread(token, pid):
+            raise RuntimeError("Gumroad get_product request failed: timeout")
+
+        with patch.object(gp.requests, "request", return_value=self._put_ok()):
+            with self.assertRaisesRegex(RuntimeError, "VERIFICATION_UNKNOWN"):
+                gp.update_product_file(
+                    "fake-token", "p1", self.file_path, verify_delay_seconds=0,
+                    upload_fn=lambda token, path: "https://signed.example/upload-url",
+                    get_product_fn=_broken_reread,
+                )
+
+    def test_blocked_attach_response_raises_before_any_reread(self):
+        put_blocked = _fake_response(status_code=200, json_data={
+            "success": False, "message": "File could not be processed.",
+        })
+        reread_spy = MagicMock(side_effect=AssertionError("re-read must never be attempted on a blocked attach"))
+        with patch.object(gp.requests, "request", return_value=put_blocked):
+            with self.assertRaisesRegex(RuntimeError, "Gumroad update_product_file failed"):
+                gp.update_product_file(
+                    "fake-token", "p1", self.file_path, verify_delay_seconds=0,
+                    upload_fn=lambda token, path: "https://signed.example/upload-url",
+                    get_product_fn=reread_spy,
+                )
+        reread_spy.assert_not_called()
+
+    def test_missing_local_file_refuses_before_any_upload_attempt(self):
+        upload_spy = MagicMock(side_effect=AssertionError("upload must never be attempted for a missing file"))
+        with self.assertRaises(gp.ConfigError):
+            gp.update_product_file("fake-token", "p1", "/no/such/file.zip", upload_fn=upload_spy)
+        upload_spy.assert_not_called()
+
+    def test_empty_local_file_refuses_before_any_upload_attempt(self):
+        import tempfile
+        empty = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
+        empty.close()
+        upload_spy = MagicMock(side_effect=AssertionError("upload must never be attempted for an empty file"))
+        try:
+            with self.assertRaises(gp.ConfigError):
+                gp.update_product_file("fake-token", "p1", empty.name, upload_fn=upload_spy)
+            upload_spy.assert_not_called()
+        finally:
+            import os as _os
+            _os.unlink(empty.name)
+
+    def test_no_product_id_refuses_before_any_upload_attempt(self):
+        upload_spy = MagicMock(side_effect=AssertionError("upload must never be attempted without a product_id"))
+        with self.assertRaises(gp.ConfigError):
+            gp.update_product_file("fake-token", "", self.file_path, upload_fn=upload_spy)
+        upload_spy.assert_not_called()
 
 
 class TestNonInteractiveAuth(unittest.TestCase):

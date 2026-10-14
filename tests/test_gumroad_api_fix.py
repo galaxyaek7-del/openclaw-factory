@@ -1,3 +1,4 @@
+import pytest
 import sys
 from pathlib import Path
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
@@ -11,6 +12,13 @@ from unittest.mock import MagicMock, patch
 import requests
 
 from channels.gumroad_publisher import _gumroad_error, _PART_SIZE
+
+# Cycle 84: this module exercises Gumroad write logic against a mocked
+# HTTP layer, so it explicitly opts in to write authorization. It was
+# previously getting this from an AUTOUSE fixture that set
+# FACTORY_LIVE_PUBLISH=true for the whole suite -- a hidden broad
+# permission. The opt-in is now visible here, in the file that needs it.
+pytestmark = pytest.mark.usefixtures("authorize_live_writes")
 
 
 def _resp(success=True, **extra):

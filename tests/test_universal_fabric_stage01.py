@@ -1,3 +1,4 @@
+import pytest
 """Stage 01 — Universal Distribution Fabric integration tests (18 tests).
 
 Proves every fabric capability per the Stage 01 directive Task 11.
@@ -11,6 +12,13 @@ import tempfile
 import json
 from pathlib import Path
 from dataclasses import dataclass
+
+# Cycle 84: this module exercises Gumroad write logic against a mocked
+# HTTP layer, so it explicitly opts in to write authorization. It was
+# previously getting this from an AUTOUSE fixture that set
+# FACTORY_LIVE_PUBLISH=true for the whole suite -- a hidden broad
+# permission. The opt-in is now visible here, in the file that needs it.
+pytestmark = pytest.mark.usefixtures("authorize_live_writes")
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:

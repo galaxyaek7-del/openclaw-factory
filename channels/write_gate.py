@@ -87,27 +87,44 @@ def check_write_authorization(
     state_path: str | None = None,
     now: float | None = None,
     fingerprint_fn=None,
+    scope_id: str | None = None,
+    product_id: str | None = None,
+    payload: dict | None = None,
 ) -> WriteAuthDecision:
     """
     Central authorization check. Denies by default.
 
-    `state_path`, `now` and `fingerprint_fn` are injectable purely so tests can
-    exercise every denial branch without touching the real state file or the
-    real credential. Production callers pass none of them.
+    Cycle 84: the FACTORY_LIVE_PUBLISH requirement is now CONDITIONAL. An
+    unscoped operation still needs the global flag, so the factory never
+    becomes generally live-capable. A single-use, fully bound authorization
+    from channels/write_scope.py can satisfy it for ONE scoped operation
+    instead -- which is the founder's explicit engineering preference and
+    avoids granting a permanent capability to authorise a one-off edit.
 
-    When `state_path` is omitted the authoritative location is used, which
-    FACTORY_WRITE_GATE_STATE_PATH may redirect. That variable selects WHERE the
-    state is read from; it never relaxes what counts as authorised. A test can
-    point it at a fixture file, but it cannot use it to invent a VERIFIED
-    state the gate would otherwise reject -- the same status, freshness and
-    fingerprint rules still apply, unchanged.
+    Scoping narrows WHO may do WHAT. It never relaxes authentication: the
+    auth-state checks below run identically on both paths.
+
+    `state_path`, `now` and `fingerprint_fn` remain injectable so every
+    denial branch is testable without touching real state or a real
+    credential.
     """
+    scoped_ok = False
+    scope_reason = ""
+    if scope_id and product_id and payload is not None:
+        from channels.write_scope import consume_scope
+        d = consume_scope(scope_id=scope_id, product_id=product_id,
+                          payload=payload, operation=operation, now=now)
+        scoped_ok = d.allowed
+        scope_reason = d.reason
+
     flag = _live_publish_requested()
-    if not flag:
+    if not flag and not scoped_ok:
         return WriteAuthDecision(
-            False, "FACTORY_LIVE_PUBLISH is not set to a true value; "
-                   "live mutation is disabled", state="NOT_CHECKED",
-            live_publish_flag=False)
+            False,
+            "no scoped authorization and FACTORY_LIVE_PUBLISH is not true; "
+            "live mutation is disabled"
+            + (f" (scope refused: {scope_reason})" if scope_id else ""),
+            state="NOT_CHECKED", live_publish_flag=flag)
 
     if state_path is None:
         state_path = os.environ.get("FACTORY_WRITE_GATE_STATE_PATH") or None
@@ -172,9 +189,11 @@ def check_write_authorization(
             state=VERIFIED, fingerprint_match=False, live_publish_flag=True)
 
     return WriteAuthDecision(True, f"authorised: state VERIFIED, fresh, "
-                                  f"fingerprint matches ({operation})",
+                                  f"fingerprint matches ({operation})"
+                                  + (f" via scoped authorization" if scoped_ok
+                                     else ""),
                              state=VERIFIED, fingerprint_match=True,
-                             live_publish_flag=True)
+                             live_publish_flag=flag)
 
 
 def require_write_authorization(operation: str, **kw) -> WriteAuthDecision:
