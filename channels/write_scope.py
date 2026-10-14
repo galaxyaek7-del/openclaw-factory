@@ -68,7 +68,25 @@ DEFAULT_TTL_SECONDS = 900  # 15 minutes: long enough to run, short to expire
 
 # The only field a description-scope authorization may ever touch.
 DESCRIPTION_ONLY = ("description",)
-ALLOWED_OPERATIONS = ("update_description",)
+
+# Cycle 85 Phase 3: upload and abort are separate MUTATIONS and now have
+# their own scopeable operations. They are listed separately rather than
+# folded into the description operation so an authorization for one can never
+# authorise the other.
+ALLOWED_OPERATIONS = ("update_description", "upload_file", "abort_upload")
+
+OPERATION_FIELDS = {
+    # an update may touch description only
+    "update_description": ("description",),
+    # an upload is scoped by identity, not by body field
+    "upload_file": ("file_path",),
+    # an abort is scoped by session identity, not by body field
+    "abort_upload": ("upload_id",),
+}
+
+
+def operation_fields(operation: str) -> tuple[str, ...]:
+    return OPERATION_FIELDS.get(operation, ())
 
 
 def scope_dir() -> Path:
@@ -120,29 +138,38 @@ def _payload_digest(payload: dict, fields) -> str:
 
 def issue_scope(*, product_id: str, slug: str, payload: dict,
                 operation: str = "update_description",
-                allowed_fields=DESCRIPTION_ONLY,
+                allowed_fields=None,
                 ttl_seconds: int = DEFAULT_TTL_SECONDS,
                 note: str = "") -> WriteScope:
     """
     Mint a single-use, fully bound authorization.
 
-    Refuses outright anything that is not a description-only operation, so a
-    scope for a price or file change cannot be created here by mistake.
+    Refuses outright anything that is not a recognised operation, and refuses
+    any field outside that operation's permitted set, so a scope for a price or
+    file change cannot be created here by mistake.
+
+    For upload/abort the binding is on IDENTITY rather than body text:
+      upload_file   -> the exact file path, size and digest of the payload
+      abort_upload  -> the exact upload_id
+    Both are still single use, single product, single operation.
     """
     if operation not in ALLOWED_OPERATIONS:
         raise ValueError(f"operation {operation!r} is not scopable")
-    extra = [f for f in allowed_fields if f not in DESCRIPTION_ONLY]
+    permitted = operation_fields(operation)
+    fields = tuple(allowed_fields) if allowed_fields else permitted
+    extra = [f for f in fields if f not in permitted]
     if extra:
         raise ValueError(
-            f"fields {extra} are outside the scopeable set {DESCRIPTION_ONLY}; "
-            f"price, files, title and published must never be scoped this way")
+            f"fields {extra} are outside the permitted set {permitted} for "
+            f"{operation!r}; price, files, title and published must never be "
+            f"scoped")
 
     scope_id = secrets.token_urlsafe(24)
     now = time.time()
     scope = WriteScope(
         scope_id=scope_id, product_id=product_id, slug=slug,
-        operation=operation, allowed_fields=tuple(allowed_fields),
-        payload_sha256=_payload_digest(payload, allowed_fields),
+        operation=operation, allowed_fields=fields,
+        payload_sha256=_payload_digest(payload, fields),
         created_utc=now, expires_utc=now + int(ttl_seconds),
         note=note)
 

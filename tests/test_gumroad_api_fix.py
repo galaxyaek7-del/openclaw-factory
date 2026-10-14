@@ -58,7 +58,8 @@ class TestGumroadApiFix(unittest.TestCase):
 
         pdf = _tmp_file()
         try:
-            product = create_product("token", {"file_path": pdf, "price_cents": 1000, "title": "Test Product"})
+            product = create_product("token", {"file_path": pdf, "price_cents": 1000, "title": "Test Product"},
+                                   upload_scope_id=_up(pdf))
         finally:
             os.unlink(pdf)
 
@@ -104,7 +105,8 @@ class TestGumroadApiFix(unittest.TestCase):
 
         big = _tmp_file(suffix=".bin", data=b"x" * (_PART_SIZE + 1))
         try:
-            create_product("token", {"file_path": big, "price_cents": 500, "title": "Multi"})
+            create_product("token", {"file_path": big, "price_cents": 500, "title": "Multi"},
+                           upload_scope_id=_up(big))
         finally:
             os.unlink(big)
 
@@ -129,7 +131,8 @@ class TestGumroadApiFix(unittest.TestCase):
         pdf = _tmp_file()
         try:
             with self.assertRaises(RuntimeError):
-                create_product("token", {"file_path": pdf, "price_cents": 1000, "title": "Test"})
+                create_product("token", {"file_path": pdf, "price_cents": 1000, "title": "Test"},
+                           upload_scope_id=_up(pdf))
         finally:
             os.unlink(pdf)
 
@@ -154,11 +157,13 @@ class TestGumroadApiFix(unittest.TestCase):
         pdf = _tmp_file()
         try:
             with self.assertRaises(RuntimeError) as ctx:
-                create_product("token", {"file_path": pdf, "price_cents": 1000, "title": "Test"})
+                create_product("token", {"file_path": pdf, "price_cents": 1000, "title": "Test"},
+                           upload_scope_id=_up(pdf))
             self.assertIn("no ETag", str(ctx.exception))
         finally:
             os.unlink(pdf)
-        mock_abort.assert_called_once_with("token", "u1")
+        mock_abort.assert_called_once_with("token", "u1",
+                                           product_id="NEW_PRODUCT")
         mock_post.assert_not_called()
 
     @patch('channels.gumroad_publisher._abort_upload')
@@ -176,12 +181,14 @@ class TestGumroadApiFix(unittest.TestCase):
         pdf = _tmp_file()
         try:
             with self.assertRaises(RuntimeError) as ctx:
-                create_product("token", {"file_path": pdf, "price_cents": 1000, "title": "Test"})
+                create_product("token", {"file_path": pdf, "price_cents": 1000, "title": "Test"},
+                           upload_scope_id=_up(pdf))
             self.assertIn("The upload_id does not exist", str(ctx.exception))
             self.assertNotIn("None", str(ctx.exception))
         finally:
             os.unlink(pdf)
-        mock_abort.assert_called_once_with("token", "u1")
+        mock_abort.assert_called_once_with("token", "u1",
+                                           product_id="NEW_PRODUCT")
 
     def test_gumroad_error_prefers_error_field(self):
         self.assertEqual(_gumroad_error({"error": "boom", "message": "legacy"}), "boom")
@@ -192,3 +199,23 @@ class TestGumroadApiFix(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def _up(path):
+    """
+    Mint a real single-use upload authorization for one file.
+
+    Cycle 85 Phase 3. _upload_file has its own gate now, so this test must
+    present a genuine scope rather than be handed a bypass. It cannot take a
+    pytest fixture: this is a unittest.TestCase, which does not receive one.
+    """
+    import sys as _s
+    from pathlib import Path as _P
+    _root = _P(__file__).resolve().parent.parent
+    if str(_root) not in _s.path:
+        _s.path.insert(0, str(_root))
+    from channels import write_scope
+    return write_scope.issue_scope(
+        product_id="NEW_PRODUCT", slug="test",
+        payload={"file_path": str(path)},
+        operation="upload_file", note="pytest").scope_id

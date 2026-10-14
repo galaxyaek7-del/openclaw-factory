@@ -96,11 +96,14 @@ class TestRetryOnTransientFailure(unittest.TestCase):
                  patch.object(gp.requests, "post",
                               side_effect=[complete_ok, _fake_response(status_code=503)]) as mock_post:
                 with self.assertRaises(RuntimeError):
+                    # Cycle 85 Phase 3: the upload has its own gate, so this
+                    # test mints a real single-use authorization. It cannot
+                    # take a pytest fixture: this is a unittest.TestCase.
                     gp.create_product("fake-token", {
                         "title": "Test",
                         "price_cents": 999,
                         "file_path": tmp.name,
-                    })
+                    }, upload_scope_id=_upload_scope(tmp.name))
             # complete (1) + the single, un-retried create POST (1) = 2.
             self.assertEqual(mock_post.call_count, 2)
             self.assertEqual(mock_req.call_count, 2)
@@ -646,3 +649,23 @@ class TestNonInteractiveAuth(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def _upload_scope(path):
+    """
+    Mint a real single-use upload authorization for one file.
+
+    Cycle 85 Phase 3. _upload_file has its own gate, so this test must present
+    a genuine scope rather than be handed a bypass. It cannot take a pytest
+    fixture: this is a unittest.TestCase, which does not receive one.
+    """
+    import sys as _s
+    from pathlib import Path as _P
+    _root = _P(__file__).resolve().parent.parent
+    if str(_root) not in _s.path:
+        _s.path.insert(0, str(_root))
+    from channels import write_scope
+    return write_scope.issue_scope(
+        product_id="NEW_PRODUCT", slug="test",
+        payload={"file_path": str(path)},
+        operation="upload_file", note="pytest").scope_id

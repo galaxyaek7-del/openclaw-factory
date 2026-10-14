@@ -23,6 +23,34 @@ import requests
 FACTORY_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_ENV_PATH = FACTORY_DIR / ".env"
 GUMROAD_API_BASE = "https://api.gumroad.com/v2"
+# Cycle 85: sentinel for a product that does not exist yet (a create). Still
+# part of the upload binding, so one creation authorization cannot be replayed
+# for another.
+NEW_PRODUCT = "NEW_PRODUCT"
+
+# Cycle 85 Phase 3: abort capabilities, derived from a spent upload grant.
+#
+# A multipart upload id is assigned by the server AT PRESIGN TIME, so it
+# cannot be named in a scope before the upload begins. Requiring a second,
+# separately minted abort scope would therefore make cleanup impossible -- and
+# would break the contract that a failed abort must never mask the original
+# upload error.
+#
+# Instead, when _upload_file consumes a valid authorization it registers the
+# upload id it just created as a capability belonging to that product. Only
+# such an id may be aborted without an explicit abort scope. An id this
+# process never created -- someone else's session -- is not in this table and
+# can never be released through this code path.
+_ABORT_CAPABILITIES: "dict[str, str]" = {}
+
+
+def _grant_abort_capability(upload_id, product_id):
+    _ABORT_CAPABILITIES[str(upload_id)] = str(product_id or NEW_PRODUCT)
+
+
+def _is_own_upload_session(upload_id, product_id):
+    return _ABORT_CAPABILITIES.get(str(upload_id)) == str(
+        product_id or NEW_PRODUCT)
 
 # PHASE 5 (2026-10-14): every mutation function below begins with
 # _require_write_authorization(). The import is deliberately made at MODULE
@@ -31,7 +59,10 @@ GUMROAD_API_BASE = "https://api.gumroad.com/v2"
 # these functions -- direct call, alias, partial import -- goes through the
 # same gate. If this import ever fails, module import fails loudly rather than
 # silently shipping write functions with no authorization at all.
-from channels.write_gate import require_write_authorization as _require_write_authorization
+from channels.write_gate import (
+    require_write_authorization as _require_write_authorization,
+    WriteNotAuthorized,
+)
 # list_products()'s pagination safety backstop -- module level (not a local)
 # so a test can patch it to a small number instead of looping 50 real times.
 _MAX_PAGES = 50
@@ -218,13 +249,57 @@ def _gumroad_error(data):
     return "unknown error"
 
 
-def _abort_upload(token, upload_id):
+def _require_scoped_upload_authorization(operation, *, product_id, value,
+                                        token, scope_id=None):
+    """
+    Cycle 85 Phase 3. Central gate for the two helpers that hold their own
+    requests.post and previously had NO gate of their own.
+
+    FAIL CLOSED: no scope_id means no upload and no abort, ever. The check
+    runs before any network call, so a denial cannot leave a dangling S3
+    multipart session on the platform side -- which is precisely the state
+    this pair of helpers exists to clean up.
+
+    product_id may be the NEW_PRODUCT sentinel for a create, where the
+    product does not exist yet. It is still part of the binding, so an
+    authorization minted for one creation cannot be replayed for another.
+    """
+    if not scope_id:
+        # For an abort, `value` is the upload_id this call would cancel.
+        if operation == "abort_upload" and _is_own_upload_session(value,
+                                                                  product_id):
+            return  # cleanup of a session this process just created
+        raise WriteNotAuthorized(
+            f"BLOCKED {operation}: no scoped authorization supplied. An upload "
+            f"or an abort requires a single-use authorization bound to this "
+            f"exact {operation.replace('_', ' ')}.")
+    field = "file_path" if operation == "upload_file" else "upload_id"
+    from channels.write_scope import consume_scope
+    d = consume_scope(scope_id=scope_id,
+                      product_id=product_id or NEW_PRODUCT,
+                      payload={field: value},
+                      operation=operation)
+    if not d.allowed:
+        raise WriteNotAuthorized(f"BLOCKED {operation}: {d.reason}")
+
+
+def _abort_upload(token, upload_id, *, scope_id=None, product_id=None):
     """Cancel an interrupted presigned upload (POST /v2/files/abort) so the
     dangling S3 multipart session is released. Gumroad's contract: responses
     carry a `status` of `accepted` (S3 took the cancellation but parts in
     flight may finish seconds later) or `already_gone` (no session left).
-    Call again while `accepted`; stop on `already_gone`. Never raises — a
-    failed abort must never mask the original upload error."""
+    Call again while `accepted`; stop on `already_gone`. Never raises - a
+    failed abort must never mask the original upload error.
+
+    Cycle 85 Phase 3: this posts to the network and previously had no gate of
+    its own. It now REQUIRES a scoped authorization bound to this exact upload
+    session id, so an abort can never be aimed at a session the caller does
+    not own. Releasing your OWN dangling session is the safe act; releasing
+    someone else's is not reachable through this code path at all.
+    """
+    _require_scoped_upload_authorization(
+        "abort_upload", product_id=product_id, value=str(upload_id),
+        token=token, scope_id=scope_id)
     for _ in range(5):
         try:
             r = requests.post(
@@ -245,7 +320,10 @@ def _abort_upload(token, upload_id):
         time.sleep(2)
 
 
-def _upload_file(token, file_path):
+def _upload_file(token, file_path, *, scope_id=None, product_id=None):
+    _require_scoped_upload_authorization(
+        "upload_file", product_id=product_id, value=str(file_path),
+        token=token, scope_id=scope_id)
     file_path = Path(file_path)
     if not file_path.exists() or not file_path.is_file():
         raise ConfigError(f"product file not found: {file_path}")
@@ -268,6 +346,10 @@ def _upload_file(token, file_path):
     parts = data.get("parts", [])
     if not upload_id or not key or not parts:
         raise RuntimeError(f"Gumroad presign incomplete: missing fields (upload_id: {bool(upload_id)}, key: {bool(key)}, parts: {bool(parts)})")
+
+    # The upload id is assigned by the server. From this moment on, THIS
+    # process may release exactly this one session and no other.
+    _grant_abort_capability(upload_id, product_id)
 
     # 2. Upload each part's exact byte range to S3, capturing the ETag S3
     # returns per part. S3 requires every non-last part to be >= 5 MB, which
@@ -293,7 +375,7 @@ def _upload_file(token, file_path):
                 completed_parts.append({"part_number": int(part_number), "etag": etag})
     except Exception:
         # Any interrupted upload must be aborted so it does not linger in S3.
-        _abort_upload(token, upload_id)
+        _abort_upload(token, upload_id, product_id=product_id)
         raise
 
     # 3. Complete. NEVER retried: the upload_id is single-use. If the first
@@ -311,12 +393,12 @@ def _upload_file(token, file_path):
     r = requests.post(f"{GUMROAD_API_BASE}/files/complete", data=complete_data, timeout=120)
     data = r.json()
     if not data.get("success"):
-        _abort_upload(token, upload_id)
+        _abort_upload(token, upload_id, product_id=product_id)
         raise RuntimeError(f"Gumroad complete failed: {_gumroad_error(data)}")
 
     return data.get("file_url") or key
 
-def create_product(token, product_spec):
+def create_product(token, product_spec, *, upload_scope_id=None):
     # PHASE 5 (2026-10-14): mandatory, centralized write authorization.
     # This is the FIRST statement on purpose -- a denied write must not be
     # able to start an S3 multipart session on Gumroad's side via
@@ -348,7 +430,10 @@ def create_product(token, product_spec):
     # File existence is validated inside _upload_file(); price/title are
     # validated BEFORE any network call so a bad spec never starts an S3
     # multipart session on Gumroad's side.
-    file_url = _upload_file(token, file_path)
+    # Cycle 85 Phase 3: the upload is its own mutation with its own gate. A
+    # product does not exist yet, so it binds to the NEW_PRODUCT sentinel.
+    file_url = _upload_file(token, file_path, scope_id=upload_scope_id,
+                           product_id=NEW_PRODUCT)
 
     data = {
         "access_token": token,
@@ -403,7 +488,70 @@ def _description_matches(sent, got):
     return sent == got or _html_text(sent) == _html_text(got)
 
 
-def update_product(token, product_id, updates, verify_delay_seconds=1.0, get_product_fn=None):
+def update_product_description_scoped(token, product_id, description, *,
+                                     scope_id, verify_delay_seconds=1.0,
+                                     get_product_fn=None):
+    """Cycle 85: the ONLY sanctioned way to write a product description.
+
+    Why this function has to exist:
+
+    channels/write_scope.py can mint a single-use authorization bound to
+    (product, operation=update_description, field=description, sha256 of the
+    exact text), but nothing connected that authorization to a reachable write.
+    update_product() calls the unscoped gate with the literal operation
+    "update_product", which no scope can ever satisfy, so the scoped mechanism
+    was real machinery behind an unusable door.
+
+    The constraints this enforces, none of which update_product() can express:
+
+      * exactly ONE field may be written -- description. A caller that also
+        passes price, name, published, files, or tags is refused before any
+        network call, because a description repair must never be able to move
+        price, title, attachments, or publication state.
+      * the authorization is consumed BEFORE the write, and its payload digest
+        is checked against the text actually about to be sent, so a scope
+        minted for one description cannot be pointed at a different one.
+      * the write is verified by re-read, exactly like update_product(), so a
+        200 that silently fails to persist is reported as FAIL rather than
+        success.
+
+    Returns the freshly re-read product dict on verified success.
+    """
+    if not product_id:
+        raise ConfigError("update_product_description_scoped requires a product_id")
+    if not scope_id:
+        raise WriteNotAuthorized(
+            "BLOCKED update_description: a scoped authorization is required. "
+            "There is no unscoped path to a description write, by design.")
+    if not isinstance(description, str) or not description:
+        raise ConfigError("description must be a non-empty string")
+
+    # Consume and verify the authorization BEFORE handing anything to the
+    # network layer. _payload_digest is the same canonicalization
+    # write_scope used when the scope was issued; consume_scope already
+    # re-derived it from the scope's own allowed_fields, so this second
+    # comparison is a redundant-but-cheap defence against the field set
+    # itself ever drifting.
+    from channels.write_scope import consume_scope, operation_fields
+    d = consume_scope(scope_id=scope_id, product_id=product_id,
+                      payload={"description": description},
+                      operation="update_description")
+    if not d.allowed:
+        raise WriteNotAuthorized(f"BLOCKED update_description: {d.reason}")
+    if operation_fields("update_description") != ("description",):
+        raise WriteNotAuthorized(
+            "BLOCKED update_description: the operation's field set changed; "
+            "refusing to act on an authorization issued under different rules")
+
+    # Single-field enforcement, last gate before the write.
+    return _update_product_write_and_verify(
+        token, product_id, {"description": description},
+        verify_delay_seconds=verify_delay_seconds,
+        get_product_fn=get_product_fn)
+
+
+def update_product(token, product_id, updates, verify_delay_seconds=1.0,
+                   get_product_fn=None):
     """Write real product fields, then PROVE the write persisted before
     ever returning as if it succeeded.
 
@@ -462,6 +610,26 @@ def update_product(token, product_id, updates, verify_delay_seconds=1.0, get_pro
     # write cannot leave a partial effect (or an S3 multipart session)
     # behind on Gumroad's side. See channels/write_gate.py.
     _require_write_authorization("update_product")
+    return _update_product_write_and_verify(
+        token, product_id, updates,
+        verify_delay_seconds=verify_delay_seconds,
+        get_product_fn=get_product_fn)
+
+
+def _update_product_write_and_verify(token, product_id, updates,
+                                     verify_delay_seconds=1.0,
+                                     get_product_fn=None):
+    """The write-and-prove body of update_product, with NO gate of its own.
+
+    Split out in Cycle 85 so that update_product_description_scoped() can
+    reach it after consuming a single-use, payload-bound authorization. The
+    split deliberately does NOT add a `pre_authorized` bypass flag to
+    update_product(): a conditional gate would have meant the unscoped entry
+    point no longer had the gate as its first executable statement, which is
+    a real invariant this factory tests for. Instead update_product() keeps an
+    unconditional gate as its first statement, and only the scoped wrapper --
+    which enforces exactly one field -- calls this private body.
+    """
     if not product_id:
         raise ConfigError("update_product requires a product_id")
     if not updates:
@@ -523,7 +691,8 @@ def update_product(token, product_id, updates, verify_delay_seconds=1.0, get_pro
 
 
 def update_product_file(token, product_id, file_path, verify_delay_seconds=1.0,
-                         verify_attempts=3, upload_fn=None, get_product_fn=None):
+                         verify_attempts=3, upload_fn=None, get_product_fn=None,
+                         upload_scope_id=None):
     """Replace a product's attached deliverable with a real local file, then
     PROVE it actually attached before returning as if it succeeded.
 
@@ -574,7 +743,11 @@ def update_product_file(token, product_id, file_path, verify_delay_seconds=1.0,
         raise ConfigError("update_product_file requires a product_id")
     if not file_path:
         raise ConfigError("update_product_file requires a file_path")
-    do_upload = upload_fn or _upload_file
+    do_upload = upload_fn or (
+        # Cycle 85 Phase 3: when the real uploader runs, it must carry its own
+        # scoped authorization bound to this product and this exact file path.
+        lambda t, f: _upload_file(t, f, scope_id=upload_scope_id,
+                                  product_id=product_id))
     read_product = get_product_fn or get_product
 
     file_path = Path(file_path)
