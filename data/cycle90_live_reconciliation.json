@@ -1,0 +1,81 @@
+{
+  "probe": "cycle90_live_reconciliation",
+  "read_only": true,
+  "cost_usd": 0,
+  "writes_performed": 0,
+  "catalog_size": 79,
+  "results": [
+    {
+      "claim_id": "C1",
+      "product": "Etsy Suspension: Triage + Appeal Bundle (Both Steps)",
+      "commit": "2af1b96",
+      "claim": "file replaced with repaired bundle 176,766 B; price unchanged $79",
+      "live_id": "LzOV85deBGdLgNZmvpvYGw==",
+      "live_url": "https://aekraft.gumroad.com/l/bfhpzl",
+      "live_published": true,
+      "live_price_usd": 79.0,
+      "live_sales": 0,
+      "file_info_exposed": {
+        "Size": "173 KB"
+      },
+      "price_verdict": "MATCH",
+      "published_verdict": "NOT VERIFIABLE (no claim)",
+      "attachment_verdict": "NOT VERIFIABLE",
+      "file_content_match": "UNKNOWN"
+    },
+    {
+      "claim_id": "C2",
+      "product": "Etsy Suspension Appeal Kit",
+      "commit": "2af1b96",
+      "claim": "file replaced with repaired bundle 170,027 B; price $29",
+      "live_id": "mvuoJTNLfsWsm0NF-CrZHw==",
+      "live_url": "https://aekraft.gumroad.com/l/fgruzn",
+      "live_published": true,
+      "live_price_usd": 29.0,
+      "live_sales": 0,
+      "file_info_exposed": {
+        "Size": "166 KB"
+      },
+      "price_verdict": "MATCH",
+      "published_verdict": "NOT VERIFIABLE (no claim)",
+      "attachment_verdict": "NOT VERIFIABLE",
+      "file_content_match": "UNKNOWN"
+    },
+    {
+      "claim_id": "C3",
+      "product": "GALAXY FORGE API TEST — DO NOT BUY — DELETE ME",
+      "commit": "2af1b96",
+      "claim": "unpublished, verified published=false",
+      "live_id": "20tVUV_UF9NOUf6aJ-GDRA==",
+      "live_url": "https://aekraft.gumroad.com/l/dxfwlu",
+      "live_published": false,
+      "live_price_usd": 1.0,
+      "live_sales": 0,
+      "file_info_exposed": {
+        "Size": "102 Bytes"
+      },
+      "price_verdict": "MATCH",
+      "published_verdict": "MATCH",
+      "attachment_verdict": "NOT VERIFIABLE",
+      "file_content_match": "UNKNOWN"
+    },
+    {
+      "claim_id": "C4",
+      "product": "Landlord Move-In Inspection Pack",
+      "commit": "2af1b96",
+      "claim": "pricing PROPOSAL $27, explicitly NOT applied",
+      "live_id": "Mk8k3QvpcL5Hf6ll_8CcAg==",
+      "live_url": "https://aekraft.gumroad.com/l/gzbdaz",
+      "live_published": true,
+      "live_price_usd": 49.0,
+      "live_sales": 0,
+      "file_info_exposed": {
+        "Size": "130 KB"
+      },
+      "price_verdict": "MATCH",
+      "published_verdict": "NOT VERIFIABLE (no claim)",
+      "attachment_verdict": "NOT VERIFIABLE",
+      "file_content_match": "UNKNOWN"
+    }
+  ]
+}
