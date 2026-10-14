@@ -2101,6 +2101,38 @@ def draw_flowing_text(c, accent, header_label, paragraphs, x, top, max_width, pa
 
 def create_ai_book(out_path, title, subtitle, theme, author, book_data, topic=""):
     accent = theme_color(theme)
+
+    # Cycle 87 (2026-10-14) -- WinAnsi text safety. Measured before fixing,
+    # not assumed: 40,259 black-box glyphs ("■") exist across 44 of the 114
+    # shipped PDFs, so real customers are reading "Post■Removal" and "the
+    # 30■day window" in the Etsy Suspension Appeal Kit.
+    #
+    # Root cause, isolated by test: reportlab's base-14 Helvetica is WinAnsi
+    # encoded, and U+2010 HYPHEN / U+2011 NON-BREAKING HYPHEN / U+2012 / U+2015
+    # / U+2016 / U+2017 / U+201B / U+201F / U+00A0 / U+FFFD are NOT in that
+    # encoding. reportlab does not raise -- it silently substitutes a filled
+    # box. The drawing path itself is innocent: drawString, _wrap_text and
+    # draw_flowing_text all round-trip a real em-dash correctly, which is why
+    # an earlier fix attempt in the renderer would have found nothing.
+    #
+    # Sanitizing HERE, at the single entry point every generated book passes
+    # through, rather than inside the renderers, fixes titles, subtitles,
+    # introductions, chapter titles and chapter bodies in one pass and cannot
+    # be bypassed by a caller.
+    try:
+        import text_sanitizer as _ts
+        book_data, _san = _ts.sanitize_structure(book_data)
+        title = _ts.sanitize_for_pdf(title).text
+        subtitle = _ts.sanitize_for_pdf(subtitle).text
+        topic = _ts.sanitize_for_pdf(topic).text
+        author = _ts.sanitize_for_pdf(author).text
+        if _san.changed:
+            print(f"[PDF-TEXT-SANITIZER] {_san.summary()} -- characters that "
+                  f"reportlab's Helvetica cannot render were replaced before "
+                  f"writing, instead of shipping as black boxes.")
+    except Exception:  # noqa: BLE001 -- never let sanitizing break production
+        pass
+
     c = canvas.Canvas(out_path, pagesize=(PAGE_W, PAGE_H))
     page_counter = [0]
 
