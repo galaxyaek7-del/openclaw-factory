@@ -1,6 +1,6 @@
 {
- "status": "UNVERIFIED_COMPROMISED",
- "reason": "live credential matches exposed fingerprint; reads only, no writes until rotation",
- "fingerprint_prefix": "6c2e73f238903859",
- "at": "2026-09-30T18:05:58.205680+00:00"
+ "status": "VERIFIED",
+ "reason": "rotated credential live-verified (products page: 10)",
+ "fingerprint_prefix": "f1218f89b1f5cdf3",
+ "at": "2026-10-14T18:57:01.092997+00:00"
 }

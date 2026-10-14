@@ -1,0 +1,39 @@
+{
+ "scan_time": "2026-10-14T18:08:39.475463+00:00",
+ "files_cleaned": [],
+ "lines_fixed": 0,
+ "status": "CLEAN",
+ "env_variable_used": "GUMROAD_ACCESS_TOKEN",
+ "env_variable_requested": "GUMROAD_KEY",
+ "env_variable_note": "Not renamed. All 4 reads in code (channels/gumroad_publisher.py load_token and 3 os.environ.get calls) use GUMROAD_ACCESS_TOKEN; renaming would make the factory read no key. Put the rotated key in GUMROAD_ACCESS_TOKEN.",
+ "searches": {
+  "grep -rl gsk_ (js/py/json)": {
+   "files": [
+    "scripts/gsc_token_watch.py"
+   ],
+   "finding": "a detection regex for the Groq key prefix, not a key; gsk_ is Groq's prefix, not Gumroad's"
+  },
+  "grep gumroad | key/token/secret/auth (js/py)": {
+   "lines": 93,
+   "files": 37,
+   "lines_with_long_literal": 1,
+   "finding": "the one long literal is the variable name GUMROAD_ACCESS_TOKEN (channels/capability_matrix.py:146)"
+  },
+  "exact live-key value, tracked files + origin/main + 1303 commits": {
+   "hits": 0
+  },
+  "scripts/scan_for_secrets.py (repo CI scanner)": {
+   "result": "no secret-shaped strings found in any tracked file"
+  }
+ },
+ "what_is_in_code": "gumroad_auth_watch.py holds KNOWN_EXPOSED_FP, a 16-hex SHA-256 prefix (one-way fingerprint), not the key. It is the gate that blocks Gumroad writes until rotation; it was not removed.",
+ "gumroad_auth_watch_reads_from": "gumroad_publisher.load_token(): os.environ, then .env -- never a literal",
+ "no_values_recorded": true,
+ "correction_2026-10-14": "Earlier field 'writes_blocked_until_rotation: true' was wrong and is removed: no write path (channels/, distributor.py, server.js, factory_loop.js) reads gumroad_auth_state.json. Automated writes are stopped by FACTORY_LIVE_PUBLISH=false; gumroad_publisher.py write functions have no guard of their own.",
+ "incident_closure": {
+  "new_key": "AUTH_PASS -- GET /v2/products HTTP 200, 10 products (read-only, Bearer header)",
+  "old_exposed_key": "REVOKED -- HTTP 401, WWW-Authenticate error=invalid_token, 'The access token was revoked', same request shape that returned 200 for the new key",
+  "state_file": "VERIFIED via gumroad_auth_watch.poll() (not hand-edited), 2026-10-14T18:57:01Z",
+  "backups": "both .env.snapshot-20261012*.bak replaced by redacted copies after 7 checks; exposed key found in no file in the repository afterwards"
+ }
+}

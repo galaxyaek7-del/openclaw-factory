@@ -117,3 +117,15 @@ data/telemetry_state.json
 # State backups (2026-09-29): timestamped copies of critical ledgers/state
 # for self-repair rollback. Rebuildable from live files; never committed.
 data/_backups/
+
+# Founder directive, post security scan (2026-10-14): never let any .env
+# copy or security state file reach the public repo. .env,
+# data/auth_audit.jsonl and data/ledger_integrity_baseline.json were
+# already listed above.
+.env.*
+*.env
+*.env.bak
+.env.backup*
+.env.2026*
+data/security/secrets_report.json
+data/security/kill_state.json
