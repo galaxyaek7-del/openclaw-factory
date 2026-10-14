@@ -1,0 +1,193 @@
+{
+  "probe": "cycle87_scorecards",
+  "read_only": true,
+  "cost_usd": 0,
+  "scorecards": [
+    {
+      "product": "EU AI Act Compliance Toolkit",
+      "verdict": "HOLD",
+      "total": 35,
+      "max": 100,
+      "threshold": 90,
+      "critical_defects": [
+        "cites a legal annex naming 'autonomy', which is not an Annex III category. Real categories are: biometrics; critical infrastructure; education and vocational training; employment; essential private services; law enforcement; migration; administration of justice",
+        "cites a legal annex naming 'creativity', which is not an Annex III category. Real categories are: biometrics; critical infrastructure; education and vocational training; employment; essential private services; law enforcement; migration; administration of justice",
+        "cites a legal annex naming 'autonomy', which is not an Annex III category. Real categories are: biometrics; critical infrastructure; education and vocational training; employment; essential private services; law enforcement; migration; administration of justice",
+        "Annex III 'Part A' is asserted; Annex III has no such division",
+        "Annex III 'Part A' is asserted; Annex III has no such division",
+        "Annex III 'Part A' is asserted; Annex III has no such division",
+        "Annex III 'Part A' is asserted; Annex III has no such division",
+        "Annex III 'Part A' is asserted; Annex III has no such division",
+        "Annex III 'Part A' is asserted; Annex III has no such division",
+        "Annex III 'Part B' is asserted; Annex III has no such division",
+        "asserts the Act prohibits high-risk GPAI models; it does not"
+      ],
+      "dimensions": [
+        {
+          "name": "file_completeness_and_usability",
+          "earned": 25,
+          "max": 25,
+          "status": "PASS",
+          "evidence": [
+            "2/2 files PASS, 0 FAIL, 0 UNKNOWN"
+          ]
+        },
+        {
+          "name": "accuracy_and_sources",
+          "earned": 2,
+          "max": 25,
+          "status": "FAIL",
+          "evidence": [
+            "11 critical defect(s): ['FABRICATED_CITATION', 'FALSE_PROHIBITION', 'INVENTED_STRUCTURE']"
+          ]
+        },
+        {
+          "name": "practical_value_and_customer_fit",
+          "earned": 3,
+          "max": 20,
+          "status": "FAIL",
+          "evidence": [
+            "median chapter 65 words"
+          ]
+        },
+        {
+          "name": "independent_verification_and_tests",
+          "earned": 5,
+          "max": 15,
+          "status": "HOLD",
+          "evidence": [
+            "2/2 files independently tested",
+            "no qualified human specialist review"
+          ]
+        },
+        {
+          "name": "commercial_presentation_and_accuracy",
+          "earned": 0,
+          "max": 15,
+          "status": "UNKNOWN",
+          "evidence": [
+            "sales page was never matched against the product"
+          ]
+        }
+      ],
+      "note": "a high score never cancels an open critical defect; UNKNOWN is not a pass"
+    },
+    {
+      "product": "Etsy Suspension Appeal Kit",
+      "verdict": "HOLD",
+      "total": 45,
+      "max": 100,
+      "threshold": 90,
+      "critical_defects": [],
+      "dimensions": [
+        {
+          "name": "file_completeness_and_usability",
+          "earned": 12,
+          "max": 25,
+          "status": "FAIL",
+          "evidence": [
+            "1/2 files PASS, 1 FAIL, 0 UNKNOWN",
+            "etsy_appeal_tracker.xlsx: FAIL ['ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool']"
+          ]
+        },
+        {
+          "name": "accuracy_and_sources",
+          "earned": 25,
+          "max": 25,
+          "status": "PASS",
+          "evidence": [
+            "no fabricated citation, no ungrounded regulatory claim"
+          ]
+        },
+        {
+          "name": "practical_value_and_customer_fit",
+          "earned": 3,
+          "max": 20,
+          "status": "FAIL",
+          "evidence": [
+            "median chapter 78 words",
+            "1/1 workbooks ship with zero formulas"
+          ]
+        },
+        {
+          "name": "independent_verification_and_tests",
+          "earned": 5,
+          "max": 15,
+          "status": "HOLD",
+          "evidence": [
+            "2/2 files independently tested",
+            "no qualified human specialist review"
+          ]
+        },
+        {
+          "name": "commercial_presentation_and_accuracy",
+          "earned": 0,
+          "max": 15,
+          "status": "UNKNOWN",
+          "evidence": [
+            "sales page was never matched against the product"
+          ]
+        }
+      ],
+      "note": "a high score never cancels an open critical defect; UNKNOWN is not a pass"
+    },
+    {
+      "product": "Amazon FBA Reconciliation Workbook",
+      "verdict": "HOLD",
+      "total": 0,
+      "max": 100,
+      "threshold": 90,
+      "critical_defects": [],
+      "dimensions": [
+        {
+          "name": "file_completeness_and_usability",
+          "earned": 0,
+          "max": 25,
+          "status": "UNKNOWN",
+          "evidence": [
+            "0/1 files PASS, 0 FAIL, 1 UNKNOWN",
+            "books/amazon_fba_reconciliation_workbook.xlsx: UNKNOWN ['not present locally']"
+          ]
+        },
+        {
+          "name": "accuracy_and_sources",
+          "earned": 0,
+          "max": 25,
+          "status": "UNKNOWN",
+          "evidence": [
+            "content was never checked"
+          ]
+        },
+        {
+          "name": "practical_value_and_customer_fit",
+          "earned": 0,
+          "max": 20,
+          "status": "UNKNOWN",
+          "evidence": [
+            "no usable value signal was measured"
+          ]
+        },
+        {
+          "name": "independent_verification_and_tests",
+          "earned": 0,
+          "max": 15,
+          "status": "UNKNOWN",
+          "evidence": [
+            "0/1 files independently tested",
+            "no qualified human specialist review"
+          ]
+        },
+        {
+          "name": "commercial_presentation_and_accuracy",
+          "earned": 0,
+          "max": 15,
+          "status": "UNKNOWN",
+          "evidence": [
+            "sales page was never matched against the product"
+          ]
+        }
+      ],
+      "note": "a high score never cancels an open critical defect; UNKNOWN is not a pass"
+    }
+  ]
+}

@@ -1,0 +1,194 @@
+{
+  "probe": "cycle87_file_tests",
+  "read_only": true,
+  "cost_usd": 0,
+  "results": [
+    {
+      "product": "EU AI Act Compliance Toolkit",
+      "file": "books/eu_ai_act_compliance_toolkit_v2.pdf",
+      "status": "PASS",
+      "detail": {
+        "bytes": 139401,
+        "pages": 31,
+        "encrypted": false,
+        "title": "",
+        "layout_findings": 0
+      },
+      "problems": []
+    },
+    {
+      "product": "EU AI Act Compliance Toolkit",
+      "file": "books/eu_ai_act_compliance_toolkit_preview.pdf",
+      "status": "PASS",
+      "detail": {
+        "bytes": 106489,
+        "pages": 3,
+        "encrypted": false,
+        "title": "",
+        "layout_findings": 0
+      },
+      "problems": []
+    },
+    {
+      "product": "Amazon FBA Reconciliation Workbook",
+      "file": "books/amazon_fba_reconciliation_workbook.xlsx",
+      "status": "UNKNOWN",
+      "problems": [
+        "not present locally"
+      ]
+    },
+    {
+      "product": "Amazon FBA Reconciliation Workbook",
+      "file": "books/ccpa_compliance_tracker.xlsx",
+      "status": "FAIL",
+      "detail": {
+        "bytes": 6926,
+        "sheets": [
+          "Deadlines",
+          "Evidence log",
+          "Cost comparison",
+          "Correspondence log"
+        ],
+        "sheet_count": 4,
+        "formula_count": 0,
+        "blank_sheets": [],
+        "no_formulas": true,
+        "first_row_headers": 5
+      },
+      "problems": [
+        "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+      ]
+    },
+    {
+      "product": "Etsy Suspension Appeal Kit",
+      "file": "books/etsy_suspension_appeal_kit.pdf",
+      "status": "PASS",
+      "detail": {
+        "bytes": 122465,
+        "pages": 19,
+        "encrypted": false,
+        "title": "untitled",
+        "layout_findings": 0
+      },
+      "problems": []
+    },
+    {
+      "product": "Etsy Suspension Appeal Kit",
+      "file": "books/etsy_appeal_tracker.xlsx",
+      "status": "FAIL",
+      "detail": {
+        "bytes": 6916,
+        "sheets": [
+          "Deadlines",
+          "Evidence log",
+          "Cost comparison",
+          "Correspondence log"
+        ],
+        "sheet_count": 4,
+        "formula_count": 0,
+        "blank_sheets": [],
+        "no_formulas": true,
+        "first_row_headers": 5
+      },
+      "problems": [
+        "ZERO formulas across every sheet -- a workbook product with no formulas is a static grid, not a working tool"
+      ]
+    },
+    {
+      "product": "bundle",
+      "file": "books\\auto_repair_estimate_transparency_bundle.zip",
+      "status": "PASS",
+      "detail": {
+        "bytes": 7890,
+        "members": [
+          "auto_repair_estimate_transparency_pack.xlsx",
+          "auto_repair_estimate_transparency_guide.pdf"
+        ],
+        "member_count": 2
+      },
+      "problems": []
+    },
+    {
+      "product": "bundle",
+      "file": "books\\chargeback_representment_kit_bundle.zip",
+      "status": "PASS",
+      "detail": {
+        "bytes": 8845,
+        "members": [
+          "chargeback_representment_kit.xlsx",
+          "chargeback_representment_guide.pdf"
+        ],
+        "member_count": 2
+      },
+      "problems": []
+    },
+    {
+      "product": "bundle",
+      "file": "books\\clinic_noshow_reduction_bundle.zip",
+      "status": "PASS",
+      "detail": {
+        "bytes": 8957,
+        "members": [
+          "clinic_noshow_reduction_system.xlsx",
+          "clinic_noshow_reduction_guide.pdf"
+        ],
+        "member_count": 2
+      },
+      "problems": []
+    },
+    {
+      "product": "bundle",
+      "file": "books\\etsy_suspension_appeal_kit_v2_bundle.zip",
+      "status": "PASS",
+      "detail": {
+        "bytes": 166634,
+        "members": [
+          "etsy_suspension_appeal_kit.pdf",
+          "README.txt",
+          "etsy_appeal_evidence_tracker.xlsx",
+          "etsy_appeal_letter_template_A_IP.docx",
+          "etsy_appeal_letter_template_B_policy.docx"
+        ],
+        "member_count": 5
+      },
+      "problems": []
+    },
+    {
+      "product": "bundle",
+      "file": "books\\etsy_suspension_complete_bundle.zip",
+      "status": "PASS",
+      "detail": {
+        "bytes": 173373,
+        "members": [
+          "etsy_policy_triage.pdf",
+          "etsy_suspension_appeal_kit.pdf",
+          "etsy_appeal_evidence_tracker.xlsx",
+          "etsy_appeal_letter_template_A_IP.docx",
+          "etsy_appeal_letter_template_B_policy.docx",
+          "README.txt"
+        ],
+        "member_count": 6
+      },
+      "problems": []
+    },
+    {
+      "product": "bundle",
+      "file": "books\\fitness_silent_churn_winback_bundle.zip",
+      "status": "PASS",
+      "detail": {
+        "bytes": 8731,
+        "members": [
+          "fitness_silent_churn_winback_system.xlsx",
+          "fitness_silent_churn_winback_guide.pdf"
+        ],
+        "member_count": 2
+      },
+      "problems": []
+    }
+  ],
+  "tally": {
+    "PASS": 9,
+    "UNKNOWN": 1,
+    "FAIL": 2
+  }
+}
