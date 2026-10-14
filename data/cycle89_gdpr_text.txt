@@ -1,0 +1,498 @@
+GDPR Data-Subject Request Handling Kit for SMBs  |  v1.0
+Page 1
+ GDPR Data-Subject Request Handling
+ Kit for SMBs
+Within 10 days the buyer holds a live request register with deadline math, mapped data locations, four
+ready templates with worked examples, and a documented search-to-response method that meets the
+one-month clock.
+Galaxy Forge Implementation Kit  |  Version 1.0  |  September 2026
+Companion files: Excel workbook, editable Word templates, README.
+GDPR Data-Subject Request Handling Kit for SMBs
+This kit gives a small business a complete, repeatable method for handling data-subject requests
+inside the one-month response clock. You log every request with automatic deadline math, verify
+identity proportionately, clarify over-broad scope into a searchable plan, search every system with a
+reviewed checklist, justify each redaction on record, and assemble response packs or erasure
+decisions that reconstruct cleanly when queried. Within 10 days you hold a live register, mapped data
+locations, four ready templates, and a documented search-to-response method.
+1. Executive Guide
+Data-subject requests are the GDPR's most operationally demanding feature for small firms. An access
+request obliges the business to find personal data across every system, review it for third-party content,
+and deliver it within one month of receipt, with a documented two-month extension available only for
+complex cases (OBSERVED: EDPB SME guide, accessed 2026-09-25). An erasure request adds a
+deletion-and-retention decision with lasting consequences. Most small businesses handle these events
+ad hoc: the request sits in a shared inbox, nobody owns the clock, the search covers the CRM and
+stops, redactions happen by instinct, and the reasoning lives in someone's head. Each shortcut
+compounds the next until the deadline arrives with an indefensible file.
+The cost context is honestly tagged. Managed DSAR handling runs GBP 250-GBP 480 per request
+(OBSERVED: DSAR.ai, accessed 2026-09-25). GDPR consultancy bills GBP 125-GBP 150 per hour
+(OBSERVED: GDPR Local, accessed 2026-09-25). DSAR management tools list $99-$1,499 per
+month (OBSERVED: gdprdsar.com, accessed 2026-09-25). Against those anchors, a straightforward
+
+GDPR Data-Subject Request Handling Kit for SMBs  |  v1.0
+Page 2
+request handled in-house in about 1-2 hours of guided work (ESTIMATED) represents a large
+per-request avoided cost (DERIVED comparison, not a saving promise). The kit's position is measured:
+straightforward requests move in-house through this method; genuinely complex or disputed ones still
+go to counsel, arriving with organized facts that reduce billable orientation.
+Who pays for ad hoc handling today? The admin or ops staffer pays in anxious hours, researching
+duties from scratch on every request and second-guessing each redaction. The owner pays in
+exposure: a missed deadline or an incomplete search discovered later costs more to remediate than to
+prevent. The requester pays in slow, partial responses that invite complaints to the supervisory
+authority, converting a routine request into a regulatory contact. And counsel, when eventually
+engaged, bills for reconstructing facts the business should have logged at receipt.
+What changes after week one? By day 7 of the rollout in section 9, the buyer holds five concrete
+artifacts. A request register with every live request logged and deadline math running. A data-location
+map covering every system that holds personal data. A calibrated search checklist the team has tested
+on a sample subject. Draft-ready identity and clarification templates with the business's own contact
+details filled in. And an extension-discipline record showing which requests, if any, genuinely qualify.
+That is the difference between meeting the clock with a method and meeting it with improvisation.
+Why buy this instead of a free template? Free DSR sheets give you a log table and stop there. They
+contain no deadline computation, so the one-month clock is mental arithmetic that fails under load.
+They contain no search matrix, so coverage is asserted rather than proved. They contain no redaction
+reasoning structure, so withheld passages are undefended. They contain no erasure-decision record,
+so deletion-versus-retention calls cannot be reconstructed. And they contain no worked examples, so
+the first use is on a live request. This kit integrates four parts free sheets never combine: an
+intake-verify-clarify-search-decide workflow (section 3), EDATE-based deadline math with extension
+tracking (workbook sheets 1-2), a per-system search coverage method with rollups (workbook sheet 3),
+and a 10-day implementation sequence (section 9). The formulas are visible, extension use is policed
+by counting, and the redaction log makes every withheld passage defend itself.
+A note on honesty runs through the whole kit. Every factual claim carries an evidence tag: OBSERVED
+(with the source named), DERIVED (arithmetic from observed or buyer-supplied numbers),
+ESTIMATED (a round illustrative figure clearly labeled as such), or UNKNOWN (something neither the
+brief nor the buyer's data can support, left open, never filled with a guess). Deadline rules are cited to
+the EDPB SME guide as observed, never paraphrased into false certainty. Retention grounds in
+examples are illustrative; the buyer confirms each ground for its own records. That discipline is what
+makes the files defensible when a requester queries the response or an authority asks for the
+reasoning.
+The cost of the alternative is worth stating plainly. One outsourced request at the observed low-end
+managed rate (GBP 250) exceeds five times this kit's price (DERIVED). A single consultancy hour at
+GBP 125-GBP 150 exceeds twice it (DERIVED). This kit, at $69, performs the repeatable per-request
+labor those options charge for: roughly 1-2 hours of guided work per straightforward request
+(ESTIMATED) instead of an estimated 6-10 hours working without a method (ESTIMATED). The trade
+is clear: an afternoon of setup plus an hour per request in exchange for deadline confidence on every
+request that follows.
+
+GDPR Data-Subject Request Handling Kit for SMBs  |  v1.0
+Page 3
+Where small-firm searches actually fail deserves a closer look, because the CRM-only search is the
+signature failure of ad hoc handling. Personal data in a small business lives in the CRM, the email
+marketing list, support tickets, shared drives, accounting exports, chat histories, phone backups, and
+paper files. The search matrix in section 3 exists because requesters remember the forgotten stores:
+the marketing list nobody connected to the request, the archived tickets excluded from the export, the
+spreadsheet a departed staffer kept locally. The mapping exercise on day 2 of the rollout enumerates
+every store before any live search, and the checklist's unreviewed-system count must reach zero
+before a pack ships. Coverage proved row by row is the entire credibility of an access response;
+everything else is presentation.
+A further point on proportionality. Small firms sometimes over-respond from anxiety: demanding
+excessive identity proof, copying counsel on routine replies, or treating every request as hostile. The
+kit's posture is deliberately measured. Identity evidence must be proportionate to the situation; the
+template says so explicitly and the decision tree routes weak-ID cases to a single proportionate
+request, not an interrogation. Clarification questions are capped at five and framed cooperatively.
+Redactions protect third parties and exempt material only, logged per passage. Erasure retains what
+the business must keep, with grounds and review dates, rather than deleting defensively and
+destroying records the business needs. Restraint documented is as much a part of defensibility as
+thoroughness documented.
+The extension discipline deserves emphasis because extensions are the most abused feature of
+request handling. The EDPB rule permits two further months for complex cases with reasons given to
+the requester (OBSERVED: EDPB SME guide, accessed 2026-09-25). The deadline calculator tracks
+standard and extended dates side by side, counts extensions in use, and requires a recorded reason
+plus requester notification for each one. The worksheet in section 7 scores extension justification so the
+team learns what genuinely qualifies: multi-system searches with archive involvement, high-volume
+records, or parallel complex requests. A business that extends every request extends none credibly;
+the counter on the sheet keeps the exception exceptional. Where in doubt, the decision tree routes to
+counsel rather than to a self-granted extension.
+Parallel requests deserve their own planning because they arrive in clusters, not evenly. A breach
+notification, a press mention, or a departing customer's social post can generate several requests in
+one week, each with its own clock. The register handles this structurally: every row carries its own
+deadline and days-left flag, so triage by proximity is mechanical rather than debated. The practical
+rules are three. First, never borrow time from an early-deadline request to advance a later one; work in
+deadline order, always. Second, add the second searcher early: the data map names alternates per
+store precisely so parallel searching starts in hours, not days. Third, brief counsel at the cluster's start
+rather than per request, with the register attached; one briefing covering five rows costs far less than
+five separate engagements. The extension worksheet then polices honestly which rows genuinely
+qualify as complex, because a cluster feels complex without each member being so. Volume pressure
+is real, but the clock does not bend for it; staffing and sequencing are the only honest answers.
+The complaint path also repays understanding in advance. A requester who considers the response
+late, partial, or wrongly redacted may complain to the supervisory authority, and that complaint will ask
+for the file: the log row, the searches, the redaction grounds, the delivery proof. A business holding this
+kit's records answers from paper in an afternoon. A business without them reconstructs from memory
+under regulatory scrutiny, which is the most expensive possible context for improvisation. The QA
+
+GDPR Data-Subject Request Handling Kit for SMBs  |  v1.0
+Page 4
+checklist in section 10 exists largely for this audience: every check is a question an authority could ask,
+answered before it is posed. None of this requires fear of regulators to motivate; it requires only the
+recognition that documented work is reusable work, and the same file that satisfies a requester today
+satisfies an authority tomorrow.
+2. Quick Start
+Complete this 45-minute first session before touching anything else, preparation included. It triages live
+requests first, then maps data locations. Definition of done: every live request is logged with its
+deadline computed, every system holding personal data is listed, and the next action per request has
+an owner and a date.
+Step 1 - Triage live requests (15 minutes). Open the inbox and any other channel where requests
+arrive. Every message that is or might be a data-subject request becomes a register row immediately:
+reference, requester, type, receipt date, identity status. Compute the deadline by formula. If identity is
+unverified, queue the verification reply for same-day send; the clock runs from receipt regardless, so ID
+chasing starts now, not later. If any request is within 7 days of deadline, it jumps the queue: all
+remaining Quick Start time goes to it, and the owner is told today.
+Step 2 - Map data locations (20 minutes). List every place the business holds personal data: CRM,
+ticketing, marketing list, ecommerce orders, accounting, shared drives, chat tools, phone backups,
+paper files, archives. For each, record who can search it and roughly how (export function, admin
+search, manual review). This map becomes the search checklist's row set. Mark any store nobody can
+currently search (a departed staffer's local files, an archived system without access) as GAP with an
+owner and a recovery date; gaps found now are fixable, gaps found mid-request are emergencies.
+Step 3 - Set the weekly rhythm (10 minutes). Assign the register owner (usually the admin or ops
+staffer, with a named stand-in for absences), set a weekly 20-minute register review (deadlines, chase
+dates, extension flags), and file the four templates where the handler reaches them. Record the
+counsel contact for complex-case escalation. That rhythm is the definition of done: logged requests,
+mapped stores, owned review.
+Common first-session mistakes: debating whether a vague message counts as a request instead of
+logging it (log first, classify second; over-logging costs nothing, while an unlogged message carries the
+full deadline risk silently); mapping only the CRM and declaring the map complete; and treating the
+deadline as starting when convenient rather than from receipt. The register's EDATE formula settles
+the third mistake mechanically.
+Two edge cases come up regularly. Requests arriving by phone or in person: log them with the receipt
+date and a written note of what was asked, then confirm by email or letter restating the understanding;
+verbal requests carry the same clock. Multiple requests from the same person: one row each, linked by
+note, because deadlines and types may differ; batching them into a single row is how one deadline
+gets missed. Requests from agents or family members writing on someone's behalf: require authority
+evidence (written authorization or a legal basis such as parental responsibility) before disclosing
+anything, and correspond with the agent only once authority is recorded; the verification reply template
+adapts to this case by substituting the authority request for the ID request, with the same chase
+discipline.
+
+GDPR Data-Subject Request Handling Kit for SMBs  |  v1.0
+Page 5
+3. Main Toolkit
+The core method runs in five stages: Intake, Verify, Clarify, Search and Review, Decide and Respond.
+Each stage below is a subsection with inputs, procedure, and exit criteria.
+3.1 Intake - log everything immediately
+Inputs: the request message, the Request_Register sheet. Procedure: create the row within one
+business day of receipt: reference (DSR-YYYY-NNN), requester, type (access, erasure, rectification,
+restriction, portability, objection, or other with a note), receipt date, identity status. The deadline formula
+computes the one-month date automatically; days-left flags urgency. Acknowledge receipt promptly in
+plain terms without prejudging the outcome, confirming the reference number the requester should
+quote in follow-ups. File the original message with the row, preserving headers where available for
+authenticity. Exit criteria: row complete, deadline visible, acknowledgment sent, next action owned.
+3.2 Verify - confirm identity proportionately
+Inputs: the identity-verification reply template, whatever the requester has already provided. Procedure:
+where identity is reasonably established (request from the account email on file, matching details),
+record the basis and proceed; no reply needed. Where it is not, send the verification reply the same
+day: acknowledge, state exactly what is needed, keep it proportionate (one or two items, with obscuring
+guidance for documents), give the channel, and set a chase date. Never demand more than the
+situation calls for; excessive demands are themselves complainable. Record the outcome: ID received
+(proceed), partial (one focused follow-up), or silent past the chase date (second chase, then counsel on
+whether to close or hold). Exit criteria: identity recorded with basis, or chase cycle documented with
+dates.
+3.3 Clarify - narrow broad scope actionably
+Inputs: the scope-clarification letter template, the data-location map. Procedure: where the request is
+actionable as written, skip this stage and search. Where it is too broad to search safely ("everything
+you hold"), send the clarification letter within a few days: quote the original scope, ask three to five
+specific questions (date range, systems, formats), and state that answers will direct the search. Record
+answers as the search scope; non-answers after the reply-by date do not stop the clock, so proceed on
+a reasonable interpretation recorded in writing and invite correction. Exit criteria: search scope
+recorded (from answers or documented interpretation), systems to search listed.
+3.4 Search and review - prove coverage
+Inputs: the Search_Checklist matrix, the data-location map, the Redaction_Log. Procedure: one row
+per system per request. Search each store, record hits, mark reviewed only after a human has actually
+reviewed the hits (an export nobody opened is not reviewed). Log every redaction as it is made:
+document, field, whose data is protected, and the ground. Assemble the access pack behind the cover
+sheet: numbered enclosures, search coverage with dates, redaction references, anything withheld with
+reasons, and a query route. The unreviewed-system count must read zero before the pack ships. Exit
+criteria: every system row reviewed, every redaction logged, cover sheet complete, pack
+reviewer-signed.
+
+GDPR Data-Subject Request Handling Kit for SMBs  |  v1.0
+Page 6
+Search technique deserves practical detail. Start with the highest-yield stores (CRM, tickets, marketing
+list) to establish the bulk early, then work outward to drives, chats, and archives. For email and chat
+histories, search by the requester's known addresses and name variants, and record the query terms;
+a later query about completeness is answered from those notes. For shared documents, check
+comments and version histories where personal data hides. For archives and backups, follow the kit's
+noted-rotation pattern: record the scope that was and was not restored, with the reasoning, rather than
+silently skipping or needlessly restoring entire archives. Each technique note is filed per request so the
+method improves with repetition.
+Cover-sheet assembly has its own discipline worth stating. The cover sheet is written last but reviewed
+first: it is the document the requester actually reads, and its inventory must match the enclosures
+exactly. Number enclosures physically (file names or page ranges, not vague descriptions) so a
+missing item is detectable. State the search coverage with dates per system; a requester who sees
+four systems with dates trusts the response more than one who reads a bare assertion of
+completeness. Reference each redaction by log ID so the reasoning is traceable without re-explaining.
+And include the query route with a real timeframe, because follow-up questions are normal and a pack
+without a contact reads as a closed door. The reviewer signs the cover sheet only after verifying each
+of these against the underlying rows; the signature is the control, not a formality.
+3.5 Decide and respond - close defensibly
+Inputs: the assembled pack or the erasure-decision record, the Deadline_Calculator. Procedure for
+access: send the pack through a tracked channel before the deadline, file delivery evidence, and diary
+the 30-day query window. Procedure for erasure: complete the decision record (scope, found records,
+deleted items with confirmation, retained items with grounds and review dates), execute deletion, notify
+the requester with the record attached, and file everything. Where the extension applies, notify the
+requester with reasons before the standard deadline expires and track the extended date. Exit criteria:
+response sent with delivery filed, or erasure executed with confirmations and requester notice filed, all
+inside the applicable deadline.
+Erasure judgment calls deserve explicit guidance. Retention grounds in the worked example (tax
+records, audit-trail IDs) are illustrative; the buyer confirms each ground for its own records against
+applicable law and counsel where uncertain. Backup handling follows disclosure: tell the requester
+backups expire on rotation rather than claiming instant deletion everywhere, because the latter is
+usually untrue and the former is defensible. Third-party data mixed into the requester's records is
+redacted under the log, not deleted wholesale, where the business must preserve its own records.
+Each of these rules is stated in the decision record's guidance so the handler applies them consistently
+across requests.
+Non-access request types follow the same machinery with adjusted outputs. Rectification (correction)
+requests: verify the claimed inaccuracy against source records, correct where wrong with a dated note
+of the change, and decline with written reasons where the record is accurate and the requester
+disagrees (recording their statement alongside is the recognized pattern). Restriction requests: flag the
+records as restricted in each live system, confirm processing pauses except storage and agreed
+purposes, and diary the restriction's review. Portability requests: export the provided-by-the-requester
+data in a structured, commonly used format with the same cover-sheet inventory discipline, noting that
+observed data and inferred data sit outside the portable set. Objection requests: record the objection,
+
+GDPR Data-Subject Request Handling Kit for SMBs  |  v1.0
+Page 7
+assess the compelling-grounds balance with counsel where the business intends to continue, and
+confirm the outcome in writing. None of these needs a separate kit; the register row, the deadline math,
+the search matrix, and the filed reasoning transfer directly, with only the response document changing
+shape.
+3.6 Deadline and extension governance
+Parallel to the stages, the Deadline_Calculator governs time. Standard and extended dates compute
+by formula; extension rows require a reason and a requester-notification flag. Review extensions
+weekly: the count of extensions in use should stay small, each with its documented complexity ground.
+Where a deadline will be missed despite effort, the playbook is candid: inform the requester with
+reasons and a delivery date, record the miss with its cause, fix the process gap in the review, and take
+counsel where the miss carries dispute risk. A documented miss with a corrected process reads very
+differently from a silent one discovered later.
+4. Templates
+Template 1 - Identity verification reply. Purpose: prompt, proportionate ID handling with chase
+discipline. Field-by-field: request reference; reply date; what was received and when; specific
+proportionate evidence requested; submission channel; chase date; handler name. Worked example:
+the DSR-2026-032 reply in templates.json, with ID received six days later and the search starting the
+same day.
+Template 2 - Scope clarification letter. Purpose: convert over-broad requests into searchable scope
+cooperatively. Field-by-field: reference and date; quoted original scope; three to five specific questions;
+systems the answers will direct; reply-by date; handler name. Worked example: the DSR-2026-033
+letter, answered in four days with scope recorded across four systems.
+Template 3 - Access response pack cover sheet. Purpose: inventory and accountability for the finished
+pack. Field-by-field: reference and requester; period covered; numbered enclosures; systems searched
+with dates; redaction count with log references; anything withheld with reasons; query route with
+timeframe. Worked example: the DSR-2026-031 pack sent 2026-10-02 with two logged redactions and
+zero withholdings beyond them.
+Template 4 - Erasure decision record. Purpose: the full audit trail behind deletion and retention.
+Field-by-field: reference and requester; deletion scope; records found system by system; deleted items
+with dates and confirmations; retained items with grounds and review dates; requester notice with date
+and channel; approver with date. Worked example: the DSR-2026-035 record decided 2026-10-09 with
+backup-rotation disclosure.
+Review cadence for the templates: the identity and clarification templates are per-request
+correspondence, filed with their request. The cover sheet ships per access pack with reviewer sign-off.
+The erasure record is per erasure decision, retained with the retention review dates it sets. After each
+real request, note any template friction (a missing field, an unclear instruction) and update the template;
+quarterly, verify contact details embedded in each one. Retention review dates deserve their own diary
+discipline: when a retained record's review date arrives, pull the erasure record, confirm the ground still
+holds or delete then, and file the revisit note. A retention ground confirmed once and never revisited
+decays into precisely the indefinite storage the requester originally challenged.
+
+GDPR Data-Subject Request Handling Kit for SMBs  |  v1.0
+Page 8
+5. Checklists
+Intake checklist:
+ - [ ] Request logged within one business day with type and receipt date
+- [ ] Deadline computed by formula and visible in the register
+- [ ] Original message filed with the row
+- [ ] Acknowledgment sent without prejudging the outcome
+- [ ] Identity status assessed and next action owned
+Verification checklist:
+ - [ ] Identity basis recorded, or verification reply sent same-day
+- [ ] Evidence requested is proportionate and specific
+- [ ] Chase date set and diaried
+- [ ] Outcome recorded (verified, partial follow-up, or documented chase cycle)
+Search checklist (per request):
+ - [ ] Every mapped system has a checklist row
+- [ ] Every row shows Reviewed = Y with reviewer and date
+- [ ] Query terms recorded for message-history searches
+- [ ] Archive and backup scope noted with reasoning
+- [ ] Unreviewed-system count reads zero
+Response checklist:
+ - [ ] Cover sheet complete with enclosures numbered
+- [ ] Every redaction logged with ground before the pack ships
+- [ ] Pack reviewer-signed and sent through a tracked channel
+- [ ] Delivery evidence filed; query window diaried
+- [ ] Erasure decisions carry confirmations plus retention grounds and review dates
+Governance checklist (weekly):
+ - [ ] Register reviewed: deadlines, chase dates, extension flags
+- [ ] Extensions in use each carry a reason and requester notice
+- [ ] Overdue or near-due rows have named owners and dates
+- [ ] Template friction notes collected for the quarterly update
+6. Decision Trees
+Intake classification flow. Start: message received that may be a request. Is it from or about an
+identifiable living individual and does it concern their personal data? If yes, log as a request row now;
+classify the type second. If genuinely unclear, log it as a possible request with a 2-day classification
+task owned by the register owner. Never leave an unlogged message while deciding; the log costs
+seconds and the missed clock costs far more.
+
+GDPR Data-Subject Request Handling Kit for SMBs  |  v1.0
+Page 9
+Verify-versus-proceed flow. Start: identity evidence in hand. Request from the account email on file
+with matching details? Proceed, recording the basis. Unknown address or third party writing on
+someone's behalf? Send the verification reply (or authority evidence for agents) same-day with a chase
+date. Partial evidence? One focused follow-up naming exactly what is missing. Silent past two chases?
+Counsel on close-or-hold; record the advice and follow it.
+Extension flow. Start: standard deadline within 10 days and work incomplete. Is the case genuinely
+complex (multi-system search with archive involvement, high-volume records, parallel complex
+requests)? If yes, notify the requester with reasons before the standard deadline, record the extended
+date, and track it. If no, reassign effort to finish on time: narrow remaining scope, add a searcher, or
+brief counsel on partial response. Complexity discovered after the standard deadline has passed is
+handled as a documented miss per section 3.6, not a retroactive extension.
+Redaction flow (per passage). Start: does the passage contain third-party personal data or exempt
+material? If no, disclose. If yes, can the third-party content be separated (redact the names, disclose
+the rest)? If yes, log the redaction with its ground and disclose the remainder. If no (inextricably mixed),
+log the withholding with its ground and state it on the cover sheet. Every branch ends in a log row; a
+withheld passage without one does not exist defensibly.
+Erasure flow. Start: erasure requested. Identify each record holding the requester's data. Must the
+business keep it (tax law, contract performance, legal claims, other documented ground)? If yes, retain
+with ground and review date recorded, and tell the requester. If no, delete, confirm deletion, and record
+the confirmation. Backups: note rotation expiry to the requester rather than claiming instant erasure.
+Mixed records: redact third-party content under the log where the business retains its own records.
+Close with the decision record approved and the requester notified.
+Follow-up query flow. Start: requester queries the response within the diary window. Is the query a
+correction of fact (a missing system, a wrong date, an unexplained redaction)? If yes, treat it as a
+restricted new task with its own 2-week internal target: investigate, supplement the pack or correct the
+record, and reply with what changed and why. Is it dissatisfaction without new facts (disagreement with
+a lawful retention, unhappiness with redactions)? If so, reply once with the grounds restated plainly and
+the complaint route signposted; do not re-argue indefinitely. Is it a genuinely new request (new data
+type, new period)? If so, open a fresh register row with its own clock rather than stretching the old one.
+Log every query against the original reference so the full correspondence reconstructs as one thread.
+Queries handled this way rarely escalate; queries ignored almost always do.
+7. Worksheets
+Worksheet A - Search completeness record (per request). Copy each system row with hits and review
+status; total hits via the rollup formula; confirm the unreviewed count is zero. Record any GAP store
+with its recovery plan. Interpretation: complete means every mapped store searched and reviewed with
+evidence; a pack shipping over an incomplete matrix is the failure this worksheet exists to prevent.
+Worksheet B - Extension justification score (per extension). Rate three factors 1-5: system spread
+(stores involved), volume (records to review), and contention (parallel requests competing for the
+handler). Total 3-15; 9+ supports extension with the reasoning recorded, below 9 means finish on time
+by reassigning effort. Interpretation: the score disciplines the exception; extensions granted below the
+line more than occasionally signal understaffing to fix rather than clocks to extend.
+
+GDPR Data-Subject Request Handling Kit for SMBs  |  v1.0
+Page 10
+Worksheet C - Redaction review record (per pack). List each logged redaction with its ground; a
+second pair of eyes confirms proportionality (narrowest withholding that protects the interest). Record
+confirmations with dates. Interpretation: complete when every cover-sheet redaction traces to a log row
+and every log row carries a reviewer confirmation; unconfirmed redactions do not ship.
+Worksheet D - Request retrospective (per quarter). Aggregate counts: requests by type, on-time rate
+(DERIVED), extensions used with grounds, chase cycles needed, template friction notes. Identify one
+process fix for next quarter with an owner. Interpretation: the retrospective converts per-request effort
+into institutional learning; a quarter with no identified fix was not examined honestly.
+8. Worked Examples
+Example 1 - The straightforward access request (DSR-2026-031). E. Whitfield emails from the account
+address on file requesting access to personal data, received 2026-09-04. Identity: established from the
+account email, basis recorded, no reply needed. Deadline computes to 2026-10-04 by EDATE formula.
+Search across four systems yields 17 hits: CRM contacts and tickets (14, including 3 archived),
+marketing list (2 with consent history), shared drive (1). Review surfaces two third-party passages
+logged as R-031-01 and R-031-02. Pack ships 2026-10-02, two days inside the deadline: cover sheet,
+contact export, 14 tickets with two redactions, consent history. Delivery filed; query window diaried with
+no query received. Handler time: about 1.5 hours across three sessions (ESTIMATED). The file
+reconstructs end to end: log row, searches with dates, redaction grounds, cover sheet, delivery.
+Example 2 - The erasure with retention (DSR-2026-035). J. Lindqvist requests erasure of all account
+and marketing data, received 2026-09-20, identity verified from account details. Search finds the CRM
+record, two marketing-list entries, three closed tickets, and invoice copies in accounts. Decision: delete
+the CRM record, marketing entries, and ticket contents (executed 2026-10-07, confirmed 2026-10-08);
+retain invoice copies under tax-record retention with a 2032 review date and bare ticket IDs for the
+audit trail. Backups disclosed as expiring on rotation. Requester notified 2026-10-09 with the decision
+record attached, inside the 2026-10-20 deadline. Handler time: about 2 hours plus the IT confirmation
+wait (ESTIMATED). The retention grounds are illustrative and the buyer's own grounds require
+confirmation, but the structure (found, deleted with proof, retained with ground and date, requester told)
+transfers to any case.
+What the two examples prove together: Example 1 shows the access path where the machinery
+produces a complete, on-time pack from a clean search. Example 2 shows the erasure path where the
+same machinery justifies keeping records, with grounds and dates, rather than deleting defensively.
+Both meet the clock with margin, both file reasoning that survives later questions, and both cost about
+an hour or two of guided work against the observed GBP 250-GBP 480 outsourced per-request range.
+Figures above are illustrative estimates from realistic example data, not promises about any buyer's
+requests.
+A third pattern worth studying is the identity-chase case that tests the clock (DSR-2026-032). T.
+Mensah's erasure request arrives 2026-09-12 from an address matching no record. The verification
+reply goes out 2026-09-13 requesting an order confirmation or account ID plus one obscured photo-ID
+document, with a chase date of 2026-09-20. No reply arrives; the second chase goes out 2026-09-21.
+ID arrives 2026-09-24 and matches a 2023 customer record. The deadline, running from receipt, reads
+2026-10-12: eighteen days remain, enough for a focused search but not for drift. The search runs
+
+GDPR Data-Subject Request Handling Kit for SMBs  |  v1.0
+Page 11
+2026-09-25 to 2026-09-29, deletion executes 2026-10-02, and the requester is notified 2026-10-06, six
+days inside the clock. The lesson is structural: the chase cycle consumed twelve of thirty days without
+touching the deadline, which is why the reply goes same-day and the chase dates are diaried rather
+than remembered. A verification reply sent a week late would have left eleven days for the entire
+substantive job. Handler time beyond the waiting: about 2.5 hours (ESTIMATED). The file shows every
+date, both chases, and the reasoning, so the compressed substantive phase reads as diligence, not
+rush.
+9. Implementation Workflow
+Day 1 - Run the 45-minute Quick Start (section 2). Output: live requests logged, data map drafted,
+review rhythm set. Day 2 - Complete the data map: confirm search access per store, resolve GAPs or
+date their recovery, add the map's rows to the search checklist. Day 3 - Fill the business's details into
+all four templates (contact addresses, handler names, counsel contact); test the deadline formulas with
+a sample date. Day 4 - Run a sample search: pick a real (or test) subject, search two systems, log one
+mock redaction, assemble a practice cover sheet; debrief friction. Day 5 - Process live requests
+through intake to search; send verification or clarification letters where needed. Day 6 - Complete first
+searches and reviews; log redactions; draft first packs or decision records. Day 7 - Week-1 checkpoint:
+register current, searches provable, correspondence filed. Record open items with owners. Day 8 -
+Handle responses due: reviewer sign-off, tracked sending, delivery filing, query diaries. Day 9 - Close
+erasure decisions due: confirmations collected, requester notices sent, retention dates diaried. Day 10
+- Final review: every checklist in section 5 walked once, retrospective template scheduled quarterly,
+one process fix identified with an owner. Write the one-page closeout: requests handled, timeliness,
+open items with owners and dates. Confirm the weekly 20-minute register review is in the calendar as a
+recurring event with a named stand-in for the register owner's absences; the method survives holidays
+only if the review does.
+Contingency notes for the plan. If a deadline-critical request lands mid-rollout, it preempts everything:
+the partial kit (register, one template, counsel number) handles it today while setup resumes after. If the
+business discovers unsearchable stores (legacy archives, ex-staff devices), the GAP plan from section
+2 governs: recovery dated and owned, interim disclosure notes drafted for affected requests. If request
+volume spikes (a breach or press event generating parallel requests), triage by deadline proximity, add
+a second searcher from the map's named alternates, and brief counsel early; the extension worksheet
+polices which cases genuinely qualify. None of these events restarts the plan; each is handled inside
+its day with owner and date recorded.
+10. QA / Validation Checklist
+Verify the work before relying on it. Recompute one deadline chain by hand from a receipt date; the
+EDATE formulas must reproduce exactly, including across month-ends and the December-to-January
+boundary where manual arithmetic most often slips. Trace every pack's redactions to log rows with
+grounds and confirmations. Confirm no pack shipped with an unreviewed system row. Confirm every
+extension carries a reason and a requester notice with dates. Confirm the data map covers every store
+a sample search can name; any store found mid-request becomes a map addition plus a process note.
+Confirm no promissory or banned language appears in any record: deadlines are computed, outcomes
+
+GDPR Data-Subject Request Handling Kit for SMBs  |  v1.0
+Page 12
+are documented, never promised. If any check fails, fix it before the closeout is signed.
+Run the language check last. Search all records for promissory terms: nothing may promise a response
+outcome, an authority's view, or a requester's satisfaction before it is confirmed. Verify every external
+figure carries its evidence tag and access date: EDPB guide, DSAR.ai, GDPR Local, gdprdsar.com.
+Verify all ESTIMATED figures are labeled with their basis. Confirm the closeout distinguishes requests
+completed on time (with delivery proof) from ones still in flight (with owners and dates); blending the
+two misleads exactly when accuracy matters most.
+11. Version Information
+Version 1.0 - September 2026
+12. Disclaimer / Scope
+This kit is an informational and organizational aid for handling data-subject requests. It is not legal
+advice, and nothing in it predicts or promises any request outcome, authority view, or requester
+response. EDPB and national data-protection authority guidance is authoritative; verify the duties that
+apply to each request there and with licensed counsel before acting, especially for complex cases,
+disputed identity, retention grounds, and extensions. Deadline computation follows the EDPB SME
+guide as observed; the buyer remains responsible for correct application, including any
+jurisdiction-specific detail. Retention grounds in examples are illustrative starting points, not
+determinations. UNKNOWN items in this kit are left open deliberately rather than filled with guesses.
+The buyer is responsible for confirming all decisions against primary sources and professional advice.
+13. README
+Files in this package and how they fit together. guide.md (this file, rendered to PDF) - the full
+operating method: executive case, quick start, five-stage method, template fill guides, checklists,
+decision trees, scored worksheets, two worked examples with numbers, the 10-day rollout, QA checks,
+version, disclaimer, and change log. gdpr_dsr_handling_kit_workbook.xlsx - four sheets:
+Request_Register (intake rows with EDATE deadlines and days-left flags), Deadline_Calculator
+(standard and extended dates with extension tracking), Search_Checklist (per-system coverage with
+hit rollups and unreviewed counts), Redaction_Log (per-passage grounds with completeness checks).
+gdpr_dsr_identity_verification_reply.docx - proportionate ID handling with a completed
+example. gdpr_dsr_scope_clarification_letter.docx - cooperative scope narrowing with a
+completed example. gdpr_dsr_access_response_cover_sheet.docx - pack inventory with a
+completed example. gdpr_dsr_erasure_decision_record.docx - deletion-and-retention audit
+trail with a completed example. Suggested use order: read sections 1-2, run the Quick Start, map data
+stores, dry-run a sample search, execute the 10-day plan.
+14. Change Log
+1.0 - initial release (September 2026).

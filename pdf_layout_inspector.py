@@ -64,7 +64,26 @@ _SHOW = re.compile(rb"(?:\[.*?\]\s*TJ|\(.*?\)\s*Tj)", re.S)
 
 
 def _extract_page_data(page) -> tuple[list[tuple[float, float]], tuple[float, ...]]:
-    """Return [(x, y)] text-show positions and the MediaBox."""
+    """
+    Return [(x, y)] ABSOLUTE text-show positions and the MediaBox.
+
+    Cycle 89 REAL BUG -- 642 false positives on the GDPR guide. This
+    function ignored the `cm` (current transformation matrix) operator, so any
+    page that used `1 0 0 1 67.2 672 cm` to position a block reported the
+    block's LOCAL text coordinates as if they were absolute. A page with a
+    correct 67pt left margin was reported as text anchored at x=0, i.e.
+    "about to be clipped by every printer".
+
+    The content stream made it obvious:
+        1 0 0 1 67.2 672 cm
+        BT 1 0 0 1 0 49.5 Tm (...) Tj
+    Absolute position is (67.2, 721.5). The un-transformed reading (0, 49.5)
+    is off the page entirely.
+
+    A layout checker that cries wolf is worse than none: it would have
+    "repaired" a perfectly good product. CTM translation is now tracked,
+    including q/Q save/restore.
+    """
     try:
         content = page.get_contents()
         data = content.get_data() if content is not None else b""
@@ -75,25 +94,58 @@ def _extract_page_data(page) -> tuple[list[tuple[float, float]], tuple[float, ..
     box = (float(mb.left), float(mb.bottom), float(mb.right), float(mb.top))
 
     positions: list[tuple[float, float]] = []
-    x = y = 0.0
-    # Walk the stream in order so Td/TD accumulate onto the current position.
-    for m in re.finditer(
-            rb"(?P<tm>[-\d.\s]+Tm)|(?P<td>[-\d.\s]+T[dD])|(?P<show>\[(?:[^\[\]]|\\.)*\]\s*TJ|\((?:[^()\\]|\\.)*\)\s*Tj)",
-            data, re.S):
-        if m.group("tm"):
-            nums = [float(x) for x in m.group("tm").split()[:6]]
+    x = y = 0.0            # text-space origin
+    ctm_e = ctm_f = 0.0    # CTM translation
+    ctm_stack: list[tuple[float, float]] = []
+
+    token = re.compile(
+        rb"(?P<tm>[-\d.]+\s+[-\d.]+\s+[-\d.]+\s+[-\d.]+\s+[-\d.]+\s+[-\d.]+\s+Tm)"
+        rb"|(?P<td>[-\d.]+\s+[-\d.]+\s+T[dD])"
+        rb"|(?P<cm>([-\d.]+\s+){6}cm)"
+        rb"|(?P<q>\bq\b)"
+        rb"|(?P<Q>\bQ\b)"
+        rb"|(?P<show>\[(?:[^\[\]]|\\.)*\]\s*TJ|\((?:[^()\\]|\\.)*\)\s*Tj)",
+        re.S)
+
+    for m in token.finditer(data):
+        kind = m.lastgroup
+        if kind == "tm":
+            try:
+                nums = [float(v) for v in m.group("tm").split()[:6]]
+            except ValueError:
+                continue
             if len(nums) == 6:
                 x, y = nums[4], nums[5]
-                positions.append((x, y))
-        elif m.group("td"):
-            nums = [float(v) for v in m.group("td").split()[:2]]
+                positions.append((ctm_e + x, ctm_f + y))
+        elif kind == "td":
+            try:
+                nums = [float(v) for v in m.group("td").split()[:2]]
+            except ValueError:
+                continue
             if len(nums) == 2:
                 x += nums[0]
                 y += nums[1]
-                positions.append((x, y))
-        else:
+                positions.append((ctm_e + x, ctm_f + y))
+        elif kind == "cm":
+            try:
+                nums = [float(v) for v in m.group("cm").split()[:6]]
+            except ValueError:
+                continue
+            if len(nums) == 6:
+                # translation is the last two operands; rotation/scale are
+                # tracked as ignored because the shipped layouts use pure
+                # translation. A rotated block would need full matrix maths.
+                ctm_e += nums[4]
+                ctm_f += nums[5]
+        elif kind == "q":
+            ctm_stack.append((ctm_e, ctm_f))
+        elif kind == "Q":
+            if ctm_stack:
+                ctm_e, ctm_f = ctm_stack.pop()
+        elif kind == "show":
             if positions:
-                positions.append((x, y))
+                positions.append((ctm_e + x, ctm_f + y))
+
     return positions, box
 
 

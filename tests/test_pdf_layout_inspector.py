@@ -88,6 +88,71 @@ class TestLayoutInspector(unittest.TestCase):
         self.assertTrue(r.findings)
 
 
+class TestCtmFalsePositiveRegression(unittest.TestCase):
+    """
+    Cycle 89: this checker reported 642 MARGIN_BREACH findings on the GDPR
+    guide, every one of them false. The page positions its body with
+    `1 0 0 1 67.2 672 cm` and then draws text at local (0, 49.5); absolute
+    position is (67.2, 721.5), a correct 67pt margin. The extractor ignored
+    `cm`, so local coordinates were reported as absolute and a perfectly good
+    product looked like it was about to be clipped by any printer.
+
+    These tests pin the transform handling so a good layout cannot be
+    "repaired" into a broken one.
+    """
+
+    import tempfile
+
+    def _pdf_with_cm(self, path, cm=(67.2, 672.0), local=(0.0, 49.5)):
+        w = PdfWriter()
+        w.add_blank_page(width=612, height=792)
+        page = w.pages[0]
+        e, f = cm
+        lx, ly = local
+        stream = (f"1 0 0 1 {e} {f} cm "
+                  f"BT 1 0 0 1 {lx} {ly} Tm /F1 12 Tf "
+                  f"(TRANSFORMED) Tj ET").encode()
+        from pypdf.generic import DecodedStreamObject, NameObject
+        obj = DecodedStreamObject()
+        obj.set_data(stream)
+        page[NameObject("/Contents")] = w._add_object(obj)
+        with open(path, "wb") as fh:
+            w.write(fh)
+        return path
+
+    def test_transformed_text_is_not_reported_as_edge(self):
+        p = Path(self.tempfile.gettempdir()) / "gf_ctm_ok.pdf"
+        self._pdf_with_cm(p)
+        r = pli.inspect_pdf_layout(str(p))
+        self.assertEqual(
+            len(r.findings), 0,
+            f"false positive -- transformed text inside a proper margin was "
+            f"reported: {[f.evidence for f in r.findings][:3]}")
+        p.unlink(missing_ok=True)
+
+    def test_real_breach_still_caught_through_a_transform(self):
+        """The fix must not blind the checker: genuinely edge-hugging text
+        under a transform must still fail."""
+        p = Path(self.tempfile.gettempdir()) / "gf_ctm_bad.pdf"
+        self._pdf_with_cm(p, cm=(2.0, 2.0))
+        r = pli.inspect_pdf_layout(str(p))
+        self.assertFalse(r.ok)
+        self.assertIn("MARGIN_BREACH", {f.rule for f in r.findings})
+        p.unlink(missing_ok=True)
+
+    def test_real_gdpr_guide_is_clean(self):
+        import os
+        pdf = os.path.join(
+            "cohort_GF_SHOPIFY_PREMIUM_10_2026_09", "dist", "GF-SHOP-02",
+            "gdpr_dsr_handling_kit_guide.pdf")
+        if not os.path.exists(pdf):
+            self.skipTest("product not present")
+        r = pli.inspect_pdf_layout(pdf)
+        self.assertEqual(len(r.findings), 0,
+                         "the GDPR guide has a correct margin; a finding here "
+                         "means the transform bug is back")
+
+
 class TestShippedProductsAreLayoutClean(unittest.TestCase):
     """Regression: if a future regeneration introduces clipping, fail here."""
 
