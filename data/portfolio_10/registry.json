@@ -191,7 +191,6 @@
     "claim_integrity": "N/A",
     "price_usd": null,
     "blockers": [
-     "live file on Gumroad predates the 2026-10-14 glyph repair; local repaired copy needs re-upload (approval)",
      "legal/regulatory accuracy not yet checked against primary sources"
     ]
    },
@@ -200,6 +199,12 @@
     "price_usd": 79.0,
     "sales": 0,
     "gumroad_id": "LzOV85deBGdLgNZmvpvYGw=="
+   },
+   "p3_replacement": {
+    "live_file_before": "books/etsy_suspension_complete_bundle.zip (173,373 B): guide PDF with 22 in-word black boxes; evidence tracker with 0 formulas",
+    "live_file_now": "books/_releases/etsy_suspension_complete_bundle_v3.zip (176,766 B): PDF repaired 22->0 (text otherwise identical), upgraded workbook (215 formulas), other 4 members byte-identical",
+    "verified": "update_product_file PASS: one zip of 176,766 B attached; published=true; price unchanged $79",
+    "rollback": "backups/live_rollback_2026-10-14/etsy_suspension_complete_bundle.zip (sha1 matches original)"
    }
   },
   {
@@ -354,6 +359,12 @@
     "price_usd": 59.0,
     "sales": 0,
     "gumroad_id": "2NIVAf0Nu4SE2DgAL9buYw=="
+   },
+   "pricing": {
+    "live": 59,
+    "proposed": 29,
+    "status": "PROPOSAL_AWAITING_FOUNDER",
+    "audit": "data/portfolio_10/pricing_audit_2026-10-14.md"
    }
   }
  ],
@@ -548,5 +559,19 @@
   "Verified B2B Lead Lists $99 (UNPUBLISHED 2026-10-14, false claim)",
   "Cottage Food / Homebuyer Inspection / Dental Insurance / Landlord Move-In kits (live, not selected)"
  ],
- "correction": "2026-10-14: GET /v2/products is paginated (8 pages, 79 products). The first selection's 'already live' tie-break used only page 1, so it is recomputed here on the full inventory (data/portfolio_10/gumroad_inventory_2026-10-14.json)."
+ "correction": "2026-10-14: GET /v2/products is paginated (8 pages, 79 products). The first selection's 'already live' tie-break used only page 1, so it is recomputed here on the full inventory (data/portfolio_10/gumroad_inventory_2026-10-14.json).",
+ "outside_portfolio_actions": [
+  {
+   "item": "Etsy Suspension Appeal Kit $29 (/l/fgruzn)",
+   "action": "file replaced with repaired bundle (170,027 B), verified; rollback backups/live_rollback_2026-10-14/etsy_suspension_appeal_kit_v2_bundle.zip"
+  },
+  {
+   "item": "GALAXY FORGE API TEST - DO NOT BUY ($1)",
+   "action": "unpublished, verified published=false"
+  },
+  {
+   "item": "Landlord Move-In Inspection Pack $49",
+   "action": "pricing proposal $27 (not applied)"
+  }
+ ]
 }
