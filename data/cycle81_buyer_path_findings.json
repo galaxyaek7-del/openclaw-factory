@@ -1,0 +1,68 @@
+{
+  "probe": "cycle81_buyer_path",
+  "cost_usd": 0,
+  "purchases_made": 0,
+  "writes_performed": 0,
+  "bundle_deliverable_integrity": {
+    "fgruzn": {
+      "local_v3_bytes": 170027,
+      "claimed_bytes": 170027,
+      "exact_match": true,
+      "live_page_size": "166 KB",
+      "binary_kib": 166.0,
+      "consistent": true,
+      "zip_crc": "OK",
+      "members": 5,
+      "zero_byte": 0,
+      "xlsx_formulas": 215,
+      "verdict": "PASS -- deliverable itself verified"
+    },
+    "bfhpzl": {
+      "local_v3_bytes": 176766,
+      "claimed_bytes": 176766,
+      "exact_match": true,
+      "live_page_size": "173 KB",
+      "binary_kib": 172.6,
+      "consistent": true,
+      "zip_crc": "OK",
+      "members": 6,
+      "zero_byte": 0,
+      "xlsx_formulas": 215,
+      "verdict": "PASS -- deliverable itself verified"
+    }
+  },
+  "live_attachment_identity": {
+    "status": "NOT_VERIFIABLE",
+    "reason": "products API and public page expose size only -- no filename, no checksum, no upload timestamp, no file_url",
+    "purchases_prohibited": true
+  },
+  "sales_page_manifest_mismatch": {
+    "product": "/l/bfhpzl",
+    "entries_total": 6,
+    "mismatched": 2,
+    "details": [
+      {
+        "file": "etsy_suspension_appeal_kit.pdf",
+        "page_claims": "122 KB",
+        "actual_bytes": 138923,
+        "actual_kib": 135.7,
+        "actual_kb_dec": 138.9
+      },
+      {
+        "file": "etsy_appeal_evidence_tracker.xlsx",
+        "page_claims": "6 KB",
+        "actual_bytes": 15011,
+        "actual_kib": 14.7,
+        "actual_kb_dec": 15.0
+      }
+    ],
+    "cause": "workbook was upgraded 0->215 formulas and the PDF was repaired; the sales copy was not updated",
+    "severity": "consumer-facing false claim; page invites the buyer to verify against it",
+    "fix_requires": "live Gumroad description update (BLOCKED)"
+  },
+  "ether2": {
+    "status": "NOT_FOUND",
+    "scope": "live catalog + full repo reference scan",
+    "action": "no action taken"
+  }
+}
