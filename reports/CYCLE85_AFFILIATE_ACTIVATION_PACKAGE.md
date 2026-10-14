@@ -1,0 +1,157 @@
+# CYCLE 85 — AFFILIATE ACTIVATION PACKAGE
+
+**Prepared:** 2026-10-14 · **Cost:** $0 · **Status:** prepared, **nothing sent, nothing configured**
+
+---
+
+## 1. THE PRODUCT SELECTED
+
+### **EU AI Act Compliance Toolkit — $155**
+**https://aekraft.gumroad.com/l/iaiyt**
+
+Chosen on the three criteria, not on price alone:
+
+| Criterion | Evidence |
+|---|---|
+| **Delivery quality** | 2 PDFs, byte-verified: 106,314 + 139,401 bytes, SHA-256 recorded, 3 + 31 pages, 3,266 words, real text extracted. `Not Legal Advice` is Chapter 1 in the shipped bytes. |
+| **Customer benefit** | The obligation is real and dated. The toolkit states the deferred high-risk deadline (2 Dec 2027) rather than the superseded 2 Aug 2026 claim — a correction made *against* the product's own earlier sales copy. |
+| **Audience clarity** | One buyer, one job: an EU SME compliance/ops owner who must produce evidence. Not a hobbyist, not a developer. |
+
+**Why not the cheaper candidates — this is the decisive part.**
+
+A $29 product nets **$24.46** after Gumroad and card fees. Pay a 30% affiliate and the seller keeps **$15.76**. A $59 product nets $50.59; after 30%, **$32.89**. Those numbers cannot support a serious affiliate programme, and an affiliate who earns $5.80 per sale has no reason to spend an hour on it.
+
+The $155 product nets **$134.20**. At 30% it still keeps **$87.70** — which clears the factory's own $70 elite profit floor. It is the only listing on the account where affiliate promotion is economically coherent.
+
+---
+
+## 2. THE FEES ARE NOT WHAT THE CONFIG SAYS
+
+`config/economics.json` records Gumroad as `royalty_rate 0.9, flat_fee_usd 0.0`, annotated *"Simplified"*.
+
+Gumroad's own fee article says:
+
+> *"For sales made on Gumroad's website, we charge a **10% + $0.50** fee per
+> transaction. This does not include: **Credit card processing (2.9% + $0.30)**"*
+> — https://gumroad.com/help/article/66-gumroads-fees
+
+Real cost per direct card sale: **~12.9% + $0.80**, not 10%.
+
+This is not a rounding detail. The fixed $0.80 is **2.8% of a $29 sale** and **0.5% of a $155 sale**. Every margin this factory has computed from that config is overstated, and the error is worst exactly where the products are cheapest.
+
+Also worth knowing: a **Discover/marketplace sale costs a flat 30%** — nearly double a direct sale. An affiliate must be given the **direct product link**, never a Discover link.
+
+### Real margin table (quoted rates, not estimates)
+
+| Product | Price | Seller net before affiliate | @20% | @25% | @30% |
+|---|---|---|---|---|---|
+| **EU AI Act Toolkit** | $155 | **$134.20** | $103.20 | $95.45 | **$87.70** |
+| Clinic No-Show | $59 | $50.59 | $38.79 | $35.84 | $32.89 |
+| Turo Guest Dispute | $29 | $24.46 | $18.66 | $17.21 | $15.76 |
+| CCPA Action Kit | $29 | $24.46 | $18.66 | $17.21 | $15.76 |
+
+---
+
+## 3. RECOMMENDED COMMISSION: **30%**
+
+Within Gumroad's documented 1–75% range for "Your Affiliates".
+
+Why 30% and not more:
+- It leaves **$87.70** on a $155 sale — above the factory's own $70 elite floor, so the product stays profitable *after* the affiliate is paid.
+- It is a round, credible number for a B2B compliance product, where the buyer is spending to avoid a regulatory penalty, not on a whim.
+- Anything above ~40% starts competing with Gumroad's own pricing logic for no proven gain, and this factory has **zero** affiliate-attributed sales to justify a premium rate.
+
+Why not Gumroad Affiliates (the self-serve 10%): that track pays a **fixed 10%** and is for people promoting *any* Discover product. It is not a negotiated rate and gives no per-product control.
+
+---
+
+## 4. IS THERE AN API FOR THIS? **NO.**
+
+Per Gumroad's official API documentation:
+
+- **Documented scopes:** `account`, `view_profile`, `view_sales`, `view_payouts`, `edit_sales`
+- **Documented resources:** Products, Sales, Subscribers, License Keys, Offer Codes, Resource subscriptions (webhooks), authenticated user
+
+**There is no affiliate scope and no affiliate endpoint.** The affiliate dashboard is documented as a user-interface surface ("in the main sidebar, under Analytics").
+
+> **Conclusion: affiliate configuration is a manual Gumroad UI action. It cannot be done through this factory's API integration, and this report does not claim otherwise.**
+
+---
+
+## 5. THE CURRENT LINKS EARN NOTHING AS AFFILIATE COMMISSIONS
+
+The catalog's 53 product links carry:
+
+```
+?ref=galaxyforge_products&referrer=c99_catalog
+```
+
+`ref=` on a link pointing at **our own storefront is self-attribution.** Gumroad's own affiliate FAQ is explicit about the mechanism:
+
+> *"Sticky affiliate links: `https://gumroad.com/l/:product_permalink?affiliate_id=<affiliate_id>`"*
+> *"the only way you can be credited for your affiliate sales is if you share your affiliate links… **We can't credit you for the sale if you accidentally share a product link.**"*
+
+So the existing `ref=` parameters produce **zero commission**. They are analytics labels, not affiliate links. **They have been left in place** — removing them would destroy the existing `referrer` attribution for no commercial gain, and the directive did not ask for a site-wide rewrite.
+
+---
+
+## 6. FOUNDER SETUP — MANUAL, AND NOT YET DONE
+
+**Nothing below has been performed. I have no affiliate API and no write authority.**
+
+1. Open **https://gumroad.com/settings/affiliates** (Affiliates Dashboard, in the sidebar under **Analytics**).
+2. **Add affiliate** → enter the affiliate's **Gumroad account email**.
+3. Select **only** the EU AI Act Compliance Toolkit as an affiliate product. Do not select "All products" — 78 other listings are not affiliate-ready and several carry unresolved issues.
+4. Set the commission to **30%**.
+5. Click **Copy Link** and send it to the affiliate.
+
+Gumroad then emails the affiliate their link. Do not hand-craft an `affiliate_id` URL; a copied link is the one that credits.
+
+**Note the cookie difference** (official): seller-added affiliates get a **30-day** cookie; the self-serve Gumroad Affiliates program gets 7 days. Seller-added is the better choice here.
+
+---
+
+## 7. THE INVITATION — PREPARED, NOT SENT
+
+> **Subject:** 30% commission — EU AI Act compliance toolkit (deadline-driven)
+>
+> Hi [name],
+>
+> I built the **EU AI Act Compliance Toolkit** — 31 pages of implementation templates and reference material for EU SMEs who need to evidence AI Act compliance, built from the regulation's own text.
+>
+> One thing worth flagging, because most material on this is still wrong: the high-risk obligations were **deferred to 2 December 2027** (Annex I systems to 2 August 2028) by the 2026 Digital Omnibus. The "2 August 2026" date in circulation is superseded. The toolkit states the current dates and says plainly that the amendments were provisionally agreed and pending final adoption.
+>
+> I also have to be straight with you: **I have zero sales and zero reviews on it.** I'm not going to dress that up. What I can tell you is exactly what is in the file — page count, contents, and the sources it cites — and you can judge it before you say anything about it.
+>
+> **30% commission on every sale**, paid by Gumroad on their normal payout schedule. There is a 30-day attribution window.
+>
+> If it isn't useful, say no — no follow-up, no pressure.
+>
+> [Product link — Gumroad-issued affiliate link goes here]
+
+**Deliberately included:** the 0-sales disclosure, the reason it is still worth a look, and an explicit easy exit. Inflating the offer or hiding the track record would poison the only channel whose entire value is trust.
+
+---
+
+## 8. FREE CHANNELS THAT ARE LEGITIMATE AND AVAILABLE
+
+| Channel | Status here | Note |
+|---|---|---|
+| **Gumroad Discover** | Available | But 30% flat fee — use only if a direct link is impossible. |
+| **LinkedIn** | `channels/linkedin_publisher.py` exists | **No credential in `.env` — unverified, do not assume working.** |
+| **X** | `X_ACCESS_TOKEN` set | **BLOCKED — real 402 `credits depleted`. Posting costs money. Not available at $0.** |
+| **Nostr** | Module exists | **Not runnable — `nostr_direct.py` missing.** 20 historical posts → 0 replies, 1 relay spam-blocked. Exhausted. |
+| **Own audience / email** | — | The only channel with proven conversion. Not yet built. |
+| **Gumroad Affiliates sign-up form** | Manual | Lets unknown affiliates request affiliation without you recruiting them. **Cheapest available lever — $0, no outreach required.** |
+
+**The last row is the recommended first move.** It requires no message, no list, and no permission — affiliates come to the product. Set the form up alongside the 30% rate and it works while nobody is doing anything.
+
+---
+
+## 9. PROOF RULES OBSERVED
+
+- No affiliate link was created — only the seller can, in the UI.
+- No message was sent. No external contact was made.
+- No price, payout setting, account field or product was modified.
+- No commission is claimed, because none has been earned. `VERIFIED_REVENUE` remains `$0.00`.
+- A prepared invitation is **not** a distributed one. A HTTP 200 IndexNow receipt is **not** a visit.

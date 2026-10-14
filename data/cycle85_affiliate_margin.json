@@ -1,0 +1,77 @@
+{
+  "probe": "cycle85_affiliate_margin",
+  "cost_usd": 0,
+  "fee_source": "https://gumroad.com/help/article/66-gumroads-fees",
+  "quoted_fees": {
+    "gumroad_direct_pct": 0.1,
+    "gumroad_direct_flat_usd": 0.5,
+    "card_processing_pct": 0.029,
+    "card_processing_flat_usd": 0.3,
+    "discover_marketplace_pct": 0.3,
+    "discover_note": "applies to Gumroad-sourced discovery sales, NOT to affiliate or direct-link sales"
+  },
+  "config_discrepancy": {
+    "file": "config/economics.json",
+    "says": "royalty_rate 0.9, flat_fee_usd 0.0 ('Simplified')",
+    "reality": "12.9% + $0.80 per direct card sale",
+    "consequence": "every margin computed from that config is overstated, and the error grows as price falls"
+  },
+  "candidates": [
+    {
+      "name": "Turo Guest Dispute Toolkit",
+      "short_id": "adyvd",
+      "price": 29.0,
+      "gumroad_plus_card_fees": 4.54,
+      "seller_net_before_affiliate": 24.46,
+      "effective_fee_pct": 15.66,
+      "affiliate_20pct_commission": 5.8,
+      "seller_net_after_affiliate_20pct": 18.66,
+      "affiliate_25pct_commission": 7.25,
+      "seller_net_after_affiliate_25pct": 17.21,
+      "affiliate_30pct_commission": 8.7,
+      "seller_net_after_affiliate_30pct": 15.76
+    },
+    {
+      "name": "EU AI Act Compliance Toolkit",
+      "short_id": "iaiyt",
+      "price": 155.0,
+      "gumroad_plus_card_fees": 20.8,
+      "seller_net_before_affiliate": 134.2,
+      "effective_fee_pct": 13.42,
+      "affiliate_20pct_commission": 31.0,
+      "seller_net_after_affiliate_20pct": 103.2,
+      "affiliate_25pct_commission": 38.75,
+      "seller_net_after_affiliate_25pct": 95.45,
+      "affiliate_30pct_commission": 46.5,
+      "seller_net_after_affiliate_30pct": 87.7
+    },
+    {
+      "name": "Clinic No-Show Reduction Kit",
+      "short_id": "eiztlg",
+      "price": 59.0,
+      "gumroad_plus_card_fees": 8.41,
+      "seller_net_before_affiliate": 50.59,
+      "effective_fee_pct": 14.25,
+      "affiliate_20pct_commission": 11.8,
+      "seller_net_after_affiliate_20pct": 38.79,
+      "affiliate_25pct_commission": 14.75,
+      "seller_net_after_affiliate_25pct": 35.84,
+      "affiliate_30pct_commission": 17.7,
+      "seller_net_after_affiliate_30pct": 32.89
+    },
+    {
+      "name": "CCPA Compliance Action Kit",
+      "short_id": "kaooj",
+      "price": 29.0,
+      "gumroad_plus_card_fees": 4.54,
+      "seller_net_before_affiliate": 24.46,
+      "effective_fee_pct": 15.66,
+      "affiliate_20pct_commission": 5.8,
+      "seller_net_after_affiliate_20pct": 18.66,
+      "affiliate_25pct_commission": 7.25,
+      "seller_net_after_affiliate_25pct": 17.21,
+      "affiliate_30pct_commission": 8.7,
+      "seller_net_after_affiliate_30pct": 15.76
+    }
+  ]
+}
