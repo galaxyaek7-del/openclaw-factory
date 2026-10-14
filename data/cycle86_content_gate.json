@@ -1,0 +1,146 @@
+{
+  "product": "EU AI Act Compliance Toolkit",
+  "verdict": "FAIL",
+  "critical_count": 11,
+  "finding_count": 14,
+  "findings": [
+    {
+      "rule": "FABRICATED_CITATION",
+      "severity": "CRITICAL",
+      "verdict": "FAIL",
+      "evidence": "cites a legal annex naming 'autonomy', which is not an Annex III category. Real categories are: biometrics; critical infrastructure; education and vocational training; employment; essential private services; law enforcement; migration; administration of justice",
+      "where": "page 13: ...Annex III, Part A) - autonomy, creativity,..."
+    },
+    {
+      "rule": "FABRICATED_CITATION",
+      "severity": "CRITICAL",
+      "verdict": "FAIL",
+      "evidence": "cites a legal annex naming 'creativity', which is not an Annex III category. Real categories are: biometrics; critical infrastructure; education and vocational training; employment; essential private services; law enforcement; migration; administration of justice",
+      "where": "page 13: ...Annex III, Part A) - autonomy, creativity,..."
+    },
+    {
+      "rule": "FABRICATED_CITATION",
+      "severity": "CRITICAL",
+      "verdict": "FAIL",
+      "evidence": "cites a legal annex naming 'autonomy', which is not an Annex III category. Real categories are: biometrics; critical infrastructure; education and vocational training; employment; essential private services; law enforcement; migration; administration of justice",
+      "where": "page 19: ...Annex III, Part A, category 1: Autonomy - System documentation and test..."
+    },
+    {
+      "rule": "INVENTED_STRUCTURE",
+      "severity": "CRITICAL",
+      "verdict": "FAIL",
+      "evidence": "Annex III 'Part A' is asserted; Annex III has no such division",
+      "where": "page 13"
+    },
+    {
+      "rule": "INVENTED_STRUCTURE",
+      "severity": "CRITICAL",
+      "verdict": "FAIL",
+      "evidence": "Annex III 'Part A' is asserted; Annex III has no such division",
+      "where": "page 19"
+    },
+    {
+      "rule": "INVENTED_STRUCTURE",
+      "severity": "CRITICAL",
+      "verdict": "FAIL",
+      "evidence": "Annex III 'Part A' is asserted; Annex III has no such division",
+      "where": "page 19"
+    },
+    {
+      "rule": "INVENTED_STRUCTURE",
+      "severity": "CRITICAL",
+      "verdict": "FAIL",
+      "evidence": "Annex III 'Part A' is asserted; Annex III has no such division",
+      "where": "page 19"
+    },
+    {
+      "rule": "INVENTED_STRUCTURE",
+      "severity": "CRITICAL",
+      "verdict": "FAIL",
+      "evidence": "Annex III 'Part A' is asserted; Annex III has no such division",
+      "where": "page 19"
+    },
+    {
+      "rule": "INVENTED_STRUCTURE",
+      "severity": "CRITICAL",
+      "verdict": "FAIL",
+      "evidence": "Annex III 'Part A' is asserted; Annex III has no such division",
+      "where": "page 22"
+    },
+    {
+      "rule": "INVENTED_STRUCTURE",
+      "severity": "CRITICAL",
+      "verdict": "FAIL",
+      "evidence": "Annex III 'Part B' is asserted; Annex III has no such division",
+      "where": "page 27"
+    },
+    {
+      "rule": "FALSE_PROHIBITION",
+      "severity": "CRITICAL",
+      "verdict": "FAIL",
+      "evidence": "asserts the Act prohibits high-risk GPAI models; it does not",
+      "where": "page 18: ...Prohibit the use of high-risk general-purpose..."
+    },
+    {
+      "rule": "MARKDOWN_LEAKAGE",
+      "severity": "MINOR",
+      "verdict": "FAIL",
+      "evidence": "12 literal '**bold**' markers survived into the rendered PDF",
+      "where": "glossary and FAQ sections"
+    },
+    {
+      "rule": "CONTENT_PADDING",
+      "severity": "MAJOR",
+      "verdict": "REVIEW",
+      "evidence": "23 of 29 chapters under 150 words; median 72, mean 112 (mean is inflated by long reference chapters, which is why the median is used). Most substantive chapters are a 5-bullet list of ~60 words.",
+      "where": "throughout"
+    },
+    {
+      "rule": "STALE_VERIFICATION",
+      "severity": "MAJOR",
+      "verdict": "REVIEW",
+      "evidence": "'verified 2026-08-06' is ~68 days old (today 2026-10-14)",
+      "where": "page 7"
+    }
+  ],
+  "notes": [],
+  "automated": true,
+  "legal_review_required": true,
+  "probe": "cycle86_content_gate",
+  "today": "2026-10-14",
+  "source_pdf": "books/eu_ai_act_compliance_toolkit_v2.pdf",
+  "source_sha256": "18c4158342c7f8a290a4386507e1d6bb7cfdc92420e485d76108d4102a40f6bf",
+  "scorecard": {
+    "content_correctness": {
+      "score": 2,
+      "max": 25,
+      "why": "2/25 - fabricated Annex III categories cited as literal regulation text"
+    },
+    "file_completeness": {
+      "score": 25,
+      "max": 25,
+      "why": "25/25 - both PDFs fetched, sha256'd, parsed, size-matched (data/delivery_integrity.json)"
+    },
+    "practical_value": {
+      "score": 7,
+      "max": 20,
+      "why": "7/20 - most of 25 chapters are 5-bullet generic lists (~45 words each)"
+    },
+    "independent_verification": {
+      "score": 5,
+      "max": 15,
+      "why": "5/15 - automated gate now exists, but NO qualified human legal review has ever been performed; mechanical pass is not clearance"
+    },
+    "commercial_presentation": {
+      "score": 12,
+      "max": 15,
+      "why": "12/15 - literal **markdown** and mid-word TOC truncation visible to buyers"
+    },
+    "total": 51,
+    "max": 100,
+    "threshold": 90,
+    "decision": "HOLD",
+    "decision_reason": "critical defects open; HOLD overrides total score"
+  },
+  "cost_usd": 0
+}
