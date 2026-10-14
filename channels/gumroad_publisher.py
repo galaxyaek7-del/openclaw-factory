@@ -23,6 +23,15 @@ import requests
 FACTORY_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_ENV_PATH = FACTORY_DIR / ".env"
 GUMROAD_API_BASE = "https://api.gumroad.com/v2"
+
+# PHASE 5 (2026-10-14): every mutation function below begins with
+# _require_write_authorization(). The import is deliberately made at MODULE
+# level and the helper aliased at import time, so the check cannot be shadowed
+# by a later local definition, and so any alternate call path that reaches
+# these functions -- direct call, alias, partial import -- goes through the
+# same gate. If this import ever fails, module import fails loudly rather than
+# silently shipping write functions with no authorization at all.
+from channels.write_gate import require_write_authorization as _require_write_authorization
 # list_products()'s pagination safety backstop -- module level (not a local)
 # so a test can patch it to a small number instead of looping 50 real times.
 _MAX_PAGES = 50
@@ -308,6 +317,13 @@ def _upload_file(token, file_path):
     return data.get("file_url") or key
 
 def create_product(token, product_spec):
+    # PHASE 5 (2026-10-14): mandatory, centralized write authorization.
+    # This is the FIRST statement on purpose -- a denied write must not be
+    # able to start an S3 multipart session on Gumroad's side via
+    # _upload_file() further down. Previously this function performed NO auth
+    # check at all; the "writes blocked" posture reported across several
+    # cycles was a convention, not a control. See channels/write_gate.py.
+    _require_write_authorization("create_product")
     if not token or not str(token).strip():
         raise ConfigError("create_product requires a non-empty token")
     file_path = product_spec.get("file_path")
@@ -441,6 +457,11 @@ def update_product(token, product_id, updates, verify_delay_seconds=1.0, get_pro
     get_product_fn is injectable purely so tests can simulate a re-read
     failure/mismatch without a real network call; real callers never
     pass it (defaults to the real get_product())."""
+    # PHASE 5 (2026-10-14): mandatory, centralized write authorization --
+    # first statement, before any validation or network call, so a denied
+    # write cannot leave a partial effect (or an S3 multipart session)
+    # behind on Gumroad's side. See channels/write_gate.py.
+    _require_write_authorization("update_product")
     if not product_id:
         raise ConfigError("update_product requires a product_id")
     if not updates:
@@ -501,6 +522,114 @@ def update_product(token, product_id, updates, verify_delay_seconds=1.0, get_pro
     return reread
 
 
+def update_product_file(token, product_id, file_path, verify_delay_seconds=1.0,
+                         verify_attempts=3, upload_fn=None, get_product_fn=None):
+    """Replace a product's attached deliverable with a real local file, then
+    PROVE it actually attached before returning as if it succeeded.
+
+    Why this is a SEPARATE function from update_product(), not another key
+    in its generic `updates` dict: the write and the read use genuinely
+    different shapes for a file. The write sends a single string,
+    "files[][url]" -> a fresh, signed upload URL from _upload_file(). The
+    re-read returns a `files` LIST of dicts, each with its own `size` /
+    `filetype` -- and that URL is re-signed by Gumroad on every read
+    (different query string each time), so comparing the sent URL against
+    the re-read URL would NEVER match even on a fully successful attach.
+    update_product()'s generic _fields_match() has no way to know this --
+    reusing it here would either always false-FAIL or (worse) silently
+    skip real verification. The one real, stable property both sides can
+    agree on is the file's own byte size, known locally before upload and
+    present in Gumroad's own re-read -- that is what this function proves.
+
+    REAL FINDING (2026-10-13, live): a multi-file zip attach can take
+    longer than a simple text-field update to finish processing --
+    observed live, the first re-read (after a 3s delay) returned a real
+    `files` entry already present but with `size: None` (still being
+    processed server-side); a fresh re-read moments later showed the
+    correct, matching size. One fixed delay is therefore not enough on
+    its own; the verification re-read is retried up to `verify_attempts`
+    times with linear backoff before a FAIL is declared, distinguishing
+    "still processing" from "genuinely never attached."
+
+    Same honest PASS/BLOCKED/FAIL/UNKNOWN discipline as update_product():
+      - PASS:    upload + attach succeeded AND a re-read (possibly after
+                 a few retried attempts) proves the `files` list contains
+                 an entry whose size matches the real local file exactly
+                 -- returns that fresh re-read product.
+      - BLOCKED: the attach PUT itself reported success:false.
+      - FAIL:    the PUT reported success, but no file of the correct
+                 size ever appeared across every verification attempt.
+      - UNKNOWN: every post-attach re-read attempt itself failed outright
+                 (e.g. network/timeout) -- never a size-mismatch.
+
+    upload_fn/get_product_fn are injectable purely so tests can simulate
+    the upload and re-read without a real network call or a real local
+    file; real callers never pass them."""
+    # PHASE 5 (2026-10-14): mandatory, centralized write authorization --
+    # first statement, before any validation or network call, so a denied
+    # write cannot leave a partial effect (or an S3 multipart session)
+    # behind on Gumroad's side. See channels/write_gate.py.
+    _require_write_authorization("update_product_file")
+    if not product_id:
+        raise ConfigError("update_product_file requires a product_id")
+    if not file_path:
+        raise ConfigError("update_product_file requires a file_path")
+    do_upload = upload_fn or _upload_file
+    read_product = get_product_fn or get_product
+
+    file_path = Path(file_path)
+    try:
+        expected_size = os.path.getsize(file_path)
+    except OSError as e:
+        raise ConfigError(f"cannot read local file size for {file_path}: {e}")
+    if expected_size <= 0:
+        raise ConfigError(f"local file is empty (0 bytes): {file_path}")
+
+    file_url = do_upload(token, file_path)
+
+    data = {"access_token": token, "files[][url]": file_url}
+    try:
+        r = _request_with_retry("PUT", f"{GUMROAD_API_BASE}/products/{product_id}", data=data, timeout=60)
+        r.raise_for_status()
+    except requests.RequestException as e:
+        raise RuntimeError(f"Gumroad update_product_file request failed: {_safe_err(e)}")
+    try:
+        result = r.json()
+    except ValueError as e:
+        raise RuntimeError(f"Gumroad update_product_file returned invalid JSON: {_safe_err(e)}")
+    if not isinstance(result, dict) or not result.get("success", False):
+        raise RuntimeError(f"Gumroad update_product_file failed: {_gumroad_error(result if isinstance(result, dict) else {})}")
+
+    reread = None
+    sizes_seen = []
+    for attempt in range(1, verify_attempts + 1):
+        if verify_delay_seconds:
+            time.sleep(verify_delay_seconds * attempt)
+        try:
+            reread = read_product(token, product_id)
+        except Exception as e:
+            raise RuntimeError(
+                f"VERIFICATION_UNKNOWN: update_product_file's attach for {product_id} reported "
+                f"success, but the post-write re-read failed, so persistence could not be proven: {_safe_err(e)}"
+            )
+        if not isinstance(reread, dict):
+            raise RuntimeError(
+                f"VERIFICATION_UNKNOWN: update_product_file's post-write re-read for {product_id} "
+                f"returned a non-product response ({type(reread).__name__}); persistence could not be proven."
+            )
+        reread_files = reread.get("files") or []
+        sizes_this_attempt = [f.get("size") for f in reread_files if isinstance(f, dict)]
+        sizes_seen.append(sizes_this_attempt)
+        if expected_size in sizes_this_attempt:
+            return reread
+
+    raise RuntimeError(
+        f"VERIFICATION_FAILED: update_product_file's attach for {product_id} reported success, "
+        f"but the expected {expected_size}-byte file never appeared across {verify_attempts} "
+        f"re-read attempt(s) (sizes seen per attempt: {sizes_seen})"
+    )
+
+
 def enable_product(token, product_id):
     """Publish a draft product so it becomes purchasable (PUT
     /v2/products/:id/enable -- the real publish endpoint; the 'publish'
@@ -517,6 +646,11 @@ def enable_product(token, product_id):
     user's email confirmed, at least one payment method connected, and
     valid pricing. Any unmet requirement is surfaced honestly via
     _gumroad_error() -- never faked into a success."""
+    # PHASE 5 (2026-10-14): mandatory, centralized write authorization --
+    # first statement, before any validation or network call, so a denied
+    # write cannot leave a partial effect (or an S3 multipart session)
+    # behind on Gumroad's side. See channels/write_gate.py.
+    _require_write_authorization("enable_product")
     if not product_id:
         raise ConfigError("enable_product requires a product_id")
     try:
