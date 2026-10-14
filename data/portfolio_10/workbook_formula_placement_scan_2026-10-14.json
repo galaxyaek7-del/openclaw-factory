@@ -1,0 +1,264 @@
+{
+ "GF-B10-01": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 14
+ },
+ "GF-B10-02": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 9
+ },
+ "GF-B10-03": {
+  "aggregate_formulas_in_data_rows": [
+   "SAQ selector worksheet!G2 under '=COUNTA(C2:C20)'",
+   "Scope inventory!H2 under '=COUNTIF(B2:B50,\"Unknown\")'",
+   "Readiness log!H2 under '=COUNTIF(C2:C100,\"Confirmed\")/COUNTA(C2:C100)'",
+   "Renewal calendar!G2 under '=COUNTIF(F2:F30,\"Overdue\")'"
+  ],
+  "dates_stored_as_text": 16
+ },
+ "GF-B10-04": {
+  "aggregate_formulas_in_data_rows": [
+   "Appointment no-show log!H2 under '=SUM(E2:E200)/SUM(C2:C200)'",
+   "Appointment no-show log!H3 under '=SUM(E2:E200)/SUM(C2:C200)'",
+   "Message performance tracker!H2 under '=SUM(D2:D200)/SUM(C2:C200)'",
+   "Message performance tracker!H3 under '=SUM(D2:D200)/SUM(C2:C200)'",
+   "Waitlist log!I2 under '=COUNTIF(F2:F200,\"Yes\")'"
+  ],
+  "dates_stored_as_text": 10
+ },
+ "GF-B10-05": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 10
+ },
+ "GF-B10-06": {
+  "aggregate_formulas_in_data_rows": [
+   "sla_dashboard!B2 under 'Value'",
+   "sla_dashboard!B3 under 'Value'",
+   "sla_dashboard!B4 under 'Value'"
+  ],
+  "dates_stored_as_text": 9
+ },
+ "GF-B10-07": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 0
+ },
+ "GF-B10-08": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 0
+ },
+ "GF-B10-09": {
+  "aggregate_formulas_in_data_rows": [
+   "employee_ack_log!K2 under '=COUNTA(A2:A500)'",
+   "employee_ack_log!K3 under '=COUNTA(A2:A500)'",
+   "employee_ack_log!K4 under '=COUNTA(A2:A500)'",
+   "chase_list!E2 under 'Days outstanding'"
+  ],
+  "dates_stored_as_text": 32
+ },
+ "GF-B10-10": {
+  "aggregate_formulas_in_data_rows": [
+   "permit_register!H2 under '=SUM(G2:G50)'",
+   "permit_register!H3 under '=SUM(G2:G50)'"
+  ],
+  "dates_stored_as_text": 17
+ },
+ "GF-B11-01": {
+  "aggregate_formulas_in_data_rows": [
+   "Scope_Checker!I2 under 'None'",
+   "Scope_Checker!I3 under 'None'",
+   "Scope_Checker!I4 under 'None'",
+   "Supplier_Register!M2 under 'None'",
+   "Supplier_Register!M3 under 'None'",
+   "DDS_Preparation_Log!P2 under 'None'",
+   "DDS_Preparation_Log!P3 under 'None'",
+   "Deadline_Calendar!I2 under 'None'",
+   "Deadline_Calendar!I3 under 'None'",
+   "Deadline_Calendar!I4 under 'None'",
+   "Gap_Memo_Log!K2 under 'None'",
+   "Gap_Memo_Log!K3 under 'None'"
+  ],
+  "dates_stored_as_text": 15
+ },
+ "GF-B11-02": {
+  "aggregate_formulas_in_data_rows": [
+   "Claim_Inventory!J2 under 'None'",
+   "Claim_Inventory!J3 under 'None'",
+   "Claim_Inventory!J4 under 'None'",
+   "Evidence_File_Log!K2 under 'None'",
+   "Evidence_File_Log!K3 under 'None'",
+   "Risk_Scorer!I2 under 'None'",
+   "Remediation_Tracker!J2 under 'None'",
+   "Remediation_Tracker!J3 under 'None'",
+   "Review_Worksheet_Log!K2 under 'None'",
+   "Review_Worksheet_Log!K3 under 'None'"
+  ],
+  "dates_stored_as_text": 16
+ },
+ "GF-B11-03": {
+  "aggregate_formulas_in_data_rows": [
+   "Par Reorder!G2 under 'Order Qty'"
+  ],
+  "dates_stored_as_text": 5
+ },
+ "GF-B11-04": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 4
+ },
+ "GF-B11-05": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 14
+ },
+ "GF-B11-06": {
+  "aggregate_formulas_in_data_rows": [
+   "Deal_Tracker!A8 under 'Deal ID'",
+   "Document_Checklist!A9 under 'Deal ID'",
+   "Post_Close_Review!A8 under 'Deal ID'"
+  ],
+  "dates_stored_as_text": 20
+ },
+ "GF-B11-07": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 5
+ },
+ "GF-B11-08": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 7
+ },
+ "GF-B11-09": {
+  "aggregate_formulas_in_data_rows": [
+   "Label Compliance Checker!L2 under 'None'",
+   "Registration Log!K2 under 'None'",
+   "Sales Cap Tracker!F2 under 'Running Year Total (USD)'",
+   "Sales Cap Tracker!F3 under 'Running Year Total (USD)'"
+  ],
+  "dates_stored_as_text": 13
+ },
+ "GF-B11-10": {
+  "aggregate_formulas_in_data_rows": [
+   "Room Condition Log!K2 under 'None'",
+   "Photo Inventory Sheet!J2 under 'None'",
+   "Signature Tracker!J2 under 'None'",
+   "Wear Vs Damage Reference!F2 under 'None'"
+  ],
+  "dates_stored_as_text": 8
+ },
+ "GF-P10-01": {
+  "aggregate_formulas_in_data_rows": [
+   "Savings_Calculator!D7 under 'Projected annual saving (USD)'"
+  ],
+  "dates_stored_as_text": 20
+ },
+ "GF-P10-02": {
+  "aggregate_formulas_in_data_rows": [
+   "Recovery_Calculator!E6 under 'Agency fee avoided (USD)'"
+  ],
+  "dates_stored_as_text": 26
+ },
+ "GF-P10-03": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 10
+ },
+ "GF-P10-04": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 23
+ },
+ "GF-P10-05": {
+  "aggregate_formulas_in_data_rows": [
+   "List Hygiene Scorer!G2 under 'Hygiene score'"
+  ],
+  "dates_stored_as_text": 8
+ },
+ "GF-P10-06": {
+  "aggregate_formulas_in_data_rows": [
+   "Claim Builder!H2 under 'Running total'",
+   "Deadline Calc!F2 under 'Binding deadline'"
+  ],
+  "dates_stored_as_text": 39
+ },
+ "GF-P10-07": {
+  "aggregate_formulas_in_data_rows": [
+   "Quote_Log!B2 under 'Date'",
+   "Quote_Log!B3 under 'Date'",
+   "Option_Builder!B5 under 'Tier_Good_Price'",
+   "Option_Builder!B6 under 'Tier_Good_Price'"
+  ],
+  "dates_stored_as_text": 4
+ },
+ "GF-P10-08": {
+  "aggregate_formulas_in_data_rows": [
+   "Exclusion_Flagger!B2 under 'Year'",
+   "Cap_Checker!H2 under 'Over_Cap_Amount'",
+   "Recovery_Estimator!B5 under 'Year'"
+  ],
+  "dates_stored_as_text": 0
+ },
+ "GF-P10-09": {
+  "aggregate_formulas_in_data_rows": [
+   "Offer_Scorecard!G2 under 'Total_100'",
+   "Negotiation_Tracker!B2 under 'Owner'",
+   "Four_Year_View!B5 under 'Offer_A'"
+  ],
+  "dates_stored_as_text": 5
+ },
+ "GF-P10-10": {
+  "aggregate_formulas_in_data_rows": [
+   "Deal_Pipeline!B2 under 'Brand'",
+   "Deal_Pipeline!B3 under 'Brand'",
+   "Risk_Scorer!H2 under 'Total_Risk_Score'",
+   "Risk_Scorer!B5 under 'Usage_Term'"
+  ],
+  "dates_stored_as_text": 15
+ },
+ "GF-SHOP-01": {
+  "aggregate_formulas_in_data_rows": [
+   "Notification_Matrix!D2 under 'Running score'"
+  ],
+  "dates_stored_as_text": 0
+ },
+ "GF-SHOP-02": {
+  "aggregate_formulas_in_data_rows": [
+   "Search_Checklist!H2 under 'None'",
+   "Redaction_Log!G2 under 'None'"
+  ],
+  "dates_stored_as_text": 24
+ },
+ "GF-SHOP-03": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 4
+ },
+ "GF-SHOP-04": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 13
+ },
+ "GF-SHOP-05": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 12
+ },
+ "GF-SHOP-06": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 17
+ },
+ "GF-SHOP-07": {
+  "aggregate_formulas_in_data_rows": [
+   "ABC Classifier!G3 under 'Cum share %'"
+  ],
+  "dates_stored_as_text": 21
+ },
+ "GF-SHOP-08": {
+  "aggregate_formulas_in_data_rows": [
+   "Health Scorer!G2 under 'Health avg'",
+   "Readiness Checker!G2 under 'Score'"
+  ],
+  "dates_stored_as_text": 16
+ },
+ "GF-SHOP-09": {
+  "aggregate_formulas_in_data_rows": [],
+  "dates_stored_as_text": 0
+ },
+ "GF-SHOP-10": {
+  "aggregate_formulas_in_data_rows": [
+   "State Gaps!F7 under 'None'"
+  ],
+  "dates_stored_as_text": 16
+ }
+}

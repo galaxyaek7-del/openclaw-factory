@@ -45,7 +45,7 @@ from pathlib import Path
 
 MARKER = "gf-workbook-upgrade-v1"
 ENTRY_ROWS = 200
-TEXT_SHEET_NAMES = {"readme", "instructions", "how to use", "notes"}
+TEXT_SHEET_NAMES = {"readme", "instructions", "how to use", "notes", "summary", "dashboard"}
 
 YES_NO = ["Yes", "No", "N/A"]
 Y_N = ["Y", "N"]
@@ -73,8 +73,14 @@ class Column:
     formula: str = ""
 
 
+_ANNOTATION = re.compile(r"\s*\((illustrative|example|optional|d-number)\)", re.I)
+
+
 def classify(header: str) -> tuple[str, list]:
-    h = (header or "").strip().lower()
+    # "Rate (illustrative)" is a money column; the note says the sample value
+    # is made up, not that the column is text. Typed suffixes such as "(Y/N)",
+    # "($)", "(1-5)", "(hours)" and "(=C*D)" are kept and still classify.
+    h = _ANNOTATION.sub("", (header or "")).strip().lower()
     if not h:
         return "text", []
     if _HEADER_FORMULA.search(header):
@@ -91,9 +97,11 @@ def classify(header: str) -> tuple[str, list]:
         return "date", []
     if re.search(r"stars?\b.*\(1-5\)|^stars?$", h):
         return "rating", []
+    if "%" in h or "percent" in h:
+        return "number", []
     if any(k in h for k in ("($)", "amount", "cost", "fee", "price", "value",
-                            "recovered", "budget", "position ($)")) \
-            or h in ("rate", "paid"):
+                            "recovered", "budget", "position ($)", "billed")) \
+            or h in ("rate", "paid") or re.search(r"\brate\b", h):
         return "money", []
     if h.endswith("?") or any(k in h for k in ("eligible", "attached", "obtained",
                                                "disclosed", "retention set",
@@ -105,7 +113,7 @@ def classify(header: str) -> tuple[str, list]:
         return "status", STATUS
     if any(k in h for k in ("(hours)", "(min)", "(g)", "days to", "units",
                             "missed calls", "jobs won", "jobs lost", "rounds",
-                            "round used", "new fails")):
+                            "round used", "new fails", "minutes", "(days")):
         return "number", []
     return "text", []
 
@@ -273,7 +281,8 @@ def upgrade_workbook(src, dst=None) -> UpgradeReport:
         rep.sheets[ws.title] = {c.header: c.kind for c in allcols}
 
     # --- Summary sheet -----------------------------------------------------
-    sm = wb.create_sheet("Summary", 0)
+    # a builder-made "Summary" (cohort_workbook.py) is kept; ours becomes "Dashboard"
+    sm = wb.create_sheet("Dashboard" if "Summary" in wb.sheetnames else "Summary", 0)
     sm["A1"] = "Summary -- updates automatically from your entries"
     sm["A1"].font = Font(bold=True, size=14)
     sm.column_dimensions["A"].width = 46

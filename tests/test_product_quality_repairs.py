@@ -59,6 +59,19 @@ class TestClassify(unittest.TestCase):
         for h, want in cases.items():
             self.assertEqual(wu.classify(h)[0], want, h)
 
+    def test_annotation_suffix_does_not_hide_the_type(self):
+        # real headers from the live freelancer workbook
+        cases = {
+            "Rate (illustrative)": "money", "Overage rate per round (illustrative)": "money",
+            "Extra billed": "money", "Minutes spent": "number",
+            "Schedule impact (days, illustrative)": "number",
+            "Rounds included (illustrative)": "number", "Request ID (illustrative)": "text",
+            "Interest rate (%)": "number",          # a percent is not money
+            "Paid (Y/N)": "yesno", "Cost ($)": "money",  # typed suffixes still win
+        }
+        for h, want in cases.items():
+            self.assertEqual(wu.classify(h)[0], want, h)
+
 
 class TestHeaderFormula(unittest.TestCase):
     def test_scientific_notation_is_not_a_cell_reference(self):

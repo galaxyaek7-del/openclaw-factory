@@ -233,7 +233,11 @@
     "files": "PASS",
     "claim_integrity": "PASS",
     "price_usd": 49.0,
-    "blockers": []
+    "blockers": [],
+    "open": [
+     "workbook example Par Reorder E3/E4 disagree with their own formula (90 vs 120, 9 vs 8): spec content fix needed",
+     "no cover on listing (dashboard upload)"
+    ]
    },
    "live_listing": {
     "url": "https://aekraft.gumroad.com/l/swkgd",
@@ -291,6 +295,11 @@
     "cover": "MISSING on live listing; cover_1280x720.png + thumbnail prepared, upload needs dashboard (no API endpoint)",
     "distribution_kit": "data/portfolio_10/distribution/GF-B10-05.md",
     "price": "HOLD: live $19 vs manifest $39 vs comparables $20-$49; consequential live price change awaits founder decision"
+   },
+   "pricing": {
+    "live": 19,
+    "target": 39,
+    "status": "HOLD: quality gap = no cover; workbook upgraded (8 -> 235 formulas) and live bundle replaced (179,216 B)"
    }
   },
   {
@@ -305,15 +314,23 @@
     "https://payhip.com/b/20W9O",
     "https://keijiito.com/templates/brand-deal-tracker-for-creators"
    ],
-   "stage": "SELECTED",
+   "stage": "QA_PASSED_COVER_PENDING",
    "checkout": "UNVERIFIED",
    "affiliate": "UNVERIFIED",
    "distribution": "NOT_STARTED",
    "orders": 0,
    "revenue_usd": 0,
    "qa": {
-    "blockers": [
-     "QA round 1 not yet run"
+    "files": "PASS",
+    "claim_integrity": "PASS",
+    "blockers": [],
+    "fixed_2026-10-14": [
+     "workbook: summary formulas had overwritten 2 brand names and 1 risk score (generator bug); rebuilt with cohort_workbook.py + upgrader, 1,640 formulas, dates real",
+     "sales page: double-encoded characters and internal research tags removed; claims rewritten to match the files; text-verified"
+    ],
+    "open": [
+     "guide cites third-party statistics (e.g. \"about 99% of deals\") that are labelled with sources but not independently verified",
+     "no cover on listing (dashboard upload)"
     ]
    },
    "rank": 9,
@@ -323,7 +340,11 @@
     "sales": 0,
     "gumroad_id": "x5Cf-OfCwDvtC-nNlFe6BQ=="
    },
-   "publication": "LIVE_ON_GUMROAD"
+   "publication": "LIVE_ON_GUMROAD",
+   "pricing": {
+    "live": 49,
+    "decision": "founder to approve after QA (QA now passed)"
+   }
   },
   {
    "pid": "GF-B11-06",
@@ -339,7 +360,7 @@
    ],
    "tie_band": true,
    "rank": 10,
-   "stage": "QA_IN_PROGRESS",
+   "stage": "LIVE_PRICE_UPDATED",
    "publication": "LIVE_ON_GUMROAD",
    "checkout": "UNVERIFIED",
    "affiliate": "UNVERIFIED",
@@ -350,8 +371,9 @@
     "files": "PASS",
     "claim_integrity": "PASS",
     "price_usd": 59.0,
-    "blockers": [
-     "price $59 is >2x highest comparable seen ($20)"
+    "blockers": [],
+    "fixed_2026-10-14": [
+     "workbook: 3 summary formulas sat in the Deal ID column where buyer rows go; moved to Summary; 20 text dates made real; 2,245 formulas; new bundle verified live (155,012 B)"
     ]
    },
    "live_listing": {
@@ -361,10 +383,10 @@
     "gumroad_id": "2NIVAf0Nu4SE2DgAL9buYw=="
    },
    "pricing": {
-    "live": 59,
-    "proposed": 29,
-    "status": "PROPOSAL_AWAITING_FOUNDER",
-    "audit": "data/portfolio_10/pricing_audit_2026-10-14.md"
+    "live": 29,
+    "previous": 59,
+    "status": "APPLIED_2026-10-14 and verified (API re-read + public page price_cents=2900)",
+    "rollback": "data/portfolio_10/rollback/prices_before_2026-10-14.json"
    }
   }
  ],

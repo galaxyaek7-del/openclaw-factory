@@ -148,38 +148,18 @@ def build_pdf(pid, slug, guide_path, pdf_path, listing):
     return doc.page
 
 def build_xlsx(spec_path, xlsx_path):
-    import openpyxl
-    from openpyxl.styles import Font, PatternFill, Alignment
-    spec = json.loads(spec_path.read_text(encoding="utf-8"))
-    wb = openpyxl.Workbook()
-    wb.remove(wb.active)
-    hdr = PatternFill("solid", fgColor="1F3864")
-    hfont = Font(bold=True, color="FFFFFF")
-    for sh in spec["sheets"]:
-        ws = wb.create_sheet(sh["name"][:31])
-        for c, col in enumerate(sh["columns"], 1):
-            cell = ws.cell(row=1, column=c, value=col)
-            cell.font = hfont; cell.fill = hdr
-            cell.alignment = Alignment(wrap_text=True, vertical="center")
-        for r, row in enumerate(sh.get("example_rows", []), 2):
-            for c, val in enumerate(row, 1):
-                if c <= len(sh["columns"]):
-                    ws.cell(row=r, column=c, value=val)
-        for f in sh.get("formulas", []):
-            coord = f["cell"]
-            target_ws = ws
-            if "!" in coord:
-                prefix, coord = coord.split("!", 1)
-                prefix = prefix.strip("'")
-                if prefix in wb.sheetnames:
-                    target_ws = wb[prefix]
-            target_ws[coord] = f["formula"]
-        if sh.get("notes"):
-            ws.cell(row=ws.max_row + 2, column=1, value="Notes: " + sh["notes"])
-        for c in range(1, len(sh["columns"]) + 1):
-            ws.column_dimensions[openpyxl.utils.get_column_letter(c)].width = 22
-        ws.freeze_panes = "A2"
-    wb.save(xlsx_path)
+    """Delegates to cohort_workbook.build_xlsx (2026-10-14). The previous
+    in-file version wrote "Summary!B2" formulas onto the current sheet
+    (overwriting example data), never copied "copy down" formulas, and
+    stored dates as text. See cohort_workbook.py."""
+    import sys as _sys
+    from pathlib import Path as _P
+    _root = str(_P(__file__).resolve().parent.parent)
+    if _root not in _sys.path:
+        _sys.path.insert(0, _root)
+    import cohort_workbook
+    return cohort_workbook.build_xlsx(spec_path, xlsx_path)
+
 
 def build_docx(templates_path, out_dir):
     from docx import Document
