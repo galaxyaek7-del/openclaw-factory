@@ -1,0 +1,1180 @@
+{
+  "manifest": "cycle88_artifact_checksums",
+  "created_utc": "2026-10-14T19:55:22.683706+00:00",
+  "purpose": "rollback path for artifacts that are NOT in version control -- books/*.pdf is gitignored",
+  "note": "these files are untracked by design; this manifest is the record",
+  "total_artifacts": 167,
+  "artifacts_with_black_boxes": 19,
+  "total_black_boxes": 39263,
+  "artifacts": [
+    {
+      "path": "books/30-day_habit_tracker_journal.pdf",
+      "bytes": 137506,
+      "sha256": "a8a1f94682a065d8ffd7e611f1a0c1f6017eef2f9b8f5af2e20868ae776af250",
+      "mtime_utc": "2026-07-13T06:45:51.716121+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/90_day_fitness_transformation_journal.pdf",
+      "bytes": 59305,
+      "sha256": "0849fa641167851b25583c983a3f9bf36d1067ea576aea8781f806ded4f91e9a",
+      "mtime_utc": "2026-09-21T17:03:37.663236+00:00",
+      "black_boxes": 145
+    },
+    {
+      "path": "books/ada_demand_response_kit.pdf",
+      "bytes": 9700,
+      "sha256": "4a31d7350f455094989752507506302058548fb5b903ee6043d28b679dc12a1e",
+      "mtime_utc": "2026-09-21T17:03:37.804005+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/ada_triage_workbook.xlsx",
+      "bytes": 18507,
+      "sha256": "d2655804a9ef19a7d6b1c9a7e92e678051bda20da352214430640bda2f10df2b",
+      "mtime_utc": "2026-10-14T16:56:17.843278+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/ai_agent_blueprint_cloudops.pdf",
+      "bytes": 104421,
+      "sha256": "4a0eb53987bb1094174a3c3f7ba8869720e55b2871d94b9bab2ba3fc1b2a1013",
+      "mtime_utc": "2026-10-14T16:55:31.182139+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/ai_agent_blueprint_for_saas_cloudops_automation.pdf",
+      "bytes": 125425,
+      "sha256": "e60b6852ae075e2d59662167e78fe6b5afdbdb1ac4c876535f8329e2b904ff6f",
+      "mtime_utc": "2026-10-14T16:55:31.767264+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/ai_compliance_automation_for_accounting_firms_v2.pdf",
+      "bytes": 99147,
+      "sha256": "012640fe9952a71527857918fc4df7b1401fd5726ce8d4512f15b52bd2894840",
+      "mtime_utc": "2026-07-22T09:05:15.661711+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/ai_customer_support_automation_ecommerce.pdf",
+      "bytes": 94589,
+      "sha256": "9eca426941482c8f43fe2b21a8b473656e5fedfb0a54361ca52b4284dc7dde1e",
+      "mtime_utc": "2026-07-22T09:23:05.776028+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/ai_customer_support_premium.pdf",
+      "bytes": 110692,
+      "sha256": "3bfa23186fb750332586bcee41d7be798b247ac2c3060ea16982711607f13e8f",
+      "mtime_utc": "2026-09-21T17:03:37.822202+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/ai_prompting_playbook_for_freelancers.pdf",
+      "bytes": 131835,
+      "sha256": "301a0ba8d571107907cad3b32f0384a9aac640e9d62d4cccd7aad46653e7872c",
+      "mtime_utc": "2026-07-13T06:47:58.171126+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/aiact_logging_tracker.xlsx",
+      "bytes": 16570,
+      "sha256": "b569ff588596530119d44873221485c35f9308a4697b12b7756d96760a53f775",
+      "mtime_utc": "2026-10-14T16:56:18.144928+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/auto_repair_estimate_transparency_bundle.zip",
+      "bytes": 7890,
+      "sha256": "b8ddd7a8ac0cc2739c7c7f9c3bfe8fee39eca2e8153619c69a274b4ecebeccda",
+      "mtime_utc": "2026-09-21T17:03:37.824210+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/auto_repair_estimate_transparency_guide.pdf",
+      "bytes": 2497,
+      "sha256": "8fc7867c17f2f50f599305350ee6d5d061f77bebb06597f6f918be29f1432918",
+      "mtime_utc": "2026-09-21T17:03:37.824210+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/auto_repair_estimate_transparency_pack.xlsx",
+      "bytes": 10498,
+      "sha256": "f270c113ea03116bf10137c40500ea0ff4834e755465b6f1cf9c3b31048fe4cf",
+      "mtime_utc": "2026-10-14T16:56:18.293716+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/automated_contract_review_system.pdf",
+      "bytes": 118408,
+      "sha256": "a158f89dfbe9414fb83f0218d1c39ceaf4d1e3d57233a8ad0e13fcf812e8199c",
+      "mtime_utc": "2026-09-21T17:03:37.836000+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/automated_invoice_processing_toolkit_for_small_businesses.pdf",
+      "bytes": 107085,
+      "sha256": "c27e4b3a422c7a27a32284264087d2795a169e3c904746e96b22674ad8dee72d",
+      "mtime_utc": "2026-10-14T16:55:33.039327+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/budget_tracker_for_college_students.pdf",
+      "bytes": 121283,
+      "sha256": "2915680bdeb7b258b5b1924700179206e3b0bd83758455930768962b512c5a6e",
+      "mtime_utc": "2026-10-14T16:55:33.522648+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/ccpa_compliance_action_kit.pdf",
+      "bytes": 139490,
+      "sha256": "a20cc619a895178d7795900470f88790f6b66a4219197c7af3436a11299d8a06",
+      "mtime_utc": "2026-10-14T16:55:34.127803+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/ccpa_compliance_tracker.xlsx",
+      "bytes": 16863,
+      "sha256": "dbde9ecf740058cd4dee31dc2d930d39e05e93dcde14c1de7cefd1d6ed7f17de",
+      "mtime_utc": "2026-10-14T16:56:18.474433+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/chargeback_representment_guide.pdf",
+      "bytes": 2765,
+      "sha256": "08ac4a0d538d633a62a1e87ea346b1e0090df7c862a860cf9228fb1857712fcd",
+      "mtime_utc": "2026-09-21T17:03:37.844045+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/chargeback_representment_kit.xlsx",
+      "bytes": 7573,
+      "sha256": "fd41c53820808d4ee6d908ecd1d2070dec8a6a67a94f40e8bd34366586e665d3",
+      "mtime_utc": "2026-09-21T17:03:37.847812+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/chargeback_representment_kit_bundle.zip",
+      "bytes": 8845,
+      "sha256": "a981fbfea0f5cba6bdde4040421767f25d76c92390667e3e2c4061c177c82f46",
+      "mtime_utc": "2026-09-21T17:03:37.850330+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/clinic_noshow_reduction_bundle.zip",
+      "bytes": 8957,
+      "sha256": "3965cc050abe8b3ab15aef3f8a9407b3ba0497b4f8b0181a0073959dc54f3324",
+      "mtime_utc": "2026-09-21T17:03:37.852338+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/clinic_noshow_reduction_guide.pdf",
+      "bytes": 2959,
+      "sha256": "ede406d01366c8c5bb62274f4a6fd954696feb6751458c8c6b4acdc85ee33d41",
+      "mtime_utc": "2026-09-21T17:03:37.854345+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/clinic_noshow_reduction_system.xlsx",
+      "bytes": 7522,
+      "sha256": "dbc8c291a624d26880db9cd2199b8ac02f822eae155482df8ea6717cb6ffee5d",
+      "mtime_utc": "2026-09-21T17:03:37.856354+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/cloudops_action_tracker.xlsx",
+      "bytes": 13071,
+      "sha256": "450d4da7d86738696fe8b60f2c36e191a705a69faab0487ec59ed433e608a81e",
+      "mtime_utc": "2026-10-14T16:56:18.698043+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/daily_habit_tracker_for_remote_workers.pdf",
+      "bytes": 127486,
+      "sha256": "ef7374eb6e3836b1d2144c4ecb18770b014333248f443caaf7a6162de190ae10",
+      "mtime_utc": "2026-10-14T16:55:34.798615+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/deposit_demand_tracker.xlsx",
+      "bytes": 17146,
+      "sha256": "603f0b24240296f836a355022f38b4f503171bb2a1dcfbb7760bd0edcf5d34c9",
+      "mtime_utc": "2026-10-14T16:56:18.896150+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/diminished_value_claim_kit.pdf",
+      "bytes": 9742,
+      "sha256": "3be694ff917fd7e661bb0b52227e946efe743284f953002172cef2764361f9fb",
+      "mtime_utc": "2026-09-21T17:03:38.118742+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/diminished_value_claim_pack.xlsx",
+      "bytes": 17631,
+      "sha256": "a8302ce2347eb86360e72f5db1f1f2ad4cb1fee50f3a277e05e0ff8909d654fb",
+      "mtime_utc": "2026-10-14T16:56:19.158389+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/epr_packaging_action_kit.pdf",
+      "bytes": 11532,
+      "sha256": "baf7f6e58c02c044da614e58bb7a46562d815143758b1a185ef1f6625591cc07",
+      "mtime_utc": "2026-09-21T17:03:38.124476+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/epr_packaging_register.xlsx",
+      "bytes": 22097,
+      "sha256": "82247928aa60685bb44020960dff38873252b92662923b12bd76e814fd8533d0",
+      "mtime_utc": "2026-10-14T16:56:19.391475+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/etsy_appeal_tracker.xlsx",
+      "bytes": 16216,
+      "sha256": "173fbdf2fda02064f3890b8e9f00f6cae1186608343762ea285f3266d6d83936",
+      "mtime_utc": "2026-10-14T16:56:19.720311+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/etsy_policy_triage.pdf",
+      "bytes": 10065,
+      "sha256": "20633dc8522aa4d96a18e92e261c7fa2b92880a6c10190ce45672f1708030a66",
+      "mtime_utc": "2026-10-13T16:22:29.645622+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/etsy_suspension_appeal_kit.pdf",
+      "bytes": 138923,
+      "sha256": "a7b650602075c1115d33211d1eeed8b5b5f7c6ee1bb0bb82ef4edda6e5a6605d",
+      "mtime_utc": "2026-10-14T16:55:35.818979+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/etsy_suspension_appeal_kit_v2_bundle.zip",
+      "bytes": 166634,
+      "sha256": "b05f3f4ccb8cf66b1ad1985afab60d783d4d896f35b908495012f2987dbfda54",
+      "mtime_utc": "2026-10-10T10:38:50.603042+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/etsy_suspension_complete_bundle.zip",
+      "bytes": 173373,
+      "sha256": "6d873ac2e598d3b911c86bcbd0968cd48400aadbb0549b88fbfcd2aef5d8a219",
+      "mtime_utc": "2026-10-13T16:32:46.132375+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/eu_ai_act_audit_logging_kit.pdf",
+      "bytes": 127869,
+      "sha256": "454bbb33e7ed8be9ebf205c6fe0732d2540641134f56ec450b498bc56a7b647f",
+      "mtime_utc": "2026-10-14T16:55:36.648084+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/eu_ai_act_compliance_quickstart_checklist.pdf",
+      "bytes": 3866,
+      "sha256": "3f67ced688f72438a3b130b62ed9698c00b836c6193bd7eaabc0215f4dd17665",
+      "mtime_utc": "2026-09-21T17:03:38.129326+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/eu_ai_act_compliance_toolkit.pdf",
+      "bytes": 139121,
+      "sha256": "c22671a674141e734c4862cfcac871ec697d621693c5457cce4f738d9618c7af",
+      "mtime_utc": "2026-08-06T21:06:42.731533+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/eu_ai_act_compliance_toolkit_preview.pdf",
+      "bytes": 106489,
+      "sha256": "26df026abbea64f7b531124ecc3f0e7a70623543f6bc0a23d3732906a5f89c7f",
+      "mtime_utc": "2026-09-21T17:03:38.134853+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/eu_ai_act_compliance_toolkit_v2.pdf",
+      "bytes": 139401,
+      "sha256": "18c4158342c7f8a290a4386507e1d6bb7cfdc92420e485d76108d4102a40f6bf",
+      "mtime_utc": "2026-10-12T15:26:26.283166+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/eu_ai_act_transparency_literacy_checklist.pdf",
+      "bytes": 3750,
+      "sha256": "1e2a88af9745aa2e02b246d27b1fde009c3ccabe7087b10f15dd60e3bff300ac",
+      "mtime_utc": "2026-09-21T17:03:38.134853+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/fallback_test.pdf",
+      "bytes": 71797,
+      "sha256": "c5e789a4eb58e44fb50c754163d8971ecb7c07cb5a75b77b551396ff4d4710e2",
+      "mtime_utc": "2026-09-21T17:03:38.140483+00:00",
+      "black_boxes": 44
+    },
+    {
+      "path": "books/fitness_silent_churn_winback_bundle.zip",
+      "bytes": 8731,
+      "sha256": "2964e570b6d59effbfec06685318c5b13aec900fa250852003fda79ec943a625",
+      "mtime_utc": "2026-09-21T17:03:38.140483+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/fitness_silent_churn_winback_guide.pdf",
+      "bytes": 2637,
+      "sha256": "2b3ba317800ec98a7dc6d561f920a58b7a7baf621e9b738d68b5ae0425ed8f41",
+      "mtime_utc": "2026-09-21T17:03:38.143137+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/fitness_silent_churn_winback_system.xlsx",
+      "bytes": 7540,
+      "sha256": "63358880dc9e347f6490e3b8e81b6f448a16072ac25814a233f7c4680570894c",
+      "mtime_utc": "2026-09-21T17:03:38.145142+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/five_minute_context_reset_playbook.pdf",
+      "bytes": 119824,
+      "sha256": "73d6f147168d0e830fd73388bdf2ed880f522e35f5ff03ef0e98c233a8cd7b17",
+      "mtime_utc": "2026-10-12T11:12:59.963531+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/freelancer_client_onboarding_template.pdf",
+      "bytes": 93235,
+      "sha256": "f52dfaeac9d430d3c553de43bb50e88124d201621fc092364e5d343b272bbdd9",
+      "mtime_utc": "2026-07-13T06:51:42.696365+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/freelancer_invoice_expense_log.pdf",
+      "bytes": 140818,
+      "sha256": "df0f080021b924774542c9aae7b56c80ac63ab8c5425f8eb29cde713667bb3a5",
+      "mtime_utc": "2026-10-14T16:55:38.093587+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/freelancer_payment_protection_scope_control_toolkit.pdf",
+      "bytes": 6738,
+      "sha256": "0cf6ba5bc48d1e599cb19922faa31f8647a34d0465b786a4fe14d15f6dbec07c",
+      "mtime_utc": "2026-09-21T17:03:38.146886+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/freelancer_scope_control_v2_bundle.zip",
+      "bytes": 79296,
+      "sha256": "22287980e785bb0b3d9266880c71539072b3d4b977ff97045c936f7f331dca6b",
+      "mtime_utc": "2026-10-10T19:59:34.921530+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/ftc_review_rule_audit_tracker.xlsx",
+      "bytes": 17029,
+      "sha256": "e38c4cbe970bf56d0162b19a7e9432ff277e3b85fc50c82016ddbba6a6c18aeb",
+      "mtime_utc": "2026-10-14T16:56:20.198766+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/ftc_review_rule_compliance_kit.pdf",
+      "bytes": 13255,
+      "sha256": "c0f970691d787d44d5297596a0519f7adc71172fc1cdd984958755c5e7920618",
+      "mtime_utc": "2026-09-21T17:03:38.153214+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/FULL_COOKBOOK_SAMPLE.pdf",
+      "bytes": 4344725,
+      "sha256": "260cda615a2c4c24c76c3a89b7b24f261702121fb7ec6e4c643d97df95d504c1",
+      "mtime_utc": "2026-09-21T17:03:37.772516+00:00",
+      "black_boxes": 9
+    },
+    {
+      "path": "books/gcc_contractor_payment_command_system.pdf",
+      "bytes": 7284,
+      "sha256": "32814de73ae2a50019dfcf6799b639665ba60a5f15fd6e99426cdf758b2b474f",
+      "mtime_utc": "2026-09-21T17:03:38.156146+00:00",
+      "black_boxes": 141
+    },
+    {
+      "path": "books/gcc_implementation_checklist_v2.pdf",
+      "bytes": 2564,
+      "sha256": "b603616d4f4c0fc2fe9c43e99ad68b2aa114a90aa7b711ccfcc47d931cb6f7d4",
+      "mtime_utc": "2026-09-21T17:03:38.157564+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/gcc_payment_command_manual_v2.pdf",
+      "bytes": 4503,
+      "sha256": "7b6004ea79ca8fa5c84977870459b133688744966570a658788230d4a807023b",
+      "mtime_utc": "2026-09-21T17:03:38.158840+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/gcc_payment_command_system_v2_bundle.zip",
+      "bytes": 17106,
+      "sha256": "abd3d0535cb64cd04bb244e2539e82562aded06219bf7eef179f5d4c3f7b6ded",
+      "mtime_utc": "2026-09-21T17:03:38.160546+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/gcc_payment_command_workbook_v2.xlsx",
+      "bytes": 10764,
+      "sha256": "c6c4fe3da23089146c892e095dcc70a9e8a1613728902ebdb38042a05db90f51",
+      "mtime_utc": "2026-09-21T17:03:38.162560+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/gcc_payment_templates_ar_en_v2.pdf",
+      "bytes": 3739,
+      "sha256": "c17a0d21f72b2864eccd4a7be2cb8bf743992784c19f8bf56aba7936866f5319",
+      "mtime_utc": "2026-09-21T17:03:38.165271+00:00",
+      "black_boxes": 279
+    },
+    {
+      "path": "books/GOLDEN_BOOK_SAMPLE.pdf",
+      "bytes": 3217245,
+      "sha256": "c70dd3cdb2bfbc3ddcabd21069ded976b6c4a174c2f5cc318bf3f8a88519ac50",
+      "mtime_utc": "2026-09-21T17:03:37.802000+00:00",
+      "black_boxes": 3
+    },
+    {
+      "path": "books/gpsr_eu_seller_action_kit.pdf",
+      "bytes": 18389,
+      "sha256": "9d27dc57beaa1384b93336b4b76ce9c763fa79e5695db0044d65f1af90efc924",
+      "mtime_utc": "2026-09-21T17:03:38.168117+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/gpsr_eu_seller_cost_planner.xlsx",
+      "bytes": 7721,
+      "sha256": "7967596f27506bfc7efc6ea706069c6b34be214b94ba7d5f90b72cea991af247",
+      "mtime_utc": "2026-09-21T17:03:38.172146+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/gulf_job_landing_ats_cv_system.pdf",
+      "bytes": 5240,
+      "sha256": "4c4ecd977e7373d0c17f534f6755e6f3a5ee2ac4ed44cd3805a9a31df3b5134d",
+      "mtime_utc": "2026-09-21T17:03:38.172146+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/healthy_air_fryer_weeknight_meals.pdf",
+      "bytes": 111041,
+      "sha256": "924ab251583225cd8f89bbb5037ce6b3af79fdd723d25cc9fd6b2fb200c5a692",
+      "mtime_utc": "2026-10-14T16:55:39.556553+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/healthy_air_fryer_weeknight_meals_cover.pdf",
+      "bytes": 79925,
+      "sha256": "0587432c2bd9dce79032b8fec0b72d9223221f0aca17b460cf37b045c6e7abac",
+      "mtime_utc": "2026-09-21T17:03:38.180265+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/home_service_review_response_bundle.zip",
+      "bytes": 8861,
+      "sha256": "89e55045e4cfa1d7d04e75d40a8524947bc2fbcd99a31ff81480a9cffcc24430",
+      "mtime_utc": "2026-09-21T17:03:38.182282+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/home_service_review_response_guide.pdf",
+      "bytes": 3120,
+      "sha256": "5d74b443c382dc0de9b8cb9a7d5962401f34bcb288bfbc2b9b3540d7091f0524",
+      "mtime_utc": "2026-09-21T17:03:38.184297+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/home_service_review_response_system.xlsx",
+      "bytes": 12805,
+      "sha256": "09e5ade10f83b6828812faee20f9c073cfb7e4632ee498b66489d91b4b3796db",
+      "mtime_utc": "2026-10-14T16:56:20.447650+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/how_i_built_an_autonomous_ai_company_solo.pdf",
+      "bytes": 129800,
+      "sha256": "bdb636750aa7adf14e8c13f3038c4c0d76bcc3ad95ad1195fac876a334083833",
+      "mtime_utc": "2026-07-22T12:16:18.987919+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/inventory_management_wholesale.pdf",
+      "bytes": 91074,
+      "sha256": "dbd61730cd56bc959f58e49d700787e867d0763d9fddd258297a77d68e702ceb",
+      "mtime_utc": "2026-09-13T17:38:10.538319+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/inventory_management_wholesale_premium.pdf",
+      "bytes": 124428,
+      "sha256": "c58279bca39bb0676fd71e811e302f4c5a9885ba65dee99a2241be4527669704",
+      "mtime_utc": "2026-09-21T17:03:38.188313+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/invoice_processing_premium.pdf",
+      "bytes": 116302,
+      "sha256": "f32778e9ff874123a014d4b7496eff0332d51bcc0821d7d87bbdfc9b019cf017",
+      "mtime_utc": "2026-09-21T17:03:38.193938+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/landlord_rent_arrears_action_bundle.zip",
+      "bytes": 8523,
+      "sha256": "58c54f81c134c3375714ad1cfe859ac976e4798e5923ea6f2bfdfd51a76b26a6",
+      "mtime_utc": "2026-09-21T17:03:38.193938+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/landlord_rent_arrears_action_guide.pdf",
+      "bytes": 2510,
+      "sha256": "ecc1650867d4f6e0e42d23c4f66bf1baf691807782b84e11ecbd79dde059a9c9",
+      "mtime_utc": "2026-09-21T17:03:38.200390+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/landlord_rent_arrears_action_system.xlsx",
+      "bytes": 7436,
+      "sha256": "c9d199bae69f1f387b47613e6af91db88c5965d86b4c9991a48280a928df1491",
+      "mtime_utc": "2026-09-21T17:03:38.202396+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/legal_case_research_automation_playbook.pdf",
+      "bytes": 9625,
+      "sha256": "45dad9347030c472464e799fa239aee4e0609399e8bf29dac0cf83cbea3fa5d3",
+      "mtime_utc": "2026-09-21T17:03:38.204401+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/legal_case_research_solo_kit.pdf",
+      "bytes": 123594,
+      "sha256": "daee30e3aa845ef08493d488ad393098e173d4206cd0de1f493d93ca99218dc4",
+      "mtime_utc": "2026-10-14T16:55:41.144141+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/legal_research_tracker.xlsx",
+      "bytes": 16265,
+      "sha256": "3456a197dd7bd8df2e48f28c7901e10d4d038b070ba374f71b1e51c6f5d6b0b8",
+      "mtime_utc": "2026-10-14T16:56:20.690281+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/lien_deadline_tracker.xlsx",
+      "bytes": 17870,
+      "sha256": "d451773a9b235d63ad972bd16f894d7f675a58fce9f6eaac0bb7a4b726058a9b",
+      "mtime_utc": "2026-10-14T16:56:20.959322+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/mechanics_lien_filing_kit.pdf",
+      "bytes": 140613,
+      "sha256": "d652e84aaa608a3273049656124ea6784278843d7b280ca13ef6b735f3e20f69",
+      "mtime_utc": "2026-10-14T16:55:42.020133+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/mechanics_lien_filing_kit_v2.pdf",
+      "bytes": 138060,
+      "sha256": "55c506b4a5129d4183a35c68b052a5c32b16ee1a0ad0d656a3fbe4bbe201f612",
+      "mtime_utc": "2026-10-14T16:55:42.747460+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/mindful_morning_routine_system.pdf",
+      "bytes": 69916,
+      "sha256": "31c5c11af58c0923f969b93d1118e4150a76ccdc91735fbdd4b4afc03a39dbab",
+      "mtime_utc": "2026-09-21T17:03:38.206407+00:00",
+      "black_boxes": 377
+    },
+    {
+      "path": "books/mindfulness_journal_for_stress_relief.pdf",
+      "bytes": 154817,
+      "sha256": "e544f801cdd78d6273dcde340786a7c6deb3c535768e2cf0d79de4064830c132",
+      "mtime_utc": "2026-10-14T16:56:57.603044+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/notary_signing_error_free_ops_bundle.zip",
+      "bytes": 8824,
+      "sha256": "754f51a08bac356f5d9381dc1e6d6523fce5ec40fca3826e1dfa591cf154e238",
+      "mtime_utc": "2026-09-21T17:03:38.217793+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/notary_signing_error_free_ops_guide.pdf",
+      "bytes": 2668,
+      "sha256": "3375ed60f537a784b70b4f74654daf7460226d6fc94ef21b0296b5950155e528",
+      "mtime_utc": "2026-09-21T17:03:38.217793+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/notary_signing_error_free_ops_pack.xlsx",
+      "bytes": 7619,
+      "sha256": "4f3e2387dcce12ebc878f9995cc95a76131a19a0e71fda2a0ed37b5b1fcba34b",
+      "mtime_utc": "2026-09-21T17:03:38.219801+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/pet_grooming_rebooking_review_bundle.zip",
+      "bytes": 8521,
+      "sha256": "86dd610b453f59f4046fd398e936211c75f039e6b526e066f86ca297bc08561d",
+      "mtime_utc": "2026-09-21T17:03:38.221808+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/pet_grooming_rebooking_review_guide.pdf",
+      "bytes": 2617,
+      "sha256": "e0b8e60560b1a69f167ad7f0049d44911a41d3fc59c47f1f1a126c6d9872b87b",
+      "mtime_utc": "2026-09-21T17:03:38.223813+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/pet_grooming_rebooking_review_system.xlsx",
+      "bytes": 7357,
+      "sha256": "2a57bd9a41e9079531f466e29b2322be428f6add2c367427faa860948d8d8db1",
+      "mtime_utc": "2026-09-21T17:03:38.223813+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/proof_ai_compliance_automation_package.pdf",
+      "bytes": 105577,
+      "sha256": "476c77fc9c8f478b2797f0f54ab50f340c00e17e8f64c51700868e0bca610570",
+      "mtime_utc": "2026-07-17T21:40:58.880584+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/regression_test_draft_with_content.pdf",
+      "bytes": 94233,
+      "sha256": "cf1f15a87885cd305916c4b2d9392d1d39c7f2cc600c4a11a5c3a9ce7f700a69",
+      "mtime_utc": "2026-10-14T17:14:00.963140+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/repeatability_test_1.pdf",
+      "bytes": 118059,
+      "sha256": "d804e5a4a4eb562fa293d070a9ffee1707ef220131331257b612db1deece5aa7",
+      "mtime_utc": "2026-10-14T16:55:45.080693+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/repeatability_test_2.pdf",
+      "bytes": 121787,
+      "sha256": "3e646a9a4219037ec563cb30c8b7daf66f64bbab0a6bc65fd5056e22edb8a7d1",
+      "mtime_utc": "2026-10-14T16:55:45.644080+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/repeatability_test_3.pdf",
+      "bytes": 112030,
+      "sha256": "88d73c5520cb6414950c729f1d5ba5f1a55fd810baa15e7d3278d57e5ceb6269",
+      "mtime_utc": "2026-10-14T16:55:46.233553+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/restaurant_food_waste_tracking_bundle.zip",
+      "bytes": 8996,
+      "sha256": "5930d18d480d8fa8cf94bee84e1acdf85b463655917f9edc949f417ee0f4cc4e",
+      "mtime_utc": "2026-09-21T17:03:38.238357+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/restaurant_food_waste_tracking_guide.pdf",
+      "bytes": 2447,
+      "sha256": "0bb44b6c7cefef85b7def724d10ac84d2b1820a6c9befe2703427c8ec6136888",
+      "mtime_utc": "2026-09-21T17:03:38.238357+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/restaurant_food_waste_tracking_system.xlsx",
+      "bytes": 8057,
+      "sha256": "a575dd2ec04c1ad925d36bbf9ac831f774ad96438f62e0abf6dda6c5f18f2da3",
+      "mtime_utc": "2026-09-21T17:03:38.242854+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/restaurant_inspection_logs.xlsx",
+      "bytes": 7814,
+      "sha256": "1dfd0bdd0ae94b3e3fd7d72a206f9f2e45973fa221dcb3c866976fb5378dd0a3",
+      "mtime_utc": "2026-09-21T17:03:38.244817+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/restaurant_inspection_readiness_kit.pdf",
+      "bytes": 10981,
+      "sha256": "b61a954f28cbe888e9f510a62134f86374f95454046825a995703a993270f9a9",
+      "mtime_utc": "2026-09-21T17:03:38.246874+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/section8_notice_validity_workbook.xlsx",
+      "bytes": 10107,
+      "sha256": "c051f0f02231efdc88978e754640ac2bf6af0a1045f6bf2cd2d1c64e5462b28d",
+      "mtime_utc": "2026-09-21T17:03:38.250646+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/section8_templates_checklists.pdf",
+      "bytes": 2729,
+      "sha256": "b54c730a9b30288828d7baebae72349c1835633b9f170a4ee4196e1e85353a3a",
+      "mtime_utc": "2026-09-21T17:03:38.252651+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/section8_validity_manual.pdf",
+      "bytes": 3475,
+      "sha256": "6817b74f7948b1ce38795a9948d6715012ab5a6b1a855d6ee1cc7b6b99652780",
+      "mtime_utc": "2026-09-21T17:03:38.252651+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/section8_validity_system_bundle.zip",
+      "bytes": 13669,
+      "sha256": "a2bca3397e84051b7d5cc4fb636cd8d68867a5e641df4d0c48a47098d970bc3c",
+      "mtime_utc": "2026-09-21T17:03:38.254657+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/security_deposit_demand_kit.pdf",
+      "bytes": 130079,
+      "sha256": "b10647d2e5a81c91f2585f4ff74dcba08961722a2424ba7c4deb1a2a8eafca6c",
+      "mtime_utc": "2026-10-14T16:55:46.995857+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/security_deposit_demand_kit_v2.pdf",
+      "bytes": 127075,
+      "sha256": "cbec5ea3ec5c7e86100360d5b5236daa3e0309f6f40c8b0748482bb659352021",
+      "mtime_utc": "2026-10-14T16:55:47.666228+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/service_verified_lead_lists_sheet.pdf",
+      "bytes": 2008,
+      "sha256": "28b7bee3db2035dc9b478597e5157ba8405641a1a3d1f8134118e81460e528a4",
+      "mtime_utc": "2026-10-02T10:00:46.799002+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/severance_agreement_review_kit.pdf",
+      "bytes": 133971,
+      "sha256": "594241aef1dd9b36b05575a8c536b540d703ae679329cc44f47c648a2477bb71",
+      "mtime_utc": "2026-10-14T16:55:48.311874+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/severance_review_tracker.xlsx",
+      "bytes": 13707,
+      "sha256": "ea809750f0680618a576d9bbad31d8ed68c57d39f39b53da6d57c50b0eebf956",
+      "mtime_utc": "2026-10-14T16:56:21.259937+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/smart_budget_command_center.pdf",
+      "bytes": 58994,
+      "sha256": "0ad32d64b6b114ca16614423bae60ba7611b9241a061a9fd5f8d7db149c5d90a",
+      "mtime_utc": "2026-09-21T17:03:38.257670+00:00",
+      "black_boxes": 87
+    },
+    {
+      "path": "books/soc2_compliance_automation_kit.pdf",
+      "bytes": 138152,
+      "sha256": "95c07ccf35efcf18bd77c27039c504c85573ceb05f7b1daabcb71c6f6a757e28",
+      "mtime_utc": "2026-10-14T16:55:49.664628+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/soc2_evidence_tracker.xlsx",
+      "bytes": 16530,
+      "sha256": "b5edb9de3558f8aa2225579408ba0f82fdf5c75ce868223f6c1c5eb31101542d",
+      "mtime_utc": "2026-10-14T16:56:21.452003+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/startup_founder_weekly_planner.pdf",
+      "bytes": 132738,
+      "sha256": "2eea6619bb45d1034edab2515851ad404093eb5cd7ff716c2784c5db3a7925fb",
+      "mtime_utc": "2026-10-14T16:55:50.501254+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/str_direct_booking_kit.pdf",
+      "bytes": 10186,
+      "sha256": "bb725f5941b9f55a23bb463a0fb7f169c7e519451083fe48815786483aa00911",
+      "mtime_utc": "2026-09-21T17:03:38.257670+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/str_direct_booking_planner.xlsx",
+      "bytes": 7527,
+      "sha256": "66d2d36846cfc63ca0cce1818ae544d130a242f6cef10b1fa46d1576b5eddb7d",
+      "mtime_utc": "2026-09-21T17:03:38.266095+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/stripe_chargeback_defense_kit.pdf",
+      "bytes": 127900,
+      "sha256": "1ff5d0bdc3e152307550df602b0b98deac7f5d2efcd33b28095988d2a7df24a0",
+      "mtime_utc": "2026-10-14T16:55:51.354156+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/stripe_dispute_tracker.xlsx",
+      "bytes": 17018,
+      "sha256": "3eec6596371fd655060cc7f258957be48474a206f6c35f1926536944f6ff45ca",
+      "mtime_utc": "2026-10-14T16:56:21.690864+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/suspended_seller_first_appeal_poa_system.pdf",
+      "bytes": 5626,
+      "sha256": "0a67a6d008fce8b382cb12e39c8d9b67662ada9500cdad59ff6a14cfd3097f0a",
+      "mtime_utc": "2026-09-21T17:03:38.266095+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/tattoo_studio_booking_deposit_bundle.zip",
+      "bytes": 8211,
+      "sha256": "4468cd1af52979a3fc94c74a1f885b6f38e2e2eee54543838f00d8fce34389f0",
+      "mtime_utc": "2026-09-21T17:03:38.273332+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/tattoo_studio_booking_deposit_guide.pdf",
+      "bytes": 2798,
+      "sha256": "0d4d91eae3ee23a41e34eefcfdf41aebf39dded7104e1df679fe5bf2f097e880",
+      "mtime_utc": "2026-09-21T17:03:38.275340+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/tattoo_studio_booking_deposit_system.xlsx",
+      "bytes": 6796,
+      "sha256": "94700916940cda8c55e2ecca43852c45d44aaf5fc4ba4e482642bb570677c2cc",
+      "mtime_utc": "2026-09-21T17:03:38.277346+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/test.pdf",
+      "bytes": 96476,
+      "sha256": "466bbce4d3f35cd70a92a7d0d6460321df9af188284587f00b183ce6ecac15db",
+      "mtime_utc": "2026-10-14T16:57:00.783766+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/test_automation_book.pdf",
+      "bytes": 112769,
+      "sha256": "dd9252e6439948640b757eb02dff03786d0152096676c606fd1afd1c0d25471d",
+      "mtime_utc": "2026-10-14T16:57:01.337612+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/the_5_minute_context_reset_playbook.pdf",
+      "bytes": 172346,
+      "sha256": "f7970f6384542f671af92d13f1c1ebdcd1a915ad200b0fca2962ed3907dc9583",
+      "mtime_utc": "2026-09-21T17:03:38.289070+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/trademark_diy_filing_kit.pdf",
+      "bytes": 12514,
+      "sha256": "a7f86fc132a45c8e6a4e2067553dab9f8f98cffe74d38a3c65e8f3cabce8a436",
+      "mtime_utc": "2026-09-21T17:03:38.289070+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/trademark_filing_tracker.xlsx",
+      "bytes": 7650,
+      "sha256": "10261dd269ae808750716f2f9256709fe2e75a3f8213d657b63c612266e20495",
+      "mtime_utc": "2026-09-21T17:03:38.289070+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/turo_guest_dispute_toolkit.pdf",
+      "bytes": 18078,
+      "sha256": "65c5994738a97d4ad0e14fbf15e59c291add58ad4b44c11c251f86d45a8258aa",
+      "mtime_utc": "2026-09-21T17:03:38.295016+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/turo_guest_dispute_tracker.xlsx",
+      "bytes": 7688,
+      "sha256": "e4759b5be70888172e1454f5c7b3162ab9b783a17cea105ea069663cf4bc9b8c",
+      "mtime_utc": "2026-09-21T17:03:38.297023+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/uk_deposit_recovery_action_pack.xlsx",
+      "bytes": 7731,
+      "sha256": "39821352d9f79c9219fb0c73ed3d256a2caf8db3a01c9154ea59f0ea7e2eaceb",
+      "mtime_utc": "2026-09-21T17:03:38.297023+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/uk_deposit_recovery_guide.pdf",
+      "bytes": 3017,
+      "sha256": "c78f272c207157f035b7c9597393d4b98f7dcbef736d9586595924937afaf9d5",
+      "mtime_utc": "2026-09-21T17:03:38.304946+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/uk_deposit_recovery_pack.zip",
+      "bytes": 9198,
+      "sha256": "b95e79fed7ce66e11f3f1041d04d529f993e698dfb7f4757d6e1c6531afb0048",
+      "mtime_utc": "2026-09-21T17:03:38.306952+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/vacation_rental_turnover_fee_bundle.zip",
+      "bytes": 8529,
+      "sha256": "4b9624f3279a04bcd8ec114a053b40b87ddfe8167743aa1f6eaca7db5853ba25",
+      "mtime_utc": "2026-09-21T17:03:38.308959+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/vacation_rental_turnover_fee_guide.pdf",
+      "bytes": 2469,
+      "sha256": "1b8661f9a1e4ac4f6e17b5cb2d935816c9e21cbd2f9a4df365badd6216c49930",
+      "mtime_utc": "2026-09-21T17:03:38.308959+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/vacation_rental_turnover_fee_system.xlsx",
+      "bytes": 7478,
+      "sha256": "d617ef3e5f80fc8c183e5747dcc7d19cfc24f75679b8c1667a3a4009b7400bf8",
+      "mtime_utc": "2026-09-21T17:03:38.310966+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/vendor_questionnaire_response_kit.pdf",
+      "bytes": 12157,
+      "sha256": "cd15d4dea78141adb3c5ef4cd41864fc0dff20b4d3ad16055eb1ebe3958d3707",
+      "mtime_utc": "2026-09-21T17:03:38.314533+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/vendor_questionnaire_tracker.xlsx",
+      "bytes": 15679,
+      "sha256": "877013e6cc5c5df40bd2e1e181d75887f21f4d1ff204a98ec4d494fc951178fe",
+      "mtime_utc": "2026-10-14T16:56:22.145297+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/wedding_vendor_booking_protection_bundle.zip",
+      "bytes": 8864,
+      "sha256": "6881fdd8d3ce41e2fe50a26dbef76505bd284af571254e1fb6ae4571b80ab4f3",
+      "mtime_utc": "2026-09-21T17:03:38.319629+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/wedding_vendor_booking_protection_guide.pdf",
+      "bytes": 2779,
+      "sha256": "964bc7b9a3c6f18eed061f81a88699724d05defa1f21f671ea26b663f7df0051",
+      "mtime_utc": "2026-09-21T17:03:38.321656+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/wedding_vendor_booking_protection_pack.xlsx",
+      "bytes": 7543,
+      "sha256": "39f0fdb877520696ee35cb5ec73f5e3e9b76ec52bac99e21dc29ec91e72b3d9e",
+      "mtime_utc": "2026-09-21T17:03:38.322913+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/weekly_meal_planner_printable.pdf",
+      "bytes": 37550,
+      "sha256": "70d2538cc625bc8f9387d29d2b6a98c2ae6e95ebe1a1ee6b2eca5546b08c2e92",
+      "mtime_utc": "2026-07-13T06:46:14.108015+00:00",
+      "black_boxes": 294
+    },
+    {
+      "path": "books/workflow_automation_logistics.pdf",
+      "bytes": 96389,
+      "sha256": "e043f56a25a838e31387a66d96af88c2c9129a5c96768c45dfe1931fa25cf7b5",
+      "mtime_utc": "2026-09-13T17:38:10.538319+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/workflow_automation_logistics_premium.pdf",
+      "bytes": 121483,
+      "sha256": "62ac0afe7e483e494ff6c733d187e25f8428b67b9626d16e2835aa56c36a1472",
+      "mtime_utc": "2026-09-21T17:03:38.327543+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "books/\u0623\u0628\u062d\u0627\u062b_\u0627\u0644\u062a\u0648\u062c\u064a\u0647_\u0627\u0644\u0630\u0643\u064a.pdf",
+      "bytes": 81460,
+      "sha256": "32f77d5373d78e24b6efc21c7afad32ddd0e8ab8b905d7e0e528dabfd66684f0",
+      "mtime_utc": "2026-07-09T07:35:42.982940+00:00",
+      "black_boxes": 4636
+    },
+    {
+      "path": "books/\u0627\u0644\u0625\u0628\u062f\u0627\u0639_\u0627\u0644\u0641\u0648\u0631\u064a\u0627_\u0643\u064a\u0641_\u062a\u062d\u0648\u0644_\u0631\u062f\u0648\u062f_\u0623\u0641\u0639\u0627\u0644\u0643_\u0625\u0644\u0649_\u0641\u0631\u0635_\u0630\u0647\u0628\u064a\u0629.pdf",
+      "bytes": 121582,
+      "sha256": "ba7593ce21277ed6f726e6f1433ffbbb513af641f069f788d8feb38b46d6c42d",
+      "mtime_utc": "2026-07-08T07:38:54.017198+00:00",
+      "black_boxes": 3212
+    },
+    {
+      "path": "books/\u0627\u0644\u0630\u0643\u0627\u0621_\u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a_\u0644\u0644\u0645\u0628\u062a\u062f\u0626\u064a\u0646_\u0627\u0644\u062a\u0637\u0628\u064a\u0642\u0627\u062a_\u0648\u0627\u0644\u0623\u0633\u0627\u0633\u064a\u0627\u062a.pdf",
+      "bytes": 17131,
+      "sha256": "6dcd1c8daa5371baaf6c0fc7d9b445a6cfddf2193143fa8334dc99a8a65af01f",
+      "mtime_utc": "2026-07-05T13:07:03.425823+00:00",
+      "black_boxes": 2751
+    },
+    {
+      "path": "books/\u0627\u0644\u0631\u062c\u0644_\u0627\u0644\u0646\u0627\u062c\u062d_30_\u064a\u0648\u0645_\u0627_\u0644\u062a\u0645\u064a\u0632\u0643_\u0627\u0644\u0634\u062e\u0635\u064a.pdf",
+      "bytes": 112303,
+      "sha256": "e0cebaade757bae91ca04518c998bc0c0fe1a2e9c99c6933ef7431793ff12e6a",
+      "mtime_utc": "2026-07-09T07:39:57.835920+00:00",
+      "black_boxes": 3288
+    },
+    {
+      "path": "books/\u0627\u0644\u0643\u062a\u0627\u0628_\u0627\u0644\u0645\u0642\u062f\u0633_\u0644\u0644\u0643\u062a\u0627\u0628\u0629_\u0627\u0644\u0625\u0628\u062f\u0627\u0639\u064a\u0629.pdf",
+      "bytes": 96326,
+      "sha256": "49aebedd5579677a0cf53a387b141bcd2b4cc882b9a9e6f1195120b3921098be",
+      "mtime_utc": "2026-07-08T07:54:25.751325+00:00",
+      "black_boxes": 4738
+    },
+    {
+      "path": "books/\u0627\u0644\u0646\u0635\u0627\u0628_\u0627\u0644\u0630\u0647\u0628\u064a_\u0627\u0644\u0633\u0631_\u0627\u0644\u0645\u0631\u064a\u0628_\u0641\u064a_\u0627\u0644\u0627\u0633\u062a\u062b\u0645\u0627\u0631.pdf",
+      "bytes": 100061,
+      "sha256": "898d91d9b0f39a99a012b0c9db6a3c6565448e8069c34e41a4f719e10ea8eca3",
+      "mtime_utc": "2026-07-06T14:55:14.433176+00:00",
+      "black_boxes": 4108
+    },
+    {
+      "path": "books/\u0627\u0644\u0646\u0635\u0648\u0635_\u0627\u0644\u0633\u0627\u062d\u0631\u0629__\u0645\u0647\u0627\u0631\u0627\u062a_\u0627\u0644\u0643\u062a\u0627\u0628\u0629_\u0627\u0644\u0631\u0647\u064a\u0626\u0629.pdf",
+      "bytes": 103765,
+      "sha256": "0154dfc5ab7e7af405ed4838ecb98ae2835f464f833b75d69e2e8e0b27e8243e",
+      "mtime_utc": "2026-07-06T14:54:12.494084+00:00",
+      "black_boxes": 4031
+    },
+    {
+      "path": "books/\u062f\u0644\u064a\u0644_\u0627\u0644\u0625\u0646\u062a\u0627\u062c\u064a\u0629_\u0627\u0644\u064a\u0648\u0645\u064a\u0629_\u0644\u0644\u0645\u0628\u062a\u062f\u0626\u064a\u0646.pdf",
+      "bytes": 90060,
+      "sha256": "95a5a2946e0e0688f97a65301b703f22575b4da6cd0c226c0e5dbd7b41cd7d75",
+      "mtime_utc": "2026-07-08T07:38:38.296587+00:00",
+      "black_boxes": 4583
+    },
+    {
+      "path": "books/\u062f\u0644\u064a\u0644_\u0627\u0644\u0646\u0648\u0645_\u0627\u0644\u0635\u062d\u064a.pdf",
+      "bytes": 8834,
+      "sha256": "10a32afca209d2729424442849b80bab0c935f08d16b4d9ea19bfa9075e15b1c",
+      "mtime_utc": "2026-07-05T13:28:35.753844+00:00",
+      "black_boxes": 3602
+    },
+    {
+      "path": "books/\u0635\u0646\u0627\u0639\u0629_\u0623\u0644\u0639\u0627\u0628_\u0627\u0644\u0639\u0642\u0644_\u0644\u0644\u0623\u0637\u0641\u0627\u0644.pdf",
+      "bytes": 102976,
+      "sha256": "e89d8ca58ddb6e7e5d18a86d4575f44a32865241ab2e52912b60a68b4fad4f25",
+      "mtime_utc": "2026-07-09T07:36:07.528131+00:00",
+      "black_boxes": 2935
+    },
+    {
+      "path": "factory_workspace/sprint14/amazon_fba_reconciliation_workbook.pdf",
+      "bytes": 3726,
+      "sha256": "50f65b60978f53c40a21289a319f399921e132e55b35c08a95e97a5c76c83b85",
+      "mtime_utc": "2026-09-23T12:00:06.788663+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "factory_workspace/sprint14/battery_weee_miniguide.pdf",
+      "bytes": 3061,
+      "sha256": "9b1ef57bdbd63a8d082111d41485e5785004f7903cdc0ac4d7408a8bc3178524",
+      "mtime_utc": "2026-09-23T12:02:43.089983+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "factory_workspace/sprint14/digital_refund_policy_pack.pdf",
+      "bytes": 3123,
+      "sha256": "44fb3536f4035477864dc817234048abaf0a7c48d6e070ea0ab3fd5b0d92a2c6",
+      "mtime_utc": "2026-09-23T12:02:43.116717+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "factory_workspace/sprint14/etsy_ads_roi_playbook.pdf",
+      "bytes": 3480,
+      "sha256": "e5768f1879c8868e32a232fb7da326e0991eef9f7329851cd0291f3826431103",
+      "mtime_utc": "2026-09-23T12:00:06.788663+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "factory_workspace/sprint14/eu_cosmetics_responsible_person_guide.pdf",
+      "bytes": 4637,
+      "sha256": "b9809f67ae01ab343ec6d214d61d1588ac7b159fa17427b29307e3a536525a49",
+      "mtime_utc": "2026-09-23T12:00:06.810150+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "factory_workspace/sprint14/eu_late_payment_recovery_kit.pdf",
+      "bytes": 3863,
+      "sha256": "26984a5bc1c405fa4f87af61493d1a156f54c7272f556459f3da845ba8dfa972",
+      "mtime_utc": "2026-09-23T12:00:06.772571+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "factory_workspace/sprint14/eudr_due_diligence_starter.pdf",
+      "bytes": 3472,
+      "sha256": "c2321f7c925bb47887747125d6f1c8d6630d2de5a8318201bc5899c38ca5c334",
+      "mtime_utc": "2026-09-23T12:34:24.431978+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "factory_workspace/sprint14/food_contact_materials_starter.pdf",
+      "bytes": 3112,
+      "sha256": "70271b185f25d4ec9611b13f572e4d04fcd29e785b71f8585c4716e729c77b3c",
+      "mtime_utc": "2026-09-23T12:02:43.073349+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "factory_workspace/sprint14/freelancer_scope_creep_contract_kit.pdf",
+      "bytes": 3055,
+      "sha256": "ba929223654d7f5402e722d84fa6d3b77a6fc93a7f780b469581221d12e63ce4",
+      "mtime_utc": "2026-09-23T12:02:43.099733+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "factory_workspace/sprint14/marketplace_fee_escape_pack.pdf",
+      "bytes": 3618,
+      "sha256": "96a1e03301a3b6f45ccae99431db6a8c2dc7fa1543bbbaa9703c97d461baebc2",
+      "mtime_utc": "2026-09-23T12:24:49.364052+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "factory_workspace/sprint14/ppwr_seller_update_pack.pdf",
+      "bytes": 3756,
+      "sha256": "7aaeb5770f1ebac465052dc7331472a0aa18df517f96bd78209d7577272f91a9",
+      "mtime_utc": "2026-09-23T12:24:49.355126+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "factory_workspace/sprint14/saas_churn_email_pack.pdf",
+      "bytes": 3061,
+      "sha256": "e81f3874c7d4569b41f1640edc336c119ea1785909f711fac08d9bc07a7ccf40",
+      "mtime_utc": "2026-09-23T12:02:43.109108+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "factory_workspace/sprint14/svc_spreadsheet_79_brief.pdf",
+      "bytes": 2347,
+      "sha256": "eaf15ca7ab0b41c5ac6e8f8a9b8f161526c760b1c07a909b7a23fd5e79be659e",
+      "mtime_utc": "2026-09-23T20:26:48.372081+00:00",
+      "black_boxes": 0
+    },
+    {
+      "path": "factory_workspace/sprint14/toy_safety_file_starter.pdf",
+      "bytes": 3906,
+      "sha256": "bf6b2e06a9f8f05c0c1a1bdd2bb943743bb90a1516aaabb13a54eb5fa5ace6a8",
+      "mtime_utc": "2026-09-23T12:00:06.822172+00:00",
+      "black_boxes": 0
+    }
+  ]
+}
