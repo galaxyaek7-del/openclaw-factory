@@ -1,0 +1,293 @@
+{
+  "probe": "cycle86c_legal_review_inventory",
+  "read_only": true,
+  "cost_usd": 0,
+  "grants_clearance": false,
+  "gives_legal_opinion": false,
+  "scanned_files": 10,
+  "files_with_legal_claims": 10,
+  "summary": {
+    "HOLD": 5,
+    "REVIEW": 5,
+    "NOT_APPLICABLE": 0
+  },
+  "gaps": [
+    "legal_review_required() is defined twice and called by NO production caller -- it is documentation, not an enforced control.",
+    "SOURCE_REGISTRY covers only eu_ai_act; get_sources() returns [] for GDPR/CCPA/SOC2/FTC/GPSR/HIPAA, so those topics get an empty grounding block and are verified against AI-Act-specific patterns only."
+  ],
+  "items": [
+    {
+      "file": "books\\eu_ai_act_compliance_toolkit_v2.pdf",
+      "size_bytes": 139401,
+      "pages": 31,
+      "words": 3057,
+      "jurisdictions": [
+        "EU"
+      ],
+      "legal_topics": [
+        "AI Act",
+        "compliance",
+        "enforcement",
+        "not legal advice",
+        "penalt",
+        "regulation",
+        "regulatory"
+      ],
+      "has_disclaimer": true,
+      "grounded_sources": [
+        "https://ai-act-service-desk.ec.europa.eu/en/ai-act/annex-3",
+        "https://ai-act-service-desk.ec.europa.eu/en/high-risk-ai-systems-areas-listed-annex-iii"
+      ],
+      "verified_dates": [
+        "2026-08-06"
+      ],
+      "unresolved": [],
+      "status": "HOLD",
+      "reason": "legal claims present; requires qualified human legal review. No automated result clears this."
+    },
+    {
+      "file": "books\\eu_ai_act_compliance_toolkit_preview.pdf",
+      "size_bytes": 106489,
+      "pages": 3,
+      "words": 209,
+      "jurisdictions": [
+        "EU"
+      ],
+      "legal_topics": [
+        "AI Act",
+        "compliance",
+        "enforcement",
+        "not legal advice",
+        "penalt"
+      ],
+      "has_disclaimer": true,
+      "grounded_sources": [
+        "https://ai-act-service-desk.ec.europa.eu/en/ai-act/annex-3",
+        "https://ai-act-service-desk.ec.europa.eu/en/high-risk-ai-systems-areas-listed-annex-iii"
+      ],
+      "verified_dates": [],
+      "unresolved": [
+        "no verification date found"
+      ],
+      "status": "HOLD",
+      "reason": "legal claims present; requires qualified human legal review. No automated result clears this."
+    },
+    {
+      "file": "books\\eu_ai_act_audit_logging_kit.pdf",
+      "size_bytes": 109570,
+      "pages": 14,
+      "words": 2267,
+      "jurisdictions": [
+        "EU"
+      ],
+      "legal_topics": [
+        "AI Act",
+        "GDPR",
+        "compliance",
+        "enforcement",
+        "not legal advice",
+        "regulation",
+        "regulatory"
+      ],
+      "has_disclaimer": true,
+      "grounded_sources": [
+        "https://ai-act-service-desk.ec.europa.eu/en/ai-act/annex-3",
+        "https://ai-act-service-desk.ec.europa.eu/en/high-risk-ai-systems-areas-listed-annex-iii"
+      ],
+      "verified_dates": [],
+      "unresolved": [
+        "no verification date found"
+      ],
+      "status": "HOLD",
+      "reason": "legal claims present; requires qualified human legal review. No automated result clears this."
+    },
+    {
+      "file": "books\\eu_ai_act_compliance_quickstart_checklist.pdf",
+      "size_bytes": 3866,
+      "pages": 2,
+      "words": 312,
+      "jurisdictions": [
+        "EU"
+      ],
+      "legal_topics": [
+        "AI Act",
+        "compliance",
+        "not legal advice"
+      ],
+      "has_disclaimer": true,
+      "grounded_sources": [
+        "https://ai-act-service-desk.ec.europa.eu/en/ai-act/annex-3",
+        "https://ai-act-service-desk.ec.europa.eu/en/high-risk-ai-systems-areas-listed-annex-iii"
+      ],
+      "verified_dates": [],
+      "unresolved": [
+        "no verification date found"
+      ],
+      "status": "HOLD",
+      "reason": "legal claims present; requires qualified human legal review. No automated result clears this."
+    },
+    {
+      "file": "books\\eu_ai_act_transparency_literacy_checklist.pdf",
+      "size_bytes": 3750,
+      "pages": 2,
+      "words": 309,
+      "jurisdictions": [
+        "EU"
+      ],
+      "legal_topics": [
+        "AI Act",
+        "compliance",
+        "enforcement",
+        "not legal advice",
+        "penalt"
+      ],
+      "has_disclaimer": true,
+      "grounded_sources": [
+        "https://ai-act-service-desk.ec.europa.eu/en/ai-act/annex-3",
+        "https://ai-act-service-desk.ec.europa.eu/en/high-risk-ai-systems-areas-listed-annex-iii"
+      ],
+      "verified_dates": [],
+      "unresolved": [
+        "no verification date found"
+      ],
+      "status": "HOLD",
+      "reason": "legal claims present; requires qualified human legal review. No automated result clears this."
+    },
+    {
+      "file": "books\\ccpa_compliance_action_kit.pdf",
+      "size_bytes": 121663,
+      "pages": 13,
+      "words": 2386,
+      "jurisdictions": [
+        "US-Federal",
+        "US-State"
+      ],
+      "legal_topics": [
+        "CCPA",
+        "compliance",
+        "enforcement",
+        "liable",
+        "not legal advice",
+        "penalt"
+      ],
+      "has_disclaimer": true,
+      "grounded_sources": [],
+      "verified_dates": [],
+      "unresolved": [
+        "no verification date found",
+        "regulatory topic with NO grounded primary source in SOURCE_REGISTRY",
+        "jurisdictional claims rest on no primary source"
+      ],
+      "status": "REVIEW",
+      "reason": "legal claims present; requires qualified human legal review. No automated result clears this."
+    },
+    {
+      "file": "books\\soc2_compliance_automation_kit.pdf",
+      "size_bytes": 121365,
+      "pages": 18,
+      "words": 2724,
+      "jurisdictions": [
+        "INTL",
+        "US-Federal"
+      ],
+      "legal_topics": [
+        "SOC 2",
+        "compliance",
+        "regulatory"
+      ],
+      "has_disclaimer": false,
+      "grounded_sources": [],
+      "verified_dates": [],
+      "unresolved": [
+        "no 'not legal advice' disclaimer found",
+        "no verification date found",
+        "regulatory topic with NO grounded primary source in SOURCE_REGISTRY",
+        "jurisdictional claims rest on no primary source"
+      ],
+      "status": "REVIEW",
+      "reason": "legal claims present; requires qualified human legal review. No automated result clears this."
+    },
+    {
+      "file": "books\\ftc_review_rule_compliance_kit.pdf",
+      "size_bytes": 13255,
+      "pages": 5,
+      "words": 1715,
+      "jurisdictions": [
+        "US-Federal"
+      ],
+      "legal_topics": [
+        "FTC",
+        "HIPAA",
+        "compliance",
+        "enforcement",
+        "liability",
+        "liable",
+        "not legal advice",
+        "penalt",
+        "regulation"
+      ],
+      "has_disclaimer": true,
+      "grounded_sources": [],
+      "verified_dates": [],
+      "unresolved": [
+        "no verification date found",
+        "regulatory topic with NO grounded primary source in SOURCE_REGISTRY",
+        "jurisdictional claims rest on no primary source"
+      ],
+      "status": "REVIEW",
+      "reason": "legal claims present; requires qualified human legal review. No automated result clears this."
+    },
+    {
+      "file": "books\\gpsr_eu_seller_action_kit.pdf",
+      "size_bytes": 18389,
+      "pages": 6,
+      "words": 2592,
+      "jurisdictions": [
+        "EU",
+        "UK"
+      ],
+      "legal_topics": [
+        "GPSR",
+        "compliance",
+        "enforcement",
+        "not legal advice",
+        "regulation",
+        "regulatory"
+      ],
+      "has_disclaimer": true,
+      "grounded_sources": [],
+      "verified_dates": [],
+      "unresolved": [
+        "no verification date found",
+        "regulatory topic with NO grounded primary source in SOURCE_REGISTRY",
+        "jurisdictional claims rest on no primary source"
+      ],
+      "status": "REVIEW",
+      "reason": "legal claims present; requires qualified human legal review. No automated result clears this."
+    },
+    {
+      "file": "books\\ai_compliance_automation_for_accounting_firms_v2.pdf",
+      "size_bytes": 99147,
+      "pages": 8,
+      "words": 1126,
+      "jurisdictions": [
+        "US-Federal"
+      ],
+      "legal_topics": [
+        "SOC 2",
+        "compliance"
+      ],
+      "has_disclaimer": false,
+      "grounded_sources": [],
+      "verified_dates": [],
+      "unresolved": [
+        "no 'not legal advice' disclaimer found",
+        "no verification date found",
+        "regulatory topic with NO grounded primary source in SOURCE_REGISTRY",
+        "jurisdictional claims rest on no primary source"
+      ],
+      "status": "REVIEW",
+      "reason": "legal claims present; requires qualified human legal review. No automated result clears this."
+    }
+  ]
+}

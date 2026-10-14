@@ -138,8 +138,12 @@ class TestContentPadding(unittest.TestCase):
         doc = self._doc([400] * 10)
         self.assertEqual(pci.check_content_padding(doc), [])
 
-    def test_quiet_on_too_short_a_document(self):
-        self.assertEqual(pci.check_content_padding("CHAPTER 1\nhi"), [])
+    def test_reports_non_evaluation_on_too_short_a_document(self):
+        """Changed in the Cycle 86 repair: this used to return []. Silence is
+        not a pass -- a rule that cannot evaluate must say so."""
+        f = pci.check_content_padding("CHAPTER 1\ntiny")
+        self.assertTrue(f)
+        self.assertIn("NOT EVALUATED", f[0].evidence)
 
 
 class TestStaleVerification(unittest.TestCase):
@@ -181,14 +185,94 @@ class TestVerdictLogic(unittest.TestCase):
         self.assertGreater(res.critical_count, 0)
 
     def test_clean_text_passes(self):
-        res = pci.check_product(
-            "p", "A short clean document about nothing in particular.", TODAY)
-        self.assertEqual(res.verdict, pci.PASS)
+        """A genuine PASS requires a document the rules CAN evaluate --
+        i.e. real chapters, so CONTENT_PADDING is not 'NOT EVALUATED'."""
+        doc = "\n".join(
+            # 80 x 2 words = 160, comfortably above the 150-word padding floor
+            f"CHAPTER {i}\n" + ("substantive content " * 80)
+            for i in range(1, 6))
+        res = pci.check_product("p", doc, TODAY)
+        self.assertEqual(res.verdict, pci.PASS,
+                         "a fully clean, evaluable document may pass")
+
+    def test_short_clean_document_does_not_earn_a_pass(self):
+        """The repair's whole point: no findings produced because a rule
+        could not run is not the same as no findings because all is well."""
+        res = pci.check_product("p", "A short clean document.", TODAY)
+        self.assertNotEqual(res.verdict, pci.PASS)
 
     def test_legal_review_always_required(self):
         res = pci.check_product("p", "clean text", TODAY)
         self.assertTrue(pci.legal_review_required(res),
                         "a mechanical pass is never clearance")
+
+
+class TestGateCannotDeclarePassEarly(unittest.TestCase):
+    """
+    Cycle 86 repair: the gate must never report PASS for work it did not
+    actually complete. Two real fail-open paths existed and are now closed.
+    """
+
+    def test_padding_rule_reports_when_it_cannot_evaluate(self):
+        """It used to return an EMPTY list -- indistinguishable from a pass."""
+        f = pci.check_content_padding("CHAPTER 1\ntiny")
+        self.assertTrue(f, "must report non-evaluation, not silence")
+        self.assertIn("NOT EVALUATED", f[0].evidence)
+
+    def test_unevaluable_document_is_never_a_clean_pass(self):
+        res = pci.check_product("p", "one chapter only\nCHAPTER 1\nshort", TODAY)
+        self.assertNotEqual(res.verdict, pci.PASS)
+
+    def test_a_crashing_rule_becomes_critical_not_silence(self):
+        """If any rule raises, the gate must record it as unchecked."""
+        original = pci.check_guarantee_language
+
+        def boom(_text):
+            raise RuntimeError("simulated rule failure")
+
+        pci.check_guarantee_language = boom
+        try:
+            res = pci.check_product("p", "clean text entirely", TODAY)
+        finally:
+            pci.check_guarantee_language = original
+
+        rules = {f.rule for f in res.findings}
+        self.assertIn("RULE_ERROR", rules)
+        self.assertNotEqual(res.verdict, pci.PASS,
+                            "a partial run must never read as a clean pass")
+
+    def test_every_rule_is_invoked_even_when_one_fails(self):
+        """A crash in rule 1 must not skip rules 2-9."""
+        calls = []
+        originals = {}
+        for name in ("check_fabricated_annex_citation", "check_invented_annex_structure",
+                     "check_false_prohibition", "check_ai_artifacts",
+                     "check_markdown_leakage", "check_truncated_headings",
+                     "check_content_padding", "check_stale_verification"):
+            originals[name] = getattr(pci, name)
+
+        def wrap(fn):
+            def inner(t, *a, **k):
+                calls.append(fn.__name__)
+                return fn(t, *a, **k)
+            return inner
+
+        for name, fn in list(originals.items()):
+            setattr(pci, name, wrap(fn))
+        pci.check_fabricated_annex_citation = lambda t: (_ for _ in ()).throw(
+            RuntimeError("first rule dies"))
+        try:
+            res = pci.check_product("p", "text", TODAY)
+        finally:
+            for name, fn in originals.items():
+                setattr(pci, name, fn)
+
+        # 9 rules run in total; one is deliberately replaced with a thrower,
+        # leaving 7 wrapped rules that must still execute after it dies.
+        self.assertEqual(len(calls), 7,
+                         "all remaining rules must still run after one dies")
+        self.assertEqual(len(set(calls)), 7, "no rule ran twice")
+        self.assertNotEqual(res.verdict, pci.PASS)
 
 
 class TestRealProductIsHeld(unittest.TestCase):

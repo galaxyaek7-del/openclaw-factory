@@ -162,9 +162,21 @@ class GateResult:
 
     @property
     def verdict(self) -> str:
+        """
+        FAIL if any critical defect is open.
+        REVIEW if ANY finding exists that is not a clean pass -- including a
+        rule that could not evaluate, or a MAJOR finding graded REVIEW.
+        PASS only when zero findings were produced.
+
+        Cycle 86 repair: this previously returned PASS whenever no finding
+        carried verdict==FAIL, so a MAJOR/REVIEW finding -- which is exactly
+        what "the rule could not evaluate" produces -- still reported a clean
+        PASS. That is the same fail-open the founder's standard forbids:
+        declaring PASS before the required work completed.
+        """
         if self.critical_count:
             return FAIL
-        if any(f.verdict == FAIL for f in self.findings):
+        if self.findings:
             return REVIEW
         return PASS
 
@@ -308,6 +320,19 @@ def check_content_padding(text: str, floor: int = 150) -> list[Finding]:
     chunks = re.split(r"\nCHAPTER\s+\d+\s*\n", text)
     bodies = [c for c in chunks if c.strip()]
     if len(bodies) < 3:
+        # FAIL-OPEN FIXED. This used to `return out` -- an empty list, which
+        # reads as "checked, found nothing" and is indistinguishable from a
+        # clean pass. A rule that cannot evaluate must SAY so, never report
+        # silence as a pass. Same principle as legal_review_required().
+        out.append(Finding(
+            rule="CONTENT_PADDING",
+            severity="MAJOR",
+            verdict=REVIEW,
+            evidence=(f"NOT EVALUATED: found only {len(bodies)} chapter-like "
+                      f"section(s); need 3 to measure padding. Absence of a "
+                      f"finding here is not a pass."),
+            where="document structure",
+        ))
         return out
     counts = sorted(len(c.split()) for c in bodies)
     n = len(counts)
@@ -397,17 +422,41 @@ def check_guarantee_language(text: str) -> list[Finding]:
 
 
 def check_product(product: str, text: str, today: str) -> GateResult:
-    """Run every rule. Pure: no network, no writes, no hidden clock."""
+    """
+    Run every rule. Pure: no network, no writes, no hidden clock.
+
+    FAIL-CLOSED (Cycle 86 repair). Every rule is wrapped. A rule that raises
+    used to abort the whole gate, and -- worse, in the general shape this
+    guards against -- a caller that only inspects the findings list would see
+    the rules that ran BEFORE the exception and conclude the product passed.
+    A crash is now recorded as its own CRITICAL finding so a partial run can
+    never masquerade as a clean one.
+    """
     res = GateResult(product=product)
-    res.findings += check_fabricated_annex_citation(text)
-    res.findings += check_invented_annex_structure(text)
-    res.findings += check_false_prohibition(text)
-    res.findings += check_ai_artifacts(text)
-    res.findings += check_guarantee_language(text)
-    res.findings += check_markdown_leakage(text)
-    res.findings += check_truncated_headings(text)
-    res.findings += check_content_padding(text)
-    res.findings += check_stale_verification(text, today)
+    rules = [
+        ("fabricated_annex_citation", lambda: check_fabricated_annex_citation(text)),
+        ("invented_annex_structure", lambda: check_invented_annex_structure(text)),
+        ("false_prohibition", lambda: check_false_prohibition(text)),
+        ("ai_artifact", lambda: check_ai_artifacts(text)),
+        ("unsupported_promise", lambda: check_guarantee_language(text)),
+        ("markdown_leakage", lambda: check_markdown_leakage(text)),
+        ("truncated_heading", lambda: check_truncated_headings(text)),
+        ("content_padding", lambda: check_content_padding(text)),
+        ("stale_verification", lambda: check_stale_verification(text, today)),
+    ]
+    for name, fn in rules:
+        try:
+            res.findings.extend(fn())
+        except Exception as exc:  # noqa: BLE001 -- record, never swallow
+            res.findings.append(Finding(
+                rule="RULE_ERROR",
+                severity="CRITICAL",
+                verdict=FAIL,
+                evidence=(f"rule {name!r} raised {type(exc).__name__}: {exc}. "
+                          f"This rule did NOT complete; treat as unchecked, "
+                          f"not as passed."),
+                where="gate",
+            ))
     return res
 
 

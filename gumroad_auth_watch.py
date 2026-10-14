@@ -19,6 +19,37 @@ States:
 - INVALID: API rejects the credential (401/invalid) -- needs founder hands.
 - UNKNOWN: check could not run (network/module error), never guessed.
 
+PROVENANCE OF KNOWN_EXPOSED_FP -- INVESTIGATED 2026-10-14, EVIDENCE-BASED
+------------------------------------------------------------------------
+Traced rather than assumed. Findings, none of which involve the secret value:
+
+  * ORIGIN. The constant was introduced in commit d822ca6 (2026-09-30,
+    "AUTO-ALL-01: gumroad auth watch"). It was BAKED IN AT CREATION, not
+    recorded later in response to a later incident. The commit message states
+    no reason and contains no evidence.
+
+  * CLAIM. The only justification anywhere is this module's own docstring:
+    "exposed in session output during the GAP-1 probing cycle". No GAP-1
+    commit exists in history; searching every commit message for "GAP-1"
+    returns nothing.
+
+  * ARTIFACTS. A full-history search for the literal credential finds it in
+    ZERO commits and in zero tracked files today
+    (scripts/audit_credential_exposure.py reproduces this).
+
+  * VERDICT. The exposure is UNVERIFIABLE from inside this repository. It is
+    NOT disproven either: a secret printed to a console or passed through a
+    process is exposed without ever touching git. The fingerprint match means
+    the SAME credential that was handled is still live, which is the part that
+    is actually verifiable and is why rotation remains prudent.
+
+  * CONSEQUENCE FOR THIS MODULE. The block is retained deliberately. A
+    fail-safe on an unverifiable claim is the correct posture for a write
+    path; removing it because no artifact was found would be reasoning from
+    absence of evidence to evidence of absence. Rotation is recommended as
+    hygiene and is separately REQUIRED for API publishing, not because a
+    compromise is proven but because the credential predates this audit.
+
 `poll()` is idempotent and safe to run every cycle; it performs at most one
 live API call and writes only data/gumroad_auth_state.json + an evidence
 record without secret values.
