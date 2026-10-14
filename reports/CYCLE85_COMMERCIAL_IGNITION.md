@@ -286,12 +286,21 @@ retained alternative — lower price, same audience, smaller file.
 ## 7. Known unresolved issues carried forward
 
 1. **CI on `main` is failing**, including on the reference commit `6acad2d`.
-   Cause not established: logs require authentication (HTTP 403). Reproduced
-   locally in a clean tracked-files checkout, group (a) passes (417 tests), so
-   the failure is environment-specific and not caused by this cycle's commits.
-   Tracked tests also reference source APIs that do not exist
+   Precisely: **32 of 33 jobs succeed**; the single failing job is `test`, and
+   within it the single failing step is `Python tests (a)`. The same job and
+   step fail identically on `6acad2d`, `43acf18` and `6b7f48b` — so this
+   predates this cycle's commits.
+   Cause not established. Logs require authentication (HTTP 403). A clean
+   tracked-files checkout of HEAD passes that group locally (417 tests, OK), so
+   the failure is environment-specific rather than caused by these commits.
+   An audit for the usual causes came back clean: no missing dependency
+   declarations, no OS-sensitive assertions, no untracked data-file
+   dependencies in the tracked `test_a*` files. Tracked tests elsewhere do
+   reference source APIs that do not exist
    (`list_safe_mode_status(circuit_breaker_state_path=...)`,
-   `decision_engine.engine._get_economics`, `economics.platform_for_product_type`).
+   `decision_engine.engine._get_economics`, `economics.platform_for_product_type`),
+   but those are in other CI groups.
+   **Resolving this needs authenticated access to the CI log.**
 2. **21 untracked `test_a*.py` files** in the working tree (written by other
    sessions) fail locally and inflate any local run of the same CI group. They
    are not deleted, per the instruction to preserve other sessions' work.
