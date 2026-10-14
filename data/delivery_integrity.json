@@ -1,0 +1,3496 @@
+{
+  "probe": "verify_delivery_integrity",
+  "read_only": true,
+  "cost_usd": 0,
+  "method": "attachment bytes fetched from the public CDN, hashed, parsed, size-compared",
+  "checked": 79,
+  "verdict_counts": {
+    "PASS": 79
+  },
+  "results": [
+    {
+      "short_id": "jlxmez",
+      "meta_http": 200,
+      "title": "GCC Contractor Payment Command System (V2 Bundle)",
+      "price_cents": 39900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/jlxmez",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 17106,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 17106,
+          "sha256": "abd3d0535cb64cd04bb244e2539e82562aded06219bf7eef179f5d4c3f7b6ded",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "gcc_payment_command_workbook_v2.xlsx",
+              "bytes": 10764,
+              "readable": true
+            },
+            {
+              "name": "gcc_payment_command_manual_v2.pdf",
+              "bytes": 4410,
+              "readable": true
+            },
+            {
+              "name": "gcc_payment_templates_ar_en_v2.pdf",
+              "bytes": 3640,
+              "readable": true
+            },
+            {
+              "name": "gcc_implementation_checklist_v2.pdf",
+              "bytes": 2490,
+              "readable": true
+            }
+          ],
+          "entry_count": 4,
+          "uncompressed_bytes": 21304,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "lrmgml",
+      "meta_http": 200,
+      "title": "Automated Contract Review System for Legal Departments",
+      "price_cents": 32700,
+      "published": false,
+      "url": "https://aekraft.gumroad.com/l/lrmgml",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 118012,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 118012,
+          "sha256": "ed20b94a001b697102f250b78eba67c48f1f97d8e8242799d27af8d30676a004",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 17,
+          "words": 2924,
+          "first_text": "TABLE OF CONTENTS What's Inside 1. Chapter 1: Foundations of AI-Powered Contract Analysis 2. Chapter 2: Vendor Selection and Platform Evaluation 3. Chapter 3: Data Preparation and Contract Digitization 4. Chapter 4: Automated Clause Extraction Architecture 5. Chapter 5: Risk Scoring Models and Metho",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "iaiyt",
+      "meta_http": 200,
+      "title": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
+      "price_cents": 15500,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/iaiyt",
+      "sales_count": 0,
+      "file_count": 2,
+      "files": [
+        {
+          "declared_bytes": 106314,
+          "declared_type": "pdf",
+          "name": "eu_ai_act_compliance_toolkit_preview",
+          "fetch_http": 200,
+          "actual_bytes": 106314,
+          "sha256": "cd74c2866214a10e9787c9151e46f78be546387872126c9ae609725599809dce",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 3,
+          "words": 209,
+          "first_text": "TABLE OF CONTENTS What's Inside 1. Important Note: Not Legal Advice 2. Introduction 3. Reference: Key EU AI Act Deadlines & Enforcement Timeline 4. Reference: Glossary of Key EU AI Act Terms 5. CHAPTER 1: AI System Risk Classification - A Decision-Tree Checkli 6. CHAPTER 2: Technical Documentation R",
+          "encrypted": false,
+          "verdict": "PASS"
+        },
+        {
+          "declared_bytes": 139401,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 139401,
+          "sha256": "18c4158342c7f8a290a4386507e1d6bb7cfdc92420e485d76108d4102a40f6bf",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 31,
+          "words": 3057,
+          "first_text": "TABLE OF CONTENTS What's Inside 1. Important Note: Not Legal Advice 2. Introduction 3. Reference: Key EU AI Act Deadlines & Enforcement Timeline 4. Reference: Glossary of Key EU AI Act Terms 5. CHAPTER 1: AI System Risk Classification - A Decision-Tree Checkli 6. CHAPTER 2: Technical Documentation R",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "drtaj",
+      "meta_http": 200,
+      "title": "Verified B2B Lead Lists (200-lead batch)",
+      "price_cents": 9900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/drtaj",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 2008,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 2008,
+          "sha256": "28b7bee3db2035dc9b478597e5157ba8405641a1a3d1f8134118e81460e528a4",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 1,
+          "words": 81,
+          "first_text": "Verified B2B Lead Lists — Galaxy Forge Problem: bought lead lists fail on wrong titles, stale emails, duplicates. Deliverable: verified database to your exact criteria — decision-maker titles, business emails, titles, websites, locations. CSV/Sheets, deduped, spot-verified. One revision round within",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "pyzqa",
+      "meta_http": 200,
+      "title": "Vendor Questionnaire Response Kit",
+      "price_cents": 8900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/pyzqa",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 12020,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 12020,
+          "sha256": "f4e6eabd083b462ff78e27eb695c86d18720808b051d6eba97c38dc564b8a0d2",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 4,
+          "words": 1566,
+          "first_text": "Vendor Questionnaire Response Kit Unblock enterprise deals: answer SIG Lite, SIG Core, and CAIQ-style security questionnaires with evidence, not panic Practical operations guide. Not legal, audit, or certification advice and not a substitute for counsel, auditors, or a vCISO. Frameworks, question co",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "bfhpzl",
+      "meta_http": 200,
+      "title": "Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)",
+      "price_cents": 7900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/bfhpzl",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 173373,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 173373,
+          "sha256": "6d873ac2e598d3b911c86bcbd0968cd48400aadbb0549b88fbfcd2aef5d8a219",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "etsy_policy_triage.pdf",
+              "bytes": 10065,
+              "readable": true
+            },
+            {
+              "name": "etsy_suspension_appeal_kit.pdf",
+              "bytes": 122465,
+              "readable": true
+            },
+            {
+              "name": "etsy_appeal_evidence_tracker.xlsx",
+              "bytes": 6397,
+              "readable": true
+            },
+            {
+              "name": "etsy_appeal_letter_template_A_IP.docx",
+              "bytes": 36302,
+              "readable": true
+            },
+            {
+              "name": "etsy_appeal_letter_template_B_policy.docx",
+              "bytes": 36108,
+              "readable": true
+            },
+            {
+              "name": "README.txt",
+              "bytes": 1003,
+              "readable": true
+            }
+          ],
+          "entry_count": 6,
+          "uncompressed_bytes": 212340,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "uucxer",
+      "meta_http": 200,
+      "title": "Sales Tax Nexus Tracker",
+      "price_cents": 7900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/uucxer",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 133775,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 133775,
+          "sha256": "1aa04e489d207e63f52fa498c879488f5b1c987d57f4d5319ae98f9f755104e1",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "sales_tax_nexus_tracker/cpa_handoff_summary.docx",
+              "bytes": 35659,
+              "readable": true
+            },
+            {
+              "name": "sales_tax_nexus_tracker/nexus_review_memo.docx",
+              "bytes": 35757,
+              "readable": true
+            },
+            {
+              "name": "sales_tax_nexus_tracker/README.txt",
+              "bytes": 550,
+              "readable": true
+            },
+            {
+              "name": "sales_tax_nexus_tracker/registration_action_list.docx",
+              "bytes": 35649,
+              "readable": true
+            },
+            {
+              "name": "sales_tax_nexus_tracker/sales_tax_nexus_tracker_guide.pdf",
+              "bytes": 32900,
+              "readable": true
+            },
+            {
+              "name": "sales_tax_nexus_tracker/sales_tax_nexus_tracker_workbook.xlsx",
+              "bytes": 9155,
+              "readable": true
+            }
+          ],
+          "entry_count": 6,
+          "uncompressed_bytes": 149670,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "fetmu",
+      "meta_http": 200,
+      "title": "GPSR EU Seller Action Kit",
+      "price_cents": 7900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/fetmu",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 18208,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 18208,
+          "sha256": "3afe91da94e0dc8cb7b6c191f412c7e29c36ad1b0ac88798c56a633aa2c088e9",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 6,
+          "words": 2592,
+          "first_text": "GPSR EU Seller Action Kit Keep your EU listings live: Responsible Person route, technical file, risk assessment, labels, and Etsy/Amazon field guides for non-EU sellers Practical implementation guide. Not legal advice. GPSR = Regulation (EU) 2023/988, mandatory since 13 December 2024. Rules, fees, a",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "uyzuu",
+      "meta_http": 200,
+      "title": "EU Green Claims Review Kit",
+      "price_cents": 6900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/uyzuu",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 131594,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 131594,
+          "sha256": "373b15824092f8187127d4948eb0e1422cc7856fdd8f4ab6dfd817059d752243",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "empco_green_claims_kit/empco_claim_review_worksheet.docx",
+              "bytes": 35644,
+              "readable": true
+            },
+            {
+              "name": "empco_green_claims_kit/empco_green_claims_kit_guide.pdf",
+              "bytes": 29165,
+              "readable": true
+            },
+            {
+              "name": "empco_green_claims_kit/empco_green_claims_kit_workbook.xlsx",
+              "bytes": 9658,
+              "readable": true
+            },
+            {
+              "name": "empco_green_claims_kit/empco_influencer_brief_addendum.docx",
+              "bytes": 35607,
+              "readable": true
+            },
+            {
+              "name": "empco_green_claims_kit/empco_remediation_action_note.docx",
+              "bytes": 35537,
+              "readable": true
+            },
+            {
+              "name": "empco_green_claims_kit/manifest.json",
+              "bytes": 539,
+              "readable": true
+            },
+            {
+              "name": "empco_green_claims_kit/README.txt",
+              "bytes": 579,
+              "readable": true
+            }
+          ],
+          "entry_count": 7,
+          "uncompressed_bytes": 146729,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "brwrta",
+      "meta_http": 200,
+      "title": "EUDR Due Diligence Starter",
+      "price_cents": 6900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/brwrta",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 136267,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 136267,
+          "sha256": "a96ca648d183eb489d71a2cdc022da271980ea5be673c011894388d9ae5ec6a9",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "eudr_due_diligence_starter/eudr_due_diligence_starter_guide.pdf",
+              "bytes": 34070,
+              "readable": true
+            },
+            {
+              "name": "eudr_due_diligence_starter/eudr_due_diligence_starter_workbook.xlsx",
+              "bytes": 10080,
+              "readable": true
+            },
+            {
+              "name": "eudr_due_diligence_starter/eudr_gap_memo.docx",
+              "bytes": 35621,
+              "readable": true
+            },
+            {
+              "name": "eudr_due_diligence_starter/eudr_scope_decision_note.docx",
+              "bytes": 35552,
+              "readable": true
+            },
+            {
+              "name": "eudr_due_diligence_starter/eudr_supplier_data_request_letter.docx",
+              "bytes": 35880,
+              "readable": true
+            },
+            {
+              "name": "eudr_due_diligence_starter/manifest.json",
+              "bytes": 537,
+              "readable": true
+            },
+            {
+              "name": "eudr_due_diligence_starter/README.txt",
+              "bytes": 569,
+              "readable": true
+            }
+          ],
+          "entry_count": 7,
+          "uncompressed_bytes": 152309,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "xouyjy",
+      "meta_http": 200,
+      "title": "Subscription Renewal Compliance Kit",
+      "price_cents": 6900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/xouyjy",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 138784,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 138784,
+          "sha256": "558670c3e716d7795c957b23912b00cb01a0deb7db35a88037b78a6be57fd2af",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "subscription_renewal_compliance/cancellation_path_test_script.docx",
+              "bytes": 35915,
+              "readable": true
+            },
+            {
+              "name": "subscription_renewal_compliance/disclosure_review_signoff.docx",
+              "bytes": 35663,
+              "readable": true
+            },
+            {
+              "name": "subscription_renewal_compliance/README.txt",
+              "bytes": 593,
+              "readable": true
+            },
+            {
+              "name": "subscription_renewal_compliance/remediation_plan_memo.docx",
+              "bytes": 35741,
+              "readable": true
+            },
+            {
+              "name": "subscription_renewal_compliance/subscription_renewal_compliance_guide.pdf",
+              "bytes": 36939,
+              "readable": true
+            },
+            {
+              "name": "subscription_renewal_compliance/subscription_renewal_compliance_workbook.xlsx",
+              "bytes": 10780,
+              "readable": true
+            }
+          ],
+          "entry_count": 6,
+          "uncompressed_bytes": 155631,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "bfdgx",
+      "meta_http": 200,
+      "title": "EU Cosmetics Responsible Person Guide",
+      "price_cents": 6900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/bfdgx",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 4637,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 4637,
+          "sha256": "b9809f67ae01ab343ec6d214d61d1588ac7b159fa17427b29307e3a536525a49",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 2,
+          "words": 415,
+          "first_text": "EU Cosmetics Responsible Person Guide Scope, roles and documentation route for cosmetics sellers. Separate regime from GPSR — practical orientation, not legal advice. Checked 2026-09-22. Why cosmetics are different Cosmetics sit under their own EU regime (Regulation (EC) 1223/2009 framework) with a ",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "palmdr",
+      "meta_http": 200,
+      "title": "ADA Demand-Letter Response & Triage Kit",
+      "price_cents": 6900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/palmdr",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 9588,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 9588,
+          "sha256": "60dda7c5b6c4b1bdba6b4201ef3feb5638c8f8a9edffc55da8ce63388648e205",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 3,
+          "words": 1244,
+          "first_text": "ADA Demand-Letter Response & Triage Kit First 30 days after the letter: preserve, assess, respond, and route — for US small businesses facing website-accessibility claims Practical first-response guide. Not legal advice, not a law firm, not a remediation service. Lawsuit counts, settlement ranges, a",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "gfsvu",
+      "meta_http": 200,
+      "title": "EU Packaging EPR Action Kit",
+      "price_cents": 6900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/gfsvu",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 11401,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 11401,
+          "sha256": "8ad5548e3b790f39aa4b4db77f9c63599f62a59769ca7533ef52aed89a48822a",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 4,
+          "words": 1546,
+          "first_text": "EU Packaging EPR Action Kit Registrations, representatives, and reporting that keep EU marketplace listings live — LUCID to CONAI, VerpackG to PPWR Practical compliance guide. Not legal advice. Packaging EPR rules changed substantially in 2026 (VerpackG repealed summer 2026; PPWR applies from 12 Aug",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "vkqogv",
+      "meta_http": 200,
+      "title": "Trademark DIY Filing Action Kit",
+      "price_cents": 6900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/vkqogv",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 12383,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 12383,
+          "sha256": "54d13adc33734810f9bdaed90b8832910652ce1758fd0e2398a654c1ac724ae3",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 4,
+          "words": 1705,
+          "first_text": "Trademark DIY Filing Action Kit Clear it, classify it, file it, defend it — a founder's end-to-end path through the USPTO without a $2,500 legal bill Practical filing guide. Not legal advice and not a law firm. USPTO fees, forms (TEAS/Trademark Center), and examination practice change — the January ",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ekhza",
+      "meta_http": 200,
+      "title": "FTC Consumer Review Rule Compliance Kit",
+      "price_cents": 6900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ekhza",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 13105,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 13105,
+          "sha256": "8b6d3cb1ceecd7341e9ec82be48d73a628d67fc0d58816879f42d9172d4179cf",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 5,
+          "words": 1715,
+          "first_text": "FTC Consumer Review Rule Compliance Kit Audit your reviews, fix incentives and disclosures, and answer a warning letter — for US businesses that live on reviews Practical compliance guide. Not legal advice. Covers the FTC Trade Regulation Rule on the Use of Consumer Reviews and Testimonials (16 CFR ",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "diboaf",
+      "meta_http": 200,
+      "title": "Dental Insurance Verification Kit",
+      "price_cents": 5900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/diboaf",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 166141,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 166141,
+          "sha256": "312cbcd533ab7797335c93ea6c9496d3bbc1cab9010461cbf7aa582cd8e73978",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "dental_insurance_verification_kit/denial_review_form.docx",
+              "bytes": 35528,
+              "readable": true
+            },
+            {
+              "name": "dental_insurance_verification_kit/dental_insurance_verification_kit_guide.pdf",
+              "bytes": 30561,
+              "readable": true
+            },
+            {
+              "name": "dental_insurance_verification_kit/dental_insurance_verification_kit_workbook.xlsx",
+              "bytes": 9801,
+              "readable": true
+            },
+            {
+              "name": "dental_insurance_verification_kit/estimate_letter.docx",
+              "bytes": 35777,
+              "readable": true
+            },
+            {
+              "name": "dental_insurance_verification_kit/huddle_hold_list.docx",
+              "bytes": 35452,
+              "readable": true
+            },
+            {
+              "name": "dental_insurance_verification_kit/README.txt",
+              "bytes": 622,
+              "readable": true
+            },
+            {
+              "name": "dental_insurance_verification_kit/verification_call_script.docx",
+              "bytes": 35698,
+              "readable": true
+            }
+          ],
+          "entry_count": 7,
+          "uncompressed_bytes": 183439,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "vwlmeo",
+      "meta_http": 200,
+      "title": "Real Estate Transaction Deadline Kit",
+      "price_cents": 5900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/vwlmeo",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 133785,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 133785,
+          "sha256": "ebac01b3f65ca2d2dfb079b8a50743e842eb433e0da1b5d557f9a6ab67c4823e",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "realestate_tc_deadline_kit/contingency_status_update.docx",
+              "bytes": 35783,
+              "readable": true
+            },
+            {
+              "name": "realestate_tc_deadline_kit/deal_file_cover_sheet.docx",
+              "bytes": 35834,
+              "readable": true
+            },
+            {
+              "name": "realestate_tc_deadline_kit/post_close_review_form.docx",
+              "bytes": 35710,
+              "readable": true
+            },
+            {
+              "name": "realestate_tc_deadline_kit/README.txt",
+              "bytes": 577,
+              "readable": true
+            },
+            {
+              "name": "realestate_tc_deadline_kit/realestate_tc_deadline_kit_guide.pdf",
+              "bytes": 32795,
+              "readable": true
+            },
+            {
+              "name": "realestate_tc_deadline_kit/realestate_tc_deadline_kit_workbook.xlsx",
+              "bytes": 8908,
+              "readable": true
+            }
+          ],
+          "entry_count": 6,
+          "uncompressed_bytes": 149607,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "cdfdcy",
+      "meta_http": 200,
+      "title": "Food Truck Permit Navigator",
+      "price_cents": 5900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/cdfdcy",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 167645,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 167645,
+          "sha256": "6283c7992320d648c8f8b7c6cc67dbb34cba2dbb5529ae0b1eabe1fb82592f8d",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "foodtruck_permit_navigator/agency_contact_sheet.docx",
+              "bytes": 35514,
+              "readable": true
+            },
+            {
+              "name": "foodtruck_permit_navigator/commissary_comparison_sheet.docx",
+              "bytes": 35686,
+              "readable": true
+            },
+            {
+              "name": "foodtruck_permit_navigator/document_packet_checklist.docx",
+              "bytes": 35541,
+              "readable": true
+            },
+            {
+              "name": "foodtruck_permit_navigator/foodtruck_permit_navigator_guide.pdf",
+              "bytes": 32700,
+              "readable": true
+            },
+            {
+              "name": "foodtruck_permit_navigator/foodtruck_permit_navigator_workbook.xlsx",
+              "bytes": 9929,
+              "readable": true
+            },
+            {
+              "name": "foodtruck_permit_navigator/README.txt",
+              "bytes": 629,
+              "readable": true
+            },
+            {
+              "name": "foodtruck_permit_navigator/renewal_reminder_setup_guide.docx",
+              "bytes": 35623,
+              "readable": true
+            }
+          ],
+          "entry_count": 7,
+          "uncompressed_bytes": 185622,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "mrecoe",
+      "meta_http": 200,
+      "title": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+      "price_cents": 5900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/mrecoe",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 167072,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 167072,
+          "sha256": "752538647362384e063c576b731511b47616e6e0a9c00b0098588772f623b515",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "dtc_returns_abuse_playbook/appeal_review_form.docx",
+              "bytes": 35541,
+              "readable": true
+            },
+            {
+              "name": "dtc_returns_abuse_playbook/denial_with_reason_letter.docx",
+              "bytes": 35594,
+              "readable": true
+            },
+            {
+              "name": "dtc_returns_abuse_playbook/dtc_returns_abuse_playbook_guide.pdf",
+              "bytes": 33668,
+              "readable": true
+            },
+            {
+              "name": "dtc_returns_abuse_playbook/dtc_returns_abuse_playbook_workbook.xlsx",
+              "bytes": 9128,
+              "readable": true
+            },
+            {
+              "name": "dtc_returns_abuse_playbook/photo_requirement_notice.docx",
+              "bytes": 35469,
+              "readable": true
+            },
+            {
+              "name": "dtc_returns_abuse_playbook/README.txt",
+              "bytes": 661,
+              "readable": true
+            },
+            {
+              "name": "dtc_returns_abuse_playbook/tiered_returns_policy.docx",
+              "bytes": 35672,
+              "readable": true
+            }
+          ],
+          "entry_count": 7,
+          "uncompressed_bytes": 185733,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "uqmqnu",
+      "meta_http": 200,
+      "title": "DSAR Response Kit ($59)",
+      "price_cents": 5900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/uqmqnu",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 198866,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 198866,
+          "sha256": "04c2cf966301803b001e419078a4d28907d3ef649a6145e4aed016a0bc60bf22",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "dsar_response_kit/dsar_response_kit_guide.pdf",
+              "bytes": 30468,
+              "readable": true
+            },
+            {
+              "name": "dsar_response_kit/dsar_response_kit_workbook.xlsx",
+              "bytes": 9231,
+              "readable": true
+            },
+            {
+              "name": "dsar_response_kit/intake_form_fields.docx",
+              "bytes": 35687,
+              "readable": true
+            },
+            {
+              "name": "dsar_response_kit/letter_access_fulfilled.docx",
+              "bytes": 35598,
+              "readable": true
+            },
+            {
+              "name": "dsar_response_kit/letter_deletion_confirmed.docx",
+              "bytes": 35610,
+              "readable": true
+            },
+            {
+              "name": "dsar_response_kit/letter_extension_notice.docx",
+              "bytes": 35618,
+              "readable": true
+            },
+            {
+              "name": "dsar_response_kit/letter_rejection_with_basis.docx",
+              "bytes": 35617,
+              "readable": true
+            },
+            {
+              "name": "dsar_response_kit/README.txt",
+              "bytes": 652,
+              "readable": true
+            }
+          ],
+          "entry_count": 8,
+          "uncompressed_bytes": 218481,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "eiztlg",
+      "meta_http": 200,
+      "title": "Clinic No-Show Reduction Kit",
+      "price_cents": 5900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/eiztlg",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 199056,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 199056,
+          "sha256": "1d97432edea03af260b7f5ba330957d9b9cdce1223ba52603a8959e007b46781",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "clinic_noshow_reduction/clinic_noshow_reduction_guide.pdf",
+              "bytes": 28812,
+              "readable": true
+            },
+            {
+              "name": "clinic_noshow_reduction/clinic_noshow_reduction_workbook.xlsx",
+              "bytes": 9500,
+              "readable": true
+            },
+            {
+              "name": "clinic_noshow_reduction/noshow_48hour_reminder_script.docx",
+              "bytes": 35774,
+              "readable": true
+            },
+            {
+              "name": "clinic_noshow_reduction/noshow_7day_confirmation_script.docx",
+              "bytes": 35812,
+              "readable": true
+            },
+            {
+              "name": "clinic_noshow_reduction/noshow_cancellation_reschedule_reply.docx",
+              "bytes": 35723,
+              "readable": true
+            },
+            {
+              "name": "clinic_noshow_reduction/noshow_sameday_reminder_script.docx",
+              "bytes": 35720,
+              "readable": true
+            },
+            {
+              "name": "clinic_noshow_reduction/noshow_staff_sop_one_pager.docx",
+              "bytes": 35944,
+              "readable": true
+            },
+            {
+              "name": "clinic_noshow_reduction/README.txt",
+              "bytes": 705,
+              "readable": true
+            }
+          ],
+          "entry_count": 8,
+          "uncompressed_bytes": 217990,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "qezxe",
+      "meta_http": 200,
+      "title": "PCI SAQ Readiness Kit for Small Merchants",
+      "price_cents": 5900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/qezxe",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 133862,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 133862,
+          "sha256": "4ea522368ebc151109f28e94c9f4dc8c1862057fd2068efeede896ff446c895a",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "pci_saq_readiness/pci_acquirer_confirmation_letter_draft.docx",
+              "bytes": 36000,
+              "readable": true
+            },
+            {
+              "name": "pci_saq_readiness/pci_incident_response_one_pager.docx",
+              "bytes": 35956,
+              "readable": true
+            },
+            {
+              "name": "pci_saq_readiness/pci_saq_readiness_guide.pdf",
+              "bytes": 31141,
+              "readable": true
+            },
+            {
+              "name": "pci_saq_readiness/pci_saq_readiness_workbook.xlsx",
+              "bytes": 9903,
+              "readable": true
+            },
+            {
+              "name": "pci_saq_readiness/pci_service_provider_list.docx",
+              "bytes": 35772,
+              "readable": true
+            },
+            {
+              "name": "pci_saq_readiness/README.txt",
+              "bytes": 590,
+              "readable": true
+            }
+          ],
+          "entry_count": 6,
+          "uncompressed_bytes": 149362,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "wsbqr",
+      "meta_http": 200,
+      "title": "B2B Late-Payment Collections Operating System",
+      "price_cents": 5900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/wsbqr",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 172282,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 172282,
+          "sha256": "af78c77a45bcbb4a3d5ba05b4b95af8943197dc0a9df9943f03d66fa6f9745b5",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "b2b_collections_recovery/b2b_collections_recovery_agency_handoff.docx",
+              "bytes": 36331,
+              "readable": true
+            },
+            {
+              "name": "b2b_collections_recovery/b2b_collections_recovery_call_script.docx",
+              "bytes": 36156,
+              "readable": true
+            },
+            {
+              "name": "b2b_collections_recovery/b2b_collections_recovery_dunning_sequence.docx",
+              "bytes": 36410,
+              "readable": true
+            },
+            {
+              "name": "b2b_collections_recovery/b2b_collections_recovery_guide.pdf",
+              "bytes": 34743,
+              "readable": true
+            },
+            {
+              "name": "b2b_collections_recovery/b2b_collections_recovery_payment_plan.docx",
+              "bytes": 36168,
+              "readable": true
+            },
+            {
+              "name": "b2b_collections_recovery/b2b_collections_recovery_workbook.xlsx",
+              "bytes": 9682,
+              "readable": true
+            },
+            {
+              "name": "b2b_collections_recovery/manifest.json",
+              "bytes": 670,
+              "readable": true
+            },
+            {
+              "name": "b2b_collections_recovery/README.txt",
+              "bytes": 696,
+              "readable": true
+            }
+          ],
+          "entry_count": 8,
+          "uncompressed_bytes": 190856,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "xmbxpz",
+      "meta_http": 200,
+      "title": "Commercial Lease CAM & Operating-Expense Audit Kit",
+      "price_cents": 5900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/xmbxpz",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 170069,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 170069,
+          "sha256": "14e8fd281ea622dcf757c56bcd14c4498b69e14659aee7887f8c488791b85343",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "cam_lease_audit/cam_lease_audit_dispute_letter.docx",
+              "bytes": 36150,
+              "readable": true
+            },
+            {
+              "name": "cam_lease_audit/cam_lease_audit_estoppel_review_checklist.docx",
+              "bytes": 35977,
+              "readable": true
+            },
+            {
+              "name": "cam_lease_audit/cam_lease_audit_guide.pdf",
+              "bytes": 34567,
+              "readable": true
+            },
+            {
+              "name": "cam_lease_audit/cam_lease_audit_records_request_letter.docx",
+              "bytes": 36114,
+              "readable": true
+            },
+            {
+              "name": "cam_lease_audit/cam_lease_audit_renewal_clause_checklist.docx",
+              "bytes": 36018,
+              "readable": true
+            },
+            {
+              "name": "cam_lease_audit/cam_lease_audit_workbook.xlsx",
+              "bytes": 9234,
+              "readable": true
+            },
+            {
+              "name": "cam_lease_audit/README.txt",
+              "bytes": 679,
+              "readable": true
+            }
+          ],
+          "entry_count": 7,
+          "uncompressed_bytes": 188739,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ciowwm",
+      "meta_http": 200,
+      "title": "EU Late Payment Recovery Kit",
+      "price_cents": 5900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ciowwm",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 3863,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 3863,
+          "sha256": "26984a5bc1c405fa4f87af61493d1a156f54c7272f556459f3da845ba8dfa972",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 1,
+          "words": 392,
+          "first_text": "EU Late Payment Recovery Kit Get B2B invoices paid: statutory rights, reminder ladder, and fee math. Practical guide — not legal advice. Checked 2026-09-22. Your statutory position (EU Directive 2011/7/EU, established law) Business-to-business: absent other terms, payment is due within 30 calendar d",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "dyjavs",
+      "meta_http": 200,
+      "title": "Diminished Value Claim Kit",
+      "price_cents": 5900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/dyjavs",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 9630,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 9630,
+          "sha256": "fda7daf9ec0d3b87e795ee546ebc046d4e41853b39d88cfd601cc40c31944cc5",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 3,
+          "words": 1274,
+          "first_text": "Diminished Value Claim Kit Recover your car's lost resale value after a not-at-fault accident — eligibility, evidence, demand letter, negotiation, escalation Practical claims guide. Not legal advice and not an appraisal service. Diminished-value law varies by state (Georgia's first-party rule is the",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ppsluq",
+      "meta_http": 200,
+      "title": "STR Direct Booking Revenue Kit",
+      "price_cents": 5900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ppsluq",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 10074,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 10074,
+          "sha256": "71800ec025aac21111b7ad14e5631c980da83c7496adf8415eb8f44804429f2e",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 3,
+          "words": 1394,
+          "first_text": "STR Direct Booking Revenue Kit Reclaim the 15.5%: fee math, channel mix, direct-site launch, and returning-guest engine for short-term rental hosts Practical revenue guide. Not financial, legal, or tax advice. Platform fees, policies, and market figures below reflect published sources checked Septem",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "nmasnb",
+      "meta_http": 200,
+      "title": "Section 8 Notice Validity System (England)",
+      "price_cents": 5900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/nmasnb",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 13669,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 13669,
+          "sha256": "a2bca3397e84051b7d5cc4fb636cd8d68867a5e641df4d0c48a47098d970bc3c",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "section8_notice_validity_workbook.xlsx",
+              "bytes": 10107,
+              "readable": true
+            },
+            {
+              "name": "section8_validity_manual.pdf",
+              "bytes": 3401,
+              "readable": true
+            },
+            {
+              "name": "section8_templates_checklists.pdf",
+              "bytes": 2655,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 16163,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "sjrjxq",
+      "meta_http": 200,
+      "title": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/sjrjxq",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 10065,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 10065,
+          "sha256": "20633dc8522aa4d96a18e92e261c7fa2b92880a6c10190ce45672f1708030a66",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 6,
+          "words": 1153,
+          "first_text": "Etsy Policy Triage Find the exact policy you were cited for — in about 15 minutes, before you write a single sentence of your appeal. Read this first. This is a triage tool. It helps you identify what to fix. It does not write your appeal. It is not professional, legal or financial advice, and it is",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "gzbdaz",
+      "meta_http": 200,
+      "title": "Landlord Move-In Inspection Pack",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/gzbdaz",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 132834,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 132834,
+          "sha256": "00411d00d3ae58f4083d49f2addb72c04010134c16558456f95bc02f26328c8b",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "landlord_movein_inspection_pack/landlord_movein_inspection_pack_guide.pdf",
+              "bytes": 30709,
+              "readable": true
+            },
+            {
+              "name": "landlord_movein_inspection_pack/landlord_movein_inspection_pack_workbook.xlsx",
+              "bytes": 9362,
+              "readable": true
+            },
+            {
+              "name": "landlord_movein_inspection_pack/movein_condition_report_form.docx",
+              "bytes": 35807,
+              "readable": true
+            },
+            {
+              "name": "landlord_movein_inspection_pack/photo_inventory_log.docx",
+              "bytes": 35748,
+              "readable": true
+            },
+            {
+              "name": "landlord_movein_inspection_pack/README.txt",
+              "bytes": 590,
+              "readable": true
+            },
+            {
+              "name": "landlord_movein_inspection_pack/tenant_acknowledgment_packet.docx",
+              "bytes": 35730,
+              "readable": true
+            }
+          ],
+          "entry_count": 6,
+          "uncompressed_bytes": 147946,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ursxh",
+      "meta_http": 200,
+      "title": "Cottage Food Compliance Kit",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ursxh",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 135984,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 135984,
+          "sha256": "0feaa3c735d5f8ccb7ffc476308be3eb2e8bd0a37837217d09a165389ee05f7d",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "cottage_food_compliance_kit/cottage_food_compliance_kit_guide.pdf",
+              "bytes": 33943,
+              "readable": true
+            },
+            {
+              "name": "cottage_food_compliance_kit/cottage_food_compliance_kit_workbook.xlsx",
+              "bytes": 9718,
+              "readable": true
+            },
+            {
+              "name": "cottage_food_compliance_kit/cottage_food_label_template.docx",
+              "bytes": 36017,
+              "readable": true
+            },
+            {
+              "name": "cottage_food_compliance_kit/home_kitchen_signage_and_notice.docx",
+              "bytes": 35880,
+              "readable": true
+            },
+            {
+              "name": "cottage_food_compliance_kit/README.txt",
+              "bytes": 592,
+              "readable": true
+            },
+            {
+              "name": "cottage_food_compliance_kit/registration_and_cap_cover_sheet.docx",
+              "bytes": 35866,
+              "readable": true
+            }
+          ],
+          "entry_count": 6,
+          "uncompressed_bytes": 152016,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "oerot",
+      "meta_http": 200,
+      "title": "Fleet Maintenance and Damage Documentation Bundle",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/oerot",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 141990,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 141990,
+          "sha256": "68e6144b30ac4657998e4ff01372a5a02e0a88d6f63dbbf6c9b5b44d4e75fc74",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "fleet_maintenance_damage_bundle/damage_claim_letter.docx",
+              "bytes": 35948,
+              "readable": true
+            },
+            {
+              "name": "fleet_maintenance_damage_bundle/fleet_maintenance_damage_bundle_guide.pdf",
+              "bytes": 42511,
+              "readable": true
+            },
+            {
+              "name": "fleet_maintenance_damage_bundle/fleet_maintenance_damage_bundle_workbook.xlsx",
+              "bytes": 9422,
+              "readable": true
+            },
+            {
+              "name": "fleet_maintenance_damage_bundle/pre_post_rental_inspection_form.docx",
+              "bytes": 36134,
+              "readable": true
+            },
+            {
+              "name": "fleet_maintenance_damage_bundle/README.txt",
+              "bytes": 602,
+              "readable": true
+            },
+            {
+              "name": "fleet_maintenance_damage_bundle/service_visit_record.docx",
+              "bytes": 35715,
+              "readable": true
+            }
+          ],
+          "entry_count": 6,
+          "uncompressed_bytes": 160332,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "swkgd",
+      "meta_http": 200,
+      "title": "Restaurant Food Cost Control Kit",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/swkgd",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 138350,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 138350,
+          "sha256": "b0b737540e2b21939d8b7dc362c0ec547931c0926ec950e6d16f5c12a00ed204",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "restaurant_food_cost_control/README.txt",
+              "bytes": 623,
+              "readable": true
+            },
+            {
+              "name": "restaurant_food_cost_control/restaurant_food_cost_control_guide.pdf",
+              "bytes": 38747,
+              "readable": true
+            },
+            {
+              "name": "restaurant_food_cost_control/restaurant_food_cost_control_workbook.xlsx",
+              "bytes": 9209,
+              "readable": true
+            },
+            {
+              "name": "restaurant_food_cost_control/restaurant_food_cost_recipe_cost_card.docx",
+              "bytes": 35693,
+              "readable": true
+            },
+            {
+              "name": "restaurant_food_cost_control/restaurant_food_cost_waste_log_sheet.docx",
+              "bytes": 35691,
+              "readable": true
+            },
+            {
+              "name": "restaurant_food_cost_control/restaurant_food_cost_weekly_review_agenda.docx",
+              "bytes": 35855,
+              "readable": true
+            }
+          ],
+          "entry_count": 6,
+          "uncompressed_bytes": 155818,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "fydjid",
+      "meta_http": 200,
+      "title": "Handbook Acknowledgment Tracker",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/fydjid",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 169145,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 169145,
+          "sha256": "0132de95f19a2569f39e1599b70b3b8451b47029ba3bc380543e497722fda310",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "handbook_ack_tracker/acknowledgment_receipt_form.docx",
+              "bytes": 35685,
+              "readable": true
+            },
+            {
+              "name": "handbook_ack_tracker/annual_review_checklist.docx",
+              "bytes": 35579,
+              "readable": true
+            },
+            {
+              "name": "handbook_ack_tracker/handbook_ack_tracker_guide.pdf",
+              "bytes": 34524,
+              "readable": true
+            },
+            {
+              "name": "handbook_ack_tracker/handbook_ack_tracker_workbook.xlsx",
+              "bytes": 10059,
+              "readable": true
+            },
+            {
+              "name": "handbook_ack_tracker/README.txt",
+              "bytes": 621,
+              "readable": true
+            },
+            {
+              "name": "handbook_ack_tracker/refusal_documentation_form.docx",
+              "bytes": 35715,
+              "readable": true
+            },
+            {
+              "name": "handbook_ack_tracker/update_announcement_memo.docx",
+              "bytes": 35624,
+              "readable": true
+            }
+          ],
+          "entry_count": 7,
+          "uncompressed_bytes": 187807,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "odqlk",
+      "meta_http": 200,
+      "title": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/odqlk",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 135392,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 135392,
+          "sha256": "b76fa7923e9a33b73e569002e7b72721e03b56475736133e2dac26ea8cdadb4f",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "landlord_rent_ledger/landlord_rent_ledger_guide.pdf",
+              "bytes": 35568,
+              "readable": true
+            },
+            {
+              "name": "landlord_rent_ledger/landlord_rent_ledger_workbook.xlsx",
+              "bytes": 9072,
+              "readable": true
+            },
+            {
+              "name": "landlord_rent_ledger/notice_preparation_checklist.docx",
+              "bytes": 35791,
+              "readable": true
+            },
+            {
+              "name": "landlord_rent_ledger/payment_receipt_form.docx",
+              "bytes": 35689,
+              "readable": true
+            },
+            {
+              "name": "landlord_rent_ledger/README.txt",
+              "bytes": 599,
+              "readable": true
+            },
+            {
+              "name": "landlord_rent_ledger/year_end_handoff_summary.docx",
+              "bytes": 35661,
+              "readable": true
+            }
+          ],
+          "entry_count": 6,
+          "uncompressed_bytes": 152380,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "iwbcmi",
+      "meta_http": 200,
+      "title": "Newsletter Deliverability & Inbox Placement System",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/iwbcmi",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 138154,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 138154,
+          "sha256": "97818a60060b4aa03c3452f2240d347f8218b63eead00799f205eacaa45c3a89",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "newsletter_deliverability/manifest.json",
+              "bytes": 645,
+              "readable": true
+            },
+            {
+              "name": "newsletter_deliverability/newsletter_deliverability_guide.pdf",
+              "bytes": 36892,
+              "readable": true
+            },
+            {
+              "name": "newsletter_deliverability/newsletter_deliverability_incident_triage_runbook.docx",
+              "bytes": 36089,
+              "readable": true
+            },
+            {
+              "name": "newsletter_deliverability/newsletter_deliverability_reengagement_sequence.docx",
+              "bytes": 36027,
+              "readable": true
+            },
+            {
+              "name": "newsletter_deliverability/newsletter_deliverability_sunset_flow.docx",
+              "bytes": 35950,
+              "readable": true
+            },
+            {
+              "name": "newsletter_deliverability/newsletter_deliverability_workbook.xlsx",
+              "bytes": 9204,
+              "readable": true
+            },
+            {
+              "name": "newsletter_deliverability/README.txt",
+              "bytes": 654,
+              "readable": true
+            }
+          ],
+          "entry_count": 7,
+          "uncompressed_bytes": 155461,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "tjbly",
+      "meta_http": 200,
+      "title": "Employee Offboarding & Access-Revocation System",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/tjbly",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 138482,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 138482,
+          "sha256": "63bf5ab65c3b06698b194885125db9f7b85c101fc0b87c72758cb6d5207af248",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "employee_offboarding_access/employee_offboarding_access_guide.pdf",
+              "bytes": 35574,
+              "readable": true
+            },
+            {
+              "name": "employee_offboarding_access/employee_offboarding_access_manager_handover_memo.docx",
+              "bytes": 36051,
+              "readable": true
+            },
+            {
+              "name": "employee_offboarding_access/employee_offboarding_access_post_exit_verification_audit.docx",
+              "bytes": 36050,
+              "readable": true
+            },
+            {
+              "name": "employee_offboarding_access/employee_offboarding_access_same_day_exit_checklist.docx",
+              "bytes": 36402,
+              "readable": true
+            },
+            {
+              "name": "employee_offboarding_access/employee_offboarding_access_workbook.xlsx",
+              "bytes": 9825,
+              "readable": true
+            },
+            {
+              "name": "employee_offboarding_access/manifest.json",
+              "bytes": 673,
+              "readable": true
+            },
+            {
+              "name": "employee_offboarding_access/README.txt",
+              "bytes": 678,
+              "readable": true
+            }
+          ],
+          "entry_count": 7,
+          "uncompressed_bytes": 155253,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ykwdfc",
+      "meta_http": 200,
+      "title": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ykwdfc",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 138718,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 138718,
+          "sha256": "8d09f10dc82de824d99c66abeeb6756d9058e6e5bcc05c463ba2e5bb30923bd6",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "vendor_onboarding_1099/manifest.json",
+              "bytes": 611,
+              "readable": true
+            },
+            {
+              "name": "vendor_onboarding_1099/README.txt",
+              "bytes": 626,
+              "readable": true
+            },
+            {
+              "name": "vendor_onboarding_1099/vendor_onboarding_1099_cpa_letter.docx",
+              "bytes": 36354,
+              "readable": true
+            },
+            {
+              "name": "vendor_onboarding_1099/vendor_onboarding_1099_guide.pdf",
+              "bytes": 35257,
+              "readable": true
+            },
+            {
+              "name": "vendor_onboarding_1099/vendor_onboarding_1099_intake_form.docx",
+              "bytes": 36079,
+              "readable": true
+            },
+            {
+              "name": "vendor_onboarding_1099/vendor_onboarding_1099_w9_request.docx",
+              "bytes": 36309,
+              "readable": true
+            },
+            {
+              "name": "vendor_onboarding_1099/vendor_onboarding_1099_workbook.xlsx",
+              "bytes": 10049,
+              "readable": true
+            }
+          ],
+          "entry_count": 7,
+          "uncompressed_bytes": 155285,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "pahxdv",
+      "meta_http": 200,
+      "title": "SaaS Spend & Renewal Audit System for Small Teams",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/pahxdv",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 137925,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 137925,
+          "sha256": "58cb410b1d392da25fe3777b73e5ec3fd259aca14bbfa7b8f03de6b4d8c25831",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "saas_spend_renewal_audit/manifest.json",
+              "bytes": 638,
+              "readable": true
+            },
+            {
+              "name": "saas_spend_renewal_audit/README.txt",
+              "bytes": 649,
+              "readable": true
+            },
+            {
+              "name": "saas_spend_renewal_audit/saas_spend_renewal_audit_app_approval_intake.docx",
+              "bytes": 36099,
+              "readable": true
+            },
+            {
+              "name": "saas_spend_renewal_audit/saas_spend_renewal_audit_cancellation_email.docx",
+              "bytes": 36101,
+              "readable": true
+            },
+            {
+              "name": "saas_spend_renewal_audit/saas_spend_renewal_audit_guide.pdf",
+              "bytes": 35043,
+              "readable": true
+            },
+            {
+              "name": "saas_spend_renewal_audit/saas_spend_renewal_audit_renegotiation_brief.docx",
+              "bytes": 36166,
+              "readable": true
+            },
+            {
+              "name": "saas_spend_renewal_audit/saas_spend_renewal_audit_workbook.xlsx",
+              "bytes": 9710,
+              "readable": true
+            }
+          ],
+          "entry_count": 7,
+          "uncompressed_bytes": 154406,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "vzmswo",
+      "meta_http": 200,
+      "title": "Creator Brand-Deal Management System",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/vzmswo",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 170404,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 170404,
+          "sha256": "3df9260fea4bce8aa5ab5814a3a31a381f2fea3420689d5dec1471cb765c3418",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "creator_brand_deal/creator_brand_deal_ftc_disclosure_checklist.docx",
+              "bytes": 35971,
+              "readable": true
+            },
+            {
+              "name": "creator_brand_deal/creator_brand_deal_guide.pdf",
+              "bytes": 35192,
+              "readable": true
+            },
+            {
+              "name": "creator_brand_deal/creator_brand_deal_late_payment_sequence.docx",
+              "bytes": 35938,
+              "readable": true
+            },
+            {
+              "name": "creator_brand_deal/creator_brand_deal_red_flag_checklist.docx",
+              "bytes": 36163,
+              "readable": true
+            },
+            {
+              "name": "creator_brand_deal/creator_brand_deal_revision_cap_clause.docx",
+              "bytes": 35946,
+              "readable": true
+            },
+            {
+              "name": "creator_brand_deal/creator_brand_deal_workbook.xlsx",
+              "bytes": 9255,
+              "readable": true
+            },
+            {
+              "name": "creator_brand_deal/README.txt",
+              "bytes": 680,
+              "readable": true
+            }
+          ],
+          "entry_count": 7,
+          "uncompressed_bytes": 189145,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "qpuagh",
+      "meta_http": 200,
+      "title": "Tech Job Offer Evaluation & Negotiation System",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/qpuagh",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 169645,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 169645,
+          "sha256": "2bb691d2233aa6930c7df3215c762dd379d6dd9e95784b1f2211da5664fadec3",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "tech_offer_negotiation/README.txt",
+              "bytes": 698,
+              "readable": true
+            },
+            {
+              "name": "tech_offer_negotiation/tech_offer_negotiation_accept_decline_notes.docx",
+              "bytes": 35916,
+              "readable": true
+            },
+            {
+              "name": "tech_offer_negotiation/tech_offer_negotiation_competing_offer_update.docx",
+              "bytes": 35892,
+              "readable": true
+            },
+            {
+              "name": "tech_offer_negotiation/tech_offer_negotiation_counter_email.docx",
+              "bytes": 36001,
+              "readable": true
+            },
+            {
+              "name": "tech_offer_negotiation/tech_offer_negotiation_guide.pdf",
+              "bytes": 34611,
+              "readable": true
+            },
+            {
+              "name": "tech_offer_negotiation/tech_offer_negotiation_stall_reply.docx",
+              "bytes": 35916,
+              "readable": true
+            },
+            {
+              "name": "tech_offer_negotiation/tech_offer_negotiation_workbook.xlsx",
+              "bytes": 8963,
+              "readable": true
+            }
+          ],
+          "entry_count": 7,
+          "uncompressed_bytes": 187997,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "behmhy",
+      "meta_http": 200,
+      "title": "Home-Service Quoting & Deposit Protection System",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/behmhy",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 171180,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 171180,
+          "sha256": "e89132f93b2e91686602e162280540a0182faa4168e14007aac996d544b3a238",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "home_service_quote_deposit/home_service_quote_deposit_change_order_form.docx",
+              "bytes": 35898,
+              "readable": true
+            },
+            {
+              "name": "home_service_quote_deposit/home_service_quote_deposit_deposit_agreement.docx",
+              "bytes": 36080,
+              "readable": true
+            },
+            {
+              "name": "home_service_quote_deposit/home_service_quote_deposit_guide.pdf",
+              "bytes": 34882,
+              "readable": true
+            },
+            {
+              "name": "home_service_quote_deposit/home_service_quote_deposit_site_visit_quote_sheet.docx",
+              "bytes": 36186,
+              "readable": true
+            },
+            {
+              "name": "home_service_quote_deposit/home_service_quote_deposit_tiered_proposal.docx",
+              "bytes": 36190,
+              "readable": true
+            },
+            {
+              "name": "home_service_quote_deposit/home_service_quote_deposit_workbook.xlsx",
+              "bytes": 9269,
+              "readable": true
+            },
+            {
+              "name": "home_service_quote_deposit/manifest.json",
+              "bytes": 685,
+              "readable": true
+            },
+            {
+              "name": "home_service_quote_deposit/README.txt",
+              "bytes": 729,
+              "readable": true
+            }
+          ],
+          "entry_count": 8,
+          "uncompressed_bytes": 189919,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "xwbbb",
+      "meta_http": 200,
+      "title": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/xwbbb",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 171558,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 171558,
+          "sha256": "0e9fc52e596cb9089c0435bcd1d2c1d3f9010918971ab094e4e8be22824cf257",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "str_damage_claim/manifest.json",
+              "bytes": 664,
+              "readable": true
+            },
+            {
+              "name": "str_damage_claim/README.txt",
+              "bytes": 706,
+              "readable": true
+            },
+            {
+              "name": "str_damage_claim/str_damage_claim_checkout_inspection_routine.docx",
+              "bytes": 36046,
+              "readable": true
+            },
+            {
+              "name": "str_damage_claim/str_damage_claim_cleaner_incident_report.docx",
+              "bytes": 35879,
+              "readable": true
+            },
+            {
+              "name": "str_damage_claim/str_damage_claim_guest_damage_message.docx",
+              "bytes": 36096,
+              "readable": true
+            },
+            {
+              "name": "str_damage_claim/str_damage_claim_guide.pdf",
+              "bytes": 36179,
+              "readable": true
+            },
+            {
+              "name": "str_damage_claim/str_damage_claim_resolution_center_narrative.docx",
+              "bytes": 36122,
+              "readable": true
+            },
+            {
+              "name": "str_damage_claim/str_damage_claim_workbook.xlsx",
+              "bytes": 9295,
+              "readable": true
+            }
+          ],
+          "entry_count": 8,
+          "uncompressed_bytes": 190987,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "wteork",
+      "meta_http": 200,
+      "title": "Amazon FBA Reconciliation Workbook",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/wteork",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 3726,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 3726,
+          "sha256": "50f65b60978f53c40a21289a319f399921e132e55b35c08a95e97a5c76c83b85",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 1,
+          "words": 331,
+          "first_text": "Amazon FBA Reconciliation Workbook Find fee, refund and reimbursement leakage with a repeatable monthly routine. Figures change — verify current fee schedules. Checked 2026-09-22. Where FBA money leaks Inbound shipment discrepancies (units received vs sent). Customer refunds where the fee credit nev",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "dvfvm",
+      "meta_http": 200,
+      "title": "Restaurant Health Inspection Readiness Kit",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/dvfvm",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 10850,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 10850,
+          "sha256": "85e17a796fa650cec95d916a7f47fa0bfad7fb2b883f0cd436655160ea1bee80",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 4,
+          "words": 1415,
+          "first_text": "Restaurant Health Inspection Readiness Kit Self-inspection scoring, corrective-action engine, inspector-day protocol, and staff drill logs for independent restaurants Practical operations guide. Not legal advice and not a substitute for your local health code. Inspection systems differ by state and ",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "uwyfje",
+      "meta_http": 200,
+      "title": "GCC Contractor Payment Command System",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/uwyfje",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 7166,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 7166,
+          "sha256": "2503c6720a7ef65919052b17d579006c37b58d59048df5af62acee613f3f16c1",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 3,
+          "words": 846,
+          "first_text": "Contractor Payment Command System GCC Contractors, Suppliers & B2B Agencies Milestones, retention, change orders, collection, ZATCA-ready invoicing discipline. Operational tools — not legal advice. MODULE 1 — Contract & payment-terms review framework - Before signing: payment schedule, milestone def",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "fwrjot",
+      "meta_http": 200,
+      "title": "Freelancer Payment Protection & Scope-Control Toolkit",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/fwrjot",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 6626,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 6626,
+          "sha256": "de5e964a1bf495efb7a1a2f1aef21b3f27aea83c3c4ea42f7443c34f8438cf02",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 3,
+          "words": 792,
+          "first_text": "Freelancer Payment Protection & Scope-Control Toolkit Contracts, change orders, late-fee math, reminders, demand letters. Practical tools — not legal advice. How to use this toolkit - Work top to bottom before your next project starts. - Every template has [brackets] — replace them, don't delete the",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "xwacbo",
+      "meta_http": 200,
+      "title": "Salon Commission Pay Kit",
+      "price_cents": 3900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/xwacbo",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 133144,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 133144,
+          "sha256": "421b2ee198bf6204a59d0f46bd9e2428b3c1148c0636f9525a71a74bf39270fa",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "salon_commission_pay_kit/README.txt",
+              "bytes": 584,
+              "readable": true
+            },
+            {
+              "name": "salon_commission_pay_kit/salon_commission_agreement_template.docx",
+              "bytes": 35806,
+              "readable": true
+            },
+            {
+              "name": "salon_commission_pay_kit/salon_commission_pay_kit_guide.pdf",
+              "bytes": 33601,
+              "readable": true
+            },
+            {
+              "name": "salon_commission_pay_kit/salon_commission_pay_kit_workbook.xlsx",
+              "bytes": 8052,
+              "readable": true
+            },
+            {
+              "name": "salon_commission_pay_kit/salon_pay_dispute_log_form.docx",
+              "bytes": 35635,
+              "readable": true
+            },
+            {
+              "name": "salon_commission_pay_kit/salon_stylist_payout_statement.docx",
+              "bytes": 35677,
+              "readable": true
+            }
+          ],
+          "entry_count": 6,
+          "uncompressed_bytes": 149355,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "roxdbe",
+      "meta_http": 200,
+      "title": "SaaS Churn Email Pack",
+      "price_cents": 3900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/roxdbe",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 3061,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 3061,
+          "sha256": "e81f3874c7d4569b41f1640edc336c119ea1785909f711fac08d9bc07a7ccf40",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 1,
+          "words": 257,
+          "first_text": "SaaS Churn Email Pack Cancellation-flow, failed-payment and win-back sequences with the logic behind each send. Templates to adapt, not copy-paste magic. Checked 2026-09-22. Cancellation flow (3 sends) 1. Exit survey + pause offer (day 0): learn and retain the pausable. 2. Outcome reminder (day 3): ",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ldrdm",
+      "meta_http": 200,
+      "title": "Food-Contact Materials Starter",
+      "price_cents": 3900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ldrdm",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 3112,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 3112,
+          "sha256": "70271b185f25d4ec9611b13f572e4d04fcd29e785b71f8585c4716e729c77b3c",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 1,
+          "words": 272,
+          "first_text": "Food-Contact Materials Starter Ceramics, kitchenware and packaging: the second regulatory layer atop GPSR. Practical orientation — not legal advice. Checked 2026-09-22. The second layer Food-contact use pulls a second regime on top of general product safety: migration limits (lead/cadmium classics),",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "hasjmp",
+      "meta_http": 200,
+      "title": "Etsy Ads ROI Playbook + Calculator",
+      "price_cents": 3900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/hasjmp",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 3480,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 3480,
+          "sha256": "e5768f1879c8868e32a232fb7da326e0991eef9f7329851cd0291f3826431103",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 1,
+          "words": 300,
+          "first_text": "Etsy Ads ROI Playbook + Calculator Decide in numbers whether Etsy Ads earns its keep for your shop. Verify current Ads mechanics in Etsy's handbook. Checked 2026-09-22. The only math that matters Revenue attributed to ads minus ad spend, divided by ad spend — computed per listing, not shop-wide. Win",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "zfnagp",
+      "meta_http": 200,
+      "title": "Suspended Seller First-Appeal POA System",
+      "price_cents": 3900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/zfnagp",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 5533,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 5533,
+          "sha256": "d79cb87f43cc7e305a788348b5359e5412a44a4baa3b86facf438b015faa98a0",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 2,
+          "words": 618,
+          "first_text": "Suspended Seller First-Appeal POA System Diagnose, document, draft, review, submit. Self-help — not legal advice, no outcome promised. READ FIRST — the 48-hour rule - Your first Plan of Action carries disproportionate weight. A rushed or generic first appeal m akes every later appeal harder — practi",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "volqjv",
+      "meta_http": 200,
+      "title": "Homebuyer Inspection Action Kit",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/volqjv",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 132410,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 132410,
+          "sha256": "c83ab142c88a8d2c730f8eae656334be68dcbc98e270fc4edf736e9f804afc15",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "homebuyer_inspection_action_kit/contractor_scope_request.docx",
+              "bytes": 35572,
+              "readable": true
+            },
+            {
+              "name": "homebuyer_inspection_action_kit/decision_worksheet_form.docx",
+              "bytes": 35583,
+              "readable": true
+            },
+            {
+              "name": "homebuyer_inspection_action_kit/homebuyer_inspection_action_kit_guide.pdf",
+              "bytes": 31077,
+              "readable": true
+            },
+            {
+              "name": "homebuyer_inspection_action_kit/homebuyer_inspection_action_kit_workbook.xlsx",
+              "bytes": 9440,
+              "readable": true
+            },
+            {
+              "name": "homebuyer_inspection_action_kit/README.txt",
+              "bytes": 582,
+              "readable": true
+            },
+            {
+              "name": "homebuyer_inspection_action_kit/repair_request_letter.docx",
+              "bytes": 35696,
+              "readable": true
+            }
+          ],
+          "entry_count": 6,
+          "uncompressed_bytes": 147950,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "fwxmms",
+      "meta_http": 200,
+      "title": "EU AI Act Audit Logging Kit",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/fwxmms",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 109570,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 109570,
+          "sha256": "5a87d74c6b4bb7e8ffc3b9f92e7c9b94927b681aca1e965b6cadcf1b3aad381a",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 14,
+          "words": 2267,
+          "first_text": "TABLE OF CONTENTS What's Inside 1. Read This First — What This Kit Is (and Is Not) 2. Risk Tier–Specific Logging Requirements 3. Designing a Robust Log Retention Strategy 4. Post■Market Monitoring and Continuous Oversight 5. Documenting Serious Incidents Effectively 6. Aligning Audit Logging with Co",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "uldlwa",
+      "meta_http": 200,
+      "title": "Legal Case Research Automation for Solo Attorneys",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/uldlwa",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 105317,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 105317,
+          "sha256": "db964a21800dc38d87d95da30fd978dce0b0abcd8f44b4b27e62d2011dcc03fc",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 16,
+          "words": 2663,
+          "first_text": "TABLE OF CONTENTS What's Inside 1. Read This First — What This Kit Is (and Is Not) 2. Choosing the Right AI Research Platform: Landscape and Pricing 3. Building a Verification Workflow to Counter AI Hallucinations 4. Citation Checking Discipline: From AI Output to Accurate Reference 5. Client■Cost E",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "sjmbrp",
+      "meta_http": 200,
+      "title": "SOC 2 Compliance Automation Guide for Startups",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/sjmbrp",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 121365,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 121365,
+          "sha256": "a5f768de3f1a4a246390fe182e15a7015c46103c5c48614ab9eb07bdbd5b8b38",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 18,
+          "words": 2724,
+          "first_text": "TABLE OF CONTENTS What's Inside 1. Read This First — What This Kit Is (and Is Not) 2. Understanding SOC 2: Foundations for Startups 3. Mapping Trust Criteria to Your Product Stack 4. Automating Evidence Collection: Tools & Workflows 5. Vendor Management in the SOC 2 Ecosystem 6. Access Controls and ",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "esnpki",
+      "meta_http": 200,
+      "title": "AI Agent Blueprint for Small SaaS CloudOps Automation",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/esnpki",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 93996,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 93996,
+          "sha256": "891a6466ed4c67d0b1c55346618d04ed1e2599398580503c2a548aa86fdf88bd",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 9,
+          "words": 1282,
+          "first_text": "TABLE OF CONTENTS What's Inside 1. Read This First — What This Kit Is (and Is Not) 2. \"Foundations of AI■Driven CloudOps for the Lean Team\" 3. \"Incident Response Runbooks Powered by AI\" CHAPTER 1 Read This First — What This Kit Is (and Is Not) IMPORTANT — READ FIRST. This kit is a practical operatio",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "vunrqm",
+      "meta_http": 200,
+      "title": "Severance Agreement Review Checklist",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/vunrqm",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 118143,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 118143,
+          "sha256": "2a22b1db616a82a6bb6042e91d316febb819bea41d0669b11c5bc78462f1b3d2",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 15,
+          "words": 2581,
+          "first_text": "TABLE OF CONTENTS What's Inside 1. Read This First — What This Kit Is (and Is Not) 2. Understanding the Severance Agreement Basics 3. The 21■Day and 45■Day Consideration Periods 4. The 7■Day Revocation Window: How to Exercise Your Right 5. Dissecting the Release of Claims Clause 6. Non■Compete, Non■",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "yiqba",
+      "meta_http": 200,
+      "title": "Security Deposit Demand Kit for Tenants",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/yiqba",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 115393,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 115393,
+          "sha256": "88484790d518ea991b2fe697994f41a52619124a3ace513be27f5e66ef6fb97f",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 11,
+          "words": 2443,
+          "first_text": "TABLE OF CONTENTS What's Inside 1. Read This First — What This Kit Is (and Is Not) 2. Understanding State Deposit Return Deadlines 3. Decoding Itemization: What Landlords Can Actually Deduct 4. The Six■Element Demand Letter: Structure and Statute Citations 5. Proving Bad Faith: Gathering Evidence an",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "jibnyt",
+      "meta_http": 200,
+      "title": "Mechanics Lien Filing Kit for Contractors",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/jibnyt",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 126790,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 126790,
+          "sha256": "cb7cc1ed8b65afc2c3f034c8daa9aaa1ee7b0acb192352c6e9064cf62e1a60f4",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 17,
+          "words": 2759,
+          "first_text": "TABLE OF CONTENTS What's Inside 1. Read This First — What This Kit Is (and Is Not) 2. Understanding the Mechanics Lien Landscape 3. Preliminary Notices: The 20■Day Countdown 4. Recording the Lien: Timing, Format, and Jurisdiction 5. Serving the Property Owner: Legal Requirements and Practical Tips 6",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ceiwk",
+      "meta_http": 200,
+      "title": "Stripe Chargeback Defense Kit for Digital Sellers",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ceiwk",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 114918,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 114918,
+          "sha256": "75c087c66f66ed6828c852e5fcd807076f9a58dc00c73b467aadfbf3bc335f24",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 15,
+          "words": 2504,
+          "first_text": "TABLE OF CONTENTS What's Inside 1. Read This First — What This Kit Is (and Is Not) 2. The Anatomy of a Stripe Dispute 3. Visa Compelling Evidence 3.0 Demystified 4. Harvesting Digital Activity Logs 5. Constructing a Winning Evidence Packet 6. Response Templates That Close Disputes 7. Automating Evid",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "fgruzn",
+      "meta_http": 200,
+      "title": "Etsy Suspension Appeal Kit",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/fgruzn",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 166634,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 166634,
+          "sha256": "b05f3f4ccb8cf66b1ad1985afab60d783d4d896f35b908495012f2987dbfda54",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "etsy_suspension_appeal_kit.pdf",
+              "bytes": 122465,
+              "readable": true
+            },
+            {
+              "name": "README.txt",
+              "bytes": 1017,
+              "readable": true
+            },
+            {
+              "name": "etsy_appeal_evidence_tracker.xlsx",
+              "bytes": 6397,
+              "readable": true
+            },
+            {
+              "name": "etsy_appeal_letter_template_A_IP.docx",
+              "bytes": 36302,
+              "readable": true
+            },
+            {
+              "name": "etsy_appeal_letter_template_B_policy.docx",
+              "bytes": 36108,
+              "readable": true
+            }
+          ],
+          "entry_count": 5,
+          "uncompressed_bytes": 202289,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "kaooj",
+      "meta_http": 200,
+      "title": "CCPA Compliance Action Kit for Small Business",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/kaooj",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 121663,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 121663,
+          "sha256": "5aace78aacd899622a99d3b8312e54f52928026d293d5aca120909ddf984b1c8",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 13,
+          "words": 2386,
+          "first_text": "TABLE OF CONTENTS What's Inside 1. Read This First — What This Kit Is (and Is Not) 2. Understanding Applicability Thresholds and Legal Scope 3. Crafting a Clear, Compliant Privacy Policy 4. Implementing the “Do Not Sell” and “Do Not Share” Opt■Out 5. Integrating the Global Privacy Control (GPC) Sign",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "yhnyn",
+      "meta_http": 200,
+      "title": "Digital-Product Refund Policy Pack",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/yhnyn",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 3123,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 3123,
+          "sha256": "44fb3536f4035477864dc817234048abaf0a7c48d6e070ea0ab3fd5b0d92a2c6",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 1,
+          "words": 254,
+          "first_text": "Digital-Product Refund Policy Pack Write a refund policy that cuts disputes without inviting abuse. Observed gap: most digital listings carry none. Checked 2026-09-22. Why the policy page converts Buyers of intangible goods cannot inspect before purchase; the refund terms are the inspection substitu",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "zjwpx",
+      "meta_http": 200,
+      "title": "Freelancer Scope-Creep Contract Kit",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/zjwpx",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 3055,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 3055,
+          "sha256": "ba929223654d7f5402e722d84fa6d3b77a6fc93a7f780b469581221d12e63ce4",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 1,
+          "words": 253,
+          "first_text": "Freelancer Scope-Creep Contract Kit Change requests, kill fees and boundary clauses that hold without a lawyer on speed-dial. Templates, not legal advice. Checked 2026-09-22. The three clauses that matter Change-request procedure (written, priced, signed before work). Kill fee schedule (percentage b",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "eiebdt",
+      "meta_http": 200,
+      "title": "Battery & WEEE Mini-Guide for Sellers",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/eiebdt",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 3061,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 3061,
+          "sha256": "9b1ef57bdbd63a8d082111d41485e5785004f7903cdc0ac4d7408a8bc3178524",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 1,
+          "words": 258,
+          "first_text": "Battery & WEEE Mini-Guide for Sellers Registration duties for electronics sellers in the EU: what to check, in what order. Orientation, not legal advice. Checked 2026-09-22. Which duties bite Portable batteries, light transport batteries, and WEEE (waste electrical equipment) each carry producer-reg",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "vyitxf",
+      "meta_http": 200,
+      "title": "Toy Safety File Starter (EN 71 Lens)",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/vyitxf",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 3906,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 3906,
+          "sha256": "bf6b2e06a9f8f05c0c1a1bdd2bb943743bb90a1516aaabb13a54eb5fa5ace6a8",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 1,
+          "words": 358,
+          "first_text": "Toy Safety File Starter (EN 71 Lens) Structure your toy technical file around the hazard rows assessors actually check. Does not replace lab testing. Checked 2026-09-22. Which lens applies Mechanical/physical, flammability, chemical/migration, electrical (if powered), hygiene, and age-grading/chokin",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "adyvd",
+      "meta_http": 200,
+      "title": "Turo Guest Dispute Toolkit",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/adyvd",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 17909,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 17909,
+          "sha256": "ef236fe8ec5d2b06482f1382286b86d8290f0f041e5138f2fbfeacca40cfd9e9",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 6,
+          "words": 2774,
+          "first_text": "Turo Guest Dispute Toolkit Fight unfair damage and invoice claims — invoice disputes, damage-claim defense, escalation, and collections response for US guests Practical implementation guide. Not legal advice. Policy details reflect Turo's published help pages as checked in September 2026 — Turo chan",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "edgiq",
+      "meta_http": 200,
+      "title": "UK Deposit Recovery Action Pack",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/edgiq",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 9198,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 9198,
+          "sha256": "b95e79fed7ce66e11f3f1041d04d529f993e698dfb7f4757d6e1c6531afb0048",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "uk_deposit_recovery_action_pack.xlsx",
+              "bytes": 7731,
+              "readable": true
+            },
+            {
+              "name": "uk_deposit_recovery_guide.pdf",
+              "bytes": 2943,
+              "readable": true
+            }
+          ],
+          "entry_count": 2,
+          "uncompressed_bytes": 10674,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "fccqk",
+      "meta_http": 200,
+      "title": "Gulf Job-Landing ATS CV System",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/fccqk",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 5147,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 5147,
+          "sha256": "ef00ed19262b94860477764b8e8b35383da3687cffc9e233128cc14381869d9a",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 2,
+          "words": 556,
+          "first_text": "Gulf Job-Landing ATS CV System Parse-safe CVs, keyword tailoring, Gulf playbook. Education — no outcome guaranteed. 1. How hiring systems actually read you (no myths) - Most large employers run applicant tracking systems that parse your file, then rank and sort candidates. Automatic rejection is rar",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ziiur",
+      "meta_http": 200,
+      "title": "Freelancer Scope Control Kit",
+      "price_cents": 1900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ziiur",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 167522,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 167522,
+          "sha256": "eef4627bc6b890ccada541bb0841bb42fb915c08a89bc8c92440e04b9fa412be",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "freelancer_scope_control/change_order_form.docx",
+              "bytes": 35792,
+              "readable": true
+            },
+            {
+              "name": "freelancer_scope_control/freelancer_scope_control_guide.pdf",
+              "bytes": 31225,
+              "readable": true
+            },
+            {
+              "name": "freelancer_scope_control/freelancer_scope_control_workbook.xlsx",
+              "bytes": 9290,
+              "readable": true
+            },
+            {
+              "name": "freelancer_scope_control/pushback_message_scripts.docx",
+              "bytes": 36103,
+              "readable": true
+            },
+            {
+              "name": "freelancer_scope_control/README.txt",
+              "bytes": 627,
+              "readable": true
+            },
+            {
+              "name": "freelancer_scope_control/revision_limit_clause_insert.docx",
+              "bytes": 35813,
+              "readable": true
+            },
+            {
+              "name": "freelancer_scope_control/SOW_with_exclusions_clause.docx",
+              "bytes": 36465,
+              "readable": true
+            }
+          ],
+          "entry_count": 7,
+          "uncompressed_bytes": 185315,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "engiwk",
+      "meta_http": 200,
+      "title": "EU AI Act Compliance Quickstart Checklist",
+      "price_cents": 1900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/engiwk",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 3773,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 3773,
+          "sha256": "0eb1d3aea7ab29834de3e41118f6ffbf354f82bf4c045faa295665a66cd37f18",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 2,
+          "words": 312,
+          "first_text": "EU AI Act Compliance Quickstart Checklist An operational starting sheet for SMEs. Not legal advice. Verify dates against official EU sources. 1. Scope check (do this first) - List AI systems you build, buy, or operate. - For each: provider or deployer role, users affected, EU exposure. - Park anythi",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "akxaae",
+      "meta_http": 200,
+      "title": "The 5-Minute Context Reset Playbook",
+      "price_cents": 1500,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/akxaae",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 119824,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 119824,
+          "sha256": "270951e63127d4e3b0c73bfa0174d5ee1724b8656cb8684bcd0cbcd2f5e07d08",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 9,
+          "words": 1612,
+          "first_text": "TABLE OF CONTENTS What's Inside 1. Why You Lose the Thread, and What It Actually Costs 2. The Context Cost Ledger: Measuring Your Own Number 3. The 5-Minute Reset: The Actual Procedure 4. Deciding Whether to Switch: The 30-Second Gate 5. Protecting the First Twenty Minutes of the Day 6. When the Res",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "vhofn",
+      "meta_http": 200,
+      "title": "The 5-Minute Context Reset Playbook",
+      "price_cents": 1500,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/vhofn",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 172023,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 172023,
+          "sha256": "148e248964266be8eec783c4f08066db9aa1e0ecd66e8e210a9b49bd5d67eb8c",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 10,
+          "words": 501,
+          "first_text": "The 5-Minute Context Reset Playbook Practical micro-habits for rapid focus recovery Galaxy Forge Name: _________________________________ HABIT TRACKER Month: _______________ 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Wake up early Exercise Read 30 min Drink w",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "tmhlb",
+      "meta_http": 200,
+      "title": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+      "price_cents": 900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/tmhlb",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 3657,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 3657,
+          "sha256": "0ce2ba02bf6aa85e100bc2120de1261d74d6e49aa2c909e9754669b091c8e4c4",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 2,
+          "words": 309,
+          "first_text": "EU AI Act: Transparency & AI Literacy Quickstart Checklist A practical starting sheet for SMEs. Not legal advice. Verify dates against official EU sources. 1. Know whether the rules touch you - List every AI system your team builds, buys, or operates. - Mark who is provider, deployer, or user for ea",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "jvuelq",
+      "meta_http": 200,
+      "title": "Mindfulness Journal for Stress Relief",
+      "price_cents": 700,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/jvuelq",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 134567,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 134567,
+          "sha256": "451a03bd4a0dec300d493e0d1f0103345b44dc3c488864b37bc2c04574b490d2",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 18,
+          "words": 2954,
+          "first_text": "TABLE OF CONTENTS What's Inside 1. Understanding Stress and Mindfulness: The Science Behind the Pract 2. Setting Intentions and Goals: Aligning Mindfulness with Your Profe 3. Daily Mindful Breathing: Your Anchor for Calm in a Chaotic Day 4. Body Scan and Physical Awareness: Uncovering Hidden Tension",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "dxfwlu",
+      "meta_http": 200,
+      "title": "GALAXY FORGE API TEST — DO NOT BUY — DELETE ME",
+      "price_cents": 100,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/dxfwlu",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 102,
+          "declared_type": "txt",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 102,
+          "sha256": "259c6624fc8f812b5a891a67519565bf5732c0a33262031456b9724b9a654c6e",
+          "size_matches_declared": true,
+          "magic": "47616c61",
+          "type": "other/unknown",
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "owtmpe",
+      "meta_http": 200,
+      "title": "[Unavailable] AI Workflow QA & Stress Test - one agent, reviewed before you demo it to a client",
+      "price_cents": 0,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/owtmpe",
+      "sales_count": 0,
+      "file_count": 0,
+      "verdict": "PASS",
+      "reason": "free listing, no attachment"
+    }
+  ]
+}

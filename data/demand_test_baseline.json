@@ -1,0 +1,69 @@
+{
+  "probe": "demand_test_baseline",
+  "read_only": true,
+  "cost_usd": 0,
+  "captured_at": "2026-10-14T13:50:47.135254+00:00",
+  "candidates": [
+    {
+      "short_id": "iaiyt",
+      "expected_label": "EU AI Act Compliance Toolkit",
+      "expected_price_cents": 15500,
+      "found_in_catalog": true,
+      "title": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
+      "price_cents": 15500,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/iaiyt",
+      "sales_count_DAY0": 0,
+      "sales_usd_cents_DAY0": 0.0,
+      "status": "OBSERVED"
+    },
+    {
+      "short_id": "adyvd",
+      "expected_label": "Turo Guest Dispute Toolkit",
+      "expected_price_cents": 2900,
+      "found_in_catalog": true,
+      "title": "Turo Guest Dispute Toolkit",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/adyvd",
+      "sales_count_DAY0": 0,
+      "sales_usd_cents_DAY0": 0.0,
+      "status": "OBSERVED"
+    },
+    {
+      "short_id": "kaooj",
+      "expected_label": "CCPA Compliance Action Kit for Small Business",
+      "expected_price_cents": 2900,
+      "found_in_catalog": true,
+      "title": "CCPA Compliance Action Kit for Small Business",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/kaooj",
+      "sales_count_DAY0": 0,
+      "sales_usd_cents_DAY0": 0.0,
+      "status": "OBSERVED"
+    }
+  ],
+  "account": {
+    "sales_endpoint_http": 200,
+    "success": true,
+    "sales_count_DAY0": 0,
+    "query_status": "OBSERVED",
+    "products_total": 79,
+    "products_published": 78
+  },
+  "free_assets": [
+    {
+      "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/free-guides.html",
+      "http": 200,
+      "reachable": true,
+      "bytes": 11331
+    },
+    {
+      "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/guide-turo-invoice-dispute.html",
+      "http": 200,
+      "reachable": true,
+      "bytes": 11254
+    }
+  ]
+}
