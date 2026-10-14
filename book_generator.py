@@ -1907,12 +1907,44 @@ def ai_generate_book_content(title, topic, chapters, audience):
     # same precedent as create_book()'s printable pages (hardcoded English,
     # no parameter) since English is the default target market now, not an
     # option among several.
+    #
+    # Cycle 86 (2026-10-14) — SOURCE GROUNDING ADDED. This function is the
+    # origin of a real, shipped defect. The $155 EU AI Act Compliance Toolkit
+    # was produced through the Scout/hunt path into this function, and shipped
+    # with four fabricated "Annex III categories", an invented "Annex III
+    # Part A/B" division, and a prohibition the Act does not contain. The
+    # cause was this prompt: it demanded content "at a quality bar suitable
+    # for direct publication" while supplying no source and placing no
+    # constraint on citations. A model asked to write about a regulation
+    # produces fluent, plausible, unverified legal text.
+    #
+    # The fix is structural, not a softer instruction -- this factory already
+    # learned that you cannot rely on a model to include safety-critical text
+    # (the same product shipped without its "not legal advice" disclaimer).
+    # So: detect regulatory topics, inject a verified primary-source block,
+    # and tell the model to omit anything it was not given rather than invent.
+    # The OUTPUT is still checked by check_generated() below and by
+    # product_content_integrity.py before anything is sold.
     n = max(2, min(int(chapters or 8), 20))
     system = (
         "You are the content-building agent at Galaxy Forge. You write real, complete digital "
         "book content (not summaries or bare headings), at a quality bar suitable for direct "
         "publication on Amazon KDP or Gumroad, for an English-speaking EU/US audience."
     )
+
+    try:
+        import source_grounding as _sg
+    except Exception:  # noqa: BLE001 -- never let grounding break generation
+        _sg = None
+
+    grounding_block = ""
+    if _sg is not None:
+        _is_reg, _markers = _sg.classify_regulatory(title, topic)
+        if _is_reg:
+            _srcs = _sg.get_sources(topic)
+            grounding_block = _sg.grounding_instruction(_srcs)
+            if grounding_block:
+                system = system + "\n\n" + grounding_block
     chapter_markers = "\n".join(
         f"##CHAPTER {i} TITLE##\nChapter {i} title\n##CHAPTER {i} CONTENT##\nFull content of chapter {i} (300-500 words)"
         for i in range(1, n + 1)
@@ -1935,7 +1967,28 @@ A conclusion (100-150 words)
 
 Do not add any explanation, numbering, or text outside these sections. Every chapter's content must be real, useful text, not filler."""
     raw = groq_chat(system, user_prompt, max_tokens=4096, cost_context={"niche": topic, "title": title})
-    return _parse_sectioned_book(raw, n)
+    parsed = _parse_sectioned_book(raw, n)
+
+    # Cycle 86: verify the OUTPUT before it can be packaged. Fail closed and
+    # record the violation rather than silently shipping ungrounded legal text.
+    if _sg is not None and grounding_block:
+        try:
+            _body = " ".join(
+                str(v) for v in (parsed or {}).values() if isinstance(v, (str, list)))
+            _res = _sg.check_generated(title=title, topic=topic, body=_body)
+            if _res.violations:
+                print(f"[SOURCE-GROUNDING] {len(_res.violations)} ungrounded claim(s) in "
+                      f"{title!r}: {_res.violations[:3]} -- product must NOT be sold "
+                      f"until content is corrected.")
+                try:
+                    factory_state.enqueue_retry(
+                        "source_grounding", "; ".join(_res.violations[:5]))
+                except Exception:
+                    pass
+        except Exception:
+            pass
+
+    return parsed
 
 
 def _fallback_book_content(title, topic, chapters, audience):
