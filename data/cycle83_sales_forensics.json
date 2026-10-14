@@ -1,0 +1,42 @@
+﻿{
+  "probe": "cycle83_sales_forensics",
+  "read_only": true,
+  "sales_endpoint": {
+    "method": "GET",
+    "path": "/v2/sales",
+    "documented_scope": "view_sales (per gumroad.com/api)",
+    "http_status": 200,
+    "success_field": true,
+    "body_top_level_keys": [
+      "sales",
+      "success"
+    ],
+    "sales_is_list": true,
+    "sales_length": 0,
+    "next_page_field_present": false,
+    "next_page_value": null,
+    "verdict": "REAL_ZERO"
+  },
+  "independent_cross_check": {
+    "source": "GET /v2/products (different endpoint, different code path)",
+    "pages_walked": 8,
+    "products": 79,
+    "sum_sales_count": 0,
+    "sum_sales_usd_cents": 0.0,
+    "products_missing_the_sales_count_field": 0,
+    "verdict": "CONSISTENT_ZERO",
+    "why_it_matters": "This total does not depend on parsing /v2/sales. If both independent sources report zero, '0 sales' is the platform's answer rather than our misreading of one response."
+  },
+  "negative_control": {
+    "description": "same endpoint, deliberately invalid credential",
+    "http_status": 401,
+    "success_field": null,
+    "sales_is_list": false,
+    "verdict": "API_REJECTS_BAD_CREDENTIAL",
+    "why_it_matters": "If an invalid token gets a non-200 while ours gets 200 + success:true, then 200 means the request really was authenticated and answered."
+  },
+  "conclusion": {
+    "verified_revenue_usd": 0.0,
+    "basis": "COMPLETED /v2/sales query returned success:true with an empty list and no pagination cursor, AND an independent /v2/products walk reports 0 across all products."
+  }
+}

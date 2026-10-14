@@ -33,14 +33,22 @@ def _now_iso():
 
 
 def _real_total_revenue(finance_path=None):
-    path = Path(finance_path) if finance_path else _FINANCE_PATH
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-    except (OSError, json.JSONDecodeError):
-        return 0.0
-    sales = [s for s in data.get("sales", []) if _TEST_RECORD_MARKER not in str(s.get("product", ""))]
-    return round(sum(float(s.get("amount", 0)) for s in sales), 2)
+    """Real revenue, or an honest UNKNOWN.
+
+    This used to be:
+        except (OSError, json.JSONDecodeError): return 0.0
+    so an unreadable or corrupt finance file produced exactly the same 0.0
+    as a file containing no sales at all. A caller could not tell "we made
+    nothing" from "we could not read the answer", on the company's headline
+    number.
+
+    It now delegates to revenue_truth.read_revenue_state() and reports a
+    genuine UNKNOWN as None. Callers that sum this must treat None as
+    "no figure", never as 0.
+    """
+    from revenue_truth import read_revenue_state
+    return read_revenue_state(
+        finance_path, exclude_products_with=_TEST_RECORD_MARKER)["gross_usd"]
 
 
 def _real_total_ai_cost(ai_cost_log_path=None):

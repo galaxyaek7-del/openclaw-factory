@@ -84,22 +84,19 @@ def count_units_sold(finance_path=FINANCE_PATH):
 
 
 def net_revenue(finance_path=FINANCE_PATH):
-    try:
-        data = _load_finance(finance_path)
-        sales = data.get("sales")
-        if not isinstance(sales, list):
-            return 0.0
-        total = 0.0
-        for sale in sales:
-            if not isinstance(sale, dict):
-                continue
-            try:
-                total += float(sale.get("amount") or 0)
-            except (TypeError, ValueError):
-                pass
-        return round(total, 2)
-    except Exception:
-        return 0.0
+    """Net revenue, or an honest UNKNOWN (None).
+
+    Previously this returned 0.0 for a missing file, a corrupt file, a
+    `sales` key that was not a list, and an unexpected exception -- so four
+    very different failures all reported as "no money". It now delegates to
+    revenue_truth.read_revenue_state(), which distinguishes a real observed
+    zero from a source that could not be read.
+
+    Callers that add this to a total MUST handle None. None means unknown,
+    not zero.
+    """
+    from revenue_truth import read_revenue_state
+    return read_revenue_state(finance_path)["gross_usd"]
 
 
 def _load_ledger_events(ledger_path=LEDGER_PATH):
