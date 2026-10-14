@@ -1,0 +1,494 @@
+{
+ "registry": "Galaxy Forge 10-product portfolio",
+ "generated": "2026-10-14T19:15:51.975359+00:00",
+ "selection_rule": "score = proof-of-payment grade (STRONG 4 .. WEAK 1) + min(highest observed comparable price,$400)/400 - 0.75 if duplicate niche; ties keep listed order; duplicate pair keeps the deeper product; tie band = within 0.10 of 10th-place score, broken by (1) already live on Gumroad, (2) pain-signal strength, (3) highest observed comparable price",
+ "evidence_file": "data/portfolio_10/demand_evidence.jsonl",
+ "selected": [
+  {
+   "pid": "GF-B10-03",
+   "name": "PCI SAQ Readiness Kit for Small Merchants",
+   "grade": "STRONG",
+   "top_comparable_usd": 421.2,
+   "score": 5.0,
+   "duplicate_of": null,
+   "sources": [
+    "https://usd.de/wp-content/uploads/usd-PCI-DSS-Policy-Templates-EN-07-2024.pdf",
+    "https://templates.securityscientist.net/t/pci-dss-saq-a-checklist-template/"
+   ],
+   "rank": 1,
+   "stage": "QA_IN_PROGRESS",
+   "publication": "PENDING_FOUNDER_APPROVAL",
+   "checkout": "UNVERIFIED",
+   "affiliate": "UNVERIFIED",
+   "distribution": "NOT_STARTED",
+   "orders": 0,
+   "revenue_usd": 0,
+   "qa": {
+    "files": "PASS",
+    "claim_integrity": "PASS",
+    "price_usd": 59.0,
+    "blockers": [
+     "no explicit not-legal-advice statement inside the PDF",
+     "legal/regulatory accuracy not yet checked against primary sources"
+    ]
+   }
+  },
+  {
+   "pid": "GF-SHOP-01",
+   "name": "SMB Data-Breach Response Playbook",
+   "grade": "STRONG",
+   "top_comparable_usd": 722.7,
+   "score": 5.0,
+   "duplicate_of": null,
+   "sources": [
+    "https://archone.gumroad.com/l/incident-response-plan",
+    "https://cyberberri.gumroad.com/l/incident-response-plan",
+    "https://cciwa.com/product-category/blwa/"
+   ],
+   "rank": 2,
+   "stage": "QA_IN_PROGRESS",
+   "publication": "PENDING_FOUNDER_APPROVAL",
+   "checkout": "UNVERIFIED",
+   "affiliate": "UNVERIFIED",
+   "distribution": "NOT_STARTED",
+   "orders": 0,
+   "revenue_usd": 0,
+   "qa": {
+    "files": "PASS",
+    "claim_integrity": "PASS",
+    "price_usd": 79.0,
+    "blockers": [
+     "no explicit not-legal-advice statement inside the PDF",
+     "legal/regulatory accuracy not yet checked against primary sources"
+    ]
+   }
+  },
+  {
+   "pid": "GF-SHOP-10",
+   "name": "Micro-Business Employee Handbook Builder (US)",
+   "grade": "STRONG",
+   "top_comparable_usd": 198.0,
+   "score": 4.5,
+   "duplicate_of": null,
+   "sources": [
+    "https://payhip.com/b/UO91x",
+    "https://payhip.com/b/30ftw",
+    "https://payhip.com/b/BH4Ih"
+   ],
+   "rank": 3,
+   "stage": "QA_IN_PROGRESS",
+   "publication": "PENDING_FOUNDER_APPROVAL",
+   "checkout": "UNVERIFIED",
+   "affiliate": "UNVERIFIED",
+   "distribution": "NOT_STARTED",
+   "orders": 0,
+   "revenue_usd": 0,
+   "qa": {
+    "files": "PASS",
+    "claim_integrity": "PASS",
+    "price_usd": 69.0,
+    "blockers": [
+     "legal/regulatory accuracy not yet checked against primary sources"
+    ]
+   }
+  },
+  {
+   "pid": "GF-SHOP-02",
+   "name": "GDPR Data-Subject Request Handling Kit for SMBs",
+   "grade": "MODERATE-STRONG",
+   "top_comparable_usd": 249.0,
+   "score": 4.12,
+   "duplicate_of": "GF-B10-06 (same niche)",
+   "sources": [
+    "https://snapcomply.gumroad.com/l/dsartoolkit",
+    "https://payhip.com/b/AZhe1"
+   ],
+   "rank": 4,
+   "stage": "QA_IN_PROGRESS",
+   "publication": "PENDING_FOUNDER_APPROVAL",
+   "checkout": "UNVERIFIED",
+   "affiliate": "UNVERIFIED",
+   "distribution": "NOT_STARTED",
+   "orders": 0,
+   "revenue_usd": 0,
+   "qa": {
+    "files": "PASS",
+    "claim_integrity": "PASS",
+    "price_usd": 69.0,
+    "blockers": [
+     "no explicit not-legal-advice statement inside the PDF",
+     "legal/regulatory accuracy not yet checked against primary sources"
+    ]
+   }
+  },
+  {
+   "pid": "GF-P10-08",
+   "name": "Commercial Lease CAM & Operating-Expense Audit Kit",
+   "grade": "MODERATE",
+   "top_comparable_usd": 1299.0,
+   "score": 4.0,
+   "duplicate_of": null,
+   "sources": [
+    "https://terms.law/Demand-Letters/Landlord-Tenant/commercial-cam-operating-expense-reconciliation-dispute-letters.html",
+    "https://www.occupier.com/resources/cam-reconciliation-template",
+    "https://beancount.io/blog/2026/05/17/cam-reconciliation-commercial-tenants-audit-landlord-true-up-bill-caps-exclusions-gross-up-pro-rata-share-guide"
+   ],
+   "rank": 5,
+   "stage": "QA_IN_PROGRESS",
+   "publication": "PENDING_FOUNDER_APPROVAL",
+   "checkout": "UNVERIFIED",
+   "affiliate": "UNVERIFIED",
+   "distribution": "NOT_STARTED",
+   "orders": 0,
+   "revenue_usd": 0,
+   "qa": {
+    "files": "PASS",
+    "claim_integrity": "PASS",
+    "price_usd": 59.0,
+    "blockers": [
+     "legal/regulatory accuracy not yet checked against primary sources"
+    ]
+   }
+  },
+  {
+   "pid": "LIVE-ETSY-APPEAL",
+   "name": "Etsy Suspension: Triage + Appeal Bundle (live on Gumroad)",
+   "grade": "PAIN STRONG / PAYMENT MODERATE",
+   "top_comparable_usd": 0,
+   "score": 3.0,
+   "duplicate_of": null,
+   "sources": [
+    "https://www.alura.io/docs/article/the-etsy-suspension-guide-how-to-appeal-and-reopen-your-shop",
+    "https://www.freelancer.in/projects/compliance/etsy-shop-suspension-appeal",
+    "https://merchtitans.com/blog/how-to-appeal-etsy-policy-violation-2026"
+   ],
+   "tie_band": true,
+   "rank": 6,
+   "stage": "QA_IN_PROGRESS",
+   "publication": "LIVE_ON_GUMROAD_PREEXISTING",
+   "checkout": "UNVERIFIED",
+   "affiliate": "UNVERIFIED",
+   "distribution": "NOT_STARTED",
+   "orders": 0,
+   "revenue_usd": 0,
+   "qa": {
+    "files": "PASS",
+    "claim_integrity": "N/A",
+    "price_usd": null,
+    "blockers": [
+     "live file on Gumroad predates the 2026-10-14 glyph repair; local repaired copy needs re-upload (approval)",
+     "legal/regulatory accuracy not yet checked against primary sources"
+    ]
+   }
+  },
+  {
+   "pid": "GF-B11-06",
+   "name": "Real Estate Transaction Deadline Kit",
+   "grade": "MODERATE",
+   "top_comparable_usd": 20.0,
+   "score": 3.05,
+   "duplicate_of": null,
+   "sources": [
+    "https://www.etsy.com/listing/1503119514",
+    "https://www.etsy.com/listing/1701929614",
+    "https://www.paperlesspipeline.com/blog/real-estate-transaction-coordinator-checklist"
+   ],
+   "tie_band": true,
+   "rank": 7,
+   "stage": "QA_IN_PROGRESS",
+   "publication": "LIVE_ON_GUMROAD_PREEXISTING",
+   "checkout": "UNVERIFIED",
+   "affiliate": "UNVERIFIED",
+   "distribution": "NOT_STARTED",
+   "orders": 0,
+   "revenue_usd": 0,
+   "qa": {
+    "files": "PASS",
+    "claim_integrity": "PASS",
+    "price_usd": 59.0,
+    "blockers": [
+     "price $59 is >2x highest comparable seen ($20)"
+    ]
+   }
+  },
+  {
+   "pid": "GF-B11-10",
+   "name": "Landlord Move-In Inspection Pack",
+   "grade": "MODERATE",
+   "top_comparable_usd": 19.0,
+   "score": 3.05,
+   "duplicate_of": null,
+   "sources": [
+    "https://www.etsy.com/listing/4557417294",
+    "https://www.landlordstudio.com/resource/rental-move-in-and-move-out-checklist"
+   ],
+   "tie_band": true,
+   "rank": 8,
+   "stage": "QA_IN_PROGRESS",
+   "publication": "LIVE_ON_GUMROAD_PREEXISTING",
+   "checkout": "UNVERIFIED",
+   "affiliate": "UNVERIFIED",
+   "distribution": "NOT_STARTED",
+   "orders": 0,
+   "revenue_usd": 0,
+   "qa": {
+    "files": "PASS",
+    "claim_integrity": "PASS",
+    "price_usd": 49.0,
+    "blockers": [
+     "price $49 is >2x highest comparable seen ($19)"
+    ]
+   }
+  },
+  {
+   "pid": "GF-B11-03",
+   "name": "Restaurant Food Cost Control Kit",
+   "grade": "MODERATE",
+   "top_comparable_usd": 49.95,
+   "score": 3.12,
+   "duplicate_of": null,
+   "sources": [
+    "https://www.etsy.com/listing/4513048189",
+    "https://www.etsy.com/listing/4528913017",
+    "https://www.someka.net/products/food-cost-google-sheets-template/",
+    "https://www.etsy.com/de/shop/FBCostingStudio"
+   ],
+   "tie_band": true,
+   "rank": 9,
+   "stage": "QA_PASSED_PENDING_APPROVAL",
+   "publication": "PENDING_FOUNDER_APPROVAL",
+   "checkout": "UNVERIFIED",
+   "affiliate": "UNVERIFIED",
+   "distribution": "NOT_STARTED",
+   "orders": 0,
+   "revenue_usd": 0,
+   "qa": {
+    "files": "PASS",
+    "claim_integrity": "PASS",
+    "price_usd": 49.0,
+    "blockers": []
+   }
+  },
+  {
+   "pid": "GF-B10-05",
+   "name": "Freelancer Scope Control Kit ($39)",
+   "grade": "MODERATE",
+   "top_comparable_usd": 49.0,
+   "score": 3.12,
+   "duplicate_of": "books/freelancer_scope_control_v2 (existing older product)",
+   "sources": [
+    "https://humosync.gumroad.com/l/ScopeGuardProposalin7Minutes",
+    "https://www.getly.store/product/freelancer-client-onboarding-contract-bundle"
+   ],
+   "note": "older books/freelancer_scope_control_v2 becomes historical",
+   "tie_band": true,
+   "rank": 10,
+   "stage": "QA_PASSED_PENDING_APPROVAL",
+   "publication": "PENDING_FOUNDER_APPROVAL",
+   "checkout": "UNVERIFIED",
+   "affiliate": "UNVERIFIED",
+   "distribution": "NOT_STARTED",
+   "orders": 0,
+   "revenue_usd": 0,
+   "qa": {
+    "files": "PASS",
+    "claim_integrity": "PASS",
+    "price_usd": 39.0,
+    "blockers": []
+   }
+  }
+ ],
+ "historical_not_counted": [
+  {
+   "pid": "GF-P10-10",
+   "name": "Creator Brand-Deal Management System",
+   "score": 3.11,
+   "reason": "not selected: tie band alternate"
+  },
+  {
+   "pid": "GF-SHOP-03",
+   "name": "Independent-Contractor Classification Audit (US)",
+   "score": 3.05,
+   "reason": "not selected: tie band alternate"
+  },
+  {
+   "pid": "GF-SHOP-06",
+   "name": "Agency Client Offboarding & Referral System",
+   "score": 3.05,
+   "reason": "not selected: tie band alternate"
+  },
+  {
+   "pid": "GF-P10-09",
+   "name": "Tech Job Offer Evaluation & Negotiation System",
+   "score": 3.04,
+   "reason": "not selected: tie band alternate"
+  },
+  {
+   "pid": "GF-P10-02",
+   "name": "B2B Late-Payment Collections Operating System",
+   "score": 3.03,
+   "reason": "not selected: tie band alternate"
+  },
+  {
+   "pid": "GF-B10-02",
+   "name": "Sales Tax Nexus Tracker",
+   "score": 2.02,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-B10-01",
+   "name": "Subscription Renewal Compliance Kit",
+   "score": 2.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-P10-01",
+   "name": "SaaS Spend & Renewal Audit System for Small Teams",
+   "score": 2.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-P10-06",
+   "name": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO",
+   "score": 2.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-B10-08",
+   "name": "DTC Returns Abuse Playbook: Fair Tiered Policy with Gradua",
+   "score": 1.5,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-B11-01",
+   "name": "EUDR Due Diligence Starter",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-B11-04",
+   "name": "Salon Commission Pay Kit",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-B11-07",
+   "name": "Dental Insurance Verification Kit",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-B11-09",
+   "name": "Cottage Food Compliance Kit",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-B11-05",
+   "name": "Fleet Maintenance and Damage Documentation Bundle",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-B11-02",
+   "name": "EU Green Claims Review Kit",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-B11-08",
+   "name": "Homebuyer Inspection Action Kit",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-B10-04",
+   "name": "Clinic No-Show Reduction Kit",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-B10-07",
+   "name": "Landlord Rent Ledger: Court-Ready Records for Self-Managin",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-B10-09",
+   "name": "Handbook Acknowledgment Tracker",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-B10-10",
+   "name": "Food Truck Permit Navigator",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-P10-03",
+   "name": "Vendor Onboarding & 1099-Readiness Pack for US Small Busin",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-P10-04",
+   "name": "Employee Offboarding & Access-Revocation System",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-P10-05",
+   "name": "Newsletter Deliverability & Inbox Placement System",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-P10-07",
+   "name": "Home-Service Quoting & Deposit Protection System",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-SHOP-04",
+   "name": "Export Documentation Pack for Small Exporters",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-SHOP-05",
+   "name": "SaaS Churn Winback System for Small Teams",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-SHOP-07",
+   "name": "Warehouse Cycle-Count & Slotting System for Small Operatio",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-SHOP-08",
+   "name": "B2B Customer QBR Playbook for Small CS Teams",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-SHOP-09",
+   "name": "B2B Price-Increase Communication Kit",
+   "score": 1.0,
+   "reason": "not selected: lower evidence score"
+  },
+  {
+   "pid": "GF-B10-06",
+   "reason": "duplicate niche of GF-SHOP-02 (kept SHOP-02: 12 pages/6,178 words vs 11/5,747)"
+  }
+ ],
+ "store_listings_outside_portfolio": [
+  "Etsy Policy Triage $49 (component of the selected Etsy bundle)",
+  "The 5-Minute Context Reset Playbook $15",
+  "[Unavailable] AI Workflow QA $0",
+  "Verified B2B Lead Lists $99 (UNPUBLISHED 2026-10-14, false claim)",
+  "Cottage Food / Homebuyer Inspection / Dental Insurance / Landlord Move-In kits (live, not selected)"
+ ]
+}

@@ -18,6 +18,13 @@ Gumroad route and never existed as a call site in this repository. Evidence:
 Conclusion: Gumroad's public API offers `enable` but offers NO way to unpublish
 or delete. That operation is BLOCKED on the dashboard.
 
+CORRECTION (2026-10-14): the conclusion above is wrong. The probe used POST;
+Gumroad documents `PUT /v2/products/:id/disable` (same verb as `enable`).
+A live PUT on the "Verified B2B Lead Lists" listing returned HTTP 200
+success=true, and a read-back showed published=false. Unpublishing through
+the API works. gumroad_publisher still has no /disable call, so the test
+below remains true as a statement about this codebase, not about Gumroad.
+
 These tests use mocks only. No real product, real network call, or real
 unpublish is ever exercised.
 """
