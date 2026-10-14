@@ -1,0 +1,2335 @@
+{
+ "generated": "2026-10-14T19:48:04.679245+00:00",
+ "products": [
+  {
+   "id": "P5k2ptcnUohhKUir5Aq5hg==",
+   "name": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
+   "url": "https://aekraft.gumroad.com/l/sjrjxq",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     10065
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 6,
+   "pdf_words": 1153,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "rMOopS7Q7LHxwaPTY462uw==",
+   "name": "The 5-Minute Context Reset Playbook",
+   "url": "https://aekraft.gumroad.com/l/akxaae",
+   "published": true,
+   "price": 15.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     119824
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 9,
+   "pdf_words": 1612,
+   "tests": [
+    [
+     "pdf",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "IW58tjt2zS14fPYrWZOuxg==",
+   "name": "[Unavailable] AI Workflow QA & Stress Test - one agent, reviewed before you demo it to a client",
+   "url": "https://aekraft.gumroad.com/l/owtmpe",
+   "published": true,
+   "price": 0.0,
+   "sales": 0,
+   "files": [],
+   "covers": 0,
+   "desc_issues": [
+    "empty_description"
+   ],
+   "pdf_pages": 0,
+   "pdf_words": 0,
+   "tests": [],
+   "blocking": []
+  },
+  {
+   "id": "AB1xLDjN-l7q7yjcmiRmIw==",
+   "name": "Verified B2B Lead Lists (200-lead batch)",
+   "url": "https://aekraft.gumroad.com/l/drtaj",
+   "published": false,
+   "price": 99.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     2008
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 1,
+   "pdf_words": 81,
+   "tests": [
+    [
+     "pdf",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "Mk8k3QvpcL5Hf6ll_8CcAg==",
+   "name": "Landlord Move-In Inspection Pack",
+   "url": "https://aekraft.gumroad.com/l/gzbdaz",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     132834
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "raw_list_syntax"
+   ],
+   "pdf_pages": 11,
+   "pdf_words": 5709,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "landlord_movein_inspection_pack_workbook.xlsx",
+     "PASS"
+    ],
+    [
+     "movein_condition_report_form.docx",
+     "PASS"
+    ],
+    [
+     "photo_inventory_log.docx",
+     "PASS"
+    ],
+    [
+     "tenant_acknowledgment_packet.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "to7fbH3OvYu68ggvK9bGGg==",
+   "name": "Cottage Food Compliance Kit",
+   "url": "https://aekraft.gumroad.com/l/ursxh",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     135984
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "raw_list_syntax"
+   ],
+   "pdf_pages": 12,
+   "pdf_words": 6428,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "cottage_food_compliance_kit_workbook.xlsx",
+     "PASS"
+    ],
+    [
+     "cottage_food_label_template.docx",
+     "PASS"
+    ],
+    [
+     "home_kitchen_signage_and_notice.docx",
+     "PASS"
+    ],
+    [
+     "registration_and_cap_cover_sheet.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "uUo9QfyfAyqf8-nZb9G7Og==",
+   "name": "Homebuyer Inspection Action Kit",
+   "url": "https://aekraft.gumroad.com/l/volqjv",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     132410
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "raw_list_syntax"
+   ],
+   "pdf_pages": 12,
+   "pdf_words": 5643,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "contractor_scope_request.docx",
+     "PASS"
+    ],
+    [
+     "decision_worksheet_form.docx",
+     "PASS"
+    ],
+    [
+     "homebuyer_inspection_action_kit_workbook.xlsx",
+     "PASS"
+    ],
+    [
+     "repair_request_letter.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "iJOXxUlufzNyZFndUreFHA==",
+   "name": "Dental Insurance Verification Kit",
+   "url": "https://aekraft.gumroad.com/l/diboaf",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     166141
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "raw_list_syntax"
+   ],
+   "pdf_pages": 11,
+   "pdf_words": 5684,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "denial_review_form.docx",
+     "PASS"
+    ],
+    [
+     "dental_insurance_verification_kit_workbook.xlsx",
+     "PASS"
+    ],
+    [
+     "estimate_letter.docx",
+     "PASS"
+    ],
+    [
+     "huddle_hold_list.docx",
+     "PASS"
+    ],
+    [
+     "verification_call_script.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "Opfzi3JcKHx-hiwJT3tHrA==",
+   "name": "Fleet Maintenance and Damage Documentation Bundle",
+   "url": "https://aekraft.gumroad.com/l/oerot",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     141990
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "raw_list_syntax"
+   ],
+   "pdf_pages": 15,
+   "pdf_words": 8363,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "damage_claim_letter.docx",
+     "PASS"
+    ],
+    [
+     "fleet_maintenance_damage_bundle_workbook.xlsx",
+     "PASS"
+    ],
+    [
+     "pre_post_rental_inspection_form.docx",
+     "PASS"
+    ],
+    [
+     "service_visit_record.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "2HC2OvtsS7gdfVF1lQQSTQ==",
+   "name": "Salon Commission Pay Kit",
+   "url": "https://aekraft.gumroad.com/l/xwacbo",
+   "published": true,
+   "price": 39.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     133144
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "raw_list_syntax"
+   ],
+   "pdf_pages": 13,
+   "pdf_words": 6601,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "salon_commission_agreement_template.docx",
+     "PASS"
+    ],
+    [
+     "salon_commission_pay_kit_workbook.xlsx",
+     "PASS"
+    ],
+    [
+     "salon_pay_dispute_log_form.docx",
+     "PASS"
+    ],
+    [
+     "salon_stylist_payout_statement.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "C4xKqsgTA37Zd-rysSqmeQ==",
+   "name": "EU Green Claims Review Kit",
+   "url": "https://aekraft.gumroad.com/l/uyzuu",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     131594
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 11,
+   "pdf_words": 5887,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "empco_claim_review_worksheet.docx",
+     "PASS"
+    ],
+    [
+     "empco_green_claims_kit_workbook.xlsx",
+     "PASS"
+    ],
+    [
+     "empco_influencer_brief_addendum.docx",
+     "PASS"
+    ],
+    [
+     "empco_remediation_action_note.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "qxjGLQkyK0CQ3WVuLc-7Kg==",
+   "name": "EUDR Due Diligence Starter",
+   "url": "https://aekraft.gumroad.com/l/brwrta",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     136267
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 11,
+   "pdf_words": 6735,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "eudr_due_diligence_starter_workbook.xlsx",
+     "PASS"
+    ],
+    [
+     "eudr_gap_memo.docx",
+     "PASS"
+    ],
+    [
+     "eudr_scope_decision_note.docx",
+     "PASS"
+    ],
+    [
+     "eudr_supplier_data_request_letter.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "bBfEKkiaOp-HZcfQaGdIIw==",
+   "name": "Food Truck Permit Navigator",
+   "url": "https://aekraft.gumroad.com/l/cdfdcy",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     167645
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "raw_list_syntax"
+   ],
+   "pdf_pages": 12,
+   "pdf_words": 6055,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "agency_contact_sheet.docx",
+     "PASS"
+    ],
+    [
+     "commissary_comparison_sheet.docx",
+     "PASS"
+    ],
+    [
+     "document_packet_checklist.docx",
+     "PASS"
+    ],
+    [
+     "foodtruck_permit_navigator_workbook.xlsx",
+     "PASS"
+    ],
+    [
+     "renewal_reminder_setup_guide.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "3B99PVyD77qKqh0cAPcsDA==",
+   "name": "Handbook Acknowledgment Tracker",
+   "url": "https://aekraft.gumroad.com/l/fydjid",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     169145
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "raw_list_syntax"
+   ],
+   "pdf_pages": 13,
+   "pdf_words": 6643,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "acknowledgment_receipt_form.docx",
+     "PASS"
+    ],
+    [
+     "annual_review_checklist.docx",
+     "PASS"
+    ],
+    [
+     "handbook_ack_tracker_workbook.xlsx",
+     "PASS"
+    ],
+    [
+     "refusal_documentation_form.docx",
+     "PASS"
+    ],
+    [
+     "update_announcement_memo.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "MzZhoK8Uu-GEYHChAXcvdA==",
+   "name": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+   "url": "https://aekraft.gumroad.com/l/mrecoe",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     167072
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 14,
+   "pdf_words": 6047,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "appeal_review_form.docx",
+     "PASS"
+    ],
+    [
+     "denial_with_reason_letter.docx",
+     "PASS"
+    ],
+    [
+     "dtc_returns_abuse_playbook_workbook.xlsx",
+     "PASS"
+    ],
+    [
+     "photo_requirement_notice.docx",
+     "PASS"
+    ],
+    [
+     "tiered_returns_policy.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "hQgyFvb26l7vadCGhTHF9Q==",
+   "name": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+   "url": "https://aekraft.gumroad.com/l/odqlk",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     135392
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 14,
+   "pdf_words": 6317,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "landlord_rent_ledger_workbook.xlsx",
+     "PASS"
+    ],
+    [
+     "notice_preparation_checklist.docx",
+     "PASS"
+    ],
+    [
+     "payment_receipt_form.docx",
+     "PASS"
+    ],
+    [
+     "year_end_handoff_summary.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "68zZcBRo9nevkZGYP5lTDg==",
+   "name": "DSAR Response Kit ($59)",
+   "url": "https://aekraft.gumroad.com/l/uqmqnu",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     198866
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "raw_list_syntax"
+   ],
+   "pdf_pages": 11,
+   "pdf_words": 5747,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "dsar_response_kit_workbook.xlsx",
+     "PASS"
+    ],
+    [
+     "intake_form_fields.docx",
+     "PASS"
+    ],
+    [
+     "letter_access_fulfilled.docx",
+     "PASS"
+    ],
+    [
+     "letter_deletion_confirmed.docx",
+     "PASS"
+    ],
+    [
+     "letter_extension_notice.docx",
+     "PASS"
+    ],
+    [
+     "letter_rejection_with_basis.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "K5oIlu_UgDH0k1NXKP4fHw==",
+   "name": "Clinic No-Show Reduction Kit",
+   "url": "https://aekraft.gumroad.com/l/eiztlg",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     199056
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "raw_list_syntax"
+   ],
+   "pdf_pages": 10,
+   "pdf_words": 5694,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "clinic_noshow_reduction_workbook.xlsx",
+     "PASS"
+    ],
+    [
+     "noshow_48hour_reminder_script.docx",
+     "PASS"
+    ],
+    [
+     "noshow_7day_confirmation_script.docx",
+     "PASS"
+    ],
+    [
+     "noshow_cancellation_reschedule_reply.docx",
+     "PASS"
+    ],
+    [
+     "noshow_sameday_reminder_script.docx",
+     "PASS"
+    ],
+    [
+     "noshow_staff_sop_one_pager.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "h9G-1Ec29FPRtsDc-k04XA==",
+   "name": "Sales Tax Nexus Tracker",
+   "url": "https://aekraft.gumroad.com/l/uucxer",
+   "published": true,
+   "price": 79.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     133775
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "raw_list_syntax"
+   ],
+   "pdf_pages": 12,
+   "pdf_words": 6300,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "cpa_handoff_summary.docx",
+     "PASS"
+    ],
+    [
+     "nexus_review_memo.docx",
+     "PASS"
+    ],
+    [
+     "registration_action_list.docx",
+     "PASS"
+    ],
+    [
+     "sales_tax_nexus_tracker_workbook.xlsx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "2ZvRp79aLQiOBEVCYwnZMQ==",
+   "name": "Subscription Renewal Compliance Kit",
+   "url": "https://aekraft.gumroad.com/l/xouyjy",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     138784
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "raw_list_syntax"
+   ],
+   "pdf_pages": 13,
+   "pdf_words": 7145,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "cancellation_path_test_script.docx",
+     "PASS"
+    ],
+    [
+     "disclosure_review_signoff.docx",
+     "PASS"
+    ],
+    [
+     "remediation_plan_memo.docx",
+     "PASS"
+    ],
+    [
+     "subscription_renewal_compliance_workbook.xlsx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "KzZbStETfJeJsc-O3cQjsA==",
+   "name": "Newsletter Deliverability & Inbox Placement System",
+   "url": "https://aekraft.gumroad.com/l/iwbcmi",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     138154
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "mojibake",
+    "internal_research_tags"
+   ],
+   "pdf_pages": 14,
+   "pdf_words": 6174,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "newsletter_deliverability_incident_triage_runbook.docx",
+     "PASS"
+    ],
+    [
+     "newsletter_deliverability_reengagement_sequence.docx",
+     "PASS"
+    ],
+    [
+     "newsletter_deliverability_sunset_flow.docx",
+     "PASS"
+    ],
+    [
+     "newsletter_deliverability_workbook.xlsx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "nwqwR1RJ8rJlZqZE-vj4pw==",
+   "name": "Employee Offboarding & Access-Revocation System",
+   "url": "https://aekraft.gumroad.com/l/tjbly",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     138482
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "mojibake",
+    "internal_research_tags"
+   ],
+   "pdf_pages": 13,
+   "pdf_words": 6207,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "employee_offboarding_access_manager_handover_memo.docx",
+     "PASS"
+    ],
+    [
+     "employee_offboarding_access_post_exit_verification_audit.docx",
+     "PASS"
+    ],
+    [
+     "employee_offboarding_access_same_day_exit_checklist.docx",
+     "PASS"
+    ],
+    [
+     "employee_offboarding_access_workbook.xlsx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "vQEIyRYO5PLkFV1RpzE6wA==",
+   "name": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
+   "url": "https://aekraft.gumroad.com/l/ykwdfc",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     138718
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "mojibake",
+    "internal_research_tags"
+   ],
+   "pdf_pages": 12,
+   "pdf_words": 6268,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "vendor_onboarding_1099_cpa_letter.docx",
+     "PASS"
+    ],
+    [
+     "vendor_onboarding_1099_intake_form.docx",
+     "PASS"
+    ],
+    [
+     "vendor_onboarding_1099_w9_request.docx",
+     "PASS"
+    ],
+    [
+     "vendor_onboarding_1099_workbook.xlsx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "8uWrIqx8uhc8LMIkLEeKkA==",
+   "name": "B2B Late-Payment Collections Operating System",
+   "url": "https://aekraft.gumroad.com/l/wsbqr",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     172282
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "mojibake",
+    "internal_research_tags"
+   ],
+   "pdf_pages": 12,
+   "pdf_words": 6245,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "b2b_collections_recovery_agency_handoff.docx",
+     "PASS"
+    ],
+    [
+     "b2b_collections_recovery_call_script.docx",
+     "PASS"
+    ],
+    [
+     "b2b_collections_recovery_dunning_sequence.docx",
+     "PASS"
+    ],
+    [
+     "b2b_collections_recovery_payment_plan.docx",
+     "PASS"
+    ],
+    [
+     "b2b_collections_recovery_workbook.xlsx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "sjnnlSPbFj44VCYoJpXxPw==",
+   "name": "SaaS Spend & Renewal Audit System for Small Teams",
+   "url": "https://aekraft.gumroad.com/l/pahxdv",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     137925
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "mojibake",
+    "internal_research_tags"
+   ],
+   "pdf_pages": 12,
+   "pdf_words": 6293,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "saas_spend_renewal_audit_app_approval_intake.docx",
+     "PASS"
+    ],
+    [
+     "saas_spend_renewal_audit_cancellation_email.docx",
+     "PASS"
+    ],
+    [
+     "saas_spend_renewal_audit_renegotiation_brief.docx",
+     "PASS"
+    ],
+    [
+     "saas_spend_renewal_audit_workbook.xlsx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "q63gLiL5xvdOAPIbNhxIcw==",
+   "name": "Tech Job Offer Evaluation & Negotiation System",
+   "url": "https://aekraft.gumroad.com/l/qpuagh",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     169645
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "mojibake",
+    "internal_research_tags"
+   ],
+   "pdf_pages": 12,
+   "pdf_words": 6156,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "tech_offer_negotiation_accept_decline_notes.docx",
+     "PASS"
+    ],
+    [
+     "tech_offer_negotiation_competing_offer_update.docx",
+     "PASS"
+    ],
+    [
+     "tech_offer_negotiation_counter_email.docx",
+     "PASS"
+    ],
+    [
+     "tech_offer_negotiation_stall_reply.docx",
+     "PASS"
+    ],
+    [
+     "tech_offer_negotiation_workbook.xlsx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "N9TrQZXO5NMMk8otX5g7Zg==",
+   "name": "Home-Service Quoting & Deposit Protection System",
+   "url": "https://aekraft.gumroad.com/l/behmhy",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     171180
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "mojibake",
+    "internal_research_tags"
+   ],
+   "pdf_pages": 13,
+   "pdf_words": 6162,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "home_service_quote_deposit_change_order_form.docx",
+     "PASS"
+    ],
+    [
+     "home_service_quote_deposit_deposit_agreement.docx",
+     "PASS"
+    ],
+    [
+     "home_service_quote_deposit_site_visit_quote_sheet.docx",
+     "PASS"
+    ],
+    [
+     "home_service_quote_deposit_tiered_proposal.docx",
+     "PASS"
+    ],
+    [
+     "home_service_quote_deposit_workbook.xlsx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "iL2bwAwHI8OAmxKsFeZnQw==",
+   "name": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
+   "url": "https://aekraft.gumroad.com/l/xwbbb",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     171558
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [
+    "mojibake",
+    "internal_research_tags"
+   ],
+   "pdf_pages": 14,
+   "pdf_words": 6205,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "str_damage_claim_checkout_inspection_routine.docx",
+     "PASS"
+    ],
+    [
+     "str_damage_claim_cleaner_incident_report.docx",
+     "PASS"
+    ],
+    [
+     "str_damage_claim_guest_damage_message.docx",
+     "PASS"
+    ],
+    [
+     "str_damage_claim_resolution_center_narrative.docx",
+     "PASS"
+    ],
+    [
+     "str_damage_claim_workbook.xlsx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "WP6Vb-qltKfYXQ1KAb0Tog==",
+   "name": "EU AI Act Audit Logging Kit",
+   "url": "https://aekraft.gumroad.com/l/fwxmms",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     109570
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 14,
+   "pdf_words": 2267,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": [
+    "60 black-box glyph(s) printed inside words (e.g. 't■M') -- customer sees a box instead of a hyphen"
+   ]
+  },
+  {
+   "id": "y4nX4cwydsCtWdxBA6uXJw==",
+   "name": "Legal Case Research Automation for Solo Attorneys",
+   "url": "https://aekraft.gumroad.com/l/uldlwa",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     105317
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 16,
+   "pdf_words": 2663,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": [
+    "58 black-box glyph(s) printed inside words (e.g. 't■C') -- customer sees a box instead of a hyphen"
+   ]
+  },
+  {
+   "id": "M5AZWbcXPFKzvgnzcrDqCg==",
+   "name": "SOC 2 Compliance Automation Guide for Startups",
+   "url": "https://aekraft.gumroad.com/l/sjmbrp",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     121365
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 18,
+   "pdf_words": 2724,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": [
+    "50 black-box glyph(s) printed inside words (e.g. 'r■d') -- customer sees a box instead of a hyphen"
+   ]
+  },
+  {
+   "id": "Ag3pKi2eN5fiGQDmJ-fLxA==",
+   "name": "AI Agent Blueprint for Small SaaS CloudOps Automation",
+   "url": "https://aekraft.gumroad.com/l/esnpki",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     93996
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 9,
+   "pdf_words": 1282,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": [
+    "38 black-box glyph(s) printed inside words (e.g. 'I■D') -- customer sees a box instead of a hyphen"
+   ]
+  },
+  {
+   "id": "D4JC45lly7EjsY-CO5FKyQ==",
+   "name": "Severance Agreement Review Checklist",
+   "url": "https://aekraft.gumroad.com/l/vunrqm",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     118143
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 15,
+   "pdf_words": 2581,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": [
+    "50 black-box glyph(s) printed inside words (e.g. '1■D') -- customer sees a box instead of a hyphen"
+   ]
+  },
+  {
+   "id": "0uieIt-Pn09q9Xz-Hp1DEQ==",
+   "name": "Security Deposit Demand Kit for Tenants",
+   "url": "https://aekraft.gumroad.com/l/yiqba",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     115393
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 11,
+   "pdf_words": 2443,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": [
+    "21 black-box glyph(s) printed inside words (e.g. 'x■E') -- customer sees a box instead of a hyphen"
+   ]
+  },
+  {
+   "id": "mx6XSGrElB5b-NLSHfEryg==",
+   "name": "Mechanics Lien Filing Kit for Contractors",
+   "url": "https://aekraft.gumroad.com/l/jibnyt",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     126790
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 17,
+   "pdf_words": 2759,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": [
+    "18 black-box glyph(s) printed inside words (e.g. '0■D') -- customer sees a box instead of a hyphen"
+   ]
+  },
+  {
+   "id": "F3Q5fUqOCxy3n7k6eVTWqw==",
+   "name": "Stripe Chargeback Defense Kit for Digital Sellers",
+   "url": "https://aekraft.gumroad.com/l/ceiwk",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     114918
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 15,
+   "pdf_words": 2504,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": [
+    "22 black-box glyph(s) printed inside words (e.g. 'n■n') -- customer sees a box instead of a hyphen"
+   ]
+  },
+  {
+   "id": "mvuoJTNLfsWsm0NF-CrZHw==",
+   "name": "Etsy Suspension Appeal Kit",
+   "url": "https://aekraft.gumroad.com/l/fgruzn",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     170027
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 19,
+   "pdf_words": 2639,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "etsy_appeal_evidence_tracker.xlsx",
+     "PASS"
+    ],
+    [
+     "etsy_appeal_letter_template_A_IP.docx",
+     "PASS"
+    ],
+    [
+     "etsy_appeal_letter_template_B_policy.docx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "dyZ5uSfqjjN91f_1Ir0t6w==",
+   "name": "CCPA Compliance Action Kit for Small Business",
+   "url": "https://aekraft.gumroad.com/l/kaooj",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     121663
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 13,
+   "pdf_words": 2386,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": [
+    "54 black-box glyph(s) printed inside words (e.g. 't■O') -- customer sees a box instead of a hyphen"
+   ]
+  },
+  {
+   "id": "f3MRQnVlf3F2w_7n5LfBhw==",
+   "name": "Digital-Product Refund Policy Pack",
+   "url": "https://aekraft.gumroad.com/l/yhnyn",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     3123
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 1,
+   "pdf_words": 254,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "lac1TzWQPrNs1vdysJA0dA==",
+   "name": "SaaS Churn Email Pack",
+   "url": "https://aekraft.gumroad.com/l/roxdbe",
+   "published": true,
+   "price": 39.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     3061
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 1,
+   "pdf_words": 257,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "T8OiOrVH1ficDv1bN3ksfg==",
+   "name": "Freelancer Scope-Creep Contract Kit",
+   "url": "https://aekraft.gumroad.com/l/zjwpx",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     3055
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 1,
+   "pdf_words": 253,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "LInf08ypx6myskvOgd8ryQ==",
+   "name": "Battery & WEEE Mini-Guide for Sellers",
+   "url": "https://aekraft.gumroad.com/l/eiebdt",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     3061
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 1,
+   "pdf_words": 258,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "tHvtBhoJC0KJMPhQippBBA==",
+   "name": "Food-Contact Materials Starter",
+   "url": "https://aekraft.gumroad.com/l/ldrdm",
+   "published": true,
+   "price": 39.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     3112
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 1,
+   "pdf_words": 272,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "jIkPBKpLVF7Hk7_DCgMxcA==",
+   "name": "Toy Safety File Starter (EN 71 Lens)",
+   "url": "https://aekraft.gumroad.com/l/vyitxf",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     3906
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 1,
+   "pdf_words": 358,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "GVqbXZ0k0Vfn7fhm2AEQXA==",
+   "name": "EU Cosmetics Responsible Person Guide",
+   "url": "https://aekraft.gumroad.com/l/bfdgx",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     4637
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 2,
+   "pdf_words": 415,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "ZFXJttaaGoJvEE10JOXbWg==",
+   "name": "Etsy Ads ROI Playbook + Calculator",
+   "url": "https://aekraft.gumroad.com/l/hasjmp",
+   "published": true,
+   "price": 39.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     3480
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 1,
+   "pdf_words": 300,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "ylqF8rzW698iKeOuKFWQkw==",
+   "name": "Amazon FBA Reconciliation Workbook",
+   "url": "https://aekraft.gumroad.com/l/wteork",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     3726
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 1,
+   "pdf_words": 331,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "8Vlc3zY6AkxU4DCe7IRVDA==",
+   "name": "EU Late Payment Recovery Kit",
+   "url": "https://aekraft.gumroad.com/l/ciowwm",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     3863
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 1,
+   "pdf_words": 392,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "nLl2DJc7VcPu0aeD_CnHAA==",
+   "name": "ADA Demand-Letter Response & Triage Kit",
+   "url": "https://aekraft.gumroad.com/l/palmdr",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     9588
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 3,
+   "pdf_words": 1244,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": [
+    "text overlap p1: 'ADA Demand-Letter Response &' printed over 'Triage Kit'"
+   ]
+  },
+  {
+   "id": "f542PZ92SUPOjV9F5GJh-Q==",
+   "name": "Diminished Value Claim Kit",
+   "url": "https://aekraft.gumroad.com/l/dyjavs",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     9630
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 3,
+   "pdf_words": 1274,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "8JM3qFgUuQznesYdiQFNXw==",
+   "name": "EU Packaging EPR Action Kit",
+   "url": "https://aekraft.gumroad.com/l/gfsvu",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     11401
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 4,
+   "pdf_words": 1546,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "J6ir7vCGTHsS-J4E_a_Lqg==",
+   "name": "Vendor Questionnaire Response Kit",
+   "url": "https://aekraft.gumroad.com/l/pyzqa",
+   "published": true,
+   "price": 89.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     12020
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 4,
+   "pdf_words": 1566,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "iPqoAaWMnZCWf8AvYusjxw==",
+   "name": "STR Direct Booking Revenue Kit",
+   "url": "https://aekraft.gumroad.com/l/ppsluq",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     10074
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 3,
+   "pdf_words": 1394,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "KMNGNgO5gS85H_JppnygIg==",
+   "name": "Trademark DIY Filing Action Kit",
+   "url": "https://aekraft.gumroad.com/l/vkqogv",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     12383
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 4,
+   "pdf_words": 1705,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "OiBdFFTaLaZdDX52HxwezQ==",
+   "name": "FTC Consumer Review Rule Compliance Kit",
+   "url": "https://aekraft.gumroad.com/l/ekhza",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     13105
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 5,
+   "pdf_words": 1715,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": [
+    "text overlap p1: 'FTC Consumer Review Rule' printed over 'Compliance Kit'"
+   ]
+  },
+  {
+   "id": "T41QMtEfZcuDKa7tGtnvgw==",
+   "name": "Restaurant Health Inspection Readiness Kit",
+   "url": "https://aekraft.gumroad.com/l/dvfvm",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     10850
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 4,
+   "pdf_words": 1415,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": [
+    "text overlap p1: 'Restaurant Health Inspection' printed over 'Readiness Kit'"
+   ]
+  },
+  {
+   "id": "srd6CIjZc381be9FhiyHeA==",
+   "name": "Turo Guest Dispute Toolkit",
+   "url": "https://aekraft.gumroad.com/l/adyvd",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     17909
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 6,
+   "pdf_words": 2774,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "VPYaNkAdv7Yocko-lIJsZQ==",
+   "name": "GPSR EU Seller Action Kit",
+   "url": "https://aekraft.gumroad.com/l/fetmu",
+   "published": true,
+   "price": 79.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     18208
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 6,
+   "pdf_words": 2592,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "A1LlQxtJJkdWbhrWG8tyww==",
+   "name": "UK Deposit Recovery Action Pack",
+   "url": "https://aekraft.gumroad.com/l/edgiq",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     9198
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 1,
+   "pdf_words": 249,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "uk_deposit_recovery_action_pack.xlsx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "FbwR2Vq8XY2ZjbZ-JmQHrg==",
+   "name": "Section 8 Notice Validity System (England)",
+   "url": "https://aekraft.gumroad.com/l/nmasnb",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     13669
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 2,
+   "pdf_words": 514,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "section8_notice_validity_workbook.xlsx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "66fo53TSmA6Lu5cycxuHxQ==",
+   "name": "Suspended Seller First-Appeal POA System",
+   "url": "https://aekraft.gumroad.com/l/zfnagp",
+   "published": true,
+   "price": 39.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     5533
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 2,
+   "pdf_words": 618,
+   "tests": [
+    [
+     "pdf",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "8gFbi-vE0ceqFacn3i3eMA==",
+   "name": "Gulf Job-Landing ATS CV System",
+   "url": "https://aekraft.gumroad.com/l/fccqk",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     5147
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 2,
+   "pdf_words": 556,
+   "tests": [
+    [
+     "pdf",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "yrSExa-YQe4fjWuIKV4vmQ==",
+   "name": "GCC Contractor Payment Command System (V2 Bundle)",
+   "url": "https://aekraft.gumroad.com/l/jlxmez",
+   "published": true,
+   "price": 399.0,
+   "sales": 0,
+   "files": [
+    [
+     "zip",
+     17106
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 5,
+   "pdf_words": 884,
+   "tests": [
+    [
+     "zip",
+     "PASS"
+    ],
+    [
+     "gcc_payment_command_workbook_v2.xlsx",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "_wJUrEKIuR0Y6cOj9Zqyqg==",
+   "name": "GCC Contractor Payment Command System",
+   "url": "https://aekraft.gumroad.com/l/uwyfje",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     7166
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 3,
+   "pdf_words": 846,
+   "tests": [
+    [
+     "pdf",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "YW18CUcSrghFoNioG8hFGA==",
+   "name": "Freelancer Payment Protection & Scope-Control Toolkit",
+   "url": "https://aekraft.gumroad.com/l/fwrjot",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     6626
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 3,
+   "pdf_words": 792,
+   "tests": [
+    [
+     "pdf",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "tGGL1mqB2bp7uZ6k2THgwA==",
+   "name": "EU AI Act Compliance Quickstart Checklist",
+   "url": "https://aekraft.gumroad.com/l/engiwk",
+   "published": true,
+   "price": 19.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     3773
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 2,
+   "pdf_words": 312,
+   "tests": [
+    [
+     "pdf",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "AnZqjZBFNvMdpV0bto7jDw==",
+   "name": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+   "url": "https://aekraft.gumroad.com/l/tmhlb",
+   "published": true,
+   "price": 9.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     3657
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 2,
+   "pdf_words": 309,
+   "tests": [
+    [
+     "pdf",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "20tVUV_UF9NOUf6aJ-GDRA==",
+   "name": "GALAXY FORGE API TEST — DO NOT BUY — DELETE ME",
+   "url": "https://aekraft.gumroad.com/l/dxfwlu",
+   "published": false,
+   "price": 1.0,
+   "sales": 0,
+   "files": [
+    [
+     "txt",
+     102
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 0,
+   "pdf_words": 0,
+   "tests": [
+    [
+     "txt",
+     "UNKNOWN"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "_H7FbvlTPITBmT0V6lyPeg==",
+   "name": "Mindfulness Journal for Stress Relief",
+   "url": "https://aekraft.gumroad.com/l/jvuelq",
+   "published": true,
+   "price": 7.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     134567
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 18,
+   "pdf_words": 2954,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": [
+    "42 black-box glyph(s) printed inside words (e.g. 'g■T') -- customer sees a box instead of a hyphen"
+   ]
+  },
+  {
+   "id": "9Zq9SGkALI0tjd7A97Pc_A==",
+   "name": "The 5-Minute Context Reset Playbook",
+   "url": "https://aekraft.gumroad.com/l/vhofn",
+   "published": true,
+   "price": 15.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     172023
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 10,
+   "pdf_words": 501,
+   "tests": [
+    [
+     "pdf",
+     "FAIL"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "VIKayqYEWqBV23ZMvKsdIg==",
+   "name": "Automated Contract Review System for Legal Departments",
+   "url": "https://aekraft.gumroad.com/l/lrmgml",
+   "published": false,
+   "price": 327.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     118012
+    ]
+   ],
+   "covers": 0,
+   "desc_issues": [],
+   "pdf_pages": 17,
+   "pdf_words": 2924,
+   "tests": [
+    [
+     "pdf",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  },
+  {
+   "id": "pzTmMb4v8cih3nbWTj5TeA==",
+   "name": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
+   "url": "https://aekraft.gumroad.com/l/iaiyt",
+   "published": true,
+   "price": 155.0,
+   "sales": 0,
+   "files": [
+    [
+     "pdf",
+     106314
+    ],
+    [
+     "pdf",
+     139401
+    ]
+   ],
+   "covers": 3,
+   "desc_issues": [],
+   "pdf_pages": 34,
+   "pdf_words": 3266,
+   "tests": [
+    [
+     "pdf",
+     "PASS"
+    ],
+    [
+     "pdf",
+     "PASS"
+    ]
+   ],
+   "blocking": []
+  }
+ ]
+}

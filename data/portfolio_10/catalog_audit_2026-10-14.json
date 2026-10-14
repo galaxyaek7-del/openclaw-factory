@@ -1,0 +1,1013 @@
+{
+ "rules": {
+  "thin": "published, price>=$25 and (PDF words<800, or price>=$49 and words-per-dollar<30); PDF words only, so workbook-heavy bundles are judged on their guide",
+  "canonical_duplicate": "deeper deliverable kept (pages, words, file count)"
+ },
+ "products": [
+  {
+   "name": "Automated Contract Review System for Legal Departments",
+   "url": "https://aekraft.gumroad.com/l/lrmgml",
+   "published": false,
+   "price": 327.0,
+   "sales": 0,
+   "pdf_pages": 17,
+   "pdf_words": 2924,
+   "class": "BLOCKED",
+   "reasons": [
+    "already unpublished"
+   ]
+  },
+  {
+   "name": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
+   "url": "https://aekraft.gumroad.com/l/iaiyt",
+   "published": true,
+   "price": 155.0,
+   "sales": 0,
+   "pdf_pages": 34,
+   "pdf_words": 3266,
+   "class": "BLOCKED",
+   "reasons": [
+    "known fabricated legal content (4 non-existent Annex III categories, invented Part A/B); internal HOLD since commit 7a1d478 but listing still LIVE at $155",
+    "thin for price: 34 pages / 3266 PDF words at $155"
+   ]
+  },
+  {
+   "name": "GALAXY FORGE API TEST — DO NOT BUY — DELETE ME",
+   "url": "https://aekraft.gumroad.com/l/dxfwlu",
+   "published": false,
+   "price": 1.0,
+   "sales": 0,
+   "pdf_pages": 0,
+   "pdf_words": 0,
+   "class": "BLOCKED",
+   "reasons": [
+    "already unpublished"
+   ]
+  },
+  {
+   "name": "Verified B2B Lead Lists (200-lead batch)",
+   "url": "https://aekraft.gumroad.com/l/drtaj",
+   "published": false,
+   "price": 99.0,
+   "sales": 0,
+   "pdf_pages": 1,
+   "pdf_words": 81,
+   "class": "BLOCKED",
+   "reasons": [
+    "already unpublished"
+   ]
+  },
+  {
+   "name": "[Unavailable] AI Workflow QA & Stress Test - one agent, reviewed before you demo it to a client",
+   "url": "https://aekraft.gumroad.com/l/owtmpe",
+   "published": true,
+   "price": 0.0,
+   "sales": 0,
+   "pdf_pages": 0,
+   "pdf_words": 0,
+   "class": "BLOCKED",
+   "reasons": [
+    "published with no file and no description",
+    "sales page: empty_description",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "DSAR Response Kit ($59)",
+   "url": "https://aekraft.gumroad.com/l/uqmqnu",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "pdf_pages": 11,
+   "pdf_words": 5747,
+   "class": "DUPLICATE_REVIEW",
+   "reasons": [
+    "same niche as portfolio GDPR Data-Subject Request Kit (GF-SHOP-02, not yet published); keep until that one is live",
+    "sales page: raw_list_syntax",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
+   "url": "https://aekraft.gumroad.com/l/sjrjxq",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 6,
+   "pdf_words": 1153,
+   "class": "DUPLICATE_REVIEW",
+   "reasons": [
+    "component of the portfolio Etsy bundle (bundle contains this exact file)",
+    "thin for price: 6 pages / 1153 PDF words at $49",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Etsy Suspension Appeal Kit",
+   "url": "https://aekraft.gumroad.com/l/fgruzn",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 19,
+   "pdf_words": 2639,
+   "class": "DUPLICATE_REVIEW",
+   "reasons": [
+    "component of the portfolio Etsy bundle (bundle contains this guide + workbook + templates)",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Freelancer Payment Protection & Scope-Control Toolkit",
+   "url": "https://aekraft.gumroad.com/l/fwrjot",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 3,
+   "pdf_words": 792,
+   "class": "DUPLICATE_REVIEW",
+   "reasons": [
+    "overlaps portfolio Freelancer Scope Control Kit (3 pages, 792 words vs 12 pages)",
+    "thin for price: 3 pages / 792 PDF words at $49",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Freelancer Scope-Creep Contract Kit",
+   "url": "https://aekraft.gumroad.com/l/zjwpx",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 1,
+   "pdf_words": 253,
+   "class": "DUPLICATE_REVIEW",
+   "reasons": [
+    "duplicate of portfolio Freelancer Scope Control Kit (1 page vs 12-page guide + workbook + 4 templates)",
+    "thin for price: 1 pages / 253 PDF words at $29",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "GCC Contractor Payment Command System",
+   "url": "https://aekraft.gumroad.com/l/uwyfje",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 3,
+   "pdf_words": 846,
+   "class": "DUPLICATE_REVIEW",
+   "reasons": [
+    "base version of the $399 V2 bundle (3 pages vs 5)",
+    "thin for price: 3 pages / 846 PDF words at $49",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "The 5-Minute Context Reset Playbook",
+   "url": "https://aekraft.gumroad.com/l/vhofn",
+   "published": true,
+   "price": 15.0,
+   "sales": 0,
+   "pdf_pages": 10,
+   "pdf_words": 501,
+   "class": "DUPLICATE_REVIEW",
+   "reasons": [
+    "weaker of two identical-title listings (501 vs 1612 words); keep the other",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Amazon FBA Reconciliation Workbook",
+   "url": "https://aekraft.gumroad.com/l/wteork",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 1,
+   "pdf_words": 331,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 1 pages / 331 PDF words at $49",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Battery & WEEE Mini-Guide for Sellers",
+   "url": "https://aekraft.gumroad.com/l/eiebdt",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 1,
+   "pdf_words": 258,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 1 pages / 258 PDF words at $29",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Digital-Product Refund Policy Pack",
+   "url": "https://aekraft.gumroad.com/l/yhnyn",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 1,
+   "pdf_words": 254,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 1 pages / 254 PDF words at $29",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Diminished Value Claim Kit",
+   "url": "https://aekraft.gumroad.com/l/dyjavs",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "pdf_pages": 3,
+   "pdf_words": 1274,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 3 pages / 1274 PDF words at $59",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "EU Cosmetics Responsible Person Guide",
+   "url": "https://aekraft.gumroad.com/l/bfdgx",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "pdf_pages": 2,
+   "pdf_words": 415,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 2 pages / 415 PDF words at $69",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "EU Late Payment Recovery Kit",
+   "url": "https://aekraft.gumroad.com/l/ciowwm",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "pdf_pages": 1,
+   "pdf_words": 392,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 1 pages / 392 PDF words at $59",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "EU Packaging EPR Action Kit",
+   "url": "https://aekraft.gumroad.com/l/gfsvu",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "pdf_pages": 4,
+   "pdf_words": 1546,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 4 pages / 1546 PDF words at $69",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Etsy Ads ROI Playbook + Calculator",
+   "url": "https://aekraft.gumroad.com/l/hasjmp",
+   "published": true,
+   "price": 39.0,
+   "sales": 0,
+   "pdf_pages": 1,
+   "pdf_words": 300,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 1 pages / 300 PDF words at $39",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Food-Contact Materials Starter",
+   "url": "https://aekraft.gumroad.com/l/ldrdm",
+   "published": true,
+   "price": 39.0,
+   "sales": 0,
+   "pdf_pages": 1,
+   "pdf_words": 272,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 1 pages / 272 PDF words at $39",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "GCC Contractor Payment Command System (V2 Bundle)",
+   "url": "https://aekraft.gumroad.com/l/jlxmez",
+   "published": true,
+   "price": 399.0,
+   "sales": 0,
+   "pdf_pages": 5,
+   "pdf_words": 884,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 5 pages / 884 PDF words at $399",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Gulf Job-Landing ATS CV System",
+   "url": "https://aekraft.gumroad.com/l/fccqk",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 2,
+   "pdf_words": 556,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 2 pages / 556 PDF words at $29",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "STR Direct Booking Revenue Kit",
+   "url": "https://aekraft.gumroad.com/l/ppsluq",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "pdf_pages": 3,
+   "pdf_words": 1394,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 3 pages / 1394 PDF words at $59",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "SaaS Churn Email Pack",
+   "url": "https://aekraft.gumroad.com/l/roxdbe",
+   "published": true,
+   "price": 39.0,
+   "sales": 0,
+   "pdf_pages": 1,
+   "pdf_words": 257,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 1 pages / 257 PDF words at $39",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Section 8 Notice Validity System (England)",
+   "url": "https://aekraft.gumroad.com/l/nmasnb",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "pdf_pages": 2,
+   "pdf_words": 514,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 2 pages / 514 PDF words at $59",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Suspended Seller First-Appeal POA System",
+   "url": "https://aekraft.gumroad.com/l/zfnagp",
+   "published": true,
+   "price": 39.0,
+   "sales": 0,
+   "pdf_pages": 2,
+   "pdf_words": 618,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 2 pages / 618 PDF words at $39",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Toy Safety File Starter (EN 71 Lens)",
+   "url": "https://aekraft.gumroad.com/l/vyitxf",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 1,
+   "pdf_words": 358,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 1 pages / 358 PDF words at $29",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Trademark DIY Filing Action Kit",
+   "url": "https://aekraft.gumroad.com/l/vkqogv",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "pdf_pages": 4,
+   "pdf_words": 1705,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 4 pages / 1705 PDF words at $69",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "UK Deposit Recovery Action Pack",
+   "url": "https://aekraft.gumroad.com/l/edgiq",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 1,
+   "pdf_words": 249,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 1 pages / 249 PDF words at $29",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Vendor Questionnaire Response Kit",
+   "url": "https://aekraft.gumroad.com/l/pyzqa",
+   "published": true,
+   "price": 89.0,
+   "sales": 0,
+   "pdf_pages": 4,
+   "pdf_words": 1566,
+   "class": "PAUSE_CANDIDATE",
+   "reasons": [
+    "thin for price: 4 pages / 1566 PDF words at $89",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "ADA Demand-Letter Response & Triage Kit",
+   "url": "https://aekraft.gumroad.com/l/palmdr",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "pdf_pages": 3,
+   "pdf_words": 1244,
+   "class": "IMPROVE",
+   "reasons": [
+    "title printed over subtitle on page 1; no generator in repo",
+    "thin for price: 3 pages / 1244 PDF words at $69",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "B2B Late-Payment Collections Operating System",
+   "url": "https://aekraft.gumroad.com/l/wsbqr",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "pdf_pages": 12,
+   "pdf_words": 6245,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: mojibake, internal_research_tags",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "CCPA Compliance Action Kit for Small Business",
+   "url": "https://aekraft.gumroad.com/l/kaooj",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 13,
+   "pdf_words": 2386,
+   "class": "IMPROVE",
+   "reasons": [
+    "delivers PDF with black boxes inside words; exact repaired local copy ready (text-identical)",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Clinic No-Show Reduction Kit",
+   "url": "https://aekraft.gumroad.com/l/eiztlg",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "pdf_pages": 10,
+   "pdf_words": 5694,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: raw_list_syntax",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Cottage Food Compliance Kit",
+   "url": "https://aekraft.gumroad.com/l/ursxh",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 12,
+   "pdf_words": 6428,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: raw_list_syntax",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Dental Insurance Verification Kit",
+   "url": "https://aekraft.gumroad.com/l/diboaf",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "pdf_pages": 11,
+   "pdf_words": 5684,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: raw_list_syntax",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "EU AI Act Audit Logging Kit",
+   "url": "https://aekraft.gumroad.com/l/fwxmms",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 14,
+   "pdf_words": 2267,
+   "class": "IMPROVE",
+   "reasons": [
+    "delivers PDF with black boxes inside words; exact repaired local copy ready (text-identical)",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Employee Offboarding & Access-Revocation System",
+   "url": "https://aekraft.gumroad.com/l/tjbly",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 13,
+   "pdf_words": 6207,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: mojibake, internal_research_tags",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "FTC Consumer Review Rule Compliance Kit",
+   "url": "https://aekraft.gumroad.com/l/ekhza",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "pdf_pages": 5,
+   "pdf_words": 1715,
+   "class": "IMPROVE",
+   "reasons": [
+    "title printed over subtitle on page 1; no generator in repo",
+    "thin for price: 5 pages / 1715 PDF words at $69",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Fleet Maintenance and Damage Documentation Bundle",
+   "url": "https://aekraft.gumroad.com/l/oerot",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 15,
+   "pdf_words": 8363,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: raw_list_syntax",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Food Truck Permit Navigator",
+   "url": "https://aekraft.gumroad.com/l/cdfdcy",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "pdf_pages": 12,
+   "pdf_words": 6055,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: raw_list_syntax",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Handbook Acknowledgment Tracker",
+   "url": "https://aekraft.gumroad.com/l/fydjid",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 13,
+   "pdf_words": 6643,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: raw_list_syntax",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Home-Service Quoting & Deposit Protection System",
+   "url": "https://aekraft.gumroad.com/l/behmhy",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 13,
+   "pdf_words": 6162,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: mojibake, internal_research_tags",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Homebuyer Inspection Action Kit",
+   "url": "https://aekraft.gumroad.com/l/volqjv",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 12,
+   "pdf_words": 5643,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: raw_list_syntax",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Landlord Move-In Inspection Pack",
+   "url": "https://aekraft.gumroad.com/l/gzbdaz",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 11,
+   "pdf_words": 5709,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: raw_list_syntax",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Legal Case Research Automation for Solo Attorneys",
+   "url": "https://aekraft.gumroad.com/l/uldlwa",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 16,
+   "pdf_words": 2663,
+   "class": "IMPROVE",
+   "reasons": [
+    "delivers PDF with black boxes inside words; exact repaired local copy ready (text-identical)",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Mechanics Lien Filing Kit for Contractors",
+   "url": "https://aekraft.gumroad.com/l/jibnyt",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 17,
+   "pdf_words": 2759,
+   "class": "IMPROVE",
+   "reasons": [
+    "delivers PDF with black boxes inside words; exact repaired local copy ready (text-identical)",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Mindfulness Journal for Stress Relief",
+   "url": "https://aekraft.gumroad.com/l/jvuelq",
+   "published": true,
+   "price": 7.0,
+   "sales": 0,
+   "pdf_pages": 18,
+   "pdf_words": 2954,
+   "class": "IMPROVE",
+   "reasons": [
+    "delivers PDF with black boxes inside words; exact repaired local copy ready (text-identical)",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Newsletter Deliverability & Inbox Placement System",
+   "url": "https://aekraft.gumroad.com/l/iwbcmi",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 14,
+   "pdf_words": 6174,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: mojibake, internal_research_tags",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Restaurant Health Inspection Readiness Kit",
+   "url": "https://aekraft.gumroad.com/l/dvfvm",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 4,
+   "pdf_words": 1415,
+   "class": "IMPROVE",
+   "reasons": [
+    "title printed over subtitle on page 1; no generator in repo",
+    "thin for price: 4 pages / 1415 PDF words at $49",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "SOC 2 Compliance Automation Guide for Startups",
+   "url": "https://aekraft.gumroad.com/l/sjmbrp",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 18,
+   "pdf_words": 2724,
+   "class": "IMPROVE",
+   "reasons": [
+    "delivers PDF with black boxes inside words; exact repaired local copy ready (text-identical)",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "SaaS Spend & Renewal Audit System for Small Teams",
+   "url": "https://aekraft.gumroad.com/l/pahxdv",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 12,
+   "pdf_words": 6293,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: mojibake, internal_research_tags",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Sales Tax Nexus Tracker",
+   "url": "https://aekraft.gumroad.com/l/uucxer",
+   "published": true,
+   "price": 79.0,
+   "sales": 0,
+   "pdf_pages": 12,
+   "pdf_words": 6300,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: raw_list_syntax",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Salon Commission Pay Kit",
+   "url": "https://aekraft.gumroad.com/l/xwacbo",
+   "published": true,
+   "price": 39.0,
+   "sales": 0,
+   "pdf_pages": 13,
+   "pdf_words": 6601,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: raw_list_syntax",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Security Deposit Demand Kit for Tenants",
+   "url": "https://aekraft.gumroad.com/l/yiqba",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 11,
+   "pdf_words": 2443,
+   "class": "IMPROVE",
+   "reasons": [
+    "delivers PDF with black boxes inside words; exact repaired local copy ready (text-identical)",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Severance Agreement Review Checklist",
+   "url": "https://aekraft.gumroad.com/l/vunrqm",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 15,
+   "pdf_words": 2581,
+   "class": "IMPROVE",
+   "reasons": [
+    "delivers PDF with black boxes inside words; exact repaired local copy ready (text-identical)",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
+   "url": "https://aekraft.gumroad.com/l/xwbbb",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 14,
+   "pdf_words": 6205,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: mojibake, internal_research_tags",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Stripe Chargeback Defense Kit for Digital Sellers",
+   "url": "https://aekraft.gumroad.com/l/ceiwk",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 15,
+   "pdf_words": 2504,
+   "class": "IMPROVE",
+   "reasons": [
+    "delivers PDF with black boxes inside words; exact repaired local copy ready (text-identical)",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Subscription Renewal Compliance Kit",
+   "url": "https://aekraft.gumroad.com/l/xouyjy",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "pdf_pages": 13,
+   "pdf_words": 7145,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: raw_list_syntax",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Tech Job Offer Evaluation & Negotiation System",
+   "url": "https://aekraft.gumroad.com/l/qpuagh",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 12,
+   "pdf_words": 6156,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: mojibake, internal_research_tags",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
+   "url": "https://aekraft.gumroad.com/l/ykwdfc",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 12,
+   "pdf_words": 6268,
+   "class": "IMPROVE",
+   "reasons": [
+    "sales page: mojibake, internal_research_tags",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "AI Agent Blueprint for Small SaaS CloudOps Automation",
+   "url": "https://aekraft.gumroad.com/l/esnpki",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 9,
+   "pdf_words": 1282,
+   "class": "IMPROVE",
+   "reasons": [
+    "delivers PDF with black boxes inside words; exact repaired local copy ready (text-identical)",
+    "no cover image"
+   ]
+  },
+  {
+   "name": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+   "url": "https://aekraft.gumroad.com/l/mrecoe",
+   "published": true,
+   "price": 59.0,
+   "sales": 0,
+   "pdf_pages": 14,
+   "pdf_words": 6047,
+   "class": "KEEP",
+   "reasons": [
+    "no cover image"
+   ]
+  },
+  {
+   "name": "EU AI Act Compliance Quickstart Checklist",
+   "url": "https://aekraft.gumroad.com/l/engiwk",
+   "published": true,
+   "price": 19.0,
+   "sales": 0,
+   "pdf_pages": 2,
+   "pdf_words": 312,
+   "class": "KEEP",
+   "reasons": [
+    "no cover image"
+   ]
+  },
+  {
+   "name": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+   "url": "https://aekraft.gumroad.com/l/tmhlb",
+   "published": true,
+   "price": 9.0,
+   "sales": 0,
+   "pdf_pages": 2,
+   "pdf_words": 309,
+   "class": "KEEP",
+   "reasons": [
+    "no cover image"
+   ]
+  },
+  {
+   "name": "EU Green Claims Review Kit",
+   "url": "https://aekraft.gumroad.com/l/uyzuu",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "pdf_pages": 11,
+   "pdf_words": 5887,
+   "class": "KEEP",
+   "reasons": [
+    "no cover image"
+   ]
+  },
+  {
+   "name": "EUDR Due Diligence Starter",
+   "url": "https://aekraft.gumroad.com/l/brwrta",
+   "published": true,
+   "price": 69.0,
+   "sales": 0,
+   "pdf_pages": 11,
+   "pdf_words": 6735,
+   "class": "KEEP",
+   "reasons": [
+    "no cover image"
+   ]
+  },
+  {
+   "name": "GPSR EU Seller Action Kit",
+   "url": "https://aekraft.gumroad.com/l/fetmu",
+   "published": true,
+   "price": 79.0,
+   "sales": 0,
+   "pdf_pages": 6,
+   "pdf_words": 2592,
+   "class": "KEEP",
+   "reasons": [
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+   "url": "https://aekraft.gumroad.com/l/odqlk",
+   "published": true,
+   "price": 49.0,
+   "sales": 0,
+   "pdf_pages": 14,
+   "pdf_words": 6317,
+   "class": "KEEP",
+   "reasons": [
+    "no cover image"
+   ]
+  },
+  {
+   "name": "The 5-Minute Context Reset Playbook",
+   "url": "https://aekraft.gumroad.com/l/akxaae",
+   "published": true,
+   "price": 15.0,
+   "sales": 0,
+   "pdf_pages": 9,
+   "pdf_words": 1612,
+   "class": "KEEP",
+   "reasons": [
+    "no cover image"
+   ]
+  },
+  {
+   "name": "Turo Guest Dispute Toolkit",
+   "url": "https://aekraft.gumroad.com/l/adyvd",
+   "published": true,
+   "price": 29.0,
+   "sales": 0,
+   "pdf_pages": 6,
+   "pdf_words": 2774,
+   "class": "KEEP",
+   "reasons": [
+    "no cover image"
+   ]
+  }
+ ]
+}
