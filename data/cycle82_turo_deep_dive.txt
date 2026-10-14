@@ -1,0 +1,16 @@
+﻿==============================================================================
+Turo Guest Dispute Toolkit
+  price $29   published=True   sales=0   https://aekraft.gumroad.com/l/adyvd
+  FILE None  17909B  pdf
+    MEASURED: 6 pages, 2774 words
+    DEPTH MARKERS (measured presence, not a judgement):
+      no   step-by-step sequence              (0 match(es))
+      YES  time/amount thresholds             (14 match(es))
+      YES  escalation path                    (52 match(es))
+      YES  documentation requirement          (75 match(es))
+      YES  template/script/letter language    (4 match(es))
+      YES  what NOT to do                     (12 match(es))
+      YES  checklist format                   (1 match(es))
+      YES  reference to official source       (47 match(es))
+    ---- first 700 words ----
+    Turo Guest Dispute Toolkit Fight unfair damage and invoice claims ÔÇö invoice disputes, damage-claim defense, escalation, and collections response for US guests Practical implementation guide. Not legal advice. Policy details reflect Turo's published help pages as checked in September 2026 ÔÇö Turo changes its Terms and help pages, so verify the current wording on help.turo.com before you act on any deadline below. Who this is for: guests who rented on Turo in the US and received a host invoice (fuel, mileage, tolls, cleaning, damage) or a damage-claim notice they believe is wrong. If you are a host, this toolkit is written from the guest side ÔÇö the host process differs (see Chapter 10). 1. How a Turo claim actually works When a host believes your trip caused damage or extra charges, the process follows a fixed sequence published on help.turo.com. Knowing the sequence is half the battle, because every step has a deadline and the deadlines favor whoever is prepared. The standard path  Host reports within 24 hours of trip end. The host must report damage no more than 24 hours after the trip ends (help.turo.com, 'Reporting damage | Hosts'). Late reports may lose eligibility ÔÇö this cuts both ways (Chapter 3).  You are notified and asked to respond. If the host reports damage, they choose a resolution path: resolve directly with you, or file a claim for Turo to manage.  Direct resolu

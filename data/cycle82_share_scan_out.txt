@@ -1,0 +1,15 @@
+﻿{
+  "checked": 79,
+  "reachable": 60,
+  "verdicts": {
+    "GENERIC_PLACEHOLDER_OG_IMAGE": 59,
+    "REAL_PRODUCT_OG_IMAGE": 1,
+    "NO_OG_IMAGE_AT_ALL": 0,
+    "FETCH_FAILED": 19
+  }
+}
+
+Listings that DO have a real share image:
+  iaiyt  EU AI Act Compliance Toolkit ÔÇö Practical Templates & Im
+
+A share of any of the other 59 listings renders as Gumroad's generic placeholder card.
