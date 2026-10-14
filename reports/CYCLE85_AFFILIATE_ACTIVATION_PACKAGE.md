@@ -12,14 +12,18 @@
 
 > ### ⚠️ Select by ID. There are FOUR "EU AI Act" listings on this account.
 >
-> | Product | Price | Can it carry 30%? |
-> |---|---|---|
-> | **EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs** | **$155** | **Yes — this is the target** |
-> | EU AI Act Audit Logging Kit | $29 | No — leaves $15.76 |
-> | EU AI Act Compliance Quickstart Checklist | $19 | No — worse still |
-> | EU AI Act Transparency & AI Literacy Quickstart Checklist | $9 | No — a 30% fee exceeds the price |
+> | Product | Price | Affiliate earns at 30% | Seller keeps at 30% |
+> |---|---|---|---|
+> | **EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs** | **$155** | **$46.50** | **$87.70** |
+> | EU AI Act Audit Logging Kit | $29 | $8.70 | $15.76 |
+> | EU AI Act Compliance Quickstart Checklist | $19 | $5.70 | $10.05 |
+> | EU AI Act Transparency & AI Literacy Quickstart Checklist | $9 | $2.70 | $4.34 |
 
-> Choosing **"All products"** in the affiliate UI would attach a 30% commission to all four. Three of them cannot absorb it. Match on the ID above, not on the name.
+> **CORRECTION.** An earlier draft of this report claimed a 30% commission "exceeds the price" on the $9 listing. That was wrong — 30% of $9 is $2.70 and the seller still keeps $4.34. All four listings can carry 30%.
+>
+> The accurate reason to isolate the $155 one is commercial, not arithmetic: at $9 and $19 the affiliate earns $2.70 and $5.70, which is not worth an hour of anyone's promotion, so those listings would earn no volume while still exposing margin to low-value sales. At $155 the affiliate earns $46.50 — enough to motivate real promotion — and the seller still clears the factory's $70 elite floor at $87.70.
+>
+> Choosing **"All products"** would attach 30% to all four. Match on the ID, not the name.
 
 Chosen on the three criteria, not on price alone:
 
@@ -111,6 +115,8 @@ So the existing `ref=` parameters produce **zero commission**. They are analytic
 
 **Nothing below has been performed. I have no affiliate API and no write authority.**
 
+> **Rotation is NOT a prerequisite for any of this.** An earlier draft implied it was. That was wrong, and the reason is mechanical: `UNVERIFIED_COMPROMISED` blocks **API writes** (publish, product update, distribution) only. Every operation this task needs — add affiliate, set rate, read the link — is **UI-only because no affiliate API exists**. The gate does not touch it. Token rotation remains sensible hygiene, but it is not on the critical path. See §11.
+
 1. Open **https://gumroad.com/settings/affiliates** (Affiliates Dashboard, in the sidebar under **Analytics**).
 2. **Add affiliate** → enter the affiliate's **Gumroad account email**.
 3. Select **only** the product named *"EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs"* (ID `pzTmMb4v8cih3nbWTj5TeA==`, $155). Do **not** select "All products" — three other "EU AI Act" listings exist at $29, $19 and $9, and none can absorb a 30% commission.
@@ -190,3 +196,59 @@ python scripts/cycle85_verify_affiliate.py
 ```
 
 It exits non-zero until every verifiable check passes.
+
+---
+
+## 11. WHAT THE VERIFICATION ACTUALLY SHOWS (corrected)
+
+The first version of this package reported a binary FAIL on "token rotated" and "write gate". **Both were wrong.**
+
+**Stale-evidence bug.** It read `data/gumroad_auth_state.json`, last written 2026-10-13. Rotation could have happened and it would still have said FAIL, because nothing refreshes that file unless `poll()` is called. It now calls `poll()` live.
+
+**Wrong gate.** It presented rotation as blocking this task. It does not. `UNVERIFIED_COMPROMISED` blocks API writes only, and this task uses none.
+
+**The exposure evidence is unverifiable.** `scripts/audit_credential_exposure.py` searched the full git history and found **no artefact anywhere in this repository showing the credential was ever written down**. The block rests on a claim about a past session's console output that cannot be checked from here. That does not prove the token is safe — a secret shown in a terminal is exposed without ever touching the repo — but it does mean rotation is **prudent hygiene, not a proven incident**, and the report must not say it is.
+
+### Corrected result
+
+| # | Check | Status | Evidence |
+|---|---|---|---|
+| 1 | Credential live | **PASS** | real API read returned |
+| 2 | Target product identity + price | **PASS** | `pzTmMb4v8cih3nbWTj5TeA==`, published, $155, `/l/iaiyt`, 0 sales |
+| 3 | Commission paid so far | **PASS** (zero) | 0 sales / $0.00 across all 79 products |
+| 4 | Live credential state | **ADVISORY** | `UNVERIFIED_COMPROMISED` — hygiene, not a gate |
+| 5 | Commission observability | **UNKNOWN** | no affiliate field exists in any of 35 product fields |
+| 6–11 | Affiliate row, rate, eligibility, sibling exclusion, link, first credit | **BLOCKED** | all UI-only; no API exists |
+
+**No check FAILED. The channel is unconfigured, not broken.** Commission is not claimed because no affiliate exists and no sale has ever completed. `VERIFIED_REVENUE` remains `$0.00`.
+
+---
+
+## 12. THE FREE COMMERCIAL STEP — MARKETER ATTRACTION PATH (prepared, not launched)
+
+### What live search actually found
+
+Every target below surfaced from a real search on 2026-10-14. No personas were invented. Full evidence in `data/cycle85_affiliate_targets.json`.
+
+| Target | URL | What they do | Fit |
+|---|---|---|---|
+| aiacto | aiacto.eu | Free SME compliance checklists | **HIGH** — free content, named audience needs a concrete pack |
+| Regulation AI | regulation-ai.eu | Free newsletter + paid Academy | MEDIUM — monetises same audience |
+| Khairos AI | khairos.ai | 60+ free guides + consulting | MEDIUM — sells service, not document |
+| electe.net | electe.net | Free SME guide | MEDIUM |
+| AiComply | aicomplyapp.eu | Free checker → €199 report | **LOW** — direct competitor |
+| EU AI Compliance Institute | euaicomplianceinstitute.eu | Free resources + subscription | **LOW** — direct competitor |
+
+### The finding that changes the pitch
+
+**Almost the entire niche publishes this material free.** Leading with "$155 and a deadline" fails on first contact, because every one of these targets already publishes deadline content for free.
+
+The only segment with an un-met need is **consultants who need a client-facing deliverable**. Regulation AI names that segment explicitly in its own audience description. For them $155 is a cost of doing business, not an information purchase — and $46.50 is worth the send.
+
+**Independent bonus:** the search also **corroborated the product's corrected deadline** against three unrelated sources (euai-act.com, aicomplyapp.eu, regulation-ai.eu), all agreeing high-risk obligations moved to 2 Dec 2027 under Regulation (EU) 2026/1744. The claim this factory corrected before ever selling is now confirmed beyond its own research.
+
+### What was built (free, launchable)
+
+`customer_site/affiliate-program.html` — the recruitment page, in the house design system, stating the offer, the free-competition warning, and the zero-sales position openly.
+
+**Nothing was sent.** No invitation, no email, no DM, no post. The page exists and is not published to an audience until you say so.

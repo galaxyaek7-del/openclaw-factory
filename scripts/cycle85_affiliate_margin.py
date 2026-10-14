@@ -74,10 +74,12 @@ def with_affiliate(price: float, pct: float) -> dict:
 
 
 CANDIDATES = [
+    ("EU AI Act Transparency & AI Literacy Quickstart", 9.0, None),
+    ("EU AI Act Compliance Quickstart Checklist", 19.0, None),
     ("Turo Guest Dispute Toolkit", 29.0, "adyvd"),
-    ("EU AI Act Compliance Toolkit", 155.0, "iaiyt"),
+    ("EU AI Act Audit Logging Kit", 29.0, None),
     ("Clinic No-Show Reduction Kit", 59.0, "eiztlg"),
-    ("CCPA Compliance Action Kit", 29.0, "kaooj"),
+    ("EU AI Act Compliance Toolkit (TARGET)", 155.0, "iaiyt"),
 ]
 
 RATES = (0.20, 0.25, 0.30)
@@ -115,13 +117,31 @@ def main() -> int:
         for r in RATES:
             row.update(with_affiliate(price, r))
         out["candidates"].append(row)
-        print(f"\n{name}  (${price:.0f}, /l/{sid})")
+        tag = f"  /l/{sid}" if sid else ""
+        print(f"\n{name}{tag}  ${price:.0f}")
         print(f"  seller net before affiliate : ${row['seller_net_before_affiliate']:>7.2f}"
               f"   (effective fee {row['effective_fee_pct']}%)")
         for r in RATES:
             k = int(r * 100)
             print(f"  affiliate {k:>2}%  -> commission ${row[f'affiliate_{k}pct_commission']:>6.2f}"
                   f"   seller keeps ${row[f'seller_net_after_affiliate_{k}pct']:>7.2f}")
+
+    print()
+    print("=" * 74)
+    print("CORRECTION TO THE CYCLE 85 REPORT")
+    print("=" * 74)
+    print("An earlier draft of the report claimed a 30% commission \"exceeds the")
+    print("price\" on the $9 Transparency Checklist. That was wrong. 30% of $9 is")
+    print("$2.70, and the seller still keeps a positive amount.")
+    print()
+    print("The accurate reason not to attach commission to the three cheap EU AI")
+    print("Act listings is not that it is impossible -- it is that the affiliate")
+    print("earns $2.70 on a $9 sale and $5.70 on a $19 sale. That is not worth an")
+    print("hour of anyone's promotion, so those listings would earn no volume")
+    print("while still exposing the margin to a sale that costs more to support")
+    print("than it returns. The $155 listing is the only one where the commission")
+    print("is large enough to motivate real promotion AND the seller still clears")
+    print("the factory's $70 elite floor ($87.70).")
 
     print()
     print("=" * 74)

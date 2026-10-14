@@ -18,6 +18,34 @@
   },
   "candidates": [
     {
+      "name": "EU AI Act Transparency & AI Literacy Quickstart",
+      "short_id": null,
+      "price": 9.0,
+      "gumroad_plus_card_fees": 1.96,
+      "seller_net_before_affiliate": 7.04,
+      "effective_fee_pct": 21.78,
+      "affiliate_20pct_commission": 1.8,
+      "seller_net_after_affiliate_20pct": 5.24,
+      "affiliate_25pct_commission": 2.25,
+      "seller_net_after_affiliate_25pct": 4.79,
+      "affiliate_30pct_commission": 2.7,
+      "seller_net_after_affiliate_30pct": 4.34
+    },
+    {
+      "name": "EU AI Act Compliance Quickstart Checklist",
+      "short_id": null,
+      "price": 19.0,
+      "gumroad_plus_card_fees": 3.25,
+      "seller_net_before_affiliate": 15.75,
+      "effective_fee_pct": 17.11,
+      "affiliate_20pct_commission": 3.8,
+      "seller_net_after_affiliate_20pct": 11.95,
+      "affiliate_25pct_commission": 4.75,
+      "seller_net_after_affiliate_25pct": 11.0,
+      "affiliate_30pct_commission": 5.7,
+      "seller_net_after_affiliate_30pct": 10.05
+    },
+    {
       "name": "Turo Guest Dispute Toolkit",
       "short_id": "adyvd",
       "price": 29.0,
@@ -32,18 +60,18 @@
       "seller_net_after_affiliate_30pct": 15.76
     },
     {
-      "name": "EU AI Act Compliance Toolkit",
-      "short_id": "iaiyt",
-      "price": 155.0,
-      "gumroad_plus_card_fees": 20.8,
-      "seller_net_before_affiliate": 134.2,
-      "effective_fee_pct": 13.42,
-      "affiliate_20pct_commission": 31.0,
-      "seller_net_after_affiliate_20pct": 103.2,
-      "affiliate_25pct_commission": 38.75,
-      "seller_net_after_affiliate_25pct": 95.45,
-      "affiliate_30pct_commission": 46.5,
-      "seller_net_after_affiliate_30pct": 87.7
+      "name": "EU AI Act Audit Logging Kit",
+      "short_id": null,
+      "price": 29.0,
+      "gumroad_plus_card_fees": 4.54,
+      "seller_net_before_affiliate": 24.46,
+      "effective_fee_pct": 15.66,
+      "affiliate_20pct_commission": 5.8,
+      "seller_net_after_affiliate_20pct": 18.66,
+      "affiliate_25pct_commission": 7.25,
+      "seller_net_after_affiliate_25pct": 17.21,
+      "affiliate_30pct_commission": 8.7,
+      "seller_net_after_affiliate_30pct": 15.76
     },
     {
       "name": "Clinic No-Show Reduction Kit",
@@ -60,18 +88,18 @@
       "seller_net_after_affiliate_30pct": 32.89
     },
     {
-      "name": "CCPA Compliance Action Kit",
-      "short_id": "kaooj",
-      "price": 29.0,
-      "gumroad_plus_card_fees": 4.54,
-      "seller_net_before_affiliate": 24.46,
-      "effective_fee_pct": 15.66,
-      "affiliate_20pct_commission": 5.8,
-      "seller_net_after_affiliate_20pct": 18.66,
-      "affiliate_25pct_commission": 7.25,
-      "seller_net_after_affiliate_25pct": 17.21,
-      "affiliate_30pct_commission": 8.7,
-      "seller_net_after_affiliate_30pct": 15.76
+      "name": "EU AI Act Compliance Toolkit (TARGET)",
+      "short_id": "iaiyt",
+      "price": 155.0,
+      "gumroad_plus_card_fees": 20.8,
+      "seller_net_before_affiliate": 134.2,
+      "effective_fee_pct": 13.42,
+      "affiliate_20pct_commission": 31.0,
+      "seller_net_after_affiliate_20pct": 103.2,
+      "affiliate_25pct_commission": 38.75,
+      "seller_net_after_affiliate_25pct": 95.45,
+      "affiliate_30pct_commission": 46.5,
+      "seller_net_after_affiliate_30pct": 87.7
     }
   ]
 }

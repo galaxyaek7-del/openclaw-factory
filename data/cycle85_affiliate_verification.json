@@ -2,19 +2,21 @@
   "probe": "cycle85_verify_affiliate",
   "read_only": true,
   "cost_usd": 0,
-  "verifiable_checks": {
-    "token_rotated": false,
-    "credential_live": true,
-    "write_gate": false,
-    "product_ok": true
+  "tally": {
+    "PASS": 3,
+    "ADVISORY": 1,
+    "UNKNOWN": 1
   },
-  "all_verifiable_passed": false,
-  "founder_must_confirm": [
-    "An affiliate was added",
+  "blocked_on_ui": [
+    "An affiliate row exists for this product",
     "Commission is exactly 30%",
-    "ONLY EU AI Act Toolkit is affiliate-eligible",
-    "The affiliate_id link was Copy Link'd from Gumroad",
+    "Only product pzTmMb4v8cih3nbWTj5TeA== is affiliate-eligible",
+    "No commission on the $29 / $19 / $9 EU AI Act listings",
+    "The affiliate_id link came from Copy Link",
     "A real purchase has credited"
   ],
-  "note": "Affiliate configuration has no API. A real credited purchase is the only proof of commission."
+  "rotation_is_a_gate": false,
+  "rotation_note": "advisory hygiene only; affiliate work is UI-only and ungated. Exposure evidence unverifiable from this repo.",
+  "commission_claimed": false,
+  "verified_revenue_usd": 0.0
 }

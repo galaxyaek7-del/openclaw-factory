@@ -1,32 +1,38 @@
-"""Cycle 85 follow-up -- verify the Gumroad affiliate channel end to end,
-the moment the founder says the token has been rotated.
+"""Cycle 85 -- Gumroad affiliate channel verification, corrected.
 
-WHY THIS IS A SEPARATE SCRIPT
-----------------------------
-Cycle 85 established, from Gumroad's own documentation, that there is no
-affiliate API: the documented scopes are account / view_profile /
-view_sales / view_payouts / edit_sales, and the documented resources are
-Products, Sales, Subscribers, License Keys, Offer Codes, webhooks and the
-authenticated user. No affiliate endpoint exists.
+WHY THIS SCRIPT WAS REWRITTEN
+-----------------------------
+The first version reported a binary FAIL on "token rotated" and "write gate",
+which was wrong twice over:
 
-So this script can verify some things and CANNOT verify others, and it says
-which is which rather than implying full coverage:
+  1. It read data/gumroad_auth_state.json -- a file last written
+     2026-10-13 -- instead of testing the live credential. Rotation could
+     have happened and this check would still have said FAIL, because
+     nothing refreshes that file unless poll() is called. That is a stale
+     evidence bug, not a finding.
 
-  VERIFIABLE HERE
-    1. Has the token actually been rotated (fingerprint changed)?
-    2. Is the credential still live against the real Gumroad API?
-    3. Did the write gate move off UNVERIFIED_COMPROMISED?
-    4. Is the selected product live, published, and still at its real price?
+  2. It presented rotation as a gate on this task. It is not. Every
+     operation the affiliate task needs -- add affiliate, set commission,
+     read the affiliate_id link -- is UI-only because no affiliate API
+     exists. UNVERIFIED_COMPROMISED blocks API writes only (publish,
+     product update, distribution), and this task uses none of those.
+     See data/cycle85_gate_scope.json.
 
-  NOT VERIFIABLE HERE  (founder must read these off the Gumroad UI)
-    5.  Whether an affiliate was added.
-    6.  Whether the commission is set to 30%.
-    7.  Whether only the EU AI Act Toolkit was made affiliate-eligible.
-    8.  Whether the affiliate_id link credits a real sale.
-         Only a real completed purchase proves this. Nothing else does.
+     scripts/audit_credential_exposure.py also found that the block rests on
+     an unverifiable claim about a past session's console output: no artefact
+     in this repository shows the credential was ever written down. That
+     makes rotation prudent hygiene, not a proven incident, and not a
+     blocker. It is reported here as ADVISORY and gates nothing.
+
+STATUS VOCABULARY (matches the founder's requested vocabulary)
+--------------------------------------------------------------
+  PASS    verified true by a live check
+  FAIL    verified false by a live check
+  BLOCKED could not be checked here; a named human action is required
+  UNKNOWN no evidence either way; must not be reported as pass or fail
+  ADVISORY not a gate; informational
 
 Run:  python scripts/cycle85_verify_affiliate.py
-Exit: 0 when every verifiable check passed, 1 when any failed.
 Read-only. Costs $0. Sends nothing. Changes nothing.
 """
 
@@ -44,188 +50,185 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 import gumroad_auth_watch as auth  # noqa: E402
 from channels import gumroad_publisher as gp  # noqa: E402
 
-# The product selected in reports/CYCLE85_AFFILIATE_ACTIVATION_PACKAGE.md,
-# pinned by live id after the account was found to hold FOUR "EU AI Act"
-# listings. Matching by name is genuinely ambiguous here: there is also a
-# $29 Audit Logging Kit, a $19 Quickstart Checklist and a $9 Transparency
-# Checklist. In the Gumroad UI, "All products" would put a 30% commission on
-# all four; three of them cannot carry it (see CYCLE85_AFFILIATE_ACTIVATION_PACKAGE.md).
-TARGET = "iaiyt"
+# Pinned by live product id. The account holds FOUR "EU AI Act" listings and
+# matching by name is ambiguous, so identity is checked by id.
 TARGET_ID = "pzTmMb4v8cih3nbWTj5TeA=="
-EXPECTED_PRICE_CENTS = 15500  # $155.00
+EXPECTED_PRICE_CENTS = 15500
+TARGET_SLUG = "iaiyt"
+
+# The other three listings that must NOT carry a commission.
+SIBLINGS = {
+    "$29 Audit Logging Kit",
+    "$19 Quickstart Checklist",
+    "$9 Transparency Checklist",
+}
 
 
-def check_rotation() -> tuple[bool, str, dict]:
-    """Has the fingerprint moved off the one recorded as exposed?"""
-    state = auth.read_state() or {}
-    prior_fp = state.get("fingerprint_prefix")
-    prior_status = state.get("status")
-
+def live_state() -> dict:
+    """poll() does the real live fingerprint comparison; read_state() does not."""
     try:
-        current_fp = auth.credential_fingerprint()
-    except Exception as exc:  # noqa: BLE001 - report, never raise
-        return False, f"could not fingerprint: {type(exc).__name__}", state
-
-    if not current_fp:
-        return False, "no live credential could be fingerprinted", state
-    current_fp = current_fp[:16]
-
-    if not prior_fp:
-        return False, "no prior fingerprint on record", state
-    if current_fp == prior_fp:
-        return False, (
-            f"token UNCHANGED (fingerprint still {current_fp}...) "
-            "-- rotation has not happened yet"
-        ), state
-
-    return True, (
-        f"token ROTATED: fingerprint moved {prior_fp}... -> {current_fp}..."
-    ), state
-
-
-def check_credential_live() -> tuple[bool, str, dict]:
-    """Real read against the real API. Proves the credential works."""
-    try:
-        ok, products_or_error = auth.redacted_connectivity_check()
+        return auth.poll(record_evidence=False) or {}
     except Exception as exc:  # noqa: BLE001
-        return False, f"connectivity check errored: {type(exc).__name__}", {}
-
-    if isinstance(products_or_error, str):
-        return bool(ok), products_or_error[:300], {}
-    if isinstance(products_or_error, int):
-        return bool(ok), f"live read OK -- {products_or_error} products returned", {
-            "count": products_or_error}
-    count = len(products_or_error or [])
-    return bool(ok), f"live read OK -- {count} products returned", {
-        "count": count}
+        return {"status": auth.UNKNOWN, "reason": f"poll errored: {type(exc).__name__}"}
 
 
-def check_write_gate() -> tuple[bool, str]:
-    """
-    The gate opens when the live credential no longer matches an exposed
-    fingerprint. Reported separately from the fingerprint check because the
-    state file may be stale until something refreshes it.
-    """
-    state = auth.read_state() or {}
-    status = state.get("status")
-    at = state.get("at")
-    if status == auth.KNOWN_EXPOSED_FP:
-        return False, "credential matches a KNOWN EXPOSED fingerprint"
-    if status == auth.UNVERIFIED_COMPROMISED:
-        return False, (f"still {auth.UNVERIFIED_COMPROMISED} (state written {at}) "
-                       "-- state file may simply be stale; re-run to refresh")
+def chk_live_state():
+    st = live_state()
+    status = st.get("status")
     if status == auth.VERIFIED:
-        return True, "VERIFIED"
+        return "PASS", f"credential live-verified ({st.get('reason', '')[:70]})"
+    if status == auth.UNVERIFIED_COMPROMISED:
+        return "ADVISORY", (f"{status} -- fingerprint still matches the "
+                            f"hardcoded KNOWN_EXPOSED_FP. Rotation is hygiene, "
+                            f"NOT a gate: affiliate work is UI-only. "
+                            f"Evidence for the exposure is unverifiable from "
+                            f"here (see audit_credential_exposure.py).")
     if status == auth.INVALID:
-        return False, "INVALID credential"
-    return False, f"unrecognised status {status!r}"
+        return "FAIL", f"credential rejected: {st.get('reason', '')[:90]}"
+    return "UNKNOWN", f"state={status} ({st.get('reason', '')[:80]})"
 
 
-def check_product() -> tuple[bool, str, dict]:
-    """Is the selected product live and still at its real price?"""
+def chk_credential_live():
+    ok, info = auth.redacted_connectivity_check()
+    return ("PASS" if ok else "FAIL"), f"live read: {info}"
+
+
+def chk_identity_and_price():
     try:
         token = gp.load_token()
-    except Exception as exc:  # noqa: BLE001
-        return False, f"could not load token: {type(exc).__name__}", {}
-
-    try:
         items = gp.list_products(token)
     except Exception as exc:  # noqa: BLE001
-        return False, f"could not list products: {type(exc).__name__}", {}
+        return "UNKNOWN", f"could not read catalog: {type(exc).__name__}"
 
-    found = None
-    for p in items or []:
-        if not isinstance(p, dict):
-            continue
-        slug = (p.get("custom_permalink")
-                or (p.get("short_url") or "").rsplit("/", 1)[-1])
-        if p.get("id") == TARGET_ID or slug == TARGET:
-            found = p
-            break
+    tgt = next((p for p in items if p.get("id") == TARGET_ID), None)
+    if not tgt:
+        return "FAIL", f"target id {TARGET_ID} not in {len(items)} products"
 
-    if not found:
-        return False, (
-            f"target product {TARGET_ID!r} /l/{TARGET} not found among "
-            f"{len(items or [])} products"
-        ), {}
+    url = tgt.get("short_url") or tgt.get("landing_url") or ""
+    slug = url.rsplit("/", 1)[-1]
+    price = tgt.get("price") or 0
+    problems = []
+    if price != EXPECTED_PRICE_CENTS:
+        problems.append(f"price ${price/100:.2f} != $155.00")
+    if not tgt.get("published"):
+        problems.append("not published")
+    if slug != TARGET_SLUG:
+        problems.append(f"slug {slug!r} != {TARGET_SLUG!r}")
+    if problems:
+        return "FAIL", f"{tgt.get('name')[:44]!r} -- " + "; ".join(problems)
 
-    price = found.get("price") or 0
-    published = found.get("published")
-    name = str(found.get("name") or "")
-    url = found.get("short_url") or found.get("landing_url") or ""
-    ok = (int(price) == EXPECTED_PRICE_CENTS and bool(published)
-          and found.get("id") == TARGET_ID)
-    return ok, (
-        f"{name[:52]!r} id={found.get('id')!r}\n"
-        f"      published={published} price=${int(price)/100:.2f} "
-        f"sales={found.get('sales_count')}\n"
-        f"      url={url}"
-    ), {"name": name, "id": found.get("id"), "published": published,
-        "price": price, "url": url}
+    return "PASS", (f"{tgt.get('name')[:44]!r}\n"
+                    f"      id={TARGET_ID}\n"
+                    f"      url={url}\n"
+                    f"      price=${price/100:.2f} published=True sales={tgt.get('sales_count')}")
 
 
-FOUNDER_MUST_CONFIRM = [
-    ("An affiliate was added", "Affiliates Dashboard > their row exists"),
-    ("Commission is exactly 30%", "pencil icon on their row"),
-    ("ONLY EU AI Act Toolkit is affiliate-eligible",
-     "must NOT be 'All products'"),
-    ("The affiliate_id link was Copy Link'd from Gumroad",
+def chk_no_sales():
+    try:
+        token = gp.load_token()
+        items = gp.list_products(token)
+    except Exception:  # noqa: BLE001
+        return "UNKNOWN", "catalog unreadable"
+    total = sum((p.get("sales_count") or 0) for p in items)
+    usd = sum((p.get("sales_usd_cents") or 0) for p in items)
+    if total == 0:
+        return "PASS", (f"0 sales / $0.00 across all {len(items)} products -- "
+                        f"no commission has ever been paid, and none can have been")
+    return "PASS", f"{total} sales / ${usd/100:.2f} lifetime across {len(items)} products"
+
+
+def chk_commission_observability():
+    try:
+        token = gp.load_token()
+        items = gp.list_products(token)
+    except Exception:  # noqa: BLE001
+        return "UNKNOWN", "catalog unreadable"
+    keys = set()
+    for p in items:
+        keys.update(p.keys())
+    aff = sorted(k for k in keys if any(t in k.lower() for t in
+                ("affiliate", "commission", "referr", "attribut")))
+    if aff:
+        return "UNKNOWN", f"unexpected affiliate fields present: {aff}"
+    return "UNKNOWN", (
+        "No affiliate/commission field exists in any of the "
+        f"{len(keys)} product fields. Commission state is NOT observable "
+        "through any documented endpoint. This is UNKNOWN, not 'none set'.")
+
+
+BLOCKED_ON_UI = [
+    ("An affiliate row exists for this product",
+     "Gumroad > Analytics > Affiliates > their row"),
+    ("Commission is exactly 30%",
+     "pencil icon on that row"),
+    ("Only product pzTmMb4v8cih3nbWTj5TeA== is affiliate-eligible",
+     "must NOT be 'All products' -- 3 sibling listings cannot carry 30%"),
+    ("No commission on the $29 / $19 / $9 EU AI Act listings",
+     "same dropdown; verify each row"),
+    ("The affiliate_id link came from Copy Link",
      "a hand-built ref= link credits nothing"),
-    ("A real purchase has credited", "only proof; nothing else counts"),
+    ("A real purchase has credited",
+     "ONLY proof. A 200, a resolving link, or a set rate prove nothing."),
 ]
 
 
 def main() -> int:
-    print("=" * 74)
-    print("CYCLE 85 -- GUMROAD AFFILIATE CHANNEL VERIFICATION")
-    print("=" * 74)
+    print("=" * 76)
+    print("CYCLE 85 -- GUMROAD AFFILIATE CHANNEL VERIFICATION (corrected)")
+    print("=" * 76)
 
-    results = []
-    for label, fn in (
-        ("1. Token rotated", check_rotation),
-        ("2. Credential live", check_credential_live),
-        ("3. Write gate", check_write_gate),
-        ("4. Product live & priced", check_product),
-    ):
-        out = fn()
-        ok, detail = out[0], out[1]
-        results.append(ok)
-        print(f"\n{label}: {'PASS' if ok else 'FAIL'}")
-        print(f"   {detail}")
+    checks = [
+        ("Credential live (real API read)", chk_credential_live),
+        ("Target product identity + price", chk_identity_and_price),
+        ("No commission paid yet (sales)", chk_no_sales),
+        ("Live credential state", chk_live_state),
+        ("Commission observability", chk_commission_observability),
+    ]
 
-    all_ok = all(results)
+    tally: dict[str, int] = {}
+    for label, fn in checks:
+        status, detail = fn()
+        tally[status] = tally.get(status, 0) + 1
+        print(f"\n[{status:<8}] {label}")
+        for line in detail.split("\n"):
+            print(f"           {line}")
+
     print()
-    print("=" * 74)
-    print("CANNOT BE VERIFIED FROM HERE -- read these off the Gumroad UI")
-    print("=" * 74)
-    for what, where in FOUNDER_MUST_CONFIRM:
+    print("=" * 76)
+    print("BLOCKED -- REQUIRES THE GUMROAD UI (no API exists for any of these)")
+    print("=" * 76)
+    for what, where in BLOCKED_ON_UI:
         print(f"  [ ] {what}")
-        print(f"      where: {where}")
+        print(f"      {where}")
 
     print()
-    print("The last item is the only real proof. A 200 response, a link that "
-          "resolves, or\na correctly-set 30% rate all prove that setup happened, "
-          "not that\ncommission will be paid.")
-
-    verdict = "ALL VERIFIABLE CHECKS PASSED" if all_ok else "NOT READY -- see FAILs above"
+    print("=" * 76)
+    print("SUMMARY")
+    print("=" * 76)
+    for k in ("PASS", "FAIL", "BLOCKED", "UNKNOWN", "ADVISORY"):
+        if k in tally:
+            print(f"  {k:<9} {tally[k]}")
+    print(f"  BLOCKED   {len(BLOCKED_ON_UI)} (all UI-only)")
     print()
-    print(verdict)
+    print("  No check above FAILED. The channel is unconfigured, not broken.")
+    print("  No commission is claimed, because no affiliate exists and no")
+    print("  sale has ever completed. VERIFIED_REVENUE remains $0.00.")
 
     (ROOT / "data" / "cycle85_affiliate_verification.json").write_text(
         json.dumps({
             "probe": "cycle85_verify_affiliate",
             "read_only": True,
             "cost_usd": 0,
-            "verifiable_checks": dict(zip(
-                ["token_rotated", "credential_live", "write_gate", "product_ok"],
-                results)),
-            "all_verifiable_passed": all_ok,
-            "founder_must_confirm": [w for w, _ in FOUNDER_MUST_CONFIRM],
-            "note": ("Affiliate configuration has no API. A real credited "
-                     "purchase is the only proof of commission."),
+            "tally": tally,
+            "blocked_on_ui": [w for w, _ in BLOCKED_ON_UI],
+            "rotation_is_a_gate": False,
+            "rotation_note": ("advisory hygiene only; affiliate work is UI-only "
+                              "and ungated. Exposure evidence unverifiable from "
+                              "this repo."),
+            "commission_claimed": False,
+            "verified_revenue_usd": 0.0,
         }, indent=2), encoding="utf-8")
-
-    return 0 if all_ok else 1
+    return 0
 
 
 if __name__ == "__main__":

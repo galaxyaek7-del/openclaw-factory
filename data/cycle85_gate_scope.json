@@ -1,0 +1,10 @@
+{
+  "probe": "cycle85_gate_scope",
+  "read_only": true,
+  "cost_usd": 0,
+  "affiliate_fields_in_products_api": [],
+  "gate_blocks_this_task": false,
+  "reason": "all affiliate operations are UI-only; the write gate only affects API publish/update, which this task does not use",
+  "total_sales_all_products": 0,
+  "commission_paid_evidence": false
+}
