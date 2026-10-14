@@ -1,0 +1,11 @@
+﻿scanned 32 thin deliverables: 1 BLOCK, 3 REVIEW
+
+[BLOCK] $99  Verified B2B Lead Lists (200-lead batch)
+    CLAIMED_DATA_NOT_DELIVERED: listing promises a data artefact (matched 'lead lists') but no csv/xlsx/tsv/json file is attached; a document cannot satisfy that promise
+    ATTACHMENT_DESCRIBES_RATHER_THAN_DELIVERS: the copy enumerates what the buyer receives ('what you get') and the only attachment is too short to be that (pages=1, words=81)
+    https://aekraft.gumroad.com/l/drtaj
+
+REVIEW (thin or unverifiable, NOT false claims):
+  $  399   17106B  GCC Contractor Payment Command System (V2 Bundle)
+  $   89   12020B  Vendor Questionnaire Response Kit
+  $   79   18208B  GPSR EU Seller Action Kit

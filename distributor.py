@@ -37,6 +37,7 @@ from channels import publish_protection
 from channels.base_arm import PublishResult
 from schemas.product import Product
 import factory_state
+import product_claim_integrity
 
 # Self-registers "gumroad" in channels.registry on import.
 import channels.gumroad_arm  # noqa: F401,E402
@@ -121,8 +122,25 @@ def _already_published_live(product, arm_name, ledger_path=None):
     return False
 
 
+def _claim_payloads(product):
+    """Describe what this product would actually ship, from the real file on
+    disk. Returns None when the file cannot be inspected -- the gate treats
+    that as UNKNOWN (never a block), so a missing or unreadable file cannot
+    silently start rejecting real publishes."""
+    path = getattr(product, "file_path", None)
+    if not path:
+        return None
+    try:
+        p = Path(path)
+        if not p.is_file():
+            return None
+        return [{"name": p.name, "bytes": p.stat().st_size}]
+    except OSError:
+        return None
+
+
 def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protection_state_path=None,
-               allow_protected=False):
+               allow_protected=False, allow_claim_risk=False):
     """Fan `product` out to arms and record every attempt in the ledger.
 
     arm_names=None means every currently registered arm. ledger_path
@@ -140,7 +158,27 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
     module's existing dry-run-by-default safety net). protection_state_path
     overrides the default data/publish_protection_state.json, same reason
     ledger_path exists.
+
+    Claim-integrity gate (Cycle 81, 2026-10-14): a real publish additionally
+    passes product_claim_integrity.check_claim_integrity() first, so a listing
+    whose attached file contradicts what the listing promises cannot go live
+    for the first time through this path. Motivated by a real live defect —
+    a $99 Gumroad listing that promised a 200-lead CSV/Sheets database and
+    shipped a 1-page, 81-word PDF describing it. The gate blocks ONLY on
+    positive evidence of a contradicted claim; an un-inspectable payload is
+    UNKNOWN and passes, because a gate that fires on absent evidence is a
+    gate that gets switched off. allow_claim_risk=True is the explicit
+    founder override, mirroring allow_protected.
     """
+    claim_verdict = None
+    if not dry_run and not allow_claim_risk:
+        claim_verdict = product_claim_integrity.check_claim_integrity(
+            title=getattr(product, "title", "") or "",
+            description=getattr(product, "description", "") or "",
+            payloads=_claim_payloads(product),
+            price_usd=getattr(product, "price_usd", None),
+        )
+
     targets = arm_names if arm_names is not None else [a.name for a in registry.all_arms()]
     outcomes = []
 
@@ -168,6 +206,13 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
                         "arm": name, "attempted": False, "ok": None,
                         "skip_reason": "protected product: explicit founder gate required (allow_protected=True)",
                         "result": None,
+                    })
+                    continue
+                if claim_verdict is not None and claim_verdict["verdict"] == product_claim_integrity.BLOCK:
+                    reason = "blocked by claim-integrity gate: " + claim_verdict["reason"]
+                    outcomes.append({
+                        "arm": name, "attempted": False, "ok": None,
+                        "skip_reason": reason, "result": None,
                     })
                     continue
                 if _already_published_live(product, name, ledger_path=ledger_path):

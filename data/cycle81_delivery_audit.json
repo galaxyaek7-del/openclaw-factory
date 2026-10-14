@@ -1,0 +1,1702 @@
+{
+  "probe": "cycle81_delivery_audit",
+  "read_only": true,
+  "source": "GET /v2/products/:id per product (detail payload only)",
+  "corrects": "has_file inference in gumroad_catalog_truth.py used the LIST payload, whose `files` array is truncated. The $155 flagship was wrongly flagged as undeliverable. Not true.",
+  "checked": 79,
+  "fetch_errors": [],
+  "verdicts": {
+    "publishable_and_deliverable": 78,
+    "published_but_zero_files": 1,
+    "PRICED_ABOVE_ZERO_BUT_UNDELIVERABLE": 0,
+    "deliverable_under_20KB": 32
+  },
+  "undeliverable_paid_products": [],
+  "zero_file_products": [
+    {
+      "short_id": "owtmpe",
+      "name": "[Unavailable] AI Workflow QA & Stress Test - one agent, reviewed before you demo it to a client",
+      "price_usd": 0.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 0,
+      "file_bytes": 0,
+      "file_names": [],
+      "description_chars": 9,
+      "url": "https://aekraft.gumroad.com/l/owtmpe"
+    }
+  ],
+  "tiny_files": [
+    {
+      "short_id": "jlxmez",
+      "name": "GCC Contractor Payment Command System (V2 Bundle)",
+      "price_usd": 399.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 17106,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1063,
+      "url": "https://aekraft.gumroad.com/l/jlxmez"
+    },
+    {
+      "short_id": "drtaj",
+      "name": "Verified B2B Lead Lists (200-lead batch)",
+      "price_usd": 99.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 2008,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1410,
+      "url": "https://aekraft.gumroad.com/l/drtaj"
+    },
+    {
+      "short_id": "pyzqa",
+      "name": "Vendor Questionnaire Response Kit",
+      "price_usd": 89.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 12020,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1374,
+      "url": "https://aekraft.gumroad.com/l/pyzqa"
+    },
+    {
+      "short_id": "fetmu",
+      "name": "GPSR EU Seller Action Kit",
+      "price_usd": 79.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 18208,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1704,
+      "url": "https://aekraft.gumroad.com/l/fetmu"
+    },
+    {
+      "short_id": "bfdgx",
+      "name": "EU Cosmetics Responsible Person Guide",
+      "price_usd": 69.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 4637,
+      "file_names": [
+        null
+      ],
+      "description_chars": 919,
+      "url": "https://aekraft.gumroad.com/l/bfdgx"
+    },
+    {
+      "short_id": "palmdr",
+      "name": "ADA Demand-Letter Response & Triage Kit",
+      "price_usd": 69.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 9588,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1308,
+      "url": "https://aekraft.gumroad.com/l/palmdr"
+    },
+    {
+      "short_id": "gfsvu",
+      "name": "EU Packaging EPR Action Kit",
+      "price_usd": 69.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 11401,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1383,
+      "url": "https://aekraft.gumroad.com/l/gfsvu"
+    },
+    {
+      "short_id": "vkqogv",
+      "name": "Trademark DIY Filing Action Kit",
+      "price_usd": 69.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 12383,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1331,
+      "url": "https://aekraft.gumroad.com/l/vkqogv"
+    },
+    {
+      "short_id": "ekhza",
+      "name": "FTC Consumer Review Rule Compliance Kit",
+      "price_usd": 69.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 13105,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1254,
+      "url": "https://aekraft.gumroad.com/l/ekhza"
+    },
+    {
+      "short_id": "ciowwm",
+      "name": "EU Late Payment Recovery Kit",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3863,
+      "file_names": [
+        null
+      ],
+      "description_chars": 914,
+      "url": "https://aekraft.gumroad.com/l/ciowwm"
+    },
+    {
+      "short_id": "dyjavs",
+      "name": "Diminished Value Claim Kit",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 9630,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1631,
+      "url": "https://aekraft.gumroad.com/l/dyjavs"
+    },
+    {
+      "short_id": "ppsluq",
+      "name": "STR Direct Booking Revenue Kit",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 10074,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1289,
+      "url": "https://aekraft.gumroad.com/l/ppsluq"
+    },
+    {
+      "short_id": "nmasnb",
+      "name": "Section 8 Notice Validity System (England)",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 13669,
+      "file_names": [
+        null
+      ],
+      "description_chars": 541,
+      "url": "https://aekraft.gumroad.com/l/nmasnb"
+    },
+    {
+      "short_id": "sjrjxq",
+      "name": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 10065,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1305,
+      "url": "https://aekraft.gumroad.com/l/sjrjxq"
+    },
+    {
+      "short_id": "wteork",
+      "name": "Amazon FBA Reconciliation Workbook",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3726,
+      "file_names": [
+        null
+      ],
+      "description_chars": 933,
+      "url": "https://aekraft.gumroad.com/l/wteork"
+    },
+    {
+      "short_id": "dvfvm",
+      "name": "Restaurant Health Inspection Readiness Kit",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 10850,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1183,
+      "url": "https://aekraft.gumroad.com/l/dvfvm"
+    },
+    {
+      "short_id": "uwyfje",
+      "name": "GCC Contractor Payment Command System",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 7166,
+      "file_names": [
+        null
+      ],
+      "description_chars": 727,
+      "url": "https://aekraft.gumroad.com/l/uwyfje"
+    },
+    {
+      "short_id": "fwrjot",
+      "name": "Freelancer Payment Protection & Scope-Control Toolkit",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 6626,
+      "file_names": [
+        null
+      ],
+      "description_chars": 406,
+      "url": "https://aekraft.gumroad.com/l/fwrjot"
+    },
+    {
+      "short_id": "roxdbe",
+      "name": "SaaS Churn Email Pack",
+      "price_usd": 39.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3061,
+      "file_names": [
+        null
+      ],
+      "description_chars": 890,
+      "url": "https://aekraft.gumroad.com/l/roxdbe"
+    },
+    {
+      "short_id": "ldrdm",
+      "name": "Food-Contact Materials Starter",
+      "price_usd": 39.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3112,
+      "file_names": [
+        null
+      ],
+      "description_chars": 884,
+      "url": "https://aekraft.gumroad.com/l/ldrdm"
+    },
+    {
+      "short_id": "hasjmp",
+      "name": "Etsy Ads ROI Playbook + Calculator",
+      "price_usd": 39.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3480,
+      "file_names": [
+        null
+      ],
+      "description_chars": 900,
+      "url": "https://aekraft.gumroad.com/l/hasjmp"
+    },
+    {
+      "short_id": "zfnagp",
+      "name": "Suspended Seller First-Appeal POA System",
+      "price_usd": 39.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 5533,
+      "file_names": [
+        null
+      ],
+      "description_chars": 597,
+      "url": "https://aekraft.gumroad.com/l/zfnagp"
+    },
+    {
+      "short_id": "yhnyn",
+      "name": "Digital-Product Refund Policy Pack",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3123,
+      "file_names": [
+        null
+      ],
+      "description_chars": 887,
+      "url": "https://aekraft.gumroad.com/l/yhnyn"
+    },
+    {
+      "short_id": "zjwpx",
+      "name": "Freelancer Scope-Creep Contract Kit",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3055,
+      "file_names": [
+        null
+      ],
+      "description_chars": 888,
+      "url": "https://aekraft.gumroad.com/l/zjwpx"
+    },
+    {
+      "short_id": "eiebdt",
+      "name": "Battery & WEEE Mini-Guide for Sellers",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3061,
+      "file_names": [
+        null
+      ],
+      "description_chars": 883,
+      "url": "https://aekraft.gumroad.com/l/eiebdt"
+    },
+    {
+      "short_id": "vyitxf",
+      "name": "Toy Safety File Starter (EN 71 Lens)",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3906,
+      "file_names": [
+        null
+      ],
+      "description_chars": 290,
+      "url": "https://aekraft.gumroad.com/l/vyitxf"
+    },
+    {
+      "short_id": "adyvd",
+      "name": "Turo Guest Dispute Toolkit",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 17909,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1006,
+      "url": "https://aekraft.gumroad.com/l/adyvd"
+    },
+    {
+      "short_id": "edgiq",
+      "name": "UK Deposit Recovery Action Pack",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 9198,
+      "file_names": [
+        null
+      ],
+      "description_chars": 353,
+      "url": "https://aekraft.gumroad.com/l/edgiq"
+    },
+    {
+      "short_id": "fccqk",
+      "name": "Gulf Job-Landing ATS CV System",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 5147,
+      "file_names": [
+        null
+      ],
+      "description_chars": 408,
+      "url": "https://aekraft.gumroad.com/l/fccqk"
+    },
+    {
+      "short_id": "engiwk",
+      "name": "EU AI Act Compliance Quickstart Checklist",
+      "price_usd": 19.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3773,
+      "file_names": [
+        null
+      ],
+      "description_chars": 376,
+      "url": "https://aekraft.gumroad.com/l/engiwk"
+    },
+    {
+      "short_id": "tmhlb",
+      "name": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+      "price_usd": 9.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3657,
+      "file_names": [
+        null
+      ],
+      "description_chars": 340,
+      "url": "https://aekraft.gumroad.com/l/tmhlb"
+    },
+    {
+      "short_id": "dxfwlu",
+      "name": "GALAXY FORGE API TEST — DO NOT BUY — DELETE ME",
+      "price_usd": 1.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 102,
+      "file_names": [
+        null
+      ],
+      "description_chars": 346,
+      "url": "https://aekraft.gumroad.com/l/dxfwlu"
+    }
+  ],
+  "revenue": {
+    "total_units_sold": 0,
+    "total_gross_usd": 0.0
+  },
+  "products": [
+    {
+      "short_id": "jlxmez",
+      "name": "GCC Contractor Payment Command System (V2 Bundle)",
+      "price_usd": 399.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 17106,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1063,
+      "url": "https://aekraft.gumroad.com/l/jlxmez"
+    },
+    {
+      "short_id": "lrmgml",
+      "name": "Automated Contract Review System for Legal Departments",
+      "price_usd": 327.0,
+      "published": false,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 118012,
+      "file_names": [
+        null
+      ],
+      "description_chars": 932,
+      "url": "https://aekraft.gumroad.com/l/lrmgml"
+    },
+    {
+      "short_id": "iaiyt",
+      "name": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
+      "price_usd": 155.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 2,
+      "file_bytes": 245715,
+      "file_names": [
+        "eu_ai_act_compliance_toolkit_preview",
+        null
+      ],
+      "description_chars": 4085,
+      "url": "https://aekraft.gumroad.com/l/iaiyt"
+    },
+    {
+      "short_id": "drtaj",
+      "name": "Verified B2B Lead Lists (200-lead batch)",
+      "price_usd": 99.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 2008,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1410,
+      "url": "https://aekraft.gumroad.com/l/drtaj"
+    },
+    {
+      "short_id": "pyzqa",
+      "name": "Vendor Questionnaire Response Kit",
+      "price_usd": 89.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 12020,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1374,
+      "url": "https://aekraft.gumroad.com/l/pyzqa"
+    },
+    {
+      "short_id": "bfhpzl",
+      "name": "Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)",
+      "price_usd": 79.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 173373,
+      "file_names": [
+        null
+      ],
+      "description_chars": 3380,
+      "url": "https://aekraft.gumroad.com/l/bfhpzl"
+    },
+    {
+      "short_id": "uucxer",
+      "name": "Sales Tax Nexus Tracker",
+      "price_usd": 79.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 133775,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1505,
+      "url": "https://aekraft.gumroad.com/l/uucxer"
+    },
+    {
+      "short_id": "fetmu",
+      "name": "GPSR EU Seller Action Kit",
+      "price_usd": 79.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 18208,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1704,
+      "url": "https://aekraft.gumroad.com/l/fetmu"
+    },
+    {
+      "short_id": "uyzuu",
+      "name": "EU Green Claims Review Kit",
+      "price_usd": 69.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 131594,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1375,
+      "url": "https://aekraft.gumroad.com/l/uyzuu"
+    },
+    {
+      "short_id": "brwrta",
+      "name": "EUDR Due Diligence Starter",
+      "price_usd": 69.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 136267,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1833,
+      "url": "https://aekraft.gumroad.com/l/brwrta"
+    },
+    {
+      "short_id": "xouyjy",
+      "name": "Subscription Renewal Compliance Kit",
+      "price_usd": 69.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 138784,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1887,
+      "url": "https://aekraft.gumroad.com/l/xouyjy"
+    },
+    {
+      "short_id": "bfdgx",
+      "name": "EU Cosmetics Responsible Person Guide",
+      "price_usd": 69.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 4637,
+      "file_names": [
+        null
+      ],
+      "description_chars": 919,
+      "url": "https://aekraft.gumroad.com/l/bfdgx"
+    },
+    {
+      "short_id": "palmdr",
+      "name": "ADA Demand-Letter Response & Triage Kit",
+      "price_usd": 69.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 9588,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1308,
+      "url": "https://aekraft.gumroad.com/l/palmdr"
+    },
+    {
+      "short_id": "gfsvu",
+      "name": "EU Packaging EPR Action Kit",
+      "price_usd": 69.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 11401,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1383,
+      "url": "https://aekraft.gumroad.com/l/gfsvu"
+    },
+    {
+      "short_id": "vkqogv",
+      "name": "Trademark DIY Filing Action Kit",
+      "price_usd": 69.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 12383,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1331,
+      "url": "https://aekraft.gumroad.com/l/vkqogv"
+    },
+    {
+      "short_id": "ekhza",
+      "name": "FTC Consumer Review Rule Compliance Kit",
+      "price_usd": 69.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 13105,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1254,
+      "url": "https://aekraft.gumroad.com/l/ekhza"
+    },
+    {
+      "short_id": "diboaf",
+      "name": "Dental Insurance Verification Kit",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 166141,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1903,
+      "url": "https://aekraft.gumroad.com/l/diboaf"
+    },
+    {
+      "short_id": "vwlmeo",
+      "name": "Real Estate Transaction Deadline Kit",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 133785,
+      "file_names": [
+        null
+      ],
+      "description_chars": 2875,
+      "url": "https://aekraft.gumroad.com/l/vwlmeo"
+    },
+    {
+      "short_id": "cdfdcy",
+      "name": "Food Truck Permit Navigator",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 167645,
+      "file_names": [
+        null
+      ],
+      "description_chars": 2193,
+      "url": "https://aekraft.gumroad.com/l/cdfdcy"
+    },
+    {
+      "short_id": "mrecoe",
+      "name": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 167072,
+      "file_names": [
+        null
+      ],
+      "description_chars": 2749,
+      "url": "https://aekraft.gumroad.com/l/mrecoe"
+    },
+    {
+      "short_id": "uqmqnu",
+      "name": "DSAR Response Kit ($59)",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 198866,
+      "file_names": [
+        null
+      ],
+      "description_chars": 2705,
+      "url": "https://aekraft.gumroad.com/l/uqmqnu"
+    },
+    {
+      "short_id": "eiztlg",
+      "name": "Clinic No-Show Reduction Kit",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 199056,
+      "file_names": [
+        null
+      ],
+      "description_chars": 2569,
+      "url": "https://aekraft.gumroad.com/l/eiztlg"
+    },
+    {
+      "short_id": "qezxe",
+      "name": "PCI SAQ Readiness Kit for Small Merchants",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 133862,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1922,
+      "url": "https://aekraft.gumroad.com/l/qezxe"
+    },
+    {
+      "short_id": "wsbqr",
+      "name": "B2B Late-Payment Collections Operating System",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 172282,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1716,
+      "url": "https://aekraft.gumroad.com/l/wsbqr"
+    },
+    {
+      "short_id": "xmbxpz",
+      "name": "Commercial Lease CAM & Operating-Expense Audit Kit",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 170069,
+      "file_names": [
+        null
+      ],
+      "description_chars": 3047,
+      "url": "https://aekraft.gumroad.com/l/xmbxpz"
+    },
+    {
+      "short_id": "ciowwm",
+      "name": "EU Late Payment Recovery Kit",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3863,
+      "file_names": [
+        null
+      ],
+      "description_chars": 914,
+      "url": "https://aekraft.gumroad.com/l/ciowwm"
+    },
+    {
+      "short_id": "dyjavs",
+      "name": "Diminished Value Claim Kit",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 9630,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1631,
+      "url": "https://aekraft.gumroad.com/l/dyjavs"
+    },
+    {
+      "short_id": "ppsluq",
+      "name": "STR Direct Booking Revenue Kit",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 10074,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1289,
+      "url": "https://aekraft.gumroad.com/l/ppsluq"
+    },
+    {
+      "short_id": "nmasnb",
+      "name": "Section 8 Notice Validity System (England)",
+      "price_usd": 59.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 13669,
+      "file_names": [
+        null
+      ],
+      "description_chars": 541,
+      "url": "https://aekraft.gumroad.com/l/nmasnb"
+    },
+    {
+      "short_id": "sjrjxq",
+      "name": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 10065,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1305,
+      "url": "https://aekraft.gumroad.com/l/sjrjxq"
+    },
+    {
+      "short_id": "gzbdaz",
+      "name": "Landlord Move-In Inspection Pack",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 132834,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1497,
+      "url": "https://aekraft.gumroad.com/l/gzbdaz"
+    },
+    {
+      "short_id": "ursxh",
+      "name": "Cottage Food Compliance Kit",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 135984,
+      "file_names": [
+        null
+      ],
+      "description_chars": 2126,
+      "url": "https://aekraft.gumroad.com/l/ursxh"
+    },
+    {
+      "short_id": "oerot",
+      "name": "Fleet Maintenance and Damage Documentation Bundle",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 141990,
+      "file_names": [
+        null
+      ],
+      "description_chars": 3254,
+      "url": "https://aekraft.gumroad.com/l/oerot"
+    },
+    {
+      "short_id": "swkgd",
+      "name": "Restaurant Food Cost Control Kit",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 138350,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1454,
+      "url": "https://aekraft.gumroad.com/l/swkgd"
+    },
+    {
+      "short_id": "fydjid",
+      "name": "Handbook Acknowledgment Tracker",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 169145,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1843,
+      "url": "https://aekraft.gumroad.com/l/fydjid"
+    },
+    {
+      "short_id": "odqlk",
+      "name": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 135392,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1854,
+      "url": "https://aekraft.gumroad.com/l/odqlk"
+    },
+    {
+      "short_id": "iwbcmi",
+      "name": "Newsletter Deliverability & Inbox Placement System",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 138154,
+      "file_names": [
+        null
+      ],
+      "description_chars": 3159,
+      "url": "https://aekraft.gumroad.com/l/iwbcmi"
+    },
+    {
+      "short_id": "tjbly",
+      "name": "Employee Offboarding & Access-Revocation System",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 138482,
+      "file_names": [
+        null
+      ],
+      "description_chars": 2701,
+      "url": "https://aekraft.gumroad.com/l/tjbly"
+    },
+    {
+      "short_id": "ykwdfc",
+      "name": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 138718,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1788,
+      "url": "https://aekraft.gumroad.com/l/ykwdfc"
+    },
+    {
+      "short_id": "pahxdv",
+      "name": "SaaS Spend & Renewal Audit System for Small Teams",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 137925,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1625,
+      "url": "https://aekraft.gumroad.com/l/pahxdv"
+    },
+    {
+      "short_id": "vzmswo",
+      "name": "Creator Brand-Deal Management System",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 170404,
+      "file_names": [
+        null
+      ],
+      "description_chars": 3097,
+      "url": "https://aekraft.gumroad.com/l/vzmswo"
+    },
+    {
+      "short_id": "qpuagh",
+      "name": "Tech Job Offer Evaluation & Negotiation System",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 169645,
+      "file_names": [
+        null
+      ],
+      "description_chars": 3105,
+      "url": "https://aekraft.gumroad.com/l/qpuagh"
+    },
+    {
+      "short_id": "behmhy",
+      "name": "Home-Service Quoting & Deposit Protection System",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 171180,
+      "file_names": [
+        null
+      ],
+      "description_chars": 2880,
+      "url": "https://aekraft.gumroad.com/l/behmhy"
+    },
+    {
+      "short_id": "xwbbb",
+      "name": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 171558,
+      "file_names": [
+        null
+      ],
+      "description_chars": 3069,
+      "url": "https://aekraft.gumroad.com/l/xwbbb"
+    },
+    {
+      "short_id": "wteork",
+      "name": "Amazon FBA Reconciliation Workbook",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3726,
+      "file_names": [
+        null
+      ],
+      "description_chars": 933,
+      "url": "https://aekraft.gumroad.com/l/wteork"
+    },
+    {
+      "short_id": "dvfvm",
+      "name": "Restaurant Health Inspection Readiness Kit",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 10850,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1183,
+      "url": "https://aekraft.gumroad.com/l/dvfvm"
+    },
+    {
+      "short_id": "uwyfje",
+      "name": "GCC Contractor Payment Command System",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 7166,
+      "file_names": [
+        null
+      ],
+      "description_chars": 727,
+      "url": "https://aekraft.gumroad.com/l/uwyfje"
+    },
+    {
+      "short_id": "fwrjot",
+      "name": "Freelancer Payment Protection & Scope-Control Toolkit",
+      "price_usd": 49.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 6626,
+      "file_names": [
+        null
+      ],
+      "description_chars": 406,
+      "url": "https://aekraft.gumroad.com/l/fwrjot"
+    },
+    {
+      "short_id": "xwacbo",
+      "name": "Salon Commission Pay Kit",
+      "price_usd": 39.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 133144,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1409,
+      "url": "https://aekraft.gumroad.com/l/xwacbo"
+    },
+    {
+      "short_id": "roxdbe",
+      "name": "SaaS Churn Email Pack",
+      "price_usd": 39.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3061,
+      "file_names": [
+        null
+      ],
+      "description_chars": 890,
+      "url": "https://aekraft.gumroad.com/l/roxdbe"
+    },
+    {
+      "short_id": "ldrdm",
+      "name": "Food-Contact Materials Starter",
+      "price_usd": 39.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3112,
+      "file_names": [
+        null
+      ],
+      "description_chars": 884,
+      "url": "https://aekraft.gumroad.com/l/ldrdm"
+    },
+    {
+      "short_id": "hasjmp",
+      "name": "Etsy Ads ROI Playbook + Calculator",
+      "price_usd": 39.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3480,
+      "file_names": [
+        null
+      ],
+      "description_chars": 900,
+      "url": "https://aekraft.gumroad.com/l/hasjmp"
+    },
+    {
+      "short_id": "zfnagp",
+      "name": "Suspended Seller First-Appeal POA System",
+      "price_usd": 39.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 5533,
+      "file_names": [
+        null
+      ],
+      "description_chars": 597,
+      "url": "https://aekraft.gumroad.com/l/zfnagp"
+    },
+    {
+      "short_id": "volqjv",
+      "name": "Homebuyer Inspection Action Kit",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 132410,
+      "file_names": [
+        null
+      ],
+      "description_chars": 2015,
+      "url": "https://aekraft.gumroad.com/l/volqjv"
+    },
+    {
+      "short_id": "fwxmms",
+      "name": "EU AI Act Audit Logging Kit",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 109570,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1102,
+      "url": "https://aekraft.gumroad.com/l/fwxmms"
+    },
+    {
+      "short_id": "uldlwa",
+      "name": "Legal Case Research Automation for Solo Attorneys",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 105317,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1151,
+      "url": "https://aekraft.gumroad.com/l/uldlwa"
+    },
+    {
+      "short_id": "sjmbrp",
+      "name": "SOC 2 Compliance Automation Guide for Startups",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 121365,
+      "file_names": [
+        null
+      ],
+      "description_chars": 618,
+      "url": "https://aekraft.gumroad.com/l/sjmbrp"
+    },
+    {
+      "short_id": "esnpki",
+      "name": "AI Agent Blueprint for Small SaaS CloudOps Automation",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 93996,
+      "file_names": [
+        null
+      ],
+      "description_chars": 586,
+      "url": "https://aekraft.gumroad.com/l/esnpki"
+    },
+    {
+      "short_id": "vunrqm",
+      "name": "Severance Agreement Review Checklist",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 118143,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1110,
+      "url": "https://aekraft.gumroad.com/l/vunrqm"
+    },
+    {
+      "short_id": "yiqba",
+      "name": "Security Deposit Demand Kit for Tenants",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 115393,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1129,
+      "url": "https://aekraft.gumroad.com/l/yiqba"
+    },
+    {
+      "short_id": "jibnyt",
+      "name": "Mechanics Lien Filing Kit for Contractors",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 126790,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1121,
+      "url": "https://aekraft.gumroad.com/l/jibnyt"
+    },
+    {
+      "short_id": "ceiwk",
+      "name": "Stripe Chargeback Defense Kit for Digital Sellers",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 114918,
+      "file_names": [
+        null
+      ],
+      "description_chars": 558,
+      "url": "https://aekraft.gumroad.com/l/ceiwk"
+    },
+    {
+      "short_id": "fgruzn",
+      "name": "Etsy Suspension Appeal Kit",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 166634,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1708,
+      "url": "https://aekraft.gumroad.com/l/fgruzn"
+    },
+    {
+      "short_id": "kaooj",
+      "name": "CCPA Compliance Action Kit for Small Business",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 121663,
+      "file_names": [
+        null
+      ],
+      "description_chars": 396,
+      "url": "https://aekraft.gumroad.com/l/kaooj"
+    },
+    {
+      "short_id": "yhnyn",
+      "name": "Digital-Product Refund Policy Pack",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3123,
+      "file_names": [
+        null
+      ],
+      "description_chars": 887,
+      "url": "https://aekraft.gumroad.com/l/yhnyn"
+    },
+    {
+      "short_id": "zjwpx",
+      "name": "Freelancer Scope-Creep Contract Kit",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3055,
+      "file_names": [
+        null
+      ],
+      "description_chars": 888,
+      "url": "https://aekraft.gumroad.com/l/zjwpx"
+    },
+    {
+      "short_id": "eiebdt",
+      "name": "Battery & WEEE Mini-Guide for Sellers",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3061,
+      "file_names": [
+        null
+      ],
+      "description_chars": 883,
+      "url": "https://aekraft.gumroad.com/l/eiebdt"
+    },
+    {
+      "short_id": "vyitxf",
+      "name": "Toy Safety File Starter (EN 71 Lens)",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3906,
+      "file_names": [
+        null
+      ],
+      "description_chars": 290,
+      "url": "https://aekraft.gumroad.com/l/vyitxf"
+    },
+    {
+      "short_id": "adyvd",
+      "name": "Turo Guest Dispute Toolkit",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 17909,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1006,
+      "url": "https://aekraft.gumroad.com/l/adyvd"
+    },
+    {
+      "short_id": "edgiq",
+      "name": "UK Deposit Recovery Action Pack",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 9198,
+      "file_names": [
+        null
+      ],
+      "description_chars": 353,
+      "url": "https://aekraft.gumroad.com/l/edgiq"
+    },
+    {
+      "short_id": "fccqk",
+      "name": "Gulf Job-Landing ATS CV System",
+      "price_usd": 29.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 5147,
+      "file_names": [
+        null
+      ],
+      "description_chars": 408,
+      "url": "https://aekraft.gumroad.com/l/fccqk"
+    },
+    {
+      "short_id": "ziiur",
+      "name": "Freelancer Scope Control Kit",
+      "price_usd": 19.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 167522,
+      "file_names": [
+        null
+      ],
+      "description_chars": 476,
+      "url": "https://aekraft.gumroad.com/l/ziiur"
+    },
+    {
+      "short_id": "engiwk",
+      "name": "EU AI Act Compliance Quickstart Checklist",
+      "price_usd": 19.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3773,
+      "file_names": [
+        null
+      ],
+      "description_chars": 376,
+      "url": "https://aekraft.gumroad.com/l/engiwk"
+    },
+    {
+      "short_id": "akxaae",
+      "name": "The 5-Minute Context Reset Playbook",
+      "price_usd": 15.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 119824,
+      "file_names": [
+        null
+      ],
+      "description_chars": 858,
+      "url": "https://aekraft.gumroad.com/l/akxaae"
+    },
+    {
+      "short_id": "vhofn",
+      "name": "The 5-Minute Context Reset Playbook",
+      "price_usd": 15.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 172023,
+      "file_names": [
+        null
+      ],
+      "description_chars": 846,
+      "url": "https://aekraft.gumroad.com/l/vhofn"
+    },
+    {
+      "short_id": "tmhlb",
+      "name": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+      "price_usd": 9.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 3657,
+      "file_names": [
+        null
+      ],
+      "description_chars": 340,
+      "url": "https://aekraft.gumroad.com/l/tmhlb"
+    },
+    {
+      "short_id": "jvuelq",
+      "name": "Mindfulness Journal for Stress Relief",
+      "price_usd": 7.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 134567,
+      "file_names": [
+        null
+      ],
+      "description_chars": 1552,
+      "url": "https://aekraft.gumroad.com/l/jvuelq"
+    },
+    {
+      "short_id": "dxfwlu",
+      "name": "GALAXY FORGE API TEST — DO NOT BUY — DELETE ME",
+      "price_usd": 1.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 1,
+      "file_bytes": 102,
+      "file_names": [
+        null
+      ],
+      "description_chars": 346,
+      "url": "https://aekraft.gumroad.com/l/dxfwlu"
+    },
+    {
+      "short_id": "owtmpe",
+      "name": "[Unavailable] AI Workflow QA & Stress Test - one agent, reviewed before you demo it to a client",
+      "price_usd": 0.0,
+      "published": true,
+      "sales_count": 0,
+      "sales_usd_cents": 0.0,
+      "file_count": 0,
+      "file_bytes": 0,
+      "file_names": [],
+      "description_chars": 9,
+      "url": "https://aekraft.gumroad.com/l/owtmpe"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+﻿==============================================================================
+GCC Contractor Payment Command System (V2 Bundle)  --  $399
+  file: (unnamed)  declared=17106B  type=zip
+    fetch HTTP 200, got 17106 bytes
+    ZIP: 4 entries, 21304 bytes uncompressed
+      - gcc_payment_command_workbook_v2.xlsx  (10764B)
+      - gcc_payment_command_manual_v2.pdf  (4410B)
+      - gcc_payment_templates_ar_en_v2.pdf  (3640B)
+      - gcc_implementation_checklist_v2.pdf  (2490B)
+==============================================================================
+Automated Contract Review System for Legal Departments  --  $327
+  file: (unnamed)  declared=118012B  type=pdf
+    fetch HTTP 200, got 118012 bytes
+    PDF: 17 pages, 2924 words extracted
+    first 300 chars: TABLE OF CONTENTS What's Inside 1. Chapter 1: Foundations of AI-Powered Contract Analysis 2. Chapter 2: Vendor Selection and Platform Evaluation 3. Chapter 3: Data Preparation and Contract Digitization 4. Chapter 4: Automated Clause Extraction Architecture 5. Chapter 5: Risk Scoring Models and Metho
+==============================================================================
+Verified B2B Lead Lists (200-lead batch)  --  $99
+  file: (unnamed)  declared=2008B  type=pdf
+    fetch HTTP 200, got 2008 bytes
+    PDF: 1 pages, 81 words extracted
+    first 300 chars: Verified B2B Lead Lists ÔÇö Galaxy Forge Problem: bought lead lists fail on wrong titles, stale emails, duplicates. Deliverable: verified database to your exact criteria ÔÇö decision-maker titles, business emails, titles, websites, locations. CSV/Sheets, deduped, spot-verified. One revision round within
