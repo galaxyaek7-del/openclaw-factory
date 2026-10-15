@@ -6,10 +6,23 @@ patched in every test.
     python -m unittest tests.test_gumroad_publisher -v
 """
 
+import os
 import sys
 import unittest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
+
+# Cycle 81: see the matching note in tests/test_gumroad_api_fix.py. The
+# pytestmark opt-in is inert under CI's `unittest discover`, so the write gate
+# refused these calls and the tests asserted against its BLOCKED message.
+# setUpModule/tearDownModule work under both runners; tearDownModule stops the
+# flag leaking into later tests sharing the group-runner process.
+def setUpModule():
+    os.environ["FACTORY_LIVE_PUBLISH"] = "1"
+
+
+def tearDownModule():
+    os.environ.pop("FACTORY_LIVE_PUBLISH", None)
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:

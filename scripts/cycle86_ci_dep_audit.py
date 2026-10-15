@@ -12,8 +12,18 @@ import subprocess
 import sys
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-CLONE = r"C:\Users\Dell\AppData\Local\Temp\opencode\cycle85ci"
-REPO = r"C:\openclaw-dasgboard"
+
+# Cycle 81: this used to hardcode an absolute Temp path to a scratch clone.
+# That is exactly what tests/test_no_temp_dependencies.py forbids -- a tracked
+# script may not depend on a Temp/session location, because it stops working
+# the moment that directory is cleaned. The clone now comes from $GF_CLONE or
+# argv[1], and defaults to this repository.
+CLONE = (sys.argv[1] if len(sys.argv) > 1
+         else os.environ.get("GF_CLONE")
+         or os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if not os.path.isfile(os.path.join(CLONE, "requirements.txt")):
+    raise SystemExit(f"not a factory checkout: {CLONE}")
+REPO = CLONE
 
 stdlib = set(sys.stdlib_module_names)
 third = {}

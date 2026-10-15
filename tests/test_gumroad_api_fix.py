@@ -9,6 +9,24 @@ import tempfile
 import unittest
 from unittest.mock import MagicMock, patch
 
+
+# Cycle 81: the pytestmark below only takes effect under pytest, but CI runs
+# `unittest discover` via scripts/run_python_group.py. Under unittest the
+# opt-in was silently absent, the write gate refused the call, and these tests
+# then asserted against the gate's BLOCKED message instead of the behaviour
+# they are actually testing.
+#
+# setUpModule/tearDownModule are honoured by BOTH runners, so the opt-in now
+# applies wherever the suite runs. tearDownModule matters: the group runner
+# executes a whole pattern in one process, so leaving the flag set would enable
+# live writes for every later test in the group.
+def setUpModule():
+    os.environ["FACTORY_LIVE_PUBLISH"] = "1"
+
+
+def tearDownModule():
+    os.environ.pop("FACTORY_LIVE_PUBLISH", None)
+
 import requests
 
 from channels.gumroad_publisher import _gumroad_error, _PART_SIZE

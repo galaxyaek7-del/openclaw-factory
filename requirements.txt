@@ -64,3 +64,27 @@ oauthlib==4.0.0
 #   tenacity        -> lib/http.py (bounded retries on the shared JSON client)
 python-dateutil==2.9.0.post0
 tenacity==9.1.4
+
+# Eighth occurrence of the exact failure class this file's own header warns
+# about: tracked code genuinely imports it, a clean CI environment genuinely
+# lacked it, and it was invisible locally because this machine has it.
+#
+# Nine tracked test modules (tests/conftest.py, test_arm8_distribution_guardian,
+# test_circuit_breaker_integration, test_d16_d19, test_final_rehearsal,
+# test_g7_fsync, test_gumroad_api_fix, test_gumroad_publisher,
+# test_phase3_governance, test_universal_fabric_stage01) do a top-level
+# `import pytest` in order to carry
+#   pytestmark = pytest.mark.usefixtures("authorize_live_writes")
+# which is how Cycle 85 made the live-write opt-in explicit instead of an
+# invisible autouse fixture.
+#
+# Introduced by 6acad2d, which turned CI red:
+#   ERROR unittest.loader._FailedTest.test_arm8_distribution_guardian
+#   :: ModuleNotFoundError: No module named 'pytest'
+# and the job then aborted at group (a), so the later groups never ran and hid
+# the same breakage in five more modules.
+#
+# Note the marker itself is inert under CI's `unittest discover`, which is the
+# safe direction: those tests simply run without the opt-in and assert refusal.
+# pytest is required for the import to succeed, not to drive the run.
+pytest==9.1.1
