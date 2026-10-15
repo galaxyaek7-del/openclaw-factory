@@ -1977,9 +1977,11 @@ Do not add any explanation, numbering, or text outside these sections. Every cha
                 str(v) for v in (parsed or {}).values() if isinstance(v, (str, list)))
             _res = _sg.check_generated(title=title, topic=topic, body=_body)
             if _res.violations:
+                # Observability only — stderr, NEVER stdout (same contract
+                # as the sanitizer notice: --json stdout is pure JSON).
                 print(f"[SOURCE-GROUNDING] {len(_res.violations)} ungrounded claim(s) in "
                       f"{title!r}: {_res.violations[:3]} -- product must NOT be sold "
-                      f"until content is corrected.")
+                      f"until content is corrected.", file=sys.stderr)
                 try:
                     factory_state.enqueue_retry(
                         "source_grounding", "; ".join(_res.violations[:5]))
@@ -2127,9 +2129,16 @@ def create_ai_book(out_path, title, subtitle, theme, author, book_data, topic=""
         topic = _ts.sanitize_for_pdf(topic).text
         author = _ts.sanitize_for_pdf(author).text
         if _san.changed:
+            # Observability only — stderr, NEVER stdout: --json mode's
+            # stdout is a machine contract (one JSON object). A log line
+            # here corrupts every subprocess consumer's json.loads whenever
+            # generated content happens to contain unrenderable characters
+            # (content-dependent flake: passes when Groq output is clean,
+            # JSONDecodeError at char 1 when it is not).
             print(f"[PDF-TEXT-SANITIZER] {_san.summary()} -- characters that "
                   f"reportlab's Helvetica cannot render were replaced before "
-                  f"writing, instead of shipping as black boxes.")
+                  f"writing, instead of shipping as black boxes.",
+                  file=sys.stderr)
     except Exception:  # noqa: BLE001 -- never let sanitizing break production
         pass
 

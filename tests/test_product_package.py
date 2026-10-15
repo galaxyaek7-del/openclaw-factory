@@ -292,5 +292,82 @@ class TestCliDispatchAutoFillsSectionsForTechdoc(unittest.TestCase):
                         pass
 
 
+    def test_stdout_stays_pure_json_when_sanitizer_fires(self):
+        """Stdout-purity contract (2026-10-15 root-cause repair): log lines
+        ([PDF-TEXT-SANITIZER], [SOURCE-GROUNDING]) go to stderr, never
+        stdout — the --json stdout is one JSON object, parsed strictly.
+        Deterministic and free: explicit chapters carrying U+2011 force the
+        sanitizer with no Groq call, so this never flakes on live-model
+        output the way the no-chapters test can."""
+        proc = subprocess.run(
+            [sys.executable, str(_FACTORY_ROOT / "book_generator.py"), "--json"],
+            input=json.dumps({
+                "title": "Stdout Purity Probe",
+                "chapters": [{"title": "Setup",
+                              "content": "Step‑1: connect. Step‑2: verify. Plain ASCII otherwise."}],
+                "price": 197,
+                "product_type": "techdoc",
+                "output": "test_stdout_purity_probe.pdf",
+            }, ensure_ascii=False),
+            capture_output=True, text=True, encoding="utf-8", timeout=60,
+            cwd=str(_FACTORY_ROOT),
+        )
+        try:
+            result = json.loads(proc.stdout.strip())  # must not raise
+            self.assertTrue(result["success"], result)
+        finally:
+            for name in ("test_stdout_purity_probe.pdf",
+                         "stdout_purity_probe_cover.png"):
+                try:
+                    os.remove(str(_FACTORY_ROOT / "books" / name))
+                except OSError:
+                    pass
+
+    def test_stderr_carries_sanitizer_diagnostics(self):
+        """Diagnostics routing pin: the sanitizer notice must appear on
+        stderr (observability preserved), never on stdout. Same
+        deterministic U+2011 trigger as the purity test — no Groq."""
+        proc = subprocess.run(
+            [sys.executable, str(_FACTORY_ROOT / "book_generator.py"), "--json"],
+            input=json.dumps({
+                "title": "Stderr Diagnostics Probe",
+                "chapters": [{"title": "Setup",
+                              "content": "Step‑1: connect. Plain ASCII otherwise."}],
+                "price": 197,
+                "product_type": "techdoc",
+                "output": "test_stderr_diagnostics_probe.pdf",
+            }, ensure_ascii=False),
+            capture_output=True, text=True, encoding="utf-8", timeout=60,
+            cwd=str(_FACTORY_ROOT),
+        )
+        try:
+            self.assertIn("SANITIZER", proc.stderr)
+            result = json.loads(proc.stdout.strip())
+            self.assertTrue(result["success"], result)
+        finally:
+            for name in ("test_stderr_diagnostics_probe.pdf",
+                         "stderr_diagnostics_probe_cover.png"):
+                try:
+                    os.remove(str(_FACTORY_ROOT / "books" / name))
+                except OSError:
+                    pass
+
+    def test_malformed_stdin_yields_json_error_and_nonzero_exit(self):
+        """Failure-path contract: garbage stdin → nonzero exit AND stdout
+        still parses as a JSON error object with success False (never a
+        traceback blob, never exit 0). Deterministic, no Groq (parse fails
+        before generation)."""
+        proc = subprocess.run(
+            [sys.executable, str(_FACTORY_ROOT / "book_generator.py"), "--json"],
+            input="NOT JSON{{{ garbage",
+            capture_output=True, text=True, encoding="utf-8", timeout=60,
+            cwd=str(_FACTORY_ROOT),
+        )
+        self.assertNotEqual(proc.returncode, 0)
+        result = json.loads(proc.stdout.strip())  # must parse
+        self.assertFalse(result["success"])
+        self.assertIn("error", result)
+
+
 if __name__ == "__main__":
     unittest.main()
