@@ -1,0 +1,68 @@
+{
+ "project": "Kids Studio",
+ "episode": "ep01",
+ "updated": "2026-10-15T06:39:52+00:00",
+ "time": {
+  "OBSERVED_session_wall_clock_minutes": 21.0,
+  "OBSERVED_render_seconds_288_frames": 950.2,
+  "OBSERVED_seconds_per_frame": 3.3,
+  "OBSERVED_encode_seconds": 2.4,
+  "note": "wall clock covers audit, writing, renderer development, two test renders, full render and verification by one AI session; it is not a human-hours figure"
+ },
+ "hardware": "OBSERVED: Intel i5-8365U (8 threads), Intel UHD 620, 15.8 GB RAM; CPU-only rendering",
+ "artifact": {
+  "file": "kids_studio/renders/ep01_sc01_poc.mp4 (not committed)",
+  "verdict": "PASS",
+  "video": {
+   "codec": "h264",
+   "width": 1280,
+   "height": 720,
+   "fps": 24.0
+  },
+  "duration_s": 12.0,
+  "decoded_frames": 288,
+  "audio_peak_dbfs": -6.0,
+  "audio_rms_dbfs": -25.6,
+  "sync_offset_ms": {
+   "median": 7.5,
+   "max_abs": 15.0
+  },
+  "max_frame_to_frame_luminance_change": "0.03/255 (no flashing)"
+ },
+ "defects": {
+  "technical_found_and_fixed": [
+   "verify_video.py crashed writing numpy booleans to JSON (fixed; verdict unaffected)",
+   "first test frame: Nunu stopped with his head past the bridge post, reading as stepping onto the bridge (stop point moved from x=-1.7 to -2.2, storyboard updated)",
+   "outlines cut across the distant hills (terrain excluded from outlines)"
+  ],
+  "quality_open": [
+   "Mimo reads as a brown ball: no visible spines, not yet recognisable as a hedgehog",
+   "primitive characters are a test style, not production models",
+   "characters are small in frame (acceptable for an establishing shot)",
+   "no dialogue: no cleared Arabic voice"
+  ]
+ },
+ "automatable_safely": [
+  "rendering and encoding (render_poc.py)",
+  "technical QA: decode, black/frozen frames, loudness, A/V duration, sync (verify_video.py)",
+  "flash detection",
+  "manifest generation from the storyboard",
+  "asset-licence bookkeeping"
+ ],
+ "needs_human": [
+  "story and child-safety sign-off",
+  "native Arabic review and read-aloud test",
+  "voice performances (actors with release)",
+  "final watch-through",
+  "founder approval before any upload"
+ ],
+ "ESTIMATED_future": {
+  "full_ep01_render_at_this_style": "ESTIMATED about 4.5 min x 24 fps x 3.3 s/frame = about 6 hours CPU for a 4.5-minute episode at 640x360, before any added complexity",
+  "spend": "$0 authorized; no paid cost estimated or incurred"
+ },
+ "UNKNOWN": [
+  "audience demand",
+  "monetisation eligibility",
+  "how a richer character style (Blender) would perform on this hardware"
+ ]
+}

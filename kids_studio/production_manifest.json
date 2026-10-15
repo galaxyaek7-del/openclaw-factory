@@ -1,0 +1,263 @@
+{
+ "project": "Kids Studio",
+ "episode": "ep01_nunu_little_bridge",
+ "title_ar": "نونو والجسر الصغير",
+ "title_en": "Nunu and the Little Bridge",
+ "episode_status": "PRE-PRODUCTION: script DRAFT v0.1, storyboard DRAFT v0.1, 1 of 14 shots rendered as a technical proof of concept",
+ "finished_film_exists": false,
+ "shots": [
+  {
+   "shot": "01",
+   "scene": 1,
+   "planned_seconds": 12,
+   "camera": "wide, static, slight high angle; bridge centre-frame",
+   "action": "Valley at morning. Lulu (far bank, right) and Mimo wait. Nunu walks in from the left, tail swaying, toward the bridge, and stops at the near end",
+   "audio": "stream ambience, soft melody",
+   "status": "POC_RENDERED_AND_VERIFIED (technical test, not a finished shot)",
+   "creation_method": "procedural 3D primitives, CPU ray casting (tools/render_poc.py)",
+   "assets": [
+    "char-nunu",
+    "char-lulu",
+    "char-mimo",
+    "set-wadi-al-zahr",
+    "tex-planks-water",
+    "music-poc-melody",
+    "sfx-brook-footsteps"
+   ],
+   "approvals": {
+    "story": "PENDING",
+    "arabic_review": "N/A (no dialogue)",
+    "child_safety": "PENDING",
+    "founder": "PENDING"
+   },
+   "verification": "renders/ep01_sc01_poc.verify.json: PASS"
+  },
+  {
+   "shot": "02",
+   "scene": 1,
+   "planned_seconds": 6,
+   "camera": "medium on Nunu",
+   "action": "Nunu's greeting line",
+   "audio": "dialogue 1",
+   "status": "BOARDED",
+   "creation_method": "not started",
+   "assets": [],
+   "approvals": {
+    "story": "PENDING",
+    "arabic_review": "PENDING",
+    "child_safety": "PENDING",
+    "founder": "PENDING"
+   }
+  },
+  {
+   "shot": "03",
+   "scene": 2,
+   "planned_seconds": 6,
+   "camera": "close on the middle plank",
+   "action": "Nunu's front paw touches the first plank; the middle plank tilts slightly",
+   "audio": "soft wooden creak (not scary)",
+   "status": "BOARDED",
+   "creation_method": "not started",
+   "assets": [],
+   "approvals": {
+    "story": "PENDING",
+    "arabic_review": "PENDING",
+    "child_safety": "PENDING",
+    "founder": "PENDING"
+   }
+  },
+  {
+   "shot": "04",
+   "scene": 2,
+   "planned_seconds": 8,
+   "camera": "medium, eye level",
+   "action": "\"Oh! This plank is wobbling!\" Nunu steps back onto the grass",
+   "audio": "dialogue 2",
+   "status": "BOARDED",
+   "creation_method": "not started",
+   "assets": [],
+   "approvals": {
+    "story": "PENDING",
+    "arabic_review": "PENDING",
+    "child_safety": "PENDING",
+    "founder": "PENDING"
+   }
+  },
+  {
+   "shot": "05",
+   "scene": 2,
+   "planned_seconds": 10,
+   "camera": "medium-close",
+   "action": "Nunu looks at the gap, thinks of jumping, stops: \"Wait! I'll think first.\"",
+   "audio": "dialogue 3, music pause",
+   "status": "BOARDED",
+   "creation_method": "not started",
+   "assets": [],
+   "approvals": {
+    "story": "PENDING",
+    "arabic_review": "PENDING",
+    "child_safety": "PENDING",
+    "founder": "PENDING"
+   }
+  },
+  {
+   "shot": "06",
+   "scene": 3,
+   "planned_seconds": 12,
+   "camera": "two-shot across the stream",
+   "action": "Lulu calls, Nunu explains; Lulu: \"Don't jump! Let's ask!\"",
+   "audio": "dialogue 4-6",
+   "status": "BOARDED",
+   "creation_method": "not started",
+   "assets": [],
+   "approvals": {
+    "story": "PENDING",
+    "arabic_review": "PENDING",
+    "child_safety": "PENDING",
+    "founder": "PENDING"
+   }
+  },
+  {
+   "shot": "07",
+   "scene": 3,
+   "planned_seconds": 8,
+   "camera": "close on Mimo",
+   "action": "Mimo, shy, points toward the olive tree",
+   "audio": "dialogue 7",
+   "status": "BOARDED",
+   "creation_method": "not started",
+   "assets": [],
+   "approvals": {
+    "story": "PENDING",
+    "arabic_review": "PENDING",
+    "child_safety": "PENDING",
+    "founder": "PENDING"
+   }
+  },
+  {
+   "shot": "08",
+   "scene": 4,
+   "planned_seconds": 10,
+   "camera": "wide, tracking slowly",
+   "action": "Nunu walks to the olive tree; Grandma Owl on a low branch",
+   "audio": "footsteps, birds",
+   "status": "BOARDED",
+   "creation_method": "not started",
+   "assets": [],
+   "approvals": {
+    "story": "PENDING",
+    "arabic_review": "PENDING",
+    "child_safety": "PENDING",
+    "founder": "PENDING"
+   }
+  },
+  {
+   "shot": "09",
+   "scene": 4,
+   "planned_seconds": 14,
+   "camera": "medium two-shot",
+   "action": "Nunu reports; Grandma Owl praises him",
+   "audio": "dialogue 8-9",
+   "status": "BOARDED",
+   "creation_method": "not started",
+   "assets": [],
+   "approvals": {
+    "story": "PENDING",
+    "arabic_review": "PENDING",
+    "child_safety": "PENDING",
+    "founder": "PENDING"
+   }
+  },
+  {
+   "shot": "10",
+   "scene": 5,
+   "planned_seconds": 20,
+   "camera": "wide on the bridge",
+   "action": "Grandma Owl ties the plank with rope; Nunu holds the rope basket",
+   "audio": "gentle work music",
+   "status": "BOARDED",
+   "creation_method": "not started",
+   "assets": [],
+   "approvals": {
+    "story": "PENDING",
+    "arabic_review": "PENDING",
+    "child_safety": "PENDING",
+    "founder": "PENDING"
+   }
+  },
+  {
+   "shot": "11",
+   "scene": 5,
+   "planned_seconds": 6,
+   "camera": "close on Mimo",
+   "action": "thumbs up: \"Very strong!\"",
+   "audio": "dialogue 11",
+   "status": "BOARDED",
+   "creation_method": "not started",
+   "assets": [],
+   "approvals": {
+    "story": "PENDING",
+    "arabic_review": "PENDING",
+    "child_safety": "PENDING",
+    "founder": "PENDING"
+   }
+  },
+  {
+   "shot": "12",
+   "scene": 6,
+   "planned_seconds": 16,
+   "camera": "side view, eye level",
+   "action": "Nunu crosses slowly, paw on the rail",
+   "audio": "soft cheer",
+   "status": "BOARDED",
+   "creation_method": "not started",
+   "assets": [],
+   "approvals": {
+    "story": "PENDING",
+    "arabic_review": "PENDING",
+    "child_safety": "PENDING",
+    "founder": "PENDING"
+   }
+  },
+  {
+   "shot": "13",
+   "scene": 6,
+   "planned_seconds": 10,
+   "camera": "three-shot",
+   "action": "\"When we see something broken... we tell a grown-up!\" \"Let's play!\"",
+   "audio": "dialogue 12-14",
+   "status": "BOARDED",
+   "creation_method": "not started",
+   "assets": [],
+   "approvals": {
+    "story": "PENDING",
+    "arabic_review": "PENDING",
+    "child_safety": "PENDING",
+    "founder": "PENDING"
+   }
+  },
+  {
+   "shot": "14",
+   "scene": 7,
+   "planned_seconds": 20,
+   "camera": "wide, slow pull-out",
+   "action": "friends play on the grass",
+   "audio": "closing music",
+   "status": "BOARDED",
+   "creation_method": "not started",
+   "assets": [],
+   "approvals": {
+    "story": "PENDING",
+    "arabic_review": "PENDING",
+    "child_safety": "PENDING",
+    "founder": "PENDING"
+   }
+  }
+ ],
+ "blocked_on": [
+  "Arabic voices (human actors with release, or a licensed synthetic voice): founder decision",
+  "an open-licensed Arabic font for any on-screen text: download needs founder approval",
+  "production-quality character models: Blender (free) needs install approval, or keep the primitive style",
+  "native Arabic reviewer for the script"
+ ]
+}
