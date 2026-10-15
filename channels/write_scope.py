@@ -164,6 +164,22 @@ def issue_scope(*, product_id: str, slug: str, payload: dict,
             f"{operation!r}; price, files, title and published must never be "
             f"scoped")
 
+    # Cycle 86: also inspect what the caller actually put in `payload`.
+    #
+    # The check above only constrains the REQUESTED field set, so a payload
+    # carrying price could still be accepted here -- the digest is computed
+    # over `fields`, so keys outside it are silently ignored. That was not
+    # exploitable, because consume_scope independently refuses any payload
+    # touching fields outside the authorization. But a mint that accepts a
+    # price-bearing payload contradicts this function's own docstring and
+    # relies on a downstream check to stay safe, so refuse it here too.
+    stray = sorted(f for f in payload if f not in permitted)
+    if stray:
+        raise ValueError(
+            f"payload keys {stray} are outside the permitted set {permitted} "
+            f"for {operation!r}; price, files, title and published must never "
+            f"be scoped")
+
     scope_id = secrets.token_urlsafe(24)
     now = time.time()
     scope = WriteScope(

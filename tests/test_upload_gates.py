@@ -209,3 +209,39 @@ class _Resp:
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+class TestPayloadKeySmuggling(unittest.TestCase):
+    """Cycle 86: the mint must refuse a payload carrying an unauthorized field.
+
+    consume_scope already refused these, so this was never exploitable. The
+    probe that found it only tested the mint, which is why it first looked
+    alarming. Hardening the mint removes the dependence on a downstream check.
+    """
+
+    def test_price_payload_cannot_be_minted(self):
+        for field in ("price", "name", "files", "published", "tags"):
+            with self.subTest(field=field):
+                with self.assertRaises(ValueError):
+                    ws.issue_scope(product_id=PID, slug="bfhpzl",
+                                   payload={field: "x"},
+                                   operation="update_description")
+
+    def test_mixed_payload_is_refused_rather_than_partly_honoured(self):
+        with self.assertRaises(ValueError):
+            ws.issue_scope(product_id=PID, slug="bfhpzl",
+                           payload={"description": "ok", "price": 1},
+                           operation="update_description")
+
+    def test_permitted_field_still_mints_normally(self):
+        s = ws.issue_scope(product_id=PID, slug="bfhpzl",
+                           payload={"description": "text"},
+                           operation="update_description")
+        self.assertEqual(s.allowed_fields, ("description",))
+
+    def test_upload_and_abort_payloads_are_unaffected(self):
+        ws.issue_scope(product_id=PID, slug="bfhpzl",
+                       payload={"file_path": "a.pdf"},
+                       operation="upload_file")
+        ws.issue_scope(product_id=PID, slug="bfhpzl",
+                       payload={"upload_id": "UP_1"},
+                       operation="abort_upload")
