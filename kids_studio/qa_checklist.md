@@ -53,3 +53,8 @@ Every item gets PASS, FAIL, N/A (with reason) or PENDING, plus who checked it an
 |---|---|---|
 | G1 | Every asset in `rights_ledger.json` with `usable: true` | PASS: every asset used in the PoC is original and owned |
 | G2 | No voice, music or font with unknown rights | PASS: no voice or font used; music is original |
+
+## Episode 1 animatic (2026-10-15)
+Technical (verify_video.py): PASS. 1896/1896 frames, 0 decode errors, 1280x720, 12 fps, 158.0 s; audio peak -6.0 dBFS; 80/80 footsteps synced (max 4.0 ms); Arabic subtitle track 16/16 cues.
+Child safety: PASS on staging. Nunu never jumps (tested on every frame of every shot), steps back from the wobbly plank, asks the grown-up; the plank is tied before anyone crosses (tested); no flashing (max 1 luminance jump per second, at cuts).
+Open: D1/D2 native Arabic review (human), voices, visual defects listed in production_log.json.

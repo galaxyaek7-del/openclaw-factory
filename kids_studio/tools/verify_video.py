@@ -23,6 +23,39 @@ def run(cmd, binary=False):
     return p.returncode, p.stdout if binary else p.stdout.decode("utf-8", "replace"), p.stderr.decode("utf-8", "replace")
 
 
+def footstep_offsets(x, sr, expected, window=0.06, band=(100, 200), min_snr=4.0):
+    """Measured onset minus expected time for each footstep (seconds).
+
+    Footsteps are 140 Hz thumps: isolate the band, build a block envelope, and
+    find the first crossing of half the local peak near each expected time.
+    Block times use the EXACT block length (hop / sr). The first version used
+    a rounded 5 ms and drifted 2.3 ms per second -- 0.34 s by the end of a
+    158 s episode -- so late footsteps fell outside the window and noise was
+    measured instead (fixed 2026-10-15). A footstep whose peak is not clearly
+    above the local background is reported as missed, never measured from noise.
+    """
+    X = np.fft.rfft(x)
+    f = np.fft.rfftfreq(len(x), 1 / sr)
+    X[(f < band[0]) | (f > band[1])] = 0
+    b = np.abs(np.fft.irfft(X, len(x)))
+    hop = int(0.005 * sr)
+    step = hop / sr                                   # exact block duration
+    nblk = len(b) // hop
+    env = b[: nblk * hop].reshape(nblk, hop).max(axis=1)
+    offsets, missed = [], []
+    for t in expected:
+        i0 = max(int(np.floor((t - window) / step)), 0)
+        i1 = min(int(np.ceil((t + window) / step)) + 1, nblk)
+        seg = env[i0:i1]
+        bg = env[max(i0 - int(0.3 / step), 0):i0]
+        if len(seg) == 0 or len(bg) == 0 or seg.max() < min_snr * np.median(bg):
+            missed.append(t)
+            continue
+        on = int(np.argmax(seg >= 0.5 * seg.max()))
+        offsets.append((i0 + on) * step - t)
+    return offsets, missed
+
+
 def main(path):
     import imageio_ffmpeg
     ff = imageio_ffmpeg.get_ffmpeg_exe()
@@ -78,29 +111,28 @@ def main(path):
     build = path.with_name(path.stem + ".build.json")
     if build.exists() and len(x):
         expected = json.loads(build.read_text(encoding="utf-8")).get("footstep_times_s", [])
-        # footsteps are 140 Hz thumps; isolate them with a band filter via FFT
-        X = np.fft.rfft(x)
-        f = np.fft.rfftfreq(len(x), 1 / sr)
-        X[(f < 100) | (f > 200)] = 0
-        band = np.abs(np.fft.irfft(X, len(x)))
-        hop = int(0.005 * sr)
-        env = np.array([band[i:i + hop].max() for i in range(0, len(band) - hop, hop)])
-        offsets = []
-        for t in expected:
-            i0, i1 = int((t - 0.06) / 0.005), int((t + 0.06) / 0.005)
-            seg = env[max(i0, 0):i1]
-            if len(seg) == 0:
-                continue
-            # onset = first crossing of half the local peak
-            on = np.argmax(seg >= 0.5 * seg.max())
-            offsets.append((max(i0, 0) + on) * 0.005 - t)
+        offsets, missed = footstep_offsets(x, sr, expected)
         rep["footsteps_expected"] = len(expected)
         rep["footsteps_measured"] = len(offsets)
+        rep["footsteps_not_detected"] = missed
         rep["sync_offset_ms"] = {"median": round(float(np.median(offsets)) * 1000, 1) if offsets else None,
                                  "max_abs": round(float(np.max(np.abs(offsets))) * 1000, 1) if offsets else None}
-        C["footstep_sync_within_one_frame"] = bool(offsets) and float(np.max(np.abs(offsets))) <= 1 / fps
+        C["footstep_sync_within_one_frame"] = (bool(offsets) and not missed
+                                               and float(np.max(np.abs(offsets))) <= 1 / fps)
     else:
         C["footstep_sync_within_one_frame"] = None
+
+    # subtitle track, when the build declares one
+    if build.exists():
+        want = json.loads(build.read_text(encoding="utf-8")).get("subtitle_cues")
+        if want is not None:
+            has = bool(re.search(r"Subtitle: mov_text", info))
+            lang = bool(re.search(r"\(ara\).*Subtitle|Subtitle.*\(ara\)", info)) or bool(re.search(r"Stream #0:\d+\(ara\): Subtitle", info))
+            _, srt_txt, _ = run([ff, "-v", "error", "-i", str(path), "-map", "0:s:0", "-f", "srt", "-"])
+            cues = len(re.findall(r"^\d+\s*$", srt_txt, re.M)) if has else 0
+            arabic = bool(re.search(r"[؀-ۿ]", srt_txt))
+            rep["subtitles"] = {"stream": has, "language_ara": lang, "cues": cues, "expected": want, "arabic_text": arabic}
+            C["arabic_subtitle_track_complete"] = has and lang and arabic and cues == want
 
     for k, v in C.items():          # numpy bools are not JSON-serialisable
         C[k] = None if v is None else bool(v)

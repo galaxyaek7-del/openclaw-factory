@@ -2,23 +2,167 @@
  "purpose": "Every asset and tool that touches a Kids Studio deliverable. Rule: an asset with unknown rights is not usable.",
  "updated": "2026-10-15",
  "assets": [
-  {"id": "char-nunu", "type": "character design + 3D primitive model", "source": "original, defined in kids_studio/tools/render_poc.py and bible/series_bible.md", "created_by": "Galaxy Forge", "license": "owned (original work)", "evidence": "code in this repo; no reference asset used", "usable": true},
-  {"id": "char-lulu", "type": "character design + 3D primitive model", "source": "original, render_poc.py", "created_by": "Galaxy Forge", "license": "owned (original work)", "evidence": "code in this repo", "usable": true},
-  {"id": "char-mimo", "type": "character design + 3D primitive model", "source": "original, render_poc.py", "created_by": "Galaxy Forge", "license": "owned (original work)", "evidence": "code in this repo", "usable": true},
-  {"id": "char-grandma-owl", "type": "character design (text only, not yet modelled)", "source": "original, series bible", "created_by": "Galaxy Forge", "license": "owned (original work)", "evidence": "bible/series_bible.md", "usable": true},
-  {"id": "set-wadi-al-zahr", "type": "3D set (banks, stream, bridge, olive tree, hills)", "source": "original procedural primitives, render_poc.py", "created_by": "Galaxy Forge", "license": "owned", "evidence": "code in this repo", "usable": true},
-  {"id": "tex-planks-water", "type": "procedural textures (plank stripes, water ripples)", "source": "formulas in render_poc.py", "created_by": "Galaxy Forge", "license": "owned", "evidence": "code in this repo; no image textures used", "usable": true},
-  {"id": "music-poc-melody", "type": "music", "source": "original 15-note C-major pentatonic sequence synthesised in render_poc.py (sine + 2nd harmonic)", "created_by": "Galaxy Forge", "license": "owned (original composition)", "evidence": "note list in synth_audio(); no sample or recording used", "usable": true},
-  {"id": "sfx-brook-footsteps", "type": "sound effects", "source": "seeded noise (brook) and 140 Hz decaying sine (footsteps), synthesised in render_poc.py", "created_by": "Galaxy Forge", "license": "owned", "evidence": "synth_audio()", "usable": true},
-  {"id": "voice-arabic", "type": "voices", "source": "NONE YET", "license": "n/a", "evidence": "No Arabic voice is installed (Windows SAPI has only fr-FR Hortense and en-US Zira, observed 2026-10-15). Production voices must be consenting human actors under a written release, or a synthetic voice whose licence explicitly permits this use. No cloned or imitated real voices.", "usable": false},
-  {"id": "font-arabic", "type": "font for titles / subtitles", "source": "NONE YET", "license": "n/a", "evidence": "No open-licensed Arabic font on the machine (no Noto/Amiri/Cairo found). Windows system fonts are not cleared for this use. The proof of concept therefore has no on-screen text. Candidate: an SIL Open Font License Arabic font, which needs a download (founder approval).", "usable": false}
+  {
+   "id": "char-nunu",
+   "type": "character design + 3D primitive model",
+   "source": "original, defined in kids_studio/tools/render_poc.py and bible/series_bible.md",
+   "created_by": "Galaxy Forge",
+   "license": "owned (original work)",
+   "evidence": "code in this repo; no reference asset used",
+   "usable": true
+  },
+  {
+   "id": "char-lulu",
+   "type": "character design + 3D primitive model",
+   "source": "original, render_poc.py",
+   "created_by": "Galaxy Forge",
+   "license": "owned (original work)",
+   "evidence": "code in this repo",
+   "usable": true
+  },
+  {
+   "id": "char-mimo",
+   "type": "character design + 3D primitive model",
+   "source": "original, render_poc.py",
+   "created_by": "Galaxy Forge",
+   "license": "owned (original work)",
+   "evidence": "code in this repo",
+   "usable": true
+  },
+  {
+   "id": "char-grandma-owl",
+   "type": "character design + 3D primitive model",
+   "source": "original, series bible + kids_studio/tools/ep01_shots.py (owl())",
+   "created_by": "Galaxy Forge",
+   "license": "owned (original work)",
+   "evidence": "code in this repo",
+   "usable": true
+  },
+  {
+   "id": "set-wadi-al-zahr",
+   "type": "3D set (banks, stream, bridge, olive tree, hills)",
+   "source": "original procedural primitives, render_poc.py",
+   "created_by": "Galaxy Forge",
+   "license": "owned",
+   "evidence": "code in this repo",
+   "usable": true
+  },
+  {
+   "id": "tex-planks-water",
+   "type": "procedural textures (plank stripes, water ripples)",
+   "source": "formulas in render_poc.py",
+   "created_by": "Galaxy Forge",
+   "license": "owned",
+   "evidence": "code in this repo; no image textures used",
+   "usable": true
+  },
+  {
+   "id": "music-poc-melody",
+   "type": "music",
+   "source": "original 15-note C-major pentatonic sequence synthesised in render_poc.py (sine + 2nd harmonic)",
+   "created_by": "Galaxy Forge",
+   "license": "owned (original composition)",
+   "evidence": "note list in synth_audio(); no sample or recording used",
+   "usable": true
+  },
+  {
+   "id": "sfx-brook-footsteps",
+   "type": "sound effects",
+   "source": "seeded noise (brook) and 140 Hz decaying sine (footsteps), synthesised in render_poc.py",
+   "created_by": "Galaxy Forge",
+   "license": "owned",
+   "evidence": "synth_audio()",
+   "usable": true
+  },
+  {
+   "id": "voice-arabic",
+   "type": "voices",
+   "source": "NONE YET",
+   "license": "n/a",
+   "evidence": "No Arabic voice is installed (Windows SAPI has only fr-FR Hortense and en-US Zira, observed 2026-10-15). Production voices must be consenting human actors under a written release, or a synthetic voice whose licence explicitly permits this use. No cloned or imitated real voices.",
+   "usable": false
+  },
+  {
+   "id": "font-arabic",
+   "type": "font for titles / subtitles",
+   "source": "NONE YET",
+   "license": "n/a",
+   "evidence": "No open-licensed Arabic font on the machine (no Noto/Amiri/Cairo found). Windows system fonts are not cleared for this use. The proof of concept therefore has no on-screen text. Candidate: an SIL Open Font License Arabic font, which needs a download (founder approval).",
+   "usable": false
+  },
+  {
+   "id": "props-plank-rope-basket",
+   "type": "3D props (loose plank, rope wraps, basket, low branch)",
+   "source": "original primitives, ep01_shots.py",
+   "created_by": "Galaxy Forge",
+   "license": "owned",
+   "evidence": "code in this repo",
+   "usable": true
+  },
+  {
+   "id": "sfx-plank-creak",
+   "type": "sound effect",
+   "source": "original: 620->480 Hz glide with tremolo and decay, synthesised in build_episode.py",
+   "created_by": "Galaxy Forge",
+   "license": "owned",
+   "evidence": "soundtrack()",
+   "usable": true
+  },
+  {
+   "id": "music-episode-bed",
+   "type": "music",
+   "source": "the original PoC phrase, transposed per 12 s block (build_episode.py)",
+   "created_by": "Galaxy Forge",
+   "license": "owned (original composition)",
+   "evidence": "soundtrack()",
+   "usable": true
+  },
+  {
+   "id": "subs-ar-ep01",
+   "type": "Arabic subtitle text",
+   "source": "the script's own lines (episodes/ep01_nunu_little_bridge/script_ar.md)",
+   "created_by": "Galaxy Forge",
+   "license": "owned",
+   "evidence": "tests/test_kids_studio.py checks every subtitle line against the script",
+   "usable": true,
+   "note": "soft subtitle track (mov_text): rendered by the viewer's player, so no font is embedded or needed"
+  }
  ],
  "tools": [
-  {"id": "python", "version": "3.14.6", "license": "PSF License", "use": "build scripts"},
-  {"id": "numpy", "version": "2.5.3", "license": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 (package metadata)", "use": "ray-casting renderer, audio synthesis"},
-  {"id": "pillow", "version": "12.3.0", "license": "MIT-CMU (package metadata)", "use": "writing frames"},
-  {"id": "imageio-ffmpeg", "version": "0.6.0", "license": "BSD-2-Clause (package metadata)", "use": "provides the FFmpeg binary"},
-  {"id": "ffmpeg", "version": "7.1 essentials build (gyan.dev), bundled in imageio-ffmpeg", "license": "GPL (build includes libx264); licence of the tool, not of the encoded output", "use": "H.264/AAC encoding, decoding for verification"}
+  {
+   "id": "python",
+   "version": "3.14.6",
+   "license": "PSF License",
+   "use": "build scripts"
+  },
+  {
+   "id": "numpy",
+   "version": "2.5.3",
+   "license": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 (package metadata)",
+   "use": "ray-casting renderer, audio synthesis"
+  },
+  {
+   "id": "pillow",
+   "version": "12.3.0",
+   "license": "MIT-CMU (package metadata)",
+   "use": "writing frames"
+  },
+  {
+   "id": "imageio-ffmpeg",
+   "version": "0.6.0",
+   "license": "BSD-2-Clause (package metadata)",
+   "use": "provides the FFmpeg binary"
+  },
+  {
+   "id": "ffmpeg",
+   "version": "7.1 essentials build (gyan.dev), bundled in imageio-ffmpeg",
+   "license": "GPL (build includes libx264); licence of the tool, not of the encoded output",
+   "use": "H.264/AAC encoding, decoding for verification"
+  }
  ],
- "not_used": ["Blender (not installed)", "any stock footage, image, model, font, music or voice", "any paid API or online generator"]
+ "not_used": [
+  "Blender (not installed)",
+  "any stock footage, image, model, font, music or voice",
+  "any paid API or online generator"
+ ]
 }

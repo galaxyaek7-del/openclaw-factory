@@ -5,3 +5,5 @@
 *.mp4
 *_frames/
 render_log.txt
+*.srt
+episode_build_log.txt

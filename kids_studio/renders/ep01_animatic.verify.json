@@ -1,0 +1,49 @@
+{
+ "file": "kids_studio\\renders\\ep01_animatic.mp4",
+ "bytes": 7559448,
+ "checks": {
+  "has_video_and_audio": true,
+  "full_decode_without_errors": true,
+  "no_black_or_blank_frames": true,
+  "no_frozen_stretch_over_2s": true,
+  "audio_peak_below_minus_1_dbfs": true,
+  "audio_not_silent": true,
+  "audio_video_duration_match_within_50ms": true,
+  "footstep_sync_within_one_frame": true,
+  "arabic_subtitle_track_complete": true
+ },
+ "container_duration_s": 158.0,
+ "video": {
+  "codec": "h264",
+  "width": 1280,
+  "height": 720,
+  "fps": 12.0
+ },
+ "audio": {
+  "codec": "aac",
+  "sample_rate": 44100
+ },
+ "decode_errors": "",
+ "decoded_frames": 1896,
+ "longest_identical_run_frames": 5,
+ "frames_with_motion": 1856,
+ "audio_duration_s": 158.012,
+ "video_duration_s": 158.0,
+ "audio_peak_dbfs": -6.0,
+ "audio_rms_dbfs": -27.4,
+ "footsteps_expected": 80,
+ "footsteps_measured": 80,
+ "footsteps_not_detected": [],
+ "sync_offset_ms": {
+  "median": -1.3,
+  "max_abs": 4.0
+ },
+ "subtitles": {
+  "stream": true,
+  "language_ara": true,
+  "cues": 16,
+  "expected": 16,
+  "arabic_text": true
+ },
+ "verdict": "PASS"
+}

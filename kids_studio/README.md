@@ -25,7 +25,9 @@ kids_studio/
   rights_ledger.json         every asset: source, licence, evidence
   qa_checklist.md            child safety, story, visuals, audio, playback
   production_log.json        measured time, render time, defects
-  tools/render_poc.py        reproducible proof-of-concept build (no network)
+  tools/render_poc.py        render engine + verified Shot 01 proof of concept
+  tools/ep01_shots.py        Episode 1 shot list: cameras, poses, props, subtitles
+  tools/build_episode.py     parallel render, soundtrack, SRT, mux (no network)
   tools/verify_video.py      decodes a render and checks it
   publishing/youtube_metadata_draft.md   draft only, not uploaded
   renders/                   build output (not committed)
@@ -46,6 +48,15 @@ kids_studio/
 | 9. Edit and mix | master file | yes (FFmpeg) | yes |
 | 10. QA | checklist results | technical checks automated | **yes**: full watch-through |
 | 11. Publish | YouTube upload | **never automatic** | **founder approval** |
+
+## Building the Episode 1 animatic
+
+```
+python kids_studio/tools/build_episode.py --workers 4     # all 14 shots, music, sound, Arabic soft subtitles
+python kids_studio/tools/verify_video.py kids_studio/renders/ep01_animatic.mp4
+```
+
+The animatic is a **timing and staging preview**: primitive 3D characters, no voices, and the Arabic dialogue as a subtitle track. Shots are defined as data in `tools/ep01_shots.py`; the engine in `tools/render_poc.py` culls rays that cannot hit an object (pixel-identical output, about 4x faster).
 
 ## Reproducing the proof of concept
 

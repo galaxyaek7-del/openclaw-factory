@@ -32,9 +32,10 @@
  "audio_rms_dbfs": -25.6,
  "footsteps_expected": 21,
  "footsteps_measured": 21,
+ "footsteps_not_detected": [],
  "sync_offset_ms": {
-  "median": 7.5,
-  "max_abs": 15.0
+  "median": -1.3,
+  "max_abs": 3.8
  },
  "verdict": "PASS"
 }

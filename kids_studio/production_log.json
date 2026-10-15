@@ -1,13 +1,14 @@
 {
  "project": "Kids Studio",
  "episode": "ep01",
- "updated": "2026-10-15T06:39:52+00:00",
+ "updated": "2026-10-15T07:23:28+00:00",
  "time": {
   "OBSERVED_session_wall_clock_minutes": 21.0,
   "OBSERVED_render_seconds_288_frames": 950.2,
   "OBSERVED_seconds_per_frame": 3.3,
   "OBSERVED_encode_seconds": 2.4,
-  "note": "wall clock covers audit, writing, renderer development, two test renders, full render and verification by one AI session; it is not a human-hours figure"
+  "note": "wall clock covers audit, writing, renderer development, two test renders, full render and verification by one AI session; it is not a human-hours figure",
+  "OBSERVED_session_wall_clock_minutes_total": 64.6
  },
  "hardware": "OBSERVED: Intel i5-8365U (8 threads), Intel UHD 620, 15.8 GB RAM; CPU-only rendering",
  "artifact": {
@@ -33,13 +34,19 @@
   "technical_found_and_fixed": [
    "verify_video.py crashed writing numpy booleans to JSON (fixed; verdict unaffected)",
    "first test frame: Nunu stopped with his head past the bridge post, reading as stepping onto the bridge (stop point moved from x=-1.7 to -2.2, storyboard updated)",
-   "outlines cut across the distant hills (terrain excluded from outlines)"
+   "outlines cut across the distant hills (terrain excluded from outlines)",
+   "test build: FFmpeg -shortest mis-cut the video when a subtitle stream was mapped (229 of 288 frames); explicit -t duration now",
+   "test build: subtitle file held cues beyond the rendered cut; cues now limited to the cut",
+   "verify_video.py measured sync with a rounded 5 ms block (exact: 4.9887 ms), drifting 2.3 ms/s -- 0.34 s by the end of the episode, so late footsteps were measured from noise and the check passed by accident; exact block time + missed-footstep detection now. Corrected readings: PoC max 3.8 ms, episode max 4.0 ms",
+   "staging: shots 02/03/07/09/10/11/13 framed wrongly in the first pass (character facing away, owl hidden in the canopy, Lulu blocking Mimo); fixed and re-checked on contact sheets",
+   "Mimo spines added (PoC open defect C2 closed)"
   ],
   "quality_open": [
-   "Mimo reads as a brown ball: no visible spines, not yet recognisable as a hedgehog",
-   "primitive characters are a test style, not production models",
-   "characters are small in frame (acceptable for an establishing shot)",
-   "no dialogue: no cleared Arabic voice"
+   "primitive characters are a preview style, not production models",
+   "shots 07 and 11: Lulu is a large grey shape at the frame edge",
+   "shot 12: Nunu does not hold the rail (script asks for a paw on the rail)",
+   "no mouths or lip sync (no voices yet)",
+   "animatic is 12 fps; final should be 24 fps (ESTIMATED render: about 2 x 18 min = 36 min on 4 workers)"
   ]
  },
  "automatable_safely": [
@@ -57,12 +64,35 @@
   "founder approval before any upload"
  ],
  "ESTIMATED_future": {
-  "full_ep01_render_at_this_style": "ESTIMATED about 4.5 min x 24 fps x 3.3 s/frame = about 6 hours CPU for a 4.5-minute episode at 640x360, before any added complexity",
+  "full_ep01_render_at_this_style": "ESTIMATED from the measured 0.57 s/frame effective (4 workers, 12 fps): about 36 min for 158 s at 24 fps",
   "spend": "$0 authorized; no paid cost estimated or incurred"
  },
  "UNKNOWN": [
   "audience demand",
   "monetisation eligibility",
   "how a richer character style (Blender) would perform on this hardware"
- ]
+ ],
+ "animatic": {
+  "OBSERVED_render_seconds": 1073.2,
+  "frames": 1896,
+  "fps": 12,
+  "workers": 4,
+  "OBSERVED_effective_seconds_per_frame": 0.57,
+  "encode_seconds": 17.3,
+  "verdict": "PASS",
+  "duration_s": 158.0,
+  "sync_offset_ms": {
+   "median": -1.3,
+   "max_abs": 4.0
+  },
+  "subtitles": {
+   "stream": true,
+   "language_ara": true,
+   "cues": 16,
+   "expected": 16,
+   "arabic_text": true
+  },
+  "flash_check": "8 luminance jumps, all at shot cuts; max 1 within any second (limit 3)"
+ },
+ "engine_speedup": "exact ray culling: 3.3 -> 0.78 s/frame single-process on the PoC, pixel-identical (0 differing pixels, 4 frames compared)"
 }

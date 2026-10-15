@@ -3,7 +3,7 @@
  "episode": "ep01_nunu_little_bridge",
  "title_ar": "نونو والجسر الصغير",
  "title_en": "Nunu and the Little Bridge",
- "episode_status": "PRE-PRODUCTION: script DRAFT v0.1, storyboard DRAFT v0.1, 1 of 14 shots rendered as a technical proof of concept",
+ "episode_status": "ANIMATIC COMPLETE AND VERIFIED: all 14 shots, 158 s, music/sound, 16 Arabic subtitle cues. NOT the finished episode: no voices, primitive models.",
  "finished_film_exists": false,
  "shots": [
   {
@@ -13,8 +13,8 @@
    "camera": "wide, static, slight high angle; bridge centre-frame",
    "action": "Valley at morning. Lulu (far bank, right) and Mimo wait. Nunu walks in from the left, tail swaying, toward the bridge, and stops at the near end",
    "audio": "stream ambience, soft melody",
-   "status": "POC_RENDERED_AND_VERIFIED (technical test, not a finished shot)",
-   "creation_method": "procedural 3D primitives, CPU ray casting (tools/render_poc.py)",
+   "status": "POC_RENDERED_AND_VERIFIED; ANIMATIC_RENDERED_AND_VERIFIED (primitive 3D, no voices)",
+   "creation_method": "procedural 3D primitives, CPU ray casting with exact culling (tools/ep01_shots.py)",
    "assets": [
     "char-nunu",
     "char-lulu",
@@ -39,8 +39,8 @@
    "camera": "medium on Nunu",
    "action": "Nunu's greeting line",
    "audio": "dialogue 1",
-   "status": "BOARDED",
-   "creation_method": "not started",
+   "status": "ANIMATIC_RENDERED_AND_VERIFIED (primitive 3D, no voices)",
+   "creation_method": "procedural 3D primitives, CPU ray casting with exact culling (tools/ep01_shots.py)",
    "assets": [],
    "approvals": {
     "story": "PENDING",
@@ -56,8 +56,8 @@
    "camera": "close on the middle plank",
    "action": "Nunu's front paw touches the first plank; the middle plank tilts slightly",
    "audio": "soft wooden creak (not scary)",
-   "status": "BOARDED",
-   "creation_method": "not started",
+   "status": "ANIMATIC_RENDERED_AND_VERIFIED (primitive 3D, no voices)",
+   "creation_method": "procedural 3D primitives, CPU ray casting with exact culling (tools/ep01_shots.py)",
    "assets": [],
    "approvals": {
     "story": "PENDING",
@@ -73,8 +73,8 @@
    "camera": "medium, eye level",
    "action": "\"Oh! This plank is wobbling!\" Nunu steps back onto the grass",
    "audio": "dialogue 2",
-   "status": "BOARDED",
-   "creation_method": "not started",
+   "status": "ANIMATIC_RENDERED_AND_VERIFIED (primitive 3D, no voices)",
+   "creation_method": "procedural 3D primitives, CPU ray casting with exact culling (tools/ep01_shots.py)",
    "assets": [],
    "approvals": {
     "story": "PENDING",
@@ -90,8 +90,8 @@
    "camera": "medium-close",
    "action": "Nunu looks at the gap, thinks of jumping, stops: \"Wait! I'll think first.\"",
    "audio": "dialogue 3, music pause",
-   "status": "BOARDED",
-   "creation_method": "not started",
+   "status": "ANIMATIC_RENDERED_AND_VERIFIED (primitive 3D, no voices)",
+   "creation_method": "procedural 3D primitives, CPU ray casting with exact culling (tools/ep01_shots.py)",
    "assets": [],
    "approvals": {
     "story": "PENDING",
@@ -107,8 +107,8 @@
    "camera": "two-shot across the stream",
    "action": "Lulu calls, Nunu explains; Lulu: \"Don't jump! Let's ask!\"",
    "audio": "dialogue 4-6",
-   "status": "BOARDED",
-   "creation_method": "not started",
+   "status": "ANIMATIC_RENDERED_AND_VERIFIED (primitive 3D, no voices)",
+   "creation_method": "procedural 3D primitives, CPU ray casting with exact culling (tools/ep01_shots.py)",
    "assets": [],
    "approvals": {
     "story": "PENDING",
@@ -124,8 +124,8 @@
    "camera": "close on Mimo",
    "action": "Mimo, shy, points toward the olive tree",
    "audio": "dialogue 7",
-   "status": "BOARDED",
-   "creation_method": "not started",
+   "status": "ANIMATIC_RENDERED_AND_VERIFIED (primitive 3D, no voices)",
+   "creation_method": "procedural 3D primitives, CPU ray casting with exact culling (tools/ep01_shots.py)",
    "assets": [],
    "approvals": {
     "story": "PENDING",
@@ -141,8 +141,8 @@
    "camera": "wide, tracking slowly",
    "action": "Nunu walks to the olive tree; Grandma Owl on a low branch",
    "audio": "footsteps, birds",
-   "status": "BOARDED",
-   "creation_method": "not started",
+   "status": "ANIMATIC_RENDERED_AND_VERIFIED (primitive 3D, no voices)",
+   "creation_method": "procedural 3D primitives, CPU ray casting with exact culling (tools/ep01_shots.py)",
    "assets": [],
    "approvals": {
     "story": "PENDING",
@@ -158,8 +158,8 @@
    "camera": "medium two-shot",
    "action": "Nunu reports; Grandma Owl praises him",
    "audio": "dialogue 8-9",
-   "status": "BOARDED",
-   "creation_method": "not started",
+   "status": "ANIMATIC_RENDERED_AND_VERIFIED (primitive 3D, no voices)",
+   "creation_method": "procedural 3D primitives, CPU ray casting with exact culling (tools/ep01_shots.py)",
    "assets": [],
    "approvals": {
     "story": "PENDING",
@@ -175,8 +175,8 @@
    "camera": "wide on the bridge",
    "action": "Grandma Owl ties the plank with rope; Nunu holds the rope basket",
    "audio": "gentle work music",
-   "status": "BOARDED",
-   "creation_method": "not started",
+   "status": "ANIMATIC_RENDERED_AND_VERIFIED (primitive 3D, no voices)",
+   "creation_method": "procedural 3D primitives, CPU ray casting with exact culling (tools/ep01_shots.py)",
    "assets": [],
    "approvals": {
     "story": "PENDING",
@@ -192,8 +192,8 @@
    "camera": "close on Mimo",
    "action": "thumbs up: \"Very strong!\"",
    "audio": "dialogue 11",
-   "status": "BOARDED",
-   "creation_method": "not started",
+   "status": "ANIMATIC_RENDERED_AND_VERIFIED (primitive 3D, no voices)",
+   "creation_method": "procedural 3D primitives, CPU ray casting with exact culling (tools/ep01_shots.py)",
    "assets": [],
    "approvals": {
     "story": "PENDING",
@@ -209,8 +209,8 @@
    "camera": "side view, eye level",
    "action": "Nunu crosses slowly, paw on the rail",
    "audio": "soft cheer",
-   "status": "BOARDED",
-   "creation_method": "not started",
+   "status": "ANIMATIC_RENDERED_AND_VERIFIED (primitive 3D, no voices)",
+   "creation_method": "procedural 3D primitives, CPU ray casting with exact culling (tools/ep01_shots.py)",
    "assets": [],
    "approvals": {
     "story": "PENDING",
@@ -226,8 +226,8 @@
    "camera": "three-shot",
    "action": "\"When we see something broken... we tell a grown-up!\" \"Let's play!\"",
    "audio": "dialogue 12-14",
-   "status": "BOARDED",
-   "creation_method": "not started",
+   "status": "ANIMATIC_RENDERED_AND_VERIFIED (primitive 3D, no voices)",
+   "creation_method": "procedural 3D primitives, CPU ray casting with exact culling (tools/ep01_shots.py)",
    "assets": [],
    "approvals": {
     "story": "PENDING",
@@ -243,8 +243,8 @@
    "camera": "wide, slow pull-out",
    "action": "friends play on the grass",
    "audio": "closing music",
-   "status": "BOARDED",
-   "creation_method": "not started",
+   "status": "ANIMATIC_RENDERED_AND_VERIFIED (primitive 3D, no voices)",
+   "creation_method": "procedural 3D primitives, CPU ray casting with exact culling (tools/ep01_shots.py)",
    "assets": [],
    "approvals": {
     "story": "PENDING",
@@ -259,5 +259,9 @@
   "an open-licensed Arabic font for any on-screen text: download needs founder approval",
   "production-quality character models: Blender (free) needs install approval, or keep the primitive style",
   "native Arabic reviewer for the script"
- ]
+ ],
+ "animatic": {
+  "file": "renders/ep01_animatic.mp4 (not committed)",
+  "verification": "renders/ep01_animatic.verify.json: PASS"
+ }
 }

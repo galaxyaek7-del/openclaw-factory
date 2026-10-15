@@ -246,31 +246,130 @@ def normal_box(p, ob):
     return n
 
 
-def cast(o, d, objs):
+def obox(c, half, col, R=None, cast=True, tex=None):
+    """Oriented box: centre, half-extents, rotation. Used for tilting props."""
+    return {"k": "o", "c": np.array(c, float), "h": np.array(half, float),
+            "R": np.eye(3) if R is None else R, "col": col, "cast": cast, "tex": tex}
+
+
+def _to_local(o, d, ob):
+    Rt = ob["R"].T
+    return (o - ob["c"]) @ Rt.T, d @ Rt.T
+
+
+def hit_obox(o, d, ob):
+    lo, ld = _to_local(o, d, ob)
+    return hit_box(lo, ld, {"lo": -ob["h"], "hi": ob["h"]})
+
+
+def normal_obox(p, ob):
+    lp, _ = _to_local(p, np.zeros_like(p), ob)
+    n = normal_box(lp, {"lo": -ob["h"], "hi": ob["h"]})
+    return n @ ob["R"].T
+
+
+def _hit(o, d, ob):
+    k = ob["k"]
+    return hit_ellipsoid(o, d, ob) if k == "e" else hit_obox(o, d, ob) if k == "o" else hit_box(o, d, ob)
+
+
+def _normal(p, ob):
+    k = ob["k"]
+    return normal_ellipsoid(p, ob) if k == "e" else normal_obox(p, ob) if k == "o" else normal_box(p, ob)
+
+
+def _bsphere(ob):
+    """Centre and radius of a sphere that encloses the object (for culling)."""
+    if ob["k"] == "e":
+        return ob["c"], float(ob["r"].max())
+    if ob["k"] == "o":
+        return ob["c"], float(np.linalg.norm(ob["h"]))
+    return (ob["lo"] + ob["hi"]) / 2, float(np.linalg.norm(ob["hi"] - ob["lo"]) / 2)
+
+
+def cast(o, d, objs, sel=None):
+    """Nearest hit per ray. `sel[i]`, when given, lists the only rays that can
+    possibly reach object i (conservative culling); None means test all."""
     best = np.full(len(d), np.inf)
     idx = np.full(len(d), -1)
     for i, ob in enumerate(objs):
-        t = hit_ellipsoid(o, d, ob) if ob["k"] == "e" else hit_box(o, d, ob)
-        m = t < best
-        best[m] = t[m]
-        idx[m] = i
+        ix = None if sel is None else sel[i]
+        if ix is None:
+            t = _hit(o, d, ob)
+            m = t < best
+            best[m] = t[m]
+            idx[m] = i
+        elif len(ix):
+            t = _hit(o[ix], d[ix], ob)
+            m = t < best[ix]
+            best[ix[m]] = t[m]
+            idx[ix[m]] = i
     return best, idx
+
+
+def _screen_candidates(objs, cam, right, up, fwd, tx, ty, W, H):
+    """Pixels whose primary ray could hit each object: the projected bounding
+    box of the 8 corners of a cube enclosing the object's bounding sphere.
+    Exact-conservative: a ray outside this box cannot hit the object."""
+    out = []
+    signs = np.array([[sx, sy, sz] for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)], float)
+    for ob in objs:
+        c, rad = _bsphere(ob)
+        corners = c + signs * rad - cam
+        z = corners @ fwd
+        if (z <= 1e-3).any():
+            out.append(None)
+            continue
+        sx = (corners @ right) / z / tx
+        sy = (corners @ up) / z / ty
+        c0 = int(max(0, np.floor((sx.min() + 1) / 2 * W - 1)))
+        c1 = int(min(W - 1, np.ceil((sx.max() + 1) / 2 * W + 1)))
+        r0 = int(max(0, np.floor((1 - sy.max()) / 2 * H - 1)))
+        r1 = int(min(H - 1, np.ceil((1 - sy.min()) / 2 * H + 1)))
+        if c0 > c1 or r0 > r1:
+            out.append(np.zeros(0, int))
+            continue
+        rows, cols = np.arange(r0, r1 + 1), np.arange(c0, c1 + 1)
+        out.append((rows[:, None] * W + cols[None, :]).ravel())
+    return out
+
+
+def _shadow_candidates(objs, sp, L):
+    """Shadow rays all share direction L: keep only rays passing within the
+    object's bounding sphere (distance from centre to the ray line)."""
+    out = []
+    for ob in objs:
+        c, rad = _bsphere(ob)
+        rel = c - sp
+        proj = rel @ L
+        perp2 = np.einsum("ij,ij->i", rel, rel) - proj * proj
+        out.append(np.nonzero((perp2 <= rad * rad * 1.0001) & (proj >= -rad))[0])
+    return out
 
 
 LIGHT = np.array([-0.45, 1.0, 0.55])
 LIGHT /= np.linalg.norm(LIGHT)
 
 
+POC_CAMERA = ((0.4, 2.0, 6.6), (-0.4, 0.35, 0.0), 46)
+
+
 def render(t, W, H):
+    """The verified Shot 01 proof of concept (unchanged camera and scene)."""
     objs = static_scene() + nunu(t) + lulu(t) + mimo(t)
-    cam = np.array([0.4, 2.0, 6.6])
-    look = np.array([-0.4, 0.35, 0.0])
+    return render_scene(objs, *POC_CAMERA, t, W, H)
+
+
+def render_scene(objs, cam, look, fov_deg, t, W, H):
+    """Generic renderer: any object list, any camera."""
+    cam = np.array(cam, float)
+    look = np.array(look, float)
     fwd = look - cam
     fwd /= np.linalg.norm(fwd)
     right = np.cross(fwd, [0, 1, 0])
     right /= np.linalg.norm(right)
     up = np.cross(right, fwd)
-    fov = math.radians(46)
+    fov = math.radians(fov_deg)
     ys, xs = np.mgrid[0:H, 0:W]
     px = (2 * (xs + 0.5) / W - 1) * math.tan(fov / 2) * W / H
     py = (1 - 2 * (ys + 0.5) / H) * math.tan(fov / 2)
@@ -278,7 +377,8 @@ def render(t, W, H):
     d /= np.linalg.norm(d, axis=1, keepdims=True)
     o = np.broadcast_to(cam, d.shape)
 
-    tbest, idx = cast(o, d, objs)
+    tx, ty = math.tan(fov / 2) * W / H, math.tan(fov / 2)
+    tbest, idx = cast(o, d, objs, _screen_candidates(objs, cam, right, up, fwd, tx, ty, W, H))
     sky_v = np.clip(d[:, 1] * 2.2 + 0.25, 0, 1)[:, None]
     img = (1 - sky_v) * np.array([206, 232, 248]) + sky_v * np.array([120, 178, 236])
     hit = np.isfinite(tbest)
@@ -290,7 +390,7 @@ def render(t, W, H):
         m = ids == i
         if not m.any():
             continue
-        n[m] = normal_ellipsoid(p[m], ob) if ob["k"] == "e" else normal_box(p[m], ob)
+        n[m] = _normal(p[m], ob)
         c = np.array(ob["col"], float)
         if ob.get("tex") == "planks":
             stripe = (np.floor((p[m, 0] + 1.6) / 0.32) % 2)[:, None]
@@ -304,7 +404,7 @@ def render(t, W, H):
     # cast shadows from casters onto everything
     casters = [ob for ob in objs if ob["cast"]]
     sp = p + n * 2e-3
-    st, _ = cast(sp, np.broadcast_to(LIGHT, sp.shape), casters)
+    st, _ = cast(sp, np.broadcast_to(LIGHT, sp.shape), casters, _shadow_candidates(casters, sp, LIGHT))
     lit = np.where(np.isfinite(st), 0.0, 1.0)
     band = np.where(ndl > 0.55, 1.0, np.where(ndl > 0.2, 0.72, 0.5))   # toon bands
     shade = 0.42 + 0.58 * band * lit
@@ -319,7 +419,8 @@ def render(t, W, H):
     for dy, dx in ((0, 1), (1, 0)):
         edge |= idmap != np.roll(np.roll(idmap, dy, 0), dx, 1)
     # no outlines on terrain: ground boxes and the large distant hills
-    big = {i for i, ob in enumerate(objs) if not ob["cast"] and (ob["k"] == "b" or ob["r"].max() > 3)}
+    big = {i for i, ob in enumerate(objs)
+           if not ob["cast"] and (ob["k"] == "b" or (ob["k"] == "e" and ob["r"].max() > 3))}
     on_char = np.isin(idmap, [i for i in range(len(objs)) if i not in big])
     img[edge & on_char] *= 0.55
     return np.clip(img, 0, 255).astype(np.uint8)
