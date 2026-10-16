@@ -1,0 +1,30 @@
+{
+  "experiment_id": "EXP-C81-001",
+  "product_id": "LzOV85deBGdLgNZmvpvYGw==",
+  "product_slug": "bfhpzl",
+  "method": "GET",
+  "endpoint": "https://api.gumroad.com/v2/sales?product_id=<id>&access_token=<redacted>",
+  "write_calls_made": 0,
+  "max_attempts_allowed": 2,
+  "token_printed_or_saved": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "sent_at_utc": "2026-10-15T22:32:32+00:00",
+      "response_received_at_utc": "2026-10-15T22:32:32+00:00",
+      "response_date_header": "Thu, 15 Oct 2026 22:32:37 GMT",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "json_parsed": true,
+      "success_field": true,
+      "records_returned": 0,
+      "next_page_key_present": false
+    }
+  ],
+  "result": {
+    "http_status": 200,
+    "records_returned": 0,
+    "success_field": true,
+    "response_received_at_utc": "2026-10-15T22:32:32+00:00"
+  }
+}

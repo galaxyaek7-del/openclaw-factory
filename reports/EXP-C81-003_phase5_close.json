@@ -1,0 +1,52 @@
+{
+  "phase": 5,
+  "experiment": "EXP-C81-003",
+  "date": "2026-10-16",
+  "status": "COMPLETE_AWAITING_FOUNDER_ACTIONS",
+  "preflight": {
+    "integrity": "CLEAN",
+    "secrets": "CLEAN",
+    "protected_files_unchanged_since_phase4": true
+  },
+  "delivered": [
+    {
+      "id": "BKL-001",
+      "status": "READY_FOR_FOUNDER",
+      "artifacts": [
+        "scripts/search_console_verify.py"
+      ],
+      "evidence": "sitemap.xml: 61 URLs, 0 missing files, 8/8 experiment pages, 0 noindex, 0 canonical mismatches"
+    },
+    {
+      "id": "BKL-004",
+      "status": "READY_FOR_FOUNDER",
+      "artifacts": [
+        "src/measurement/gumroad_csv_parser.py (SALES_EXPORT layout added)"
+      ],
+      "evidence": "web search 2026-10-16: Gumroad's dashboard export is a per-purchase Sales CSV; no source confirms a views column (help pages JS-rendered, not read directly)"
+    },
+    {
+      "id": "BKL-002",
+      "status": "PARTIAL_DECISION_NEEDED",
+      "artifacts": [
+        "scripts/set_pageview_endpoint.py"
+      ],
+      "evidence": "server.js cors({origin:false}) + JSON fetch beacon => cross-origin visits would be blocked even on a public server"
+    }
+  ],
+  "measurement_status": "MINIMAL_CONNECTED (purchases only) - unchanged; nothing new connected without a founder action",
+  "tests": {
+    "test_phase5_tools": "5/5",
+    "phase4_and_c81_suites": "37/37 (py) + 5/5 (js) + 13/13 (gf_pageview)",
+    "regression_affiliate_mcp_kids": "301 passed, 1 skipped"
+  },
+  "founder_actions": "reports/PHASE5_FOUNDER_ACTIONS_AR.md",
+  "governance": {
+    "FACTORY_LIVE_PUBLISH": false,
+    "REAL_TREASURY": 0,
+    "PRODUCTION_AUTHORIZED": false,
+    "NO_EXTERNAL_ACTION": "web search + 2 public help-page fetches only (read-only); no account, no write",
+    "NO_COMMIT_WITHOUT_APPROVAL": true,
+    "server_js_touched": false
+  }
+}

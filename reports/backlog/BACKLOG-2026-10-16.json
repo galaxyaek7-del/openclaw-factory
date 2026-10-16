@@ -1,0 +1,48 @@
+{
+  "created": "2026-10-16",
+  "source": "FOUNDER DIRECTIVE - EXP-C81 UNBLOCK + PHASE 3 ADVANCE (2026-10-16)",
+  "status": "DEFERRED - document only; not to be resolved in the C81 Phase 3 sprint",
+  "tickets": [
+    {
+      "id": "BKL-001",
+      "title": "Connect Google Search Console",
+      "priority": "P1",
+      "sprint": "Phase 4",
+      "blocker_for": "EXP-C81 measurement",
+      "note": "Requires founder ownership verification of galaxyaek7-del.github.io; analytics tool decision needs founder approval before any change to the site.",
+      "status_2026-10-16_phase5": "READY_FOR_FOUNDER",
+      "phase5_note": "Sitemap validated (61 URLs, 8 experiment pages, canonicals OK). scripts/search_console_verify.py installs the verification file once the founder provides its name. Needs founder Google login + approved push."
+    },
+    {
+      "id": "BKL-002",
+      "title": "Configure page-visit receiver endpoint",
+      "priority": "P1",
+      "sprint": "Phase 4",
+      "blocker_for": "page_visit_metric",
+      "note": "gf-pageview.js posts to same-origin /api/page-view; on GitHub Pages that resolves to https://galaxyaek7-del.github.io/api/page-view, observed 404 on 2026-10-15T22:24:09Z. The server.js receiver binds 127.0.0.1 only.",
+      "status_2026-10-16_phase5": "PARTIAL_DECISION_NEEDED",
+      "phase5_note": "Receiver library (Phase 4) + scripts/set_pageview_endpoint.py ready. Blocked on a public HTTPS receiver; server.js has cors({origin:false}), so any receiver must allow galaxyaek7-del.github.io. Options and costs in reports/PHASE5_FOUNDER_ACTIONS_AR.md."
+    },
+    {
+      "id": "BKL-003",
+      "title": "Fix evidence gate in affiliate/opportunities.py for e2e placeholder values",
+      "ticket_alias": "FIX-e2e-evidence-placeholder",
+      "priority": "P2",
+      "sprint": "Isolated Fix Sprint",
+      "blocker_for": "test_e2e_simulation::test_02",
+      "note": "evidence_gate_check() reports the five *_evidence fields as missing for placeholder value 'x'. Both files are untracked. Decide whether the gate or the test expectation is wrong before changing either; the gate must not be weakened to make the test pass.",
+      "status_2026-10-16_phase5": "RESOLVED",
+      "phase5_note": "Phase 4."
+    },
+    {
+      "id": "BKL-004",
+      "title": "Gumroad CSV export integration for analytics fallback",
+      "priority": "P2",
+      "sprint": "Phase 4",
+      "blocker_for": "measurement_status upgrade",
+      "note": "Export folder data/gumroad_analytics_export/ does not exist yet. Per the computed rule, an export file alone yields 'unverified', never 'connected', until code parses and validates it.",
+      "status_2026-10-16_phase5": "READY_FOR_FOUNDER",
+      "phase5_note": "Parser recognises SALES_EXPORT and DAILY_AGGREGATE layouts; a sales export has no views and does not connect listing analytics. Awaiting a real export."
+    }
+  ]
+}

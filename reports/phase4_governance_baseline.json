@@ -1,0 +1,27 @@
+{
+  "purpose": "Phase 4 governance baseline: these files must be byte-identical at sprint close. Pre-existing uncommitted changes by another tool (publish_protection.py, profit_oracle.py) are captured here as-is, not attributed to this sprint.",
+  "recorded_at_utc": "2026-10-16T09:34:25+00:00",
+  "git_head": "d157b0f7e4e022f639c0adaf5e23e38183ac29e4",
+  "files": {
+    "server.js": {
+      "sha256": "b963f68efb5935c6fe2252b10b14e4f3491bd75f6db559452470dc374dbef95f",
+      "git_status_at_baseline": "clean"
+    },
+    "channels/publish_protection.py": {
+      "sha256": "230ec44e36f9c5abc25864e1305dba8af2555f8eb41a26aed9b4852ae5f6ffdd",
+      "git_status_at_baseline": "M"
+    },
+    "quality_gate_policy.py": {
+      "sha256": "183e745fbdb79bbe740f979ed756a38ae8716f40071eed68a5800253b14b8f99",
+      "git_status_at_baseline": "??"
+    },
+    "profit_oracle.py": {
+      "sha256": "50193e32ee77c87b500443026a3db032702c566a30b4356b25824135c5f212e3",
+      "git_status_at_baseline": "M"
+    },
+    "finance_data.json": {
+      "sha256": "5aa0806c6207ada5c85f7b9a82b92494d07ffe188d8d91041d54d3829d6b9328",
+      "git_status_at_baseline": "M"
+    }
+  }
+}
