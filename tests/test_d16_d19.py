@@ -47,7 +47,11 @@ class TestD19DocumentationOnly(unittest.TestCase):
         self.assertIn("abs(rate - t) < 1e-9", Path("economics.py").read_text(encoding="utf-8"))
 
     def test_d8_still_verified(self):
-        self.assertIn('platform="gumroad_digital"', Path("profit_oracle.py").read_text(encoding="utf-8"))
+        # D8's platform-param form was consolidated: economics.net_profit()
+        # takes the platform explicitly and profit_oracle passes
+        # "gumroad_digital" at the real call site. Pin the actual wiring
+        # expression, not the retired default-arg spelling.
+        self.assertIn('ECONOMICS.net_profit(price, "gumroad_digital", config)', Path("profit_oracle.py").read_text(encoding="utf-8"))
 
     def test_d10_still_verified(self):
         self.assertIn("astimezone(timezone.utc)", Path("profit_oracle.py").read_text(encoding="utf-8"))

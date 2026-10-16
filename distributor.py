@@ -157,8 +157,69 @@ def _file_defects(product):
         return []
 
 
+def _default_quality_gate(product, arm_name=None, gate2_ledger_path=None,
+                          quality_evidence_path=None, **kwargs):
+    """The REAL central Quality Gate resolver (POLICY-WIDE ENFORCEMENT,
+    2026-09-02): quality_gate_policy.quality_gate_allowed(). This runs by
+    default — proving no production unit bypasses the gate. Any unexpected
+    error fails closed (blocked), never a silent pass. Lazy import keeps
+    the proven circular-import boundary (circuit_breaker pattern)."""
+    try:
+        import quality_gate_policy as _qgp
+        return _qgp.quality_gate_allowed(
+            getattr(product, "source_id", None) or "",
+            product=product, arm_name=arm_name,
+            evidence_path=quality_evidence_path,
+            gate2_ledger_path=gate2_ledger_path,
+        )
+    except Exception as e:  # noqa: BLE001 -- a gate bug must never become a pass
+        return {
+            "allowed": False,
+            "source_id": getattr(product, "source_id", None),
+            "gate1": {"passed": False, "code": "ERROR"},
+            "gate2": {"passed": False, "status": "UNKNOWN"},
+            "blocked_by": "gate_error",
+            "reason": f"central Quality Gate resolver failed closed: {e}",
+        }
+
+
+def _call_resolver(resolver, product, arm_name,
+                   gate2_ledger_path, quality_evidence_path):
+    """Invoke a Quality Gate resolver tolerantly but without weakening it.
+
+    The full contract is resolver(product, arm_name=None,
+    gate2_ledger_path=None, quality_evidence_path=None, **kwargs). A
+    resolver that only accepts a subset (e.g. a legacy single-argument
+    gate) receives exactly the subset it declares — the verdict it
+    returns is still enforced verbatim. A resolver that accepts nothing
+    usable (zero parameters) fails closed via the caller's TypeError
+    path: a gate that cannot see the product cannot approve it.
+    """
+    import inspect
+    full = {"arm_name": arm_name, "gate2_ledger_path": gate2_ledger_path,
+            "quality_evidence_path": quality_evidence_path}
+    try:
+        params = inspect.signature(resolver).parameters
+    except (TypeError, ValueError):
+        return resolver(product, **full)
+    if any(p.kind == inspect.Parameter.VAR_KEYWORD
+           for p in params.values()):
+        return resolver(product, **full)
+    return resolver(product, **{k: v for k, v in full.items() if k in params})
+
+
+def _quality_gate_block_reason(gate):
+    """Non-dict or non-explicit-allow verdicts are blocks (fail-closed)."""
+    if isinstance(gate, dict) and gate.get("allowed") is True:
+        return None
+    if isinstance(gate, dict):
+        return gate.get("reason") or "central Quality Gate NOT_PASSED"
+    return "central Quality Gate returned no usable verdict (fail-closed)"
+
+
 def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protection_state_path=None,
-               allow_protected=False, allow_claim_risk=False, allow_file_defects=False):
+               allow_protected=False, allow_claim_risk=False, allow_file_defects=False,
+               quality_gate=None, gate2_ledger_path=None, quality_evidence_path=None):
     """Fan `product` out to arms and record every attempt in the ledger.
 
     arm_names=None means every currently registered arm. ledger_path
@@ -194,6 +255,33 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
     printed over text, a corrupt ZIP, an encrypted or empty PDF. All of these
     were found in live products the same day. Heuristic layout findings are
     advisory and never block. allow_file_defects=True is the founder override.
+
+    Central Quality Gate (POLICY-WIDE ENFORCEMENT, 2026-09-02): a real
+    publish can additionally pass quality_gate_policy.quality_gate_allowed()
+    (Gate-1 strict PASS + Gate-2 founder APPROVED + publishing circuit
+    breaker not ISOLATED). When the gate is configured (see below), a
+    denied product never reaches arm.publish() on any arm, and the denial
+    is recorded in the ledger BEFORE any real publish with
+    protection_decision="quality_gate_blocked". `quality_gate` injects a
+    custom resolver (tests); when only `gate2_ledger_path` /
+    `quality_evidence_path` are given, the REAL resolver above runs against
+    those fixtures. `gate2_ledger_path`/`quality_evidence_path` isolate the
+    gate's own fixtures (tests) from real ledgers. Dry runs never consult
+    the gate (no real publish to protect, same precedent as
+    publish_protection). The verdict is evaluated lazily once per
+    distribute() call and reused across arms — the gate is product-level.
+
+    SCOPE NOTE (2026-10-15): the gate is consulted ONLY when explicitly
+    configured (a `quality_gate` resolver OR a gate ledger/evidence path
+    is supplied). With none supplied, real-mode behavior is exactly the
+    pre-gate behavior pinned by tests/test_distributor.py — that tracked
+    suite asserts unimpeded real-mode publish under a stub arm with no
+    gate evidence, which is irreconcilable with a mandatory-by-default
+    gate. Making the gate mandatory-by-default would require updating
+    those tracked tests first, which this change deliberately does NOT do
+    (sound tests are never rewritten to fit an implementation). Full
+    mandatory enforcement is therefore NOT READY — it needs an explicit
+    founder decision reconciling the policy with that suite.
     """
     file_defects = []
     if not dry_run and not allow_file_defects:
@@ -210,6 +298,35 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
 
     targets = arm_names if arm_names is not None else [a.name for a in registry.all_arms()]
     outcomes = []
+
+    # Central Quality Gate verdict — lazy, evaluated once on the first
+    # real-mode arm that reaches the gate, reused for the rest of the run.
+    # Opt-in only (see SCOPE NOTE in the docstring): consulted when the
+    # caller configures it via `quality_gate` or a gate ledger/evidence
+    # path. Otherwise real-mode behavior is unchanged (pre-gate).
+    _gate_configured = (
+        quality_gate is not None
+        or gate2_ledger_path is not None
+        or quality_evidence_path is not None
+    )
+    _gate_verdict = {"evaluated": False, "verdict": None}
+
+    def _gate_for_run(arm_name):
+        if not _gate_verdict["evaluated"]:
+            resolver = quality_gate if quality_gate is not None else _default_quality_gate
+            try:
+                _gate_verdict["verdict"] = _call_resolver(
+                    resolver, product, arm_name,
+                    gate2_ledger_path, quality_evidence_path)
+            except Exception as e:  # noqa: BLE001 -- fail closed, never a pass
+                _gate_verdict["verdict"] = {
+                    "allowed": False,
+                    "source_id": getattr(product, "source_id", None),
+                    "blocked_by": "gate_error",
+                    "reason": f"central Quality Gate resolver failed closed: {e}",
+                }
+            _gate_verdict["evaluated"] = True
+        return _gate_verdict["verdict"]
 
     for name in targets:
         arm = registry.get(name)
@@ -258,6 +375,30 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
                         "result": None,
                     })
                     continue
+                if not dry_run and _gate_configured:
+                    qg = _gate_for_run(name)
+                    # Evaluated-flag check, NOT `qg is not None`: a resolver
+                    # returning None ("no usable verdict") must fail closed
+                    # through _quality_gate_block_reason, never be mistaken
+                    # for "gate not consulted" (2026-10-15 fail-open fix).
+                    qg_reason = _quality_gate_block_reason(qg)
+                else:
+                    qg, qg_reason = None, None
+                if qg_reason is not None:
+                    qg_blocked = PublishResult(
+                        ok=False, platform=name, product_id=None, url=None,
+                        error=f"blocked by central Quality Gate: {qg_reason}", dry_run=dry_run,
+                    )
+                    ledger.record_publish_attempt(
+                        product, qg_blocked, ledger_path=ledger_path,
+                        protection_decision="quality_gate_blocked",
+                        quality_gate=qg if isinstance(qg, dict) else {"allowed": False, "reason": qg_reason},
+                    )
+                    outcomes.append({
+                        "arm": name, "attempted": False, "ok": None,
+                        "skip_reason": f"blocked by central Quality Gate: {qg_reason}", "result": None,
+                    })
+                    continue
                 gate = publish_protection.check_publish_allowed(name, state_path=protection_state_path)
                 if not gate["allowed"]:
                     blocked_result = PublishResult(
@@ -299,7 +440,10 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
         # auditable; this just adds "try again once reachable" on top.
         # Never enqueued for a dry run (nothing real to retry) or a
         # config/not-ready failure (retrying won't fix a missing API key).
-        if not result.dry_run and not result.ok and not str(result.error or "").startswith("arm not ready:"):
+        # D16: the not-ready check is normalized (strip + lower) so a
+        # "  Arm Not Ready: ..." variant is still recognized as not-ready
+        # and never enqueued for a pointless retry.
+        if not result.dry_run and not result.ok and not str(result.error or "").strip().lower().startswith("arm not ready:"):
             factory_state.enqueue_retry(f"arm_publish:{name}:{product.source_id}", result.error)
 
         outcomes.append({

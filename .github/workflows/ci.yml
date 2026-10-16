@@ -140,6 +140,32 @@ jobs:
           print("every test file is covered by exactly one group")
           PY
 
+      # Cycle 83: fail fast on unimportable test modules (commit-time drift
+      # guard). If a tracked test imports a name that does not exist in the
+      # checked-out tree -- e.g. tests committed ahead of their implementation
+      # (run 38718955518 failed exactly this way: import errors that only
+      # surfaced mid-suite inside group steps) -- unittest reports _FailedTest
+      # and the real cause hides in a group log tail. This names the missing
+      # module up front. Same discovery cost the count-floor check below
+      # already pays; no new side-effect class.
+      - name: No unimportable tracked test modules
+        run: |
+          python - <<'PY'
+          import sys, unittest
+          def walk(suite):
+              for t in suite:
+                  if isinstance(t, unittest.TestSuite):
+                      yield from walk(t)
+                  else:
+                      yield t
+          found = list(walk(unittest.TestLoader().discover(start_dir="tests", pattern="test_*.py")))
+          bad = [t for t in found if type(t).__name__ == "_FailedTest"]
+          print("collected: %d, unimportable: %d" % (len(found), len(bad)))
+          for t in bad:
+              print("::error::unimportable test module: %s" % (t,))
+          sys.exit(1 if bad else 0)
+          PY
+
       # Cycle 77 section 3: the file-coverage check above only proves every
       # test FILE still runs somewhere -- it would not catch someone
       # quietly deleting half the test METHODS inside a file that still
@@ -181,7 +207,7 @@ jobs:
         run: node scripts/run_js_group.js tests/test_attribution_log_bounds.js
 
       - name: JS batch 2 of 19
-        run: node scripts/run_js_group.js tests/test_brand_dna_preamble_consistency.js
+        run: node scripts/run_js_group.js tests/test_bkl002_pagevisit_receiver.js tests/test_brand_dna_preamble_consistency.js
 
       - name: JS batch 3 of 19
         run: node scripts/run_js_group.js tests/test_check_jsonl_duplication.js tests/test_customer_auth.js tests/test_customer_front_door.js tests/test_gf_pageview.js

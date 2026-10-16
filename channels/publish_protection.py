@@ -129,13 +129,16 @@ def _load_state(state_path=None):
 
 
 def _save_state(state, state_path=None):
-    """Atomic write -- a crash mid-write leaves the previous valid file
-    intact, exact pattern as `factory_state.py::save_state()`."""
+    """Atomic + durable write -- a crash mid-write leaves the previous
+    valid file intact, exact pattern as `factory_state.py::save_state()`
+    (flush + fsync before rename, G7)."""
     p = Path(state_path) if state_path else DEFAULT_STATE_PATH
     p.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = p.parent / f"{p.name}.tmp-{os.getpid()}"
     with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(state, f, ensure_ascii=False, indent=2)
+        f.flush()
+        os.fsync(f.fileno())
     os.replace(tmp_path, p)
     return state
 
@@ -158,17 +161,30 @@ def _roll_buckets(record, now):
     return record
 
 
-def check_publish_allowed(arm_name, state_path=None, now=None):
+def check_publish_allowed(arm_name, state_path=None, now=None,
+                          circuit_breaker_state_path=None):
     """The real pre-publish gate. Blocks on, in order: an active global
-    emergency stop, a genuinely new arm's unapproved first real publish,
-    a still-open per-arm cooldown (from repeated real failures), a real
-    daily cap already hit, a real hourly cap already hit, the platform's
-    minimum publish spacing not having elapsed, or an unapproved
-    elevated risk_score. `risk_score` (0-100) is purely informational
-    once a block already didn't fire -- it explains how close an arm is
-    to being blocked, it never itself blocks anything beyond the real
-    checks above (except the elevated-risk approval gate itself, which
-    reads this same computed value)."""
+    emergency stop, a circuit breaker that has isolated publishing, a genuinely
+    new arm's unapproved first real publish, a still-open per-arm cooldown
+    (from repeated real failures), a real daily cap already hit, a real hourly
+    cap already hit, the platform's minimum publish spacing not having elapsed,
+    or an unapproved elevated risk_score. `risk_score` (0-100) is purely
+    informational once a block already didn't fire -- it explains how close an
+    arm is to being blocked, it never itself blocks anything beyond the real
+    checks above (except the elevated-risk approval gate itself, which reads
+    this same computed value).
+
+    circuit_breaker_state_path is optional and additive. When omitted the real
+    default breaker state is read, so an arm isolated by circuit_breaker.py is
+    blocked whether or not a caller passes the path. Passing it lets a test (or
+    an operator) evaluate a specific breaker state file, which is how
+    tests/test_circuit_breaker_integration.py isolates its own fixtures without
+    touching the real one.
+
+    Ordering note: the founder's global emergency stop is checked first, so it
+    keeps precedence over an automatic breaker. Automatic isolation must never
+    outrank a deliberate founder control.
+    """
     now = now or _now()
     state = _load_state(state_path)
     profile = _profile(arm_name)
@@ -177,6 +193,25 @@ def check_publish_allowed(arm_name, state_path=None, now=None):
         return {
             "allowed": False,
             "reason": f"global publish emergency stop is active: {state['global']['emergency_reason']}",
+            "risk_score": 100, "cooldown_until": None,
+            "counts": {"publishes_today": 0, "publishes_this_hour": 0},
+        }
+
+    # Automatic isolation of the publishing path. Added because
+    # circuit_breaker.py recorded repeated real failures against
+    # marketplace_publishing and nothing consulted it: the breaker existed,
+    # isolated nothing, and publishing carried on regardless.
+    import circuit_breaker as _cb
+    if _cb.is_isolated(_cb.PUBLISHING_PATH, circuit_breaker_state_path):
+        _rec = _cb.current_state(_cb.PUBLISHING_PATH, circuit_breaker_state_path)
+        return {
+            "allowed": False,
+            "reason": (
+                f"circuit breaker is ISOLATED for {_cb.PUBLISHING_PATH} after "
+                f"{_rec.get('consecutive_failures')} consecutive failures "
+                f"(last reason: {_rec.get('reason')!r}); reset with "
+                f"circuit_breaker.reset() after recovery is proven"
+            ),
             "risk_score": 100, "cooldown_until": None,
             "counts": {"publishes_today": 0, "publishes_this_hour": 0},
         }
@@ -202,7 +237,12 @@ def check_publish_allowed(arm_name, state_path=None, now=None):
                     "reason": f"{arm_name} is in a real cooldown (triggered by {_CONSECUTIVE_FAILURE_THRESHOLD}+ consecutive failures) until {cooldown_until}",
                     "risk_score": 90, "cooldown_until": cooldown_until, "counts": counts,
                 }
-        except ValueError:
+        except (ValueError, TypeError):
+            # Corrupt or tz-naive timestamp: same fail-open-as-missing
+            # precedent as the spacing check below — a timestamp we cannot
+            # honestly parse is not evidence of an active cooldown. (A naive
+            # stamp raises TypeError on aware-vs-naive comparison, which the
+            # old ValueError-only clause let propagate.)
             pass
 
     if record["publishes_today"] >= profile["max_per_day"]:
@@ -231,7 +271,12 @@ def check_publish_allowed(arm_name, state_path=None, now=None):
                     "reason": f"{arm_name}'s minimum {profile['min_cooldown_minutes']}-minute publish spacing hasn't elapsed yet",
                     "risk_score": 60, "cooldown_until": wait_until, "counts": counts,
                 }
-        except ValueError:
+        except (ValueError, TypeError):
+            # Corrupt (ValueError) or tz-naive (TypeError on aware-vs-naive
+            # subtraction) timestamp: not honest evidence of a recent
+            # publish, so the spacing check is skipped — the pre-existing
+            # corrupt-timestamp precedent, extended to naive stamps which
+            # the old clause let propagate as an exception.
             pass
 
     day_pct = (record["publishes_today"] / profile["max_per_day"]) if profile["max_per_day"] else 0

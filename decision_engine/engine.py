@@ -154,6 +154,31 @@ def evaluate_and_decide(niche, external_signal=None, tier="tier4", max_results=1
     return decision
 
 
+def _get_economics(analysis):
+    """D19 conservative economics fallback (documentation + behavior).
+
+    market_intelligence_core.evaluate_opportunity() does NOT produce
+    economics — its result carries dimension scores, the AI-CEO verdict
+    and real customer-pain/competitor evidence, but no price, margin or
+    platform field (verified: no economics reference anywhere in
+    market_intelligence_core/core.py). Any decision path that needs
+    economics must therefore obtain it explicitly, never assume the
+    analysis already has it.
+
+    This fallback is deliberately conservative: when the analysis
+    carries a real, well-formed economics section it is passed through
+    unchanged; when keys are missing it reports UNKNOWN instead of
+    inventing figures, so a thin-evidence opportunity can never look
+    profitable by default.
+    """
+    econ = (analysis or {}).get("economics")
+    if isinstance(econ, dict) and econ:
+        return econ
+    return {"status": "UNKNOWN",
+            "reason": ("no economics section in analysis result; "
+                       "conservative fallback, never an invented figure")}
+
+
 # ADR-076 (Decision Surface Reconciliation, 2026-07-18): the fast-path
 # recorder — market_hunter.py's hunt_market() already computes a real
 # profit_oracle.ladder_opportunity_score() result for every candidate it

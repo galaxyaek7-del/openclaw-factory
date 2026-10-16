@@ -198,14 +198,21 @@ def _score_momentum_from_recency(created_at, now=None):
     if not created_at:
         return 50, "لا تاريخ نشر متوفر مع الإشارة الخارجية — قيمة محايدة"
     try:
-        now = now or datetime.now()
+        # D10: normalize both ends to UTC before subtracting. The same
+        # instant observed from different zones must yield the same
+        # day-count (and therefore the same momentum band); stripping
+        # tzinfo instead silently shifts the count by the zone offset.
+        now = now or datetime.now(timezone.utc)
         created = datetime.fromisoformat(str(created_at).replace('Z', '+00:00'))
-        # Compare naive-to-naive: strip tzinfo if present so this never
-        # raises on an aware-vs-naive subtraction — a day-count this rough
-        # doesn't need timezone precision.
-        created = created.replace(tzinfo=None)
-        now_naive = now.replace(tzinfo=None) if now.tzinfo else now
-        days_old = (now_naive - created).days
+        if created.tzinfo is None:
+            created = created.replace(tzinfo=timezone.utc)
+        else:
+            created = created.astimezone(timezone.utc)
+        if now.tzinfo is None:
+            now = now.replace(tzinfo=timezone.utc)
+        else:
+            now = now.astimezone(timezone.utc)
+        days_old = (now - created).days
     except Exception:
         return 50, "تاريخ نشر غير صالح مع الإشارة الخارجية — قيمة محايدة"
 

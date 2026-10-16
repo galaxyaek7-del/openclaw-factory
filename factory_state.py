@@ -58,14 +58,17 @@ def load_state(path=None):
 
 
 def save_state(state, path=None):
-    """Atomic write — a crash mid-write leaves the previous valid file
-    intact, never a half-written one."""
+    """Atomic + durable write — a crash mid-write leaves the previous
+    valid file intact, never a half-written one; flush + fsync before
+    the rename so the new content actually reaches disk (G7)."""
     p = Path(path) if path else DEFAULT_STATE_PATH
     p.parent.mkdir(parents=True, exist_ok=True)
     state["updated_at"] = datetime.now(timezone.utc).isoformat()
     tmp_path = p.parent / f"{p.name}.tmp-{os.getpid()}"
     with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(state, f, ensure_ascii=False, indent=2)
+        f.flush()
+        os.fsync(f.fileno())
     os.replace(tmp_path, p)
     return state
 

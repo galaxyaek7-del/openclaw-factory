@@ -1,5 +1,5 @@
 # LinkedIn Post — EU AI Act Compliance Toolkit
-## Ready to publish after HUMAN_GATE clears
+## ON HOLD — DO NOT PUBLISH. Product withdrawn from promotion pending internal accuracy review (see hold notice on customer_site/eu-ai-act-compliance-toolkit.html). Direct product link removed until the hold clears.
 
 ### Post Text (copy-paste ready)
 
@@ -15,7 +15,7 @@ Most SMEs don't need a 50,000 EUR consultancy retainer. They need practical tool
 
 I built a 31-page toolkit with exactly these tools. Not legal advice — practical implementation.
 
-Available now: https://aekraft.gumroad.com/l/iaiyt
+[Product link WITHHELD — listing is on HOLD pending accuracy review. No direct link until the hold clears.]
 
 What's your biggest EU AI Act compliance challenge?
 
@@ -24,7 +24,7 @@ What's your biggest EU AI Act compliance challenge?
 ---
 
 ### CTA
-https://aekraft.gumroad.com/l/iaiyt
+[WITHHELD — product on HOLD. No CTA link until the hold clears.]
 
 ### Disclosure
 This is a paid product (one-time purchase, $155). No affiliate relationship. No fabricated testimonials.
@@ -35,7 +35,7 @@ This is a paid product (one-time purchase, $155). No affiliate relationship. No 
 - [x] No legal guarantee claims
 - [x] No misleading urgency
 - [x] No fake scarcity
-- [x] CTA points to real Gumroad product
+- [ ] CTA points to real Gumroad product — REMOVED while on HOLD (was: https://aekraft.gumroad.com/l/iaiyt)
 - [x] Price matches ($155)
 - [x] Regulatory dates accurate (December 2027)
 - [x] "Not legal advice" positioning clear

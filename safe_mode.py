@@ -126,40 +126,83 @@ def clear_subsystem_unstable(name, state_path=None):
     return state[name]
 
 
-def is_subsystem_safe_mode(name, state_path=None):
+def is_subsystem_safe_mode(name, state_path=None, circuit_breaker_state_path=None):
     """Real per-subsystem check. marketplace_publishing reads
     channels/publish_protection.py's own real global emergency-stop state
     directly -- never a second, potentially-diverging flag for the same
-    real concern."""
+    real concern.
+
+    A subsystem is ALSO considered unsafe when circuit_breaker.py has isolated
+    it. That is not a duplicate flag: the manual Safe Mode flag and the
+    automatic breaker are different real signals with different triggers, and
+    before this the breaker isolated subsystems that nothing consulted, so
+    three consecutive real failures changed nothing.
+
+    circuit_breaker_state_path is optional and additive; omitting it reads the
+    real default breaker state.
+    """
+    import circuit_breaker as _cb
+
     if name == "marketplace_publishing":
         from channels import publish_protection
         status = publish_protection.list_publish_protection_status()
-        return bool(status["global"]["emergency_stopped"])
+        if bool(status["global"]["emergency_stopped"]):
+            return True
+        return bool(_cb.is_isolated(_cb.PUBLISHING_PATH, circuit_breaker_state_path))
     if name not in INDEPENDENTLY_TRACKED_SUBSYSTEMS:
         raise ValueError(f"unrecognized subsystem: {name!r}, expected one of {ALL_SUBSYSTEMS}")
 
     state = _load_state(state_path)
-    return bool(state[name]["unstable"])
+    if bool(state[name]["unstable"]):
+        return True
+    return bool(_cb.is_isolated(name, circuit_breaker_state_path))
 
 
-def list_safe_mode_status(state_path=None):
+def list_safe_mode_status(state_path=None, circuit_breaker_state_path=None):
     """Mission Control read view -- real status for every named
     subsystem, marketplace_publishing included via the real passthrough
-    above (not duplicated storage)."""
+    above (not duplicated storage).
+
+    Each subsystem also carries its real circuit-breaker record, so a founder
+    reading this view can see WHY something is blocked: the manual flag, the
+    automatic breaker, or both.
+    """
     from channels import publish_protection
+    import circuit_breaker as _cb
 
     state = _load_state(state_path)
     protection_status = publish_protection.list_publish_protection_status()
     marketplace_unstable = bool(protection_status["global"]["emergency_stopped"])
 
+    def _breakers(name):
+        return {
+            "ai_generation": _cb.current_state("ai_generation", circuit_breaker_state_path),
+            "market_intelligence": _cb.current_state("market_intelligence", circuit_breaker_state_path),
+            "marketplace_publishing": _cb.current_state(_cb.PUBLISHING_PATH, circuit_breaker_state_path),
+        }[name]
+
+    ai_breaker = _cb.is_isolated("ai_generation", circuit_breaker_state_path)
+    mi_breaker = _cb.is_isolated("market_intelligence", circuit_breaker_state_path)
+    mp_breaker = _cb.is_isolated(_cb.PUBLISHING_PATH, circuit_breaker_state_path)
+
+    ai = dict(state["ai_generation"])
+    ai["circuit_breaker"] = _breakers("ai_generation")
+    mi = dict(state["market_intelligence"])
+    mi["circuit_breaker"] = _breakers("market_intelligence")
+    mp = {
+        "unstable": marketplace_unstable,
+        "reason": protection_status["global"]["emergency_reason"],
+        "since": protection_status["global"]["emergency_stopped_at"],
+        "triggered_by": protection_status["global"]["emergency_triggered_by"],
+        "circuit_breaker": _breakers("marketplace_publishing"),
+    }
+
     return {
-        "ai_generation": state["ai_generation"],
-        "market_intelligence": state["market_intelligence"],
-        "marketplace_publishing": {
-            "unstable": marketplace_unstable,
-            "reason": protection_status["global"]["emergency_reason"],
-            "since": protection_status["global"]["emergency_stopped_at"],
-            "triggered_by": protection_status["global"]["emergency_triggered_by"],
-        },
-        "any_subsystem_unstable": marketplace_unstable or state["ai_generation"]["unstable"] or state["market_intelligence"]["unstable"],
+        "ai_generation": ai,
+        "market_intelligence": mi,
+        "marketplace_publishing": mp,
+        "any_subsystem_unstable": (
+            marketplace_unstable or mp_breaker
+            or ai["unstable"] or ai_breaker
+            or mi["unstable"] or mi_breaker),
     }

@@ -48,7 +48,7 @@ def append_event(event: dict, ledger_path=None) -> dict:
     return record
 
 
-def record_publish_attempt(product, result, ledger_path=None, risk_score=None, protection_decision=None, backfill_reason=None) -> dict:
+def record_publish_attempt(product, result, ledger_path=None, risk_score=None, protection_decision=None, backfill_reason=None, quality_gate=None) -> dict:
     """Build a publish_attempt event from a Product + PublishResult and
     append it. Never raises on a failed publish — a failure is exactly what
     this ledger exists to record honestly.
@@ -57,6 +57,11 @@ def record_publish_attempt(product, result, ledger_path=None, risk_score=None, p
     2026-07-29): optional fields from channels/publish_protection.py's
     real pre-publish gate — only added to the event when actually given,
     so every pre-existing caller's event shape is unchanged.
+
+    quality_gate (POLICY-WIDE ENFORCEMENT, 2026-09-02): the central
+    Quality Gate verdict dict recorded BEFORE any real publish when the
+    gate blocks — only added when actually given, same convention, so
+    every pre-existing caller's event shape is unchanged.
 
     backfill_reason (Production Hardening, ADR-204, Phase 14, 2026-08-08):
     closes FAILURE_REGISTER.md F3 — a real, live Paddle product-creation
@@ -82,6 +87,8 @@ def record_publish_attempt(product, result, ledger_path=None, risk_score=None, p
         event["risk_score"] = risk_score
     if protection_decision is not None:
         event["protection_decision"] = protection_decision
+    if quality_gate is not None:
+        event["quality_gate"] = quality_gate
     if backfill_reason is not None:
         event["backfilled"] = True
         event["backfill_reason"] = backfill_reason

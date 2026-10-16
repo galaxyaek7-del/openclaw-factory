@@ -38,6 +38,18 @@ def _platform_config(platform, config):
     return platforms[platform]
 
 
+def platform_for_product_type(product_type):
+    """G2 central mapping: product type -> economics platform.
+
+    Delegates to book_generator._economics_platform_for(), the single
+    canonical table (ADR-065) — never a second copy here that could drift.
+    The import is lazy so this module keeps its zero-import-at-load
+    contract; book_generator does not import economics, so no cycle.
+    """
+    from book_generator import _economics_platform_for
+    return _economics_platform_for(product_type)
+
+
 def royalty_rate(price, platform, config):
     pconf = _platform_config(platform, config)
 
@@ -59,7 +71,11 @@ def net_profit(price, platform, config, page_count=None):
     if platform == "kdp_ebook":
         rate = royalty_rate(price, platform, config)
         gross = price * rate
-        if rate in pconf.get("applies_delivery_cost_to_tier", []):
+        # D6: float-equality tolerance. `rate` is a binary float and the
+        # tier list comes from JSON decimals, so exact `in` membership can
+        # miss an equal-by-value tier (delivery cost silently skipped,
+        # ~$0.30/unit). Epsilon comparison restores the match.
+        if any(abs(rate - t) < 1e-9 for t in pconf.get("applies_delivery_cost_to_tier", [])):
             gross -= pconf["delivery_cost_per_mb_usd"] * pconf["assumed_file_size_mb"]
         return round(max(0.0, gross), 4)
 

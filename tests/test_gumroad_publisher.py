@@ -17,12 +17,75 @@ from unittest.mock import patch, MagicMock
 # refused these calls and the tests asserted against its BLOCKED message.
 # setUpModule/tearDownModule work under both runners; tearDownModule stops the
 # flag leaking into later tests sharing the group-runner process.
+#
+# The unittest path does NOT load tests/conftest.py, so this module must also
+# provide the fresh, fingerprint-matched VERIFIED auth state that the pytest
+# `authorize_live_writes` fixture otherwise supplies. Without it the write
+# gate denies on STALE real state (>3600s) and every test asserts against the
+# BLOCKED message instead of the behaviour under test. Network stays blocked
+# (scripts/run_python_group.py) and HTTP stays mocked; this grants the
+# DECISION only, never the NETWORK.
+#
+# The fingerprint is a FIXED test value, never the real credential: these
+# tests run on CI runners with no credential at all, so reading the real
+# fingerprint would deny there ("live credential unreadable"). Patching the
+# fingerprint function keeps the gate's real logic (fresh VERIFIED state +
+# flag + fingerprint match) fully exercised with zero real secret.
+_TEST_FINGERPRINT = "testfp0123456789abcdef"
+_SAVED_ENV = {}
+_STATE_FILE = None
+_FP_PATCHER = None
+
+
 def setUpModule():
+    import json as _json
+    import tempfile as _tempfile
+
+    from datetime import datetime as _dt, timezone as _tz
+    from unittest.mock import patch as _patch
+
+    global _STATE_FILE, _FP_PATCHER
+    _SAVED_ENV["FACTORY_LIVE_PUBLISH"] = os.environ.get("FACTORY_LIVE_PUBLISH")
+    _SAVED_ENV["FACTORY_WRITE_GATE_STATE_PATH"] = os.environ.get("FACTORY_WRITE_GATE_STATE_PATH")
     os.environ["FACTORY_LIVE_PUBLISH"] = "1"
+    import gumroad_auth_watch as _auth
+
+    _FP_PATCHER = _patch.object(_auth, "credential_fingerprint",
+                                return_value=_TEST_FINGERPRINT)
+    _FP_PATCHER.start()
+    _fd, _path = _tempfile.mkstemp(prefix="write_gate_", suffix=".json")
+    with os.fdopen(_fd, "w", encoding="utf-8") as _f:
+        _json.dump(
+            {
+                "status": "VERIFIED",
+                "reason": "test fixture: unit tests only, network is blocked",
+                "fingerprint_prefix": _TEST_FINGERPRINT[:16],
+                "at": _dt.now(_tz.utc).isoformat(),
+            },
+            _f,
+        )
+    _STATE_FILE = _path
+    os.environ["FACTORY_WRITE_GATE_STATE_PATH"] = _path
 
 
 def tearDownModule():
-    os.environ.pop("FACTORY_LIVE_PUBLISH", None)
+    global _FP_PATCHER
+    try:
+        if _FP_PATCHER is not None:
+            _FP_PATCHER.stop()
+    finally:
+        _FP_PATCHER = None
+    for _k in ("FACTORY_LIVE_PUBLISH", "FACTORY_WRITE_GATE_STATE_PATH"):
+        _v = _SAVED_ENV.get(_k)
+        if _v is None:
+            os.environ.pop(_k, None)
+        else:
+            os.environ[_k] = _v
+    try:
+        if _STATE_FILE:
+            os.unlink(_STATE_FILE)
+    except OSError:
+        pass
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
