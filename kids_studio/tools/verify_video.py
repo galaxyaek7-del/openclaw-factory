@@ -18,8 +18,10 @@ from pathlib import Path
 import numpy as np
 
 
-def run(cmd, binary=False):
-    p = subprocess.run(cmd, capture_output=True)
+def run(cmd, binary=False, timeout=None):
+    # stdin=DEVNULL: FFmpeg reads stdin for keystrokes. Inherited, it swallowed
+    # the next JSON-RPC request when this ran inside the MCP pilot (2026-10-15).
+    p = subprocess.run(cmd, capture_output=True, timeout=timeout, stdin=subprocess.DEVNULL)
     return p.returncode, p.stdout if binary else p.stdout.decode("utf-8", "replace"), p.stderr.decode("utf-8", "replace")
 
 
@@ -56,14 +58,20 @@ def footstep_offsets(x, sr, expected, window=0.06, band=(100, 200), min_snr=4.0)
     return offsets, missed
 
 
-def main(path):
+def analyze(path, timeout=None):
+    """Decode and check `path`; return the report. Writes nothing.
+
+    Kept separate from main() so a read-only caller (the MCP pilot) can verify
+    a render without overwriting its .verify.json. `timeout` bounds every
+    FFmpeg call, in seconds.
+    """
     import imageio_ffmpeg
     ff = imageio_ffmpeg.get_ffmpeg_exe()
     path = Path(path)
     rep = {"file": str(path), "bytes": path.stat().st_size, "checks": {}}
     C = rep["checks"]
 
-    _, _, info = run([ff, "-hide_banner", "-i", str(path)])
+    _, _, info = run([ff, "-hide_banner", "-i", str(path)], timeout=timeout)
     dur = re.search(r"Duration: (\d+):(\d+):([\d.]+)", info)
     v = re.search(r"Video: (\w+).*?, (\d+)x(\d+).*?, ([\d.]+) fps", info)
     a = re.search(r"Audio: (\w+).*?, (\d+) Hz", info)
@@ -72,13 +80,13 @@ def main(path):
     rep["audio"] = {"codec": a[1], "sample_rate": int(a[2])} if a else None
     C["has_video_and_audio"] = bool(v and a)
 
-    code, _, err = run([ff, "-v", "error", "-i", str(path), "-f", "null", "-"])
+    code, _, err = run([ff, "-v", "error", "-i", str(path), "-f", "null", "-"], timeout=timeout)
     C["full_decode_without_errors"] = code == 0 and not err.strip()
     rep["decode_errors"] = err.strip()[:500]
 
     w, h = 160, 90
     _, raw, _ = run([ff, "-v", "error", "-i", str(path), "-vf", f"scale={w}:{h}", "-f", "rawvideo",
-                     "-pix_fmt", "gray", "-"], binary=True)
+                     "-pix_fmt", "gray", "-"], binary=True, timeout=timeout)
     frames = np.frombuffer(raw, np.uint8).reshape(-1, h, w).astype(np.float32)
     rep["decoded_frames"] = int(len(frames))
     means = frames.mean(axis=(1, 2))
@@ -96,7 +104,7 @@ def main(path):
     C["no_frozen_stretch_over_2s"] = longest < 2 * fps
 
     sr = 44100
-    _, pcm, _ = run([ff, "-v", "error", "-i", str(path), "-f", "s16le", "-ac", "1", "-ar", str(sr), "-"], binary=True)
+    _, pcm, _ = run([ff, "-v", "error", "-i", str(path), "-f", "s16le", "-ac", "1", "-ar", str(sr), "-"], binary=True, timeout=timeout)
     x = np.frombuffer(pcm, np.int16).astype(np.float32) / 32768
     rep["audio_duration_s"] = round(len(x) / sr, 3)
     rep["video_duration_s"] = round(len(frames) / fps, 3)
@@ -128,15 +136,23 @@ def main(path):
         if want is not None:
             has = bool(re.search(r"Subtitle: mov_text", info))
             lang = bool(re.search(r"\(ara\).*Subtitle|Subtitle.*\(ara\)", info)) or bool(re.search(r"Stream #0:\d+\(ara\): Subtitle", info))
-            _, srt_txt, _ = run([ff, "-v", "error", "-i", str(path), "-map", "0:s:0", "-f", "srt", "-"])
+            _, srt_txt, _ = run([ff, "-v", "error", "-i", str(path), "-map", "0:s:0", "-f", "srt", "-"], timeout=timeout)
             cues = len(re.findall(r"^\d+\s*$", srt_txt, re.M)) if has else 0
             arabic = bool(re.search(r"[؀-ۿ]", srt_txt))
-            rep["subtitles"] = {"stream": has, "language_ara": lang, "cues": cues, "expected": want, "arabic_text": arabic}
+            first = re.search(r"-->[^\n]*\r?\n(.+)", srt_txt)
+            rep["subtitles"] = {"stream": has, "language_ara": lang, "cues": cues, "expected": want,
+                                "arabic_text": arabic, "first_cue_text": first[1].strip()[:120] if first else None}
             C["arabic_subtitle_track_complete"] = has and lang and arabic and cues == want
 
     for k, v in C.items():          # numpy bools are not JSON-serialisable
         C[k] = None if v is None else bool(v)
     rep["verdict"] = "PASS" if all(v is not False for v in C.values()) else "FAIL"
+    return rep
+
+
+def main(path):
+    path = Path(path)
+    rep = analyze(path)
     out = path.with_name(path.stem + ".verify.json")
     out.write_text(json.dumps(rep, indent=1), encoding="utf-8")
     print(json.dumps(rep, indent=1))

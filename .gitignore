@@ -129,3 +129,4 @@ data/_backups/
 .env.2026*
 data/security/secrets_report.json
 data/security/kill_state.json
+/logs/mcp_readonly_calls.jsonl

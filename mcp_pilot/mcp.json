@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "gf_readonly": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["-E", "-P", "mcp_pilot/gf_readonly_server.py"]
+    }
+  }
+}
