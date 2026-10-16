@@ -11,11 +11,11 @@
 **ما تفعله:**
 1. افتح search.google.com/search-console وسجّل الدخول بحسابك في Google.
 2. أضف خاصية من نوع **URL prefix**: `https://galaxyaek7-del.github.io/openclaw-factory/`
-3. اختر طريقة التحقق **HTML file**، وأرسل لي اسم الملف فقط، مثل `google0123456789abcdef.html`. لا ترسل أي شيء آخر.
+3. اختر طريقة التحقق **HTML file**، ونزّل الملف الذي يعطيك إياه Google، مثل `google0123456789abcdef.html`. ضعه في أي مجلد وأخبرني بمكانه.
 
-**ما أفعله بعدها:** `python scripts/search_console_verify.py --file <الاسم> --apply`
+**ما أفعله بعدها:** `python scripts/deploy_gsc_verification.py --file <مسار الملف> --dry-run` للتحقق أولًا، ثم التشغيل نفسه دون `--dry-run`. الأداة تتحقق من الاسم والمحتوى، وتفحصه بحثًا عن أسرار، ثم تضعه في جذر المستودع وتنفّذ commit + push للملف وحده.
 
-ثم تحتاج موافقتك على commit + push، لأن الملف لا يظهر لـ Google قبل ذلك. بعدها تضغط **Verify** وتضيف `sitemap.xml`.
+التشغيل الفعلي يتطلب موافقتك، لأنه ينشر الملف على الموقع العام. بعدها تضغط **Verify** وتضيف `sitemap.xml`.
 
 **حالة الاستعداد (OBSERVED):** خريطة الموقع فيها 61 رابطًا، كلها تشير إلى ملفات موجودة. صفحات التجربة الثماني مضمّنة، دون `noindex`، وروابطها القانونية (canonical) صحيحة.
 

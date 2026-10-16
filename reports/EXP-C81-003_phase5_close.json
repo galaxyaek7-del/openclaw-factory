@@ -13,7 +13,7 @@
       "id": "BKL-001",
       "status": "READY_FOR_FOUNDER",
       "artifacts": [
-        "scripts/search_console_verify.py"
+        "scripts/deploy_gsc_verification.py (pre-existing; duplicate removed)"
       ],
       "evidence": "sitemap.xml: 61 URLs, 0 missing files, 8/8 experiment pages, 0 noindex, 0 canonical mismatches"
     },

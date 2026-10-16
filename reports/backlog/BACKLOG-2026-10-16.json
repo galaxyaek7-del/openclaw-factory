@@ -11,7 +11,7 @@
       "blocker_for": "EXP-C81 measurement",
       "note": "Requires founder ownership verification of galaxyaek7-del.github.io; analytics tool decision needs founder approval before any change to the site.",
       "status_2026-10-16_phase5": "READY_FOR_FOUNDER",
-      "phase5_note": "Sitemap validated (61 URLs, 8 experiment pages, canonicals OK). scripts/search_console_verify.py installs the verification file once the founder provides its name. Needs founder Google login + approved push."
+      "phase5_note": "Sitemap validated (61 URLs, 8 experiment pages, canonicals OK). scripts/deploy_gsc_verification.py (the pre-existing canonical tool; the Phase 5 duplicate was removed) deploys the Google-supplied file. Needs founder Google login + approved push."
     },
     {
       "id": "BKL-002",

@@ -7,6 +7,8 @@ import hashlib
 import importlib.util
 import json
 import shutil
+import sys
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -21,7 +23,6 @@ def _load(name, rel):
     return mod
 
 
-GSC = _load("gsc_p5", "scripts/search_console_verify.py")
 EP = _load("ep_p5", "scripts/set_pageview_endpoint.py")
 CSV = _load("csv_p5", "src/measurement/gumroad_csv_parser.py")
 EVAL = _load("eval_p5", "scripts/cycle81_product_evaluation.py")
@@ -31,17 +32,26 @@ class TestPhase5Tools(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp())
 
-    def test_search_console_file_is_validated_and_never_overwritten(self):
-        for bad in ("google123.html", "evil.html", "../google0123456789abcdef.html", ""):
-            self.assertFalse(GSC.plan(bad, str(self.tmp))["ok"], bad)
-        name = "google0123456789abcdef.html"
-        self.assertEqual(GSC.plan(name, str(self.tmp))["action"], "create")
-        self.assertFalse((self.tmp / name).exists())                      # plan writes nothing
-        self.assertEqual(GSC.apply(name, str(self.tmp))["action"], "created")
-        self.assertEqual((self.tmp / name).read_text(encoding="utf-8").strip(), f"google-site-verification: {name}")
-        self.assertEqual(GSC.apply(name, str(self.tmp))["action"], "already_present")
-        (self.tmp / name).write_text("something else", encoding="utf-8")
-        self.assertFalse(GSC.apply(name, str(self.tmp))["ok"])
+    def test_search_console_deploy_dry_run_validates_and_writes_nothing(self):
+        # Canonical tool: scripts/deploy_gsc_verification.py (the Phase 5
+        # duplicate search_console_verify.py was removed 2026-10-16).
+        script = str(ROOT / "scripts" / "deploy_gsc_verification.py")
+
+        def dry(name, content):
+            f = self.tmp / name
+            f.write_text(content, encoding="utf-8")
+            p = subprocess.run([sys.executable, script, "--file", str(f), "--dry-run"],
+                               capture_output=True, text=True, timeout=120, cwd=str(ROOT))
+            return p.returncode, json.loads(p.stdout.strip().splitlines()[-1])
+
+        good = "google0123456789abcdef.html"
+        code, r = dry(good, f"google-site-verification: {good}")
+        self.assertEqual((code, r["success"], r["dry_run"]), (0, True, True))
+        self.assertFalse((ROOT / good).exists())                          # dry run writes nothing
+        self.assertIn("marker", dry("google0123456789abcdee.html", "hello")[1]["error"])
+        self.assertIn("secret", dry("google0123456789abcdea.html",
+                                    "google-site-verification: x\nghp_" + "A" * 36)[1]["error"])
+        self.assertIn("format", dry("evil.html", "google-site-verification: evil.html")[1]["error"])
 
     def test_pageview_endpoint_edit_is_scoped_idempotent_and_reversible(self):
         site = self.tmp / "site"
