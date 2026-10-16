@@ -7,6 +7,7 @@ repair could quietly make a product worse: misclassifying a column, mistaking
 import re
 import sys
 import tempfile
+import importlib.util
 import unittest
 from pathlib import Path
 
@@ -239,6 +240,11 @@ class TestBlockingProblems(unittest.TestCase):
         self.assertGreaterEqual(r.detail["text_overlaps"], 1)
         self.assertTrue(any("text overlap" in x for x in fte.blocking_problems(r)))
 
+    @unittest.skipUnless(importlib.util.find_spec("fitz"),
+                         "PyMuPDF not installed: the overlap check is optional in "
+                         "file_testing_engine (reports 'PyMuPDF unavailable'); it is "
+                         "AGPL-licensed, so adding it to requirements.txt is a "
+                         "licensing decision, not a test fix")
     def test_clean_multi_paragraph_pdf_has_no_overlaps(self):
         p = _p("clean_paras.pdf")
         _box_pdf(p, ["First paragraph of ordinary body text."] * 30)

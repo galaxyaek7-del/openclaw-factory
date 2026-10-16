@@ -88,3 +88,22 @@ tenacity==9.1.4
 # safe direction: those tests simply run without the opt-in and assert refusal.
 # pytest is required for the import to succeed, not to drive the run.
 pytest==9.1.1
+
+# Ninth and tenth occurrences of this file's own warning: tracked code and
+# tracked tests import them, a clean CI environment lacks them, and both are
+# invisible locally because this machine has them. Found 2026-10-16 when CI
+# finally got past group (c-d) and stopped on
+#   ERROR unittest.loader._FailedTest.test_cohort_workbook
+#   :: ModuleNotFoundError: No module named 'openpyxl'
+# then reproduced in a clean venv built from this file alone, which also
+# showed test_kids_studio failing on numpy.
+#   openpyxl -> cohort_workbook.py, workbook_upgrader.py, file_testing_engine.py,
+#               manifest_gate.py (and their tests)
+#   numpy    -> kids_studio/tools/render_poc.py, verify_video.py, build_episode.py
+openpyxl==3.1.5
+numpy==2.5.3
+# python-docx -> manifest_gate.py opens .docx members of product archives.
+# Same failure class, same clean-venv reproduction. (PyMuPDF, used by the
+# optional text-overlap check, is deliberately NOT added: it is AGPL-3.0 or
+# commercial, so that is a licensing decision; its test skips with that reason.)
+python-docx==1.2.0
