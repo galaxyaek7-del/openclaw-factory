@@ -32,6 +32,7 @@ genuinely needs that raw, high-volume view, clearly labeled as such.
 """
 
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -96,7 +97,30 @@ def _generation_log_record_for_title(title, generation_log_path=None):
     mechanical proxy for `version` -- how many times this exact product
     was actually (re)generated, a real signal, not invented)."""
     path = Path(generation_log_path) if generation_log_path else _GENERATION_LOG_PATH
-    matches = []
+    index = _generation_log_index(path)
+    if index is None:
+        return None, 0
+    return index.get(title, (None, 0))
+
+
+# The generation log is ~20 MB and this lookup runs once per catalog entry,
+# several catalogs per dashboard: re-parsing it every time cost ~20 s of the
+# commercial-operations dashboard (2026-10-16 profile: 208k json.loads per
+# request). One parse builds a name -> (latest successful record, count)
+# index, reused until the file's size or mtime changes.
+_GEN_INDEX_CACHE = {}
+
+
+def _generation_log_index(path):
+    try:
+        st = os.stat(path)
+    except OSError:
+        return None
+    key = (str(Path(path).resolve()), st.st_mtime_ns, st.st_size)
+    cached = _GEN_INDEX_CACHE.get(key[0])
+    if cached and cached[0] == key:
+        return cached[1]
+    latest, counts = {}, {}
     try:
         with open(path, "r", encoding="utf-8") as f:
             for line in f:
@@ -109,13 +133,16 @@ def _generation_log_record_for_title(title, generation_log_path=None):
                     continue
                 if not r.get("success"):
                     continue
-                if r.get("title") == title or r.get("topic") == title:
-                    matches.append(r)
+                # A record whose title and topic are the same counts once,
+                # exactly as the original per-title scan did.
+                for name in {r.get("title"), r.get("topic")} - {None}:
+                    latest[name] = r
+                    counts[name] = counts.get(name, 0) + 1
     except OSError:
-        return None, 0
-    if not matches:
-        return None, 0
-    return matches[-1], len(matches)
+        return None
+    index = {name: (latest[name], counts[name]) for name in latest}
+    _GEN_INDEX_CACHE[key[0]] = (key, index)
+    return index
 
 
 def _paddle_catalog_entries(paddle_products_path=None, finance_path=None, generation_log_path=None):

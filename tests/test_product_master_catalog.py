@@ -206,5 +206,43 @@ class TestAllGenerationAttempts(unittest.TestCase):
             self.assertEqual(result["total_real_attempts"], 10)
 
 
+class TestGenerationLogIndex(unittest.TestCase):
+    """The per-title lookup is served from a cached index (2026-10-16): same
+    answers as the original full scan, rebuilt when the log changes."""
+
+    def _write(self, path, rows):
+        with open(path, "w", encoding="utf-8") as f:
+            for r in rows:
+                f.write((r if isinstance(r, str) else json.dumps(r)) + "\n")
+
+    def test_same_answers_as_a_full_scan(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "_generation_log.jsonl")
+            self._write(path, [
+                {"success": True, "title": "A", "v": 1},
+                {"success": False, "title": "A", "v": 2},          # failures never count
+                {"success": True, "topic": "A", "v": 3},           # topic matches too
+                {"success": True, "title": "B", "topic": "B", "v": 4},   # same record once
+                "not json",
+                {"success": True, "title": "A", "topic": "C", "v": 5},
+            ])
+            rec, n = pmc._generation_log_record_for_title("A", path)
+            self.assertEqual((rec["v"], n), (5, 3))                 # latest wins
+            self.assertEqual(pmc._generation_log_record_for_title("B", path)[1], 1)
+            self.assertEqual(pmc._generation_log_record_for_title("C", path)[0]["v"], 5)
+            self.assertEqual(pmc._generation_log_record_for_title("missing", path), (None, 0))
+            self.assertEqual(pmc._generation_log_record_for_title("A", os.path.join(tmp, "nope.jsonl")), (None, 0))
+
+    def test_index_is_rebuilt_when_the_log_changes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "_generation_log.jsonl")
+            self._write(path, [{"success": True, "title": "A", "v": 1}])
+            self.assertEqual(pmc._generation_log_record_for_title("A", path)[1], 1)
+            with open(path, "a", encoding="utf-8") as f:
+                f.write(json.dumps({"success": True, "title": "A", "v": 2}) + "\n")
+            rec, n = pmc._generation_log_record_for_title("A", path)
+            self.assertEqual((rec["v"], n), (2, 2))
+
+
 if __name__ == "__main__":
     unittest.main()
