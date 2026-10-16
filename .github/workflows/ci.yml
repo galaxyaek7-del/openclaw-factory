@@ -44,6 +44,13 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
+      # 2026-10-16: openpyxl, numpy and python-docx were imported by tracked
+      # code but never declared; invisible locally, broken only on CI, found
+      # one round trip at a time. This names every undeclared module-level
+      # third-party import up front (lazy/guarded ones are reported, not failed).
+      - name: Every hard third-party import is declared in requirements.txt
+        run: python scripts/audit_requirements.py
+
       - name: Install Node dependencies
         run: npm ci
 
