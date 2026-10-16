@@ -54,7 +54,15 @@ class TestAuditRequirements(unittest.TestCase):
                  self.write("tests/network_guard.py", "x = 1\n"),
                  self.write("app.py", "import golden_hunter\nfrom golden_hunter import hunt\nimport network_guard\n")]
         r = self.run_audit(*files)
-        self.assertEqual(r, {"hard": {}, "soft": {}})
+        self.assertEqual((r["hard"], r["soft"], r["untracked_local"]), ({}, {}, []))
+
+    def test_untracked_local_code_is_named_as_such(self):
+        # present on disk, absent from the tracked list -> missing from the repo
+        self.write("helper_pkg/__init__.py", "")
+        f = self.write("app.py", "import helper_pkg\n")
+        r = self.run_audit(f)
+        self.assertIn("helper_pkg", r["hard"])
+        self.assertEqual(r["untracked_local"], ["helper_pkg"])
 
     def test_real_repository_has_no_hard_gaps(self):
         r = A.audit()

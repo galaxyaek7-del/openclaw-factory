@@ -156,8 +156,14 @@ def audit(root=ROOT, tracked=None, req_path=None):
                 continue
             (hard if kind == "HARD" else soft).setdefault(mod, set()).add(rel)
     soft = {m: v for m, v in soft.items() if m not in hard}
+    # A name that exists on disk as a local module/package but is not tracked
+    # is not a missing *library*: it is code missing from the repository
+    # (a fresh clone breaks). Named separately so the fix is obvious.
+    on_disk = {m for m in set(hard) | set(soft)
+               if os.path.isdir(os.path.join(root, m)) or os.path.isfile(os.path.join(root, m + ".py"))}
     return {"hard": {m: sorted(v) for m, v in sorted(hard.items())},
-            "soft": {m: sorted(v) for m, v in sorted(soft.items())}}
+            "soft": {m: sorted(v) for m, v in sorted(soft.items())},
+            "untracked_local": sorted(on_disk)}
 
 
 def main(argv=None):
@@ -176,6 +182,9 @@ def main(argv=None):
             print("  %-22s <- %d file(s): %s" % (m, len(users), ", ".join(users[:3])))
         if not r["soft"]:
             print("  none")
+        if r["untracked_local"]:
+            print("=== of these, LOCAL code present on disk but NOT in git (a fresh clone lacks it) ===")
+            print("  " + ", ".join(r["untracked_local"]))
     return 1 if r["hard"] else 0
 
 
