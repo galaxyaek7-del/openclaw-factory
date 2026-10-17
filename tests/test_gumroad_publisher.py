@@ -113,6 +113,16 @@ def _fake_response(status_code=200, json_data=None):
 
 
 class TestRetryOnTransientFailure(unittest.TestCase):
+    def setUp(self):
+        # Cycle 91: create_product now reads the live catalog to refuse a
+        # duplicate title. These tests feed the network mocks in a fixed
+        # order and are about the upload/create flow, so the duplicate check
+        # is stubbed to "none found"; tests/test_publish_failclosed_cycle91.py
+        # proves the check itself blocks.
+        p = patch("channels.gumroad_publisher._find_duplicate_listing", return_value=None)
+        p.start()
+        self.addCleanup(p.stop)
+
     def test_get_sales_retries_after_one_5xx_then_succeeds(self):
         responses = [
             _fake_response(status_code=503),

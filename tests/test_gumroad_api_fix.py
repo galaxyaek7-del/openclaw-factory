@@ -115,6 +115,16 @@ def _tmp_file(suffix=".pdf", data=b"test"):
 
 
 class TestGumroadApiFix(unittest.TestCase):
+    def setUp(self):
+        # Cycle 91: create_product now reads the live catalog to refuse a
+        # duplicate title. These tests feed the network mocks in a fixed
+        # order and are about the upload/create flow, so the duplicate check
+        # is stubbed to "none found"; tests/test_publish_failclosed_cycle91.py
+        # proves the check itself blocks.
+        p = patch("channels.gumroad_publisher._find_duplicate_listing", return_value=None)
+        p.start()
+        self.addCleanup(p.stop)
+
 
     @patch('requests.post')
     @patch('channels.gumroad_publisher._request_with_retry')

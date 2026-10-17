@@ -83,6 +83,10 @@ _RETRY_BACKOFF_SECONDS = 1.5
 _PART_SIZE = 100 * 1024 * 1024
 
 
+class DuplicateListing(Exception):
+    """A non-deleted listing with the same title already exists (Cycle 91)."""
+
+
 class ConfigError(Exception):
     """A missing/invalid local configuration — never a Gumroad API error."""
     pass
@@ -398,6 +402,46 @@ def _upload_file(token, file_path, *, scope_id=None, product_id=None):
 
     return data.get("file_url") or key
 
+def _norm_title(t):
+    return re.sub(r"\s+", " ", str(t or "")).strip().casefold()
+
+
+def _check_attachment(file_path, expected_sha256=None):
+    """Cycle 91: the attachment must be a readable, non-empty file and, when
+    the caller names it, exactly the expected file (sha256). Runs before any
+    network call or scope consumption."""
+    import hashlib
+    fp = Path(file_path)
+    if not fp.exists() or not fp.is_file():
+        raise ConfigError(f"product file not found: {fp}")
+    try:
+        data = fp.read_bytes()
+    except OSError as e:
+        raise ConfigError(f"product file unreadable: {fp} ({e})")
+    if not data:
+        raise ConfigError(f"product file is empty (0 bytes): {fp}")
+    if expected_sha256 is not None:
+        got = hashlib.sha256(data).hexdigest()
+        if got != str(expected_sha256).strip().lower():
+            raise ConfigError(f"product file identity mismatch: {fp.name} sha256 {got[:12]}… "
+                              f"!= expected {str(expected_sha256)[:12]}…")
+
+
+def _find_duplicate_listing(token, title):
+    """Cycle 91: a non-deleted listing whose title matches, or None. Reads the
+    live catalog (GET only). If the catalog cannot be read, uniqueness cannot
+    be proven, so this raises instead of returning None (fail closed)."""
+    want = _norm_title(title)
+    try:
+        existing = list_products(token)
+    except Exception as e:  # noqa: BLE001
+        raise DuplicateListing(f"cannot verify uniqueness, catalog unreadable: {_safe_err(e)}")
+    for p in existing or []:
+        if not p.get("deleted") and _norm_title(p.get("name")) == want:
+            return p
+    return None
+
+
 def create_product(token, product_spec, *, upload_scope_id=None):
     # PHASE 5 (2026-10-14): mandatory, centralized write authorization.
     # This is the FIRST statement on purpose -- a denied write must not be
@@ -425,6 +469,16 @@ def create_product(token, product_spec, *, upload_scope_id=None):
     title = (product_spec.get("title") or "").strip() if isinstance(product_spec.get("title"), str) else product_spec.get("title")
     if not title:
         raise ConfigError("product_spec missing 'title'")
+
+    # Cycle 91, before any upload or scope consumption: the attachment must be
+    # readable (and the expected file, when named), and no live listing may
+    # already carry this title -- re-running a batch must never create a
+    # second paid listing. No override argument.
+    _check_attachment(file_path, product_spec.get("expected_sha256"))
+    dup = _find_duplicate_listing(token, title)
+    if dup is not None:
+        raise DuplicateListing(f"a listing titled {title!r} already exists "
+                               f"({dup.get('short_url') or dup.get('id')}); not creating another")
 
     # Presign -> Upload -> Complete -> Get URL, then attach files[][url].
     # File existence is validated inside _upload_file(); price/title are

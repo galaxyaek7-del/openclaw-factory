@@ -6,11 +6,15 @@ Founder authorization: 2026-10-17 ("المصنع ينشر تلقائياً كل 
 
 Publishes ONLY when all 5 gates pass. No overrides, no bypass, no exceptions.
 
-DISCLOSED (verified before building): the live path below calls the Gumroad
-REST API directly (urllib), so it does NOT pass through
-channels/write_gate.py -- the factory's fail-closed Gumroad write gate.
-The founder explicitly chose this literal path on 2026-10-17 over the
-scoped-authorization alternative in channels/write_scope.py.
+Cycle 91 security recovery (2026-10-17): the original version called the
+Gumroad REST API directly (urllib), bypassing channels/write_gate.py, never
+checking FACTORY_LIVE_PUBLISH, and creating a published product with no file
+attached. The live step now goes through distributor.distribute() and
+channels/gumroad_publisher.create_product() only, so every factory control
+applies (write gate, scoped upload authorization, daily caps, duplicate
+checks). The founder authorization cited above is recorded as stated by the
+parallel session; it is unconfirmed in the reviewing session
+(reports/governance/AUTO_PUBLISHER_REVIEW_CYCLE88.md).
 """
 from src.quality.quality_enforcer import QualityEnforcer
 from src.pricing.dynamic_pricer import DynamicPricer
@@ -35,6 +39,29 @@ def _load_dotenv(path: str = ".env") -> None:
 _load_dotenv()
 
 
+def _live_publish_enabled() -> bool:
+    """The factory-wide live-publish switch.
+
+    Same convention as channels/write_gate.py and server.js/factory_loop.js.
+    Fail closed: anything other than an explicit truthy value keeps live
+    publishing disabled. This module previously had NO such check, so a
+    product passing all 5 gates would POST live regardless of the factory
+    switch (CYCLE 90 publish-safety recovery).
+    """
+    return str(os.environ.get("FACTORY_LIVE_PUBLISH", "")).strip().lower() in (
+        "1", "true", "yes", "on")
+
+
+def _say(msg: str) -> None:
+    """print() that cannot crash the publisher: a Windows cp1252 console
+    raises UnicodeEncodeError on the emoji below (found in the Cycle 88
+    review, where it aborted publish() right after logging)."""
+    try:
+        print(msg)
+    except UnicodeEncodeError:
+        print(msg.encode("ascii", "replace").decode("ascii"))
+
+
 class AutoPublisher:
     """
     Publishes automatically ONLY when
@@ -44,10 +71,36 @@ class AutoPublisher:
     Founder authorization: 2026-10-17
     """
 
-    def __init__(self):
+    def __init__(self, log_path: str = "data/publish_log.jsonl"):
         self.enforcer = QualityEnforcer()
         self.pricer   = DynamicPricer()
-        self.log_path = "data/publish_log.jsonl"
+        self.log_path = log_path
+
+    # Declared product files are bare basenames; resolve against known dirs.
+    _FILE_BASES = ("", "books/batch12/", "books/", "reports/")
+
+    def _resolve_files(self, files) -> list:
+        """Resolve declared product files to real paths.
+
+        Batch records declare bare filenames (see
+        tests/test_distributor.py::_b12_product, which prefixes
+        'books/batch12/'), while QualityEnforcer resolves 'files' relative to
+        the repo root. Try the real product dirs first; an unresolvable name
+        is passed through unchanged so the enforcer still reports it missing.
+        """
+        out = []
+        for f in files or []:
+            if os.path.isabs(f):
+                out.append(f)
+                continue
+            for base in self._FILE_BASES:
+                cand = os.path.join(base, f) if base else f
+                if os.path.exists(cand):
+                    out.append(cand)
+                    break
+            else:
+                out.append(f)
+        return out
 
     # ══════════════════════════════
     # THE 5 GATES
@@ -56,7 +109,7 @@ class AutoPublisher:
     def gate_1_quality(self, product: dict, content: str) -> dict:
         """Layer 1-3 quality inspection"""
         result = self.enforcer.full_inspection(
-            product, content, files=product.get("files")
+            product, content, files=self._resolve_files(product.get("files"))
         )
         scores = result.get("scores") or {}
         numeric = [v for v in scores.values() if isinstance(v, (int, float))]
@@ -128,8 +181,10 @@ class AutoPublisher:
             w, h = img.size
             correct = (w == 1280 and h == 720)
         except Exception:
+            # Fail closed (Cycle 88 review): an unreadable cover is not a
+            # verified 1280x720 cover. This used to pass the gate.
             w = h = None
-            correct = True  # PIL not available
+            correct = False
 
         return {
             "gate": 3,
@@ -215,11 +270,26 @@ class AutoPublisher:
             log_entry["action"] = "HELD"
             log_entry["reason"] = f"Failed gates: {evaluation['failed_gates']}"
             self._log(log_entry)
-            print(
+            _say(
                 f"⏸️  HELD: {product.get('name') or product.get('title')}"
                 f"\n   Failed: {evaluation['failed_gates']}"
             )
             return log_entry
+
+        # All 5 gates passed, but the factory-wide live-publish switch must
+        # also be on. Fail closed: absent/false => held, never a live POST.
+        if not _live_publish_enabled():
+            log_entry["action"] = "HELD"
+            log_entry["reason"] = (
+                "all 5 gates passed, but live publish is disabled "
+                "(FACTORY_LIVE_PUBLISH is not true)")
+            self._log(log_entry)
+            _say(
+                f"⏸️  HELD: {product.get('name') or product.get('title')}"
+                f"\n   Passed all 5 gates; live publish disabled"
+            )
+            return log_entry
+
 
         # All 5 gates passed -> publish
         gumroad_result = self._publish_to_gumroad(product, content)
@@ -232,14 +302,14 @@ class AutoPublisher:
         self._log(log_entry)
 
         if gumroad_result["success"]:
-            print(
+            _say(
                 f"✅ PUBLISHED: {product.get('name') or product.get('title')}"
                 f"\n   Price: ${product.get('price_usd')}"
                 f"\n   URL: {gumroad_result.get('url')}"
             )
             self._notify_telegram(product, gumroad_result)
         else:
-            print(
+            _say(
                 f"❌ PUBLISH FAILED: {product.get('name') or product.get('title')}"
                 f"\n   Error: {gumroad_result.get('error')}"
             )
@@ -247,53 +317,57 @@ class AutoPublisher:
         return log_entry
 
     def _publish_to_gumroad(self, product: dict, content: str) -> dict:
-        """Calls Gumroad API to create and publish."""
-        import urllib.request
-        import urllib.parse
+        """Live create, through the factory's one controlled path (Cycle 91).
 
-        token = (
-            os.getenv("GUMROAD_ACCESS_TOKEN") or
-            os.getenv("GUMROAD_KEY")
-        )
-
-        if not token:
-            return {"success": False, "error": "No Gumroad token in .env"}
-
-        data = urllib.parse.urlencode({
-            "name": product.get("name") or product.get("title", ""),
-            "description": content[:3000],
-            "price": int(float(product.get("price_usd", 0)) * 100),
-            "published": "true",
-            "tags[]": ",".join(product.get("tags", []))
-        }).encode()
-
+        The direct urllib POST that used to live here created a PUBLISHED
+        product with no file attached and skipped every factory control. It
+        is gone. A live attempt now goes distributor.distribute() ->
+        channels.gumroad_arm -> channels.gumroad_publisher.create_product(),
+        so it gets: the ledger duplicate check, publish_protection daily
+        caps and cooldowns, the file-usability and claim-integrity gates, the
+        write gate (FACTORY_LIVE_PUBLISH + verified credential), the
+        single-use scoped upload authorization, the attachment readability
+        check, and the live-catalog duplicate-title check.
+        """
+        # Defense in depth: never start a live attempt unless the
+        # factory-wide live-publish switch is explicitly on.
+        if not _live_publish_enabled():
+            return {"success": False,
+                    "error": "live publish disabled (FACTORY_LIVE_PUBLISH is not true)"}
+        files = self._resolve_files(product.get("files"))
+        if not files or not os.path.isfile(files[0]):
+            return {"success": False, "error": "no deliverable file resolved; not creating a listing"}
         try:
-            req = urllib.request.Request(
-                "https://api.gumroad.com/v2/products",
-                data=data,
-                headers={
-                    "Authorization": f"Bearer {token}",
-                    "Content-Type": "application/x-www-form-urlencoded"
-                }
-            )
+            price = float(product.get("price_usd") or product.get("price") or 0)
+        except (TypeError, ValueError):
+            price = 0.0
+        if price <= 0:
+            return {"success": False, "error": "no valid price; not creating a listing"}
+        if product.get("file_sha256"):
+            from channels import gumroad_publisher
+            try:
+                gumroad_publisher._check_attachment(files[0], product["file_sha256"])
+            except Exception as e:  # noqa: BLE001
+                return {"success": False, "error": str(e)}
 
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                result = json.loads(resp.read())
-
-            if result.get("success"):
-                p = result.get("product", {})
-                return {
-                    "success": True,
-                    "gumroad_id": p.get("id"),
-                    "url": p.get("short_url"),
-                    "name": p.get("name"),
-                    "published_at": datetime.utcnow().isoformat()
-                }
-            else:
-                return {"success": False, "error": result.get("message")}
-
-        except Exception as e:
-            return {"success": False, "error": str(e)}
+        import distributor
+        from schemas.product import Product
+        title = product.get("name") or product.get("title") or ""
+        item = Product(
+            title=title, subtitle="", description=content[:3000] if content else "",
+            price_usd=price, file_path=files[0], cover_path=None,
+            tags=list(product.get("tags") or []), language="en",
+            source_id=str(product.get("id") or ""), raw_price_hint=price,
+            needs_pricing=False, price_source="registry_verified",
+        )
+        outcomes = distributor.distribute(item, arm_names=["gumroad"], dry_run=False)
+        o = outcomes[0] if outcomes else {}
+        res = o.get("result")
+        if o.get("ok") and res is not None and getattr(res, "ok", False):
+            return {"success": True, "gumroad_id": res.product_id, "url": res.url,
+                    "name": title, "published_at": datetime.utcnow().isoformat()}
+        reason = o.get("skip_reason") or (getattr(res, "error", None) if res is not None else None) or "not attempted"
+        return {"success": False, "error": reason}
 
     def _notify_telegram(self, product: dict, result: dict):
         """Send Telegram notification on publish"""
@@ -318,8 +392,8 @@ class AutoPublisher:
 
     def _log(self, entry: dict):
         """Append to publish log"""
-        os.makedirs("data", exist_ok=True)
-        with open(self.log_path, "a") as f:
+        os.makedirs(os.path.dirname(self.log_path) or ".", exist_ok=True)
+        with open(self.log_path, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
     def run_batch(self, products_dir: str = "data"):
@@ -331,8 +405,8 @@ class AutoPublisher:
             glob.glob(f"{products_dir}/products/*.json")
         )
 
-        print(f"Found {len(product_files)} products")
-        print("Running 5-gate evaluation...\n")
+        _say(f"Found {len(product_files)} products")
+        _say("Running 5-gate evaluation...\n")
 
         published, held, failed = [], [], []
 
@@ -373,20 +447,20 @@ class AutoPublisher:
             except Exception as e:
                 failed.append({"file": pf, "error": str(e)})
 
-        print(f"\n═══ BATCH COMPLETE ═══")
-        print(f"✅ Published: {len(published)}")
-        print(f"⏸️  Held:      {len(held)}")
-        print(f"❌ Errors:    {len(failed)}")
+        _say(f"\n═══ BATCH COMPLETE ═══")
+        _say(f"✅ Published: {len(published)}")
+        _say(f"⏸️  Held:      {len(held)}")
+        _say(f"❌ Errors:    {len(failed)}")
 
         if published:
-            print("\nPublished:")
+            _say("\nPublished:")
             for p in published:
-                print(f"  ✅ {p}")
+                _say(f"  ✅ {p}")
 
         if held:
-            print("\nHeld (failed gates):")
+            _say("\nHeld (failed gates):")
             for h in held:
-                print(f"  ⏸️  {h['name']}: {h['failed']}")
+                _say(f"  ⏸️  {h['name']}: {h['failed']}")
 
         return {
             "published": len(published),
