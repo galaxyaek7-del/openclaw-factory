@@ -1,0 +1,61 @@
+{
+  "generated_at": "2026-10-17T07:06:03+00:00",
+  "method": "git grep for gate names across tracked .py/.js (50 non-test files), then traced which ones the real path imports: decision_engine/engine.py -> book_generator.py -> distributor.py",
+  "files_found": 50,
+  "actually_blocking": [
+    {
+      "gate": "profit_oracle.ladder_opportunity_score",
+      "stage": "decision",
+      "where": "decision_engine/engine.py:98",
+      "effect": "nine hard gates incl. Proof of Payment; a niche is ACCEPTED only if it passes, otherwise DEFERRED/REJECTED"
+    },
+    {
+      "gate": "book_generator pre-generation checks (niche / competition)",
+      "stage": "production",
+      "where": "book_generator.py ~2395",
+      "effect": "returns passed=False; callers must not generate"
+    },
+    {
+      "gate": "inspectors.final_inspection (Dual Inspection)",
+      "stage": "production -> publish clearance",
+      "where": "book_generator.py ~2504",
+      "effect": "cleared to publish only if both inspectors approve; inspectors.py missing -> fails closed; failures go to QUARANTINE.md"
+    },
+    {
+      "gate": "file_testing_engine.blocking_problems",
+      "stage": "publish",
+      "where": "distributor.py ~144-155",
+      "effect": "opens the real delivered file before a real publish and blocks on certain defects"
+    },
+    {
+      "gate": "channels/write_gate",
+      "stage": "Gumroad writes",
+      "effect": "fails closed unless live flag/scope + VERIFIED fresh auth state"
+    }
+  ],
+  "partial_opt_in": [
+    {
+      "gate": "quality_gate_policy.quality_gate_allowed (central Quality Gate)",
+      "where": "distributor.py ~302-311",
+      "effect": "BLOCKS when consulted, but consulted ONLY if the caller passes quality_gate / gate2_ledger_path / quality_evidence_path; the default real-publish path skips it"
+    }
+  ],
+  "advisory_only": [
+    {
+      "gate": "executive_quality_gate (REJECT_IF_FAIL checks)",
+      "used_by": "reporting modules (brand_dna, commercial_readiness, digital_twin, ...)",
+      "note": "not imported by the decision, production or publish path"
+    },
+    {
+      "gate": "product_readiness_score / launch_readiness",
+      "used_by": "dashboards and reports"
+    }
+  ],
+  "dead_code": "none proven in this pass (a full call-graph check was not run)",
+  "gaps_against_the_founder_directive": [
+    "No gate checks problem statement / audience / measurable value / differentiation (Core Value) before production",
+    "No gate ties content depth to price (Content Quality) or checks demand evidence and competition (Market Reality) per product",
+    "The central quality gate exists but is opt-in at publish time"
+  ],
+  "verdict": "PARTIAL - real blocking gates exist at decision, production and file level; value/content/market checks per product do not; the central publish gate is opt-in"
+}

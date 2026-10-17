@@ -27,10 +27,55 @@ _FACTORY_ROOT = Path(__file__).resolve().parent.parent.parent
 _BOOK_GENERATOR = _FACTORY_ROOT / "book_generator.py"
 
 
+class QualityGateBlocked(RuntimeError):
+    def __init__(self, gate):
+        self.gate = gate
+        super().__init__(f"quality_enforcer {gate['verdict']}: {'; '.join(gate.get('reasons') or [])}"
+                         f" (report: {gate.get('report_path')})")
+
+
+def _product_brief(context):
+    """The concept facts the Quality Enforcer judges before anything is made.
+    A caller may pass a full `product_brief`; otherwise the brief is built
+    from the decision record, and facts the decision does not hold stay
+    absent (the enforcer then reports BLOCKED_MISSING_DATA, never a guess)."""
+    decision = context.get("decision_result") or {}
+    snap = decision.get("evaluation_snapshot") or {}
+    pain = snap.get("customer_pain") if isinstance(snap.get("customer_pain"), dict) else {}
+    brief = {
+        "id": decision.get("decision_id"), "niche": context.get("niche"),
+        "title": context.get("niche"), "price": snap.get("price"),
+        "audience": pain.get("audience"), "problem": pain.get("problem") or pain.get("pain"),
+        "outcome": pain.get("outcome"), "competitors": snap.get("competitors") or [],
+    }
+    brief.update(context.get("product_brief") or {})
+    return brief
+
+
+def _pre_production_gate(context):
+    """Master Sprint A4 (2026-10-17): Quality Enforcer layers 1+3 run
+    before any generation. Anything but APPROVED stops production here.
+    No override flag exists. Tests that only exercise routing patch this
+    function, the same way they patch subprocess."""
+    qdir = str(_FACTORY_ROOT / "src" / "quality")
+    if qdir not in sys.path:
+        sys.path.insert(0, qdir)
+    import quality_enforcer
+    return quality_enforcer.inspect(_product_brief(context), stage="pre_production",
+                                    report_dir=context.get("quality_report_dir"))
+
+
 @register_engine("production")
 def run(context):
     if context.get("dry_run", True):
         return {"executed": False, "reason": "dry_run=True — no subprocess spawned, no Groq cost incurred"}
+
+    gate = _pre_production_gate(context)
+    if gate["verdict"] != "APPROVED":
+        # Raised, not returned: the orchestrator then records this stage
+        # FAILED, so the timeline never marks a blocked product as already
+        # produced and a later run (once the missing facts exist) can retry.
+        raise QualityGateBlocked(gate)
 
     niche = context["niche"]
     decision = context.get("decision_result") or {}

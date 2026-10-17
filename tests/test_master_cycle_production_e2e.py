@@ -108,6 +108,15 @@ class TestRunMasterCycleExecuteTrueDrivesRealProductionAndPublishing(unittest.Te
         defensibility_patcher.start()
         self.addCleanup(defensibility_patcher.stop)
 
+        # Master Sprint A4 (2026-10-17): the Quality Enforcer now gates
+        # production. This test exercises run_master_cycle's wiring, not
+        # quality, so the gate is stubbed APPROVED here; test_quality_enforcer.py
+        # and test_production_quality_gate.py prove the gate itself blocks.
+        gate_patcher = patch("orchestrator.engines.production._pre_production_gate",
+                             return_value={"verdict": "APPROVED", "reasons": []})
+        gate_patcher.start()
+        self.addCleanup(gate_patcher.stop)
+
         # Strategic Doctrine v2 (ADR-122, 2026-07-24): real customer-pain
         # evidence, same real-shape passthrough as payment evidence above.
         scored = po.ladder_opportunity_score(

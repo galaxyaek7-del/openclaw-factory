@@ -141,6 +141,11 @@ class TestAutomationSystemsEndToEnd(unittest.TestCase):
             # job) -- mocked passing, same isolation technique as every
             # other patch in this list.
             patch("profit_oracle._score_defensibility", return_value=(75, "عالية نسبياً", "test-fixture: mocked passing, isolated")),
+            # Master Sprint A4 (2026-10-17): the Quality Enforcer now gates
+            # production. This test exercises routing/wiring, not quality, so
+            # the gate is stubbed APPROVED here; test_quality_enforcer.py and
+            # test_production_quality_gate.py prove the gate itself blocks.
+            patch("orchestrator.engines.production._pre_production_gate", return_value={"verdict": "APPROVED", "reasons": []}),
         ]
         for p in patches:
             p.start()

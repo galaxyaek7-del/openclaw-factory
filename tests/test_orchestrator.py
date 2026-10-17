@@ -216,7 +216,8 @@ class TestExistingDecisionAvoidsDuplicateDecisionRecording(_IsolatedRunCycleTest
             "decision_id": "existing-3", "niche": "z", "status": "ACCEPTED", "ladder": "b2b_systems",
             "evaluation_snapshot": {"price": 197},
         }
-        with patch.object(production_engine.subprocess, "run") as mock_run:
+        # Master Sprint A4: routing test, Quality Enforcer stubbed APPROVED.
+        with patch.object(production_engine.subprocess, "run") as mock_run,              patch.object(production_engine, "_pre_production_gate", return_value={"verdict": "APPROVED", "reasons": []}):
             mock_run.return_value.stdout = json.dumps({"success": True, "path": "/fake.pdf"})
             results = self._run_cycle(
                 "z", ladder="b2b_systems", execute_production=True, existing_decision=existing,
@@ -302,6 +303,16 @@ class TestCliRunLadderOpportunity(unittest.TestCase):
 
 
 class TestRunCycleDryRunSafetyDefault(_IsolatedRunCycleTestCase):
+    def setUp(self):
+        super().setUp()
+        # Master Sprint A4 (2026-10-17): the Quality Enforcer now gates
+        # production. This test exercises routing/wiring, not quality, so
+        # the gate is stubbed APPROVED here; test_quality_enforcer.py and
+        # test_production_quality_gate.py prove the gate itself blocks.
+        gate = patch("orchestrator.engines.production._pre_production_gate", return_value={"verdict": "APPROVED", "reasons": []})
+        gate.start()
+        self.addCleanup(gate.stop)
+
     def test_default_never_executes_production_or_publishing(self):
         results = self._run_cycle("a dry run safety test niche")
         by_stage = {r.engine: r for r in results}
