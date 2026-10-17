@@ -1,0 +1,36 @@
+{
+  "checked_at": "2026-10-17",
+  "source": "data/prompt_packs.json (real prompt texts)",
+  "tested_items_basis": "0: no prompt has been run on ChatGPT yet (reports/small_products/TEST_CHECKLIST.md)",
+  "results": {
+    "arabic_teacher_prompts": {
+      "product_type": "prompt_pack",
+      "score": 75,
+      "passed": false,
+      "issues": [
+        "Only 0% tested — need 90%+"
+      ],
+      "blocking": [
+        "test_rate"
+      ],
+      "verdict": "FIX_REQUIRED",
+      "items_count": 20,
+      "tested_count": 0
+    },
+    "ecommerce_arabic_prompts": {
+      "product_type": "prompt_pack",
+      "score": 75,
+      "passed": false,
+      "issues": [
+        "Only 0% tested — need 90%+"
+      ],
+      "blocking": [
+        "test_rate"
+      ],
+      "verdict": "FIX_REQUIRED",
+      "items_count": 25,
+      "tested_count": 0
+    }
+  },
+  "to_approve": "Founder tests the prompts and records ratings; at 18/20 (and 23/25) GOOD or better the gate approves."
+}

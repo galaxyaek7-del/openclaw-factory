@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-10-17T12:26:25+00:00",
+  "source": "Gumroad API GET /v2/sales via scripts/check_gumroad_sales.py (read-only, all pages)",
+  "token_working": true,
+  "readable": true,
+  "pages_read": 1,
+  "complete": true,
+  "count": 0,
+  "paid_count": 0,
+  "refunded_count": 0,
+  "gross_usd": 0.0,
+  "by_product": {},
+  "sales_today": 0
+}

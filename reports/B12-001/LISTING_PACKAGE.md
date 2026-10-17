@@ -40,10 +40,8 @@ Business & Money → Business Templates / Spreadsheets
 
 ## ════ COVER IMAGE ════
 File: `reports/B12-001/cover.png`
-Size: 1280×720 PNG (9,155 bytes; deterministic, offline-generated — Pillow only)
+Size: 1280×720 PNG (30,643 bytes; regenerated 2026-10-17 with scripts/generate_listing_covers.py, same design as the other listing covers).
 Upload this file to Gumroad.
-(Note: 9,155 bytes is below the directive's suggested ">10KB" — the flat dark design compresses
-small; the file is a valid 1280×720 PNG and this is not a defect.)
 
 ## ════ PRODUCT FILE ════
 Path: `books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx`
