@@ -1,0 +1,24 @@
+{
+  "product": "Arabic Teacher Prompt Pack",
+  "title": "٢٠ موجّهاً جاهزاً للمعلّم العربي",
+  "files": [
+    "books/arabic_teacher_prompts/README.md",
+    "data/prompt_packs.json"
+  ],
+  "prompts_written": 20,
+  "prompts_tested_on_chatgpt": 0,
+  "gate_status": "FIX_REQUIRED",
+  "gate_reason": [
+    "Only 0% tested — need 90%+"
+  ],
+  "gate_report": "reports/small_products/GATE_2026-10-17.json",
+  "gate_unblock_condition": "Founder tests all 20 on ChatGPT and marks results",
+  "testing_guide": "reports/small_products/TEST_CHECKLIST.md",
+  "estimated_testing_time": "60 minutes",
+  "platform_ready": false,
+  "platform_ready_after": "18+ prompts rated GOOD",
+  "price": 4.99,
+  "price_note": "Founder directive 2026-10-17 sets $4.99; data/prompt_packs.json still lists $7.99. Confirm, then align the registry.",
+  "store": "aekraft.gumroad.com",
+  "note": "NOT uploading to Gumroad until human-tested"
+}

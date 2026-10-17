@@ -47,5 +47,5 @@
   "gate_evidence": "data/evidence/b12_competitors.json (3 competitor prices verified from page metadata; Etsy entry unverified, not used)",
   "allowed_to_publish_note": "Quality gate only. Publishing still needs the founder: the gate stays LOCKED until 'APPROVE B12-001 PUBLISH', and FACTORY_LIVE_PUBLISH=false.",
   "pricer_mechanical_rule": "10% below the cheapest sourced price gives $4.49 (the $4.99 bundle); $14.99 is the founder's comparable-based price",
-  "cover_note": "Regenerated 2026-10-17 with scripts/generate_listing_covers.py (same design as the other 74 listing covers). The previous image printed '$29', a wrong store address (galaxyforge.gumroad.com; the store is aekraft.gumroad.com) and the label 'BUSINESS AUTOMATION'."
+  "cover_note": "Regenerated 2026-10-17 with scripts/generate_listing_covers.py (same design as the other 74 listing covers). The previous image printed '$29', a store address that is not this store (the store is aekraft.gumroad.com) and the label 'BUSINESS AUTOMATION'."
 }

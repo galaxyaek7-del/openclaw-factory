@@ -20,7 +20,39 @@
       "price_basis": "FOUNDER_DECISION_BELOW_COMPARABLE",
       "pricing_date": "2026-10-17",
       "price_evidence": "reports/B12-001/DEMAND_EVIDENCE_2026-10-17.json",
-      "previous_price": 29
+      "previous_price": 29,
+      "price_usd": 14.99,
+      "tags": [
+        "freelancing",
+        "pricing",
+        "rate calculator",
+        "consultant",
+        "spreadsheet",
+        "raise",
+        "excel template",
+        "solo consultant"
+      ],
+      "category": "Business & Money > Business Templates / Spreadsheets",
+      "demand_evidence": {
+        "competitor_prices": "data/evidence/b12_competitors.json (3 verified from page metadata: $19.00, $4.99, EUR 28 / $31.46)",
+        "problem_discussion": "reports/B12-001/DEMAND_EVIDENCE_2026-10-17.json (3 dated public Reddit threads on underpricing)",
+        "proof_of_payment": null
+      },
+      "competition_level": "HIGH: crowded field $4.99-$31.46, incl. one free Google-Sheet substitute (DEMAND_EVIDENCE_2026-10-17.json)",
+      "differentiation": "WEAK per DEMAND_EVIDENCE_2026-10-17.json: the ClientMix/RaisePlanner angle is matched by a $19 bundle with more content; the $14.99 price is below it",
+      "gate_verdict": "APPROVED",
+      "gate_date": "2026-10-17",
+      "gate_score": {
+        "core": 100,
+        "content": 100,
+        "market": 70
+      },
+      "gate_report": "reports/B12-001/GATE_FINAL_2026-10-17.json",
+      "ready_to_publish": true,
+      "publish_gate": "LOCKED until the founder says 'APPROVE B12-001 PUBLISH'; the founder publishes by hand",
+      "missing_fields": {
+        "measurable_value": "no measured customer result exists yet; the $120.29/hr in the listing is an example output from default inputs, not a measurement"
+      }
     },
     {
       "id": "B12-002",
