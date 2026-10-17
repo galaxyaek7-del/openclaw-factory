@@ -1,0 +1,470 @@
+{
+  "generated_at": "2026-10-17T07:24:23+00:00",
+  "total_ready": 74,
+  "format": "1280x720 PNG",
+  "location": "reports/covers/gumroad/",
+  "verified": {
+    "correct_size": 74,
+    "wrong_size": []
+  },
+  "not_for_upload": {
+    "books/covers/ portrait files": "84 book covers at 1600x2560; used only as insets inside the new listing covers",
+    "books/covers/ landscape files": "21 files at 1280x720 (GF-B10-01..10, B12-001..010, cover.png) made by the parallel session for batch products, keyed by internal id; not checked by this batch and not in this upload list"
+  },
+  "upload_method": "Manual on Gumroad (no API endpoint for covers)",
+  "time_estimate": "about 1-3 min per listing",
+  "b12_001": "Has its own cover (reports/B12-001/cover.png, 1280x720) but no Gumroad listing yet; it is uploaded when the listing is created.",
+  "skip": [
+    "vhofn duplicate of 'The 5-Minute Context Reset Playbook' (if unpublished, see reports/cleanup/LISTINGS_TO_UNPUBLISH.md)",
+    "[Unavailable] AI Workflow QA (no cover generated; unpublish instead)"
+  ],
+  "how_to_upload": [
+    "gumroad.com/products",
+    "open the listing",
+    "Edit",
+    "Cover section",
+    "upload the PNG",
+    "Save",
+    "button names approximate, not checked against today's dashboard"
+  ],
+  "priority_order_by_price": [
+    {
+      "title": "GCC Contractor Payment Command System (V2 Bundle)",
+      "price_usd": 399.0,
+      "url": "https://aekraft.gumroad.com/l/jlxmez",
+      "file": "reports/covers/gumroad/gcc-contractor-payment-command-system-v2-bundle--yrSExa.png"
+    },
+    {
+      "title": "Vendor Questionnaire Response Kit",
+      "price_usd": 89.0,
+      "url": "https://aekraft.gumroad.com/l/pyzqa",
+      "file": "reports/covers/gumroad/vendor-questionnaire-response-kit--J6ir7v.png"
+    },
+    {
+      "title": "Sales Tax Nexus Tracker",
+      "price_usd": 79.0,
+      "url": "https://aekraft.gumroad.com/l/uucxer",
+      "file": "reports/covers/gumroad/sales-tax-nexus-tracker--h9G1Ec.png"
+    },
+    {
+      "title": "Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)",
+      "price_usd": 79.0,
+      "url": "https://aekraft.gumroad.com/l/bfhpzl",
+      "file": "reports/covers/gumroad/etsy-suspension-triage-appeal-bundle-both-steps-25-pages--LzOV85.png"
+    },
+    {
+      "title": "GPSR EU Seller Action Kit",
+      "price_usd": 79.0,
+      "url": "https://aekraft.gumroad.com/l/fetmu",
+      "file": "reports/covers/gumroad/gpsr-eu-seller-action-kit--VPYaNk.png"
+    },
+    {
+      "title": "EU Cosmetics Responsible Person Guide",
+      "price_usd": 69.0,
+      "url": "https://aekraft.gumroad.com/l/bfdgx",
+      "file": "reports/covers/gumroad/eu-cosmetics-responsible-person-guide--GVqbXZ.png"
+    },
+    {
+      "title": "EU Green Claims Review Kit",
+      "price_usd": 69.0,
+      "url": "https://aekraft.gumroad.com/l/uyzuu",
+      "file": "reports/covers/gumroad/eu-green-claims-review-kit--C4xKqs.png"
+    },
+    {
+      "title": "EUDR Due Diligence Starter",
+      "price_usd": 69.0,
+      "url": "https://aekraft.gumroad.com/l/brwrta",
+      "file": "reports/covers/gumroad/eudr-due-diligence-starter--qxjGLQ.png"
+    },
+    {
+      "title": "Subscription Renewal Compliance Kit",
+      "price_usd": 69.0,
+      "url": "https://aekraft.gumroad.com/l/xouyjy",
+      "file": "reports/covers/gumroad/subscription-renewal-compliance-kit--2ZvRp7.png"
+    },
+    {
+      "title": "ADA Demand-Letter Response & Triage Kit",
+      "price_usd": 69.0,
+      "url": "https://aekraft.gumroad.com/l/palmdr",
+      "file": "reports/covers/gumroad/ada-demand-letter-response-triage-kit--nLl2DJ.png"
+    },
+    {
+      "title": "EU Packaging EPR Action Kit",
+      "price_usd": 69.0,
+      "url": "https://aekraft.gumroad.com/l/gfsvu",
+      "file": "reports/covers/gumroad/eu-packaging-epr-action-kit--8JM3qF.png"
+    },
+    {
+      "title": "FTC Consumer Review Rule Compliance Kit",
+      "price_usd": 69.0,
+      "url": "https://aekraft.gumroad.com/l/ekhza",
+      "file": "reports/covers/gumroad/ftc-consumer-review-rule-compliance-kit--OiBdFF.png"
+    },
+    {
+      "title": "Trademark DIY Filing Action Kit",
+      "price_usd": 69.0,
+      "url": "https://aekraft.gumroad.com/l/vkqogv",
+      "file": "reports/covers/gumroad/trademark-diy-filing-action-kit--KMNGNg.png"
+    },
+    {
+      "title": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+      "price_usd": 59.0,
+      "url": "https://aekraft.gumroad.com/l/mrecoe",
+      "file": "reports/covers/gumroad/dtc-returns-abuse-playbook-fair-tiered-policy-with-graduated-responses--MzZhoK.png"
+    },
+    {
+      "title": "Clinic No-Show Reduction Kit",
+      "price_usd": 59.0,
+      "url": "https://aekraft.gumroad.com/l/eiztlg",
+      "file": "reports/covers/gumroad/clinic-no-show-reduction-kit--K5oIlu.png"
+    },
+    {
+      "title": "DSAR Response Kit ($59)",
+      "price_usd": 59.0,
+      "url": "https://aekraft.gumroad.com/l/uqmqnu",
+      "file": "reports/covers/gumroad/dsar-response-kit-59--68zZcB.png"
+    },
+    {
+      "title": "Dental Insurance Verification Kit",
+      "price_usd": 59.0,
+      "url": "https://aekraft.gumroad.com/l/diboaf",
+      "file": "reports/covers/gumroad/dental-insurance-verification-kit--iJOXxU.png"
+    },
+    {
+      "title": "Diminished Value Claim Kit",
+      "price_usd": 59.0,
+      "url": "https://aekraft.gumroad.com/l/dyjavs",
+      "file": "reports/covers/gumroad/diminished-value-claim-kit--f542PZ.png"
+    },
+    {
+      "title": "Food Truck Permit Navigator",
+      "price_usd": 59.0,
+      "url": "https://aekraft.gumroad.com/l/cdfdcy",
+      "file": "reports/covers/gumroad/food-truck-permit-navigator--bBfEKk.png"
+    },
+    {
+      "title": "PCI SAQ Readiness Kit for Small Merchants",
+      "price_usd": 59.0,
+      "url": "https://aekraft.gumroad.com/l/qezxe",
+      "file": "reports/covers/gumroad/pci-saq-readiness-kit-for-small-merchants--F0aW62.png"
+    },
+    {
+      "title": "Section 8 Notice Validity System (England)",
+      "price_usd": 59.0,
+      "url": "https://aekraft.gumroad.com/l/nmasnb",
+      "file": "reports/covers/gumroad/section-8-notice-validity-system-england--FbwR2V.png"
+    },
+    {
+      "title": "B2B Late-Payment Collections Operating System",
+      "price_usd": 59.0,
+      "url": "https://aekraft.gumroad.com/l/wsbqr",
+      "file": "reports/covers/gumroad/b2b-late-payment-collections-operating-system--8uWrIq.png"
+    },
+    {
+      "title": "Commercial Lease CAM & Operating-Expense Audit Kit",
+      "price_usd": 59.0,
+      "url": "https://aekraft.gumroad.com/l/xmbxpz",
+      "file": "reports/covers/gumroad/commercial-lease-cam-operating-expense-audit-kit--iTLlmV.png"
+    },
+    {
+      "title": "EU Late Payment Recovery Kit",
+      "price_usd": 59.0,
+      "url": "https://aekraft.gumroad.com/l/ciowwm",
+      "file": "reports/covers/gumroad/eu-late-payment-recovery-kit--8Vlc3z.png"
+    },
+    {
+      "title": "STR Direct Booking Revenue Kit",
+      "price_usd": 59.0,
+      "url": "https://aekraft.gumroad.com/l/ppsluq",
+      "file": "reports/covers/gumroad/str-direct-booking-revenue-kit--iPqoAa.png"
+    },
+    {
+      "title": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/odqlk",
+      "file": "reports/covers/gumroad/landlord-rent-ledger-court-ready-records-for-self-managing-owners--hQgyFv.png"
+    },
+    {
+      "title": "Cottage Food Compliance Kit",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/ursxh",
+      "file": "reports/covers/gumroad/cottage-food-compliance-kit--to7fbH.png"
+    },
+    {
+      "title": "Fleet Maintenance and Damage Documentation Bundle",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/oerot",
+      "file": "reports/covers/gumroad/fleet-maintenance-and-damage-documentation-bundle--Opfzi3.png"
+    },
+    {
+      "title": "Handbook Acknowledgment Tracker",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/fydjid",
+      "file": "reports/covers/gumroad/handbook-acknowledgment-tracker--3B99PV.png"
+    },
+    {
+      "title": "Home-Service Quoting & Deposit Protection System",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/behmhy",
+      "file": "reports/covers/gumroad/home-service-quoting-deposit-protection-system--N9TrQZ.png"
+    },
+    {
+      "title": "Landlord Move-In Inspection Pack",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/gzbdaz",
+      "file": "reports/covers/gumroad/landlord-move-in-inspection-pack--Mk8k3Q.png"
+    },
+    {
+      "title": "Restaurant Food Cost Control Kit",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/swkgd",
+      "file": "reports/covers/gumroad/restaurant-food-cost-control-kit--M55I0t.png"
+    },
+    {
+      "title": "Freelancer Payment Protection & Scope-Control Toolkit",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/fwrjot",
+      "file": "reports/covers/gumroad/freelancer-payment-protection-scope-control-toolkit--YW18CU.png"
+    },
+    {
+      "title": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/ykwdfc",
+      "file": "reports/covers/gumroad/vendor-onboarding-1099-readiness-pack-for-us-small-business--vQEIyR.png"
+    },
+    {
+      "title": "Amazon FBA Reconciliation Workbook",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/wteork",
+      "file": "reports/covers/gumroad/amazon-fba-reconciliation-workbook--ylqF8r.png"
+    },
+    {
+      "title": "Creator Brand-Deal Management System",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/vzmswo",
+      "file": "reports/covers/gumroad/creator-brand-deal-management-system--x5CfOf.png"
+    },
+    {
+      "title": "Employee Offboarding & Access-Revocation System",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/tjbly",
+      "file": "reports/covers/gumroad/employee-offboarding-access-revocation-system--nwqwR1.png"
+    },
+    {
+      "title": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/sjrjxq",
+      "file": "reports/covers/gumroad/etsy-policy-triage-find-your-exact-violation-in-15-minutes--P5k2pt.png"
+    },
+    {
+      "title": "GCC Contractor Payment Command System",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/uwyfje",
+      "file": "reports/covers/gumroad/gcc-contractor-payment-command-system--wJUrEK.png"
+    },
+    {
+      "title": "Newsletter Deliverability & Inbox Placement System",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/iwbcmi",
+      "file": "reports/covers/gumroad/newsletter-deliverability-inbox-placement-system--KzZbSt.png"
+    },
+    {
+      "title": "Restaurant Health Inspection Readiness Kit",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/dvfvm",
+      "file": "reports/covers/gumroad/restaurant-health-inspection-readiness-kit--T41QMt.png"
+    },
+    {
+      "title": "SaaS Spend & Renewal Audit System for Small Teams",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/pahxdv",
+      "file": "reports/covers/gumroad/saas-spend-renewal-audit-system-for-small-teams--sjnnlS.png"
+    },
+    {
+      "title": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/xwbbb",
+      "file": "reports/covers/gumroad/short-term-rental-damage-claim-evidence-kit-airbnb-vrbo--iL2bwA.png"
+    },
+    {
+      "title": "Tech Job Offer Evaluation & Negotiation System",
+      "price_usd": 49.0,
+      "url": "https://aekraft.gumroad.com/l/qpuagh",
+      "file": "reports/covers/gumroad/tech-job-offer-evaluation-negotiation-system--q63gLi.png"
+    },
+    {
+      "title": "Food-Contact Materials Starter",
+      "price_usd": 39.0,
+      "url": "https://aekraft.gumroad.com/l/ldrdm",
+      "file": "reports/covers/gumroad/food-contact-materials-starter--tHvtBh.png"
+    },
+    {
+      "title": "SaaS Churn Email Pack",
+      "price_usd": 39.0,
+      "url": "https://aekraft.gumroad.com/l/roxdbe",
+      "file": "reports/covers/gumroad/saas-churn-email-pack--lac1Tz.png"
+    },
+    {
+      "title": "Salon Commission Pay Kit",
+      "price_usd": 39.0,
+      "url": "https://aekraft.gumroad.com/l/xwacbo",
+      "file": "reports/covers/gumroad/salon-commission-pay-kit--2HC2Ov.png"
+    },
+    {
+      "title": "Etsy Ads ROI Playbook + Calculator",
+      "price_usd": 39.0,
+      "url": "https://aekraft.gumroad.com/l/hasjmp",
+      "file": "reports/covers/gumroad/etsy-ads-roi-playbook-calculator--ZFXJtt.png"
+    },
+    {
+      "title": "Suspended Seller First-Appeal POA System",
+      "price_usd": 39.0,
+      "url": "https://aekraft.gumroad.com/l/zfnagp",
+      "file": "reports/covers/gumroad/suspended-seller-first-appeal-poa-system--66fo53.png"
+    },
+    {
+      "title": "CCPA Compliance Action Kit for Small Business",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/kaooj",
+      "file": "reports/covers/gumroad/ccpa-compliance-action-kit-for-small-business--dyZ5uS.png"
+    },
+    {
+      "title": "Gulf Job-Landing ATS CV System",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/fccqk",
+      "file": "reports/covers/gumroad/gulf-job-landing-ats-cv-system--8gFbiv.png"
+    },
+    {
+      "title": "UK Deposit Recovery Action Pack",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/edgiq",
+      "file": "reports/covers/gumroad/uk-deposit-recovery-action-pack--A1LlQx.png"
+    },
+    {
+      "title": "Digital-Product Refund Policy Pack",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/yhnyn",
+      "file": "reports/covers/gumroad/digital-product-refund-policy-pack--f3MRQn.png"
+    },
+    {
+      "title": "Freelancer Scope-Creep Contract Kit",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/zjwpx",
+      "file": "reports/covers/gumroad/freelancer-scope-creep-contract-kit--T8OiOr.png"
+    },
+    {
+      "title": "Homebuyer Inspection Action Kit",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/volqjv",
+      "file": "reports/covers/gumroad/homebuyer-inspection-action-kit--uUo9Qf.png"
+    },
+    {
+      "title": "Mechanics Lien Filing Kit for Contractors",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/jibnyt",
+      "file": "reports/covers/gumroad/mechanics-lien-filing-kit-for-contractors--mx6XSG.png"
+    },
+    {
+      "title": "Real Estate Transaction Deadline Kit",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/vwlmeo",
+      "file": "reports/covers/gumroad/real-estate-transaction-deadline-kit--2NIVAf.png"
+    },
+    {
+      "title": "Security Deposit Demand Kit for Tenants",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/yiqba",
+      "file": "reports/covers/gumroad/security-deposit-demand-kit-for-tenants--0uieIt.png"
+    },
+    {
+      "title": "Severance Agreement Review Checklist",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/vunrqm",
+      "file": "reports/covers/gumroad/severance-agreement-review-checklist--D4JC45.png"
+    },
+    {
+      "title": "Stripe Chargeback Defense Kit for Digital Sellers",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/ceiwk",
+      "file": "reports/covers/gumroad/stripe-chargeback-defense-kit-for-digital-sellers--F3Q5fU.png"
+    },
+    {
+      "title": "Toy Safety File Starter (EN 71 Lens)",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/vyitxf",
+      "file": "reports/covers/gumroad/toy-safety-file-starter-en-71-lens--jIkPBK.png"
+    },
+    {
+      "title": "AI Agent Blueprint for Small SaaS CloudOps Automation",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/esnpki",
+      "file": "reports/covers/gumroad/ai-agent-blueprint-for-small-saas-cloudops-automation--Ag3pKi.png"
+    },
+    {
+      "title": "Battery & WEEE Mini-Guide for Sellers",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/eiebdt",
+      "file": "reports/covers/gumroad/battery-weee-mini-guide-for-sellers--LInf08.png"
+    },
+    {
+      "title": "EU AI Act Audit Logging Kit",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/fwxmms",
+      "file": "reports/covers/gumroad/eu-ai-act-audit-logging-kit--WP6Vbq.png"
+    },
+    {
+      "title": "Etsy Suspension Appeal Kit",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/fgruzn",
+      "file": "reports/covers/gumroad/etsy-suspension-appeal-kit--mvuoJT.png"
+    },
+    {
+      "title": "Legal Case Research Automation for Solo Attorneys",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/uldlwa",
+      "file": "reports/covers/gumroad/legal-case-research-automation-for-solo-attorneys--y4nX4c.png"
+    },
+    {
+      "title": "SOC 2 Compliance Automation Guide for Startups",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/sjmbrp",
+      "file": "reports/covers/gumroad/soc-2-compliance-automation-guide-for-startups--M5AZWb.png"
+    },
+    {
+      "title": "Turo Guest Dispute Toolkit",
+      "price_usd": 29.0,
+      "url": "https://aekraft.gumroad.com/l/adyvd",
+      "file": "reports/covers/gumroad/turo-guest-dispute-toolkit--srd6CI.png"
+    },
+    {
+      "title": "Freelancer Scope Control Kit",
+      "price_usd": 19.0,
+      "url": "https://aekraft.gumroad.com/l/ziiur",
+      "file": "reports/covers/gumroad/freelancer-scope-control-kit--NHlV8f.png"
+    },
+    {
+      "title": "EU AI Act Compliance Quickstart Checklist",
+      "price_usd": 19.0,
+      "url": "https://aekraft.gumroad.com/l/engiwk",
+      "file": "reports/covers/gumroad/eu-ai-act-compliance-quickstart-checklist--tGGL1m.png"
+    },
+    {
+      "title": "The 5-Minute Context Reset Playbook",
+      "price_usd": 15.0,
+      "url": "https://aekraft.gumroad.com/l/akxaae",
+      "file": "reports/covers/gumroad/the-5-minute-context-reset-playbook--rMOopS.png"
+    },
+    {
+      "title": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+      "price_usd": 9.0,
+      "url": "https://aekraft.gumroad.com/l/tmhlb",
+      "file": "reports/covers/gumroad/eu-ai-act-transparency-ai-literacy-quickstart-checklist--AnZqjZ.png"
+    },
+    {
+      "title": "Mindfulness Journal for Stress Relief",
+      "price_usd": 7.0,
+      "url": "https://aekraft.gumroad.com/l/jvuelq",
+      "file": "reports/covers/gumroad/mindfulness-journal-for-stress-relief--H7Fbvl.png"
+    }
+  ]
+}

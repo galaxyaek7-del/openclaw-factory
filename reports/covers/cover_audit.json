@@ -1,0 +1,1602 @@
+{
+  "generated_at": "2026-10-17T07:24:23+00:00",
+  "standard": "1280x720 PNG",
+  "listings_without_cover": 74,
+  "with_matched_book_cover": 31,
+  "text_only_design": 43,
+  "all_correct_size": true,
+  "all_titles_fit": true,
+  "skipped": [
+    {
+      "product_id": "IW58tjt2zS14fPYrWZOuxg==",
+      "title": "[Unavailable] AI Workflow QA & Stress Test - one agent, reviewed before you demo it to a client",
+      "reason": "title marked [Unavailable] while published"
+    }
+  ],
+  "duplicate_live_titles": [
+    "The 5-Minute Context Reset Playbook"
+  ],
+  "existing_book_covers_note": "books/covers/ PNGs are 1600x2560 portrait; used only as an inset, never uploaded as-is.",
+  "items": [
+    {
+      "product_id": "dyZ5uSfqjjN91f_1Ir0t6w==",
+      "title": "CCPA Compliance Action Kit for Small Business",
+      "url": "https://aekraft.gumroad.com/l/kaooj",
+      "cover_file": "reports/covers/gumroad/ccpa-compliance-action-kit-for-small-business--dyZ5uS.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/ccpa_compliance_action_kit_for_small_business_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 5,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 86.6,
+        "luma_stddev": 43.6,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "8gFbi-vE0ceqFacn3i3eMA==",
+      "title": "Gulf Job-Landing ATS CV System",
+      "url": "https://aekraft.gumroad.com/l/fccqk",
+      "cover_file": "reports/covers/gumroad/gulf-job-landing-ats-cv-system--8gFbiv.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/gulf_job_landing_ats_cv_system_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 6,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 40.6,
+        "luma_stddev": 29.2,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "A1LlQxtJJkdWbhrWG8tyww==",
+      "title": "UK Deposit Recovery Action Pack",
+      "url": "https://aekraft.gumroad.com/l/edgiq",
+      "cover_file": "reports/covers/gumroad/uk-deposit-recovery-action-pack--A1LlQx.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "MzZhoK8Uu-GEYHChAXcvdA==",
+      "title": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+      "url": "https://aekraft.gumroad.com/l/mrecoe",
+      "cover_file": "reports/covers/gumroad/dtc-returns-abuse-playbook-fair-tiered-policy-with-graduated-responses--MzZhoK.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 48,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "hQgyFvb26l7vadCGhTHF9Q==",
+      "title": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+      "url": "https://aekraft.gumroad.com/l/odqlk",
+      "cover_file": "reports/covers/gumroad/landlord-rent-ledger-court-ready-records-for-self-managing-owners--hQgyFv.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 56,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "K5oIlu_UgDH0k1NXKP4fHw==",
+      "title": "Clinic No-Show Reduction Kit",
+      "url": "https://aekraft.gumroad.com/l/eiztlg",
+      "cover_file": "reports/covers/gumroad/clinic-no-show-reduction-kit--K5oIlu.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "to7fbH3OvYu68ggvK9bGGg==",
+      "title": "Cottage Food Compliance Kit",
+      "url": "https://aekraft.gumroad.com/l/ursxh",
+      "cover_file": "reports/covers/gumroad/cottage-food-compliance-kit--to7fbH.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "68zZcBRo9nevkZGYP5lTDg==",
+      "title": "DSAR Response Kit ($59)",
+      "url": "https://aekraft.gumroad.com/l/uqmqnu",
+      "cover_file": "reports/covers/gumroad/dsar-response-kit-59--68zZcB.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "iJOXxUlufzNyZFndUreFHA==",
+      "title": "Dental Insurance Verification Kit",
+      "url": "https://aekraft.gumroad.com/l/diboaf",
+      "cover_file": "reports/covers/gumroad/dental-insurance-verification-kit--iJOXxU.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "f3MRQnVlf3F2w_7n5LfBhw==",
+      "title": "Digital-Product Refund Policy Pack",
+      "url": "https://aekraft.gumroad.com/l/yhnyn",
+      "cover_file": "reports/covers/gumroad/digital-product-refund-policy-pack--f3MRQn.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "f542PZ92SUPOjV9F5GJh-Q==",
+      "title": "Diminished Value Claim Kit",
+      "url": "https://aekraft.gumroad.com/l/dyjavs",
+      "cover_file": "reports/covers/gumroad/diminished-value-claim-kit--f542PZ.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/diminished_value_claim_kit_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 3,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 50.9,
+        "luma_stddev": 26.0,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "GVqbXZ0k0Vfn7fhm2AEQXA==",
+      "title": "EU Cosmetics Responsible Person Guide",
+      "url": "https://aekraft.gumroad.com/l/bfdgx",
+      "cover_file": "reports/covers/gumroad/eu-cosmetics-responsible-person-guide--GVqbXZ.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "C4xKqsgTA37Zd-rysSqmeQ==",
+      "title": "EU Green Claims Review Kit",
+      "url": "https://aekraft.gumroad.com/l/uyzuu",
+      "cover_file": "reports/covers/gumroad/eu-green-claims-review-kit--C4xKqs.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "qxjGLQkyK0CQ3WVuLc-7Kg==",
+      "title": "EUDR Due Diligence Starter",
+      "url": "https://aekraft.gumroad.com/l/brwrta",
+      "cover_file": "reports/covers/gumroad/eudr-due-diligence-starter--qxjGLQ.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "Opfzi3JcKHx-hiwJT3tHrA==",
+      "title": "Fleet Maintenance and Damage Documentation Bundle",
+      "url": "https://aekraft.gumroad.com/l/oerot",
+      "cover_file": "reports/covers/gumroad/fleet-maintenance-and-damage-documentation-bundle--Opfzi3.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 60,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "bBfEKkiaOp-HZcfQaGdIIw==",
+      "title": "Food Truck Permit Navigator",
+      "url": "https://aekraft.gumroad.com/l/cdfdcy",
+      "cover_file": "reports/covers/gumroad/food-truck-permit-navigator--bBfEKk.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "tHvtBhoJC0KJMPhQippBBA==",
+      "title": "Food-Contact Materials Starter",
+      "url": "https://aekraft.gumroad.com/l/ldrdm",
+      "cover_file": "reports/covers/gumroad/food-contact-materials-starter--tHvtBh.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "NHlV8fguLAZLwpkRi5KyIA==",
+      "title": "Freelancer Scope Control Kit",
+      "url": "https://aekraft.gumroad.com/l/ziiur",
+      "cover_file": "reports/covers/gumroad/freelancer-scope-control-kit--NHlV8f.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "T8OiOrVH1ficDv1bN3ksfg==",
+      "title": "Freelancer Scope-Creep Contract Kit",
+      "url": "https://aekraft.gumroad.com/l/zjwpx",
+      "cover_file": "reports/covers/gumroad/freelancer-scope-creep-contract-kit--T8OiOr.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "3B99PVyD77qKqh0cAPcsDA==",
+      "title": "Handbook Acknowledgment Tracker",
+      "url": "https://aekraft.gumroad.com/l/fydjid",
+      "cover_file": "reports/covers/gumroad/handbook-acknowledgment-tracker--3B99PV.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "N9TrQZXO5NMMk8otX5g7Zg==",
+      "title": "Home-Service Quoting & Deposit Protection System",
+      "url": "https://aekraft.gumroad.com/l/behmhy",
+      "cover_file": "reports/covers/gumroad/home-service-quoting-deposit-protection-system--N9TrQZ.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "uUo9QfyfAyqf8-nZb9G7Og==",
+      "title": "Homebuyer Inspection Action Kit",
+      "url": "https://aekraft.gumroad.com/l/volqjv",
+      "cover_file": "reports/covers/gumroad/homebuyer-inspection-action-kit--uUo9Qf.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "Mk8k3QvpcL5Hf6ll_8CcAg==",
+      "title": "Landlord Move-In Inspection Pack",
+      "url": "https://aekraft.gumroad.com/l/gzbdaz",
+      "cover_file": "reports/covers/gumroad/landlord-move-in-inspection-pack--Mk8k3Q.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "mx6XSGrElB5b-NLSHfEryg==",
+      "title": "Mechanics Lien Filing Kit for Contractors",
+      "url": "https://aekraft.gumroad.com/l/jibnyt",
+      "cover_file": "reports/covers/gumroad/mechanics-lien-filing-kit-for-contractors--mx6XSG.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/mechanics_lien_filing_kit_for_contractors_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 4,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 87.7,
+        "luma_stddev": 45.8,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "_H7FbvlTPITBmT0V6lyPeg==",
+      "title": "Mindfulness Journal for Stress Relief",
+      "url": "https://aekraft.gumroad.com/l/jvuelq",
+      "cover_file": "reports/covers/gumroad/mindfulness-journal-for-stress-relief--H7Fbvl.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/mindfulness_journal_for_stress_relief_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 4,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 98.6,
+        "luma_stddev": 49.9,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "F0aW62vvcQcU8CzRDhiFIQ==",
+      "title": "PCI SAQ Readiness Kit for Small Merchants",
+      "url": "https://aekraft.gumroad.com/l/qezxe",
+      "cover_file": "reports/covers/gumroad/pci-saq-readiness-kit-for-small-merchants--F0aW62.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "2NIVAf0Nu4SE2DgAL9buYw==",
+      "title": "Real Estate Transaction Deadline Kit",
+      "url": "https://aekraft.gumroad.com/l/vwlmeo",
+      "cover_file": "reports/covers/gumroad/real-estate-transaction-deadline-kit--2NIVAf.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "M55I0tATHuFRNHia1tiiAg==",
+      "title": "Restaurant Food Cost Control Kit",
+      "url": "https://aekraft.gumroad.com/l/swkgd",
+      "cover_file": "reports/covers/gumroad/restaurant-food-cost-control-kit--M55I0t.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "lac1TzWQPrNs1vdysJA0dA==",
+      "title": "SaaS Churn Email Pack",
+      "url": "https://aekraft.gumroad.com/l/roxdbe",
+      "cover_file": "reports/covers/gumroad/saas-churn-email-pack--lac1Tz.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "h9G-1Ec29FPRtsDc-k04XA==",
+      "title": "Sales Tax Nexus Tracker",
+      "url": "https://aekraft.gumroad.com/l/uucxer",
+      "cover_file": "reports/covers/gumroad/sales-tax-nexus-tracker--h9G1Ec.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "2HC2OvtsS7gdfVF1lQQSTQ==",
+      "title": "Salon Commission Pay Kit",
+      "url": "https://aekraft.gumroad.com/l/xwacbo",
+      "cover_file": "reports/covers/gumroad/salon-commission-pay-kit--2HC2Ov.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "FbwR2Vq8XY2ZjbZ-JmQHrg==",
+      "title": "Section 8 Notice Validity System (England)",
+      "url": "https://aekraft.gumroad.com/l/nmasnb",
+      "cover_file": "reports/covers/gumroad/section-8-notice-validity-system-england--FbwR2V.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "0uieIt-Pn09q9Xz-Hp1DEQ==",
+      "title": "Security Deposit Demand Kit for Tenants",
+      "url": "https://aekraft.gumroad.com/l/yiqba",
+      "cover_file": "reports/covers/gumroad/security-deposit-demand-kit-for-tenants--0uieIt.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/security_deposit_demand_kit_for_tenants_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 4,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 86.7,
+        "luma_stddev": 44.0,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "D4JC45lly7EjsY-CO5FKyQ==",
+      "title": "Severance Agreement Review Checklist",
+      "url": "https://aekraft.gumroad.com/l/vunrqm",
+      "cover_file": "reports/covers/gumroad/severance-agreement-review-checklist--D4JC45.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/severance_agreement_review_checklist_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 4,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 85.5,
+        "luma_stddev": 41.5,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "F3Q5fUqOCxy3n7k6eVTWqw==",
+      "title": "Stripe Chargeback Defense Kit for Digital Sellers",
+      "url": "https://aekraft.gumroad.com/l/ceiwk",
+      "cover_file": "reports/covers/gumroad/stripe-chargeback-defense-kit-for-digital-sellers--F3Q5fU.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/stripe_chargeback_defense_kit_for_digital_sellers_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 5,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 85.5,
+        "luma_stddev": 41.4,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "2ZvRp79aLQiOBEVCYwnZMQ==",
+      "title": "Subscription Renewal Compliance Kit",
+      "url": "https://aekraft.gumroad.com/l/xouyjy",
+      "cover_file": "reports/covers/gumroad/subscription-renewal-compliance-kit--2ZvRp7.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "9Zq9SGkALI0tjd7A97Pc_A==",
+      "title": "The 5-Minute Context Reset Playbook",
+      "url": "https://aekraft.gumroad.com/l/vhofn",
+      "cover_file": "reports/covers/gumroad/the-5-minute-context-reset-playbook--9Zq9SG.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/the_5-minute_context_reset_playbook_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 4,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 93.6,
+        "luma_stddev": 46.0,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "tGGL1mqB2bp7uZ6k2THgwA==",
+      "title": "EU AI Act Compliance Quickstart Checklist",
+      "url": "https://aekraft.gumroad.com/l/engiwk",
+      "cover_file": "reports/covers/gumroad/eu-ai-act-compliance-quickstart-checklist--tGGL1m.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/eu_ai_act_compliance_quickstart_checklist_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 6,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 45.3,
+        "luma_stddev": 28.6,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 68,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "AnZqjZBFNvMdpV0bto7jDw==",
+      "title": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+      "url": "https://aekraft.gumroad.com/l/tmhlb",
+      "cover_file": "reports/covers/gumroad/eu-ai-act-transparency-ai-literacy-quickstart-checklist--AnZqjZ.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/eu_ai_act_transparency_literacy_checklist_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 6,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 42.7,
+        "luma_stddev": 31.2,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 60,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "YW18CUcSrghFoNioG8hFGA==",
+      "title": "Freelancer Payment Protection & Scope-Control Toolkit",
+      "url": "https://aekraft.gumroad.com/l/fwrjot",
+      "cover_file": "reports/covers/gumroad/freelancer-payment-protection-scope-control-toolkit--YW18CU.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/freelancer_payment_protection_scope_control_toolkit_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 6,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 49.6,
+        "luma_stddev": 30.9,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 64,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "jIkPBKpLVF7Hk7_DCgMxcA==",
+      "title": "Toy Safety File Starter (EN 71 Lens)",
+      "url": "https://aekraft.gumroad.com/l/vyitxf",
+      "cover_file": "reports/covers/gumroad/toy-safety-file-starter-en-71-lens--jIkPBK.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "LzOV85deBGdLgNZmvpvYGw==",
+      "title": "Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)",
+      "url": "https://aekraft.gumroad.com/l/bfhpzl",
+      "cover_file": "reports/covers/gumroad/etsy-suspension-triage-appeal-bundle-both-steps-25-pages--LzOV85.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/etsy_suspension_appeal_kit_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 3,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 85.9,
+        "luma_stddev": 42.2,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 60,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "vQEIyRYO5PLkFV1RpzE6wA==",
+      "title": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
+      "url": "https://aekraft.gumroad.com/l/ykwdfc",
+      "cover_file": "reports/covers/gumroad/vendor-onboarding-1099-readiness-pack-for-us-small-business--vQEIyR.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 64,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "nLl2DJc7VcPu0aeD_CnHAA==",
+      "title": "ADA Demand-Letter Response & Triage Kit",
+      "url": "https://aekraft.gumroad.com/l/palmdr",
+      "cover_file": "reports/covers/gumroad/ada-demand-letter-response-triage-kit--nLl2DJ.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/ada_demand_response_kit_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 3,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 50.9,
+        "luma_stddev": 26.5,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 72,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "Ag3pKi2eN5fiGQDmJ-fLxA==",
+      "title": "AI Agent Blueprint for Small SaaS CloudOps Automation",
+      "url": "https://aekraft.gumroad.com/l/esnpki",
+      "cover_file": "reports/covers/gumroad/ai-agent-blueprint-for-small-saas-cloudops-automation--Ag3pKi.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/ai_agent_blueprint_for_small_saas_cloudops_automation_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 7,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 84.4,
+        "luma_stddev": 38.9,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 64,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "ylqF8rzW698iKeOuKFWQkw==",
+      "title": "Amazon FBA Reconciliation Workbook",
+      "url": "https://aekraft.gumroad.com/l/wteork",
+      "cover_file": "reports/covers/gumroad/amazon-fba-reconciliation-workbook--ylqF8r.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "8uWrIqx8uhc8LMIkLEeKkA==",
+      "title": "B2B Late-Payment Collections Operating System",
+      "url": "https://aekraft.gumroad.com/l/wsbqr",
+      "cover_file": "reports/covers/gumroad/b2b-late-payment-collections-operating-system--8uWrIq.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "LInf08ypx6myskvOgd8ryQ==",
+      "title": "Battery & WEEE Mini-Guide for Sellers",
+      "url": "https://aekraft.gumroad.com/l/eiebdt",
+      "cover_file": "reports/covers/gumroad/battery-weee-mini-guide-for-sellers--LInf08.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "iTLlmVaVTM5rbXDn7vPyjg==",
+      "title": "Commercial Lease CAM & Operating-Expense Audit Kit",
+      "url": "https://aekraft.gumroad.com/l/xmbxpz",
+      "cover_file": "reports/covers/gumroad/commercial-lease-cam-operating-expense-audit-kit--iTLlmV.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 60,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "x5Cf-OfCwDvtC-nNlFe6BQ==",
+      "title": "Creator Brand-Deal Management System",
+      "url": "https://aekraft.gumroad.com/l/vzmswo",
+      "cover_file": "reports/covers/gumroad/creator-brand-deal-management-system--x5CfOf.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 72,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "WP6Vb-qltKfYXQ1KAb0Tog==",
+      "title": "EU AI Act Audit Logging Kit",
+      "url": "https://aekraft.gumroad.com/l/fwxmms",
+      "cover_file": "reports/covers/gumroad/eu-ai-act-audit-logging-kit--WP6Vbq.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/eu_ai_act_audit_logging_kit_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 5,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 86.0,
+        "luma_stddev": 42.3,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "8Vlc3zY6AkxU4DCe7IRVDA==",
+      "title": "EU Late Payment Recovery Kit",
+      "url": "https://aekraft.gumroad.com/l/ciowwm",
+      "cover_file": "reports/covers/gumroad/eu-late-payment-recovery-kit--8Vlc3z.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "8JM3qFgUuQznesYdiQFNXw==",
+      "title": "EU Packaging EPR Action Kit",
+      "url": "https://aekraft.gumroad.com/l/gfsvu",
+      "cover_file": "reports/covers/gumroad/eu-packaging-epr-action-kit--8JM3qF.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/epr_packaging_action_kit_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 3,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 54.4,
+        "luma_stddev": 30.7,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "nwqwR1RJ8rJlZqZE-vj4pw==",
+      "title": "Employee Offboarding & Access-Revocation System",
+      "url": "https://aekraft.gumroad.com/l/tjbly",
+      "cover_file": "reports/covers/gumroad/employee-offboarding-access-revocation-system--nwqwR1.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 64,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "ZFXJttaaGoJvEE10JOXbWg==",
+      "title": "Etsy Ads ROI Playbook + Calculator",
+      "url": "https://aekraft.gumroad.com/l/hasjmp",
+      "cover_file": "reports/covers/gumroad/etsy-ads-roi-playbook-calculator--ZFXJtt.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "P5k2ptcnUohhKUir5Aq5hg==",
+      "title": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
+      "url": "https://aekraft.gumroad.com/l/sjrjxq",
+      "cover_file": "reports/covers/gumroad/etsy-policy-triage-find-your-exact-violation-in-15-minutes--P5k2pt.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 60,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "mvuoJTNLfsWsm0NF-CrZHw==",
+      "title": "Etsy Suspension Appeal Kit",
+      "url": "https://aekraft.gumroad.com/l/fgruzn",
+      "cover_file": "reports/covers/gumroad/etsy-suspension-appeal-kit--mvuoJT.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/etsy_suspension_appeal_kit_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 3,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 85.9,
+        "luma_stddev": 42.2,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "OiBdFFTaLaZdDX52HxwezQ==",
+      "title": "FTC Consumer Review Rule Compliance Kit",
+      "url": "https://aekraft.gumroad.com/l/ekhza",
+      "cover_file": "reports/covers/gumroad/ftc-consumer-review-rule-compliance-kit--OiBdFF.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/ftc_review_rule_compliance_kit_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 4,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 54.5,
+        "luma_stddev": 32.6,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "_wJUrEKIuR0Y6cOj9Zqyqg==",
+      "title": "GCC Contractor Payment Command System",
+      "url": "https://aekraft.gumroad.com/l/uwyfje",
+      "cover_file": "reports/covers/gumroad/gcc-contractor-payment-command-system--wJUrEK.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/gcc_contractor_payment_command_system_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 5,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 38.7,
+        "luma_stddev": 30.8,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "yrSExa-YQe4fjWuIKV4vmQ==",
+      "title": "GCC Contractor Payment Command System (V2 Bundle)",
+      "url": "https://aekraft.gumroad.com/l/jlxmez",
+      "cover_file": "reports/covers/gumroad/gcc-contractor-payment-command-system-v2-bundle--yrSExa.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/gcc_contractor_payment_command_system_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 5,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 38.7,
+        "luma_stddev": 30.8,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 72,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "VPYaNkAdv7Yocko-lIJsZQ==",
+      "title": "GPSR EU Seller Action Kit",
+      "url": "https://aekraft.gumroad.com/l/fetmu",
+      "cover_file": "reports/covers/gumroad/gpsr-eu-seller-action-kit--VPYaNk.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/gpsr_eu_seller_action_kit_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 4,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 56.1,
+        "luma_stddev": 34.9,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "y4nX4cwydsCtWdxBA6uXJw==",
+      "title": "Legal Case Research Automation for Solo Attorneys",
+      "url": "https://aekraft.gumroad.com/l/uldlwa",
+      "cover_file": "reports/covers/gumroad/legal-case-research-automation-for-solo-attorneys--y4nX4c.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/legal_case_research_automation_for_solo_attorneys_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 6,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 84.4,
+        "luma_stddev": 39.0,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 68,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "KzZbStETfJeJsc-O3cQjsA==",
+      "title": "Newsletter Deliverability & Inbox Placement System",
+      "url": "https://aekraft.gumroad.com/l/iwbcmi",
+      "cover_file": "reports/covers/gumroad/newsletter-deliverability-inbox-placement-system--KzZbSt.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 64,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "T41QMtEfZcuDKa7tGtnvgw==",
+      "title": "Restaurant Health Inspection Readiness Kit",
+      "url": "https://aekraft.gumroad.com/l/dvfvm",
+      "cover_file": "reports/covers/gumroad/restaurant-health-inspection-readiness-kit--T41QMt.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/restaurant_inspection_readiness_kit_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 3,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 61.8,
+        "luma_stddev": 42.8,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "M5AZWbcXPFKzvgnzcrDqCg==",
+      "title": "SOC 2 Compliance Automation Guide for Startups",
+      "url": "https://aekraft.gumroad.com/l/sjmbrp",
+      "cover_file": "reports/covers/gumroad/soc-2-compliance-automation-guide-for-startups--M5AZWb.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/soc_2_compliance_automation_guide_for_startups_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 5,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 85.9,
+        "luma_stddev": 42.3,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "iPqoAaWMnZCWf8AvYusjxw==",
+      "title": "STR Direct Booking Revenue Kit",
+      "url": "https://aekraft.gumroad.com/l/ppsluq",
+      "cover_file": "reports/covers/gumroad/str-direct-booking-revenue-kit--iPqoAa.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/str_direct_booking_kit_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 3,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 50.7,
+        "luma_stddev": 27.2,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "sjnnlSPbFj44VCYoJpXxPw==",
+      "title": "SaaS Spend & Renewal Audit System for Small Teams",
+      "url": "https://aekraft.gumroad.com/l/pahxdv",
+      "cover_file": "reports/covers/gumroad/saas-spend-renewal-audit-system-for-small-teams--sjnnlS.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 64,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "iL2bwAwHI8OAmxKsFeZnQw==",
+      "title": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
+      "url": "https://aekraft.gumroad.com/l/xwbbb",
+      "cover_file": "reports/covers/gumroad/short-term-rental-damage-claim-evidence-kit-airbnb-vrbo--iL2bwA.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 56,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "66fo53TSmA6Lu5cycxuHxQ==",
+      "title": "Suspended Seller First-Appeal POA System",
+      "url": "https://aekraft.gumroad.com/l/zfnagp",
+      "cover_file": "reports/covers/gumroad/suspended-seller-first-appeal-poa-system--66fo53.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/suspended_seller_first_appeal_poa_system_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 6,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 37.4,
+        "luma_stddev": 30.8,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "q63gLiL5xvdOAPIbNhxIcw==",
+      "title": "Tech Job Offer Evaluation & Negotiation System",
+      "url": "https://aekraft.gumroad.com/l/qpuagh",
+      "cover_file": "reports/covers/gumroad/tech-job-offer-evaluation-negotiation-system--q63gLi.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": null,
+      "match_share": null,
+      "match_shared_words": null,
+      "book_cover_check": null,
+      "book_cover_used": false,
+      "title_font_px": 72,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "rMOopS7Q7LHxwaPTY462uw==",
+      "title": "The 5-Minute Context Reset Playbook",
+      "url": "https://aekraft.gumroad.com/l/akxaae",
+      "cover_file": "reports/covers/gumroad/the-5-minute-context-reset-playbook--rMOopS.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/the_5-minute_context_reset_playbook_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 4,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 93.6,
+        "luma_stddev": 46.0,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    },
+    {
+      "product_id": "KMNGNgO5gS85H_JppnygIg==",
+      "title": "Trademark DIY Filing Action Kit",
+      "url": "https://aekraft.gumroad.com/l/vkqogv",
+      "cover_file": "reports/covers/gumroad/trademark-diy-filing-action-kit--KMNGNg.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/trademark_diy_filing_kit_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 3,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 53.5,
+        "luma_stddev": 30.1,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "srd6CIjZc381be9FhiyHeA==",
+      "title": "Turo Guest Dispute Toolkit",
+      "url": "https://aekraft.gumroad.com/l/adyvd",
+      "cover_file": "reports/covers/gumroad/turo-guest-dispute-toolkit--srd6CI.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/turo_guest_dispute_toolkit_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 4,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 55.5,
+        "luma_stddev": 33.0,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 2,
+      "fits": true
+    },
+    {
+      "product_id": "J6ir7vCGTHsS-J4E_a_Lqg==",
+      "title": "Vendor Questionnaire Response Kit",
+      "url": "https://aekraft.gumroad.com/l/pyzqa",
+      "cover_file": "reports/covers/gumroad/vendor-questionnaire-response-kit--J6ir7v.png",
+      "size": [
+        1280,
+        720
+      ],
+      "matched_book_cover": "books/covers/vendor_questionnaire_response_kit_cover.png",
+      "match_share": 1.0,
+      "match_shared_words": 3,
+      "book_cover_check": {
+        "size": [
+          1600,
+          2560
+        ],
+        "mean_luma": 49.6,
+        "luma_stddev": 25.8,
+        "blank": false
+      },
+      "book_cover_used": true,
+      "title_font_px": 76,
+      "title_lines": 3,
+      "fits": true
+    }
+  ]
+}
