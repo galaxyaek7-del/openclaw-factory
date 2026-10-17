@@ -1,0 +1,298 @@
+{
+  "source": "books/arabic_teacher_prompts/README.md",
+  "profile": "teacher",
+  "prompt_count": 20,
+  "count_ok": true,
+  "passed": 20,
+  "failed": [],
+  "live_chatgpt_test": "NOT DONE (founder action: reports/small_products/TEST_CHECKLIST.md)",
+  "reviewer_note": "clarity/usefulness are a model review of the text, not a teacher's review",
+  "rows": [
+    {
+      "n": 1,
+      "title": "خطة درس متمايزة",
+      "words": 35,
+      "placeholders": [
+        "المادة",
+        "الصف",
+        "الموضوع",
+        "٤٥"
+      ],
+      "max_similarity": 0.38,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 2,
+      "title": "بنك أسئلة متعدد المستويات (حسب تصنيف بلوم)",
+      "words": 22,
+      "placeholders": [
+        "١٢",
+        "الموضوع",
+        "الصف"
+      ],
+      "max_similarity": 0.49,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 3,
+      "title": "مقياس تقييم (روبرك) لمهمة كتابية",
+      "words": 31,
+      "placeholders": [
+        "مقال / تقرير / قصة",
+        "الصف",
+        "٤",
+        "٥"
+      ],
+      "max_similarity": 0.38,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 4,
+      "title": "شرح مفهوم صعب بثلاث طرق",
+      "words": 34,
+      "placeholders": [
+        "الكسر / الطاقة / الخلية",
+        "الصف"
+      ],
+      "max_similarity": 0.42,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 5,
+      "title": "نشاط تهيئة في خمس دقائق",
+      "words": 25,
+      "placeholders": [
+        "٣",
+        "الموضوع",
+        "الصف"
+      ],
+      "max_similarity": 0.41,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 6,
+      "title": "واجب منزلي متدرّج",
+      "words": 22,
+      "placeholders": [
+        "الموضوع",
+        "الصف",
+        "٣"
+      ],
+      "max_similarity": 0.45,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 7,
+      "title": "رسالة لأولياء الأمور عن تقدّم الطالب",
+      "words": 39,
+      "placeholders": [
+        "٦",
+        "اسم مستعار للطالب، مثل: الطالب أ",
+        "المادة"
+      ],
+      "max_similarity": 0.52,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 8,
+      "title": "خطة علاجية لطالب متأخّر",
+      "words": 24,
+      "placeholders": [
+        "٤",
+        "الصف",
+        "المهارة/الموضوع"
+      ],
+      "max_similarity": 0.35,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 9,
+      "title": "أسئلة مراجعة سريعة (تذكرة خروج)",
+      "words": 25,
+      "placeholders": [
+        "٥",
+        "الموضوع",
+        "الصف",
+        "٥"
+      ],
+      "max_similarity": 0.45,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 10,
+      "title": "مشروع جماعي بمعايير تقييم",
+      "words": 21,
+      "placeholders": [
+        "الموضوع",
+        "الصف"
+      ],
+      "max_similarity": 0.43,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 11,
+      "title": "تبسيط نص علمي لمستوى الصف",
+      "words": 42,
+      "placeholders": [
+        "الصف",
+        "١٥",
+        "الصق النص هنا"
+      ],
+      "max_similarity": 0.3,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 12,
+      "title": "سيناريو لعب أدوار لدرس اجتماعي",
+      "words": 23,
+      "placeholders": [
+        "الموضوع / الموقف",
+        "الصف",
+        "٤",
+        "٣"
+      ],
+      "max_similarity": 0.48,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 13,
+      "title": "اختبار قصير مع مفتاح إجابة",
+      "words": 24,
+      "placeholders": [
+        "١٠",
+        "الموضوع",
+        "الصف",
+        "٦",
+        "٢",
+        "٢"
+      ],
+      "max_similarity": 0.47,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 14,
+      "title": "خطة إدارة صف لسلوك متكرّر",
+      "words": 30,
+      "placeholders": [
+        "المقاطعة المتكررة / عدم إحضار الأدوات",
+        "الصف"
+      ],
+      "max_similarity": 0.39,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 15,
+      "title": "تحويل درس إلى قصة",
+      "words": 27,
+      "placeholders": [
+        "الموضوع",
+        "الصف",
+        "٢٠٠",
+        "٣"
+      ],
+      "max_similarity": 0.4,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 16,
+      "title": "أسئلة سقراطية لدرس قراءة",
+      "words": 25,
+      "placeholders": [
+        "٦",
+        "الصف",
+        "الفكرة الرئيسية / الرسالة",
+        "العنوان"
+      ],
+      "max_similarity": 0.39,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 17,
+      "title": "خريطة مفاهيمية لوحدة",
+      "words": 29,
+      "placeholders": [
+        "اسم الوحدة",
+        "المادة",
+        "الصف",
+        "٨"
+      ],
+      "max_similarity": 0.4,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 18,
+      "title": "تقييم تشخيصي في بداية العام",
+      "words": 31,
+      "placeholders": [
+        "٢٠",
+        "المادة",
+        "الصف"
+      ],
+      "max_similarity": 0.43,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 19,
+      "title": "بطاقات مهام لمركز تعلّم",
+      "words": 23,
+      "placeholders": [
+        "٦",
+        "المهارة",
+        "الصف"
+      ],
+      "max_similarity": 0.35,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 20,
+      "title": "تقرير تقدّم فردي مختصر",
+      "words": 28,
+      "placeholders": [
+        "اسم مستعار للطالب، مثل: الطالب أ",
+        "الفترة"
+      ],
+      "max_similarity": 0.35,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    }
+  ]
+}

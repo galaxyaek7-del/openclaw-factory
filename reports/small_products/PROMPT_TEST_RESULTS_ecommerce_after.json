@@ -1,0 +1,365 @@
+{
+  "source": "books/ecommerce_arabic_prompts/README.md",
+  "profile": "ecommerce",
+  "prompt_count": 25,
+  "count_ok": true,
+  "passed": 25,
+  "failed": [],
+  "live_chatgpt_test": "NOT DONE (founder action: reports/small_products/TEST_CHECKLIST.md)",
+  "reviewer_note": "clarity/usefulness are a model review of the text, not a teacher's review",
+  "rows": [
+    {
+      "n": 1,
+      "title": "وصف منتج يحوّل (بصيغة AIDA)",
+      "words": 32,
+      "placeholders": [
+        "اسم المنتج",
+        "٣",
+        "١٢٠"
+      ],
+      "max_similarity": 0.46,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 2,
+      "title": "عنوان منتج محسّن لمحركات البحث",
+      "words": 22,
+      "placeholders": [
+        "٥",
+        "اسم المنتج",
+        "٧٠",
+        "الكلمة"
+      ],
+      "max_similarity": 0.54,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 3,
+      "title": "كلمات مفتاحية طويلة الذيل",
+      "words": 32,
+      "placeholders": [
+        "١٥",
+        "المنتج",
+        "الجمهور"
+      ],
+      "max_similarity": 0.4,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 4,
+      "title": "نص إعلان فيسبوك",
+      "words": 30,
+      "placeholders": [
+        "المنتج",
+        "الجمهور",
+        "٨٠"
+      ],
+      "max_similarity": 0.45,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 5,
+      "title": "نص إعلان إنستغرام",
+      "words": 30,
+      "placeholders": [
+        "٣",
+        "المنتج",
+        "٤٠",
+        "٥"
+      ],
+      "max_similarity": 0.53,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 6,
+      "title": "سلسلة تغريدات لإطلاق منتج",
+      "words": 31,
+      "placeholders": [
+        "٦",
+        "المنتج",
+        "٢٨٠"
+      ],
+      "max_similarity": 0.51,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 7,
+      "title": "بريد ترحيبي للمشتركين الجدد",
+      "words": 30,
+      "placeholders": [
+        "المتجر / النشرة",
+        "١٥٠"
+      ],
+      "max_similarity": 0.45,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 8,
+      "title": "سلسلة بريدية للبيع (٣ رسائل)",
+      "words": 29,
+      "placeholders": [
+        "٣",
+        "المنتج",
+        "٢٠٠"
+      ],
+      "max_similarity": 0.38,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 9,
+      "title": "رد على استفسار عن السعر",
+      "words": 41,
+      "placeholders": [
+        "المنتج",
+        "السعر",
+        "البديل الأرخص، إن وُجد",
+        "٨٠"
+      ],
+      "max_similarity": 0.36,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 10,
+      "title": "رد على شكوى عميل",
+      "words": 34,
+      "placeholders": [
+        "المشكلة",
+        "المنتج",
+        "١٠٠"
+      ],
+      "max_similarity": 0.37,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 11,
+      "title": "طلب تقييم بعد الشراء",
+      "words": 25,
+      "placeholders": [
+        "المنتج",
+        "٦٠"
+      ],
+      "max_similarity": 0.4,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 12,
+      "title": "نص صفحة هبوط",
+      "words": 44,
+      "placeholders": [
+        "المنتج",
+        "٣",
+        "٤",
+        "معلومات المتجر: مدة التسليم، سياسة الاسترجاع، طريقة الدعم"
+      ],
+      "max_similarity": 0.37,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 13,
+      "title": "أسئلة شائعة للمنتج",
+      "words": 37,
+      "placeholders": [
+        "٦",
+        "المنتج",
+        "٣",
+        "معلومات المتجر: مدة التسليم، سياسة الاسترجاع، طريقة الدعم"
+      ],
+      "max_similarity": 0.37,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 14,
+      "title": "مقارنة بين منتجين",
+      "words": 28,
+      "placeholders": [
+        "المنتج أ",
+        "المنتج ب"
+      ],
+      "max_similarity": 0.41,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 15,
+      "title": "نص إعلان تخفيض موسمي",
+      "words": 37,
+      "placeholders": [
+        "العيد / الجمعة البيضاء",
+        "المنتج",
+        "٦٠",
+        "نسبة الخصم",
+        "مدة العرض"
+      ],
+      "max_similarity": 0.43,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 16,
+      "title": "عنوان بريد إلكتروني يجذب الفتح",
+      "words": 21,
+      "placeholders": [
+        "١٠",
+        "الموضوع",
+        "٥٠"
+      ],
+      "max_similarity": 0.53,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 17,
+      "title": "سكريبت فيديو قصير للمنتج",
+      "words": 33,
+      "placeholders": [
+        "٣٠",
+        "المنتج"
+      ],
+      "max_similarity": 0.46,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 18,
+      "title": "سياسة الاسترجاع",
+      "words": 28,
+      "placeholders": [
+        "النوع"
+      ],
+      "max_similarity": 0.37,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 19,
+      "title": "رسالة السلة المتروكة",
+      "words": 31,
+      "placeholders": [
+        "٢",
+        "المتجر",
+        "المنتج",
+        "ساعة",
+        "يوم"
+      ],
+      "max_similarity": 0.45,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 20,
+      "title": "نص إعلان Google",
+      "words": 28,
+      "placeholders": [
+        "٣",
+        "المنتج",
+        "الكلمة المفتاحية"
+      ],
+      "max_similarity": 0.52,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 21,
+      "title": "تحسين وصف موجود لزيادة التحويل",
+      "words": 38,
+      "placeholders": [
+        "١٢٠",
+        "الصق الوصف هنا"
+      ],
+      "max_similarity": 0.35,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 22,
+      "title": "اقتراح باقات (Bundles)",
+      "words": 28,
+      "placeholders": [
+        "٣",
+        "القائمة"
+      ],
+      "max_similarity": 0.51,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 23,
+      "title": "عرض ترويجي محدود",
+      "words": 26,
+      "placeholders": [
+        "٣",
+        "المنتج",
+        "هدية أو خصم",
+        "التاريخ",
+        "السبب"
+      ],
+      "max_similarity": 0.34,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 24,
+      "title": "نقاط بيع مختصرة (Bullet points) للمنصات",
+      "words": 35,
+      "placeholders": [
+        "٥",
+        "المنتج",
+        "أمازون / إتسي",
+        "٢٠٠"
+      ],
+      "max_similarity": 0.52,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 25,
+      "title": "استبيان ما بعد الشراء",
+      "words": 25,
+      "placeholders": [
+        "٥",
+        "المنتج"
+      ],
+      "max_similarity": 0.35,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    }
+  ]
+}

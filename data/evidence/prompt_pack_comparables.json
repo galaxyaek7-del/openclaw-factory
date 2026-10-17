@@ -1,0 +1,178 @@
+{
+  "product": "Arabic E-commerce Prompt Pack (books/ecommerce_arabic_prompts/README.md, 25 prompts)",
+  "researched_at": "2026-10-17T20:23:37+00:00",
+  "method": "two web searches; every candidate page read once for its own price metadata and title; nothing purchased, no account used",
+  "direct_comparables": [
+    {
+      "url": "https://empiretech0.gumroad.com/l/cuipf",
+      "product": "Marketing Masterminds Prompts",
+      "price": 4.99,
+      "currency": "USD",
+      "arabic_content": true,
+      "prompts_claim": null,
+      "relevance": "DIRECT",
+      "note": "bilingual EN+AR marketing prompts (ads, landing pages, campaigns); search excerpt says 2 pages",
+      "kind": "paid",
+      "observed_at": "2026-10-17T20:23:37+00:00",
+      "class": "OBSERVED",
+      "verified_by": "Claude (page price metadata (product:price:amount/currency) + og:title, read-only GET by Claude)"
+    },
+    {
+      "url": "https://4809343299623.gumroad.com/l/fsvytf",
+      "product": "25 AI Prompts to Grow Your Etsy Shop",
+      "price": 9.0,
+      "currency": "USD",
+      "arabic_content": false,
+      "prompts_claim": "25 AI Prompts",
+      "relevance": "DIRECT (English)",
+      "note": "25 prompts for Etsy shops: same size and use case, English market",
+      "kind": "paid",
+      "observed_at": "2026-10-17T20:23:37+00:00",
+      "class": "OBSERVED",
+      "verified_by": "Claude (page price metadata (product:price:amount/currency) + og:title, read-only GET by Claude)"
+    }
+  ],
+  "weak_comparables": [
+    {
+      "url": "https://moneymindempire.gumroad.com/l/wcgoza",
+      "product": "Ultimate AI Prompt Kit for Copywriters – 200+ GPT-4, DALL·E & MidJourney Prompts (English + Arabic Version) |",
+      "price": 9.0,
+      "currency": "USD",
+      "arabic_content": true,
+      "prompts_claim": "200+ AI prompts",
+      "relevance": "WEAK",
+      "note": "200+ bilingual copywriting prompts; broader than e-commerce",
+      "kind": "paid",
+      "observed_at": "2026-10-17T20:23:37+00:00",
+      "class": "OBSERVED",
+      "verified_by": "Claude (page price metadata (product:price:amount/currency) + og:title, read-only GET by Claude)"
+    },
+    {
+      "url": "https://getaventra.gumroad.com/l/E-commerceProductDescriptionPromptVaultBundle",
+      "product": "E-commerce Product Description Prompt Vault Bundle | 250 AI Prompts (Vol. 1 + Vol. 2) for High-Converting Prod",
+      "price": 19.99,
+      "currency": "USD",
+      "arabic_content": false,
+      "prompts_claim": "250 AI Prompts",
+      "relevance": "WEAK",
+      "note": "250 English product-description prompts; much larger",
+      "kind": "paid",
+      "observed_at": "2026-10-17T20:23:37+00:00",
+      "class": "OBSERVED",
+      "verified_by": "Claude (page price metadata (product:price:amount/currency) + og:title, read-only GET by Claude)"
+    },
+    {
+      "url": "https://yashdotferwani.gumroad.com/l/EcomandEtsyAIKit",
+      "product": "Ecom & Etsy AI Kit – 50 Expert Prompts to Grow Your Online Store with AI",
+      "price": 3.99,
+      "currency": "USD",
+      "arabic_content": false,
+      "prompts_claim": "50 AI prompts",
+      "relevance": "WEAK",
+      "note": "50 English e-commerce prompts",
+      "kind": "paid",
+      "observed_at": "2026-10-17T20:23:37+00:00",
+      "class": "OBSERVED",
+      "verified_by": "Claude (page price metadata (product:price:amount/currency) + og:title, read-only GET by Claude)"
+    },
+    {
+      "url": "https://aipromptkits.gumroad.com/l/qmfmdo",
+      "product": "E-commerce Business Prompt pack",
+      "price": 5.0,
+      "currency": "GBP",
+      "arabic_content": false,
+      "prompts_claim": null,
+      "relevance": "WEAK",
+      "note": "50+ English e-commerce prompts (GBP)",
+      "kind": "paid",
+      "observed_at": "2026-10-17T20:23:37+00:00",
+      "class": "OBSERVED",
+      "verified_by": "Claude (page price metadata (product:price:amount/currency) + og:title, read-only GET by Claude)"
+    },
+    {
+      "url": "https://promptgold.gumroad.com/l/ecommerce-starter-pack",
+      "product": "Starter Pack – E-Commerce Owners (20 AI Prompts)",
+      "price": 5.0,
+      "currency": "CAD",
+      "arabic_content": false,
+      "prompts_claim": "20 AI Prompts",
+      "relevance": "WEAK",
+      "note": "20 English prompts (CAD)",
+      "kind": "paid",
+      "observed_at": "2026-10-17T20:23:37+00:00",
+      "class": "OBSERVED",
+      "verified_by": "Claude (page price metadata (product:price:amount/currency) + og:title, read-only GET by Claude)"
+    },
+    {
+      "url": "https://edgeagent.gumroad.com/l/fhlkg",
+      "product": "🛒 E-commerce Prompt Pack: 120+ Prompts for Online Sales Success",
+      "price": 6.0,
+      "currency": "CAD",
+      "arabic_content": false,
+      "prompts_claim": "120+ Prompts",
+      "relevance": "WEAK",
+      "note": "120+ English prompts (CAD)",
+      "kind": "paid",
+      "observed_at": "2026-10-17T20:23:37+00:00",
+      "class": "OBSERVED",
+      "verified_by": "Claude (page price metadata (product:price:amount/currency) + og:title, read-only GET by Claude)"
+    }
+  ],
+  "free_anchors": [
+    {
+      "url": "https://semah.gumroad.com/l/product1",
+      "product": "“ChatGPT”دليلك الشامل لأوامر",
+      "price": 0.0,
+      "currency": "USD",
+      "arabic_content": true,
+      "prompts_claim": null,
+      "relevance": "FREE ANCHOR",
+      "note": "125 bilingual prompts incl. product descriptions",
+      "kind": "free",
+      "observed_at": "2026-10-17T20:23:37+00:00",
+      "class": "OBSERVED",
+      "verified_by": "Claude (page price metadata (product:price:amount/currency) + og:title, read-only GET by Claude)"
+    },
+    {
+      "url": "https://wowgroup.gumroad.com/l/kdmayu",
+      "product": "50 ChatGPT Prompts for Etsy Sellers | Boost Sales, SEO & Customer Engagement",
+      "price": 0.0,
+      "currency": "USD",
+      "arabic_content": false,
+      "prompts_claim": null,
+      "relevance": "FREE ANCHOR",
+      "note": "50 English Etsy prompts",
+      "kind": "free",
+      "observed_at": "2026-10-17T20:23:37+00:00",
+      "class": "OBSERVED",
+      "verified_by": "Claude (page price metadata (product:price:amount/currency) + og:title, read-only GET by Claude)"
+    }
+  ],
+  "not_usable": [
+    {
+      "url": "https://colorplaydigital.gumroad.com/l/300PremiumPromptPack",
+      "observed": "HTTP 404 (2026-10-17)",
+      "why": "page gone; the $7 in a search snippet is not evidence"
+    },
+    {
+      "url": "https://promptxpress.gumroad.com/l/qklil",
+      "observed": "not verified",
+      "why": "Spanish pack; snippet only"
+    }
+  ],
+  "pricing_decision": {
+    "status": "PROVISIONAL",
+    "provisional_range_usd": [
+      4.99,
+      7.99
+    ],
+    "reasoning": "Direct comparables: $4.99 (bilingual Arabic marketing) and $9.00 (25 English Etsy prompts). Most English e-commerce packs sell for about $4-$9; free Arabic and English alternatives exist. This pack is 25 prompts with honesty guards (tested 25/25 structurally) but has had no live ChatGPT test and has no demand evidence.",
+    "leaning": "the lower half of the range ($4.99-$5.99), matching the $4.99 test price the founder set for the teacher pack",
+    "not_final_because": [
+      "0 live ChatGPT tests",
+      "no demand or sales evidence",
+      "Arabic-language premium unproven"
+    ],
+    "current_registry_value": 7.99
+  }
+}

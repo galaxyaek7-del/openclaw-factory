@@ -18,7 +18,32 @@
   "platform_ready": false,
   "platform_ready_after": "18+ prompts rated GOOD",
   "price": 4.99,
-  "price_note": "Founder directive 2026-10-17 sets $4.99; data/prompt_packs.json still lists $7.99. Confirm, then align the registry.",
+  "price_note": "Provisional internal test-price hypothesis (founder, 2026-10-17), not market-validated. Canonical record data/prompt_packs.json now says 4.99 (previous proposal 7.99). No live listing exists.",
   "store": "aekraft.gumroad.com",
-  "note": "NOT uploading to Gumroad until human-tested"
+  "note": "Structural and model-review tests pass 20/20. NOT uploading to Gumroad until the founder's live ChatGPT test rates 18+ prompts GOOD.",
+  "structural_tests": {
+    "script": "scripts/prompt_pack_tests.py",
+    "rubric": "reports/small_products/PROMPT_TEST_RUBRIC.md",
+    "before_repair": "7/20 passed",
+    "after_repair": "20/20 passed",
+    "repaired_prompts": [
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "results": [
+      "reports/small_products/PROMPT_TEST_RESULTS_before.json",
+      "reports/small_products/PROMPT_TEST_RESULTS_after.json"
+    ]
+  }
 }

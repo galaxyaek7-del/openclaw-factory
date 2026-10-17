@@ -1,0 +1,360 @@
+{
+  "source": "C:/Users/Dell/AppData/Local/Temp/claude/C--openclaw-dasgboard/c1ea6c9a-8719-4d91-8e39-ede16f87547c/scratchpad/teacher_README.before.md",
+  "prompt_count": 20,
+  "count_ok": true,
+  "passed": 7,
+  "failed": [
+    5,
+    7,
+    8,
+    9,
+    11,
+    12,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "live_chatgpt_test": "NOT DONE (founder action: reports/small_products/TEST_CHECKLIST.md)",
+  "reviewer_note": "clarity/usefulness are a model review of the text, not a teacher's review",
+  "rows": [
+    {
+      "n": 1,
+      "title": "خطة درس متمايزة",
+      "words": 35,
+      "placeholders": [
+        "المادة",
+        "الصف",
+        "الموضوع",
+        "٤٥"
+      ],
+      "max_similarity": 0.38,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 2,
+      "title": "بنك أسئلة متعدد المستويات (حسب تصنيف بلوم)",
+      "words": 22,
+      "placeholders": [
+        "١٢",
+        "الموضوع",
+        "الصف"
+      ],
+      "max_similarity": 0.49,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 3,
+      "title": "مقياس تقييم (روبرك) لمهمة كتابية",
+      "words": 31,
+      "placeholders": [
+        "مقال / تقرير / قصة",
+        "الصف",
+        "٤",
+        "٥"
+      ],
+      "max_similarity": 0.37,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 4,
+      "title": "شرح مفهوم صعب بثلاث طرق",
+      "words": 34,
+      "placeholders": [
+        "الكسر / الطاقة / الخلية",
+        "الصف"
+      ],
+      "max_similarity": 0.41,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 5,
+      "title": "نشاط تهيئة في خمس دقائق",
+      "words": 23,
+      "placeholders": [
+        "٣",
+        "الموضوع"
+      ],
+      "max_similarity": 0.36,
+      "result": "FAIL",
+      "failed": [
+        "user_fit"
+      ],
+      "reasons": {
+        "user_fit": "no grade/level placeholder: output cannot be fitted to the class"
+      }
+    },
+    {
+      "n": 6,
+      "title": "واجب منزلي متدرّج",
+      "words": 22,
+      "placeholders": [
+        "الموضوع",
+        "الصف",
+        "٣"
+      ],
+      "max_similarity": 0.45,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 7,
+      "title": "رسالة لأولياء الأمور عن تقدّم الطالب",
+      "words": 30,
+      "placeholders": [
+        "الاسم",
+        "المادة"
+      ],
+      "max_similarity": 0.46,
+      "result": "FAIL",
+      "failed": [
+        "specificity",
+        "ambiguity",
+        "user_fit"
+      ],
+      "reasons": {
+        "specificity": "no count, duration or structure requested",
+        "ambiguity": "bare [الاسم]: unclear whose name, and invites a real student name",
+        "user_fit": "student-specific prompt should ask for a pseudonym (README privacy note)"
+      }
+    },
+    {
+      "n": 8,
+      "title": "خطة علاجية لطالب متأخّر",
+      "words": 21,
+      "placeholders": [
+        "٤",
+        "المهارة/الموضوع"
+      ],
+      "max_similarity": 0.38,
+      "result": "FAIL",
+      "failed": [
+        "user_fit"
+      ],
+      "reasons": {
+        "user_fit": "no grade/level placeholder: output cannot be fitted to the class"
+      }
+    },
+    {
+      "n": 9,
+      "title": "أسئلة مراجعة سريعة (تذكرة خروج)",
+      "words": 23,
+      "placeholders": [
+        "٥",
+        "الموضوع",
+        "٥"
+      ],
+      "max_similarity": 0.39,
+      "result": "FAIL",
+      "failed": [
+        "user_fit"
+      ],
+      "reasons": {
+        "user_fit": "no grade/level placeholder: output cannot be fitted to the class"
+      }
+    },
+    {
+      "n": 10,
+      "title": "مشروع جماعي بمعايير تقييم",
+      "words": 21,
+      "placeholders": [
+        "الموضوع",
+        "الصف"
+      ],
+      "max_similarity": 0.43,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 11,
+      "title": "تبسيط نص علمي لمستوى الصف",
+      "words": 20,
+      "placeholders": [
+        "الصف",
+        "الصق النص هنا"
+      ],
+      "max_similarity": 0.35,
+      "result": "FAIL",
+      "failed": [
+        "specificity",
+        "factual"
+      ],
+      "reasons": {
+        "specificity": "no count, duration or structure requested",
+        "factual": "rewrites user text without forbidding added facts"
+      }
+    },
+    {
+      "n": 12,
+      "title": "سيناريو لعب أدوار لدرس اجتماعي",
+      "words": 22,
+      "placeholders": [
+        "الموضوع / الموقف",
+        "الصف"
+      ],
+      "max_similarity": 0.39,
+      "result": "FAIL",
+      "failed": [
+        "specificity"
+      ],
+      "reasons": {
+        "specificity": "no count, duration or structure requested"
+      }
+    },
+    {
+      "n": 13,
+      "title": "اختبار قصير مع مفتاح إجابة",
+      "words": 24,
+      "placeholders": [
+        "١٠",
+        "الموضوع",
+        "الصف",
+        "٦",
+        "٢",
+        "٢"
+      ],
+      "max_similarity": 0.47,
+      "result": "PASS",
+      "failed": [],
+      "reasons": {}
+    },
+    {
+      "n": 14,
+      "title": "خطة إدارة صف لسلوك متكرّر",
+      "words": 28,
+      "placeholders": [
+        "المقاطعة المتكررة / عدم إحضار الأدوات"
+      ],
+      "max_similarity": 0.36,
+      "result": "FAIL",
+      "failed": [
+        "user_fit"
+      ],
+      "reasons": {
+        "user_fit": "no grade/level placeholder: output cannot be fitted to the class"
+      }
+    },
+    {
+      "n": 15,
+      "title": "تحويل درس إلى قصة",
+      "words": 20,
+      "placeholders": [
+        "الموضوع",
+        "الصف",
+        "٣"
+      ],
+      "max_similarity": 0.39,
+      "result": "FAIL",
+      "failed": [
+        "clarity"
+      ],
+      "reasons": {
+        "clarity": "«تحمل الشخصيات والمغزى الواحد» unclear: what the story 'carries' is not said (characters? a moral?)"
+      }
+    },
+    {
+      "n": 16,
+      "title": "أسئلة سقراطية لدرس قراءة",
+      "words": 23,
+      "placeholders": [
+        "٦",
+        "الفكرة الرئيسية / الرسالة",
+        "العنوان"
+      ],
+      "max_similarity": 0.35,
+      "result": "FAIL",
+      "failed": [
+        "user_fit"
+      ],
+      "reasons": {
+        "user_fit": "no grade/level placeholder: output cannot be fitted to the class"
+      }
+    },
+    {
+      "n": 17,
+      "title": "خريطة مفاهيمية لوحدة",
+      "words": 22,
+      "placeholders": [
+        "الاسم"
+      ],
+      "max_similarity": 0.39,
+      "result": "FAIL",
+      "failed": [
+        "specificity",
+        "ambiguity",
+        "user_fit"
+      ],
+      "reasons": {
+        "specificity": "no count, duration or structure requested",
+        "ambiguity": "bare [الاسم]: unclear whose name, and invites a real student name",
+        "user_fit": "no grade/level placeholder: output cannot be fitted to the class"
+      }
+    },
+    {
+      "n": 18,
+      "title": "تقييم تشخيصي في بداية العام",
+      "words": 28,
+      "placeholders": [
+        "المادة",
+        "الصف"
+      ],
+      "max_similarity": 0.4,
+      "result": "FAIL",
+      "failed": [
+        "specificity"
+      ],
+      "reasons": {
+        "specificity": "no count, duration or structure requested"
+      }
+    },
+    {
+      "n": 19,
+      "title": "بطاقات مهام لمركز تعلّم",
+      "words": 21,
+      "placeholders": [
+        "٦",
+        "المهارة"
+      ],
+      "max_similarity": 0.34,
+      "result": "FAIL",
+      "failed": [
+        "user_fit"
+      ],
+      "reasons": {
+        "user_fit": "no grade/level placeholder: output cannot be fitted to the class"
+      }
+    },
+    {
+      "n": 20,
+      "title": "تقرير تقدّم فردي مختصر",
+      "words": 24,
+      "placeholders": [
+        "الاسم",
+        "الفترة"
+      ],
+      "max_similarity": 0.47,
+      "result": "FAIL",
+      "failed": [
+        "ambiguity",
+        "user_fit"
+      ],
+      "reasons": {
+        "ambiguity": "bare [الاسم]: unclear whose name, and invites a real student name",
+        "user_fit": "student-specific prompt should ask for a pseudonym (README privacy note)"
+      }
+    }
+  ]
+}

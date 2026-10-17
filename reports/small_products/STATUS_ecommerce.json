@@ -1,0 +1,49 @@
+{
+  "product": "Arabic E-commerce Prompt Pack",
+  "title": "٢٥ موجّهاً جاهزاً للتجارة الإلكترونية",
+  "files": [
+    "books/ecommerce_arabic_prompts/README.md",
+    "data/prompt_packs.json"
+  ],
+  "prompts_written": 25,
+  "prompts_tested_on_chatgpt": 0,
+  "structural_tests": {
+    "script": "scripts/prompt_pack_tests.py --profile ecommerce",
+    "before_repair": "7/25 passed",
+    "after_repair": "25/25 passed",
+    "repaired_prompts": [
+      3,
+      5,
+      6,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      17,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25
+    ],
+    "results": [
+      "reports/small_products/PROMPT_TEST_RESULTS_ecommerce_before.json",
+      "reports/small_products/PROMPT_TEST_RESULTS_ecommerce_after.json"
+    ]
+  },
+  "gate_status": "FIX_REQUIRED",
+  "gate_reason": [
+    "Only 0% tested — need 90%+"
+  ],
+  "testing_guide": "reports/small_products/TEST_CHECKLIST.md",
+  "platform_ready": false,
+  "platform_ready_after": "23+ prompts rated GOOD (90%, same bar as the teacher pack)",
+  "price": 7.99,
+  "price_note": "Proposed price in data/prompt_packs.json; no founder decision yet; no live listing.",
+  "note": "NOT uploading to Gumroad until human-tested."
+}
