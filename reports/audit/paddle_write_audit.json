@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-16",
+  "recorded_at_utc": "2026-10-17T06:28:24+00:00",
+  "event": "PADDLE_CHECK_TRANSACTION_ATTEMPT",
+  "type": "WRITE",
+  "code_path": "factory_loop.js maybeNotifyPaddleCheckoutReady -> scripts/check_paddle_checkout_status.py check_and_notify -> channels/paddle_publisher.py create_checkout_transaction: requests.post(PADDLE_API_BASE + '/transactions')",
+  "frequency": "every factory_loop tick while a product is not yet recorded as checkout-ready",
+  "observed_outcome_to_date": "no product has ever reached checkout_ready (data/paddle_checkout_notifications.json does not exist; it is written only on success); recorded blocker: transaction_checkout_not_enabled",
+  "occurrence_in_this_session": "none - factory_loop was stopped (last tick 2026-10-14T09:15Z)",
+  "charge": false,
+  "amount": 0,
+  "description": "The Paddle readiness check creates a checkout transaction rather than reading state. While onboarding is incomplete Paddle rejects it. Once onboarding completes, one transaction (no charge) is created per product, the founder is notified on Telegram, and the check stops for that product.",
+  "classified_as": "HARMLESS_WRITE",
+  "real_financial_impact": "NONE",
+  "REAL_TREASURY_AFFECTED": false,
+  "founder_notified": true,
+  "decision": "PROCEED_WITH_AWARENESS",
+  "authority": "FOUNDER DIRECTIVE - SECURITY LOCKDOWN + FACTORY RESTART (2026-10-16)"
+}

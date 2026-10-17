@@ -13,6 +13,8 @@
 2. أضف خاصية من نوع **URL prefix**: `https://galaxyaek7-del.github.io/openclaw-factory/`
 3. اختر طريقة التحقق **HTML file**، ونزّل الملف الذي يعطيك إياه Google، مثل `google0123456789abcdef.html`. ضعه في أي مجلد وأخبرني بمكانه.
 
+**الطريق الأسهل الآن (المصنع يعمل منذ 2026-10-17):** ضع الملف في `C:\openclaw-dasgboard\gsc_inbox\`، وستنشره دورة المصنع تلقائيًا (`maybeDeployGscVerification`).
+
 **ما أفعله بعدها:** `python scripts/deploy_gsc_verification.py --file <مسار الملف> --dry-run` للتحقق أولًا، ثم التشغيل نفسه دون `--dry-run`. الأداة تتحقق من الاسم والمحتوى، وتفحصه بحثًا عن أسرار، ثم تضعه في جذر المستودع وتنفّذ commit + push للملف وحده.
 
 التشغيل الفعلي يتطلب موافقتك، لأنه ينشر الملف على الموقع العام. بعدها تضغط **Verify** وتضيف `sitemap.xml`.

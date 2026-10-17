@@ -1,0 +1,23 @@
+{
+  "product": "B12-001",
+  "title": "Freelancer Rate & Raise Calculator",
+  "price_usd": 29,
+  "gumroad_status": "NOT LISTED - LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION (data/product_batch_12_gumroad_prep.json)",
+  "current_tags": [],
+  "recommended_tags": [
+    "freelancing",
+    "pricing",
+    "rate calculator",
+    "consultant",
+    "spreadsheet",
+    "raise",
+    "excel template",
+    "solo consultant"
+  ],
+  "sources": {
+    "freelancing, pricing, rate calculator, consultant, spreadsheet, raise": "reports/B12-001/gumroad_checklist.md (prepared tags)",
+    "excel template": "the delivered file is B12-001_freelancer_rate_raise_calculator.xlsx (data/product_batch_12.json)",
+    "solo consultant": "audience: 'Freelancers and solo consultants worldwide.' (data/product_batch_12.json)"
+  },
+  "note": "Every tag comes from the product's own content or its prepared checklist; none is guessed. Gumroad's per-product tag limit is UNVERIFIED."
+}

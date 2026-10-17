@@ -1,0 +1,1 @@
+{"recorded_at_utc": "2026-10-17T06:28:24+00:00", "event": "PADDLE_CHECK_TRANSACTION_ATTEMPT", "type": "WRITE", "target": "Paddle POST /transactions", "charge": false, "amount": 0, "classified_as": "HARMLESS_WRITE", "decision": "PROCEED_WITH_AWARENESS", "evidence": "reports/audit/paddle_write_audit.json", "authority": "founder 2026-10-16"}

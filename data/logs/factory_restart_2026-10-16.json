@@ -1,0 +1,35 @@
+{
+  "restart_time": "2026-10-17T06:28:48Z",
+  "reason": "SUPERVISED_RESTART_AFTER_SECURITY_LOCKDOWN",
+  "authority": "FOUNDER DIRECTIVE - SECURITY LOCKDOWN + FACTORY RESTART (2026-10-16)",
+  "mode": "SUPERVISED",
+  "processes": {
+    "server_supervisor": "node scripts/supervisor.js -> server.js (port 3000, 127.0.0.1)",
+    "factory_loop_supervisor": "SUPERVISOR_TARGET=factory_loop.js node scripts/supervisor.js",
+    "logs": [
+      "logs/server_supervised.log",
+      "logs/factory_loop_supervised.log"
+    ]
+  },
+  "pre_checks": {
+    "FACTORY_LIVE_PUBLISH": "false (.env)",
+    "x_queue": "data/x_post_queue.json: 3 items, all status blocked-payment, 0 pending",
+    "n8n": "127.0.0.1:5678 (data/security/n8n_lockdown_report.json)",
+    "factory_processes_before": 0
+  },
+  "first_tick": {
+    "started": "2026-10-17T06:28:55Z (golden hunter: skipped, opportunities data stale 78 h)",
+    "progress_seen": "evidence_recording_audit 06:31:10Z -> eu_ai_act_pricing_review 06:41:10Z (sequential steps)"
+  },
+  "monitoring_first_12_minutes": {
+    "sales_ledger_lines": "135 -> 135 (no publish attempt)",
+    "x_post_queue": "unchanged",
+    "finance_data.json": "unchanged",
+    "gumroad_write": false,
+    "x_posting": false,
+    "financial_operation": false
+  },
+  "telegram_notification": "NOT OBSERVED - no startup notification in the logs; factory_loop has no startup notification; its 7 Telegram sends are inside tick steps (runTick, resilience alerts, retries, daily market evidence, affiliate tick, EU AI Act pricing review, GSC deploy)",
+  "paddle_check": "DOCUMENTED (reports/audit/paddle_write_audit.json)",
+  "FACTORY_LIVE_PUBLISH": false
+}

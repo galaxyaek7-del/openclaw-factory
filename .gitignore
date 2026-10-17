@@ -130,3 +130,7 @@ data/_backups/
 data/security/secrets_report.json
 data/security/kill_state.json
 /logs/mcp_readonly_calls.jsonl
+
+# n8n lockdown report: names the public ngrok host, LAN address and firewall
+# rules. The repo is public; keep it local (2026-10-17).
+data/security/n8n_lockdown_report.json
