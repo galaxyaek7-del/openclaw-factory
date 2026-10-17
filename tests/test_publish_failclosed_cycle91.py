@@ -151,6 +151,23 @@ class TestUploadScopes(_Base):
         with self.assertRaises(WriteNotAuthorized):  # second use: already consumed
             gp._upload_file("tok", str(self.file), scope_id=sid, product_id=gp.NEW_PRODUCT)
 
+    def test_malformed_scope_file_is_refused(self):
+        sid = write_scope.issue_scope(product_id=gp.NEW_PRODUCT, slug="t", payload={"file_path": str(self.file)},
+                                      operation="upload_file", note="test").scope_id
+        store = write_scope._store_path(sid)
+        store.write_text("{not json", encoding="utf-8")          # corrupted on disk
+        with self.assertRaises(WriteNotAuthorized) as cm:
+            gp._upload_file("tok", str(self.file), scope_id=sid, product_id=gp.NEW_PRODUCT)
+        self.assertIn("unreadable", str(cm.exception))
+
+    def test_approval_for_another_operation_cannot_authorize_an_upload(self):
+        """A general approval (here: a description edit) must not authorize an
+        unrelated action such as a file upload for a new product."""
+        sid = write_scope.issue_scope(product_id=gp.NEW_PRODUCT, slug="t", payload={"description": "x"},
+                                      operation="update_description", note="test").scope_id
+        with self.assertRaises(WriteNotAuthorized):
+            gp._upload_file("tok", str(self.file), scope_id=sid, product_id=gp.NEW_PRODUCT)
+
 
 class TestDailyLimit(unittest.TestCase):
     def test_gumroad_daily_cap_blocks(self):

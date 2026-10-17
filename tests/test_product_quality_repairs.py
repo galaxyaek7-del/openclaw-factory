@@ -232,13 +232,20 @@ class TestBlockingProblems(unittest.TestCase):
         self.assertEqual(fte.blocking_problems(r), [])
 
     def test_title_overlapping_subtitle_is_detected(self):
-        # the real live defect: page 1 title wraps onto its subtitle
-        p = Path(__file__).resolve().parent.parent / "books" / "ada_demand_response_kit.pdf"
+        # The real defect: page 1 title wraps onto its subtitle. The live file
+        # was repaired 2026-10-17 (scripts/fix_pdf_title_overlap.py); the
+        # original, kept for exactly this purpose, is the defect fixture now,
+        # and the repaired file must come back clean.
+        books = Path(__file__).resolve().parent.parent / "books"
+        p = books / "_pre_title_fix_2026-10-17" / "ada_demand_response_kit.pdf"
         if not p.exists():
             self.skipTest("fixture absent")
         r = fte.test_pdf(p)
         self.assertGreaterEqual(r.detail["text_overlaps"], 1)
         self.assertTrue(any("text overlap" in x for x in fte.blocking_problems(r)))
+        fixed = books / "ada_demand_response_kit.pdf"
+        if fixed.exists():
+            self.assertEqual(fte.test_pdf(fixed).detail["text_overlaps"], 0)
 
     @unittest.skipUnless(importlib.util.find_spec("fitz"),
                          "PyMuPDF not installed: the overlap check is optional in "
@@ -277,6 +284,11 @@ class TestPublishGate(unittest.TestCase):
         import distributor
         prod = self.c81._product(title="Dispute Tracker", description="An Excel tracker.",
                                  price_usd=19.0, file_path=str(path))
+        # The central Quality Gate is mandatory on real publishes (founder
+        # directive, 2026-10-17); this class proves the file-usability gate,
+        # so it injects an allowing resolver (see tests/test_gate_mandatory.py).
+        kw.setdefault("quality_gate", lambda *a, **k: {
+            "allowed": True, "blocked_by": None, "reason": "test allow"})
         return distributor.distribute(prod, arm_names=["gumroad"], allow_protected=True,
                                       ledger_path=self.ledger,
                                       protection_state_path=self.state, **kw)[0]
