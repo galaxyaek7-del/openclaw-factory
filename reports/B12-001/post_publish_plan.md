@@ -1,8 +1,8 @@
 # B12-001 — Post-Publish Measurement Plan
 
 ## Day 1 After Publishing
-□ Confirm listing live on Gumroad (open URL, $29 rendered)
-□ Test purchase flow: BUYING YOUR OWN PRODUCT COSTS A REAL $29
+□ Confirm listing live on Gumroad (open URL, $14.99 rendered)
+□ Test purchase flow: BUYING YOUR OWN PRODUCT COSTS A REAL $14.99
   (plus Gumroad fees; refund reverses it but touches real money).
   This is a FOUNDER-ONLY financial action — not routine QA.
   Skip it unless explicitly authorized; the listing preview check

@@ -6,7 +6,7 @@
 □ Product name (clear, searchable): READY — "Freelancer Rate & Raise Calculator"
 □ Description (benefit-focused): READY — in `drafts/b12_001_listing_copy.txt` (honest 0-sales disclosure kept)
 □ Short summary (1-2 sentences): READY — "A spreadsheet that computes your minimum hourly rate from your own costs — plus client ranking and raise triggers."
-□ Price set (in USD): READY — $29 one-time (proposed; Founder confirms at listing)
+□ Price set (in USD): READY — $14.99 one-time (proposed; Founder confirms at listing)
 □ Product file(s) attached: READY LOCALLY — 8,302-byte XLSX verified (attach at listing time)
 
 ### Visual

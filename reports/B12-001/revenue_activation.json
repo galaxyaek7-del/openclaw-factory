@@ -3,7 +3,6 @@
   "activation_date": "2026-10-16",
   "platform": "Gumroad",
   "status": "PREPARING",
-
   "steps": {
     "step_1_audit": {
       "status": "COMPLETE",
@@ -38,16 +37,14 @@
       "gate": "FOUNDER_PUBLISH_GATE"
     }
   },
-
   "revenue_tracking": {
     "first_sale_target": "PENDING_LISTING",
-    "price": 29,
+    "price": 14.99,
     "real_revenue": 0,
     "real_sales": 0,
     "REAL_TREASURY": 0,
     "measurement_source": "gumroad_dashboard"
   },
-
   "governance": {
     "FACTORY_LIVE_PUBLISH": false,
     "manual_publish_only": true,

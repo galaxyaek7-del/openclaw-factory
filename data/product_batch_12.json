@@ -1,0 +1,167 @@
+{
+  "generated_at": "2026-10-15T18:03:11.427085+00:00",
+  "batch": "B12",
+  "products": [
+    {
+      "id": "B12-001",
+      "title": "Freelancer Rate & Raise Calculator",
+      "price": 14.99,
+      "files": [
+        "B12-001_freelancer_rate_raise_calculator.xlsx"
+      ],
+      "audience": "Freelancers and solo consultants worldwide.",
+      "problem": "Freelancers guess their rates and undercharge for years.",
+      "state": "READY_FOR_REVIEW",
+      "issues": [],
+      "distribution_channels": [
+        "gumroad"
+      ],
+      "price_rationale": "Founder decision 2026-10-17: priced below the most comparable verified competitor (Freelance Pricing & Proposal Kit, $19.00, https://ysteriprime.gumroad.com/l/freelance-pricing-proposal-kit), which offers more content (9-sheet calculator + 50 AI prompts). 10% below $19 would be $17.10; $14.99 is the founder's chosen price.",
+      "price_basis": "FOUNDER_DECISION_BELOW_COMPARABLE",
+      "pricing_date": "2026-10-17",
+      "price_evidence": "reports/B12-001/DEMAND_EVIDENCE_2026-10-17.json",
+      "previous_price": 29
+    },
+    {
+      "id": "B12-002",
+      "title": "Client Project Handoff Pack",
+      "price": 39,
+      "files": [
+        "B12-002_client_handoff_guide.pdf",
+        "B12-002_client_handoff_register.xlsx"
+      ],
+      "audience": "Freelancers, agencies, and contractors handing work to clients.",
+      "problem": "Project handoffs done by email threads end in disputes over what was transferred.",
+      "state": "READY_FOR_REVIEW",
+      "issues": [],
+      "distribution_channels": [
+        "gumroad"
+      ]
+    },
+    {
+      "id": "B12-003",
+      "title": "Founder Access Continuity Organizer",
+      "price": 29,
+      "files": [
+        "B12-003_access_continuity_organizer.pdf"
+      ],
+      "audience": "Solo founders and one-person businesses.",
+      "problem": "If a solo founder is unreachable, nobody can keep the business alive — and writing passwords on paper is the unsafe answer.",
+      "state": "READY_FOR_REVIEW",
+      "issues": [],
+      "distribution_channels": [
+        "gumroad"
+      ]
+    },
+    {
+      "id": "B12-004",
+      "title": "Meeting Cost & ROI Calculator",
+      "price": 19,
+      "files": [
+        "B12-004_meeting_cost_roi_calculator.xlsx",
+        "B12-004_meeting_method_onepager.pdf"
+      ],
+      "audience": "Team leads, managers, and founders with calendars full of status calls.",
+      "problem": "Teams lose thousands of dollars a month to recurring meetings nobody priced.",
+      "state": "READY_FOR_REVIEW",
+      "issues": [],
+      "distribution_channels": [
+        "gumroad"
+      ]
+    },
+    {
+      "id": "B12-005",
+      "title": "Podcast Guest Booking Kit",
+      "price": 29,
+      "files": [
+        "B12-005_podcast_guest_scripts.pdf",
+        "B12-005_podcast_guest_tracker.xlsx"
+      ],
+      "audience": "Founders, freelancers, and authors seeking podcast appearances.",
+      "problem": "Cold podcast pitches get ignored because they are generic and followed up into spam.",
+      "state": "READY_FOR_REVIEW",
+      "issues": [],
+      "distribution_channels": [
+        "gumroad"
+      ]
+    },
+    {
+      "id": "B12-006",
+      "title": "Home-Office Deduction Organizer (US)",
+      "price": 29,
+      "files": [
+        "B12-006_home_office_method_guide.pdf",
+        "B12-006_home_office_expense_log.xlsx"
+      ],
+      "audience": "US remote workers and self-employed filers.",
+      "problem": "Home-office deductions fail on missing receipts and misunderstood exclusive-use rules.",
+      "state": "READY_FOR_REVIEW",
+      "issues": [],
+      "distribution_channels": [
+        "gumroad"
+      ]
+    },
+    {
+      "id": "B12-007",
+      "title": "Digital Declutter & Backup: 30-Day System",
+      "price": 19,
+      "files": [
+        "B12-007_digital_declutter_plan.pdf",
+        "B12-007_digital_inventory.xlsx"
+      ],
+      "audience": "Overwhelmed professionals and households.",
+      "problem": "Accounts, files, and subscriptions pile up for years; backups that were never restore-tested are not backups.",
+      "state": "READY_FOR_REVIEW",
+      "issues": [],
+      "distribution_channels": [
+        "gumroad"
+      ]
+    },
+    {
+      "id": "B12-008",
+      "title": "Moving House 8-Week Planner",
+      "price": 29,
+      "files": [
+        "B12-008_moving_checklist.pdf",
+        "B12-008_moving_budget_tracker.xlsx"
+      ],
+      "audience": "Renters and homeowners planning a move.",
+      "problem": "Moves bleed money through single quotes, uninsured movers, and forgotten address changes.",
+      "state": "READY_FOR_REVIEW",
+      "issues": [],
+      "distribution_channels": [
+        "gumroad"
+      ]
+    },
+    {
+      "id": "B12-009",
+      "title": "Pet Sitter Handover Kit",
+      "price": 19,
+      "files": [
+        "B12-009_pet_sitter_handover_kit.pdf"
+      ],
+      "audience": "Pet owners who travel.",
+      "problem": "Sitters left without vet info, meds schedules, or authorization details cannot act in an emergency.",
+      "state": "READY_FOR_REVIEW",
+      "issues": [],
+      "distribution_channels": [
+        "gumroad"
+      ]
+    },
+    {
+      "id": "B12-010",
+      "title": "Nonprofit Grant Pipeline Tracker",
+      "price": 39,
+      "files": [
+        "B12-010_grant_pipeline_tracker.xlsx"
+      ],
+      "audience": "Small nonprofits and volunteer grant writers.",
+      "problem": "Small nonprofits waste weeks on ineligible applications and rewrite boilerplate per funder.",
+      "state": "READY_FOR_REVIEW",
+      "issues": [],
+      "distribution_channels": [
+        "gumroad"
+      ]
+    }
+  ]
+}

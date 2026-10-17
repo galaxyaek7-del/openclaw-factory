@@ -1,0 +1,49 @@
+{
+  "product": "B12-001",
+  "research_date": "2026-10-17T12:13:51+00:00",
+  "competitors": [
+    {
+      "name": "Freelance Pricing & Proposal Kit (Sean Oh)",
+      "url": "https://ysteriprime.gumroad.com/l/freelance-pricing-proposal-kit",
+      "price": 19.0,
+      "currency": "USD",
+      "notes": "9-sheet rate calculator + 50 AI prompts; most comparable, offers more content",
+      "observed_at": "2026-10-17T12:13:51+00:00",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (page price metadata (product:price:amount + JSON-LD offer), read-only GET by Claude)",
+      "founder_confirmation": "PENDING"
+    },
+    {
+      "name": "The Complete Freelancer Business Toolkit (Prabha Boravat)",
+      "url": "https://prabha02.gumroad.com/l/jmvqo",
+      "price": 4.99,
+      "currency": "USD",
+      "notes": "bundle incl. hourly rate calculator, invoices, tax calculator",
+      "observed_at": "2026-10-17T12:13:51+00:00",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (page price metadata (product:price:amount + JSON-LD offer), read-only GET by Claude)",
+      "founder_confirmation": "PENDING"
+    },
+    {
+      "name": "Earnwise Freelance Business Toolkit (Earnwise Co)",
+      "url": "https://earnwise56.gumroad.com/l/pnrxz",
+      "price": 31.46,
+      "currency": "USD",
+      "listed_price": "EUR 28.00",
+      "notes": "rate + quote calculators; listed in EUR, USD per the page's own offer data",
+      "observed_at": "2026-10-17T12:13:51+00:00",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (page price metadata (product:price:amount + JSON-LD offer), read-only GET by Claude)",
+      "founder_confirmation": "PENDING"
+    }
+  ],
+  "not_verified": [
+    {
+      "url": "https://www.etsy.com/listing/1413751064/hourly-rate-calculator-freelance-rate",
+      "recorded_price": 12.46,
+      "reason": "Etsy returned HTTP 403 to an automated read; price unconfirmed, not used"
+    }
+  ],
+  "ready_for_pricing": true,
+  "note": "Prices verified from each page's own metadata. Founder confirmation of the links is still requested (reply '4 LINKS VERIFIED')."
+}

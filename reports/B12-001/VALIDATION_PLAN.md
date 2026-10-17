@@ -6,7 +6,7 @@ External publishing/contact requires founder authorization. `TOTAL_NEW_SPEND=$0`
 ## Hypothesis
 Freelancers who set their own rates will give their email / click through to
 evaluate a **free minimum-rate calculator**, and a meaningful fraction will
-then consider the paid full product ($29).
+then consider the paid full product ($14.99).
 
 ## Target customer
 Solo freelancers / solo consultants who bill clients for their time and set
@@ -21,7 +21,7 @@ as a free download, with the full 4-sheet product as the paid upgrade.
 |---|---|---|
 | Channel | Galaxy Forge public site (`customer_site/`, served at `/site/`) + one honest community post | Existing, free, permitted; no paid ads |
 | Demonstration | Free 1-sheet minimum-rate calculator (derived from B12-001 `Inputs`) | Proves value before the ask; mirrors the free competitor |
-| Destination | A B12-001 landing page with the honest offer + "$29" CTA | Single measurable conversion point |
+| Destination | A B12-001 landing page with the honest offer + "$14.99" CTA | Single measurable conversion point |
 | Tracking | Real click counts, real checkout attempts, real completed sales; GSC impressions/CTR | All already instrumentable; no fabrication |
 | Assets reused | `reports/B12-001/cover.png`, `LISTING_PACKAGE.md`, `customer_site/` static hosting | Avoids new infrastructure |
 
@@ -35,7 +35,7 @@ as a free download, with the full 4-sheet product as the paid upgrade.
 | Outcome | Next action |
 |---|---|
 | SUCCESS | Verify repeatability before scaling; raise confidence in the offer |
-| INCONCLUSIVE | A/B a lower price ($19) against $29 on the same page |
+| INCONCLUSIVE | A/B a lower price ($19) against $14.99 on the same page |
 | NO TRAFFIC | Invest in distribution/audience discovery, not product changes |
 | BLOCKED | Record restriction; choose fallback channel |
 
@@ -57,7 +57,7 @@ as a free download, with the full 4-sheet product as the paid upgrade.
 - Landing draft: `prototypes/b12_001_rate_calculator/landing.html`
   (local only; checkout disabled; no testimonials/reviews/claims).
 - Tests: `tests/test_rate_calculator_prototype.py` — **17 passed**.
-- The draft page accurately describes the deliverables and states the $29 price
+- The draft page accurately describes the deliverables and states the $14.99 price
   is an unvalidated hypothesis.
 
 ## Definition of qualified buyer intent (evidence grading)
@@ -65,7 +65,7 @@ as a free download, with the full 4-sheet product as the paid upgrade.
 |---|---|---|
 | Page visit / impression (incl. GSC) | weak | No |
 | Free mini-calculator download / email | medium | No (interest only) |
-| Clicks a live "$29 buy" button | strong | Partial (intent) |
+| Clicks a live "$14.99 buy" button | strong | Partial (intent) |
 | Completes checkout + pays | definitive | Yes |
 | Refund / complaint | definitive | Yes (negative) |
 

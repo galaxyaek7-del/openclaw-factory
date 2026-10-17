@@ -5,7 +5,7 @@
 □ Cover image displays correctly (`reports/B12-001/cover.png`, 1280×720, 9,155 bytes — generated 2026-10-16)
 □ No pixelation or distortion
 □ Text readable on mobile preview
-□ Price shows: $29.00 USD
+□ Price shows: $14.99 USD
 
 ## Content QA
 □ Title matches approved version ("Freelancer Rate & Raise Calculator")
@@ -29,7 +29,7 @@
 
 ## Purchase Flow QA
 □ "I want this" button visible
-□ Price correct at checkout ($29)
+□ Price correct at checkout ($14.99)
 □ Payment methods available
 □ Thank you page configured
 

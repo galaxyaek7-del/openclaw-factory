@@ -1,8 +1,8 @@
 {
   "product_id": "B12-001",
   "title": "Freelancer Rate & Raise Calculator",
-  "price_usd": 29,
-  "checked_at": "2026-10-17T07:26:10+00:00",
+  "price_usd": 14.99,
+  "checked_at": "2026-10-17 (re-run after verified competitor prices)",
   "publish_gate": "LOCKED",
   "unlock_phrase": "APPROVE B12-001 PUBLISH",
   "gate_file": "reports/B12-001/PUBLISH_GATE.md",
@@ -40,9 +40,10 @@
     },
     {
       "item": "market reality (sourced competitor prices or proof of payment)",
-      "status": "MISSING_DATA",
+      "status": "PASS",
       "evidence": {
-        "reason": "no sourced competitor prices and no recorded proof of payment"
+        "score": 70,
+        "source": "data/evidence/b12_competitors.json"
       }
     },
     {
@@ -89,11 +90,9 @@
       }
     }
   ],
-  "quality_enforcer_verdict": "BLOCKED_MISSING_DATA",
-  "quality_enforcer_reasons": [
-    "market_reality: no sourced competitor prices and no recorded proof of payment"
-  ],
+  "quality_enforcer_verdict": "APPROVED",
+  "quality_enforcer_reasons": [],
   "quality_report": "reports/B12-001/inspections/B12-001_full_20261017T072610783383.json",
-  "honest_reading": "The file, cover, copy and tags are ready. The Quality Enforcer cannot APPROVE yet: no sourced competitor price and no recorded proof that anyone pays for this exact problem. Publishing anyway is the founder's call; if chosen, it is a demand test, and the first 30 days of real views/sales are the evidence Layer 3 is missing.",
-  "stale_record_note": "reports/B12-001/product_audit.json (2026-10-16) still says cover_image_ready=false; the cover was made afterwards and is verified here."
+  "honest_reading": "File, cover, copy, tags and market evidence pass. What is still missing is a real sale: the market layer passes on three sourced competitor prices, not on proof that anyone pays for B12-001 itself.",
+  "price_rationale": "Founder decision 2026-10-17: priced below the most comparable verified competitor (Freelance Pricing & Proposal Kit, $19.00, https://ysteriprime.gumroad.com/l/freelance-pricing-proposal-kit), which offers more content (9-sheet calculator + 50 AI prompts). 10% below $19 would be $17.10; $14.99 is the founder's chosen price."
 }

@@ -7,7 +7,7 @@
 
 ### What You're Promoting
 Freelancer Rate & Raise Calculator — a spreadsheet that computes your
-minimum hourly rate from your own costs. Price: $29.
+minimum hourly rate from your own costs. Price: $14.99.
 Your commission: PENDING (no affiliate program configured yet).
 Your earnings per sale: PENDING (set when the program goes live).
 
@@ -23,12 +23,12 @@ Nothing proven yet — this section updates after 30 days of real data.
 Short (X, draft — NOT posted):
 Freelancers: I ran my costs through this sheet — $80k target,
 30% buffer, 1,150 billable hrs = $120.29/hr minimum. The
-spreadsheet that does it: Freelancer Rate & Raise Calculator, $29,
+spreadsheet that does it: Freelancer Rate & Raise Calculator, $14.99,
 first version, no reviews yet. [LINK when live]
 
 Medium (LinkedIn, draft — NOT posted):
 Most freelancers I know set rates by gut feel and discover years
-later they undercharged by 20-30%. This $29 workbook (rate math +
+later they undercharged by 20-30%. This $14.99 workbook (rate math +
 client ranking + raise triggers, first version, no reviews yet)
 does the arithmetic in minutes. [LINK when live]
 

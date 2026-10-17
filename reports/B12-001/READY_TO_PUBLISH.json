@@ -1,41 +1,51 @@
 {
   "product": "B12-001",
   "title": "Freelancer Rate & Raise Calculator",
-  "quality_verdict": "BLOCKED_MISSING_DATA",
-  "allowed_to_publish": false,
+  "quality_verdict": "APPROVED",
+  "allowed_to_publish": true,
   "layers": {
     "core_value": "PASS",
     "content_quality": "PASS",
-    "market_reality": "MISSING_DATA"
+    "market_reality": "PASS"
   },
   "scores": {
-    "core_value": 75,
+    "core_value": 100,
     "content_quality": 100,
-    "market_reality": null
+    "market_reality": 70
   },
-  "blocked_by": "market_reality: no sourced competitor prices and no recorded proof of payment",
-  "note": "Layers 1 and 2 pass. Layer 3 (Market Reality) cannot be scored because no real-world evidence exists yet: no competitor price with a source URL and no human-recorded proof of payment. This is a missing fact, not a bad product, and it cannot be fabricated.",
-  "price": 29,
+  "blocked_by": null,
+  "note": "All three layers pass with real, sourced competitor prices. No proof of payment exists yet; the market layer passes on three sourced competitors (founder rule, 2026-10-17).",
+  "price": 14.99,
   "cover": "reports/B12-001/cover.png",
-  "cover_bytes": 44553,
-  "cover_size": [1280, 720],
+  "cover_bytes": 30643,
+  "cover_size": [
+    1280,
+    720
+  ],
   "listing_package": "reports/B12-001/LISTING_PACKAGE.md",
   "product_file": "books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx",
   "gumroad_url": "PENDING_PUBLISH",
   "publish_gate": "LOCKED",
   "unlock_with": "APPROVE B12-001 PUBLISH",
-  "founder_question_to_clear_the_block": "For Freelancer Rate & Raise Calculator: is there any real evidence that someone pays to solve this problem? A sourced competitor price (a URL + price), or even one real conversation or record that a freelancer wanted this. Layer 3 needs one real, citable signal.",
   "founder_steps": [
     "1. Open gumroad.com/products",
     "2. Click '+ New product'",
     "3. Copy title from LISTING_PACKAGE.md",
     "4. Copy description from LISTING_PACKAGE.md",
-    "5. Set price: $29",
+    "5. Set price: $14.99",
     "6. Upload cover: reports/B12-001/cover.png",
     "7. Upload product file: books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx",
     "8. Add tags from listing package",
     "9. Save as DRAFT",
     "10. Send link here for QA review",
     "11. Say 'APPROVE B12-001 PUBLISH'"
-  ]
+  ],
+  "price_justified": true,
+  "price_evidence": "reports/B12-001/DEMAND_EVIDENCE_2026-10-17.json",
+  "price_rationale": "Founder decision 2026-10-17: priced below the most comparable verified competitor (Freelance Pricing & Proposal Kit, $19.00, https://ysteriprime.gumroad.com/l/freelance-pricing-proposal-kit), which offers more content (9-sheet calculator + 50 AI prompts). 10% below $19 would be $17.10; $14.99 is the founder's chosen price.",
+  "gate_passed_date": "2026-10-17",
+  "gate_evidence": "data/evidence/b12_competitors.json (3 competitor prices verified from page metadata; Etsy entry unverified, not used)",
+  "allowed_to_publish_note": "Quality gate only. Publishing still needs the founder: the gate stays LOCKED until 'APPROVE B12-001 PUBLISH', and FACTORY_LIVE_PUBLISH=false.",
+  "pricer_mechanical_rule": "10% below the cheapest sourced price gives $4.49 (the $4.99 bundle); $14.99 is the founder's comparable-based price",
+  "cover_note": "Regenerated 2026-10-17 with scripts/generate_listing_covers.py (same design as the other 74 listing covers). The previous image printed '$29', a wrong store address (galaxyforge.gumroad.com; the store is aekraft.gumroad.com) and the label 'BUSINESS AUTOMATION'."
 }

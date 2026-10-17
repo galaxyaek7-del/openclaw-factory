@@ -25,7 +25,7 @@ New product from Galaxy Forge: no sales recorded yet, no reviews. Arithmetic on 
 Requires: Excel, LibreOffice Calc (free), or Google Sheets (free upload). Instant XLSX download after purchase. Support: reply to your Gumroad receipt email.
 
 ## ════ PRICE ════
-$29.00 USD
+$14.99 USD
 
 ## ════ TAGS (copy all) ════
 freelancing, pricing, rate calculator, consultant, spreadsheet, raise, excel template, solo consultant
@@ -58,7 +58,7 @@ This is what buyers download.
 Personal use license. One buyer, one license. No redistribution.
 
 ## ════ CALL TO ACTION ════
-"Get Instant Access — $29"
+"Get Instant Access — $14.99"
 
 ## ════ THANK YOU PAGE ════
 "Thank you for your purchase! Your download link is below. For support, reply to your Gumroad

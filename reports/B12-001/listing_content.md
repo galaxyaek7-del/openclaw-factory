@@ -58,11 +58,11 @@ or a refund through Gumroad's standard process.
 freelancing, pricing, rate calculator, consultant, spreadsheet, raise
 
 ## Suggested Price
-- Recommended: **$29** (approved plan; matches verified content depth)
+- Recommended: **$14.99** (founder decision 2026-10-17; below the most comparable verified competitor at $19, which offers more content; see DEMAND_EVIDENCE_2026-10-17.json)
 - Minimum viable: UNKNOWN (no demand data to price-discriminate)
 - Premium: UNKNOWN (same reason — not invented)
 
 ## Custom URL Slug
-galaxyforge.gumroad.com/l/[assigned-by-gumroad]
+aekraft.gumroad.com/l/[assigned-by-gumroad]
 Suggested: rate-calculator (confirm availability at listing time;
 record the final slug — never invent one in advance)

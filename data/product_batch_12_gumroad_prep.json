@@ -1,0 +1,272 @@
+{
+  "generated": "local-only, FACTORY_LIVE_PUBLISH=false, no listing created/modified",
+  "items": [
+    {
+      "id": "B12-001",
+      "title": "Freelancer Rate & Raise Calculator",
+      "proposed_price_usd": 14.99,
+      "files": [
+        "B12-001_freelancer_rate_raise_calculator.xlsx"
+      ],
+      "page": "b12-freelancer-rate-calculator.html",
+      "utm_plan": {
+        "site_catalog": "utm_source=site&utm_medium=catalog&utm_campaign=b12-001_catalog",
+        "guide_cluster": "utm_source=b12-001_seo_cta&utm_medium=site&utm_campaign=b12-001_cluster",
+        "future_telegraph": "utm_source=telegraph&utm_medium=article&utm_campaign=b12-001_guide (DRAFT: posting NOT authorized)",
+        "future_nostr": "utm_source=nostr&utm_medium=post&utm_campaign=b12-001_post (DRAFT: posting NOT authorized)"
+      },
+      "delivery_checklist": [
+        "open every file",
+        "confirm listed files match payload",
+        "verify price matches proposal",
+        "test download after listing (founder, post-authorization)"
+      ],
+      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+      "listing_copy": {
+        "listing_title": "Freelancer Rate & Raise Calculator",
+        "listing_description": "Stop guessing your rates. This spreadsheet computes YOUR minimum hourly rate from your own costs: target take-home pay, tax buffer, business expenses, billable weeks and hours, plus a safety margin for scope creep and late payers.\n\nInside (4 sheets): Inputs (your numbers in, computed rate out), ClientMix (rank every client by revenue-per-hassle and see who to fire first), RaisePlanner (raise only on logged triggers, never on feelings), README (4-step instructions).\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews. Arithmetic on your inputs — not financial advice; confirm tax figures with your accountant.\n\nRequires: Excel, LibreOffice Calc (free), or Google Sheets (free upload). Instant XLSX download after purchase. Support: reply to your Gumroad receipt email.",
+        "tags": [
+          "freelancing",
+          "pricing",
+          "rate calculator",
+          "consultant",
+          "spreadsheet",
+          "raise"
+        ],
+        "version": "1.0"
+      },
+      "listing_copy_status": "READY_TO_PASTE__AWAITS_LISTING_AUTHORIZATION",
+      "price_rationale": "Founder decision 2026-10-17: priced below the most comparable verified competitor (Freelance Pricing & Proposal Kit, $19.00, https://ysteriprime.gumroad.com/l/freelance-pricing-proposal-kit), which offers more content (9-sheet calculator + 50 AI prompts). 10% below $19 would be $17.10; $14.99 is the founder's chosen price."
+    },
+    {
+      "id": "B12-002",
+      "title": "Client Project Handoff Pack",
+      "proposed_price_usd": 39,
+      "files": [
+        "B12-002_client_handoff_guide.pdf",
+        "B12-002_client_handoff_register.xlsx"
+      ],
+      "page": "b12-client-handoff-pack.html",
+      "utm_plan": {
+        "site_catalog": "utm_source=site&utm_medium=catalog&utm_campaign=b12-002_catalog",
+        "guide_cluster": "utm_source=b12-002_seo_cta&utm_medium=site&utm_campaign=b12-002_cluster",
+        "future_telegraph": "utm_source=telegraph&utm_medium=article&utm_campaign=b12-002_guide (DRAFT: posting NOT authorized)",
+        "future_nostr": "utm_source=nostr&utm_medium=post&utm_campaign=b12-002_post (DRAFT: posting NOT authorized)"
+      },
+      "delivery_checklist": [
+        "open every file",
+        "confirm listed files match payload",
+        "verify price matches proposal",
+        "test download after listing (founder, post-authorization)"
+      ],
+      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
+    },
+    {
+      "id": "B12-003",
+      "title": "Founder Access Continuity Organizer",
+      "proposed_price_usd": 29,
+      "files": [
+        "B12-003_access_continuity_organizer.pdf"
+      ],
+      "page": "b12-access-continuity-organizer.html",
+      "utm_plan": {
+        "site_catalog": "utm_source=site&utm_medium=catalog&utm_campaign=b12-003_catalog",
+        "guide_cluster": "utm_source=b12-003_seo_cta&utm_medium=site&utm_campaign=b12-003_cluster",
+        "future_telegraph": "utm_source=telegraph&utm_medium=article&utm_campaign=b12-003_guide (DRAFT: posting NOT authorized)",
+        "future_nostr": "utm_source=nostr&utm_medium=post&utm_campaign=b12-003_post (DRAFT: posting NOT authorized)"
+      },
+      "delivery_checklist": [
+        "open every file",
+        "confirm listed files match payload",
+        "verify price matches proposal",
+        "test download after listing (founder, post-authorization)"
+      ],
+      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
+    },
+    {
+      "id": "B12-004",
+      "title": "Meeting Cost & ROI Calculator",
+      "proposed_price_usd": 19,
+      "files": [
+        "B12-004_meeting_cost_roi_calculator.xlsx",
+        "B12-004_meeting_method_onepager.pdf"
+      ],
+      "page": "b12-meeting-cost-calculator.html",
+      "utm_plan": {
+        "site_catalog": "utm_source=site&utm_medium=catalog&utm_campaign=b12-004_catalog",
+        "guide_cluster": "utm_source=b12-004_seo_cta&utm_medium=site&utm_campaign=b12-004_cluster",
+        "future_telegraph": "utm_source=telegraph&utm_medium=article&utm_campaign=b12-004_guide (DRAFT: posting NOT authorized)",
+        "future_nostr": "utm_source=nostr&utm_medium=post&utm_campaign=b12-004_post (DRAFT: posting NOT authorized)"
+      },
+      "delivery_checklist": [
+        "open every file",
+        "confirm listed files match payload",
+        "verify price matches proposal",
+        "test download after listing (founder, post-authorization)"
+      ],
+      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+      "listing_copy": {
+        "listing_title": "Meeting Cost & ROI Calculator",
+        "listing_description": "Price every recurring meeting with loaded attendee costs, find the expensive ones with no decision attached, and run a quarterly kill review. Includes a worked example (a 7-person standup costs ~$29,500/year), a polite decline script, and a kill-review worksheet.\n\nInside: Meetings workbook (costs auto-sum) + 1-page method sheet.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews.\n\nRequires: Excel, LibreOffice Calc (free), or Google Sheets (free upload) for the workbook; any PDF reader for the method sheet. Instant download after purchase. Support: reply to your Gumroad receipt email.",
+        "tags": [
+          "meetings",
+          "productivity",
+          "management",
+          "calculator",
+          "spreadsheet"
+        ],
+        "version": "1.0"
+      },
+      "listing_copy_status": "READY_TO_PASTE__AWAITS_LISTING_AUTHORIZATION"
+    },
+    {
+      "id": "B12-005",
+      "title": "Podcast Guest Booking Kit",
+      "proposed_price_usd": 29,
+      "files": [
+        "B12-005_podcast_guest_scripts.pdf",
+        "B12-005_podcast_guest_tracker.xlsx"
+      ],
+      "page": "b12-podcast-guest-kit.html",
+      "utm_plan": {
+        "site_catalog": "utm_source=site&utm_medium=catalog&utm_campaign=b12-005_catalog",
+        "guide_cluster": "utm_source=b12-005_seo_cta&utm_medium=site&utm_campaign=b12-005_cluster",
+        "future_telegraph": "utm_source=telegraph&utm_medium=article&utm_campaign=b12-005_guide (DRAFT: posting NOT authorized)",
+        "future_nostr": "utm_source=nostr&utm_medium=post&utm_campaign=b12-005_post (DRAFT: posting NOT authorized)"
+      },
+      "delivery_checklist": [
+        "open every file",
+        "confirm listed files match payload",
+        "verify price matches proposal",
+        "test download after listing (founder, post-authorization)"
+      ],
+      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
+    },
+    {
+      "id": "B12-006",
+      "title": "Home-Office Deduction Organizer (US)",
+      "proposed_price_usd": 29,
+      "files": [
+        "B12-006_home_office_method_guide.pdf",
+        "B12-006_home_office_expense_log.xlsx"
+      ],
+      "page": "b12-home-office-organizer.html",
+      "utm_plan": {
+        "site_catalog": "utm_source=site&utm_medium=catalog&utm_campaign=b12-006_catalog",
+        "guide_cluster": "utm_source=b12-006_seo_cta&utm_medium=site&utm_campaign=b12-006_cluster",
+        "future_telegraph": "utm_source=telegraph&utm_medium=article&utm_campaign=b12-006_guide (DRAFT: posting NOT authorized)",
+        "future_nostr": "utm_source=nostr&utm_medium=post&utm_campaign=b12-006_post (DRAFT: posting NOT authorized)"
+      },
+      "delivery_checklist": [
+        "open every file",
+        "confirm listed files match payload",
+        "verify price matches proposal",
+        "test download after listing (founder, post-authorization)"
+      ],
+      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
+    },
+    {
+      "id": "B12-007",
+      "title": "Digital Declutter & Backup: 30-Day System",
+      "proposed_price_usd": 19,
+      "files": [
+        "B12-007_digital_declutter_plan.pdf",
+        "B12-007_digital_inventory.xlsx"
+      ],
+      "page": "b12-digital-declutter-system.html",
+      "utm_plan": {
+        "site_catalog": "utm_source=site&utm_medium=catalog&utm_campaign=b12-007_catalog",
+        "guide_cluster": "utm_source=b12-007_seo_cta&utm_medium=site&utm_campaign=b12-007_cluster",
+        "future_telegraph": "utm_source=telegraph&utm_medium=article&utm_campaign=b12-007_guide (DRAFT: posting NOT authorized)",
+        "future_nostr": "utm_source=nostr&utm_medium=post&utm_campaign=b12-007_post (DRAFT: posting NOT authorized)"
+      },
+      "delivery_checklist": [
+        "open every file",
+        "confirm listed files match payload",
+        "verify price matches proposal",
+        "test download after listing (founder, post-authorization)"
+      ],
+      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
+    },
+    {
+      "id": "B12-008",
+      "title": "Moving House 8-Week Planner",
+      "proposed_price_usd": 29,
+      "files": [
+        "B12-008_moving_checklist.pdf",
+        "B12-008_moving_budget_tracker.xlsx"
+      ],
+      "page": "b12-moving-house-planner.html",
+      "utm_plan": {
+        "site_catalog": "utm_source=site&utm_medium=catalog&utm_campaign=b12-008_catalog",
+        "guide_cluster": "utm_source=b12-008_seo_cta&utm_medium=site&utm_campaign=b12-008_cluster",
+        "future_telegraph": "utm_source=telegraph&utm_medium=article&utm_campaign=b12-008_guide (DRAFT: posting NOT authorized)",
+        "future_nostr": "utm_source=nostr&utm_medium=post&utm_campaign=b12-008_post (DRAFT: posting NOT authorized)"
+      },
+      "delivery_checklist": [
+        "open every file",
+        "confirm listed files match payload",
+        "verify price matches proposal",
+        "test download after listing (founder, post-authorization)"
+      ],
+      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+      "listing_copy": {
+        "listing_title": "Moving House 8-Week Planner",
+        "listing_description": "Week-by-week checklist from notice to keys plus a budget tracker with mover comparison and address-change register. Includes a first-night box manifest and a damage-claim email template (file within 48h).\n\nInside: 8-week checklist PDF + budget tracker workbook.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews.\n\nRequires: any PDF reader for the checklist; Excel, LibreOffice Calc (free), or Google Sheets (free upload) for the tracker. Instant download after purchase. Support: reply to your Gumroad receipt email.",
+        "tags": [
+          "moving",
+          "relocation",
+          "checklist",
+          "planner",
+          "budget"
+        ],
+        "version": "1.0"
+      },
+      "listing_copy_status": "READY_TO_PASTE__AWAITS_LISTING_AUTHORIZATION"
+    },
+    {
+      "id": "B12-009",
+      "title": "Pet Sitter Handover Kit",
+      "proposed_price_usd": 19,
+      "files": [
+        "B12-009_pet_sitter_handover_kit.pdf"
+      ],
+      "page": "b12-pet-sitter-handover-kit.html",
+      "utm_plan": {
+        "site_catalog": "utm_source=site&utm_medium=catalog&utm_campaign=b12-009_catalog",
+        "guide_cluster": "utm_source=b12-009_seo_cta&utm_medium=site&utm_campaign=b12-009_cluster",
+        "future_telegraph": "utm_source=telegraph&utm_medium=article&utm_campaign=b12-009_guide (DRAFT: posting NOT authorized)",
+        "future_nostr": "utm_source=nostr&utm_medium=post&utm_campaign=b12-009_post (DRAFT: posting NOT authorized)"
+      },
+      "delivery_checklist": [
+        "open every file",
+        "confirm listed files match payload",
+        "verify price matches proposal",
+        "test download after listing (founder, post-authorization)"
+      ],
+      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
+    },
+    {
+      "id": "B12-010",
+      "title": "Nonprofit Grant Pipeline Tracker",
+      "proposed_price_usd": 39,
+      "files": [
+        "B12-010_grant_pipeline_tracker.xlsx"
+      ],
+      "page": "b12-grant-pipeline-tracker.html",
+      "utm_plan": {
+        "site_catalog": "utm_source=site&utm_medium=catalog&utm_campaign=b12-010_catalog",
+        "guide_cluster": "utm_source=b12-010_seo_cta&utm_medium=site&utm_campaign=b12-010_cluster",
+        "future_telegraph": "utm_source=telegraph&utm_medium=article&utm_campaign=b12-010_guide (DRAFT: posting NOT authorized)",
+        "future_nostr": "utm_source=nostr&utm_medium=post&utm_campaign=b12-010_post (DRAFT: posting NOT authorized)"
+      },
+      "delivery_checklist": [
+        "open every file",
+        "confirm listed files match payload",
+        "verify price matches proposal",
+        "test download after listing (founder, post-authorization)"
+      ],
+      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
+    }
+  ]
+}
