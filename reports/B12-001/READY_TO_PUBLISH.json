@@ -1,0 +1,41 @@
+{
+  "product": "B12-001",
+  "title": "Freelancer Rate & Raise Calculator",
+  "quality_verdict": "BLOCKED_MISSING_DATA",
+  "allowed_to_publish": false,
+  "layers": {
+    "core_value": "PASS",
+    "content_quality": "PASS",
+    "market_reality": "MISSING_DATA"
+  },
+  "scores": {
+    "core_value": 75,
+    "content_quality": 100,
+    "market_reality": null
+  },
+  "blocked_by": "market_reality: no sourced competitor prices and no recorded proof of payment",
+  "note": "Layers 1 and 2 pass. Layer 3 (Market Reality) cannot be scored because no real-world evidence exists yet: no competitor price with a source URL and no human-recorded proof of payment. This is a missing fact, not a bad product, and it cannot be fabricated.",
+  "price": 29,
+  "cover": "reports/B12-001/cover.png",
+  "cover_bytes": 44553,
+  "cover_size": [1280, 720],
+  "listing_package": "reports/B12-001/LISTING_PACKAGE.md",
+  "product_file": "books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx",
+  "gumroad_url": "PENDING_PUBLISH",
+  "publish_gate": "LOCKED",
+  "unlock_with": "APPROVE B12-001 PUBLISH",
+  "founder_question_to_clear_the_block": "For Freelancer Rate & Raise Calculator: is there any real evidence that someone pays to solve this problem? A sourced competitor price (a URL + price), or even one real conversation or record that a freelancer wanted this. Layer 3 needs one real, citable signal.",
+  "founder_steps": [
+    "1. Open gumroad.com/products",
+    "2. Click '+ New product'",
+    "3. Copy title from LISTING_PACKAGE.md",
+    "4. Copy description from LISTING_PACKAGE.md",
+    "5. Set price: $29",
+    "6. Upload cover: reports/B12-001/cover.png",
+    "7. Upload product file: books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx",
+    "8. Add tags from listing package",
+    "9. Save as DRAFT",
+    "10. Send link here for QA review",
+    "11. Say 'APPROVE B12-001 PUBLISH'"
+  ]
+}

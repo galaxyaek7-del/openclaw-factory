@@ -1,0 +1,32 @@
+{
+  "product": "B12-001",
+  "base_url": "PENDING_LISTING — no Gumroad URL exists yet; replace after the founder creates the listing. Never invent a slug.",
+  "utm_links": {
+    "direct": {
+      "url": "[base_url]",
+      "source": "direct",
+      "use_case": "Personal sharing"
+    },
+    "affiliate": {
+      "url": "[base_url]?utm_source=affiliate&utm_medium=partner&utm_campaign=B12-001",
+      "source": "affiliate",
+      "use_case": "Affiliate distribution"
+    },
+    "social_twitter": {
+      "url": "[base_url]?utm_source=twitter&utm_medium=social&utm_campaign=B12-001",
+      "source": "twitter",
+      "use_case": "X/Twitter posts"
+    },
+    "social_linkedin": {
+      "url": "[base_url]?utm_source=linkedin&utm_medium=social&utm_campaign=B12-001",
+      "source": "linkedin",
+      "use_case": "LinkedIn posts"
+    },
+    "email": {
+      "url": "[base_url]?utm_source=email&utm_medium=outreach&utm_campaign=B12-001",
+      "source": "email",
+      "use_case": "Direct email outreach"
+    }
+  },
+  "note": "Replace [base_url] after Gumroad listing created. r/freelance-style link drops excluded (removal + ban risk)."
+}

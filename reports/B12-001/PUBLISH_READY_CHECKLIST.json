@@ -1,0 +1,99 @@
+{
+  "product_id": "B12-001",
+  "title": "Freelancer Rate & Raise Calculator",
+  "price_usd": 29,
+  "checked_at": "2026-10-17T07:26:10+00:00",
+  "publish_gate": "LOCKED",
+  "unlock_phrase": "APPROVE B12-001 PUBLISH",
+  "gate_file": "reports/B12-001/PUBLISH_GATE.md",
+  "who_publishes": "Founder, manually on Gumroad. The factory never publishes (FACTORY_LIVE_PUBLISH=false).",
+  "items": [
+    {
+      "item": "product file opens, formulas present",
+      "status": "PASS",
+      "evidence": {
+        "file": "books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx",
+        "bytes": 8302,
+        "sha256": "3f5ce8a6abef3ad1022a74440c3bc8d0f5d314b4d9282ecaa02f73d8096f5109",
+        "matches_recorded_sha": true,
+        "content_score": 100,
+        "depth": {
+          "sheets": 4,
+          "formulas": 8,
+          "sheet_depth_ok": true
+        }
+      }
+    },
+    {
+      "item": "core value (audience, problem, outcome, title, price)",
+      "status": "PASS",
+      "evidence": {
+        "score": 100,
+        "checks": {
+          "audience_specific": true,
+          "problem_stated": true,
+          "outcome_stated": true,
+          "title_specific": true,
+          "priced": true
+        }
+      }
+    },
+    {
+      "item": "market reality (sourced competitor prices or proof of payment)",
+      "status": "MISSING_DATA",
+      "evidence": {
+        "reason": "no sourced competitor prices and no recorded proof of payment"
+      }
+    },
+    {
+      "item": "cover 1280x720",
+      "status": "PASS",
+      "evidence": {
+        "file": "reports/B12-001/cover.png",
+        "size": [
+          1280,
+          720
+        ]
+      }
+    },
+    {
+      "item": "listing copy ready to paste",
+      "status": "PASS",
+      "evidence": {
+        "file": "reports/B12-001/listing_content.md",
+        "chars": 2412
+      }
+    },
+    {
+      "item": "tags grounded in product content",
+      "status": "PASS",
+      "evidence": {
+        "file": "data/seo/b12_001_tags.json",
+        "tags": [
+          "freelancing",
+          "pricing",
+          "rate calculator",
+          "consultant",
+          "spreadsheet",
+          "raise",
+          "excel template",
+          "solo consultant"
+        ]
+      }
+    },
+    {
+      "item": "founder approval",
+      "status": "PENDING",
+      "evidence": {
+        "required_phrase": "APPROVE B12-001 PUBLISH"
+      }
+    }
+  ],
+  "quality_enforcer_verdict": "BLOCKED_MISSING_DATA",
+  "quality_enforcer_reasons": [
+    "market_reality: no sourced competitor prices and no recorded proof of payment"
+  ],
+  "quality_report": "reports/B12-001/inspections/B12-001_full_20261017T072610783383.json",
+  "honest_reading": "The file, cover, copy and tags are ready. The Quality Enforcer cannot APPROVE yet: no sourced competitor price and no recorded proof that anyone pays for this exact problem. Publishing anyway is the founder's call; if chosen, it is a demand test, and the first 30 days of real views/sales are the evidence Layer 3 is missing.",
+  "stale_record_note": "reports/B12-001/product_audit.json (2026-10-16) still says cover_image_ready=false; the cover was made afterwards and is verified here."
+}

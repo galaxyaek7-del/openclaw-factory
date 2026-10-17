@@ -1,0 +1,89 @@
+{
+  "product": "B12-001",
+  "title": "Freelancer Rate & Raise Calculator",
+  "investigated_on": "2026-10-17",
+  "method": "Public web search (no spend, no account access, no scraping behind controls). Search-result excerpts only; several Gumroad listing pages returned no price in the excerpt.",
+  "evidence_items": [
+    {
+      "type": "COMPETITOR_PRICE_EVIDENCE",
+      "url": "https://www.etsy.com/listing/1413751064/hourly-rate-calculator-freelance-rate",
+      "observed": "2026-10-17",
+      "price_usd": 12.46,
+      "what_it_proves": "A directly comparable 'freelance hourly rate calculator' spreadsheet is actively sold on Etsy at ~$12.46; Google-Sheets-only, not Excel.",
+      "what_it_does_not_prove": "Does not prove B12-001 demand, nor that anyone would pay $29 for B12-001."
+    },
+    {
+      "type": "COMPETITOR_PRICE_EVIDENCE",
+      "url": "https://earnwise56.gumroad.com/l/pnrxz",
+      "observed": "2026-10-17",
+      "price_usd": 31.40,
+      "includes": "True hourly-rate calculator, hourly quote calculator, fixed-price quote calculator; Excel + free Google Sheets; Euros.",
+      "what_it_proves": "A near-identical offer (rate calculator, Excel+Sheets) transacts at a price ABOVE B12-001's $29.",
+      "what_it_does_not_prove": "Its sales volume is unknown; price alone is not demand."
+    },
+    {
+      "type": "COMPETITOR_PRICE_EVIDENCE",
+      "url": "https://ysteriprime.gumroad.com/l/freelance-pricing-proposal-kit",
+      "observed": "2026-10-17",
+      "price_usd": 19,
+      "includes": "9-sheet Rate Calculator with Underpricing Detector + Rate Raise Planner, Excel+Sheets, 50 AI prompts, sample proposal.",
+      "what_it_proves": "A bundle that overlaps B12-001's exact 'raise planner / underpricing' angle sells at $19 — BELOW B12-001's $29, and with more content.",
+      "what_it_does_not_prove": "Not proof that its price is optimal or that it sells volume."
+    },
+    {
+      "type": "COMPETITOR_PRICE_EVIDENCE",
+      "url": "https://prabha02.gumroad.com/l/jmvqo",
+      "observed": "2026-10-17",
+      "price_usd": 4.99,
+      "includes": "All-in-one Excel toolkit incl. hourly rate calculator, client tracker, invoices, tax calculator.",
+      "what_it_proves": "The market has low-price anchors ($4.99) for rate calculators bundled with more.",
+      "what_it_does_not_prove": "Not proof of quality or sales."
+    },
+    {
+      "type": "FREE_ALTERNATIVE_EVIDENCE",
+      "url": "https://nanoomarketing.com/blog/hourly-rate-calculator-template-google-sheet",
+      "observed": "2026-10-17",
+      "price_usd": 0,
+      "what_it_proves": "A free Google-Sheet hourly-rate calculator exists — a genuine free substitute competing with B12-001 at $0.",
+      "what_it_does_not_prove": "Not proof that free beats paid, but it removes 'no free option' as a differentiator."
+    },
+    {
+      "type": "PROBLEM_EVIDENCE",
+      "url": "https://www.reddit.com/r/freelance/comments/1jf6ecj/why_are_so_many_people_underpricing_their/",
+      "observed": "2025-03-19",
+      "what_it_proves": "Real freelancers publicly discuss underpricing as a live, recurring problem.",
+      "what_it_does_not_prove": "A discussion is not a purchase."
+    },
+    {
+      "type": "PROBLEM_EVIDENCE",
+      "url": "https://www.reddit.com/r/Freelancers/comments/1vjmwkq/how_do_you_actually_figure_out_what_to_charge_as/",
+      "observed": "2026-08-09",
+      "what_it_proves": "Buyers of this problem describe exactly B12-001's promise ('turn all of that into an actual number' from expenses/hours).",
+      "what_it_does_not_prove": "Stated confusion is not stated willingness to pay."
+    },
+    {
+      "type": "PROBLEM_EVIDENCE",
+      "url": "https://www.reddit.com/r/Upwork/comments/1s32qmx/how_did_you_figure_out_what_to_charge_when_you/",
+      "observed": "2026-03-25",
+      "what_it_proves": "Active purchase-intent-adjacent discussion: someone wishes to see a market range vs their own rate.",
+      "what_it_does_not_prove": "Aspiration is not a transaction."
+    },
+    {
+      "type": "COMPLETED_TRANSACTION_EVIDENCE",
+      "value": null,
+      "what_it_proves": "Nothing — no completed external transaction for B12-001 exists.",
+      "what_it_does_not_prove": "n/a"
+    }
+  ],
+  "verdict": {
+    "problem_exists": "SUPPORTED (multiple dated public discussions)",
+    "willingness_to_pay_for_B12_001_specifically": "UNPROVEN",
+    "differentiation_vs_market": "WEAK (crowded field $4.99–$31.40 incl. one free substitute; B12-001's ClientMix/RaisePlanner angle is matched by a $19 bundle with more content)",
+    "price_29_supported": "NOT YET (sits mid-high in the field with less content than the $19 and $31.40 offers)"
+  },
+  "limitations": [
+    "Search excerpts only — Gumroad listing pages did not expose prices for 3 competitors.",
+    "No sales volumes, conversion rates, or review counts obtained.",
+    "Nothing here is a completed transaction; verified revenue remains $0."
+  ]
+}

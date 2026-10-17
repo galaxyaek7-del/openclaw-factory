@@ -1,0 +1,57 @@
+{
+  "product": "B12-001",
+  "activation_date": "2026-10-16",
+  "platform": "Gumroad",
+  "status": "PREPARING",
+
+  "steps": {
+    "step_1_audit": {
+      "status": "COMPLETE",
+      "owner": "OpenCode",
+      "output": "reports/B12-001/product_audit.json"
+    },
+    "step_2_content": {
+      "status": "COMPLETE",
+      "owner": "OpenCode",
+      "output": "reports/B12-001/listing_content.md"
+    },
+    "step_3_review": {
+      "status": "PENDING_FOUNDER",
+      "owner": "Founder",
+      "action": "Review and approve content"
+    },
+    "step_4_create_draft": {
+      "status": "PENDING_FOUNDER",
+      "owner": "Founder",
+      "action": "Create DRAFT listing on Gumroad",
+      "note": "DO NOT PUBLISH YET"
+    },
+    "step_5_qa": {
+      "status": "PENDING",
+      "owner": "OpenCode + Founder",
+      "action": "Review draft listing together"
+    },
+    "step_6_publish": {
+      "status": "PENDING_FOUNDER_APPROVAL",
+      "owner": "Founder",
+      "trigger": "Explicit approval message",
+      "gate": "FOUNDER_PUBLISH_GATE"
+    }
+  },
+
+  "revenue_tracking": {
+    "first_sale_target": "PENDING_LISTING",
+    "price": 29,
+    "real_revenue": 0,
+    "real_sales": 0,
+    "REAL_TREASURY": 0,
+    "measurement_source": "gumroad_dashboard"
+  },
+
+  "governance": {
+    "FACTORY_LIVE_PUBLISH": false,
+    "manual_publish_only": true,
+    "no_auto_publish": true,
+    "founder_gate_required": true
+  }
+}

@@ -25,7 +25,7 @@ Button names below are approximate; they were not checked against today's Gumroa
 
 - **Live listing marked unavailable:** [Unavailable] AI Workflow QA & Stress Test - one agent, reviewed before you demo it to a c… (`IW58tjt2zS14fPYrWZOuxg==`). Its own title says it is unavailable, but it is still published. Unpublish it or restore it.
 - **Same title live twice:** "The 5-Minute Context Reset Playbook". Two published listings share this name. Both have covers, told apart by the id suffix in the filename. Consider unpublishing one.
-- **ADA Demand-Letter Response & Triage Kit:** the delivered PDF has a real defect on page 1. The title's second line is printed over the subtitle (found by `file_testing_engine`, confirmed by rendering the page). Fix the PDF before promoting this listing.
+- **ADA Demand-Letter Response & Triage Kit:** the delivered PDF had its title printed over the subtitle on page 1. It is repaired locally (the FTC and Restaurant kits had the same defect and are repaired too). Re-upload the files listed in `reports/cleanup/PDF_REPLACEMENTS.md`.
 
 ## Files
 
