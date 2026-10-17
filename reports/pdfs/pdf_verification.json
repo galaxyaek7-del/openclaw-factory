@@ -1,0 +1,73 @@
+{
+  "verified_date": "2026-10-17",
+  "method": "file_testing_engine (text overlap) + overlap detector of scripts/fix_pdf_title_overlap.py + page-1 render",
+  "pdfs": [
+    {
+      "name": "ADA Demand-Letter Response & Triage Kit",
+      "path": "books/ada_demand_response_kit.pdf",
+      "gumroad_listing": "https://aekraft.gumroad.com/l/palmdr",
+      "pages": 3,
+      "sha256": "878fc65362358c90d494984cd6f283ce760fd0d1c2fa74c12ad0182090f7ab09",
+      "title_subtitle_clean": true,
+      "file_test_before": {
+        "status": "FAIL",
+        "problems": [
+          "text overlap p1: 'ADA Demand-Letter Response &' printed over 'Triage Kit'"
+        ]
+      },
+      "file_test_after": {
+        "status": "PASS",
+        "problems": []
+      },
+      "title_lines_after": 1,
+      "page1_preview": "Practical first-response guide. Not legal advice, not a law firm, not a remediation service. Lawsuit counts, settlement ranges, and enforcement posture below reflect published sources checked September 2026 — verify current law with qualified counsel in your state. This kit organizes your first mont",
+      "original_kept_at": "books/_pre_title_fix_2026-10-17/ada_demand_response_kit.pdf",
+      "ready_for_upload": true
+    },
+    {
+      "name": "FTC Consumer Review Rule Compliance Kit",
+      "path": "books/ftc_review_rule_compliance_kit.pdf",
+      "gumroad_listing": "https://aekraft.gumroad.com/l/ekhza",
+      "pages": 5,
+      "sha256": "0130b51a6fa71da9c035047546f6d7ae51b87b37d21ea7d9341a213ddb954eb3",
+      "title_subtitle_clean": true,
+      "file_test_before": {
+        "status": "FAIL",
+        "problems": [
+          "text overlap p1: 'FTC Consumer Review Rule' printed over 'Compliance Kit'"
+        ]
+      },
+      "file_test_after": {
+        "status": "PASS",
+        "problems": []
+      },
+      "title_lines_after": 1,
+      "page1_preview": "Practical compliance guide. Not legal advice. Covers the FTC Trade Regulation Rule on the Use of Consumer Reviews and Testimonials (16 CFR Part 465), fully effective October 21, 2024. Penalties, cases, and FTC positions below reflect published sources checked September 2026 — verify current FTC guid",
+      "original_kept_at": "books/_pre_title_fix_2026-10-17/ftc_review_rule_compliance_kit.pdf",
+      "ready_for_upload": true
+    },
+    {
+      "name": "Restaurant Health Inspection Readiness Kit",
+      "path": "books/restaurant_inspection_readiness_kit.pdf",
+      "gumroad_listing": "https://aekraft.gumroad.com/l/dvfvm",
+      "pages": 4,
+      "sha256": "c30290323b36d6a6bf2c1afd5a0b3266324e64af1f89802d71804ed2ec204525",
+      "title_subtitle_clean": true,
+      "file_test_before": {
+        "status": "FAIL",
+        "problems": [
+          "text overlap p1: 'Restaurant Health Inspection' printed over 'Readiness Kit'"
+        ]
+      },
+      "file_test_after": {
+        "status": "PASS",
+        "problems": []
+      },
+      "title_lines_after": 1,
+      "page1_preview": "Practical operations guide. Not legal advice and not a substitute for your local health code. Inspection systems differ by state and county (scoring, grades, and fine schedules vary) — verify your jurisdiction's current code alongside this kit. Built from published inspector checklists and real 2025",
+      "original_kept_at": "books/_pre_title_fix_2026-10-17/restaurant_inspection_readiness_kit.pdf",
+      "ready_for_upload": true
+    }
+  ],
+  "founder_action": "Replace the file on each Gumroad listing with the path above; then download it from Gumroad and check page 1."
+}

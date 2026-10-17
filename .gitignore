@@ -135,10 +135,9 @@ data/security/kill_state.json
 # rules. The repo is public; keep it local (2026-10-17).
 data/security/n8n_lockdown_report.json
 
-# Master Sprint 2026-10-17: regenerable outputs. The 1280x720 listing covers
-# (scripts/generate_listing_covers.py) are uploaded from local disk by the
-# founder; per-product inspection reports are summarised in committed
-# reports (reports/quality/full_audit_76.json, reports/covers/cover_audit.json).
-reports/covers/gumroad/
+# Master Sprint 2026-10-17: per-product inspection reports are summarised in
+# committed reports (reports/quality/full_audit_76.json, B12-001 checklists).
+# The 1280x720 listing covers in reports/covers/gumroad/ ARE committed
+# (founder decision, 2026-10-17).
 reports/quality/inspections/
 reports/B12-001/inspections/
