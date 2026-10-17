@@ -1,0 +1,84 @@
+{
+  "audit_date": "2026-10-17",
+  "method": "git grep for gate names across tracked .py/.js, then traced which the real path imports (decision_engine/engine.py -> book_generator.py -> distributor.py -> orchestrator/engines/production.py). Full detail: reports/quality/existing_gates_audit.json",
+  "layers_found": [
+    {
+      "name": "profit_oracle.ladder_opportunity_score",
+      "file": "profit_oracle.py (via decision_engine/engine.py:98)",
+      "status": "ACTIVE",
+      "actually_blocks_products": true,
+      "evidence": "Nine hard gates incl. Proof of Payment (ADR-121). A niche is ACCEPTED only if it passes; otherwise DEFERRED/REJECTED."
+    },
+    {
+      "name": "book_generator pre-generation checks (niche / competition)",
+      "file": "book_generator.py (~2395)",
+      "status": "ACTIVE",
+      "actually_blocks_products": true,
+      "evidence": "Returns passed=False; callers must not generate."
+    },
+    {
+      "name": "inspectors.final_inspection (Dual Inspection)",
+      "file": "inspectors.py (via book_generator.py ~2504)",
+      "status": "ACTIVE",
+      "actually_blocks_products": true,
+      "evidence": "Cleared to publish only if both inspectors approve; missing inspectors -> fails closed; failures go to QUARANTINE.md."
+    },
+    {
+      "name": "file_testing_engine.blocking_problems",
+      "file": "file_testing_engine.py (via distributor.py ~144-155)",
+      "status": "ACTIVE",
+      "actually_blocks_products": true,
+      "evidence": "Opens the real delivered file before a real publish and blocks on certain defects."
+    },
+    {
+      "name": "channels/write_gate",
+      "file": "channels/write_gate.py",
+      "status": "ACTIVE",
+      "actually_blocks_products": true,
+      "evidence": "Fails closed unless live flag/scope + VERIFIED fresh auth state (guards Gumroad writes)."
+    },
+    {
+      "name": "quality_enforcer (Core Value + Content Quality + Market Reality)",
+      "file": "src/quality/quality_enforcer.py",
+      "status": "ACTIVE",
+      "actually_blocks_products": true,
+      "evidence": "Built + wired this sprint in orchestrator/engines/production.py::_pre_production_gate (Master Sprint A4). Layers 1+3 run before any generation; anything but APPROVED raises QualityGateBlocked. No override. Reuses file_testing_engine + market_evidence."
+    },
+    {
+      "name": "quality_gate_policy.quality_gate_allowed (central publish gate)",
+      "file": "quality_gate_policy.py (via distributor.py ~302-311)",
+      "status": "BYPASSED",
+      "actually_blocks_products": false,
+      "evidence": "BLOCKS when consulted, but is consulted ONLY if the caller passes quality_gate / gate2_ledger_path / quality_evidence_path; the default real-publish path skips it."
+    },
+    {
+      "name": "executive_quality_gate (REJECT_IF_FAIL checks)",
+      "file": "executive_quality_gate.py",
+      "status": "INACTIVE",
+      "actually_blocks_products": false,
+      "evidence": "Used by reporting modules (brand_dna, commercial_readiness, digital_twin); not imported by the decision, production or publish path."
+    },
+    {
+      "name": "product_readiness_score / launch_readiness",
+      "file": "launch_readiness.py",
+      "status": "INACTIVE",
+      "actually_blocks_products": false,
+      "evidence": "Used by dashboards and reports only."
+    }
+  ],
+  "layers_active_count": 6,
+  "layers_inactive_count": 2,
+  "layers_bypassed_count": 1,
+  "verdict": "PARTIALLY_WORKING_THEN_IMPROVED",
+  "verdict_note": "Real blocking gates already existed at decision, production and file level; the per-product Core Value / Content Quality / Market Reality checks did not, and the central publish gate was opt-in. This sprint added quality_enforcer (layers 1+3 wired pre-production) and dynamic_pricer; the central publish gate remains opt-in (a disclosed, unfixed gap).",
+  "gaps_closed": [
+    "Per-product Core Value check before production (quality_enforcer layer 1).",
+    "Per-product Content Quality check tied to price (layer 2), spreadsheet-aware.",
+    "Per-product Market Reality check (layer 3) requiring sourced proof-of-payment / priced competitors.",
+    "Dynamic pricing with a 60% margin floor and 10%-below-cheapest-sourced-competitor rule (dynamic_pricer)."
+  ],
+  "gaps_remaining": [
+    "quality_gate_policy central publish gate is still opt-in on the default real-publish path.",
+    "No sourced competitor prices exist in the factory today, so Market Reality reports BLOCKED_MISSING_DATA for every current product."
+  ]
+}

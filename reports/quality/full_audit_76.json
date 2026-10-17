@@ -1,0 +1,2081 @@
+{
+  "generated_at": "2026-10-17T11:30:09+00:00",
+  "source": "Gumroad list_products (read-only GET) + cycle88 file map + catalog.json facts",
+  "audited": 76,
+  "by_verdict": {
+    "BLOCKED_MISSING_DATA": 76
+  },
+  "layer_coverage": {
+    "core_value_scored": 11,
+    "content_quality_scored": 52,
+    "market_reality_scored": 0
+  },
+  "content_quality": {
+    "passed": 5,
+    "failed": 47,
+    "no_local_file": 24,
+    "depth_insufficient": 47,
+    "depth_insufficient_medium_confidence_match": 33,
+    "files_failing_existing_file_tester": []
+  },
+  "limits": [
+    "Layer 2 judges the LOCAL file Cycle 88 matched to each listing. The Gumroad API exposes no download of the delivered file, so a bundle listing may deliver more than the matched file.",
+    "Depth rule: words >= price x 100 for text formats (founder directive). Spreadsheets: >= 2 sheets and >= 5 formulas."
+  ],
+  "note": "APPROVED requires every layer. Layer 3 needs sourced competitor prices or recorded proof of payment; none exist for these listings, so no listing can be APPROVED today. That is a data gap, reported as BLOCKED_MISSING_DATA, not a judgement of the product.",
+  "rows": [
+    {
+      "product_id": "nLl2DJc7VcPu0aeD_CnHAA==",
+      "title": "ADA Demand-Letter Response & Triage Kit",
+      "price_usd": 69.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": 75,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 1258,
+        "words_required": 6900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\ada_demand_response_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 2,
+      "match_confidence": "LOW",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\nLl2DJc7VcPu0aeD_CnHAA__full_20261017T113002124257.json"
+    },
+    {
+      "product_id": "Ag3pKi2eN5fiGQDmJ-fLxA==",
+      "title": "AI Agent Blueprint for Small SaaS CloudOps Automation",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 1665,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\ai_agent_blueprint_for_saas_cloudops_automation.pdf",
+      "local_file_present": true,
+      "match_overlap": 5,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\Ag3pKi2eN5fiGQDmJ-fLxA__full_20261017T112956904845.json"
+    },
+    {
+      "product_id": "ylqF8rzW698iKeOuKFWQkw==",
+      "title": "Amazon FBA Reconciliation Workbook",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 340,
+        "words_required": 4900,
+        "text_depth_ok": false
+      },
+      "local_file": "factory_workspace/sprint14\\amazon_fba_reconciliation_workbook.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\ylqF8rzW698iKeOuKFWQkw__full_20261017T113001652453.json"
+    },
+    {
+      "product_id": "8uWrIqx8uhc8LMIkLEeKkA==",
+      "title": "B2B Late-Payment Collections Operating System",
+      "price_usd": 59.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 755,
+        "words_required": 5900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\gcc_contractor_payment_command_system.pdf",
+      "local_file_present": true,
+      "match_overlap": 2,
+      "match_confidence": "LOW",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\8uWrIqx8uhc8LMIkLEeKkA__full_20261017T112954585340.json"
+    },
+    {
+      "product_id": "LInf08ypx6myskvOgd8ryQ==",
+      "title": "Battery & WEEE Mini-Guide for Sellers",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 267,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "factory_workspace/sprint14\\battery_weee_miniguide.pdf",
+      "local_file_present": true,
+      "match_overlap": 2,
+      "match_confidence": "LOW",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\LInf08ypx6myskvOgd8ryQ__full_20261017T113001110970.json"
+    },
+    {
+      "product_id": "K5oIlu_UgDH0k1NXKP4fHw==",
+      "title": "Clinic No-Show Reduction Kit",
+      "price_usd": 59.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 229,
+        "words_required": 5900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\clinic_noshow_reduction_guide.pdf",
+      "local_file_present": true,
+      "match_overlap": 2,
+      "match_confidence": "LOW",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\K5oIlu_UgDH0k1NXKP4fHw__full_20261017T112954388223.json"
+    },
+    {
+      "product_id": "f3MRQnVlf3F2w_7n5LfBhw==",
+      "title": "Digital-Product Refund Policy Pack",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 269,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "factory_workspace/sprint14\\digital_refund_policy_pack.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\f3MRQnVlf3F2w_7n5LfBhw__full_20261017T113000894304.json"
+    },
+    {
+      "product_id": "f542PZ92SUPOjV9F5GJh-Q==",
+      "title": "Diminished Value Claim Kit",
+      "price_usd": 59.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": 75,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 1283,
+        "words_required": 5900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\diminished_value_claim_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\f542PZ92SUPOjV9F5GJh-Q__full_20261017T113002442914.json"
+    },
+    {
+      "product_id": "WP6Vb-qltKfYXQ1KAb0Tog==",
+      "title": "EU AI Act Audit Logging Kit",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 2356,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\eu_ai_act_audit_logging_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 2,
+      "match_confidence": "LOW",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\WP6Vb-qltKfYXQ1KAb0Tog__full_20261017T112955831607.json"
+    },
+    {
+      "product_id": "tGGL1mqB2bp7uZ6k2THgwA==",
+      "title": "EU AI Act Compliance Quickstart Checklist",
+      "price_usd": 19.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 290,
+        "words_required": 1900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\eu_ai_act_compliance_quickstart_checklist.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\tGGL1mqB2bp7uZ6k2THgwA__full_20261017T113007061953.json"
+    },
+    {
+      "product_id": "pzTmMb4v8cih3nbWTj5TeA==",
+      "title": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
+      "price_usd": 155.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": 60,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 3134,
+        "words_required": 15500,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\eu_ai_act_compliance_toolkit.pdf",
+      "local_file_present": true,
+      "match_overlap": 2,
+      "match_confidence": "LOW",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\pzTmMb4v8cih3nbWTj5TeA__full_20261017T113009248852.json"
+    },
+    {
+      "product_id": "AnZqjZBFNvMdpV0bto7jDw==",
+      "title": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+      "price_usd": 9.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 285,
+        "words_required": 900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\eu_ai_act_transparency_literacy_checklist.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\AnZqjZBFNvMdpV0bto7jDw__full_20261017T113007143542.json"
+    },
+    {
+      "product_id": "GVqbXZ0k0Vfn7fhm2AEQXA==",
+      "title": "EU Cosmetics Responsible Person Guide",
+      "price_usd": 69.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 426,
+        "words_required": 6900,
+        "text_depth_ok": false
+      },
+      "local_file": "factory_workspace/sprint14\\eu_cosmetics_responsible_person_guide.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\GVqbXZ0k0Vfn7fhm2AEQXA__full_20261017T113001423166.json"
+    },
+    {
+      "product_id": "8Vlc3zY6AkxU4DCe7IRVDA==",
+      "title": "EU Late Payment Recovery Kit",
+      "price_usd": 59.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 406,
+        "words_required": 5900,
+        "text_depth_ok": false
+      },
+      "local_file": "factory_workspace/sprint14\\eu_late_payment_recovery_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\8Vlc3zY6AkxU4DCe7IRVDA__full_20261017T113001779381.json"
+    },
+    {
+      "product_id": "8JM3qFgUuQznesYdiQFNXw==",
+      "title": "EU Packaging EPR Action Kit",
+      "price_usd": 69.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": 100,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 1581,
+        "words_required": 6900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\epr_packaging_action_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 2,
+      "match_confidence": "LOW",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\8JM3qFgUuQznesYdiQFNXw__full_20261017T113002750100.json"
+    },
+    {
+      "product_id": "qxjGLQkyK0CQ3WVuLc-7Kg==",
+      "title": "EUDR Due Diligence Starter",
+      "price_usd": 69.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 334,
+        "words_required": 6900,
+        "text_depth_ok": false
+      },
+      "local_file": "factory_workspace/sprint14\\eudr_due_diligence_starter.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\qxjGLQkyK0CQ3WVuLc-7Kg__full_20261017T112954135964.json"
+    },
+    {
+      "product_id": "ZFXJttaaGoJvEE10JOXbWg==",
+      "title": "Etsy Ads ROI Playbook + Calculator",
+      "price_usd": 39.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 313,
+        "words_required": 3900,
+        "text_depth_ok": false
+      },
+      "local_file": "factory_workspace/sprint14\\etsy_ads_roi_playbook.pdf",
+      "local_file_present": true,
+      "match_overlap": 2,
+      "match_confidence": "LOW",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\ZFXJttaaGoJvEE10JOXbWg__full_20261017T113001529666.json"
+    },
+    {
+      "product_id": "mvuoJTNLfsWsm0NF-CrZHw==",
+      "title": "Etsy Suspension Appeal Kit",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 2703,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\etsy_suspension_appeal_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\mvuoJTNLfsWsm0NF-CrZHw__full_20261017T113000203094.json"
+    },
+    {
+      "product_id": "LzOV85deBGdLgNZmvpvYGw==",
+      "title": "Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)",
+      "price_usd": 79.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 2703,
+        "words_required": 7900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\etsy_suspension_appeal_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\LzOV85deBGdLgNZmvpvYGw__full_20261017T112953162466.json"
+    },
+    {
+      "product_id": "OiBdFFTaLaZdDX52HxwezQ==",
+      "title": "FTC Consumer Review Rule Compliance Kit",
+      "price_usd": 69.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": 75,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 1733,
+        "words_required": 6900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\ftc_review_rule_compliance_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\OiBdFFTaLaZdDX52HxwezQ__full_20261017T113004316744.json"
+    },
+    {
+      "product_id": "T8OiOrVH1ficDv1bN3ksfg==",
+      "title": "Freelancer Scope-Creep Contract Kit",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 262,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "factory_workspace/sprint14\\freelancer_scope_creep_contract_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 4,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\T8OiOrVH1ficDv1bN3ksfg__full_20261017T113001040855.json"
+    },
+    {
+      "product_id": "_wJUrEKIuR0Y6cOj9Zqyqg==",
+      "title": "GCC Contractor Payment Command System",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 755,
+        "words_required": 4900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\gcc_contractor_payment_command_system.pdf",
+      "local_file_present": true,
+      "match_overlap": 4,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\_wJUrEKIuR0Y6cOj9Zqyqg__full_20261017T113006823665.json"
+    },
+    {
+      "product_id": "yrSExa-YQe4fjWuIKV4vmQ==",
+      "title": "GCC Contractor Payment Command System (V2 Bundle)",
+      "price_usd": 399.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 755,
+        "words_required": 39900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\gcc_contractor_payment_command_system.pdf",
+      "local_file_present": true,
+      "match_overlap": 4,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\yrSExa-YQe4fjWuIKV4vmQ__full_20261017T113006643488.json"
+    },
+    {
+      "product_id": "8gFbi-vE0ceqFacn3i3eMA==",
+      "title": "Gulf Job-Landing ATS CV System",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 538,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\gulf_job_landing_ats_cv_system.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\8gFbi-vE0ceqFacn3i3eMA__full_20261017T113006453840.json"
+    },
+    {
+      "product_id": "hQgyFvb26l7vadCGhTHF9Q==",
+      "title": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 146,
+        "words_required": 4900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\landlord_rent_arrears_action_guide.pdf",
+      "local_file_present": true,
+      "match_overlap": 2,
+      "match_confidence": "LOW",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\hQgyFvb26l7vadCGhTHF9Q__full_20261017T112954182753.json"
+    },
+    {
+      "product_id": "y4nX4cwydsCtWdxBA6uXJw==",
+      "title": "Legal Case Research Automation for Solo Attorneys",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 1003,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\legal_case_research_automation_playbook.pdf",
+      "local_file_present": true,
+      "match_overlap": 4,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\y4nX4cwydsCtWdxBA6uXJw__full_20261017T112956009804.json"
+    },
+    {
+      "product_id": "M55I0tATHuFRNHia1tiiAg==",
+      "title": "Restaurant Food Cost Control Kit",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 129,
+        "words_required": 4900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\restaurant_food_waste_tracking_guide.pdf",
+      "local_file_present": true,
+      "match_overlap": 2,
+      "match_confidence": "LOW",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\M55I0tATHuFRNHia1tiiAg__full_20261017T112954034864.json"
+    },
+    {
+      "product_id": "T41QMtEfZcuDKa7tGtnvgw==",
+      "title": "Restaurant Health Inspection Readiness Kit",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": 100,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 1471,
+        "words_required": 4900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\restaurant_inspection_readiness_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\T41QMtEfZcuDKa7tGtnvgw__full_20261017T113004719825.json"
+    },
+    {
+      "product_id": "iPqoAaWMnZCWf8AvYusjxw==",
+      "title": "STR Direct Booking Revenue Kit",
+      "price_usd": 59.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": 100,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 1476,
+        "words_required": 5900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\str_direct_booking_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 2,
+      "match_confidence": "LOW",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\iPqoAaWMnZCWf8AvYusjxw__full_20261017T113003416036.json"
+    },
+    {
+      "product_id": "lac1TzWQPrNs1vdysJA0dA==",
+      "title": "SaaS Churn Email Pack",
+      "price_usd": 39.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 268,
+        "words_required": 3900,
+        "text_depth_ok": false
+      },
+      "local_file": "factory_workspace/sprint14\\saas_churn_email_pack.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\lac1TzWQPrNs1vdysJA0dA__full_20261017T113000981753.json"
+    },
+    {
+      "product_id": "0uieIt-Pn09q9Xz-Hp1DEQ==",
+      "title": "Security Deposit Demand Kit for Tenants",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": false,
+        "no_mojibake": true,
+        "instructions_present": true
+      },
+      "depth": {
+        "words": 2516,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\security_deposit_demand_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\0uieIt-Pn09q9Xz-Hp1DEQ__full_20261017T112958176582.json"
+    },
+    {
+      "product_id": "D4JC45lly7EjsY-CO5FKyQ==",
+      "title": "Severance Agreement Review Checklist",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 2632,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\severance_agreement_review_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\D4JC45lly7EjsY-CO5FKyQ__full_20261017T112957586025.json"
+    },
+    {
+      "product_id": "F3Q5fUqOCxy3n7k6eVTWqw==",
+      "title": "Stripe Chargeback Defense Kit for Digital Sellers",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": false,
+        "no_mojibake": true,
+        "instructions_present": true
+      },
+      "depth": {
+        "words": 2565,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\stripe_chargeback_defense_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\F3Q5fUqOCxy3n7k6eVTWqw__full_20261017T112959500905.json"
+    },
+    {
+      "product_id": "66fo53TSmA6Lu5cycxuHxQ==",
+      "title": "Suspended Seller First-Appeal POA System",
+      "price_usd": 39.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 587,
+        "words_required": 3900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\suspended_seller_first_appeal_poa_system.pdf",
+      "local_file_present": true,
+      "match_overlap": 5,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\66fo53TSmA6Lu5cycxuHxQ__full_20261017T113006293388.json"
+    },
+    {
+      "product_id": "jIkPBKpLVF7Hk7_DCgMxcA==",
+      "title": "Toy Safety File Starter (EN 71 Lens)",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 369,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "factory_workspace/sprint14\\toy_safety_file_starter.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\jIkPBKpLVF7Hk7_DCgMxcA__full_20261017T113001290038.json"
+    },
+    {
+      "product_id": "KMNGNgO5gS85H_JppnygIg==",
+      "title": "Trademark DIY Filing Action Kit",
+      "price_usd": 69.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": 100,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 1727,
+        "words_required": 6900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\trademark_diy_filing_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 2,
+      "match_confidence": "LOW",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\KMNGNgO5gS85H_JppnygIg__full_20261017T113003800921.json"
+    },
+    {
+      "product_id": "srd6CIjZc381be9FhiyHeA==",
+      "title": "Turo Guest Dispute Toolkit",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": 75,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 2777,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\turo_guest_dispute_toolkit.pdf",
+      "local_file_present": true,
+      "match_overlap": 4,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\srd6CIjZc381be9FhiyHeA__full_20261017T113005318344.json"
+    },
+    {
+      "product_id": "J6ir7vCGTHsS-J4E_a_Lqg==",
+      "title": "Vendor Questionnaire Response Kit",
+      "price_usd": 89.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": 75,
+      "content_quality": 50,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 1552,
+        "words_required": 8900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\vendor_questionnaire_response_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\J6ir7vCGTHsS-J4E_a_Lqg__full_20261017T113003125472.json"
+    },
+    {
+      "product_id": "dyZ5uSfqjjN91f_1Ir0t6w==",
+      "title": "CCPA Compliance Action Kit for Small Business",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 60,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": true
+      },
+      "depth": {
+        "words": 2498,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\ccpa_compliance_action_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\dyZ5uSfqjjN91f_1Ir0t6w__full_20261017T113000826437.json"
+    },
+    {
+      "product_id": "P5k2ptcnUohhKUir5Aq5hg==",
+      "title": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 60,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": true
+      },
+      "depth": {
+        "words": 1109,
+        "words_required": 4900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\etsy_policy_triage.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\P5k2ptcnUohhKUir5Aq5hg__full_20261017T112953459416.json"
+    },
+    {
+      "product_id": "tHvtBhoJC0KJMPhQippBBA==",
+      "title": "Food-Contact Materials Starter",
+      "price_usd": 39.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 60,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": true
+      },
+      "depth": {
+        "words": 282,
+        "words_required": 3900,
+        "text_depth_ok": false
+      },
+      "local_file": "factory_workspace/sprint14\\food_contact_materials_starter.pdf",
+      "local_file_present": true,
+      "match_overlap": 4,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\tHvtBhoJC0KJMPhQippBBA__full_20261017T113001189653.json"
+    },
+    {
+      "product_id": "YW18CUcSrghFoNioG8hFGA==",
+      "title": "Freelancer Payment Protection & Scope-Control Toolkit",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 60,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": true
+      },
+      "depth": {
+        "words": 746,
+        "words_required": 4900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\freelancer_payment_protection_scope_control_toolkit.pdf",
+      "local_file_present": true,
+      "match_overlap": 6,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\YW18CUcSrghFoNioG8hFGA__full_20261017T113006966742.json"
+    },
+    {
+      "product_id": "NHlV8fguLAZLwpkRi5KyIA==",
+      "title": "Freelancer Scope Control Kit",
+      "price_usd": 19.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 60,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": true
+      },
+      "depth": {
+        "words": 746,
+        "words_required": 1900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\freelancer_payment_protection_scope_control_toolkit.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\NHlV8fguLAZLwpkRi5KyIA__full_20261017T112954339779.json"
+    },
+    {
+      "product_id": "VPYaNkAdv7Yocko-lIJsZQ==",
+      "title": "GPSR EU Seller Action Kit",
+      "price_usd": 79.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": 100,
+      "content_quality": 60,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": true
+      },
+      "depth": {
+        "words": 2643,
+        "words_required": 7900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\gpsr_eu_seller_action_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\VPYaNkAdv7Yocko-lIJsZQ__full_20261017T113006010427.json"
+    },
+    {
+      "product_id": "mx6XSGrElB5b-NLSHfEryg==",
+      "title": "Mechanics Lien Filing Kit for Contractors",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 60,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": true
+      },
+      "depth": {
+        "words": 2704,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\mechanics_lien_filing_kit.pdf",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\mx6XSGrElB5b-NLSHfEryg__full_20261017T112958851340.json"
+    },
+    {
+      "product_id": "M5AZWbcXPFKzvgnzcrDqCg==",
+      "title": "SOC 2 Compliance Automation Guide for Startups",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 60,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": true
+      },
+      "depth": {
+        "words": 1133,
+        "words_required": 2900,
+        "text_depth_ok": false
+      },
+      "local_file": "books\\ai_compliance_automation_for_accounting_firms_v2.pdf",
+      "local_file_present": true,
+      "match_overlap": 2,
+      "match_confidence": "LOW",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\M5AZWbcXPFKzvgnzcrDqCg__full_20261017T112956390352.json"
+    },
+    {
+      "product_id": "FbwR2Vq8XY2ZjbZ-JmQHrg==",
+      "title": "Section 8 Notice Validity System (England)",
+      "price_usd": 59.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 60,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": false,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": true
+      },
+      "depth": {
+        "sheets": 6,
+        "formulas": 4,
+        "sheet_depth_ok": false
+      },
+      "local_file": "books\\section8_notice_validity_workbook.xlsx",
+      "local_file_present": true,
+      "match_overlap": 2,
+      "match_confidence": "LOW",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\FbwR2Vq8XY2ZjbZ-JmQHrg__full_20261017T113006132839.json"
+    },
+    {
+      "product_id": "_H7FbvlTPITBmT0V6lyPeg==",
+      "title": "Mindfulness Journal for Stress Relief",
+      "price_usd": 7.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 90,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": true,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 3044,
+        "words_required": 700,
+        "text_depth_ok": true
+      },
+      "local_file": "books\\mindfulness_journal_for_stress_relief.pdf",
+      "local_file_present": true,
+      "match_overlap": 4,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\_H7FbvlTPITBmT0V6lyPeg__full_20261017T113007963922.json"
+    },
+    {
+      "product_id": "rMOopS7Q7LHxwaPTY462uw==",
+      "title": "The 5-Minute Context Reset Playbook",
+      "price_usd": 15.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 90,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": true,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 1625,
+        "words_required": 1500,
+        "text_depth_ok": true
+      },
+      "local_file": "books\\five_minute_context_reset_playbook.pdf",
+      "local_file_present": true,
+      "match_overlap": 4,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\rMOopS7Q7LHxwaPTY462uw__full_20261017T112953972412.json"
+    },
+    {
+      "product_id": "9Zq9SGkALI0tjd7A97Pc_A==",
+      "title": "The 5-Minute Context Reset Playbook",
+      "price_usd": 15.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 90,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": true,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": false
+      },
+      "depth": {
+        "words": 1625,
+        "words_required": 1500,
+        "text_depth_ok": true
+      },
+      "local_file": "books\\five_minute_context_reset_playbook.pdf",
+      "local_file_present": true,
+      "match_overlap": 4,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\9Zq9SGkALI0tjd7A97Pc_A__full_20261017T113008482666.json"
+    },
+    {
+      "product_id": "N9TrQZXO5NMMk8otX5g7Zg==",
+      "title": "Home-Service Quoting & Deposit Protection System",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 100,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": true,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": true
+      },
+      "depth": {
+        "sheets": 6,
+        "formulas": 10,
+        "sheet_depth_ok": true
+      },
+      "local_file": "books\\home_service_review_response_system.xlsx",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\N9TrQZXO5NMMk8otX5g7Zg__full_20261017T112955232102.json"
+    },
+    {
+      "product_id": "A1LlQxtJJkdWbhrWG8tyww==",
+      "title": "UK Deposit Recovery Action Pack",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": 100,
+      "market_reality": null,
+      "content_checks": {
+        "files_open_cleanly": true,
+        "depth_sufficient": true,
+        "no_placeholders": true,
+        "no_mojibake": true,
+        "instructions_present": true
+      },
+      "depth": {
+        "sheets": 4,
+        "formulas": 11,
+        "sheet_depth_ok": true
+      },
+      "local_file": "books\\uk_deposit_recovery_action_pack.xlsx",
+      "local_file_present": true,
+      "match_overlap": 3,
+      "match_confidence": "MEDIUM",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\A1LlQxtJJkdWbhrWG8tyww__full_20261017T113006065481.json"
+    },
+    {
+      "product_id": "iTLlmVaVTM5rbXDn7vPyjg==",
+      "title": "Commercial Lease CAM & Operating-Expense Audit Kit",
+      "price_usd": 59.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\iTLlmVaVTM5rbXDn7vPyjg__full_20261017T112954594406.json"
+    },
+    {
+      "product_id": "to7fbH3OvYu68ggvK9bGGg==",
+      "title": "Cottage Food Compliance Kit",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\to7fbH3OvYu68ggvK9bGGg__full_20261017T112953978478.json"
+    },
+    {
+      "product_id": "x5Cf-OfCwDvtC-nNlFe6BQ==",
+      "title": "Creator Brand-Deal Management System",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\x5Cf-OfCwDvtC-nNlFe6BQ__full_20261017T112954589715.json"
+    },
+    {
+      "product_id": "68zZcBRo9nevkZGYP5lTDg==",
+      "title": "DSAR Response Kit ($59)",
+      "price_usd": 59.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\68zZcBRo9nevkZGYP5lTDg__full_20261017T112954184756.json"
+    },
+    {
+      "product_id": "MzZhoK8Uu-GEYHChAXcvdA==",
+      "title": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+      "price_usd": 59.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\MzZhoK8Uu-GEYHChAXcvdA__full_20261017T112954140692.json"
+    },
+    {
+      "product_id": "iJOXxUlufzNyZFndUreFHA==",
+      "title": "Dental Insurance Verification Kit",
+      "price_usd": 59.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\iJOXxUlufzNyZFndUreFHA__full_20261017T112953983505.json"
+    },
+    {
+      "product_id": "C4xKqsgTA37Zd-rysSqmeQ==",
+      "title": "EU Green Claims Review Kit",
+      "price_usd": 69.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\C4xKqsgTA37Zd-rysSqmeQ__full_20261017T112954037070.json"
+    },
+    {
+      "product_id": "nwqwR1RJ8rJlZqZE-vj4pw==",
+      "title": "Employee Offboarding & Access-Revocation System",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\nwqwR1RJ8rJlZqZE-vj4pw__full_20261017T112954408467.json"
+    },
+    {
+      "product_id": "Opfzi3JcKHx-hiwJT3tHrA==",
+      "title": "Fleet Maintenance and Damage Documentation Bundle",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\Opfzi3JcKHx-hiwJT3tHrA__full_20261017T112953988949.json"
+    },
+    {
+      "product_id": "bBfEKkiaOp-HZcfQaGdIIw==",
+      "title": "Food Truck Permit Navigator",
+      "price_usd": 59.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\bBfEKkiaOp-HZcfQaGdIIw__full_20261017T112954137778.json"
+    },
+    {
+      "product_id": "3B99PVyD77qKqh0cAPcsDA==",
+      "title": "Handbook Acknowledgment Tracker",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\3B99PVyD77qKqh0cAPcsDA__full_20261017T112954139272.json"
+    },
+    {
+      "product_id": "uUo9QfyfAyqf8-nZb9G7Og==",
+      "title": "Homebuyer Inspection Action Kit",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\uUo9QfyfAyqf8-nZb9G7Og__full_20261017T112953981207.json"
+    },
+    {
+      "product_id": "Mk8k3QvpcL5Hf6ll_8CcAg==",
+      "title": "Landlord Move-In Inspection Pack",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\Mk8k3QvpcL5Hf6ll_8CcAg__full_20261017T112953976082.json"
+    },
+    {
+      "product_id": "KzZbStETfJeJsc-O3cQjsA==",
+      "title": "Newsletter Deliverability & Inbox Placement System",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\KzZbStETfJeJsc-O3cQjsA__full_20261017T112954406326.json"
+    },
+    {
+      "product_id": "F0aW62vvcQcU8CzRDhiFIQ==",
+      "title": "PCI SAQ Readiness Kit for Small Merchants",
+      "price_usd": 59.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\F0aW62vvcQcU8CzRDhiFIQ__full_20261017T112954390103.json"
+    },
+    {
+      "product_id": "2NIVAf0Nu4SE2DgAL9buYw==",
+      "title": "Real Estate Transaction Deadline Kit",
+      "price_usd": 29.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\2NIVAf0Nu4SE2DgAL9buYw__full_20261017T112953986861.json"
+    },
+    {
+      "product_id": "sjnnlSPbFj44VCYoJpXxPw==",
+      "title": "SaaS Spend & Renewal Audit System for Small Teams",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\sjnnlSPbFj44VCYoJpXxPw__full_20261017T112954587990.json"
+    },
+    {
+      "product_id": "h9G-1Ec29FPRtsDc-k04XA==",
+      "title": "Sales Tax Nexus Tracker",
+      "price_usd": 79.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\h9G-1Ec29FPRtsDc-k04XA__full_20261017T112954391830.json"
+    },
+    {
+      "product_id": "2HC2OvtsS7gdfVF1lQQSTQ==",
+      "title": "Salon Commission Pay Kit",
+      "price_usd": 39.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\2HC2OvtsS7gdfVF1lQQSTQ__full_20261017T112953990980.json"
+    },
+    {
+      "product_id": "iL2bwAwHI8OAmxKsFeZnQw==",
+      "title": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\iL2bwAwHI8OAmxKsFeZnQw__full_20261017T112955234137.json"
+    },
+    {
+      "product_id": "2ZvRp79aLQiOBEVCYwnZMQ==",
+      "title": "Subscription Renewal Compliance Kit",
+      "price_usd": 69.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\2ZvRp79aLQiOBEVCYwnZMQ__full_20261017T112954393735.json"
+    },
+    {
+      "product_id": "q63gLiL5xvdOAPIbNhxIcw==",
+      "title": "Tech Job Offer Evaluation & Negotiation System",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\q63gLiL5xvdOAPIbNhxIcw__full_20261017T112954592279.json"
+    },
+    {
+      "product_id": "vQEIyRYO5PLkFV1RpzE6wA==",
+      "title": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
+      "price_usd": 49.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\vQEIyRYO5PLkFV1RpzE6wA__full_20261017T112954410509.json"
+    },
+    {
+      "product_id": "IW58tjt2zS14fPYrWZOuxg==",
+      "title": "[Unavailable] AI Workflow QA & Stress Test - one agent, reviewed before you demo it to a client",
+      "price_usd": 0.0,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "reasons": [
+        "core_value: no audience and no problem recorded; value cannot be judged",
+        "content_quality: no product files given; content cannot be judged",
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "core_value": null,
+      "content_quality": null,
+      "market_reality": null,
+      "content_checks": {},
+      "depth": null,
+      "local_file": null,
+      "local_file_present": false,
+      "match_overlap": null,
+      "match_confidence": "NONE",
+      "report_path": "reports\\quality\\inspections\\catalog_audit\\IW58tjt2zS14fPYrWZOuxg__full_20261017T112953974252.json"
+    }
+  ]
+}

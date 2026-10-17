@@ -1,0 +1,313 @@
+{
+  "generated_at": "2026-10-17T07:46:04+00:00",
+  "registries": [
+    "data/product_batch_12.json"
+  ],
+  "products_analyzed": 10,
+  "auto_repairable": 0,
+  "requires_founder": 10,
+  "auto_fills_applied": 10,
+  "products_needing_repair": [
+    {
+      "product_id": "B12-001",
+      "title": "Freelancer Rate & Raise Calculator",
+      "missing_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "distribution_channels",
+        "competition_level"
+      ],
+      "auto_fillable_fields": [
+        "distribution_channels"
+      ],
+      "founder_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "competition_level"
+      ],
+      "can_auto_fill": false,
+      "requires_founder_input": true,
+      "reasons": [
+        "measurable_value: the measurable outcome must be a real number the product delivers",
+        "differentiation: the real reason a buyer picks this over the alternatives",
+        "demand_evidence: demand_evidence must be REAL — evidence a human saw that someone pays for this",
+        "distribution_channels: required field missing or invalid",
+        "competition_level: competition_level needs a real, researched assessment"
+      ],
+      "registry": "data/product_batch_12.json"
+    },
+    {
+      "product_id": "B12-002",
+      "title": "Client Project Handoff Pack",
+      "missing_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "distribution_channels",
+        "competition_level"
+      ],
+      "auto_fillable_fields": [
+        "distribution_channels"
+      ],
+      "founder_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "competition_level"
+      ],
+      "can_auto_fill": false,
+      "requires_founder_input": true,
+      "reasons": [
+        "measurable_value: the measurable outcome must be a real number the product delivers",
+        "differentiation: the real reason a buyer picks this over the alternatives",
+        "demand_evidence: demand_evidence must be REAL — evidence a human saw that someone pays for this",
+        "distribution_channels: required field missing or invalid",
+        "competition_level: competition_level needs a real, researched assessment"
+      ],
+      "registry": "data/product_batch_12.json"
+    },
+    {
+      "product_id": "B12-003",
+      "title": "Founder Access Continuity Organizer",
+      "missing_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "distribution_channels",
+        "competition_level"
+      ],
+      "auto_fillable_fields": [
+        "distribution_channels"
+      ],
+      "founder_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "competition_level"
+      ],
+      "can_auto_fill": false,
+      "requires_founder_input": true,
+      "reasons": [
+        "measurable_value: the measurable outcome must be a real number the product delivers",
+        "differentiation: the real reason a buyer picks this over the alternatives",
+        "demand_evidence: demand_evidence must be REAL — evidence a human saw that someone pays for this",
+        "distribution_channels: required field missing or invalid",
+        "competition_level: competition_level needs a real, researched assessment"
+      ],
+      "registry": "data/product_batch_12.json"
+    },
+    {
+      "product_id": "B12-004",
+      "title": "Meeting Cost & ROI Calculator",
+      "missing_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "distribution_channels",
+        "competition_level"
+      ],
+      "auto_fillable_fields": [
+        "distribution_channels"
+      ],
+      "founder_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "competition_level"
+      ],
+      "can_auto_fill": false,
+      "requires_founder_input": true,
+      "reasons": [
+        "measurable_value: the measurable outcome must be a real number the product delivers",
+        "differentiation: the real reason a buyer picks this over the alternatives",
+        "demand_evidence: demand_evidence must be REAL — evidence a human saw that someone pays for this",
+        "distribution_channels: required field missing or invalid",
+        "competition_level: competition_level needs a real, researched assessment"
+      ],
+      "registry": "data/product_batch_12.json"
+    },
+    {
+      "product_id": "B12-005",
+      "title": "Podcast Guest Booking Kit",
+      "missing_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "distribution_channels",
+        "competition_level"
+      ],
+      "auto_fillable_fields": [
+        "distribution_channels"
+      ],
+      "founder_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "competition_level"
+      ],
+      "can_auto_fill": false,
+      "requires_founder_input": true,
+      "reasons": [
+        "measurable_value: the measurable outcome must be a real number the product delivers",
+        "differentiation: the real reason a buyer picks this over the alternatives",
+        "demand_evidence: demand_evidence must be REAL — evidence a human saw that someone pays for this",
+        "distribution_channels: required field missing or invalid",
+        "competition_level: competition_level needs a real, researched assessment"
+      ],
+      "registry": "data/product_batch_12.json"
+    },
+    {
+      "product_id": "B12-006",
+      "title": "Home-Office Deduction Organizer (US)",
+      "missing_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "distribution_channels",
+        "competition_level"
+      ],
+      "auto_fillable_fields": [
+        "distribution_channels"
+      ],
+      "founder_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "competition_level"
+      ],
+      "can_auto_fill": false,
+      "requires_founder_input": true,
+      "reasons": [
+        "measurable_value: the measurable outcome must be a real number the product delivers",
+        "differentiation: the real reason a buyer picks this over the alternatives",
+        "demand_evidence: demand_evidence must be REAL — evidence a human saw that someone pays for this",
+        "distribution_channels: required field missing or invalid",
+        "competition_level: competition_level needs a real, researched assessment"
+      ],
+      "registry": "data/product_batch_12.json"
+    },
+    {
+      "product_id": "B12-007",
+      "title": "Digital Declutter & Backup: 30-Day System",
+      "missing_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "distribution_channels",
+        "competition_level"
+      ],
+      "auto_fillable_fields": [
+        "distribution_channels"
+      ],
+      "founder_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "competition_level"
+      ],
+      "can_auto_fill": false,
+      "requires_founder_input": true,
+      "reasons": [
+        "measurable_value: the measurable outcome must be a real number the product delivers",
+        "differentiation: the real reason a buyer picks this over the alternatives",
+        "demand_evidence: demand_evidence must be REAL — evidence a human saw that someone pays for this",
+        "distribution_channels: required field missing or invalid",
+        "competition_level: competition_level needs a real, researched assessment"
+      ],
+      "registry": "data/product_batch_12.json"
+    },
+    {
+      "product_id": "B12-008",
+      "title": "Moving House 8-Week Planner",
+      "missing_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "distribution_channels",
+        "competition_level"
+      ],
+      "auto_fillable_fields": [
+        "distribution_channels"
+      ],
+      "founder_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "competition_level"
+      ],
+      "can_auto_fill": false,
+      "requires_founder_input": true,
+      "reasons": [
+        "measurable_value: the measurable outcome must be a real number the product delivers",
+        "differentiation: the real reason a buyer picks this over the alternatives",
+        "demand_evidence: demand_evidence must be REAL — evidence a human saw that someone pays for this",
+        "distribution_channels: required field missing or invalid",
+        "competition_level: competition_level needs a real, researched assessment"
+      ],
+      "registry": "data/product_batch_12.json"
+    },
+    {
+      "product_id": "B12-009",
+      "title": "Pet Sitter Handover Kit",
+      "missing_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "distribution_channels",
+        "competition_level"
+      ],
+      "auto_fillable_fields": [
+        "distribution_channels"
+      ],
+      "founder_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "competition_level"
+      ],
+      "can_auto_fill": false,
+      "requires_founder_input": true,
+      "reasons": [
+        "measurable_value: the measurable outcome must be a real number the product delivers",
+        "differentiation: the real reason a buyer picks this over the alternatives",
+        "demand_evidence: demand_evidence must be REAL — evidence a human saw that someone pays for this",
+        "distribution_channels: required field missing or invalid",
+        "competition_level: competition_level needs a real, researched assessment"
+      ],
+      "registry": "data/product_batch_12.json"
+    },
+    {
+      "product_id": "B12-010",
+      "title": "Nonprofit Grant Pipeline Tracker",
+      "missing_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "distribution_channels",
+        "competition_level"
+      ],
+      "auto_fillable_fields": [
+        "distribution_channels"
+      ],
+      "founder_fields": [
+        "measurable_value",
+        "differentiation",
+        "demand_evidence",
+        "competition_level"
+      ],
+      "can_auto_fill": false,
+      "requires_founder_input": true,
+      "reasons": [
+        "measurable_value: the measurable outcome must be a real number the product delivers",
+        "differentiation: the real reason a buyer picks this over the alternatives",
+        "demand_evidence: demand_evidence must be REAL — evidence a human saw that someone pays for this",
+        "distribution_channels: required field missing or invalid",
+        "competition_level: competition_level needs a real, researched assessment"
+      ],
+      "registry": "data/product_batch_12.json"
+    }
+  ],
+  "note": "Demand evidence cannot be fabricated — every field with no real-world source is returned to the founder, never invented."
+}

@@ -1,0 +1,264 @@
+{
+  "date": "2026-10-17",
+  "generated_at": "2026-10-17T07:21:13+00:00",
+  "enforcer": "src/quality/quality_enforcer.py",
+  "total": 10,
+  "approved": 0,
+  "blocked_missing_data": 10,
+  "rewrite": 0,
+  "not_ready": 0,
+  "killed": 0,
+  "note": "BLOCKED_MISSING_DATA means a layer could not be scored because the facts it needs (crafted value statement, sourced competitor prices, recorded proof of payment) do not exist yet -- it is not a judgement that the product is bad.",
+  "results": [
+    {
+      "source": "data/product_batch_12.json",
+      "id": "B12-001",
+      "title": "Freelancer Rate & Raise Calculator",
+      "price_usd": 29,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "blocked": true,
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "layers": {
+        "core_value": {
+          "status": "PASS",
+          "score": 75
+        },
+        "content_quality": {
+          "status": "PASS",
+          "score": 100
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        }
+      }
+    },
+    {
+      "source": "data/product_batch_12.json",
+      "id": "B12-002",
+      "title": "Client Project Handoff Pack",
+      "price_usd": 39,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "blocked": true,
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "layers": {
+        "core_value": {
+          "status": "PASS",
+          "score": 75
+        },
+        "content_quality": {
+          "status": "FAIL",
+          "score": 30
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        }
+      }
+    },
+    {
+      "source": "data/product_batch_12.json",
+      "id": "B12-003",
+      "title": "Founder Access Continuity Organizer",
+      "price_usd": 29,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "blocked": true,
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "layers": {
+        "core_value": {
+          "status": "PASS",
+          "score": 75
+        },
+        "content_quality": {
+          "status": "FAIL",
+          "score": 60
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        }
+      }
+    },
+    {
+      "source": "data/product_batch_12.json",
+      "id": "B12-004",
+      "title": "Meeting Cost & ROI Calculator",
+      "price_usd": 19,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "blocked": true,
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "layers": {
+        "core_value": {
+          "status": "PASS",
+          "score": 75
+        },
+        "content_quality": {
+          "status": "FAIL",
+          "score": 60
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        }
+      }
+    },
+    {
+      "source": "data/product_batch_12.json",
+      "id": "B12-005",
+      "title": "Podcast Guest Booking Kit",
+      "price_usd": 29,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "blocked": true,
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "layers": {
+        "core_value": {
+          "status": "PASS",
+          "score": 75
+        },
+        "content_quality": {
+          "status": "FAIL",
+          "score": 30
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        }
+      }
+    },
+    {
+      "source": "data/product_batch_12.json",
+      "id": "B12-006",
+      "title": "Home-Office Deduction Organizer (US)",
+      "price_usd": 29,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "blocked": true,
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "layers": {
+        "core_value": {
+          "status": "PASS",
+          "score": 75
+        },
+        "content_quality": {
+          "status": "FAIL",
+          "score": 60
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        }
+      }
+    },
+    {
+      "source": "data/product_batch_12.json",
+      "id": "B12-007",
+      "title": "Digital Declutter & Backup: 30-Day System",
+      "price_usd": 19,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "blocked": true,
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "layers": {
+        "core_value": {
+          "status": "PASS",
+          "score": 75
+        },
+        "content_quality": {
+          "status": "FAIL",
+          "score": 30
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        }
+      }
+    },
+    {
+      "source": "data/product_batch_12.json",
+      "id": "B12-008",
+      "title": "Moving House 8-Week Planner",
+      "price_usd": 29,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "blocked": true,
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "layers": {
+        "core_value": {
+          "status": "PASS",
+          "score": 75
+        },
+        "content_quality": {
+          "status": "FAIL",
+          "score": 60
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        }
+      }
+    },
+    {
+      "source": "data/product_batch_12.json",
+      "id": "B12-009",
+      "title": "Pet Sitter Handover Kit",
+      "price_usd": 19,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "blocked": true,
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "layers": {
+        "core_value": {
+          "status": "PASS",
+          "score": 75
+        },
+        "content_quality": {
+          "status": "FAIL",
+          "score": 60
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        }
+      }
+    },
+    {
+      "source": "data/product_batch_12.json",
+      "id": "B12-010",
+      "title": "Nonprofit Grant Pipeline Tracker",
+      "price_usd": 39,
+      "verdict": "BLOCKED_MISSING_DATA",
+      "blocked": true,
+      "reasons": [
+        "market_reality: no sourced competitor prices and no recorded proof of payment"
+      ],
+      "layers": {
+        "core_value": {
+          "status": "PASS",
+          "score": 75
+        },
+        "content_quality": {
+          "status": "FAIL",
+          "score": 30
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,1470 @@
+{
+  "generated_at": "2026-10-17T11:28:14+00:00",
+  "rule": "every suggested tag appears in the listing's own title or description; a description-only phrase must share a word with the title; disclaimer phrases are excluded; source recorded",
+  "listings": 75,
+  "already_at_target": 13,
+  "reach_target_with_suggestions": 24,
+  "short_of_target": [
+    "Landlord Move-In Inspection Pack",
+    "Cottage Food Compliance Kit",
+    "Homebuyer Inspection Action Kit",
+    "Dental Insurance Verification Kit",
+    "Real Estate Transaction Deadline Kit",
+    "Fleet Maintenance and Damage Documentation Bundle",
+    "Salon Commission Pay Kit",
+    "Restaurant Food Cost Control Kit",
+    "EU Green Claims Review Kit",
+    "EUDR Due Diligence Starter",
+    "Food Truck Permit Navigator",
+    "Handbook Acknowledgment Tracker",
+    "DSAR Response Kit ($59)",
+    "Freelancer Scope Control Kit",
+    "Clinic No-Show Reduction Kit",
+    "PCI SAQ Readiness Kit for Small Merchants",
+    "Sales Tax Nexus Tracker",
+    "Subscription Renewal Compliance Kit",
+    "Tech Job Offer Evaluation & Negotiation System",
+    "Commercial Lease CAM & Operating-Expense Audit Kit",
+    "Home-Service Quoting & Deposit Protection System",
+    "EU AI Act Audit Logging Kit",
+    "SOC 2 Compliance Automation Guide for Startups",
+    "Severance Agreement Review Checklist",
+    "Security Deposit Demand Kit for Tenants",
+    "Mechanics Lien Filing Kit for Contractors",
+    "Stripe Chargeback Defense Kit for Digital Sellers",
+    "CCPA Compliance Action Kit for Small Business",
+    "Digital-Product Refund Policy Pack",
+    "SaaS Churn Email Pack",
+    "Freelancer Scope-Creep Contract Kit",
+    "Battery & WEEE Mini-Guide for Sellers",
+    "Food-Contact Materials Starter",
+    "EU Cosmetics Responsible Person Guide",
+    "Etsy Ads ROI Playbook + Calculator",
+    "Amazon FBA Reconciliation Workbook",
+    "EU Late Payment Recovery Kit",
+    "Diminished Value Claim Kit",
+    "EU Packaging EPR Action Kit",
+    "Restaurant Health Inspection Readiness Kit",
+    "Turo Guest Dispute Toolkit",
+    "GPSR EU Seller Action Kit",
+    "UK Deposit Recovery Action Pack",
+    "Section 8 Notice Validity System (England)",
+    "Gulf Job-Landing ATS CV System",
+    "GCC Contractor Payment Command System (V2 Bundle)",
+    "GCC Contractor Payment Command System",
+    "EU AI Act Compliance Quickstart Checklist",
+    "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+    "Mindfulness Journal for Stress Relief",
+    "The 5-Minute Context Reset Playbook"
+  ],
+  "apply": "Live listing edit. Founder approval per change; nothing was written to Gumroad.",
+  "gumroad_tag_rules": {
+    "length": "2-20 characters, no leading '#', no comma (Gumroad source, app/models/tag.rb)",
+    "count_per_product": "UNVERIFIED (no limit found in tag.rb or product_tagging.rb)"
+  },
+  "target_tags_per_listing": 7,
+  "rows": [
+    {
+      "product_id": "LzOV85deBGdLgNZmvpvYGw==",
+      "title": "Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)",
+      "url": "https://aekraft.gumroad.com/l/bfhpzl",
+      "existing_tags": [
+        "ecommerce",
+        "etsy",
+        "small business",
+        "etsy seller",
+        "appeal letter",
+        "etsy policy",
+        "etsy appeal",
+        "etsy suspension",
+        "shop suspension",
+        "seller handbook"
+      ],
+      "suggested": [
+        {
+          "tag": "triage",
+          "source": "title + description x3"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "P5k2ptcnUohhKUir5Aq5hg==",
+      "title": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
+      "url": "https://aekraft.gumroad.com/l/sjrjxq",
+      "existing_tags": [
+        "ecommerce",
+        "etsy",
+        "small business",
+        "etsy seller",
+        "etsy policy",
+        "etsy suspension",
+        "shop suspension",
+        "seller handbook"
+      ],
+      "suggested": [
+        {
+          "tag": "triage",
+          "source": "title + description x2"
+        },
+        {
+          "tag": "exact",
+          "source": "title + description x1"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "rMOopS7Q7LHxwaPTY462uw==",
+      "title": "The 5-Minute Context Reset Playbook",
+      "url": "https://aekraft.gumroad.com/l/akxaae",
+      "existing_tags": [
+        "productivity",
+        "freelancer",
+        "focus",
+        "developer",
+        "remote work"
+      ],
+      "suggested": [
+        {
+          "tag": "context",
+          "source": "title + description x2"
+        },
+        {
+          "tag": "reset",
+          "source": "title + description x2"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "Mk8k3QvpcL5Hf6ll_8CcAg==",
+      "title": "Landlord Move-In Inspection Pack",
+      "url": "https://aekraft.gumroad.com/l/gzbdaz",
+      "existing_tags": [
+        "landlord",
+        "inspection",
+        "move-in"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "to7fbH3OvYu68ggvK9bGGg==",
+      "title": "Cottage Food Compliance Kit",
+      "url": "https://aekraft.gumroad.com/l/ursxh",
+      "existing_tags": [
+        "cottage food",
+        "compliance",
+        "labeling"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "uUo9QfyfAyqf8-nZb9G7Og==",
+      "title": "Homebuyer Inspection Action Kit",
+      "url": "https://aekraft.gumroad.com/l/volqjv",
+      "existing_tags": [
+        "real estate",
+        "inspection",
+        "homebuyer"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "iJOXxUlufzNyZFndUreFHA==",
+      "title": "Dental Insurance Verification Kit",
+      "url": "https://aekraft.gumroad.com/l/diboaf",
+      "existing_tags": [
+        "insurance",
+        "dental",
+        "verification"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "2NIVAf0Nu4SE2DgAL9buYw==",
+      "title": "Real Estate Transaction Deadline Kit",
+      "url": "https://aekraft.gumroad.com/l/vwlmeo",
+      "existing_tags": [
+        "real estate",
+        "transaction",
+        "deadlines"
+      ],
+      "suggested": [
+        {
+          "tag": "transaction deadline",
+          "source": "title"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "Opfzi3JcKHx-hiwJT3tHrA==",
+      "title": "Fleet Maintenance and Damage Documentation Bundle",
+      "url": "https://aekraft.gumroad.com/l/oerot",
+      "existing_tags": [
+        "maintenance",
+        "documentation",
+        "fleet"
+      ],
+      "suggested": [
+        {
+          "tag": "damage",
+          "source": "title + description x5"
+        },
+        {
+          "tag": "damage claim",
+          "source": "description x3"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "2HC2OvtsS7gdfVF1lQQSTQ==",
+      "title": "Salon Commission Pay Kit",
+      "url": "https://aekraft.gumroad.com/l/xwacbo",
+      "existing_tags": [
+        "commission",
+        "payroll",
+        "salon"
+      ],
+      "suggested": [
+        {
+          "tag": "commission pay",
+          "source": "title + description x1"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "M55I0tATHuFRNHia1tiiAg==",
+      "title": "Restaurant Food Cost Control Kit",
+      "url": "https://aekraft.gumroad.com/l/swkgd",
+      "existing_tags": [
+        "restaurant",
+        "inventory",
+        "food cost"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "C4xKqsgTA37Zd-rysSqmeQ==",
+      "title": "EU Green Claims Review Kit",
+      "url": "https://aekraft.gumroad.com/l/uyzuu",
+      "existing_tags": [
+        "eu",
+        "compliance",
+        "green claims"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "qxjGLQkyK0CQ3WVuLc-7Kg==",
+      "title": "EUDR Due Diligence Starter",
+      "url": "https://aekraft.gumroad.com/l/brwrta",
+      "existing_tags": [
+        "compliance",
+        "due diligence",
+        "eudr"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "bBfEKkiaOp-HZcfQaGdIIw==",
+      "title": "Food Truck Permit Navigator",
+      "url": "https://aekraft.gumroad.com/l/cdfdcy",
+      "existing_tags": [
+        "food truck",
+        "licensing",
+        "permits"
+      ],
+      "suggested": [
+        {
+          "tag": "permit",
+          "source": "title + description x3"
+        },
+        {
+          "tag": "permit navigator",
+          "source": "title"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "3B99PVyD77qKqh0cAPcsDA==",
+      "title": "Handbook Acknowledgment Tracker",
+      "url": "https://aekraft.gumroad.com/l/fydjid",
+      "existing_tags": [
+        "handbook",
+        "hr",
+        "compliance"
+      ],
+      "suggested": [
+        {
+          "tag": "acknowledgment",
+          "source": "title + description x2"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "MzZhoK8Uu-GEYHChAXcvdA==",
+      "title": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+      "url": "https://aekraft.gumroad.com/l/mrecoe",
+      "existing_tags": [
+        "ecommerce",
+        "policy",
+        "returns"
+      ],
+      "suggested": [
+        {
+          "tag": "tiered",
+          "source": "title + description x3"
+        },
+        {
+          "tag": "dtc",
+          "source": "title + description x2"
+        },
+        {
+          "tag": "graduated",
+          "source": "title + description x2"
+        },
+        {
+          "tag": "abuse",
+          "source": "title + description x1"
+        },
+        {
+          "tag": "fair",
+          "source": "title + description x1"
+        },
+        {
+          "tag": "graduated responses",
+          "source": "title"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "hQgyFvb26l7vadCGhTHF9Q==",
+      "title": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+      "url": "https://aekraft.gumroad.com/l/odqlk",
+      "existing_tags": [
+        "landlord",
+        "rent",
+        "record-keeping"
+      ],
+      "suggested": [
+        {
+          "tag": "ledger",
+          "source": "title + description x2"
+        },
+        {
+          "tag": "self-managing",
+          "source": "title + description x2"
+        },
+        {
+          "tag": "self-managing owners",
+          "source": "title + description x1"
+        },
+        {
+          "tag": "court-ready records",
+          "source": "title"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "68zZcBRo9nevkZGYP5lTDg==",
+      "title": "DSAR Response Kit ($59)",
+      "url": "https://aekraft.gumroad.com/l/uqmqnu",
+      "existing_tags": [
+        "privacy",
+        "gdpr",
+        "dsar"
+      ],
+      "suggested": [
+        {
+          "tag": "response",
+          "source": "title + description x4"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "NHlV8fguLAZLwpkRi5KyIA==",
+      "title": "Freelancer Scope Control Kit",
+      "url": "https://aekraft.gumroad.com/l/ziiur",
+      "existing_tags": [
+        "freelancer",
+        "contracts",
+        "scope control"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "K5oIlu_UgDH0k1NXKP4fHw==",
+      "title": "Clinic No-Show Reduction Kit",
+      "url": "https://aekraft.gumroad.com/l/eiztlg",
+      "existing_tags": [
+        "clinic",
+        "healthcare",
+        "scheduling"
+      ],
+      "suggested": [
+        {
+          "tag": "no-show",
+          "source": "title + description x2"
+        },
+        {
+          "tag": "no-show reduction",
+          "source": "title"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "F0aW62vvcQcU8CzRDhiFIQ==",
+      "title": "PCI SAQ Readiness Kit for Small Merchants",
+      "url": "https://aekraft.gumroad.com/l/qezxe",
+      "existing_tags": [
+        "small business",
+        "compliance",
+        "pci"
+      ],
+      "suggested": [
+        {
+          "tag": "saq",
+          "source": "title + description x5"
+        },
+        {
+          "tag": "merchants",
+          "source": "title + description x2"
+        },
+        {
+          "tag": "readiness",
+          "source": "title + description x2"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "h9G-1Ec29FPRtsDc-k04XA==",
+      "title": "Sales Tax Nexus Tracker",
+      "url": "https://aekraft.gumroad.com/l/uucxer",
+      "existing_tags": [
+        "sales tax",
+        "nexus",
+        "compliance"
+      ],
+      "suggested": [
+        {
+          "tag": "nexus tracker",
+          "source": "title"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "2ZvRp79aLQiOBEVCYwnZMQ==",
+      "title": "Subscription Renewal Compliance Kit",
+      "url": "https://aekraft.gumroad.com/l/xouyjy",
+      "existing_tags": [
+        "subscription",
+        "renewal",
+        "compliance"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "KzZbStETfJeJsc-O3cQjsA==",
+      "title": "Newsletter Deliverability & Inbox Placement System",
+      "url": "https://aekraft.gumroad.com/l/iwbcmi",
+      "existing_tags": [
+        "email authentication",
+        "spf dkim dmarc",
+        "inbox placement",
+        "spam folder fix",
+        "list hygiene",
+        "re-engagement emails",
+        "email sunset flow",
+        "email warming",
+        "sender reputation"
+      ],
+      "suggested": [
+        {
+          "tag": "newsletter",
+          "source": "title + description x3"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "nwqwR1RJ8rJlZqZE-vj4pw==",
+      "title": "Employee Offboarding & Access-Revocation System",
+      "url": "https://aekraft.gumroad.com/l/tjbly",
+      "existing_tags": [
+        "employee offboarding",
+        "access revocation",
+        "asset recovery",
+        "access audit",
+        "it offboarding",
+        "saas license reclaim",
+        "exit process",
+        "hr offboarding"
+      ],
+      "suggested": [
+        {
+          "tag": "access-revocation",
+          "source": "title"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "vQEIyRYO5PLkFV1RpzE6wA==",
+      "title": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
+      "url": "https://aekraft.gumroad.com/l/ykwdfc",
+      "existing_tags": [
+        "vendor onboarding",
+        "1099 filing",
+        "w-9 collection",
+        "nec vs misc",
+        "information returns",
+        "iris e-file",
+        "1099 deadline",
+        "backup withholding",
+        "vendor master",
+        "cpa package"
+      ],
+      "suggested": [
+        {
+          "tag": "small business",
+          "source": "title"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "8uWrIqx8uhc8LMIkLEeKkA==",
+      "title": "B2B Late-Payment Collections Operating System",
+      "url": "https://aekraft.gumroad.com/l/wsbqr",
+      "existing_tags": [
+        "accounts receivable",
+        "overdue invoices",
+        "b2b collections",
+        "ar aging tracker",
+        "dunning emails",
+        "promise to pay log",
+        "agency handoff",
+        "contingency fees"
+      ],
+      "suggested": [
+        {
+          "tag": "operating",
+          "source": "title + description x1"
+        },
+        {
+          "tag": "late-payment",
+          "source": "title"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "sjnnlSPbFj44VCYoJpXxPw==",
+      "title": "SaaS Spend & Renewal Audit System for Small Teams",
+      "url": "https://aekraft.gumroad.com/l/pahxdv",
+      "existing_tags": [
+        "cost control",
+        "recurring spend",
+        "renewal calendar",
+        "saas spend audit",
+        "shadow it",
+        "seat utilization",
+        "software waste score",
+        "renegotiation brief",
+        "cancellation email",
+        "app approval process"
+      ],
+      "suggested": [
+        {
+          "tag": "small teams",
+          "source": "title"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "x5Cf-OfCwDvtC-nNlFe6BQ==",
+      "title": "Creator Brand-Deal Management System",
+      "url": "https://aekraft.gumroad.com/l/vzmswo",
+      "existing_tags": [
+        "late payment",
+        "usage rights",
+        "brand deal contract",
+        "influencer rate card",
+        "creator sponsorship",
+        "ftc disclosure",
+        "exclusivity clause",
+        "revision cap",
+        "ai likeness clause",
+        "sponsorship pipeline"
+      ],
+      "suggested": [
+        {
+          "tag": "brand-deal",
+          "source": "title"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "q63gLiL5xvdOAPIbNhxIcw==",
+      "title": "Tech Job Offer Evaluation & Negotiation System",
+      "url": "https://aekraft.gumroad.com/l/qpuagh",
+      "existing_tags": [
+        "tech",
+        "job",
+        "evaluation",
+        "negotiation",
+        "offer"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "iTLlmVaVTM5rbXDn7vPyjg==",
+      "title": "Commercial Lease CAM & Operating-Expense Audit Kit",
+      "url": "https://aekraft.gumroad.com/l/xmbxpz",
+      "existing_tags": [
+        "audit",
+        "commercial",
+        "lease",
+        "cam",
+        "operating-expense"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "N9TrQZXO5NMMk8otX5g7Zg==",
+      "title": "Home-Service Quoting & Deposit Protection System",
+      "url": "https://aekraft.gumroad.com/l/behmhy",
+      "existing_tags": [
+        "protection",
+        "deposit",
+        "quoting",
+        "home-service"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "iL2bwAwHI8OAmxKsFeZnQw==",
+      "title": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
+      "url": "https://aekraft.gumroad.com/l/xwbbb",
+      "existing_tags": [
+        "airbnb",
+        "damage",
+        "evidence",
+        "rental",
+        "claim",
+        "short-term"
+      ],
+      "suggested": [
+        {
+          "tag": "vrbo",
+          "source": "title + description x2"
+        },
+        {
+          "tag": "damage protection",
+          "source": "description x3"
+        },
+        {
+          "tag": "host damage",
+          "source": "description x3"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "WP6Vb-qltKfYXQ1KAb0Tog==",
+      "title": "EU AI Act Audit Logging Kit",
+      "url": "https://aekraft.gumroad.com/l/fwxmms",
+      "existing_tags": [
+        "audit",
+        "ai",
+        "eu",
+        "logging",
+        "act"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "y4nX4cwydsCtWdxBA6uXJw==",
+      "title": "Legal Case Research Automation for Solo Attorneys",
+      "url": "https://aekraft.gumroad.com/l/uldlwa",
+      "existing_tags": [
+        "automation",
+        "solo",
+        "legal",
+        "case",
+        "research",
+        "attorneys",
+        "ai for lawyers"
+      ],
+      "suggested": [],
+      "reaches_target": true
+    },
+    {
+      "product_id": "M5AZWbcXPFKzvgnzcrDqCg==",
+      "title": "SOC 2 Compliance Automation Guide for Startups",
+      "url": "https://aekraft.gumroad.com/l/sjmbrp",
+      "existing_tags": [
+        "guide",
+        "automation",
+        "startups",
+        "compliance",
+        "soc"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "Ag3pKi2eN5fiGQDmJ-fLxA==",
+      "title": "AI Agent Blueprint for Small SaaS CloudOps Automation",
+      "url": "https://aekraft.gumroad.com/l/esnpki",
+      "existing_tags": [
+        "automation",
+        "blueprint",
+        "agent",
+        "ai",
+        "saas",
+        "cloudops"
+      ],
+      "suggested": [
+        {
+          "tag": "small saas",
+          "source": "title + description x2"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "D4JC45lly7EjsY-CO5FKyQ==",
+      "title": "Severance Agreement Review Checklist",
+      "url": "https://aekraft.gumroad.com/l/vunrqm",
+      "existing_tags": [
+        "checklist",
+        "review",
+        "agreement",
+        "severance"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "0uieIt-Pn09q9Xz-Hp1DEQ==",
+      "title": "Security Deposit Demand Kit for Tenants",
+      "url": "https://aekraft.gumroad.com/l/yiqba",
+      "existing_tags": [
+        "security",
+        "deposit",
+        "tenants",
+        "demand"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "mx6XSGrElB5b-NLSHfEryg==",
+      "title": "Mechanics Lien Filing Kit for Contractors",
+      "url": "https://aekraft.gumroad.com/l/jibnyt",
+      "existing_tags": [
+        "mechanics",
+        "contractors",
+        "lien",
+        "filing"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "F3Q5fUqOCxy3n7k6eVTWqw==",
+      "title": "Stripe Chargeback Defense Kit for Digital Sellers",
+      "url": "https://aekraft.gumroad.com/l/ceiwk",
+      "existing_tags": [
+        "stripe",
+        "digital sellers",
+        "chargeback",
+        "representment"
+      ],
+      "suggested": [
+        {
+          "tag": "chargeback defense",
+          "source": "title"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "mvuoJTNLfsWsm0NF-CrZHw==",
+      "title": "Etsy Suspension Appeal Kit",
+      "url": "https://aekraft.gumroad.com/l/fgruzn",
+      "existing_tags": [
+        "ecommerce",
+        "etsy",
+        "small business",
+        "etsy seller",
+        "appeal letter",
+        "etsy appeal",
+        "etsy suspension",
+        "shop suspension",
+        "seller handbook"
+      ],
+      "suggested": [],
+      "reaches_target": true
+    },
+    {
+      "product_id": "dyZ5uSfqjjN91f_1Ir0t6w==",
+      "title": "CCPA Compliance Action Kit for Small Business",
+      "url": "https://aekraft.gumroad.com/l/kaooj",
+      "existing_tags": [
+        "action",
+        "business",
+        "compliance",
+        "ccpa"
+      ],
+      "suggested": [
+        {
+          "tag": "small business",
+          "source": "title"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "f3MRQnVlf3F2w_7n5LfBhw==",
+      "title": "Digital-Product Refund Policy Pack",
+      "url": "https://aekraft.gumroad.com/l/yhnyn",
+      "existing_tags": [
+        "trust",
+        "digital products",
+        "conversion",
+        "refunds"
+      ],
+      "suggested": [
+        {
+          "tag": "refund policy",
+          "source": "title + description x2"
+        },
+        {
+          "tag": "digital-product",
+          "source": "title + description x1"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "lac1TzWQPrNs1vdysJA0dA==",
+      "title": "SaaS Churn Email Pack",
+      "url": "https://aekraft.gumroad.com/l/roxdbe",
+      "existing_tags": [
+        "email",
+        "saas",
+        "retention",
+        "churn"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "T8OiOrVH1ficDv1bN3ksfg==",
+      "title": "Freelancer Scope-Creep Contract Kit",
+      "url": "https://aekraft.gumroad.com/l/zjwpx",
+      "existing_tags": [
+        "consulting",
+        "freelancer",
+        "contracts",
+        "scope"
+      ],
+      "suggested": [
+        {
+          "tag": "scope-creep contract",
+          "source": "title + description x1"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "LInf08ypx6myskvOgd8ryQ==",
+      "title": "Battery & WEEE Mini-Guide for Sellers",
+      "url": "https://aekraft.gumroad.com/l/eiebdt",
+      "existing_tags": [
+        "electronics",
+        "battery",
+        "eu compliance",
+        "epr",
+        "weee"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "tHvtBhoJC0KJMPhQippBBA==",
+      "title": "Food-Contact Materials Starter",
+      "url": "https://aekraft.gumroad.com/l/ldrdm",
+      "existing_tags": [
+        "kitchen",
+        "ceramics",
+        "eu compliance",
+        "food contact"
+      ],
+      "suggested": [
+        {
+          "tag": "food-contact",
+          "source": "title + description x1"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "jIkPBKpLVF7Hk7_DCgMxcA==",
+      "title": "Toy Safety File Starter (EN 71 Lens)",
+      "url": "https://aekraft.gumroad.com/l/vyitxf",
+      "existing_tags": [
+        "safety",
+        "toys",
+        "children",
+        "eu compliance",
+        "en71"
+      ],
+      "suggested": [
+        {
+          "tag": "safety file",
+          "source": "title"
+        },
+        {
+          "tag": "toy",
+          "source": "title + description x1"
+        },
+        {
+          "tag": "lens",
+          "source": "title"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "GVqbXZ0k0Vfn7fhm2AEQXA==",
+      "title": "EU Cosmetics Responsible Person Guide",
+      "url": "https://aekraft.gumroad.com/l/bfdgx",
+      "existing_tags": [
+        "cosmetics",
+        "skincare",
+        "eu compliance",
+        "responsible person"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "ZFXJttaaGoJvEE10JOXbWg==",
+      "title": "Etsy Ads ROI Playbook + Calculator",
+      "url": "https://aekraft.gumroad.com/l/hasjmp",
+      "existing_tags": [
+        "marketing",
+        "ecommerce",
+        "etsy",
+        "ads",
+        "roi"
+      ],
+      "suggested": [
+        {
+          "tag": "calculator",
+          "source": "title + description x1"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "ylqF8rzW698iKeOuKFWQkw==",
+      "title": "Amazon FBA Reconciliation Workbook",
+      "url": "https://aekraft.gumroad.com/l/wteork",
+      "existing_tags": [
+        "amazon fba",
+        "ecommerce",
+        "reconciliation",
+        "reimbursement",
+        "fees"
+      ],
+      "suggested": [
+        {
+          "tag": "workbook",
+          "source": "title + description x1"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "8Vlc3zY6AkxU4DCe7IRVDA==",
+      "title": "EU Late Payment Recovery Kit",
+      "url": "https://aekraft.gumroad.com/l/ciowwm",
+      "existing_tags": [
+        "freelancer",
+        "invoicing",
+        "eu",
+        "cashflow",
+        "late payment"
+      ],
+      "suggested": [
+        {
+          "tag": "recovery",
+          "source": "title + description x2"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "nLl2DJc7VcPu0aeD_CnHAA==",
+      "title": "ADA Demand-Letter Response & Triage Kit",
+      "url": "https://aekraft.gumroad.com/l/palmdr",
+      "existing_tags": [
+        "ecommerce",
+        "small business",
+        "accessibility",
+        "compliance",
+        "ada"
+      ],
+      "suggested": [
+        {
+          "tag": "ada demand-letter",
+          "source": "title"
+        },
+        {
+          "tag": "response triage",
+          "source": "title"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "f542PZ92SUPOjV9F5GJh-Q==",
+      "title": "Diminished Value Claim Kit",
+      "url": "https://aekraft.gumroad.com/l/dyjavs",
+      "existing_tags": [
+        "auto",
+        "insurance claim",
+        "car accident",
+        "diminished value"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "8JM3qFgUuQznesYdiQFNXw==",
+      "title": "EU Packaging EPR Action Kit",
+      "url": "https://aekraft.gumroad.com/l/gfsvu",
+      "existing_tags": [
+        "amazon fba",
+        "packaging",
+        "lucid",
+        "eu compliance",
+        "epr"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "J6ir7vCGTHsS-J4E_a_Lqg==",
+      "title": "Vendor Questionnaire Response Kit",
+      "url": "https://aekraft.gumroad.com/l/pyzqa",
+      "existing_tags": [
+        "b2b",
+        "cybersecurity",
+        "procurement",
+        "compliance",
+        "vendor risk"
+      ],
+      "suggested": [
+        {
+          "tag": "response",
+          "source": "title + description x2"
+        },
+        {
+          "tag": "questionnaire",
+          "source": "title + description x1"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "iPqoAaWMnZCWf8AvYusjxw==",
+      "title": "STR Direct Booking Revenue Kit",
+      "url": "https://aekraft.gumroad.com/l/ppsluq",
+      "existing_tags": [
+        "real estate",
+        "airbnb",
+        "hospitality",
+        "short term rental",
+        "direct booking"
+      ],
+      "suggested": [
+        {
+          "tag": "revenue",
+          "source": "title + description x1"
+        },
+        {
+          "tag": "str",
+          "source": "title"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "KMNGNgO5gS85H_JppnygIg==",
+      "title": "Trademark DIY Filing Action Kit",
+      "url": "https://aekraft.gumroad.com/l/vkqogv",
+      "existing_tags": [
+        "startup",
+        "trademark",
+        "branding",
+        "legal templates",
+        "uspto"
+      ],
+      "suggested": [
+        {
+          "tag": "diy",
+          "source": "title + description x3"
+        },
+        {
+          "tag": "diy filing",
+          "source": "title"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "OiBdFFTaLaZdDX52HxwezQ==",
+      "title": "FTC Consumer Review Rule Compliance Kit",
+      "url": "https://aekraft.gumroad.com/l/ekhza",
+      "existing_tags": [
+        "ecommerce",
+        "small business",
+        "reviews",
+        "compliance",
+        "ftc"
+      ],
+      "suggested": [
+        {
+          "tag": "consumer review",
+          "source": "title"
+        },
+        {
+          "tag": "ftc consumer",
+          "source": "title"
+        },
+        {
+          "tag": "review rule",
+          "source": "title"
+        },
+        {
+          "tag": "rule compliance",
+          "source": "title"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "T41QMtEfZcuDKa7tGtnvgw==",
+      "title": "Restaurant Health Inspection Readiness Kit",
+      "url": "https://aekraft.gumroad.com/l/dvfvm",
+      "existing_tags": [
+        "small business",
+        "checklist",
+        "food safety",
+        "restaurant",
+        "health inspection"
+      ],
+      "suggested": [
+        {
+          "tag": "readiness",
+          "source": "title"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "srd6CIjZc381be9FhiyHeA==",
+      "title": "Turo Guest Dispute Toolkit",
+      "url": "https://aekraft.gumroad.com/l/adyvd",
+      "existing_tags": [
+        "travel",
+        "dispute",
+        "turo",
+        "car rental",
+        "damage claim"
+      ],
+      "suggested": [
+        {
+          "tag": "guest",
+          "source": "title + description x1"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "VPYaNkAdv7Yocko-lIJsZQ==",
+      "title": "GPSR EU Seller Action Kit",
+      "url": "https://aekraft.gumroad.com/l/fetmu",
+      "existing_tags": [
+        "amazon fba",
+        "product safety",
+        "etsy seller",
+        "gpsr",
+        "eu compliance"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "A1LlQxtJJkdWbhrWG8tyww==",
+      "title": "UK Deposit Recovery Action Pack",
+      "url": "https://aekraft.gumroad.com/l/edgiq",
+      "existing_tags": [
+        "landlord",
+        "tenants",
+        "deposit protection",
+        "uk deposit"
+      ],
+      "suggested": [
+        {
+          "tag": "recovery",
+          "source": "title + description x2"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "FbwR2Vq8XY2ZjbZ-JmQHrg==",
+      "title": "Section 8 Notice Validity System (England)",
+      "url": "https://aekraft.gumroad.com/l/nmasnb",
+      "existing_tags": [
+        "section 8",
+        "housing association",
+        "notice validity",
+        "uk landlords"
+      ],
+      "suggested": [
+        {
+          "tag": "england",
+          "source": "title + description x2"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "66fo53TSmA6Lu5cycxuHxQ==",
+      "title": "Suspended Seller First-Appeal POA System",
+      "url": "https://aekraft.gumroad.com/l/zfnagp",
+      "existing_tags": [
+        "ecommerce",
+        "appeal letter",
+        "amazon suspension",
+        "seller suspension",
+        "account appeal",
+        "reinstatement",
+        "etsy suspension",
+        "first appeal",
+        "platform appeal",
+        "suspended account",
+        "seller poa",
+        "seller appeal"
+      ],
+      "suggested": [
+        {
+          "tag": "first-appeal",
+          "source": "title"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "8gFbi-vE0ceqFacn3i3eMA==",
+      "title": "Gulf Job-Landing ATS CV System",
+      "url": "https://aekraft.gumroad.com/l/fccqk",
+      "existing_tags": [
+        "cv",
+        "job search",
+        "ats",
+        "gulf jobs"
+      ],
+      "suggested": [
+        {
+          "tag": "job-landing ats",
+          "source": "title"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "yrSExa-YQe4fjWuIKV4vmQ==",
+      "title": "GCC Contractor Payment Command System (V2 Bundle)",
+      "url": "https://aekraft.gumroad.com/l/jlxmez",
+      "existing_tags": [
+        "construction",
+        "payment",
+        "payroll",
+        "contractor",
+        "gcc"
+      ],
+      "suggested": [
+        {
+          "tag": "payment command",
+          "source": "title + description x2"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "_wJUrEKIuR0Y6cOj9Zqyqg==",
+      "title": "GCC Contractor Payment Command System",
+      "url": "https://aekraft.gumroad.com/l/uwyfje",
+      "existing_tags": [
+        "construction",
+        "payment",
+        "payroll",
+        "contractor",
+        "gcc"
+      ],
+      "suggested": [
+        {
+          "tag": "payment command",
+          "source": "title"
+        }
+      ],
+      "reaches_target": false
+    },
+    {
+      "product_id": "YW18CUcSrghFoNioG8hFGA==",
+      "title": "Freelancer Payment Protection & Scope-Control Toolkit",
+      "url": "https://aekraft.gumroad.com/l/fwrjot",
+      "existing_tags": [
+        "freelance",
+        "freelancer",
+        "solo",
+        "templates",
+        "invoice",
+        "contract template",
+        "client",
+        "change order",
+        "scope creep",
+        "late fee"
+      ],
+      "suggested": [
+        {
+          "tag": "freelancer payment",
+          "source": "title"
+        }
+      ],
+      "reaches_target": true
+    },
+    {
+      "product_id": "tGGL1mqB2bp7uZ6k2THgwA==",
+      "title": "EU AI Act Compliance Quickstart Checklist",
+      "url": "https://aekraft.gumroad.com/l/engiwk",
+      "existing_tags": [
+        "checklist",
+        "quickstart",
+        "sme",
+        "eu ai act",
+        "ai compliance"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "AnZqjZBFNvMdpV0bto7jDw==",
+      "title": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+      "url": "https://aekraft.gumroad.com/l/tmhlb",
+      "existing_tags": [
+        "checklist",
+        "quickstart",
+        "transparency",
+        "ai literacy",
+        "eu ai act"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "_H7FbvlTPITBmT0V6lyPeg==",
+      "title": "Mindfulness Journal for Stress Relief",
+      "url": "https://aekraft.gumroad.com/l/jvuelq",
+      "existing_tags": [
+        "mindfulness",
+        "stress relief",
+        "journal",
+        "journaling"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "9Zq9SGkALI0tjd7A97Pc_A==",
+      "title": "The 5-Minute Context Reset Playbook",
+      "url": "https://aekraft.gumroad.com/l/vhofn",
+      "existing_tags": [
+        "productivity",
+        "focus",
+        "remote work",
+        "context reset"
+      ],
+      "suggested": [],
+      "reaches_target": false
+    },
+    {
+      "product_id": "pzTmMb4v8cih3nbWTj5TeA==",
+      "title": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
+      "url": "https://aekraft.gumroad.com/l/iaiyt",
+      "existing_tags": [
+        "gdpr",
+        "dpo",
+        "risk assessment",
+        "ai policy",
+        "ai literacy",
+        "ai governance",
+        "eu ai act",
+        "ai compliance",
+        "ai regulation",
+        "compliance kit",
+        "risk classification",
+        "ai inventory",
+        "sme compliance",
+        "ai act templates",
+        "human oversight",
+        "sme templates",
+        "high-risk system",
+        "transparency rules",
+        "ai act smes"
+      ],
+      "suggested": [
+        {
+          "tag": "implementation",
+          "source": "title + description x3"
+        }
+      ],
+      "reaches_target": true
+    }
+  ]
+}
