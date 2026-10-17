@@ -6,7 +6,7 @@
 ## Unlock Requirements
 
 ### Technical (OpenCode verifies):
-□ Product file verified: 8,302 bytes ✅ (sha 3f5ce8a6…f5109)
+□ Product file verified: 8,922 bytes (sha aee8fc0b…ab8a092d; re-verified 2026-10-17 CYCLE 94)
 □ Listing content approved by Founder: PENDING
 □ Cover image: READY (`reports/B12-001/cover.png`, 1280×720, verified)
 □ UTM links prepared ✅ (base URL pending listing)

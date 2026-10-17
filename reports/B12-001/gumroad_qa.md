@@ -2,7 +2,7 @@
 # Run this AFTER Founder creates draft
 
 ## Visual QA
-□ Cover image displays correctly (`reports/B12-001/cover.png`, 1280×720, 9,155 bytes — generated 2026-10-16)
+□ Cover image displays correctly (`reports/B12-001/cover.png`, 1280×720, 30,643 bytes — regenerated 2026-10-17)
 □ No pixelation or distortion
 □ Text readable on mobile preview
 □ Price shows: $14.99 USD
@@ -16,7 +16,7 @@
 
 ## Technical QA
 □ Product file downloads correctly
-□ File size matches: 8,302 bytes
+□ File size matches: 8,922 bytes
 □ File format correct (.xlsx with formulas)
 □ Download works after purchase
 

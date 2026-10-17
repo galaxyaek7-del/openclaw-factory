@@ -21,8 +21,9 @@ reports/B12-001/utm_links.json after the base URL exists).
 Nothing proven yet — this section updates after 30 days of real data.
 
 Short (X, draft — NOT posted):
-Freelancers: I ran my costs through this sheet — $80k target,
-30% buffer, 1,150 billable hrs = $120.29/hr minimum. The
+Freelancers: worked example from this sheet — $80k take-home,
+30% tax buffer, $6k expenses, 1,150 billable hrs = $104.60/hr
+minimum, $120.29/hr with a 15% safety margin. The
 spreadsheet that does it: Freelancer Rate & Raise Calculator, $14.99,
 first version, no reviews yet. [LINK when live]
 

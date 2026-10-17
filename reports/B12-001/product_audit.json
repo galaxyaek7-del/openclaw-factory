@@ -8,6 +8,7 @@
   ],
   "file_bytes": 8302,
   "file_sha256": "3f5ce8a6abef3ad1022a74440c3bc8d0f5d314b4d9282ecaa02f73d8096f5109",
+  "superseded_2026-10-17_CYCLE92": "This 2026-10-16 audit is historical. The product file was later regenerated (8,922 bytes, sha256 aee8fc0b…ab8a092d, 10 formulas) and re-verified — see reports/B12-001/PUBLISH_READY_CHECKLIST.json (current) and inspections/B12-001_full_20261017T173646207808.json.",
   "description_ready": true,
   "cover_image_ready": false,
   "cover_note": "No thumbnail exists. Proposal: screenshot of Inputs sheet, or ship with Gumroad default initially.",

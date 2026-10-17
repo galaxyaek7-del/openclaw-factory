@@ -33,6 +33,30 @@
         "solo consultant"
       ],
       "category": "Business & Money > Business Templates / Spreadsheets",
+      "competitors": [
+        {
+          "name": "Freelance Pricing & Proposal Kit (Sean Oh)",
+          "url": "https://ysteriprime.gumroad.com/l/freelance-pricing-proposal-kit",
+          "price_usd": 19.0,
+          "evidence_type": "REAL",
+          "founder_confirmation": "PENDING"
+        },
+        {
+          "name": "The Complete Freelancer Business Toolkit (Prabha Boravat)",
+          "url": "https://prabha02.gumroad.com/l/jmvqo",
+          "price_usd": 4.99,
+          "evidence_type": "REAL",
+          "founder_confirmation": "PENDING"
+        },
+        {
+          "name": "Earnwise Freelance Business Toolkit (Earnwise Co)",
+          "url": "https://earnwise56.gumroad.com/l/pnrxz",
+          "price_usd": 31.46,
+          "evidence_type": "REAL",
+          "founder_confirmation": "PENDING"
+        }
+      ],
+      "competitor_evidence_source": "data/evidence/b12_competitors.json",
       "demand_evidence": {
         "competitor_prices": "data/evidence/b12_competitors.json (3 verified from page metadata: $19.00, $4.99, EUR 28 / $31.46)",
         "problem_discussion": "reports/B12-001/DEMAND_EVIDENCE_2026-10-17.json (3 dated public Reddit threads on underpricing)",

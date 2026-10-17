@@ -45,7 +45,7 @@ Upload this file to Gumroad.
 
 ## ════ PRODUCT FILE ════
 Path: `books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx`
-Size: 8,302 bytes
+Size: 8,922 bytes (sha256 aee8fc0b…ab8a092d; re-verified 2026-10-17 CYCLE 94)
 Format: XLSX, 4 sheets, working formulas (no macros, no external links)
 This is what buyers download.
 
@@ -66,6 +66,6 @@ receipt email."
 
 ## Founder checklist after publishing
 1. Open `books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx` — confirm it opens and formulas compute.
-2. Confirm the paid download matches the file above (8,302 bytes, XLSX).
+2. Confirm the paid download matches the file above (8,922 bytes, XLSX).
 3. Record the final listing slug/URL back into `data/product_batch_12_gumroad_prep.json`.
 4. Do **not** run any automated publish — listing is manual by design.

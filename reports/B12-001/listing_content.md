@@ -25,8 +25,9 @@ done. This workbook does it from YOUR numbers.
 Freelancers and solo consultants who set their own hourly rates.
 
 ### What This Solves
-Rate guessing → a computed minimum ($120.29/hr from the worked
-defaults) plus a margin for scope creep and late payers.
+Rate guessing → a computed minimum rate ($104.60/hr in the worked
+example) and a charge rate with a safety margin for scope creep and
+late payers ($120.29/hr in the same example).
 
 ### What's Inside
 One XLSX file (8 KB), 4 sheets, working formulas throughout,

@@ -7,10 +7,10 @@
 □ Description (benefit-focused): READY — in `drafts/b12_001_listing_copy.txt` (honest 0-sales disclosure kept)
 □ Short summary (1-2 sentences): READY — "A spreadsheet that computes your minimum hourly rate from your own costs — plus client ranking and raise triggers."
 □ Price set (in USD): READY — $14.99 one-time (proposed; Founder confirms at listing)
-□ Product file(s) attached: READY LOCALLY — 8,302-byte XLSX verified (attach at listing time)
+□ Product file(s) attached: READY LOCALLY — 8,922-byte XLSX verified (sha aee8fc0b…ab8a092d; attach at listing time)
 
 ### Visual
-□ Cover image (1280×720 minimum): MISSING — no thumbnail exists; proposal: Inputs-sheet screenshot or Gumroad default initially
+□ Cover image (1280×720 minimum): READY — `reports/B12-001/cover.png` (1280×720, 30,643 bytes, regenerated 2026-10-17)
 □ Preview images: OPTIONAL — none prepared; skip for v1
 
 ### Settings
