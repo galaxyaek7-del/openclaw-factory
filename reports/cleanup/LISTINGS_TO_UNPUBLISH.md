@@ -23,6 +23,8 @@ Two published listings have the same title and price ($15):
 - **Suggestion:** keep `akxaae` (the more complete listing) and unpublish `vhofn`.
   - Listing views are visible only in your Gumroad dashboard; the API does not return them. If `vhofn` shows clearly more views there, keep that one instead.
 - Both listings have a cover ready in `reports/covers/gumroad/`. Skip the one you unpublish.
+- Both listings also appear as duplicate cards on `customer_site/products.html` (line 67 = `akxaae`, line 122 = `vhofn`). If you unpublish `vhofn`, remove its card (line 122) too, or the page will link to an unpublished listing.
+- Machine-readable record of this conflict: `data/playbook_listing_conflict.json` (guarded by `tests/test_playbook_listing_conflict.py`).
 
 ### 3. EU AI Act Compliance Toolkit ($155)
 - **Link:** https://aekraft.gumroad.com/l/iaiyt (id `pzTmMb4v8cih3nbWTj5TeA==`)
