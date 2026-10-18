@@ -211,7 +211,7 @@ jobs:
       # as their own steps below to keep the fast pure-unit set from blocking
       # on a full server boot.
       - name: JS batch 1 of 19
-        run: node scripts/run_js_group.js tests/test_attribution_log_bounds.js tests/test_founder_alert.js
+        run: node scripts/run_js_group.js tests/test_attribution_log_bounds.js tests/test_founder_alert.js tests/test_factory_loop_heal_finance.js
 
       - name: JS batch 2 of 19
         run: node scripts/run_js_group.js tests/test_bkl002_pagevisit_receiver.js tests/test_brand_dna_preamble_consistency.js

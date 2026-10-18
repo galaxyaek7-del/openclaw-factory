@@ -1588,17 +1588,35 @@ function checkPendingReview(queueDir = PENDING_REVIEW_QUEUE_DIR, notifyFilePath 
 // is: quarantine the corrupt file and reset to clean empty finance data —
 // exactly what already happens automatically on the next /finance request.
 // This just does it proactively instead of waiting for that request.
-function healFinance(health) {
+function healFinance(health, { financeFile = FINANCE_FILE } = {}) {
   const financeOk = health && health.checks && health.checks.finance && health.checks.finance.ok;
   if (financeOk !== false) {
     return { action: 'none', detail: 'finance_data.json سليم' };
   }
+  // Cycle 99: /health reports ok:false on ANY read error -- a transient
+  // Windows lock (EBUSY/EPERM), not only real corruption. Re-check here,
+  // immediately before the destructive reset, and reset only a file that
+  // reads fine but genuinely fails to parse (or does not exist).
+  if (fs.existsSync(financeFile)) {
+    let raw;
+    try {
+      raw = fs.readFileSync(financeFile, 'utf8');
+    } catch (err) {
+      return { action: 'skipped', detail: `تعذّرت قراءة finance_data.json (${err.code || err.message}) — لم يُستبدل، ستُعاد المحاولة في الدورة التالية` };
+    }
+    try {
+      JSON.parse(raw);
+      return { action: 'none', detail: 'finance_data.json صالح عند إعادة الفحص — لم يُستبدل' };
+    } catch (_) { /* genuinely corrupt: quarantine below */ }
+  }
   try {
-    if (fs.existsSync(FINANCE_FILE)) {
-      fs.copyFileSync(FINANCE_FILE, `${FINANCE_FILE}.loop-corrupt-${Date.now()}.bak`);
+    if (fs.existsSync(financeFile)) {
+      fs.copyFileSync(financeFile, `${financeFile}.loop-corrupt-${Date.now()}.bak`);
     }
     const clean = { sales: [], totalKDP: 0, totalEtsy: 0, totalGumroad: 0, totalSales: 0, lastUpdated: new Date().toISOString() };
-    fs.writeFileSync(FINANCE_FILE, JSON.stringify(clean, null, 2));
+    const tmpFile = `${financeFile}.tmp-${process.pid}-${Date.now()}`;
+    fs.writeFileSync(tmpFile, JSON.stringify(clean, null, 2));
+    fs.renameSync(tmpFile, financeFile);
     return {
       action: 'healed',
       detail: 'finance_data.json كان فاسداً — عُزل واستُبدل ببيانات فارغة نظيفة (وليس من scout_runs.log، فهو لا يحوي بيانات مالية — انظر التعليق أعلى الدالة)',
