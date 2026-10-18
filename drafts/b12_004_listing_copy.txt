@@ -1,0 +1,28 @@
+B12-004 COPY-PASTE LISTING (paste exactly; do not embellish)
+============================================================
+TITLE:
+Meeting Cost & ROI Calculator
+
+PRICE:
+$11.99 USD one-time (FOUNDER-APPROVED 2026-10-18; not yet listed — no Gumroad product exists yet)
+
+DESCRIPTION:
+Your recurring meetings have a price tag — this workbook calculates it. Give each meeting its attendee count and a fully-loaded hourly rate, and it returns the weekly and annual cost, the person-hours, and the one number worth arguing about: cost per decision. Sort by annual cost and cut from the top.
+
+Built for the person who suspects the weekly round-robin is expensive and wants the number, not a productivity tip. Includes a worked example (a 7-person daily standup at $65/hr runs about $26,160/year — the same team shortens one biweekly planning meeting and recovers around $5,200/year), a polite decline script, and a quarterly kill-review process.
+
+Inside (2 files):
+- Meeting Cost & ROI Calculator workbook (.xlsx, 5 sheets): Setup (your loaded rate and threshold), MeetingLog (one row per meeting, with input validation and guarded formulas), Dashboard (annual cost, cost per decision, zero-decision savings, most expensive meeting), Rules, and a README.
+- Meeting Cost & ROI Method Guide (.pdf, 4 pages): how to price a meeting honestly (the loaded rate plus employer surcharge), how to run the quarterly kill review, five mistakes that ruin the number, and answers to the usual objections.
+
+New product from Galaxy Forge: no sales recorded yet, no reviews.
+
+Requires: Excel, LibreOffice Calc (free), or Google Sheets (free upload) for the workbook; any PDF reader for the guide. Instant download after purchase. Support: reply to your Gumroad receipt email.
+
+TAGS:
+meetings, productivity, management, calculator, spreadsheet, roi, cost, team
+
+FILES TO UPLOAD:
+books/batch12/B12-004_meeting_cost_roi_calculator.xlsx
+books/batch12/B12-004_meeting_method_guide.pdf
+============================================================

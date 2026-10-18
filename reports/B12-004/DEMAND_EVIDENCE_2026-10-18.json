@@ -1,0 +1,69 @@
+{
+  "product": "B12-004",
+  "title": "Meeting Cost & ROI Calculator",
+  "research_date": "2026-10-18",
+  "audience": "Team leads, managers, and founders who run recurring meetings",
+  "problem_statement": "Recurring meetings consume salary time, are easy to create and hard to remove, and almost none are reviewed against the cost they carry.",
+  "demand_evidence": [
+    {
+      "claim": "71% of meetings are considered unproductive; 65% of senior managers say meetings prevent them from completing their own work.",
+      "source": "Harvard Business Review (as cited by meetingtoll.com/guides/meeting-costs/meeting-waste-statistics-2026 and flowtrace.co)",
+      "read_at": "2026-10-18",
+      "label": "OBSERVED (published statistic; underlying survey methodology varies)"
+    },
+    {
+      "claim": "US businesses lose about $37 billion per year in salary cost to unproductive meetings (wider economic-impact estimates run to $259B-$399B).",
+      "source": "Doodle State of Meetings; London School of Economics (as cited by meetingtoll.com and flowtrace.co)",
+      "read_at": "2026-10-18",
+      "label": "OBSERVED (published statistic; ranges differ by methodology - directional)"
+    },
+    {
+      "claim": "Workers average ~8 hours per week in meetings; 58% of that time is considered unnecessary, equal to ~26 working days per person per year.",
+      "source": "Jabra Research Institute, 'The Cost of Bad Meetings' (2026), survey of 2,300+ workers across 7 markets",
+      "read_at": "2026-10-18",
+      "label": "OBSERVED (published survey; 2026)"
+    },
+    {
+      "claim": "Recurring meetings are 48% of all meetings and 92.4% have no end date set on the calendar.",
+      "source": "Flowtrace meeting dataset (flowtrace.co, 2026)",
+      "read_at": "2026-10-18",
+      "label": "OBSERVED (vendor dataset; directional)"
+    },
+    {
+      "claim": "Only ~30% of meeting time is considered productive; ~31 hours per month are spent in unproductive meetings.",
+      "source": "Atlassian (as cited by meetingtoll.com)",
+      "read_at": "2026-10-18",
+      "label": "OBSERVED (published statistic)"
+    },
+    {
+      "claim": "A fully-loaded hourly rate (salary + ~20-35% employer surcharge) is the step most people skip, undercounting meeting cost by ~17-26%.",
+      "source": "Capme, 'Meeting Cost Formula' (2026-08-24)",
+      "read_at": "2026-10-18",
+      "label": "OBSERVED (vendor methodology claim)"
+    }
+  ],
+  "demand_hypothesis": "A manager who has just seen a real annual meeting-cost number for their own team will act on it, and a workbook that also ranks which meetings to kill and at what cost per decision is worth paying for rather than building by hand.",
+  "differentiation": [
+    "Cost per decision: each meeting is priced against the decisions it actually produces (the core idea of the free $0+ substitute, delivered here as a reusable workbook, not a one-off HTML page).",
+    "Kill-review ranking: the Dashboard ranks meetings by annual cost and totals the savings from cancelling zero-decision meetings.",
+    "Loaded-rate honesty: Setup derives the fully-loaded hourly rate from salary + a configurable employer surcharge, with real guidance (EU ~20%, US ~35%).",
+    "Input guards: percentage and count inputs are validated so a mis-typed rate cannot silently produce a wrong number."
+  ],
+  "competition": "MODERATE - see data/evidence/b12_004_competitors.json",
+  "risks": [
+    "A free $0+ Gumroad substitute (Standard Work Co.) covers the core calculation - the paid value must be the workflow, ranking and dashboard, not the formula.",
+    "Free public guides (excels.uk, capme.app) teach the same math - a motivated buyer can self-build.",
+    "No verified payment for this specific product concept exists (proof-of-payment: UNKNOWN); demand is inferred from the large, well-documented general problem and from real competitors charging for it.",
+    "Meeting-cost statistics are secondhand published numbers with varying methodology - treated as directional, never quoted as precise per-customer outcomes in the listing."
+  ],
+  "price": {
+    "manifest_price_usd": 19.0,
+    "recommended_price_usd": 11.99,
+    "approved_price_usd": 11.99,
+    "approved_by": "Founder, 2026-10-18 (Cycle 98)",
+    "requires_founder_confirmation": false,
+    "rationale": "Below the $12.00 most-comparable paid product; above the free substitute only because the workbook adds ranking and decision-ROI."
+  },
+  "verdict": "SELECT - strong documented demand, moderate competition, formula-verifiable deliverable, distinct from B12-001 in problem, audience and workflow.",
+  "gate_verdict": "QA_PASSED / APPROVED at $11.99 - NOT_READY at the manifest's $19.00 (price_within_market false; depth short). See reports/B12-004/GATE_FINAL_2026-10-18.json. Price is a founder decision."
+}

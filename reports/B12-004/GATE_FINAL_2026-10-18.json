@@ -1,0 +1,138 @@
+{
+  "product_id": "B12-004",
+  "title": "Meeting Cost & ROI Calculator",
+  "run_at": "2026-10-18T19:40:00Z",
+  "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
+  "price_basis": "RECOMMENDED_BELOW_HIGHEST_COMPARABLE (founder confirmation pending)",
+  "competitors_sourced": [
+    {
+      "name": "Meeting Cost Calculator Spreadsheet - Time, Headcount & Burn (Kosmic Rift)",
+      "price_usd": 12.0
+    },
+    {
+      "name": "Effective Meetings Cost Calculator (QUICKFix)",
+      "price_usd": 5.77
+    },
+    {
+      "name": "Meeting Tax - See What Meetings Actually Cost (Clear Stack)",
+      "price_usd": 9.0
+    },
+    {
+      "name": "Meeting Notes & Action Items - Run Better Meetings (branga breow)",
+      "price_usd": 2.4
+    }
+  ],
+  "gate_at_recommended_price_11_99": {
+    "verdict": "APPROVED",
+    "blocked": false,
+    "reasons": [],
+    "thresholds": {
+      "core_value": 70,
+      "content_quality": 70,
+      "market_reality": 65
+    },
+    "layers": {
+      "core_value": {
+        "status": "PASS",
+        "score": 100,
+        "checks": {
+          "audience_specific": true,
+          "problem_stated": true,
+          "outcome_stated": true,
+          "title_specific": true,
+          "priced": true
+        }
+      },
+      "content_quality": {
+        "status": "PASS",
+        "score": 100,
+        "checks": {
+          "files_open_cleanly": true,
+          "depth_sufficient": true,
+          "no_placeholders": true,
+          "no_mojibake": true,
+          "instructions_present": true
+        }
+      },
+      "market_reality": {
+        "status": "PASS",
+        "score": 70,
+        "checks": {
+          "payment_evidence": false,
+          "three_sourced_competitors": true,
+          "two_sourced_competitors": true,
+          "one_sourced_competitor": true,
+          "price_within_market": true
+        }
+      }
+    },
+    "content_depth": {
+      "words": 1441,
+      "words_required": 1199,
+      "text_depth_ok": true,
+      "sheets": 5,
+      "formulas": 111,
+      "sheet_depth_ok": true
+    }
+  },
+  "gate_at_manifest_price_19_00": {
+    "verdict": "NOT_READY",
+    "blocked": true,
+    "reasons": [
+      "content_quality 60 < 70",
+      "market_reality 40 < 65"
+    ],
+    "thresholds": {
+      "core_value": 70,
+      "content_quality": 70,
+      "market_reality": 65
+    },
+    "layers": {
+      "core_value": {
+        "status": "PASS",
+        "score": 100,
+        "checks": {
+          "audience_specific": true,
+          "problem_stated": true,
+          "outcome_stated": true,
+          "title_specific": true,
+          "priced": true
+        }
+      },
+      "content_quality": {
+        "status": "FAIL",
+        "score": 60,
+        "checks": {
+          "files_open_cleanly": true,
+          "depth_sufficient": false,
+          "no_placeholders": true,
+          "no_mojibake": true,
+          "instructions_present": true
+        }
+      },
+      "market_reality": {
+        "status": "FAIL",
+        "score": 40,
+        "checks": {
+          "payment_evidence": false,
+          "three_sourced_competitors": true,
+          "two_sourced_competitors": true,
+          "one_sourced_competitor": true,
+          "price_within_market": false
+        }
+      }
+    },
+    "content_depth": {
+      "words": 1441,
+      "words_required": 1900,
+      "text_depth_ok": false,
+      "sheets": 5,
+      "formulas": 111,
+      "sheet_depth_ok": true
+    }
+  },
+  "verdict": "APPROVED at $11.99; NOT_READY at the manifest's $19.00",
+  "proof_of_payment": "none yet",
+  "publish_gate": "LOCKED until the founder confirms a price AND issues a per-product authorization phrase (B12-001's phrase does not transfer)",
+  "gate_limits": "Structural + depth + market-reality gate. Usability is verified separately (openpyxl structure + arithmetic re-derivation, since no LibreOffice exists on this host)."
+}
