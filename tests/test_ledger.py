@@ -200,6 +200,75 @@ class TestReconcileLedgerToFinance(unittest.TestCase):
         self.assertEqual(data["sales"][0]["platform"], "KDP")  # pre-existing sale preserved verbatim
         self.assertEqual(data["sales"][1]["id"], 2)  # new sale's id continues the sequence
 
+    # ── Cycle 103: never overwrite what we could not read; never lose a
+    # concurrent manual entry written by server.js's saveFin(). ──
+    _MANUAL = {"sales": [{"id": 1, "platform": "Gumroad", "amount": 5.0, "product": "manual"}],
+               "totalKDP": 0, "totalEtsy": 0, "totalGumroad": 5.0, "totalPaddle": 0, "totalSales": 5.0}
+
+    def _write_finance(self, obj_or_text):
+        with open(self.finance_path, "w", encoding="utf-8") as f:
+            f.write(obj_or_text if isinstance(obj_or_text, str) else json.dumps(obj_or_text))
+
+    def test_corrupt_finance_file_is_never_overwritten(self):
+        self._write_finance('{"sales": [ broken')
+        ledger.record_sale("gumroad", {"id": "s1", "price": "9.99"}, ledger_path=self.ledger_path)
+        result = ledger.reconcile_ledger_to_finance(ledger_path=self.ledger_path, finance_path=self.finance_path)
+        self.assertEqual(result["reconciled"], 0)
+        self.assertIn("not overwritten", result["error"])
+        with open(self.finance_path, encoding="utf-8") as f:
+            self.assertEqual(f.read(), '{"sales": [ broken')
+
+    def test_unreadable_finance_file_is_never_overwritten(self):
+        self._write_finance(self._MANUAL)
+        ledger.record_sale("gumroad", {"id": "s1", "price": "9.99"}, ledger_path=self.ledger_path)
+        real_read = Path.read_bytes
+        def locked(path_self):
+            if str(path_self) == str(self.finance_path):
+                raise PermissionError("locked")
+            return real_read(path_self)
+        with mock.patch.object(Path, "read_bytes", locked):
+            result = ledger.reconcile_ledger_to_finance(ledger_path=self.ledger_path, finance_path=self.finance_path)
+        self.assertIn("unreadable", result["error"])
+        with open(self.finance_path, encoding="utf-8") as f:
+            self.assertEqual(json.load(f), self._MANUAL)
+
+    def test_concurrent_manual_entry_is_kept_by_retrying(self):
+        self._write_finance(self._MANUAL)
+        ledger.record_sale("gumroad", {"id": "s1", "price": "9.99"}, ledger_path=self.ledger_path)
+        real_read_events = ledger.read_events
+        calls = {"n": 0}
+        def read_events_with_a_concurrent_writer(*a, **k):
+            calls["n"] += 1
+            if calls["n"] == 1:  # server.js adds a manual sale while we merge
+                both = json.loads(json.dumps(self._MANUAL))
+                both["sales"].append({"id": 2, "platform": "Gumroad", "amount": 7.0, "product": "manual 2"})
+                self._write_finance(both)
+            return real_read_events(*a, **k)
+        with mock.patch.object(ledger, "read_events", read_events_with_a_concurrent_writer):
+            result = ledger.reconcile_ledger_to_finance(ledger_path=self.ledger_path, finance_path=self.finance_path)
+        self.assertEqual(result["reconciled"], 1)
+        with open(self.finance_path, encoding="utf-8") as f:
+            data = json.load(f)
+        self.assertEqual(sorted(s["product"] for s in data["sales"]), ["Unknown", "manual", "manual 2"])
+        self.assertAlmostEqual(data["totalSales"], 21.99)
+        self.assertEqual([n for n in os.listdir(os.path.dirname(self.finance_path)) if ".tmp-" in n and os.path.basename(self.finance_path) in n], [])
+
+    def test_file_that_keeps_changing_is_left_alone_with_an_error(self):
+        self._write_finance(self._MANUAL)
+        ledger.record_sale("gumroad", {"id": "s1", "price": "9.99"}, ledger_path=self.ledger_path)
+        real_read_events = ledger.read_events
+        counter = {"n": 0}
+        def always_changing(*a, **k):
+            counter["n"] += 1
+            changed = dict(self._MANUAL, lastUpdated=str(counter["n"]))
+            self._write_finance(changed)
+            return real_read_events(*a, **k)
+        with mock.patch.object(ledger, "read_events", always_changing):
+            result = ledger.reconcile_ledger_to_finance(ledger_path=self.ledger_path, finance_path=self.finance_path)
+        self.assertIn("kept changing", result["error"])
+        with open(self.finance_path, encoding="utf-8") as f:
+            self.assertEqual(json.load(f)["sales"], self._MANUAL["sales"])
+
 
 class TestRevenueTrend(unittest.TestCase):
     def setUp(self):

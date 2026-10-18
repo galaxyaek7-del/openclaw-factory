@@ -230,14 +230,51 @@ def reconcile_ledger_to_finance(ledger_path=None, finance_path=None):
     writing this file stays safe."""
     finance_path = Path(finance_path) if finance_path else _FINANCE_FILE
 
-    if finance_path.exists():
-        try:
-            with open(finance_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except (json.JSONDecodeError, OSError):
-            data = _default_finance_data()
-    else:
+    # Cycle 103: never replace a file we could not read, and never drop a
+    # concurrent writer's change. server.js's saveFin() (manual /finance/add
+    # entries, which are NOT in the ledger and cannot be re-derived) writes
+    # the same file; an unreadable/unparsable existing file used to fall back
+    # to an empty structure that was then written over the real one, and a
+    # change landing between our read and os.replace() was silently lost.
+    # There is no cross-language lock, so this is optimistic: re-read just
+    # before replacing and start over if the bytes moved.
+    for _attempt in range(_RECONCILE_ATTEMPTS):
+        outcome = _reconcile_once(ledger_path, finance_path)
+        if outcome is not _CONCURRENT_CHANGE:
+            return outcome
+    return {"reconciled": 0, "skipped_unrecognized": 0, "total_sales": None,
+            "error": "finance_data.json kept changing during reconciliation; not written, retry next poll"}
+
+
+_RECONCILE_ATTEMPTS = 3
+_CONCURRENT_CHANGE = object()
+
+
+def _read_finance_bytes(finance_path):
+    """(bytes or None, error or None). None bytes = file absent."""
+    if not finance_path.exists():
+        return None, None
+    try:
+        return finance_path.read_bytes(), None
+    except OSError as e:
+        return None, f"finance_data.json unreadable ({e.__class__.__name__}); not overwritten"
+
+
+def _reconcile_once(ledger_path, finance_path):
+    original, read_error = _read_finance_bytes(finance_path)
+    if read_error:
+        return {"reconciled": 0, "skipped_unrecognized": 0, "total_sales": None, "error": read_error}
+    if original is None:
         data = _default_finance_data()
+    else:
+        try:
+            data = json.loads(original.decode("utf-8-sig"))
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            return {"reconciled": 0, "skipped_unrecognized": 0, "total_sales": None,
+                    "error": "finance_data.json is not valid JSON; not overwritten"}
+        if not isinstance(data, dict):
+            return {"reconciled": 0, "skipped_unrecognized": 0, "total_sales": None,
+                    "error": "finance_data.json is not a JSON object; not overwritten"}
 
     # Defensive shape normalization — tolerates a partially-missing/legacy
     # file, same discipline as server.js's own loadFin().
@@ -301,6 +338,10 @@ def reconcile_ledger_to_finance(ledger_path=None, finance_path=None):
         tmp_path = finance_path.parent / f"{finance_path.name}.tmp-{os.getpid()}"
         with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
+        current, _ = _read_finance_bytes(finance_path)
+        if current != original:
+            tmp_path.unlink(missing_ok=True)
+            return _CONCURRENT_CHANGE
         os.replace(tmp_path, finance_path)
 
     return {"reconciled": reconciled, "skipped_unrecognized": skipped_unrecognized, "total_sales": data["totalSales"]}
