@@ -159,6 +159,25 @@ class TestPollSales(unittest.TestCase):
         self.assertEqual(outcomes[0]["skip_reason"], "no get_sales() support")
         self.assertEqual(outcomes[0]["new_sales"], 0)
 
+    def test_paddle_rate_limit_does_not_hide_a_gumroad_sale(self):
+        """Cycle 99: a Paddle 429 is reported as Paddle's own error while the
+        Gumroad sale in the same poll is still recorded."""
+        from channels import paddle_arm as paddle_arm_module
+        from channels.paddle_arm import PaddleArm
+        from channels.base_arm import ArmStatus
+        registry.register(PaddleArm())
+        sale = {"id": "sale_g1", "product_name": "B12", "price": "1499"}
+        rate_limited = paddle_arm_module.paddle_publisher.requests.RequestException("HTTP 429: <!doctype html>")
+        with patch.object(gumroad_arm_module.gumroad_publisher, "load_token", return_value="fake-token"),              patch.object(gumroad_arm_module.gumroad_publisher, "get_sales", return_value=[sale]),              patch.object(PaddleArm, "status", return_value=ArmStatus.READY),              patch.object(paddle_arm_module.paddle_publisher, "load_api_key", return_value="k" * 20),              patch.object(paddle_arm_module.paddle_publisher, "_request_with_retry", side_effect=rate_limited):
+            outcomes, details = poll_sales_module.poll_sales(ledger_path=self.ledger_path)
+        by_arm = {o["arm"]: o for o in outcomes}
+        self.assertEqual(by_arm["gumroad"]["new_sales"], 1)
+        self.assertIsNone(by_arm["gumroad"]["error"])
+        self.assertIn("429", by_arm["paddle"]["error"])
+        self.assertEqual(by_arm["paddle"]["new_sales"], 0)
+        events = list(ledger.read_events(event_type="sale", ledger_path=self.ledger_path))
+        self.assertEqual([e["platform"] for e in events], ["gumroad"])
+
 
 if __name__ == "__main__":
     unittest.main()

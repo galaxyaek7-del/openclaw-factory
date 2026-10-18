@@ -507,6 +507,20 @@ class RetryTotalBudgetTest(unittest.TestCase):
         self.assertEqual(req.call_count, pp._RETRY_ATTEMPTS)
         self.assertEqual(sleep.call_count, pp._RETRY_ATTEMPTS - 1)
 
+    def test_network_failures_retry_inside_budget_then_raise(self):
+        err = pp.requests.ConnectionError("network down")
+        with patch.object(pp.requests, "request", side_effect=err) as req,              patch.object(pp.time, "sleep") as sleep:
+            with self.assertRaises(pp.requests.RequestException):
+                pp._request_with_retry("GET", "https://x", timeout=30, max_total_seconds=20)
+        self.assertEqual(req.call_count, pp._RETRY_ATTEMPTS)
+        self.assertLessEqual(sum(c.args[0] for c in sleep.call_args_list), 20)
+
+    def test_budgeted_429_surfaces_as_a_truthful_runtime_error(self):
+        with patch.object(pp.requests, "request", return_value=self._rate_limited()),              patch.object(pp.time, "sleep"):
+            with self.assertRaises(RuntimeError) as ctx:
+                pp.get_transactions("k" * 20)
+        self.assertIn("HTTP 429", str(ctx.exception))
+
     def test_get_transactions_uses_the_budget(self):
         with patch.object(pp, "_request_with_retry", return_value=_fake_response(json_data={"data": []})) as rr:
             self.assertEqual(pp.get_transactions("k" * 20), [])
