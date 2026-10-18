@@ -467,5 +467,51 @@ class TestMalformedResponseHandling(unittest.TestCase):
         self.assertIn("malformed response", str(ctx.exception))
 
 
+class RetryTotalBudgetTest(unittest.TestCase):
+    """Cycle 95: a Cloudflare 429 with Retry-After: 30 made get_transactions()
+    retry for ~60s, past POST /api/sales/poll's 45s kill, so the whole poll
+    came back 504. The sales read now has a total budget."""
+
+    def _rate_limited(self):
+        resp = _fake_response(status_code=429, text="<!doctype html>rate limited")
+        resp.headers = {"Retry-After": "30"}
+        return resp
+
+    def test_budget_stops_retries_that_cannot_finish_in_time(self):
+        with patch.object(pp.requests, "request", return_value=self._rate_limited()) as req,              patch.object(pp.time, "sleep") as sleep:
+            with self.assertRaises(pp.requests.RequestException):
+                pp._request_with_retry("GET", "https://x", timeout=30, max_total_seconds=20)
+        self.assertEqual(req.call_count, 1, "a 30s Retry-After cannot fit a 20s budget")
+        sleep.assert_not_called()
+
+    def test_budget_caps_per_attempt_timeout(self):
+        ok = _fake_response(status_code=200)
+        with patch.object(pp.requests, "request", return_value=ok) as req:
+            pp._request_with_retry("GET", "https://x", timeout=30, max_total_seconds=5)
+        self.assertLessEqual(req.call_args.kwargs["timeout"], 5)
+
+    def test_short_retry_after_still_retries_inside_budget(self):
+        short = _fake_response(status_code=429, text="rl")
+        short.headers = {"Retry-After": "1"}
+        ok = _fake_response(status_code=200)
+        with patch.object(pp.requests, "request", side_effect=[short, ok]) as req,              patch.object(pp.time, "sleep") as sleep:
+            r = pp._request_with_retry("GET", "https://x", timeout=30, max_total_seconds=20)
+        self.assertIs(r, ok)
+        self.assertEqual(req.call_count, 2)
+        sleep.assert_called_once_with(1.0)
+
+    def test_no_budget_keeps_original_retry_behaviour(self):
+        with patch.object(pp.requests, "request", return_value=self._rate_limited()) as req,              patch.object(pp.time, "sleep") as sleep:
+            with self.assertRaises(pp.requests.RequestException):
+                pp._request_with_retry("GET", "https://x", timeout=30)
+        self.assertEqual(req.call_count, pp._RETRY_ATTEMPTS)
+        self.assertEqual(sleep.call_count, pp._RETRY_ATTEMPTS - 1)
+
+    def test_get_transactions_uses_the_budget(self):
+        with patch.object(pp, "_request_with_retry", return_value=_fake_response(json_data={"data": []})) as rr:
+            self.assertEqual(pp.get_transactions("k" * 20), [])
+        self.assertEqual(rr.call_args.kwargs["max_total_seconds"], pp._TRANSACTIONS_MAX_TOTAL_SECONDS)
+
+
 if __name__ == "__main__":
     unittest.main()

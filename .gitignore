@@ -141,3 +141,9 @@ data/security/n8n_lockdown_report.json
 # (founder decision, 2026-10-17).
 reports/quality/inspections/
 reports/B12-001/inspections/
+
+# Rejected parallel-session files (founder rule, 2026-10-18): see reports/governance/N8N_ENGINEERING_REVIEW_CYCLE95.md
+# security_resilience_audit.js overwrites real sales/finance/reality files with a start-of-run snapshot.
+# contact_tracker.js belongs to an unreviewed automated customer-reply system.
+scripts/security_resilience_audit.js
+lib/contact_tracker.js

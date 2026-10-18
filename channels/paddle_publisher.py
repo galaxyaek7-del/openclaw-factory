@@ -81,7 +81,15 @@ class ConfigError(Exception):
     pass
 
 
-def _request_with_retry(method, url, **kwargs):
+# Total wall-clock budget for the sales read. POST /api/sales/poll kills
+# poll_sales.py after 45s (server.js PYTHON_SALES_POLL_TIMEOUT_MS); a
+# Cloudflare 429 carrying Retry-After: 30 made the old unbounded retries
+# take ~60s (measured 2026-10-18), so the whole poll -- Gumroad included --
+# came back as a 504 instead of reporting Paddle's error honestly.
+_TRANSACTIONS_MAX_TOTAL_SECONDS = 20
+
+
+def _request_with_retry(method, url, *, max_total_seconds=None, **kwargs):
     """Same retry discipline as gumroad_publisher.py's own helper: a real
     4xx client error (400/401/403/404/...) is permanent, never retried.
     429 (rate limit) and 503 (service unavailable) are the one real
@@ -89,7 +97,10 @@ def _request_with_retry(method, url, **kwargs):
     real Retry-After-aware delay (see _retry_delay_seconds() above,
     ADR-204 fix for FAILURE_REGISTER.md F6)."""
     last_exc = None
+    deadline = None if max_total_seconds is None else time.monotonic() + max_total_seconds
     for attempt in range(1, _RETRY_ATTEMPTS + 1):
+        if deadline is not None and "timeout" in kwargs:
+            kwargs["timeout"] = max(1.0, min(kwargs["timeout"], deadline - time.monotonic()))
         try:
             r = requests.request(method, url, **kwargs)
         except requests.RequestException as e:
@@ -101,7 +112,10 @@ def _request_with_retry(method, url, **kwargs):
             last_exc = requests.RequestException(f"HTTP {r.status_code}: {r.text[:200]}")
             response = r
         if attempt < _RETRY_ATTEMPTS:
-            time.sleep(_retry_delay_seconds(attempt, response))
+            delay = _retry_delay_seconds(attempt, response)
+            if deadline is not None and time.monotonic() + delay >= deadline:
+                break  # the next attempt could not finish inside the budget
+            time.sleep(delay)
     raise last_exc
 
 
@@ -278,7 +292,8 @@ def get_transactions(api_key):
     """Paddle's real-sales-data equivalent of gumroad_publisher.get_sales()
     — Paddle calls a completed sale a 'transaction'."""
     try:
-        r = _request_with_retry("GET", f"{PADDLE_API_BASE}/transactions", headers=_headers(api_key), timeout=30)
+        r = _request_with_retry("GET", f"{PADDLE_API_BASE}/transactions", headers=_headers(api_key), timeout=30,
+                                max_total_seconds=_TRANSACTIONS_MAX_TOTAL_SECONDS)
         r.raise_for_status()
     except requests.RequestException as e:
         raise RuntimeError(f"Paddle get_transactions request failed: {_safe_err(e, api_key)}")
