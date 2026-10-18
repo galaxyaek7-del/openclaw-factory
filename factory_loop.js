@@ -32,6 +32,7 @@ const os = require('os');
 const { spawn, execSync, execFileSync } = require('child_process');
 const selfAwareness = require('./self_awareness');
 const n8nNotify = require('./lib/n8n_notify');
+const founderAlert = require('./lib/founder_alert');
 const telegramDirect = require('./lib/telegram_direct');
 const departmentEvents = require('./lib/department_events');
 const {
@@ -1033,10 +1034,14 @@ function checkProductionEngineHealth({ timeoutMs = 15000, scriptPath = path.join
 async function notifyGoldenHunterAccepted(niche, opportunityScore) {
   try {
     const payload = buildGoldenHunterNotifyPayload(niche, opportunityScore);
-    return await notifyN8nProductionEvent(payload, {
-      webhookUrl: N8N_TELEGRAM_WEBHOOK_URL,
-      envVarName: 'N8N_TELEGRAM_WEBHOOK_URL',
-      log: (entry) => appendGoldenHunterEvent({ action: 'n8n_notify', niche, ...entry }),
+    // Cycle 95: direct Telegram first (real message_id), n8n only as fallback.
+    return await founderAlert.sendFounderAlert(payload, {
+      n8nOptions: {
+        webhookUrl: N8N_TELEGRAM_WEBHOOK_URL,
+        envVarName: 'N8N_TELEGRAM_WEBHOOK_URL',
+        log: (entry) => appendGoldenHunterEvent({ action: 'n8n_notify', niche, ...entry }),
+      },
+      log: (entry) => appendGoldenHunterEvent({ action: 'founder_alert', niche, ...entry }),
     });
   } catch (err) {
     return { attempted: false, error: err.message };
@@ -1049,10 +1054,14 @@ async function notifyGoldenHunterAccepted(niche, opportunityScore) {
 // notify implementation.
 async function notifyFactoryRecoveryEvent(payload) {
   try {
-    return await notifyN8nProductionEvent(payload, {
-      webhookUrl: N8N_TELEGRAM_WEBHOOK_URL,
-      envVarName: 'N8N_TELEGRAM_WEBHOOK_URL',
-      log: (entry) => appendLoopLog({ diagnosis: { status: 'recovery_notify' }, actions: [{ step: 'recovery_notify', ...entry }] }),
+    // Cycle 95: direct Telegram first (real message_id), n8n only as fallback.
+    return await founderAlert.sendFounderAlert(payload, {
+      n8nOptions: {
+        webhookUrl: N8N_TELEGRAM_WEBHOOK_URL,
+        envVarName: 'N8N_TELEGRAM_WEBHOOK_URL',
+        log: (entry) => appendLoopLog({ diagnosis: { status: 'recovery_notify' }, actions: [{ step: 'recovery_notify', ...entry }] }),
+      },
+      log: (entry) => appendLoopLog({ diagnosis: { status: 'founder_alert' }, actions: [{ step: 'founder_alert', event: payload && payload.event, ...entry }] }),
     });
   } catch (err) {
     return { attempted: false, error: err.message };
