@@ -23,10 +23,48 @@ exactly as before — nothing about their test surface changes.
 """
 
 import json
+import os
+import ssl
 import urllib.error
 import urllib.request
 
+try:
+    # certifi ships a current, portable CA bundle. Some endpoints (arXiv,
+    # observed 2026-10-18) are not verifiable with this interpreter's own
+    # default bundle, but are with certifi's. See get_ssl_context().
+    import certifi as _certifi
+except Exception:  # pragma: no cover - certifi is a normal dependency of `requests`
+    _certifi = None
+
 DEFAULT_USER_AGENT = "Mozilla/5.0 (Galaxy-Forge-MarketIntelligence)"
+
+_SSL_CONTEXT = None
+
+
+def get_ssl_context():
+    """Return a certificate-verifying TLS context, preferring certifi's bundle.
+
+    Root cause of the arXiv ``CERTIFICATE_VERIFY_FAILED: unable to get
+    local issuer certificate`` failure: this Python build resolves its
+    default CA bundle to ``C:\\Program Files\\Common Files\\SSL\\cert.pem``,
+    which lacks the issuer arXiv's chain needs, while certifi's bundle
+    verifies it (both observed 2026-10-18).
+
+    Certificate verification is always enabled. When certifi is
+    unavailable or its bundle is missing we fall back to the interpreter's
+    own defaults (still verifying) — never to an unverified context — so a
+    missing bundle degrades to a clear verification failure, not a silent
+    security downgrade.
+    """
+    global _SSL_CONTEXT
+    if _SSL_CONTEXT is None:
+        cafile = None
+        if _certifi is not None:
+            candidate = _certifi.where()
+            if candidate and os.path.exists(candidate):
+                cafile = candidate
+        _SSL_CONTEXT = ssl.create_default_context(cafile=cafile)
+    return _SSL_CONTEXT
 
 # Real Evidence Provider abstraction (ADR-179, 2026-08-06): the codes a
 # real server uses to actively refuse a request (bot-protection,
@@ -56,7 +94,7 @@ def http_get_json(url, timeout=10, user_agent=DEFAULT_USER_AGENT):
         'Accept': 'application/json',
     })
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
+        with urllib.request.urlopen(req, timeout=timeout, context=get_ssl_context()) as r:
             return json.loads(r.read().decode('utf-8'))
     except urllib.error.HTTPError as e:
         if e.code in BLOCKED_STATUS_CODES:
@@ -75,7 +113,7 @@ def http_get_text(url, timeout=10, user_agent=DEFAULT_USER_AGENT):
         'Accept': 'application/atom+xml, text/xml, */*',
     })
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
+        with urllib.request.urlopen(req, timeout=timeout, context=get_ssl_context()) as r:
             return r.read().decode('utf-8')
     except urllib.error.HTTPError as e:
         if e.code in BLOCKED_STATUS_CODES:
