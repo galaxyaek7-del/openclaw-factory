@@ -19,6 +19,11 @@ where they already are:
     desk affiliate catalog (a second, distinct real product line).
   - config/reality.json's published_books -- the one real, unfakeable
     KDP publication ground truth.
+  - data/product_batch_12_gumroad_prep.json + data/commercial_inventory.json
+    -- this factory's own declared Gumroad product set and a real,
+    timestamped snapshot of the live Gumroad account. Added 2026-10-19
+    (Cycle 104): the catalog previously omitted Gumroad entirely, which is
+    the one platform where this factory has genuinely published.
   - finance_data.json's sales -- real revenue per product (DELETE-ME
     test record always filtered).
 
@@ -41,6 +46,8 @@ _PADDLE_PRODUCTS_PATH = _FACTORY_ROOT / "data" / "paddle_products.json"
 _REALITY_PATH = _FACTORY_ROOT / "config" / "reality.json"
 _FINANCE_PATH = _FACTORY_ROOT / "finance_data.json"
 _GENERATION_LOG_PATH = _FACTORY_ROOT / "books" / "_generation_log.jsonl"
+_GUMROAD_PREP_PATH = _FACTORY_ROOT / "data" / "product_batch_12_gumroad_prep.json"
+_GUMROAD_INVENTORY_PATH = _FACTORY_ROOT / "data" / "commercial_inventory.json"
 _TEST_RECORD_MARKER = "DELETE-ME"
 
 
@@ -216,19 +223,91 @@ def _kdp_catalog_entries(reality_path=None):
     return entries
 
 
-def build_product_master_catalog(paddle_products_path=None, reality_path=None, finance_path=None, generation_log_path=None, now=None):
+def _norm_title(value):
+    return "".join(ch for ch in str(value or "").lower() if ch.isalnum())
+
+
+def _gumroad_catalog_entries(prep_path=None, inventory_path=None, finance_path=None):
+    """Cycle 104 (2026-10-19): closes a real gap -- the catalog declared
+    itself this factory's product source of truth while omitting Gumroad
+    entirely, which is the only platform where this factory has actually
+    published anything (verified live: 82 products, 79 published). Only
+    the 10 products this factory itself declares are included: the live
+    account holds a large legacy catalog that is not ours to claim.
+
+    Two real local sources, no network call:
+      - data/product_batch_12_gumroad_prep.json -- our own declared B12
+        product set (id, title, files, price, status).
+      - data/commercial_inventory.json -- a real, timestamped read of the
+        live Gumroad account (scripts/commercial_inventory.py). It is
+        cited, never re-fetched, so this stays a pure read.
+
+    Matching is by normalized title because that is the only field both
+    sources genuinely share; the live product id is carried through when a
+    match is found and honestly absent when it is not.
+    """
+    prep_file = Path(prep_path) if prep_path else _GUMROAD_PREP_PATH
+    inv_file = Path(inventory_path) if inventory_path else _GUMROAD_INVENTORY_PATH
+    try:
+        with open(prep_file, "r", encoding="utf-8-sig") as f:
+            prep = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return []
+    inventory = _read_json(inv_file, {})
+    live = {}
+    observed_at = inventory.get("generated_at")
+    for it in ((inventory.get("gumroad") or {}).get("items") or []):
+        live[_norm_title(it.get("title"))] = it
+
+    entries = []
+    for item in prep.get("items") or []:
+        title = item.get("title", "Unknown")
+        it_live = live.get(_norm_title(title))
+        sales = _real_sales_matching(title, finance_path=finance_path)
+        copy_block = item.get("listing_copy")
+        description = (copy_block.get("listing_description")
+                       if isinstance(copy_block, dict) else "Unknown")
+        entries.append(_catalog_entry(
+            internal_product_id=(it_live or {}).get("id") or item.get("id"),
+            product_name=title,
+            product_type="gumroad_digital_product",
+            description=description,
+            source_files=["books/batch12/%s" % fn for fn in (item.get("files") or [])],
+            pricing_usd=((it_live.get("price_cents") or 0) / 100.0
+                         if it_live and it_live.get("price_cents") is not None
+                         else item.get("proposed_price_usd")),
+            platforms={"gumroad": {
+                "status": "PUBLISHED" if (it_live or {}).get("published") else "NOT_PUBLISHED",
+                "product_id": (it_live or {}).get("id"),
+                "url": (it_live or {}).get("url"),
+                "sales_count": (it_live or {}).get("sales_count_field"),
+                "observed_at": observed_at,
+                "note": ("publication state read from data/commercial_inventory.json, "
+                         "a real live-account snapshot; not re-fetched here."),
+            }},
+            publication_status=("PUBLISHED" if (it_live or {}).get("published")
+                                else "NOT_PUBLISHED"),
+            checkout_url=(it_live or {}).get("url"),
+            revenue_usd=sales["revenue_usd"], refunds_usd=sales["refunds_usd"],
+            last_updated=item.get("updated_at_utc"),
+        ))
+    return entries
+
+
+def build_product_master_catalog(paddle_products_path=None, reality_path=None, finance_path=None, generation_log_path=None, gumroad_prep_path=None, gumroad_inventory_path=None, now=None):
     """The one real aggregator. Computes each real source exactly once."""
     now = now or datetime.now(timezone.utc)
     entries = (
         _paddle_catalog_entries(paddle_products_path=paddle_products_path, finance_path=finance_path, generation_log_path=generation_log_path)
         + _affiliate_catalog_entries()
         + _kdp_catalog_entries(reality_path=reality_path)
+        + _gumroad_catalog_entries(prep_path=gumroad_prep_path, inventory_path=gumroad_inventory_path, finance_path=finance_path)
     )
     return {
         "generated_at": now.isoformat(),
         "total_products": len(entries),
         "products": entries,
-        "note": "Source of truth is per-platform real records (data/paddle_products.json, affiliate_commerce/products.py, config/reality.json) -- this is a read-only merged view, never a second mutable product database. See all_generation_attempts() for the separate, much larger raw generation-attempt log.",
+        "note": "Source of truth is per-platform real records (data/paddle_products.json, affiliate_commerce/products.py, config/reality.json, data/product_batch_12_gumroad_prep.json + data/commercial_inventory.json for Gumroad) -- this is a read-only merged view, never a second mutable product database. See all_generation_attempts() for the separate, much larger raw generation-attempt log.",
     }
 
 

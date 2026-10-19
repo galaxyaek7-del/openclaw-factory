@@ -1,0 +1,1171 @@
+{
+  "schema": "cycle104_digital_product_inventory/1",
+  "generated_at": "2026-10-19T19:49:41.625468+00:00",
+  "read_only": true,
+  "cost_usd": 0,
+  "sources": {
+    "catalog": "product_master_catalog.build_product_master_catalog()",
+    "operational_history": "data/operational_history.json",
+    "listing_verification": "C:\\openclaw-dasgboard\\reports\\CYCLE104\\GUMROAD_LISTING_VERIFICATION.json",
+    "listing_verified_at": "2026-10-19T18:58:16+00:00",
+    "qa_sweep": "C:\\openclaw-dasgboard\\reports\\CYCLE104\\PRODUCT_QA_RESULTS.json",
+    "qa_generated_at": "2026-10-19T19:05:35+00:00"
+  },
+  "note": "PURCHASABLE is always UNKNOWN: only a real, completed checkout can prove purchasability and this factory has never completed one. No metric here is estimated.",
+  "totals": {
+    "products": 21,
+    "by_platform_family": {
+      "ai_saas_or_b2b_ladder_product": 7,
+      "affiliate_asset": 4,
+      "gumroad_digital_product": 10
+    },
+    "published": 3,
+    "release_states": {
+      "UNKNOWN": 11,
+      "CHECKOUT_VERIFIED": 3,
+      "READY_FOR_AUTHORIZATION": 3,
+      "BUILD_COMPLETE": 4
+    },
+    "purchasable": "UNKNOWN",
+    "revenue_usd": 0
+  },
+  "gaps": [
+    "pro_01kxtd3xzaz0nmfgphk55brhn7: not published on any platform",
+    "pro_01ky4w4ej5b3kmhm3fyddmajw7: not published on any platform",
+    "pro_01ky4w4frj8j0kctqzqg8mbwev: not published on any platform",
+    "pro_01ky4w4gr5eksxkf48zqe61zny: not published on any platform",
+    "pro_01ky4w4hgv157bqqe4wmp7rwe7: not published on any platform",
+    "pro_01kzdzzh4kv6bkpzfhd5r1jnkn: not published on any platform",
+    "pro_01m23gzbw31wc62r7rkr7y2zyw: not published on any platform",
+    "B07LCCT6VS: not published on any platform",
+    "B07LCCJD6B: not published on any platform",
+    "B0864RSM5S: not published on any platform",
+    "B0D1C9LBN5: not published on any platform",
+    "B12-002: not published on any platform",
+    "B12-005: not published on any platform",
+    "B12-006: not published on any platform",
+    "B12-006: content-quality layer FAIL -- not release-ready",
+    "B12-007: not published on any platform",
+    "B12-007: content-quality layer FAIL -- not release-ready",
+    "B12-008: not published on any platform",
+    "B12-008: content-quality layer FAIL -- not release-ready",
+    "B12-009: not published on any platform",
+    "B12-009: content-quality layer FAIL -- not release-ready",
+    "B12-010: not published on any platform"
+  ],
+  "products": [
+    {
+      "product_id": "pro_01kxtd3xzaz0nmfgphk55brhn7",
+      "local_id": null,
+      "product_name": "AI-Powered Compliance Automation System for Accounting Firms",
+      "product_type": "ai_saas_or_b2b_ladder_product",
+      "platforms": {
+        "paddle": {
+          "status": "PRODUCT_CREATED",
+          "product_id": "pro_01kxtd3xzaz0nmfgphk55brhn7",
+          "price_id": "pri_01kxtd4p62t4m7ezap61k5ree0",
+          "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."
+        }
+      },
+      "pricing_usd": 388.0,
+      "publication_status": "PRODUCT_CREATED_NOT_CONFIRMED_LIVE",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "UNKNOWN",
+        "reason": "no real operational_history record"
+      },
+      "local_artifacts": [
+        {
+          "path": "C:\\openclaw-dasgboard\\books\\ai_compliance_automation_for_accounting_firms_v2.pdf",
+          "exists": true,
+          "size_bytes": 99147,
+          "sha256": "012640fe9952a71527857918fc4df7b1401fd5726ce8d4512f15b52bd2894840"
+        },
+        {
+          "path": "C:\\openclaw-dasgboard\\books\\covers\\ai-powered_compliance_automation_system_for_accounting_firms_cover.png",
+          "exists": true,
+          "size_bytes": 88944,
+          "sha256": "4fbf0efc8d84721c774c5dc1d6f06b8ca779fc71afaf05c8080d3f7d84d76a92"
+        }
+      ],
+      "listing_verification": null,
+      "qa": null,
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "pro_01ky4w4ej5b3kmhm3fyddmajw7",
+      "local_id": null,
+      "product_name": "AI Customer Support Automation Platform for E-Commerce Businesses",
+      "product_type": "ai_saas_or_b2b_ladder_product",
+      "platforms": {
+        "paddle": {
+          "status": "PRODUCT_CREATED",
+          "product_id": "pro_01ky4w4ej5b3kmhm3fyddmajw7",
+          "price_id": "pri_01ky4w4f177yw91dk9tp0yahwv",
+          "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."
+        }
+      },
+      "pricing_usd": 126.0,
+      "publication_status": "PRODUCT_CREATED_NOT_CONFIRMED_LIVE",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "UNKNOWN",
+        "reason": "no real operational_history record"
+      },
+      "local_artifacts": [
+        {
+          "path": "C:\\openclaw-dasgboard\\books\\ai_customer_support_automation_ecommerce.pdf",
+          "exists": true,
+          "size_bytes": 94589,
+          "sha256": "9eca426941482c8f43fe2b21a8b473656e5fedfb0a54361ca52b4284dc7dde1e"
+        },
+        {
+          "path": "C:\\openclaw-dasgboard\\books\\covers\\ai_customer_support_automation_platform_for_e-commerce_businesses_cover.png",
+          "exists": true,
+          "size_bytes": 83540,
+          "sha256": "339dbf1a569595232d4a8394596dfdbf5ef0e564e7ca133efd73fce9b4062f18"
+        }
+      ],
+      "listing_verification": null,
+      "qa": null,
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "pro_01ky4w4frj8j0kctqzqg8mbwev",
+      "local_id": null,
+      "product_name": "Workflow Automation System for Logistics Companies",
+      "product_type": "ai_saas_or_b2b_ladder_product",
+      "platforms": {
+        "paddle": {
+          "status": "PRODUCT_CREATED",
+          "product_id": "pro_01ky4w4frj8j0kctqzqg8mbwev",
+          "price_id": "pri_01ky4w4ga1f0vhav7m9cjkfk02",
+          "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."
+        }
+      },
+      "pricing_usd": 327.0,
+      "publication_status": "PRODUCT_CREATED_NOT_CONFIRMED_LIVE",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "UNKNOWN",
+        "reason": "no real operational_history record"
+      },
+      "local_artifacts": [
+        {
+          "path": "C:\\openclaw-dasgboard\\books\\workflow_automation_logistics.pdf",
+          "exists": true,
+          "size_bytes": 96389,
+          "sha256": "e043f56a25a838e31387a66d96af88c2c9129a5c96768c45dfe1931fa25cf7b5"
+        },
+        {
+          "path": "C:\\openclaw-dasgboard\\books\\covers\\workflow_automation_system_for_logistics_companies_cover.png",
+          "exists": true,
+          "size_bytes": 89996,
+          "sha256": "9cd84d193d0eb5eb968c08728ac6aaf878f53983884e27b0d8df4eed2bd5c59f"
+        }
+      ],
+      "listing_verification": null,
+      "qa": null,
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "pro_01ky4w4gr5eksxkf48zqe61zny",
+      "local_id": null,
+      "product_name": "Inventory Management System for Wholesale Distributors",
+      "product_type": "ai_saas_or_b2b_ladder_product",
+      "platforms": {
+        "paddle": {
+          "status": "PRODUCT_CREATED",
+          "product_id": "pro_01ky4w4gr5eksxkf48zqe61zny",
+          "price_id": "pri_01ky4w4h5yrygn6460ywdhcmad",
+          "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."
+        }
+      },
+      "pricing_usd": 327.0,
+      "publication_status": "PRODUCT_CREATED_NOT_CONFIRMED_LIVE",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "UNKNOWN",
+        "reason": "no real operational_history record"
+      },
+      "local_artifacts": [
+        {
+          "path": "C:\\openclaw-dasgboard\\books\\inventory_management_wholesale.pdf",
+          "exists": true,
+          "size_bytes": 91074,
+          "sha256": "dbd61730cd56bc959f58e49d700787e867d0763d9fddd258297a77d68e702ceb"
+        },
+        {
+          "path": "C:\\openclaw-dasgboard\\books\\covers\\inventory_management_system_for_wholesale_distributors_cover.png",
+          "exists": true,
+          "size_bytes": 81819,
+          "sha256": "4a92662d049557da740f736f745da7d0cca0dd504feda9dcca6ed78e1d5590e4"
+        }
+      ],
+      "listing_verification": null,
+      "qa": null,
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "pro_01ky4w4hgv157bqqe4wmp7rwe7",
+      "local_id": null,
+      "product_name": "How I Built an Autonomous AI Company Solo",
+      "product_type": "ai_saas_or_b2b_ladder_product",
+      "platforms": {
+        "paddle": {
+          "status": "PRODUCT_CREATED",
+          "product_id": "pro_01ky4w4hgv157bqqe4wmp7rwe7",
+          "price_id": "pri_01ky4w4hxem6vqc8fk0me4p7tt",
+          "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."
+        }
+      },
+      "pricing_usd": 97.0,
+      "publication_status": "PRODUCT_CREATED_NOT_CONFIRMED_LIVE",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "UNKNOWN",
+        "reason": "no real operational_history record"
+      },
+      "local_artifacts": [
+        {
+          "path": "C:\\openclaw-dasgboard\\books\\how_i_built_an_autonomous_ai_company_solo.pdf",
+          "exists": true,
+          "size_bytes": 129800,
+          "sha256": "bdb636750aa7adf14e8c13f3038c4c0d76bcc3ad95ad1195fac876a334083833"
+        },
+        {
+          "path": "C:\\openclaw-dasgboard\\books\\covers\\how_i_built_an_autonomous_ai_company_solo_cover.png",
+          "exists": true,
+          "size_bytes": 111627,
+          "sha256": "25b93e7f635f2ef4a9e29438b3cf5e4d1ccaf83e61fc27119472b205463572b5"
+        }
+      ],
+      "listing_verification": null,
+      "qa": null,
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "pro_01kzdzzh4kv6bkpzfhd5r1jnkn",
+      "local_id": null,
+      "product_name": "EU AI Act Compliance Toolkit",
+      "product_type": "ai_saas_or_b2b_ladder_product",
+      "platforms": {
+        "paddle": {
+          "status": "PRODUCT_CREATED",
+          "product_id": "pro_01kzdzzh4kv6bkpzfhd5r1jnkn",
+          "price_id": "pri_01kzdzzhhnfs8b3jraewg022kp",
+          "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."
+        }
+      },
+      "pricing_usd": 155.0,
+      "publication_status": "PRODUCT_CREATED_NOT_CONFIRMED_LIVE",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "UNKNOWN",
+        "reason": "no real operational_history record"
+      },
+      "local_artifacts": [
+        {
+          "path": "C:\\openclaw-dasgboard\\books\\eu_ai_act_compliance_toolkit.pdf",
+          "exists": true,
+          "size_bytes": 139121,
+          "sha256": "c22671a674141e734c4862cfcac871ec697d621693c5457cce4f738d9618c7af"
+        },
+        {
+          "path": "C:\\openclaw-dasgboard\\books\\covers\\eu_ai_act_compliance_toolkit_cover.png",
+          "exists": true,
+          "size_bytes": 98785,
+          "sha256": "743cc99dea160b5b94adf292c6763680631e462c39445d28979cd53976ecf884"
+        }
+      ],
+      "listing_verification": null,
+      "qa": null,
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "pro_01m23gzbw31wc62r7rkr7y2zyw",
+      "local_id": null,
+      "product_name": "The 5-Minute Context Reset Playbook",
+      "product_type": "ai_saas_or_b2b_ladder_product",
+      "platforms": {
+        "paddle": {
+          "status": "PRODUCT_CREATED",
+          "product_id": "pro_01m23gzbw31wc62r7rkr7y2zyw",
+          "price_id": "pri_01m23gzc9bb5z3kr0yfqrx7yba",
+          "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."
+        }
+      },
+      "pricing_usd": 15.0,
+      "publication_status": "PRODUCT_CREATED_NOT_CONFIRMED_LIVE",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "UNKNOWN",
+        "reason": "no real operational_history record"
+      },
+      "local_artifacts": [
+        {
+          "path": "C:\\openclaw-dasgboard\\books\\five_minute_context_reset_playbook.pdf",
+          "exists": true,
+          "size_bytes": 119824,
+          "sha256": "73d6f147168d0e830fd73388bdf2ed880f522e35f5ff03ef0e98c233a8cd7b17"
+        },
+        {
+          "path": "C:\\openclaw-dasgboard\\books\\covers\\the_5-minute_context_reset_playbook_cover.png",
+          "exists": true,
+          "size_bytes": 102080,
+          "sha256": "9defc5884efec151fe43f1d25b1954f090d1466230ae356292eb045996a66207"
+        }
+      ],
+      "listing_verification": null,
+      "qa": null,
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "B07LCCT6VS",
+      "local_id": null,
+      "product_name": "FITUEYES Height Adjustable Standing Desk Converter, 36\" Wide",
+      "product_type": "affiliate_asset",
+      "platforms": {
+        "amazon_associates": {
+          "status": "REAL_LISTING_CITED",
+          "asin": "B07LCCT6VS"
+        }
+      },
+      "pricing_usd": 179.99,
+      "publication_status": "EXTERNAL_PRODUCT_NOT_OWNED",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "UNKNOWN",
+        "reason": "no real operational_history record"
+      },
+      "local_artifacts": [],
+      "listing_verification": null,
+      "qa": null,
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "B07LCCJD6B",
+      "local_id": null,
+      "product_name": "FITUEYES Height Adjustable Standing Desk Converter, 32\" Wide",
+      "product_type": "affiliate_asset",
+      "platforms": {
+        "amazon_associates": {
+          "status": "REAL_LISTING_CITED",
+          "asin": "B07LCCJD6B"
+        }
+      },
+      "pricing_usd": 111.98,
+      "publication_status": "EXTERNAL_PRODUCT_NOT_OWNED",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "UNKNOWN",
+        "reason": "no real operational_history record"
+      },
+      "local_artifacts": [],
+      "listing_verification": null,
+      "qa": null,
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "B0864RSM5S",
+      "local_id": null,
+      "product_name": "PowerPro 36 Inch Electric Standing Desk Converter",
+      "product_type": "affiliate_asset",
+      "platforms": {
+        "amazon_associates": {
+          "status": "REAL_LISTING_CITED",
+          "asin": "B0864RSM5S"
+        }
+      },
+      "pricing_usd": 349.0,
+      "publication_status": "EXTERNAL_PRODUCT_NOT_OWNED",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "UNKNOWN",
+        "reason": "no real operational_history record"
+      },
+      "local_artifacts": [],
+      "listing_verification": null,
+      "qa": null,
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "B0D1C9LBN5",
+      "local_id": null,
+      "product_name": "Aconcept Extra-Slim 24 x 14 inch Standing Desk Converter",
+      "product_type": "affiliate_asset",
+      "platforms": {
+        "amazon_associates": {
+          "status": "REAL_LISTING_CITED",
+          "asin": "B0D1C9LBN5"
+        }
+      },
+      "pricing_usd": 49.99,
+      "publication_status": "EXTERNAL_PRODUCT_NOT_OWNED",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "UNKNOWN",
+        "reason": "no real operational_history record"
+      },
+      "local_artifacts": [],
+      "listing_verification": null,
+      "qa": null,
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "W9FpZXpQB-fNiVCteT6Cow==",
+      "local_id": "B12-001",
+      "product_name": "Freelancer Rate & Raise Calculator",
+      "product_type": "gumroad_digital_product",
+      "platforms": {
+        "gumroad": {
+          "status": "PUBLISHED",
+          "product_id": "W9FpZXpQB-fNiVCteT6Cow==",
+          "url": "https://aekraft.gumroad.com/l/blayvb",
+          "sales_count": 0,
+          "observed_at": "2026-10-19T18:41:34.363993+00:00",
+          "note": "publication state read from data/commercial_inventory.json, a real live-account snapshot; not re-fetched here."
+        }
+      },
+      "pricing_usd": 14.99,
+      "publication_status": "PUBLISHED",
+      "checkout_url": "https://aekraft.gumroad.com/l/blayvb",
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "CHECKOUT_VERIFIED",
+        "verified_milestones": [
+          "BUILD_COMPLETE",
+          "QA_PASS",
+          "READY_FOR_AUTHORIZATION",
+          "UPLOAD_COMPLETED",
+          "PUBLIC_LISTING_VERIFIED",
+          "CHECKOUT_VERIFIED"
+        ],
+        "unrecognised_milestones": []
+      },
+      "local_artifacts": [
+        {
+          "path": "books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx",
+          "exists": true,
+          "size_bytes": 8922,
+          "sha256": "aee8fc0b100345e7abc6e8a41487ddf551b5b7f235c6f4324827d1c6ab8a092d"
+        }
+      ],
+      "listing_verification": {
+        "state": "PUBLISHED_VERIFIED_WITH_REVIEW_ITEMS",
+        "verified_at": "2026-10-19T18:58:16+00:00",
+        "review_items": [
+          {
+            "item": "attachment names not exposed by the API",
+            "detail": "file name is null on every attachment; matching used filetype+size only, so a same-type same-size substitution cannot be excluded by this check"
+          }
+        ]
+      },
+      "qa": {
+        "gate_verdict": "APPROVED",
+        "gate_file": "reports\\B12-001\\GATE_FINAL_2026-10-17.json",
+        "content_quality": {
+          "status": "PASS",
+          "score": 100
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        },
+        "content_depth": {
+          "sheets": 4,
+          "formulas": 10,
+          "sheet_depth_ok": true
+        },
+        "harness_verdict": "BLOCKED_MISSING_DATA",
+        "artifacts_tracked_in_git": {
+          "books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx": true
+        }
+      },
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "B12-002",
+      "local_id": "B12-002",
+      "product_name": "Client Project Handoff Pack",
+      "product_type": "gumroad_digital_product",
+      "platforms": {
+        "gumroad": {
+          "status": "NOT_PUBLISHED",
+          "product_id": null,
+          "url": null,
+          "sales_count": null,
+          "observed_at": "2026-10-19T18:41:34.363993+00:00",
+          "note": "publication state read from data/commercial_inventory.json, a real live-account snapshot; not re-fetched here."
+        }
+      },
+      "pricing_usd": 11.99,
+      "publication_status": "NOT_PUBLISHED",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "READY_FOR_AUTHORIZATION",
+        "verified_milestones": [
+          "BUILD_COMPLETE",
+          "QA_PASS",
+          "READY_FOR_AUTHORIZATION"
+        ],
+        "unrecognised_milestones": []
+      },
+      "local_artifacts": [
+        {
+          "path": "books/batch12/B12-002_client_handoff_guide.pdf",
+          "exists": true,
+          "size_bytes": 11360,
+          "sha256": "273e05c5d8720ebe61ab44b2a9a6a3ef9f07f4eea4c561283c3ef0dd79b80f07"
+        },
+        {
+          "path": "books/batch12/B12-002_client_handoff_register.xlsx",
+          "exists": true,
+          "size_bytes": 15941,
+          "sha256": "e733ea8e913899b53ebe9a69d3e273d4ed018f997e47f006bbe1263d90543fda"
+        }
+      ],
+      "listing_verification": {
+        "state": "NOT_PUBLISHED_AS_EXPECTED",
+        "verified_at": "2026-10-19T18:58:16+00:00",
+        "review_items": []
+      },
+      "qa": {
+        "gate_verdict": {
+          "gate_at_recommended_price_11_99": "APPROVED",
+          "gate_at_manifest_price_29_00": "REWRITE"
+        },
+        "gate_file": "reports\\B12-002\\GATE_FINAL_2026-10-18.json",
+        "content_quality": {
+          "status": "PASS",
+          "score": 100
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        },
+        "content_depth": {
+          "words": 1722,
+          "words_required": 1199,
+          "text_depth_ok": true,
+          "sheets": 6,
+          "formulas": 102,
+          "sheet_depth_ok": true
+        },
+        "harness_verdict": "BLOCKED_MISSING_DATA",
+        "artifacts_tracked_in_git": {
+          "books/batch12/B12-002_client_handoff_guide.pdf": true,
+          "books/batch12/B12-002_client_handoff_register.xlsx": true
+        }
+      },
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "TFeaaWXO3zySimrs2Jbjbw==",
+      "local_id": "B12-003",
+      "product_name": "Founder Access Continuity Organizer",
+      "product_type": "gumroad_digital_product",
+      "platforms": {
+        "gumroad": {
+          "status": "PUBLISHED",
+          "product_id": "TFeaaWXO3zySimrs2Jbjbw==",
+          "url": "https://aekraft.gumroad.com/l/svlky",
+          "sales_count": 0,
+          "observed_at": "2026-10-19T18:41:34.363993+00:00",
+          "note": "publication state read from data/commercial_inventory.json, a real live-account snapshot; not re-fetched here."
+        }
+      },
+      "pricing_usd": 8.0,
+      "publication_status": "PUBLISHED",
+      "checkout_url": "https://aekraft.gumroad.com/l/svlky",
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "CHECKOUT_VERIFIED",
+        "verified_milestones": [
+          "BUILD_COMPLETE",
+          "QA_PASS",
+          "READY_FOR_AUTHORIZATION",
+          "UPLOAD_COMPLETED",
+          "PUBLIC_LISTING_VERIFIED",
+          "CHECKOUT_VERIFIED"
+        ],
+        "unrecognised_milestones": []
+      },
+      "local_artifacts": [
+        {
+          "path": "books/batch12/B12-003_access_continuity_inventory.xlsx",
+          "exists": true,
+          "size_bytes": 13594,
+          "sha256": "7cf3e46fa8c2470e1a14c91ff983bf186542fb92f005a0305ff3cacdf9d5edd5"
+        },
+        {
+          "path": "books/batch12/B12-003_access_continuity_organizer.pdf",
+          "exists": true,
+          "size_bytes": 19095,
+          "sha256": "c9c18a4b0505828a1eabaf6a72a2aba8cc6ef5024c8ebe543e47f971889000fb"
+        }
+      ],
+      "listing_verification": {
+        "state": "PUBLISHED_VERIFIED_WITH_REVIEW_ITEMS",
+        "verified_at": "2026-10-19T18:58:16+00:00",
+        "review_items": [
+          {
+            "item": "attachment names not exposed by the API",
+            "detail": "file name is null on every attachment; matching used filetype+size only, so a same-type same-size substitution cannot be excluded by this check"
+          }
+        ]
+      },
+      "qa": {
+        "gate_verdict": "APPROVED at $8.00",
+        "gate_file": "reports\\B12-003\\GATE_FINAL_2026-10-19.json",
+        "content_quality": {
+          "status": "PASS",
+          "score": 100
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        },
+        "content_depth": {
+          "words": 3235,
+          "words_required": 800,
+          "text_depth_ok": true,
+          "sheets": 6,
+          "formulas": 20,
+          "sheet_depth_ok": true
+        },
+        "harness_verdict": "BLOCKED_MISSING_DATA",
+        "artifacts_tracked_in_git": {
+          "books/batch12/B12-003_access_continuity_inventory.xlsx": true,
+          "books/batch12/B12-003_access_continuity_organizer.pdf": true
+        }
+      },
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "-cbRBfZyJMTKpl-Xk8Oz3Q==",
+      "local_id": "B12-004",
+      "product_name": "Meeting Cost & ROI Calculator",
+      "product_type": "gumroad_digital_product",
+      "platforms": {
+        "gumroad": {
+          "status": "PUBLISHED",
+          "product_id": "-cbRBfZyJMTKpl-Xk8Oz3Q==",
+          "url": "https://aekraft.gumroad.com/l/ieashv",
+          "sales_count": 0,
+          "observed_at": "2026-10-19T18:41:34.363993+00:00",
+          "note": "publication state read from data/commercial_inventory.json, a real live-account snapshot; not re-fetched here."
+        }
+      },
+      "pricing_usd": 11.99,
+      "publication_status": "PUBLISHED",
+      "checkout_url": "https://aekraft.gumroad.com/l/ieashv",
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "CHECKOUT_VERIFIED",
+        "verified_milestones": [
+          "BUILD_COMPLETE",
+          "QA_PASS",
+          "READY_FOR_AUTHORIZATION",
+          "UPLOAD_COMPLETED",
+          "PUBLIC_LISTING_VERIFIED",
+          "CHECKOUT_VERIFIED"
+        ],
+        "unrecognised_milestones": []
+      },
+      "local_artifacts": [
+        {
+          "path": "books/batch12/B12-004_meeting_cost_roi_calculator.xlsx",
+          "exists": true,
+          "size_bytes": 12865,
+          "sha256": "87ecb1cd223ebf615c46bf49a74c1feb70ea5131a1da9c14dcedff470ccac820"
+        },
+        {
+          "path": "books/batch12/B12-004_meeting_method_guide.pdf",
+          "exists": true,
+          "size_bytes": 9639,
+          "sha256": "2c964edcfc8a9dcfb45d6bfcde23da85871ec6b3deacc39a10c71cf227972a46"
+        }
+      ],
+      "listing_verification": {
+        "state": "PUBLISHED_VERIFIED_WITH_REVIEW_ITEMS",
+        "verified_at": "2026-10-19T18:58:16+00:00",
+        "review_items": [
+          {
+            "item": "attachment names not exposed by the API",
+            "detail": "file name is null on every attachment; matching used filetype+size only, so a same-type same-size substitution cannot be excluded by this check"
+          }
+        ]
+      },
+      "qa": {
+        "gate_verdict": "APPROVED at $11.99; NOT_READY at the manifest's $19.00",
+        "gate_file": "reports\\B12-004\\GATE_FINAL_2026-10-18.json",
+        "content_quality": {
+          "status": "PASS",
+          "score": 100
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        },
+        "content_depth": {
+          "words": 1441,
+          "words_required": 1199,
+          "text_depth_ok": true,
+          "sheets": 5,
+          "formulas": 111,
+          "sheet_depth_ok": true
+        },
+        "harness_verdict": "BLOCKED_MISSING_DATA",
+        "artifacts_tracked_in_git": {
+          "books/batch12/B12-004_meeting_cost_roi_calculator.xlsx": true,
+          "books/batch12/B12-004_meeting_method_guide.pdf": true
+        }
+      },
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "B12-005",
+      "local_id": "B12-005",
+      "product_name": "Podcast Guest Booking Kit",
+      "product_type": "gumroad_digital_product",
+      "platforms": {
+        "gumroad": {
+          "status": "NOT_PUBLISHED",
+          "product_id": null,
+          "url": null,
+          "sales_count": null,
+          "observed_at": "2026-10-19T18:41:34.363993+00:00",
+          "note": "publication state read from data/commercial_inventory.json, a real live-account snapshot; not re-fetched here."
+        }
+      },
+      "pricing_usd": 8.0,
+      "publication_status": "NOT_PUBLISHED",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "READY_FOR_AUTHORIZATION",
+        "verified_milestones": [
+          "BUILD_COMPLETE",
+          "QA_PASS",
+          "READY_FOR_AUTHORIZATION"
+        ],
+        "unrecognised_milestones": []
+      },
+      "local_artifacts": [
+        {
+          "path": "books/batch12/B12-005_podcast_guest_scripts.pdf",
+          "exists": true,
+          "size_bytes": 20146,
+          "sha256": "246268d4ba41c6099a1d78ddd74c10203106f6999d4908710178fbd1d749bb9e"
+        },
+        {
+          "path": "books/batch12/B12-005_podcast_guest_tracker.xlsx",
+          "exists": true,
+          "size_bytes": 17400,
+          "sha256": "0720869bd302ff7c49c03edae97722d22161061191650380fc9047913e124b14"
+        }
+      ],
+      "listing_verification": {
+        "state": "NOT_PUBLISHED_AS_EXPECTED",
+        "verified_at": "2026-10-19T18:58:16+00:00",
+        "review_items": []
+      },
+      "qa": {
+        "gate_verdict": "APPROVED at $8.00",
+        "gate_file": "reports\\B12-005\\GATE_FINAL_2026-10-19.json",
+        "content_quality": {
+          "status": "PASS",
+          "score": 100
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        },
+        "content_depth": {
+          "words": 3336,
+          "words_required": 800,
+          "text_depth_ok": true,
+          "sheets": 6,
+          "formulas": 154,
+          "sheet_depth_ok": true
+        },
+        "harness_verdict": "BLOCKED_MISSING_DATA",
+        "artifacts_tracked_in_git": {
+          "books/batch12/B12-005_podcast_guest_scripts.pdf": true,
+          "books/batch12/B12-005_podcast_guest_tracker.xlsx": true
+        }
+      },
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "B12-006",
+      "local_id": "B12-006",
+      "product_name": "Home-Office Deduction Organizer (US)",
+      "product_type": "gumroad_digital_product",
+      "platforms": {
+        "gumroad": {
+          "status": "NOT_PUBLISHED",
+          "product_id": null,
+          "url": null,
+          "sales_count": null,
+          "observed_at": "2026-10-19T18:41:34.363993+00:00",
+          "note": "publication state read from data/commercial_inventory.json, a real live-account snapshot; not re-fetched here."
+        }
+      },
+      "pricing_usd": 29,
+      "publication_status": "NOT_PUBLISHED",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "BUILD_COMPLETE",
+        "verified_milestones": [
+          "BUILD_COMPLETE"
+        ],
+        "unrecognised_milestones": []
+      },
+      "local_artifacts": [
+        {
+          "path": "books/batch12/B12-006_home_office_method_guide.pdf",
+          "exists": true,
+          "size_bytes": 3270,
+          "sha256": "e6560135e09006300468dc388f775e20ac8803a2d2ee74a5fc370d8a3d226e7a"
+        },
+        {
+          "path": "books/batch12/B12-006_home_office_expense_log.xlsx",
+          "exists": true,
+          "size_bytes": 7886,
+          "sha256": "fb8252cded40ebb73964710cbb34ef817da8d2a8c66618c2f45c0cc075fec72f"
+        }
+      ],
+      "listing_verification": null,
+      "qa": {
+        "gate_verdict": null,
+        "gate_file": null,
+        "content_quality": {
+          "status": "FAIL",
+          "score": 60
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        },
+        "content_depth": {
+          "words": 254,
+          "words_required": 2900,
+          "text_depth_ok": false,
+          "sheets": 4,
+          "formulas": 3,
+          "sheet_depth_ok": false
+        },
+        "harness_verdict": "BLOCKED_MISSING_DATA",
+        "artifacts_tracked_in_git": {
+          "books/batch12/B12-006_home_office_method_guide.pdf": false,
+          "books/batch12/B12-006_home_office_expense_log.xlsx": false
+        }
+      },
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "B12-007",
+      "local_id": "B12-007",
+      "product_name": "Digital Declutter & Backup: 30-Day System",
+      "product_type": "gumroad_digital_product",
+      "platforms": {
+        "gumroad": {
+          "status": "NOT_PUBLISHED",
+          "product_id": null,
+          "url": null,
+          "sales_count": null,
+          "observed_at": "2026-10-19T18:41:34.363993+00:00",
+          "note": "publication state read from data/commercial_inventory.json, a real live-account snapshot; not re-fetched here."
+        }
+      },
+      "pricing_usd": 19,
+      "publication_status": "NOT_PUBLISHED",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "BUILD_COMPLETE",
+        "verified_milestones": [
+          "BUILD_COMPLETE"
+        ],
+        "unrecognised_milestones": []
+      },
+      "local_artifacts": [
+        {
+          "path": "books/batch12/B12-007_digital_declutter_plan.pdf",
+          "exists": true,
+          "size_bytes": 4036,
+          "sha256": "a70b55d9aba3ec4a5e4b3bc91e91bf1a6e5b7e9e7b17a6b10e639dc28ee3b117"
+        },
+        {
+          "path": "books/batch12/B12-007_digital_inventory.xlsx",
+          "exists": true,
+          "size_bytes": 9374,
+          "sha256": "6ff62c7847c3dbcef3dde0ebf5a855c161212804952cc0b9a5b34fe847901458"
+        }
+      ],
+      "listing_verification": null,
+      "qa": {
+        "gate_verdict": null,
+        "gate_file": null,
+        "content_quality": {
+          "status": "FAIL",
+          "score": 60
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        },
+        "content_depth": {
+          "words": 273,
+          "words_required": 1900,
+          "text_depth_ok": false,
+          "sheets": 6,
+          "formulas": 10,
+          "sheet_depth_ok": true
+        },
+        "harness_verdict": "BLOCKED_MISSING_DATA",
+        "artifacts_tracked_in_git": {
+          "books/batch12/B12-007_digital_declutter_plan.pdf": false,
+          "books/batch12/B12-007_digital_inventory.xlsx": false
+        }
+      },
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "B12-008",
+      "local_id": "B12-008",
+      "product_name": "Moving House 8-Week Planner",
+      "product_type": "gumroad_digital_product",
+      "platforms": {
+        "gumroad": {
+          "status": "NOT_PUBLISHED",
+          "product_id": null,
+          "url": null,
+          "sales_count": null,
+          "observed_at": "2026-10-19T18:41:34.363993+00:00",
+          "note": "publication state read from data/commercial_inventory.json, a real live-account snapshot; not re-fetched here."
+        }
+      },
+      "pricing_usd": 29,
+      "publication_status": "NOT_PUBLISHED",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "BUILD_COMPLETE",
+        "verified_milestones": [
+          "BUILD_COMPLETE"
+        ],
+        "unrecognised_milestones": []
+      },
+      "local_artifacts": [
+        {
+          "path": "books/batch12/B12-008_moving_checklist.pdf",
+          "exists": true,
+          "size_bytes": 4311,
+          "sha256": "d3803cd831106cfbce6875c84ada45fd008360db7fbe195d60c6a7bf73d2db14"
+        },
+        {
+          "path": "books/batch12/B12-008_moving_budget_tracker.xlsx",
+          "exists": true,
+          "size_bytes": 7629,
+          "sha256": "1e42132bf63d3c2b305a66ac86ff79824bdada0511b186420adaeaf5121dd1ed"
+        }
+      ],
+      "listing_verification": null,
+      "qa": {
+        "gate_verdict": null,
+        "gate_file": null,
+        "content_quality": {
+          "status": "FAIL",
+          "score": 60
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        },
+        "content_depth": {
+          "words": 273,
+          "words_required": 2900,
+          "text_depth_ok": false,
+          "sheets": 4,
+          "formulas": 1,
+          "sheet_depth_ok": false
+        },
+        "harness_verdict": "BLOCKED_MISSING_DATA",
+        "artifacts_tracked_in_git": {
+          "books/batch12/B12-008_moving_checklist.pdf": false,
+          "books/batch12/B12-008_moving_budget_tracker.xlsx": false
+        }
+      },
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "B12-009",
+      "local_id": "B12-009",
+      "product_name": "Pet Sitter Handover Kit",
+      "product_type": "gumroad_digital_product",
+      "platforms": {
+        "gumroad": {
+          "status": "NOT_PUBLISHED",
+          "product_id": null,
+          "url": null,
+          "sales_count": null,
+          "observed_at": "2026-10-19T18:41:34.363993+00:00",
+          "note": "publication state read from data/commercial_inventory.json, a real live-account snapshot; not re-fetched here."
+        }
+      },
+      "pricing_usd": 19,
+      "publication_status": "NOT_PUBLISHED",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "BUILD_COMPLETE",
+        "verified_milestones": [
+          "BUILD_COMPLETE"
+        ],
+        "unrecognised_milestones": []
+      },
+      "local_artifacts": [
+        {
+          "path": "books/batch12/B12-009_pet_sitter_handover_kit.pdf",
+          "exists": true,
+          "size_bytes": 4283,
+          "sha256": "2b2069c950627ea12aac60574dd2cf3b7d1ebc5bdbb852d37659127f89731844"
+        }
+      ],
+      "listing_verification": null,
+      "qa": {
+        "gate_verdict": null,
+        "gate_file": null,
+        "content_quality": {
+          "status": "FAIL",
+          "score": 60
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        },
+        "content_depth": {
+          "words": 233,
+          "words_required": 1900,
+          "text_depth_ok": false
+        },
+        "harness_verdict": "BLOCKED_MISSING_DATA",
+        "artifacts_tracked_in_git": {
+          "books/batch12/B12-009_pet_sitter_handover_kit.pdf": false
+        }
+      },
+      "purchasable": "UNKNOWN"
+    },
+    {
+      "product_id": "B12-010",
+      "local_id": "B12-010",
+      "product_name": "Nonprofit Grant Pipeline Tracker",
+      "product_type": "gumroad_digital_product",
+      "platforms": {
+        "gumroad": {
+          "status": "NOT_PUBLISHED",
+          "product_id": null,
+          "url": null,
+          "sales_count": null,
+          "observed_at": "2026-10-19T18:41:34.363993+00:00",
+          "note": "publication state read from data/commercial_inventory.json, a real live-account snapshot; not re-fetched here."
+        }
+      },
+      "pricing_usd": 15.0,
+      "publication_status": "NOT_PUBLISHED",
+      "checkout_url": null,
+      "revenue_usd": 0,
+      "refunds_usd": 0,
+      "release_state": {
+        "state": "READY_FOR_AUTHORIZATION",
+        "verified_milestones": [
+          "BUILD_COMPLETE",
+          "QA_PASS",
+          "READY_FOR_AUTHORIZATION"
+        ],
+        "unrecognised_milestones": []
+      },
+      "local_artifacts": [
+        {
+          "path": "books/batch12/B12-010_grant_pipeline_tracker.xlsx",
+          "exists": true,
+          "size_bytes": 38765,
+          "sha256": "df49cecaf704cb06dec3b48c9f826c94cfdae9e2bf91d3a2b76fc670593b8574"
+        },
+        {
+          "path": "books/batch12/B12-010_grant_pipeline_guide.pdf",
+          "exists": true,
+          "size_bytes": 45453,
+          "sha256": "b7ad0849a7d248db821c79873a8cdc3c42399a6ce054083eaf650298e97f0a49"
+        }
+      ],
+      "listing_verification": {
+        "state": "NOT_PUBLISHED_AS_EXPECTED",
+        "verified_at": "2026-10-19T18:58:16+00:00",
+        "review_items": []
+      },
+      "qa": {
+        "gate_verdict": "APPROVED at $15.00",
+        "gate_file": "reports\\B12-010\\GATE_FINAL_2026-10-19.json",
+        "content_quality": {
+          "status": "PASS",
+          "score": 100
+        },
+        "market_reality": {
+          "status": "MISSING_DATA",
+          "score": null
+        },
+        "content_depth": {
+          "words": 8324,
+          "words_required": 1500,
+          "text_depth_ok": true,
+          "sheets": 9,
+          "formulas": 427,
+          "sheet_depth_ok": true
+        },
+        "harness_verdict": "BLOCKED_MISSING_DATA",
+        "artifacts_tracked_in_git": {
+          "books/batch12/B12-010_grant_pipeline_tracker.xlsx": true,
+          "books/batch12/B12-010_grant_pipeline_guide.pdf": true
+        }
+      },
+      "purchasable": "UNKNOWN"
+    }
+  ]
+}

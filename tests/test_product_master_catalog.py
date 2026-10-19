@@ -17,6 +17,19 @@ if str(_FACTORY_ROOT) not in sys.path:
 import product_master_catalog as pmc
 
 
+def _empty_gumroad(tmp):
+    """Isolate the real Gumroad family (Cycle 104) the same way every other
+    real source is isolated here: an empty prep file and an empty snapshot,
+    so these tests keep asserting the exact totals they document."""
+    prep = os.path.join(tmp, "gumroad_prep.json")
+    inv = os.path.join(tmp, "gumroad_inventory.json")
+    with open(prep, "w", encoding="utf-8") as f:
+        json.dump({"items": []}, f)
+    with open(inv, "w", encoding="utf-8") as f:
+        json.dump({"gumroad": {"items": []}}, f)
+    return prep, inv
+
+
 class TestPaddleCatalogEntries(unittest.TestCase):
     def test_every_field_from_the_directive_is_present(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -32,6 +45,7 @@ class TestPaddleCatalogEntries(unittest.TestCase):
 
             result = pmc.build_product_master_catalog(
                 paddle_products_path=paddle_path, finance_path=finance_path, reality_path=reality_path,
+                gumroad_prep_path=_empty_gumroad(tmp)[0], gumroad_inventory_path=_empty_gumroad(tmp)[1],
             )
             self.assertEqual(result["total_products"], 5)  # 1 paddle + 4 real affiliate
             paddle_entry = next(p for p in result["products"] if p["product_name"] == "Test Product")
@@ -75,7 +89,9 @@ class TestPaddleCatalogEntries(unittest.TestCase):
             reality_path = os.path.join(tmp, "reality.json")
             with open(reality_path, "w", encoding="utf-8") as f:
                 json.dump({"published_books": []}, f)
-            result = pmc.build_product_master_catalog(paddle_products_path=paddle_path, reality_path=reality_path)
+            result = pmc.build_product_master_catalog(paddle_products_path=paddle_path, reality_path=reality_path,
+                                                      gumroad_prep_path=_empty_gumroad(tmp)[0],
+                                                      gumroad_inventory_path=_empty_gumroad(tmp)[1])
             self.assertEqual(result["total_products"], 4)
             self.assertTrue(all(p["product_type"] == "affiliate_asset" for p in result["products"]))
 
@@ -178,6 +194,86 @@ class TestGenerationLogCrossReference(unittest.TestCase):
             result = pmc.build_product_master_catalog(paddle_products_path=paddle_path, reality_path=reality_path, generation_log_path=gen_log_path)
             entry = next(p for p in result["products"] if p["product_name"] == "Failed Widget")
             self.assertEqual(entry["description"], "Unknown")
+
+
+class TestGumroadCatalogEntries(unittest.TestCase):
+    """Cycle 104 (2026-10-19): the catalog previously omitted Gumroad --
+    the only platform where this factory has actually published -- from a
+    module that declares itself the product source of truth."""
+
+    def _fixtures(self, tmp, live_published=True, include_live=True):
+        prep = os.path.join(tmp, "prep.json")
+        with open(prep, "w", encoding="utf-8-sig") as f:
+            json.dump({"items": [
+                {"id": "B12-003", "title": "Founder Access Continuity Organizer",
+                 "files": ["B12-003_access_continuity_inventory.xlsx"],
+                 "proposed_price_usd": 8.0,
+                 "listing_copy": {"listing_description": "Real copy."}},
+                {"id": "B12-002", "title": "Client Project Handoff Pack",
+                 "files": ["B12-002_client_handoff_guide.pdf"],
+                 "proposed_price_usd": 11.99, "listing_copy": "drafts/x.txt"},
+            ]}, f)
+        inv = os.path.join(tmp, "inv.json")
+        items = []
+        if include_live:
+            items.append({"id": "TFeaaWXO3zySimrs2Jbjbw==",
+                          "title": "Founder Access Continuity Organizer",
+                          "url": "https://aekraft.gumroad.com/l/svlky",
+                          "price_cents": 800, "published": live_published,
+                          "sales_count_field": 0})
+        with open(inv, "w", encoding="utf-8") as f:
+            json.dump({"generated_at": "2026-10-19T18:41:34+00:00",
+                       "gumroad": {"items": items}}, f)
+        return prep, inv
+
+    def test_live_match_marks_published_with_real_id_url_and_price(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            prep, inv = self._fixtures(tmp)
+            entries = pmc._gumroad_catalog_entries(prep_path=prep, inventory_path=inv)
+            live = next(e for e in entries if e["product_name"].startswith("Founder"))
+            self.assertEqual(live["publication_status"], "PUBLISHED")
+            self.assertEqual(live["platforms"]["gumroad"]["product_id"],
+                             "TFeaaWXO3zySimrs2Jbjbw==")
+            self.assertEqual(live["checkout_url"], "https://aekraft.gumroad.com/l/svlky")
+            self.assertEqual(live["pricing_usd"], 8.0)
+            self.assertEqual(live["platforms"]["gumroad"]["observed_at"],
+                             "2026-10-19T18:41:34+00:00")
+
+    def test_no_live_row_stays_not_published_using_the_declared_price(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            prep, inv = self._fixtures(tmp)
+            entries = pmc._gumroad_catalog_entries(prep_path=prep, inventory_path=inv)
+            absent = next(e for e in entries if e["product_name"].startswith("Client"))
+            self.assertEqual(absent["publication_status"], "NOT_PUBLISHED")
+            self.assertIsNone(absent["checkout_url"])
+            self.assertEqual(absent["pricing_usd"], 11.99)  # declared, never invented
+            self.assertEqual(absent["internal_product_id"], "B12-002")
+
+    def test_published_false_is_never_reported_as_published(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            prep, inv = self._fixtures(tmp, live_published=False)
+            entries = pmc._gumroad_catalog_entries(prep_path=prep, inventory_path=inv)
+            live = next(e for e in entries if e["product_name"].startswith("Founder"))
+            self.assertEqual(live["publication_status"], "NOT_PUBLISHED")
+
+    def test_missing_prep_file_yields_nothing_instead_of_guessing(self):
+        self.assertEqual(pmc._gumroad_catalog_entries(
+            prep_path="C:/definitely/not/here.json"), [])
+
+    def test_description_is_unknown_rather_than_the_pointer_string(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            prep, inv = self._fixtures(tmp)
+            entries = pmc._gumroad_catalog_entries(prep_path=prep, inventory_path=inv)
+            absent = next(e for e in entries if e["product_name"].startswith("Client"))
+            self.assertEqual(absent["description"], "Unknown")
+
+    def test_source_files_are_the_real_declared_paths(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            prep, inv = self._fixtures(tmp)
+            entries = pmc._gumroad_catalog_entries(prep_path=prep, inventory_path=inv)
+            live = next(e for e in entries if e["product_name"].startswith("Founder"))
+            self.assertEqual(live["source_files"],
+                             ["books/batch12/B12-003_access_continuity_inventory.xlsx"])
 
 
 class TestAllGenerationAttempts(unittest.TestCase):
