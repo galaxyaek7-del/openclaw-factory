@@ -1,0 +1,739 @@
+{
+  "registry_version": "1.0.0",
+  "created_at": "2026-09-06",
+  "mode": "SILENT_INTERNAL_FACTORY",
+  "ground_truth": {
+    "revenue": 0,
+    "sales": 0,
+    "treasury": 0,
+    "published_products": 0,
+    "source": "config/reality.json"
+  },
+  "assets": [
+    {
+      "asset_id": "GF-001",
+      "product_name": "EU AI Act Compliance Toolkit",
+      "product_category": "digital_toolkit",
+      "target_customer": "SMEs needing EU AI Act compliance",
+      "problem_solved": "Navigate complex EU AI Act regulations with actionable compliance guidance",
+      "market_evidence": {
+        "strength": "VERIFIED",
+        "sources": [
+          {"source": "governancedocs.com", "type": "competitor", "detail": "Real customer reviews, $699 comparable pricing"},
+          {"source": "riskprofs.com", "type": "competitor", "detail": "Real $699 pricing for similar service"}
+        ],
+        "customer_pain": "HIGH — regulatory deadline approaching, compliance complexity",
+        "willingness_to_pay": "$150-700 range documented in market"
+      },
+      "product_genome": {
+        "type": "techdoc",
+        "pages": 31,
+        "price": 155,
+        "platform": "gumroad_digital",
+        "file": "books/eu_ai_act_compliance_toolkit_v2.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "9/9", "commercial": "PASS", "profit_score": 66},
+      "known_defects": ["Regulatory dates updated (Digital Omnibus deferral to Dec 2027)", "Cycle 105 (2026-10-19): this registry previously pointed at books/eu_ai_act_compliance_toolkit.pdf, which is the superseded v1 revision (139,121 bytes, sha256 c22671a674141e734c4862cf) carrying an unsupported 'ensure compliance' guarantee. The live Gumroad listing serves the repaired v2 revision (139,401 bytes, sha256 18c4158342c7f8a290a43865). Repointed to v2 so no future re-upload can regress the product."],
+      "commercial_hypothesis": "SMEs will pay $155 for actionable EU AI Act compliance guidance vs $699 consultants",
+      "estimated_price_range": "$155-310",
+      "unit economics": {"gross": 155, "net": 137.55, "margin": "88.7%"},
+      "reusability": "HIGH — compliance template reusable for other regulations",
+      "dependencies": ["Paddle onboarding (BLOCKED)"],
+      "distribution_requirements": ["Paddle account", " Gumroad listing"],
+      "readiness_status": "COMMERCIAL_CANDIDATE",
+      "readiness_notes": "Blocked on Paddle onboarding gate. Product verified, QA passed."
+    },
+    {
+      "asset_id": "GF-002",
+      "product_name": "AI Compliance Automation for Accounting Firms",
+      "product_category": "automation_system",
+      "target_customer": "Accounting firms",
+      "problem_solved": "Automate AI compliance workflows for accounting practices",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN — no direct evidence gathered",
+        "willingness_to_pay": "ESTIMATED based on similar products"
+      },
+      "product_genome": {
+        "type": "techdoc",
+        "price": 388,
+        "platform": "gumroad_digital",
+        "file": "books/ai_compliance_automation_for_accounting_firms_v2.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": ["Near-duplicate of GF-004 (proof_ai_compliance_automation_package)"],
+      "commercial_hypothesis": "Accounting firms need AI compliance automation at $388 price point",
+      "estimated_price_range": "$300-500",
+      "unit economics": {"gross": 388, "net": 341.44, "margin": "88%"},
+      "reusability": "MEDIUM — compliance automation template",
+      "dependencies": ["Paddle onboarding (BLOCKED)", "Market evidence (MISSING)"],
+      "distribution_requirements": ["Paddle account", " Gumroad listing"],
+      "readiness_status": "QA_REQUIRED",
+      "readiness_notes": "Near-duplicate detected. Needs differentiation from GF-004."
+    },
+    {
+      "asset_id": "GF-003",
+      "product_name": "AI Customer Support Automation for E-Commerce",
+      "product_category": "automation_system",
+      "target_customer": "E-commerce businesses",
+      "problem_solved": "Automate customer support with AI for e-commerce operations",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN — no direct evidence gathered",
+        "willingness_to_pay": "ESTIMATED"
+      },
+      "product_genome": {
+        "type": "techdoc",
+        "price": 126,
+        "platform": "gumroad_digital",
+        "file": "books/ai_customer_support_automation_ecommerce.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": [],
+      "commercial_hypothesis": "E-commerce businesses will pay $126 for AI customer support automation",
+      "estimated_price_range": "$100-200",
+      "unit economics": {"gross": 126, "net": 110.88, "margin": "88%"},
+      "reusability": "MEDIUM — automation template",
+      "dependencies": ["Paddle onboarding (BLOCKED)", "Market evidence (MISSING)"],
+      "distribution_requirements": ["Paddle account", " Gumroad listing"],
+      "readiness_status": "QA_REQUIRED",
+      "readiness_notes": "Needs market evidence validation."
+    },
+    {
+      "asset_id": "GF-004",
+      "product_name": "Proof AI Compliance Automation Package",
+      "product_category": "automation_system",
+      "target_customer": "Accounting firms",
+      "problem_solved": "Demonstrate AI compliance automation capability",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "ESTIMATED"
+      },
+      "product_genome": {
+        "type": "techdoc",
+        "price": 388,
+        "platform": "gumroad_digital",
+        "file": "books/proof_ai_compliance_automation_package.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": ["Near-duplicate of GF-002"],
+      "commercial_hypothesis": "Earlier iteration of GF-002",
+      "estimated_price_range": "$300-500",
+      "unit economics": {"gross": 388, "net": 341.44, "margin": "88%"},
+      "reusability": "LOW — superseded by GF-002",
+      "dependencies": ["Paddle onboarding (BLOCKED)"],
+      "distribution_requirements": ["Paddle account"],
+      "readiness_status": "HOLD",
+      "readiness_notes": "Near-duplicate of GF-002. Consider merging or killing."
+    },
+    {
+      "asset_id": "GF-005",
+      "product_name": "Workflow Automation for Logistics",
+      "product_category": "automation_system",
+      "target_customer": "Logistics companies",
+      "problem_solved": "Automate workflow processes in logistics operations",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "ESTIMATED"
+      },
+      "product_genome": {
+        "type": "techdoc",
+        "price": 327,
+        "platform": "gumroad_digital",
+        "file": "books/workflow_automation_logistics.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": [],
+      "commercial_hypothesis": "Logistics companies need workflow automation at $327",
+      "estimated_price_range": "$250-400",
+      "unit economics": {"gross": 327, "net": 287.76, "margin": "88%"},
+      "reusability": "MEDIUM — workflow template",
+      "dependencies": ["Paddle onboarding (BLOCKED)", "Market evidence (MISSING)"],
+      "distribution_requirements": ["Paddle account", " Gumroad listing"],
+      "readiness_status": "QA_REQUIRED",
+      "readiness_notes": "Needs market evidence. Premium variant exists (GF-012)."
+    },
+    {
+      "asset_id": "GF-006",
+      "product_name": "Inventory Management for Wholesale Distributors",
+      "product_category": "automation_system",
+      "target_customer": "Wholesale distributors",
+      "problem_solved": "Manage inventory with automation for wholesale operations",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "ESTIMATED"
+      },
+      "product_genome": {
+        "type": "techdoc",
+        "price": 327,
+        "platform": "gumroad_digital",
+        "file": "books/inventory_management_wholesale.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": [],
+      "commercial_hypothesis": "Wholesale distributors need inventory automation at $327",
+      "estimated_price_range": "$250-400",
+      "unit economics": {"gross": 327, "net": 287.76, "margin": "88%"},
+      "reusability": "MEDIUM — inventory template",
+      "dependencies": ["Paddle onboarding (BLOCKED)", "Market evidence (MISSING)"],
+      "distribution_requirements": ["Paddle account", " Gumroad listing"],
+      "readiness_status": "QA_REQUIRED",
+      "readiness_notes": "Needs market evidence. Premium variant exists (GF-013)."
+    },
+    {
+      "asset_id": "GF-007",
+      "product_name": "How I Built an Autonomous AI Company Solo",
+      "product_category": "book",
+      "target_customer": "Solo founders",
+      "problem_solved": "Inspiration and guidance for building AI-powered businesses alone",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "ESTIMATED"
+      },
+      "product_genome": {
+        "type": "book",
+        "price": 97,
+        "platform": "gumroad_digital",
+        "file": "books/how_i_built_an_autonomous_ai_company_solo.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": [],
+      "commercial_hypothesis": "Solo founders want inspiration and practical guidance at $97",
+      "estimated_price_range": "$50-150",
+      "unit economics": {"gross": 97, "net": 85.36, "margin": "88%"},
+      "reusability": "LOW — one-time narrative",
+      "dependencies": ["Paddle onboarding (BLOCKED)", "Market evidence (MISSING)"],
+      "distribution_requirements": ["Paddle account", " Gumroad listing"],
+      "readiness_status": "QA_REQUIRED",
+      "readiness_notes": "Needs market evidence validation."
+    },
+    {
+      "asset_id": "GF-008",
+      "product_name": "AI Prompting Playbook for Freelancers",
+      "product_category": "playbook",
+      "target_customer": "Freelancers",
+      "problem_solved": "Master AI prompting techniques for freelance work",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "ESTIMATED"
+      },
+      "product_genome": {
+        "type": "book",
+        "price": 37,
+        "platform": "gumroad_digital",
+        "file": "books/ai_prompting_playbook_for_freelancers.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": [],
+      "commercial_hypothesis": "Freelancers need AI prompting guidance at $37",
+      "estimated_price_range": "$25-50",
+      "unit economics": {"gross": 37, "net": 32.56, "margin": "88%"},
+      "reusability": "MEDIUM — prompting techniques reusable",
+      "dependencies": ["Market evidence (MISSING)"],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "QA_REQUIRED",
+      "readiness_notes": "Needs market evidence."
+    },
+    {
+      "asset_id": "GF-009",
+      "product_name": "Freelancer Client Onboarding Template",
+      "product_category": "template",
+      "target_customer": "Freelancers",
+      "problem_solved": "Streamline client onboarding process for freelancers",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "ESTIMATED"
+      },
+      "product_genome": {
+        "type": "template",
+        "price": 37,
+        "platform": "gumroad_digital",
+        "file": "books/freelancer_client_onboarding_template.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": [],
+      "commercial_hypothesis": "Freelancers need onboarding templates at $37",
+      "estimated_price_range": "$25-50",
+      "unit economics": {"gross": 37, "net": 32.56, "margin": "88%"},
+      "reusability": "HIGH — template reusable across freelancer niches",
+      "dependencies": ["Market evidence (MISSING)"],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "QA_REQUIRED",
+      "readiness_notes": "Needs market evidence."
+    },
+    {
+      "asset_id": "GF-010",
+      "product_name": "Automated Contract Review System",
+      "product_category": "automation_system",
+      "target_customer": "Legal professionals",
+      "problem_solved": "Automate contract review processes",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "ESTIMATED"
+      },
+      "product_genome": {
+        "type": "techdoc",
+        "price": 327,
+        "platform": "gumroad_digital",
+        "file": "books/automated_contract_review_system.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": [],
+      "commercial_hypothesis": "Legal professionals need contract automation at $327",
+      "estimated_price_range": "$250-400",
+      "unit economics": {"gross": 327, "net": 287.76, "margin": "88%"},
+      "reusability": "MEDIUM — contract template",
+      "dependencies": ["Market evidence (MISSING)"],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "QA_REQUIRED",
+      "readiness_notes": "Needs market evidence."
+    },
+    {
+      "asset_id": "GF-011",
+      "product_name": "Legal Case Research Automation Playbook",
+      "product_category": "playbook",
+      "target_customer": "Solo attorneys",
+      "problem_solved": "Automate legal case research processes",
+      "market_evidence": {
+        "strength": "MEDIUM",
+        "sources": [
+          {"source": "syntora.io", "type": "vendor", "detail": "Solo attorney legal research automation demand"},
+          {"source": "inyourleague.net", "type": "case_study", "detail": "Solo immigration lawyer research time cut from 20hrs to 8hrs"},
+          {"source": "clio.com", "type": "industry_report", "detail": "71% solos use AI, <1/3 increased revenue"},
+          {"source": "irys.ai", "type": "buyer_guide", "detail": "Solos buy legal AI $33-499/mo"}
+        ],
+        "customer_pain": "MEDIUM — documented, not product-specific",
+        "willingness_to_pay": "DOCUMENTED — $33-499/mo for legal AI tools"
+      },
+      "product_genome": {
+        "type": "playbook",
+        "price": 37,
+        "platform": "gumroad_digital",
+        "file": "books/legal_case_research_automation_playbook.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": [],
+      "commercial_hypothesis": "Solo attorneys need research automation playbook at $37",
+      "estimated_price_range": "$25-50",
+      "unit economics": {"gross": 37, "net": 32.56, "margin": "88%"},
+      "reusability": "MEDIUM — legal research template",
+      "dependencies": ["Market evidence (PARTIAL)"],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "VERIFIED",
+      "readiness_notes": "Has partial market evidence. Product candidate for controlled validation."
+    },
+    {
+      "asset_id": "GF-012",
+      "product_name": "Workflow Automation for Logistics (Premium)",
+      "product_category": "automation_system",
+      "target_customer": "Logistics companies",
+      "problem_solved": "Premium version of GF-005 with enhanced features",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "ESTIMATED"
+      },
+      "product_genome": {
+        "type": "techdoc",
+        "price": 327,
+        "platform": "gumroad_digital",
+        "file": "books/workflow_automation_logistics_premium.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": ["No Paddle registration", "Near-duplicate of GF-005"],
+      "commercial_hypothesis": "Premium variant of GF-005",
+      "estimated_price_range": "$250-400",
+      "unit economics": {"gross": 327, "net": 287.76, "margin": "88%"},
+      "reusability": "LOW — duplicate of GF-005",
+      "dependencies": ["Paddle registration (MISSING)", "Market evidence (MISSING)"],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "HOLD",
+      "readiness_notes": "Near-duplicate of GF-005. Consider merging or differentiating."
+    },
+    {
+      "asset_id": "GF-013",
+      "product_name": "Inventory Management for Wholesale (Premium)",
+      "product_category": "automation_system",
+      "target_customer": "Wholesale distributors",
+      "problem_solved": "Premium version of GF-006 with enhanced features",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "ESTIMATED"
+      },
+      "product_genome": {
+        "type": "techdoc",
+        "price": 327,
+        "platform": "gumroad_digital",
+        "file": "books/inventory_management_wholesale_premium.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": ["No Paddle registration", "Near-duplicate of GF-006"],
+      "commercial_hypothesis": "Premium variant of GF-006",
+      "estimated_price_range": "$250-400",
+      "unit economics": {"gross": 327, "net": 287.76, "margin": "88%"},
+      "reusability": "LOW — duplicate of GF-006",
+      "dependencies": ["Paddle registration (MISSING)", "Market evidence (MISSING)"],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "HOLD",
+      "readiness_notes": "Near-duplicate of GF-006. Consider merging or differentiating."
+    },
+    {
+      "asset_id": "GF-014",
+      "product_name": "AI Customer Support Premium",
+      "product_category": "automation_system",
+      "target_customer": "E-commerce businesses",
+      "problem_solved": "Premium version of GF-003 with enhanced features",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "ESTIMATED"
+      },
+      "product_genome": {
+        "type": "techdoc",
+        "price": 126,
+        "platform": "gumroad_digital",
+        "file": "books/ai_customer_support_premium.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": ["No Paddle registration", "Near-duplicate of GF-003"],
+      "commercial_hypothesis": "Premium variant of GF-003",
+      "estimated_price_range": "$100-200",
+      "unit economics": {"gross": 126, "net": 110.88, "margin": "88%"},
+      "reusability": "LOW — duplicate of GF-003",
+      "dependencies": ["Paddle registration (MISSING)", "Market evidence (MISSING)"],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "HOLD",
+      "readiness_notes": "Near-duplicate of GF-003. Consider merging or differentiating."
+    },
+    {
+      "asset_id": "GF-015",
+      "product_name": "Invoice Processing Premium",
+      "product_category": "automation_system",
+      "target_customer": "Finance teams",
+      "problem_solved": "Automate invoice processing with AI",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "ESTIMATED"
+      },
+      "product_genome": {
+        "type": "techdoc",
+        "price": 327,
+        "platform": "gumroad_digital",
+        "file": "books/invoice_processing_premium.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": [],
+      "commercial_hypothesis": "Finance teams need invoice automation at $327",
+      "estimated_price_range": "$250-400",
+      "unit economics": {"gross": 327, "net": 287.76, "margin": "88%"},
+      "reusability": "MEDIUM — invoice template",
+      "dependencies": ["Market evidence (MISSING)"],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "QA_REQUIRED",
+      "readiness_notes": "Needs market evidence."
+    },
+    {
+      "asset_id": "GF-016",
+      "product_name": "30-Day Habit Tracker Journal",
+      "product_category": "printable",
+      "target_customer": "Individuals building habits",
+      "problem_solved": "Track daily habits with structured check-ins",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "ESTIMATED"
+      },
+      "product_genome": {
+        "type": "habit",
+        "price": 38,
+        "platform": "gumroad_digital",
+        "file": "books/30-day_habit_tracker_journal.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": [],
+      "commercial_hypothesis": "Individuals need habit tracking at $38",
+      "estimated_price_range": "$25-50",
+      "unit economics": {"gross": 38, "net": 33.44, "margin": "88%"},
+      "reusability": "MEDIUM — habit template",
+      "dependencies": ["Market evidence (MISSING)"],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "QA_REQUIRED",
+      "readiness_notes": "Needs market evidence."
+    },
+    {
+      "asset_id": "GF-017",
+      "product_name": "Weekly Meal Planner Printable",
+      "product_category": "printable",
+      "target_customer": "Health-conscious individuals",
+      "problem_solved": "Plan weekly meals with structured templates",
+      "market_evidence": {
+        "strength": "ESTIMATED",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "ESTIMATED"
+      },
+      "product_genome": {
+        "type": "healthy_eating",
+        "price": 9,
+        "platform": "gumroad_digital",
+        "file": "books/weekly_meal_planner_printable.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "PASS"},
+      "known_defects": [],
+      "commercial_hypothesis": "Health-conscious individuals need meal planning at $9",
+      "estimated_price_range": "$5-15",
+      "unit economics": {"gross": 9, "net": 7.92, "margin": "88%"},
+      "reusability": "MEDIUM — meal template",
+      "dependencies": ["Market evidence (MISSING)"],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "QA_REQUIRED",
+      "readiness_notes": "Low price point. Consider bundling with other health products."
+    },
+    {
+      "asset_id": "GF-018",
+      "product_name": "90-Day Fitness Transformation Journal",
+      "product_category": "printable",
+      "target_customer": "Fitness enthusiasts",
+      "problem_solved": "Track workouts, nutrition, habits, and progress over 90 days",
+      "market_evidence": {
+        "strength": "MEDIUM",
+        "sources": [
+          {"source": "Habit Nest", "type": "competitor", "detail": "12-week format is proven magic duration"},
+          {"source": "Market research", "type": "industry", "detail": "Fitness journals with QR video links are top sellers"}
+        ],
+        "customer_pain": "MEDIUM — fitness tracking is a proven need",
+        "willingness_to_pay": "$10-35 range documented"
+      },
+      "product_genome": {
+        "type": "fitness",
+        "price": 19,
+        "pages": 30,
+        "platform": "gumroad_digital",
+        "file": "books/90_day_fitness_transformation_journal.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "9/9", "commercial": "PASS", "profit_score": 66},
+      "known_defects": [],
+      "commercial_hypothesis": "Fitness enthusiasts will pay $19 for a structured 90-day transformation journal",
+      "estimated_price_range": "$15-25",
+      "unit economics": {"gross": 19, "net": 16.72, "margin": "88%"},
+      "reusability": "HIGH — fitness template reusable",
+      "dependencies": [],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "VERIFIED",
+      "readiness_notes": "Generated 2026-09-06. QA passed. Market evidence medium."
+    },
+    {
+      "asset_id": "GF-019",
+      "product_name": "Smart Budget Command Center",
+      "product_category": "printable",
+      "target_customer": "Budget-conscious individuals",
+      "problem_solved": "Track income, expenses, savings goals, and net worth in one place",
+      "market_evidence": {
+        "strength": "MEDIUM",
+        "sources": [
+          {"source": "Gumroad trends", "type": "marketplace", "detail": "Personal finance templates are top sellers"},
+          {"source": "Etsy research", "type": "marketplace", "detail": "Budget trackers sell at $15-47 range"}
+        ],
+        "customer_pain": "MEDIUM — budget tracking is a proven need",
+        "willingness_to_pay": "$15-47 range documented"
+      },
+      "product_genome": {
+        "type": "budget",
+        "price": 29,
+        "pages": 30,
+        "platform": "gumroad_digital",
+        "file": "books/smart_budget_command_center.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "9/9", "commercial": "PASS", "profit_score": 66},
+      "known_defects": [],
+      "commercial_hypothesis": "Budget-conscious individuals will pay $29 for a comprehensive budget tracker",
+      "estimated_price_range": "$19-39",
+      "unit economics": {"gross": 29, "net": 25.52, "margin": "88%"},
+      "reusability": "HIGH — budget template reusable",
+      "dependencies": [],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "VERIFIED",
+      "readiness_notes": "Generated 2026-09-06. QA passed. Market evidence medium."
+    },
+    {
+      "asset_id": "GF-020",
+      "product_name": "Mindful Morning Routine System",
+      "product_category": "printable",
+      "target_customer": "Individuals seeking mindfulness",
+      "problem_solved": "Build intentional morning routines with breathing, gratitude, and intention setting",
+      "market_evidence": {
+        "strength": "MEDIUM",
+        "sources": [
+          {"source": "Market research", "type": "industry", "detail": "Mindfulness journals are fastest-growing digital product category"}
+        ],
+        "customer_pain": "MEDIUM — morning routine optimization is trending",
+        "willingness_to_pay": "$10-30 range documented"
+      },
+      "product_genome": {
+        "type": "mindfulness",
+        "price": 15,
+        "pages": 30,
+        "platform": "gumroad_digital",
+        "file": "books/mindful_morning_routine_system.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "9/9", "commercial": "PASS", "profit_score": 70},
+      "known_defects": [],
+      "commercial_hypothesis": "Individuals will pay $15 for a mindful morning routine system",
+      "estimated_price_range": "$10-25",
+      "unit economics": {"gross": 15, "net": 13.20, "margin": "88%"},
+      "reusability": "HIGH — mindfulness template reusable",
+      "dependencies": [],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "VERIFIED",
+      "readiness_notes": "Generated 2026-09-06. QA passed. Market evidence medium."
+    },
+    {
+      "asset_id": "GF-SEED-001",
+      "product_name": "HiveNotes Beekeeper Logbook",
+      "product_category": "seed",
+      "target_customer": "Hobbyist beekeepers",
+      "problem_solved": "Track hive inspections and beekeeping activities",
+      "market_evidence": {
+        "strength": "UNKNOWN",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "UNKNOWN"
+      },
+      "product_genome": {
+        "type": "logbook",
+        "price": 6.99,
+        "pages": 140,
+        "platform": "gumroad",
+        "file": "seeds/hivenotes/hive_logbook_v1.pdf"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "PASS", "commercial": "UNKNOWN"},
+      "known_defects": [],
+      "commercial_hypothesis": "Beekeepers need inspection logbooks",
+      "estimated_price_range": "$5-10",
+      "unit economics": {"gross": 6.99, "net": 5.59, "margin": "80%"},
+      "reusability": "LOW — niche product",
+      "dependencies": [],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "SEED",
+      "readiness_notes": "Outside generic pipeline. Needs market validation."
+    },
+    {
+      "asset_id": "GF-SEED-002",
+      "product_name": "Morning Focus Journal for Remote Workers",
+      "product_category": "seed",
+      "target_customer": "Remote workers",
+      "problem_solved": "Structure morning focus routines for remote work",
+      "market_evidence": {
+        "strength": "UNKNOWN",
+        "sources": [],
+        "customer_pain": "UNKNOWN",
+        "willingness_to_pay": "UNKNOWN"
+      },
+      "product_genome": {
+        "type": "journal",
+        "price": 9,
+        "platform": "gumroad",
+        "file": "seeds/morning-focus-journal-for-remote-workers-v1.docx"
+      },
+      "production_status": "PRODUCED",
+      "qa_score": {"technical": "UNKNOWN", "commercial": "UNKNOWN"},
+      "known_defects": ["Quality report scored Chapter 1 poorly: Substance 6/10, Voice 2/10"],
+      "commercial_hypothesis": "Remote workers need morning focus journals",
+      "estimated_price_range": "$5-15",
+      "unit economics": {"gross": 9, "net": 7.20, "margin": "80%"},
+      "reusability": "LOW — needs quality improvement",
+      "dependencies": [],
+      "distribution_requirements": ["Gumroad listing"],
+      "readiness_status": "REWORK",
+      "readiness_notes": "Quality issues identified. Needs rewrite before commercial use."
+    }
+  ],
+  "summary": {
+    "total_assets": 22,
+    "by_status": {
+      "COMMERCIAL_CANDIDATE": 1,
+      "VERIFIED": 3,
+      "QA_REQUIRED": 10,
+      "HOLD": 3,
+      "REWORK": 1,
+      "SEED": 1,
+      "UNKNOWN": 3
+    },
+    "by_category": {
+      "automation_system": 8,
+      "printable": 4,
+      "book": 1,
+      "playbook": 2,
+      "template": 1,
+      "digital_toolkit": 1,
+      "seed": 2,
+      "UNKNOWN": 3
+    },
+    "traceability_score": "45%",
+    "evidence_coverage": {
+      "VERIFIED": 2,
+      "MEDIUM": 3,
+      "ESTIMATED": 15,
+      "UNKNOWN": 2
+    },
+    "near_duplicates": [
+      {"pair": ["GF-002", "GF-004"], "reason": "Both AI compliance automation for accounting"},
+      {"pair": ["GF-005", "GF-012"], "reason": "Workflow automation base vs premium"},
+      {"pair": ["GF-006", "GF-013"], "reason": "Inventory management base vs premium"},
+      {"pair": ["GF-003", "GF-014"], "reason": "AI customer support base vs premium"}
+    ],
+    "anti_hoarding_check": "4 near-duplicate pairs detected. Consider merging or differentiating.",
+    "recommendations": [
+      "Merge GF-002/GF-004 (compliance automation near-duplicates)",
+      "Differentiate or merge GF-005/GF-012, GF-006/GF-013, GF-003/GF-014 (premium variants)",
+      "Add market evidence to 15 products with ESTIMATED evidence",
+      "Mark GF-SEED-002 as REWORK (quality issues)",
+      "Clean 6 test artifacts from books/",
+      "Remove 4 placeholder Paddle entries or create real products"
+    ]
+  }
+}

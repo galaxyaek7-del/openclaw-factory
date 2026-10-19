@@ -1,0 +1,1488 @@
+{
+ "schema": "galaxy_forge.product_state_reconciliation.v1",
+ "generated_at": "2026-10-19T20:40:56.209982+00:00",
+ "reconciled_at": "2026-10-19T20:40:56.209982+00:00",
+ "snapshots": {
+  "product_master_catalog": {
+   "path": "product_master_catalog.py",
+   "generated_at": "2026-10-19T20:40:56.869028+00:00"
+  },
+  "operational_history": {
+   "path": "data/operational_history.json",
+   "generated_at": "2026-10-19T20:40:57.178597+00:00"
+  },
+  "gumroad_live_snapshot": {
+   "path": "data/commercial_inventory.json",
+   "generated_at": "2026-10-19T18:41:34.363993+00:00"
+  },
+  "listing_verification": {
+   "path": "reports/CYCLE104/GUMROAD_LISTING_VERIFICATION.json",
+   "verified_at": "2026-10-19T18:58:16+00:00"
+  },
+  "asset_registry": {
+   "path": "data/asset_registry.json",
+   "created_at": "2026-09-06"
+  },
+  "founder_approvals": {
+   "path": "data/founder_approvals.jsonl",
+   "rows": 6
+  }
+ },
+ "products": [
+  {
+   "canonical_id": "pro_01kxtd3xzaz0nmfgphk55brhn7",
+   "declared_product_id": null,
+   "title": "AI-Powered Compliance Automation System for Accounting Firms",
+   "product_type": "ai_saas_or_b2b_ladder_product",
+   "identity_basis": "explicit_id",
+   "primary_state": "PLATFORM_RECORD_ONLY",
+   "primary_state_basis": {
+    "source": "data/paddle_products.json",
+    "reason": "a real Paddle Product+Price exists, but no local artifact, QA verdict or public listing was proven for it"
+   },
+   "flags": {
+    "qa": {
+     "status": "UNKNOWN",
+     "reason": "no gate evidence found for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "NOT_CONFIRMED_LIVE",
+     "source": "data/paddle_products.json",
+     "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "TRACKED",
+     "paths": [
+      "books/ai_compliance_automation_for_accounting_firms_v2.pdf",
+      "books/covers/ai-powered_compliance_automation_system_for_accounting_firms_cover.png"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "pro_01ky4w4ej5b3kmhm3fyddmajw7",
+   "declared_product_id": null,
+   "title": "AI Customer Support Automation Platform for E-Commerce Businesses",
+   "product_type": "ai_saas_or_b2b_ladder_product",
+   "identity_basis": "explicit_id",
+   "primary_state": "PLATFORM_RECORD_ONLY",
+   "primary_state_basis": {
+    "source": "data/paddle_products.json",
+    "reason": "a real Paddle Product+Price exists, but no local artifact, QA verdict or public listing was proven for it"
+   },
+   "flags": {
+    "qa": {
+     "status": "UNKNOWN",
+     "reason": "no gate evidence found for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "NOT_CONFIRMED_LIVE",
+     "source": "data/paddle_products.json",
+     "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "TRACKED",
+     "paths": [
+      "books/ai_customer_support_automation_ecommerce.pdf",
+      "books/covers/ai_customer_support_automation_platform_for_e-commerce_businesses_cover.png"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "pro_01ky4w4frj8j0kctqzqg8mbwev",
+   "declared_product_id": null,
+   "title": "Workflow Automation System for Logistics Companies",
+   "product_type": "ai_saas_or_b2b_ladder_product",
+   "identity_basis": "explicit_id",
+   "primary_state": "PLATFORM_RECORD_ONLY",
+   "primary_state_basis": {
+    "source": "data/paddle_products.json",
+    "reason": "a real Paddle Product+Price exists, but no local artifact, QA verdict or public listing was proven for it"
+   },
+   "flags": {
+    "qa": {
+     "status": "UNKNOWN",
+     "reason": "no gate evidence found for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "NOT_CONFIRMED_LIVE",
+     "source": "data/paddle_products.json",
+     "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "MIXED",
+     "paths": [
+      "books/workflow_automation_logistics.pdf",
+      "books/covers/workflow_automation_system_for_logistics_companies_cover.png"
+     ],
+     "untracked": [
+      "books/covers/workflow_automation_system_for_logistics_companies_cover.png"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "pro_01ky4w4gr5eksxkf48zqe61zny",
+   "declared_product_id": null,
+   "title": "Inventory Management System for Wholesale Distributors",
+   "product_type": "ai_saas_or_b2b_ladder_product",
+   "identity_basis": "explicit_id",
+   "primary_state": "PLATFORM_RECORD_ONLY",
+   "primary_state_basis": {
+    "source": "data/paddle_products.json",
+    "reason": "a real Paddle Product+Price exists, but no local artifact, QA verdict or public listing was proven for it"
+   },
+   "flags": {
+    "qa": {
+     "status": "UNKNOWN",
+     "reason": "no gate evidence found for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "NOT_CONFIRMED_LIVE",
+     "source": "data/paddle_products.json",
+     "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "TRACKED",
+     "paths": [
+      "books/inventory_management_wholesale.pdf",
+      "books/covers/inventory_management_system_for_wholesale_distributors_cover.png"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "pro_01ky4w4hgv157bqqe4wmp7rwe7",
+   "declared_product_id": null,
+   "title": "How I Built an Autonomous AI Company Solo",
+   "product_type": "ai_saas_or_b2b_ladder_product",
+   "identity_basis": "explicit_id",
+   "primary_state": "PLATFORM_RECORD_ONLY",
+   "primary_state_basis": {
+    "source": "data/paddle_products.json",
+    "reason": "a real Paddle Product+Price exists, but no local artifact, QA verdict or public listing was proven for it"
+   },
+   "flags": {
+    "qa": {
+     "status": "UNKNOWN",
+     "reason": "no gate evidence found for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "NOT_CONFIRMED_LIVE",
+     "source": "data/paddle_products.json",
+     "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "TRACKED",
+     "paths": [
+      "books/how_i_built_an_autonomous_ai_company_solo.pdf",
+      "books/covers/how_i_built_an_autonomous_ai_company_solo_cover.png"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "pro_01kzdzzh4kv6bkpzfhd5r1jnkn",
+   "declared_product_id": null,
+   "title": "EU AI Act Compliance Toolkit",
+   "product_type": "ai_saas_or_b2b_ladder_product",
+   "identity_basis": "explicit_id",
+   "primary_state": "PLATFORM_RECORD_ONLY",
+   "primary_state_basis": {
+    "source": "data/paddle_products.json",
+    "reason": "a real Paddle Product+Price exists, but no local artifact, QA verdict or public listing was proven for it"
+   },
+   "flags": {
+    "qa": {
+     "status": "UNKNOWN",
+     "reason": "no gate evidence found for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "NOT_CONFIRMED_LIVE",
+     "source": "data/paddle_products.json",
+     "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "TRACKED",
+     "paths": [
+      "books/eu_ai_act_compliance_toolkit.pdf",
+      "books/covers/eu_ai_act_compliance_toolkit_cover.png"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "pro_01m23gzbw31wc62r7rkr7y2zyw",
+   "declared_product_id": null,
+   "title": "The 5-Minute Context Reset Playbook",
+   "product_type": "ai_saas_or_b2b_ladder_product",
+   "identity_basis": "explicit_id",
+   "primary_state": "PLATFORM_RECORD_ONLY",
+   "primary_state_basis": {
+    "source": "data/paddle_products.json",
+    "reason": "a real Paddle Product+Price exists, but no local artifact, QA verdict or public listing was proven for it"
+   },
+   "flags": {
+    "qa": {
+     "status": "UNKNOWN",
+     "reason": "no gate evidence found for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "NOT_CONFIRMED_LIVE",
+     "source": "data/paddle_products.json",
+     "note": "Real Paddle Product+Price exist; not the same as a completed sale -- checkout is real but Paddle's own account-onboarding gate may still block a live transaction."
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "UNTRACKED",
+     "paths": [
+      "books/five_minute_context_reset_playbook.pdf",
+      "books/covers/the_5-minute_context_reset_playbook_cover.png"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "B07LCCT6VS",
+   "declared_product_id": null,
+   "title": "FITUEYES Height Adjustable Standing Desk Converter, 36\" Wide",
+   "product_type": "affiliate_asset",
+   "identity_basis": "explicit_id",
+   "primary_state": "EXTERNAL_NOT_OWNED",
+   "primary_state_basis": {
+    "source": "affiliate_commerce/products.py",
+    "reason": "an affiliate asset is a third-party product this factory does not own"
+   },
+   "flags": {
+    "qa": {
+     "status": "UNKNOWN",
+     "reason": "no gate evidence found for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "EXTERNAL_LISTING",
+     "source": "affiliate_commerce/products.py"
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "NO_ARTIFACTS",
+     "reason": "this record lists no local artifact"
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "B07LCCJD6B",
+   "declared_product_id": null,
+   "title": "FITUEYES Height Adjustable Standing Desk Converter, 32\" Wide",
+   "product_type": "affiliate_asset",
+   "identity_basis": "explicit_id",
+   "primary_state": "EXTERNAL_NOT_OWNED",
+   "primary_state_basis": {
+    "source": "affiliate_commerce/products.py",
+    "reason": "an affiliate asset is a third-party product this factory does not own"
+   },
+   "flags": {
+    "qa": {
+     "status": "UNKNOWN",
+     "reason": "no gate evidence found for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "EXTERNAL_LISTING",
+     "source": "affiliate_commerce/products.py"
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "NO_ARTIFACTS",
+     "reason": "this record lists no local artifact"
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "B0864RSM5S",
+   "declared_product_id": null,
+   "title": "PowerPro 36 Inch Electric Standing Desk Converter",
+   "product_type": "affiliate_asset",
+   "identity_basis": "explicit_id",
+   "primary_state": "EXTERNAL_NOT_OWNED",
+   "primary_state_basis": {
+    "source": "affiliate_commerce/products.py",
+    "reason": "an affiliate asset is a third-party product this factory does not own"
+   },
+   "flags": {
+    "qa": {
+     "status": "UNKNOWN",
+     "reason": "no gate evidence found for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "EXTERNAL_LISTING",
+     "source": "affiliate_commerce/products.py"
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "NO_ARTIFACTS",
+     "reason": "this record lists no local artifact"
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "B0D1C9LBN5",
+   "declared_product_id": null,
+   "title": "Aconcept Extra-Slim 24 x 14 inch Standing Desk Converter",
+   "product_type": "affiliate_asset",
+   "identity_basis": "explicit_id",
+   "primary_state": "EXTERNAL_NOT_OWNED",
+   "primary_state_basis": {
+    "source": "affiliate_commerce/products.py",
+    "reason": "an affiliate asset is a third-party product this factory does not own"
+   },
+   "flags": {
+    "qa": {
+     "status": "UNKNOWN",
+     "reason": "no gate evidence found for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "EXTERNAL_LISTING",
+     "source": "affiliate_commerce/products.py"
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "NO_ARTIFACTS",
+     "reason": "this record lists no local artifact"
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "W9FpZXpQB-fNiVCteT6Cow==",
+   "declared_product_id": "B12-001",
+   "title": "Freelancer Rate & Raise Calculator",
+   "product_type": "gumroad_digital_product",
+   "identity_basis": "declared_registry_id",
+   "primary_state": "CHECKOUT_VERIFIED",
+   "primary_state_basis": {
+    "source": "operational_history.build_snapshot()",
+    "reason": "highest milestone with a named VERIFIED source: CHECKOUT_VERIFIED",
+    "history_join": "declared_registry_id"
+   },
+   "flags": {
+    "qa": {
+     "status": "PASS",
+     "source": "reports/B12-001/GATE_FINAL_2026-10-17.json",
+     "evidence": [
+      "verdict: APPROVED",
+      "gate price: $14.99"
+     ]
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "PUBLISHED_UNVERIFIED",
+     "source": "data/commercial_inventory.json (snapshot, not a verified read-back)",
+     "note": "a snapshot is not independent verification"
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "TRACKED",
+     "paths": [
+      "books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "B12-002",
+   "declared_product_id": "B12-002",
+   "title": "Client Project Handoff Pack",
+   "product_type": "gumroad_digital_product",
+   "identity_basis": "explicit_id",
+   "primary_state": "READY_FOR_AUTHORIZATION",
+   "primary_state_basis": {
+    "source": "operational_history.build_snapshot()",
+    "reason": "highest milestone with a named VERIFIED source: READY_FOR_AUTHORIZATION"
+   },
+   "flags": {
+    "qa": {
+     "status": "PASS",
+     "source": "reports/B12-002/GATE_FINAL_2026-10-18.json",
+     "evidence": [
+      "verdict: APPROVED (from gate_at_recommended_price_11_99 at $11.99)",
+      "QA_FACTS verdict: missing"
+     ]
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "NOT_PUBLISHED_AS_EXPECTED",
+     "verified_at": null,
+     "source": "reports/CYCLE104/GUMROAD_LISTING_VERIFICATION.json",
+     "review_items": []
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "TRACKED",
+     "paths": [
+      "books/batch12/B12-002_client_handoff_guide.pdf",
+      "books/batch12/B12-002_client_handoff_register.xlsx"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "TFeaaWXO3zySimrs2Jbjbw==",
+   "declared_product_id": "B12-003",
+   "title": "Founder Access Continuity Organizer",
+   "product_type": "gumroad_digital_product",
+   "identity_basis": "declared_registry_id",
+   "primary_state": "CHECKOUT_VERIFIED",
+   "primary_state_basis": {
+    "source": "operational_history.build_snapshot()",
+    "reason": "highest milestone with a named VERIFIED source: CHECKOUT_VERIFIED",
+    "history_join": "declared_registry_id"
+   },
+   "flags": {
+    "qa": {
+     "status": "PASS",
+     "source": "reports/B12-003/GATE_FINAL_2026-10-19.json",
+     "evidence": [
+      "verdict: APPROVED at $8.00",
+      "QA_FACTS verdict: missing"
+     ]
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "PUBLISHED_UNVERIFIED",
+     "source": "data/commercial_inventory.json (snapshot, not a verified read-back)",
+     "note": "a snapshot is not independent verification"
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "TRACKED",
+     "paths": [
+      "books/batch12/B12-003_access_continuity_inventory.xlsx",
+      "books/batch12/B12-003_access_continuity_organizer.pdf"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "-cbRBfZyJMTKpl-Xk8Oz3Q==",
+   "declared_product_id": "B12-004",
+   "title": "Meeting Cost & ROI Calculator",
+   "product_type": "gumroad_digital_product",
+   "identity_basis": "declared_registry_id",
+   "primary_state": "CHECKOUT_VERIFIED",
+   "primary_state_basis": {
+    "source": "operational_history.build_snapshot()",
+    "reason": "highest milestone with a named VERIFIED source: CHECKOUT_VERIFIED",
+    "history_join": "declared_registry_id"
+   },
+   "flags": {
+    "qa": {
+     "status": "PASS",
+     "source": "reports/B12-004/GATE_FINAL_2026-10-18.json",
+     "evidence": [
+      "verdict: APPROVED at $11.99; NOT_READY at the manifest's $19.00"
+     ]
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "PUBLISHED_UNVERIFIED",
+     "source": "data/commercial_inventory.json (snapshot, not a verified read-back)",
+     "note": "a snapshot is not independent verification"
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "TRACKED",
+     "paths": [
+      "books/batch12/B12-004_meeting_cost_roi_calculator.xlsx",
+      "books/batch12/B12-004_meeting_method_guide.pdf"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "B12-005",
+   "declared_product_id": "B12-005",
+   "title": "Podcast Guest Booking Kit",
+   "product_type": "gumroad_digital_product",
+   "identity_basis": "explicit_id",
+   "primary_state": "READY_FOR_AUTHORIZATION",
+   "primary_state_basis": {
+    "source": "operational_history.build_snapshot()",
+    "reason": "highest milestone with a named VERIFIED source: READY_FOR_AUTHORIZATION"
+   },
+   "flags": {
+    "qa": {
+     "status": "PASS",
+     "source": "reports/B12-005/GATE_FINAL_2026-10-19.json",
+     "evidence": [
+      "verdict: APPROVED at $8.00",
+      "QA_FACTS verdict: missing"
+     ]
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "NOT_PUBLISHED_AS_EXPECTED",
+     "verified_at": null,
+     "source": "reports/CYCLE104/GUMROAD_LISTING_VERIFICATION.json",
+     "review_items": []
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "TRACKED",
+     "paths": [
+      "books/batch12/B12-005_podcast_guest_scripts.pdf",
+      "books/batch12/B12-005_podcast_guest_tracker.xlsx"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "B12-006",
+   "declared_product_id": "B12-006",
+   "title": "Home-Office Deduction Organizer (US)",
+   "product_type": "gumroad_digital_product",
+   "identity_basis": "explicit_id",
+   "primary_state": "BUILD_COMPLETE",
+   "primary_state_basis": {
+    "source": "operational_history.build_snapshot()",
+    "reason": "highest milestone with a named VERIFIED source: BUILD_COMPLETE"
+   },
+   "flags": {
+    "qa": {
+     "status": "FAIL",
+     "source": null,
+     "note": "no GATE_FINAL record exists for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "NOT_PUBLISHED",
+     "source": "data/commercial_inventory.json (snapshot, not a verified read-back)",
+     "note": "a snapshot is not independent verification"
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "UNTRACKED",
+     "paths": [
+      "books/batch12/B12-006_home_office_method_guide.pdf",
+      "books/batch12/B12-006_home_office_expense_log.xlsx"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "B12-007",
+   "declared_product_id": "B12-007",
+   "title": "Digital Declutter & Backup: 30-Day System",
+   "product_type": "gumroad_digital_product",
+   "identity_basis": "explicit_id",
+   "primary_state": "BUILD_COMPLETE",
+   "primary_state_basis": {
+    "source": "operational_history.build_snapshot()",
+    "reason": "highest milestone with a named VERIFIED source: BUILD_COMPLETE"
+   },
+   "flags": {
+    "qa": {
+     "status": "FAIL",
+     "source": null,
+     "note": "no GATE_FINAL record exists for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "NOT_PUBLISHED",
+     "source": "data/commercial_inventory.json (snapshot, not a verified read-back)",
+     "note": "a snapshot is not independent verification"
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "UNTRACKED",
+     "paths": [
+      "books/batch12/B12-007_digital_declutter_plan.pdf",
+      "books/batch12/B12-007_digital_inventory.xlsx"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "B12-008",
+   "declared_product_id": "B12-008",
+   "title": "Moving House 8-Week Planner",
+   "product_type": "gumroad_digital_product",
+   "identity_basis": "explicit_id",
+   "primary_state": "BUILD_COMPLETE",
+   "primary_state_basis": {
+    "source": "operational_history.build_snapshot()",
+    "reason": "highest milestone with a named VERIFIED source: BUILD_COMPLETE"
+   },
+   "flags": {
+    "qa": {
+     "status": "FAIL",
+     "source": null,
+     "note": "no GATE_FINAL record exists for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "NOT_PUBLISHED",
+     "source": "data/commercial_inventory.json (snapshot, not a verified read-back)",
+     "note": "a snapshot is not independent verification"
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "UNTRACKED",
+     "paths": [
+      "books/batch12/B12-008_moving_checklist.pdf",
+      "books/batch12/B12-008_moving_budget_tracker.xlsx"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "B12-009",
+   "declared_product_id": "B12-009",
+   "title": "Pet Sitter Handover Kit",
+   "product_type": "gumroad_digital_product",
+   "identity_basis": "explicit_id",
+   "primary_state": "BUILD_COMPLETE",
+   "primary_state_basis": {
+    "source": "operational_history.build_snapshot()",
+    "reason": "highest milestone with a named VERIFIED source: BUILD_COMPLETE"
+   },
+   "flags": {
+    "qa": {
+     "status": "FAIL",
+     "source": null,
+     "note": "no GATE_FINAL record exists for this product"
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "NOT_PUBLISHED",
+     "source": "data/commercial_inventory.json (snapshot, not a verified read-back)",
+     "note": "a snapshot is not independent verification"
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "UNTRACKED",
+     "paths": [
+      "books/batch12/B12-009_pet_sitter_handover_kit.pdf"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  },
+  {
+   "canonical_id": "B12-010",
+   "declared_product_id": "B12-010",
+   "title": "Nonprofit Grant Pipeline Tracker",
+   "product_type": "gumroad_digital_product",
+   "identity_basis": "explicit_id",
+   "primary_state": "READY_FOR_AUTHORIZATION",
+   "primary_state_basis": {
+    "source": "operational_history.build_snapshot()",
+    "reason": "highest milestone with a named VERIFIED source: READY_FOR_AUTHORIZATION"
+   },
+   "flags": {
+    "qa": {
+     "status": "PASS",
+     "source": "reports/B12-010/GATE_FINAL_2026-10-19.json",
+     "evidence": [
+      "verdict: APPROVED at $15.00",
+      "QA_FACTS verdict: PASS_WITH_DISCLOSED_LIMITATIONS",
+      "native recalc: 0 error cell(s), verdict PASS - every displayed value agrees with the documented rule and no cell shows an Excel error."
+     ]
+    },
+    "authorization": {
+     "live_gate": {
+      "status": "UNKNOWN",
+      "reason": "write gate not consulted"
+     },
+     "pending_founder_items": 6,
+     "pending_item_ids": [
+      "105b50b9f45f",
+      "225484d91187",
+      "763d12d252a8",
+      "a054be159b0e",
+      "fd394165c746",
+      "61f74047337f"
+     ],
+     "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+    },
+    "publication": {
+     "status": "NOT_PUBLISHED_AS_EXPECTED",
+     "verified_at": null,
+     "source": "reports/CYCLE104/GUMROAD_LISTING_VERIFICATION.json",
+     "review_items": []
+    },
+    "purchasability": {
+     "status": "UNKNOWN",
+     "reason": "only a real, completed checkout proves purchasability; no purchase is ever attempted by this factory"
+    },
+    "git_tracking": {
+     "status": "TRACKED",
+     "paths": [
+      "books/batch12/B12-010_grant_pipeline_tracker.xlsx",
+      "books/batch12/B12-010_grant_pipeline_guide.pdf"
+     ]
+    },
+    "revenue_verified": false
+   },
+   "sources": [
+    "product_master_catalog.build_product_master_catalog()"
+   ],
+   "conflicts": [],
+   "alias_of": null
+  }
+ ],
+ "identity_notes": {
+  "asset_registry": {
+   "total": 22,
+   "matched": [
+    {
+     "asset_id": "GF-001",
+     "title": "EU AI Act Compliance Toolkit",
+     "catalog_id": "pro_01kzdzzh4kv6bkpzfhd5r1jnkn",
+     "match": "normalized_title"
+    },
+    {
+     "asset_id": "GF-007",
+     "title": "How I Built an Autonomous AI Company Solo",
+     "catalog_id": "pro_01ky4w4hgv157bqqe4wmp7rwe7",
+     "match": "normalized_title"
+    }
+   ],
+   "unmatched": [
+    {
+     "asset_id": "GF-002",
+     "title": "AI Compliance Automation for Accounting Firms",
+     "production_status": "PRODUCED",
+     "asset_file": "books/ai_compliance_automation_for_accounting_firms_v2.pdf",
+     "probable_alias": {
+      "catalog_id": "pro_01kxtd3xzaz0nmfgphk55brhn7",
+      "title": "AI-Powered Compliance Automation System for Accounting Firms",
+      "similarity": 0.714,
+      "label": "INFERRED"
+     },
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-003",
+     "title": "AI Customer Support Automation for E-Commerce",
+     "production_status": "PRODUCED",
+     "asset_file": "books/ai_customer_support_automation_ecommerce.pdf",
+     "probable_alias": {
+      "catalog_id": "pro_01ky4w4ej5b3kmhm3fyddmajw7",
+      "title": "AI Customer Support Automation Platform for E-Commerce Businesses",
+      "similarity": 0.75,
+      "label": "INFERRED"
+     },
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-004",
+     "title": "Proof AI Compliance Automation Package",
+     "production_status": "PRODUCED",
+     "asset_file": "books/proof_ai_compliance_automation_package.pdf",
+     "probable_alias": null,
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-005",
+     "title": "Workflow Automation for Logistics",
+     "production_status": "PRODUCED",
+     "asset_file": "books/workflow_automation_logistics.pdf",
+     "probable_alias": {
+      "catalog_id": "pro_01ky4w4frj8j0kctqzqg8mbwev",
+      "title": "Workflow Automation System for Logistics Companies",
+      "similarity": 0.6,
+      "label": "INFERRED"
+     },
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-006",
+     "title": "Inventory Management for Wholesale Distributors",
+     "production_status": "PRODUCED",
+     "asset_file": "books/inventory_management_wholesale.pdf",
+     "probable_alias": {
+      "catalog_id": "pro_01ky4w4gr5eksxkf48zqe61zny",
+      "title": "Inventory Management System for Wholesale Distributors",
+      "similarity": 0.8,
+      "label": "INFERRED"
+     },
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-008",
+     "title": "AI Prompting Playbook for Freelancers",
+     "production_status": "PRODUCED",
+     "asset_file": "books/ai_prompting_playbook_for_freelancers.pdf",
+     "probable_alias": null,
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-009",
+     "title": "Freelancer Client Onboarding Template",
+     "production_status": "PRODUCED",
+     "asset_file": "books/freelancer_client_onboarding_template.pdf",
+     "probable_alias": null,
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-010",
+     "title": "Automated Contract Review System",
+     "production_status": "PRODUCED",
+     "asset_file": "books/automated_contract_review_system.pdf",
+     "probable_alias": null,
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-011",
+     "title": "Legal Case Research Automation Playbook",
+     "production_status": "PRODUCED",
+     "asset_file": "books/legal_case_research_automation_playbook.pdf",
+     "probable_alias": null,
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-012",
+     "title": "Workflow Automation for Logistics (Premium)",
+     "production_status": "PRODUCED",
+     "asset_file": "books/workflow_automation_logistics_premium.pdf",
+     "probable_alias": {
+      "catalog_id": "pro_01ky4w4frj8j0kctqzqg8mbwev",
+      "title": "Workflow Automation System for Logistics Companies",
+      "similarity": 0.5,
+      "label": "INFERRED"
+     },
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-013",
+     "title": "Inventory Management for Wholesale (Premium)",
+     "production_status": "PRODUCED",
+     "asset_file": "books/inventory_management_wholesale_premium.pdf",
+     "probable_alias": {
+      "catalog_id": "pro_01ky4w4gr5eksxkf48zqe61zny",
+      "title": "Inventory Management System for Wholesale Distributors",
+      "similarity": 0.5,
+      "label": "INFERRED"
+     },
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-014",
+     "title": "AI Customer Support Premium",
+     "production_status": "PRODUCED",
+     "asset_file": "books/ai_customer_support_premium.pdf",
+     "probable_alias": null,
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-015",
+     "title": "Invoice Processing Premium",
+     "production_status": "PRODUCED",
+     "asset_file": "books/invoice_processing_premium.pdf",
+     "probable_alias": null,
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-016",
+     "title": "30-Day Habit Tracker Journal",
+     "production_status": "PRODUCED",
+     "asset_file": "books/30-day_habit_tracker_journal.pdf",
+     "probable_alias": null,
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-017",
+     "title": "Weekly Meal Planner Printable",
+     "production_status": "PRODUCED",
+     "asset_file": "books/weekly_meal_planner_printable.pdf",
+     "probable_alias": null,
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-018",
+     "title": "90-Day Fitness Transformation Journal",
+     "production_status": "PRODUCED",
+     "asset_file": "books/90_day_fitness_transformation_journal.pdf",
+     "probable_alias": null,
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-019",
+     "title": "Smart Budget Command Center",
+     "production_status": "PRODUCED",
+     "asset_file": "books/smart_budget_command_center.pdf",
+     "probable_alias": null,
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-020",
+     "title": "Mindful Morning Routine System",
+     "production_status": "PRODUCED",
+     "asset_file": "books/mindful_morning_routine_system.pdf",
+     "probable_alias": null,
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-SEED-001",
+     "title": "HiveNotes Beekeeper Logbook",
+     "production_status": "PRODUCED",
+     "asset_file": "seeds/hivenotes/hive_logbook_v1.pdf",
+     "probable_alias": null,
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    },
+    {
+     "asset_id": "GF-SEED-002",
+     "title": "Morning Focus Journal for Remote Workers",
+     "production_status": "PRODUCED",
+     "asset_file": "seeds/morning-focus-journal-for-remote-workers-v1.docx",
+     "probable_alias": null,
+     "reason": "present in data/asset_registry.json but absent from the product master catalog; titles differ, so this is not merged automatically"
+    }
+   ]
+  },
+  "operational_history_only": [
+   "B12-001",
+   "B12-003",
+   "B12-004"
+  ],
+  "batch_registry_only": [
+   "B12-001",
+   "B12-003",
+   "B12-004"
+  ]
+ },
+ "authorization": {
+  "live_gate": {
+   "status": "UNKNOWN",
+   "reason": "write gate not consulted"
+  },
+  "pending_founder_items": 6,
+  "pending_item_ids": [
+   "105b50b9f45f",
+   "225484d91187",
+   "763d12d252a8",
+   "a054be159b0e",
+   "fd394165c746",
+   "61f74047337f"
+  ],
+  "note": "A pending founder item is a request, never a grant. Publication also requires the platform-side write path to be open."
+ },
+ "counts": {
+  "logical_products": 21,
+  "primary_state_counts": {
+   "CHECKOUT_VERIFIED": 3,
+   "READY_FOR_AUTHORIZATION": 3,
+   "BUILD_COMPLETE": 4,
+   "PLATFORM_RECORD_ONLY": 7,
+   "EXTERNAL_NOT_OWNED": 4
+  },
+  "primary_state_sum": 21,
+  "published_products": 3,
+  "published_ids": [
+   "W9FpZXpQB-fNiVCteT6Cow==",
+   "TFeaaWXO3zySimrs2Jbjbw==",
+   "-cbRBfZyJMTKpl-Xk8Oz3Q=="
+  ],
+  "axis_overlap": 3,
+  "products_plus_axis_overlap": 24,
+  "duplicate_explicit_ids": [],
+  "duplicate_titles": [],
+  "explanation": "primary_state_sum must equal logical_products: that is the exclusivity invariant. The published products ALSO carry a publication flag, so counting both axes yields logical_products + axis_overlap. That overlap -- not a duplicate record and not a missing product -- is the only mechanism in this repository that reproduces the reported 24 (21 products + 3 published)."
+ },
+ "invariant_violations": []
+}
