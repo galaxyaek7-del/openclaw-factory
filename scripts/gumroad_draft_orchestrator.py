@@ -95,6 +95,33 @@ B12_004_DESCRIPTION = (
     "reader for the guide. Instant download after purchase. Support: reply to your Gumroad receipt email."
 )
 
+B12_003_DESCRIPTION = (
+    "A one-person business has one single point of failure: you. If you are in hospital, offline for a week, "
+    "or simply unreachable, the business does not pause \u2014 it fails quietly, because nobody else knows what "
+    "it runs on or how to get back in. This is the organizer that fixes that, without ever writing a password "
+    "on paper.\n\n"
+    "Built for solo founders and one-person businesses. The rule is the same one the best products in this "
+    "category use: this is a map, not a vault. It records what exists, where it lives, and who is allowed to "
+    "touch it \u2014 and it routes every secret through a password manager's emergency access, so the plan is "
+    "useful to a successor without ever being a liability in a drawer.\n\n"
+    "Inside (2 files):\n"
+    "- Founder Access Continuity Inventory workbook (.xlsx, 6 sheets): Systems (one row per thing the business "
+    "runs on \u2014 what it is, where it lives, who can reach it, the recovery route, whether a second person "
+    "can get in, criticality 1-5, and when it was last verified), Holders (who may touch what, and the "
+    "authority basis for it), Envelopes (the three-envelope custody method pre-filled: the map, the keys via "
+    "password-manager emergency access, and a sealed letter), DrillLog (the annual 30-minute drill, with "
+    "next-due dates computed), Dashboard (coverage %, critical-gap count, days since the last drill and a "
+    "single Continuity readiness verdict), and a README. Includes worked example rows.\n"
+    "- Founder Access Continuity Guide (.pdf, 8 pages): the inventory-not-vault rule, what \"unreachable\" "
+    "actually means, the three-envelope method, how to name holders inside legal boundaries, the "
+    "password-manager emergency-access walk-through, the 30-day keep-alive plan, the annual drill, your "
+    "successor's first 72 hours, ten failure modes this plan prevents, boundaries (this is an organizing "
+    "system, not a will and not legal advice), an FAQ, and a completion checklist.\n\n"
+    "New product from Galaxy Forge: no sales recorded yet, no reviews.\n\n"
+    "Requires: Excel, LibreOffice Calc (free), or Google Sheets (free upload) for the workbook; any PDF "
+    "reader for the guide. Instant download after purchase. Support: reply to your Gumroad receipt email."
+)
+
 # ---------------------------------------------------------------------------
 # Product profile registry (Cycle 98).
 #
@@ -144,6 +171,35 @@ PROFILES = {
         "tags": ["meetings", "productivity", "management", "calculator",
                  "spreadsheet", "roi", "cost", "team"],
         "description": B12_004_DESCRIPTION,
+    },
+    "B12-003": {
+        "id": "B12-003",
+        "slug": "b12-003",
+        "title": "Founder Access Continuity Organizer",
+        # Cycle 99: price set to USD 8.00, the highest price that clears this
+        # factory's own market-realism policy for an 8-page guide
+        # (economics.market_realism_check: min($1.00 x 8 pages, $15) = $8.00).
+        # The prior recorded $19.00 failed that mandatory gate. See
+        # reports/B12-003/GATE_FINAL_2026-10-19.json for the decision record.
+        "price_cents": 800,
+        "files": [
+            str(FACTORY_DIR / "books" / "batch12" / "B12-003_access_continuity_inventory.xlsx"),
+            str(FACTORY_DIR / "books" / "batch12" / "B12-003_access_continuity_organizer.pdf"),
+        ],
+        "expected": {
+            str(FACTORY_DIR / "books" / "batch12" / "B12-003_access_continuity_inventory.xlsx"):
+                {"bytes": 13594,
+                 "sha256": "7cf3e46fa8c2470e1a14c91ff983bf186542fb92f005a0305ff3cacdf9d5edd5"},
+            str(FACTORY_DIR / "books" / "batch12" / "B12-003_access_continuity_organizer.pdf"):
+                {"bytes": 19095,
+                 "sha256": "c9c18a4b0505828a1eabaf6a72a2aba8cc6ef5024c8ebe543e47f971889000fb"},
+        },
+        "cover_local_path": str(FACTORY_DIR / "reports" / "B12-003" / "cover.png"),
+        "cover_public_url": ("https://raw.githubusercontent.com/galaxyaek7-del/"
+                             "openclaw-factory/main/reports/B12-003/cover.png"),
+        "tags": ["business continuity", "solo founder", "checklist", "spreadsheet",
+                 "emergency", "access", "succession", "template"],
+        "description": B12_003_DESCRIPTION,
     },
 }
 

@@ -418,22 +418,147 @@ def b12_004_meeting_calculator():
 
 
 def b12_005_guest_tracker():
+    """Podcast Guest Booking Tracker (Cycle 99 rebuild to the deep-QA bar).
+
+    Guest-side outreach tracker: build the assets first, keep the target list
+    short and scored, let the sheet compute the day-7 / day-21 follow-up dates
+    and shout when a cadence is overdue or a third touch is being attempted.
+    White cells are yours to fill, blue cells are formulas (do not overwrite),
+    yellow rows are EXAMPLES. Every rollup guards its inputs, so an empty sheet
+    shows a blank or a plain-language prompt instead of an Excel error."""
+    from openpyxl.worksheet.datavalidation import DataValidation
+
+    STATUSES = '"Pitched,Replied,Booked,Declined,Closed - no reply,Do not contact"'
+
     wb = Workbook()
-    _sheet(wb, "Pipeline", ["Show", "Contact", "Pitch date", "Angle", "Stage", "Record date", "Follow-up date", "Assets sent (Y/N)"],
-        [["EXAMPLE The Ops Show", "producer@example.com", "2026-10-20", "Freelancer pricing math", "Pitched", "", "2026-10-27", "N"]],
-        [22, 26, 12, 30, 14, 13, 15, 16], example_rows=1)
-    _sheet(wb, "Angles", ["#", "Your angle (one line)", "Proof you can cite", "Best-fit show type"],
-        [[1, "EXAMPLE pricing math freelancers get wrong", "500 rate reviews analyzed", "Freelance/business"],
-         [2, "", "", ""],
-         [3, "", "", ""]],
-        [5, 44, 34, 24], example_rows=1)
-    _sheet(wb, "FollowUps", ["Show", "Touch #", "Date", "Channel", "One-line value add", "Reply (Y/N)"],
-        [["EXAMPLE The Ops Show", 1, "2026-10-27", "Email", "EXAMPLE rate-benchmark table", "N"]],
-        [22, 9, 12, 10, 44, 11], example_rows=1)
-    _readme(wb, ["B12-005 Podcast Guest Booking Tracker — HOW TO USE",
-        "1) Write 3+ angles first (Angles sheet) — never pitch without an angle.",
-        "2) Log every pitch on Pipeline; move FollowUps on day 7 and day 21, then close.",
-        "3) Pair with the B12-005 PDF (pitch + follow-up scripts word-for-word). Max 2 follow-ups per show — more is spam."])
+
+    # ---- Assets: the four things that must exist before any pitch -------
+    _sheet(wb, "Assets", ["#", "Asset", "What it must contain", "Ready (Y/N)", "Link or location"],
+        [[1, "Angle 1 + its proof", "One specific, arguable claim for a named audience, plus the number, story or outcome that proves it", "N", ""],
+         [2, "Angle 2 + its proof", "Same bar as angle 1 - a claim you can defend on air", "N", ""],
+         [3, "Angle 3 + its proof", "Same bar again - three angles is the working minimum", "N", ""],
+         [4, "One-sheet", "One page a host can scan in 30 seconds: topics, proof, short bio, logistics - under 250 words of prose", "N", ""],
+         [5, "Bio - 60 words", "Paste-ready short bio for the worst-moment request", "N", ""],
+         [6, "Bio - 150 words", "Paste-ready medium bio", "N", ""],
+         [7, "Bio - 300 words", "Paste-ready long bio with credentials", "N", ""],
+         [8, "Lead magnet", "One free, genuinely useful thing for the host's audience (checklist, template, calculator)", "N", ""],
+         [9, "Headshot", "Square, high resolution, current", "N", ""],
+         [10, "Links (two at most)", "The only two links you will cite everywhere", "N", ""]],
+        [4, 22, 82, 12, 34], example_rows=0)
+    asws = wb["Assets"]
+    dv = DataValidation(type="list", formula1='"Y,N"', allow_blank=False, showErrorMessage=True,
+                        showInputMessage=True, errorTitle="Ready?", error="Enter Y or N.")
+    asws.add_data_validation(dv); dv.add("D2:D11")
+    asws["G1"] = ("Build every asset marked N before you send a single pitch. "
+                  "The Metrics sheet will not report ASSETS READY until all ten are Y.")
+    asws["G1"].font = Font(italic=True)
+
+    # ---- Angles: three specific claims, with proof ----------------------
+    _sheet(wb, "Angles", ["#", "Your angle (one specific claim)", "Proof you can cite (number, story or outcome)",
+                          "Best-fit show type", "Complete (Y/N)", "Pitches sent", "Replies", "Reply rate"],
+        [[1, "EXAMPLE the three pricing mistakes that make freelancers undercharge", "500 rate reviews analysed", "Freelance / business", "", "", "", ""],
+         [2, "", "", "", "", "", "", ""],
+         [3, "", "", "", "", "", "", ""],
+         [4, "", "", "", "", "", "", ""],
+         [5, "", "", "", "", "", "", ""]],
+        [4, 46, 34, 24, 13, 12, 10, 12], {7: "0%"}, example_rows=1)
+    an = wb["Angles"]
+    for r in range(2, 7):
+        an[f"E{r}"] = f'=IF(AND(B{r}<>"",C{r}<>"",D{r}<>""),"Y","N")'
+        an[f"F{r}"] = f'=COUNTIF(Pipeline!$F$2:$F$200,B{r})'
+        an[f"G{r}"] = (f'=COUNTIFS(Pipeline!$F$2:$F$200,B{r},Pipeline!$K$2:$K$200,"Replied")'
+                       f'+COUNTIFS(Pipeline!$F$2:$F$200,B{r},Pipeline!$K$2:$K$200,"Booked")')
+        an[f"H{r}"] = f'=IF(OR(B{r}="",F{r}=0),"",G{r}/F{r})'
+    dv = DataValidation(type="list", formula1='"Y,N"', allow_blank=True, showErrorMessage=True,
+                        errorTitle="Complete?", error="Enter Y or N.")
+    an.add_data_validation(dv); dv.add("E2:E6")
+    an["J1"] = "Retire an angle after about 15 pitches if its reply rate stays the weakest."
+    an["J1"].font = Font(italic=True)
+
+    # ---- Pipeline: one row per show, with computed follow-up dates ------
+    _sheet(wb, "Pipeline", ["Show", "Host or producer", "Network", "Episode you heard (title + date)",
+                            "Contact route", "Angle used", "Fit score 1-5", "Date pitched",
+                            "Follow-up 1 due", "Follow-up 2 due", "Status", "Cadence", "Next action", "Notes"],
+        [["EXAMPLE The Small Biz Kitchen", "Marisol", "Independent", "Ep. 112 - the bakery owner drowning in paperwork (2026-09-30)",
+          "contact form", "the three pricing mistakes that make freelancers undercharge", 5, "2026-10-20",
+          "", "", "Pitched", "", "Send the pitch", ""]] +
+        [["", "", "", "", "", "", None, None, "", "", "", "", "", ""] for _ in range(40)],
+        [26, 16, 16, 46, 18, 44, 11, 12, 13, 13, 16, 15, 26, 24],
+        {7: "yyyy-mm-dd", 8: "yyyy-mm-dd", 9: "yyyy-mm-dd"}, example_rows=1)
+    pl = wb["Pipeline"]
+    for r in range(2, 42):
+        pl[f"I{r}"] = f'=IF(ISNUMBER(H{r}),H{r}+7,"")'
+        pl[f"J{r}"] = f'=IF(ISNUMBER(H{r}),H{r}+21,"")'
+        pl[f"L{r}"] = (
+            f'=IF(A{r}="","",'
+            f'IF(OR(K{r}="Booked",K{r}="Declined",K{r}="Closed - no reply",K{r}="Do not contact"),"CLOSED",'
+            f'IF(AND(ISNUMBER(J{r}),TODAY()>J{r}),"CLOSE THE LOOP",'
+            f'IF(AND(ISNUMBER(I{r}),TODAY()>I{r}),"FOLLOW UP 1","WAITING"))))')
+    dv = DataValidation(type="whole", operator="between", formula1="1", formula2="5", allow_blank=True,
+                        showErrorMessage=True, showInputMessage=True, errorTitle="Fit score",
+                        error="Enter 1 (poor) to 5 (strong). Cut anything 3 or below.")
+    pl.add_data_validation(dv); dv.add("G2:G41")
+    dv = DataValidation(type="list", formula1=STATUSES, allow_blank=True, showErrorMessage=True,
+                        errorTitle="Status", error="Pick a status from the list.")
+    pl.add_data_validation(dv); dv.add("K2:K41")
+    pl["P1"] = ("Fill the white cells only. Follow-up dates, Cadence and every figure on Metrics are computed - "
+                "do not overwrite the blue cells. Cut any show scoring 3 or below: delete the row.")
+    pl["P1"].font = Font(italic=True)
+
+    # ---- FollowUps: the fixed cadence, never a third touch --------------
+    _sheet(wb, "FollowUps", ["Show", "Touch number", "Date sent", "Channel",
+                             "One-line value added (never just 'bumping this')", "Reply (Y/N)"],
+        [["EXAMPLE The Small Biz Kitchen", 1, "2026-10-27", "Email", "EXAMPLE added the rate-benchmark table", "N"]] +
+        [["", None, None, "", "", ""] for _ in range(40)],
+        [26, 14, 12, 12, 52, 11], {2: "yyyy-mm-dd"}, example_rows=1)
+    fu = wb["FollowUps"]
+    dv = DataValidation(type="whole", operator="between", formula1="1", formula2="4", allow_blank=True,
+                        showErrorMessage=True, showInputMessage=True, errorTitle="Touch number",
+                        error="1 = first follow-up (day 7), 2 = close (day 21). A 3 is spam - do not send it.")
+    fu.add_data_validation(dv); dv.add("B2:B41")
+    dv = DataValidation(type="list", formula1='"Y,N"', allow_blank=True, showErrorMessage=True,
+                        errorTitle="Reply?", error="Enter Y or N.")
+    fu.add_data_validation(dv); dv.add("F2:F41")
+    fu["H1"] = "Two follow-ups maximum per show, then close. Touch number above 2 is a spam risk and Metrics will say so."
+    fu["H1"].font = Font(italic=True)
+
+    # ---- Metrics: the honest scoreboard --------------------------------
+    _sheet(wb, "Metrics", ["KPI", "Value", "How it is computed"],
+        [["Shows on the target list", '=COUNTA(Pipeline!$A$2:$A$41)', "Rows with a show name"],
+         ["Pitches sent", '=COUNT(Pipeline!$H$2:$H$41)', "Rows with a real pitch date"],
+         ["Replies", '=COUNTIF(Pipeline!$K$2:$K$41,"Replied")+COUNTIF(Pipeline!$K$2:$K$41,"Booked")',
+          "Replied + Booked"],
+         ["Reply rate", '=IFERROR(B3/B2,"")', "Replies / pitches sent"],
+         ["Bookings", '=COUNTIF(Pipeline!$K$2:$K$41,"Booked")', "Status = Booked"],
+         ["Booking rate", '=IFERROR(B5/B2,"")', "Bookings / pitches sent"],
+         ["Closed without a reply", '=COUNTIF(Pipeline!$K$2:$K$41,"Closed - no reply")',
+          "The honest baseline your next quarter is measured against"],
+         ["Shows cut as poor fit (score 3 or below)", '=COUNTIF(Pipeline!$G$2:$G$41,"<=3")',
+          "Rows you should delete rather than pitch"],
+         ["Cadence overdue", '=COUNTIF(Pipeline!$L$2:$L$41,"FOLLOW UP 1")+COUNTIF(Pipeline!$L$2:$L$41,"CLOSE THE LOOP")',
+          "Rows the cadence says are due today or earlier"],
+         ["Spam risk (any touch number above 2)", '=COUNTIF(FollowUps!$B$2:$B$41,">2")',
+          "Must stay 0 - a third follow-up is a request to be filtered"],
+         ["Assets ready (of 10)", '=COUNTIF(Assets!$D$2:$D$11,"Y")', "Rows marked Y on Assets"],
+         ["Assets status", '=IF(B12<10,"BUILD THE MISSING ASSETS BEFORE PITCHING","ASSETS READY")',
+          "All ten assets must be ready before the first pitch"],
+         ["Best angle so far", '=IFERROR(IF(MAX(Angles!$H$2:$H$6)=0,"",INDEX(Angles!$B$2:$B$6,MATCH(MAX(Angles!$H$2:$H$6),Angles!$H$2:$H$6,0))),"")',
+          "Highest reply rate among the angles you have actually pitched"],
+         ["Read this honestly", '=IF(B2=0,"No pitches yet - build the assets first",IF(B2<10,"Under 10 pitches: too early to read a trend",IF(B13<>"ASSETS READY","Assets incomplete - fix that first",IF(B10>0,"SPAM RISK - stop sending third follow-ups","Judge batches, not single emails. Change one thing at a time."))))',
+          "Change one variable at a time so an improvement has a cause you can name"]],
+        [42, 30, 62], None, example_rows=0)
+    me = wb["Metrics"]
+    for c in ("B4", "B6"):
+        me[c].number_format = "0%"
+
+    _readme(wb, ["B12-005 Podcast Guest Booking Kit - TRACKER, HOW TO USE",
+        "1) Assets first. Fill the Assets sheet and mark each row Y only when the asset genuinely exists. Metrics stays on BUILD THE MISSING ASSETS for as long as any row is N - a pitch sent without an angle, proof and a lead magnet is a coin flip.",
+        "2) Angles. Write two to five specific, arguable claims with the proof you can cite. The sheet computes each angle's pitches and reply rate from Pipeline, so you can see which angle is actually wanted. Retire the weakest after about 15 pitches.",
+        "3) Pipeline. One row per show. Fill Show, host, network, episode-you-heard, contact route, angle, fit score (1-5) and pitch date (white cells). Follow-up 1 due (day 7), Follow-up 2 due (day 21) and Cadence are computed - do not overwrite the blue cells. Cut any show scoring 3 or below: delete the row rather than pitch it.",
+        "4) FollowUps. Log every touch. Touch number 1 is the day-7 follow-up, 2 is the day-21 close. There is no 3 - the entry warns you and Metrics reports SPAM RISK, because a third follow-up is how you get filtered. Never send an empty bump; always add one line of real value.",
+        "5) Metrics. The scoreboard, computed from your own rows: pitches, replies, reply rate, bookings, booking rate, closed-without-reply, cadence overdue, spam risk, and the best-performing angle. Anything under 10 pitches is too early to read a trend - judge batches, not single emails.",
+        "6) Weekly ritual, 45 minutes: rank and cut new shows, send this week's pitches, work the rows Cadence marks due, update statuses honestly, glance at Metrics, close it. Pair this with the B12-005 PDF (the method, the five scripts, and the ten mistakes).",
+        "7) This is an organising tool for YOUR OWN guest outreach. It contacts no one, subscribes you to no database, and promises no bookings. It is not PR, legal or financial advice."])
     p = OUT / "B12-005_podcast_guest_tracker.xlsx"
     _paint_formulas(wb)
     wb.save(p)

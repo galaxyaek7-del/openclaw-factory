@@ -1,0 +1,271 @@
+{
+ "product_id": "B12-005",
+ "title": "Podcast Guest Booking Kit",
+ "run_at": "2026-10-19T10:40:00Z",
+ "pdf_pages": 8,
+ "words": 3330,
+ "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
+ "competitors_sourced": [
+  {
+   "name": "Podcast Guest Kit (Zicula)",
+   "price_usd": 28.0,
+   "url": "https://podcast-guest-kit.zicula.trade/"
+  },
+  {
+   "name": "Guest Pipeline (vitk)",
+   "price_usd": 25.0,
+   "url": "https://vitk.gumroad.com/l/guest-pipeline"
+  },
+  {
+   "name": "Podcast Guest Communication Template Pack (Gaffin Creative)",
+   "price_usd": 19.0,
+   "url": "https://gaffincreative.com/product/podcast-guest-communication-email-templates/"
+  },
+  {
+   "name": "Podcast Guest Pitch Kit | PR Templates for Coaches, Authors (Digital Download)",
+   "price_usd": 18.0,
+   "url": "https://www.etsy.com/market/podcast_pitch"
+  },
+  {
+   "name": "Podcast Guest Pitching Guide (EarnifyHub)",
+   "price_usd": 15.0,
+   "url": "https://earnifyhub.com/products/podcast-guest-pitching-guide"
+  },
+  {
+   "name": "Podcast Guest Release Form Template | Lawyer-Drafted",
+   "price_usd": 12.75,
+   "url": "https://www.etsy.com/market/podcast_guest_booking_form"
+  },
+  {
+   "name": "Podcast Guest One Sheet Template (Etsy)",
+   "price_usd": 7.92,
+   "url": "https://www.etsy.com/market/podcast_pitch_sheet"
+  },
+  {
+   "name": "Podcast Guest Booking System (CreatorSkills)",
+   "price_usd": 7.0,
+   "url": "https://creatorskills.co/skills/podcast-guest-booking-system"
+  },
+  {
+   "name": "One Sheet Speaker Canva Template (Trendy Fox Studio)",
+   "price_usd": 6.0,
+   "url": "https://trendyfoxstudio.com/products/one-sheet-speaker-canva-template-corporate-speaker-press-kit-one-pager-keynote-speaker-author-podcast-guest-influencer-media-kit-template-copy"
+  },
+  {
+   "name": "Podcast Media Kit and Rate Card (Podcasts for Profit)",
+   "price_usd": 38.0,
+   "url": "https://podcastsforprofit.com/products/podcast-media-kit-and-rate-card"
+  },
+  {
+   "name": "Podcast Guest Outreach Pitch Deck Canva Template (Etsy)",
+   "price_usd": 5.03,
+   "url": "https://www.etsy.com/market/podcast_pitch"
+  }
+ ],
+ "competitors_not_read": [
+  "Remote Podcast Guest Kit | Brief, Checklists & 5 Email Templates (maszara)",
+  "Podcast Guest Launch Kit — Positioning to Booked Interviews (Checklist + Planner) (rdcalloway)",
+  "10-Page Nail Your Podcast Guest Pitch Playbook + Video Tutorial (thethoughtcard)",
+  "Easy Podcast Guest Booking & Communication E-book + Templates (wannmo)"
+ ],
+ "price_range_observed": [
+  5.03,
+  38.0
+ ],
+ "gate_at_7_0": {
+  "price": 7.0,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "content_depth": {
+   "words": 3336,
+   "words_required": 700,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 154,
+   "sheet_depth_ok": true
+  }
+ },
+ "gate_at_8_0": {
+  "price": 8.0,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "content_depth": {
+   "words": 3336,
+   "words_required": 800,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 154,
+   "sheet_depth_ok": true
+  }
+ },
+ "gate_at_9_0": {
+  "price": 9.0,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "content_depth": {
+   "words": 3336,
+   "words_required": 900,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 154,
+   "sheet_depth_ok": true
+  }
+ },
+ "gate_at_11_99": {
+  "price": 11.99,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "content_depth": {
+   "words": 3336,
+   "words_required": 1199,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 154,
+   "sheet_depth_ok": true
+  }
+ },
+ "gate_at_14_99": {
+  "price": 14.99,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "content_depth": {
+   "words": 3336,
+   "words_required": 1499,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 154,
+   "sheet_depth_ok": true
+  }
+ },
+ "gate_at_19_0": {
+  "price": 19.0,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "content_depth": {
+   "words": 3336,
+   "words_required": 1900,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 154,
+   "sheet_depth_ok": true
+  }
+ },
+ "gate_at_29_0": {
+  "price": 29.0,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "content_depth": {
+   "words": 3336,
+   "words_required": 2900,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 154,
+   "sheet_depth_ok": true
+  }
+ }
+}

@@ -320,6 +320,19 @@ _EXTRA = {
         # floor (still well above a thin stub); B12-001's 300 is unchanged.
         "min_description_words": 200,
     },
+    "B12-003": {
+        "gate": FACTORY_DIR / "reports" / "B12-003" / "GATE_FINAL_2026-10-19.json",
+        "customer_page": FACTORY_DIR / "customer_site" / "b12-access-continuity-organizer.html",
+        "evidence": FACTORY_DIR / "data" / "first_sale_draft_evidence_b12_003.json",
+        "listing_copy": FACTORY_DIR / "drafts" / "b12_003_listing_copy.txt",
+        "listing_evidence": FACTORY_DIR / "data" / "first_sale_listing_update_evidence_b12_003.json",
+        "utm_template": None,
+        "utm_resolved": FACTORY_DIR / "reports" / "B12-003" / "utm_links.resolved.json",
+        "cover_evidence": FACTORY_DIR / "data" / "first_sale_cover_evidence_b12_003.json",
+        # B12-003's listing copy is 346 words -- above B12-001's 300-word bar,
+        # so it uses the same floor (no per-product relaxation needed).
+        "min_description_words": 300,
+    },
 }
 
 
@@ -572,6 +585,63 @@ def _real_verify_draft(ctx, evidence):
     }
 
 
+def _assert_listing_copy_is_live(gp, token, product_id, product=None) -> dict:
+    """Durable pre-publish guard (Cycle 99).
+
+    Refuse to publish a listing whose prepared description/tags are not
+    actually live. The mis-sequenced 2026-10-19 run published B12-003 before
+    `--apply-listing` had run, leaving a live listing with zero tags. This makes
+    "publish a half-configured listing" impossible for every product.
+
+    Raises CapabilityError -- a re-checkable block -- so the run simply retries
+    once the listing copy is applied, rather than a permanent, hand-editable
+    block.
+    """
+    try:
+        _, prepared_tags = _prepared_listing_copy(product)
+    except TaskError:
+        # No prepared copy for this product -> preserve the historical behaviour.
+        return {"checked": False, "reason": "no prepared listing copy"}
+    live = gp.get_product(token, product_id)
+    if not isinstance(live, dict):
+        raise UncertainOutcomeError("could not read the listing back before publishing")
+    live_tags = set(live.get("tags") or [])
+    missing = sorted(set(prepared_tags) - live_tags)
+    try:
+        min_words = int(product_config(product).get("min_description_words") or 0)
+    except Exception:  # noqa: BLE001
+        min_words = 0
+    live_words = len((live.get("description") or "").split())
+    if missing or (min_words and live_words < min_words):
+        raise CapabilityError(
+            "refusing to publish: the prepared listing copy is not live yet "
+            f"(missing_tags={missing}, description_words={live_words}"
+            + (f", required>={min_words}" if min_words else "")
+            + "); run --apply-listing first")
+    return {"checked": True, "tags": sorted(live_tags), "description_words": live_words}
+
+
+def republish(product=None, publish_authorization=None) -> dict:
+    """Re-enable an existing, verified listing via the DOCUMENTED route.
+
+    The counterpart to `--rollback`: after a rollback (disable) the listing can
+    be brought back live without creating a second product. Requires BOTH the
+    live write gate and the exact per-product phrase, and shares
+    `_real_publish_fn`'s guards -- including the listing-copy precheck -- so a
+    republish can never go out ahead of the listing copy.
+    """
+    phrase = publish_phrase(product) if product else PUBLISH_PHRASE
+    if publish_authorization != phrase:
+        raise FounderAuthorityError(f"republish requires '{phrase}'",
+                                    ctx_key="publish_authorization", required=phrase)
+    if not live_flag_enabled() or not _write_authorized("create_product"):
+        raise AuthorizationError(
+            "republish requires FACTORY_LIVE_PUBLISH=true and a fresh VERIFIED "
+            "auth state (write gate)")
+    return _real_publish_fn({"product": product,
+                             "publish_authorization": publish_authorization})
+
+
 def _real_publish_fn(ctx):
     """Publish an already-verified draft. Only reachable with the exact phrase."""
     product = ctx.get("product")
@@ -589,6 +659,7 @@ def _real_publish_fn(ctx):
 
     token = gp.load_token()
     pid = evidence["product_id"]
+    _assert_listing_copy_is_live(gp, token, pid, product)
     try:
         gp.enable_product(token, pid)
     except Exception as exc:  # noqa: BLE001
@@ -1786,6 +1857,9 @@ def main():
                     help="attach the cover to the live listing (needs the write gate)")
     ap.add_argument("--rollback", action="store_true",
                     help="revert the listing to unpublished (needs the write gate)")
+    ap.add_argument("--republish", action="store_true",
+                    help="re-enable an existing verified listing after a rollback "
+                         "(needs the write gate AND --publish-authorization)")
     ap.add_argument("--product", default=None,
                     help="product id (e.g. B12-004); default is B12-001")
     ap.add_argument("--json", action="store_true")
@@ -1818,6 +1892,12 @@ def main():
             out = _rollback(product=args.product)
         except TaskError as e:
             out = {"error": str(e), "rolled_back": False}
+    elif args.republish:
+        try:
+            out = republish(product=args.product,
+                            publish_authorization=args.publish_authorization)
+        except TaskError as e:
+            out = {"published": False, "error": str(e)}
     elif args.workbook:
         out = workbook_validate(product=args.product)
     elif args.resolve_utm:

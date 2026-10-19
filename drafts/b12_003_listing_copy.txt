@@ -1,13 +1,16 @@
 B12-003 COPY-PASTE LISTING (paste exactly; do not embellish)
 ============================================================
-STATUS: FOUNDER-APPROVED 2026-10-19 (USD 19.00) — this product is NOT listed yet.
-Do not publish until an explicit B12-003 authorization phrase is given.
+STATUS: PUBLISHED (Cycle 99, 2026-10-19). FINAL PRICE USD 8.00. Live listing:
+https://aekraft.gumroad.com/l/svlky (product id TFeaaWXO3zySimrs2Jbjbw==), independently verified
+2026-10-19: published=true, price 800 cents, 8 tags, cover attached, both deliverables attached
+(xlsx 13,594 B + pdf 19,095 B), 0 sales. Evidence: data/cycle99_b12_003_live_verification.json.
 
 TITLE:
 Founder Access Continuity Organizer
 
 PRICE:
-$19.00 USD one-time (FOUNDER-APPROVED 2026-10-19; not yet listed — no Gumroad product exists yet)
+$8.00 USD one-time (FINAL, Cycle 99 directive 2026-10-19; highest price that clears the mandatory
+market-realism policy for an 8-page guide: min($1.00 x 8 pages, $15.00) = $8.00)
 
 DESCRIPTION:
 A one-person business has one single point of failure: you. If you are in hospital, offline for a week, or simply unreachable, the business does not pause — it fails quietly, because nobody else knows what it runs on or how to get back in. This is the organizer that fixes that, without ever writing a password on paper.

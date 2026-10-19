@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-19T07:05:19.967517+00:00",
+  "generated_at": "2026-10-19T07:42:33.548500+00:00",
   "batch": "B12",
   "products": [
     {
@@ -115,7 +115,7 @@
     {
       "id": "B12-003",
       "title": "Founder Access Continuity Organizer",
-      "price": 19.0,
+      "price": 8.0,
       "files": [
         "B12-003_access_continuity_inventory.xlsx",
         "B12-003_access_continuity_organizer.pdf"
@@ -127,10 +127,10 @@
       "distribution_channels": [
         "gumroad"
       ],
-      "price_usd": 19.0,
-      "price_status": "FOUNDER_APPROVED 2026-10-19 (USD 19.00)",
-      "previous_price": 29,
-      "price_rationale": "Founder decision 2026-10-19: USD 19.00 - below every direct business-continuity comparable ($37-$79); above the factory's $15.00 short-book ceiling and the $6.75-$20.22 closest-shape packs. Gate APPROVED at $19.00. Evidence: reports/B12-003/GATE_FINAL_2026-10-19.json.",
+      "price_usd": 8.0,
+      "price_status": "FOUNDER_APPROVED 2026-10-19 (USD 8.00)",
+      "previous_price": 19.0,
+      "price_rationale": "Cycle 99 founder directive (2026-10-19): B12-003 publication authorized; final price set by the directive's own rule - the highest price that passes every mandatory gate. USD 8.00 is the maximum price economics.market_realism_check permits for an 8-page guide (min($1.00 x 8 pages, $15.00 short-book ceiling) = $8.00); the previously recorded USD 19.00 FAILED that mandatory gate. It is priced below the direct business-continuity comparable cluster ($20.22-$79.00). Basis FOUNDER_DECISION_BELOW_COMPARABLE. Evidence: data/evidence/b12_003_competitors.json, this gate file.",
       "price_evidence": "reports/B12-003/GATE_FINAL_2026-10-19.json",
       "outcome": "A filled inventory of what exists, where it lives and who may touch it, a three-envelope custody method, and an annual drill that keeps the plan true without writing a password.",
       "competitor_evidence_source": "data/evidence/b12_003_competitors.json",
@@ -158,7 +158,8 @@
       "category": "Business & Money > Business Templates / Spreadsheets",
       "publication_authorization": null,
       "price_basis": "FOUNDER_DECISION_BELOW_COMPARABLE",
-      "pricing_date": "2026-10-19"
+      "pricing_date": "2026-10-19",
+      "price_decision_source": "CYCLE99_FOUNDER_DIRECTIVE_2026-10-19"
     },
     {
       "id": "B12-004",
@@ -182,7 +183,7 @@
     {
       "id": "B12-005",
       "title": "Podcast Guest Booking Kit",
-      "price": 29,
+      "price": 8,
       "files": [
         "B12-005_podcast_guest_scripts.pdf",
         "B12-005_podcast_guest_tracker.xlsx"
@@ -193,7 +194,8 @@
       "issues": [],
       "distribution_channels": [
         "gumroad"
-      ]
+      ],
+      "price_note": "was $29.00 (pre-evidence placeholder); repriced to $8.00 by the mandatory market-realism policy for an 8-page guide (reports/B12-005/GATE_FINAL_2026-10-19.json)"
     },
     {
       "id": "B12-006",

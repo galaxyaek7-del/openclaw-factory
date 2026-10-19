@@ -82,7 +82,7 @@
     {
       "id": "B12-003",
       "title": "Founder Access Continuity Organizer",
-      "proposed_price_usd": 19.0,
+      "proposed_price_usd": 8.0,
       "files": [
         "B12-003_access_continuity_inventory.xlsx",
         "B12-003_access_continuity_organizer.pdf"
@@ -98,13 +98,15 @@
         "open every file",
         "confirm listed files match payload",
         "verify price matches proposal",
-        "test download after listing (founder, post-authorization)"
+        "test download after listing (founder, post-authorization)",
+        "live read-back verified 2026-10-19: price 800c, 8 tags, cover attached, both files attached"
       ],
-      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
-      "price_status": "FOUNDER_APPROVED 2026-10-19 (USD 19.00)",
-      "price_usd": 19.0,
+      "status": "PUBLISHED_AND_VERIFIED 2026-10-19",
+      "price_status": "FOUNDER_APPROVED 2026-10-19 (USD 8.00)",
+      "price_usd": 8.0,
       "price_basis": "FOUNDER_DECISION_BELOW_COMPARABLE",
-      "cover": "reports/B12-003/cover.png"
+      "cover": "reports/B12-003/cover.png",
+      "live_url": "https://aekraft.gumroad.com/l/svlky"
     },
     {
       "id": "B12-004",
@@ -146,7 +148,7 @@
     {
       "id": "B12-005",
       "title": "Podcast Guest Booking Kit",
-      "proposed_price_usd": 29,
+      "proposed_price_usd": 8.0,
       "files": [
         "B12-005_podcast_guest_scripts.pdf",
         "B12-005_podcast_guest_tracker.xlsx"
@@ -164,7 +166,17 @@
         "verify price matches proposal",
         "test download after listing (founder, post-authorization)"
       ],
-      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
+      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+      "price_status": "DERIVED_BY_CYCLE99_PRICING_RULE 2026-10-19 (USD 8.00) - pending founder listing authorization",
+      "price_basis": "HIGHEST_PRICE_PASSING_ALL_MANDATORY_GATES",
+      "price_rationale": "The manifest's $29.00 fails the mandatory economics market-realism policy for an 8-page guide ($1.00/page ceiling = $8.00). $8.00 clears every mandatory gate: quality gate APPROVED (core 100 / content 100 / market 70), depth rule (3,336 words >= 100 x $8.00), market-realism policy ($1.00 x 8 pages). Evidence: reports/B12-005/GATE_FINAL_2026-10-19.json.",
+      "evidence": {
+        "gate": "reports/B12-005/GATE_FINAL_2026-10-19.json",
+        "qa": "reports/B12-005/QA_FACTS_2026-10-19.json",
+        "demand": "reports/B12-005/DEMAND_EVIDENCE_2026-10-19.json",
+        "competitors": "data/evidence/b12_005_competitors.json"
+      },
+      "cover": "reports/B12-005/cover.png"
     },
     {
       "id": "B12-006",

@@ -1,0 +1,34 @@
+B12-005 COPY-PASTE LISTING (paste exactly; do not embellish)
+============================================================
+STATUS: READY FOR AUTHORIZATION (Cycle 99, 2026-10-19). NOT LISTED YET - no Gumroad listing exists
+for this product and none may be created without a separate, explicit, product-specific founder
+authorization. Price below is DERIVED by the standing Cycle 99 rule (the highest price passing every
+mandatory gate), not a founder price approval. Evidence: reports/B12-005/GATE_FINAL_2026-10-19.json.
+
+TITLE:
+Podcast Guest Booking Kit
+
+PRICE:
+$8.00 USD one-time (DERIVED, Cycle 99 pricing rule 2026-10-19; the manifest's $29.00 fails the
+mandatory market-realism policy for an 8-page guide: min($1.00 x 8 pages, $15.00) = $8.00)
+
+DESCRIPTION:
+Most guest pitches get ignored for the same three reasons: they are sent to a show that was never a fit, they open with a bio instead of a reason for the host's audience to care, and they get followed up until they read as spam. This kit fixes all three, without ever promising a booking.
+
+Built for founders, freelancers, consultants and authors who want to be booked as podcast guests. The method is fit-first and deliberately capped: score a real list of shows, pitch in each host's own words with a specific angle you can prove, send exactly two follow-ups, then close the loop with dignity and move on. The workbook computes the follow-up dates so the cadence cannot drift, flags any third-touch attempt as spam risk, and tells you which of your angles actually earns replies.
+
+Inside (2 files):
+- Podcast Guest Tracker workbook (.xlsx, 6 sheets): Assets (the ten things that must exist before you send a single pitch, including three specific angles with their proof), Angles (two to five arguable claims with the proof you can cite, pitched count, replies and a computed reply rate per angle), Pipeline (one row per show - episode you actually heard, contact route, angle used, fit score 1-5, pitch date, auto-computed follow-up dates, status, a Cadence column that says WAITING / FOLLOW UP 1 / CLOSE THE LOOP / CLOSED, and your next action), FollowUps (log every touch; touch number above 2 is flagged as a spam risk), Metrics (shows on the list, pitches sent, replies, reply rate, bookings, booking rate, shows cut as poor fit, cadence overdue, spam risk, assets ready and best-performing angle, plus a plain-language read on whether your sample is even big enough to judge), and a README. Includes worked example rows.
+- Podcast Guest Scripts guide (.pdf, 8 pages, 15 sections): what this kit is and is not, the fit-before-pitch principle, the three assets to build first, how to build a target list of 25 to 40 shows instead of 200, the six-signal fit test, the pitch script and why each line exists, the two capped follow-ups, the confirmation brief for after a yes, the thank-you and asset email, a one-sheet fill-in template, a question bank that makes a host want you back, the first 14 days if you are starting today, a weekly 45-minute ritual, a worked example, ten mistakes that get you ignored, and answers to the five objections that stop people starting.
+
+New product from Galaxy Forge: no sales recorded yet, no reviews.
+
+Requires: Excel, LibreOffice Calc (free), or Google Sheets (free upload) for the workbook; any PDF reader for the guide. Instant download after purchase. Support: reply to your Gumroad receipt email.
+
+TAGS:
+podcast, guest pitching, outreach, email templates, publicity, tracker, checklist, pr
+
+FILES TO UPLOAD:
+books/batch12/B12-005_podcast_guest_scripts.pdf
+books/batch12/B12-005_podcast_guest_tracker.xlsx
+============================================================

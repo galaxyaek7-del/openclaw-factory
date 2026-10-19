@@ -1,0 +1,200 @@
+{
+ "product": "B12-005",
+ "title": "Podcast Guest Booking Kit",
+ "research_date": "2026-10-19T09:40:00Z",
+ "method": "Read-only web search of live public listing/product pages for podcast-guest pitching kits, guest-booking systems, pitch scripts, one-sheets and podcast media-kit templates. Prices are each page's own displayed price at the time observed. No purchase, no account, no contact, $0.",
+ "scope_note": "The product's scripts are written from the GUEST's point of view (pitching yourself onto shows). Several products below address the HOST's point of view (booking guests onto your own show); they are kept because they compete for the same search terms and wallet, and are labelled attitude=HOST vs GUEST so the mix is not mistaken for a pure guest-side market.",
+ "competitors": [
+  {
+   "name": "Podcast Guest Kit (Zicula)",
+   "url": "https://podcast-guest-kit.zicula.trade/",
+   "price_usd": 28.0,
+   "platform": "Direct (own site)",
+   "attitude": "GUEST",
+   "notes": "Closest and most complete comparable: one-sheet generator (HTML, prints to PDF), 8 pitch templates + 10 subject lines, a pipeline tracker with a weekly ritual, a publishable booking page, and a 14-day plan. One-time price, explicitly 'not a placement service', with an 'honest box' stating what it does not promise.",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search showing the live page's own '$28 one-time' pricing and contents)"
+  },
+  {
+   "name": "Guest Pipeline (vitk)",
+   "url": "https://vitk.gumroad.com/l/guest-pipeline",
+   "price_usd": 25.0,
+   "platform": "Gumroad",
+   "attitude": "HOST",
+   "notes": "Offline dashboard that keeps outreach, booking, recording, release dates, topics and follow-ups in one place; CSV export and 'structured JSON to ChatGPT/Claude/Codex'. No subscription. Shows the price a bare tracker-plus-workflow can command.",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search showing the live listing's '$25')"
+  },
+  {
+   "name": "Podcast Guest Communication Template Pack (Gaffin Creative)",
+   "url": "https://gaffincreative.com/product/podcast-guest-communication-email-templates/",
+   "price_usd": 19.0,
+   "platform": "Direct (own site)",
+   "attitude": "HOST",
+   "notes": "6 copy-and-paste guest-communication email templates covering outreach, scheduling, media request, prep, launch announcement and launch-day reminder. Email templates alone, no tracker.",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search showing the live page's '$19.00')"
+  },
+  {
+   "name": "Podcast Guest Pitch Kit | PR Templates for Coaches, Authors (Digital Download)",
+   "url": "https://www.etsy.com/market/podcast_pitch",
+   "price_usd": 18.0,
+   "platform": "Etsy",
+   "attitude": "GUEST",
+   "notes": "Guest-side pitch kit of PR templates for coaches and authors. Listed at USD 18.00 in Etsy's podcast-pitch market results at the time observed.",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live Etsy market listing showing 'Podcast Guest Pitch Kit | PR Templates for Coaches, Authors (Digital Download) USD 18.00')"
+  },
+  {
+   "name": "Podcast Guest Pitching Guide (EarnifyHub)",
+   "url": "https://earnifyhub.com/products/podcast-guest-pitching-guide",
+   "price_usd": 15.0,
+   "platform": "Direct (own site)",
+   "attitude": "BOTH",
+   "notes": "Two-sided written guide: 11 sections, 4 outreach email templates, a cold-vs-warm comparison table, a pre-interview prep checklist and a before/during/after workflow. The closest written-content comparable to this product's PDF.",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search showing the live page's '$15.00' and its contents list)"
+  },
+  {
+   "name": "Podcast Guest Release Form Template | Lawyer-Drafted",
+   "url": "https://www.etsy.com/market/podcast_guest_booking_form",
+   "price_usd": 12.75,
+   "platform": "Etsy",
+   "attitude": "HOST",
+   "notes": "A single lawyer-drafted release form for the guest-booking step. Shows that a narrow, single-purpose document in this category still clears $12.",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live Etsy guest-booking-form listing showing '$12.75')"
+  },
+  {
+   "name": "Podcast Guest One Sheet Template (Etsy)",
+   "url": "https://www.etsy.com/market/podcast_pitch_sheet",
+   "price_usd": 7.92,
+   "platform": "Etsy",
+   "attitude": "GUEST",
+   "notes": "Canva one-sheet for the podcast-guest pitch; listed at a $7.92 sale price from a $10.56 original. This is the template floor for the asset the top kit bundles with scripts and a tracker.",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live Etsy pitch-sheet listing showing '$7.92 ... Original Price $10.56')"
+  },
+  {
+   "name": "Podcast Guest Booking System (CreatorSkills)",
+   "url": "https://creatorskills.co/skills/podcast-guest-booking-system",
+   "price_usd": 7.0,
+   "platform": "Direct (own site)",
+   "attitude": "HOST",
+   "notes": "Five-part AI skill (ideal-guest persona, guest research, cold outreach generator with three tone variants, a 3-touch follow-up cadence, and a pre-show prep kit). One payment, no subscription. Defines the low end of the AI-assisted segment.",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search showing the live page's '$7' pricing line)"
+  },
+  {
+   "name": "One Sheet Speaker Canva Template (Trendy Fox Studio)",
+   "url": "https://trendyfoxstudio.com/products/one-sheet-speaker-canva-template-corporate-speaker-press-kit-one-pager-keynote-speaker-author-podcast-guest-influencer-media-kit-template-copy",
+   "price_usd": 6.0,
+   "platform": "Direct (own site)",
+   "attitude": "GUEST",
+   "notes": "Single-page speaker/guest one-sheet Canva template, explicitly marketed for 'podcast guest' use. Bottom of the one-sheet price range.",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search showing the live page's '$6.00')"
+  },
+  {
+   "name": "Podcast Media Kit and Rate Card (Podcasts for Profit)",
+   "url": "https://podcastsforprofit.com/products/podcast-media-kit-and-rate-card",
+   "price_usd": 38.0,
+   "platform": "Direct (own site)",
+   "attitude": "HOST",
+   "notes": "5-page Canva packet for podcasters pitching themselves to SPONSORS (audience demographics, rate card, ad pricing). The high end of the priced packet market, but the money flows the other way (selling ads, not guesting).",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search showing the live page's 'Price: 38 USD' and its contents list)"
+  },
+  {
+   "name": "Podcast Guest Outreach Pitch Deck Canva Template (Etsy)",
+   "url": "https://www.etsy.com/market/podcast_pitch",
+   "price_usd": 5.03,
+   "platform": "Etsy",
+   "attitude": "HOST",
+   "notes": "Guest-outreach pitch deck template at a $5.03 sale price from $7.19. Illustrates how aggressively the Etsy template floor is discounted.",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live Etsy market listing showing 'USD 5.03 Original Price USD 7.19')"
+  },
+  {
+   "name": "Remote Podcast Guest Kit | Brief, Checklists & 5 Email Templates (maszara)",
+   "url": "https://maszara.gumroad.com/l/uqowif",
+   "price_usd": null,
+   "platform": "Gumroad",
+   "attitude": "GUEST",
+   "notes": "Guest-side kit of brief + checklists + 5 email templates. Included as a shape match; the page is client-rendered so its price could not be read without executing scripts, and is deliberately NOT guessed.",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "NOT_READ",
+   "verified_by": "Claude (title and product shape confirmed via web search; price not observable)"
+  },
+  {
+   "name": "Podcast Guest Launch Kit — Positioning to Booked Interviews (Checklist + Planner) (rdcalloway)",
+   "url": "https://rdcalloway.gumroad.com/l/uibmme",
+   "price_usd": null,
+   "platform": "Gumroad",
+   "attitude": "GUEST",
+   "notes": "Guest-side positioning checklist + planner. Same shape as this product (checklist + planner). Price not observable on the client-rendered page; NOT guessed.",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "NOT_READ",
+   "verified_by": "Claude (title and product shape confirmed via web search; price not observable)"
+  },
+  {
+   "name": "10-Page Nail Your Podcast Guest Pitch Playbook + Video Tutorial (thethoughtcard)",
+   "url": "https://thethoughtcard.gumroad.com/l/wmoLr",
+   "price_usd": null,
+   "platform": "Gumroad",
+   "attitude": "GUEST",
+   "notes": "10-page playbook plus a video tutorial. A directly competitive long-form playbook; price not observable on the client-rendered page; NOT guessed.",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "NOT_READ",
+   "verified_by": "Claude (title and product shape confirmed via web search; price not observable)"
+  },
+  {
+   "name": "Easy Podcast Guest Booking & Communication E-book + Templates (wannmo)",
+   "url": "https://wannmo.gumroad.com/l/podcastguestsebook",
+   "price_usd": null,
+   "platform": "Gumroad",
+   "attitude": "HOST",
+   "notes": "E-book plus templates for guest booking and communication. Price not observable on the client-rendered page; NOT guessed.",
+   "observed_at": "2026-10-19T09:40:00Z",
+   "evidence_type": "NOT_READ",
+   "verified_by": "Claude (title and product shape confirmed via web search; price not observable)"
+  }
+ ],
+ "substitute_prices_cited_by_a_competitor": [
+  {
+   "name": "Guestio Pro",
+   "price": "$97/month",
+   "kind": "subscription tool",
+   "cited_by": "Zicula Podcast Guest Kit page"
+  },
+  {
+   "name": "Rephonic",
+   "price": "from $99/month",
+   "kind": "subscription tool",
+   "cited_by": "Zicula Podcast Guest Kit page"
+  },
+  {
+   "name": "PodMatch (guest plan)",
+   "price": "$32/month",
+   "kind": "subscription tool",
+   "cited_by": "Zicula Podcast Guest Kit page"
+  }
+ ],
+ "observed_span_usd": {
+  "min": 5.03,
+  "max": 38.0,
+  "note": "refers only to the listings whose price was actually read; 4 shape-matched Gumroad listings are NOT_READ and excluded"
+ },
+ "verified_by": "Claude (read-only web research, 2026-10-19); no purchase, no account, $0"
+}

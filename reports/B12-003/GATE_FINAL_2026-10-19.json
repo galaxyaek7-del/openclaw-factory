@@ -3,7 +3,7 @@
  "title": "Founder Access Continuity Organizer",
  "run_at": "2026-10-19T07:55:00Z",
  "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
- "price_status": "FOUNDER_APPROVED 2026-10-19 (USD 19.00)",
+ "price_status": "FOUNDER_APPROVED 2026-10-19 (USD 8.00)",
  "price_basis": "FOUNDER_DECISION_BELOW_COMPARABLE",
  "recommended_price_usd": 14.99,
  "competitors_sourced": [
@@ -547,9 +547,10 @@
  },
  "founder_decision": {
   "date": "2026-10-19",
-  "price_usd": 19.0,
+  "price_usd": 8.0,
   "basis": "FOUNDER_DECISION_BELOW_COMPARABLE",
-  "source": "founder answer, Cycle 98 continuation, 2026-10-19"
+  "source": "Cycle 99 founder directive (explicit B12-003 authorization + delegated pricing rule)",
+  "rationale": "Cycle 99 founder directive (2026-10-19): B12-003 publication authorized; final price set by the directive's own rule - the highest price that passes every mandatory gate. USD 8.00 is the maximum price economics.market_realism_check permits for an 8-page guide (min($1.00 x 8 pages, $15.00 short-book ceiling) = $8.00); the previously recorded USD 19.00 FAILED that mandatory gate. It is priced below the direct business-continuity comparable cluster ($20.22-$79.00). Basis FOUNDER_DECISION_BELOW_COMPARABLE. Evidence: data/evidence/b12_003_competitors.json, this gate file."
  },
  "gate_at_approved_price_19_00": {
   "inspected_at": "2026-10-19T07:01:21+00:00",
@@ -699,5 +700,63 @@
     }
    }
   }
- }
+ },
+ "gate_at_approved_price_8_00": {
+  "price": 8.0,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "thresholds": {
+   "core_value": 70,
+   "content_quality": 70,
+   "market_reality": 65
+  },
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "content_depth": {
+   "words": 3235,
+   "words_required": 800,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 20,
+   "sheet_depth_ok": true
+  }
+ },
+ "verdict": "APPROVED at $8.00",
+ "price_history": [
+  {
+   "price_usd": 29.0,
+   "status": "manifest price (pre-decision)",
+   "gate": "REWRITE"
+  },
+  {
+   "price_usd": 14.99,
+   "status": "recommended",
+   "gate": "APPROVED"
+  },
+  {
+   "price_usd": 19.0,
+   "status": "founder decision 2026-10-19 (superseded)",
+   "gate": "APPROVED",
+   "superseded_by": "$8.00 - failed the mandatory economics market-realism gate"
+  },
+  {
+   "price_usd": 8.0,
+   "status": "FINAL (Cycle 99 founder directive)",
+   "gate": "APPROVED"
+  }
+ ],
+ "cycle99_note": "The published price is $8.00. The $19.00 record above is retained as decision history only; it is not the live price. The auto-distribution path (schemas/product.py) would itself reprice an 8-page gumroad_digital product to $8.00, so the selected price now agrees with both the founder-authorized first-sale path and the economics policy - no layer disagrees."
 }

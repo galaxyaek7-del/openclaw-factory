@@ -956,5 +956,151 @@ class TestB12004Profile(unittest.TestCase):
         self.assertEqual(len(out["tags"]), 8)
 
 
+class TestCycle99B12003Publish(unittest.TestCase):
+    """Cycle 99: B12-003 is fully parameterized and its authorization is
+    strictly product-scoped -- one product's phrase can never publish another,
+    and the gate record must carry a real top-level APPROVED verdict."""
+
+    def test_config_resolves_every_layer(self):
+        cfg = od.product_config("B12-003")
+        self.assertEqual(cfg["id"], "B12-003")
+        self.assertEqual(int(cfg["price_cents"]), 800)
+        self.assertEqual(cfg["phrase"], "APPROVE B12-003 PUBLISH")
+        # `evidence` is created by the real draft create, so it is a forward
+        # path; every pre-existing artifact must resolve on disk.
+        for key in ("gate", "listing_copy", "customer_page", "cover_local_path"):
+            self.assertTrue(Path(cfg[key]).exists(), f"{key} missing: {cfg[key]}")
+        self.assertTrue(str(cfg["evidence"]).endswith("first_sale_draft_evidence_b12_003.json"))
+
+    def test_price_authority_is_authorized_at_8_00(self):
+        pa = od.price_authority(product="B12-003")
+        self.assertTrue(pa["authorized"], pa.get("reason"))
+        self.assertEqual(pa["price_usd"], 8.0)
+        self.assertEqual(pa["basis"], "FOUNDER_DECISION_BELOW_COMPARABLE")
+        self.assertGreaterEqual(len(pa["sources"]), 2)
+
+    def test_manifest_price_matches_the_profile_price(self):
+        # No layer may silently disagree on the price.
+        import json
+        man = json.loads((FACTORY_DIR / "data" / "product_batch_12.json").read_text(encoding="utf-8"))
+        entry = next(p for p in man["products"] if p["id"] == "B12-003")
+        profile = od.product_config("B12-003")
+        self.assertEqual(int(entry["price_usd"] * 100), int(profile["price_cents"]))
+        self.assertEqual(int(profile["price_cents"]), 800)
+
+    def test_gate_must_carry_a_top_level_approved_verdict(self):
+        # The real Cycle 99 blocker: GATE_FINAL for B12-003/B12-002 had verdicts
+        # only nested, so price_authority read '' and refused. A gate without a
+        # top-level APPROVED verdict must fail closed.
+        b12_002_gate = FACTORY_DIR / "reports" / "B12-002" / "GATE_FINAL_2026-10-18.json"
+        pa = od.price_authority(product="B12-003", gate_path=b12_002_gate)
+        self.assertFalse(pa["authorized"])
+        self.assertIn("not APPROVED", pa.get("reason", ""))
+
+    def test_publish_requires_its_own_phrase(self):
+        with self.assertRaises(od.FounderAuthorityError):
+            od._task_publish({"product": "B12-003",
+                              "publish_authorization": "APPROVE B12-001 PUBLISH"})
+        with self.assertRaises(od.CapabilityError):
+            od._task_publish({"product": "B12-003",
+                              "publish_authorization": "APPROVE B12-003 PUBLISH"})
+
+    def test_phrases_are_distinct_per_product(self):
+        self.assertNotEqual(od.publish_phrase("B12-003"), od.publish_phrase("B12-001"))
+        self.assertNotEqual(od.publish_phrase("B12-003"), od.publish_phrase("B12-004"))
+
+    def test_b12003_phrase_does_not_unlock_b12001(self):
+        with self.assertRaises(od.FounderAuthorityError):
+            od._task_publish({"product": "B12-001",
+                              "publish_authorization": "APPROVE B12-003 PUBLISH"})
+
+    def test_b12003_listing_copy_parses_plain_format(self):
+        desc, tags = od._prepared_listing_copy("B12-003")
+        self.assertEqual(len(tags), 8)
+        self.assertIn("business continuity", tags)
+        self.assertGreaterEqual(len(desc.split()), 300)
+
+    def test_b12003_apply_listing_copy_dry_run(self):
+        out = od.apply_listing_copy(dry_run=True, product="B12-003")
+        self.assertFalse(out["applied"])
+        self.assertEqual(out["reason"], "dry_run")
+        self.assertEqual(len(out["tags"]), 8)
+
+    def test_publish_block_reopens_only_with_the_b12003_phrase(self):
+        # A stale B12-003 publish block must stay BLOCKED until the exact
+        # B12-003 phrase arrives -- and never be reopened by B12-001's.
+        st = od.default_state()
+        t = st["tasks"]["publish"]
+        t["status"] = od.BLOCKED
+        t["blocker"] = od.BLOCKER_FOUNDER_AUTHORITY
+        t["authority_requirement"] = {"ctx_key": "publish_authorization",
+                                      "required": "APPROVE B12-003 PUBLISH"}
+        self.assertEqual(od.reset_founder_authority(st, {"publish_authorization": "APPROVE B12-001 PUBLISH"}), [])
+        self.assertEqual(t["status"], od.BLOCKED)
+        self.assertEqual(od.reset_founder_authority(st, {"publish_authorization": "APPROVE B12-003 PUBLISH"}), ["publish"])
+        # Re-opened to PENDING only; the task function still enforces the phrase.
+        self.assertEqual(t["status"], od.PENDING)
+
+    def test_publish_guard_refuses_until_listing_copy_is_live(self):
+        # The real Cycle 99 defect: a run published the listing before
+        # --apply-listing, leaving zero tags live. The guard must now refuse.
+        import channels.gumroad_publisher as gp
+        orig_ev = od.read_draft_evidence
+        od.read_draft_evidence = lambda path=None: {"product_id": "pid"}
+        try:
+            with mock.patch.object(gp, "load_token", return_value="tok"), \
+                    mock.patch.object(gp, "enable_product") as en, \
+                    mock.patch.object(gp, "get_product",
+                                      return_value={"id": "pid", "published": False,
+                                                    "tags": [], "description": "word " * 400}):
+                with self.assertRaises(od.CapabilityError):
+                    od._real_publish_fn({"product": "B12-003",
+                                         "publish_authorization": "APPROVE B12-003 PUBLISH"})
+                en.assert_not_called()
+        finally:
+            od.read_draft_evidence = orig_ev
+
+    def test_publish_guard_allows_publish_once_listing_copy_is_live(self):
+        import channels.gumroad_publisher as gp
+        _, tags = od._prepared_listing_copy("B12-003")
+        live_pre = {"id": "pid", "published": False, "tags": list(tags),
+                    "description": "word " * 320}
+        live_post = {"id": "pid", "published": True, "tags": list(tags),
+                     "description": "word " * 320, "short_url": "https://x/l/abc"}
+        orig_ev = od.read_draft_evidence
+        od.read_draft_evidence = lambda path=None: {"product_id": "pid"}
+        try:
+            with mock.patch.object(gp, "load_token", return_value="tok"), \
+                    mock.patch.object(gp, "enable_product") as en, \
+                    mock.patch.object(gp, "get_product", side_effect=[live_pre, live_post]):
+                out = od._real_publish_fn({"product": "B12-003",
+                                           "publish_authorization": "APPROVE B12-003 PUBLISH"})
+            en.assert_called_once()
+            self.assertTrue(out["published"])
+        finally:
+            od.read_draft_evidence = orig_ev
+
+    def test_republish_requires_gate_and_phrase(self):
+        orig = (od.live_flag_enabled, od._write_authorized, od._real_publish_fn)
+        try:
+            od.live_flag_enabled = lambda: False
+            od._write_authorized = lambda op="create_product": False
+            with self.assertRaises(od.FounderAuthorityError):
+                od.republish(product="B12-003", publish_authorization="nope")
+            with self.assertRaises(od.AuthorizationError):
+                od.republish(product="B12-003",
+                             publish_authorization="APPROVE B12-003 PUBLISH")
+            calls = []
+            od.live_flag_enabled = lambda: True
+            od._write_authorized = lambda op="create_product": True
+            od._real_publish_fn = lambda ctx: calls.append(ctx) or {"published": True}
+            out = od.republish(product="B12-003",
+                               publish_authorization="APPROVE B12-003 PUBLISH")
+            self.assertTrue(out["published"])
+            self.assertEqual(calls[0]["product"], "B12-003")
+        finally:
+            od.live_flag_enabled, od._write_authorized, od._real_publish_fn = orig
+
+
 if __name__ == "__main__":
     unittest.main()

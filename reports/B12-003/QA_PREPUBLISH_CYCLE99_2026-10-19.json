@@ -1,0 +1,151 @@
+{
+ "product_id": "B12-003",
+ "cycle": 99,
+ "final_price_usd": 8.0,
+ "validated_at": "2026-10-19",
+ "checks": [
+  {
+   "check": "pdf sha256 matches profile",
+   "status": "PASS",
+   "detail": "c9c18a4b0505828a..."
+  },
+  {
+   "check": "xlsx sha256 matches profile",
+   "status": "PASS",
+   "detail": "7cf3e46fa8c2470e..."
+  },
+  {
+   "check": "cover sha256 matches record",
+   "status": "PASS",
+   "detail": "943429b9687cd809..."
+  },
+  {
+   "check": "pdf pages == 8",
+   "status": "PASS",
+   "detail": "8"
+  },
+  {
+   "check": "no placeholders",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "check": "no mojibake",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "check": "words clear the $8.00 bar (>=800)",
+   "status": "PASS",
+   "detail": "3235 words"
+  },
+  {
+   "check": "no password-on-paper advice",
+   "status": "PASS",
+   "detail": "map-not-vault doctrine present"
+  },
+  {
+   "check": "not-legal-advice boundary present",
+   "status": "PASS",
+   "detail": "not-legal/tax/financial-advice + not-a-will disclaimer present"
+  },
+  {
+   "check": "xlsx sheets exactly the 6 intended",
+   "status": "PASS",
+   "detail": "['Systems', 'Holders', 'Envelopes', 'DrillLog', 'Dashboard', 'README']"
+  },
+  {
+   "check": "xlsx formulas >= 5",
+   "status": "PASS",
+   "detail": "20"
+  },
+  {
+   "check": "xlsx data validations present",
+   "status": "PASS",
+   "detail": "7"
+  },
+  {
+   "check": "cover non-blank",
+   "status": "PASS",
+   "detail": "1280x720 luma stddev 30.8"
+  },
+  {
+   "check": "copy states final price $8.00",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "copy does not still state $19.00",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "copy lists B12-003_access_continuity_inventory.xlsx",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "copy lists B12-003_access_continuity_organizer.pdf",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "payload is exactly the 2 intended files",
+   "status": "PASS",
+   "detail": "['B12-003_access_continuity_inventory.xlsx', 'B12-003_access_continuity_organizer.pdf']"
+  },
+  {
+   "check": "inspect_technical PASS",
+   "status": "PASS",
+   "detail": "None"
+  },
+  {
+   "check": "brand_dna PASS",
+   "status": "PASS",
+   "detail": "{'passed': True, 'failed_checks': [], 'results': {'brand_reputation': {'status': 'PASS', 'evidence': None, 'reason': 'لا عبارات ادّعاء بنية تحتية غير حقيقية موج"
+  },
+  {
+   "check": "executive safety checks PASS",
+   "status": "PASS",
+   "detail": "{\"copyright_trademark\": \"PASS\", \"content_neutrality\": \"PASS\", \"fake_urgency\": \"PASS\", \"brand_reputation\": \"PASS\"}"
+  }
+ ],
+ "facts": {
+  "pdf": {
+   "bytes": 19095,
+   "sha256": "c9c18a4b0505828a1eabaf6a72a2aba8cc6ef5024c8ebe543e47f971889000fb",
+   "pages": 8,
+   "words": 3235
+  },
+  "xlsx": {
+   "bytes": 13594,
+   "sha256": "7cf3e46fa8c2470e1a14c91ff983bf186542fb92f005a0305ff3cacdf9d5edd5",
+   "sheets": [
+    "Systems",
+    "Holders",
+    "Envelopes",
+    "DrillLog",
+    "Dashboard",
+    "README"
+   ],
+   "formulas": 20,
+   "data_validations": 7
+  },
+  "cover": {
+   "bytes": 31218,
+   "sha256": "943429b9687cd809fb49d61aa1164b2322fe5a18261eba5e00aa7c9b34023d6c",
+   "detail": "1280x720 luma stddev 30.8"
+  },
+  "eqg": {
+   "copyright_trademark": "PASS",
+   "content_neutrality": "PASS",
+   "fake_urgency": "PASS",
+   "brand_reputation": "PASS"
+  }
+ },
+ "overall": "PASS",
+ "test_results": {
+  "touched_suites": "144 passed",
+  "cmd": "pytest tests/test_gumroad_draft_orchestrator.py tests/test_first_sale_orchestrator.py tests/test_batch12_registry_merge.py tests/test_distributor.py"
+ }
+}

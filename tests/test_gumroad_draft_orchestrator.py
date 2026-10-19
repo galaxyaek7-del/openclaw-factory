@@ -442,5 +442,46 @@ class TestPreflightReport(unittest.TestCase):
         self.assertEqual(rep["duplicate_scan"], {"found": False, "match": None})
 
 
+class TestProductProfileRegistry(unittest.TestCase):
+    """Cycle 99: B12-003 joined the registry; every product stays isolated and
+    fail-closed. A profile change must never leak authorization to another id."""
+
+    def test_b12_003_is_registered_with_its_own_price(self):
+        prof = od.get_profile("B12-003")
+        self.assertEqual(prof["id"], "B12-003")
+        self.assertEqual(prof["slug"], "b12-003")
+        self.assertEqual(prof["price_cents"], 800)
+        self.assertEqual(prof["title"], "Founder Access Continuity Organizer")
+
+    def test_every_registered_profile_builds_and_validates(self):
+        for pid in sorted(od.PROFILES):
+            spec = od.build_spec(pid)
+            self.assertEqual(spec["product"], pid)
+            rep = od.validate_spec(spec)
+            self.assertTrue(rep["ready"], (pid, [c for c in rep["checks"] if c["status"] != "PASS"]))
+
+    def test_unknown_product_still_raises(self):
+        with self.assertRaises(od.DraftBlocked) as ctx:
+            od.get_profile("B12-999")
+        self.assertIn("unknown product", str(ctx.exception))
+
+    def test_profile_price_is_isolated_between_products(self):
+        # B12-003's $8.00 spec must not satisfy B12-001's $14.99 profile and
+        # vice-versa: a spec's price is checked against ITS OWN profile only.
+        spec_003 = od.build_spec("B12-003")
+        spec_003["price_cents"] = od.PROFILES["B12-001"]["price_cents"]
+        with self.assertRaises(od.DraftBlocked) as ctx:
+            od.create_draft("tok", spec_003, list_products_fn=lambda: [])
+        self.assertIn("price mismatch", str(ctx.exception))
+
+    def test_profiles_have_distinct_prices_and_titles(self):
+        prices = {pid: p["price_cents"] for pid, p in od.PROFILES.items()}
+        titles = [p["title"] for p in od.PROFILES.values()]
+        self.assertEqual(len(titles), len(set(titles)))
+        self.assertEqual(prices["B12-003"], 800)
+        self.assertEqual(prices["B12-001"], 1499)
+        self.assertEqual(prices["B12-004"], 1199)
+
+
 if __name__ == "__main__":
     unittest.main()

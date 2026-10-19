@@ -41,6 +41,16 @@ def _fake_product(source_id="PROD-test-1"):
     )
 
 
+def _allow_gate(product, **kwargs):
+    """An always-allow gate resolver, for tests that are about OTHER layers
+    (publish protection / retry enqueue). The central gate is now mandatory
+    in real mode (founder directive, 2026-10-17); a test focused on the
+    protection layer must inject this so the gate does not pre-empt it.
+    The gate's own mandatory, no-bypass property is pinned separately in
+    tests/test_gate_mandatory.py."""
+    return {"allowed": True, "reason": None}
+
+
 class TestDistributeRetryEnqueue(unittest.TestCase):
     def setUp(self):
         self._saved_arms = registry.all_arms()
@@ -141,6 +151,7 @@ class TestDistributePublishProtectionIntegration(unittest.TestCase):
         outcomes = distributor.distribute(
             _fake_product(), dry_run=False, ledger_path=self.ledger_path,
             protection_state_path=self.protection_state_path,
+            quality_gate=_allow_gate,
         )
         fake_arm.publish.assert_not_called()
         self.assertFalse(outcomes[0]["attempted"])
@@ -154,6 +165,7 @@ class TestDistributePublishProtectionIntegration(unittest.TestCase):
         distributor.distribute(
             _fake_product(), dry_run=False, ledger_path=self.ledger_path,
             protection_state_path=self.protection_state_path,
+            quality_gate=_allow_gate,
         )
         events = list(ledger.read_events(event_type="publish_attempt", ledger_path=self.ledger_path))
         self.assertEqual(len(events), 1)
@@ -167,6 +179,7 @@ class TestDistributePublishProtectionIntegration(unittest.TestCase):
         distributor.distribute(
             _fake_product(), dry_run=False, ledger_path=self.ledger_path,
             protection_state_path=self.protection_state_path,
+            quality_gate=_allow_gate,
         )
         fake_arm.publish.assert_called_once()
         status = publish_protection.list_publish_protection_status(state_path=self.protection_state_path)
@@ -183,6 +196,83 @@ class TestDistributePublishProtectionIntegration(unittest.TestCase):
         )
         fake_arm.publish.assert_called_once()
         self.assertTrue(outcomes[0]["attempted"])
+
+
+class TestB12001GumroadReady(unittest.TestCase):
+    """B12-001 activation sprint (2026-10-16): sound equivalents of the
+    requested readiness checks. The naive forms are deliberately NOT used:
+    no load_product() helper exists anywhere (build from the batch
+    registry's own verified fields instead); schemas.product.Product
+    exposes attributes, not .get(); and asserting a live token exists
+    would fail every tokenless environment including CI — instead pin
+    fail-closed behavior with the token removed (passes everywhere)."""
+
+    def setUp(self):
+        self._saved = registry.all_arms()
+        registry.clear()
+        self.ledger = _temp_path(".jsonl")
+        self.protection = _temp_path(".json")
+
+    def tearDown(self):
+        registry.clear()
+        for a in self._saved:
+            registry.register(a)
+        for p in (self.ledger, self.protection):
+            if os.path.exists(p):
+                os.remove(p)
+
+    def _b12_product(self):
+        import json
+        reg = json.loads(
+            (_FACTORY_ROOT / "data" / "product_batch_12.json").read_text(encoding="utf-8"))
+        entry = next(p for p in reg["products"] if p["id"] == "B12-001")
+        return Product(
+            title=entry["title"], subtitle="", description=entry["problem"],
+            price_usd=float(entry["price"]),
+            file_path="books/batch12/" + entry["files"][0],
+            cover_path=None, tags=[], language="en",
+            source_id="B12-001", raw_price_hint=float(entry["price"]),
+            needs_pricing=False, price_source="registry_verified",
+        )
+
+    def test_b12_001_distributes_via_gumroad_dry_run(self):
+        """B12-001 can be distributed via Gumroad (dry run, stub arm)."""
+        arm = MagicMock()
+        arm.name = "gumroad"
+        arm.supports.return_value = True
+        arm.publish.return_value = PublishResult(
+            ok=True, platform="gumroad", product_id="p1",
+            url=None, error=None, dry_run=True)
+        registry.register(arm)
+        product = self._b12_product()
+        self.assertIsNotNone(product)
+        self.assertEqual(product.price_usd, 14.99)   # founder repriced B12-001 2026-10-17 (was 29)
+        outcomes = distributor.distribute(
+            product, arm_names=["gumroad"], dry_run=True,
+            ledger_path=self.ledger,
+            protection_state_path=self.protection)
+        self.assertTrue(outcomes[0]["attempted"])
+        self.assertTrue(outcomes[0]["ok"])
+
+    def test_b12_001_no_auto_publish_by_default(self):
+        """distribute() is dry-run by default: a bare call can never be a
+        live publish. This is the real no-auto-publish pin (stronger than
+        asserting an env var's value)."""
+        import inspect
+        self.assertIs(
+            inspect.signature(distributor.distribute).parameters["dry_run"].default,
+            True)
+
+    def test_b12_001_missing_token_fails_closed(self):
+        """Without a token, the Gumroad publisher refuses with ConfigError
+        instead of attempting an unauthenticated call (works in every
+        environment, including tokenless CI)."""
+        from unittest.mock import patch
+        from channels import gumroad_publisher
+        with patch.dict(os.environ, {"GUMROAD_ACCESS_TOKEN": ""}):
+            with self.assertRaises(gumroad_publisher.ConfigError):
+                gumroad_publisher.load_token(
+                    env_path=Path(self.ledger).parent / "definitely-not-here.env")
 
 
 if __name__ == "__main__":

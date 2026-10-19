@@ -1,0 +1,13 @@
+{
+ "args": [
+  "--product",
+  "B12-003",
+  "--republish",
+  "--publish-authorization",
+  "APPROVE B12-003 PUBLISH",
+  "--json"
+ ],
+ "returncode": 0,
+ "stdout": "{\n \"published\": true,\n \"product_id\": \"TFeaaWXO3zySimrs2Jbjbw==\",\n \"url\": \"https://aekraft.gumroad.com/l/svlky\",\n \"externally_verified\": true\n}\n",
+ "stderr": ""
+}

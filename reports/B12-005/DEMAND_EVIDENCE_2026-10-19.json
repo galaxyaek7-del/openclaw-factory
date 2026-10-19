@@ -1,0 +1,67 @@
+{
+ "product": "B12-005",
+ "title": "Podcast Guest Booking Kit",
+ "research_date": "2026-10-19T09:45:00Z",
+ "cycle": 99,
+ "target_customer": "Founders, freelancers, consultants and authors who want to be booked as podcast guests",
+ "problem": "Cold podcast pitches get ignored because they are generic, are sent to the wrong show, and are followed up into spam territory",
+ "demand_signals": [
+  {
+   "signal": "Independent sellers ship paid guest-pitching / guest-booking products across three separate marketplaces (Gumroad, Etsy, and direct sites), at prices from $5.03 to $38.00.",
+   "evidence": "11 confirmable priced listings with observed prices (see data/evidence/b12_005_competitors.json); 4 further shape-matched Gumroad listings exist but their prices are client-rendered and were NOT guessed.",
+   "interpretation": "Proven willingness to pay for a packaged podcast-pitching asset, at more than one price tier.",
+   "evidence_type": "REAL"
+  },
+  {
+   "signal": "The category's top-of-market DIY kit defines a complete product as exactly four pieces: a one-sheet, pitch templates, a pipeline tracker, and a booking page.",
+   "evidence": "Zicula Podcast Guest Kit ($28) markets 'one-sheet generator, 8 pitch templates, a pipeline tracker with a weekly ritual, and a booking page you can publish today' as its complete contents (live page, observed 2026-10-19).",
+   "interpretation": "The market itself says scripts-plus-tracker is the core of the product; a 2-page script sheet with a 4-sheet stub tracker does not meet the bar the category sets.",
+   "evidence_type": "REAL"
+  },
+  {
+   "signal": "The dominant substitute is a monthly subscription, and the category's own comparison anchors against it: $97/month, $99/month and $32/month tools.",
+   "evidence": "Zicula's live page states 'Guestio Pro runs $97/month. Rephonic starts at $99/month. PodMatch's guest plan is $32/month. This kit costs $28 once.'",
+   "interpretation": "A one-time price below $32/month has a clear, seller-stated anchor in this category - though that anchor is a competitor's claim, not an independent measurement.",
+   "evidence_type": "REAL"
+  },
+  {
+   "signal": "The category's own best-practice doctrine matches the honesty rule this factory applies: the leading kit states plainly that it is 'not a placement service' and cannot promise a booking.",
+   "evidence": "'It is a toolkit, not a placement service. Nothing here submits you to databases or buys you slots ... no template can promise a booking' (Zicula, live page).",
+   "interpretation": "Our no-guarantee, no-fabricated-results framing is aligned with the category's own practice rather than a disadvantage against it.",
+   "evidence_type": "REAL"
+  },
+  {
+   "signal": "The market splits into two distinct jobs, and the search results for one bleed into the other: GUEST-side (pitch yourself onto shows) and HOST-side (book guests onto your own show).",
+   "evidence": "Of the 15 listings reviewed, 5 are GUEST-side, 8 are HOST-side, 2 are both; the title 'Podcast Guest Booking Kit' is ambiguous and is read by search as the HOST-side job.",
+   "interpretation": "A positioning risk, not a demand risk: the deliverable is guest-side while the title reads host-side. Recorded honestly because it affects copy and price comparisons.",
+   "evidence_type": "REAL"
+  }
+ ],
+ "competition_level": "HIGH. 11 priced comparables in a narrow category, plus a large discounted template tier on Etsy ($2-$12) and four further Gumroad kits of the same shape. Several are one-file template packs competing on price alone.",
+ "differentiation_risk": "MEDIUM-HIGH at the current build. As shipped (2-page script sheet, ~339 words, plus a stub 4-sheet tracker) this product sits below the $6-$12 template floor in substance and cannot honestly be priced near the $15-$28 kit tier. Differentiation must come from real written depth (a genuine method, worked examples, failure modes) plus a working tracker with formulas and validations - the same structure that justified B12-003/B12-004.",
+ "price": {
+  "manifest_price_usd": 29.0,
+  "approved_price_usd": null,
+  "price_basis": "NOT_YET_DECIDED",
+  "note": "Price is decided only after the rebuild by running this factory's own mandatory gates (economics.market_realism_check for the page-based ceiling and the commercial-validation comparable ceiling, plus the quality gate). The manifest's $29.00 is the pre-evidence placeholder and is not treated as approved."
+ },
+ "real_alternatives_for_a_zero_budget_buyer": [
+  "PodMatch / other booking platforms' free tiers",
+  "A plain Google Sheet used as a pitch tracker",
+  "Writing pitches by hand from free articles"
+ ],
+ "sources": [
+  "data/evidence/b12_005_competitors.json",
+  "https://podcast-guest-kit.zicula.trade/",
+  "https://vitk.gumroad.com/l/guest-pipeline",
+  "https://gaffincreative.com/product/podcast-guest-communication-email-templates/",
+  "https://earnifyhub.com/products/podcast-guest-pitching-guide",
+  "https://creatorskills.co/skills/podcast-guest-booking-system",
+  "https://www.etsy.com/market/podcast_pitch",
+  "https://www.etsy.com/market/podcast_pitch_sheet",
+  "https://www.etsy.com/market/podcast_guest_booking_form",
+  "https://trendyfoxstudio.com/products/one-sheet-speaker-canva-template-corporate-speaker-press-kit-one-pager-keynote-speaker-author-podcast-guest-influencer-media-kit-template-copy",
+  "https://podcastsforprofit.com/products/podcast-media-kit-and-rate-card"
+ ],
+ "verified_by": "Claude (read-only web research, 2026-10-19); no purchase, no account, no outreach, $0"
+}

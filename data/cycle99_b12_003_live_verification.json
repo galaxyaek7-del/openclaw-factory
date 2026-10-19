@@ -1,0 +1,122 @@
+{
+ "product_id": "TFeaaWXO3zySimrs2Jbjbw==",
+ "checkout_url": "https://aekraft.gumroad.com/l/svlky",
+ "verified_at_utc": "2026-10-19",
+ "checks": [
+  {
+   "check": "listing exists and is published",
+   "status": "PASS",
+   "detail": "True"
+  },
+  {
+   "check": "product identity is B12-003",
+   "status": "PASS",
+   "detail": "'Founder Access Continuity Organizer'"
+  },
+  {
+   "check": "displayed price is 800 cents ($8.00)",
+   "status": "PASS",
+   "detail": "800"
+  },
+  {
+   "check": "live description present and >= 300 words",
+   "status": "PASS",
+   "detail": "346 words"
+  },
+  {
+   "check": "exactly the 2 QA-approved deliverables attached (type+size)",
+   "status": "PASS",
+   "detail": "[('xlsx', 13594), ('pdf', 19095)]"
+  },
+  {
+   "check": "cover attached",
+   "status": "PASS",
+   "detail": "1 cover(s)"
+  },
+  {
+   "check": "tags present",
+   "status": "PASS",
+   "detail": "['template', 'checklist', 'emergency', 'access', 'business continuity', 'spreadsheet', 'succession', 'solo founder']"
+  },
+  {
+   "check": "checkout URL returns HTTP 200",
+   "status": "PASS",
+   "detail": "200"
+  },
+  {
+   "check": "public page shows 8.00",
+   "status": "PASS",
+   "detail": "8.0"
+  },
+  {
+   "check": "public currency is USD",
+   "status": "PASS",
+   "detail": "USD"
+  },
+  {
+   "check": "public availability in_stock",
+   "status": "UNKNOWN",
+   "detail": "og product:availability meta absent on Gumroad's JS-rendered page (same as other live listings)"
+  },
+  {
+   "check": "exactly one listing with this title (no duplicate)",
+   "status": "PASS",
+   "detail": "['TFeaaWXO3zySimrs2Jbjbw==']"
+  },
+  {
+   "check": "no completed external transactions for B12-003",
+   "status": "PASS",
+   "detail": "0 sale record(s)"
+  }
+ ],
+ "facts": {
+  "product": {
+   "id": "TFeaaWXO3zySimrs2Jbjbw==",
+   "name": "Founder Access Continuity Organizer",
+   "price": 800,
+   "published": true,
+   "short_url": "https://aekraft.gumroad.com/l/svlky",
+   "custom_permalink": null,
+   "currency": "usd",
+   "tags": [
+    "template",
+    "checklist",
+    "emergency",
+    "access",
+    "business continuity",
+    "spreadsheet",
+    "succession",
+    "solo founder"
+   ],
+   "description": "A one-person business has one single point of failure: you. If you are in hospital, offline for a week, or simply unreachable, the business does not pause — it fails quietly, because nobody else knows what it runs on or how to get back in. This is the organizer that fixes that, without ever writing a password on paper.\n\nBuilt for solo founders and one-person businesses. The rule is the same one the best products in this category use: this is a map, not a vault. It records what exists, where it lives, and who is allowed to touch it — and it routes every secret through a password manager's emergency access, so the plan is useful to a successor without ever being a liability in a drawer.\n\nInside (2 files):\n- Founder Access Continuity Inventory workbook (.xlsx, 6 sheets): Systems (one row per thing the business runs on — what it is, where it lives, who can reach it, the recovery route, whether a second person can get in, criticality 1-5, and when it was last verified), Holders (who may touch what, and the authority basis for it), Envelopes (the three-envelope custody method pre-filled: the map, the keys via password-manager emergency access, and a sealed letter), DrillLog (the annual 30-minute drill, with next-due dates computed), Dashboard (coverage %, critical-gap count, days since the last drill and a single Continuity readiness verdict), and a README. Includes worked example rows.\n- Founder Access Continuity Guide (.pdf, 8 pages): the inventory-not-vault rule, what \"unreachable\" actually means, the three-envelope method, how to name holders inside legal boundaries, the password-manager emergency-access walk-through, the 30-day keep-alive plan, the annual drill, your successor's first 72 hours, ten failure modes this plan prevents, boundaries (this is an organizing system, not a will and not legal advice), an FAQ, and a completion checklist.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews.\n\nRequires: Excel, LibreOffice Calc (free), or Google Sheets (free upload) for the workbook; any PDF reader for the guide. Instant download after purchase. Support: reply to your Gumroad receipt email."
+  },
+  "description_words": 346,
+  "files": [
+   [
+    "xlsx",
+    13594
+   ],
+   [
+    "pdf",
+    19095
+   ]
+  ],
+  "covers_count": 1,
+  "tags_count": 8,
+  "public_http_status": 200,
+  "public_price": "8.0",
+  "public_currency": "USD",
+  "public_title": "Founder Access Continuity Organizer",
+  "public_availability": null,
+  "same_title_count": 1,
+  "same_title_ids": [
+   "TFeaaWXO3zySimrs2Jbjbw=="
+  ],
+  "sales_count_total": 0,
+  "b12003_sales_count": 0,
+  "b12003_gross_cents": 0
+ },
+ "VERIFIED_REVENUE_USD": 0.0,
+ "revenue_note": "no completed external transactions; a published listing is not a sale",
+ "overall": "PASS_WITH_UNKNOWNS"
+}

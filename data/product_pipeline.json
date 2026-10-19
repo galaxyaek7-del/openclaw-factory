@@ -1,7 +1,7 @@
 {
  "schema": "galaxy_forge.product_pipeline.v1",
  "created_at_utc": "2026-10-18T19:10:00Z",
- "updated_at_utc": "2026-10-19T08:45:00Z",
+ "updated_at_utc": "2026-10-19T11:10:00Z",
  "cycle": 98,
  "purpose": "Durable, resumable product production queue. One record per product. Resume from this file + referenced evidence after any interruption.",
  "states": [
@@ -116,7 +116,7 @@
   {
    "id": "B12-003",
    "title": "Founder Access Continuity Organizer",
-   "state": "READY_FOR_AUTHORIZATION",
+   "state": "PUBLISHED",
    "target_customer": "Solo founders and one-person businesses who are the single point of failure for everything the business needs.",
    "problem": "If a solo founder is unreachable, nobody else knows what the business runs on or how to restore access, and writing the passwords on paper is the unsafe answer.",
    "deliverables": [
@@ -124,17 +124,25 @@
     "books/batch12/B12-003_access_continuity_inventory.xlsx"
    ],
    "evidence_of_demand": "reports/B12-003/DEMAND_EVIDENCE_2026-10-19.json",
-   "qa_results": "Cycle 98 deep QA: 6-sheet inventory (Systems/Holders/Envelopes/DrillLog/Dashboard/README) with 20 formulas + 7 data validations + worked examples; 8-page guide (3,235 words vs 1,499 required at $14.99); no placeholders/mojibake; instructions present; inspectors.inspect_technical PASS 6/6; brand_dna PASS; the four Executive Safety checks PASS; Dashboard Continuity-readiness logic re-derived independently across 6 boundary scenarios (no LibreOffice on host); quality_enforcer full gate APPROVED at $14.99. Report: reports/B12-003/QA_FACTS_2026-10-19.json.",
-   "publication_authorization": null,
-   "live_url": null,
-   "next_action": "AWAITS FOUNDER PUBLICATION DECISION (phrase-gated); no Gumroad listing created yet",
+   "qa_results": "Cycle 98 deep QA: 6-sheet inventory (Systems/Holders/Envelopes/DrillLog/Dashboard/README) with 20 formulas + 7 data validations + worked examples; 8-page guide (3,235 words vs 800 required at $8.00); no placeholders/mojibake; instructions present; inspectors.inspect_technical PASS 6/6; brand_dna PASS; the four Executive Safety checks PASS; Dashboard Continuity-readiness logic re-derived independently across 6 boundary scenarios (no LibreOffice on host); quality_enforcer full gate APPROVED at $8.00/$11.99/$14.99/$19.00/$29.00. Report: reports/B12-003/QA_FACTS_2026-10-19.json.",
+   "publication_authorization": {
+    "phrase": "APPROVE B12-003 PUBLISH",
+    "granted_at_utc": "2026-10-19",
+    "consumed": true
+   },
+   "live_url": "https://aekraft.gumroad.com/l/svlky",
+   "next_action": "FIRST-SALE WATCH (automatic sales poll); zero additional spend",
    "lifecycle": [
     "RESEARCH",
     "SELECTED",
     "BUILDING",
     "REPAIRING",
     "QA_PASSED",
-    "READY_FOR_AUTHORIZATION"
+    "READY_FOR_AUTHORIZATION",
+    "PUBLISHING",
+    "LIVE_VERIFICATION",
+    "PUBLISHED",
+    "MONITORING"
    ],
    "deliverable_hashes": {
     "books/batch12/B12-003_access_continuity_organizer.pdf": {
@@ -147,17 +155,28 @@
     }
    },
    "competitors": "data/evidence/b12_003_competitors.json (14 real paid comparables $6.75-$79; MEDIUM-HIGH competition)",
-   "gate": "reports/B12-003/GATE_FINAL_2026-10-19.json (APPROVED at $19.00 - core 100 / content 100 / market 70)",
-   "price_usd": 19.0,
-   "price_status": "FOUNDER_APPROVED 2026-10-19 (USD 19.00)",
+   "gate": "reports/B12-003/GATE_FINAL_2026-10-19.json (APPROVED at $8.00 - core 100 / content 100 / market 70)",
+   "price_usd": 8.0,
+   "price_status": "FOUNDER_APPROVED 2026-10-19 (USD 8.00) — live",
    "price_basis": "FOUNDER_DECISION_BELOW_COMPARABLE",
-   "open_prerequisite": "None for pricing (founder-approved 19.00). Before any publication: (a) a publication decision (phrase-gated), and (b) a real prerequisite gap - B12-003 has no entry in scripts/gumroad_draft_orchestrator.py::PROFILES (known: B12-001, B12-004), so the sanctioned phrase-gated first-sale flow cannot run for it yet. B12-002 has the same gap.",
+   "open_prerequisite": "RESOLVED 2026-10-19: B12-003 published via the sanctioned phrase-gated flow (run -> apply-listing -> attach-cover -> republish).",
    "listing_copy": "drafts/b12_003_listing_copy.txt",
    "listing_package": "reports/phase8/B12_003_GUMROAD_LISTING_PACKAGE.md",
    "cover": "reports/B12-003/cover.png (1280x720, non-blank)",
    "customer_page": "customer_site/b12-access-continuity-organizer.html",
    "differentiation_vs_prev": "Different problem (business survival if the founder is unreachable, not a single transaction), different customer (solo founders as a single point of failure), different workflow (asset/access inventory + three-envelope custody + annual drill, never writing a password)",
-   "updated_at_utc": "2026-10-19T08:45:00Z"
+   "updated_at_utc": "2026-10-19T08:25:00Z",
+   "live_product_id": "TFeaaWXO3zySimrs2Jbjbw==",
+   "live_verified_at_utc": "2026-10-19T08:21:12Z",
+   "evidence_files": [
+    "data/first_sale_draft_evidence_b12_003.json",
+    "data/first_sale_listing_update_evidence_b12_003.json",
+    "data/first_sale_cover_evidence_b12_003.json",
+    "data/cycle99_b12_003_publish_run.json",
+    "data/cycle99_b12_003_live_verification.json",
+    "reports/B12-003/QA_PREPUBLISH_CYCLE99_2026-10-19.json",
+    "reports/CYCLE99_B12-003_PUBLISH_2026-10-19.md"
+   ]
   },
   {
    "id": "B12-004",
@@ -220,18 +239,47 @@
   {
    "id": "B12-005",
    "title": "Podcast Guest Booking Kit",
-   "state": "BUILDING",
-   "target_customer": "Founders, freelancers, and authors seeking podcast appearances",
-   "problem": "Cold podcast pitches get ignored because they are generic",
+   "state": "READY_FOR_AUTHORIZATION",
+   "lifecycle": [
+    "RESEARCH",
+    "SELECTED",
+    "BUILDING",
+    "REPAIRING",
+    "QA_PASSED",
+    "READY_FOR_AUTHORIZATION"
+   ],
+   "target_customer": "Founders, freelancers, consultants and authors who want to be booked as podcast guests",
+   "problem": "Cold podcast pitches get ignored because they are generic, are sent to the wrong show, and are followed up into spam territory",
    "deliverables": [
     "books/batch12/B12-005_podcast_guest_scripts.pdf",
     "books/batch12/B12-005_podcast_guest_tracker.xlsx"
    ],
-   "evidence_of_demand": null,
-   "qa_results": "Only the 2026-10-15 self-graded pass; no demand evidence, no deep QA, no gate",
+   "deliverable_hashes": {
+    "books/batch12/B12-005_podcast_guest_scripts.pdf": {
+     "sha256": "246268d4ba41c6099a1d78ddd74c10203106f6999d4908710178fbd1d749bb9e",
+     "size": 20146
+    },
+    "books/batch12/B12-005_podcast_guest_tracker.xlsx": {
+     "sha256": "0720869bd302ff7c49c03edae97722d22161061191650380fc9047913e124b14",
+     "size": 17400
+    }
+   },
+   "evidence_of_demand": "reports/B12-005/DEMAND_EVIDENCE_2026-10-19.json",
+   "competitors": "data/evidence/b12_005_competitors.json (11 real priced comparables $5.03-$38.00; 4 further shape-matched Gumroad listings were NOT_READ - client-rendered pages return no price; HIGH competition)",
+   "gate": "reports/B12-005/GATE_FINAL_2026-10-19.json (APPROVED at $8.00 - core 100 / content 100 / market 70; REWRITE at the manifest's $29.00 - the binding gate is the economics page-count market-realism policy at $1.00/page)",
+   "qa_results": "Cycle 99 deep QA: 6-sheet tracker (Assets/Angles/Pipeline/FollowUps/Metrics/README) with 154 formulas + 6 data validations + worked example rows; 8-page guide (3,336 words vs 800 required at $8.00); no placeholders/mojibake; instructions present; inspectors.inspect_technical PASS 6/6 (PDF-only method, consistent with B12-003); brand_dna PASS; the four Executive Safety checks PASS; the Pipeline cadence logic and the Metrics 'read this honestly' logic re-derived independently in Python across 9 boundary cases (no LibreOffice on host); quality_enforcer full gate APPROVED at $8.00/$9.00/$11.99/$14.99/$19.00. Report: reports/B12-005/QA_FACTS_2026-10-19.json.",
+   "price_usd": 8.0,
+   "price_status": "DERIVED_BY_CYCLE99_PRICING_RULE 2026-10-19 (USD 8.00) - pending founder listing authorization",
+   "price_basis": "HIGHEST_PRICE_PASSING_ALL_MANDATORY_GATES",
    "publication_authorization": null,
    "live_url": null,
-   "next_action": "Run real demand/competitor evidence, rebuild deliverable to the deep-QA bar, then QA"
+   "listing_copy": "drafts/b12_005_listing_copy.txt",
+   "listing_package": "reports/phase8/B12_005_GUMROAD_LISTING_PACKAGE.md",
+   "cover": "reports/B12-005/cover.png (1280x720, non-blank)",
+   "customer_page": "customer_site/b12-podcast-guest-kit.html",
+   "next_action": "AWAITS FOUNDER PUBLICATION DECISION (phrase-gated); no Gumroad listing created yet",
+   "differentiation_vs_prev": "Different problem (earning guest bookings, not protecting access or pricing work), different customer (founders/freelancers who want podcast appearances), different workflow (fit-first target scoring + 5 scripts + computed follow-up cadence and spam-risk ceiling, never a placement promise)",
+   "updated_at_utc": "2026-10-19T11:10:00Z"
   },
   {
    "id": "B12-006",

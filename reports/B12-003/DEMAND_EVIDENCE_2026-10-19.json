@@ -30,14 +30,15 @@
  "price": {
   "manifest_price_usd": 29.0,
   "recommended_price_usd": 14.99,
-  "approved_price_usd": 19.0,
+  "market_realism_ceiling_usd": 8.0,
+  "approved_price_usd": 8.0,
   "price_basis": "FOUNDER_DECISION_BELOW_COMPARABLE",
   "pricing_date": "2026-10-19",
   "requires_founder_confirmation": false,
-  "price_status": "FOUNDER_APPROVED 2026-10-19 (USD 19.00)",
-  "rationale": "Founder decision 2026-10-19: USD 19.00, above the factory's $15.00 short-book ceiling but below every direct business-continuity comparable ($37-$79). The gate is APPROVED at $19.00 (core 100 / content 100 / market 70). Note: the auto-distribution path would reprice an 8-page gumroad_digital product to $8.00; publishing must use the founder-authorized first-sale path, which does not reprice."
+  "price_status": "FOUNDER_APPROVED 2026-10-19 (USD 8.00)",
+  "rationale": "Cycle 99 founder directive (2026-10-19): B12-003 publication authorized; final price set by the directive's own rule - the highest price that passes every mandatory gate. USD 8.00 is the maximum price economics.market_realism_check permits for an 8-page guide (min($1.00 x 8 pages, $15.00 short-book ceiling) = $8.00); the previously recorded USD 19.00 FAILED that mandatory gate. It is priced below the direct business-continuity comparable cluster ($20.22-$79.00). Basis FOUNDER_DECISION_BELOW_COMPARABLE. Evidence: data/evidence/b12_003_competitors.json, this gate file."
  },
  "verdict": "SELECT_WITH_CAUTION - demand is proven across 14 real comparables and the two jobs this product ships are the ones the market names itself. The niche is competitive and our 2-file pack is thinner in count than the high end, so it must win on usefulness of the inventory + clarity of the guide.",
- "gate_verdict": "APPROVED at $19.00 (core 100 / content 100 / market 70; the same as at $11.99/$14.99/$29.00 - no price in the observed band fails).",
- "note": "Founder-approved at $19.00 on 2026-10-19. Supersedes the earlier $29.00 manifest price and the $14.99 recommendation. See GATE_FINAL_2026-10-19.json."
+ "gate_verdict": "APPROVED at $8.00 (core 100 / content 100 / market 70).",
+ "note": "Cycle 99: final price USD 8.00 - the highest price that clears the factory's mandatory market-realism policy for an 8-page guide. Supersedes the earlier $29.00 manifest price, the $14.99 recommendation and the interim $19.00 founder record (which failed that gate). See GATE_FINAL_2026-10-19.json."
 }

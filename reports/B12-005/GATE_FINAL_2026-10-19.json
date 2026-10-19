@@ -1,0 +1,285 @@
+{
+ "product_id": "B12-005",
+ "title": "Podcast Guest Booking Kit",
+ "run_at": "2026-10-19T11:05:00Z",
+ "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
+ "price_status": "DERIVED_BY_CYCLE99_PRICING_RULE (pending founder listing authorization)",
+ "price_basis": "HIGHEST_PRICE_PASSING_ALL_MANDATORY_GATES",
+ "recommended_price_usd": 8.0,
+ "competitors_sourced": [
+  {
+   "name": "Podcast Guest Kit (Zicula)",
+   "price_usd": 28.0,
+   "url": "https://podcast-guest-kit.zicula.trade/"
+  },
+  {
+   "name": "Guest Pipeline (vitk)",
+   "price_usd": 25.0,
+   "url": "https://vitk.gumroad.com/l/guest-pipeline"
+  },
+  {
+   "name": "Podcast Guest Communication Template Pack (Gaffin Creative)",
+   "price_usd": 19.0,
+   "url": "https://gaffincreative.com/product/podcast-guest-communication-email-templates/"
+  },
+  {
+   "name": "Podcast Guest Pitch Kit | PR Templates for Coaches, Authors (Digital Download)",
+   "price_usd": 18.0,
+   "url": "https://www.etsy.com/market/podcast_pitch"
+  },
+  {
+   "name": "Podcast Guest Pitching Guide (EarnifyHub)",
+   "price_usd": 15.0,
+   "url": "https://earnifyhub.com/products/podcast-guest-pitching-guide"
+  },
+  {
+   "name": "Podcast Guest Release Form Template | Lawyer-Drafted",
+   "price_usd": 12.75,
+   "url": "https://www.etsy.com/market/podcast_guest_booking_form"
+  },
+  {
+   "name": "Podcast Guest One Sheet Template (Etsy)",
+   "price_usd": 7.92,
+   "url": "https://www.etsy.com/market/podcast_pitch_sheet"
+  },
+  {
+   "name": "Podcast Guest Booking System (CreatorSkills)",
+   "price_usd": 7.0,
+   "url": "https://creatorskills.co/skills/podcast-guest-booking-system"
+  },
+  {
+   "name": "One Sheet Speaker Canva Template (Trendy Fox Studio)",
+   "price_usd": 6.0,
+   "url": "https://trendyfoxstudio.com/products/one-sheet-speaker-canva-template-corporate-speaker-press-kit-one-pager-keynote-speaker-author-podcast-guest-influencer-media-kit-template-copy"
+  },
+  {
+   "name": "Podcast Media Kit and Rate Card (Podcasts for Profit)",
+   "price_usd": 38.0,
+   "url": "https://podcastsforprofit.com/products/podcast-media-kit-and-rate-card"
+  },
+  {
+   "name": "Podcast Guest Outreach Pitch Deck Canva Template (Etsy)",
+   "price_usd": 5.03,
+   "url": "https://www.etsy.com/market/podcast_pitch"
+  }
+ ],
+ "competitors_not_read": [
+  "Remote Podcast Guest Kit | Brief, Checklists & 5 Email Templates (maszara)",
+  "Podcast Guest Launch Kit — Positioning to Booked Interviews (Checklist + Planner) (rdcalloway)",
+  "10-Page Nail Your Podcast Guest Pitch Playbook + Video Tutorial (thethoughtcard)",
+  "Easy Podcast Guest Booking & Communication E-book + Templates (wannmo)"
+ ],
+ "price_range_observed_usd": [
+  5.03,
+  38.0
+ ],
+ "gate_at_manifest_price_29_00": {
+  "price": 29.0,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "content_depth": {
+   "words": 3336,
+   "words_required": 2900,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 154,
+   "sheet_depth_ok": true
+  }
+ },
+ "gate_at_19_00": {
+  "price": 19.0,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "content_depth": {
+   "words": 3336,
+   "words_required": 1900,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 154,
+   "sheet_depth_ok": true
+  }
+ },
+ "gate_at_14_99": {
+  "price": 14.99,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "content_depth": {
+   "words": 3336,
+   "words_required": 1499,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 154,
+   "sheet_depth_ok": true
+  }
+ },
+ "gate_at_11_99": {
+  "price": 11.99,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "content_depth": {
+   "words": 3336,
+   "words_required": 1199,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 154,
+   "sheet_depth_ok": true
+  }
+ },
+ "gate_at_9_00": {
+  "price": 9.0,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "content_depth": {
+   "words": 3336,
+   "words_required": 900,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 154,
+   "sheet_depth_ok": true
+  }
+ },
+ "gate_at_approved_price_8_00": {
+  "price": 8.0,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "content_depth": {
+   "words": 3336,
+   "words_required": 800,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 154,
+   "sheet_depth_ok": true
+  }
+ },
+ "economics_market_realism_disclosure": {
+  "check": "economics.market_realism_check(price, page_count=8, platform='gumroad_digital')",
+  "at_8_00_8pages": [
+   true,
+   8.0
+  ],
+  "at_9_00_8pages": [
+   false,
+   8.0
+  ],
+  "at_11_99_8pages": [
+   false,
+   8.0
+  ],
+  "at_14_99_8pages": [
+   false,
+   8.0
+  ],
+  "finding": "At 8 PDF pages, gumroad_digital's global market-realism ceiling is $1.00/page = $8.00, so any price above $8.00 is flagged NOT market_realistic. schemas/product.py::from_jsonl_record() would silently re-price it to $8.00 on the auto-distribution path. The founder-authorized first-sale path (scripts/first_sale_orchestrator.py) publishes the manifest price_usd directly, so the risk applies ONLY to distributor.py's auto path.",
+  "comparables_note": "The observed comparable cluster ($5.03-$38.00; 11 priced listings) would support a higher price than $8.00. The page-count policy is the binding constraint, not the market."
+ },
+ "founder_decision": {
+  "date": null,
+  "price_usd": null,
+  "basis": null,
+  "note": "No founder listing/publication authorization exists for B12-005. Pricing below is derived by the standing Cycle 99 rule (highest price passing every mandatory gate), not a founder price approval."
+ },
+ "verdict": "APPROVED at $8.00",
+ "price_history": [
+  {
+   "price_usd": 29.0,
+   "status": "manifest price (pre-evidence placeholder)",
+   "gate": "REWRITE"
+  },
+  {
+   "price_usd": 8.0,
+   "status": "DERIVED (Cycle 99 pricing rule, pending founder listing authorization)",
+   "gate": "APPROVED"
+  }
+ ],
+ "cycle99_note": "Depth is not the constraint at this volume: 3,336 words against 8 pages clears the 100-words-per-dollar depth rule up to ~$33. The binding gate is the economics page-count market-realism policy ($1.00/page). At $8.00 the quality gate, the depth rule and the market-realism policy all agree - no layer disagrees. Raising the price would require either a founder override of the page-count policy or a longer, genuinely useful guide."
+}

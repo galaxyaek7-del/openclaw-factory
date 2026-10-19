@@ -1,0 +1,18 @@
+{
+ "cmd": [
+  "C:\\Program Files\\Python314\\python.exe",
+  "scripts/first_sale_orchestrator.py",
+  "--product",
+  "B12-003",
+  "--run",
+  "--authorize-draft",
+  "--publish-authorization",
+  "APPROVE B12-003 PUBLISH",
+  "--json"
+ ],
+ "returncode": 0,
+ "stdout": "{\n \"run_id\": \"18852-20261019T075029\",\n \"updated_at\": \"2026-10-19T07:50:45.108037+00:00\",\n \"counts\": {\n  \"COMPLETED\": 7,\n  \"EXTERNALLY_VERIFIED\": 2,\n  \"BLOCKED\": 1\n },\n \"next_action\": {\n  \"kind\": \"BLOCKED\",\n  \"action\": null,\n  \"reason\": \"all remaining work is blocked or awaiting reconciliation\",\n  \"blocked_by\": {\n   \"resolve_utm\": \"BLOCKED_PERMANENT\"\n  }\n },\n \"tasks\": {\n  \"package_validate\": {\n   \"status\": \"COMPLETED\",\n   \"blocker\": null,\n   \"kind\": \"AUTONOMOUS\",\n   \"attempts\": 1\n  },\n  \"price_authority\": {\n   \"status\": \"COMPLETED\",\n   \"blocker\": null,\n   \"kind\": \"AUTONOMOUS\",\n   \"attempts\": 1\n  },\n  \"catalog_duplicate_check\": {\n   \"status\": \"COMPLETED\",\n   \"blocker\": null,\n   \"kind\": \"AUTONOMOUS\",\n   \"attempts\": 1\n  },\n  \"draft_capability\": {\n   \"status\": \"COMPLETED\",\n   \"blocker\": null,\n   \"kind\": \"ENGINEERING\",\n   \"attempts\": 1\n  },\n  \"create_draft\": {\n   \"status\": \"COMPLETED\",\n   \"blocker\": null,\n   \"kind\": \"EXTERNAL_CAPABILITY\",\n   \"attempts\": 1\n  },\n  \"verify_remote_draft\": {\n   \"status\": \"EXTERNALLY_VERIFIED\",\n   \"blocker\": null,\n   \"kind\": \"AUTONOMOUS\",\n   \"attempts\": 1\n  },\n  \"resolve_utm\": {\n   \"status\": \"BLOCKED\",\n   \"blocker\": \"BLOCKED_PERMANENT\",\n   \"kind\": \"AUTONOMOUS\",\n   \"attempts\": 1\n  },\n  \"sales_ledger_check\": {\n   \"status\": \"COMPLETED\",\n   \"blocker\": null,\n   \"kind\": \"AUTONOMOUS\",\n   \"attempts\": 1\n  },\n  \"journey_check\": {\n   \"status\": \"COMPLETED\",\n   \"blocker\": null,\n   \"kind\": \"AUTONOMOUS\",\n   \"attempts\": 1\n  },\n  \"publish\": {\n   \"status\": \"EXTERNALLY_VERIFIED\",\n   \"blocker\": null,\n   \"kind\": \"FOUNDER_AUTHORITY\",\n   \"attempts\": 1\n  }\n }\n}\n",
+ "stderr": "",
+ "live_flag": "true (child only)",
+ "authorization": "APPROVE B12-003 PUBLISH"
+}
