@@ -1,0 +1,28 @@
+B12-002 COPY-PASTE LISTING (paste exactly; do not embellish)
+============================================================
+TITLE:
+Client Project Handoff Pack
+
+PRICE:
+$11.99 USD one-time (FOUNDER-APPROVED 2026-10-18; not yet listed — no Gumroad product exists yet)
+
+DESCRIPTION:
+A project ends twice: once when you stop working, once when the client can prove they own it. This pack makes the second one happen on purpose. It is the 45-minute handoff session you run live, the three emails you copy and paste, the five asset categories nothing ships without, and a companion workbook that computes a hard Close gate so a project cannot be marked finished while the receiver is still blocked.
+
+Built for freelancers, agencies and contractors handing work to a client or another team. The method is simple and stubborn: a handoff ends when the receiver can prove they own it, not when the sender stops working — so the register is filled in together, on the call, and every credential is reissued into an account the client owns rather than passed over as a password.
+
+Inside (2 files):
+- Client Project Handoff Register workbook (.xlsx, 6 sheets): HandoffRegister (one row per project — days to handoff, assets-complete %, open high risks, and a computed Close gate), ChecklistTemplate (18 canonical items across Code, Docs, Accounts, Money, Data, Security, People and Support, each with why it prevents a dispute), AssetChecklist (one row per item, with access transferred Y/N, who verified it, where it lives and a proof note), RiskRegister (Severity x Likelihood scoring — a score of 12 or more is HIGH and blocks the close gate), Dashboard (KPIs including projects ready to close), and a README. Includes worked example rows (a "DNS transfer fails" risk scores 4 x 3 = 12, so the gate stays OPEN until every asset reads Y, no high risk is open, and sign-off is Y).
+- Client Project Handoff Guide (.pdf, 4 pages): the transfer-by-evidence principle, the ten-day prep list, the minute-by-minute 45-minute session script, the five asset categories, the access and security rules, three copy-paste emails, the acceptance criteria and close gate, the 14-day support window, the 30/60/90-day review, the failure modes this pack prevents, an FAQ, and a final pre-handoff checklist.
+
+New product from Galaxy Forge: no sales recorded yet, no reviews.
+
+Requires: Excel, LibreOffice Calc (free), or Google Sheets (free upload) for the workbook; any PDF reader for the guide. Instant download after purchase. Support: reply to your Gumroad receipt email.
+
+TAGS:
+handoff, freelancing, checklist, project management, client, contractor, template, risk
+
+FILES TO UPLOAD:
+books/batch12/B12-002_client_handoff_register.xlsx
+books/batch12/B12-002_client_handoff_guide.pdf
+============================================================

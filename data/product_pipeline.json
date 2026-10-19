@@ -1,0 +1,322 @@
+{
+ "schema": "galaxy_forge.product_pipeline.v1",
+ "created_at_utc": "2026-10-18T19:10:00Z",
+ "updated_at_utc": "2026-10-19T08:45:00Z",
+ "cycle": 98,
+ "purpose": "Durable, resumable product production queue. One record per product. Resume from this file + referenced evidence after any interruption.",
+ "states": [
+  "RESEARCH",
+  "SELECTED",
+  "BUILDING",
+  "QA_FAILED",
+  "REPAIRING",
+  "QA_PASSED",
+  "READY_FOR_AUTHORIZATION",
+  "PUBLISHING",
+  "LIVE_VERIFICATION",
+  "PUBLISHED",
+  "DISTRIBUTION",
+  "MONITORING",
+  "BLOCKED"
+ ],
+ "queue_policy": {
+  "move_on_rule": "A product reaching READY_FOR_AUTHORIZATION (or BLOCKED) does not stop the queue; the next eligible product is selected immediately.",
+  "authorization_rule": "Publication authorization is per-product and never inferred. Phrase to publish B12-001 was 'APPROVE B12-001 PUBLISH' and applies to B12-001 only.",
+  "quality_bar": "No product may be marked QA_PASSED without: structural inspection, formula/output arithmetic verification, an independent inspection of the final deliverable, listing-to-deliverable consistency, and a re-test after every repair.",
+  "evidence_rule": "Demand/price claims must cite real, dated sources (OBSERVED) or are marked DERIVED/INFERRED/UNKNOWN. No invented demand.",
+  "spend_rule": "TOTAL_NEW_SPEND=$0. No paid APIs, ads, or purchased traffic.",
+  "dedup_rule": "Before creating a new product, check existing products and rejected candidates for an overlap in problem, audience, workflow, or outcome."
+ },
+ "products": [
+  {
+   "id": "B12-001",
+   "title": "Freelancer Rate & Raise Calculator",
+   "state": "PUBLISHED",
+   "lifecycle": [
+    "RESEARCH",
+    "SELECTED",
+    "BUILDING",
+    "QA_PASSED",
+    "READY_FOR_AUTHORIZATION",
+    "PUBLISHING",
+    "LIVE_VERIFICATION",
+    "PUBLISHED",
+    "MONITORING"
+   ],
+   "target_customer": "Freelancers and solo consultants worldwide",
+   "problem": "Freelancers guess their rates and undercharge for years",
+   "deliverables": [
+    "books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx"
+   ],
+   "evidence_of_demand": {
+    "competitors": "data/evidence/b12_competitors.json (3 real: $19.00, $4.99, $31.46)",
+    "demand_discussion": "reports/B12-001/DEMAND_EVIDENCE_2026-10-17.json",
+    "gate": "reports/B12-001/GATE_FINAL_2026-10-17.json (APPROVED)"
+   },
+   "qa_results": "Cycle 88 + Cycle 94 fixes (percent formatting, input validation, guards); Cycle 93 workbook re-verification: 10 formula cells, 6 data validations, 0 external refs",
+   "publication_authorization": {
+    "phrase": "APPROVE B12-001 PUBLISH",
+    "granted_at_utc": "2026-10-18T~18:44Z",
+    "consumed": true
+   },
+   "live_url": "https://aekraft.gumroad.com/l/blayvb",
+   "live_verified_at_utc": "2026-10-18T18:47Z",
+   "price_usd": 14.99,
+   "next_action": "FIRST-SALE WATCH (automatic 10-minute sales poll); zero additional spend",
+   "evidence_files": [
+    "data/cycle94_live_verification.json",
+    "data/cycle94_first_sale_watch.json"
+   ]
+  },
+  {
+   "id": "B12-002",
+   "title": "Client Project Handoff Pack",
+   "state": "READY_FOR_AUTHORIZATION",
+   "lifecycle": [
+    "RESEARCH",
+    "SELECTED",
+    "BUILDING",
+    "REPAIRING",
+    "QA_PASSED",
+    "READY_FOR_AUTHORIZATION"
+   ],
+   "target_customer": "Freelancers, agencies, and contractors handing work to clients",
+   "problem": "Project handoffs done by email threads end in disputes over what was transferred",
+   "deliverables": [
+    "books/batch12/B12-002_client_handoff_guide.pdf",
+    "books/batch12/B12-002_client_handoff_register.xlsx"
+   ],
+   "deliverable_hashes": {
+    "books/batch12/B12-002_client_handoff_register.xlsx": {
+     "sha256": "e733ea8e913899b53ebe9a69d3e273d4ed018f997e47f006bbe1263d90543fda",
+     "size": 15941
+    },
+    "books/batch12/B12-002_client_handoff_guide.pdf": {
+     "sha256": "273e05c5d8720ebe61ab44b2a9a6a3ef9f07f4eea4c561283c3ef0dd79b80f07",
+     "size": 11360
+    }
+   },
+   "evidence_of_demand": "reports/B12-002/DEMAND_EVIDENCE_2026-10-18.json",
+   "competitors": "data/evidence/b12_002_competitors.json (12 real paid comparables $3.49-$54.89, mode ~$15; HIGH competition)",
+   "gate": "reports/B12-002/GATE_FINAL_2026-10-18.json (APPROVED at $11.99; REWRITE at the manifest's $29.00 and prep's $39.00 - depth short and price_within_market false)",
+   "qa_results": "Cycle 98 deep QA: 6-sheet register (HandoffRegister/ChecklistTemplate/AssetChecklist/RiskRegister/Dashboard/README) with 102 formulas + 8 data validations + worked examples; 4-page guide (1,722 words vs 1,199 required at $11.99); no placeholders/mojibake; instructions present; inspectors.inspect_technical PASS; brand_dna PASS; the four Executive Safety checks PASS; close-gate boundary logic re-derived independently in Python (no LibreOffice on host); quality_enforcer full gate APPROVED at $11.99. Report: reports/B12-002/QA_2026-10-18.json.",
+   "price_usd": 11.99,
+   "price_status": "FOUNDER_APPROVED 2026-10-18 (USD 11.99)",
+   "price_basis": "Below the comparable cluster's mode (~$15); the manifest's $29.00 and prep's $39.00 are rejected by the gate's own depth (100 words/dollar) and market (<= highest comparable x 1.10) rules.",
+   "publication_authorization": null,
+   "live_url": null,
+   "listing_copy": "drafts/b12_002_listing_copy.txt",
+   "listing_package": "reports/phase8/B12_002_GUMROAD_LISTING_PACKAGE.md",
+   "cover": "reports/B12-002/cover.png (1280x720, non-blank)",
+   "customer_page": "customer_site/b12-client-handoff-pack.html",
+   "next_action": "AWAITS FOUNDER PUBLICATION DECISION (phrase-gated); no Gumroad listing created yet",
+   "differentiation_vs_prev": "Different problem (handoff transfer/dispute-proofing, not rate-setting or meeting spend), different customer (freelancers/agencies delivering to clients), different workflow (live 45-minute transfer session + computed close gate)",
+   "updated_at_utc": "2026-10-18T23:42:00Z"
+  },
+  {
+   "id": "B12-003",
+   "title": "Founder Access Continuity Organizer",
+   "state": "READY_FOR_AUTHORIZATION",
+   "target_customer": "Solo founders and one-person businesses who are the single point of failure for everything the business needs.",
+   "problem": "If a solo founder is unreachable, nobody else knows what the business runs on or how to restore access, and writing the passwords on paper is the unsafe answer.",
+   "deliverables": [
+    "books/batch12/B12-003_access_continuity_organizer.pdf",
+    "books/batch12/B12-003_access_continuity_inventory.xlsx"
+   ],
+   "evidence_of_demand": "reports/B12-003/DEMAND_EVIDENCE_2026-10-19.json",
+   "qa_results": "Cycle 98 deep QA: 6-sheet inventory (Systems/Holders/Envelopes/DrillLog/Dashboard/README) with 20 formulas + 7 data validations + worked examples; 8-page guide (3,235 words vs 1,499 required at $14.99); no placeholders/mojibake; instructions present; inspectors.inspect_technical PASS 6/6; brand_dna PASS; the four Executive Safety checks PASS; Dashboard Continuity-readiness logic re-derived independently across 6 boundary scenarios (no LibreOffice on host); quality_enforcer full gate APPROVED at $14.99. Report: reports/B12-003/QA_FACTS_2026-10-19.json.",
+   "publication_authorization": null,
+   "live_url": null,
+   "next_action": "AWAITS FOUNDER PUBLICATION DECISION (phrase-gated); no Gumroad listing created yet",
+   "lifecycle": [
+    "RESEARCH",
+    "SELECTED",
+    "BUILDING",
+    "REPAIRING",
+    "QA_PASSED",
+    "READY_FOR_AUTHORIZATION"
+   ],
+   "deliverable_hashes": {
+    "books/batch12/B12-003_access_continuity_organizer.pdf": {
+     "sha256": "c9c18a4b0505828a1eabaf6a72a2aba8cc6ef5024c8ebe543e47f971889000fb",
+     "size": 19095
+    },
+    "books/batch12/B12-003_access_continuity_inventory.xlsx": {
+     "sha256": "7cf3e46fa8c2470e1a14c91ff983bf186542fb92f005a0305ff3cacdf9d5edd5",
+     "size": 13594
+    }
+   },
+   "competitors": "data/evidence/b12_003_competitors.json (14 real paid comparables $6.75-$79; MEDIUM-HIGH competition)",
+   "gate": "reports/B12-003/GATE_FINAL_2026-10-19.json (APPROVED at $19.00 - core 100 / content 100 / market 70)",
+   "price_usd": 19.0,
+   "price_status": "FOUNDER_APPROVED 2026-10-19 (USD 19.00)",
+   "price_basis": "FOUNDER_DECISION_BELOW_COMPARABLE",
+   "open_prerequisite": "None for pricing (founder-approved 19.00). Before any publication: (a) a publication decision (phrase-gated), and (b) a real prerequisite gap - B12-003 has no entry in scripts/gumroad_draft_orchestrator.py::PROFILES (known: B12-001, B12-004), so the sanctioned phrase-gated first-sale flow cannot run for it yet. B12-002 has the same gap.",
+   "listing_copy": "drafts/b12_003_listing_copy.txt",
+   "listing_package": "reports/phase8/B12_003_GUMROAD_LISTING_PACKAGE.md",
+   "cover": "reports/B12-003/cover.png (1280x720, non-blank)",
+   "customer_page": "customer_site/b12-access-continuity-organizer.html",
+   "differentiation_vs_prev": "Different problem (business survival if the founder is unreachable, not a single transaction), different customer (solo founders as a single point of failure), different workflow (asset/access inventory + three-envelope custody + annual drill, never writing a password)",
+   "updated_at_utc": "2026-10-19T08:45:00Z"
+  },
+  {
+   "id": "B12-004",
+   "title": "Meeting Cost & ROI Calculator",
+   "state": "PUBLISHED",
+   "lifecycle": [
+    "RESEARCH",
+    "SELECTED",
+    "BUILDING",
+    "QA_FAILED",
+    "REPAIRING",
+    "QA_PASSED",
+    "READY_FOR_AUTHORIZATION",
+    "PUBLISHING",
+    "LIVE_VERIFICATION",
+    "PUBLISHED",
+    "MONITORING"
+   ],
+   "reason_selected": "Strongest feasible next opportunity: large documented demand, formula-verifiable deliverable, distinct audience (managers/team leads) and workflow (meeting audit) from B12-001.",
+   "target_customer": "Team leads, managers, and founders with calendars full of recurring status calls",
+   "problem": "Recurring meetings silently consume salary time and almost none carry an end date or a decision",
+   "deliverables": [
+    "books/batch12/B12-004_meeting_cost_roi_calculator.xlsx",
+    "books/batch12/B12-004_meeting_method_guide.pdf"
+   ],
+   "deliverable_hashes": {
+    "books/batch12/B12-004_meeting_cost_roi_calculator.xlsx": {
+     "sha256": "87ecb1cd223ebf615c46bf49a74c1feb70ea5131a1da9c14dcedff470ccac820",
+     "size": 12865
+    },
+    "books/batch12/B12-004_meeting_method_guide.pdf": {
+     "sha256": "2c964edcfc8a9dcfb45d6bfcde23da85871ec6b3deacc39a10c71cf227972a46",
+     "size": 9639
+    }
+   },
+   "evidence_of_demand": "reports/B12-004/DEMAND_EVIDENCE_2026-10-18.json",
+   "competitors": "data/evidence/b12_004_competitors.json (4 real paid comparables: $12.00, $9.00, $5.77, $2.40; plus a $0+ substitute)",
+   "gate": "reports/B12-004/GATE_FINAL_2026-10-18.json (APPROVED at $11.99; NOT_READY at the manifest's $19.00 — price_within_market false and depth short)",
+   "qa_results": "Cycle 97 deep QA: 5-sheet workbook (Setup/MeetingLog/Dashboard/Rules/README) with 20 guarded formula rows + 10 data validations; 28-check structural test passed; arithmetic re-derived independently in Python (no LibreOffice on host); 4-page method guide (8258 chars); inspectors.inspect_technical PASS; quality_enforcer full gate APPROVED at $11.99; batch page QA READY_FOR_REVIEW (listing lists both files).",
+   "price_usd": 11.99,
+   "price_status": "FOUNDER_APPROVED 2026-10-18 (USD 11.99)",
+   "price_basis": "Below the $12.00 highest real comparable; the manifest's earlier $19.00 was rejected by the gate (price_within_market ceiling $13.20).",
+   "open_prerequisite": "RESOLVED 2026-10-18: scripts/first_sale_orchestrator.py was parameterized (--product) and the sanctioned phrase-gated flow was used to create, verify, apply listing+cover, and enable the B12-004 draft live.",
+   "publication_authorization": {
+    "phrase": "APPROVE B12-004 PUBLISH",
+    "granted_at_utc": "2026-10-18",
+    "consumed": true
+   },
+   "live_url": "https://aekraft.gumroad.com/l/ieashv",
+   "next_action": "FIRST-SALE WATCH (automatic 10-minute sales poll); zero additional spend",
+   "differentiation_vs_prev": "Different problem (meeting spend, not rate-setting), different customer (managers, not solo freelancers), different workflow (calendar audit + kill review, not pricing math)",
+   "updated_at_utc": "2026-10-18T23:42:00Z",
+   "live_verified_at_utc": "2026-10-18T22:28:30Z",
+   "evidence_files": [
+    "data/first_sale_draft_evidence_b12_004.json",
+    "data/cycle98_b12_004_live_verification.json",
+    "reports/CYCLE98_B12-004_PUBLISHED_2026-10-18.md"
+   ]
+  },
+  {
+   "id": "B12-005",
+   "title": "Podcast Guest Booking Kit",
+   "state": "BUILDING",
+   "target_customer": "Founders, freelancers, and authors seeking podcast appearances",
+   "problem": "Cold podcast pitches get ignored because they are generic",
+   "deliverables": [
+    "books/batch12/B12-005_podcast_guest_scripts.pdf",
+    "books/batch12/B12-005_podcast_guest_tracker.xlsx"
+   ],
+   "evidence_of_demand": null,
+   "qa_results": "Only the 2026-10-15 self-graded pass; no demand evidence, no deep QA, no gate",
+   "publication_authorization": null,
+   "live_url": null,
+   "next_action": "Run real demand/competitor evidence, rebuild deliverable to the deep-QA bar, then QA"
+  },
+  {
+   "id": "B12-006",
+   "title": "Home-Office Deduction Organizer (US)",
+   "state": "BLOCKED",
+   "blocker": "Tax/legal: US deduction rules change annually and the product touches filing advice; a legal/tax review is required before further investment.",
+   "target_customer": "US remote workers and self-employed filers",
+   "problem": "Home-office deductions fail on missing receipts and misunderstood exclusive-use rules",
+   "deliverables": [
+    "books/batch12/B12-006_home_office_method_guide.pdf",
+    "books/batch12/B12-006_home_office_expense_log.xlsx"
+   ],
+   "evidence_of_demand": null,
+   "qa_results": "Only the 2026-10-15 self-graded pass; includes a 'not tax advice' disclaimer",
+   "publication_authorization": null,
+   "live_url": null,
+   "next_action": "Founder decision on tax/legal scope; if cleared, refresh current-year IRS rules then rebuild"
+  },
+  {
+   "id": "B12-007",
+   "title": "Digital Declutter & Backup: 30-Day System",
+   "state": "BUILDING",
+   "target_customer": "Overwhelmed professionals and households",
+   "problem": "Accounts, files, and subscriptions pile up; untested backups are not backups",
+   "deliverables": [
+    "books/batch12/B12-007_digital_declutter_plan.pdf",
+    "books/batch12/B12-007_digital_inventory.xlsx"
+   ],
+   "evidence_of_demand": null,
+   "qa_results": "Only the 2026-10-15 self-graded pass; no demand evidence, no deep QA, no gate",
+   "publication_authorization": null,
+   "live_url": null,
+   "next_action": "Run real demand/competitor evidence, rebuild deliverable to the deep-QA bar, then QA"
+  },
+  {
+   "id": "B12-008",
+   "title": "Moving House 8-Week Planner",
+   "state": "BUILDING",
+   "target_customer": "Renters and homeowners planning a move",
+   "problem": "Moves bleed money through single quotes, uninsured movers, and forgotten address changes",
+   "deliverables": [
+    "books/batch12/B12-008_moving_checklist.pdf",
+    "books/batch12/B12-008_moving_budget_tracker.xlsx"
+   ],
+   "evidence_of_demand": null,
+   "qa_results": "Only the 2026-10-15 self-graded pass; no demand evidence, no deep QA, no gate",
+   "publication_authorization": null,
+   "live_url": null,
+   "next_action": "Run real demand/competitor evidence, rebuild deliverable to the deep-QA bar, then QA"
+  },
+  {
+   "id": "B12-009",
+   "title": "Pet Sitter Handover Kit",
+   "state": "BUILDING",
+   "target_customer": "Pet owners who travel",
+   "problem": "Sitters left without vet info, meds schedules, or authorization cannot act in an emergency",
+   "deliverables": [
+    "books/batch12/B12-009_pet_sitter_handover_kit.pdf"
+   ],
+   "evidence_of_demand": null,
+   "qa_results": "Only the 2026-10-15 self-graded pass; no demand evidence, no deep QA, no gate",
+   "publication_authorization": null,
+   "live_url": null,
+   "next_action": "Run real demand/competitor evidence, rebuild deliverable to the deep-QA bar, then QA"
+  },
+  {
+   "id": "B12-010",
+   "title": "Nonprofit Grant Pipeline Tracker",
+   "state": "BUILDING",
+   "target_customer": "Small nonprofits and volunteer grant writers",
+   "problem": "Small nonprofits waste weeks on ineligible applications and rewrite boilerplate per funder",
+   "deliverables": [
+    "books/batch12/B12-010_grant_pipeline_tracker.xlsx"
+   ],
+   "evidence_of_demand": null,
+   "qa_results": "Only the 2026-10-15 self-graded pass; no demand evidence, no deep QA, no gate",
+   "publication_authorization": null,
+   "live_url": null,
+   "next_action": "Run real demand/competitor evidence, rebuild deliverable to the deep-QA bar, then QA"
+  }
+ ],
+ "notes": [
+  "Batch 11 and prior cohorts are archived in books/_releases and cohort_GF_BATCH11_2026_09; not part of the active queue.",
+  "The 2026-10-15 batch-12 QA was self-graded and superficial (all 10 flipped to QA_READY_FOR_REVIEW within minutes; thin-content flags cleared by regeneration). Only B12-001 received real evidence + gate work. This queue reflects the honest position.",
+  "Cycle 97 (2026-10-18): B12-004 taken to the deep-QA bar. Deliverable renamed B12-004_meeting_method_onepager.pdf -> B12-004_meeting_method_guide.pdf (it is a 4-page guide); all batch-12 references updated. Gate APPROVED at $11.99 / NOT_READY at $19.00. Awaiting founder price confirmation + authorization.",
+  "Cycle 98 (2026-10-18): founder approved B12-004 price USD 11.99 and issued 'APPROVE B12-004 PUBLISH'. Price reconciled across all B12-004 references; deliverables re-hashed (unchanged); integrity OK. Publication BLOCKED: the sanctioned phrase-gated orchestrator is hardcoded to B12-001 and B12-004 has no product/draft; automated draft creation is unverified/blocked; the only create-then-publish files are parallel-owned. See reports/CYCLE98_B12-004_PUBLICATION_ATTEMPT_2026-10-18.md and reports/B12-004/PUBLICATION_MECHANISM_AUDIT_2026-10-18.json."
+ ]
+}

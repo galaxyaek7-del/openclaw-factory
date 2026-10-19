@@ -1,0 +1,75 @@
+{
+  "cycle": 94,
+  "generated_at_utc": "2026-10-18T18:52:00Z",
+  "product": {
+    "evidence_id": "B12-001",
+    "gumroad_product_id": "W9FpZXpQB-fNiVCteT6Cow==",
+    "short_url": "https://aekraft.gumroad.com/l/blayvb",
+    "approved_price_cents": 1499,
+    "currency": "usd"
+  },
+  "monitoring_mechanism": {
+    "verified": true,
+    "kind": "persistent_supervised_scheduled",
+    "supervisor_pid": 18272,
+    "loop_pid": 18396,
+    "loop_started_utc": "2026-10-18T14:09:48Z",
+    "script": "factory_loop.js",
+    "interval_seconds": 600,
+    "sales_step": "sales_poll -> POST /api/sales/poll -> scripts/poll_sales.py -> channels.<arm>.get_sales",
+    "sales_step_code_reference": "factory_loop.js:4896",
+    "ledger_written": "data/sales_ledger.jsonl",
+    "finance_reconciler": "channels.ledger.reconcile_ledger_to_finance (idempotent, runs every tick)",
+    "first_sale_notify": "telegramDirect.sendTelegramMessage (fire-and-forget on new_sales>0)",
+    "cadence_observed": {
+      "source": "factory_loop.log",
+      "ticks_utc": [
+        "2026-10-18T18:21:24.676Z",
+        "2026-10-18T18:31:22.315Z",
+        "2026-10-18T18:41:24.389Z",
+        "2026-10-18T18:51:25.123Z"
+      ],
+      "interval_minutes": 10
+    }
+  },
+  "last_check": {
+    "at_utc": "2026-10-18T18:51:25.123Z",
+    "source": "factory_loop tick (sales_poll step)",
+    "result": "gumroad: 0 new sales; paddle: error 403 Forbidden (pre-existing, non-gating)"
+  },
+  "last_manual_read": {
+    "at_utc": "2026-10-18T18:49Z",
+    "command": "python scripts/check_gumroad_sales.py",
+    "readable": true,
+    "pages_read": 1,
+    "complete": true,
+    "count": 0,
+    "paid_count": 0,
+    "refunded_count": 0,
+    "gross_usd": 0.0,
+    "by_product": {}
+  },
+  "next_check": {
+    "mode": "automatic",
+    "at_utc_approx": "2026-10-18T19:01:25Z",
+    "interval_seconds": 600,
+    "manual_command": "python scripts/check_gumroad_sales.py"
+  },
+  "verified_commerce_metrics": {
+    "completed_external_transactions": 0,
+    "refunds": 0,
+    "verified_gross_revenue_usd": 0.0,
+    "verified_net_revenue_usd": 0.0,
+    "page_views": "UNKNOWN",
+    "clicks": "UNKNOWN",
+    "attempted_checkouts": "NOT_MEASURABLE",
+    "notes": "purchase records are read from the authoritative Gumroad account source (GET /v2/sales, complete page read). Views/referrers require an authenticated Gumroad dashboard session (not autonomous). Attempted/abandoned checkouts are not exposed by the Gumroad API."
+  },
+  "monitoring_limitations": [
+    "Gumroad views/referrers: AUTH_REQUIRED (dashboard login) - not autonomously observable (data/analytics_boundary.json)",
+    "page-view beacon: PLATFORM_LIMITATION - /api/page-view receiver absent on static GitHub Pages by architecture",
+    "Paddle arm: GET /v2/transactions returns 403 (pre-existing credential/onboarding gap) - Gumroad is the only live sales rail",
+    "first-sale Telegram alert is currently UNDELIVERABLE (OPENCLAW_TELEGRAM_CHAT_ID unset + n8n DENY env access); the sale would still be recorded to the ledger"
+  ],
+  "daily_orchestrator_note": "factory_loop's daily-gated first_sale_orchestrator step already ran for 2026-10-18; it will next run 2026-10-19. Sales polling itself is NOT daily-gated - it runs every 10-minute tick."
+}

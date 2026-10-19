@@ -1,0 +1,703 @@
+{
+ "product_id": "B12-003",
+ "title": "Founder Access Continuity Organizer",
+ "run_at": "2026-10-19T07:55:00Z",
+ "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
+ "price_status": "FOUNDER_APPROVED 2026-10-19 (USD 19.00)",
+ "price_basis": "FOUNDER_DECISION_BELOW_COMPARABLE",
+ "recommended_price_usd": 14.99,
+ "competitors_sourced": [
+  {
+   "name": "The Divine Business Legacy Vault",
+   "price_usd": 37.0,
+   "url": "https://divinewealthplug.gumroad.com/l/businessvault"
+  },
+  {
+   "name": "IF I CAN'T - Personal Continuity & Emergency Takeover System",
+   "price_usd": 49.0,
+   "url": "https://kennyagent.gumroad.com/l/arkbts"
+  },
+  {
+   "name": "The Solo Ager Planner - Life, Legacy & Emergency Plan (Notion)",
+   "price_usd": 39.0,
+   "url": "https://yannick78.gumroad.com/l/solo-ager-planner"
+  },
+  {
+   "name": "Business Continuity Plan (The Aligned Way)",
+   "price_usd": 20.22,
+   "url": "https://alignedemily.gumroad.com/l/business-continuity-plan"
+  },
+  {
+   "name": "Business Continuity Plan Template (Our Cloud Security)",
+   "price_usd": 47.0,
+   "url": "https://ourcloudsecurity.gumroad.com/l/business-continuity-plan"
+  },
+  {
+   "name": "Business Continuity & Cyber Readiness Kit - 6 Editable Templates",
+   "price_usd": 79.0,
+   "url": "https://smithprecision.gumroad.com/l/trqjif"
+  },
+  {
+   "name": "The Twenty Page Emergency Binder",
+   "price_usd": 19.0,
+   "url": "https://bookmarkedbytadz.gumroad.com/l/emergency-binder"
+  },
+  {
+   "name": "Digital Legacy Planner Bundle (64 files)",
+   "price_usd": 19.0,
+   "url": "https://payhip.com/b/kjusc"
+  },
+  {
+   "name": "The Family Emergency Binder (75-page illustrated PDF)",
+   "price_usd": 6.75,
+   "url": "https://pixela.gumroad.com/l/family-emergency-binder"
+  },
+  {
+   "name": "Emergency Preparedness Binder (Family, Medical, Financial & Legal Organizer)",
+   "price_usd": 7.99,
+   "url": "https://gumroad.com/checkout?product=dtltr&quantity=1"
+  },
+  {
+   "name": "Business Administration Toolkit (The Billable Hour)",
+   "price_usd": 79.0,
+   "url": "https://thebillablehour.gumroad.com/l/geica"
+  },
+  {
+   "name": "Trevenco BCM Starter Kit (SME Edition)",
+   "price_usd": 67.73,
+   "url": "https://kovykube.gumroad.com/l/rdfzsu"
+  },
+  {
+   "name": "Emergency Plan Bundle (ReadyOps AI)",
+   "price_usd": 49.0,
+   "url": "https://readyops-ai.polsia.app/products/emergency-plan-bundle"
+  },
+  {
+   "name": "LifeVault Secure - Single Document template",
+   "price_usd": 19.99,
+   "url": "https://www.lifevaultsecure.com/templates"
+  }
+ ],
+ "price_range_observed_usd": [
+  6.75,
+  79.0
+ ],
+ "gate_at_recommended_price_14_99": {
+  "inspected_at": "2026-10-19T06:49:14+00:00",
+  "product_id": "B12-003",
+  "title": "Founder Access Continuity Organizer",
+  "stage": "full",
+  "thresholds": {
+   "core_value": 70,
+   "content_quality": 70,
+   "market_reality": 65
+  },
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100,
+    "checks": {
+     "audience_specific": true,
+     "problem_stated": true,
+     "outcome_stated": true,
+     "title_specific": true,
+     "priced": true
+    }
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100,
+    "checks": {
+     "files_open_cleanly": true,
+     "depth_sufficient": true,
+     "no_placeholders": true,
+     "no_mojibake": true,
+     "instructions_present": true
+    },
+    "detail": {
+     "files": [
+      {
+       "file": "books\\batch12\\B12-003_access_continuity_organizer.pdf",
+       "status": "PASS",
+       "problems": []
+      },
+      {
+       "file": "books\\batch12\\B12-003_access_continuity_inventory.xlsx",
+       "status": "PASS",
+       "problems": []
+      }
+     ],
+     "depth": {
+      "words": 3235,
+      "words_required": 1499,
+      "text_depth_ok": true,
+      "sheets": 6,
+      "formulas": 20,
+      "sheet_depth_ok": true
+     },
+     "placeholders_found": [],
+     "mojibake_hits": 0,
+     "unreadable": []
+    }
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70,
+    "checks": {
+     "payment_evidence": false,
+     "three_sourced_competitors": true,
+     "two_sourced_competitors": true,
+     "one_sourced_competitor": true,
+     "price_within_market": true
+    },
+    "detail": {
+     "sourced_competitors": [
+      {
+       "name": "The Divine Business Legacy Vault",
+       "url": "https://divinewealthplug.gumroad.com/l/businessvault",
+       "price_usd": 37.0
+      },
+      {
+       "name": "IF I CAN'T - Personal Continuity & Emergency Takeover System",
+       "url": "https://kennyagent.gumroad.com/l/arkbts",
+       "price_usd": 49.0
+      },
+      {
+       "name": "The Solo Ager Planner - Life, Legacy & Emergency Plan (Notion)",
+       "url": "https://yannick78.gumroad.com/l/solo-ager-planner",
+       "price_usd": 39.0
+      },
+      {
+       "name": "Business Continuity Plan (The Aligned Way)",
+       "url": "https://alignedemily.gumroad.com/l/business-continuity-plan",
+       "price_usd": 20.22
+      },
+      {
+       "name": "Business Continuity Plan Template (Our Cloud Security)",
+       "url": "https://ourcloudsecurity.gumroad.com/l/business-continuity-plan",
+       "price_usd": 47.0
+      },
+      {
+       "name": "Business Continuity & Cyber Readiness Kit - 6 Editable Templates",
+       "url": "https://smithprecision.gumroad.com/l/trqjif",
+       "price_usd": 79.0
+      },
+      {
+       "name": "The Twenty Page Emergency Binder",
+       "url": "https://bookmarkedbytadz.gumroad.com/l/emergency-binder",
+       "price_usd": 19.0
+      },
+      {
+       "name": "Digital Legacy Planner Bundle (64 files)",
+       "url": "https://payhip.com/b/kjusc",
+       "price_usd": 19.0
+      },
+      {
+       "name": "The Family Emergency Binder (75-page illustrated PDF)",
+       "url": "https://pixela.gumroad.com/l/family-emergency-binder",
+       "price_usd": 6.75
+      },
+      {
+       "name": "Emergency Preparedness Binder (Family, Medical, Financial & Legal Organizer)",
+       "url": "https://gumroad.com/checkout?product=dtltr&quantity=1",
+       "price_usd": 7.99
+      },
+      {
+       "name": "Business Administration Toolkit (The Billable Hour)",
+       "url": "https://thebillablehour.gumroad.com/l/geica",
+       "price_usd": 79.0
+      },
+      {
+       "name": "Trevenco BCM Starter Kit (SME Edition)",
+       "url": "https://kovykube.gumroad.com/l/rdfzsu",
+       "price_usd": 67.73
+      },
+      {
+       "name": "Emergency Plan Bundle (ReadyOps AI)",
+       "url": "https://readyops-ai.polsia.app/products/emergency-plan-bundle",
+       "price_usd": 49.0
+      },
+      {
+       "name": "LifeVault Secure - Single Document template",
+       "url": "https://www.lifevaultsecure.com/templates",
+       "price_usd": 19.99
+      }
+     ],
+     "payment_evidence_count": 0
+    }
+   }
+  }
+ },
+ "gate_at_11_99": {
+  "inspected_at": "2026-10-19T06:49:15+00:00",
+  "product_id": "B12-003",
+  "title": "Founder Access Continuity Organizer",
+  "stage": "full",
+  "thresholds": {
+   "core_value": 70,
+   "content_quality": 70,
+   "market_reality": 65
+  },
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100,
+    "checks": {
+     "audience_specific": true,
+     "problem_stated": true,
+     "outcome_stated": true,
+     "title_specific": true,
+     "priced": true
+    }
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100,
+    "checks": {
+     "files_open_cleanly": true,
+     "depth_sufficient": true,
+     "no_placeholders": true,
+     "no_mojibake": true,
+     "instructions_present": true
+    },
+    "detail": {
+     "files": [
+      {
+       "file": "books\\batch12\\B12-003_access_continuity_organizer.pdf",
+       "status": "PASS",
+       "problems": []
+      },
+      {
+       "file": "books\\batch12\\B12-003_access_continuity_inventory.xlsx",
+       "status": "PASS",
+       "problems": []
+      }
+     ],
+     "depth": {
+      "words": 3235,
+      "words_required": 1199,
+      "text_depth_ok": true,
+      "sheets": 6,
+      "formulas": 20,
+      "sheet_depth_ok": true
+     },
+     "placeholders_found": [],
+     "mojibake_hits": 0,
+     "unreadable": []
+    }
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70,
+    "checks": {
+     "payment_evidence": false,
+     "three_sourced_competitors": true,
+     "two_sourced_competitors": true,
+     "one_sourced_competitor": true,
+     "price_within_market": true
+    },
+    "detail": {
+     "sourced_competitors": [
+      {
+       "name": "The Divine Business Legacy Vault",
+       "url": "https://divinewealthplug.gumroad.com/l/businessvault",
+       "price_usd": 37.0
+      },
+      {
+       "name": "IF I CAN'T - Personal Continuity & Emergency Takeover System",
+       "url": "https://kennyagent.gumroad.com/l/arkbts",
+       "price_usd": 49.0
+      },
+      {
+       "name": "The Solo Ager Planner - Life, Legacy & Emergency Plan (Notion)",
+       "url": "https://yannick78.gumroad.com/l/solo-ager-planner",
+       "price_usd": 39.0
+      },
+      {
+       "name": "Business Continuity Plan (The Aligned Way)",
+       "url": "https://alignedemily.gumroad.com/l/business-continuity-plan",
+       "price_usd": 20.22
+      },
+      {
+       "name": "Business Continuity Plan Template (Our Cloud Security)",
+       "url": "https://ourcloudsecurity.gumroad.com/l/business-continuity-plan",
+       "price_usd": 47.0
+      },
+      {
+       "name": "Business Continuity & Cyber Readiness Kit - 6 Editable Templates",
+       "url": "https://smithprecision.gumroad.com/l/trqjif",
+       "price_usd": 79.0
+      },
+      {
+       "name": "The Twenty Page Emergency Binder",
+       "url": "https://bookmarkedbytadz.gumroad.com/l/emergency-binder",
+       "price_usd": 19.0
+      },
+      {
+       "name": "Digital Legacy Planner Bundle (64 files)",
+       "url": "https://payhip.com/b/kjusc",
+       "price_usd": 19.0
+      },
+      {
+       "name": "The Family Emergency Binder (75-page illustrated PDF)",
+       "url": "https://pixela.gumroad.com/l/family-emergency-binder",
+       "price_usd": 6.75
+      },
+      {
+       "name": "Emergency Preparedness Binder (Family, Medical, Financial & Legal Organizer)",
+       "url": "https://gumroad.com/checkout?product=dtltr&quantity=1",
+       "price_usd": 7.99
+      },
+      {
+       "name": "Business Administration Toolkit (The Billable Hour)",
+       "url": "https://thebillablehour.gumroad.com/l/geica",
+       "price_usd": 79.0
+      },
+      {
+       "name": "Trevenco BCM Starter Kit (SME Edition)",
+       "url": "https://kovykube.gumroad.com/l/rdfzsu",
+       "price_usd": 67.73
+      },
+      {
+       "name": "Emergency Plan Bundle (ReadyOps AI)",
+       "url": "https://readyops-ai.polsia.app/products/emergency-plan-bundle",
+       "price_usd": 49.0
+      },
+      {
+       "name": "LifeVault Secure - Single Document template",
+       "url": "https://www.lifevaultsecure.com/templates",
+       "price_usd": 19.99
+      }
+     ],
+     "payment_evidence_count": 0
+    }
+   }
+  }
+ },
+ "gate_at_manifest_price_29_00": {
+  "inspected_at": "2026-10-19T06:49:15+00:00",
+  "product_id": "B12-003",
+  "title": "Founder Access Continuity Organizer",
+  "stage": "full",
+  "thresholds": {
+   "core_value": 70,
+   "content_quality": 70,
+   "market_reality": 65
+  },
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100,
+    "checks": {
+     "audience_specific": true,
+     "problem_stated": true,
+     "outcome_stated": true,
+     "title_specific": true,
+     "priced": true
+    }
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100,
+    "checks": {
+     "files_open_cleanly": true,
+     "depth_sufficient": true,
+     "no_placeholders": true,
+     "no_mojibake": true,
+     "instructions_present": true
+    },
+    "detail": {
+     "files": [
+      {
+       "file": "books\\batch12\\B12-003_access_continuity_organizer.pdf",
+       "status": "PASS",
+       "problems": []
+      },
+      {
+       "file": "books\\batch12\\B12-003_access_continuity_inventory.xlsx",
+       "status": "PASS",
+       "problems": []
+      }
+     ],
+     "depth": {
+      "words": 3235,
+      "words_required": 2900,
+      "text_depth_ok": true,
+      "sheets": 6,
+      "formulas": 20,
+      "sheet_depth_ok": true
+     },
+     "placeholders_found": [],
+     "mojibake_hits": 0,
+     "unreadable": []
+    }
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70,
+    "checks": {
+     "payment_evidence": false,
+     "three_sourced_competitors": true,
+     "two_sourced_competitors": true,
+     "one_sourced_competitor": true,
+     "price_within_market": true
+    },
+    "detail": {
+     "sourced_competitors": [
+      {
+       "name": "The Divine Business Legacy Vault",
+       "url": "https://divinewealthplug.gumroad.com/l/businessvault",
+       "price_usd": 37.0
+      },
+      {
+       "name": "IF I CAN'T - Personal Continuity & Emergency Takeover System",
+       "url": "https://kennyagent.gumroad.com/l/arkbts",
+       "price_usd": 49.0
+      },
+      {
+       "name": "The Solo Ager Planner - Life, Legacy & Emergency Plan (Notion)",
+       "url": "https://yannick78.gumroad.com/l/solo-ager-planner",
+       "price_usd": 39.0
+      },
+      {
+       "name": "Business Continuity Plan (The Aligned Way)",
+       "url": "https://alignedemily.gumroad.com/l/business-continuity-plan",
+       "price_usd": 20.22
+      },
+      {
+       "name": "Business Continuity Plan Template (Our Cloud Security)",
+       "url": "https://ourcloudsecurity.gumroad.com/l/business-continuity-plan",
+       "price_usd": 47.0
+      },
+      {
+       "name": "Business Continuity & Cyber Readiness Kit - 6 Editable Templates",
+       "url": "https://smithprecision.gumroad.com/l/trqjif",
+       "price_usd": 79.0
+      },
+      {
+       "name": "The Twenty Page Emergency Binder",
+       "url": "https://bookmarkedbytadz.gumroad.com/l/emergency-binder",
+       "price_usd": 19.0
+      },
+      {
+       "name": "Digital Legacy Planner Bundle (64 files)",
+       "url": "https://payhip.com/b/kjusc",
+       "price_usd": 19.0
+      },
+      {
+       "name": "The Family Emergency Binder (75-page illustrated PDF)",
+       "url": "https://pixela.gumroad.com/l/family-emergency-binder",
+       "price_usd": 6.75
+      },
+      {
+       "name": "Emergency Preparedness Binder (Family, Medical, Financial & Legal Organizer)",
+       "url": "https://gumroad.com/checkout?product=dtltr&quantity=1",
+       "price_usd": 7.99
+      },
+      {
+       "name": "Business Administration Toolkit (The Billable Hour)",
+       "url": "https://thebillablehour.gumroad.com/l/geica",
+       "price_usd": 79.0
+      },
+      {
+       "name": "Trevenco BCM Starter Kit (SME Edition)",
+       "url": "https://kovykube.gumroad.com/l/rdfzsu",
+       "price_usd": 67.73
+      },
+      {
+       "name": "Emergency Plan Bundle (ReadyOps AI)",
+       "url": "https://readyops-ai.polsia.app/products/emergency-plan-bundle",
+       "price_usd": 49.0
+      },
+      {
+       "name": "LifeVault Secure - Single Document template",
+       "url": "https://www.lifevaultsecure.com/templates",
+       "price_usd": 19.99
+      }
+     ],
+     "payment_evidence_count": 0
+    }
+   }
+  }
+ },
+ "economics_market_realism_disclosure": {
+  "check": "economics.market_realism_check(price, page_count=8, platform='gumroad_digital')",
+  "at_1499_8pages": [
+   false,
+   8.0
+  ],
+  "at_1199_8pages": [
+   false,
+   8.0
+  ],
+  "at_1499_no_pagecount": [
+   true,
+   14.99
+  ],
+  "finding": "At 8 PDF pages, gumroad_digital's global market-realism ceiling is $1.00/page = $8.00, so a $14.99 price is flagged NOT market_realistic for the auto-distribution path. schemas/product.py::from_jsonl_record() would silently re-price it to $8.00. The founder-authorized first-sale path (scripts/first_sale_orchestrator.py) does NOT use schemas/product.py and publishes the manifest price_usd directly, so this risk applies ONLY to distributor.py's auto path."
+ },
+ "founder_decision": {
+  "date": "2026-10-19",
+  "price_usd": 19.0,
+  "basis": "FOUNDER_DECISION_BELOW_COMPARABLE",
+  "source": "founder answer, Cycle 98 continuation, 2026-10-19"
+ },
+ "gate_at_approved_price_19_00": {
+  "inspected_at": "2026-10-19T07:01:21+00:00",
+  "product_id": "B12-003",
+  "title": "Founder Access Continuity Organizer",
+  "stage": "full",
+  "thresholds": {
+   "core_value": 70,
+   "content_quality": 70,
+   "market_reality": 65
+  },
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100,
+    "checks": {
+     "audience_specific": true,
+     "problem_stated": true,
+     "outcome_stated": true,
+     "title_specific": true,
+     "priced": true
+    }
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100,
+    "checks": {
+     "files_open_cleanly": true,
+     "depth_sufficient": true,
+     "no_placeholders": true,
+     "no_mojibake": true,
+     "instructions_present": true
+    },
+    "detail": {
+     "files": [
+      {
+       "file": "books\\batch12\\B12-003_access_continuity_organizer.pdf",
+       "status": "PASS",
+       "problems": []
+      },
+      {
+       "file": "books\\batch12\\B12-003_access_continuity_inventory.xlsx",
+       "status": "PASS",
+       "problems": []
+      }
+     ],
+     "depth": {
+      "words": 3235,
+      "words_required": 1900,
+      "text_depth_ok": true,
+      "sheets": 6,
+      "formulas": 20,
+      "sheet_depth_ok": true
+     },
+     "placeholders_found": [],
+     "mojibake_hits": 0,
+     "unreadable": []
+    }
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70,
+    "checks": {
+     "payment_evidence": false,
+     "three_sourced_competitors": true,
+     "two_sourced_competitors": true,
+     "one_sourced_competitor": true,
+     "price_within_market": true
+    },
+    "detail": {
+     "sourced_competitors": [
+      {
+       "name": "The Divine Business Legacy Vault",
+       "url": "https://divinewealthplug.gumroad.com/l/businessvault",
+       "price_usd": 37.0
+      },
+      {
+       "name": "IF I CAN'T - Personal Continuity & Emergency Takeover System",
+       "url": "https://kennyagent.gumroad.com/l/arkbts",
+       "price_usd": 49.0
+      },
+      {
+       "name": "The Solo Ager Planner - Life, Legacy & Emergency Plan (Notion)",
+       "url": "https://yannick78.gumroad.com/l/solo-ager-planner",
+       "price_usd": 39.0
+      },
+      {
+       "name": "Business Continuity Plan (The Aligned Way)",
+       "url": "https://alignedemily.gumroad.com/l/business-continuity-plan",
+       "price_usd": 20.22
+      },
+      {
+       "name": "Business Continuity Plan Template (Our Cloud Security)",
+       "url": "https://ourcloudsecurity.gumroad.com/l/business-continuity-plan",
+       "price_usd": 47.0
+      },
+      {
+       "name": "Business Continuity & Cyber Readiness Kit - 6 Editable Templates",
+       "url": "https://smithprecision.gumroad.com/l/trqjif",
+       "price_usd": 79.0
+      },
+      {
+       "name": "The Twenty Page Emergency Binder",
+       "url": "https://bookmarkedbytadz.gumroad.com/l/emergency-binder",
+       "price_usd": 19.0
+      },
+      {
+       "name": "Digital Legacy Planner Bundle (64 files)",
+       "url": "https://payhip.com/b/kjusc",
+       "price_usd": 19.0
+      },
+      {
+       "name": "The Family Emergency Binder (75-page illustrated PDF)",
+       "url": "https://pixela.gumroad.com/l/family-emergency-binder",
+       "price_usd": 6.75
+      },
+      {
+       "name": "Emergency Preparedness Binder (Family, Medical, Financial & Legal Organizer)",
+       "url": "https://gumroad.com/checkout?product=dtltr&quantity=1",
+       "price_usd": 7.99
+      },
+      {
+       "name": "Business Administration Toolkit (The Billable Hour)",
+       "url": "https://thebillablehour.gumroad.com/l/geica",
+       "price_usd": 79.0
+      },
+      {
+       "name": "Trevenco BCM Starter Kit (SME Edition)",
+       "url": "https://kovykube.gumroad.com/l/rdfzsu",
+       "price_usd": 67.73
+      },
+      {
+       "name": "Emergency Plan Bundle (ReadyOps AI)",
+       "url": "https://readyops-ai.polsia.app/products/emergency-plan-bundle",
+       "price_usd": 49.0
+      },
+      {
+       "name": "LifeVault Secure - Single Document template",
+       "url": "https://www.lifevaultsecure.com/templates",
+       "price_usd": 19.99
+      }
+     ],
+     "payment_evidence_count": 0
+    }
+   }
+  }
+ }
+}

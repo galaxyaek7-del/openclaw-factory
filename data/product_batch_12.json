@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T18:03:11.427085+00:00",
+  "generated_at": "2026-10-19T07:05:19.967517+00:00",
   "batch": "B12",
   "products": [
     {
@@ -81,13 +81,31 @@
     {
       "id": "B12-002",
       "title": "Client Project Handoff Pack",
-      "price": 39,
+      "price": 11.99,
+      "price_usd": 11.99,
+      "price_basis": "FOUNDER_APPROVED_BELOW_COMPARABLE_2026-10-18",
+      "pricing_date": "2026-10-18",
+      "previous_price": 39,
+      "price_rationale": "Founder decision 2026-10-18: original manifest price $39.00 is unusable - the gate's own depth rule (100 words per dollar) and market rule (price <= highest sourced comparable x 1.10) both fail at $39, and the 12 real sourced comparables top out at $54.89 with a mode near $15. $11.99 clears both rules (depth 100, market 70) and sits below the comparable cluster's mode. Evidence: reports/B12-002/GATE_FINAL_2026-10-18.json.",
+      "price_evidence": "reports/B12-002/GATE_FINAL_2026-10-18.json",
       "files": [
         "B12-002_client_handoff_guide.pdf",
         "B12-002_client_handoff_register.xlsx"
       ],
       "audience": "Freelancers, agencies, and contractors handing work to clients.",
       "problem": "Project handoffs done by email threads end in disputes over what was transferred.",
+      "competitor_evidence_source": "data/evidence/b12_002_competitors.json",
+      "competition_level": "HIGH: 12 real paid comparables $3.49-$54.89, mode ~$15 (data/evidence/b12_002_competitors.json)",
+      "gate_verdict": "APPROVED",
+      "gate_date": "2026-10-18",
+      "gate_score": {
+        "core": 100,
+        "content": 100,
+        "market": 70
+      },
+      "gate_report": "reports/B12-002/GATE_FINAL_2026-10-18.json",
+      "qa_report": "reports/B12-002/QA_2026-10-18.json",
+      "ready_to_publish": true,
       "state": "READY_FOR_REVIEW",
       "issues": [],
       "distribution_channels": [
@@ -97,25 +115,61 @@
     {
       "id": "B12-003",
       "title": "Founder Access Continuity Organizer",
-      "price": 29,
+      "price": 19.0,
       "files": [
+        "B12-003_access_continuity_inventory.xlsx",
         "B12-003_access_continuity_organizer.pdf"
       ],
-      "audience": "Solo founders and one-person businesses.",
-      "problem": "If a solo founder is unreachable, nobody can keep the business alive — and writing passwords on paper is the unsafe answer.",
+      "audience": "Solo founders and one-person businesses who are the single point of failure for everything the business needs.",
+      "problem": "If a solo founder is unreachable, nobody else knows what the business runs on or how to restore access, and writing the passwords on paper is the unsafe answer.",
       "state": "READY_FOR_REVIEW",
       "issues": [],
       "distribution_channels": [
         "gumroad"
-      ]
+      ],
+      "price_usd": 19.0,
+      "price_status": "FOUNDER_APPROVED 2026-10-19 (USD 19.00)",
+      "previous_price": 29,
+      "price_rationale": "Founder decision 2026-10-19: USD 19.00 - below every direct business-continuity comparable ($37-$79); above the factory's $15.00 short-book ceiling and the $6.75-$20.22 closest-shape packs. Gate APPROVED at $19.00. Evidence: reports/B12-003/GATE_FINAL_2026-10-19.json.",
+      "price_evidence": "reports/B12-003/GATE_FINAL_2026-10-19.json",
+      "outcome": "A filled inventory of what exists, where it lives and who may touch it, a three-envelope custody method, and an annual drill that keeps the plan true without writing a password.",
+      "competitor_evidence_source": "data/evidence/b12_003_competitors.json",
+      "competition_level": "MEDIUM-HIGH: 14 real paid comparables $6.75-$79 (business-continuity cluster $37-$79; closest-shape packs $6.75-$20.22) (data/evidence/b12_003_competitors.json)",
+      "gate_verdict": "APPROVED",
+      "gate_date": "2026-10-19",
+      "gate_score": {
+        "core": 100,
+        "content": 100,
+        "market": 70
+      },
+      "gate_report": "reports/B12-003/GATE_FINAL_2026-10-19.json",
+      "qa_report": "reports/B12-003/QA_FACTS_2026-10-19.json",
+      "ready_to_publish": true,
+      "tags": [
+        "business continuity",
+        "solo founder",
+        "checklist",
+        "spreadsheet",
+        "emergency",
+        "access",
+        "succession",
+        "template"
+      ],
+      "category": "Business & Money > Business Templates / Spreadsheets",
+      "publication_authorization": null,
+      "price_basis": "FOUNDER_DECISION_BELOW_COMPARABLE",
+      "pricing_date": "2026-10-19"
     },
     {
       "id": "B12-004",
       "title": "Meeting Cost & ROI Calculator",
-      "price": 19,
+      "price": 11.99,
+      "price_usd": 11.99,
+      "price_basis": "FOUNDER_APPROVED_BELOW_COMPARABLE_2026-10-18",
+      "pricing_date": "2026-10-18",
       "files": [
         "B12-004_meeting_cost_roi_calculator.xlsx",
-        "B12-004_meeting_method_onepager.pdf"
+        "B12-004_meeting_method_guide.pdf"
       ],
       "audience": "Team leads, managers, and founders with calendars full of status calls.",
       "problem": "Teams lose thousands of dollars a month to recurring meetings nobody priced.",

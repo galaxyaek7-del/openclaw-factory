@@ -1,0 +1,91 @@
+{
+  "verified_at": "2026-10-18T18:45:53Z",
+  "product_id": "W9FpZXpQB-fNiVCteT6Cow==",
+  "listing_url": "https://aekraft.gumroad.com/l/blayvb",
+  "api_readback": {
+    "id": "W9FpZXpQB-fNiVCteT6Cow==",
+    "name": "Freelancer Rate & Raise Calculator",
+    "price": 1499,
+    "currency": "usd",
+    "published": true,
+    "deleted": false,
+    "short_url": "https://aekraft.gumroad.com/l/blayvb",
+    "sales_count": 0,
+    "taxonomy_id": 266
+  },
+  "public_page": {
+    "http_status": 200,
+    "bytes": 27036,
+    "is_published": true,
+    "is_compliance_blocked": false,
+    "price_cents": 1499,
+    "currency": "usd",
+    "name": "Freelancer Rate & Raise Calculator",
+    "permalink": "blayvb",
+    "main_cover_id": "630b43ca79ba1a5ce710749f672c2c04",
+    "covers_count": 1,
+    "ratings": {
+      "count": 0,
+      "average": 0.0,
+      "percentages": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "sales_count": null,
+    "has_purchase_prop": true,
+    "checkout_props_present": false
+  },
+  "description": {
+    "words": 326,
+    "placeholders_found": [],
+    "mentions_four_sheets": true,
+    "mentions_price_consistently": false,
+    "promises_xlsx": true
+  },
+  "deliverable": {
+    "files_count": 1,
+    "bytes": 8922,
+    "canonical_sha256": "aee8fc0b100345e7abc6e8a41487ddf551b5b7f235c6f4324827d1c6ab8a092d",
+    "served_sha256": "aee8fc0b100345e7abc6e8a41487ddf551b5b7f235c6f4324827d1c6ab8a092d",
+    "identical": true,
+    "http_status": 200,
+    "download_name": "B12-001_freelancer_rate_raise_calculator.xlsx"
+  },
+  "purchase_probe": {
+    "page": {
+      "status": 200,
+      "final_url": "https://aekraft.gumroad.com/l/blayvb",
+      "cart_items": 0,
+      "errors": {},
+      "cart_keys": []
+    },
+    "wanted": {
+      "status": 200,
+      "final_url": "https://gumroad.com/checkout?action=show&controller=links&format=html&id=blayvb&price=1499&product=blayvb&rent=false&wan",
+      "cart_items": 0,
+      "errors": {},
+      "cart_keys": []
+    },
+    "app_checkout": {
+      "status": 200,
+      "final_url": "https://gumroad.com/checkout?product=blayvb",
+      "cart_items": 0,
+      "errors": {},
+      "cart_keys": []
+    }
+  },
+  "overall": {
+    "api_published_true": true,
+    "page_published_true": true,
+    "not_compliance_blocked": true,
+    "price_matches_approved_1499": true,
+    "deliverable_identical_to_canonical": true,
+    "no_description_placeholders": true,
+    "cover_present": true,
+    "all_pass": true
+  }
+}

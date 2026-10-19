@@ -1,0 +1,516 @@
+{
+  "run_id": "18672-20261018T222608",
+  "tasks": {
+    "package_validate": {
+      "id": "package_validate",
+      "title": "Validate B12-001 package (sha/size/cover)",
+      "kind": "AUTONOMOUS",
+      "depends_on": [],
+      "external": false,
+      "max_attempts": 3,
+      "status": "COMPLETED",
+      "blocker": null,
+      "attempts": 1,
+      "last_error": null,
+      "last_error_kind": null,
+      "next_retry_at": null,
+      "run_id": null,
+      "result": {
+        "ready": true,
+        "failed": [],
+        "workbook": {
+          "sha256": "87ecb1cd223ebf615c46bf49a74c1feb70ea5131a1da9c14dcedff470ccac820",
+          "sheets": [
+            "Setup",
+            "MeetingLog",
+            "Dashboard",
+            "Rules",
+            "README"
+          ],
+          "formula_cells": 111,
+          "cached_verification": "NOT_CHECKED_FOR_PRODUCT"
+        }
+      },
+      "updated_at": "2026-10-18T22:11:00.889595+00:00",
+      "needs_reconciliation": false
+    },
+    "price_authority": {
+      "id": "price_authority",
+      "title": "Confirm B12-001 price is authorized",
+      "kind": "AUTONOMOUS",
+      "depends_on": [],
+      "external": false,
+      "max_attempts": 3,
+      "status": "COMPLETED",
+      "blocker": null,
+      "attempts": 1,
+      "last_error": null,
+      "last_error_kind": null,
+      "next_retry_at": null,
+      "run_id": null,
+      "result": {
+        "price_usd": 11.99,
+        "basis": "FOUNDER_APPROVED_BELOW_COMPARABLE_2026-10-18",
+        "sources": [
+          "C:\\openclaw-dasgboard\\data\\product_batch_12.json",
+          "C:\\openclaw-dasgboard\\reports\\B12-004\\GATE_FINAL_2026-10-18.json"
+        ]
+      },
+      "updated_at": "2026-10-18T22:11:00.891411+00:00",
+      "needs_reconciliation": false
+    },
+    "catalog_duplicate_check": {
+      "id": "catalog_duplicate_check",
+      "title": "Read-only duplicate scan of the live catalog",
+      "kind": "AUTONOMOUS",
+      "depends_on": [],
+      "external": false,
+      "max_attempts": 3,
+      "status": "COMPLETED",
+      "blocker": null,
+      "attempts": 1,
+      "last_error": null,
+      "last_error_kind": null,
+      "next_retry_at": null,
+      "run_id": null,
+      "result": {
+        "duplicate": "NONE",
+        "match": null
+      },
+      "updated_at": "2026-10-18T22:11:06.454665+00:00",
+      "needs_reconciliation": false
+    },
+    "draft_capability": {
+      "id": "draft_capability",
+      "title": "Determine draft-creation capability state",
+      "kind": "ENGINEERING",
+      "depends_on": [],
+      "external": false,
+      "max_attempts": 3,
+      "status": "COMPLETED",
+      "blocker": null,
+      "attempts": 1,
+      "last_error": null,
+      "last_error_kind": null,
+      "next_retry_at": null,
+      "run_id": null,
+      "result": {
+        "state": "BLOCKED_BY_AUTHORIZATION",
+        "authorization": "BLOCKED_BY_AUTHORIZATION",
+        "documented": true,
+        "implemented": true,
+        "remote_verified": true,
+        "evidence": {
+          "product_id": "W9FpZXpQB-fNiVCteT6Cow==",
+          "title": "Freelancer Rate & Raise Calculator",
+          "price_cents": 1499,
+          "published": false,
+          "url": "https://aekraft.gumroad.com/l/blayvb",
+          "verified_at": "2026-10-18T13:00:15.052032+00:00",
+          "source": "create response + GET read-back (OBSERVED)"
+        },
+        "required_guarantees": [
+          "explicit published=false (and draft=true) in the create payload",
+          "create response has product.published == false",
+          "GET /v2/products/:id read-back confirms published == false and id/title/price match"
+        ],
+        "documented_reversibility": [
+          "PUT /v2/products/:id/disable",
+          "DELETE /v2/products/:id"
+        ],
+        "unknowns": [
+          "default create publication state (docs internally inconsistent)",
+          "whether published:true implies purchasable"
+        ],
+        "reason": "No LIVE-VERIFIED unpublished-create path. The Gumroad API *documents* POST /v2/products with published=false / draft=true (returns an unpublished product) plus PUT /:id/disable and DELETE /:id -- so the platform supports drafts and reversibility. But our integration's create_product() omits the field, a real live creation defaulted to published:true with a public page (channels/gumroad_arm.py:8-13), the docs are internally inconsistent about the default, and creation is non-idempotent. Until a live draft is verified, this remains an unverified capability and automated creation stays blocked."
+      },
+      "updated_at": "2026-10-18T22:11:06.460558+00:00",
+      "needs_reconciliation": false
+    },
+    "create_draft": {
+      "id": "create_draft",
+      "title": "Create the unpublished Gumroad draft",
+      "kind": "EXTERNAL_CAPABILITY",
+      "depends_on": [
+        "package_validate",
+        "price_authority",
+        "catalog_duplicate_check",
+        "draft_capability"
+      ],
+      "external": true,
+      "max_attempts": 1,
+      "status": "COMPLETED",
+      "blocker": null,
+      "attempts": 1,
+      "last_error": null,
+      "last_error_kind": null,
+      "next_retry_at": null,
+      "run_id": null,
+      "result": {
+        "created": true,
+        "state": "DRAFT_CREATED_AND_UNPUBLISHED_STATE_VERIFIED",
+        "draft": {
+          "product_id": "-cbRBfZyJMTKpl-Xk8Oz3Q==",
+          "title": "Meeting Cost & ROI Calculator",
+          "price_cents": 1199,
+          "published": false,
+          "url": "https://aekraft.gumroad.com/l/ieashv",
+          "verified_at": "2026-10-18T22:15:41.646113+00:00",
+          "source": "create response + GET read-back (OBSERVED)"
+        }
+      },
+      "updated_at": "2026-10-18T22:15:41.650994+00:00",
+      "needs_reconciliation": false
+    },
+    "verify_remote_draft": {
+      "id": "verify_remote_draft",
+      "title": "Verify the draft is unpublished and matches",
+      "kind": "AUTONOMOUS",
+      "depends_on": [
+        "create_draft"
+      ],
+      "external": true,
+      "max_attempts": 1,
+      "status": "EXTERNALLY_VERIFIED",
+      "blocker": null,
+      "attempts": 1,
+      "last_error": null,
+      "last_error_kind": null,
+      "next_retry_at": null,
+      "run_id": null,
+      "result": {
+        "verified": true,
+        "problems": [],
+        "product_id": "-cbRBfZyJMTKpl-Xk8Oz3Q==",
+        "url": "https://aekraft.gumroad.com/l/ieashv",
+        "externally_verified": true
+      },
+      "updated_at": "2026-10-18T22:15:42.028060+00:00",
+      "needs_reconciliation": false
+    },
+    "resolve_utm": {
+      "id": "resolve_utm",
+      "title": "Resolve UTM links against the verified draft URL",
+      "kind": "AUTONOMOUS",
+      "depends_on": [
+        "verify_remote_draft"
+      ],
+      "external": false,
+      "max_attempts": 3,
+      "status": "BLOCKED",
+      "blocker": "BLOCKED_PERMANENT",
+      "attempts": 1,
+      "last_error": "no UTM template configured for B12-004",
+      "last_error_kind": "BLOCKED",
+      "next_retry_at": null,
+      "run_id": null,
+      "result": null,
+      "updated_at": "2026-10-18T22:15:42.029940+00:00",
+      "needs_reconciliation": false
+    },
+    "sales_ledger_check": {
+      "id": "sales_ledger_check",
+      "title": "Reconcile sales / refunds (read-only)",
+      "kind": "AUTONOMOUS",
+      "depends_on": [],
+      "external": false,
+      "max_attempts": 3,
+      "status": "COMPLETED",
+      "blocker": null,
+      "attempts": 1,
+      "last_error": null,
+      "last_error_kind": null,
+      "next_retry_at": null,
+      "run_id": null,
+      "result": {
+        "verdict": "ZERO_CONFIRMED",
+        "sales": 0
+      },
+      "updated_at": "2026-10-18T22:11:06.790592+00:00",
+      "needs_reconciliation": false
+    },
+    "journey_check": {
+      "id": "journey_check",
+      "title": "Validate the customer page state (read-only)",
+      "kind": "AUTONOMOUS",
+      "depends_on": [],
+      "external": false,
+      "max_attempts": 3,
+      "status": "COMPLETED",
+      "blocker": null,
+      "attempts": 1,
+      "last_error": null,
+      "last_error_kind": null,
+      "next_retry_at": null,
+      "run_id": null,
+      "result": {
+        "page_exists": true,
+        "has_draft_banner": true,
+        "has_buy_link": false,
+        "has_beacon": false
+      },
+      "updated_at": "2026-10-18T22:11:06.794420+00:00",
+      "needs_reconciliation": false
+    },
+    "publish": {
+      "id": "publish",
+      "title": "Publish B12-001 (requires founder phrase)",
+      "kind": "FOUNDER_AUTHORITY",
+      "depends_on": [
+        "verify_remote_draft"
+      ],
+      "external": false,
+      "max_attempts": 3,
+      "status": "EXTERNALLY_VERIFIED",
+      "blocker": null,
+      "attempts": 1,
+      "last_error": null,
+      "last_error_kind": null,
+      "next_retry_at": null,
+      "run_id": null,
+      "result": {
+        "published": true,
+        "product_id": "-cbRBfZyJMTKpl-Xk8Oz3Q==",
+        "url": "https://aekraft.gumroad.com/l/ieashv",
+        "externally_verified": true
+      },
+      "updated_at": "2026-10-18T22:26:11.866552+00:00",
+      "needs_reconciliation": false
+    }
+  },
+  "events": [
+    {
+      "at": "2026-10-18T22:11:00.598278+00:00",
+      "task": "package_validate",
+      "event": "STATUS",
+      "status": "RUNNING",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:11:00.889607+00:00",
+      "task": "package_validate",
+      "event": "STATUS",
+      "status": "COMPLETED",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:11:00.889622+00:00",
+      "task": "price_authority",
+      "event": "STATUS",
+      "status": "RUNNING",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:11:00.891421+00:00",
+      "task": "price_authority",
+      "event": "STATUS",
+      "status": "COMPLETED",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:11:00.891434+00:00",
+      "task": "catalog_duplicate_check",
+      "event": "STATUS",
+      "status": "RUNNING",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:11:06.454687+00:00",
+      "task": "catalog_duplicate_check",
+      "event": "STATUS",
+      "status": "COMPLETED",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:11:06.454717+00:00",
+      "task": "draft_capability",
+      "event": "STATUS",
+      "status": "RUNNING",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:11:06.460576+00:00",
+      "task": "draft_capability",
+      "event": "STATUS",
+      "status": "COMPLETED",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:11:06.460607+00:00",
+      "task": "create_draft",
+      "event": "STATUS",
+      "status": "RUNNING",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:11:06.463876+00:00",
+      "task": "create_draft",
+      "event": "STATUS",
+      "status": "BLOCKED",
+      "attempts": 1,
+      "detail": "IMPLEMENTED_BUT_REMOTE_BEHAVIOR_UNVERIFIED: no live-verified, authorized draft-creation route (No LIVE-VERIFIED unpublished-create path. The Gumroad API *documents* POST /v2/products with published=false / draft=true (returns an unpublished product) plus PUT /:id/disable and DELETE /:id -- so the platform supports drafts and reversibility. But our integration's create_product() omits the field, a real live creation defaulted to published:true with a public page (channels/gumroad_arm.py:8-13), the docs are internally inconsistent about the default, and creation is non-idempotent. Until a live draft is verified, this remains an unverified capability and automated creation stays blocked.)"
+    },
+    {
+      "at": "2026-10-18T22:11:06.463902+00:00",
+      "task": "verify_remote_draft",
+      "event": "STATUS",
+      "status": "PENDING",
+      "attempts": 0,
+      "detail": "waiting on prerequisites"
+    },
+    {
+      "at": "2026-10-18T22:11:06.463915+00:00",
+      "task": "resolve_utm",
+      "event": "STATUS",
+      "status": "PENDING",
+      "attempts": 0,
+      "detail": "waiting on prerequisites"
+    },
+    {
+      "at": "2026-10-18T22:11:06.463928+00:00",
+      "task": "sales_ledger_check",
+      "event": "STATUS",
+      "status": "RUNNING",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:11:06.790613+00:00",
+      "task": "sales_ledger_check",
+      "event": "STATUS",
+      "status": "COMPLETED",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:11:06.790652+00:00",
+      "task": "journey_check",
+      "event": "STATUS",
+      "status": "RUNNING",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:11:06.794478+00:00",
+      "task": "journey_check",
+      "event": "STATUS",
+      "status": "COMPLETED",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:11:06.794563+00:00",
+      "task": "publish",
+      "event": "STATUS",
+      "status": "PENDING",
+      "attempts": 0,
+      "detail": "waiting on prerequisites"
+    },
+    {
+      "at": "2026-10-18T22:15:32.246875+00:00",
+      "task": "create_draft",
+      "event": "STATUS",
+      "status": "PENDING",
+      "attempts": 0,
+      "detail": "re-checked on a new run (capability/authorization may have changed)"
+    },
+    {
+      "at": "2026-10-18T22:15:32.246897+00:00",
+      "task": "create_draft",
+      "event": "STATUS",
+      "status": "RUNNING",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:15:41.651018+00:00",
+      "task": "create_draft",
+      "event": "STATUS",
+      "status": "COMPLETED",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:15:41.651060+00:00",
+      "task": "verify_remote_draft",
+      "event": "STATUS",
+      "status": "RUNNING",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:15:42.028083+00:00",
+      "task": "verify_remote_draft",
+      "event": "STATUS",
+      "status": "EXTERNALLY_VERIFIED",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:15:42.028116+00:00",
+      "task": "resolve_utm",
+      "event": "STATUS",
+      "status": "RUNNING",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:15:42.029958+00:00",
+      "task": "resolve_utm",
+      "event": "STATUS",
+      "status": "BLOCKED",
+      "attempts": 1,
+      "detail": "no UTM template configured for B12-004"
+    },
+    {
+      "at": "2026-10-18T22:15:42.029993+00:00",
+      "task": "publish",
+      "event": "STATUS",
+      "status": "RUNNING",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:15:42.031664+00:00",
+      "task": "publish",
+      "event": "STATUS",
+      "status": "BLOCKED",
+      "attempts": 1,
+      "detail": "publishing requires the exact founder authorization 'APPROVE B12-004 PUBLISH'"
+    },
+    {
+      "at": "2026-10-18T22:26:08.707377+00:00",
+      "task": "publish",
+      "event": "STATUS",
+      "status": "RUNNING",
+      "attempts": 1,
+      "detail": null
+    },
+    {
+      "at": "2026-10-18T22:26:11.866574+00:00",
+      "task": "publish",
+      "event": "STATUS",
+      "status": "EXTERNALLY_VERIFIED",
+      "attempts": 1,
+      "detail": null
+    }
+  ],
+  "next_action": {
+    "kind": "BLOCKED",
+    "action": null,
+    "reason": "all remaining work is blocked or awaiting reconciliation",
+    "blocked_by": {
+      "resolve_utm": "BLOCKED_PERMANENT"
+    }
+  },
+  "updated_at": "2026-10-18T22:26:11.867066+00:00"
+}

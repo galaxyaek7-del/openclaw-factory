@@ -1,0 +1,85 @@
+{
+ "product_id": "B12-002",
+ "run_at": "2026-10-18T23:41:00Z",
+ "pdf_pages": 4,
+ "guide_words": 1722,
+ "inspect_technical": {
+  "passed": true,
+  "failures": []
+ },
+ "brand_dna": {
+  "passed": true,
+  "failed_checks": [],
+  "results": {
+   "brand_reputation": {
+    "status": "PASS",
+    "evidence": null,
+    "reason": "لا عبارات ادّعاء بنية تحتية غير حقيقية موجودة في نص المحتوى (فحص جزئي)"
+   },
+   "content_neutrality": {
+    "status": "PASS",
+    "evidence": null,
+    "reason": "لا عبارات مخالفة لمبادئ الحياد التنفيذي موجودة في نص المحتوى (فحص جزئي)"
+   },
+   "copyright_trademark": {
+    "status": "PASS",
+    "evidence": null,
+    "reason": "لا عبارات ادّعاء انتماء/ترخيص علامة تجارية موجودة في نص المحتوى (فحص جزئي)"
+   },
+   "fake_urgency": {
+    "status": "PASS",
+    "evidence": null,
+    "reason": "لا عبارات استعجال/ندرة مصطنعة موجودة في نص المحتوى (فحص جزئي)"
+   }
+  },
+  "generated_at": "2026-10-18T22:44:48.201135+00:00"
+ },
+ "executive_quality_gate": {
+  "copyright_trademark": {
+   "status": "PASS",
+   "reason": "لا عبارات ادّعاء انتماء/ترخيص علامة تجارية موجودة في نص المحتوى (فحص جزئي)",
+   "evidence": null
+  },
+  "content_neutrality": {
+   "status": "PASS",
+   "reason": "لا عبارات مخالفة لمبادئ الحياد التنفيذي موجودة في نص المحتوى (فحص جزئي)",
+   "evidence": null
+  },
+  "fake_urgency": {
+   "status": "PASS",
+   "reason": "لا عبارات استعجال/ندرة مصطنعة موجودة في نص المحتوى (فحص جزئي)",
+   "evidence": null
+  },
+  "brand_reputation": {
+   "status": "PASS",
+   "reason": "لا عبارات ادّعاء بنية تحتية غير حقيقية موجودة في نص المحتوى (فحص جزئي)",
+   "evidence": null
+  }
+ },
+ "close_gate_logic_recheck": {
+  "example_website_rebuild": {
+   "assets_pct": 0.0,
+   "open_high": 1,
+   "signoff": "N",
+   "expected": "OPEN"
+  },
+  "all_done": {
+   "assets_pct": 1.0,
+   "open_high": 0,
+   "signoff": "Y",
+   "expected": "READY TO CLOSE"
+  },
+  "one_high_open": {
+   "assets_pct": 1.0,
+   "open_high": 1,
+   "signoff": "Y",
+   "expected": "OPEN"
+  },
+  "assets_incomplete": {
+   "assets_pct": 0.9,
+   "open_high": 0,
+   "signoff": "Y",
+   "expected": "OPEN"
+  }
+ }
+}

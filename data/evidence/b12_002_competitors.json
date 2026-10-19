@@ -1,0 +1,157 @@
+{
+  "product": "B12-002",
+  "title": "Client Project Handoff Pack",
+  "research_date": "2026-10-18T21:20:00Z",
+  "method": "Read-only public page reads + web search of live Gumroad/Payhip/vendor listing pages. Prices are each page's own displayed price. No purchase, no account, $0.",
+  "competitors": [
+    {
+      "name": "Client Offboarding & Handover Kit (ClientReady)",
+      "url": "https://clientreadyhq.gumroad.com/l/ahrwiv",
+      "price_usd": 15.0,
+      "platform": "Gumroad",
+      "notes": "Most direct comparable. Closeout checklist with a payment gate, handover emails, full access inventory (Revoked on + Status), warranty-window language, kill-fee notes. Solo freelancers.",
+      "observed_at": "2026-10-18T21:20:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing $15)"
+    },
+    {
+      "name": "Client Offboarding & Testimonial Kit (Money Blindspots)",
+      "url": "https://moneyblindspots.gumroad.com/l/client-offboarding-testimonial-kit",
+      "price_usd": 17.0,
+      "platform": "Gumroad",
+      "notes": "Editable Word offboarding/handover templates, completion checklist, testimonial request + reminder sequence, referral emails, a formula-driven Excel proof tracker, dashboard. Broad audience.",
+      "observed_at": "2026-10-18T21:20:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing $17)"
+    },
+    {
+      "name": "Client Wrap-Up Pack (Catpool)",
+      "url": "https://catpool.gumroad.com/l/qbgzlr",
+      "price_usd": 18.55,
+      "platform": "Gumroad",
+      "notes": "Five print-ready A4 templates (payment reminder, project wrap summary, testimonial request, handover checklist, retainer proposal), HTML + PDF.",
+      "observed_at": "2026-10-18T21:20:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing $18.55)"
+    },
+    {
+      "name": "CleanExit Offboarding Kit (Ledger Lazarus)",
+      "url": "https://ledgerlazarus.gumroad.com/l/hqyzrz",
+      "price_usd": 15.0,
+      "platform": "Gumroad",
+      "notes": "Offboarding email templates (friendly to firm), access-return checklist, handover tracker CSV, testimonial ask, handover notes and FAQ.",
+      "observed_at": "2026-10-18T21:20:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing $15)"
+    },
+    {
+      "name": "Complete Client Project OS (Landmark Labs)",
+      "url": "https://landmarklabs.gumroad.com/l/NwPnit",
+      "price_usd": 15.89,
+      "platform": "Gumroad",
+      "notes": "Notion workspace: onboarding, comms and handover; client portal dashboard.",
+      "observed_at": "2026-10-18T21:20:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing $15.89)"
+    },
+    {
+      "name": "The Website Handoff Kit (Handoff Harbor)",
+      "url": "https://itsupportgroup.gumroad.com/l/website-handoff-kit",
+      "price_usd": 29.0,
+      "platform": "Gumroad",
+      "notes": "Website-specific closeout kit: 20+ page guide PDF, launch handoff checklist CSV, access inventory CSV, email scripts, support boundary, maintenance upsell. Highest-volume content of the set.",
+      "observed_at": "2026-10-18T21:20:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing $29)"
+    },
+    {
+      "name": "Project Close Kit - Handover, Final Invoice & Archive (Ops Kits)",
+      "url": "https://invoicekits.gumroad.com/l/gdafz",
+      "price_usd": 54.89,
+      "platform": "Gumroad",
+      "notes": "Premium outlier (EUR 49). Full closeout system: delivery checklist, handover emails, final-invoice bridge, receipt-close, feedback, archive checklist, warranty note, CSV tracker. Part of a numbered pack series.",
+      "observed_at": "2026-10-18T21:20:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing $54.89 / EUR 49)"
+    },
+    {
+      "name": "Project Closeout & Referral Kit for Freelancers (TinyOps Foundry)",
+      "url": "https://foundrycraft.gumroad.com/l/project-closeout-referral-kit-for-freelancers",
+      "price_usd": 3.49,
+      "listed_price": "$3.49 AUD",
+      "platform": "Gumroad",
+      "notes": "Cheapest paid comparable (AUD, ~USD 2.30). Closeout checklist, handoff email, feedback/testimonial/referral scripts, 30/60/90 follow-ups, tracker CSV. Also offers a free 'Client Ops Health Check'.",
+      "observed_at": "2026-10-18T21:20:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing $3.49 AUD)"
+    },
+    {
+      "name": "Client Handoff Planner (ClearDesk Studio)",
+      "url": "https://payhip.com/b/c5YqV",
+      "price_usd": 12.0,
+      "platform": "Payhip",
+      "notes": "Editable Word template plus a handoff tracker workbook (final files, locations, client confirmations, follow-up dates, archive status). Closest in shape to our guide + register two-file pack.",
+      "observed_at": "2026-10-18T21:20:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing $12.00)"
+    },
+    {
+      "name": "Client Offboarding and Testimonial Kit (Copper Vault Templates)",
+      "url": "https://coppervaulttemplates.com/products/client-offboarding-kit/",
+      "price_usd": 12.0,
+      "platform": "Own site (Etsy + Gumroad)",
+      "notes": "Handover checklist, final delivery email, feedback questions, testimonial + referral scripts, case-study template. ZIP with PDF/Word/Markdown.",
+      "observed_at": "2026-10-18T21:20:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing $12 USD)"
+    },
+    {
+      "name": "Offboarding Package (Gloria Condy)",
+      "url": "https://www.gloriacondy.com/shop/p/offboarding-package",
+      "price_usd": 15.0,
+      "platform": "Own site",
+      "notes": "Designer-oriented: offboarding PDF template, Illustrator/InDesign sources, email templates, feedback form, checklist.",
+      "observed_at": "2026-10-18T21:20:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing $15.00)"
+    },
+    {
+      "name": "Offboarding Guide Kit (Maevi Creative Studio)",
+      "url": "https://maevistudio.com/product/offboarding-guide-kit/",
+      "price_usd": 35.0,
+      "listed_price": "$35.00 (was $79.00)",
+      "platform": "Own site",
+      "notes": "Premium bundle: final handoff checklist, goodbye email templates, testimonial scripts, VIP discount email, offboarding guide template, retention mini-guide.",
+      "observed_at": "2026-10-18T21:20:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing $35.00)"
+    }
+  ],
+  "free_substitutes": [
+    {
+      "what": "Free 10-minute Client Ops Health Check (self-assessment quiz)",
+      "url": "https://foundrycraft.gumroad.com/l/free-client-ops-health-check",
+      "dated": "2026",
+      "risk": "A free funnel entry that leads to the paid closeout kit; competes for the same buyer"
+    }
+  ],
+  "not_verified": [
+    {
+      "item": "Competitor sales counts / revenue",
+      "reason": "Gumroad/Payhip do not expose per-listing sales counts publicly; UNKNOWN"
+    },
+    {
+      "item": "Total number of competing 'client handoff/offboarding' listings",
+      "reason": "Marketplace search is client-rendered and not enumerable by a read-only GET; only individually surfaced listings were confirmed. UNKNOWN (confirmed lower bound: 7 paid Gumroad listings + Payhip + 3 own-site, prices $3.49-$54.89)."
+    }
+  ],
+  "competition_level": "HIGH: 8+ real paid comparables confirmed in the exact client-handoff/offboarding niche ($3.49 to $54.89; mode ~$15), plus a free self-assessment funnel. This is markedly more crowded than B12-004 (4 comparables), and several entrants bundle more files than our two-file pack. Proven demand, but weak room to differentiate on content alone.",
+  "price_recommendation": {
+    "manifest_price_usd": 29.0,
+    "recommended_price_usd": 11.99,
+    "basis": "The closely-shaped comparables (ClearDesk Payhip $12, Copper Vault $12, ClientReady $15, CleanExit $15) cluster at $12-$15; a $3.49 floor competitor exists. Consistent with the B12-001/B12-004 precedent of pricing just below the most comparable, $11.99 sits at/below the $12-15 cluster while our two-file pack is simpler than the multi-file bundles.",
+    "requires_founder_confirmation": true,
+    "note": "A premium price ($29, matching the Website Handoff Kit) is not defensible for a two-file pack against 8+ rivals; the gate's numeric ceiling is loose here (highest comparable $54.89) so price is NOT the binding constraint - content depth and differentiation are."
+  },
+  "ready_for_pricing": true
+}

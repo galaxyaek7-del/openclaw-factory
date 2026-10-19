@@ -1,0 +1,52 @@
+{
+ "product": "B12-004",
+ "title": "Meeting Cost & ROI Calculator",
+ "verification_type": "READ_ONLY",
+ "checked_at_utc": "2026-10-19T08:25:00Z",
+ "auth_state": {
+  "status": "VERIFIED",
+  "fingerprint_prefix": "f1218f89b1f5cdf3"
+ },
+ "live": {
+  "id": "-cbRBfZyJMTKpl-Xk8Oz3Q==",
+  "name": "Meeting Cost & ROI Calculator",
+  "published": true,
+  "price_cents": 1199,
+  "currency": "usd",
+  "short_url": "https://aekraft.gumroad.com/l/ieashv",
+  "custom_permalink": null,
+  "tags": [
+   "productivity",
+   "management",
+   "meetings",
+   "calculator",
+   "cost",
+   "spreadsheet",
+   "team",
+   "roi"
+  ],
+  "has_cover": true,
+  "cover_count": 1,
+  "file_count": 2,
+  "files": [
+   null,
+   null
+  ],
+  "sales_count": 0,
+  "ratings_count": null,
+  "views_count": null
+ },
+ "sales": {
+  "all_transactions": 0,
+  "matching_product_transactions": 0,
+  "verified_revenue_usd": 0.0,
+  "note": "Total Gumroad sales across every product, from the authoritative /v2/sales endpoint. 0 transactions = VERIFIED_REVENUE $0.00, VERIFIED_EXTERNAL_TRANSACTIONS 0."
+ },
+ "checkout": {
+  "http_status": 200,
+  "final_url": "https://aekraft.gumroad.com/l/ieashv",
+  "price_meta_present": true,
+  "price_currency_usd": true
+ },
+ "all_pass": true
+}

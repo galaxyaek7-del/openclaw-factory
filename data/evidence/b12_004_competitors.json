@@ -1,0 +1,108 @@
+{
+  "product": "B12-004",
+  "title": "Meeting Cost & ROI Calculator",
+  "research_date": "2026-10-18T19:05:00Z",
+  "method": "Read-only public page reads + web search of Gumroad listing pages and public guides. Prices taken from each page's own displayed price. No purchase, no account, $0.",
+  "competitors": [
+    {
+      "name": "Meeting Cost Calculator Spreadsheet - Time, Headcount & Burn (Kosmic Rift)",
+      "url": "https://kosmicrift.gumroad.com/l/cmkqh",
+      "price_usd": 12.0,
+      "platform": "Gumroad",
+      "notes": "Most comparable paid product. Sheets: Setup (default hourly rate, work-week hours, currency), Meeting Log (attendees, duration, rate override, auto cost), Recurring Burn (weekly -> monthly/annualized), Dashboard KPIs (total logged, this month, top expensive meeting, recurring burn). .xlsx, formulas only, sample rows labeled SAMPLE.",
+      "observed_at": "2026-10-18T19:05:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page + its checkout page showing US$12)"
+    },
+    {
+      "name": "Meeting Cost Calculator (Standard Work Co.)",
+      "url": "https://standardworkco.gumroad.com/l/meeting-cost-calculator",
+      "price_usd": 0.0,
+      "listed_price": "$0+",
+      "platform": "Gumroad",
+      "notes": "FREE / name-your-price substitute. A single offline HTML file that costs a recurring meeting by attendee salary, duration and frequency, then divides by decisions produced (cost per decision). Direct competitor to the core idea, at $0.",
+      "observed_at": "2026-10-18T19:05:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing '$0+')"
+    },
+    {
+      "name": "Effective Meetings Cost Calculator (QUICKFix)",
+      "url": "https://identity-intelligence.org/effective-meetings-cost-calculator/",
+      "price_usd": 5.77,
+      "platform": "Own site (not Gumroad)",
+      "notes": "Excel spreadsheet computing annual meeting cost, annual productivity cost, and total annual cost.",
+      "observed_at": "2026-10-18T19:05:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live vendor page showing $5.77)"
+    },
+    {
+      "name": "Meeting Cost Calculator Template (Calcam)",
+      "url": "https://app.getcalcam.com/templates/meeting-cost-calculator",
+      "price_usd": null,
+      "platform": "SaaS template (pricing plans)",
+      "notes": "Template outputs: annual cost of a meeting, cost per meeting, weekly cost, person-hours/year. Part of a paid tool with plans; exact one-off price not exposed on the page read.",
+      "observed_at": "2026-10-18T19:05:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live template page)"
+    },
+    {
+      "name": "Meeting Tax - See What Meetings Actually Cost (Clear Stack)",
+      "url": "https://clearstackk.gumroad.com/l/MeetingTax",
+      "price_usd": 9.0,
+      "platform": "Gumroad",
+      "notes": "Paid Gumroad listing, US$9. Offline HTML app: attendees x duration x your rate = real $ cost, person-hours, Must/Should/Cut decision with a one-line reason, weekly rollup. Close format to ours (calculation + a keep/cut decision), simpler than a multi-sheet workbook.",
+      "observed_at": "2026-10-18T19:20:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing $9)"
+    },
+    {
+      "name": "Meeting Notes & Action Items - Run Better Meetings (branga breow)",
+      "url": "https://brangabrew.gumroad.com/l/qqrtta",
+      "price_usd": 2.40,
+      "platform": "Gumroad",
+      "notes": "Paid Gumroad listing, US$2.40. Excel template for meeting log, action items, decisions log and parking lot - adjacent (meeting records, not meeting cost), and the cheapest paid comparable.",
+      "observed_at": "2026-10-18T19:20:00Z",
+      "evidence_type": "REAL",
+      "verified_by": "Claude (web search of the live product page showing $2.40)"
+    }
+  ],
+  "free_substitutes": [
+    {
+      "what": "Build-your-own guide with the exact formula and spreadsheet layout",
+      "url": "https://excels.uk/meeting-cost-calculator-excel-template-for-team-time-and-salary-spend",
+      "dated": "2026-06-10",
+      "risk": "A motivated buyer can build the calculator from this guide for free"
+    },
+    {
+      "what": "Meeting cost formula + loaded-rate surcharge guidance",
+      "url": "https://capme.app/meeting-cost-formula",
+      "dated": "2026-08-24",
+      "risk": "Explains the loaded-rate surcharge (EU ~20%, US ~35%) for free"
+    },
+    {
+      "what": "Free in-browser meeting cost calculator (MeetingKing)",
+      "url": "https://meetingking.com/meeting-cost-calculator/",
+      "dated": "2026",
+      "risk": "Instant free cost number (no log, no ranking); covers the single-number use case"
+    }
+  ],
+  "not_verified": [
+    {
+      "item": "Competitor sales counts / revenue",
+      "reason": "Gumroad does not expose per-listing sales counts publicly; UNKNOWN"
+    },
+    {
+      "item": "Number of competing 'meeting cost' listings on Gumroad",
+      "reason": "Gumroad search is client-rendered and not enumerable by a read-only GET; only the individually surfaced listings above were confirmed. UNKNOWN (confirmed lower bound: 3 paid Gumroad listings - Kosmic Rift $12, Meeting Tax $9, Meeting Notes $2.40 - plus the $0+ substitute)."
+    }
+  ],
+  "competition_level": "MODERATE: 4 real paid comparables confirmed ($12 Kosmic Rift, $9 Meeting Tax, $5.77 QUICKFix, $2.40 Meeting Notes) plus a free/name-your-price Gumroad substitute ($0+) and free guides/calculators. The math is public knowledge; the paid value must be the workflow, ranking and dashboard.",
+  "price_recommendation": {
+    "manifest_price_usd": 19.0,
+    "recommended_price_usd": 11.99,
+    "basis": "Most comparable paid product is $12.00 (Kosmic Rift), and a free $0+ Gumroad substitute exists. Consistent with the B12-001 precedent (priced just below the most comparable), $11.99 sits below the $12 comparable while the bundle adds decision-ROI and a kill-review the comparable lacks.",
+    "requires_founder_confirmation": true,
+    "note": "$14.99 (B12-001's price) is also defensible, but the free $0+ substitute makes a sub-$12 price the safer first-listing choice."
+  },
+  "ready_for_pricing": true
+}

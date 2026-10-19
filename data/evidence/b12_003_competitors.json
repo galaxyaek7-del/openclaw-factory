@@ -1,0 +1,148 @@
+{
+ "product": "B12-003",
+ "title": "Founder Access Continuity Organizer",
+ "research_date": "2026-10-19T07:00:00Z",
+ "method": "Read-only web search + public listing pages for business-continuity, emergency-access and digital-legacy products. Prices are each page's own displayed price at the time observed. No purchase, no account, $0.",
+ "competitors": [
+  {
+   "name": "The Divine Business Legacy Vault",
+   "url": "https://divinewealthplug.gumroad.com/l/businessvault",
+   "price_usd": 37.0,
+   "platform": "Gumroad",
+   "notes": "Most direct business comparable. Fillable vault: password/login tracker, social vault, business financial accounts log, digital products inventory, subscriptions tracker, key contacts, business succession plan, letter to successor. For women entrepreneurs.",
+   "observed_at": "2026-10-19T07:00:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live product page showing $37)"
+  },
+  {
+   "name": "IF I CAN'T - Personal Continuity & Emergency Takeover System",
+   "url": "https://kennyagent.gumroad.com/l/arkbts",
+   "price_usd": 49.0,
+   "platform": "Gumroad",
+   "notes": "Closest conceptual comparable: a Notion command center so life keeps running if you are in hospital, unreachable or gone. Explicitly 'map not vault', organizational only, no password vault, built for Owner + Helper.",
+   "observed_at": "2026-10-19T07:00:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live product page showing $49)"
+  },
+  {
+   "name": "The Solo Ager Planner - Life, Legacy & Emergency Plan (Notion)",
+   "url": "https://yannick78.gumroad.com/l/solo-ager-planner",
+   "price_usd": 39.0,
+   "platform": "Gumroad",
+   "notes": "Asset & Account Inventory that maps what exists and where it is documented (never the account numbers themselves), plus an 'If This Happens' page with five scenarios (hospitalization, unreachable 48h, incapacity, death).",
+   "observed_at": "2026-10-19T07:00:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live product page showing $39)"
+  },
+  {
+   "name": "Business Continuity Plan (The Aligned Way)",
+   "url": "https://alignedemily.gumroad.com/l/business-continuity-plan",
+   "price_usd": 20.22,
+   "platform": "Gumroad",
+   "notes": "Thin 2-page plan: key contacts, critical business functions, key risks, response plan, data/financial continuity, reviewed once or twice a year. Shows the floor for a template-only continuity product aimed at small owners.",
+   "observed_at": "2026-10-19T07:00:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live product page showing $20.22)"
+  },
+  {
+   "name": "Business Continuity Plan Template (Our Cloud Security)",
+   "url": "https://ourcloudsecurity.gumroad.com/l/business-continuity-plan",
+   "price_usd": 47.0,
+   "platform": "Gumroad",
+   "notes": "NIST SP 800-34 structured BCP template (.docx): business impact analysis with RTO/RPO/MTD tables, authority matrix, critical vendor registry, test schedule and records. Enterprise-oriented.",
+   "observed_at": "2026-10-19T07:00:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live product page showing $47)"
+  },
+  {
+   "name": "Business Continuity & Cyber Readiness Kit - 6 Editable Templates",
+   "url": "https://smithprecision.gumroad.com/l/trqjif",
+   "price_usd": 79.0,
+   "platform": "Gumroad",
+   "notes": "6 Word templates + 6 fillable PDFs: business impact analysis, continuity/DR plan, call tree, cyber incident response, IT security policy starter, systems/vendor/backup register. Displayed $79 (list $118).",
+   "observed_at": "2026-10-19T07:00:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live product page showing $79)"
+  },
+  {
+   "name": "The Twenty Page Emergency Binder",
+   "url": "https://bookmarkedbytadz.gumroad.com/l/emergency-binder",
+   "price_usd": 19.0,
+   "platform": "Gumroad",
+   "notes": "22-page PDF (A4 + US Letter) for households: first call order, professionals, hospital/death pages, accounts by name, papers, and 'digital access: how to reach the accounts safely, without writing a single password down' - the same never-write-a-password doctrine as this product.",
+   "observed_at": "2026-10-19T07:00:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live product page showing $19)"
+  },
+  {
+   "name": "Digital Legacy Planner Bundle (64 files)",
+   "url": "https://payhip.com/b/kjusc",
+   "price_usd": 19.0,
+   "platform": "Payhip",
+   "notes": "64 printable/fillable files + an Excel workbook for password and account tracking, financial worksheets, insurance/asset records, emergency information forms, subscription logs. Bundle sold at a single low price.",
+   "observed_at": "2026-10-19T07:00:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live listing showing $19.00)"
+  },
+  {
+   "name": "The Family Emergency Binder (75-page illustrated PDF)",
+   "url": "https://pixela.gumroad.com/l/family-emergency-binder",
+   "price_usd": 6.75,
+   "platform": "Gumroad",
+   "notes": "75 pages, 20 chapters, 24 worksheets, 20-tab binder structure; privacy-first with nine handling rules and clear instruction never to write passwords, PINs or full account numbers on paper. Displayed $6.75 (list $9).",
+   "observed_at": "2026-10-19T07:00:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live product page showing $6.75)"
+  },
+  {
+   "name": "Emergency Preparedness Binder (Family, Medical, Financial & Legal Organizer)",
+   "url": "https://gumroad.com/checkout?product=dtltr&quantity=1",
+   "price_usd": 7.99,
+   "platform": "Gumroad",
+   "notes": "Digital PDF organizer for family/medical/financial/legal information. Price read from the product's own checkout page (US$7.99).",
+   "observed_at": "2026-10-19T07:00:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live checkout page showing US$7.99)"
+  },
+  {
+   "name": "Business Administration Toolkit (The Billable Hour)",
+   "url": "https://thebillablehour.gumroad.com/l/geica",
+   "price_usd": 79.0,
+   "platform": "Gumroad",
+   "notes": "10 administrative templates, 30+ pages, one editable .docx; includes an Emergency Contacts & Business Continuity Plan module, a subscription/software tracker and a document retention schedule.",
+   "observed_at": "2026-10-19T07:00:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live product page showing $79)"
+  },
+  {
+   "name": "Trevenco BCM Starter Kit (SME Edition)",
+   "url": "https://kovykube.gumroad.com/l/rdfzsu",
+   "price_usd": 67.73,
+   "platform": "Gumroad",
+   "notes": "Business impact analysis with impact timelines, risk register with probability x impact scoring, BCM policy, incident scenarios and a crisis checklist; built by a working BCM manager. English + Czech.",
+   "observed_at": "2026-10-19T07:00:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live product page showing $67.73)"
+  },
+  {
+   "name": "Emergency Plan Bundle (ReadyOps AI)",
+   "url": "https://readyops-ai.polsia.app/products/emergency-plan-bundle",
+   "price_usd": 49.0,
+   "platform": "Gumroad (via ReadyOps)",
+   "notes": "Four editable plans (Emergency Action, Business Continuity, Crisis Comms, Disaster Recovery), Word + PDF, per-company license, quarterly updates.",
+   "observed_at": "2026-10-19T07:00:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live product page showing $49)"
+  },
+  {
+   "name": "LifeVault Secure - Single Document template",
+   "url": "https://www.lifevaultsecure.com/templates",
+   "price_usd": 19.99,
+   "platform": "Direct / vendor",
+   "notes": "One-time single-template price for guided estate/continuity planning drafts; also offers a free Digital Executor Checklist and an Emergency Binder Template as lead magnets. Shows a subscription platform pricing its template-only entry point.",
+   "observed_at": "2026-10-19T07:00:00Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (web search of the live vendor pricing page showing $19.99)"
+  }
+ ]
+}

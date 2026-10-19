@@ -1,0 +1,179 @@
+{
+ "product_id": "B12-002",
+ "title": "Client Project Handoff Pack",
+ "run_at": "2026-10-18T23:40:00Z",
+ "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
+ "price_basis": "FOUNDER_APPROVED_BELOW_COMPARABLE_2026-10-18",
+ "competitors_sourced": [
+  {
+   "name": "Client Offboarding & Handover Kit (ClientReady)",
+   "price_usd": 15.0,
+   "url": "https://clientreadyhq.gumroad.com/l/ahrwiv"
+  },
+  {
+   "name": "Client Offboarding & Testimonial Kit (Money Blindspots)",
+   "price_usd": 17.0,
+   "url": "https://moneyblindspots.gumroad.com/l/client-offboarding-testimonial-kit"
+  },
+  {
+   "name": "Client Wrap-Up Pack (Catpool)",
+   "price_usd": 18.55,
+   "url": "https://catpool.gumroad.com/l/qbgzlr"
+  },
+  {
+   "name": "CleanExit Offboarding Kit (Ledger Lazarus)",
+   "price_usd": 15.0,
+   "url": "https://ledgerlazarus.gumroad.com/l/hqyzrz"
+  },
+  {
+   "name": "Complete Client Project OS (Landmark Labs)",
+   "price_usd": 15.89,
+   "url": "https://landmarklabs.gumroad.com/l/NwPnit"
+  },
+  {
+   "name": "The Website Handoff Kit (Handoff Harbor)",
+   "price_usd": 29.0,
+   "url": "https://itsupportgroup.gumroad.com/l/website-handoff-kit"
+  },
+  {
+   "name": "Project Close Kit - Handover, Final Invoice & Archive (Ops Kits)",
+   "price_usd": 54.89,
+   "url": "https://invoicekits.gumroad.com/l/gdafz"
+  },
+  {
+   "name": "Project Closeout & Referral Kit for Freelancers (TinyOps Foundry)",
+   "price_usd": 3.49,
+   "url": "https://foundrycraft.gumroad.com/l/project-closeout-referral-kit-for-freelancers"
+  },
+  {
+   "name": "Client Handoff Planner (ClearDesk Studio)",
+   "price_usd": 12.0,
+   "url": "https://payhip.com/b/c5YqV"
+  },
+  {
+   "name": "Client Offboarding and Testimonial Kit (Copper Vault Templates)",
+   "price_usd": 12.0,
+   "url": "https://coppervaulttemplates.com/products/client-offboarding-kit/"
+  },
+  {
+   "name": "Offboarding Package (Gloria Condy)",
+   "price_usd": 15.0,
+   "url": "https://www.gloriacondy.com/shop/p/offboarding-package"
+  },
+  {
+   "name": "Offboarding Guide Kit (Maevi Creative Studio)",
+   "price_usd": 35.0,
+   "url": "https://maevistudio.com/product/offboarding-guide-kit/"
+  }
+ ],
+ "gate_at_recommended_price_11_99": {
+  "price": 11.99,
+  "verdict": "APPROVED",
+  "blocked": false,
+  "reasons": [],
+  "thresholds": {
+   "core_value": 70,
+   "content_quality": 70,
+   "market_reality": 65
+  },
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100,
+    "checks": {
+     "audience_specific": true,
+     "problem_stated": true,
+     "outcome_stated": true,
+     "title_specific": true,
+     "priced": true
+    }
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100,
+    "checks": {
+     "files_open_cleanly": true,
+     "depth_sufficient": true,
+     "no_placeholders": true,
+     "no_mojibake": true,
+     "instructions_present": true
+    }
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70,
+    "checks": {
+     "payment_evidence": false,
+     "three_sourced_competitors": true,
+     "two_sourced_competitors": true,
+     "one_sourced_competitor": true,
+     "price_within_market": true
+    }
+   }
+  },
+  "content_depth": {
+   "words": 1722,
+   "words_required": 1199,
+   "text_depth_ok": true,
+   "sheets": 6,
+   "formulas": 102,
+   "sheet_depth_ok": true
+  }
+ },
+ "gate_at_manifest_price_29_00": {
+  "price": 29.0,
+  "verdict": "REWRITE",
+  "blocked": true,
+  "reasons": [
+   "content_quality 60 < 70"
+  ],
+  "thresholds": {
+   "core_value": 70,
+   "content_quality": 70,
+   "market_reality": 65
+  },
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100,
+    "checks": {
+     "audience_specific": true,
+     "problem_stated": true,
+     "outcome_stated": true,
+     "title_specific": true,
+     "priced": true
+    }
+   },
+   "content_quality": {
+    "status": "FAIL",
+    "score": 60,
+    "checks": {
+     "files_open_cleanly": true,
+     "depth_sufficient": false,
+     "no_placeholders": true,
+     "no_mojibake": true,
+     "instructions_present": true
+    }
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70,
+    "checks": {
+     "payment_evidence": false,
+     "three_sourced_competitors": true,
+     "two_sourced_competitors": true,
+     "one_sourced_competitor": true,
+     "price_within_market": true
+    }
+   }
+  },
+  "content_depth": {
+   "words": 1722,
+   "words_required": 2900,
+   "text_depth_ok": false,
+   "sheets": 6,
+   "formulas": 102,
+   "sheet_depth_ok": true
+  }
+ }
+}

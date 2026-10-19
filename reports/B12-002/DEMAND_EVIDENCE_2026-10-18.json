@@ -1,0 +1,39 @@
+{
+  "product": "B12-002",
+  "title": "Client Project Handoff Pack",
+  "research_date": "2026-10-18T21:20:00Z",
+  "cycle": 98,
+  "target_customer": "Freelancers, agencies, and contractors handing work to clients",
+  "problem": "Project handoffs done by email threads end in disputes over what was transferred",
+  "demand_signals": [
+    {
+      "signal": "Multiple independent sellers ship a paid 'client handoff / offboarding' product on Gumroad and Payhip, several with dozens of pre-written assets and email scripts.",
+      "evidence": "8+ confirmed paid listings (see data/evidence/b12_002_competitors.json), prices $3.49-$54.89.",
+      "interpretation": "Proven, non-trivial willingness to pay for a packaged closeout workflow.",
+      "evidence_type": "REAL"
+    },
+    {
+      "signal": "Repeated, specific pain language across listings: 'projects do not end, they fade', 'loose logins', 'unpaid finals', 'where is everything? handoff week', 'unpaid support spiral'.",
+      "evidence": "Verified quotes from the live product pages (ClientReady, Ops Kits, Copper Vault, Handoff Harbor).",
+      "interpretation": "The problem is real and articulated by the market itself, not invented.",
+      "evidence_type": "REAL"
+    },
+    {
+      "signal": "A free self-assessment ('Client Ops Health Check') is used as a top-of-funnel for a paid closeout kit.",
+      "evidence": "https://foundrycraft.gumroad.com/l/free-client-ops-health-check",
+      "interpretation": "Sellers invest in lead magnets here, indicating commercial intent.",
+      "evidence_type": "REAL"
+    }
+  ],
+  "competition_level": "HIGH (8+ paid comparables; mode ~$15; a $3.49 floor).",
+  "differentiation_risk": "HIGH. Our two-file pack (a guide PDF + a register xlsx) is thinner than several multi-file bundles (20+ page guide + CSVs + scripts). Differentiation must come from the register's structure and the guide's clarity, not file count.",
+  "price": {
+    "manifest_price_usd": 29.0,
+    "recommended_price_usd": 11.99,
+    "requires_founder_confirmation": true,
+    "rationale": "Sits at/below the $12-$15 cluster of closest-shaped comparables; the manifest's $29 is not defensible for a two-file pack against 8+ rivals."
+  },
+  "verdict": "SELECT_WITH_CAUTION - demand is proven and dense (more competitors than any prior batch product), but the niche is crowded and our current two-file deliverable is thin relative to rivals. Proceed only if the deliverable is rebuilt to clearly beat the $12-$15 cluster on usefulness (a genuinely better handoff register + a tighter guide), otherwise this is weak differentiation.",
+  "gate_verdict": "NOT YET GATED - deliverable must be rebuilt to the deep-QA bar and re-gated before any price applies. Price is a founder decision.",
+  "note": "Recommendation differs from the pipeline's manifest price ($29); founder confirmation required."
+}

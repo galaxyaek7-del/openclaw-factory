@@ -1,0 +1,80 @@
+{"at": "2026-10-15T17:42:43.672380+00:00", "id": "B12-001", "transition": "QA→HOLD", "issues": ["page does not list file: B12-001_freelancer_rate_raise_calculator.xlsx"]}
+{"at": "2026-10-15T17:42:43.672380+00:00", "id": "B12-002", "transition": "QA→HOLD", "issues": ["page does not list file: B12-002_client_handoff_guide.pdf", "page does not list file: B12-002_client_handoff_register.xlsx"]}
+{"at": "2026-10-15T17:42:43.672380+00:00", "id": "B12-003", "transition": "QA→HOLD", "issues": ["page does not list file: B12-003_access_continuity_organizer.pdf"]}
+{"at": "2026-10-15T17:42:43.672380+00:00", "id": "B12-004", "transition": "QA→HOLD", "issues": ["thin content (<1500 chars): B12-004_meeting_method_onepager.pdf", "page does not list file: B12-004_meeting_cost_roi_calculator.xlsx", "page does not list file: B12-004_meeting_method_onepager.pdf"]}
+{"at": "2026-10-15T17:42:43.672380+00:00", "id": "B12-005", "transition": "QA→HOLD", "issues": ["thin content (<1500 chars): B12-005_podcast_guest_scripts.pdf", "page does not list file: B12-005_podcast_guest_scripts.pdf", "page does not list file: B12-005_podcast_guest_tracker.xlsx"]}
+{"at": "2026-10-15T17:42:43.672380+00:00", "id": "B12-006", "transition": "QA→HOLD", "issues": ["page does not list file: B12-006_home_office_method_guide.pdf", "page does not list file: B12-006_home_office_expense_log.xlsx"]}
+{"at": "2026-10-15T17:42:43.672380+00:00", "id": "B12-007", "transition": "QA→HOLD", "issues": ["thin content (<1500 chars): B12-007_digital_declutter_plan.pdf", "page does not list file: B12-007_digital_declutter_plan.pdf", "page does not list file: B12-007_digital_inventory.xlsx"]}
+{"at": "2026-10-15T17:42:43.672380+00:00", "id": "B12-008", "transition": "QA→HOLD", "issues": ["thin content (<1500 chars): B12-008_moving_checklist.pdf", "page does not list file: B12-008_moving_checklist.pdf", "page does not list file: B12-008_moving_budget_tracker.xlsx"]}
+{"at": "2026-10-15T17:42:43.672380+00:00", "id": "B12-009", "transition": "QA→HOLD", "issues": ["page does not list file: B12-009_pet_sitter_handover_kit.pdf"]}
+{"at": "2026-10-15T17:42:43.672380+00:00", "id": "B12-010", "transition": "QA→HOLD", "issues": ["page does not list file: B12-010_grant_pipeline_tracker.xlsx"]}
+{"at": "2026-10-15T17:44:06.738095+00:00", "id": "B12-001", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:06.738095+00:00", "id": "B12-002", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:06.738095+00:00", "id": "B12-003", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:06.738095+00:00", "id": "B12-004", "transition": "QA→HOLD", "issues": ["thin content (<1500 chars): B12-004_meeting_method_onepager.pdf"]}
+{"at": "2026-10-15T17:44:06.738095+00:00", "id": "B12-005", "transition": "QA→HOLD", "issues": ["thin content (<1500 chars): B12-005_podcast_guest_scripts.pdf"]}
+{"at": "2026-10-15T17:44:06.738095+00:00", "id": "B12-006", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:06.738095+00:00", "id": "B12-007", "transition": "QA→HOLD", "issues": ["thin content (<1500 chars): B12-007_digital_declutter_plan.pdf"]}
+{"at": "2026-10-15T17:44:06.738095+00:00", "id": "B12-008", "transition": "QA→HOLD", "issues": ["thin content (<1500 chars): B12-008_moving_checklist.pdf"]}
+{"at": "2026-10-15T17:44:06.738095+00:00", "id": "B12-009", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:06.738095+00:00", "id": "B12-010", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:19.821212+00:00", "id": "B12-001", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:19.821212+00:00", "id": "B12-002", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:19.821212+00:00", "id": "B12-003", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:19.821212+00:00", "id": "B12-004", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:19.821212+00:00", "id": "B12-005", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:19.821212+00:00", "id": "B12-006", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:19.821212+00:00", "id": "B12-007", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:19.821212+00:00", "id": "B12-008", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:19.821212+00:00", "id": "B12-009", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T17:44:19.821212+00:00", "id": "B12-010", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T18:03:11.427085+00:00", "id": "B12-001", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T18:03:11.427085+00:00", "id": "B12-002", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T18:03:11.427085+00:00", "id": "B12-003", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T18:03:11.427085+00:00", "id": "B12-004", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T18:03:11.427085+00:00", "id": "B12-005", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T18:03:11.427085+00:00", "id": "B12-006", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T18:03:11.427085+00:00", "id": "B12-007", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T18:03:11.427085+00:00", "id": "B12-008", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T18:03:11.427085+00:00", "id": "B12-009", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-15T18:03:11.427085+00:00", "id": "B12-010", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-18T23:06:51.945284+00:00", "id": "B12-001", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-18T23:06:51.945284+00:00", "id": "B12-002", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-18T23:06:51.945284+00:00", "id": "B12-003", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-18T23:06:51.945284+00:00", "id": "B12-004", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-18T23:06:51.945284+00:00", "id": "B12-005", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-18T23:06:51.945284+00:00", "id": "B12-006", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-18T23:06:51.945284+00:00", "id": "B12-007", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-18T23:06:51.945284+00:00", "id": "B12-008", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-18T23:06:51.945284+00:00", "id": "B12-009", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-18T23:06:51.945284+00:00", "id": "B12-010", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:06:37.323163+00:00", "id": "B12-001", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:06:37.323163+00:00", "id": "B12-002", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:06:37.323163+00:00", "id": "B12-003", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:06:37.323163+00:00", "id": "B12-004", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:06:37.323163+00:00", "id": "B12-005", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:06:37.323163+00:00", "id": "B12-006", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:06:37.323163+00:00", "id": "B12-007", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:06:37.323163+00:00", "id": "B12-008", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:06:37.323163+00:00", "id": "B12-009", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:06:37.323163+00:00", "id": "B12-010", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:54:39.252744+00:00", "id": "B12-001", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:54:39.252744+00:00", "id": "B12-002", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:54:39.252744+00:00", "id": "B12-003", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:54:39.252744+00:00", "id": "B12-004", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:54:39.252744+00:00", "id": "B12-005", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:54:39.252744+00:00", "id": "B12-006", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:54:39.252744+00:00", "id": "B12-007", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:54:39.252744+00:00", "id": "B12-008", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:54:39.252744+00:00", "id": "B12-009", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T06:54:39.252744+00:00", "id": "B12-010", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T07:05:19.967517+00:00", "id": "B12-001", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T07:05:19.967517+00:00", "id": "B12-002", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T07:05:19.967517+00:00", "id": "B12-003", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T07:05:19.967517+00:00", "id": "B12-004", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T07:05:19.967517+00:00", "id": "B12-005", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T07:05:19.967517+00:00", "id": "B12-006", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T07:05:19.967517+00:00", "id": "B12-007", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T07:05:19.967517+00:00", "id": "B12-008", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T07:05:19.967517+00:00", "id": "B12-009", "transition": "QA→READY_FOR_REVIEW", "issues": []}
+{"at": "2026-10-19T07:05:19.967517+00:00", "id": "B12-010", "transition": "QA→READY_FOR_REVIEW", "issues": []}

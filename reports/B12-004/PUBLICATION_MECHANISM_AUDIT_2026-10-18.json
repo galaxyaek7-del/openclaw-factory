@@ -1,0 +1,137 @@
+{
+  "schema": "galaxy_forge.publication_mechanism_audit.v1",
+  "generated_at_utc": "2026-10-18T20:55:16Z",
+  "cycle": 98,
+  "subject_product": "B12-004",
+  "founder_authorization": "APPROVE B12-004 PUBLISH (2026-10-18)",
+  "conclusion": "BLOCKED - no sanctioned mechanism can publish B12-004",
+  "why": [
+    "scripts/first_sale_orchestrator.py is hardcoded to B12-001 (PUBLISH_PHRASE line 265; task graph, build_spec, verify, draft-evidence all B12-001-specific). Its --status shows next_action=DONE with zero B12-004 tasks.",
+    "B12-004 has no Gumroad product and no draft (never created).",
+    "gumroad_draft_orchestrator.draft_creation_capability() = DRAFT_CREATION_CAPABILITY_UNKNOWN / authorization BLOCKED / live_verified false: automated unpublished-create is unverified, and our create_product() omits the published field.",
+    "publishing_authority_audit found only 2 create-then-publish files, both parallel-owned: affiliate/publish_queue.py (does not check FACTORY_LIVE_PUBLISH) and src/publish/auto_publisher.py (checks it) - neither is the per-product phrase-gated founder mechanism.",
+    "Using channels/gumroad_publisher.py --create would bypass the founder-authorization phrase layer and create a live product with no cover."
+  ],
+  "read_only_audits": {
+    "publishing_authority_audit": {
+      "live_flag": "<unset>",
+      "findings": [
+        {
+          "file": "affiliate/publish_queue.py",
+          "present": true,
+          "what": "create-then-enable (parallel-owned)",
+          "creates_then_publishes": true,
+          "checks_live_flag": false
+        },
+        {
+          "file": "src/publish/auto_publisher.py",
+          "present": true,
+          "what": "batch glob over data/product_batch_*.json (parallel-owned)",
+          "creates_then_publishes": false,
+          "checks_live_flag": true
+        }
+      ],
+      "note": "Read-only. Parallel-owned files are never modified."
+    },
+    "draft_creation_capability": {
+      "state": "DRAFT_CREATION_CAPABILITY_UNKNOWN",
+      "platform_documented": true,
+      "live_verified": false,
+      "authorization": "BLOCKED",
+      "required_guarantees": [
+        "explicit published=false (and draft=true) in the create payload",
+        "create response has product.published == false",
+        "GET /v2/products/:id read-back confirms published == false and id/title/price match"
+      ],
+      "documented_reversibility": [
+        "PUT /v2/products/:id/disable",
+        "DELETE /v2/products/:id"
+      ],
+      "unknowns": [
+        "default create publication state (docs internally inconsistent)",
+        "whether published:true implies purchasable"
+      ],
+      "blockers": [
+        "FACTORY_LIVE_PUBLISH is false",
+        "no live-verified unpublished create"
+      ],
+      "reason": "No LIVE-VERIFIED unpublished-create path. The Gumroad API *documents* POST /v2/products with published=false / draft=true (returns an unpublished product) plus PUT /:id/disable and DELETE /:id -- so the platform supports drafts and reversibility. But our integration's create_product() omits the field, a real live creation defaulted to published:true with a public page (channels/gumroad_arm.py:8-13), the docs are internally inconsistent about the default, and creation is non-idempotent. Until a live draft is verified, this remains an unverified capability and automated creation stays blocked.",
+      "source": "gumroad.com/api + mintlify overview, retrieved 2026-10-18"
+    },
+    "first_sale_status": {
+      "run_id": "18640-20261018T184438",
+      "updated_at": "2026-10-18T18:44:41.874090+00:00",
+      "counts": {
+        "COMPLETED": 8,
+        "EXTERNALLY_VERIFIED": 2
+      },
+      "next_action": {
+        "kind": "DONE",
+        "action": null,
+        "reason": "all tasks completed"
+      },
+      "tasks": {
+        "package_validate": {
+          "status": "COMPLETED",
+          "blocker": null,
+          "kind": "AUTONOMOUS",
+          "attempts": 1
+        },
+        "price_authority": {
+          "status": "COMPLETED",
+          "blocker": null,
+          "kind": "AUTONOMOUS",
+          "attempts": 1
+        },
+        "catalog_duplicate_check": {
+          "status": "COMPLETED",
+          "blocker": null,
+          "kind": "AUTONOMOUS",
+          "attempts": 1
+        },
+        "draft_capability": {
+          "status": "COMPLETED",
+          "blocker": null,
+          "kind": "ENGINEERING",
+          "attempts": 1
+        },
+        "create_draft": {
+          "status": "COMPLETED",
+          "blocker": null,
+          "kind": "EXTERNAL_CAPABILITY",
+          "attempts": 1
+        },
+        "verify_remote_draft": {
+          "status": "EXTERNALLY_VERIFIED",
+          "blocker": null,
+          "kind": "AUTONOMOUS",
+          "attempts": 1
+        },
+        "resolve_utm": {
+          "status": "COMPLETED",
+          "blocker": null,
+          "kind": "AUTONOMOUS",
+          "attempts": 1
+        },
+        "sales_ledger_check": {
+          "status": "COMPLETED",
+          "blocker": null,
+          "kind": "AUTONOMOUS",
+          "attempts": 1
+        },
+        "journey_check": {
+          "status": "COMPLETED",
+          "blocker": null,
+          "kind": "AUTONOMOUS",
+          "attempts": 1
+        },
+        "publish": {
+          "status": "EXTERNALLY_VERIFIED",
+          "blocker": null,
+          "kind": "FOUNDER_AUTHORITY",
+          "attempts": 1
+        }
+      }
+    }
+  }
+}

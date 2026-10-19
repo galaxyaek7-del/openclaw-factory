@@ -22,19 +22,29 @@ BASELINES = {
         "size": 8922,
     },
     "books/batch12/B12-004_meeting_cost_roi_calculator.xlsx": {
-        "sha256": "733fc40ba7cb3cf224e253cbdb2f57592c395c16dcc2f0dfd6244cb5dea4a331",
-        "size": 7125,
+        # Re-baselined 2026-10-18 (Cycle 97): rebuild to the deep-QA bar — Setup
+        # sheet, guarded formulas, input validation, Dashboard KPIs (inspection:
+        # reports/B12-004/). NOTE: openpyxl embeds a timestamp, so a rebuild
+        # changes the bytes even when the content is identical.
+        "sha256": "87ecb1cd223ebf615c46bf49a74c1feb70ea5131a1da9c14dcedff470ccac820",
+        "size": 12865,
     },
-    "books/batch12/B12-004_meeting_method_onepager.pdf": {
-        "sha256": "bc897207efe2a199c36587451b86c0187f776365a3e5d8ef992b74a4a934e244",
-        "size": 3360,
+    "books/batch12/B12-004_meeting_method_guide.pdf": {
+        # Renamed from _onepager (it is a 4-page guide, Cycles 97). reportlab
+        # embeds a timestamp, so the bytes are not stable across rebuilds.
+        "sha256": "2c964edcfc8a9dcfb45d6bfcde23da85871ec6b3deacc39a10c71cf227972a46",
+        "size": 9639,
     },
     "books/batch12/B12-008_moving_budget_tracker.xlsx": {
         "sha256": "1e42132bf63d3c2b305a66ac86ff79824bdada0511b186420adaeaf5121dd1ed",
         "size": 7629,
     },
     "books/batch12/B12-008_moving_checklist.pdf": {
-        "sha256": "368660003648942fbc7b14edb6f304d5b8b1aa21a606bf06e27a6e3b617526dd",
+        # Re-baselined 2026-10-18 (Cycle 97): the B12-004 guide rebuild ran the
+        # shared scripts/build_batch12_pdfs.py, which regenerates every batch-12
+        # PDF; B12-008's content is unchanged but reportlab's embedded timestamp
+        # differs, so the bytes differ. Same 4311-byte size, new hash.
+        "sha256": "d3803cd831106cfbce6875c84ada45fd008360db7fbe195d60c6a7bf73d2db14",
         "size": 4311,
     },
 }

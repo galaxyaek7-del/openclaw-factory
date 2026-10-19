@@ -1,0 +1,68 @@
+{
+ "schema": "cycle98_b12_004_live_verification/v1",
+ "product_id": "B12-004",
+ "title": "Meeting Cost & ROI Calculator",
+ "verified_at_utc": "2026-10-18T22:28:30Z",
+ "status": "PUBLISHED_AND_VERIFIED",
+ "method": "OBSERVED — independent live GET read-back of the Gumroad product (listing_projection) plus a fresh HTTP GET of the public product page",
+ "run_id_publish": "18672-20261018T222608",
+ "gumroad": {
+  "product_id": "-cbRBfZyJMTKpl-Xk8Oz3Q==",
+  "short_url": "https://aekraft.gumroad.com/l/ieashv",
+  "name": "Meeting Cost & ROI Calculator",
+  "price_cents": 1199,
+  "currency": "usd",
+  "published": true,
+  "sales_count": 0,
+  "description_words": 233,
+  "tags": [
+   "productivity",
+   "management",
+   "meetings",
+   "calculator",
+   "cost",
+   "spreadsheet",
+   "team",
+   "roi"
+  ],
+  "files": [
+   {
+    "filetype": "xlsx",
+    "size": 12865
+   },
+   {
+    "filetype": "pdf",
+    "size": 9639
+   }
+  ],
+  "cover_present": true,
+  "covers_count": 1,
+  "main_cover_id": "ebcb227ded6afbde22a270eb19eef8be",
+  "cover_urls": [
+   "https://public-files.gumroad.com/ofav4ozty5ak13l03ndxwcr8gu7e"
+  ]
+ },
+ "checkout_page": {
+  "http_status": 200,
+  "product_price_amount": "11.99",
+  "meta_property": "product:price:amount",
+  "source_url": "https://aekraft.gumroad.com/l/ieashv"
+ },
+ "price_condition_satisfied": true,
+ "price_condition_note": "Listing price_cents=1199 ($11.99) and the public page's product:price:amount=11.99 both show exactly USD 11.99.",
+ "auth_state": {
+  "status": "VERIFIED",
+  "fingerprint_prefix": "f1218f89b1f5cdf3",
+  "at": "2026-10-18T22:13:17.397457+00:00",
+  "source": "gumroad_auth_watch.poll() — read-only GET"
+ },
+ "live_publish_flag_unset_at_verification": true,
+ "revenue": {
+  "verified_revenue_usd": 0,
+  "verified_external_transactions": 0
+ },
+ "notes": [
+  "resolve_utm is BLOCKED_PERMANENT for B12-004 (no UTM template) — disclosed, non-gating.",
+  "Draft-creation evidence data/first_sale_draft_evidence_b12_004.json is a create-time snapshot (published=false at that instant) and is left unchanged."
+ ]
+}

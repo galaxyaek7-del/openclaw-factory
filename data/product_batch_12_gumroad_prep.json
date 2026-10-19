@@ -41,7 +41,9 @@
     {
       "id": "B12-002",
       "title": "Client Project Handoff Pack",
-      "proposed_price_usd": 39,
+      "proposed_price_usd": 11.99,
+      "price_status": "FOUNDER_APPROVED 2026-10-18 (USD 11.99)",
+      "price_rationale": "Original $39.00 fails the gate's own depth (100 words/dollar) and market (<= highest comparable x 1.10) rules; $11.99 clears both. Evidence: reports/B12-002/GATE_FINAL_2026-10-18.json.",
       "files": [
         "B12-002_client_handoff_guide.pdf",
         "B12-002_client_handoff_register.xlsx"
@@ -59,13 +61,30 @@
         "verify price matches proposal",
         "test download after listing (founder, post-authorization)"
       ],
-      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
+      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+      "listing_copy": {
+        "listing_title": "Client Project Handoff Pack",
+        "listing_description": "A project ends twice: once when you stop working, once when the client can prove they own it. This pack makes the second one happen on purpose. It is the 45-minute handoff session you run live, the three emails you copy and paste, the five asset categories nothing ships without, and a companion workbook that computes a hard Close gate so a project cannot be marked finished while the receiver is still blocked.\n\nBuilt for freelancers, agencies and contractors handing work to a client or another team. The method is simple and stubborn: a handoff ends when the receiver can prove they own it, not when the sender stops working — so the register is filled in together, on the call, and every credential is reissued into an account the client owns rather than passed over as a password.\n\nInside (2 files):\n- Client Project Handoff Register workbook (.xlsx, 6 sheets): HandoffRegister (one row per project — days to handoff, assets-complete %, open high risks, and a computed Close gate), ChecklistTemplate (18 canonical items across Code, Docs, Accounts, Money, Data, Security, People and Support, each with why it prevents a dispute), AssetChecklist (one row per item, with access transferred Y/N, who verified it, where it lives and a proof note), RiskRegister (Severity x Likelihood scoring — a score of 12 or more is HIGH and blocks the close gate), Dashboard (KPIs including projects ready to close), and a README. Includes worked example rows.\n- Client Project Handoff Guide (.pdf, 4 pages): the transfer-by-evidence principle, the ten-day prep list, the minute-by-minute 45-minute session script, the five asset categories, the access and security rules, three copy-paste emails, the acceptance criteria and close gate, the 14-day support window, the 30/60/90-day review, the failure modes this pack prevents, an FAQ, and a final pre-handoff checklist.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews.\n\nRequires: Excel, LibreOffice Calc (free), or Google Sheets (free upload) for the workbook; any PDF reader for the guide. Instant download after purchase. Support: reply to your Gumroad receipt email.",
+        "tags": [
+          "handoff",
+          "freelancing",
+          "checklist",
+          "project management",
+          "client",
+          "contractor",
+          "template",
+          "risk"
+        ],
+        "version": "1.0"
+      },
+      "listing_copy_status": "READY_TO_PASTE__AWAITS_LISTING_AUTHORIZATION"
     },
     {
       "id": "B12-003",
       "title": "Founder Access Continuity Organizer",
-      "proposed_price_usd": 29,
+      "proposed_price_usd": 19.0,
       "files": [
+        "B12-003_access_continuity_inventory.xlsx",
         "B12-003_access_continuity_organizer.pdf"
       ],
       "page": "b12-access-continuity-organizer.html",
@@ -81,15 +100,20 @@
         "verify price matches proposal",
         "test download after listing (founder, post-authorization)"
       ],
-      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
+      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+      "price_status": "FOUNDER_APPROVED 2026-10-19 (USD 19.00)",
+      "price_usd": 19.0,
+      "price_basis": "FOUNDER_DECISION_BELOW_COMPARABLE",
+      "cover": "reports/B12-003/cover.png"
     },
     {
       "id": "B12-004",
       "title": "Meeting Cost & ROI Calculator",
-      "proposed_price_usd": 19,
+      "proposed_price_usd": 11.99,
+      "price_status": "FOUNDER_APPROVED 2026-10-18 (USD 11.99)",
       "files": [
         "B12-004_meeting_cost_roi_calculator.xlsx",
-        "B12-004_meeting_method_onepager.pdf"
+        "B12-004_meeting_method_guide.pdf"
       ],
       "page": "b12-meeting-cost-calculator.html",
       "utm_plan": {
