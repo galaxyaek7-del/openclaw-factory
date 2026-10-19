@@ -1,0 +1,546 @@
+{
+ "generated_at": "2026-10-19T18:19:07.667478+00:00",
+ "layers": {
+  "layers": {
+   "incident_memory": {
+    "status": "EXISTS",
+    "requirement": "durable incident records with root cause, detection, prevention, verification",
+    "modules_present": [
+     "incident_memory.py"
+    ],
+    "modules_missing": [],
+    "tests_present": [
+     "tests/test_doctrine_layers.py"
+    ],
+    "doc": "PERMANENT_OPERATING_DOCTRINE.md section 3A"
+   },
+   "claim_vs_reality": {
+    "status": "EXISTS",
+    "requirement": "material claims traceable to evidence, with an unsupported-claim rate",
+    "modules_present": [
+     "operational_history.py",
+     "product_claim_integrity.py",
+     "doctrine_review.py"
+    ],
+    "modules_missing": [],
+    "tests_present": [
+     "tests/test_native_workbook_qa.py",
+     "tests/test_doctrine_layers.py"
+    ],
+    "doc": "PERMANENT_OPERATING_DOCTRINE.md section 3G"
+   },
+   "unknown_protocol": {
+    "status": "EXISTS",
+    "requirement": "explicit OBSERVED/DERIVED/INFERRED/ESTIMATED/UNKNOWN/BLOCKED labels",
+    "modules_present": [
+     "truth_first.py",
+     "operational_history.py"
+    ],
+    "modules_missing": [],
+    "tests_present": [
+     "tests/test_doctrine_layers.py"
+    ],
+    "doc": "PERMANENT_OPERATING_DOCTRINE.md section 3C"
+   },
+   "rework_cycle_time": {
+    "status": "EXISTS",
+    "requirement": "per-cycle change, repeated-check reasons, rework split, honest timing",
+    "modules_present": [
+     "cycle_metrics.py"
+    ],
+    "modules_missing": [],
+    "tests_present": [
+     "tests/test_doctrine_layers.py"
+    ],
+    "doc": "PERMANENT_OPERATING_DOCTRINE.md section 4"
+   },
+   "handoffs": {
+    "status": "EXISTS",
+    "requirement": "seven-field contracts with visible delays",
+    "modules_present": [
+     "handoffs.py"
+    ],
+    "modules_missing": [],
+    "tests_present": [
+     "tests/test_doctrine_layers.py"
+    ],
+    "doc": "PERMANENT_OPERATING_DOCTRINE.md section 3D"
+   },
+   "risk_budget": {
+    "status": "EXISTS",
+    "requirement": "zero-spend and protected-action gates remain enforced",
+    "modules_present": [
+     "safe_mode.py",
+     "channels/publish_protection.py"
+    ],
+    "modules_missing": [],
+    "tests_present": [
+     "tests/test_resilience.py"
+    ],
+    "doc": "PERMANENT_OPERATING_DOCTRINE.md section 3B/8"
+   },
+   "weak_signals": {
+    "status": "EXISTS",
+    "requirement": "small observations with source/date/independence; no single-signal verdicts",
+    "modules_present": [
+     "weak_signals.py"
+    ],
+    "modules_missing": [],
+    "tests_present": [
+     "tests/test_doctrine_layers.py"
+    ],
+    "doc": "PERMANENT_OPERATING_DOCTRINE.md section 3F"
+   },
+   "doctrine_review": {
+    "status": "EXISTS",
+    "requirement": "periodic review of the rules themselves, from evidence",
+    "modules_present": [
+     "doctrine_review.py",
+     "OpenClaw_Brain/00_Governance/PERMANENT_OPERATING_DOCTRINE.md"
+    ],
+    "modules_missing": [],
+    "tests_present": [
+     "tests/test_doctrine_layers.py"
+    ],
+    "doc": "PERMANENT_OPERATING_DOCTRINE.md section 3E"
+   },
+   "business_arms": {
+    "status": "EXISTS",
+    "requirement": "five-state arm registry that cannot claim READY without evidence",
+    "modules_present": [
+     "business_arms.py"
+    ],
+    "modules_missing": [],
+    "tests_present": [
+     "tests/test_doctrine_layers.py"
+    ],
+    "doc": "PERMANENT_OPERATING_DOCTRINE.md section 5"
+   }
+  },
+  "counts": {
+   "EXISTS": 9,
+   "PARTIAL": 0,
+   "MISSING": 0
+  }
+ },
+ "claims": {
+  "claims_checked": 14,
+  "critical": 0,
+  "warning": 10,
+  "unsupported_rate": 0.0,
+  "findings": [
+   {
+    "severity": "WARNING",
+    "code": "REGISTRY_BEHIND_EVIDENCE",
+    "product_id": "B12-001",
+    "claim": "registry state READY_FOR_REVIEW",
+    "reality": "evidence state CHECKOUT_VERIFIED",
+    "evidence": "data/product_batch_12.json vs data/operational_history.json"
+   },
+   {
+    "severity": "WARNING",
+    "code": "REGISTRY_BEHIND_EVIDENCE",
+    "product_id": "B12-003",
+    "claim": "registry state READY_FOR_REVIEW",
+    "reality": "evidence state CHECKOUT_VERIFIED",
+    "evidence": "data/product_batch_12.json vs data/operational_history.json"
+   },
+   {
+    "severity": "WARNING",
+    "code": "REGISTRY_BEHIND_EVIDENCE",
+    "product_id": "B12-004",
+    "claim": "registry state READY_FOR_REVIEW",
+    "reality": "evidence state CHECKOUT_VERIFIED",
+    "evidence": "data/product_batch_12.json vs data/operational_history.json"
+   },
+   {
+    "severity": "WARNING",
+    "code": "TASK_TITLE_MISMATCH",
+    "file": "data/first_sale_tasks_b12-003.json",
+    "task_id": "package_validate",
+    "claim": "Validate B12-001 package (sha/size/cover)",
+    "reality": "file and payload belong to B12-003",
+    "evidence": "title text vs filename"
+   },
+   {
+    "severity": "WARNING",
+    "code": "TASK_TITLE_MISMATCH",
+    "file": "data/first_sale_tasks_b12-003.json",
+    "task_id": "price_authority",
+    "claim": "Confirm B12-001 price is authorized",
+    "reality": "file and payload belong to B12-003",
+    "evidence": "title text vs filename"
+   },
+   {
+    "severity": "WARNING",
+    "code": "TASK_TITLE_MISMATCH",
+    "file": "data/first_sale_tasks_b12-003.json",
+    "task_id": "publish",
+    "claim": "Publish B12-001 (requires founder phrase)",
+    "reality": "file and payload belong to B12-003",
+    "evidence": "title text vs filename"
+   },
+   {
+    "severity": "WARNING",
+    "code": "TASK_TITLE_MISMATCH",
+    "file": "data/first_sale_tasks_b12-004.json",
+    "task_id": "package_validate",
+    "claim": "Validate B12-001 package (sha/size/cover)",
+    "reality": "file and payload belong to B12-004",
+    "evidence": "title text vs filename"
+   },
+   {
+    "severity": "WARNING",
+    "code": "TASK_TITLE_MISMATCH",
+    "file": "data/first_sale_tasks_b12-004.json",
+    "task_id": "price_authority",
+    "claim": "Confirm B12-001 price is authorized",
+    "reality": "file and payload belong to B12-004",
+    "evidence": "title text vs filename"
+   },
+   {
+    "severity": "WARNING",
+    "code": "TASK_TITLE_MISMATCH",
+    "file": "data/first_sale_tasks_b12-004.json",
+    "task_id": "publish",
+    "claim": "Publish B12-001 (requires founder phrase)",
+    "reality": "file and payload belong to B12-004",
+    "evidence": "title text vs filename"
+   },
+   {
+    "severity": "WARNING",
+    "code": "PASS_WITHOUT_LINKED_EVIDENCE",
+    "file": "reports/B12-010/RELEASE_BASELINE_2026-10-19.json",
+    "claim": "deadline states and post-award cadence match the documented rule",
+    "reality": "no file reference in the evidence text",
+    "evidence": "recalculated by Excel and re-derived independently in Python"
+   }
+  ],
+  "basis": "release verification rows, release-manifest statuses, release baselines, batch registry, generated task titles",
+  "target": "zero critical unsupported material claims"
+ },
+ "incidents": {
+  "records": 5,
+  "ok": true,
+  "findings": [],
+  "with_preventive_control": 5,
+  "with_verified_control": 5,
+  "detection_existed_and_missed": 2,
+  "rules_kept": 5
+ },
+ "cycles": {
+  "cycles": 2,
+  "defects_total": {
+   "critical": 0,
+   "high": 7,
+   "medium": 2,
+   "low": 0
+  },
+  "rework": {
+   "new_defects": 7,
+   "preexisting": 2,
+   "new_share": 0.778
+  },
+  "time_measured_cycles": 0,
+  "time_unmeasured_cycles": 2
+ },
+ "repetition": {
+  "cycles": 2,
+  "findings": [],
+  "ok": true
+ },
+ "handoffs": {
+  "open": 7,
+  "blocked": 6,
+  "blocked_reasons": [
+   {
+    "handoff_id": "H-B12-010-QA-COMMERCE",
+    "reason": "no product-specific founder authorization phrase exists"
+   },
+   {
+    "handoff_id": "H-B12-005-QA-COMMERCE",
+    "reason": "publication not authorized; readiness verified but no authorization phrase exists"
+   },
+   {
+    "handoff_id": "H-B12-006-PROD-QA",
+    "reason": "no reports/B12-006/ gate record exists; QA has never run on these artifacts"
+   },
+   {
+    "handoff_id": "H-B12-007-PROD-QA",
+    "reason": "no reports/B12-007/ gate record exists; QA has never run on these artifacts"
+   },
+   {
+    "handoff_id": "H-B12-008-PROD-QA",
+    "reason": "no reports/B12-008/ gate record exists; QA has never run on these artifacts"
+   },
+   {
+    "handoff_id": "H-B12-009-PROD-QA",
+    "reason": "no reports/B12-009/ gate record exists; QA has never run on these artifacts"
+   }
+  ]
+ },
+ "weak_signals": {
+  "topics": [
+   {
+    "topic": "distribution_reliability",
+    "signals": 1,
+    "independent_groups": [
+     "factory_ledger"
+    ],
+    "triggered": false,
+    "verdict": "NOT_ENOUGH_EVIDENCE"
+   },
+   {
+    "topic": "verified_demand",
+    "signals": 2,
+    "independent_groups": [
+     "factory_ledger",
+     "gumroad_account_audit"
+    ],
+    "triggered": false,
+    "verdict": "NOT_ENOUGH_EVIDENCE"
+   }
+  ],
+  "triggered": [],
+  "threshold": {
+   "min_signals": 3,
+   "min_groups": 2
+  }
+ },
+ "arms": {
+  "arms": {
+   "digital_products": {
+    "arm": "digital_products",
+    "name": "Digital Products",
+    "status": "BLOCKED",
+    "acceptance_criteria": [
+     "at least one product is checkout-verified",
+     "a recorded, evidence-based release state",
+     "a native quality gate for the shipped format"
+    ],
+    "implementation_present": [
+     "books/batch12",
+     "operational_history.py",
+     "native_workbook_qa.py",
+     "channels/",
+     "distributor.py"
+    ],
+    "implementation_missing": [],
+    "commercial_path_present": [
+     "channels/",
+     "src/publish/"
+    ],
+    "external_dependency": "founder listing authorization and a live Gumroad write credential in this environment",
+    "gap": null,
+    "blocker": "no verified external sale; three products are checkout-verified and all show zero sales",
+    "evidence_basis": "path existence at call time plus the real revenue record"
+   },
+   "micro_b2b": {
+    "arm": "micro_b2b",
+    "name": "Micro-B2B Services",
+    "status": "PARTIAL",
+    "acceptance_criteria": [
+     "a written offer",
+     "a working delivery engine",
+     "a customer engagement"
+    ],
+    "implementation_present": [
+     "services/spreadsheet_normalization/engine.py",
+     "services/spreadsheet_normalization/offer.md",
+     "services/spreadsheet_normalization/runbook.md"
+    ],
+    "implementation_missing": [],
+    "commercial_path_present": [
+     "services/spreadsheet_normalization/offer.md"
+    ],
+    "external_dependency": null,
+    "gap": "no customer engagement or intake channel exists",
+    "blocker": "no customer engagement or intake channel exists",
+    "evidence_basis": "path existence at call time plus the real revenue record"
+   },
+   "research_data_services": {
+    "arm": "research_data_services",
+    "name": "Research and Data Services",
+    "status": "PARTIAL",
+    "acceptance_criteria": [
+     "repeatable research output",
+     "a written offer",
+     "a paying engagement"
+    ],
+    "implementation_present": [
+     "market_intelligence_core",
+     "multi_source_intelligence",
+     "competitor_discovery.py",
+     "reports/B12-010/GATE_CANDIDATES_2026-10-19.json"
+    ],
+    "implementation_missing": [],
+    "commercial_path_present": [],
+    "external_dependency": null,
+    "gap": "research infrastructure exists but no customer-facing offer exists",
+    "blocker": "research infrastructure exists but no customer-facing offer or engagement",
+    "evidence_basis": "path existence at call time plus the real revenue record"
+   },
+   "affiliate_intelligence": {
+    "arm": "affiliate_intelligence",
+    "name": "Affiliate Intelligence",
+    "status": "BLOCKED",
+    "acceptance_criteria": [
+     "a real affiliate account",
+     "real tracked clicks",
+     "confirmed commissions"
+    ],
+    "implementation_present": [
+     "affiliate_commerce/",
+     "business_development.py",
+     "data/council_recommendations.jsonl"
+    ],
+    "implementation_missing": [],
+    "commercial_path_present": [
+     "affiliate_commerce/networks.py"
+    ],
+    "external_dependency": "a real Amazon Associates account; AMAZON_ASSOCIATE_TAG is unset and only the founder can create the account",
+    "gap": null,
+    "blocker": "AMAZON_ASSOCIATE_TAG is unset and no real affiliate account was created; zero real clicks exist",
+    "evidence_basis": "path existence at call time plus the real revenue record"
+   },
+   "content_distribution": {
+    "arm": "content_distribution",
+    "name": "Content and Distribution",
+    "status": "PARTIAL",
+    "acceptance_criteria": [
+     "a publishing channel that succeeds",
+     "repeated distribution",
+     "measured audience response"
+    ],
+    "implementation_present": [
+     "content_generation/",
+     "affiliate_content/",
+     "customer_site/",
+     "channels/x_arm.py"
+    ],
+    "implementation_missing": [],
+    "commercial_path_present": [
+     "channels/"
+    ],
+    "external_dependency": null,
+    "gap": "the X publishing arm is credit-blocked; no measured audience response exists yet",
+    "blocker": "the X publishing arm failed its last real attempts with HTTP 402 credits depleted",
+    "evidence_basis": "path existence at call time plus the real revenue record"
+   },
+   "ai_operations": {
+    "arm": "ai_operations",
+    "name": "AI Operations",
+    "status": "PLANNED",
+    "acceptance_criteria": [
+     "a customer-facing AI operations offer",
+     "a delivery workflow",
+     "a paying engagement"
+    ],
+    "implementation_present": [],
+    "implementation_missing": [],
+    "commercial_path_present": [],
+    "external_dependency": null,
+    "gap": "internal AI orchestration exists, but no customer-facing AI-operations arm was found",
+    "blocker": "internal AI orchestration exists, but no customer-facing AI-operations arm was found",
+    "evidence_basis": "path existence at call time plus the real revenue record"
+   },
+   "productized_ai_services": {
+    "arm": "productized_ai_services",
+    "name": "Productized AI Services",
+    "status": "PLANNED",
+    "acceptance_criteria": [
+     "a scoped service offer",
+     "a delivery workflow",
+     "a paying engagement"
+    ],
+    "implementation_present": [],
+    "implementation_missing": [],
+    "commercial_path_present": [],
+    "external_dependency": null,
+    "gap": "no implementation evidence found anywhere in the repository",
+    "blocker": "no implementation evidence found anywhere in the repository",
+    "evidence_basis": "path existence at call time plus the real revenue record"
+   },
+   "childrens_media_studio": {
+    "arm": "childrens_media_studio",
+    "name": "Children's Media Studio",
+    "status": "PARTIAL",
+    "acceptance_criteria": [
+     "a finished episode",
+     "a distribution channel",
+     "audience evidence"
+    ],
+    "implementation_present": [
+     "kids_studio/production_manifest.json",
+     "kids_studio/qa_checklist.md",
+     "kids_studio/rights_ledger.json",
+     "kids_studio/episodes"
+    ],
+    "implementation_missing": [],
+    "commercial_path_present": [],
+    "external_dependency": null,
+    "gap": "one animatic exists; no finished film exists and no distribution channel is wired",
+    "blocker": "one animatic exists; no finished film exists and no distribution channel is wired",
+    "evidence_basis": "path existence at call time plus the real revenue record"
+   }
+  },
+  "counts": {
+   "READY": 0,
+   "PARTIAL": 4,
+   "PLANNED": 2,
+   "BLOCKED": 2,
+   "REVENUE_VERIFIED": 0
+  },
+  "revenue": {
+   "status": "STALE",
+   "gross_usd": 0.0,
+   "sales_count": 0,
+   "note": "company-wide only; no per-arm attribution exists, so REVENUE_VERIFIED is unreachable today"
+  },
+  "honesty_note": "READY is not claimed for any arm: every arm with implementation evidence has either a named gap or an external dependency. REVENUE_VERIFIED requires arm-level attribution, which does not exist."
+ },
+ "questions": [
+  {
+   "question": "Which rules demonstrably improved quality, cycle time, reliability, or commercial outcomes?",
+   "status": "OBSERVED",
+   "answer": "5 incident(s) carry a real preventive control whose verification passed; those controls are the rules with evidence of effect.",
+   "basis": "incident_memory audit"
+  },
+  {
+   "question": "Which rules are redundant or unnecessarily expensive?",
+   "status": "UNKNOWN",
+   "answer": "No doctrine-cost telemetry exists. Rework that is attributable to a specific rule is not recorded, so no rule can be called redundant from evidence.",
+   "basis": "cycle_metrics records rework, not rule-level cost"
+  },
+  {
+   "question": "Which rules repeatedly fail in practice?",
+   "status": "OBSERVED",
+   "answer": "2 incident(s) had a check that existed and still missed the failure; those checks are the ones to strengthen, not the policies they enforce.",
+   "basis": "incident_memory detection_mechanism.status"
+  },
+  {
+   "question": "Which failures indicate poor implementation rather than a defective rule?",
+   "status": "DERIVED",
+   "answer": "5 incident(s) explicitly kept their rule unchanged and fixed the implementation instead.",
+   "basis": "incident_memory rules_left_unchanged"
+  },
+  {
+   "question": "Which new risks or business requirements require a change?",
+   "status": "NOT_ENOUGH_EVIDENCE",
+   "answer": "No topic has the required number of independent signals yet; this is not evidence that no risk exists.",
+   "basis": "weak_signals.review_triggers"
+  },
+  {
+   "question": "Which safeguards must remain regardless of frequency of use?",
+   "status": "OBSERVED",
+   "answer": "The four founder-protected gates remain: evolution execute, capital reallocation, business retirement, and first/elevated-risk publishing. Rare use is never a reason to remove a safeguard.",
+   "basis": "safe_mode.py, channels/publish_protection.py, evidence_engine REJECT_IF_FAIL"
+  }
+ ],
+ "status": {
+  "claim_audit": "PASS",
+  "incident_memory": "PASS",
+  "repetition": "PASS",
+  "layers": "PASS"
+ }
+}

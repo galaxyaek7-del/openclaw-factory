@@ -119,6 +119,12 @@ Previously undocumented, and material to the revenue picture:
   product title (for example `GPSR EU Seller Action Kit`, `Turo Guest Dispute
   Toolkit`, `Restaurant Health Inspection Readiness Kit`, `FTC Consumer Review
   Rule Compliance Kit`) (`OBSERVED`, ledger).
+- The account-size figure that should be quoted is **79 live products**, from
+  the read-only enumeration recorded by `product_claim_integrity.py` and
+  `scripts/gumroad_catalog_truth.py` on **2026-10-14** (`OBSERVED`, account
+  audit). The 50 publish attempts in this ledger are a narrower, earlier scope
+  (2026-09-20 to 2026-09-28 only); both numbers are true of different things,
+  and the 79 figure is authoritative for how many products the account serves.
 - Liveness spot-checked by direct HTTP read this cycle:
   `https://aekraft.gumroad.com/l/blayvb` served `Freelancer Rate & Raise
   Calculator` (B12-001) and `https://aekraft.gumroad.com/l/fetmu` served
@@ -132,8 +138,9 @@ Previously undocumented, and material to the revenue picture:
 - `config/reality.json` reports zero published books because it counts only
   Amazon ASINs — a deliberate, documented KDP-only schema, not the whole store
   (`OBSERVED`, the file's own `_published_note`). The operational record should
-  stop implying "nothing has ever been published anywhere": 50 Gumroad listings
-  were published and are still live.
+  stop implying "nothing has ever been published anywhere": the Gumroad account
+  served 79 live products as of 2026-10-14, and 50 of this ledger's publish
+  attempts are on the record.
 - The ledger also records 17 real (non-dry-run) publish attempts that failed,
   the most recent on 2026-10-03 with `HTTP 402 credits depleted` from the X
   platform (`OBSERVED`). Those are failures to publish, not live products.
@@ -159,9 +166,15 @@ fails if the workbook changes without a matching recorded `PASS`.
 (`url https://aekraft.gumroad.com/l/ieashv`, `published: true`,
 `externally_verified: true`). Task titles are not parameterized by product.
 *Guard:* `operational_history.py` derives identity from the result payload and
-never from a task title; the defect is recorded here so a title is never again
-trusted as the state source. `UNKNOWN` whether other task files repeat it
-(not audited this cycle).
+never from a task title. Confirmed systematic in Cycle 103: the same three
+wrong titles appear in **both** product-specific files
+(`first_sale_tasks_b12-003.json` and `_b12-004.json`) — 6 mismatched titles —
+while every payload matches its own file's product. The generic
+`first_sale_tasks.json` and the cycle-94 backup are real B12-001 runs whose
+titles are consistent, which confirms the template was never parameterised for
+any other product. `doctrine_review.audit_task_titles()` now detects this and
+`tests/test_doctrine_layers.py` proves the detector fires. The generator itself
+is not yet corrected, so this is detected, not prevented at source.
 
 **L3 — The registry drifts from reality.** `data/product_batch_12.json` says
 `READY_FOR_REVIEW` for all ten products, including three that are live and

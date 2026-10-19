@@ -44,6 +44,12 @@ This document **supersedes nothing**:
 - The Founder interface remains the V5.4 Founder Command Center
   (`founder_command_center.py` + `founder_command_center.html`): the Founder
   governs the company, the Factory operates it.
+- How a cycle is run and what proves it is the operating doctrine:
+  `OpenClaw_Brain/00_Governance/PERMANENT_OPERATING_DOCTRINE.md` (2026-10-19),
+  enforced by `incident_memory.py`, `doctrine_review.py`, `handoffs.py`,
+  `cycle_metrics.py`, `weak_signals.py`, and `business_arms.py`, with a single
+  gate at `scripts/check_doctrine.py`. That document states explicitly that this
+  constitution wins on any overlap.
 
 **Amendment rule:** this constitution grows by citation, never by duplication.
 A new capability is added here only when its real enforcement mechanism

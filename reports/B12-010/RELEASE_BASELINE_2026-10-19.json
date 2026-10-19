@@ -72,6 +72,39 @@
     "passes_all": true,
     "blocking": []
    }
+  ],
+  "candidate_outcomes": [
+   {
+    "price_usd": 19.97,
+    "outcome": "REJECTED",
+    "reason": "market_realism page ceiling: min(1.00 x 17 pages, 15.00) = 15.00"
+   },
+   {
+    "price_usd": 17.99,
+    "outcome": "REJECTED",
+    "reason": "market_realism page ceiling: min(1.00 x 17 pages, 15.00) = 15.00"
+   },
+   {
+    "price_usd": 15.0,
+    "outcome": "SELECTED",
+    "reason": "highest price passing every mandatory gate; net 13.50, floor 2.50"
+   },
+   {
+    "price_usd": 14.99,
+    "outcome": "NOT_SELECTED",
+    "reason": "passes every gate but is lower than the selected price"
+   },
+   {
+    "price_usd": 12.99,
+    "outcome": "NOT_SELECTED",
+    "reason": "passes every gate but is lower than the selected price"
+   }
+  ],
+  "withdrawn": [
+   {
+    "price_usd": 39.0,
+    "note": "manifest placeholder; withdrawn/rejected, never the release price"
+   }
   ]
  },
  "gate": {

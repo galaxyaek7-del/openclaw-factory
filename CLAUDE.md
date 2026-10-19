@@ -577,3 +577,21 @@ Nothing in this repo runs anything on a timer: `factory_loop.js` (the Golden Hun
 ### `index.html` encoding
 
 The file is saved as **UTF-16 LE with BOM**. When reading or editing it, ensure your editor preserves this encoding, or the Arabic text and emoji will corrupt.
+
+### Permanent Operating Doctrine (2026-10-19)
+
+`OpenClaw_Brain/00_Governance/PERMANENT_OPERATING_DOCTRINE.md` is the operating doctrine for every cycle from Cycle 103 on — *how* a cycle is run and what proves it. It does **not** replace `MASTER_OPERATING_CONSTITUTION.md` (which stays the constitution and ADR index); the constitution wins on any overlap.
+
+It is enforced by real modules and a single gate, not by prose:
+
+| Layer | Module |
+|---|---|
+| Incident memory (15 fields, control must exist on disk) | `incident_memory.py` → `data/incident_memory.jsonl` |
+| Claim vs. reality audit (critical/warning, unsupported rate) | `doctrine_review.py::audit_structured_claims()` |
+| UNKNOWN protocol (OBSERVED/DERIVED/INFERRED/ESTIMATED/UNKNOWN/BLOCKED) | `operational_history.py`, `truth_first.py` |
+| Handoff contracts (7 fields; BLOCKED needs a delay reason) | `handoffs.py` → `data/handoffs.jsonl` |
+| Rework / cycle time | `cycle_metrics.py` → `data/cycle_metrics.jsonl` |
+| Weak signals (3 signals, 2 independent groups, then review) | `weak_signals.py` → `data/weak_signals.jsonl` |
+| Business arms (READY/PARTIAL/PLANNED/BLOCKED/REVENUE_VERIFIED) | `business_arms.py` |
+
+Gate: `python scripts/check_doctrine.py` (exit 1 if any layer is outside its rule; read-only). Tests: `tests/test_doctrine_layers.py`. The seven release states (`BUILD_COMPLETE` → `FIRST_SALE_VERIFIED`) are never collapsed; `FIRST_SALE_VERIFIED` is the only definition of success and is currently zero. `REVENUE_VERIFIED` is structurally unreachable because no per-arm revenue attribution exists.
