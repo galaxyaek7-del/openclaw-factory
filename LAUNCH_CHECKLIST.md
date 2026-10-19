@@ -2,6 +2,11 @@
 
 **Companion to `PRODUCTION_READINESS.md`.** This is the concrete, step-by-step operations sequence — not a repeat of that report's audit, just what to actually do, in order.
 
+> **Superseded for the procedure itself (Cycle 102, 2026-10-19).** This
+> checklist predates the current Gumroad release path. The canonical, current
+> production-to-publishing procedure is `PRODUCTION_TO_PUBLISHING_PLAYBOOK.md`.
+> Keep this file for its history.
+
 ---
 
 ## ⚠️ First: a decision point, not a step

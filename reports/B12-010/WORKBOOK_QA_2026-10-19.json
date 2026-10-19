@@ -1,0 +1,39 @@
+{
+ "product_id": "B12-010",
+ "artifact": "books/batch12/B12-010_grant_pipeline_tracker.xlsx",
+ "artifact_sha256": "df49cecaf704cb06dec3b48c9f826c94cfdae9e2bf91d3a2b76fc670593b8574",
+ "engine": {
+  "name": "Microsoft Excel",
+  "version": "16.0",
+  "build": "19127"
+ },
+ "calculated_at_utc": "2026-10-19T16:20:35Z",
+ "formula_cells": 148,
+ "formula_sheets": [
+  "Opportunities",
+  "Timeline",
+  "Dashboard"
+ ],
+ "scanned_sheets": [
+  "Opportunities",
+  "Docs",
+  "Budget",
+  "Timeline",
+  "Dashboard",
+  "Stages",
+  "Eligibility",
+  "DocLibrary",
+  "README"
+ ],
+ "verdict": "PASS",
+ "findings": [],
+ "critical_count": 0,
+ "warning_count": 0,
+ "schema": "workbook_qa/v1",
+ "recorded_at_utc": "2026-10-19T16:20:38.308755+00:00",
+ "limitations": [
+  "The probe runs against a temporary read-only copy; it never opens the release file for write.",
+  "Number-format and value checks are limited to the sheets and cells named in the spec.",
+  "Excel is the only supported native engine; no other spreadsheet engine is installed here."
+ ]
+}

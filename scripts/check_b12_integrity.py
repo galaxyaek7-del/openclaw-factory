@@ -72,6 +72,35 @@ def main():
             problems.append("HASH DRIFT: " + rel)
         if len(data) != base["size"]:
             problems.append("SIZE DRIFT: " + rel)
+    # Native workbook QA gate (Cycle 102): a workbook with a registered QA spec
+    # must carry a recorded PASS whose hash matches the file about to ship. This
+    # reads the recorded evidence only -- it never runs Excel -- so the gate is
+    # deterministic and fast, and fails if the workbook changes without the
+    # native recalculation/format check being re-run against it.
+    sys.path.insert(0, str(ROOT))
+    try:
+        import native_workbook_qa as wbqa
+        for product_id, spec in wbqa.SPECS.items():
+            report_dir = ROOT / "reports" / product_id
+            evidence = sorted(report_dir.glob("WORKBOOK_QA_*.json"))
+            if not evidence:
+                problems.append(
+                    "workbook QA evidence missing: reports/%s/WORKBOOK_QA_*.json" % product_id
+                )
+                continue
+            record = json.loads(evidence[-1].read_text(encoding="utf-8"))
+            if record.get("verdict") != "PASS":
+                problems.append("workbook QA verdict is %s: %s" % (record.get("verdict"), evidence[-1].name))
+            artifact = ROOT / spec["artifact"]
+            if not artifact.exists():
+                problems.append("workbook QA artifact missing: " + spec["artifact"])
+            elif record.get("artifact_sha256") != hashlib.sha256(artifact.read_bytes()).hexdigest():
+                problems.append(
+                    "workbook QA evidence is stale for %s: re-run native_workbook_qa.py" % product_id
+                )
+    except ImportError as exc:  # pragma: no cover - import guards the gate itself
+        problems.append("workbook QA module could not be imported: %s" % exc)
+
     if problems:
         print("B12 integrity: DRIFT DETECTED")
         for x in problems:

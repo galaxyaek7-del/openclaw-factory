@@ -41,5 +41,6 @@
  "companion_public_page": "customer_site/b12-grant-pipeline-tracker.html",
  "rebuilt_at_utc": "2026-10-19T12:34:07Z",
  "rebuild_reason": "Cycle 101: Dashboard and helper number formats were one row out of step, so Excel displayed 100% for a count, $1 for a rate, 3000000% for requested money, 1900-01-01 for a count and 46328 for a date. Formats fixed; values and formulas unchanged.",
- "native_recalc": "reports/B12-010/NATIVE_RECALC_EXCEL_2026-10-19.json"
+ "native_recalc": "reports/B12-010/NATIVE_RECALC_EXCEL_2026-10-19.json",
+ "native_workbook_qa": "reports/B12-010/WORKBOOK_QA_2026-10-19.json"
 }

@@ -2,13 +2,16 @@
  "product_id": "B12-010",
  "title": "Nonprofit Grant Pipeline Tracker",
  "recorded_at_utc": "2026-10-19T13:00:58Z",
- "cycle": 101,
+ "updated_at_utc": "2026-10-19T16:25:00Z",
+ "cycle": 102,
+ "release_commit": "b2e2f34",
  "release_state": "READY_FOR_AUTHORIZATION",
  "price": {
   "usd": 15.0,
   "rule": "HIGHEST_PRICE_PASSING_ALL_MANDATORY_GATES",
   "status": "DERIVED (pending founder listing authorization)",
   "founder_approved": false,
+  "history_note": "Only $39.00 (the manifest placeholder) was withdrawn/rejected. $15.00 was never withdrawn; it is the highest price that passes every mandatory gate and the current release price. Source: reports/B12-010/GATE_FINAL_2026-10-19.json price_history, reports/CYCLE101_B12-010_VERIFICATION_2026-10-19.md section 6.",
   "candidates_tested": [
    {
     "price_usd": 19.97,
@@ -127,9 +130,14 @@
    "evidence": "reports/B12-010/NATIVE_RECALC_EXCEL_2026-10-19.json (Excel 16.0, 0 error cells, 0 real formula errors)"
   },
   {
+   "check": "native recalculation and number-format QA re-run as a reusable capability",
+   "status": "PASS",
+   "evidence": "reports/B12-010/WORKBOOK_QA_2026-10-19.json (Excel 16.0 build 19127, verdict PASS, 0 critical, artifact hash matches the release workbook)"
+  },
+  {
    "check": "Dashboard and helper number formats match what they display",
    "status": "PASS",
-   "evidence": "seven wrong formats found and fixed in Cycle 101; regression test asserts every format"
+   "evidence": "seven wrong formats found and fixed in Cycle 101; 17 regression tests in tests/test_native_workbook_qa.py reintroduce each defect and assert it is caught; scripts/check_b12_integrity.py now fails if the workbook changes without a matching PASS"
   },
   {
    "check": "deadline states and post-award cadence match the documented rule",
@@ -160,6 +168,11 @@
    "check": "registries agree with the artifacts",
    "status": "PASS",
    "evidence": "data/product_batch_12.json, data/product_batch_12_gumroad_prep.json, data/product_pipeline.json; scripts/check_b12_integrity.py -> OK"
+  },
+  {
+   "check": "evidence-based release state, reconstructed from real records",
+   "status": "PASS",
+   "evidence": "data/operational_history.json (B12-010: READY_FOR_AUTHORIZATION, next milestone UPLOAD_COMPLETED, FIRST_SALE_VERIFIED not verified)"
   },
   {
    "check": "bounded regression suite",

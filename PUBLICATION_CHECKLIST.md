@@ -3,6 +3,11 @@
 **Date:** 2026-07-16
 **Directive:** "Executive Directive — Phase 12: Commercial Launch Readiness," objective 5
 
+> **Superseded for the procedure itself (Cycle 102, 2026-10-19).** This is a
+> one-product checklist for the Freelancer Client Onboarding Template. The
+> canonical, current production-to-publishing procedure is
+> `PRODUCTION_TO_PUBLISHING_PLAYBOOK.md`. Keep this file for its history.
+
 ---
 
 | # | Item | Status | Evidence |

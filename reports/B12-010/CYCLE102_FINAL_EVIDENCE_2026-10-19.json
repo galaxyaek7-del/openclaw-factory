@@ -1,0 +1,139 @@
+{
+ "product_id": "B12-010",
+ "cycle": 102,
+ "title": "Nonprofit Grant Pipeline Tracker",
+ "recorded_at_utc": "2026-10-19T16:40:00Z",
+ "release_commit": "b2e2f34",
+ "release_state": "READY_FOR_AUTHORIZATION",
+ "headline": "Cycle 101 correction independently verified in real Excel; native workbook recalculation and number-format verification made reusable and gated; batch-12 release states reconstructed from evidence; B12-010 prepared for an authorized $15.00 launch, not published.",
+ "deliverables": [
+  {
+   "n": 1,
+   "deliverable": "Cycle 102 verification report",
+   "status": "DONE",
+   "artifact": "reports/CYCLE102_B12-010_OPERATIONAL_LEARNING_2026-10-19.md"
+  },
+  {
+   "n": 2,
+   "deliverable": "Updated operational-learning records including the spreadsheet-format lesson",
+   "status": "DONE",
+   "artifact": "reports/OPERATIONAL_LEARNING_BASELINE.md"
+  },
+  {
+   "n": 3,
+   "deliverable": "Reusable workbook QA procedure integrated into the existing workflow",
+   "status": "DONE",
+   "artifact": "native_workbook_qa.py, scripts/excel_recalc_probe.ps1, gate in scripts/check_b12_integrity.py, required stage in PRODUCTION_TO_PUBLISHING_PLAYBOOK.md"
+  },
+  {
+   "n": 4,
+   "deliverable": "Regression tests for spreadsheet formatting and recalculation behaviour",
+   "status": "DONE",
+   "artifact": "tests/test_native_workbook_qa.py (17 tests; each Cycle 101 defect reintroduced and asserted caught) plus the pre-existing tests/test_b12_010_workbook.py format test"
+  },
+  {
+   "n": 5,
+   "deliverable": "Corrected pricing history and release records",
+   "status": "DONE",
+   "artifact": "reports/B12-010/RELEASE_BASELINE_2026-10-19.json (price.history_note: only $39.00 withdrawn; $15.00 never withdrawn), release_commit recorded, cycle advanced to 102"
+  },
+  {
+   "n": 6,
+   "deliverable": "Updated B12-010 release evidence with artifact identity and test results",
+   "status": "DONE",
+   "artifact": "reports/B12-010/WORKBOOK_QA_2026-10-19.json, reports/B12-010/RELEASE_BASELINE_2026-10-19.json (17-row verification matrix), reports/B12-010/MANIFEST_2026-10-19.json (native_workbook_qa reference)"
+  },
+  {
+   "n": 7,
+   "deliverable": "Publication-readiness record separating prepared / authorized / platform access",
+   "status": "DONE",
+   "artifact": "reports/B12-010/PUBLICATION_READINESS_2026-10-19.md"
+  },
+  {
+   "n": 8,
+   "deliverable": "Final evidence report (files changed, tests run, results, blockers, next actions)",
+   "status": "DONE",
+   "artifact": "reports/B12-010/CYCLE102_FINAL_EVIDENCE_2026-10-19.json (this file)"
+  }
+ ],
+ "artifacts": [
+  {
+   "path": "books/batch12/B12-010_grant_pipeline_tracker.xlsx",
+   "bytes": 38765,
+   "sha256": "df49cecaf704cb06dec3b48c9f826c94cfdae9e2bf91d3a2b76fc670593b8574",
+   "role": "workbook"
+  },
+  {
+   "path": "books/batch12/B12-010_grant_pipeline_guide.pdf",
+   "bytes": 45453,
+   "pages": 17,
+   "sha256": "b7ad0849a7d248db821c79873a8cdc3c42399a6ce054083eaf650298e97f0a49",
+   "role": "method guide"
+  },
+  {
+   "path": "books/covers/B12-010.png",
+   "bytes": 42566,
+   "sha256": "c17de7066cbd9bf22affa138881fc67ed3d64e7598756277b807836eaaf122ec",
+   "role": "cover image"
+  }
+ ],
+ "files_changed": [
+  {"path": "operational_history.py", "state": "new", "bytes": 33637, "sha256": "bb6f440032504d475fd697105210c7b26fe81a989f2bb8ce27fd7f8138128a76"},
+  {"path": "native_workbook_qa.py", "state": "new", "bytes": 17569, "sha256": "bd4a0c29628d6e928d37e58c68cbcc563b4dc3f3696a062a5ced6639e2c2f55a"},
+  {"path": "scripts/excel_recalc_probe.ps1", "state": "new", "bytes": 5680, "sha256": "68c3a7639ef63668604c8e3feece52b6544e00e164393d9da912fa226e0811c6"},
+  {"path": "tests/test_native_workbook_qa.py", "state": "new", "bytes": 10044, "sha256": "66451e29d74ccb7933dee668a25887a106a7d9de53adb1b8dc73f4642e33d898"},
+  {"path": "PRODUCTION_TO_PUBLISHING_PLAYBOOK.md", "state": "new", "bytes": 10094, "sha256": "9543c9702aab0dfbfe50fba6b3f456daead588953f4d9eb46778509b90556f65"},
+  {"path": "reports/OPERATIONAL_LEARNING_BASELINE.md", "state": "new", "bytes": 13051, "sha256": "f1f4ab769227b32a6d58330a7ab9c57a4393ed0a841e1d02c27b1e5e011521f0"},
+  {"path": "reports/CYCLE102_B12-010_OPERATIONAL_LEARNING_2026-10-19.md", "state": "new", "sha256": "see git"},
+  {"path": "reports/B12-010/PUBLICATION_READINESS_2026-10-19.md", "state": "new", "bytes": 3678, "sha256": "0e8adef2f2769229e2b5cccc21ab4e23612e5924e71b5b02afdfb84452617dbd"},
+  {"path": "reports/B12-010/WORKBOOK_QA_2026-10-19.json", "state": "new", "bytes": 1032, "sha256": "312e4d268d15b0ee8b8212c3d0a8df21b19ca115f9a16d6d09142e786826b211"},
+  {"path": "data/operational_history.json", "state": "new", "bytes": 26111, "sha256": "e1c9b5c1e53cc0e8bc4787b3c0ab2233c29c23fb7d99ef0a3471200b55874bcb"},
+  {"path": "data/operational_history.jsonl", "state": "new", "bytes": 12515, "sha256": "9b3ba0a643a89b1e0d06ce057a8632be29731f5ce8767b4d67e0c4065244c061"},
+  {"path": "scripts/check_b12_integrity.py", "state": "modified", "bytes": 5736, "sha256": "c543f0e6b4776251459eae8e54aa107e244d4d01a49ddf2e2ee4ea21179eefb7", "change": "added the workbook QA evidence gate (recorded PASS required, hash must match the shipping file)"},
+  {"path": "reports/B12-010/RELEASE_BASELINE_2026-10-19.json", "state": "modified", "bytes": 7247, "sha256": "fc6496551a1fd15b1562aa3b46e50c9e90202b74eb950dc987ad026034ad90d4", "change": "cycle 102, release_commit, price.history_note, 2 new verification rows"},
+  {"path": "reports/B12-010/MANIFEST_2026-10-19.json", "state": "modified", "bytes": 1835, "sha256": "3b48a9f4c6ea8f85079978c34d78d0df204e606f47167fad0a2761ad7228d83f", "change": "native_workbook_qa evidence reference added"},
+  {"path": "PUBLICATION_CHECKLIST.md", "state": "modified", "bytes": 2160, "sha256": "88cae75887035440d3680d40cc4b6211982622dc666e049fffc76ea52bae79ab", "change": "one-line pointer to the canonical playbook"},
+  {"path": "LAUNCH_CHECKLIST.md", "state": "modified", "bytes": 7201, "sha256": "0d537acf555063c9e9e83f6ed4cc7f91ba6ebbc322e088b495fa2952728cf8d2", "change": "one-line pointer to the canonical playbook"}
+ ],
+ "tests": [
+  {"command": "python -m pytest tests/test_native_workbook_qa.py -q", "result": "17 passed"},
+  {"command": "python -m pytest tests/test_native_workbook_qa.py tests/test_b12_010_workbook.py tests/test_first_sale_orchestrator.py tests/test_first_sale_monitor.py tests/test_first_sale_monitor_hardened.py tests/test_gumroad_truthful_gate.py -q", "result": "153 passed"},
+  {"command": "python -m pytest <same set> tests/test_b12_utm_links.py -q", "result": "164 passed (the UTM file belongs to a parallel track, not this change)"},
+  {"command": "python scripts/check_b12_integrity.py", "result": "B12 integrity: OK (10 prep items, 5 baselines), exit 0"},
+  {"command": "python operational_history.py --write --check", "result": "OK, exit 0, 0 new transitions on re-run"},
+  {"command": "python native_workbook_qa.py --product B12-010 --write-evidence --json", "result": "PASS, 0 critical, 0 warning, Excel 16.0 build 19127, artifact hash matches"},
+  {"command": "full repository test suite", "result": "NOT RUN (over 50 minutes, known pre-existing failures unrelated to this batch); no claim is made about it"}
+ ],
+ "verification": [
+  {"check": "Cycle 101 format fix still correct in real Excel", "status": "PASS", "evidence": "reports/B12-010/WORKBOOK_QA_2026-10-19.json"},
+  {"check": "artifact hashes agree across manifest, release baseline, and disk", "status": "PASS", "evidence": "reports/B12-010/MANIFEST_2026-10-19.json, reports/B12-010/RELEASE_BASELINE_2026-10-19.json"},
+  {"check": "release states reconstructed from real evidence, invariants hold", "status": "PASS", "evidence": "data/operational_history.json"},
+  {"check": "batch registry drift identified and not trusted as the state source", "status": "PASS", "evidence": "reports/OPERATIONAL_LEARNING_BASELINE.md section 6 (L3)"},
+  {"check": "publication", "status": "BLOCKED", "evidence": "no product-specific founder authorization phrase exists; no live publishing credential in this environment"},
+  {"check": "externally verified sale", "status": "BLOCKED", "evidence": "$0.00 verified revenue; data/sales_ledger.jsonl has only publish_attempt rows"}
+ ],
+ "corrections": [
+  "Only $39.00 (the manifest placeholder) was withdrawn. $15.00 is the winning price and was never withdrawn.",
+  "The $15.00 gate versus $19.97 market evidence is not a policy conflict; the binding constraint is the page policy min($1.00 x pages, $15.00) on a 17-page guide.",
+  "The batch registry data/product_batch_12.json is stale (READY_FOR_REVIEW for live products) and must not be used as the state source.",
+  "reports/B12-010/RELEASE_BASELINE_2026-10-19.json lacked the release commit; it now records release_commit b2e2f34."
+ ],
+ "blockers": [
+  "A product-specific founder authorization phrase for B12-010.",
+  "A working live publishing credential in this environment.",
+  "A real external buyer: the store already has 50 live Gumroad listings and zero recorded sales."
+ ],
+ "next_actions": [
+  "Put B12-006 through B12-009 through real quality gates; they have artifacts but no gate records, so their QA state is UNKNOWN.",
+  "Add native workbook QA specs for the other shipping workbooks so the new gate covers more than one product.",
+  "Resolve the L3 registry drift so no downstream report can read READY_FOR_REVIEW for a live product."
+ ],
+ "disclosures": [
+  "The workbook has 427 formulas; the probe recalculated 148 on the scanned sheets. The 148 is not full verification.",
+  "Excel via COM (16.0 build 19127) is the only native engine available here; there is no pywin32 and no LibreOffice.",
+  "Google Sheets import of the workbook is untested and is disclosed to buyers.",
+  "B12-004's readiness is INFERRED (no standalone preparation record); the B12-004 publish task title names B12-001 (a real copy-paste defect, recorded not fixed).",
+  "The 50 older Gumroad listings were confirmed live by spot-check, not exhaustively re-fetched.",
+  "Nothing was published this cycle; FACTORY_LIVE_PUBLISH remains false."
+ ]
+}

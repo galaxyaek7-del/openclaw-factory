@@ -1,0 +1,850 @@
+{
+ "schema": "operational_history/v1",
+ "generated_at": "2026-10-19T16:51:15.470495+00:00",
+ "milestones": [
+  "BUILD_COMPLETE",
+  "QA_PASS",
+  "READY_FOR_AUTHORIZATION",
+  "UPLOAD_COMPLETED",
+  "PUBLIC_LISTING_VERIFIED",
+  "CHECKOUT_VERIFIED",
+  "FIRST_SALE_VERIFIED"
+ ],
+ "labels": [
+  "OBSERVED",
+  "DERIVED",
+  "INFERRED",
+  "UNKNOWN"
+ ],
+ "milestone_to_commercial_reality": {
+  "UPLOAD_COMPLETED": "PUBLISH_STATE_VERIFIED",
+  "PUBLIC_LISTING_VERIFIED": "PUBLIC_PAGE_VERIFIED",
+  "CHECKOUT_VERIFIED": "CHECKOUT_VERIFIED",
+  "FIRST_SALE_VERIFIED": "TRANSACTION_VERIFIED + PAYMENT_VERIFIED"
+ },
+ "products": [
+  {
+   "product_id": "B12-001",
+   "title": "Freelancer Rate & Raise Calculator",
+   "registry_price_usd": 14.99,
+   "milestones": {
+    "BUILD_COMPLETE": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "books/batch12",
+     "evidence": [
+      "books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx (8922 bytes, sha256 aee8fc0b100345e7...)"
+     ],
+     "note": null
+    },
+    "QA_PASS": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": "2026-10-17T20:19:51+00:00",
+     "source": "reports/B12-001/GATE_FINAL_2026-10-17.json",
+     "evidence": [
+      "verdict: APPROVED",
+      "gate price: $14.99"
+     ],
+     "note": null
+    },
+    "READY_FOR_AUTHORIZATION": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "data/founder_approvals.jsonl",
+     "evidence": [
+      "founder approval record: {\"item_id\": \"763d12d252a8\", \"created_at\": \"2026-10-17T21:34:08+00:00\", \"status\": \"PENDING\", \"status_updated_at\": null, \"action\": \"create_draft_listing\", \"target\": \"gumroad:B12-001\", \"change\": \"Manually create an UNPUBLISHED draft for B12-00"
+     ],
+     "note": null
+    },
+    "UPLOAD_COMPLETED": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": "2026-10-18T13:00:15.052032+00:00",
+     "source": "data/first_sale_draft_evidence.json",
+     "evidence": [
+      "create response + GET read-back for W9FpZXpQB-fNiVCteT6Cow== at $14.99"
+     ],
+     "note": null
+    },
+    "PUBLIC_LISTING_VERIFIED": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": "2026-10-18T18:45:53Z",
+     "source": "data/cycle94_live_verification.json",
+     "evidence": [
+      "data/cycle94_live_verification.json: published=true and public HTTP 200",
+      "data/cycle94_live_verification.json: public price=1499, currency=usd",
+      "data/cycle94_live_verification.json: sales_count=0",
+      "data/cycle94_live_verification.json: overall={'api_published_true': True, 'page_published_true': True, 'not_compliance_blocked': True, 'price_matches_approved_1499': True, 'deliverable_identical_to_canonical': True, 'no_description_placeholders': True, 'cover_present': True, 'all_pass': True}"
+     ],
+     "note": "an external read-back confirms the listing is public; checkout is assessed separately"
+    },
+    "CHECKOUT_VERIFIED": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": "2026-10-18T18:45:53Z",
+     "source": "data/cycle94_live_verification.json",
+     "evidence": [
+      "data/cycle93_live_verification.json: checkout HTTP 200, price=None, currency=None",
+      "data/cycle94_live_verification.json: checkout page HTTP 200, price 1499, currency usd",
+      "data/cycle94_live_verification.json: purchase prop present=True"
+     ],
+     "note": "the checkout page renders the approved price and currency; this is not a completed transaction and does not prove a payment can succeed"
+    },
+    "FIRST_SALE_VERIFIED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no sale ledger, Gumroad transaction record, or finance sale record exists"
+     ],
+     "note": "no real transaction exists for this product"
+    }
+   },
+   "highest_contiguous_verified": "CHECKOUT_VERIFIED",
+   "next_required": "FIRST_SALE_VERIFIED",
+   "verified_count": 6,
+   "out_of_order": [],
+   "registry_state": "READY_FOR_REVIEW"
+  },
+  {
+   "product_id": "B12-002",
+   "title": "Client Project Handoff Pack",
+   "registry_price_usd": 11.99,
+   "milestones": {
+    "BUILD_COMPLETE": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "books/batch12",
+     "evidence": [
+      "books/batch12/B12-002_client_handoff_guide.pdf (11360 bytes, sha256 273e05c5d8720ebe...)",
+      "books/batch12/B12-002_client_handoff_register.xlsx (15941 bytes, sha256 e733ea8e913899b5...)"
+     ],
+     "note": null
+    },
+    "QA_PASS": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": "2026-10-18T23:40:00Z",
+     "source": "reports/B12-002/GATE_FINAL_2026-10-18.json",
+     "evidence": [
+      "verdict: APPROVED (from gate_at_recommended_price_11_99 at $11.99)",
+      "QA_FACTS verdict: missing"
+     ],
+     "note": null
+    },
+    "READY_FOR_AUTHORIZATION": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": "2026-10-18T23:40:00Z",
+     "source": "reports/B12-002/GATE_FINAL_2026-10-18.json",
+     "evidence": [
+      "gate approved; no publication authorization is recorded"
+     ],
+     "note": "ready and awaiting a product-specific authorization; nothing has been published"
+    },
+    "UPLOAD_COMPLETED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no draft/create read-back exists"
+     ],
+     "note": "no upload has been observed for this product"
+    },
+    "PUBLIC_LISTING_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "CHECKOUT_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "FIRST_SALE_VERIFIED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no sale ledger, Gumroad transaction record, or finance sale record exists"
+     ],
+     "note": "no real transaction exists for this product"
+    }
+   },
+   "highest_contiguous_verified": "READY_FOR_AUTHORIZATION",
+   "next_required": "UPLOAD_COMPLETED",
+   "verified_count": 3,
+   "out_of_order": [],
+   "registry_state": "READY_FOR_REVIEW"
+  },
+  {
+   "product_id": "B12-003",
+   "title": "Founder Access Continuity Organizer",
+   "registry_price_usd": 8.0,
+   "milestones": {
+    "BUILD_COMPLETE": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "books/batch12",
+     "evidence": [
+      "books/batch12/B12-003_access_continuity_inventory.xlsx (13594 bytes, sha256 7cf3e46fa8c2470e...)",
+      "books/batch12/B12-003_access_continuity_organizer.pdf (19095 bytes, sha256 c9c18a4b0505828a...)"
+     ],
+     "note": null
+    },
+    "QA_PASS": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": "2026-10-19T07:55:00Z",
+     "source": "reports/B12-003/GATE_FINAL_2026-10-19.json",
+     "evidence": [
+      "verdict: APPROVED at $8.00",
+      "QA_FACTS verdict: missing"
+     ],
+     "note": null
+    },
+    "READY_FOR_AUTHORIZATION": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "data/cycle99_b12_003_publish_run.json",
+     "evidence": [
+      "the recorded publish run carried an explicit --publish-authorization argument"
+     ],
+     "note": null
+    },
+    "UPLOAD_COMPLETED": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": "2026-10-19T07:50:41.784628+00:00",
+     "source": "data/first_sale_draft_evidence_b12_003.json",
+     "evidence": [
+      "create response + GET read-back for TFeaaWXO3zySimrs2Jbjbw== at $8.00"
+     ],
+     "note": null
+    },
+    "PUBLIC_LISTING_VERIFIED": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": "2026-10-19",
+     "source": "data/cycle99_b12_003_live_verification.json",
+     "evidence": [
+      "data/cycle99_b12_003_live_verification.json: published=true and public HTTP 200",
+      "data/cycle99_b12_003_live_verification.json: public price=800, currency=USD",
+      "data/cycle99_b12_003_live_verification.json: sales_count=0",
+      "data/cycle99_b12_003_live_verification.json: overall=PASS_WITH_UNKNOWNS"
+     ],
+     "note": "an external read-back confirms the listing is public; checkout is assessed separately"
+    },
+    "CHECKOUT_VERIFIED": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": "2026-10-19",
+     "source": "data/cycle99_b12_003_live_verification.json",
+     "evidence": [
+      "data/cycle99_b12_003_live_verification.json: checkout page HTTP 200, price 800, currency USD"
+     ],
+     "note": "the checkout page renders the approved price and currency; this is not a completed transaction and does not prove a payment can succeed"
+    },
+    "FIRST_SALE_VERIFIED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no sale ledger, Gumroad transaction record, or finance sale record exists"
+     ],
+     "note": "no real transaction exists for this product"
+    }
+   },
+   "highest_contiguous_verified": "CHECKOUT_VERIFIED",
+   "next_required": "FIRST_SALE_VERIFIED",
+   "verified_count": 6,
+   "out_of_order": [],
+   "registry_state": "READY_FOR_REVIEW"
+  },
+  {
+   "product_id": "B12-004",
+   "title": "Meeting Cost & ROI Calculator",
+   "registry_price_usd": 11.99,
+   "milestones": {
+    "BUILD_COMPLETE": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "books/batch12",
+     "evidence": [
+      "books/batch12/B12-004_meeting_cost_roi_calculator.xlsx (12865 bytes, sha256 87ecb1cd223ebf61...)",
+      "books/batch12/B12-004_meeting_method_guide.pdf (9639 bytes, sha256 2c964edcfc8a9dcf...)"
+     ],
+     "note": null
+    },
+    "QA_PASS": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": "2026-10-18T19:40:00Z",
+     "source": "reports/B12-004/GATE_FINAL_2026-10-18.json",
+     "evidence": [
+      "verdict: APPROVED at $11.99; NOT_READY at the manifest's $19.00"
+     ],
+     "note": null
+    },
+    "READY_FOR_AUTHORIZATION": {
+     "status": "VERIFIED",
+     "label": "INFERRED",
+     "at": null,
+     "source": "data/cycle98_b12_004_live_verification.json",
+     "evidence": [
+      "a real publish exists: data/cycle98_b12_004_live_verification.json: published=true"
+     ],
+     "note": "no standalone authorization artifact was found; authorization is inferred from the recorded founder-authority publish, not observed directly"
+    },
+    "UPLOAD_COMPLETED": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": "2026-10-18T22:15:41.646113+00:00",
+     "source": "data/first_sale_draft_evidence_b12_004.json",
+     "evidence": [
+      "create response + GET read-back for -cbRBfZyJMTKpl-Xk8Oz3Q== at $11.99"
+     ],
+     "note": null
+    },
+    "PUBLIC_LISTING_VERIFIED": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": "2026-10-18T22:28:30Z",
+     "source": "data/cycle98_b12_004_live_verification.json",
+     "evidence": [
+      "data/cycle98_b12_004_live_verification.json: published=true and public HTTP 200",
+      "data/cycle98_b12_004_live_verification.json: public price=11.99, currency=usd",
+      "data/cycle98_b12_004_live_verification.json: sales_count=0"
+     ],
+     "note": "an external read-back confirms the listing is public; checkout is assessed separately"
+    },
+    "CHECKOUT_VERIFIED": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": "2026-10-18T22:28:30Z",
+     "source": "data/cycle98_b12_004_live_verification.json",
+     "evidence": [
+      "data/cycle98_b12_004_live_verification.json: checkout page HTTP 200, price 11.99, currency usd"
+     ],
+     "note": "the checkout page renders the approved price and currency; this is not a completed transaction and does not prove a payment can succeed"
+    },
+    "FIRST_SALE_VERIFIED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no sale ledger, Gumroad transaction record, or finance sale record exists"
+     ],
+     "note": "no real transaction exists for this product"
+    }
+   },
+   "highest_contiguous_verified": "CHECKOUT_VERIFIED",
+   "next_required": "FIRST_SALE_VERIFIED",
+   "verified_count": 6,
+   "out_of_order": [],
+   "registry_state": "READY_FOR_REVIEW"
+  },
+  {
+   "product_id": "B12-005",
+   "title": "Podcast Guest Booking Kit",
+   "registry_price_usd": 8,
+   "milestones": {
+    "BUILD_COMPLETE": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "books/batch12",
+     "evidence": [
+      "books/batch12/B12-005_podcast_guest_scripts.pdf (20146 bytes, sha256 246268d4ba41c609...)",
+      "books/batch12/B12-005_podcast_guest_tracker.xlsx (17400 bytes, sha256 0720869bd302ff7c...)"
+     ],
+     "note": null
+    },
+    "QA_PASS": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": "2026-10-19T09:45:00Z",
+     "source": "reports/B12-005/GATE_FINAL_2026-10-19.json",
+     "evidence": [
+      "verdict: APPROVED at $8.00",
+      "QA_FACTS verdict: missing"
+     ],
+     "note": null
+    },
+    "READY_FOR_AUTHORIZATION": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": "2026-10-19T09:45:00Z",
+     "source": "reports/B12-005/GATE_FINAL_2026-10-19.json",
+     "evidence": [
+      "gate approved; no publication authorization is recorded"
+     ],
+     "note": "ready and awaiting a product-specific authorization; nothing has been published"
+    },
+    "UPLOAD_COMPLETED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no draft/create read-back exists"
+     ],
+     "note": "no upload has been observed for this product"
+    },
+    "PUBLIC_LISTING_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "CHECKOUT_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "FIRST_SALE_VERIFIED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no sale ledger, Gumroad transaction record, or finance sale record exists"
+     ],
+     "note": "no real transaction exists for this product"
+    }
+   },
+   "highest_contiguous_verified": "READY_FOR_AUTHORIZATION",
+   "next_required": "UPLOAD_COMPLETED",
+   "verified_count": 3,
+   "out_of_order": [],
+   "registry_state": "READY_FOR_REVIEW"
+  },
+  {
+   "product_id": "B12-006",
+   "title": "Home-Office Deduction Organizer (US)",
+   "registry_price_usd": 29,
+   "milestones": {
+    "BUILD_COMPLETE": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "books/batch12",
+     "evidence": [
+      "books/batch12/B12-006_home_office_method_guide.pdf (3270 bytes, sha256 e6560135e0900630...)",
+      "books/batch12/B12-006_home_office_expense_log.xlsx (7886 bytes, sha256 fb8252cded40ebb7...)"
+     ],
+     "note": null
+    },
+    "QA_PASS": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no GATE_FINAL record exists for this product"
+    },
+    "READY_FOR_AUTHORIZATION": {
+     "status": "NOT_VERIFIED",
+     "label": "DERIVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "QA_PASS is not verified"
+     ],
+     "note": "a product cannot be ready for authorization before QA passes"
+    },
+    "UPLOAD_COMPLETED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no draft/create read-back exists"
+     ],
+     "note": "no upload has been observed for this product"
+    },
+    "PUBLIC_LISTING_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "CHECKOUT_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "FIRST_SALE_VERIFIED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no sale ledger, Gumroad transaction record, or finance sale record exists"
+     ],
+     "note": "no real transaction exists for this product"
+    }
+   },
+   "highest_contiguous_verified": "BUILD_COMPLETE",
+   "next_required": "QA_PASS",
+   "verified_count": 1,
+   "out_of_order": [],
+   "registry_state": "READY_FOR_REVIEW"
+  },
+  {
+   "product_id": "B12-007",
+   "title": "Digital Declutter & Backup: 30-Day System",
+   "registry_price_usd": 19,
+   "milestones": {
+    "BUILD_COMPLETE": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "books/batch12",
+     "evidence": [
+      "books/batch12/B12-007_digital_declutter_plan.pdf (4036 bytes, sha256 a70b55d9aba3ec4a...)",
+      "books/batch12/B12-007_digital_inventory.xlsx (8115 bytes, sha256 5b0b7088e7bea270...)"
+     ],
+     "note": null
+    },
+    "QA_PASS": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no GATE_FINAL record exists for this product"
+    },
+    "READY_FOR_AUTHORIZATION": {
+     "status": "NOT_VERIFIED",
+     "label": "DERIVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "QA_PASS is not verified"
+     ],
+     "note": "a product cannot be ready for authorization before QA passes"
+    },
+    "UPLOAD_COMPLETED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no draft/create read-back exists"
+     ],
+     "note": "no upload has been observed for this product"
+    },
+    "PUBLIC_LISTING_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "CHECKOUT_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "FIRST_SALE_VERIFIED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no sale ledger, Gumroad transaction record, or finance sale record exists"
+     ],
+     "note": "no real transaction exists for this product"
+    }
+   },
+   "highest_contiguous_verified": "BUILD_COMPLETE",
+   "next_required": "QA_PASS",
+   "verified_count": 1,
+   "out_of_order": [],
+   "registry_state": "READY_FOR_REVIEW"
+  },
+  {
+   "product_id": "B12-008",
+   "title": "Moving House 8-Week Planner",
+   "registry_price_usd": 29,
+   "milestones": {
+    "BUILD_COMPLETE": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "books/batch12",
+     "evidence": [
+      "books/batch12/B12-008_moving_checklist.pdf (4311 bytes, sha256 d3803cd831106cfb...)",
+      "books/batch12/B12-008_moving_budget_tracker.xlsx (7629 bytes, sha256 1e42132bf63d3c2b...)"
+     ],
+     "note": null
+    },
+    "QA_PASS": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no GATE_FINAL record exists for this product"
+    },
+    "READY_FOR_AUTHORIZATION": {
+     "status": "NOT_VERIFIED",
+     "label": "DERIVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "QA_PASS is not verified"
+     ],
+     "note": "a product cannot be ready for authorization before QA passes"
+    },
+    "UPLOAD_COMPLETED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no draft/create read-back exists"
+     ],
+     "note": "no upload has been observed for this product"
+    },
+    "PUBLIC_LISTING_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "CHECKOUT_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "FIRST_SALE_VERIFIED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no sale ledger, Gumroad transaction record, or finance sale record exists"
+     ],
+     "note": "no real transaction exists for this product"
+    }
+   },
+   "highest_contiguous_verified": "BUILD_COMPLETE",
+   "next_required": "QA_PASS",
+   "verified_count": 1,
+   "out_of_order": [],
+   "registry_state": "READY_FOR_REVIEW"
+  },
+  {
+   "product_id": "B12-009",
+   "title": "Pet Sitter Handover Kit",
+   "registry_price_usd": 19,
+   "milestones": {
+    "BUILD_COMPLETE": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "books/batch12",
+     "evidence": [
+      "books/batch12/B12-009_pet_sitter_handover_kit.pdf (4283 bytes, sha256 2b2069c950627ea1...)"
+     ],
+     "note": null
+    },
+    "QA_PASS": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no GATE_FINAL record exists for this product"
+    },
+    "READY_FOR_AUTHORIZATION": {
+     "status": "NOT_VERIFIED",
+     "label": "DERIVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "QA_PASS is not verified"
+     ],
+     "note": "a product cannot be ready for authorization before QA passes"
+    },
+    "UPLOAD_COMPLETED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no draft/create read-back exists"
+     ],
+     "note": "no upload has been observed for this product"
+    },
+    "PUBLIC_LISTING_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "CHECKOUT_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "FIRST_SALE_VERIFIED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no sale ledger, Gumroad transaction record, or finance sale record exists"
+     ],
+     "note": "no real transaction exists for this product"
+    }
+   },
+   "highest_contiguous_verified": "BUILD_COMPLETE",
+   "next_required": "QA_PASS",
+   "verified_count": 1,
+   "out_of_order": [],
+   "registry_state": "READY_FOR_REVIEW"
+  },
+  {
+   "product_id": "B12-010",
+   "title": "Nonprofit Grant Pipeline Tracker",
+   "registry_price_usd": 15.0,
+   "milestones": {
+    "BUILD_COMPLETE": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "books/batch12",
+     "evidence": [
+      "books/batch12/B12-010_grant_pipeline_tracker.xlsx (38765 bytes, sha256 df49cecaf704cb06...)",
+      "books/batch12/B12-010_grant_pipeline_guide.pdf (45453 bytes, sha256 b7ad0849a7d248db...)",
+      "reports/B12-010/MANIFEST_2026-10-19.json declares all 2 artifact(s)"
+     ],
+     "note": "artifact set matches the recorded manifest"
+    },
+    "QA_PASS": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": "2026-10-19T11:28:10Z",
+     "source": "reports/B12-010/GATE_FINAL_2026-10-19.json",
+     "evidence": [
+      "verdict: APPROVED at $15.00",
+      "QA_FACTS verdict: PASS_WITH_DISCLOSED_LIMITATIONS",
+      "native recalc: 0 error cell(s), verdict PASS - every displayed value agrees with the documented rule and no cell shows an Excel error."
+     ],
+     "note": null
+    },
+    "READY_FOR_AUTHORIZATION": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": "2026-10-19T11:28:10Z",
+     "source": "reports/B12-010/GATE_FINAL_2026-10-19.json",
+     "evidence": [
+      "gate approved; no publication authorization is recorded"
+     ],
+     "note": "ready and awaiting a product-specific authorization; nothing has been published"
+    },
+    "UPLOAD_COMPLETED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no draft/create read-back exists"
+     ],
+     "note": "no upload has been observed for this product"
+    },
+    "PUBLIC_LISTING_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "CHECKOUT_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "FIRST_SALE_VERIFIED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no sale ledger, Gumroad transaction record, or finance sale record exists"
+     ],
+     "note": "no real transaction exists for this product"
+    }
+   },
+   "highest_contiguous_verified": "READY_FOR_AUTHORIZATION",
+   "next_required": "UPLOAD_COMPLETED",
+   "verified_count": 3,
+   "out_of_order": [],
+   "registry_state": "READY_FOR_REVIEW"
+  }
+ ],
+ "summary": {
+  "products": 10,
+  "by_highest": {
+   "null": 0,
+   "BUILD_COMPLETE": 4,
+   "QA_PASS": 0,
+   "READY_FOR_AUTHORIZATION": 3,
+   "UPLOAD_COMPLETED": 0,
+   "PUBLIC_LISTING_VERIFIED": 0,
+   "CHECKOUT_VERIFIED": 3,
+   "FIRST_SALE_VERIFIED": 0
+  },
+  "first_sale_verified": 0
+ }
+}
