@@ -1,0 +1,201 @@
+{
+ "product_id": "B12-010",
+ "title": "Nonprofit Grant Pipeline Tracker",
+ "run_at": "2026-10-19T11:28:10Z",
+ "pdf": {
+  "file": "books\\batch12\\B12-010_grant_pipeline_guide.pdf",
+  "pages": 17,
+  "bytes": 45453,
+  "sha256": "b7ad0849a7d248db821c79873a8cdc3c42399a6ce054083eaf650298e97f0a49",
+  "words_pdf_only": 8198,
+  "words_including_sheet_text": 8324,
+  "words_per_dollar_at_recommended_price": 546.5,
+  "placeholders": 0,
+  "mojibake_markers": 0,
+  "sections": 28,
+  "instructions_present": true,
+  "promises_no_funding": true,
+  "disclaimer_present": true,
+  "no_free_income_claim": true
+ },
+ "xlsx": {
+  "file": "books\\batch12\\B12-010_grant_pipeline_tracker.xlsx",
+  "bytes": 38775,
+  "sha256": "def9f4c290ff385c79b904e044eaf6c3d454df561991fb20c760eecfcf132eab",
+  "sheets": [
+   "Opportunities",
+   "Docs",
+   "Budget",
+   "Timeline",
+   "Dashboard",
+   "Stages",
+   "Eligibility",
+   "DocLibrary",
+   "README"
+  ],
+  "sheet_count": 9,
+  "formulas": 427,
+  "data_validations": 11,
+  "structural": {
+   "Opportunities": {
+    "max_row": 41,
+    "max_col": 24,
+    "formulas": 280,
+    "data_validations": 6,
+    "date_cells": 6
+   },
+   "Docs": {
+    "max_row": 201,
+    "max_col": 8,
+    "formulas": 0,
+    "data_validations": 2,
+    "date_cells": 8
+   },
+   "Budget": {
+    "max_row": 121,
+    "max_col": 7,
+    "formulas": 0,
+    "data_validations": 1,
+    "date_cells": 0
+   },
+   "Timeline": {
+    "max_row": 61,
+    "max_col": 9,
+    "formulas": 120,
+    "data_validations": 2,
+    "date_cells": 2
+   },
+   "Dashboard": {
+    "max_row": 30,
+    "max_col": 3,
+    "formulas": 27,
+    "data_validations": 0,
+    "date_cells": 0
+   },
+   "Stages": {
+    "max_row": 8,
+    "max_col": 5,
+    "formulas": 0,
+    "data_validations": 0,
+    "date_cells": 0
+   },
+   "Eligibility": {
+    "max_row": 13,
+    "max_col": 4,
+    "formulas": 0,
+    "data_validations": 0,
+    "date_cells": 0
+   },
+   "DocLibrary": {
+    "max_row": 13,
+    "max_col": 5,
+    "formulas": 0,
+    "data_validations": 0,
+    "date_cells": 0
+   },
+   "README": {
+    "max_row": 11,
+    "max_col": 1,
+    "formulas": 0,
+    "data_validations": 0,
+    "date_cells": 0
+   }
+  },
+  "example_rows": [
+   "EX-001",
+   "EX-002",
+   "EX-003",
+   "EX-004"
+  ],
+  "example_rows_marked": "Yellow fill + EXAMPLE prefix on funder/program names; README says to delete them."
+ },
+ "cover": {
+  "file": "books\\covers\\B12-010.png",
+  "bytes": 42566,
+  "sha256": "c17de7066cbd9bf22affa138881fc67ed3d64e7598756277b807836eaaf122ec",
+  "width": 1280,
+  "height": 720,
+  "generator": "scripts/generate_all_covers.py::generate_cover('B12-010', ..., 15.00, 'Nonprofit Operations')",
+  "note": "1280x720 landscape matches every other Batch 12 cover. It is a Gumroad listing image, not a KDP cover."
+ },
+ "content_checks": {
+  "brand_dna.validate_customer_facing_text": "PASS (brand_reputation, content_neutrality, copyright_trademark, fake_urgency)",
+  "executive_quality_gate.check_content_neutrality_risk": "PASS",
+  "executive_quality_gate.check_copyright_trademark_risk": "PASS",
+  "executive_quality_gate.check_fake_urgency_risk": "PASS",
+  "executive_quality_gate.check_brand_reputation_risk": "PASS"
+ },
+ "cross_artifact_consistency": [
+  "Guide names 12 must-pass eligibility questions; Eligibility sheet has exactly 12, matching in substance.",
+  "Guide names 12 standard documents; DocLibrary sheet has exactly 12.",
+  "Guide names 7 stages with exit gates; Stages sheet has exactly 7 with the same gates.",
+  "Guide's field dictionary matches every Opportunities header A-V, including the six computed columns.",
+  "Guide says DUE IN within 14 days (Opportunities) and 30 days (Timeline); formulas use 14 and 30 respectively.",
+  "Guide says closed statuses are Awarded/Declined/Withdrawn; both column S and helper column V use exactly those three.",
+  "Guide says Docs gap reads OK when nothing is required; column Q returns OK for 0 required.",
+  "Guide says awarded-above-max is flagged; column U contains that exact check.",
+  "Guide's worked example (15,000 award, quarterly reports, 57 days) is consistent with the Timeline formulas."
+ ],
+ "metrics_rederivation": {
+  "method": "Independent Python re-implementation of every computed rule (not an Excel recalculation - no LibreOffice in this environment).",
+  "deadline_states": {
+   "EX-001:2": {
+    "deadline_state_expected": "OPEN",
+    "days_expected": 147,
+    "duplicate_expected": "DUPLICATE OF ANOTHER ROW",
+    "open_deadline_helper_expected": "2027-03-15"
+   },
+   "EX-002:3": {
+    "deadline_state_expected": "DUE IN 14 DAYS",
+    "days_expected": 14,
+    "duplicate_expected": "",
+    "open_deadline_helper_expected": "2026-11-02"
+   },
+   "EX-003:4": {
+    "deadline_state_expected": "CLOSED",
+    "days_expected": -110,
+    "duplicate_expected": "",
+    "open_deadline_helper_expected": ""
+   },
+   "EX-004:5": {
+    "deadline_state_expected": "OPEN",
+    "days_expected": 147,
+    "duplicate_expected": "DUPLICATE OF ANOTHER ROW",
+    "open_deadline_helper_expected": "2027-03-15"
+   }
+  },
+  "timeline_next_due": [
+   {
+    "row": 2,
+    "id": "EX-003",
+    "first_due": "2027-01-31 00:00:00",
+    "every": 365,
+    "next_due_expected": "2027-01-31",
+    "status_expected": "OPEN"
+   },
+   {
+    "row": 3,
+    "id": "EX-003",
+    "first_due": "2026-12-15 00:00:00",
+    "every": 90,
+    "next_due_expected": "2026-12-15",
+    "status_expected": "OPEN"
+   },
+   {
+    "row": 4,
+    "id": "EX-003",
+    "first_due": "None",
+    "every": 365,
+    "next_due_expected": "Check first due and repeat days",
+    "status_expected": "CHECK INPUTS"
+   }
+  ],
+  "result": "All example rows match the expected states, day counts, duplicate flags and helper values."
+ },
+ "limitations_disclosed": [
+  "Workbook math was not recalculated by a spreadsheet engine: no LibreOffice/Excel is available in this environment. Formula logic was re-implemented independently in Python and the example rows agree.",
+  "The workbook was built for Excel and imports into Google Sheets in ordinary use, but no version-by-version editor matrix was tested.",
+  "No real funder's guidelines were used to validate the eligibility questions - they are a general screen, and the funder's own guidelines always win."
+ ],
+ "verdict": "PASS_WITH_DISCLOSED_LIMITATIONS"
+}

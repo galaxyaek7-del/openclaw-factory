@@ -1,0 +1,525 @@
+{
+ "product_id": "B12-010",
+ "title": "Nonprofit Grant Pipeline Tracker",
+ "run_at": "2026-10-19T11:28:10Z",
+ "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
+ "price_status": "DERIVED_BY_CYCLE100_PRICING_RULE (pending founder listing authorization)",
+ "price_basis": "HIGHEST_PRICE_PASSING_ALL_MANDATORY_GATES",
+ "recommended_price_usd": 15.0,
+ "price_normalized_to": "$15.00",
+ "competitors_sourced": [
+  {
+   "name": "Grant Award Management Spreadsheet | Grant Reporting Tracker | Nonprofit Compliance Template | Deadline Reminder System | Google Sheets",
+   "price_usd": 111.25,
+   "url": "https://www.etsy.com/listing/4481454002/grant-award-management-spreadsheet-grant"
+  },
+  {
+   "name": "Grant Writing Templates Bundle (GrantCompass)",
+   "price_usd": 67.0,
+   "url": "https://grantcompass.ca/products/grant-writing-templates.html"
+  },
+  {
+   "name": "Nonprofit Grant Tracker Spreadsheet, Grant Management Template for Excel & Google Sheets, Deadline and Reporting Tracker",
+   "price_usd": 19.97,
+   "url": "https://www.etsy.com/market/grant_tracking_spreadsheet"
+  },
+  {
+   "name": "Grant Budget and Reporting Tracker - Excel Workbook (Gumroad checkout)",
+   "price_usd": 19.0,
+   "url": "https://gumroad.com/checkout?product=awhrah&quantity=1"
+  },
+  {
+   "name": "Nonprofit Grant Management Excel + Google Sheets | Program Tracker, Budget Dashboard, Reporting Calendar & Impact Tracker",
+   "price_usd": 17.24,
+   "url": "https://www.etsy.com/market/grant_tracking_spreadsheet"
+  },
+  {
+   "name": "GRANTFLOW - Grant Application & Reporting Tracker (animaliriana)",
+   "price_usd": 15.92,
+   "url": "https://animaliriana.gumroad.com/l/grantflow"
+  },
+  {
+   "name": "Nonprofit Grant Tracker Spreadsheet | Excel & Google Sheets | Grants Management Template | Grant Writing Dashboard | Compliance Calendar",
+   "price_usd": 15.0,
+   "url": "https://www.etsy.com/market/grant_tracking_spreadsheet"
+  },
+  {
+   "name": "Grant Tracker for Nonprofits: Post Award Reporting and Pipeline Template for Notion (Gumroad checkout)",
+   "price_usd": 15.0,
+   "url": "https://gumroad.com/checkout?product=ukpnes&quantity=1"
+  },
+  {
+   "name": "Nonprofit Grant Application Tracking Spreadsheet - Google Sheets Version - With Dashboard, Budget Projection, & Submission Tracker",
+   "price_usd": 6.98,
+   "url": "https://www.etsy.com/market/grant_tracking_spreadsheet"
+  }
+ ],
+ "competitors_not_read": [
+  {
+   "name": "Nonprofit Grant Tracker (Google Sheets + Excel) (esanveisi)",
+   "url": "https://esanveisi.gumroad.com/l/nonprofit-grant-tracker",
+   "reason": "Page rendered the title only; no price in the returned content. Recorded as NOT_READ."
+  }
+ ],
+ "price_range_observed_usd": [
+  6.98,
+  111.25
+ ],
+ "comparables_note": "Single-file workbooks: $6.98-$19.97. Bundle: $67. One aspirational listing at $111.25 with 0 sales. Two JPY-only listings excluded from the USD span.",
+ "gate_results": [
+  {
+   "price": 19.97,
+   "quality_gate": {
+    "verdict": "APPROVED",
+    "blocked": false,
+    "reasons": [],
+    "layers": {
+     "core_value": {
+      "status": "PASS",
+      "score": 100
+     },
+     "content_quality": {
+      "status": "PASS",
+      "score": 100
+     },
+     "market_reality": {
+      "status": "PASS",
+      "score": 70
+     }
+    }
+   },
+   "economics": {
+    "royalty_rate": 0.9,
+    "net_profit": 17.973,
+    "min_required": 2.5,
+    "in_dead_zone": false,
+    "approved": true,
+    "reason": "ok: net $17.97 clears floor $2.50",
+    "market_realistic": false,
+    "suggested_realistic_price": 15.0
+   },
+   "market_realism": {
+    "market_realistic": false,
+    "suggested_realistic_price": 15.0,
+    "page_count": 17,
+    "pages_based_ceiling_usd": 15.0
+   },
+   "passes_all": false,
+   "blocking": [
+    "market_realism:page ceiling $15.00"
+   ]
+  },
+  {
+   "price": 17.99,
+   "quality_gate": {
+    "verdict": "APPROVED",
+    "blocked": false,
+    "reasons": [],
+    "layers": {
+     "core_value": {
+      "status": "PASS",
+      "score": 100
+     },
+     "content_quality": {
+      "status": "PASS",
+      "score": 100
+     },
+     "market_reality": {
+      "status": "PASS",
+      "score": 70
+     }
+    }
+   },
+   "economics": {
+    "royalty_rate": 0.9,
+    "net_profit": 16.191,
+    "min_required": 2.5,
+    "in_dead_zone": false,
+    "approved": true,
+    "reason": "ok: net $16.19 clears floor $2.50",
+    "market_realistic": false,
+    "suggested_realistic_price": 15.0
+   },
+   "market_realism": {
+    "market_realistic": false,
+    "suggested_realistic_price": 15.0,
+    "page_count": 17,
+    "pages_based_ceiling_usd": 15.0
+   },
+   "passes_all": false,
+   "blocking": [
+    "market_realism:page ceiling $15.00"
+   ]
+  },
+  {
+   "price": 15.0,
+   "quality_gate": {
+    "verdict": "APPROVED",
+    "blocked": false,
+    "reasons": [],
+    "layers": {
+     "core_value": {
+      "status": "PASS",
+      "score": 100
+     },
+     "content_quality": {
+      "status": "PASS",
+      "score": 100
+     },
+     "market_reality": {
+      "status": "PASS",
+      "score": 70
+     }
+    }
+   },
+   "economics": {
+    "royalty_rate": 0.9,
+    "net_profit": 13.5,
+    "min_required": 2.5,
+    "in_dead_zone": false,
+    "approved": true,
+    "reason": "ok: net $13.50 clears floor $2.50",
+    "market_realistic": true,
+    "suggested_realistic_price": 15.0
+   },
+   "market_realism": {
+    "market_realistic": true,
+    "suggested_realistic_price": 15.0,
+    "page_count": 17,
+    "pages_based_ceiling_usd": 15.0
+   },
+   "passes_all": true,
+   "blocking": []
+  },
+  {
+   "price": 14.99,
+   "quality_gate": {
+    "verdict": "APPROVED",
+    "blocked": false,
+    "reasons": [],
+    "layers": {
+     "core_value": {
+      "status": "PASS",
+      "score": 100
+     },
+     "content_quality": {
+      "status": "PASS",
+      "score": 100
+     },
+     "market_reality": {
+      "status": "PASS",
+      "score": 70
+     }
+    }
+   },
+   "economics": {
+    "royalty_rate": 0.9,
+    "net_profit": 13.491,
+    "min_required": 2.5,
+    "in_dead_zone": false,
+    "approved": true,
+    "reason": "ok: net $13.49 clears floor $2.50",
+    "market_realistic": true,
+    "suggested_realistic_price": 14.99
+   },
+   "market_realism": {
+    "market_realistic": true,
+    "suggested_realistic_price": 14.99,
+    "page_count": 17,
+    "pages_based_ceiling_usd": 15.0
+   },
+   "passes_all": true,
+   "blocking": []
+  },
+  {
+   "price": 12.99,
+   "quality_gate": {
+    "verdict": "APPROVED",
+    "blocked": false,
+    "reasons": [],
+    "layers": {
+     "core_value": {
+      "status": "PASS",
+      "score": 100
+     },
+     "content_quality": {
+      "status": "PASS",
+      "score": 100
+     },
+     "market_reality": {
+      "status": "PASS",
+      "score": 70
+     }
+    }
+   },
+   "economics": {
+    "royalty_rate": 0.9,
+    "net_profit": 11.691,
+    "min_required": 2.5,
+    "in_dead_zone": false,
+    "approved": true,
+    "reason": "ok: net $11.69 clears floor $2.50",
+    "market_realistic": true,
+    "suggested_realistic_price": 12.99
+   },
+   "market_realism": {
+    "market_realistic": true,
+    "suggested_realistic_price": 12.99,
+    "page_count": 17,
+    "pages_based_ceiling_usd": 15.0
+   },
+   "passes_all": true,
+   "blocking": []
+  }
+ ],
+ "gate_at_19_97": {
+  "price": 19.97,
+  "quality_gate": {
+   "verdict": "APPROVED",
+   "blocked": false,
+   "reasons": [],
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 100
+    },
+    "content_quality": {
+     "status": "PASS",
+     "score": 100
+    },
+    "market_reality": {
+     "status": "PASS",
+     "score": 70
+    }
+   }
+  },
+  "economics": {
+   "royalty_rate": 0.9,
+   "net_profit": 17.973,
+   "min_required": 2.5,
+   "in_dead_zone": false,
+   "approved": true,
+   "reason": "ok: net $17.97 clears floor $2.50",
+   "market_realistic": false,
+   "suggested_realistic_price": 15.0
+  },
+  "market_realism": {
+   "market_realistic": false,
+   "suggested_realistic_price": 15.0,
+   "page_count": 17,
+   "pages_based_ceiling_usd": 15.0
+  },
+  "passes_all": false,
+  "blocking": [
+   "market_realism:page ceiling $15.00"
+  ]
+ },
+ "gate_at_17_99": {
+  "price": 17.99,
+  "quality_gate": {
+   "verdict": "APPROVED",
+   "blocked": false,
+   "reasons": [],
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 100
+    },
+    "content_quality": {
+     "status": "PASS",
+     "score": 100
+    },
+    "market_reality": {
+     "status": "PASS",
+     "score": 70
+    }
+   }
+  },
+  "economics": {
+   "royalty_rate": 0.9,
+   "net_profit": 16.191,
+   "min_required": 2.5,
+   "in_dead_zone": false,
+   "approved": true,
+   "reason": "ok: net $16.19 clears floor $2.50",
+   "market_realistic": false,
+   "suggested_realistic_price": 15.0
+  },
+  "market_realism": {
+   "market_realistic": false,
+   "suggested_realistic_price": 15.0,
+   "page_count": 17,
+   "pages_based_ceiling_usd": 15.0
+  },
+  "passes_all": false,
+  "blocking": [
+   "market_realism:page ceiling $15.00"
+  ]
+ },
+ "gate_at_15_00": {
+  "price": 15.0,
+  "quality_gate": {
+   "verdict": "APPROVED",
+   "blocked": false,
+   "reasons": [],
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 100
+    },
+    "content_quality": {
+     "status": "PASS",
+     "score": 100
+    },
+    "market_reality": {
+     "status": "PASS",
+     "score": 70
+    }
+   }
+  },
+  "economics": {
+   "royalty_rate": 0.9,
+   "net_profit": 13.5,
+   "min_required": 2.5,
+   "in_dead_zone": false,
+   "approved": true,
+   "reason": "ok: net $13.50 clears floor $2.50",
+   "market_realistic": true,
+   "suggested_realistic_price": 15.0
+  },
+  "market_realism": {
+   "market_realistic": true,
+   "suggested_realistic_price": 15.0,
+   "page_count": 17,
+   "pages_based_ceiling_usd": 15.0
+  },
+  "passes_all": true,
+  "blocking": []
+ },
+ "gate_at_14_99": {
+  "price": 14.99,
+  "quality_gate": {
+   "verdict": "APPROVED",
+   "blocked": false,
+   "reasons": [],
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 100
+    },
+    "content_quality": {
+     "status": "PASS",
+     "score": 100
+    },
+    "market_reality": {
+     "status": "PASS",
+     "score": 70
+    }
+   }
+  },
+  "economics": {
+   "royalty_rate": 0.9,
+   "net_profit": 13.491,
+   "min_required": 2.5,
+   "in_dead_zone": false,
+   "approved": true,
+   "reason": "ok: net $13.49 clears floor $2.50",
+   "market_realistic": true,
+   "suggested_realistic_price": 14.99
+  },
+  "market_realism": {
+   "market_realistic": true,
+   "suggested_realistic_price": 14.99,
+   "page_count": 17,
+   "pages_based_ceiling_usd": 15.0
+  },
+  "passes_all": true,
+  "blocking": []
+ },
+ "gate_at_12_99": {
+  "price": 12.99,
+  "quality_gate": {
+   "verdict": "APPROVED",
+   "blocked": false,
+   "reasons": [],
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 100
+    },
+    "content_quality": {
+     "status": "PASS",
+     "score": 100
+    },
+    "market_reality": {
+     "status": "PASS",
+     "score": 70
+    }
+   }
+  },
+  "economics": {
+   "royalty_rate": 0.9,
+   "net_profit": 11.691,
+   "min_required": 2.5,
+   "in_dead_zone": false,
+   "approved": true,
+   "reason": "ok: net $11.69 clears floor $2.50",
+   "market_realistic": true,
+   "suggested_realistic_price": 12.99
+  },
+  "market_realism": {
+   "market_realistic": true,
+   "suggested_realistic_price": 12.99,
+   "page_count": 17,
+   "pages_based_ceiling_usd": 15.0
+  },
+  "passes_all": true,
+  "blocking": []
+ },
+ "economics_market_realism_disclosure": {
+  "check": "economics.market_realism_check(price, page_count=17, platform='gumroad_digital')",
+  "at_12_99_17pages": [
+   true,
+   12.99
+  ],
+  "at_14_99_17pages": [
+   true,
+   14.99
+  ],
+  "at_15_00_17pages": [
+   true,
+   15.0
+  ],
+  "at_17_99_17pages": [
+   false,
+   15.0
+  ],
+  "at_19_97_17pages": [
+   false,
+   15.0
+  ],
+  "finding": "At 17 PDF pages, the short-book ceiling is $15.00. Prices above $15.00 are flagged NOT market_realistic; schemas/product.py::from_jsonl_record() would silently re-price them to $15.00 on the auto-distribution path. The founder-authorized first-sale path (scripts/first_sale_orchestrator.py) would publish a manifest price directly, so the cap is enforced here deliberately, not bypassed.",
+  "why_not_30_pages": "A 30-page guide would clear the cap, but reaching it would require roughly 6,000 more words of genuine content. Adding filler to clear a pricing gate would violate the no-padding rule; $15.00 is the honest price for this artifact.",
+  "comparables_note": "The observed single-file cluster ($6.98-$19.97) supports $15.00 without any appeal to the policy ceiling: a 1,500-review comparable sits at exactly $15.00."
+ },
+ "founder_decision": {
+  "date": null,
+  "price_usd": null,
+  "basis": null,
+  "note": "No founder listing or publication authorization exists for B12-010. The price above is derived by the standing pricing rule, not approved by the founder."
+ },
+ "verdict": "APPROVED at $15.00",
+ "price_history": [
+  {
+   "price_usd": 39.0,
+   "status": "manifest placeholder",
+   "gate": "REJECTED - no comparable sustains $39 and the page policy caps at $15.00"
+  },
+  {
+   "price_usd": 15.0,
+   "status": "DERIVED (Cycle 100 pricing rule, pending founder listing authorization)",
+   "gate": "APPROVED"
+  }
+ ],
+ "cycle100_note": "Qualitative layers all score 100/100/70 at every candidate; the binding constraint is the page-based market-realism policy, not quality. 8,198 guide words clear the 100-words-per-dollar depth rule up to about $81, so depth is not what limits the price - page count is."
+}

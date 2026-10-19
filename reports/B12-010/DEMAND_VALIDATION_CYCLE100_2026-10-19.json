@@ -1,0 +1,149 @@
+{
+ "product": "B12-010",
+ "title": "Nonprofit Grant Pipeline Tracker",
+ "cycle": 100,
+ "run_at": "2026-10-19T10:29:02Z",
+ "purpose": "Re-validate the Cycle 99 demand evidence for B12-010 before any build work, per the Cycle 100 directive: do not treat rating/review counts as sales without checking what they actually measure, and re-derive the price band rather than inheriting $39.",
+ "method": "Live web search of Etsy market pages for the exact concept (grant tracker / grant management spreadsheet) plus one direct listing fetch attempt. Etsy listing fetches are geo/anti-bot limited: a direct fetch of the market URL returned HTTP 403 while the search provider's own retrieval of the same page content succeeded. Every figure below was read off retrieved page content, not inferred.",
+ "re_checks_of_cycle99_claims": [
+  {
+   "claim": "A 'Nonprofit Grant Tracker Spreadsheet | Excel & Google Sheets' listing shows (982) reviews.",
+   "result": "PARTIALLY_CONFIRMED - magnitude confirmed, exact number is not stable",
+   "observed": [
+    982,
+    973,
+    957,
+    981
+   ],
+   "detail": "The same listing title appeared with (982), (973), (957) and (981) on four different Etsy market pages retrieved minutes apart, and two of those appearances were labelled 'Ad by Etsy seller'. The count is a listing/shop review aggregate rendered per page and per geo, not a fixed figure. It is evidence of hundreds of reviews for this exact concept; it is NOT evidence of 982 current sales.",
+   "impact_on_build": "none - the build plan already assumes hundreds-of-reviews-level demand, not a specific number"
+  },
+  {
+   "claim": "The $67 17-resource Canadian bundle (GrantCompass) proves depth commands an order of magnitude more.",
+   "result": "CARRIED_FORWARD_NOT_REVERIFIED_THIS_PASS",
+   "detail": "Not re-fetched in this pass; the Cycle 99 observation recorded on 2026-10-19 stands as recorded and is not strengthened. Treated as weak supporting evidence only, never as a price target for a two-file product.",
+   "impact_on_build": "none - the price band does not rely on this comparable"
+  },
+  {
+   "claim": "A workbook-plus-guide bundle in this niche is an already-selling product shape.",
+   "result": "CONFIRMED_AND_STRENGTHENED",
+   "detail": "Three independent confirmations retrieved this pass: (1) GRANTFLOW on Gumroad at $15.92 ships 2 XLSX + 4 PDF guides (Cycle 99 record); (2) Etsy 'Grants Dashboard 2.0' ships '1 PDF, 2 other files' and its own description lists an instruction tab, a training video, an example spreadsheet and a blank template, at SEK 188.72 (25% off SEK 251.66), 4.5 stars from 5 shop reviews; (3) the Etsy category norm itself is 'Digital file type(s): 1 PDF, 1 other file', i.e. buyer expectation is already a multi-file package, not a bare spreadsheet.",
+   "impact_on_build": "supports shipping the workbook WITH a written method guide (ADR-022 path) rather than a workbook alone"
+  },
+  {
+   "claim": "The manifest price of $39.00 is unsupported by the evidence.",
+   "result": "CONFIRMED_AND_SHARPENED",
+   "detail": "Every single-file comparable retrieved in either pass sits at or below $19.97. The highest-priced comparable with volume evidence is $19.97 (135 reviews), and the highest-review comparable is priced $3.90. No retrieved evidence supports $39.00.",
+   "impact_on_build": "$39.00 is withdrawn as a hypothesis; the price will be derived by gate, not inherited"
+  }
+ ],
+ "new_observations_this_pass": {
+  "review_count_ladder_usd": [
+   {
+    "reviews": 1500,
+    "price_usd": 3.9,
+    "list_price_usd": 7.8,
+    "note": "'(1.5k)' - the volume end of the market is cheap"
+   },
+   {
+    "reviews": 981,
+    "price_usd": 15.0,
+    "list_price_usd": 30.0,
+    "note": "Nonprofit Grant Tracker Spreadsheet (Excel & Google Sheets)"
+   },
+   {
+    "reviews": 486,
+    "price_usd": 12.99,
+    "list_price_usd": null,
+    "note": "GRANT TRACKER TEMPLATE - Nonprofit Template"
+   },
+   {
+    "reviews": 135,
+    "price_usd": 19.97,
+    "list_price_usd": 39.95,
+    "note": "Nonprofit Grant Tracker Spreadsheet, Deadline and Reporting Tracker"
+   },
+   {
+    "reviews": 40,
+    "price_usd": 8.5,
+    "list_price_usd": null,
+    "note": "Grant Application Tracker | Excel & Google Sheets"
+   },
+   {
+    "reviews": 35,
+    "price_usd": 6.98,
+    "list_price_usd": null,
+    "note": "Google Sheets version with dashboard + budget projection"
+   },
+   {
+    "reviews": 27,
+    "price_usd": 8.13,
+    "list_price_usd": null,
+    "note": "Nonprofit Grant Tracker Google Sheet"
+   },
+   {
+    "reviews": 3,
+    "price_usd": 17.24,
+    "list_price_usd": 34.49,
+    "note": "Program tracker + budget dashboard + impact tracker"
+   }
+  ],
+  "observations": [
+   "Volume concentrates between $3.90 and $13.00; the $15.00-$19.97 band is real and carries the second- and fourth-highest review counts, but every listing in that band displays a permanent '50% off' list-price anchor ($30.00 / $39.95).",
+   "Most rows on the Etsy market pages are labelled 'Ad by Etsy seller'. Prices are real; page position is paid, so position must not be read as organic demand.",
+   "The deepest observed competitor (Grants Dashboard 2.0) competes on volume - up to 700 grants and 2,000 tasks across 6+ report tabs - and prices at roughly $18 equivalent. Competing on tab count is a losing move for a two-file product.",
+   "Cheap near-substitutes are abundant: $3.97 grant prospect tracker, $5.99 nonprofit budget/grant tracker, and free funder-provided reporting templates. Any claim of uniqueness would be false."
+  ]
+ },
+ "revised_comparable_band_usd": {
+  "min": 3.9,
+  "max": 19.97,
+  "core_band": [
+   12.99,
+   19.97
+  ],
+  "note": "Single-file/comparable grant-tracker products. The bundle comparable (GRANTFLOW, $15.92, 6 files) sits inside the same band, which is the band a workbook + guide package belongs in."
+ },
+ "price_hypothesis_this_cycle": {
+  "candidate_range_usd": [
+   12.99,
+   15.0,
+   17.99,
+   19.97
+  ],
+  "withdrawn": 39.0,
+  "binding_policy": "economics.market_realism_check: ceiling = min(pages x $1.00, $15.00) while the PDF guide is under 30 pages; at 30+ pages the $15 short-book ceiling stops applying.",
+  "consequence": "$19.97 is reachable only if the guide genuinely runs 30+ pages. If it lands under 30 pages the honest price is $15.00 or below, and that outcome will be reported rather than engineered by padding pages."
+ },
+ "differentiation_decision": {
+  "keep": [
+   "deadline/compliance calculation engine with plain-language states",
+   "post-award reporting cadence computed to a next-due date",
+   "required-document readiness tracking with a standard 12-document library",
+   "reusable narrative/boilerplate block discipline",
+   "a written method guide (field dictionary, formulas explained, worked example, mistakes, FAQ)"
+  ],
+  "reject": [
+   "competing on grant/task volume (700-grant featurism) - unwinnable and unverifiable",
+   "any live alerting/notification feature - needs a service this factory does not run and the directive forbids new external services",
+   "any claim of funding outcomes or guarantees - market norm and Truth First rule both forbid it"
+  ]
+ },
+ "sources": [
+  "https://www.etsy.com/market/grant_tracking_spreadsheet (HTTP 403 on direct fetch; content retrieved via search provider)",
+  "https://www.etsy.com/market/grant_tracker_google_sheet",
+  "https://www.etsy.com/market/non_profit_grant_management",
+  "https://www.etsy.com/listing/1698587919/grants-dashboard-20-grants-spreadsheet",
+  "https://www.etsy.com/listing/4462870544/grant-tracker-spreadsheet-for-nonprofits",
+  "https://www.etsy.com/market/grant_management_template%2C_excel",
+  "https://www.etsy.com/market/grant_tracking_dashboard",
+  "reports/B12-010/DEMAND_EVIDENCE_2026-10-19.json (Cycle 99 record, unchanged)"
+ ],
+ "honest_caveats": [
+  "Review counts on Etsy market pages are listing/shop aggregates that vary by page and geo; they are not sales counts and must never be reported as sales.",
+  "Two listings in the Cycle 99 record displayed prices only in JPY; none of this pass's figures are geo-converted, and no USD figure is asserted for any JPY listing.",
+  "The $67 bundle comparable was not re-verified in this pass and is not relied upon.",
+  "No Galaxy Forge revenue is implied anywhere here. VERIFIED_REVENUE remains $0.00."
+ ],
+ "status": "VALIDATION_COMPLETE - build plan supported, price band narrowed to $12.99-$19.97, $39.00 withdrawn"
+}

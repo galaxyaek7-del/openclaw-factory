@@ -285,9 +285,10 @@
     {
       "id": "B12-010",
       "title": "Nonprofit Grant Pipeline Tracker",
-      "proposed_price_usd": 39,
+      "proposed_price_usd": 15.0,
       "files": [
-        "B12-010_grant_pipeline_tracker.xlsx"
+        "B12-010_grant_pipeline_tracker.xlsx",
+        "B12-010_grant_pipeline_guide.pdf"
       ],
       "page": "b12-grant-pipeline-tracker.html",
       "utm_plan": {
@@ -302,7 +303,13 @@
         "verify price matches proposal",
         "test download after listing (founder, post-authorization)"
       ],
-      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
+      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+      "previous_proposed_price_usd": 39.0,
+      "price_status": "DERIVED (Cycle 100 pricing rule); not founder-approved",
+      "cover_image": "books/covers/B12-010.png",
+      "listing_copy": "drafts/b12_010_listing_copy.txt",
+      "gate_report": "reports/B12-010/GATE_FINAL_2026-10-19.json",
+      "updated_at_utc": "2026-10-19T11:38:19Z"
     }
   ]
 }

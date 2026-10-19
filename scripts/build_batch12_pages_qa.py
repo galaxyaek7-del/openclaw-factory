@@ -72,10 +72,10 @@ PRODUCTS = [
       value="Print-and-fill emergency contacts, pet profiles, vet authorization worksheet, and house rules. Organizer only — confirm requirements with your own clinic.",
       audience="Pet owners who travel.", use="Print, fill by hand, fridge + photo in sitter's phone, walk through once."),
  dict(id="B12-010", slug="b12-grant-pipeline-tracker", title="Nonprofit Grant Pipeline Tracker",
-      price=39, files=["B12-010_grant_pipeline_tracker.xlsx"],
-      problem="Small nonprofits waste weeks on ineligible applications and rewrite boilerplate per funder.",
-      value="A stage-gated pipeline (nothing enters drafting until eligibility exits clean), reusable boilerplate blocks, and decline reasons that actually teach.",
-      audience="Small nonprofits and volunteer grant writers.", use="Log funders, clear eligibility first, reuse boilerplate."),
+      price=15, files=["B12-010_grant_pipeline_tracker.xlsx", "B12-010_grant_pipeline_guide.pdf"],
+      problem="Grant work is lost to applications that were never eligible and to post-award reports that live in one person's memory.",
+      value="One register for every funder and program, with a twelve-question eligibility screen, per-application document readiness, computed deadline states, and a reporting calendar that steps forward in whole intervals so a post-award report is never missed. Ships with a 17-page method guide covering every field, every formula rule, a worked 90-day example and the twenty mistakes that cost applications.",
+      audience="Small nonprofits, fiscal sponsors and volunteer grant writers.", use="Screen eligibility before drafting; check the Dashboard weekly and the Timeline before any report is due."),
 ]
 
 PAGE_TPL = """<!DOCTYPE html>

@@ -647,27 +647,338 @@ def b12_008_moving_budget():
 
 
 def b12_010_grant_pipeline():
+    """Nonprofit Grant Pipeline Tracker (Cycle 100 rebuild to the deep-QA bar).
+
+    A stage-gated grant pipeline: nothing enters drafting until eligibility
+    exits clean. The workbook computes what a calendar usually gets wrong -
+    days to each deadline and a plain-language deadline state, required-
+    document readiness per application, requested-versus-awarded money, and
+    the next due date of every post-award report derived from its own
+    cadence. White cells are yours to fill, blue cells are formulas (do not
+    overwrite), yellow rows are EXAMPLES. Every rollup guards its inputs, so
+    an empty sheet shows a blank or a plain-language prompt instead of an
+    Excel error - and the duplicate and row-check columns name the problem
+    rather than silently accepting bad data."""
+    from datetime import date
+    from openpyxl.worksheet.datavalidation import DataValidation
+
+    STATUSES = '"Research,Eligibility,Drafting,Internal review,Submitted,Awarded,Declined,Withdrawn"'
+    LAST = 41          # last Opportunities row (A2:A41)
+    DOCS_LAST = 201    # last Docs row
+    BUD_LAST = 121     # last Budget row
+    TL_LAST = 61       # last Timeline row
+
     wb = Workbook()
-    _sheet(wb, "Pipeline", ["Funder", "Program", "Amount (USD)", "Deadline", "Stage", "Owner", "Docs checklist done (Y/N)", "Submitted date"],
-        [["EXAMPLE Community Fund", "Small grants", 10000, "2027-02-01", "Research", "Sam", "N", ""]],
-        [22, 20, 14, 12, 14, 10, 22, 15], {2: '"$"#,##0'}, example_rows=1)
-    _sheet(wb, "Stages", ["Stage", "Exit rule", "Typical docs"],
-        [["Research", "Funder fits mission + budget range", "Guidelines PDF saved"],
-         ["Eligibility", "All must-pass criteria = yes", "Eligibility checklist"],
-         ["Drafting", "Narrative + budget + attachments complete", "Narrative, budget, board list, 990"],
-         ["Review", "Second reader signed off", "Review sign-off"],
-         ["Submitted", "Confirmation receipt saved", "Receipt"],
-         ["FollowUp", "Report dates calendared", "Award letter / decline note"]],
-        [14, 40, 44], example_rows=0)
-    _sheet(wb, "Boilerplate", ["Block", "Owner", "Last updated", "Status"],
-        [["EXAMPLE mission paragraph", "", "", "Missing"],
-         ["EXAMPLE budget template", "", "", "Missing"],
-         ["EXAMPLE board list", "", "", "Missing"]],
-        [28, 12, 14, 12], example_rows=3)
-    _readme(wb, ["B12-010 Grant Pipeline Tracker — HOW TO USE",
-        "1) Nothing enters Drafting until Eligibility exits clean — ineligible applications are the #1 wasted effort.",
-        "2) Reuse Boilerplate blocks; never rewrite mission/budget prose per funder from scratch.",
-        "3) Log every decline with the reason — a pipeline without decline reasons cannot improve."])
+
+    # ---- Opportunities: the register, with computed deadline logic ------
+    _sheet(wb, "Opportunities",
+        ["ID", "Funder", "Program", "Focus area", "Geography", "Award min (USD)", "Award max (USD)",
+         "Deadline", "Status", "Owner", "Source URL", "Next action", "Submitted", "Decision",
+         "Awarded (USD)", "Docs ready", "Docs gap", "Days to deadline", "Deadline state",
+         "Duplicate?", "Row check", "Open deadline (helper)"],
+        [["EX-001", "EXAMPLE Northfield Community Trust", "EXAMPLE Youth Arts Grant", "Arts education",
+          "Regional", 5000, 15000, date(2027, 3, 15), "Research", "Sam",
+          "https://example.org/northfield-guidelines", "Confirm eligibility, then draft the narrative",
+          None, None, None, "", "", "", "", "", ""],
+         ["EX-002", "EXAMPLE Riverside Health Foundation", "EXAMPLE Community Wellness Grant", "Health",
+          "Statewide", 10000, 25000, date(2026, 11, 2), "Drafting", "Priya",
+          "https://example.org/riverside-apply", "Finish the outcomes table",
+          None, None, None, "", "", "", "", "", ""],
+         ["EX-003", "EXAMPLE State Arts Council", "EXAMPLE Operating Support", "Arts", "Statewide",
+          7500, 20000, date(2026, 7, 1), "Awarded", "Sam", "https://example.org/state-arts",
+          "Log the first report due date on Timeline", date(2026, 6, 5), date(2026, 10, 1), 15000,
+          "", "", "", "", "", ""],
+         ["EX-004", "EXAMPLE Northfield Community Trust", "EXAMPLE Youth Arts Grant", "Arts education",
+          "Regional", 5000, 15000, date(2027, 3, 15), "Research", "Sam",
+          "https://example.org/northfield-guidelines",
+          "EXAMPLE duplicate of EX-001 - delete this row or merge the notes", None, None, None,
+          "", "", "", "", "", ""]] +
+        [["", "", "", "", "", None, None, None, "", "", "", "", None, None, None,
+          "", "", "", "", "", ""] for _ in range(36)],
+        [8, 32, 30, 16, 12, 14, 14, 12, 14, 10, 34, 34, 12, 12, 13, 11, 11, 11, 17, 22, 40, 14],
+        {5: '"$"#,##0', 6: '"$"#,##0', 7: "yyyy-mm-dd", 12: "yyyy-mm-dd", 13: "yyyy-mm-dd",
+         14: '"$"#,##0', 17: "0", 21: "yyyy-mm-dd"},
+        example_rows=4)
+    op = wb["Opportunities"]
+    for r in range(2, LAST + 1):
+        op[f"P{r}"] = (f'=IF($A{r}="","",'
+                       f'COUNTIFS(Docs!$A$2:$A${DOCS_LAST},$A{r},Docs!$C$2:$C${DOCS_LAST},"Y",Docs!$D$2:$D${DOCS_LAST},"Y")'
+                       f'&"/"&COUNTIFS(Docs!$A$2:$A${DOCS_LAST},$A{r},Docs!$C$2:$C${DOCS_LAST},"Y"))')
+        op[f"Q{r}"] = (f'=IF($A{r}="","",'
+                       f'IF(COUNTIFS(Docs!$A$2:$A${DOCS_LAST},$A{r},Docs!$C$2:$C${DOCS_LAST},"Y",'
+                       f'Docs!$D$2:$D${DOCS_LAST},"N")>0,"MISSING","OK"))')
+        op[f"R{r}"] = f'=IF(AND($A{r}<>"",ISNUMBER($H{r})),$H{r}-TODAY(),"")'
+        op[f"S{r}"] = (
+            f'=IF($A{r}="","",'
+            f'IF(OR($I{r}="Awarded",$I{r}="Declined",$I{r}="Withdrawn"),"CLOSED",'
+            f'IF(NOT(ISNUMBER($H{r})),"NO DEADLINE SET",'
+            f'IF($H{r}<TODAY(),"OVERDUE "&TODAY()-$H{r}&" DAYS",'
+            f'IF($H{r}-TODAY()<=14,"DUE IN "&$H{r}-TODAY()&" DAYS","OPEN")))))')
+        op[f"T{r}"] = (f'=IF($A{r}="","",'
+                       f'IF(COUNTIFS($B$2:$B${LAST},$B{r},$C$2:$C${LAST},$C{r})>1,'
+                       f'"DUPLICATE OF ANOTHER ROW",""))')
+        op[f"U{r}"] = (
+            f'=IF($A{r}="","",'
+            f'IF($B{r}="","No funder name. ","")'
+            f'&IF(AND(ISNUMBER($F{r}),ISNUMBER($G{r}),$G{r}<$F{r}),"Award max is below award min. ","")'
+            f'&IF(AND($I{r}="Submitted",NOT(ISNUMBER($M{r}))),"Status is Submitted but there is no submitted date. ","")'
+            f'&IF(AND($I{r}="Awarded",NOT(ISNUMBER($O{r}))),"Status is Awarded but there is no awarded amount. ","")'
+            f'&IF(AND($I{r}<>"Research",$I{r}<>"",NOT(ISNUMBER($H{r}))),"There is no deadline date. ","")'
+            f'&IF(AND(ISNUMBER($O{r}),ISNUMBER($G{r}),$O{r}>$G{r}),"Awarded amount is above the award max you recorded. ",""))')
+        op[f"V{r}"] = (f'=IF(AND($A{r}<>"",ISNUMBER($H{r}),$I{r}<>"Awarded",$I{r}<>"Declined",'
+                       f'$I{r}<>"Withdrawn"),$H{r},"")')
+    dv = DataValidation(type="list", formula1=STATUSES, allow_blank=True, showErrorMessage=True,
+                        showInputMessage=True, errorTitle="Status",
+                        error="Pick a status from the list: Research, Eligibility, Drafting, Internal review, "
+                              "Submitted, Awarded, Declined or Withdrawn.")
+    op.add_data_validation(dv); dv.add(f"I2:I{LAST}")
+    dv = DataValidation(type="decimal", operator="greaterThanOrEqual", formula1="0", allow_blank=True,
+                        showErrorMessage=True, errorTitle="Award range",
+                        error="Enter a number in USD, 0 or more. The max can never sit below the min.")
+    op.add_data_validation(dv); dv.add(f"F2:G{LAST}")
+    dv = DataValidation(type="decimal", operator="greaterThanOrEqual", formula1="0", allow_blank=True,
+                        showErrorMessage=True, errorTitle="Awarded amount",
+                        error="Enter the amount actually awarded in USD, or leave blank until the decision arrives.")
+    op.add_data_validation(dv); dv.add(f"O2:O{LAST}")
+    for col in ("H", "M", "N"):
+        dv = DataValidation(type="date", operator="greaterThan", formula1="DATE(2000,1,1)", allow_blank=True,
+                            showErrorMessage=True, errorTitle="Date",
+                            error="Enter a real date (yyyy-mm-dd), or leave the cell blank.")
+        op.add_data_validation(dv); dv.add(f"{col}2:{col}{LAST}")
+    op["X1"] = ("White cells are yours to fill. Blue cells are computed - do not overwrite them. "
+                "Yellow rows are EXAMPLES - overwrite or delete them.")
+    op["X1"].font = Font(italic=True)
+
+    # ---- Docs: required-document readiness per application --------------
+    _sheet(wb, "Docs", ["Opportunity ID", "Document", "Required? (Y/N)", "Ready? (Y/N)",
+                        "Where it lives", "Last checked"],
+        [["EX-001", "Mission statement (150 words)", "Y", "Y", "org-drive/accreditation/mission.docx", date(2026, 9, 1)],
+         ["EX-001", "501(c)(3) determination letter", "Y", "Y", "org-drive/legal/irs-determination.pdf", date(2026, 9, 1)],
+         ["EX-001", "Board of directors list with affiliations", "Y", "N", "", None],
+         ["EX-001", "Project budget and budget narrative", "Y", "N", "", None],
+         ["EX-001", "Program narrative (most recent)", "Y", "N", "", None],
+         ["EX-001", "Letters of support", "N", "N", "ask two partner orgs", None],
+         ["EX-001", "Most recent IRS Form 990", "Y", "Y", "org-drive/finance/990-2025.pdf", date(2026, 9, 1)],
+         ["EX-002", "Mission statement (150 words)", "Y", "Y", "org-drive/accreditation/mission.docx", date(2026, 8, 20)],
+         ["EX-002", "Project budget and budget narrative", "Y", "Y", "org-drive/riverside/budget-v3.xlsx", date(2026, 10, 1)],
+         ["EX-002", "Program narrative (most recent)", "Y", "Y", "org-drive/riverside/narrative-v2.docx", date(2026, 10, 1)],
+         ["EX-002", "Outcomes tracking table", "Y", "Y", "org-drive/riverside/outcomes.xlsx", date(2026, 10, 4)],
+         ["EX-002", "Board of directors list with affiliations", "Y", "Y", "org-drive/legal/board-2026.docx", date(2026, 8, 20)]] +
+        [["", "", "", "", "", None] for _ in range(DOCS_LAST - 13)],
+        [14, 42, 15, 12, 42, 13], {0: "yyyy-mm-dd", 5: "yyyy-mm-dd"}, example_rows=12)
+    ds = wb["Docs"]
+    for col in ("C", "D"):
+        dv = DataValidation(type="list", formula1='"Y,N"', allow_blank=True, showErrorMessage=True,
+                            showInputMessage=True, errorTitle="Y or N",
+                            error="Enter Y or N. Required? = is this document required by this funder.")
+        ds.add_data_validation(dv); dv.add(f"{col}2:{col}{DOCS_LAST}")
+    ds["H1"] = ("Leave Required? blank for documents this funder does not ask for - only required documents "
+                "count towards the readiness figure on Opportunities column P.")
+    ds["H1"].font = Font(italic=True)
+
+    # ---- Budget: requested versus awarded, per line item ---------------
+    _sheet(wb, "Budget", ["Opportunity ID", "Line item", "Requested (USD)", "Confirmed (USD)", "Notes"],
+        [["EX-001", "Teaching artist stipends", 6000, None, "EXAMPLE 12 sessions x $500"],
+         ["EX-001", "Materials and instruments", 3000, None, ""],
+         ["EX-001", "Evaluation", 1500, None, ""],
+         ["EX-001", "Administration (10%)", 1500, None, ""],
+         ["EX-002", "Community health workers (part-time)", 12000, None, ""],
+         ["EX-002", "Screening equipment", 4000, None, ""],
+         ["EX-002", "Translation and outreach", 2000, None, ""]] +
+        [["", "", None, None, ""] for _ in range(BUD_LAST - 8)],
+        [14, 42, 15, 15, 40], {2: '"$"#,##0', 3: '"$"#,##0'}, example_rows=7)
+    bu = wb["Budget"]
+    dv = DataValidation(type="decimal", operator="greaterThanOrEqual", formula1="0", allow_blank=True,
+                        showErrorMessage=True, errorTitle="Amount",
+                        error="Enter an amount in USD, 0 or more.")
+    bu.add_data_validation(dv); dv.add(f"C2:D{BUD_LAST}")
+    bu["G1"] = ("Requested = what you asked for (one row per budget line). Confirmed = what the award letter "
+                "actually committed, filled in only after a decision. The Dashboard compares the total "
+                "requested here with the total awarded on Opportunities.")
+    bu["G1"].font = Font(italic=True)
+
+    # ---- Timeline: post-award reporting cadence, computed next due ------
+    _sheet(wb, "Timeline", ["Opportunity ID", "Report or deliverable", "First due", "Repeat every (days)",
+                            "Next due", "Status", "Notes"],
+        [["EX-003", "Annual narrative and financial report", date(2027, 1, 31), 365, "", "",
+          "EXAMPLE from the award letter"],
+         ["EX-003", "Quarterly program update", date(2026, 12, 15), 90, "", "", "EXAMPLE quarterly"],
+         ["EX-003", "Final report", None, 365, "", "",
+          "EXAMPLE left blank on purpose so you can see the guard message"]] +
+        [["", "", None, None, "", "", ""] for _ in range(TL_LAST - 4)],
+        [14, 40, 12, 17, 12, 17, 34], {2: "yyyy-mm-dd", 4: "yyyy-mm-dd"}, example_rows=3)
+    tl = wb["Timeline"]
+    for r in range(2, TL_LAST + 1):
+        tl[f"E{r}"] = (f'=IF(OR($A{r}="",NOT(ISNUMBER($C{r})),NOT(ISNUMBER($D{r})),$D{r}<=0),'
+                       f'"Check first due and repeat days",'
+                       f'$C{r}+MAX(0,ROUNDUP((TODAY()-$C{r})/$D{r},0))*$D{r})')
+        tl[f"F{r}"] = (f'=IF($A{r}="","",'
+                       f'IF(NOT(ISNUMBER($E{r})),"CHECK INPUTS",'
+                       f'IF($E{r}<TODAY(),"OVERDUE "&TODAY()-$E{r}&" DAYS",'
+                       f'IF($E{r}-TODAY()<=30,"DUE IN "&$E{r}-TODAY()&" DAYS","OPEN"))))')
+    dv = DataValidation(type="whole", operator="between", formula1="1", formula2="3650", allow_blank=True,
+                        showErrorMessage=True, showInputMessage=True, errorTitle="Repeat every (days)",
+                        error="Enter the gap between reports in DAYS (30 = monthly, 90 = quarterly, "
+                              "365 = annual), between 1 and 3650.")
+    tl.add_data_validation(dv); dv.add(f"D2:D{TL_LAST}")
+    for col in ("C",):
+        dv = DataValidation(type="date", operator="greaterThan", formula1="DATE(2000,1,1)", allow_blank=True,
+                            showErrorMessage=True, errorTitle="First due",
+                            error="Enter the first due date from the award letter (yyyy-mm-dd).")
+        tl.add_data_validation(dv); dv.add(f"{col}2:{col}{TL_LAST}")
+    tl["I1"] = ("Next due is computed from First due and Repeat every: it steps forward in whole intervals "
+                "until it lands on or after today, so it never shows a date in the past. Leave First due "
+                "blank and the cell asks you to fill it instead of guessing.")
+    tl["I1"].font = Font(italic=True)
+
+    # ---- Dashboard: every figure computed from the sheets above ---------
+    _sheet(wb, "Dashboard", ["KPI", "Value", "How it is computed"],
+        [["Opportunities tracked", f'=COUNTA(Opportunities!$A$2:$A${LAST})', "Rows on Opportunities with an ID"],
+         ["Active (not awarded, declined or withdrawn)",
+          f'=COUNTA(Opportunities!$A$2:$A${LAST})-COUNTIF(Opportunities!$I$2:$I${LAST},"Awarded")'
+          f'-COUNTIF(Opportunities!$I$2:$I${LAST},"Declined")-COUNTIF(Opportunities!$I$2:$I${LAST},"Withdrawn")',
+          "Tracked rows minus the three closed statuses"],
+         ["Submitted, awaiting a decision", f'=COUNTIF(Opportunities!$I$2:$I${LAST},"Submitted")', "Status = Submitted"],
+         ["Decisions received (awarded + declined)",
+          f'=COUNTIF(Opportunities!$I$2:$I${LAST},"Awarded")+COUNTIF(Opportunities!$I$2:$I${LAST},"Declined")',
+          "The only two statuses that carry a real answer"],
+         ["Awarded (count)", f'=COUNTIF(Opportunities!$I$2:$I${LAST},"Awarded")', "Status = Awarded"],
+         ["Award rate", '=IFERROR(B6/B5,"")', "Awarded / decisions received - blank until a decision exists"],
+         ["Total awarded (USD)", f'=SUM(Opportunities!$O$2:$O${LAST})', "Sum of column O on Opportunities"],
+         ["Total requested (USD)", f'=SUM(Budget!$C$2:$C${BUD_LAST})', "Sum of Requested on Budget"],
+         ["Awarded against requested", '=IF(B9=0,"",B8/B9)', "Blank until something is requested"],
+         ["Overdue deadlines", f'=COUNTIF(Opportunities!$S$2:$S${LAST},"OVERDUE*")', "Deadline state starts with OVERDUE"],
+         ["Deadlines due within 14 days", f'=COUNTIF(Opportunities!$S$2:$S${LAST},"DUE IN*")', "Deadline state starts with DUE IN"],
+         ["Next deadline (open rows only)",
+          f'=IF(COUNT(Opportunities!$V$2:$V${LAST})=0,"",MIN(Opportunities!$V$2:$V${LAST}))',
+          "Earliest open deadline - closed rows are excluded by the helper column"],
+         ["Applications with required documents not ready",
+          f'=COUNTIF(Opportunities!$Q$2:$Q${LAST},"MISSING")', "Rows where Docs gap = MISSING"],
+         ["Duplicate rows to merge", f'=COUNTIF(Opportunities!$T$2:$T${LAST},"DUPLICATE*")',
+          "Same funder AND same program on more than one row"],
+         ["Rows with a data problem", f'=SUMPRODUCT(--(Opportunities!$U$2:$U${LAST}<>""))',
+          "Any non-blank message in the Row check column"],
+         ["Post-award reports overdue", f'=COUNTIF(Timeline!$F$2:$F${TL_LAST},"OVERDUE*")', "Status starts with OVERDUE"],
+         ["Post-award reports due within 30 days", f'=COUNTIF(Timeline!$F$2:$F${TL_LAST},"DUE IN*")',
+          "Status starts with DUE IN"],
+         ["Pipeline verdict",
+          '=IF(B2=0,"Start here: add your first funder on the Opportunities sheet",'
+          'IF(B16>0,"FIX THE ROW PROBLEMS - see column U on Opportunities",'
+          'IF(B15>0,"MERGE OR DELETE THE DUPLICATE ROWS",'
+          'IF(B11>0,"CLOSE THE OVERDUE DEADLINES FIRST",'
+          'IF(B14>0,"REQUIRED DOCUMENTS MISSING ON ACTIVE APPLICATIONS",'
+          'IF(B17>0,"A POST-AWARD REPORT IS OVERDUE","PIPELINE CLEAN - work column L (Next action)"))))))',
+          "One instruction, in the order that costs the least if ignored"],
+         ["", "", ""],
+         ["Stage", "Count", "Rows currently sitting in each stage"],
+         ["Research", f'=COUNTIF(Opportunities!$I$2:$I${LAST},"Research")', ""],
+         ["Eligibility", f'=COUNTIF(Opportunities!$I$2:$I${LAST},"Eligibility")', ""],
+         ["Drafting", f'=COUNTIF(Opportunities!$I$2:$I${LAST},"Drafting")', ""],
+         ["Internal review", f'=COUNTIF(Opportunities!$I$2:$I${LAST},"Internal review")', ""],
+         ["Submitted", f'=COUNTIF(Opportunities!$I$2:$I${LAST},"Submitted")', ""],
+         ["Awarded", f'=COUNTIF(Opportunities!$I$2:$I${LAST},"Awarded")', ""],
+         ["Declined", f'=COUNTIF(Opportunities!$I$2:$I${LAST},"Declined")', ""],
+         ["Withdrawn", f'=COUNTIF(Opportunities!$I$2:$I${LAST},"Withdrawn")', ""],
+         ["Rows with no status yet", '=B2-SUM(B22:B29)', "Tracked rows minus the staged rows above"]],
+        [46, 22, 62], None, example_rows=0)
+    dash = wb["Dashboard"]
+    dash["B6"].number_format = "0%"
+    dash["B7"].number_format = '"$"#,##0'
+    dash["B8"].number_format = '"$"#,##0'
+    dash["B9"].number_format = "0%"
+    dash["B12"].number_format = "yyyy-mm-dd"
+    for cell in ("B10", "B11", "B13", "B14", "B15", "B16", "B17", "B22", "B23", "B24", "B25",
+                 "B26", "B27", "B28", "B29", "B30"):
+        dash[cell].number_format = "0"
+    for cell in ("A21", "A22"):
+        dash[cell].font = HDR_FONT
+        dash[cell].fill = HDR_FILL
+
+    # ---- Stages: the seven gates, as a reference ------------------------
+    _sheet(wb, "Stages", ["#", "Stage", "Exit gate - all of it must be true to leave", "What blocks you here",
+                          "Owner"],
+        [[1, "Research", "The funder's guidelines are saved and the award range overlaps what you can deliver",
+          "No saved guidelines, so nobody can check the rules later", "Pipeline owner"],
+         [2, "Eligibility", "Every must-pass question on the Eligibility sheet is answered YES",
+          "One NO at this stage is the cheapest place to stop - every stage after it costs real hours", "Pipeline owner"],
+         [3, "Drafting", "Narrative, budget and every required document are complete (Docs shows no MISSING)",
+          "Drafting before eligibility is the single largest source of wasted effort", "Writer"],
+         [4, "Internal review", "A second reader has signed off the narrative, the budget and the numbers",
+          "One person reading their own work finds their own assumptions, not their mistakes", "Second reader"],
+         [5, "Submitted", "The submission confirmation or receipt is saved next to the row",
+          "No receipt means no proof of what you sent when the funder asks", "Pipeline owner"],
+         [6, "Decision", "The award or decline letter is on file and the amount is recorded",
+          "A verbal yes is not a decision; nothing else in this workbook should assume it is", "Pipeline owner"],
+         [7, "Reporting", "Every report due date is on Timeline with its cadence",
+          "A missed report can put an existing award at risk - this is the stage that keeps money", "Finance / program"]],
+        [4, 16, 52, 52, 14], example_rows=0)
+
+    # ---- Eligibility: the must-pass screen ------------------------------
+    _sheet(wb, "Eligibility", ["#", "Must-pass question", "Why it stops you", "How to verify"],
+        [[1, "Is the applicant a legal entity the funder accepts (nonprofit, fiscal sponsor, school, tribe)?",
+          "Many funders cannot pay an individual or an unincorporated group at all",
+          "The eligibility section of the guidelines, and your own determination letter"],
+         [2, "Is the geographic area served inside the funder's stated area?",
+          "A single out-of-area sentence disqualifies the application before review",
+          "The guidelines' service area, checked against your real delivery map"],
+         [3, "Does the funder accept your organisation size (budget band)?",
+          "Some funders exist specifically for small or for large organisations only",
+          "Any stated annual-budget or staff-count band in the guidelines"],
+         [4, "Does the funder accept your program area?",
+          "Program categories are usually narrower than they first appear",
+          "The list of funded priorities, funder by funder"],
+         [5, "Is your required registration or licence current (charity status, state registration)?",
+          "An expired registration fails verification later, after the writing is finished",
+          "The registry record, dated within the last three months"],
+         [6, "Can you meet the reporting obligations you would be agreeing to?",
+          "Reports are the obligation people agree to without reading; they cost real hours",
+          "The report schedule and template in the guidelines or award terms"],
+         [7, "Is the ask inside the stated award range?",
+          "Asking far outside the range signals you did not read the guidelines",
+          "The stated minimum and maximum award"],
+         [8, "Is the match or co-funding requirement something you can genuinely meet?",
+          "A match you cannot document becomes a clawback",
+          "The matching requirement, and a named source for your share"],
+         [9, "Is the deadline realistic given your document readiness today?",
+          "A two-week deadline with a missing 990 and an unsigned board letter is not realistic",
+          "The Docs sheet: how many required documents are already Y"],
+         [10, "Is this funder's process compatible with your decision timeline?",
+          "A twelve-month decision cycle can be useless for a program starting next quarter",
+          "The stated notification date, and your own start date"],
+         [11, "Do you have a person who will genuinely own this application?",
+          "Shared ownership is the reliable predictor of an unsubmitted application",
+          "A name in the Owner column, not a team"],
+         [12, "Would you still apply if you had to reuse existing material with no rewrite?",
+          "If the answer is no, the application is a rewrite of your whole case, not a fit",
+          "An honest answer, written down before the writing starts"]],
+        [4, 60, 56, 46], example_rows=0)
+
+    # ---- DocLibrary: the standard twelve --------------------------------
+    _sheet(wb, "DocLibrary", ["#", "Document", "What it must show", "Typical format", "Refresh cadence"],
+        [[1, "Mission statement", "150 words, plain language, no jargon a funder has to decode", "DOCX + PDF", "Review yearly"],
+         [2, "501(c)(3) determination letter", "The IRS letter naming the organisation and its status", "PDF", "Once, on receipt"],
+         [3, "EIN confirmation letter", "The IRS letter showing the employer identification number", "PDF", "Once, on receipt"],
+         [4, "Board of directors list", "Names, roles and affiliations, with the date adopted", "DOCX or PDF", "On every board change"],
+         [5, "Organisation budget", "Current financial-year operating budget, board approved", "XLSX", "On every budget approval"],
+         [6, "Project budget and narrative", "Every line justified in words, not just numbers", "XLSX + DOCX", "Per application"],
+         [7, "Most recent Form 990", "The filing as submitted, not a draft", "PDF", "Yearly, once filed"],
+         [8, "Financial statements", "Audited, reviewed or internally prepared - say which", "PDF", "Yearly, once closed"],
+         [9, "Program narrative", "What you do, for whom, with what evidence it works", "DOCX", "Review each quarter"],
+         [10, "Logic model or outcomes table", "Inputs, activities, outputs and the outcomes you measure", "XLSX or DOCX", "Review each quarter"],
+         [11, "Letters of support", "Dated, specific and signed - one page each", "PDF", "Per application"],
+         [12, "Project timeline", "Months on one side, milestones and who delivers them on the other", "XLSX or DOCX", "Per application"]],
+        [4, 34, 54, 20, 24], example_rows=0)
+
+    _readme(wb, ["B12-010 Nonprofit Grant Pipeline Tracker - HOW TO USE",
+        "1) Start on Opportunities. One row per funder and program, never one row per funder. Fill only the white cells (ID, Funder, Program, Focus area, Geography, Award min, Award max, Deadline, Status, Owner, Source URL, Next action, Submitted, Decision, Awarded). The blue columns are computed and must not be overwritten: Docs ready, Docs gap, Days to deadline, Deadline state, Duplicate? and Row check.",
+        "2) Nothing enters Drafting until Eligibility exits clean. Work the Eligibility sheet's twelve must-pass questions on paper for the funder in front of you; a single NO is the cheapest possible stop, and every stage after it costs real hours.",
+        "3) Docs: one row per opportunity and document. Mark Required? Y only for documents that funder actually asks for, and Ready? Y only when the file exists and is current. Opportunities column P then shows readiness as ready/required, and column Q turns MISSING the moment a required document is not ready. The DocLibrary sheet lists the standard twelve documents and how often each needs refreshing.",
+        "4) Budget: one row per budget line with the amount you requested. Fill Confirmed only after an award letter commits a figure. The Dashboard compares the total requested here with the total awarded on Opportunities, so the gap between asking and getting is visible.",
+        "5) Timeline: every post-award report, with the first due date from the award letter and the gap in DAYS (30 monthly, 90 quarterly, 365 annual). Next due is computed by stepping forward in whole intervals, so it never shows a date in the past, and a blank or impossible cadence asks you to fix the input instead of guessing.",
+        "6) Dashboard: every figure is computed from your own rows - tracked and active opportunities, submitted, decisions, award count and award rate, total awarded against total requested, overdue deadlines, what is due in the next 14 days, the next open deadline, applications with missing required documents, duplicate rows, rows with a data problem, and the post-award reports due in the next 30 days. The Pipeline verdict at the bottom gives you one next instruction, ordered by what costs the least if ignored.",
+        "7) Duplicate and invalid data are named, not hidden. Two rows with the same funder AND the same program are flagged DUPLICATE OF ANOTHER ROW. Column U names concrete problems - missing funder, an award maximum below the minimum, Submitted with no submitted date, Awarded with no amount, a missing deadline, an awarded amount above the range you recorded. The Dashboard counts them so they cannot quietly pile up.",
+        "8) Golden rule: an untracked report is a risk to an award you already have. Check Timeline weekly and the Dashboard's next-deadline figure monthly.",
+        "9) Pair this workbook with the B12-010 PDF method guide: the field dictionary, how every formula behaves, a worked 90-day example, the twenty mistakes, and the limits of the tool. This is an organising system for your own applications - it does not submit anything, contact any funder, or promise any funding, and it is not legal or financial advice. Always follow the funder's own guidelines over anything in this workbook."])
     p = OUT / "B12-010_grant_pipeline_tracker.xlsx"
     _paint_formulas(wb)
     wb.save(p)

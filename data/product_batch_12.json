@@ -263,17 +263,56 @@
     {
       "id": "B12-010",
       "title": "Nonprofit Grant Pipeline Tracker",
-      "price": 39,
+      "price": 15.0,
       "files": [
-        "B12-010_grant_pipeline_tracker.xlsx"
+        "B12-010_grant_pipeline_tracker.xlsx",
+        "B12-010_grant_pipeline_guide.pdf"
       ],
-      "audience": "Small nonprofits and volunteer grant writers.",
-      "problem": "Small nonprofits waste weeks on ineligible applications and rewrite boilerplate per funder.",
+      "audience": "Small nonprofits, fiscal sponsors and volunteer grant writers.",
+      "problem": "Grant work is lost to applications that were never eligible and to post-award reports that live in one person's memory.",
       "state": "READY_FOR_REVIEW",
       "issues": [],
       "distribution_channels": [
         "gumroad"
-      ]
+      ],
+      "price_usd": 15.0,
+      "price_status": "DERIVED_BY_CYCLE100_PRICING_RULE (pending founder listing authorization)",
+      "previous_price": 39.0,
+      "price_rationale": "Cycle 100 pricing rule: the highest price passing every mandatory gate. USD 15.00 is the maximum economics.market_realism_check permits for a 17-page guide (min($1.00 x 17 pages, $15.00 short-book ceiling) = $15.00). The manifest placeholder of $39.00 FAILED that page-based policy, and no observed single-file comparable in the category sustains $39 (single-file cluster $6.98-$19.97; one $111.25 listing with 0 sales excluded from the band). Evidence: data/evidence/b12_010_competitors.json, reports/B12-010/GATE_FINAL_2026-10-19.json.",
+      "price_evidence": "reports/B12-010/GATE_FINAL_2026-10-19.json",
+      "outcome": "A grant register with an eligibility screen, per-application document readiness, computed deadline states and a post-award reporting calendar that never shows a past date.",
+      "competitor_evidence_source": "data/evidence/b12_010_competitors.json",
+      "competition_level": "MEDIUM-HIGH: 9 sourced comparables $6.98-$111.25; the paid single-file cluster is $6.98-$19.97 with review counts in the hundreds (data/evidence/b12_010_competitors.json)",
+      "gate_verdict": "APPROVED",
+      "gate_date": "2026-10-19",
+      "gate_score": {
+        "core": 100,
+        "content": 100,
+        "market": 70
+      },
+      "gate_report": "reports/B12-010/GATE_FINAL_2026-10-19.json",
+      "qa_report": "reports/B12-010/QA_FACTS_2026-10-19.json",
+      "manifest_report": "reports/B12-010/MANIFEST_2026-10-19.json",
+      "ready_to_publish": false,
+      "ready_to_publish_reason": "Not published and not authorized. Publication requires a founder authorization phrase; the derived price is not a founder price approval.",
+      "tags": [
+        "nonprofit",
+        "grant tracker",
+        "grant management",
+        "grant spreadsheet",
+        "nonprofit templates",
+        "grant reporting",
+        "excel template",
+        "google sheets",
+        "grants calendar",
+        "nonprofit operations"
+      ],
+      "category": "Business & Money > Nonprofit / Spreadsheets & Templates",
+      "publication_authorization": null,
+      "price_basis": "HIGHEST_PRICE_PASSING_ALL_MANDATORY_GATES",
+      "pricing_date": "2026-10-19",
+      "price_decision_source": "CYCLE100_PRICING_RULE_2026-10-19",
+      "updated_at_utc": "2026-10-19T11:38:19Z"
     }
   ]
 }

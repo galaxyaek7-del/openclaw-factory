@@ -1,0 +1,42 @@
+{
+ "product_id": "B12-010",
+ "title": "Nonprofit Grant Pipeline Tracker",
+ "prepared_at_utc": "2026-10-19T11:28:10Z",
+ "status": "READY_FOR_AUTHORIZATION",
+ "recommended_price_usd": 15.0,
+ "authorization_required": true,
+ "authorization_phrase": null,
+ "files": [
+  {
+   "role": "method guide",
+   "path": "books\\batch12\\B12-010_grant_pipeline_guide.pdf",
+   "bytes": 45453,
+   "sha256": "b7ad0849a7d248db821c79873a8cdc3c42399a6ce054083eaf650298e97f0a49",
+   "pages": 17
+  },
+  {
+   "role": "workbook",
+   "path": "books\\batch12\\B12-010_grant_pipeline_tracker.xlsx",
+   "bytes": 38775,
+   "sha256": "def9f4c290ff385c79b904e044eaf6c3d454df561991fb20c760eecfcf132eab",
+   "sheets": 9,
+   "formulas": 427
+  },
+  {
+   "role": "cover image",
+   "path": "books\\covers\\B12-010.png",
+   "bytes": 42566,
+   "sha256": "c17de7066cbd9bf22affa138881fc67ed3d64e7598756277b807836eaaf122ec",
+   "width": 1280,
+   "height": 720
+  }
+ ],
+ "payload_policy": "Both customer files are delivered (workbook + guide). Naming a second file matches the observed Etsy category norm of '1 PDF, 1 other file'.",
+ "publication": {
+  "channel": "gumroad",
+  "listing_url": null,
+  "published": false,
+  "note": "NOT published. FACTORY_LIVE_PUBLISH must stay false; a founder authorization phrase is required before any write."
+ },
+ "companion_public_page": "customer_site/b12-grant-pipeline-tracker.html"
+}

@@ -1,7 +1,7 @@
 {
  "schema": "galaxy_forge.product_pipeline.v1",
  "created_at_utc": "2026-10-18T19:10:00Z",
- "updated_at_utc": "2026-10-19T10:02:37Z",
+ "updated_at_utc": "2026-10-19T11:38:19Z",
  "cycle": 98,
  "purpose": "Durable, resumable product production queue. One record per product. Resume from this file + referenced evidence after any interruption.",
  "states": [
@@ -363,22 +363,28 @@
   {
    "id": "B12-010",
    "title": "Nonprofit Grant Pipeline Tracker",
-   "state": "BUILDING",
+   "state": "READY_FOR_AUTHORIZATION",
    "target_customer": "Small nonprofits and volunteer grant writers",
    "problem": "Small nonprofits waste weeks on ineligible applications and rewrite boilerplate per funder",
    "deliverables": [
-    "books/batch12/B12-010_grant_pipeline_tracker.xlsx"
+    "books/batch12/B12-010_grant_pipeline_tracker.xlsx",
+    "books/batch12/B12-010_grant_pipeline_guide.pdf",
+    "books/covers/B12-010.png"
    ],
-   "evidence_of_demand": "reports/B12-010/DEMAND_EVIDENCE_2026-10-19.json",
-   "qa_results": "Only the 2026-10-15 self-graded pass; no demand evidence, no deep QA, no gate",
+   "evidence_of_demand": "reports/B12-010/DEMAND_EVIDENCE_2026-10-19.json + reports/B12-010/DEMAND_VALIDATION_CYCLE100_2026-10-19.json (re-validated 2026-10-19: band narrowed to $12.99-$19.97, $39.00 withdrawn)",
+   "qa_results": "Cycle 100: workbook rebuilt (9 sheets, 427 formulas, 11 validations) and re-derived independently in Python; 17-page guide (8,198 words, 28 sections) with 0 placeholders and 0 mojibake; QualityEnforcer 100/100/70 at every candidate; cover 1280x720; full evidence in reports/B12-010/",
    "publication_authorization": null,
    "live_url": null,
-   "next_action": "Rebuild deliverable to the deep-QA bar, then deep QA, then gate/price (evidence complete 2026-10-19; AWAITS FOUNDER SELECTION as the next build)",
-   "selection_status": "RECOMMENDED_NEXT_AWAITS_FOUNDER_SELECTION",
+   "next_action": "AWAITS FOUNDER LISTING AUTHORIZATION. Nothing is published, no charge exists, and the $15.00 price is derived rather than approved.",
+   "selection_status": "BUILT_READY_FOR_AUTHORIZATION",
    "selection_note": "Evidence complete 2026-10-19 (reports/B12-010/DEMAND_EVIDENCE_2026-10-19.json): the only candidate with review counts in the hundreds (982 / 137 / 35), a stated 203-sale comparable, sustained $15-$19.97 price points, and buyers who pay $67+ for depth. Recommended as the next build; the manifest's $39.00 is NOT supported and will be derived by the factory's gates after the rebuild. Selected by founder: no.",
    "selected_by": null,
    "research_completed_at_utc": "2026-10-19T10:02:37Z",
-   "updated_at_utc": "2026-10-19T10:02:37Z"
+   "updated_at_utc": "2026-10-19T11:38:19Z",
+   "gate_verdict": "APPROVED at $15.00",
+   "gate_report": "reports/B12-010/GATE_FINAL_2026-10-19.json",
+   "derived_price_usd": 15.0,
+   "manifest_placeholder_price_usd": 39.0
   }
  ],
  "notes": [

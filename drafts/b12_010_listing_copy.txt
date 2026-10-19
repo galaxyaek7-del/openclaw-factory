@@ -1,0 +1,39 @@
+B12-010 COPY-PASTE LISTING (paste exactly; do not embellish)
+============================================================
+STATUS: READY FOR AUTHORIZATION (Cycle 100, 2026-10-19). NOT LISTED YET - no Gumroad listing exists
+for this product and none may be created without a separate, explicit, product-specific founder
+authorization. The price below is DERIVED by the standing rule (the highest price passing every
+mandatory gate), not a founder price approval. Evidence: reports/B12-010/GATE_FINAL_2026-10-19.json.
+
+TITLE:
+Nonprofit Grant Pipeline Tracker
+
+PRICE:
+$15.00 USD one-time (DERIVED, Cycle 100 pricing rule 2026-10-19; the manifest's $39.00 fails the
+mandatory page-based market-realism policy for a 17-page guide: min($1.00 x 17 pages, $15.00) = $15.00)
+
+DESCRIPTION:
+Grant work fails in two specific ways. The first is weeks of writing spent on applications that were never eligible. The second is an award put at risk because a report due date lived in one person's head. This kit is built to close both gaps.
+
+It is one register plus one honest method. Every funder and program is a row. Every required document is tracked against that row, so you can see readiness before you write. Every deadline and every post-award report is computed from its own date, so the state is correct the moment you open the file rather than whenever someone remembers to check.
+
+Inside (2 files):
+- Grant Pipeline Tracker workbook (.xlsx, 9 sheets): Opportunities (one row per funder and program, with award range, deadline, status, owner and source), Docs (required vs. ready, per application, with where each file lives), Budget (requested vs. confirmed, per line), Timeline (every post-award report, with first due date and repeat interval in days), Dashboard (tracked, active, submitted, decisions, award rate, awarded vs. requested, overdue, due within 14 days, next open deadline, missing documents, duplicate rows, data problems, post-award reports overdue, and a single plain-language Pipeline verdict), plus Stages, Eligibility (twelve must-pass questions), DocLibrary (twelve standard documents and how often each needs refreshing) and a README. Includes four worked example rows and 427 formulas.
+- Grant Pipeline Method Guide (.pdf, 17 pages, 28 sections): what the kit is and is not, the eligibility-before-drafting rule, the seven stages and their exit gates, twenty-minute setup, a field dictionary for every column, how the deadline maths and the reporting cadence maths behave, how document readiness is counted, how duplicates and row problems are found, the twelve must-pass eligibility questions, the standard document library, writing narratives from reusable blocks, a budget narrative that survives review, a worked 90-day example, the four-line decline post-mortem, a monthly sixty-minute review, twenty mistakes, reporting after award, compatibility and limitations, FAQ, glossary, and a first-ninety-minutes checklist.
+
+The design choices are deliberate: the deadline state is a sentence, not a colour, because a sentence can be counted and sorted. A document is marked ready only when it exists and is current, not when someone knows where it is. A closed row keeps its history instead of being deleted, because a pipeline that only shows live work cannot tell you that the same funder has declined you twice.
+
+Honest limits: this does not find funders, submit applications, contact anyone, monitor portals, or predict whether you will be funded. It is an organising system for your own work. Eligibility rules, award ranges, match requirements and reporting obligations are set by each funder and by law, and the funder's own guidelines always take precedence. It is not legal, tax, accounting or financial advice. The workbook uses standard spreadsheet functions and is built for Excel; it imports into Google Sheets in ordinary use, but verify the computed columns after import.
+
+New product from Galaxy Forge: no sales recorded yet, no reviews.
+
+Requires: a spreadsheet application that opens .xlsx (Excel, or Google Sheets after import) for the workbook; any PDF reader for the guide. Instant download after purchase. Support: reply to your Gumroad receipt email.
+
+TAGS:
+nonprofit, grant tracker, grant management, grant spreadsheet, nonprofit templates, grant reporting, excel template, google sheets, grants calendar, nonprofit operations
+
+FILES TO UPLOAD:
+books/batch12/B12-010_grant_pipeline_tracker.xlsx
+books/batch12/B12-010_grant_pipeline_guide.pdf
+books/covers/B12-010.png (listing image, 1280x720)
+============================================================

@@ -1,0 +1,243 @@
+{
+ "product_id": "B12-010",
+ "title": "Nonprofit Grant Pipeline Tracker",
+ "evaluated_at_utc": "2026-10-19T11:28:10Z",
+ "engine": "src/quality/quality_enforcer.py::inspect(stage='full') + economics.evaluate() + economics.market_realism_check()",
+ "pricing_rule": "HIGHEST_PRICE_PASSING_ALL_MANDATORY_GATES",
+ "page_count": 17,
+ "page_policy": {
+  "config": "config/economics.json -> market_realism.max_price_per_page_usd=1.0, short_book_max_pages=30, short_book_price_ceiling_usd=15.0",
+  "applied_ceiling_usd": 15.0,
+  "why": "At 17 pages (< 30), the short-book cap limits the honest price to $15.00. Raising the ceiling would require a guide of 30+ genuine pages, not padding."
+ },
+ "candidates": [
+  {
+   "price": 19.97,
+   "quality_gate": {
+    "verdict": "APPROVED",
+    "blocked": false,
+    "reasons": [],
+    "layers": {
+     "core_value": {
+      "status": "PASS",
+      "score": 100
+     },
+     "content_quality": {
+      "status": "PASS",
+      "score": 100
+     },
+     "market_reality": {
+      "status": "PASS",
+      "score": 70
+     }
+    }
+   },
+   "economics": {
+    "royalty_rate": 0.9,
+    "net_profit": 17.973,
+    "min_required": 2.5,
+    "in_dead_zone": false,
+    "approved": true,
+    "reason": "ok: net $17.97 clears floor $2.50",
+    "market_realistic": false,
+    "suggested_realistic_price": 15.0
+   },
+   "market_realism": {
+    "market_realistic": false,
+    "suggested_realistic_price": 15.0,
+    "page_count": 17,
+    "pages_based_ceiling_usd": 15.0
+   },
+   "passes_all": false,
+   "blocking": [
+    "market_realism:page ceiling $15.00"
+   ]
+  },
+  {
+   "price": 17.99,
+   "quality_gate": {
+    "verdict": "APPROVED",
+    "blocked": false,
+    "reasons": [],
+    "layers": {
+     "core_value": {
+      "status": "PASS",
+      "score": 100
+     },
+     "content_quality": {
+      "status": "PASS",
+      "score": 100
+     },
+     "market_reality": {
+      "status": "PASS",
+      "score": 70
+     }
+    }
+   },
+   "economics": {
+    "royalty_rate": 0.9,
+    "net_profit": 16.191,
+    "min_required": 2.5,
+    "in_dead_zone": false,
+    "approved": true,
+    "reason": "ok: net $16.19 clears floor $2.50",
+    "market_realistic": false,
+    "suggested_realistic_price": 15.0
+   },
+   "market_realism": {
+    "market_realistic": false,
+    "suggested_realistic_price": 15.0,
+    "page_count": 17,
+    "pages_based_ceiling_usd": 15.0
+   },
+   "passes_all": false,
+   "blocking": [
+    "market_realism:page ceiling $15.00"
+   ]
+  },
+  {
+   "price": 15.0,
+   "quality_gate": {
+    "verdict": "APPROVED",
+    "blocked": false,
+    "reasons": [],
+    "layers": {
+     "core_value": {
+      "status": "PASS",
+      "score": 100
+     },
+     "content_quality": {
+      "status": "PASS",
+      "score": 100
+     },
+     "market_reality": {
+      "status": "PASS",
+      "score": 70
+     }
+    }
+   },
+   "economics": {
+    "royalty_rate": 0.9,
+    "net_profit": 13.5,
+    "min_required": 2.5,
+    "in_dead_zone": false,
+    "approved": true,
+    "reason": "ok: net $13.50 clears floor $2.50",
+    "market_realistic": true,
+    "suggested_realistic_price": 15.0
+   },
+   "market_realism": {
+    "market_realistic": true,
+    "suggested_realistic_price": 15.0,
+    "page_count": 17,
+    "pages_based_ceiling_usd": 15.0
+   },
+   "passes_all": true,
+   "blocking": []
+  },
+  {
+   "price": 14.99,
+   "quality_gate": {
+    "verdict": "APPROVED",
+    "blocked": false,
+    "reasons": [],
+    "layers": {
+     "core_value": {
+      "status": "PASS",
+      "score": 100
+     },
+     "content_quality": {
+      "status": "PASS",
+      "score": 100
+     },
+     "market_reality": {
+      "status": "PASS",
+      "score": 70
+     }
+    }
+   },
+   "economics": {
+    "royalty_rate": 0.9,
+    "net_profit": 13.491,
+    "min_required": 2.5,
+    "in_dead_zone": false,
+    "approved": true,
+    "reason": "ok: net $13.49 clears floor $2.50",
+    "market_realistic": true,
+    "suggested_realistic_price": 14.99
+   },
+   "market_realism": {
+    "market_realistic": true,
+    "suggested_realistic_price": 14.99,
+    "page_count": 17,
+    "pages_based_ceiling_usd": 15.0
+   },
+   "passes_all": true,
+   "blocking": []
+  },
+  {
+   "price": 12.99,
+   "quality_gate": {
+    "verdict": "APPROVED",
+    "blocked": false,
+    "reasons": [],
+    "layers": {
+     "core_value": {
+      "status": "PASS",
+      "score": 100
+     },
+     "content_quality": {
+      "status": "PASS",
+      "score": 100
+     },
+     "market_reality": {
+      "status": "PASS",
+      "score": 70
+     }
+    }
+   },
+   "economics": {
+    "royalty_rate": 0.9,
+    "net_profit": 11.691,
+    "min_required": 2.5,
+    "in_dead_zone": false,
+    "approved": true,
+    "reason": "ok: net $11.69 clears floor $2.50",
+    "market_realistic": true,
+    "suggested_realistic_price": 12.99
+   },
+   "market_realism": {
+    "market_realistic": true,
+    "suggested_realistic_price": 12.99,
+    "page_count": 17,
+    "pages_based_ceiling_usd": 15.0
+   },
+   "passes_all": true,
+   "blocking": []
+  }
+ ],
+ "winner_price_usd": 15.0,
+ "losers": [
+  {
+   "price": 19.97,
+   "blocking": [
+    "market_realism:page ceiling $15.00"
+   ]
+  },
+  {
+   "price": 17.99,
+   "blocking": [
+    "market_realism:page ceiling $15.00"
+   ]
+  }
+ ],
+ "depth_measured": {
+  "pdf_words": 8198,
+  "words_required_at_winner": 1500,
+  "text_depth_ok": true,
+  "sheets": 9,
+  "formulas": 427,
+  "sheet_depth_ok": true
+ },
+ "method_note": "No payment evidence exists for this niche in market_evidence. The market layer therefore scores from the 9 sourced competitor prices alone (3+ sourced competitors and price-within-market: 70/100), which is the founder-authorized path since 2026-10-17."
+}
