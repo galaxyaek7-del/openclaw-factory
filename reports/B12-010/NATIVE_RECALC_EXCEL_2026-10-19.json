@@ -1,0 +1,192 @@
+{
+  "product_id": "B12-010",
+  "artifact": "books/batch12/B12-010_grant_pipeline_tracker.xlsx",
+  "artifact_bytes": 38765,
+  "artifact_sha256": "df49cecaf704cb06dec3b48c9f826c94cfdae9e2bf91d3a2b76fc670593b8574",
+  "engine": {
+    "name": "Microsoft Excel",
+    "version": "16.0",
+    "build": "19127"
+  },
+  "run_at_utc": "2026-10-19T12:34:07Z",
+  "method": "COM automation. A temporary copy of the canonical workbook was opened read-only, CalculateFullRebuild() was called, then every cell's displayed text and value was read. The copy was closed without saving and deleted. The canonical file was never opened for write.",
+  "error_cells": [],
+  "error_cell_detector": "Matches real Excel error literals only (#VALUE!, #DIV/0!, #REF!, #NAME?, #N/A, #NUM!, #NULL!, Err:502/508/509/522). Three header cells whose literal text is '#', on Stages/Eligibility/DocLibrary, were initially misread as errors and are excluded.",
+  "formula_cells_recalculated": 148,
+  "formula_cells_note": "148 is SpecialCells(xlCellTypeFormulas) over Opportunities + Timeline + Dashboard only. The workbook's full 427 formulas are counted by openpyxl in QA_FACTS. This figure must not be read as coverage of all 427.",
+  "defects_found_and_fixed": [
+    {
+      "cell": "Dashboard!B6",
+      "label": "Awarded (count)",
+      "was_format": "0%",
+      "was_display": "100%",
+      "now_format": "0",
+      "now_display": "1"
+    },
+    {
+      "cell": "Dashboard!B7",
+      "label": "Award rate",
+      "was_format": "\"$\"#,##0",
+      "was_display": "$1",
+      "now_format": "0%",
+      "now_display": "100%"
+    },
+    {
+      "cell": "Dashboard!B9",
+      "label": "Total requested (USD)",
+      "was_format": "0%",
+      "was_display": "3000000%",
+      "now_format": "\"$\"#,##0",
+      "now_display": "$30,000"
+    },
+    {
+      "cell": "Dashboard!B10",
+      "label": "Awarded against requested",
+      "was_format": "0",
+      "was_display": "1",
+      "now_format": "0%",
+      "now_display": "50%"
+    },
+    {
+      "cell": "Dashboard!B12",
+      "label": "Deadlines due within 14 days",
+      "was_format": "yyyy-mm-dd",
+      "was_display": "1900-01-01",
+      "now_format": "0",
+      "now_display": "1"
+    },
+    {
+      "cell": "Dashboard!B13",
+      "label": "Next deadline (open rows only)",
+      "was_format": "0",
+      "was_display": "46328",
+      "now_format": "yyyy-mm-dd",
+      "now_display": "2026-11-02"
+    },
+    {
+      "cell": "Opportunities!V2",
+      "label": "Open deadline (helper)",
+      "was_format": "General",
+      "was_display": "46461",
+      "now_format": "yyyy-mm-dd",
+      "now_display": "2027-03-15"
+    }
+  ],
+  "computed_after_fix": {
+    "opportunities": [
+      {
+        "row": 2,
+        "id": "EX-001",
+        "deadline": "2027-03-15",
+        "status": "Research",
+        "docs_ready": "3/6",
+        "docs_gap": "MISSING",
+        "days": "147",
+        "state": "OPEN",
+        "duplicate": "DUPLICATE OF ANOTHER ROW",
+        "row_check": "",
+        "helper": "2027-03-15"
+      },
+      {
+        "row": 3,
+        "id": "EX-002",
+        "deadline": "2026-11-02",
+        "status": "Drafting",
+        "docs_ready": "5/5",
+        "docs_gap": "OK",
+        "days": "14",
+        "state": "DUE IN 14 DAYS",
+        "duplicate": "",
+        "row_check": "",
+        "helper": "2026-11-02"
+      },
+      {
+        "row": 4,
+        "id": "EX-003",
+        "deadline": "2026-07-01",
+        "status": "Awarded",
+        "docs_ready": "0/0",
+        "docs_gap": "OK",
+        "days": "-110",
+        "state": "CLOSED",
+        "duplicate": "",
+        "row_check": "",
+        "helper": ""
+      },
+      {
+        "row": 5,
+        "id": "EX-004",
+        "deadline": "2027-03-15",
+        "status": "Research",
+        "docs_ready": "0/0",
+        "docs_gap": "OK",
+        "days": "147",
+        "state": "OPEN",
+        "duplicate": "DUPLICATE OF ANOTHER ROW",
+        "row_check": "",
+        "helper": "2027-03-15"
+      }
+    ],
+    "timeline": [
+      {
+        "row": 2,
+        "opportunity_id": "EX-003",
+        "report": "Annual narrative and financial report",
+        "first_due": "2027-01-31",
+        "repeat_days": "365",
+        "next_due": "2027-01-31",
+        "status": "OPEN"
+      },
+      {
+        "row": 3,
+        "opportunity_id": "EX-003",
+        "report": "Quarterly program update",
+        "first_due": "2026-12-15",
+        "repeat_days": "90",
+        "next_due": "2026-12-15",
+        "status": "OPEN"
+      },
+      {
+        "row": 4,
+        "opportunity_id": "EX-003",
+        "report": "Final report",
+        "first_due": "",
+        "repeat_days": "365",
+        "next_due": "Check first due and repeat days",
+        "status": "CHECK INPUTS"
+      }
+    ],
+    "dashboard": {
+      "Post-award reports overdue": "0",
+      "Awarded (count)": "1",
+      "Deadlines due within 14 days": "1",
+      "Next deadline (open rows only)": "2026-11-02",
+      "Total awarded (USD)": "$15,000",
+      "Total requested (USD)": "$30,000",
+      "Awarded against requested": "50%",
+      "Pipeline verdict": "MERGE OR DELETE THE DUPLICATE ROWS",
+      "Overdue deadlines": "0",
+      "Opportunities tracked": "4",
+      "Decisions received (awarded + declined)": "1",
+      "Applications with required documents not ready": "1",
+      "Active (not awarded, declined or withdrawn)": "3",
+      "Duplicate rows to merge": "2",
+      "Rows with a data problem": "0",
+      "Submitted, awaiting a decision": "0",
+      "Award rate": "100%",
+      "Post-award reports due within 30 days": "0"
+    },
+    "milestone_counts": {
+      "Declined": "0",
+      "Eligibility": "0",
+      "Internal review": "0",
+      "Submitted": "0",
+      "Research": "2",
+      "Awarded": "1",
+      "Withdrawn": "0",
+      "Drafting": "1",
+      "Rows with no status yet": "0"
+    }
+  },
+  "verdict": "PASS - every displayed value agrees with the documented rule and no cell shows an Excel error."
+}

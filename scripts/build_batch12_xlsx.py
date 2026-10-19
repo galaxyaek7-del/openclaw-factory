@@ -727,6 +727,8 @@ def b12_010_grant_pipeline():
             f'&IF(AND(ISNUMBER($O{r}),ISNUMBER($G{r}),$O{r}>$G{r}),"Awarded amount is above the award max you recorded. ",""))')
         op[f"V{r}"] = (f'=IF(AND($A{r}<>"",ISNUMBER($H{r}),$I{r}<>"Awarded",$I{r}<>"Declined",'
                        f'$I{r}<>"Withdrawn"),$H{r},"")')
+        # Without this the helper shows the raw serial (e.g. 46461) in Excel.
+        op[f"V{r}"].number_format = "yyyy-mm-dd"
     dv = DataValidation(type="list", formula1=STATUSES, allow_blank=True, showErrorMessage=True,
                         showInputMessage=True, errorTitle="Status",
                         error="Pick a status from the list: Research, Eligibility, Drafting, Internal review, "
@@ -882,12 +884,18 @@ def b12_010_grant_pipeline():
          ["Rows with no status yet", '=B2-SUM(B22:B29)', "Tracked rows minus the staged rows above"]],
         [46, 22, 62], None, example_rows=0)
     dash = wb["Dashboard"]
-    dash["B6"].number_format = "0%"
-    dash["B7"].number_format = '"$"#,##0'
-    dash["B8"].number_format = '"$"#,##0'
-    dash["B9"].number_format = "0%"
-    dash["B12"].number_format = "yyyy-mm-dd"
-    for cell in ("B10", "B11", "B13", "B14", "B15", "B16", "B17", "B22", "B23", "B24", "B25",
+    # Cycle 101: these were one row out of step with the rebuilt Dashboard, so
+    # Excel displayed "100%" for a count, "$1" for a rate, "3000000%" for
+    # requested money, "1900-01-01" for a count and "46328" for a date.
+    # Verified by a real Excel recalculation, not only by value re-derivation.
+    dash["B6"].number_format = "0"              # Awarded (count)
+    dash["B7"].number_format = "0%"             # Award rate
+    dash["B8"].number_format = '"$"#,##0'       # Total awarded
+    dash["B9"].number_format = '"$"#,##0'       # Total requested
+    dash["B10"].number_format = "0%"            # Awarded against requested
+    dash["B12"].number_format = "0"             # Deadlines due within 14 days
+    dash["B13"].number_format = "yyyy-mm-dd"    # Next deadline
+    for cell in ("B11", "B14", "B15", "B16", "B17", "B18", "B22", "B23", "B24", "B25",
                  "B26", "B27", "B28", "B29", "B30"):
         dash[cell].number_format = "0"
     for cell in ("A21", "A22"):

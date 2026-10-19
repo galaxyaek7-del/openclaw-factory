@@ -20,8 +20,8 @@
  },
  "xlsx": {
   "file": "books\\batch12\\B12-010_grant_pipeline_tracker.xlsx",
-  "bytes": 38775,
-  "sha256": "def9f4c290ff385c79b904e044eaf6c3d454df561991fb20c760eecfcf132eab",
+  "bytes": 38765,
+  "sha256": "df49cecaf704cb06dec3b48c9f826c94cfdae9e2bf91d3a2b76fc670593b8574",
   "sheets": [
    "Opportunities",
    "Docs",
@@ -107,7 +107,32 @@
    "EX-003",
    "EX-004"
   ],
-  "example_rows_marked": "Yellow fill + EXAMPLE prefix on funder/program names; README says to delete them."
+  "example_rows_marked": "Yellow fill + EXAMPLE prefix on funder/program names; README says to delete them.",
+  "number_formats": {
+   "Dashboard!B6": "0",
+   "Dashboard!B7": "0%",
+   "Dashboard!B8": "\"$\"#,##0",
+   "Dashboard!B9": "\"$\"#,##0",
+   "Dashboard!B10": "0%",
+   "Dashboard!B12": "0",
+   "Dashboard!B13": "yyyy-mm-dd",
+   "Opportunities!V2": "yyyy-mm-dd"
+  },
+  "native_recalc": {
+   "evidence": "reports/B12-010/NATIVE_RECALC_EXCEL_2026-10-19.json",
+   "engine": "Microsoft Excel 16.0",
+   "error_cells": 0,
+   "displayed_values": {
+    "Awarded (count)": "1",
+    "Award rate": "100%",
+    "Total requested (USD)": "$30,000",
+    "Awarded against requested": "50%",
+    "Deadlines due within 14 days": "1",
+    "Next deadline (open rows only)": "2026-11-02",
+    "Open deadline (helper)": "2027-03-15"
+   },
+   "note": "Cycle 101 fixed a real display defect this recalculation exposed: the number formats were applied one row off, so several Dashboard figures were right as values and wrong as text."
+  }
  },
  "cover": {
   "file": "books\\covers\\B12-010.png",

@@ -1,0 +1,43 @@
+{
+ "product_id": "B12-010",
+ "recorded_at_utc": "2026-10-19T13:00:58Z",
+ "scope_statement": "Bounded regression only. This is NOT the full repository suite: the full run takes over 50 minutes and contains known pre-existing failures unrelated to B12-010. No claim of full-suite correctness is made here.",
+ "commands": [
+  {
+   "command": "python -m pytest tests/test_b12_010_workbook.py -q",
+   "result": "20 passed",
+   "duration_s": 2.98,
+   "purpose": "the shipped B12-010 artifacts, their hashes, rules and number formats"
+  },
+  {
+   "command": "python -m pytest tests/test_first_sale_orchestrator.py tests/test_gumroad_draft_orchestrator.py tests/test_batch12_registry_merge.py tests/test_distributor.py tests/test_b12_010_workbook.py -q",
+   "result": "167 passed",
+   "duration_s": 7.35,
+   "purpose": "the B12-010 contract plus every pipeline module it enters"
+  },
+  {
+   "command": "python scripts/check_b12_integrity.py",
+   "result": "B12 integrity: OK (10 prep items, 5 baselines)",
+   "purpose": "every Batch 12 registry agrees with the files on disk"
+  },
+  {
+   "command": "powershell -File b12_010_excel_recalc.ps1",
+   "result": "Excel 16.0 build 19127; 0 error cells",
+   "purpose": "native recalculation of the real workbook (Cycle 101)",
+   "evidence": "reports/B12-010/NATIVE_RECALC_EXCEL_2026-10-19.json"
+  }
+ ],
+ "known_pre_existing_failures_not_in_scope": [
+  "node scripts/check_jsonl_duplication.js exits 1",
+  "tests/test_final_rehearsal.py::test_no_autopublish_path",
+  "tests/test_first_product_build.py::test_market_evidence_not_gf_sale",
+  "tests/test_first_product_build.py::test_genome_finds_registered_product",
+  "the g-h test group (7 failures)",
+  "audit_commercial(platform='gumroad_elite') returns FAIL"
+ ],
+ "regression_guarded_by_this_cycle": [
+  "Dashboard!B6/B7/B8/B9/B10/B12/B13 number formats",
+  "Opportunities!V number format",
+  "artifact sizes and sha256 (manifest, registry and test updated together)"
+ ]
+}

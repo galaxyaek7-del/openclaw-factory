@@ -32,8 +32,8 @@ REGISTRY = ROOT / "data" / "product_batch_12.json"
 
 EXPECTED = {
     "B12-010_grant_pipeline_tracker.xlsx": (
-        38775,
-        "def9f4c290ff385c79b904e044eaf6c3d454df561991fb20c760eecfcf132eab",
+        38765,
+        "df49cecaf704cb06dec3b48c9f826c94cfdae9e2bf91d3a2b76fc670593b8574",
     ),
     "B12-010_grant_pipeline_guide.pdf": (
         45453,
@@ -176,6 +176,29 @@ class TestWorkbook(unittest.TestCase):
             self.assertIn("Opportunities!", d.cell(r, 2).value)
         for r in (17, 18):
             self.assertIn("Timeline!", d.cell(r, 2).value)
+
+    def test_number_formats_match_the_kind_of_number_they_show(self):
+        """Cycle 101: a real Excel recalc exposed formats applied one row off.
+
+        Values were right and text was wrong -- 100% for a count, $1 for a
+        rate, 3000000% for money, 1900-01-01 for a count, 46328 for a date.
+        A value-only re-derivation cannot catch that, so assert the formats.
+        """
+        d = self.wb["Dashboard"]
+        expected = {
+            "B6": "0",              # Awarded (count)
+            "B7": "0%",             # Award rate
+            "B8": '"$"#,##0',       # Total awarded (USD)
+            "B9": '"$"#,##0',       # Total requested (USD)
+            "B10": "0%",            # Awarded against requested
+            "B12": "0",             # Deadlines due within 14 days
+            "B13": "yyyy-mm-dd",    # Next deadline (open rows only)
+        }
+        for coord, fmt in expected.items():
+            self.assertEqual(d[coord].number_format, fmt, coord)
+        for r in list(range(14, 19)) + list(range(22, 31)):
+            self.assertIn(d.cell(r, 2).number_format, ("0", "General"), "B%d" % r)
+        self.assertEqual(self.ws["V2"].number_format, "yyyy-mm-dd")
 
 
 class TestRulesRederived(unittest.TestCase):

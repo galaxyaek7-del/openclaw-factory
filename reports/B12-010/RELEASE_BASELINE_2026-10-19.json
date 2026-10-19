@@ -1,0 +1,215 @@
+{
+ "product_id": "B12-010",
+ "title": "Nonprofit Grant Pipeline Tracker",
+ "recorded_at_utc": "2026-10-19T13:00:58Z",
+ "cycle": 101,
+ "release_state": "READY_FOR_AUTHORIZATION",
+ "price": {
+  "usd": 15.0,
+  "rule": "HIGHEST_PRICE_PASSING_ALL_MANDATORY_GATES",
+  "status": "DERIVED (pending founder listing authorization)",
+  "founder_approved": false,
+  "candidates_tested": [
+   {
+    "price_usd": 19.97,
+    "core_value": 100,
+    "content_quality": 100,
+    "market_reality": 70,
+    "economics_approved": true,
+    "net_profit_usd": 17.973,
+    "market_realistic": false,
+    "passes_all": false,
+    "blocking": [
+     "market_realism:page ceiling $15.00"
+    ]
+   },
+   {
+    "price_usd": 17.99,
+    "core_value": 100,
+    "content_quality": 100,
+    "market_reality": 70,
+    "economics_approved": true,
+    "net_profit_usd": 16.191,
+    "market_realistic": false,
+    "passes_all": false,
+    "blocking": [
+     "market_realism:page ceiling $15.00"
+    ]
+   },
+   {
+    "price_usd": 15.0,
+    "core_value": 100,
+    "content_quality": 100,
+    "market_reality": 70,
+    "economics_approved": true,
+    "net_profit_usd": 13.5,
+    "market_realistic": true,
+    "passes_all": true,
+    "blocking": []
+   },
+   {
+    "price_usd": 14.99,
+    "core_value": 100,
+    "content_quality": 100,
+    "market_reality": 70,
+    "economics_approved": true,
+    "net_profit_usd": 13.491,
+    "market_realistic": true,
+    "passes_all": true,
+    "blocking": []
+   },
+   {
+    "price_usd": 12.99,
+    "core_value": 100,
+    "content_quality": 100,
+    "market_reality": 70,
+    "economics_approved": true,
+    "net_profit_usd": 11.691,
+    "market_realistic": true,
+    "passes_all": true,
+    "blocking": []
+   }
+  ]
+ },
+ "gate": {
+  "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
+  "thresholds": {
+   "core_value": 70,
+   "content_quality": 70,
+   "market_reality": 65
+  },
+  "core_value": 100,
+  "content_quality": 100,
+  "market_reality": 70,
+  "quality_verdict": "APPROVED",
+  "economics_approved": true,
+  "net_profit_usd": 13.5,
+  "market_realism_ok": true,
+  "pages_based_ceiling_usd": 15.0,
+  "method_document": "reports/B12-010/GATE_METHOD_2026-10-19.md",
+  "evidence": "reports/B12-010/GATE_FINAL_2026-10-19.json"
+ },
+ "artifacts": [
+  {
+   "path": "books/batch12/B12-010_grant_pipeline_guide.pdf",
+   "bytes": 45453,
+   "sha256": "b7ad0849a7d248db821c79873a8cdc3c42399a6ce054083eaf650298e97f0a49",
+   "role": "method guide",
+   "pages": 17
+  },
+  {
+   "path": "books/batch12/B12-010_grant_pipeline_tracker.xlsx",
+   "bytes": 38765,
+   "sha256": "df49cecaf704cb06dec3b48c9f826c94cfdae9e2bf91d3a2b76fc670593b8574",
+   "role": "workbook",
+   "sheets": 9,
+   "formulas": 427,
+   "data_validations": 11
+  },
+  {
+   "path": "books/covers/B12-010.png",
+   "bytes": 42566,
+   "sha256": "c17de7066cbd9bf22affa138881fc67ed3d64e7598756277b807836eaaf122ec",
+   "role": "cover image",
+   "width": 1280,
+   "height": 720
+  }
+ ],
+ "verification": [
+  {
+   "check": "artifact bytes and sha256 match the manifest",
+   "status": "PASS",
+   "evidence": "reports/B12-010/MANIFEST_2026-10-19.json"
+  },
+  {
+   "check": "workbook formulas recalculated by a real spreadsheet engine",
+   "status": "PASS",
+   "evidence": "reports/B12-010/NATIVE_RECALC_EXCEL_2026-10-19.json (Excel 16.0, 0 error cells, 0 real formula errors)"
+  },
+  {
+   "check": "Dashboard and helper number formats match what they display",
+   "status": "PASS",
+   "evidence": "seven wrong formats found and fixed in Cycle 101; regression test asserts every format"
+  },
+  {
+   "check": "deadline states and post-award cadence match the documented rule",
+   "status": "PASS",
+   "evidence": "recalculated by Excel and re-derived independently in Python"
+  },
+  {
+   "check": "Brand DNA and the Executive Safety checks",
+   "status": "PASS",
+   "evidence": "reports/B12-010/QA_FACTS_2026-10-19.json"
+  },
+  {
+   "check": "PDF integrity (pages, words, placeholders, mojibake, disclaimers)",
+   "status": "PASS",
+   "evidence": "reports/B12-010/QA_FACTS_2026-10-19.json"
+  },
+  {
+   "check": "cover image spec",
+   "status": "PASS",
+   "evidence": "reports/B12-010/QA_FACTS_2026-10-19.json"
+  },
+  {
+   "check": "companion page content and price",
+   "status": "PASS",
+   "evidence": "customer_site/b12-grant-pipeline-tracker.html"
+  },
+  {
+   "check": "registries agree with the artifacts",
+   "status": "PASS",
+   "evidence": "data/product_batch_12.json, data/product_batch_12_gumroad_prep.json, data/product_pipeline.json; scripts/check_b12_integrity.py -> OK"
+  },
+  {
+   "check": "bounded regression suite",
+   "status": "PASS",
+   "evidence": "reports/B12-010/TEST_EVIDENCE_2026-10-19.json (167 passed)"
+  },
+  {
+   "check": "full repository test suite",
+   "status": "UNKNOWN",
+   "evidence": "not run: it takes over 50 minutes and has known pre-existing failures unrelated to B12-010. No claim is made about it."
+  },
+  {
+   "check": "Google Sheets import of the workbook",
+   "status": "UNKNOWN",
+   "evidence": "not tested; disclosed in the listing copy and in the guide"
+  },
+  {
+   "check": "other spreadsheet editors (Numbers, LibreOffice)",
+   "status": "UNKNOWN",
+   "evidence": "not available in this environment"
+  },
+  {
+   "check": "publication",
+   "status": "BLOCKED",
+   "evidence": "no product-specific founder authorization phrase exists"
+  },
+  {
+   "check": "externally verified sale",
+   "status": "BLOCKED",
+   "evidence": "nothing is published, so no external transaction can exist"
+  }
+ ],
+ "publication": {
+  "published": false,
+  "channel": "gumroad",
+  "listing_url": null,
+  "authorization_phrase": null,
+  "required_env": {
+   "FACTORY_LIVE_PUBLISH": "must stay false"
+  }
+ },
+ "blocking_for_revenue": [
+  "A product-specific founder authorization phrase for B12-010.",
+  "A working live publishing credential (Gumroad token configured for this environment).",
+  "A real external buyer."
+ ],
+ "disclosures": [
+  "No payment evidence exists for this niche.",
+  "Verified revenue is $0.00 and config/reality.json records no published book.",
+  "The guide is 17 pages; the page policy caps the price at $15.00.",
+  "Google Sheets import is unverified."
+ ]
+}

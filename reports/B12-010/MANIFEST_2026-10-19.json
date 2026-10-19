@@ -17,8 +17,8 @@
   {
    "role": "workbook",
    "path": "books\\batch12\\B12-010_grant_pipeline_tracker.xlsx",
-   "bytes": 38775,
-   "sha256": "def9f4c290ff385c79b904e044eaf6c3d454df561991fb20c760eecfcf132eab",
+   "bytes": 38765,
+   "sha256": "df49cecaf704cb06dec3b48c9f826c94cfdae9e2bf91d3a2b76fc670593b8574",
    "sheets": 9,
    "formulas": 427
   },
@@ -38,5 +38,8 @@
   "published": false,
   "note": "NOT published. FACTORY_LIVE_PUBLISH must stay false; a founder authorization phrase is required before any write."
  },
- "companion_public_page": "customer_site/b12-grant-pipeline-tracker.html"
+ "companion_public_page": "customer_site/b12-grant-pipeline-tracker.html",
+ "rebuilt_at_utc": "2026-10-19T12:34:07Z",
+ "rebuild_reason": "Cycle 101: Dashboard and helper number formats were one row out of step, so Excel displayed 100% for a count, $1 for a rate, 3000000% for requested money, 1900-01-01 for a count and 46328 for a date. Formats fixed; values and formulas unchanged.",
+ "native_recalc": "reports/B12-010/NATIVE_RECALC_EXCEL_2026-10-19.json"
 }
