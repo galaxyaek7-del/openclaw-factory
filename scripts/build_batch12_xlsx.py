@@ -565,30 +565,188 @@ def b12_005_guest_tracker():
     return p
 
 
-def b12_006_home_office_log():
+CATEGORY_OPTIONS = ("Internet/utilities,Supplies,Repairs & maintenance,Rent/mortgage share,"
+                    "Insurance,Depreciation,Other (explain)")
+LOG_ROWS = 41          # rows 2..41 of Expenses2026 are prefilled with guarded formulas
+METHOD_OPTIONS = "Actual,Simplified"
+
+
+def b12_006_home_office_log(out_dir=None):
+    """Cycle 106 rebuild. The Cycle-104 version was a five-row skeleton: the
+    SpaceMeasure percentage was a typed literal even though its own note said
+    '=B3/B2', the log had no validation, no monthly or annual totals, no way to
+    compare the two methods, and no place to record the limits. This version is
+    the tool the guide describes: one computed home percentage flowing into
+    every row, a two-method comparison with the arithmetic visible, category
+    dropdowns, and an explicit limits section -- still procedure information,
+    never tax advice."""
+    from openpyxl.worksheet.datavalidation import DataValidation
+
     wb = Workbook()
-    _sheet(wb, "Expenses2026", ["Date", "Category", "Description", "Amount (USD)", "Home %", "Deductible est. (USD)", "Receipt file"],
-        [["2026-01-15", "EXAMPLE internet", "Monthly bill", 80.00, 0.40, "=D2*E2", "receipts/jan-internet.pdf"]],
-        [12, 18, 30, 15, 10, 19, 28], {3: '"$"#,##0.00', 5: '"$"#,##0.00'}, example_rows=1)
-    ws = wb["Expenses2026"]
-    ws["H1"] = "TOTAL deductible est. (USD)"
-    ws["I1"] = "=SUM(F2:F500)"
-    ws["I1"].number_format = '"$"#,##0.00'
+
+    # ── Expenses2026: the log ─────────────────────────────────────────
+    last = LOG_ROWS + 1
+    rows = [["2026-01-15", "Internet/utilities", "EXAMPLE internet (delete or overwrite)", 80.00,
+             "=IF($D2=\"\",\"\",SpaceMeasure!$B$4)", "=IF(OR($D2=\"\",$E2=\"\"),\"\",$D2*$E2)",
+             "receipts/2026-01-internet.pdf"]]
+    for r in range(3, last + 1):
+        rows.append(["", "", "", None,
+                     '=IF($D{r}="","",SpaceMeasure!$B$4)'.format(r=r),
+                     '=IF(OR($D{r}="",$E{r}=""),"",$D{r}*$E{r})'.format(r=r),
+                     ""])
+    ws = _sheet(wb, "Expenses2026",
+                ["Date", "Category", "Description", "Amount (USD)", "Home share",
+                 "Deductible est. (USD)", "Receipt file"],
+                rows, [12, 22, 34, 14, 12, 16, 30],
+                {3: '"$"#,##0.00', 4: '0.00%', 5: '"$"#,##0.00'}, example_rows=1)
+    dv_cat = DataValidation(type="list", formula1='"%s"' % CATEGORY_OPTIONS, allow_blank=True,
+                            showErrorMessage=True, errorTitle="Category",
+                            error="Pick a category from the list so the annual summary can total it.")
+    ws.add_data_validation(dv_cat)
+    dv_cat.add("B2:B%s" % last)
+    dv_amt = DataValidation(type="decimal", operator="greaterThanOrEqual", formula1="0",
+                            allow_blank=True, showErrorMessage=True, errorTitle="Amount",
+                            error="Enter a cost in USD, 0 or more. Enter the FULL bill here; the home share is applied in column E.")
+    ws.add_data_validation(dv_amt)
+    dv_amt.add("D2:D%s" % last)
+    ws["I1"] = "TOTAL deductible est. (USD)"
+    ws["J1"] = "=SUM(F2:F%s)" % last
+    ws["J1"].number_format = '"$"#,##0.00'
+    ws["I2"] = "Rows logged (of %d)" % (last - 1)
+    ws["J2"] = '=COUNT(D2:D%s)' % last
+    ws.column_dimensions["I"].width = 26
+    ws.column_dimensions["J"].width = 14
+
+    # ── SpaceMeasure: the one number everything depends on ────────────
     _sheet(wb, "SpaceMeasure", ["Item", "Value", "Notes"],
-        [["Total home sq ft", 1200, "Measure once"], ["Office sq ft (exclusive use)", 150, "Must be regular + exclusive use"],
-         ["Office % (= office ÷ total)", 0.125, "=B3/B2 — used for Home % above"], ["Method chosen", "Actual", "Actual or Simplified — pick ONE per year"]],
-        [30, 14, 44], example_rows=0)
+           [["Total home sq ft (livable area)", 1200, "Measure once and write it down here."],
+            ["Qualifying space sq ft (regular + exclusive use)", 150, "Exclusive means nothing else is stored or used in that space."],
+            ["Home % (qualifying ÷ total) — USED BY THE LOG",
+             '=IF(AND(ISNUMBER(B2),ISNUMBER(B3),B2>0,B3>0,B3<=B2),B3/B2,"Check B2 and B3: home must be greater than 0 and space no larger than home")',
+             "Computed. Do not type over this cell."],
+            ["Method chosen for the year", "Actual", "Actual or Simplified — pick ONE per year for this space (dropdown)."],
+            ["Simplified rate per sq ft (USD)", 5, "EXAMPLE rate. Verify the current rate for your tax year in the current IRS guidance."],
+            ["Simplified maximum sq ft (cap)", 300, "EXAMPLE cap. Verify the current cap for your tax year."],
+            ["Simplified deduction (est.)", '=IF(AND(ISNUMBER(B3),ISNUMBER(B6),ISNUMBER(B7)),MIN(B3,B7)*B6,"Fill in qualifying sq ft, rate and cap")',
+             "Cap is applied automatically: MIN(space, cap) × rate."],
+            ["", "", ""],
+            ["SECOND PERIOD — only if the qualifying use started or stopped mid-year", "", ""],
+            ["Period 2: qualifying sq ft", "", "Leave blank if the space was used all year."],
+            ["Period 2: total home sq ft", "", "Needed only for the second measurement."],
+            ["Period 2: home %",
+             '=IF(AND(ISNUMBER(B11),ISNUMBER(B12),B12>0,B11>0,B11<=B12),B11/B12,"")',
+             "Recorded so the number is not lost; run the log a second time for the split year rather than averaging the two."]],
+           [46, 16, 56], None, example_rows=0)
+    ws = wb["SpaceMeasure"]
+    # The Value column mixes square feet, a percentage, a method name and
+    # currency, so a single whole-column format would render 1,200 sq ft as a
+    # percentage. Format each cell for what it actually holds.
+    for addr in ("B2", "B3", "B6", "B7", "B11", "B12"):
+        ws[addr].number_format = "#,##0"
+    ws["B4"].number_format = "0.00%"
+    ws["B13"].number_format = "0.00%"
+    ws["B8"].number_format = '"$"#,##0.00'
+    dv_method = DataValidation(type="list", formula1='"%s"' % METHOD_OPTIONS, allow_blank=False,
+                               showErrorMessage=True, errorTitle="Method",
+                               error="Pick Actual or Simplified. You cannot mix methods for the same space in one year.")
+    ws.add_data_validation(dv_method)
+    dv_method.add("B5")
+
+    # ── MethodCompare: both methods, side by side ─────────────────────
+    _sheet(wb, "MethodCompare", ["Eligible annual cost (actual method)", "Amount (USD)", "Notes"],
+           [["Rent (if you rent)", 18000, "EXAMPLE. Full annual amount you paid."],
+            ["Mortgage interest (if you own)", 0, "EXAMPLE. Interest only — principal is not a home-office cost."],
+            ["Real estate taxes (if you own)", 0, "EXAMPLE."],
+            ["Utilities (electric, gas, water, heating, trash)", 2400, "EXAMPLE. Full annual amount; the home % is applied below."],
+            ["Insurance (homeowners or renters)", 1200, "EXAMPLE."],
+            ["Repairs & maintenance (qualifying area only)", 600, "EXAMPLE. Office-area repairs only, not whole-home work."],
+            ["Depreciation (owners only — see the Limits notes)", 0, "EXAMPLE. Carries a consequence on sale; confirm with a preparer."],
+            ["Other eligible (describe in Notes)", 0, "EXAMPLE. Anything else genuinely eligible, with its document."],
+            ["Eligible costs total", "=SUM(B2:B9)", "Sum of the rows above."],
+            ["Home % (from SpaceMeasure)", "=SpaceMeasure!$B$4", "Computed on the SpaceMeasure sheet."],
+            ["ACTUAL method estimate", '=IF(AND(ISNUMBER(B10),ISNUMBER(B11)),B10*B11,"Check SpaceMeasure and your entries above")',
+             "Eligible costs × home %."],
+            ["SIMPLIFIED method estimate", "=SpaceMeasure!$B$8", "From SpaceMeasure: MIN(space, cap) × rate."],
+            ["Difference (actual minus simplified)", '=IF(AND(ISNUMBER(B12),ISNUMBER(B13)),B12-B13,"Check both methods above")',
+             "Positive means the actual method is larger on these figures."],
+            ["Which is higher",
+             '=IF(NOT(ISNUMBER(B14)),"Check the lines above",IF(B14>0,"ACTUAL method is higher by "&TEXT(B14,"$#,##0.00"),IF(B14<0,"SIMPLIFIED method is higher by "&TEXT(-B14,"$#,##0.00"),"The two methods are equal")))',
+             "You may COMPUTE both. You CLAIM one method for the year for this space."]],
+           [50, 16, 60], None, example_rows=8)
+    ws = wb["MethodCompare"]
+    for r in (2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14):
+        ws.cell(row=r, column=2).number_format = '"$"#,##0.00'
+    ws["B11"].number_format = "0.00%"      # a percentage, not a dollar figure
+    ws["B15"].number_format = "General"    # a sentence, not a number
+
+    # ── AnnualSummary: what the log adds up to ────────────────────────
+    _sheet(wb, "AnnualSummary", ["Category", "Logged (USD)", "Deductible est. (USD)", "Notes"],
+           [["Internet/utilities", '=SUMIFS(Expenses2026!$D$2:$D$%d,Expenses2026!$B$2:$B$%d,$A2)' % (last, last),
+             '=SUMIFS(Expenses2026!$F$2:$F$%d,Expenses2026!$B$2:$B$%d,$A2)' % (last, last), "Logged total and the home share already applied."],
+            ["Supplies", '=SUMIFS(Expenses2026!$D$2:$D$%d,Expenses2026!$B$2:$B$%d,$A3)' % (last, last),
+             '=SUMIFS(Expenses2026!$F$2:$F$%d,Expenses2026!$B$2:$B$%d,$A3)' % (last, last), "Business-only items are logged at 100%."],
+            ["Repairs & maintenance", '=SUMIFS(Expenses2026!$D$2:$D$%d,Expenses2026!$B$2:$B$%d,$A4)' % (last, last),
+             '=SUMIFS(Expenses2026!$F$2:$F$%d,Expenses2026!$B$2:$B$%d,$A4)' % (last, last), "Qualifying area only."],
+            ["Rent/mortgage share", '=SUMIFS(Expenses2026!$D$2:$D$%d,Expenses2026!$B$2:$B$%d,$A5)' % (last, last),
+             '=SUMIFS(Expenses2026!$F$2:$F$%d,Expenses2026!$B$2:$B$%d,$A5)' % (last, last), "Whatever the dropdown category name is in the log."],
+            ["Insurance", '=SUMIFS(Expenses2026!$D$2:$D$%d,Expenses2026!$B$2:$B$%d,$A6)' % (last, last),
+             '=SUMIFS(Expenses2026!$F$2:$F$%d,Expenses2026!$B$2:$B$%d,$A6)' % (last, last), ""],
+            ["Depreciation", '=SUMIFS(Expenses2026!$D$2:$D$%d,Expenses2026!$B$2:$B$%d,$A7)' % (last, last),
+             '=SUMIFS(Expenses2026!$F$2:$F$%d,Expenses2026!$B$2:$B$%d,$A7)' % (last, last), "Owners only; see the Limits notes."],
+            ["Other (explain)", '=SUMIFS(Expenses2026!$D$2:$D$%d,Expenses2026!$B$2:$B$%d,$A8)' % (last, last),
+             '=SUMIFS(Expenses2026!$F$2:$F$%d,Expenses2026!$B$2:$B$%d,$A8)' % (last, last), "Name it in the log's Description."],
+            ["Total logged", "=SUM(B2:B8)", "=SUM(C2:C8)", "Do NOT multiply the deductible total by the home % again — every row already applied it."],
+            ["Simplified method estimate (for comparison)", "", "=SpaceMeasure!$B$8", "From SpaceMeasure; ignores your actual costs."],
+            ["Higher figure in this log",
+             "",
+             '=IF(NOT(ISNUMBER(C9)),"Check the log above",IF(ISNUMBER(C10),IF(C9>C10,"Actual-method log is higher by "&TEXT(C9-C10,"$#,##0.00"),IF(C10>C9,"Simplified is higher by "&TEXT(C10-C9,"$#,##0.00"),"Equal on these figures")),"Check SpaceMeasure"))',
+             "A comparison, not a decision — read the Limits notes before relying on any figure."],
+            ["LIMIT — gross income",
+             "", "", "The home-office figure is generally limited to the gross income from the business that used the space; it cannot create or increase a business loss by itself."],
+            ["LIMIT — ordering rules",
+             "", "", "The regular method applies cost categories in a prescribed order with further limits. This workbook approximates that with simple arithmetic."],
+            ["LIMIT — depreciation and sale",
+             "", "", "If you own the home, business-use depreciation affects the gain when you sell. The simplified method produces none, which can cost more later."]],
+           [42, 16, 22, 62], {1: '"$"#,##0.00', 2: '"$"#,##0.00'}, example_rows=0)
+    wb["AnnualSummary"]["C11"].number_format = "General"   # a sentence, not a number
+
+    # ── Categories: the guidance the log refers to ────────────────────
     _sheet(wb, "Categories", ["Category", "What counts", "What never counts"],
-        [["Internet/utilities", "Business-use share only", "Full bill without home %"],
-         ["Supplies", "100% business items", "Personal items"],
-         ["Repairs", "Office-area repairs", "Whole-home improvements (different rules)"],
-         ["Rent/mortgage share", "Home % of eligible costs (actual method)", "Simplified method mixes"]],
-        [20, 44, 44], example_rows=0)
+           [["Internet/utilities", "The business share of a shared bill: log the FULL bill and let the home share apply.", "The full bill treated as 100% business, or the personal share of it."],
+            ["Supplies", "Genuinely business-only items: paper, ink, a monitor used only for work.", "Anything the household also uses."],
+            ["Repairs & maintenance", "Repairs to the qualifying area itself (the office room or defined corner).", "Whole-home improvements the business space did not need; lawn and landscaping."],
+            ["Rent/mortgage share", "Rent; mortgage INTEREST; real estate taxes (actual method).", "Mortgage PRINCIPAL; the personal share; any figure already home-adjusted twice."],
+            ["Insurance", "Homeowners or renters insurance share used for business.", "Life, health or auto premiums."],
+            ["Depreciation", "The business-use share of the home's depreciation (owners, actual method, with consequences on sale).", "A depreciation figure invented to inflate the total; the simplified method produces none."],
+            ["Never — commuting", "Nothing.", "Travel between your home and a regular workplace is never a home-office cost."],
+            ["Never — mixed methods", "Nothing.", "The same space claimed under both methods in one year."],
+            ["Never — the shared-room claim", "Nothing.", "A room the household also uses: an exclusive-use failure can invalidate the position, not just reduce it."]],
+           [22, 56, 56], example_rows=0)
+
+    # ── Checklist: the records, as a task list ────────────────────────
+    _sheet(wb, "Checklist", ["Record to keep", "Proof type", "Done (Y/N)", "Notes"],
+           [["Total home square footage, written down", "Space proof", "N", "Measure once; keep the measurement."],
+            ["Qualifying space square footage, written down", "Space proof", "N", "Nothing else stored or used in that space."],
+            ["Dated photograph of the space (this year)", "Space proof", "N", "One photo a year, showing the setup as it is."],
+            ["The method chosen for the year, written down", "Method memo", "N", "One line: 'Year 20XX: actual method, 12.5%, reason.'"],
+            ["A document for every logged cost, filed and linked", "Cost proof", "N", "The Receipt file column must point at a real file."],
+            ["Business-use evidence (records, calendar, invoices)", "Use proof", "N", "Shows the business actually ran in the space, regularly."],
+            ["Second-period measurement (split year only)", "Space proof", "N", "Record it on SpaceMeasure so the number is not lost."],
+            ["Worked total re-checked against the limits before filing", "Limits", "N", "Read the Limits rows on AnnualSummary."]],
+           [50, 14, 12, 46], example_rows=0)
+
     _readme(wb, ["B12-006 Home-Office Deduction Organizer — HOW TO USE",
-        "1) Measure once (SpaceMeasure). Pick ONE method for the year: Actual (this log) or Simplified.",
-        "2) Log every expense with Home % and receipt file. The deductible estimate column is arithmetic, not a filing.",
-        "3) Read the companion PDF before filing. PROCEDURE INFORMATION ONLY — NOT TAX ADVICE. Verify current-year IRS rules; limits change."])
-    p = OUT / "B12-006_home_office_expense_log.xlsx"
+        "1) SpaceMeasure: enter total home sq ft and qualifying sq ft. The home % computes itself and flows into every row of the log. Pick ONE method for the year (Actual or Simplified) — the dropdown is in B5.",
+        "2) MethodCompare: enter your eligible annual costs once. Both methods and the difference appear side by side, so you can see which is larger before you commit. The example amounts shown tie to the worked example in the companion PDF.",
+        "3) Expenses2026: log every cost as it happens. Category is a dropdown, the home share comes from SpaceMeasure, and the deductible estimate computes per row. Enter the FULL bill amount; the home share is applied for you. Log within 7 days and link the receipt file in the last column.",
+        "4) AnnualSummary: your logged totals by category, plus the same three limits a preparer will raise — gross income, ordering rules, and depreciation on sale. Read them before treating any figure as final.",
+        "5) Checklist: satisfy every line and file the space photo with that month's receipts. This is what makes the number defensible.",
+        "6) The coloured cells: yellow = EXAMPLE values, overwrite or delete them. Blue = computed, do not type over them. White = yours to fill.",
+        "7) PROCEDURE INFORMATION ONLY — NOT TAX ADVICE. Rates, caps and limits change; verify the current tax year's guidance and confirm your own worker or entity category with a licensed tax professional before relying on any figure here."])
+    # out_dir exists so the regression test can build into a temp directory
+    # instead of overwriting the release artifact in books/batch12.
+    target_dir = Path(out_dir) if out_dir else OUT
+    p = target_dir / "B12-006_home_office_expense_log.xlsx"
     _paint_formulas(wb)
     wb.save(p)
     return p

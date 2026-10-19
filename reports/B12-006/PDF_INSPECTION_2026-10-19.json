@@ -1,0 +1,17 @@
+{
+ "schema": "galaxy_forge.b12_006_pdf_inspection.v1",
+ "run_at": "2026-10-19T22:16:12.749449+00:00",
+ "file": "books/batch12/B12-006_home_office_method_guide.pdf",
+ "bytes": 18614,
+ "sha256": "c33cf851c46051ca994102870faf83f13be15de24ecd170008ef19338d896e78",
+ "pages": 7,
+ "words": 3352,
+ "words_per_page": 478.9,
+ "sections": 14,
+ "placeholders": [],
+ "mojibake_markers": 0,
+ "not_tax_advice_present": true,
+ "worked_example_arithmetic_present": true,
+ "cap_behaviour_documented": true,
+ "method": "pypdf text extraction of the release PDF; the same reader the enforcer and the fleet QA use"
+}

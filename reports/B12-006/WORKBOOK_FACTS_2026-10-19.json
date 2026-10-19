@@ -1,0 +1,22 @@
+{
+ "schema": "galaxy_forge.b12_006_workbook_facts.v1",
+ "run_at": "2026-10-19T22:16:12.749449+00:00",
+ "file": "books/batch12/B12-006_home_office_expense_log.xlsx",
+ "bytes": 16462,
+ "sha256": "e4abe2866a470bfaf00999ce96d44f415522abb15693b5e72638e5821510e911",
+ "sheets": [
+  "Expenses2026",
+  "SpaceMeasure",
+  "MethodCompare",
+  "AnnualSummary",
+  "Categories",
+  "Checklist",
+  "README"
+ ],
+ "sheet_count": 7,
+ "formulas": 111,
+ "data_validations": 3,
+ "percent_formula_is_computed": true,
+ "method_cell_is_dropdown": true,
+ "annual_summary_uses_sumifs": true
+}

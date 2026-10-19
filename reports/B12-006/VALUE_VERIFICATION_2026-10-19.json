@@ -1,0 +1,174 @@
+{
+ "schema": "galaxy_forge.b12_006_value_verification.v1",
+ "artifact": "books/batch12/B12-006_home_office_expense_log.xlsx",
+ "artifact_sha256": "e4abe2866a470bfaf00999ce96d44f415522abb15693b5e72638e5821510e911",
+ "engine": {
+  "name": "Microsoft Excel",
+  "version": "16.0",
+  "build": "19127"
+ },
+ "calculated_at_utc": "2026-10-19T22:05:59Z",
+ "formula_cells": 111,
+ "format_and_kind_gate": {
+  "verdict": "PASS",
+  "findings": []
+ },
+ "independent_expected_inputs": {
+  "total_home_sqft": 1200,
+  "qualifying_sqft": 150,
+  "simplified_rate": 5,
+  "simplified_cap": 300,
+  "rent": 18000,
+  "utilities": 2400,
+  "insurance": 1200,
+  "repairs": 600
+ },
+ "value_checks": [
+  {
+   "where": "SpaceMeasure!B4",
+   "expected": 0.125,
+   "excel": 0.125,
+   "ok": true
+  },
+  {
+   "where": "SpaceMeasure!B4",
+   "expected_text_contains": "12.50%",
+   "excel_text": "12.50%",
+   "ok": true
+  },
+  {
+   "where": "SpaceMeasure!B8",
+   "expected": 750.0,
+   "excel": 750,
+   "ok": true
+  },
+  {
+   "where": "MethodCompare!B10",
+   "expected": 22200.0,
+   "excel": 22200,
+   "ok": true
+  },
+  {
+   "where": "MethodCompare!B11",
+   "expected": 0.125,
+   "excel": 0.125,
+   "ok": true
+  },
+  {
+   "where": "MethodCompare!B12",
+   "expected": 2775.0,
+   "excel": 2775,
+   "ok": true
+  },
+  {
+   "where": "MethodCompare!B13",
+   "expected": 750.0,
+   "excel": 750,
+   "ok": true
+  },
+  {
+   "where": "MethodCompare!B14",
+   "expected": 2025.0,
+   "excel": 2025,
+   "ok": true
+  },
+  {
+   "where": "MethodCompare!B15",
+   "expected_text_contains": "ACTUAL method is higher by $2,025.00",
+   "excel_text": "ACTUAL method is higher by $2,025.00",
+   "ok": true
+  },
+  {
+   "where": "Expenses2026!E2",
+   "expected": 0.125,
+   "excel": 0.125,
+   "ok": true
+  },
+  {
+   "where": "Expenses2026!F2",
+   "expected": 10.0,
+   "excel": 10,
+   "ok": true
+  },
+  {
+   "where": "Expenses2026!J1",
+   "expected": 10.0,
+   "excel": 10,
+   "ok": true
+  },
+  {
+   "where": "Expenses2026!J2",
+   "expected": 1,
+   "excel": 1,
+   "ok": true
+  },
+  {
+   "where": "AnnualSummary!B2",
+   "expected": 80.0,
+   "excel": 80,
+   "ok": true
+  },
+  {
+   "where": "AnnualSummary!C2",
+   "expected": 10.0,
+   "excel": 10,
+   "ok": true
+  },
+  {
+   "where": "AnnualSummary!B9",
+   "expected": 80.0,
+   "excel": 80,
+   "ok": true
+  },
+  {
+   "where": "AnnualSummary!C9",
+   "expected": 10.0,
+   "excel": 10,
+   "ok": true
+  },
+  {
+   "where": "AnnualSummary!C10",
+   "expected": 750.0,
+   "excel": 750,
+   "ok": true
+  },
+  {
+   "where": "AnnualSummary!C11",
+   "expected_text_contains": "Simplified is higher by $740.00",
+   "excel_text": "Simplified is higher by $740.00",
+   "ok": true
+  }
+ ],
+ "guard_checks": [
+  {
+   "case": "qualifying sq ft > total sq ft",
+   "cell": "SpaceMeasure!B4",
+   "excel_text": "Check B2 and B3: home must be greater than 0 and space no larger than home",
+   "excel_value": "Check B2 and B3: home must be greater than 0 and space no larger than home",
+   "ok": true
+  },
+  {
+   "case": "simplified cap cleared",
+   "cell": "SpaceMeasure!B8",
+   "excel_text": "Fill in qualifying sq ft, rate and cap",
+   "excel_value": "Fill in qualifying sq ft, rate and cap",
+   "ok": true
+  },
+  {
+   "case": "amount cleared",
+   "cell": "Expenses2026!E2",
+   "excel_text": "",
+   "excel_value": "",
+   "ok": true
+  },
+  {
+   "case": "amount cleared",
+   "cell": "Expenses2026!F2",
+   "excel_text": "",
+   "excel_value": "",
+   "ok": true
+  }
+ ],
+ "all_values_match": true,
+ "all_guards_hold": true
+}

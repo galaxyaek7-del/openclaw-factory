@@ -1,0 +1,158 @@
+{
+ "schema": "galaxy_forge.b12_gate_final.v1",
+ "product_id": "B12-006",
+ "title": "Home-Office Deduction Organizer (US)",
+ "run_at": "2026-10-19T22:16:12.749449+00:00",
+ "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
+ "artifacts": [
+  {
+   "file": "books/batch12/B12-006_home_office_method_guide.pdf",
+   "bytes": 18614,
+   "sha256": "c33cf851c46051ca994102870faf83f13be15de24ecd170008ef19338d896e78",
+   "pages": 7,
+   "words": 3352
+  },
+  {
+   "file": "books/batch12/B12-006_home_office_expense_log.xlsx",
+   "bytes": 16462,
+   "sha256": "e4abe2866a470bfaf00999ce96d44f415522abb15693b5e72638e5821510e911",
+   "sheets": 7,
+   "formulas": 111
+  }
+ ],
+ "quality_gate": {
+  "verdict": "BLOCKED_MISSING_DATA",
+  "blocked": true,
+  "reasons": [
+   "market_reality: no sourced competitor prices and no recorded proof of payment"
+  ],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "MISSING_DATA",
+    "score": null
+   }
+  },
+  "depth": {
+   "words": 3353,
+   "words_required": 2900,
+   "text_depth_ok": true,
+   "sheets": 7,
+   "formulas": 111,
+   "sheet_depth_ok": true
+  }
+ },
+ "market_reality_note": "market_reality is MISSING_DATA for every product in this factory: no sourced competitor prices and no recorded founder payment evidence are wired into the harness. That is a harness limitation, not a product verdict, and it is why the overall enforcer verdict reads BLOCKED_MISSING_DATA while both scored layers pass.",
+ "native_recalculation": {
+  "engine": {
+   "name": "Microsoft Excel",
+   "version": "16.0",
+   "build": "19127"
+  },
+  "verdict": "PASS",
+  "formula_cells": 111,
+  "critical_count": 0,
+  "warning_count": 0,
+  "evidence": "reports/B12-006/WORKBOOK_QA_2026-10-19.json",
+  "tool": "native_workbook_qa.py + scripts/excel_recalc_probe.ps1 (unchanged factory tools)"
+ },
+ "independent_value_verification": {
+  "checks": 19,
+  "guards": 4,
+  "all_values_match": true,
+  "all_guards_hold": true,
+  "evidence": "reports/B12-006/VALUE_VERIFICATION_2026-10-19.json",
+  "method": "expected values recomputed in Python from the shipped example inputs and compared against Excel's own recalculated values; guards exercised by running the same real probe over deliberately broken copies"
+ },
+ "structural": {
+  "verdict": "PASS",
+  "tool": "file_testing_engine.test_file per artifact",
+  "note": "both artifacts PASS structurally (PDF and XLSX); the same tool the fleet QA uses"
+ },
+ "price": {
+  "manifest_price_usd": 29,
+  "price_change_applied": false,
+  "why_no_change": "A price change is a founder decision; this repair changes content and formulas only. The figure below is disclosed, not applied.",
+  "economics_module": "economics.market_realism_check (two ceilings, the stricter wins: price/page_count <= max_price_per_page_usd, and books under 30 pages capped at $15.00 outright)",
+  "page_count_used": 7,
+  "ceilings": {
+   "gumroad_digital": {
+    "at_29": {
+     "market_realistic": false,
+     "suggested_price_usd": 7.0
+    },
+    "at_19": {
+     "market_realistic": false,
+     "suggested_price_usd": 7.0
+    },
+    "at_15": {
+     "market_realistic": false,
+     "suggested_price_usd": 7.0
+    },
+    "at_7": {
+     "market_realistic": true,
+     "suggested_price_usd": 7.0
+    }
+   },
+   "gumroad_premium": {
+    "at_29": {
+     "market_realistic": true,
+     "suggested_price_usd": 29.0
+    },
+    "at_19": {
+     "market_realistic": true,
+     "suggested_price_usd": 19.0
+    },
+    "at_15": {
+     "market_realistic": true,
+     "suggested_price_usd": 15.0
+    },
+    "at_7": {
+     "market_realistic": true,
+     "suggested_price_usd": 7.0
+    }
+   },
+   "gumroad_elite": {
+    "at_29": {
+     "market_realistic": true,
+     "suggested_price_usd": 29.0
+    },
+    "at_19": {
+     "market_realistic": true,
+     "suggested_price_usd": 19.0
+    },
+    "at_15": {
+     "market_realistic": true,
+     "suggested_price_usd": 15.0
+    },
+    "at_7": {
+     "market_realistic": true,
+     "suggested_price_usd": 7.0
+    }
+   }
+  },
+  "finding": "At the guide's 7 pages the general digital tier caps this product at $7.00 (the per-page ceiling binds before the $15 short-book rule), so the $29 manifest price would be silently re-priced to $7.00 by the auto-distribution path. On the premium curated tier the same $29 is accepted, because that tier is calibrated for expertise and curation rather than pages.",
+  "policy_limitation": "The page policy counts PDF pages only. The workbook is a 7-sheet, 111-formula tool that the policy does not see at all - the same shape the B12-010 gate disclosed for its own workbook.",
+  "not_padded": "The guide was extended to 3,352 words of real content; no filler was added to raise the page count toward a price ceiling."
+ },
+ "verdict": "REPAIRED_QA_PASS_AWAITING_PRICE_TIER_AND_LISTING_AUTHORIZATION",
+ "state": {
+  "build_state": "BUILD_COMPLETE",
+  "qa_state": "QA_PASS",
+  "authorization": "READY_FOR_AUTHORIZATION (not requested this cycle)",
+  "publication": "NOT_PUBLISHED",
+  "purchasability": "UNKNOWN"
+ },
+ "blocking_next": [
+  "Price tier decision: $7.00 honest ceiling on the general digital tier versus the $29 manifest price (which the premium curated tier accepts).",
+  "Listing publication remains behind the standing write gate: FACTORY_LIVE_PUBLISH is not true and no scoped authorization exists."
+ ],
+ "cycle104_defect_reference": "reports/CYCLE104/PRODUCT_QA_RESULTS.json (B12-006 content_quality FAIL 60)"
+}

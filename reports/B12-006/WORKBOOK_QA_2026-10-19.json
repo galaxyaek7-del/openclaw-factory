@@ -1,0 +1,38 @@
+{
+ "product_id": "B12-006",
+ "artifact": "books/batch12/B12-006_home_office_expense_log.xlsx",
+ "artifact_sha256": "e4abe2866a470bfaf00999ce96d44f415522abb15693b5e72638e5821510e911",
+ "engine": {
+  "name": "Microsoft Excel",
+  "version": "16.0",
+  "build": "19127"
+ },
+ "calculated_at_utc": "2026-10-19T22:14:04Z",
+ "formula_cells": 111,
+ "formula_sheets": [
+  "Expenses2026",
+  "SpaceMeasure",
+  "MethodCompare",
+  "AnnualSummary"
+ ],
+ "scanned_sheets": [
+  "Expenses2026",
+  "SpaceMeasure",
+  "MethodCompare",
+  "AnnualSummary",
+  "Categories",
+  "Checklist",
+  "README"
+ ],
+ "verdict": "PASS",
+ "findings": [],
+ "critical_count": 0,
+ "warning_count": 0,
+ "schema": "workbook_qa/v1",
+ "recorded_at_utc": "2026-10-19T22:14:04.964709+00:00",
+ "limitations": [
+  "The probe runs against a temporary read-only copy; it never opens the release file for write.",
+  "Number-format and value checks are limited to the sheets and cells named in the spec.",
+  "Excel is the only supported native engine; no other spreadsheet engine is installed here."
+ ]
+}

@@ -98,7 +98,66 @@ B12_010_SPEC: Dict[str, Any] = {
     ],
 }
 
-SPECS = {B12_010_SPEC["product_id"]: B12_010_SPEC}
+B12_006_SPEC: Dict[str, Any] = {
+    "product_id": "B12-006",
+    "artifact": "books/batch12/B12-006_home_office_expense_log.xlsx",
+    "artifact_sha256": "e4abe2866a470bfaf00999ce96d44f415522abb15693b5e72638e5821510e911",
+    "formula_sheets": ["Expenses2026", "SpaceMeasure", "MethodCompare", "AnnualSummary"],
+    "scan_sheets": [
+        "Expenses2026", "SpaceMeasure", "MethodCompare", "AnnualSummary",
+        "Categories", "Checklist", "README",
+    ],
+    # Each sheet's label/value table. A single value column per sheet, so the
+    # annual summary is checked on column C, which carries its computed figures.
+    "tables": [
+        {"sheet": "SpaceMeasure", "key_column": 1, "value_column": 2, "first_row": 2, "last_row": 13},
+        {"sheet": "MethodCompare", "key_column": 1, "value_column": 2, "first_row": 2, "last_row": 15},
+        {"sheet": "AnnualSummary", "key_column": 1, "value_column": 3, "first_row": 2, "last_row": 14},
+    ],
+    # The Value column of SpaceMeasure is intentionally heterogeneous (square
+    # feet, a percentage, a method name, currency), so its cells are formatted
+    # individually and no whole-column rule is asserted for it.
+    "columns": [
+        {
+            "name": "Expenses2026!D (Amount)",
+            "sheet": "Expenses2026", "column": 4, "first_row": 2, "last_row": 41,
+            "kind": "currency", "format_contains": "$", "require_rows": True,
+        },
+        {
+            "name": "Expenses2026!E (Home share)",
+            "sheet": "Expenses2026", "column": 5, "first_row": 2, "last_row": 41,
+            "kind": "percent", "format": "0.00%", "require_rows": True,
+        },
+        {
+            "name": "Expenses2026!F (Deductible est.)",
+            "sheet": "Expenses2026", "column": 6, "first_row": 2, "last_row": 41,
+            "kind": "currency", "format_contains": "$", "require_rows": True,
+        },
+    ],
+    "expect": [
+        {"sheet": "SpaceMeasure", "label": "Total home sq ft (livable area)", "kind": "integer"},
+        {"sheet": "SpaceMeasure", "label": "Qualifying space sq ft (regular + exclusive use)", "kind": "integer"},
+        {"sheet": "SpaceMeasure", "label": "Home % (qualifying ÷ total) — USED BY THE LOG",
+         "kind": "percent", "format": "0.00%"},
+        {"sheet": "SpaceMeasure", "label": "Simplified deduction (est.)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "MethodCompare", "label": "Rent (if you rent)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "MethodCompare", "label": "Eligible costs total", "kind": "currency", "format_contains": "$"},
+        {"sheet": "MethodCompare", "label": "Home % (from SpaceMeasure)", "kind": "percent", "format": "0.00%"},
+        {"sheet": "MethodCompare", "label": "ACTUAL method estimate", "kind": "currency", "format_contains": "$"},
+        {"sheet": "MethodCompare", "label": "SIMPLIFIED method estimate", "kind": "currency", "format_contains": "$"},
+        {"sheet": "MethodCompare", "label": "Difference (actual minus simplified)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "MethodCompare", "label": "Which is higher", "kind": "text"},
+        {"sheet": "AnnualSummary", "label": "Internet/utilities", "kind": "currency", "format_contains": "$"},
+        {"sheet": "AnnualSummary", "label": "Total logged", "kind": "currency", "format_contains": "$"},
+        {"sheet": "AnnualSummary", "label": "Simplified method estimate (for comparison)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "AnnualSummary", "label": "Higher figure in this log", "kind": "text"},
+    ],
+}
+
+SPECS = {
+    B12_010_SPEC["product_id"]: B12_010_SPEC,
+    B12_006_SPEC["product_id"]: B12_006_SPEC,
+}
 
 
 # ---------------------------------------------------------------------------
