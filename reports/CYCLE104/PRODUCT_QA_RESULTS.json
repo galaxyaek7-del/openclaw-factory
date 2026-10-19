@@ -1,0 +1,562 @@
+{
+ "schema": "galaxy_forge.b12_product_qa_sweep.v1",
+ "generated_at": "2026-10-19T19:05:35+00:00",
+ "cost_usd": 0,
+ "read_only": true,
+ "products": 10,
+ "summary": {
+  "gate_present": 6,
+  "gate_absent": 4,
+  "content_quality_pass": 6,
+  "content_quality_fail": 4,
+  "structural_failures": 0,
+  "artifacts_untracked": 7
+ },
+ "results": [
+  {
+   "id": "B12-001",
+   "title": "Freelancer Rate & Raise Calculator",
+   "price_used_usd": 14.99,
+   "files": [
+    "books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx"
+   ],
+   "artifacts_tracked_in_git": {
+    "books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx": true
+   },
+   "gate": {
+    "file": "reports\\B12-001\\GATE_FINAL_2026-10-17.json",
+    "verdict": "APPROVED",
+    "recommended_price_usd": null
+   },
+   "enforcer_verdict": "BLOCKED_MISSING_DATA",
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 100
+    },
+    "content_quality": {
+     "status": "PASS",
+     "score": 100
+    },
+    "market_reality": {
+     "status": "MISSING_DATA",
+     "score": null
+    }
+   },
+   "content_depth": {
+    "sheets": 4,
+    "formulas": 10,
+    "sheet_depth_ok": true
+   },
+   "structural": [
+    {
+     "file": "books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx",
+     "status": "PASS",
+     "kind": "xlsx",
+     "problems": []
+    }
+   ],
+   "notes": [
+    "market_reality is MISSING_DATA for every row because this sweep supplies neither sourced competitor prices nor payment evidence; that is a harness limitation, not a product verdict"
+   ]
+  },
+  {
+   "id": "B12-002",
+   "title": "Client Project Handoff Pack",
+   "price_used_usd": 11.99,
+   "files": [
+    "books/batch12/B12-002_client_handoff_guide.pdf",
+    "books/batch12/B12-002_client_handoff_register.xlsx"
+   ],
+   "artifacts_tracked_in_git": {
+    "books/batch12/B12-002_client_handoff_guide.pdf": true,
+    "books/batch12/B12-002_client_handoff_register.xlsx": true
+   },
+   "gate": {
+    "file": "reports\\B12-002\\GATE_FINAL_2026-10-18.json",
+    "verdict": {
+     "gate_at_recommended_price_11_99": "APPROVED",
+     "gate_at_manifest_price_29_00": "REWRITE"
+    },
+    "recommended_price_usd": null
+   },
+   "enforcer_verdict": "BLOCKED_MISSING_DATA",
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 75
+    },
+    "content_quality": {
+     "status": "PASS",
+     "score": 100
+    },
+    "market_reality": {
+     "status": "MISSING_DATA",
+     "score": null
+    }
+   },
+   "content_depth": {
+    "words": 1722,
+    "words_required": 1199,
+    "text_depth_ok": true,
+    "sheets": 6,
+    "formulas": 102,
+    "sheet_depth_ok": true
+   },
+   "structural": [
+    {
+     "file": "books/batch12/B12-002_client_handoff_guide.pdf",
+     "status": "PASS",
+     "kind": "pdf",
+     "problems": []
+    },
+    {
+     "file": "books/batch12/B12-002_client_handoff_register.xlsx",
+     "status": "PASS",
+     "kind": "xlsx",
+     "problems": []
+    }
+   ],
+   "notes": [
+    "market_reality is MISSING_DATA for every row because this sweep supplies neither sourced competitor prices nor payment evidence; that is a harness limitation, not a product verdict"
+   ]
+  },
+  {
+   "id": "B12-003",
+   "title": "Founder Access Continuity Organizer",
+   "price_used_usd": 8.0,
+   "files": [
+    "books/batch12/B12-003_access_continuity_inventory.xlsx",
+    "books/batch12/B12-003_access_continuity_organizer.pdf"
+   ],
+   "artifacts_tracked_in_git": {
+    "books/batch12/B12-003_access_continuity_inventory.xlsx": true,
+    "books/batch12/B12-003_access_continuity_organizer.pdf": true
+   },
+   "gate": {
+    "file": "reports\\B12-003\\GATE_FINAL_2026-10-19.json",
+    "verdict": "APPROVED at $8.00",
+    "recommended_price_usd": 14.99
+   },
+   "enforcer_verdict": "BLOCKED_MISSING_DATA",
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 100
+    },
+    "content_quality": {
+     "status": "PASS",
+     "score": 100
+    },
+    "market_reality": {
+     "status": "MISSING_DATA",
+     "score": null
+    }
+   },
+   "content_depth": {
+    "words": 3235,
+    "words_required": 800,
+    "text_depth_ok": true,
+    "sheets": 6,
+    "formulas": 20,
+    "sheet_depth_ok": true
+   },
+   "structural": [
+    {
+     "file": "books/batch12/B12-003_access_continuity_inventory.xlsx",
+     "status": "PASS",
+     "kind": "xlsx",
+     "problems": []
+    },
+    {
+     "file": "books/batch12/B12-003_access_continuity_organizer.pdf",
+     "status": "PASS",
+     "kind": "pdf",
+     "problems": []
+    }
+   ],
+   "notes": [
+    "market_reality is MISSING_DATA for every row because this sweep supplies neither sourced competitor prices nor payment evidence; that is a harness limitation, not a product verdict"
+   ]
+  },
+  {
+   "id": "B12-004",
+   "title": "Meeting Cost & ROI Calculator",
+   "price_used_usd": 11.99,
+   "files": [
+    "books/batch12/B12-004_meeting_cost_roi_calculator.xlsx",
+    "books/batch12/B12-004_meeting_method_guide.pdf"
+   ],
+   "artifacts_tracked_in_git": {
+    "books/batch12/B12-004_meeting_cost_roi_calculator.xlsx": true,
+    "books/batch12/B12-004_meeting_method_guide.pdf": true
+   },
+   "gate": {
+    "file": "reports\\B12-004\\GATE_FINAL_2026-10-18.json",
+    "verdict": "APPROVED at $11.99; NOT_READY at the manifest's $19.00",
+    "recommended_price_usd": null
+   },
+   "enforcer_verdict": "BLOCKED_MISSING_DATA",
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 75
+    },
+    "content_quality": {
+     "status": "PASS",
+     "score": 100
+    },
+    "market_reality": {
+     "status": "MISSING_DATA",
+     "score": null
+    }
+   },
+   "content_depth": {
+    "words": 1441,
+    "words_required": 1199,
+    "text_depth_ok": true,
+    "sheets": 5,
+    "formulas": 111,
+    "sheet_depth_ok": true
+   },
+   "structural": [
+    {
+     "file": "books/batch12/B12-004_meeting_cost_roi_calculator.xlsx",
+     "status": "PASS",
+     "kind": "xlsx",
+     "problems": []
+    },
+    {
+     "file": "books/batch12/B12-004_meeting_method_guide.pdf",
+     "status": "PASS",
+     "kind": "pdf",
+     "problems": []
+    }
+   ],
+   "notes": [
+    "market_reality is MISSING_DATA for every row because this sweep supplies neither sourced competitor prices nor payment evidence; that is a harness limitation, not a product verdict"
+   ]
+  },
+  {
+   "id": "B12-005",
+   "title": "Podcast Guest Booking Kit",
+   "price_used_usd": 8.0,
+   "files": [
+    "books/batch12/B12-005_podcast_guest_scripts.pdf",
+    "books/batch12/B12-005_podcast_guest_tracker.xlsx"
+   ],
+   "artifacts_tracked_in_git": {
+    "books/batch12/B12-005_podcast_guest_scripts.pdf": true,
+    "books/batch12/B12-005_podcast_guest_tracker.xlsx": true
+   },
+   "gate": {
+    "file": "reports\\B12-005\\GATE_FINAL_2026-10-19.json",
+    "verdict": "APPROVED at $8.00",
+    "recommended_price_usd": 8.0
+   },
+   "enforcer_verdict": "BLOCKED_MISSING_DATA",
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 75
+    },
+    "content_quality": {
+     "status": "PASS",
+     "score": 100
+    },
+    "market_reality": {
+     "status": "MISSING_DATA",
+     "score": null
+    }
+   },
+   "content_depth": {
+    "words": 3336,
+    "words_required": 800,
+    "text_depth_ok": true,
+    "sheets": 6,
+    "formulas": 154,
+    "sheet_depth_ok": true
+   },
+   "structural": [
+    {
+     "file": "books/batch12/B12-005_podcast_guest_scripts.pdf",
+     "status": "PASS",
+     "kind": "pdf",
+     "problems": []
+    },
+    {
+     "file": "books/batch12/B12-005_podcast_guest_tracker.xlsx",
+     "status": "PASS",
+     "kind": "xlsx",
+     "problems": []
+    }
+   ],
+   "notes": [
+    "market_reality is MISSING_DATA for every row because this sweep supplies neither sourced competitor prices nor payment evidence; that is a harness limitation, not a product verdict"
+   ]
+  },
+  {
+   "id": "B12-006",
+   "title": "Home-Office Deduction Organizer (US)",
+   "price_used_usd": 29.0,
+   "files": [
+    "books/batch12/B12-006_home_office_method_guide.pdf",
+    "books/batch12/B12-006_home_office_expense_log.xlsx"
+   ],
+   "artifacts_tracked_in_git": {
+    "books/batch12/B12-006_home_office_method_guide.pdf": false,
+    "books/batch12/B12-006_home_office_expense_log.xlsx": false
+   },
+   "gate": null,
+   "enforcer_verdict": "BLOCKED_MISSING_DATA",
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 75
+    },
+    "content_quality": {
+     "status": "FAIL",
+     "score": 60
+    },
+    "market_reality": {
+     "status": "MISSING_DATA",
+     "score": null
+    }
+   },
+   "content_depth": {
+    "words": 254,
+    "words_required": 2900,
+    "text_depth_ok": false,
+    "sheets": 4,
+    "formulas": 3,
+    "sheet_depth_ok": false
+   },
+   "structural": [
+    {
+     "file": "books/batch12/B12-006_home_office_method_guide.pdf",
+     "status": "PASS",
+     "kind": "pdf",
+     "problems": []
+    },
+    {
+     "file": "books/batch12/B12-006_home_office_expense_log.xlsx",
+     "status": "PASS",
+     "kind": "xlsx",
+     "problems": []
+    }
+   ],
+   "notes": [
+    "market_reality is MISSING_DATA for every row because this sweep supplies neither sourced competitor prices nor payment evidence; that is a harness limitation, not a product verdict"
+   ]
+  },
+  {
+   "id": "B12-007",
+   "title": "Digital Declutter & Backup: 30-Day System",
+   "price_used_usd": 19.0,
+   "files": [
+    "books/batch12/B12-007_digital_declutter_plan.pdf",
+    "books/batch12/B12-007_digital_inventory.xlsx"
+   ],
+   "artifacts_tracked_in_git": {
+    "books/batch12/B12-007_digital_declutter_plan.pdf": false,
+    "books/batch12/B12-007_digital_inventory.xlsx": false
+   },
+   "gate": null,
+   "enforcer_verdict": "BLOCKED_MISSING_DATA",
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 100
+    },
+    "content_quality": {
+     "status": "FAIL",
+     "score": 60
+    },
+    "market_reality": {
+     "status": "MISSING_DATA",
+     "score": null
+    }
+   },
+   "content_depth": {
+    "words": 273,
+    "words_required": 1900,
+    "text_depth_ok": false,
+    "sheets": 6,
+    "formulas": 10,
+    "sheet_depth_ok": true
+   },
+   "structural": [
+    {
+     "file": "books/batch12/B12-007_digital_declutter_plan.pdf",
+     "status": "PASS",
+     "kind": "pdf",
+     "problems": []
+    },
+    {
+     "file": "books/batch12/B12-007_digital_inventory.xlsx",
+     "status": "PASS",
+     "kind": "xlsx",
+     "problems": []
+    }
+   ],
+   "notes": [
+    "market_reality is MISSING_DATA for every row because this sweep supplies neither sourced competitor prices nor payment evidence; that is a harness limitation, not a product verdict"
+   ]
+  },
+  {
+   "id": "B12-008",
+   "title": "Moving House 8-Week Planner",
+   "price_used_usd": 29.0,
+   "files": [
+    "books/batch12/B12-008_moving_checklist.pdf",
+    "books/batch12/B12-008_moving_budget_tracker.xlsx"
+   ],
+   "artifacts_tracked_in_git": {
+    "books/batch12/B12-008_moving_checklist.pdf": false,
+    "books/batch12/B12-008_moving_budget_tracker.xlsx": false
+   },
+   "gate": null,
+   "enforcer_verdict": "BLOCKED_MISSING_DATA",
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 75
+    },
+    "content_quality": {
+     "status": "FAIL",
+     "score": 60
+    },
+    "market_reality": {
+     "status": "MISSING_DATA",
+     "score": null
+    }
+   },
+   "content_depth": {
+    "words": 273,
+    "words_required": 2900,
+    "text_depth_ok": false,
+    "sheets": 4,
+    "formulas": 1,
+    "sheet_depth_ok": false
+   },
+   "structural": [
+    {
+     "file": "books/batch12/B12-008_moving_checklist.pdf",
+     "status": "PASS",
+     "kind": "pdf",
+     "problems": []
+    },
+    {
+     "file": "books/batch12/B12-008_moving_budget_tracker.xlsx",
+     "status": "PASS",
+     "kind": "xlsx",
+     "problems": []
+    }
+   ],
+   "notes": [
+    "market_reality is MISSING_DATA for every row because this sweep supplies neither sourced competitor prices nor payment evidence; that is a harness limitation, not a product verdict"
+   ]
+  },
+  {
+   "id": "B12-009",
+   "title": "Pet Sitter Handover Kit",
+   "price_used_usd": 19.0,
+   "files": [
+    "books/batch12/B12-009_pet_sitter_handover_kit.pdf"
+   ],
+   "artifacts_tracked_in_git": {
+    "books/batch12/B12-009_pet_sitter_handover_kit.pdf": false
+   },
+   "gate": null,
+   "enforcer_verdict": "BLOCKED_MISSING_DATA",
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 75
+    },
+    "content_quality": {
+     "status": "FAIL",
+     "score": 60
+    },
+    "market_reality": {
+     "status": "MISSING_DATA",
+     "score": null
+    }
+   },
+   "content_depth": {
+    "words": 233,
+    "words_required": 1900,
+    "text_depth_ok": false
+   },
+   "structural": [
+    {
+     "file": "books/batch12/B12-009_pet_sitter_handover_kit.pdf",
+     "status": "PASS",
+     "kind": "pdf",
+     "problems": []
+    }
+   ],
+   "notes": [
+    "market_reality is MISSING_DATA for every row because this sweep supplies neither sourced competitor prices nor payment evidence; that is a harness limitation, not a product verdict"
+   ]
+  },
+  {
+   "id": "B12-010",
+   "title": "Nonprofit Grant Pipeline Tracker",
+   "price_used_usd": 15.0,
+   "files": [
+    "books/batch12/B12-010_grant_pipeline_tracker.xlsx",
+    "books/batch12/B12-010_grant_pipeline_guide.pdf"
+   ],
+   "artifacts_tracked_in_git": {
+    "books/batch12/B12-010_grant_pipeline_tracker.xlsx": true,
+    "books/batch12/B12-010_grant_pipeline_guide.pdf": true
+   },
+   "gate": {
+    "file": "reports\\B12-010\\GATE_FINAL_2026-10-19.json",
+    "verdict": "APPROVED at $15.00",
+    "recommended_price_usd": 15.0
+   },
+   "enforcer_verdict": "BLOCKED_MISSING_DATA",
+   "layers": {
+    "core_value": {
+     "status": "PASS",
+     "score": 100
+    },
+    "content_quality": {
+     "status": "PASS",
+     "score": 100
+    },
+    "market_reality": {
+     "status": "MISSING_DATA",
+     "score": null
+    }
+   },
+   "content_depth": {
+    "words": 8324,
+    "words_required": 1500,
+    "text_depth_ok": true,
+    "sheets": 9,
+    "formulas": 427,
+    "sheet_depth_ok": true
+   },
+   "structural": [
+    {
+     "file": "books/batch12/B12-010_grant_pipeline_tracker.xlsx",
+     "status": "PASS",
+     "kind": "xlsx",
+     "problems": []
+    },
+    {
+     "file": "books/batch12/B12-010_grant_pipeline_guide.pdf",
+     "status": "PASS",
+     "kind": "pdf",
+     "problems": []
+    }
+   ],
+   "notes": [
+    "market_reality is MISSING_DATA for every row because this sweep supplies neither sourced competitor prices nor payment evidence; that is a harness limitation, not a product verdict"
+   ]
+  }
+ ]
+}

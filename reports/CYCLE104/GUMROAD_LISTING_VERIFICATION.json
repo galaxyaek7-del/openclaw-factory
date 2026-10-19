@@ -1,0 +1,482 @@
+{
+ "schema": "galaxy_forge.gumroad_listing_verification.v1",
+ "verified_at": "2026-10-19T18:58:16+00:00",
+ "read_only": true,
+ "cost_usd": 0,
+ "purchases_attempted": 0,
+ "method": "GET /v2/products/:id per known product id (authoritative) plus an unauthenticated public-page GET; title scan of the live catalog for products expected to have no listing",
+ "purchasable": "UNKNOWN for every product (never asserted without a real checkout)",
+ "results": [
+  {
+   "product": "B12-001",
+   "title": "Freelancer Rate & Raise Calculator",
+   "expected_published": true,
+   "expected_price_cents": 1499,
+   "expected_deliverables": [
+    "books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx"
+   ],
+   "observed": {
+    "product_id": "W9FpZXpQB-fNiVCteT6Cow==",
+    "title": "Freelancer Rate & Raise Calculator",
+    "url": "https://aekraft.gumroad.com/l/blayvb",
+    "published": true,
+    "deleted": false,
+    "price_cents": 1499,
+    "currency": "usd",
+    "sales_count": 0,
+    "file_info": {
+     "Size": "8.71 KB"
+    },
+    "attachment_names_exposed": false,
+    "files": [
+     {
+      "name": null,
+      "size": 8922,
+      "filetype": "xlsx",
+      "filegroup": "url",
+      "url_present": true
+     }
+    ]
+   },
+   "checks": [
+    {
+     "check": "published is true",
+     "status": "PASS",
+     "detail": "True"
+    },
+    {
+     "check": "not deleted",
+     "status": "PASS",
+     "detail": "False"
+    },
+    {
+     "check": "price matches approved",
+     "status": "PASS",
+     "detail": "1499 (expected 1499)"
+    },
+    {
+     "check": "title matches",
+     "status": "PASS",
+     "detail": "Freelancer Rate & Raise Calculator"
+    },
+    {
+     "check": "attachment matches local B12-001_freelancer_rate_raise_calculator.xlsx",
+     "status": "PASS",
+     "detail": "xlsx, 8922 bytes present on the listing"
+    },
+    {
+     "check": "no unexpected attachments",
+     "status": "PASS",
+     "detail": "attachment set equals the promised set"
+    }
+   ],
+   "review_items": [
+    {
+     "item": "attachment names not exposed by the API",
+     "detail": "file name is null on every attachment; matching used filetype+size only, so a same-type same-size substitution cannot be excluded by this check"
+    }
+   ],
+   "state": "PUBLISHED_VERIFIED_WITH_REVIEW_ITEMS",
+   "public_page": {
+    "checked": true,
+    "http_status": 200,
+    "bytes": 27256,
+    "purchase_affordance_present": true,
+    "unavailable_marker_present": false,
+    "purchasable": "UNKNOWN",
+    "purchasable_note": "never asserted from an unauthenticated page; a real checkout is required and is not permitted here"
+   },
+   "deliverable_matched": [
+    {
+     "local": "B12-001_freelancer_rate_raise_calculator.xlsx",
+     "size": 8922,
+     "filetype": "xlsx"
+    }
+   ],
+   "deliverable_missing": []
+  },
+  {
+   "product": "B12-003",
+   "title": "Founder Access Continuity Organizer",
+   "expected_published": true,
+   "expected_price_cents": 800,
+   "expected_deliverables": [
+    "books/batch12/B12-003_access_continuity_inventory.xlsx",
+    "books/batch12/B12-003_access_continuity_organizer.pdf"
+   ],
+   "observed": {
+    "product_id": "TFeaaWXO3zySimrs2Jbjbw==",
+    "title": "Founder Access Continuity Organizer",
+    "url": "https://aekraft.gumroad.com/l/svlky",
+    "published": true,
+    "deleted": false,
+    "price_cents": 800,
+    "currency": "usd",
+    "sales_count": 0,
+    "file_info": {},
+    "attachment_names_exposed": false,
+    "files": [
+     {
+      "name": null,
+      "size": 13594,
+      "filetype": "xlsx",
+      "filegroup": "url",
+      "url_present": true
+     },
+     {
+      "name": null,
+      "size": 19095,
+      "filetype": "pdf",
+      "filegroup": "document",
+      "url_present": true
+     }
+    ]
+   },
+   "checks": [
+    {
+     "check": "published is true",
+     "status": "PASS",
+     "detail": "True"
+    },
+    {
+     "check": "not deleted",
+     "status": "PASS",
+     "detail": "False"
+    },
+    {
+     "check": "price matches approved",
+     "status": "PASS",
+     "detail": "800 (expected 800)"
+    },
+    {
+     "check": "title matches",
+     "status": "PASS",
+     "detail": "Founder Access Continuity Organizer"
+    },
+    {
+     "check": "attachment matches local B12-003_access_continuity_inventory.xlsx",
+     "status": "PASS",
+     "detail": "xlsx, 13594 bytes present on the listing"
+    },
+    {
+     "check": "attachment matches local B12-003_access_continuity_organizer.pdf",
+     "status": "PASS",
+     "detail": "pdf, 19095 bytes present on the listing"
+    },
+    {
+     "check": "no unexpected attachments",
+     "status": "PASS",
+     "detail": "attachment set equals the promised set"
+    }
+   ],
+   "review_items": [
+    {
+     "item": "attachment names not exposed by the API",
+     "detail": "file name is null on every attachment; matching used filetype+size only, so a same-type same-size substitution cannot be excluded by this check"
+    }
+   ],
+   "state": "PUBLISHED_VERIFIED_WITH_REVIEW_ITEMS",
+   "public_page": {
+    "checked": true,
+    "http_status": 200,
+    "bytes": 27436,
+    "purchase_affordance_present": true,
+    "unavailable_marker_present": false,
+    "purchasable": "UNKNOWN",
+    "purchasable_note": "never asserted from an unauthenticated page; a real checkout is required and is not permitted here"
+   },
+   "deliverable_matched": [
+    {
+     "local": "B12-003_access_continuity_inventory.xlsx",
+     "size": 13594,
+     "filetype": "xlsx"
+    },
+    {
+     "local": "B12-003_access_continuity_organizer.pdf",
+     "size": 19095,
+     "filetype": "pdf"
+    }
+   ],
+   "deliverable_missing": []
+  },
+  {
+   "product": "B12-004",
+   "title": "Meeting Cost & ROI Calculator",
+   "expected_published": true,
+   "expected_price_cents": 1199,
+   "expected_deliverables": [
+    "books/batch12/B12-004_meeting_cost_roi_calculator.xlsx",
+    "books/batch12/B12-004_meeting_method_guide.pdf"
+   ],
+   "observed": {
+    "product_id": "-cbRBfZyJMTKpl-Xk8Oz3Q==",
+    "title": "Meeting Cost & ROI Calculator",
+    "url": "https://aekraft.gumroad.com/l/ieashv",
+    "published": true,
+    "deleted": false,
+    "price_cents": 1199,
+    "currency": "usd",
+    "sales_count": 0,
+    "file_info": {},
+    "attachment_names_exposed": false,
+    "files": [
+     {
+      "name": null,
+      "size": 12865,
+      "filetype": "xlsx",
+      "filegroup": "url",
+      "url_present": true
+     },
+     {
+      "name": null,
+      "size": 9639,
+      "filetype": "pdf",
+      "filegroup": "document",
+      "url_present": true
+     }
+    ]
+   },
+   "checks": [
+    {
+     "check": "published is true",
+     "status": "PASS",
+     "detail": "True"
+    },
+    {
+     "check": "not deleted",
+     "status": "PASS",
+     "detail": "False"
+    },
+    {
+     "check": "price matches approved",
+     "status": "PASS",
+     "detail": "1199 (expected 1199)"
+    },
+    {
+     "check": "title matches",
+     "status": "PASS",
+     "detail": "Meeting Cost & ROI Calculator"
+    },
+    {
+     "check": "attachment matches local B12-004_meeting_cost_roi_calculator.xlsx",
+     "status": "PASS",
+     "detail": "xlsx, 12865 bytes present on the listing"
+    },
+    {
+     "check": "attachment matches local B12-004_meeting_method_guide.pdf",
+     "status": "PASS",
+     "detail": "pdf, 9639 bytes present on the listing"
+    },
+    {
+     "check": "no unexpected attachments",
+     "status": "PASS",
+     "detail": "attachment set equals the promised set"
+    }
+   ],
+   "review_items": [
+    {
+     "item": "attachment names not exposed by the API",
+     "detail": "file name is null on every attachment; matching used filetype+size only, so a same-type same-size substitution cannot be excluded by this check"
+    }
+   ],
+   "state": "PUBLISHED_VERIFIED_WITH_REVIEW_ITEMS",
+   "public_page": {
+    "checked": true,
+    "http_status": 200,
+    "bytes": 26767,
+    "purchase_affordance_present": true,
+    "unavailable_marker_present": false,
+    "purchasable": "UNKNOWN",
+    "purchasable_note": "never asserted from an unauthenticated page; a real checkout is required and is not permitted here"
+   },
+   "deliverable_matched": [
+    {
+     "local": "B12-004_meeting_cost_roi_calculator.xlsx",
+     "size": 12865,
+     "filetype": "xlsx"
+    },
+    {
+     "local": "B12-004_meeting_method_guide.pdf",
+     "size": 9639,
+     "filetype": "pdf"
+    }
+   ],
+   "deliverable_missing": []
+  },
+  {
+   "product": "EU-AI-ACT-TOOLKIT",
+   "title": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
+   "expected_published": true,
+   "expected_price_cents": 15500,
+   "expected_deliverables": [
+    "books/eu_ai_act_compliance_toolkit.pdf"
+   ],
+   "observed": {
+    "product_id": "pzTmMb4v8cih3nbWTj5TeA==",
+    "title": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
+    "url": "https://aekraft.gumroad.com/l/iaiyt",
+    "published": true,
+    "deleted": false,
+    "price_cents": 15500,
+    "currency": "usd",
+    "sales_count": 0,
+    "file_info": {},
+    "attachment_names_exposed": true,
+    "files": [
+     {
+      "name": "eu_ai_act_compliance_toolkit_preview",
+      "size": 106314,
+      "filetype": "pdf",
+      "filegroup": "document",
+      "url_present": true
+     },
+     {
+      "name": null,
+      "size": 139401,
+      "filetype": "pdf",
+      "filegroup": "document",
+      "url_present": true
+     }
+    ]
+   },
+   "checks": [
+    {
+     "check": "published is true",
+     "status": "PASS",
+     "detail": "True"
+    },
+    {
+     "check": "not deleted",
+     "status": "PASS",
+     "detail": "False"
+    },
+    {
+     "check": "price matches approved",
+     "status": "PASS",
+     "detail": "15500 (expected 15500)"
+    },
+    {
+     "check": "title matches",
+     "status": "PASS",
+     "detail": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs"
+    },
+    {
+     "check": "attachment matches local eu_ai_act_compliance_toolkit.pdf",
+     "status": "FAIL",
+     "detail": "no live attachment with filetype=pdf size=139121; live=[('pdf', 106314), ('pdf', 139401)]"
+    }
+   ],
+   "review_items": [
+    {
+     "item": "extra attachment present",
+     "detail": "2 unexpected attachment(s) beyond the promised deliverable set: [('pdf', 106314), ('pdf', 139401)]"
+    }
+   ],
+   "state": "PUBLICATION_MISMATCH",
+   "public_page": {
+    "checked": true,
+    "http_status": 200,
+    "bytes": 32092,
+    "purchase_affordance_present": true,
+    "unavailable_marker_present": false,
+    "purchasable": "UNKNOWN",
+    "purchasable_note": "never asserted from an unauthenticated page; a real checkout is required and is not permitted here"
+   },
+   "deliverable_matched": [],
+   "deliverable_missing": [
+    {
+     "local": "eu_ai_act_compliance_toolkit.pdf",
+     "expected": "pdf/139121",
+     "observed": [
+      [
+       "pdf",
+       106314
+      ],
+      [
+       "pdf",
+       139401
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "product": "B12-002",
+   "title": "Client Project Handoff Pack",
+   "expected_published": false,
+   "expected_price_cents": 1199,
+   "expected_deliverables": [
+    "books/batch12/B12-002_client_handoff_guide.pdf",
+    "books/batch12/B12-002_client_handoff_register.xlsx"
+   ],
+   "observed": {
+    "catalog_title_scan": true,
+    "catalog_match": null
+   },
+   "checks": [
+    {
+     "check": "no listing exists (expected)",
+     "status": "PASS",
+     "detail": "title absent from the live catalog"
+    }
+   ],
+   "review_items": [],
+   "state": "NOT_PUBLISHED_AS_EXPECTED"
+  },
+  {
+   "product": "B12-005",
+   "title": "Podcast Guest Booking Kit",
+   "expected_published": false,
+   "expected_price_cents": 800,
+   "expected_deliverables": [
+    "books/batch12/B12-005_podcast_guest_scripts.pdf",
+    "books/batch12/B12-005_podcast_guest_tracker.xlsx"
+   ],
+   "observed": {
+    "catalog_title_scan": true,
+    "catalog_match": null
+   },
+   "checks": [
+    {
+     "check": "no listing exists (expected)",
+     "status": "PASS",
+     "detail": "title absent from the live catalog"
+    }
+   ],
+   "review_items": [],
+   "state": "NOT_PUBLISHED_AS_EXPECTED"
+  },
+  {
+   "product": "B12-010",
+   "title": "Nonprofit Grant Pipeline Tracker",
+   "expected_published": false,
+   "expected_price_cents": 1500,
+   "expected_deliverables": [
+    "books/batch12/B12-010_grant_pipeline_tracker.xlsx",
+    "books/batch12/B12-010_grant_pipeline_guide.pdf"
+   ],
+   "observed": {
+    "catalog_title_scan": true,
+    "catalog_match": null
+   },
+   "checks": [
+    {
+     "check": "no listing exists (expected)",
+     "status": "PASS",
+     "detail": "title absent from the live catalog"
+    }
+   ],
+   "review_items": [],
+   "state": "NOT_PUBLISHED_AS_EXPECTED"
+  }
+ ],
+ "summary": {
+  "checked": 7,
+  "published_verified": 0,
+  "published_verified_with_review_items": 3,
+  "publication_mismatch": 1,
+  "not_published_as_expected": 3,
+  "unexpected_listing": 0,
+  "blocked": 0
+ }
+}

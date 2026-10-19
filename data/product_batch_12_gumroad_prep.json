@@ -21,7 +21,7 @@
         "verify price matches proposal",
         "test download after listing (founder, post-authorization)"
       ],
-      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+      "status": "PUBLISHED_AND_VERIFIED 2026-10-19",
       "listing_copy": {
         "listing_title": "Freelancer Rate & Raise Calculator",
         "listing_description": "Stop guessing your rates. This spreadsheet computes YOUR minimum hourly rate from your own costs: target take-home pay, tax buffer, business expenses, billable weeks and hours, plus a safety margin for scope creep and late payers.\n\nInside (4 sheets): Inputs (your numbers in, computed rate out), ClientMix (rank every client by revenue-per-hassle and see who to fire first), RaisePlanner (raise only on logged triggers, never on feelings), README (4-step instructions).\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews. Arithmetic on your inputs — not financial advice; confirm tax figures with your accountant.\n\nRequires: Excel, LibreOffice Calc (free), or Google Sheets (free upload). Instant XLSX download after purchase. Support: reply to your Gumroad receipt email.",
@@ -36,7 +36,9 @@
         "version": "1.0"
       },
       "listing_copy_status": "READY_TO_PASTE__AWAITS_LISTING_AUTHORIZATION",
-      "price_rationale": "Founder decision 2026-10-17: priced below the most comparable verified competitor (Freelance Pricing & Proposal Kit, $19.00, https://ysteriprime.gumroad.com/l/freelance-pricing-proposal-kit), which offers more content (9-sheet calculator + 50 AI prompts). 10% below $19 would be $17.10; $14.99 is the founder's chosen price."
+      "price_rationale": "Founder decision 2026-10-17: priced below the most comparable verified competitor (Freelance Pricing & Proposal Kit, $19.00, https://ysteriprime.gumroad.com/l/freelance-pricing-proposal-kit), which offers more content (9-sheet calculator + 50 AI prompts). 10% below $19 would be $17.10; $14.99 is the founder's chosen price.",
+      "status_basis": "reports/CYCLE104/GUMROAD_LISTING_VERIFICATION.json",
+      "status_note": "live GET /v2/products/:id: published=true, price 1499, attachment byte-matches the local workbook"
     },
     {
       "id": "B12-002",
@@ -130,7 +132,7 @@
         "verify price matches proposal",
         "test download after listing (founder, post-authorization)"
       ],
-      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+      "status": "PUBLISHED_AND_VERIFIED 2026-10-19",
       "listing_copy": {
         "listing_title": "Meeting Cost & ROI Calculator",
         "listing_description": "Price every recurring meeting with loaded attendee costs, find the expensive ones with no decision attached, and run a quarterly kill review. Includes a worked example (a 7-person standup costs ~$29,500/year), a polite decline script, and a kill-review worksheet.\n\nInside: Meetings workbook (costs auto-sum) + 1-page method sheet.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews.\n\nRequires: Excel, LibreOffice Calc (free), or Google Sheets (free upload) for the workbook; any PDF reader for the method sheet. Instant download after purchase. Support: reply to your Gumroad receipt email.",
@@ -143,7 +145,9 @@
         ],
         "version": "1.0"
       },
-      "listing_copy_status": "READY_TO_PASTE__AWAITS_LISTING_AUTHORIZATION"
+      "listing_copy_status": "READY_TO_PASTE__AWAITS_LISTING_AUTHORIZATION",
+      "status_basis": "reports/CYCLE104/GUMROAD_LISTING_VERIFICATION.json",
+      "status_note": "live GET /v2/products/:id: published=true, price 1199, both attachments byte-match the local artifacts"
     },
     {
       "id": "B12-005",
@@ -199,7 +203,9 @@
         "verify price matches proposal",
         "test download after listing (founder, post-authorization)"
       ],
-      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
+      "status": "QA_FAIL__NOT_LOCAL_READY",
+      "status_basis": "reports/CYCLE104/PRODUCT_QA_RESULTS.json",
+      "status_note": "content-quality layer FAIL 60 (254 words vs 2900 required at $29.00); no gate record exists"
     },
     {
       "id": "B12-007",
@@ -222,7 +228,9 @@
         "verify price matches proposal",
         "test download after listing (founder, post-authorization)"
       ],
-      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
+      "status": "QA_FAIL__NOT_LOCAL_READY",
+      "status_basis": "reports/CYCLE104/PRODUCT_QA_RESULTS.json",
+      "status_note": "content-quality layer FAIL 60 (273 words vs 1900 required at $19.00); zero-formula workbook defect repaired this cycle, content depth still unmet; no gate record exists"
     },
     {
       "id": "B12-008",
@@ -245,7 +253,7 @@
         "verify price matches proposal",
         "test download after listing (founder, post-authorization)"
       ],
-      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+      "status": "QA_FAIL__NOT_LOCAL_READY",
       "listing_copy": {
         "listing_title": "Moving House 8-Week Planner",
         "listing_description": "Week-by-week checklist from notice to keys plus a budget tracker with mover comparison and address-change register. Includes a first-night box manifest and a damage-claim email template (file within 48h).\n\nInside: 8-week checklist PDF + budget tracker workbook.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews.\n\nRequires: any PDF reader for the checklist; Excel, LibreOffice Calc (free), or Google Sheets (free upload) for the tracker. Instant download after purchase. Support: reply to your Gumroad receipt email.",
@@ -258,7 +266,9 @@
         ],
         "version": "1.0"
       },
-      "listing_copy_status": "READY_TO_PASTE__AWAITS_LISTING_AUTHORIZATION"
+      "listing_copy_status": "READY_TO_PASTE__AWAITS_LISTING_AUTHORIZATION",
+      "status_basis": "reports/CYCLE104/PRODUCT_QA_RESULTS.json",
+      "status_note": "content-quality layer FAIL 60 (273 words vs 2900 required at $29.00); budget tracker holds a single formula; no gate record exists"
     },
     {
       "id": "B12-009",
@@ -280,7 +290,9 @@
         "verify price matches proposal",
         "test download after listing (founder, post-authorization)"
       ],
-      "status": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
+      "status": "QA_FAIL__NOT_LOCAL_READY",
+      "status_basis": "reports/CYCLE104/PRODUCT_QA_RESULTS.json",
+      "status_note": "content-quality layer FAIL 60 (233 words vs 1900 required at $19.00); PDF only, no companion workbook; no gate record exists"
     },
     {
       "id": "B12-010",
@@ -310,6 +322,46 @@
       "listing_copy": "drafts/b12_010_listing_copy.txt",
       "gate_report": "reports/B12-010/GATE_FINAL_2026-10-19.json",
       "updated_at_utc": "2026-10-19T11:38:19Z"
+    }
+  ],
+  "registry_corrections": [
+    {
+      "registry": "data\\product_batch_12_gumroad_prep.json",
+      "corrected_at": "2026-10-19T19:04:22+00:00",
+      "reason": "unsupported status claims: stale published state and/or LOCAL_READY asserted with no gate record",
+      "changes": [
+        {
+          "id": "B12-001",
+          "before": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+          "after": "PUBLISHED_AND_VERIFIED 2026-10-19"
+        },
+        {
+          "id": "B12-004",
+          "before": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+          "after": "PUBLISHED_AND_VERIFIED 2026-10-19"
+        },
+        {
+          "id": "B12-006",
+          "before": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+          "after": "QA_FAIL__NOT_LOCAL_READY"
+        },
+        {
+          "id": "B12-007",
+          "before": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+          "after": "QA_FAIL__NOT_LOCAL_READY"
+        },
+        {
+          "id": "B12-008",
+          "before": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+          "after": "QA_FAIL__NOT_LOCAL_READY"
+        },
+        {
+          "id": "B12-009",
+          "before": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+          "after": "QA_FAIL__NOT_LOCAL_READY"
+        }
+      ],
+      "applied": false
     }
   ]
 }

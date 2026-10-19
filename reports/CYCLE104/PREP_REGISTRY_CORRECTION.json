@@ -1,0 +1,39 @@
+{
+ "registry": "data\\product_batch_12_gumroad_prep.json",
+ "corrected_at": "2026-10-19T19:04:22+00:00",
+ "reason": "unsupported status claims: stale published state and/or LOCAL_READY asserted with no gate record",
+ "changes": [
+  {
+   "id": "B12-001",
+   "before": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+   "after": "PUBLISHED_AND_VERIFIED 2026-10-19"
+  },
+  {
+   "id": "B12-004",
+   "before": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+   "after": "PUBLISHED_AND_VERIFIED 2026-10-19"
+  },
+  {
+   "id": "B12-006",
+   "before": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+   "after": "QA_FAIL__NOT_LOCAL_READY"
+  },
+  {
+   "id": "B12-007",
+   "before": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+   "after": "QA_FAIL__NOT_LOCAL_READY"
+  },
+  {
+   "id": "B12-008",
+   "before": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+   "after": "QA_FAIL__NOT_LOCAL_READY"
+  },
+  {
+   "id": "B12-009",
+   "before": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
+   "after": "QA_FAIL__NOT_LOCAL_READY"
+  }
+ ],
+ "applied": true,
+ "backup": "data\\product_batch_12_gumroad_prep.json.cycle104.bak"
+}

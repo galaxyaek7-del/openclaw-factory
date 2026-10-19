@@ -1,0 +1,26 @@
+{
+ "target": "books\\batch12\\B12-007_digital_inventory.xlsx",
+ "before_sha256": "5b0b7088e7bea270d19deba7b1ce534dcede37f64ea74796a63ac77f3642c909",
+ "sheets_before": [
+  "Accounts",
+  "Files",
+  "Backups",
+  "Subscriptions",
+  "README"
+ ],
+ "formulas_before": 0,
+ "formulas_added": 10,
+ "sheet_index_restored_to": 0,
+ "applied": true,
+ "sheets_after": [
+  "Dashboard",
+  "Accounts",
+  "Files",
+  "Backups",
+  "Subscriptions",
+  "README"
+ ],
+ "formulas_after": 10,
+ "after_sha256": "6ff62c7847c3dbcef3dde0ebf5a855c161212804952cc0b9a5b34fe847901458",
+ "applied_at": "2026-10-19T19:01:15+00:00"
+}
