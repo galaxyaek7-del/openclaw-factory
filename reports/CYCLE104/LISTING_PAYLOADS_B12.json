@@ -1,0 +1,172 @@
+{
+ "schema": "galaxy_forge.b12_listing_payloads.v1",
+ "generated_at": "2026-10-19T19:18:05+00:00",
+ "cost_usd": 0,
+ "gumroad_calls_made": 0,
+ "published_anything": false,
+ "note": "Local preparation only. Nothing here creates or publishes a listing; every product stays unpublished until the founder authorizes it explicitly and the publication gate is opened.",
+ "products": [
+  {
+   "id": "B12-002",
+   "title": "Client Project Handoff Pack",
+   "registry_title": "Client Project Handoff Pack",
+   "description": "A project ends twice: once when you stop working, once when the client can prove they own it. This pack makes the second one happen on purpose. It is the 45-minute handoff session you run live, the three emails you copy and paste, the five asset categories nothing ships without, and a companion workbook that computes a hard Close gate so a project cannot be marked finished while the receiver is still blocked.\n\nBuilt for freelancers, agencies and contractors handing work to a client or another team. The method is simple and stubborn: a handoff ends when the receiver can prove they own it, not when the sender stops working — so the register is filled in together, on the call, and every credential is reissued into an account the client owns rather than passed over as a password.\n\nInside (2 files):\n- Client Project Handoff Register workbook (.xlsx, 6 sheets): HandoffRegister (one row per project — days to handoff, assets-complete %, open high risks, and a computed Close gate), ChecklistTemplate (18 canonical items across Code, Docs, Accounts, Money, Data, Security, People and Support, each with why it prevents a dispute), AssetChecklist (one row per item, with access transferred Y/N, who verified it, where it lives and a proof note), RiskRegister (Severity x Likelihood scoring — a score of 12 or more is HIGH and blocks the close gate), Dashboard (KPIs including projects ready to close), and a README. Includes worked example rows (a \"DNS transfer fails\" risk scores 4 x 3 = 12, so the gate stays OPEN until every asset reads Y, no high risk is open, and sign-off is Y).\n- Client Project Handoff Guide (.pdf, 4 pages): the transfer-by-evidence principle, the ten-day prep list, the minute-by-minute 45-minute session script, the five asset categories, the access and security rules, three copy-paste emails, the acceptance criteria and close gate, the 14-day support window, the 30/60/90-day review, the failure modes this pack prevents, an FAQ, and a final pre-handoff checklist.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews.\n\nRequires: Excel, LibreOffice Calc (free), or Google Sheets (free upload) for the workbook; any PDF reader for the guide. Instant download after purchase. Support: reply to your Gumroad receipt email.",
+   "tags": [
+    "handoff",
+    "freelancing",
+    "checklist",
+    "project management",
+    "client",
+    "contractor",
+    "template",
+    "risk"
+   ],
+   "price_usd": 11.99,
+   "price_cents": 1199,
+   "price_basis": "FOUNDER_APPROVED 2026-10-18 (USD 11.99)",
+   "copy_source": "drafts/b12_002_listing_copy.txt",
+   "registry_listing_copy_shape": "dict",
+   "files": [
+    {
+     "path": "books/batch12/B12-002_client_handoff_guide.pdf",
+     "exists": true,
+     "bytes": 11360,
+     "sha256": "273e05c5d8720ebe61ab44b2a9a6a3ef9f07f4eea4c561283c3ef0dd79b80f07"
+    },
+    {
+     "path": "books/batch12/B12-002_client_handoff_register.xlsx",
+     "exists": true,
+     "bytes": 15941,
+     "sha256": "e733ea8e913899b53ebe9a69d3e273d4ed018f997e47f006bbe1263d90543fda"
+    }
+   ],
+   "cover": "reports/B12-002/cover.png",
+   "cover_exists": true,
+   "cover_dimensions": [
+    1280,
+    720
+   ],
+   "customer_page": "customer_site/b12-client-handoff-pack.html",
+   "customer_page_exists": true,
+   "gate": "reports/B12-002/GATE_FINAL_2026-10-18.json",
+   "gate_exists": true,
+   "trust_validation": {
+    "passed": true,
+    "failed_checks": []
+   },
+   "state": "READY_TO_PUBLISH__AWAITS_FOUNDER_AUTHORIZATION",
+   "problems": [],
+   "authorization_required": "I authorize publishing B12-002 — Client Project Handoff Pack — to Gumroad at 11.99 USD with the exact files listed in reports/CYCLE104/LISTING_PAYLOADS_B12.json",
+   "published": false
+  },
+  {
+   "id": "B12-005",
+   "title": "Podcast Guest Booking Kit",
+   "registry_title": "Podcast Guest Booking Kit",
+   "description": "Most guest pitches get ignored for the same three reasons: they are sent to a show that was never a fit, they open with a bio instead of a reason for the host's audience to care, and they get followed up until they read as spam. This kit fixes all three, without ever promising a booking.\n\nBuilt for founders, freelancers, consultants and authors who want to be booked as podcast guests. The method is fit-first and deliberately capped: score a real list of shows, pitch in each host's own words with a specific angle you can prove, send exactly two follow-ups, then close the loop with dignity and move on. The workbook computes the follow-up dates so the cadence cannot drift, flags any third-touch attempt as spam risk, and tells you which of your angles actually earns replies.\n\nInside (2 files):\n- Podcast Guest Tracker workbook (.xlsx, 6 sheets): Assets (the ten things that must exist before you send a single pitch, including three specific angles with their proof), Angles (two to five arguable claims with the proof you can cite, pitched count, replies and a computed reply rate per angle), Pipeline (one row per show - episode you actually heard, contact route, angle used, fit score 1-5, pitch date, auto-computed follow-up dates, status, a Cadence column that says WAITING / FOLLOW UP 1 / CLOSE THE LOOP / CLOSED, and your next action), FollowUps (log every touch; touch number above 2 is flagged as a spam risk), Metrics (shows on the list, pitches sent, replies, reply rate, bookings, booking rate, shows cut as poor fit, cadence overdue, spam risk, assets ready and best-performing angle, plus a plain-language read on whether your sample is even big enough to judge), and a README. Includes worked example rows.\n- Podcast Guest Scripts guide (.pdf, 8 pages, 15 sections): what this kit is and is not, the fit-before-pitch principle, the three assets to build first, how to build a target list of 25 to 40 shows instead of 200, the six-signal fit test, the pitch script and why each line exists, the two capped follow-ups, the confirmation brief for after a yes, the thank-you and asset email, a one-sheet fill-in template, a question bank that makes a host want you back, the first 14 days if you are starting today, a weekly 45-minute ritual, a worked example, ten mistakes that get you ignored, and answers to the five objections that stop people starting.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews.\n\nRequires: Excel, LibreOffice Calc (free), or Google Sheets (free upload) for the workbook; any PDF reader for the guide. Instant download after purchase. Support: reply to your Gumroad receipt email.",
+   "tags": [
+    "podcast",
+    "guest pitching",
+    "outreach",
+    "email templates",
+    "publicity",
+    "tracker",
+    "checklist",
+    "pr"
+   ],
+   "price_usd": 8.0,
+   "price_cents": 800,
+   "price_basis": "DERIVED_BY_CYCLE99_PRICING_RULE 2026-10-19 (USD 8.00) - pending founder listing authorization",
+   "copy_source": "drafts/b12_005_listing_copy.txt",
+   "registry_listing_copy_shape": "NoneType",
+   "files": [
+    {
+     "path": "books/batch12/B12-005_podcast_guest_scripts.pdf",
+     "exists": true,
+     "bytes": 20146,
+     "sha256": "246268d4ba41c6099a1d78ddd74c10203106f6999d4908710178fbd1d749bb9e"
+    },
+    {
+     "path": "books/batch12/B12-005_podcast_guest_tracker.xlsx",
+     "exists": true,
+     "bytes": 17400,
+     "sha256": "0720869bd302ff7c49c03edae97722d22161061191650380fc9047913e124b14"
+    }
+   ],
+   "cover": "reports/B12-005/cover.png",
+   "cover_exists": true,
+   "cover_dimensions": [
+    1280,
+    720
+   ],
+   "customer_page": "customer_site/b12-podcast-guest-kit.html",
+   "customer_page_exists": true,
+   "gate": "reports/B12-005/GATE_FINAL_2026-10-19.json",
+   "gate_exists": true,
+   "trust_validation": {
+    "passed": true,
+    "failed_checks": []
+   },
+   "state": "READY_TO_PUBLISH__AWAITS_FOUNDER_AUTHORIZATION",
+   "problems": [],
+   "authorization_required": "I authorize publishing B12-005 — Podcast Guest Booking Kit — to Gumroad at 8.00 USD with the exact files listed in reports/CYCLE104/LISTING_PAYLOADS_B12.json",
+   "published": false
+  },
+  {
+   "id": "B12-010",
+   "title": "Nonprofit Grant Pipeline Tracker",
+   "registry_title": "Nonprofit Grant Pipeline Tracker",
+   "description": "Grant work fails in two specific ways. The first is weeks of writing spent on applications that were never eligible. The second is an award put at risk because a report due date lived in one person's head. This kit is built to close both gaps.\n\nIt is one register plus one honest method. Every funder and program is a row. Every required document is tracked against that row, so you can see readiness before you write. Every deadline and every post-award report is computed from its own date, so the state is correct the moment you open the file rather than whenever someone remembers to check.\n\nInside (2 files):\n- Grant Pipeline Tracker workbook (.xlsx, 9 sheets): Opportunities (one row per funder and program, with award range, deadline, status, owner and source), Docs (required vs. ready, per application, with where each file lives), Budget (requested vs. confirmed, per line), Timeline (every post-award report, with first due date and repeat interval in days), Dashboard (tracked, active, submitted, decisions, award rate, awarded vs. requested, overdue, due within 14 days, next open deadline, missing documents, duplicate rows, data problems, post-award reports overdue, and a single plain-language Pipeline verdict), plus Stages, Eligibility (twelve must-pass questions), DocLibrary (twelve standard documents and how often each needs refreshing) and a README. Includes four worked example rows and 427 formulas.\n- Grant Pipeline Method Guide (.pdf, 17 pages, 28 sections): what the kit is and is not, the eligibility-before-drafting rule, the seven stages and their exit gates, twenty-minute setup, a field dictionary for every column, how the deadline maths and the reporting cadence maths behave, how document readiness is counted, how duplicates and row problems are found, the twelve must-pass eligibility questions, the standard document library, writing narratives from reusable blocks, a budget narrative that survives review, a worked 90-day example, the four-line decline post-mortem, a monthly sixty-minute review, twenty mistakes, reporting after award, compatibility and limitations, FAQ, glossary, and a first-ninety-minutes checklist.\n\nThe design choices are deliberate: the deadline state is a sentence, not a colour, because a sentence can be counted and sorted. A document is marked ready only when it exists and is current, not when someone knows where it is. A closed row keeps its history instead of being deleted, because a pipeline that only shows live work cannot tell you that the same funder has declined you twice.\n\nHonest limits: this does not find funders, submit applications, contact anyone, monitor portals, or predict whether you will be funded. It is an organising system for your own work. Eligibility rules, award ranges, match requirements and reporting obligations are set by each funder and by law, and the funder's own guidelines always take precedence. It is not legal, tax, accounting or financial advice. The workbook uses standard spreadsheet functions and is built for Excel; it imports into Google Sheets in ordinary use, but verify the computed columns after import.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews.\n\nRequires: a spreadsheet application that opens .xlsx (Excel, or Google Sheets after import) for the workbook; any PDF reader for the guide. Instant download after purchase. Support: reply to your Gumroad receipt email.",
+   "tags": [
+    "nonprofit",
+    "grant tracker",
+    "grant management",
+    "grant spreadsheet",
+    "nonprofit templates",
+    "grant reporting",
+    "excel template",
+    "google sheets",
+    "grants calendar",
+    "nonprofit operations"
+   ],
+   "price_usd": 15.0,
+   "price_cents": 1500,
+   "price_basis": "DERIVED (Cycle 100 pricing rule); not founder-approved",
+   "copy_source": "drafts/b12_010_listing_copy.txt",
+   "registry_listing_copy_shape": "str",
+   "files": [
+    {
+     "path": "books/batch12/B12-010_grant_pipeline_tracker.xlsx",
+     "exists": true,
+     "bytes": 38765,
+     "sha256": "df49cecaf704cb06dec3b48c9f826c94cfdae9e2bf91d3a2b76fc670593b8574"
+    },
+    {
+     "path": "books/batch12/B12-010_grant_pipeline_guide.pdf",
+     "exists": true,
+     "bytes": 45453,
+     "sha256": "b7ad0849a7d248db821c79873a8cdc3c42399a6ce054083eaf650298e97f0a49"
+    }
+   ],
+   "cover": "books/covers/B12-010.png",
+   "cover_exists": true,
+   "cover_dimensions": [
+    1280,
+    720
+   ],
+   "customer_page": "customer_site/b12-grant-pipeline-tracker.html",
+   "customer_page_exists": true,
+   "gate": "reports/B12-010/GATE_FINAL_2026-10-19.json",
+   "gate_exists": true,
+   "trust_validation": {
+    "passed": true,
+    "failed_checks": []
+   },
+   "state": "READY_TO_PUBLISH__AWAITS_FOUNDER_AUTHORIZATION",
+   "problems": [],
+   "authorization_required": "I authorize publishing B12-010 — Nonprofit Grant Pipeline Tracker — to Gumroad at 15.00 USD with the exact files listed in reports/CYCLE104/LISTING_PAYLOADS_B12.json",
+   "published": false
+  }
+ ],
+ "ready_count": 3
+}
