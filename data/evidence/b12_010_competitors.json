@@ -1,0 +1,186 @@
+{
+ "product": "B12-010",
+ "title": "Nonprofit Grant Pipeline Tracker",
+ "research_date": "2026-10-19",
+ "method": "Live web search + page-level inspection of the listings themselves (external, read-only, $0 spend). Each entry cites the live URL, the displayed price and a verbatim snippet from the page. Pages that rendered no price are recorded as NOT_READ rather than guessed.",
+ "scope_note": "Nonprofit grant trackers are the only candidate in this research pass with (a) review counts in the hundreds, (b) a stated sales count, (c) sustained $15-$20 price points, and (d) buyers who demonstrably pay $67+ for a deeper bundle. Competition is MEDIUM-HIGH and Etsy/Google-Sheets-led, but the category is proven to pay. Our planned $39.00 sits above every single-file comparable ($6.98-$19.97) and must be earned with real depth, not assumed.",
+ "competitors": [
+  {
+   "name": "Nonprofit Grant Tracker Spreadsheet | Excel & Google Sheets | Grants Management Template | Grant Writing Dashboard | Compliance Calendar",
+   "url": "https://www.etsy.com/market/grant_tracking_spreadsheet",
+   "price_usd": 15.0,
+   "platform": "Etsy",
+   "notes": "The single strongest demand artifact found in this whole research pass: a grant-tracker spreadsheet with 982 reviews, on sale at $15.00 from a $30.00 list. Same exact product concept and same file format as our planned deliverable.",
+   "quote": "\"(982) Sale Price $15.00 $15.00 $30.00 Original Price $30.00 (50% off) Digital Download\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$15.00 (was $30.00), 982 reviews"
+  },
+  {
+   "name": "Nonprofit Grant Tracker Spreadsheet, Grant Management Template for Excel & Google Sheets, Deadline and Reporting Tracker",
+   "url": "https://www.etsy.com/market/grant_tracking_spreadsheet",
+   "price_usd": 19.97,
+   "platform": "Etsy",
+   "notes": "137 reviews at $19.97 (from a $39.95 list) - i.e. the same category sustains a price point above our planned cost basis and just below our planned $39.",
+   "quote": "\"(137) Sale Price $19.97 $19.97 $39.95 Original Price $39.95 (50% off) Digital Download\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$19.97 (was $39.95), 137 reviews"
+  },
+  {
+   "name": "Nonprofit Grant Management Excel + Google Sheets | Program Tracker, Budget Dashboard, Reporting Calendar & Impact Tracker",
+   "url": "https://www.etsy.com/market/grant_tracking_spreadsheet",
+   "price_usd": 17.24,
+   "platform": "Etsy",
+   "notes": "Deeper 4-module variant at $17.24 (from $34.49).",
+   "quote": "\"(3) Sale Price $17.24 $17.24 $34.49 Original Price $34.49 (50% off) Digital Download\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$17.24 (was $34.49)"
+  },
+  {
+   "name": "Nonprofit Grant Application Tracking Spreadsheet - Google Sheets Version - With Dashboard, Budget Projection, & Submission Tracker",
+   "url": "https://www.etsy.com/market/grant_tracking_spreadsheet",
+   "price_usd": 6.98,
+   "platform": "Etsy",
+   "notes": "35 reviews at a flat $6.98 - the low-price, single-platform end of the same niche.",
+   "quote": "\"(35) $6.98 Digital Download\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$6.98, 35 reviews"
+  },
+  {
+   "name": "GRANTFLOW - Grant Application & Reporting Tracker (animaliriana)",
+   "url": "https://animaliriana.gumroad.com/l/grantflow",
+   "price_usd": 15.92,
+   "platform": "Gumroad",
+   "notes": "The closest same-shape competitor anywhere in this research: a Gumroad workbook+guide bundle for exactly 'small organizations and independent applicants managing their own grant pipeline' - 2 XLSX (blank + sample), 4 PDF guides, 250 prepared rows. Its own disclaimer ('does not submit applications or guarantee funding') is the disclosure pattern we must mirror.",
+   "quote": "\"GRANTFLOW - Grant Application & Reporting Tracker $15.92 ... 2 XLSX workbooks (blank and sample), 4 PDF guides and review sheets ... Excel workbook workflow with 250 prepared entry rows ... This template does not submit applications or guarantee funding.\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$15.92"
+  },
+  {
+   "name": "Grant Budget and Reporting Tracker - Excel Workbook (Gumroad checkout)",
+   "url": "https://gumroad.com/checkout?product=awhrah&quantity=1",
+   "price_usd": 19.0,
+   "platform": "Gumroad",
+   "notes": "Price read from the live Gumroad checkout page itself.",
+   "quote": "\"Grant Budget and Reporting Tracker - Excel Workbook ... US$19\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "US$19"
+  },
+  {
+   "name": "Grant Tracker for Nonprofits: Post Award Reporting and Pipeline Template for Notion (Gumroad checkout)",
+   "url": "https://gumroad.com/checkout?product=ukpnes&quantity=1",
+   "price_usd": 15.0,
+   "platform": "Gumroad",
+   "notes": "Notion-format competitor at US$15, again read from the live checkout page. Shows the tracker concept is bought in at least three formats (Excel, Google Sheets, Notion) at $15-$20.",
+   "quote": "\"Grant Tracker for Nonprofits: Post Award Reporting and Pipeline Template for Notion ... US$15\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "US$15"
+  },
+  {
+   "name": "Grant Writing Templates Bundle (GrantCompass)",
+   "url": "https://grantcompass.ca/products/grant-writing-templates.html",
+   "price_usd": 67.0,
+   "platform": "Direct (own site)",
+   "notes": "A 17-resource Canadian bundle at $67 (from $97), explicitly updated February 2026 and marketed as built from '224 analyzed Canadian programs', positioned against hiring a grant writer at $2,000+. Evidence that grant-pipeline buyers with budget pay an order of magnitude more than the Etsy templates.",
+   "quote": "\"Grant Writing Templates Bundle - Win More Funding | GrantCompass ... Updated February 2026 - 17 resources included ... Complete Bundle $67 $97 Save $30 ... vs Hire a Grant Writer $2,000+\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$67 (was $97)"
+  },
+  {
+   "name": "Grant Award Management Spreadsheet | Grant Reporting Tracker | Nonprofit Compliance Template | Deadline Reminder System | Google Sheets",
+   "url": "https://www.etsy.com/listing/4481454002/grant-award-management-spreadsheet-grant",
+   "price_usd": 111.25,
+   "platform": "Etsy",
+   "notes": "Priced at USD 111.25 with Apps Script email reminders and 0 sales. Evidence of the category's price ceiling AND of the fact that a high price with no reputation does not sell - a caution, not a target.",
+   "quote": "\"Price: USD 111.25 ... Includes Apps Script for automated reminders ... No reviews yet 0 sales Listed on Apr 1, 2026\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "USD 111.25 (0 sales)"
+  },
+  {
+   "name": "Grant Tracker Spreadsheet for Nonprofits | Grant Application & Deadline Tracker | 501c3 Grant Management Tool | Google Sheet and Excel",
+   "url": "https://www.etsy.com/listing/4462870544/grant-tracker-spreadsheet-for-nonprofits",
+   "price_usd": null,
+   "platform": "Etsy",
+   "notes": "Has the rarest kind of real demand proof in this niche: a stated sales count (203 sales, 4.9 from 27 ratings, 1 year on Etsy). Price displayed only in JPY on the geo-served page, so no USD figure is asserted.",
+   "quote": "\"Price: Y498 ... 4.9 (27) ... 203 sales ... 1 year on Etsy\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "JPY 498 (no USD asserted); 203 sales"
+  }
+ ],
+ "not_read": [
+  {
+   "name": "Nonprofit Grant Tracker (Google Sheets + Excel) (esanveisi)",
+   "url": "https://esanveisi.gumroad.com/l/nonprofit-grant-tracker",
+   "reason": "Page rendered the title only; no price in the returned content. Recorded as NOT_READ."
+  }
+ ],
+ "demand_signals": [
+  {
+   "signal": "Etsy 'Nonprofit Grant Tracker Spreadsheet' (Excel + Google Sheets)",
+   "type": "reviews",
+   "value": "982 reviews"
+  },
+  {
+   "signal": "Etsy 'Grant Management Template for Excel & Google Sheets'",
+   "type": "reviews",
+   "value": "137 reviews at $19.97"
+  },
+  {
+   "signal": "Etsy 'Grant Application Tracking Spreadsheet' (Google Sheets)",
+   "type": "reviews",
+   "value": "35 reviews at $6.98"
+  },
+  {
+   "signal": "Etsy 'Grant Tracker Spreadsheet for Nonprofits ... 501c3'",
+   "type": "sales",
+   "value": "203 sales, 4.9 from 27 ratings"
+  },
+  {
+   "signal": "GrantCompass bundle",
+   "type": "positioning",
+   "value": "$67 bundle explicitly compared against a $2,000+ human grant writer"
+  }
+ ],
+ "substitute_prices_cited_by_a_competitor": [
+  {
+   "name": "Hire a grant writer",
+   "price_usd": 2000.0,
+   "cited_by": "https://grantcompass.ca/products/grant-writing-templates.html",
+   "quote": "\"Hire a Grant Writer $2,000+ - Fully done for you - 3-6 week turnaround - Per-application cost\""
+  },
+  {
+   "name": "xlsx-template / Google Sheets free alternatives in the same Etsy category",
+   "price_usd": 0.0,
+   "cited_by": "https://www.etsy.com/market/grant_tracking_spreadsheet",
+   "quote": "the results page mixes paid listings with free and $3-ish alternatives in the same result set"
+  }
+ ],
+ "observed_span_usd": {
+  "min_usd": 6.98,
+  "max_usd": 111.25,
+  "paid_min_usd": 6.98,
+  "paid_max_usd": 19.97,
+  "cluster_note": "Single-file workbooks: $6.98-$19.97. Bundle: $67. One aspirational listing at $111.25 with 0 sales. Two JPY-only listings excluded from the USD span.",
+  "planned_price_39_note": "DERIVED: at $39.00 the deliverable must clear the factory's own page/depth market-realism policy, and no observed single-file competitor sustains $39. The honest comparable band is $15-$20."
+ },
+ "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)"
+}

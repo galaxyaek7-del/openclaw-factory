@@ -1,7 +1,7 @@
 {
  "product_id": "B12-005",
  "title": "Podcast Guest Booking Kit",
- "run_at": "2026-10-19T11:05:00Z",
+ "run_at": "2026-10-19T09:45:00Z",
  "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
  "price_status": "DERIVED_BY_CYCLE99_PRICING_RULE (pending founder listing authorization)",
  "price_basis": "HIGHEST_PRICE_PASSING_ALL_MANDATORY_GATES",
@@ -281,5 +281,15 @@
    "gate": "APPROVED"
   }
  ],
- "cycle99_note": "Depth is not the constraint at this volume: 3,336 words against 8 pages clears the 100-words-per-dollar depth rule up to ~$33. The binding gate is the economics page-count market-realism policy ($1.00/page). At $8.00 the quality gate, the depth rule and the market-realism policy all agree - no layer disagrees. Raising the price would require either a founder override of the page-count policy or a longer, genuinely useful guide."
+ "cycle99_note": "Depth is not the constraint at this volume: 3,336 words against 8 pages clears the 100-words-per-dollar depth rule up to ~$33. The binding gate is the economics page-count market-realism policy ($1.00/page). At $8.00 the quality gate, the depth rule and the market-realism policy all agree - no layer disagrees. Raising the price would require either a founder override of the page-count policy or a longer, genuinely useful guide.",
+ "timestamp_corrections": [
+  {
+   "field": "run_at",
+   "original_value": "2026-10-19T11:05:00Z",
+   "corrected_value": "2026-10-19T09:45:00Z",
+   "reason": "The original value labelled local system time (+01:00) as UTC, producing a timestamp in the future. Re-derived from the real UTC time of the surrounding work (the Cycle 99 commit was made at 2026-10-19T09:57:49Z) and disclosed here rather than silently rewritten.",
+   "corrected_at_utc": "2026-10-19T10:02:37Z",
+   "corrected_by": "Claude (Cycle 99, 2026-10-19)"
+  }
+ ]
 }

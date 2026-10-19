@@ -1,0 +1,121 @@
+{
+ "product": "B12-007",
+ "title": "Digital Declutter & Backup: 30-Day System",
+ "research_date": "2026-10-19",
+ "method": "Live web search + page-level inspection of the listings themselves (external, read-only, $0 spend). Each entry cites the live URL, the displayed price and a verbatim snippet from the page. Pages that rendered no price are recorded as NOT_READ rather than guessed.",
+ "scope_note": "Category is well supplied on Gumroad (a paid cluster at $3.49-$14.99 plus a free/PWYW tier). Our planned $19.00 sits ABOVE every observed paid comparable except none, and an existing product already carries a near-identical title ('The 30-Day Digital Declutter'). Evidence supports the category's willingness to pay in the $10-$15 band, not at $19.",
+ "competitors": [
+  {
+   "name": "30-Day Digital Declutter Planner (otosto)",
+   "url": "https://otosto.gumroad.com/l/fqrdmm",
+   "price_usd": 3.0,
+   "platform": "Gumroad",
+   "notes": "Pay-what-you-want with a $3 minimum. 30 daily micro-actions over 6 themes, PDF instant download. Closest shape to our planned 30-day plan.",
+   "quote": "\"30-Day Digital Declutter Planner ... $3+ ... This planner gives you one simple, 10-20 minute action to complete each day for 30 days - no apps, no cost, no overwhelm.\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$3+ (PWYW minimum)"
+  },
+  {
+   "name": "Digital Minimalism: A 30-Day Reset to Reclaim Your Focus (animeop/Onyx Editions)",
+   "url": "https://animeop.gumroad.com/l/30-day-reset",
+   "price_usd": 14.99,
+   "platform": "Gumroad",
+   "notes": "21-page PDF, week-by-week reset plan (Audit -> Declutter -> Rebuild -> Systemize), trigger log, app-inventory worksheet, 90-day maintenance. Highest credible price in the closest concept cluster.",
+   "quote": "\"What you get: A week-by-week reset plan (Audit -> Declutter -> Rebuild -> Systemize) ... Format: PDF, 21 pages, instant download. ... 21 pages\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$14.99"
+  },
+  {
+   "name": "THE DIGITAL RESET - 30-Day Digital Detox Workbook (theedigitalreset)",
+   "url": "https://theedigitalreset.gumroad.com/l/fzham",
+   "price_usd": 9.99,
+   "platform": "Gumroad",
+   "notes": "30-day detox workbook with printable screen-time trackers, habit trackers, relapse recovery. Positions as 'premium'.",
+   "quote": "\"The Digital Reset is a premium 30-day digital detox workbook ... $9.99\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$9.99"
+  },
+  {
+   "name": "Digital Decluttering Checklist (digitalminimalist)",
+   "url": "https://digitalminimalist.gumroad.com/l/xosme",
+   "price_usd": 0.0,
+   "platform": "Gumroad",
+   "notes": "Pay-what-you-want ($0+). 21 ratings at 4.8 stars - a real, observable demand signal for the category, at a zero price floor. Included to show the free tier we must beat on substance, not price.",
+   "quote": "\"Digital Decluttering Checklist $0+ ... 21 ratings ... 4.8 (21 ratings) 5 stars 95%\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$0+ (PWYW, 21 ratings)"
+  },
+  {
+   "name": "Digital Detox Checklist Notion Template (Momomuse studio)",
+   "url": "https://momomuse.gumroad.com/l/Digital-Detox-Checklist",
+   "price_usd": 0.0,
+   "platform": "Gumroad",
+   "notes": "Free/pay-what-you-want Notion template. Confirms the category is also served by free Notion templates, not only PDFs.",
+   "quote": "\"Digital Detox Checklist Notion Template $0+ ... Declutter, Refresh & Reclaim Your Digital Life\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$0+"
+  },
+  {
+   "name": "The Screen Free Reset - 30-Day Digital Wellness Planner (creativebuzz3)",
+   "url": "https://creativebuzz3.gumroad.com/l/moesnr",
+   "price_usd": 3.49,
+   "platform": "Gumroad",
+   "notes": "40-page printable planner at a pay-what-you-want floor of $3.49. Shows a 40-page deliverable can still sit at the low end of this market.",
+   "quote": "\"The Screen Free Reset $3.49+ ... This comprehensive 40-page printable digital planner\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$3.49+"
+  },
+  {
+   "name": "Digital Declutter Guide (harry davison)",
+   "url": "https://5153937594533.gumroad.com/l/hvosn",
+   "price_usd": 9.99,
+   "platform": "Gumroad",
+   "notes": "A $9.99 'guide' whose only stated artifact is a 9.26 KB file - i.e. the market already pays ~$10 for a very thin PDF. Useful pricing evidence, and a quality bar to beat rather than match.",
+   "quote": "\"Digital Declutter Guide $9.99 ... 9.26 KB\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$9.99"
+  }
+ ],
+ "not_read": [
+  {
+   "name": "The 30-Day Digital Declutter (mauricehekker)",
+   "url": "https://mauricehekker.gumroad.com/l/30daydigitaldeclutter",
+   "reason": "Page rendered the title only; no price in the returned content. Recorded as NOT_READ. NOTE: the title is near-identical to our planned product name - a real differentiation risk, not evidence."
+  }
+ ],
+ "demand_signals": [
+  {
+   "signal": "digitalminimalist Digital Decluttering Checklist",
+   "type": "ratings",
+   "value": "21 ratings, 4.8 stars"
+  },
+  {
+   "signal": "category supply",
+   "type": "observed",
+   "value": "7 priced/free comparables found on Gumroad alone in one search pass"
+  }
+ ],
+ "substitute_prices_cited_by_a_competitor": [],
+ "observed_span_usd": {
+  "min_usd": 0.0,
+  "max_usd": 14.99,
+  "paid_min_usd": 3.0,
+  "paid_max_usd": 14.99,
+  "cluster_note": "Paid prices cluster at $3.49-$14.99; two $9.99 entries, one $14.99 entry, one $3.49-$3.00 entry, plus a $0+ tier."
+ },
+ "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)"
+}

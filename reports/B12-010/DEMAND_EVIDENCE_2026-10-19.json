@@ -1,0 +1,99 @@
+{
+ "product": "B12-010",
+ "title": "Nonprofit Grant Pipeline Tracker",
+ "research_date": "2026-10-19T10:02:37Z",
+ "cycle": 99,
+ "target_customer": "Small nonprofits, 501(c)(3) staff, program directors and independent grant applicants who track their own funding pipeline",
+ "problem": "Grant deadlines, reporting obligations and award conditions are missed because they live in three places (a calendar, an inbox and a spreadsheet nobody updates), and a missed report can put an award at risk",
+ "demand_signals": [
+  {
+   "signal": "This is the only candidate in the 2026-10-19 research pass with review counts in the hundreds on the exact same product concept and file format.",
+   "evidence": "Etsy market page for 'grant tracking spreadsheet' shows a Nonprofit Grant Tracker Spreadsheet (Excel & Google Sheets) with (982) reviews at $15.00 (from a $30.00 list), and a second at (137) reviews for $19.97 (from $39.95).",
+   "interpretation": "Proven, repeated, high-volume willingness to pay for a grant-pipeline workbook - the strongest demand artifact found in this pass.",
+   "evidence_type": "REAL"
+  },
+  {
+   "signal": "At least one comparable publishes a real sales count.",
+   "evidence": "Etsy listing 4462870544 ('Grant Tracker Spreadsheet for Nonprofits ... 501c3') states '4.9 (27) - 203 sales - 1 year on Etsy' (price displayed only in JPY on the geo-served page; no USD figure asserted).",
+   "interpretation": "The category converts, not just accumulates reviews.",
+   "evidence_type": "REAL"
+  },
+  {
+   "signal": "The concept is bought in three different formats at $15-$20, including one Gumroad workbook bundle almost identical in shape to what we plan to ship.",
+   "evidence": "GRANTFLOW ($15.92, Gumroad: 2 XLSX + 4 PDF guides + 250 prepared rows) and two Gumroad checkout pages showing 'Grant Budget and Reporting Tracker - Excel Workbook' at US$19 and a Notion grant tracker at US$15.",
+   "interpretation": "A workbook-plus-guide bundle in this niche is a normal, already-selling product shape at a price we can meet.",
+   "evidence_type": "REAL"
+  },
+  {
+   "signal": "Buyers with budget exist above the template price band.",
+   "evidence": "GrantCompass sells a 17-resource Canadian grant bundle at $67 (from $97), explicitly positioned against 'Hire a Grant Writer $2,000+', and states it was built from 224 analysed programs (page updated February 2026).",
+   "interpretation": "The niche is not purely price-driven; depth commands an order of magnitude more than an Etsy template.",
+   "evidence_type": "REAL"
+  },
+  {
+   "signal": "A high price without reputation does not sell in this niche.",
+   "evidence": "Etsy listing 4481454002 prices a grant award management spreadsheet at USD 111.25 and shows 'No reviews yet - 0 sales - Listed on Apr 1, 2026'.",
+   "interpretation": "The $39.00 manifest price cannot be assumed; it must be earned by content depth and proven by the factory's own gates. Recorded as a caution, not a target.",
+   "evidence_type": "REAL"
+  },
+  {
+   "signal": "The closest competitor states the same non-promise we must make, which is evidence of the category's honest disclosure norm.",
+   "evidence": "GRANTFLOW's own page: 'This template does not submit applications or guarantee funding.'",
+   "interpretation": "Any product we ship must carry the equivalent disclosure (no funding guaranteed, not legal/financial advice) - it is a market norm, not optional hedging.",
+   "evidence_type": "REAL"
+  }
+ ],
+ "competition_level": "MEDIUM-HIGH",
+ "competition_note": "Etsy and Google-Sheets-first templates dominate; at least 6 Etsy listings and 4 Gumroad/direct products were observed for this exact concept in one search pass. Competition is real but the category is proven to pay.",
+ "differentiation_risk": "MEDIUM",
+ "differentiation_note": "The winning differentiation is not a new concept - it is depth and correctness: a deadline/report-cadence engine that computes what is actually due (like B12-005's cadence logic), a status pipeline with real conditional logic, plus a written method. The market's most-reviewed entry is a plain tracker, so computation is where a small seller can still win.",
+ "price": {
+  "manifest_price_usd": 39.0,
+  "recommended_price_usd": null,
+  "comparable_band_usd": {
+   "min": 6.98,
+   "max": 19.97,
+   "note": "Observed single-file workbooks on Etsy/Gumroad: $6.98, $15.00, $15.92, $17.24, $19.00, $19.97. Bundles reach $67."
+  },
+  "market_realism_ceiling_usd": null,
+  "approved_price_usd": null,
+  "price_basis": "NOT_YET_DERIVED - no gate has been run for B12-010 in this round",
+  "pricing_date": null,
+  "requires_founder_confirmation": true,
+  "price_status": "NOT_YET_GATED (evidence only)",
+  "rationale": "The manifest's $39.00 is ABOVE every observed single-file comparable ($6.98-$19.97) and is not supported by this evidence. Per the Cycle 99 pricing rule the price will be derived after the deliverable is rebuilt to the deep-QA bar and the factory's own gates are run - including the page/depth market-realism policy, which will bind hard for a workbook-only product. No price is proposed or charged now."
+ },
+ "real_alternatives_for_a_zero_budget_buyer": [
+  {
+   "alternative": "Google Sheets / Excel templates already bundled with grant-writing guides",
+   "price_usd": 0.0,
+   "quote": "the same Etsy result page mixes paid listings with free and low-cost template alternatives"
+  },
+  {
+   "alternative": "Funder-provided reporting templates",
+   "price_usd": 0.0,
+   "quote": "not priced anywhere; standard practice in the sector - a real substitute we must beat on workflow, not on availability"
+  },
+  {
+   "alternative": "Hire a grant writer",
+   "price_usd": 2000.0,
+   "quote": "GrantCompass: 'Hire a Grant Writer $2,000+ - Fully done for you - 3-6 week turnaround - Per-application cost'"
+  }
+ ],
+ "sources": [
+  "https://www.etsy.com/market/grant_tracking_spreadsheet",
+  "https://www.etsy.com/listing/4462870544/grant-tracker-spreadsheet-for-nonprofits",
+  "https://www.etsy.com/listing/4481454002/grant-award-management-spreadsheet-grant",
+  "https://animaliriana.gumroad.com/l/grantflow",
+  "https://gumroad.com/checkout?product=awhrah&quantity=1",
+  "https://gumroad.com/checkout?product=ukpnes&quantity=1",
+  "https://grantcompass.ca/products/grant-writing-templates.html",
+  "data/evidence/b12_010_competitors.json"
+ ],
+ "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+ "honest_caveats": [
+  "The 982-review figure is the review count displayed against that listing on the Etsy market page; it is the strongest demand signal observed, but it measures accumulated reviews, not current monthly sales.",
+  "Two listings display prices only in JPY because of the geo-served page; no USD conversion is asserted for either.",
+  "No sales or revenue for Galaxy Forge is implied anywhere by this evidence. VERIFIED_REVENUE remains $0.00."
+ ]
+}

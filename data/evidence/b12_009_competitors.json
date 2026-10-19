@@ -1,0 +1,103 @@
+{
+ "product": "B12-009",
+ "title": "Pet Sitter Handover Kit",
+ "research_date": "2026-10-19",
+ "method": "Live web search + page-level inspection of the listings themselves (external, read-only, $0 spend). Each entry cites the live URL, the displayed price and a verbatim snippet from the page. Pages that rendered no price are recorded as NOT_READ rather than guessed.",
+ "scope_note": "Pet-sitter handover kits are a small, crowded market with a clear low ceiling: $1.39 to $10, with the deepest 4-edition binder at $10. Our planned $19.00 has no support in this evidence at all.",
+ "competitors": [
+  {
+   "name": "PET SITTER READY (kindleleaf / Shastri Seepersad)",
+   "url": "https://kindleleaf.gumroad.com/l/alduw",
+   "price_usd": 4.0,
+   "platform": "Gumroad",
+   "notes": "14 reusable cat+dog handover pages, fillable A4 PDF, A4 + US Letter print editions, 6-page quick-start guide, 10 copy-paste messages. Very close to our planned kit shape at $4.",
+   "quote": "\"PET SITTER READY $4 ... 14 reusable handover pages for cat and dog owners ... A six-page quick-start guide ... 10 copy-and-paste messages\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$4"
+  },
+  {
+   "name": "Pet Sitter Handoff Pack (Helping Hands / hansomeaaron) - checkout page",
+   "url": "https://gumroad.com/checkout?product=sbucie&quantity=1",
+   "price_usd": 5.99,
+   "platform": "Gumroad",
+   "notes": "Price read from the live Gumroad checkout page itself (a stronger evidence class than a listing render).",
+   "quote": "\"Pet Sitter Handoff Pack: Printable Pet Sitter Instructions, Feeding and Meds Log | Helping Hands ... US$5.99\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "US$5.99"
+  },
+  {
+   "name": "Away Ready Pet and House Sitter Binder (jawwad24)",
+   "url": "https://jawwad24.gumroad.com/l/pbivij",
+   "price_usd": 10.0,
+   "platform": "Gumroad",
+   "notes": "The deepest observed single product: pet profile, meds log, vet/insurance/microchip, home access, utilities, plants, mail, daily visit + overnight logs, incident report - across 4 PDF editions. The top of this category's range.",
+   "quote": "\"Away-Ready Pet & House Sitter Binder $10 ... US Letter Color PDF, US Letter Ink-Friendly PDF, A4 Color PDF, A4 Ink-Friendly PDF, Quick Start / Printing Guide\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$10"
+  },
+  {
+   "name": "Pet Sitter Instructions (GoodVibesDesignUSA)",
+   "url": "https://www.etsy.com/listing/1080328671/pet-sitter-instructions-pet-sitter-notes",
+   "price_usd": 1.39,
+   "platform": "Etsy",
+   "notes": "Fillable + non-fillable Letter PDF plus printing instructions, on sale from $1.99, sold by a Star Seller. Buyer-review summary on the page is positive and specifically praises the fillable option and instant download.",
+   "quote": "\"Price: $1.39 Original Price: $1.99 ... One fillable Letter size (8.5\\\" x 11\\\") PDF file One non-fillable Letter size (8.5\\\" x 11\\\") PDF file\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$1.39 (was $1.99)"
+  },
+  {
+   "name": "Pet Sitter Notes (Neat and Tidy Design)",
+   "url": "https://neatandtidydesign.com/store/pet-sitter-notes/",
+   "price_usd": 4.0,
+   "platform": "Direct (own site)",
+   "notes": "A single fillable sheet (Letter + A4, three colours) at $4.00 with 1 customer review. Shows even a one-page handout clears $4 in this niche.",
+   "quote": "\"Pet Sitter Notes (1 customer review) $ 4.00 ... This is a fillable PDF file ... LETTER size ... and A4 size\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$4.00"
+  },
+  {
+   "name": "Printable Pet Sitter Instructions: Dog & Cat Care Forms (ProjectPismo)",
+   "url": "https://www.etsy.com/listing/1244207966/printable-pet-sitter-instructions-dog",
+   "price_usd": null,
+   "platform": "Etsy",
+   "notes": "Price displayed only in JPY on the geo-served page. No USD conversion is asserted here - recorded for shape (ready-to-print PDF, 2 sizes, 4 colours, browser-editable copy on the page).",
+   "quote": "\"Printable Pet Sitter Instructions: Dog & Cat Care Forms (PDF) ... Price: Y519 ... 2 sizes - US letter or A4 ... 4 colors\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "JPY 519 (no USD asserted)"
+  }
+ ],
+ "not_read": [
+  {
+   "name": "Pet Sitter Instructions Template Bundle (lifewithchevy)",
+   "url": "https://lifewithchevy.gumroad.com/l/PetSitterInstructions",
+   "reason": "Page rendered the title only; no price in the returned content. Recorded as NOT_READ."
+  },
+  {
+   "name": "Pet Sitter Instructions Printable | 9 Pet Care Sheets (Methodwise, sold via Etsy)",
+   "url": "https://methodwise.co.uk/products/pet-sitter-instructions-pack/",
+   "reason": "Product page describes 9 sheets x 2 paper sizes x 2 styles x 5 colours but states the download is delivered through Etsy; no price on the page. NOT_READ."
+  }
+ ],
+ "demand_signals": [],
+ "substitute_prices_cited_by_a_competitor": [],
+ "observed_span_usd": {
+  "min_usd": 1.39,
+  "max_usd": 10.0,
+  "paid_min_usd": 1.39,
+  "paid_max_usd": 10.0,
+  "cluster_note": "Observed paid prices: $1.39, $4.00, $4.00, $5.99, $10.00. One JPY-only listing excluded from the USD span."
+ },
+ "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)"
+}

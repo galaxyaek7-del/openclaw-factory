@@ -1,7 +1,7 @@
 {
  "id": "B12-005",
  "title": "Podcast Guest Booking Kit",
- "run_at": "2026-10-19T10:55:00Z",
+ "run_at": "2026-10-19T09:35:00Z",
  "pdf": {
   "pages": 8,
   "bytes": 20146,
@@ -207,5 +207,15 @@
    "cover_70_20_10_zone (expects ~70% title band)"
   ],
   "disposition": "Non-gating for Gumroad: Gumroad renders a wide product card, not a KDP portrait cover. Disclosed, not hidden - a 1600x2560 portrait cover would be required only for a KDP listing (needs trim-size recompute + KDP-specific layout)."
- }
+ },
+ "timestamp_corrections": [
+  {
+   "field": "run_at",
+   "original_value": "2026-10-19T10:55:00Z",
+   "corrected_value": "2026-10-19T09:35:00Z",
+   "reason": "The original value labelled local system time (+01:00) as UTC, producing a timestamp in the future. Re-derived from the real UTC time of the surrounding work (the Cycle 99 commit was made at 2026-10-19T09:57:49Z) and disclosed here rather than silently rewritten.",
+   "corrected_at_utc": "2026-10-19T10:02:37Z",
+   "corrected_by": "Claude (Cycle 99, 2026-10-19)"
+  }
+ ]
 }

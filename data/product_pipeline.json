@@ -1,7 +1,7 @@
 {
  "schema": "galaxy_forge.product_pipeline.v1",
  "created_at_utc": "2026-10-18T19:10:00Z",
- "updated_at_utc": "2026-10-19T11:10:00Z",
+ "updated_at_utc": "2026-10-19T10:02:37Z",
  "cycle": 98,
  "purpose": "Durable, resumable product production queue. One record per product. Resume from this file + referenced evidence after any interruption.",
  "states": [
@@ -279,7 +279,7 @@
    "customer_page": "customer_site/b12-podcast-guest-kit.html",
    "next_action": "AWAITS FOUNDER PUBLICATION DECISION (phrase-gated); no Gumroad listing created yet",
    "differentiation_vs_prev": "Different problem (earning guest bookings, not protecting access or pricing work), different customer (founders/freelancers who want podcast appearances), different workflow (fit-first target scoring + 5 scripts + computed follow-up cadence and spam-risk ceiling, never a placement promise)",
-   "updated_at_utc": "2026-10-19T11:10:00Z"
+   "updated_at_utc": "2026-10-19T10:02:37Z"
   },
   {
    "id": "B12-006",
@@ -308,11 +308,16 @@
     "books/batch12/B12-007_digital_declutter_plan.pdf",
     "books/batch12/B12-007_digital_inventory.xlsx"
    ],
-   "evidence_of_demand": null,
+   "evidence_of_demand": "data/evidence/b12_007_competitors.json",
    "qa_results": "Only the 2026-10-15 self-graded pass; no demand evidence, no deep QA, no gate",
    "publication_authorization": null,
    "live_url": null,
-   "next_action": "Run real demand/competitor evidence, rebuild deliverable to the deep-QA bar, then QA"
+   "next_action": "Evidence complete 2026-10-19; held - see selection_note",
+   "selection_status": "EVIDENCE_COMPLETE_NOT_RECOMMENDED_NEXT",
+   "selection_note": "Evidence complete 2026-10-19 (data/evidence/b12_007_competitors.json): paid comparables cluster $3.49-$14.99 and an existing product carries a near-identical title. NOT recommended as the next build - the planned $19.00 has no support and differentiation risk is HIGH. Revisit only if repositioned (e.g. the restore-tested backup half, which no comparable sells).",
+   "selected_by": null,
+   "research_completed_at_utc": "2026-10-19T10:02:37Z",
+   "updated_at_utc": "2026-10-19T10:02:37Z"
   },
   {
    "id": "B12-008",
@@ -324,11 +329,16 @@
     "books/batch12/B12-008_moving_checklist.pdf",
     "books/batch12/B12-008_moving_budget_tracker.xlsx"
    ],
-   "evidence_of_demand": null,
+   "evidence_of_demand": "data/evidence/b12_008_competitors.json",
    "qa_results": "Only the 2026-10-15 self-graded pass; no demand evidence, no deep QA, no gate",
    "publication_authorization": null,
    "live_url": null,
-   "next_action": "Run real demand/competitor evidence, rebuild deliverable to the deep-QA bar, then QA"
+   "next_action": "Evidence complete 2026-10-19; held - see selection_note",
+   "selection_status": "EVIDENCE_COMPLETE_NOT_RECOMMENDED_NEXT",
+   "selection_note": "Evidence complete 2026-10-19 (data/evidence/b12_008_competitors.json): commodity category, single-product prices $2.24-$12, the only $29 point is a 3-product bundle. NOT recommended as the next build.",
+   "selected_by": null,
+   "research_completed_at_utc": "2026-10-19T10:02:37Z",
+   "updated_at_utc": "2026-10-19T10:02:37Z"
   },
   {
    "id": "B12-009",
@@ -339,11 +349,16 @@
    "deliverables": [
     "books/batch12/B12-009_pet_sitter_handover_kit.pdf"
    ],
-   "evidence_of_demand": null,
+   "evidence_of_demand": "data/evidence/b12_009_competitors.json",
    "qa_results": "Only the 2026-10-15 self-graded pass; no demand evidence, no deep QA, no gate",
    "publication_authorization": null,
    "live_url": null,
-   "next_action": "Run real demand/competitor evidence, rebuild deliverable to the deep-QA bar, then QA"
+   "next_action": "Evidence complete 2026-10-19; held - see selection_note",
+   "selection_status": "EVIDENCE_COMPLETE_NOT_RECOMMENDED_NEXT",
+   "selection_note": "Evidence complete 2026-10-19 (data/evidence/b12_009_competitors.json): observed paid prices $1.39-$10.00. NOT recommended as the next build - the planned $19.00 has no support at all.",
+   "selected_by": null,
+   "research_completed_at_utc": "2026-10-19T10:02:37Z",
+   "updated_at_utc": "2026-10-19T10:02:37Z"
   },
   {
    "id": "B12-010",
@@ -354,11 +369,16 @@
    "deliverables": [
     "books/batch12/B12-010_grant_pipeline_tracker.xlsx"
    ],
-   "evidence_of_demand": null,
+   "evidence_of_demand": "reports/B12-010/DEMAND_EVIDENCE_2026-10-19.json",
    "qa_results": "Only the 2026-10-15 self-graded pass; no demand evidence, no deep QA, no gate",
    "publication_authorization": null,
    "live_url": null,
-   "next_action": "Run real demand/competitor evidence, rebuild deliverable to the deep-QA bar, then QA"
+   "next_action": "Rebuild deliverable to the deep-QA bar, then deep QA, then gate/price (evidence complete 2026-10-19; AWAITS FOUNDER SELECTION as the next build)",
+   "selection_status": "RECOMMENDED_NEXT_AWAITS_FOUNDER_SELECTION",
+   "selection_note": "Evidence complete 2026-10-19 (reports/B12-010/DEMAND_EVIDENCE_2026-10-19.json): the only candidate with review counts in the hundreds (982 / 137 / 35), a stated 203-sale comparable, sustained $15-$19.97 price points, and buyers who pay $67+ for depth. Recommended as the next build; the manifest's $39.00 is NOT supported and will be derived by the factory's gates after the rebuild. Selected by founder: no.",
+   "selected_by": null,
+   "research_completed_at_utc": "2026-10-19T10:02:37Z",
+   "updated_at_utc": "2026-10-19T10:02:37Z"
   }
  ],
  "notes": [
@@ -366,5 +386,15 @@
   "The 2026-10-15 batch-12 QA was self-graded and superficial (all 10 flipped to QA_READY_FOR_REVIEW within minutes; thin-content flags cleared by regeneration). Only B12-001 received real evidence + gate work. This queue reflects the honest position.",
   "Cycle 97 (2026-10-18): B12-004 taken to the deep-QA bar. Deliverable renamed B12-004_meeting_method_onepager.pdf -> B12-004_meeting_method_guide.pdf (it is a 4-page guide); all batch-12 references updated. Gate APPROVED at $11.99 / NOT_READY at $19.00. Awaiting founder price confirmation + authorization.",
   "Cycle 98 (2026-10-18): founder approved B12-004 price USD 11.99 and issued 'APPROVE B12-004 PUBLISH'. Price reconciled across all B12-004 references; deliverables re-hashed (unchanged); integrity OK. Publication BLOCKED: the sanctioned phrase-gated orchestrator is hardcoded to B12-001 and B12-004 has no product/draft; automated draft creation is unverified/blocked; the only create-then-publish files are parallel-owned. See reports/CYCLE98_B12-004_PUBLICATION_ATTEMPT_2026-10-18.md and reports/B12-004/PUBLICATION_MECHANISM_AUDIT_2026-10-18.json."
+ ],
+ "timestamp_corrections": [
+  {
+   "field": "updated_at_utc (top level and products[4].updated_at_utc)",
+   "original_value": "2026-10-19T11:10:00Z",
+   "corrected_value": "2026-10-19T10:02:37Z",
+   "reason": "The original value labelled local system time (+01:00) as UTC, producing a timestamp in the future. Corrected to the real UTC time of this edit; the original value is retained here so the record is auditable rather than silently rewritten.",
+   "corrected_at_utc": "2026-10-19T10:02:37Z",
+   "corrected_by": "Claude (Cycle 99, 2026-10-19)"
+  }
  ]
 }

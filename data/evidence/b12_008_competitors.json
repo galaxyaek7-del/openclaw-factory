@@ -1,0 +1,123 @@
+{
+ "product": "B12-008",
+ "title": "Moving House 8-Week Planner",
+ "research_date": "2026-10-19",
+ "method": "Live web search + page-level inspection of the listings themselves (external, read-only, $0 spend). Each entry cites the live URL, the displayed price and a verbatim snippet from the page. Pages that rendered no price are recorded as NOT_READ rather than guessed.",
+ "scope_note": "The 8-week moving-plan category is a commodity printable: the median observed price is roughly $7, the top single-product price is $12 (18 fillable pages), and the only $29 point is a 3-product bundle. Our planned $29.00 for one plan + one tracker is not supported by this evidence.",
+ "competitors": [
+  {
+   "name": "Moving Checklist Printable PDF | 8-Week Moving Planner (Momentum Templates Co.)",
+   "url": "https://momentumtemplatesco.com/products/moving-checklist-printable",
+   "price_usd": 2.99,
+   "platform": "Direct (own site)",
+   "notes": "A single-page 8-week checklist. Sets the floor for the exact 8-week idea we planned.",
+   "quote": "\"Moving Checklist Printable PDF | 8-Week Moving Planner $2.99 ... 1-page Moving Checklist (PDF) ... Organized into an 8-week timeline\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$2.99"
+  },
+  {
+   "name": "Moving House Checklist, English + Deutsch (bordatonico)",
+   "url": "https://bordatonico.gumroad.com/l/krdokq",
+   "price_usd": 2.24,
+   "platform": "Gumroad",
+   "notes": "2-page A4 print-ready PDF with 6-8 weeks / 4-5 weeks / 1-2 weeks phases plus a First Night Box. Price shown in EUR.",
+   "quote": "\"Moving House Checklist (English + Deutsch) $2.24 ... 2 pages, A4, print-ready PDF\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "EUR $2.24"
+  },
+  {
+   "name": "Moving Checklist Bundle (PrintableUtils)",
+   "url": "https://www.etsy.com/listing/1040721841/moving-checklist-moving-checklist-bundle",
+   "price_usd": 2.72,
+   "platform": "Etsy",
+   "notes": "10 pages across 4 files (A4 + US Letter, colour + B&W) on sale from $3.90. Bundled-but-cheap is the norm here.",
+   "quote": "\"Price: $2.72 Original Price: $3.90 ... 4 pages starting from 8 weeks prior to moving day ... = 10 Pages in total\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$2.72 (was $3.90)"
+  },
+  {
+   "name": "Moving Planner: 8-Week Countdown & Box Inventory System (sandwichmaster1)",
+   "url": "https://sandwichmaster1.gumroad.com/l/xdsblp",
+   "price_usd": 7.0,
+   "platform": "Gumroad",
+   "notes": "14 pages: 8-week countdown with 20 tasks/week, box inventory log, utility transfer tracker, 20-item address-change checklist, budget tracker. Closest single-file shape to ours at a mid price.",
+   "quote": "\"Moving Planner: 8-Week Countdown & Box Inventory System $7 ... 8-week countdown: 20 tasks per week from Week 8 down to moving day ... 14 pages\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$7"
+  },
+  {
+   "name": "Moving Planner - 16-Page Printable Moving Organizer (Frostmere)",
+   "url": "https://frostmere.co/products/moving-planner",
+   "price_usd": 10.0,
+   "platform": "Direct (own site)",
+   "notes": "16 pages: 8-week timeline, budget tracker, room-by-room inventory, box labeling log, essentials bag, first-week checklist.",
+   "quote": "\"Moving Planner Regular price $10.00 USD ... The Moving Planner is your complete 16-page moving command center\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$10.00"
+  },
+  {
+   "name": "Moving & New Home Planner, 18 pages, fillable + printable (mastertech8)",
+   "url": "https://mastertech8.gumroad.com/l/zruxa",
+   "price_usd": 12.0,
+   "platform": "Gumroad",
+   "notes": "18 pages as BOTH a fillable PDF and a printable PDF, zipped: mover quote comparison on 13 points, 48-box inventory, 17-place change-of-address, deposits/refunds tracker. The depth bar for a $12 product in this category.",
+   "quote": "\"Moving & New Home Planner ... $12 ... What is inside (18 pages) ... Mover and truck quotes: three quotes side by side on 13 points ... Box inventory (2 pages, 48 boxes)\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$12"
+  },
+  {
+   "name": "8-Week Moving Checklist Pack (Settle In / lambkin76)",
+   "url": "https://lambkin76.gumroad.com/",
+   "price_usd": 14.0,
+   "platform": "Gumroad",
+   "notes": "Shown as $17 struck to $14 on the shop landing page, with sibling products at $9 (room-by-room packing inventory) and $29 (complete 3-kit bundle) and $15 (moving budget pack).",
+   "quote": "\"8-Week Moving Checklist Pack | Printable PDF - Settle In ... $17 USD $14 ... Settle In Complete Pack - All 3 Printable Kits ($40 -> $29) ... $29\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$17 -> $14"
+  },
+  {
+   "name": "Moving Essentials Bundle (Made For Moving AU)",
+   "url": "https://madeformoving.com.au/product/moving-essentials-bundle-printable-moving-planners/",
+   "price_usd": 29.0,
+   "platform": "Direct (own site)",
+   "notes": "A 3-product bundle (home records book + new-home checklist + 8-week checklist) at $29.00 - the only observed $29 point in the category, and it is a bundle, not a single planner.",
+   "quote": "\"Moving Essentials Bundle (Printable Moving Planners) $29.00 ... This printable bundle includes three core tools\"",
+   "observed_at": "2026-10-19T10:02:37Z",
+   "evidence_type": "REAL",
+   "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)",
+   "price_displayed": "$29.00 (bundle of 3)"
+  }
+ ],
+ "not_read": [],
+ "demand_signals": [
+  {
+   "signal": "Etsy selling-velocity proxies",
+   "type": "observed",
+   "value": "the $2.72 bundle and $14 pack are long-lived listings with steady review counts; exact counts not captured on the market page"
+  }
+ ],
+ "substitute_prices_cited_by_a_competitor": [],
+ "observed_span_usd": {
+  "min_usd": 2.24,
+  "max_usd": 29.0,
+  "median_usd": 7.0,
+  "paid_min_usd": 2.24,
+  "paid_max_usd": 12.0,
+  "cluster_note": "Single-product prices $2.24-$12; $14-$17 for packs; $29 only as a multi-product bundle."
+ },
+ "verified_by": "Claude (live web search, 2026-10-19; prices read off the live listing/checkout pages)"
+}

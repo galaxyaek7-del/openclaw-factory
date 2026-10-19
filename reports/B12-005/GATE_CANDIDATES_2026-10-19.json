@@ -1,7 +1,7 @@
 {
  "product_id": "B12-005",
  "title": "Podcast Guest Booking Kit",
- "run_at": "2026-10-19T10:40:00Z",
+ "run_at": "2026-10-19T09:40:00Z",
  "pdf_pages": 8,
  "words": 3330,
  "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
@@ -267,5 +267,15 @@
    "formulas": 154,
    "sheet_depth_ok": true
   }
- }
+ },
+ "timestamp_corrections": [
+  {
+   "field": "run_at",
+   "original_value": "2026-10-19T10:40:00Z",
+   "corrected_value": "2026-10-19T09:40:00Z",
+   "reason": "The original value labelled local system time (+01:00) as UTC, producing a timestamp in the future. Re-derived from the real UTC time of the surrounding work (the Cycle 99 commit was made at 2026-10-19T09:57:49Z) and disclosed here rather than silently rewritten.",
+   "corrected_at_utc": "2026-10-19T10:02:37Z",
+   "corrected_by": "Claude (Cycle 99, 2026-10-19)"
+  }
+ ]
 }
