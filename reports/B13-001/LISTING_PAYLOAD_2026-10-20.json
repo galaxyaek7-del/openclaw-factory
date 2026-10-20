@@ -7,21 +7,23 @@
  "price_usd": 19.0,
  "price_status": "PROPOSED_NOT_AUTHORIZED",
  "price_realism": {
-  "finding": "At 7 pages, $19 is approved on gumroad_digital (net floor $2.50) but market_realistic is false (sub-30-page ceiling $15, then $1/page suggests $7). $19 cannot pass gumroad_premium because its $25 net floor requires at least $27.78. The price is therefore approved-but-unrealistic on one tier and rejected-on-profit on the other. Not changed here: price changes need founder authorization.",
+  "finding": "The guide is now 15 pages. Two independent ceilings decide whether a price is credible. First, any book under 30 pages is capped at $15 absolute. Second, below that cap a price must stay at or under $1 per page. So $19 is still marked unrealistic at 15 pages even though the profit floor is cleared, and it stays that way until the guide reaches 30 pages. At the current depth, $15 is the highest price that clears both checks on gumroad_digital (net $13.50, against a $2.50 floor). On gumroad_premium, $19 is realistic but rejected on profit, because that tier's net floor is $25, which needs $27.78 or more. Nothing was repriced here: price changes need founder authorization.",
   "matrix": [
    {
+    "price_usd": 19.0,
     "platform": "gumroad_digital",
-    "pages": 7,
+    "pages": 15,
     "approved": true,
     "net_profit_usd": 17.1,
     "min_required_usd": 2.5,
     "market_realistic": false,
-    "suggested_realistic_price_usd": 7.0,
+    "suggested_realistic_price_usd": 15.0,
     "reason": "ok: net $17.10 clears floor $2.50"
    },
    {
+    "price_usd": 19.0,
     "platform": "gumroad_premium",
-    "pages": 7,
+    "pages": 15,
     "approved": false,
     "net_profit_usd": 17.1,
     "min_required_usd": 25.0,
@@ -30,6 +32,7 @@
     "reason": "weak_margin: net $17.10 below floor $25.00"
    },
    {
+    "price_usd": 19.0,
     "platform": "gumroad_digital",
     "pages": 30,
     "approved": true,
@@ -40,22 +43,23 @@
     "reason": "ok: net $17.10 clears floor $2.50"
    },
    {
-    "platform": "gumroad_premium",
-    "pages": 8,
-    "approved": false,
-    "net_profit_usd": 17.1,
-    "min_required_usd": 25.0,
+    "price_usd": 15.0,
+    "platform": "gumroad_digital",
+    "pages": 15,
+    "approved": true,
+    "net_profit_usd": 13.5,
+    "min_required_usd": 2.5,
     "market_realistic": true,
-    "suggested_realistic_price_usd": 19.0,
-    "reason": "weak_margin: net $17.10 below floor $25.00"
+    "suggested_realistic_price_usd": 15.0,
+    "reason": "ok: net $13.50 clears floor $2.50"
    }
   ],
   "options": [
-   "Keep $19 and grow the guide to 30+ pages so the per-page ceiling clears it.",
-   "List at $27.99 on gumroad_premium (net $25.19, realistic at 7 pages).",
-   "List at $15 or below, which the short-book ceiling still marks unrealistic at 7 pages."
+   "Authorize $15.00 now. It is the highest price that is both approved and realistic at the current 15 pages.",
+   "Keep $19 and grow the guide from 15 to 30 pages, so the sub-30-page ceiling stops applying.",
+   "List at $27.99 on gumroad_premium (net $25.19), which clears both checks at the current depth."
   ],
-  "recommended": "Grow the guide to 30+ pages and keep $19. It is the only option that improves the product rather than the arithmetic."
+  "recommended": "Authorize $15.00, then grow the guide toward 30 pages and revisit $19 once the content genuinely earns it. The price should follow the product, not lead it."
  },
  "files": [
   {
@@ -65,8 +69,8 @@
   },
   {
    "path": "books/batch13/B13-001_renovation_allowance_control_guide.pdf",
-   "bytes": 19861,
-   "sha256": "53c65af902c99d0e1ad67d70b5248efc4ad205695a23bd1850410572d68cd755"
+   "bytes": 41652,
+   "sha256": "6c82a7147fbca4ebb7d1a176bce394c6265211e476253d0d8543f819f1c40607"
   }
  ],
  "cover": {
@@ -82,7 +86,7 @@
  "customer_page_note": "No customer-facing page was created for B13-001. Creating one is a separate, reviewable step; it is not required to list on Gumroad.",
  "listing_copy": {
   "path": "drafts/b13_001_listing_copy.txt",
-  "text": "Renovation Allowance & Change-Order Control\n\nA renovation budget usually fails in two places: allowances nobody tracks, and change orders nobody signs. This workbook keeps both attached to the money.\n\nInside (9 sheets, 415 live formulas, no macros):\n\n- Setup — project, currency, tax rate, and your allowance categories\n- Cost Control — 40 cost lines with budget, committed, actual, payments, remaining, variance, and an OVER / ON PLAN / UNDER read on every line\n- Allowances — allowance against selections made per category, with an overage flag that names the missing change order\n- Change Orders — 20 change orders with cost impact, schedule impact and approval state\n- Payments — invoice and payment log, rolled up per cost line\n- Contingency — reserve held and consumed, with the remaining reserve shown against any overrun\n- Summary — the one-page position: original budget, approved change orders, revised budget, paid to date, remaining, reserve left\n- Assumptions — every rate and constant in one editable place\n- Start Here — four steps\n\nThe workbook ships with a worked example you can read before you overwrite it, and every total is a formula you can audit. Nothing is hidden in a macro.\n\nAlso included: a 7-page PDF guide. How to set an allowance you can defend, how to run a change order so it actually gets signed, how to read a variance instead of panicking at it, and what to do when the reserve is gone.\n\nRequires Excel, LibreOffice Calc (free), or Google Sheets (free upload). No macros, no add-ins, no subscription.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews. Arithmetic on the numbers you enter — not legal, tax or financial advice. Your contract and your accountant govern.\n\nSupport: reply to your Gumroad receipt email.\n",
+  "text": "Renovation Allowance & Change-Order Control\n\nA renovation budget usually fails in two places: allowances nobody tracks, and change orders nobody signs. This workbook keeps both attached to the money.\n\nInside (9 sheets, 415 live formulas, no macros):\n\n- Setup — project, currency, tax rate, and your allowance categories\n- Cost Control — 40 cost lines with budget, committed, actual, payments, remaining, variance, and an OVER / ON PLAN / UNDER read on every line\n- Allowances — allowance against selections made per category, with an overage flag that names the missing change order\n- Change Orders — 20 change orders with cost impact, schedule impact and approval state\n- Payments — invoice and payment log, rolled up per cost line\n- Contingency — reserve held and consumed, with the remaining reserve shown against any overrun\n- Summary — the one-page position: original budget, approved change orders, revised budget, paid to date, remaining, reserve left\n- Assumptions — every rate and constant in one editable place\n- Start Here — four steps\n\nThe workbook ships with a worked example you can read before you overwrite it, and every total is a formula you can audit. Nothing is hidden in a macro.\n\nAlso included: a 15-page PDF guide. How to set an allowance you can defend, how to run a change order so it actually gets signed, how to read a variance instead of panicking at it, what to do when the reserve is gone, which of the three \"estimate\" words decides who pays, how to compare quotes without being fooled by the total, why stage payments and retention matter more than the final figure, and a one-page record to write in the first forty-eight hours when something goes wrong.\n\nRequires Excel, LibreOffice Calc (free), or Google Sheets (free upload). No macros, no add-ins, no subscription.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews. Arithmetic on the numbers you enter — not legal, tax or financial advice. Your contract and your accountant govern.\n\nSupport: reply to your Gumroad receipt email.\n",
   "tags": [
    "renovation budget",
    "change order",
@@ -120,7 +124,7 @@
     "reason": "لا عبارات استعجال/ندرة مصطنعة موجودة في نص المحتوى (فحص جزئي)"
    }
   },
-  "generated_at": "2026-10-20T13:30:52.661861+00:00"
+  "generated_at": "2026-10-20T14:03:42.585886+00:00"
  },
  "verification_evidence": {
   "gate": "reports/B13-001/GATE_FINAL_2026-10-20.json",
@@ -161,7 +165,7 @@
       }
      ],
      "depth": {
-      "words": 3802,
+      "words": 8237,
       "words_required": 1900,
       "text_depth_ok": true,
       "sheets": 9,
@@ -211,8 +215,8 @@
    }
   },
   "guide_inspection": "reports/B13-001/GUIDE_INSPECTION_2026-10-20.json",
-  "guide_pages": 7,
-  "guide_words": 3802,
+  "guide_pages": 15,
+  "guide_words": 8237,
   "guide_word_method": "src/quality/quality_enforcer.py::_words (the gate's own tokenizer)",
   "workbook_qa": "reports/B13-001/WORKBOOK_QA_2026-10-20.json",
   "workbook_qa_verdict": "PASS",

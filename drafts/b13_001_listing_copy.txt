@@ -16,7 +16,7 @@ Inside (9 sheets, 415 live formulas, no macros):
 
 The workbook ships with a worked example you can read before you overwrite it, and every total is a formula you can audit. Nothing is hidden in a macro.
 
-Also included: a 7-page PDF guide. How to set an allowance you can defend, how to run a change order so it actually gets signed, how to read a variance instead of panicking at it, and what to do when the reserve is gone.
+Also included: a 15-page PDF guide. How to set an allowance you can defend, how to run a change order so it actually gets signed, how to read a variance instead of panicking at it, what to do when the reserve is gone, which of the three "estimate" words decides who pays, how to compare quotes without being fooled by the total, why stage payments and retention matter more than the final figure, and a one-page record to write in the first forty-eight hours when something goes wrong.
 
 Requires Excel, LibreOffice Calc (free), or Google Sheets (free upload). No macros, no add-ins, no subscription.
 

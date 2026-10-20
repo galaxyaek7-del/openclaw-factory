@@ -78,26 +78,30 @@ def test_cover_is_a_gumroad_landscape(payload):
 
 def test_price_matrix_matches_the_economics_module(payload):
     cfg = economics.load_config()
+    assert len(payload["price_realism"]["matrix"]) == 4
     for row in payload["price_realism"]["matrix"]:
-        real = economics.evaluate(19.00, row["platform"], cfg, page_count=row["pages"])
+        real = economics.evaluate(row["price_usd"], row["platform"], cfg, page_count=row["pages"])
         assert real["approved"] is row["approved"]
         assert real["market_realistic"] is row["market_realistic"]
         assert round(real["net_profit"], 2) == round(row["net_profit_usd"], 2)
 
 
 def test_the_known_bind_is_still_true(payload):
-    """$19 at 7 pages is approved on digital but unrealistic, and rejected on premium."""
-    rows = {(r["platform"], r["pages"]): r for r in payload["price_realism"]["matrix"]}
-    digital7 = rows[("gumroad_digital", 7)]
-    premium7 = rows[("gumroad_premium", 7)]
-    assert digital7["approved"] is True and digital7["market_realistic"] is False
-    assert premium7["approved"] is False and premium7["min_required_usd"] == 25.0
+    """$19 at the current depth is approved but unrealistic; $15 clears both."""
+    rows = {(r["price_usd"], r["platform"], r["pages"]): r for r in payload["price_realism"]["matrix"]}
+    pages = payload["verification_evidence"]["guide_pages"]
+    non_premium = rows[(19.0, "gumroad_digital", pages)]
+    premium = rows[(19.0, "gumroad_premium", pages)]
+    fifteen = rows[(15.0, "gumroad_digital", pages)]
+    assert non_premium["approved"] is True and non_premium["market_realistic"] is False
+    assert premium["approved"] is False and premium["min_required_usd"] == 25.0
+    assert fifteen["approved"] is True and fifteen["market_realistic"] is True
 
 
 def test_listing_copy_cites_the_real_page_count(payload):
     pages = payload["verification_evidence"]["guide_pages"]
-    assert pages == 7
-    assert "7-page" in payload["listing_copy"]["text"]
+    assert pages >= 15, "the guide was expanded past the 15-page threshold; keep it honest"
+    assert "%d-page" % pages in payload["listing_copy"]["text"]
 
 
 def test_listing_copy_passes_the_brand_gate(payload):

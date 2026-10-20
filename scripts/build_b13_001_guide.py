@@ -266,7 +266,292 @@ BLOCKS = [
          "<b>Forecasting once.</b> The monthly review updates the forecast, and the assumptions sheet records what changed.",
          "<b>Leaving example rows in the file.</b> Every row with a line code is summed. Delete the yellow rows before you add your own."]),
 
-    (H, "16. Scope, limits and honest caveats"),
+    (H, "16. Allowance, provisional sum, prime cost: three words that decide who pays"),
+    (P, "These three terms are used interchangeably in conversation and almost never in contracts. The difference "
+        "between them is not academic: it decides who absorbs the gap when the real number arrives, and whether that gap "
+        "needs your written approval before it happens. Read the clause that uses the term, not the term itself, because "
+        "the same label is defined differently by different builders."),
+    (P, "<b>An allowance</b> is normally a figure agreed for something the buyer has not chosen yet: tiles, sanitaryware, "
+        "a kitchen, lighting. The contract usually says the buyer may select within it, pays any excess, and receives a "
+        "credit if they spend less, though the credit is often reduced by a handling or restocking charge. The risk being "
+        "allocated is choice risk. You control it, which is why an allowance that is quietly exceeded is a control "
+        "failure rather than a builder's fault."),
+    (P, "<b>A provisional sum</b> is normally a figure for work that cannot be defined yet: opening up a wall, moving a "
+        "drain, making good what was found behind a floor. The risk being allocated is discovery risk. Who absorbs the "
+        "difference depends entirely on the wording: some contracts adjust the sum with no further approval, others "
+        "require a variation before the work proceeds. That single sentence is worth more of your attention than the "
+        "headline price."),
+    (P, "<b>A prime cost sum</b> is usually about goods rather than work, and often carries a stated margin on top of the "
+        "actual invoice. If a quote shows a prime cost sum, ask what margin applies to the adjustment and whether you "
+        "may supply the item yourself. Those two answers change the effective price of the item considerably."),
+    (B, ["Write the term next to the number in the Cost Control sheet, in the notes column. A number without its term is "
+         "a number you cannot defend later.",
+         "Ask, for each of the three: if the actual is higher, who approves the difference, and in what form?",
+         "Ask what happens to a credit: full value, reduced, or none.",
+         "Check whether the allowance includes installation, waste, delivery and tax, or only the item.",
+         "Record the answer in the assumptions sheet with the date you were told. Memory is not evidence."]),
+    (P, "None of this requires legal training. It requires noticing that a number in a quote arrives with a rule attached, "
+        "and writing the rule down while the person who stated it is still on the phone."),
+
+    (H, "17. Reading a quote for what it transfers, not what it totals"),
+    (P, "Two quotes can total the same and expose you to completely different risk. The total is the least informative "
+        "number in the document. What matters is the boundary: what the price includes, what it silently excludes, and "
+        "what happens at the edges. Read the exclusions before the price, and read the qualifications before the "
+        "exclusions."),
+    (P, "<b>Supply and fit</b> usually means the contractor buys the material and installs it, and the price carries both. "
+        "<b>Supply only</b> means the material is yours and so is its risk: damage, shortage, wrong specification and "
+        "delivery delays are yours unless the contract says otherwise. <b>By others</b> is the phrase that costs the most "
+        "money in renovations, because it transfers work out of the quote without transferring it out of your project. "
+        "Every time you read it, write down who the other is and whether they have been booked."),
+    (P, "<b>Subject to site conditions</b> and <b>to be confirmed on site</b> are not evasions; they are honest markers "
+        "that the price rests on an assumption. The useful response is not to argue but to ask what the price becomes if "
+        "the assumption fails, and to record the answer as a provisional sum with a range rather than a single figure."),
+    (P, "<b>Day rates</b> convert a fixed price into an open one. They are legitimate for genuinely unpredictable work, "
+        "but they need three things to stay controllable: an agreed estimate of days, a written record of days worked, and "
+        "a cap that requires your approval to exceed. Without all three you have agreed to a number you cannot forecast."),
+    (P, "<b>Variations priced at a stated margin</b> is the clause that decides what every future change costs you. A "
+        "change priced at cost plus a stated percentage is a different proposition from a change priced from a rate card "
+        "written before you knew what would change. Neither is dishonest; one is simply easier to predict."),
+    (B, ["Highlight every exclusion and every qualification in the quote. If there are none, that is itself worth a "
+         "question.",
+         "Convert each qualification into a range and enter it in the Cost Control sheet as a provisional amount.",
+         "List every 'by others' item and give each a name and a date, or move it into your own scope deliberately.",
+         "Compare quotes on inclusions, not totals: a cheaper total with three exclusions is often the dearer project.",
+         "Keep the quote version you signed. Quotes get reissued, and the reissued version is rarely the kinder one."]),
+
+    (H, "18. Stage payments and retention: the timing problem behind most 'over budget' surprises"),
+    (P, "A renovation can be within budget and still run out of money, because budget is a total and cash is a calendar. "
+        "Paying ahead of progress does not change what the project costs, but it changes what you can do when something "
+        "goes wrong, and it quietly transfers risk from the party who is behind to the party who has already paid."),
+    (P, "The control is straightforward in principle and tedious in practice: each payment should be tied to a stage you "
+        "can see, inspect and record, not to a date on a schedule. Take photographs on the day you pay. Note in the "
+        "Payments sheet what the payment was for, and keep the invoice next to it. If a stage is agreed as complete, "
+        "record who confirmed it and when."),
+    (P, "<b>Retention</b> is money withheld from payments until completion, and often until the end of a defects period. "
+        "Whether it applies, at what percentage, for how long, and what releases it are matters of contract and local law, "
+        "and they vary. Treat the answer as unknown until you have read it, and never assume the arrangement is the one "
+        "you have heard about from someone else's project."),
+    (P, "The practical trap is the same in every project: the last ten per cent of the work takes a disproportionate "
+        "share of the time, and it is exactly the part you have the least leverage over once you have paid everything "
+        "except retention. Keeping a real, contractually agreed retention is not distrust; it is the only mechanism that "
+        "keeps the final stage worth finishing."),
+    (B, ["Tie each payment to an observable stage, and photograph it before you pay.",
+         "Record the invoice number, the date and the stage in the Payments sheet; a payment without a stage is a "
+         "payment you cannot later question.",
+         "Write down the retention terms you actually agreed, with the clause reference, in the assumptions sheet.",
+         "Never let a payment be described only as 'on account'. It is the phrase that makes reconciliation impossible.",
+         "If a payment is brought forward at the builder's request, record why. That note is the only evidence that the "
+         "change was requested rather than agreed."]),
+
+    (H, "19. The evidence file: rebuilding a decision you made in March"),
+    (P, "Renovations are decided in conversations, and the conversations are the first thing to disappear. Six months "
+        "later the question is never 'what did we decide' but 'why did we decide it, and who agreed'. A file that "
+        "answers that question in under five minutes is worth more than a spreadsheet that answers it in an afternoon."),
+    (P, "The file does not need to be elaborate. It needs five kinds of item, each with a date: the signed contract and "
+        "every quote version you relied on; every change request and its approval, in writing, with the number that "
+        "appears in the workbook; photographs of stages and of anything that was covered up; invoices and payment "
+        "records; and a single running note of verbal agreements, written the same day, saying who said what."),
+    (P, "That last item is the one people skip and the one that resolves most disputes. A note that reads '14 March, "
+        "phone with site manager, agreed the extra tile battening is included in the variation 3 price, no extra charge' "
+        "is not a legal document, but it is a dated record of a shared understanding, and it is very hard to argue with "
+        "later."),
+    (P, "How long to keep the file, and what a dispute process requires, varies by jurisdiction and by contract. Do not "
+        "guess: ask, or keep it longer than you think you need. Storage is cheap and reconstruction is not."),
+    (B, ["One folder, one naming convention, dates first: 2026-03-14 variation 3 approval.pdf.",
+         "Keep every quote version, not just the last. The earlier version is often the one you compared against.",
+         "Photograph before work is covered up, and photograph the meter readings and the state of adjacent rooms at "
+         "handover.",
+         "Write verbal agreements down the same day, in one line, with names.",
+         "Reconcile the folder against the workbook once a month: every approved change number in the workbook should "
+         "have a document, and every document should have a number."]),
+
+    (H, "20. Twenty questions worth asking before you sign"),
+    (P, "Most of the expensive surprises in a renovation are visible before the contract is signed, in the form of a "
+        "question nobody asked. These are the questions this workbook assumes you have answers to. If you cannot answer "
+        "one, write 'unknown' in the assumptions sheet rather than guessing, and ask before the first payment."),
+    (B, ["What exactly is excluded, and which of those exclusions have I already assumed were included?",
+         "For each allowance, what happens if I spend more, less, or nothing at all?",
+         "For each provisional sum, who approves the difference, and in what written form?",
+         "What margin applies to variations, and is it on cost, on the rate card, or on a quoted price?",
+         "Which items are 'by others', and who are they, and have they been booked?",
+         "What are the stage payment points, and are they tied to observable progress or to dates?",
+         "What retention applies, for how long, and what releases it?",
+         "What notice do I have to give to change or pause the work, and what does that cost?",
+         "What happens to the price if the start date slips?",
+         "Who is responsible for waste removal, protection of floors and access, and temporary services?",
+         "Are permits included, and who is responsible if the authority requires changes?",
+         "What is the defects period, and what does the builder have to do inside it?",
+         "How are delays notified, and what records will I be given if they happen?",
+         "Who is on site day to day, and who am I allowed to instruct?",
+         "What is the process if we disagree about whether a stage is complete?",
+         "Are there any charges for suspending the work, and what triggers them?",
+         "What insurance covers the works, and does it cover my existing property?",
+         "What happens if a discovered defect makes part of the scope impossible?",
+         "How will we record changes that are agreed verbally on site?",
+         "What would make you, as the builder, ask for a price increase, and how early would you tell me?"]),
+    (P, "The answers belong in the assumptions sheet, dated, with who told you. Not because the answers are guaranteed to "
+        "hold, but because a written answer is a shared starting point and an unwritten one is a future argument."),
+
+    (H, "21. When the numbers stop agreeing: a five-step reconciliation"),
+    (P, "Sooner or later the workbook and the builder's account will disagree. The instinct is to find who is wrong. The "
+        "useful first move is to find where the two records diverge, because the divergence is almost always a category, "
+        "not a lie: a payment recorded as a cost, an allowance treated as a fixed price, a credit still outstanding, a "
+        "variation agreed but never numbered."),
+    (B, ["<b>Agree the totals you are comparing.</b> Write both numbers down before you discuss them, and say which "
+         "period each covers. Most disagreements dissolve at this step.",
+         "<b>Match by category.</b> Compare original, approved changes, allowances, contingency and paid separately. A "
+         "single total hides which of the five is wrong.",
+         "<b>Match by document.</b> Every number in the builder's account should map to an invoice, a variation or a "
+         "quote line. Anything that maps to none of them is an open question, not an error.",
+         "<b>Isolate the smallest disagreeing item.</b> Resolve one line completely before moving to the next. Bulk "
+         "reconciliation produces agreement about nothing.",
+         "<b>Write the outcome down.</b> One line: what was agreed, by whom, on what date, and what the workbook now "
+         "says. Then update the workbook."]),
+    (P, "Run this the first time the numbers diverge, not the third. The cost of reconciliation rises with the number of "
+        "unreconciled months, because each month adds a new explanation and a new person who has to remember it."),
+
+    (H, "22. Working with more than one trade: the interface is the risk"),
+    (P, "Almost every renovation that goes badly wrong with a competent builder goes wrong at a boundary: between the "
+        "plumber and the tiler, between the electrician and the plasterer, between the joiner and the decorator. Each "
+        "trade can do its own work perfectly and still leave you with a hole in the wall, because the interface between "
+        "them was nobody's line item."),
+    (P, "The workbook helps here in a way that is easy to miss. The Cost Control sheet is a list of promises with names "
+        "against them. If two rows describe the same physical work, you have found either duplication or an interface. "
+        "If a row has no name, you have found the place where the argument will happen."),
+    (P, "The practical control is to write the interfaces down as if they were work: who makes good after the "
+        "electrician, who moves the skip, who protects the finished floor while the decorator is in, who returns to "
+        "connect the appliance after the worktop is fitted. None of these are glamorous, and all of them have a cost, "
+        "a date and an owner. Putting them in the sheet as explicit rows with a provisional amount is more honest than "
+        "assuming they are inside someone's price."),
+    (P, "Then there is the question of instruction. On a site with several trades, only one person should be able to tell "
+        "any of them to do something different. If you instruct a trade directly, you have usually created a variation "
+        "that the main contractor will not price, will not warrant, and may charge to unwind. Decide at the start who "
+        "you instruct and in what form, and write it in the assumptions sheet, because it is the rule you will most want "
+        "to break at eight in the morning when something looks wrong."),
+    (B, ["Give every trade row a name, even the ones inside another trade's price.",
+         "Write the interfaces as rows: making good, protection, waste, temporary services, final connections.",
+         "Agree one instruction route, and write it down with the date.",
+         "When you are tempted to instruct directly, ask instead: what does this do to the contract, and who pays for "
+         "the unwinding?",
+         "Photograph the interfaces as they are closed up. That photograph is the only record of who left what."]),
+
+    (H, "23. Doing part of it yourself: where DIY stops being a saving"),
+    (P, "Self-performance is a real way to reduce a renovation budget and a reliable way to increase one. The difference "
+        "is rarely skill. It is the two costs that never appear in the DIY estimate: the cost of the time, and the cost "
+        "of the interface you have created between your own work and everyone else's schedule."),
+    (P, "The time cost is easy to underestimate because it is paid in evenings and weekends, which feel free. Write it "
+        "down anyway, at whatever your spare hour is worth to you, and compare that number to the saving. For demolition "
+        "and clearance the arithmetic often works. For anything that must be finished to a standard someone else will "
+        "then build on, it often does not, because a trade asked to work over a surface they did not prepare will either "
+        "refuse or price the risk in."),
+    (P, "The interface cost is subtler. A builder's programme assumes a sequence. Doing your part late does not delay "
+        "only your part; it delays the trade who was due next, and that trade will usually be paid for the delay "
+        "somewhere in the final account. The saving you banked in week three reappears as an unexplained charge in week "
+        "nine."),
+    (P, "There is also the warranty question, and it is the one to settle before you start rather than after. If you "
+        "supply or install part of the work, what happens to the guarantee on the parts around it? Many contractors will "
+        "exclude anything they did not install, which is reasonable and also means the saving has a hidden price. Ask, "
+        "and write the answer down."),
+    (B, ["List what you will do yourself and give each item a realistic hour estimate, including the hours you will not "
+         "want to do.",
+         "Put your own work in the sheet as a row with a cost of zero and a note, so the sequence is visible.",
+         "Agree with the contractor, in writing, when your part must be finished for their programme to hold.",
+         "Ask what the guarantee position is for work adjacent to yours.",
+         "Decide in advance what you will do if you run out of time. The honest answer is usually 'pay someone', and it "
+         "is cheaper to plan for it than to discover it."]),
+
+    (H, "24. Handover and the final account: the last five per cent"),
+    (P, "The end of a renovation is not the day the last trade leaves. It is the day you have a list of what is "
+        "outstanding, a date for each item, the documents you will need when something fails in two years, and an agreed "
+        "final amount. Projects that skip this stage do not feel finished for a long time, and the things that were "
+        "almost right become the things that are wrong."),
+    (P, "Start the snag list before completion, and keep one list rather than three. Walk the property room by room, in "
+        "the same order every time, and write each item as a location plus an observation plus what finished looks like. "
+        "'Kitchen, unit door under sink, hinge rubbing and door sits proud at the top' is an item. 'Kitchen needs "
+        "attention' is a conversation that will happen three times."),
+    (P, "Give each item a date and a named owner, and agree in writing which items are cosmetic and which prevent you "
+        "from using the room. That distinction matters because it is the one that decides whether the final payment is "
+        "due. If the contract ties the final payment to completion, the question 'is it complete' should be answered by "
+        "the list, not by the atmosphere on the last day."),
+    (P, "The handover pack is the part people forget and later wish they had. It is not a legal requirement in most "
+        "places, which is exactly why nobody chases it. Ask for: certificates for electrical and gas work where they "
+        "apply; the boiler or heat pump service record and manual; warranties for appliances, worktops, flooring and "
+        "anything with a manufacturer's guarantee; paint colours and product codes; tile and flooring details with the "
+        "spare boxes; the as-built note of any pipe or cable route that was buried; the names of the trades who did the "
+        "work; and the date from which each guarantee runs."),
+    (P, "Two of those are worth more than they look. The as-built note of buried routes will save a future you from "
+        "drilling through a pipe, and it takes five minutes for someone who knows to write down. The list of trades is "
+        "what lets you call the right person rather than a stranger when a specific thing fails, which is often the "
+        "difference between a repair and a re-do."),
+    (P, "Finally, keep the workbook finished. Close the open items, record the final paid total and the final committed "
+        "total, note the retention release date if there is one, and file it with the handover pack. In three years, when "
+        "you cannot remember whether the bathroom was in the original scope, that closed workbook is the answer."),
+    (B, ["One snag list, room by room, in the same order, with location, observation and the finished state.",
+         "Separate 'prevents use' from 'cosmetic', in writing, before discussing the final payment.",
+         "Ask for the handover pack as a list, and tick it off: certificates, manuals, warranties, colours, spares, "
+         "buried routes, trade names, guarantee start dates.",
+         "Write the as-built note for anything that was covered up, even if it is three lines on a sheet of paper.",
+         "Close the workbook: final paid, final committed, retention release date, and file it with the pack."]),
+
+    (H, "25. Comparing quotes, and knowing when re-tendering costs more than it saves"),
+    (P, "Three quotes for the same work are rarely for the same work. One includes the skip, one does not; one prices "
+        "the making good, one assumes you will; one has a provisional sum where another has a fixed price. Comparing the "
+        "totals is therefore not a comparison at all. It is a comparison of three different projects that happen to "
+        "share a description."),
+    (P, "The method that survives contact with reality has four steps, and none of them requires a spreadsheet beyond "
+        "the one you already have. First, build a common scope list from your own understanding of the job, not from any "
+        "single quote: every room, every element, every item you expect to be included. Second, map each quote onto that "
+        "list, marking included, excluded, and unclear. Third, convert each exclusion and each qualification into a "
+        "range, using the quote's own language where it gives one. Fourth, compare three numbers per quote: the stated "
+        "total, the expected total after likely exclusions, and the worst case if every qualification fails."),
+    (P, "The gap between the stated total and the expected total is the most useful number in the exercise. It tells you "
+        "which quote is cheap because it is good value and which is cheap because it has been scoped down. A quote that "
+        "is ten per cent lower but carries three unbooked 'by others' items is not lower; it is unfinished."),
+    (P, "Then there is the question nobody asks out loud: is the cheapest quote actually the one you want to build with? "
+        "Price is one axis. The others are whether the scope is legible, whether the person answered your questions "
+        "directly, whether they have done this specific work recently, and whether their payment terms leave you with "
+        "any leverage at the end. A quote that is clear, complete and slightly dearer is often the cheaper project, "
+        "because the money you do not spend is frequently the money you do not argue about."),
+    (P, "<b>Re-tendering</b> is the decision that feels prudent and often is not. It costs weeks, it costs your attention, "
+        "and it costs the goodwill of whichever trade was expecting the job. It is worth doing when the scope has "
+        "genuinely changed, when the spread between quotes is large enough to suggest a misunderstanding rather than a "
+        "margin, or when the leading quote carries qualifications you cannot price. It is not worth doing because one "
+        "number is higher than you hoped, or because a fourth opinion might be kinder than the three you have."),
+    (P, "A useful test before you ask for another quote: can you write down, in one sentence, what you expect the new "
+        "quote to tell you that the existing three did not? If you cannot, you are buying delay rather than information."),
+    (B, ["Build your own scope list first, so you are comparing quotes to the job rather than to each other.",
+         "Mark every line included, excluded or unclear. Unclear is a category, not a rounding error.",
+         "Compare stated, expected and worst-case totals. The gap is the real differentiator.",
+         "Price the qualifications before you choose, not after the work starts.",
+         "Re-tender only when you can name the question a new quote would answer. Otherwise, negotiate the existing one."]),
+
+    (H, "26. The first forty-eight hours when something goes wrong"),
+    (P, "Something will go wrong. Water where it should not be, a wall that was not load-bearing according to the "
+        "drawing, a delivery that never arrives, a trade who stops answering. The first forty-eight hours decide how "
+        "expensive the problem becomes, and almost none of that cost is the problem itself. It is the decisions taken "
+        "while nobody has written down what happened."),
+    (P, "The first move is always the same and always feels too slow: stop, and record. Photograph the situation before "
+        "anything is moved, dried, covered or tidied. Note the time. Write one paragraph of what you observed with your "
+        "own eyes, and keep it separate from what you were told. Those are two different kinds of information and they "
+        "will diverge later, usually in good faith."),
+    (P, "The second move is to establish who needs to know, in what order. For anything involving water, gas, electricity "
+        "or structural work, the answer usually begins with whoever is qualified to make it safe, not with whoever is "
+        "responsible for the cost. Sorting responsibility is a later conversation; making the site safe is now."),
+    (P, "The third move is the one people skip: decide what you are not going to decide yet. Most bad outcomes in the "
+        "first two days come from agreeing a fix before understanding the cause, and from agreeing a number before "
+        "understanding the fix. It is entirely reasonable to say: I am not agreeing a cost today, I am recording what "
+        "happened and we will agree the remedy in writing once we know the cause."),
+    (P, "Then write the one page that will matter in six months: what happened, when, who was told, what was done to make "
+        "it safe, what is still unknown, and what the next decision is and who makes it. Attach the photographs. File it "
+        "with the evidence file. If the matter later becomes a claim, that page is the reason the conversation is about "
+        "facts rather than recollections."),
+    (B, ["Make safe first, and record who did it and when.",
+         "Photograph before anything is moved, dried or covered.",
+         "Separate what you observed from what you were told.",
+         "Do not agree a cost before the cause is understood.",
+         "Write the one-page record the same day, and file it with the photographs."]),
+
+    (H, "27. Scope, limits and honest caveats"),
     (P, "This is a control workbook for a domestic or small commercial renovation where you are the person paying the "
         "bills. It assumes you have, or can get, the signed quotes and the contract terms. It does not calculate tax, "
         "retention, financing costs or the time value of money, and it does not model schedules."),

@@ -174,3 +174,38 @@ the three price options above.
 3. A second product does not exist. Four probes, no selection.
 4. The 30-page guide expansion is not started. It is the recommended fix for the
    price bind and the largest remaining value item on this product.
+
+---
+
+## Addendum, same day: the guide was expanded to 15 pages
+
+Gap 4 above is now partly closed and the price picture has changed shape.
+
+The guide grew from 7 to **15 pages** and from 3,802 to **8,237** gate-words, by
+adding eleven sections of substance: the allowance / provisional-sum / prime-cost
+distinction, reading a quote for what it transfers, stage payments and retention,
+the evidence file, twenty questions before signing, a five-step reconciliation,
+multi-trade interfaces, self-performance, handover and the final account,
+comparing quotes and when re-tendering costs more than it saves, and the first
+forty-eight hours after something goes wrong.
+
+Effect on the arithmetic, recomputed rather than assumed:
+
+- **$15.00 at 15 pages now passes both checks** on `gumroad_digital`
+  (approved, net $13.50 against a $2.50 floor; `market_realistic` true). Before
+  this expansion no price above $7 cleared both at the guide's depth, so $15 was
+  not an executable option. It is now.
+- **$19.00 is still flagged.** The sub-30-page band caps any price at $15
+  absolute, so 15 pages does not help $19 — only 30 pages would.
+- **$27.99 on premium** still clears both checks at the current depth.
+
+So the founder's choice is now real rather than theoretical: take $15 today and
+revisit $19 at 30 pages, or list at $27.99 on premium now. The price itself was
+**not** changed; the payload's recommended option is $15 with further growth.
+
+Repriced claims were corrected everywhere they appear: the listing copy now says
+15 pages, the listing payload's matrix carries the current page count, the gate
+evidence was regenerated, and the build report carries a dated addendum instead
+of being silently rewritten. Tests assert the copy's page claim against the real
+PDF, so the two cannot drift apart unnoticed.
+

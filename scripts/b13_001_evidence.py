@@ -323,15 +323,18 @@ def main() -> int:
         "page_policy_disclosure": {
             "market_realism_check_gumroad_digital": {
                 "realistic": digital_ok, "suggested_price_usd": digital_price,
-                "reason": "the page-based policy sees 7 PDF pages and ignores the 9-sheet workbook",
+                "reason": ("the page-based policy sees %d PDF pages and ignores the 9-sheet workbook"
+                           % len(reader.pages)),
             },
             "market_realism_check_gumroad_premium": {
                 "realistic": premium_ok, "suggested_price_usd": premium_price,
             },
             "decision": ("Price stays at $19.00 as listed for the premium tier, matching the sourced"
-                         " comparables and the discovery record. The digital-tier page ceiling is the"
-                         " known structural defect already recorded as a weak signal, not a reason to"
-                         " weaken the gate or pad the guide."),
+                         " comparables and the discovery record. The guide has since been expanded from"
+                         " 7 to %d pages, which is a real product improvement; it still sits under the"
+                         " 30-page band, so $19 remains flagged on the digital tier. The founder now has"
+                         " an executable alternative: $15.00 clears both checks at the current depth."
+                         % len(reader.pages)),
         },
         "payment_evidence": "none - no sale exists anywhere in this factory",
         "state": "QA_PASS_AT_19_USD_AWAITING_LISTING_AND_PUBLICATION_AUTHORIZATION",

@@ -1,6 +1,6 @@
 {
  "product_id": "B13-001",
- "checked_at": "2026-10-20T12:09:19+00:00",
+ "checked_at": "2026-10-20T14:01:13+00:00",
  "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
  "price_checked_usd": 19.0,
  "verdict": "APPROVED",
@@ -47,7 +47,7 @@
      }
     ],
     "depth": {
-     "words": 3802,
+     "words": 8237,
      "words_required": 1900,
      "text_depth_ok": true,
      "sheets": 9,
@@ -99,14 +99,14 @@
  "page_policy_disclosure": {
   "market_realism_check_gumroad_digital": {
    "realistic": false,
-   "suggested_price_usd": 7.0,
-   "reason": "the page-based policy sees 7 PDF pages and ignores the 9-sheet workbook"
+   "suggested_price_usd": 15.0,
+   "reason": "the page-based policy sees 15 PDF pages and ignores the 9-sheet workbook"
   },
   "market_realism_check_gumroad_premium": {
    "realistic": true,
    "suggested_price_usd": 19.0
   },
-  "decision": "Price stays at $19.00 as listed for the premium tier, matching the sourced comparables and the discovery record. The digital-tier page ceiling is the known structural defect already recorded as a weak signal, not a reason to weaken the gate or pad the guide."
+  "decision": "Price stays at $19.00 as listed for the premium tier, matching the sourced comparables and the discovery record. The guide has since been expanded from 7 to 15 pages, which is a real product improvement; it still sits under the 30-page band, so $19 remains flagged on the digital tier. The founder now has an executable alternative: $15.00 clears both checks at the current depth."
  },
  "payment_evidence": "none - no sale exists anywhere in this factory",
  "state": "QA_PASS_AT_19_USD_AWAITING_LISTING_AND_PUBLICATION_AUTHORIZATION"

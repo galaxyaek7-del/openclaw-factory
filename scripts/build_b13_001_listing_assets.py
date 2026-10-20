@@ -88,18 +88,25 @@ def main() -> int:
         problems.append("brand check failed: %s" % brand["failed_checks"])
 
     cfg = economics.load_config()
+    guide = (
+        json.loads((ROOT / GUIDE_CHECK).read_text(encoding="utf-8"))
+        if (ROOT / GUIDE_CHECK).exists()
+        else {}
+    )
+    pages = int(guide.get("pages") or 0)
     matrix = []
-    for platform, pages in (
-        ("gumroad_digital", 7),
-        ("gumroad_premium", 7),
-        ("gumroad_digital", 30),
-        ("gumroad_premium", 8),
+    for price, platform, page_count in (
+        (PRICE_USD, "gumroad_digital", pages),
+        (PRICE_USD, "gumroad_premium", pages),
+        (PRICE_USD, "gumroad_digital", 30),
+        (15.00, "gumroad_digital", pages),
     ):
-        r = economics.evaluate(PRICE_USD, platform, cfg, page_count=pages)
+        r = economics.evaluate(price, platform, cfg, page_count=page_count)
         matrix.append(
             {
+                "price_usd": price,
                 "platform": platform,
-                "pages": pages,
+                "pages": page_count,
                 "approved": r["approved"],
                 "net_profit_usd": r["net_profit"],
                 "min_required_usd": r["min_required"],
@@ -110,11 +117,6 @@ def main() -> int:
         )
 
     gate = json.loads((ROOT / GATE).read_text(encoding="utf-8")) if (ROOT / GATE).exists() else {}
-    guide = (
-        json.loads((ROOT / GUIDE_CHECK).read_text(encoding="utf-8"))
-        if (ROOT / GUIDE_CHECK).exists()
-        else {}
-    )
     wbqa = (
         json.loads((ROOT / WORKBOOK_QA).read_text(encoding="utf-8"))
         if (ROOT / WORKBOOK_QA).exists()
@@ -131,20 +133,27 @@ def main() -> int:
         "price_status": "PROPOSED_NOT_AUTHORIZED",
         "price_realism": {
             "finding": (
-                "At 7 pages, $19 is approved on gumroad_digital (net floor $2.50) but "
-                "market_realistic is false (sub-30-page ceiling $15, then $1/page suggests $7). "
-                "$19 cannot pass gumroad_premium because its $25 net floor requires at least "
-                "$27.78. The price is therefore approved-but-unrealistic on one tier and "
-                "rejected-on-profit on the other. Not changed here: price changes need founder "
-                "authorization."
+                "The guide is now %s pages. Two independent ceilings decide whether a price is "
+                "credible. First, any book under 30 pages is capped at $15 absolute. Second, "
+                "below that cap a price must stay at or under $1 per page. So $19 is still "
+                "marked unrealistic at %s pages even though the profit floor is cleared, and it "
+                "stays that way until the guide reaches 30 pages. At the current depth, $15 is "
+                "the highest price that clears both checks on gumroad_digital (net $13.50, "
+                "against a $2.50 floor). On gumroad_premium, $19 is realistic but rejected on "
+                "profit, because that tier's net floor is $25, which needs $27.78 or more. "
+                "Nothing was repriced here: price changes need founder authorization."
+                % (pages, pages)
             ),
             "matrix": matrix,
             "options": [
-                "Keep $19 and grow the guide to 30+ pages so the per-page ceiling clears it.",
-                "List at $27.99 on gumroad_premium (net $25.19, realistic at 7 pages).",
-                "List at $15 or below, which the short-book ceiling still marks unrealistic at 7 pages.",
+                "Authorize $15.00 now. It is the highest price that is both approved and realistic at the current %s pages." % pages,
+                "Keep $19 and grow the guide from %s to 30 pages, so the sub-30-page ceiling stops applying." % pages,
+                "List at $27.99 on gumroad_premium (net $25.19), which clears both checks at the current depth.",
             ],
-            "recommended": "Grow the guide to 30+ pages and keep $19. It is the only option that improves the product rather than the arithmetic.",
+            "recommended": (
+                "Authorize $15.00, then grow the guide toward 30 pages and revisit $19 once the "
+                "content genuinely earns it. The price should follow the product, not lead it."
+            ),
         },
         "files": file_rows,
         "cover": {"path": COVER, "exists": cover.exists(), "dimensions": cover_dims},
@@ -206,19 +215,20 @@ def main() -> int:
         "## Verification cited",
         "",
         "- Gate: `%s` — state `%s`" % (GATE, gate.get("state")),
-        "- Guide inspection: `%s` — %s pages, %s words" % (GUIDE_CHECK, guide.get("pages"), guide.get("word_count")),
+        "- Guide inspection: `%s` — %s pages, %s words" % (GUIDE_CHECK, guide.get("pages"), guide.get("gate_words")),
         "- Workbook QA: `%s` — verdict `%s`, %s formula cells" % (WORKBOOK_QA, wbqa.get("verdict"), wbqa.get("formula_cells")),
         "- Brand check: %s" % ("PASS" if brand["passed"] else "FAIL: %s" % brand["failed_checks"]),
         "",
         "## Price realism (computed by economics.evaluate, this round)",
         "",
-        "| platform | pages | approved | net | floor | realistic | suggested |",
-        "|---|---|---|---|---|---|---|",
+        "| price | platform | pages | approved | net | floor | realistic | suggested |",
+        "|---|---|---|---|---|---|---|---|",
     ]
     for m in matrix:
         lines.append(
-            "| %s | %d | %s | $%.2f | $%.2f | %s | $%.2f |"
+            "| $%.2f | %s | %d | %s | $%.2f | $%.2f | %s | $%.2f |"
             % (
+                m["price_usd"],
                 m["platform"],
                 m["pages"],
                 "yes" if m["approved"] else "no",
