@@ -1,7 +1,7 @@
 # B13-001 Listing Payload
 
 **State:** `LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION`
-**Published:** no · **Gumroad call made:** no · **Price:** $19.00 (proposed, not authorized)
+**Published:** no · **Gumroad call made:** no · **Price:** $15.00 (selected by the founder, not authorized for a live listing)
 
 ## Deliverables
 
@@ -19,16 +19,25 @@
 
 ## Price realism (computed by economics.evaluate, this round)
 
-| price | platform | pages | approved | net | floor | realistic | suggested |
-|---|---|---|---|---|---|---|---|
-| $19.00 | gumroad_digital | 15 | yes | $17.10 | $2.50 | no | $15.00 |
-| $19.00 | gumroad_premium | 15 | no | $17.10 | $25.00 | yes | $19.00 |
-| $19.00 | gumroad_digital | 30 | yes | $17.10 | $2.50 | yes | $19.00 |
-| $15.00 | gumroad_digital | 15 | yes | $13.50 | $2.50 | yes | $15.00 |
+| price | platform | pages | role | approved | net | floor | realistic | suggested |
+|---|---|---|---|---|---|---|---|---|
+| $15.00 | gumroad_digital | 15 | selected | yes | $13.50 | $2.50 | yes | $15.00 |
+| $19.00 | gumroad_digital | 15 | previous proposal; fails realism below 30 pages | yes | $17.10 | $2.50 | no | $15.00 |
+| $19.00 | gumroad_digital | 30 | what $19 would require: 30 pages or more | yes | $17.10 | $2.50 | yes | $19.00 |
+| $19.00 | gumroad_premium | 15 | premium tier at the current depth | no | $17.10 | $25.00 | yes | $19.00 |
+| $27.99 | gumroad_premium | 15 | premium alternative that clears the $25 net floor | yes | $25.19 | $25.00 | yes | $27.99 |
 
-The guide is now 15 pages. Two independent ceilings decide whether a price is credible. First, any book under 30 pages is capped at $15 absolute. Second, below that cap a price must stay at or under $1 per page. So $19 is still marked unrealistic at 15 pages even though the profit floor is cleared, and it stays that way until the guide reaches 30 pages. At the current depth, $15 is the highest price that clears both checks on gumroad_digital (net $13.50, against a $2.50 floor). On gumroad_premium, $19 is realistic but rejected on profit, because that tier's net floor is $25, which needs $27.78 or more. Nothing was repriced here: price changes need founder authorization.
+The guide is 15 pages. Two independent ceilings decide whether a price is credible. First, any book under 30 pages is capped at $15 absolute. Second, below that cap a price must stay at or under $1 per page. $19 at 15 pages clears the profit floor but fails realism, and stays that way until the guide reaches 30 pages. $15 is the highest price that clears both checks on gumroad_digital (net $13.50 against a $2.50 floor), which is why the founder selected it as the preferred proposed price on 2026-10-20 and declined to expand the guide merely to justify $19. On gumroad_premium, $19 is realistic but rejected on profit (that tier's net floor is $25, needing $27.78 or more). No live listing or platform price was changed: this remains a local proposal.
 
-Recommended: Authorize $15.00, then grow the guide toward 30 pages and revisit $19 once the content genuinely earns it. The price should follow the product, not lead it.
+Selected: $15.00 on gumroad_digital at 15 pages, as the highest price that is both approved and realistic at the deliverable's actual depth.
+
+## Founder decision
+
+- Decided: 2026-10-20
+- Preferred price: $15.00
+- Scope: preferred pricing direction only; not a listing or publication authorization
+- Expand the guide to 30 pages to justify $19: declined by the founder
+- Publication authorized: False · live price changed: False
 
 ## Still blocked
 

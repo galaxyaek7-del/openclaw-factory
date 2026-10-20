@@ -1,0 +1,64 @@
+{
+ "cycle": 107,
+ "recorded_at": "2026-10-20",
+ "purpose": "Independently re-verify every URL relied on by the Cycle 106 discovery records before reusing their conclusions.",
+ "method": {
+  "tool": "Python 3.14.6 urllib.request, sequential GET, 20s timeout, 200 KB read cap",
+  "user_agent": "Chrome 124 desktop UA",
+  "unique_urls_checked": 29,
+  "note": "A 200 response proves the page is served. It does not prove the page contains what Cycle 106 said it contained; that was checked separately where the claim was decisive."
+ },
+ "results_classified": {
+  "verified_served": 21,
+  "bot_protected_403": 3,
+  "dead_404": 1,
+  "dns_failure": 2,
+  "tls_or_connection_failure": 2,
+  "async_gate_202_no_body": 2,
+  "served_but_wrong_content": 5
+ },
+ "material_defects_found": [
+  {
+   "id": "V1",
+   "severity": "high",
+   "finding": "https://depositbackr.com/tools/security-deposit-return-templates returns HTTP 404. It was cited in DISCOVERY_2026-10-20_MARKET_SATURATION.json as a live free substitute.",
+   "impact": "One of the two free-alternative citations behind the security-deposit rejection no longer supports the claim.",
+   "does_the_rejection_stand": "Yes. Quire Paper (HTTP 200) sells an itemised deposit ledger with a deadline engine at $12, which is the decisive evidence; a second free source was corroboration, not the basis.",
+   "action": "Recorded here. The Cycle 106 file is left unchanged as history."
+  },
+  {
+   "id": "V2",
+   "severity": "high",
+   "finding": "capveri.com and lextract.io both fail DNS resolution (getaddrinfo). Neither domain resolves from this environment, while 27 other hosts resolve normally.",
+   "impact": "Two CAM-reconciliation competitor citations cannot be verified now. Whether they ever existed is UNKNOWN; the record must not treat them as confirmed.",
+   "does_the_rejection_stand": "Yes, on the two that do resolve: Sheet Chief (HTTP 200, a published 5-sheet CAM audit tracker dated 2026-08-13) and leaseabstracts.com (HTTP 200, free four-tab template). The CAM rejection now rests on two verified sources, not four.",
+   "action": "Downgrade both to UNVERIFIED in every future reuse."
+  },
+  {
+   "id": "V3",
+   "severity": "medium",
+   "finding": "The four Reddit URLs return HTTP 200 under a browser UA but HTTP 403 with a plain client, and the served body is a block page rather than the thread. Their content was not retrievable at verification time.",
+   "impact": "Cycle 106 classified those threads as OBSERVED customer complaints. The correct classification is UNVERIFIED: the URLs are real-shaped and the subreddits are real, but the specific posts and quoted dollar amounts were not re-read this cycle.",
+   "does_the_rejection_stand": "Yes. Every rejection in Cycle 106 also rests on live competitor artefacts, which is the stronger evidence class anyway.",
+   "action": "Future records must label Reddit-sourced demand as UNVERIFIED unless a fetched copy is retained."
+  }
+ ],
+ "claims_that_survived_verification": [
+  {"claim": "Quire Paper sells a $12 security deposit ledger with itemised deductions and a deadline engine", "url": "https://quirepaper.com/security-deposit-ledger/", "status": 200},
+  {"claim": "Sheet Chief publishes a 5-sheet CAM audit tracker", "url": "https://sheetchief.com/commercial-lease-cam-audit-tracker/", "status": 200},
+  {"claim": "leaseabstracts.com publishes a free four-tab CAM template", "url": "https://leaseabstracts.com/templates/cam-reconciliation-template", "status": 200},
+  {"claim": "Six free COI tracker templates exist, from six different vendors", "urls": ["https://www.remindax.com/excel-templates/free-vendor-subcontractor-coi-tracker-template", "https://subdoc.io/blog/free-coi-tracking-spreadsheet-template", "https://www.field-pm.com/templates/certificate-of-insurance-tracker", "https://forge-motion.com/coi-tracking-spreadsheet", "https://certcove.com/free-coi-tracking-spreadsheet", "https://os.construction/templates/coi-tracker.csv"], "status": "all 200"},
+  {"claim": "EUDR large/medium deadline is 30 December 2026, micro/small 30 June 2027", "url": "https://environment.ec.europa.eu/topics/forests/deforestation/regulation-deforestation-free-products_en", "status": 200},
+  {"claim": "SawmillSmart publishes a free six-sheet EUDR workbook current to the 2025/2650 amendment", "url": "https://sawmillsmart.com/insights/eudr-dds-template-sawmills/", "status": 200},
+  {"claim": "polygon-one publishes a free EUDR preparation sheet plus a worked coffee example", "url": "https://polygon-one.com/en/article-dds-template", "status": 200}
+ ],
+ "inaccessible_and_marked_unknown": [
+  {"url": "https://www.etsy.com/listing/1768378040/landlord-and-tenant-toolkit-landlord", "status": 403, "note": "Etsy bot protection. Price $39.50 remains UNVERIFIED."},
+  {"url": "https://www.etsy.com/listing/1822454637/move-out-cost-worksheet-printable", "status": 403, "note": "Price $4.99 remains UNVERIFIED."},
+  {"url": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ%3AC_202504524", "status": 202, "note": "EU Publications Office returns 202 with an empty body to non-browser clients. Guidance text remains UNVERIFIED from this host; the Article 9 content was corroborated by the polygon-one analysis instead."},
+  {"url": "https://cdgdocs.com/b/eudr-documentation-kit", "status": 202, "note": "Async gate, empty body. The $250 price was not re-verified this cycle."},
+  {"url": "https://eudr.finagon.com/faq/", "status": "TLS failure", "note": "Certificate verification error in this environment. Its stale SME date is therefore UNVERIFIED and must not be cited as proof."},
+  {"url": "https://eudrready.eu/eudr-software-small-business/", "status": "connection closed", "note": "Not re-verified."}
+ ],
+ "conclusion": "The Cycle 106 rejections survive, but on narrower evidence than originally claimed. Two competitor citations are unverifiable, one free alternative is dead, and the Reddit demand signals were never successfully fetched. The distinction that matters for future work: competitor artefacts were verified live; customer-pain claims were not."
+}

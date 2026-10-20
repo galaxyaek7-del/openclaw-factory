@@ -24,7 +24,16 @@ import economics
 
 PRODUCT_ID = "B13-001"
 TITLE = "Renovation Allowance & Change-Order Control"
-PRICE_USD = 19.00
+PRICE_USD = 15.00
+PRICE_STATUS = "PROPOSED_SELECTED_BY_FOUNDER_NOT_AUTHORIZED"
+FOUNDER_DECISION = {
+    "decided_at": "2026-10-20",
+    "preferred_price_usd": 15.00,
+    "scope": "preferred pricing direction only; not a listing or publication authorization",
+    "expand_guide_to_30_pages_for_19_usd": "declined by the founder",
+    "publication_authorized": False,
+    "live_price_changed": False,
+}
 FILES = [
     "books/batch13/B13-001_renovation_allowance_control.xlsx",
     "books/batch13/B13-001_renovation_allowance_control_guide.pdf",
@@ -95,11 +104,12 @@ def main() -> int:
     )
     pages = int(guide.get("pages") or 0)
     matrix = []
-    for price, platform, page_count in (
-        (PRICE_USD, "gumroad_digital", pages),
-        (PRICE_USD, "gumroad_premium", pages),
-        (PRICE_USD, "gumroad_digital", 30),
-        (15.00, "gumroad_digital", pages),
+    for price, platform, page_count, role in (
+        (PRICE_USD, "gumroad_digital", pages, "selected"),
+        (19.00, "gumroad_digital", pages, "previous proposal; fails realism below 30 pages"),
+        (19.00, "gumroad_digital", 30, "what $19 would require: 30 pages or more"),
+        (19.00, "gumroad_premium", pages, "premium tier at the current depth"),
+        (27.99, "gumroad_premium", pages, "premium alternative that clears the $25 net floor"),
     ):
         r = economics.evaluate(price, platform, cfg, page_count=page_count)
         matrix.append(
@@ -107,6 +117,7 @@ def main() -> int:
                 "price_usd": price,
                 "platform": platform,
                 "pages": page_count,
+                "role": role,
                 "approved": r["approved"],
                 "net_profit_usd": r["net_profit"],
                 "min_required_usd": r["min_required"],
@@ -130,29 +141,30 @@ def main() -> int:
         "published": False,
         "gumroad_call_made": False,
         "price_usd": PRICE_USD,
-        "price_status": "PROPOSED_NOT_AUTHORIZED",
+        "price_status": PRICE_STATUS,
+        "founder_decision": FOUNDER_DECISION,
         "price_realism": {
             "finding": (
-                "The guide is now %s pages. Two independent ceilings decide whether a price is "
+                "The guide is %s pages. Two independent ceilings decide whether a price is "
                 "credible. First, any book under 30 pages is capped at $15 absolute. Second, "
-                "below that cap a price must stay at or under $1 per page. So $19 is still "
-                "marked unrealistic at %s pages even though the profit floor is cleared, and it "
-                "stays that way until the guide reaches 30 pages. At the current depth, $15 is "
-                "the highest price that clears both checks on gumroad_digital (net $13.50, "
-                "against a $2.50 floor). On gumroad_premium, $19 is realistic but rejected on "
-                "profit, because that tier's net floor is $25, which needs $27.78 or more. "
-                "Nothing was repriced here: price changes need founder authorization."
+                "below that cap a price must stay at or under $1 per page. $19 at %s pages "
+                "clears the profit floor but fails realism, and stays that way until the guide "
+                "reaches 30 pages. $15 is the highest price that clears both checks on "
+                "gumroad_digital (net $13.50 against a $2.50 floor), which is why the founder "
+                "selected it as the preferred proposed price on 2026-10-20 and declined to "
+                "expand the guide merely to justify $19. On gumroad_premium, $19 is realistic "
+                "but rejected on profit (that tier's net floor is $25, needing $27.78 or more). "
+                "No live listing or platform price was changed: this remains a local proposal."
                 % (pages, pages)
             ),
             "matrix": matrix,
-            "options": [
-                "Authorize $15.00 now. It is the highest price that is both approved and realistic at the current %s pages." % pages,
-                "Keep $19 and grow the guide from %s to 30 pages, so the sub-30-page ceiling stops applying." % pages,
-                "List at $27.99 on gumroad_premium (net $25.19), which clears both checks at the current depth.",
+            "alternatives_considered": [
+                "Keep $19 and grow the guide to 30 pages so the sub-30-page ceiling stops applying. Declined by the founder: content should lead the price.",
+                "List at $27.99 on gumroad_premium (net $25.19), which clears both checks at the current depth. Not selected.",
             ],
-            "recommended": (
-                "Authorize $15.00, then grow the guide toward 30 pages and revisit $19 once the "
-                "content genuinely earns it. The price should follow the product, not lead it."
+            "selected": (
+                "$15.00 on gumroad_digital at %s pages, as the highest price that is both "
+                "approved and realistic at the deliverable's actual depth." % pages
             ),
         },
         "files": file_rows,
@@ -188,7 +200,9 @@ def main() -> int:
                 "Founder sets FACTORY_LIVE_PUBLISH=true for the run and completes a fresh "
                 "gumroad_auth_watch.poll() so auth state is VERIFIED and not stale."
             ),
-            "price_decision_required_first": True,
+            "price_decision_required_first": False,
+            "price_selected_but_not_authorized": True,
+            "publication_separately_gated": True,
         },
         "problems": problems,
     }
@@ -201,7 +215,7 @@ def main() -> int:
         "# B13-001 Listing Payload",
         "",
         "**State:** `%s`" % payload["state"],
-        "**Published:** no · **Gumroad call made:** no · **Price:** $%.2f (proposed, not authorized)" % PRICE_USD,
+        "**Published:** no · **Gumroad call made:** no · **Price:** $%.2f (selected by the founder, not authorized for a live listing)" % PRICE_USD,
         "",
         "## Deliverables",
         "",
@@ -221,16 +235,17 @@ def main() -> int:
         "",
         "## Price realism (computed by economics.evaluate, this round)",
         "",
-        "| price | platform | pages | approved | net | floor | realistic | suggested |",
-        "|---|---|---|---|---|---|---|---|",
+        "| price | platform | pages | role | approved | net | floor | realistic | suggested |",
+        "|---|---|---|---|---|---|---|---|---|",
     ]
     for m in matrix:
         lines.append(
-            "| $%.2f | %s | %d | %s | $%.2f | $%.2f | %s | $%.2f |"
+            "| $%.2f | %s | %d | %s | %s | $%.2f | $%.2f | %s | $%.2f |"
             % (
                 m["price_usd"],
                 m["platform"],
                 m["pages"],
+                m["role"],
                 "yes" if m["approved"] else "no",
                 m["net_profit_usd"],
                 m["min_required_usd"],
@@ -242,7 +257,16 @@ def main() -> int:
         "",
         payload["price_realism"]["finding"],
         "",
-        "Recommended: " + payload["price_realism"]["recommended"],
+        "Selected: " + payload["price_realism"]["selected"],
+        "",
+        "## Founder decision",
+        "",
+        "- Decided: %s" % FOUNDER_DECISION["decided_at"],
+        "- Preferred price: $%.2f" % FOUNDER_DECISION["preferred_price_usd"],
+        "- Scope: %s" % FOUNDER_DECISION["scope"],
+        "- Expand the guide to 30 pages to justify $19: %s" % FOUNDER_DECISION["expand_guide_to_30_pages_for_19_usd"],
+        "- Publication authorized: %s · live price changed: %s"
+        % (FOUNDER_DECISION["publication_authorized"], FOUNDER_DECISION["live_price_changed"]),
         "",
         "## Still blocked",
         "",

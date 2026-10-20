@@ -57,9 +57,19 @@ def test_payload_never_claims_publication(payload):
     assert payload["state"] == "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION"
 
 
-def test_price_is_marked_unauthorized(payload):
-    assert payload["price_status"] == "PROPOSED_NOT_AUTHORIZED"
-    assert payload["authorization_required"]["price_decision_required_first"] is True
+def test_price_is_selected_but_still_unauthorized(payload):
+    """The founder selected $15 on 2026-10-20; that is not a publication grant."""
+    assert payload["price_usd"] == 15.0
+    assert payload["price_status"] == "PROPOSED_SELECTED_BY_FOUNDER_NOT_AUTHORIZED"
+    decision = payload["founder_decision"]
+    assert decision["preferred_price_usd"] == 15.0
+    assert decision["decided_at"] == "2026-10-20"
+    assert decision["publication_authorized"] is False
+    assert decision["live_price_changed"] is False
+    auth = payload["authorization_required"]
+    assert auth["price_decision_required_first"] is False
+    assert auth["price_selected_but_not_authorized"] is True
+    assert auth["publication_separately_gated"] is True
 
 
 def test_declared_hashes_match_the_real_files(payload):
@@ -78,8 +88,9 @@ def test_cover_is_a_gumroad_landscape(payload):
 
 def test_price_matrix_matches_the_economics_module(payload):
     cfg = economics.load_config()
-    assert len(payload["price_realism"]["matrix"]) == 4
+    assert len(payload["price_realism"]["matrix"]) == 5
     for row in payload["price_realism"]["matrix"]:
+        assert row["role"], "every row states why it is there"
         real = economics.evaluate(row["price_usd"], row["platform"], cfg, page_count=row["pages"])
         assert real["approved"] is row["approved"]
         assert real["market_realistic"] is row["market_realistic"]
@@ -92,10 +103,12 @@ def test_the_known_bind_is_still_true(payload):
     pages = payload["verification_evidence"]["guide_pages"]
     non_premium = rows[(19.0, "gumroad_digital", pages)]
     premium = rows[(19.0, "gumroad_premium", pages)]
-    fifteen = rows[(15.0, "gumroad_digital", pages)]
+    selected = rows[(15.0, "gumroad_digital", pages)]
     assert non_premium["approved"] is True and non_premium["market_realistic"] is False
     assert premium["approved"] is False and premium["min_required_usd"] == 25.0
-    assert fifteen["approved"] is True and fifteen["market_realistic"] is True
+    assert selected["approved"] is True and selected["market_realistic"] is True
+    assert selected["role"] == "selected"
+    assert selected["net_profit_usd"] == 13.5
 
 
 def test_listing_copy_cites_the_real_page_count(payload):

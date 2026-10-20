@@ -4,15 +4,36 @@
  "state": "LOCAL_READY__AWAITS_FOUNDER_LISTING_AUTHORIZATION",
  "published": false,
  "gumroad_call_made": false,
- "price_usd": 19.0,
- "price_status": "PROPOSED_NOT_AUTHORIZED",
+ "price_usd": 15.0,
+ "price_status": "PROPOSED_SELECTED_BY_FOUNDER_NOT_AUTHORIZED",
+ "founder_decision": {
+  "decided_at": "2026-10-20",
+  "preferred_price_usd": 15.0,
+  "scope": "preferred pricing direction only; not a listing or publication authorization",
+  "expand_guide_to_30_pages_for_19_usd": "declined by the founder",
+  "publication_authorized": false,
+  "live_price_changed": false
+ },
  "price_realism": {
-  "finding": "The guide is now 15 pages. Two independent ceilings decide whether a price is credible. First, any book under 30 pages is capped at $15 absolute. Second, below that cap a price must stay at or under $1 per page. So $19 is still marked unrealistic at 15 pages even though the profit floor is cleared, and it stays that way until the guide reaches 30 pages. At the current depth, $15 is the highest price that clears both checks on gumroad_digital (net $13.50, against a $2.50 floor). On gumroad_premium, $19 is realistic but rejected on profit, because that tier's net floor is $25, which needs $27.78 or more. Nothing was repriced here: price changes need founder authorization.",
+  "finding": "The guide is 15 pages. Two independent ceilings decide whether a price is credible. First, any book under 30 pages is capped at $15 absolute. Second, below that cap a price must stay at or under $1 per page. $19 at 15 pages clears the profit floor but fails realism, and stays that way until the guide reaches 30 pages. $15 is the highest price that clears both checks on gumroad_digital (net $13.50 against a $2.50 floor), which is why the founder selected it as the preferred proposed price on 2026-10-20 and declined to expand the guide merely to justify $19. On gumroad_premium, $19 is realistic but rejected on profit (that tier's net floor is $25, needing $27.78 or more). No live listing or platform price was changed: this remains a local proposal.",
   "matrix": [
+   {
+    "price_usd": 15.0,
+    "platform": "gumroad_digital",
+    "pages": 15,
+    "role": "selected",
+    "approved": true,
+    "net_profit_usd": 13.5,
+    "min_required_usd": 2.5,
+    "market_realistic": true,
+    "suggested_realistic_price_usd": 15.0,
+    "reason": "ok: net $13.50 clears floor $2.50"
+   },
    {
     "price_usd": 19.0,
     "platform": "gumroad_digital",
     "pages": 15,
+    "role": "previous proposal; fails realism below 30 pages",
     "approved": true,
     "net_profit_usd": 17.1,
     "min_required_usd": 2.5,
@@ -22,19 +43,9 @@
    },
    {
     "price_usd": 19.0,
-    "platform": "gumroad_premium",
-    "pages": 15,
-    "approved": false,
-    "net_profit_usd": 17.1,
-    "min_required_usd": 25.0,
-    "market_realistic": true,
-    "suggested_realistic_price_usd": 19.0,
-    "reason": "weak_margin: net $17.10 below floor $25.00"
-   },
-   {
-    "price_usd": 19.0,
     "platform": "gumroad_digital",
     "pages": 30,
+    "role": "what $19 would require: 30 pages or more",
     "approved": true,
     "net_profit_usd": 17.1,
     "min_required_usd": 2.5,
@@ -43,23 +54,35 @@
     "reason": "ok: net $17.10 clears floor $2.50"
    },
    {
-    "price_usd": 15.0,
-    "platform": "gumroad_digital",
+    "price_usd": 19.0,
+    "platform": "gumroad_premium",
     "pages": 15,
-    "approved": true,
-    "net_profit_usd": 13.5,
-    "min_required_usd": 2.5,
+    "role": "premium tier at the current depth",
+    "approved": false,
+    "net_profit_usd": 17.1,
+    "min_required_usd": 25.0,
     "market_realistic": true,
-    "suggested_realistic_price_usd": 15.0,
-    "reason": "ok: net $13.50 clears floor $2.50"
+    "suggested_realistic_price_usd": 19.0,
+    "reason": "weak_margin: net $17.10 below floor $25.00"
+   },
+   {
+    "price_usd": 27.99,
+    "platform": "gumroad_premium",
+    "pages": 15,
+    "role": "premium alternative that clears the $25 net floor",
+    "approved": true,
+    "net_profit_usd": 25.191,
+    "min_required_usd": 25.0,
+    "market_realistic": true,
+    "suggested_realistic_price_usd": 27.99,
+    "reason": "ok: net $25.19 clears floor $25.00"
    }
   ],
-  "options": [
-   "Authorize $15.00 now. It is the highest price that is both approved and realistic at the current 15 pages.",
-   "Keep $19 and grow the guide from 15 to 30 pages, so the sub-30-page ceiling stops applying.",
-   "List at $27.99 on gumroad_premium (net $25.19), which clears both checks at the current depth."
+  "alternatives_considered": [
+   "Keep $19 and grow the guide to 30 pages so the sub-30-page ceiling stops applying. Declined by the founder: content should lead the price.",
+   "List at $27.99 on gumroad_premium (net $25.19), which clears both checks at the current depth. Not selected."
   ],
-  "recommended": "Authorize $15.00, then grow the guide toward 30 pages and revisit $19 once the content genuinely earns it. The price should follow the product, not lead it."
+  "selected": "$15.00 on gumroad_digital at 15 pages, as the highest price that is both approved and realistic at the deliverable's actual depth."
  },
  "files": [
   {
@@ -124,7 +147,7 @@
     "reason": "لا عبارات استعجال/ندرة مصطنعة موجودة في نص المحتوى (فحص جزئي)"
    }
   },
-  "generated_at": "2026-10-20T14:40:03.724025+00:00"
+  "generated_at": "2026-10-20T15:43:52.462668+00:00"
  },
  "verification_evidence": {
   "gate": "reports/B13-001/GATE_FINAL_2026-10-20.json",
@@ -225,7 +248,9 @@
  "authorization_required": {
   "blocked_by": "FACTORY_LIVE_PUBLISH=false and no active write scope; create_product and enable_product are not scopable.",
   "exact_minimal_action": "Founder sets FACTORY_LIVE_PUBLISH=true for the run and completes a fresh gumroad_auth_watch.poll() so auth state is VERIFIED and not stale.",
-  "price_decision_required_first": true
+  "price_decision_required_first": false,
+  "price_selected_but_not_authorized": true,
+  "publication_separately_gated": true
  },
  "problems": []
 }
