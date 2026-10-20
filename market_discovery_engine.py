@@ -30,6 +30,7 @@ _FACTORY_ROOT = Path(__file__).resolve().parent
 
 REGISTER_PATH = _FACTORY_ROOT / "data" / "market_signal_register.jsonl"
 PROBLEM_MAP_PATH = _FACTORY_ROOT / "data" / "problem_map.json"
+RETRIEVAL_LEDGER_PATH = _FACTORY_ROOT / "data" / "discovery_retrievals.jsonl"
 
 # Sec 10 ladder, V5.7-second-directive Sec 2/3 extension: LEVEL 0 TREND
 # (general interest / circulating topic -- e.g. "EU AI Act". A trend is
@@ -52,8 +53,280 @@ GATES = {
     "GATE_B": ("SIGNAL_ONLY", "DEEPER_DISCOVERY"),
     "GATE_C": ("COMMERCIAL_SIGNAL", "TEST_OFFER"),
     "GATE_D": ("QUALIFIED_DEMAND", "DELIVER_OFFER"),
-    "GATE_E": ("TRANSACTION", "DELIVER → FEEDBACK → REPEATABILITY"),
+    "GATE_E": ("TRANSACTION", "DELIVER ��' FEEDBACK ��' REPEATABILITY"),
 }
+
+# ---------------------------------------------------------------------------
+# Intake screening (Cycle 107 repair, 2026-10-20)
+#
+# Three consecutive discovery rounds were rejected *after* scoring, for the
+# same reason: the candidate was already covered by an adequate free
+# alternative. Scoring first meant a 19/25 or 16/25 number was computed for a
+# product that could never be built, and that number then had to be explained
+# away. Cycle 107 also proved that a URL can return 200 and still not contain
+# what the record claimed, and that 403/404/DNS-failure links had been treated
+# as if they were evidence.
+#
+# This block is the intake gate that runs BEFORE any score exists. It answers
+# one question per source -- "what did the retrieval actually return?" -- and
+# one question per candidate -- "does the evidence survive, and is the product
+# already given away?" A single failed gate rejects the candidate; the score
+# is never consulted, so no number can argue past a missing prerequisite.
+# ---------------------------------------------------------------------------
+
+# What a retrieval returned, not what the record hoped it returned.
+SOURCE_STATUSES = ("FETCHED_OK", "REDIRECTED", "BLOCKED", "DEAD", "UNVERIFIED")
+
+EVIDENCE_STATUSES = ("FETCHED_OK", "REDIRECTED")
+
+INTAKE_GATES = {
+    "G1": "every cited URL has a retrieval record that counts as evidence",
+    "G2": "at least two independent source types survive retrieval",
+    "G3": "an adequate free alternative is not materially duplicating the candidate",
+    "G4": "a paid comparison exists and a specific differentiator is stated",
+    "G5": "the buyer and the selling channel are named",
+    "G6": "the build cost for this factory is $0",
+}
+
+_FREE_DUPLICATE_MARKERS = ("duplicate", "duplicated", "already free", "covers the same")
+
+
+def classify_source(status_code=None, error=None, requested_url="",
+                    final_url="", body_bytes=0):
+    """Map an observed retrieval to one SOURCE_STATUSES value.
+
+    Deliberately mechanical: a status code is not an opinion. 401/403/429 is
+    BLOCKED (the host refused a plain client), 404/410/DNS failure is DEAD, a
+    redirect is REDIRECTED only when the destination was actually observed,
+    and a bodiless response -- EUR-Lex's 202 with 0 bytes is the real example
+    -- is UNVERIFIED, never "served".
+    """
+    err = str(error or "").lower()
+    if err:
+        if "dns" in err or "getaddrinfo" in err or "name or service" in err:
+            return {"status": "DEAD", "detail": "DNS resolution failed", "counts_as_evidence": False}
+        return {"status": "UNVERIFIED",
+                "detail": "transport error (%s) with no HTTP response observed" % (error or "unknown"),
+                "counts_as_evidence": False}
+
+    try:
+        code = int(status_code)
+    except (TypeError, ValueError):
+        return {"status": "UNVERIFIED", "detail": "no status code recorded",
+                "counts_as_evidence": False}
+
+    if code in (401, 403, 429):
+        return {"status": "BLOCKED",
+                "detail": "HTTP %d: host refused a plain client (bot protection or auth)" % code,
+                "counts_as_evidence": False}
+    if code in (404, 410):
+        return {"status": "DEAD", "detail": "HTTP %d: resource gone" % code,
+                "counts_as_evidence": False}
+    if 300 <= code < 400:
+        if final_url and final_url != requested_url:
+            return {"status": "REDIRECTED",
+                    "detail": "HTTP %d to %s" % (code, final_url),
+                    "counts_as_evidence": True}
+        return {"status": "UNVERIFIED",
+                "detail": "HTTP %d with no observed destination" % code,
+                "counts_as_evidence": False}
+    if 200 <= code < 300:
+        if int(body_bytes or 0) > 0:
+            return {"status": "FETCHED_OK",
+                    "detail": "HTTP %d with %d bytes" % (code, int(body_bytes)),
+                    "counts_as_evidence": True}
+        return {"status": "UNVERIFIED",
+                "detail": "HTTP %d with an empty body (async gate or bot wall)" % code,
+                "counts_as_evidence": False}
+    return {"status": "UNVERIFIED", "detail": "HTTP %d is not a usable retrieval" % code,
+            "counts_as_evidence": False}
+
+
+def record_retrieval(url, status_code=None, error=None, final_url="",
+                     body_bytes=0, source_type=None, note="", path=None):
+    """Append one real retrieval observation to the ledger.
+
+    Append-only and never rewritten: a later successful fetch does not erase
+    an earlier 403. Callers add the latest record for a URL when they need the
+    current state. Nothing here fetches anything.
+    """
+    url = str(url or "").strip()
+    if not (url.startswith("http://") or url.startswith("https://")):
+        return {"recorded": False, "reason": "not an http(s) url"}
+    verdict = classify_source(status_code=status_code, error=error,
+                              requested_url=url, final_url=final_url,
+                              body_bytes=body_bytes)
+    record = {
+        "retrieved_at": datetime.now(timezone.utc).isoformat(),
+        "url": url,
+        "status": verdict["status"],
+        "detail": verdict["detail"],
+        "counts_as_evidence": verdict["counts_as_evidence"],
+        "status_code": status_code,
+        "error": error,
+        "final_url": final_url or None,
+        "body_bytes": int(body_bytes or 0),
+        "source_type": source_type,
+        "note": note,
+    }
+    dest = Path(path) if path else RETRIEVAL_LEDGER_PATH
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    with open(dest, "a", encoding="utf-8", newline="\n") as f:
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    return {"recorded": True, "status": record["status"], "url": url}
+
+
+def latest_retrievals(path=None):
+    """url -> most recent ledger record. Later records win; earlier ones stay."""
+    latest = {}
+    for rec in _read_jsonl(Path(path) if path else RETRIEVAL_LEDGER_PATH):
+        url = rec.get("url")
+        if url:
+            latest[url] = rec
+    return latest
+
+
+def evidence_integrity(cited_urls, retrievals=None):
+    """Check every cited URL against what retrieval actually returned.
+
+    `cited_urls` is a list of {"url": ..., "source_type": ...} or plain URL
+    strings. A URL with no ledger record is UNVERIFIED -- an assertion in a
+    markdown file is not a retrieval.
+    """
+    retrievals = retrievals if retrievals is not None else latest_retrievals()
+    rows = []
+    evidence = []
+    source_types = set()
+    for item in cited_urls or []:
+        if isinstance(item, str):
+            url, source_type = item, None
+        else:
+            url = item.get("url")
+            source_type = item.get("source_type")
+        rec = retrievals.get(url)
+        if rec is None:
+            rows.append({"url": url, "source_type": source_type,
+                         "status": "UNVERIFIED", "detail": "no retrieval record",
+                         "counts_as_evidence": False})
+            continue
+        row = {"url": url, "source_type": source_type or rec.get("source_type"),
+               "status": rec.get("status"), "detail": rec.get("detail"),
+               "counts_as_evidence": bool(rec.get("counts_as_evidence"))}
+        rows.append(row)
+        if row["counts_as_evidence"]:
+            evidence.append(row)
+            if row["source_type"]:
+                source_types.add(str(row["source_type"]).lower())
+
+    problems = []
+    if not cited_urls:
+        problems.append("no cited URLs")
+    blocked = [r["url"] for r in rows if r["status"] in ("BLOCKED", "DEAD")]
+    unverified = [r["url"] for r in rows if r["status"] == "UNVERIFIED"]
+    if blocked:
+        problems.append("%d cited URL(s) are BLOCKED/DEAD" % len(blocked))
+    if unverified:
+        problems.append("%d cited URL(s) have no usable retrieval record" % len(unverified))
+    if len(evidence) < 2:
+        problems.append("only %d URL(s) count as evidence (2 required)" % len(evidence))
+    return {"ok": not problems, "urls": rows, "evidence_urls": [r["url"] for r in evidence],
+            "source_types": sorted(source_types), "problems": problems,
+            "blocked": blocked, "unverified": unverified}
+
+
+def _free_alternative_gate(free_alternative):
+    """G3. The free substitute has to be named, assessed, and beaten.
+
+    Saying nothing is a failure, not a pass: Cycle 107's three candidates were
+    all rejected because the record never asked this question until scoring.
+    """
+    free = free_alternative or {}
+    if not free:
+        return False, "no free alternative was assessed"
+    urls = free.get("urls") or ([free["url"]] if free.get("url") else [])
+    if not urls:
+        return False, "free alternative named no URL"
+    if free.get("materially_duplicates") is True:
+        return False, "materially duplicated by an adequate free alternative"
+    advantage = str(free.get("demonstrated_advantage") or "").strip()
+    if not advantage or advantage.upper() in ("UNKNOWN", "NONE", "N/A"):
+        return False, "no demonstrated advantage over the free alternative"
+    if any(m in advantage.lower() for m in _FREE_DUPLICATE_MARKERS):
+        return False, "the stated advantage describes a duplication, not a difference"
+    return True, "advantage stated: " + advantage
+
+
+def evaluate_intake(candidate, retrievals=None):
+    """The six hard gates, before any score exists.
+
+    Any single FAIL rejects the candidate and sets scoring_skipped. There is
+    deliberately no "close enough" path and no weighting: a missing
+    prerequisite is not offset by strength elsewhere.
+    """
+    name = (candidate or {}).get("name") or "unnamed candidate"
+    integrity = evidence_integrity((candidate or {}).get("cited_urls"), retrievals)
+
+    gates = {}
+    gates["G1"] = {"status": "PASS" if integrity["ok"] else "FAIL",
+                   "reason": "all cited URLs count as evidence"
+                   if integrity["ok"] else "; ".join(integrity["problems"])}
+    types = integrity["source_types"]
+    gates["G2"] = {"status": "PASS" if len(types) >= 2 else "FAIL",
+                   "reason": "%d independent source type(s): %s"
+                   % (len(types), ", ".join(types) if types else "none")}
+
+    ok3, why3 = _free_alternative_gate(candidate.get("free_alternative"))
+    gates["G3"] = {"status": "PASS" if ok3 else "FAIL", "reason": why3}
+
+    paid = candidate.get("paid_comparison") or {}
+    competitors = [c for c in (paid.get("competitors") or []) if c]
+    differentiator = str(paid.get("differentiator") or "").strip()
+    if not competitors:
+        gates["G4"] = {"status": "FAIL", "reason": "no paid competitor recorded"}
+    elif not differentiator or differentiator.upper() in ("UNKNOWN", "NONE", "N/A"):
+        gates["G4"] = {"status": "FAIL",
+                       "reason": "no specific differentiator against the paid competitor(s)"}
+    else:
+        gates["G4"] = {"status": "PASS", "reason": differentiator}
+
+    buyer_channel = candidate.get("buyer_channel") or {}
+    buyer = str(buyer_channel.get("buyer") or "").strip()
+    channel = str(buyer_channel.get("channel") or "").strip()
+    if buyer and channel:
+        gates["G5"] = {"status": "PASS", "reason": "%s via %s" % (buyer, channel)}
+    else:
+        gates["G5"] = {"status": "FAIL", "reason": "buyer and channel must both be named"}
+
+    cost = candidate.get("build_cost_usd")
+    if cost is None:
+        gates["G6"] = {"status": "FAIL", "reason": "build cost not stated"}
+    elif float(cost) > 0:
+        gates["G6"] = {"status": "FAIL", "reason": "build cost $%.2f exceeds $0" % float(cost)}
+    else:
+        gates["G6"] = {"status": "PASS", "reason": "build cost $0"}
+
+    failed = [g for g, v in gates.items() if v["status"] == "FAIL"]
+    return {
+        "name": name,
+        "verdict": "REJECTED" if failed else "QUALIFIED_FOR_SCORING",
+        "failed_gates": failed,
+        "gates": gates,
+        "evidence_integrity": integrity,
+        "claimed_score": candidate.get("claimed_score"),
+        "score_consulted": False,
+        "scoring_skipped": bool(failed),
+    }
+
+
+def screen_intake(candidates, retrievals=None):
+    """Run evaluate_intake over a batch, with an honest rollup."""
+    results = [evaluate_intake(c, retrievals) for c in (candidates or [])]
+    return {
+        "screened": len(results),
+        "rejected_at_intake": sum(1 for r in results if r["verdict"] == "REJECTED"),
+        "qualified": sum(1 for r in results if r["verdict"] == "QUALIFIED_FOR_SCORING"),
+        "results": results,
+    }
 
 
 def _read_jsonl(path):

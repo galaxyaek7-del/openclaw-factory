@@ -1,0 +1,551 @@
+{
+ "cycle": 107,
+ "recorded_at": "2026-10-20",
+ "purpose": "Replay Cycle 107's three candidates through the repaired intake gate to prove they are rejected before any score is computed.",
+ "source_record": "reports/CYCLE107/EVIDENCE_VERIFICATION_2026-10-20.json",
+ "cited_url_pool": 29,
+ "retrieval_provenance": {
+  "OBSERVED": [
+   "https://cdgdocs.com/b/eudr-documentation-kit",
+   "https://depositbackr.com/tools/security-deposit-return-templates",
+   "https://eudr.finagon.com/faq/",
+   "https://eudrready.eu/eudr-software-small-business/",
+   "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ%3AC_202504524",
+   "https://lextract.io/templates/lease-audit-workbook",
+   "https://www.capveri.com/resources/templates/cam-reconciliation-excel",
+   "https://www.etsy.com/listing/1768378040/landlord-and-tenant-toolkit-landlord",
+   "https://www.etsy.com/listing/1822454637/move-out-cost-worksheet-printable"
+  ],
+  "OBSERVED_AMBIGUOUS": [
+   "https://www.reddit.com/r/Accounting/comments/1v8fej7/any_of_you_guys_ever_do_a_cam_audit_for_a/",
+   "https://www.reddit.com/r/Renters/comments/1ncnerz/va_landlord_withheld_my_deposit_without_itemized/",
+   "https://www.reddit.com/r/Tenant/comments/1ekd5fl/our_landlord_did_not_give_us_an_itemized_receipt/",
+   "https://www.reddit.com/r/smallbusiness/comments/1q9my6x/anyone_else_getting_crushed_by_cam_reconciliation/",
+   "https://www.reddit.com/r/smallbusiness/comments/cnv2j3/59k_in_back_cam_charges_from_the_last_5_years/"
+  ],
+  "DERIVED": "every other URL in the Cycle 106 set; implied by 21 served pages plus the record's complete six-item failure list",
+  "NOT_RECORDED": [
+   "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32024L0825",
+   "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-definitive-regime_en",
+   "https://www.ecoclaim.eu/blog/how-to-check-website-greenwashing"
+  ]
+ },
+ "status_counts": {
+  "FETCHED_OK": 15,
+  "REDIRECTED": 0,
+  "BLOCKED": 2,
+  "DEAD": 3,
+  "UNVERIFIED": 12
+ },
+ "record_inconsistency_found": {
+  "what": "The Cycle 107 record states 3 bot-protected 403 responses in its summary but names 'the four Reddit URLs' as 403 in material defect V3, while the cited set contains five Reddit URLs. The aggregate counts (21 + 3 + 1 + 2 + 2 + 2) also sum to 31 against a stated 29 unique URLs because the 5 wrong-content pages overlap the 21 served.",
+  "effect": "No verdict changes: none of the three candidates cites a Reddit URL. The five Reddit URLs are recorded as UNVERIFIED rather than guessed, and the counts are reported as recorded, not reconciled by invention."
+ },
+ "retrievals_used": [
+  {
+   "url": "https://cdgdocs.com/b/eudr-documentation-kit",
+   "status": "UNVERIFIED",
+   "detail": "HTTP 202 with an empty body (async gate or bot wall)",
+   "counts_as_evidence": false,
+   "source_type": null,
+   "provenance": "OBSERVED",
+   "note": "Async gate, empty body. The $250 price was not re-verified this cycle."
+  },
+  {
+   "url": "https://certcove.com/free-coi-tracking-spreadsheet",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  },
+  {
+   "url": "https://depositbackr.com/tools/security-deposit-return-templates",
+   "status": "DEAD",
+   "detail": "HTTP 404: resource gone",
+   "counts_as_evidence": false,
+   "source_type": null,
+   "provenance": "OBSERVED",
+   "note": "https://depositbackr.com/tools/security-deposit-return-templates returns HTTP 404. It was cited in DISCOVERY_2026-10-20_MARKET_SATURATION.json as a live free substitute."
+  },
+  {
+   "url": "https://environment.ec.europa.eu/document/download/a3c5c3a0-232e-43c4-b0b8-1eecb1df45c7_en?filename=Report+from+the+Commission+to+the+Council+and+Parliament+on+the+EUDR.pdf",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  },
+  {
+   "url": "https://environment.ec.europa.eu/topics/forests/deforestation/regulation-deforestation-free-products_en",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  },
+  {
+   "url": "https://eudr.finagon.com/faq/",
+   "status": "UNVERIFIED",
+   "detail": "transport error (tls certificate verify failed) with no HTTP response observed",
+   "counts_as_evidence": false,
+   "source_type": null,
+   "provenance": "OBSERVED",
+   "note": "Certificate verification error in this environment. Its stale SME date is therefore UNVERIFIED and must not be cited as proof."
+  },
+  {
+   "url": "https://eudrdesk.eu/en/",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  },
+  {
+   "url": "https://eudrready.eu/eudr-software-small-business/",
+   "status": "UNVERIFIED",
+   "detail": "transport error (connection closed) with no HTTP response observed",
+   "counts_as_evidence": false,
+   "source_type": null,
+   "provenance": "OBSERVED",
+   "note": "Not re-verified."
+  },
+  {
+   "url": "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32024L0825",
+   "status": "UNVERIFIED",
+   "detail": "transport error (no retrieval record retained in Cycle 107) with no HTTP response observed",
+   "counts_as_evidence": false,
+   "source_type": "official",
+   "provenance": "NOT_RECORDED",
+   "note": "Cycle 107 markdown asserts EUR-Lex verification but retained no status row"
+  },
+  {
+   "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ%3AC_202504524",
+   "status": "UNVERIFIED",
+   "detail": "HTTP 202 with an empty body (async gate or bot wall)",
+   "counts_as_evidence": false,
+   "source_type": null,
+   "provenance": "OBSERVED",
+   "note": "EU Publications Office returns 202 with an empty body to non-browser clients. Guidance text remains UNVERIFIED from this host; the Article 9 content was corroborated by the polygon-one analysis instead."
+  },
+  {
+   "url": "https://forge-motion.com/coi-tracking-spreadsheet",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  },
+  {
+   "url": "https://leaseabstracts.com/templates/cam-reconciliation-template",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  },
+  {
+   "url": "https://lextract.io/templates/lease-audit-workbook",
+   "status": "DEAD",
+   "detail": "DNS resolution failed",
+   "counts_as_evidence": false,
+   "source_type": null,
+   "provenance": "OBSERVED",
+   "note": "capveri.com and lextract.io both fail DNS resolution (getaddrinfo). Neither domain resolves from this environment, while 27 other hosts resolve normally."
+  },
+  {
+   "url": "https://os.construction/templates/coi-tracker.csv",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  },
+  {
+   "url": "https://polygon-one.com/en/article-dds-template",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  },
+  {
+   "url": "https://quirepaper.com/security-deposit-ledger/",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  },
+  {
+   "url": "https://sawmillsmart.com/insights/eudr-dds-template-sawmills/",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  },
+  {
+   "url": "https://sheetchief.com/commercial-lease-cam-audit-tracker/",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  },
+  {
+   "url": "https://subdoc.io/blog/free-coi-tracking-spreadsheet-template",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  },
+  {
+   "url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-definitive-regime_en",
+   "status": "UNVERIFIED",
+   "detail": "transport error (no retrieval record retained in Cycle 107) with no HTTP response observed",
+   "counts_as_evidence": false,
+   "source_type": "official",
+   "provenance": "NOT_RECORDED",
+   "note": "Cycle 107 markdown asserts live verification but retained no status row"
+  },
+  {
+   "url": "https://trade.ec.europa.eu/access-to-markets/en/news/delay-until-december-2026-and-other-developments-implementation-eudr-regulation",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  },
+  {
+   "url": "https://www.capveri.com/resources/templates/cam-reconciliation-excel",
+   "status": "DEAD",
+   "detail": "DNS resolution failed",
+   "counts_as_evidence": false,
+   "source_type": null,
+   "provenance": "OBSERVED",
+   "note": "capveri.com and lextract.io both fail DNS resolution (getaddrinfo). Neither domain resolves from this environment, while 27 other hosts resolve normally."
+  },
+  {
+   "url": "https://www.ecoclaim.eu/blog/how-to-check-website-greenwashing",
+   "status": "UNVERIFIED",
+   "detail": "transport error (no retrieval record retained in Cycle 107) with no HTTP response observed",
+   "counts_as_evidence": false,
+   "source_type": "vendor_free",
+   "provenance": "NOT_RECORDED",
+   "note": "free scanner cited in the Cycle 107 markdown, no status retained"
+  },
+  {
+   "url": "https://www.etsy.com/listing/1768378040/landlord-and-tenant-toolkit-landlord",
+   "status": "BLOCKED",
+   "detail": "HTTP 403: host refused a plain client (bot protection or auth)",
+   "counts_as_evidence": false,
+   "source_type": null,
+   "provenance": "OBSERVED",
+   "note": "Etsy bot protection. Price $39.50 remains UNVERIFIED."
+  },
+  {
+   "url": "https://www.etsy.com/listing/1822454637/move-out-cost-worksheet-printable",
+   "status": "BLOCKED",
+   "detail": "HTTP 403: host refused a plain client (bot protection or auth)",
+   "counts_as_evidence": false,
+   "source_type": null,
+   "provenance": "OBSERVED",
+   "note": "Price $4.99 remains UNVERIFIED."
+  },
+  {
+   "url": "https://www.field-pm.com/templates/certificate-of-insurance-tracker",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  },
+  {
+   "url": "https://www.reddit.com/r/Accounting/comments/1v8fej7/any_of_you_guys_ever_do_a_cam_audit_for_a/",
+   "status": "UNVERIFIED",
+   "detail": "transport error (V3: 403 block page reported, no per-URL status row retained) with no HTTP response observed",
+   "counts_as_evidence": false,
+   "source_type": null,
+   "provenance": "OBSERVED_AMBIGUOUS",
+   "note": "The four Reddit URLs return HTTP 200 under a browser UA but HTTP 403 with a plain client, and the served body is a block page rather than the thread. Their content was not retrievable at verification time."
+  },
+  {
+   "url": "https://www.reddit.com/r/Renters/comments/1ncnerz/va_landlord_withheld_my_deposit_without_itemized/",
+   "status": "UNVERIFIED",
+   "detail": "transport error (V3: 403 block page reported, no per-URL status row retained) with no HTTP response observed",
+   "counts_as_evidence": false,
+   "source_type": null,
+   "provenance": "OBSERVED_AMBIGUOUS",
+   "note": "The four Reddit URLs return HTTP 200 under a browser UA but HTTP 403 with a plain client, and the served body is a block page rather than the thread. Their content was not retrievable at verification time."
+  },
+  {
+   "url": "https://www.reddit.com/r/Tenant/comments/1ekd5fl/our_landlord_did_not_give_us_an_itemized_receipt/",
+   "status": "UNVERIFIED",
+   "detail": "transport error (V3: 403 block page reported, no per-URL status row retained) with no HTTP response observed",
+   "counts_as_evidence": false,
+   "source_type": null,
+   "provenance": "OBSERVED_AMBIGUOUS",
+   "note": "The four Reddit URLs return HTTP 200 under a browser UA but HTTP 403 with a plain client, and the served body is a block page rather than the thread. Their content was not retrievable at verification time."
+  },
+  {
+   "url": "https://www.reddit.com/r/smallbusiness/comments/1q9my6x/anyone_else_getting_crushed_by_cam_reconciliation/",
+   "status": "UNVERIFIED",
+   "detail": "transport error (V3: 403 block page reported, no per-URL status row retained) with no HTTP response observed",
+   "counts_as_evidence": false,
+   "source_type": null,
+   "provenance": "OBSERVED_AMBIGUOUS",
+   "note": "The four Reddit URLs return HTTP 200 under a browser UA but HTTP 403 with a plain client, and the served body is a block page rather than the thread. Their content was not retrievable at verification time."
+  },
+  {
+   "url": "https://www.reddit.com/r/smallbusiness/comments/cnv2j3/59k_in_back_cam_charges_from_the_last_5_years/",
+   "status": "UNVERIFIED",
+   "detail": "transport error (V3: 403 block page reported, no per-URL status row retained) with no HTTP response observed",
+   "counts_as_evidence": false,
+   "source_type": null,
+   "provenance": "OBSERVED_AMBIGUOUS",
+   "note": "The four Reddit URLs return HTTP 200 under a browser UA but HTTP 403 with a plain client, and the served body is a block page rather than the thread. Their content was not retrievable at verification time."
+  },
+  {
+   "url": "https://www.remindax.com/excel-templates/free-vendor-subcontractor-coi-tracker-template",
+   "status": "FETCHED_OK",
+   "detail": "HTTP 200 with 1 bytes",
+   "counts_as_evidence": true,
+   "source_type": null,
+   "provenance": "DERIVED",
+   "note": "implied by the record's 21 served pages and six-item failure list"
+  }
+ ],
+ "screen": {
+  "screened": 3,
+  "rejected_at_intake": 3,
+  "qualified": 0,
+  "results": [
+   {
+    "name": "EUDR operator/downstream register",
+    "verdict": "REJECTED",
+    "failed_gates": [
+     "G3",
+     "G4"
+    ],
+    "gates": {
+     "G1": {
+      "status": "PASS",
+      "reason": "all cited URLs count as evidence"
+     },
+     "G2": {
+      "status": "PASS",
+      "reason": "2 independent source type(s): official, vendor_free"
+     },
+     "G3": {
+      "status": "FAIL",
+      "reason": "materially duplicated by an adequate free alternative"
+     },
+     "G4": {
+      "status": "FAIL",
+      "reason": "no specific differentiator against the paid competitor(s)"
+     },
+     "G5": {
+      "status": "PASS",
+      "reason": "EU importers and traders of in-scope commodities via direct digital download"
+     },
+     "G6": {
+      "status": "PASS",
+      "reason": "build cost $0"
+     }
+    },
+    "evidence_integrity": {
+     "ok": true,
+     "urls": [
+      {
+       "url": "https://environment.ec.europa.eu/topics/forests/deforestation/regulation-deforestation-free-products_en",
+       "source_type": "official",
+       "status": "FETCHED_OK",
+       "detail": "HTTP 200 with 1 bytes",
+       "counts_as_evidence": true
+      },
+      {
+       "url": "https://sawmillsmart.com/insights/eudr-dds-template-sawmills/",
+       "source_type": "vendor_free",
+       "status": "FETCHED_OK",
+       "detail": "HTTP 200 with 1 bytes",
+       "counts_as_evidence": true
+      },
+      {
+       "url": "https://polygon-one.com/en/article-dds-template",
+       "source_type": "vendor_free",
+       "status": "FETCHED_OK",
+       "detail": "HTTP 200 with 1 bytes",
+       "counts_as_evidence": true
+      }
+     ],
+     "evidence_urls": [
+      "https://environment.ec.europa.eu/topics/forests/deforestation/regulation-deforestation-free-products_en",
+      "https://sawmillsmart.com/insights/eudr-dds-template-sawmills/",
+      "https://polygon-one.com/en/article-dds-template"
+     ],
+     "source_types": [
+      "official",
+      "vendor_free"
+     ],
+     "problems": [],
+     "blocked": [],
+     "unverified": []
+    },
+    "claimed_score": 19,
+    "score_consulted": false,
+    "scoring_skipped": true
+   },
+   {
+    "name": "CBAM definitive regime, small importer data collection",
+    "verdict": "REJECTED",
+    "failed_gates": [
+     "G1",
+     "G2",
+     "G3",
+     "G4"
+    ],
+    "gates": {
+     "G1": {
+      "status": "FAIL",
+      "reason": "1 cited URL(s) have no usable retrieval record; only 0 URL(s) count as evidence (2 required)"
+     },
+     "G2": {
+      "status": "FAIL",
+      "reason": "0 independent source type(s): none"
+     },
+     "G3": {
+      "status": "FAIL",
+      "reason": "free alternative named no URL"
+     },
+     "G4": {
+      "status": "FAIL",
+      "reason": "no paid competitor recorded"
+     },
+     "G5": {
+      "status": "PASS",
+      "reason": "EU importers of cement, iron/steel, aluminium, fertilisers, hydrogen, electricity via direct digital download"
+     },
+     "G6": {
+      "status": "PASS",
+      "reason": "build cost $0"
+     }
+    },
+    "evidence_integrity": {
+     "ok": false,
+     "urls": [
+      {
+       "url": "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-definitive-regime_en",
+       "source_type": "official",
+       "status": "UNVERIFIED",
+       "detail": "transport error (no retrieval record retained in Cycle 107) with no HTTP response observed",
+       "counts_as_evidence": false
+      }
+     ],
+     "evidence_urls": [],
+     "source_types": [],
+     "problems": [
+      "1 cited URL(s) have no usable retrieval record",
+      "only 0 URL(s) count as evidence (2 required)"
+     ],
+     "blocked": [],
+     "unverified": [
+      "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-definitive-regime_en"
+     ]
+    },
+    "claimed_score": 15,
+    "score_consulted": false,
+    "scoring_skipped": true
+   },
+   {
+    "name": "EU EmpCo green-claims audit",
+    "verdict": "REJECTED",
+    "failed_gates": [
+     "G1",
+     "G2",
+     "G3",
+     "G4"
+    ],
+    "gates": {
+     "G1": {
+      "status": "FAIL",
+      "reason": "1 cited URL(s) have no usable retrieval record; only 0 URL(s) count as evidence (2 required)"
+     },
+     "G2": {
+      "status": "FAIL",
+      "reason": "0 independent source type(s): none"
+     },
+     "G3": {
+      "status": "FAIL",
+      "reason": "materially duplicated by an adequate free alternative"
+     },
+     "G4": {
+      "status": "FAIL",
+      "reason": "no specific differentiator against the paid competitor(s)"
+     },
+     "G5": {
+      "status": "PASS",
+      "reason": "any EU trader making voluntary environmental claims to consumers via direct digital download"
+     },
+     "G6": {
+      "status": "PASS",
+      "reason": "build cost $0"
+     }
+    },
+    "evidence_integrity": {
+     "ok": false,
+     "urls": [
+      {
+       "url": "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32024L0825",
+       "source_type": "official",
+       "status": "UNVERIFIED",
+       "detail": "transport error (no retrieval record retained in Cycle 107) with no HTTP response observed",
+       "counts_as_evidence": false
+      }
+     ],
+     "evidence_urls": [],
+     "source_types": [],
+     "problems": [
+      "1 cited URL(s) have no usable retrieval record",
+      "only 0 URL(s) count as evidence (2 required)"
+     ],
+     "blocked": [],
+     "unverified": [
+      "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32024L0825"
+     ]
+    },
+    "claimed_score": 16,
+    "score_consulted": false,
+    "scoring_skipped": true
+   }
+  ]
+ },
+ "conclusion": {
+  "rejected_at_intake": 3,
+  "qualified": 0,
+  "scores_consulted": false,
+  "eudr_note": "Every EUDR citation survived retrieval (G1/G2 pass), so the rejection does not rest on missing evidence: it fails G3 (materially duplicated by a free alternative) and G4 (no stated differentiator). That is the same conclusion Cycle 107 reached after scoring 19/25, now reached without computing a score.",
+  "cbam_empco_note": "Both fail G1 as well, because Cycle 107 retained no per-URL status for their citations. That is the second defect this repair closes: an md sentence saying 'verified live' is not a retrieval record.",
+  "verdict": "ALL THREE REJECTED AT INTAKE"
+ },
+ "what_this_does_not_prove": [
+  "It does not prove the free alternatives are adequate for every buyer; it proves they were adequate to reject these three candidates, as already recorded.",
+  "It does not re-fetch anything: statuses are the ones Cycle 107 observed or derived.",
+  "It does not create demand evidence, and passing the intake gate would not have made any of the three sellable."
+ ]
+}
