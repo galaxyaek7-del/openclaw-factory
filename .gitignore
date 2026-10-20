@@ -147,3 +147,7 @@ reports/B12-001/inspections/
 # contact_tracker.js belongs to an unreviewed automated customer-reply system.
 scripts/security_resilience_audit.js
 lib/contact_tracker.js
+
+# Affiliate assets rendered with the real tracked link (contains the partner id).
+# The source draft keeps a placeholder; only this directory ever holds the link.
+drafts/affiliate/rendered/
