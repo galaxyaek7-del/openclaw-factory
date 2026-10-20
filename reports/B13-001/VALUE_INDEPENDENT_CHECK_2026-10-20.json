@@ -1,7 +1,7 @@
 {
  "product_id": "B13-001",
  "title": "Renovation Allowance & Change-Order Control",
- "checked_at": "2026-10-20T14:01:11+00:00",
+ "checked_at": "2026-10-20T14:37:19+00:00",
  "engine": "Microsoft Excel 16.0 via scripts/excel_recalc_probe.ps1; independent model in plain Python from typed inputs only",
  "artifact": "books\\batch13\\B13-001_renovation_allowance_control.xlsx",
  "artifact_sha256": "028b9ed14e80ddb8f62955835bd0012f88022d52c0ff135d4c62ef13765e5a89",

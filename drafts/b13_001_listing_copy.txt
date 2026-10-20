@@ -5,20 +5,20 @@ A renovation budget usually fails in two places: allowances nobody tracks, and c
 Inside (9 sheets, 415 live formulas, no macros):
 
 - Setup — project, currency, tax rate, and your allowance categories
-- Cost Control — 40 cost lines with budget, committed, actual, payments, remaining, variance, and an OVER / ON PLAN / UNDER read on every line
-- Allowances — allowance against selections made per category, with an overage flag that names the missing change order
-- Change Orders — 20 change orders with cost impact, schedule impact and approval state
+- Cost Control — room for 40 cost lines, each with budget, committed, actual, payments, remaining, variance, and an OVER / ON PLAN / UNDER read on every line
+- Allowances — allowance against selections made per category, with an overage column that tells you whether an approved change order covers it
+- Change Orders — room for 20 change orders with cost impact, schedule impact and approval state
 - Payments — invoice and payment log, rolled up per cost line
 - Contingency — reserve held and consumed, with the remaining reserve shown against any overrun
-- Summary — the one-page position: original budget, approved change orders, revised budget, paid to date, remaining, reserve left
-- Assumptions — every rate and constant in one editable place
-- Start Here — four steps
+- Summary — the one-page position: original budget, approved change orders, revised budget, committed, paid to date, unpaid committed, projected final cost, and reserve left, plus nine checks
+- Assumptions — what is excluded, where each number lives, and your own note against each item
+- Start Here — the eight steps, in order
 
 The workbook ships with a worked example you can read before you overwrite it, and every total is a formula you can audit. Nothing is hidden in a macro.
 
 Also included: a 15-page PDF guide. How to set an allowance you can defend, how to run a change order so it actually gets signed, how to read a variance instead of panicking at it, what to do when the reserve is gone, which of the three "estimate" words decides who pays, how to compare quotes without being fooled by the total, why stage payments and retention matter more than the final figure, and a one-page record to write in the first forty-eight hours when something goes wrong.
 
-Requires Excel, LibreOffice Calc (free), or Google Sheets (free upload). No macros, no add-ins, no subscription.
+Built for Excel. The file uses standard formulas only, no macros and no add-ins, so LibreOffice Calc and Google Sheets should open it — but neither has been tested by me, so if anything misbehaves, reply to your receipt and I will fix it. No subscription, no account, no upsell.
 
 New product from Galaxy Forge: no sales recorded yet, no reviews. Arithmetic on the numbers you enter — not legal, tax or financial advice. Your contract and your accountant govern.
 

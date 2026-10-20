@@ -128,6 +128,56 @@ def test_outputs_use_repo_newline_and_encoding_conventions(payload):
         assert raw.endswith(b"\n"), "%s has no trailing newline" % path.name
 
 
+def _numbered_steps_in_workbook():
+    import openpyxl
+
+    wb = openpyxl.load_workbook(ROOT / "books" / "batch13" / "B13-001_renovation_allowance_control.xlsx")
+    ws = wb["Start Here"]
+    count = 0
+    for row in ws.iter_rows(values_only=True):
+        for value in row:
+            if isinstance(value, str) and value[:1].isdigit() and value[1:3] == ". ":
+                count += 1
+    return count
+
+
+def test_copy_step_count_matches_the_workbook(payload):
+    """A real defect this caught: the copy claimed four steps; the sheet has eight.
+
+    The brand gate checks tone and prohibited claims, not counts, so this had to
+    be a structural comparison against the workbook itself.
+    """
+    words = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven",
+             8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve"}
+    steps = _numbered_steps_in_workbook()
+    assert steps in words, "extend the word map rather than guessing: %d" % steps
+    text = payload["listing_copy"]["text"].lower()
+    assert "%s steps" % words[steps] in text
+
+
+def test_untested_platforms_are_not_claimed_as_working(payload):
+    """Sheets/Numbers/LibreOffice were never exercised; the copy must say so."""
+    text = payload["listing_copy"]["text"].lower()
+    for platform in ("google sheets", "libreoffice", "numbers"):
+        if platform in text:
+            assert "tested" in text, "mentioning %s requires the untested qualifier" % platform
+
+
+def test_copy_does_not_invent_capacity(payload):
+    """Rows are described as capacity, not as pre-filled content."""
+    text = payload["listing_copy"]["text"].lower()
+    assert "room for 40 cost lines" in text
+    assert "room for 20 change orders" in text
+
+
+def test_self_found_defects_record_the_copy_repairs():
+    defects = json.loads(
+        (ROOT / "reports" / "B13-001" / "SELF_FOUND_DEFECTS_2026-10-20.json").read_text(encoding="utf-8")
+    )
+    ids = {d["id"] for d in defects["found_in_own_draft"]}
+    assert {"D6", "D7", "D8"} <= ids, "the three copy defects must stay on the record"
+
+
 def test_builder_source_cannot_publish_or_spend():
     """A structural guard: the builder must never gain a network or publish path.
 

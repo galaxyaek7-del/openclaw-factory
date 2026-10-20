@@ -1,6 +1,6 @@
 {
  "product_id": "B13-001",
- "checked_at": "2026-10-20T14:01:13+00:00",
+ "checked_at": "2026-10-20T14:37:22+00:00",
  "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
  "price_checked_usd": 19.0,
  "verdict": "APPROVED",

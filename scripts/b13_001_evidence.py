@@ -365,6 +365,25 @@ def main() -> int:
              "what": "The Allowances status formula was written with three closing parentheses for four IF levels; Excel refused to open the whole workbook (0x800A03EC).",
              "found_by": "Excel refusing to open the file, then bisecting sheet by sheet",
              "fix": "Corrected the formula and added a build-time parenthesis-balance check to the workbook test."},
+            {"id": "D6", "severity": "medium",
+             "what": ("The listing copy said Start Here held 'four steps'; the sheet actually has eight, "
+                      "numbered 1 to 8."),
+             "found_by": ("reading the Start Here sheet against the copy, after the copy had already passed "
+                          "the brand gate - the brand gate checks tone and prohibited claims, not counts"),
+             "fix": "Copy now says 'the eight steps, in order'."},
+            {"id": "D7", "severity": "medium",
+             "what": ("The listing copy described Assumptions as 'every rate and constant in one editable "
+                      "place'. The sheet is a list of excluded and included statements with a location and "
+                      "an owner note; the editable rates and constants live in Setup."),
+             "found_by": "comparing the copy line by line with the sheet headers",
+             "fix": "Copy now describes what the sheet actually contains and where the numbers live."},
+            {"id": "D8", "severity": "medium",
+             "what": ("The listing copy asserted the workbook works in 'Excel, LibreOffice Calc or Google "
+                      "Sheets'. Only Excel and openpyxl were ever exercised; the other two are untested, "
+                      "so the claim was stronger than the evidence."),
+             "found_by": "checking the copy against the build report's own UNKNOWN list",
+             "fix": ("Copy now says it is built for Excel, states that the other two are untested, and "
+                     "invites the buyer to report any problem.")},
         ],
         "process_incident": {
             "id": "INC-b13-001-import-rebuilt-catalogue",
