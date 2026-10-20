@@ -1,0 +1,177 @@
+{
+ "schema": "galaxy_forge.cycle106_discovery_record.v1",
+ "run_at": "2026-10-20T02:05:00+00:00",
+ "method": {
+  "what_this_is": "A design decision over evidence gathered in this cycle: public listing pages read directly (prices, review counts, seller sales counts) plus published 2026 renovation-cost research. No paid data, no scraping, no accounts.",
+  "what_this_is_not": "Not a demand forecast and not transaction-level proof. Review pages state 'verified buyers'; nobody outside the seller can see units sold, so volume is INFERRED, not OBSERVED.",
+  "existing_catalog_checked": [
+   "B12-001 Freelancer Rate & Raise Calculator",
+   "B12-002 Client Project Handoff Pack",
+   "B12-003 Founder Access Continuity Organizer",
+   "B12-004 Meeting Cost & ROI Calculator",
+   "B12-005 Podcast Guest Booking Kit",
+   "B12-006 Home-Office Deduction Organizer (US)",
+   "B12-007 Digital Declutter & Backup: 30-Day System",
+   "B12-008 Moving House 8-Week Planner",
+   "B12-009 Pet Sitter Handover Kit",
+   "B12-010 Nonprofit Grant Pipeline Tracker"
+  ]
+ },
+ "market_evidence": [
+  {
+   "label": "OBSERVED",
+   "claim": "Homeowners pay for renovation budget spreadsheets on Etsy; one listing sells at $6.50 (35% off $10.00) and carries 63 reviews at 4.6",
+   "source_url": "https://www.etsy.com/listing/1411618646/home-renovation-budget-planner-for-excel",
+   "detail": "Star Seller; reviews dated Aug 2026, May 2026, Feb 2026, Nov 2025; review page states 'All reviews are from verified buyers.'"
+  },
+  {
+   "label": "OBSERVED",
+   "claim": "A 10,000-sale Etsy shop sells a renovation project spreadsheet at AU$8.93 (40% off AU$14.88) with 8 reviews",
+   "source_url": "https://www.etsy.com/au/listing/4316218623/home-renovation-project-planner-google",
+   "detail": "AbbyOrganizes, 580 shop ratings, 10k sales, 127 favourites on the listing; the same product sells on the seller's own site at $12.00."
+  },
+  {
+   "label": "OBSERVED",
+   "claim": "A 9,508-sale Etsy shop sells a renovation planner at $5.38 (from $13.46)",
+   "source_url": "https://www.etsy.com/shop/ImperfectOrg",
+   "detail": "Shop-level sales count, not listing-level."
+  },
+  {
+   "label": "OBSERVED",
+   "claim": "A direct-response site prices a 6-component renovation spreadsheet system at $27 (stated regular $97)",
+   "source_url": "https://www.homerenovationspreadsheet.com/",
+   "detail": "Sells budget, actuals, funding, ROI by room, timeline and dashboard. Its own copy uses countdown urgency ('the timer doesn't stop'), which this factory's brand rules forbid; the price point is still real."
+  },
+  {
+   "label": "OBSERVED",
+   "claim": "37% of homeowners who renovated in 2025 exceeded their budget; 35% chose more expensive materials than planned and 31% changed scope mid-project",
+   "source_url": "https://st.hzcdn.com/static/econ/2026_U.S._Houzz_and_Home_Study_RenovationTrends.pdf",
+   "detail": "Houzz 2026 U.S. Renovation Trends study, >10,000 respondents. 35% came in on budget, 3% under."
+  },
+  {
+   "label": "OBSERVED",
+   "claim": "43% of homeowners who hired a professional exceeded their estimate, and slightly over one-third of those went at least 30% over",
+   "source_url": "https://homecoststatista.com/over-budget-renovations/",
+   "detail": "Reporting Angi's 2026 State of Home Spending Pulse (fielded 2026-07-09, 1,000 homeowners)."
+  },
+  {
+   "label": "OBSERVED",
+   "claim": "Allowance overruns hide because they arrive one at a time, and forgotten under-run credits are absorbed; twelve categories can add $8,000-$15,000 with no single moment of clarity",
+   "source_url": "https://www.getkiron.com/learn/allowance",
+   "detail": "Explains that allowance overruns are documented by change order, that COs lag the selection, and that credits are often never returned."
+  },
+  {
+   "label": "OBSERVED",
+   "claim": "Professional job costing separates four numbers - approved budget, committed, actual, estimate-at-completion - and warns that tracking only actuals overstates remaining budget",
+   "source_url": "https://rainfirebuilders.com/project-management/job-costing/",
+   "detail": "Also: 'A project manager who quotes the original budget after multiple change orders have been executed is quoting fiction.'"
+  },
+  {
+   "label": "OBSERVED",
+   "claim": "Consumer renovation templates on the same marketplaces are budget-versus-actual trackers; committed costs and EAC appear in B2B construction software, not in the consumer listings surveyed",
+   "source_url": "https://financefundamentals.io/home-renovation-budget-templates-estimating-tracking-construction-expenses/",
+   "detail": "A survey of 12 renovation budget templates names 'Cost-to-Complete & Variance Tracker' as the specialist one, and it is framed for project managers."
+  }
+ ],
+ "candidates": [
+  {
+   "rank": 1,
+   "working_title": "Renovation Allowance & Change-Order Control",
+   "score": 88,
+   "score_basis": {
+    "real_payment_evidence": "OBSERVED - paid listings with verified-buyer reviews at $6.50 to $27, including a 10k-sale shop",
+    "problem_cost_evidence": "OBSERVED - 37% over budget; one-third of overruns >= 30%; allowance overruns compound silently",
+    "differentiation": "OBSERVED GAP - consumer templates track budget vs actual only; committed cost, allowance reconciliation and EAC are B2B-software concepts",
+    "legal_risk": "low - arithmetic and process; no tax, legal or safety advice required",
+    "buildability": "high - formula-led, so Excel recalculation can verify the product rather than a claim",
+    "clone_risk": "low - no existing catalog product covers renovation; adjacent to B12-008 only in being a household project planner"
+   },
+   "chosen": true,
+   "why": "It sits exactly where the factory has a real, repeatable advantage: the product is a calculation, so the native Excel probe and independent value checks can prove it works. Its differentiator is a mechanism competitors do not implement (three-way cost control plus allowance credit recovery), not a cosmetic variation."
+  },
+  {
+   "rank": 2,
+   "working_title": "Small-Landlord Maintenance & Deposit System",
+   "score": 82,
+   "score_basis": {
+    "real_payment_evidence": "OBSERVED - $11.99, $14, $19 and $49 products, plus a $0 lead-magnet kit",
+    "problem_cost_evidence": "INFERRED - no equivalent public overrun statistic gathered this cycle",
+    "differentiation": "LOW - competitors already ship dashboards, dropdowns, P&L, cap rate and 'every formula tested before it ships'",
+    "legal_risk": "medium - habitability, deposit and eviction rules are jurisdiction-specific",
+    "buildability": "medium",
+    "clone_risk": "low against the catalog, high against the market"
+   },
+   "chosen": false,
+   "why": "Crowded at every price point and the strongest incumbent claim is exactly the quality claim this factory would make. Low differentiation plus jurisdiction liability."
+  },
+  {
+   "rank": 3,
+   "working_title": "Craft-Fair / Market Stall Profitability Tracker",
+   "score": 58,
+   "score_basis": {
+    "real_payment_evidence": "UNKNOWN - no paid listing verified this cycle",
+    "problem_cost_evidence": "UNKNOWN",
+    "differentiation": "MEDIUM - per-event break-even is a real gap",
+    "legal_risk": "low",
+    "buildability": "high",
+    "clone_risk": "medium - overlaps B12-001 and B12-004 arithmetic"
+   },
+   "chosen": false,
+   "why": "Plausible but unevidenced this cycle. Building on a guess is exactly what the payment-evidence rule exists to prevent."
+  },
+  {
+   "rank": 4,
+   "working_title": "Special-Education Meeting Binder for Parents",
+   "score": 61,
+   "score_basis": {
+    "real_payment_evidence": "UNKNOWN - not verified this cycle",
+    "problem_cost_evidence": "UNKNOWN",
+    "differentiation": "MEDIUM",
+    "legal_risk": "medium - rights and entitlement language is jurisdiction-specific",
+    "buildability": "medium",
+    "clone_risk": "low"
+   },
+   "chosen": false,
+   "why": "High-stakes domain with real legal sensitivity and no verified payment evidence. Not this cycle."
+  },
+  {
+   "rank": 5,
+   "working_title": "Subscription Cancellation Audit",
+   "score": 45,
+   "score_basis": {
+    "real_payment_evidence": "UNKNOWN",
+    "differentiation": "LOW - B12-007 already covers subscriptions in its declutter system",
+    "legal_risk": "low",
+    "buildability": "high",
+    "clone_risk": "high"
+   },
+   "chosen": false,
+   "why": "A subset of an existing product. Rejected as a clone."
+  }
+ ],
+ "rejected_as_clones": [
+  "another freelancer rate calculator (B12-001)",
+  "another marketplace-suspension appeal kit (existing catalog line)",
+  "another compliance toolkit (existing catalog line)",
+  "a generic undated planner (B12-008 covers the household-project planner slot with real dated logic)"
+ ],
+ "decision": {
+  "product_id": "B13-001",
+  "title": "Renovation Allowance & Change-Order Control",
+  "price_usd": 19.0,
+  "price_basis": "OBSERVED comparable systems at $11.99, $14, $19, $27 and $49; $19 sits at the median of the paid, non-discounted tier and is the price at which an incumbent sells a directly comparable landlord system. Not a guess about what buyers will pay: it is the observed market's middle.",
+  "core_mechanism": [
+   "each budget line carries approved budget, committed (signed contract or accepted quote), paid, and remaining - four numbers, not two",
+   "allowance lines are reconciled separately: allowance, selection price, difference, and whether the credit is still owed back",
+   "every change order is a row with its own approved amount, feeding a revised budget rather than editing the original",
+   "estimate-at-completion = paid + cost-to-complete, compared against the revised budget, so the projected overrun is visible while choices can still change",
+   "contingency is tracked as a separate reserve with a drawdown log, so upgrades cannot quietly consume it"
+  ],
+  "why_this_is_not_a_clone": "The consumer listings verified this cycle compare budget to actual. This product's headline number is the one the research says is missing: what is already committed but not yet paid, plus what is still owed back on allowances, expressed as a projected final cost.",
+  "honest_limitations": [
+   "No transaction-level sales data exists for any competitor; volume is INFERRED from review counts and shop sales totals.",
+   "The factory's market-realism policy counts PDF pages only and will suggest a much lower price on the general digital tier; that conflict is disclosed, not resolved silently.",
+   "Publication of this product will be blocked by the same authorization gate as B12-006 to B12-009."
+  ]
+ }
+}

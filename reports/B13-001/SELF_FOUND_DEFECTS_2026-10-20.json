@@ -1,0 +1,48 @@
+{
+ "product_id": "B13-001",
+ "recorded_at": "2026-10-20T12:09:19+00:00",
+ "found_in_own_draft": [
+  {
+   "id": "D1",
+   "severity": "high",
+   "what": "Summary!B12 (Variance) was =B7-B12, a self-reference, so Excel displayed blank instead of an error.",
+   "found_by": "Excel probe (first recalculation), not by reading the formula",
+   "fix": "Summary rebuilt around named row constants; variance is revised minus projected."
+  },
+  {
+   "id": "D2",
+   "severity": "high",
+   "what": "Summary 'Approved change orders' was ='Change Orders'!$G$2+0, counting only the first row ($1,700 of $2,300).",
+   "found_by": "probe value disagreed with the independent addition of the two approved COs",
+   "fix": "SUM over G2:G21."
+  },
+  {
+   "id": "D3",
+   "severity": "medium",
+   "what": "Summary 'Committed as % of revised budget' divided paid by committed (41%) and was mislabelled.",
+   "found_by": "probe value vs definition",
+   "fix": "B7/B6 against the named revised row; now 84.1%."
+  },
+  {
+   "id": "D4",
+   "severity": "medium",
+   "what": "The allowance check was a tautology (SUMPRODUCT(...)>=0, always true), then accepted any approved CO on the same line.",
+   "found_by": "reviewing the probe output: it said OK while an overage had no change order",
+   "fix": "Allowances gained a Change-order # column; status is proven by COUNTIFS on that exact id, and the summary counts the two failure statuses."
+  },
+  {
+   "id": "D5",
+   "severity": "high",
+   "what": "The Allowances status formula was written with three closing parentheses for four IF levels; Excel refused to open the whole workbook (0x800A03EC).",
+   "found_by": "Excel refusing to open the file, then bisecting sheet by sheet",
+   "fix": "Corrected the formula and added a build-time parenthesis-balance check to the workbook test."
+  }
+ ],
+ "process_incident": {
+  "id": "INC-b13-001-import-rebuilt-catalogue",
+  "what": "Importing scripts/build_batch12_pdfs.py to reuse its build() helper executed every module-level build call, re-emitting 5 tracked PDFs and overwriting an uncommitted B12-004 repair with the older committed blob.",
+  "impact": "B12-004 PDF now 9,639 B / 4 pages / 1,441 gate words (content re-verified) and B12-008 PDF re-emitted at the same 17,339 B / 6 pages / 3,265 words; both baselines re-recorded with the reason, no other artifact changed.",
+  "fix": "GF_PDF_IMPORT_ONLY guard in build_batch12_pdfs.py; the B13 guide loader sets it before importing.",
+  "disclosed": true
+ }
+}

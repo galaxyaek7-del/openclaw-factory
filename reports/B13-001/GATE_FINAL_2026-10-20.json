@@ -1,0 +1,113 @@
+{
+ "product_id": "B13-001",
+ "checked_at": "2026-10-20T12:09:19+00:00",
+ "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
+ "price_checked_usd": 19.0,
+ "verdict": "APPROVED",
+ "blocked": false,
+ "reasons": [],
+ "thresholds": {
+  "core_value": 70,
+  "content_quality": 70,
+  "market_reality": 65
+ },
+ "layers": {
+  "core_value": {
+   "status": "PASS",
+   "score": 100,
+   "checks": {
+    "audience_specific": true,
+    "problem_stated": true,
+    "outcome_stated": true,
+    "title_specific": true,
+    "priced": true
+   }
+  },
+  "content_quality": {
+   "status": "PASS",
+   "score": 100,
+   "checks": {
+    "files_open_cleanly": true,
+    "depth_sufficient": true,
+    "no_placeholders": true,
+    "no_mojibake": true,
+    "instructions_present": true
+   },
+   "detail": {
+    "files": [
+     {
+      "file": "books\\batch13\\B13-001_renovation_allowance_control.xlsx",
+      "status": "PASS",
+      "problems": []
+     },
+     {
+      "file": "books\\batch13\\B13-001_renovation_allowance_control_guide.pdf",
+      "status": "PASS",
+      "problems": []
+     }
+    ],
+    "depth": {
+     "words": 3802,
+     "words_required": 1900,
+     "text_depth_ok": true,
+     "sheets": 9,
+     "formulas": 415,
+     "sheet_depth_ok": true
+    },
+    "placeholders_found": [],
+    "mojibake_hits": 0,
+    "unreadable": []
+   }
+  },
+  "market_reality": {
+   "status": "PASS",
+   "score": 70,
+   "checks": {
+    "payment_evidence": false,
+    "three_sourced_competitors": true,
+    "two_sourced_competitors": true,
+    "one_sourced_competitor": true,
+    "price_within_market": true
+   },
+   "detail": {
+    "sourced_competitors": [
+     {
+      "name": "Etsy renovation budget spreadsheet (63 reviews, 4.6)",
+      "url": "https://www.etsy.com/listing/1411618646/home-renovation-budget-planner-for-excel",
+      "price_usd": 6.5
+     },
+     {
+      "name": "ImperfectOrg renovation planner (9,508-sale shop)",
+      "url": "https://www.etsy.com/shop/ImperfectOrg",
+      "price_usd": 5.38
+     },
+     {
+      "name": "Home Renovation Spreadsheet system (6 components)",
+      "url": "https://www.homerenovationspreadsheet.com/",
+      "price_usd": 27.0
+     },
+     {
+      "name": "Maintenance Wizard landlord maintenance kit",
+      "url": "https://maintenancewizard.gumroad.com/l/landlord-maintenance-kit",
+      "price_usd": 11.99
+     }
+    ],
+    "payment_evidence_count": 0
+   }
+  }
+ },
+ "page_policy_disclosure": {
+  "market_realism_check_gumroad_digital": {
+   "realistic": false,
+   "suggested_price_usd": 7.0,
+   "reason": "the page-based policy sees 7 PDF pages and ignores the 9-sheet workbook"
+  },
+  "market_realism_check_gumroad_premium": {
+   "realistic": true,
+   "suggested_price_usd": 19.0
+  },
+  "decision": "Price stays at $19.00 as listed for the premium tier, matching the sourced comparables and the discovery record. The digital-tier page ceiling is the known structural defect already recorded as a weak signal, not a reason to weaken the gate or pad the guide."
+ },
+ "payment_evidence": "none - no sale exists anywhere in this factory",
+ "state": "QA_PASS_AT_19_USD_AWAITING_LISTING_AND_PUBLICATION_AUTHORIZATION"
+}

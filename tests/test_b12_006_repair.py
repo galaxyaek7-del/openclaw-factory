@@ -31,6 +31,18 @@ def build() -> Path:
     return b12.b12_006_home_office_log(out_dir=out)
 
 
+def _content(wb) -> list:
+    """Every cell's value and number format, sheet by sheet."""
+    return [
+        (ws.title, [
+            (c.coordinate, c.value, c.number_format)
+            for row in ws.iter_rows() for c in row
+            if c.value is not None
+        ])
+        for ws in wb.worksheets
+    ]
+
+
 class HomeOfficeWorkbookTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -133,9 +145,21 @@ class HomeOfficeWorkbookTests(unittest.TestCase):
         self.assertIn("verify", text.lower())
 
     def test_build_is_deterministic(self):
-        a = self.path.read_bytes()
-        b = build().read_bytes()
-        self.assertEqual(a, b)
+        # Byte equality is not the right assertion: openpyxl stamps
+        # docProps/core.xml with the wall-clock time, so two builds are
+        # identical only when they land in the same second (this test used to
+        # fail whenever they straddled one). What must not drift is the content.
+        a, b = load_workbook(self.path), load_workbook(build())
+        self.assertEqual(a.sheetnames, b.sheetnames)
+        self.assertEqual(_content(a), _content(b))
+
+    def test_the_only_zip_member_that_can_differ_is_the_build_timestamp(self):
+        import zipfile
+        a, b = self.path, build()
+        with zipfile.ZipFile(a) as za, zipfile.ZipFile(b) as zb:
+            self.assertEqual(sorted(za.namelist()), sorted(zb.namelist()))
+            differing = {n for n in za.namelist() if za.read(n) != zb.read(n)}
+        self.assertLessEqual(differing, {"docProps/core.xml"})
 
 
 class B12006SpecTests(unittest.TestCase):

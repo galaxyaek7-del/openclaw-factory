@@ -213,10 +213,80 @@ B12_008_SPEC: Dict[str, Any] = {
     ],
 }
 
+B13_001_SPEC: Dict[str, Any] = {
+    "product_id": "B13-001",
+    "artifact": "books/batch13/B13-001_renovation_allowance_control.xlsx",
+    "artifact_sha256": "028b9ed14e80ddb8f62955835bd0012f88022d52c0ff135d4c62ef13765e5a89",
+    "formula_sheets": ["Cost Control", "Change Orders", "Allowances", "Payments",
+                       "Contingency", "Summary"],
+    "scan_sheets": [
+        "Cost Control", "Change Orders", "Allowances", "Payments",
+        "Contingency", "Summary",
+    ],
+    # Summary is the product's only label/value block. Cost Control and
+    # Allowances are wide forms whose columns carry different units, so they
+    # are checked by column rule instead.
+    "tables": [
+        {"sheet": "Summary", "key_column": 1, "value_column": 2,
+         "first_row": 4, "last_row": 19},
+    ],
+    "columns": [
+        {
+            "name": "Cost Control!L (Projected final)",
+            "sheet": "Cost Control", "column": 12, "first_row": 2, "last_row": 41,
+            "kind": "currency", "format_contains": "$", "require_rows": True,
+        },
+        {
+            "name": "Cost Control!M (Variance vs revised)",
+            "sheet": "Cost Control", "column": 13, "first_row": 2, "last_row": 41,
+            "kind": "currency", "format_contains": "$", "require_rows": True,
+        },
+        {
+            "name": "Cost Control!N (Status word)",
+            "sheet": "Cost Control", "column": 14, "first_row": 2, "last_row": 41,
+            "kind": "text", "require_rows": True,
+        },
+        {
+            "name": "Allowances!F (Difference)",
+            "sheet": "Allowances", "column": 6, "first_row": 2, "last_row": 21,
+            "kind": "currency", "format_contains": "$", "require_rows": True,
+        },
+        {
+            "name": "Allowances!J (Status word)",
+            "sheet": "Allowances", "column": 10, "first_row": 2, "last_row": 21,
+            "kind": "text", "require_rows": True,
+        },
+        {
+            "name": "Change Orders!G (Amount that counts)",
+            "sheet": "Change Orders", "column": 7, "first_row": 2, "last_row": 21,
+            "kind": "currency", "format_contains": "$", "require_rows": True,
+        },
+    ],
+    "expect": [
+        {"sheet": "Summary", "label": "Original budget (sum of lines)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Approved change orders", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Revised budget", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Committed total", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Paid to date", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Unpaid committed", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Forecast to complete", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Projected final cost", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Variance vs revised budget", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Committed as % of revised budget", "kind": "percent", "format": "0.0%"},
+        {"sheet": "Summary", "label": "Contingency reserve remaining", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Allowance overruns (all)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Allowance credits still owed to you", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Change orders awaiting signature", "kind": "integer", "format": "0"},
+        {"sheet": "Summary", "label": "Lines already over their revised budget", "kind": "integer", "format": "0"},
+        {"sheet": "Summary", "label": "All-in plan (revised budget + reserve)", "kind": "currency", "format_contains": "$"},
+    ],
+}
+
 SPECS = {
     B12_010_SPEC["product_id"]: B12_010_SPEC,
     B12_006_SPEC["product_id"]: B12_006_SPEC,
     B12_008_SPEC["product_id"]: B12_008_SPEC,
+    B13_001_SPEC["product_id"]: B13_001_SPEC,
 }
 
 

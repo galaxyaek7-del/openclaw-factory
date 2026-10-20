@@ -1,0 +1,142 @@
+{
+ "product_id": "B13-001",
+ "title": "Renovation Allowance & Change-Order Control",
+ "checked_at": "2026-10-20T12:09:18+00:00",
+ "engine": "Microsoft Excel 16.0 via scripts/excel_recalc_probe.ps1; independent model in plain Python from typed inputs only",
+ "artifact": "books\\batch13\\B13-001_renovation_allowance_control.xlsx",
+ "artifact_sha256": "028b9ed14e80ddb8f62955835bd0012f88022d52c0ff135d4c62ef13765e5a89",
+ "excel_formula_cells": 415,
+ "excel_error_cells": 0,
+ "fields_compared": 16,
+ "mismatches": [],
+ "comparison": [
+  {
+   "field": "original_budget",
+   "cell": "Summary!B4",
+   "excel_displayed": "$45,000",
+   "independent_python": 45000.0,
+   "match": true
+  },
+  {
+   "field": "approved_change_orders",
+   "cell": "Summary!B5",
+   "excel_displayed": "$2,300",
+   "independent_python": 2300.0,
+   "match": true
+  },
+  {
+   "field": "revised_budget",
+   "cell": "Summary!B6",
+   "excel_displayed": "$47,300",
+   "independent_python": 47300.0,
+   "match": true
+  },
+  {
+   "field": "committed_total",
+   "cell": "Summary!B7",
+   "excel_displayed": "$39,800",
+   "independent_python": 39800.0,
+   "match": true
+  },
+  {
+   "field": "paid_to_date",
+   "cell": "Summary!B8",
+   "excel_displayed": "$16,300",
+   "independent_python": 16300.0,
+   "match": true
+  },
+  {
+   "field": "unpaid_committed",
+   "cell": "Summary!B9",
+   "excel_displayed": "$23,500",
+   "independent_python": 23500.0,
+   "match": true
+  },
+  {
+   "field": "forecast_to_complete",
+   "cell": "Summary!B10",
+   "excel_displayed": "$9,900",
+   "independent_python": 9900.0,
+   "match": true
+  },
+  {
+   "field": "projected_final",
+   "cell": "Summary!B11",
+   "excel_displayed": "$49,700",
+   "independent_python": 49700.0,
+   "match": true
+  },
+  {
+   "field": "variance",
+   "cell": "Summary!B12",
+   "excel_displayed": "-$2,400",
+   "independent_python": -2400.0,
+   "match": true
+  },
+  {
+   "field": "reserve_remaining",
+   "cell": "Summary!B14",
+   "excel_displayed": "$2,400",
+   "independent_python": 2400.0,
+   "match": true
+  },
+  {
+   "field": "allowance_overruns",
+   "cell": "Summary!B15",
+   "excel_displayed": "$2,100",
+   "independent_python": 2100.0,
+   "match": true
+  },
+  {
+   "field": "credits_owed",
+   "cell": "Summary!B16",
+   "excel_displayed": "$500",
+   "independent_python": 500.0,
+   "match": true
+  },
+  {
+   "field": "cos_pending",
+   "cell": "Summary!B17",
+   "excel_displayed": "1",
+   "independent_python": 1,
+   "match": true
+  },
+  {
+   "field": "lines_over",
+   "cell": "Summary!B18",
+   "excel_displayed": "5",
+   "independent_python": 5,
+   "match": true
+  },
+  {
+   "field": "all_in_plan",
+   "cell": "Summary!B19",
+   "excel_displayed": "$49,700",
+   "independent_python": 49700.0,
+   "match": true
+  },
+  {
+   "field": "committed_pct",
+   "cell": "Summary!B13",
+   "excel_displayed": "84.1%",
+   "independent_python": 0.841438,
+   "match": true
+  }
+ ],
+ "self_check_rows_exercised": {
+  "Summary!B22": "OK",
+  "Summary!B23": "FIX: 1 overage(s) with no approved change order",
+  "Summary!B24": "OK",
+  "Summary!B25": "OVER by $2,400",
+  "Summary!B26": "Reserve still available",
+  "Summary!B27": "OVER-COMMITTED: remaining spend exceeds budget left",
+  "Summary!B28": "Do not let the work proceed on an unsigned change",
+  "Summary!B29": "OK"
+ },
+ "self_checks_expected": true,
+ "verdict": "PASS",
+ "notes": [
+  "The independent model reads only typed input cells (budget, committed, forecast, change-order amounts and approvals, payments, allowances, contingency draws) and never reads a formula cell, so agreement means two implementations concur.",
+  "The workbook is a hybrid: the money is in the spreadsheet, not in the PDF page count."
+ ]
+}

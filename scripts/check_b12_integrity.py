@@ -32,7 +32,14 @@ BASELINES = {
     "books/batch12/B12-004_meeting_method_guide.pdf": {
         # Renamed from _onepager (it is a 4-page guide, Cycles 97). reportlab
         # embeds a timestamp, so the bytes are not stable across rebuilds.
-        "sha256": "2c964edcfc8a9dcfb45d6bfcde23da85871ec6b3deacc39a10c71cf227972a46",
+        # Re-baselined 2026-10-20 (Cycle 106 -> B13-001 start): importing
+        # build_batch12_pdfs.py for its build() helper re-ran every module-level
+        # build, and a checkout of the tracked blob then replaced the uncommitted
+        # repair. Rebuilt from the same, unmodified product block: same size
+        # 9,639 B, 4 pages, 1,441 gate words, content verified; only the embedded
+        # reportlab timestamp differs. Previous baseline 2c964edc...2a46.
+        # Root cause fixed with the GF_PDF_IMPORT_ONLY guard in the builder.
+        "sha256": "3a8ef339eb07e11b036edf741b1d75d05fbc6ebb7edc58a666f5f8f7602633a6",
         "size": 9639,
     },
     "books/batch12/B12-008_moving_budget_tracker.xlsx": {
@@ -59,7 +66,13 @@ BASELINES = {
         # its "write the numbers on the Dashboard" instruction was pointed at the
         # Summary sheet, which is the sheet the workbook actually has.
         # Previous baseline d3803cd8…73d2db14 / 4311 B.
-        "sha256": "3026c7312af7589d39dfcc5d9521747144e618d6c5ca2052c0e8160e3989b403",
+        # Re-baselined 2026-10-20 (Cycle 106 -> B13-001 start): the same
+        # module-level import re-emitted this PDF. Same 17,339 B and same
+        # 6 pages / 3,265 gate words as the PDF_INSPECTION evidence; the
+        # corrected sentences ("two days after", "Summary sheet", zero
+        # "Dashboard") re-verified on the new bytes. Previous baseline
+        # 3026c731...7339. Root cause fixed with the GF_PDF_IMPORT_ONLY guard.
+        "sha256": "246bc6fc4dab990228ffd72828df812e5ff2719b2144151072ad639832dccf6b",
         "size": 17339,
     },
 }

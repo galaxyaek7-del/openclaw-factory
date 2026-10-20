@@ -1,0 +1,44 @@
+{
+ "product_id": "B13-001",
+ "artifact": "books\\batch13\\B13-001_renovation_allowance_control_guide.pdf",
+ "artifact_sha256": "53c65af902c99d0e1ad67d70b5248efc4ad205695a23bd1850410572d68cd755",
+ "artifact_bytes": 19861,
+ "checked_at": "2026-10-20T12:09:18+00:00",
+ "pages": 7,
+ "gate_words": 3802,
+ "words_method": "src/quality/quality_enforcer.py::_words (the gate's own tokenizer)",
+ "headings_found": 16,
+ "placeholder_hits": [],
+ "mojibake_hits": [],
+ "instructions_marker_present": true,
+ "worked_example_figures_present": {
+  "45,000": true,
+  "2,300": true,
+  "47,300": true,
+  "39,800": true,
+  "16,300": true,
+  "23,500": true,
+  "9,900": true,
+  "49,700": true,
+  "2,400": true,
+  "84.1": true,
+  "1,700": true,
+  "500": true,
+  "3,750": true,
+  "5,600": true,
+  "2,100": true
+ },
+ "workbook_sheet_names_mentioned": {
+  "Cost Control": true,
+  "Payments": true,
+  "Change Orders": true,
+  "Allowances": true,
+  "Contingency": true,
+  "Summary": true,
+  "Assumptions": false
+ },
+ "missing_sheet_references": [
+  "Assumptions"
+ ],
+ "verdict": "PASS"
+}

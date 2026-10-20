@@ -1,0 +1,39 @@
+{
+ "product_id": "B13-001",
+ "artifact": "books/batch13/B13-001_renovation_allowance_control.xlsx",
+ "artifact_sha256": "028b9ed14e80ddb8f62955835bd0012f88022d52c0ff135d4c62ef13765e5a89",
+ "engine": {
+  "name": "Microsoft Excel",
+  "version": "16.0",
+  "build": "19127"
+ },
+ "calculated_at_utc": "2026-10-20T12:08:14Z",
+ "formula_cells": 415,
+ "formula_sheets": [
+  "Cost Control",
+  "Change Orders",
+  "Allowances",
+  "Payments",
+  "Contingency",
+  "Summary"
+ ],
+ "scanned_sheets": [
+  "Cost Control",
+  "Change Orders",
+  "Allowances",
+  "Payments",
+  "Contingency",
+  "Summary"
+ ],
+ "verdict": "PASS",
+ "findings": [],
+ "critical_count": 0,
+ "warning_count": 0,
+ "schema": "workbook_qa/v1",
+ "recorded_at_utc": "2026-10-20T12:08:15.286849+00:00",
+ "limitations": [
+  "The probe runs against a temporary read-only copy; it never opens the release file for write.",
+  "Number-format and value checks are limited to the sheets and cells named in the spec.",
+  "Excel is the only supported native engine; no other spreadsheet engine is installed here."
+ ]
+}

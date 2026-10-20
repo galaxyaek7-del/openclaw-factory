@@ -90,6 +90,15 @@ P = "p"
 H = "h2"
 C = "check"
 
+# Importing this module must NOT rebuild the catalogue: the build() calls
+# below run at import time. Cycle 106 lost real working-tree bytes this way -
+# importing it to reuse build() for B13-001 silently re-emitted 5 tracked PDFs
+# (reportlab embeds a timestamp, so the bytes change) and overwrote an
+# uncommitted B12-004 repair with the older committed blob. Set
+# GF_PDF_IMPORT_ONLY=1 before importing to reuse the helpers instead.
+if os.environ.get("GF_PDF_IMPORT_ONLY") == "1" and __name__ != "__main__":
+    raise SystemExit("GF_PDF_IMPORT_ONLY=1: catalogue build skipped")
+
 # ── B12-002 handoff guide ──────────────────────────────────────────────
 build("B12-002_client_handoff_guide.pdf", "B12-002", "Client Project Handoff Pack",
       "A calm, complete transfer: the 45-minute session script, the email templates, the close gate, and the asset checklist that prevents post-handoff disputes.",
