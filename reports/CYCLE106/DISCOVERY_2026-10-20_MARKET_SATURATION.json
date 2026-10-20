@@ -1,0 +1,208 @@
+{
+ "mission": "GF-6H-NEW-MARKETS-PRODUCT-FACTORY-01",
+ "recorded_at": "2026-10-20",
+ "phase": "DISCOVERY",
+ "verdict": "REJECTED_ALL_CANDIDATES",
+ "verdict_reason": "Every candidate failed the differentiation dimension of the 25-point gate. In all three independent categories a free, formula-complete incumbent template already exists, published as a lead magnet for a paid SaaS product. A paid digital product in these categories would be a me-too artifact, not a new capability.",
+ "scoring_rubric": {
+  "demand_evidence": "0-5, needs evidence of need AND evidence the need is currently unmet by an accessible product",
+  "willingness_to_pay": "0-4, sourced paid prices in the category",
+  "differentiation_vs_market": "0-5, substance, not cosmetics",
+  "differentiation_vs_catalog": "0-3, versus B12-001..010 and B13-001",
+  "buildability_and_verifiability": "0-3, deterministic, independently checkable",
+  "risk": "0-3, higher is lower legal/content risk",
+  "evidence_traceability": "0-2, every claim URL-sourced",
+  "threshold": 18
+ },
+ "candidates": [
+  {
+   "id": "CAND-A",
+   "name": "Security deposit disposition tracker for small landlords",
+   "status": "REJECTED",
+   "score": 17,
+   "score_breakdown": {
+    "demand_evidence": 3,
+    "willingness_to_pay": 4,
+    "differentiation_vs_market": 1,
+    "differentiation_vs_catalog": 2,
+    "buildability_and_verifiability": 3,
+    "risk": 2,
+    "evidence_traceability": 2
+   },
+   "market_evidence": [
+    {
+     "source": "Quire Paper Security Deposit Ledger",
+     "url": "https://quirepaper.com/security-deposit-ledger/",
+     "observed": "Direct incumbent at $12: Excel .xlsx, 40-deposit ledger, itemized deductions tab, return-deadline engine with days-left and overdue highlighting, dashboard, status lifecycle Held/Return due/Overdue/Returned, dated history export.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "Sheet & Flow Landlord & Tenant Toolkit (Etsy)",
+     "url": "https://www.etsy.com/listing/1768378040/landlord-and-tenant-toolkit-landlord",
+     "observed": "$39.50 landlord suite that already includes a security deposit tracker alongside rent ledger, lease dates, maintenance, and move-in/move-out inspection tabs.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "Good Columns Move-Out Cost Worksheet (Etsy)",
+     "url": "https://www.etsy.com/listing/1822454637/move-out-cost-worksheet-printable",
+     "observed": "$4.99 printable move-out cost worksheet by room, explicitly built around security deposit deductions.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "DepositBackr",
+     "url": "https://depositbackr.com/tools/security-deposit-return-templates",
+     "observed": "Free line-item deposit return worksheet template plus a separate free depreciation calculator for prorated item replacement - both of the mechanisms that would have constituted differentiation.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "r/Tenant - landlord gave no itemized receipt, $4,800 deposit (California)",
+     "url": "https://www.reddit.com/r/Tenant/comments/1ekd5fl/our_landlord_did_not_give_us_an_itemized_receipt/",
+     "observed": "Tenant reports $4,800 held, no itemized statement by day 21, 43 hours of claimed labour. Real pain, already served by the products above.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "r/Renters - $4,200 deposit, $2,500 withheld without invoices (Virginia)",
+     "url": "https://www.reddit.com/r/Renters/comments/1ncnerz/va_landlord_withheld_my_deposit_without_itemized/",
+     "observed": "Withholding without receipts inside a 45-day window. Same failure mode.",
+     "state": "OBSERVED"
+    }
+   ],
+   "rejection_reason": "The proposed differentiators (evidence-completeness flags, prorated replacement value, wear-versus-damage classification) are already available for free or for $4.99-$12. Competing would be a re-skin at a higher price with no defensible capability gap."
+  },
+  {
+   "id": "CAND-B",
+   "name": "Commercial lease CAM reconciliation and tenant audit workbook",
+   "status": "REJECTED",
+   "score": 17,
+   "score_breakdown": {
+    "demand_evidence": 4,
+    "willingness_to_pay": 4,
+    "differentiation_vs_market": 1,
+    "differentiation_vs_catalog": 3,
+    "buildability_and_verifiability": 3,
+    "risk": 1,
+    "evidence_traceability": 2
+   },
+   "market_evidence": [
+    {
+     "source": "CapVeri free CAM Reconciliation Excel template",
+     "url": "https://www.capveri.com/resources/templates/cam-reconciliation-excel",
+     "observed": "Free download, March 2026: pro-rata share, gross-up, cumulative and non-cumulative cap tracking, true-up, expense categorization and exclusions, tenant roster, per-tenant calculation, prior-year cap validation, up to 20 tenants.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "Sheet Chief - Commercial Lease CAM Charge Reconciliation & Tenant Audit Tracker",
+     "url": "https://sheetchief.com/commercial-lease-cam-audit-tracker/",
+     "observed": "Published 2026-08-13, paid workbook, five connected sheets: Lease Setup, CAM Expense Detail, Reconciliation, Tenant Audit, Dashboard; controllable cap, admin fee, materiality threshold, audit flags. This is almost exactly the candidate specification, two months old.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "Lextract Lease Audit Workbook",
+     "url": "https://lextract.io/templates/lease-audit-workbook",
+     "observed": "Structured workbook with 12-step checklist covering caps, gross-up, capital-expense misuse, duplicate lines, overcharge accumulation, dispute table, audit-window expiry flag, documentation log.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "leaseabstracts.com CAM reconciliation template guide",
+     "url": "https://leaseabstracts.com/templates/cam-reconciliation-template",
+     "observed": "Free published four-tab architecture and worked example, including the exact structural rules (per-tenant denominator cell, controllable separation at ledger level).",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "r/smallbusiness - CAM reconciliation up 25%, capital item charged, no $5k for a forensic accountant",
+     "url": "https://www.reddit.com/r/smallbusiness/comments/1q9my6x/anyone_else_getting_crushed_by_cam_reconciliation/",
+     "observed": "Real buyer pain with explicit price sensitivity stated by the buyer.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "r/smallbusiness - $59k in back CAM charges over 5 years",
+     "url": "https://www.reddit.com/r/smallbusiness/comments/cnv2j3/59k_in_back_cam_charges_from_the_last_5_years/",
+     "observed": "Five-figure exposure; commenters advise itemized reconciliation and invoice-level verification.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "r/Accounting - CAM audit, gross-up on utilities at declining occupancy",
+     "url": "https://www.reddit.com/r/Accounting/comments/1v8fej7/any_of_you_guys_ever_do_a_cam_audit_for_a/",
+     "observed": "Practitioner discussion of variable-versus-fixed classification, confirming the technical core.",
+     "state": "OBSERVED"
+    }
+   ],
+   "rejection_reason": "Free formula-complete templates from at least two vendors, plus a paid five-sheet tracker published 2026-08-13 that already implements the proposed specification. Differentiation would be cosmetic. Risk is also the highest of the three: the product's value depends on lease interpretation, which invites legal-advice exposure."
+  },
+  {
+   "id": "CAND-C",
+   "name": "Subcontractor certificate-of-insurance compliance tracker",
+   "status": "REJECTED",
+   "score": 16,
+   "score_breakdown": {
+    "demand_evidence": 4,
+    "willingness_to_pay": 2,
+    "differentiation_vs_market": 0,
+    "differentiation_vs_catalog": 2,
+    "buildability_and_verifiability": 3,
+    "risk": 3,
+    "evidence_traceability": 2
+   },
+   "market_evidence": [
+    {
+     "source": "Remindax free vendor and subcontractor COI tracker",
+     "url": "https://www.remindax.com/excel-templates/free-vendor-subcontractor-coi-tracker-template",
+     "observed": "Free: 21-column tracker, minimum-limit auto-check, additional-insured and waiver flags, compliance dashboard, compliance score, dropdown lists, 10 coverage types.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "SubDoc free COI tracking template",
+     "url": "https://subdoc.io/blog/free-coi-tracking-spreadsheet-template",
+     "observed": "Published 2026-08-30: seven sheets, 51-column master tracker, dashboard KPIs, five-stage escalation follow-up log, rule matrices, 0-100 compliance scoring, expiry formulas.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "field-pm free certificate of insurance tracker",
+     "url": "https://www.field-pm.com/templates/certificate-of-insurance-tracker",
+     "observed": "Free: limits check against an editable required-limits tab, endorsement checks that turn red on any missing item, EXPIRED/EXPIRING/OK status, six preloaded examples, ACORD 25 review checklist.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "CoverProof free COI tracking spreadsheet",
+     "url": "https://forge-motion.com/coi-tracking-spreadsheet",
+     "observed": "Free: per-sub limits, workers comp, auto, additional insured CG 20 10/20 37, waiver, expiry, last-requested, compliant/action/missing status.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "CertCove free COI tracking spreadsheet",
+     "url": "https://certcove.com/free-coi-tracking-spreadsheet",
+     "observed": "Free, no signup and no email required: soonest-expiration, days remaining, amber within 30 days, red when expired, requirements tab.",
+     "state": "OBSERVED"
+    },
+    {
+     "source": "os.construction COI tracker CSV",
+     "url": "https://os.construction/templates/coi-tracker.csv",
+     "observed": "Free machine-readable CSV with working formulas for limit check, days-to-expiry, and status including 'EXPIRED - hold payment'.",
+     "state": "OBSERVED"
+    }
+   ],
+   "rejection_reason": "Six free templates, one of them a 51-column seven-sheet engine with scoring and escalation stages, all published as acquisition funnels for SaaS. The price anchor in this category is zero, and the incumbent feature set exceeds anything a paid spreadsheet would add."
+  }
+ ],
+ "structural_finding": {
+  "statement": "Single-purpose operational trackers for small businesses are structurally unviable as paid digital products in 2026. The category is served by free, formula-complete templates published by SaaS vendors as lead magnets. The free template is not a weaker product; it is often more feature-complete than a plausible paid alternative, and its purpose is to make the spreadsheet feel insufficient so the buyer upgrades to software.",
+  "evidence": "Three independent categories probed, three free formula-complete incumbents found, zero categories where a paid workbook had a defensible capability gap.",
+  "implication": "A paid product in this format must compete on something a template cannot replicate: assembled interpretation of a dated obligation, a decision the buyer cannot make alone, or distribution and brand. The factory's only Proof-of-Payment-evidenced product, the EU AI Act Compliance Toolkit, is in exactly that lane.",
+  "state": "DERIVED"
+ },
+ "recommendation": {
+  "action": "Do not build a tracker. Direct the next build round at a dated regulatory or contractual obligation where the value is assembled interpretation plus a deterministic worksheet, with real payment evidence gathered before generation.",
+  "precondition": "Proof of Payment evidence for the specific obligation must be gathered and recorded before any build, per ADR-121. This round did not gather such evidence for any replacement candidate and therefore authorizes no build.",
+  "state": "DERIVED"
+ },
+ "not_done": [
+  "No product was built this round.",
+  "No candidate reached the 18/25 threshold.",
+  "No replacement regulatory candidate was researched to the point of a buildable specification.",
+  "Differentiation was assessed against search results and published product pages, not against downloaded inspection of competitor files."
+ ],
+ "artifacts": [
+  "reports/CYCLE106/DISCOVERY_2026-10-20_MARKET_SATURATION.json",
+  "reports/CYCLE106/GF-6H_NEW_MARKETS_REPORT_2026-10-20.md"
+ ]
+}
