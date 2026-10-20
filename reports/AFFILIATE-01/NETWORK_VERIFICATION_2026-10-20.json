@@ -1,0 +1,247 @@
+{
+ "mission": "GF-AFFILIATE-01",
+ "recorded_at": "2026-10-20",
+ "cost_usd": 0,
+ "accounts_created": 0,
+ "applications_submitted": 0,
+ "note": "Every material claim below carries the URL it came from and the date it was verified. Anything not confirmed is marked UNKNOWN rather than inferred. No account was created; creating one accepts a binding agreement, which requires founder authorization.",
+ "buyer_location": "Algeria (per mission brief)",
+ "payout_constraint_that_decides_everything": {
+  "finding": "Algeria can receive PayPal payments only under PayPal's Receive Funds and Automatic Transfer Agreement, which requires linking a US bank account or a Visa credit card, holds funds 30 days, and forbids sending from balance.",
+  "evidence": "https://www.paypal.com/al/legalhub/paypal/recpymt-full?locale.x=en_AL",
+  "verified": "2026-10-20",
+  "page_date": "last updated 22 September 2026",
+  "consequence": "Any network that pays only by PayPal is conditional on the founder having a US bank account or a Visa card that PayPal accepts, and even then carries a 30-day hold and a $5 manual-transfer fee to a card. Any network that pays by bank transfer to an Algerian account is materially stronger.",
+  "not_verified": "Whether a typical Algerian-issued Visa card is accepted by PayPal for this flow. UNKNOWN."
+ },
+ "networks": [
+  {
+   "id": "impact_com",
+   "name": "impact.com",
+   "signup_cost_usd": 0,
+   "deposit_required": false,
+   "country_eligibility": {
+    "status": "LIKELY_ELIGIBLE",
+    "evidence": "https://member.impactradius.com/signup/create-mediapartner-flow.ihtml?execution=e1s1",
+    "observed": "Algeria appears in both the 'Country / Region' dropdown and the separate 'Bank Location Country' dropdown on impact.com's own publisher signup form.",
+    "verified": "2026-10-20",
+    "caveat": "Presence in a form dropdown is necessary but not sufficient; approval is discretionary and the marketplace application is reviewed."
+   },
+   "payout_methods": ["bank transfer", "PayPal"],
+   "algeria_payout_usability": {
+    "status": "LIKELY_USABLE_VIA_BANK",
+    "reason": "Bank transfer is offered and Algeria is selectable as the bank location country. PayPal route inherits the PayPal Algeria constraint above."
+   },
+   "minimum_payout_usd": 10,
+   "fees": {
+    "signup": "none stated",
+    "payout": "UNKNOWN for an Algerian bank account; impact.com does not publish a per-country fee table on the partner help pages retrieved",
+    "dormancy": "$10 USD per month (direct invoicing) or GBP 25 per month (impact.com entity invoicing) after 6 months of being unpayable; non-refundable, charged until details are fixed or balance is zero"
+   },
+   "tax_requirements": "Electronic tax document required only when yearly earnings reach USD 2,000 with US-based brands. Non-US partners working exclusively with non-US brands submit tax details instead.",
+   "categories": "6,500+ brands across retail, SaaS, travel, finance; no category restriction stated for publishers",
+   "commission_structure": "Brand-specific CPA, flat fee, hybrid, or pay-per-lead; set by each advertiser contract",
+   "attribution": "Per brand contract; partners can set minimum referral-window requirements in their own contract rules",
+   "refund_reversal": "Brand contract controls reversals; partners can require a reversal policy in contract requirements",
+   "approval": "Account creation, then a marketplace application checklist (business category, verified channel, profile) reviewed by impact.com; brands may also approve individually",
+   "evidence": [
+    "https://help.impact.com/partner/what-would-you-like-to-learn-about/getting-started/sign-up-as-a-partner-on-impactcom",
+    "https://help.impact.com/partner/what-would-you-like-to-learn-about/platform-features/finance/payments-withdrawals-and-balance/how-do-partners-get-paid",
+    "https://impact.com/partners/affiliate-partners/"
+   ],
+   "verified": "2026-10-20",
+   "verdict": "USABLE_FREE_PENDING_FOUNDER_AUTHORIZATION",
+   "why": "Only network of the three that is free, has a $10 threshold, and offers bank transfer with Algeria explicitly selectable as the bank country."
+  },
+  {
+   "id": "digistore24",
+   "name": "Digistore24",
+   "signup_cost_usd": 0,
+   "deposit_required": false,
+   "country_eligibility": {
+    "status": "UNKNOWN",
+    "evidence": "https://www.digistore24.com/affiliates/",
+    "observed": "Registration is advertised as free and the marketplace as open to affiliates; no country list is published on the pages retrieved.",
+    "verified": "2026-10-20",
+    "caveat": "No documented Algeria exclusion was found either. Absence of evidence is not eligibility."
+   },
+   "payout_methods": ["PayPal", "SEPA transfer", "US ACH (US reseller only)", "international bank transfer"],
+   "algeria_payout_usability": {
+    "status": "CONDITIONAL",
+    "reason": "SEPA and ACH are unavailable to Algeria. International bank transfer is available but has a higher minimum. PayPal route inherits the PayPal Algeria constraint."
+   },
+   "minimum_payout": {
+    "domestic_and_sepa": "EUR/USD/CHF/GBP 50 on the 7th; 200 on the 14th, 21st, 28th",
+    "international_transfer": "250 EUR/USD/CHF/GBP"
+   },
+   "fees": {
+    "signup": "none stated",
+    "payout": "fee per payout, varies by method and reseller; not quantified on the pages retrieved",
+    "security_retention": "10% of earnings withheld for 60 days to fund refunds"
+   },
+   "tax_requirements": "VAT ID or tax number required only for Europe-based sellers using the GmbH reseller. Non-European sellers using Digistore24 Inc. are not asked for a VAT ID; US reseller uses W-8/W-9 forms.",
+   "categories": "44 niches, 10,000+ offers; digital products, courses, software, services; some categories prohibited (e.g. get-rich-quick unless demonstrably serious)",
+   "commission_structure": "Vendor-set per offer; marketplace listing shows the rate before promotion",
+   "attribution": "Vendor-set per offer; not standardised across the marketplace",
+   "refund_reversal": "10% security retention exists precisely because refunds reverse commissions; per-offer refund terms apply",
+   "approval": "Free account, then per-offer approval by vendor where required",
+   "evidence": [
+    "https://help.digistore24.com/hc/en-us/articles/24292908360849-Set-up-payout-account-as-an-affiliate",
+    "https://help.digistore24.com/hc/en-us/articles/23548523136529-Payout-Set-dates-and-thresholds",
+    "https://help.digistore24.com/hc/en-us/articles/23523891135633-Requirements-for-payout",
+    "https://help.digistore24.com/hc/en-us/articles/23314370906897-Digistore24-reseller-overview",
+    "https://www.digistore24.com/affiliates/"
+   ],
+   "verified": "2026-10-20",
+   "verdict": "HOLD",
+   "why": "Free and legitimate, but the only payout rail that reaches Algeria is international transfer with a 250-unit minimum, plus a 60-day 10% retention. A first commission would be unpayable for months. Country eligibility itself is UNKNOWN."
+  },
+  {
+   "id": "partnerstack",
+   "name": "PartnerStack",
+   "signup_cost_usd": 0,
+   "deposit_required": false,
+   "country_eligibility": {
+    "status": "UNKNOWN",
+    "evidence": "https://support.partnerstack.com/hc/en-us/articles/360009183474-Intro-to-PartnerStack",
+    "observed": "Free partner account, then a Network application reviewed by PartnerStack; no country list published on the pages retrieved.",
+    "verified": "2026-10-20"
+   },
+   "payout_methods": ["PayPal", "Stripe", "direct deposit via Airwallex"],
+   "algeria_payout_usability": {
+    "status": "BLOCKED_ON_PUBLISHED_LISTS",
+    "reason": "Airwallex direct deposit's published country list does not include Algeria. Stripe's availability in Algeria was not verified this cycle (UNKNOWN). PayPal inherits the PayPal Algeria constraint, which requires a US bank or Visa card.",
+    "evidence": "https://support.partnerstack.com/hc/en-us/articles/360009377934-Configuring-payout-providers"
+   },
+   "minimum_payout_usd": 5,
+   "fees": {
+    "signup": "none stated",
+    "payout_paypal": "2% capped at USD 20 per payout",
+    "payout_stripe": "USD 2.25 + 0.25% capped at USD 20",
+    "payout_direct_deposit": "varies by country and currency; variable pricing table"
+   },
+   "tax_requirements": "Tax information must be added before any withdrawal, regardless of provider",
+   "categories": "B2B SaaS and software partner programs (referral, reseller, affiliate)",
+   "commission_structure": "Program-specific; commonly 10-30% recurring or one-time bounties",
+   "attribution": "Mix of link-based attribution, lead forms, and deal registration depending on program",
+   "refund_reversal": "Company-set; commissions stay 'Pending approval' until the partner company reviews them",
+   "approval": "Network application approved by PartnerStack, then per-program application",
+   "evidence": [
+    "https://support.partnerstack.com/hc/en-us/articles/360009501113-How-do-I-get-paid",
+    "https://support.partnerstack.com/hc/en-us/articles/360009377934-Configuring-payout-providers",
+    "https://support.partnerstack.com/hc/en-us/articles/360009183474-Intro-to-PartnerStack"
+   ],
+   "verified": "2026-10-20",
+   "verdict": "HOLD",
+   "why": "Good economics and a $5 threshold, but no published payout rail that reaches an Algerian bank. Applying before confirming a payout path risks earning a balance that cannot be withdrawn."
+  },
+  {
+   "id": "awin",
+   "name": "Awin",
+   "signup_cost_usd": 1,
+   "deposit_required": true,
+   "country_eligibility": {
+    "status": "UNKNOWN",
+    "evidence": "https://www.awin.com/us/faqs",
+    "observed": "Publisher applications are reviewed by a compliance team; registration is open, but country eligibility is not enumerated on the page retrieved.",
+    "verified": "2026-10-20"
+   },
+   "payout_methods": ["BACS", "international wire transfer", "ACH", "SEPA"],
+   "algeria_payout_usability": {
+    "status": "LIKELY_VIA_INTERNATIONAL_WIRE",
+    "reason": "International wire is offered; the others are domestic to UK/EU/US rails."
+   },
+   "minimum_payout": "GBP 20 / EUR 20 / USD 20, or the local equivalent; default thresholds are higher (50 in major currencies)",
+   "fees": {
+    "signup": "USD 1 refundable security deposit, payable by card, refunded at the first payment threshold or on decline",
+    "payout": "UNKNOWN per-country"
+   },
+   "tax_requirements": "Tax information required before payment; bank details required",
+   "categories": "30,000+ advertisers across retail and services",
+   "commission_structure": "Advertiser-set CPA",
+   "attribution": "Per advertiser programme",
+   "refund_reversal": "Per advertiser programme; Awin compliance monitors activity",
+   "approval": "Compliance review, typically automated in near real time, up to 2 working days if manual review is needed",
+   "evidence": [
+    "https://www.awin.com/us/faqs",
+    "https://success.awin.com/s/article/What-are-the-payment-thresholds?language=en_US",
+    "https://www.awin.com/us/how-to-use-awin/awin-guide-on-how-to-start-affiliate-marketing"
+   ],
+   "verified": "2026-10-20",
+   "verdict": "BLOCKED_BY_ZERO_SPEND",
+   "why": "The USD 1 refundable deposit is still new expenditure, which TOTAL_NEW_SPEND=$0 forbids. The mission also designates Awin as secondary. No application was prepared."
+  },
+  {
+   "id": "systeme_direct",
+   "name": "systeme.io (direct program, already enrolled)",
+   "signup_cost_usd": 0,
+   "deposit_required": false,
+   "country_eligibility": {
+    "status": "ELIGIBLE",
+    "evidence": "https://systeme.io/affiliate-program",
+    "observed": "Anyone can join, free, no application, no approval, no follower minimum.",
+    "verified": "2026-10-20"
+   },
+   "payout_methods": ["PayPal", "wire transfer"],
+   "algeria_payout_usability": {
+    "status": "CONDITIONAL_BUT_WIRE_EXISTS",
+    "reason": "Wire transfer is offered alongside PayPal. Wire is the route that does not depend on PayPal Algeria's US-bank/Visa requirement; the actual wire fee to Algeria is UNKNOWN."
+   },
+   "minimum_payout_usd": 30,
+   "fees": {"signup": "none", "payout": "UNKNOWN for wire to Algeria"},
+   "tax_requirements": "Not stated on the program page; UNKNOWN",
+   "categories": "SaaS: funnels, email marketing, courses, communities",
+   "commission_structure": "60% of every payment, lifetime recurring (60% of USD 17 = USD 10.20/month; 60% of USD 97 = USD 58.20/month)",
+   "attribution": "Lifetime, permanent tagging ('last-cookie model'), explicitly not a 30/60-day window",
+   "refund_reversal": "Not published on the program page; UNKNOWN. Refunded subscriptions would presumably not pay commission, but this is INFERRED, not verified.",
+   "approval": "None; affiliate ID issued on free account creation",
+   "evidence": [
+    "https://systeme.io/affiliate-program",
+    "https://systeme.io/pricing"
+   ],
+   "verified": "2026-10-20",
+   "page_date": "terms as of April 2026",
+   "factory_state": "A tracked link already exists locally (data/affiliate_links.jsonl, program SYSTEME_DIRECT, registered 2026-09-21) and was verified ACTIVE on 2026-10-01 with attribution preserved. This is the only real tracked affiliate link in the factory.",
+   "verdict": "USABLE_NOW",
+   "why": "Free, already enrolled, real tracked link on file, $30 threshold, 60% lifetime recurring, and a real product the buyer can evaluate for free before paying."
+  },
+  {
+   "id": "amazon_associates",
+   "name": "Amazon Associates (existing factory program)",
+   "signup_cost_usd": 0,
+   "deposit_required": false,
+   "country_eligibility": {
+    "status": "ALREADY_ENROLLED_IN_FACTORY_RECORDS",
+    "observed": "affiliate_commerce/networks.py builds tagged links and gates on AMAZON_ASSOCIATE_TAG; data/affiliate_activation_pack.json records the program as the factory's single real affiliate program (ADR-149). No platform page was fetched this cycle to re-confirm the account's own country terms.",
+    "verified": "2026-10-20"
+   },
+   "payout_methods": ["direct deposit", "Amazon gift card", "cheque (threshold-dependent)"],
+   "algeria_payout_usability": {
+    "status": "UNKNOWN",
+    "reason": "The existing activation pack does not record a payout method for an Algerian bank account, and no platform page was fetched this cycle to confirm it."
+   },
+   "minimum_payout_usd": 10,
+   "categories": "Physical and digital goods sold on Amazon",
+   "commission_structure": "Category-dependent, typically 1-10%",
+   "attribution": "24-hour cookie on the Associates programme",
+   "refund_reversal": "Commissions reversed on returns",
+   "approval": "Already part of the factory's affiliate plan (ADR-149); the only missing piece is the tag itself",
+   "evidence": [
+    "https://affiliate-program.amazon.com/"
+   ],
+   "local_evidence": [
+    "affiliate_commerce/networks.py",
+    "data/affiliate_activation_pack.json"
+   ],
+   "verified": "2026-10-20",
+   "verdict": "BLOCKED_ON_FOUNDER_CREDENTIAL",
+   "why": "AMAZON_ASSOCIATE_TAG is unset, so all four product links render untagged and earn nothing (verified 2026-10-01, unchanged). Only the founder's own Associates account can produce the tag."
+  }
+ ],
+ "what_this_does_not_prove": [
+  "That any network will approve this publisher. Approval is discretionary and UNKNOWN until applied for.",
+  "That any offer will convert. Zero real affiliate conversions exist in this factory; the 29 click rows are all null-referrer and predate a live tag.",
+  "That a wire transfer from systeme.io or impact.com will actually arrive in an Algerian bank account, or what it costs. UNKNOWN, testable only with a real payout.",
+  "Any commission figure. Projected earnings are not revenue and are not recorded as such anywhere."
+ ]
+}
