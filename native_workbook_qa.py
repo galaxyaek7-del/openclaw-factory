@@ -216,7 +216,7 @@ B12_008_SPEC: Dict[str, Any] = {
 B13_001_SPEC: Dict[str, Any] = {
     "product_id": "B13-001",
     "artifact": "books/batch13/B13-001_renovation_allowance_control.xlsx",
-    "artifact_sha256": "028b9ed14e80ddb8f62955835bd0012f88022d52c0ff135d4c62ef13765e5a89",
+    "artifact_sha256": "6a48ebc859a064ac003a9ae1dc9779ca7f9cf3972bbf7ce5ddc89e2f8ec3cf38",
     "formula_sheets": ["Cost Control", "Change Orders", "Allowances", "Payments",
                        "Contingency", "Summary"],
     "scan_sheets": [
@@ -228,7 +228,7 @@ B13_001_SPEC: Dict[str, Any] = {
     # are checked by column rule instead.
     "tables": [
         {"sheet": "Summary", "key_column": 1, "value_column": 2,
-         "first_row": 4, "last_row": 19},
+         "first_row": 4, "last_row": 20},
     ],
     "columns": [
         {
@@ -278,7 +278,7 @@ B13_001_SPEC: Dict[str, Any] = {
         {"sheet": "Summary", "label": "Allowance credits still owed to you", "kind": "currency", "format_contains": "$"},
         {"sheet": "Summary", "label": "Change orders awaiting signature", "kind": "integer", "format": "0"},
         {"sheet": "Summary", "label": "Lines already over their revised budget", "kind": "integer", "format": "0"},
-        {"sheet": "Summary", "label": "All-in plan (revised budget + reserve)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "All-in plan (revised budget + reserve left)", "kind": "currency", "format_contains": "$"},
     ],
 }
 

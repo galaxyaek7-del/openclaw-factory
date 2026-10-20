@@ -1,6 +1,6 @@
 {
  "product_id": "B13-001",
- "checked_at": "2026-10-20T14:37:22+00:00",
+ "checked_at": "2026-10-20T17:23:00+00:00",
  "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
  "price_checked_usd": 19.0,
  "verdict": "APPROVED",
@@ -47,11 +47,11 @@
      }
     ],
     "depth": {
-     "words": 8237,
+     "words": 8298,
      "words_required": 1900,
      "text_depth_ok": true,
      "sheets": 9,
-     "formulas": 415,
+     "formulas": 416,
      "sheet_depth_ok": true
     },
     "placeholders_found": [],

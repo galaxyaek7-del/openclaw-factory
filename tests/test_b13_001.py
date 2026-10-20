@@ -55,6 +55,7 @@ EXPECTED = {
     "cos_pending": 1,
     "lines_over": 5,
     "all_in_plan": 49700.0,
+    "contingency_drawn": 2100.0,
 }
 
 
@@ -147,6 +148,7 @@ def rederive(wb) -> dict:
         "cos_pending": pending,
         "lines_over": lines_over,
         "all_in_plan": revised + reserve - drawn,
+        "contingency_drawn": drawn,
         "overage_without_change_order": overage_without_co,
     }
 
@@ -193,13 +195,30 @@ class WorkbookStructureTests(unittest.TestCase):
 
     def test_summary_has_no_self_reference(self):
         summary = self.wb["Summary"]
-        for row in summary.iter_rows(min_row=4, max_row=19, min_col=2, max_col=2):
+        for row in summary.iter_rows(min_row=4, max_row=20, min_col=2, max_col=2):
             for cell in row:
                 value = str(cell.value or "")
                 refs = re.findall(r"\$?B\$?(\d+)", value)
                 for ref in refs:
                     self.assertNotEqual(int(ref), cell.row,
                                         f"{cell.coordinate} refers to its own row")
+
+    def test_all_in_label_matches_what_it_actually_adds(self):
+        # Regression: the row read "(revised budget + reserve)" while adding only
+        # the reserve that is left, so a buyer could read it as revised + the full
+        # 4,500 reserve (51,800) and be 2,100 short of what the label promised.
+        summary = self.wb["Summary"]
+        label = str(summary["A19"].value)
+        self.assertIn("reserve left", label)
+        self.assertNotIn("+ reserve)", label)
+        self.assertIn("+B14", str(summary["B19"].value))
+
+    def test_drawn_reserve_is_visible_in_the_summary(self):
+        # The 2,100 already drawn from the reserve is spent money that no
+        # projected total contains; it must not vanish from the one-page view.
+        summary = self.wb["Summary"]
+        self.assertEqual(summary["A20"].value, "Contingency drawn to date")
+        self.assertEqual(summary["B20"].value, "=Contingency!$H$2")
 
 
 class ArithmeticTests(unittest.TestCase):

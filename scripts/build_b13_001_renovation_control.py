@@ -336,7 +336,7 @@ def _summary(wb):
         "paid": 8, "unpaid": 9, "forecast": 10, "projected": 11,
         "variance": 12, "committed_pct": 13, "reserve": 14,
         "allow_over": 15, "credits": 16, "cos_pending": 17,
-        "lines_over": 18, "all_in": 19,
+        "lines_over": 18, "all_in": 19, "drawn": 20,
     }
     rows = [
         ("Original budget (sum of lines)", "original", "=SUM('Cost Control'!$D$2:$D$41)", MONEY0),
@@ -354,7 +354,8 @@ def _summary(wb):
         ("Allowance credits still owed to you", "credits", "=SUM(Allowances!$H$2:$H$21)", MONEY0),
         ("Change orders awaiting signature", "cos_pending", '=COUNTIF(\'Change Orders\'!$F$2:$F$21,"No")', "0"),
         ("Lines already over their revised budget", "lines_over", '=COUNTIF(\'Cost Control\'!$N$2:$N$41,"OVER")', "0"),
-        ("All-in plan (revised budget + reserve)", "all_in", "=B{revised}+B{reserve}", MONEY0),
+        ("All-in plan (revised budget + reserve left)", "all_in", "=B{revised}+B{reserve}", MONEY0),
+        ("Contingency drawn to date", "drawn", "=Contingency!$H$2", MONEY0),
     ]
     for label, key, template, fmt in rows:
         ws.cell(row=R[key], column=1, value=label).font = Font(bold=True)

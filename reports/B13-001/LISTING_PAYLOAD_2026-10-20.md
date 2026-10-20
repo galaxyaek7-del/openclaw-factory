@@ -7,15 +7,15 @@
 
 | file | bytes | sha256 |
 |---|---|---|
-| `books/batch13/B13-001_renovation_allowance_control.xlsx` | 23871 | `028b9ed14e80ddb8...` |
-| `books/batch13/B13-001_renovation_allowance_control_guide.pdf` | 41652 | `6c82a7147fbca4eb...` |
+| `books/batch13/B13-001_renovation_allowance_control.xlsx` | 23894 | `6a48ebc859a064ac...` |
+| `books/batch13/B13-001_renovation_allowance_control_guide.pdf` | 41858 | `7f8218938a794392...` |
 
 ## Verification cited
 
 - Gate: `reports/B13-001/GATE_FINAL_2026-10-20.json` — state `QA_PASS_AT_19_USD_AWAITING_LISTING_AND_PUBLICATION_AUTHORIZATION` (recorded at the earlier $19 proposal)
 - Gate at the selected price: `reports/B13-001/GATE_SELECTED_PRICE_2026-10-20.json` — verdict `APPROVED` at $15.00
-- Guide inspection: `reports/B13-001/GUIDE_INSPECTION_2026-10-20.json` — 15 pages, 8237 words
-- Workbook QA: `reports/B13-001/WORKBOOK_QA_2026-10-20.json` — verdict `PASS`, 415 formula cells
+- Guide inspection: `reports/B13-001/GUIDE_INSPECTION_2026-10-20.json` — 15 pages, 8298 words
+- Workbook QA: `reports/B13-001/WORKBOOK_QA_2026-10-20.json` — verdict `PASS`, 416 formula cells
 - Brand check: PASS
 
 ## Price realism (computed by economics.evaluate, this round)

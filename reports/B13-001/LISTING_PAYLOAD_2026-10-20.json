@@ -87,13 +87,13 @@
  "files": [
   {
    "path": "books/batch13/B13-001_renovation_allowance_control.xlsx",
-   "bytes": 23871,
-   "sha256": "028b9ed14e80ddb8f62955835bd0012f88022d52c0ff135d4c62ef13765e5a89"
+   "bytes": 23894,
+   "sha256": "6a48ebc859a064ac003a9ae1dc9779ca7f9cf3972bbf7ce5ddc89e2f8ec3cf38"
   },
   {
    "path": "books/batch13/B13-001_renovation_allowance_control_guide.pdf",
-   "bytes": 41652,
-   "sha256": "6c82a7147fbca4ebb7d1a176bce394c6265211e476253d0d8543f819f1c40607"
+   "bytes": 41858,
+   "sha256": "7f8218938a79439205b99927bcc52d6b50ec756363a3e077f609083cc99ae9fd"
   }
  ],
  "cover": {
@@ -109,7 +109,7 @@
  "customer_page_note": "No customer-facing page was created for B13-001. Creating one is a separate, reviewable step; it is not required to list on Gumroad.",
  "listing_copy": {
   "path": "drafts/b13_001_listing_copy.txt",
-  "text": "Renovation Allowance & Change-Order Control\n\nA renovation budget usually fails in two places: allowances nobody tracks, and change orders nobody signs. This workbook keeps both attached to the money.\n\nInside (9 sheets, 415 live formulas, no macros):\n\n- Setup — project, currency, tax rate, and your allowance categories\n- Cost Control — room for 40 cost lines, each with budget, committed, actual, payments, remaining, variance, and an OVER / ON PLAN / UNDER read on every line\n- Allowances — allowance against selections made per category, with an overage column that tells you whether an approved change order covers it\n- Change Orders — room for 20 change orders with cost impact, schedule impact and approval state\n- Payments — invoice and payment log, rolled up per cost line\n- Contingency — reserve held and consumed, with the remaining reserve shown against any overrun\n- Summary — the one-page position: original budget, approved change orders, revised budget, committed, paid to date, unpaid committed, projected final cost, and reserve left, plus nine checks\n- Assumptions — what is excluded, where each number lives, and your own note against each item\n- Start Here — the eight steps, in order\n\nThe workbook ships with a worked example you can read before you overwrite it, and every total is a formula you can audit. Nothing is hidden in a macro.\n\nAlso included: a 15-page PDF guide. How to set an allowance you can defend, how to run a change order so it actually gets signed, how to read a variance instead of panicking at it, what to do when the reserve is gone, which of the three \"estimate\" words decides who pays, how to compare quotes without being fooled by the total, why stage payments and retention matter more than the final figure, and a one-page record to write in the first forty-eight hours when something goes wrong.\n\nBuilt for Excel. The file uses standard formulas only, no macros and no add-ins, so LibreOffice Calc and Google Sheets should open it — but neither has been tested by me, so if anything misbehaves, reply to your receipt and I will fix it. No subscription, no account, no upsell.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews. Arithmetic on the numbers you enter — not legal, tax or financial advice. Your contract and your accountant govern.\n\nSupport: reply to your Gumroad receipt email.\n",
+  "text": "Renovation Allowance & Change-Order Control\n\nA renovation budget usually fails in two places: allowances nobody tracks, and change orders nobody signs. This workbook keeps both attached to the money.\n\nInside (9 sheets, 416 live formulas, no macros):\n\n- Setup — project, currency, tax rate, and your allowance categories\n- Cost Control — room for 40 cost lines, each with budget, committed, actual, payments, remaining, variance, and an OVER / ON PLAN / UNDER read on every line\n- Allowances — allowance against selections made per category, with an overage column that tells you whether an approved change order covers it\n- Change Orders — room for 20 change orders with cost impact, schedule impact and approval state\n- Payments — invoice and payment log, rolled up per cost line\n- Contingency — reserve held and consumed, with the remaining reserve shown against any overrun\n- Summary — the one-page position: original budget, approved change orders, revised budget, committed, paid to date, unpaid committed, projected final cost, reserve left, contingency drawn to date, plus nine checks\n- Assumptions — what is excluded, where each number lives, and your own note against each item\n- Start Here — the eight steps, in order\n\nThe workbook ships with a worked example you can read before you overwrite it, and every total is a formula you can audit. Nothing is hidden in a macro.\n\nAlso included: a 15-page PDF guide. How to set an allowance you can defend, how to run a change order so it actually gets signed, how to read a variance instead of panicking at it, what to do when the reserve is gone, which of the three \"estimate\" words decides who pays, how to compare quotes without being fooled by the total, why stage payments and retention matter more than the final figure, and a one-page record to write in the first forty-eight hours when something goes wrong.\n\nBuilt for Excel. The file uses standard formulas only, no macros and no add-ins, so LibreOffice Calc and Google Sheets should open it — but neither has been tested by me, so if anything misbehaves, reply to your receipt and I will fix it. No subscription, no account, no upsell.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews. Arithmetic on the numbers you enter — not legal, tax or financial advice. Your contract and your accountant govern.\n\nSupport: reply to your Gumroad receipt email.\n",
   "tags": [
    "renovation budget",
    "change order",
@@ -147,7 +147,7 @@
     "reason": "لا عبارات استعجال/ندرة مصطنعة موجودة في نص المحتوى (فحص جزئي)"
    }
   },
-  "generated_at": "2026-10-20T16:04:40.535271+00:00"
+  "generated_at": "2026-10-20T17:27:55.608092+00:00"
  },
  "verification_evidence": {
   "gate": "reports/B13-001/GATE_FINAL_2026-10-20.json",
@@ -188,11 +188,11 @@
       }
      ],
      "depth": {
-      "words": 8237,
+      "words": 8298,
       "words_required": 1900,
       "text_depth_ok": true,
       "sheets": 9,
-      "formulas": 415,
+      "formulas": 416,
       "sheet_depth_ok": true
      },
      "placeholders_found": [],
@@ -276,11 +276,11 @@
       }
      ],
      "depth": {
-      "words": 8237,
+      "words": 8298,
       "words_required": 1500,
       "text_depth_ok": true,
       "sheets": 9,
-      "formulas": 415,
+      "formulas": 416,
       "sheet_depth_ok": true
      },
      "placeholders_found": [],
@@ -327,11 +327,11 @@
   },
   "guide_inspection": "reports/B13-001/GUIDE_INSPECTION_2026-10-20.json",
   "guide_pages": 15,
-  "guide_words": 8237,
+  "guide_words": 8298,
   "guide_word_method": "src/quality/quality_enforcer.py::_words (the gate's own tokenizer)",
   "workbook_qa": "reports/B13-001/WORKBOOK_QA_2026-10-20.json",
   "workbook_qa_verdict": "PASS",
-  "workbook_formula_cells": 415
+  "workbook_formula_cells": 416
  },
  "authorization_required": {
   "blocked_by": "FACTORY_LIVE_PUBLISH=false and no active write scope; create_product and enable_product are not scopable.",

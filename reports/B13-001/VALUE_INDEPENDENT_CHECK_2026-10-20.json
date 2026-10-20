@@ -1,13 +1,13 @@
 {
  "product_id": "B13-001",
  "title": "Renovation Allowance & Change-Order Control",
- "checked_at": "2026-10-20T14:37:19+00:00",
+ "checked_at": "2026-10-20T17:22:59+00:00",
  "engine": "Microsoft Excel 16.0 via scripts/excel_recalc_probe.ps1; independent model in plain Python from typed inputs only",
  "artifact": "books\\batch13\\B13-001_renovation_allowance_control.xlsx",
- "artifact_sha256": "028b9ed14e80ddb8f62955835bd0012f88022d52c0ff135d4c62ef13765e5a89",
- "excel_formula_cells": 415,
+ "artifact_sha256": "6a48ebc859a064ac003a9ae1dc9779ca7f9cf3972bbf7ce5ddc89e2f8ec3cf38",
+ "excel_formula_cells": 416,
  "excel_error_cells": 0,
- "fields_compared": 16,
+ "fields_compared": 17,
  "mismatches": [],
  "comparison": [
   {
@@ -113,6 +113,13 @@
    "cell": "Summary!B19",
    "excel_displayed": "$49,700",
    "independent_python": 49700.0,
+   "match": true
+  },
+  {
+   "field": "contingency_drawn",
+   "cell": "Summary!B20",
+   "excel_displayed": "$2,100",
+   "independent_python": 2100.0,
    "match": true
   },
   {

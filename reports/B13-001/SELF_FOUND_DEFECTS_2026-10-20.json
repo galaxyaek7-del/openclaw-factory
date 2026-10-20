@@ -1,6 +1,6 @@
 {
  "product_id": "B13-001",
- "recorded_at": "2026-10-20T14:37:22+00:00",
+ "recorded_at": "2026-10-20T17:23:00+00:00",
  "found_in_own_draft": [
   {
    "id": "D1",
@@ -57,6 +57,13 @@
    "what": "The listing copy asserted the workbook works in 'Excel, LibreOffice Calc or Google Sheets'. Only Excel and openpyxl were ever exercised; the other two are untested, so the claim was stronger than the evidence.",
    "found_by": "checking the copy against the build report's own UNKNOWN list",
    "fix": "Copy now says it is built for Excel, states that the other two are untested, and invites the buyer to report any problem."
+  },
+  {
+   "id": "D9",
+   "severity": "medium",
+   "what": "Summary!B19 was labelled 'All-in plan (revised budget + reserve)' but its formula added B14, the reserve that is left, so it displayed $49,700 rather than the $51,800 the label implied. The guide repeated the same claim ('adds the reserve back'), and the $2,100 already drawn from the reserve appeared nowhere on the one-page Summary, so money already spent was invisible there.",
+   "found_by": "auditing the label against its own formula and against the guide sentence repeating it",
+   "fix": "Label is now '(revised budget + reserve left)'; new Summary!B20 'Contingency drawn to date' =Contingency!$H$2; guide paragraph 11 and the worked-example paragraph corrected; listing copy names the new row; the Excel probe and the independent model now compare 17 fields instead of 16."
   }
  ],
  "process_incident": {

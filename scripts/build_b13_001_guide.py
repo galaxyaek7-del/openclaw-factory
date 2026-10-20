@@ -189,8 +189,9 @@ BLOCKS = [
         "budget."),
     (P, "Then read four numbers in this order: revised budget, committed total, projected final, and variance. Committed "
         "as a percentage of the revised budget tells you how much of the project is already decided, which is a useful "
-        "measure of how much freedom you still have. All-in plan adds the reserve back, so you can see the total the "
-        "project could reach without any further change orders."),
+        "measure of how much freedom you still have. All-in plan adds whatever is left of the reserve, so you can see the "
+        "total the project could reach without any further change orders. The line under it says how much has already been "
+        "drawn from the reserve, because that money is spent and does not appear inside projected final."),
     (P, "One number the summary deliberately does not produce is a single confidence score. A renovation is not a "
         "portfolio, and averaging incompatible risks into one figure would be a comfort, not a control."),
 
@@ -226,8 +227,10 @@ BLOCKS = [
         "yet. Five lines are over their revised budget, one change order is unsigned, one allowance has no paperwork, and "
         "$500 is owed back. Every one of those facts came out of the workbook's own formulas, not from a narrator."),
     (P, "Notice also what the example does not do: it does not pretend that a $45,000 budget with a $49,700 projected final "
-        "is fine because the reserve exists. The all-in plan line shows $49,700, and the check line says remaining spend "
-        "exceeds the budget left. The workbook's job is to make the sentence unavoidable, not to soften it."),
+        "is fine because the reserve exists. The all-in plan line shows $49,700 - the revised budget plus the $2,400 of "
+        "reserve still left - and the check line says remaining spend exceeds the budget left. The drawn-to-date line shows "
+        "the other $2,100 of the reserve, already spent and sitting outside every projected total. The workbook's job is to "
+        "make those sentences unavoidable, not to soften them."),
 
     (H, "13. The fifteen-minute monthly review"),
     (P, "Once a month, and immediately after any signed change, run the same short sequence. It is short on purpose; a "

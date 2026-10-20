@@ -24,6 +24,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -42,6 +43,19 @@ XLSX = ROOT / "books" / "batch13" / "B13-001_renovation_allowance_control.xlsx"
 PDF = ROOT / "books" / "batch13" / "B13-001_renovation_allowance_control_guide.pdf"
 EVID = ROOT / "reports" / "B13-001"
 PROBE = Path(r"C:\Users\Dell\AppData\Local\Temp\opencode\b13_probe_out.json")
+PROBE_SPEC = PROBE.with_name("b13_probe_spec.json")
+PROBE_CELLS = [
+    ("Summary", "B4"), ("Summary", "B5"), ("Summary", "B6"), ("Summary", "B7"),
+    ("Summary", "B8"), ("Summary", "B9"), ("Summary", "B10"), ("Summary", "B11"),
+    ("Summary", "B12"), ("Summary", "B13"), ("Summary", "B14"), ("Summary", "B15"),
+    ("Summary", "B16"), ("Summary", "B17"), ("Summary", "B18"), ("Summary", "B19"),
+    ("Summary", "B20"),
+    ("Summary", "B22"), ("Summary", "B23"), ("Summary", "B24"), ("Summary", "B25"),
+    ("Summary", "B26"), ("Summary", "B27"), ("Summary", "B28"), ("Summary", "B29"),
+    ("Contingency", "G2"), ("Contingency", "H2"),
+    ("Allowances", "J2"), ("Allowances", "J3"), ("Allowances", "J4"), ("Allowances", "J5"),
+    ("Cost Control", "N2"), ("Cost Control", "N3"), ("Cost Control", "N4"),
+]
 PRICE = 19.00
 TODAY = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
@@ -58,6 +72,33 @@ def _sha(path: Path) -> str:
 
 
 def _probe_values() -> dict:
+    """Force a fresh Excel recalculation instead of reading a stale dump.
+
+    The first version read whatever dump was already in the temp folder. When
+    Summary!B20 was added, the dump predated it, Excel's value came back empty,
+    and the comparison reported a mismatch that did not exist in the workbook.
+    The spec is written here so the cells compared and the cells probed cannot
+    drift apart.
+    """
+    spec = {
+        "artifact": str(XLSX.relative_to(ROOT)).replace("\\", "/"),
+        "formula_sheets": [
+            "Start Here", "Setup", "Cost Control", "Change Orders",
+            "Allowances", "Payments", "Contingency", "Assumptions", "Summary",
+        ],
+        "scan_sheets": [
+            "Start Here", "Setup", "Cost Control", "Change Orders",
+            "Allowances", "Payments", "Contingency", "Assumptions", "Summary",
+        ],
+        "cells": [{"sheet": s, "address": a} for s, a in PROBE_CELLS],
+    }
+    PROBE_SPEC.write_text(json.dumps(spec, indent=1), encoding="utf-8")
+    subprocess.run(
+        ["powershell", "-NoProfile", "-File",
+         str(ROOT / "scripts" / "excel_recalc_probe.ps1"),
+         "-Spec", str(PROBE_SPEC), "-Out", str(PROBE), "-Root", str(ROOT)],
+        check=True, capture_output=True, text=True,
+    )
     d = json.loads(PROBE.read_text(encoding="utf-8-sig"))
     return {(c["sheet"], c["address"]): c["text"] for c in d["cells"]}, d
 
@@ -165,6 +206,7 @@ def independent_model(wb) -> dict:
         "cos_pending": pending,
         "lines_over": lines_over,
         "all_in_plan": round(revised + reserve - drawn, 2),
+        "contingency_drawn": round(drawn, 2),
         "overage_without_change_order": overage_without_co,
     }
 
@@ -190,6 +232,7 @@ def main() -> int:
         "cos_pending": ("Summary", "B17"),
         "lines_over": ("Summary", "B18"),
         "all_in_plan": ("Summary", "B19"),
+        "contingency_drawn": ("Summary", "B20"),
     }
     compared = []
     mismatches = []
@@ -384,6 +427,17 @@ def main() -> int:
              "found_by": "checking the copy against the build report's own UNKNOWN list",
              "fix": ("Copy now says it is built for Excel, states that the other two are untested, and "
                      "invites the buyer to report any problem.")},
+            {"id": "D9", "severity": "medium",
+             "what": ("Summary!B19 was labelled 'All-in plan (revised budget + reserve)' but its formula "
+                      "added B14, the reserve that is left, so it displayed $49,700 rather than the "
+                      "$51,800 the label implied. The guide repeated the same claim ('adds the reserve "
+                      "back'), and the $2,100 already drawn from the reserve appeared nowhere on the "
+                      "one-page Summary, so money already spent was invisible there."),
+             "found_by": "auditing the label against its own formula and against the guide sentence repeating it",
+             "fix": ("Label is now '(revised budget + reserve left)'; new Summary!B20 'Contingency drawn "
+                     "to date' =Contingency!$H$2; guide paragraph 11 and the worked-example paragraph "
+                     "corrected; listing copy names the new row; the Excel probe and the independent "
+                     "model now compare 17 fields instead of 16.")},
         ],
         "process_incident": {
             "id": "INC-b13-001-import-rebuilt-catalogue",

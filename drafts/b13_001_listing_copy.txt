@@ -2,7 +2,7 @@ Renovation Allowance & Change-Order Control
 
 A renovation budget usually fails in two places: allowances nobody tracks, and change orders nobody signs. This workbook keeps both attached to the money.
 
-Inside (9 sheets, 415 live formulas, no macros):
+Inside (9 sheets, 416 live formulas, no macros):
 
 - Setup — project, currency, tax rate, and your allowance categories
 - Cost Control — room for 40 cost lines, each with budget, committed, actual, payments, remaining, variance, and an OVER / ON PLAN / UNDER read on every line
@@ -10,7 +10,7 @@ Inside (9 sheets, 415 live formulas, no macros):
 - Change Orders — room for 20 change orders with cost impact, schedule impact and approval state
 - Payments — invoice and payment log, rolled up per cost line
 - Contingency — reserve held and consumed, with the remaining reserve shown against any overrun
-- Summary — the one-page position: original budget, approved change orders, revised budget, committed, paid to date, unpaid committed, projected final cost, and reserve left, plus nine checks
+- Summary — the one-page position: original budget, approved change orders, revised budget, committed, paid to date, unpaid committed, projected final cost, reserve left, contingency drawn to date, plus nine checks
 - Assumptions — what is excluded, where each number lives, and your own note against each item
 - Start Here — the eight steps, in order
 
