@@ -72,6 +72,23 @@ def test_price_is_selected_but_still_unauthorized(payload):
     assert auth["publication_separately_gated"] is True
 
 
+def test_the_selected_price_clears_the_real_gate(payload):
+    """$15 is not just arithmetic: the real enforcer was re-run at that price.
+
+    The $19 gate record stays on disk as history; this asserts the payload cites
+    a gate that actually ran at the price the founder selected.
+    """
+    evidence = payload["verification_evidence"]
+    assert evidence["gate_at_selected_price_price_usd"] == payload["price_usd"] == 15.0
+    assert evidence["gate_at_selected_price_verdict"] == "APPROVED"
+    layers = evidence["gate_at_selected_price_layers"]
+    for name in ("core_value", "content_quality", "market_reality"):
+        assert layers[name]["status"] == "PASS", name
+    assert layers["core_value"]["score"] == 100
+    assert layers["content_quality"]["score"] == 100
+    assert layers["market_reality"]["score"] >= 65
+
+
 def test_declared_hashes_match_the_real_files(payload):
     assert len(payload["files"]) == 2
     for row in payload["files"]:

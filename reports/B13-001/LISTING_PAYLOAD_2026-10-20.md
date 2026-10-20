@@ -12,7 +12,8 @@
 
 ## Verification cited
 
-- Gate: `reports/B13-001/GATE_FINAL_2026-10-20.json` — state `QA_PASS_AT_19_USD_AWAITING_LISTING_AND_PUBLICATION_AUTHORIZATION`
+- Gate: `reports/B13-001/GATE_FINAL_2026-10-20.json` — state `QA_PASS_AT_19_USD_AWAITING_LISTING_AND_PUBLICATION_AUTHORIZATION` (recorded at the earlier $19 proposal)
+- Gate at the selected price: `reports/B13-001/GATE_SELECTED_PRICE_2026-10-20.json` — verdict `APPROVED` at $15.00
 - Guide inspection: `reports/B13-001/GUIDE_INSPECTION_2026-10-20.json` — 15 pages, 8237 words
 - Workbook QA: `reports/B13-001/WORKBOOK_QA_2026-10-20.json` — verdict `PASS`, 415 formula cells
 - Brand check: PASS
