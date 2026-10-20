@@ -1,0 +1,25 @@
+Renovation Allowance & Change-Order Control
+
+A renovation budget usually fails in two places: allowances nobody tracks, and change orders nobody signs. This workbook keeps both attached to the money.
+
+Inside (9 sheets, 415 live formulas, no macros):
+
+- Setup — project, currency, tax rate, and your allowance categories
+- Cost Control — 40 cost lines with budget, committed, actual, payments, remaining, variance, and an OVER / ON PLAN / UNDER read on every line
+- Allowances — allowance against selections made per category, with an overage flag that names the missing change order
+- Change Orders — 20 change orders with cost impact, schedule impact and approval state
+- Payments — invoice and payment log, rolled up per cost line
+- Contingency — reserve held and consumed, with the remaining reserve shown against any overrun
+- Summary — the one-page position: original budget, approved change orders, revised budget, paid to date, remaining, reserve left
+- Assumptions — every rate and constant in one editable place
+- Start Here — four steps
+
+The workbook ships with a worked example you can read before you overwrite it, and every total is a formula you can audit. Nothing is hidden in a macro.
+
+Also included: a 7-page PDF guide. How to set an allowance you can defend, how to run a change order so it actually gets signed, how to read a variance instead of panicking at it, and what to do when the reserve is gone.
+
+Requires Excel, LibreOffice Calc (free), or Google Sheets (free upload). No macros, no add-ins, no subscription.
+
+New product from Galaxy Forge: no sales recorded yet, no reviews. Arithmetic on the numbers you enter — not legal, tax or financial advice. Your contract and your accountant govern.
+
+Support: reply to your Gumroad receipt email.

@@ -1,0 +1,108 @@
+{
+ "mission": "GF-6H-NEW-MARKETS-PRODUCT-FACTORY-01",
+ "recorded_at": "2026-10-20",
+ "phase": "DISCOVERY",
+ "probe": "PROBE-4",
+ "candidate": "EUDR downstream-trader / operator compliance register and due-diligence preparation pack",
+ "verdict": "DEFERRED_NOT_REJECTED",
+ "score": 19,
+ "score_breakdown": {
+  "demand_evidence": 4,
+  "willingness_to_pay": 4,
+  "differentiation_vs_market": 2,
+  "differentiation_vs_catalog": 3,
+  "buildability_and_verifiability": 3,
+  "risk": 1,
+  "evidence_traceability": 2
+ },
+ "why_this_is_not_a_rejection": "Unlike probes 1-3, this candidate cleared the 18/25 floor. It was not built in this window for a capacity and quality reason, not a commercial one: a compliance product whose value depends on statutory accuracy needs primary-source verification of commodity scope, per-role obligations and retention rules before generation. Writing it from memory would risk exactly the stale-date defect described below, and shipping a rushed compliance product would breach the standing quality constitution.",
+ "critical_date_correction": {
+  "what_was_wrong": "Working assumption carried into this window was that EUDR obligations began 30 December 2025 for large operators and 30 June 2026 for micro and small operators.",
+  "what_is_true": "Both dates moved by one year. Large and medium operators: 30 December 2026. Micro and small operators: 30 June 2027. Micro and small operators already covered by the EU Timber Regulation: 30 December 2026.",
+  "why_it_matters": "A product, listing or guide repeating the 2025/2026 dates would be materially wrong on the single fact a buyer is paying to get right. It also means several circulating paid templates are now stale.",
+  "state": "OBSERVED",
+  "sources": [
+   {
+    "name": "European Commission, Regulation on Deforestation-free products (official topic page)",
+    "url": "https://environment.ec.europa.eu/topics/forests/deforestation/regulation-deforestation-free-products_en",
+    "observed": "Entry into application listed as 30 December 2026 for large and medium operators, 30 June 2027 for micro and small operators, 30 December 2026 for micro and small operators already covered by the EUTR."
+   },
+   {
+    "name": "Commission report to the European Parliament and the Council on the EUDR",
+    "url": "https://environment.ec.europa.eu/document/download/a3c5c3a0-232e-43c4-b0b8-1eecb1df45c7_en?filename=Report+from+the+Commission+to+the+Council+and+Parliament+on+the+EUDR.pdf",
+    "observed": "The 19 December 2025 revision added a further year. Due diligence also shifted to the first operator placing on the market; downstream operators and traders no longer submit their own due diligence statement, and non-SMEs register in the EUDR Information System."
+   },
+   {
+    "name": "Access2Markets news, 2026-01-28",
+    "url": "https://trade.ec.europa.eu/access-to-markets/en/news/delay-until-december-2026-and-other-developments-implementation-eudr-regulation",
+    "observed": "Confirms 30 December 2026 for large operators and 30 June 2027 for micro and small enterprises."
+   },
+   {
+    "name": "Commission Notice, Guidance Document for Regulation (EU) 2023/1115",
+    "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ%3AC_202504524",
+    "observed": "Article 9 information requirements in full, including geolocation of all plots, date or time range of production, supplier and downstream recipient identity blocks, and the deforestation-free and legality evidence requirements."
+   },
+   {
+    "name": "polygon-one, Annex II analysis updated 2026-10-18",
+    "url": "https://polygon-one.com/en/article-dds-template",
+    "observed": "Regulation (EU) 2025/2650 deleted Annex II point 4; the remaining five items are exhaustive, including the verbatim declaration wording and the prescribed signature format. Also notes the aggregated statement introduced July 2026."
+   }
+  ]
+ },
+ "market_evidence": [
+  {
+   "name": "SawmillSmart EUDR DDS template",
+   "url": "https://sawmillsmart.com/insights/eudr-dds-template-sawmills/",
+   "date": "2026-08-18",
+   "price_usd": 0,
+   "observed": "Free six-sheet workbook (statement worksheet, Article 9 evidence checklist, plot geolocation, inbound register, outbound register, field guide) plus a two-page supplier form, explicitly updated for the 2025/2650 amendment. Wood/log focused."
+  },
+  {
+   "name": "polygon-one preparation sheet",
+   "url": "https://polygon-one.com/en/article-dds-template",
+   "date": "2026-10-18",
+   "price_usd": 0,
+   "observed": "Free XLSX preparation sheet with Annex II items, Article 9 fields, plot sheet, completeness check and signatory log; plus a free worked coffee-import example."
+  },
+  {
+   "name": "CDG EUDR Documentation Kit",
+   "url": "https://cdgdocs.com/b/eudr-documentation-kit",
+   "price_usd": 250,
+   "observed": "Paid generic kit: policy and procedures, supply-chain mapping, origin verification, geolocation register, supplier due diligence and risk assessment, DDS preparation records, internal audit and document control."
+  },
+  {
+   "name": "EUDR-Ready service (eudrdesk.eu)",
+   "url": "https://eudrdesk.eu/en/",
+   "price_usd": 990,
+   "observed": "Done-for-you scope check, TRACES NT registration and first DDS filing, founding price EUR 990 rising to EUR 1,990."
+  },
+  {
+   "name": "EUDRReady software comparison",
+   "url": "https://eudrready.eu/eudr-software-small-business/",
+   "date": "2026-05-15",
+   "observed": "SaaS at EUR 29/month starter and EUR 79/month business; article states small businesses can manage with a spreadsheet and folder at very small scale, and names auditing, scale, staff change and five-year retention as the failure points."
+  },
+  {
+   "name": "EUDR toolkit vendor FAQ (Finagon)",
+   "url": "https://eudr.finagon.com/faq/",
+   "observed": "Paid template toolkit positioned at companies and consultants; confirms the DDS template mirrors Annex II. Its FAQ still states the pre-amendment SME date of 30 June 2026, which is now wrong."
+  }
+ ],
+ "differentiation_analysis": {
+  "available_gap": "The free workbooks are wood-specific or generic preparation sheets. A commodity-specific pack for a non-wood commodity (coffee, cocoa, palm, rubber, soy, cattle) with current-amendment accuracy, supplier request forms written for that supply chain, and an explicit role split between first placer and downstream trader is a real, if modest, wedge. Currency against Regulation (EU) 2025/2650 is itself a differentiator, since at least one paid vendor FAQ still carries the superseded date.",
+  "why_only_2_of_5": "The core arithmetic and checklists are already free and current. The wedge is specificity and accuracy, not a new capability. Claiming more would be marketing rather than substance.",
+  "state": "DERIVED"
+ },
+ "build_requirements_if_resumed": [
+  "Verify commodity scope against Annex I CN codes for the chosen commodity before writing any claim.",
+  "Verify the role split (first placer vs downstream trader vs micro/small primary operator) against the consolidated Regulation (EU) 2023/1115 as amended by (EU) 2025/2650.",
+  "Confirm retention period and Information System registration duties per role and size.",
+  "Cite the official Commission pages in the product itself, with an as-of date, and state that competent authorities govern.",
+  "Target at least 12 guide pages at $12, or 30+ pages at $19, so the price clears the market-realism curve rather than fighting it."
+ ],
+ "not_done": [
+  "No EUDR product was built.",
+  "Commodity scope was not verified against Annex I for any specific commodity.",
+  "No supplier form, workbook or guide was drafted."
+ ]
+}
