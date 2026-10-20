@@ -1,0 +1,102 @@
+{
+ "schema": "galaxy_forge.b12_008_repair_record.v1",
+ "run_at": "2026-10-20T01:25:45.558496+00:00",
+ "product_id": "B12-008",
+ "artifacts": [
+  {
+   "file": "books/batch12/B12-008_moving_checklist.pdf",
+   "before": {
+    "bytes": 4311,
+    "sha256": "d3803cd831106cfbce6875c84ada45fd008360db7fbe195d60c6a7bf73d2db14",
+    "source": "reports/CYCLE104/DIGITAL_PRODUCT_INVENTORY.json"
+   },
+   "after": {
+    "bytes": 17339,
+    "sha256": "3026c7312af7589d39dfcc5d9521747144e618d6c5ca2052c0e8160e3989b403",
+    "pages": 6,
+    "words": 3265
+   }
+  },
+  {
+   "file": "books/batch12/B12-008_moving_budget_tracker.xlsx",
+   "before": {
+    "bytes": 7629,
+    "sha256": "1e42132bf63d3c2b305a66ac86ff79824bdada0511b186420adaeaf5121dd1ed",
+    "source": "reports/CYCLE104/DIGITAL_PRODUCT_INVENTORY.json"
+   },
+   "after": {
+    "bytes": 16860,
+    "sha256": "48225a83e8ddd030e34d26e80594a34b34462b74ec7039e86d20a7cf8ad0155e",
+    "sheets": 7,
+    "formulas": 129,
+    "sheet_names": [
+     "Budget",
+     "MoverCompare",
+     "AddressChanges",
+     "Utilities",
+     "Deposits",
+     "Summary",
+     "README"
+    ]
+   }
+  }
+ ],
+ "trigger": "Cycle 104 recorded B12-008 as content_quality FAIL 60 (depth only) against a $29 price: a 2-page, 273-word PDF and a 4-sheet workbook holding a single formula.",
+ "defects_fixed": [
+  {
+   "where": "guide PDF",
+   "defect": "2 pages / 273 gate-words against a 2,900-word requirement for a $29 product",
+   "fix": "rebuilt as a 6-page guide built around the workbook's own arithmetic",
+   "found_by": "reports/CYCLE104/PRODUCT_QA_RESULTS.json (depth_sufficient false)"
+  },
+  {
+   "where": "budget workbook",
+   "defect": "4 sheets / 1 formula: no real calculation anywhere, so the workbook was a form to look at rather than a tool that computes",
+   "fix": "rebuilt as 7 sheets / 129 formulas / 9 data validations (Budget, MoverCompare, AddressChanges, Utilities, Deposits, Summary, README) with guarded formulas that refuse to guess when inputs are missing",
+   "found_by": "reports/CYCLE104/PRODUCT_QA_RESULTS.json (sheet_depth_ok false)"
+  },
+  {
+   "where": "Summary sheet",
+   "defect": "the row labelled \"Deposits at risk\" summed every deposit, so the label described a calculation the formula did not perform - it read correctly only because no example row had a photo recorded yet",
+   "fix": "split into three honest rows: total deposits held (SUM), deposits with photos done (SUMIF), deposits still at risk (=SUM minus the photo-complete sum)",
+   "found_by": "Cycle 106 reading of the freshly built workbook, before release; no automated gate compares a label against its formula"
+  },
+  {
+   "where": "guide PDF, worked example",
+   "defect": "the mover-scoring example contradicted the workbook it describes: it called a 1,950-quote scenario the \"maximum score\" and claimed the cheapest quote takes the same price score, while the shipped formula gives 40 / 34 / 31 and totals 70 / 94 / 91",
+   "fix": "replaced with the real arithmetic, then proved against Excel: the example entered into a throwaway copy recalculates to 70 / 94 / 91 with the 1,950 mover shortlisted (reports/B12-008/WORKED_EXAMPLE_RECONCILIATION_2026-10-20.json)",
+   "found_by": "Cycle 106 reading of the shipped PDF text, before release"
+  },
+  {
+   "where": "guide PDF, cross-reference",
+   "defect": "the guide twice told the reader to write numbers on \"the Dashboard\" - a sheet this workbook does not have (the sheet is Summary), a broken instruction for any buyer who followed it",
+   "fix": "both references corrected to the Summary sheet, and the sheet list re-verified",
+   "found_by": "Cycle 106 comparison of the guide's named sheets against the workbook's real sheet names, before release"
+  },
+  {
+   "where": "guide PDF, dates",
+   "defect": "an example said \"a day after the old close\" where its own dates are two days apart",
+   "fix": "corrected to two days; the workbook's Utilities examples now demonstrate both a two-day gap and a same-day handover",
+   "found_by": "Cycle 106 reading of the shipped PDF text, before release"
+  },
+  {
+   "where": "Summary sheet number formats",
+   "defect": "count rows carried a money format from the shared format loop, so counts rendered as currency",
+   "fix": "percent row, integer count rows and money rows now formatted separately",
+   "found_by": "Cycle 106 read-through of the rebuilt workbook, before release"
+  }
+ ],
+ "self_caught_disclosure": "Four of the defects above were in text and formulas this cycle authored; they were caught by extracting and reading the shipped artifact before release, which is the step no automated gate in this factory performs. They are recorded rather than quietly fixed because that review step is the only thing that caught them.",
+ "deliberately_not_done": [
+  "No price change (a founder decision; the dual reading is disclosed instead).",
+  "No weakening of the words-per-dollar or sheet-depth rules.",
+  "No padding to reach a page count or price ceiling.",
+  "No edit to data/product_batch_12.json.",
+  "No departure from native_workbook_qa's spec format: the workbook was verified by Excel's own recalculation, not by a Python formula evaluator."
+ ],
+ "observed_data_quality_gap": {
+  "where": "data/product_batch_12.json (B12-006..009)",
+  "gap": "no outcome field, so the sweep's core-value layer scores 75 instead of 100",
+  "handled_by": "recorded here and as a weak signal; the generated registry is not hand-edited"
+ }
+}

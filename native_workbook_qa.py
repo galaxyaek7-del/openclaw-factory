@@ -154,9 +154,69 @@ B12_006_SPEC: Dict[str, Any] = {
     ],
 }
 
+B12_008_SPEC: Dict[str, Any] = {
+    "product_id": "B12-008",
+    "artifact": "books/batch12/B12-008_moving_budget_tracker.xlsx",
+    "artifact_sha256": "48225a83e8ddd030e34d26e80594a34b34462b74ec7039e86d20a7cf8ad0155e",
+    "formula_sheets": ["Budget", "MoverCompare", "Utilities", "Summary"],
+    "scan_sheets": [
+        "Budget", "MoverCompare", "AddressChanges", "Utilities",
+        "Deposits", "Summary", "README",
+    ],
+    # Summary is the only label/value table: every other sheet is a wide form
+    # where the columns carry different units, so those are checked by column
+    # rule instead (see below).
+    "tables": [
+        {"sheet": "Summary", "key_column": 1, "value_column": 2, "first_row": 2, "last_row": 21},
+        # The gap-days example is the workbook's flagship calculation: two
+        # transferred services with real dates (a 2-day gap and a same-day
+        # handover). Checked through the service names so the row order can
+        # change without breaking the spec.
+        {"sheet": "Utilities", "key_column": 1, "value_column": 6, "first_row": 2, "last_row": 11},
+    ],
+    "columns": [
+        {
+            "name": "Budget!E (Chosen)",
+            "sheet": "Budget", "column": 5, "first_row": 2, "last_row": 41,
+            "kind": "currency", "format_contains": "$", "require_rows": True,
+        },
+        {
+            "name": "Budget!G (Variance vs lowest)",
+            "sheet": "Budget", "column": 7, "first_row": 2, "last_row": 41,
+            "kind": "currency", "format_contains": "$", "require_rows": True,
+        },
+        {
+            "name": "MoverCompare!F (Deposit due)",
+            "sheet": "MoverCompare", "column": 6, "first_row": 2, "last_row": 11,
+            "kind": "currency", "format_contains": "$", "require_rows": True,
+        },
+        {
+            "name": "MoverCompare!J (Total score)",
+            "sheet": "MoverCompare", "column": 10, "first_row": 2, "last_row": 11,
+            "kind": "integer", "format": "General", "require_rows": True,
+        },
+    ],
+    "expect": [
+        {"sheet": "Summary", "label": "Total chosen budget (USD)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Paid so far (USD)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Still to pay (USD)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Share already paid", "kind": "percent", "format": "0.0%"},
+        {"sheet": "Summary", "label": "Movers shortlisted", "kind": "integer", "format": "0"},
+        {"sheet": "Summary", "label": "Best mover score", "kind": "integer", "format": "0"},
+        {"sheet": "Summary", "label": "Address changes still to do", "kind": "integer", "format": "0"},
+        {"sheet": "Summary", "label": "Utilities with a gap", "kind": "integer", "format": "0"},
+        {"sheet": "Summary", "label": "Total deposits held (USD)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Deposits with photos done (USD)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Deposits still at risk (USD)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Utilities", "label": "EXAMPLE electricity", "kind": "integer", "format": "0"},
+        {"sheet": "Utilities", "label": "EXAMPLE internet", "kind": "integer", "format": "0"},
+    ],
+}
+
 SPECS = {
     B12_010_SPEC["product_id"]: B12_010_SPEC,
     B12_006_SPEC["product_id"]: B12_006_SPEC,
+    B12_008_SPEC["product_id"]: B12_008_SPEC,
 }
 
 

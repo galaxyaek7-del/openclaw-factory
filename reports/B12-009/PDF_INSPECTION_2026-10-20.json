@@ -1,0 +1,35 @@
+{
+ "schema": "galaxy_forge.b12_pdf_inspection.v1",
+ "run_at": "2026-10-20T00:49:22.405923+00:00",
+ "product_id": "B12-009",
+ "file": "books/batch12/B12-009_pet_sitter_handover_kit.pdf",
+ "bytes": 16718,
+ "sha256": "231243cfcc6af8ed55d9db88534221ea5949cde5b8bf49ea2b0cd2a61d796ca2",
+ "pages": 7,
+ "words": 2766,
+ "words_per_page": 395.1,
+ "required_phrases": [
+  "Step 1.",
+  "Step 6.",
+  "Call the vet before you call the owner",
+  "Spending limit I authorise",
+  "xylitol",
+  "microchip",
+  "daily log",
+  "what to do if a dose is missed",
+  "NOT VETERINARY OR LEGAL ADVICE"
+ ],
+ "missing_phrases": [],
+ "required_statements": {
+  "never_human_medication": true,
+  "never_induce_vomiting_unprompted": true,
+  "never_double_a_missed_dose": true,
+  "authorisation_arranged_in_advance": true,
+  "clinic_instructions_override": true
+ },
+ "cross_references": {},
+ "placeholders": [],
+ "mojibake_markers": 0,
+ "method": "pypdf text extraction of the release PDF, whitespace-normalised; required phrases, statements and workbook cross-references are matched against that extracted text, never against the builder source",
+ "verdict": "PASS"
+}

@@ -1,0 +1,116 @@
+{
+ "schema": "galaxy_forge.b12_gate_final.v1",
+ "product_id": "B12-009",
+ "title": "Pet Sitter Handover Kit",
+ "run_at": "2026-10-20T01:25:45.558496+00:00",
+ "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
+ "artifacts": [
+  {
+   "file": "books/batch12/B12-009_pet_sitter_handover_kit.pdf",
+   "before": {
+    "bytes": 4283,
+    "sha256": "2b2069c950627ea12aac60574dd2cf3b7d1ebc5bdbb852d37659127f89731844",
+    "source": "reports/CYCLE104/DIGITAL_PRODUCT_INVENTORY.json"
+   },
+   "after": {
+    "bytes": 16718,
+    "sha256": "231243cfcc6af8ed55d9db88534221ea5949cde5b8bf49ea2b0cd2a61d796ca2",
+    "pages": 7,
+    "words": 2729
+   }
+  }
+ ],
+ "quality_gate": {
+  "verdict": "BLOCKED_MISSING_DATA",
+  "blocked": true,
+  "reasons": [
+   "market_reality: no sourced competitor prices and no recorded proof of payment"
+  ],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 75
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "MISSING_DATA",
+    "score": null
+   }
+  },
+  "depth": {
+   "words": 2729,
+   "words_required": 1900,
+   "text_depth_ok": true
+  }
+ },
+ "market_reality_note": "market_reality is MISSING_DATA for every product in this factory: no sourced competitor prices and no recorded founder payment evidence are wired into the harness. That is a harness limitation, not a product verdict, and it is why the overall enforcer verdict reads BLOCKED_MISSING_DATA while both scored layers pass.",
+ "verdict": "REPAIRED_QA_PASS_AWAITING_PRICE_TIER_AND_LISTING_AUTHORIZATION",
+ "state": {
+  "build_state": "BUILD_COMPLETE",
+  "qa_state": "QA_PASS",
+  "authorization": "READY_FOR_AUTHORIZATION (not requested this cycle)",
+  "publication": "NOT_PUBLISHED",
+  "purchasability": "UNKNOWN"
+ },
+ "blocking_next": [
+  "Price tier decision: the honest general-digital ceiling at this page count versus the 19 USD manifest price (the premium curated tier accepts the manifest price).",
+  "Listing publication remains behind the standing write gate: FACTORY_LIVE_PUBLISH is not true and no scoped authorization exists."
+ ],
+ "cycle104_defect_reference": "reports/CYCLE104/PRODUCT_QA_RESULTS.json (B12-009 content_quality FAIL 60)",
+ "price": {
+  "manifest_price_usd": 19,
+  "price_change_applied": false,
+  "why_no_change": "A price change is a founder decision; this repair changes content and formulas only. The figures below are disclosed, not applied.",
+  "economics_module": "economics.market_realism_check (two ceilings, the stricter wins: price/page_count <= max_price_per_page_usd, and books under 30 pages capped at short_book_price_ceiling_usd)",
+  "page_count_used": 7,
+  "ceilings": {
+   "gumroad_digital": {
+    "at_19": {
+     "market_realistic": false,
+     "suggested_price_usd": 7.0
+    },
+    "at_15": {
+     "market_realistic": false,
+     "suggested_price_usd": 7.0
+    },
+    "at_7": {
+     "market_realistic": true,
+     "suggested_price_usd": 7
+    }
+   },
+   "gumroad_premium": {
+    "at_19": {
+     "market_realistic": true,
+     "suggested_price_usd": 19
+    },
+    "at_15": {
+     "market_realistic": true,
+     "suggested_price_usd": 15
+    },
+    "at_7": {
+     "market_realistic": true,
+     "suggested_price_usd": 7
+    }
+   },
+   "gumroad_elite": {
+    "at_19": {
+     "market_realistic": true,
+     "suggested_price_usd": 19
+    },
+    "at_15": {
+     "market_realistic": true,
+     "suggested_price_usd": 15
+    },
+    "at_7": {
+     "market_realistic": true,
+     "suggested_price_usd": 7
+    }
+   }
+  },
+  "policy_limitation": "This is a PDF-only product (no workbook), so the general digital tier's own short-book rule binds directly: a 7-page guide cannot honestly carry a $19 self-serve price on that tier, whatever the words say.",
+  "not_padded": "The kit was rebuilt as 13 sections plus 5 fillable forms a sitter actually completes. No filler was added to reach a page count or a price ceiling."
+ }
+}

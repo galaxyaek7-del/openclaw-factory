@@ -1,0 +1,54 @@
+{
+ "schema": "galaxy_forge.b12_009_repair_record.v1",
+ "run_at": "2026-10-20T01:25:45.558496+00:00",
+ "product_id": "B12-009",
+ "artifacts": [
+  {
+   "file": "books/batch12/B12-009_pet_sitter_handover_kit.pdf",
+   "before": {
+    "bytes": 4283,
+    "sha256": "2b2069c950627ea12aac60574dd2cf3b7d1ebc5bdbb852d37659127f89731844",
+    "source": "reports/CYCLE104/DIGITAL_PRODUCT_INVENTORY.json"
+   },
+   "after": {
+    "bytes": 16718,
+    "sha256": "231243cfcc6af8ed55d9db88534221ea5949cde5b8bf49ea2b0cd2a61d796ca2",
+    "pages": 7,
+    "words": 2729
+   }
+  }
+ ],
+ "trigger": "Cycle 104 recorded B12-009 as content_quality FAIL 60 (depth only) against a $19 price: a 2-page, 233-word PDF for a product sold as a handover kit.",
+ "defects_fixed": [
+  {
+   "where": "kit PDF",
+   "defect": "2 pages / 233 gate-words against a 1,900-word requirement for a $19 product",
+   "fix": "rebuilt as 13 sections plus 5 fillable forms (vet authorisation and spending limit, feeding and medication log, daily update log, emergency protocol, return checklist)",
+   "found_by": "reports/CYCLE104/PRODUCT_QA_RESULTS.json (depth_sufficient false)"
+  },
+  {
+   "where": "kit PDF, emergency protocol",
+   "defect": "the first rebuild said \"a eye that cannot open\" and cited \"the form in section six\" for a form that ships in section eleven",
+   "fix": "corrected to \"an eye\", and the cross-reference corrected to section eleven",
+   "found_by": "Cycle 106 extraction and reading of the rebuilt PDF, before release"
+  },
+  {
+   "where": "kit PDF, self-reference",
+   "defect": "\"Pages two and three are the part that matters\" was false once the kit grew",
+   "fix": "replaced with a page-independent instruction (\"The first pages are...\")",
+   "found_by": "Cycle 106 extraction and reading of the rebuilt PDF, before release"
+  }
+ ],
+ "self_caught_disclosure": "The prose defects above were introduced by this cycle's own first rebuild and caught by reading the extracted PDF text before release; recorded rather than quietly fixed.",
+ "deliberately_not_done": [
+  "No workbook was created: the product is a PDF-only kit and inventing a spreadsheet to chase a cheaper price ceiling would be padding, not value.",
+  "No price change (a founder decision; the dual reading is disclosed instead).",
+  "No weakening of the words-per-dollar rule.",
+  "No edit to data/product_batch_12.json."
+ ],
+ "observed_data_quality_gap": {
+  "where": "data/product_batch_12.json (B12-006..009)",
+  "gap": "no outcome field, so the sweep's core-value layer scores 75 instead of 100",
+  "handled_by": "recorded here and as a weak signal; the generated registry is not hand-edited"
+ }
+}

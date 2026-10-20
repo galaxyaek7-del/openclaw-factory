@@ -1,0 +1,350 @@
+{
+ "product_id": "B12-008",
+ "artifact": "books/batch12/B12-008_moving_budget_tracker.xlsx",
+ "artifact_sha256": "48225a83e8ddd030e34d26e80594a34b34462b74ec7039e86d20a7cf8ad0155e",
+ "engine": {
+  "name": "Microsoft Excel",
+  "version": "16.0",
+  "build": "19127"
+ },
+ "calculated_at_utc": "2026-10-20T00:49:36Z",
+ "method": "Each expected value is derived in Python from the workbook's input cells (chosen amounts, quotes, paid flags, categories, quotes/insured/reviews, utility dates, deposits, address rows) and compared with the value Microsoft Excel calculated. No expectation is read from the output cell it is compared to.",
+ "checks": [
+  {
+   "check": "Budget: total chosen = sum of Chosen column",
+   "expected": 5120,
+   "actual": 5120,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Budget: paid = sum of Chosen where Paid = Y",
+   "expected": 0,
+   "actual": 0,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Budget: still to pay = total - paid",
+   "expected": 5120,
+   "actual": 5120,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Budget: share paid = paid / total",
+   "expected": 0.0,
+   "actual": 0,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Budget: rollup 'Moving company'",
+   "expected": 1800,
+   "actual": 1800,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Budget: rollup 'Packing supplies'",
+   "expected": 120,
+   "actual": 120,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Budget: rollup 'Deposit'",
+   "expected": 3000,
+   "actual": 3000,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Budget: rollup 'Utilities'",
+   "expected": 200,
+   "actual": 200,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Budget: rollup 'Fees'",
+   "expected": 0,
+   "actual": 0,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Budget: rollup 'Furniture'",
+   "expected": 0,
+   "actual": 0,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Budget: rollup 'Other'",
+   "expected": 0,
+   "actual": 0,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Budget: variance = Chosen - MIN(Quote A, Quote B) on every quoted row",
+   "expected": true,
+   "actual": true,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Budget: variance is blank when Chosen is blank",
+   "expected": "",
+   "actual": "",
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "MoverCompare: deposit due = quote x deposit %",
+   "expected": true,
+   "actual": true,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "MoverCompare: price score, insured, reviews and total recompute exactly",
+   "expected": [
+    94,
+    70,
+    56
+   ],
+   "actual": [
+    94,
+    70,
+    56
+   ],
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "MoverCompare: price score is capped at 0 (never negative)",
+   "expected": true,
+   "actual": true,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "MoverCompare: exactly the top-scoring mover is shortlisted",
+   "expected": [
+    2
+   ],
+   "actual": [
+    2
+   ],
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Summary: movers shortlisted",
+   "expected": 1,
+   "actual": 1,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Summary: best mover score",
+   "expected": 94,
+   "actual": 94,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Utilities: gap days = new start - old close",
+   "expected": {
+    "2": 2,
+    "3": 0
+   },
+   "actual": {
+    "2": 2,
+    "3": 0
+   },
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Utilities: electricity example shows a 2-day gap",
+   "expected": 2,
+   "actual": 2,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Utilities: internet example shows a same-day handover (0)",
+   "expected": 0,
+   "actual": 0,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Utilities: blank dates leave the gap blank",
+   "expected": "",
+   "actual": "",
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Summary: utilities with a gap",
+   "expected": 1,
+   "actual": 1,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Summary: utilities with a break",
+   "expected": 0,
+   "actual": 0,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Utilities: example dates render as real dates (not serial numbers)",
+   "expected": true,
+   "actual": true,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Deposits: total held",
+   "expected": 3300,
+   "actual": 3300,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Deposits: with photos done",
+   "expected": 0,
+   "actual": 0,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Deposits: still at risk = total - photos done",
+   "expected": 3300,
+   "actual": 3300,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Deposits: return deadline renders as a real date",
+   "expected": true,
+   "actual": true,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "AddressChanges: outstanding = rows not marked Y",
+   "expected": 6,
+   "actual": 6,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Guard: Budget variance formula guards blank Chosen and non-numeric quotes",
+   "expected": true,
+   "actual": true,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Guard: gap formula returns ? instead of a wrong number for non-dates",
+   "expected": true,
+   "actual": true,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Guard: price score floors at 0 and guards a zero lowest quote",
+   "expected": true,
+   "actual": true,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Guard: total score is the sum of the three components",
+   "expected": true,
+   "actual": true,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Guard: share-paid formula does not divide by zero",
+   "expected": true,
+   "actual": true,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Guard: at-risk deposits are derived, not the gross total",
+   "expected": true,
+   "actual": true,
+   "pass": true,
+   "basis": "DERIVED",
+   "note": ""
+  },
+  {
+   "check": "Validation: at least 9 input rules exist",
+   "expected": true,
+   "actual": true,
+   "pass": true,
+   "basis": "OBSERVED",
+   "note": "counted from the workbook's data validations"
+  },
+  {
+   "check": "Validation: rules cover Budget, MoverCompare, AddressChanges, Utilities, Deposits",
+   "expected": true,
+   "actual": true,
+   "pass": true,
+   "basis": "OBSERVED",
+   "note": "sheets with at least one rule"
+  }
+ ],
+ "summary": {
+  "total": 39,
+  "passed": 39,
+  "failed": 0
+ },
+ "verdict": "PASS"
+}

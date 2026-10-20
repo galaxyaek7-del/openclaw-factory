@@ -1,0 +1,45 @@
+{
+ "schema": "galaxy_forge.b12_pdf_inspection.v1",
+ "run_at": "2026-10-20T00:49:22.088922+00:00",
+ "product_id": "B12-007",
+ "file": "books/batch12/B12-007_digital_declutter_plan.pdf",
+ "bytes": 14824,
+ "sha256": "46e2440533160160ddc4b560e90ee0b5ab1e1ebe6518d61f51af767d43dec6d7",
+ "pages": 5,
+ "words": 2808,
+ "words_per_page": 561.6,
+ "required_phrases": [
+  "keep, archive, or delete",
+  "Archive is the pressure valve",
+  "Day 1.",
+  "Day 30.",
+  "cloud sync folder is not a backup",
+  "restore test",
+  "Five ways this plan fails",
+  "worked example",
+  "not a forecast for your household",
+  "NOT SECURITY, LEGAL, TAX OR FINANCIAL ADVICE"
+ ],
+ "missing_phrases": [],
+ "required_statements": {
+  "archive_is_a_verdict_not_a_holding_pen": true,
+  "three_verdicts_only": true,
+  "restore_is_performed_not_assumed": true,
+  "subscriptions_normalised_to_monthly": true,
+  "bounded_by_design": true
+ },
+ "cross_references": {
+  "workbook_sheets": {
+   "Accounts": true,
+   "Files": true,
+   "Backups": true,
+   "Subscriptions": true,
+   "Dashboard": true,
+   "README": true
+  }
+ },
+ "placeholders": [],
+ "mojibake_markers": 0,
+ "method": "pypdf text extraction of the release PDF, whitespace-normalised; required phrases, statements and workbook cross-references are matched against that extracted text, never against the builder source",
+ "verdict": "PASS"
+}

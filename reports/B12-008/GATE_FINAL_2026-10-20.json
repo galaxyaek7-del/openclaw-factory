@@ -1,0 +1,142 @@
+{
+ "schema": "galaxy_forge.b12_gate_final.v1",
+ "product_id": "B12-008",
+ "title": "Moving House 8-Week Planner",
+ "run_at": "2026-10-20T01:25:45.558496+00:00",
+ "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
+ "artifacts": [
+  {
+   "file": "books/batch12/B12-008_moving_checklist.pdf",
+   "before": {
+    "bytes": 4311,
+    "sha256": "d3803cd831106cfbce6875c84ada45fd008360db7fbe195d60c6a7bf73d2db14",
+    "source": "reports/CYCLE104/DIGITAL_PRODUCT_INVENTORY.json"
+   },
+   "after": {
+    "bytes": 17339,
+    "sha256": "3026c7312af7589d39dfcc5d9521747144e618d6c5ca2052c0e8160e3989b403",
+    "pages": 6,
+    "words": 3265
+   }
+  },
+  {
+   "file": "books/batch12/B12-008_moving_budget_tracker.xlsx",
+   "before": {
+    "bytes": 7629,
+    "sha256": "1e42132bf63d3c2b305a66ac86ff79824bdada0511b186420adaeaf5121dd1ed",
+    "source": "reports/CYCLE104/DIGITAL_PRODUCT_INVENTORY.json"
+   },
+   "after": {
+    "bytes": 16860,
+    "sha256": "48225a83e8ddd030e34d26e80594a34b34462b74ec7039e86d20a7cf8ad0155e",
+    "sheets": 7,
+    "formulas": 129,
+    "sheet_names": [
+     "Budget",
+     "MoverCompare",
+     "AddressChanges",
+     "Utilities",
+     "Deposits",
+     "Summary",
+     "README"
+    ]
+   }
+  }
+ ],
+ "quality_gate": {
+  "verdict": "BLOCKED_MISSING_DATA",
+  "blocked": true,
+  "reasons": [
+   "market_reality: no sourced competitor prices and no recorded proof of payment"
+  ],
+  "layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 75
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "MISSING_DATA",
+    "score": null
+   }
+  },
+  "depth": {
+   "words": 3265,
+   "words_required": 2900,
+   "text_depth_ok": true,
+   "sheets": 7,
+   "formulas": 129,
+   "sheet_depth_ok": true
+  }
+ },
+ "market_reality_note": "market_reality is MISSING_DATA for every product in this factory: no sourced competitor prices and no recorded founder payment evidence are wired into the harness. That is a harness limitation, not a product verdict, and it is why the overall enforcer verdict reads BLOCKED_MISSING_DATA while both scored layers pass.",
+ "verdict": "REPAIRED_QA_PASS_AWAITING_PRICE_TIER_AND_LISTING_AUTHORIZATION",
+ "state": {
+  "build_state": "BUILD_COMPLETE",
+  "qa_state": "QA_PASS",
+  "authorization": "READY_FOR_AUTHORIZATION (not requested this cycle)",
+  "publication": "NOT_PUBLISHED",
+  "purchasability": "UNKNOWN"
+ },
+ "blocking_next": [
+  "Price tier decision: the honest general-digital ceiling at this page count versus the 29 USD manifest price (the premium curated tier accepts the manifest price).",
+  "Listing publication remains behind the standing write gate: FACTORY_LIVE_PUBLISH is not true and no scoped authorization exists."
+ ],
+ "cycle104_defect_reference": "reports/CYCLE104/PRODUCT_QA_RESULTS.json (B12-008 content_quality FAIL 60)",
+ "price": {
+  "manifest_price_usd": 29,
+  "price_change_applied": false,
+  "why_no_change": "A price change is a founder decision; this repair changes content and formulas only. The figures below are disclosed, not applied.",
+  "economics_module": "economics.market_realism_check (two ceilings, the stricter wins: price/page_count <= max_price_per_page_usd, and books under 30 pages capped at short_book_price_ceiling_usd)",
+  "page_count_used": 6,
+  "ceilings": {
+   "gumroad_digital": {
+    "at_29": {
+     "market_realistic": false,
+     "suggested_price_usd": 6.0
+    },
+    "at_15": {
+     "market_realistic": false,
+     "suggested_price_usd": 6.0
+    },
+    "at_7": {
+     "market_realistic": false,
+     "suggested_price_usd": 6.0
+    }
+   },
+   "gumroad_premium": {
+    "at_29": {
+     "market_realistic": true,
+     "suggested_price_usd": 29
+    },
+    "at_15": {
+     "market_realistic": true,
+     "suggested_price_usd": 15
+    },
+    "at_7": {
+     "market_realistic": true,
+     "suggested_price_usd": 7
+    }
+   },
+   "gumroad_elite": {
+    "at_29": {
+     "market_realistic": true,
+     "suggested_price_usd": 29
+    },
+    "at_15": {
+     "market_realistic": true,
+     "suggested_price_usd": 15
+    },
+    "at_7": {
+     "market_realistic": true,
+     "suggested_price_usd": 7
+    }
+   }
+  },
+  "policy_limitation": "The page policy counts PDF pages only. The 7-sheet, 129-formula budget tracker is invisible to it - the same shape the B12-006 and B12-010 gates disclosed.",
+  "not_padded": "The guide was rebuilt around the workbook's own arithmetic. No filler was added to reach a page count or a price ceiling."
+ }
+}

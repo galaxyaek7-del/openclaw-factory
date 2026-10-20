@@ -1,0 +1,46 @@
+{
+ "schema": "galaxy_forge.b12_pdf_inspection.v1",
+ "run_at": "2026-10-20T00:49:22.245794+00:00",
+ "product_id": "B12-008",
+ "file": "books/batch12/B12-008_moving_checklist.pdf",
+ "bytes": 17339,
+ "sha256": "3026c7312af7589d39dfcc5d9521747144e618d6c5ca2052c0e8160e3989b403",
+ "pages": 6,
+ "words": 3276,
+ "words_per_page": 546.0,
+ "required_phrases": [
+  "eight-week operating plan",
+  "40 for price, 30 for insurance and 30 for checked reviews",
+  "AddressChanges",
+  "Utilities sheet",
+  "condition report",
+  "damage claim",
+  "same day",
+  "6,900 dollars",
+  "7,935",
+  "NOT LEGAL, FINANCIAL, INSURANCE OR TAX ADVICE"
+ ],
+ "missing_phrases": [],
+ "required_statements": {
+  "buffer_is_not_optional": true,
+  "gap_is_a_night_without_service": true,
+  "evidence_is_dated": true,
+  "mover_score_is_disclosed_weighting": true,
+  "estimate_is_not_a_forecast": true
+ },
+ "cross_references": {
+  "workbook_sheets": {
+   "MoverCompare": true,
+   "AddressChanges": true,
+   "Utilities": true,
+   "Summary": true
+  },
+  "must_not_name_a_sheet_that_does_not_exist": {
+   "Dashboard": true
+  }
+ },
+ "placeholders": [],
+ "mojibake_markers": 0,
+ "method": "pypdf text extraction of the release PDF, whitespace-normalised; required phrases, statements and workbook cross-references are matched against that extracted text, never against the builder source",
+ "verdict": "PASS"
+}

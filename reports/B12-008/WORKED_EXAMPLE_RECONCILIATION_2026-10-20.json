@@ -1,0 +1,78 @@
+{
+ "schema": "galaxy_forge.b12_worked_example_reconciliation.v1",
+ "product_id": "B12-008",
+ "guide": "books/batch12/B12-008_moving_checklist.pdf",
+ "workbook": "books/batch12/B12-008_moving_budget_tracker.xlsx",
+ "workbook_sha256": "48225a83e8ddd030e34d26e80594a34b34462b74ec7039e86d20a7cf8ad0155e",
+ "engine": {
+  "name": "Microsoft Excel",
+  "version": "16.0",
+  "build": "19127"
+ },
+ "method": "The guide's published worked example (quotes of 2,100 insured, 1,700 uninsured and 1,950 insured) was entered into a throwaway copy of the release workbook; Excel recalculated it and the displayed values were compared with the numbers the guide prints. The release artifact was never opened for write (hash unchanged).",
+ "checks": [
+  {
+   "check": "guide: 2,100 insured scores 91",
+   "guide_says": "91",
+   "excel_shows": "91",
+   "pass": true
+  },
+  {
+   "check": "guide: 1,700 uninsured scores 70",
+   "guide_says": "70",
+   "excel_shows": "70",
+   "pass": true
+  },
+  {
+   "check": "guide: 1,950 insured scores 94",
+   "guide_says": "94",
+   "excel_shows": "94",
+   "pass": true
+  },
+  {
+   "check": "guide: price score for 1,950 is 34",
+   "guide_says": "34",
+   "excel_shows": "34",
+   "pass": true
+  },
+  {
+   "check": "guide: price score for 2,100 is 31",
+   "guide_says": "31",
+   "excel_shows": "31",
+   "pass": true
+  },
+  {
+   "check": "guide: cheapest takes the full price score 40",
+   "guide_says": "40",
+   "excel_shows": "40",
+   "pass": true
+  },
+  {
+   "check": "guide: the shortlist is the 1,950 insured mover",
+   "guide_says": "Shortlist",
+   "excel_shows": "Shortlist",
+   "pass": true
+  },
+  {
+   "check": "guide: nothing else is shortlisted",
+   "guide_says": "",
+   "excel_shows": "",
+   "pass": true
+  },
+  {
+   "check": "summary: one mover shortlisted",
+   "guide_says": "1",
+   "excel_shows": "1",
+   "pass": true
+  },
+  {
+   "check": "summary: best score is 94",
+   "guide_says": "94",
+   "excel_shows": "94",
+   "pass": true
+  }
+ ],
+ "release_artifact_untouched": true,
+ "failed": [],
+ "verdict": "PASS"
+}

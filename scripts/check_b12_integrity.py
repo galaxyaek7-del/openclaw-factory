@@ -36,16 +36,31 @@ BASELINES = {
         "size": 9639,
     },
     "books/batch12/B12-008_moving_budget_tracker.xlsx": {
-        "sha256": "1e42132bf63d3c2b305a66ac86ff79824bdada0511b186420adaeaf5121dd1ed",
-        "size": 7629,
+        # Re-baselined 2026-10-20 (Cycle 106): the Cycle-104 workbook was 4
+        # sheets / 1 formula and failed the hybrid depth rule; rebuilt to 7
+        # sheets / 129 formulas / 9 validations with a guarded variance column,
+        # a scored mover comparison, and worked utility-transfer dates (a 2-day
+        # gap and a same-day handover) so the flagship gap calculation is
+        # actually demonstrated. "Deposits still at risk" is now total held minus
+        # deposits with photo evidence, not the total (the old label claimed a
+        # calculation the formula did not perform). Native Excel recalculation
+        # PASS on this hash (reports/B12-008/WORKBOOK_QA_2026-10-20.json).
+        # Previous baseline 1e42132b…d1ed / 7629 B.
+        "sha256": "48225a83e8ddd030e34d26e80594a34b34462b74ec7039e86d20a7cf8ad0155e",
+        "size": 16860,
     },
     "books/batch12/B12-008_moving_checklist.pdf": {
-        # Re-baselined 2026-10-18 (Cycle 97): the B12-004 guide rebuild ran the
-        # shared scripts/build_batch12_pdfs.py, which regenerates every batch-12
-        # PDF; B12-008's content is unchanged but reportlab's embedded timestamp
-        # differs, so the bytes differ. Same 4311-byte size, new hash.
-        "sha256": "d3803cd831106cfbce6875c84ada45fd008360db7fbe195d60c6a7bf73d2db14",
-        "size": 4311,
+        # Re-baselined 2026-10-20 (Cycle 106): guide rebuilt from 2 pages / 273
+        # words to 6 pages / 3,265 words to meet the $29 depth requirement, and
+        # its worked mover example was corrected to match what the MoverCompare
+        # sheet actually computes (proved against Excel in
+        # reports/B12-008/WORKED_EXAMPLE_RECONCILIATION_2026-10-20.json) after it
+        # claimed a "maximum score" for a quote that does not score highest, and
+        # its "write the numbers on the Dashboard" instruction was pointed at the
+        # Summary sheet, which is the sheet the workbook actually has.
+        # Previous baseline d3803cd8…73d2db14 / 4311 B.
+        "sha256": "3026c7312af7589d39dfcc5d9521747144e618d6c5ca2052c0e8160e3989b403",
+        "size": 17339,
     },
 }
 

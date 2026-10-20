@@ -94,11 +94,8 @@ try {
     }
 
     $formulaCount = 0
-    foreach ($name in @($specData.formula_sheets)) {
-        if (-not $name) { continue }
-        $ws = $wb.Worksheets.Item($name)
-        $special = $ws.UsedRange.SpecialCells(2)
-        if ($null -ne $special) { $formulaCount += [int]$special.Count }
+    foreach ($cell in $cellsOut) {
+        if ($cell.formula) { $formulaCount += 1 }
     }
 
     $artifactInfo = Get-Item -LiteralPath $artifact

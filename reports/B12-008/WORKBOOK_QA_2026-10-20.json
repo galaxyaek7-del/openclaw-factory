@@ -1,0 +1,38 @@
+{
+ "product_id": "B12-008",
+ "artifact": "books/batch12/B12-008_moving_budget_tracker.xlsx",
+ "artifact_sha256": "48225a83e8ddd030e34d26e80594a34b34462b74ec7039e86d20a7cf8ad0155e",
+ "engine": {
+  "name": "Microsoft Excel",
+  "version": "16.0",
+  "build": "19127"
+ },
+ "calculated_at_utc": "2026-10-20T00:43:53Z",
+ "formula_cells": 129,
+ "formula_sheets": [
+  "Budget",
+  "MoverCompare",
+  "Utilities",
+  "Summary"
+ ],
+ "scanned_sheets": [
+  "Budget",
+  "MoverCompare",
+  "AddressChanges",
+  "Utilities",
+  "Deposits",
+  "Summary",
+  "README"
+ ],
+ "verdict": "PASS",
+ "findings": [],
+ "critical_count": 0,
+ "warning_count": 0,
+ "schema": "workbook_qa/v1",
+ "recorded_at_utc": "2026-10-20T00:43:53.850585+00:00",
+ "limitations": [
+  "The probe runs against a temporary read-only copy; it never opens the release file for write.",
+  "Number-format and value checks are limited to the sheets and cells named in the spec.",
+  "Excel is the only supported native engine; no other spreadsheet engine is installed here."
+ ]
+}

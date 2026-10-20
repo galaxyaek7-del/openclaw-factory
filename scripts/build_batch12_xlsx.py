@@ -775,30 +775,228 @@ def b12_007_digital_inventory():
     return p
 
 
-def b12_008_moving_budget():
+def b12_008_moving_budget(out_dir=None):
+    """Cycle 106 rebuild. The Cycle-104 workbook was a static budget table with
+    a single SUM: a product sold as a budget tracker that did not track a
+    budget. Every figure below is computed from the rows the user fills, and
+    every column that mixes units has its format set per cell (a whole-column
+    percent format is how 2,100 dollars becomes 210000%).
+
+    What the workbook now does:
+      Budget        40 rows; Variance vs lowest names what choosing one quote
+                    over the other actually cost.
+      MoverCompare  10 movers scored on price (40), insurance (30) and
+                    reviews checked (30); the top score is marked Shortlist.
+      AddressChanges 30 rows; Summary counts what is still outstanding.
+      Utilities     old close vs new start, so a gap night becomes a number.
+      Deposits      what is at risk until the condition photos exist.
+      Summary       the four questions a mover budget has to answer: total,
+                    paid, still to pay, and what is outstanding elsewhere.
+    """
+    from openpyxl.worksheet.datavalidation import DataValidation
+
+    MONEY = '"$"#,##0'
+    PCT = "0.0%"
+    CATEGORIES = ("Moving company,Packing supplies,Deposit,Utilities,Fees,"
+                  "Furniture,Other")
+    LAST_BUDGET = 41
+    LAST_MOVER = 11
+    LAST_ADDR = 31
+    LAST_UTIL = 11
+    LAST_DEP = 6
+
     wb = Workbook()
-    _sheet(wb, "Budget", ["Item", "Quote A (USD)", "Quote B (USD)", "Chosen (USD)", "Paid (Y/N)"],
-        [["EXAMPLE movers (3-bed)", 1800, 2100, 1800, "N"],
-         ["EXAMPLE packing supplies", 150, 120, 120, "N"],
-         ["EXAMPLE deposit + first month", 3000, 3000, 3000, "N"],
-         ["EXAMPLE utility transfers/fees", 200, 200, 200, "N"]],
-        [32, 16, 16, 15, 11], {1: '"$"#,##0', 2: '"$"#,##0', 3: '"$"#,##0'}, example_rows=4)
-    ws = wb["Budget"]
-    ws["A8"] = "TOTAL chosen (USD)"
-    ws["D8"] = "=SUM(D2:D7)"
-    ws["D8"].number_format = '"$"#,##0'
-    _sheet(wb, "MoverCompare", ["Mover", "Quote (USD)", "Insured (Y/N)", "Reviews checked (Y/N)", "Red flags", "Decision"],
-        [["EXAMPLE MoveRight", 1800, "Y", "Y", "None", "Shortlist"]],
-        [20, 14, 13, 20, 30, 12], example_rows=1)
-    _sheet(wb, "AddressChanges", ["Account/service", "Updated (Y/N)", "Date", "Confirmation #"],
-        [["EXAMPLE bank", "N", "", ""], ["EXAMPLE employer/payroll", "N", "", ""],
-         ["EXAMPLE subscriptions", "N", "", ""], ["EXAMPLE voter registration", "N", "", ""]],
-        [30, 14, 12, 20], example_rows=4)
+
+    # ── Budget ────────────────────────────────────────────────────────
+    ws = _sheet(wb, "Budget",
+                ["Item", "Category", "Quote A (USD)", "Quote B (USD)", "Chosen (USD)",
+                 "Paid (Y/N)", "Variance vs lowest (USD)", "Notes"],
+                [["EXAMPLE movers (3-bed)", "Moving company", 1800, 2100, 1800, "N", "", "3 quotes in MoverCompare"],
+                 ["EXAMPLE packing supplies", "Packing supplies", 150, 120, 120, "N", "", "boxes, tape, bubble wrap"],
+                 ["EXAMPLE deposit + first month", "Deposit", 3000, 3000, 3000, "N", "", "keep every receipt"],
+                 ["EXAMPLE utility transfers", "Utilities", 200, 200, 200, "N", "", "see the Utilities sheet"]],
+                [28, 18, 15, 15, 15, 9, 20, 34], example_rows=4)
+    for r in range(2, LAST_BUDGET + 1):
+        ws.cell(row=r, column=7).value = (
+            '=IF($E{r}="","",IF(AND(ISNUMBER($C{r}),ISNUMBER($D{r})),$E{r}-MIN($C{r},$D{r}),'
+            'IF(ISNUMBER($C{r}),$E{r}-$C{r},IF(ISNUMBER($D{r}),$E{r}-$D{r},""))))'.format(r=r)
+        )
+        for c, fmt in ((3, MONEY), (4, MONEY), (5, MONEY), (7, MONEY)):
+            ws.cell(row=r, column=c).number_format = fmt
+            ws.cell(row=r, column=c).border = THIN
+        for c in (1, 2, 6, 8):
+            ws.cell(row=r, column=c).border = THIN
+            ws.cell(row=r, column=c).alignment = WRAP
+    dv_cat = DataValidation(type="list", formula1='"%s"' % CATEGORIES, allow_blank=True,
+                            showErrorMessage=True, errorTitle="Category",
+                            error="Pick one of the seven categories so the Summary rollup counts it.")
+    dv_paid = DataValidation(type="list", formula1='"Y,N"', allow_blank=True,
+                             showErrorMessage=True, errorTitle="Paid?",
+                             error="Enter Y or N.")
+    dv_amount = DataValidation(type="decimal", operator="between", formula1="0",
+                               formula2="100000000", allow_blank=True,
+                               showErrorMessage=True, errorTitle="Amount",
+                               error="Enter a positive amount in USD, or leave it blank.")
+    for dv, rng in ((dv_cat, "B2:B%d" % LAST_BUDGET), (dv_paid, "F2:F%d" % LAST_BUDGET),
+                    (dv_amount, "C2:E%d" % LAST_BUDGET)):
+        ws.add_data_validation(dv)
+        dv.add(rng)
+
+    # ── MoverCompare ──────────────────────────────────────────────────
+    ws = _sheet(wb, "MoverCompare",
+                ["Mover", "Quote (USD)", "Insured (Y/N)", "Reviews checked (Y/N)",
+                 "Deposit %", "Deposit due (USD)", "Price score (0-40)",
+                 "Insured (0-30)", "Reviews (0-30)", "Total score", "Verdict"],
+                [["EXAMPLE MoveRight", 1800, "Y", "Y", 0.10, "", "", "", "", "", ""],
+                 ["EXAMPLE TwoGuys", 1550, "N", "Y", 0.20, "", "", "", "", "", ""],
+                 ["EXAMPLE CarefulMove", 2100, "Y", "N", 0.05, "", "", "", "", "", ""]],
+                [22, 14, 13, 20, 11, 16, 15, 14, 13, 12, 12], example_rows=3)
+    for r in range(2, LAST_MOVER + 1):
+        ws.cell(row=r, column=6).value = '=IF(OR($B{r}="",$E{r}=""),"",$B{r}*$E{r})'.format(r=r)
+        ws.cell(row=r, column=7).value = (
+            '=IF($B{r}="","",MAX(0,IF(MIN($B$2:$B${last})<=0,40,'
+            'ROUND(40*(1-($B{r}-MIN($B$2:$B${last}))/MIN($B$2:$B${last})),0))))'
+            .format(r=r, last=LAST_MOVER)
+        )
+        ws.cell(row=r, column=8).value = '=IF($C{r}="","",IF($C{r}="Y",30,0))'.format(r=r)
+        ws.cell(row=r, column=9).value = '=IF($D{r}="","",IF($D{r}="Y",30,0))'.format(r=r)
+        ws.cell(row=r, column=10).value = '=IF($B{r}="","",$G{r}+$H{r}+$I{r})'.format(r=r)
+        ws.cell(row=r, column=11).value = (
+            '=IF($J{r}="","",IF($J{r}=MAX($J$2:$J${last}),"Shortlist",""))'
+            .format(r=r, last=LAST_MOVER)
+        )
+        for c in (2, 6):
+            ws.cell(row=r, column=c).number_format = MONEY
+        ws.cell(row=r, column=5).number_format = "0%"
+        for c in range(1, 12):
+            ws.cell(row=r, column=c).border = THIN
+            ws.cell(row=r, column=c).alignment = WRAP
+    dv_yn = DataValidation(type="list", formula1='"Y,N"', allow_blank=True,
+                           showErrorMessage=True, errorTitle="Yes or no", error="Enter Y or N.")
+    dv_dep = DataValidation(type="decimal", operator="between", formula1="0", formula2="1",
+                            allow_blank=True, showErrorMessage=True, errorTitle="Deposit %",
+                            error="Enter a percentage between 0% and 100%, e.g. 10% (not 10).")
+    for dv, rng in ((dv_yn, "C2:D%d" % LAST_MOVER), (dv_dep, "E2:E%d" % LAST_MOVER)):
+        ws.add_data_validation(dv)
+        dv.add(rng)
+
+    # ── AddressChanges ────────────────────────────────────────────────
+    ws = _sheet(wb, "AddressChanges",
+                ["Account / service", "Updated (Y/N)", "Date", "Confirmation #"],
+                [["EXAMPLE bank", "N", "", ""],
+                 ["EXAMPLE employer / payroll", "N", "", ""],
+                 ["EXAMPLE subscriptions", "N", "", ""],
+                 ["EXAMPLE voter registration", "N", "", ""],
+                 ["EXAMPLE insurance (home + auto)", "N", "", ""],
+                 ["EXAMPLE doctor / dentist / vet", "N", "", ""]],
+                [32, 14, 13, 22], example_rows=6)
+    for r in range(2, LAST_ADDR + 1):
+        for c in range(1, 5):
+            ws.cell(row=r, column=c).border = THIN
+            ws.cell(row=r, column=c).alignment = WRAP
+        ws.cell(row=r, column=3).number_format = "yyyy-mm-dd"
+    dv_yn2 = DataValidation(type="list", formula1='"Y,N"', allow_blank=True,
+                            showErrorMessage=True, errorTitle="Updated?", error="Enter Y or N.")
+    dv_date = DataValidation(type="date", operator="between", formula1="DATE(2020,1,1)",
+                             formula2="DATE(2100,12,31)", allow_blank=True,
+                             showErrorMessage=True, errorTitle="Date",
+                             error="Enter a real date, e.g. 2026-08-01.")
+    ws.add_data_validation(dv_yn2); dv_yn2.add("B2:B%d" % LAST_ADDR)
+    ws.add_data_validation(dv_date); dv_date.add("C2:C%d" % LAST_ADDR)
+
+    from datetime import date
+
+    # ── Utilities ─────────────────────────────────────────────────────
+    ws = _sheet(wb, "Utilities",
+                ["Service", "Old provider", "New provider", "Old close date",
+                 "New start date", "Gap days (blank = fine)", "Transfer cost (USD)"],
+                [["EXAMPLE electricity", "Example Power", "NewCo Energy",
+                  date(2026, 11, 14), date(2026, 11, 16), "", 0],
+                 ["EXAMPLE internet", "Example Fibre", "NewNet",
+                  date(2026, 11, 15), date(2026, 11, 15), "", 0],
+                 ["EXAMPLE water", "City Water", "City Water", "", "", "", ""]],
+                [22, 20, 20, 15, 15, 20, 18], example_rows=3)
+    for r in range(2, LAST_UTIL + 1):
+        ws.cell(row=r, column=6).value = (
+            '=IF(OR($D{r}="",$E{r}=""),"",IF(NOT(ISNUMBER($D{r})),"?",IF(NOT(ISNUMBER($E{r})),"?",$E{r}-$D{r})))'
+            .format(r=r)
+        )
+        ws.cell(row=r, column=6).number_format = "0"
+        ws.cell(row=r, column=7).number_format = MONEY
+        for c in (4, 5):
+            ws.cell(row=r, column=c).number_format = "yyyy-mm-dd"
+        for c in range(1, 8):
+            ws.cell(row=r, column=c).border = THIN
+            ws.cell(row=r, column=c).alignment = WRAP
+    dv_date2 = DataValidation(type="date", operator="between", formula1="DATE(2020,1,1)",
+                              formula2="DATE(2100,12,31)", allow_blank=True,
+                              showErrorMessage=True, errorTitle="Date",
+                              error="Enter a real date, e.g. 2026-08-01.")
+    ws.add_data_validation(dv_date2); dv_date2.add("D2:E%d" % LAST_UTIL)
+
+    # ── Deposits ──────────────────────────────────────────────────────
+    ws = _sheet(wb, "Deposits",
+                ["Property / agent", "Deposit (USD)", "Photos + inventory done (Y/N)",
+                 "Return deadline", "Notes"],
+                [["EXAMPLE old flat", 1500, "N", date(2026, 12, 31),
+                  "photograph every room before the walk-through"],
+                 ["EXAMPLE new flat", 1800, "N", "", "check the condition report before signing"]],
+                [24, 16, 26, 16, 46], example_rows=2)
+    for r in range(2, LAST_DEP + 1):
+        ws.cell(row=r, column=2).number_format = MONEY
+        ws.cell(row=r, column=4).number_format = "yyyy-mm-dd"
+        for c in range(1, 6):
+            ws.cell(row=r, column=c).border = THIN
+            ws.cell(row=r, column=c).alignment = WRAP
+    dv_yn3 = DataValidation(type="list", formula1='"Y,N"', allow_blank=True,
+                            showErrorMessage=True, errorTitle="Done?", error="Enter Y or N.")
+    ws.add_data_validation(dv_yn3); dv_yn3.add("C2:C%d" % LAST_DEP)
+
+    # ── Summary ───────────────────────────────────────────────────────
+    rows = [
+        ["Total chosen budget (USD)", "=SUM(Budget!$E$2:$E$%d)" % LAST_BUDGET, "Every row you filled in the Budget sheet."],
+        ["Paid so far (USD)", '=SUMIF(Budget!$F$2:$F$%d,"Y",Budget!$E$2:$E$%d)' % (LAST_BUDGET, LAST_BUDGET), "Rows marked Y in Paid."],
+        ["Still to pay (USD)", "=$B$2-$B$3", "The number that decides whether the move happens this month."],
+        ["Share already paid", '=IF($B$2=0,"",$B$3/$B$2)', "Blank until you enter a budget."],
+        ["Moving company (USD)", '=SUMIFS(Budget!$E$2:$E$%d,Budget!$B$2:$B$%d,"Moving company")' % (LAST_BUDGET, LAST_BUDGET), "Category rollup."],
+        ["Packing supplies (USD)", '=SUMIFS(Budget!$E$2:$E$%d,Budget!$B$2:$B$%d,"Packing supplies")' % (LAST_BUDGET, LAST_BUDGET), "Category rollup."],
+        ["Deposit (USD)", '=SUMIFS(Budget!$E$2:$E$%d,Budget!$B$2:$B$%d,"Deposit")' % (LAST_BUDGET, LAST_BUDGET), "Category rollup."],
+        ["Utilities (USD)", '=SUMIFS(Budget!$E$2:$E$%d,Budget!$B$2:$B$%d,"Utilities")' % (LAST_BUDGET, LAST_BUDGET), "Category rollup."],
+        ["Fees (USD)", '=SUMIFS(Budget!$E$2:$E$%d,Budget!$B$2:$B$%d,"Fees")' % (LAST_BUDGET, LAST_BUDGET), "Category rollup."],
+        ["Furniture (USD)", '=SUMIFS(Budget!$E$2:$E$%d,Budget!$B$2:$B$%d,"Furniture")' % (LAST_BUDGET, LAST_BUDGET), "Category rollup."],
+        ["Other (USD)", '=SUMIFS(Budget!$E$2:$E$%d,Budget!$B$2:$B$%d,"Other")' % (LAST_BUDGET, LAST_BUDGET), "Category rollup."],
+        ["Movers shortlisted", '=COUNTIF(MoverCompare!$K$2:$K$%d,"Shortlist")' % LAST_MOVER, "One name per equal top score."],
+        ["Best mover score", '=IF(COUNT(MoverCompare!$J$2:$J$%d)=0,"",MAX(MoverCompare!$J$2:$J$%d))' % (LAST_MOVER, LAST_MOVER), "Out of 100: price 40 + insured 30 + reviews 30."],
+        ["Address changes still to do", '=COUNTIF(AddressChanges!$B$2:$B$%d,"N")' % LAST_ADDR, "Marked N in AddressChanges."],
+        ["Utilities with a gap", '=COUNTIF(Utilities!$F$2:$F$%d,">0")' % LAST_UTIL, "Positive gap days means at least one night with no service."],
+        ["Utilities with a break", '=COUNTIF(Utilities!$F$2:$F$%d,"?")' % LAST_UTIL, "A date that is not a date - fix it before you rely on the number."],
+        ["Total deposits held (USD)", "=SUM(Deposits!$B$2:$B$%d)" % LAST_DEP, "Every deposit you are waiting to get back."],
+        ["Deposits with photos done (USD)", '=SUMIF(Deposits!$C$2:$C$%d,"Y",Deposits!$B$2:$B$%d)' % (LAST_DEP, LAST_DEP), "Proof of condition is what gets a deposit back."],
+        ["Deposits still at risk (USD)", "=$B$18-$B$19", "Held deposits with no photo evidence yet. This is the number to drive to zero."],
+    ]
+    ws = _sheet(wb, "Summary", ["Metric", "Value", "What it means"], rows, [32, 16, 68])
+    for r in range(2, 2 + len(rows)):
+        if r == 5:
+            ws.cell(row=r, column=2).number_format = PCT
+        elif r in (13, 14, 15, 16, 17):
+            ws.cell(row=r, column=2).number_format = "0"
+        else:
+            ws.cell(row=r, column=2).number_format = MONEY
+
     _readme(wb, ["B12-008 Moving Budget & Tracker — HOW TO USE",
-        "1) Get 2+ quotes per row (MoverCompare). Never book an uninsured mover.",
-        "2) Work AddressChanges in week 2 — missed ones cost money for months.",
-        "3) Pair with the B12-008 8-week checklist PDF."])
-    p = OUT / "B12-008_moving_budget_tracker.xlsx"
+        "1) Budget sheet: one row per cost. Fill Quote A and Quote B where you have two, then Chosen. "
+        "Variance vs lowest tells you what the choice cost (blank until both quotes or a chosen figure exist).",
+        "2) MoverCompare: one row per mover. Score out of 100 = price 40 + insured 30 + reviews checked 30. "
+        "Insured and Reviews are Y/N because they are yes/no facts, not opinions. One name per equal top score is marked Shortlist.",
+        "3) AddressChanges: 30 rows. Summary counts what is still marked N; that count is the real to-do list.",
+        "4) Utilities: enter the old close date and the new start date. Gap days is positive when there is a night "
+        "with no service, negative when services overlap, and ? when a date is not a date.",
+        "5) Deposits: what is at risk until the condition photos exist. Do the photos before the final walk-through, not after.",
+        "6) Summary: total, paid, still to pay, and what is outstanding elsewhere. Every figure is computed; "
+        "white cells are yours, blue cells are formulas, yellow rows are examples to overwrite or delete.",
+        "7) Pair with the B12-008 8-week checklist PDF for the order of work. NOT FINANCIAL ADVICE."])
+    target_dir = Path(out_dir) if out_dir else OUT
+    p = target_dir / "B12-008_moving_budget_tracker.xlsx"
     _paint_formulas(wb)
     wb.save(p)
     return p
