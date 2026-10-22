@@ -39,14 +39,18 @@ pytestmark = pytest.mark.usefixtures("authorize_live_writes")
 
 FACTORY_ROOT = Path(__file__).resolve().parent.parent
 
-# Protected-file baseline hashes. NOTE: the real sales ledger is
-# data/sales_ledger.jsonl (a stray empty sales_ledger.jsonl also exists at
-# repo root and is intentionally NOT the protected file).
-PROTECTED = {
-    "finance_data.json": "CD297D2FC5C6E98945DFBAAE7025E44568ABE53817931CEEB811D5DAA84E7122",
-    "config/reality.json": "EA3177773F63A39126B1DB02AB7BF9D307A6121A4AC0FAD257B47467DEC8E04E",
-    "data/sales_ledger.jsonl": "3D2E418D09D2E037D5581A529F15108571FAD51153ABFEDFBDEE291F568D0155",
-}
+# Protected files. NOTE: the real sales ledger is data/sales_ledger.jsonl (a
+# stray empty sales_ledger.jsonl also exists at repo root and is intentionally
+# NOT the protected file).
+#
+# These used to be pinned to frozen absolute hashes. The files are live
+# business records: the ledger gains a publish_attempt row every time the real
+# factory tries a channel, and finance_data.json is reconciled. So the pins
+# failed on every machine whose data had moved on, including CI's checkout,
+# while proving nothing about THIS module. The guarantee this module owns is
+# "ARM 8 verification changed nothing", which is a before/after comparison.
+# BASELINE is captured at import, before any test here runs.
+PROTECTED = ("finance_data.json", "config/reality.json", "data/sales_ledger.jsonl")
 
 
 def _sha256(path: Path) -> str:
@@ -61,11 +65,31 @@ def _protected_hashes():
     return {k: _sha256(FACTORY_ROOT / k) for k in PROTECTED}
 
 
+BASELINE = _protected_hashes()
+
+
+def _real_sale_events():
+    path = FACTORY_ROOT / "data" / "sales_ledger.jsonl"
+    if not path.exists():
+        return []
+    out = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        try:
+            if json.loads(line).get("event_type") == "sale":
+                out.append(line)
+        except ValueError:
+            continue
+    return out
+
+
 def test_protected_files_unchanged_baseline():
-    """The three protected financial files must keep their baseline hashes."""
+    """The protected files are unchanged since this module was imported, and
+    the real sales ledger holds zero "sale" events (commercial distribution
+    is NOT_READY)."""
     actual = _protected_hashes()
-    for name, expected in PROTECTED.items():
-        assert actual[name] == expected, f"{name} hash changed: {actual[name]} != {expected}"
+    for name, expected in BASELINE.items():
+        assert actual[name] == expected, f"{name} changed during ARM 8 verification"
+    assert _real_sale_events() == []
 
 
 def test_modules_import_safely():
@@ -148,6 +172,7 @@ def test_distribute_dry_run_is_safe(tmp_path):
         "product_type": "book", "price": 0,
     })
     tmp_ledger = tmp_path / "sales_ledger.jsonl"
+    before = _protected_hashes()
     outcomes = dist.distribute(
         product, arm_names=["gumroad"], dry_run=True, ledger_path=tmp_ledger,
     )
@@ -158,7 +183,7 @@ def test_distribute_dry_run_is_safe(tmp_path):
             assert o["result"] is not None
             assert o["result"].dry_run is True
     # Real ledger untouched (we wrote to a temp path).
-    assert _protected_hashes()["data/sales_ledger.jsonl"] == PROTECTED["data/sales_ledger.jsonl"]
+    assert _protected_hashes() == before
 
 
 def test_ledger_records_to_temp_not_real(tmp_path):
@@ -170,13 +195,14 @@ def test_ledger_records_to_temp_not_real(tmp_path):
     result = PublishResult(ok=False, platform="gumroad", product_id=None,
                            url=None, error="blocked by test", dry_run=True)
     tmp_ledger = tmp_path / "sales_ledger.jsonl"
+    before = _protected_hashes()
     ledger.record_publish_attempt(product, result, ledger_path=tmp_ledger,
                                   risk_score=0.0, protection_decision="blocked")
     events = list(ledger.read_events(ledger_path=tmp_ledger))
     assert len(events) == 1
     assert events[0]["event_type"] == "publish_attempt"
     # Real ledger must still be empty / unchanged.
-    assert _protected_hashes()["data/sales_ledger.jsonl"] == PROTECTED["data/sales_ledger.jsonl"]
+    assert _protected_hashes() == before
 
 
 def test_published_books_state_intact():
