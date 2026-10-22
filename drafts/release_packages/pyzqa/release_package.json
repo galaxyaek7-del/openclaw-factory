@@ -1,0 +1,38 @@
+{
+ "product_id": "pyzqa",
+ "name": "Vendor Questionnaire Response Kit",
+ "price_usd": 89.0,
+ "gate_status": "HOLD",
+ "blocking": [],
+ "holds": [
+  "human rights/policy review not recorded"
+ ],
+ "fingerprint": "2feab2ef882adb86",
+ "manifest": [
+  {
+   "name": "vendor_questionnaire_response_kit.pdf",
+   "bytes": 12157,
+   "sha256": "cd15d4dea78141adb3c5ef4cd41864fc0dff20b4d3ad16055eb1ebe3958d3707",
+   "kind": "pdf",
+   "source": "books/vendor_questionnaire_response_kit.pdf"
+  },
+  {
+   "name": "vendor_questionnaire_tracker.xlsx",
+   "bytes": 15679,
+   "sha256": "877013e6cc5c5df40bd2e1e181d75887f21f4d1ff204a98ec4d494fc951178fe",
+   "kind": "xlsx",
+   "source": "books/vendor_questionnaire_tracker.xlsx"
+  }
+ ],
+ "live_files": [
+  {
+   "type": "pdf",
+   "bytes": 12020
+  }
+ ],
+ "proposed_changes": [
+  "attach the XLSX workbook (not on the live listing)"
+ ],
+ "listing_change": "review description: it does not currently mention the workbook",
+ "publication_status": "NOT_PUBLISHED -- founder-authorized Gumroad edit required"
+}

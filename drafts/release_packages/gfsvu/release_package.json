@@ -1,0 +1,38 @@
+{
+ "product_id": "gfsvu",
+ "name": "EU Packaging EPR Action Kit",
+ "price_usd": 69.0,
+ "gate_status": "HOLD",
+ "blocking": [],
+ "holds": [
+  "human rights/policy review not recorded"
+ ],
+ "fingerprint": "bec9c29dc0200a34",
+ "manifest": [
+  {
+   "name": "epr_packaging_action_kit.pdf",
+   "bytes": 11532,
+   "sha256": "baf7f6e58c02c044da614e58bb7a46562d815143758b1a185ef1f6625591cc07",
+   "kind": "pdf",
+   "source": "books/epr_packaging_action_kit.pdf"
+  },
+  {
+   "name": "epr_packaging_register.xlsx",
+   "bytes": 22097,
+   "sha256": "82247928aa60685bb44020960dff38873252b92662923b12bd76e814fd8533d0",
+   "kind": "xlsx",
+   "source": "books/epr_packaging_register.xlsx"
+  }
+ ],
+ "live_files": [
+  {
+   "type": "pdf",
+   "bytes": 11401
+  }
+ ],
+ "proposed_changes": [
+  "attach the XLSX workbook (not on the live listing)"
+ ],
+ "listing_change": "review description: it does not currently mention the workbook",
+ "publication_status": "NOT_PUBLISHED -- founder-authorized Gumroad edit required"
+}

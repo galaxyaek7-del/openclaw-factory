@@ -1,0 +1,32 @@
+{
+ "product_id": "ekhza",
+ "name": "FTC Consumer Review Rule Compliance Kit",
+ "price_usd": 69.0,
+ "gate_status": "HOLD",
+ "blocking": [],
+ "holds": [
+  "substance below price: 1715 words for $69 (<25/$) and no working tool -- expand, reprice, or label experimental",
+  "human rights/policy review not recorded"
+ ],
+ "fingerprint": "44ca13626cd58c9d",
+ "manifest": [
+  {
+   "name": "ftc_review_rule_compliance_kit.pdf",
+   "bytes": 33174,
+   "sha256": "0130b51a6fa71da9c035047546f6d7ae51b87b37d21ea7d9341a213ddb954eb3",
+   "kind": "pdf",
+   "source": "books/ftc_review_rule_compliance_kit.pdf"
+  }
+ ],
+ "live_files": [
+  {
+   "type": "pdf",
+   "bytes": 13105
+  }
+ ],
+ "proposed_changes": [
+  "live PDF is 13105 B vs local 33174 B: confirm which version is current before replacing"
+ ],
+ "listing_change": "review description: it does not currently mention the workbook",
+ "publication_status": "NOT_PUBLISHED -- founder-authorized Gumroad edit required"
+}

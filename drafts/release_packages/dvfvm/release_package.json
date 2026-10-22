@@ -1,0 +1,31 @@
+{
+ "product_id": "dvfvm",
+ "name": "Restaurant Health Inspection Readiness Kit",
+ "price_usd": 49.0,
+ "gate_status": "HOLD",
+ "blocking": [],
+ "holds": [
+  "human rights/policy review not recorded"
+ ],
+ "fingerprint": "d148c8a2bdc6bf86",
+ "manifest": [
+  {
+   "name": "restaurant_inspection_readiness_kit.pdf",
+   "bytes": 30594,
+   "sha256": "c30290323b36d6a6bf2c1afd5a0b3266324e64af1f89802d71804ed2ec204525",
+   "kind": "pdf",
+   "source": "books/restaurant_inspection_readiness_kit.pdf"
+  }
+ ],
+ "live_files": [
+  {
+   "type": "pdf",
+   "bytes": 10850
+  }
+ ],
+ "proposed_changes": [
+  "live PDF is 10850 B vs local 30594 B: confirm which version is current before replacing"
+ ],
+ "listing_change": "review description: it does not currently mention the workbook",
+ "publication_status": "NOT_PUBLISHED -- founder-authorized Gumroad edit required"
+}

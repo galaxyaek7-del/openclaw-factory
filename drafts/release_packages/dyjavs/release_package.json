@@ -1,0 +1,38 @@
+{
+ "product_id": "dyjavs",
+ "name": "Diminished Value Claim Kit",
+ "price_usd": 59.0,
+ "gate_status": "HOLD",
+ "blocking": [],
+ "holds": [
+  "human rights/policy review not recorded"
+ ],
+ "fingerprint": "95006386b9b6a259",
+ "manifest": [
+  {
+   "name": "diminished_value_claim_kit.pdf",
+   "bytes": 9742,
+   "sha256": "3be694ff917fd7e661bb0b52227e946efe743284f953002172cef2764361f9fb",
+   "kind": "pdf",
+   "source": "books/diminished_value_claim_kit.pdf"
+  },
+  {
+   "name": "diminished_value_claim_pack.xlsx",
+   "bytes": 17631,
+   "sha256": "a8302ce2347eb86360e72f5db1f1f2ad4cb1fee50f3a277e05e0ff8909d654fb",
+   "kind": "xlsx",
+   "source": "books/diminished_value_claim_pack.xlsx"
+  }
+ ],
+ "live_files": [
+  {
+   "type": "pdf",
+   "bytes": 9630
+  }
+ ],
+ "proposed_changes": [
+  "attach the XLSX workbook (not on the live listing)"
+ ],
+ "listing_change": "review description: it does not currently mention the workbook",
+ "publication_status": "NOT_PUBLISHED -- founder-authorized Gumroad edit required"
+}

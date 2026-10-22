@@ -1,0 +1,38 @@
+{
+ "product_id": "adyvd",
+ "name": "Turo Guest Dispute Toolkit",
+ "price_usd": 29.0,
+ "gate_status": "HOLD",
+ "blocking": [],
+ "holds": [
+  "human rights/policy review not recorded"
+ ],
+ "fingerprint": "1d64e90c7db914f8",
+ "manifest": [
+  {
+   "name": "turo_guest_dispute_toolkit.pdf",
+   "bytes": 18078,
+   "sha256": "65c5994738a97d4ad0e14fbf15e59c291add58ad4b44c11c251f86d45a8258aa",
+   "kind": "pdf",
+   "source": "books/turo_guest_dispute_toolkit.pdf"
+  },
+  {
+   "name": "turo_guest_dispute_tracker.xlsx",
+   "bytes": 7688,
+   "sha256": "e4759b5be70888172e1454f5c7b3162ab9b783a17cea105ea069663cf4bc9b8c",
+   "kind": "xlsx",
+   "source": "books/turo_guest_dispute_tracker.xlsx"
+  }
+ ],
+ "live_files": [
+  {
+   "type": "pdf",
+   "bytes": 17909
+  }
+ ],
+ "proposed_changes": [
+  "attach the XLSX workbook (not on the live listing)"
+ ],
+ "listing_change": "review description: it does not currently mention the workbook",
+ "publication_status": "NOT_PUBLISHED -- founder-authorized Gumroad edit required"
+}

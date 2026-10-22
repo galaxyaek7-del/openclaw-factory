@@ -53,6 +53,31 @@ listing copy + local deliverables
 
 Product files stay in `books/`, which is gitignored; none were copied into the public repo.
 
+### The other reviewed products (same day, VERIFIED by execution)
+
+| Product | Price | Local workbook (file_testing_engine) | Gate as live | Gate with workbook |
+|---|---|---|---|---|
+| Turo Guest Dispute (`adyvd`) | $29 | PASS, 4 sheets, 5 formulas | HOLD (rights only) | HOLD (rights only) |
+| STR Direct Booking (`ppsluq`) | $59 | PASS, 4 sheets, 10 formulas | HOLD: **substance** 1,394 words | HOLD (rights only) |
+| Vendor Questionnaire (`pyzqa`) | $89 | PASS, 6 sheets, **217** formulas | HOLD: **substance** 1,566 words | HOLD (rights only) |
+| EU Packaging EPR (`gfsvu`) | $69 | PASS, 6 sheets, **628** formulas | HOLD: **substance** 1,546 words | HOLD (rights only) |
+| Diminished Value (`dyjavs`) | $59 | PASS, 6 sheets, **211** formulas | HOLD: **substance** 1,274 words | HOLD (rights only) |
+| Restaurant Inspection (`dvfvm`) | $49 | none | HOLD (rights only) | — |
+| FTC Review Rule (`ekhza`) | $69 | none | HOLD: **substance** 1,715 words | — |
+
+**Finding (OBSERVED).** Seven reviewed products have a working local workbook that was never attached on Gumroad. The live deliverable is the PDF alone. The four with the largest workbooks are sold today as short PDFs below the gate's substance bar, while the tool that justifies the price sits unshipped.
+
+**Version drift (OBSERVED).**
+
+| Product | Live PDF | Local PDF |
+|---|---|---|
+| Restaurant | 10,850 B | 30,594 B |
+| FTC | 13,105 B | 33,174 B |
+
+Which is current is UNKNOWN; the live file cannot be downloaded through this API.
+
+**Packages:** `drafts/release_packages/<slug>/release_package.json`, 9 in total. Each has its manifest and hashes, the live files, the proposed changes and the gate result.
+
 ## First-dollar rule: what is actually blocked
 
 | Activity | Blocked? | Where |

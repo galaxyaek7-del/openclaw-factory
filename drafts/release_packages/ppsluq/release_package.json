@@ -1,0 +1,38 @@
+{
+ "product_id": "ppsluq",
+ "name": "STR Direct Booking Revenue Kit",
+ "price_usd": 59.0,
+ "gate_status": "HOLD",
+ "blocking": [],
+ "holds": [
+  "human rights/policy review not recorded"
+ ],
+ "fingerprint": "ceceba26dac6293b",
+ "manifest": [
+  {
+   "name": "str_direct_booking_kit.pdf",
+   "bytes": 10186,
+   "sha256": "bb725f5941b9f55a23bb463a0fb7f169c7e519451083fe48815786483aa00911",
+   "kind": "pdf",
+   "source": "books/str_direct_booking_kit.pdf"
+  },
+  {
+   "name": "str_direct_booking_planner.xlsx",
+   "bytes": 7527,
+   "sha256": "66d2d36846cfc63ca0cce1818ae544d130a242f6cef10b1fa46d1576b5eddb7d",
+   "kind": "xlsx",
+   "source": "books/str_direct_booking_planner.xlsx"
+  }
+ ],
+ "live_files": [
+  {
+   "type": "pdf",
+   "bytes": 10074
+  }
+ ],
+ "proposed_changes": [
+  "attach the XLSX workbook (not on the live listing)"
+ ],
+ "listing_change": "review description: it does not currently mention the workbook",
+ "publication_status": "NOT_PUBLISHED -- founder-authorized Gumroad edit required"
+}
