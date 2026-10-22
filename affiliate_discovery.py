@@ -168,6 +168,49 @@ NEWLY_VERIFIED_PROGRAMS: List[dict] = [
 ]
 
 
+# 2026-10-22: systeme.io is absent from the registry although an affiliate ID
+# (SYSTEME_AFFILIATE_ID) is configured and customer pages already link to it.
+# Verified from the official program page and help article the same day.
+# NOT merged: affiliate/portfolio.py (parallel work, untracked) already holds
+# systeme.io as a secondary candidate, and merging it here duplicates that row.
+# Merge with merge_newly_verified_programs(programs=[SYSTEME_PROGRAM]) once the
+# two are reconciled.
+SYSTEME_PROGRAM: dict = {
+    "opportunity_id": "CO-systeme-affiliate",
+    "source": "affiliate_discovery.py (affiliate mandate 2026-10-22): official program page + help article",
+    "partner_id": "systeme",
+    "program_name": "systeme.io Affiliate Program",
+    "partner_name": "systeme.io",
+    "category": "affiliate",
+    "target_customer": "Creators, coaches and small businesses building funnels, email lists, courses",
+    "customer_problem": "Wants funnels, email marketing, courses and a store in one low-cost tool",
+    "product_or_service": "systeme.io all-in-one marketing platform (free and paid plans)",
+    "commission_type": "PERCENTAGE",
+    "commission_value": "60% on every sale (official page, checked 2026-10-22; some third-party reviews say 40% -- official page used)",
+    "commission_currency": "USD",
+    "recurring_commission": True,
+    "commission_duration": "Lifetime recurring while the referral stays subscribed",
+    "minimum_conditions": "No application; 'There are no conditions to join our affiliate program.'",
+    "cookie_or_tracking_window": "Lifetime (referral tagged permanently)",
+    "payout_terms": "Monthly on the 10th; $30 minimum; PayPal or wire (wire only after the first affiliate sale; IBAN + 11-char SWIFT)",
+    "payout_minimum": "USD 30",
+    "payout_methods": ["PayPal", "Wire transfer (IBAN/SWIFT; after first sale)"],
+    "eligibility": "Anyone can join; no country restriction stated on the program page",
+    "geography": "No country restriction stated; Algeria payout feasibility depends on PayPal (conditional) or wire (IBAN form, unverified)",
+    "terms_url": "https://systeme.io/affiliate-program",
+    "evidence_url": ["https://systeme.io/affiliate-program",
+                     "https://help.systeme.io/article/2102-how-to-add-a-method-for-receiving-commissions"],
+    "evidence_timestamp": "2026-10-22 (WebFetch of official pages)",
+    "verification_status": "VERIFIED",
+    "confidence": "medium",
+    "economic_score": "UNKNOWN",
+    "risk_score": "UNKNOWN",
+    "status": "DISCOVERED",
+    "last_verified": "2026-10-22",
+    "last_verified_evidence": "Official page states rate, cookie, minimum, methods; prohibited methods and disclosure rules are in the affiliate agreement, not yet read",
+}
+
+
 def _now_iso(now: Optional[datetime] = None) -> str:
     return (now or datetime.now(timezone.utc)).isoformat()
 

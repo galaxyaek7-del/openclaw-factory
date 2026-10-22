@@ -85,11 +85,17 @@ def score_program(record):
     comps.append({"axis": "terms_transparency",
                   "points": min(WEIGHTS["terms_transparency"], known_terms * 4),
                   "basis": "OBSERVED" if known_terms else "UNKNOWN"})
+    # 2026-10-22: "global" (or any mention of Algeria, e.g. "PayPal receiving
+    # in Algeria is conditional") is not evidence that an Algeria-resident
+    # publisher may join. Full points need the eligibility matrix's verdict;
+    # an open-to-all program text earns only partial, INFERRED points.
     geo = str(record.get("geographic_restrictions", "UNKNOWN"))
-    if geo == "UNKNOWN":
+    if record.get("algeria_eligibility") == "ELIGIBLE_EVIDENCE_FOUND":
+        comps.append({"axis": "geographic_fit", "points": WEIGHTS["geographic_fit"], "basis": "VERIFIED"})
+    elif geo == "UNKNOWN":
         comps.append({"axis": "geographic_fit", "points": 0, "basis": "UNKNOWN"})
-    elif "algeria" in geo.lower() or "global" in geo.lower() or "worldwide" in geo.lower():
-        comps.append({"axis": "geographic_fit", "points": WEIGHTS["geographic_fit"], "basis": "OBSERVED"})
+    elif "global" in geo.lower() or "worldwide" in geo.lower():
+        comps.append({"axis": "geographic_fit", "points": 3, "basis": "INFERRED"})
     else:
         comps.append({"axis": "geographic_fit", "points": 0, "basis": "OBSERVED"})
     warnings = []

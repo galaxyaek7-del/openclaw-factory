@@ -91,6 +91,14 @@ def lifecycle_stage(status):
             "EXPIRED": "REJECTED", "DISCONTINUED": "REJECTED"}.get(status, "DISCOVERED")
 
 
+def _first_known(opp, *keys):
+    for k in keys:
+        v = opp.get(k)
+        if v not in (None, "", [], "UNKNOWN"):
+            return v
+    return "UNKNOWN"
+
+
 def program_record(opp, pipeline_rows=None, link_rows=None):
     """Full §3 field set; UNKNOWN where no real source exists. Never invented."""
     pipeline_rows = pipeline_rows if pipeline_rows is not None else load_pipeline()
@@ -112,9 +120,12 @@ def program_record(opp, pipeline_rows=None, link_rows=None):
         "commission_rate": opp.get("commission_value", "UNKNOWN"),
         "recurring": opp.get("recurring_commission", "UNKNOWN"),
         "cookie_duration": opp.get("cookie_or_tracking_window", "UNKNOWN"),
-        "payout_threshold": opp.get("payout_threshold", "UNKNOWN"),
-        "payout_method": opp.get("payout_method", "UNKNOWN"),
-        "geographic_restrictions": opp.get("geographic_restrictions", "UNKNOWN"),
+        # 2026-10-22: the registry stores these as payout_minimum /
+        # payout_methods / geography; reading only the older names made every
+        # program show UNKNOWN even where the value was recorded.
+        "payout_threshold": _first_known(opp, "payout_threshold", "payout_minimum"),
+        "payout_method": _first_known(opp, "payout_method", "payout_methods"),
+        "geographic_restrictions": _first_known(opp, "geographic_restrictions", "geography"),
         "prohibited_traffic_sources": opp.get("prohibited_traffic", "UNKNOWN"),
         "brand_restrictions": opp.get("brand_restrictions", "UNKNOWN"),
         "content_restrictions": opp.get("content_restrictions", "UNKNOWN"),
