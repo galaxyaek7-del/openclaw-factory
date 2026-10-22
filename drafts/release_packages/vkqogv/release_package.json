@@ -1,0 +1,33 @@
+{
+ "product_id": "vkqogv",
+ "name": "Trademark DIY Filing Action Kit",
+ "price_usd": 69.0,
+ "gate_status": "HOLD",
+ "blocking": [],
+ "holds": [
+  "human rights/policy review not recorded"
+ ],
+ "fingerprint": "baad2451c2d535ab",
+ "manifest": [
+  {
+   "name": "trademark_diy_filing_kit.pdf",
+   "bytes": 12514,
+   "sha256": "a7f86fc132a45c8e6a4e2067553dab9f8f98cffe74d38a3c65e8f3cabce8a436",
+   "kind": "pdf",
+   "source": "books/trademark_diy_filing_kit.pdf"
+  },
+  {
+   "name": "trademark_filing_tracker.xlsx",
+   "bytes": 7650,
+   "sha256": "10261dd269ae808750716f2f9256709fe2e75a3f8213d657b63c612266e20495",
+   "kind": "xlsx",
+   "source": "books/trademark_filing_tracker.xlsx"
+  }
+ ],
+ "listing_change": {
+  "replace": "a four-sheet docket tracker (search log, specimen file, deadlines, fee math).",
+  "with": "a four-sheet XLSX docket tracker (clearance search log, specimen file, docket tracker, fee math)."
+ },
+ "live_state_at_audit": "only the PDF attached; listing promises the spreadsheet (reports/GUMROAD_DELIVERY_AUDIT_2026-10-22.json)",
+ "publication_status": "NOT_PUBLISHED -- founder-authorized Gumroad edit required"
+}

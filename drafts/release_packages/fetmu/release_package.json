@@ -1,0 +1,33 @@
+{
+ "product_id": "fetmu",
+ "name": "GPSR EU Seller Action Kit",
+ "price_usd": 79.0,
+ "gate_status": "HOLD",
+ "blocking": [],
+ "holds": [
+  "human rights/policy review not recorded"
+ ],
+ "fingerprint": "a6488f428210fa00",
+ "manifest": [
+  {
+   "name": "gpsr_eu_seller_action_kit.pdf",
+   "bytes": 18389,
+   "sha256": "9d27dc57beaa1384b93336b4b76ce9c763fa79e5695db0044d65f1af90efc924",
+   "kind": "pdf",
+   "source": "books/gpsr_eu_seller_action_kit.pdf"
+  },
+  {
+   "name": "gpsr_eu_seller_cost_planner.xlsx",
+   "bytes": 7721,
+   "sha256": "7967596f27506bfc7efc6ea706069c6b34be214b94ba7d5f90b72cea991af247",
+   "kind": "xlsx",
+   "source": "books/gpsr_eu_seller_cost_planner.xlsx"
+  }
+ ],
+ "listing_change": {
+  "replace": "YOU RECEIVE: PDF guide + PDF cost planner (Cost planner / SKU tracker / Listing fields / Enforcement log).",
+  "with": "YOU RECEIVE: PDF guide + XLSX cost planner workbook (4 sheets: Cost planner / SKU tracker / Listing fields / Enforcement log)."
+ },
+ "live_state_at_audit": "only the PDF attached; listing promises the spreadsheet (reports/GUMROAD_DELIVERY_AUDIT_2026-10-22.json)",
+ "publication_status": "NOT_PUBLISHED -- founder-authorized Gumroad edit required"
+}
