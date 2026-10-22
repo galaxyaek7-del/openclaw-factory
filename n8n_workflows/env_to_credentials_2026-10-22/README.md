@@ -126,3 +126,23 @@ script prints that command.
 stops n8n by exact PID, restores the three DB files from the backup, and
 restarts n8n through the scheduled task. Rolling back returns the workflows to
 their pre-change, always-failing state.
+
+## Follow-up (2026-10-22 15:11 UTC): first real run after the fix
+
+`scripts/n8n_workflow_health.py` read the first scheduled run after the
+credential change (Sales_Poll, execution 191, 15:00 UTC). The `$env` error is
+gone. The run still failed, with a different error: `ECONNREFUSED` to `::1`.
+n8n resolves `localhost` to IPv6 first, and `server.js` listens on
+`127.0.0.1:3000` only (confirmed with `Get-NetTCPConnection`). The env error
+had been masking this one.
+
+**Prepared, not applied.** The three `server.js` calls in this folder now use
+`http://127.0.0.1:3000`. Isolated proof, run in a separate n8n user folder with
+a fake credential against the real server:
+- the exact fixed node reached `server.js` and got `401 unauthenticated`, so no
+  business operation ran;
+- the same node with `localhost` failed with a connection refusal, like the
+  live run.
+
+Applying it means re-importing 3 workflows and restarting n8n with
+`apply_fix.py`. That needs owner authorization.

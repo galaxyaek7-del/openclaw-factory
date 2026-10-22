@@ -117,7 +117,7 @@
   {
    "parameters": {
     "method": "POST",
-    "url": "http://localhost:3000/api/trends",
+    "url": "http://127.0.0.1:3000/api/trends",
     "sendBody": true,
     "specifyBody": "json",
     "jsonBody": "={{ JSON.stringify($json) }}",
