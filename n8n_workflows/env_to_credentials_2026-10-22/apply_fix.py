@@ -18,7 +18,9 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = Path(r"C:\openclaw-dasgboard")
 N8N_DIR = Path.home() / ".n8n"
-N8N = r"C:\Users\Dell\AppData\Roaming\npm\n8n.cmd"
+# Resolved from PATH, else the npm global bin under %APPDATA%; never a
+# hardcoded user directory (tests/test_no_temp_dependencies.py).
+N8N = shutil.which("n8n.cmd") or shutil.which("n8n") or os.path.join(os.environ.get("APPDATA", ""), "npm", "n8n.cmd")
 TASK = "GalaxyForge-N8N-Autostart"
 TELEGRAM_WF = {"03_Production_Notify.json", "04_Telegram_Notify.json"}
 DB_FILES = ["database.sqlite", "database.sqlite-wal", "database.sqlite-shm"]

@@ -56,6 +56,14 @@ class TestAuditRequirements(unittest.TestCase):
         r = self.run_audit(*files)
         self.assertEqual((r["hard"], r["soft"], r["untracked_local"]), ({}, {}, []))
 
+    def test_src_layout_package_is_local(self):
+        # src/quality/quality_enforcer.py imported as `quality` once src/ is on
+        # sys.path (scripts/b13_001_evidence.py) was reported as a HARD gap.
+        files = [self.write("src/quality/quality_enforcer.py", "x = 1\n"),
+                 self.write("app.py", "from quality import quality_enforcer\n")]
+        r = self.run_audit(*files)
+        self.assertEqual(r["hard"], {})
+
     def test_untracked_local_code_is_named_as_such(self):
         # present on disk, absent from the tracked list -> missing from the repo
         self.write("helper_pkg/__init__.py", "")

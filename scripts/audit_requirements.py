@@ -77,13 +77,18 @@ def declared_import_names(req_path):
 
 def local_names(tracked):
     """Top-level folders, plus the stem of every tracked .py file at any depth
-    (many scripts put a folder on sys.path and import its modules bare)."""
+    (many scripts put a folder on sys.path and import its modules bare), plus
+    the folder holding each tracked .py file. The last one covers the src/
+    layout: a script that puts src/ on sys.path imports src/quality/ as the
+    package `quality`, which the first two rules never named."""
     out = set()
     for f in tracked:
         parts = f.split("/")
         out.add(parts[0][:-3] if len(parts) == 1 and parts[0].endswith(".py") else parts[0])
         if f.endswith(".py"):
             out.add(parts[-1][:-3])
+            if len(parts) >= 2:
+                out.add(parts[-2])
     return out
 
 

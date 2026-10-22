@@ -26,6 +26,7 @@ import json
 import re
 import subprocess
 import sys
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -42,7 +43,10 @@ from quality.quality_enforcer import _INSTRUCTIONS, _MOJIBAKE, _PLACEHOLDER, _wo
 XLSX = ROOT / "books" / "batch13" / "B13-001_renovation_allowance_control.xlsx"
 PDF = ROOT / "books" / "batch13" / "B13-001_renovation_allowance_control_guide.pdf"
 EVID = ROOT / "reports" / "B13-001"
-PROBE = Path(r"C:\Users\Dell\AppData\Local\Temp\opencode\b13_probe_out.json")
+# Scratch round-trip for the Excel recalculation probe (written, then read
+# back). It lives in the system temp dir, not a hardcoded user directory, so
+# the script runs on any machine (tests/test_no_temp_dependencies.py).
+PROBE = Path(tempfile.gettempdir()) / "gf_b13_probe" / "b13_probe_out.json"
 PROBE_SPEC = PROBE.with_name("b13_probe_spec.json")
 PROBE_CELLS = [
     ("Summary", "B4"), ("Summary", "B5"), ("Summary", "B6"), ("Summary", "B7"),
@@ -92,6 +96,7 @@ def _probe_values() -> dict:
         ],
         "cells": [{"sheet": s, "address": a} for s, a in PROBE_CELLS],
     }
+    PROBE_SPEC.parent.mkdir(parents=True, exist_ok=True)
     PROBE_SPEC.write_text(json.dumps(spec, indent=1), encoding="utf-8")
     subprocess.run(
         ["powershell", "-NoProfile", "-File",
