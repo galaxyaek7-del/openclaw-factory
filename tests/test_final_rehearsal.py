@@ -126,12 +126,32 @@ class TestFinalRehearsal(unittest.TestCase):
         ev("notify", "sim suppressed, real flagged", "POLICY HELD")
 
     def test_no_autopublish_path(self):
-        import pathlib
-        for f in list(pathlib.Path("affiliate").glob("*.py")):
+        import subprocess
+        # Scope the invariant to files git actually tracks. Untracked
+        # operator scratch scripts (e.g. affiliate/publish_queue.py, which is
+        # parallel-owned and not committed) are not part of the repository's
+        # executable code; the guard below proves no tracked module imports
+        # one of them.
+        out = subprocess.run(
+            ["git", "ls-files", "--", "affiliate"],
+            cwd=_FACTORY_ROOT, capture_output=True, text=True, encoding="utf-8",
+        )
+        if out.returncode != 0:
+            self.skipTest("git not available -- cannot determine tracked affiliate files")
+        tracked = [p for p in out.stdout.splitlines() if p.endswith(".py")]
+        self.assertTrue(tracked, "no tracked affiliate Python files found")
+        for rel in tracked:
+            f = _FACTORY_ROOT / rel
             t = f.read_text(encoding="utf-8")
-            self.assertNotIn("enable_product(", t, f.name)
-            self.assertNotIn("distributor.publish", t, f.name)
-        ev("gates", "no auto-publish path in automation", "STOP PROVEN")
+            self.assertNotIn("enable_product(", t, rel)
+            self.assertNotIn("distributor.publish", t, rel)
+        # No tracked module may import an untracked autopublish helper.
+        imports = subprocess.run(
+            ["git", "grep", "-nE", r"^[[:space:]]*(from|import)[[:space:]].*publish_queue", "--", "*.py"],
+            cwd=_FACTORY_ROOT, capture_output=True, text=True, encoding="utf-8",
+        )
+        self.assertEqual(imports.stdout.strip(), "", "tracked module imports untracked publish_queue")
+        ev("gates", "no auto-publish path in tracked automation", "STOP PROVEN")
 
     def test_out_of_order(self):
         from affiliate import ledger_firewall as fw

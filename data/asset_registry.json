@@ -12,6 +12,7 @@
   "assets": [
     {
       "asset_id": "GF-001",
+      "production_id": "PROD-77af8be77621c9a6",
       "product_name": "EU AI Act Compliance Toolkit",
       "product_category": "digital_toolkit",
       "target_customer": "SMEs needing EU AI Act compliance",
@@ -316,6 +317,7 @@
     },
     {
       "asset_id": "GF-011",
+      "production_id": "PROD-5214fb83a464299d",
       "product_name": "Legal Case Research Automation Playbook",
       "product_category": "playbook",
       "target_customer": "Solo attorneys",
