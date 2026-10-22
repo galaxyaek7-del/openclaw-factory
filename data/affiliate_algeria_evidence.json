@@ -195,6 +195,22 @@
         "https://www.canva.com/affiliates/hubpage/how-tos"
       ],
       "checked": "2026-10-22"
+    },
+    "CO-shopify-affiliate": {
+      "publisher_eligibility_algeria": "UNKNOWN",
+      "eligibility_basis": "UNKNOWN",
+      "network": "impact.com since June 2022; impact.com reviews the marketplace application, then Shopify reviews fit (up to 5 business days)",
+      "acceptance_requirements": "active website, established audience, original content, commerce experience (help.shopify.com; third-party list). Galaxy Forge has ~31 recorded site page views, mostly internal probes: acceptance is UNLIKELY until an audience exists (INFERRED)",
+      "payout_routes": [
+        "impact_wire_dzd"
+      ],
+      "payout_verified": false,
+      "payout_note": "Shopify help: direct deposit or PayPal in most countries, $10 minimum. Not in the main registry.",
+      "sources": [
+        "https://help.shopify.com/affiliates/earnings",
+        "https://help.shopify.com/ja/affiliates/about"
+      ],
+      "checked": "2026-10-22"
     }
   },
   "impact_account": {
