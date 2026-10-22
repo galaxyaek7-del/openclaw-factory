@@ -159,3 +159,6 @@ lib/contact_tracker.js
 # Affiliate assets rendered with the real tracked link (contains the partner id).
 # The source draft keeps a placeholder; only this directory ever holds the link.
 drafts/affiliate/rendered/
+
+# 2026-10-22: workbook specs are paid product source; never commit (public repo)
+books/_workbook_specs/

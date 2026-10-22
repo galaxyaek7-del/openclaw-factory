@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-22T20:38:57.316949+00:00",
+ "generated_at": "2026-10-22T21:56:34.313212+00:00",
  "status": "PREPARED_NOT_APPLIED",
  "constraints": "No Gumroad write, upload, unpublish or delete was performed. FACTORY_LIVE_PUBLISH=false. Spend $0.",
  "actions": [
@@ -300,6 +300,61 @@
    "status": "PREPARED_NOT_APPLIED"
   },
   {
+   "slug": "wteork",
+   "product": "Amazon FBA Reconciliation Workbook",
+   "action": "attach_file+reword",
+   "recommendation": "REPAIR",
+   "before": "Live: one 3,726-byte PDF (331 words) sold as a 'Workbook' at $49; no spreadsheet attached. Listing line: '- A single, focused file you download and use immediately'.",
+   "after": "Attach the working workbook (5 tabs + Summary, formulas recalculated and checked: 16/16); replace the line with '- A PDF guide (the monthly routine) and a working XLSX workbook: refunds vs fee credits, removal orders, fee-tier audit, case log and monthly tracker, all with formulas'.",
+   "required_files": [
+    {
+     "path": "books/amazon_fba_reconciliation_workbook.xlsx",
+     "bytes": 45560,
+     "sha256": "b88bc5ad429b9cf1f903f44bec94c705a59cfa521d73b603ff9a04308c915d5f",
+     "file_test": "PASS",
+     "sheets": 7,
+     "formulas": 2025
+    }
+   ],
+   "evidence": [
+    "built by scripts/build_tool_workbook.py from books/_workbook_specs/amazon_fba_reconciliation.json (gitignored product source); tabs follow the guide's six-step routine",
+    "live guide sha256 equals factory_workspace/sprint14/amazon_fba_reconciliation_workbook.pdf",
+    "release gate: QA_FAILED as live -> HOLD (rights review only) with the workbook",
+    "no Amazon fee table or claim window hardcoded; the seller enters current figures"
+   ],
+   "rollback": "Remove the workbook; restore the previous line.",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
+   "slug": "hasjmp",
+   "product": "Etsy Ads ROI Playbook + Calculator",
+   "action": "attach_file+reword",
+   "recommendation": "REPAIR",
+   "before": "Live: one 3,480-byte PDF (300 words) titled '+ Calculator' at $39; no calculator attached. Listing line: '- A single, focused file you download and use immediately'.",
+   "after": "Attach the working calculator (tracker, readiness check, Summary; 12/12 formula checks); replace the line with '- A PDF playbook and a working XLSX calculator: per-listing ROAS, break-even ROAS, max CPC and an automatic kill/watch/promote verdict, plus a listing-readiness check'.",
+   "required_files": [
+    {
+     "path": "books/etsy_ads_roi_calculator.xlsx",
+     "bytes": 35341,
+     "sha256": "c99f07e0d61c6de9a7ce6bc46eca9bcdeb94e00b4fd5468f9f659c09356dc11a",
+     "file_test": "PASS",
+     "sheets": 4,
+     "formulas": 1427
+    }
+   ],
+   "evidence": [
+    "built by scripts/build_tool_workbook.py from books/_workbook_specs/etsy_ads_roi_calculator.json; verdict rules are the playbook's own kill/watch/promote rules",
+    "live guide sha256 equals factory_workspace/sprint14/etsy_ads_roi_playbook.pdf",
+    "release gate: HOLD (substance) as live -> HOLD (rights review only) with the calculator"
+   ],
+   "rollback": "Remove the calculator; restore the previous line.",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
    "slug": "iaiyt",
    "product": "EU AI Act Compliance Toolkit",
    "action": "remove_file",
@@ -549,21 +604,6 @@
    "basis": "392 words for $59 = 6.6 words/$ (<10)"
   },
   {
-   "slug": "wteork",
-   "product": "Amazon FBA Reconciliation Workbook",
-   "published": true,
-   "price_usd": 49.0,
-   "live_bytes": 3726,
-   "live_types": [
-    "pdf"
-   ],
-   "local_file": "factory_workspace/sprint14\\amazon_fba_reconciliation_workbook.pdf",
-   "pages": 1,
-   "words": 331,
-   "recommendation": "PROPOSE_UNPUBLISH (or reprice/expand)",
-   "basis": "331 words for $49 = 6.8 words/$ (<10); the title promises a calculator/workbook but only a PDF is attached"
-  },
-  {
    "slug": "roxdbe",
    "product": "SaaS Churn Email Pack",
    "published": true,
@@ -592,21 +632,6 @@
    "words": 272,
    "recommendation": "PROPOSE_UNPUBLISH (or reprice/expand)",
    "basis": "272 words for $39 = 7.0 words/$ (<10)"
-  },
-  {
-   "slug": "hasjmp",
-   "product": "Etsy Ads ROI Playbook + Calculator",
-   "published": true,
-   "price_usd": 39.0,
-   "live_bytes": 3480,
-   "live_types": [
-    "pdf"
-   ],
-   "local_file": "factory_workspace/sprint14\\etsy_ads_roi_playbook.pdf",
-   "pages": 1,
-   "words": 300,
-   "recommendation": "PROPOSE_UNPUBLISH (or reprice/expand)",
-   "basis": "300 words for $39 = 7.7 words/$ (<10); the title promises a calculator/workbook but only a PDF is attached"
   },
   {
    "slug": "yhnyn",

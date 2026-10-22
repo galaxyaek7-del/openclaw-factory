@@ -107,7 +107,33 @@ def build_actions():
                          "workbook named in the launch kit; sha256 equals cycle88 record"],
                         f"Re-upload books/_rollback_2026-10-22/{os.path.basename(pdf)} (byte-identical to the "
                         "current live file) and remove the workbook."))
+    single = "- A single, focused file you download and use immediately"
     A += [
+        action("wteork", "Amazon FBA Reconciliation Workbook", "attach_file+reword", "REPAIR",
+               "Live: one 3,726-byte PDF (331 words) sold as a 'Workbook' at $49; no spreadsheet attached. "
+               f"Listing line: '{single}'.",
+               "Attach the working workbook (5 tabs + Summary, formulas recalculated and checked: 16/16); replace "
+               "the line with '- A PDF guide (the monthly routine) and a working XLSX workbook: refunds vs fee "
+               "credits, removal orders, fee-tier audit, case log and monthly tracker, all with formulas'.",
+               ["books/amazon_fba_reconciliation_workbook.xlsx"],
+               ["built by scripts/build_tool_workbook.py from books/_workbook_specs/amazon_fba_reconciliation.json "
+                "(gitignored product source); tabs follow the guide's six-step routine",
+                "live guide sha256 equals factory_workspace/sprint14/amazon_fba_reconciliation_workbook.pdf",
+                "release gate: QA_FAILED as live -> HOLD (rights review only) with the workbook",
+                "no Amazon fee table or claim window hardcoded; the seller enters current figures"],
+               "Remove the workbook; restore the previous line."),
+        action("hasjmp", "Etsy Ads ROI Playbook + Calculator", "attach_file+reword", "REPAIR",
+               "Live: one 3,480-byte PDF (300 words) titled '+ Calculator' at $39; no calculator attached. "
+               f"Listing line: '{single}'.",
+               "Attach the working calculator (tracker, readiness check, Summary; 12/12 formula checks); replace "
+               "the line with '- A PDF playbook and a working XLSX calculator: per-listing ROAS, break-even ROAS, "
+               "max CPC and an automatic kill/watch/promote verdict, plus a listing-readiness check'.",
+               ["books/etsy_ads_roi_calculator.xlsx"],
+               ["built by scripts/build_tool_workbook.py from books/_workbook_specs/etsy_ads_roi_calculator.json; "
+                "verdict rules are the playbook's own kill/watch/promote rules",
+                "live guide sha256 equals factory_workspace/sprint14/etsy_ads_roi_playbook.pdf",
+                "release gate: HOLD (substance) as live -> HOLD (rights review only) with the calculator"],
+               "Remove the calculator; restore the previous line."),
         action("iaiyt", "EU AI Act Compliance Toolkit", "remove_file", "REPAIR",
                "Live: 2 PDFs -- full v2 (139,401 B, 31 pages) and 'eu_ai_act_compliance_toolkit_preview' "
                "(106,314 B, 3 pages, 209 words).",
