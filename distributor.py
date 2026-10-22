@@ -283,6 +283,16 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
     mandatory enforcement is therefore NOT READY — it needs an explicit
     founder decision reconciling the policy with that suite.
     """
+    # A JSON job can hand us a plain dict. Every arm's supports()/publish()
+    # reads attributes, so a dict used to make all four of gumroad/etsy/
+    # payhip/paddle raise "'dict' object has no attribute 'file_path'"
+    # (live ledger, 2026-10-01). Normalize once, here, at the boundary: a
+    # dict becomes a Product through the same defensive constructor the
+    # generation log uses, so a malformed job yields an honest "not
+    # supported" outcome instead of an exception in every arm.
+    if isinstance(product, dict):
+        product = Product.from_jsonl_record(product)
+
     file_defects = []
     if not dry_run and not allow_file_defects:
         file_defects = _file_defects(product)
