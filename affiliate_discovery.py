@@ -199,7 +199,8 @@ SYSTEME_PROGRAM: dict = {
     "geography": "No country restriction stated; Algeria payout feasibility depends on PayPal (conditional) or wire (IBAN form, unverified)",
     "terms_url": "https://systeme.io/affiliate-program",
     "evidence_url": ["https://systeme.io/affiliate-program",
-                     "https://help.systeme.io/article/2102-how-to-add-a-method-for-receiving-commissions"],
+                     "https://help.systeme.io/article/2102-how-to-add-a-method-for-receiving-commissions",
+                     "https://systeme.io/affiliate-agreement"],
     "evidence_timestamp": "2026-10-22 (WebFetch of official pages)",
     "verification_status": "VERIFIED",
     "confidence": "medium",
@@ -207,7 +208,11 @@ SYSTEME_PROGRAM: dict = {
     "risk_score": "UNKNOWN",
     "status": "DISCOVERED",
     "last_verified": "2026-10-22",
-    "last_verified_evidence": "Official page states rate, cookie, minimum, methods; prohibited methods and disclosure rules are in the affiliate agreement, not yet read",
+    "prohibited_traffic": "Deceptive/misleading/unethical marketing; unsolicited email in breach of law; competitor trademarks in promotion of systeme.io; implying endorsement; altering provided resources (affiliate agreement)",
+    "brand_restrictions": "systeme.io trademarks only in connection with the program; no competitor trademarks in promotion (affiliate agreement)",
+    "refund_rules": "No commission if the customer requests a refund within 30 days or is not retained for 30 days (affiliate agreement)",
+    "attribution_rules": "Lead-based lifetime attribution by email; lost if the lead buys via another affiliate's link on a payment page (affiliate agreement)",
+    "last_verified_evidence": "Official program page + affiliate agreement (read 2026-10-22). Agreement sets no disclosure rule; we disclose anyway",
 }
 
 

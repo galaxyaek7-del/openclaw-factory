@@ -61,6 +61,49 @@ Under the same formula it would score roughly economics × 1.0 × 0.7 + 10, whic
 
 Read the systeme.io affiliate agreement (`https://systeme.io/affiliate-agreement`) to capture prohibited methods and disclosure rules. Then prepare one WS-02/WS-18 guide locally, using the existing `affiliate/content_qa.py` checks. Do not publish it.
 
+## Checkpoint 2 — systeme.io agreement and the live guide (same day)
+
+**Affiliate agreement read** (`https://systeme.io/affiliate-agreement`, VERIFIED; no last-updated date is shown):
+
+- **Commission:** 60% per new customer. The rate may be changed via the Affiliate Tool.
+- **Attribution:** lead-based and lifetime. It is lost if the lead buys through another affiliate's link on a payment page.
+- **Commission is void if** the customer asks for a refund within 30 days, is not retained for 30 days, or is a self-referral.
+- **Promotion rules:**
+  - No deceptive marketing.
+  - Unsolicited-email laws apply.
+  - **No competitor trademarks in promotion of systeme.io.**
+  - No implied endorsement by systeme.io.
+- **Other terms:**
+  - The affiliate must be over 18.
+  - The affiliate pays all taxes and bank fees.
+  - The agreement sets no disclosure rule; we disclose anyway.
+
+Consequence: "X vs Y" comparison content (WS-22) must not be used to promote systeme.io.
+
+**Reuse before new.** `affiliate/assets.py` sets this policy. An English draft (`drafts/affiliate/systeme_free_plan_ceiling_2026-10-20.md`) and a full video package already exist. The draft names no competitors. No new guide was written.
+
+**Live page fixed locally** (`customer_site/guide-systemeio-affiliate.html`, published; not pushed):
+
+| Defect | Fix |
+|---|---|
+| "معظمرواد" (missing space) and "المهتممين" (typo) | Corrected |
+| "APPLICATIONImplementation" (template leftover) inside the disclosure | Removed |
+| Disclosure placed after the affiliate link | Moved before it |
+| Link marked only `nofollow` | `rel="sponsored nofollow noopener"` |
+| Thin page, no usable steps | Added the free-plan limits (official pricing page, April 2026, checked 2026-10-22) and the 6 setup steps from the official help article (`Automations → Rules`, `Funnel step form subscribed` → `Subscribe to campaign`, button action `Submit form`) |
+
+**QA:**
+
+- `affiliate/content_qa.py` gained two checks:
+  - `forbidden_terms`, for terms a program's agreement bans.
+  - Fused/template tokens.
+- The revised page passes, including the "disclosure before link" check.
+- A scan of every other `customer_site/*.html` page found no fused tokens.
+
+The affiliate ID in the link stays as-is. It is the existing, allowlisted exposure in `tests/test_no_committed_affiliate_links.py`, and its rotation is still a founder item.
+
+**Publication** happens only on `git push`, and it needs founder approval.
+
 ## Tests (2026-10-22)
 
 - **New tests:** 14 passed.

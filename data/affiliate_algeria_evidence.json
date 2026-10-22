@@ -6,42 +6,56 @@
       "algeria_receive": "CONDITIONAL",
       "basis": "VERIFIED",
       "summary": "PayPal's Algeria user agreement allows receiving payments, with conditions (a linked US bank account or Visa card for withdrawal, holds of up to 30 days, fees). Not blocked, not frictionless.",
-      "sources": ["https://www.paypal.com/dz/legalhub/paypal/recpymt-full", "reports/PAYPAL_ALGERIA_EVIDENCE_2026-10-22.md"],
+      "sources": [
+        "https://www.paypal.com/dz/legalhub/paypal/recpymt-full",
+        "reports/PAYPAL_ALGERIA_EVIDENCE_2026-10-22.md"
+      ],
       "checked": "2026-10-22"
     },
     "paypal_payouts_api": {
       "algeria_receive": "NOT_LISTED",
       "basis": "VERIFIED",
       "summary": "PayPal Payouts supported-features list does not include DZ. Networks paying through Payouts may fail for DZ accounts.",
-      "sources": ["https://developer.paypal.com/payouts/supported-features", "reports/PAYPAL_ALGERIA_EVIDENCE_2026-10-22.md"],
+      "sources": [
+        "https://developer.paypal.com/payouts/supported-features",
+        "reports/PAYPAL_ALGERIA_EVIDENCE_2026-10-22.md"
+      ],
       "checked": "2026-10-22"
     },
     "stripe": {
       "algeria_receive": "UNAVAILABLE",
       "basis": "VERIFIED",
       "summary": "Stripe is not offered to accounts in Algeria, so PartnerStack's Stripe payout option does not apply.",
-      "sources": ["reports/PAYPAL_ALGERIA_EVIDENCE_2026-10-22.md"],
+      "sources": [
+        "reports/PAYPAL_ALGERIA_EVIDENCE_2026-10-22.md"
+      ],
       "checked": "2026-10-22"
     },
     "payoneer": {
       "algeria_receive": "UNKNOWN",
       "basis": "UNKNOWN",
       "summary": "Awin points publishers to Payoneer's capabilities map and does not confirm Algeria. Country-level receive eligibility unconfirmed.",
-      "sources": ["https://success.awin.com/articles/en_US/Knowledge/Payoneer-for-Awin-Publishers-FAQs"],
+      "sources": [
+        "https://success.awin.com/articles/en_US/Knowledge/Payoneer-for-Awin-Publishers-FAQs"
+      ],
       "checked": "2026-10-21"
     },
     "impact_wire_dzd": {
       "algeria_receive": "LISTED",
       "basis": "OBSERVED",
       "summary": "impact.com lists DZD among wire-supported payout currencies. Strongest rail found, but no program here pays through impact.com yet.",
-      "sources": ["reports/PAYPAL_ALGERIA_EVIDENCE_2026-10-22.md"],
+      "sources": [
+        "reports/PAYPAL_ALGERIA_EVIDENCE_2026-10-22.md"
+      ],
       "checked": "2026-10-22"
     },
     "systeme_wire": {
       "algeria_receive": "UNKNOWN",
       "basis": "INFERRED",
       "summary": "systeme.io wire payouts require an IBAN and an 11-character SWIFT code, and are only selectable after the first affiliate sale. Algerian banks use a 20-digit RIB rather than a standard IBAN, so the form may not accept a local account (INFERRED, not tested).",
-      "sources": ["https://help.systeme.io/article/2102-how-to-add-a-method-for-receiving-commissions"],
+      "sources": [
+        "https://help.systeme.io/article/2102-how-to-add-a-method-for-receiving-commissions"
+      ],
       "checked": "2026-10-22"
     }
   },
@@ -51,55 +65,104 @@
       "eligibility_basis": "VERIFIED",
       "eligibility_quote": "Anyone can join ... There are no conditions to join our affiliate program.",
       "account_observed": "SYSTEME_AFFILIATE_ID is configured in .env (value never read into reports). Account standing UNVERIFIED.",
-      "payout_routes": ["paypal", "systeme_wire"],
+      "payout_routes": [
+        "paypal",
+        "systeme_wire"
+      ],
       "payout_verified": false,
       "payout_note": "PayPal receiving in Algeria is conditional; wire needs IBAN/SWIFT and a first sale. No payout has been attempted.",
-      "sources": ["https://systeme.io/affiliate-program", "https://help.systeme.io/article/2102-how-to-add-a-method-for-receiving-commissions"],
-      "checked": "2026-10-22"
+      "sources": [
+        "https://help.systeme.io/article/2102-how-to-add-a-method-for-receiving-commissions",
+        "https://systeme.io/affiliate-agreement",
+        "https://systeme.io/affiliate-program"
+      ],
+      "checked": "2026-10-22",
+      "agreement": {
+        "url": "https://systeme.io/affiliate-agreement",
+        "last_updated": "not shown",
+        "checked": "2026-10-22",
+        "commission": "60% per new customer; rate may be changed via the Affiliate Tool",
+        "attribution": "lead-based, lifetime; lost if the lead buys through another affiliate's link on a payment page; no referral without a free signup",
+        "eligibility": "over 18; compensation may be limited by Irish law or the affiliate's local law; US export rules may apply",
+        "commission_void_if": "refund requested within 30 days; customer not retained for 30 days; self-referral or affiliated party",
+        "promotion_rules": [
+          "no deceptive, misleading, illegal or unethical marketing",
+          "unsolicited-email laws apply",
+          "systeme.io trademarks only in connection with the program",
+          "no competitor trademarks in promotion of systeme.io",
+          "may not imply systeme.io endorses the affiliate",
+          "may not alter provided resources"
+        ],
+        "disclosure": "not specified in the agreement (local law and FTC-style disclosure still applied by us)",
+        "taxes": "affiliate pays all taxes and fees, including bank fees"
+      }
     },
     "CO-n8n-affiliate": {
       "publisher_eligibility_algeria": "NO_COUNTRY_RESTRICTION_STATED",
       "eligibility_basis": "OBSERVED",
-      "payout_routes": ["paypal"],
+      "payout_routes": [
+        "paypal"
+      ],
       "payout_verified": false,
       "payout_note": "n8n's affiliate FAQ requires a PayPal account; PartnerStack's Stripe option does not apply in Algeria. EUR 100 minimum.",
-      "sources": ["https://n8n.io/affiliates/", "https://market.partnerstack.com/page/n8n"],
+      "sources": [
+        "https://n8n.io/affiliates/",
+        "https://market.partnerstack.com/page/n8n"
+      ],
       "checked": "2026-10-21"
     },
     "CO-aweber-affiliate": {
       "publisher_eligibility_algeria": "NO_COUNTRY_RESTRICTION_STATED",
       "eligibility_basis": "OBSERVED",
-      "payout_routes": ["paypal"],
+      "payout_routes": [
+        "paypal"
+      ],
       "payout_verified": false,
       "payout_note": "PayPal (USD) only; $50 minimum for non-US referrers.",
-      "sources": ["https://docs.aweber.com/aweber-advocate-program/faq-customer-referral-program/how-do-i-get-paid"],
+      "sources": [
+        "https://docs.aweber.com/aweber-advocate-program/faq-customer-referral-program/how-do-i-get-paid"
+      ],
       "checked": "2026-10-21"
     },
     "CO-siteground-affiliate": {
       "publisher_eligibility_algeria": "NO_COUNTRY_RESTRICTION_STATED",
       "eligibility_basis": "OBSERVED",
-      "payout_routes": ["paypal"],
+      "payout_routes": [
+        "paypal"
+      ],
       "payout_verified": false,
       "payout_note": "PayPal for low volume; wire only for high volume.",
-      "sources": ["https://www.siteground.com/affiliates"],
+      "sources": [
+        "https://www.siteground.com/affiliates"
+      ],
       "checked": "2026-10-21"
     },
     "CO-brevo-affiliate": {
       "publisher_eligibility_algeria": "NO_COUNTRY_RESTRICTION_STATED",
       "eligibility_basis": "OBSERVED",
-      "payout_routes": ["paypal", "stripe"],
+      "payout_routes": [
+        "paypal",
+        "stripe"
+      ],
       "payout_verified": false,
       "payout_note": "Via PartnerStack: PayPal (conditional in Algeria) or Stripe (unavailable in Algeria).",
-      "sources": ["https://market.partnerstack.com/page/brevo"],
+      "sources": [
+        "https://market.partnerstack.com/page/brevo"
+      ],
       "checked": "2026-10-21"
     },
     "CO-digitalocean-affiliate": {
       "publisher_eligibility_algeria": "UNKNOWN",
       "eligibility_basis": "UNKNOWN",
-      "payout_routes": ["payoneer"],
+      "payout_routes": [
+        "payoneer"
+      ],
       "payout_verified": false,
       "payout_note": "Awin pays international publishers through Payoneer; Awin does not confirm Algeria. Application-based (Awin).",
-      "sources": ["https://ui.awin.com/merchant-profile/123996", "https://success.awin.com/articles/en_US/Knowledge/Payoneer-for-Awin-Publishers-FAQs"],
+      "sources": [
+        "https://ui.awin.com/merchant-profile/123996",
+        "https://success.awin.com/articles/en_US/Knowledge/Payoneer-for-Awin-Publishers-FAQs"
+      ],
       "checked": "2026-10-21"
     }
   }

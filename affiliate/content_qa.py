@@ -11,12 +11,14 @@ out of scope (a human still owns meaning). Limits, disclosed:
 Input asset dict fields (all optional except title+body):
   title, body, disclosure (bool), pricing_claims [{text, evidence_date}],
   commission_claims [{text, evidence_date}], thumbnail_claims [texts],
-  cta_present (bool), evidence_date (ISO, newest supporting evidence).
+  cta_present (bool), evidence_date (ISO, newest supporting evidence),
+  forbidden_terms [texts] (e.g. competitor names a program's terms ban).
 Output: {"status": "PASS"|"HOLD", "failures": [...], "checked_at": ...}.
 """
 
 from __future__ import annotations
 
+import re
 from datetime import datetime, timezone
 
 _BANNED_PHRASES = (
@@ -25,6 +27,11 @@ _BANNED_PHRASES = (
 )
 
 _EVIDENCE_MAX_AGE_DAYS = 60
+
+# 2026-10-22: the live systeme.io guide shipped "APPLICATIONImplementation"
+# (two words fused, a leftover template token) inside its disclosure. An
+# all-caps run glued to a capitalised word is never intended prose.
+_FUSED_TOKEN = re.compile(r"\b[A-Z]{3,}[A-Z][a-z]{2,}")
 
 
 def _age_days(iso_date, now):
@@ -62,6 +69,11 @@ def qa_content(asset: dict, now=None) -> dict:
             failures.append("undated claim: %r" % str((claim or {}).get("text"))[:60])
         elif age > _EVIDENCE_MAX_AGE_DAYS:
             failures.append("stale claim (%dd): %r" % (age, str((claim or {}).get("text"))[:60]))
+    for term in asset.get("forbidden_terms", []):
+        if term and re.search(r"(?<!\w)" + re.escape(term.lower()) + r"(?!\w)", text):
+            failures.append("forbidden term by program terms: %r" % term)
+    for token in _FUSED_TOKEN.findall(title + " " + body):
+        failures.append("fused/template token: %r" % token)
     for claim in asset.get("thumbnail_claims", []):
         if claim and claim.lower() not in text:
             failures.append("thumbnail claim not supported by body: %r" % str(claim)[:60])
