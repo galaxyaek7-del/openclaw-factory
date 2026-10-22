@@ -235,6 +235,109 @@ class TestEnableProduct(unittest.TestCase):
                 gp.enable_product("fake-token", "p1")
 
 
+class TestAddProductCover(unittest.TestCase):
+    """POST /v2/products/:id/covers -- the real cover endpoint, added by
+    antiwork/gumroad PR #4311 and documented at gumroad.com/api. Previous
+    rounds wrongly recorded 'the API has no cover upload'; these tests pin
+    the real contract: a publicly reachable URL, verified by a re-read."""
+
+    _URL = "https://raw.githubusercontent.com/galaxyaek7-del/openclaw-factory/main/reports/B12-001/cover.png"
+
+    def _post_ok(self):
+        return _fake_response(status_code=200, json_data={
+            "success": True,
+            "covers": [{"id": "c1", "url": "https://public-files.gumroad.com/x",
+                        "original_url": self._URL, "filetype": "png",
+                        "native_width": 1280, "native_height": 720}],
+            "main_cover_id": "c1",
+        })
+
+    def test_cover_hits_the_real_covers_endpoint_with_the_url(self):
+        reread = {"id": "p1", "published": False, "price": 1499,
+                  "covers": [{"id": "c1", "url": "https://public-files.gumroad.com/x",
+                              "original_url": self._URL}], "main_cover_id": "c1"}
+        with patch.object(gp.requests, "request", return_value=self._post_ok()) as mock_req, \
+                patch.object(gp, "get_product", return_value=reread), \
+                patch.object(gp.time, "sleep"):
+            product = gp.add_product_cover("fake-token", "p1", self._URL)
+        self.assertEqual(product["main_cover_id"], "c1")
+        args, kwargs = mock_req.call_args
+        self.assertEqual(args[0], "POST")
+        self.assertTrue(args[1].endswith("/products/p1/covers"))
+        self.assertEqual(kwargs["data"], {"access_token": "fake-token", "url": self._URL})
+
+    def test_no_other_field_is_ever_sent(self):
+        reread = {"id": "p1", "published": False, "price": 1499,
+                  "covers": [{"id": "c1", "url": "https://public-files.gumroad.com/x",
+                              "original_url": self._URL}]}
+        with patch.object(gp.requests, "request", return_value=self._post_ok()) as mock_req, \
+                patch.object(gp, "get_product", return_value=reread), \
+                patch.object(gp.time, "sleep"):
+            gp.add_product_cover("fake-token", "p1", self._URL)
+        sent = mock_req.call_args[1]["data"]
+        for forbidden in ("price", "published", "files", "name", "description", "tags"):
+            self.assertNotIn(forbidden, sent)
+
+    def test_platform_rejection_is_blocked_not_success(self):
+        blocked = _fake_response(status_code=200, json_data={
+            "success": False, "message": "Cover must be an image (JPEG, PNG, GIF) or a video.",
+        })
+        with patch.object(gp.requests, "request", return_value=blocked):
+            with self.assertRaisesRegex(RuntimeError, "add_product_cover failed"):
+                gp.add_product_cover("fake-token", "p1", self._URL)
+
+    def test_silent_noop_is_reported_not_swallowed(self):
+        reread = {"id": "p1", "published": False, "covers": []}
+        with patch.object(gp.requests, "request", return_value=self._post_ok()), \
+                patch.object(gp, "get_product", return_value=reread), \
+                patch.object(gp.time, "sleep"):
+            with self.assertRaisesRegex(RuntimeError, "VERIFICATION_FAILED"):
+                gp.add_product_cover("fake-token", "p1", self._URL)
+
+    def test_a_different_cover_url_is_expected_not_a_failure(self):
+        """Live, 2026-10-18: Gumroad stores its own copy and reports THAT as
+        original_url, so a re-read never echoes the URL that was sent. The
+        attach is proven by the cover existing + count growth, not by URL
+        identity (which would be a guaranteed false FAIL)."""
+        reread = {"id": "p1", "covers": [{"id": "cX", "url": "https://public-files.gumroad.com/abc",
+                                          "original_url": "https://public-files.gumroad.com/abc"}]}
+        with patch.object(gp.requests, "request", return_value=self._post_ok()), \
+                patch.object(gp, "get_product", return_value=reread), \
+                patch.object(gp.time, "sleep"):
+            product = gp.add_product_cover("fake-token", "p1", self._URL)
+        self.assertEqual(len(product["covers"]), 1)
+
+    def test_a_cover_with_no_display_url_is_a_loud_failure(self):
+        reread = {"id": "p1", "covers": [{"id": "cX"}]}
+        with patch.object(gp.requests, "request", return_value=self._post_ok()), \
+                patch.object(gp, "get_product", return_value=reread), \
+                patch.object(gp.time, "sleep"):
+            with self.assertRaisesRegex(RuntimeError, "VERIFICATION_FAILED"):
+                gp.add_product_cover("fake-token", "p1", self._URL)
+
+    def test_cover_count_must_grow_when_expected(self):
+        reread = {"id": "p1", "covers": [{"id": "c1", "original_url": self._URL}]}
+        with patch.object(gp.requests, "request", return_value=self._post_ok()), \
+                patch.object(gp, "get_product", return_value=reread), \
+                patch.object(gp.time, "sleep"):
+            with self.assertRaisesRegex(RuntimeError, "VERIFICATION_FAILED"):
+                gp.add_product_cover("fake-token", "p1", self._URL, expected_cover_count=1)
+
+    def test_unreadable_readback_is_unknown_not_pass_or_fail(self):
+        with patch.object(gp.requests, "request", return_value=self._post_ok()), \
+                patch.object(gp, "get_product", side_effect=RuntimeError("network down")), \
+                patch.object(gp.time, "sleep"):
+            with self.assertRaisesRegex(RuntimeError, "VERIFICATION_UNKNOWN"):
+                gp.add_product_cover("fake-token", "p1", self._URL)
+
+    def test_local_path_or_presigned_url_is_refused_before_any_call(self):
+        with patch.object(gp.requests, "request") as mock_req:
+            for bad in ("reports/B12-001/cover.png", "ftp://x/y.png", "", None):
+                with self.assertRaises(gp.ConfigError):
+                    gp.add_product_cover("fake-token", "p1", bad)
+            mock_req.assert_not_called()
+
+
 class TestGetProduct(unittest.TestCase):
     def test_get_product_returns_real_state(self):
         ok = _fake_response(status_code=200, json_data={
@@ -487,18 +590,51 @@ class TestUpdateProductVerification(unittest.TestCase):
                 gp.update_product("fake-token", "p1", {})
         mock_req.assert_not_called()
 
-    def test_list_field_comparison_is_order_sensitive_matching_live_observed_behavior(self):
-        """Live-verified 2026-10-13: a written tag list round-trips in the
-        exact order sent. A re-read returning the same tags in a DIFFERENT
-        order is therefore an honest mismatch, not a false pass."""
+    def test_list_field_comparison_ignores_element_order_matching_live_observed_behavior(self):
+        """Supersedes the 2026-10-13 order-sensitive expectation.
+
+        2026-10-18 (live, real account): a write of the SAME 8 tags came back
+        reordered, and the old order-sensitive comparison raised
+        VERIFICATION_FAILED for a write that had actually persisted. Element
+        order is not part of Gumroad's contract; the set is."""
         put_ok = self._put_ok()
         reread_reordered = {"id": "p1", "tags": ["b", "a"]}
+        with patch.object(gp.requests, "request", return_value=put_ok):
+            result = gp.update_product(
+                "fake-token", "p1", {"tags": ["a", "b"]},
+                verify_delay_seconds=0, get_product_fn=lambda token, pid: reread_reordered,
+            )
+        self.assertEqual(result, reread_reordered)
+
+    def test_a_missing_tag_is_still_a_loud_failure(self):
+        put_ok = self._put_ok()
         with patch.object(gp.requests, "request", return_value=put_ok):
             with self.assertRaisesRegex(RuntimeError, "VERIFICATION_FAILED"):
                 gp.update_product(
                     "fake-token", "p1", {"tags": ["a", "b"]},
-                    verify_delay_seconds=0, get_product_fn=lambda token, pid: reread_reordered,
+                    verify_delay_seconds=0, get_product_fn=lambda token, pid: {"id": "p1", "tags": ["a"]},
                 )
+
+    def test_an_unexpected_tag_is_still_a_loud_failure(self):
+        put_ok = self._put_ok()
+        with patch.object(gp.requests, "request", return_value=put_ok):
+            with self.assertRaisesRegex(RuntimeError, "VERIFICATION_FAILED"):
+                gp.update_product(
+                    "fake-token", "p1", {"tags": ["a"]},
+                    verify_delay_seconds=0,
+                    get_product_fn=lambda token, pid: {"id": "p1", "tags": ["a", "surprise"]},
+                )
+
+    def test_a_platform_dedupe_is_not_a_failure(self):
+        """Gumroad stores tags as a set; sending a duplicate that it collapses
+        is a real platform contract, not a lost write."""
+        put_ok = self._put_ok()
+        with patch.object(gp.requests, "request", return_value=put_ok):
+            result = gp.update_product(
+                "fake-token", "p1", {"tags": ["a", "a", "b"]},
+                verify_delay_seconds=0, get_product_fn=lambda token, pid: {"id": "p1", "tags": ["b", "a"]},
+            )
+        self.assertEqual(set(result["tags"]), {"a", "b"})
 
     def test_only_requested_fields_are_compared_an_unrelated_platform_change_never_fails_the_write(self):
         """A legitimate platform-side change to a field this call never
