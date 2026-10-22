@@ -10,7 +10,8 @@
         "https://www.paypal.com/dz/legalhub/paypal/recpymt-full",
         "reports/PAYPAL_ALGERIA_EVIDENCE_2026-10-22.md"
       ],
-      "checked": "2026-10-22"
+      "checked": "2026-10-22",
+      "recheck_2026-10-22": "Re-fetch of the agreement page returned only its title (truncated); the earlier same-day OBSERVED extract in reports/PAYPAL_ALGERIA_EVIDENCE_2026-10-22.md stands."
     },
     "paypal_payouts_api": {
       "algeria_receive": "NOT_LISTED",
@@ -51,10 +52,11 @@
     },
     "systeme_wire": {
       "algeria_receive": "UNKNOWN",
-      "basis": "INFERRED",
-      "summary": "systeme.io wire payouts require an IBAN and an 11-character SWIFT code, and are only selectable after the first affiliate sale. Algerian banks use a 20-digit RIB rather than a standard IBAN, so the form may not accept a local account (INFERRED, not tested).",
+      "basis": "OBSERVED",
+      "summary": "systeme.io wire payouts require an IBAN and an 11-character SWIFT code, and are only selectable after the first affiliate sale. Algeria is not in the IBAN standard's main list: iban.com lists DZ only under 'Partial IBAN Countries (Experimental)' (24 chars; another source says 26). Whether systeme.io's form accepts a DZ account, and whether the founder's bank provides an IBAN, is UNKNOWN until tried in the account.",
       "sources": [
-        "https://help.systeme.io/article/2102-how-to-add-a-method-for-receiving-commissions"
+        "https://help.systeme.io/article/2102-how-to-add-a-method-for-receiving-commissions",
+        "https://www.iban.com/structure"
       ],
       "checked": "2026-10-22"
     }

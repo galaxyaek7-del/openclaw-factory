@@ -104,6 +104,51 @@ The affiliate ID in the link stays as-is. It is the existing, allowlisted exposu
 
 **Publication** happens only on `git push`, and it needs founder approval.
 
+## Checkpoint 3 — hardening cycle (same day)
+
+### Disclosure placement, site-wide (OBSERVED, static scan)
+
+- **Third-party affiliate links:** only one exists on `customer_site/` (systeme.io). Its disclosure comes before it, and it is marked `rel=sponsored`.
+- **The Amazon standing-desk page:** its disclosure sits at the top. Links are marked `sponsored` only when an affiliate tag is attached; no tag is configured today.
+- **First-party links:** 12 pages link to the founder's own store (`aekraft.gumroad.com`) or own site with `?ref=` source tags. These are not affiliate links and need no disclosure.
+- **New test:** `tests/test_affiliate_disclosure_placement.py` now enforces three things:
+  - the disclosure comes before every third-party affiliate link;
+  - every such link is `rel=sponsored`;
+  - systeme.io links never use `www`.
+
+### systeme.io link and attribution
+
+| Check | Finding | Basis |
+|---|---|---|
+| `SYSTEME_AFFILIATE_ID` set | yes; format `sa` + 40 hex | OBSERVED, value not printed |
+| Page link uses the configured ID | yes, 1 of 1 | OBSERVED, compared without printing |
+| Link format | `https://systeme.io/?sa=<id>` matches the help center; `www` would break tracking | VERIFIED (help.systeme.io, articles 162/328) |
+| Whether a click records a referral | **UNKNOWN**. Per the agreement, a referral exists only after a free signup. Testing it would mean a self-referral or a fake lead, which is prohibited, so it was not attempted. Only the founder's Affiliate Dashboard can show recorded leads | — |
+
+**Documented vs. in-account.** The guide's steps (`Automations → Rules`, `Funnel step form subscribed`, `Subscribe to campaign`) come from help article 284 (documented). No setting was checked inside an actual systeme.io account.
+
+### Payout from Algeria
+
+| Route | Status | Evidence |
+|---|---|---|
+| PayPal receive | CONDITIONAL | US bank account or Visa card, 30-day initial hold, 4.9% + fixed fee (OBSERVED, `reports/PAYPAL_ALGERIA_EVIDENCE_2026-10-22.md`). Today's re-fetch returned only the page title; the earlier extract stands |
+| PayPal to a local bank | CONDITIONAL | via an external provider at 2.0% + $1.50, plus the provider's own fees (OBSERVED, published fee) |
+| systeme.io wire | UNKNOWN | requires an IBAN. iban.com lists Algeria only as "Partial IBAN Countries (Experimental)", 24 characters, and another source says 26 (OBSERVED). Whether the form accepts it is untested |
+| Stripe (PartnerStack) | BLOCKED | Stripe is not available in Algeria |
+| Payoneer (Awin) | UNKNOWN | Awin does not confirm Algeria |
+| impact.com wire in DZD | LISTED | the strongest rail found; no candidate program uses it yet |
+| Founder's own account | UNKNOWN | founder-only |
+
+### Product pipeline
+
+- **Not done.** No new product was built: `CLAUDE.md`'s golden rule says no new product before the first dollar, there are 0 sales, and the bottleneck is payment and distribution.
+- **Done.** `tests/test_listing_copy_residue.py` scans every tracked product listing file (49 found) for:
+  - unfilled placeholders;
+  - income-guarantee phrases;
+  - fused template tokens.
+
+  It found 0 defects. Two real names that look fused, `CAMAudit` and `QUICKFix`, are allowlisted with reasons.
+
 ## Tests (2026-10-22)
 
 - **New tests:** 14 passed.
