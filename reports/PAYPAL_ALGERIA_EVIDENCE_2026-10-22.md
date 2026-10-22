@@ -45,3 +45,24 @@ application, no spend. Raw quotes and page hashes are stored in
 
 Each of these is an account action under the founder's identity. None was
 attempted.
+
+## Addendum: PartnerStack withdrawal methods for Algeria (same day)
+
+Closes matrix action 3 ("PartnerStack DZ check", affects n8n, Kit and one
+other row). Source: PartnerStack's own help article "Configuring payout
+providers" (support.partnerstack.com/hc/en-us/articles/360009377934). A plain
+GET returned 403, so the text was read through a search-provider extract.
+`stripe.com/global` was read the same way.
+
+| Method | Algeria? | Class | Basis |
+|---|---|---|---|
+| PayPal | Depends on P1–P3 above. PartnerStack defers to "PayPal's list of supported countries" and warns that "some accounts only allow money to be sent out." | DERIVED | PartnerStack article + this file's P1–P3 |
+| Stripe | **Not available.** Algeria is not among the countries on Stripe's global availability page. | OBSERVED | stripe.com/global |
+| Direct deposit (Airwallex) | **Probably not; not proven.** The Airwallex local-transfer fee table names Egypt, Morocco, Nigeria and others but not Algeria. The full country list was elided in the extract. The article says a country missing from the dashboard drop-down "is not yet available." | INFERRED | same article |
+
+**Net**: for an Algeria-based partner, PartnerStack's only plausible route is
+PayPal, under the 30-day-hold, US-bank-or-Visa conditions above. The matrix
+records no PartnerStack account. The Airwallex question can only be settled
+from the country drop-down under "Setup withdrawals", which needs an account,
+so it stays a founder decision. Opening that account means accepting
+PartnerStack's terms.
