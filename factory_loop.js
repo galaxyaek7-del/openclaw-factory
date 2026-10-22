@@ -68,7 +68,10 @@ function internalAuthHeaders() {
 const N8N_TELEGRAM_WEBHOOK_URL = process.env.N8N_TELEGRAM_WEBHOOK_URL || null;
 const INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
 
-const LOOP_LOG = path.join(FACTORY_DIR, 'factory_loop.log');
+// FACTORY_LOOP_LOG_PATH lets tests point this at a temp file. Without it,
+// tests/test_factory_loop_tick_overlap.js wrote "simulated tick failure" and
+// tick_skipped_overlap entries into the real production log (found 2026-10-22).
+const LOOP_LOG = process.env.FACTORY_LOOP_LOG_PATH || path.join(FACTORY_DIR, 'factory_loop.log');
 const SCOUT_LOG = path.join(FACTORY_DIR, 'scout_runs.log');
 const FINANCE_FILE = path.join(FACTORY_DIR, 'finance_data.json');
 const BOOKS_DIR = path.join(FACTORY_DIR, 'books');

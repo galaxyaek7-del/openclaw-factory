@@ -14,6 +14,15 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
+// safeTick() logs skipped/failed ticks. Point that log at a temp file BEFORE
+// factory_loop.js is loaded, so this test never writes "simulated tick
+// failure" into the real factory_loop.log (it did, 2026-10-18).
+const TMP_LOG = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'gf_loop_log_')), 'factory_loop.log');
+process.env.FACTORY_LOOP_LOG_PATH = TMP_LOG;
 const { safeTick } = require('../factory_loop.js');
 
 function slowTick(callLog, delayMs = 100) {
@@ -62,4 +71,14 @@ test('safeTick: the guard resets even if the tick function throws', async () => 
   await safeTick(okTick);
 
   assert.deepEqual(callLog, ['start', 'start', 'end']);
+});
+
+test('safeTick: test-generated log entries go to the temp log, never the real one', async () => {
+  const realLog = path.join(__dirname, '..', 'factory_loop.log');
+  const realBefore = fs.existsSync(realLog) ? fs.readFileSync(realLog, 'utf8') : '';
+  await safeTick(async () => { throw new Error('simulated tick failure (isolation check)'); });
+  const realAfter = fs.existsSync(realLog) ? fs.readFileSync(realLog, 'utf8') : '';
+  assert.ok(!realAfter.slice(realBefore.length).includes('isolation check'),
+    'the real factory_loop.log must not receive test entries');
+  assert.ok(fs.readFileSync(TMP_LOG, 'utf8').includes('isolation check'));
 });
