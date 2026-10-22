@@ -16,6 +16,11 @@ AUTH_PATTERNS = [
     re.compile(r"401", re.I),
     re.compile(r"authentication failed", re.I),
     re.compile(r"access denied", re.I),
+    # 2026-10-22: Paddle's live "403 Forbidden / You aren't permitted to
+    # perform this request" (valid key, missing permission) was UNKNOWN.
+    re.compile(r"\b403\b", re.I),
+    re.compile(r"forbidden", re.I),
+    re.compile(r"(aren't|not) permitted", re.I),
 ]
 
 ACCOUNT_PATTERNS = [
@@ -39,6 +44,9 @@ RATE_LIMIT_PATTERNS = [
     re.compile(r"429", re.I),
     re.compile(r"too many requests", re.I),
     re.compile(r"throttl", re.I),
+    # Gumroad's live daily creation cap ("... 10 products per day").
+    re.compile(r"products per day", re.I),
+    re.compile(r"daily (limit|cap|quota)", re.I),
 ]
 
 TIMEOUT_PATTERNS = [
@@ -72,6 +80,22 @@ PAYMENT_BLOCK_PATTERNS = [
     re.compile(r"insufficient.*funds", re.I),
     re.compile(r"card.*declined", re.I),
     re.compile(r"checkout.*not.*enabled", re.I),
+    # 2026-10-22: X API's live "HTTP 402: credits depleted" was UNKNOWN and
+    # therefore indistinguishable from a transient failure.
+    re.compile(r"\b402\b", re.I),
+    re.compile(r"payment required", re.I),
+    re.compile(r"credits? (depleted|exhausted)", re.I),
+]
+
+# Server-side faults: worth a later retry. Scoped to "HTTP 5xx" or explicit
+# phrases so an ordinary number such as a price of 500 can never match.
+PLATFORM_ERROR_PATTERNS = [
+    re.compile(r"\bHTTP 5\d\d\b", re.I),
+    re.compile(r"\b5\d\d (server|internal|service|bad gateway|gateway)", re.I),
+    re.compile(r"internal server error", re.I),
+    re.compile(r"service unavailable", re.I),
+    re.compile(r"bad gateway", re.I),
+    re.compile(r"gateway time-?out", re.I),
 ]
 
 
@@ -95,6 +119,9 @@ def classify_error(error: Exception) -> ErrorClass:
     for pattern in NETWORK_PATTERNS:
         if pattern.search(msg):
             return ErrorClass.NETWORK_ERROR
+    for pattern in PLATFORM_ERROR_PATTERNS:
+        if pattern.search(msg):
+            return ErrorClass.PLATFORM_ERROR
     for pattern in DUPLICATE_PATTERNS:
         if pattern.search(msg):
             return ErrorClass.DUPLICATE

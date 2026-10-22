@@ -217,6 +217,21 @@ def _quality_gate_block_reason(gate):
     return "central Quality Gate returned no usable verdict (fail-closed)"
 
 
+_NEVER_RETRY = {"AUTH_ERROR", "ACCOUNT_ERROR", "PAYMENT_BLOCK", "VALIDATION_ERROR",
+                "DUPLICATE", "POLICY_BLOCK"}
+
+
+def _definitively_not_retryable(error):
+    """True only when channels.error_classification positively identifies a
+    failure that retrying cannot fix. Unclassifiable errors return False,
+    so they keep the pre-existing retry behavior."""
+    try:
+        from channels.error_classification import classify_error
+        return classify_error(Exception(str(error or ""))).value in _NEVER_RETRY
+    except Exception:  # noqa: BLE001 -- classification must never break distribution
+        return False
+
+
 def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protection_state_path=None,
                allow_protected=False, allow_claim_risk=False, allow_file_defects=False,
                quality_gate=None, gate2_ledger_path=None, quality_evidence_path=None):
@@ -453,7 +468,15 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
         # D16: the not-ready check is normalized (strip + lower) so a
         # "  Arm Not Ready: ..." variant is still recognized as not-ready
         # and never enqueued for a pointless retry.
-        if not result.dry_run and not result.ok and not str(result.error or "").strip().lower().startswith("arm not ready:"):
+        # 2026-10-22: a failure that a retry provably cannot fix (bad or
+        # under-permissioned credentials, an exhausted account balance such
+        # as X's live "HTTP 402: credits depleted", a validation, duplicate
+        # or policy rejection) is no longer queued either. Retrying those
+        # only repeats the same failure. UNKNOWN and transient classes are
+        # still queued, exactly as before.
+        if (not result.dry_run and not result.ok
+                and not str(result.error or "").strip().lower().startswith("arm not ready:")
+                and not _definitively_not_retryable(result.error)):
             factory_state.enqueue_retry(f"arm_publish:{name}:{product.source_id}", result.error)
 
         outcomes.append({
