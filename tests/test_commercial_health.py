@@ -8,10 +8,11 @@ replaces were wrong twice:
   2. reporting a purchase as complete when nothing was bought
   3. treating a reachable link as correct without checking which product it hits
 """
+import os
 import sys
 import unittest
 
-sys.path.insert(0, r'C:\openclaw-dasgboard')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import commercial_health as ch
 
 

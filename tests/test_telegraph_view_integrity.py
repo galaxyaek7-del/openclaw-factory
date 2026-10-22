@@ -11,11 +11,12 @@ These tests pin the two API-only accessors so future verification defaults to a
 measurement that does not corrupt the metric it is reporting.
 """
 import json
+import os
 import sys
 import unittest
 from unittest import mock
 
-sys.path.insert(0, r'C:\openclaw-dasgboard')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from lib import telegraph_safe_edit as T
 
 

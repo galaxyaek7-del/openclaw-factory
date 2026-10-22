@@ -8,10 +8,11 @@ a positive result.
 Specifically: HTTP 200, a published article, and an existing product must never
 clear checkout readiness, payout readiness, or revenue.
 """
+import os
 import sys
 import unittest
 
-sys.path.insert(0, r'C:\openclaw-dasgboard')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from commercial_root_causes import (classify, PASS, BLOCKED, UNKNOWN, HOLD)
 
 

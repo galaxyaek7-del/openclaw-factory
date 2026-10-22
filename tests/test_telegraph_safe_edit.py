@@ -10,11 +10,12 @@ _live_body_lines are injected, exactly as they must be for this to be testable
 without risking real pages.
 """
 import json
+import os
 import sys
 import unittest
 from unittest import mock
 
-sys.path.insert(0, r'C:\openclaw-dasgboard')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from lib import telegraph_safe_edit as T
 
 
