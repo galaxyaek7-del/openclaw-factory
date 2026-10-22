@@ -185,3 +185,40 @@ reached `server.js`.
    the chat id, and never configure the chat id before this, or the open
    webhooks become live.
 4. Restart `server.js` and `factory_loop.js` so they load the secret.
+
+### Applied 2026-10-22 15:53–15:58 UTC (owner-approved)
+
+- `.env` was backed up to `.env.bak-20261022_165323`, which is gitignored and
+  holds secrets. Then a random 48-hex-character `N8N_WEBHOOK_SECRET` was
+  appended. The value was never printed.
+- n8n was backed up to `~/.n8n/backup_gf_envfix_20261022_165323`. Credential
+  `GFwebhookSecr01` was imported. Its plaintext temp file was deleted and
+  confirmed gone. Openclaw_Sensing_Engine (with webhook auth and the wired
+  webhook) was imported and published, and n8n restarted.
+- `server.js` (PID 14608 → 3792) and `factory_loop.js` (PID 18396 → 4160) were
+  restarted by exact PID between ticks, and respawned by their supervisors.
+  factory_loop reported "nothing was in flight".
+
+**Verified**
+- External GET `/webhook/scout-trigger`: no secret returns 403; a wrong
+  secret returns 403.
+- `GET /health` now reports `sensing_engine` from execution evidence:
+  `ok:false`, Sales_Poll=FAILING, Sensing=UNKNOWN. Before the change it read
+  `ok:true`.
+
+**Not verified**
+- Whether the restarted `server.js` loaded `N8N_WEBHOOK_SECRET`. Its startup
+  line reads `injected env (0) from .env`. A clean simulation of the same
+  situation reports 1, and the cause of the difference is UNKNOWN. The first
+  real Scout run decides it: it should create a Sensing execution in mode
+  `webhook`, and a 403 means the secret is missing. Either way nothing that
+  worked before is lost, because that call did nothing while the node was
+  orphaned.
+- The Telegram webhooks are still open but cannot send while there is no chat
+  id. Protect them together with the chat id, never after it.
+
+**Rollback**
+1. Restore `.env.bak-20261022_165323` over `.env`.
+2. Run `python n8n_workflows/env_to_credentials_2026-10-22/apply_fix.py --rollback C:\Users\Dell\.n8n\backup_gf_envfix_20261022_165323`.
+3. Restart `server.js` and `factory_loop.js`: stop each by exact PID, and its
+   supervisor respawns it.
