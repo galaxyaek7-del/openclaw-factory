@@ -94,6 +94,17 @@ def _write_state(state, state_path=None):
     os.replace(tmp_path, path)
 
 
+def recorded_checkout_status(state_path=None):
+    """Read-only view of what earlier real checks recorded. Never calls
+    Paddle and never sends Telegram. For status/gate readers, which must not
+    trigger check_and_notify_all(): that function POSTs a Paddle transaction
+    per product and may send a message."""
+    state = _read_state(state_path)
+    results = [{"price_id": k, "checkout_ready": True, "checkout_url_recorded": True}
+               for k, v in state.items() if isinstance(v, dict) and v.get("checkout_url")]
+    return {"results": results, "source": "recorded_state", "read_only": True}
+
+
 def _build_arabic_message(title, price, checkout_url):
     return (
         "\U0001F4B0 رابط الدفع جاهز!\n\n"
@@ -122,6 +133,28 @@ def check_and_notify(product, state_path=None, env_path=None):
             "notified_at": existing.get("notified_at"),
         }
 
+    # 2026-10-22: a checkout URL obtained on an earlier run is reused; only
+    # the Telegram send is retried. Before this, `notified` was the only
+    # stop condition, so with Telegram unconfigured (OPENCLAW_TELEGRAM_CHAT_ID
+    # unset) every factory_loop tick would have created a NEW Paddle
+    # transaction per product, indefinitely, once checkout started working.
+    # Each product now gets at most one transaction from this script.
+    if existing and existing.get("checkout_url"):
+        checkout_url = existing["checkout_url"]
+        telegram_result = telegram_direct.send_telegram_message(
+            _build_arabic_message(title, price, checkout_url), env_path=env_path)
+        existing["notified"] = bool(telegram_result.get("sent"))
+        existing["telegram_error"] = telegram_result.get("error")
+        if telegram_result.get("sent"):
+            existing["notified_at"] = datetime.now(timezone.utc).isoformat()
+        state[price_id] = existing
+        _write_state(state, state_path)
+        return {
+            "title": title, "success": True, "checkout_ready": True, "already_notified": False,
+            "checkout_url": checkout_url, "telegram_sent": bool(telegram_result.get("sent")),
+            "telegram_error": telegram_result.get("error"), "reused_existing_transaction": True,
+        }
+
     try:
         api_key = paddle_publisher.load_api_key(env_path)
     except paddle_publisher.ConfigError as e:
@@ -145,6 +178,13 @@ def check_and_notify(product, state_path=None, env_path=None):
                 "title": title, "success": True, "checkout_ready": False, "already_notified": False,
                 "reason": "Paddle onboarding still incomplete (checkout not enabled for this account) — expected until the founder finishes it in vendors.paddle.com",
             }
+        # 2026-10-22: the live API key returns 403 "You aren't permitted to
+        # perform this request" on every Paddle call, so the key lacks the
+        # needed permission. Name that cause instead of a generic error, so
+        # factory_loop stops recording it as an "unspecified failure".
+        if "403" in msg or "aren't permitted" in msg or "not permitted" in msg:
+            return {"title": title, "success": False, "checkout_ready": False,
+                    "error_category": "PADDLE_PERMISSION_DENIED", "error": str(e)}
         return {"title": title, "success": False, "checkout_ready": False, "error": str(e)}
 
     if not checkout_url:
@@ -159,6 +199,7 @@ def check_and_notify(product, state_path=None, env_path=None):
     state[price_id] = {
         "notified": bool(telegram_result.get("sent")),
         "checkout_url": checkout_url,
+        "checkout_obtained_at": notified_at,
         "notified_at": notified_at if telegram_result.get("sent") else None,
         "telegram_error": telegram_result.get("error"),
     }
@@ -171,20 +212,82 @@ def check_and_notify(product, state_path=None, env_path=None):
     }
 
 
-def check_and_notify_all(registry_path=None, state_path=None, env_path=None):
+# The throttle timestamp lives in its OWN file. founder_next_action.py treats
+# the mere existence of paddle_checkout_notifications.json as "checkout is
+# enabled", so writing bookkeeping into that file would create a false signal.
+DEFAULT_ATTEMPT_META_PATH = _FACTORY_ROOT / "data" / "paddle_checkout_check_meta.json"
+MIN_INTERVAL_SECONDS = 1800
+
+
+def _read_meta(path):
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def _write_meta(meta, path):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(meta, f, ensure_ascii=False, indent=2)
+    os.replace(tmp, path)
+
+
+def check_and_notify_all(registry_path=None, state_path=None, env_path=None, now=None,
+                         min_interval_seconds=MIN_INTERVAL_SECONDS, meta_path=None):
     """Runs check_and_notify() for every product in the registry. One
     Paddle account has one onboarding gate — the moment it clears, every
     product's first real check afterward will report checkout_ready=True
     and send its own real Telegram message, not just the first one ever
     registered."""
+    now = now or datetime.now(timezone.utc)
+    # 2026-10-22: factory_loop.js runs this on every ~10-minute tick, i.e.
+    # one Paddle write attempt per product per tick (728 failed runs since
+    # 2026-10-15, alongside Paddle 429 rate-limit refusals in sales_poll).
+    # An onboarding/permission gate does not clear within minutes, so a run
+    # within min_interval_seconds of the last real attempt is skipped
+    # (reported as throttled, 0 products checked). Pass 0 to disable.
+    if meta_path:
+        meta_path = Path(meta_path)
+    elif state_path:
+        # A caller-supplied state file (tests, tools) keeps its meta beside it,
+        # so it never touches the real data/ file.
+        meta_path = Path(state_path).with_name(Path(state_path).stem + "_check_meta.json")
+    else:
+        meta_path = DEFAULT_ATTEMPT_META_PATH
+    meta = _read_meta(meta_path)
+    last = meta.get("last_paddle_attempt_at")
+    if min_interval_seconds and last:
+        try:
+            elapsed = (now - datetime.fromisoformat(last)).total_seconds()
+        except (TypeError, ValueError):
+            elapsed = None
+        if elapsed is not None and 0 <= elapsed < min_interval_seconds:
+            return {"success": True, "throttled": True, "total_products": 0, "newly_ready": 0,
+                    "results": [], "last_attempt_at": last}
+
     products = _load_product_registry(registry_path)
     results = [check_and_notify(p, state_path=state_path, env_path=env_path) for p in products]
-    return {
+    _write_meta({"last_paddle_attempt_at": now.isoformat()}, meta_path)
+
+    out = {
         "success": all(r.get("success") for r in results) if results else True,
         "total_products": len(results),
         "newly_ready": sum(1 for r in results if r.get("checkout_ready") and not r.get("already_notified")),
         "results": results,
     }
+    # factory_loop.js reads a top-level `error`; without it every failure
+    # was logged as "فشل غير محدَّد" (unspecified failure).
+    failed = [r for r in results if not r.get("success")]
+    if failed:
+        cats = sorted({r.get("error_category") or "ERROR" for r in failed})
+        out["error"] = (f"{'/'.join(cats)}: {len(failed)}/{len(results)} products -- "
+                        f"{str(failed[0].get('error', ''))[:160]}")
+    return out
 
 
 def emit(obj):

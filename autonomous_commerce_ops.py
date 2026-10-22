@@ -349,14 +349,19 @@ def human_gate_orchestrator(now: Optional[datetime] = None) -> Dict[str, object]
 
         elif gate_id == "GATE-PADDLE-ONBOARDING":
             try:
-                # Real live checkout status from the existing checker; the
-                # caller (tests) may inject a stub to stay mock-only.
-                from scripts.check_paddle_checkout_status import check_and_notify_all
-                result = check_and_notify_all()
+                # 2026-10-22: this gate reader used to call
+                # check_and_notify_all(), which POSTs a Paddle transaction per
+                # product and can send Telegram. So every read of this
+                # "read-only" state (founder_next_action, rank_first_dollar,
+                # dashboards, their tests) attempted live Paddle writes. It now
+                # reads only what the dedicated, rate-limited check recorded.
+                from scripts.check_paddle_checkout_status import recorded_checkout_status
+                result = recorded_checkout_status()
                 results = result if isinstance(result, list) else result.get("results", [])
                 ready = any(r.get("checkout_ready") for r in results)
                 status = "READY_FOR_VERIFICATION" if ready else "BLOCKING"
-                verification = "re-run check_paddle_checkout_status.py -- checkout_ready=true + real webhook"
+                verification = ("recorded by the factory_loop Paddle check (rate-limited, one "
+                                "transaction per product) -- confirm checkout_ready=true + a real webhook")
             except Exception:
                 status = "OPEN"
                 verification = "live Paddle checkout check unavailable"
