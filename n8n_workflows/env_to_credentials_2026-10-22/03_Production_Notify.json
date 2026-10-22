@@ -1,0 +1,104 @@
+{
+ "id": "PN03productionNotifyX",
+ "name": "03_Production_Notify",
+ "active": 1,
+ "nodes": [
+  {
+   "parameters": {
+    "path": "production-notify",
+    "httpMethod": "POST",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.webhook",
+   "typeVersion": 2.1,
+   "position": [
+    -560,
+    0
+   ],
+   "id": "a1b2c3d4-0001-4a11-9e11-000000000001",
+   "name": "Webhook",
+   "webhookId": "a1b2c3d4-0001-4a11-9e11-000000000099"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "a1b2c3d4-0002-4a11-9e11-000000000002",
+       "name": "message",
+       "value": "={{ \"📦 منتج جديد جاهز للإنتاج\\n\\nالمعرّف: \" + $json.body.production_id + \"\\nالمجال: \" + $json.body.niche + ($json.body.recommended_price ? (\"\\nالسعر المقترح: $\" + $json.body.recommended_price) : \"\") + \"\\nفحوصات ما قبل الإنتاج: \" + ($json.body.pre_production_checks_passed ? \"✅ ناجحة\" : \"⚠️ لم تكتمل بعد\") }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -384,
+    0
+   ],
+   "id": "a1b2c3d4-0006-4a11-9e11-000000000006",
+   "name": "Build Telegram Message"
+  },
+  {
+   "parameters": {
+    "resource": "message",
+    "operation": "sendMessage",
+    "chatId": "__GF_TELEGRAM_CHAT_ID__",
+    "text": "={{ $json.message }}",
+    "additionalFields": {
+     "appendAttribution": false
+    }
+   },
+   "type": "n8n-nodes-base.telegram",
+   "typeVersion": 1.2,
+   "position": [
+    -192,
+    0
+   ],
+   "id": "a1b2c3d4-0007-4a11-9e11-000000000007",
+   "name": "Send Telegram Message",
+   "credentials": {
+    "telegramApi": {
+     "id": "GFtelegramBot001",
+     "name": "GF Telegram Bot"
+    }
+   }
+  }
+ ],
+ "connections": {
+  "Webhook": {
+   "main": [
+    [
+     {
+      "node": "Build Telegram Message",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Build Telegram Message": {
+   "main": [
+    [
+     {
+      "node": "Send Telegram Message",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1",
+  "binaryMode": "separate",
+  "availableInMCP": false
+ },
+ "staticData": null,
+ "pinData": {},
+ "meta": null,
+ "description": "Receives server.js's notifyN8nProductionEvent() POST once a real production dossier completes, and forwards it to Telegram as a real Arabic message via a plain HTTP Request to Telegram's Bot API — same pattern as 04_Telegram_Notify (ADR-072/073): TELEGRAM_BOT_TOKEN/OPENCLAW_TELEGRAM_CHAT_ID read from n8n's own process environment via $env, never embedded in this file or a Telegram credential. ADR-077 (Product Generation Pipeline): this is the pipeline's Telegram Founder Report stage — closes the gap the earlier ADR-06x audit found (this workflow used to only log the event, never actually tell the founder). Not yet imported into the live n8n instance (see n8n_workflows/README.md) — same stop/import/restart step ADR-045/ADR-072 used, requires the founder's explicit go-ahead each time."
+}

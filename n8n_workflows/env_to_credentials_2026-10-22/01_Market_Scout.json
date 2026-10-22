@@ -1,0 +1,63 @@
+{
+ "id": "HlLmuUpSbYEZu5Rn",
+ "name": "01_Market_Scout",
+ "active": 1,
+ "nodes": [
+  {
+   "parameters": {},
+   "type": "n8n-nodes-base.manualTrigger",
+   "typeVersion": 1,
+   "position": [
+    -560,
+    0
+   ],
+   "id": "e925957d-1c41-40ef-b95a-a27c570b51c7",
+   "name": "When clicking ‘Execute workflow’"
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "http://localhost:3000/api/scout/run",
+    "options": {},
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpHeaderAuth"
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.4,
+   "position": [
+    -384,
+    0
+   ],
+   "id": "68bc83fe-b6ba-410b-8c80-79220d93293e",
+   "name": "HTTP Request",
+   "credentials": {
+    "httpHeaderAuth": {
+     "id": "GFinternalTokn01",
+     "name": "GF Internal Service Token (X-Internal-Token)"
+    }
+   }
+  }
+ ],
+ "connections": {
+  "When clicking ‘Execute workflow’": {
+   "main": [
+    [
+     {
+      "node": "HTTP Request",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1",
+  "binaryMode": "separate",
+  "availableInMCP": false
+ },
+ "staticData": null,
+ "pinData": {},
+ "meta": null,
+ "description": null
+}

@@ -1,0 +1,80 @@
+{
+ "id": "BnVsrXsOeGmFG0ph",
+ "name": "02_Sales_Poll",
+ "active": 1,
+ "nodes": [
+  {
+   "parameters": {
+    "rule": {
+     "interval": [
+      {
+       "field": "hours",
+       "hoursInterval": 4
+      }
+     ]
+    }
+   },
+   "type": "n8n-nodes-base.scheduleTrigger",
+   "typeVersion": 1.3,
+   "position": [
+    -144,
+    0
+   ],
+   "id": "41b208f7-fa0f-4590-a5de-b52d1e72e8fc",
+   "name": "Schedule Trigger"
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "http://localhost:3000/api/sales/poll",
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={}",
+    "options": {},
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpHeaderAuth"
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.4,
+   "position": [
+    48,
+    0
+   ],
+   "id": "050b1fca-a90f-4bce-91a6-7e32e1473301",
+   "name": "Poll Sales (server.js Brain)",
+   "credentials": {
+    "httpHeaderAuth": {
+     "id": "GFinternalTokn01",
+     "name": "GF Internal Service Token (X-Internal-Token)"
+    }
+   }
+  }
+ ],
+ "connections": {
+  "Schedule Trigger": {
+   "main": [
+    [
+     {
+      "node": "Poll Sales (server.js Brain)",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1",
+  "timezone": "Africa/Algiers"
+ },
+ "staticData": {
+  "node:Schedule Trigger": {
+   "recurrenceRules": [
+    12
+   ]
+  }
+ },
+ "pinData": null,
+ "meta": null,
+ "description": null
+}
