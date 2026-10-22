@@ -149,6 +149,54 @@ The affiliate ID in the link stays as-is. It is the existing, allowlisted exposu
 
   It found 0 defects. Two real names that look fused, `CAMAudit` and `QUICKFix`, are allowlisted with reasons.
 
+## Checkpoint 4 — impact.com payout route and the first-dollar policy (same day)
+
+### impact.com: platform level vs. account level vs. program level
+
+| Level | Finding | Basis |
+|---|---|---|
+| Platform currency | DZD is in "Wire supported currencies", and Algeria is a supported bank-account location. DZD is not in the ACH or PayPal lists | VERIFIED (help.impact.com supported-currencies page) |
+| Withdrawal | Wire fee "currency-specific", amount UNKNOWN. Paid 3–5 business days after the paystub clears; $10 minimum. Needs SWIFT plus account number or IBAN, and impact.com verifies bank details. **Currency cannot be changed after setup.** $10/month maintenance fee if unpaid for 6 months | VERIFIED (withdraw-to-bank article) |
+| Holding period | UNKNOWN; not stated on the withdrawal page | — |
+| Signup | Mobile verification and acceptance of the Partner Program Agreement. impact.com reviews the marketplace application, then each brand approves separately. "Free to join" appears only in third-party sources | VERIFIED steps; free = UNKNOWN |
+| Account level | The founder's bank, verification and approval are UNKNOWN | founder-only |
+| Envato on impact.com | Elements, Market and Placeit run on impact.com; Envato's team reviews applications manually. The help page returned 403 to direct fetch; the facts come from the official page's search excerpt | OBSERVED |
+| Canva on impact.com | Impact is confirmed by Canva's own help page. Entry is reported (third-party) to be the Canvassador program, opened only periodically | OBSERVED / UNVERIFIED |
+| Adobe | Runs on Partnerize, **not** impact.com | VERIFIED (adobe.com/affiliates) |
+
+**Ranking after recording these facts:**
+
+- Envato and Canva move to PAYOUT_ROUTE_CONDITIONAL, but their eligibility is still UNKNOWN, so they rank 9.8.
+- The PayPal-route programs still rank first.
+
+**Known limit of the ranking (INFERRED):** it treats every CONDITIONAL route alike. A native DZD wire via impact.com plausibly carries less friction than PayPal's US-bank-or-Visa condition, but no rail-specific factor exists yet.
+
+### First-dollar policy (Track C)
+
+**Where it is enforced (OBSERVED).** It is doctrine in `CLAUDE.md`, plus one code gate on the manual production route in `server.js` (≈line 4652). Production is blocked when either holds:
+
+- `config/reality.json` has `scale_level=0` and `commercial_proof=UNKNOWN`;
+- `data/commercial_reality.json` has `highest_verified_index < 1`.
+
+**What it does not block.** Research, QA, packaging, listing preparation and prototypes outside that route.
+
+**Evidence against "the rule is blocking growth" (OBSERVED):**
+
+- `customer_site/products.html` links 73 distinct Gumroad products.
+- 116 PDFs exist under `books/`.
+- 5 cohorts exist.
+- Real sales are 0.
+
+Supply is not the bottleneck; demand, distribution and payment are.
+
+**Defect found (OBSERVED, not fixed).** `data/commercial_reality.json` records no state at all (`highest_verified_index = -1`, PUBLIC_PAGE_VERIFIED false). Yet a sampled product page (`aekraft.gumroad.com/l/bfhpzl`) returns HTTP 200. The ledger under-records reality, and that is what keeps the code gate shut. Writing the evidence would open the production gate, so it is left as a founder decision.
+
+**Recommendation (narrow):** do not relax the rule for new product lines. Instead:
+
+1. Let the founder decide whether to record the verified public pages through `commercial_reality.py`, so the ledger matches reality.
+2. Keep new-product work at research and prototype level, unpublished.
+3. Point effort at distribution for the 73 existing listings.
+
 ## Tests (2026-10-22)
 
 - **New tests:** 14 passed.
@@ -160,3 +208,11 @@ The affiliate ID in the link stays as-is. It is the existing, allowlisted exposu
     - `test_ledger_firewall` depends on a time window that has expired.
     - `test_phase4_integration` checks a `server.js` hash, and the parallel session has uncommitted edits to `server.js`.
     - `test_prospecting` needs an MCP endpoint that is not running.
+
+### Hardening-cycle suite run (2026-10-22, 17:47–17:55 UTC)
+
+**Scope:** 47 affiliate test files, plus the disclosure, content-QA, site-metadata, SEO-distribution, SEO-tags, Gumroad-SEO-audit and affiliate-link-guard tests.
+
+**Result:** **688 passed, 4 failed** in 501 s.
+
+The 4 failures are the same pre-existing ones listed below: `test_alert_path`, `test_ledger_firewall`, `test_phase4_integration` and `test_prospecting`. The earlier 2 duplicate-row failures no longer occur.

@@ -43,10 +43,11 @@
     },
     "impact_wire_dzd": {
       "algeria_receive": "LISTED",
-      "basis": "OBSERVED",
-      "summary": "impact.com lists DZD among wire-supported payout currencies. Strongest rail found, but no program here pays through impact.com yet.",
+      "basis": "VERIFIED",
+      "summary": "Platform level only. impact.com lists DZD under 'Wire supported currencies' with Algeria as a supported bank-account location (not in ACH or PayPal lists). Wire fee is 'currency-specific' (amount UNKNOWN), 3-5 business days after the paystub clears, $10 minimum, all payments need SWIFT plus account number or IBAN, bank details are verified by impact.com, and the account currency cannot be changed after setup. Maintenance fee ($10/month direct invoicing) if impact.com cannot pay for 6 months. Account-level (founder's bank, verification) is UNKNOWN.",
       "sources": [
-        "reports/PAYPAL_ALGERIA_EVIDENCE_2026-10-22.md"
+        "https://help.impact.com/other/reference-documentation/supported-currencies-and-timezones",
+        "https://help.impact.com/partner/what-would-you-like-to-learn-about/platform-features/finance/payments-withdrawals-and-balance/withdraw-funds-to-your-bank-account"
       ],
       "checked": "2026-10-22"
     },
@@ -166,6 +167,47 @@
         "https://success.awin.com/articles/en_US/Knowledge/Payoneer-for-Awin-Publishers-FAQs"
       ],
       "checked": "2026-10-21"
+    },
+    "CO-envato-affiliate": {
+      "publisher_eligibility_algeria": "UNKNOWN",
+      "eligibility_basis": "UNKNOWN",
+      "network": "impact.com (Elements, Market and Placeit programs; affiliates need an impact.com account; manual review by Envato's partnerships team)",
+      "payout_routes": [
+        "impact_wire_dzd"
+      ],
+      "payout_verified": false,
+      "payout_note": "Paid through impact.com, whose wire rail lists DZD/Algeria. Program acceptance and the founder's account are unverified. Envato's help page returned 403 to a direct fetch; network facts come from its search excerpt.",
+      "sources": [
+        "https://help.elements.envato.com/hc/en-us/articles/11880595894297-Affiliate-program"
+      ],
+      "checked": "2026-10-22"
+    },
+    "CO-canva-affiliate": {
+      "publisher_eligibility_algeria": "UNKNOWN",
+      "eligibility_basis": "UNKNOWN",
+      "network": "impact.com (Canva's own affiliate help page); entry now reported (third-party) to be the Canvassador program, applications opened only periodically",
+      "payout_routes": [
+        "impact_wire_dzd"
+      ],
+      "payout_verified": false,
+      "payout_note": "Same impact.com rail as Envato, but the program is reported closed to new applicants most of the time (UNVERIFIED).",
+      "sources": [
+        "https://www.canva.com/affiliates/hubpage/how-tos"
+      ],
+      "checked": "2026-10-22"
     }
+  },
+  "impact_account": {
+    "signup": "Partner account: email, name, mobile verification, country/timezone/currency (pre-filled from IP, editable), approval of the Partner Program Agreement. Free-to-join is stated only by third parties (UNKNOWN on official pages).",
+    "approval": "Two levels: impact.com reviews the marketplace application after the checklist is complete; then each brand approves the partner separately.",
+    "founder_only": [
+      "accepting the Partner Program Agreement",
+      "choosing the account currency (irreversible)",
+      "entering bank details"
+    ],
+    "sources": [
+      "https://help.impact.com/partner/what-would-you-like-to-learn-about/getting-started/sign-up-as-a-partner-on-impactcom"
+    ],
+    "checked": "2026-10-22"
   }
 }
