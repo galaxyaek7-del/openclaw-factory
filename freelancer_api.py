@@ -33,12 +33,13 @@ class FreelancerAPIError(RuntimeError):
     pass
 
 
-def _get(path):
+def _get(path, timeout=None):
     from lib.http import get_json, HttpError
 
+    kw = {"timeout": timeout} if timeout else {}
     try:
         body = get_json(API_BASE + path,
-                        headers={"User-Agent": USER_AGENT})
+                        headers={"User-Agent": USER_AGENT}, **kw)
     except HttpError as e:
         raise FreelancerAPIError(
             "GET %s -> HTTP %s: %s" % (path, e.code, str(e)[:200])
@@ -48,9 +49,10 @@ def _get(path):
     return body["result"]
 
 
-def get_project(project_id):
-    """Public, no-auth project read. Returns raw result dict. Evidence: OBSERVED."""
-    return _get("/projects/0.1/projects/%d/" % int(project_id))
+def get_project(project_id, timeout=None):
+    """Public, no-auth project read. Returns raw result dict. Evidence: OBSERVED.
+    `timeout` (seconds per attempt) defaults to lib.http's own."""
+    return _get("/projects/0.1/projects/%d/" % int(project_id), timeout=timeout)
 
 
 def _get_with_params(path, params):

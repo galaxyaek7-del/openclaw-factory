@@ -314,6 +314,10 @@ class TestXArmIdempotency(unittest.TestCase):
         self.assertTrue(o2[0]["ok"])
 
 
+# 2026-10-22: these tests exercise the mocked live-write path; since
+# channels/write_gate.py fails closed by default, they opt in explicitly.
+# tests/test_platform_write_gate.py proves the default refusal.
+@patch.dict(os.environ, {"FACTORY_LIVE_PUBLISH": "true"})
 class TestXArmApiFailure(unittest.TestCase):
     """Test 5: API failure → bounded retry, no infinite loop, clear failure state."""
 
@@ -472,6 +476,14 @@ class TestXArmRealPublicationPath(unittest.TestCase):
         self.assertFalse(arm.supports(_no_pricing_product()))
 
 
+import os as _gf_os  # noqa: E402  (2026-10-22 live-path opt-in)
+from unittest import mock as _gf_mock  # noqa: E402
+_gf_patch = _gf_mock.patch
+
+
+# 2026-10-22: exercises the mocked live distribution path; distributor.py
+# and channels/write_gate.py fail closed by default, so it opts in explicitly.
+@_gf_patch.dict(_gf_os.environ, {"FACTORY_LIVE_PUBLISH": "true"})
 class TestXArmPublishProtectionIntegration(unittest.TestCase):
     """Verify X arm integrates with publish_protection.py's gate."""
 
@@ -527,6 +539,9 @@ class TestXArmPublishProtectionIntegration(unittest.TestCase):
         self.assertIn("publish protection", outcomes[0]["skip_reason"])
 
 
+# 2026-10-22: exercises the mocked live distribution path; distributor.py
+# and channels/write_gate.py fail closed by default, so it opts in explicitly.
+@_gf_patch.dict(_gf_os.environ, {"FACTORY_LIVE_PUBLISH": "true"})
 class TestDistributorLiveDedup(unittest.TestCase):
     """Live-path idempotency: a recorded real success blocks a second real
     attempt for the same product+arm. Temp ledgers only — never production."""

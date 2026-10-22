@@ -235,6 +235,14 @@ class TestRunPublishPipelineDryRun(_FakeArmMixin, unittest.TestCase):
         self.assertTrue(record["marketplaces"][0]["dry_run"])
 
 
+import os as _gf_os  # noqa: E402  (2026-10-22 live-path opt-in)
+from unittest import mock as _gf_mock  # noqa: E402
+_gf_patch = _gf_mock.patch
+
+
+# 2026-10-22: exercises the mocked live distribution path; distributor.py
+# and channels/write_gate.py fail closed by default, so it opts in explicitly.
+@_gf_patch.dict(_gf_os.environ, {"FACTORY_LIVE_PUBLISH": "true"})
 class TestRunPublishPipelineRealMode(_FakeArmMixin, unittest.TestCase):
     def setUp(self):
         super().setUp()
@@ -314,6 +322,9 @@ class TestRunPublishPipelineRealMode(_FakeArmMixin, unittest.TestCase):
         self.assertEqual(json.loads(lines[0])["product_source_id"], product.source_id)
 
 
+# 2026-10-22: exercises the mocked live distribution path; distributor.py
+# and channels/write_gate.py fail closed by default, so it opts in explicitly.
+@_gf_patch.dict(_gf_os.environ, {"FACTORY_LIVE_PUBLISH": "true"})
 class TestApiTimeoutRetry(_FakeArmMixin, unittest.TestCase):
     def setUp(self):
         super().setUp()

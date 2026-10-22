@@ -14,6 +14,7 @@ import os
 import sys
 import unittest
 from unittest import mock
+from unittest.mock import patch
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from lib import telegraph_safe_edit as T
@@ -23,6 +24,10 @@ def node(text, tag='p'):
     return {'tag': tag, 'children': [text]}
 
 
+# 2026-10-22: these tests exercise the mocked live-write path; since
+# channels/write_gate.py fails closed by default, they opt in explicitly.
+# tests/test_platform_write_gate.py proves the default refusal.
+@patch.dict(os.environ, {"FACTORY_LIVE_PUBLISH": "true"})
 class TestSafeEditGuards(unittest.TestCase):
 
     def test_refuses_to_write_when_body_read_is_empty(self):

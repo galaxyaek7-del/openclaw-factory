@@ -114,6 +114,14 @@ class TestDistributeRetryEnqueue(unittest.TestCase):
         self.assertEqual(self._enqueued, [])
 
 
+import os as _gf_os  # noqa: E402  (2026-10-22 live-path opt-in)
+from unittest import mock as _gf_mock  # noqa: E402
+_gf_patch = _gf_mock.patch
+
+
+# 2026-10-22: exercises the mocked live distribution path; distributor.py
+# and channels/write_gate.py fail closed by default, so it opts in explicitly.
+@_gf_patch.dict(_gf_os.environ, {"FACTORY_LIVE_PUBLISH": "true"})
 class TestDistributePublishProtectionIntegration(unittest.TestCase):
     """Global Commercial Hardening, Phase 1 (2026-07-29): a real (non-dry-
     run) publish now passes through channels/publish_protection.py's gate

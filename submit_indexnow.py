@@ -45,6 +45,9 @@ def _get(url):
 
 
 def _post(endpoint, payload):
+    # 2026-10-22: submitting URLs to search engines is a live external write.
+    from channels.write_gate import require_platform_write
+    require_platform_write("indexnow", "submit_urls")
     req = urllib.request.Request(
         endpoint,
         data=json.dumps(payload).encode("utf-8"),

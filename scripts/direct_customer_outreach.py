@@ -7,6 +7,7 @@ Attempts to reach real customers through available channels:
 3. Email outreach to potential partners
 """
 import json
+import sys
 import urllib.request
 import urllib.parse
 import ssl
@@ -15,8 +16,26 @@ from datetime import datetime, timezone
 
 ctx = ssl.create_default_context()
 
+# 2026-10-22: this script sends contact forms to third parties. It did so for
+# real on 2026-10-02 (EaseCert, HTTP 200, sender partnerships@galaxyforge.com,
+# an address whose ownership is unverified). Sending now requires
+# GF_ALLOW_OUTBOUND_MESSAGES=true (channels/write_gate.py); otherwise each
+# attempt is reported as blocked and nothing leaves this machine.
+_ROOT = __import__("pathlib").Path(__file__).resolve().parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+from channels.write_gate import check_platform_write  # noqa: E402
+
+
+def _blocked(company):
+    d = check_platform_write("outreach", f"contact_form:{company}", message=True)
+    return None if d.allowed else {'status': 'blocked', 'reason': d.reason}
+
 def reach_out_to_easecert():
     """Try to reach EaseCert via contact form."""
+    blocked = _blocked('easecert')
+    if blocked:
+        return blocked
     try:
         data = urllib.parse.urlencode({
             'name': 'Galaxy Forge',
@@ -31,6 +50,9 @@ def reach_out_to_easecert():
         return {'status': 'failed', 'error': str(e)[:100]}
 
 def reach_out_to_euverify():
+    blocked = _blocked('euverify')
+    if blocked:
+        return blocked
     """Try to reach Euverify via contact form."""
     try:
         data = urllib.parse.urlencode({
@@ -100,10 +122,13 @@ def main():
         ]
     }
     
-    with open('data/direct_outreach_results.json', 'w') as f:
+    # Never overwrite data/direct_outreach_results.json: it is the only record
+    # of the real 2026-10-02 send.
+    out = 'data/direct_outreach_results_' + now[:19].replace(':', '') + '.json'
+    with open(out, 'w') as f:
         json.dump(results, f, indent=2)
     
-    print("\nResults saved to data/direct_outreach_results.json")
+    print("\nResults saved to " + out)
     print("\nNext steps:")
     print("  1. Monitor email for responses")
     print("  2. Check customer site for new leads")

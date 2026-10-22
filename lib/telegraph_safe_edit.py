@@ -120,6 +120,9 @@ def append_paragraph(token, path, text, allow_empty_page=False):
     if len(new_nodes) <= before:
         raise UnsafeEdit('refusing to write a non-growing node list')
 
+    # 2026-10-22: editing a public page is a live external write.
+    from channels.write_gate import require_platform_write
+    require_platform_write('telegraph', 'editPage')
     e = requests.post(API + 'editPage', data={
         'access_token': token, 'path': path, 'title': page['title'],
         'content': json.dumps(new_nodes), 'author_name': AUTHOR_NAME,

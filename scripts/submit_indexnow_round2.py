@@ -13,6 +13,13 @@ URLS = [
     BASE + "turo-guest-dispute-toolkit.html",
     BASE + "index.html",
 ]
+# 2026-10-22: submitting URLs to search engines is a live external write.
+import sys as _gf_sys
+from pathlib import Path as _GfPath
+_gf_sys.path.insert(0, str(_GfPath(__file__).resolve().parent.parent))
+from channels.write_gate import require_platform_write as _gf_require  # noqa: E402
+_gf_require("indexnow", "submit_urls")
+
 payload = json.dumps({"host": HOST, "key": KEY, "urlList": URLS}).encode()
 out = {"at": datetime.datetime.now(datetime.timezone.utc).isoformat(), "urls": URLS, "receipts": {}}
 for endpoint in ["https://api.indexnow.org/indexnow", "https://www.bing.com/indexnow"]:

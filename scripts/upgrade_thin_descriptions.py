@@ -39,6 +39,16 @@ def get_product(slug):
 
 
 def put_description(pid, desc):
+    # 2026-10-22: this PUT bypassed channels/gumroad_publisher.py and therefore
+    # the Gumroad write gate. It now passes the same check (FACTORY_LIVE_PUBLISH
+    # or a single-use scope, plus a VERIFIED, fresh credential state).
+    import sys as _sys
+    from pathlib import Path as _P
+    _sys.path.insert(0, str(_P(__file__).resolve().parent.parent))
+    from channels.write_gate import WriteNotAuthorized, check_write_authorization
+    decision = check_write_authorization("update_product")
+    if not decision.allowed:
+        raise WriteNotAuthorized(decision.reason)
     r = requests.put('%s/products/%s' % (B, pid),
                      data={'access_token': TOKEN, 'description': desc}, timeout=60)
     return r.status_code

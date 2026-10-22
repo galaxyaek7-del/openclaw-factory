@@ -44,6 +44,10 @@ except ImportError:  # executed directly as a script, not as channels.<module>
     from env_config import read_env_value
 
 import requests
+try:  # 2026-10-22: fail-closed live-write gate (see channels/write_gate.py)
+    from .write_gate import require_platform_write
+except ImportError:  # executed directly as a script
+    from write_gate import require_platform_write
 
 FACTORY_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_ENV_PATH = FACTORY_DIR / ".env"
@@ -180,6 +184,7 @@ def create_product(api_key, product_spec):
     equivalent of gumroad_publisher.create_product(), but Paddle products
     don't carry a file upload or a price directly (see create_price()
     below); this only registers the sellable item's identity."""
+    require_platform_write("paddle", "create_product")
     title = product_spec.get("title")
     if not title:
         raise ConfigError("product_spec missing 'title'")
@@ -219,6 +224,7 @@ def update_product(api_key, product_id, updates):
     """PATCH an existing product — used to fill in real title/description
     on a product created with placeholder values, rather than creating a
     duplicate every time a caller wants to change one field."""
+    require_platform_write("paddle", "update_product")
     if not product_id:
         raise ConfigError("update_product requires a product_id")
     try:
@@ -235,6 +241,7 @@ def create_price(api_key, product_id, price_spec):
     """A Paddle Price is a separate resource attached to a Product — where
     the actual sellable amount and billing cycle (one-time vs recurring)
     live. Required before a product can actually be sold."""
+    require_platform_write("paddle", "create_price")
     if not product_id:
         raise ConfigError("create_price requires a product_id")
     unit_price_cents = price_spec.get("unit_price_cents")
@@ -269,6 +276,7 @@ def create_checkout_transaction(api_key, price_id, quantity=1):
     already work — a real, distinct account-level gate, not a bug in this
     function. Callers must handle that RuntimeError as "founder needs to
     finish onboarding in the Paddle dashboard," not a code defect."""
+    require_platform_write("paddle", "create_checkout_transaction", checkout=True)
     if not price_id:
         raise ConfigError("create_checkout_transaction requires a price_id")
     body = {"items": [{"price_id": price_id, "quantity": quantity}]}

@@ -34,6 +34,11 @@ Standalone module. Does not import or modify any live factory file.
 
 import os
 from pathlib import Path
+
+try:  # 2026-10-22: fail-closed live-write gate (see channels/write_gate.py)
+    from .write_gate import require_platform_write
+except ImportError:  # executed directly as a script
+    from write_gate import require_platform_write
 try:
     from .env_config import read_env_value
 except ImportError:  # executed directly as a script, not as channels.<module>
@@ -78,6 +83,7 @@ def load_credentials(env_path=None):
 
 
 def create_product(api_key, access_token, shop_id, product_spec):
+    require_platform_write("etsy", "create_product")
     if requests is None:
         raise RuntimeError("requests library not installed")
 

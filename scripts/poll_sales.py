@@ -40,6 +40,34 @@ from channels.error_classification import classify_error  # noqa: E402
 # retried, after a short backoff; auth, payment and "arm not ready" errors are
 # returned at once. The retries stay inside a small time budget so a poll
 # still finishes before server.js's 45 s and factory_loop's 30 s limits.
+# 2026-10-22: a permission error (Paddle 403 on every tick since 2026-10-15,
+# 541 times) does not clear in minutes. After an AUTH_ERROR the arm is not
+# polled again for AUTH_BACKOFF_SECONDS; the outcome says so explicitly.
+AUTH_BACKOFF_SECONDS = 2 * 3600
+DEFAULT_BACKOFF_PATH = _FACTORY_ROOT / "data" / "sales_poll_auth_backoff.json"
+
+
+def _backoff_path(ledger_path):
+    # A caller-supplied ledger (tests, tools) keeps its backoff state beside it.
+    return Path(ledger_path).with_name("sales_poll_auth_backoff.json") if ledger_path else DEFAULT_BACKOFF_PATH
+
+
+def _read_backoff(path):
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def _write_backoff(state, path):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
+    tmp.replace(path)
+
+
 NETWORK_RETRY_DELAYS = (2, 4)
 NETWORK_RETRY_BUDGET_SECONDS = 12
 
@@ -72,7 +100,7 @@ def _already_recorded_keys(ledger_path=None):
     return keys
 
 
-def poll_sales(arm_names=None, ledger_path=None):
+def poll_sales(arm_names=None, ledger_path=None, now=None):
     """Poll every arm that exposes get_sales() and record any new sale.
 
     Returns a list of per-arm outcome dicts: {"arm", "checked", "skip_reason",
@@ -88,6 +116,10 @@ def poll_sales(arm_names=None, ledger_path=None):
     platform's raw shape can't be honestly parsed — never guessed as $0.
     """
     targets = arm_names if arm_names is not None else [a.name for a in registry.all_arms()]
+    now = time.time() if now is None else now
+    backoff_path = _backoff_path(ledger_path)
+    backoff = _read_backoff(backoff_path)
+    backoff_dirty = False
     already = _already_recorded_keys(ledger_path=ledger_path)
     outcomes = []
     new_sale_details = []
@@ -103,11 +135,24 @@ def poll_sales(arm_names=None, ledger_path=None):
             outcomes.append({"arm": name, "checked": False, "skip_reason": "no get_sales() support", "new_sales": 0, "error": None})
             continue
 
+        held = backoff.get(name)
+        if held and now - held.get("at", 0) < AUTH_BACKOFF_SECONDS:
+            outcomes.append({"arm": name, "checked": False, "new_sales": 0, "error": None,
+                             "skip_reason": f"auth backoff until {AUTH_BACKOFF_SECONDS // 3600} h after the last "
+                                            f"permission error: {str(held.get('error'))[:120]}"})
+            continue
+
         sales, error, attempts = _get_sales_with_network_retry(get_sales_fn)
         if error:
+            if classify_error(Exception(error)) is ErrorClass.AUTH_ERROR:
+                backoff[name] = {"at": now, "error": str(error)[:300]}
+                backoff_dirty = True
             outcomes.append({"arm": name, "checked": True, "skip_reason": None, "new_sales": 0, "error": error,
                              "attempts": attempts})
             continue
+        if name in backoff:
+            backoff.pop(name)
+            backoff_dirty = True
 
         new_count = 0
         for sale in sales:
@@ -121,6 +166,8 @@ def poll_sales(arm_names=None, ledger_path=None):
 
         outcomes.append({"arm": name, "checked": True, "skip_reason": None, "new_sales": new_count, "error": None})
 
+    if backoff_dirty:
+        _write_backoff(backoff, backoff_path)
     return outcomes, new_sale_details
 
 

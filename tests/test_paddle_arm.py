@@ -63,6 +63,10 @@ class TestKeyNeverLeaksInErrors(unittest.TestCase):
         self.assertIn("REDACTED", text)
 
 
+# 2026-10-22: these tests exercise the mocked live-write path; since
+# channels/write_gate.py fails closed by default, they opt in explicitly.
+# tests/test_platform_write_gate.py proves the default refusal.
+@patch.dict(os.environ, {"FACTORY_LIVE_PUBLISH": "true"})
 class TestCreateProductAndPrice(unittest.TestCase):
     def test_create_product_posts_expected_fields(self):
         with patch.object(pp.requests, "post", return_value=_fake_response(json_data={"data": {"id": "pro_123"}})) as mock_post:
@@ -133,6 +137,10 @@ class TestCreateProductAndPrice(unittest.TestCase):
         self.assertEqual(body["unit_price"]["amount"], "19700")
 
 
+# 2026-10-22: these tests exercise the mocked live-write path; since
+# channels/write_gate.py fails closed by default, they opt in explicitly.
+# tests/test_platform_write_gate.py proves the default refusal.
+@patch.dict(os.environ, {"FACTORY_LIVE_PUBLISH": "true"})
 class TestCreateCheckoutTransaction(unittest.TestCase):
     def test_requires_price_id(self):
         with self.assertRaises(pp.ConfigError):
@@ -431,6 +439,10 @@ class TestRateLimitRetry(unittest.TestCase):
         mock_request.assert_called_once()
 
 
+# 2026-10-22: these tests exercise the mocked live-write path; since
+# channels/write_gate.py fails closed by default, they opt in explicitly.
+# tests/test_platform_write_gate.py proves the default refusal.
+@patch.dict(os.environ, {"FACTORY_LIVE_PUBLISH": "true"})
 class TestMalformedResponseHandling(unittest.TestCase):
     """Production Hardening (ADR-204, Phase 14, 2026-08-08): regression
     tests for FAILURE_REGISTER.md F8 -- a malformed JSON response used

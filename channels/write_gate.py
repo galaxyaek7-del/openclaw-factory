@@ -203,3 +203,60 @@ def require_write_authorization(operation: str, **kw) -> WriteAuthDecision:
         raise WriteNotAuthorized(
             f"BLOCKED live Gumroad mutation '{operation}': {d.reason}")
     return d
+
+# --- Non-Gumroad platforms (2026-10-22) --------------------------------------
+# FACTORY_LIVE_PUBLISH was enforced only inside channels/gumroad_publisher.py.
+# Paddle, Etsy and X mutation functions performed live writes for any caller,
+# and distributor.distribute(dry_run=False) reached them with no global flag
+# check. This is the same fail-closed rule, applied inside each mutation
+# function so every caller (arms, scripts, Mission Control, customer flow) is
+# covered, directly or indirectly.
+#
+# Two classes, deliberately separate:
+#   catalog/social mutations (create/update product, create price, post):
+#       need FACTORY_LIVE_PUBLISH=true.
+#   checkout transactions (a buyer's payment link): need FACTORY_LIVE_PUBLISH
+#       or GF_ALLOW_CHECKOUT_TRANSACTIONS=true, so the founder can open the
+#       purchase path without making the catalog live-writable.
+#   outbound messages to third parties (contact forms, emails, DMs): need
+#       GF_ALLOW_OUTBOUND_MESSAGES=true. FACTORY_LIVE_PUBLISH does NOT cover
+#       them: permission to publish is not permission to contact people.
+# These platforms have no credential-state watcher like gumroad_auth_watch, so
+# the flag is the only check here; it never widens what Gumroad requires.
+
+CHECKOUT_ENV = "GF_ALLOW_CHECKOUT_TRANSACTIONS"
+MESSAGE_ENV = "GF_ALLOW_OUTBOUND_MESSAGES"
+
+
+def _env_true(name: str) -> bool:
+    return str(os.environ.get(name, "")).strip().lower() in ("1", "true", "yes", "on")
+
+
+def check_platform_write(platform: str, operation: str, *, checkout: bool = False,
+                         message: bool = False) -> WriteAuthDecision:
+    if message:
+        if _env_true(MESSAGE_ENV):
+            return WriteAuthDecision(True, f"{platform}.{operation}: {MESSAGE_ENV} is true",
+                                     state="MESSAGE_ONLY", live_publish_flag=_live_publish_requested())
+        return WriteAuthDecision(False, f"{platform}.{operation}: outbound message disabled ({MESSAGE_ENV} is not true)",
+                                 state="NOT_CHECKED", live_publish_flag=_live_publish_requested())
+    flag = _live_publish_requested()
+    if flag:
+        return WriteAuthDecision(True, f"{platform}.{operation}: FACTORY_LIVE_PUBLISH is true",
+                                 state="FLAG_ONLY", live_publish_flag=True)
+    if checkout and _env_true(CHECKOUT_ENV):
+        return WriteAuthDecision(True, f"{platform}.{operation}: {CHECKOUT_ENV} is true (checkout only)",
+                                 state="CHECKOUT_ONLY", live_publish_flag=False)
+    need = f"FACTORY_LIVE_PUBLISH or {CHECKOUT_ENV}" if checkout else "FACTORY_LIVE_PUBLISH"
+    return WriteAuthDecision(False, f"{platform}.{operation}: live mutation disabled ({need} is not true)",
+                             state="NOT_CHECKED", live_publish_flag=False)
+
+
+def require_platform_write(platform: str, operation: str, *, checkout: bool = False,
+                           message: bool = False) -> WriteAuthDecision:
+    """Raise WriteNotAuthorized unless check_platform_write allows it. Call it
+    first in every non-Gumroad mutation function, before any network I/O."""
+    decision = check_platform_write(platform, operation, checkout=checkout, message=message)
+    if not decision.allowed:
+        raise WriteNotAuthorized(decision.reason)
+    return decision

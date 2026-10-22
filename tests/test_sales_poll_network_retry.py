@@ -85,5 +85,59 @@ class TestNetworkRetry(unittest.TestCase):
         self.assertEqual(c.sleeps, [2])
 
 
+class TestAuthBackoff(unittest.TestCase):
+    """A 403 is not retried every tick: the arm is skipped for 2 hours."""
+
+    REAL_403 = ("Paddle get_transactions request failed: 403 Client Error: Forbidden for url: "
+                "https://api.paddle.com/transactions")
+
+    def setUp(self):
+        import tempfile
+        from unittest.mock import MagicMock, patch
+        import scripts.poll_sales as ps
+        self.ps = ps
+        d = tempfile.TemporaryDirectory()
+        self.addCleanup(d.cleanup)
+        self.ledger = str(Path(d.name) / "ledger.jsonl")
+        self.arm = MagicMock()
+        self.arm.get_sales.return_value = ([], self.REAL_403)
+        p = patch.object(ps.registry, "get", return_value=self.arm)
+        p.start()
+        self.addCleanup(p.stop)
+
+    def poll(self, t):
+        outcomes, _ = self.ps.poll_sales(arm_names=["paddle"], ledger_path=self.ledger, now=t)
+        return outcomes[0]
+
+    def test_403_is_skipped_inside_the_window_then_retried(self):
+        first = self.poll(1000)
+        self.assertTrue(first["checked"])
+        second = self.poll(1000 + 600)
+        self.assertFalse(second["checked"])
+        self.assertIn("auth backoff", second["skip_reason"])
+        self.assertEqual(self.arm.get_sales.call_count, 1)
+        self.poll(1000 + self.ps.AUTH_BACKOFF_SECONDS + 1)
+        self.assertEqual(self.arm.get_sales.call_count, 2)
+
+    def test_success_clears_the_backoff(self):
+        self.poll(1000)
+        self.arm.get_sales.return_value = ([], None)
+        self.poll(1000 + self.ps.AUTH_BACKOFF_SECONDS + 1)
+        self.arm.get_sales.return_value = ([], self.REAL_403)
+        self.assertTrue(self.poll(1000 + self.ps.AUTH_BACKOFF_SECONDS + 2)["checked"])
+
+    def test_network_errors_never_trigger_the_auth_backoff(self):
+        self.arm.get_sales.return_value = ([], DNS_FAIL)
+        with unittest.mock.patch.object(self.ps.time, "sleep"):
+            self.poll(1000)
+            self.assertTrue(self.poll(1001)["checked"])
+
+    def test_backoff_state_stays_beside_a_custom_ledger(self):
+        self.poll(1000)
+        self.assertTrue((Path(self.ledger).parent / "sales_poll_auth_backoff.json").exists())
+
+
+import unittest.mock  # noqa: E402  (used by TestAuthBackoff)
+
 if __name__ == "__main__":
     unittest.main()

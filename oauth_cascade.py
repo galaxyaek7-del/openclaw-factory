@@ -81,6 +81,15 @@ def main():
                 prop.get("deliverables", ""), prop.get("timeline", ""))
         else:
             desc = str(prop)[:1500] or "Fixed-scope delivery per agreed criteria."
+        # 2026-10-22: a bid is an outbound message to a client
+        # (channels/write_gate.py): needs GF_ALLOW_OUTBOUND_MESSAGES=true.
+        from channels.write_gate import check_platform_write
+        gate = check_platform_write("freelancer", "place_bid", message=True)
+        if not gate.allowed:
+            rec["status"] = "BLOCKED"
+            rec["evidence"] = gate.reason
+            print(json.dumps({"project": pid, "action": "blocked", "reason": gate.reason}))
+            continue
         code, placed = authed("/projects/0.1/bids/", token, {
             "project_id": int(pid), "bidder_id": bidder,
             "amount": float(rec.get("price_usd", 100)),

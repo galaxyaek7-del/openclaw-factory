@@ -105,6 +105,16 @@ class XArm(BaseArm):
         if dry_run:
             return self._dry_run_result()
 
+        # 2026-10-22: fail-closed live-write gate (channels/write_gate.py). A
+        # refusal is not a platform failure, so it does not trip the breaker.
+        from .write_gate import check_platform_write
+        gate = check_platform_write("x", "post")
+        if not gate.allowed:
+            return PublishResult(
+                ok=False, platform=self.name, product_id=None, url=None,
+                error=f"blocked by write gate: {gate.reason}", dry_run=False,
+            )
+
         # Build tweet text from product fields
         tweet_text = self._build_tweet_text(product)
         clean_text, warnings = _validate_tweet_text(tweet_text)

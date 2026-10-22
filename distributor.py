@@ -372,6 +372,18 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
                 continue
 
             if not dry_run:
+                # 2026-10-22: defense in depth. Every publisher mutation is
+                # gated by channels/write_gate.py; refusing here as well means
+                # a live run never even starts an arm's write sequence while
+                # FACTORY_LIVE_PUBLISH is off.
+                from channels.write_gate import check_platform_write
+                live_gate = check_platform_write(name, "distribute")
+                if not live_gate.allowed:
+                    outcomes.append({
+                        "arm": name, "attempted": False, "ok": None,
+                        "skip_reason": f"blocked by write gate: {live_gate.reason}", "result": None,
+                    })
+                    continue
                 if not allow_protected and _is_protected_product(product):
                     outcomes.append({
                         "arm": name, "attempted": False, "ok": None,

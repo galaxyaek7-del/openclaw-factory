@@ -35,7 +35,7 @@ class TestRegistry(unittest.TestCase):
 
     def test_real_builders_are_registered(self):
         names = {b.name for b in registry.all_builders()}
-        self.assertEqual(names, {"ai_book", "techdoc_package"})
+        self.assertEqual(names, {"ai_book", "techdoc_package", "xlsx_workbook"})  # 2026-10-22: real .xlsx builder
 
     def test_unregistered_builder_returns_none_not_a_guess(self):
         registry.clear()

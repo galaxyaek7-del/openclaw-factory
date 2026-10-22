@@ -49,6 +49,23 @@ def _make_product(file_path="test.epub", price_usd=9.99, title="Test Book"):
 
 
 class TestUniversalDistributionFabricStage01(unittest.TestCase):
+    def setUp(self):
+        # 2026-10-22: arms self-register once, at import. Other test files
+        # (e.g. test_x_arm, test_integration_registry) clear channels.registry,
+        # so when they ran first, 12 tests here failed ("'kdp' not in
+        # registry") purely from ordering. Re-register any real arm that is
+        # missing; never replaces one another test registered on purpose.
+        from channels import registry
+        from channels.etsy_arm import EtsyArm
+        from channels.gumroad_arm import GumroadArm
+        from channels.kdp_arm import KdpArm
+        from channels.paddle_arm import PaddleArm
+        from channels.payhip_arm import PayhipArm
+        for cls in (GumroadArm, PaddleArm, EtsyArm, PayhipArm, KdpArm):
+            arm = cls()
+            if registry.get(arm.name) is None:
+                registry.register(arm)
+
     def test_universal_product_contract(self):
         from schemas.product import Product
         rec = {"title": "T", "topic": "desc", "price": 9.99, "path": "test.epub", "pages": 50, "production_id": "PROD-99"}

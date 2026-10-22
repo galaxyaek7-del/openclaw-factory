@@ -1,4 +1,12 @@
 """Publish FTC compliance article to Telegraph."""
+# 2026-10-22: publishing a public Telegraph page is a live external write;
+# it requires FACTORY_LIVE_PUBLISH=true (channels/write_gate.py).
+import sys as _gf_sys
+from pathlib import Path as _GfPath
+_gf_sys.path.insert(0, str(_GfPath(__file__).resolve().parent.parent))
+from channels.write_gate import require_platform_write as _gf_require  # noqa: E402
+_gf_require("telegraph", "createPage")
+
 import json, urllib.request, urllib.parse, ssl, time, datetime
 
 ctx = ssl.create_default_context()
