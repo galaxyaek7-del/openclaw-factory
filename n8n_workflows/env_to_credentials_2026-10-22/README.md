@@ -79,3 +79,50 @@ The Telegram node was not executed, because that would call Telegram for real.
 The Telegram workflows are **skipped** until `OPENCLAW_TELEGRAM_CHAT_ID` is
 set. To roll back, run `python apply_fix.py --rollback <backup dir>`; the
 script prints that command.
+
+## Change record (applied 2026-10-22 ~11:30 UTC, founder-approved)
+
+**Pre-change state.** Read-only DB copy, 2026-10-22 ~10:50 UTC:
+- Sales_Poll: 64 runs, 64 errors. Sensing: 11/11. Telegram_Notify: 6/6.
+  Production_Notify: 1/1. Market_Scout: 0 runs.
+- Last error on all of them: `access to env vars denied`.
+
+**Applied.** `apply_fix.py`:
+- 1 credential: `GFinternalTokn01` (HTTP Header Auth).
+- 3 workflows imported and published: 01_Market_Scout, 02_Sales_Poll,
+  Openclaw_Sensing_Engine.
+- The Telegram credential and the 2 Telegram workflows were **not** applied.
+  `OPENCLAW_TELEGRAM_CHAT_ID` is unset, so they are unchanged and still failing.
+- Backup: `C:\Users\Dell\.n8n\backup_gf_envfix_20261022_123022`.
+
+**Verified after the change: static only, no real execution yet**
+- n8n `/healthz` returns 200 after restart.
+- The 3 workflows are active, updatedAt 11:31 UTC. The 4 demos are still
+  active.
+- The stored credential value equals `.env`'s `INTERNAL_SERVICE_TOKEN`. This
+  was compared by SHA-256 prefix; the value was never printed.
+
+**NOT yet verified**
+- That any of the 3 workflows now **executes successfully**. No run has
+  happened since the change: Sales_Poll fires every 4 h and Sensing daily at
+  07:00 UTC. Market_Scout is manual-only and was not run, because it triggers
+  the full scout pipeline.
+- Check with `python scripts/n8n_workflow_health.py`. A workflow is OK only
+  when it shows a fresh successful run *and* `server.js` returned
+  `{"success": true}`.
+
+**Secrets handling disclosure (control D)**
+- `apply_fix.py` wrote the credential JSON (plaintext) to a private temp
+  directory for the n8n CLI import, and deleted it in a `finally` block.
+  Deletion was confirmed.
+- The post-change hash comparison exported the decrypted credential to a temp
+  directory, which was then deleted. Deletion was confirmed.
+- No secret was printed, logged or committed.
+- Future runs should avoid both: compare via the CLI without writing a file,
+  or ask first.
+
+**Rollback**
+`python n8n_workflows/env_to_credentials_2026-10-22/apply_fix.py --rollback C:\Users\Dell\.n8n\backup_gf_envfix_20261022_123022`
+stops n8n by exact PID, restores the three DB files from the backup, and
+restarts n8n through the scheduled task. Rolling back returns the workflows to
+their pre-change, always-failing state.
