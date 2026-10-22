@@ -36,6 +36,27 @@
    "algeria_listed": false,
    "dz_code_listed": false,
    "table_head": "Eligible countries and their feature sets The following table lists countries eligible for payouts and their available feature sets: Country, Feature set, Country Code Country Feature set Country Code Andorra Send, receive, and withdraw AD Argentina Send, rece"
+  },
+  {
+   "id": "impact_currencies",
+   "url": "https://help.impact.com/other/reference-documentation/supported-currencies-and-timezones.md",
+   "md_sha256": "f01ae1a4a7b2e3a048ea8d52cb2bf858f75bbddf3410fceadf195ed2b897ad64",
+   "quotes": [
+    "| Algerian Dinar | DZD | Algeria |",
+    "<summary>Wire supported currencies</summary> ... * **DZD** - Algerian Dinar",
+    "<summary>PayPal supported currencies</summary> AUD CAD DDK EUR GBP HKD ILS JPY MXN NOK NZD PHP SEK SGD USD (no DZD)"
+   ],
+   "dzd_in_wire_list": true,
+   "dzd_in_paypal_list": false,
+   "dzd_in_ach_list": false
+  },
+  {
+   "id": "impact_bank_details",
+   "url": "https://help.impact.com/partner/what-would-you-like-to-learn-about/platform-features/finance/payments-withdrawals-and-balance/payout-setup/withdraw-funds-to-your-bank-account.md",
+   "quotes": [
+    "International EFT payments are Wire payments. Used when impact.com does not hold a bank account in your currency/region. | 3-5 business days after the paystub has cleared. | Currency-specific",
+    "PayPal ... 2% processing fee (up to $20 or the currency equivalent)"
+   ]
   }
  ]
 }

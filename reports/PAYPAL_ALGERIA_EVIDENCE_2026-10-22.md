@@ -66,3 +66,39 @@ records no PartnerStack account. The Airwallex question can only be settled
 from the country drop-down under "Setup withdrawals", which needs an account,
 so it stays a founder decision. Opening that account means accepting
 PartnerStack's terms.
+
+## Addendum: impact.com has a documented wire straight to an Algerian bank
+
+Closes matrix action 4 (Impact) for the payout-rail question. Sources are
+impact.com's own help center, read as raw `.md` with a plain GET. Hash and
+quotes are in the JSON record.
+
+| # | Fact | Class | Source |
+|---|---|---|---|
+| I1 | DZD (Algerian Dinar, country Algeria) is in impact.com's **"Wire supported currencies"** list for partner withdrawals. | OBSERVED | help.impact.com/other/reference-documentation/supported-currencies-and-timezones.md |
+| I2 | DZD is **not** in the ACH or PayPal currency lists. | OBSERVED | same |
+| I3 | Wire timing: 3–5 business days after the paystub clears. Fee: "Currency-specific", shown in the dashboard when the bank country is chosen. | OBSERVED (fee amount UNKNOWN) | .../payout-setup/withdraw-funds-to-your-bank-account.md |
+| I4 | Minimum withdrawal: $10 or equivalent. Payouts run on a threshold (Tue/Thu) or a fixed day (1st/15th). | OBSERVED | impact.com "How Do Partners Get Paid?" (updated 15 Jan 2026) |
+| I5 | Whether the founder's identity and bank pass impact.com verification, and what the Algerian bank charges on an inbound FX wire. | UNKNOWN | founder-only |
+
+**Why this matters**
+- impact.com is the only network now documented to pay **directly into an
+  Algerian bank account**, with no PayPal, US bank or Visa card in between.
+- The earlier register treated Impact as `UNKNOWN` at the country level
+  (Semrush and other Impact-hosted programs). The rail is now documented.
+- Approval stays discretionary per brand. The terms are binding on signup,
+  so FQ/F-04 remains a founder decision; nothing was submitted.
+
+## Updated ranking of payout rails for an Algeria-based publisher
+
+| Rank | Rail | Lands in | Evidence |
+|---|---|---|---|
+| 1 | impact.com wire (DZD) | Algerian bank, directly | I1–I4 OBSERVED |
+| 2 | Payoneer (DigitalOcean / Awin) | Payoneer balance | Matrix: documented end to end; Awin's fee blocker stands |
+| 3 | PayPal (ordinary payment) | PayPal → US bank / Visa / external provider | P2–P5 OBSERVED; 30-day hold plus stacked fees |
+| — | PayPal Payouts (mass payout) | — | P1: Algeria not eligible |
+| — | Stripe (via PartnerStack) | — | not available in Algeria |
+
+This ranking is about **collectability only**. It says nothing about which
+program would earn a commission. No program here has produced a click,
+conversion or commission for this factory.
