@@ -38,6 +38,14 @@ books/covers/regression_test_draft_with_content_cover.png
 # product PDF. XLSX trackers were never tracked (verified 0) and stay that
 # way via the same rule.
 books/*.pdf
+# 2026-10-22: `books/*.pdf` only matches the top level, so product files in
+# subfolders (books/batch12/, books/batch13/, kit folders) were never covered.
+# Three paid deliverables (B12-007 PDF+XLSX, B12-009 PDF) were committed
+# locally by mistake through this gap and then untracked before any push.
+# These rules cover every depth and the XLSX trackers the note above meant to
+# keep out. Already-tracked files are unaffected (founder decision).
+books/**/*.pdf
+books/**/*.xlsx
 
 # Real customer PII (name/email/company/description) and auth secrets --
 # unlike this repo's internal business data (decisions.jsonl, finance_data.json,

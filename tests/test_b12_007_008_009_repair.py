@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import sys
 import tempfile
@@ -35,6 +36,19 @@ import build_batch12_xlsx as b12  # noqa: E402
 import native_workbook_qa as wbqa  # noqa: E402
 
 BATCH = ROOT / "books" / "batch12"
+
+
+def require_release_files(*paths):
+    """Skip in CI when a paid deliverable is absent; fail everywhere else.
+
+    The repository is public (GitHub Pages), so product PDFs/XLSX are kept
+    out of it by .gitignore and can never exist in CI's checkout. On the
+    founder's machine they do exist, and a missing one is a real defect, so
+    outside CI absence is left to fail loudly. A present file with the wrong
+    bytes is checked by the tests themselves and fails in both places."""
+    missing = [str(p) for p in paths if not Path(p).exists()]
+    if missing and os.environ.get("CI"):
+        raise unittest.SkipTest("paid deliverable not in public repo: " + ", ".join(missing))
 
 
 def pdf_text(name: str) -> str:
@@ -70,6 +84,7 @@ class MovingBudgetWorkbookTests(unittest.TestCase):
 
     def test_importing_the_builder_does_not_touch_the_release_artifact(self):
         import importlib
+        require_release_files(BATCH / "B12-008_moving_budget_tracker.xlsx")
         before = hashlib.sha256((BATCH / "B12-008_moving_budget_tracker.xlsx").read_bytes()).hexdigest()
         importlib.import_module("build_batch12_xlsx")
         after = hashlib.sha256((BATCH / "B12-008_moving_budget_tracker.xlsx").read_bytes()).hexdigest()
@@ -142,6 +157,8 @@ class MovingBudgetWorkbookTests(unittest.TestCase):
 class MovingGuideTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
+        require_release_files(BATCH / "B12-008_moving_checklist.pdf",
+                              BATCH / "B12-008_moving_budget_tracker.xlsx")
         cls.text = pdf_text("B12-008_moving_checklist.pdf")
         cls.lower = cls.text.lower()
 
@@ -179,6 +196,8 @@ class MovingGuideTests(unittest.TestCase):
 class DeclutterGuideTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
+        require_release_files(BATCH / "B12-007_digital_declutter_plan.pdf",
+                              BATCH / "B12-007_digital_inventory.xlsx")
         cls.text = pdf_text("B12-007_digital_declutter_plan.pdf")
 
     def test_guide_is_deep_enough_for_its_price(self):
@@ -208,6 +227,7 @@ class DeclutterGuideTests(unittest.TestCase):
 class HandoverKitTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
+        require_release_files(BATCH / "B12-009_pet_sitter_handover_kit.pdf")
         cls.text = pdf_text("B12-009_pet_sitter_handover_kit.pdf")
 
     def test_kit_is_deep_enough_for_its_price(self):
@@ -243,6 +263,7 @@ class EvidenceConsistencyTests(unittest.TestCase):
     """The recorded evidence must describe the artifact that would ship."""
 
     def test_registered_specs_point_at_real_files_with_matching_hashes(self):
+        require_release_files(*(ROOT / spec["artifact"] for spec in wbqa.SPECS.values()))
         for product_id, spec in wbqa.SPECS.items():
             artifact = ROOT / spec["artifact"]
             self.assertTrue(artifact.exists(), product_id)
@@ -251,6 +272,7 @@ class EvidenceConsistencyTests(unittest.TestCase):
 
     def test_native_qa_evidence_matches_the_shipping_workbook(self):
         artifact = ROOT / wbqa.B12_008_SPEC["artifact"]
+        require_release_files(artifact)
         digest = hashlib.sha256(artifact.read_bytes()).hexdigest()
         records = sorted((ROOT / "reports" / "B12-008").glob("WORKBOOK_QA_*.json"))
         self.assertTrue(records, "no native workbook QA evidence recorded")

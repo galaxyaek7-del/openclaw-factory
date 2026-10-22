@@ -19,6 +19,7 @@ network -- the live byte count is cited as recorded evidence, not re-fetched.
 """
 import hashlib
 import json
+import os
 import sys
 import unittest
 from pathlib import Path
@@ -51,16 +52,27 @@ def _gf001():
     raise AssertionError("GF-001 is missing from data/asset_registry.json")
 
 
+def require_v2():
+    """v2 is the paid deliverable the live listing serves. books/*.pdf is
+    gitignored because this repository is public, so v2 can never exist in
+    CI's checkout. Skip there; anywhere else a missing v2 must still fail."""
+    if not V2.exists() and os.environ.get("CI"):
+        raise unittest.SkipTest("paid deliverable not in public repo: " + str(V2))
+
+
 class TestRevisionsExist(unittest.TestCase):
     def test_both_revisions_are_present_as_an_audit_trail(self):
         self.assertTrue(V1.exists(), "the superseded revision must be kept, not deleted")
+        require_v2()
         self.assertTrue(V2.exists())
 
     def test_hashes_match_the_recorded_evidence(self):
         self.assertEqual(_sha256(V1), V1_SHA256)
+        require_v2()
         self.assertEqual(_sha256(V2), V2_SHA256)
 
     def test_v2_is_the_revision_the_live_listing_serves(self):
+        require_v2()
         self.assertEqual(V2.stat().st_size, LIVE_DELIVERABLE_BYTES)
 
     def test_v1_is_not_the_revision_the_live_listing_serves(self):
@@ -73,6 +85,7 @@ class TestContentDifference(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        require_v2()
         from pypdf import PdfReader
 
         def text(path):
@@ -102,6 +115,7 @@ class TestRegistryPointsAtTheServedRevision(unittest.TestCase):
 
     def test_asset_registry_gf001_file_exists_and_matches_live_bytes(self):
         recorded = ROOT / _gf001()["product_genome"]["file"]
+        require_v2()
         self.assertTrue(recorded.exists(), f"GF-001 points at a missing file: {recorded}")
         self.assertEqual(recorded.stat().st_size, LIVE_DELIVERABLE_BYTES)
 
