@@ -3896,6 +3896,7 @@ function runCheckPaddleCheckoutStatus({ timeoutMs = 60000, pythonPath } = {}) {
           ok: true,
           totalProducts: result.total_products,
           newlyReady: result.newly_ready,
+          liveProbeDisabled: result.live_probe_disabled === true,
         });
       } catch (e) {
         finish({ ok: false, detail: `فشل تحليل ناتج check_paddle_checkout_status.py: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
@@ -3914,6 +3915,11 @@ async function maybeNotifyPaddleCheckoutReady() {
   }
   if (result.newlyReady > 0) {
     return { action: 'notified', detail: `Paddle checkout أصبح جاهزاً فعلاً لـ ${result.newlyReady} منتج حقيقي — تم إرسال تنبيه Telegram حقيقي` };
+  }
+  if (result.liveProbeDisabled) {
+    // 2026-10-22: the probe creates a real Paddle transaction, so it is off
+    // unless PADDLE_CHECKOUT_LIVE_PROBE=1. Do not report "still blocked".
+    return { action: 'none', detail: 'فحص Paddle الحي معطَّل (لا إنشاء معاملات) — حالة checkout غير مفحوصة' };
   }
   return { action: 'none', detail: `لا يزال Paddle checkout غير مفعَّل (${result.totalProducts} منتج حقيقي مفحوص) — لا تنبيه جديد` };
 }

@@ -19,6 +19,7 @@ CLI mirrors distributor.py's stdin-JSON-in / stdout-JSON-out pattern:
 import argparse
 import json
 import sys
+import time
 from pathlib import Path
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
@@ -31,6 +32,36 @@ from channels import ledger
 # Self-registers "gumroad"/"paddle" in channels.registry on import.
 import channels.gumroad_arm  # noqa: F401,E402
 import channels.paddle_arm  # noqa: F401,E402
+from channels.adapter_contract import ErrorClass  # noqa: E402
+from channels.error_classification import classify_error  # noqa: E402
+
+# 2026-10-22: every Gumroad poll failure since 10-15 (1,131 in factory_loop.log)
+# was a DNS/connection failure during a host network outage. Only those are
+# retried, after a short backoff; auth, payment and "arm not ready" errors are
+# returned at once. The retries stay inside a small time budget so a poll
+# still finishes before server.js's 45 s and factory_loop's 30 s limits.
+NETWORK_RETRY_DELAYS = (2, 4)
+NETWORK_RETRY_BUDGET_SECONDS = 12
+
+
+def _get_sales_with_network_retry(get_sales_fn, delays=NETWORK_RETRY_DELAYS,
+                                  budget=NETWORK_RETRY_BUDGET_SECONDS,
+                                  sleep=time.sleep, clock=time.monotonic):
+    """Calls get_sales_fn(); on a NETWORK_ERROR, waits and retries per
+    `delays` while the elapsed time plus the next delay stays within
+    `budget`. Returns (sales, error, attempts)."""
+    start = clock()
+    attempts = 0
+    for delay in (0,) + tuple(delays):
+        if delay:
+            if clock() - start + delay > budget:
+                break
+            sleep(delay)
+        attempts += 1
+        sales, error = get_sales_fn()
+        if not error or classify_error(Exception(error)) is not ErrorClass.NETWORK_ERROR:
+            break
+    return sales, error, attempts
 
 
 def _already_recorded_keys(ledger_path=None):
@@ -72,9 +103,10 @@ def poll_sales(arm_names=None, ledger_path=None):
             outcomes.append({"arm": name, "checked": False, "skip_reason": "no get_sales() support", "new_sales": 0, "error": None})
             continue
 
-        sales, error = get_sales_fn()
+        sales, error, attempts = _get_sales_with_network_retry(get_sales_fn)
         if error:
-            outcomes.append({"arm": name, "checked": True, "skip_reason": None, "new_sales": 0, "error": error})
+            outcomes.append({"arm": name, "checked": True, "skip_reason": None, "new_sales": 0, "error": error,
+                             "attempts": attempts})
             continue
 
         new_count = 0

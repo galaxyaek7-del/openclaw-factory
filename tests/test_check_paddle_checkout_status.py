@@ -42,6 +42,11 @@ def _temp_registry_path(products):
 
 class TestCheckAndNotify(unittest.TestCase):
     def setUp(self):
+        # These tests exercise the live-probe write path, which is off by
+        # default since 2026-10-22; opt in explicitly (still fully mocked).
+        _env = patch.dict("os.environ", {cpcs.LIVE_PROBE_ENV: "1"})
+        _env.start()
+        self.addCleanup(_env.stop)
         self.state_path = _temp_state_path()
 
     def tearDown(self):
@@ -148,6 +153,11 @@ class TestCheckAndNotifyAll(unittest.TestCase):
     the first one ever registered."""
 
     def setUp(self):
+        # These tests exercise the live-probe write path, which is off by
+        # default since 2026-10-22; opt in explicitly (still fully mocked).
+        _env = patch.dict("os.environ", {cpcs.LIVE_PROBE_ENV: "1"})
+        _env.start()
+        self.addCleanup(_env.stop)
         self.state_path = _temp_state_path()
         self.registry_path = _temp_registry_path([
             {"title": "Product A", "product_id": "pro_a", "price_id": "pri_a", "price": 100.0},

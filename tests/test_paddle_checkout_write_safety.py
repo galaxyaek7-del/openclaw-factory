@@ -34,6 +34,11 @@ T0 = datetime(2026, 10, 22, 12, 0, tzinfo=timezone.utc)
 
 class _Tmp(unittest.TestCase):
     def setUp(self):
+        # These tests exercise the live-probe write path, which is off by
+        # default since 2026-10-22; opt in explicitly (still fully mocked).
+        _env = patch.dict("os.environ", {cpcs.LIVE_PROBE_ENV: "1"})
+        _env.start()
+        self.addCleanup(_env.stop)
         self._d = tempfile.TemporaryDirectory()
         self.addCleanup(self._d.cleanup)
         d = Path(self._d.name)
@@ -114,6 +119,41 @@ class TestReadersNeverWrite(_Tmp):
             gates = aco.human_gate_orchestrator()["gates"]
         paddle = [g for g in gates if g["gate_id"] == "GATE-PADDLE-ONBOARDING"][0]
         self.assertIn(paddle["status"], ("BLOCKING", "READY_FOR_VERIFICATION"))
+
+
+class TestLiveProbeOffByDefault(_Tmp):
+    """Phase 2 step 1 (2026-10-22): no transaction is created unless asked."""
+
+    def setUp(self):
+        super().setUp()
+        _env = patch.dict("os.environ", {cpcs.LIVE_PROBE_ENV: ""})
+        _env.start()
+        self.addCleanup(_env.stop)
+
+    def test_default_run_never_creates_a_transaction(self):
+        with patch.object(cpcs.paddle_publisher, "load_api_key", return_value="k"), \
+             patch.object(cpcs.paddle_publisher, "create_checkout_transaction",
+                          side_effect=AssertionError("must not call Paddle")):
+            out = self.run_all(T0)
+        self.assertTrue(out["success"])
+        self.assertTrue(out["live_probe_disabled"])
+        self.assertTrue(out["results"][0]["live_probe_disabled"])
+        self.assertIsNone(out["results"][0]["checkout_ready"])
+        self.assertNotIn("error", out)
+        self.assertFalse(self.state.exists())
+        self.assertFalse((self.state.parent / "notifications_check_meta.json").exists())
+
+    def test_explicit_opt_in_still_probes(self):
+        with patch.object(cpcs.paddle_publisher, "load_api_key", return_value="k"), \
+             patch.object(cpcs.paddle_publisher, "create_checkout_transaction",
+                          side_effect=RuntimeError("403 Forbidden")) as create:
+            self.run_all(T0, allow_live_probe=True)
+        self.assertEqual(create.call_count, 1)
+
+    def test_env_flag_values(self):
+        self.assertTrue(cpcs.live_probe_allowed({cpcs.LIVE_PROBE_ENV: "1"}))
+        self.assertFalse(cpcs.live_probe_allowed({}))
+        self.assertFalse(cpcs.live_probe_allowed({cpcs.LIVE_PROBE_ENV: "0"}))
 
 
 if __name__ == "__main__":

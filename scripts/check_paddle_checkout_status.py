@@ -114,7 +114,21 @@ def _build_arabic_message(title, price, checkout_url):
     )
 
 
-def check_and_notify(product, state_path=None, env_path=None):
+# 2026-10-22 (founder directive, phase 2 step 1): this check no longer creates
+# Paddle transactions by default. A "readiness probe" here is a real
+# POST /transactions, i.e. a write to the live Paddle account, and the API key
+# currently gets 403 on every call. The probe runs only when explicitly
+# allowed: PADDLE_CHECKOUT_LIVE_PROBE=1 in the environment, or
+# {"allow_live_probe": true} on stdin for a deliberate manual run.
+LIVE_PROBE_ENV = "PADDLE_CHECKOUT_LIVE_PROBE"
+
+
+def live_probe_allowed(env=None):
+    env = os.environ if env is None else env
+    return str(env.get(LIVE_PROBE_ENV, "")).strip().lower() in ("1", "true", "yes")
+
+
+def check_and_notify(product, state_path=None, env_path=None, allow_live_probe=None):
     """One product through the readiness check. `product` is a dict with
     at least title/price_id/price. Returns a dict describing exactly what
     happened — never raises. already_notified=True means a real link was
@@ -154,6 +168,14 @@ def check_and_notify(product, state_path=None, env_path=None):
             "checkout_url": checkout_url, "telegram_sent": bool(telegram_result.get("sent")),
             "telegram_error": telegram_result.get("error"), "reused_existing_transaction": True,
         }
+
+    if allow_live_probe is None:
+        allow_live_probe = live_probe_allowed()
+    if not allow_live_probe:
+        return {"title": title, "success": True, "checkout_ready": None, "already_notified": False,
+                "live_probe_disabled": True,
+                "reason": f"live Paddle probe disabled (no transaction created); set {LIVE_PROBE_ENV}=1 "
+                          "or pass allow_live_probe to run it"}
 
     try:
         api_key = paddle_publisher.load_api_key(env_path)
@@ -238,13 +260,16 @@ def _write_meta(meta, path):
 
 
 def check_and_notify_all(registry_path=None, state_path=None, env_path=None, now=None,
-                         min_interval_seconds=MIN_INTERVAL_SECONDS, meta_path=None):
+                         min_interval_seconds=MIN_INTERVAL_SECONDS, meta_path=None,
+                         allow_live_probe=None):
     """Runs check_and_notify() for every product in the registry. One
     Paddle account has one onboarding gate — the moment it clears, every
     product's first real check afterward will report checkout_ready=True
     and send its own real Telegram message, not just the first one ever
     registered."""
     now = now or datetime.now(timezone.utc)
+    if allow_live_probe is None:
+        allow_live_probe = live_probe_allowed()
     # 2026-10-22: factory_loop.js runs this on every ~10-minute tick, i.e.
     # one Paddle write attempt per product per tick (728 failed runs since
     # 2026-10-15, alongside Paddle 429 rate-limit refusals in sales_poll).
@@ -261,7 +286,7 @@ def check_and_notify_all(registry_path=None, state_path=None, env_path=None, now
         meta_path = DEFAULT_ATTEMPT_META_PATH
     meta = _read_meta(meta_path)
     last = meta.get("last_paddle_attempt_at")
-    if min_interval_seconds and last:
+    if allow_live_probe and min_interval_seconds and last:
         try:
             elapsed = (now - datetime.fromisoformat(last)).total_seconds()
         except (TypeError, ValueError):
@@ -271,14 +296,17 @@ def check_and_notify_all(registry_path=None, state_path=None, env_path=None, now
                     "results": [], "last_attempt_at": last}
 
     products = _load_product_registry(registry_path)
-    results = [check_and_notify(p, state_path=state_path, env_path=env_path) for p in products]
-    _write_meta({"last_paddle_attempt_at": now.isoformat()}, meta_path)
+    results = [check_and_notify(p, state_path=state_path, env_path=env_path,
+                                allow_live_probe=allow_live_probe) for p in products]
+    if allow_live_probe:
+        _write_meta({"last_paddle_attempt_at": now.isoformat()}, meta_path)
 
     out = {
         "success": all(r.get("success") for r in results) if results else True,
         "total_products": len(results),
         "newly_ready": sum(1 for r in results if r.get("checkout_ready") and not r.get("already_notified")),
         "results": results,
+        "live_probe_disabled": not allow_live_probe,
     }
     # factory_loop.js reads a top-level `error`; without it every failure
     # was logged as "فشل غير محدَّد" (unspecified failure).
@@ -311,8 +339,13 @@ def main():
         return
 
     try:
-        sys.stdin.read()  # no job fields used today; kept for convention consistency
-        result = check_and_notify_all()
+        raw = sys.stdin.read()
+        try:
+            job = json.loads(raw) if raw.strip() else {}
+        except ValueError:
+            job = {}
+        allow = True if (isinstance(job, dict) and job.get("allow_live_probe") is True) else None
+        result = check_and_notify_all(allow_live_probe=allow)
         emit(result)
     except Exception as e:
         emit({"success": False, "error": str(e)})
