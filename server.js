@@ -5503,7 +5503,9 @@ async function triggerN8nTrends(retries = 2, timeoutMs = 8000) {
   let lastErr = null;
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const r = await withTimeout(fetch(N8N_SCOUT_WEBHOOK), timeoutMs, 'n8n');
+      // Carries the shared webhook secret when N8N_WEBHOOK_SECRET is set
+      // (lib/n8n_notify.js webhookAuthHeaders); unset = no header, as before.
+      const r = await withTimeout(fetch(N8N_SCOUT_WEBHOOK, { headers: n8nNotify.webhookAuthHeaders() }), timeoutMs, 'n8n');
       const text = await r.text();
       let body = text;
       try { body = JSON.parse(text); } catch (_) { /* plain text ack — fine */ }

@@ -380,3 +380,32 @@ test('a no-webhook-configured no-op never enqueues a retry', async () => {
     if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
   }
 });
+
+// ── Webhook shared secret (2026-10-22) ──
+const { webhookAuthHeaders, WEBHOOK_SECRET_HEADER } = require('../lib/n8n_notify.js');
+
+test('webhookAuthHeaders: no secret configured -> no header (previous behavior)', () => {
+  assert.deepEqual(webhookAuthHeaders({}), {});
+  assert.deepEqual(webhookAuthHeaders({ N8N_WEBHOOK_SECRET: '   ' }), {});
+});
+
+test('webhookAuthHeaders: secret configured -> X-GF-Webhook-Secret header', () => {
+  assert.deepEqual(webhookAuthHeaders({ N8N_WEBHOOK_SECRET: 's3cr3t' }), { [WEBHOOK_SECRET_HEADER]: 's3cr3t' });
+});
+
+test('notifyN8nProductionEvent sends the secret header only when configured', async () => {
+  const seen = [];
+  const saved = process.env.N8N_WEBHOOK_SECRET;
+  try {
+    for (const secret of [undefined, 'abc123']) {
+      if (secret === undefined) delete process.env.N8N_WEBHOOK_SECRET; else process.env.N8N_WEBHOOK_SECRET = secret;
+      await withMockedFetch(async (url, opts) => { seen.push(opts.headers); return { ok: true, status: 200 }; },
+        () => notifyN8nProductionEvent({ event: 'x' }, { webhookUrl: 'http://127.0.0.1:5678/webhook/t', statePath: tempStatePath() }));
+    }
+  } finally {
+    if (saved === undefined) delete process.env.N8N_WEBHOOK_SECRET; else process.env.N8N_WEBHOOK_SECRET = saved;
+  }
+  assert.equal(seen[0][WEBHOOK_SECRET_HEADER], undefined);
+  assert.equal(seen[1][WEBHOOK_SECRET_HEADER], 'abc123');
+  assert.equal(seen[1]['Content-Type'], 'application/json');
+});

@@ -102,7 +102,8 @@
   {
    "parameters": {
     "path": "scout-trigger",
-    "options": {}
+    "options": {},
+    "authentication": "headerAuth"
    },
    "type": "n8n-nodes-base.webhook",
    "typeVersion": 2.1,
@@ -112,7 +113,13 @@
    ],
    "id": "b9ad9c79-adb2-4b28-a381-4ae893a7401f",
    "name": "Webhook",
-   "webhookId": "b4502042-604b-4d94-b87c-f22714a44a2f"
+   "webhookId": "b4502042-604b-4d94-b87c-f22714a44a2f",
+   "credentials": {
+    "httpHeaderAuth": {
+     "id": "GFwebhookSecr01",
+     "name": "GF Webhook Secret (X-GF-Webhook-Secret)"
+    }
+   }
   },
   {
    "parameters": {
@@ -191,6 +198,17 @@
     [
      {
       "node": "Edit Fields",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Webhook": {
+   "main": [
+    [
+     {
+      "node": "HTTP Request",
       "type": "main",
       "index": 0
      }

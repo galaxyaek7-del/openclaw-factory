@@ -7,7 +7,8 @@
    "parameters": {
     "path": "golden-hunter-notify",
     "httpMethod": "POST",
-    "options": {}
+    "options": {},
+    "authentication": "headerAuth"
    },
    "type": "n8n-nodes-base.webhook",
    "typeVersion": 2.1,
@@ -17,7 +18,13 @@
    ],
    "id": "b1c2d3e4-0001-4a11-9e11-000000000001",
    "name": "Webhook",
-   "webhookId": "b1c2d3e4-0001-4a11-9e11-000000000099"
+   "webhookId": "b1c2d3e4-0001-4a11-9e11-000000000099",
+   "credentials": {
+    "httpHeaderAuth": {
+     "id": "GFwebhookSecr01",
+     "name": "GF Webhook Secret (X-GF-Webhook-Secret)"
+    }
+   }
   },
   {
    "parameters": {

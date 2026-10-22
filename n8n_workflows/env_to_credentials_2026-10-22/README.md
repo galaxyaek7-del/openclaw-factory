@@ -146,3 +146,42 @@ a fake credential against the real server:
 
 Applying it means re-importing 3 workflows and restarting n8n with
 `apply_fix.py`. That needs owner authorization.
+
+## Webhook authentication (prepared 2026-10-22 ~16:00 UTC, not applied)
+
+**Found.** With n8n exposed through ngrok, three company webhooks accepted any
+caller:
+- `golden-hunter-notify` and `production-notify` are wired straight to
+  Telegram sending. Once a chat id is configured, anyone could message the
+  founder through the factory's own bot.
+- `scout-trigger` was an orphan node, so it started empty runs only. It was
+  also the endpoint `server.js`'s Scout pipeline calls to fetch trends, which
+  therefore did nothing.
+
+A GET probe from outside confirmed the exposure, and it also started one empty
+Sensing run (execution 192). That run stopped at the Webhook node, and nothing
+reached `server.js`.
+
+**Prepared, in this folder and in the code:**
+- All three webhook nodes require HTTP Header Auth (`X-GF-Webhook-Secret`,
+  credential `GFwebhookSecr01`).
+- The Sensing webhook is connected to the trends flow.
+- `lib/n8n_notify.js` and `server.js` (`triggerN8nTrends`) send the header when
+  `N8N_WEBHOOK_SECRET` is set. Unset means no header, exactly as before.
+
+**Isolated proof**, run on a separate n8n instance with fake credentials on
+127.0.0.1:58178:
+
+| Request | Result |
+|---|---|
+| no header | 403 |
+| wrong header | 403 |
+| correct header | 200 |
+
+**To apply (owner authorization needed):**
+1. Generate a secret into `.env` as `N8N_WEBHOOK_SECRET`.
+2. Import credential `GFwebhookSecr01`.
+3. Re-import Sensing now. Re-import the two Telegram workflows *together with*
+   the chat id, and never configure the chat id before this, or the open
+   webhooks become live.
+4. Restart `server.js` and `factory_loop.js` so they load the secret.
