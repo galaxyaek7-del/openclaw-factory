@@ -69,3 +69,29 @@ test('real script: exits non-zero when a genuinely new occurrence is introduced'
     fs.rmSync(scratchPath, { force: true });
   }
 });
+
+test('real script: a gitignored local-only file is not counted (local result matches CI)', () => {
+  const repoRoot = path.join(__dirname, '..');
+  // /backups/ is gitignored (.gitignore). Before this fix the checker walked
+  // the raw filesystem and failed locally on such files while CI's clean
+  // checkout passed -- a false red.
+  const dir = path.join(repoRoot, 'backups');
+  const created = !fs.existsSync(dir);
+  fs.mkdirSync(dir, { recursive: true });
+  const ignoredPath = path.join(dir, `test_scratch_ignored_${process.pid}.js`);
+  fs.writeFileSync(ignoredPath, `const x = s.split('\\n').filter(Boolean);\n`);
+  try {
+    const { listCandidateJsFiles } = require('../scripts/check_jsonl_duplication.js');
+    // Guard against a vacuous test: the fixture must really contain the idiom.
+    assert.equal(countMatches(ignoredPath), 1);
+    const listed = listCandidateJsFiles(repoRoot).map((p) => path.resolve(p));
+    assert.ok(!listed.includes(path.resolve(ignoredPath)), 'gitignored file must not be scanned');
+    const out = execFileSync(process.execPath, [path.join(repoRoot, 'scripts', 'check_jsonl_duplication.js')], {
+      cwd: repoRoot, encoding: 'utf8',
+    });
+    assert.match(out, /No new JSONL-read duplication/);
+  } finally {
+    fs.rmSync(ignoredPath, { force: true });
+    if (created) fs.rmSync(dir, { recursive: true, force: true });
+  }
+});

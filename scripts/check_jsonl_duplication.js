@@ -30,6 +30,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
 
 const REPO_ROOT = path.join(__dirname, '..');
 const PATTERN = /\.split\('\\n'\)\.filter\(Boolean\)/;
@@ -52,6 +53,28 @@ function listJsFiles(dir, out = []) {
   return out;
 }
 
+// The files git would actually commit: tracked files plus new, untracked
+// files that are NOT gitignored. Walking the raw filesystem instead made the
+// check fail locally (never in CI's clean checkout) on gitignored local-only
+// files such as /backups/ snapshots and ignored scratch modules -- a false
+// red that trained people to ignore this gate. A brand-new file someone is
+// still writing is untracked-but-not-ignored, so it is still caught.
+// Falls back to the plain directory walk when git is unavailable.
+function listCandidateJsFiles(root = REPO_ROOT) {
+  try {
+    const out = execFileSync('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard', '--', '*.js'], {
+      cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 64 * 1024 * 1024,
+    });
+    return out.split('\0')
+      .filter(Boolean)
+      .filter((rel) => !rel.split('/').some((seg) => EXCLUDE_DIRS.has(seg)))
+      .map((rel) => path.join(root, rel))
+      .filter((abs) => fs.existsSync(abs));
+  } catch (_) {
+    return listJsFiles(root);
+  }
+}
+
 function countMatches(filePath) {
   const content = fs.readFileSync(filePath, 'utf8');
   const matches = content.match(new RegExp(PATTERN, 'g'));
@@ -62,7 +85,7 @@ function run() {
   const baselinePath = path.join(REPO_ROOT, 'config', 'jsonl_duplication_baseline.json');
   const baseline = JSON.parse(fs.readFileSync(baselinePath, 'utf8'));
 
-  const files = listJsFiles(REPO_ROOT);
+  const files = listCandidateJsFiles(REPO_ROOT);
   const violations = [];
   const current = {};
 
@@ -100,4 +123,4 @@ function run() {
 
 run();
 
-module.exports = { countMatches, listJsFiles };
+module.exports = { countMatches, listJsFiles, listCandidateJsFiles };
