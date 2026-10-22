@@ -1,0 +1,41 @@
+{
+ "retrieved_at_utc": "2026-10-22T10:40:38Z",
+ "method": "curl GET, public pages, no login",
+ "sources": [
+  {
+   "id": "fees",
+   "url": "https://www.paypal.com/dz/webapps/mpp/paypal-fees",
+   "html_sha256": "46e9843d0f583843eb2ac4cb1508cb06438f7c5e9ea64a84e1071ccdf942bd5a",
+   "quotes": [
+    "تحويلات العملات عمليات السحب من PayPal رسوم المستهلك الأخرى آخر تحديث: 28 سبتمبر 2026 يمكنك البحث عن تفاصيل حول التغييرات التي تطرأ على الأسعار والرسوم لدينا ووقت تطبيقها في صفحة تحديثات السياسة على موقعنا. كما يمكنك أيضاً استعراض هذه التغييرات بالنقر فوق \"الاعتبارات القانونية \" أسفل أي صفحة ويب، ثم اختي",
+    "لمحددة لرصيد حسابك، فستتحمل بشكل إضافي رسوم تحويل العملات . عمليات السحب من خلال مقدّمي الخدمة الخارجيين بناءً على الأسواق/المناطق المسجَّل فيها حسابك، قد تتمكّن بشكل مباشر من سحب/تحويل المبالغ المالية من أو إلى حسابك على PayPal إلى حساب بنكي محلي مربوط أو محفظة مربوطة من خلال مقدّم خدمة خارجي. سيتعيّن عليك أن تكون مسجَّلا",
+    "، وTG‏، وTJ‏، وTM‏، وTN‏، وTZ‏، وUG‏، وYE‏، وZA‏، وZM‏، وZW 2.0%+1.50 USDدولار أمريكي* LK 2.90% + 2.50 دولار أمريكي* *سيفرض مقدّم الخدمة الخارجي رسوماً إضافية مما يؤدي إلى عدم إضافة المبلغ بالكامل إلى رصيد حسابك. لن تتحمل PayPal أي مسؤولية عن أي رسوم أو تكاليف (بما في ذلك أي رسوم تحويل) يفرضه",
+    " الرسوم وفقاً لعملة التحويل بالبطاقة في الجدول الوارد أدناه عمليات السحب/التحويلات اليدوية إلى بطاقة ائتمان Visa DM، BZ، BB، BA، AG، AL، KN، GD، PF، FJ، EG، DZ، PW، NC، MW، LS، LC، TT، TC، SC، 5.00 دولار أمريكي (أو ما يعادلها) *قد يفرض البنك الذي تتعامل معه رسوماً إضافية تؤدي إلى إيداع مبلغ أقل من المبلغ الكامل في حسابك البنكي. لن"
+   ]
+  },
+  {
+   "id": "rfat",
+   "url": "https://www.paypal.com/dz/legalhub/paypal/recpymt-full",
+   "html_sha256": "9d474a7f8ce5f54c07fa29c5c0145e25762ecdea9ee89d66ec13a490babd8d64",
+   "quotes": [
+    "ement PayPal Receive Funds and Automatic Transfer Agreement Last updated on 22 September 2026 This policy applies to users in the following countries: Albania, Algeria, Antigua and Barbuda, Barbados, Belize, Bosnia and Herzegovina, Dominica, Egypt, Fiji, French Polynesia, Grenada, Lesotho, Malawi, New Caledonia,",
+    "omatic Transfer Agreement Last updated on 22 September 2026 This policy applies to users in the following countries: Albania, Algeria, Antigua and Barbuda, Barbados, Belize, Bosnia and Herzegovina, Dominica, Egypt, Fiji, French Polynesia, Grenada, Lesotho, Malawi, New Caledonia, Palau, Saint Kitts and Nevis, Saint Lucia, Trinidad and",
+    "ity: In order to receive payments into your PayPal account, you must link your US bank account or Visa credit card to your PayPal account and complete PayPal’s credit card and/or bank account verification process. 2. Automatic Transfer: On a regular basis, PayPal will automatically transfer the amounts from your available PayPal Bal",
+    "Period: All payments that you receive will be subject to an initial 30 day hold period and will be placed in a pending balance. This means that you will not have access to your funds for at least 30 days. After the initial 30 day hold period, your funds will be released to your available balance unless Pa",
+    "ng Payments: You may use your credit card to send payments. You may not use your PayPal balance or US bank account to send payments. All amounts in your available PayPal balance must be withdrawn from your PayPal account through automatic and/or manual transfer. 8. Transaction Fees for Receiving Payments: Transaction Fees: Standard Rate and Merchant",
+    "ume Fee Rate Category $0.01 - $3,000.00 USD (or equivalent) 4.9% + Fixed Fee Standard Rate $3,000,01 - $10,000.00 USD (or equivalent) 4.4% + Fixed Fee Merchant Rate $10,000.01 - $100,000.00 USD (or equivalent) 4.2% + Fixed Fee Merchant Rate $100,000.01 and over USD (or equivalent) 3."
+   ]
+  },
+  {
+   "id": "payouts",
+   "url": "https://developer.paypal.com/docs/payouts/standard/reference/country-feature/",
+   "html_sha256": "d6f2d5e8df6578887ba2cb7d247b20977849db10b486381b0767fd9797b1492c",
+   "quotes": [
+    "try. PayPal account holders can receive and withdraw money. Eligible countries and their feature sets The following table lists countries eligible for payouts and their available feature sets: Country, Feature set, Country Code Country Feature set Country Code Andorra Send, receive, and withdraw AD Argentina Send, recei"
+   ],
+   "algeria_listed": false,
+   "dz_code_listed": false,
+   "table_head": "Eligible countries and their feature sets The following table lists countries eligible for payouts and their available feature sets: Country, Feature set, Country Code Country Feature set Country Code Andorra Send, receive, and withdraw AD Argentina Send, rece"
+  }
+ ]
+}
