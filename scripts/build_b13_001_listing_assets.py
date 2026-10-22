@@ -41,6 +41,7 @@ FILES = [
 COVER = "reports/B13-001/B13-001.png"
 COPY = "drafts/b13_001_listing_copy.txt"
 GATE = "reports/B13-001/GATE_FINAL_2026-10-20.json"
+SELECTED_GATE = "reports/B13-001/GATE_SELECTED_PRICE_2026-10-20.json"
 GUIDE_CHECK = "reports/B13-001/GUIDE_INSPECTION_2026-10-20.json"
 WORKBOOK_QA = "reports/B13-001/WORKBOOK_QA_2026-10-20.json"
 OUT_JSON = "reports/B13-001/LISTING_PAYLOAD_2026-10-20.json"
@@ -128,6 +129,11 @@ def main() -> int:
         )
 
     gate = json.loads((ROOT / GATE).read_text(encoding="utf-8")) if (ROOT / GATE).exists() else {}
+    selected_gate = (
+        json.loads((ROOT / SELECTED_GATE).read_text(encoding="utf-8"))
+        if (ROOT / SELECTED_GATE).exists()
+        else {}
+    )
     wbqa = (
         json.loads((ROOT / WORKBOOK_QA).read_text(encoding="utf-8"))
         if (ROOT / WORKBOOK_QA).exists()
@@ -186,6 +192,10 @@ def main() -> int:
             "gate": GATE,
             "gate_state": gate.get("state"),
             "gate_layers": gate.get("layers"),
+            "gate_at_selected_price": SELECTED_GATE,
+            "gate_at_selected_price_verdict": selected_gate.get("verdict"),
+            "gate_at_selected_price_price_usd": selected_gate.get("price_checked_usd"),
+            "gate_at_selected_price_layers": selected_gate.get("layers"),
             "guide_inspection": GUIDE_CHECK,
             "guide_pages": guide.get("pages"),
             "guide_words": guide.get("gate_words"),
@@ -228,7 +238,13 @@ def main() -> int:
         "",
         "## Verification cited",
         "",
-        "- Gate: `%s` — state `%s`" % (GATE, gate.get("state")),
+        "- Gate: `%s` — state `%s` (recorded at the earlier $19 proposal)" % (GATE, gate.get("state")),
+        "- Gate at the selected price: `%s` — verdict `%s` at $%.2f"
+        % (
+            SELECTED_GATE,
+            selected_gate.get("verdict"),
+            selected_gate.get("price_checked_usd") or 0,
+        ),
         "- Guide inspection: `%s` — %s pages, %s words" % (GUIDE_CHECK, guide.get("pages"), guide.get("gate_words")),
         "- Workbook QA: `%s` — verdict `%s`, %s formula cells" % (WORKBOOK_QA, wbqa.get("verdict"), wbqa.get("formula_cells")),
         "- Brand check: %s" % ("PASS" if brand["passed"] else "FAIL: %s" % brand["failed_checks"]),

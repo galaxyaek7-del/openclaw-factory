@@ -27,8 +27,21 @@ def test_malformed_snapshot_rejected(tmp_path):
     assert loaded is None and "unreadable" in err
 
 
-def test_future_deadline_refuses_real_run():
-    res = run(str(ROOT / "data" / "review_snapshot_10-11.json"), str(ROOT / "data"))
+def test_future_deadline_refuses_real_run(tmp_path):
+    # Date-relative by construction (fixed 2026-10-16): the committed
+    # snapshot's own deadline (2026-10-11) is in the past, so running it
+    # can never be "premature" again, and the real data/ artifact from a
+    # past run flips the path to already-decided. Both make this test
+    # fail for calendar/leftovers reasons unrelated to the gate logic.
+    # Build a fresh future-deadline snapshot in tmp instead; the assertion
+    # (exit 3 + "premature") is unchanged.
+    snap = copy.deepcopy(SNAP)
+    future = (datetime.datetime.now(datetime.timezone.utc)
+              + datetime.timedelta(days=2)).isoformat()
+    snap["review_deadline"] = future
+    fx = tmp_path / "future.json"
+    fx.write_text(json.dumps(snap), encoding="utf-8")
+    res = run(str(fx), str(tmp_path))
     assert res["exit"] == 3 and "premature" in res["error"]
 
 
