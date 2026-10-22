@@ -39,6 +39,25 @@ def _temp_path(suffix=".jsonl"):
     return path
 
 
+# The X arm now falls back to the factory `.env` (like every other arm).
+# Point that fallback at a path that cannot exist for this whole module so
+# the real, configured `.env` never leaks into "credentials missing" cases.
+_NO_ENV_FILE = Path(tempfile.gettempdir()) / "gf_x_arm_tests_no_such.env"
+_env_path_patch = None
+
+
+def setUpModule():
+    global _env_path_patch
+    from channels import x_arm as _x_mod
+    _env_path_patch = patch.object(_x_mod, "DEFAULT_ENV_PATH", _NO_ENV_FILE)
+    _env_path_patch.start()
+
+
+def tearDownModule():
+    if _env_path_patch is not None:
+        _env_path_patch.stop()
+
+
 _FAKE_X_CREDS = {
     "X_API_KEY": "test_key",
     "X_API_SECRET": "test_secret",
@@ -501,6 +520,8 @@ class TestXArmPublishProtectionIntegration(unittest.TestCase):
             _fake_product(), arm_names=["x"], dry_run=False,
             ledger_path=self.ledger_path,
             protection_state_path=self.protection_path,
+            quality_gate=lambda *a, **k: {"allowed": True, "blocked_by": None,
+                                          "reason": "test allow"},
         )
         self.assertFalse(outcomes[0]["attempted"])
         self.assertIn("publish protection", outcomes[0]["skip_reason"])
@@ -551,6 +572,8 @@ class TestDistributorLiveDedup(unittest.TestCase):
             product, arm_names=["x"], dry_run=False,
             ledger_path=self.ledger_path,
             protection_state_path=self.protection_path,
+            quality_gate=lambda *a, **k: {"allowed": True, "blocked_by": None,
+                                          "reason": "test allow"},
         )
         self.assertFalse(outcomes[0]["attempted"])
         # Must reach the protection gate (first-publish approval for x),

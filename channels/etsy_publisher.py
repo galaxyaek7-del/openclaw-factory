@@ -34,6 +34,10 @@ Standalone module. Does not import or modify any live factory file.
 
 import os
 from pathlib import Path
+try:
+    from .env_config import read_env_value
+except ImportError:  # executed directly as a script, not as channels.<module>
+    from env_config import read_env_value
 
 try:
     import requests
@@ -51,18 +55,7 @@ class ConfigError(Exception):
 
 
 def _read_env_var(name, env_path):
-    value = os.environ.get(name)
-    if value:
-        return value
-    if env_path.exists():
-        with open(env_path, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line.startswith(name):
-                    v = line.split("=", 1)[1].strip()
-                    if v:
-                        return v
-    return None
+    return read_env_value(name, env_path) or None
 
 
 def load_credentials(env_path=None):

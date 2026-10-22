@@ -33,6 +33,7 @@ from channels.registry import register
 from channels.adapter_contract import ErrorClass
 from channels.error_classification import classify_error, error_summary
 from channels.duplicate_protection import DuplicateProtection
+from channels import env_config
 
 # KDP does not have a public API. Real publishing requires human upload.
 KDP_HAS_API = False
@@ -66,9 +67,10 @@ class KdpArm(BaseArm):
 
     @staticmethod
     def _load_credentials():
-        """Load KDP credentials from environment. Returns (username, cookie) or raises."""
-        username = os.environ.get("KDP_USERNAME", "").strip()
-        cookie = os.environ.get("KDP_SESSION_COOKIE", "").strip()
+        """Load KDP credentials from the environment, falling back to the
+        factory `.env` like every other arm. Returns (username, cookie) or raises."""
+        username = env_config.read_env_value("KDP_USERNAME", env_config.DEFAULT_ENV_PATH)
+        cookie = env_config.read_env_value("KDP_SESSION_COOKIE", env_config.DEFAULT_ENV_PATH)
         if not username:
             raise ConfigError("KDP_USERNAME not set in environment")
         if not cookie:

@@ -38,6 +38,10 @@ import os
 import sys
 import time
 from pathlib import Path
+try:
+    from .env_config import read_env_value
+except ImportError:  # executed directly as a script, not as channels.<module>
+    from env_config import read_env_value
 
 import requests
 
@@ -121,17 +125,9 @@ def _request_with_retry(method, url, *, max_total_seconds=None, **kwargs):
 
 def load_api_key(env_path=None):
     env_path = Path(env_path) if env_path else DEFAULT_ENV_PATH
-    key = os.environ.get("PADDLE_API_KEY")
+    key = read_env_value("PADDLE_API_KEY", env_path)
     if key:
         return key
-    if env_path.exists():
-        with open(env_path, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line.startswith("PADDLE_API_KEY"):
-                    value = line.split("=", 1)[1].strip()
-                    if value:
-                        return value
     raise ConfigError(
         "PADDLE_API_KEY not set. Get it from https://vendors.paddle.com/authentication-v2"
     )

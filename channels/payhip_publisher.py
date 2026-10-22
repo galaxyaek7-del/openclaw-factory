@@ -17,6 +17,10 @@ Standalone module. Does not import or modify any live factory file.
 
 import os
 from pathlib import Path
+try:
+    from .env_config import read_env_value
+except ImportError:  # executed directly as a script, not as channels.<module>
+    from env_config import read_env_value
 
 FACTORY_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_ENV_PATH = FACTORY_DIR / ".env"
@@ -35,17 +39,9 @@ class UnsupportedOperationError(Exception):
 
 def load_token(env_path=None):
     env_path = Path(env_path) if env_path else DEFAULT_ENV_PATH
-    token = os.environ.get("PAYHIP_API_KEY")
+    token = read_env_value("PAYHIP_API_KEY", env_path)
     if token:
         return token
-    if env_path.exists():
-        with open(env_path, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line.startswith("PAYHIP_API_KEY"):
-                    value = line.split("=", 1)[1].strip()
-                    if value:
-                        return value
     raise ConfigError(
         "PAYHIP_API_KEY not set. Get it from https://payhip.com/account/api"
     )

@@ -23,6 +23,7 @@ import os
 import json
 from .base_arm import BaseArm, ArmStatus, PublishResult
 from . import registry
+from .env_config import DEFAULT_ENV_PATH, read_env_value
 
 _TWEET_MAX_CHARS = 280
 
@@ -34,11 +35,16 @@ class _ConfigError(Exception):
 
 def _load_credentials():
     """Load and validate X API credentials. Raises _ConfigError if any
-    required credential is missing or empty."""
-    api_key = os.environ.get("X_API_KEY", "").strip()
-    api_secret = os.environ.get("X_API_SECRET", "").strip()
-    access_token = os.environ.get("X_ACCESS_TOKEN", "").strip()
-    access_token_secret = os.environ.get("X_ACCESS_TOKEN_SECRET", "").strip()
+    required credential is missing or empty.
+
+    Reads the process environment first, then the factory `.env` (same
+    fallback every other arm has) -- without it, X reported UNAVAILABLE
+    from any direct Python entrypoint even with all four keys configured,
+    because only server.js/factory_loop.js load `.env` into the env."""
+    api_key = read_env_value("X_API_KEY", DEFAULT_ENV_PATH)
+    api_secret = read_env_value("X_API_SECRET", DEFAULT_ENV_PATH)
+    access_token = read_env_value("X_ACCESS_TOKEN", DEFAULT_ENV_PATH)
+    access_token_secret = read_env_value("X_ACCESS_TOKEN_SECRET", DEFAULT_ENV_PATH)
     if not all([api_key, api_secret, access_token, access_token_secret]):
         raise _ConfigError(
             "X API credentials not configured "
