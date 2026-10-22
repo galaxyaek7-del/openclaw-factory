@@ -44,7 +44,8 @@ class TestRegistry(unittest.TestCase):
         names = {a.name for a in registry.all_families()}
         self.assertEqual(
             names,
-            {"kdp_books", "professional_templates", "digital_toolkits", "knowledge_bases", "automation_systems"},
+            {"kdp_books", "professional_templates", "digital_toolkits", "knowledge_bases", "automation_systems",
+             "spreadsheet_systems"},  # 2026-10-22: real .xlsx family
         )
 
     def test_unregistered_family_returns_none_not_a_guess(self):

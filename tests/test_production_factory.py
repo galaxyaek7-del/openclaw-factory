@@ -92,8 +92,14 @@ class TestProductTypeCapability(unittest.TestCase):
 
     def test_unbuilt_families_are_honestly_not_built(self):
         caps = dossier._product_type_capability()
-        for family in ("ai_saas", "notion_systems", "spreadsheet_systems", "prompt_libraries"):
+        for family in ("ai_saas", "notion_systems", "prompt_libraries"):
             self.assertIn("NOT YET BUILT", caps[family])
+
+    def test_spreadsheet_systems_is_real_since_the_xlsx_builder(self):
+        # 2026-10-22: the family builds a genuine .xlsx (asset_generation's
+        # xlsx_workbook); it reports REAL only because the adapter registered.
+        caps = dossier._product_type_capability()
+        self.assertIn("REAL", caps["spreadsheet_systems"])
 
 
 class TestPublishingChecklist(unittest.TestCase):

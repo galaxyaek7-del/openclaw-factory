@@ -18,3 +18,4 @@ from . import professional_templates  # noqa: F401
 from . import digital_toolkits  # noqa: F401
 from . import knowledge_bases  # noqa: F401
 from . import automation_systems  # noqa: F401
+from . import spreadsheet_systems  # noqa: F401  (2026-10-22: real .xlsx via asset_generation's xlsx_workbook)

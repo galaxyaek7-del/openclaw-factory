@@ -1,0 +1,658 @@
+{
+ "generated_at": "2026-10-22T20:38:57.316949+00:00",
+ "status": "PREPARED_NOT_APPLIED",
+ "constraints": "No Gumroad write, upload, unpublish or delete was performed. FACTORY_LIVE_PUBLISH=false. Spend $0.",
+ "actions": [
+  {
+   "slug": "fetmu",
+   "product": "GPSR EU Seller Action Kit",
+   "action": "attach_file+reword",
+   "recommendation": "REPAIR",
+   "before": "Live: 1 PDF (18,208 B). Listing: 'YOU RECEIVE: PDF guide + PDF cost planner (...)'. Guide chapter 7 points to a companion .xlsx the buyer never receives.",
+   "after": "Attach the cost planner workbook; listing: 'PDF guide + XLSX cost planner workbook (4 sheets: ...)'.",
+   "required_files": [
+    {
+     "path": "books/gpsr_eu_seller_cost_planner.xlsx",
+     "bytes": 7721,
+     "sha256": "7967596f27506bfc7efc6ea706069c6b34be214b94ba7d5f90b72cea991af247",
+     "file_test": "PASS",
+     "sheets": 4,
+     "formulas": 2
+    }
+   ],
+   "evidence": [
+    "named in books/gpsr_eu_seller_action_kit_launch_kit.md",
+    "sha256 equals data/cycle88_artifact_checksums.json",
+    "already requested by founder_approvals.jsonl item 105b50b9f45f (PENDING since 2026-10-17)",
+    "release gate with the workbook: HOLD (human rights/policy review not recorded)"
+   ],
+   "rollback": "Remove the workbook; restore the previous sentence (drafts/release_packages/fetmu/release_package.json).",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
+   "slug": "vkqogv",
+   "product": "Trademark DIY Filing Action Kit",
+   "action": "attach_file+reword",
+   "recommendation": "REPAIR",
+   "before": "Live: 1 PDF (12,383 B). Listing promises 'a four-sheet docket tracker (...)'; no spreadsheet attached. Below the substance bar as live: 1,705 words for $69.",
+   "after": "Attach the tracker; listing: 'a four-sheet XLSX docket tracker (clearance search log, specimen file, docket tracker, fee math)'.",
+   "required_files": [
+    {
+     "path": "books/trademark_filing_tracker.xlsx",
+     "bytes": 7650,
+     "sha256": "10261dd269ae808750716f2f9256709fe2e75a3f8213d657b63c612266e20495",
+     "file_test": "PASS",
+     "sheets": 4,
+     "formulas": 2
+    }
+   ],
+   "evidence": [
+    "named in books/trademark_diy_filing_kit_launch_kit.md",
+    "sheet names match the listing promise",
+    "sha256 equals cycle88 checksum record",
+    "release gate with the workbook: HOLD (human rights/policy review not recorded)"
+   ],
+   "rollback": "Remove the workbook; restore the previous sentence.",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
+   "slug": "adyvd",
+   "product": "Turo Guest Dispute Toolkit",
+   "action": "attach_file",
+   "recommendation": "REPAIR",
+   "before": "Live: PDF only [{'type': 'pdf', 'bytes': 17909}]. A working local workbook was never attached.",
+   "after": "Attach the workbook; add one sentence naming it in the description (founder wording).",
+   "required_files": [
+    {
+     "path": "books/turo_guest_dispute_tracker.xlsx",
+     "bytes": 7688,
+     "sha256": "e4759b5be70888172e1454f5c7b3162ab9b783a17cea105ea069663cf4bc9b8c",
+     "file_test": "PASS",
+     "sheets": 4,
+     "formulas": 5
+    }
+   ],
+   "evidence": [
+    "named in the product's launch kit (books/*_launch_kit.md)",
+    "sha256 equals cycle88 checksum record",
+    "file test PASS",
+    "release gate with the workbook: HOLD (human rights/policy review not recorded)"
+   ],
+   "rollback": "Remove the attached workbook.",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
+   "slug": "ppsluq",
+   "product": "STR Direct Booking Revenue Kit",
+   "action": "attach_file",
+   "recommendation": "REPAIR",
+   "before": "Live: PDF only [{'type': 'pdf', 'bytes': 10074}]. A working local workbook was never attached.",
+   "after": "Attach the workbook; add one sentence naming it in the description (founder wording).",
+   "required_files": [
+    {
+     "path": "books/str_direct_booking_planner.xlsx",
+     "bytes": 7527,
+     "sha256": "66d2d36846cfc63ca0cce1818ae544d130a242f6cef10b1fa46d1576b5eddb7d",
+     "file_test": "PASS",
+     "sheets": 4,
+     "formulas": 10
+    }
+   ],
+   "evidence": [
+    "named in the product's launch kit (books/*_launch_kit.md)",
+    "sha256 equals cycle88 checksum record",
+    "file test PASS",
+    "release gate with the workbook: HOLD (human rights/policy review not recorded)"
+   ],
+   "rollback": "Remove the attached workbook.",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
+   "slug": "pyzqa",
+   "product": "Vendor Questionnaire Response Kit",
+   "action": "attach_file",
+   "recommendation": "REPAIR",
+   "before": "Live: PDF only [{'type': 'pdf', 'bytes': 12020}]. A working local workbook was never attached.",
+   "after": "Attach the workbook; add one sentence naming it in the description (founder wording).",
+   "required_files": [
+    {
+     "path": "books/vendor_questionnaire_tracker.xlsx",
+     "bytes": 15679,
+     "sha256": "877013e6cc5c5df40bd2e1e181d75887f21f4d1ff204a98ec4d494fc951178fe",
+     "file_test": "PASS",
+     "sheets": 6,
+     "formulas": 217
+    }
+   ],
+   "evidence": [
+    "named in the product's launch kit (books/*_launch_kit.md)",
+    "sha256 equals cycle88 checksum record",
+    "file test PASS",
+    "release gate with the workbook: HOLD (human rights/policy review not recorded)"
+   ],
+   "rollback": "Remove the attached workbook.",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
+   "slug": "gfsvu",
+   "product": "EU Packaging EPR Action Kit",
+   "action": "attach_file",
+   "recommendation": "REPAIR",
+   "before": "Live: PDF only [{'type': 'pdf', 'bytes': 11401}]. A working local workbook was never attached.",
+   "after": "Attach the workbook; add one sentence naming it in the description (founder wording).",
+   "required_files": [
+    {
+     "path": "books/epr_packaging_register.xlsx",
+     "bytes": 22097,
+     "sha256": "82247928aa60685bb44020960dff38873252b92662923b12bd76e814fd8533d0",
+     "file_test": "PASS",
+     "sheets": 6,
+     "formulas": 628
+    }
+   ],
+   "evidence": [
+    "named in the product's launch kit (books/*_launch_kit.md)",
+    "sha256 equals cycle88 checksum record",
+    "file test PASS",
+    "release gate with the workbook: HOLD (human rights/policy review not recorded)"
+   ],
+   "rollback": "Remove the attached workbook.",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
+   "slug": "dyjavs",
+   "product": "Diminished Value Claim Kit",
+   "action": "attach_file",
+   "recommendation": "REPAIR",
+   "before": "Live: PDF only [{'type': 'pdf', 'bytes': 9630}]. A working local workbook was never attached.",
+   "after": "Attach the workbook; add one sentence naming it in the description (founder wording).",
+   "required_files": [
+    {
+     "path": "books/diminished_value_claim_pack.xlsx",
+     "bytes": 17631,
+     "sha256": "a8302ce2347eb86360e72f5db1f1f2ad4cb1fee50f3a277e05e0ff8909d654fb",
+     "file_test": "PASS",
+     "sheets": 6,
+     "formulas": 211
+    }
+   ],
+   "evidence": [
+    "named in the product's launch kit (books/*_launch_kit.md)",
+    "sha256 equals cycle88 checksum record",
+    "file test PASS",
+    "release gate with the workbook: HOLD (human rights/policy review not recorded)",
+    "data/c99_founder_actions.json: 'Optional: attach books/diminished_value_claim_pack.xlsx'"
+   ],
+   "rollback": "Remove the attached workbook.",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
+   "slug": "ekhza",
+   "product": "FTC Consumer Review Rule Compliance Kit",
+   "action": "replace_file+attach_file",
+   "recommendation": "REPAIR",
+   "before": "Live PDF is the pre-2026-10-17 version: page-1 title printed over the subtitle (file_testing_engine FAIL: text overlap); live sha256 equals the LF-normalized pre-fix copy. No workbook attached.",
+   "after": "Replace the PDF with the repaired file (title fix; file test PASS; same pages and words) and attach the companion workbook.",
+   "required_files": [
+    {
+     "path": "books/ftc_review_rule_compliance_kit.pdf",
+     "bytes": 33174,
+     "sha256": "0130b51a6fa71da9c035047546f6d7ae51b87b37d21ea7d9341a213ddb954eb3",
+     "file_test": "PASS",
+     "pages": 5
+    },
+    {
+     "path": "books/ftc_review_rule_audit_tracker.xlsx",
+     "bytes": 17029,
+     "sha256": "e38c4cbe970bf56d0162b19a7e9432ff277e3b85fc50c82016ddbba6a6c18aeb",
+     "file_test": "PASS",
+     "sheets": 6,
+     "formulas": 223
+    }
+   ],
+   "evidence": [
+    "reports/cleanup/PDF_REPLACEMENTS.md (2026-10-17) lists this re-upload as a pending founder action",
+    "workbook named in the launch kit; sha256 equals cycle88 record"
+   ],
+   "rollback": "Re-upload books/_rollback_2026-10-22/ftc_review_rule_compliance_kit.pdf (byte-identical to the current live file) and remove the workbook.",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
+   "slug": "dvfvm",
+   "product": "Restaurant Health Inspection Readiness Kit",
+   "action": "replace_file+attach_file",
+   "recommendation": "REPAIR",
+   "before": "Live PDF is the pre-2026-10-17 version: page-1 title printed over the subtitle (file_testing_engine FAIL: text overlap); live sha256 equals the LF-normalized pre-fix copy. No workbook attached.",
+   "after": "Replace the PDF with the repaired file (title fix; file test PASS; same pages and words) and attach the companion workbook.",
+   "required_files": [
+    {
+     "path": "books/restaurant_inspection_readiness_kit.pdf",
+     "bytes": 30594,
+     "sha256": "c30290323b36d6a6bf2c1afd5a0b3266324e64af1f89802d71804ed2ec204525",
+     "file_test": "PASS",
+     "pages": 4
+    },
+    {
+     "path": "books/restaurant_inspection_logs.xlsx",
+     "bytes": 7814,
+     "sha256": "1dfd0bdd0ae94b3e3fd7d72a206f9f2e45973fa221dcb3c866976fb5378dd0a3",
+     "file_test": "PASS",
+     "sheets": 4,
+     "formulas": 1
+    }
+   ],
+   "evidence": [
+    "reports/cleanup/PDF_REPLACEMENTS.md (2026-10-17) lists this re-upload as a pending founder action",
+    "workbook named in the launch kit; sha256 equals cycle88 record"
+   ],
+   "rollback": "Re-upload books/_rollback_2026-10-22/restaurant_inspection_readiness_kit.pdf (byte-identical to the current live file) and remove the workbook.",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
+   "slug": "palmdr",
+   "product": "ADA Demand-Letter Response & Triage Kit",
+   "action": "replace_file+attach_file",
+   "recommendation": "REPAIR",
+   "before": "Live PDF is the pre-2026-10-17 version: page-1 title printed over the subtitle (file_testing_engine FAIL: text overlap); live size equals the LF-normalized pre-fix copy (no live hash on record). No workbook attached.",
+   "after": "Replace the PDF with the repaired file (title fix; file test PASS; same pages and words) and attach the companion workbook.",
+   "required_files": [
+    {
+     "path": "books/ada_demand_response_kit.pdf",
+     "bytes": 30154,
+     "sha256": "878fc65362358c90d494984cd6f283ce760fd0d1c2fa74c12ad0182090f7ab09",
+     "file_test": "PASS",
+     "pages": 3
+    },
+    {
+     "path": "books/ada_triage_workbook.xlsx",
+     "bytes": 18507,
+     "sha256": "d2655804a9ef19a7d6b1c9a7e92e678051bda20da352214430640bda2f10df2b",
+     "file_test": "PASS",
+     "sheets": 6,
+     "formulas": 219
+    }
+   ],
+   "evidence": [
+    "reports/cleanup/PDF_REPLACEMENTS.md (2026-10-17) lists this re-upload as a pending founder action",
+    "workbook named in the launch kit; sha256 equals cycle88 record"
+   ],
+   "rollback": "Re-upload books/_rollback_2026-10-22/ada_demand_response_kit.pdf (byte-identical to the current live file) and remove the workbook.",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
+   "slug": "iaiyt",
+   "product": "EU AI Act Compliance Toolkit",
+   "action": "remove_file",
+   "recommendation": "REPAIR",
+   "before": "Live: 2 PDFs -- full v2 (139,401 B, 31 pages) and 'eu_ai_act_compliance_toolkit_preview' (106,314 B, 3 pages, 209 words).",
+   "after": "Deliver the full v2 only; keep the excerpt as the listing preview, not as a deliverable.",
+   "required_files": [],
+   "evidence": [
+    "preview: 3 pages / 209 words; 21 of its lines appear verbatim in v2 (a redundant excerpt)",
+    "local v2 sha256 equals the live file (data/delivery_integrity.json)"
+   ],
+   "rollback": "Re-attach books/_rollback_2026-10-22/eu_ai_act_compliance_toolkit_preview.pdf (byte-identical to live).",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
+   "slug": "owtmpe",
+   "product": "[Unavailable] AI Workflow QA & Stress Test",
+   "action": "unpublish",
+   "recommendation": "PROPOSE_UNPUBLISH",
+   "before": "Published at $0 with no file and a 9-character description: a 'purchase' delivers nothing.",
+   "after": "Unpublished.",
+   "required_files": [],
+   "evidence": [
+    "Gumroad API: published=true, files=0, no custom delivery URL",
+    "also targeted by founder_approvals.jsonl fd394165c746, whose second target (iaiyt) is wrong"
+   ],
+   "rollback": "Republish from the Gumroad dashboard.",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
+   "slug": "vhofn",
+   "product": "The 5-Minute Context Reset Playbook (second listing)",
+   "action": "unpublish",
+   "recommendation": "PROPOSE_UNPUBLISH",
+   "before": "Two published listings, same title, $15 each. vhofn: 10 pages / 501 words, not linked from the site; akxaae: 9 pages / 1,612 words, linked from the site. Different sha256.",
+   "after": "Keep akxaae; unpublish vhofn (the thinner variant).",
+   "required_files": [],
+   "evidence": [
+    "data/delivery_integrity.json per-file words and sha256",
+    "customer_site links akxaae only"
+   ],
+   "rollback": "Republish vhofn.",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
+   "slug": "dxfwlu",
+   "product": "GALAXY FORGE API TEST - DO NOT BUY - DELETE ME",
+   "action": "delete",
+   "recommendation": "PROPOSE_DELETE",
+   "before": "Unpublished test product (102-byte txt).",
+   "after": "Deleted from the account.",
+   "required_files": [],
+   "evidence": [
+    "Gumroad API: published=false; title says DELETE ME"
+   ],
+   "rollback": "None needed (test artefact).",
+   "risk": "NONE",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  }
+ ],
+ "thin_product_review": [
+  {
+   "slug": "edgiq",
+   "product": "UK Deposit Recovery Action Pack",
+   "published": true,
+   "price_usd": 29.0,
+   "live_bytes": 9198,
+   "live_types": [
+    "zip"
+   ],
+   "local_file": "books\\uk_deposit_recovery_action_pack.xlsx",
+   "pages": null,
+   "words": null,
+   "recommendation": "HOLD",
+   "basis": "ZIP contents cannot be verified through the API"
+  },
+  {
+   "slug": "blayvb",
+   "product": "Freelancer Rate & Raise Calculator",
+   "published": true,
+   "price_usd": 14.99,
+   "live_bytes": 8922,
+   "live_types": [
+    "xlsx"
+   ],
+   "local_file": null,
+   "pages": null,
+   "words": null,
+   "recommendation": "HOLD",
+   "basis": "deliverable is a workbook; byte size is no content measure -- verify formulas on a downloaded copy"
+  },
+  {
+   "slug": "uwyfje",
+   "product": "GCC Contractor Payment Command System",
+   "published": true,
+   "price_usd": 49.0,
+   "live_bytes": 7166,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "books\\gcc_contractor_payment_command_system.pdf",
+   "pages": 3,
+   "words": 846,
+   "recommendation": "HOLD (expand or reprice)",
+   "basis": "846 words for $49 = 17.3 words/$ (<25)"
+  },
+  {
+   "slug": "fwrjot",
+   "product": "Freelancer Payment Protection & Scope-Control Toolkit",
+   "published": true,
+   "price_usd": 49.0,
+   "live_bytes": 6626,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "books\\freelancer_payment_protection_scope_control_toolkit.pdf",
+   "pages": 3,
+   "words": 792,
+   "recommendation": "HOLD (expand or reprice)",
+   "basis": "792 words for $49 = 16.2 words/$ (<25)"
+  },
+  {
+   "slug": "zfnagp",
+   "product": "Suspended Seller First-Appeal POA System",
+   "published": true,
+   "price_usd": 39.0,
+   "live_bytes": 5533,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "books\\suspended_seller_first_appeal_poa_system.pdf",
+   "pages": 2,
+   "words": 618,
+   "recommendation": "HOLD (expand or reprice)",
+   "basis": "618 words for $39 = 15.8 words/$ (<25)"
+  },
+  {
+   "slug": "vyitxf",
+   "product": "Toy Safety File Starter (EN 71 Lens)",
+   "published": true,
+   "price_usd": 29.0,
+   "live_bytes": 3906,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "factory_workspace/sprint14\\toy_safety_file_starter.pdf",
+   "pages": 1,
+   "words": 358,
+   "recommendation": "HOLD (expand or reprice)",
+   "basis": "358 words for $29 = 12.3 words/$ (<25)"
+  },
+  {
+   "slug": "fccqk",
+   "product": "Gulf Job-Landing ATS CV System",
+   "published": true,
+   "price_usd": 29.0,
+   "live_bytes": 5147,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "books\\gulf_job_landing_ats_cv_system.pdf",
+   "pages": 2,
+   "words": 556,
+   "recommendation": "HOLD (expand or reprice)",
+   "basis": "556 words for $29 = 19.2 words/$ (<25)"
+  },
+  {
+   "slug": "engiwk",
+   "product": "EU AI Act Compliance Quickstart Checklist",
+   "published": true,
+   "price_usd": 19.0,
+   "live_bytes": 3773,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "books\\eu_ai_act_compliance_quickstart_checklist.pdf",
+   "pages": 2,
+   "words": 312,
+   "recommendation": "HOLD (expand or reprice)",
+   "basis": "312 words for $19 = 16.4 words/$ (<25)"
+  },
+  {
+   "slug": "tmhlb",
+   "product": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+   "published": true,
+   "price_usd": 9.0,
+   "live_bytes": 3657,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "books\\eu_ai_act_transparency_literacy_checklist.pdf",
+   "pages": 2,
+   "words": 309,
+   "recommendation": "KEEP",
+   "basis": "309 words for $9"
+  },
+  {
+   "slug": "drtaj",
+   "product": "Verified B2B Lead Lists (200-lead batch)",
+   "published": false,
+   "price_usd": 99.0,
+   "live_bytes": 2008,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "books\\service_verified_lead_lists_sheet.pdf",
+   "pages": 1,
+   "words": 81,
+   "recommendation": "KEEP (unpublished)",
+   "basis": "not live"
+  },
+  {
+   "slug": "bfdgx",
+   "product": "EU Cosmetics Responsible Person Guide",
+   "published": true,
+   "price_usd": 69.0,
+   "live_bytes": 4637,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "factory_workspace/sprint14\\eu_cosmetics_responsible_person_guide.pdf",
+   "pages": 2,
+   "words": 415,
+   "recommendation": "PROPOSE_UNPUBLISH (or reprice/expand)",
+   "basis": "415 words for $69 = 6.0 words/$ (<10)"
+  },
+  {
+   "slug": "ciowwm",
+   "product": "EU Late Payment Recovery Kit",
+   "published": true,
+   "price_usd": 59.0,
+   "live_bytes": 3863,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "factory_workspace/sprint14\\eu_late_payment_recovery_kit.pdf",
+   "pages": 1,
+   "words": 392,
+   "recommendation": "PROPOSE_UNPUBLISH (or reprice/expand)",
+   "basis": "392 words for $59 = 6.6 words/$ (<10)"
+  },
+  {
+   "slug": "wteork",
+   "product": "Amazon FBA Reconciliation Workbook",
+   "published": true,
+   "price_usd": 49.0,
+   "live_bytes": 3726,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "factory_workspace/sprint14\\amazon_fba_reconciliation_workbook.pdf",
+   "pages": 1,
+   "words": 331,
+   "recommendation": "PROPOSE_UNPUBLISH (or reprice/expand)",
+   "basis": "331 words for $49 = 6.8 words/$ (<10); the title promises a calculator/workbook but only a PDF is attached"
+  },
+  {
+   "slug": "roxdbe",
+   "product": "SaaS Churn Email Pack",
+   "published": true,
+   "price_usd": 39.0,
+   "live_bytes": 3061,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "factory_workspace/sprint14\\saas_churn_email_pack.pdf",
+   "pages": 1,
+   "words": 257,
+   "recommendation": "PROPOSE_UNPUBLISH (or reprice/expand)",
+   "basis": "257 words for $39 = 6.6 words/$ (<10)"
+  },
+  {
+   "slug": "ldrdm",
+   "product": "Food-Contact Materials Starter",
+   "published": true,
+   "price_usd": 39.0,
+   "live_bytes": 3112,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "factory_workspace/sprint14\\food_contact_materials_starter.pdf",
+   "pages": 1,
+   "words": 272,
+   "recommendation": "PROPOSE_UNPUBLISH (or reprice/expand)",
+   "basis": "272 words for $39 = 7.0 words/$ (<10)"
+  },
+  {
+   "slug": "hasjmp",
+   "product": "Etsy Ads ROI Playbook + Calculator",
+   "published": true,
+   "price_usd": 39.0,
+   "live_bytes": 3480,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "factory_workspace/sprint14\\etsy_ads_roi_playbook.pdf",
+   "pages": 1,
+   "words": 300,
+   "recommendation": "PROPOSE_UNPUBLISH (or reprice/expand)",
+   "basis": "300 words for $39 = 7.7 words/$ (<10); the title promises a calculator/workbook but only a PDF is attached"
+  },
+  {
+   "slug": "yhnyn",
+   "product": "Digital-Product Refund Policy Pack",
+   "published": true,
+   "price_usd": 29.0,
+   "live_bytes": 3123,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "factory_workspace/sprint14\\digital_refund_policy_pack.pdf",
+   "pages": 1,
+   "words": 254,
+   "recommendation": "PROPOSE_UNPUBLISH (or reprice/expand)",
+   "basis": "254 words for $29 = 8.8 words/$ (<10)"
+  },
+  {
+   "slug": "zjwpx",
+   "product": "Freelancer Scope-Creep Contract Kit",
+   "published": true,
+   "price_usd": 29.0,
+   "live_bytes": 3055,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "factory_workspace/sprint14\\freelancer_scope_creep_contract_kit.pdf",
+   "pages": 1,
+   "words": 253,
+   "recommendation": "PROPOSE_UNPUBLISH (or reprice/expand)",
+   "basis": "253 words for $29 = 8.7 words/$ (<10)"
+  },
+  {
+   "slug": "eiebdt",
+   "product": "Battery & WEEE Mini-Guide for Sellers",
+   "published": true,
+   "price_usd": 29.0,
+   "live_bytes": 3061,
+   "live_types": [
+    "pdf"
+   ],
+   "local_file": "factory_workspace/sprint14\\battery_weee_miniguide.pdf",
+   "pages": 1,
+   "words": 258,
+   "recommendation": "PROPOSE_UNPUBLISH (or reprice/expand)",
+   "basis": "258 words for $29 = 8.9 words/$ (<10)"
+  }
+ ],
+ "approval_queue": "data/founder_approvals.jsonl (gf_ops/founder_approval.py)"
+}

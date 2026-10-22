@@ -76,7 +76,8 @@ class TestManifestRegistry(unittest.TestCase):
         import product_families  # noqa: F401 — self-registers
         names = {m.product_id for m in manifest_registry.all_manifests()}
         self.assertEqual(
-            names, {"automation_systems", "professional_templates", "digital_toolkits"},
+            names, {"automation_systems", "professional_templates", "digital_toolkits",
+                    "spreadsheet_systems"},  # 2026-10-22: manifest for the real .xlsx family
         )
 
     def test_unregistered_manifest_returns_none_not_a_guess(self):

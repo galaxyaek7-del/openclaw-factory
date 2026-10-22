@@ -8,3 +8,4 @@ logging. No new rendering logic lives here.
 """
 
 from . import pdf_builder  # noqa: F401
+from . import xlsx_builder  # noqa: F401  (2026-10-22: real .xlsx, not a PDF about one)
