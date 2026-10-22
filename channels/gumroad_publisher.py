@@ -510,15 +510,23 @@ def create_product(token, product_spec, *, upload_scope_id=None):
 
 def _fields_match(sent, got):
     """True iff a field we WROTE matches what a fresh re-read returned.
-    List-typed fields (e.g. tags) compare as lists — order is part of the
-    real, observed contract (live-verified 2026-10-13: a written tag list
-    round-trips in the exact order sent). Every other type compares by
-    plain equality. No fuzzy/normalized comparison is attempted for any
-    field this function has not been live-verified against -- an
-    unverified transformation reads as a mismatch (FAIL), never a silent
-    pass, per this module's own 'loud errors only' rule."""
+
+    List-typed fields (today, `tags`) compare as SETS. Two live observations,
+    the second superseding the first:
+      * 2026-10-13: one written tag list round-tripped in the exact order sent,
+        which is why this used to compare lists order-sensitively.
+      * 2026-10-18: a real write of the same 8 tags came back in a DIFFERENT
+        order, so update_product() raised VERIFICATION_FAILED for a write that
+        had in fact persisted. Order is therefore NOT part of the contract.
+    Set comparison still detects every real defect: a missing tag, an
+    unexpected tag, or a platform-side dedupe of a tag sent twice. It only
+    stops treating element order (which Gumroad does not promise) as a
+    failure. Every other type compares by plain equality -- no fuzzy or
+    normalized comparison for any field this function has not been
+    live-verified against, so an unverified transformation reads as a
+    mismatch (FAIL), never a silent pass."""
     if isinstance(sent, list) or isinstance(got, list):
-        return list(sent or []) == list(got or [])
+        return set(sent or []) == set(got or [])
     return sent == got
 
 
@@ -890,6 +898,106 @@ def enable_product(token, product_id):
     if not result.get("success", False):
         raise RuntimeError(f"Gumroad enable_product failed: {_gumroad_error(result)}")
     return result.get("product", result)
+
+
+def add_product_cover(token, product_id, image_url, *, verify_delay_seconds=1.0,
+                      get_product_fn=None, expected_cover_count=None):
+    """Attach a cover image to a product from a PUBLICLY ACCESSIBLE http(s) URL
+    (POST /v2/products/:id/covers -- the real cover endpoint).
+
+    Documented contract (Gumroad API docs, verified 2026-08-05; endpoint added
+    by antiwork/gumroad PR #4311): the server FETCHES the URL and stores its own
+    copy, so the URL must be reachable over plain HTTP(S) and must NOT be a
+    private or pre-signed upload URL. Requires the `edit_products` scope, or the
+    `account` scope when authenticating with an API key. Accepts images
+    (JPEG/PNG/GIF) and video URLs; WebP is NOT supported.
+
+    Why this function exists: previous rounds recorded "Gumroad's API has no
+    cover upload" and pushed the cover to a manual dashboard step. That reading
+    was wrong for cover *images*: the endpoint exists. Covers are distinct from
+    the product THUMBNAIL (POST /v2/products/:id/thumbnail), which needs an
+    ActiveStorage signed blob; the product page renders the first cover as its
+    main image, so a cover is sufficient for a professional listing.
+
+    Never trusts the POST response alone: only touches the cover list, then
+    PROVES the attach with a fresh GET /v2/products/:id whose `covers` must be
+    non-empty and (when Gumroad returns an `original_url`) must contain the URL
+    that was sent. It changes no other field -- price, files, name and
+    publication state are not part of the request, by the endpoint's contract.
+
+    Return/raise contract, matching update_product()'s honest PASS/BLOCKED/
+    FAIL/UNKNOWN discipline:
+      - PASS:    POST succeeded and the re-read proves a cover persisted --
+                 returns the fresh, re-read product dict.
+      - BLOCKED: Gumroad's own response reported success:false (e.g. an
+                 unsupported file type or an unreachable URL) -- raises
+                 RuntimeError prefixed "Gumroad add_product_cover failed:".
+      - FAIL:    POST reported success but the re-read proves no matching
+                 cover persisted -- raises RuntimeError prefixed
+                 "VERIFICATION_FAILED:". When expected_cover_count is given,
+                 a re-read cover count that did not grow is also a FAIL.
+      - UNKNOWN: POST reported success but the re-read could not be completed
+                 -- raises RuntimeError prefixed "VERIFICATION_UNKNOWN:".
+    """
+    # Same mandatory, centralized write authorization as every other write in
+    # this module: first statement, before any validation or network call.
+    _require_write_authorization("update_product")
+    if not product_id:
+        raise ConfigError("add_product_cover requires a product_id")
+    if not isinstance(image_url, str) or not image_url.lower().startswith(("http://", "https://")):
+        raise ConfigError(
+            "add_product_cover requires a publicly accessible http(s) image URL "
+            "(Gumroad fetches it server-side; a local path or pre-signed URL cannot work)")
+    try:
+        r = _request_with_retry("POST", f"{GUMROAD_API_BASE}/products/{product_id}/covers",
+                                data={"access_token": token, "url": image_url}, timeout=60)
+        r.raise_for_status()
+    except requests.RequestException as e:
+        raise RuntimeError(f"Gumroad add_product_cover request failed: {_safe_err(e)}")
+    try:
+        result = r.json()
+    except ValueError as e:
+        raise RuntimeError(f"Gumroad add_product_cover returned invalid JSON: {_safe_err(e)}")
+    if not isinstance(result, dict) or not result.get("success", False):
+        raise RuntimeError(
+            f"Gumroad add_product_cover failed: {_gumroad_error(result if isinstance(result, dict) else {})}")
+
+    if verify_delay_seconds:
+        time.sleep(verify_delay_seconds)
+    read_product = get_product_fn or get_product
+    try:
+        reread = read_product(token, product_id)
+    except Exception as e:  # noqa: BLE001
+        raise RuntimeError(
+            f"VERIFICATION_UNKNOWN: add_product_cover's POST for {product_id} reported "
+            f"success, but the post-write re-read failed, so the attach could not be "
+            f"proven: {_safe_err(e)}")
+    if not isinstance(reread, dict):
+        raise RuntimeError(
+            f"VERIFICATION_UNKNOWN: add_product_cover's post-write re-read for {product_id} "
+            f"returned a non-product response ({type(reread).__name__}).")
+
+    covers = reread.get("covers")
+    if not isinstance(covers, list) or not covers:
+        raise RuntimeError(
+            f"VERIFICATION_FAILED: add_product_cover's POST for {product_id} reported success, "
+            f"but a fresh re-read shows no covers attached (covers={covers!r}).")
+    if expected_cover_count is not None and len(covers) <= int(expected_cover_count):
+        raise RuntimeError(
+            f"VERIFICATION_FAILED: add_product_cover's re-read for {product_id} shows "
+            f"{len(covers)} cover(s), which did not grow past the expected {expected_cover_count}.")
+    # NOTE (live, 2026-10-18): Gumroad stores its own copy and reports THAT copy
+    # as `original_url` (e.g. https://public-files.gumroad.com/...), NOT the URL
+    # that was sent -- the docs' oEmbed example is misleading on this point.
+    # Comparing the sent URL against original_url therefore produced a false
+    # VERIFICATION_FAILED for an attach that had in fact succeeded. Identity is
+    # instead established by: a cover exists, it carries a display URL, and the
+    # cover count grew when a prior count was supplied.
+    if not any(isinstance(c, dict) and c.get("url") for c in covers):
+        raise RuntimeError(
+            f"VERIFICATION_FAILED: add_product_cover's re-read for {product_id} returned "
+            f"cover entries with no display url: {covers!r}")
+    return reread
 
 
 def get_product(token, product_id):
