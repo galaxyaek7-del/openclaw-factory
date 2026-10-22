@@ -161,9 +161,16 @@ PROFILES = {
             str(FACTORY_DIR / "books" / "batch12" / "B12-004_meeting_cost_roi_calculator.xlsx"):
                 {"bytes": 12865,
                  "sha256": "87ecb1cd223ebf615c46bf49a74c1feb70ea5131a1da9c14dcedff470ccac820"},
+            # Re-pinned 2026-10-22 to match scripts/check_b12_integrity.py, which
+            # re-baselined this PDF on 2026-10-20 (Cycle 106, fb69405) after a
+            # rebuild from the unmodified product block: same 9,639 B, 4 pages,
+            # 1,441 gate words; only reportlab's embedded timestamp differs.
+            # That re-baseline missed this second copy of the pin, so
+            # validate_spec("B12-004") reported a false file-identity FAIL.
+            # Previous pin: 2c964edc...2a46.
             str(FACTORY_DIR / "books" / "batch12" / "B12-004_meeting_method_guide.pdf"):
                 {"bytes": 9639,
-                 "sha256": "2c964edcfc8a9dcfb45d6bfcde23da85871ec6b3deacc39a10c71cf227972a46"},
+                 "sha256": "3a8ef339eb07e11b036edf741b1d75d05fbc6ebb7edc58a666f5f8f7602633a6"},
         },
         "cover_local_path": str(FACTORY_DIR / "reports" / "B12-004" / "cover.png"),
         "cover_public_url": ("https://raw.githubusercontent.com/galaxyaek7-del/"

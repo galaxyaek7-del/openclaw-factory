@@ -1,0 +1,29 @@
+# Deliverables are byte-exact artifacts; git must never convert them.
+#
+# This machine's system git config sets core.autocrlf=true, and there was no
+# .gitattributes. reportlab writes uncompressed PDFs, which git's heuristic
+# took for text, so every checkout inserted a CR before each LF *inside the
+# PDF*. Found 2026-10-22: six tracked PDFs differed from their committed
+# blobs. Stripping the CRs reproduced the blobs exactly, and the
+# working-tree copies failed a strict parse ("Broken xref table") while the
+# committed bytes passed. Anything uploaded from such a working tree is not
+# the file that was built, and file-hash pins drift by machine.
+#
+# Marking these types binary keeps them byte-identical across checkouts.
+*.pdf   binary
+*.xlsx  binary
+*.xls   binary
+*.docx  binary
+*.pptx  binary
+*.zip   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.otf   binary
+*.mp4   binary
