@@ -249,7 +249,14 @@ class TestPublishAuthorityAudit(unittest.TestCase):
     def test_read_only_audit_flags_parallel_paths(self):
         out = od.publish_authority_audit()
         by_file = {f["file"]: f for f in out["findings"]}
-        self.assertTrue(by_file["affiliate/publish_queue.py"]["creates_then_publishes"])
+        # affiliate/publish_queue.py is parallel-owned and untracked, so it is
+        # absent from any clean checkout (CI). When present it must be flagged;
+        # when absent the audit must say so honestly, never invent a finding.
+        queue = by_file["affiliate/publish_queue.py"]
+        if (od.FACTORY_DIR / "affiliate" / "publish_queue.py").is_file():
+            self.assertTrue(queue["creates_then_publishes"])
+        else:
+            self.assertEqual(queue, {"file": "affiliate/publish_queue.py", "present": False})
         self.assertTrue(by_file["src/publish/auto_publisher.py"]["checks_live_flag"])
 
 
