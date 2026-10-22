@@ -11,6 +11,7 @@ Two properties are under test:
    malformed ledger line is skipped rather than fatal.
 """
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -107,8 +108,13 @@ def test_default_out_directory_is_gitignored():
 
 
 def test_check_mode_never_prints_the_link_or_id():
+    # A fake, test-shaped ID is supplied through the environment (read before
+    # .env). Without it this test depended on the founder's real local .env and
+    # failed on any clean checkout, including CI, with "SYSTEME_AFFILIATE_ID is
+    # not set". The assertions below still prove no ID or link is printed.
+    env = dict(os.environ, SYSTEME_AFFILIATE_ID="saTESTONLY000000000000000000000000000000")
     done = subprocess.run([sys.executable, str(ROOT / "scripts" / "render_affiliate_asset.py"), "--check"],
-                          cwd=str(ROOT), capture_output=True, text=True, timeout=120)
+                          cwd=str(ROOT), capture_output=True, text=True, timeout=120, env=env)
     blob = (done.stdout or "") + (done.stderr or "")
     assert done.returncode == 0, blob
     assert "sa=" not in blob
