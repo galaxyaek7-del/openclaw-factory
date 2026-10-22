@@ -6144,7 +6144,12 @@ async function computeHealthStatus() {
   // degrades gracefully to its Groq-based fallback when n8n is unavailable.
   try {
     await withTimeout(fetch('http://localhost:5678'), 3000, 'n8n-health');
-    checks.sensing_engine = { ok: true, severity: 'degraded', detail: 'n8n يستجيب على localhost:5678' };
+    // 2026-10-22: reachability alone used to report ok, which stayed green
+    // while every company workflow run failed (2026-10-10..22). It now also
+    // requires real execution evidence (lib/health_checks.js
+    // checkN8nWorkflowEvidence: a fresh successful run whose server.js
+    // call returned success:true). Missing evidence is never ok.
+    checks.sensing_engine = await healthChecks.checkN8nWorkflowEvidence({ python: detectPython() });
   } catch (err) {
     checks.sensing_engine = { ok: false, severity: 'degraded', detail: `n8n غير متاح: ${err.message}` };
   }

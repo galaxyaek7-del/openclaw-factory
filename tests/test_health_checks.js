@@ -171,3 +171,55 @@ test('buildHealthReport: a real critical failure (network down) surfaces as over
   });
   assert.equal(report.status, 'critical');
 });
+
+// ── n8n workflow execution evidence (2026-10-22) ──
+const hc = require('../lib/health_checks.js');
+
+function fakeRun(stdout, err = null) {
+  return (cmd, args, opts, cb) => cb(err, stdout);
+}
+
+test('n8n evidence: ok only when every scheduled workflow verdict is OK', async () => {
+  const report = { workflows: { '02_Sales_Poll': { verdict: 'OK' }, 'Openclaw_Sensing_Engine': { verdict: 'OK' },
+    '01_Market_Scout': { verdict: 'UNKNOWN' } } };
+  const r = await hc.checkN8nWorkflowEvidence({ run: fakeRun(JSON.stringify(report)), useCache: false });
+  assert.equal(r.ok, true);
+});
+
+test('n8n evidence: a FAILING workflow is not ok even though n8n answers', async () => {
+  const report = { workflows: { '02_Sales_Poll': { verdict: 'FAILING' }, 'Openclaw_Sensing_Engine': { verdict: 'OK' } } };
+  const r = await hc.checkN8nWorkflowEvidence({ run: fakeRun(JSON.stringify(report)), useCache: false });
+  assert.equal(r.ok, false);
+  assert.match(r.detail, /02_Sales_Poll=FAILING/);
+});
+
+test('n8n evidence: missing or STALE evidence is never ok', async () => {
+  for (const verdict of ['UNKNOWN', 'STALE']) {
+    const report = { workflows: { '02_Sales_Poll': { verdict: 'OK' }, 'Openclaw_Sensing_Engine': { verdict } } };
+    const r = await hc.checkN8nWorkflowEvidence({ run: fakeRun(JSON.stringify(report)), useCache: false });
+    assert.equal(r.ok, false, verdict);
+  }
+  const r = await hc.checkN8nWorkflowEvidence({ run: fakeRun(JSON.stringify({ workflows: {} })), useCache: false });
+  assert.equal(r.ok, false);
+});
+
+test('n8n evidence: a verifier failure is reported, never ok', async () => {
+  const r1 = await hc.checkN8nWorkflowEvidence({ run: fakeRun('', new Error('python not found')), useCache: false });
+  assert.equal(r1.ok, false);
+  const r2 = await hc.checkN8nWorkflowEvidence({ run: fakeRun('not json'), useCache: false });
+  assert.equal(r2.ok, false);
+});
+
+test('n8n evidence: cached within the TTL, refreshed after it', async () => {
+  let calls = 0;
+  const report = JSON.stringify({ workflows: { '02_Sales_Poll': { verdict: 'OK' }, 'Openclaw_Sensing_Engine': { verdict: 'OK' } } });
+  const run = (cmd, args, opts, cb) => { calls += 1; cb(null, report); };
+  let t = 1000;
+  const now = () => t;
+  await hc.checkN8nWorkflowEvidence({ run, now });
+  await hc.checkN8nWorkflowEvidence({ run, now });
+  assert.equal(calls, 1);
+  t += 5 * 60 * 1000 + 1;
+  await hc.checkN8nWorkflowEvidence({ run, now });
+  assert.equal(calls, 2);
+});
