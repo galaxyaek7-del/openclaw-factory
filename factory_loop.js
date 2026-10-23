@@ -4019,6 +4019,34 @@ function runFreelancerStateMonitor({ timeoutMs = 60000, pythonPath } = {}) {
   });
 }
 
+// ── AGENT PRODUCT CHAIN (2026-10-23) ──
+// Once a day, after Sensing: today's commercial trends -> scout -> qa ->
+// finance -> design -> builder -> publisher -> a proposal in
+// drafts/agent_packages/ for founder review (lib/daily_product_chain.js).
+// The distribute step is protected and stays blocked without live-publish
+// authorization. Bounded: one finished run per day, at most 3 failed tries,
+// a 5-minute cap per tick; any error is reported, never thrown into the tick.
+let agentChainGroq = null;
+async function runAgentProductChain({ timeoutMs = 5 * 60 * 1000 } = {}) {
+  try {
+    const { runDailyProductChain } = require('./lib/daily_product_chain');
+    const key = process.env.GROQ_KEY || process.env.GROQ_API_KEY;
+    if (key && !agentChainGroq) {
+      const Groq = require('groq-sdk');
+      agentChainGroq = new Groq({ apiKey: key });
+    }
+    let timer;
+    const timeout = new Promise((resolve) => {
+      timer = setTimeout(() => resolve({ action: 'failed', detail: `agent product chain exceeded ${timeoutMs / 1000}s` }), timeoutMs);
+    });
+    const r = await Promise.race([runDailyProductChain({ client: agentChainGroq }), timeout]);
+    clearTimeout(timer);
+    return { action: r.action, detail: r.detail };
+  } catch (err) {
+    return { action: 'failed', detail: `agent product chain error: ${String(err && err.message || err).slice(0, 200)}` };
+  }
+}
+
 // ── SENSING CATCH-UP (2026-10-23) ──
 // Openclaw_Sensing_Engine runs once a day (07:00 UTC) and the host loses its
 // network most mornings; a run that fails with a network error loses that
@@ -4788,6 +4816,9 @@ async function runTick() {
     actions.push({ step: 'heal_n8n', ...healN8n(diagnosis.health) });
     markStep('sensing_catchup');
     actions.push({ step: 'sensing_catchup', ...(await runSensingCatchup()) });
+
+    markStep('agent_product_chain');
+    actions.push({ step: 'agent_product_chain', ...(await runAgentProductChain()) });
 
     markStep('sales_poll');
     actions.push({ step: 'sales_poll', ...(await pollSales(true)) });

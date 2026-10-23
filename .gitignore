@@ -162,3 +162,10 @@ drafts/affiliate/rendered/
 
 # 2026-10-22: workbook specs are paid product source; never commit (public repo)
 books/_workbook_specs/
+
+# Agent runtime output (2026-10-23): execution telemetry, chain state, verifier
+# snapshot and agent product proposals are runtime data, not source.
+data/agent_executions.jsonl
+data/agent_tasks.jsonl
+data/connection_status.json
+drafts/agent_packages/
