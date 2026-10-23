@@ -99,10 +99,22 @@ class TestProbes(unittest.TestCase):
 
 
 class TestRules(unittest.TestCase):
-    def test_ai_agents_without_records_are_unknown_not_verified(self):
-        rows = cv.ai_agents()
-        self.assertTrue(rows)
-        self.assertTrue(all(r["status"] == cv.UNKNOWN for r in rows))
+    def test_agent_statuses_follow_execution_records(self):
+        d = Path(tempfile.mkdtemp())
+        log = d / "agents.jsonl"
+        recs = [
+            {"agent": "scout", "outcome": "ok", "source": "scout_pipeline", "started_at": "2026-10-20T08:00:00Z"},
+            {"agent": "builder", "outcome": "ok", "source": "probe", "started_at": "2026-10-23T07:00:00Z"},
+            {"agent": "qa", "outcome": "error", "source": "api", "started_at": "2026-10-23T07:00:00Z"},
+            {"agent": "design", "outcome": "ok", "source": "scout_pipeline", "started_at": "2026-07-09T08:00:00Z"},
+        ]
+        log.write_text("".join(json.dumps(r) + chr(10) for r in recs), encoding="utf-8")
+        rows = {r["name"]: r["status"] for r in cv.ai_agents(NOW, log_path=log)}
+        self.assertEqual(rows["agent:scout"], "VERIFIED_CONNECTED")
+        self.assertEqual(rows["agent:builder"], "VERIFIED_EXECUTABLE_NOT_CONNECTED")
+        self.assertEqual(rows["agent:qa"], cv.FAILED)
+        self.assertEqual(rows["agent:design"], "VERIFIED_EXECUTABLE_NOT_CONNECTED")  # factory run too old
+        self.assertEqual(rows["agent:finance"], cv.UNKNOWN)
 
     def test_ai_provider_needs_a_recent_record(self):
         d = Path(tempfile.mkdtemp())

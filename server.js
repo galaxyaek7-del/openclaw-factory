@@ -2886,6 +2886,13 @@ v1Router.get('/metrics.json', (req, res) => {
   res.json({ success: true, version: 'v1', generated_at: new Date().toISOString(), routes: metricsLib.summarizeRoutes(METRICS_REGISTRY) });
 });
 
+// 2026-10-23: real execution evidence for Mission Control -- connection_verifier
+// output, per-agent call records and agent-chain task state; missing sources are
+// reported UNKNOWN, never as zero or OK (lib/connection_status.js).
+v1Router.get('/connection-status', (req, res) => {
+  res.json({ success: true, version: 'v1', ...require('./lib/connection_status').buildConnectionStatus() });
+});
+
 v1Router.get('/docs', (req, res) => {
   res.json({
     success: true,
@@ -4813,11 +4820,20 @@ app.post('/generate-book', requireMissionControlOrInternalToken, async (req, res
 const { logPublisherSEO, generatePublisherSEO: generatePublisherSEOCore } = require('./lib/publisher_seo');
 
 async function generatePublisherSEO(record) {
-  return generatePublisherSEOCore(record, {
+  const started = Date.now();
+  const seo = await generatePublisherSEOCore(record, {
     groqClient: groq,
     groqKey: GROQ_KEY,
     systemPrompt: COMPANY_PERSONALITY_PREAMBLE + AGENT_PROMPTS.publisher.system,
   });
+  // 2026-10-23: execution evidence for the publisher persona (lib/agent_runtime.js).
+  agentRuntime.recordAgentExecution({
+    task_id: `task_${Date.now().toString(36)}`, correlation_id: (record && record.source_id) || null,
+    agent: 'publisher', source: 'publisher_seo', started_at: new Date(started).toISOString(),
+    duration_ms: Date.now() - started, outcome: seo && seo.ok ? 'ok' : 'error',
+    error: seo && !seo.ok ? agentRuntime.sanitizeError(seo.error) : undefined,
+  });
+  return seo;
 }
 
 // Shared spawn + stdin-JSON/stdout-JSON helper — extracted so both the
@@ -5362,69 +5378,8 @@ app.post('/webhooks/paddle', (req, res) => {
 });
 
 // ── AGENT SYSTEM PROMPTS ──
-const AGENT_PROMPTS = {
-  scout: {
-    system: `أنت وكيل استكشاف الأسواق في Galaxy Forge. مهمتك تحليل أسواق الكتب الرقمية وتقديم أفكار رابحة لـ Amazon KDP وEtsy وGumroad.
-عند تشغيلك قدّم:
-1. 3-5 أفكار كتب رابحة حالياً بناءً على اتجاهات السوق
-2. لكل فكرة: النيش، مستوى المنافسة (منخفض/متوسط/عالي)، السعر المقترح، الجمهور المستهدف
-3. توصيتك الأولى بوضوح
-أجب باللغة العربية، بشكل منظم ومختصر.`,
-    trigger: 'حلّل السوق الآن وأعطني أفضل 5 أفكار كتب رابحة لهذا الشهر على Amazon KDP وEtsy'
-  },
-
-  builder: {
-    system: `أنت وكيل بناء المحتوى في Galaxy Forge. مهمتك توليد محتوى الكتب الرقمية (journals, planners, trackers, cookbooks).
-عند تشغيلك قدّم:
-1. هيكل كتاب جديد مقترح: عنوان، فصول رئيسية، عدد الصفحات
-2. مثال محتوى صفحة واحدة كاملة من الكتاب
-3. 3 نصائح لجعل المحتوى أكثر قيمة وأعلى تقييماً
-أجب باللغة العربية، بشكل عملي وقابل للتطبيق مباشرة.`,
-    trigger: 'اقترح كتاباً رقمياً جديداً مع هيكله الكامل ومثال على محتواه'
-  },
-
-  design: {
-    system: `أنت وكيل التصميم في Galaxy Forge. مهمتك اقتراح أفكار تصميم احترافية للأغلفة والصفحات الداخلية للكتب الرقمية بحجم 6×9 إنش.
-عند تشغيلك قدّم:
-1. مفهوم تصميم غلاف: الألوان الرئيسية، نوع الخط، الأسلوب البصري، العناصر الجرافيكية
-2. أفكار للصفحات الداخلية: التخطيط، التوزيع، الأيقونات، الفراغات
-3. 3 توصيات لجعل التصميم يبرز في نتائج البحث على Amazon وEtsy
-أجب باللغة العربية بتفاصيل دقيقة قابلة للتنفيذ.`,
-    trigger: 'اقترح تصميماً احترافياً كاملاً لغلاف وصفحات داخلية لكتاب journal أو planner'
-  },
-
-  qa: {
-    system: `أنت وكيل ضمان الجودة في Galaxy Forge. مهمتك فحص المنتجات الرقمية وضمان جودتها قبل النشر على KDP وEtsy.
-عند تشغيلك قدّم:
-1. قائمة تحقق شاملة لجودة الكتاب الرقمي (PDF، محتوى، تصميم، بيانات)
-2. أبرز 5 أخطاء تؤدي لرفض المنتج على KDP أو شكاوى على Etsy
-3. معايير الجودة الدنيا المطلوبة لكل منصة
-أجب باللغة العربية بقوائم منظمة وعملية.`,
-    trigger: 'افحص معايير الجودة وأعطني checklist كاملة لضمان قبول منتجنا الرقمي'
-  },
-
-  publisher: {
-    system: `أنت وكيل النشر في Galaxy Forge. مهمتك تحضير بيانات النشر المحسّنة لـ SEO على Amazon KDP وEtsy وGumroad.
-عند تشغيلك قدّم:
-1. عنوان محسّن لـ SEO يتضمن الكلمات المفتاحية الأكثر بحثاً (بالإنجليزية)
-2. وصف تسويقي جذاب 150-200 كلمة (بالإنجليزية)
-3. 7 كلمات مفتاحية مقترحة لـ KDP Backend Keywords (بالإنجليزية)
-4. أنسب 2 فئة (Browse Categories) على Amazon
-قدّم البيانات الفعلية بالإنجليزية لأن المنصات إنجليزية، مع شرح مختصر بالعربية لكل قسم.`,
-    trigger: 'حضّر بيانات نشر كاملة ومحسّنة لـ SEO لكتاب daily journal على Amazon KDP'
-  },
-
-  finance: {
-    system: `أنت وكيل التمويل في Galaxy Forge. مهمتك تحليل الربحية واقتراح استراتيجيات تسعير للكتب الرقمية.
-عند تشغيلك قدّم:
-1. استراتيجية تسعير: سعر الإطلاق، السعر الدائم، أوقات التخفيض
-2. مقارنة هوامش الربح الصافي على KDP (35% أو 70%) وEtsy وGumroad
-3. حساب نقطة التعادل وهدف إيرادات شهري واقعي للمبتدئين
-4. نصيحة واحدة لزيادة الإيرادات بأقل جهد
-أجب باللغة العربية مع أرقام واضحة وقابلة للتطبيق.`,
-    trigger: 'حلّل الربحية وأعطني استراتيجية تسعير كاملة لكتبنا الرقمية على KDP وEtsy وGumroad'
-  }
-};
+const AGENT_PROMPTS = require('./lib/agent_prompts'); // 2026-10-23: moved verbatim
+const agentRuntime = require('./lib/agent_runtime');
 
 // Customer Experience & Brand DNA (ADR-170, 2026-08-05): the real
 // mechanism by which "every AI agent must reflect one unified company
@@ -5456,24 +5411,17 @@ app.post('/api/agent/:name', requireMissionControlAuth, async (req, res) => {
     return res.status(500).json({ success: false, error: 'GROQ_KEY غير مضبوط في .env' });
   }
 
-  try {
-    const userMessage = (req.body && req.body.message) || agentConfig.trigger;
-    const response = await groq.chat.completions.create({
-      model: 'openai/gpt-oss-20b',
-      max_tokens: 1024,
-      messages: [
-        { role: 'system', content: COMPANY_PERSONALITY_PREAMBLE + agentConfig.system },
-        { role: 'user',   content: userMessage }
-      ]
-    });
-    res.json({
-      success: true,
-      message: response.choices[0].message.content,
-      agent: name
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+  // 2026-10-23: one invocation path with an execution record per call
+  // (data/agent_executions.jsonl; lib/agent_runtime.js). Response shape unchanged.
+  const result = await agentRuntime.invokeAgent({
+    name, config: agentConfig, client: groq, systemPrefix: COMPANY_PERSONALITY_PREAMBLE,
+    message: req.body && req.body.message, source: 'api',
+    correlationId: req.get('x-correlation-id') || undefined,
+  });
+  if (result.ok) {
+    return res.json({ success: true, message: result.content, agent: name, task_id: result.telemetry.task_id });
   }
+  res.status(500).json({ success: false, error: result.error, task_id: result.telemetry.task_id });
 });
 
 // ── SCOUT PRODUCTION PIPELINE ──
@@ -5535,87 +5483,7 @@ async function groqChatWithRetry(messages, { maxTokens = 1024, retries = 2, time
   throw lastErr;
 }
 
-function scoutBriefPrompt(trendsHint) {
-  return `اقترح نيتش كتاب رقمي واحد فقط (الأقوى) مناسب للنشر الفوري على Amazon KDP${trendsHint ? `، مستفيداً من هذه الترندات الحالية: ${trendsHint}` : ''}.
-
-عند تحديد ##PRICE##: سعّر هذا الكتاب كمنتج احترافي متميز (Premium)، وليس كتاباً رقمياً عادياً رخيصاً. اعتبارات التسعير:
-- عمق المحتوى ومدى تخصصه (كلما كان أعمق وأكثر تخصصاً، كلما استحق سعراً أعلى)
-- الجمهور المستهدف: هل هم محترفون/أصحاب أعمال مستعدون للدفع مقابل قيمة حقيقية؟
-- أسعار المنتجات المماثلة في السوق (Market comparables) لنفس الفئة والجمهور
-- الحد الأدنى المقبول هو 30 دولاراً (مستوى "الزبدة" — Butter-tier)، ولا تقترح رقماً أقل من ذلك أبداً
-اجعل السعر مبرَّراً بالقيمة التي يقدّمها الكتاب فعلياً، لا رقماً افتراضياً.
-
-هذا مثال على الشكل المطلوب فقط (نيتش مختلف تماماً — لا تكرر محتواه أبداً):
-##TITLE##
-دليل العادات الذهبية للصباح المنتج
-##TOPIC##
-كتاب عملي يعلّم القارئ بناء روتين صباحي يرفع تركيزه وطاقته خلال 30 يوماً
-##AUDIENCE##
-الموظفون وأصحاب الأعمال الذين يعانون من قلة التركيز
-##PRICE##
-39
-##CHAPTERS##
-6
-
-الآن، بنفس التنسيق الحرفي بالضبط (##TITLE## ثم ##TOPIC## ثم ##AUDIENCE## ثم ##PRICE## ثم ##CHAPTERS##)، اكتب اقتراحك الخاص لنيتش مختلف تماماً بمحتوى حقيقي جديد. لا تعد أي شرح خارج هذه الأقسام، ولا تكرر نص المثال.`;
-}
-
-function parseScoutBrief(text) {
-  // The small/fast Groq model is inconsistent run-to-run: sometimes it follows
-  // the literal ##TITLE##/##TOPIC##/... tags exactly; other times it invents
-  // its own '## <actual title text> ##' header and inline Arabic labels
-  // ("وصف النيش:", "الجمهور المستهدف:", ...) instead of separate tag lines.
-  // Handle both shapes explicitly rather than guessing from one heuristic
-  // (same lesson learned in book_generator.py's content parser).
-  if (/##TITLE##/i.test(text) && /##TOPIC##/i.test(text)) {
-    const section = (tag) => {
-      const m = text.match(new RegExp(`##${tag}##\\s*([\\s\\S]*?)(?=##[A-Z]+##|$)`, 'i'));
-      return m ? m[1].trim() : '';
-    };
-    const priceMatch = section('PRICE').match(/[\d.]+/);
-    const chaptersMatch = section('CHAPTERS').match(/\d+/);
-    return {
-      title: section('TITLE'),
-      topic: section('TOPIC'),
-      audience: section('AUDIENCE') || 'القارئ العام',
-      price: priceMatch ? parseFloat(priceMatch[0]) : 9.99,
-      chapters: chaptersMatch ? Math.max(4, Math.min(10, parseInt(chaptersMatch[0], 10))) : 6,
-    };
-  }
-
-  // Loose fallback: first '## ... ##' line is the title (whatever it says),
-  // the rest is scanned for inline Arabic field labels.
-  const headerMatch = text.match(/^#{1,4}\s*(.+?)\s*#{0,4}\s*$/m);
-  const title = headerMatch ? headerMatch[1].trim() : '';
-  let body = headerMatch ? text.slice(headerMatch.index + headerMatch[0].length) : text;
-  body = body.replace(/^\/+/gm, ''); // strip a stray leading "/" the model sometimes emits before a label
-
-  // Bare word stems (no "ال" prefix, no fixed multi-word phrase) — the model
-  // has been observed using "نيش"/"موضوع", "جمهور"/"الجمهور المستهدف",
-  // "سعر"/"السعر المقترح", "فصول"/"عدد الفصول المتوقعة" interchangeably.
-  const STEMS = { topic: '(?:نيش|موضوع)', audience: 'جمهور', price: 'سعر', chapters: 'فصول' };
-  const LABELS = `(?:${STEMS.topic}|${STEMS.audience}|${STEMS.price}|${STEMS.chapters})`;
-  const grab = (stem) => {
-    // Skip the rest of the label's own line (and an optional inline ":"),
-    // then capture up to the next label line (matched within its first ~30
-    // chars, so the word can't accidentally match deep inside a paragraph).
-    const re = new RegExp(`${stem}[^\\n:]*[:#]?\\s*([\\s\\S]*?)(?=\\n\\s*#*\\s*[^\\n]{0,30}?${LABELS}|$)`, 'i');
-    const m = body.match(re);
-    return m ? m[1].trim() : '';
-  };
-
-  const topic = grab(STEMS.topic);
-  const audience = grab(STEMS.audience) || 'القارئ العام';
-  const priceMatch = grab(STEMS.price).match(/[\d.]+/);
-  const chaptersMatch = grab(STEMS.chapters).match(/\d+/);
-  return {
-    title,
-    topic,
-    audience,
-    price: priceMatch ? parseFloat(priceMatch[0]) : 9.99,
-    chapters: chaptersMatch ? Math.max(4, Math.min(10, parseInt(chaptersMatch[0], 10))) : 6,
-  };
-}
+const { scoutBriefPrompt, parseScoutBrief } = require('./lib/scout_brief'); // 2026-10-23: moved verbatim
 
 function fallbackScoutBrief() {
   return {
@@ -5700,11 +5568,18 @@ app.post('/api/scout/run', requireMissionControlOrInternalToken, async (req, res
     brief = fallbackScoutBrief();
     briefSource = 'fallback-no-key';
   } else {
+    const scoutStarted = Date.now();
+    const recordScout = (outcome, error) => agentRuntime.recordAgentExecution({
+      task_id: `task_${scoutStarted.toString(36)}`, correlation_id: null, agent: 'scout', source: 'scout_pipeline',
+      started_at: new Date(scoutStarted).toISOString(), duration_ms: Date.now() - scoutStarted, outcome,
+      error: error ? agentRuntime.sanitizeError(error) : undefined,
+    });
     try {
       const raw = await groqChatWithRetry([
         { role: 'system', content: COMPANY_PERSONALITY_PREAMBLE + AGENT_PROMPTS.scout.system },
         { role: 'user', content: scoutBriefPrompt(trendsHint) },
       ]);
+      recordScout(raw && String(raw).trim() ? 'ok' : 'invalid_output', raw ? null : 'empty output');
       const parsed = parseScoutBrief(raw);
       // Guard against the model echoing its own tag name back as the "title"
       // (e.g. a literal "标题"/"TITLE") — a real title is never that short.
@@ -5714,6 +5589,7 @@ app.post('/api/scout/run', requireMissionControlOrInternalToken, async (req, res
         logScout('brief-unparseable', { raw });
       }
     } catch (err) {
+      recordScout('error', err);
       logScout('brief-error', { error: err.message });
     }
     if (!brief) {

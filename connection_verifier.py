@@ -211,20 +211,55 @@ def commerce_reads():
     return rows
 
 
-def ai_agents():
-    """The six AGENT_PROMPTS personas in server.js. Their calls are not
-    recorded in any log, so nothing can show them working: UNKNOWN."""
-    src = (ROOT / "server.js").read_text(encoding="utf-8", errors="replace")
-    block = src[src.find("const AGENT_PROMPTS = {"):]
-    names = re.findall(r"^  ([a-z]+): \{", block[:20000], re.M)[:6]
-    return [_row(f"agent:{n}", "ai_agent_persona", UNKNOWN,
-                 "no execution record exists (POST /api/agent/:name calls are not logged)", "runtime_record")
-            for n in names]
+AGENT_LOG = ROOT / "data" / "agent_executions.jsonl"
+# Sources that mean "a factory component invoked the agent as part of its work".
+FACTORY_SOURCES = {"scout_pipeline", "publisher_seo", "loop", "orchestrator"}
+# Who can call each persona today (static, from the code; 2026-10-23).
+AGENT_CALLERS = {
+    "scout": "Scout pipeline (POST /api/scout/run, manual button); last pipeline run 2026-07-09",
+    "publisher": "Publisher SEO inside runDistributor (POST /api/distribute, gated shut)",
+    "builder": "index.html button only", "design": "index.html button only", "qa": "index.html button only",
+    "finance": "no caller in the codebase",
+}
+
+
+def ai_agents(now=None, log_path=AGENT_LOG, connected_days=30):
+    """The six personas (lib/agent_prompts.js), from data/agent_executions.jsonl.
+    VERIFIED_CONNECTED needs an ok run invoked by a factory component within
+    `connected_days`; an ok probe or manual API call alone is
+    VERIFIED_EXECUTABLE_NOT_CONNECTED; failures only -> FAILED; nothing -> UNKNOWN."""
+    now = now or _now()
+    names = list(AGENT_CALLERS)
+    records = []
+    for line in _tail_lines(log_path, 4_000_000):
+        try:
+            records.append(json.loads(line))
+        except ValueError:
+            continue
+    rows = []
+    for n in names:
+        mine = [r for r in records if r.get("agent") == n]
+        ok = [r for r in mine if r.get("outcome") == "ok"]
+        factory_ok = [r for r in ok if r.get("source") in FACTORY_SOURCES
+                      and (_age_hours(r.get("started_at"), now) or 1e9) <= connected_days * 24]
+        if factory_ok:
+            status = "VERIFIED_CONNECTED"
+        elif ok:
+            status = "VERIFIED_EXECUTABLE_NOT_CONNECTED"
+        elif mine:
+            status = FAILED
+        else:
+            status = UNKNOWN
+        last = mine[-1] if mine else None
+        evidence = (f"last {last.get('outcome')} via {last.get('source')} at {last.get('started_at')}; "
+                    f"{len(ok)}/{len(mine)} ok" if last else "no execution record") + f"; callers: {AGENT_CALLERS[n]}"
+        rows.append(_row(f"agent:{n}", "ai_agent_persona", status, evidence, "runtime_record"))
+    return rows
 
 
 def verify(live=True, now=None):
     now = now or _now()
-    rows = loop_steps(now) + ai_provider(now) + ai_agents()
+    rows = loop_steps(now) + ai_provider(now) + ai_agents(now)
     if live:
         rows += server() + n8n() + telegram() + commerce_reads()
     counts = Counter(r["status"] for r in rows)
