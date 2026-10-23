@@ -5383,6 +5383,7 @@ app.post('/webhooks/paddle', (req, res) => {
 // ── AGENT SYSTEM PROMPTS ──
 const AGENT_PROMPTS = require('./lib/agent_prompts'); // 2026-10-23: moved verbatim
 const agentRuntime = require('./lib/agent_runtime');
+const trendClassifier = require('./lib/trend_classifier');
 
 // Customer Experience & Brand DNA (ADR-170, 2026-08-05): the real
 // mechanism by which "every AI agent must reflect one unified company
@@ -5818,6 +5819,15 @@ app.post('/api/trends', requireMissionControlOrInternalToken, async (req, res) =
       if (safety.allowed === false) {
         console.log(`[trends] blocked by safety filter — niche: "${niche}" | title: "${trendTitle}" | risk: ${safety.risk_level}`);
         results.push({ added: false, niche, reason: 'safety_rejected', risk_level: safety.risk_level, safety_reasons: safety.reasons });
+        continue;
+      }
+
+      // 2026-10-23: people and news events passed both gates above. The scout
+      // agent decides whether the trend is a need someone would pay to solve;
+      // any classifier failure fails closed (lib/trend_classifier.js).
+      const intent = await trendClassifier.classifyTrend({ niche, title: trendTitle, client: groq });
+      if (!intent.commercial) {
+        results.push({ added: false, niche, reason: intent.failed ? intent.reason : 'not_commercial', detail: intent.reason, task_id: intent.task_id });
       } else {
         appendOpportunity(niche, gate);
         results.push({ added: true, niche, reason: gate.reason, safety: { score: safety.score, risk_level: safety.risk_level } });

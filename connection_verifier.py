@@ -213,10 +213,10 @@ def commerce_reads():
 
 AGENT_LOG = ROOT / "data" / "agent_executions.jsonl"
 # Sources that mean "a factory component invoked the agent as part of its work".
-FACTORY_SOURCES = {"scout_pipeline", "publisher_seo", "loop", "orchestrator"}
+FACTORY_SOURCES = {"scout_pipeline", "publisher_seo", "loop", "orchestrator", "sensing_trends"}
 # Who can call each persona today (static, from the code; 2026-10-23).
 AGENT_CALLERS = {
-    "scout": "Scout pipeline (POST /api/scout/run, manual button); last pipeline run 2026-07-09",
+    "scout": "Sensing trend classifier (POST /api/trends, daily n8n run); Scout pipeline (POST /api/scout/run, manual button)",
     "publisher": "Publisher SEO inside runDistributor (POST /api/distribute, gated shut)",
     "builder": "index.html button only", "design": "index.html button only", "qa": "index.html button only",
     "finance": "no caller in the codebase",
