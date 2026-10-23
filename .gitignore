@@ -174,3 +174,4 @@ drafts/agent_packages/
 # text) are the paid product; the repository is public. Covers stay public.
 books/**/*.zip
 books/_batch14_src/
+data/registry_daily_state.json

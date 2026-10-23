@@ -4893,6 +4893,9 @@ async function runTick() {
     actions.push({ step: 'site_publish', ...(await runOnceScript('auto_publish_site.py', { timeoutMs: 20 * 60 * 1000 })) });
     markStep('indexnow');
     actions.push({ step: 'indexnow', ...(await runOnceScript('indexnow_auto.py')) });
+    // 2026-10-23: daily product-registry rebuild + listing page checks (read-only).
+    markStep('product_registry');
+    actions.push({ step: 'product_registry', ...(await runOnceScript('registry_daily.py', { timeoutMs: 15 * 60 * 1000 })) });
 
     markStep('sales_poll');
     actions.push({ step: 'sales_poll', ...(await pollSales(true)) });

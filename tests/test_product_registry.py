@@ -148,3 +148,20 @@ class TestTransientErrors(unittest.TestCase):
         finally:
             pr.verify_pages = orig
         self.assertTrue(json.loads(checks.read_text())["g1"]["ok"])
+
+
+class TestDaily(unittest.TestCase):
+    def test_runs_once_per_day_and_reports_drift(self):
+        import tempfile
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import registry_daily as rd
+        st = Path(tempfile.mkdtemp()) / "state.json"
+        calls = []
+        summ = {"products": 2, "states": {"UPLOAD_COMPLETED": 2}, "sales_total": 0,
+                "drift_counts": {"live_missing_from_catalog": 1, "duplicate_live_titles": 0}}
+        runner = lambda: calls.append(1) or (summ, {})  # noqa: E731
+        r = rd.run_once(today="2026-10-24", state_path=st, runner=runner)
+        self.assertEqual(r["action"], "drift")
+        self.assertIn("live_missing_from_catalog=1", r["detail"])
+        self.assertEqual(rd.run_once(today="2026-10-24", state_path=st, runner=runner)["action"], "none")
+        self.assertEqual(len(calls), 1)
