@@ -45,7 +45,11 @@ class FakeGumroad:
         self.published = True
 
     def add_product_cover(self, token, pid, url, expected_cover_count=None):
+        # same contract as channels/gumroad_publisher.add_product_cover: the
+        # re-read count must grow past expected_cover_count (the count before)
         self.calls.append(("cover", url))
+        if expected_cover_count is not None and 1 <= expected_cover_count:
+            raise RuntimeError("VERIFICATION_FAILED: cover count did not grow")
 
 
 class Fakes:

@@ -109,7 +109,8 @@ def publish_one(man, token, *, gp, write_scope, ledger, cover_url_fn, opener=url
         return rec
     rec["url"] = got.get("short_url")
     try:
-        gp.add_product_cover(token, pid, cover_url_fn(man["id"]), expected_cover_count=len(got.get("covers") or []) + 1)
+        # expected_cover_count is the count BEFORE the attach: the re-read must grow past it
+        gp.add_product_cover(token, pid, cover_url_fn(man["id"]), expected_cover_count=len(got.get("covers") or []))
         rec["steps"]["cover"] = "ok"
     except Exception as e:  # the listing is live; a missing cover is reported, not hidden
         rec["steps"]["cover"] = f"FAILED: {str(e)[:160]}"
