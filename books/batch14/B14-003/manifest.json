@@ -1,0 +1,67 @@
+{
+ "id": "B14-003",
+ "slug": "debt-payoff-planner",
+ "title": "Debt Payoff Planner (Avalanche or Snowball)",
+ "price_cents": 1200,
+ "files": {
+  "workbook": {
+   "path": "books/batch14/B14-003/debt_payoff_planner.xlsx",
+   "bytes": 50097,
+   "sha256": "d8928ffddbddc61b5fad5b1962d755e81e57be1c973b4408582809a695a593ea"
+  },
+  "guide": {
+   "path": "books/batch14/B14-003/debt_payoff_planner_guide.pdf",
+   "bytes": 8318,
+   "sha256": "0e7bd374733ab5debf91d556b2ade39f67082b68e55ed8cf1120ca03b3dcda4b"
+  },
+  "cover": {
+   "path": "books/covers/B14-003.png",
+   "bytes": 47874,
+   "sha256": "45f5d770461c84b5826e6189dbf726914741c8a546e36b0b74bafa69a82d5c1e"
+  },
+  "bundle": {
+   "path": "books/batch14/B14-003/debt_payoff_planner_bundle.zip",
+   "bytes": 34027,
+   "sha256": "5cc4b6c4221d5c4f04c0ed35d94b5e7a93e5a2c576fa6308232b8671e45b4a34"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 178,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1666
+  },
+  "bundle": {
+   "files": [
+    "debt-payoff-planner/README.txt",
+    "debt-payoff-planner/debt_payoff_planner.xlsx",
+    "debt-payoff-planner/debt_payoff_planner_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>A real month-by-month payoff schedule for up to six debts: your debt-free month, total interest, and how much you save against paying minimums only.</p><p>This planner calculates that plan month by month for up to six debts, for up to ten years: the balance of every debt every month, the month each one is paid off, the month you are debt-free, and the total interest. It also estimates what the same debts would cost if you paid minimums only, so you can see the interest you save.</p><p><strong>What's included</strong></p><ul><li>True month-by-month schedule for up to six debts and 120 months, with automatic rollover of freed-up payments</li><li>Your debt-free month and the payoff month of every single debt</li><li>Total interest with your plan versus an estimate for minimum payments only, and the interest saved</li><li>Works for avalanche (highest rate first) or snowball (smallest balance first): just order the rows</li><li>Warning when a minimum payment does not cover the monthly interest</li><li>PDF guide with a worked four-debt example</li></ul><p><strong>Who it's for</strong></p><ul><li>Anyone paying down credit cards, store cards, personal loans or car loans</li><li>Couples agreeing a shared payoff plan and budget</li><li>Readers of debt-free books who want the numbers for their own debts</li><li>Coaches and counsellors preparing a plan with a client</li></ul><p><strong>You get:</strong> debt_payoff_planner.xlsx (Plan, Debts, Schedule) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a budgeting aid, not financial, credit or legal advice. It assumes fixed interest rates and that you make every payment on time; lenders&#x27; real statements may differ slightly because of daily interest and fees.</em></p>"
+  }
+ }
+}

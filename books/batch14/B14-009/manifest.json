@@ -1,0 +1,67 @@
+{
+ "id": "B14-009",
+ "slug": "startup-runway-burn-planner",
+ "title": "Startup Runway & Burn Planner",
+ "price_cents": 1500,
+ "files": {
+  "workbook": {
+   "path": "books/batch14/B14-009/startup_runway_burn_planner.xlsx",
+   "bytes": 14840,
+   "sha256": "871d21aca605899d0a3348ff712730af418212fe1e1052b1c36749191b18db07"
+  },
+  "guide": {
+   "path": "books/batch14/B14-009/startup_runway_burn_planner_guide.pdf",
+   "bytes": 7903,
+   "sha256": "65bd82298b0487b7cc8320e1abff3bf82a02e675a8ba2dbb207df8b37a7c1b41"
+  },
+  "cover": {
+   "path": "books/covers/B14-009.png",
+   "bytes": 49171,
+   "sha256": "79dc0ba906be857607c088fff4ac88e1d21e8163841ec6d8d39999ae78ec3c77"
+  },
+  "bundle": {
+   "path": "books/batch14/B14-009/startup_runway_burn_planner_bundle.zip",
+   "bytes": 18586,
+   "sha256": "96384d647ad6699bdf0e2444dca071983a53ef156b1ac154055d93aa10a986ef"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 138,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1612
+  },
+  "bundle": {
+   "files": [
+    "startup-runway-burn-planner/README.txt",
+    "startup-runway-burn-planner/startup_runway_burn_planner.xlsx",
+    "startup-runway-burn-planner/startup_runway_burn_planner_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Month by month for three years: revenue, costs, burn and cash. See your runway, your break-even month, and whether you reach break-even before the money runs out, with a second scenario to compare.</p><p>This planner projects 36 months from a few assumptions you control: cash today, current monthly revenue and costs, and how fast each grows. It adds any one-off items you know about (a fundraise, an equipment purchase, a big contract) and calculates monthly burn, ending cash, your runway, your break-even month and whether you get there in time.</p><p><strong>What's included</strong></p><ul><li>36-month projection of revenue, costs, burn and ending cash from a few assumptions</li><li>Runway in months, break-even month, lowest cash and whether break-even comes before cash runs out</li><li>A second scenario next to the plan to test cost cuts, slower growth or price changes</li><li>One-off items for fundraises, loans, equipment and big contracts</li><li>Monthly status: OUT OF CASH, BURNING or PROFITABLE</li><li>PDF guide with a worked example comparing plan and scenario</li></ul><p><strong>Who it's for</strong></p><ul><li>Founders of bootstrapped and early-stage startups</li><li>Owners of small companies investing ahead of revenue</li><li>Agencies and studios planning a hire</li><li>Anyone preparing numbers for investors or a bank</li></ul><p><strong>You get:</strong> startup_runway_burn_planner.xlsx (Assumptions, Plan, Scenario, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a planning model, not financial, investment or legal advice. Projections are only as good as the growth and cost assumptions you enter; real results will differ.</em></p>"
+  }
+ }
+}

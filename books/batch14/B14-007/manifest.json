@@ -1,0 +1,67 @@
+{
+ "id": "B14-007",
+ "slug": "inventory-reorder-point-tracker",
+ "title": "Inventory Reorder Point & Stock Tracker",
+ "price_cents": 1500,
+ "files": {
+  "workbook": {
+   "path": "books/batch14/B14-007/inventory_reorder_point_tracker.xlsx",
+   "bytes": 33124,
+   "sha256": "c687f41da31fa5d991e7a9cc98b9468a74f82069e075e8316b176e83874cdf8e"
+  },
+  "guide": {
+   "path": "books/batch14/B14-007/inventory_reorder_point_tracker_guide.pdf",
+   "bytes": 8313,
+   "sha256": "df6921fd6e15b6d9c965a26aeeff7b46c4fbe47db3a1d4fcd0cd20929af1d8cf"
+  },
+  "cover": {
+   "path": "books/covers/B14-007.png",
+   "bytes": 49332,
+   "sha256": "f3cebf56b4aaa47ca97e99f035db54d397969b775a122bd9f54687062c70befa"
+  },
+  "bundle": {
+   "path": "books/batch14/B14-007/inventory_reorder_point_tracker_bundle.zip",
+   "bytes": 23971,
+   "sha256": "a33b76e8b43bd256dcbe525d6e27d9e6c74834be4fbe91a49b32898e16268fe0"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 54,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1540
+  },
+  "bundle": {
+   "files": [
+    "inventory-reorder-point-tracker/README.txt",
+    "inventory-reorder-point-tracker/inventory_reorder_point_tracker.xlsx",
+    "inventory-reorder-point-tracker/inventory_reorder_point_tracker_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Know what to reorder, when and how much: reorder points with safety stock, days of stock left, and a suggested order list for every SKU.</p><p>A reorder point fixes that. It is the stock level at which you must order so that the new stock arrives before you run out: average daily sales x supplier lead time, plus a safety buffer for slower deliveries or a busy week. This tracker calculates it for every SKU, compares it with what you have on hand and already on order, and tells you which items to reorder now, which soon, and how many to order.</p><p><strong>What's included</strong></p><ul><li>Reorder point with safety stock for every SKU, from your sales rate and supplier lead time</li><li>REORDER NOW / REORDER SOON / OK status that counts stock already on order</li><li>Suggested order quantity that respects supplier minimums</li><li>Days of stock left, order value and total stock value</li><li>Up to 200 SKUs, filterable and sortable</li><li>PDF guide with a worked six-SKU example</li></ul><p><strong>Who it's for</strong></p><ul><li>Etsy, Shopify and Amazon sellers holding their own stock</li><li>Small shops, cafes and salons buying supplies</li><li>Makers managing raw materials</li><li>Anyone currently reordering from memory</li></ul><p><strong>You get:</strong> inventory_reorder_point_tracker.xlsx (Settings, Items, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a planning aid based on the sales rates and lead times you enter; it does not connect to your store or supplier, and stock-outs can still happen when demand or lead times change. Not accounting advice.</em></p>"
+  }
+ }
+}

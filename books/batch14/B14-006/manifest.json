@@ -1,0 +1,67 @@
+{
+ "id": "B14-006",
+ "slug": "service-pricing-break-even-calculator",
+ "title": "Service Business Pricing & Break-Even Calculator",
+ "price_cents": 1500,
+ "files": {
+  "workbook": {
+   "path": "books/batch14/B14-006/service_pricing_break_even_calculator.xlsx",
+   "bytes": 14743,
+   "sha256": "feac1234f1516996fd2ee781f33711f3c674a043be3dca3600faa42800ee7a7d"
+  },
+  "guide": {
+   "path": "books/batch14/B14-006/service_pricing_break_even_calculator_guide.pdf",
+   "bytes": 8946,
+   "sha256": "c3c6d2a79adaedf33e69b30648a06c669ed4c7c09f95b44dea56cd2210f62de5"
+  },
+  "cover": {
+   "path": "books/covers/B14-006.png",
+   "bytes": 51881,
+   "sha256": "19ded518095445af600051a6022a619aa1e2c1dd513850c5cbd78f5b2fc6bcc2"
+  },
+  "bundle": {
+   "path": "books/batch14/B14-006/service_pricing_break_even_calculator_bundle.zip",
+   "bytes": 18796,
+   "sha256": "a89cfa55c4d80ef18b104b4fe91ce25966c771afa884f1a4df72a9cecbd82d47"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 48,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1561
+  },
+  "bundle": {
+   "files": [
+    "service-pricing-break-even-calculator/README.txt",
+    "service-pricing-break-even-calculator/service_pricing_break_even_calculator.xlsx",
+    "service-pricing-break-even-calculator/service_pricing_break_even_calculator_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Price every service from your real costs and capacity: cost per billable hour, minimum price, target-margin price, and whether next month&#x27;s plan covers your costs and your own pay.</p><p>This calculator works that number out from your fixed costs, your target owner pay and your real capacity (weeks worked, hours per week and the share of hours that are billable). Every service then gets a floor price that covers its share of costs and fees, a target price that adds your profit margin, and a status against what you charge today.</p><p><strong>What's included</strong></p><ul><li>Your real cost per billable hour from fixed costs, owner pay and capacity</li><li>Floor price and target-margin price for every service, with BELOW COST / BELOW TARGET flags</li><li>Profit, margin and contribution at your current prices</li><li>Monthly plan: revenue, hours, capacity used and whether it covers your costs and your pay</li><li>Price-linked fees (card processing, platforms) included in every price</li><li>PDF guide with a worked example for a four-service studio</li></ul><p><strong>Who it's for</strong></p><ul><li>Freelancers, consultants and coaches</li><li>Agencies and studios</li><li>Trades and home-service businesses pricing by the job</li><li>Salons, clinics and other appointment businesses</li></ul><p><strong>You get:</strong> service_pricing_break_even_calculator.xlsx (Costs &amp; Capacity, Services, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a pricing aid, not accounting, tax or legal advice. It relies on your own cost and time estimates; review prices with your accountant where needed.</em></p>"
+  }
+ }
+}

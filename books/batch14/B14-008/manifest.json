@@ -1,0 +1,67 @@
+{
+ "id": "B14-008",
+ "slug": "client-pipeline-proposal-tracker",
+ "title": "Client Pipeline & Proposal Tracker",
+ "price_cents": 1400,
+ "files": {
+  "workbook": {
+   "path": "books/batch14/B14-008/client_pipeline_proposal_tracker.xlsx",
+   "bytes": 34755,
+   "sha256": "e5787db21e5a28ace8ab8dfeda7d9f26c031e23375107e5edda64ef562f28ddd"
+  },
+  "guide": {
+   "path": "books/batch14/B14-008/client_pipeline_proposal_tracker_guide.pdf",
+   "bytes": 7989,
+   "sha256": "ede68e7a58f2d78eef1f07b319a654a976553dba929e4692283c0be572cd5b88"
+  },
+  "cover": {
+   "path": "books/covers/B14-008.png",
+   "bytes": 65299,
+   "sha256": "6c0d6b53c6b5f48029d7822e6015f44998b15ec66fee32484659fd49fce3e350"
+  },
+  "bundle": {
+   "path": "books/batch14/B14-008/client_pipeline_proposal_tracker_bundle.zip",
+   "bytes": 24906,
+   "sha256": "ec3e6f6a4ed9304bda4a696c6a70733775bae861704f76a7a1ae8e9af717972b"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 98,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1332
+  },
+  "bundle": {
+   "files": [
+    "client-pipeline-proposal-tracker/README.txt",
+    "client-pipeline-proposal-tracker/client_pipeline_proposal_tracker.xlsx",
+    "client-pipeline-proposal-tracker/client_pipeline_proposal_tracker_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Track every lead and proposal from first contact to won or lost: weighted pipeline value, win rate, follow-ups due, and which lead sources actually bring paying clients.</p><p>This tracker keeps every lead on one row with its value and stage. It calculates a weighted pipeline value from the probability you give each stage, flags open deals that have not been contacted for longer than your follow-up limit, and reports your win rate, average deal size and results by lead source.</p><p><strong>What's included</strong></p><ul><li>One row per lead from first contact to won or lost, with value and stage</li><li>Weighted pipeline value from stage probabilities you set</li><li>FOLLOW UP flag for open deals that have gone quiet past your limit</li><li>Win rate, average won deal and days to close</li><li>Results by lead source: leads, wins, won value and win rate</li><li>PDF guide with a worked ten-lead example</li></ul><p><strong>Who it's for</strong></p><ul><li>Freelancers sending proposals</li><li>Small agencies and studios</li><li>Consultants and coaches</li><li>Trades and contractors quoting jobs</li></ul><p><strong>You get:</strong> client_pipeline_proposal_tracker.xlsx (Settings, Pipeline, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is an organising aid. Weighted values are estimates based on the stage probabilities you set, not forecasts of what will close.</em></p>"
+  }
+ }
+}

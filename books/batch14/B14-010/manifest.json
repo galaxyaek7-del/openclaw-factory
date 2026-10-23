@@ -1,0 +1,67 @@
+{
+ "id": "B14-010",
+ "slug": "zero-based-monthly-budget-planner",
+ "title": "Zero-Based Monthly Budget Planner",
+ "price_cents": 900,
+ "files": {
+  "workbook": {
+   "path": "books/batch14/B14-010/zero_based_monthly_budget_planner.xlsx",
+   "bytes": 19399,
+   "sha256": "9a8075a9b5e5b94c20ffcf38f17dbbe8ca8c123d66afadf394e12fba24e345c2"
+  },
+  "guide": {
+   "path": "books/batch14/B14-010/zero_based_monthly_budget_planner_guide.pdf",
+   "bytes": 7982,
+   "sha256": "9bd04bba418f3eb1e0f25b40c03fe11f553a3515255ac388ce2a27dc05e7316f"
+  },
+  "cover": {
+   "path": "books/covers/B14-010.png",
+   "bytes": 59843,
+   "sha256": "1615274d9f7f69ee9f42df4ae3bebe5e856934fb823878e4f34c1c9fdd07717d"
+  },
+  "bundle": {
+   "path": "books/batch14/B14-010/zero_based_monthly_budget_planner_bundle.zip",
+   "bytes": 21463,
+   "sha256": "3a3297285fd73ce69df2fb5f5a4ef55c79b1a9c1057a069ab5e0bd7cb42992ba"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 86,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1400
+  },
+  "bundle": {
+   "files": [
+    "zero-based-monthly-budget-planner/README.txt",
+    "zero-based-monthly-budget-planner/zero_based_monthly_budget_planner.xlsx",
+    "zero-based-monthly-budget-planner/zero_based_monthly_budget_planner_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Give every dollar of this month&#x27;s income a job, log spending as it happens, and see category by category where the money actually went.</p><p>This planner makes that a monthly routine: list your income, plan each category, then log transactions as they happen. Actual spending per category is added up automatically from the transaction log, so you see during the month, not after it, which categories are running over.</p><p><strong>What's included</strong></p><ul><li>Zero-based plan: income minus planned categories, with &#x27;left to assign&#x27; until every dollar has a job</li><li>Transaction log that totals each category automatically and flags OVER budget</li><li>Category check that catches transactions logged to a category not in your budget</li><li>Needs / Wants / Savings / Debt split compared with the 50/30/20 guideline</li><li>Ready-made example categories you can rename</li><li>PDF guide with a worked example month</li></ul><p><strong>Who it's for</strong></p><ul><li>Anyone starting a budget for the first time</li><li>Couples sharing household money</li><li>People paying off debt who need every dollar planned</li><li>Freelancers smoothing an irregular income</li></ul><p><strong>You get:</strong> zero_based_monthly_budget_planner.xlsx (Income, Categories, Transactions, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a personal budgeting aid, not financial advice. It does not connect to your bank; it shows only what you enter.</em></p>"
+  }
+ }
+}

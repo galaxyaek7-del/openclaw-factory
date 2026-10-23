@@ -1,0 +1,67 @@
+{
+ "id": "B14-002",
+ "slug": "rental-property-deal-analyzer",
+ "title": "Rental Property Deal Analyzer",
+ "price_cents": 2400,
+ "files": {
+  "workbook": {
+   "path": "books/batch14/B14-002/rental_property_deal_analyzer.xlsx",
+   "bytes": 14755,
+   "sha256": "757498d7c4eb1a53a7c66af7a02a71c5d15c597862e9cc54ac13c1e20c4ef368"
+  },
+  "guide": {
+   "path": "books/batch14/B14-002/rental_property_deal_analyzer_guide.pdf",
+   "bytes": 9175,
+   "sha256": "702fb77de3ed62a3107124685507745020e3d3db47b9bdf947ede216e00214a1"
+  },
+  "cover": {
+   "path": "books/covers/B14-002.png",
+   "bytes": 52831,
+   "sha256": "ff7a2c487fb9f470d6c7d4e93bf64395eb92c82b27790ef1b57611a7d47be109"
+  },
+  "bundle": {
+   "path": "books/batch14/B14-002/rental_property_deal_analyzer_bundle.zip",
+   "bytes": 20308,
+   "sha256": "cdbb5be65160c495fa383011ad6fb74848365ce132278eb7d882c49ff88e8c1f"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 44,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1586
+  },
+  "bundle": {
+   "files": [
+    "rental-property-deal-analyzer/README.txt",
+    "rental-property-deal-analyzer/rental_property_deal_analyzer.xlsx",
+    "rental-property-deal-analyzer/rental_property_deal_analyzer_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Compare up to 25 buy-and-hold rental deals side by side: monthly cash flow, cap rate, cash-on-cash return, DSCR and a clear verdict against your own targets.</p><p>This analyzer puts every deal through the same full calculation: financing, operating costs, reserves for vacancy, maintenance and capital expenses, then net operating income, monthly cash flow and the standard return measures lenders and investors use, so you can compare deals on the same terms.</p><p><strong>What's included</strong></p><ul><li>One row per property, up to 25 deals compared side by side</li><li>Mortgage payment (PMT), NOI, monthly cash flow, cap rate, cash-on-cash return, DSCR and rent-to-price</li><li>Vacancy, maintenance, management and CapEx reserves built in, so the numbers are not best-case</li><li>Verdict per deal against the cash-on-cash and DSCR targets you set</li><li>Handles cash purchases (100% down) as well as financed deals</li><li>PDF guide with three worked example deals and a field-by-field reference</li></ul><p><strong>Who it's for</strong></p><ul><li>First-time and small portfolio rental investors</li><li>House hackers comparing a duplex against a single-family home</li><li>Agents and wholesalers presenting numbers to buyers</li><li>Anyone checking a seller&#x27;s or agent&#x27;s pro forma</li></ul><p><strong>You get:</strong> rental_property_deal_analyzer.xlsx (Targets, Deals, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is an analysis aid, not investment, lending, legal or tax advice. Results depend entirely on the figures you enter; verify rents, taxes, insurance and loan terms with local professionals before buying.</em></p>"
+  }
+ }
+}

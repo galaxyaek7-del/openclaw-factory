@@ -1,0 +1,67 @@
+{
+ "id": "B14-001",
+ "slug": "13-week-cash-flow-forecast",
+ "title": "13-Week Cash Flow Forecast for Small Business",
+ "price_cents": 1900,
+ "files": {
+  "workbook": {
+   "path": "books/batch14/B14-001/13_week_cash_flow_forecast.xlsx",
+   "bytes": 11499,
+   "sha256": "a6c53574e5d94ed4d25c668c12bf07b5397f203710879654dfeff082f35341b8"
+  },
+  "guide": {
+   "path": "books/batch14/B14-001/13_week_cash_flow_forecast_guide.pdf",
+   "bytes": 8506,
+   "sha256": "293116a6c3d1effe8657a7cc8f6ea9dadf60e56d9b4c026264a24a1c07b61ea4"
+  },
+  "cover": {
+   "path": "books/covers/B14-001.png",
+   "bytes": 62408,
+   "sha256": "e6cb311a5d7bb8bea46eb9e1a8f05918fb2b62636798b394c9a6abc313fea940"
+  },
+  "bundle": {
+   "path": "books/batch14/B14-001/13_week_cash_flow_forecast_bundle.zip",
+   "bytes": 17313,
+   "sha256": "73d0d79a2af590c4dfe9068206a86022432048fc12ae43fb12c17273e44386d4"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 102,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1554
+  },
+  "bundle": {
+   "files": [
+    "13-week-cash-flow-forecast/13_week_cash_flow_forecast.xlsx",
+    "13-week-cash-flow-forecast/13_week_cash_flow_forecast_guide.pdf",
+    "13-week-cash-flow-forecast/README.txt"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>See every week&#x27;s cash position for the next quarter, spot the tight weeks before they happen, and track forecast against actual.</p><p>Monthly profit-and-loss reports hide timing. A month can be profitable on paper while payroll lands two days before the biggest customer pays. A weekly view shows that gap in advance, while there is still time to move a payment, chase an invoice or arrange a credit line.</p><p><strong>What's included</strong></p><ul><li>Weekly view of the next 13 weeks: receipts, payments by category, net cash flow and closing balance</li><li>Automatic BELOW BUFFER flag for any week under the minimum balance you set</li><li>Summary: quarter totals, ending cash, lowest balance, number of tight weeks</li><li>Variance sheet to compare your real bank balance with the forecast each week</li><li>Formulas locked against accidental overwrites; inputs clearly marked in yellow</li><li>PDF guide with a worked example and a field-by-field reference</li></ul><p><strong>Who it's for</strong></p><ul><li>Owners of small and service businesses who pay staff weekly or bi-weekly</li><li>Freelancers and agencies with lumpy client payments</li><li>Bookkeepers preparing a cash view for a client or a bank</li><li>Anyone asked by a lender for a short-term cash forecast</li></ul><p><strong>You get:</strong> 13_week_cash_flow_forecast.xlsx (Inputs, Forecast, Summary, Variance) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a planning tool, not accounting, tax or financial advice. Its results are only as accurate as the figures you enter; check important decisions with a qualified accountant.</em></p>"
+  }
+ }
+}

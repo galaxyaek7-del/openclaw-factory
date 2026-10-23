@@ -1,0 +1,67 @@
+{
+ "id": "B14-004",
+ "slug": "quarterly-tax-set-aside-planner",
+ "title": "Self-Employed Quarterly Tax Set-Aside Planner (US, 2026)",
+ "price_cents": 1200,
+ "files": {
+  "workbook": {
+   "path": "books/batch14/B14-004/quarterly_tax_set_aside_planner.xlsx",
+   "bytes": 28489,
+   "sha256": "cc88dd3cd52ab62286dfe277ee0170265f0d1e3087720e8e2162f3b86d6f417a"
+  },
+  "guide": {
+   "path": "books/batch14/B14-004/quarterly_tax_set_aside_planner_guide.pdf",
+   "bytes": 8832,
+   "sha256": "6a741e0a75d38a7ce675c9b166afa3105cf7d99d349853223d91dfbd815f987d"
+  },
+  "cover": {
+   "path": "books/covers/B14-004.png",
+   "bytes": 52669,
+   "sha256": "1ed76659101b79684ebfec5b2562294913ac5c8c9bb4639ed86ecaa3e8f07685"
+  },
+  "bundle": {
+   "path": "books/batch14/B14-004/quarterly_tax_set_aside_planner_bundle.zip",
+   "bytes": 25022,
+   "sha256": "23d68f27d52126020e88760f813d9a15db6131102dcfa7a98ebc3dc1ac1f81e2"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 78,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1700
+  },
+  "bundle": {
+   "files": [
+    "quarterly-tax-set-aside-planner/README.txt",
+    "quarterly-tax-set-aside-planner/quarterly_tax_set_aside_planner.xlsx",
+    "quarterly-tax-set-aside-planner/quarterly_tax_set_aside_planner_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Log income and expenses as they happen and see, each quarter, how much to set aside and pay for federal income tax, self-employment tax and state tax.</p><p>This planner turns that into a routine. You log each payment you receive and each business expense; the workbook assigns them to the IRS estimated-tax periods, and for each quarter calculates self-employment tax, an estimate of federal and state income tax, the amount to pay by the due date, and the share of income to set aside.</p><p><strong>What's included</strong></p><ul><li>Income and expense logs that assign each entry to the IRS estimated-tax period automatically</li><li>Self-employment tax with the 2026 Social Security wage base (184,500), including W-2 wages you already earned</li><li>Estimated federal and state income tax using your own rates, and the payment due for each period</li><li>Safe-harbor installment from last year&#x27;s tax (100% or 110% rule)</li><li>Set-aside % so you know how much of each payment to move to savings</li><li>PDF guide with a full-year worked example and the 2026 due dates</li></ul><p><strong>Who it's for</strong></p><ul><li>Freelancers, consultants and contractors paid on a 1099</li><li>Sole proprietors and single-member LLC owners</li><li>Creators and online sellers with business income</li><li>People with a side business on top of a W-2 job</li></ul><p><strong>You get:</strong> quarterly_tax_set_aside_planner.xlsx (Settings, Income, Expenses, Quarters) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook estimates taxes for planning; it is not tax advice and does not replace Form 1040-ES or a tax professional. It uses your own estimated income-tax rates and does not model every deduction or credit. Confirm figures with a qualified tax preparer.</em></p>"
+  }
+ }
+}

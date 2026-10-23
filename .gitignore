@@ -169,3 +169,8 @@ data/agent_executions.jsonl
 data/agent_tasks.jsonl
 data/connection_status.json
 drafts/agent_packages/
+
+# 2026-10-23 batch 14: delivery bundles and the product sources (specs, guide
+# text) are the paid product; the repository is public. Covers stay public.
+books/**/*.zip
+books/_batch14_src/

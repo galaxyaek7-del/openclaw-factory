@@ -1,0 +1,67 @@
+{
+ "id": "B14-005",
+ "slug": "etsy-shopify-product-profit-calculator",
+ "title": "Etsy & Shopify Product Profit Calculator",
+ "price_cents": 1200,
+ "files": {
+  "workbook": {
+   "path": "books/batch14/B14-005/etsy_shopify_product_profit_calculator.xlsx",
+   "bytes": 25002,
+   "sha256": "c5dc13009ccce5c8f3db1cb78cdb9578194bcc8860bec7303049d0de1cd3c438"
+  },
+  "guide": {
+   "path": "books/batch14/B14-005/etsy_shopify_product_profit_calculator_guide.pdf",
+   "bytes": 8504,
+   "sha256": "910f20bd9da1848183b4569cf36152b9c9e861313ac89b5a370cffa7f522a30d"
+  },
+  "cover": {
+   "path": "books/covers/B14-005.png",
+   "bytes": 51825,
+   "sha256": "1a9b0ade2fa54504bdab555f1e8ff0095fa200cccd5fee084a0da5e731d78a89"
+  },
+  "bundle": {
+   "path": "books/batch14/B14-005/etsy_shopify_product_profit_calculator_bundle.zip",
+   "bytes": 22694,
+   "sha256": "c538fdae30311b9ff05d81a3a7f786264874275212ae26a64e2bbc85fef84417"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 46,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1789
+  },
+  "bundle": {
+   "files": [
+    "etsy-shopify-product-profit-calculator/README.txt",
+    "etsy-shopify-product-profit-calculator/etsy_shopify_product_profit_calculator.xlsx",
+    "etsy-shopify-product-profit-calculator/etsy_shopify_product_profit_calculator_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>The real profit on every product after platform fees, payment processing, Offsite Ads, shipping, packaging and ad spend, plus the price you need for the margin you want.</p><p>This calculator puts all of it on one row per product, so you see the real profit and margin of each item, which products lose money, and the minimum price and target-margin price for each one.</p><p><strong>What's included</strong></p><ul><li>Real profit and margin per product after every Etsy or Shopify fee, shipping, packaging and ad cost</li><li>Etsy listing, 6.5% transaction, 3% + 0.25 processing and 15% Offsite Ads (with the 100 cap) built in and editable</li><li>Shopify Basic 2.9% + 0.30 processing for side-by-side comparison</li><li>Break-even price and price for your target margin on every row</li><li>LOSS / LOW MARGIN flags and a summary of how many products need attention</li><li>PDF guide with five worked example products</li></ul><p><strong>Who it's for</strong></p><ul><li>Etsy sellers of handmade, vintage, print-on-demand and digital items</li><li>Shopify store owners pricing new products</li><li>Sellers deciding whether to offer free shipping or discounts</li><li>Makers comparing the same product on both platforms</li></ul><p><strong>You get:</strong> etsy_shopify_product_profit_calculator.xlsx (Fees, Products, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>Fee rates are the published US rates checked on 2026-10-23 (Etsy: 0.20 listing, 6.5% transaction, 3% + 0.25 payment processing, 15% Offsite Ads capped at 100 per order; Shopify Basic: 2.9% + 0.30). Platforms change fees and rates differ by country and plan: confirm on etsy.com/legal/fees and shopify.com/pricing and update the Fees sheet. Not tax or accounting advice. Etsy and Shopify are trademarks of their owners. This is an independent tool with no connection to either company.</em></p>"
+  }
+ }
+}
