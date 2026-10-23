@@ -82,6 +82,14 @@ class TestSemantics(unittest.TestCase):
         self.assertIs(w.evaluate("Data!B2"), True)
         self.assertIs(w.evaluate("Data!B3"), False)
 
+    def test_dates_are_serials(self):
+        import datetime
+        w = book({"A1": datetime.date(2026, 8, 1), "A2": datetime.date(2026, 10, 15),
+                  "B1": "=A1+30", "B2": "=A2-A1"})
+        self.assertEqual(w.evaluate("Data!B1"), xe.excel_serial(datetime.date(2026, 8, 31)))
+        self.assertEqual(w.evaluate("Data!B2"), 75)
+        self.assertEqual(xe.excel_serial(datetime.date(2026, 1, 1)), 46023)  # Excel's own serial
+
     def test_unsupported_function_is_reported_not_guessed(self):
         with self.assertRaises(xe.Unsupported):
             book({"B1": "=VLOOKUP(1,A1:A2,1,FALSE)"}).evaluate("Data!B1")

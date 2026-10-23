@@ -17,12 +17,14 @@ actually use, with Excel's semantics for blanks, text and errors:
   operators: + - * / & = <> < > <= >=, unary -, parentheses
   functions: IF (lazy), AND, OR, NOT, SUM, COUNTIF (equality criterion),
              MAX, MIN, ROUND, ABS, IFERROR
+  dates: date cells become Excel day serials, so D2+30 and G2-F2 work
 
 Anything else raises Unsupported, so a caller reports the cell as
 UNVERIFIED instead of guessing. Pure Python + openpyxl; no network.
 """
 from __future__ import annotations
 
+import datetime as _dt
 import re
 
 import openpyxl
@@ -214,6 +216,8 @@ class Workbook:
         if sheet not in self.wb.sheetnames:
             raise Unsupported(f"unknown sheet {sheet!r}")
         raw = self.wb[sheet][coord].value
+        if isinstance(raw, (_dt.datetime, _dt.date)):
+            raw = excel_serial(raw)  # Excel stores dates as day serials
         if raw is None:
             val = BLANK
         elif isinstance(raw, str) and raw.startswith("="):
@@ -345,3 +349,12 @@ class Workbook:
 
 
 _IN_PROGRESS = object()
+_EPOCH = _dt.datetime(1899, 12, 30)
+
+
+def excel_serial(d):
+    """Excel's 1900 date system serial (valid for dates after 1900-03-01)."""
+    if not isinstance(d, _dt.datetime):
+        d = _dt.datetime(d.year, d.month, d.day)
+    delta = d - _EPOCH
+    return delta.days + delta.seconds / 86400.0

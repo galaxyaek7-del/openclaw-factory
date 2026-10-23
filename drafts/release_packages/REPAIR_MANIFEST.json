@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-22T21:56:34.313212+00:00",
+ "generated_at": "2026-10-23T01:10:50.344444+00:00",
  "status": "PREPARED_NOT_APPLIED",
  "constraints": "No Gumroad write, upload, unpublish or delete was performed. FACTORY_LIVE_PUBLISH=false. Spend $0.",
  "actions": [
@@ -355,6 +355,34 @@
    "status": "PREPARED_NOT_APPLIED"
   },
   {
+   "slug": "ciowwm",
+   "product": "EU Late Payment Recovery Kit",
+   "action": "attach_file+reword",
+   "recommendation": "REPAIR",
+   "before": "Live: one 3,863-byte PDF (392 words) at $59; below the substance bar. Listing line: '- A single, focused file you download and use immediately'.",
+   "after": "Attach the working calculator (invoice tracker, notice ladder, Summary; 21/21 formula checks, reproduces the guide's EUR 4,800 / 45-day worked example); replace the line with '- A PDF guide (rights, reminder ladder, worked example) and a working XLSX calculator: due date, days overdue, statutory interest, EUR 40 compensation, total claimable and notice stage per invoice'.",
+   "required_files": [
+    {
+     "path": "books/eu_late_payment_calculator.xlsx",
+     "bytes": 33818,
+     "sha256": "5b76520d31759fc597db149b8ed51f80f5a043b92d9d4017ebdc1ea42afd0f86",
+     "file_test": "PASS",
+     "sheets": 4,
+     "formulas": 1224
+    }
+   ],
+   "evidence": [
+    "rules verified 2026-10-22 from the directive text (legislation.gov.uk, Directive 2011/7/EU): Art. 2(6) simple interest at reference rate + at least 8 points; Art. 3(2) 1 January / 1 July rate; Art. 3(3)(b)(i) 30 days; Art. 6(1)-(3) at least EUR 40, no reminder needed",
+    "reference rate and margin are user inputs; the 2% example rate is labelled illustrative",
+    "live guide sha256 equals factory_workspace/sprint14/eu_late_payment_recovery_kit.pdf",
+    "release gate: substance HOLD as live -> HOLD (rights review only) with the calculator"
+   ],
+   "rollback": "Remove the calculator; restore the previous line.",
+   "risk": "LOW",
+   "founder_approval_required": true,
+   "status": "PREPARED_NOT_APPLIED"
+  },
+  {
    "slug": "iaiyt",
    "product": "EU AI Act Compliance Toolkit",
    "action": "remove_file",
@@ -587,21 +615,6 @@
    "words": 415,
    "recommendation": "PROPOSE_UNPUBLISH (or reprice/expand)",
    "basis": "415 words for $69 = 6.0 words/$ (<10)"
-  },
-  {
-   "slug": "ciowwm",
-   "product": "EU Late Payment Recovery Kit",
-   "published": true,
-   "price_usd": 59.0,
-   "live_bytes": 3863,
-   "live_types": [
-    "pdf"
-   ],
-   "local_file": "factory_workspace/sprint14\\eu_late_payment_recovery_kit.pdf",
-   "pages": 1,
-   "words": 392,
-   "recommendation": "PROPOSE_UNPUBLISH (or reprice/expand)",
-   "basis": "392 words for $59 = 6.6 words/$ (<10)"
   },
   {
    "slug": "roxdbe",

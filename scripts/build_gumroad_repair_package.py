@@ -134,6 +134,21 @@ def build_actions():
                 "live guide sha256 equals factory_workspace/sprint14/etsy_ads_roi_playbook.pdf",
                 "release gate: HOLD (substance) as live -> HOLD (rights review only) with the calculator"],
                "Remove the calculator; restore the previous line."),
+        action("ciowwm", "EU Late Payment Recovery Kit", "attach_file+reword", "REPAIR",
+               "Live: one 3,863-byte PDF (392 words) at $59; below the substance bar. "
+               f"Listing line: '{single}'.",
+               "Attach the working calculator (invoice tracker, notice ladder, Summary; 21/21 formula checks, "
+               "reproduces the guide's EUR 4,800 / 45-day worked example); replace the line with '- A PDF guide "
+               "(rights, reminder ladder, worked example) and a working XLSX calculator: due date, days overdue, "
+               "statutory interest, EUR 40 compensation, total claimable and notice stage per invoice'.",
+               ["books/eu_late_payment_calculator.xlsx"],
+               ["rules verified 2026-10-22 from the directive text (legislation.gov.uk, Directive 2011/7/EU): "
+                "Art. 2(6) simple interest at reference rate + at least 8 points; Art. 3(2) 1 January / 1 July "
+                "rate; Art. 3(3)(b)(i) 30 days; Art. 6(1)-(3) at least EUR 40, no reminder needed",
+                "reference rate and margin are user inputs; the 2% example rate is labelled illustrative",
+                "live guide sha256 equals factory_workspace/sprint14/eu_late_payment_recovery_kit.pdf",
+                "release gate: substance HOLD as live -> HOLD (rights review only) with the calculator"],
+               "Remove the calculator; restore the previous line."),
         action("iaiyt", "EU AI Act Compliance Toolkit", "remove_file", "REPAIR",
                "Live: 2 PDFs -- full v2 (139,401 B, 31 pages) and 'eu_ai_act_compliance_toolkit_preview' "
                "(106,314 B, 3 pages, 209 words).",
