@@ -267,6 +267,11 @@ jobs:
       - name: JS batch 19 of 19
         run: node scripts/run_js_group.js tests/test_telegram_commands.js tests/test_telegram_direct.js tests/test_trust_center.js
 
+      # 2026-10-23: agent runtime, handoff chains, Sensing classifier and
+      # demand sensing. Fake model clients and fake network only; no Groq call.
+      - name: JS batch -- agents and sensing
+        run: node scripts/run_js_group.js tests/test_agent_runtime.js tests/test_agent_chain_e2e.js tests/test_connection_status.js tests/test_trend_classifier.js tests/test_product_chain.js tests/test_demand_sensing.js
+
       - name: Every JS test file runs in exactly one place
         run: |
           python - <<'PY'
