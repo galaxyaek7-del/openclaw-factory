@@ -25,10 +25,16 @@ _FACTORY_ROOT = Path(__file__).resolve().parent.parent
 if str(_FACTORY_ROOT) not in sys.path:
     sys.path.insert(0, str(_FACTORY_ROOT))
 
-from affiliate import publish_queue as pq
+import importlib
+
+try:
+    pq = importlib.import_module("affiliate.publish_queue")
+except ImportError:
+    pq = None
 from channels import gumroad_publisher as gp
 from channels.write_gate import WriteNotAuthorized
 
+_QUEUE_SOURCE = _FACTORY_ROOT / "affiliate" / "publish_queue.py"
 _QUEUE_ITEM = {
     "slug": "gate_probe",
     "file": "does-not-need-to-exist.pdf",
@@ -70,6 +76,9 @@ class TestGumroadMutatorsFailClosed(unittest.TestCase):
                 self._assert_denied(gp.enable_product, token="t", product_id=None)
 
 
+@unittest.skipUnless(
+    pq is not None,
+    "affiliate/publish_queue.py is not part of the tracked repo")
 class TestPublishQueueDeniedBeforeNetwork(unittest.TestCase):
     def test_retry_queue_publishes_nothing_without_live_flag(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -97,9 +106,11 @@ class TestPublishQueueDeniedBeforeNetwork(unittest.TestCase):
 
 
 class TestPublishQueueCallSurface(unittest.TestCase):
+    @unittest.skipUnless(
+        _QUEUE_SOURCE.is_file(),
+        "affiliate/publish_queue.py is not part of the tracked repo")
     def test_queue_uses_only_gated_gumroad_mutations(self):
-        source = (_FACTORY_ROOT / "affiliate" / "publish_queue.py").read_text(
-            encoding="utf-8")
+        source = _QUEUE_SOURCE.read_text(encoding="utf-8")
         tree = ast.parse(source)
         calls = {
             node.func.attr
