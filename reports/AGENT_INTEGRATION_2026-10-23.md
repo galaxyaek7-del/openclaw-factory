@@ -68,3 +68,49 @@ Live check (2026-10-23, real model, temp state/package paths, trends "small busi
 ## Pre-existing, not touched
 
 `tests/test_factory_loop_daily_product_lifecycle_snapshot.js` is untracked (dated 2026-09-21) and calls `runRecordDailyProductLifecycleSnapshot`, which exists in no commit of `factory_loop.js`. It fails on its own; it is someone else's unfinished work.
+
+## Revenue reality check (2026-10-23)
+
+Measured, not estimated: 31 page views and 29 affiliate clicks recorded in three months (`data/affiliate_page_views.jsonl`, `data/affiliate_clicks.jsonl`); 79 live Gumroad products, 0 sales (`reports/COMMERCIAL_RECONCILIATION_2026-10-22.md`). The binding constraint is traffic, not production. $100,000 in a year is about $8,300 a month: roughly 280 sales at $30, or about 14,000 visits a month at a 2% conversion rate, against about 10 visits a month today.
+
+## Founder decisions (2026-10-23, AskUserQuestion)
+
+1. Clean the unpushed history of the three paid B12 files, then publish; afterwards the loop may push site-page-only updates that pass the tests.
+2. Automatic search-engine notification (IndexNow) is authorized. Gumroad auto-publishing and Telegraph articles were not authorized.
+
+Done:
+
+- History: backup branch `backup/pre-history-clean-20261023`; the 62 unpushed commits rewritten without `books/batch12/B12-007_*` and `B12-009_*`; every commit's tree otherwise identical.
+- `GF_ALLOW_SEARCH_PING` (allows search pings only) added to `.env`; `FACTORY_LIVE_PUBLISH` stays `false`.
+- `scripts/indexnow_auto.py`: daily, changed published pages only, live-checked, always with `keyLocation`. Finding: the key file answers 404 at the host root and 200 under `/openclaw-factory/`; earlier submissions omitted `keyLocation`, so IndexNow could not verify them.
+- `scripts/auto_publish_site.py`: pushes only ranges that touch site pages alone; code waits for a reviewed push.
+- `lib/demand_sensing.js`: Stack Exchange + Ask HN questions through the same `/api/trends` gates.
+
+## Open: paid products are public
+
+168 product-like files (PDF/XLSX/ZIP), mostly the delivery bundles in `cohort_GF_BATCH10_2026_09/` and `cohort_GF_BATCH11_2026_09/dist/`, are in the public repository's current tree and download without login (checked: `B12-001_freelancer_rate_raise_calculator.xlsx` → HTTP 200 on raw.githubusercontent.com). Removing them from the current tree stops casual access; removing them from history needs a force push. Needs a founder decision.
+
+## Evidence ledger, 2026-10-23 afternoon (PASS / FAIL / HOLD / BLOCKED / UNKNOWN)
+
+| Item | Status | Evidence |
+|---|---|---|
+| History cleaned of 3 paid B12 files | PASS | 62 commits rewritten; every commit's tree identical except those paths; 0 occurrences in the pushed range; raw.githubusercontent.com → 404 for both files. Backups: `backup/pre-history-clean-20261023`, `backup/pre-history-clean-20261023-final`. |
+| Push to origin/main | PASS | `7cb880f..08e65a9`, then `08e65a9..cde4f73`; fast-forward, no force. |
+| CI-equivalent run on the clean tree (CI=true, GITHUB_ACTIONS=true) | PASS | groups b 203 OK (6 skipped), e 626 OK (5), f 237 OK (3), i-p 1615 OK (12); a, c-d, g-h, q-z passed in the first pass; 0 unimportable of 5853; all JS batches and checks passed. Python 3.14 locally vs 3.12 on CI. |
+| GitHub CI on 08e65a9 | FAIL | run 39937686646: 35 of 36 jobs passed; `test` failed at "Python tests (b)": `test_b12_010_workbook` read Windows paths with `Path(...).name`, which on Linux returns the whole string. |
+| Fix for that failure (`cde4f73`) | PASS locally / UNKNOWN on CI | `PureWindowsPath(...).name`; group b 203 OK on the clean tree. GitHub run pending at time of writing. |
+| Phase-3 permission patch (`d375735`) | PASS | Test-only: `@patch.dict(os.environ, {"FACTORY_LIVE_PUBLISH": "true"})` on the two classes that test the gates behind the write gate, same pattern as `tests/test_distributor.py`. Without it: exactly 3 failures; with it: 28/28. No production file changed; 0 non-dry-run publish attempts recorded today. |
+| publish_queue test fix (`8f0fe40`) | PASS | Prepared in the working tree by the parallel session; committed unchanged with that provenance stated. |
+| Classifier retry (`f46387c`) | PASS | Telemetry: 3 of 14 calls returned empty output. Two attempts, then fail closed; both new tests fail on the previous code. |
+| Live loop steps after restart | PASS | `demand_sensing` 35 fetched / 20 sent / 18 accepted; `indexnow` HTTP 200, 73 URLs (11 retried next tick); `site_publish` none; `agent_product_chain` ended for today (qa REVISE on the pre-filter trends). |
+| Classifier strictness on Stack Exchange questions | HOLD | 18 of 20 accepted; the small model is lenient on personal questions. qa and founder review remain downstream. |
+| Agents connected | PASS: scout, qa / HOLD: finance, design, builder, publisher | The four connect on the first day qa passes a brief. |
+| Paid product files in the public tree (168) | BLOCKED | Founder decision (remove from tree, and/or rewrite history with force push). |
+| Gumroad / Telegraph auto-publishing | BLOCKED | Not authorized. `FACTORY_LIVE_PUBLISH=false`. |
+| Paddle 403, Telegram chat id | BLOCKED | Founder actions (key permissions; message the bot). |
+| Spend | PASS | TOTAL_NEW_SPEND=$0. |
+
+Side findings, not fixed here:
+
+- Running the Python suite modified three tracked files in the test checkout (`GOLDEN_OPPORTUNITIES.md`, `QUARANTINE.md`, `REJECTED_NICHES.md`): some tests write to real repository files instead of temp paths.
+- `tests/test_b12_010_workbook.py` line ~131 (the parallel session's uncommitted test) uses the same `Path(...).name` on a Windows path and will fail on CI the same way once committed.
