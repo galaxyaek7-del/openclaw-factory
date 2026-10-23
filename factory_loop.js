@@ -4019,6 +4019,33 @@ function runFreelancerStateMonitor({ timeoutMs = 60000, pythonPath } = {}) {
   });
 }
 
+// ── DEMAND SENSING (2026-10-23) ──
+// Once a day: real questions from Stack Exchange and Ask HN, delivered to
+// POST /api/trends so they pass the same quality, safety and commercial-intent
+// gates as a Google Trends item (lib/demand_sensing.js). Read-only sources,
+// no account, no key. Runs before the product chain so it has today's input.
+async function runDemandSensingStep({ timeoutMs = 4 * 60 * 1000 } = {}) {
+  try {
+    const { runDemandSensing } = require('./lib/demand_sensing');
+    const post = async (items) => {
+      const ac = new AbortController();
+      const t = setTimeout(() => ac.abort(), timeoutMs);
+      try {
+        const r = await fetch(`${DASHBOARD_URL}/api/trends`, { method: 'POST', signal: ac.signal,
+          headers: { 'Content-Type': 'application/json', ...internalAuthHeaders() }, body: JSON.stringify(items) });
+        if (!r.ok) throw new Error(`/api/trends HTTP ${r.status}`);
+        return await r.json();
+      } finally {
+        clearTimeout(t);
+      }
+    };
+    const r = await runDemandSensing({ post });
+    return { action: r.action, detail: r.detail };
+  } catch (err) {
+    return { action: 'failed', detail: `demand sensing error: ${String(err && err.message || err).slice(0, 200)}` };
+  }
+}
+
 // ── AGENT PRODUCT CHAIN (2026-10-23) ──
 // Once a day, after Sensing: today's commercial trends -> scout -> qa ->
 // finance -> design -> builder -> publisher -> a proposal in
@@ -4817,6 +4844,8 @@ async function runTick() {
     markStep('sensing_catchup');
     actions.push({ step: 'sensing_catchup', ...(await runSensingCatchup()) });
 
+    markStep('demand_sensing');
+    actions.push({ step: 'demand_sensing', ...(await runDemandSensingStep()) });
     markStep('agent_product_chain');
     actions.push({ step: 'agent_product_chain', ...(await runAgentProductChain()) });
 
