@@ -4019,6 +4019,46 @@ function runFreelancerStateMonitor({ timeoutMs = 60000, pythonPath } = {}) {
   });
 }
 
+// ── SENSING CATCH-UP (2026-10-23) ──
+// Openclaw_Sensing_Engine runs once a day (07:00 UTC) and the host loses its
+// network most mornings; a run that fails with a network error loses that
+// day's trends. scripts/n8n_sensing_catchup.py --once re-runs it through the
+// workflow's own authenticated webhook only after a network-class failure
+// today, once the network is back, at most twice a day. No n8n config change.
+function runSensingCatchup({ timeoutMs = 90000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'scripts', 'n8n_sensing_catchup.py'), '--once'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ action: 'failed', detail: `تعذّر تشغيل n8n_sensing_catchup.py: ${err.message}` });
+      return;
+    }
+    let output = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ action: 'failed', detail: `انتهت مهلة n8n_sensing_catchup.py (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.on('error', (err) => finish({ action: 'failed', detail: err.message }));
+    python.on('close', () => {
+      try {
+        const r = JSON.parse(output.trim());
+        finish({ action: r.action || 'none', detail: r.detail || '' });
+      } catch (e) {
+        finish({ action: 'failed', detail: `فشل تحليل ناتج n8n_sensing_catchup.py: ${e.message}` });
+      }
+    });
+    python.stdin.end();
+  });
+}
+
 async function maybeMonitorFreelancerStates() {
   const result = await runFreelancerStateMonitor();
   if (!result.ok) {
@@ -4746,6 +4786,8 @@ async function runTick() {
     }
 
     actions.push({ step: 'heal_n8n', ...healN8n(diagnosis.health) });
+    markStep('sensing_catchup');
+    actions.push({ step: 'sensing_catchup', ...(await runSensingCatchup()) });
 
     markStep('sales_poll');
     actions.push({ step: 'sales_poll', ...(await pollSales(true)) });
