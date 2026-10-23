@@ -31,12 +31,12 @@ Every line below was observed or measured in this session; anything not measured
 |---|---|---|
 | Gumroad listings | 92 (82 before + 10 published 2026-10-23) | OBSERVED (API) |
 | Verified sales, any channel | **0**; revenue **$0.00** | OBSERVED (`config/reality.json`, Gumroad `/v2/sales`) |
-| Site traffic, last three months | 31 page views, 29 affiliate clicks recorded | OBSERVED (`data/affiliate_page_views.jsonl`, `data/affiliate_clicks.jsonl`) |
+| Site traffic | **UNKNOWN: not measured.** GitHub Pages has no page-view receiver, so the beacon (`customer_site/assets/gf-pageview.js`) gets 404 and records nothing; the 32 rows in `data/affiliate_page_views.jsonl` are local probes and tests (3 classified as browsers) | OBSERVED |
 | Paid product files publicly downloadable | 168 in the repository tree before 2026-10-23; removal in progress (founder decision) | OBSERVED |
 | Paddle | live key returns 403 (missing permissions) | OBSERVED |
 | Telegram | bot token valid; chat id not set | OBSERVED |
 
-The binding constraint is traffic and demand, not production capacity: 92 listings, 0 sales, about ten visits a month.
+The binding constraint is demand reaching the products, not production capacity: 92 listings and 0 sales. How many people visit the site is unknown, because public traffic is not measured.
 
 ## What works and is trustworthy
 

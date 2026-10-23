@@ -29,8 +29,8 @@ Reading: the platform-keyed catalog tracks the live store well apart from the ne
 | Metric | Value | Source |
 |---|---|---|
 | Verified revenue | $0.00 | `config/reality.json`, Gumroad `/v2/sales` |
-| Site page views, three months | 31 | `data/affiliate_page_views.jsonl` |
-| Affiliate clicks, three months | 29 | `data/affiliate_clicks.jsonl` |
+| Public site traffic | UNKNOWN (no receiver on GitHub Pages; the 32 recorded rows are local probes and tests) | `data/affiliate_page_views.jsonl`, `customer_site/assets/gf-pageview.js` |
+| Affiliate clicks recorded | 29 (same caveat: local server only) | `data/affiliate_clicks.jsonl` |
 | Agent calls recorded | 14, 3 empty outputs (21%) | `data/agent_executions.jsonl` |
 | Loop steps | 53 per tick | `factory_loop.js` |
 | Connection verifier | 49 VERIFIED, 3 DEGRADED | `data/connection_status.json` |

@@ -21,7 +21,7 @@ Each listing: published, one cover, one file whose size equals the reviewed bund
 
 ## Why these, and the prices
 
-Measured state before the batch: 82 Gumroad products, 0 sales, about 10 site visits a month. Most existing listings are compliance kits at $49-69. Comparable spreadsheet tools on Etsy/Gumroad (searched 2026-10-23) sell at about $3-50, most at $9-29; a comparable rental deal analyzer is listed at $29.25. A store with no reviews priced at the lower-middle of that range.
+Measured state before the batch: 82 Gumroad products, 0 sales. Site traffic was reported here as about ten visits a month; that was wrong: public traffic is not measured at all (no page-view receiver on GitHub Pages; the recorded rows are local probes). Corrected 2026-10-23. Most existing listings are compliance kits at $49-69. Comparable spreadsheet tools on Etsy/Gumroad (searched 2026-10-23) sell at about $3-50, most at $9-29; a comparable rental deal analyzer is listed at $29.25. A store with no reviews priced at the lower-middle of that range.
 
 ## Verification
 
@@ -52,4 +52,4 @@ Found, not mine: the working tree's uncommitted `tests/test_exp_c81_utm_regressi
 
 ## What sells these
 
-Nothing yet: 0 sales is the starting point. The products now have pages on the site, sitemap entries and the daily IndexNow submission. Traffic remains the constraint.
+Nothing yet: 0 sales is the starting point. The products now have pages on the site, sitemap entries and the daily IndexNow submission. Whether anyone visits is not yet measurable (see docs/factory risk R1).
