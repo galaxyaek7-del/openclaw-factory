@@ -16,7 +16,7 @@ import json
 import math
 import re
 import unittest
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 import openpyxl
 from PIL import Image
@@ -98,7 +98,9 @@ class TestCanonicalArtifacts(unittest.TestCase):
 
     def test_manifest_agrees_with_the_files_on_disk(self):
         data = json.loads(MANIFEST.read_text(encoding="utf-8"))
-        recorded = {Path(f["path"]).name: f for f in data["files"]}
+        # The manifest was written on Windows ("books\batch12\..."); PureWindowsPath
+        # splits both separators, so this also holds on CI's Linux runner.
+        recorded = {PureWindowsPath(f["path"]).name: f for f in data["files"]}
         for name, (size, digest) in EXPECTED.items():
             self.assertIn(name, recorded, name)
             self.assertEqual(recorded[name]["bytes"], size, name)
