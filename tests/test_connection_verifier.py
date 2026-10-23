@@ -44,6 +44,13 @@ class TestLoopSteps(unittest.TestCase):
         self.assertEqual(rows["loop:hunt"]["status"], cv.DEGRADED)
         self.assertEqual(rows["factory_loop"]["status"], cv.VERIFIED)
 
+    def test_failure_only_step_that_stopped_failing_is_recovered_not_failed(self):
+        self.write(tick("2026-10-23T04:00:00Z", ("diagnose", "failed")),
+                   tick("2026-10-23T07:50:00Z", ("sales_poll", "none")))
+        rows = {r["name"]: r for r in cv.loop_steps(NOW, log_path=self.log)}
+        self.assertEqual(rows["loop:diagnose"]["status"], cv.DEGRADED)
+        self.assertIn("no failure logged", rows["loop:diagnose"]["evidence"])
+
     def test_stale_loop_and_old_records_are_not_verified(self):
         self.write(tick("2026-10-23T06:00:00Z", ("sales_poll", "none")),
                    tick("2026-10-21T06:00:00Z", ("ancient", "none")))

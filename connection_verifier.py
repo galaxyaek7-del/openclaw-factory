@@ -100,9 +100,16 @@ def loop_steps(now, window_hours=24, log_path=LOOP_LOG):
         status = FAILED if failed == total else DEGRADED if failed else VERIFIED
         if last[step][0] == "failed" and status == VERIFIED:
             status = DEGRADED
+        note = ""
+        # Some steps (e.g. diagnose) are logged only when they fail. If the loop
+        # kept ticking for 30+ min after the step's last failure, it recovered.
+        if status == FAILED and last_tick and last[step][1] < last_tick:
+            gap = (_age_hours(last[step][1], now) or 0) - (_age_hours(last_tick, now) or 0)
+            if gap >= 0.5:
+                status, note = DEGRADED, f"; no failure logged in the {gap:.1f} h since (ticks continued)"
         rows.append(_row(f"loop:{step}", "factory_loop_step", status,
-                         f"{total} runs in {window_hours} h, {failed} failed; last={last[step][0]} at {last[step][1]}",
-                         "runtime_record", runs=total, failed=failed))
+                         f"{total} runs in {window_hours} h, {failed} failed; last={last[step][0]} at {last[step][1]}"
+                         + note, "runtime_record", runs=total, failed=failed))
     age = _age_hours(last_tick, now) if last_tick else None
     head = _row("factory_loop", "scheduler",
                 VERIFIED if age is not None and age < 0.5 else FAILED if age is not None else UNKNOWN,
