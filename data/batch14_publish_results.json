@@ -1,0 +1,154 @@
+[
+ {
+  "at": "2026-10-23T13:22:42Z",
+  "authorization": "founder 2026-10-23: publish ten batch-14 products on Gumroad at realistic prices",
+  "results": [
+   {
+    "id": "B14-001",
+    "title": "13-Week Cash Flow Forecast for Small Business",
+    "price_cents": 1900,
+    "steps": {
+     "create": "ok",
+     "published": true,
+     "cover": "FAILED: VERIFICATION_FAILED: add_product_cover's re-read for 1t5RKMmSW9x7m0p2rsepnQ== shows 1 cover(s), which did not grow past the expected 1.",
+     "public_page": true
+    },
+    "product_id": "1t5RKMmSW9x7m0p2rsepnQ==",
+    "url": "https://aekraft.gumroad.com/l/dliccs",
+    "ok": false
+   }
+  ]
+ },
+ {
+  "at": "2026-10-23T13:26:07Z",
+  "authorization": "founder 2026-10-23: publish ten batch-14 products on Gumroad at realistic prices",
+  "results": [
+   {
+    "id": "B14-002",
+    "title": "Rental Property Deal Analyzer",
+    "price_cents": 2400,
+    "steps": {
+     "create": "ok",
+     "published": true,
+     "cover": "ok",
+     "public_page": true
+    },
+    "product_id": "JyKW6Ok1C3Ha1fjAjc8G9w==",
+    "url": "https://aekraft.gumroad.com/l/mfpqin",
+    "ok": true
+   },
+   {
+    "id": "B14-003",
+    "title": "Debt Payoff Planner (Avalanche or Snowball)",
+    "price_cents": 1200,
+    "steps": {
+     "create": "ok",
+     "published": true,
+     "cover": "ok",
+     "public_page": true
+    },
+    "product_id": "lcJ2lwjpD3HR5am_3bfptA==",
+    "url": "https://aekraft.gumroad.com/l/ebuszz",
+    "ok": true
+   },
+   {
+    "id": "B14-004",
+    "title": "Self-Employed Quarterly Tax Set-Aside Planner (US, 2026)",
+    "price_cents": 1200,
+    "steps": {
+     "create": "ok",
+     "published": true,
+     "cover": "ok",
+     "public_page": true
+    },
+    "product_id": "_-vV2F76nlPPhIhCXeIyog==",
+    "url": "https://aekraft.gumroad.com/l/ydgbnh",
+    "ok": true
+   },
+   {
+    "id": "B14-005",
+    "title": "Etsy & Shopify Product Profit Calculator",
+    "price_cents": 1200,
+    "steps": {
+     "create": "ok",
+     "published": true,
+     "cover": "ok",
+     "public_page": true
+    },
+    "product_id": "sJSccVv73KZuXMHiI9yobA==",
+    "url": "https://aekraft.gumroad.com/l/ntbvq",
+    "ok": true
+   },
+   {
+    "id": "B14-006",
+    "title": "Service Business Pricing & Break-Even Calculator",
+    "price_cents": 1500,
+    "steps": {
+     "create": "ok",
+     "published": true,
+     "cover": "ok",
+     "public_page": true
+    },
+    "product_id": "Hb8TH-s7cxGstm4QEEgVQQ==",
+    "url": "https://aekraft.gumroad.com/l/czhxhu",
+    "ok": true
+   },
+   {
+    "id": "B14-007",
+    "title": "Inventory Reorder Point & Stock Tracker",
+    "price_cents": 1500,
+    "steps": {
+     "create": "ok",
+     "published": true,
+     "cover": "ok",
+     "public_page": true
+    },
+    "product_id": "fJ-hUH0SGHvrCtR_H5XLAA==",
+    "url": "https://aekraft.gumroad.com/l/jydqg",
+    "ok": true
+   },
+   {
+    "id": "B14-008",
+    "title": "Client Pipeline & Proposal Tracker",
+    "price_cents": 1400,
+    "steps": {
+     "create": "ok",
+     "published": true,
+     "cover": "ok",
+     "public_page": true
+    },
+    "product_id": "dvU4mMSDmnRL7TmKL_Sedg==",
+    "url": "https://aekraft.gumroad.com/l/qevzns",
+    "ok": true
+   },
+   {
+    "id": "B14-009",
+    "title": "Startup Runway & Burn Planner",
+    "price_cents": 1500,
+    "steps": {
+     "create": "ok",
+     "published": true,
+     "cover": "ok",
+     "public_page": true
+    },
+    "product_id": "49bs32IwUFlq4jv-tIei1w==",
+    "url": "https://aekraft.gumroad.com/l/mcwusn",
+    "ok": true
+   },
+   {
+    "id": "B14-010",
+    "title": "Zero-Based Monthly Budget Planner",
+    "price_cents": 900,
+    "steps": {
+     "create": "ok",
+     "published": true,
+     "cover": "ok",
+     "public_page": true
+    },
+    "product_id": "P43t_52yRtWP4_s4D_Ed0g==",
+    "url": "https://aekraft.gumroad.com/l/uubnbi",
+    "ok": true
+   }
+  ]
+ }
+]
