@@ -42,7 +42,7 @@ import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 # --- Phase 3 isolation guard -----------------------------------------------
 # Redirect the factory AI cost-ledger default to an isolated temp location
@@ -341,6 +341,10 @@ class TestBreakerBlocksGovernance(unittest.TestCase):
         self.assertEqual(r["circuit_breaker"]["state"], "CLOSED")
 
 
+# CI runs this file with plain unittest, where the pytest fixture above does
+# not apply; these classes need the live-write opt-in to reach the quality
+# and publish-protection gates behind channels/write_gate.py (2026-10-23).
+@patch.dict(os.environ, {"FACTORY_LIVE_PUBLISH": "true"})
 class TestAllFourArmsGated(unittest.TestCase):
     """Each of the four publishing arms (gumroad, payhip, etsy, paddle) must be
     blocked uniformly at the CENTRAL gate front — a non-passing product never
@@ -452,6 +456,7 @@ class TestNoWeakeningInvariant(unittest.TestCase):
                     os.remove(path)
 
 
+@patch.dict(os.environ, {"FACTORY_LIVE_PUBLISH": "true"})
 class TestNonDryRunGateEnforcement(unittest.TestCase):
     """On the non-dry-run (real-publish) surface, the central quality gate and
     publish-protection gate MUST fire and block before any arm may publish.
