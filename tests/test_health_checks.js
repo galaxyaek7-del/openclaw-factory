@@ -223,3 +223,35 @@ test('n8n evidence: cached within the TTL, refreshed after it', async () => {
   await hc.checkN8nWorkflowEvidence({ run, now });
   assert.equal(calls, 2);
 });
+
+// 2026-10-22: /health must never block on the n8n evidence check.
+test('n8n evidence: a hung check never blocks /health; first answer is a fail-closed pending', async () => {
+  hc._resetN8nEvidenceCache();
+  const hang = () => {}; // never calls back
+  const started = Date.now();
+  const r = await hc.checkN8nWorkflowEvidence({ run: hang, now: () => 1 });
+  assert.ok(Date.now() - started < 200);
+  assert.equal(r.ok, false);
+  assert.equal(r.pending, true);
+  hc._resetN8nEvidenceCache();
+});
+
+test('n8n evidence: an expired result is served at once while one background refresh runs', async () => {
+  hc._resetN8nEvidenceCache();
+  const ok = JSON.stringify({ workflows: { '02_Sales_Poll': { verdict: 'OK' }, 'Openclaw_Sensing_Engine': { verdict: 'OK' } } });
+  let t = 0;
+  const now = () => t;
+  await hc.checkN8nWorkflowEvidence({ run: (c, a, o, cb) => cb(null, ok), now });
+  await new Promise((r) => setImmediate(r));
+  t += 5 * 60 * 1000 + 1;
+  let calls = 0;
+  const slow = () => { calls += 1; };              // refresh that has not finished yet
+  const r1 = await hc.checkN8nWorkflowEvidence({ run: slow, now });
+  const r2 = await hc.checkN8nWorkflowEvidence({ run: slow, now });
+  assert.equal(r1.ok, true);
+  assert.equal(r1.stale, true);
+  assert.equal(r2.stale, true);
+  assert.equal(calls, 1, 'only one refresh may be in flight');
+  hc._resetN8nEvidenceCache();
+});
+
