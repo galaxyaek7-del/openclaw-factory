@@ -53,6 +53,25 @@ test('an answer outside the contract fails closed and is recorded as invalid out
   assert.equal(readAgentExecutions(log)[0].outcome, 'invalid_output');
 });
 
+test('an empty answer is retried once, so a real need is not dropped', async () => {
+  const log = logPath();
+  const replies = ['', 'COMMERCIAL: YES\nREASON: recurring bookkeeping task.'];
+  const c = { chat: { completions: { create: async () => ({ choices: [{ message: { content: replies.shift() } }], usage: {} }) } } };
+  const r = await classifyTrend({ niche: 'small business bookkeeping', client: c, logPath: log });
+  assert.equal(r.commercial, true);
+  assert.deepEqual(readAgentExecutions(log).map((e) => e.outcome), ['invalid_output', 'ok']);
+});
+
+test('two failed attempts still fail closed, with no third call', async () => {
+  const log = logPath();
+  let calls = 0;
+  const c = { chat: { completions: { create: async () => { calls += 1; return { choices: [{ message: { content: '' } }], usage: {} }; } } } };
+  const r = await classifyTrend({ niche: 'x', client: c, logPath: log });
+  assert.equal(r.commercial, false);
+  assert.equal(r.failed, true);
+  assert.equal(calls, 2);
+});
+
 test('parseClassification is strict about the verdict line', () => {
   assert.equal(parseClassification('COMMERCIAL: maybe'), null);
   assert.deepEqual(parseClassification('commercial: yes\nreason: fine'), { commercial: true, reason: 'fine' });
