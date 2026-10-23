@@ -98,7 +98,7 @@ Done:
 | Push to origin/main | PASS | `7cb880f..08e65a9`, then `08e65a9..cde4f73`; fast-forward, no force. |
 | CI-equivalent run on the clean tree (CI=true, GITHUB_ACTIONS=true) | PASS | groups b 203 OK (6 skipped), e 626 OK (5), f 237 OK (3), i-p 1615 OK (12); a, c-d, g-h, q-z passed in the first pass; 0 unimportable of 5853; all JS batches and checks passed. Python 3.14 locally vs 3.12 on CI. |
 | GitHub CI on 08e65a9 | FAIL | run 39937686646: 35 of 36 jobs passed; `test` failed at "Python tests (b)": `test_b12_010_workbook` read Windows paths with `Path(...).name`, which on Linux returns the whole string. |
-| Fix for that failure (`cde4f73`) | PASS locally / UNKNOWN on CI | `PureWindowsPath(...).name`; group b 203 OK on the clean tree. GitHub run pending at time of writing. |
+| Fix for that failure (`cde4f73`) | PASS | `PureWindowsPath(...).name`; group b 203 OK on the clean tree; GitHub CI on `cde4f73`: 36 of 36 jobs successful (2026-10-23 12:47 UTC), the first green CI on the public main in this cycle (`7cb880f` had failed). |
 | Phase-3 permission patch (`d375735`) | PASS | Test-only: `@patch.dict(os.environ, {"FACTORY_LIVE_PUBLISH": "true"})` on the two classes that test the gates behind the write gate, same pattern as `tests/test_distributor.py`. Without it: exactly 3 failures; with it: 28/28. No production file changed; 0 non-dry-run publish attempts recorded today. |
 | publish_queue test fix (`8f0fe40`) | PASS | Prepared in the working tree by the parallel session; committed unchanged with that provenance stated. |
 | Classifier retry (`f46387c`) | PASS | Telemetry: 3 of 14 calls returned empty output. Two attempts, then fail closed; both new tests fail on the previous code. |
