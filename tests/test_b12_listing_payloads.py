@@ -22,6 +22,9 @@ if str(_ROOT) not in sys.path:
 sys.path.insert(0, str(_ROOT / "scripts"))
 
 import build_b12_listing_payloads as bp  # noqa: E402
+import sys as _gf_sys  # noqa: E402
+_gf_sys.path.insert(0, str(Path(__file__).resolve().parent))
+from paid_artifacts import paid_files_absent, require_paid_files  # noqa: E402
 
 
 class TestCopyParsing(unittest.TestCase):
@@ -71,6 +74,8 @@ class TestRegistryAgreement(unittest.TestCase):
                                 "%s: %s missing (%s)" % (pid, key, spec[key]))
 
     def test_every_declared_deliverable_exists(self):
+        require_paid_files(*[_ROOT / "books" / "batch12" / rel for pid, it in self.items.items()
+                             if pid in bp.PRODUCTS for rel in it.get("files") or []])
         for pid, item in self.items.items():
             if pid not in bp.PRODUCTS:
                 continue

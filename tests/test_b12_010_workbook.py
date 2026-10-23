@@ -23,6 +23,10 @@ from PIL import Image
 from pypdf import PdfReader
 
 ROOT = Path(__file__).resolve().parent.parent
+
+import sys as _gf_sys  # noqa: E402
+_gf_sys.path.insert(0, str(Path(__file__).resolve().parent))
+from paid_artifacts import paid_files_absent, require_paid_files  # noqa: E402
 XLSX = ROOT / "books" / "batch12" / "B12-010_grant_pipeline_tracker.xlsx"
 PDF = ROOT / "books" / "batch12" / "B12-010_grant_pipeline_guide.pdf"
 COVER = ROOT / "books" / "covers" / "B12-010.png"
@@ -88,6 +92,7 @@ def next_report_due(today, first_due, repeat_days):
 
 class TestCanonicalArtifacts(unittest.TestCase):
     def test_files_exist_at_the_recorded_size_and_hash(self):
+        require_paid_files(XLSX, PDF)
         for name, (size, digest) in EXPECTED.items():
             path = ROOT / "books" / "batch12" / name
             if name.endswith(".png"):
@@ -115,6 +120,7 @@ class TestCanonicalArtifacts(unittest.TestCase):
 class TestWorkbook(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        require_paid_files(XLSX, PDF)
         cls.wb = openpyxl.load_workbook(XLSX)
         cls.ws = cls.wb["Opportunities"]
 
@@ -227,6 +233,7 @@ class TestRulesRederived(unittest.TestCase):
         self.assertIsNone(next_report_due(today, dt.date(2026, 1, 31), 0))
 
     def test_the_documented_14_day_window_matches_the_two_thresholds(self):
+        require_paid_files(XLSX, PDF)
         # Opportunities warns at 14 days, post-award reports at 30.
         wb = openpyxl.load_workbook(XLSX)
         self.assertIn("<=14", wb["Opportunities"]["S2"].value)
@@ -236,6 +243,7 @@ class TestRulesRederived(unittest.TestCase):
 class TestGuide(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        require_paid_files(XLSX, PDF)
         cls.reader = PdfReader(str(PDF))
         cls.text = "\n".join((p.extract_text() or "") for p in cls.reader.pages)
 

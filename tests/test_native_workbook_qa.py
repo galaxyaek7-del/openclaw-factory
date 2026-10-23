@@ -24,6 +24,10 @@ import native_workbook_qa as wbqa  # noqa: E402
 MANIFEST = ROOT / "reports" / "B12-010" / "MANIFEST_2026-10-19.json"
 ARTIFACT = ROOT / "books" / "batch12" / "B12-010_grant_pipeline_tracker.xlsx"
 
+import sys as _gf_sys  # noqa: E402
+_gf_sys.path.insert(0, str(Path(__file__).resolve().parent))
+from paid_artifacts import paid_files_absent, require_paid_files  # noqa: E402
+
 HASH = "df49cecaf704cb06dec3b48c9f826c94cfdae9e2bf91d3a2b76fc670593b8574"
 
 
@@ -203,6 +207,7 @@ class TestOtherSafeguards(unittest.TestCase):
 
 class TestSpecMatchesTheRelease(unittest.TestCase):
     def test_spec_hash_matches_the_manifest_and_the_artifact_on_disk(self):
+        require_paid_files(ARTIFACT)
         spec_hash = wbqa.B12_010_SPEC["artifact_sha256"]
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
         xlsx = next(f for f in manifest["files"] if f["path"].lower().endswith(".xlsx"))

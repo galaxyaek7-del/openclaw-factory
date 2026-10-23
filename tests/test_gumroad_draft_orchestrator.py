@@ -29,6 +29,27 @@ def _load():
 
 od = _load()
 
+sys.path.insert(0, str(FACTORY_DIR / "tests"))
+from paid_artifacts import paid_files_absent, require_paid_files  # noqa: E402
+
+# Paid product files are not in the public repository (2026-10-23). On CI the
+# safety-matrix tests below still need validate_spec() to treat the absent
+# release files as present, since they test the response handling after it;
+# only "file exists" failures for those exact, absent paid files are waived.
+# Every other failure (a corrupt package, a wrong price, a missing cover)
+# still blocks. On the factory machine the real files are checked in full.
+_PAID_FILES = sorted({f for prof in od.PROFILES.values() for f in prof.get("files", [])})
+if paid_files_absent(*_PAID_FILES):
+    _real_validate_spec = od.validate_spec
+    _absent = {str(Path(f)) for f in _PAID_FILES if not Path(f).exists()}
+
+    def _validate_spec_ci(spec):
+        rep = _real_validate_spec(spec)
+        checks = [c for c in rep["checks"]
+                  if not (c["check"].startswith("file exists:") and c["status"] != "PASS" and str(Path(c["detail"])) in _absent)]
+        return {"ready": all(c["status"] == "PASS" for c in checks), "checks": checks}
+    od.validate_spec = _validate_spec_ci
+
 
 def _ok_post(url, data):
     return {"success": True, "product": {"id": "prod_1", "published": False}}
@@ -48,6 +69,7 @@ class _AllowAuth:
 
 class TestPackageValidation(unittest.TestCase):
     def test_real_workbook_is_ready(self):
+        require_paid_files(*_PAID_FILES)
         report = od.validate_package()
         self.assertTrue(report["ready"], [c for c in report["checks"] if c["status"] != "PASS"])
         names = {c["check"]: c["status"] for c in report["checks"]}
@@ -431,6 +453,7 @@ class TestDraftLiveSafetyMatrix(unittest.TestCase):
 
 class TestPreflightReport(unittest.TestCase):
     def test_preflight_reports_ready_and_blocked(self):
+        require_paid_files(*_PAID_FILES)
         rep = od.preflight()
         self.assertTrue(rep["package_ready"])
         self.assertFalse(rep["safe_draft_creation_supported"])
@@ -454,6 +477,7 @@ class TestProductProfileRegistry(unittest.TestCase):
         self.assertEqual(prof["title"], "Founder Access Continuity Organizer")
 
     def test_every_registered_profile_builds_and_validates(self):
+        require_paid_files(*_PAID_FILES)
         for pid in sorted(od.PROFILES):
             spec = od.build_spec(pid)
             self.assertEqual(spec["product"], pid)

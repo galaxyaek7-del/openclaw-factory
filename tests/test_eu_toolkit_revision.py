@@ -29,6 +29,10 @@ sys.path.insert(0, str(ROOT))
 
 V1 = ROOT / "books" / "eu_ai_act_compliance_toolkit.pdf"
 V2 = ROOT / "books" / "eu_ai_act_compliance_toolkit_v2.pdf"
+
+import sys as _gf_sys  # noqa: E402
+_gf_sys.path.insert(0, str(Path(__file__).resolve().parent))
+from paid_artifacts import paid_files_absent, require_paid_files  # noqa: E402
 ASSET_REGISTRY = ROOT / "data" / "asset_registry.json"
 
 # Recorded evidence, not recomputed here:
@@ -62,11 +66,13 @@ def require_v2():
 
 class TestRevisionsExist(unittest.TestCase):
     def test_both_revisions_are_present_as_an_audit_trail(self):
+        require_paid_files(V1, V2)
         self.assertTrue(V1.exists(), "the superseded revision must be kept, not deleted")
         require_v2()
         self.assertTrue(V2.exists())
 
     def test_hashes_match_the_recorded_evidence(self):
+        require_paid_files(V1, V2)
         self.assertEqual(_sha256(V1), V1_SHA256)
         require_v2()
         self.assertEqual(_sha256(V2), V2_SHA256)
@@ -76,6 +82,7 @@ class TestRevisionsExist(unittest.TestCase):
         self.assertEqual(V2.stat().st_size, LIVE_DELIVERABLE_BYTES)
 
     def test_v1_is_not_the_revision_the_live_listing_serves(self):
+        require_paid_files(V1, V2)
         self.assertNotEqual(V1.stat().st_size, LIVE_DELIVERABLE_BYTES)
 
 

@@ -36,6 +36,10 @@ XLSX = ROOT / "books" / "batch13" / "B13-001_renovation_allowance_control.xlsx"
 PDF = ROOT / "books" / "batch13" / "B13-001_renovation_allowance_control_guide.pdf"
 EVID = ROOT / "reports" / "B13-001"
 
+import sys as _gf_sys  # noqa: E402
+_gf_sys.path.insert(0, str(Path(__file__).resolve().parent))
+from paid_artifacts import paid_files_absent, require_paid_files  # noqa: E402
+
 SHEETS = ["Start Here", "Setup", "Cost Control", "Change Orders", "Allowances",
           "Payments", "Contingency", "Assumptions", "Summary"]
 
@@ -156,6 +160,7 @@ def rederive(wb) -> dict:
 class WorkbookStructureTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        require_paid_files(XLSX, PDF)
         cls.wb = load_workbook(XLSX)
 
     def test_exact_sheet_set_and_order(self):
@@ -224,6 +229,7 @@ class WorkbookStructureTests(unittest.TestCase):
 class ArithmeticTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        require_paid_files(XLSX, PDF)
         cls.model = rederive(load_workbook(XLSX))
 
     def test_worked_example_rederives_independently(self):
@@ -256,6 +262,7 @@ class ArithmeticTests(unittest.TestCase):
 class GuideTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        require_paid_files(XLSX, PDF)
         cls.text = pdf_text(PDF)
         cls.flat = re.sub(r"\s+", " ", cls.text)
 
@@ -314,6 +321,7 @@ class ImportGuardTests(unittest.TestCase):
 
 class EvidenceTests(unittest.TestCase):
     def test_native_spec_hash_matches_the_shipped_workbook(self):
+        require_paid_files(XLSX)
         import native_workbook_qa as wbqa
         spec = wbqa.SPECS["B13-001"]
         shipped = hashlib.sha256(XLSX.read_bytes()).hexdigest()

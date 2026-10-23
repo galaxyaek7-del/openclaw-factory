@@ -29,6 +29,18 @@ def _load():
 
 od = _load()
 
+import sys as _gf_sys  # noqa: E402
+_gf_sys.path.insert(0, str(Path(__file__).resolve().parent))
+from paid_artifacts import paid_files_absent, require_paid_files  # noqa: E402
+
+# Paid product files are not in the public repository (2026-10-23). The
+# graph and persistence tests exercise orchestration, not the files: on CI
+# only the package_validate task is replaced by a stub that reports what the
+# real task reports on the factory machine. Tests of the files skip instead.
+_PAID = sorted({f for prof in od._load_gdo().PROFILES.values() for f in prof.get("files", [])})
+if paid_files_absent(*_PAID):
+    od.DEFAULT_REGISTRY["package_validate"] = lambda ctx: {"ready": True, "failed": [], "workbook": {"ci_stand_in": True}}
+
 _MISSING_EVIDENCE = Path(tempfile.gettempdir()) / "c118_no_default_draft_evidence.json"
 
 
@@ -287,6 +299,7 @@ class TestStatePersistence(unittest.TestCase):
 
 class TestWorkbookValidation(unittest.TestCase):
     def test_canonical_workbook_structure(self):
+        require_paid_files(*_PAID)
         wb = od.workbook_validate()
         self.assertTrue(wb["structural_ok"], wb.get("reason"))
         self.assertEqual(wb["sha256"],
@@ -908,6 +921,7 @@ class TestB12004Profile(unittest.TestCase):
         self.assertIsNotNone(spec["expected_sha256"])
 
     def test_b12004_validate_spec_ready(self):
+        require_paid_files(*_PAID)
         gdo = od._load_gdo()
         rep = gdo.validate_spec(gdo.build_spec("B12-004"))
         self.assertTrue(rep["ready"], [c for c in rep["checks"] if c["status"] != "PASS"])

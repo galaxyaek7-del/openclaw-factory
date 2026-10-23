@@ -22,6 +22,21 @@ if str(_ROOT) not in sys.path:
 
 sys.path.insert(0, str(_ROOT / "scripts"))
 import verify_gumroad_listing as vgl  # noqa: E402
+import sys as _gf_sys  # noqa: E402
+_gf_sys.path.insert(0, str(Path(__file__).resolve().parent))
+from paid_artifacts import paid_files_absent, require_paid_files  # noqa: E402
+
+_REAL_DELIVERABLE = "books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx"
+# The matching tests need a local file of known size, not the paid
+# product itself: on CI (no paid files) a temp file stands in for it.
+if paid_files_absent(_ROOT / _REAL_DELIVERABLE):
+    import tempfile as _gf_tmp
+    _fd, _stand_in = _gf_tmp.mkstemp(suffix=".xlsx")
+    with open(_fd, "wb") as _f:
+        _f.write(b"stand-in for a paid deliverable" * 300)
+    _DELIVERABLE = _stand_in
+else:
+    _DELIVERABLE = _REAL_DELIVERABLE
 
 
 def _spec(**over):
@@ -31,7 +46,7 @@ def _spec(**over):
         "url": "https://example.invalid/l/x",
         "expect_published": True,
         "price_cents": 1000,
-        "deliverables": ["books/batch12/B12-001_freelancer_rate_raise_calculator.xlsx"],
+        "deliverables": [_DELIVERABLE],
     }
     base.update(over)
     return base
@@ -131,6 +146,7 @@ class TestExpectedAbsence(unittest.TestCase):
 
 class TestRegistryInvariants(unittest.TestCase):
     def test_every_deliverable_path_exists(self):
+        require_paid_files(*[_ROOT / rel for spec in vgl.PRODUCTS.values() for rel in spec["deliverables"]])
         for key, spec in vgl.PRODUCTS.items():
             for rel in spec["deliverables"]:
                 self.assertTrue((_ROOT / rel).exists(),
