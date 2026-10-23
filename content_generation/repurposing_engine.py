@@ -21,6 +21,7 @@ testable and safe to run in CI.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
@@ -49,6 +50,11 @@ class Asset:
     source_doc: Optional[str] = None
     kind: str = "product"  # "product" | "service" | "asset" | "book"
     tags: List[str] = field(default_factory=list)
+    # 2026-10-23 (distribution engine): where a reader can actually get it, and
+    # whether it is live. "concept" keeps the original validation-concept
+    # framing; "live" is only for a listing verified as publicly available.
+    url: Optional[str] = None
+    status: str = "concept"  # "concept" | "live"
 
     def validate(self) -> None:
         for f in REQUIRED_FIELDS:
@@ -118,26 +124,62 @@ def short_video_script(asset: Asset) -> Dict[str, str]:
 def linkedin_post(asset: Asset) -> Dict[str, str]:
     asset.validate()
     price = _price_line(asset)
-    body = (
-        f"{asset.description}\n\n"
-        f"{price} — one-time, no subscription, no seat minimum.\n"
-        f"This is a {asset.kind} (validation concept — not a launched product)."
-    )
+    if asset.status == "live" and asset.url:
+        # A verified live listing: saying "not a launched product" would be false.
+        body = f"{asset.description}\n\n{price}, one-time purchase.\n{asset.url}"
+        cta = "Link above."
+    else:
+        body = (
+            f"{asset.description}\n\n"
+            f"{price} — one-time, no subscription, no seat minimum.\n"
+            f"This is a {asset.kind} (validation concept — not a launched product)."
+        )
+        cta = "Comments and DMs welcome."
     return {
         "headline": asset.title,
         "body": body,
-        "cta": "Comments and DMs welcome.",
+        "cta": cta,
         "post_length_chars": len(body),
     }
+
+
+X_MAX_CHARS = 280
+X_URL_WEIGHT = 23  # X counts every link as 23 characters (t.co wrapping)
+
+
+def x_weighted_length(text: str) -> int:
+    """Length as X counts it: each http(s) URL weighs 23 characters."""
+    urls = re.findall(r"https?://\S+", text)
+    return len(text) - sum(len(u) for u in urls) + X_URL_WEIGHT * len(urls)
 
 
 def x_post(asset: Asset) -> Dict[str, str]:
     asset.validate()
     price = _price_line(asset)
+    tail = f" {price}" + (f" {asset.url}" if asset.url and asset.status == "live" else "") + " #galaxyforge"
+    head = f"{asset.title}: "
+    # the description gets whatever the title, price, link and tag leave over
+    budget = X_MAX_CHARS - x_weighted_length(head + tail)
+    text = head + _fit_sentences(asset.description, max(0, min(200, budget))) + tail
+    if x_weighted_length(text) > X_MAX_CHARS:  # an extreme title: drop the description entirely
+        text = (head.rstrip(": ") + tail)[: X_MAX_CHARS]
     return {
-        "text": f"{asset.title}: {_truncate(asset.description, 200)} {price} #galaxyforge",
-        "max_chars": 280,
+        "text": text,
+        "max_chars": X_MAX_CHARS,
+        "weighted_length": x_weighted_length(text),
     }
+
+
+def instagram_caption(asset: Asset) -> Dict[str, str]:
+    """Feed/Reel caption. Links in Instagram captions are not clickable, so the
+    call to action points to the profile link instead of pasting a URL."""
+    asset.validate()
+    price = _price_line(asset)
+    tags = [f"#{t.replace(' ', '').replace('-', '')}" for t in asset.tags[:5] if t.strip()]
+    caption = f"{asset.title}\n\n{_truncate(asset.description, 1500)}\n\n{price}. Link in bio."
+    if tags:
+        caption += "\n\n" + " ".join(tags)
+    return {"caption": caption[:2200], "max_chars": 2200, "hashtag_count": len(tags)}
 
 
 def facebook_post(asset: Asset) -> Dict[str, str]:
@@ -195,6 +237,7 @@ CHANNEL_BUILDERS = {
     "short_video_script": short_video_script,
     "linkedin_post": linkedin_post,
     "x_post": x_post,
+    "instagram_caption": instagram_caption,
     "facebook_post": facebook_post,
     "pinterest_asset": pinterest_asset,
     "email_newsletter": email_newsletter,
@@ -234,13 +277,29 @@ def _truncate(text: str, max_chars: int) -> str:
     return text[: max_chars - 1].rstrip() + "…"
 
 
+def _fit_sentences(text: str, max_chars: int) -> str:
+    """Whole sentences up to max_chars; a single over-long first sentence is
+    truncated with an ellipsis rather than dropped."""
+    text = (text or "").strip()
+    if len(text) <= max_chars:
+        return text
+    out = ""
+    for s in re.split(r"(?<=[.!?])\s+", text):
+        if len(out) + len(s) + (1 if out else 0) > max_chars:
+            break
+        out = (out + " " + s).strip()
+    return out or _truncate(text, max_chars)
+
+
 def _pain_from_description(asset: Asset) -> str:
     """Extract a short pain phrase from the description's first clause.
     Falls back to the title when the description is empty. Pure text
     manipulation — never invents a pain the asset doesn't claim."""
     desc = (asset.description or "").strip()
     lower = desc.lower()
-    for marker in ("without ", "while ", "instead of "):
+    # "while" was a marker too, but it is usually a conjunction ("profitable on
+    # paper while payroll lands...") and produced hooks like "Stop payroll lands".
+    for marker in ("without ", "instead of "):
         idx = lower.find(marker)
         if idx != -1:
             candidate = desc[idx + len(marker):].split(".")[0].strip()
@@ -262,4 +321,4 @@ def _has_pain_marker(asset: Asset) -> bool:
     recognized markers, so the hook can use the "Stop <pain>" framing
     without inventing anything."""
     desc = (asset.description or "").lower()
-    return any(marker in desc for marker in ("without ", "while ", "instead of "))
+    return any(marker in desc for marker in ("without ", "instead of "))

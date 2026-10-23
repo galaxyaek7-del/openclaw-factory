@@ -32,7 +32,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from content_generation.repurposing_engine import Asset, repurpose_all
+from content_generation.repurposing_engine import Asset, repurpose
+
+# The kit's own 8 assets, named, so a channel added to the shared engine
+# (instagram_caption, 2026-10-23) does not silently change the kit.
+KIT_CHANNELS = ("product_page", "short_video_script", "linkedin_post", "x_post",
+                "facebook_post", "pinterest_asset", "email_newsletter", "seo_content")
 
 _FACTORY_ROOT = Path(__file__).resolve().parent
 _GENERATION_LOG_PATH = _FACTORY_ROOT / "books" / "_generation_log.jsonl"
@@ -185,7 +190,7 @@ def prepare_product_launch_kit(gumroad_status: str = "DRAFT_PENDING_PAYMENT_METH
         price_usd=profile["price_usd"],
         gumroad_url=profile["gumroad_url"],
         landing_page=profile["landing_page"],
-        channel_assets=repurpose_all(_asset(profile)),
+        channel_assets=repurpose(_asset(profile), channels=list(KIT_CHANNELS)),
         tracking=dict(profile["tracking"]),
         gumroad_status=gumroad_status,
         prepared_at=_now_iso(now),

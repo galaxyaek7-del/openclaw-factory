@@ -1,0 +1,139 @@
+{
+ "generated_at": "2026-10-23T18:45:46+00:00",
+ "operational": {
+  "offers": {
+   "total": 173,
+   "by_arm": {
+    "digital_products": 114,
+    "affiliate": 19,
+    "education_content": 35,
+    "services": 3,
+    "video": 2
+   },
+   "by_type": {
+    "digital_product": 92,
+    "content_asset": 59,
+    "service": 3,
+    "affiliate_offer": 17,
+    "media_asset": 2
+   },
+   "by_eligibility": {
+    "ELIGIBLE": 137,
+    "NEEDS_REVIEW": 7,
+    "NOT_ELIGIBLE": 29
+   },
+   "eligible_by_arm": {
+    "digital_products": 100,
+    "affiliate": 2,
+    "education_content": 35
+   }
+  },
+  "offer_blockers": {
+   "program approval is NOT_APPLIED; no approved affiliate link": 17,
+   "product page for a product that is not on sale (page says (proposed))": 5,
+   "page is not on origin/main, so it is not public": 4,
+   "listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED": 3,
+   "service: delivery capacity and terms need founder confirmation before promotion": 3,
+   "duplicate live title shared with ['GR-0fa92aeb1a', 'GR-ab323215ab']": 2,
+   "rights UNRESOLVED": 2,
+   "product page for a product that is not on sale (page says (approved, not yet listed))": 1,
+   "page is stale: it says (proposed) but GR-41d87224ab is live at https://aekraft.gumroad.com/l/blayvb": 1,
+   "page is stale: it says (approved, not yet listed) but GR-2562d0b4d2 is live at https://aekraft.gumroad.com/l/ieashv": 1,
+   "product page for a product that is not on sale (page says (proposed, not yet listed))": 1
+  },
+  "platforms": {
+   "linkedin": {
+    "name": "LinkedIn",
+    "state": "NOT_CONNECTED",
+    "missing_credentials": [
+     "LINKEDIN_ACCESS_TOKEN",
+     "LINKEDIN_PERSON_URN"
+    ],
+    "publish_mode": "MANUAL_HANDOFF",
+    "why": "no app or credentials on this machine"
+   },
+   "tiktok": {
+    "name": "TikTok",
+    "state": "NOT_CONNECTED",
+    "missing_credentials": [
+     "TIKTOK_CLIENT_KEY",
+     "TIKTOK_CLIENT_SECRET",
+     "TIKTOK_ACCESS_TOKEN"
+    ],
+    "publish_mode": "MANUAL_HANDOFF",
+    "why": "no app or credentials on this machine"
+   },
+   "instagram": {
+    "name": "Instagram",
+    "state": "NOT_CONNECTED",
+    "missing_credentials": [
+     "INSTAGRAM_ACCESS_TOKEN",
+     "INSTAGRAM_USER_ID"
+    ],
+    "publish_mode": "MANUAL_HANDOFF",
+    "why": "no app or credentials on this machine"
+   },
+   "x": {
+    "name": "X",
+    "state": "BLOCKED_SPEND",
+    "missing_credentials": [],
+    "publish_mode": "MANUAL_HANDOFF",
+    "why": "posting needs paid API credits; TOTAL_NEW_SPEND=$0"
+   }
+  },
+  "jobs_by_state": {
+   "QA_PASSED": 16,
+   "QA_FAILED": 8
+  },
+  "jobs_by_platform": {
+   "linkedin": 8,
+   "x": 8,
+   "instagram": 4,
+   "tiktok": 4
+  },
+  "jobs_by_arm": {
+   "digital_products": 16,
+   "affiliate": 4,
+   "education_content": 4
+  },
+  "qa_failure_reasons": {
+   "Instagram needs rendered JPEG images; only slide text exists": 4,
+   "TikTok needs a rendered video; none exists for this offer": 2,
+   "video rights UNRESOLVED": 2
+  },
+  "awaiting_approval": [
+   "SJ-6cebab7f3406",
+   "SJ-c019cc276857",
+   "SJ-c4066cda8acd",
+   "SJ-c027af691793",
+   "SJ-9e6a41c8224a",
+   "SJ-8715ad7f2a85",
+   "SJ-d0dea5803531",
+   "SJ-8a570477cb8d",
+   "SJ-b441f77cc437",
+   "SJ-2fe5d6b41b2e",
+   "SJ-e51cea0fb84a",
+   "SJ-78a529795f9d",
+   "SJ-0c2b10bebca8",
+   "SJ-9f96b996b6c6",
+   "SJ-6a55bf152a2e",
+   "SJ-faee23e43fd4"
+  ],
+  "stuck_or_retrying": [],
+  "published_verified": [],
+  "manual_posts_unverified": []
+ },
+ "commercial": {
+  "metrics": "NO REAL METRICS RECORDED",
+  "verified_revenue_cents": 0,
+  "note": "Traffic to the public site is unmeasured (GitHub Pages has no beacon receiver). Gumroad sales carry their own referrer; no social-attributed sale exists."
+ },
+ "next_actions": [
+  "Founder: review 16 QA-passed drafts and approve the ones to post (manual hand-off).",
+  "LinkedIn: no app or credentials on this machine.",
+  "TikTok: no app or credentials on this machine.",
+  "Instagram: no app or credentials on this machine.",
+  "X: posting needs paid API credits; TOTAL_NEW_SPEND=$0.",
+  "Largest offer blocker (17): program approval is NOT_APPLIED; no approved affiliate link."
+ ]
+}
