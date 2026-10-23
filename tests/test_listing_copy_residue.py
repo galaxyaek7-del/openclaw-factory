@@ -27,10 +27,18 @@ KNOWN_NAMES = {
 }
 
 
+# Files whose names match the listing pattern but hold machine records, not
+# listing copy; each needs a reason.
+NOT_COPY = {
+    "data/listing_page_checks.json": "product_registry page-check results keyed by Gumroad product ids "
+                                     "(base64 ids look like fused tokens)",
+}
+
+
 def listing_files():
     out = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, check=True).stdout
     return [ROOT / p for p in out.splitlines()
-            if re.search(r"listing(_copy)?[^/]*\.(md|txt|json)$", p, re.I)]
+            if re.search(r"listing(_copy)?[^/]*\.(md|txt|json)$", p, re.I) and p not in NOT_COPY]
 
 
 class TestListingCopyResidue(unittest.TestCase):
