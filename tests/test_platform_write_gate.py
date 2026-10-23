@@ -22,7 +22,7 @@ from channels import write_gate as wg  # noqa: E402
 from channels import paddle_publisher as pp  # noqa: E402
 from channels import etsy_publisher as ep  # noqa: E402
 
-CLEAN_ENV = {"FACTORY_LIVE_PUBLISH": "", wg.CHECKOUT_ENV: "", wg.MESSAGE_ENV: ""}
+CLEAN_ENV = {"FACTORY_LIVE_PUBLISH": "", wg.CHECKOUT_ENV: "", wg.MESSAGE_ENV: "", wg.SEARCH_PING_ENV: ""}
 NO_NET = AssertionError("network must not be reached")
 
 
@@ -81,6 +81,16 @@ class TestFlagSemantics(unittest.TestCase):
             self.assertFalse(wg.check_platform_write("outreach", "contact_form", message=True).allowed)
         with patch.dict(os.environ, dict(CLEAN_ENV, **{wg.MESSAGE_ENV: "true"})):
             self.assertTrue(wg.check_platform_write("outreach", "contact_form", message=True).allowed)
+
+    def test_search_ping_switch_allows_only_search_pings(self):
+        with patch.dict(os.environ, dict(CLEAN_ENV, **{wg.SEARCH_PING_ENV: "true"})):
+            self.assertTrue(wg.check_platform_write("indexnow", "submit_urls", search_ping=True).allowed)
+            self.assertFalse(wg.check_platform_write("indexnow", "submit_urls").allowed)
+            self.assertFalse(wg.check_platform_write("paddle", "create_product").allowed)
+            self.assertFalse(wg.check_platform_write("paddle", "tx", checkout=True).allowed)
+            self.assertFalse(wg.check_platform_write("outreach", "contact_form", message=True).allowed)
+        with patch.dict(os.environ, CLEAN_ENV):
+            self.assertFalse(wg.check_platform_write("indexnow", "submit_urls", search_ping=True).allowed)
 
     def test_contradictory_or_junk_values_deny(self):
         for v in ("", "0", "false", "no", "maybe", "TRUE-ish"):

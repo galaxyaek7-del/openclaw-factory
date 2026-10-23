@@ -221,11 +221,16 @@ def require_write_authorization(operation: str, **kw) -> WriteAuthDecision:
 #   outbound messages to third parties (contact forms, emails, DMs): need
 #       GF_ALLOW_OUTBOUND_MESSAGES=true. FACTORY_LIVE_PUBLISH does NOT cover
 #       them: permission to publish is not permission to contact people.
+#   search-engine URL notification (IndexNow): FACTORY_LIVE_PUBLISH, or
+#       GF_ALLOW_SEARCH_PING=true alone (founder authorization, 2026-10-23),
+#       which allows ONLY calls made with search_ping=True -- telling search
+#       engines a public page exists, never creating or changing anything.
 # These platforms have no credential-state watcher like gumroad_auth_watch, so
 # the flag is the only check here; it never widens what Gumroad requires.
 
 CHECKOUT_ENV = "GF_ALLOW_CHECKOUT_TRANSACTIONS"
 MESSAGE_ENV = "GF_ALLOW_OUTBOUND_MESSAGES"
+SEARCH_PING_ENV = "GF_ALLOW_SEARCH_PING"
 
 
 def _env_true(name: str) -> bool:
@@ -233,7 +238,7 @@ def _env_true(name: str) -> bool:
 
 
 def check_platform_write(platform: str, operation: str, *, checkout: bool = False,
-                         message: bool = False) -> WriteAuthDecision:
+                         message: bool = False, search_ping: bool = False) -> WriteAuthDecision:
     if message:
         if _env_true(MESSAGE_ENV):
             return WriteAuthDecision(True, f"{platform}.{operation}: {MESSAGE_ENV} is true",
@@ -244,19 +249,24 @@ def check_platform_write(platform: str, operation: str, *, checkout: bool = Fals
     if flag:
         return WriteAuthDecision(True, f"{platform}.{operation}: FACTORY_LIVE_PUBLISH is true",
                                  state="FLAG_ONLY", live_publish_flag=True)
+    if search_ping and _env_true(SEARCH_PING_ENV):
+        return WriteAuthDecision(True, f"{platform}.{operation}: {SEARCH_PING_ENV} is true (search ping only)",
+                                 state="SEARCH_PING_ONLY", live_publish_flag=False)
     if checkout and _env_true(CHECKOUT_ENV):
         return WriteAuthDecision(True, f"{platform}.{operation}: {CHECKOUT_ENV} is true (checkout only)",
                                  state="CHECKOUT_ONLY", live_publish_flag=False)
-    need = f"FACTORY_LIVE_PUBLISH or {CHECKOUT_ENV}" if checkout else "FACTORY_LIVE_PUBLISH"
+    need = (f"FACTORY_LIVE_PUBLISH or {CHECKOUT_ENV}" if checkout
+            else f"FACTORY_LIVE_PUBLISH or {SEARCH_PING_ENV}" if search_ping else "FACTORY_LIVE_PUBLISH")
     return WriteAuthDecision(False, f"{platform}.{operation}: live mutation disabled ({need} is not true)",
                              state="NOT_CHECKED", live_publish_flag=False)
 
 
 def require_platform_write(platform: str, operation: str, *, checkout: bool = False,
-                           message: bool = False) -> WriteAuthDecision:
+                           message: bool = False, search_ping: bool = False) -> WriteAuthDecision:
     """Raise WriteNotAuthorized unless check_platform_write allows it. Call it
     first in every non-Gumroad mutation function, before any network I/O."""
-    decision = check_platform_write(platform, operation, checkout=checkout, message=message)
+    decision = check_platform_write(platform, operation, checkout=checkout, message=message,
+                                    search_ping=search_ping)
     if not decision.allowed:
         raise WriteNotAuthorized(decision.reason)
     return decision

@@ -4046,6 +4046,46 @@ async function runDemandSensingStep({ timeoutMs = 4 * 60 * 1000 } = {}) {
   }
 }
 
+// ── SITE PUBLISHING + INDEXNOW (2026-10-23, founder authorization) ──
+// scripts/auto_publish_site.py pushes to origin/main only when every pending
+// commit touches site pages alone and the site tests pass (code still needs a
+// reviewed manual push); scripts/indexnow_auto.py then tells search engines
+// about published pages that changed, gated by GF_ALLOW_SEARCH_PING, which
+// allows search pings and nothing else. Both print one JSON line.
+function runOnceScript(script, { timeoutMs = 6 * 60 * 1000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'scripts', script), '--once'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ action: 'failed', detail: `could not start ${script}: ${err.message}` });
+      return;
+    }
+    let output = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ action: 'failed', detail: `${script} timed out (${timeoutMs / 1000}s)` });
+    }, timeoutMs);
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.on('error', (err) => finish({ action: 'failed', detail: err.message }));
+    python.on('close', () => {
+      try {
+        const r = JSON.parse(output.trim().split(/\r?\n/).pop());
+        finish({ action: r.action || 'none', detail: r.detail || '' });
+      } catch (e) {
+        finish({ action: 'failed', detail: `could not parse ${script} output: ${e.message}` });
+      }
+    });
+    python.stdin.end();
+  });
+}
+
 // ── AGENT PRODUCT CHAIN (2026-10-23) ──
 // Once a day, after Sensing: today's commercial trends -> scout -> qa ->
 // finance -> design -> builder -> publisher -> a proposal in
@@ -4848,6 +4888,11 @@ async function runTick() {
     actions.push({ step: 'demand_sensing', ...(await runDemandSensingStep()) });
     markStep('agent_product_chain');
     actions.push({ step: 'agent_product_chain', ...(await runAgentProductChain()) });
+
+    markStep('site_publish');
+    actions.push({ step: 'site_publish', ...(await runOnceScript('auto_publish_site.py', { timeoutMs: 20 * 60 * 1000 })) });
+    markStep('indexnow');
+    actions.push({ step: 'indexnow', ...(await runOnceScript('indexnow_auto.py')) });
 
     markStep('sales_poll');
     actions.push({ step: 'sales_poll', ...(await pollSales(true)) });
