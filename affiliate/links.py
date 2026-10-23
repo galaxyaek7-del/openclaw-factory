@@ -93,6 +93,39 @@ def active_links(registry_path=None) -> list:
             if not r.get("event") and r.get("campaign") not in flagged]
 
 
+_REDIRECT_PARAMS = ("redirect", "redirect_uri", "redirect_url", "url", "next", "return", "return_to",
+                    "returnurl", "dest", "destination", "goto", "continue", "target", "r", "u")
+
+
+def validate_destination(url, merchant_domain) -> dict:
+    """2026-10-23: the registry stored only a bare domain and nothing checked
+    the URL a link actually sends a visitor to. A destination is accepted
+    only when it is https, its host is the program's domain or a subdomain of
+    it, it carries no user:password part, and no query parameter forwards
+    the visitor to another site. Pure: no network."""
+    try:
+        parts = urllib.parse.urlsplit(str(url or "").strip())
+    except ValueError:
+        return {"ok": False, "reason": "unparseable URL"}
+    domain = str(merchant_domain or "").strip().lower().rstrip(".")
+    host = (parts.hostname or "").lower().rstrip(".")
+    if parts.scheme != "https":
+        return {"ok": False, "reason": f"scheme {parts.scheme or 'missing'!r}: https required"}
+    if not host or not domain:
+        return {"ok": False, "reason": "missing host or program domain"}
+    if parts.username or parts.password:
+        return {"ok": False, "reason": "credentials in URL"}
+    if host != domain and not host.endswith("." + domain):
+        return {"ok": False, "reason": f"host {host!r} is not {domain!r} or a subdomain of it"}
+    for key, value in urllib.parse.parse_qsl(parts.query, keep_blank_values=True):
+        v = value.strip().lower()
+        if key.lower() in _REDIRECT_PARAMS and (v.startswith(("http:", "https:", "//")) or "%2f%2f" in v):
+            target = (urllib.parse.urlsplit(value if "//" in value else "//" + value).hostname or "").lower()
+            if target != domain and not target.endswith("." + domain):
+                return {"ok": False, "reason": f"parameter {key!r} redirects off-domain"}
+    return {"ok": True, "host": host}
+
+
 def check_link_status(url, timeout=15) -> dict:
     """Best-effort HTTP reachability of a destination URL. Explicitly opt-in
     per call (never crawled automatically): some merchants rate-limit

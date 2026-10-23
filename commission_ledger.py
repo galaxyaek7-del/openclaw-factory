@@ -17,6 +17,7 @@ when it does.
 """
 
 import json
+import secrets
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -157,7 +158,10 @@ def record_commission(partner_id, opportunity_id, commission_status, gross_commi
 
     net_commission = gross_commission - fees
     record = {
-        "commission_id": f"COM-{partner_id}-{opportunity_id}-{_now_iso(now)}",
+        # 2026-10-23: a timestamp alone collided for records written in the
+        # same second (four distinct commissions shared one id in the
+        # affiliate simulation); a random suffix keeps every id unique.
+        "commission_id": f"COM-{partner_id}-{opportunity_id}-{_now_iso(now)}-{secrets.token_hex(4)}",
         "partner_id": partner_id, "opportunity_id": opportunity_id,
         "customer_id": customer_id, "lead_id": lead_id, "deal_id": deal_id,
         "external_transaction_id": external_transaction_id,
@@ -217,30 +221,156 @@ def load_ledger(ledger_path=None):
     return records
 
 
+# ---------------------------------------------------------------------------
+# 2026-10-23: status changes for an existing commission.
+#
+# The ledger refused a second REAL record for the same transaction (correct:
+# it prevents double counting) and its error message pointed callers to "a
+# follow-up event", but no function recorded one. A PENDING commission could
+# therefore never become CONFIRMED, and a confirmed one could never be
+# REVERSED -- and the summary kept counting it. Status changes now go to a
+# separate append-only file beside the ledger, so load_ledger() still
+# returns exactly the commission records every existing caller expects.
+# ---------------------------------------------------------------------------
+
+ALLOWED_TRANSITIONS = {
+    "EXPECTED": {"PENDING", "CONFIRMED", "REVERSED", "UNKNOWN"},
+    "PENDING": {"CONFIRMED", "REVERSED", "REFUNDED", "DISPUTED", "UNKNOWN"},
+    "CONFIRMED": {"PAID", "REVERSED", "REFUNDED", "DISPUTED"},
+    "PAID": {"REVERSED", "REFUNDED", "DISPUTED"},
+    "DISPUTED": {"CONFIRMED", "PAID", "REVERSED", "REFUNDED"},
+    "UNKNOWN": {"PENDING", "CONFIRMED", "PAID", "REVERSED", "REFUNDED", "DISPUTED"},
+    "REVERSED": set(),
+    "REFUNDED": set(),
+}
+COUNTED_STATUSES = ("CONFIRMED", "PAID")
+
+
+def status_path(ledger_path=None):
+    path = Path(ledger_path) if ledger_path else DEFAULT_LEDGER_PATH
+    return path.with_name(path.stem + ".status.jsonl")
+
+
+def _load_status_events(ledger_path=None):
+    p = status_path(ledger_path)
+    if not p.exists():
+        return []
+    out = []
+    with open(p, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                out.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+    return out
+
+
+def _tx_key(record):
+    return record.get("external_transaction_id") or record.get("commission_id")
+
+
+def transaction_states(ledger_path=None, environment=None):
+    """{transaction key: latest state} -- the commission record (keyed by its
+    external_transaction_id, or its commission_id when it has none) with
+    every recorded status change applied in order."""
+    states = {}
+    for r in load_ledger(ledger_path):
+        if environment and r.get("environment") != environment:
+            continue
+        key = (r.get("environment"), _tx_key(r))
+        if key in states:  # TEST/SIMULATION may repeat a transaction id; keep both
+            key = (r.get("environment"), r.get("commission_id"))
+        states[key] = {"commission_id": r.get("commission_id"), "external_transaction_id": r.get("external_transaction_id"),
+                       "environment": r.get("environment"), "status": r.get("commission_status"),
+                       "net_commission": r.get("net_commission", 0) or 0, "gross_commission": r.get("gross_commission", 0) or 0,
+                       "currency": (r.get("currency") or "USD").upper(), "customer_id": r.get("customer_id"),
+                       "deal_id": r.get("deal_id"), "evidence": r.get("evidence"),
+                       "history": [{"status": r.get("commission_status"), "at": r.get("created_at")}]}
+    for e in _load_status_events(ledger_path):
+        key = (e.get("environment"), e.get("transaction_key"))
+        if key in states:
+            states[key]["status"] = e.get("commission_status")
+            states[key]["history"].append({"status": e.get("commission_status"), "at": e.get("created_at"),
+                                           "evidence": e.get("evidence")})
+    return {k[1]: v for k, v in states.items()}
+
+
+def record_status_change(transaction_key, new_status, environment, evidence=None, ledger_path=None, now=None, source=None):
+    """Record a status change for an existing commission. `transaction_key`
+    is its external_transaction_id (or its commission_id when it has none).
+    Refuses an unknown commission, a transition the state machine does not
+    allow (a REVERSED commission never becomes PAID), and, for REAL and
+    PROVISIONAL, a change without real evidence."""
+    if new_status not in COMMISSION_STATUSES:
+        raise ValueError(f"commission_status must be one of {COMMISSION_STATUSES}, got {new_status!r}")
+    if environment in ("REAL", "PROVISIONAL") and not _is_meaningful(evidence):
+        raise AntiFabricationError(f"A {environment} status change needs real evidence (e.g. the network's notice or statement line).")
+    path = status_path(ledger_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with _LedgerLock(path):
+        current = transaction_states(ledger_path, environment=environment).get(transaction_key)
+        if current is None:
+            raise ValueError(f"no {environment} commission with key {transaction_key!r}")
+        allowed = ALLOWED_TRANSITIONS.get(current["status"], set())
+        if new_status not in allowed:
+            raise ValueError(f"transition {current['status']} -> {new_status} is not allowed")
+        # Same bar as record_commission(): a REAL commission only becomes
+        # CONFIRMED or PAID when it carries a real external transaction id.
+        if environment == "REAL" and new_status in COUNTED_STATUSES and not _is_meaningful(current["external_transaction_id"]):
+            raise AntiFabricationError(
+                "A REAL commission cannot become CONFIRMED or PAID without a real external_transaction_id; "
+                "record the confirmed commission with its transaction id instead.")
+        event = {"record_type": "status_change", "transaction_key": transaction_key,
+                 "commission_id": current["commission_id"], "environment": environment,
+                 "previous_status": current["status"], "commission_status": new_status,
+                 "evidence": evidence, "source": source, "created_at": _now_iso(now)}
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(event, ensure_ascii=False) + "\n")
+    return event
+
+
+def _sum_by_currency(states, statuses):
+    out = {}
+    for s in states:
+        if s["status"] in statuses:
+            out[s["currency"]] = round(out.get(s["currency"], 0) + s["net_commission"], 2)
+    return out
+
+
 def real_commission_summary(ledger_path=None):
     """The one real, authoritative summary -- filters strictly on
     environment='REAL'. TEST/SIMULATION/PROVISIONAL records are
     counted separately and never blended into these totals, per the
     directive's own explicit rule (Section 9's REAL/TEST/SIMULATION
     separation, extended Phase 41/ADR-238 to include PROVISIONAL)."""
+    # 2026-10-23: totals use each transaction's LATEST status (a reversed or
+    # refunded commission no longer counts) and the *_usd fields are USD
+    # only; other currencies are reported per currency, never added to USD.
     records = load_ledger(ledger_path)
-    real = [r for r in records if r.get("environment") == "REAL"]
+    real = list(transaction_states(ledger_path, environment="REAL").values())
     test = [r for r in records if r.get("environment") == "TEST"]
     simulation = [r for r in records if r.get("environment") == "SIMULATION"]
-    provisional = [r for r in records if r.get("environment") == "PROVISIONAL"]
+    provisional = [s for s in transaction_states(ledger_path, environment="PROVISIONAL").values()
+                   if s["status"] not in ("REVERSED", "REFUNDED")]
 
-    confirmed_or_paid = [r for r in real if r.get("commission_status") in ("CONFIRMED", "PAID")]
-    paid = [r for r in real if r.get("commission_status") == "PAID"]
+    by_cur = _sum_by_currency(real, COUNTED_STATUSES)
+    paid_by_cur = _sum_by_currency(real, ("PAID",))
 
     return {
         "generated_at": _now_iso(),
         "real_commission_records": len(real),
-        "real_confirmed_or_paid_commission_usd": round(sum(r["net_commission"] for r in confirmed_or_paid), 2),
-        "real_paid_commission_usd": round(sum(r["net_commission"] for r in paid), 2),
+        "real_confirmed_or_paid_commission_usd": by_cur.get("USD", 0),
+        "real_paid_commission_usd": paid_by_cur.get("USD", 0),
+        "real_confirmed_or_paid_by_currency": by_cur,
+        "real_paid_by_currency": paid_by_cur,
+        "real_reversed_or_refunded_records": sum(1 for s in real if s["status"] in ("REVERSED", "REFUNDED")),
         "test_records": len(test),
         "simulation_records": len(simulation),
         "provisional_records": len(provisional),
-        "provisional_commission_usd": round(sum(r["net_commission"] for r in provisional), 2),
+        "provisional_commission_usd": round(sum(s["net_commission"] for s in provisional if s["currency"] == "USD"), 2),
         "note": "Only CONFIRMED/PAID REAL records count as real commercial revenue -- EXPECTED/PENDING REAL records exist but are explicitly excluded from this total. PROVISIONAL records (real, in-progress claims awaiting authoritative confirmation) are tracked in their own bucket, never blended into real_confirmed_or_paid_commission_usd -- promoting a claim to REAL requires a fresh, separately-evidenced record_commission() call.",
     }
 
@@ -259,9 +389,10 @@ def first_real_dollar_status(ledger_path=None):
     record_commission()'s own AntiFabricationError guard). No
     exceptions, no partial credit, no averaging toward true."""
     summary = real_commission_summary(ledger_path=ledger_path)
-    records = load_ledger(ledger_path)
-    real_confirmed_or_paid = [r for r in records if r.get("environment") == "REAL" and r.get("commission_status") in ("CONFIRMED", "PAID")]
-    real_paid = [r for r in real_confirmed_or_paid if r.get("commission_status") == "PAID"]
+    # latest state per transaction: a reversed commission is no longer evidence of a real dollar
+    real_confirmed_or_paid = [s for s in transaction_states(ledger_path, environment="REAL").values()
+                              if s["status"] in COUNTED_STATUSES and s["currency"] == "USD"]
+    real_paid = [s for s in real_confirmed_or_paid if s["status"] == "PAID"]
 
     first_real_dollar = summary["real_confirmed_or_paid_commission_usd"] > 0
 

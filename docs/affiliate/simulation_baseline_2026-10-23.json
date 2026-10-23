@@ -1,0 +1,219 @@
+{
+ "generated_at": "2026-10-23T13:55:03.247360+00:00",
+ "environment": "SIMULATION (temp dir, synthetic SIM- ids)",
+ "checks": 35,
+ "passed": 28,
+ "failed": 7,
+ "results": [
+  {
+   "scenario": "A",
+   "check": "registry derives QUALIFIED for a verified synthetic program",
+   "result": "PASS",
+   "detail": "QUALIFIED"
+  },
+  {
+   "scenario": "A",
+   "check": "eligibility found and payout conditional (not verified)",
+   "result": "PASS",
+   "detail": "{'opportunity_id': 'SIM-CO-acme-affiliate', 'program_name': 'SIM Acme Tools affiliate', 'category': 'affiliate', 'eligibility_state': 'ELIGIBLE_EVIDENCE_FOUND', 'eligibility_basis': 'VERIFIED', 'payout_state': 'PAYOUT_ROUTE_CONDITIONAL', 'payout_rails': [{'rail': 'SIM-paypal', 'algeria_receive': 'CO"
+  },
+  {
+   "scenario": "A",
+   "check": "an approval can be recorded with evidence (path exists)",
+   "result": "FAIL",
+   "detail": "no function records a program approval; registry can never show APPROVED"
+  },
+  {
+   "scenario": "A",
+   "check": "link registered in an isolated registry",
+   "result": "PASS",
+   "detail": "{'ok': True, 'entry': {'program': 'SIM Acme', 'content_asset': 'SIM-asset-1', 'channel': 'SIM-blog', 'campaign': 'SIM-campaign', 'cta': 'Try Acme', 'merchant_domain': 'acme.example', 'registered_at': '2026-10-23T13:55:03.102903+00:00', 'last_verified': None, 'http_status': None}}"
+  },
+  {
+   "scenario": "A",
+   "check": "destination URL validated against the program domain (function exists)",
+   "result": "FAIL",
+   "detail": "links.py stores only a bare domain; no destination URL validation"
+  },
+  {
+   "scenario": "A",
+   "check": "content QA passes a disclosed, dated asset",
+   "result": "PASS",
+   "detail": "[]"
+  },
+  {
+   "scenario": "A",
+   "check": "mock-channel publication allowed only when its switch is explicitly on (test-only env)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "scenario": "A",
+   "check": "synthetic click recorded with source SIMULATION",
+   "result": "PASS",
+   "detail": "{'product_id': 'SIM-product-1', 'timestamp': '2026-10-23T13:55:03.107400+00:00', 'referrer': None, 'channel': 'SIM-blog', 'campaign': 'SIM-campaign', 'source': 'SIMULATION'}"
+  },
+  {
+   "scenario": "A",
+   "check": "simulated conversion recorded as PENDING",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "scenario": "A",
+   "check": "PENDING -> CONFIRMED -> PAID recorded for one transaction",
+   "result": "FAIL",
+   "detail": "commission_ledger has no status-change path; a second record for the transaction is the only option"
+  },
+  {
+   "scenario": "A",
+   "check": "simulated money never counted as real revenue",
+   "result": "PASS",
+   "detail": "{'generated_at': '2026-10-23T13:55:03.112977+00:00', 'real_commission_records': 0, 'real_confirmed_or_paid_commission_usd': 0, 'real_paid_commission_usd': 0, 'test_records': 0, 'simulation_records': 1, 'provisional_records': 0, 'provisional_commission_usd': 0, 'note': 'Only CONFIRMED/PAID REAL recor"
+  },
+  {
+   "scenario": "A",
+   "check": "revenue firewall classifies a simulated event as internal, not verified",
+   "result": "PASS",
+   "detail": "{'EVENT': 'UNKNOWN', 'SOURCE': 'simulation', 'CLASS': 'INTERNAL', 'VERIFICATION': 'UNKNOWN', 'ATTRIBUTION': 'UNKNOWN', 'LEDGER_WRITE': 'none', 'COMMERCIAL_STATUS': 'NOT_VERIFIED'}"
+  },
+  {
+   "scenario": "B",
+   "check": "unverified program is not QUALIFIED or APPROVED",
+   "result": "PASS",
+   "detail": "RESEARCHING"
+  },
+  {
+   "scenario": "B",
+   "check": "approval status reported as not approved",
+   "result": "PASS",
+   "detail": "NOT_APPLIED"
+  },
+  {
+   "scenario": "C",
+   "check": "eligibility and payout reported separately; payout blocked",
+   "result": "PASS",
+   "detail": "{'opportunity_id': 'SIM-CO-blocked-payout', 'program_name': 'SIM Acme Tools affiliate', 'category': 'affiliate', 'eligibility_state': 'ELIGIBLE_EVIDENCE_FOUND', 'eligibility_basis': 'VERIFIED', 'payout_state': 'PAYOUT_ROUTE_BLOCKED', 'payout_rails': [{'rail': 'SIM-bank', 'algeria_receive': 'UNAVAILA"
+  },
+  {
+   "scenario": "C",
+   "check": "next action holds activation",
+   "result": "PASS",
+   "detail": "hold: no documented payout route usable from Algeria"
+  },
+  {
+   "scenario": "D",
+   "check": "tokenized or malformed domain rejected: 'acme.example?aff_id=1'",
+   "result": "PASS",
+   "detail": "{'ok': False, 'error': 'merchant_domain must be a bare domain, never a tokenized URL'}"
+  },
+  {
+   "scenario": "D",
+   "check": "tokenized or malformed domain rejected: 'acme.example/x?token=abc'",
+   "result": "PASS",
+   "detail": "{'ok': False, 'error': 'merchant_domain must be a bare domain, never a tokenized URL'}"
+  },
+  {
+   "scenario": "D",
+   "check": "tokenized or malformed domain rejected: ''",
+   "result": "PASS",
+   "detail": "{'ok': False, 'error': 'all fields required as non-empty strings'}"
+  },
+  {
+   "scenario": "D",
+   "check": "tokenized or malformed domain rejected: 'a b.example'",
+   "result": "PASS",
+   "detail": "{'ok': False, 'error': 'invalid domain'}"
+  },
+  {
+   "scenario": "E",
+   "check": "REAL commission without evidence refused",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "scenario": "E",
+   "check": "REAL PAID without external transaction id refused",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "scenario": "E",
+   "check": "unknown commission status refused",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "scenario": "F",
+   "check": "replayed conversion refused (same transaction id)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "scenario": "F",
+   "check": "commission ids unique",
+   "result": "PASS",
+   "detail": "['COM-SIM-acme-SIM-CO-2026-10-23T12:00:00+00:00']"
+  },
+  {
+   "scenario": "G",
+   "check": "reversal of an existing commission can be recorded",
+   "result": "FAIL",
+   "detail": "DuplicateCommissionError: A REAL commission with external_transaction_id='SIM-tx-rev' already exists (commission_id=COM-SIM-acme-SIM-CO-2026-10-23T12:00:00+00:00) -- the same real transaction must nev"
+  },
+  {
+   "scenario": "H",
+   "check": "catalog/social publication blocked with FACTORY_LIVE_PUBLISH off",
+   "result": "PASS",
+   "detail": "SIM-channel.publish: live mutation disabled (FACTORY_LIVE_PUBLISH is not true)"
+  },
+  {
+   "scenario": "H",
+   "check": "outbound message blocked with its switch off",
+   "result": "PASS",
+   "detail": "SIM-channel.post: outbound message disabled (GF_ALLOW_OUTBOUND_MESSAGES is not true)"
+  },
+  {
+   "scenario": "H",
+   "check": "search-ping switch does not authorize publication",
+   "result": "PASS",
+   "detail": "SIM-channel.publish: live mutation disabled (FACTORY_LIVE_PUBLISH is not true)"
+  },
+  {
+   "scenario": "I",
+   "check": "corrupt line skipped, valid records preserved",
+   "result": "PASS",
+   "detail": "2"
+  },
+  {
+   "scenario": "I",
+   "check": "missing ledger file reads as empty, not an error",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "scenario": "J",
+   "check": "USD total excludes EUR and PENDING",
+   "result": "FAIL",
+   "detail": "got 75.0, independent calculation 60.0"
+  },
+  {
+   "scenario": "J",
+   "check": "paid total is only PAID",
+   "result": "PASS",
+   "detail": "40.0"
+  },
+  {
+   "scenario": "J",
+   "check": "commission ids unique when records share a timestamp",
+   "result": "FAIL",
+   "detail": "['COM-SIM-acme-SIM-CO-2026-10-23T12:00:00+00:00', 'COM-SIM-acme-SIM-CO-2026-10-23T12:00:00+00:00', 'COM-SIM-acme-SIM-CO-2026-10-23T12:00:00+00:00', 'COM-SIM-acme-SIM-CO-2026-10-23T12:00:00+00:00']"
+  },
+  {
+   "scenario": "J",
+   "check": "per-currency totals reported",
+   "result": "FAIL",
+   "detail": "None"
+  }
+ ]
+}
