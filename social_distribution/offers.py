@@ -100,6 +100,8 @@ def product_offers(registry: dict, live: list) -> list:
             "availability": "LIVE" if r.get("published") else "UNPUBLISHED", "primary_state": r.get("primary_state"),
             "qa_status": "QA_PASS" if r.get("manifest") else "UNKNOWN", "rights_status": "OWNED_ORIGINAL",
             "description": desc, "tags": lp.get("tags") or [], "sales_count": r.get("sales_count", 0),
+            # the listing's own public cover image, when it has one (14 of 92 on 2026-10-23)
+            "cover_url": lp.get("preview_url") or next((c.get("url") for c in lp.get("covers") or [] if c.get("url")), None),
             "measurement": {"destination": "gumroad", "sales_referrer": "OBSERVED per sale via Gumroad sales API",
                             "page_views": "UNKNOWN (no read API used)"},
             "eligibility": _eligibility(block, review),

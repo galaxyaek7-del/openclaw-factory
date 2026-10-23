@@ -20,6 +20,7 @@ NOT_CONNECTED = "NOT_CONNECTED"            # no app, no credentials
 CREDENTIALS_PRESENT = "CREDENTIALS_PRESENT"  # keys exist; posting never proven
 BLOCKED_SPEND = "BLOCKED_SPEND"            # posting is possible only by paying
 PUBLISH_VERIFIED = "PUBLISH_VERIFIED"      # a real post confirmed by read-back (none yet)
+CONNECTED_VIA_METRICOOL = "CONNECTED_VIA_METRICOOL"  # account linked in Metricool (read-only proof)
 
 PLATFORMS = {
     "linkedin": {
@@ -75,6 +76,23 @@ PLATFORMS = {
         "cost": "free API",
         "sources": ["https://developers.facebook.com/docs/instagram-platform/content-publishing"],
     },
+    "pinterest": {
+        "name": "Pinterest",
+        "formats": ["image_pin"],
+        "account": "Pinterest account galaxyaek7, connected to Metricool brand 6965613",
+        "permissions": ["Metricool connector post creation (Claude Code permission rule required)"],
+        "operations": ["schedule a pin through Metricool (review flow)"],
+        "prerequisites": ["a public image (the product cover)", "a destination link"],
+        "constraints": {"title_max_chars": 100, "description_max_chars": 500},
+        "rate_limits": "Metricool plan limits (not verified)",
+        "scheduling": "native in Metricool",
+        "verification": "Metricool getScheduledPosts, then the public pin URL",
+        "manual_steps": ["allow the Metricool post tool in Claude Code permissions"],
+        "env_keys": [],
+        "via": "metricool",
+        "cost": "free on the current Metricool plan (review flow availability unverified)",
+        "sources": ["data/metricool_brand.json"],
+    },
     "x": {
         "name": "X",
         "formats": ["text_post", "thread", "image_post"],
@@ -118,12 +136,28 @@ def _x_spend_blocked(root=ROOT):
     return any("402" in str(i.get("block_reason", "")) for i in q)
 
 
+def _metricool(root=ROOT):
+    try:
+        return json.loads((Path(root) / "data" / "metricool_brand.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
 def readiness(env_names=None, root=ROOT) -> dict:
     """Per platform: connection state, missing credential names, publish mode."""
     names = _env_names() if env_names is None else set(env_names)
+    mc = _metricool(root)
     out = {}
     for key, p in PLATFORMS.items():
         missing = [k for k in p["env_keys"] if k not in names]
+        if key in mc.get("connected_networks", {}):
+            blocked = str(mc.get("post_creation", "")).startswith("BLOCKED")
+            out[key] = {"name": p["name"], "state": CONNECTED_VIA_METRICOOL, "missing_credentials": [],
+                        "account": mc["connected_networks"][key], "brand_id": mc.get("brand_id"),
+                        "publish_mode": "MANUAL_HANDOFF" if blocked else "METRICOOL",
+                        "why": ("connected through Metricool; post creation needs a Claude Code permission rule"
+                                if blocked else "connected through Metricool")}
+            continue
         if key == "x" and not missing and _x_spend_blocked(root):
             state = BLOCKED_SPEND
         elif not missing:

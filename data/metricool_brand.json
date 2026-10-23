@@ -1,0 +1,10 @@
+{
+ "source": "Metricool connector getBrandSettings, read 2026-10-23T19:10Z (read-only)",
+ "brand_id": 6965613,
+ "label": "galaxyaek7",
+ "timezone": "Europe/Paris",
+ "connected_networks": {"pinterest": "galaxyaek7", "tiktok": "aekgalaxy8"},
+ "not_connected": ["linkedin", "x", "instagram"],
+ "post_creation": "BLOCKED_BY_PERMISSION: Claude Code denied createScheduledPostForReview twice on 2026-10-23; needs an allow rule added by the founder",
+ "note": "The Metricool REST API needs a paid plan (docs/CYCLE_82_METRICOOL_DECISION.md); this connector is a separate path."
+}

@@ -27,7 +27,7 @@ ROOT = Path(__file__).resolve().parent.parent
 REAL_LEDGER = ROOT / "data" / "social_distribution_metrics.jsonl"
 SIM_LEDGER = ROOT / "data" / "social_distribution_metrics.simulation.jsonl"
 
-PLATFORMS = ("linkedin", "tiktok", "instagram", "x")
+PLATFORMS = ("linkedin", "tiktok", "instagram", "x", "pinterest")
 MEDIUM = "social_organic"
 EVIDENCE_CLASSES = ("OBSERVED", "DERIVED", "INFERRED", "UNKNOWN")
 METRICS = ("content_created", "content_approved", "post_scheduled", "post_published", "publication_failed",
