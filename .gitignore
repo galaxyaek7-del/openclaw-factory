@@ -175,3 +175,15 @@ drafts/agent_packages/
 books/**/*.zip
 books/_batch14_src/
 data/registry_daily_state.json
+
+# 2026-10-23 founder decision: paid product files leave the public repository.
+# They stay on the factory machine; tests that read them skip on CI when absent.
+cohort_GF_BATCH*/dist/
+books/**/*.docx
+books/**/*.epub
+product_review_*/**/*.pdf
+product_review_*/**/*.xlsx
+seeds/**/*.pdf
+seeds/**/*.docx
+seeds/**/*.xlsx
+/demo_cookbook.pdf
