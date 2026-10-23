@@ -392,6 +392,8 @@ function killAfterTimeout(childProcess, timeoutMs, onTimeout) {
 // Fast, local-file-only services (opportunities/production/revenue/
 // automation/decision_history/system_configuration) — generous but
 // bounded; none of these normally take more than a couple of seconds.
+// 2026-10-23: services whose measured run time (logs/service_layer.log) reached
+// this default and returned 500 carry their own timeout at the handler.
 const PYTHON_SERVICE_TIMEOUT_MS = 30000;
 
 // Single shared bridge to mission_control_api.py's CLI dispatcher —
@@ -941,7 +943,7 @@ const SERVICE_REGISTRY = [
     name: 'ceo-score',
     description: "CEO Score (founder Priority #1, 2026-08-17): a read-only daily executive dashboard answering 'how is the company actually doing today' with exactly 8 indicators -- FINANCIAL_TRUTH (real revenue $0 / 0 real sales / $0 treasury / 0 published books, ground truth only, never adjusted), SYSTEM_HEALTH (real health trend + resilience + factory_loop runtime), BEST_OPPORTUNITY (the real Opportunity Queue's top run-now item, never a fabricated pick), BIGGEST_RISK (highest-severity unresolved gap in the most recent audit evidence), TECHNOLOGY_THREAT (real repo evidence only -- llama-3.1-8b-instant's retirement is already mitigated by openai/gpt-oss-20b), AI_CAPABILITY (currently verified model in use: openai/gpt-oss-20b / groq, ADOPTED), LEARNING_LOOP (decision->outcome->lesson actually exists -- honestly NOT CLOSED today), COMMERCIAL_READINESS (real products with ZERO founder-gate blockers -- preparation is never readiness; 0 today, every real candidate still carries a founder gate). Plus Today's 3 Decisions (up to 3 real pending founder-gated decisions) and 'What the founder can ignore today' (only items proven by current real state). Every value traces to a real repo data source; missing data reads 'Unknown — no data yet.'. Read-only: creates no external action, never spends, never publishes, never contacts a platform/customer, never changes any authority level, never records to any ledger.",
     reused: 'ceo_score.py::build_ceo_score(), via mission_control_api.py. Reuses execution_governance.py, scheduler.py, resilience_monitor.py, founder_next_action.py, health_trend.py, ai_capability/observatory.py, finance_data.json, config/reality.json.',
-    handler: (req) => runPythonServiceCached('ceo_score', [], req),
+    handler: (req) => runPythonServiceCached('ceo_score', [], req, 60000),
     health: pythonHealthCheck('ceo_score'),
   },
   {
@@ -951,7 +953,7 @@ const SERVICE_REGISTRY = [
     name: 'eos-decision-feed',
     description: "Every open real recommendation the company currently has, each carrying Problem/Evidence/Business impact/Financial impact/Confidence/Recommended action/Estimated ROI/Time to execute/Priority -- sourced from executive_brain.py (today's arbitrated directive), resilience_monitor.py (active critical/emergency risks), commercial_readiness.py (the lowest-scoring readiness dimension), and goos.py (top-ranked unbuilt opportunities). Fields with no real signal anywhere in this factory read 'Unknown', never a fabricated number.",
     reused: 'eos_decision_feed.py::build_eos_decision_feed(), via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('eos_decision_feed', [], req),
+    handler: (req) => runPythonServiceCached('eos_decision_feed', [], req, 60000),
     health: pythonHealthCheck('eos_decision_feed'),
   },
   {
@@ -995,7 +997,7 @@ const SERVICE_REGISTRY = [
     name: 'golden-hunter-room',
     description: "The CEO's window into Golden Hunter: best opportunity today, second best, the highest real long-term-potential candidate (ranked by real ROI score, never a fabricated dollar figure), and which candidates should be ignored -- reshapes goos.py::rank_build_candidates() into the founder's named CEO View questions.",
     reused: 'golden_hunter_room.py::ceo_view(), via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('golden_hunter_room', [], req),
+    handler: (req) => runPythonServiceCached('golden_hunter_room', [], req, 60000),
     health: pythonHealthCheck('golden_hunter_room'),
   },
   {
@@ -1233,7 +1235,7 @@ const SERVICE_REGISTRY = [
     name: 'ai-doctor',
     description: "The real, non-fabricated engineering-health system replacing quality_doctor.py's confirmed-fake pattern -- combines evolution_engine's bottleneck/tech-debt/ROI/capability-gap signals with real infrastructure status and a real (never-fabricated) dependency-pinning + npm-audit check.",
     reused: 'ai_doctor.py build_ai_doctor_report() (EOS Phase 2, 2026-07-19) -- reuses evolution_engine.py and infrastructure_bridge.py verbatim, no reimplementation.',
-    handler: (req) => runPythonServiceCached('ai_doctor', [], req),
+    handler: (req) => runPythonServiceCached('ai_doctor', [], req, 60000),
     health: pythonHealthCheck('ai_doctor'),
   },
   {
@@ -1264,7 +1266,8 @@ const SERVICE_REGISTRY = [
     name: 'galaxy-evolution-report',
     description: "The real monthly Galaxy Evolution Report -- Current Strengths/Weaknesses, Critical Risks, Hidden Opportunities, Recommended Improvements, High Priority Actions (ranked by real capital_allocation_engine.py ROI data), Expected Long-Term Impact, Potential Monthly Revenue Impact, Estimated Implementation Effort, Global Benchmark. The last 3 are honestly disclosed gaps, never fabricated: zero real revenue exists to model an impact against, zero real historical per-task duration data exists to estimate effort from, and no real external company-research pipeline exists to study world-class companies with. Already wired into factory_loop.js's tick with a genuinely new once-per-calendar-month gate (this factory's first monthly cadence, alongside its existing daily/weekly ones).",
     reused: 'evolution_engine.py::build_galaxy_evolution_report() (ADR-173) + capital_allocation_engine.py, via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('galaxy_evolution_report', [], req),
+    // ~22s alone, past the 30s default under concurrent load (API contract run, 2026-10-23).
+    handler: (req) => runPythonServiceCached('galaxy_evolution_report', [], req, 90000),
     health: pythonHealthCheck('galaxy_evolution_report'),
   },
   {
@@ -1531,7 +1534,7 @@ const SERVICE_REGISTRY = [
     name: 'enterprise-dependency-graph',
     description: "Extends the real department dependency matrix (ADR-155) with real reverse-dependents, real cascade-impact ('what breaks if this department fails'), and real cycle detection -- all from dependency_graph.py's already-real functions, never surfaced in Mission Control until now.",
     reused: 'enterprise_executive_brain.py::enterprise_dependency_graph() (ADR-156) + dependency_graph.py, via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('enterprise_dependency_graph', [], req),
+    handler: (req) => runPythonServiceCached('enterprise_dependency_graph', [], req, 90000),
     health: pythonHealthCheck('enterprise_dependency_graph'),
   },
   {
@@ -1545,7 +1548,7 @@ const SERVICE_REGISTRY = [
     name: 'executive-scenario-simulator',
     description: "3 real, disclosed-assumption HYPOTHETICAL projections (revenue growth off channels/ledger.py's real baseline, AI cost increase off data/ai_cost_log.jsonl's real baseline, infrastructure-failure cascade off the real dependency graph) + 4 scenarios honestly reported NOT_ARCHITECTED (traffic spikes, publishing delays, affiliate expansion, digital product expansion -- no real, distinct baseline exists to honestly perturb). Never a prediction, never written to any ledger, never touches Simulation Mode's AFFILIATE_MODE switch or any production code path. Accepts optional ?cascade_department=<name> query param.",
     reused: 'enterprise_executive_brain.py::executive_scenario_simulator() (ADR-156), via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('executive_scenario_simulator', [JSON.stringify({ cascade_department: req.query && req.query.cascade_department })], req),
+    handler: (req) => runPythonServiceCached('executive_scenario_simulator', [JSON.stringify({ cascade_department: req.query && req.query.cascade_department })], req, 90000),
     health: pythonHealthCheck('executive_scenario_simulator'),
   },
   {
@@ -1613,7 +1616,7 @@ const SERVICE_REGISTRY = [
     name: 'digital-twin-dashboard',
     description: "Real REAL STATE + DIGITAL TWIN across 17 named domains (inventory honestly not_applicable -- a digital-only business), 8 named 'what happens if...' scenarios (mostly citing enterprise_scenario_simulator() and ai_provider_concentration() directly), and the real preview-action registry (5 named production action types: growth stage progression, roadmap execution, affiliate simulation cycle, publish, capital reallocation -- each honestly disclosing which of PREVIEW/SIMULATE/ESTIMATE IMPACT/ROLLBACK PLAN it can really provide). Advisory only -- never authorizes or blocks any real action. Expensive (~40s, chains growth_stages/strategic_planning/gfos/customer_pipeline/etc.).",
     reused: 'digital_twin.py::build_digital_twin_dashboard() (ADR-161) + growth_stages.py/strategic_planning.py/enterprise_executive_brain.py/global_opportunity_exchange.py/gfos.py, via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('digital_twin_dashboard', [], req, 60000),
+    handler: (req) => runPythonServiceCached('digital_twin_dashboard', [], req, 120000),
     health: pythonHealthCheck('digital_twin_dashboard'),
   },
   {
@@ -1797,7 +1800,7 @@ const SERVICE_REGISTRY = [
     name: 'strategic-planning-dashboard',
     description: "The real rolling roadmap (Today/This Week/This Month/This Quarter/This Year -- a disclosed heuristic re-bucketing of scheduler.py's real buckets + Growth Stage requirements, never a committed calendar date, since this factory has no scheduler and no real historical duration model), per-division status board (7 divisions: objectives/progress/risks/dependencies/blocked tasks/estimated completion -- estimated completion is honestly Unknown), the Enterprise Priority Matrix (8 real columns per ACCEPTED opportunity, execution_status.py's own real Priority Score order, never a second ranking algorithm), instant answers to 'build next / delay / highest ROI / blocks growth', and an extended Executive Timeline (milestones + real Growth Stage history + architectural decisions). Expensive (measured live ~70s, chains answer_strategic_questions() + build_growth_dashboard() + build_execution_status_report()).",
     reused: 'strategic_planning.py::build_strategic_planning_dashboard() (ADR-159) + gfos.py/growth_stages.py/executive_questions.py/execution_status.py/launch_readiness.py/enterprise_operations.py, via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('strategic_planning_dashboard', [], req, 90000),
+    handler: (req) => runPythonServiceCached('strategic_planning_dashboard', [], req, 150000),
     health: pythonHealthCheck('strategic_planning_dashboard'),
   },
   {
@@ -2056,21 +2059,21 @@ const SERVICE_REGISTRY = [
     name: 'commercial-control-center',
     description: "Real revenue dashboard (Total/Today/Week/Month/MRR/ARR/Net/Refunds/Fees/by-Platform/by-Product/by-Country/Trend/Conversion/CAC/CLV), every field tagged ACTUAL/ESTIMATED/PROJECTED explicitly, plus a Global Commercial Score averaging only the dimensions with a real computed value. $0 real revenue today -- honestly reported, not hidden.",
     reused: 'commercial_control_center.py::revenue_snapshot()/global_commercial_score(), via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('commercial_control_center', [], req),
+    handler: (req) => runPythonServiceCached('commercial_control_center', [], req, 90000),
     health: pythonHealthCheck('commercial_control_center'),
   },
   {
     name: 'commercial-daily-brief',
     description: "CEO Daily Commercial Brief: Revenue/Net Revenue/Best Product/Best Platform/Best Market/Best Acquisition Channel/Top Opportunity/Top Partnership/Top Affiliate Opportunity/Biggest Commercial Risk/Biggest Revenue Leak/Recommended Action -- every field a real citation, never a fabricated 'best' when all real values are tied at $0.",
     reused: 'commercial_control_center.py::commercial_daily_brief(), via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('commercial_daily_brief', [], req),
+    handler: (req) => runPythonServiceCached('commercial_daily_brief', [], req, 90000),
     health: pythonHealthCheck('commercial_daily_brief'),
   },
   {
     name: 'commercial-reconciliation',
     description: "Real, read-only reconciliation of Paddle's live /transactions API against internal finance_data.json -- Gumroad/Etsy/Payhip honestly report NOT_RECONCILABLE (no real credential configured) rather than a fabricated zero-discrepancy match. Never modifies any financial record.",
     reused: 'commercial_reconciliation.py::reconcile_all(), via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('commercial_reconciliation_report', [], req),
+    handler: (req) => runPythonServiceCached('commercial_reconciliation_report', [], req, 90000),
     health: pythonHealthCheck('commercial_reconciliation_report'),
   },
   {
@@ -2084,7 +2087,7 @@ const SERVICE_REGISTRY = [
     name: 'commercial-alerts',
     description: "6 of 11 named commercial alert triggers with a real, mechanical check (revenue drop, platform failure, checkout unavailable, payment integration failure, high-value partnership, commercial discrepancy) -- the other 5 honestly disclosed NOT_ARCHITECTED with a specific real reason each (no fabricated refund/trend/competitor-pricing signal exists anywhere in this factory).",
     reused: 'commercial_alerts.py::assess_commercial_alerts(), via mission_control_api.py; reuses resilience_monitor.py\'s own _finding() shape.',
-    handler: (req) => runPythonServiceCached('commercial_alerts_status', [], req),
+    handler: (req) => runPythonServiceCached('commercial_alerts_status', [], req, 90000),
     health: pythonHealthCheck('commercial_alerts_status'),
   },
   {
@@ -2169,14 +2172,14 @@ const SERVICE_REGISTRY = [
     name: 'daily-autonomous-review',
     description: "Citation-only aggregator over ceo_home.build_ceo_home_briefing() (ADR-184) + the real unified operations queue, reshaped into Top-5 Risks/Actions/Opportunities/Improvements + items requiring CEO approval. Computes nothing new.",
     reused: 'autonomous_operations.py::daily_autonomous_review(), via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('daily_autonomous_review', [], req),
+    handler: (req) => runPythonServiceCached('daily_autonomous_review', [], req, 60000),
     health: pythonHealthCheck('daily_autonomous_review'),
   },
   {
     name: 'autonomous-daily-score',
     description: "10 named operational indicators (Automation Success, Recovery Success, Human Intervention, Commercial Reliability, Customer Trust, AI Reliability, Data Integrity, Knowledge Growth, Decision Accuracy, Continuous Improvement) -- each a real citation of an already-computed value or an honest NOT_MEASURABLE. No single fabricated composite score.",
     reused: 'autonomous_operations.py::autonomous_daily_score(), via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('autonomous_daily_score', [], req),
+    handler: (req) => runPythonServiceCached('autonomous_daily_score', [], req, 60000),
     health: pythonHealthCheck('autonomous_daily_score'),
   },
   {
@@ -2291,7 +2294,7 @@ const SERVICE_REGISTRY = [
     name: 'commercial-operations-dashboard',
     description: "Platform Registry (real 21-platform business_development.py registry), Product<->Platform Matrix, Currency (honest single-USD), Commission/Order/Refund Normalization, Payout Reconciliation, Platform Account Health, Payment Infrastructure, Commercial Task Queue, Alerts, Anomaly Detection, Fraud Protection (real SUSPICION->INVESTIGATION->EVIDENCE->DECISION), Channel Profitability, Concentration Risk, and a real Governance Level 0-4 relabeling of autonomous_operations.py's Level 0-6 taxonomy.",
     reused: 'global_commercial_operations_engine.py::build_commercial_operations_dashboard(), via mission_control_api.py. Measured live ~7s.',
-    handler: (req) => runPythonServiceCached('commercial_operations_dashboard', [], req),
+    handler: (req) => runPythonServiceCached('commercial_operations_dashboard', [], req, 60000),
     health: pythonHealthCheck('commercial_operations_dashboard'),
   },
   {
@@ -2339,7 +2342,7 @@ const SERVICE_REGISTRY = [
     name: 'customer-success-dashboard',
     description: "Customer Outcome, Onboarding, Churn, Retention, Support, Root Cause (real clustering over customer_pipeline.py's real problem-cost signal), Refunds, Feedback, Recurring Revenue (real 6-question gate -- SUBSCRIPTION_JUSTIFIED requires at least 1 real yes, never defaults to yes), Renewal, Expansion, LTV, Segment Profitability, Queue, Automation Boundaries (7 named human-required categories, 9 safe-to-automate), Community, Enterprise Success, Forecast, Experiments, Trust, Autonomy (6th relabeling this session of autonomous_operations.py's Level 0-6 taxonomy).",
     reused: 'customer_success_engine.py::build_customer_success_dashboard(), via mission_control_api.py. Measured live ~13s.',
-    handler: (req) => runPythonServiceCached('customer_success_dashboard', [], req),
+    handler: (req) => runPythonServiceCached('customer_success_dashboard', [], req, 60000),
     health: pythonHealthCheck('customer_success_dashboard'),
   },
   {
@@ -2573,7 +2576,7 @@ const SERVICE_REGISTRY = [
     name: 'commercial-ops',
     description: "Unified commercial operations view: revenue-arm audit (READY/PARTIAL/BLOCKED), VERIFIED/PENDING revenue, blockers, consolidated founder queue, TOP revenue path, Paddle activation queue. Exposes autonomous_commerce_ops.mission_control() which was previously imported only by tests.",
     reused: 'autonomous_commerce_ops.py::mission_control(), via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('commercial_mission_control', [], req),
+    handler: (req) => runPythonServiceCached('commercial_mission_control', [], req, 90000),
     health: pythonHealthCheck('commercial_mission_control'),
   },
   {
@@ -2594,7 +2597,7 @@ const SERVICE_REGISTRY = [
     name: 'operational-readiness',
     description: "Honest GALAXY_FORGE_OPERATIONAL_READINESS % + per-dimension scores (TECHNICAL/COMMERCIAL/AUTOMATION/REVENUE/SECURITY/RECOVERY), computed from real code/config signals. Never inflated.",
     reused: 'commercial_operations.py::operational_readiness(), via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('operational_readiness', [], req),
+    handler: (req) => runPythonServiceCached('operational_readiness', [], req, 60000),
     health: pythonHealthCheck('operational_readiness'),
   },
   {
@@ -2650,7 +2653,7 @@ const SERVICE_REGISTRY = [
     name: 'first-dollar-engine',
     description: "FIRST-DOLLAR ENGINE: read-only scoring/ranking/router over the existing infrastructure. Computes FIRST_DOLLAR_SCORE (12 weighted criteria), classifies AUTOMATABLE vs HUMAN_GATE, returns the best first-dollar path + scale ladder. Never writes a ledger, never spends.",
     reused: 'first_dollar_engine.py::run_first_dollar_cycle(), via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('first_dollar_engine', [], req),
+    handler: (req) => runPythonServiceCached('first_dollar_engine', [], req, 90000),
     health: pythonHealthCheck('first_dollar_engine'),
   },
   {
@@ -2699,7 +2702,7 @@ const SERVICE_REGISTRY = [
     name: 'executive-orchestrator',
     description: "EXECUTIVE ORCHESTRATOR: the unified control layer. ONE company state + ONE priority system (TOP opportunity/arm/autonomous action/human gate/failure/experiment/learning) + auditable decision state machine + deduped work queue + executive memory. Composition-only, reusing revenue_os / first_dollar_engine / founder_next_action / experiment loop / retry queue.",
     reused: 'executive_orchestrator.py::run_executive_orchestrator(), via mission_control_api.py.',
-    handler: (req) => runPythonServiceCached('executive_orchestrator', [], req),
+    handler: (req) => runPythonServiceCached('executive_orchestrator', [], req, 90000),
     health: pythonHealthCheck('executive_orchestrator'),
   },
   {
