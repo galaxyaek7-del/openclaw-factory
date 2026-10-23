@@ -34,6 +34,7 @@ test('real records are summarized: per-agent calls and per-task status', () => {
   const s = buildConnectionStatus({ dataDir: d, now: Date.parse('2026-10-23T09:00:00Z') });
   assert.equal(s.verifier.age_hours, 2);
   assert.deepEqual(s.verifier.not_verified.map((r) => r.name), ['paddle']);
+  assert.deepEqual(s.verifier.not_connected.map((r) => r.name), ['agent:x']);
   assert.equal(s.agents.scout.calls, 2);
   assert.equal(s.agents.scout.failures, 1);
   assert.equal(s.agents.scout.last.outcome, 'timeout');
