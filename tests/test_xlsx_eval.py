@@ -117,3 +117,63 @@ class TestBuildToolRejectsWrongExpectations(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestExtendedSubset(unittest.TestCase):
+    """2026-10-23 additions. Expected values are Excel's documented results."""
+
+    def test_power_precedence_and_associativity(self):
+        w = book({"A1": 2, "B1": "=-A1^2", "B2": "=2^3^2", "B3": "=2*3^2", "B4": "=4^0.5", "B5": "=0^-1"})
+        self.assertEqual(w.evaluate("Data!B1"), 4)       # unary minus binds first
+        self.assertEqual(w.evaluate("Data!B2"), 64)      # left-associative
+        self.assertEqual(w.evaluate("Data!B3"), 18)
+        self.assertEqual(w.evaluate("Data!B4"), 2)
+        self.assertEqual(w.evaluate("Data!B5"), xe.DIV0)
+
+    def test_pmt_and_nper_match_excel(self):
+        w = book({"B1": "=PMT(0.05/12,360,200000)", "B2": "=NPER(0.01,-100,1000)",
+                  "B3": "=PMT(0,10,1000)", "B4": "=NPER(0.02,-10,1000)", "B5": "=PMT(0.1,2,100,0,1)"})
+        self.assertAlmostEqual(w.evaluate("Data!B1"), -1073.6432460242781, places=6)
+        self.assertAlmostEqual(w.evaluate("Data!B2"), 10.588644, places=5)
+        self.assertEqual(w.evaluate("Data!B3"), -100)
+        self.assertEqual(w.evaluate("Data!B4"), xe.NUM)  # payment never covers the interest
+        self.assertAlmostEqual(w.evaluate("Data!B5"), -52.380952, places=5)
+
+    def test_countif_and_sumif_criteria(self):
+        cells = {"A1": 5, "A2": -3, "A3": "paid", "A4": 0, "A5": "PAID",
+                 "B1": 10, "B2": 20, "B3": 30, "B4": 40, "B5": 50,
+                 "C1": '=COUNTIF(A1:A6,">0")', "C2": '=COUNTIF(A1:A6,"<>5")', "C3": '=COUNTIF(A1:A6,"paid")',
+                 "C4": '=SUMIF(A1:A5,"paid",B1:B5)', "C5": '=SUMIF(A1:A5,"<=0",B1:B5)', "C6": '=SUMIF(B1:B5,">=30")',
+                 "C7": '=COUNTIF(A1:A6,"")', "C8": '=COUNTIF(A1:A6,"<>")'}
+        w = book(cells)
+        self.assertEqual(w.evaluate("Data!C1"), 1)
+        self.assertEqual(w.evaluate("Data!C2"), 5)   # blank and text cells satisfy "<>5"
+        self.assertEqual(w.evaluate("Data!C3"), 2)   # case-insensitive
+        self.assertEqual(w.evaluate("Data!C4"), 80)
+        self.assertEqual(w.evaluate("Data!C5"), 60)
+        self.assertEqual(w.evaluate("Data!C6"), 120)
+        self.assertEqual(w.evaluate("Data!C7"), 1)   # A6 is blank
+        self.assertEqual(w.evaluate("Data!C8"), 5)
+
+    def test_wildcard_criterion_is_unsupported_not_guessed(self):
+        w = book({"A1": "x", "B1": '=COUNTIF(A1:A2,"x*")'})
+        with self.assertRaises(xe.Unsupported):
+            w.evaluate("Data!B1")
+
+    def test_average_count_counta(self):
+        w = book({"A1": 2, "A2": 4, "A3": "t", "A4": '=""',
+                  "B1": "=AVERAGE(A1:A5)", "B2": "=COUNT(A1:A5)", "B3": "=COUNTA(A1:A5)", "B4": "=AVERAGE(A5:A6)"})
+        self.assertEqual(w.evaluate("Data!B1"), 3)
+        self.assertEqual(w.evaluate("Data!B2"), 2)
+        self.assertEqual(w.evaluate("Data!B3"), 4)   # counts the "" a formula returns, as Excel does
+        self.assertEqual(w.evaluate("Data!B4"), xe.DIV0)
+
+    def test_int_roundup_rounddown(self):
+        w = book({"B1": "=INT(-1.5)", "B2": "=ROUNDUP(2.141,2)", "B3": "=ROUNDUP(-2.141,2)",
+                  "B4": "=ROUNDDOWN(2.149,2)", "B5": "=ROUNDUP(2.5,0)", "B6": "=ROUNDUP(3,0)"})
+        self.assertEqual(w.evaluate("Data!B1"), -2)
+        self.assertAlmostEqual(w.evaluate("Data!B2"), 2.15)
+        self.assertAlmostEqual(w.evaluate("Data!B3"), -2.15)
+        self.assertAlmostEqual(w.evaluate("Data!B4"), 2.14)
+        self.assertEqual(w.evaluate("Data!B5"), 3)
+        self.assertEqual(w.evaluate("Data!B6"), 3)
