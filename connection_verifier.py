@@ -216,10 +216,12 @@ AGENT_LOG = ROOT / "data" / "agent_executions.jsonl"
 FACTORY_SOURCES = {"scout_pipeline", "publisher_seo", "loop", "orchestrator", "sensing_trends"}
 # Who can call each persona today (static, from the code; 2026-10-23).
 AGENT_CALLERS = {
-    "scout": "Sensing trend classifier (POST /api/trends, daily n8n run); Scout pipeline (POST /api/scout/run, manual button)",
-    "publisher": "Publisher SEO inside runDistributor (POST /api/distribute, gated shut)",
-    "builder": "index.html button only", "design": "index.html button only", "qa": "index.html button only",
-    "finance": "no caller in the codebase",
+    "scout": "Sensing trend classifier (POST /api/trends); loop product chain (daily); Scout pipeline (manual button)",
+    "qa": "loop product chain (daily); index.html button",
+    "finance": "loop product chain (daily, only after qa PASS)",
+    "design": "loop product chain (daily, only after qa PASS); index.html button",
+    "builder": "loop product chain (daily, only after qa PASS); index.html button",
+    "publisher": "loop product chain (daily, only after qa PASS); Publisher SEO in runDistributor (gated shut)",
 }
 
 
