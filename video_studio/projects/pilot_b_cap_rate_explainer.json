@@ -1,0 +1,40 @@
+{
+ "id": "pilot_b_cap_rate_explainer",
+ "title": "Cap rate in 90 seconds, with a worked example",
+ "format": "landscape",
+ "audience": "First-time rental property investors (English)",
+ "purpose": "Educational explainer; supports the live product 'Rental Property Deal Analyzer' (B14-002). Internal review pilot, not authorized for publication. Educational only, not financial advice.",
+ "brand": "Galaxy Forge",
+ "voice": "Microsoft Zira Desktop",
+ "rate": 0,
+ "subtitle_language": "eng",
+ "palette": {"bg1": "#10261C", "bg2": "#1D4634", "accent": "#7EE0A8", "text": "#F1F7F3"},
+ "facts": {
+  "price": 250000, "monthly_rent": 2000, "gross_annual_rent": 24000, "vacancy_rate": 0.05, "vacancy_loss": 1200,
+  "operating_expenses": 7800, "noi": 15000, "cap_rate": 0.06,
+  "check": "24000 - 1200 - 7800 = 15000; 15000 / 250000 = 0.06"
+ },
+ "scenes": [
+  {"heading": "What a cap rate measures",
+   "visual": {"type": "formula", "lines": ["Cap rate = NOI / property price"]},
+   "lines": ["A capitalization rate compares a property's yearly net operating income with its price.",
+             "It shows the return the property itself produces, before any mortgage."]},
+  {"heading": "Step 1: net operating income",
+   "visual": {"type": "steps", "progressive": true,
+              "items": ["Rent: $2,000 x 12 = $24,000", "Vacancy at 5%: - $1,200", "Taxes, insurance, repairs, management: - $7,800", "NOI = $15,000"]},
+   "lines": ["Take a home renting for two thousand dollars a month: twenty-four thousand a year.",
+             "Allow five percent for empty months, which removes twelve hundred dollars.",
+             "Subtract operating costs such as taxes, insurance, repairs and management: seven thousand eight hundred.",
+             "That leaves a net operating income of fifteen thousand dollars."]},
+  {"heading": "Step 2: divide by the price",
+   "visual": {"type": "stat", "value": "6.0%", "label": "$15,000 NOI / $250,000 price"},
+   "lines": ["If the price is two hundred and fifty thousand dollars, divide fifteen thousand by that price.",
+             "The cap rate is six percent."]},
+  {"heading": "What it leaves out",
+   "visual": {"type": "bullets",
+              "items": ["Mortgage payments are not in NOI", "Big future repairs need their own reserve", "Compare only with similar properties in the same area"]},
+   "lines": ["Mortgage payments are not part of net operating income, so the cap rate ignores financing.",
+             "Large future repairs need their own reserve.",
+             "Use it to compare similar properties in the same area. This is education, not financial advice."]}
+ ]
+}

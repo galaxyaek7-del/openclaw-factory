@@ -1,0 +1,59 @@
+{
+ "id": "pilot_a_cashflow_short",
+ "status": "UNRESOLVED",
+ "status_reason": "Voice and font licences for commercial video are not confirmed. Internal review only; youtube_upload refuses any job whose rights status is not CLEARED.",
+ "assets": [
+  {
+   "type": "script",
+   "source": "Original text written for Galaxy Forge in this session (AI-assisted). No third-party text quoted.",
+   "status": "OWNED_ORIGINAL",
+   "note": "Copyright protection of AI-assisted text is uncertain; this does not block use."
+  },
+  {
+   "type": "voice",
+   "source": "Microsoft Zira Desktop, Windows System.Speech (SAPI 5), synthesized locally",
+   "status": "UNRESOLVED",
+   "open_question": "Whether Windows' built-in voice licence permits audio in commercial, monetized online video.",
+   "replacement": "A voice with an explicit commercial licence, or the founder's own recorded narration."
+  },
+  {
+   "type": "font",
+   "source": "Segoe UI, Segoe UI Bold, Consolas Bold (bundled with Windows), rendered to pixels",
+   "status": "UNRESOLVED",
+   "open_question": "Whether the Windows font licence covers text rendered into commercial video.",
+   "replacement": "Open Font Licence fonts (e.g. Inter, Noto Sans, JetBrains Mono) committed with their licence files."
+  },
+  {
+   "type": "graphics",
+   "source": "Gradients, boxes and text drawn by video_studio/narrated.py",
+   "status": "OWNED_ORIGINAL"
+  },
+  {
+   "type": "music",
+   "source": "none",
+   "status": "NOT_APPLICABLE"
+  },
+  {
+   "type": "footage_or_images",
+   "source": "none",
+   "status": "NOT_APPLICABLE"
+  },
+  {
+   "type": "trademarks",
+   "source": "Only the company's own name 'Galaxy Forge'; no third-party marks",
+   "status": "OWNED_ORIGINAL"
+  }
+ ],
+ "disclosures": {
+  "contains_synthetic_media": true,
+  "note": "Synthetic voice. YouTube's altered/synthetic label targets realistic content; set to true conservatively.",
+  "made_for_kids": false
+ },
+ "people_depicted": "none",
+ "reviewed_by": "Claude (engineering review), 2026-10-23; founder review pending",
+ "claims_checked": [
+  "Profit vs cash timing: general accounting principle (accrual vs cash receipt).",
+  "'Customers often pay 30-60 days after invoice': stated as 'often', a common net-30/net-60 term, not a statistic."
+ ],
+ "financial_disclaimer": "Not needed for a general budgeting concept; no advice given."
+}

@@ -1,0 +1,3 @@
+# Rendered media and build records are local artifacts, never committed.
+*
+!.gitignore
