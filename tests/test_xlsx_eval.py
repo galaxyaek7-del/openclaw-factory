@@ -177,3 +177,16 @@ class TestExtendedSubset(unittest.TestCase):
         self.assertAlmostEqual(w.evaluate("Data!B4"), 2.14)
         self.assertEqual(w.evaluate("Data!B5"), 3)
         self.assertEqual(w.evaluate("Data!B6"), 3)
+
+
+class TestExcelRound(unittest.TestCase):
+    def test_round_is_half_away_from_zero_like_excel(self):
+        w = book({"B1": "=ROUND(2.675,2)", "B2": "=ROUND(-0.125,2)", "B3": "=ROUND(0.5,0)", "B4": "=ROUND(1.5,0)",
+                  "B5": "=ROUND(2.5,0)", "B6": "=ROUND(1234.5678,-2)", "B7": "=ROUND(-2.5,0)"})
+        self.assertEqual(w.evaluate("Data!B1"), 2.68)   # Python's round() gives 2.67
+        self.assertEqual(w.evaluate("Data!B2"), -0.13)
+        self.assertEqual(w.evaluate("Data!B3"), 1)      # round(0.5) is 0 in Python
+        self.assertEqual(w.evaluate("Data!B4"), 2)
+        self.assertEqual(w.evaluate("Data!B5"), 3)      # round(2.5) is 2 in Python
+        self.assertEqual(w.evaluate("Data!B6"), 1200)
+        self.assertEqual(w.evaluate("Data!B7"), -3)

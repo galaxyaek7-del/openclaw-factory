@@ -205,6 +205,15 @@ def _cmp(op, a, b):
     return {"=": a == b, "<>": a != b, "<": a < b, ">": a > b, "<=": a <= b, ">=": a >= b}[op]
 
 
+def excel_round(v, digits):
+    """Excel's ROUND: half away from zero on the value's shortest decimal
+    form (=ROUND(2.675,2) is 2.68, =ROUND(-0.125,2) is -0.13). Python's
+    round() rounds half to even on the binary value (2.67, -0.12)."""
+    from decimal import ROUND_HALF_UP, Decimal
+    q = Decimal(1).scaleb(-digits)
+    return float(Decimal(repr(float(v))).quantize(q, rounding=ROUND_HALF_UP))
+
+
 _CRIT_OP = re.compile(r"^(<=|>=|<>|<|>|=)?(.*)$", re.S)
 
 
@@ -479,7 +488,11 @@ class Workbook:
             return math.copysign(m / f, v) if v else 0.0
         if name == "ROUND":
             v, d = _num(self._eval(args[0], sheet)), _num(self._eval(args[1], sheet))
-            return v if isinstance(v, XLError) else round(v, int(d))
+            if isinstance(v, XLError):
+                return v
+            if isinstance(d, XLError):
+                return d
+            return excel_round(v, int(d))
         if name == "ABS":
             v = _num(self._eval(args[0], sheet))
             return v if isinstance(v, XLError) else abs(v)
