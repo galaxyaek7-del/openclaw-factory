@@ -1,0 +1,25 @@
+# Gap and risk register (2026-10-23)
+
+Ranked by business impact, then reliability, then cost of delay. Status: OPEN, IN PROGRESS, CLOSED.
+
+| # | Gap / risk | Evidence | Impact | Recommended action | Status |
+|---|---|---|---|---|---|
+| R1 | **No demand reaching the products** | 92 listings, 0 sales; 31 page views in three months | No revenue regardless of product quality | Distribution before more production: per-product pages (done for batch 14), IndexNow (live), search-intent content for existing products, measure page views per product | OPEN |
+| R2 | **Paid product files public** | 168 product files in the public tree; a $69 bundle downloaded with HTTP 200 | Revenue leak; free copies undercut listings | Remove from the current tree, ignore, guard tests (founder approved 2026-10-23); history rewrite not approved | IN PROGRESS |
+| R3 | **No stable internal product identity** | `data/catalog.json` keyed by Gumroad id; canonical inventory mixes Paddle ids, Amazon ASINs, Gumroad ids, internal ids; covers 21 of 92 listed products | Cannot trace a product from spec to listing to sale; reconciliations recompute identity each cycle | Product identity registry mapping one internal id to every external id; drift check against live Gumroad | OPEN (next task) |
+| R4 | **Quality Gate bypass on direct publishing** | `distributor.py` consults the central gate only when configured; direct publisher scripts (79 earlier listings, batch 14) never consult it | Products can be live without gate evidence; founder review not recorded | One publication entry point that always runs the gate; founder review recorded per product. A parallel session has an uncommitted test for the mandatory gate | OPEN (coordinate with parallel work) |
+| R5 | **Catalog quality unknown** | 71 of 83 catalog rows `UNREVIEWED`, quality `UNKNOWN`; ~20 thin paid PDFs found 2026-10-22 | Refund and reputation risk on live listings | Review and repair or unpublish (14 repairs, 2 unpublish, 1 delete prepared in `drafts/release_packages/REPAIR_MANIFEST.json`; founder authorization pending) | OPEN (founder) |
+| R6 | **Documentation sprawl** | 557 root Markdown files, 377 reports, ~174 ADRs, many describing superseded systems | New work re-derives facts; conflicting sources of truth | One index (`docs/factory/README.md`); mark historical documents as such; no new root-level reports | IN PROGRESS |
+| R7 | **Service and endpoint sprawl** | 293 SERVICE_REGISTRY entries, 306 API endpoints, many citation layers over the same signals | Maintenance cost; timeouts (20 services hit the 30 s limit before 2026-10-23) | Freeze new panels; retire unused ones (`enterprise_validation.detect_unused_services`) | OPEN |
+| R8 | **Multiple generators without a shared product spec** | `book_generator.py`, two cohort `build.py`, `cohort_workbook.py`, `build_tool_workbook.py`, batch-14 builder | Duplicate code, uneven QA per generator | Product-type adapters behind one manifest contract (see target architecture) | OPEN |
+| R9 | **Tests writing to tracked files** | Python suite modified `GOLDEN_OPPORTUNITIES.md`, `QUARANTINE.md`, `REJECTED_NICHES.md` in a clean checkout | Tests mutate real records; noisy working trees | Redirect those writes to temp paths in tests | OPEN |
+| R10 | **External gates** | Paddle key 403; Telegram chat id unset; Sensing source mostly people/news | Checkout and alerts unavailable; thin opportunity input | Founder: key permissions, message the bot; source change done in the loop (demand sensing) | OPEN (founder) |
+| R11 | **Parallel session drift** | uncommitted `tests/test_exp_c81_utm_regression.py` expects behaviour `distributor.py` lacks; earlier commit referenced an untracked module | CI breaks when partial work is committed | Stage by hunk; verify on a clean checkout before every push (in practice since 2026-10-22) | MITIGATED |
+| R12 | **Model reliability** | 3 of 14 recorded agent calls returned empty output (reasoning model budget) | Dropped opportunities, failed chain steps | Retries in chain and classifier (done); telemetry per call | MITIGATED |
+
+## Strengths to preserve
+
+- Fail-closed write gate with per-class switches, single-use scopes and auth freshness.
+- Read-back verification of external writes.
+- Independent numeric verification for spreadsheets.
+- Honest-disclosure culture: zero revenue is reported as zero everywhere checked.
