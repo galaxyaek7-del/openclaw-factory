@@ -5,6 +5,13 @@
  "timezone": "Europe/Paris",
  "connected_networks": {"pinterest": "galaxyaek7", "tiktok": "aekgalaxy8"},
  "not_connected": ["linkedin", "x", "instagram"],
- "post_creation": "BLOCKED_BY_PERMISSION: Claude Code denied createScheduledPostForReview twice on 2026-10-23; needs an allow rule added by the founder",
+ "post_creation": "BLOCKED_NEEDS_BOARD: permission is now an ask rule (founder, 2026-10-23); two review-flow attempts on 2026-10-24 were rejected by validation before creating anything",
+ "attempts_2026_10_24": [
+  {"error": "Field 'publicationDate' is required", "created": false, "verified_by": "getScheduledPosts empty"},
+  {"error": "Pinterest data requires 'boardId', 'pinTitle', and 'pinLink'", "created": false, "verified_by": "getScheduledPosts empty"}
+ ],
+ "pinterest_boards_public": {"count": 4, "readable_slugs": ["family-home-cooking", "islamic-quotes", "plats"],
+                             "note": "none fits a business-finance product; a relevant board and its id are needed"},
+ "required_info_fields": ["text", "providers", "media", "publicationDate {dateTime, timezone}", "pinterestData {boardId, pinTitle, pinLink}"],
  "note": "The Metricool REST API needs a paid plan (docs/CYCLE_82_METRICOOL_DECISION.md); this connector is a separate path."
 }
