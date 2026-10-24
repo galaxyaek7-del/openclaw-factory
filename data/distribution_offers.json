@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "generated_at": "2026-10-23T18:45:46+00:00",
+ "generated_at": "2026-10-24T06:53:41+00:00",
  "offers": [
   {
    "offer_id": "B14-001",
@@ -20,6 +20,7 @@
    "description": "See every week's cash position for the next quarter, spot the tight weeks before they happen, and track forecast against actual.\nMonthly profit-and-loss reports hide timing. A month can be profitable on paper while payroll lands two days before the biggest customer pays. A weekly view shows that gap in advance, while there is still time to move a payment, chase an invoice or arrange a credit line.\nWhat's included\n- Weekly view of the next 13 weeks: receipts, payments by category, net cash flow and closing balance\n- Automatic BELOW BUFFER flag for any week under the minimum balance you set\n- Summary: quarter totals, ending cash, lowest balance, number of tight weeks\n- Variance sheet to compare your real bank balance with the forecast each week\n- Formulas locked against accidental overwrites; inputs clearly marked in yellow\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Owners of small and service businesses who pay staff weekly or bi-weekly\n- Freelancers and agencies with lumpy client payments\n- Bookkeepers preparing a cash view for a client or a bank\n- Anyone asked by a lender for a short-term cash forecast\nYou get: 13_week_cash_flow_forecast.xlsx (Inputs, Forecast, Summary, Variance) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning tool, not accounting, tax or financial advice. Its results are only as accurate as the figures you enter; check important decisions with a qualified accountant.",
    "tags": [],
    "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/0yng60jkax93wb9qqi54jfvvbwxa",
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -68,6 +69,7 @@
    "description": "Compare up to 25 buy-and-hold rental deals side by side: monthly cash flow, cap rate, cash-on-cash return, DSCR and a clear verdict against your own targets.\nThis analyzer puts every deal through the same full calculation: financing, operating costs, reserves for vacancy, maintenance and capital expenses, then net operating income, monthly cash flow and the standard return measures lenders and investors use, so you can compare deals on the same terms.\nWhat's included\n- One row per property, up to 25 deals compared side by side\n- Mortgage payment (PMT), NOI, monthly cash flow, cap rate, cash-on-cash return, DSCR and rent-to-price\n- Vacancy, maintenance, management and CapEx reserves built in, so the numbers are not best-case\n- Verdict per deal against the cash-on-cash and DSCR targets you set\n- Handles cash purchases (100% down) as well as financed deals\n- PDF guide with three worked example deals and a field-by-field reference\nWho it's for\n- First-time and small portfolio rental investors\n- House hackers comparing a duplex against a single-family home\n- Agents and wholesalers presenting numbers to buyers\n- Anyone checking a seller's or agent's pro forma\nYou get: rental_property_deal_analyzer.xlsx (Targets, Deals, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is an analysis aid, not investment, lending, legal or tax advice. Results depend entirely on the figures you enter; verify rents, taxes, insurance and loan terms with local professionals before buying.",
    "tags": [],
    "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/6cjp37efmemavq1u9jdy1we7kuia",
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -116,6 +118,7 @@
    "description": "A real month-by-month payoff schedule for up to six debts: your debt-free month, total interest, and how much you save against paying minimums only.\nThis planner calculates that plan month by month for up to six debts, for up to ten years: the balance of every debt every month, the month each one is paid off, the month you are debt-free, and the total interest. It also estimates what the same debts would cost if you paid minimums only, so you can see the interest you save.\nWhat's included\n- True month-by-month schedule for up to six debts and 120 months, with automatic rollover of freed-up payments\n- Your debt-free month and the payoff month of every single debt\n- Total interest with your plan versus an estimate for minimum payments only, and the interest saved\n- Works for avalanche (highest rate first) or snowball (smallest balance first): just order the rows\n- Warning when a minimum payment does not cover the monthly interest\n- PDF guide with a worked four-debt example\nWho it's for\n- Anyone paying down credit cards, store cards, personal loans or car loans\n- Couples agreeing a shared payoff plan and budget\n- Readers of debt-free books who want the numbers for their own debts\n- Coaches and counsellors preparing a plan with a client\nYou get: debt_payoff_planner.xlsx (Plan, Debts, Schedule) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a budgeting aid, not financial, credit or legal advice. It assumes fixed interest rates and that you make every payment on time; lenders' real statements may differ slightly because of daily interest and fees.",
    "tags": [],
    "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/puoylsrk0mvd2w2rrob8ydlltut1",
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -164,6 +167,7 @@
    "description": "Log income and expenses as they happen and see, each quarter, how much to set aside and pay for federal income tax, self-employment tax and state tax.\nThis planner turns that into a routine. You log each payment you receive and each business expense; the workbook assigns them to the IRS estimated-tax periods, and for each quarter calculates self-employment tax, an estimate of federal and state income tax, the amount to pay by the due date, and the share of income to set aside.\nWhat's included\n- Income and expense logs that assign each entry to the IRS estimated-tax period automatically\n- Self-employment tax with the 2026 Social Security wage base (184,500), including W-2 wages you already earned\n- Estimated federal and state income tax using your own rates, and the payment due for each period\n- Safe-harbor installment from last year's tax (100% or 110% rule)\n- Set-aside % so you know how much of each payment to move to savings\n- PDF guide with a full-year worked example and the 2026 due dates\nWho it's for\n- Freelancers, consultants and contractors paid on a 1099\n- Sole proprietors and single-member LLC owners\n- Creators and online sellers with business income\n- People with a side business on top of a W-2 job\nYou get: quarterly_tax_set_aside_planner.xlsx (Settings, Income, Expenses, Quarters) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook estimates taxes for planning; it is not tax advice and does not replace Form 1040-ES or a tax professional. It uses your own estimated income-tax rates and does not model every deduction or credit. Confirm figures with a qualified tax preparer.",
    "tags": [],
    "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/3uveh1fgecaxoyn3bxdl5kqx1znd",
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -212,6 +216,7 @@
    "description": "The real profit on every product after platform fees, payment processing, Offsite Ads, shipping, packaging and ad spend, plus the price you need for the margin you want.\nThis calculator puts all of it on one row per product, so you see the real profit and margin of each item, which products lose money, and the minimum price and target-margin price for each one.\nWhat's included\n- Real profit and margin per product after every Etsy or Shopify fee, shipping, packaging and ad cost\n- Etsy listing, 6.5% transaction, 3% + 0.25 processing and 15% Offsite Ads (with the 100 cap) built in and editable\n- Shopify Basic 2.9% + 0.30 processing for side-by-side comparison\n- Break-even price and price for your target margin on every row\n- LOSS / LOW MARGIN flags and a summary of how many products need attention\n- PDF guide with five worked example products\nWho it's for\n- Etsy sellers of handmade, vintage, print-on-demand and digital items\n- Shopify store owners pricing new products\n- Sellers deciding whether to offer free shipping or discounts\n- Makers comparing the same product on both platforms\nYou get: etsy_shopify_product_profit_calculator.xlsx (Fees, Products, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nFee rates are the published US rates checked on 2026-10-23 (Etsy: 0.20 listing, 6.5% transaction, 3% + 0.25 payment processing, 15% Offsite Ads capped at 100 per order; Shopify Basic: 2.9% + 0.30). Platforms change fees and rates differ by country and plan: confirm on etsy.com/legal/fees and shopify.com/pricing and update the Fees sheet. Not tax or accounting advice. Etsy and Shopify are trademarks of their owners. This is an independent tool with no connection to either company.",
    "tags": [],
    "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/wu3mo0w6spaax1k3fbcv8wc1ddij",
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -260,6 +265,7 @@
    "description": "Price every service from your real costs and capacity: cost per billable hour, minimum price, target-margin price, and whether next month's plan covers your costs and your own pay.\nThis calculator works that number out from your fixed costs, your target owner pay and your real capacity (weeks worked, hours per week and the share of hours that are billable). Every service then gets a floor price that covers its share of costs and fees, a target price that adds your profit margin, and a status against what you charge today.\nWhat's included\n- Your real cost per billable hour from fixed costs, owner pay and capacity\n- Floor price and target-margin price for every service, with BELOW COST / BELOW TARGET flags\n- Profit, margin and contribution at your current prices\n- Monthly plan: revenue, hours, capacity used and whether it covers your costs and your pay\n- Price-linked fees (card processing, platforms) included in every price\n- PDF guide with a worked example for a four-service studio\nWho it's for\n- Freelancers, consultants and coaches\n- Agencies and studios\n- Trades and home-service businesses pricing by the job\n- Salons, clinics and other appointment businesses\nYou get: service_pricing_break_even_calculator.xlsx (Costs & Capacity, Services, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a pricing aid, not accounting, tax or legal advice. It relies on your own cost and time estimates; review prices with your accountant where needed.",
    "tags": [],
    "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/9iyhtze2azpeb53tdr3dkl3bia2s",
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -308,6 +314,7 @@
    "description": "Know what to reorder, when and how much: reorder points with safety stock, days of stock left, and a suggested order list for every SKU.\nA reorder point fixes that. It is the stock level at which you must order so that the new stock arrives before you run out: average daily sales x supplier lead time, plus a safety buffer for slower deliveries or a busy week. This tracker calculates it for every SKU, compares it with what you have on hand and already on order, and tells you which items to reorder now, which soon, and how many to order.\nWhat's included\n- Reorder point with safety stock for every SKU, from your sales rate and supplier lead time\n- REORDER NOW / REORDER SOON / OK status that counts stock already on order\n- Suggested order quantity that respects supplier minimums\n- Days of stock left, order value and total stock value\n- Up to 200 SKUs, filterable and sortable\n- PDF guide with a worked six-SKU example\nWho it's for\n- Etsy, Shopify and Amazon sellers holding their own stock\n- Small shops, cafes and salons buying supplies\n- Makers managing raw materials\n- Anyone currently reordering from memory\nYou get: inventory_reorder_point_tracker.xlsx (Settings, Items, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning aid based on the sales rates and lead times you enter; it does not connect to your store or supplier, and stock-outs can still happen when demand or lead times change. Not accounting advice.",
    "tags": [],
    "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/zhbmj4vusj4zc50p6sg7zn012hju",
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -356,6 +363,7 @@
    "description": "Track every lead and proposal from first contact to won or lost: weighted pipeline value, win rate, follow-ups due, and which lead sources actually bring paying clients.\nThis tracker keeps every lead on one row with its value and stage. It calculates a weighted pipeline value from the probability you give each stage, flags open deals that have not been contacted for longer than your follow-up limit, and reports your win rate, average deal size and results by lead source.\nWhat's included\n- One row per lead from first contact to won or lost, with value and stage\n- Weighted pipeline value from stage probabilities you set\n- FOLLOW UP flag for open deals that have gone quiet past your limit\n- Win rate, average won deal and days to close\n- Results by lead source: leads, wins, won value and win rate\n- PDF guide with a worked ten-lead example\nWho it's for\n- Freelancers sending proposals\n- Small agencies and studios\n- Consultants and coaches\n- Trades and contractors quoting jobs\nYou get: client_pipeline_proposal_tracker.xlsx (Settings, Pipeline, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is an organising aid. Weighted values are estimates based on the stage probabilities you set, not forecasts of what will close.",
    "tags": [],
    "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/abkk5dho5j0sp2rzzfrtttqd4yk7",
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -404,6 +412,7 @@
    "description": "Month by month for three years: revenue, costs, burn and cash. See your runway, your break-even month, and whether you reach break-even before the money runs out, with a second scenario to compare.\nThis planner projects 36 months from a few assumptions you control: cash today, current monthly revenue and costs, and how fast each grows. It adds any one-off items you know about (a fundraise, an equipment purchase, a big contract) and calculates monthly burn, ending cash, your runway, your break-even month and whether you get there in time.\nWhat's included\n- 36-month projection of revenue, costs, burn and ending cash from a few assumptions\n- Runway in months, break-even month, lowest cash and whether break-even comes before cash runs out\n- A second scenario next to the plan to test cost cuts, slower growth or price changes\n- One-off items for fundraises, loans, equipment and big contracts\n- Monthly status: OUT OF CASH, BURNING or PROFITABLE\n- PDF guide with a worked example comparing plan and scenario\nWho it's for\n- Founders of bootstrapped and early-stage startups\n- Owners of small companies investing ahead of revenue\n- Agencies and studios planning a hire\n- Anyone preparing numbers for investors or a bank\nYou get: startup_runway_burn_planner.xlsx (Assumptions, Plan, Scenario, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning model, not financial, investment or legal advice. Projections are only as good as the growth and cost assumptions you enter; real results will differ.",
    "tags": [],
    "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/qkf1pz0d82bq7omvv29vyw8hu7f4",
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -452,6 +461,7 @@
    "description": "Give every dollar of this month's income a job, log spending as it happens, and see category by category where the money actually went.\nThis planner makes that a monthly routine: list your income, plan each category, then log transactions as they happen. Actual spending per category is added up automatically from the transaction log, so you see during the month, not after it, which categories are running over.\nWhat's included\n- Zero-based plan: income minus planned categories, with 'left to assign' until every dollar has a job\n- Transaction log that totals each category automatically and flags OVER budget\n- Category check that catches transactions logged to a category not in your budget\n- Needs / Wants / Savings / Debt split compared with the 50/30/20 guideline\n- Ready-made example categories you can rename\n- PDF guide with a worked example month\nWho it's for\n- Anyone starting a budget for the first time\n- Couples sharing household money\n- People paying off debt who need every dollar planned\n- Freelancers smoothing an irregular income\nYou get: zero_based_monthly_budget_planner.xlsx (Income, Categories, Transactions, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a personal budgeting aid, not financial advice. It does not connect to your bank; it shows only what you enter.",
    "tags": [],
    "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/u6q3unljbp4tq5nf8npuv62mur93",
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -506,6 +516,7 @@
     "uspto"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -560,6 +571,7 @@
     "eu ai act"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -613,6 +625,7 @@
     "gulf jobs"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -666,6 +679,7 @@
     "journaling"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -720,6 +734,7 @@
     "health inspection"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -779,6 +794,7 @@
     "late fee"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -831,6 +847,7 @@
     "eudr"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -884,6 +901,7 @@
     "context reset"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -938,6 +956,7 @@
     "record-keeping"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -990,6 +1009,7 @@
     "labeling"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1042,6 +1062,7 @@
     "fleet"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1099,6 +1120,7 @@
     "contingency fees"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1152,6 +1174,7 @@
     "diminished value"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1209,6 +1232,7 @@
     "roi"
    ],
    "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/ofav4ozty5ak13l03ndxwcr8gu7e",
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1262,6 +1286,7 @@
     "home-service"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1315,6 +1340,7 @@
     "uk deposit"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1370,6 +1396,7 @@
     "short-term"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1423,6 +1450,7 @@
     "scope"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1477,6 +1505,7 @@
     "offer"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1545,6 +1574,7 @@
     "ai act smes"
    ],
    "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/8dg0owe6ohababn7l2y8h29taayb",
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1597,6 +1627,7 @@
     "compliance"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1645,6 +1676,7 @@
    "description": "AUTOMATED CAPABILITY TEST OBJECT — NOT A REAL PRODUCT.\nThis listing exists only to verify API connectivity. It contains no deliverable and must never be purchased. Please contact the seller for a full refund if you bought it by mistake.\nOriginal note: Automated API capability test object (2026-09-17). Not a real product. Never enable or sell.",
    "tags": [],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1708,6 +1740,7 @@
     "seller appeal"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1761,6 +1794,7 @@
     "severance"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1813,6 +1847,7 @@
     "salon"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1870,6 +1905,7 @@
     "solo consultant"
    ],
    "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/91wnmnxr7xjndd0ypay24m9ujmdj",
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1929,6 +1965,7 @@
     "app approval process"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -1981,6 +2018,7 @@
     "pci"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2033,6 +2071,7 @@
     "verification"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2085,6 +2124,7 @@
     "permits"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2137,6 +2177,7 @@
     "deadlines"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2191,6 +2232,7 @@
     "ada"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2244,6 +2286,7 @@
     "demand"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2296,6 +2339,7 @@
     "compliance"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2349,6 +2393,7 @@
     "representment"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2402,6 +2447,7 @@
     "food contact"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2456,6 +2502,7 @@
     "direct booking"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2509,6 +2556,7 @@
     "churn"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2565,6 +2613,7 @@
     "ai for lawyers"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2617,6 +2666,7 @@
     "green claims"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2669,6 +2719,7 @@
     "move-in"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2723,6 +2774,7 @@
     "vendor risk"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2776,6 +2828,7 @@
     "refunds"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2830,6 +2883,7 @@
     "fees"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2888,6 +2942,7 @@
     "seller handbook"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -2941,6 +2996,7 @@
     "ccpa"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3000,6 +3056,7 @@
     "sponsorship pipeline"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3055,6 +3112,7 @@
     "cloudops"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3112,6 +3170,7 @@
     "hr offboarding"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3166,6 +3225,7 @@
     "gcc"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3219,6 +3279,7 @@
     "agent review"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3276,6 +3337,7 @@
     "solo founder"
    ],
    "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/lm7woqzl5ksn7rsy3ja0crss1bt2",
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3330,6 +3392,7 @@
     "late payment"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3384,6 +3447,7 @@
     "operating-expense"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3436,6 +3500,7 @@
     "food cost"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3490,6 +3555,7 @@
     "roi"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3542,6 +3608,7 @@
     "scheduling"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3594,6 +3661,7 @@
     "scope control"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3653,6 +3721,7 @@
     "seller handbook"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3707,6 +3776,7 @@
     "epr"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3761,6 +3831,7 @@
     "soc"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3813,6 +3884,7 @@
     "homebuyer"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3861,6 +3933,7 @@
    "description": "Automated Contract Review System for Legal Departments - $327.\nBuilt for people who need to get this right quickly, with the actual steps in order rather than a general overview.\nWhat you get:\n- A single, focused file you download and use immediately\n- Step-by-step process, so you work in the right order\n- Checklists and prompts for the parts people usually get wrong\n- Plain language, no padding\nWhat this is NOT:\n- Not professional, legal, financial or tax advice\n- No result, outcome or saving is guaranteed\n- Not a substitute for the official rules in your jurisdiction - verify anything specific with the relevant authority\nBuy once. No subscription, no account, no upsell.\nMore Galaxy Forge toolkits: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html\n---\nAI-Powered Contract Analysis, Risk Detection & Compliance Automation Toolkit — 17-page implementation guide for legal departments.",
    "tags": [],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3917,6 +3990,7 @@
     "remote work"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -3971,6 +4045,7 @@
     "dsar"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4025,6 +4100,7 @@
     "ftc"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4079,6 +4155,7 @@
     "act"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4137,6 +4214,7 @@
     "sender reputation"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4191,6 +4269,7 @@
     "damage claim"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4248,6 +4327,7 @@
     "seller handbook"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4301,6 +4381,7 @@
     "filing"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4355,6 +4436,7 @@
     "eu compliance"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4409,6 +4491,7 @@
     "gcc"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4463,6 +4546,7 @@
     "verified emails"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4524,6 +4608,7 @@
     "cpa package"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4576,6 +4661,7 @@
     "returns"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4628,6 +4714,7 @@
     "compliance"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4682,6 +4769,7 @@
     "ai compliance"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4736,6 +4824,7 @@
     "weee"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4790,6 +4879,7 @@
     "en71"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4843,6 +4933,7 @@
     "uk landlords"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4896,6 +4987,7 @@
     "responsible person"
    ],
    "sales_count": 0,
+   "cover_url": null,
    "measurement": {
     "destination": "gumroad",
     "sales_referrer": "OBSERVED per sale via Gumroad sales API",
@@ -4954,7 +5046,7 @@
    },
    "evidence": {
     "source": "customer_site/affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4999,7 +5091,7 @@
    },
    "evidence": {
     "source": "customer_site/affiliate-standing-desks.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5044,7 +5136,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-access-continuity-organizer.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5091,7 +5183,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-client-handoff-pack.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5139,7 +5231,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-digital-declutter-system.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5161,7 +5253,7 @@
    "arm": "digital_products",
    "type": "content_asset",
    "subtype": "b12",
-   "title": "Freelancer Rate & Raise Calculator — $29 (proposed)",
+   "title": "Freelancer Rate & Raise Calculator — $14.99",
    "problem": "Freelancers guess their rates and undercharge for years.",
    "audience": "UNKNOWN",
    "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/b12-freelancer-rate-calculator.html",
@@ -5179,14 +5271,12 @@
     "page_views": "UNMEASURED (no receiver for the beacon)"
    },
    "eligibility": {
-    "status": "NEEDS_REVIEW",
-    "reasons": [
-     "page is stale: it says (proposed) but GR-41d87224ab is live at https://aekraft.gumroad.com/l/blayvb"
-    ]
+    "status": "ELIGIBLE",
+    "reasons": []
    },
    "evidence": {
     "source": "customer_site/b12-freelancer-rate-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5233,7 +5323,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-grant-pipeline-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5281,7 +5371,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-home-office-organizer.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5303,7 +5393,7 @@
    "arm": "digital_products",
    "type": "content_asset",
    "subtype": "b12",
-   "title": "Meeting Cost & ROI Calculator — $11.99 (approved, not yet listed)",
+   "title": "Meeting Cost & ROI Calculator — $11.99",
    "problem": "Teams lose thousands of dollars a month to recurring meetings nobody priced.",
    "audience": "UNKNOWN",
    "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/b12-meeting-cost-calculator.html",
@@ -5321,14 +5411,12 @@
     "page_views": "UNMEASURED (no receiver for the beacon)"
    },
    "eligibility": {
-    "status": "NEEDS_REVIEW",
-    "reasons": [
-     "page is stale: it says (approved, not yet listed) but GR-2562d0b4d2 is live at https://aekraft.gumroad.com/l/ieashv"
-    ]
+    "status": "ELIGIBLE",
+    "reasons": []
    },
    "evidence": {
     "source": "customer_site/b12-meeting-cost-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5376,7 +5464,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-moving-house-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5424,7 +5512,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-pet-sitter-handover-kit.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5471,7 +5559,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-podcast-guest-kit.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5516,7 +5604,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-appeal-evidence.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5561,7 +5649,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-appeal-mistakes.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5606,7 +5694,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-first-24-hours.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5651,7 +5739,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-temp-vs-permanent.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5696,7 +5784,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-write-clear-appeal.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5741,7 +5829,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-eu-ai-act-compliance-sme-guide.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5786,7 +5874,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-adobe-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5831,7 +5919,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-amazon-associates-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5876,7 +5964,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-aweber-advocate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5921,7 +6009,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-brevo-affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5966,7 +6054,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-canva-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6011,7 +6099,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-creative-market-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6056,7 +6144,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-digitalocean-affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6101,7 +6189,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-diminished-value-claim.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6146,7 +6234,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-envato-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6191,7 +6279,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-etsy-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6236,7 +6324,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-etsy-marketplace.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6281,7 +6369,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-etsy-suspension-appeal.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6326,7 +6414,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-eudr-sme-deadlines.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6371,7 +6459,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-food-truck-permit-stack.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6416,7 +6504,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-freelancer-scope-control.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6461,7 +6549,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-freelancer-scope-creep.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6506,7 +6594,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-google-workspace-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6551,7 +6639,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-gumroad-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6596,7 +6684,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-gumroad-marketplace.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6641,7 +6729,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-mindfulness-focus-for-founders.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6686,7 +6774,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-n8n-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6731,7 +6819,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-paddle-partnership.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6776,7 +6864,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-sales-tax-nexus-rolling-method.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6821,7 +6909,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-siteground-affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6866,7 +6954,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-stripe-chargeback-evidence.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6911,7 +6999,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-subscription-renewal-audit.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6956,7 +7044,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-systemeio-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7001,7 +7089,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-turo-invoice-dispute.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7046,7 +7134,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-zapier-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7093,7 +7181,7 @@
    },
    "evidence": {
     "source": "customer_site/service-eu-deadline-briefing.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin"
@@ -7139,7 +7227,7 @@
    },
    "evidence": {
     "source": "customer_site/service-kdp-typesetting.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin"
@@ -7185,7 +7273,7 @@
    },
    "evidence": {
     "source": "customer_site/service-verified-lead-lists.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin"
@@ -7229,7 +7317,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-13-week-cash-flow-forecast.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7274,7 +7362,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-client-pipeline-proposal-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7319,7 +7407,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-debt-payoff-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7364,7 +7452,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-etsy-shopify-product-profit-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7409,7 +7497,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-food-truck-cost-estimator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7454,7 +7542,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-inventory-reorder-point-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7499,7 +7587,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-quarterly-tax-set-aside-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7544,7 +7632,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-rental-property-deal-analyzer.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7589,7 +7677,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-saas-waste-estimator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7634,7 +7722,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-service-pricing-break-even-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7679,7 +7767,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-startup-runway-burn-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7724,7 +7812,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-zero-based-monthly-budget-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7770,7 +7858,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7816,7 +7904,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7862,7 +7950,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7908,7 +7996,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7954,7 +8042,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8000,7 +8088,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8046,7 +8134,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8092,7 +8180,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8138,7 +8226,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8184,7 +8272,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8230,7 +8318,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8276,7 +8364,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8322,7 +8410,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8368,7 +8456,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8414,7 +8502,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8460,7 +8548,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8506,7 +8594,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8553,7 +8641,7 @@
    },
    "evidence": {
     "source": "video_studio/projects/pilot_a_cashflow_short.json + rights manifest",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "tiktok",
@@ -8600,7 +8688,7 @@
    },
    "evidence": {
     "source": "video_studio/projects/pilot_b_cap_rate_explainer.json + rights manifest",
-    "verified_at": "2026-10-23T18:45:46+00:00"
+    "verified_at": "2026-10-24T06:53:41+00:00"
    },
    "platforms": [
     "tiktok",
@@ -8635,12 +8723,12 @@
    "media_asset": 2
   },
   "by_eligibility": {
-   "ELIGIBLE": 137,
-   "NEEDS_REVIEW": 7,
+   "ELIGIBLE": 139,
+   "NEEDS_REVIEW": 5,
    "NOT_ELIGIBLE": 29
   },
   "eligible_by_arm": {
-   "digital_products": 100,
+   "digital_products": 102,
    "affiliate": 2,
    "education_content": 35
   }

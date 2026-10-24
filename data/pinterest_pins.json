@@ -1,0 +1,188 @@
+{
+ "generated_at": "2026-10-24T06:53:57+00:00",
+ "fonts": "Bitstream Vera (reportlab bundle)",
+ "pins": {
+  "B14-001": {
+   "file": "customer_site/assets/pins/b14-001.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-001.jpg",
+   "sha256": "8395182589fbce13502b09cb21fc6988287ee519d6622cb64dc5e8c4ddc84799",
+   "bytes": 131075,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/0yng60jkax93wb9qqi54jfvvbwxa",
+   "title": "13-Week Cash Flow Forecast for Small Business",
+   "price_cents": 1900
+  },
+  "B14-002": {
+   "file": "customer_site/assets/pins/b14-002.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-002.jpg",
+   "sha256": "f15ad3b3443f4d5f2fe30a806f0392cecc79c41dba963a8163f180d2f8aa7115",
+   "bytes": 113188,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/6cjp37efmemavq1u9jdy1we7kuia",
+   "title": "Rental Property Deal Analyzer",
+   "price_cents": 2400
+  },
+  "B14-003": {
+   "file": "customer_site/assets/pins/b14-003.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-003.jpg",
+   "sha256": "9f6830fc423657feb6e19b392dad9dd34f46dc578cc9d7e82f86cfde8461df42",
+   "bytes": 119649,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/puoylsrk0mvd2w2rrob8ydlltut1",
+   "title": "Debt Payoff Planner (Avalanche or Snowball)",
+   "price_cents": 1200
+  },
+  "B14-004": {
+   "file": "customer_site/assets/pins/b14-004.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-004.jpg",
+   "sha256": "697d5319e4e5ef9d80382d16e5e9d83bb11ec6d66e2f906576d3041ed3629b53",
+   "bytes": 128976,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/3uveh1fgecaxoyn3bxdl5kqx1znd",
+   "title": "Self-Employed Quarterly Tax Set-Aside Planner (US, 2026)",
+   "price_cents": 1200
+  },
+  "B14-005": {
+   "file": "customer_site/assets/pins/b14-005.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-005.jpg",
+   "sha256": "2b8dc6df3283137edad7c9cb0617f09a37216a6edf2adb1c98383e9bade6d842",
+   "bytes": 123849,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/wu3mo0w6spaax1k3fbcv8wc1ddij",
+   "title": "Etsy & Shopify Product Profit Calculator",
+   "price_cents": 1200
+  },
+  "B14-006": {
+   "file": "customer_site/assets/pins/b14-006.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-006.jpg",
+   "sha256": "3c1a106a8f468f47c2c0dc37d58205d9b4524edff07ed83ce9d5c0a35f195340",
+   "bytes": 126945,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/9iyhtze2azpeb53tdr3dkl3bia2s",
+   "title": "Service Business Pricing & Break-Even Calculator",
+   "price_cents": 1500
+  },
+  "B14-007": {
+   "file": "customer_site/assets/pins/b14-007.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-007.jpg",
+   "sha256": "7a94601000c68aa0fd61dee9725081390b2ad79d9e2bb2e354dd963e792b4aa6",
+   "bytes": 116016,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/zhbmj4vusj4zc50p6sg7zn012hju",
+   "title": "Inventory Reorder Point & Stock Tracker",
+   "price_cents": 1500
+  },
+  "B14-008": {
+   "file": "customer_site/assets/pins/b14-008.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-008.jpg",
+   "sha256": "a14b175753a267bfe32237a36d49235971b9c2ee8ade4e746b1d70e6de385a23",
+   "bytes": 130190,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/abkk5dho5j0sp2rzzfrtttqd4yk7",
+   "title": "Client Pipeline & Proposal Tracker",
+   "price_cents": 1400
+  },
+  "B14-009": {
+   "file": "customer_site/assets/pins/b14-009.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-009.jpg",
+   "sha256": "1679fe88fc7e0fc81643f1c16e73fc069ad02bfa044160e99a0676fa037efd78",
+   "bytes": 93331,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/qkf1pz0d82bq7omvv29vyw8hu7f4",
+   "title": "Startup Runway & Burn Planner",
+   "price_cents": 1500
+  },
+  "B14-010": {
+   "file": "customer_site/assets/pins/b14-010.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-010.jpg",
+   "sha256": "2245d8ad2bb663c05fd8d7563af11d48d160fe6c30e556fdac672c6f8c795a5c",
+   "bytes": 120683,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/u6q3unljbp4tq5nf8npuv62mur93",
+   "title": "Zero-Based Monthly Budget Planner",
+   "price_cents": 900
+  },
+  "GR-2562d0b4d2": {
+   "file": "customer_site/assets/pins/gr-2562d0b4d2.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-2562d0b4d2.jpg",
+   "sha256": "64192ca49833e2cf7ba78cb47bd5e819c823aea688d04b73cdab86750089c2cf",
+   "bytes": 98515,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/ofav4ozty5ak13l03ndxwcr8gu7e",
+   "title": "Meeting Cost & ROI Calculator",
+   "price_cents": 1199
+  },
+  "GR-34985d0556": {
+   "file": "customer_site/assets/pins/gr-34985d0556.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-34985d0556.jpg",
+   "sha256": "8338251c35ea4eac120dd586c2f5048166926dc5394f5e4577b3ee814b733544",
+   "bytes": 192529,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/8dg0owe6ohababn7l2y8h29taayb",
+   "title": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
+   "price_cents": 15500
+  },
+  "GR-41d87224ab": {
+   "file": "customer_site/assets/pins/gr-41d87224ab.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-41d87224ab.jpg",
+   "sha256": "6816f97c636afb5eb21122053dd81416d0924bfe6560d948f40f9fc1926be027",
+   "bytes": 92233,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/91wnmnxr7xjndd0ypay24m9ujmdj",
+   "title": "Freelancer Rate & Raise Calculator",
+   "price_cents": 1499
+  },
+  "GR-97d703401f": {
+   "file": "customer_site/assets/pins/gr-97d703401f.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-97d703401f.jpg",
+   "sha256": "2172114e5defaa59b6b3ab0ee60965000e0a5483bc38d6cf4dc4304fa006513b",
+   "bytes": 98575,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/lm7woqzl5ksn7rsy3ja0crss1bt2",
+   "title": "Founder Access Continuity Organizer",
+   "price_cents": 800
+  }
+ }
+}
