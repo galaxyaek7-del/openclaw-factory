@@ -1,0 +1,67 @@
+{
+ "id": "B15-005",
+ "slug": "renovation-budget-quote-comparison",
+ "title": "Home Renovation Budget & Contractor Quote Comparison",
+ "price_cents": 1400,
+ "files": {
+  "workbook": {
+   "path": "books/batch15/B15-005/renovation_budget_quote_comparison.xlsx",
+   "bytes": 10812,
+   "sha256": "e3e00b311f986ee8b2c9a9920cbf9ca02193d85ccdd62cc64f4756753d7458d2"
+  },
+  "guide": {
+   "path": "books/batch15/B15-005/renovation_budget_quote_comparison_guide.pdf",
+   "bytes": 7861,
+   "sha256": "224fb1ab104f6aa42e0ffa36b3d2d9064faa27e0b68a8b7c7c52926f1555cc88"
+  },
+  "cover": {
+   "path": "books/covers/B15-005.png",
+   "bytes": 69407,
+   "sha256": "4358f150e22790608621a9bb030bfb5a988ad7c9c171d50833abcb99aed4970e"
+  },
+  "bundle": {
+   "path": "books/batch15/B15-005/renovation_budget_quote_comparison_bundle.zip",
+   "bytes": 16177,
+   "sha256": "4ee9ea9c984d371b02a7deaca1c54c93aeb813017245c379823bee617ae4941c"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 49,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1499
+  },
+  "bundle": {
+   "files": [
+    "renovation-budget-quote-comparison/README.txt",
+    "renovation-budget-quote-comparison/renovation_budget_quote_comparison.xlsx",
+    "renovation-budget-quote-comparison/renovation_budget_quote_comparison_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Compare contractor quotes line by line, catch the quote that leaves items out, choose per item, and see your total with a contingency against the budget.</p><p>This workbook breaks the job into line items. You enter your own estimate and each contractor&#x27;s price per item; it shows the lowest price per item, totals each contractor only over the items they actually priced, and marks a quote INCOMPLETE when it leaves items out, so totals are never compared unfairly.</p><p><strong>What's included</strong></p><ul><li>Line-by-line comparison of three contractor quotes with your own estimate</li><li>Lowest price per item and contractor totals over the items they actually priced</li><li>INCOMPLETE flag for any quote that leaves items out</li><li>Choose a contractor per item; contingency added at the rate you set</li><li>Budget check: total with contingency against your budget</li><li>PDF guide with a worked example and a field-by-field reference</li></ul><p><strong>Who it's for</strong></p><ul><li>Homeowners planning a kitchen, bathroom or whole-house renovation</li><li>Landlords comparing quotes for a unit refurbishment</li><li>Anyone collecting three quotes and wanting a fair comparison</li></ul><p><strong>You get:</strong> renovation_budget_quote_comparison.xlsx (Project, Line Items, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a budgeting and comparison tool, not construction, legal or financial advice. Check licences, insurance, permits, payment terms and exactly what each quote includes before you sign a contract.</em></p>"
+  }
+ }
+}

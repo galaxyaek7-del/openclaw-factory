@@ -1,0 +1,67 @@
+{
+ "id": "B15-006",
+ "slug": "price-increase-impact-calculator",
+ "title": "Price Increase Impact Calculator",
+ "price_cents": 1200,
+ "files": {
+  "workbook": {
+   "path": "books/batch15/B15-006/price_increase_impact_calculator.xlsx",
+   "bytes": 8425,
+   "sha256": "2023990f327acd2ebe2dcefb0d85e9284c433e3f1904095b977a12dc4f57cb76"
+  },
+  "guide": {
+   "path": "books/batch15/B15-006/price_increase_impact_calculator_guide.pdf",
+   "bytes": 7505,
+   "sha256": "3ca01d01b67d701a9e6442c2a057b846ee02aa264a32fdb8d670ae065189e3ec"
+  },
+  "cover": {
+   "path": "books/covers/B15-006.png",
+   "bytes": 50488,
+   "sha256": "a2696276f2d62932d72247cc917b483029468031effc21efd87ce1375b54c958"
+  },
+  "bundle": {
+   "path": "books/batch15/B15-006/price_increase_impact_calculator_bundle.zip",
+   "bytes": 13661,
+   "sha256": "d15b853f0103149b44753d4007e81845a6448d32af6d1da17fd3c9a3c8fe1442"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 41,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1455
+  },
+  "bundle": {
+   "files": [
+    "price-increase-impact-calculator/README.txt",
+    "price-increase-impact-calculator/price_increase_impact_calculator.xlsx",
+    "price-increase-impact-calculator/price_increase_impact_calculator_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Before you raise prices, see how many sales you could lose and still earn more, and what profit each increase gives at the loss you actually expect.</p><p>Because a price increase goes straight to margin, the answer is often larger than people expect. This workbook calculates it for up to eight increases: the most sales you could lose and still make the same gross profit, and the monthly profit at the loss you actually expect.</p><p><strong>What's included</strong></p><ul><li>Up to eight price-increase scenarios side by side</li><li>Maximum share of sales you can lose and still keep today&#x27;s gross profit</li><li>Monthly profit at the sales loss you actually expect, and the change against today</li><li>Uses your real variable and fixed costs</li><li>Works for products, services and subscriptions</li><li>PDF guide with a worked example and a field-by-field reference</li></ul><p><strong>Who it's for</strong></p><ul><li>Service businesses and agencies reviewing their rates</li><li>Online sellers and shops with rising supplier costs</li><li>Subscription businesses considering a new price for new or existing customers</li><li>Anyone who has not raised prices in a year or more</li></ul><p><strong>You get:</strong> price_increase_impact_calculator.xlsx (Current, Scenarios) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a planning tool, not financial advice. It models profit from the costs and volumes you enter; real customer response to a price change is uncertain, so test increases carefully.</em></p>"
+  }
+ }
+}

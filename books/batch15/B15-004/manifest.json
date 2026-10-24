@@ -1,0 +1,67 @@
+{
+ "id": "B15-004",
+ "slug": "wedding-budget-vendor-payment-planner",
+ "title": "Wedding Budget & Vendor Payment Planner",
+ "price_cents": 1200,
+ "files": {
+  "workbook": {
+   "path": "books/batch15/B15-004/wedding_budget_vendor_payment_planner.xlsx",
+   "bytes": 10287,
+   "sha256": "70cf37da272af8a5fa5d07c53e62685414d3c8f01da78dacc9476809e2bb1858"
+  },
+  "guide": {
+   "path": "books/batch15/B15-004/wedding_budget_vendor_payment_planner_guide.pdf",
+   "bytes": 7814,
+   "sha256": "21b8882ccb8801a57e25c4ad0c07e18bec0a75953e1c57ca2a3fc5fcd0b97e0f"
+  },
+  "cover": {
+   "path": "books/covers/B15-004.png",
+   "bytes": 69500,
+   "sha256": "7c72adb18c91da500fd7012d8230b0372e3234e7a0fb7c85138190afd03d82da"
+  },
+  "bundle": {
+   "path": "books/batch15/B15-004/wedding_budget_vendor_payment_planner_bundle.zip",
+   "bytes": 15693,
+   "sha256": "89eb5d4dc5d4c51428e945eed57c260c98d1c8f19d640f3c6ba0342cb90af6ad"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 68,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1527
+  },
+  "bundle": {
+   "files": [
+    "wedding-budget-vendor-payment-planner/README.txt",
+    "wedding-budget-vendor-payment-planner/wedding_budget_vendor_payment_planner.xlsx",
+    "wedding-budget-vendor-payment-planner/wedding_budget_vendor_payment_planner_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Split your budget across categories, record every quote and contract, track deposits and the balances still due, and see at once which category has gone over.</p><p>This workbook keeps the budget and the contracts in one place. You set a total and split it across categories; for each category you record what you have actually agreed with the vendor, what you have paid and when the balance is due. Every category over its plan is flagged, and the Summary shows money committed, paid, still owed, and the cost per guest.</p><p><strong>What's included</strong></p><ul><li>Budget split across 15 categories with planned amounts from your total</li><li>Contracted amount, payments made, balance due and due date for every vendor</li><li>OVER PLAN flag the moment a contract exceeds its category</li><li>Summary: committed, paid, still owed, uncommitted budget, cost per guest</li><li>Planned shares check: tells you when the split does not add up to 100%</li><li>PDF guide with a worked example and a field-by-field reference</li></ul><p><strong>Who it's for</strong></p><ul><li>Couples planning their own wedding</li><li>Parents or family members managing the payments</li><li>Wedding planners and coordinators tracking several vendors for a client</li></ul><p><strong>You get:</strong> wedding_budget_vendor_payment_planner.xlsx (Budget, Vendors, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a planning tool. Amounts and due dates are only as accurate as the figures you enter; always check payment terms and cancellation clauses in each vendor&#x27;s written contract.</em></p>"
+  }
+ }
+}

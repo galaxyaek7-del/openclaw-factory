@@ -1,0 +1,67 @@
+{
+ "id": "B15-001",
+ "slug": "refinance-break-even-calculator",
+ "title": "Refinance Break-Even & Loan Comparison Calculator",
+ "price_cents": 1500,
+ "files": {
+  "workbook": {
+   "path": "books/batch15/B15-001/refinance_break_even_calculator.xlsx",
+   "bytes": 9937,
+   "sha256": "a8974d912c508c2a9069a28123144dfcce3bc9b564e0c5c4a49a96f790891fc3"
+  },
+  "guide": {
+   "path": "books/batch15/B15-001/refinance_break_even_calculator_guide.pdf",
+   "bytes": 8465,
+   "sha256": "380af61b2e30458d56a77511c8c3a8a8aefa356af6373d44a9763154b6182712"
+  },
+  "cover": {
+   "path": "books/covers/B15-001.png",
+   "bytes": 62537,
+   "sha256": "6a4016e95fd71e42299c24750ef179d9cf7925fb713bd470f2be88290855ba83"
+  },
+  "bundle": {
+   "path": "books/batch15/B15-001/refinance_break_even_calculator_bundle.zip",
+   "bytes": 15876,
+   "sha256": "74b816081683398839a6ce9d8742a5b16c55e23a682f6113315c263c59ef12b3"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 62,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1628
+  },
+  "bundle": {
+   "files": [
+    "refinance-break-even-calculator/README.txt",
+    "refinance-break-even-calculator/refinance_break_even_calculator.xlsx",
+    "refinance-break-even-calculator/refinance_break_even_calculator_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Find out whether a refinance really pays: monthly savings, break-even month, and the true cost difference over the years you will actually keep the loan.</p><p>Most quick calculators stop at the monthly saving. This workbook also finds the break-even month, and compares the two loans over the period you expect to keep the loan, counting the payments made and the balance still owed at the end, so a longer new term cannot hide its cost.</p><p><strong>What's included</strong></p><ul><li>Monthly payment for your current loan and the new offer</li><li>Break-even month: when the closing costs are paid back by the monthly saving</li><li>Net benefit over the years you will actually keep the loan, counting the balance still owed</li><li>Option to pay closing costs in cash or roll them into the new loan</li><li>Year by Year sheet: both balances and the running advantage for ten years</li><li>PDF guide with a worked example and a field-by-field reference</li></ul><p><strong>Who it's for</strong></p><ul><li>Homeowners comparing a refinance offer with their current mortgage</li><li>Borrowers deciding between paying closing costs in cash or rolling them into the loan</li><li>Anyone comparing two fixed-rate loan offers on the same balance</li><li>Small landlords reviewing refinancing on a rental property</li></ul><p><strong>You get:</strong> refinance_break_even_calculator.xlsx (Inputs, Comparison, Year by Year) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a comparison tool, not financial, lending or tax advice. It uses fixed-rate payment math and the figures you enter; check any loan decision against your lender&#x27;s official Loan Estimate and with a qualified adviser.</em></p>"
+  }
+ }
+}

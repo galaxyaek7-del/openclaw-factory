@@ -1,0 +1,67 @@
+{
+ "id": "B15-002",
+ "slug": "employee-true-cost-calculator",
+ "title": "Employee True Cost Calculator (US Small Business)",
+ "price_cents": 1500,
+ "files": {
+  "workbook": {
+   "path": "books/batch15/B15-002/employee_true_cost_calculator.xlsx",
+   "bytes": 10096,
+   "sha256": "68b83c122069da3b05b99976abb9249ad8ced801b61af3e07d3fa7a6ba08da2d"
+  },
+  "guide": {
+   "path": "books/batch15/B15-002/employee_true_cost_calculator_guide.pdf",
+   "bytes": 8433,
+   "sha256": "735eae42c11b4835fb3f52b85c3b882a1b4fd2ea926a17783f1e7ef1b4f89b34"
+  },
+  "cover": {
+   "path": "books/covers/B15-002.png",
+   "bytes": 49155,
+   "sha256": "8bde2ffdf2a75ad2b91d331c8bbb51212f0d6a4595d9b352fe8e9a544a924cc5"
+  },
+  "bundle": {
+   "path": "books/batch15/B15-002/employee_true_cost_calculator_bundle.zip",
+   "bytes": 16030,
+   "sha256": "df0a26fce288af03cfbba68cbb05b268100af542079f80d43a03ef700c98c70c"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 28,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1629
+  },
+  "bundle": {
+   "files": [
+    "employee-true-cost-calculator/README.txt",
+    "employee-true-cost-calculator/employee_true_cost_calculator.xlsx",
+    "employee-true-cost-calculator/employee_true_cost_calculator_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>What a hire really costs beyond the salary: employer payroll taxes, benefits, workers&#x27; comp, equipment and paid time off, with the true cost per productive hour.</p><p>This workbook adds every one of those costs to a wage you choose, shows the total annual cost, the multiplier over the wage, and the cost per productive hour once paid holidays and time off are taken out, so you can price your work and budget the hire with real numbers.</p><p><strong>What's included</strong></p><ul><li>Total yearly cost of a hire: wage, employer payroll taxes, workers&#x27; comp, benefits, equipment</li><li>2026 federal figures filled in (Social Security wage base $184,500, Medicare 1.45%, FUTA 0.6% on $7,000), all editable</li><li>Your state unemployment rate and wage base, and your workers&#x27; comp rate, as inputs</li><li>Cost multiplier over the wage and true cost per productive hour</li><li>Compare up to eight roles side by side</li><li>PDF guide with a worked example and a field-by-field reference</li></ul><p><strong>Who it's for</strong></p><ul><li>Owners planning their first or next employee</li><li>Founders comparing an employee with a contractor quote</li><li>Service businesses pricing work from the real cost of staff time</li><li>Managers preparing a hiring budget</li></ul><p><strong>You get:</strong> employee_true_cost_calculator.xlsx (Rates, One Hire, Compare Roles) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a planning estimate, not payroll, tax or legal advice. Tax rates and wage bases change every year and state unemployment and workers&#x27; compensation rates differ by employer; confirm current figures with your payroll provider or accountant before budgeting a hire.</em></p>"
+  }
+ }
+}

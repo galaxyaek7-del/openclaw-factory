@@ -1,0 +1,67 @@
+{
+ "id": "B15-010",
+ "slug": "sinking-funds-emergency-fund-planner",
+ "title": "Sinking Funds & Emergency Fund Planner",
+ "price_cents": 900,
+ "files": {
+  "workbook": {
+   "path": "books/batch15/B15-010/sinking_funds_emergency_fund_planner.xlsx",
+   "bytes": 9425,
+   "sha256": "166f81e94580cb62280a4db2458173e3aef0b56f7b72335c8d4aa5efd1bf0460"
+  },
+  "guide": {
+   "path": "books/batch15/B15-010/sinking_funds_emergency_fund_planner_guide.pdf",
+   "bytes": 7767,
+   "sha256": "496675d027cca2441266a3b23b92e0f49da617e361804c3758d8b78279f22c96"
+  },
+  "cover": {
+   "path": "books/covers/B15-010.png",
+   "bytes": 55633,
+   "sha256": "c9e1d2f05e957bb825142a5f522f9907445813d3f54ee7493774ffbd45a88d60"
+  },
+  "bundle": {
+   "path": "books/batch15/B15-010/sinking_funds_emergency_fund_planner_bundle.zip",
+   "bytes": 14824,
+   "sha256": "6f25a75884dba405e3bf2327b6c7cbaed590ecf792e9a2cf3ae2b58458d28516"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 21,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1459
+  },
+  "bundle": {
+   "files": [
+    "sinking-funds-emergency-fund-planner/README.txt",
+    "sinking-funds-emergency-fund-planner/sinking_funds_emergency_fund_planner.xlsx",
+    "sinking-funds-emergency-fund-planner/sinking_funds_emergency_fund_planner_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Turn the irregular bills that wreck a budget (insurance, car repairs, holidays, gifts) into a fixed monthly amount, and see when your emergency fund will be complete with what is left.</p><p>A sinking fund is money put aside a little each month for a known future bill. This workbook lists those bills, how much each will be, how much is already saved and how many months are left, and calculates the monthly amount each one needs.</p><p><strong>What's included</strong></p><ul><li>Monthly amount needed for every irregular bill, from target, savings so far and months left</li><li>Progress per fund</li><li>Emergency fund target from your essential expenses and chosen months</li><li>Months until the emergency fund is complete with what is left after sinking funds</li><li>NOT FUNDED warning when sinking funds already take all your monthly saving</li><li>PDF guide with a worked example and a field-by-field reference</li></ul><p><strong>Who it's for</strong></p><ul><li>Households tired of irregular bills breaking the monthly budget</li><li>Freelancers and self-employed people with uneven income</li><li>Anyone building a first emergency fund</li><li>Couples planning shared savings goals</li></ul><p><strong>You get:</strong> sinking_funds_emergency_fund_planner.xlsx (Plan, Sinking Funds, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a personal budgeting tool, not financial advice. It plans savings from the figures you enter; it does not account for interest, investment returns or inflation.</em></p>"
+  }
+ }
+}

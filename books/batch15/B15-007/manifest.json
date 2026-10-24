@@ -1,0 +1,67 @@
+{
+ "id": "B15-007",
+ "slug": "customer-lifetime-value-cac-calculator",
+ "title": "Customer Lifetime Value & CAC Payback Calculator",
+ "price_cents": 1500,
+ "files": {
+  "workbook": {
+   "path": "books/batch15/B15-007/customer_lifetime_value_cac_calculator.xlsx",
+   "bytes": 10112,
+   "sha256": "33e9017178056ff87c42c79879650d51eb8fccc3ab373baa5069701ccf17332e"
+  },
+  "guide": {
+   "path": "books/batch15/B15-007/customer_lifetime_value_cac_calculator_guide.pdf",
+   "bytes": 8132,
+   "sha256": "31d3526d88786aaedd0025c0a3f490ad2163dd3d1a2b944ecef88fc311796f12"
+  },
+  "cover": {
+   "path": "books/covers/B15-007.png",
+   "bytes": 54116,
+   "sha256": "05b8c33ddd8889294d6b91ebd499307b9f3e346bb0a36e111715bf3a3f6f1599"
+  },
+  "bundle": {
+   "path": "books/batch15/B15-007/customer_lifetime_value_cac_calculator_bundle.zip",
+   "bytes": 15828,
+   "sha256": "3e5842b8492e67a960450a688b11037ff96cc8e6107089886452401f87d00520"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 40,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1401
+  },
+  "bundle": {
+   "files": [
+    "customer-lifetime-value-cac-calculator/README.txt",
+    "customer-lifetime-value-cac-calculator/customer_lifetime_value_cac_calculator.xlsx",
+    "customer-lifetime-value-cac-calculator/customer_lifetime_value_cac_calculator_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>For each marketing channel: what a customer costs to win, what they are worth in gross profit, the value-to-cost ratio, and how many months it takes to earn the cost back.</p><p>This workbook works it out per channel: the customer acquisition cost (spend divided by new customers), the customer&#x27;s lifetime value in gross profit (not revenue), the ratio between the two, and the payback period, the months of gross profit it takes to earn back what the customer cost.</p><p><strong>What's included</strong></p><ul><li>Customer acquisition cost per marketing channel</li><li>Lifetime value in gross profit, not revenue</li><li>Value-to-cost ratio and payback months per channel</li><li>GROW / WATCH / CUT verdict against the targets you set</li><li>Blended summary with best and worst channel</li><li>PDF guide with a worked example and a field-by-field reference</li></ul><p><strong>Who it's for</strong></p><ul><li>Online shops and DTC brands running paid ads</li><li>Service businesses using referrals, ads and directories</li><li>Subscription and membership businesses</li><li>Founders preparing a growth plan or investor update</li></ul><p><strong>You get:</strong> customer_lifetime_value_cac_calculator.xlsx (Settings, Channels, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a planning tool, not financial advice. Lifetime value is an estimate built from the averages you enter; check it against real repeat-purchase data as it accumulates.</em></p>"
+  }
+ }
+}

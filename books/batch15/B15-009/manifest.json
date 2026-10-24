@@ -1,0 +1,67 @@
+{
+ "id": "B15-009",
+ "slug": "business-mileage-log-deduction-tracker",
+ "title": "Business Mileage Log & Deduction Tracker (US)",
+ "price_cents": 900,
+ "files": {
+  "workbook": {
+   "path": "books/batch15/B15-009/business_mileage_log_deduction_tracker.xlsx",
+   "bytes": 32028,
+   "sha256": "8995d6625833c68ad233e8c16d4cacea6794566daeba83b735e50b2d0c322168"
+  },
+  "guide": {
+   "path": "books/batch15/B15-009/business_mileage_log_deduction_tracker_guide.pdf",
+   "bytes": 7866,
+   "sha256": "087429d4ac44775ccde4099fd801b15992dad816f27020fd87d9f307d511d5b6"
+  },
+  "cover": {
+   "path": "books/covers/B15-009.png",
+   "bytes": 49732,
+   "sha256": "527519d0b77402c08257a60242b8f2d22c6ae5c2d2232940cbed649088c4f050"
+  },
+  "bundle": {
+   "path": "books/batch15/B15-009/business_mileage_log_deduction_tracker_bundle.zip",
+   "bytes": 21108,
+   "sha256": "1c085b0f9972dbce29366af5e846e96e813cf4758311ad8ad9ccc1e33a04cc53"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 38,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1697
+  },
+  "bundle": {
+   "files": [
+    "business-mileage-log-deduction-tracker/README.txt",
+    "business-mileage-log-deduction-tracker/business_mileage_log_deduction_tracker.xlsx",
+    "business-mileage-log-deduction-tracker/business_mileage_log_deduction_tracker_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>A trip-by-trip mileage log with the date, destination, purpose and odometer readings, totals by purpose, odometer error checks, and the standard-mileage deduction at the rate you enter.</p><p>IRS Publication 463 asks for records that show the amount (miles), the time (date), the place (destination) and the business purpose of each trip. This log has a column for each, calculates the miles from odometer readings, flags readings that cannot be right, and totals the business miles and the deduction at the standard mileage rate you enter.</p><p><strong>What's included</strong></p><ul><li>Trip log with date, from, to, business purpose, category and odometer readings</li><li>Miles calculated automatically, with a CHECK flag for impossible readings</li><li>Deduction at the standard mileage rate you enter (72.5 cents example: IRS January 2026 rate)</li><li>Miles by purpose category and business-use share of all driving</li><li>Room for 400 trips in a year</li><li>PDF guide with a worked example and a field-by-field reference</li></ul><p><strong>Who it's for</strong></p><ul><li>Self-employed people and freelancers who drive for work</li><li>Small business owners using a personal car for business trips</li><li>Real estate agents, consultants, tradespeople and delivery-based sellers</li><li>Bookkeepers collecting mileage records from clients</li></ul><p><strong>You get:</strong> business_mileage_log_deduction_tracker.xlsx (Settings, Mileage Log, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a record-keeping tool, not tax advice. Whether you can deduct vehicle costs, and whether the standard mileage rate or actual expenses is better for you, depends on your situation; confirm with IRS Publication 463 and a tax professional.</em></p>"
+  }
+ }
+}

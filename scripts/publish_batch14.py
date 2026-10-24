@@ -39,6 +39,13 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 BATCH = ROOT / "books" / "batch14"
 RESULTS = ROOT / "data" / "batch14_publish_results.json"
+# 2026-10-24: the same publication path for later batches (--batch). Each has
+# its own folder, results file and the founder authorization it ran under.
+BATCHES = {
+    "batch14": (BATCH, RESULTS, "founder 2026-10-23: publish ten batch-14 products on Gumroad at realistic prices"),
+    "batch15": (ROOT / "books" / "batch15", ROOT / "data" / "batch15_publish_results.json",
+                "founder 2026-10-24: produce ten new real-pain digital products with review and testing, and publish them on Gumroad"),
+}
 COVER_URL = "https://raw.githubusercontent.com/galaxyaek7-del/openclaw-factory/main/books/covers/{id}.png"
 AUTHORIZATION = "founder 2026-10-23: publish ten batch-14 products on Gumroad at realistic prices"
 
@@ -49,7 +56,8 @@ def sha256(p):
 
 def load_manifests(batch=BATCH):
     out = []
-    for m in sorted(batch.glob("B14-*/manifest.json")):
+    prefix = "B" + Path(batch).name.replace("batch", "")          # batch14 -> B14, batch15 -> B15
+    for m in sorted(Path(batch).glob(f"{prefix}-*/manifest.json")):
         out.append(json.loads(m.read_text(encoding="utf-8")))
     return out
 
@@ -126,8 +134,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--live", action="store_true")
     ap.add_argument("--only", nargs="*", help="publish only these ids, e.g. B14-001")
+    ap.add_argument("--batch", choices=sorted(BATCHES), default="batch14")
     a = ap.parse_args()
-    mans = [m for m in load_manifests() if not a.only or m["id"] in a.only]
+    global BATCH, RESULTS, AUTHORIZATION
+    BATCH, RESULTS, AUTHORIZATION = BATCHES[a.batch]
+    mans = [m for m in load_manifests(BATCH) if not a.only or m["id"] in a.only]
     checks = [(m["id"], *preflight(m)[:2]) for m in mans]
     print(json.dumps({"products": len(mans), "preflight": checks}, indent=1))
     if not a.live or not all(c[1] for c in checks):

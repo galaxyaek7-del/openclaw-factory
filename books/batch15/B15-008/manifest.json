@@ -1,0 +1,67 @@
+{
+ "id": "B15-008",
+ "slug": "shift-schedule-labor-cost-planner",
+ "title": "Shift Schedule & Labor Cost Planner",
+ "price_cents": 1400,
+ "files": {
+  "workbook": {
+   "path": "books/batch15/B15-008/shift_schedule_labor_cost_planner.xlsx",
+   "bytes": 10654,
+   "sha256": "a86699721b680edbea689a27cb160e45ad837016bc338a32d876e55c063ab163"
+  },
+  "guide": {
+   "path": "books/batch15/B15-008/shift_schedule_labor_cost_planner_guide.pdf",
+   "bytes": 7676,
+   "sha256": "1d99ad334d86c1d587a9ddb226b26ae79b7c44e81018045d6c5143f959505871"
+  },
+  "cover": {
+   "path": "books/covers/B15-008.png",
+   "bytes": 48043,
+   "sha256": "45982f251e3c7d491f9da13d4c76d313b4ab5bd1d851e9d94dbdff3819cca5b0"
+  },
+  "bundle": {
+   "path": "books/batch15/B15-008/shift_schedule_labor_cost_planner_bundle.zip",
+   "bytes": 15816,
+   "sha256": "bcfc16ae1258f507431e638669526fe2d2bf97b46b675281c062ff56e0c6ad93"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 49,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1459
+  },
+  "bundle": {
+   "files": [
+    "shift-schedule-labor-cost-planner/README.txt",
+    "shift-schedule-labor-cost-planner/shift_schedule_labor_cost_planner.xlsx",
+    "shift-schedule-labor-cost-planner/shift_schedule_labor_cost_planner_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Plan the week&#x27;s shifts, see each person&#x27;s hours and overtime, and check the week&#x27;s labor cost as a share of forecast sales before the schedule goes out.</p><p>This workbook turns a weekly schedule into money: hours per person per day, regular and overtime hours, the cost of each person with employer taxes, the daily hours on the floor, and the week&#x27;s labor cost as a share of the sales you forecast. Weeks over your labor target are flagged.</p><p><strong>What's included</strong></p><ul><li>Weekly schedule for up to 20 people, hours per day</li><li>Regular and overtime hours per person, at your threshold and multiplier</li><li>Loaded labor cost with your employer tax and insurance estimate</li><li>Labor % of forecast sales with an OVER TARGET flag</li><li>Staff hours per day to match the schedule to busy and quiet days</li><li>PDF guide with a worked example and a field-by-field reference</li></ul><p><strong>Who it's for</strong></p><ul><li>Restaurant, cafe and bar managers</li><li>Retail store managers</li><li>Clinic, salon and studio owners with hourly staff</li><li>Small teams with variable weekly hours</li></ul><p><strong>You get:</strong> shift_schedule_labor_cost_planner.xlsx (Settings, Schedule, Week Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a planning tool, not legal or payroll advice. It applies weekly overtime after the threshold you set; some states also require daily overtime or other premiums, so check the rules that apply to your staff with your payroll provider.</em></p>"
+  }
+ }
+}

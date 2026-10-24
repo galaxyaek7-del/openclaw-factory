@@ -1,0 +1,67 @@
+{
+ "id": "B15-003",
+ "slug": "car-buy-vs-lease-calculator",
+ "title": "Car Buy vs Lease Calculator: Total Cost Over the Same Period",
+ "price_cents": 1200,
+ "files": {
+  "workbook": {
+   "path": "books/batch15/B15-003/car_buy_vs_lease_calculator.xlsx",
+   "bytes": 8364,
+   "sha256": "02a21a271bde8e6f44aadba4f21781bcad888748e7862996e4b0ddcba0588782"
+  },
+  "guide": {
+   "path": "books/batch15/B15-003/car_buy_vs_lease_calculator_guide.pdf",
+   "bytes": 8138,
+   "sha256": "56e412cc633b7535c4bc57f67e640103f020d9b93c04f51708c74076eb1f7c9a"
+  },
+  "cover": {
+   "path": "books/covers/B15-003.png",
+   "bytes": 53221,
+   "sha256": "72e9c2bef238d1e0014d5b1daabbc0de0b280791cd897ba3d02a8c1573daab8f"
+  },
+  "bundle": {
+   "path": "books/batch15/B15-003/car_buy_vs_lease_calculator_bundle.zip",
+   "bytes": 14117,
+   "sha256": "4c5bfe8bef062a62994c874b9453147c72ad042fdbb54c0557558bdcf35bdb27"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 14,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1573
+  },
+  "bundle": {
+   "files": [
+    "car-buy-vs-lease-calculator/README.txt",
+    "car-buy-vs-lease-calculator/car_buy_vs_lease_calculator.xlsx",
+    "car-buy-vs-lease-calculator/car_buy_vs_lease_calculator_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Compare buying with a loan and leasing on the same footing: everything you pay over the lease period, minus what the car is worth to you at the end.</p><p>This workbook compares the two over the same period, the length of the lease. For buying it counts the down payment, the loan payments, the loan balance still owed at the end, maintenance, minus the resale value you expect; for leasing it counts the amount due at signing, the payments with tax, the fees and any extra-mileage charge.</p><p><strong>What's included</strong></p><ul><li>Buy and lease compared over the same period, not by monthly payment</li><li>Buying counts the loan balance still owed and the resale value at the end</li><li>Leasing counts amount due at signing, tax on payments, fees and extra-mileage charges</li><li>Break-even resale value: how much the decision depends on your resale estimate</li><li>Works for personal and company-car decisions</li><li>PDF guide with a worked example and a field-by-field reference</li></ul><p><strong>Who it's for</strong></p><ul><li>Drivers choosing between a lease offer and a car loan</li><li>Small business owners comparing a company car lease with a purchase</li><li>Anyone who wants to check a dealer&#x27;s &#x27;lower monthly payment&#x27; pitch</li></ul><p><strong>You get:</strong> car_buy_vs_lease_calculator.xlsx (Inputs, Comparison) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a comparison tool, not financial or tax advice. Results depend on the quotes and the resale value you enter; read the lease contract and the loan disclosure before signing, and check business-use tax treatment with an accountant.</em></p>"
+  }
+ }
+}
