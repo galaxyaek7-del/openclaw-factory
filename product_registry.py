@@ -53,8 +53,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 REGISTRY = ROOT / "data" / "product_registry.json"
 CATALOG = ROOT / "data" / "catalog.json"
-MANIFEST_GLOBS = ["books/batch14/*/manifest.json"]
-PUBLISH_RESULTS = [ROOT / "data" / "batch14_publish_results.json"]
+MANIFEST_GLOBS = ["books/batch13/B13-*.manifest.json", "books/batch14/*/manifest.json", "books/batch15/*/manifest.json"]
+PUBLISH_RESULTS = [ROOT / "data" / "batch14_publish_results.json", ROOT / "data" / "batch15_publish_results.json"]
 PAGE_CHECKS = ROOT / "data" / "listing_page_checks.json"
 PAGE_CHECK_MAX_AGE_DAYS = 7
 
@@ -175,7 +175,8 @@ def build(live, catalog_rows, manifests, publish_results, previous=None, page_ch
         products.append({
             "internal_id": iid, "external_ids": {"gumroad": gid}, "title": p.get("name"),
             "price_cents": p.get("price"), "published": published, "url": p.get("short_url"),
-            "sales_count": sales, "manifest": man["_path"] if man else None, "primary_state": state,
+            "sales_count": sales, "sales_usd_cents": int(p.get("sales_usd_cents") or 0),  # as Gumroad reports it (gross)
+            "manifest": man["_path"] if man else None, "primary_state": state,
             "flags": {"published_on_platform": published, "in_catalog": gid in catalog_ids},
         })
     listed_titles = {p.get("name") for p in live}
@@ -184,7 +185,7 @@ def build(live, catalog_rows, manifests, publish_results, previous=None, page_ch
             continue
         products.append({
             "internal_id": m["id"], "external_ids": {}, "title": m["title"], "price_cents": m.get("price_cents"),
-            "published": False, "url": None, "sales_count": 0, "manifest": m["_path"],
+            "published": False, "url": None, "sales_count": 0, "sales_usd_cents": 0, "manifest": m["_path"],
             "primary_state": "READY_FOR_AUTHORIZATION" if (m.get("qa") or {}).get("ok") else "BUILD_COMPLETE",
             "flags": {"published_on_platform": False, "in_catalog": False},
         })

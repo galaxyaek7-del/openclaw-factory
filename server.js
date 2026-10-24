@@ -7,6 +7,7 @@ const Groq = require('groq-sdk');
 const knowledgeBrain = require('./knowledge_brain');
 const selfAwareness = require('./self_awareness');
 const dashboardData = require('./lib/dashboard_data');
+const ceoCommandCenter = require('./lib/ceo_command_center');
 const infrastructureIntelligence = require('./lib/infrastructure_intelligence');
 const metricsLib = require('./lib/metrics');
 const n8nNotify = require('./lib/n8n_notify');
@@ -853,6 +854,16 @@ const SERVICE_REGISTRY = [
     reused: 'ceo_home.py::build_ceo_home_briefing() merged with server.js computeHealthStatus() -- same merge pattern as resilience-status/executive-score.',
     handler: ceoHomeService,
     health: pythonHealthCheck('ceo_home_briefing'),
+  },
+  {
+    // Executive Command Center (2026-10-24): the read model behind the
+    // founder's dashboard.html. Pure file reads, every figure tagged
+    // VERIFIED / DERIVED / UNKNOWN with its source file and time.
+    name: 'ceo-command-center',
+    description: 'Executive Command Center read model: verified revenue and the $100K goal, product portfolio and pipeline, factory loop health, integrations, distribution, agents, risks, and the founder decisions ranked by impact. File reads only; nothing is estimated in place of a missing source.',
+    reused: 'lib/ceo_command_center.js over data/product_registry.json, factory_loop.log, data/distribution_*.json, data/pinterest_queue.json, data/metricool_brand.json, data/gumroad_auth_state.json, data/commission_ledger.jsonl.',
+    handler: () => ceoCommandCenter.compute(),
+    health: async () => ({ status: 'ok', detail: 'file reads only' }),
   },
   {
     // CEO BRAIN (Phase 1 -- CEO Brain & Founder-Light Governance,

@@ -1,313 +1,432 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>Galaxy Forge — لوحة القيادة</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Galaxy Forge — مركز القيادة التنفيذية</title>
 <style>
-  :root {
-    --bg: #f8fafc; --bg-card: #ffffff; --border: #e2e8f0; --text: #0f172a; --text-dim: #64748b;
-    --accent: #2563eb; --ok: #16a34a; --warn: #d97706; --crit: #dc2626; --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  }
-  [data-theme="dark"] {
-    --bg: #0b1120; --bg-card: #131c31; --border: #1f2b45; --text: #e5edff; --text-dim: #8ba0c4;
-    --accent: #60a5fa; --ok: #4ade80; --warn: #fbbf24; --crit: #f87171; --shadow: 0 1px 3px rgba(0,0,0,0.4);
-  }
-  * { box-sizing: border-box; }
-  body {
-    font-family: -apple-system, "Segoe UI", Tahoma, sans-serif;
-    background: var(--bg); color: var(--text); margin: 0; padding: 28px;
-    transition: background .2s ease, color .2s ease;
-  }
-  .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-  h1 { font-size: 20px; margin: 0; font-weight: 700; }
-  .subtitle { color: var(--text-dim); font-size: 13px; margin-top: 2px; }
-  .controls { display: flex; gap: 10px; align-items: center; }
-  #search {
-    background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
-    border-radius: 8px; padding: 8px 12px; font-size: 13px; width: 240px;
-  }
-  #themeToggle, #search { cursor: pointer; }
-  #themeToggle {
-    background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
-    border-radius: 8px; padding: 8px 14px; font-size: 13px;
-  }
-  #searchResults {
-    position: absolute; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
-    box-shadow: var(--shadow); max-width: 400px; max-height: 300px; overflow-y: auto; z-index: 10; display: none;
-    padding: 8px; font-size: 12px;
-  }
-  #searchResults div { padding: 6px 8px; border-radius: 6px; }
-  #searchResults div:hover { background: var(--border); }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 20px; }
-  .card {
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;
-    box-shadow: var(--shadow); transition: transform .15s ease, box-shadow .15s ease;
-  }
-  .card:hover { transform: translateY(-2px); }
-  .card h2 { font-size: 12px; color: var(--text-dim); margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
-  .metric { font-size: 26px; font-weight: 700; line-height: 1.2; }
-  .note { font-size: 12px; color: var(--text-dim); margin-top: 8px; line-height: 1.5; }
-  .ok { color: var(--ok); } .critical { color: var(--crit); } .degraded { color: var(--warn); }
-  .flag-active { border-color: var(--crit); background: color-mix(in srgb, var(--crit) 8%, var(--bg-card)); }
-  .section-title { font-size: 14px; font-weight: 700; margin: 28px 0 12px 0; color: var(--text-dim); text-transform: uppercase; letter-spacing: .06em; }
-  .timeline { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); }
-  .timeline-row { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; align-items: baseline; }
-  .timeline-row:last-child { border-bottom: none; }
-  .timeline-time { color: var(--text-dim); font-size: 11px; white-space: nowrap; min-width: 130px; }
-  .timeline-source { font-size: 10px; padding: 2px 8px; border-radius: 999px; background: var(--border); color: var(--text-dim); white-space: nowrap; }
-  .timeline-summary { flex: 1; }
-  .empty { padding: 20px; text-align: center; color: var(--text-dim); font-size: 13px; }
-  .notif-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 8px; }
-  .notif-box.active { border-color: var(--warn); }
-  pre.notif-content { white-space: pre-wrap; font-size: 12px; color: var(--text); margin: 8px 0 0 0; font-family: inherit; }
+:root{--bg:#f6f7fb;--panel:#fff;--panel2:#f1f3f8;--ink:#141a26;--muted:#5c6577;--line:#e3e7ef;--brand:#1f3864;--accent:#c88a12;
+--ok:#137a4b;--okbg:#e6f5ee;--warn:#9a5b00;--warnbg:#fff3df;--bad:#b42318;--badbg:#fdecea;--info:#1f5fbf;--infobg:#e8f0fd;--unk:#5c6577;--unkbg:#eef0f4;
+--radius:12px;--shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0d1117;--panel:#151b25;--panel2:#1b2230;--ink:#e8ecf3;--muted:#9aa4b5;--line:#273041;--brand:#8fb3ff;--accent:#f0b341;
+--ok:#4cc38a;--okbg:#10291d;--warn:#f0b341;--warnbg:#2b2210;--bad:#ff7b72;--badbg:#2d1414;--info:#8fb3ff;--infobg:#142038;--unk:#9aa4b5;--unkbg:#1e2532;--shadow:none}}
+:root[data-theme=dark]{--bg:#0d1117;--panel:#151b25;--panel2:#1b2230;--ink:#e8ecf3;--muted:#9aa4b5;--line:#273041;--brand:#8fb3ff;--accent:#f0b341;
+--ok:#4cc38a;--okbg:#10291d;--warn:#f0b341;--warnbg:#2b2210;--bad:#ff7b72;--badbg:#2d1414;--info:#8fb3ff;--infobg:#142038;--unk:#9aa4b5;--unkbg:#1e2532;--shadow:none}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "Segoe UI",Tahoma,"Noto Sans Arabic",system-ui,sans-serif}
+a{color:var(--info)}
+.app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+nav.side{background:var(--panel);border-inline-end:1px solid var(--line);padding:18px 12px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{font-weight:700;font-size:17px;padding:4px 10px 14px;color:var(--brand)}
+.brand small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+nav.side button{display:flex;gap:10px;align-items:center;width:100%;border:0;background:none;color:var(--ink);text-align:start;padding:9px 10px;border-radius:8px;font:inherit;cursor:pointer}
+nav.side button:hover{background:var(--panel2)}
+nav.side button[aria-current=page]{background:var(--infobg);color:var(--info);font-weight:600}
+nav.side .ico{width:20px;text-align:center;opacity:.85}
+main{padding:22px 26px 60px;min-width:0}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+header.top h1{font-size:22px;margin:0}
+.meta{color:var(--muted);font-size:13px}
+.tools{display:flex;gap:8px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:7px 12px;font:inherit;cursor:pointer}
+.btn:hover{border-color:var(--brand)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+:root[data-theme=dark] .btn.primary,@media (prefers-color-scheme:dark){}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.grid{display:grid;gap:14px}
+.kpis{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+.two{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);min-width:0}
+.card h2{font-size:15px;margin:0 0 12px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.card h3{font-size:14px;margin:14px 0 6px}
+.kpi .label{color:var(--muted);font-size:13px}
+.kpi .value{font-size:26px;font-weight:700;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.kpi .value.unknown{color:var(--unk);font-size:20px}
+.src{color:var(--muted);font-size:11.5px;margin-top:6px}
+.badge{display:inline-block;border-radius:999px;padding:1px 9px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.b-ok{background:var(--okbg);color:var(--ok)}.b-warn{background:var(--warnbg);color:var(--warn)}.b-bad{background:var(--badbg);color:var(--bad)}
+.b-info{background:var(--infobg);color:var(--info)}.b-unk{background:var(--unkbg);color:var(--unk)}
+.goal{height:12px;background:var(--panel2);border-radius:999px;overflow:hidden;margin:10px 0 6px}
+.goal span{display:block;height:100%;background:var(--accent);min-width:2px}
+ul.list{list-style:none;margin:0;padding:0}
+ul.list li{padding:10px 0;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+ul.list li:last-child{border-bottom:0}
+.rank{flex:0 0 26px;height:26px;border-radius:50%;background:var(--infobg);color:var(--info);display:grid;place-items:center;font-weight:700;font-size:13px}
+.muted{color:var(--muted)}
+.small{font-size:12.5px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:start;vertical-align:top}
+th{background:var(--panel2);font-weight:600;position:sticky;top:0;cursor:pointer;white-space:nowrap}
+tr:hover td{background:var(--panel2)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.filters input,.filters select{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:7px 10px;font:inherit}
+.filters input{flex:1;min-width:180px}
+.chart text{fill:var(--muted);font-size:11px}
+.chart .bar{fill:var(--brand)}
+.chart .bar.unmeasured{fill:var(--line)}
+.state{padding:40px;text-align:center;color:var(--muted)}
+.stale{border:1px solid var(--warn);background:var(--warnbg);color:var(--warn);padding:8px 12px;border-radius:8px;margin-bottom:14px;font-size:13px}
+.err{border:1px solid var(--bad);background:var(--badbg);color:var(--bad);padding:10px 12px;border-radius:8px}
+section[hidden]{display:none}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);max-width:520px;width:92vw;padding:20px}
+dialog::backdrop{background:rgba(5,10,20,.45)}
+.action{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.action:last-child{border-bottom:0}
+.drawer{position:fixed;inset-block:0;inset-inline-end:0;width:min(440px,96vw);background:var(--panel);border-inline-start:1px solid var(--line);box-shadow:0 0 30px rgba(0,0,0,.15);padding:20px;overflow:auto;z-index:20}
+.menu{display:none}
+@media (max-width:900px){
+ .app{grid-template-columns:1fr}
+ nav.side{position:fixed;inset-block:0;inset-inline-start:0;width:260px;z-index:30;transform:translateX(110%);transition:transform .2s}
+ [dir=rtl] nav.side{transform:translateX(110%)}
+ nav.side.open{transform:none}
+ .menu{display:inline-block}
+ main{padding:14px 14px 60px}
+ .kpi .value{font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-  <div class="topbar">
+<div class="app">
+<nav class="side" id="side" aria-label="الأقسام">
+  <div class="brand">Galaxy Forge<small>مركز القيادة التنفيذية</small></div>
+  <div id="navlist"></div>
+</nav>
+<main>
+  <header class="top">
     <div>
-      <h1>🏭 Galaxy Forge — لوحة القيادة</h1>
-      <div class="subtitle">تجميع حي لبيانات حقيقية موجودة فعلاً — لا مقاييس مُختلَقة. آخر تحديث: <span id="ts">...</span> <span id="fetchError" style="display:none; color:var(--crit); font-weight:600;"></span></div>
+      <button class="btn menu" id="menuBtn" aria-label="القائمة">☰</button>
+      <h1 id="title">النظرة التنفيذية</h1>
+      <div class="meta" id="meta">جارٍ التحميل…</div>
     </div>
-    <div class="controls">
-      <div style="position:relative;">
-        <input id="search" placeholder="🔎 بحث في قاعدة المعرفة (OpenClaw_Brain)..." />
-        <div id="searchResults"></div>
-      </div>
-      <button id="themeToggle">🌙 داكن</button>
+    <div class="tools">
+      <button class="btn" id="themeBtn" title="الوضع الفاتح/الداكن">◐</button>
+      <button class="btn primary" id="refreshBtn">تحديث</button>
     </div>
+  </header>
+  <div id="banner"></div>
+  <div id="content"><div class="state">جارٍ تحميل بيانات المصنع…</div></div>
+</main>
+</div>
+<dialog id="confirm">
+  <h3 id="cTitle" style="margin-top:0"></h3>
+  <p id="cBody" class="small"></p>
+  <div id="cResult" class="small"></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+    <button class="btn" id="cCancel">إلغاء</button>
+    <button class="btn primary" id="cGo">تأكيد التنفيذ</button>
   </div>
+</dialog>
+<script>
+'use strict';
+const SECTIONS = [
+  ['overview', '◎', 'النظرة التنفيذية'], ['production', '⚙', 'مصنع الإنتاج'], ['portfolio', '▤', 'محفظة المنتجات'],
+  ['sales', '$', 'المبيعات والإيراد'], ['distribution', '↗', 'التوزيع والتسويق'], ['agents', '◇', 'الوكلاء والأتمتة'],
+  ['integrations', '⇄', 'التكاملات والحسابات'], ['risk', '⚠', 'الجودة والمخاطر'], ['reports', '☰', 'التقارير والأدلة'],
+  ['settings', '⚑', 'إعدادات الرئيس']];
+// The only controls on this page: existing server actions, each confirmed server-side ({confirmed:true}),
+// single-run guarded and logged. Nothing here publishes, prices, spends or touches credentials.
+const ACTIONS = [
+  ['pause-production', 'إيقاف الإنتاج مؤقتاً', 'يوقف بدء مهام إنتاج جديدة حتى الاستئناف. قابل للعكس.'],
+  ['resume-production', 'استئناف الإنتاج', 'يرفع الإيقاف المؤقت عن الإنتاج.'],
+  ['publish-emergency-stop', 'إيقاف طارئ للنشر', 'يمنع أي نشر حقيقي على المنصات حتى الاستئناف. قابل للعكس.'],
+  ['publish-emergency-resume', 'رفع الإيقاف الطارئ للنشر', 'يعيد النشر إلى وضعه الطبيعي (يبقى خاضعاً لبوابات الكتابة).'],
+  ['check-paddle-checkout-status', 'فحص جاهزية الدفع في Paddle', 'فحص حي لحالة الدفع لدى Paddle.'],
+  ['refresh-data', 'تسجيل تحديث يدوي', 'يسجل حدث تحديث في سجل التدقيق؛ لا يغير شيئاً.']];
+const KIND = {VERIFIED: ['موثّق', 'b-ok'], DERIVED: ['مشتق', 'b-info'], UNKNOWN: ['غير معروف', 'b-unk']};
+let DATA = null, VIEW = 'overview', SORT = {key: 'id', dir: 1};
 
-  <div class="grid" id="grid">جارٍ التحميل...</div>
+const $ = (s) => document.querySelector(s);
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const money = (c) => c == null ? '—' : '$' + (c / 100).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const when = (iso) => { if (!iso) return 'غير معروف'; const d = new Date(iso); return d.toLocaleString('ar', {dateStyle: 'medium', timeStyle: 'short'}); };
+const ago = (iso) => { if (!iso) return ''; const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 60 ? `منذ ${m} د` : m < 1440 ? `منذ ${Math.round(m / 60)} س` : `منذ ${Math.round(m / 1440)} يوم`; };
+const kind = (k) => { const [t, c] = KIND[k] || [k, 'b-unk']; return `<span class="badge ${c}">${esc(t)}</span>`; };
+const badge = (text, cls) => `<span class="badge ${cls}">${esc(text)}</span>`;
+const stateCls = (s) => /VERIFIED|RUNNING|CONNECTED|OK|PASS|CONFIGURED$/i.test(s) && !/NOT/i.test(s) ? 'b-ok' : /BLOCK|FAIL|STOP|BAD|403|NOT_CONNECTED|NOT CONNECTED/i.test(s) ? 'b-bad' : /WARN|SPEND|PRESENT|STALE/i.test(s) ? 'b-warn' : 'b-unk';
+const srcLine = (s) => s ? `<div class="src">المصدر: ${esc(s.file)} · آخر تحديث ${esc(when(s.updated_at))}</div>` : '';
 
-  <div class="section-title">مركز التنبيهات</div>
-  <div id="notifications"></div>
+function nav() {
+  $('#navlist').innerHTML = SECTIONS.map(([id, ic, label]) =>
+    `<button data-v="${id}" ${id === VIEW ? 'aria-current="page"' : ''}><span class="ico">${ic}</span>${esc(label)}</button>`).join('');
+  document.querySelectorAll('#navlist button').forEach((b) => b.onclick = () => { VIEW = b.dataset.v; location.hash = VIEW; $('#side').classList.remove('open'); render(); });
+}
 
-  <div class="section-title">سجلّ النشاط الحقيقي</div>
-  <div class="timeline" id="timeline">جارٍ التحميل...</div>
+async function load() {
+  $('#refreshBtn').disabled = true;
+  try {
+    const r = await fetch('/api/v1/ceo-command-center', {credentials: 'same-origin'});
+    if (r.status === 401) { location.href = '/mission_control_login.html?next=' + encodeURIComponent('/dashboard.html' + location.hash); return; }
+    const j = await r.json();
+    if (!j.success) throw new Error(j.error && j.error.message || 'فشل الطلب');
+    DATA = j.data;
+    $('#banner').innerHTML = '';
+  } catch (e) {
+    $('#banner').innerHTML = `<div class="err">تعذّر تحميل البيانات: ${esc(e.message)}. ${DATA ? 'تُعرض آخر نسخة تم تحميلها.' : ''}</div>`;
+  } finally { $('#refreshBtn').disabled = false; }
+  render();
+}
 
-  <div class="section-title">خارطة طريق الاكتشاف — ماذا يحتاج كل مقياس مفقود ليصبح حقيقياً</div>
-  <div class="timeline" id="discoveryRoadmap">جارٍ التحميل...</div>
+function render() {
+  nav();
+  const [, , label] = SECTIONS.find((s) => s[0] === VIEW) || SECTIONS[0];
+  $('#title').textContent = label;
+  if (!DATA) { $('#content').innerHTML = '<div class="state">لا توجد بيانات بعد.</div>'; return; }
+  $('#meta').textContent = `آخر تحديث للوحة: ${when(DATA.generated_at)} · كل رقم يحمل مصدره وحالته`;
+  const f = DATA.factory;
+  $('#banner').innerHTML = f.stale ? `<div class="stale">حلقة المصنع لم تسجل دورة منذ ${f.minutes_since_last_tick} دقيقة — قد تكون البيانات قديمة.</div>` : $('#banner').innerHTML;
+  $('#content').innerHTML = (VIEWS[VIEW] || VIEWS.overview)();
+  if (VIEW === 'portfolio') wirePortfolio();
+  if (VIEW === 'overview' || VIEW === 'production') wireActions();
+  if (VIEW === 'reports') loadJobs();
+}
 
-  <script>
-    // Theme: persisted, defaults to system preference — same convention
-    // Artifacts use (data-theme on root), so this behaves predictably.
-    function applyTheme(t) {
-      document.documentElement.setAttribute('data-theme', t);
-      document.getElementById('themeToggle').textContent = t === 'dark' ? '☀️ فاتح' : '🌙 داكن';
-      localStorage.setItem('galaxy_forge_dashboard_theme', t);
+function kpi(label, m, fmt) {
+  const unknown = m.value == null;
+  return `<div class="card kpi"><div class="label">${esc(label)} ${kind(m.kind)}</div>
+    <div class="value ${unknown ? 'unknown' : ''}">${unknown ? 'غير معروف' : esc(fmt(m.value))}</div>
+    ${m.note ? `<div class="small muted">${esc(m.note)}</div>` : ''}${srcLine(m.source)}</div>`;
+}
+
+function pipelineChart(p) {
+  const max = Math.max(1, ...p.map((s) => s.count));
+  const h = 26, w = 520, lw = 170;
+  const rows = p.map((s, i) => {
+    const bw = s.count ? Math.max(4, (w - lw - 50) * s.count / max) : 0;
+    return `<text x="${w}" y="${i * h + 17}" text-anchor="start" style="direction:rtl">${esc(STAGE_AR[s.stage] || s.stage)}</text>
+      <rect class="bar ${s.measured ? '' : 'unmeasured'}" x="${w - lw - bw}" y="${i * h + 5}" width="${bw}" height="16" rx="4"></rect>
+      <text x="${w - lw - bw - 6}" y="${i * h + 17}" text-anchor="end">${s.measured ? s.count : 'غير مقاس'}</text>`;
+  }).join('');
+  return `<svg class="chart" viewBox="0 0 ${w + 10} ${p.length * h + 6}" width="100%" role="img" aria-label="مراحل خط الإنتاج">${rows}</svg>`;
+}
+const STAGE_AR = {'Research': 'البحث', 'Product Creation': 'صنع المنتج', 'Quality Assurance': 'ضمان الجودة', 'Commercial Validation': 'التحقق التجاري',
+  'Packaging': 'التغليف', 'Listing Preparation': 'تجهيز القائمة', 'Authorization': 'التفويض', 'Publication': 'النشر', 'Revenue Verification': 'التحقق من الإيراد'};
+
+function actionsCard() {
+  return `<div class="card"><h2>مركز الإجراءات <span class="small muted">كل إجراء يُؤكَّد ويُسجَّل في الخادم</span></h2>
+    ${ACTIONS.map(([n, l, d]) => `<div class="action"><div><strong>${esc(l)}</strong><div class="small muted">${esc(d)}</div></div>
+      <button class="btn" data-act="${esc(n)}">تنفيذ</button></div>`).join('')}
+    <div class="small muted" style="margin-top:8px">غير متاح هنا عمداً: النشر على المنصات، تغيير الأسعار، الإنفاق، وبيانات الدخول. هذه تبقى خلف بوابات الكتابة وتفويضك الصريح.</div></div>`;
+}
+
+const VIEWS = {
+  overview() {
+    const R = DATA.revenue, P = DATA.products, f = DATA.factory, D = DATA.decisions;
+    const pct = (R.goal.progress * 100);
+    return `
+    <div class="grid kpis">
+      ${kpi('الإيراد الموثّق', {value: R.verified_revenue_cents, kind: 'DERIVED', note: 'مبيعات Gumroad + عمولات حقيقية مؤكدة', source: R.gross_sales.source}, money)}
+      ${kpi('الطلبات', R.orders, (v) => v.toLocaleString('en-US'))}
+      ${kpi('المرتجعات', R.refunds, (v) => v)}
+      ${kpi('صافي الإيراد', R.net_revenue, money)}
+      ${kpi('منتجات منشورة', {value: P.published, kind: 'VERIFIED', source: DATA.portfolio.source}, (v) => v)}
+      ${kpi('جاهزة للمراجعة/النشر', {value: P.ready_for_review, kind: 'VERIFIED', source: DATA.portfolio.source}, (v) => v)}
+      ${kpi('الزيارات', DATA.distribution.traffic, (v) => v)}
+    </div>
+    <div class="card" style="margin-top:14px"><h2>هدف $100K إيراد موثّق <span class="badge b-info">${pct.toFixed(2)}%</span></h2>
+      <div class="goal"><span style="width:${Math.min(100, pct)}%"></span></div>
+      <div class="small">${esc(money(R.verified_revenue_cents))} من ${esc(money(R.goal.target_cents))}</div>
+      <div class="src">${esc(R.goal.definition)}</div></div>
+    <div class="grid two" style="margin-top:14px">
+      <div class="card"><h2>قرارات تنتظرك ${badge(D.founder.length + ' قرار', 'b-warn')}</h2>
+        ${D.founder.length ? `<ul class="list">${D.founder.map((x, i) => `<li><span class="rank">${i + 1}</span><div style="flex:1"><strong>${esc(x.title)}</strong><div class="small muted">${esc(x.impact)} · ${esc(x.owner)}</div></div></li>`).join('')}</ul>` : '<div class="muted">لا قرارات معلقة.</div>'}</div>
+      <div class="card"><h2>يواصله المصنع تلقائياً</h2><ul class="list">${D.autonomous.map((t) => `<li><div>${esc(t)}</div></li>`).join('')}</ul></div>
+    </div>
+    <div class="grid two" style="margin-top:14px">
+      <div class="card"><h2>صحة المصنع ${badge(f.loop.state, stateCls(f.loop.state))}</h2>
+        <ul class="list">
+          <li><span>آخر دورة للحلقة</span><span>${esc(when(f.last_tick_at))} <span class="muted small">${esc(ago(f.last_tick_at))}</span></span></li>
+          <li><span>تشخيص آخر دورة</span>${badge(f.diagnosis, stateCls(f.diagnosis))}</li>
+          <li><span>المهمة الحالية</span><span>${esc(f.current_task || 'لا شيء قيد التنفيذ')}</span></li>
+          <li><span>خطوات فشلت مؤخراً</span><span>${f.recent_failed_steps.length}</span></li>
+          <li><span>الاختبارات</span><span class="small muted">${esc(f.tests.note)}</span></li>
+        </ul>${srcLine(f.source)}</div>
+      ${actionsCard()}
+    </div>`;
+  },
+  production() {
+    const pf = DATA.portfolio, b = DATA.batch, f = DATA.factory;
+    return `<div class="grid two">
+      <div class="card"><h2>خط الإنتاج</h2>${pipelineChart(pf.pipeline)}
+        <div class="small muted">المراحل الرمادية لا يوجد لها سجل منفصل بعد؛ لا تُعرض أرقام مختلقة لها.</div>${srcLine(pf.source)}</div>
+      <div class="card"><h2>الدفعة الحالية</h2>
+        <ul class="list"><li><span>الدفعة 15 (10 منتجات)</span>${badge(DATA.products.ready_for_review ? 'جاهزة — بانتظار النشر' : 'منشورة', DATA.products.ready_for_review ? 'b-warn' : 'b-ok')}</li>
+        ${b.blocked_reason ? `<li><span>سبب الانتظار</span><span>${esc(b.blocked_reason)}</span></li><li><span>الخطوة التالية</span><span>${esc(b.next)}</span></li>` : ''}
+        <li><span>آخر محاولة نشر</span><span>${esc(when(b.at))}</span></li></ul></div>
+    </div>
+    <div class="card" style="margin-top:14px"><h2>خطوات فشلت في آخر الدورات</h2>
+      ${f.recent_failed_steps.length ? `<div class="table-wrap"><table><tr><th>الوقت</th><th>الخطوة</th><th>السبب</th></tr>${f.recent_failed_steps.map((s) => `<tr><td class="num">${esc(when(s.at))}</td><td>${esc(s.step)}</td><td>${esc(s.detail)}</td></tr>`).join('')}</table></div>` : '<div class="muted">لا فشل مسجل في آخر الدورات.</div>'}
+    </div><div style="margin-top:14px">${actionsCard()}</div>`;
+  },
+  portfolio() {
+    const lines = [...new Set(DATA.portfolio.rows.map((r) => r.line))];
+    const stages = [...new Set(DATA.portfolio.rows.map((r) => r.stage))];
+    return `<div class="card"><h2>محفظة المنتجات <span class="small muted" id="pfCount"></span></h2>
+      <div class="filters"><input id="q" placeholder="بحث بالاسم أو المعرّف" aria-label="بحث">
+        <select id="fStage" aria-label="المرحلة"><option value="">كل المراحل</option>${stages.map((s) => `<option>${esc(s)}</option>`).join('')}</select>
+        <select id="fLine" aria-label="الخط"><option value="">كل الخطوط</option>${lines.map((s) => `<option>${esc(s)}</option>`).join('')}</select>
+        <select id="fBlock" aria-label="العوائق"><option value="">الكل</option><option value="1">ذات عائق فقط</option></select></div>
+      <div class="table-wrap" style="max-height:70vh"><table id="pf"></table></div>${srcLine(DATA.portfolio.source)}</div><div id="drawer"></div>`;
+  },
+  sales() {
+    const R = DATA.revenue;
+    const top = DATA.portfolio.rows.filter((r) => r.sales > 0).sort((a, b) => b.sales_usd_cents - a.sales_usd_cents);
+    return `<div class="grid kpis">${kpi('المبيعات الإجمالية (Gumroad)', R.gross_sales, money)}${kpi('الطلبات', R.orders, (v) => v)}
+      ${kpi('المرتجعات', R.refunds, (v) => v)}${kpi('صافي الإيراد', R.net_revenue, money)}${kpi('عمولات الأفلييت المؤكدة', R.affiliate_commissions, money)}</div>
+      <div class="card" style="margin-top:14px"><h2>المنتجات التي باعت <span class="small muted">${esc(R.period)}</span></h2>
+      ${top.length ? `<div class="table-wrap"><table><tr><th>المنتج</th><th>الطلبات</th><th>المبيعات</th></tr>${top.map((r) => `<tr><td>${esc(r.name)}</td><td class="num">${r.sales}</td><td class="num">${esc(money(r.sales_usd_cents))}</td></tr>`).join('')}</table></div>`
+        : '<div class="muted">لا توجد أي عملية بيع مسجلة لدى Gumroad حتى الآن. الصفر هنا رقم موثّق وليس نقصاً في البيانات.</div>'}
+      <div class="src">${esc(R.goal.definition)}</div></div>`;
+  },
+  distribution() {
+    const d = DATA.distribution, p = d.pinterest;
+    const plats = DATA.integrations.filter((i) => i.role === 'social platform');
+    return `<div class="grid two">
+      <div class="card"><h2>المنصات الاجتماعية</h2><ul class="list">${plats.map((i) => `<li><div><strong>${esc(i.name)}</strong><div class="small muted">${esc(i.detail)}</div></div>${badge(i.state, stateCls(i.state))}</li>`).join('')}</ul></div>
+      <div class="card"><h2>Pinterest ${badge(p.board_found ? 'اللوحة موجودة' : 'بانتظار اللوحة', p.board_found ? 'b-ok' : 'b-warn')}</h2>
+        <ul class="list">${Object.entries(p.summary).map(([k, v]) => `<li><span>${esc(k)}</span><span>${v}</span></li>`).join('') || '<li>لا قائمة انتظار بعد</li>'}</ul>
+        <div class="small muted">${esc(p.lookup || '')}</div><div class="src">آخر تحديث ${esc(when(p.updated_at))}</div></div>
+      <div class="card"><h2>المسودات والمحتوى</h2><ul class="list">
+        <li><span>مسودات تنتظر موافقتك</span><span>${d.awaiting_approval}</span></li>
+        <li><span>منشورات تم التحقق من نشرها</span><span>${d.published_verified}</span></li>
+        ${Object.entries(d.jobs_by_state).map(([k, v]) => `<li><span class="small">${esc(k)}</span><span>${v}</span></li>`).join('')}</ul></div>
+      <div class="card"><h2>محركات البحث والزيارات</h2><ul class="list">
+        <li><span>إشعارات IndexNow المرسلة</span><span>${d.search.indexnow_submissions}</span></li>
+        <li><span>آخر إشعار</span><span>${esc(when(d.search.last_submission_at))}</span></li>
+        <li><span>زيارات الموقع</span><span>${kind('UNKNOWN')}</span></li></ul>
+        <div class="small muted">${esc(d.traffic.note)}</div></div>
+    </div>`;
+  },
+  agents() {
+    return `<div class="card"><h2>الوكلاء وسير العمل</h2><div class="table-wrap"><table><tr><th>الاسم</th><th>الدور</th><th>الحالة</th><th>آخر نتيجة</th><th>الدليل</th><th>موافقة بشرية</th></tr>
+      ${DATA.agents.map((a) => `<tr><td><strong>${esc(a.name)}</strong></td><td>${esc(a.purpose)}</td><td>${badge(a.state, stateCls(a.state))}</td><td>${esc(a.last_result)}</td><td class="small">${esc(a.evidence)}</td><td class="small">${esc(a.approval)}</td></tr>`).join('')}
+      </table></div><div class="small muted" style="margin-top:8px">"عند الطلب" يعني أن الوكيل يُستدعى من التطبيق ولا يعمل كعملية دائمة؛ لا يُوصف وكيل بأنه نشط دون دليل تشغيل.</div></div>`;
+  },
+  integrations() {
+    return `<div class="card"><h2>التكاملات والحسابات</h2><div class="table-wrap"><table><tr><th>الخدمة</th><th>الدور</th><th>الحالة</th><th>التفاصيل</th><th>المطلوب</th></tr>
+      ${DATA.integrations.map((i) => `<tr><td><strong>${esc(i.name)}</strong></td><td>${esc(i.role)}</td><td>${badge(i.state, stateCls(i.state))}</td><td class="small">${esc(i.detail)}</td><td class="small">${esc(i.action || '—')}</td></tr>`).join('')}
+      </table></div><div class="small muted" style="margin-top:8px">لا تُعرض أي مفاتيح أو رموز؛ يُفحص وجود اسم الإعداد فقط.</div></div>`;
+  },
+  risk() {
+    const lv = {HIGH: 'b-bad', MEDIUM: 'b-warn', LOW: 'b-info'};
+    return `<div class="card"><h2>المخاطر المفتوحة ${badge(DATA.risks.length + '', DATA.risks.length ? 'b-warn' : 'b-ok')}</h2>
+      ${DATA.risks.length ? `<ul class="list">${DATA.risks.map((r) => `<li><div style="flex:1"><strong>${esc(r.title)}</strong><div class="small muted">${esc(r.area)} · ${esc(r.detail)}</div></div>${badge(r.level, lv[r.level] || 'b-unk')}</li>`).join('')}</ul>` : '<div class="muted">لا مخاطر مفتوحة مسجلة.</div>'}</div>
+      <div class="card" style="margin-top:14px"><h2>بوابات الأمان</h2><ul class="list">
+      <li><span>النشر الحي</span><span class="small">مغلق افتراضياً (FACTORY_LIVE_PUBLISH)، يُفتح لعملية مفوّضة فقط ويُغلق بعدها</span></li>
+      <li><span>إنشاء منشورات Metricool</span><span class="small">قاعدة "اسأل" في Claude Code؛ النشر المباشر ممنوع</span></li>
+      <li><span>الإجراءات من هذه اللوحة</span><span class="small">تأكيد في الخادم + منع التشغيل المزدوج + سجل تدقيق</span></li></ul></div>`;
+  },
+  reports() {
+    const docs = [['docs/distribution/README.md', 'محرك التوزيع'], ['docs/distribution/PINTEREST_METRICOOL_WORKFLOW.md', 'سير عمل Pinterest'],
+      ['docs/video/README.md', 'مصنع الفيديو'], ['docs/affiliate/README.md', 'الأفلييت'], ['docs/factory/README.md', 'حالة المصنع'],
+      ['docs/distribution/DISTRIBUTION_DASHBOARD.md', 'لوحة التوزيع (مولّدة)']];
+    return `<div class="grid two"><div class="card"><h2>التقارير</h2><ul class="list">${docs.map(([p, t]) => `<li><span>${esc(t)}</span><a href="${esc(p)}" target="_blank" rel="noopener">فتح</a></li>`).join('')}</ul></div>
+      <div class="card"><h2>آخر الإجراءات المنفذة من الخادم</h2><div id="jobs" class="muted">جارٍ التحميل…</div></div></div>`;
+  },
+  settings() {
+    const g = DATA.revenue.goal;
+    return `<div class="grid two"><div class="card"><h2>الأهداف</h2><ul class="list"><li><span>الهدف الاستراتيجي</span><span>${esc(money(g.target_cents))} إيراد موثّق</span></li></ul><div class="src">${esc(g.definition)}</div></div>
+      <div class="card"><h2>سياسات التشغيل</h2><ul class="list">
+      <li><span>الإنفاق الجديد</span><span>$0 ما لم تفوّض صراحة</span></li>
+      <li><span>النشر على المنصات</span><span>بتفويض صريح لكل عملية</span></li>
+      <li><span>المنشورات الاجتماعية</span><span>تمر بمراجعتك قبل النشر</span></li></ul>
+      <div class="small muted" style="margin-top:8px">التعديل من هذه الصفحة غير مبني بعد: تُعرض السياسات المطبقة فعلياً في الكود، وتغييرها يتم بطلب صريح منك.</div></div></div>`;
+  },
+};
+
+function wirePortfolio() {
+  const draw = () => {
+    const q = ($('#q').value || '').toLowerCase(), st = $('#fStage').value, ln = $('#fLine').value, bl = $('#fBlock').value;
+    let rows = DATA.portfolio.rows.filter((r) => (!q || (r.name || '').toLowerCase().includes(q) || r.id.toLowerCase().includes(q))
+      && (!st || r.stage === st) && (!ln || r.line === ln) && (!bl || r.blocker));
+    rows = rows.sort((a, b) => (a[SORT.key] > b[SORT.key] ? 1 : a[SORT.key] < b[SORT.key] ? -1 : 0) * SORT.dir);
+    $('#pfCount').textContent = `${rows.length} من ${DATA.portfolio.rows.length}`;
+    const cols = [['id', 'المعرّف'], ['name', 'المنتج'], ['line', 'الخط'], ['stage', 'المرحلة'], ['qa', 'الجودة'], ['price_cents', 'السعر'], ['published', 'النشر'], ['sales', 'المبيعات'], ['blocker', 'العائق / الخطوة التالية']];
+    $('#pf').innerHTML = `<tr>${cols.map(([k, l]) => `<th data-k="${k}">${esc(l)}${SORT.key === k ? (SORT.dir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('')}</tr>` +
+      (rows.length ? rows.map((r, i) => `<tr data-i="${DATA.portfolio.rows.indexOf(r)}" style="cursor:pointer"><td class="num">${esc(r.id)}</td><td>${esc(r.name)}</td><td class="small">${esc(r.line)}</td>
+        <td>${esc(STAGE_AR[r.stage] || r.stage)}</td><td class="small">${esc(r.qa)}</td><td class="num">${esc(money(r.price_cents))}<div class="small muted">${esc(r.price_kind)}</div></td>
+        <td>${r.published ? badge('منشور', 'b-ok') : badge('غير منشور', 'b-warn')}</td><td class="num">${r.sales}</td>
+        <td class="small">${r.blocker ? `<strong>${esc(r.blocker)}</strong><br>` : ''}${esc(r.next_action || '—')}</td></tr>`).join('')
+        : `<tr><td colspan="9" class="state">لا منتجات تطابق الفلاتر.</td></tr>`);
+    document.querySelectorAll('#pf th').forEach((th) => th.onclick = () => { SORT = {key: th.dataset.k, dir: SORT.key === th.dataset.k ? -SORT.dir : 1}; draw(); });
+    document.querySelectorAll('#pf tr[data-i]').forEach((tr) => tr.onclick = () => detail(DATA.portfolio.rows[+tr.dataset.i]));
+  };
+  ['#q', '#fStage', '#fLine', '#fBlock'].forEach((s) => $(s).oninput = draw);
+  draw();
+}
+
+function detail(r) {
+  $('#drawer').innerHTML = `<div class="drawer" role="dialog" aria-label="تفاصيل المنتج"><button class="btn" id="dClose">إغلاق</button>
+    <h2 style="margin:14px 0 4px">${esc(r.name)}</h2><div class="muted small">${esc(r.id)} · ${esc(r.line)}</div>
+    <ul class="list" style="margin-top:12px"><li><span>المرحلة</span><span>${esc(STAGE_AR[r.stage] || r.stage)} (${esc(r.state)})</span></li>
+    <li><span>الجودة</span><span>${esc(r.qa)}</span></li><li><span>السعر</span><span>${esc(money(r.price_cents))} — ${esc(r.price_kind)}</span></li>
+    <li><span>المبيعات</span><span>${r.sales} (${esc(money(r.sales_usd_cents))})</span></li>
+    <li><span>العائق</span><span>${esc(r.blocker || 'لا يوجد')}</span></li><li><span>الخطوة التالية</span><span>${esc(r.next_action || '—')}</span></li></ul>
+    ${r.url ? `<p><a class="btn primary" href="${esc(r.url)}" target="_blank" rel="noopener">فتح صفحة المنتج على Gumroad</a></p>` : '<p class="muted small">لا رابط عام بعد: المنتج غير منشور.</p>'}</div>`;
+  $('#dClose').onclick = () => { $('#drawer').innerHTML = ''; };
+}
+
+function wireActions() {
+  document.querySelectorAll('[data-act]').forEach((b) => b.onclick = () => {
+    const [name, label, desc] = ACTIONS.find((a) => a[0] === b.dataset.act);
+    $('#cTitle').textContent = label;
+    $('#cBody').textContent = desc + ' سيُرسل الطلب إلى الخادم مع تأكيدك، ويُسجَّل في سجل التدقيق.';
+    $('#cResult').textContent = '';
+    $('#cGo').disabled = false;
+    $('#cGo').onclick = () => runAction(name);
+    $('#confirm').showModal();
+  });
+}
+
+async function runAction(name) {
+  $('#cGo').disabled = true;
+  $('#cResult').textContent = 'جارٍ التنفيذ…';
+  try {
+    const r = await fetch(`/api/v1/actions/${encodeURIComponent(name)}`, {method: 'POST', credentials: 'same-origin',
+      headers: {'Content-Type': 'application/json'}, body: JSON.stringify({confirmed: true})});
+    if (r.status === 401) { location.href = '/mission_control_login.html?next=' + encodeURIComponent('/dashboard.html' + location.hash); return; }
+    const j = await r.json();
+    if (!j.success) throw new Error(j.error && j.error.message || 'رفض الخادم الطلب');
+    let job = j.job;
+    for (let i = 0; i < 30 && job && job.status === 'running'; i++) {
+      await new Promise((res) => setTimeout(res, 2000));
+      const s = await (await fetch(`/api/v1/actions/${encodeURIComponent(job.id)}`, {credentials: 'same-origin'})).json();
+      job = s.job || job;
     }
-    const savedTheme = localStorage.getItem('galaxy_forge_dashboard_theme')
-      || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    applyTheme(savedTheme);
-    document.getElementById('themeToggle').addEventListener('click', () => {
-      applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-    });
+    $('#cResult').innerHTML = `النتيجة من الخادم: ${badge(job.status, job.status === 'completed' ? 'b-ok' : job.status === 'running' ? 'b-warn' : 'b-bad')}
+      ${job.error ? `<div class="err" style="margin-top:6px">${esc(job.error)}</div>` : ''}`;
+  } catch (e) {
+    $('#cResult').innerHTML = `<div class="err">${esc(e.message)}</div>`;
+  }
+}
 
-    function fmtBool(active) { return active ? '⚠️ نشط' : '✅ لا شيء'; }
-    function fmtTime(ts) {
-      if (!ts) return '—';
-      return new Date(ts).toLocaleString('ar', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-    }
-    // XSS fix (self-audit, 2026-07-15): every field below can carry real
-    // external/generated text — niche names sourced from real HN/GitHub
-    // titles, GROQ-generated notes, raw OpenClaw_Brain/*.md file content
-    // via /brain search. None of it is meant to be interpreted as markup,
-    // so every interpolation into innerHTML below must escape it first.
-    function escapeHtml(s) {
-      if (s === null || s === undefined) return '';
-      return String(s)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
+async function loadJobs() {
+  try {
+    const r = await fetch('/api/v1/actions', {credentials: 'same-origin'});
+    const j = await r.json();
+    const jobs = (j.recent_jobs || []).slice(0, 12);
+    $('#jobs').innerHTML = jobs.length ? `<div class="table-wrap"><table><tr><th>الإجراء</th><th>الحالة</th><th>البدء</th></tr>${jobs.map((x) => `<tr><td>${esc(x.action)}</td><td>${badge(x.status, x.status === 'running' ? 'b-warn' : x.error ? 'b-bad' : 'b-ok')}</td><td class="num">${esc(when(x.started_at))}</td></tr>`).join('')}</table></div>`
+      : 'لا إجراءات منفذة منذ آخر تشغيل للخادم.';
+  } catch (e) { $('#jobs').textContent = 'تعذّر تحميل سجل الإجراءات.'; }
+}
 
-    async function load() {
-      // Zero-assumption audit follow-up — Medium finding, fixed: this used
-      // to have no try/catch at all around its fetch/parse. With
-      // setInterval(load, 60000) below, a failed /api/dashboard call (non-
-      // 200, network drop, malformed JSON) used to fail silently every
-      // 60s, forever, with no visible indicator — the one job this page
-      // has is telling the founder if something's wrong.
-      const errEl = document.getElementById('fetchError');
-      try {
-        const res = await fetch('/api/dashboard');
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const d = await res.json();
-        errEl.style.display = 'none';
-        renderDashboard(d);
-      } catch (err) {
-        errEl.textContent = `⚠️ فشل آخر تحديث: ${err.message}`;
-        errEl.style.display = 'inline';
-      }
-    }
-
-    function renderDashboard(d) {
-      document.getElementById('ts').textContent = new Date(d.generated_at).toLocaleString('ar');
-
-      const cards = [];
-      const nextAction = d.health && d.health.reality ? d.health.reality.next_action : null;
-      if (nextAction) {
-        cards.push(`<div class="card" style="border-color:var(--accent);">
-          <h2>🎯 التوصية الاستراتيجية (reality.py)</h2>
-          <div class="note" style="font-size:14px; color:var(--text); font-weight:600;">${escapeHtml(nextAction)}</div>
-        </div>`);
-      }
-      const booksCount = d.health && d.health.checks && d.health.checks.books_folder ? d.health.checks.books_folder.count : 0;
-      cards.push(`<div class="card">
-        <h2>الطاقة الإنتاجية</h2>
-        <div class="metric">${booksCount}</div>
-        <div class="note">منتج جاهز على القرص — ${d.pending_review.queue} بانتظار المراجعة، ${d.pending_review.completed} مكتمل عبر الخط الكامل</div>
-      </div>`);
-      cards.push(`<div class="card">
-        <h2>صحة المصنع</h2>
-        <div class="metric ${d.health && d.health.status}">${d.health ? d.health.status : '—'}</div>
-        <div class="note">${escapeHtml(d.health && d.health.reality ? d.health.reality.reason : '')}</div>
-      </div>`);
-      cards.push(`<div class="card">
-        <h2>المالية (حقيقية)</h2>
-        <div class="metric">$${d.finance.total_revenue}</div>
-        <div class="note">${d.finance.total_sales} عملية بيع — KDP $${d.finance.by_platform.KDP} / Etsy $${d.finance.by_platform.Etsy} / Gumroad $${d.finance.by_platform.Gumroad}</div>
-      </div>`);
-      cards.push(`<div class="card">
-        <h2>Oracle (Tier 4)</h2>
-        <div class="metric">${d.oracle.golden_count}/${d.oracle.total_scored}</div>
-        <div class="note">${escapeHtml(d.oracle.note) || 'فرص GOLDEN من أصل الإجمالي المُقيَّم'}</div>
-      </div>`);
-      cards.push(`<div class="card">
-        <h2>Golden Hunter (يومي)</h2>
-        <div class="metric">${d.hunter.ran ? d.hunter.golden_count : '—'}</div>
-        <div class="note">${d.hunter.note ? escapeHtml(d.hunter.note) : 'آخر تشغيل: ' + fmtTime(d.hunter.timestamp)}</div>
-      </div>`);
-      cards.push(`<div class="card">
-        <h2>اكتشاف Tier 1 (بحث حقيقي)</h2>
-        <div class="metric">${d.tier1_discovery.accepted}/${d.tier1_discovery.candidates_researched}</div>
-        <div class="note">${escapeHtml(d.tier1_discovery.note) || 'مرشَّحون مقبولون من أصل المُبحوثين'}</div>
-      </div>`);
-      cards.push(`<div class="card">
-        <h2>قائمة المراجعة البشرية</h2>
-        <div class="metric">${d.pending_review.queue}</div>
-        <div class="note">في الانتظار — ${d.pending_review.approved} مُوافَق، ${d.pending_review.completed} مكتمل، ${d.pending_review.rejected} مرفوض</div>
-      </div>`);
-      const reality = d.health && d.health.reality;
-      cards.push(`<div class="card ${reality && reality.total_published === 0 ? 'flag-active' : ''}">
-        <h2>المنتجات المنشورة فعلياً</h2>
-        <div class="metric ${reality && reality.total_published > 0 ? 'ok' : 'critical'}">${reality ? reality.total_published : '—'}</div>
-        <div class="note">نشر حقيقي على قناة (KDP/Etsy/Gumroad) — لا يُحتسَب مجرد التوليد على القرص</div>
-      </div>`);
-      const pi = d.production_inventory;
-      cards.push(`<div class="card">
-        <h2>منتجات أُنشئت (سجل حقيقي)</h2>
-        <div class="metric">${pi.created}</div>
-        <div class="note">${pi.total_attempts} محاولة إجمالاً — ${pi.failed} فشلت، ${pi.passed_quality_review} اجتاز الفحص المزدوج (Dual Inspection)</div>
-      </div>`);
-      cards.push(`<div class="card">
-        <h2>معدّل الإنتاج (آخر 7 أيام)</h2>
-        <div class="metric">${pi.last_7_days}</div>
-        <div class="note">${pi.last_updated ? 'آخر توليد: ' + fmtTime(pi.last_updated) : 'لا بيانات بعد'}</div>
-      </div>`);
-      const dq = d.decision_queue;
-      cards.push(`<div class="card">
-        <h2>فرص بانتظار قرار مستقبلي</h2>
-        <div class="metric">${dq.deferred}</div>
-        <div class="note">${dq.accepted} مقبولة جاهزة للإنتاج، ${dq.rejected} مرفوضة، من أصل ${dq.total} قراراً حقيقياً</div>
-      </div>`);
-      const fj = d.failed_jobs;
-      cards.push(`<div class="card ${fj.failed_count > 0 ? 'flag-active' : ''}">
-        <h2>مهام فاشلة (factory_loop)</h2>
-        <div class="metric ${fj.failed_count > 0 ? 'critical' : 'ok'}">${fj.failed_count}</div>
-        <div class="note">${fj.recent.length ? 'آخر فشل: ' + escapeHtml(fj.recent[0].step) + ' — ' + escapeHtml(fj.recent[0].detail || '') : 'لا فشل مسجَّل'}</div>
-      </div>`);
-      cards.push(`<div class="card">
-        <h2>الوعي الذاتي</h2>
-        <div class="note" style="font-size:13px; color:var(--text);">${escapeHtml(d.self_awareness ? d.self_awareness.verdict : '—')}</div>
-        <div class="note">أضعف خلية: ${escapeHtml(d.self_awareness ? d.self_awareness.weakest_cell : '—')}</div>
-      </div>`);
-      cards.push(`<div class="card ${d.risk.level === 'critical' || d.risk.level === 'high' ? 'flag-active' : ''}">
-        <h2>مستوى الخطر</h2>
-        <div class="metric ${d.risk.level === 'critical' ? 'critical' : d.risk.level === 'medium' ? 'degraded' : 'ok'}">${escapeHtml(d.risk.level)}</div>
-        <div class="note">${escapeHtml(d.risk.reason)}</div>
-      </div>`);
-      const mi = d.latest_market_intelligence;
-      if (mi.available) {
-        cards.push(`<div class="card" style="border-color:var(--accent);">
-          <h2>🧠 آخر تحليل ذكاء سوقي (AI CEO)</h2>
-          <div class="metric">${escapeHtml(mi.ai_ceo.decision)}</div>
-          <div class="note"><strong>${escapeHtml(mi.niche)}</strong><br>${mi.ai_ceo.evidence.map(escapeHtml).join('<br>')}</div>
-        </div>`);
-      }
-      const cm = d.capability_maturity;
-      cards.push(`<div class="card">
-        <h2>نضج القدرات (ADR-040)</h2>
-        <div class="metric"><span class="ok">${cm.real}</span> / <span style="color:var(--warn)">${cm.estimated}</span> / <span class="critical">${cm.discovery}</span></div>
-        <div class="note">حقيقي / مُقدَّر / اكتشاف — من أصل ${cm.total} مقياساً مُصنَّفاً. لا رقم مُختلَق — كل "اكتشاف" له خطة فتح واضحة</div>
-      </div>`);
-      cards.push(`<div class="card">
-        <h2>الأولويات الحالية</h2>
-        <pre class="notif-content" style="max-height:140px; overflow-y:auto;">${escapeHtml(d.current_priorities && d.current_priorities.text ? d.current_priorities.text : (d.current_priorities && d.current_priorities.note) || '—')}</pre>
-      </div>`);
-      document.getElementById('grid').innerHTML = cards.join('');
-
-      const notifs = [];
-      notifs.push(`<div class="notif-box ${d.needs_attention.active ? 'active' : ''}">
-        <strong>${fmtBool(d.needs_attention.active)} — يحتاج انتباهاً</strong>
-        ${d.needs_attention.content ? `<pre class="notif-content">${escapeHtml(d.needs_attention.content)}</pre>` : ''}
-      </div>`);
-      notifs.push(`<div class="notif-box ${d.needs_review.active ? 'active' : ''}">
-        <strong>${fmtBool(d.needs_review.active)} — يحتاج مراجعة بشرية</strong>
-        ${d.needs_review.content ? `<pre class="notif-content">${escapeHtml(d.needs_review.content)}</pre>` : ''}
-      </div>`);
-      document.getElementById('notifications').innerHTML = notifs.join('');
-
-      const rows = (d.activity || []).map(e => `<div class="timeline-row">
-        <div class="timeline-time">${fmtTime(e.timestamp)}</div>
-        <div class="timeline-source">${escapeHtml(e.source)}</div>
-        <div class="timeline-summary">${escapeHtml(e.summary)}</div>
-      </div>`).join('');
-      document.getElementById('timeline').innerHTML = rows || '<div class="empty">لا نشاط مسجَّل بعد</div>';
-
-      const discoveryRows = (d.capability_maturity.capabilities || [])
-        .filter(c => c.level === 'DISCOVERY')
-        .map(c => `<div class="timeline-row">
-          <div class="timeline-source" style="background:var(--crit); color:#fff;">DISCOVERY</div>
-          <div class="timeline-summary"><strong>${escapeHtml(c.name)}</strong><br><span style="color:var(--text-dim); font-size:12px;">${escapeHtml(c.action_plan)}</span></div>
-        </div>`).join('');
-      document.getElementById('discoveryRoadmap').innerHTML = discoveryRows || '<div class="empty">لا مقاييس في مرحلة الاكتشاف</div>';
-    }
-
-    // Global search — wired directly to the existing, real GET /brain?q=
-    // (knowledge_brain.js's searchBrain()) — no new backend, no fabrication.
-    let searchTimer;
-    document.getElementById('search').addEventListener('input', (e) => {
-      clearTimeout(searchTimer);
-      const q = e.target.value.trim();
-      const box = document.getElementById('searchResults');
-      if (!q) { box.style.display = 'none'; return; }
-      searchTimer = setTimeout(async () => {
-        try {
-          const res = await fetch('/brain?q=' + encodeURIComponent(q));
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          const d = await res.json();
-          const results = (d.results || []).slice(0, 8);
-          box.innerHTML = results.length
-            ? results.map(r => `<div><strong>${escapeHtml(r.file)}:${escapeHtml(r.line)}</strong><br>${escapeHtml(r.text)}</div>`).join('')
-            : '<div>لا نتائج</div>';
-          box.style.display = 'block';
-        } catch (err) {
-          box.innerHTML = `<div>⚠️ فشل البحث: ${escapeHtml(err.message)}</div>`;
-          box.style.display = 'block';
-        }
-      }, 300);
-    });
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('#search') && !e.target.closest('#searchResults')) {
-        document.getElementById('searchResults').style.display = 'none';
-      }
-    });
-
-    load();
-    setInterval(load, 60000); // real 10-minute factory tick — no point refreshing faster
-  </script>
+function theme(next) {
+  const cur = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const t = next ? (cur === 'dark' ? 'light' : 'dark') : (localStorage.getItem('gf-theme') || '');
+  if (t) { document.documentElement.dataset.theme = t; try { localStorage.setItem('gf-theme', t); } catch (_) {} }
+}
+$('#themeBtn').onclick = () => theme(true);
+$('#refreshBtn').onclick = load;
+$('#menuBtn').onclick = () => $('#side').classList.toggle('open');
+$('#cCancel').onclick = () => $('#confirm').close();
+VIEW = (location.hash || '#overview').slice(1);
+if (!SECTIONS.some((s) => s[0] === VIEW)) VIEW = 'overview';
+try { theme(false); } catch (_) {}
+load();
+setInterval(() => { if (!document.hidden) load(); }, 120000);
+</script>
 </body>
 </html>

@@ -61,7 +61,11 @@
       });
       const data = await res.json();
       if (data.success) {
-        window.location.href = '/mission_control.html';
+        // ?next= returns to the page that sent you here; only a same-site path
+        // made of plain characters is accepted (no "//", no scheme), so it cannot
+        // become an open redirect.
+        const next = new URLSearchParams(location.search).get('next') || '';
+        window.location.href = /^\/[A-Za-z0-9_\-./#]*$/.test(next) && !next.startsWith('//') ? next : '/mission_control.html';
       } else {
         errorMsg.textContent = data.error || 'فشل الدخول';
       }
