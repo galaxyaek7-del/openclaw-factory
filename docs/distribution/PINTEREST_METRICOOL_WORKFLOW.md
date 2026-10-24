@@ -38,8 +38,8 @@ Tests: `tests/test_metricool_payload.py` (9).
 | Step | Tool | State |
 |---|---|---|
 | Board id | `social_distribution/pinterest_boards.py` reads it from the board's own JSON object on the public profile; no typing, no guessing | waits for a board named "Small Business Finance Tools" |
-| Images | `scripts/build_pin_images.py`: 14 images, 1000x1500, product cover + title + live price, Bitstream Vera fonts | published, HTTP 200 at `customer_site/assets/pins/` |
-| Queue | `scripts/pinterest_queue.py` -> `data/pinterest_queue.json`: one post per product per day from 2026-10-27 10:00 Paris, B14-001 first, each built and checked by `metricool.py` | 14 x BLOCKED_NO_BOARD |
+| Images | `scripts/build_pin_images.py`: 86 images (every eligible product; 88 of 89 listings have a cover since 2026-10-24), 1000x1500, product cover + title + live price, Bitstream Vera fonts | published, HTTP 200 at `customer_site/assets/pins/` |
+| Queue | `scripts/pinterest_queue.py` -> `data/pinterest_queue.json`: one post per product per day from 2026-10-27 10:00 Paris, B14-001 first, each built and checked by `metricool.py` | 86 x BLOCKED_NO_BOARD |
 | Submission | the agent sends READY items one at a time with `createScheduledPostForReview` (approval `any`; Claude Code asks first), reads back with `getScheduledPosts`, records with `record_attempt()` | waiting |
 
 The moment the board exists: run `python scripts/pinterest_queue.py`; every item turns READY with its real board id, and submission follows the procedure above.

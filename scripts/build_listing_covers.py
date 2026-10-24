@@ -10,7 +10,7 @@ listing text. Fonts: Bitstream Vera, bundled with reportlab (free licence).
 
 Output: customer_site/assets/covers/<gumroad short id>.png (public once the
 site is published, which is what Gumroad's cover endpoint needs) and
-data/listing_covers.json (product id, file, public URL, hash).
+data/gumroad_covers.json (product id, file, public URL, hash).
 """
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 OUT_DIR = ROOT / "customer_site" / "assets" / "covers"
-MANIFEST = ROOT / "data" / "listing_covers.json"
+MANIFEST = ROOT / "data" / "gumroad_covers.json"
 PUBLIC_BASE = "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/"
 W, H = 1280, 720
 PALETTES = [((11, 31, 58), (18, 52, 94), (245, 183, 0)), ((16, 38, 28), (29, 70, 52), (126, 224, 168)),

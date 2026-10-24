@@ -454,5 +454,203 @@
     "result": "ATTACHED"
    }
   ]
+ },
+ {
+  "at": "2026-10-24T07:27:21Z",
+  "authorization": "founder standing order, 2026-10-24: fix, build, produce and publish on all arms automatically; covers only, no price/file/name/publication change",
+  "results": [
+   {
+    "id": "dyZ5uSfqjjN91f_1Ir0t6w==",
+    "name": "CCPA Compliance Action Kit for Small Business",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/ccpa-compliance-action-kit-for-small-business--dyZ5uS.png",
+    "result": "ATTACHED_SECOND"
+   }
+  ]
+ },
+ {
+  "at": "2026-10-24T07:29:50Z",
+  "authorization": "founder standing order, 2026-10-24: fix, build, produce and publish on all arms automatically; covers only, no price/file/name/publication change",
+  "results": [
+   {
+    "id": "8gFbi-vE0ceqFacn3i3eMA==",
+    "name": "Gulf Job-Landing ATS CV System",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/gulf-job-landing-ats-cv-system--8gFbiv.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "f542PZ92SUPOjV9F5GJh-Q==",
+    "name": "Diminished Value Claim Kit",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/diminished-value-claim-kit--f542PZ.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "mx6XSGrElB5b-NLSHfEryg==",
+    "name": "Mechanics Lien Filing Kit for Contractors",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/mechanics-lien-filing-kit-for-contractors--mx6XSG.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "_H7FbvlTPITBmT0V6lyPeg==",
+    "name": "Mindfulness Journal for Stress Relief",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/mindfulness-journal-for-stress-relief--H7Fbvl.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "0uieIt-Pn09q9Xz-Hp1DEQ==",
+    "name": "Security Deposit Demand Kit for Tenants",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/security-deposit-demand-kit-for-tenants--0uieIt.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "D4JC45lly7EjsY-CO5FKyQ==",
+    "name": "Severance Agreement Review Checklist",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/severance-agreement-review-checklist--D4JC45.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "F3Q5fUqOCxy3n7k6eVTWqw==",
+    "name": "Stripe Chargeback Defense Kit for Digital Sellers",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/stripe-chargeback-defense-kit-for-digital-sellers--F3Q5fU.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "9Zq9SGkALI0tjd7A97Pc_A==",
+    "name": "The 5-Minute Context Reset Playbook",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/the-5-minute-context-reset-playbook--9Zq9SG.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "tGGL1mqB2bp7uZ6k2THgwA==",
+    "name": "EU AI Act Compliance Quickstart Checklist",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/eu-ai-act-compliance-quickstart-checklist--tGGL1m.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "AnZqjZBFNvMdpV0bto7jDw==",
+    "name": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/eu-ai-act-transparency-ai-literacy-quickstart-checklist--AnZqjZ.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "YW18CUcSrghFoNioG8hFGA==",
+    "name": "Freelancer Payment Protection & Scope-Control Toolkit",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/freelancer-payment-protection-scope-control-toolkit--YW18CU.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "LzOV85deBGdLgNZmvpvYGw==",
+    "name": "Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/etsy-suspension-triage-appeal-bundle-both-steps-25-pages--LzOV85.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "nLl2DJc7VcPu0aeD_CnHAA==",
+    "name": "ADA Demand-Letter Response & Triage Kit",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/ada-demand-letter-response-triage-kit--nLl2DJ.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "Ag3pKi2eN5fiGQDmJ-fLxA==",
+    "name": "AI Agent Blueprint for Small SaaS CloudOps Automation",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/ai-agent-blueprint-for-small-saas-cloudops-automation--Ag3pKi.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "WP6Vb-qltKfYXQ1KAb0Tog==",
+    "name": "EU AI Act Audit Logging Kit",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/eu-ai-act-audit-logging-kit--WP6Vbq.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "8JM3qFgUuQznesYdiQFNXw==",
+    "name": "EU Packaging EPR Action Kit",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/eu-packaging-epr-action-kit--8JM3qF.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "mvuoJTNLfsWsm0NF-CrZHw==",
+    "name": "Etsy Suspension Appeal Kit",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/etsy-suspension-appeal-kit--mvuoJT.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "OiBdFFTaLaZdDX52HxwezQ==",
+    "name": "FTC Consumer Review Rule Compliance Kit",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/ftc-consumer-review-rule-compliance-kit--OiBdFF.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "_wJUrEKIuR0Y6cOj9Zqyqg==",
+    "name": "GCC Contractor Payment Command System",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/gcc-contractor-payment-command-system--wJUrEK.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "yrSExa-YQe4fjWuIKV4vmQ==",
+    "name": "GCC Contractor Payment Command System (V2 Bundle)",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/gcc-contractor-payment-command-system-v2-bundle--yrSExa.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "VPYaNkAdv7Yocko-lIJsZQ==",
+    "name": "GPSR EU Seller Action Kit",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/gpsr-eu-seller-action-kit--VPYaNk.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "y4nX4cwydsCtWdxBA6uXJw==",
+    "name": "Legal Case Research Automation for Solo Attorneys",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/legal-case-research-automation-for-solo-attorneys--y4nX4c.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "T41QMtEfZcuDKa7tGtnvgw==",
+    "name": "Restaurant Health Inspection Readiness Kit",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/restaurant-health-inspection-readiness-kit--T41QMt.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "M5AZWbcXPFKzvgnzcrDqCg==",
+    "name": "SOC 2 Compliance Automation Guide for Startups",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/soc-2-compliance-automation-guide-for-startups--M5AZWb.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "iPqoAaWMnZCWf8AvYusjxw==",
+    "name": "STR Direct Booking Revenue Kit",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/str-direct-booking-revenue-kit--iPqoAa.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "66fo53TSmA6Lu5cycxuHxQ==",
+    "name": "Suspended Seller First-Appeal POA System",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/suspended-seller-first-appeal-poa-system--66fo53.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "rMOopS7Q7LHxwaPTY462uw==",
+    "name": "The 5-Minute Context Reset Playbook",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/the-5-minute-context-reset-playbook--rMOopS.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "KMNGNgO5gS85H_JppnygIg==",
+    "name": "Trademark DIY Filing Action Kit",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/trademark-diy-filing-action-kit--KMNGNg.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "srd6CIjZc381be9FhiyHeA==",
+    "name": "Turo Guest Dispute Toolkit",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/turo-guest-dispute-toolkit--srd6CI.png",
+    "result": "ATTACHED_SECOND"
+   },
+   {
+    "id": "J6ir7vCGTHsS-J4E_a_Lqg==",
+    "name": "Vendor Questionnaire Response Kit",
+    "cover": "https://galaxyaek7-del.github.io/openclaw-factory/reports/covers/gumroad/vendor-questionnaire-response-kit--J6ir7v.png",
+    "result": "ATTACHED_SECOND"
+   }
+  ]
  }
 ]
