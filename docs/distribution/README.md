@@ -17,5 +17,6 @@ Mandate: GF-DISTRIBUTION-ENGINE-v1.0. Nothing was posted to any platform. All pu
 | [DISTRIBUTION_TRACKING_AND_ATTRIBUTION.md](DISTRIBUTION_TRACKING_AND_ATTRIBUTION.md) | Links, metrics, attribution rules |
 | [DISTRIBUTION_NEXT_ACTIONS.md](DISTRIBUTION_NEXT_ACTIONS.md) | Prioritized next steps |
 | [DISTRIBUTION_DASHBOARD.md](DISTRIBUTION_DASHBOARD.md) | Generated dashboard (rebuilt by each cycle) |
+| [PINTEREST_METRICOOL_WORKFLOW.md](PINTEREST_METRICOOL_WORKFLOW.md) | Pinterest via Metricool: payload, procedure, status |
 
 Run a cycle: `python scripts/distribution_cycle.py --n 8 --per-arm 2`. Code: `social_distribution/`. Tests: `tests/test_social_distribution.py`.
