@@ -52,6 +52,15 @@ def _wrap(draw, text, font, width):
     return lines
 
 
+def _clip(lines, n):
+    """At most n lines; a cut is marked with an ellipsis, never left mid-sentence."""
+    if len(lines) <= n:
+        return lines
+    out = lines[:n]
+    out[-1] = out[-1].rstrip(" .,;:—-") + "…"
+    return out
+
+
 def render(offer: dict, cover: Image.Image) -> Image.Image:
     img = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(img)
@@ -66,13 +75,13 @@ def render(offer: dict, cover: Image.Image) -> Image.Image:
     img.paste(cover, (60, top))
     y = top + ch + 70
     tf = _font(True, 62)
-    for line in _wrap(d, offer["title"], tf, W - 120)[:5]:
+    for line in _clip(_wrap(d, offer["title"], tf, W - 120), 5):
         d.text((60, y), line, font=tf, fill=TEXT)
         y += 78
     y += 20
     sf = _font(False, 34)
     sub = offer.get("problem") or ""
-    for line in _wrap(d, sub, sf, W - 120)[:4]:
+    for line in _clip(_wrap(d, sub, sf, W - 120), 4):
         d.text((60, y), line, font=sf, fill=MUTED)
         y += 46
     price = f"${offer['price_cents'] / 100:.2f}".replace(".00", "")

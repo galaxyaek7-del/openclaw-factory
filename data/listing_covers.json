@@ -1,0 +1,602 @@
+{
+ "generated_at": "2026-10-24T07:11:38+00:00",
+ "size": [
+  1280,
+  720
+ ],
+ "fonts": "Bitstream Vera (reportlab bundle)",
+ "covers": {
+  "LzOV85deBGdLgNZmvpvYGw==": {
+   "name": "Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)",
+   "short_url": "https://aekraft.gumroad.com/l/bfhpzl",
+   "file": "customer_site/assets/covers/bfhpzl.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/bfhpzl.png",
+   "sha256": "0b8f59ed91284f2852b9355600c4d95568c2c136d22715cf44fb8e3fa241dcbf",
+   "bytes": 48176
+  },
+  "P5k2ptcnUohhKUir5Aq5hg==": {
+   "name": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
+   "short_url": "https://aekraft.gumroad.com/l/sjrjxq",
+   "file": "customer_site/assets/covers/sjrjxq.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/sjrjxq.png",
+   "sha256": "e0db43fd90667b392ed26dcff1865c48c1f1716ef7d8877c7a641ebd5d8d647f",
+   "bytes": 43489
+  },
+  "rMOopS7Q7LHxwaPTY462uw==": {
+   "name": "The 5-Minute Context Reset Playbook",
+   "short_url": "https://aekraft.gumroad.com/l/akxaae",
+   "file": "customer_site/assets/covers/akxaae.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/akxaae.png",
+   "sha256": "6114d3328b4def1e7987ead1a4ff52225d18f5405de08785e5933379c64b51ca",
+   "bytes": 41098
+  },
+  "Mk8k3QvpcL5Hf6ll_8CcAg==": {
+   "name": "Landlord Move-In Inspection Pack",
+   "short_url": "https://aekraft.gumroad.com/l/gzbdaz",
+   "file": "customer_site/assets/covers/gzbdaz.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/gzbdaz.png",
+   "sha256": "73be9618370acef4962bbda39fcf7e4bf4ae57adc2be5bf66d4e21b84d56afc5",
+   "bytes": 35642
+  },
+  "to7fbH3OvYu68ggvK9bGGg==": {
+   "name": "Cottage Food Compliance Kit",
+   "short_url": "https://aekraft.gumroad.com/l/ursxh",
+   "file": "customer_site/assets/covers/ursxh.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/ursxh.png",
+   "sha256": "69162589df5fcc80bebc470dc7b5a20c08d6ec411debe2aa756b2de030269b2d",
+   "bytes": 34814
+  },
+  "uUo9QfyfAyqf8-nZb9G7Og==": {
+   "name": "Homebuyer Inspection Action Kit",
+   "short_url": "https://aekraft.gumroad.com/l/volqjv",
+   "file": "customer_site/assets/covers/volqjv.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/volqjv.png",
+   "sha256": "64e973a74b8c470890c41f7e861dd6ca69cac7a32ecb15f9afd1b4ebee5ced32",
+   "bytes": 39864
+  },
+  "iJOXxUlufzNyZFndUreFHA==": {
+   "name": "Dental Insurance Verification Kit",
+   "short_url": "https://aekraft.gumroad.com/l/diboaf",
+   "file": "customer_site/assets/covers/diboaf.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/diboaf.png",
+   "sha256": "ff3d3939cb0cd9b5fafd51507558d75061c8fed600b5674de4cc33bf4c6b9ed6",
+   "bytes": 40710
+  },
+  "2NIVAf0Nu4SE2DgAL9buYw==": {
+   "name": "Real Estate Transaction Deadline Kit",
+   "short_url": "https://aekraft.gumroad.com/l/vwlmeo",
+   "file": "customer_site/assets/covers/vwlmeo.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/vwlmeo.png",
+   "sha256": "c949c2ed0e85ca240e867c192660a5bab5a7efd39d4b9426831a12b64c282a3b",
+   "bytes": 39643
+  },
+  "Opfzi3JcKHx-hiwJT3tHrA==": {
+   "name": "Fleet Maintenance and Damage Documentation Bundle",
+   "short_url": "https://aekraft.gumroad.com/l/oerot",
+   "file": "customer_site/assets/covers/oerot.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/oerot.png",
+   "sha256": "2a7bd315a79be3a630ed65c499e05d27beb51d12fe332fae4ea7244619334e5c",
+   "bytes": 49911
+  },
+  "2HC2OvtsS7gdfVF1lQQSTQ==": {
+   "name": "Salon Commission Pay Kit",
+   "short_url": "https://aekraft.gumroad.com/l/xwacbo",
+   "file": "customer_site/assets/covers/xwacbo.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/xwacbo.png",
+   "sha256": "125c41cb851d5b863ab9bb665db50013b7cb5bae58fcdd736f3ca7607b357bac",
+   "bytes": 35863
+  },
+  "M55I0tATHuFRNHia1tiiAg==": {
+   "name": "Restaurant Food Cost Control Kit",
+   "short_url": "https://aekraft.gumroad.com/l/swkgd",
+   "file": "customer_site/assets/covers/swkgd.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/swkgd.png",
+   "sha256": "3a2358747e3e035acb756c0a4ea17f63cfcc99d1a6c974e9355be2319be2412b",
+   "bytes": 39986
+  },
+  "C4xKqsgTA37Zd-rysSqmeQ==": {
+   "name": "EU Green Claims Review Kit",
+   "short_url": "https://aekraft.gumroad.com/l/uyzuu",
+   "file": "customer_site/assets/covers/uyzuu.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/uyzuu.png",
+   "sha256": "6890e0f7810ffb2bf05221a280ffee87ad545cd6116d856d0afb0a9defba4785",
+   "bytes": 41307
+  },
+  "qxjGLQkyK0CQ3WVuLc-7Kg==": {
+   "name": "EUDR Due Diligence Starter",
+   "short_url": "https://aekraft.gumroad.com/l/brwrta",
+   "file": "customer_site/assets/covers/brwrta.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/brwrta.png",
+   "sha256": "222e53dd537aaa859a47d4bc5d6678e7de67681cc7d61748ac2a6eb130e87c32",
+   "bytes": 35203
+  },
+  "bBfEKkiaOp-HZcfQaGdIIw==": {
+   "name": "Food Truck Permit Navigator",
+   "short_url": "https://aekraft.gumroad.com/l/cdfdcy",
+   "file": "customer_site/assets/covers/cdfdcy.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/cdfdcy.png",
+   "sha256": "362748a3d1dc86f4e119edb147eaf865b6a027f044406a7d6bcaa772c2a8c8ab",
+   "bytes": 36349
+  },
+  "3B99PVyD77qKqh0cAPcsDA==": {
+   "name": "Handbook Acknowledgment Tracker",
+   "short_url": "https://aekraft.gumroad.com/l/fydjid",
+   "file": "customer_site/assets/covers/fydjid.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/fydjid.png",
+   "sha256": "512ca81b3852f04096466fb59b8846e83d1e5349c11f669cf6a49f872d4c614d",
+   "bytes": 46299
+  },
+  "MzZhoK8Uu-GEYHChAXcvdA==": {
+   "name": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+   "short_url": "https://aekraft.gumroad.com/l/mrecoe",
+   "file": "customer_site/assets/covers/mrecoe.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/mrecoe.png",
+   "sha256": "3f3e54f85a014b0b8a13c075f89c9d44529c6967523659f08bdf272d949c294b",
+   "bytes": 57150
+  },
+  "hQgyFvb26l7vadCGhTHF9Q==": {
+   "name": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+   "short_url": "https://aekraft.gumroad.com/l/odqlk",
+   "file": "customer_site/assets/covers/odqlk.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/odqlk.png",
+   "sha256": "1a7f301635b79dda73d71269ebe7d64a66e11f03cedd38a8358c0771c529f978",
+   "bytes": 58102
+  },
+  "68zZcBRo9nevkZGYP5lTDg==": {
+   "name": "DSAR Response Kit ($59)",
+   "short_url": "https://aekraft.gumroad.com/l/uqmqnu",
+   "file": "customer_site/assets/covers/uqmqnu.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/uqmqnu.png",
+   "sha256": "619bd6127ce5925d6b5a2c95b037257b8c8d2d0ad9defb10189115f42702e2fa",
+   "bytes": 43609
+  },
+  "NHlV8fguLAZLwpkRi5KyIA==": {
+   "name": "Freelancer Scope Control Kit",
+   "short_url": "https://aekraft.gumroad.com/l/ziiur",
+   "file": "customer_site/assets/covers/ziiur.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/ziiur.png",
+   "sha256": "07ef9578b3c67100da01d3411e70f11d227a369447f24f1c2d78b1bcd1de639b",
+   "bytes": 40483
+  },
+  "K5oIlu_UgDH0k1NXKP4fHw==": {
+   "name": "Clinic No-Show Reduction Kit",
+   "short_url": "https://aekraft.gumroad.com/l/eiztlg",
+   "file": "customer_site/assets/covers/eiztlg.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/eiztlg.png",
+   "sha256": "332a17c6c57660d04de19dd1a2f0117faeb432648aa780f2cb7ffca504cfbdc8",
+   "bytes": 37241
+  },
+  "F0aW62vvcQcU8CzRDhiFIQ==": {
+   "name": "PCI SAQ Readiness Kit for Small Merchants",
+   "short_url": "https://aekraft.gumroad.com/l/qezxe",
+   "file": "customer_site/assets/covers/qezxe.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/qezxe.png",
+   "sha256": "eedf6d4a64bf94f5abe0dca85230148bbf323c7f19ae48826c67119f117464b8",
+   "bytes": 50116
+  },
+  "h9G-1Ec29FPRtsDc-k04XA==": {
+   "name": "Sales Tax Nexus Tracker",
+   "short_url": "https://aekraft.gumroad.com/l/uucxer",
+   "file": "customer_site/assets/covers/uucxer.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/uucxer.png",
+   "sha256": "46b84bd34996ab5111eaf2d5da6096ccd32490819f6c6017871fe8bf00ec4892",
+   "bytes": 37757
+  },
+  "2ZvRp79aLQiOBEVCYwnZMQ==": {
+   "name": "Subscription Renewal Compliance Kit",
+   "short_url": "https://aekraft.gumroad.com/l/xouyjy",
+   "file": "customer_site/assets/covers/xouyjy.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/xouyjy.png",
+   "sha256": "c2830316e8a2970fc5f128bde4b90d1132daf22f1613a611de1086ec754e78b8",
+   "bytes": 44597
+  },
+  "KzZbStETfJeJsc-O3cQjsA==": {
+   "name": "Newsletter Deliverability & Inbox Placement System",
+   "short_url": "https://aekraft.gumroad.com/l/iwbcmi",
+   "file": "customer_site/assets/covers/iwbcmi.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/iwbcmi.png",
+   "sha256": "5fb48640385898ae1e62a84cb21e434ca27d625b5104a3c23978449514e6c3e9",
+   "bytes": 46627
+  },
+  "nwqwR1RJ8rJlZqZE-vj4pw==": {
+   "name": "Employee Offboarding & Access-Revocation System",
+   "short_url": "https://aekraft.gumroad.com/l/tjbly",
+   "file": "customer_site/assets/covers/tjbly.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/tjbly.png",
+   "sha256": "008950a4ef4106791af27492676ac443ad361a02b52f093c245d5646c2227a6e",
+   "bytes": 52262
+  },
+  "vQEIyRYO5PLkFV1RpzE6wA==": {
+   "name": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
+   "short_url": "https://aekraft.gumroad.com/l/ykwdfc",
+   "file": "customer_site/assets/covers/ykwdfc.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/ykwdfc.png",
+   "sha256": "175d68a281fe4ef953b01a12e1435eccfe5a61109fd5f990de0e35d79a4d253f",
+   "bytes": 64245
+  },
+  "8uWrIqx8uhc8LMIkLEeKkA==": {
+   "name": "B2B Late-Payment Collections Operating System",
+   "short_url": "https://aekraft.gumroad.com/l/wsbqr",
+   "file": "customer_site/assets/covers/wsbqr.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/wsbqr.png",
+   "sha256": "68a1ebd1879ef8bc569e690c91adaf59f996c7a10ca5940926153deb484460cc",
+   "bytes": 61611
+  },
+  "sjnnlSPbFj44VCYoJpXxPw==": {
+   "name": "SaaS Spend & Renewal Audit System for Small Teams",
+   "short_url": "https://aekraft.gumroad.com/l/pahxdv",
+   "file": "customer_site/assets/covers/pahxdv.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/pahxdv.png",
+   "sha256": "07963a862925641a5a19d4b86be8eb4db341c85f2c1ea8b4cde0e1d9bf075f97",
+   "bytes": 52345
+  },
+  "x5Cf-OfCwDvtC-nNlFe6BQ==": {
+   "name": "Creator Brand-Deal Management System",
+   "short_url": "https://aekraft.gumroad.com/l/vzmswo",
+   "file": "customer_site/assets/covers/vzmswo.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/vzmswo.png",
+   "sha256": "53d5a751c1de37f59e00c4cd9cd3310bc28b2277723e77379a33deba2761dcf6",
+   "bytes": 42089
+  },
+  "q63gLiL5xvdOAPIbNhxIcw==": {
+   "name": "Tech Job Offer Evaluation & Negotiation System",
+   "short_url": "https://aekraft.gumroad.com/l/qpuagh",
+   "file": "customer_site/assets/covers/qpuagh.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/qpuagh.png",
+   "sha256": "950a483e9be6f81d0870b702605e3f7280046635254466e0eaab0c0cdd3b007e",
+   "bytes": 57105
+  },
+  "iTLlmVaVTM5rbXDn7vPyjg==": {
+   "name": "Commercial Lease CAM & Operating-Expense Audit Kit",
+   "short_url": "https://aekraft.gumroad.com/l/xmbxpz",
+   "file": "customer_site/assets/covers/xmbxpz.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/xmbxpz.png",
+   "sha256": "ffc5177ae0547a0a5ad1193194ef797c912d939a7ffc4dcb14d45ac9d5e1232c",
+   "bytes": 59718
+  },
+  "N9TrQZXO5NMMk8otX5g7Zg==": {
+   "name": "Home-Service Quoting & Deposit Protection System",
+   "short_url": "https://aekraft.gumroad.com/l/behmhy",
+   "file": "customer_site/assets/covers/behmhy.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/behmhy.png",
+   "sha256": "178073f58ad17a44fd62ead0e6d40091a1ef2f11bacf8d34f77f61f511987476",
+   "bytes": 54848
+  },
+  "iL2bwAwHI8OAmxKsFeZnQw==": {
+   "name": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
+   "short_url": "https://aekraft.gumroad.com/l/xwbbb",
+   "file": "customer_site/assets/covers/xwbbb.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/xwbbb.png",
+   "sha256": "62a50a34ff74e87a2bcf4552d1dfb06e322824d432ef1c3e949d8dbc81b7f0b5",
+   "bytes": 46956
+  },
+  "WP6Vb-qltKfYXQ1KAb0Tog==": {
+   "name": "EU AI Act Audit Logging Kit",
+   "short_url": "https://aekraft.gumroad.com/l/fwxmms",
+   "file": "customer_site/assets/covers/fwxmms.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/fwxmms.png",
+   "sha256": "d79570d7b3451f73032077cf46072bd640c69d5a38216f3f85252867ba321bb0",
+   "bytes": 26177
+  },
+  "y4nX4cwydsCtWdxBA6uXJw==": {
+   "name": "Legal Case Research Automation for Solo Attorneys",
+   "short_url": "https://aekraft.gumroad.com/l/uldlwa",
+   "file": "customer_site/assets/covers/uldlwa.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/uldlwa.png",
+   "sha256": "e9b78bc536bde4c03120458cc3e98bd4403a7c7b0902512c6713ccc969e0d017",
+   "bytes": 45164
+  },
+  "M5AZWbcXPFKzvgnzcrDqCg==": {
+   "name": "SOC 2 Compliance Automation Guide for Startups",
+   "short_url": "https://aekraft.gumroad.com/l/sjmbrp",
+   "file": "customer_site/assets/covers/sjmbrp.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/sjmbrp.png",
+   "sha256": "896dd6ea85f8dbdf6d0977f57544f40dc1111f303c855549cb99de47310b3d67",
+   "bytes": 59918
+  },
+  "Ag3pKi2eN5fiGQDmJ-fLxA==": {
+   "name": "AI Agent Blueprint for Small SaaS CloudOps Automation",
+   "short_url": "https://aekraft.gumroad.com/l/esnpki",
+   "file": "customer_site/assets/covers/esnpki.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/esnpki.png",
+   "sha256": "b1ebd570ad172918b7b0ca2c2e454d0cd58868d3f01d5ce9b766984373fb38a3",
+   "bytes": 55105
+  },
+  "D4JC45lly7EjsY-CO5FKyQ==": {
+   "name": "Severance Agreement Review Checklist",
+   "short_url": "https://aekraft.gumroad.com/l/vunrqm",
+   "file": "customer_site/assets/covers/vunrqm.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/vunrqm.png",
+   "sha256": "17e8b8eea3fa1f4fb26c9a4b06d104008cfa2aa5f985839e05a4d99f6193aeae",
+   "bytes": 44234
+  },
+  "0uieIt-Pn09q9Xz-Hp1DEQ==": {
+   "name": "Security Deposit Demand Kit for Tenants",
+   "short_url": "https://aekraft.gumroad.com/l/yiqba",
+   "file": "customer_site/assets/covers/yiqba.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/yiqba.png",
+   "sha256": "863beedea3210479f5fb9a930c3c84e3d8d3a7b4b6945641e534eab8634ba85c",
+   "bytes": 40771
+  },
+  "mx6XSGrElB5b-NLSHfEryg==": {
+   "name": "Mechanics Lien Filing Kit for Contractors",
+   "short_url": "https://aekraft.gumroad.com/l/jibnyt",
+   "file": "customer_site/assets/covers/jibnyt.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/jibnyt.png",
+   "sha256": "287c329a9b161ca9f59f404082ba497babf1df8a82e184a3e0afb8b06b4b6698",
+   "bytes": 33556
+  },
+  "F3Q5fUqOCxy3n7k6eVTWqw==": {
+   "name": "Stripe Chargeback Defense Kit for Digital Sellers",
+   "short_url": "https://aekraft.gumroad.com/l/ceiwk",
+   "file": "customer_site/assets/covers/ceiwk.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/ceiwk.png",
+   "sha256": "76c264d86b242264ac06c298a4f5c9d00c306c29256fc0181699700c7832f051",
+   "bytes": 41271
+  },
+  "mvuoJTNLfsWsm0NF-CrZHw==": {
+   "name": "Etsy Suspension Appeal Kit",
+   "short_url": "https://aekraft.gumroad.com/l/fgruzn",
+   "file": "customer_site/assets/covers/fgruzn.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/fgruzn.png",
+   "sha256": "bdc4fa77d4da62fafba84b80f67ee702f77cbd2a7e101283da29d6fd3259a2d5",
+   "bytes": 29498
+  },
+  "dyZ5uSfqjjN91f_1Ir0t6w==": {
+   "name": "CCPA Compliance Action Kit for Small Business",
+   "short_url": "https://aekraft.gumroad.com/l/kaooj",
+   "file": "customer_site/assets/covers/kaooj.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/kaooj.png",
+   "sha256": "a4a86d06f73b721e35a72b3b0b2e24a7285bc6a29df3bf43ee305759134f9eaf",
+   "bytes": 52828
+  },
+  "f3MRQnVlf3F2w_7n5LfBhw==": {
+   "name": "Digital-Product Refund Policy Pack",
+   "short_url": "https://aekraft.gumroad.com/l/yhnyn",
+   "file": "customer_site/assets/covers/yhnyn.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/yhnyn.png",
+   "sha256": "5f01a524966d61eb7213f0e2a66051c4131fb7ee45bc1fd3fefb69cea9c9540c",
+   "bytes": 36426
+  },
+  "lac1TzWQPrNs1vdysJA0dA==": {
+   "name": "SaaS Churn Email Pack",
+   "short_url": "https://aekraft.gumroad.com/l/roxdbe",
+   "file": "customer_site/assets/covers/roxdbe.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/roxdbe.png",
+   "sha256": "1add21747688dcbb21f61c5cee99872b84e3e116318441570f1521a661493dce",
+   "bytes": 26710
+  },
+  "T8OiOrVH1ficDv1bN3ksfg==": {
+   "name": "Freelancer Scope-Creep Contract Kit",
+   "short_url": "https://aekraft.gumroad.com/l/zjwpx",
+   "file": "customer_site/assets/covers/zjwpx.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/zjwpx.png",
+   "sha256": "fecdf0b75df1b1a9eafd19dc7c778ddfbb0627ed8321f2ea955c188b1e29fb9f",
+   "bytes": 35679
+  },
+  "LInf08ypx6myskvOgd8ryQ==": {
+   "name": "Battery & WEEE Mini-Guide for Sellers",
+   "short_url": "https://aekraft.gumroad.com/l/eiebdt",
+   "file": "customer_site/assets/covers/eiebdt.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/eiebdt.png",
+   "sha256": "147872849263c57e3f74439b123364b296fd309bd9012b6ee867da79f4957c40",
+   "bytes": 39802
+  },
+  "tHvtBhoJC0KJMPhQippBBA==": {
+   "name": "Food-Contact Materials Starter",
+   "short_url": "https://aekraft.gumroad.com/l/ldrdm",
+   "file": "customer_site/assets/covers/ldrdm.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/ldrdm.png",
+   "sha256": "5bd703814a817a2e10dbaf1637ea0ba97bb19e024eda3830ff7d91a61402e6ac",
+   "bytes": 31122
+  },
+  "jIkPBKpLVF7Hk7_DCgMxcA==": {
+   "name": "Toy Safety File Starter (EN 71 Lens)",
+   "short_url": "https://aekraft.gumroad.com/l/vyitxf",
+   "file": "customer_site/assets/covers/vyitxf.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/vyitxf.png",
+   "sha256": "645597644d37c6d6123a0c6f8c1ad63e0ce6f726d9b9f77d2feef66dda659040",
+   "bytes": 35380
+  },
+  "GVqbXZ0k0Vfn7fhm2AEQXA==": {
+   "name": "EU Cosmetics Responsible Person Guide",
+   "short_url": "https://aekraft.gumroad.com/l/bfdgx",
+   "file": "customer_site/assets/covers/bfdgx.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/bfdgx.png",
+   "sha256": "40038466fde5019f899682a363aa1383c09f8c74e42f743c551902ff268c0000",
+   "bytes": 38070
+  },
+  "ZFXJttaaGoJvEE10JOXbWg==": {
+   "name": "Etsy Ads ROI Playbook + Calculator",
+   "short_url": "https://aekraft.gumroad.com/l/hasjmp",
+   "file": "customer_site/assets/covers/hasjmp.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/hasjmp.png",
+   "sha256": "c0696f6260fe1b271a4942c5f7976b8e12eb2639267881b5812c16252d585a36",
+   "bytes": 38627
+  },
+  "ylqF8rzW698iKeOuKFWQkw==": {
+   "name": "Amazon FBA Reconciliation Workbook",
+   "short_url": "https://aekraft.gumroad.com/l/wteork",
+   "file": "customer_site/assets/covers/wteork.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/wteork.png",
+   "sha256": "81363dcf03755f6b66ee77310ada72d3088f776afaa91f3a502c620753a2d661",
+   "bytes": 36436
+  },
+  "8Vlc3zY6AkxU4DCe7IRVDA==": {
+   "name": "EU Late Payment Recovery Kit",
+   "short_url": "https://aekraft.gumroad.com/l/ciowwm",
+   "file": "customer_site/assets/covers/ciowwm.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/ciowwm.png",
+   "sha256": "11e77a011c32cd5824436f4f2ae59548c06b39a8f38596c0e501bd069653cd70",
+   "bytes": 32129
+  },
+  "nLl2DJc7VcPu0aeD_CnHAA==": {
+   "name": "ADA Demand-Letter Response & Triage Kit",
+   "short_url": "https://aekraft.gumroad.com/l/palmdr",
+   "file": "customer_site/assets/covers/palmdr.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/palmdr.png",
+   "sha256": "16b346546f9146251c103953cdd593978bafc2c6ead23bd40097d54e8433ca6d",
+   "bytes": 50507
+  },
+  "f542PZ92SUPOjV9F5GJh-Q==": {
+   "name": "Diminished Value Claim Kit",
+   "short_url": "https://aekraft.gumroad.com/l/dyjavs",
+   "file": "customer_site/assets/covers/dyjavs.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/dyjavs.png",
+   "sha256": "fe40ea5009dd7d568f39e96598f78d388c4b0a24bb6dc46d485602b9eb1a6725",
+   "bytes": 33122
+  },
+  "8JM3qFgUuQznesYdiQFNXw==": {
+   "name": "EU Packaging EPR Action Kit",
+   "short_url": "https://aekraft.gumroad.com/l/gfsvu",
+   "file": "customer_site/assets/covers/gfsvu.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/gfsvu.png",
+   "sha256": "2dada02addaa58ac3e5aaee25f41b60473e3cc106237070d6385635baf999281",
+   "bytes": 43615
+  },
+  "J6ir7vCGTHsS-J4E_a_Lqg==": {
+   "name": "Vendor Questionnaire Response Kit",
+   "short_url": "https://aekraft.gumroad.com/l/pyzqa",
+   "file": "customer_site/assets/covers/pyzqa.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/pyzqa.png",
+   "sha256": "3598b0038cadb8b5c6ee558535fcd4fd5988a46dfd58869aa5e052a3958ccbd8",
+   "bytes": 48856
+  },
+  "iPqoAaWMnZCWf8AvYusjxw==": {
+   "name": "STR Direct Booking Revenue Kit",
+   "short_url": "https://aekraft.gumroad.com/l/ppsluq",
+   "file": "customer_site/assets/covers/ppsluq.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/ppsluq.png",
+   "sha256": "46448f5ac009ea34e97d9713a26ca1c0d9f6792363924f1fbd52fab9704deb72",
+   "bytes": 39012
+  },
+  "KMNGNgO5gS85H_JppnygIg==": {
+   "name": "Trademark DIY Filing Action Kit",
+   "short_url": "https://aekraft.gumroad.com/l/vkqogv",
+   "file": "customer_site/assets/covers/vkqogv.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/vkqogv.png",
+   "sha256": "264502198c7d3ca477ca735ec2540798cffe646de8d336e39cbc1fcfed1e7c3e",
+   "bytes": 42671
+  },
+  "OiBdFFTaLaZdDX52HxwezQ==": {
+   "name": "FTC Consumer Review Rule Compliance Kit",
+   "short_url": "https://aekraft.gumroad.com/l/ekhza",
+   "file": "customer_site/assets/covers/ekhza.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/ekhza.png",
+   "sha256": "033cf74ce3d0960739e519779c43ab824481ee51003fbed11e960ad181ec6a2e",
+   "bytes": 45320
+  },
+  "T41QMtEfZcuDKa7tGtnvgw==": {
+   "name": "Restaurant Health Inspection Readiness Kit",
+   "short_url": "https://aekraft.gumroad.com/l/dvfvm",
+   "file": "customer_site/assets/covers/dvfvm.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/dvfvm.png",
+   "sha256": "2a7ad772de03afe1093a40ce8b058838474d4e41ab398a0216e0564fc77896e8",
+   "bytes": 42920
+  },
+  "srd6CIjZc381be9FhiyHeA==": {
+   "name": "Turo Guest Dispute Toolkit",
+   "short_url": "https://aekraft.gumroad.com/l/adyvd",
+   "file": "customer_site/assets/covers/adyvd.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/adyvd.png",
+   "sha256": "6f0d0e5847d106d6b00cdd720805133dc6315ff1f96aaba5dc4df78631e526d8",
+   "bytes": 28867
+  },
+  "VPYaNkAdv7Yocko-lIJsZQ==": {
+   "name": "GPSR EU Seller Action Kit",
+   "short_url": "https://aekraft.gumroad.com/l/fetmu",
+   "file": "customer_site/assets/covers/fetmu.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/fetmu.png",
+   "sha256": "cf9fd1581b80024b3a361423b99a0eff0dbc04fd774ae48b55a2faad1e1b91aa",
+   "bytes": 43347
+  },
+  "A1LlQxtJJkdWbhrWG8tyww==": {
+   "name": "UK Deposit Recovery Action Pack",
+   "short_url": "https://aekraft.gumroad.com/l/edgiq",
+   "file": "customer_site/assets/covers/edgiq.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/edgiq.png",
+   "sha256": "1960da519d003287b87139421413eb0523db868ad32a8cbdaf1e3bd4241352d1",
+   "bytes": 44088
+  },
+  "FbwR2Vq8XY2ZjbZ-JmQHrg==": {
+   "name": "Section 8 Notice Validity System (England)",
+   "short_url": "https://aekraft.gumroad.com/l/nmasnb",
+   "file": "customer_site/assets/covers/nmasnb.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/nmasnb.png",
+   "sha256": "1635a3351824ef06d128c775d967b242a469ec2d419995a86cdf848bdca68624",
+   "bytes": 50256
+  },
+  "66fo53TSmA6Lu5cycxuHxQ==": {
+   "name": "Suspended Seller First-Appeal POA System",
+   "short_url": "https://aekraft.gumroad.com/l/zfnagp",
+   "file": "customer_site/assets/covers/zfnagp.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/zfnagp.png",
+   "sha256": "720d84d02e9282ed0a7510f0a0b6deea30040ec050c71328e2af913cf9376850",
+   "bytes": 50000
+  },
+  "8gFbi-vE0ceqFacn3i3eMA==": {
+   "name": "Gulf Job-Landing ATS CV System",
+   "short_url": "https://aekraft.gumroad.com/l/fccqk",
+   "file": "customer_site/assets/covers/fccqk.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/fccqk.png",
+   "sha256": "a526322a82e059eeef09568718569565b40a6c6a6259d9292a15038f4def9e69",
+   "bytes": 49835
+  },
+  "yrSExa-YQe4fjWuIKV4vmQ==": {
+   "name": "GCC Contractor Payment Command System (V2 Bundle)",
+   "short_url": "https://aekraft.gumroad.com/l/jlxmez",
+   "file": "customer_site/assets/covers/jlxmez.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/jlxmez.png",
+   "sha256": "a167dfa90afd9d3b139dd97949b3a5cdb962af7e9983ec441b349db20a8077f6",
+   "bytes": 49939
+  },
+  "_wJUrEKIuR0Y6cOj9Zqyqg==": {
+   "name": "GCC Contractor Payment Command System",
+   "short_url": "https://aekraft.gumroad.com/l/uwyfje",
+   "file": "customer_site/assets/covers/uwyfje.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/uwyfje.png",
+   "sha256": "dbc583f245359e5a8ad1f9b19e2fd45a18f9955d230cfce244063c1703666584",
+   "bytes": 50049
+  },
+  "YW18CUcSrghFoNioG8hFGA==": {
+   "name": "Freelancer Payment Protection & Scope-Control Toolkit",
+   "short_url": "https://aekraft.gumroad.com/l/fwrjot",
+   "file": "customer_site/assets/covers/fwrjot.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/fwrjot.png",
+   "sha256": "996ddc299f5d996384beaf3642a8c588b8e2641d7c90553775e610949acdef74",
+   "bytes": 54428
+  },
+  "tGGL1mqB2bp7uZ6k2THgwA==": {
+   "name": "EU AI Act Compliance Quickstart Checklist",
+   "short_url": "https://aekraft.gumroad.com/l/engiwk",
+   "file": "customer_site/assets/covers/engiwk.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/engiwk.png",
+   "sha256": "24597a17285003aaf8acac65cce0210f207246c2b6e9492c008f22a689c2a527",
+   "bytes": 45323
+  },
+  "AnZqjZBFNvMdpV0bto7jDw==": {
+   "name": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+   "short_url": "https://aekraft.gumroad.com/l/tmhlb",
+   "file": "customer_site/assets/covers/tmhlb.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/tmhlb.png",
+   "sha256": "e9e32c7e6ad2f205a92fa3408d49ba6ab4a3b875c0387dbfee23a37a2dd05577",
+   "bytes": 59121
+  },
+  "_H7FbvlTPITBmT0V6lyPeg==": {
+   "name": "Mindfulness Journal for Stress Relief",
+   "short_url": "https://aekraft.gumroad.com/l/jvuelq",
+   "file": "customer_site/assets/covers/jvuelq.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/jvuelq.png",
+   "sha256": "575d3da88c1e5167fc1ba4956cc5c2222c4b14a91659a53172a0a21511241b6f",
+   "bytes": 37566
+  },
+  "9Zq9SGkALI0tjd7A97Pc_A==": {
+   "name": "The 5-Minute Context Reset Playbook",
+   "short_url": "https://aekraft.gumroad.com/l/vhofn",
+   "file": "customer_site/assets/covers/vhofn.png",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/covers/vhofn.png",
+   "sha256": "2872defcb26ac95afbd73667f2f8379ecc8dd31327343873d6b8e4b693333967",
+   "bytes": 36590
+  }
+ }
+}

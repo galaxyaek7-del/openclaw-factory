@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-24T06:53:57+00:00",
+ "generated_at": "2026-10-24T07:22:14+00:00",
  "fonts": "Bitstream Vera (reportlab bundle)",
  "pins": {
   "B14-001": {
@@ -132,6 +132,162 @@
    "title": "Zero-Based Monthly Budget Planner",
    "price_cents": 900
   },
+  "GR-003d8ce46f": {
+   "file": "customer_site/assets/pins/gr-003d8ce46f.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-003d8ce46f.jpg",
+   "sha256": "3fb2a1ffaa7f77dd6f6e50d729e9cd1b3d9f08bcb77d35700a509589f52bd0d3",
+   "bytes": 109203,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/rj21rvy9m1lw2y2m5uz92y0msnc2",
+   "title": "Trademark DIY Filing Action Kit",
+   "price_cents": 6900
+  },
+  "GR-04864e2091": {
+   "file": "customer_site/assets/pins/gr-04864e2091.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-04864e2091.jpg",
+   "sha256": "a2ee5b54fd1c2eda5385744ca0eb48eef24faf5c23721c8f280f72e100c7c9f9",
+   "bytes": 150452,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/1swff32l39a3vlyfj7w6xffc3ded",
+   "title": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+   "price_cents": 900
+  },
+  "GR-05cd19f99c": {
+   "file": "customer_site/assets/pins/gr-05cd19f99c.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-05cd19f99c.jpg",
+   "sha256": "77d64195fe4cd4715b2a4ea13d14641f50ea15cfde3d00d7a1c42d415b56b83d",
+   "bytes": 129116,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/tj1mcbjvs31j3baw5uue14x1w9c1",
+   "title": "Gulf Job-Landing ATS CV System",
+   "price_cents": 2900
+  },
+  "GR-06bad25d25": {
+   "file": "customer_site/assets/pins/gr-06bad25d25.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-06bad25d25.jpg",
+   "sha256": "0e22d02d76c05564836da8839a5141afef78f384a36c768e2ae6ba0e2039d5ae",
+   "bytes": 109476,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/yezczk6zhmzarw8ro0gf2pqiawu1",
+   "title": "Mindfulness Journal for Stress Relief",
+   "price_cents": 700
+  },
+  "GR-0b1dd2739c": {
+   "file": "customer_site/assets/pins/gr-0b1dd2739c.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-0b1dd2739c.jpg",
+   "sha256": "6a03a25666db2646703cc8328674809f10662484f271d4f938e40f62e1b18038",
+   "bytes": 140330,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/s1alvd49ohjavz9m7uilkdt7o7ak",
+   "title": "Restaurant Health Inspection Readiness Kit",
+   "price_cents": 4900
+  },
+  "GR-0c1ef5afd5": {
+   "file": "customer_site/assets/pins/gr-0c1ef5afd5.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-0c1ef5afd5.jpg",
+   "sha256": "9091f4350c68c414cb1e9f0daf8427b8648696bd2d7870d7adeceae0efc34257",
+   "bytes": 154866,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/lxhs7mj4tmgl5o4h3t2h6t6zmo1a",
+   "title": "Freelancer Payment Protection & Scope-Control Toolkit",
+   "price_cents": 4900
+  },
+  "GR-0eb6de052c": {
+   "file": "customer_site/assets/pins/gr-0eb6de052c.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-0eb6de052c.jpg",
+   "sha256": "758556800d58db6db08f2bd7786e773704288d44f1810c9c40671d4d154be56c",
+   "bytes": 107012,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/rz1zdt557m8estf8cvbkllrjxcag",
+   "title": "EUDR Due Diligence Starter",
+   "price_cents": 6900
+  },
+  "GR-10d84cb5ad": {
+   "file": "customer_site/assets/pins/gr-10d84cb5ad.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-10d84cb5ad.jpg",
+   "sha256": "27c92462af363ffb9e7f468f73822df82bc8b0e5682cfa9ab7454d90469eef8e",
+   "bytes": 160729,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/23me2otrdh14blqq4qekovujn777",
+   "title": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+   "price_cents": 4900
+  },
+  "GR-163a547dcc": {
+   "file": "customer_site/assets/pins/gr-163a547dcc.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-163a547dcc.jpg",
+   "sha256": "155e4a90a18b6c1cd962cc331461d15e5b0670a4a35da5dac4cf1bff557f1973",
+   "bytes": 99653,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/y1gi9si1wd8o4yaymv2k6zcyfl4p",
+   "title": "Cottage Food Compliance Kit",
+   "price_cents": 4900
+  },
+  "GR-1b31fa3983": {
+   "file": "customer_site/assets/pins/gr-1b31fa3983.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-1b31fa3983.jpg",
+   "sha256": "351caf5e40591a35068b824321e3cf99c4e073257207908a644afdafd8847d14",
+   "bytes": 148816,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/eslf0ok8mmp0mnqnywzslfy4skgk",
+   "title": "Fleet Maintenance and Damage Documentation Bundle",
+   "price_cents": 4900
+  },
+  "GR-1c352a7aac": {
+   "file": "customer_site/assets/pins/gr-1c352a7aac.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-1c352a7aac.jpg",
+   "sha256": "c7ac43576c0beac28bb721ee67e3bed24c585cce67dbc1a9ebfba65ce5950bdd",
+   "bytes": 151256,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/1wgvbj6pu9q8hbs8lh582rxf0m4u",
+   "title": "B2B Late-Payment Collections Operating System",
+   "price_cents": 5900
+  },
+  "GR-23e0647791": {
+   "file": "customer_site/assets/pins/gr-23e0647791.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-23e0647791.jpg",
+   "sha256": "960995519550ef9cae87010c960ffe6896e4a8901c8a8ae64531fd31ff197734",
+   "bytes": 91918,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/b81flye4hudlw0y1gztypvos1u3u",
+   "title": "Diminished Value Claim Kit",
+   "price_cents": 5900
+  },
   "GR-2562d0b4d2": {
    "file": "customer_site/assets/pins/gr-2562d0b4d2.jpg",
    "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-2562d0b4d2.jpg",
@@ -144,6 +300,71 @@
    "source_cover": "https://public-files.gumroad.com/ofav4ozty5ak13l03ndxwcr8gu7e",
    "title": "Meeting Cost & ROI Calculator",
    "price_cents": 1199
+  },
+  "GR-267ea1d084": {
+   "file": "customer_site/assets/pins/gr-267ea1d084.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-267ea1d084.jpg",
+   "sha256": "ff3811e62daadd27d4114343373aec62af874838d2f4ef2dac34461bae18163a",
+   "bytes": 148909,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/bwmcf8bm7nhy5ko8t46q22n15wuv",
+   "title": "Home-Service Quoting & Deposit Protection System",
+   "price_cents": 4900
+  },
+  "GR-2dad0445dd": {
+   "file": "customer_site/assets/pins/gr-2dad0445dd.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-2dad0445dd.jpg",
+   "sha256": "564ea8eadde1bf2221e20f1e7420291ba56a0847cfc703b53829459bcc7fd30f",
+   "bytes": 130058,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/cxjwx6r2c3cgmx8x94amx7wl33l1",
+   "title": "UK Deposit Recovery Action Pack",
+   "price_cents": 2900
+  },
+  "GR-30cce4848c": {
+   "file": "customer_site/assets/pins/gr-30cce4848c.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-30cce4848c.jpg",
+   "sha256": "a8c298b7af9f2f6aa0e56ac58572b4441114fe378c2226068231bcd3c83dffc3",
+   "bytes": 122249,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/kvrgbd8lk2y0f9xornnzqni5wmpm",
+   "title": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
+   "price_cents": 4900
+  },
+  "GR-3228cc6b63": {
+   "file": "customer_site/assets/pins/gr-3228cc6b63.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-3228cc6b63.jpg",
+   "sha256": "774f18dfa9814c997314a44afab1ad1e495e3262e143913ebf00a8d84c049207",
+   "bytes": 92538,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/6pp0mial63bwzb13m48bka3bqo4a",
+   "title": "Freelancer Scope-Creep Contract Kit",
+   "price_cents": 2900
+  },
+  "GR-342e45a45f": {
+   "file": "customer_site/assets/pins/gr-342e45a45f.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-342e45a45f.jpg",
+   "sha256": "6581e719e07a209fdf95615816ca2c50435cb2af044392d023dde5c3f0a4612a",
+   "bytes": 144594,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/e0tzd4hm51y2fwoivsb55i2rb8xd",
+   "title": "Tech Job Offer Evaluation & Negotiation System",
+   "price_cents": 4900
   },
   "GR-34985d0556": {
    "file": "customer_site/assets/pins/gr-34985d0556.jpg",
@@ -158,6 +379,58 @@
    "title": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
    "price_cents": 15500
   },
+  "GR-36a9097179": {
+   "file": "customer_site/assets/pins/gr-36a9097179.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-36a9097179.jpg",
+   "sha256": "1e0fd45ca11d1093874896d3af7fb2e5a051482a6e315caea0d67605f13c32f0",
+   "bytes": 124626,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/6l6sj3pcwdn5svrv3wazs1ldtcsm",
+   "title": "Handbook Acknowledgment Tracker",
+   "price_cents": 4900
+  },
+  "GR-3e9d6d26a6": {
+   "file": "customer_site/assets/pins/gr-3e9d6d26a6.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-3e9d6d26a6.jpg",
+   "sha256": "285773dcc534d70bef29daab6b7b85dfcb8f05b7757ab2a100adb938af38ea3c",
+   "bytes": 141940,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/tf631jff6gj9nd9qcwhi7u0gkdpx",
+   "title": "Suspended Seller First-Appeal POA System",
+   "price_cents": 3900
+  },
+  "GR-4050e1ff8a": {
+   "file": "customer_site/assets/pins/gr-4050e1ff8a.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-4050e1ff8a.jpg",
+   "sha256": "95e9141eb1781834d6aae5b8d83d4e70051b082a83b31622c66d0389f2e17e03",
+   "bytes": 99491,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/kkfolzi138mf5hrz9pj8td7k7fe1",
+   "title": "Severance Agreement Review Checklist",
+   "price_cents": 2900
+  },
+  "GR-40b960a83d": {
+   "file": "customer_site/assets/pins/gr-40b960a83d.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-40b960a83d.jpg",
+   "sha256": "ea1fcddcb389d2e9a7ba9adf9be4f0017552a4fc7699799fc66ffa9a4f1186b1",
+   "bytes": 106367,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/3xpb0qv8rbc2zkho70h9nrsp1r7w",
+   "title": "Salon Commission Pay Kit",
+   "price_cents": 3900
+  },
   "GR-41d87224ab": {
    "file": "customer_site/assets/pins/gr-41d87224ab.jpg",
    "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-41d87224ab.jpg",
@@ -171,6 +444,318 @@
    "title": "Freelancer Rate & Raise Calculator",
    "price_cents": 1499
   },
+  "GR-4409859130": {
+   "file": "customer_site/assets/pins/gr-4409859130.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-4409859130.jpg",
+   "sha256": "76ea19fcd7be6f87aa44e50a6bf9b72fb64601bd85c8119d328954336a563a6d",
+   "bytes": 130483,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/ihlkfud3ifn77jkvtcj9eqia7wv3",
+   "title": "SaaS Spend & Renewal Audit System for Small Teams",
+   "price_cents": 4900
+  },
+  "GR-460da4d6b2": {
+   "file": "customer_site/assets/pins/gr-460da4d6b2.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-460da4d6b2.jpg",
+   "sha256": "13efa669af61ea6f45e77cd60ca608a44c8730bcb5557eb1ae5147fa7b5b64c6",
+   "bytes": 130859,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/9z3k12ntuho2dqy5wajh6itm57nu",
+   "title": "PCI SAQ Readiness Kit for Small Merchants",
+   "price_cents": 5900
+  },
+  "GR-465bb926a7": {
+   "file": "customer_site/assets/pins/gr-465bb926a7.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-465bb926a7.jpg",
+   "sha256": "b62dd2b97b0376fec0c004aff56de55bfc9b4046a7f5ca74ece57424cf5add2a",
+   "bytes": 122857,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/qsvd9d7ip4z7xpr2ufxv9eaj72x4",
+   "title": "Dental Insurance Verification Kit",
+   "price_cents": 5900
+  },
+  "GR-49bd37f875": {
+   "file": "customer_site/assets/pins/gr-49bd37f875.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-49bd37f875.jpg",
+   "sha256": "0415d96e31e9b9b90665554cb285958f26d0011b48b51af9b39de122751a3c6a",
+   "bytes": 109347,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/o0gfre5qrf8yhv3i5tm5ijxfoev9",
+   "title": "Food Truck Permit Navigator",
+   "price_cents": 5900
+  },
+  "GR-4ad7472b8c": {
+   "file": "customer_site/assets/pins/gr-4ad7472b8c.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-4ad7472b8c.jpg",
+   "sha256": "cac845ab945923a9ff8b3429e844d44ff4608e8081220b8dd8b3c3b39bef10d5",
+   "bytes": 130937,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/bcgw4386d2m4yxiawtl9a0my92t4",
+   "title": "Real Estate Transaction Deadline Kit",
+   "price_cents": 2900
+  },
+  "GR-4b3f22e75e": {
+   "file": "customer_site/assets/pins/gr-4b3f22e75e.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-4b3f22e75e.jpg",
+   "sha256": "6764cee003636c4b8835597cb580c472626e85ce79be44a5b2ff27c2d184b25e",
+   "bytes": 139523,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/hhug6k3e4zpbtlghaf7dyaydqnuv",
+   "title": "ADA Demand-Letter Response & Triage Kit",
+   "price_cents": 6900
+  },
+  "GR-52aa3d878c": {
+   "file": "customer_site/assets/pins/gr-52aa3d878c.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-52aa3d878c.jpg",
+   "sha256": "ea59d8c0c35890f2ae6a26641b6d6b9967a02b821646002e0fbc8fd0ae0abd99",
+   "bytes": 98075,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/9s2stbyz1ncererd9qlumvton7wj",
+   "title": "Security Deposit Demand Kit for Tenants",
+   "price_cents": 2900
+  },
+  "GR-541c7ced0a": {
+   "file": "customer_site/assets/pins/gr-541c7ced0a.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-541c7ced0a.jpg",
+   "sha256": "5376f70ec913fdc52ab4f391182709ca22527ea26ad019c1eef9bb61f47a8d88",
+   "bytes": 118644,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/yyzcyqdd257l8pqzws3aik3c0rtt",
+   "title": "Subscription Renewal Compliance Kit",
+   "price_cents": 6900
+  },
+  "GR-57ef021040": {
+   "file": "customer_site/assets/pins/gr-57ef021040.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-57ef021040.jpg",
+   "sha256": "cddb59c52c87d9e5de94c3d5ae254a836a058f0412af27e17ae96d92fff638ad",
+   "bytes": 101775,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/fpt9sq6bheksvyheih62l3e6b2ik",
+   "title": "Stripe Chargeback Defense Kit for Digital Sellers",
+   "price_cents": 2900
+  },
+  "GR-59f3f65424": {
+   "file": "customer_site/assets/pins/gr-59f3f65424.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-59f3f65424.jpg",
+   "sha256": "8b3d3b798addfc9a79fbdf4a2d5c09c57780c81b0d895d8580918b429bf497cf",
+   "bytes": 86346,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/nnv6isu6yn262lu6pwd2izbl61dw",
+   "title": "Food-Contact Materials Starter",
+   "price_cents": 3900
+  },
+  "GR-5bd18ab656": {
+   "file": "customer_site/assets/pins/gr-5bd18ab656.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-5bd18ab656.jpg",
+   "sha256": "babfb8573466a3404ad991e4153c0ae6ae8d8608cfb48dcca1253f111de2f8a0",
+   "bytes": 98649,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/oqopuj6q4pmnlozf81my9oqgpndh",
+   "title": "STR Direct Booking Revenue Kit",
+   "price_cents": 5900
+  },
+  "GR-6275a223a6": {
+   "file": "customer_site/assets/pins/gr-6275a223a6.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-6275a223a6.jpg",
+   "sha256": "121426192345fda78908180454c9aed272b08e956c06d3494163f7bdcba93514",
+   "bytes": 75364,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/smuutqoe53rh68au8xz9hvtfr93g",
+   "title": "SaaS Churn Email Pack",
+   "price_cents": 3900
+  },
+  "GR-673041e16c": {
+   "file": "customer_site/assets/pins/gr-673041e16c.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-673041e16c.jpg",
+   "sha256": "dfcc7df3df3c6c5b725c8ee7c154d16feda6c8168d36ad1d2883885a72ed5abc",
+   "bytes": 123189,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/byl86gd9j9oqqts3r88zzyxf6tm5",
+   "title": "Legal Case Research Automation for Solo Attorneys",
+   "price_cents": 2900
+  },
+  "GR-67795d0eb5": {
+   "file": "customer_site/assets/pins/gr-67795d0eb5.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-67795d0eb5.jpg",
+   "sha256": "c2bcfefd61910c93c9c4ab854cabdb3216d30861270feefe2dfb676d2fd8ff49",
+   "bytes": 110583,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/2a9s4ulbwbgmguhytbncho96gr5s",
+   "title": "EU Green Claims Review Kit",
+   "price_cents": 6900
+  },
+  "GR-6be7a41899": {
+   "file": "customer_site/assets/pins/gr-6be7a41899.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-6be7a41899.jpg",
+   "sha256": "aac542bcea8f89b1e8e745bb35c271cb185bf4d3d0a90dba09c58f13f008dfe6",
+   "bytes": 95362,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/1x9kjml99tp1e1f8188pujie3oid",
+   "title": "Landlord Move-In Inspection Pack",
+   "price_cents": 4900
+  },
+  "GR-742a42d65f": {
+   "file": "customer_site/assets/pins/gr-742a42d65f.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-742a42d65f.jpg",
+   "sha256": "5c0d80a36b7cbc66ec1bbc8fa8cd96d809d16055c93f8c1ecaba19e815563079",
+   "bytes": 127728,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/h466hcut2vbgu2i1876ddsofi44f",
+   "title": "Vendor Questionnaire Response Kit",
+   "price_cents": 8900
+  },
+  "GR-78692be074": {
+   "file": "customer_site/assets/pins/gr-78692be074.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-78692be074.jpg",
+   "sha256": "bffa6541b54920bfa6f39545221659410594d6d748d7eafb2eb99b8fa7d0fa36",
+   "bytes": 89628,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/75o6osj9gb9bq20mral9kgyqp22p",
+   "title": "Digital-Product Refund Policy Pack",
+   "price_cents": 2900
+  },
+  "GR-7a569c5ee4": {
+   "file": "customer_site/assets/pins/gr-7a569c5ee4.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-7a569c5ee4.jpg",
+   "sha256": "8ef622d0ac55259e5bb3c67ffe1ee0fa041ad35b56c4cfa6770f2d9a7d443a15",
+   "bytes": 94852,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/q90r2wiid7lbk1tt7mp7z81lkysw",
+   "title": "Amazon FBA Reconciliation Workbook",
+   "price_cents": 4900
+  },
+  "GR-7ec42de401": {
+   "file": "customer_site/assets/pins/gr-7ec42de401.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-7ec42de401.jpg",
+   "sha256": "af2ef067022c62c44c200739ea46cd322ee164e7e27661e5d96fed89095aa5d6",
+   "bytes": 80108,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/lqsmezejl826f13rr9yhu5u97qq1",
+   "title": "Etsy Suspension Appeal Kit",
+   "price_cents": 2900
+  },
+  "GR-84e347793d": {
+   "file": "customer_site/assets/pins/gr-84e347793d.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-84e347793d.jpg",
+   "sha256": "27297781ea728f92ffc1d09cf3b08fb4d1a1bcea1b0cfd28789b7a65febfd366",
+   "bytes": 143820,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/tjml11ijvtyrvnjtglzq5pho4zia",
+   "title": "CCPA Compliance Action Kit for Small Business",
+   "price_cents": 2900
+  },
+  "GR-876de3c06e": {
+   "file": "customer_site/assets/pins/gr-876de3c06e.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-876de3c06e.jpg",
+   "sha256": "1c5b1fed28d3c982283078ad648fbf20eaa8715423b494337fa78058ca32d206",
+   "bytes": 110063,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/dw765s9vl3js3ctg97cmzv0hacq0",
+   "title": "Creator Brand-Deal Management System",
+   "price_cents": 4900
+  },
+  "GR-8e78d6c337": {
+   "file": "customer_site/assets/pins/gr-8e78d6c337.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-8e78d6c337.jpg",
+   "sha256": "413a29b7b74b2fbc1d43358c64ec39cbfcbb0194d2b52bffe077b87e5a560973",
+   "bytes": 148241,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/1dfjgqrqatghrp0zqpezfxnffbmh",
+   "title": "AI Agent Blueprint for Small SaaS CloudOps Automation",
+   "price_cents": 2900
+  },
+  "GR-91f851b123": {
+   "file": "customer_site/assets/pins/gr-91f851b123.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-91f851b123.jpg",
+   "sha256": "cbc8c1f8507e57f0b05b9aca6c94438cea186f925aa2808351fd7359a6e37d65",
+   "bytes": 119089,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/nm3zwu7xneqa5i5szxub7abggfyq",
+   "title": "Employee Offboarding & Access-Revocation System",
+   "price_cents": 4900
+  },
+  "GR-9201af7c3d": {
+   "file": "customer_site/assets/pins/gr-9201af7c3d.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9201af7c3d.jpg",
+   "sha256": "9df19319829f54259d3d75f7e42536b31bf57d83ec3d4a0d68290fe99e1a08bc",
+   "bytes": 119480,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/6hv6kfyozzgmeojs9g7xstbr59tc",
+   "title": "GCC Contractor Payment Command System (V2 Bundle)",
+   "price_cents": 39900
+  },
   "GR-97d703401f": {
    "file": "customer_site/assets/pins/gr-97d703401f.jpg",
    "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-97d703401f.jpg",
@@ -183,6 +768,357 @@
    "source_cover": "https://public-files.gumroad.com/lm7woqzl5ksn7rsy3ja0crss1bt2",
    "title": "Founder Access Continuity Organizer",
    "price_cents": 800
+  },
+  "GR-99ccfe16de": {
+   "file": "customer_site/assets/pins/gr-99ccfe16de.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-99ccfe16de.jpg",
+   "sha256": "3c50779b95bb9d62e42683d8071e630f3fc6b2680c10365ec12836ecfbc27553",
+   "bytes": 85521,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/635sqtlan851t922q4wzwab4ccxx",
+   "title": "EU Late Payment Recovery Kit",
+   "price_cents": 5900
+  },
+  "GR-9c3726734b": {
+   "file": "customer_site/assets/pins/gr-9c3726734b.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9c3726734b.jpg",
+   "sha256": "c7e5657896a6b0b5f0041afee07c6c47c0d9f70449e16f8ec8062d363f82737f",
+   "bytes": 152388,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/3f0pbxdxrw9qmyqf82k0dpmecg88",
+   "title": "Commercial Lease CAM & Operating-Expense Audit Kit",
+   "price_cents": 5900
+  },
+  "GR-9ca0823dac": {
+   "file": "customer_site/assets/pins/gr-9ca0823dac.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9ca0823dac.jpg",
+   "sha256": "62b3e20aa5712eaba40cb50e75c1c39df61bff23722af2088e3b1fa21ec1bd60",
+   "bytes": 119478,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/7no1legigrrjfbo4oe4zwiwv8h6o",
+   "title": "Restaurant Food Cost Control Kit",
+   "price_cents": 4900
+  },
+  "GR-9dcaccc0b3": {
+   "file": "customer_site/assets/pins/gr-9dcaccc0b3.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9dcaccc0b3.jpg",
+   "sha256": "2e7478616d84c3e9ea3863f6465cfa99ac8364ec575c1fb27ab74a8193ad59bd",
+   "bytes": 90519,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/9viav9ek7hxowfthqmaqse1vba11",
+   "title": "Etsy Ads ROI Playbook + Calculator",
+   "price_cents": 3900
+  },
+  "GR-9e454ccff8": {
+   "file": "customer_site/assets/pins/gr-9e454ccff8.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9e454ccff8.jpg",
+   "sha256": "155a4e362979ab6be78e9f1d0e525a0cb5c0729a55ea9b70c5281f459ac113d5",
+   "bytes": 109136,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/ldm14dw5dakndwof0hshhcxo717r",
+   "title": "Clinic No-Show Reduction Kit",
+   "price_cents": 5900
+  },
+  "GR-a176706761": {
+   "file": "customer_site/assets/pins/gr-a176706761.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a176706761.jpg",
+   "sha256": "70ea02dbad3878dcee6a7ccf1f2551ecebf5cb86d19c7a47bab0e8ed5182c3ca",
+   "bytes": 116299,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/1d3uxft5m0pjsqzhv3157uf9cahp",
+   "title": "Freelancer Scope Control Kit",
+   "price_cents": 1900
+  },
+  "GR-a56ea2e341": {
+   "file": "customer_site/assets/pins/gr-a56ea2e341.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a56ea2e341.jpg",
+   "sha256": "d54106f1c6c9a9333273ebcd22969c232a72a26559c5edc16c33a9179b8f8d77",
+   "bytes": 111267,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/ockldhdrbz1e7xk7m9jufggfksfb",
+   "title": "Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)",
+   "price_cents": 7900
+  },
+  "GR-a76fa0a9dd": {
+   "file": "customer_site/assets/pins/gr-a76fa0a9dd.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a76fa0a9dd.jpg",
+   "sha256": "c88b1308a920b45c4fdde6104bca5843aadd89f6a4c7f8b97f6200f630a2bd06",
+   "bytes": 124439,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/t1z4141m2new70qzsrdvglzhuhde",
+   "title": "EU Packaging EPR Action Kit",
+   "price_cents": 6900
+  },
+  "GR-a8cfecca6a": {
+   "file": "customer_site/assets/pins/gr-a8cfecca6a.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a8cfecca6a.jpg",
+   "sha256": "aa7c0c67deb6f3156fe647291a7cb1b4067d97635980517bd03e11867c680542",
+   "bytes": 142591,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/msq47tkqvsuas0kaje5trqelxesf",
+   "title": "SOC 2 Compliance Automation Guide for Startups",
+   "price_cents": 2900
+  },
+  "GR-a8ee3e9d09": {
+   "file": "customer_site/assets/pins/gr-a8ee3e9d09.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a8ee3e9d09.jpg",
+   "sha256": "cac0123017f2487c503948d7112d495fd0c72ea500f46a8f73ed49445d3c4f02",
+   "bytes": 125152,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/l7mijwvprjnpb4pcfa10cfwg1c34",
+   "title": "Homebuyer Inspection Action Kit",
+   "price_cents": 2900
+  },
+  "GR-b1983191ca": {
+   "file": "customer_site/assets/pins/gr-b1983191ca.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-b1983191ca.jpg",
+   "sha256": "5ebd052e66fdd093170c9d30aa1f76cbbe6e253bd5719128a19263be7b9267fc",
+   "bytes": 114814,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/6tz243lrbwnsmacvtfcgdciydycx",
+   "title": "DSAR Response Kit ($59)",
+   "price_cents": 5900
+  },
+  "GR-b99bdaf89c": {
+   "file": "customer_site/assets/pins/gr-b99bdaf89c.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-b99bdaf89c.jpg",
+   "sha256": "b5615baee9c95d4ea215a8fc03f674e98ac426f109373f93105ffe6c29314e4d",
+   "bytes": 115702,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/d9zkws0mdfu4nib2hivlb039xafx",
+   "title": "FTC Consumer Review Rule Compliance Kit",
+   "price_cents": 6900
+  },
+  "GR-b9f6e295c0": {
+   "file": "customer_site/assets/pins/gr-b9f6e295c0.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-b9f6e295c0.jpg",
+   "sha256": "3c1561fa0ad1a5cd7cd35229576a06e51eebf8994da2da7a93aa8534983d10e6",
+   "bytes": 80775,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/e7a6pgjcapf9horbypi4b9g19lyd",
+   "title": "EU AI Act Audit Logging Kit",
+   "price_cents": 2900
+  },
+  "GR-ca2a7d0d18": {
+   "file": "customer_site/assets/pins/gr-ca2a7d0d18.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-ca2a7d0d18.jpg",
+   "sha256": "c5de34d200d22cbae15221697696f3955881960008c1ab42f2c326c7f949006c",
+   "bytes": 119012,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/yriy5rrzy7dj77xfuro4xhukgy40",
+   "title": "Newsletter Deliverability & Inbox Placement System",
+   "price_cents": 4900
+  },
+  "GR-cd958b18ca": {
+   "file": "customer_site/assets/pins/gr-cd958b18ca.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-cd958b18ca.jpg",
+   "sha256": "562bea752accb6e1729e956fece99de4ab180e01c3a9bb83457d222c1bd3ae8f",
+   "bytes": 85455,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/7pnday2yz1bjhsw3reem6l6an1ug",
+   "title": "Turo Guest Dispute Toolkit",
+   "price_cents": 2900
+  },
+  "GR-d91a1bfc52": {
+   "file": "customer_site/assets/pins/gr-d91a1bfc52.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-d91a1bfc52.jpg",
+   "sha256": "2b1d5d30ac16578774f4374b483c3bfd20a4b49c9a6f05390110f021d421ce56",
+   "bytes": 108850,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/a06p33pmhiqz987r2u3mpj4d1rfx",
+   "title": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
+   "price_cents": 4900
+  },
+  "GR-dc1d67af68": {
+   "file": "customer_site/assets/pins/gr-dc1d67af68.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-dc1d67af68.jpg",
+   "sha256": "1c318b0050092768fa3b88e18c96e733511214714712b7d071220a6dd4e54206",
+   "bytes": 96441,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/b9zoms20jmtur9oh3rnex311bbxa",
+   "title": "Mechanics Lien Filing Kit for Contractors",
+   "price_cents": 2900
+  },
+  "GR-dd3b61adf3": {
+   "file": "customer_site/assets/pins/gr-dd3b61adf3.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-dd3b61adf3.jpg",
+   "sha256": "84eb85caa82245e6ae0b550a52362823d25c3d562e72a1fac26a922c75258f77",
+   "bytes": 112662,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/ugv1leadpowbl0y11fogkbwktv1o",
+   "title": "GPSR EU Seller Action Kit",
+   "price_cents": 7900
+  },
+  "GR-ddb44115c3": {
+   "file": "customer_site/assets/pins/gr-ddb44115c3.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-ddb44115c3.jpg",
+   "sha256": "6dd19a102b173e26e4e641221369ac4cc44d618db7627d3b70ea16a33544a2b8",
+   "bytes": 140252,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/t434471hyaha4l54pho9i6nzd2e2",
+   "title": "GCC Contractor Payment Command System",
+   "price_cents": 4900
+  },
+  "GR-e24c0b6c1f": {
+   "file": "customer_site/assets/pins/gr-e24c0b6c1f.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-e24c0b6c1f.jpg",
+   "sha256": "e26e7788190ab3973db9cc070533bd5597b277df1896b7cd89e76e02c0b0eb98",
+   "bytes": 153118,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/up8cngkxxwspbutpi9qcqida45a0",
+   "title": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
+   "price_cents": 4900
+  },
+  "GR-e46938b960": {
+   "file": "customer_site/assets/pins/gr-e46938b960.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-e46938b960.jpg",
+   "sha256": "b06ddd3513a92b770b446bbf453483a43d6b2fb0a46b7213ffec2ddd548aaf8a",
+   "bytes": 158353,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/6me1tm52cuqr4rdgpjps63bm7pa5",
+   "title": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+   "price_cents": 5900
+  },
+  "GR-e5edb1f278": {
+   "file": "customer_site/assets/pins/gr-e5edb1f278.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-e5edb1f278.jpg",
+   "sha256": "360078e852928b38f37c58aff19c166b1ae98dcd0cd3380152088050266b4adb",
+   "bytes": 106259,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/a02upkxk29n3hwzuehtsxu7dky5t",
+   "title": "Sales Tax Nexus Tracker",
+   "price_cents": 7900
+  },
+  "GR-eb5f48c3aa": {
+   "file": "customer_site/assets/pins/gr-eb5f48c3aa.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-eb5f48c3aa.jpg",
+   "sha256": "189fa8a707b70cba5d7e00fd7e6bce9b7df184bf5f26ca038d203ba5e5f416e6",
+   "bytes": 135422,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/b7ykcevb9p9o2vuf85mnpgkbspqj",
+   "title": "EU AI Act Compliance Quickstart Checklist",
+   "price_cents": 1900
+  },
+  "GR-ed2a731cba": {
+   "file": "customer_site/assets/pins/gr-ed2a731cba.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-ed2a731cba.jpg",
+   "sha256": "1869be7617f33437a03d8d554102c3d1406fd75718e9b1338e7a3e8981405c61",
+   "bytes": 95068,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/2w2pja0wfq8j6qa91mo1i3eufqyk",
+   "title": "Battery & WEEE Mini-Guide for Sellers",
+   "price_cents": 2900
+  },
+  "GR-f32a573dfb": {
+   "file": "customer_site/assets/pins/gr-f32a573dfb.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-f32a573dfb.jpg",
+   "sha256": "e7d9666bef5d39e54cdf8f9ebb3c763522d95562ac22055069cf1fd49c36a2ad",
+   "bytes": 101795,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/86jyekdra34cgax82kquehe8rul2",
+   "title": "Toy Safety File Starter (EN 71 Lens)",
+   "price_cents": 2900
+  },
+  "GR-f691a87f7e": {
+   "file": "customer_site/assets/pins/gr-f691a87f7e.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-f691a87f7e.jpg",
+   "sha256": "778586ef1b3c5d58df67a9d98d8668306a4c43e50d05bf2c88030b747cb0ea3f",
+   "bytes": 137506,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/aiyjebh5rt24x0pbvjpllafmt9q3",
+   "title": "Section 8 Notice Validity System (England)",
+   "price_cents": 5900
+  },
+  "GR-f7ddf33a9f": {
+   "file": "customer_site/assets/pins/gr-f7ddf33a9f.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-f7ddf33a9f.jpg",
+   "sha256": "a5bd1dd7c967c0194c085696d4023d1e972cff7d281fa691170174bff376523a",
+   "bytes": 97073,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/p0awjfc43o3wgel96x5r0nftz2f9",
+   "title": "EU Cosmetics Responsible Person Guide",
+   "price_cents": 6900
   }
  }
 }
