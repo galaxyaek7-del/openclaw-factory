@@ -43,6 +43,10 @@ def _rpc(lines, cwd=ROOT, env=None):
     return [json.loads(x) for x in p.stdout.decode("utf-8").splitlines() if x.strip()], p
 
 
+ALL_TOOLS = ["ci_status", "write_gate_status", "verify_render",
+             "factory_products", "distribution_status", "pinterest_queue_status", "video_studio_status"]
+FILE_TOOLS = ALL_TOOLS[3:]          # 2026-10-24: fixed-file readers, no arguments
+
 INIT = {"jsonrpc": "2.0", "id": 0, "method": "initialize",
         "params": {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "t", "version": "0"}}}
 
@@ -55,7 +59,7 @@ class TestProtocol(unittest.TestCase):
         self.assertEqual(out[0]["result"]["protocolVersion"], "2025-06-18")
         self.assertIn("tools", out[0]["result"]["capabilities"])
         names = [t["name"] for t in out[1]["result"]["tools"]]
-        self.assertEqual(names, ["ci_status", "write_gate_status", "verify_render"])
+        self.assertEqual(names, ALL_TOOLS)
         for t in out[1]["result"]["tools"]:
             self.assertTrue(t["annotations"]["readOnlyHint"])
             self.assertFalse(t["annotations"]["destructiveHint"])
@@ -74,8 +78,9 @@ class TestProtocol(unittest.TestCase):
 
 
 class TestReadOnlySurface(unittest.TestCase):
-    def test_exactly_three_tools_and_no_generic_capability(self):
-        self.assertEqual(set(S.TOOLS), {"ci_status", "write_gate_status", "verify_render"})
+    def test_exactly_the_listed_tools_and_no_generic_capability(self):
+        # The tool set is pinned by name: adding one means adding it here, on purpose.
+        self.assertEqual(list(S.TOOLS), ALL_TOOLS)
         src = SERVER.read_text(encoding="utf-8")
         for bad in ("shell=True", "eval(", "exec(", "os.system", "urlopen", "requests",
                     ".write_text(", "unlink(", "rmtree", "record_state(", "check_write_authorization(",
@@ -203,7 +208,7 @@ class TestEnvironmentRobustness(unittest.TestCase):
                 (Path(d) / f"{name}.py").write_text("raise SystemExit('SHADOWED')\n", encoding="utf-8")
             out, p = _rpc([INIT, {"jsonrpc": "2.0", "id": 1, "method": "tools/list"}], cwd=d)
         self.assertNotIn(b"SHADOWED", p.stdout + p.stderr)
-        self.assertEqual(len(out[1]["result"]["tools"]), 3)
+        self.assertEqual(len(out[1]["result"]["tools"]), len(ALL_TOOLS))
 
     def test_request_arriving_during_a_verification_is_not_swallowed(self):
         # Regression (2026-10-15): FFmpeg inherited the server's stdin and read
@@ -267,6 +272,81 @@ class TestSettingsRollback(unittest.TestCase):
             tool = r.split("__")[-1].lower()
             for read_word in ("read", "get", "list", "search", "fetch", "query"):
                 self.assertFalse(tool.startswith(read_word), r)
+
+
+class TestFactoryStateTools(unittest.TestCase):
+    """The 2026-10-24 file readers: fixed files only, no arguments, nothing written."""
+
+    def setUp(self):
+        self.d = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.d, ignore_errors=True)
+        w = lambda name, obj: (self.d / name).write_text(json.dumps(obj), encoding="utf-8")  # noqa: E731
+        w("reg.json", {"generated_at": "2026-10-24T00:00:00+00:00", "drift": {"live_missing_from_catalog": ["a", "b"]},
+                       "products": [{"primary_state": "PUBLIC_LISTING_VERIFIED", "sales_count": 0},
+                                    {"primary_state": "UPLOAD_COMPLETED", "sales_count": 0}]})
+        w("dash.json", {"generated_at": "2026-10-24T00:00:00+00:00",
+                        "operational": {"platforms": {"x": {"name": "X", "state": "BLOCKED_SPEND", "publish_mode": "MANUAL_HANDOFF",
+                                                            "why": "paid", "missing_credentials": ["X_SECRET_NAME"]}},
+                                        "awaiting_approval": ["SJ-1", "SJ-2"], "jobs_by_state": {"QA_PASSED": 2}},
+                        "commercial": {"metrics": "NO REAL METRICS RECORDED", "verified_revenue_cents": 0}})
+        w("queue.json", {"generated_at": "2026-10-24T00:00:00+00:00", "board": None, "board_lookup": "no board",
+                         "summary": {"BLOCKED_NO_BOARD": 1},
+                         "items": [{"offer_id": "B14-001", "status": "BLOCKED_NO_BOARD", "when_local": "2026-10-27T10:00:00",
+                                    "call": {"reviewers": "founder@example.com", "info": "{}"}}]})
+        w("brand.json", {"label": "galaxyaek7", "connected_networks": {"pinterest": "p", "tiktok": "t"}, "post_creation": "BLOCKED_NEEDS_BOARD"})
+        self.patches = [mock.patch.object(S, "PRODUCT_REGISTRY", self.d / "reg.json"),
+                        mock.patch.object(S, "DIST_DASHBOARD", self.d / "dash.json"),
+                        mock.patch.object(S, "PINTEREST_QUEUE", self.d / "queue.json"),
+                        mock.patch.object(S, "METRICOOL_BRAND", self.d / "brand.json"),
+                        mock.patch.object(S, "METRICOOL_ATTEMPTS", self.d / "attempts.jsonl"),
+                        mock.patch.object(S, "VIDEO_PROJECTS", self.d / "projects"),
+                        mock.patch.object(S, "VIDEO_OUTPUT", self.d / "output")]
+        for p in self.patches:
+            p.start()
+            self.addCleanup(p.stop)
+        (self.d / "projects").mkdir()
+
+    def call(self, name, args=None):
+        r = S.call_tool(name, args or {})
+        return r, (json.loads(r["content"][0]["text"]) if not r["isError"] else r["content"][0]["text"])
+
+    def test_values_come_from_the_files(self):
+        _, p = self.call("factory_products")
+        self.assertEqual((p["products"], p["sales_total"], p["drift_counts"]), (2, 0, {"live_missing_from_catalog": 2}))
+        _, d = self.call("distribution_status")
+        self.assertEqual((d["awaiting_approval"], d["platforms"]["x"]["state"]), (2, "BLOCKED_SPEND"))
+        self.assertNotIn("missing_credentials", d["platforms"]["x"])          # credential names are not repeated
+        _, q = self.call("pinterest_queue_status")
+        self.assertEqual((q["board_found"], q["summary"], q["submissions"]), (False, {"BLOCKED_NO_BOARD": 1}, {"attempts": 0, "created": 0}))
+        self.assertNotIn("founder@example.com", json.dumps(q))                  # the post bodies stay in the file
+        _, v = self.call("video_studio_status")
+        self.assertEqual(v["videos"], [])
+
+    def test_arguments_refused_and_missing_files_reported(self):
+        for name in FILE_TOOLS:
+            r, text = self.call(name, {"path": "../../.env"})
+            self.assertTrue(r["isError"], name)
+            self.assertIn("takes no arguments", text)
+        (self.d / "reg.json").unlink()
+        r, text = self.call("factory_products")
+        self.assertTrue(r["isError"])
+        self.assertIn("not been generated yet", text)
+
+    def test_reads_no_env_and_writes_nothing(self):
+        opened, real_open = [], open
+
+        def spy(f, *a, **k):
+            opened.append((str(f), a[0] if a else k.get("mode", "r")))
+            return real_open(f, *a, **k)
+
+        before = sorted(p.name for p in self.d.iterdir())
+        with mock.patch("builtins.open", spy):
+            for name in FILE_TOOLS:
+                self.call(name)
+        self.assertFalse(any(f.endswith(".env") for f, _ in opened), opened)
+        writes = [f for f, m in opened if any(c in str(m) for c in "wax+") and not f.endswith(".jsonl")]
+        self.assertEqual(writes, [])                                         # only the call log is appended
+        self.assertEqual(sorted(p.name for p in self.d.iterdir()), before)
 
 
 if __name__ == "__main__":

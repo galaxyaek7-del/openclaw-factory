@@ -155,7 +155,8 @@ def readiness(env_names=None, root=ROOT) -> dict:
             out[key] = {"name": p["name"], "state": CONNECTED_VIA_METRICOOL, "missing_credentials": [],
                         "account": mc["connected_networks"][key], "brand_id": mc.get("brand_id"),
                         "publish_mode": "MANUAL_HANDOFF" if blocked else "METRICOOL",
-                        "why": ("connected through Metricool; post creation needs a Claude Code permission rule"
+                        # the recorded reason, not a fixed sentence: it changes as blockers are cleared
+                        "why": (f"connected through Metricool; {mc.get('post_creation')}"
                                 if blocked else "connected through Metricool")}
             continue
         if key == "x" and not missing and _x_spend_blocked(root):

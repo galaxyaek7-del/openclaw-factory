@@ -4,12 +4,17 @@ A Model Context Protocol server over STDIO: newline-delimited JSON-RPC 2.0
 on stdin/stdout, as the MCP stdio transport specifies. It opens no network
 listener. Approved as "Option B" in reports/MCP_FEASIBILITY_AUDIT_2026-10-15.md.
 
-It exposes exactly three READ-ONLY tools, each a thin wrapper over code that
-already exists and is already tested:
+It exposes seven READ-ONLY tools, each a thin wrapper over code or files that
+already exist and are already tested:
 
   ci_status               ci_health_detector.detect()   (anonymous GitHub GETs)
   write_gate_status       data/gumroad_auth_state.json  (status + age only)
   verify_render           kids_studio/tools/verify_video.analyze()
+  factory_products        data/product_registry.json                 (2026-10-24)
+  distribution_status     data/distribution_dashboard.json           (2026-10-24)
+  pinterest_queue_status  data/pinterest_queue.json + Metricool records (2026-10-24)
+  video_studio_status     video_studio/projects + build records      (2026-10-24)
+The four 2026-10-24 tools read fixed files only: no arguments, no caller path.
 
 What it deliberately does NOT do:
   * no shell, no eval, no generic file read/write, no generic HTTP
@@ -60,7 +65,7 @@ RENDERS = (ROOT / "kids_studio" / "renders").resolve()
 AUTH_STATE = ROOT / "data" / "gumroad_auth_state.json"
 LOG = Path(os.environ.get("GF_MCP_CALL_LOG") or ROOT / "logs" / "mcp_readonly_calls.jsonl")   # override: tests only
 
-SERVER_INFO = {"name": "gf-readonly", "version": "0.1.0"}
+SERVER_INFO = {"name": "gf-readonly", "version": "0.2.0"}
 SUPPORTED_PROTOCOLS = ("2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05")
 MAX_RESULT_CHARS = 20_000
 CI_TIMEOUT_S = 120
@@ -314,6 +319,125 @@ def tool_verify_render(args):
     return {"status": rep["verdict"], **rep}
 
 
+# --- factory state readers (2026-10-24) -------------------------------------
+# Each reads fixed, already-committed files under data/ or video_studio/; no
+# arguments, no path from the caller, no network, no .env, nothing written.
+
+PRODUCT_REGISTRY = ROOT / "data" / "product_registry.json"
+DIST_DASHBOARD = ROOT / "data" / "distribution_dashboard.json"
+PINTEREST_QUEUE = ROOT / "data" / "pinterest_queue.json"
+METRICOOL_BRAND = ROOT / "data" / "metricool_brand.json"
+METRICOOL_ATTEMPTS = ROOT / "data" / "metricool_submissions.jsonl"
+VIDEO_PROJECTS = ROOT / "video_studio" / "projects"
+VIDEO_OUTPUT = ROOT / "video_studio" / "output"
+
+
+def _no_args(name, args):
+    if args:
+        raise ToolError(f"{name} takes no arguments")
+
+
+def _read_json(path, what):
+    try:
+        return json.loads(Path(path).read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        p = Path(path)
+        shown = p.relative_to(ROOT).as_posix() if ROOT in p.parents else p.name
+        raise ToolError(f"{what} not found ({shown}); it has not been generated yet")
+    except (OSError, ValueError) as exc:
+        raise ToolError(f"{what} unreadable ({type(exc).__name__})")
+
+
+def _age_s(iso):
+    try:
+        ts = datetime.fromisoformat(str(iso))
+        if ts.tzinfo is None:
+            ts = ts.replace(tzinfo=timezone.utc)
+        return int(time.time() - ts.timestamp())
+    except (TypeError, ValueError):
+        return None
+
+
+def tool_factory_products(args):
+    _no_args("factory_products", args)
+    reg = _read_json(PRODUCT_REGISTRY, "product registry")
+    products = reg.get("products") or []
+    states = {}
+    for p in products:
+        states[p.get("primary_state")] = states.get(p.get("primary_state"), 0) + 1
+    drift = reg.get("drift") or {}
+    return {"status": "OK", "generated_at": reg.get("generated_at"), "age_seconds": _age_s(reg.get("generated_at")),
+            "products": len(products), "states": states,
+            "sales_total": sum(int(p.get("sales_count") or 0) for p in products),
+            "drift_counts": {k: (len(v) if isinstance(v, (list, dict)) else v) for k, v in drift.items()},
+            "note": "FIRST_SALE_VERIFIED needs a real sale; sales_total comes from the Gumroad listing data in the registry"}
+
+
+def tool_distribution_status(args):
+    _no_args("distribution_status", args)
+    d = _read_json(DIST_DASHBOARD, "distribution dashboard")
+    op, com = d.get("operational") or {}, d.get("commercial") or {}
+    platforms = {k: {f: v.get(f) for f in ("name", "state", "publish_mode", "why")} for k, v in (op.get("platforms") or {}).items()}
+    return {"status": "OK", "generated_at": d.get("generated_at"), "age_seconds": _age_s(d.get("generated_at")),
+            "platforms": platforms, "offers": op.get("offers"), "jobs_by_state": op.get("jobs_by_state"),
+            "jobs_by_platform": op.get("jobs_by_platform"), "awaiting_approval": len(op.get("awaiting_approval") or []),
+            "stuck_or_retrying": len(op.get("stuck_or_retrying") or []),
+            "published_verified": len(op.get("published_verified") or []),
+            "manual_posts_unverified": len(op.get("manual_posts_unverified") or []),
+            "commercial": {"metrics": com.get("metrics"), "verified_revenue_cents": com.get("verified_revenue_cents")},
+            "next_actions": (d.get("next_actions") or [])[:8]}
+
+
+def tool_pinterest_queue_status(args):
+    _no_args("pinterest_queue_status", args)
+    q = _read_json(PINTEREST_QUEUE, "Pinterest queue")
+    brand = _read_json(METRICOOL_BRAND, "Metricool brand record")
+    attempts = []
+    try:
+        for line in METRICOOL_ATTEMPTS.read_text(encoding="utf-8").splitlines():
+            try:
+                attempts.append(json.loads(line))
+            except ValueError:
+                continue
+    except FileNotFoundError:
+        pass
+    items = q.get("items") or []
+    nxt = next((i for i in items if i.get("status") == "READY"), None)
+    return {"status": "OK", "generated_at": q.get("generated_at"), "age_seconds": _age_s(q.get("generated_at")),
+            "board_found": bool(q.get("board")), "board_name": (q.get("board") or {}).get("name"),
+            "board_lookup": q.get("board_lookup"), "summary": q.get("summary"),
+            "items": [{k: i.get(k) for k in ("offer_id", "status", "when_local")} for i in items],
+            "next_ready": {k: nxt.get(k) for k in ("offer_id", "title", "when_local", "image")} if nxt else None,
+            "metricool": {"brand_label": brand.get("label"), "connected_networks": sorted(brand.get("connected_networks") or {}),
+                          "post_creation": brand.get("post_creation")},
+            "submissions": {"attempts": len(attempts), "created": sum(1 for a in attempts if a.get("created") is True)},
+            "note": "a post counts as created only after a getScheduledPosts read-back; this tool never calls Metricool"}
+
+
+def tool_video_studio_status(args):
+    _no_args("video_studio_status", args)
+    videos = []
+    for m in sorted(VIDEO_PROJECTS.glob("*.json")):
+        if m.name.endswith(".rights.json"):
+            continue
+        man = _read_json(m, f"video project {m.name}")
+        vid = man.get("id") or m.stem
+        rights = {}
+        rp = m.with_name(m.stem + ".rights.json")
+        if rp.is_file():
+            rights = _read_json(rp, f"rights manifest {rp.name}")
+        build = VIDEO_OUTPUT / vid / f"{vid}.build.json"
+        rec = _read_json(build, f"build record {vid}") if build.is_file() else None
+        videos.append({"id": vid, "title": man.get("title"), "format": man.get("format"),
+                       "rendered": bool(rec and (VIDEO_OUTPUT / vid / f"{vid}.mp4").is_file()),
+                       "duration_s": rec.get("duration_s") if rec else None,
+                       "sentences": rec.get("sentences") if rec else None,
+                       "rights_status": rights.get("status", "UNKNOWN")})
+    return {"status": "OK", "videos": videos,
+            "publishable": [v["id"] for v in videos if v["rendered"] and v["rights_status"] == "CLEARED"],
+            "note": "renders are local only; nothing is uploaded; publication also needs rights CLEARED and a founder approval"}
+
+
 def _schema(props, required=()):
     return {"type": "object", "properties": props, "required": list(required), "additionalProperties": False}
 
@@ -346,6 +470,31 @@ TOOLS = {
             "path": {"type": "string", "maxLength": 260,
                      "description": "Path relative to the project root, e.g. kids_studio/renders/ep01_animatic.mp4"},
         }, required=("path",)),
+    },
+    "factory_products": {
+        "fn": tool_factory_products,
+        "description": ("Read-only. Product registry summary: products, listing states, recorded sales, drift "
+                        "counts and the registry's age. Reads data/product_registry.json only."),
+        "inputSchema": _schema({}),
+    },
+    "distribution_status": {
+        "fn": tool_distribution_status,
+        "description": ("Read-only. Distribution engine dashboard: platform states, offer eligibility, campaign "
+                        "jobs by state, drafts awaiting approval, commercial evidence. Reads "
+                        "data/distribution_dashboard.json only; never approves or posts."),
+        "inputSchema": _schema({}),
+    },
+    "pinterest_queue_status": {
+        "fn": tool_pinterest_queue_status,
+        "description": ("Read-only. Pinterest/Metricool queue: board found or not, items by status, the next READY "
+                        "post, recorded submission attempts. Reads data/ files only; never calls Metricool."),
+        "inputSchema": _schema({}),
+    },
+    "video_studio_status": {
+        "fn": tool_video_studio_status,
+        "description": ("Read-only. Video studio projects: rendered or not, duration, rights status, and which "
+                        "could be published. Reads video_studio/projects and build records only; uploads nothing."),
+        "inputSchema": _schema({}),
     },
 }
 
@@ -390,7 +539,7 @@ def handle(msg):
         version = asked if asked in SUPPORTED_PROTOCOLS else SUPPORTED_PROTOCOLS[0]
         result = {"protocolVersion": version, "capabilities": {"tools": {"listChanged": False}},
                   "serverInfo": SERVER_INFO,
-                  "instructions": "Three read-only tools. Nothing here can write, publish or send."}
+                  "instructions": f"{len(TOOLS)} read-only tools. Nothing here can write, publish or send."}
     elif method == "ping":
         result = {}
     elif method == "tools/list":

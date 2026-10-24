@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-23T18:45:46+00:00",
+ "generated_at": "2026-10-24T07:04:11+00:00",
  "operational": {
   "offers": {
    "total": 173,
@@ -18,12 +18,12 @@
     "media_asset": 2
    },
    "by_eligibility": {
-    "ELIGIBLE": 137,
-    "NEEDS_REVIEW": 7,
+    "ELIGIBLE": 139,
+    "NEEDS_REVIEW": 5,
     "NOT_ELIGIBLE": 29
    },
    "eligible_by_arm": {
-    "digital_products": 100,
+    "digital_products": 102,
     "affiliate": 2,
     "education_content": 35
    }
@@ -37,8 +37,6 @@
    "duplicate live title shared with ['GR-0fa92aeb1a', 'GR-ab323215ab']": 2,
    "rights UNRESOLVED": 2,
    "product page for a product that is not on sale (page says (approved, not yet listed))": 1,
-   "page is stale: it says (proposed) but GR-41d87224ab is live at https://aekraft.gumroad.com/l/blayvb": 1,
-   "page is stale: it says (approved, not yet listed) but GR-2562d0b4d2 is live at https://aekraft.gumroad.com/l/ieashv": 1,
    "product page for a product that is not on sale (page says (proposed, not yet listed))": 1
   },
   "platforms": {
@@ -54,14 +52,12 @@
    },
    "tiktok": {
     "name": "TikTok",
-    "state": "NOT_CONNECTED",
-    "missing_credentials": [
-     "TIKTOK_CLIENT_KEY",
-     "TIKTOK_CLIENT_SECRET",
-     "TIKTOK_ACCESS_TOKEN"
-    ],
+    "state": "CONNECTED_VIA_METRICOOL",
+    "missing_credentials": [],
+    "account": "aekgalaxy8",
+    "brand_id": 6965613,
     "publish_mode": "MANUAL_HANDOFF",
-    "why": "no app or credentials on this machine"
+    "why": "connected through Metricool; BLOCKED_NEEDS_BOARD: permission is now an ask rule (founder, 2026-10-23); two review-flow attempts on 2026-10-24 were rejected by validation before creating anything"
    },
    "instagram": {
     "name": "Instagram",
@@ -72,6 +68,15 @@
     ],
     "publish_mode": "MANUAL_HANDOFF",
     "why": "no app or credentials on this machine"
+   },
+   "pinterest": {
+    "name": "Pinterest",
+    "state": "CONNECTED_VIA_METRICOOL",
+    "missing_credentials": [],
+    "account": "galaxyaek7",
+    "brand_id": 6965613,
+    "publish_mode": "MANUAL_HANDOFF",
+    "why": "connected through Metricool; BLOCKED_NEEDS_BOARD: permission is now an ask rule (founder, 2026-10-23); two review-flow attempts on 2026-10-24 were rejected by validation before creating anything"
    },
    "x": {
     "name": "X",
@@ -131,8 +136,9 @@
  "next_actions": [
   "Founder: review 16 QA-passed drafts and approve the ones to post (manual hand-off).",
   "LinkedIn: no app or credentials on this machine.",
-  "TikTok: no app or credentials on this machine.",
+  "TikTok: connected through Metricool; BLOCKED_NEEDS_BOARD: permission is now an ask rule (founder, 2026-10-23); two review-flow attempts on 2026-10-24 were rejected by validation before creating anything.",
   "Instagram: no app or credentials on this machine.",
+  "Pinterest: connected through Metricool; BLOCKED_NEEDS_BOARD: permission is now an ask rule (founder, 2026-10-23); two review-flow attempts on 2026-10-24 were rejected by validation before creating anything.",
   "X: posting needs paid API credits; TOTAL_NEW_SPEND=$0.",
   "Largest offer blocker (17): program approval is NOT_APPLIED; no approved affiliate link."
  ]
