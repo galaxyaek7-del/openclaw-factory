@@ -1,17 +1,18 @@
-"""Build the Episode 1 ANIMATIC: all 14 storyboard shots, cut, scored, subtitled.
+"""Build a Kids Studio ANIMATIC: all storyboard shots, cut, scored, subtitled.
 
 ANIMATIC means a timing and staging preview in the primitive 3D style, with
 no voices: the Arabic dialogue appears as a soft subtitle track taken from
-script_ar.md. It is not the finished episode.
+the episode script. It is not the finished episode.
 
-Steps: render every frame in parallel -> synthesise the soundtrack (original
+Steps: render every frame sequentially -> synthesise the soundtrack (original
 music, brook, footsteps tied to the walk cycles, plank creaks) -> write an
 Arabic SRT -> mux H.264 + AAC + mov_text subtitles with FFmpeg -> write a
-build report that verify_video.py checks against.
+build report.
 
-No network calls, no external assets.
+No network calls, no external assets. Rendering is strictly sequential
+(multiprocessing is intentionally not used on this platform).
 
-    python kids_studio/tools/build_episode.py [--fps 12 --workers 4]
+    python kids_studio/tools/build_episode.py --episode ep02 --fps 12
 """
 from __future__ import annotations
 
@@ -23,7 +24,6 @@ import subprocess
 import sys
 import time
 import wave
-from multiprocessing import Pool
 from pathlib import Path
 
 import numpy as np
@@ -31,28 +31,16 @@ from PIL import Image
 
 TOOLS = Path(__file__).resolve().parent
 OUT = TOOLS.parent / "renders"
-NAME = "ep01_animatic"
 SR = 44100
-_EP = None
+
+DEFAULT_NAMES = {"ep01": "ep01_animatic", "ep02": "ep02_lulus_lost_ball"}
 
 
-def _load_ep():
-    spec = importlib.util.spec_from_file_location("ep01_shots", TOOLS / "ep01_shots.py")
+def _load_ep(episode):
+    spec = importlib.util.spec_from_file_location(episode, TOOLS / f"{episode}_shots.py")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
-
-
-def _init_worker():
-    global _EP
-    _EP = _load_ep()
-
-
-def _render_one(job):
-    f, fps, W, H, fdir = job
-    img = _EP.frame_at(f / fps, W, H)
-    Image.fromarray(img).save(Path(fdir) / f"{f:05d}.png")
-    return f
 
 
 def _tone(seg, f, decay):
@@ -123,30 +111,34 @@ def main():
     ap.add_argument("--fps", type=int, default=12)
     ap.add_argument("--width", type=int, default=640)
     ap.add_argument("--height", type=int, default=360)
-    ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--workers", type=int, default=1, help="accepted for compatibility; rendering is sequential")
     ap.add_argument("--seconds", type=float, default=0, help="only the first N seconds (test)")
+    ap.add_argument("--episode", type=str, default="ep01", help="episode shots module (ep01 or ep02)")
+    ap.add_argument("--name", type=str, default="", help="output basename (default depends on episode)")
     args = ap.parse_args()
     import imageio_ffmpeg
     ff = imageio_ffmpeg.get_ffmpeg_exe()
-    ep = _load_ep()
+    name = args.name or DEFAULT_NAMES.get(args.episode, f"{args.episode}_animatic")
+    ep = _load_ep(args.episode)
     _, total = ep.timeline()
     if args.seconds:
         total = min(total, args.seconds)
     nframes = int(round(total * args.fps))
     OUT.mkdir(parents=True, exist_ok=True)
-    fdir = OUT / f"{NAME}_frames"
+    fdir = OUT / f"{name}_frames"
     if fdir.exists():
         shutil.rmtree(fdir)
     fdir.mkdir()
     t0 = time.time()
-    jobs = [(f, args.fps, args.width, args.height, str(fdir)) for f in range(nframes)]
-    with Pool(args.workers, initializer=_init_worker) as pool:
-        for k, _ in enumerate(pool.imap_unordered(_render_one, jobs, chunksize=4), 1):
-            if k % 120 == 0:
-                print(f"frames {k}/{nframes}  {time.time() - t0:.0f}s", flush=True)
+    for f in range(nframes):
+        t = f / args.fps
+        img = ep.frame_at(t, args.width, args.height)
+        Image.fromarray(img).save(Path(fdir) / f"{f:05d}.png")
+        if f % 120 == 0:
+            print(f"frames {f + 1}/{nframes}  {time.time() - t0:.0f}s", flush=True)
     render_s = time.time() - t0
     mix, step_times, creak_times = soundtrack(ep, nframes / args.fps)
-    wav = OUT / f"{NAME}.wav"
+    wav = OUT / f"{name}.wav"
     pcm = (np.clip(mix, -1, 1) * 32767).astype(np.int16)
     with wave.open(str(wav), "wb") as w:
         w.setnchannels(1)
@@ -154,9 +146,9 @@ def main():
         w.setframerate(SR)
         w.writeframes(pcm.tobytes())
     body, ncues = srt(ep, nframes / args.fps)
-    srt_path = OUT / f"{NAME}.ar.srt"
+    srt_path = OUT / f"{name}.ar.srt"
     srt_path.write_text(body, encoding="utf-8")
-    mp4 = OUT / f"{NAME}.mp4"
+    mp4 = OUT / f"{name}.mp4"
     t1 = time.time()
     subprocess.run([ff, "-y", "-loglevel", "error", "-framerate", str(args.fps), "-i", str(fdir / "%05d.png"),
                     "-i", str(wav), "-i", str(srt_path),
@@ -164,18 +156,19 @@ def main():
                     "-vf", "scale=1280:720:flags=lanczos,format=yuv420p",
                     "-c:v", "libx264", "-crf", "20", "-preset", "medium",
                     "-c:a", "aac", "-b:a", "160k", "-c:s", "mov_text",
-                    "-metadata:s:s:0", "language=ara", "-metadata", "title=ANIMATIC - Nunu and the Little Bridge (no voices)",
+                    "-metadata:s:s:0", "language=ara", "-metadata", "title=ANIMATIC: primitive 3D, no voices, Arabic soft subtitles",
                     # explicit duration: -shortest mis-cuts when a subtitle stream is mapped
                     "-t", f"{nframes / args.fps:.3f}", "-movflags", "+faststart", str(mp4)], check=True)
-    meta = {"name": NAME, "label": "ANIMATIC: primitive 3D, no voices, Arabic soft subtitles",
+    meta = {"name": name, "episode": args.episode,
+            "label": "ANIMATIC: primitive 3D, no voices, Arabic soft subtitles",
             "shots": [{"id": s["id"], "start_s": round(a, 2), "dur_s": s["dur"]} for a, s in ep.timeline()[0]],
             "frames": nframes, "fps": args.fps, "render_resolution": [args.width, args.height],
-            "output_resolution": [1280, 720], "workers": args.workers,
+            "output_resolution": [1280, 720], "workers": 1, "sequential": True,
             "render_seconds": round(render_s, 1), "encode_seconds": round(time.time() - t1, 1),
             "footstep_times_s": step_times, "creak_times_s": [round(x, 3) for x in creak_times],
             "subtitle_cues": ncues, "network_calls": 0, "external_assets": 0}
-    (OUT / f"{NAME}.build.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False), encoding="utf-8")
-    print(json.dumps({k: meta[k] for k in ("frames", "fps", "render_seconds", "encode_seconds", "subtitle_cues")}, indent=1))
+    (OUT / f"{name}.build.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False), encoding="utf-8")
+    print(json.dumps({k: meta[k] for k in ("name", "frames", "fps", "render_seconds", "encode_seconds", "subtitle_cues")}, indent=1))
 
 
 if __name__ == "__main__":

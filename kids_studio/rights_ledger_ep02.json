@@ -1,0 +1,161 @@
+{
+  "purpose": "Every asset and tool that touches a Kids Studio deliverable. Rule: an asset with unknown rights is not usable.",
+  "updated": "2026-10-27",
+  "assets": [
+    {
+      "id": "char-lulu",
+      "type": "character design + 3D primitive model",
+      "source": "original, render_poc.py",
+      "created_by": "Galaxy Forge",
+      "license": "owned (original work)",
+      "evidence": "code in this repo",
+      "usable": true
+    },
+    {
+      "id": "ladybug-new",
+      "type": "character design (new)",
+      "source": "original, defined for episode 2 only; no reference asset used",
+      "created_by": "Galaxy Forge",
+      "license": "owned (original work)",
+      "evidence": "code in this repo; new design, not referenced from any external source",
+      "usable": true,
+      "note": "friendly ladybug who guides Lulu to the lost ball"
+    },
+    {
+      "id": "red-ball",
+      "type": "prop (simple red ball)",
+      "source": "original, simple primitive sphere, no reference asset needed",
+      "created_by": "Galaxy Forge",
+      "license": "owned",
+      "evidence": "code in this repo; geometrically simple, no external model",
+      "usable": true
+    },
+    {
+      "id": "set-garden",
+      "type": "3D set (garden ground, hedge line, tree, foreground and distant bushes, leaf disc, flowers, pond)",
+      "source": "original procedural primitives, garden_scene() in ep02_shots.py",
+      "created_by": "Galaxy Forge",
+      "license": "owned",
+      "evidence": "code in this repo; no image textures or external models",
+      "usable": true
+    },
+    {
+      "id": "prop-safe-spot",
+      "type": "prop (cream ellipsoid marking the 'safe place' for the ball)",
+      "source": "original procedural primitive, ep02_shots.py shots 08 and 13",
+      "created_by": "Galaxy Forge",
+      "license": "owned (original work)",
+      "evidence": "code in this repo; a plain ellipsoid, no external asset",
+      "usable": true,
+      "note": "added 2026-10-27 to reconcile the one asset the audit flagged as used but unlisted"
+    },
+    {
+      "id": "tex-grass-flowers",
+      "type": "procedural textures (grass stripes, flower shapes)",
+      "source": "formulas in render_poc.py",
+      "created_by": "Galaxy Forge",
+      "license": "owned",
+      "evidence": "code in this repo; no image textures used",
+      "usable": true
+    },
+    {
+      "id": "music-poc-melody",
+      "type": "music",
+      "source": "original 15-note C-major pentatonic sequence synthesised in render_poc.py (sine + 2nd harmonic)",
+      "created_by": "Galaxy Forge",
+      "license": "owned (original composition)",
+      "evidence": "note list in synth_audio(); no sample or recording used",
+      "usable": true
+    },
+    {
+      "id": "sfx-brook-footsteps",
+      "type": "sound effects",
+      "source": "seeded noise (brook) and 140 Hz decaying sine (footsteps), synthesised in render_poc.py",
+      "created_by": "Galaxy Forge",
+      "license": "owned",
+      "evidence": "synth_audio()",
+      "usable": true
+    },
+    {
+      "id": "voice-arabic",
+      "type": "voices",
+      "source": "NONE YET",
+      "license": "n/a",
+      "evidence": "No Arabic voice is installed (Windows SAPI has only fr-FR Hortense and en-US Zira, observed 2026-10-26). Production voices must be consenting human actors under a written release, or a synthetic voice whose licence explicitly permits this use. No cloned or imitated real voices.",
+      "usable": false
+    },
+    {
+      "id": "font-arabic",
+      "type": "font for titles / subtitles",
+      "source": "NONE YET",
+      "license": "n/a",
+      "evidence": "No open-licensed Arabic font on the machine (no Noto/Amiri/Cairo found). Windows system fonts are not cleared for this use. The proof of concept therefore has no on-screen text. Candidate: an SIL Open Font License Arabic font, which needs a download (founder approval).",
+      "usable": false
+    },
+    {
+      "id": "sfx-plank-creak",
+      "type": "sound effect",
+      "source": "original: 620->480 Hz glide with tremolo and decay, synthesised in build_episode.py",
+      "created_by": "Galaxy Forge",
+      "license": "owned",
+      "evidence": "soundtrack()",
+      "usable": true
+    },
+    {
+      "id": "music-episode-bed",
+      "type": "music",
+      "source": "the original PoC phrase, transposed per 12 s block (build_episode.py)",
+      "created_by": "Galaxy Forge",
+      "license": "owned (original composition)",
+      "evidence": "soundtrack()",
+      "usable": true
+    },
+    {
+      "id": "subs-ar-ep02",
+      "type": "Arabic subtitle text",
+      "source": "the script's own lines (episodes/ep02_lulus_lost_ball/script_ar.md)",
+      "created_by": "Galaxy Forge",
+      "license": "owned",
+      "evidence": "tests/test_kids_studio.py checks every subtitle line against the script",
+      "usable": true,
+      "note": "soft subtitle track (mov_text): rendered by the viewer's player, so no font is embedded or needed"
+    }
+  ],
+  "tools": [
+    {
+      "id": "python",
+      "version": "3.14.6",
+      "license": "PSF License",
+      "use": "build scripts"
+    },
+    {
+      "id": "numpy",
+      "version": "2.5.3",
+      "license": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 (package metadata)",
+      "use": "ray-casting renderer, audio synthesis"
+    },
+    {
+      "id": "pillow",
+      "version": "12.3.0",
+      "license": "MIT-CMU (package metadata)",
+      "use": "writing frames"
+    },
+    {
+      "id": "imageio-ffmpeg",
+      "version": "0.6.0",
+      "license": "BSD-2-Clause (package metadata)",
+      "use": "provides the FFmpeg binary"
+    },
+    {
+      "id": "ffmpeg",
+      "version": "7.1 essentials build (gyan.dev), bundled in imageio-ffmpeg",
+      "license": "GPL (build includes libx264); licence of the tool, not of the encoded output",
+      "use": "H.264/AAC encoding, decoding for verification"
+    }
+  ],
+  "not_used": [
+    "Blender (not installed)",
+    "any stock footage, image, model, font, music or voice",
+    "any paid API or online generator"
+  ]
+}

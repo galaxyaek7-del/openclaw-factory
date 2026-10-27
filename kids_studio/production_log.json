@@ -1,7 +1,8 @@
 {
  "project": "Kids Studio",
  "episode": "ep01",
- "updated": "2026-10-15T07:23:28+00:00",
+ "scope_note": "Top-level time/defects/animatic fields describe Episode 1. Episode 2 has its own measured record under 'episode2'.",
+ "updated": "2026-10-27T00:00:00+00:00",
  "time": {
   "OBSERVED_session_wall_clock_minutes": 21.0,
   "OBSERVED_render_seconds_288_frames": 950.2,
@@ -92,7 +93,56 @@
    "expected": 16,
    "arabic_text": true
   },
-  "flash_check": "8 luminance jumps, all at shot cuts; max 1 within any second (limit 3)"
+  "flash_check": "8 luminance jumps, all at shot cuts; max 1 within any second (limit 3)",
+  "restoration_2026_10_27": {
+   "why": "the gitignored original 158 s file could not be restored byte-for-byte; the same unchanged ep01_shots.py source was re-rendered sequentially",
+   "OBSERVED_render_seconds": 4585.8,
+   "workers": 1,
+   "frames": 1896,
+   "encode_seconds": 23.1,
+   "verdict": "PASS",
+   "duration_s": 158.0,
+   "frames_with_motion": "1856/1896",
+   "longest_identical_run_frames": 5,
+   "bytes": 7559455,
+   "sha256": "8a376a557b4f121d5171f75ca29d4491b5b83121b17ec10f071470c8192cfe68",
+   "note": "the 1073.2 s / 4-worker figure above is the original build; that parallel code path no longer exists"
+  }
+ },
+ "episode2": {
+  "file": "kids_studio/renders/ep02_lulus_lost_ball.mp4 (not committed)",
+  "concept": "Lulu's Lost Ball - 14 shots, 130 s, garden setting",
+  "OBSERVED_render_seconds": 888.1,
+  "OBSERVED_encode_seconds": 18.5,
+  "frames": 1560,
+  "fps": 12,
+  "render_resolution": [640, 360],
+  "output_resolution": [1280, 720],
+  "duration_s": 130.0,
+  "audio_duration_s": 130.009,
+  "verdict": "PASS (9/9 checks)",
+  "longest_identical_run_frames": 0,
+  "frames_with_motion": "1559/1560",
+  "footsteps": "62/62 detected; max |offset| 3.8 ms, median -1.6 ms",
+  "subtitles": {"cues": 16, "expected": 16, "language_ara": true, "arabic_text": true},
+  "audio_peak_dbfs": -6.0,
+  "audio_rms_dbfs": -27.3,
+  "bytes": 9047387,
+  "sha256": "66de2a7bb16e523f5804fe194038cbb75d4b06b1e8dc5b5840cdcace5d6cfacd",
+  "network_calls": 0,
+  "external_assets": 0,
+  "defects_found_and_fixed": [
+   "ball rendered orange while the script line says 'the red ball' (now BALL_RED)",
+   "hedge line, tree and pond were placed at +z, behind cameras that look toward -z, so the garden read as an empty field (moved behind the action; 3 distant bushes added)",
+   "ladybug shell spots were zero-depth ellipsoids: divide-by-zero in the renderer and invisible inside the shell (now on the shell surface)"
+  ],
+  "quality_open": [
+   "primitive characters are a preview style, not production models",
+   "no mouths or lip sync (no voices yet)",
+   "12 fps; final should be 24 fps",
+   "rendered at 640x360 and upscaled to 1280x720, so edges are soft",
+   "no burned-in Arabic text (soft subtitle track only; no open-licensed Arabic font)"
+  ]
  },
  "engine_speedup": "exact ray culling: 3.3 -> 0.78 s/frame single-process on the PoC, pixel-identical (0 differing pixels, 4 frames compared)"
 }
