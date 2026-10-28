@@ -721,6 +721,36 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
   const statusEl = document.getElementById('formStatus');
   const submitBtn = document.getElementById('submitBtn');
 
+  // ── Static-copy fallback (GitHub Pages has no Node process) ──
+  // Every /api/ route 404s there, so a submit used to surface a raw JSON
+  // parse error ("Unexpected token '<'") to a real visitor. A failed intake
+  // call now says what actually happened and hands over the real contact
+  // route, with the visitor's own words preserved in the mail body.
+  const CONTACT_EMAIL = 'galaxyaek7@gmail.com';
+  function isApiUnreachable(err){
+    if (!err) return false;
+    if (err.name === 'TypeError' || err.name === 'SyntaxError') return true;
+    return /Failed to fetch|Load failed|NetworkError|Unexpected token/i.test(String(err.message || ''));
+  }
+  function mailtoFor(subject, body){
+    return 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body || '');
+  }
+  function staticHostMessage(subject, body){
+    return 'This public site is a static copy, so the live intake service is not reachable from here — your message was not sent. '
+      + 'Nothing is lost: <a href="' + mailtoFor(subject, body) + '">email the same details to ' + CONTACT_EMAIL + '</a> and they go through the same evaluation.';
+  }
+  function requestMailBody(data){
+    return ['What they need built:', data.description || '(not filled in)', '',
+      'Name: ' + (data.name || ''), 'Email: ' + (data.email || ''),
+      'Company: ' + (data.company || '-'), 'Budget: ' + (data.budget_range || 'not stated'),
+      data.product_id ? 'Catalog product_id: ' + data.product_id : ''].join('\n');
+  }
+  function supportMailBody(data){
+    return ['How can we help:', data.message || '(not filled in)', '',
+      'Name: ' + (data.name || ''), 'Email: ' + (data.email || ''),
+      data.request_id ? 'Related request: ' + data.request_id : ''].join('\n');
+  }
+
   // If the customer edits the description after a catalog click pre-
   // filled it, they're describing something other than that exact
   // catalog item — clear the price-lock so it goes through real
@@ -758,6 +788,11 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
         form.reset();
       })
       .catch(function(err){
+        if (isApiUnreachable(err)){
+          statusEl.innerHTML = staticHostMessage('Product request', requestMailBody(data));
+          statusEl.className = 'error';
+          return;
+        }
         statusEl.textContent = err.message;
         statusEl.className = 'error';
       })
@@ -813,7 +848,11 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
         if (body.success === false) throw new Error(body.error || 'unavailable');
         addConsultMsg('ai', body.reply, body.reply);
       })
-      .catch(function(err){ addConsultMsg('ai', 'Sorry — ' + err.message); })
+      .catch(function(err){
+        addConsultMsg('ai', isApiUnreachable(err)
+          ? 'The AI consultation runs on our live service, which this static copy of the site cannot reach. Email ' + CONTACT_EMAIL + ' and we will answer directly.'
+          : 'Sorry — ' + err.message);
+      })
       .finally(function(){ consultSend.disabled = false; });
   }
   consultSend.addEventListener('click', sendConsult);
@@ -844,6 +883,11 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
         supportForm.reset();
       })
       .catch(function(err){
+        if (isApiUnreachable(err)){
+          supportStatus.innerHTML = staticHostMessage('Support ticket', supportMailBody(data));
+          supportStatus.className = 'error';
+          return;
+        }
         supportStatus.textContent = err.message;
         supportStatus.className = 'error';
       })
