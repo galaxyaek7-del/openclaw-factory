@@ -56,4 +56,13 @@ const out = {
 
 fs.mkdirSync(path.dirname(target), { recursive: true });
 fs.writeFileSync(target, JSON.stringify(out, null, 1) + '\n', 'utf8');
-console.log(JSON.stringify({ file: path.relative(ROOT, target).split(path.sep).join('/'), counts: data.counts, first: data.products.slice(0, 3).map((p) => p.id) }));
+// missing_media is the one number that matters for the storefront: a published
+// product with no resolvable cover is a product a visitor cannot see at all.
+// 79 of 102 were in that state until scripts/backfill_public_media.py ran
+// (2026-10-28); this makes the gap loud instead of silent.
+const missingMedia = Math.max(0, data.counts.published_total - data.counts.available_with_cover);
+console.log(JSON.stringify({
+  file: path.relative(ROOT, target).split(path.sep).join('/'),
+  counts: { ...data.counts, missing_media: missingMedia },
+  first: data.products.slice(0, 3).map((p) => p.id),
+}));

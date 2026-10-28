@@ -4301,7 +4301,8 @@ function runNodeScript(script, { timeoutMs = 2 * 60 * 1000, scriptPath } = {}) {
       try {
         const r = JSON.parse(output.trim().split(/\r?\n/).filter(Boolean).pop());
         const c = r.counts || {};
-        finish({ action: 'ok', detail: `${c.returned} of ${c.published_total} published products in customer_site/catalog.json` });
+        const gap = c.missing_media ? ` -- ${c.missing_media} published product(s) have no storefront cover (run scripts/backfill_public_media.py)` : '';
+        finish({ action: 'ok', detail: `${c.returned} of ${c.published_total} published products in customer_site/catalog.json${gap}` });
       } catch (e) {
         finish({ action: 'failed', detail: `could not parse ${script} output: ${e.message}` });
       }
