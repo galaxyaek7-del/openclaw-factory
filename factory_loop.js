@@ -2097,7 +2097,14 @@ async function maybeGenerateMonthlyGalaxyEvolutionReport(now = new Date()) {
 // function above, calling mission_control_api.py's real endpoints
 // (enterprise_validation.py/strategic_planning.py, both already real,
 // never a second computation).
-function runEnterpriseValidationReportQuarterly({ timeoutMs = 1000000, pythonPath } = {}) {
+// Real cost, measured 2026-10-28: the wrapped endpoint re-runs reality_audit.py
+// live over 162 endpoints, and one real attempt blew through the old 1000s
+// ceiling (the tick logged 'انتهت مهلة ... (1000 ثانية)' after burning 16.7
+// minutes of a full core). The sweep's own docstring already estimates
+// ~270-920s, so a ceiling below the real cost guaranteed a permanent
+// failure -- this step had never once succeeded. 2400s gives real headroom
+// for the one quarterly run it is meant to perform.
+function runEnterpriseValidationReportQuarterly({ timeoutMs = 2400000, pythonPath } = {}) {
   return new Promise((resolve) => {
     let python;
     try {
@@ -2157,9 +2164,9 @@ function runStrategicPlanningReportAnnual({ timeoutMs = 200000, pythonPath } = {
   });
 }
 
-function architectureReviewReportPath(now) {
+function architectureReviewReportPath(now, reportsDir = REPORTS_DIR) {
   const quarter = Math.floor(now.getUTCMonth() / 3) + 1;
-  return path.join(REPORTS_DIR, `ARCHITECTURE_REVIEW_${now.getUTCFullYear()}-Q${quarter}.md`);
+  return path.join(reportsDir, `ARCHITECTURE_REVIEW_${now.getUTCFullYear()}-Q${quarter}.md`);
 }
 
 function annualStrategicReviewReportPath(now) {
@@ -2168,16 +2175,36 @@ function annualStrategicReviewReportPath(now) {
 
 // Once-per-calendar-quarter gate, same file-existence technique as the
 // monthly/weekly/daily gates above, just widened to 3 real months.
-async function maybeGenerateQuarterlyArchitectureReview(now = new Date()) {
-  const datedPath = architectureReviewReportPath(now);
+async function maybeGenerateQuarterlyArchitectureReview(now = new Date(), { reportsDir = REPORTS_DIR, runner = runEnterpriseValidationReportQuarterly } = {}) {
+  const datedPath = architectureReviewReportPath(now, reportsDir);
   if (fs.existsSync(datedPath)) {
     return { action: 'none', detail: `مراجعة العمارة الفصلية لهذا الفصل موجودة بالفعل: ${path.basename(datedPath)}` };
   }
-  const result = await runEnterpriseValidationReportQuarterly();
-  if (!result.ok) return { action: 'failed', detail: result.detail };
+  // Loop-health guard, 2026-10-28: this review re-runs the live 162-endpoint
+  // audit, so a failed attempt costs many minutes. Without a marker a
+  // permanently failing generator is retried on EVERY tick and the overlap
+  // guard then skips every other step -- the whole loop degrades to one
+  // failing quarterly review. One real attempt per calendar day instead, and
+  // the failure stays visible in that tick's log line.
+  const day = now.toISOString().slice(0, 10);
+  const failureMarker = path.join(reportsDir, `.architecture_review_failed_${day}`);
+  if (fs.existsSync(failureMarker)) {
+    return { action: 'none', detail: `فشل توليد مراجعة العمارة اليوم (${day})؛ تُعاد المحاولة غداً بدل كل دورة` };
+  }
+  const result = await runner();
+  if (!result.ok) {
+    try {
+      fs.mkdirSync(reportsDir, { recursive: true });
+      fs.writeFileSync(failureMarker, JSON.stringify({ at: new Date().toISOString(), detail: result.detail }), 'utf-8');
+    } catch (err) {
+      // A marker that cannot be written must never hide the real failure.
+    }
+    return { action: 'failed', detail: result.detail };
+  }
   try {
-    fs.mkdirSync(REPORTS_DIR, { recursive: true });
+    fs.mkdirSync(reportsDir, { recursive: true });
     fs.writeFileSync(datedPath, result.markdown, 'utf-8');
+    try { fs.unlinkSync(failureMarker); } catch (err) { /* no earlier failure today */ }
     return { action: 'generated', detail: `مراجعة عمارة فصلية جديدة: ${path.basename(datedPath)}` };
   } catch (err) {
     return { action: 'failed', detail: `تعذّر كتابة مراجعة العمارة الفصلية: ${err.message}` };
@@ -3037,6 +3064,79 @@ async function maybeRecordDailyGrowthStageSnapshot(now = new Date()) {
   return { action: 'generated', detail: `تم تسجيل لقطة مرحلة نمو حقيقية: ${result.stage}` };
 }
 
+// Product Lifecycle daily snapshot (Production OS P1 gap-close, 2026-08-17;
+// restored 2026-10-28): production_os.record_product_lifecycle_snapshot()
+// appends the same real view the Mission Control panel already shows, so the
+// real lifecycle history in data/product_lifecycle_snapshots.jsonl keeps
+// growing. That ledger had stalled at 2026-08-31 because no caller was ever
+// wired -- only the (failing) test for this wiring survived. Same
+// once-per-calendar-day marker pattern as the growth-stage/commercial-
+// readiness snapshots around it.
+const PRODUCT_LIFECYCLE_SNAPSHOT_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.product_lifecycle_snapshot_daily_marker');
+
+function runRecordDailyProductLifecycleSnapshot({ timeoutMs = 180000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), [path.join(FACTORY_DIR, 'mission_control_api.py'), 'record_daily_product_lifecycle_snapshot'], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل mission_control_api.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة record_daily_product_lifecycle_snapshot (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        if (!result.success) {
+          finish({ ok: false, detail: result.error || 'فشل غير محدَّد من record_daily_product_lifecycle_snapshot' });
+          return;
+        }
+        const snap = result.snapshot || {};
+        finish({ ok: true, shown: snap.shown_products, total: snap.total_real_production_ids_in_log });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج record_daily_product_lifecycle_snapshot: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeRecordDailyProductLifecycleSnapshot(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try {
+    lastRun = fs.readFileSync(PRODUCT_LIFECYCLE_SNAPSHOT_DAILY_MARKER, 'utf8').trim();
+  } catch (_) { /* no marker yet — first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم تسجيل لقطة دورة حياة المنتجات اليومية بالفعل (${today})` };
+  }
+  const result = await runRecordDailyProductLifecycleSnapshot();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  try {
+    fs.mkdirSync(path.dirname(PRODUCT_LIFECYCLE_SNAPSHOT_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(PRODUCT_LIFECYCLE_SNAPSHOT_DAILY_MARKER, today, 'utf8');
+  } catch (err) {
+    return { action: 'failed', detail: `فشل حفظ علامة لقطة دورة حياة المنتجات: ${err.message}` };
+  }
+  return { action: 'generated', detail: `تم تسجيل لقطة دورة حياة حقيقية: ${result.shown} من ${result.total} منتجاً` };
+}
+
 const COMMERCIAL_READINESS_SNAPSHOT_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.commercial_readiness_snapshot_daily_marker');
 
 function runRecordDailyCommercialReadinessSnapshot({ timeoutMs = 60000, pythonPath } = {}) {
@@ -3182,6 +3282,91 @@ async function maybeRunDailyCeoLoop(now = new Date()) {
     return { action: 'failed', detail: result.detail };
   }
   return { action: 'generated', detail: `تم تشغيل دورة CEO حقيقية (${result.count} فرصة): ${result.decision}` };
+}
+
+// ── FIRST-SALE ORCHESTRATOR (Cycle 118, 2026-10-18) ──
+// The commercial / first-sale path previously had no orchestrator: each cycle
+// re-derived state by hand and stopped at the first blocked step, handing the
+// rest of the pipeline to the founder. This runs the owned
+// scripts/first_sale_orchestrator.py once per calendar day. It is local and
+// read-only by default; the one external task (create_draft) stays blocked
+// unless a live-verified capability AND explicit authorization both exist.
+// It never publishes, never creates a live product, and never spends.
+const FIRST_SALE_DAILY_MARKER = path.join(FACTORY_DIR, 'data', '.first_sale_daily_marker');
+
+function runFirstSaleOrchestrator({ timeoutMs = 180000, pythonPath } = {}) {
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(),
+        [path.join(FACTORY_DIR, 'scripts', 'first_sale_orchestrator.py'), '--run', '--json'],
+        { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ ok: false, detail: `تعذّر تشغيل first_sale_orchestrator.py: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ ok: false, detail: `انتهت مهلة first_sale_orchestrator (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ ok: false, detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        const counts = result.counts || {};
+        const next = result.next_action || {};
+        finish({
+          ok: true,
+          counts,
+          next_action: next.kind || null,
+          next_task: next.action || null,
+          blocked_by: next.blocked_by || null,
+        });
+      } catch (e) {
+        finish({ ok: false, detail: `فشل تحليل ناتج first_sale_orchestrator: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+async function maybeRunDailyFirstSaleOrchestrator(now = new Date()) {
+  const today = isoDate(now);
+  let lastRun = null;
+  try { lastRun = fs.readFileSync(FIRST_SALE_DAILY_MARKER, 'utf8').trim(); } catch (_) { /* first run */ }
+  if (lastRun === today) {
+    return { action: 'none', detail: `تم تشغيل منسّق البيع الأول اليوم بالفعل (${today})` };
+  }
+  // Advance the marker BEFORE the run so a timeout can never re-trigger the
+  // step every tick (same protection as ceo_loop / evidence recording).
+  try {
+    fs.mkdirSync(path.dirname(FIRST_SALE_DAILY_MARKER), { recursive: true });
+    fs.writeFileSync(FIRST_SALE_DAILY_MARKER, today, 'utf8');
+  } catch (err) { /* best effort only */ }
+
+  const result = await runFirstSaleOrchestrator();
+  if (!result.ok) {
+    return { action: 'failed', detail: result.detail };
+  }
+  const done = (result.counts && result.counts.COMPLETED) || 0;
+  const blocked = (result.counts && result.counts.BLOCKED) || 0;
+  return {
+    action: 'generated',
+    detail: `منسّق البيع الأول: ${done} مكتمل, ${blocked} محجوب — الخطوة التالية: ${result.next_action || 'UNKNOWN'}${result.next_task ? ' (' + result.next_task + ')' : ''}`,
+    counts: result.counts,
+    next_action: result.next_action,
+    next_task: result.next_task,
+  };
 }
 
 // ── EXPERIMENT AUTO LOOP (Autonomous Enterprise Directive gap #3, 2026-08-15) ──
@@ -4086,8 +4271,46 @@ function runOnceScript(script, { timeoutMs = 6 * 60 * 1000, pythonPath } = {}) {
   });
 }
 
-// ── AGENT PRODUCT CHAIN (2026-10-23) ──
-// Once a day, after Sensing: today's commercial trends -> scout -> qa ->
+// Same contract as runOnceScript, for the repo's Node-side maintenance
+// scripts: they print one JSON line and take no --once flag. Nothing about
+// them may throw into the tick -- a failure is reported like any other step.
+function runNodeScript(script, { timeoutMs = 2 * 60 * 1000, scriptPath } = {}) {
+  return new Promise((resolve) => {
+    let child;
+    try {
+      child = spawn(process.execPath, [scriptPath || path.join(FACTORY_DIR, 'scripts', script)], { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ action: 'failed', detail: `could not start ${script}: ${err.message}` });
+      return;
+    }
+    let output = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { child.kill(); } catch (_) { /* best effort */ }
+      finish({ action: 'failed', detail: `${script} timed out (${timeoutMs / 1000}s)` });
+    }, timeoutMs);
+    child.stdout.on('data', d => { output += d.toString(); });
+    child.stderr.on('data', d => { output += d.toString(); });
+    child.on('error', (err) => finish({ action: 'failed', detail: err.message }));
+    child.on('close', () => {
+      try {
+        const r = JSON.parse(output.trim().split(/\r?\n/).filter(Boolean).pop());
+        const c = r.counts || {};
+        finish({ action: 'ok', detail: `${c.returned} of ${c.published_total} published products in customer_site/catalog.json` });
+      } catch (e) {
+        finish({ action: 'failed', detail: `could not parse ${script} output: ${e.message}` });
+      }
+    });
+    child.stdin.end();
+  });
+}
+
+// ── AGENT PRODUCT CHAIN (2026-10-23) ──// Once a day, after Sensing: today's commercial trends -> scout -> qa ->
 // finance -> design -> builder -> publisher -> a proposal in
 // drafts/agent_packages/ for founder review (lib/daily_product_chain.js).
 // The distribute step is protected and stays blocked without live-publish
@@ -4337,6 +4560,75 @@ function runResilienceMonitorTick({ timeoutMs = 30000, pythonPath } = {}) {
       }
     });
   });
+}
+
+// ── GF-OPS DAILY OPERATIONS CONTROL ──
+// Cycle 97 (2026-10-17): the founder chose factory_loop.js -- not n8n -- as
+// the host for the GF-OPS read-only ops checks. Direct verification found
+// n8n 2.x disables the Execute Command node by default (NODES_EXCLUDE
+// defaults to ['n8n-nodes-base.executeCommand','n8n-nodes-base.localFileTrigger']
+// in @n8n/config/dist/configs/nodes.config.js), so a shell-executing n8n
+// workflow cannot run without a global security relaxation -- which the
+// directive explicitly forbids taking as a shortcut. This step spawns the
+// real read-only Python probe bundle instead, using the same subprocess +
+// once-per-calendar-day pattern as every other daily report above. gf_ops
+// performs zero marketplace writes, zero publishes and zero purchases; it
+// only reads public/own state and writes its own dated record.
+function runOpsDailyControl({ timeoutMs = 120000, pythonPath, args, notify } = {}) {
+  const spawnArgs = args || ['-m', 'gf_ops.ops_daily_control'];
+  const sendAlert = notify || ((msg) => telegramDirect.sendTelegramMessage(msg));
+  return new Promise((resolve) => {
+    let python;
+    try {
+      python = spawn(pythonPath || detectPythonForHunter(), spawnArgs, { cwd: FACTORY_DIR });
+    } catch (err) {
+      resolve({ action: 'failed', detail: `تعذّر تشغيل gf_ops.ops_daily_control: ${err.message}` });
+      return;
+    }
+
+    let output = '', errOut = '', settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      try { python.kill(); } catch (_) { /* best effort */ }
+      finish({ action: 'failed', detail: `انتهت مهلة ops_daily_control (${timeoutMs / 1000} ثانية)` });
+    }, timeoutMs);
+
+    python.stdout.on('data', d => { output += d.toString(); });
+    python.stderr.on('data', d => { errOut += d.toString(); });
+    python.on('error', (err) => finish({ action: 'failed', detail: err.message }));
+    python.on('close', () => {
+      try {
+        const result = JSON.parse(output.trim());
+        const overall = result.overall || 'UNKNOWN';
+        if (overall === 'FAIL' || overall === 'BLOCKED') {
+          const reasons = (result.findings || []).map(f => `${f.area}: ${f.detail}`);
+          if (reasons.length > 0) {
+            try { Promise.resolve(sendAlert(telegramDirect.buildCriticalErrorMessage(reasons))).catch(() => {}); } catch (_) { /* notification must never break the tick */ }
+          }
+        }
+        finish({ action: 'assessed', detail: `overall=${overall}, labels=${JSON.stringify(result.labels || {})}` });
+      } catch (e) {
+        finish({ action: 'failed', detail: `فشل تحليل ناتج ops_daily_control: ${e.message}${errOut ? ' — ' + errOut.slice(0, 200) : ''}` });
+      }
+    });
+  });
+}
+
+function opsDailyRecordPath(now) {
+  return path.join(FACTORY_DIR, 'data', 'ops_daily', `${isoDate(now)}.json`);
+}
+
+async function maybeRunDailyOpsControl(now = new Date()) {
+  const datedPath = opsDailyRecordPath(now);
+  if (fs.existsSync(datedPath)) {
+    return { action: 'none', detail: `سجل عمليات اليوم موجود بالفعل: ${path.basename(datedPath)}` };
+  }
+  return runOpsDailyControl();
 }
 
 // ── CUSTOMER PAYMENT STATUS CHECK ──
@@ -4895,7 +5187,18 @@ async function runTick() {
     actions.push({ step: 'indexnow', ...(await runOnceScript('indexnow_auto.py')) });
     // 2026-10-23: daily product-registry rebuild + listing page checks (read-only).
     markStep('product_registry');
-    actions.push({ step: 'product_registry', ...(await runOnceScript('registry_daily.py', { timeoutMs: 15 * 60 * 1000 })) });
+    const registryResult = await runOnceScript('registry_daily.py', { timeoutMs: 15 * 60 * 1000 });
+    actions.push({ step: 'product_registry', ...registryResult });
+    // customer_site/catalog.json is the only catalog GitHub Pages serves, and
+    // nothing regenerated it after the registry it is derived from -- a product
+    // published after the last manual export stayed invisible on the storefront
+    // (real gap found 2026-10-28: no caller of scripts/export_public_catalog.js
+    // existed anywhere in the repo). Rebuild it only on a tick that actually
+    // rebuilt the registry, so a normal tick never rewrites the snapshot.
+    if (registryResult.action !== 'none' && registryResult.action !== 'failed') {
+      markStep('public_catalog');
+      actions.push({ step: 'public_catalog', ...(await runNodeScript('export_public_catalog.js')) });
+    }
 
     markStep('sales_poll');
     actions.push({ step: 'sales_poll', ...(await pollSales(true)) });
@@ -5018,6 +5321,13 @@ async function runTick() {
   markStep('commercial_readiness_snapshot');
   actions.push({ step: 'commercial_readiness_snapshot', ...(await maybeRecordDailyCommercialReadinessSnapshot()) });
 
+  // Product Lifecycle history (restored 2026-10-28): the recorder existed as
+  // a test-only contract with no implementation, so data/product_lifecycle_
+  // snapshots.jsonl had been frozen since 2026-08-31. Same once-per-calendar-
+  // day marker pattern as the two snapshot steps immediately above.
+  markStep('product_lifecycle_snapshot');
+  actions.push({ step: 'product_lifecycle_snapshot', ...(await maybeRecordDailyProductLifecycleSnapshot()) });
+
   // CEO Loop (final production-readiness audit closure, 2026-08-15): the
   // central decision authority (revenue_os.run_daily_ceo_loop via
   // first_dollar_engine) was never wired into the automatic tick — it only
@@ -5026,6 +5336,14 @@ async function runTick() {
   // (zero spend, zero publish, zero ledger writes).
   markStep('ceo_loop');
   actions.push({ step: 'ceo_loop', ...(await maybeRunDailyCeoLoop()) });
+
+  // First-Sale Orchestrator (Cycle 118, 2026-10-18): the commercial path had
+  // no orchestrator at all -- see scripts/first_sale_orchestrator.py's own
+  // docstring. Same once-per-calendar-day marker pattern. Local/read-only by
+  // default; never publishes, never spends, and never creates a draft while
+  // the capability is unverified or authorization is absent.
+  markStep('first_sale_orchestrator');
+  actions.push({ step: 'first_sale_orchestrator', ...(await maybeRunDailyFirstSaleOrchestrator()) });
 
   // SEO Distribution (Autonomous Enterprise Master Plan Task 2): the only
   // READY distribution channel. Same once-per-calendar-day marker pattern.
@@ -5129,6 +5447,13 @@ async function runTick() {
   // founder-triggered Mission Control actions.
   markStep('resilience_monitor');
   actions.push({ step: 'resilience_monitor', ...(await runResilienceMonitorTick()) });
+
+  // GF-OPS daily operations control (Cycle 97, 2026-10-17): read-only
+  // website/Gumroad/n8n probes + a dated ops record. Once per calendar day,
+  // same marker-file pattern as the report steps above. Host chosen as
+  // factory_loop.js (not n8n) -- see runOpsDailyControl's own comment.
+  markStep('ops_daily_control');
+  actions.push({ step: 'ops_daily_control', ...(await maybeRunDailyOpsControl()) });
 
   // Revenue Mode directive (2026-07-31): every tick, not daily-gated, same
   // reasoning as resilience_monitor above — a real customer's payment
@@ -5392,6 +5717,7 @@ module.exports = {
   runCommissionOpportunityScan, maybeRunDailyCommissionOpportunityScan,
   runAffiliateDailyTick, maybeRunDailyAffiliateTick, formatAffiliateNotificationBatch,
   runRecordDailyGrowthStageSnapshot, maybeRecordDailyGrowthStageSnapshot,
+  runRecordDailyProductLifecycleSnapshot, maybeRecordDailyProductLifecycleSnapshot,
   runRecordDailyCommercialReadinessSnapshot, maybeRecordDailyCommercialReadinessSnapshot,
   runDailyEvidenceRecordingAudit, maybeRunDailyEvidenceRecordingAudit,
   runDailyRealityIntegrityCheck, maybeRunDailyRealityIntegrityCheck,
@@ -5400,9 +5726,11 @@ module.exports = {
   runExperimentCycle, maybeRunDailyExperimentCycle,
   runExecutiveOrchestrator, maybeRunDailyExecutiveOrchestrator,
   runEuAiActPricingReview, maybeCheckEuAiActPricingReview,
+  runFirstSaleOrchestrator, maybeRunDailyFirstSaleOrchestrator, FIRST_SALE_DAILY_MARKER,
   runKnowledgeGraphDailySnapshot, maybeGenerateDailyKnowledgeGraph,
   runGeneratePendingBusinessBlueprints, maybeGenerateBusinessBlueprintsForNewAcceptedDecisions,
   runResilienceMonitorTick, newIncidentTelegramReasons, runPaymentStatusCheckTick,
+  runOpsDailyControl, opsDailyRecordPath, maybeRunDailyOpsControl,
   runFreelancerGrantResume, maybeResumeFreelancerGrant,
   runFreelancerStateMonitor, maybeMonitorFreelancerStates,
   runArmStatusWatch, maybeWatchArmStatus,
@@ -5429,4 +5757,5 @@ module.exports = {
   expireStaleRetries,
   dedupePendingRetries,
   formatRetryPayloadForDirectSend,
+  runNodeScript,
 };

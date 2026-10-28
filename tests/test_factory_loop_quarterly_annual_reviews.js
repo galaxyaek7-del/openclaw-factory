@@ -72,6 +72,50 @@ async function main() {
     assert.notStrictEqual(y2026, y2027, 'a different real year must produce a different real path');
   });
 
+  await test('maybeGenerateQuarterlyArchitectureReview: a failed run is retried at most once per day', async () => {
+    const fs = require('fs');
+    const os = require('os');
+    const path = require('path');
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'gf-qreview-'));
+    let calls = 0;
+    const failing = async () => { calls++; return { ok: false, detail: 'timeout after 2400s' }; };
+    const now = new Date('2026-10-28T10:00:00Z');
+    try {
+      const first = await fl.maybeGenerateQuarterlyArchitectureReview(now, { reportsDir: dir, runner: failing });
+      assert.strictEqual(first.action, 'failed');
+      assert.strictEqual(calls, 1, 'the real runner is called on the first attempt');
+      assert.ok(fs.readdirSync(dir).some(f => f.startsWith('.architecture_review_failed_')), 'a same-day failure marker is written');
+      const second = await fl.maybeGenerateQuarterlyArchitectureReview(new Date('2026-10-28T11:00:00Z'), { reportsDir: dir, runner: failing });
+      assert.strictEqual(second.action, 'none', 'a second tick the same day must not re-run the expensive review');
+      assert.strictEqual(calls, 1, 'the runner must not be called twice in one day');
+      const nextDay = await fl.maybeGenerateQuarterlyArchitectureReview(new Date('2026-10-29T10:00:00Z'), { reportsDir: dir, runner: failing });
+      assert.strictEqual(nextDay.action, 'failed', 'the next calendar day retries');
+      assert.strictEqual(calls, 2);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  await test('maybeGenerateQuarterlyArchitectureReview: success writes the report and clears the failure marker', async () => {
+    const fs = require('fs');
+    const os = require('os');
+    const path = require('path');
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'gf-qreview-ok-'));
+    const now = new Date('2026-10-28T10:00:00Z');
+    try {
+      fs.writeFileSync(path.join(dir, '.architecture_review_failed_2026-10-28'), '{"detail":"earlier failure"}');
+      const ok = await fl.maybeGenerateQuarterlyArchitectureReview(now, { reportsDir: dir, runner: async () => ({ ok: true, markdown: '# review' }) });
+      assert.strictEqual(ok.action, 'none', 'the same-day failure marker defers the retry');
+      fs.unlinkSync(path.join(dir, '.architecture_review_failed_2026-10-28'));
+      const done = await fl.maybeGenerateQuarterlyArchitectureReview(now, { reportsDir: dir, runner: async () => ({ ok: true, markdown: '# review' }) });
+      assert.strictEqual(done.action, 'generated');
+      assert.ok(fs.existsSync(path.join(dir, 'ARCHITECTURE_REVIEW_2026-Q4.md')), 'the report is written to the injected directory');
+      assert.ok(!fs.readdirSync(dir).some(f => f.startsWith('.architecture_review_failed_')), 'the marker is cleared on success');
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   console.log(`\n${passed} passed`);
 }
 
