@@ -186,7 +186,13 @@ test('the exported catalog.json points at covers both deployments can serve', ()
   const dir = path.join(__dirname, '..', 'customer_site');
   const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'gf-catalog-out-')), 'catalog.json');
   execFileSync(process.execPath, [path.join(__dirname, '..', 'scripts', 'export_public_catalog.js'), '24', out], { stdio: 'pipe' });
-  const products = JSON.parse(fs.readFileSync(out, 'utf8')).data.products;
+  const snapshot = JSON.parse(fs.readFileSync(out, 'utf8'));
+  const products = snapshot.data.products;
+  // The snapshot states its own coverage gap rather than leaving a reader to
+  // recompute it: a published product with no cover is invisible on the site.
+  assert.equal(typeof snapshot.data.counts.missing_media, 'number');
+  assert.equal(snapshot.data.counts.missing_media,
+    snapshot.data.counts.published_total - snapshot.data.counts.available_with_cover);
   assert.ok(products.length > 0);
   for (const p of products) {
     if (!p.cover_url) continue;
