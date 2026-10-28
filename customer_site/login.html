@@ -64,9 +64,6 @@ main{padding:3.5rem 0 5rem;}
 
 .hint{font-size:.8rem; color:var(--ink-faint);}
 </style>
-    <meta property="og:title" content="Galaxy Forge — Account">
-    <meta property="og:description" content="Sign in or create a Galaxy Forge account to track every request, contract, invoice, and delivery in one place.">
-    <meta property="og:type" content="website">
 <link rel="canonical" href="https://galaxyaek7-del.github.io/openclaw-factory/customer_site/login.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Galaxy Forge">
@@ -203,7 +200,7 @@ main{padding:3.5rem 0 5rem;}
         }
         statusEl.className = 'good';
         statusEl.textContent = mode === 'signup' ? 'Account created — redirecting…' : 'Signed in — redirecting…';
-        setTimeout(function(){ window.location.href = '/site/'; }, 600);
+        setTimeout(function(){ window.location.href = 'index.html'; }, 600);
       })
       .catch(function(){
         submitBtn.disabled = false;
