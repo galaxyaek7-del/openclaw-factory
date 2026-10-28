@@ -1,0 +1,170 @@
+[
+ {
+  "at": "2026-10-28T06:29:02Z",
+  "mode": "LIVE",
+  "approval_source": "data\\publication_approvals.json",
+  "results": [
+   {
+    "id": "B13-001",
+    "title": "Renovation Allowance & Change-Order Control",
+    "price_cents": 1500,
+    "currency": "USD",
+    "status": "BLOCKED",
+    "status_reason": "RuntimeError: Gumroad create_product failed: Sorry, you can only create 10 products per day.",
+    "authorization": {
+     "status": "BLOCKED",
+     "reason": "Gumroad create_product failed: Sorry, you can only create 10 products per day."
+    },
+    "missing_prerequisites": [
+     "RuntimeError: Gumroad create_product failed: Sorry, you can only create 10 products per day."
+    ],
+    "checks": {}
+   },
+   {
+    "id": "B13-002",
+    "title": "Grant Endgame: No-Cost Extension & Unspent Funds Kit",
+    "price_cents": 1900,
+    "currency": "USD",
+    "status": "BLOCKED",
+    "status_reason": "RuntimeError: Gumroad create_product failed: Sorry, you can only create 10 products per day.",
+    "authorization": {
+     "status": "BLOCKED",
+     "reason": "Gumroad create_product failed: Sorry, you can only create 10 products per day."
+    },
+    "missing_prerequisites": [
+     "RuntimeError: Gumroad create_product failed: Sorry, you can only create 10 products per day."
+    ],
+    "checks": {}
+   },
+   {
+    "id": "B13-003",
+    "title": "Caregiver Command Kit: Emergency, Medication, and Appointment Organizer",
+    "price_cents": 1699,
+    "currency": "USD",
+    "status": "BLOCKED",
+    "status_reason": "RuntimeError: Gumroad create_product failed: Sorry, you can only create 10 products per day.",
+    "authorization": {
+     "status": "BLOCKED",
+     "reason": "Gumroad create_product failed: Sorry, you can only create 10 products per day."
+    },
+    "missing_prerequisites": [
+     "RuntimeError: Gumroad create_product failed: Sorry, you can only create 10 products per day."
+    ],
+    "checks": {}
+   }
+  ]
+ },
+ {
+  "at": "2026-10-28T07:05:20Z",
+  "mode": "LIVE",
+  "approval_source": "data\\publication_approvals.json",
+  "results": [
+   {
+    "id": "B13-001",
+    "title": "Renovation Allowance & Change-Order Control",
+    "price_cents": 1500,
+    "currency": "USD",
+    "status": "BLOCKED",
+    "status_reason": "RuntimeError: Gumroad create_product failed: Sorry, you can only create 10 products per day.",
+    "authorization": {
+     "status": "BLOCKED",
+     "reason": "Gumroad create_product failed: Sorry, you can only create 10 products per day."
+    },
+    "missing_prerequisites": [
+     "RuntimeError: Gumroad create_product failed: Sorry, you can only create 10 products per day."
+    ],
+    "checks": {}
+   },
+   {
+    "id": "B13-002",
+    "title": "Grant Endgame: No-Cost Extension & Unspent Funds Kit",
+    "price_cents": 1900,
+    "currency": "USD",
+    "status": "BLOCKED",
+    "status_reason": "RuntimeError: Gumroad create_product failed: Sorry, you can only create 10 products per day.",
+    "authorization": {
+     "status": "BLOCKED",
+     "reason": "Gumroad create_product failed: Sorry, you can only create 10 products per day."
+    },
+    "missing_prerequisites": [
+     "RuntimeError: Gumroad create_product failed: Sorry, you can only create 10 products per day."
+    ],
+    "checks": {}
+   },
+   {
+    "id": "B13-003",
+    "title": "Caregiver Command Kit: Emergency, Medication, and Appointment Organizer",
+    "price_cents": 1699,
+    "currency": "USD",
+    "status": "BLOCKED",
+    "status_reason": "RuntimeError: Gumroad create_product failed: Sorry, you can only create 10 products per day.",
+    "authorization": {
+     "status": "BLOCKED",
+     "reason": "Gumroad create_product failed: Sorry, you can only create 10 products per day."
+    },
+    "missing_prerequisites": [
+     "RuntimeError: Gumroad create_product failed: Sorry, you can only create 10 products per day."
+    ],
+    "checks": {}
+   }
+  ]
+ },
+ {
+  "at": "2026-10-28T16:02:18Z",
+  "mode": "LIVE",
+  "approval_source": "data/publication_approvals.json",
+  "results": [
+   {
+    "id": "B13-001",
+    "title": "Renovation Allowance & Change-Order Control",
+    "price_cents": 1500,
+    "currency": "USD",
+    "status": "PASS",
+    "product_id": "caoIucb1iZO4tTSFrTv0gA==",
+    "approval_id": "GF-B13-001-20261027-01",
+    "revision_sha256": "a47e383269d93f18ac93818caafba0cc3405c81d520d2414cc5c8db8de8193a5",
+    "steps": {
+     "create": "ok",
+     "published": true,
+     "cover": "ok",
+     "public_page": true
+    },
+    "url": "https://aekraft.gumroad.com/l/wsfwvz"
+   },
+   {
+    "id": "B13-002",
+    "title": "Grant Endgame: No-Cost Extension & Unspent Funds Kit",
+    "price_cents": 1900,
+    "currency": "USD",
+    "status": "PASS",
+    "product_id": "HnQnD3q-tg3Otr-qOhGm3A==",
+    "approval_id": "GF-B13-002-20261027-01",
+    "revision_sha256": "31c1a8c8b7705981a2e80fc70562f7d2a66e7c28fc57411846979bffc757b91a",
+    "steps": {
+     "create": "ok",
+     "published": true,
+     "cover": "ok",
+     "public_page": true
+    },
+    "url": "https://aekraft.gumroad.com/l/plvoxx"
+   },
+   {
+    "id": "B13-003",
+    "title": "Caregiver Command Kit: Emergency, Medication, and Appointment Organizer",
+    "price_cents": 1699,
+    "currency": "USD",
+    "status": "PASS",
+    "product_id": "5lnW5eWFdRK64-K-I8SNAw==",
+    "approval_id": "GF-B13-003-20261027-01",
+    "revision_sha256": "5f081f02c7781071d026c9ca6e1bb84c5d4cfb59fdae02be17ec02f955f370f5",
+    "steps": {
+     "create": "ok",
+     "published": true,
+     "cover": "ok",
+     "public_page": true
+    },
+    "url": "https://aekraft.gumroad.com/l/swscqu"
+   }
+  ]
+ }
+]

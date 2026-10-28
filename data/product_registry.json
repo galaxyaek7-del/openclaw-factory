@@ -2,6 +2,63 @@
  "schema": 1,
  "products": [
   {
+   "internal_id": "B13-001",
+   "external_ids": {
+    "gumroad": "caoIucb1iZO4tTSFrTv0gA=="
+   },
+   "title": "Renovation Allowance & Change-Order Control",
+   "price_cents": 1500,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/wsfwvz",
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-10-28T16:01:29.936101+00:00",
+   "manifest": "books/batch13/B13-001.manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": true
+   }
+  },
+  {
+   "internal_id": "B13-002",
+   "external_ids": {
+    "gumroad": "HnQnD3q-tg3Otr-qOhGm3A=="
+   },
+   "title": "Grant Endgame: No-Cost Extension & Unspent Funds Kit",
+   "price_cents": 1900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/plvoxx",
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-10-28T16:01:55.948931+00:00",
+   "manifest": "books/batch13/B13-002.manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": true
+   }
+  },
+  {
+   "internal_id": "B13-003",
+   "external_ids": {
+    "gumroad": "5lnW5eWFdRK64-K-I8SNAw=="
+   },
+   "title": "Caregiver Command Kit: Emergency, Medication, and Appointment Organizer",
+   "price_cents": 1699,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/swscqu",
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-10-28T16:02:18.477904+00:00",
+   "manifest": "books/batch13/B13-003.manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": true
+   }
+  },
+  {
    "internal_id": "B14-001",
    "external_ids": {
     "gumroad": "1t5RKMmSW9x7m0p2rsepnQ=="
@@ -12,11 +69,12 @@
    "url": "https://aekraft.gumroad.com/l/dliccs",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-23T13:22:42.371750+00:00",
    "manifest": "books/batch14/B14-001/manifest.json",
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -30,11 +88,12 @@
    "url": "https://aekraft.gumroad.com/l/mfpqin",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-23T13:23:39.758370+00:00",
    "manifest": "books/batch14/B14-002/manifest.json",
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -48,11 +107,12 @@
    "url": "https://aekraft.gumroad.com/l/ebuszz",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-23T13:23:56.878221+00:00",
    "manifest": "books/batch14/B14-003/manifest.json",
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -66,11 +126,12 @@
    "url": "https://aekraft.gumroad.com/l/ydgbnh",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-23T13:24:13.975796+00:00",
    "manifest": "books/batch14/B14-004/manifest.json",
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -84,11 +145,12 @@
    "url": "https://aekraft.gumroad.com/l/ntbvq",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-23T13:24:31.178336+00:00",
    "manifest": "books/batch14/B14-005/manifest.json",
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -102,11 +164,12 @@
    "url": "https://aekraft.gumroad.com/l/czhxhu",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-23T13:24:50.595237+00:00",
    "manifest": "books/batch14/B14-006/manifest.json",
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -120,11 +183,12 @@
    "url": "https://aekraft.gumroad.com/l/jydqg",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-23T13:25:09.274514+00:00",
    "manifest": "books/batch14/B14-007/manifest.json",
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -138,11 +202,12 @@
    "url": "https://aekraft.gumroad.com/l/qevzns",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-23T13:25:27.602306+00:00",
    "manifest": "books/batch14/B14-008/manifest.json",
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -156,11 +221,12 @@
    "url": "https://aekraft.gumroad.com/l/mcwusn",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-23T13:25:47.877652+00:00",
    "manifest": "books/batch14/B14-009/manifest.json",
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -174,171 +240,202 @@
    "url": "https://aekraft.gumroad.com/l/uubnbi",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-23T13:26:07.232671+00:00",
    "manifest": "books/batch14/B14-010/manifest.json",
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
    "internal_id": "B15-001",
-   "external_ids": {},
+   "external_ids": {
+    "gumroad": "2ghb4qzdl5JhAKGeXF0akg=="
+   },
    "title": "Refinance Break-Even & Loan Comparison Calculator",
    "price_cents": 1500,
-   "published": false,
-   "url": null,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/ckwqjc",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-27T12:36:25.878887+00:00",
    "manifest": "books/batch15/B15-001/manifest.json",
-   "primary_state": "READY_FOR_AUTHORIZATION",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
-    "published_on_platform": false,
-    "in_catalog": false
+    "published_on_platform": true,
+    "in_catalog": true
    }
   },
   {
    "internal_id": "B15-002",
-   "external_ids": {},
+   "external_ids": {
+    "gumroad": "-wmI77eNf-3TzDfGBe1Jgg=="
+   },
    "title": "Employee True Cost Calculator (US Small Business)",
    "price_cents": 1500,
-   "published": false,
-   "url": null,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/fdjqyp",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-27T12:46:19.700150+00:00",
    "manifest": "books/batch15/B15-002/manifest.json",
-   "primary_state": "READY_FOR_AUTHORIZATION",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
-    "published_on_platform": false,
-    "in_catalog": false
+    "published_on_platform": true,
+    "in_catalog": true
    }
   },
   {
    "internal_id": "B15-003",
-   "external_ids": {},
+   "external_ids": {
+    "gumroad": "CL0s234DG4r2udkxHr7kLA=="
+   },
    "title": "Car Buy vs Lease Calculator: Total Cost Over the Same Period",
    "price_cents": 1200,
-   "published": false,
-   "url": null,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/bqnvfq",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-27T12:37:16.800756+00:00",
    "manifest": "books/batch15/B15-003/manifest.json",
-   "primary_state": "READY_FOR_AUTHORIZATION",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
-    "published_on_platform": false,
-    "in_catalog": false
+    "published_on_platform": true,
+    "in_catalog": true
    }
   },
   {
    "internal_id": "B15-004",
-   "external_ids": {},
+   "external_ids": {
+    "gumroad": "gt5WvCt8cwo9khRvVDINBg=="
+   },
    "title": "Wedding Budget & Vendor Payment Planner",
    "price_cents": 1200,
-   "published": false,
-   "url": null,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/kidohv",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-27T12:38:18.414888+00:00",
    "manifest": "books/batch15/B15-004/manifest.json",
-   "primary_state": "READY_FOR_AUTHORIZATION",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
-    "published_on_platform": false,
-    "in_catalog": false
+    "published_on_platform": true,
+    "in_catalog": true
    }
   },
   {
    "internal_id": "B15-005",
-   "external_ids": {},
+   "external_ids": {
+    "gumroad": "S0eTeiZhhVFonDvm2mFb_g=="
+   },
    "title": "Home Renovation Budget & Contractor Quote Comparison",
    "price_cents": 1400,
-   "published": false,
-   "url": null,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/ghszog",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-27T12:38:37.971352+00:00",
    "manifest": "books/batch15/B15-005/manifest.json",
-   "primary_state": "READY_FOR_AUTHORIZATION",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
-    "published_on_platform": false,
-    "in_catalog": false
+    "published_on_platform": true,
+    "in_catalog": true
    }
   },
   {
    "internal_id": "B15-006",
-   "external_ids": {},
+   "external_ids": {
+    "gumroad": "yc_cbXmlKOtJfNndSsezYA=="
+   },
    "title": "Price Increase Impact Calculator",
    "price_cents": 1200,
-   "published": false,
-   "url": null,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/sfcpyb",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-27T12:38:56.711284+00:00",
    "manifest": "books/batch15/B15-006/manifest.json",
-   "primary_state": "READY_FOR_AUTHORIZATION",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
-    "published_on_platform": false,
-    "in_catalog": false
+    "published_on_platform": true,
+    "in_catalog": true
    }
   },
   {
    "internal_id": "B15-007",
-   "external_ids": {},
+   "external_ids": {
+    "gumroad": "GHzrD5U78JUlmKFXMeQmfg=="
+   },
    "title": "Customer Lifetime Value & CAC Payback Calculator",
    "price_cents": 1500,
-   "published": false,
-   "url": null,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/xmbbls",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-27T12:39:15.288630+00:00",
    "manifest": "books/batch15/B15-007/manifest.json",
-   "primary_state": "READY_FOR_AUTHORIZATION",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
-    "published_on_platform": false,
-    "in_catalog": false
+    "published_on_platform": true,
+    "in_catalog": true
    }
   },
   {
    "internal_id": "B15-008",
-   "external_ids": {},
+   "external_ids": {
+    "gumroad": "Pe6E3FUlWedlcUMhec-2jg=="
+   },
    "title": "Shift Schedule & Labor Cost Planner",
    "price_cents": 1400,
-   "published": false,
-   "url": null,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/ucgjwf",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-27T12:40:16.788612+00:00",
    "manifest": "books/batch15/B15-008/manifest.json",
-   "primary_state": "READY_FOR_AUTHORIZATION",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
-    "published_on_platform": false,
-    "in_catalog": false
+    "published_on_platform": true,
+    "in_catalog": true
    }
   },
   {
    "internal_id": "B15-009",
-   "external_ids": {},
+   "external_ids": {
+    "gumroad": "-3jJcVkCfNPUKv8h7uQyDg=="
+   },
    "title": "Business Mileage Log & Deduction Tracker (US)",
    "price_cents": 900,
-   "published": false,
-   "url": null,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/rlgdc",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-27T12:40:56.418882+00:00",
    "manifest": "books/batch15/B15-009/manifest.json",
-   "primary_state": "READY_FOR_AUTHORIZATION",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
-    "published_on_platform": false,
-    "in_catalog": false
+    "published_on_platform": true,
+    "in_catalog": true
    }
   },
   {
    "internal_id": "B15-010",
-   "external_ids": {},
+   "external_ids": {
+    "gumroad": "UDcPST0OQGjcOK87hFo5kg=="
+   },
    "title": "Sinking Funds & Emergency Fund Planner",
    "price_cents": 900,
-   "published": false,
-   "url": null,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/krrtdf",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-10-27T12:41:16.798656+00:00",
    "manifest": "books/batch15/B15-010/manifest.json",
-   "primary_state": "READY_FOR_AUTHORIZATION",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
-    "published_on_platform": false,
-    "in_catalog": false
+    "published_on_platform": true,
+    "in_catalog": true
    }
   },
   {
@@ -352,6 +449,7 @@
    "url": "https://aekraft.gumroad.com/l/vkqogv",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-20T08:03:43.221190+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -370,6 +468,7 @@
    "url": "https://aekraft.gumroad.com/l/tmhlb",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -388,6 +487,7 @@
    "url": "https://aekraft.gumroad.com/l/fccqk",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -406,6 +506,7 @@
    "url": "https://aekraft.gumroad.com/l/jvuelq",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -424,6 +525,7 @@
    "url": "https://aekraft.gumroad.com/l/dvfvm",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-20T07:41:57.403952+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -442,6 +544,7 @@
    "url": "https://aekraft.gumroad.com/l/fwrjot",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -460,6 +563,7 @@
    "url": "https://aekraft.gumroad.com/l/brwrta",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-28T19:55:45.020504+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -478,6 +582,7 @@
    "url": "https://aekraft.gumroad.com/l/vhofn",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -496,6 +601,7 @@
    "url": "https://aekraft.gumroad.com/l/odqlk",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-27T19:40:04.482177+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -514,6 +620,7 @@
    "url": "https://aekraft.gumroad.com/l/ursxh",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-28T21:37:24.525179+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -532,6 +639,7 @@
    "url": "https://aekraft.gumroad.com/l/oerot",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-28T20:46:47.584549+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -550,6 +658,7 @@
    "url": "https://aekraft.gumroad.com/l/wsbqr",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-26T00:58:57.032380+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -568,6 +677,7 @@
    "url": "https://aekraft.gumroad.com/l/dyjavs",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-20T08:47:57.797583+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -586,6 +696,7 @@
    "url": "https://aekraft.gumroad.com/l/ieashv",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -604,6 +715,7 @@
    "url": "https://aekraft.gumroad.com/l/behmhy",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-25T22:03:05.497249+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -622,6 +734,7 @@
    "url": "https://aekraft.gumroad.com/l/edgiq",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -640,6 +753,7 @@
    "url": "https://aekraft.gumroad.com/l/xwbbb",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-25T21:52:55.587964+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -658,6 +772,7 @@
    "url": "https://aekraft.gumroad.com/l/zjwpx",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -676,6 +791,7 @@
    "url": "https://aekraft.gumroad.com/l/qpuagh",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-25T22:23:24.558589+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -694,6 +810,7 @@
    "url": "https://aekraft.gumroad.com/l/iaiyt",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -712,6 +829,7 @@
    "url": "https://aekraft.gumroad.com/l/fydjid",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-27T20:05:26.588605+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -730,6 +848,7 @@
    "url": "https://aekraft.gumroad.com/l/dxfwlu",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "UPLOAD_COMPLETED",
    "flags": {
@@ -748,6 +867,7 @@
    "url": "https://aekraft.gumroad.com/l/zfnagp",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -766,6 +886,7 @@
    "url": "https://aekraft.gumroad.com/l/vunrqm",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-24T22:00:43.315551+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -784,6 +905,7 @@
    "url": "https://aekraft.gumroad.com/l/xwacbo",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-28T20:34:07.430374+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -802,6 +924,7 @@
    "url": "https://aekraft.gumroad.com/l/blayvb",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -820,6 +943,7 @@
    "url": "https://aekraft.gumroad.com/l/pahxdv",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-26T00:48:44.128352+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -838,6 +962,7 @@
    "url": "https://aekraft.gumroad.com/l/qezxe",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-27T18:49:24.195324+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -856,6 +981,7 @@
    "url": "https://aekraft.gumroad.com/l/diboaf",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-28T21:12:07.472351+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -874,6 +1000,7 @@
    "url": "https://aekraft.gumroad.com/l/cdfdcy",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-27T20:18:05.873377+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -892,6 +1019,7 @@
    "url": "https://aekraft.gumroad.com/l/vwlmeo",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-28T20:59:26.446277+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -910,6 +1038,7 @@
    "url": "https://aekraft.gumroad.com/l/palmdr",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-20T09:07:49.358203+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -928,6 +1057,7 @@
    "url": "https://aekraft.gumroad.com/l/yiqba",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-24T21:45:35.227710+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -946,6 +1076,7 @@
    "url": "https://aekraft.gumroad.com/l/xouyjy",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-27T18:22:38.830212+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -964,6 +1095,7 @@
    "url": "https://aekraft.gumroad.com/l/ceiwk",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-24T21:23:18.249266+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -982,6 +1114,7 @@
    "url": "https://aekraft.gumroad.com/l/ldrdm",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1000,6 +1133,7 @@
    "url": "https://aekraft.gumroad.com/l/ppsluq",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-20T08:14:05.025008+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1018,6 +1152,7 @@
    "url": "https://aekraft.gumroad.com/l/roxdbe",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1036,6 +1171,7 @@
    "url": "https://aekraft.gumroad.com/l/uldlwa",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-24T22:34:02.592605+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1054,6 +1190,7 @@
    "url": "https://aekraft.gumroad.com/l/uyzuu",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-28T20:08:46.869293+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1072,6 +1209,7 @@
    "url": "https://aekraft.gumroad.com/l/gzbdaz",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-28T21:50:01.647391+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1090,6 +1228,7 @@
    "url": "https://aekraft.gumroad.com/l/pyzqa",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-20T08:25:39.749481+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1108,6 +1247,7 @@
    "url": "https://aekraft.gumroad.com/l/yhnyn",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1126,6 +1266,7 @@
    "url": "https://aekraft.gumroad.com/l/wteork",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1144,6 +1285,7 @@
    "url": "https://aekraft.gumroad.com/l/fgruzn",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-24T21:12:10.547112+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1162,6 +1304,7 @@
    "url": "https://aekraft.gumroad.com/l/kaooj",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-24T21:01:40.530440+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1180,6 +1323,7 @@
    "url": "https://aekraft.gumroad.com/l/vzmswo",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-25T22:33:33.798821+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1198,6 +1342,7 @@
    "url": "https://aekraft.gumroad.com/l/esnpki",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-24T22:11:49.740122+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1216,6 +1361,7 @@
    "url": "https://aekraft.gumroad.com/l/tjbly",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-26T01:19:17.057686+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1234,6 +1380,7 @@
    "url": "https://aekraft.gumroad.com/l/jlxmez",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1252,6 +1399,7 @@
    "url": "https://aekraft.gumroad.com/l/owtmpe",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1270,6 +1418,7 @@
    "url": "https://aekraft.gumroad.com/l/svlky",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1288,6 +1437,7 @@
    "url": "https://aekraft.gumroad.com/l/ciowwm",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1306,6 +1456,7 @@
    "url": "https://aekraft.gumroad.com/l/xmbxpz",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-25T22:13:14.788111+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1324,6 +1475,7 @@
    "url": "https://aekraft.gumroad.com/l/swkgd",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-28T20:21:29.238182+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1342,6 +1494,7 @@
    "url": "https://aekraft.gumroad.com/l/hasjmp",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1360,6 +1513,7 @@
    "url": "https://aekraft.gumroad.com/l/eiztlg",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-27T19:02:04.606194+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1378,6 +1532,7 @@
    "url": "https://aekraft.gumroad.com/l/ziiur",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-27T19:14:46.169710+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1396,6 +1551,7 @@
    "url": "https://aekraft.gumroad.com/l/bfhpzl",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1414,6 +1570,7 @@
    "url": "https://aekraft.gumroad.com/l/gfsvu",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-20T08:36:32.253533+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1432,6 +1589,7 @@
    "url": "https://aekraft.gumroad.com/l/sjmbrp",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-24T22:22:56.362595+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1450,6 +1608,7 @@
    "url": "https://aekraft.gumroad.com/l/volqjv",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-28T21:24:45.969910+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1468,6 +1627,7 @@
    "url": "https://aekraft.gumroad.com/l/lrmgml",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "UPLOAD_COMPLETED",
    "flags": {
@@ -1486,6 +1646,7 @@
    "url": "https://aekraft.gumroad.com/l/akxaae",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1504,6 +1665,7 @@
    "url": "https://aekraft.gumroad.com/l/uqmqnu",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-27T19:27:25.478737+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1522,6 +1684,7 @@
    "url": "https://aekraft.gumroad.com/l/ekhza",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-20T07:52:09.125540+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1540,6 +1703,7 @@
    "url": "https://aekraft.gumroad.com/l/fwxmms",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-24T22:45:08.808333+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1558,6 +1722,7 @@
    "url": "https://aekraft.gumroad.com/l/iwbcmi",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-26T01:29:26.755802+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1576,6 +1741,7 @@
    "url": "https://aekraft.gumroad.com/l/adyvd",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-20T07:31:41.544872+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1594,6 +1760,7 @@
    "url": "https://aekraft.gumroad.com/l/sjrjxq",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1612,6 +1779,7 @@
    "url": "https://aekraft.gumroad.com/l/jibnyt",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-24T21:34:27.366375+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1630,6 +1798,7 @@
    "url": "https://aekraft.gumroad.com/l/fetmu",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-20T07:18:57.913803+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1648,6 +1817,7 @@
    "url": "https://aekraft.gumroad.com/l/uwyfje",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1666,6 +1836,7 @@
    "url": "https://aekraft.gumroad.com/l/drtaj",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "UPLOAD_COMPLETED",
    "flags": {
@@ -1684,6 +1855,7 @@
    "url": "https://aekraft.gumroad.com/l/ykwdfc",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-26T01:09:07.351498+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1702,6 +1874,7 @@
    "url": "https://aekraft.gumroad.com/l/mrecoe",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-27T19:52:46.923113+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1720,6 +1893,7 @@
    "url": "https://aekraft.gumroad.com/l/uucxer",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": "2026-09-27T18:36:43.603560+00:00",
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1738,6 +1912,7 @@
    "url": "https://aekraft.gumroad.com/l/engiwk",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1756,6 +1931,7 @@
    "url": "https://aekraft.gumroad.com/l/eiebdt",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1774,6 +1950,7 @@
    "url": "https://aekraft.gumroad.com/l/vyitxf",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1792,6 +1969,7 @@
    "url": "https://aekraft.gumroad.com/l/nmasnb",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1810,6 +1988,7 @@
    "url": "https://aekraft.gumroad.com/l/bfdgx",
    "sales_count": 0,
    "sales_usd_cents": 0,
+   "first_published_at": null,
    "manifest": null,
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
@@ -1818,42 +1997,62 @@
    }
   }
  ],
- "generated_at": "2026-10-24T08:19:20.119609+00:00",
+ "generated_at": "2026-10-28T16:15:41.252032+00:00",
  "source": "Gumroad GET /v2/products (read-only) + data/catalog.json + batch manifests + publish results",
  "drift": {
-  "live_missing_from_catalog": [
-   "B14-001",
-   "B14-002",
-   "B14-003",
-   "B14-004",
-   "B14-005",
-   "B14-006",
-   "B14-007",
-   "B14-008",
-   "B14-009",
-   "B14-010"
-  ],
+  "live_missing_from_catalog": [],
   "catalog_rows_not_live": [],
   "manifest_live_mismatch": [],
   "duplicate_live_titles": [
    "The 5-Minute Context Reset Playbook"
   ],
-  "qa_passed_not_listed": [
-   "B15-001",
-   "B15-002",
-   "B15-003",
-   "B15-004",
-   "B15-005",
-   "B15-006",
-   "B15-007",
-   "B15-008",
-   "B15-009",
-   "B15-010"
-  ],
+  "qa_passed_not_listed": [],
   "unpublished_on_platform": [
    "GR-3deb208315",
    "GR-aa45b7486a",
    "GR-e1d845e3c9"
+  ],
+  "published_zero_sales_past_threshold": [
+   "GR-003d8ce46f",
+   "GR-0b1dd2739c",
+   "GR-10d84cb5ad",
+   "GR-1c352a7aac",
+   "GR-23e0647791",
+   "GR-267ea1d084",
+   "GR-30cce4848c",
+   "GR-342e45a45f",
+   "GR-36a9097179",
+   "GR-4050e1ff8a",
+   "GR-4409859130",
+   "GR-460da4d6b2",
+   "GR-49bd37f875",
+   "GR-4b3f22e75e",
+   "GR-52aa3d878c",
+   "GR-541c7ced0a",
+   "GR-57ef021040",
+   "GR-5bd18ab656",
+   "GR-673041e16c",
+   "GR-742a42d65f",
+   "GR-7ec42de401",
+   "GR-84e347793d",
+   "GR-876de3c06e",
+   "GR-8e78d6c337",
+   "GR-91f851b123",
+   "GR-9c3726734b",
+   "GR-9e454ccff8",
+   "GR-a176706761",
+   "GR-a76fa0a9dd",
+   "GR-a8cfecca6a",
+   "GR-b1983191ca",
+   "GR-b99bdaf89c",
+   "GR-b9f6e295c0",
+   "GR-ca2a7d0d18",
+   "GR-cd958b18ca",
+   "GR-dc1d67af68",
+   "GR-dd3b61adf3",
+   "GR-e24c0b6c1f",
+   "GR-e46938b960",
+   "GR-e5edb1f278"
   ]
  }
 }

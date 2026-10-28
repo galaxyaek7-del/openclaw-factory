@@ -19,6 +19,14 @@ data/product_registry.json holds one record per product:
   external_ids  {"gumroad": id}
   title, price_cents, published, url, sales_count   from the live platform
   manifest      path of the QA manifest, when the factory built it
+  first_published_at  earliest real, successful, non-dry-run publish attempt
+                for this product, read from data/sales_ledger.jsonl (written by
+                channels/ledger.py on every real distribute()). None when the
+                factory has no such evidence -- never guessed from the platform,
+                because Gumroad's API returns no dates at all. This is what makes
+                config/reality.json's critical_if_sales_zero_after_days=30
+                computable: before 2026-10-28 nothing recorded when a listing
+                went live, so "30 days with zero sales" could not be evaluated.
   primary_state one of the doctrine's release states (PERMANENT_OPERATING_
                 DOCTRINE.md section 10), from evidence only:
                   FIRST_SALE_VERIFIED      platform sales_count > 0
@@ -32,7 +40,10 @@ data/product_registry.json holds one record per product:
 drift(): differences between the registry inputs, for a human to act on:
 live listings missing from data/catalog.json, catalog rows no longer live,
 manifest title/price differing from the live listing, duplicate live titles,
-QA-passed manifests never listed. It reports; it never changes the platform.
+QA-passed manifests never listed, and listings live for
+ZERO_SALES_ALERT_DAYS or more with zero sales (the real signal behind
+config/reality.json's critical_if_sales_zero_after_days threshold).
+It reports; it never changes the platform.
 
     python product_registry.py --rebuild   # read live Gumroad, write registry
     python product_registry.py --check     # same, print drift, write nothing
@@ -54,9 +65,13 @@ ROOT = Path(__file__).resolve().parent
 REGISTRY = ROOT / "data" / "product_registry.json"
 CATALOG = ROOT / "data" / "catalog.json"
 MANIFEST_GLOBS = ["books/batch13/B13-*.manifest.json", "books/batch14/*/manifest.json", "books/batch15/*/manifest.json"]
-PUBLISH_RESULTS = [ROOT / "data" / "batch14_publish_results.json", ROOT / "data" / "batch15_publish_results.json"]
+PUBLISH_RESULTS = [ROOT / "data" / "batch13_publish_results.json",
+                   ROOT / "data" / "batch14_publish_results.json",
+                   ROOT / "data" / "batch15_publish_results.json"]
 PAGE_CHECKS = ROOT / "data" / "listing_page_checks.json"
 PAGE_CHECK_MAX_AGE_DAYS = 7
+SALES_LEDGER = ROOT / "data" / "sales_ledger.jsonl"
+ZERO_SALES_ALERT_DAYS = 30
 
 
 def derived_id(gumroad_id: str) -> str:
@@ -92,6 +107,64 @@ def load_publish_results(paths=PUBLISH_RESULTS):
                     out[r["product_id"]] = {"internal_id": r.get("id") or prev.get("internal_id"),
                                             "public_page": bool((r.get("steps") or {}).get("public_page")) or prev.get("public_page", False)}
     return out
+
+
+def load_publish_history(path=SALES_LEDGER):
+    """Real first successful, non-dry-run publish time per product.
+
+    Evidence only: data/sales_ledger.jsonl's own publish_attempt events, which
+    channels/ledger.py::record_publish_attempt() appends on every real
+    distribute() call. A dry run never published anything, and a failed attempt
+    is not publication, so neither sets a date. Indexed by both the factory id
+    (product_source_id) and the platform id (product_id) because a row may
+    carry only one of them. Missing or unreadable ledger -> empty history, never
+    an exception: this is observability, not a gate.
+    """
+    by_internal, by_gumroad = {}, {}
+    try:
+        lines = Path(path).read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return {"by_internal": {}, "by_gumroad": {}}
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            ev = json.loads(line)
+        except ValueError:
+            continue
+        if (not isinstance(ev, dict) or ev.get("event_type") != "publish_attempt"
+                or ev.get("dry_run") is not False or not ev.get("ok")):
+            continue
+        ts = ev.get("timestamp")
+        if not isinstance(ts, str) or not ts:
+            continue
+        for key, table in ((ev.get("product_source_id"), by_internal),
+                           (ev.get("product_id"), by_gumroad)):
+            if key and (key not in table or ts < table[key]):
+                table[key] = ts
+    return {"by_internal": by_internal, "by_gumroad": by_gumroad}
+
+
+def first_publish_for(gumroad_id, internal_id, history):
+    """The earliest recorded real publish time for one product, or None."""
+    history = history or {}
+    return ((history.get("by_gumroad") or {}).get(gumroad_id)
+            or (history.get("by_internal") or {}).get(internal_id))
+
+
+def days_live(record, now=None):
+    """Whole days since the first real publish, or None without evidence."""
+    ts = (record or {}).get("first_published_at")
+    if not ts:
+        return None
+    try:
+        then = datetime.fromisoformat(ts)
+    except (TypeError, ValueError):
+        return None
+    if then.tzinfo is None:
+        then = then.replace(tzinfo=timezone.utc)
+    return int(((now or datetime.now(timezone.utc)) - then).total_seconds() // 86400)
 
 
 def fresh_page_checks(checks, now=None, max_age_days=PAGE_CHECK_MAX_AGE_DAYS):
@@ -141,9 +214,11 @@ def verify_pages(live, opener=None, timeout=20, retry_wait=10):
         return dict(pool.map(one, targets))
 
 
-def build(live, catalog_rows, manifests, publish_results, previous=None, page_checks=None):
+def build(live, catalog_rows, manifests, publish_results, previous=None, page_checks=None,
+          publish_history=None):
     """Pure: inputs -> registry dict. `previous` keeps earlier id assignments;
-    `page_checks` ({gumroad_id: True}) is fresh public-page evidence."""
+    `page_checks` ({gumroad_id: True}) is fresh public-page evidence;
+    `publish_history` (load_publish_history()) dates each real publication."""
     page_checks = page_checks or {}
     prev_by_gid = {}
     for rec in (previous or {}).get("products", []):
@@ -176,6 +251,7 @@ def build(live, catalog_rows, manifests, publish_results, previous=None, page_ch
             "internal_id": iid, "external_ids": {"gumroad": gid}, "title": p.get("name"),
             "price_cents": p.get("price"), "published": published, "url": p.get("short_url"),
             "sales_count": sales, "sales_usd_cents": int(p.get("sales_usd_cents") or 0),  # as Gumroad reports it (gross)
+            "first_published_at": first_publish_for(gid, iid, publish_history),
             "manifest": man["_path"] if man else None, "primary_state": state,
             "flags": {"published_on_platform": published, "in_catalog": gid in catalog_ids},
         })
@@ -185,14 +261,15 @@ def build(live, catalog_rows, manifests, publish_results, previous=None, page_ch
             continue
         products.append({
             "internal_id": m["id"], "external_ids": {}, "title": m["title"], "price_cents": m.get("price_cents"),
-            "published": False, "url": None, "sales_count": 0, "sales_usd_cents": 0, "manifest": m["_path"],
+            "published": False, "url": None, "sales_count": 0, "sales_usd_cents": 0,
+            "first_published_at": None, "manifest": m["_path"],
             "primary_state": "READY_FOR_AUTHORIZATION" if (m.get("qa") or {}).get("ok") else "BUILD_COMPLETE",
             "flags": {"published_on_platform": False, "in_catalog": False},
         })
     return {"schema": 1, "products": sorted(products, key=lambda r: r["internal_id"])}
 
 
-def drift(registry, live, catalog_rows, manifests):
+def drift(registry, live, catalog_rows, manifests, now=None):
     live_ids = {p["id"] for p in live}
     cat_ids = {r.get("id") for r in catalog_rows if r.get("channel", "Gumroad") == "Gumroad"}
     by_gid = {p["id"]: p for p in live}
@@ -214,6 +291,12 @@ def drift(registry, live, catalog_rows, manifests):
         "duplicate_live_titles": sorted(t for t, c in titles.items() if c > 1),
         "qa_passed_not_listed": sorted(r["internal_id"] for r in registry["products"] if r["primary_state"] == "READY_FOR_AUTHORIZATION"),
         "unpublished_on_platform": sorted(r["internal_id"] for r in registry["products"] if r["external_ids"].get("gumroad") and not r["published"]),
+        # The real signal behind config/reality.json's
+        # critical_if_sales_zero_after_days: published, no sale, and enough
+        # elapsed time that the silence is evidence rather than impatience.
+        "published_zero_sales_past_threshold": sorted(
+            r["internal_id"] for r in registry["products"]
+            if r["published"] and not r["sales_count"] and (days_live(r, now) or 0) >= ZERO_SALES_ALERT_DAYS),
     }
 
 
@@ -231,7 +314,7 @@ def fetch_live():
 
 
 def run(write=True, live=None, registry_path=REGISTRY, catalog_path=CATALOG, now=None, check_pages=False,
-        page_checks_path=PAGE_CHECKS, opener=None):
+        page_checks_path=PAGE_CHECKS, opener=None, sales_ledger_path=SALES_LEDGER):
     live = live if live is not None else fetch_live()
     checks = _read_json(page_checks_path, {}) or {}
     if check_pages:
@@ -247,8 +330,10 @@ def run(write=True, live=None, registry_path=REGISTRY, catalog_path=CATALOG, now
     catalog_rows = (_read_json(catalog_path, {}) or {}).get("products", [])
     manifests = load_manifests()
     previous = _read_json(registry_path, None)
-    reg = build(live, catalog_rows, manifests, load_publish_results(), previous, fresh_page_checks(checks, now))
-    d = drift(reg, live, catalog_rows, manifests)
+    history = load_publish_history(sales_ledger_path)
+    reg = build(live, catalog_rows, manifests, load_publish_results(), previous,
+                fresh_page_checks(checks, now), history)
+    d = drift(reg, live, catalog_rows, manifests, now)
     reg["generated_at"] = (now or datetime.now(timezone.utc)).isoformat()
     reg["source"] = "Gumroad GET /v2/products (read-only) + data/catalog.json + batch manifests + publish results"
     reg["drift"] = d
