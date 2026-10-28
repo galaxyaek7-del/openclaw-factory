@@ -55,25 +55,50 @@ function rotateAllKnownLogs(apply = false) {
   ];
 }
 
-function cleanupOldReports(apply = false) {
-  const reportsDir = path.join(REPO_ROOT, 'reports');
+// REAL INCIDENT, 2026-10-28: this function used to delete every reports/*.md
+// beyond the newest 10 — and on a real `--apply` run it removed 591 files, 112
+// of them tracked (recovered from git) and ~479 untracked (permanently lost,
+// including hand-written deliverables like CYCLE116_BASELINE.md and
+// REALITY_LEDGER_2026-07-31.md that were never committed). reports/ is not a
+// disposable cache: it holds generated digests *and* authored evidence. Only
+// names this factory's own scheduled reports actually generate may ever be
+// removed; anything else is never touched, whatever its age.
+const GENERATED_REPORT_PATTERNS = [
+  /^EXECUTIVE_BRIEF_\d{4}-\d{2}-\d{2}\.md$/,
+  /^EVOLUTION_\d{4}-\d{2}-\d{2}\.md$/,
+  /^AI_DOCTOR_\d{4}-\d{2}-\d{2}\.md$/,
+  /^DEPARTMENT_HEALTH_\d{4}-\d{2}-\d{2}\.md$/,
+  /^WEEK_\d{4}-\d{2}-\d{2}\.md$/,
+  /^GALAXY_EVOLUTION_\d{4}-\d{2}\.md$/,
+  /^ARCHITECTURE_REVIEW_\d{4}-Q[1-4]\.md$/,
+  /^ANNUAL_STRATEGIC_REVIEW_\d{4}\.md$/,
+  /^executive_report_\d{8}T\d{6}Z\.md$/,
+];
+
+function isGeneratedReport(name) {
+  return GENERATED_REPORT_PATTERNS.some(re => re.test(name));
+}
+
+function cleanupOldReports(apply = false, reportsDir = path.join(REPO_ROOT, 'reports'), retention = REPORTS_RETENTION_COUNT) {
   if (!fs.existsSync(reportsDir)) return console.log('✔ reports/ does not exist — nothing to clean up');
-  const files = fs.readdirSync(reportsDir)
-    .filter(f => f.endsWith('.md'))
+  const all = fs.readdirSync(reportsDir).filter(f => f.endsWith('.md'));
+  const files = all
+    .filter(isGeneratedReport)
     .map(f => ({ name: f, mtime: fs.statSync(path.join(reportsDir, f)).mtimeMs }))
     .sort((a, b) => b.mtime - a.mtime);
-  const toRemove = files.slice(REPORTS_RETENTION_COUNT);
+  const toRemove = files.slice(retention);
+  const protectedCount = all.length - files.length;
   if (!toRemove.length) {
-    return console.log(`✔ reports/ has ${files.length} file(s), within the ${REPORTS_RETENTION_COUNT}-file retention window — no cleanup needed`);
+    return console.log(`✔ reports/ has ${files.length} generated report(s) within the ${REPORTS_RETENTION_COUNT}-file window (${protectedCount} non-generated file(s) never touched) — no cleanup needed`);
   }
-  console.log(`${apply ? 'Removing' : 'Would remove'} ${toRemove.length} report(s) beyond the ${REPORTS_RETENTION_COUNT}-file retention window:`);
+  console.log(`${apply ? 'Removing' : 'Would remove'} ${toRemove.length} generated report(s) beyond the ${REPORTS_RETENTION_COUNT}-file window (${protectedCount} non-generated file(s) never touched):`);
   for (const f of toRemove) {
     console.log(`  - ${f.name}`);
     if (apply) fs.unlinkSync(path.join(reportsDir, f.name));
   }
 }
 
-module.exports = { rotateLogIfNeeded, rotateAllKnownLogs, cleanupOldReports };
+module.exports = { rotateLogIfNeeded, rotateAllKnownLogs, cleanupOldReports, isGeneratedReport };
 
 if (require.main === module) {
   const apply = process.argv.includes('--apply');
