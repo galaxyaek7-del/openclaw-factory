@@ -220,3 +220,23 @@ test('no customer_site page points at a root-absolute path only Express can serv
   walk(dir);
   assert.deepEqual(offenders, [], 'these 404 on GitHub Pages and only work when Express mounts the site at /site');
 });
+
+test('every page that lists products from /api/ can still render them on GitHub Pages', () => {
+  // REAL DEFECT, 2026-10-28: index.html fetched /api/customer/catalog and
+  // /api/public/catalog?limit=6 with no fallback. GitHub Pages has no Node
+  // process, so both homepage product sections showed "Catalog temporarily
+  // unavailable" and "No verified releases" to every real visitor while all
+  // 102 products were live, priced and covered. Any page that lists products
+  // from an Express-only route must also read the static catalog.json
+  // snapshot that scripts/export_public_catalog.js writes for Pages.
+  const dir = path.join(__dirname, '..', 'customer_site');
+  const checked = [];
+  for (const f of fs.readdirSync(dir).filter((n) => n.endsWith('.html'))) {
+    const html = fs.readFileSync(path.join(dir, f), 'utf8');
+    if (!/\/api\/(?:public\/catalog|customer\/catalog)/.test(html)) continue;
+    checked.push(f);
+    assert.match(html, /catalog\.json/, `${f}: lists products from an Express-only route with no static fallback`);
+  }
+  assert.ok(checked.includes('index.html'), 'the homepage lists products');
+  assert.ok(checked.includes('products.html'), 'the catalog page lists products');
+});

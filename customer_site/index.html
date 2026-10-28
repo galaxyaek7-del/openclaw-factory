@@ -7,14 +7,10 @@
 <meta name="description" content="Galaxy Forge builds practical toolkits for small business: compliance kits, SaaS audits, operations systems. Fixed one-time prices, instant download, no subscription.">
 <link rel="canonical" href="https://galaxyaek7-del.github.io/openclaw-factory/customer_site/index.html">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23d97a3f'/%3E%3Cstop offset='1' stop-color='%238a4a1f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-family='IBM Plex Sans,Arial,sans-serif' font-weight='800' font-size='14' fill='%231a0e05' text-anchor='middle'%3EGF%3C/text%3E%3C/svg%3E">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Galaxy Forge">
-<meta property="og:title" content="Galaxy Forge — Practical Toolkits for Small Business">
-<meta property="og:description" content="Practical toolkits for small business: compliance kits, SaaS audits, operations systems. Fixed prices, instant download.">
-<meta property="og:url" content="https://galaxyaek7-del.github.io/openclaw-factory/customer_site/index.html">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Galaxy Forge — Practical Toolkits for Small Business">
 <meta name="twitter:description" content="Practical toolkits for small business. Fixed one-time prices, instant download.">
+<meta name="twitter:image" content="https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/og-default.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -97,6 +93,13 @@ section.alt{background:var(--bg-elev); border-top:1px solid var(--border-soft); 
 .product-meta{font-family:var(--mono); font-size:.68rem; color:var(--ink-faint); word-break:break-all;}
 .product-card .btn{align-self:flex-start; margin-top:.2rem;}
 #catalogStatus{color:var(--ink-faint); font-size:.88rem;}
+#libraryStatus{color:var(--ink-faint); font-size:.88rem;}
+.library-card{padding:0; overflow:hidden;}
+.library-cover{display:block; width:100%; aspect-ratio:16/9; object-fit:cover; border-bottom:1px solid var(--border-soft); background:var(--bg-card);}
+.library-body{padding:1.25rem; display:flex; flex-direction:column; gap:.75rem; flex:1;}
+.library-tag{align-self:flex-start; font-family:var(--mono); font-size:.62rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); border:1px solid var(--border-soft); border-radius:999px; padding:.2rem .55rem;}
+.library-summary{color:var(--ink-dim); font-size:.88rem; line-height:1.55; margin:0;}
+.library-note{color:var(--ink-faint); font-size:.72rem; line-height:1.45; margin:0;}
 
 /* Request form */
 .request-panel{display:grid; grid-template-columns:1fr 1.1fr; gap:3rem; align-items:start;}
@@ -191,6 +194,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
     <nav class="nav-links">
       <a href="solutions.html">Solutions</a>
       <a href="products.html">Products</a>
+      <a href="#library">Library</a>
       <a href="tools.html">Spreadsheet tools</a>
       <a href="etsy-suspension-appeal-kit.html">Etsy Suspension Kit</a>
       <a href="compare.html">Compare</a>
@@ -211,16 +215,16 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
     <div class="wrap">
       <div class="eyebrow"><span class="dot"></span> Practical Toolkits for Small Business</div>
       <h1>Discover better solutions for real business problems. <em>Backed by evidence, not sponsorship.</em></h1>
-      <p class="lede">Galaxy Forge helps businesses and professionals find, evaluate, and choose better digital solutions — automation, creative tools, e-commerce platforms, and more — every recommendation independently verified against official sources, never ranked by who pays the highest commission. We also build our own AI-powered software, but only after the same evidence bar clears.</p>
+      <p class="lede">Galaxy Forge is an early-stage digital products business. We publish practical toolkits for small businesses and professionals, and we cite the source behind each recommendation and affiliate relationship. We build our own digital products only after the same evidence bar clears.</p>
       <div class="hero-ctas">
         <a href="solutions.html" class="btn btn-primary">Find the right solution →</a>
         <a href="recommended.html" class="btn btn-ghost">Explore solutions</a>
         <a href="mailto:galaxyaek7@gmail.com?subject=FIRST-BUYER-FREE%20Etsy%20Suspension%20Complete%20Bundle" class="btn btn-ghost">Or get your first toolkit free</a>
       </div>
       <div class="proof-strip">
-        <div class="proof-item"><div class="num">10</div><div class="label">named acceptance conditions every opportunity must clear before we build it</div></div>
-        <div class="proof-item"><div class="num">4</div><div class="label">independent evidence states per criterion — Verified True, Verified False, Unknown, Not Applicable. Unknown never silently becomes "no."</div></div>
-        <div class="proof-item"><div class="num">100%</div><div class="label">of our product decisions are logged, reasoned, and traceable — including every rejection.</div></div>
+        <div class="proof-item"><div class="num">9</div><div class="label">hard gates a ladder-scored opportunity must clear before we build it</div></div>
+        <div class="proof-item"><div class="num">4</div><div class="label">evidence states used by the completeness audit — Verified True, Verified False, Unknown, Not Applicable. Unknown never silently becomes "no."</div></div>
+        <div class="proof-item"><div class="num">LOG</div><div class="label">Product decisions are logged, reasoned, and traceable — including rejections.</div></div>
       </div>
     </div>
   </section>
@@ -241,12 +245,12 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
         <div class="approach-card">
           <div class="step">02 — Evidence Completeness</div>
           <h3>"Unknown" is never treated as "no"</h3>
-          <p>When evidence is missing, we say Unknown and go acquire it — real competitor research, real customer-pain signal — before finalizing a rejection. Every opportunity carries a real, disclosed evidence-coverage score.</p>
+          <p>When evidence is missing, we say Unknown instead of treating it as "no." The separate evidence-completeness audit reports a disclosed coverage percentage for each opportunity it evaluates, rather than folding missing evidence into a false negative.</p>
         </div>
         <div class="approach-card">
-          <div class="step">03 — Ten-Condition Gate</div>
-          <h3>Commercial value, defensibility, and durability — all required</h3>
-          <p>Competition, defensibility, pricing power, AI-leverage, long-term durability, and profit margin are each independently verified. An opportunity that fails even one still gets rejected, regardless of how good the rest looks.</p>
+          <div class="step">03 — Nine hard gates</div>
+          <h3>Defensibility, pricing power, and durability are hard gates</h3>
+          <p>Competition, defensibility, pricing power, AI leverage, durability, and margin are checked as hard gates; failing any one rejects the opportunity regardless of the rest. Two further named conditions — high commercial value and continuous-improvement potential — have no real per-opportunity signal yet and are reported as Unknown, never assumed to pass.</p>
         </div>
       </div>
     </div>
@@ -288,11 +292,24 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
     <div class="wrap">
       <div class="section-head">
         <div class="eyebrow"><span class="dot"></span> Live catalog</div>
-        <h2>Products that have already cleared the gate.</h2>
-        <p>Every item below is real: a real product, a real price, a real evidence-backed acceptance decision behind it — pulled live from our own commerce records, not a marketing copy that can drift out of date.</p>
+        <h2>Published products.</h2>
+        <p>Every item below is a real product with a real recorded price and a published Gumroad destination, read live from our product registry. Publication is not proof of customer demand or commercial success.</p>
       </div>
       <div id="catalogStatus">Loading the real catalog…</div>
       <div class="catalog-grid" id="catalogGrid"></div>
+    </div>
+  </section>
+
+  <section id="library">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow"><span class="dot"></span> Verified library</div>
+        <h2>Verified releases, read from the registry.</h2>
+        <p>These titles are published on Gumroad and verified against the same product registry our own team uses. Title, price and cover come from that record; availability is never hand-copied onto this page.</p>
+      </div>
+      <div id="libraryStatus">Loading the verified library...</div>
+      <div class="catalog-grid" id="libraryGrid"></div>
+      <div style="margin-top:1.5rem"><a class="btn btn-ghost" href="products.html">Browse all published products →</a></div>
     </div>
   </section>
 
@@ -306,7 +323,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
       <div class="request-panel">
         <div class="request-notes">
           <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Real evaluation, not a sales script.</strong> Your request goes through the same acceptance doctrine every internally-discovered opportunity does.</p></div>
-          <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Real evaluation, automatically — not a form-letter queue.</strong> Your request runs through our real evaluation gate within about a minute of submitting. Track it live at the link we give you; anything that needs a closer human look gets one.</p></div>
+          <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Real evaluation, automatically — not a form-letter queue.</strong> Your request runs through our real evaluation gate when you submit it. Track it at the link we give you; anything that needs a closer human look gets one.</p></div>
           <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">No spam, no resale.</strong> Your details are used only to evaluate and respond to this request.</p></div>
         </div>
         <form class="request-form" id="requestForm">
@@ -348,8 +365,8 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
     <div class="wrap">
       <div class="section-head">
         <div class="eyebrow"><span class="dot"></span> Customer reviews</div>
-        <h2>What customers say.</h2>
-        <p>Every review here is real, submitted by a customer after their real order was delivered — never a placeholder testimonial.</p>
+        <h2>Customer reviews.</h2>
+        <p>Reviews are published only from real, delivered orders. No placeholder testimonials.</p>
       </div>
       <div id="reviewsBody">Loading…</div>
     </div>
@@ -363,12 +380,12 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
         <p>Real policy pages, not boilerplate. Read exactly what we do with data, how refunds work, and how we disclose incidents.</p>
       </div>
       <div class="kb-grid">
-        <a class="kb-card" href="trust/index.html"><h3>Trust Center</h3><p>Every real policy in one place — the starting point.</p><span class="go">Open →</span></a>
-        <a class="kb-card" href="trust/security-policy.html"><h3>Security</h3><p>How we handle credentials, access, and infrastructure.</p><span class="go">Open →</span></a>
-        <a class="kb-card" href="trust/responsible-ai-policy.html"><h3>Responsible AI</h3><p>Our real position on AI-assisted development and disclosure.</p><span class="go">Open →</span></a>
-        <a class="kb-card" href="trust/refund-policy.html"><h3>Refund Policy</h3><p>Plain terms, no fine-print surprises.</p><span class="go">Open →</span></a>
-        <a class="kb-card" href="trust/privacy-policy.html"><h3>Privacy Policy</h3><p>What we collect and why — nothing more.</p><span class="go">Open →</span></a>
-        <a class="kb-card" href="trust/incident-disclosure-policy.html"><h3>Incident Disclosure</h3><p>How we'd tell you if something real went wrong.</p><span class="go">Open →</span></a>
+        <a class="kb-card" href="trust/index.html"><h3>Trust Center</h3><p>Draft policy templates and current honest status — not legal advice.</p><span class="go">Open →</span></a>
+        <a class="kb-card" href="trust/security-policy.html"><h3>Security</h3><p>Draft: how we handle credentials and access.</p><span class="go">Open →</span></a>
+        <a class="kb-card" href="trust/responsible-ai-policy.html"><h3>Responsible AI</h3><p>Draft: our position on AI-assisted development and disclosure.</p><span class="go">Open →</span></a>
+        <a class="kb-card" href="trust/refund-policy.html"><h3>Refund Policy</h3><p>Draft refund terms; platform purchases follow the platform.</p><span class="go">Open →</span></a>
+        <a class="kb-card" href="trust/privacy-policy.html"><h3>Privacy Policy</h3><p>Draft: what we collect and why.</p><span class="go">Open →</span></a>
+        <a class="kb-card" href="trust/incident-disclosure-policy.html"><h3>Incident Disclosure</h3><p>Draft: how we'd disclose a real incident.</p><span class="go">Open →</span></a>
       </div>
     </div>
   </section>
@@ -378,12 +395,12 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
       <div class="section-head">
         <div class="eyebrow"><span class="dot"></span> Support center</div>
         <h2>Already working with us? Get real help.</h2>
-        <p>Every ticket reaches a real person — no bot triage, no ticket queue theater. If it's about an existing request, include the request ID from your tracking link.</p>
+        <p>Tickets are logged for founder review, with no automated bot triage. If it's about an existing request, include the request ID from your tracking link.</p>
       </div>
       <div class="support-panel">
         <div class="request-notes">
           <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Track your own request first.</strong> <a href="status.html" style="color:var(--cool);">Order tracking</a> answers most status questions instantly, without waiting on a reply.</p></div>
-          <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Real triage.</strong> Every ticket is logged and reviewed by a real person — see our <a href="trust/incident-disclosure-policy.html" style="color:var(--cool);">Incident Disclosure Policy</a> for how we handle anything serious.</p></div>
+          <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Real triage.</strong> Tickets are logged for founder review — see our <a href="trust/incident-disclosure-policy.html" style="color:var(--cool);">Incident Disclosure Policy</a> for how we handle anything serious.</p></div>
         </div>
         <form class="support-form" id="supportForm">
           <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off">
@@ -407,12 +424,13 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
     <div class="footer-grid">
       <div class="footer-brand">
         <div class="brand"><div class="brand-mark">GF</div><div class="brand-name">Galaxy Forge</div></div>
-        <p>A global commercial intelligence company. We help you discover, evaluate, and choose better digital solutions for real problems — and we build our own AI software, only after real market evidence proves it's worth building.</p>
+        <p>An early-stage digital products business. We publish practical toolkits and workflow systems for small businesses and professionals, and we build new products only after the evidence bar clears.</p>
       </div>
       <div class="footer-links">
         <div class="footer-col">
           <h4>Discover</h4>
           <a href="solutions.html">Solutions</a>
+          <a href="#library">Verified library</a>
           <a href="compare.html">Compare</a>
           <a href="guides.html">Guides</a>
           <a href="recommended.html">Recommended</a>
@@ -438,7 +456,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
         </div>
       </div>
     </div>
-    <div class="footer-bottom">© <span id="year"></span> Galaxy Forge. Every figure on this page is read live from our own real records.</div>
+    <div class="footer-bottom">© <span id="year"></span> Galaxy Forge. Product listings and reviews are read from our records; no customer counts, revenue, or testimonials are invented.</div>
   </div>
 </footer>
 
@@ -478,8 +496,24 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
     return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
   }
 
+  // GitHub Pages has no Node process, so every /api/* route is a 404 there.
+  // The homepage therefore showed "Catalog temporarily unavailable" and "No
+  // verified releases" to every visitor of the public site (measured
+  // 2026-10-28). catalog.json is the static snapshot scripts/export_public_catalog.js
+  // already writes for products.html; when the API is unreachable the same
+  // real products, prices and covers are rendered from it, and the purchase
+  // path is the real Gumroad listing (Paddle checkout needs the live server).
+  function publicSnapshot(limit){
+    return fetch('catalog.json', { cache: 'no-cache' })
+      .then(function(r){ if (!r.ok) throw new Error('snapshot ' + r.status); return r.json(); })
+      .then(function(body){
+        const rows = (body && body.data && body.data.products) || [];
+        return limit ? rows.slice(0, limit) : rows;
+      });
+  }
+
   fetch('/api/customer/catalog', { credentials: 'same-origin' })
-    .then(function(r){ return r.json(); })
+    .then(function(r){ if (!r.ok) throw new Error('customer catalog ' + r.status); return r.json(); })
     .then(function(body){
       const grid = document.getElementById('catalogGrid');
       const status = document.getElementById('catalogStatus');
@@ -541,7 +575,108 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
       });
     })
     .catch(function(){
-      document.getElementById('catalogStatus').textContent = 'Catalog temporarily unavailable — please try again shortly.';
+      const grid = document.getElementById('catalogGrid');
+      const status = document.getElementById('catalogStatus');
+      publicSnapshot(6).then(function(products){
+        if (!products.length){
+          status.textContent = 'No verified products in the live catalog right now — check back soon.';
+          return;
+        }
+        status.style.display = 'none';
+        products.forEach(function(p){
+          const card = document.createElement('article');
+          card.className = 'product-card library-card';
+          if (p.cover_url){
+            const img = document.createElement('img');
+            img.className = 'library-cover';
+            img.src = p.cover_url;
+            img.alt = (p.title || 'Product') + ' cover';
+            img.loading = 'lazy';
+            img.decoding = 'async';
+            card.appendChild(img);
+          }
+          const bodyEl = document.createElement('div');
+          bodyEl.className = 'library-body';
+          const title = document.createElement('h3');
+          title.textContent = p.title || 'Untitled product';
+          const price = document.createElement('div');
+          price.className = 'product-price';
+          price.textContent = p.price_display || 'See listing';
+          const cta = document.createElement('a');
+          cta.className = 'btn btn-primary';
+          cta.href = p.url;
+          cta.target = '_blank';
+          cta.rel = 'noopener noreferrer';
+          cta.textContent = 'View on Gumroad';
+          bodyEl.appendChild(title);
+          bodyEl.appendChild(price);
+          bodyEl.appendChild(cta);
+          card.appendChild(bodyEl);
+          grid.appendChild(card);
+        });
+      }).catch(function(){
+        status.textContent = 'Catalog temporarily unavailable — please try again shortly.';
+      });
+    });
+
+  fetch('/api/public/catalog?limit=6', { credentials: 'same-origin' })
+    .then(function(r){ if (!r.ok) throw new Error('registry ' + r.status); return r.json(); })
+    .then(function(body){ return (body && body.data && body.data.products) || []; })
+    .catch(function(){ return publicSnapshot(6); })
+    .then(function(products){
+      const grid = document.getElementById('libraryGrid');
+      const status = document.getElementById('libraryStatus');
+      if (!products.length){
+        status.textContent = 'No verified releases are available in the public catalog right now.';
+        return;
+      }
+      status.textContent = products.length + ' published release' + (products.length === 1 ? '' : 's') + ' loaded from the product registry.';
+      products.forEach(function(p, index){
+        const card = document.createElement('article');
+        card.className = 'product-card library-card';
+        if (p.cover_url){
+          const img = document.createElement('img');
+          img.className = 'library-cover';
+          img.src = p.cover_url;
+          img.alt = (p.title || 'Product') + ' cover';
+          img.loading = index < 2 ? 'eager' : 'lazy';
+          img.decoding = 'async';
+          card.appendChild(img);
+        }
+        const bodyEl = document.createElement('div');
+        bodyEl.className = 'library-body';
+        const tag = document.createElement('span');
+        tag.className = 'library-tag';
+        tag.textContent = 'Published on Gumroad';
+        const title = document.createElement('h3');
+        title.textContent = p.title || 'Untitled product';
+        const summary = document.createElement('p');
+        summary.className = 'library-summary';
+        summary.textContent = p.summary || 'Open the published listing for the full contents and terms.';
+        const price = document.createElement('div');
+        price.className = 'product-price';
+        price.textContent = p.price_display || 'See listing';
+        const cta = document.createElement('a');
+        cta.className = 'btn btn-primary';
+        cta.href = p.url;
+        cta.target = '_blank';
+        cta.rel = 'noopener noreferrer';
+        cta.textContent = 'View on Gumroad';
+        const note = document.createElement('p');
+        note.className = 'library-note';
+        note.textContent = 'The listing and checkout show the final amount, currency and terms.';
+        bodyEl.appendChild(tag);
+        bodyEl.appendChild(title);
+        bodyEl.appendChild(summary);
+        bodyEl.appendChild(price);
+        bodyEl.appendChild(cta);
+        bodyEl.appendChild(note);
+        card.appendChild(bodyEl);
+        grid.appendChild(card);
+      });
+    })
+    .catch(function(){
+      document.getElementById('libraryStatus').textContent = 'The verified library is temporarily unavailable. The rest of the page still works.';
     });
 
   fetch('/api/customer/reviews', { credentials: 'same-origin' })
