@@ -121,17 +121,102 @@ test('prices are formatted from cents, never invented', () => {
   assert.equal(catalog.priceDisplay('nope'), null);
 });
 
-test('public tool pages load covers through the catalog route, not the unserved books path', () => {
+test('public tool pages load covers from a path the static site actually serves', () => {
+  // The storefront is published as a plain static copy of customer_site/
+  // (GitHub Pages) AND served under /site/ by Express, whose static root is
+  // customer_site/ -- Express deliberately does not serve the repo root, so
+  // an /api/ route exists only on Express and a ../ path resolves only on
+  // Pages. The one path that works on both is a file inside customer_site/.
   const dir = path.join(__dirname, '..', 'customer_site');
   const files = fs.readdirSync(dir).filter((f) => /^tool-.*\.html$/.test(f));
   assert.ok(files.length > 0);
   for (const f of files) {
     const html = fs.readFileSync(path.join(dir, f), 'utf8');
-    assert.doesNotMatch(html, /\.\.\/books\/covers\//, f);
     for (const match of html.matchAll(/<img[^>]+src="([^"]+)"/g)) {
-      if (/B1[45]-/.test(match[1])) {
-        assert.match(match[1], /^\/api\/public\/catalog\/cover\//, f);
-      }
+      const src = match[1];
+      if (!/B1[45]-/.test(src)) continue;
+      assert.doesNotMatch(src, /^\/api\//, `${f}: an /api/ cover route is Express-only`);
+      assert.doesNotMatch(src, /^\.\.\//, `${f}: a ../ path escapes the Pages root`);
+      assert.ok(fs.existsSync(path.join(dir, src)), `${f}: ${src} is not a real file inside customer_site/`);
     }
   }
+});
+
+test('a product without a manifest is featured from its own listing media', () => {
+  // 79 of 102 published products predate the manifest system: their only real
+  // cover and copy live in data/public_media.json, filled from their own live
+  // listing by scripts/backfill_public_media.py. Without this fallback they
+  // could never appear on the storefront at all.
+  const files = baseFiles();
+  files['data/public_media.json'] = {
+    products: {
+      'B14-002': {
+        cover: 'customer_site/assets/covers/B14-002.png',
+        summary: 'Two-page planner that turns a lump sum into dated payments.',
+        source_url: 'https://aekraft.gumroad.com/l/nocover',
+      },
+      'B14-003': {
+        cover: '../../etc/passwd.png',
+        summary: 'must never be served from outside the project',
+      },
+    },
+  };
+  files['customer_site/assets/covers/B14-002.png'] = 'png';
+
+  const d = catalog.catalog({ root: factory(files), limit: 12 });
+  const ids = d.products.map((p) => p.id);
+  assert.ok(ids.includes('B14-002'), 'the manifest-less product is now featureable');
+  const product = d.products.find((p) => p.id === 'B14-002');
+  assert.equal(product.summary, 'Two-page planner that turns a lump sum into dated payments.');
+  assert.match(product.cover_url, /^\/api\/public\/catalog\/cover\//);
+
+  const asset = catalog.coverAsset('B14-002', { root: factory(files) });
+  assert.ok(asset && asset.endsWith(path.join('customer_site', 'assets', 'covers', 'B14-002.png')),
+    'coverAsset resolves the listing cover so the exporter can copy it');
+
+  assert.equal(catalog.coverAsset('B14-003', { root: factory(files) }), null,
+    'a path escaping the project is refused, never served');
+});
+
+test('the exported catalog.json points at covers both deployments can serve', () => {
+  // Same dual-deployment rule as the tool pages above, applied to the static
+  // snapshot GitHub Pages serves. Exported into a temp file so the real
+  // customer_site/catalog.json is never rewritten by a test run.
+  const { execFileSync } = require('child_process');
+  const dir = path.join(__dirname, '..', 'customer_site');
+  const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'gf-catalog-out-')), 'catalog.json');
+  execFileSync(process.execPath, [path.join(__dirname, '..', 'scripts', 'export_public_catalog.js'), '24', out], { stdio: 'pipe' });
+  const products = JSON.parse(fs.readFileSync(out, 'utf8')).data.products;
+  assert.ok(products.length > 0);
+  for (const p of products) {
+    if (!p.cover_url) continue;
+    assert.match(p.cover_url, /^assets\/covers\//, `${p.id}: ${p.cover_url}`);
+    assert.ok(fs.existsSync(path.join(dir, p.cover_url)), `${p.id}: ${p.cover_url} is missing from customer_site/`);
+  }
+});
+
+test('no customer_site page points at a root-absolute path only Express can serve', () => {
+  // REAL DEFECT, 2026-10-28: login.html redirected to '/site/' after sign-in.
+  // That resolves on this factory's own server (which mounts customer_site at
+  // /site) and 404s on GitHub Pages, where the same file lives under
+  // /openclaw-factory/customer_site/. It is now 'index.html'. This test pins
+  // the whole class: every href/src a page really uses must be relative (or a
+  // full URL), except /api/ routes, which are deliberately backend-only.
+  const dir = path.join(__dirname, '..', 'customer_site');
+  const offenders = [];
+  const walk = (d) => {
+    for (const entry of fs.readdirSync(d, { withFileTypes: true })) {
+      const p = path.join(d, entry.name);
+      if (entry.isDirectory()) { walk(p); continue; }
+      if (!entry.name.endsWith('.html')) continue;
+      const html = fs.readFileSync(p, 'utf8');
+      for (const match of html.matchAll(/(?:href|src)\s*=\s*['"](\/(?!\/)[^'"]*)['"]/g)) {
+        const url = match[1];
+        if (url.startsWith('/api/')) continue;
+        offenders.push(`${path.relative(dir, p)} -> ${url}`);
+      }
+    }
+  };
+  walk(dir);
+  assert.deepEqual(offenders, [], 'these 404 on GitHub Pages and only work when Express mounts the site at /site');
 });

@@ -2,14 +2,22 @@
 // /api/public/catalog route serves, but with static cover paths so the
 // GitHub Pages copy of the storefront works without the local server.
 //
-//   node scripts/export_public_catalog.js
+// Cover paths are emitted relative to customer_site/ (assets/covers/<file>)
+// and the file is copied there on demand. Both deployments serve that path:
+// GitHub Pages from /openclaw-factory/customer_site/, and Express from
+// /site/ (its static root is customer_site/). A ../books/... path would only
+// work on Pages -- Express deliberately does not serve the repo root.
+//
+//   node scripts/export_public_catalog.js [limit] [outPath]
 const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const catalog = require(path.join(ROOT, 'lib', 'public_catalog.js'));
 
-const limit = Number(process.argv[2] || 24);
+const limit = Number(process.argv[2] || 120);
+const target = process.argv[3] ? path.resolve(process.argv[3]) : path.join(ROOT, 'customer_site', 'catalog.json');
+const SITE_COVERS = path.join(ROOT, 'customer_site', 'assets', 'covers');
 const data = catalog.catalog({ root: ROOT, limit });
 
 for (const product of data.products) {
@@ -20,7 +28,23 @@ for (const product of data.products) {
     continue;
   }
   const rel = path.relative(ROOT, abs).split(path.sep).join('/');
-  product.cover_url = rel.startsWith('..') ? null : `../${rel}`;
+  if (rel.startsWith('..')) {
+    product.cover_url = null;
+    continue;
+  }
+  const base = path.basename(abs);
+  const dest = path.join(SITE_COVERS, base);
+  try {
+    fs.mkdirSync(SITE_COVERS, { recursive: true });
+    const srcStat = fs.statSync(abs);
+    const stale = !fs.existsSync(dest) || fs.statSync(dest).mtimeMs < srcStat.mtimeMs;
+    if (stale) fs.copyFileSync(abs, dest);
+    product.cover_url = `assets/covers/${base}`;
+  } catch (err) {
+    // A cover that cannot be published honestly reports no cover rather than
+    // a path that 404s on the storefront.
+    product.cover_url = null;
+  }
 }
 
 const out = {
@@ -30,6 +54,6 @@ const out = {
   },
 };
 
-const target = path.join(ROOT, 'customer_site', 'catalog.json');
+fs.mkdirSync(path.dirname(target), { recursive: true });
 fs.writeFileSync(target, JSON.stringify(out, null, 1) + '\n', 'utf8');
-console.log(JSON.stringify({ file: 'customer_site/catalog.json', counts: data.counts, first: data.products.slice(0, 3).map((p) => p.id) }));
+console.log(JSON.stringify({ file: path.relative(ROOT, target).split(path.sep).join('/'), counts: data.counts, first: data.products.slice(0, 3).map((p) => p.id) }));
