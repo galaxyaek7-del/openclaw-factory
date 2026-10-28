@@ -147,7 +147,7 @@ href="https://aekraft.gumroad.com/l/ziiur?ref=galaxyforge_products&referrer=c99_
   // process, so that route is a 404). catalog.json is the static snapshot
   // scripts/export_public_catalog.js writes, so the grid still works there.
   function fromRegistry(){
-    return fetch('/api/public/catalog?limit=24', { credentials: 'same-origin' })
+    return fetch('/api/public/catalog?limit=120', { credentials: 'same-origin' })
       .then(function(r){ if (!r.ok) throw new Error('registry ' + r.status); return r.json(); })
       .then(function(body){ return { products: productsFrom(body), source: 'the product registry' }; });
   }
@@ -158,13 +158,44 @@ href="https://aekraft.gumroad.com/l/ziiur?ref=galaxyforge_products&referrer=c99_
       .then(function(body){ return { products: productsFrom(body), source: 'the published catalog snapshot' }; });
   }
 
+  // The curated cards further down this page link to the same listings the
+  // registry returns (73 of 102 when this was written). Showing a product twice
+  // on one page wastes the reader's attention, so a listing already linked here
+  // is not repeated in the grid; the count says so instead of quietly dropping it.
+  function alreadyListed(){
+    const seen = new Set();
+    const anchors = document.querySelectorAll('a[href*="gumroad.com/l/"]');
+    for (let i = 0; i < anchors.length; i += 1){
+      const a = anchors[i];
+      if (grid.contains(a)) continue;
+      const hit = String(a.href).match(/gumroad\.com\/l\/([A-Za-z0-9_-]+)/);
+      if (hit) seen.add(hit[1]);
+    }
+    return seen;
+  }
+
+  function slugOf(url){
+    const hit = String(url || '').match(/gumroad\.com\/l\/([A-Za-z0-9_-]+)/);
+    return hit ? hit[1] : null;
+  }
+
   function render(loaded){
-    const products = loaded.products;
-    if (!products.length){
+    const listed = alreadyListed();
+    const products = loaded.products.filter(function(p){
+      const slug = slugOf(p.url);
+      return !(slug && listed.has(slug));
+    });
+    if (!loaded.products.length){
       status.textContent = 'No verified releases are available in the public registry right now.';
       return;
     }
-    status.textContent = products.length + ' published release' + (products.length === 1 ? '' : 's') + ' loaded from ' + loaded.source + '.';
+    const skipped = loaded.products.length - products.length;
+    if (!products.length){
+      status.textContent = 'All ' + loaded.products.length + ' verified releases are already listed on this page.';
+      return;
+    }
+    status.textContent = products.length + ' more verified release' + (products.length === 1 ? '' : 's') + ' loaded from ' + loaded.source
+      + (skipped ? ' (' + skipped + ' already listed above)' : '') + '.';
     products.forEach(function(p, index){
       const card = document.createElement('article');
       card.className = 'card';
