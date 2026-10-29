@@ -52,6 +52,9 @@ Registers the supervised server and loop at log-on. Today they were started by h
 
 Open Telegram, send `/start` to the factory bot. The bot token works; it has no chat
 to deliver to until you write to it once (`connection_verifier.py` shows `telegram DEGRADED`).
+Then `python scripts/n8n_notification_selfcheck.py` lists the chat id under
+`discoverable_chat_ids`; set it as `OPENCLAW_TELEGRAM_CHAT_ID` in `.env` (or tell Claude to),
+and restart the server so the command handler (`lib/telegram_commands.js`) accepts it.
 
 ## 6. Decisions that unlock measurement and reach
 

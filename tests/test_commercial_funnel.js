@@ -121,6 +121,23 @@ test('a Telegraph experiment shows its article\'s latest platform reading, label
   assert.equal(e.with_exposure_reading, 1);
 });
 
+test('founder queue lists only what the files show is waiting, each with a command', () => {
+  const root = factory({
+    'reports/GUMROAD_DELIVERY_AUDIT_2026-10-29.json': { generated_at: '2026-10-29T16:00:00Z',
+      rows: [{ slug: 'a', name: 'Kit A', published: true, price_usd: 69, issues: ['PROMISES_SPREADSHEET_NOT_ATTACHED'] }] },
+    'data/commercial_experiments.jsonl': JSON.stringify({ record_type: 'experiment_definition', experiment_id: 'E1', status: 'PENDING_APPROVAL' }) + '\n',
+  });
+  const out = cf.compute({ root, registry: REGISTRY, revenue: REVENUE_ZERO, distribution: DIST, now: NOW });
+  const titles = out.founder_queue.map(q => q.title);
+  assert.equal(out.founder_queue.length, 3);
+  assert.match(titles[0], /Publish 1 .*B16-008/);
+  assert.match(titles[1], /Repair 1 paid listing/);
+  assert.match(titles[2], /Approve or reject 1/);
+  for (const q of out.founder_queue) assert.ok(q.command);
+  const empty = cf.compute({ root: factory(), registry: { products: [] }, revenue: REVENUE_ZERO, distribution: DIST, now: NOW });
+  assert.deepEqual(empty.founder_queue, []);
+});
+
 test('experiments: latest status wins and pending ones are not counted as running', () => {
   const rows = [
     { record_type: 'experiment_definition', experiment_id: 'E1', experiment_type: 'product_positioning', status: 'PENDING_APPROVAL', hypothesis: 'h' },
