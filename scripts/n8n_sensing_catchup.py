@@ -39,23 +39,40 @@ NETWORK_ERROR = re.compile(r"ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ECONNRESET|ETIMEDO
                            r"|timed? ?out|getaddrinfo", re.I)
 
 
-def decide(workflow, today, attempts_today, dns_ok, secret_set):
-    """Pure decision. Returns (should_trigger, reason)."""
+# 2026-10-29: n8n was down at 08:00 local (07:00 UTC) and the day's run never
+# started, so there was no failed run to catch up and the day's trends were lost.
+# A run that never started counts too, once the schedule has passed with an hour
+# of grace. All other limits below are unchanged.
+MISSED_AFTER_UTC_HOUR = 8
+
+
+def decide(workflow, today, attempts_today, dns_ok, secret_set, now_hour=None):
+    """Pure decision. Returns (should_trigger, reason).
+
+    now_hour (UTC) enables the missed-run case; without it the original rule
+    (only a network-class failure today) applies."""
     if not workflow:
         return False, "workflow state UNKNOWN"
     if str(workflow.get("last_success_at") or "")[:10] == today:
         return False, "already succeeded today"
-    if workflow.get("last_status") != "error" or str(workflow.get("last_started_at") or "")[:10] != today:
-        return False, "no failed run today"
-    if not NETWORK_ERROR.search(str(workflow.get("last_error") or "")):
-        return False, "today's failure is not a network error: needs diagnosis, not a retry"
+    started_today = str(workflow.get("last_started_at") or "")[:10] == today
+    if not started_today and now_hour is not None:
+        if now_hour < MISSED_AFTER_UTC_HOUR:
+            return False, "today's scheduled run is not overdue yet"
+        reason_ok = "today's scheduled run never started (n8n was down) and the network is back"
+    else:
+        if workflow.get("last_status") != "error" or not started_today:
+            return False, "no failed run today"
+        if not NETWORK_ERROR.search(str(workflow.get("last_error") or "")):
+            return False, "today's failure is not a network error: needs diagnosis, not a retry"
+        reason_ok = "network-class failure today and the network is back"
     if attempts_today >= MAX_ATTEMPTS_PER_DAY:
         return False, f"catch-up limit reached ({MAX_ATTEMPTS_PER_DAY}/day)"
     if not dns_ok:
         return False, "network still down (trends.google.com does not resolve)"
     if not secret_set:
         return False, "N8N_WEBHOOK_SECRET not configured"
-    return True, "network-class failure today and the network is back"
+    return True, reason_ok
 
 
 def _dns_ok(host="trends.google.com"):
@@ -95,7 +112,8 @@ def run_once(now=None, state_path=STATE_PATH, health=None, dns_ok=None, secret=N
     if secret is None:
         from channels.env_config import read_env_value
         secret = read_env_value("N8N_WEBHOOK_SECRET", ROOT / ".env") or ""
-    ok, reason = decide(workflow, today, attempts, _dns_ok() if dns_ok is None else dns_ok, bool(secret))
+    ok, reason = decide(workflow, today, attempts, _dns_ok() if dns_ok is None else dns_ok, bool(secret),
+                        now_hour=now.hour)
     if not ok:
         return {"action": "none", "detail": reason}
     state = {today: attempts + 1}  # keep only today's counter

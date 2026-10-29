@@ -84,3 +84,40 @@ class TestRunOnce(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestMissedRun(unittest.TestCase):
+    """2026-10-29: n8n was down at the scheduled hour and the day's run never started."""
+
+    NEVER_STARTED = {"last_status": "success", "last_started_at": "2026-10-25 07:00:08.156",
+                     "last_success_at": "2026-10-25 07:00:08.156"}
+
+    def test_missed_run_triggers_after_the_grace_hour(self):
+        ok, why = nc.decide(self.NEVER_STARTED, "2026-10-29", 0, True, True, now_hour=11)
+        self.assertTrue(ok)
+        self.assertIn("never started", why)
+
+    def test_not_before_the_schedule_has_passed(self):
+        self.assertFalse(nc.decide(self.NEVER_STARTED, "2026-10-29", 0, True, True, now_hour=7)[0])
+
+    def test_same_limits_apply(self):
+        for args, label in (((0, False, True), "network down"), ((2, True, True), "daily limit"),
+                            ((0, True, False), "no secret")):
+            self.assertFalse(nc.decide(self.NEVER_STARTED, "2026-10-29", *args, now_hour=11)[0], label)
+
+    def test_already_succeeded_today_never_triggers(self):
+        w = {"last_status": "success", "last_started_at": "2026-10-29 07:00:01", "last_success_at": "2026-10-29 07:00:05"}
+        self.assertFalse(nc.decide(w, "2026-10-29", 0, True, True, now_hour=11)[0])
+
+    def test_old_callers_without_now_hour_keep_the_original_rule(self):
+        self.assertFalse(nc.decide(self.NEVER_STARTED, "2026-10-29", 0, True, True)[0])
+
+    def test_run_once_uses_the_current_hour(self):
+        d = tempfile.TemporaryDirectory()
+        self.addCleanup(d.cleanup)
+        calls = []
+        out = nc.run_once(now=datetime(2026, 10, 29, 11, 5, tzinfo=timezone.utc), state_path=Path(d.name) / "s.json",
+                          health=health(self.NEVER_STARTED), dns_ok=True, secret="s3cret",
+                          trigger=lambda url, secret: calls.append(url) or 200)
+        self.assertEqual("triggered", out["action"])
+        self.assertEqual(1, len(calls))
