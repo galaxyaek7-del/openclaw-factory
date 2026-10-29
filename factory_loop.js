@@ -1399,11 +1399,24 @@ function criticalHealthReasons(checks) {
   return out;
 }
 
+// B39 (2026-10-29): the sensing_engine check carries per-workflow verdicts from
+// scripts/n8n_workflow_health.py. A scheduled workflow that is STALE or FAILING
+// means sales polls or sensing runs are being lost even if n8n answers; it was
+// only a "degraded" line in the log for four days. UNKNOWN (no evidence yet,
+// e.g. right after a restart) is not raised.
+function workflowHealthReasons(checks) {
+  const wf = checks && checks.sensing_engine && checks.sensing_engine.workflows;
+  if (!wf || typeof wf !== 'object') return [];
+  const bad = Object.entries(wf).filter(([, v]) => v === 'STALE' || v === 'FAILING');
+  if (!bad.length) return [];
+  return [`سير عمل n8n مجدول لا ينجح: ${bad.map(([k, v]) => `${k}=${v}`).join('، ')} — راجع python scripts/n8n_workflow_health.py`];
+}
+
 function checkNeedsAttention(tickActions, logPath = GOLDEN_HUNTER_EVENTS_FILE, healthChecks = null) {
-  const reasons = criticalHealthReasons(healthChecks);
+  const reasons = criticalHealthReasons(healthChecks).concat(workflowHealthReasons(healthChecks));
 
   for (const a of tickActions || []) {
-    if ((a.step === 'golden_hunter_bridge' || a.step === 'distribute') && a.action === 'failed') {
+    if ((a.step === 'golden_hunter_bridge' || a.step === 'distribute' || a.step === 'n8n_watchdog') && a.action === 'failed') {
       reasons.push(`فشل حقيقي في خطوة "${a.step}" هذه الدورة: ${a.detail}`);
     }
   }
@@ -1667,6 +1680,78 @@ function healN8n(health) {
     action: 'warning',
     detail: 'n8n غير متاح — يُتابَع الإنتاج بدونه (Scout يعتمد على تحليل Groq الاحتياطي مؤقتاً، كما صُمِّم في مسار Scout)',
   };
+}
+
+// ── n8n watchdog (2026-10-29) ──
+// n8n was not running from 2026-10-25 to 2026-10-29: zero executions of every
+// scheduled workflow (sales poll, sensing) while healN8n above only logged a
+// warning each tick. The watchdog checks port 5678 directly (healthz), not the
+// sensing_engine flag -- that flag is also false when n8n runs but a workflow is
+// merely stale, and restarting a running n8n would be wrong. After
+// N8N_WATCHDOG_FAILURES consecutive unreachable ticks it starts n8n through its
+// existing scheduled task (GalaxyForge-N8N-Autostart, which refuses to start a
+// second copy if the port is taken), at most once per N8N_WATCHDOG_COOLDOWN_MS.
+// It never edits n8n configuration or workflows.
+const N8N_WATCHDOG_STATE = path.join(FACTORY_DIR, 'data', 'n8n_watchdog.json');
+const N8N_WATCHDOG_FAILURES = 3;
+const N8N_WATCHDOG_COOLDOWN_MS = 60 * 60 * 1000;
+const N8N_HEALTHZ_URL = 'http://localhost:5678/healthz';
+const N8N_AUTOSTART_TASK = 'GalaxyForge-N8N-Autostart';
+
+function n8nWatchdogDecision(state, reachable, nowMs) {
+  const prev = state || {};
+  if (reachable) {
+    return { decision: 'none', state: { failures: 0, last_restart_at: prev.last_restart_at || null } };
+  }
+  const failures = (prev.failures || 0) + 1;
+  const last = prev.last_restart_at ? Date.parse(prev.last_restart_at) : null;
+  const cooled = last == null || isNaN(last) || nowMs - last >= N8N_WATCHDOG_COOLDOWN_MS;
+  if (failures >= N8N_WATCHDOG_FAILURES && cooled) {
+    return { decision: 'restart', state: { failures, last_restart_at: new Date(nowMs).toISOString() } };
+  }
+  return { decision: 'wait', state: { failures, last_restart_at: prev.last_restart_at || null } };
+}
+
+async function n8nReachable(fetchImpl = fetch) {
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort(), 5000);
+  try {
+    const r = await fetchImpl(N8N_HEALTHZ_URL, { signal: ac.signal });
+    return r.ok;
+  } catch (_) {
+    return false;
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+async function runN8nWatchdog({ statePath = N8N_WATCHDOG_STATE, now = Date.now(), fetchImpl = fetch,
+  startTask = (name) => execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
+    `Start-ScheduledTask -TaskName '${name}'`], { timeout: 30000, stdio: 'ignore' }) } = {}) {
+  let state = null;
+  try { state = JSON.parse(fs.readFileSync(statePath, 'utf8')); } catch (_) { state = null; }
+  const reachable = await n8nReachable(fetchImpl);
+  const { decision, state: next } = n8nWatchdogDecision(state, reachable, now);
+  let result;
+  if (decision === 'none') {
+    result = { action: 'none', detail: 'n8n يجيب على المنفذ 5678' };
+  } else if (decision === 'wait') {
+    result = { action: 'waiting', detail: `n8n لا يجيب (${next.failures} دورة متتالية)؛ إعادة التشغيل بعد ${N8N_WATCHDOG_FAILURES} دورات وبحد مرة في الساعة` };
+  } else if (process.platform !== 'win32') {
+    result = { action: 'failed', detail: 'n8n متوقف ولا توجد مهمة تشغيل لهذا النظام' };
+  } else {
+    try {
+      startTask(N8N_AUTOSTART_TASK);
+      result = { action: 'restarted', detail: `n8n لم يجب ${next.failures} دورات متتالية؛ شُغِّل عبر المهمة المجدولة ${N8N_AUTOSTART_TASK}` };
+    } catch (err) {
+      result = { action: 'failed', detail: `n8n متوقف وتعذّر تشغيله: ${String(err.message || err).slice(0, 160)}` };
+    }
+  }
+  try {
+    fs.writeFileSync(statePath + '.tmp', JSON.stringify(next));
+    fs.renameSync(statePath + '.tmp', statePath);
+  } catch (_) { /* state is best effort; the decision above already happened */ }
+  return result;
 }
 
 // ── HUNT ──
@@ -5188,6 +5273,8 @@ async function runTick() {
     }
 
     actions.push({ step: 'heal_n8n', ...healN8n(diagnosis.health) });
+    markStep('n8n_watchdog');
+    actions.push({ step: 'n8n_watchdog', ...(await runN8nWatchdog()) });
     markStep('sensing_catchup');
     actions.push({ step: 'sensing_catchup', ...(await runSensingCatchup()) });
 
@@ -5718,7 +5805,7 @@ if (require.main === module) {
 }
 
 module.exports = {
-  runTick, healFinance, healEmptyBooks, healN8n, hunt, diagnose,
+  runTick, healFinance, healEmptyBooks, healN8n, n8nWatchdogDecision, runN8nWatchdog, hunt, diagnose,
   generateWeeklyReport, maybeGenerateWeeklyReport, weekReportPath, runExportExecutiveReport,
   runEvolutionReport, evolutionReportPath, maybeGenerateDailyEvolutionReport,
   runGalaxyEvolutionReport, galaxyEvolutionReportPath, maybeGenerateMonthlyGalaxyEvolutionReport,
@@ -5761,7 +5848,7 @@ module.exports = {
   appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted,
   evaluateGoldenOpportunities, getButterPrice, getOpportunityScore, getLadderOpportunityScore,
   checkProductionEngineHealth,
-  checkNeedsAttention, criticalHealthReasons, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
+  checkNeedsAttention, criticalHealthReasons, workflowHealthReasons, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
   checkPendingAiCeoDecision,
   checkPendingReview, countPendingReviewDrafts, writeNeedsReview, clearNeedsReview,
   acquireLock, releaseLock, isPidAlive, isPidAliveWithIdentity, LOCK_FILE,
