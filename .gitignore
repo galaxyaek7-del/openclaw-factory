@@ -178,6 +178,8 @@ books/_batch15_src/
 books/_batch16_src/
 data/registry_daily_state.json
 data/tool_pages_daily_state.json
+# customer inquiries: names and e-mail addresses (inquiry_intake.py)
+data/inquiries.jsonl
 
 # 2026-10-23 founder decision: paid product files leave the public repository.
 # They stay on the factory machine; tests that read them skip on CI when absent.

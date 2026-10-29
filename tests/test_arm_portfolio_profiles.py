@@ -24,7 +24,7 @@ class Profiles(unittest.TestCase):
         self.assertEqual(letters, set("ABCDEFGHI"))
 
     def test_live_profiles_are_consistent(self):
-        s = state(affiliate_intelligence="BLOCKED", ai_operations="PLANNED", productized_ai_services="PLANNED")
+        s = state(affiliate_intelligence="BLOCKED", productized_ai_services="PLANNED")
         self.assertEqual(ap.validate(s), [])
 
     def test_operating_needs_verified_revenue(self):
@@ -34,7 +34,7 @@ class Profiles(unittest.TestCase):
         self.assertTrue(any("digital_products: stage OPERATING not supported by evidence status PARTIAL" in p
                             for p in problems), problems)
         ok = state(digital_products="REVENUE_VERIFIED", affiliate_intelligence="BLOCKED",
-                   ai_operations="PLANNED", productized_ai_services="PLANNED")
+                   productized_ai_services="PLANNED")
         self.assertEqual(ap.validate(ok, profiles), [])
 
     def test_a_planned_arm_cannot_claim_a_commercial_test(self):
@@ -49,7 +49,7 @@ class Profiles(unittest.TestCase):
                 self.assertIn(d, ap.SHARED_CAPABILITIES, key)
 
     def test_summary_names_cross_arm_bottlenecks(self):
-        out = ap.summary(state(affiliate_intelligence="BLOCKED", ai_operations="PLANNED", productized_ai_services="PLANNED"))
+        out = ap.summary(state(affiliate_intelligence="BLOCKED", productized_ai_services="PLANNED"))
         caps = {b["capability"]: b["blocks"] for b in out["bottlenecks"]}
         self.assertIn("visit_measurement", caps)
         self.assertGreaterEqual(len(caps["visit_measurement"]), 3)

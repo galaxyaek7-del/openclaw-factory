@@ -65,10 +65,11 @@ ARMS: Dict[str, Dict[str, Any]] = {
         "name": "Research and Data Services",
         "implementation": ["market_intelligence_core", "multi_source_intelligence",
                            "competitor_discovery.py", "reports/B12-010/GATE_CANDIDATES_2026-10-19.json",
-                           "data_products/datacard.py"],
+                           "data_products/datacard.py", "data_products/uspto_trademark_fees.py",
+                           "services/research/uspto_trademark_fees_brief_2026-10-29.md"],
         "acceptance": ["repeatable research output", "a written offer", "a paying engagement"],
-        "commercial_path": [],
-        "gap": "research infrastructure exists but no customer-facing offer exists",
+        "commercial_path": ["services/research/uspto_trademark_fees_brief_2026-10-29.md"],
+        "gap": "one sample brief and one validated sample dataset (USPTO fees, data card PASS); not published, no buyer",
         "blocker": "research infrastructure exists but no customer-facing offer or engagement",
     },
     "affiliate_intelligence": {
@@ -91,12 +92,14 @@ ARMS: Dict[str, Dict[str, Any]] = {
     },
     "ai_operations": {
         "name": "AI Operations",
-        "implementation": [],
+        # 2026-10-29: the customer-safe n8n automation audit (read-only public API,
+        # same verdict rules as the internal health check) with a tested demo.
+        "implementation": ["services/automation_health/audit.py", "services/automation_health/README.md"],
         "context": ["ai_capability/", "orchestrator/"],
         "acceptance": ["a customer-facing AI operations offer", "a delivery workflow", "a paying engagement"],
-        "commercial_path": [],
-        "gap": "internal AI orchestration exists, but no customer-facing AI-operations arm was found",
-        "blocker": "internal AI orchestration exists, but no customer-facing AI-operations arm was found",
+        "commercial_path": ["services/automation_health/README.md"],
+        "gap": "offer and tested audit demonstration exist (synthetic input); no published page, no inquiry, no engagement",
+        "blocker": "no recorded public intake; no customer engagement",
     },
     "productized_ai_services": {
         "name": "Productized AI Services",

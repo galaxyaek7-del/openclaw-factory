@@ -156,6 +156,39 @@ test('founder queue lists only what the files show is waiting, each with a comma
   assert.deepEqual(empty.founder_queue, []);
 });
 
+test('measurement: a beacon without a receiver is not a measured page view', () => {
+  const root = factory({
+    'customer_site/a.html': '<script src="assets/gf-pageview.js"></script>',
+    'customer_site/sub/b.html': '<meta name="gf-pageview-endpoint" content="https://counter.example/api"><script src="../assets/gf-pageview.js"></script>',
+    'customer_site/c.html': '<p>no beacon</p>',
+    'data/distribution_metrics.jsonl': JSON.stringify({ timestamp: '2026-10-29T16:00:00Z', views: { x: 20, y: 11 } }) + '\n',
+  });
+  const m = cf.measurement(root);
+  assert.equal(m.site_pages, 3);
+  assert.equal(m.pages_with_beacon, 2);
+  assert.equal(m.pages_with_working_receiver, 1);
+  const byName = Object.fromEntries(m.metrics.map(x => [x.name, x]));
+  assert.equal(byName['Site page views'].kind, 'OBSERVED');
+  assert.equal(byName['Telegraph article views'].value, 31);
+  assert.equal(byName['Outbound clicks to product pages'].kind, 'UNKNOWN');
+  const none = cf.measurement(factory({ 'customer_site/a.html': '<script src="assets/gf-pageview.js"></script>' }));
+  assert.equal(none.metrics[0].kind, 'UNKNOWN');
+});
+
+test('intake: counts only, never names or addresses, and the receiver is reported as not connected', () => {
+  const rows = [
+    { record: 'inquiry', inquiry_id: 'INQ-1', arm: 'micro_b2b', email: 'a@example.com', name: 'A' },
+    { record: 'inquiry', inquiry_id: 'INQ-2', arm: 'micro_b2b', email: 'b@example.com', name: 'B' },
+    { record: 'review', inquiry_id: 'INQ-1', outcome: 'REPLIED' },
+  ].map(r => JSON.stringify(r)).join('\n') + '\n';
+  const out = cf.intake(factory({ 'data/inquiries.jsonl': rows }));
+  assert.equal(out.total, 2);
+  assert.equal(out.pending, 1);
+  assert.deepEqual(out.by_arm, { micro_b2b: { total: 2, pending: 1 } });
+  assert.equal(out.public_receiver, 'NOT CONNECTED');
+  assert.doesNotMatch(JSON.stringify(out), /@example\.com/);
+});
+
 test('experiments: latest status wins and pending ones are not counted as running', () => {
   const rows = [
     { record_type: 'experiment_definition', experiment_id: 'E1', experiment_type: 'product_positioning', status: 'PENDING_APPROVAL', hypothesis: 'h' },

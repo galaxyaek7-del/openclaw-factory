@@ -27,11 +27,16 @@ test, temporary or credential files (name scan plus manual review).
 
 | Listing | Product id | Price | Live file today | Bundle (bytes, sha256) | Members | Checks | Decision |
 |---|---|---|---|---|---|---|---|
-| vkqogv Trademark DIY Filing Action Kit | `KMNGNgO5gS85H_JppnygIg==` | $69 | 1 PDF, 12,383 B | 17,604 B, `bfba326c` | guide (live text + dated USPTO fee-correction page; 5 pp, 1,918 words), tracker XLSX (4 sheets) | fee sheet rebuilt on the USPTO schedule (effective 2025-01-19, read 2026-10-29): 9/9 formulas, 0 errors; 2 classes + SOU + 1 extension each = $1,250 (DERIVED, independent recompute) | **PASS** |
+| vkqogv Trademark DIY Filing Action Kit | `KMNGNgO5gS85H_JppnygIg==` | $69 | 1 PDF, 12,383 B | 17,728 B, `1d5c0530` (updated, see note) | guide (live text + dated USPTO fee-correction page; 5 pp, 1,946 words), tracker XLSX (4 sheets) | fee sheet rebuilt on the USPTO schedule (effective 2025-01-19, read 2026-10-29): 9/9 formulas, 0 errors; 2 classes + SOU + 1 extension each = $1,250 (DERIVED, independent recompute) | **PASS** |
 | fetmu GPSR EU Seller Action Kit | `VPYaNkAdv7Yocko-lIJsZQ==` | $79 | 1 PDF, 18,208 B | 20,209 B, `36fa0de1` | live guide (6 pp, 2,592 words), cost planner XLSX (4 sheets) | 2/2 formulas, 0 errors; the description already promised the planner | **PASS** |
 | ciowwm EU Late Payment Recovery Kit | `8Vlc3zY6AkxU4DCe7IRVDA==` | $59 | 1 PDF, 3,863 B | 21,276 B, `941103da` | live guide (1 p, 392 words), calculator XLSX (4 sheets) | 1,224/1,224 formulas, 0 errors; the guide refers to "Tracker columns" = sheet "Invoice tracker" | **PASS** (guide still thin) |
 | hasjmp Etsy Ads ROI Playbook + Calculator | `ZFXJttaaGoJvEE10JOXbWg==` | $39 | 1 PDF, 3,480 B | 21,925 B, `f7b10ee5` | live playbook (1 p, 300 words), calculator XLSX (4 sheets) | 1,427/1,427 formulas, 0 errors; the title promises the calculator | **PASS** |
 | dyjavs Diminished Value Claim Kit | `f542PZ92SUPOjV9F5GJh-Q==` | $59 | 1 PDF, 9,630 B | 22,034 B, `432a26c0` | live guide (3 pp, 1,274 words), claim workbook XLSX (6 sheets) | 209/211 formulas, 0 errors; the other 2 are `COUNTIFS` with `TODAY()` (valid Excel; not implemented by the checker, so UNKNOWN by recompute); the guide refers to "workbook sheet 1" | **PASS** |
+
+Update (same day): a second read of the USPTO schedule showed that the guide's "$200-250" and
+"$225" are the paper-filing fees (statement of use $250, extension $225), not invented figures.
+The correction page now shows electronic and paper amounts side by side and says so; the
+bundle was rebuilt (17,728 B, `1d5c0530`) and passes the same checks.
 
 The workbooks have never been opened in Excel (no cached values); Excel computes them on first open.
 No workbook was opened in Excel during this preflight (UNKNOWN: rendering in Excel itself).

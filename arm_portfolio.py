@@ -98,7 +98,8 @@ PROFILES: Dict[str, Dict[str, Any]] = {
         "revenue_model": "fixed-scope service fee ($49 / $79 / $149 hypothesis, unvalidated)",
         "distribution": "service page + interest form; direct outreach not authorized",
         "stage": "BUILD",
-        "stage_evidence": "written offer and a working, tested delivery engine (services/spreadsheet_normalization/); no customer engagement",
+        "stage_evidence": "offer, tested engine and a reproducible demonstration package (catalogue merge clean-up, synthetic data); no customer engagement",
+        "demonstration": "services/spreadsheet_normalization/demo_package/README.md",
         "kpis": [
             {"kpi": "qualified inquiries", "source": "data/customer_interest.jsonl", "available": "OBSERVED"},
             {"kpi": "engagements delivered", "source": "none yet", "available": "UNKNOWN"},
@@ -118,8 +119,9 @@ PROFILES: Dict[str, Dict[str, Any]] = {
         "target_customers": "sellers and small firms needing competitor, pricing or regulatory monitoring (hypothesis)",
         "revenue_model": "paid briefs or dataset access (hypothesis)",
         "distribution": "none yet",
-        "stage": "DISCOVERY",
-        "stage_evidence": "research infrastructure and a data-card format exist; no customer-facing offer",
+        "stage": "BUILD",
+        "stage_evidence": "sample brief and a validated sample dataset (USPTO trademark fees, data card PASS); not offered",
+        "demonstration": "services/research/uspto_trademark_fees_brief_2026-10-29.md",
         "kpis": [
             {"kpi": "offers defined", "source": "none", "available": "UNKNOWN"},
             {"kpi": "inquiries", "source": "none", "available": "UNKNOWN"},
@@ -130,7 +132,7 @@ PROFILES: Dict[str, Dict[str, Any]] = {
         "modify_if": "evidence points to a one-off report rather than a dataset",
         "stop_if": "no segment with willingness to pay is found after a documented search",
         "next_decision": {"owner": "factory",
-                          "decision": "pick one segment and write a sample brief from existing pipelines",
+                          "decision": "publish the free USPTO fee CSV and brief with a change-alert sign-up (needs intake)",
                           "cheapest_test": "a free sample brief on the site; count requests for the full version"},
     },
     "affiliate_intelligence": {
@@ -180,8 +182,9 @@ PROFILES: Dict[str, Dict[str, Any]] = {
         "target_customers": "small operators running fragile automations (n8n, Zapier) (hypothesis)",
         "revenue_model": "setup fee or monthly monitoring (hypothesis)",
         "distribution": "none yet",
-        "stage": "DISCOVERY",
-        "stage_evidence": "internal orchestration, watchdogs and audits exist; no customer offer",
+        "stage": "BUILD",
+        "stage_evidence": "customer-safe n8n automation audit with a tested synthetic demonstration and a written offer; not offered",
+        "demonstration": "services/automation_health/README.md",
         "kpis": [
             {"kpi": "offer defined", "source": "none", "available": "UNKNOWN"},
             {"kpi": "internal automations with tests", "source": "tests/ (CI groups)", "available": "OBSERVED"},
@@ -191,7 +194,7 @@ PROFILES: Dict[str, Dict[str, Any]] = {
         "modify_if": "demand is for a product (template, guide) rather than a service",
         "stop_if": "no evidence of willingness to pay for monitoring",
         "next_decision": {"owner": "factory",
-                          "decision": "package the n8n watchdog pattern as a free guide and measure interest",
+                          "decision": "approve the audit offer page once a recorded intake exists",
                           "cheapest_test": "one guide page (an existing silent-failures article) with a tracked call to action"},
     },
     "productized_ai_services": {
@@ -275,7 +278,7 @@ def summary(state: Dict[str, Any]) -> Dict[str, Any]:
                      "revenue_model": p["revenue_model"], "distribution": p["distribution"],
                      "kpis": p["kpis"], "kpis_measurable": "%d of %d" % (known, len(p["kpis"])),
                      "depends_on": p["depends_on"], "continue_if": p["continue_if"], "modify_if": p["modify_if"],
-                     "stop_if": p["stop_if"], "next_decision": p["next_decision"]})
+                     "stop_if": p["stop_if"], "next_decision": p["next_decision"], "demonstration": p.get("demonstration")})
     by_stage = {s: [r["arm"] for r in rows if r["stage"] == s] for s in STAGES}
     dependency_load = {}
     for r in rows:
@@ -290,6 +293,8 @@ def summary(state: Dict[str, Any]) -> Dict[str, Any]:
         "shared_capabilities": SHARED_CAPABILITIES,
         "dependency_load": dependency_load,
         "bottlenecks": [{"capability": d, "state": SHARED_CAPABILITIES[d], "blocks": users} for d, users in bottlenecks],
+        "ready_for_controlled_validation": [{"arm": r["arm"], "demonstration": r["demonstration"]}
+                                            for r in rows if r.get("demonstration")],
         "founder_decisions": [{"arm": r["arm"], **r["next_decision"]} for r in rows if r["next_decision"]["owner"] == "founder"],
         "factory_decisions": [{"arm": r["arm"], **r["next_decision"]} for r in rows if r["next_decision"]["owner"] == "factory"],
         "unmapped_directive_arms": {"J": "new ventures: proposed by the opportunity engine, not a standing arm"},
