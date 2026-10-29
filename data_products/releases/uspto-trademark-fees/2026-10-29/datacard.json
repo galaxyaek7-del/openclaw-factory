@@ -1,0 +1,96 @@
+{
+ "dataset_id": "uspto-trademark-fees",
+ "title": "USPTO trademark fees per class, electronic and paper",
+ "version": "2026-10-29",
+ "description": "The eight per-class fees a US trademark applicant meets from filing to year 10, with both electronic and paper amounts and the fee codes.",
+ "intended_use": "Reference table for cost planners, filing checklists and fee-change monitoring.",
+ "out_of_scope_use": "Not legal advice; not a complete fee schedule (petitions, Madrid and other fees are excluded).",
+ "sources": [
+  {
+   "name": "USPTO fee schedule",
+   "origin": "https://www.uspto.gov/learning-and-resources/fees-and-payment/uspto-fee-schedule",
+   "accessed_on": "2026-10-29",
+   "access_method": "PUBLIC_WEB_PAGE",
+   "licence": {
+    "name": "US government work (17 U.S.C. 105), public domain",
+    "commercial_use": true,
+    "attribution_required": false,
+    "share_alike": false
+   }
+  }
+ ],
+ "collection_method": "Read the public page on 2026-10-29 and transcribed the eight rows verbatim.",
+ "processing_steps": [
+  "transcribe verbatim",
+  "add unit, schedule dates, source and retrieval date"
+ ],
+ "columns": [
+  {
+   "name": "item",
+   "type": "string",
+   "description": "item"
+  },
+  {
+   "name": "efile_fee_code",
+   "type": "string",
+   "description": "efile fee code"
+  },
+  {
+   "name": "efile_fee_usd",
+   "type": "string",
+   "description": "efile fee usd"
+  },
+  {
+   "name": "paper_fee_code",
+   "type": "string",
+   "description": "paper fee code"
+  },
+  {
+   "name": "paper_fee_usd",
+   "type": "string",
+   "description": "paper fee usd"
+  },
+  {
+   "name": "unit",
+   "type": "string",
+   "description": "unit"
+  },
+  {
+   "name": "schedule_effective",
+   "type": "string",
+   "description": "schedule effective"
+  },
+  {
+   "name": "schedule_last_revised",
+   "type": "string",
+   "description": "schedule last revised"
+  },
+  {
+   "name": "source_url",
+   "type": "string",
+   "description": "source url"
+  },
+  {
+   "name": "retrieved_on",
+   "type": "string",
+   "description": "retrieved on"
+  }
+ ],
+ "files": [
+  {
+   "path": "data_products/releases/uspto-trademark-fees/2026-10-29/uspto_trademark_fees.csv",
+   "sha256": "bc80095a934bcb5ca6609ef4ad50432e5c5245763f8b2c1842d1d3acca36dea8",
+   "rows": 8
+  }
+ ],
+ "personal_data": {
+  "contains": false
+ },
+ "licence_out": "public domain source; Galaxy Forge compilation",
+ "refresh_days": 30,
+ "last_refreshed": "2026-10-29",
+ "known_limitations": [
+  "Fees change by rule-making; this release is correct as of the retrieval date only.",
+  "Law-firm alerts give 18 January 2025 as the effective date; the USPTO page says 19 January 2025."
+ ]
+}

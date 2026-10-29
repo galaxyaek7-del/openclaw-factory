@@ -1,0 +1,21 @@
+{
+ "_note": "SYNTHETIC demonstration input in the shape n8n's public API returns (workflows, executions without data). No real instance.",
+ "now": "2026-10-29T12:00:00Z",
+ "expected_minutes": {"Order sync to sheet": 60, "Weekly invoice reminder": 10080, "Lead form to CRM": 15, "Manual export": null},
+ "workflows": [
+  {"id": "1", "name": "Order sync to sheet", "active": true},
+  {"id": "2", "name": "Weekly invoice reminder", "active": true},
+  {"id": "3", "name": "Lead form to CRM", "active": true},
+  {"id": "4", "name": "Manual export", "active": true},
+  {"id": "5", "name": "Old Slack digest", "active": false},
+  {"id": "6", "name": "Review request mailer", "active": true}
+ ],
+ "executions": [
+  {"workflowId": "1", "status": "success", "startedAt": "2026-10-29T11:00:05Z"},
+  {"workflowId": "1", "status": "success", "startedAt": "2026-10-29T10:00:04Z"},
+  {"workflowId": "2", "status": "success", "startedAt": "2026-10-13T08:00:00Z"},
+  {"workflowId": "3", "status": "error", "startedAt": "2026-10-29T11:45:00Z"},
+  {"workflowId": "3", "status": "success", "startedAt": "2026-10-29T11:30:00Z"},
+  {"workflowId": "4", "status": "success", "startedAt": "2026-10-20T09:12:00Z"}
+ ]
+}
