@@ -239,6 +239,39 @@ class WriteGuard(unittest.TestCase):
         self.assertEqual([], out["r"])
         self.assertEqual('{"row": "live"}\n', self.live())
 
+    def test_new_dir_is_listable_with_posix_style_path_checks(self):
+        # On POSIX os.path.isdir/exists are genericpath functions that call
+        # os.stat at call time, i.e. the guarded stat. The guard must not use
+        # them as its "real" checks: it then believed a directory that exists
+        # only in the overlay was live, and os.listdir raised FileNotFoundError
+        # (CI, Linux: niche_reports, book_generator.py / profit_oracle.py).
+        code = textwrap.dedent(f"""
+            import genericpath, json, os, sys
+            for name in ("isdir", "isfile", "exists"):
+                setattr(os.path, name, getattr(genericpath, name))
+            sys.path.insert(0, {str(TESTS)!r})
+            import write_guard as wg
+            wg.REPO_ROOT = os.path.normcase(os.path.realpath({self.repo!r}))
+            wg.install()
+            d = os.path.join({self.repo!r}, "niche_reports")
+            os.makedirs(d, exist_ok=True)
+            open(os.path.join(d, "r.json"), "w").write("{{}}")
+            out = {{"isdir": os.path.isdir(d), "list": os.listdir(d),
+                    "live_exists": os.path.exists(d) and True}}
+            print(json.dumps(out))
+        """)
+        env = dict(os.environ)
+        for k in ("GF_WRITE_GUARD_OVERLAY", "GF_WRITE_GUARD_ROOT", "GF_WRITE_GUARD_REPORT"):
+            env.pop(k, None)
+        site = str(TESTS / "_guard_site")
+        env["PYTHONPATH"] = os.pathsep.join(p for p in env.get("PYTHONPATH", "").split(os.pathsep) if p and p != site)
+        r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env=env, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        out = json.loads(r.stdout.strip().splitlines()[-1])
+        self.assertTrue(out["isdir"])
+        self.assertEqual(out["list"], ["r.json"])
+        self.assertFalse(os.path.exists(os.path.join(self.repo, "niche_reports")))
+
     def test_rmtree_of_a_live_dir_stays_virtual(self):
         out, _ = run_case(self.repo, """
             import shutil

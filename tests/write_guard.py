@@ -36,6 +36,7 @@ import builtins
 import io
 import os
 import shutil
+import stat
 import tempfile
 import threading
 
@@ -46,11 +47,31 @@ REPO_ROOT = os.path.normcase(os.path.realpath(
 SITE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_guard_site")
 _SKIP_PARTS = ("__pycache__", ".pytest_cache", ".git")
 
+_STAT, _LSTAT = os.stat, os.lstat
+
+
+# The guard's own "real" existence checks. On POSIX os.path.isdir/isfile/exists
+# are genericpath functions that call os.stat at call time -- i.e. the guarded
+# os.stat once install() has run -- so keeping a reference to them is not
+# enough: they would see the overlay and report a live directory that does not
+# exist, and the next real os.listdir raised FileNotFoundError (CI, Linux,
+# niche_reports). Windows' builtin nt._path_isdir hid this. These use the
+# captured, unpatched stat functions instead.
+def _stat_check(fn, test):
+    def check(path):
+        try:
+            return test(fn(path).st_mode)
+        except (OSError, ValueError, TypeError):
+            return False
+    return check
+
+
 _real = {
     "open": builtins.open, "io_open": io.open, "os_open": os.open, "stat": os.stat,
     "replace": os.replace, "rename": os.rename, "remove": os.remove, "unlink": os.unlink,
-    "mkdir": os.mkdir, "makedirs": os.makedirs, "exists": os.path.exists,
-    "isfile": os.path.isfile, "isdir": os.path.isdir, "lexists": os.path.lexists,
+    "mkdir": os.mkdir, "makedirs": os.makedirs, "exists": _stat_check(_STAT, lambda m: True),
+    "isfile": _stat_check(_STAT, stat.S_ISREG), "isdir": _stat_check(_STAT, stat.S_ISDIR),
+    "lexists": _stat_check(_LSTAT, lambda m: True),
     "rmdir": os.rmdir, "listdir": os.listdir, "scandir": os.scandir,
 }
 _lock = threading.RLock()
