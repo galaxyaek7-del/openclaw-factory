@@ -69,7 +69,8 @@ and restart the server so the command handler (`lib/telegram_commands.js`) accep
 
 Every ~10 minutes (supervised): health and recovery, n8n watchdog and missed-run catch-up,
 demand sensing, the six-agent product chain, site publication, IndexNow.
-Daily: product registry rebuild and listing checks, arm states, distribution exposure
+Daily: product registry rebuild and listing checks, arm states, storefront catalogue,
+site pages for newly published tools (published on the next tick), distribution exposure
 reading (Telegraph), experiment cycle, commercial readiness. Sunday: weekly report.
 Sales are polled every 4 hours by n8n. The dashboard's "القمع والتجارب" tab shows the
 funnel, what buyers receive and experiment exposure.
