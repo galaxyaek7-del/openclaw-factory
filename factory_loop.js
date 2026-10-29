@@ -5334,6 +5334,10 @@ async function runTick() {
     // approval, revision, price and auth checks still decide every product.
     markStep('publish_approved');
     actions.push({ step: 'publish_approved', ...(await runOnceScript('publish_approved_daily.py', { timeoutMs: 30 * 60 * 1000 })) });
+    // 2026-10-29: weekly GET-only audit of what each live listing delivers
+    // (the dashboard's delivery truth went stale after 8 days of hand runs).
+    markStep('delivery_audit');
+    actions.push({ step: 'delivery_audit', ...(await runOnceScript('delivery_audit_weekly.py', { timeoutMs: 25 * 60 * 1000 })) });
     // customer_site/catalog.json is the only catalog GitHub Pages serves, and
     // nothing regenerated it after the registry it is derived from -- a product
     // published after the last manual export stayed invisible on the storefront
