@@ -1,0 +1,14 @@
+Source , SKU,Name, Price ,Date,Qty 
+supplier, ab-1001 ,Ceramic mug 350ml,$8.50,03/15/2026,40
+supplier,AB-1002,Ceramic mug 500ml,$9.75,03/15/2026,25
+supplier,ab-1003,"Tea towel, linen", 6.20 ,03/16/2026,
+supplier,AB-1004,Coaster set (4),$12.00,13/03/2026,18
+shop_eu,AB-1001,Ceramic mug 350ml,"€8,50",15-03-2026,40
+shop_eu,ab-1005 ,"Bread board, oak","€24,90",16-03-2026,6
+shop_eu,AB-1006,"Candle, beeswax","€11,40",2026.03.17,30
+shop_eu,AB-1007,Napkin rings (6),"€7,00",03-04-2026,12
+shop_us,AB-1002,Ceramic mug 500ml,9.75,2026-03-15,25
+shop_us,AB-1008,Salt cellar,$14.00,04/05/2026,9
+shop_us,AB-1009,Pepper grinder,$19.50,2026-02-30,7
+shop_us,AB-1010,Butter dish,,04/18/2026,11
+shop_us,  ab-1002,Ceramic mug 500ml,$9.75,03/15/2026,25

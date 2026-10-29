@@ -11,14 +11,6 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-DATE_PATS = [
-    (re.compile(r"^(\d{1,2})/(\d{1,2})/(\d{4})$"),
-     lambda m: "%04d-%02d-%02d" % (int(m.group(3)), int(m.group(1)), int(m.group(2)))),
-    (re.compile(r"^(\d{1,2})-(\d{1,2})-(\d{4})$"),
-     lambda m: "%04d-%02d-%02d" % (int(m.group(3)), int(m.group(2)), int(m.group(1)))),
-    (re.compile(r"^(\d{4})\.(\d{1,2})\.(\d{1,2})$"),
-     lambda m: "%04d-%02d-%02d" % (int(m.group(1)), int(m.group(2)), int(m.group(3)))),
-]
 
 
 def norm_header(h):
@@ -31,16 +23,80 @@ def norm_cell(v):
     return str(v).strip()
 
 
-def norm_date(v):
+_DM_OR_MD = re.compile(r"^(\d{1,2})([/-])(\d{1,2})\2(\d{4})$")
+_YMD_DOT = re.compile(r"^(\d{4})\.(\d{1,2})\.(\d{1,2})$")
+_ISO = re.compile(r"^(\d{4})-(\d{2})-(\d{2})$")
+
+
+def _valid(y, m, d):
+    try:
+        datetime(y, m, d)
+        return True
+    except ValueError:
+        return False
+
+
+def parse_date(v, order=None):
+    """(value, status). status: iso (already ISO), converted, ambiguous, invalid, other.
+
+    order is "MDY" or "DMY" for a slash/dash value whose two leading parts could
+    each be a day or a month; normalize() infers it per column from values that
+    settle it (a part over 12). Without an order such a value is ambiguous and is
+    returned unchanged: a guessed date is worse than an unconverted one. A value
+    that is not a real calendar date (month 13, 30 February) is returned
+    unchanged and marked invalid, never written out as an impossible ISO date.
+    """
     s = str(v or "").strip()
-    for pat, fmt in DATE_PATS:
-        m = pat.match(s)
-        if m:
-            try:
-                return fmt(m)
-            except ValueError:
-                pass
-    return s
+    if not s:
+        return s, "other"
+    m = _ISO.match(s)
+    if m:
+        y, mo, d = map(int, m.groups())
+        return (s, "iso") if _valid(y, mo, d) else (s, "invalid")
+    m = _YMD_DOT.match(s)
+    if m:
+        y, mo, d = map(int, m.groups())
+        return ("%04d-%02d-%02d" % (y, mo, d), "converted") if _valid(y, mo, d) else (s, "invalid")
+    m = _DM_OR_MD.match(s)
+    if not m:
+        return s, "other"
+    a, sep, b, y = int(m.group(1)), m.group(2), int(m.group(3)), int(m.group(4))
+    if a > 12 and b > 12:
+        return s, "invalid"
+    if a > 12:
+        mo, d = b, a
+    elif b > 12:
+        mo, d = a, b
+    elif a == b:
+        mo, d = a, b
+    elif order == "MDY":
+        mo, d = a, b
+    elif order == "DMY":
+        mo, d = b, a
+    else:
+        return s, "ambiguous"
+    return ("%04d-%02d-%02d" % (y, mo, d), "converted") if _valid(y, mo, d) else (s, "invalid")
+
+
+def infer_date_order(values):
+    """MDY or DMY when the column's own values settle it, else None (also on conflict)."""
+    mdy = dmy = False
+    for v in values:
+        m = _DM_OR_MD.match(str(v or "").strip())
+        if not m:
+            continue
+        a, b = int(m.group(1)), int(m.group(3))
+        if a > 12 and b <= 12:
+            dmy = True
+        elif b > 12 and a <= 12:
+            mdy = True
+    return "MDY" if mdy and not dmy else "DMY" if dmy and not mdy else None
+
+
+def norm_date(v):
+    """Single-value form kept for callers: unambiguous values convert, others
+    are returned unchanged (see parse_date)."""
+    return parse_date(v)[0]
 
 
 def norm_currency(v):
@@ -84,11 +140,26 @@ def normalize(rows, sku_cols=("sku",), currency_cols=("price", "amount", "total"
         return {"rows": [], "qa": {"input_rows": 0, "output_rows": 0, "error": "empty input"}}
     headers = [norm_header(h) for h in rows[0].keys()]
     out, seen, dupes, missing = [], set(), 0, 0
-    for r in rows:
-        nr = {norm_header(k): norm_cell(v) for k, v in r.items()}
+    # Day/month order per date column, settled by the column's own values.
+    raw = [{norm_header(k): norm_cell(v) for k, v in r.items()} for r in rows]
+    orders = {c: infer_date_order(nr.get(c) for nr in raw) for c in date_cols if c in headers}
+    # Symbols are stripped to make amounts numeric, so record which currencies a
+    # column held first: $8.50 and €8,50 must not look like the same price.
+    currencies = {}
+    for c in currency_cols:
+        if c in headers:
+            seen_sym = sorted({s for nr in raw for s in re.findall(r"[$€£]", str(nr.get(c, "")))})
+            currencies[c] = seen_sym
+    date_counts = {"converted": 0, "ambiguous": 0, "invalid": 0}
+    date_examples = {"ambiguous": [], "invalid": []}
+    for nr in raw:
         for c in date_cols:
             if c in nr:
-                nr[c] = norm_date(nr[c])
+                nr[c], status = parse_date(nr[c], orders.get(c))
+                if status in date_counts:
+                    date_counts[status] += 1
+                if status in date_examples and len(date_examples[status]) < 5:
+                    date_examples[status].append(nr[c])
         for c in currency_cols:
             if c in nr:
                 nr[c] = norm_currency(nr[c])
@@ -103,8 +174,31 @@ def normalize(rows, sku_cols=("sku",), currency_cols=("price", "amount", "total"
             continue
         seen.add(key)
         out.append(nr)
+    # The same SKU in several rows (typical when merging exports) is reported,
+    # never merged or removed: which row is right is the customer's decision.
+    repeats = {}
+    for c in sku_cols:
+        if c not in headers:
+            continue
+        groups = {}
+        for nr in out:
+            if nr.get(c):
+                groups.setdefault(nr[c], []).append(nr)
+        for sku, grp in groups.items():
+            if len(grp) > 1:
+                prices = sorted({str(g.get(p)) for g in grp for p in currency_cols if p in g and g.get(p) != ""})
+                repeats[sku] = {"rows": len(grp), "prices": prices, "price_conflict": len(prices) > 1}
     return {"rows": out, "qa": {
         "input_rows": len(rows), "output_rows": len(out),
+        "sku_repeats": dict(list(sorted(repeats.items()))[:50]),
+        "sku_price_conflicts": sum(1 for v in repeats.values() if v["price_conflict"]),
+        "currency_symbols_by_column": currencies,
+        "mixed_currency_columns": sorted(c for c, s in currencies.items() if len(s) > 1),
         "duplicates_removed": dupes, "rows_with_missing": missing,
+        "dates_converted": date_counts["converted"],
+        "dates_ambiguous_kept": date_counts["ambiguous"],
+        "dates_invalid_kept": date_counts["invalid"],
+        "date_examples_needing_review": date_examples,
+        "date_order_inferred": orders,
         "columns": headers, "ran_at": datetime.now(timezone.utc).isoformat(),
         "elapsed_s": round(time.time() - t0, 3)}}

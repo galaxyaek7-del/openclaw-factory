@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>DRAFT: Catalogue merge clean-up for small online sellers | Galaxy Forge</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;line-height:1.6;color:#1f2937}
+.draft{background:#fff3cd;border-left:4px solid #f0ad4e;padding:10px 14px;margin:0 0 1.5rem}
+table{border-collapse:collapse;width:100%;font-size:.9rem;margin:.5rem 0 1rem}
+td,th{border:1px solid #d1d5db;padding:4px 8px;text-align:left}
+.muted{color:#6b7280;font-size:.85rem}
+</style>
+</head>
+<body>
+<div class="draft"><strong>DRAFT, not published.</strong> Example data is invented. The request form is not
+connected yet; it will be added only once submissions reliably reach a person.</div>
+
+<h1>You merged three exports. Is your catalogue actually clean?</h1>
+<p>When a supplier price list, an EU shop export and a US shop export become one file, the damage is quiet:
+a day and month swapped, dollars and euros in one column, the same SKU three times with different prices.
+Most clean-ups fix the formatting and hide the rest.</p>
+
+<h2>What you send, what you get</h2>
+<p>Send one CSV or XLSX export (up to 5,000 rows, one sheet). You get back the cleaned file and a QA report that lists
+every change and everything that still needs your decision.</p>
+
+<h2>Example (invented data)</h2>
+<table>
+<tr><th>As exported</th><th>After</th><th>In the QA report</th></tr>
+<tr><td><code> ab-1001 </code>, <code>$8.50</code>, <code>03/15/2026</code></td><td>AB-1001, 8.5, 2026-03-15</td><td>converted</td></tr>
+<tr><td><code>€8,50</code> for the same SKU</td><td>8.5</td><td>price column mixes $ and €</td></tr>
+<tr><td><code>03-04-2026</code></td><td>left as written</td><td>ambiguous: 3 April or 4 March?</td></tr>
+<tr><td><code>2026-02-30</code></td><td>left as written</td><td>not a real date</td></tr>
+<tr><td>the same row twice</td><td>kept once</td><td>1 exact duplicate removed</td></tr>
+</table>
+
+<h2>What is not included</h2>
+<p>Choosing between conflicting rows, currency conversion, bookkeeping, tax or financial advice, or writing into
+any of your systems. Files containing passwords or keys are refused. Every delivery is checked by a person before
+it is sent.</p>
+
+<h2>Price</h2>
+<p>$29 per file. <span class="muted">A first price to test; it may change.</span></p>
+
+<p class="muted">[Request form: connected after founder approval of the intake channel.]</p>
+</body>
+</html>

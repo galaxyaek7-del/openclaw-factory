@@ -1,0 +1,62 @@
+{
+ "input_rows": 13,
+ "output_rows": 12,
+ "sku_repeats": {
+  "AB-1001": {
+   "rows": 2,
+   "prices": [
+    "8.5"
+   ],
+   "price_conflict": false
+  },
+  "AB-1002": {
+   "rows": 2,
+   "prices": [
+    "9.75"
+   ],
+   "price_conflict": false
+  }
+ },
+ "sku_price_conflicts": 0,
+ "currency_symbols_by_column": {
+  "price": [
+   "$",
+   "€"
+  ]
+ },
+ "mixed_currency_columns": [
+  "price"
+ ],
+ "duplicates_removed": 1,
+ "rows_with_missing": 2,
+ "dates_converted": 9,
+ "dates_ambiguous_kept": 2,
+ "dates_invalid_kept": 1,
+ "date_examples_needing_review": {
+  "ambiguous": [
+   "03-04-2026",
+   "04/05/2026"
+  ],
+  "invalid": [
+   "2026-02-30"
+  ]
+ },
+ "date_order_inferred": {
+  "date": null
+ },
+ "columns": [
+  "source",
+  "sku",
+  "name",
+  "price",
+  "date",
+  "qty"
+ ],
+ "ran_at": "2026-10-29T21:40:55.818479+00:00",
+ "elapsed_s": 0.001,
+ "secret_scan": {
+  "clean": true,
+  "hits": []
+ },
+ "synthetic_input": true
+}
