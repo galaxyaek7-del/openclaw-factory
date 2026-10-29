@@ -24,7 +24,21 @@ def _write_arms():
     return business_arms.write_state()
 
 
-def run_once(today=None, state_path=STATE, runner=None, arms_writer=None):
+def _write_trends():
+    # Trend-to-Product state links specs to registry products and their observed
+    # sales, so it is restated after the registry it reads.
+    # Customer-problem signals (Stack Exchange public API) refresh weekly; a failure
+    # there must not stop the state from being restated.
+    try:
+        import trend_problem_signals
+        trend_problem_signals.run(if_due=True, write_state=False)
+    except Exception:  # pragma: no cover - the state file still reflects the last good run
+        pass
+    from trend_to_product import linkage
+    return linkage.write_state()
+
+
+def run_once(today=None, state_path=STATE, runner=None, arms_writer=None, trends_writer=None):
     import product_registry
     today = today or datetime.now(timezone.utc).date().isoformat()
     try:
@@ -51,6 +65,12 @@ def run_once(today=None, state_path=STATE, runner=None, arms_writer=None):
             arms_note = f"; arm state problems: {len(doc['problems'])}"
     except Exception as e:  # pragma: no cover - reported, not raised
         arms_note = f"; arm state not written ({type(e).__name__})"
+    if trends_writer is None:
+        trends_writer = _write_trends if runner is None else (lambda: None)
+    try:
+        trends_writer()
+    except Exception as e:  # pragma: no cover - reported, not raised
+        arms_note += f"; trend state not written ({type(e).__name__})"
     dc = summary["drift_counts"]
     issues = {k: v for k, v in dc.items() if v}
     detail = (f"{summary['products']} products {summary['states']}, sales {summary['sales_total']}; "

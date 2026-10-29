@@ -172,3 +172,36 @@ test('business arms: a missing state file is reported, never filled in', () => {
   assert.equal(a.state, 'MISSING');
   assert.equal(a.arms, undefined);
 });
+
+test('trend-to-product: read from the Python state file; freshness is evidence age', () => {
+  const state = {
+    generated_at: '2026-10-29T01:00:00Z',
+    evidence_freshness: { newest_access: '2026-10-29', oldest_access: '2026-10-29' },
+    counts: { sources: 2, signals: 3, opportunities: 2, specs: 1, product_links: 0 },
+    evidence_quality: { MARKETPLACE_LISTING: 2 },
+    signals_counting_as_sales: 0,
+    opportunities: [
+      { opportunity_id: 'OPP-1', name: 'Calc', format: 'excel_tool', t1_arm: 'digital_products',
+        band: 'INSUFFICIENT_EVIDENCE', composite: null, coverage: 0.4, rights: 'REVIEW',
+        price_range: { status: 'OBSERVED_RANGE', low: 2.24, high: 45 }, missing_evidence: ['demand'] },
+      { opportunity_id: 'OPP-2', name: 'Pattern', format: 'craft_pattern', t1_arm: 'digital_products',
+        band: 'WEAK', composite: 2.1, coverage: 0.73, rights: 'REVIEW',
+        price_range: { status: 'UNKNOWN' }, missing_evidence: [] }],
+    specs: [{ spec_id: 'SPEC-1', title: 'T', status: 'SPEC_REVIEW', duplication: 'CANNIBALIZATION',
+      duplicates: ['B14-005'], blockers: [], reviews: ['x'] }],
+    blockers: ['Calc: INSUFFICIENT_EVIDENCE'],
+  };
+  const root = factory({ 'data/trend_to_product_state.json': state });
+  const t = ccc.compute({ root, env: {}, now: new Date('2026-10-30T10:00:00Z') }).trend_to_product;
+  assert.equal(t.state, 'FRESH');
+  assert.equal(t.evidence_age_days, 1);
+  assert.equal(t.opportunities[0].composite, null);
+  assert.equal(t.opportunities[0].price_range, '$2.24-$45');
+  assert.equal(t.opportunities[1].price_range, 'UNKNOWN');
+  assert.equal(t.specs[0].duplicates[0], 'B14-005');
+  const old = ccc.compute({ root, env: {}, now: new Date('2026-12-15T00:00:00Z') }).trend_to_product;
+  assert.equal(old.state, 'STALE');
+  const none = ccc.compute({ root: factory({}), env: {} }).trend_to_product;
+  assert.equal(none.available, false);
+  assert.equal(none.opportunities, undefined);
+});

@@ -1,0 +1,336 @@
+{
+ "generated_at": "2026-10-29T06:37:39.523026+00:00",
+ "source": "docs/factory/FACTORY_ENGINEERING_BACKLOG.md (rows parsed verbatim; the Markdown is the edited copy)",
+ "items": [
+  {
+   "id": "B1",
+   "task": "Remove paid product files from the public tree",
+   "why": "R2",
+   "acceptance": "168 files untracked and ignored; dependent tests skip on CI when files absent and still run locally; CI green",
+   "verify": "CI-equivalent suite on a clean checkout; raw URL 404 after push",
+   "status": "DOING",
+   "status_detail": "DOING",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B2",
+   "task": "Product identity registry + drift check",
+   "why": "R3",
+   "acceptance": "every live Gumroad listing and every manifest has exactly one internal id; registry rebuild is idempotent (same input -> same ids); drift report lists live-not-registered, registered-not-live, price/title mismatches",
+   "verify": "unit tests with fixtures; run against the live account",
+   "status": "DONE",
+   "status_detail": "DONE (`product_registry.py`, `ffad27e`: 92 products, 89 page-verified)",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B3",
+   "task": "Drift check in the loop, daily",
+   "why": "R3",
+   "acceptance": "`factory_loop.js` step records counts; failure reported, never thrown",
+   "verify": "loop log shows the step",
+   "status": "DONE",
+   "status_detail": "DONE (`423ec33`; live after loop restart)",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B4",
+   "task": "One publication gate for direct publishers",
+   "why": "R4",
+   "acceptance": "`scripts/publish_batch14.py` and future publishers call the central Quality Gate; a product without gate evidence is refused unless the founder's authorization record names it",
+   "verify": "negative tests (refuse without evidence) and positive tests",
+   "status": "TODO",
+   "status_detail": "TODO (coordinate with parallel session's uncommitted test)",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B5",
+   "task": "Tests must not write tracked files",
+   "why": "R9",
+   "acceptance": "full suite on a clean checkout leaves `git status` clean. Writers found: `inspectors.QUARANTINE_FILE`, `profit_oracle.GOLDEN_MD_FILE`/`REJECTED_NICHES_FILE`, `market_hunter.REJECTED_NICHES_FILE`, `book_generator` (rejected niches, `books/_generation_log.jsonl`), `autonomous_commerce_ops` (`data/recovery_actions.jsonl`). Plan: one `GF_RECORDS_DIR` override set by `scripts/run_python_group.py`, seeded with copies so readers see the same data",
+   "verify": "run suite, check status",
+   "status": "TODO",
+   "status_detail": "TODO",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B6",
+   "task": "Per-product traffic measurement",
+   "why": "R1",
+   "acceptance": "public visits counted per page by a real receiver; joined to the registry by internal id; weekly report",
+   "verify": "first real visit recorded from a browser outside the factory machine",
+   "status": "BLOCKED",
+   "status_detail": "BLOCKED (founder: free analytics account, e.g. Cloudflare Web Analytics, or a host for `/api/page-view`)",
+   "founder_authorization_required": true
+  },
+  {
+   "id": "B7",
+   "task": "Site pages for the published products that have none",
+   "why": "R1",
+   "acceptance": "measured 2026-10-23: 84 of 89 published listings already have a site page linking to them; 5 do not (5-Minute Context Reset duplicate, Meeting Cost calculator, EU AI Act Toolkit $155, Amazon FBA workbook, an unavailable $0 item). Pages are not the bottleneck; measurement (B6) is",
+   "verify": "pages live (200), IndexNow receipts",
+   "status": "TODO",
+   "status_detail": "TODO (low)",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B8",
+   "task": "Thin-PDF repairs and unpublish/delete set",
+   "why": "R5",
+   "acceptance": "founder authorization for the 14/2/1 actions in `drafts/release_packages/REPAIR_MANIFEST.json`",
+   "verify": "platform re-read after each action",
+   "status": "BLOCKED",
+   "status_detail": "BLOCKED (founder)",
+   "founder_authorization_required": true
+  },
+  {
+   "id": "B9",
+   "task": "Move cohort generators behind the manifest contract",
+   "why": "R8",
+   "acceptance": "cohort build produces the same manifest shape and runs adapter QA",
+   "verify": "regenerated manifest + QA report",
+   "status": "TODO",
+   "status_detail": "TODO",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B10",
+   "task": "Retire unused Mission Control services",
+   "why": "R7",
+   "acceptance": "services with no caller listed and removed in reviewed batches",
+   "verify": "`enterprise_validation.detect_unused_services()` before/after",
+   "status": "TODO",
+   "status_detail": "TODO",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B11",
+   "task": "Mark superseded root documents as historical",
+   "why": "R6",
+   "acceptance": "index lists authoritative docs; others carry a one-line historical header",
+   "verify": "spot check",
+   "status": "TODO",
+   "status_detail": "TODO",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B12",
+   "task": "Paddle key permissions, Telegram chat id",
+   "why": "R10",
+   "acceptance": "verifier shows Paddle and Telegram VERIFIED",
+   "verify": "`connection_verifier.py`",
+   "status": "BLOCKED",
+   "status_detail": "BLOCKED (founder)",
+   "founder_authorization_required": true
+  },
+  {
+   "id": "B13",
+   "task": "Revenue figure reported STALE although the loop polls sales every cycle",
+   "why": "`finance_data.json` is only rewritten on a sale, so its age said \"nobody checked\" (observed: 5.6 days)",
+   "acceptance": "a successful poll records per-arm `last_ok_at`; `revenue_truth` reports PASS only for arms read without error inside 24 h and names the arms not checked",
+   "verify": "`tests/test_revenue_freshness.py` (8); live: real poll 00:07Z wrote `data/sales_poll_last_check.json`, revenue PASS, Paddle listed as not checked",
+   "status": "DONE",
+   "status_detail": "DONE (uncommitted)",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B14",
+   "task": "Digital Products arm status was fixed text from 2026-10-19 (\"no live Gumroad write credential\")",
+   "why": "wrong BLOCKED status while 102 listings are live",
+   "acceptance": "status and gap derived from `data/product_registry.json`; REVENUE_VERIFIED only with a registry sale plus a reconciled finance record",
+   "verify": "`tests/test_arm_portfolio.py`",
+   "status": "DONE",
+   "status_detail": "DONE (uncommitted)",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B15",
+   "task": "Ten portfolio activities and two control capabilities not represented",
+   "why": "mission acceptance A/B/H",
+   "acceptance": "`business_arms.PORTFOLIO_ACTIVITIES`, `CONTROL_CAPABILITIES`, `write_state()`; written after each daily registry rebuild; dashboard section \"الأذرع والقدرات\" with freshness",
+   "verify": "tests (py 17, js 2); live HTTP check with login, 401 without",
+   "status": "DONE",
+   "status_detail": "DONE (uncommitted; server restarted)",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B16",
+   "task": "Guide generator printed \"UNKNOWN -- not captured...\" on public pages and dropped og/canonical tags on every regeneration",
+   "why": "public quality, SEO",
+   "acceptance": "unknown fields omitted with an explicit \"left out rather than guessed\" row; share/canonical block emitted by the generator",
+   "verify": "`tests/test_seo_guide_quality.py` (8); 17 guides regenerated: 0 residue, 17/17 one canonical",
+   "status": "DONE",
+   "status_detail": "DONE locally; publishing BLOCKED (founder: commit/push)",
+   "founder_authorization_required": true
+  },
+  {
+   "id": "B17",
+   "task": "A test of `registry_daily.run_once` could write the live arm-state file",
+   "why": "R9",
+   "acceptance": "an injected runner without an injected writer never writes live files",
+   "verify": "`RegistryDailyWritesArms` test",
+   "status": "DONE",
+   "status_detail": "DONE",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B18",
+   "task": "Batch 15 not in Pinterest queue; 13 new pin images not public",
+   "why": "distribution",
+   "acceptance": "images built (99); queue rebuilt: 86 BLOCKED_NO_BOARD, 13 BLOCKED_IMAGE_NOT_PUBLIC",
+   "verify": "`data/pinterest_queue.json`",
+   "status": "BLOCKED",
+   "status_detail": "BLOCKED (founder: create board; authorize site commit)",
+   "founder_authorization_required": true
+  },
+  {
+   "id": "B19",
+   "task": "RaaS has no arm and no service",
+   "why": "mission arm 4",
+   "acceptance": "a written recurring-service spec with inputs/outputs/acceptance and a validation rule, based on an existing engine",
+   "verify": "spec review",
+   "status": "TODO",
+   "status_detail": "TODO",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B20",
+   "task": "Data Products: nothing packaged; no data card/provenance format",
+   "why": "mission arm 8",
+   "acceptance": "data-card schema + provenance checks for one lawful dataset",
+   "verify": "unit tests",
+   "status": "TODO",
+   "status_detail": "TODO",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B21",
+   "task": "Productized AI Services and AI Operations are PLANNED",
+   "why": "mission arms 2/6",
+   "acceptance": "one scoped service spec each, reusing existing engines; no offer activated",
+   "verify": "spec review",
+   "status": "TODO",
+   "status_detail": "TODO",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B22",
+   "task": "No per-arm revenue attribution outside Digital Products",
+   "why": "REVENUE_VERIFIED unreachable",
+   "acceptance": "affiliate commissions (REAL, CONFIRMED/PAID) attributed to `affiliate_intelligence`",
+   "verify": "unit tests",
+   "status": "TODO",
+   "status_detail": "TODO",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B23",
+   "task": "Four \"arm\" schemes in use",
+   "why": "confusion, duplicated status",
+   "acceptance": "reconciliation documented (`docs/factory/ARM_TAXONOMY.md`); new work uses T1 for business arms",
+   "verify": "doc",
+   "status": "DONE",
+   "status_detail": "DONE (doc)",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B24",
+   "task": "38 affiliate clicks recorded with no source/bot classification",
+   "why": "human traffic unverifiable",
+   "acceptance": "each click carries a classification (internal/test/bot/unknown) and the dashboard counts only verified human clicks",
+   "verify": "unit tests",
+   "status": "TODO",
+   "status_detail": "TODO",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B25",
+   "task": "Children's episode: animatic only",
+   "why": "arm 9",
+   "acceptance": "voices and on-screen font decided",
+   "verify": "`kids_studio/production_manifest.json`",
+   "status": "BLOCKED",
+   "status_detail": "BLOCKED (founder)",
+   "founder_authorization_required": true
+  },
+  {
+   "id": "B27",
+   "task": "Full-suite run on 2026-10-29 (00:16-00:46Z, stopped at ~6% by the system for low memory) appended test-fixture rows to live ledgers",
+   "why": "R9 repeated (B5 not yet fixed): live data now mixes fixture rows such as `\"error\": \"e\"`, `\"source\": \"src\"`",
+   "acceptance": "rows in the window identified per file (evidence_ledger 70, design_audit 31, design_approvals 12, design_candidates 9, distribution_events 5, recovery_actions 1, arm5_attribution 1; single rows in daily-report ledgers are the loop's own); quarantined only with a backup and founder approval, never deleted silently; then B5 isolation lands so it cannot recur",
+   "verify": "per-file row list",
+   "status": "BLOCKED",
+   "status_detail": "BLOCKED (founder: approve quarantine); B5 is the fix",
+   "founder_authorization_required": true
+  },
+  {
+   "id": "B28",
+   "task": "Trend-to-Product engine: provenance, evidence classes, advisory scoring, rights screen, specs, duplication, traceability, dashboard",
+   "why": "mission GF Trend-to-Product",
+   "acceptance": "`trend_to_product/`; `data/trend_to_product_state.json`; dashboard section \"من الاتجاه إلى المنتج\"",
+   "verify": "`tests/test_trend_to_product.py` (36), JS case; live HTTP 401 without login, 200 with",
+   "status": "DONE",
+   "status_detail": "DONE (uncommitted)",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B29",
+   "task": "No first-party search-interest readings for the six candidates",
+   "why": "every candidate lacks or weakly has demand evidence",
+   "acceptance": "Pinterest Trends index (and region) read in a signed-in session, recorded as OFFICIAL_PLATFORM_DATA via `records.record_source` + `record_signal`",
+   "verify": "candidates re-scored; coverage rises",
+   "status": "BLOCKED",
+   "status_detail": "BLOCKED (founder: Pinterest business session, or authorise a session to read it)",
+   "founder_authorization_required": true
+  },
+  {
+   "id": "B30",
+   "task": "Pricing-calculator spec overlaps B14-005",
+   "why": "cannibalisation",
+   "acceptance": "founder decides: differentiate (overhead + shipping), bundle with B14-005, or drop",
+   "verify": "spec status updated",
+   "status": "BLOCKED",
+   "status_detail": "BLOCKED (founder decision)",
+   "founder_authorization_required": true
+  },
+  {
+   "id": "B31",
+   "task": "Craft patterns cannot be verified here",
+   "why": "technical correctness",
+   "acceptance": "a physical test make or a tester workflow exists; stitch-count checker written",
+   "verify": "pattern spec acceptance tests run",
+   "status": "BLOCKED",
+   "status_detail": "BLOCKED (physical)",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B32",
+   "task": "Customer-problem signals for maker/reading/content topics",
+   "why": "problem severity is unscored",
+   "acceptance": "reuse `lib/demand_sensing.js` sources (Stack Exchange `crafts`, `money`) feeding `record_signal(CUSTOMER_PROBLEM)`",
+   "verify": "signals recorded with source ids",
+   "status": "DONE",
+   "status_detail": "DONE (uncommitted): `scripts/trend_problem_signals.py`, weekly via registry_daily; live: patterns 2, miniatures 1, others 0 questions -- thin source",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B33",
+   "task": "Listing drafts and spec-to-product links only exercised in tests",
+   "why": "traceability unproven on a real product",
+   "acceptance": "first product built from a SPEC_DRAFT, linked with `link_spec_to_product`, trace shows its QA/approval",
+   "verify": "`python -m trend_to_product` shows product_links >= 1",
+   "status": "TODO",
+   "status_detail": "TODO (after B29/B30)",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B26",
+   "task": "X spend-blocked; LinkedIn/Instagram not connected; Paddle 403",
+   "why": "channel reach, payments",
+   "acceptance": "channels connected / key reissued",
+   "verify": "`connection_verifier.py`, distribution dashboard",
+   "status": "BLOCKED",
+   "status_detail": "BLOCKED (founder)",
+   "founder_authorization_required": true
+  }
+ ]
+}
