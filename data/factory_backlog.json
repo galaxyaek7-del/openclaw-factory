@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-29T16:29:45.838623+00:00",
+ "generated_at": "2026-10-29T16:39:35.929138+00:00",
  "source": "docs/factory/FACTORY_ENGINEERING_BACKLOG.md",
  "items": [
   {
@@ -418,8 +418,8 @@
    "why": "experiments decided by status, not evidence",
    "acceptance": "an explicit article-to-experiment map feeds `record_observations_from_real_ledgers()` from `data/distribution_metrics.jsonl`",
    "verify": "unit tests; observations appear for EXP-TELEGRAPH-00x",
-   "status": "TODO",
-   "status_detail": "TODO",
+   "status": "PARTIAL",
+   "status_detail": "PARTIAL: each experiment now shows its article's latest getViews reading on the dashboard (`lib/commercial_funnel.js`, 3edb096); readings are cumulative snapshots, so no per-day observation is written (that would invent a daily split)",
    "founder_authorization_required": false
   },
   {
