@@ -2,6 +2,8 @@
 
 Newest first. One line per meaningful step; details live in commits and reports.
 
+- 2026-10-29 17:15Z: sales readings repaired (`b17ff7e`): `poll_distribution_metrics.py` and `run_campaign_review.py` ran `channels/gumroad_publisher.py` as a script, which cannot import its own package, so sales were recorded UNKNOWN on every run since 2026-10-09; now run as a module (live: sales_count 0, observed). Sweeps with no defect found: 0 broken internal links on the public site, 3/3 links inside live Gumroad descriptions answer 200, loop failures in the last 24 h all recovered or by design, IndexNow will announce the 30 changed pages on its next daily run.
+
 - 2026-10-29 17:05Z: CI group (a) passes on Linux again (run 40917097622) after the second guard fix (`681eaec`): the guard's "real" isdir/exists went through the guarded os.stat on POSIX, so an overlay-only folder (niche_reports) looked live and os.listdir failed. Found by the grouped CI annotations (`c6dbe02`), which name each distinct failure with its file:line.
 - 2026-10-29: listing repairs prepared and dry-run (`scripts/apply_listing_repairs_20261029.py`): trademark kit gets the promised tracker (fee sheet rebuilt on the USPTO schedule, read 2026-10-29) and a guide with a dated fee-correction page (statement of use $150, extension $125; the guide said $200-250 and $225); GPSR kit gets the promised cost planner; 27 listings drop "and this guide.". Live run refused to the agent by the tool's safety classifier; founder runs it (`docs/factory/FOUNDER_ACTIONS.md`).
 - 2026-10-29: storefront catalogue 100 -> 107 (B16-001..007), dashboard decision queue derived from files, 30 of 39 archives verified byte-for-byte against their built bundle (9 older ones unknown).
