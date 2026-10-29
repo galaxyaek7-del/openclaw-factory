@@ -140,8 +140,76 @@ def run(dry_run=False):
     if dry_run:
         return {"action": "dry_run", "detail": f"would push {len(commits)} site-only commits ({why})"}
     git("push", "origin", f"{head}:refs/heads/main")
-    write_state({"last_push": {"sha": head, "origin_before": origin, "commits": len(commits)}})
+    # Merge, not replace: keeps outage_open_since so the outage can be closed after this run.
+    write_state({**read_state(), "last_push": {"sha": head, "origin_before": origin, "commits": len(commits)}})
     return {"action": "pushed", "detail": f"{len(commits)} site-only commits pushed ({head[:7]}); {why}"}
+
+
+# 2026-10-29: 23 of 109 runs in a day were reported "failed" only because github.com
+# could not be reached (the host loses its network most mornings). They are now
+# "deferred" with reason "network", and each outage is recorded once as a window
+# (start, end, minutes) so real publishing failures are not buried in outage noise
+# and the outage pattern is measurable. Nothing about what may be pushed changes.
+OUTAGES = ROOT / "data" / "network_outages.jsonl"
+NETWORK_ERRORS = ("could not resolve host", "failed to connect", "connection timed out",
+                  "operation timed out", "connection reset", "network is unreachable",
+                  "could not connect to server", "timed out after")
+
+
+def is_network_error(text):
+    t = (text or "").lower()
+    return any(p in t for p in NETWORK_ERRORS)
+
+
+def _now():
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def record_outage(reachable, detail="", now=None, outages=None, state=None):
+    """Open an outage record on the first unreachable run, close it on the first
+    reachable one. Returns (event written or None, updated state)."""
+    outages = outages or OUTAGES
+    state = dict(state if state is not None else read_state())
+    now = now or _now()
+    open_since = state.get("outage_open_since")
+    event = None
+    if not reachable and not open_since:
+        state["outage_open_since"] = now
+        event = {"event": "github_unreachable", "start": now, "detail": detail[:200]}
+    elif reachable and open_since:
+        from datetime import datetime
+        minutes = round((datetime.fromisoformat(now) - datetime.fromisoformat(open_since)).total_seconds() / 60, 1)
+        state.pop("outage_open_since", None)
+        event = {"event": "github_reachable_again", "start": open_since, "end": now, "minutes": minutes}
+    if event:
+        outages.parent.mkdir(parents=True, exist_ok=True)
+        with open(outages, "a", encoding="utf-8") as f:
+            f.write(json.dumps(event, ensure_ascii=False) + "\n")
+    return event, state
+
+
+def classify_and_record(run_fn, dry_run=False, outages=None, state_reader=None, state_writer=None,
+                        now=None):
+    state_reader = state_reader or read_state
+    state_writer = state_writer or write_state
+    try:
+        r = run_fn(dry_run=dry_run)
+        reachable = True
+    except Exception as e:
+        detail = f"{type(e).__name__}: {str(e)[:200]}"
+        if not is_network_error(str(e)):
+            return {"action": "failed", "detail": detail}
+        r = {"action": "deferred", "reason": "network", "detail": detail}
+        reachable = False
+    event, state = record_outage(reachable, r.get("detail", ""), now=now, outages=outages, state=state_reader())
+    if event:
+        state_writer(state)
+        if reachable:
+            r["outage_closed_minutes"] = event["minutes"]
+        else:
+            r["outage"] = "opened"
+    return r
 
 
 def main():
@@ -149,10 +217,7 @@ def main():
     ap.add_argument("--once", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
-    try:
-        r = run(dry_run=a.dry_run)
-    except Exception as e:
-        r = {"action": "failed", "detail": f"{type(e).__name__}: {str(e)[:200]}"}
+    r = classify_and_record(run, dry_run=a.dry_run)
     sys.stdout.write(json.dumps(r, ensure_ascii=False) + "\n")
 
 

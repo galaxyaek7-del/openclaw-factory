@@ -41,3 +41,51 @@ class TestReviewRange(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestNetworkOutages(unittest.TestCase):
+    """2026-10-29: network failures are 'deferred', recorded once per outage window."""
+
+    def setUp(self):
+        import tempfile
+        self.d = Path(tempfile.mkdtemp())
+        self.outages = self.d / "outages.jsonl"
+        self.state = {}
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self.d, ignore_errors=True)
+
+    def call(self, run_fn, now):
+        return aps.classify_and_record(run_fn, outages=self.outages, now=now,
+                                       state_reader=lambda: dict(self.state),
+                                       state_writer=lambda s: self.state.update(s) or self.state.clear() or self.state.update(s))
+
+    def events(self):
+        import json
+        return [json.loads(l) for l in self.outages.read_text(encoding="utf-8").splitlines()] if self.outages.exists() else []
+
+    def test_network_error_is_deferred_and_window_recorded_once(self):
+        def down(dry_run=False):
+            raise RuntimeError("git fetch -q failed: fatal: unable to access 'https://github.com/x': Could not resolve host: github.com")
+        r1 = self.call(down, "2026-10-29T05:00:00+00:00")
+        r2 = self.call(down, "2026-10-29T05:10:00+00:00")
+        self.assertEqual(("deferred", "network", "opened"), (r1["action"], r1["reason"], r1["outage"]))
+        self.assertEqual("deferred", r2["action"])
+        self.assertNotIn("outage", r2)
+        r3 = self.call(lambda dry_run=False: {"action": "none", "detail": "nothing to publish"}, "2026-10-29T06:30:00+00:00")
+        self.assertEqual(90.0, r3["outage_closed_minutes"])
+        ev = self.events()
+        self.assertEqual(["github_unreachable", "github_reachable_again"], [e["event"] for e in ev])
+        self.assertNotIn("outage_open_since", self.state)
+
+    def test_other_errors_are_still_failures(self):
+        def broken(dry_run=False):
+            raise RuntimeError("git rev-parse failed: fatal: bad revision")
+        r = self.call(broken, "2026-10-29T05:00:00+00:00")
+        self.assertEqual("failed", r["action"])
+        self.assertEqual([], self.events())
+
+    def test_detection(self):
+        self.assertTrue(aps.is_network_error("Failed to connect to github.com port 443 after 21149 ms"))
+        self.assertFalse(aps.is_network_error("CI failed for the last automatic push"))
