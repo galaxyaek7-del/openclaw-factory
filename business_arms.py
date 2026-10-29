@@ -327,11 +327,49 @@ def _affiliate_cfg(cfg: Dict[str, Any], clicks: Dict[str, Any],
     return out
 
 
+def _studio_evidence(root: Path = None) -> Dict[str, Any]:
+    """Children's studio state from its own records: episode renders whose
+    verify.json says PASS (proof-of-concept and test renders excluded), and the
+    manifest's finished-film flag."""
+    root = root or ROOT
+    renders = root / "kids_studio" / "renders"
+    verified = []
+    for p in sorted(renders.glob("ep*.verify.json")) if renders.is_dir() else []:
+        stem = p.name[: -len(".verify.json")]
+        if any(t in stem for t in ("poc", "test")):
+            continue
+        try:
+            if json.loads(p.read_text(encoding="utf-8")).get("verdict") == "PASS":
+                verified.append(stem)
+        except (OSError, ValueError):
+            continue
+    try:
+        finished = bool(json.loads((root / "kids_studio" / "production_manifest.json")
+                                   .read_text(encoding="utf-8")).get("finished_film_exists"))
+    except (OSError, ValueError):
+        finished = None
+    return {"verified_episode_renders": verified, "finished_film_exists": finished}
+
+
+def _studio_cfg(cfg: Dict[str, Any], evidence: Dict[str, Any]) -> Dict[str, Any]:
+    """Children's Media Studio, restated from its verify records instead of fixed text."""
+    n = len(evidence.get("verified_episode_renders") or [])
+    if not n:
+        return cfg
+    out = dict(cfg)
+    film = "no finished film exists" if evidence.get("finished_film_exists") is not True else "a finished film exists"
+    out["gap"] = ("%d episode animatic(s) verified (%s); %s and no distribution channel is wired"
+                  % (n, ", ".join(evidence["verified_episode_renders"]), film))
+    out["blocker"] = out["gap"]
+    return out
+
+
 def arm_status() -> Dict[str, Any]:
     revenue = _revenue_state()
     evidence = _registry_evidence()
     cfgs = dict(ARMS)
     cfgs["digital_products"] = _digital_products_cfg(ARMS["digital_products"], evidence)
+    cfgs["childrens_media_studio"] = _studio_cfg(ARMS["childrens_media_studio"], _studio_evidence())
     cfgs["affiliate_intelligence"] = _affiliate_cfg(ARMS["affiliate_intelligence"], _click_evidence(),
                                                     _commission_evidence())
     arms = {key: evaluate_arm(key, cfg, revenue) for key, cfg in cfgs.items()}
@@ -394,12 +432,15 @@ def control_status() -> Dict[str, Any]:
 def write_state(path: Path = None, now: str = None) -> Dict[str, Any]:
     """Persist arms + portfolio + controls for the CEO dashboard (file reads only)."""
     from datetime import datetime, timezone
+    import arm_portfolio
     state = arm_status()
+    company = arm_portfolio.summary(state)
     doc = {"generated_at": now or datetime.now(timezone.utc).isoformat(),
            "generated_by": "business_arms.write_state",
            "arms": state["arms"], "counts": state["counts"], "revenue": state["revenue"],
            "portfolio": portfolio_view(state), "controls": control_status(),
-           "problems": validate_arm_states(state)}
+           "arm_portfolio": company,
+           "problems": validate_arm_states(state) + company["problems"]}
     path = Path(path) if path else ROOT / "data" / "business_arms_state.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
